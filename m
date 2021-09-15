@@ -4,35 +4,35 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-19.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E29FC4321E
-	for <rcu@archiver.kernel.org>; Wed, 15 Sep 2021 23:33:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 006D3C433FE
+	for <rcu@archiver.kernel.org>; Wed, 15 Sep 2021 23:33:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8DA8C61242
+	by mail.kernel.org (Postfix) with ESMTP id D20F461247
 	for <rcu@archiver.kernel.org>; Wed, 15 Sep 2021 23:33:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233133AbhIOXfK (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S232836AbhIOXfK (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Wed, 15 Sep 2021 19:35:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60484 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:60502 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232954AbhIOXfF (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S232982AbhIOXfF (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 15 Sep 2021 19:35:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 610FB61216;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 73A6461251;
         Wed, 15 Sep 2021 23:33:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1631748825;
-        bh=P1LOJ0jb929Ql25NTh67Ib2ZHOXICwcs825LoWP1W+Q=;
+        bh=r+HrfQUOvVIdcRSQOW//s01d+ygSv0BpWvlQuKsQZ2c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DbPK51Rh+6tSMmF0SvrfS7jRkfamszmFiUfamttnbdEz34dmmRmuuGv6QOL5M04SH
-         x1rpD8Ur+CCOh87qGgjj7NBNwK5B2PNgwDYdw+E7ps7ZJWXcZ0u44O0SatZYRaVH6a
-         FbFUZnv8gWazsduWKHUMJdLPqoTU++RQg49YkFn3jMMP/+uTMIksEDz9AdHhD8v4FW
-         UhCLRvPy9JGPDmplutzChhRMSJZfQtXGmB6HsitGTF3RMqD+kOJYOMV43i3wj3Zr5c
-         t+V7woTv13V24GyhMvid8q0Bpupft3kkBT5PE4stA/qo5OMRuPVdWHh4V34ju1fa0v
-         gX7bazrj2IlJw==
+        b=jvvGz6DqhY1rVxhrygPbdXnNjd3wXD5UYBC/fux+SAu42FqCtxN+ufyTtKIT/+CDI
+         ZgO+6QQvvcKExu3Mil+eRu1XAf64CUz1WJ6bnj4VDCv9KMM3eiAjaqFw81XesX+Oay
+         yWoeghod6t0WeHkNqA1SnIw8wweY1w6fwfyStipIIcJ3QrN2E5UnGdAJ0DQjF73eLt
+         4x+cC6Yz832xwOJlXmwYevyR0mFJ46lPUuw9U8ro93e3mgwXf11a7icJYyk/zYVlGk
+         MLK30sIYTa9qLzjXdciix6rILSypwE43RxX+v+WtCa9+LTPpf7A0ClOydc35l4/gTK
+         ncHIApWBm/Xkw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id D25DE5C0DEE; Wed, 15 Sep 2021 16:33:44 -0700 (PDT)
+        id D47A35C0F2F; Wed, 15 Sep 2021 16:33:44 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -41,11 +41,13 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Waiman Long <longman@redhat.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 13/14] rcu: Fix existing exp request check in sync_sched_exp_online_cleanup()
-Date:   Wed, 15 Sep 2021 16:33:42 -0700
-Message-Id: <20210915233343.3906738-13-paulmck@kernel.org>
+Subject: [PATCH rcu 14/14] rcu: Avoid unneeded function call in rcu_read_unlock()
+Date:   Wed, 15 Sep 2021 16:33:43 -0700
+Message-Id: <20210915233343.3906738-14-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210915233305.GA3906641@paulmck-ThinkPad-P17-Gen-1>
 References: <20210915233305.GA3906641@paulmck-ThinkPad-P17-Gen-1>
@@ -55,39 +57,60 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Neeraj Upadhyay <neeraju@codeaurora.org>
+From: Waiman Long <longman@redhat.com>
 
-The sync_sched_exp_online_cleanup() checks to see if RCU needs
-an expedited quiescent state from the incoming CPU, sending it
-an IPI if so. Before sending IPI, it checks whether expedited
-qs need has been already requested for the incoming CPU, by
-checking rcu_data.cpu_no_qs.b.exp for the current cpu, on which
-sync_sched_exp_online_cleanup() is running. This works for the
-case where incoming CPU is same as self. However, for the case
-where incoming CPU is different from self, expedited request
-won't get marked, which can potentially delay reporting of
-expedited quiescent state for the incoming CPU.
+Since commit aa40c138cc8f3 ("rcu: Report QS for outermost PREEMPT=n
+rcu_read_unlock() for strict GPs") the function rcu_read_unlock_strict()
+is invoked by the inlined rcu_read_unlock() function.  However,
+rcu_read_unlock_strict() is an empty function in production kernels,
+which are built with CONFIG_RCU_STRICT_GRACE_PERIOD=n.
 
-Fixes: e015a3411220 ("rcu: Avoid self-IPI in sync_sched_exp_online_cleanup()")
-Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+There is a mention of rcu_read_unlock_strict() in the BPF verifier,
+but this is in a deny-list, meaning that BPF does not care whether
+rcu_read_unlock_strict() is ever called.
+
+This commit therefore provides a slight performance improvement
+by hoisting the check of CONFIG_RCU_STRICT_GRACE_PERIOD from
+rcu_read_unlock_strict() into rcu_read_unlock(), thus avoiding the
+pointless call to an empty function.
+
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Waiman Long <longman@redhat.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_exp.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/rcupdate.h | 3 ++-
+ kernel/rcu/tree_plugin.h | 3 +--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index d9e4f8eb9ae2..f3947c49eee7 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -759,7 +759,7 @@ static void sync_sched_exp_online_cleanup(int cpu)
- 	my_cpu = get_cpu();
- 	/* Quiescent state either not needed or already requested, leave. */
- 	if (!(READ_ONCE(rnp->expmask) & rdp->grpmask) ||
--	    __this_cpu_read(rcu_data.cpu_no_qs.b.exp)) {
-+	    rdp->cpu_no_qs.b.exp) {
- 		put_cpu();
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index 434d12fe2d4f..5e0beb5c5659 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -71,7 +71,8 @@ static inline void __rcu_read_lock(void)
+ static inline void __rcu_read_unlock(void)
+ {
+ 	preempt_enable();
+-	rcu_read_unlock_strict();
++	if (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD))
++		rcu_read_unlock_strict();
+ }
+ 
+ static inline int rcu_preempt_depth(void)
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index d070059163d7..1a6fdb03d0a5 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -814,8 +814,7 @@ void rcu_read_unlock_strict(void)
+ {
+ 	struct rcu_data *rdp;
+ 
+-	if (!IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD) ||
+-	   irqs_disabled() || preempt_count() || !rcu_state.gp_kthread)
++	if (irqs_disabled() || preempt_count() || !rcu_state.gp_kthread)
  		return;
- 	}
+ 	rdp = this_cpu_ptr(&rcu_data);
+ 	rcu_report_qs_rdp(rdp);
 -- 
 2.31.1.189.g2e36527f23
 
