@@ -2,37 +2,37 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-19.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 91E42C433EF
-	for <rcu@archiver.kernel.org>; Wed, 15 Sep 2021 23:45:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0195CC433F5
+	for <rcu@archiver.kernel.org>; Wed, 15 Sep 2021 23:46:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7621260F8F
-	for <rcu@archiver.kernel.org>; Wed, 15 Sep 2021 23:45:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D55EC61157
+	for <rcu@archiver.kernel.org>; Wed, 15 Sep 2021 23:46:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233050AbhIOXq6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 15 Sep 2021 19:46:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48748 "EHLO mail.kernel.org"
+        id S233144AbhIOXr0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 15 Sep 2021 19:47:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49270 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232836AbhIOXq6 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 15 Sep 2021 19:46:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D7FC610E8;
-        Wed, 15 Sep 2021 23:45:38 +0000 (UTC)
+        id S232836AbhIOXrZ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 15 Sep 2021 19:47:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D3F9D610E8;
+        Wed, 15 Sep 2021 23:46:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631749538;
-        bh=2RTg2+cSa0gROS3lcGbDH7nYj3g+s7AzMM0dBHEAEqM=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=cdC2D6ojS3PUpCSqV9xLyA65S4RaQxTGKQ1vnt4hojKoxCaGM7L1EJKY4Yh5GO4tN
-         7qXf+0d5YHbsJFvkeRvzkqywDfrIT/beX9ZWFEYVfyupI8dMsBgTPXPz/Balb2v7yK
-         inhXhAbGE60gmCJXKrfph6Fu/yniG4DeNCDVLotzVHS12X7Yyjmz2zp7np8nmTA2+y
-         /rmsx9k8w0yD6z8Xy3CyKxRnl+kPxjzP8fnRJcDaX6jwq/BVa8ZlCfZZ94rTFY4Tdy
-         Kiz1WPvfyBTNSO5a+ud+t7y9bmH2bRgxxPu4/SpNxu7XY/LnIOHolEN5i0XhzmxVE4
-         hB8ZX2m43fyOg==
+        s=k20201202; t=1631749565;
+        bh=T9JJaPoA7qsXm/0bMzGOJxDkivMKAqiIsSB90vRnVcc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=lOMa9D7h/fbSzLHk5viP9DdUdXMXG4HGQ4/Qf+tazXYSaeO7pJEgI1k25lQtNuPw9
+         0F4ewWI8MZQI7dcPaWe0J3E/NWKsdYvVicJTNnt/TRPbQNXIzrak2M/Ieu3/a3SNg4
+         kxtMaYwqIQLcZ7LZx5XLFy9kmiOpTGJmyyBhfHzu3BaWwtEieZ7pFkrEJk4/NE2nrw
+         BICdz9SbFGJaPb3jBAV4VnE1K0PKimmKWOntCSIZQPlnp3UlsN6NP133VNe619iUfj
+         fqWip4ZasloCexaPhU+4mlT78Isl7njvDlJCSA3Cj2EOCpKS6BrMjyULm9Ra7NoSlH
+         KFGI6PIunPv/w==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 548C35C054E; Wed, 15 Sep 2021 16:45:38 -0700 (PDT)
-Date:   Wed, 15 Sep 2021 16:45:38 -0700
+        id BD9595C054E; Wed, 15 Sep 2021 16:46:05 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -40,63 +40,75 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org
-Subject: [PATCH rcu 0/13] Tasks RCU updates for v5.16
-Message-ID: <20210915234538.GA3907674@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        oleg@redhat.com, joel@joelfernandes.org,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 01/13] rcu-tasks: Wait for trc_read_check_handler() IPIs
+Date:   Wed, 15 Sep 2021 16:45:52 -0700
+Message-Id: <20210915234604.3907802-1-paulmck@kernel.org>
+X-Mailer: git-send-email 2.31.1.189.g2e36527f23
+In-Reply-To: <20210915234538.GA3907674@paulmck-ThinkPad-P17-Gen-1>
+References: <20210915234538.GA3907674@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello!
+Currently, RCU Tasks Trace initializes the trc_n_readers_need_end counter
+to the value one, increments it before each trc_read_check_handler()
+IPI, then decrements it within trc_read_check_handler() if the target
+task was in a quiescent state (or if the target task moved to some other
+CPU while the IPI was in flight), complaining if the new value was zero.
+The rationale for complaining is that the initial value of one must be
+decremented away before zero can be reached, and this decrement has not
+yet happened.
 
-This series provides a number of bug fixes for RCU Tasks Trace, most
-of which were uncovered in review sessions with Boqun Feng, Frederic
-Weisbecker, and Neeraj Upadhyay.
+Except that trc_read_check_handler() is initiated with an asynchronous
+smp_call_function_single(), which might be significantly delayed.  This
+can result in false-positive complaints about the counter reaching zero.
 
-1.	rcu-tasks: Wait for trc_read_check_handler() IPIs.
+This commit therefore waits for in-flight IPI handlers to complete before
+decrementing away the initial value of one from the trc_n_readers_need_end
+counter.
 
-2.	rcu-tasks: Simplify trc_read_check_handler() atomic operations.
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ kernel/rcu/tasks.h | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-3.	rcu-tasks: Add trc_inspect_reader() checks for exiting critical
-	section.
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index 806160c44b17..3b2f8038064a 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -1150,14 +1150,28 @@ static void check_all_holdout_tasks_trace(struct list_head *hop,
+ 	}
+ }
+ 
++static void rcu_tasks_trace_empty_fn(void *unused)
++{
++}
++
+ /* Wait for grace period to complete and provide ordering. */
+ static void rcu_tasks_trace_postgp(struct rcu_tasks *rtp)
+ {
++	int cpu;
+ 	bool firstreport;
+ 	struct task_struct *g, *t;
+ 	LIST_HEAD(holdouts);
+ 	long ret;
+ 
++	// Wait for any lingering IPI handlers to complete.  Note that
++	// if a CPU has gone offline or transitioned to userspace in the
++	// meantime, all IPI handlers should have been drained beforehand.
++	// Yes, this assumes that CPUs process IPIs in order.  If that ever
++	// changes, there will need to be a recheck and/or timed wait.
++	for_each_online_cpu(cpu)
++		if (smp_load_acquire(per_cpu_ptr(&trc_ipi_to_cpu, cpu)))
++			smp_call_function_single(cpu, rcu_tasks_trace_empty_fn, NULL, 1);
++
+ 	// Remove the safety count.
+ 	smp_mb__before_atomic();  // Order vs. earlier atomics
+ 	atomic_dec(&trc_n_readers_need_end);
+-- 
+2.31.1.189.g2e36527f23
 
-4.	rcu-tasks: Remove second argument of
-	rcu_read_unlock_trace_special().
-
-5.	rcu-tasks: Fix s/instruction/instructions/ typo in comment.
-
-6.	rcu-tasks: Move RTGS_WAIT_CBS to beginning of rcu_tasks_kthread()
-	loop.
-
-7.	rcu-tasks: Fix s/rcu_add_holdout/trc_add_holdout/ typo in comment,
-	courtesy of Neeraj Upadhyay.
-
-8.	rcu-tasks: Correct firstreport usage in
-	check_all_holdout_tasks_trace, courtesy of Neeraj Upadhyay.
-
-9.	rcu-tasks: Correct comparisons for CPU numbers in
-	show_stalled_task_trace, courtesy of Neeraj Upadhyay.
-
-10.	rcu-tasks: Clarify read side section info for rcu_tasks_rude GP
-	primitives, courtesy of Neeraj Upadhyay.
-
-11.	rcu-tasks: Fix read-side primitives comment for
-	call_rcu_tasks_trace, courtesy of Neeraj Upadhyay.
-
-12.	rcu-tasks: Fix IPI failure handling in trc_wait_for_one_reader,
-	courtesy of Neeraj Upadhyay.
-
-13.	rcu-tasks: Update comments to cond_resched_tasks_rcu_qs().
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- b/include/linux/rcupdate_trace.h |    5 +-
- b/kernel/rcu/tasks.h             |   14 +++++
- kernel/rcu/tasks.h               |   97 ++++++++++++++++-----------------------
- 3 files changed, 57 insertions(+), 59 deletions(-)
