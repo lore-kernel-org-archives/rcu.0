@@ -4,35 +4,35 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-19.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E34EC433FE
-	for <rcu@archiver.kernel.org>; Wed, 15 Sep 2021 23:46:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C3482C4167B
+	for <rcu@archiver.kernel.org>; Wed, 15 Sep 2021 23:46:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7594C61157
-	for <rcu@archiver.kernel.org>; Wed, 15 Sep 2021 23:46:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AF33F61157
+	for <rcu@archiver.kernel.org>; Wed, 15 Sep 2021 23:46:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233226AbhIOXr1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 15 Sep 2021 19:47:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49356 "EHLO mail.kernel.org"
+        id S232836AbhIOXr2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 15 Sep 2021 19:47:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49470 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233050AbhIOXrZ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 15 Sep 2021 19:47:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E8BA06113E;
-        Wed, 15 Sep 2021 23:46:05 +0000 (UTC)
+        id S233101AbhIOXr0 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 15 Sep 2021 19:47:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 26500611C7;
+        Wed, 15 Sep 2021 23:46:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1631749566;
-        bh=tBTLNxUFn/9oqHiZ5NMkB3NmIBVvganvnDawKOSirrc=;
+        bh=r6pUJPLUCsV/sWOj6NTvOqUI8rHTlmQvqmYyZZMHEGA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Eq8iokSXtNaF+BFpuMKvzvgaXUSst67yc+I/ZEeKyMXX8Q9ZLjng+6rST+TTS10oy
-         uTkNM2Nu9FFvzGogxydHrsd/19PM2ID1HYRahDnm3UwTHFzNcTCEvm3HpRruNkWyLj
-         FZROKpBd6CXe6puUQPhqR3Vzj6/fmaRcI6aqE1oUdIW+C4mlLL88JxwVtHKTaFIE3A
-         wD1t5qRRuvQNBHJsngztCViPB9FbVB9fKgCfDFw2Q5JD/CIcS7exN/8Oui/GidBXwn
-         X6VeGE+sWSOSuw96GxmJhWByXEF0TityqwxAN93MiAnnxrbg7K+JKmoC5nhWuegyw4
-         cCxR8u3DIRsAA==
+        b=VaidTUPAIouXgN54Z4xP6+XvkwPL84mDvLI7EPjg7D5fPhPs2f/aq5p17qsD3R914
+         1qzQUOvKporhMRd29qjoHX5NF1lCp0yAm0HaWymVMTFY88ZPgrTylOm75klroFwF3E
+         jmNcN/0MO+bslS063EVIUn9Yed5r/89RPQSSEZxMPYVk5/3FCXqnqd/F3QWM0m3ncF
+         w2t26y0Fqb1X/p4r0Pw2PRb2/t8UUVS6S4r2bYB6Z2oJwIiZ1W6KI6DhLgdcqikxWy
+         5CIN7X9Iy1pA7S8aJLMhEweSiq9B9BVGgzAveNtyO3pVfFMgi6l1n2wpZMdrAYG8E3
+         jV7TvhM5PNNJw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id C452F5C08E8; Wed, 15 Sep 2021 16:46:05 -0700 (PDT)
+        id C841A5C0954; Wed, 15 Sep 2021 16:46:05 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -41,10 +41,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 04/13] rcu-tasks: Remove second argument of rcu_read_unlock_trace_special()
-Date:   Wed, 15 Sep 2021 16:45:55 -0700
-Message-Id: <20210915234604.3907802-4-paulmck@kernel.org>
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>
+Subject: [PATCH rcu 06/13] rcu-tasks: Move RTGS_WAIT_CBS to beginning of rcu_tasks_kthread() loop
+Date:   Wed, 15 Sep 2021 16:45:57 -0700
+Message-Id: <20210915234604.3907802-6-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210915234538.GA3907674@paulmck-ThinkPad-P17-Gen-1>
 References: <20210915234538.GA3907674@paulmck-ThinkPad-P17-Gen-1>
@@ -54,77 +55,38 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The second argument of rcu_read_unlock_trace_special() is always zero.
-When called from exit_tasks_rcu_finish_trace(), it is the constant
-zero, and rcu_read_unlock_trace_special() doesn't get called from
-rcu_read_unlock_trace() unless the value of local variable "nesting"
-is zero because in that case the early return is taken instead.
+Early in debugging, it made some sense to differentiate the first
+iteration from subsequent iterations, but now this just causes confusion.
+This commit therefore moves the "set_tasks_gp_state(rtp, RTGS_WAIT_CBS)"
+statement to the beginning of the "for" loop in rcu_tasks_kthread().
 
-This commit therefore removes the "nesting" argument from the
-rcu_read_unlock_trace_special() function, substituting the constant
-zero within that function.  This commit also adds a WARN_ON_ONCE()
-to rcu_read_lock_trace_held() in case non-zeroness some day appears.
-
+Reported-by: Neeraj Upadhyay <neeraju@codeaurora.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/rcupdate_trace.h | 5 +++--
- kernel/rcu/tasks.h             | 6 +++---
- 2 files changed, 6 insertions(+), 5 deletions(-)
+ kernel/rcu/tasks.h | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/include/linux/rcupdate_trace.h b/include/linux/rcupdate_trace.h
-index 86c8f6c98412..6f9c35817398 100644
---- a/include/linux/rcupdate_trace.h
-+++ b/include/linux/rcupdate_trace.h
-@@ -31,7 +31,7 @@ static inline int rcu_read_lock_trace_held(void)
- 
- #ifdef CONFIG_TASKS_TRACE_RCU
- 
--void rcu_read_unlock_trace_special(struct task_struct *t, int nesting);
-+void rcu_read_unlock_trace_special(struct task_struct *t);
- 
- /**
-  * rcu_read_lock_trace - mark beginning of RCU-trace read-side critical section
-@@ -80,7 +80,8 @@ static inline void rcu_read_unlock_trace(void)
- 		WRITE_ONCE(t->trc_reader_nesting, nesting);
- 		return;  // We assume shallow reader nesting.
- 	}
--	rcu_read_unlock_trace_special(t, nesting);
-+	WARN_ON_ONCE(nesting != 0);
-+	rcu_read_unlock_trace_special(t);
- }
- 
- void call_rcu_tasks_trace(struct rcu_head *rhp, rcu_callback_t func);
 diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 8387e70e6b00..a3f4f9bd8c67 100644
+index 43c0f715ac63..7e2641783e43 100644
 --- a/kernel/rcu/tasks.h
 +++ b/kernel/rcu/tasks.h
-@@ -848,7 +848,7 @@ static void rcu_read_unlock_iw(struct irq_work *iwp)
- static DEFINE_IRQ_WORK(rcu_tasks_trace_iw, rcu_read_unlock_iw);
+@@ -197,6 +197,7 @@ static int __noreturn rcu_tasks_kthread(void *arg)
+ 	 * This loop is terminated by the system going down.  ;-)
+ 	 */
+ 	for (;;) {
++		set_tasks_gp_state(rtp, RTGS_WAIT_CBS);
  
- /* If we are the last reader, wake up the grace-period kthread. */
--void rcu_read_unlock_trace_special(struct task_struct *t, int nesting)
-+void rcu_read_unlock_trace_special(struct task_struct *t)
- {
- 	int nq = READ_ONCE(t->trc_reader_special.b.need_qs);
- 
-@@ -858,7 +858,7 @@ void rcu_read_unlock_trace_special(struct task_struct *t, int nesting)
- 	// Update .need_qs before ->trc_reader_nesting for irq/NMI handlers.
- 	if (nq)
- 		WRITE_ONCE(t->trc_reader_special.b.need_qs, false);
--	WRITE_ONCE(t->trc_reader_nesting, nesting);
-+	WRITE_ONCE(t->trc_reader_nesting, 0);
- 	if (nq && atomic_dec_and_test(&trc_n_readers_need_end))
- 		irq_work_queue(&rcu_tasks_trace_iw);
- }
-@@ -1200,7 +1200,7 @@ static void exit_tasks_rcu_finish_trace(struct task_struct *t)
- 	WARN_ON_ONCE(READ_ONCE(t->trc_reader_nesting));
- 	WRITE_ONCE(t->trc_reader_nesting, 0);
- 	if (WARN_ON_ONCE(READ_ONCE(t->trc_reader_special.b.need_qs)))
--		rcu_read_unlock_trace_special(t, 0);
-+		rcu_read_unlock_trace_special(t);
+ 		/* Pick up any new callbacks. */
+ 		raw_spin_lock_irqsave(&rtp->cbs_lock, flags);
+@@ -236,8 +237,6 @@ static int __noreturn rcu_tasks_kthread(void *arg)
+ 		}
+ 		/* Paranoid sleep to keep this from entering a tight loop */
+ 		schedule_timeout_idle(rtp->gp_sleep);
+-
+-		set_tasks_gp_state(rtp, RTGS_WAIT_CBS);
+ 	}
  }
  
- /**
 -- 
 2.31.1.189.g2e36527f23
 
