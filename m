@@ -7,32 +7,32 @@ X-Spam-Status: No, score=-19.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0195CC433F5
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 326FDC433EF
 	for <rcu@archiver.kernel.org>; Wed, 15 Sep 2021 23:46:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D55EC61157
-	for <rcu@archiver.kernel.org>; Wed, 15 Sep 2021 23:46:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1680661157
+	for <rcu@archiver.kernel.org>; Wed, 15 Sep 2021 23:46:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233144AbhIOXr0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S232885AbhIOXr0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Wed, 15 Sep 2021 19:47:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49270 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:49326 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232836AbhIOXrZ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S232929AbhIOXrZ (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 15 Sep 2021 19:47:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D3F9D610E8;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DAA8B61130;
         Wed, 15 Sep 2021 23:46:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1631749565;
-        bh=T9JJaPoA7qsXm/0bMzGOJxDkivMKAqiIsSB90vRnVcc=;
+        bh=1izOI3y2ZZgDEFh3zjoGsJxE3gsbe9dQQynHI2jtQ+M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lOMa9D7h/fbSzLHk5viP9DdUdXMXG4HGQ4/Qf+tazXYSaeO7pJEgI1k25lQtNuPw9
-         0F4ewWI8MZQI7dcPaWe0J3E/NWKsdYvVicJTNnt/TRPbQNXIzrak2M/Ieu3/a3SNg4
-         kxtMaYwqIQLcZ7LZx5XLFy9kmiOpTGJmyyBhfHzu3BaWwtEieZ7pFkrEJk4/NE2nrw
-         BICdz9SbFGJaPb3jBAV4VnE1K0PKimmKWOntCSIZQPlnp3UlsN6NP133VNe619iUfj
-         fqWip4ZasloCexaPhU+4mlT78Isl7njvDlJCSA3Cj2EOCpKS6BrMjyULm9Ra7NoSlH
-         KFGI6PIunPv/w==
+        b=IvXoc+5qTg6Y6f8IAtimZ+TdH4yCKw/ppNIhttV+SIWSJmksFbWWpRVnDD8ECA1S9
+         5F5eoB7qNq2HBwt26iMsejszGeeGQ+98lmhS0YRDFEr9KTfpzQog68lMfMd6YMROHH
+         NeocWMC4dixHKuMgpfzROQ3uN1VZkyGzHkbHZjpU7MaE91LC8FU6mWMtUPrEpd/cMW
+         jDmMD9fanwUjHzoPBYd8d1cl6LwladhHD3mfmEvc9jwvIwlTnAjqr5VSoWbNLtPpEc
+         KHH3ykxhWhhEG5K0Px65yABpMAAJLjNOCGj0r0Z+d/53eDccL/Cl1JpYM+pQfDX0uX
+         9qJPbyejql8rg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id BD9595C054E; Wed, 15 Sep 2021 16:46:05 -0700 (PDT)
+        id C04A75C06B9; Wed, 15 Sep 2021 16:46:05 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -42,9 +42,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 01/13] rcu-tasks: Wait for trc_read_check_handler() IPIs
-Date:   Wed, 15 Sep 2021 16:45:52 -0700
-Message-Id: <20210915234604.3907802-1-paulmck@kernel.org>
+Subject: [PATCH rcu 02/13] rcu-tasks: Simplify trc_read_check_handler() atomic operations
+Date:   Wed, 15 Sep 2021 16:45:53 -0700
+Message-Id: <20210915234604.3907802-2-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210915234538.GA3907674@paulmck-ThinkPad-P17-Gen-1>
 References: <20210915234538.GA3907674@paulmck-ThinkPad-P17-Gen-1>
@@ -54,61 +54,85 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Currently, RCU Tasks Trace initializes the trc_n_readers_need_end counter
-to the value one, increments it before each trc_read_check_handler()
-IPI, then decrements it within trc_read_check_handler() if the target
-task was in a quiescent state (or if the target task moved to some other
-CPU while the IPI was in flight), complaining if the new value was zero.
-The rationale for complaining is that the initial value of one must be
-decremented away before zero can be reached, and this decrement has not
-yet happened.
+Currently, trc_wait_for_one_reader() atomically increments
+the trc_n_readers_need_end counter before sending the IPI
+invoking trc_read_check_handler().  All failure paths out of
+trc_read_check_handler() and also from the smp_call_function_single()
+within trc_wait_for_one_reader() must carefully atomically decrement
+this counter.  This is more complex than it needs to be.
 
-Except that trc_read_check_handler() is initiated with an asynchronous
-smp_call_function_single(), which might be significantly delayed.  This
-can result in false-positive complaints about the counter reaching zero.
-
-This commit therefore waits for in-flight IPI handlers to complete before
-decrementing away the initial value of one from the trc_n_readers_need_end
-counter.
+This commit therefore simplifies things and saves a few lines of
+code by dispensing with the atomic decrements in favor of having
+trc_read_check_handler() do the atomic increment only in the success case.
+In theory, this represents no change in functionality.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tasks.h | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ kernel/rcu/tasks.h | 20 +++-----------------
+ 1 file changed, 3 insertions(+), 17 deletions(-)
 
 diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 806160c44b17..3b2f8038064a 100644
+index 3b2f8038064a..c9d8583ffe59 100644
 --- a/kernel/rcu/tasks.h
 +++ b/kernel/rcu/tasks.h
-@@ -1150,14 +1150,28 @@ static void check_all_holdout_tasks_trace(struct list_head *hop,
+@@ -890,32 +890,24 @@ static void trc_read_check_handler(void *t_in)
+ 
+ 	// If the task is no longer running on this CPU, leave.
+ 	if (unlikely(texp != t)) {
+-		if (WARN_ON_ONCE(atomic_dec_and_test(&trc_n_readers_need_end)))
+-			wake_up(&trc_wait);
+ 		goto reset_ipi; // Already on holdout list, so will check later.
+ 	}
+ 
+ 	// If the task is not in a read-side critical section, and
+ 	// if this is the last reader, awaken the grace-period kthread.
+ 	if (likely(!READ_ONCE(t->trc_reader_nesting))) {
+-		if (WARN_ON_ONCE(atomic_dec_and_test(&trc_n_readers_need_end)))
+-			wake_up(&trc_wait);
+-		// Mark as checked after decrement to avoid false
+-		// positives on the above WARN_ON_ONCE().
+ 		WRITE_ONCE(t->trc_reader_checked, true);
+ 		goto reset_ipi;
+ 	}
+ 	// If we are racing with an rcu_read_unlock_trace(), try again later.
+-	if (unlikely(READ_ONCE(t->trc_reader_nesting) < 0)) {
+-		if (WARN_ON_ONCE(atomic_dec_and_test(&trc_n_readers_need_end)))
+-			wake_up(&trc_wait);
++	if (unlikely(READ_ONCE(t->trc_reader_nesting) < 0))
+ 		goto reset_ipi;
+-	}
+ 	WRITE_ONCE(t->trc_reader_checked, true);
+ 
+ 	// Get here if the task is in a read-side critical section.  Set
+ 	// its state so that it will awaken the grace-period kthread upon
+ 	// exit from that critical section.
++	atomic_inc(&trc_n_readers_need_end); // One more to wait on.
+ 	WARN_ON_ONCE(READ_ONCE(t->trc_reader_special.b.need_qs));
+ 	WRITE_ONCE(t->trc_reader_special.b.need_qs, true);
+ 
+@@ -1015,21 +1007,15 @@ static void trc_wait_for_one_reader(struct task_struct *t,
+ 		if (per_cpu(trc_ipi_to_cpu, cpu) || t->trc_ipi_to_cpu >= 0)
+ 			return;
+ 
+-		atomic_inc(&trc_n_readers_need_end);
+ 		per_cpu(trc_ipi_to_cpu, cpu) = true;
+ 		t->trc_ipi_to_cpu = cpu;
+ 		rcu_tasks_trace.n_ipis++;
+-		if (smp_call_function_single(cpu,
+-					     trc_read_check_handler, t, 0)) {
++		if (smp_call_function_single(cpu, trc_read_check_handler, t, 0)) {
+ 			// Just in case there is some other reason for
+ 			// failure than the target CPU being offline.
+ 			rcu_tasks_trace.n_ipis_fails++;
+ 			per_cpu(trc_ipi_to_cpu, cpu) = false;
+ 			t->trc_ipi_to_cpu = cpu;
+-			if (atomic_dec_and_test(&trc_n_readers_need_end)) {
+-				WARN_ON_ONCE(1);
+-				wake_up(&trc_wait);
+-			}
+ 		}
  	}
  }
- 
-+static void rcu_tasks_trace_empty_fn(void *unused)
-+{
-+}
-+
- /* Wait for grace period to complete and provide ordering. */
- static void rcu_tasks_trace_postgp(struct rcu_tasks *rtp)
- {
-+	int cpu;
- 	bool firstreport;
- 	struct task_struct *g, *t;
- 	LIST_HEAD(holdouts);
- 	long ret;
- 
-+	// Wait for any lingering IPI handlers to complete.  Note that
-+	// if a CPU has gone offline or transitioned to userspace in the
-+	// meantime, all IPI handlers should have been drained beforehand.
-+	// Yes, this assumes that CPUs process IPIs in order.  If that ever
-+	// changes, there will need to be a recheck and/or timed wait.
-+	for_each_online_cpu(cpu)
-+		if (smp_load_acquire(per_cpu_ptr(&trc_ipi_to_cpu, cpu)))
-+			smp_call_function_single(cpu, rcu_tasks_trace_empty_fn, NULL, 1);
-+
- 	// Remove the safety count.
- 	smp_mb__before_atomic();  // Order vs. earlier atomics
- 	atomic_dec(&trc_n_readers_need_end);
 -- 
 2.31.1.189.g2e36527f23
 
