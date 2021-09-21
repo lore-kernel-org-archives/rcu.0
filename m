@@ -2,43 +2,43 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C156C433F5
-	for <rcu@archiver.kernel.org>; Tue, 21 Sep 2021 14:05:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A29BC433EF
+	for <rcu@archiver.kernel.org>; Tue, 21 Sep 2021 21:12:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 65158610E8
-	for <rcu@archiver.kernel.org>; Tue, 21 Sep 2021 14:05:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2F66261159
+	for <rcu@archiver.kernel.org>; Tue, 21 Sep 2021 21:12:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233352AbhIUOGi (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 21 Sep 2021 10:06:38 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:48892 "EHLO
+        id S234355AbhIUVOW (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 21 Sep 2021 17:14:22 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:51190 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233448AbhIUOGh (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 21 Sep 2021 10:06:37 -0400
+        with ESMTP id S232386AbhIUVOV (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 21 Sep 2021 17:14:21 -0400
 From:   Thomas Gleixner <tglx@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1632233107;
+        s=2020; t=1632258771;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=iRZkhuB3q8eWn+Q+IH85cvsi1BXsI2A4fpszlFgTJUU=;
-        b=fNNNVdBGg+ZulgR/yTyHw3OPyblYrJkTcS+WFxAIGwuHX+/NhHihA1O68bezkykOCH6+rP
-        aj+KRbIMVXK9+xwWRlXdETmYdGguenGbIWi31gR4OhHxo2zW+2VEp/jQgT8VyWV58ThUGY
-        si7riMahz8V4dyLV6FikLL9e5gU0JO/7nPfRKywDNfUYHNmY8BkYgTmFmZXM9V6pPpAT+Y
-        Qm6ZDXbTrrKF4vLUdhquYJWlJEX7F+p6Frt7rEKWjvw8eh0QXWIY3OTObCyZTihXAz1tyv
-        RQwBUaTe8Qiw5Wy3Hf1RylvujyscQHgWKWfIXwSOOj92v2GGSG5taAmDGHqtRg==
+        bh=B/d9ecYh2L4gIWFi5kh23O8/tmeJ+Zy/cOZw1iVbWJ0=;
+        b=aoWeT3TAKrBIFSeky1ZLElvf7XtWUfLAzGXcrkiNVE+lzLHwt49Ll0ytAV2q8aPLgCLmhI
+        qdBtJ3KoCjGNkY//0RlUBSXaGUBGohFQU3Iha3XJtzuCQ4d0qKRVuMiDMhpq7xN697cRFG
+        mdX6yPlwppfpjOdcB2HHKO5XtS5tLrJZiQ5pcQA3xQ24QgpIhqQFtdsjTMKiTHUpmEiWRe
+        SXbvvsm4QuK7Bxr5XCA2hSrEDCQK+STSKIASSH1XXzfVLyMPBWA94am2gt4URR0GApSkBP
+        CLvAgPpxGyNm2bZP1+d2XFkUc+iVy+4JRW0jAj+f89oBvDkQOXuSDwOeV4Q8Vw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1632233107;
+        s=2020e; t=1632258771;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=iRZkhuB3q8eWn+Q+IH85cvsi1BXsI2A4fpszlFgTJUU=;
-        b=/92k433iTx4+5yQA3qLenYPKHol2U3cD80NQ9hfx8ufaAt0X5/KFSHo2ByKulagfN2n12I
-        p3DTEu1QJXtWH+BQ==
+        bh=B/d9ecYh2L4gIWFi5kh23O8/tmeJ+Zy/cOZw1iVbWJ0=;
+        b=3jjc+7PBcS4ow3JDn4taHqXHsmytqlFtKQZlG67nicGebcHU638avfYfsznAktpZ4wte6s
+        t6czxYYgRKS6L4Dw==
 To:     Valentin Schneider <valentin.schneider@arm.com>,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         rcu@vger.kernel.org, linux-rt-users@vger.kernel.org
@@ -61,62 +61,61 @@ Cc:     Catalin Marinas <catalin.marinas@arm.com>,
         Ard Biesheuvel <ardb@kernel.org>,
         Boqun Feng <boqun.feng@gmail.com>,
         Mike Galbraith <efault@gmx.de>
-Subject: Re: [PATCH v3 3/4] rcu/nocb: Protect NOCB state via local_lock()
- under PREEMPT_RT
-In-Reply-To: <20210811201354.1976839-4-valentin.schneider@arm.com>
+Subject: rcu/tree: Protect rcu_rdp_is_offloaded() invocations on RT
+In-Reply-To: <874kae6n3g.ffs@tglx>
 References: <20210811201354.1976839-1-valentin.schneider@arm.com>
  <20210811201354.1976839-4-valentin.schneider@arm.com>
-Date:   Tue, 21 Sep 2021 16:05:07 +0200
-Message-ID: <874kae6n3g.ffs@tglx>
+ <874kae6n3g.ffs@tglx>
+Date:   Tue, 21 Sep 2021 23:12:50 +0200
+Message-ID: <87pmt163al.ffs@tglx>
 MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Valentin,
+Valentin reported warnings about suspicious RCU usage on RT kernels. Those
+happen when offloading of RCU callbacks is enabled:
 
-On Wed, Aug 11 2021 at 21:13, Valentin Schneider wrote:
-> Running v5.13-rt1 on my arm64 Juno board triggers:
->
-> [    0.156302] =============================
-> [    0.160416] WARNING: suspicious RCU usage
-> [    0.172409] kernel/rcu/tree_plugin.h:69 Unsafe read of RCU_NOCB offloaded state!
-> [    0.260328] rcu_rdp_is_offloaded (kernel/rcu/tree_plugin.h:69 kernel/rcu/tree_plugin.h:58)
-> [    0.264537] rcu_core (kernel/rcu/tree.c:2332 kernel/rcu/tree.c:2398 kernel/rcu/tree.c:2777)
-> [    0.267786] rcu_cpu_kthread (./include/linux/bottom_half.h:32 kernel/rcu/tree.c:2876)
->
-> In this case, this is the RCU core kthread accessing the local CPU's
-> rdp. Before that, rcu_cpu_kthread() invokes local_bh_disable().
->
-> Under !CONFIG_PREEMPT_RT (and rcutree.use_softirq=0), this ends up
-> incrementing the preempt_count, which satisfies the "local non-preemptible
-> read" of rcu_rdp_is_offloaded().
->
-> Under CONFIG_PREEMPT_RT however, this becomes
->
->   local_lock(&softirq_ctrl.lock)
->
-> which, under the same config, is migrate_disable() + rt_spin_lock(). As
-> pointed out by Frederic, this is not sufficient to safely access an rdp's
-> offload state, as the RCU core kthread can be preempted by a kworker
-> executing rcu_nocb_rdp_offload() [1].
->
-> Introduce a local_lock to serialize an rdp's offload state while the rdp's
-> associated core kthread is executing rcu_core().
+  WARNING: suspicious RCU usage
+  5.13.0-rt1 #20 Not tainted
+  -----------------------------
+  kernel/rcu/tree_plugin.h:69 Unsafe read of RCU_NOCB offloaded state!
 
-Yes, sure. But I don't think that local_lock is required at all.
+  rcu_rdp_is_offloaded (kernel/rcu/tree_plugin.h:69 kernel/rcu/tree_plugin.h:58)
+  rcu_core (kernel/rcu/tree.c:2332 kernel/rcu/tree.c:2398 kernel/rcu/tree.c:2777)
+  rcu_cpu_kthread (./include/linux/bottom_half.h:32 kernel/rcu/tree.c:2876)
 
-The point is that the two places where this actually matters invoke
-rcu_rdp_is_offloaded() just at the top of the function outside of the
-anyway existing protection sections. Moving it into the sections which
-already provide the required protections makes it just work for both RT
-and !RT.
+The reason is that rcu_rdp_is_offloaded() is invoked without one of the
+required protections on RT enabled kernels because local_bh_disable() does
+not disable preemption on RT.
 
-Thanks,
+Valentin proposed to add a local lock to the code in question, but that's
+suboptimal in several aspects:
 
-        tglx
+  1) local locks add extra code to !RT kernels for no value.
+
+  2) All possible callsites have to audited and amended when affected
+     possible at an outer function level due to lock nesting issues.
+
+  3) As the local lock has to be taken at the outer functions it's required
+     to release and reacquire them in the inner code sections which might
+     voluntary schedule, e.g. rcu_do_batch().
+
+Both callsites of rcu_rdp_is_offloaded() which trigger this check invoke
+rcu_rdp_is_offloaded() in the variable declaration section right at the top
+of the functions. But the actual usage of the result is either within a
+section which provides the required protections or after such a section.
+
+So the obvious solution is to move the invocation into the code sections
+which provide the proper protections, which solves the problem for RT and
+does not have any impact on !RT kernels.
+
+Reported-by: Valentin Schneider <valentin.schneider@arm.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
+ kernel/rcu/tree.c |    7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
