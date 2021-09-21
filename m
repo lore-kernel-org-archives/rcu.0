@@ -2,108 +2,154 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3353EC433EF
-	for <rcu@archiver.kernel.org>; Fri, 17 Sep 2021 22:00:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C156C433F5
+	for <rcu@archiver.kernel.org>; Tue, 21 Sep 2021 14:05:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1184F610A4
-	for <rcu@archiver.kernel.org>; Fri, 17 Sep 2021 22:00:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 65158610E8
+	for <rcu@archiver.kernel.org>; Tue, 21 Sep 2021 14:05:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244888AbhIQWBg (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 17 Sep 2021 18:01:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55260 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229589AbhIQWBg (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 17 Sep 2021 18:01:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 475B661052;
-        Fri, 17 Sep 2021 22:00:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631916013;
-        bh=+TnN3rkhiKJL7FE663JtdQS0i9k7JNLeEkBjc2XurBA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cGoM7B/0gvT7Ldv7SGJa+EIIt3SzyBKqbHNemIc2aCLG5kR+Ze2fv1ZEJrHpWonYI
-         H6ks9lYl+sQfSXf5oLUl+DXiOVq1or/UeQjExWAjdTi50keWwxsQ0nKMqZNmSvMydz
-         3nRSQXadC7+Twt9WHU7oGmvd2PHRW7dCu7xO5zFpxzZGBW+UR5kTaJs8JHxZcA6s43
-         k1Jc+rrCeCv+Y/wgpHEn3glvS3+3m3AgW3/TR60UVOLtNNq8G0hGPmFMAAvQFQkNct
-         hKSjUrc9/jlxrvCmoBeU1PEysd9BAoS30NkRzT1xO40H42nakcMkeKKihh8BsURTEl
-         NkVCIid8eEG9Q==
-Date:   Sat, 18 Sep 2021 00:00:11 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
-        urezki@gmail.com, boqun.feng@gmail.com,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        joel@joelfernandes.org
-Subject: Re: [PATCH 2/4] rcu: Remove useless WRITE_ONCE() on
- rcu_data.exp_deferred_qs
-Message-ID: <20210917220011.GB48873@lothringen>
-References: <20210916121048.36623-1-frederic@kernel.org>
- <20210916121048.36623-3-frederic@kernel.org>
- <20210916164340.GF4156@paulmck-ThinkPad-P17-Gen-1>
- <20210916210514.GA40064@lothringen>
- <20210917181024.GS4156@paulmck-ThinkPad-P17-Gen-1>
+        id S233352AbhIUOGi (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 21 Sep 2021 10:06:38 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:48892 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233448AbhIUOGh (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 21 Sep 2021 10:06:37 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1632233107;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iRZkhuB3q8eWn+Q+IH85cvsi1BXsI2A4fpszlFgTJUU=;
+        b=fNNNVdBGg+ZulgR/yTyHw3OPyblYrJkTcS+WFxAIGwuHX+/NhHihA1O68bezkykOCH6+rP
+        aj+KRbIMVXK9+xwWRlXdETmYdGguenGbIWi31gR4OhHxo2zW+2VEp/jQgT8VyWV58ThUGY
+        si7riMahz8V4dyLV6FikLL9e5gU0JO/7nPfRKywDNfUYHNmY8BkYgTmFmZXM9V6pPpAT+Y
+        Qm6ZDXbTrrKF4vLUdhquYJWlJEX7F+p6Frt7rEKWjvw8eh0QXWIY3OTObCyZTihXAz1tyv
+        RQwBUaTe8Qiw5Wy3Hf1RylvujyscQHgWKWfIXwSOOj92v2GGSG5taAmDGHqtRg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1632233107;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iRZkhuB3q8eWn+Q+IH85cvsi1BXsI2A4fpszlFgTJUU=;
+        b=/92k433iTx4+5yQA3qLenYPKHol2U3cD80NQ9hfx8ufaAt0X5/KFSHo2ByKulagfN2n12I
+        p3DTEu1QJXtWH+BQ==
+To:     Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        rcu@vger.kernel.org, linux-rt-users@vger.kernel.org
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mike Galbraith <efault@gmx.de>
+Subject: Re: [PATCH v3 3/4] rcu/nocb: Protect NOCB state via local_lock()
+ under PREEMPT_RT
+In-Reply-To: <20210811201354.1976839-4-valentin.schneider@arm.com>
+References: <20210811201354.1976839-1-valentin.schneider@arm.com>
+ <20210811201354.1976839-4-valentin.schneider@arm.com>
+Date:   Tue, 21 Sep 2021 16:05:07 +0200
+Message-ID: <874kae6n3g.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210917181024.GS4156@paulmck-ThinkPad-P17-Gen-1>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 11:10:24AM -0700, Paul E. McKenney wrote:
-> On Thu, Sep 16, 2021 at 11:05:14PM +0200, Frederic Weisbecker wrote:
-> > On Thu, Sep 16, 2021 at 09:43:40AM -0700, Paul E. McKenney wrote:
-> > > On Thu, Sep 16, 2021 at 02:10:46PM +0200, Frederic Weisbecker wrote:
-> > > > This variable is never written nor read remotely. Remove this confusion.
-> > > > 
-> > > > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> > > > ---
-> > > >  kernel/rcu/tree_exp.h | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > 
-> > > > diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-> > > > index f3947c49eee7..4266610b4587 100644
-> > > > --- a/kernel/rcu/tree_exp.h
-> > > > +++ b/kernel/rcu/tree_exp.h
-> > > > @@ -255,7 +255,7 @@ static void rcu_report_exp_cpu_mult(struct rcu_node *rnp,
-> > > >   */
-> > > >  static void rcu_report_exp_rdp(struct rcu_data *rdp)
-> > > >  {
-> > > > -	WRITE_ONCE(rdp->exp_deferred_qs, false);
-> > > > +	rdp->exp_deferred_qs = false;
-> > > 
-> > > Are you sure that this can never be invoked from an interrupt handler?
-> > > And that rdp->exp_deferred_qs is never read from an interrupt handler?
-> > > If either can happen, then the WRITE_ONCE() does play a role, right?
-> > 
-> > Well, the only effect I can imagine is that it can partly prevent from an
-> > interrupt to report concurrently the quiescent state during the few
-> > instructions before we mask interrupts and lock the node.
-> > 
-> > That's a micro performance benefit that avoid a second call to
-> > rcu_report_exp_cpu_mult() with the extra locking and early exit.
-> 
-> I am not claiming that current compilers would mess this up, though I
-> have learned to have great respect for what future compilers might do...
+Valentin,
 
-:)
+On Wed, Aug 11 2021 at 21:13, Valentin Schneider wrote:
+> Running v5.13-rt1 on my arm64 Juno board triggers:
+>
+> [    0.156302] =============================
+> [    0.160416] WARNING: suspicious RCU usage
+> [    0.172409] kernel/rcu/tree_plugin.h:69 Unsafe read of RCU_NOCB offloaded state!
+> [    0.260328] rcu_rdp_is_offloaded (kernel/rcu/tree_plugin.h:69 kernel/rcu/tree_plugin.h:58)
+> [    0.264537] rcu_core (kernel/rcu/tree.c:2332 kernel/rcu/tree.c:2398 kernel/rcu/tree.c:2777)
+> [    0.267786] rcu_cpu_kthread (./include/linux/bottom_half.h:32 kernel/rcu/tree.c:2876)
+>
+> In this case, this is the RCU core kthread accessing the local CPU's
+> rdp. Before that, rcu_cpu_kthread() invokes local_bh_disable().
+>
+> Under !CONFIG_PREEMPT_RT (and rcutree.use_softirq=0), this ends up
+> incrementing the preempt_count, which satisfies the "local non-preemptible
+> read" of rcu_rdp_is_offloaded().
+>
+> Under CONFIG_PREEMPT_RT however, this becomes
+>
+>   local_lock(&softirq_ctrl.lock)
+>
+> which, under the same config, is migrate_disable() + rt_spin_lock(). As
+> pointed out by Frederic, this is not sufficient to safely access an rdp's
+> offload state, as the RCU core kthread can be preempted by a kworker
+> executing rcu_nocb_rdp_offload() [1].
+>
+> Introduce a local_lock to serialize an rdp's offload state while the rdp's
+> associated core kthread is executing rcu_core().
 
-> 
-> > But then that racy interrupt can still happen before we clear exp_deferred_qs.
-> > In this case __this_cpu_cmpxchg() would have been more efficient.
-> 
-> Except that __this_cpu_cmpxchg() would have a possibility of failure,
-> and thus an extra branch not needed by WRITE_ONCE().  Or am I missing
-> your point here?
+Yes, sure. But I don't think that local_lock is required at all.
 
-Right, but an extra branch that could spare a call to rcu_report_exp_cpu_mult().
+The point is that the two places where this actually matters invoke
+rcu_rdp_is_offloaded() just at the top of the function outside of the
+anyway existing protection sections. Moving it into the sections which
+already provide the required protections makes it just work for both RT
+and !RT.
 
-Anyway I don't mind the WRITE_ONCE(), but you know how ordering (whether
-compiler or CPU) makes me anxious when undocumented or not self-explanatory,
-(although arguably the latter can vary depending on the reviewer :)
+Thanks,
 
-Thanks.
+        tglx
+---
+
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2278,13 +2278,13 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
+ {
+ 	unsigned long flags;
+ 	unsigned long mask;
+-	bool needwake = false;
+-	const bool offloaded = rcu_rdp_is_offloaded(rdp);
++	bool offloaded, needwake = false;
+ 	struct rcu_node *rnp;
+ 
+ 	WARN_ON_ONCE(rdp->cpu != smp_processor_id());
+ 	rnp = rdp->mynode;
+ 	raw_spin_lock_irqsave_rcu_node(rnp, flags);
++	offloaded = rcu_rdp_is_offloaded(rdp);
+ 	if (rdp->cpu_no_qs.b.norm || rdp->gp_seq != rnp->gp_seq ||
+ 	    rdp->gpwrap) {
+ 
+@@ -2446,7 +2446,7 @@ static void rcu_do_batch(struct rcu_data
+ 	int div;
+ 	bool __maybe_unused empty;
+ 	unsigned long flags;
+-	const bool offloaded = rcu_rdp_is_offloaded(rdp);
++	bool offloaded;
+ 	struct rcu_head *rhp;
+ 	struct rcu_cblist rcl = RCU_CBLIST_INITIALIZER(rcl);
+ 	long bl, count = 0;
+@@ -2472,6 +2472,7 @@ static void rcu_do_batch(struct rcu_data
+ 	rcu_nocb_lock(rdp);
+ 	WARN_ON_ONCE(cpu_is_offline(smp_processor_id()));
+ 	pending = rcu_segcblist_n_cbs(&rdp->cblist);
++	offloaded = rcu_rdp_is_offloaded(rdp);
+ 	div = READ_ONCE(rcu_divisor);
+ 	div = div < 0 ? 7 : div > sizeof(long) * 8 - 2 ? sizeof(long) * 8 - 2 : div;
+ 	bl = max(rdp->blimit, pending >> div);
