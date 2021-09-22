@@ -2,47 +2,38 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 711D2C433EF
-	for <rcu@archiver.kernel.org>; Wed, 22 Sep 2021 11:27:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BC81CC433FE
+	for <rcu@archiver.kernel.org>; Wed, 22 Sep 2021 11:31:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3E3B661107
-	for <rcu@archiver.kernel.org>; Wed, 22 Sep 2021 11:27:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A07886115A
+	for <rcu@archiver.kernel.org>; Wed, 22 Sep 2021 11:31:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235480AbhIVL3G (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 22 Sep 2021 07:29:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235422AbhIVL3F (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 22 Sep 2021 07:29:05 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5F3FC061574;
-        Wed, 22 Sep 2021 04:27:35 -0700 (PDT)
-Date:   Wed, 22 Sep 2021 13:27:31 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1632310053;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lZv1FAoayMtDLfu2V7KCrqzRbBVSYCgTHmUKvw7n0TI=;
-        b=RpD/ipNJU/V9C8NM3rFlIfTfc8M6xHrRUWi49VqPb3sh6C71LywYxpfd4c/7X9bo/j12F8
-        zdfVJHeas6gDOPwHpvsH1kIk7Jg7lgUXm8xFFqjxVvX4CxkbyYryzABeG+SnTEMmaOJNaV
-        K68O647TSPE3haj1p6pWz12nF1wdfDtzv1JG8d0dvs+Jna/oXnfsrhU2chW4v1f0D/Gd3z
-        6sAlUkZhZH8klmLYYyTEIM9KdrA7rFTfVqxiYqkCmNiuCWhB2oJrx1EA9dLaRplVMYUi9g
-        t0HqJK0dkFWEDEJB9w99dGm+SZfXaRF1yWMWAPLeKW1RK3H9RDy7wpFAVmwhQA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1632310053;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lZv1FAoayMtDLfu2V7KCrqzRbBVSYCgTHmUKvw7n0TI=;
-        b=vgdtmoLl6YC6cvTD52PgjGrxZM3dH+++Cx9uLI+f6wmGz0BblrypMUyshFohdUyDgLH21H
-        nTbLXEYftIkFqwDw==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Frederic Weisbecker <frederic@kernel.org>
+        id S235680AbhIVLcz (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 22 Sep 2021 07:32:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45084 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235653AbhIVLcz (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 22 Sep 2021 07:32:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9179961107;
+        Wed, 22 Sep 2021 11:31:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632310280;
+        bh=iJ4gFjba6VMQSTmcSmAOGGLCLhgvn3+9o9mo/NMTbAQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BQMqT049yHHdHUNbCF31bCFctTSI/QFHJ42DCvyAj7gzz1FXUKej2OZL6dkwaxY1P
+         aqYoGsT+9RDD2ENpCtkK8MKO7sJIDnJXYlqPzdAW9l7xG7epl5wlPEPKrbzrfaT/jx
+         mhsg/hx0MytptK8RBU6ovKplk9Ia1nPIgRFANZZD7P0NAf96OlvpaTYk1JPlr1HK0K
+         XqfDNVk/XDGx2j3VPi4m818u10ljzFGxPdX8GI0EWEvvXwYA0/6RvDcTXc+11H4u80
+         0fOged2Rff/k3rSAQbAbMJS3gAk0BCwfkKKHg2lxqrKpnJOIIVjq1O5NSMTRx028y6
+         Q7pTDSe9YwOag==
+Date:   Wed, 22 Sep 2021 13:31:17 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Valentin Schneider <valentin.schneider@arm.com>,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
@@ -52,7 +43,7 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Peter Zijlstra <peterz@infradead.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Josh Triplett <josh@joshtriplett.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Davidlohr Bueso <dave@stgolabs.net>,
@@ -65,80 +56,78 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Boqun Feng <boqun.feng@gmail.com>,
         Mike Galbraith <efault@gmx.de>
 Subject: Re: rcu/tree: Protect rcu_rdp_is_offloaded() invocations on RT
-Message-ID: <20210922112731.dvauvxlhx5suc7qd@linutronix.de>
+Message-ID: <20210922113117.GB106513@lothringen>
 References: <20210811201354.1976839-1-valentin.schneider@arm.com>
  <20210811201354.1976839-4-valentin.schneider@arm.com>
  <874kae6n3g.ffs@tglx>
  <87pmt163al.ffs@tglx>
- <20210921234518.GB100318@lothringen>
- <20210922063208.ltf7sdou4tr5yrnc@linutronix.de>
- <20210922111012.GA106513@lothringen>
+ <20210921233627.GA100318@lothringen>
+ <20210922021837.GV880162@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210922111012.GA106513@lothringen>
+In-Reply-To: <20210922021837.GV880162@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 2021-09-22 13:10:12 [+0200], Frederic Weisbecker wrote:
-> On Wed, Sep 22, 2021 at 08:32:08AM +0200, Sebastian Andrzej Siewior wrote:
-> > On 2021-09-22 01:45:18 [+0200], Frederic Weisbecker wrote:
-> > > 
-> > > Also while at it, I'm asking again: traditionally softirqs could assume that
-> > > manipulating a local state was safe against !irq_count() code fiddling with
-> > > the same state on the same CPU.
-> > > 
-> > > Now with preemptible softirqs, that assumption can be broken anytime. RCU was
-> > > fortunate enough to have a warning for that. But who knows how many issues like
-> > > this are lurking?
+On Tue, Sep 21, 2021 at 07:18:37PM -0700, Paul E. McKenney wrote:
+> On Wed, Sep 22, 2021 at 01:36:27AM +0200, Frederic Weisbecker wrote:
+> > Doing the local_irq_save() before checking that the segcblist is offloaded
+> > protect that state from being changed (provided we lock the local rdp). Then we
+> > can safely manipulate cblist, whether locked or unlocked.
 > > 
-> > If "local state" is modified then it is safe as long as it is modified
-> > within a local_bh_disable() section. And we are in this section while
-> > invoking a forced-threaded interrupt. The special part about RCU is
-> > that it is used in_irq() as part of core-code.
+> > 2) The actual call to rcu_do_batch(). If we are preempted between
+> > rcu_segcblist_completely_offloaded() and rcu_do_batch() with a deoffload in
+> > the middle, we miss the callback invocation. Invoking rcu_core by the end of
+> > deoffloading process should solve that.
 > 
-> But local_bh_disable() was deemed for protecting from interrupting softirqs,
-> not the other way around (softirqs being preempted by other tasks). The latter
-> semantic is new and nobody had that in mind until softirqs have been made
-> preemptible.
-> 
-> For example:
-> 
->                              CPU 0
->           -----------------------------------------------
->           SOFTIRQ                            RANDOM TASK
->           ------                             -----------
->           int *X = &per_cpu(CPUX, 0)         int *X = &per_cpu(CPUX, 0)
->           int A, B;                          WRITE_ONCE(*X, 0);
->                                              WRITE_ONCE(*X, 1);
->           A = READ_ONCE(*X);
->           B = READ_ONCE(*X);
-> 
-> 
-> We used to have the guarantee that A == B. That's not true anymore. Now
-> some new explicit local_bh_disable() should be carefully placed on RANDOM_TASK
-> where it wasn't necessary before. RCU is not that special in this regard.
+> Maybe invoke rcu_core() at that point?  My concern is that there might
+> be an extended time between the missed rcu_do_batch() and the end of
+> the deoffloading process.
 
-The part with rcutree.use_softirq=0 on RT does not make it any better,
-right?
-So you rely on some implicit behaviour which breaks with RT such as:
+Agreed!
 
-                              CPU 0
-           -----------------------------------------------
-           RANDOM TASK-A                      RANDOM TASK-B
-           ------                             -----------
-           int *X = &per_cpu(CPUX, 0)         int *X = &per_cpu(CPUX, 0)
-           int A, B;                          
-					      spin_lock(&D);
-           spin_lock(&C);
-	   				      WRITE_ONCE(*X, 0);
-           A = READ_ONCE(*X);
-                                              WRITE_ONCE(*X, 1);
-           B = READ_ONCE(*X);
+> 
+> > > Reported-by: Valentin Schneider <valentin.schneider@arm.com>
+> > > Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> > > ---
+> > >  kernel/rcu/tree.c |    7 ++++---
+> > >  1 file changed, 4 insertions(+), 3 deletions(-)
+> > > 
+> > > --- a/kernel/rcu/tree.c
+> > > +++ b/kernel/rcu/tree.c
+> > > @@ -2278,13 +2278,13 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
+> > >  {
+> > >  	unsigned long flags;
+> > >  	unsigned long mask;
+> > > -	bool needwake = false;
+> > > -	const bool offloaded = rcu_rdp_is_offloaded(rdp);
+> > > +	bool offloaded, needwake = false;
+> > >  	struct rcu_node *rnp;
+> > >  
+> > >  	WARN_ON_ONCE(rdp->cpu != smp_processor_id());
+> > >  	rnp = rdp->mynode;
+> > >  	raw_spin_lock_irqsave_rcu_node(rnp, flags);
+> > > +	offloaded = rcu_rdp_is_offloaded(rdp);
+> > >  	if (rdp->cpu_no_qs.b.norm || rdp->gp_seq != rnp->gp_seq ||
+> > >  	    rdp->gpwrap) {
+> > 
+> > BTW Paul, if we happen to switch to non-NOCB (deoffload) some time after
+> > rcu_report_qs_rdp(), it's possible that the rcu_accelerate_cbs()
+> > that was supposed to be handled by nocb kthreads on behalf of
+> > rcu_core() -> rcu_report_qs_rdp() would not happen. At least not until
+> > we invoke rcu_core() again. Not sure how much harm that could cause.
+> 
+> Again, can we just invoke rcu_core() as soon as this is noticed?
 
-while spinlock C and D are just random locks not related to CPUX but it
-just happens that they are held at that time. So for !RT you guarantee
-that A == B while it is not the case on RT.
+Right. So I'm going to do things a bit differently. I'm going to add
+a new segcblist state flag so that during the deoffloading process,
+the first very step is an invoke_rcu_core() on the target after setting a
+flag that requires handling all this things: accelerate/do_batch, etc...
 
-Sebastian
+Then will remain the "do we still have pending callbacks after do_batch?"
+in which case we'll need to invoke the rcu_core again as long as we are in
+the middle of deoffloading.
+
+Ok, now to write the patches.
