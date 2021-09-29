@@ -2,30 +2,30 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C0E13C433FE
-	for <rcu@archiver.kernel.org>; Wed, 29 Sep 2021 22:10:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E1E2C433F5
+	for <rcu@archiver.kernel.org>; Wed, 29 Sep 2021 22:10:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id AB32E61425
-	for <rcu@archiver.kernel.org>; Wed, 29 Sep 2021 22:10:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0691E60FC2
+	for <rcu@archiver.kernel.org>; Wed, 29 Sep 2021 22:10:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347216AbhI2WMR (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 29 Sep 2021 18:12:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60748 "EHLO mail.kernel.org"
+        id S1347226AbhI2WMT (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 29 Sep 2021 18:12:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60842 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347201AbhI2WMO (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 29 Sep 2021 18:12:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1882061440;
-        Wed, 29 Sep 2021 22:10:29 +0000 (UTC)
+        id S1347214AbhI2WMQ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 29 Sep 2021 18:12:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F0F6D61423;
+        Wed, 29 Sep 2021 22:10:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632953432;
-        bh=HHEYbmDWJcCLR1Dcr206w9h3MV5IHYYb74Xn1Ko6x28=;
+        s=k20201202; t=1632953435;
+        bh=DBWs3V0sa4GChCABC3MuvhuPRpOsaCGotPLqeHtOz8s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fnpTQdc6YiYV7xvuR6uAf7RRF3JWFT9iIXW4w+YUlxW+A1W/tcrd0ye6HyHRK53tv
-         5YQm6TBCDC0mLkaBRiNw8pHzT+vkK+f7CR5368jquzmL/gzehM6WLYVTQURAAJNNnP
-         xkOuusudZCeboVRep+pH3Uvo1pkQVAtpABw9yOCdCEXtdd6VxAFVw/wd1dHxDJc9gP
-         C/ba4W4CJjqMS1C9vsQmLZHtNwP2sOklTP6FIITmewpGzYuZZGfgdAOOub2ABQ+mVM
-         4nA2VOgUoHctZh2jAnZDGOhxk2dVRBP+sM6iNoDA5J445Wu7K6XRIVB+TNWSSctfLW
-         HeyD+7pZI+Ylg==
+        b=O+MXbULhCLx+ghC+3HJI03IlziVsmR3t4kshPrmZ5vCuJ6TAVsxrU+Ly1f8PihJYV
+         jJcQGyFVEzBzO7bZ1d1/jCbPT1FaaEBVF2Rp9cmLpoJf8KeJE6XVSxQx7xaE8HFVYS
+         YqjJ+92fuFKH/YP5Cw03WsjDAQ1BbDqS5rGhXE/XQTuQcBnQs0wcPHzjlZiyyzfy2v
+         dOtXwVQeXkIRqLwRU295/SmJ9eNEGXyhf56Ps9PMK3At9F0cv92ZwQNYFapUW4sHtF
+         2LAfm29AT9PgaB4LQY5fE8+x6C6U6K5kppw3UtyolSkDG55DvQzN92hhqVyorTaoGu
+         keQ4Z3L07evwA==
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     "Paul E . McKenney" <paulmck@kernel.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
@@ -39,9 +39,9 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Neeraj Upadhyay <neeraju@codeaurora.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: [PATCH 05/11] rcu/nocb: Make rcu_core() callbacks acceleration (de-)offloading safe
-Date:   Thu, 30 Sep 2021 00:10:06 +0200
-Message-Id: <20210929221012.228270-6-frederic@kernel.org>
+Subject: [RFC PATCH 06/11] rcu/nocb: Check a stable offloaded state to manipulate qlen_last_fqs_check
+Date:   Thu, 30 Sep 2021 00:10:07 +0200
+Message-Id: <20210929221012.228270-7-frederic@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210929221012.228270-1-frederic@kernel.org>
 References: <20210929221012.228270-1-frederic@kernel.org>
@@ -51,16 +51,13 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-When callbacks are offloaded, the NOCB kthreads handle the callbacks
-progression on behalf of rcu_core().
+It's unclear why rdp->qlen_last_fqs_check is updated only on offloaded
+rdp. Also rcu_core() and NOCB kthreads can run concurrently, should
+we do the update on both cases? Probably not because one can erase the
+initialized value of the other.
 
-However during the (de-)offloading process, the kthread may not be
-entirely up to the task. As a result some callbacks grace period
-sequence number may remain stale for a while because rcu_core() won't
-take care of them either.
-
-Fix this with forcing callbacks acceleration from rcu_core() as long
-as the offloading process isn't complete.
+For now shutdown the RT warning due to volatile offloading state check
+and wait for a debate after this half-baked patch.
 
 Reported-by: Valentin Schneider <valentin.schneider@arm.com>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
@@ -74,53 +71,22 @@ Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
 Cc: Uladzislau Rezki <urezki@gmail.com>
 Cc: Thomas Gleixner <tglx@linutronix.de>
 ---
- kernel/rcu/tree.c | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
+ kernel/rcu/tree.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 32303070b20b..73971b8024d8 100644
+index 73971b8024d8..b1fc6e498d90 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -2288,6 +2288,7 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
- 	unsigned long flags;
- 	unsigned long mask;
- 	bool needwake = false;
-+	bool needacc = false;
- 	struct rcu_node *rnp;
+@@ -2508,7 +2508,7 @@ static void rcu_do_batch(struct rcu_data *rdp)
+ 	trace_rcu_batch_start(rcu_state.name,
+ 			      rcu_segcblist_n_cbs(&rdp->cblist), bl);
+ 	rcu_segcblist_extract_done_cbs(&rdp->cblist, &rcl);
+-	if (offloaded)
++	if (rcu_rdp_is_offloaded(rdp))
+ 		rdp->qlen_last_fqs_check = rcu_segcblist_n_cbs(&rdp->cblist);
  
- 	WARN_ON_ONCE(rdp->cpu != smp_processor_id());
-@@ -2315,16 +2316,29 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
- 		 * This GP can't end until cpu checks in, so all of our
- 		 * callbacks can be processed during the next GP.
- 		 *
--		 * NOCB kthreads have their own way to deal with that.
-+		 * NOCB kthreads have their own way to deal with that...
- 		 */
--		if (!rcu_rdp_is_offloaded(rdp))
-+		if (!rcu_rdp_is_offloaded(rdp)) {
- 			needwake = rcu_accelerate_cbs(rnp, rdp);
-+		} else if (!rcu_segcblist_completely_offloaded(&rdp->cblist)) {
-+			/*
-+			 * ...but NOCB kthreads may miss or delay callbacks acceleration
-+			 * if in the middle of a (de-)offloading process.
-+			 */
-+			needacc = true;
-+		}
- 
- 		rcu_disable_urgency_upon_qs(rdp);
- 		rcu_report_qs_rnp(mask, rnp, rnp->gp_seq, flags);
- 		/* ^^^ Released rnp->lock */
- 		if (needwake)
- 			rcu_gp_kthread_wake();
-+
-+		if (needacc) {
-+			rcu_nocb_lock_irqsave(rdp, flags);
-+			rcu_accelerate_cbs_unlocked(rnp, rdp);
-+			rcu_nocb_unlock_irqrestore(rdp, flags);
-+		}
- 	}
- }
- 
+ 	trace_rcu_segcb_stats(&rdp->cblist, TPS("SegCbDequeued"));
 -- 
 2.25.1
 
