@@ -2,121 +2,106 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EEF9BC433F5
-	for <rcu@archiver.kernel.org>; Tue,  5 Oct 2021 20:52:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 201BDC433EF
+	for <rcu@archiver.kernel.org>; Tue,  5 Oct 2021 20:55:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D15896137C
-	for <rcu@archiver.kernel.org>; Tue,  5 Oct 2021 20:52:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C8B066137C
+	for <rcu@archiver.kernel.org>; Tue,  5 Oct 2021 20:55:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231387AbhJEUyk (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 5 Oct 2021 16:54:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230019AbhJEUyj (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 5 Oct 2021 16:54:39 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85BC9C061749
-        for <rcu@vger.kernel.org>; Tue,  5 Oct 2021 13:52:48 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id r19so1161942lfe.10
-        for <rcu@vger.kernel.org>; Tue, 05 Oct 2021 13:52:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WSPoOTkRr5tV7uZ2oQ4/a2w9VK4Qjz1YAPZdC+7bcrw=;
-        b=atKPmliQ9LuYJrilGpsViHfk6LQV6BmknanYEfaKC5+DRlC/Sf/bbZjgm5eOG2gsrs
-         fmv7trPUK3bUcYnjK+F3dvGkJznH7EtdSCCwNZlfE6Q1ZLEG8bowAjHuLUwTsaJgDL3U
-         E3zlV7ocEBIN+OWdpawxUEevr7fS0Jaaj9cW0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WSPoOTkRr5tV7uZ2oQ4/a2w9VK4Qjz1YAPZdC+7bcrw=;
-        b=fUgxt6i3pW5QYlBK7ouxlp/2GW/e6XRz68B1Jmoph8ADhhSHMVkpJpTZEiY06nNv67
-         5k4mbXIi5pXK6/edZgSHh9nPicht299MndpIGMtkTdl2iJml/OUhFzIwpXtboRQBsZjN
-         yYd4TLB7CmMIsTnciZxA4WvEazX8Av6/Kp8o175z0z+KEVZPjsW5Ot50maf6MGSUr8rN
-         xQnaU1yuWgRlu5rMl4+pv7U0gZ6HcP4jWyESx0HIXlanQdGaKzfeye6gRUPxyTkYMAhL
-         Azya+Asef7dEmChZXDxfdLy8x7Sr/94HXV6KuY0B/vumfVRjNHXbs7QwWHUPK0r+pbc9
-         6Axw==
-X-Gm-Message-State: AOAM531IsG3y3gQD1OMAIPiwol84aoIQnhiBwKNQw5y7aOO3nyulCglD
-        YlkKZz44rOZyJpjR6CPwoRFuiUD0zfiZTmOODKw=
-X-Google-Smtp-Source: ABdhPJyC19wQ3t1FV3SW7SUnzrNY9PP8GWAXp6eMqDHXIA8RO+OeInrUJD9/B9csoG3jLGTN/wHQ3A==
-X-Received: by 2002:a2e:b713:: with SMTP id j19mr25198080ljo.306.1633467166541;
-        Tue, 05 Oct 2021 13:52:46 -0700 (PDT)
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
-        by smtp.gmail.com with ESMTPSA id r16sm2068494lfi.182.2021.10.05.13.52.46
-        for <rcu@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Oct 2021 13:52:46 -0700 (PDT)
-Received: by mail-lf1-f49.google.com with SMTP id y23so1479552lfb.0
-        for <rcu@vger.kernel.org>; Tue, 05 Oct 2021 13:52:46 -0700 (PDT)
-X-Received: by 2002:a05:651c:a09:: with SMTP id k9mr25182695ljq.191.1633466769318;
- Tue, 05 Oct 2021 13:46:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211005094728.203ecef2@gandalf.local.home> <ef5b1654-1f75-da82-cab8-248319efbe3f@rasmusvillemoes.dk>
- <639278914.2878.1633457192964.JavaMail.zimbra@efficios.com>
- <826o327o-3r46-3oop-r430-8qr0ssp537o3@vanv.qr> <20211005144002.34008ea0@gandalf.local.home>
- <srqsppq-p657-43qq-np31-pq5pp03271r6@vanv.qr> <20211005154029.46f9c596@gandalf.local.home>
- <20211005163754.66552fb3@gandalf.local.home>
-In-Reply-To: <20211005163754.66552fb3@gandalf.local.home>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 5 Oct 2021 13:45:52 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wj+P=YeuY=tpY72nDMQgxGTzEMqjfq5P536G=qYEkQr1w@mail.gmail.com>
-Message-ID: <CAHk-=wj+P=YeuY=tpY72nDMQgxGTzEMqjfq5P536G=qYEkQr1w@mail.gmail.com>
-Subject: Re: [RFC][PATCH] rcu: Use typeof(p) instead of typeof(*p) *
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Jan Engelhardt <jengelh@inai.de>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Paul <paulmck@linux.vnet.ibm.com>,
+        id S235648AbhJEU5D (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 5 Oct 2021 16:57:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58742 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230027AbhJEU5D (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 5 Oct 2021 16:57:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F2D3C6121F;
+        Tue,  5 Oct 2021 20:55:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633467312;
+        bh=5DI92K8fU187OIQjppmogTi3if+UJLwQEk5wETuGMUI=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=osV4iGT9Q4LGi3G+M3FepkWV80kaG6XR0KANRzwcGqAltSsP7pxfyxrsLK4MDWxo8
+         4YK4xmj8F1+cI1nGuM/yvJY5i+FLoLGIF/wWYkVnf9V6pYHCK2wtF1ipAr3665PQct
+         JSXlpJC76AuIWJ4vCwRweMqnj4AILxf8CkQq67lrDkOPyUkz7u8EElFvRQ5/r5lkEL
+         nj6QUmEqBvvGGpy0Uvm1GZjz1hoVkEwxMAWRnpSuFZgGvURYeQfdeEeSTGeFim7yCn
+         nB2C4yCK9MBS6z4Uq1DLMGxgEyXeMDWebbzvVcW+QFjMNg/sLcGjtcpvwV4gnJ5nQp
+         y59oBQDEIeq9Q==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id BBFD65C0921; Tue,  5 Oct 2021 13:55:11 -0700 (PDT)
+Date:   Tue, 5 Oct 2021 13:55:11 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
         Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, rcu <rcu@vger.kernel.org>,
-        netfilter-devel <netfilter-devel@vger.kernel.org>,
-        coreteam <coreteam@netfilter.org>,
-        netdev <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
+Subject: Re: [PATCH 08/11] rcu/nocb: Limit number of softirq callbacks only
+ on softirq
+Message-ID: <20211005205511.GY880162@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210929221012.228270-1-frederic@kernel.org>
+ <20210929221012.228270-9-frederic@kernel.org>
+ <877dewmy5v.mognet@arm.com>
+ <20211004134227.GC273854@lothringen>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211004134227.GC273854@lothringen>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Oct 5, 2021 at 1:38 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> Really, thinking about abstraction, I don't believe there's anything wrong
-> with returning a pointer of one type, and then typecasting it to a pointer
-> of another type. Is there? As long as whoever uses the returned type does
-> nothing with it.
+On Mon, Oct 04, 2021 at 03:42:27PM +0200, Frederic Weisbecker wrote:
+> On Fri, Oct 01, 2021 at 06:51:08PM +0100, Valentin Schneider wrote:
+> > On 30/09/21 00:10, Frederic Weisbecker wrote:
+> > > The current condition to limit the number of callbacks executed in a
+> > > row checks the offloaded state of the rdp. Not only is it volatile
+> > > but it is also misleading: the rcu_core() may well be executing
+> > > callbacks concurrently with NOCB kthreads, and the offloaded state
+> > > would then be verified on both cases. As a result the limit would
+> > > spuriously not apply anymore on softirq while in the middle of
+> > > (de-)offloading process.
+> > >
+> > > Another issue with the condition is that rcu_is_callbacks_kthread()
+> > > doesn't check if we are actually running callbacks from rcuc itself or
+> > > from a softirq interrupting rcuc.
+> > >
+> > 
+> > Doesn't rcutree.use_softirq imply rcuc is never woken, in which case
+> > RCU_SOFTIRQ can't interrupt rcuc (e.g. while run atop an IRQ exit)?
+> > I suppose during the (de)offload sequence we could have RCU_SOFTIRQ running
+> > atop the NOCB CB kthread, but that's not something
+> > rcu_is_callbacks_kthread() detects.
+> 
+> Yes good point, I don't know if rcuc can be ever be interrupted by
+> irq_exit() -> do_softirq() -> rcu_core() itself after all.
+> 
+> Paul can probably confirm your point?
 
-Just stop doing this.,
+This is supposed to be prohibited by the fact that rcutree.use_softirq
+prevents the rcuc kthreads from being spawned in the first place.
 
-Dammit, just include the header file that defines the type in the
-places that you use the thing.
+That said, I do not recall having thought through the de-offloading
+process with the rcuc kthreads in mind.  There could easily be bugs
+in this case.  (I -think- that it is OK because each rcuc kthread is
+confined to running on the corresponding CPU and because it disables BH.
+But it is the system's opinion that counts.)
 
-Because, yes, there is a LOT wrong with just randomly casting pointers
-that you think have the "wrong type". You're basically taking it on
-yourself to lie to the compiler, and intentionally breaking the type
-system, because you have some completely bogus reason to hide a type.
+> > Also, why is rcu_is_callbacks_kthread() hardcoded to false for
+> > !CONFIG_RCU_BOOST? Isn't it relevant for do_rcu_batch() ratelimiting
+> > regardless (at least before your patches)?
+> 
+> I believe rcuc is only used on CONFIG_RCU_BOOST?
 
-We don't hide types in the kernel for no good reason.
+They are independent, though by default RT arranges for rcuc kthreads and
+CONFIG_RCU_BOOST.  Now there are kthreads created for CONFIG_RCU_BOOST,
+but these are the rcub kthreads, and they are not per CPU, but rather
+per leaf rcu_node structure.
 
-You are literally talking about making things worse, for a reason that
-hasn't even been explained, and isn't valid in the first place.
-Nothing else in the kernel has had a problem just declaring the damn
-type,.
-
-If there was some clean and simple solution to the compiler warning
-problem, that would be one thing. But when you think you need to
-change core RCU macros, or lie to the compiler about the type system,
-at that point it's not some clean and simple fix any more. At that
-point you're literally making things worse than just exposing the
-type.
-
-           Linus
+							Thanx, Paul
