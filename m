@@ -2,87 +2,101 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F164FC433F5
-	for <rcu@archiver.kernel.org>; Fri,  8 Oct 2021 15:49:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5AB67C433F5
+	for <rcu@archiver.kernel.org>; Mon, 11 Oct 2021 08:34:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D834760FD7
-	for <rcu@archiver.kernel.org>; Fri,  8 Oct 2021 15:49:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 46C3760F24
+	for <rcu@archiver.kernel.org>; Mon, 11 Oct 2021 08:34:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243122AbhJHPvs (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 8 Oct 2021 11:51:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50190 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243027AbhJHPvp (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 8 Oct 2021 11:51:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 245AE60F6F;
-        Fri,  8 Oct 2021 15:49:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633708190;
-        bh=JwrcRjJJdJytp6KMBRFuWFHxkJ4MwWSom/YHngd3OBo=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=IFXz+969ie11cbjyEQYnqRoCI8vZB/T5rQENTrueNOX+L46rJI6D9kCsSnUITLjfH
-         LUFitPKSHsDKmeRhjJP5zL4IKR74BIbCgeUrQWwFj4BIci156QEc/5tZdG309HjsZq
-         0ve/rhAMNIBia1Tlx042zc0CZIEVIGERPAUJlXJXhvBZ5rei/8xhBsunATAdWnqitW
-         evoGVK5IKGk/zQQo/QdUaUpa23cYpFtRzMIDBPpTnBFEybriiBBYbPeYRc5vljQkTO
-         4+cSbDOVTCajPR65W03Elavd0QshP9nATDEo9/LX0BmCK61W3a3uhDaLYBZ2rdhL0l
-         RYmsBJWK+GWZQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id DE5CC5C0887; Fri,  8 Oct 2021 08:49:49 -0700 (PDT)
-Date:   Fri, 8 Oct 2021 08:49:49 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        id S235058AbhJKIgL convert rfc822-to-8bit (ORCPT
+        <rfc822;rcu@archiver.kernel.org>); Mon, 11 Oct 2021 04:36:11 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:24397 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234975AbhJKIgL (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Mon, 11 Oct 2021 04:36:11 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-10-3xCUUb26MU6vXGQv3KSaTQ-1; Mon, 11 Oct 2021 09:34:09 +0100
+X-MC-Unique: 3xCUUb26MU6vXGQv3KSaTQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.23; Mon, 11 Oct 2021 09:34:06 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.023; Mon, 11 Oct 2021 09:34:06 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Steven Rostedt' <rostedt@goodmis.org>,
+        Jan Engelhardt <jengelh@inai.de>
+CC:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Paul <paulmck@linux.vnet.ibm.com>,
         Josh Triplett <josh@joshtriplett.org>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: Re: [PATCH 00/11] rcu: Make rcu_core() safe in PREEMPT_RT with NOCB
- + a few other fixes
-Message-ID: <20211008154949.GQ880162@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210929221012.228270-1-frederic@kernel.org>
- <87fstkmybc.mognet@arm.com>
- <87ee8vlill.mognet@arm.com>
+        "Lai Jiangshan" <jiangshanlai@gmail.com>,
+        "Joel Fernandes, Google" <joel@joelfernandes.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        "Jozsef Kadlecsik" <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, rcu <rcu@vger.kernel.org>,
+        netfilter-devel <netfilter-devel@vger.kernel.org>,
+        coreteam <coreteam@netfilter.org>,
+        netdev <netdev@vger.kernel.org>
+Subject: RE: [RFC][PATCH] rcu: Use typeof(p) instead of typeof(*p) *
+Thread-Topic: [RFC][PATCH] rcu: Use typeof(p) instead of typeof(*p) *
+Thread-Index: AQHXui9pmtYafoLH60aZNYgeQxdcxKvNgGPQ
+Date:   Mon, 11 Oct 2021 08:34:06 +0000
+Message-ID: <c30feda1b1e0457d97beafe3e3ca7ce4@AcuMS.aculab.com>
+References: <20211005094728.203ecef2@gandalf.local.home>
+        <ef5b1654-1f75-da82-cab8-248319efbe3f@rasmusvillemoes.dk>
+        <639278914.2878.1633457192964.JavaMail.zimbra@efficios.com>
+        <826o327o-3r46-3oop-r430-8qr0ssp537o3@vanv.qr>
+        <20211005144002.34008ea0@gandalf.local.home>
+        <srqsppq-p657-43qq-np31-pq5pp03271r6@vanv.qr>
+        <20211005154029.46f9c596@gandalf.local.home>
+        <20211005163754.66552fb3@gandalf.local.home>
+        <pn2qp6r2-238q-rs8n-p8n0-9s37sr614123@vanv.qr>
+ <20211005172435.190c62d9@gandalf.local.home>
+In-Reply-To: <20211005172435.190c62d9@gandalf.local.home>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87ee8vlill.mognet@arm.com>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Oct 08, 2021 at 03:03:02PM +0100, Valentin Schneider wrote:
-> On 01/10/21 18:47, Valentin Schneider wrote:
-> > On 30/09/21 00:10, Frederic Weisbecker wrote:
-> >> PREEMPT_RT has made rcu_core() preemptible, making it unsafe against
-> >> concurrent NOCB (de-)offloading.
-> >>
-> >> Thomas suggested to drop the local_lock() based solution and simply
-> >> check the offloaded state while context looks safe but that's not
-> >> enough. Here is a bit of rework.
-> >>
-> >> git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
-> >>       rcu/rt
-> >>
-> >> HEAD: aac1c58961446c731f2e989bd822ca1fd2659bad
-> >>
-> >> Thanks,
-> >>       Frederic
-> >
-> > FWIW I've had RCU torture with NOCB toggling running for half a day on my
-> > Arm Juno and nothing to report. I still need to rebase this on an -rt tree
-> > and give it a spin with CONFIG_PREEMPT_RT.
+From: Steven Rostedt
+> Sent: 05 October 2021 22:25
 > 
-> Rebased on top of v5.15-rc4-rt7-rebase with Thomas' patch reverted and ran
-> the same thing under CONFIG_PREEMPT_RT, nothing seems to catch on fire, so:
+...
 > 
-> Tested-by: Valentin Schneider <valentin.schneider@arm.com>
+> Basically (one alternative I was looking at) was simply passing around a
+> void pointer. Not sure how the RCU macros would handle that. But to
+> completely abstract it out, I was thinking of just returning void * and
+> accepting void *, but I didn't want to do that because now we just lost any
+> kind of type checking done by the compiler. The tricks I was playing was to
+> keep some kind of type checking.
 
-Thank you!!!
+Yes, don't use 'void *'.
+Sun used it for all the pointers in their DDI/DKI - made it impossible
+to ensure you were passing in the right type of 'token'.
 
-							Thanx, Paul
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
