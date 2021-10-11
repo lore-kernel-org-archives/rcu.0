@@ -2,30 +2,30 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A5649C433EF
-	for <rcu@archiver.kernel.org>; Mon, 11 Oct 2021 14:52:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F79FC433EF
+	for <rcu@archiver.kernel.org>; Mon, 11 Oct 2021 14:52:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8E99660ED4
-	for <rcu@archiver.kernel.org>; Mon, 11 Oct 2021 14:52:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 607C660EB6
+	for <rcu@archiver.kernel.org>; Mon, 11 Oct 2021 14:52:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243245AbhJKOyh (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 11 Oct 2021 10:54:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33748 "EHLO mail.kernel.org"
+        id S243892AbhJKOym (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 11 Oct 2021 10:54:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33838 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238405AbhJKOya (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 11 Oct 2021 10:54:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D920F60ED4;
-        Mon, 11 Oct 2021 14:52:26 +0000 (UTC)
+        id S244038AbhJKOye (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 11 Oct 2021 10:54:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CE92160BD3;
+        Mon, 11 Oct 2021 14:52:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633963950;
-        bh=6F4fXCCvsvFVTEE2HFP3ezyGetHLyMVJDY1zgytRX/A=;
+        s=k20201202; t=1633963954;
+        bh=8IgY3wMFqOpx4rMhJDcKyAY4whn8NSW4m12oeeuW8Ck=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DhBBBGqW1rw4z+QnZygi7Zg5NF95ufXmswE46VtlCgP44kwsziK04wupiZJ5YjuxU
-         atPWxl3Gkxu1pfe8J1CEO2h8/KhI7vRuLb6NxnJGYgN8NVMvwGKM2ztv0qnBVwwM1/
-         YwoYpLPu8Z9V+5JMnIYDAuNJW9ZAEc8tHTqoc0vFgs/KjHztJyh5pGDx5/KAAT7rFi
-         IQoFZ8UACLqcfmAWy9nqMzOgtcApUPAlTbtiotaxwp+1C5k8YDwPhZXefbEG5dm8ri
-         YEQ15Me/tWqPYEYg8PEkOP7ejw+h3vK2EamL3WGhUNYJERGWkm2slhBfLyxrDN2CDe
-         e561Ud0v4ZgAg==
+        b=ZS8rLFxg3wcgkZJBtR7dd7dwh6s+0lyjvOUj7rh59R1lcO4HVwri/glKXUQLzphFG
+         1gHHLVf8/fcmKTzCiw08oYjkteqhSH14KwPj9mWublxylbhCMZkWkus8YJ1axtwoYd
+         Y1VJTZR6aBlfsD/Xd1aZdFdXeVZ8j+BE+Ipe495PTz06qT7S3kcN4b3gjsxYZLPfFj
+         1hiKQNaeBP+eBO9C2hpLr40I83wtOiVX1N93xvi1dOpkKMXlT8TP0cYy756/YVHmJS
+         kgGgp9P0O7YCWdT6n2k1oapwGHWurmQd1Mrpz6jiuuvJ4RdWE5v4d2XIpB6kBtY5Mw
+         3VXWQRlH71eIA==
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     "Paul E . McKenney" <paulmck@kernel.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
@@ -40,9 +40,9 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Neeraj Upadhyay <neeraju@codeaurora.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: [PATCH 10/11] rcu: Apply callbacks processing time limit only on softirq
-Date:   Mon, 11 Oct 2021 16:51:39 +0200
-Message-Id: <20211011145140.359412-11-frederic@kernel.org>
+Subject: [PATCH 11/11] rcu/nocb: Don't invoke local rcu core on callback overload from nocb kthread
+Date:   Mon, 11 Oct 2021 16:51:40 +0200
+Message-Id: <20211011145140.359412-12-frederic@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211011145140.359412-1-frederic@kernel.org>
 References: <20211011145140.359412-1-frederic@kernel.org>
@@ -52,19 +52,21 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Time limit only makes sense when callbacks are serviced in softirq mode
-because:
+rcu_core() tries to ensure that its self-invocation in case of callbacks
+overload only happen in softirq/rcuc mode. Indeed it doesn't make sense
+to trigger local RCU core from nocb_cb kthread since it can execute
+on a CPU different from the target rdp. Also in case of overload, the
+nocb_cb kthread simply iterates a new loop of callbacks processing.
 
-_ In case we need to get back to the scheduler,
-  cond_resched_tasks_rcu_qs() is called after each callback.
+However the "offloaded" check that aims at preventing misplaced
+rcu_core() invocations is wrong. First of all that state is volatile
+and second: softirq/rcuc can execute while the target rdp is offloaded.
+As a result rcu_core() can be invoked on the wrong CPU while in the
+process of (de-)offloading.
 
-_ In case some other softirq vector needs the CPU, the call to
-  local_bh_enable() before cond_resched_tasks_rcu_qs() takes care about
-  them via a call to do_softirq().
+Fix that with moving the rcu_core() self-invocation to rcu_core() itself,
+irrespective of the rdp offloaded state.
 
-Therefore, make sure the time limit only applies to softirq mode.
-
-Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
 Tested-by: Valentin Schneider <valentin.schneider@arm.com>
 Tested-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
@@ -78,59 +80,45 @@ Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
 Cc: Uladzislau Rezki <urezki@gmail.com>
 Cc: Thomas Gleixner <tglx@linutronix.de>
 ---
- kernel/rcu/tree.c | 25 ++++++++++++-------------
- 1 file changed, 12 insertions(+), 13 deletions(-)
+ kernel/rcu/tree.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 7a655d93a28a..0ca4f4ec724d 100644
+index 0ca4f4ec724d..8270e58cd0f3 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -2498,7 +2498,7 @@ static void rcu_do_batch(struct rcu_data *rdp)
- 	div = READ_ONCE(rcu_divisor);
- 	div = div < 0 ? 7 : div > sizeof(long) * 8 - 2 ? sizeof(long) * 8 - 2 : div;
- 	bl = max(rdp->blimit, pending >> div);
--	if (unlikely(bl > 100)) {
-+	if (in_serving_softirq() && unlikely(bl > 100)) {
- 		long rrn = READ_ONCE(rcu_resched_ns);
+@@ -2470,7 +2470,6 @@ static void rcu_do_batch(struct rcu_data *rdp)
+ 	int div;
+ 	bool __maybe_unused empty;
+ 	unsigned long flags;
+-	const bool offloaded = rcu_rdp_is_offloaded(rdp);
+ 	struct rcu_head *rhp;
+ 	struct rcu_cblist rcl = RCU_CBLIST_INITIALIZER(rcl);
+ 	long bl, count = 0;
+@@ -2592,9 +2591,6 @@ static void rcu_do_batch(struct rcu_data *rdp)
  
- 		rrn = rrn < NSEC_PER_MSEC ? NSEC_PER_MSEC : rrn > NSEC_PER_SEC ? NSEC_PER_SEC : rrn;
-@@ -2538,6 +2538,17 @@ static void rcu_do_batch(struct rcu_data *rdp)
- 		if (in_serving_softirq()) {
- 			if (count >= bl && (need_resched() || !is_idle_task(current)))
- 				break;
-+			/*
-+			 * Make sure we don't spend too much time here and deprive other
-+			 * softirq vectors of CPU cycles.
-+			 */
-+			if (unlikely(tlimit)) {
-+				/* only call local_clock() every 32 callbacks */
-+				if (likely((count & 31) || local_clock() < tlimit))
-+					continue;
-+				/* Exceeded the time limit, so leave. */
-+				break;
-+			}
- 		} else {
- 			local_bh_enable();
- 			lockdep_assert_irqs_enabled();
-@@ -2545,18 +2556,6 @@ static void rcu_do_batch(struct rcu_data *rdp)
- 			lockdep_assert_irqs_enabled();
- 			local_bh_disable();
- 		}
--
--		/*
--		 * Make sure we don't spend too much time here and deprive other
--		 * softirq vectors of CPU cycles.
--		 */
--		if (unlikely(tlimit)) {
--			/* only call local_clock() every 32 callbacks */
--			if (likely((count & 31) || local_clock() < tlimit))
--				continue;
--			/* Exceeded the time limit, so leave. */
--			break;
--		}
- 	}
+ 	rcu_nocb_unlock_irqrestore(rdp, flags);
  
- 	rcu_nocb_lock_irqsave(rdp, flags);
+-	/* Re-invoke RCU core processing if there are callbacks remaining. */
+-	if (!offloaded && rcu_segcblist_ready_cbs(&rdp->cblist))
+-		invoke_rcu_core();
+ 	tick_dep_clear_task(current, TICK_DEP_BIT_RCU);
+ }
+ 
+@@ -2781,8 +2777,12 @@ static __latent_entropy void rcu_core(void)
+ 
+ 	/* If there are callbacks ready, invoke them. */
+ 	if (do_batch && rcu_segcblist_ready_cbs(&rdp->cblist) &&
+-	    likely(READ_ONCE(rcu_scheduler_fully_active)))
++	    likely(READ_ONCE(rcu_scheduler_fully_active))) {
+ 		rcu_do_batch(rdp);
++		/* Re-invoke RCU core processing if there are callbacks remaining. */
++		if (rcu_segcblist_ready_cbs(&rdp->cblist))
++			invoke_rcu_core();
++	}
+ 
+ 	/* Do any needed deferred wakeups of rcuo kthreads. */
+ 	do_nocb_deferred_wakeup(rdp);
 -- 
 2.25.1
 
