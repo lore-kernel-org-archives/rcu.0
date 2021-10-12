@@ -2,123 +2,144 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F79FC433EF
-	for <rcu@archiver.kernel.org>; Mon, 11 Oct 2021 14:52:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 535E9C433EF
+	for <rcu@archiver.kernel.org>; Tue, 12 Oct 2021 14:18:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 607C660EB6
-	for <rcu@archiver.kernel.org>; Mon, 11 Oct 2021 14:52:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3C5AE60EFE
+	for <rcu@archiver.kernel.org>; Tue, 12 Oct 2021 14:18:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243892AbhJKOym (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 11 Oct 2021 10:54:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33838 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244038AbhJKOye (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 11 Oct 2021 10:54:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CE92160BD3;
-        Mon, 11 Oct 2021 14:52:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633963954;
-        bh=8IgY3wMFqOpx4rMhJDcKyAY4whn8NSW4m12oeeuW8Ck=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZS8rLFxg3wcgkZJBtR7dd7dwh6s+0lyjvOUj7rh59R1lcO4HVwri/glKXUQLzphFG
-         1gHHLVf8/fcmKTzCiw08oYjkteqhSH14KwPj9mWublxylbhCMZkWkus8YJ1axtwoYd
-         Y1VJTZR6aBlfsD/Xd1aZdFdXeVZ8j+BE+Ipe495PTz06qT7S3kcN4b3gjsxYZLPfFj
-         1hiKQNaeBP+eBO9C2hpLr40I83wtOiVX1N93xvi1dOpkKMXlT8TP0cYy756/YVHmJS
-         kgGgp9P0O7YCWdT6n2k1oapwGHWurmQd1Mrpz6jiuuvJ4RdWE5v4d2XIpB6kBtY5Mw
-         3VXWQRlH71eIA==
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Paul E . McKenney" <paulmck@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Valentin Schneider <Valentin.Schneider@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        id S237088AbhJLOUH (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 12 Oct 2021 10:20:07 -0400
+Received: from mail.efficios.com ([167.114.26.124]:37390 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236695AbhJLOUG (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 12 Oct 2021 10:20:06 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 4BD2E362C62;
+        Tue, 12 Oct 2021 10:18:04 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 0DNMGIKTscHv; Tue, 12 Oct 2021 10:18:03 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id AB87C362C61;
+        Tue, 12 Oct 2021 10:18:03 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com AB87C362C61
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1634048283;
+        bh=oDnCBhtt2kYndLvbZ2dFBdBvvOim1KjLRvBSV4K13jM=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=qHFA3IhrvM/jvCrRxBuQ5z0V3oJe7BPP2XLjfE7I7j2j/hL40ExC1JOaXfJTjt3bE
+         jOsOpVSc6c1y1cGAV2+8uPV+xt8RqBzzRrTmazZvCfC9rEegqXStdTlcUxaF4KYN6h
+         H7XSIouCsZ6ibCi3cf8RtqT3g9WwpcdbPOpUOmFi0oZRKFpNzVFfj4oCmD3vi+CZaz
+         JfFatJwx19qX+Pm26RSh9tVA1a7elmsOIawr0RDSC2HnxmxKErDs6npCf1kg5HrNT5
+         5OyYh97yO869J2TvfJIvDnO/E/VBH9yJ3tfwp4OYBQElRnCtP8d1HvzXtxSVbKU2DL
+         BN9K3yKFfy2oA==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id fAOI71LUIkg8; Tue, 12 Oct 2021 10:18:03 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 90253362CEE;
+        Tue, 12 Oct 2021 10:18:03 -0400 (EDT)
+Date:   Tue, 12 Oct 2021 10:18:03 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     rostedt <rostedt@goodmis.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Paul <paulmck@linux.vnet.ibm.com>,
         Josh Triplett <josh@joshtriplett.org>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: [PATCH 11/11] rcu/nocb: Don't invoke local rcu core on callback overload from nocb kthread
-Date:   Mon, 11 Oct 2021 16:51:40 +0200
-Message-Id: <20211011145140.359412-12-frederic@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211011145140.359412-1-frederic@kernel.org>
-References: <20211011145140.359412-1-frederic@kernel.org>
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Joel Fernandes, Google" <joel@joelfernandes.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, rcu <rcu@vger.kernel.org>,
+        netfilter-devel <netfilter-devel@vger.kernel.org>,
+        coreteam <coreteam@netfilter.org>,
+        netdev <netdev@vger.kernel.org>
+Message-ID: <364516086.11428.1634048283470.JavaMail.zimbra@efficios.com>
+In-Reply-To: <4dbff8032f874a6f921ba0555c94eeaf@AcuMS.aculab.com>
+References: <20211005094728.203ecef2@gandalf.local.home> <505004021.2637.1633446912223.JavaMail.zimbra@efficios.com> <4dbff8032f874a6f921ba0555c94eeaf@AcuMS.aculab.com>
+Subject: Re: [RFC][PATCH] rcu: Use typeof(p) instead of typeof(*p) *
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_4156 (ZimbraWebClient - FF93 (Linux)/8.8.15_GA_4156)
+Thread-Topic: Use typeof(p) instead of typeof(*p) *
+Thread-Index: Ade+e4X0oj4GW2UzTF+XE9nyZN8f2yyzmkpu
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-rcu_core() tries to ensure that its self-invocation in case of callbacks
-overload only happen in softirq/rcuc mode. Indeed it doesn't make sense
-to trigger local RCU core from nocb_cb kthread since it can execute
-on a CPU different from the target rdp. Also in case of overload, the
-nocb_cb kthread simply iterates a new loop of callbacks processing.
+----- On Oct 11, 2021, at 4:39 AM, David Laight David.Laight@ACULAB.COM wrote:
 
-However the "offloaded" check that aims at preventing misplaced
-rcu_core() invocations is wrong. First of all that state is volatile
-and second: softirq/rcuc can execute while the target rdp is offloaded.
-As a result rcu_core() can be invoked on the wrong CPU while in the
-process of (de-)offloading.
+> From: Mathieu Desnoyers
+>> Sent: 05 October 2021 16:15
+>> 
+>> ----- On Oct 5, 2021, at 9:47 AM, rostedt rostedt@goodmis.org wrote:
+>> [...]
+>> > #define rcu_dereference_raw(p) \
+>> > ({ \
+>> > 	/* Dependency order vs. p above. */ \
+>> > 	typeof(p) ________p1 = READ_ONCE(p); \
+>> > -	((typeof(*p) __force __kernel *)(________p1)); \
+>> > +	((typeof(p) __force __kernel)(________p1)); \
+>> > })
+>> 
+>> AFAIU doing so removes validation that @p is indeed a pointer, so a user might
+>> mistakenly
+>> try to use rcu_dereference() on an integer, and get away with it. I'm not sure
+>> we want to
+>> loosen this check. I wonder if there might be another way to achieve the same
+>> check without
+>> requiring the structure to be declared, e.g. with __builtin_types_compatible_p ?
+> 
+> Could you pass the pointer to something like:
+> static __always_inline void foo(void *arg) {};
+> 
+> That would fail for integers.
+> Not sure whether CFI bleats about function pointers though.
+> 
 
-Fix that with moving the rcu_core() self-invocation to rcu_core() itself,
-irrespective of the rdp offloaded state.
+That would indeed validate that a pointer is being passed to rcu_dereference()
+and RCU_INITIALIZER().
 
-Tested-by: Valentin Schneider <valentin.schneider@arm.com>
-Tested-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Cc: Valentin Schneider <valentin.schneider@arm.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Josh Triplett <josh@joshtriplett.org>
-Cc: Joel Fernandes <joel@joelfernandes.org>
-Cc: Boqun Feng <boqun.feng@gmail.com>
-Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
-Cc: Uladzislau Rezki <urezki@gmail.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
----
- kernel/rcu/tree.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+However it would not solve this other issue: in Steven's patch, rcu_dereference_raw
+is changed like so:
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 0ca4f4ec724d..8270e58cd0f3 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2470,7 +2470,6 @@ static void rcu_do_batch(struct rcu_data *rdp)
- 	int div;
- 	bool __maybe_unused empty;
- 	unsigned long flags;
--	const bool offloaded = rcu_rdp_is_offloaded(rdp);
- 	struct rcu_head *rhp;
- 	struct rcu_cblist rcl = RCU_CBLIST_INITIALIZER(rcl);
- 	long bl, count = 0;
-@@ -2592,9 +2591,6 @@ static void rcu_do_batch(struct rcu_data *rdp)
- 
- 	rcu_nocb_unlock_irqrestore(rdp, flags);
- 
--	/* Re-invoke RCU core processing if there are callbacks remaining. */
--	if (!offloaded && rcu_segcblist_ready_cbs(&rdp->cblist))
--		invoke_rcu_core();
- 	tick_dep_clear_task(current, TICK_DEP_BIT_RCU);
- }
- 
-@@ -2781,8 +2777,12 @@ static __latent_entropy void rcu_core(void)
- 
- 	/* If there are callbacks ready, invoke them. */
- 	if (do_batch && rcu_segcblist_ready_cbs(&rdp->cblist) &&
--	    likely(READ_ONCE(rcu_scheduler_fully_active)))
-+	    likely(READ_ONCE(rcu_scheduler_fully_active))) {
- 		rcu_do_batch(rdp);
-+		/* Re-invoke RCU core processing if there are callbacks remaining. */
-+		if (rcu_segcblist_ready_cbs(&rdp->cblist))
-+			invoke_rcu_core();
-+	}
- 
- 	/* Do any needed deferred wakeups of rcuo kthreads. */
- 	do_nocb_deferred_wakeup(rdp);
+ #define rcu_dereference_raw(p) \
+ ({ \
+         /* Dependency order vs. p above. */ \
+         typeof(p) ________p1 = READ_ONCE(p); \
+-        ((typeof(*p) __force __kernel *)(________p1)); \
++        ((typeof(p) __force __kernel)(________p1)); \
+ })
+
+and AFAIU the __force __kernel attributes end up applying to the pointer rather than the
+object pointed to, which changes the semantic.
+
+So checking the pointer argument is not the only issue here.
+
+As Linus pointed out, it might indeed be simpler to just keep declaring the structure in
+public headers.
+
+Thanks,
+
+Mathieu
+
+>	David
+> 
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT,
+> UK
+> Registration No: 1397386 (Wales)
+
 -- 
-2.25.1
-
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
