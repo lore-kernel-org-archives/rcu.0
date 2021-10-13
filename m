@@ -2,31 +2,31 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 35DDCC433F5
-	for <rcu@archiver.kernel.org>; Wed, 13 Oct 2021 10:01:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B070EC433EF
+	for <rcu@archiver.kernel.org>; Wed, 13 Oct 2021 11:43:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 16C2F61077
-	for <rcu@archiver.kernel.org>; Wed, 13 Oct 2021 10:01:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8AC68610FB
+	for <rcu@archiver.kernel.org>; Wed, 13 Oct 2021 11:43:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237931AbhJMKDf (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 13 Oct 2021 06:03:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58600 "EHLO mail.kernel.org"
+        id S230414AbhJMLpl (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 13 Oct 2021 07:45:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229853AbhJMKDe (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 13 Oct 2021 06:03:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1727E60E74;
-        Wed, 13 Oct 2021 10:01:30 +0000 (UTC)
+        id S229653AbhJMLpl (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 13 Oct 2021 07:45:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BF37060D43;
+        Wed, 13 Oct 2021 11:43:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634119291;
-        bh=VexVs8YcPOAfCyHkd1Wd9WYaHCuP7W/gGp8boKTDsL8=;
+        s=k20201202; t=1634125418;
+        bh=09vWFfILMwEPDBCK32FQFM58AuRIt7f2AeIiDsrNZ2Q=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NTuGhUXMT2UASStrRSKBBoTRjqq2rO8TAtY4dm4od93Vg8fvxmxUk2t7/JEB5YWTg
-         OVFyW/T7K1bsxbK1rbyNiDJEXx/cAvCXF6HLhPQYG9gfFB1lSqwistN4nsWyBJoXzs
-         +ndUZQ75jI1Mtejo9PGedHM3XfUEvarDTeQCpEh5cN6yBggxJ4hScBrk3UeZL0yRSh
-         7Ei6DOt7d354vdRsqYDiOt1eyz9Q3sgt85XKXVf9DjPKGPXmeJTjvExeUxjhXHi1p5
-         ZVnhNRu9lfDmdt0MWAKhNSqT0gxpCINsSSy0spY86EwbW+77K6Q6LkilOHSIO5MBZu
-         aWugk/U8lB3kw==
-Date:   Wed, 13 Oct 2021 12:01:29 +0200
+        b=RMM+oVS2O/8H+2Z9UfXtrFSJkBjhqU/e3IdpkkCbv7jzJSyWvJS8VrBfmBLjdu9G6
+         lPE/jeHjDl/pY9tylEEhUw4UGWpb/Aj8AuAYYMbSzdzlO4mJAo0Z41mW6f6n6medFg
+         0skLXFR5hXrujqePLAf4SH6Zalq6KYo5xhrLA52L2CLbq6q6JjrTa+5k2rgWR9vwRw
+         2RIV1+zrs7mg1rET6YKBgA/Nm/t5o/KPlV8136D9E/99LYbk6y2NY/+DBKotnufBmx
+         HakhqjWLG7f8wMTaD6PT/onh8hPuAfSSLxpWa3XVUhTYQLsf0Kp2+vKa/8aJBtV4Z1
+         W0X9v+FMy+0/Q==
+Date:   Wed, 13 Oct 2021 13:43:35 +0200
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
@@ -41,7 +41,7 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
 Subject: Re: [PATCH 00/11] rcu: Make rcu_core() safe in PREEMPT_RT with NOCB
  + a few other fixes v2
-Message-ID: <20211013100129.GA377556@lothringen>
+Message-ID: <20211013114335.GB377556@lothringen>
 References: <20211011145140.359412-1-frederic@kernel.org>
  <20211013003215.GP880162@paulmck-ThinkPad-P17-Gen-1>
  <20211013032832.GQ880162@paulmck-ThinkPad-P17-Gen-1>
@@ -102,6 +102,8 @@ On Tue, Oct 12, 2021 at 08:28:32PM -0700, Paul E. McKenney wrote:
 > of TREE04, but I would be surprised if anything useful comes of it.
 > Pleased, mind you, but surprised.
 
-Oops, trying those scenario on my side as well.
+Ok I can reproduce.
 
-Thanks!
+I'm launching a bisect from my side as well.
+
+Thanks.
