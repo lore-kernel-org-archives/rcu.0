@@ -2,165 +2,209 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B571FC433EF
-	for <rcu@archiver.kernel.org>; Thu, 14 Oct 2021 13:57:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E510C433F5
+	for <rcu@archiver.kernel.org>; Mon, 18 Oct 2021 11:33:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 95EAD60EBB
-	for <rcu@archiver.kernel.org>; Thu, 14 Oct 2021 13:57:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 45EA060EE5
+	for <rcu@archiver.kernel.org>; Mon, 18 Oct 2021 11:33:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231680AbhJNN7h (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 14 Oct 2021 09:59:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231636AbhJNN7h (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 14 Oct 2021 09:59:37 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 695CFC061570;
-        Thu, 14 Oct 2021 06:57:32 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id p4so5501912qki.3;
-        Thu, 14 Oct 2021 06:57:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=GIBH8o6WpT2H7iYi/BIo0/Wyph7orVRqgeyBe3NOH3M=;
-        b=LTHM8tt06egaQG0WMY7pxFR+XLCw55vUWv7sxk436edTxMZr0w/LkyRjWCBVnLlYqW
-         psQXSfKCRPB49wKQUNnbOw3IUQ94G5HfVPn8BmG8oOouofTzcKJrqRSCVcWv2xO45OmY
-         wgwfpNH8EWdPLy3RcozvpisCjfesmSbOek332pLvyZSorEvEnrtO33xippBc+vYk7Bny
-         qNBFqJoL0Vc7FEX97Cwi5McfaqdPq2P4V8BSgt18v9ou/u89YUbVApW6lA4e7zkFxf/b
-         +1LYnGWUUQhAffPqCfXZOkCOuO2y9BrDmPuvQw26/ZEyYvJLg8sZvY90+4jqdGl/hOHl
-         EGew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GIBH8o6WpT2H7iYi/BIo0/Wyph7orVRqgeyBe3NOH3M=;
-        b=OqPSYmMtJWSysXNw9GyaOnnffBdBvCgGlBQMLy10GIjXDfw1xp0Lo45Gak1/AaGNfU
-         oUAs/XXXd8UUPf6nrbkYfGOVn/Ivub+BF+QXkDUoy21f+iqZxMQ/AYLqbTZFIRbr9UWQ
-         WpB5MsD6ZbVty9QPXFk9uWRkdup96EPrV4KfDj3MWU43trGdW+gElLKFsR0C+FjjDj87
-         A4LG4lQZW8KzmOHDmiZ80nqIpvL81hW7mF9rOp0OORePf73TIF2nr57V0HgjEi87YZbp
-         8ZLUMLymnqYsqE8OgizfaWKC8lAoQb60Lhm9iVOkYjUlNgxHwA6RTk+erQI4jaS0MMu4
-         zBLQ==
-X-Gm-Message-State: AOAM532Mcgjk0gkR34XKbkZebBRK5YVAH7AE0DfpibnlDLwA+nhx7tTv
-        1QWMJbY4PFHXpuDO+f+/g6o=
-X-Google-Smtp-Source: ABdhPJzMSynW04AaJea12M1eFo9J7qDsdaPfjkDYOTzx6zEtLLaeloZCJQHH4YQpmX9+mzR7i/ed/g==
-X-Received: by 2002:a05:620a:198e:: with SMTP id bm14mr4732122qkb.429.1634219850117;
-        Thu, 14 Oct 2021 06:57:30 -0700 (PDT)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id t19sm1386835qtn.26.2021.10.14.06.57.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Oct 2021 06:57:29 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 5830227C0054;
-        Thu, 14 Oct 2021 09:57:27 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Thu, 14 Oct 2021 09:57:28 -0400
-X-ME-Sender: <xms:RzdoYSixGWPoRWPamyyaRt85pLF_9dox-btTaRe9ngL4yAMjpivmIA>
-    <xme:RzdoYTB68I-AAuaRdnFuitFaB4q2CBjrumciWK8NJc8quYLLcPi9P20JqyBIut-ar
-    Krx9_yHeQbngpNwqA>
-X-ME-Received: <xmr:RzdoYaF-y5KQnt_jrmfoldBpSN3iTckcILYblbsfg5MawJ7R0IPV8_BzoFMbqQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvdduvddgieekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
-    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
-    htvghrnhepveeijedthfeijeefudehhedvveegudegteehgffgtddvuedtveegtedvvdef
-    gedtnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhp
-    vghrshhonhgrlhhithihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrd
-    hfvghngheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:RzdoYbT8uPO_U446wS2sOb1DU3Jfxj6E4Fv71FqTZFrrTOAACTHRhA>
-    <xmx:RzdoYfwUAUPaSNkLxgBR1ukKJXRq9an1wlAY_lrduTbVeWs2d3UGzw>
-    <xmx:RzdoYZ7zhuHTBJrgND0lBD5EvwJwz4fgLIdvM7x8hkYaG-pJuplxNA>
-    <xmx:RzdoYd4pWTN3n0ewbLyLfAC1aR3ribkd02NEOq6ycK6r9kQXgj9i0m__Jm4>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 14 Oct 2021 09:57:27 -0400 (EDT)
-Date:   Thu, 14 Oct 2021 21:57:22 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Valentin Schneider <Valentin.Schneider@arm.com>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
+        id S231494AbhJRLfZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 18 Oct 2021 07:35:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41102 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231489AbhJRLfZ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 18 Oct 2021 07:35:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 57A1F60E76;
+        Mon, 18 Oct 2021 11:33:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634556794;
+        bh=o3zG9J75vFfnzz6Szx1i6SLMtSAq2QBbR5nkK1Kth1c=;
+        h=From:To:Cc:Subject:Date:From;
+        b=FE817d/tOpvcsHqTCLzVZnpL5/GOw89yqgqoruM50O8//fkFG3wovIrZi2L8yO4Vx
+         aoQ+UPqKqv1Z1M4zRqv1Bq7QFuo0geIaQRqf6VrdZwDbl/+c8ezv9OgaLyRq/pOk77
+         +eKD8//9bpTgNpburBK7qdd5GMWn8C7Fpn5jrhbTk+DsbmMWxN5OJNYelzlubwr/m1
+         A/sILBm1f9VjeeLvIOHI2O24I8d0aV2wzVPsOepTIIgEfDQIwwG/gm+uGcO27SrJVN
+         H5U6shImmkZQrbzgB079ZsqYZ4Xz4yGMtTil4VURI7dQOtALMAsnAe64kY1EMzQZIl
+         iiLQ0iYY31Atw==
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
         Uladzislau Rezki <urezki@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        Boqun Feng <boqun.feng@gmail.com>,
         Neeraj Upadhyay <neeraju@codeaurora.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: Re: [PATCH 03/11] rcu/nocb: Invoke rcu_core() at the start of
- deoffloading
-Message-ID: <YWg3QthesE5XMeLj@boqun-archlinux>
-References: <20211011145140.359412-1-frederic@kernel.org>
- <20211011145140.359412-4-frederic@kernel.org>
- <YWcEXj2+nqO8kIFS@boqun-archlinux>
- <87o87rkf2n.mognet@arm.com>
+Subject: [PATCH] rcu/nocb: Fix misordered rcu_barrier() while (de-)offloading
+Date:   Mon, 18 Oct 2021 13:32:59 +0200
+Message-Id: <20211018113259.450292-1-frederic@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87o87rkf2n.mognet@arm.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 12:42:40PM +0100, Valentin Schneider wrote:
-> On 14/10/21 00:07, Boqun Feng wrote:
-> >> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> >> index e38028d48648..b236271b9022 100644
-> >> --- a/kernel/rcu/tree.c
-> >> +++ b/kernel/rcu/tree.c
-> >> @@ -2717,6 +2717,23 @@ static __latent_entropy void rcu_core(void)
-> >>      unsigned long flags;
-> >>      struct rcu_data *rdp = raw_cpu_ptr(&rcu_data);
-> >>      struct rcu_node *rnp = rdp->mynode;
-> >> +	/*
-> >> +	 * On RT rcu_core() can be preempted when IRQs aren't disabled.
-> >> +	 * Therefore this function can race with concurrent NOCB (de-)offloading
-> >> +	 * on this CPU and the below condition must be considered volatile.
-> >> +	 * However if we race with:
-> >> +	 *
-> >> +	 * _ Offloading:   In the worst case we accelerate or process callbacks
-> >> +	 *                 concurrently with NOCB kthreads. We are guaranteed to
-> >> +	 *                 call rcu_nocb_lock() if that happens.
-> >
-> > If offloading races with rcu_core(), can the following happen?
-> >
-> >       <offload work>
-> >       rcu_nocb_rdp_offload():
-> >                                               rcu_core():
-> >                                                 ...
-> >                                                 rcu_nocb_lock_irqsave(); // no a lock
-> >         raw_spin_lock_irqsave(->nocb_lock);
-> >           rdp_offload_toggle():
-> >             <LOCKING | OFFLOADED set>
-> >                                                 if (!rcu_segcblist_restempty(...))
-> >                                                   rcu_accelerate_cbs_unlocked(...);
-> >                                                 rcu_nocb_unlock_irqrestore();
-> >                                                 // ^ a real unlock,
-> >                                                 // and will preempt_enable()
-> >           // offload continue with ->nocb_lock not held
-> >
-> > If this can happen, it means an unpaired preempt_enable() and an
-> > incorrect unlock. Thoughts? Maybe I'm missing something here?
-> >
-> 
-> As Frederic pointed out in an earlier thread [1], this can't happen because
-> we still have IRQs disabled, and the offloading process has to be processed
-> on the CPU being offloaded. IOW, in the above scenario, rcu_core() can't be
-> preempted by the rcu_nocb_rdp_offload() work until it re-enables IRQs at
-> rcu_nocb_unlock_irqrestore().
-> 
-> (hopefully Paul or Frederic will correct me if I've just spewed garbage)
-> 
-> [1]: https://lore.kernel.org/lkml/20210930105340.GA232241@lothringen/
-> 
+When an rdp is in the process of (de-)offloading, rcu_core() and the
+nocb kthreads can process callbacks at the same time. This leaves many
+possible scenarios leading to an rcu barrier to execute before
+the preceding callbacks. Here is one such example:
 
-Thanks! I think Frederic and you are right: this cannot happen. Thank
-you both for looking into this ;-)
+            CPU 0                                  CPU 1
+       --------------                         ---------------
+     call_rcu(callbacks1)
+     call_rcu(callbacks2)
+     // move callbacks1 and callbacks2 on the done list
+     rcu_advance_callbacks()
+     call_rcu(callbacks3)
+     rcu_barrier_func()
+         rcu_segcblist_entrain(...)
+                                            nocb_cb_wait()
+                                                rcu_do_batch()
+                                                    callbacks1()
+                                                    cond_resched_tasks_rcu_qs()
+     // move callbacks3 and rcu_barrier_callback()
+     // on the done list
+     rcu_advance_callbacks()
+     rcu_core()
+         rcu_do_batch()
+             callbacks3()
+             rcu_barrier_callback()
+                                                    //MISORDERING
+                                                    callbacks2()
 
-Regards,
-Boqun
+Fix this with preventing two concurrent rcu_do_batch() on a  same rdp
+as long as an rcu barrier callback is pending somewhere.
 
-> > Regards,
-> > Boqun
-> >
+Reported-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Cc: Josh Triplett <josh@joshtriplett.org>
+Cc: Joel Fernandes <joel@joelfernandes.org>
+Cc: Boqun Feng <boqun.feng@gmail.com>
+Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
+Cc: Uladzislau Rezki <urezki@gmail.com>
+---
+ kernel/rcu/tree.c      | 27 +++++++++++++++++++++++++--
+ kernel/rcu/tree.h      |  1 +
+ kernel/rcu/tree_nocb.h | 10 +++++++++-
+ 3 files changed, 35 insertions(+), 3 deletions(-)
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 7a655d93a28a..e5b28e05c9f2 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2465,11 +2465,12 @@ int rcutree_dead_cpu(unsigned int cpu)
+  * Invoke any RCU callbacks that have made it to the end of their grace
+  * period.  Throttle as specified by rdp->blimit.
+  */
+-static void rcu_do_batch(struct rcu_data *rdp)
++static bool rcu_do_batch(struct rcu_data *rdp)
+ {
+ 	int div;
+ 	bool __maybe_unused empty;
+ 	unsigned long flags;
++	int doing_batch;
+ 	const bool offloaded = rcu_rdp_is_offloaded(rdp);
+ 	struct rcu_head *rhp;
+ 	struct rcu_cblist rcl = RCU_CBLIST_INITIALIZER(rcl);
+@@ -2484,7 +2485,7 @@ static void rcu_do_batch(struct rcu_data *rdp)
+ 				    !rcu_segcblist_empty(&rdp->cblist),
+ 				    need_resched(), is_idle_task(current),
+ 				    rcu_is_callbacks_kthread());
+-		return;
++		return true;
+ 	}
+ 
+ 	/*
+@@ -2494,6 +2495,23 @@ static void rcu_do_batch(struct rcu_data *rdp)
+ 	 */
+ 	rcu_nocb_lock_irqsave(rdp, flags);
+ 	WARN_ON_ONCE(cpu_is_offline(smp_processor_id()));
++
++	doing_batch = READ_ONCE(rdp->doing_batch);
++
++	/*
++	 * If this rdp is already running callbacks somewhere and an RCU
++	 * barrier is pending, we might run it before its preceding callbacks.
++	 * Prevent that from happening. In the worst case we can have false
++	 * positive on barrier_cpu_count (pending on another rdp or recently
++	 * decremented by a concurrent batch processing) but not false negative.
++	 */
++	if (doing_batch && atomic_read(&rcu_state.barrier_cpu_count)) {
++		rcu_nocb_unlock_irqrestore(rdp, flags);
++		return false;
++	}
++
++	WRITE_ONCE(rdp->doing_batch, doing_batch + 1);
++
+ 	pending = rcu_segcblist_n_cbs(&rdp->cblist);
+ 	div = READ_ONCE(rcu_divisor);
+ 	div = div < 0 ? 7 : div > sizeof(long) * 8 - 2 ? sizeof(long) * 8 - 2 : div;
+@@ -2591,12 +2609,17 @@ static void rcu_do_batch(struct rcu_data *rdp)
+ 	WARN_ON_ONCE(count == 0 && rcu_segcblist_n_segment_cbs(&rdp->cblist) != 0);
+ 	WARN_ON_ONCE(!empty && rcu_segcblist_n_segment_cbs(&rdp->cblist) == 0);
+ 
++	doing_batch = READ_ONCE(rdp->doing_batch);
++	WRITE_ONCE(rdp->doing_batch, doing_batch - 1);
++
+ 	rcu_nocb_unlock_irqrestore(rdp, flags);
+ 
+ 	/* Re-invoke RCU core processing if there are callbacks remaining. */
+ 	if (!offloaded && rcu_segcblist_ready_cbs(&rdp->cblist))
+ 		invoke_rcu_core();
+ 	tick_dep_clear_task(current, TICK_DEP_BIT_RCU);
++
++	return true;
+ }
+ 
+ /*
+diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+index deeaf2fee714..4cea596103a5 100644
+--- a/kernel/rcu/tree.h
++++ b/kernel/rcu/tree.h
+@@ -191,6 +191,7 @@ struct rcu_data {
+ 
+ 	/* 4) rcu_barrier(), OOM callbacks, and expediting. */
+ 	struct rcu_head barrier_head;
++	int doing_batch;
+ 	int exp_dynticks_snap;		/* Double-check need for IPI. */
+ 
+ 	/* 5) Callback offloading. */
+diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+index 3b470113ae38..bf052251c7ab 100644
+--- a/kernel/rcu/tree_nocb.h
++++ b/kernel/rcu/tree_nocb.h
+@@ -787,6 +787,7 @@ static void nocb_cb_wait(struct rcu_data *rdp)
+ 	bool needwake_state = false;
+ 	bool needwake_gp = false;
+ 	bool can_sleep = true;
++	bool did_batch;
+ 	struct rcu_node *rnp = rdp->mynode;
+ 
+ 	local_irq_save(flags);
+@@ -799,7 +800,7 @@ static void nocb_cb_wait(struct rcu_data *rdp)
+ 	 * instances of this callback would execute concurrently.
+ 	 */
+ 	local_bh_disable();
+-	rcu_do_batch(rdp);
++	did_batch = rcu_do_batch(rdp);
+ 	local_bh_enable();
+ 	lockdep_assert_irqs_enabled();
+ 	rcu_nocb_lock_irqsave(rdp, flags);
+@@ -842,6 +843,13 @@ static void nocb_cb_wait(struct rcu_data *rdp)
+ 	if (needwake_state)
+ 		swake_up_one(&rdp->nocb_state_wq);
+ 
++	/*
++	 * If rcu_core() is running concurrently and an rcu barrier
++	 * callback is pending, leave it some time to process because
++	 * we can't run concurrently and guarantee callbacks ordering.
++	 */
++	if (!did_batch && !can_sleep && nocb_cb_can_run(rdp))
++		schedule_timeout_idle(1);
+ 	do {
+ 		swait_event_interruptible_exclusive(rdp->nocb_cb_wq,
+ 						    nocb_cb_wait_cond(rdp));
+-- 
+2.25.1
+
