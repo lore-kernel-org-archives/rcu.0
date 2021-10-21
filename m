@@ -2,38 +2,32 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7AFA4C433FE
-	for <rcu@archiver.kernel.org>; Thu, 21 Oct 2021 12:28:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C7DAC433F5
+	for <rcu@archiver.kernel.org>; Thu, 21 Oct 2021 13:10:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 67CEC610A2
-	for <rcu@archiver.kernel.org>; Thu, 21 Oct 2021 12:28:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E33FB611C7
+	for <rcu@archiver.kernel.org>; Thu, 21 Oct 2021 13:10:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231641AbhJUMau (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 21 Oct 2021 08:30:50 -0400
-Received: from mx22.baidu.com ([220.181.50.185]:42398 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230190AbhJUMar (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 21 Oct 2021 08:30:47 -0400
-Received: from BC-Mail-Ex23.internal.baidu.com (unknown [172.31.51.17])
-        by Forcepoint Email with ESMTPS id 7E137C6C204F9F897255;
-        Thu, 21 Oct 2021 20:28:29 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BC-Mail-Ex23.internal.baidu.com (172.31.51.17) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.12; Thu, 21 Oct 2021 20:28:29 +0800
-Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Thu, 21 Oct 2021 20:28:28 +0800
-From:   Cai Huoqing <caihuoqing@baidu.com>
-To:     <caihuoqing@baidu.com>
-CC:     Bernard Metzler <bmt@zurich.ibm.com>,
+        id S231206AbhJUNMW (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 21 Oct 2021 09:12:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51738 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231346AbhJUNMV (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 21 Oct 2021 09:12:21 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 547BF60ED5;
+        Thu, 21 Oct 2021 13:10:04 +0000 (UTC)
+Date:   Thu, 21 Oct 2021 09:10:01 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     Bernard Metzler <bmt@zurich.ibm.com>,
         Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@ziepe.ca>,
         Davidlohr Bueso <dave@stgolabs.net>,
         "Paul E. McKenney" <paulmck@kernel.org>,
         Josh Triplett <josh@joshtriplett.org>,
-        "Steven Rostedt" <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>,
@@ -41,55 +35,73 @@ CC:     Bernard Metzler <bmt@zurich.ibm.com>,
         Daniel Bristot de Oliveira <bristot@kernel.org>,
         <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <rcu@vger.kernel.org>
-Subject: [PATCH v2 6/6] trace/hwlat: Make use of the helper macro kthread_run_on_cpu()
-Date:   Thu, 21 Oct 2021 20:27:57 +0800
-Message-ID: <20211021122758.3092-7-caihuoqing@baidu.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211021122758.3092-1-caihuoqing@baidu.com>
-References: <20211021122758.3092-1-caihuoqing@baidu.com>
+Subject: Re: [PATCH 1/6] kthread: Add the helper macro kthread_run_on_cpu()
+Message-ID: <20211021091001.26c24d5b@gandalf.local.home>
+In-Reply-To: <20211021120135.3003-2-caihuoqing@baidu.com>
+References: <20211021120135.3003-1-caihuoqing@baidu.com>
+        <20211021120135.3003-2-caihuoqing@baidu.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.31.63.8]
-X-ClientProxiedBy: BC-Mail-Ex10.internal.baidu.com (172.31.51.50) To
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Repalce kthread_create_on_cpu/wake_up_process()
-with kthread_run_on_cpu() to simplify the code.
+On Thu, 21 Oct 2021 20:01:30 +0800
+Cai Huoqing <caihuoqing@baidu.com> wrote:
 
-Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
----
-v1->v2: Update changelog.
+> the helper macro kthread_run_on_cpu() inculdes
 
- kernel/trace/trace_hwlat.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ "includes"
 
-diff --git a/kernel/trace/trace_hwlat.c b/kernel/trace/trace_hwlat.c
-index 1b83d75eb103..0e555335f095 100644
---- a/kernel/trace/trace_hwlat.c
-+++ b/kernel/trace/trace_hwlat.c
-@@ -491,18 +491,14 @@ static void stop_per_cpu_kthreads(void)
- static int start_cpu_kthread(unsigned int cpu)
- {
- 	struct task_struct *kthread;
--	char comm[24];
- 
--	snprintf(comm, 24, "hwlatd/%d", cpu);
--
--	kthread = kthread_create_on_cpu(kthread_fn, NULL, cpu, comm);
-+	kthread = kthread_run_on_cpu(kthread_fn, NULL, cpu, "hwlatd/%u");
- 	if (IS_ERR(kthread)) {
- 		pr_err(BANNER "could not start sampling thread\n");
- 		return -ENOMEM;
- 	}
- 
- 	per_cpu(hwlat_per_cpu_data, cpu).kthread = kthread;
--	wake_up_process(kthread);
- 
- 	return 0;
- }
--- 
-2.25.1
+> kthread_create_on_cpu/wake_up_process().
+> In some cases, use kthread_run_on_cpu() directly instead of
+> kthread_create_on_node/kthread_bind/wake_up_process() or
+> kthread_create_on_cpu/wake_up_process() or
+> kthreadd_create/kthread_bind/wake_up_process() to simplify the code.
+> 
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+> ---
+>  include/linux/kthread.h | 22 ++++++++++++++++++++++
+>  1 file changed, 22 insertions(+)
+> 
+> diff --git a/include/linux/kthread.h b/include/linux/kthread.h
+> index 346b0f269161..dfd125523aa9 100644
+> --- a/include/linux/kthread.h
+> +++ b/include/linux/kthread.h
+> @@ -56,6 +56,28 @@ bool kthread_is_per_cpu(struct task_struct *k);
+>  	__k;								   \
+>  })
+>  
+> +/**
+> + * kthread_run_on_cpu - create and wake a cpu bound thread.
+> + * @threadfn: the function to run until signal_pending(current).
+> + * @data: data ptr for @threadfn.
+> + * @cpu: The cpu on which the thread should be bound,
+> + * @namefmt: printf-style name for the thread. Format is restricted
+> + *	     to "name.*%u". Code fills in cpu number.
+> + *
+> + * Description: Convenient wrapper for kthread_create_on_node()
+> + * followed by wake_up_process().  Returns the kthread or
+> + * ERR_PTR(-ENOMEM).
+> + */
+> +#define kthread_run_on_cpu(threadfn, data, cpu, namefmt)		  \
+
+Why is this a macro and not a static inline function?
+
+-- Steve
+
+> +({									  \
+> +	struct task_struct *__k						  \
+> +		= kthread_create_on_cpu(threadfn, data, cpu_to_node(cpu), \
+> +					namefmt);			  \
+> +	if (!IS_ERR(__k))						  \
+> +		wake_up_process(__k);					  \
+> +	__k;								  \
+> +})
+> +
+>  void free_kthread_struct(struct task_struct *k);
+>  void kthread_bind(struct task_struct *k, unsigned int cpu);
+>  void kthread_bind_mask(struct task_struct *k, const struct cpumask *mask);
 
