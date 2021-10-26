@@ -2,125 +2,94 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4021FC433F5
-	for <rcu@archiver.kernel.org>; Mon, 25 Oct 2021 10:32:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 40EAFC433F5
+	for <rcu@archiver.kernel.org>; Tue, 26 Oct 2021 04:51:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1BE0360EBB
-	for <rcu@archiver.kernel.org>; Mon, 25 Oct 2021 10:32:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 16FE8604DC
+	for <rcu@archiver.kernel.org>; Tue, 26 Oct 2021 04:51:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232827AbhJYKeb (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 25 Oct 2021 06:34:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41514 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230005AbhJYKe1 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 25 Oct 2021 06:34:27 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC330C061745
-        for <rcu@vger.kernel.org>; Mon, 25 Oct 2021 03:32:05 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id v77so14909027oie.1
-        for <rcu@vger.kernel.org>; Mon, 25 Oct 2021 03:32:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=D0QnWPztlsrRoM5HO4MFrl5hX+n1/I11tCMVuj+w7U8=;
-        b=gh2C0oDeLRx4W05Z5QcTixxzocX+J2wuaAYBOBR58Ea1BiaAkWbGE2t7RZknfSK8FF
-         F2bMhbyhrTceCH4kWyuqHoL5gYddSREl0Ljw5a00FKyot0RHun7Xd7NSEcA4hwQ56bnr
-         zhoDY+a6CNDE/hQaJuw3XmC3pBRFZSB7RGOhI+/gH3qVk0Su95s7dnT9Pqwva+xG1lxH
-         deBbkAR58GQYNrWUr2W7xJi7mPt9B5oUy5lrWYQ0v0ORb29s4FD9F61NWiYdoq1rnRFg
-         93dkxJuzfe1V9eSAxPEF8OWRVvfJRLkYVwo6xo9N3ti5oqIWC3VXx5V437QWSDRgd7J3
-         SUXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=D0QnWPztlsrRoM5HO4MFrl5hX+n1/I11tCMVuj+w7U8=;
-        b=NyqMyQsubcnqtl1pdRcUTqfwZ1Xixoa/r2W89FCK9fFiqWApL/0IBK8yY11x7jq4gS
-         /VxW9nhtTP89o4nyoUb3TOJOO2izUsfqswwof9ALrUnxSw66Vv5M78NzXrVTzpQaJdoj
-         RafVJKy5WAYAoimNcXDTxQXXcA6FTwlpInAO9KSJRV0OHJee3RSBXj+85WEj3/rERryQ
-         vGRclEWKMcaD8TEIpHDPGjVIjPxe+Q3PP2x2sdLd0MPb91hVnCtEj1ujGDlVKMYCMtO/
-         HBB/g/IMKRKlSoE+zNrDzSWSRDvuTBCIysNKLGm9RR8PmiEMpaleXUfUF3jbeleZKaby
-         2/nQ==
-X-Gm-Message-State: AOAM532rMfQ8yvdda3JPnRsAnHWkqwSHxdPxycfOkUvLiRzWl2YLvqcE
-        dMlwJ3UktJjDmZDyXttBXFFnjZtVSp5UwpMDukqxAQr2GxE=
-X-Google-Smtp-Source: ABdhPJz1wKIV7+08Iah66Oe22tvpOMW6pVLQVVTYmBXVxB5VceXtYx/xZf8ft4WIDG+m7H8oa7ejZPfQXKcJWUDINis=
-X-Received: by 2002:a05:6808:6ce:: with SMTP id m14mr11466075oih.134.1635157924929;
- Mon, 25 Oct 2021 03:32:04 -0700 (PDT)
+        id S234205AbhJZEyB (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 26 Oct 2021 00:54:01 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:37880 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231801AbhJZEyA (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 26 Oct 2021 00:54:00 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 4B46221956;
+        Tue, 26 Oct 2021 04:51:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1635223896; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bTrIR1qpCHAdIyJY41kHLwVd8GdNIlEwhZ7tf5LN0rk=;
+        b=zFD32UvV6jXSDlZUHC6kHfGzkFF/2DxIhWYl737oxO8OOjtiNBA6ZRGdNhBh07aJzjYYT7
+        yu5vdDYcsewPVHD69b5y71HNJyB93hckaw/IJILEDvu+do/bU9H2jmkQJp2/dLPaigj7Fk
+        kotqdb6LvJAU6VI3VZl0AukEqbaXLMk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1635223896;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bTrIR1qpCHAdIyJY41kHLwVd8GdNIlEwhZ7tf5LN0rk=;
+        b=T4S0e13qKPkIBr6K/64vYqg7ewSiEwk+fjTpC280Z0arftzqw5V1XrxOu9zaeoCLSCH+Lk
+        a2/CPRDq48VG3XCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AF76213B44;
+        Tue, 26 Oct 2021 04:51:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id P1BfG1aJd2GADQAAMHmgww
+        (envelope-from <neilb@suse.de>); Tue, 26 Oct 2021 04:51:34 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
-References: <000000000000ddb95c05cf2ad54a@google.com>
-In-Reply-To: <000000000000ddb95c05cf2ad54a@google.com>
-From:   Marco Elver <elver@google.com>
-Date:   Mon, 25 Oct 2021 12:31:53 +0200
-Message-ID: <CANpmjNPC6Oqq3+8ENDfM=jXUtY+_zWHAkAE5Wq87ZMYZMV6uLg@mail.gmail.com>
-Subject: Re: [syzbot] KCSAN: data-race in call_rcu / rcu_gp_fqs_loop
-To:     syzbot <syzbot+4dfb96a94317a78f44d9@syzkaller.appspotmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+From:   "NeilBrown" <neilb@suse.de>
+To:     "Matthew Wilcox" <willy@infradead.org>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        "Jonathan Corbet" <corbet@lwn.net>, rcu@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH] Documentation: Add refcount analogy to What is RCU
+In-reply-to: <YW9fMt04JqsaComr@casper.infradead.org>
+References: <163468470814.17149.17892190693057737430@noble.neil.brown.name>,
+ <YW9fMt04JqsaComr@casper.infradead.org>
+Date:   Tue, 26 Oct 2021 15:51:31 +1100
+Message-id: <163522389176.8576.4035743192114423983@noble.neil.brown.name>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-+Cc Paul
+On Wed, 20 Oct 2021, Matthew Wilcox wrote:
+> On Wed, Oct 20, 2021 at 10:05:08AM +1100, NeilBrown wrote:
+> 
+> some more minor glitches ...
+> 
+> > +7.  ANALOGY WITH REFERENCE COUNTING
+> > +-----------------------------------
+> > +
+> > +Many uses of RCU do not look so much like reader-writer locking as
+> > +illustrated by the previous section and so it can be helpful to have
+> > +other analogies to draw on.  One such analogy involves thinking of its
+> > +behaviour as similar to reference counting: RCU effectively provides a
+> > +temporary protected reference on "everything".
+> 
+> This paragraph is a bit clunky.  How about:
+> 
+> The reader-writer analogy (illustrated by the previous section) is not
+> always the easiest way to think about using RCU.  Another analogy which
+> can be helpful is to consider RCU as providing an effective reference
+> count on everything which is protected by RCU.
 
-data race is in rcu code, presumably not yet discovered by rcutorture?
+Yes, much better.  I chose "best" rather than "easiest" though.
 
-On Mon, 25 Oct 2021 at 12:29, syzbot
-<syzbot+4dfb96a94317a78f44d9@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    9c0c4d24ac00 Merge tag 'block-5.15-2021-10-22' of git://gi..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=159c4954b00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=6339b6ea86d89fd7
-> dashboard link: https://syzkaller.appspot.com/bug?extid=4dfb96a94317a78f44d9
-> compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.2
->
-> Unfortunately, I don't have any reproducer for this issue yet.
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+4dfb96a94317a78f44d9@syzkaller.appspotmail.com
->
-> ==================================================================
-> BUG: KCSAN: data-race in call_rcu / rcu_gp_fqs_loop
->
-> write to 0xffffffff837342e0 of 8 bytes by task 11 on cpu 1:
->  rcu_gp_fqs kernel/rcu/tree.c:1910 [inline]
->  rcu_gp_fqs_loop+0x348/0x470 kernel/rcu/tree.c:1971
->  rcu_gp_kthread+0x25/0x1a0 kernel/rcu/tree.c:2130
->  kthread+0x262/0x280 kernel/kthread.c:319
->  ret_from_fork+0x1f/0x30
->
-> read to 0xffffffff837342e0 of 8 bytes by task 379 on cpu 0:
->  __call_rcu_core kernel/rcu/tree.c:2904 [inline]
->  __call_rcu kernel/rcu/tree.c:3020 [inline]
->  call_rcu+0x4c0/0x6d0 kernel/rcu/tree.c:3067
->  __dentry_kill+0x3ec/0x4e0 fs/dcache.c:596
->  dput+0xc6/0x360 fs/dcache.c:888
->  do_unlinkat+0x2a8/0x540 fs/namei.c:4172
->  __do_sys_unlink fs/namei.c:4217 [inline]
->  __se_sys_unlink fs/namei.c:4215 [inline]
->  __x64_sys_unlink+0x2c/0x30 fs/namei.c:4215
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x44/0xa0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
->
-> value changed: 0x0000000000005c0d -> 0x0000000000005c0e
->
-> Reported by Kernel Concurrency Sanitizer on:
-> CPU: 0 PID: 379 Comm: udevd Tainted: G        W         5.15.0-rc6-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> ==================================================================
->
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Other changes Incorporated too.  Result to follow.
+
+Thanks,
+NeilBrown
