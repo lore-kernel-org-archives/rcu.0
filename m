@@ -2,115 +2,117 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E1AEC433F5
-	for <rcu@archiver.kernel.org>; Tue, 26 Oct 2021 14:06:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C8C85C433F5
+	for <rcu@archiver.kernel.org>; Tue, 26 Oct 2021 14:07:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5004361039
-	for <rcu@archiver.kernel.org>; Tue, 26 Oct 2021 14:06:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AB5BF60C51
+	for <rcu@archiver.kernel.org>; Tue, 26 Oct 2021 14:07:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233975AbhJZOI6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 26 Oct 2021 10:08:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39594 "EHLO mail.kernel.org"
+        id S231493AbhJZOJy (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 26 Oct 2021 10:09:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39826 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231493AbhJZOI4 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 26 Oct 2021 10:08:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EDA956103C;
-        Tue, 26 Oct 2021 14:06:32 +0000 (UTC)
+        id S230073AbhJZOJy (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 26 Oct 2021 10:09:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8FD6160724;
+        Tue, 26 Oct 2021 14:07:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635257193;
-        bh=ZzD40Angatb9WKJIB9PLKZoFb4YiYIHNUINS1DX4/Ng=;
+        s=k20201202; t=1635257250;
+        bh=mKDe8VTb6Q3vAd+t5QlksG2XhwXHK6LoP4mZeCrxuyI=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=r00TIpUZmQmYGSxW5DdMBMLTk8k4m5P/+u8CgiXSXdP2EephzSeNVSHAQw9qm/ZNE
-         RLDaY3lTwxTB5SgA0p+H8IFiBt4OVoECpm2Sx5dPmIhZJipphw/Bpw66X4u/zMbKn3
-         0jIj5OrlrN0v5ZAk6YlPs4qVfjaaTFWov3MPyEg6GTjyFAAgbjMJ+KqWZTsE8tPAvW
-         5Ey08E/9vhkoXwvW1jE1YcvB+zO236izT26Fotl+s35wlohu2It22j7a+NSr9PtGDm
-         3W8fvxXetD6P6sU5V4tMh1xURFfBmJ+Lb2NsJai7X7bX0ho0BcdAARSAq8DNIFoG9q
-         aox1+4S2mM+CQ==
+        b=Yq0yxR/ggCiOSuu6fzCPVUvK4q6Sk+0WTNW+9zY++3lBjwHAp2MgvDj+5HEF0McjG
+         mRo+efKMC/Nd8kbthHQMa6b4BRtwPXdOoOnM4UdGyW88kW3ScG+5qRp7eX2OMG2EMU
+         hsqYkyPHeKvTiCAhtGs5xL/8sBbQIX0tsA47RGMeKCGE0nDiNCapWtyF0emvTqp8B3
+         4IIL5K4gyVO03BeBySDlLH+0EqYLQukb+MGgnc4GRO0nFtEEB1Xal+JgVQ+s2cXsqf
+         eLi522mUQa5wCj7PE7/YN5ZBpMsOIMc/rd4vAmkgp3XxCNktMhEEy2vHJI8BORDqBH
+         PtuOp+RfPWEAA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 2A6965C0D48; Tue, 26 Oct 2021 07:06:32 -0700 (PDT)
-Date:   Tue, 26 Oct 2021 07:06:32 -0700
+        id 0348A5C0D48; Tue, 26 Oct 2021 07:07:30 -0700 (PDT)
+Date:   Tue, 26 Oct 2021 07:07:29 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>
-Cc:     "dave@stgolabs.net" <dave@stgolabs.net>,
-        "josh@joshtriplett.org" <josh@joshtriplett.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "mathieu.desnoyers@efficios.com" <mathieu.desnoyers@efficios.com>,
-        "jiangshanlai@gmail.com" <jiangshanlai@gmail.com>,
-        "joel@joelfernandes.org" <joel@joelfernandes.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 3/3] refscale: always log the error message
-Message-ID: <20211026140632.GV880162@paulmck-ThinkPad-P17-Gen-1>
+To:     Marco Elver <elver@google.com>
+Cc:     syzbot <syzbot+4dfb96a94317a78f44d9@syzkaller.appspotmail.com>,
+        rcu@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk
+Subject: Re: [syzbot] KCSAN: data-race in call_rcu / rcu_gp_fqs_loop
+Message-ID: <20211026140729.GW880162@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20211025032658.22889-1-lizhijian@cn.fujitsu.com>
- <20211025032658.22889-3-lizhijian@cn.fujitsu.com>
- <5f4c53e4-34aa-98f6-343f-0de18df830f2@fujitsu.com>
+References: <000000000000ddb95c05cf2ad54a@google.com>
+ <CANpmjNPC6Oqq3+8ENDfM=jXUtY+_zWHAkAE5Wq87ZMYZMV6uLg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5f4c53e4-34aa-98f6-343f-0de18df830f2@fujitsu.com>
+In-Reply-To: <CANpmjNPC6Oqq3+8ENDfM=jXUtY+_zWHAkAE5Wq87ZMYZMV6uLg@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 06:12:40AM +0000, lizhijian@fujitsu.com wrote:
+On Mon, Oct 25, 2021 at 12:31:53PM +0200, Marco Elver wrote:
+> +Cc Paul
 > 
-> 
-> On 25/10/2021 11:26, Li Zhijian wrote:
-> > Generally, error message should be logged anyhow.
-> >
-> > Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
-> > ---
-> >   kernel/rcu/refscale.c | 8 ++++----
-> >   1 file changed, 4 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
-> > index a4479f00dcdc..f055d168365a 100644
-> > --- a/kernel/rcu/refscale.c
-> > +++ b/kernel/rcu/refscale.c
-> > @@ -58,8 +58,8 @@ do {											\
-> >   	}										\
-> >   } while (0)
-> >   
-> > -#define VERBOSE_SCALEOUT_ERRSTRING(s, x...) \
-> > -	do { if (verbose) pr_alert("%s" SCALE_FLAG "!!! " s, scale_type, ## x); } while (0)
-> > +#define SCALEOUT_ERRSTRING(s, x...) \
-> > +	do { pr_alert("%s" SCALE_FLAG "!!! " s, scale_type, ## x); } while (0)
-> >   
-> >   MODULE_LICENSE("GPL");
-> >   MODULE_AUTHOR("Joel Fernandes (Google) <joel@joelfernandes.org>");
-> > @@ -651,7 +651,7 @@ static int main_func(void *arg)
-> >   	result_avg = kzalloc(nruns * sizeof(*result_avg), GFP_KERNEL);
-> >   	buf = kzalloc(800 + 64, GFP_KERNEL);
-> >   	if (!result_avg || !buf) {
-> > -		VERBOSE_SCALEOUT_ERRSTRING("out of memory");
-> > +		SCALEOUT_ERRSTRING("out of memory");
-> 
-> '\n' should be added to the last to flush it.
+> data race is in rcu code, presumably not yet discovered by rcutorture?
 
-And there might well be other missing "\n" instances in similar messages
-in rcuscale.c, rcutorture.c, scftorture.c, locktorture.c, and torture.c.
-Please feel free to send a patch for each file needing this help.
-
-I queued your other three patches for v5.17 (not this coming merge window,
-but the one after that), thank you!  I did wordsmith the commit logs,
-so please check to see if I messed anything up.
+Quite possibly, and I will take a look.  Thank you for sending this
+along.
 
 							Thanx, Paul
 
-> >   		goto oom_exit;
-> >   	}
-> >   	if (holdoff)
-> > @@ -837,7 +837,7 @@ ref_scale_init(void)
-> >   	reader_tasks = kcalloc(nreaders, sizeof(reader_tasks[0]),
-> >   			       GFP_KERNEL);
-> >   	if (!reader_tasks) {
-> > -		VERBOSE_SCALEOUT_ERRSTRING("out of memory");
-> > +		SCALEOUT_ERRSTRING("out of memory");
-> ditto
-> 
-> Thanks
-> Zhijian
-> >   		firsterr = -ENOMEM;
-> >   		goto unwind;
-> >   	}
+> On Mon, 25 Oct 2021 at 12:29, syzbot
+> <syzbot+4dfb96a94317a78f44d9@syzkaller.appspotmail.com> wrote:
+> >
+> > Hello,
+> >
+> > syzbot found the following issue on:
+> >
+> > HEAD commit:    9c0c4d24ac00 Merge tag 'block-5.15-2021-10-22' of git://gi..
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=159c4954b00000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=6339b6ea86d89fd7
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=4dfb96a94317a78f44d9
+> > compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.2
+> >
+> > Unfortunately, I don't have any reproducer for this issue yet.
+> >
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+4dfb96a94317a78f44d9@syzkaller.appspotmail.com
+> >
+> > ==================================================================
+> > BUG: KCSAN: data-race in call_rcu / rcu_gp_fqs_loop
+> >
+> > write to 0xffffffff837342e0 of 8 bytes by task 11 on cpu 1:
+> >  rcu_gp_fqs kernel/rcu/tree.c:1910 [inline]
+> >  rcu_gp_fqs_loop+0x348/0x470 kernel/rcu/tree.c:1971
+> >  rcu_gp_kthread+0x25/0x1a0 kernel/rcu/tree.c:2130
+> >  kthread+0x262/0x280 kernel/kthread.c:319
+> >  ret_from_fork+0x1f/0x30
+> >
+> > read to 0xffffffff837342e0 of 8 bytes by task 379 on cpu 0:
+> >  __call_rcu_core kernel/rcu/tree.c:2904 [inline]
+> >  __call_rcu kernel/rcu/tree.c:3020 [inline]
+> >  call_rcu+0x4c0/0x6d0 kernel/rcu/tree.c:3067
+> >  __dentry_kill+0x3ec/0x4e0 fs/dcache.c:596
+> >  dput+0xc6/0x360 fs/dcache.c:888
+> >  do_unlinkat+0x2a8/0x540 fs/namei.c:4172
+> >  __do_sys_unlink fs/namei.c:4217 [inline]
+> >  __se_sys_unlink fs/namei.c:4215 [inline]
+> >  __x64_sys_unlink+0x2c/0x30 fs/namei.c:4215
+> >  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+> >  do_syscall_64+0x44/0xa0 arch/x86/entry/common.c:80
+> >  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> >
+> > value changed: 0x0000000000005c0d -> 0x0000000000005c0e
+> >
+> > Reported by Kernel Concurrency Sanitizer on:
+> > CPU: 0 PID: 379 Comm: udevd Tainted: G        W         5.15.0-rc6-syzkaller #0
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> > ==================================================================
+> >
+> >
+> > ---
+> > This report is generated by a bot. It may contain errors.
+> > See https://goo.gl/tpsmEJ for more information about syzbot.
+> > syzbot engineers can be reached at syzkaller@googlegroups.com.
+> >
+> > syzbot will keep track of this issue. See:
+> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
