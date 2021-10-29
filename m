@@ -2,27 +2,27 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 687C7C433EF
-	for <rcu@archiver.kernel.org>; Fri, 29 Oct 2021 09:41:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BEDD6C433EF
+	for <rcu@archiver.kernel.org>; Fri, 29 Oct 2021 09:41:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4A01160FC0
-	for <rcu@archiver.kernel.org>; Fri, 29 Oct 2021 09:41:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A561360FC0
+	for <rcu@archiver.kernel.org>; Fri, 29 Oct 2021 09:41:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231569AbhJ2JoN (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 29 Oct 2021 05:44:13 -0400
+        id S231631AbhJ2JoW (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 29 Oct 2021 05:44:22 -0400
 Received: from mga04.intel.com ([192.55.52.120]:50887 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231559AbhJ2JoN (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 29 Oct 2021 05:44:13 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10151"; a="229359969"
+        id S231559AbhJ2JoR (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 29 Oct 2021 05:44:17 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10151"; a="229360007"
 X-IronPort-AV: E=Sophos;i="5.87,192,1631602800"; 
-   d="scan'208";a="229359969"
+   d="scan'208";a="229360007"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2021 02:41:41 -0700
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2021 02:41:46 -0700
 X-IronPort-AV: E=Sophos;i="5.87,192,1631602800"; 
-   d="scan'208";a="498845430"
+   d="scan'208";a="498845444"
 Received: from rdutta-mobl3.gar.corp.intel.com (HELO lkp-bingo.ccr.corp.intel.com) ([10.255.31.247])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2021 02:41:38 -0700
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2021 02:41:42 -0700
 From:   Li Zhijian <zhijianx.li@intel.com>
 To:     dave@stgolabs.net, joel@joelfernandes.org, josh@joshtriplett.org,
         mathieu.desnoyers@efficios.com, paulmck@kernel.org,
@@ -30,9 +30,9 @@ To:     dave@stgolabs.net, joel@joelfernandes.org, josh@joshtriplett.org,
 Cc:     philip.li@intel.com, lizhijian@cn.fujitsu.com,
         jiangshanlai@gmail.com, linux-kernel@vger.kernel.org,
         Li Zhijian <zhijianx.li@intel.com>
-Subject: [PATCH 1/6] refscale: add missing '\n' to flush message out
-Date:   Fri, 29 Oct 2021 17:40:24 +0800
-Message-Id: <20211029094029.22501-2-zhijianx.li@intel.com>
+Subject: [PATCH 2/6] scftorture: add missing '\n' to flush message out
+Date:   Fri, 29 Oct 2021 17:40:25 +0800
+Message-Id: <20211029094029.22501-3-zhijianx.li@intel.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20211029094029.22501-1-zhijianx.li@intel.com>
 References: <20211029094029.22501-1-zhijianx.li@intel.com>
@@ -47,49 +47,35 @@ for each calls
 
 Signed-off-by: Li Zhijian <zhijianx.li@intel.com>
 ---
- kernel/rcu/refscale.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ kernel/scftorture.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
-index f055d168365a..ffe9e44c886c 100644
---- a/kernel/rcu/refscale.c
-+++ b/kernel/rcu/refscale.c
-@@ -44,7 +44,10 @@
- 	pr_alert("%s" SCALE_FLAG s, scale_type, ## x)
+diff --git a/kernel/scftorture.c b/kernel/scftorture.c
+index 64a08288b1a6..f60a7a240f91 100644
+--- a/kernel/scftorture.c
++++ b/kernel/scftorture.c
+@@ -42,10 +42,10 @@
+ 	pr_alert(SCFTORT_FLAG s, ## x)
  
- #define VERBOSE_SCALEOUT(s, x...) \
--	do { if (verbose) pr_alert("%s" SCALE_FLAG s, scale_type, ## x); } while (0)
-+	do { \
-+		if (verbose) \
-+			pr_alert("%s" SCALE_FLAG s "\n", scale_type, ## x); \
-+	} while (0)
+ #define VERBOSE_SCFTORTOUT(s, x...) \
+-	do { if (verbose) pr_alert(SCFTORT_FLAG s, ## x); } while (0)
++	do { if (verbose) pr_alert(SCFTORT_FLAG s "\n", ## x); } while (0)
  
- static atomic_t verbose_batch_ctr;
- 
-@@ -54,12 +57,12 @@ do {											\
- 	    (verbose_batched <= 0 ||							\
- 	     !(atomic_inc_return(&verbose_batch_ctr) % verbose_batched))) {		\
- 		schedule_timeout_uninterruptible(1);					\
--		pr_alert("%s" SCALE_FLAG s, scale_type, ## x);				\
-+		pr_alert("%s" SCALE_FLAG s "\n", scale_type, ## x);			\
- 	}										\
- } while (0)
- 
- #define SCALEOUT_ERRSTRING(s, x...) \
--	do { pr_alert("%s" SCALE_FLAG "!!! " s, scale_type, ## x); } while (0)
-+	do { pr_alert("%s" SCALE_FLAG "!!! " s "\n", scale_type, ## x); } while (0)
+ #define VERBOSE_SCFTORTOUT_ERRSTRING(s, x...) \
+-	do { if (verbose) pr_alert(SCFTORT_FLAG "!!! " s, ## x); } while (0)
++	do { if (verbose) pr_alert(SCFTORT_FLAG "!!! " s "\n", ## x); } while (0)
  
  MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Joel Fernandes (Google) <joel@joelfernandes.org>");
-@@ -842,7 +845,7 @@ ref_scale_init(void)
+ MODULE_AUTHOR("Paul E. McKenney <paulmck@kernel.org>");
+@@ -629,7 +629,7 @@ static int __init scf_torture_init(void)
  		goto unwind;
  	}
  
--	VERBOSE_SCALEOUT("Starting %d reader threads\n", nreaders);
-+	VERBOSE_SCALEOUT("Starting %d reader threads", nreaders);
+-	VERBOSE_SCFTORTOUT("Starting %d smp_call_function() threads\n", nthreads);
++	VERBOSE_SCFTORTOUT("Starting %d smp_call_function() threads", nthreads);
  
- 	for (i = 0; i < nreaders; i++) {
- 		firsterr = torture_create_kthread(ref_scale_reader, (void *)i,
+ 	atomic_set(&n_started, nthreads);
+ 	for (i = 0; i < nthreads; i++) {
 -- 
 2.32.0
 
