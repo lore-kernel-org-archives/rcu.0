@@ -2,27 +2,27 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DF01DC433EF
-	for <rcu@archiver.kernel.org>; Fri, 29 Oct 2021 09:41:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AE5B5C433EF
+	for <rcu@archiver.kernel.org>; Fri, 29 Oct 2021 09:42:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C85CB61157
-	for <rcu@archiver.kernel.org>; Fri, 29 Oct 2021 09:41:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 95F8260FC0
+	for <rcu@archiver.kernel.org>; Fri, 29 Oct 2021 09:42:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231654AbhJ2JoZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 29 Oct 2021 05:44:25 -0400
+        id S231504AbhJ2Job (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 29 Oct 2021 05:44:31 -0400
 Received: from mga04.intel.com ([192.55.52.120]:50910 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231667AbhJ2JoX (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 29 Oct 2021 05:44:23 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10151"; a="229360076"
+        id S231627AbhJ2Jo2 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 29 Oct 2021 05:44:28 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10151"; a="229360121"
 X-IronPort-AV: E=Sophos;i="5.87,192,1631602800"; 
-   d="scan'208";a="229360076"
+   d="scan'208";a="229360121"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2021 02:41:53 -0700
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2021 02:41:57 -0700
 X-IronPort-AV: E=Sophos;i="5.87,192,1631602800"; 
-   d="scan'208";a="498845489"
+   d="scan'208";a="498845521"
 Received: from rdutta-mobl3.gar.corp.intel.com (HELO lkp-bingo.ccr.corp.intel.com) ([10.255.31.247])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2021 02:41:50 -0700
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2021 02:41:53 -0700
 From:   Li Zhijian <zhijianx.li@intel.com>
 To:     dave@stgolabs.net, joel@joelfernandes.org, josh@joshtriplett.org,
         mathieu.desnoyers@efficios.com, paulmck@kernel.org,
@@ -30,9 +30,9 @@ To:     dave@stgolabs.net, joel@joelfernandes.org, josh@joshtriplett.org,
 Cc:     philip.li@intel.com, lizhijian@cn.fujitsu.com,
         jiangshanlai@gmail.com, linux-kernel@vger.kernel.org,
         Li Zhijian <zhijianx.li@intel.com>
-Subject: [PATCH 4/6] scftorture: always log error message
-Date:   Fri, 29 Oct 2021 17:40:27 +0800
-Message-Id: <20211029094029.22501-5-zhijianx.li@intel.com>
+Subject: [PATCH 5/6] rcuscale: alwaly log error message
+Date:   Fri, 29 Oct 2021 17:40:28 +0800
+Message-Id: <20211029094029.22501-6-zhijianx.li@intel.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20211029094029.22501-1-zhijianx.li@intel.com>
 References: <20211029094029.22501-1-zhijianx.li@intel.com>
@@ -46,46 +46,54 @@ Generally, error message should be logged anyhow.
 
 Signed-off-by: Li Zhijian <zhijianx.li@intel.com>
 ---
- kernel/scftorture.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ kernel/rcu/rcuscale.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/kernel/scftorture.c b/kernel/scftorture.c
-index 5fb15492999b..8ef7888d78cc 100644
---- a/kernel/scftorture.c
-+++ b/kernel/scftorture.c
-@@ -41,8 +41,7 @@
- #define VERBOSE_SCFTORTOUT(s, x...) \
- 	do { if (verbose) pr_alert(SCFTORT_FLAG s "\n", ## x); } while (0)
+diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
+index 2cc34a22a506..5c8449a8827a 100644
+--- a/kernel/rcu/rcuscale.c
++++ b/kernel/rcu/rcuscale.c
+@@ -50,8 +50,8 @@ MODULE_AUTHOR("Paul E. McKenney <paulmck@linux.ibm.com>");
+ 	pr_alert("%s" SCALE_FLAG " %s\n", scale_type, s)
+ #define VERBOSE_SCALEOUT_STRING(s) \
+ 	do { if (verbose) pr_alert("%s" SCALE_FLAG " %s\n", scale_type, s); } while (0)
+-#define VERBOSE_SCALEOUT_ERRSTRING(s) \
+-	do { if (verbose) pr_alert("%s" SCALE_FLAG "!!! %s\n", scale_type, s); } while (0)
++#define SCALEOUT_ERRSTRING(s) \
++	pr_alert("%s" SCALE_FLAG "!!! %s\n", scale_type, s)
  
--#define VERBOSE_SCFTORTOUT_ERRSTRING(s, x...) \
--	do { if (verbose) pr_alert(SCFTORT_FLAG "!!! " s "\n", ## x); } while (0)
-+#define SCFTORTOUT_ERRSTRING(s, x...) pr_alert(SCFTORT_FLAG "!!! " s "\n", ## x)
+ /*
+  * The intended use cases for the nreaders and nwriters module parameters
+@@ -514,11 +514,11 @@ rcu_scale_cleanup(void)
+ 	 * during the mid-boot phase, so have to wait till the end.
+ 	 */
+ 	if (rcu_gp_is_expedited() && !rcu_gp_is_normal() && !gp_exp)
+-		VERBOSE_SCALEOUT_ERRSTRING("All grace periods expedited, no normal ones to measure!");
++		SCALEOUT_ERRSTRING("All grace periods expedited, no normal ones to measure!");
+ 	if (rcu_gp_is_normal() && gp_exp)
+-		VERBOSE_SCALEOUT_ERRSTRING("All grace periods normal, no expedited ones to measure!");
++		SCALEOUT_ERRSTRING("All grace periods normal, no expedited ones to measure!");
+ 	if (gp_exp && gp_async)
+-		VERBOSE_SCALEOUT_ERRSTRING("No expedited async GPs, so went with async!");
++		SCALEOUT_ERRSTRING("No expedited async GPs, so went with async!");
  
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Paul E. McKenney <paulmck@kernel.org>");
-@@ -583,14 +582,14 @@ static int __init scf_torture_init(void)
- 	if (weight_single1 == 0 && weight_single_rpc1 == 0 && weight_single_wait1 == 0 &&
- 	    weight_many1 == 0 && weight_many_wait1 == 0 &&
- 	    weight_all1 == 0 && weight_all_wait1 == 0) {
--		VERBOSE_SCFTORTOUT_ERRSTRING("all zero weights makes no sense");
-+		SCFTORTOUT_ERRSTRING("all zero weights makes no sense");
- 		firsterr = -EINVAL;
+ 	if (torture_cleanup_begin())
+ 		return;
+@@ -845,7 +845,7 @@ rcu_scale_init(void)
+ 	reader_tasks = kcalloc(nrealreaders, sizeof(reader_tasks[0]),
+ 			       GFP_KERNEL);
+ 	if (reader_tasks == NULL) {
+-		VERBOSE_SCALEOUT_ERRSTRING("out of memory");
++		SCALEOUT_ERRSTRING("out of memory");
+ 		firsterr = -ENOMEM;
  		goto unwind;
  	}
- 	if (IS_BUILTIN(CONFIG_SCF_TORTURE_TEST))
- 		scf_sel_add(weight_resched1, SCF_PRIM_RESCHED, false);
- 	else if (weight_resched1)
--		VERBOSE_SCFTORTOUT_ERRSTRING("built as module, weight_resched ignored");
-+		SCFTORTOUT_ERRSTRING("built as module, weight_resched ignored");
- 	scf_sel_add(weight_single1, SCF_PRIM_SINGLE, false);
- 	scf_sel_add(weight_single_rpc1, SCF_PRIM_SINGLE_RPC, true);
- 	scf_sel_add(weight_single_wait1, SCF_PRIM_SINGLE, true);
-@@ -621,7 +620,7 @@ static int __init scf_torture_init(void)
- 		nthreads = num_online_cpus();
- 	scf_stats_p = kcalloc(nthreads, sizeof(scf_stats_p[0]), GFP_KERNEL);
- 	if (!scf_stats_p) {
--		VERBOSE_SCFTORTOUT_ERRSTRING("out of memory");
-+		SCFTORTOUT_ERRSTRING("out of memory");
+@@ -865,7 +865,7 @@ rcu_scale_init(void)
+ 		kcalloc(nrealwriters, sizeof(*writer_n_durations),
+ 			GFP_KERNEL);
+ 	if (!writer_tasks || !writer_durations || !writer_n_durations) {
+-		VERBOSE_SCALEOUT_ERRSTRING("out of memory");
++		SCALEOUT_ERRSTRING("out of memory");
  		firsterr = -ENOMEM;
  		goto unwind;
  	}
