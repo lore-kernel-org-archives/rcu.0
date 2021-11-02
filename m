@@ -2,169 +2,114 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E0F1C433EF
-	for <rcu@archiver.kernel.org>; Tue,  2 Nov 2021 14:54:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D9435C433F5
+	for <rcu@archiver.kernel.org>; Tue,  2 Nov 2021 16:31:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EC15160720
-	for <rcu@archiver.kernel.org>; Tue,  2 Nov 2021 14:54:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B0C1560D42
+	for <rcu@archiver.kernel.org>; Tue,  2 Nov 2021 16:31:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234363AbhKBO4r (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 2 Nov 2021 10:56:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233581AbhKBO4q (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 2 Nov 2021 10:56:46 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E84AC061714;
-        Tue,  2 Nov 2021 07:54:11 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id ee33so6009269edb.8;
-        Tue, 02 Nov 2021 07:54:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sQPZ+A7u6P6I2+Cdu40NEs7KpcMqwcX/VdKifLOtVBA=;
-        b=fubu4QoEJPYCuuJ0ncleAFSlDr0F0tbl53GJLEAAQU+rkCY72q0c5+YfNOgT8wNkPV
-         RHkIFwhIWGcFjwRWWHBTMB+p6yJs+Spext1PyaemoqWxeYB2X2PoxJCRfEBL+klYgU9W
-         CJHLpZOnq26UmNwHj3RZzRr+ybg4vtBe9WBwvE0316FN8z8mOVeW0OT7nXVEE9vvb5Q/
-         tbjfHndUoJoZsQ3LH3n382tEeNcfwaQjVpadFI5oUncWBMFtypddmHV4C0y+sX/ikQ3b
-         Hlwt/X7kHhvFLOS/9YGnyxDWfXCH25c7NJ0ZLKCX48EqvUQTw6Jvk5w+F2M9djS2SH3S
-         sGwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sQPZ+A7u6P6I2+Cdu40NEs7KpcMqwcX/VdKifLOtVBA=;
-        b=Hfi5tPTwn5CRqHE3RnttSYdI2IL2chpl955TUv/OcFPsZB7X6u4UezYmD7psLxG+H5
-         z7QalJQpCUPBJaLbIkJkGgPFv2Z9o4uIyAinjp7cCGVshAndsU91r8YdydfbYIVolR1h
-         JpG8uTkzQzHkusoHwIdeUdkKembSXRYD185O6y7i/PvAnJqM2SOGfSRXxy2rMPvoNlQy
-         GI5msCz9Tc78Sr0ekEVA7srYakQlHXTHxnMkg+To8ZJoWC4RmJusLwyGIl92jPvW+CNI
-         1+X4kRGMpk5UIjuSAM9bZaHdbNNlqyC/VFNhe4XitmDYjAdTV3mM5cMO0R+4D+/Z7hXQ
-         RwCg==
-X-Gm-Message-State: AOAM531cOQeDeh5BaYf3BZOUsqeGBMqFAFDMFnM4DA4r80lGsH8N9ZXW
-        yZ3CXWg1+8Cq1marZRKSsRrhjs6mzvZ7m7065nI=
-X-Google-Smtp-Source: ABdhPJwH9JY+GKdKAr6hsTkOlZ1H9hgagZ+Ewpzzk8wko78etTrjOnl/8nTxh/sPW4I2WJtIWWceZ+n5D9ceJdNym2s=
-X-Received: by 2002:a50:e145:: with SMTP id i5mr51315860edl.16.1635864849792;
- Tue, 02 Nov 2021 07:54:09 -0700 (PDT)
+        id S234765AbhKBQdh (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 2 Nov 2021 12:33:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36824 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231361AbhKBQKR (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 2 Nov 2021 12:10:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 993A661052;
+        Tue,  2 Nov 2021 16:06:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635869216;
+        bh=SobB5BdC3D2XeM1p4UGscDO/2qDjpZwU+6Zn5q4FyAE=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=ft4d6xw+wic+NimaD+VbhfAkjw3oq9hrFtSazsMPGxyORP9bwewOkJeW91oyYBvrb
+         pPfJaGYYMJEV9nDc5VL9fDYiiNcZAxL+Idq7zHMxZX32LP8AqmIJML/sV/s71q6psS
+         tCUBYpk9q4MXd8K0zaNIM/yL2s1rqNuDN2FdzvluCTDZopUiaUdJ4RBA0pc9TWbXqf
+         YnZ7uZfe6H2erwBc4FjK1QjOm3qqhXoZnciQRIy3LXkp4dMlUKQxcNq+duVzNeuTtz
+         wogpfTIfDFhkOFkyshCq6z720uzwSjEKeKsmJKtK1ViMj6GfvWaieQhjp54hznyYhx
+         3wTIWKD7znToA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 6298F5C0248; Tue,  2 Nov 2021 09:06:56 -0700 (PDT)
+Date:   Tue, 2 Nov 2021 09:06:56 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Li Zhijian <zhijianx.li@intel.com>
+Cc:     dave@stgolabs.net, joel@joelfernandes.org, josh@joshtriplett.org,
+        mathieu.desnoyers@efficios.com, rostedt@goodmis.org,
+        rcu@vger.kernel.org, philip.li@intel.com, lizhijian@cn.fujitsu.com,
+        jiangshanlai@gmail.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/6] scftorture: always log error message
+Message-ID: <20211102160656.GI880162@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20211029094029.22501-1-zhijianx.li@intel.com>
+ <20211029094029.22501-5-zhijianx.li@intel.com>
 MIME-Version: 1.0
-References: <20211101103158.3725704-1-jun.miao@windriver.com> <96f9d669-b9da-f387-199e-e6bf36081fbd@windriver.com>
-In-Reply-To: <96f9d669-b9da-f387-199e-e6bf36081fbd@windriver.com>
-From:   Uladzislau Rezki <urezki@gmail.com>
-Date:   Tue, 2 Nov 2021 15:53:58 +0100
-Message-ID: <CA+KHdyU98uHkf1VKbvFs0wcXz7SaizENRXn4BEpKJhe+KmXZuw@mail.gmail.com>
-Subject: Re: [PATCH] rcu: avoid alloc_pages() when recording stack
-To:     Jun Miao <jun.miao@windriver.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Dmitry Vyukov <dvyukov@google.com>, qiang.zhang1211@gmail.com,
-        RCU <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        miaojun0823@163.com, ryabinin.a.a@gmail.com,
-        Alexander Potapenko <glider@google.com>,
-        jianwei.hu@windriver.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211029094029.22501-5-zhijianx.li@intel.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
->
-> Add KASAN maintainers
->
-> On 11/1/21 6:31 PM, Jun Miao wrote:
-> > The default kasan_record_aux_stack() calls stack_depot_save() with GFP_NOWAIT,
-> > which in turn can then call alloc_pages(GFP_NOWAIT, ...).  In general, however,
-> > it is not even possible to use either GFP_ATOMIC nor GFP_NOWAIT in certain
-> > non-preemptive contexts/RT kernel including raw_spin_locks (see gfp.h and ab00db216c9c7).
-> >
-> > Fix it by instructing stackdepot to not expand stack storage via alloc_pages()
-> > in case it runs out by using kasan_record_aux_stack_noalloc().
-> >
-> > Jianwei Hu reported:
-> >   BUG: sleeping function called from invalid context at kernel/locking/rtmutex.c:969
-> >   in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 15319, name: python3
-> >   INFO: lockdep is turned off.
-> >   irq event stamp: 0
-> >   hardirqs last  enabled at (0): [<0000000000000000>] 0x0
-> >   hardirqs last disabled at (0): [<ffffffff856c8b13>] copy_process+0xaf3/0x2590
-> >   softirqs last  enabled at (0): [<ffffffff856c8b13>] copy_process+0xaf3/0x2590
-> >   softirqs last disabled at (0): [<0000000000000000>] 0x0
-> >   CPU: 6 PID: 15319 Comm: python3 Tainted: G        W  O 5.15-rc7-preempt-rt #1
-> >   Hardware name: Supermicro SYS-E300-9A-8C/A2SDi-8C-HLN4F, BIOS 1.1b 12/17/2018
-> >   Call Trace:
-> >    show_stack+0x52/0x58
-> >    dump_stack+0xa1/0xd6
-> >    ___might_sleep.cold+0x11c/0x12d
-> >    rt_spin_lock+0x3f/0xc0
-> >    rmqueue+0x100/0x1460
-> >    rmqueue+0x100/0x1460
-> >    mark_usage+0x1a0/0x1a0
-> >    ftrace_graph_ret_addr+0x2a/0xb0
-> >    rmqueue_pcplist.constprop.0+0x6a0/0x6a0
-> >     __kasan_check_read+0x11/0x20
-> >     __zone_watermark_ok+0x114/0x270
-> >     get_page_from_freelist+0x148/0x630
-> >     is_module_text_address+0x32/0xa0
-> >     __alloc_pages_nodemask+0x2f6/0x790
-> >     __alloc_pages_slowpath.constprop.0+0x12d0/0x12d0
-> >     create_prof_cpu_mask+0x30/0x30
-> >     alloc_pages_current+0xb1/0x150
-> >     stack_depot_save+0x39f/0x490
-> >     kasan_save_stack+0x42/0x50
-> >     kasan_save_stack+0x23/0x50
-> >     kasan_record_aux_stack+0xa9/0xc0
-> >     __call_rcu+0xff/0x9c0
-> >     call_rcu+0xe/0x10
-> >     put_object+0x53/0x70
-> >     __delete_object+0x7b/0x90
-> >     kmemleak_free+0x46/0x70
-> >     slab_free_freelist_hook+0xb4/0x160
-> >     kfree+0xe5/0x420
-> >     kfree_const+0x17/0x30
-> >     kobject_cleanup+0xaa/0x230
-> >     kobject_put+0x76/0x90
-> >     netdev_queue_update_kobjects+0x17d/0x1f0
-> >     ... ...
-> >     ksys_write+0xd9/0x180
-> >     __x64_sys_write+0x42/0x50
-> >     do_syscall_64+0x38/0x50
-> >     entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> >
-> > Fixes: 84109ab58590 ("rcu: Record kvfree_call_rcu() call stack for KASAN")
-> > Fixes: 26e760c9a7c8 ("rcu: kasan: record and print call_rcu() call stack")
-> > Reported-by: Jianwei Hu <jianwei.hu@windriver.com>
-> > Signed-off-by: Jun Miao <jun.miao@windriver.com>
-> > ---
-> >   kernel/rcu/tree.c | 4 ++--
-> >   1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index 8270e58cd0f3..2c1034580f15 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -3026,7 +3026,7 @@ __call_rcu(struct rcu_head *head, rcu_callback_t func)
-> >       head->func = func;
-> >       head->next = NULL;
-> >       local_irq_save(flags);
-> > -     kasan_record_aux_stack(head);
-> > +     kasan_record_aux_stack_noalloc(head);
-> >       rdp = this_cpu_ptr(&rcu_data);
-> >
-> >       /* Add the callback to our list. */
-> > @@ -3591,7 +3591,7 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
-> >               return;
-> >       }
-> >
-> > -     kasan_record_aux_stack(ptr);
-> > +     kasan_record_aux_stack_noalloc(ptr);
-> >       success = add_ptr_to_bulk_krc_lock(&krcp, &flags, ptr, !head);
-> >       if (!success) {
-> >               run_page_cache_worker(krcp);
->
-Yep an allocation is tricky here. This change looks correct to me at
-least from the point that it does not allocate.
+On Fri, Oct 29, 2021 at 05:40:27PM +0800, Li Zhijian wrote:
+> Generally, error message should be logged anyhow.
+> 
+> Signed-off-by: Li Zhijian <zhijianx.li@intel.com>
 
--- 
-Uladzislau Rezki
+I have queued the patches up to this point for the v5.17 merge window
+(not the current one, but the next one).
+
+This one does not apply.  It looks like you created it against mainline
+rather than -rcu.  You can learn about the -rcu tree and its habits here:
+
+https://mirrors.edge.kernel.org/pub/linux/kernel/people/paulmck/rcutodo.html
+
+Please port this patch to -rcu so that I can pull it in without
+conflicting with patches in -rcu.
+
+							Thanx, Paul
+
+> ---
+>  kernel/scftorture.c | 9 ++++-----
+>  1 file changed, 4 insertions(+), 5 deletions(-)
+> 
+> diff --git a/kernel/scftorture.c b/kernel/scftorture.c
+> index 5fb15492999b..8ef7888d78cc 100644
+> --- a/kernel/scftorture.c
+> +++ b/kernel/scftorture.c
+> @@ -41,8 +41,7 @@
+>  #define VERBOSE_SCFTORTOUT(s, x...) \
+>  	do { if (verbose) pr_alert(SCFTORT_FLAG s "\n", ## x); } while (0)
+>  
+> -#define VERBOSE_SCFTORTOUT_ERRSTRING(s, x...) \
+> -	do { if (verbose) pr_alert(SCFTORT_FLAG "!!! " s "\n", ## x); } while (0)
+> +#define SCFTORTOUT_ERRSTRING(s, x...) pr_alert(SCFTORT_FLAG "!!! " s "\n", ## x)
+>  
+>  MODULE_LICENSE("GPL");
+>  MODULE_AUTHOR("Paul E. McKenney <paulmck@kernel.org>");
+> @@ -583,14 +582,14 @@ static int __init scf_torture_init(void)
+>  	if (weight_single1 == 0 && weight_single_rpc1 == 0 && weight_single_wait1 == 0 &&
+>  	    weight_many1 == 0 && weight_many_wait1 == 0 &&
+>  	    weight_all1 == 0 && weight_all_wait1 == 0) {
+> -		VERBOSE_SCFTORTOUT_ERRSTRING("all zero weights makes no sense");
+> +		SCFTORTOUT_ERRSTRING("all zero weights makes no sense");
+>  		firsterr = -EINVAL;
+>  		goto unwind;
+>  	}
+>  	if (IS_BUILTIN(CONFIG_SCF_TORTURE_TEST))
+>  		scf_sel_add(weight_resched1, SCF_PRIM_RESCHED, false);
+>  	else if (weight_resched1)
+> -		VERBOSE_SCFTORTOUT_ERRSTRING("built as module, weight_resched ignored");
+> +		SCFTORTOUT_ERRSTRING("built as module, weight_resched ignored");
+>  	scf_sel_add(weight_single1, SCF_PRIM_SINGLE, false);
+>  	scf_sel_add(weight_single_rpc1, SCF_PRIM_SINGLE_RPC, true);
+>  	scf_sel_add(weight_single_wait1, SCF_PRIM_SINGLE, true);
+> @@ -621,7 +620,7 @@ static int __init scf_torture_init(void)
+>  		nthreads = num_online_cpus();
+>  	scf_stats_p = kcalloc(nthreads, sizeof(scf_stats_p[0]), GFP_KERNEL);
+>  	if (!scf_stats_p) {
+> -		VERBOSE_SCFTORTOUT_ERRSTRING("out of memory");
+> +		SCFTORTOUT_ERRSTRING("out of memory");
+>  		firsterr = -ENOMEM;
+>  		goto unwind;
+>  	}
+> -- 
+> 2.32.0
+> 
