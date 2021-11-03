@@ -2,752 +2,176 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 82F6BC433EF
-	for <rcu@archiver.kernel.org>; Wed,  3 Nov 2021 18:07:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ABD04C4332F
+	for <rcu@archiver.kernel.org>; Wed,  3 Nov 2021 18:13:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4AE7260D43
-	for <rcu@archiver.kernel.org>; Wed,  3 Nov 2021 18:07:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8EC2E60EDF
+	for <rcu@archiver.kernel.org>; Wed,  3 Nov 2021 18:13:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229697AbhKCSKT (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 3 Nov 2021 14:10:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33922 "EHLO mail.kernel.org"
+        id S231486AbhKCSQA (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 3 Nov 2021 14:16:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35860 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229558AbhKCSKS (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 3 Nov 2021 14:10:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A1D360EDF;
-        Wed,  3 Nov 2021 18:07:42 +0000 (UTC)
+        id S230353AbhKCSPw (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 3 Nov 2021 14:15:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F387E60FC2;
+        Wed,  3 Nov 2021 18:13:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635962862;
-        bh=a1lF8LeitmXA3wHEdxdwXtuc4UHsZnOwTOEeb/6WAh0=;
+        s=k20201202; t=1635963196;
+        bh=KSzJMSseYebSjzbGvJOlhhgh11pmPhvGaI6rCmwiqAU=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=ndY7qTJ9YEflzNu0sVHsSPsP5jj1YQj8HoasTBpnXp8dJNs+KP2L0LErw2VGmYGls
-         Ts5tqXteMAzcZ+VsXBTCVN4VgQbY17HdarNDTGEKH2ZPIGTNfSdP8FaHl0HaY6WYDc
-         h1lII3zYARN13lClI/tKFMcVhS2RkV5aPVbe1DGnfI/8ltz3qMuqEX7++9zdUDi4SB
-         ITp3wkxWwFP9W266oHUMA89VZo54IpMPuDwldF10xVJpDkiBDnXKJlNR5qWl9Bvh60
-         uAd85EKWH/Lg7FWwhb+eS5rlPOZvA9u0fo4UtYhpOPR6unH3gPgyyd7sm96sUqY57F
-         7QBaxmwy2Vkjg==
+        b=T2RpNEFsmRoZB3W910dppPE61rIqeTVN9XEp5b+nn645WjSOVrd0CAb9lmF1OzN3c
+         fQRXruGtzK6lDSFoc9uP/w0tssjJaMdUF7VFCP/IRLMV7NIWlIq/1JhFsoGp/O7bWk
+         jUXEGAqPpSKC0U8pBuhPr0LtyywpoOnLab51k3LiMq9gQiVoLa8El4GSIHwbIldXBi
+         FYRsCuKj/J0qRmE104aj+26kleU2VemNuiH7AyP09Hijp0Iemm0wN9sm1Z9+Cpjo0K
+         2Rj3r3Y39QqP9KADVzuFkRkKgGy2I36S4qHXwUqqNZNwOWFUtHF52IvUOzPgdyyrIa
+         wNbUsqgTnetag==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id E94855C0848; Wed,  3 Nov 2021 11:07:41 -0700 (PDT)
-Date:   Wed, 3 Nov 2021 11:07:41 -0700
+        id C320A5C0848; Wed,  3 Nov 2021 11:13:15 -0700 (PDT)
+Date:   Wed, 3 Nov 2021 11:13:15 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Akira Yokosawa <akiyks@gmail.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>, rcu@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -rcu] docs: RCU: Avoid 'Symbol' font-family in SVG figures
-Message-ID: <20211103180741.GS880162@paulmck-ThinkPad-P17-Gen-1>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     Jun Miao <jun.miao@windriver.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Dmitry Vyukov <dvyukov@google.com>, qiang.zhang1211@gmail.com,
+        RCU <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        miaojun0823@163.com, ryabinin.a.a@gmail.com,
+        Alexander Potapenko <glider@google.com>,
+        jianwei.hu@windriver.com, melver@google.com
+Subject: Re: [PATCH] rcu: avoid alloc_pages() when recording stack
+Message-ID: <20211103181315.GT880162@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <c363a4b2-143c-c334-4c5b-2f16acbf3989@gmail.com>
+References: <20211101103158.3725704-1-jun.miao@windriver.com>
+ <96f9d669-b9da-f387-199e-e6bf36081fbd@windriver.com>
+ <CA+KHdyU98uHkf1VKbvFs0wcXz7SaizENRXn4BEpKJhe+KmXZuw@mail.gmail.com>
+ <baa768a3-aacf-ba3a-8d20-0abc78eca2f7@windriver.com>
+ <CA+KHdyUEtBQjh61Xx+4a-AS0+z18CW1W5GzaRVsihuy=PUpUxA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c363a4b2-143c-c334-4c5b-2f16acbf3989@gmail.com>
+In-Reply-To: <CA+KHdyUEtBQjh61Xx+4a-AS0+z18CW1W5GzaRVsihuy=PUpUxA@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Nov 03, 2021 at 08:48:15AM +0900, Akira Yokosawa wrote:
-> Subject: [PATCH -rcu] docs: RCU: Avoid 'Symbol' font-family in SVG figures
-> 
-> On Ubuntu Focal, strings in some of SVG files under
-> Documentation/RCU/Design can not be rendered properly when
-> converted to PDF.
-> 
-> Ubuntu releases since Focal and Debian bullseye have trouble
-> with "Symbol" font-family in SVG files.
-> 
-> As those strings are mostly API names such as "READ_ONCE()",
-> "WRITE_ONCE(), "rcu_read_lock()", and so on, using a generic
-> monospace font-family should be a good alternative.
-> 
-> Substitute the font-family name by a simple sed pattern:
-> 
->     's/Symbol/monospace/g'
-> 
-> Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
-> ---
-> Hi Paul,
-> 
-> As was discussed off-list messages, here is a workaround
-> to avoid illegible strings in RCU.pdf when built on
-> Ubuntu Focal.
-> 
-> It turns out Debian bullseye also shows the same symptom.
-> Recent Ubuntu releases of Hirsute and Impish do too.
-> 
-> My suggestion was to substitute "Mono" for "Symbol", but
-> "monospace" is used as a generic font-family in recent
-> versions of Inkscape.
-> 
-> This is relative to -rcu's dev branch.
+On Wed, Nov 03, 2021 at 02:55:48PM +0100, Uladzislau Rezki wrote:
+> On Wed, Nov 3, 2021 at 7:51 AM Jun Miao <jun.miao@windriver.com> wrote:
+> >
+> >
+> > On 11/2/21 10:53 PM, Uladzislau Rezki wrote:
+> > > [Please note: This e-mail is from an EXTERNAL e-mail address]
+> > >
+> > >> Add KASAN maintainers
+> > >>
+> > >> On 11/1/21 6:31 PM, Jun Miao wrote:
+> > >>> The default kasan_record_aux_stack() calls stack_depot_save() with GFP_NOWAIT,
+> > >>> which in turn can then call alloc_pages(GFP_NOWAIT, ...).  In general, however,
+> > >>> it is not even possible to use either GFP_ATOMIC nor GFP_NOWAIT in certain
+> > >>> non-preemptive contexts/RT kernel including raw_spin_locks (see gfp.h and ab00db216c9c7).
+> > >>>
+> > >>> Fix it by instructing stackdepot to not expand stack storage via alloc_pages()
+> > >>> in case it runs out by using kasan_record_aux_stack_noalloc().
+> > >>>
+> > >>> Jianwei Hu reported:
+> > >>>    BUG: sleeping function called from invalid context at kernel/locking/rtmutex.c:969
+> > >>>    in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 15319, name: python3
+> > >>>    INFO: lockdep is turned off.
+> > >>>    irq event stamp: 0
+> > >>>    hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+> > >>>    hardirqs last disabled at (0): [<ffffffff856c8b13>] copy_process+0xaf3/0x2590
+> > >>>    softirqs last  enabled at (0): [<ffffffff856c8b13>] copy_process+0xaf3/0x2590
+> > >>>    softirqs last disabled at (0): [<0000000000000000>] 0x0
+> > >>>    CPU: 6 PID: 15319 Comm: python3 Tainted: G        W  O 5.15-rc7-preempt-rt #1
+> > >>>    Hardware name: Supermicro SYS-E300-9A-8C/A2SDi-8C-HLN4F, BIOS 1.1b 12/17/2018
+> > >>>    Call Trace:
+> > >>>     show_stack+0x52/0x58
+> > >>>     dump_stack+0xa1/0xd6
+> > >>>     ___might_sleep.cold+0x11c/0x12d
+> > >>>     rt_spin_lock+0x3f/0xc0
+> > >>>     rmqueue+0x100/0x1460
+> > >>>     rmqueue+0x100/0x1460
+> > >>>     mark_usage+0x1a0/0x1a0
+> > >>>     ftrace_graph_ret_addr+0x2a/0xb0
+> > >>>     rmqueue_pcplist.constprop.0+0x6a0/0x6a0
+> > >>>      __kasan_check_read+0x11/0x20
+> > >>>      __zone_watermark_ok+0x114/0x270
+> > >>>      get_page_from_freelist+0x148/0x630
+> > >>>      is_module_text_address+0x32/0xa0
+> > >>>      __alloc_pages_nodemask+0x2f6/0x790
+> > >>>      __alloc_pages_slowpath.constprop.0+0x12d0/0x12d0
+> > >>>      create_prof_cpu_mask+0x30/0x30
+> > >>>      alloc_pages_current+0xb1/0x150
+> > >>>      stack_depot_save+0x39f/0x490
+> > >>>      kasan_save_stack+0x42/0x50
+> > >>>      kasan_save_stack+0x23/0x50
+> > >>>      kasan_record_aux_stack+0xa9/0xc0
+> > >>>      __call_rcu+0xff/0x9c0
+> > >>>      call_rcu+0xe/0x10
+> > >>>      put_object+0x53/0x70
+> > >>>      __delete_object+0x7b/0x90
+> > >>>      kmemleak_free+0x46/0x70
+> > >>>      slab_free_freelist_hook+0xb4/0x160
+> > >>>      kfree+0xe5/0x420
+> > >>>      kfree_const+0x17/0x30
+> > >>>      kobject_cleanup+0xaa/0x230
+> > >>>      kobject_put+0x76/0x90
+> > >>>      netdev_queue_update_kobjects+0x17d/0x1f0
+> > >>>      ... ...
+> > >>>      ksys_write+0xd9/0x180
+> > >>>      __x64_sys_write+0x42/0x50
+> > >>>      do_syscall_64+0x38/0x50
+> > >>>      entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > >>>
+> > >>> Fixes: 84109ab58590 ("rcu: Record kvfree_call_rcu() call stack for KASAN")
+> > >>> Fixes: 26e760c9a7c8 ("rcu: kasan: record and print call_rcu() call stack")
+> > >>> Reported-by: Jianwei Hu <jianwei.hu@windriver.com>
+> > >>> Signed-off-by: Jun Miao <jun.miao@windriver.com>
+> > >>> ---
+> > >>>    kernel/rcu/tree.c | 4 ++--
+> > >>>    1 file changed, 2 insertions(+), 2 deletions(-)
+> > >>>
+> > >>> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > >>> index 8270e58cd0f3..2c1034580f15 100644
+> > >>> --- a/kernel/rcu/tree.c
+> > >>> +++ b/kernel/rcu/tree.c
+> > >>> @@ -3026,7 +3026,7 @@ __call_rcu(struct rcu_head *head, rcu_callback_t func)
+> > >>>        head->func = func;
+> > >>>        head->next = NULL;
+> > >>>        local_irq_save(flags);
+> > >>> -     kasan_record_aux_stack(head);
+> > >>> +     kasan_record_aux_stack_noalloc(head);
+> > >>>        rdp = this_cpu_ptr(&rcu_data);
+> > >>>
+> > >>>        /* Add the callback to our list. */
+> > >>> @@ -3591,7 +3591,7 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+> > >>>                return;
+> > >>>        }
+> > >>>
+> > >>> -     kasan_record_aux_stack(ptr);
+> > >>> +     kasan_record_aux_stack_noalloc(ptr);
+> > >>>        success = add_ptr_to_bulk_krc_lock(&krcp, &flags, ptr, !head);
+> > >>>        if (!success) {
+> > >>>                run_page_cache_worker(krcp);
+> > > Yep an allocation is tricky here. This change looks correct to me at
+> > > least from the point that it does not allocate.
+> > >
+> > > --
+> > > Uladzislau Rezki
+> >
+> > Thanks your approval. Could you like to give me a review?
+> >
+> Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 
-Queued for review and testing, and thank you very much!
+I have queued it for review and testing, thank you both!  I do have
+some remaining concerns about this code being starved for memory.  I am
+wondering if the code needs to check the interrupt state.  And perhaps
+also whether locks are held.  I of course will refrain from sending
+this to mainline until these concerns are resolved.
+
+Marco, Dmitry, thoughts?
 
 							Thanx, Paul
-
->         Thanks, Akira
-> --
->  .../Expedited-Grace-Periods/Funnel0.svg       |  4 +-
->  .../Expedited-Grace-Periods/Funnel1.svg       |  4 +-
->  .../Expedited-Grace-Periods/Funnel2.svg       |  4 +-
->  .../Expedited-Grace-Periods/Funnel3.svg       |  4 +-
->  .../Expedited-Grace-Periods/Funnel4.svg       |  4 +-
->  .../Expedited-Grace-Periods/Funnel5.svg       |  4 +-
->  .../Expedited-Grace-Periods/Funnel6.svg       |  4 +-
->  .../Expedited-Grace-Periods/Funnel7.svg       |  4 +-
->  .../Expedited-Grace-Periods/Funnel8.svg       |  4 +-
->  .../Requirements/GPpartitionReaders1.svg      | 36 +++++------
->  .../Requirements/ReadersPartitionGP1.svg      | 62 +++++++++----------
->  11 files changed, 67 insertions(+), 67 deletions(-)
-> 
-> diff --git a/Documentation/RCU/Design/Expedited-Grace-Periods/Funnel0.svg b/Documentation/RCU/Design/Expedited-Grace-Periods/Funnel0.svg
-> index 98af66557908..16b1ff0ad38c 100644
-> --- a/Documentation/RCU/Design/Expedited-Grace-Periods/Funnel0.svg
-> +++ b/Documentation/RCU/Design/Expedited-Grace-Periods/Funnel0.svg
-> @@ -116,7 +116,7 @@
->      <flowRoot
->         xml:space="preserve"
->         id="flowRoot2985"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"><flowRegion
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"><flowRegion
->           id="flowRegion2987"><rect
->             id="rect2989"
->             width="82.85714"
-> @@ -125,7 +125,7 @@
->             y="492.36218" /></flowRegion><flowPara
->           id="flowPara2991" /></flowRoot>    <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="362.371"
->         y="262.51819"
->         id="text4441"
-> diff --git a/Documentation/RCU/Design/Expedited-Grace-Periods/Funnel1.svg b/Documentation/RCU/Design/Expedited-Grace-Periods/Funnel1.svg
-> index e0184a37aec7..684a4b969725 100644
-> --- a/Documentation/RCU/Design/Expedited-Grace-Periods/Funnel1.svg
-> +++ b/Documentation/RCU/Design/Expedited-Grace-Periods/Funnel1.svg
-> @@ -116,7 +116,7 @@
->      <flowRoot
->         xml:space="preserve"
->         id="flowRoot2985"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"><flowRegion
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"><flowRegion
->           id="flowRegion2987"><rect
->             id="rect2989"
->             width="82.85714"
-> @@ -125,7 +125,7 @@
->             y="492.36218" /></flowRegion><flowPara
->           id="flowPara2991" /></flowRoot>    <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="362.371"
->         y="262.51819"
->         id="text4441"
-> diff --git a/Documentation/RCU/Design/Expedited-Grace-Periods/Funnel2.svg b/Documentation/RCU/Design/Expedited-Grace-Periods/Funnel2.svg
-> index 1bc3fed54d58..8fb2454d9544 100644
-> --- a/Documentation/RCU/Design/Expedited-Grace-Periods/Funnel2.svg
-> +++ b/Documentation/RCU/Design/Expedited-Grace-Periods/Funnel2.svg
-> @@ -116,7 +116,7 @@
->      <flowRoot
->         xml:space="preserve"
->         id="flowRoot2985"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"><flowRegion
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"><flowRegion
->           id="flowRegion2987"><rect
->             id="rect2989"
->             width="82.85714"
-> @@ -125,7 +125,7 @@
->             y="492.36218" /></flowRegion><flowPara
->           id="flowPara2991" /></flowRoot>    <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="362.371"
->         y="262.51819"
->         id="text4441"
-> diff --git a/Documentation/RCU/Design/Expedited-Grace-Periods/Funnel3.svg b/Documentation/RCU/Design/Expedited-Grace-Periods/Funnel3.svg
-> index 6d8a1bffb3e4..5d4f22d5662c 100644
-> --- a/Documentation/RCU/Design/Expedited-Grace-Periods/Funnel3.svg
-> +++ b/Documentation/RCU/Design/Expedited-Grace-Periods/Funnel3.svg
-> @@ -116,7 +116,7 @@
->      <flowRoot
->         xml:space="preserve"
->         id="flowRoot2985"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"><flowRegion
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"><flowRegion
->           id="flowRegion2987"><rect
->             id="rect2989"
->             width="82.85714"
-> @@ -125,7 +125,7 @@
->             y="492.36218" /></flowRegion><flowPara
->           id="flowPara2991" /></flowRoot>    <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="362.371"
->         y="262.51819"
->         id="text4441"
-> diff --git a/Documentation/RCU/Design/Expedited-Grace-Periods/Funnel4.svg b/Documentation/RCU/Design/Expedited-Grace-Periods/Funnel4.svg
-> index 44018fd6342b..b89b02869914 100644
-> --- a/Documentation/RCU/Design/Expedited-Grace-Periods/Funnel4.svg
-> +++ b/Documentation/RCU/Design/Expedited-Grace-Periods/Funnel4.svg
-> @@ -116,7 +116,7 @@
->      <flowRoot
->         xml:space="preserve"
->         id="flowRoot2985"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"><flowRegion
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"><flowRegion
->           id="flowRegion2987"><rect
->             id="rect2989"
->             width="82.85714"
-> @@ -125,7 +125,7 @@
->             y="492.36218" /></flowRegion><flowPara
->           id="flowPara2991" /></flowRoot>    <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="362.371"
->         y="262.51819"
->         id="text4441"
-> diff --git a/Documentation/RCU/Design/Expedited-Grace-Periods/Funnel5.svg b/Documentation/RCU/Design/Expedited-Grace-Periods/Funnel5.svg
-> index e5eef50454fb..90f1c77bea2f 100644
-> --- a/Documentation/RCU/Design/Expedited-Grace-Periods/Funnel5.svg
-> +++ b/Documentation/RCU/Design/Expedited-Grace-Periods/Funnel5.svg
-> @@ -116,7 +116,7 @@
->      <flowRoot
->         xml:space="preserve"
->         id="flowRoot2985"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"><flowRegion
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"><flowRegion
->           id="flowRegion2987"><rect
->             id="rect2989"
->             width="82.85714"
-> @@ -125,7 +125,7 @@
->             y="492.36218" /></flowRegion><flowPara
->           id="flowPara2991" /></flowRoot>    <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="362.371"
->         y="262.51819"
->         id="text4441"
-> diff --git a/Documentation/RCU/Design/Expedited-Grace-Periods/Funnel6.svg b/Documentation/RCU/Design/Expedited-Grace-Periods/Funnel6.svg
-> index fbd2c1892886..3e5651da031a 100644
-> --- a/Documentation/RCU/Design/Expedited-Grace-Periods/Funnel6.svg
-> +++ b/Documentation/RCU/Design/Expedited-Grace-Periods/Funnel6.svg
-> @@ -116,7 +116,7 @@
->      <flowRoot
->         xml:space="preserve"
->         id="flowRoot2985"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"><flowRegion
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"><flowRegion
->           id="flowRegion2987"><rect
->             id="rect2989"
->             width="82.85714"
-> @@ -125,7 +125,7 @@
->             y="492.36218" /></flowRegion><flowPara
->           id="flowPara2991" /></flowRoot>    <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="362.371"
->         y="262.51819"
->         id="text4441"
-> diff --git a/Documentation/RCU/Design/Expedited-Grace-Periods/Funnel7.svg b/Documentation/RCU/Design/Expedited-Grace-Periods/Funnel7.svg
-> index 502e159ed278..9483f08d345e 100644
-> --- a/Documentation/RCU/Design/Expedited-Grace-Periods/Funnel7.svg
-> +++ b/Documentation/RCU/Design/Expedited-Grace-Periods/Funnel7.svg
-> @@ -116,7 +116,7 @@
->      <flowRoot
->         xml:space="preserve"
->         id="flowRoot2985"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"><flowRegion
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"><flowRegion
->           id="flowRegion2987"><rect
->             id="rect2989"
->             width="82.85714"
-> @@ -125,7 +125,7 @@
->             y="492.36218" /></flowRegion><flowPara
->           id="flowPara2991" /></flowRoot>    <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="362.371"
->         y="262.51819"
->         id="text4441"
-> diff --git a/Documentation/RCU/Design/Expedited-Grace-Periods/Funnel8.svg b/Documentation/RCU/Design/Expedited-Grace-Periods/Funnel8.svg
-> index 677401551c7d..1101ec30e604 100644
-> --- a/Documentation/RCU/Design/Expedited-Grace-Periods/Funnel8.svg
-> +++ b/Documentation/RCU/Design/Expedited-Grace-Periods/Funnel8.svg
-> @@ -116,7 +116,7 @@
->      <flowRoot
->         xml:space="preserve"
->         id="flowRoot2985"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"><flowRegion
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"><flowRegion
->           id="flowRegion2987"><rect
->             id="rect2989"
->             width="82.85714"
-> @@ -125,7 +125,7 @@
->             y="492.36218" /></flowRegion><flowPara
->           id="flowPara2991" /></flowRoot>    <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="362.371"
->         y="262.51819"
->         id="text4441"
-> diff --git a/Documentation/RCU/Design/Requirements/GPpartitionReaders1.svg b/Documentation/RCU/Design/Requirements/GPpartitionReaders1.svg
-> index 4b4014fda770..87851a8fac1e 100644
-> --- a/Documentation/RCU/Design/Requirements/GPpartitionReaders1.svg
-> +++ b/Documentation/RCU/Design/Requirements/GPpartitionReaders1.svg
-> @@ -88,7 +88,7 @@
->      <flowRoot
->         xml:space="preserve"
->         id="flowRoot2985"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"><flowRegion
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"><flowRegion
->           id="flowRegion2987"><rect
->             id="rect2989"
->             width="82.85714"
-> @@ -103,7 +103,7 @@
->           id="text2993"
->           y="-261.66608"
->           x="412.12299"
-> -         style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +         style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->           xml:space="preserve"
->           transform="matrix(0,1,-1,0,0,0)"><tspan
->             y="-261.66608"
-> @@ -135,7 +135,7 @@
->      </g>
->      <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="112.04738"
->         y="268.18076"
->         id="text4429"
-> @@ -146,7 +146,7 @@
->           y="268.18076">WRITE_ONCE(a, 1);</tspan></text>
->      <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="112.04738"
->         y="439.13766"
->         id="text4441"
-> @@ -157,7 +157,7 @@
->           y="439.13766">WRITE_ONCE(b, 1);</tspan></text>
->      <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="255.60869"
->         y="309.29346"
->         id="text4445"
-> @@ -168,7 +168,7 @@
->           y="309.29346">r1 = READ_ONCE(a);</tspan></text>
->      <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="255.14423"
->         y="520.61786"
->         id="text4449"
-> @@ -179,7 +179,7 @@
->           y="520.61786">WRITE_ONCE(c, 1);</tspan></text>
->      <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="396.10254"
->         y="384.71124"
->         id="text4453"
-> @@ -190,7 +190,7 @@
->           y="384.71124">r2 = READ_ONCE(b);</tspan></text>
->      <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="396.10254"
->         y="582.13617"
->         id="text4457"
-> @@ -201,7 +201,7 @@
->           y="582.13617">r3 = READ_ONCE(c);</tspan></text>
->      <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="112.08231"
->         y="213.91006"
->         id="text4461"
-> @@ -212,7 +212,7 @@
->           y="213.91006">thread0()</tspan></text>
->      <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="252.34512"
->         y="213.91006"
->         id="text4461-6"
-> @@ -223,7 +223,7 @@
->           y="213.91006">thread1()</tspan></text>
->      <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="396.42557"
->         y="213.91006"
->         id="text4461-2"
-> @@ -251,7 +251,7 @@
->         inkscape:connector-curvature="0" />
->      <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="111.75929"
->         y="251.53981"
->         id="text4429-8"
-> @@ -262,7 +262,7 @@
->           y="251.53981">rcu_read_lock();</tspan></text>
->      <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="396.10254"
->         y="367.91556"
->         id="text4429-8-9"
-> @@ -273,7 +273,7 @@
->           y="367.91556">rcu_read_lock();</tspan></text>
->      <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="396.10254"
->         y="597.40289"
->         id="text4429-8-9-3"
-> @@ -284,7 +284,7 @@
->           y="597.40289">rcu_read_unlock();</tspan></text>
->      <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="111.75929"
->         y="453.15311"
->         id="text4429-8-9-3-1"
-> @@ -300,7 +300,7 @@
->         inkscape:connector-curvature="0" />
->      <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="394.94427"
->         y="345.66351"
->         id="text4648"
-> @@ -324,7 +324,7 @@
->         sodipodi:open="true" />
->      <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="112.11968"
->         y="475.77856"
->         id="text4648-4"
-> @@ -361,7 +361,7 @@
->         sodipodi:open="true" />
->      <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="254.85066"
->         y="348.96619"
->         id="text4648-4-3"
-> diff --git a/Documentation/RCU/Design/Requirements/ReadersPartitionGP1.svg b/Documentation/RCU/Design/Requirements/ReadersPartitionGP1.svg
-> index 48cd1623d4d4..e2a8af592bab 100644
-> --- a/Documentation/RCU/Design/Requirements/ReadersPartitionGP1.svg
-> +++ b/Documentation/RCU/Design/Requirements/ReadersPartitionGP1.svg
-> @@ -116,7 +116,7 @@
->      <flowRoot
->         xml:space="preserve"
->         id="flowRoot2985"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"><flowRegion
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"><flowRegion
->           id="flowRegion2987"><rect
->             id="rect2989"
->             width="82.85714"
-> @@ -131,7 +131,7 @@
->           id="text2993"
->           y="-261.66608"
->           x="436.12299"
-> -         style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +         style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->           xml:space="preserve"
->           transform="matrix(0,1,-1,0,0,0)"><tspan
->             y="-261.66608"
-> @@ -163,7 +163,7 @@
->      </g>
->      <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="112.04738"
->         y="268.18076"
->         id="text4429"
-> @@ -174,7 +174,7 @@
->           y="268.18076">WRITE_ONCE(a, 1);</tspan></text>
->      <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="112.04738"
->         y="487.13766"
->         id="text4441"
-> @@ -185,7 +185,7 @@
->           y="487.13766">WRITE_ONCE(b, 1);</tspan></text>
->      <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="255.60869"
->         y="297.29346"
->         id="text4445"
-> @@ -196,7 +196,7 @@
->           y="297.29346">r1 = READ_ONCE(a);</tspan></text>
->      <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="255.14423"
->         y="554.61786"
->         id="text4449"
-> @@ -207,7 +207,7 @@
->           y="554.61786">WRITE_ONCE(c, 1);</tspan></text>
->      <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="396.10254"
->         y="370.71124"
->         id="text4453"
-> @@ -218,7 +218,7 @@
->           y="370.71124">WRITE_ONCE(d, 1);</tspan></text>
->      <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="396.10254"
->         y="572.13617"
->         id="text4457"
-> @@ -229,7 +229,7 @@
->           y="572.13617">r2 = READ_ONCE(c);</tspan></text>
->      <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="112.08231"
->         y="213.91006"
->         id="text4461"
-> @@ -240,7 +240,7 @@
->           y="213.91006">thread0()</tspan></text>
->      <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="252.34512"
->         y="213.91006"
->         id="text4461-6"
-> @@ -251,7 +251,7 @@
->           y="213.91006">thread1()</tspan></text>
->      <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="396.42557"
->         y="213.91006"
->         id="text4461-2"
-> @@ -281,7 +281,7 @@
->         sodipodi:nodetypes="cc" />
->      <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="111.75929"
->         y="251.53981"
->         id="text4429-8"
-> @@ -292,7 +292,7 @@
->           y="251.53981">rcu_read_lock();</tspan></text>
->      <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="396.10254"
->         y="353.91556"
->         id="text4429-8-9"
-> @@ -303,7 +303,7 @@
->           y="353.91556">rcu_read_lock();</tspan></text>
->      <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="396.10254"
->         y="587.40289"
->         id="text4429-8-9-3"
-> @@ -314,7 +314,7 @@
->           y="587.40289">rcu_read_unlock();</tspan></text>
->      <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="111.75929"
->         y="501.15311"
->         id="text4429-8-9-3-1"
-> @@ -331,7 +331,7 @@
->         sodipodi:nodetypes="cc" />
->      <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="394.94427"
->         y="331.66351"
->         id="text4648"
-> @@ -355,7 +355,7 @@
->         sodipodi:open="true" />
->      <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="112.11968"
->         y="523.77856"
->         id="text4648-4"
-> @@ -392,7 +392,7 @@
->         sodipodi:open="true" />
->      <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="254.85066"
->         y="336.96619"
->         id="text4648-4-3"
-> @@ -421,7 +421,7 @@
->           id="text2993-7"
->           y="-261.66608"
->           x="440.12299"
-> -         style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +         style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->           xml:space="preserve"
->           transform="matrix(0,1,-1,0,0,0)"><tspan
->             y="-261.66608"
-> @@ -453,7 +453,7 @@
->      </g>
->      <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="541.70508"
->         y="387.6217"
->         id="text4445-0"
-> @@ -464,7 +464,7 @@
->           y="387.6217">r3 = READ_ONCE(d);</tspan></text>
->      <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="541.2406"
->         y="646.94611"
->         id="text4449-6"
-> @@ -488,7 +488,7 @@
->         sodipodi:open="true" />
->      <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="540.94702"
->         y="427.29443"
->         id="text4648-4-3-1"
-> @@ -499,7 +499,7 @@
->           y="427.29443">QS</tspan></text>
->      <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="686.27747"
->         y="461.83929"
->         id="text4453-7"
-> @@ -510,7 +510,7 @@
->           y="461.83929">r4 = READ_ONCE(b);</tspan></text>
->      <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="686.27747"
->         y="669.26422"
->         id="text4457-9"
-> @@ -521,7 +521,7 @@
->           y="669.26422">r5 = READ_ONCE(e);</tspan></text>
->      <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="686.27747"
->         y="445.04358"
->         id="text4429-8-9-33"
-> @@ -532,7 +532,7 @@
->           y="445.04358">rcu_read_lock();</tspan></text>
->      <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="686.27747"
->         y="684.53094"
->         id="text4429-8-9-3-8"
-> @@ -543,7 +543,7 @@
->           y="684.53094">rcu_read_unlock();</tspan></text>
->      <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="685.11914"
->         y="422.79153"
->         id="text4648-9"
-> @@ -567,7 +567,7 @@
->         sodipodi:open="true" />
->      <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="397.85934"
->         y="609.59003"
->         id="text4648-5"
-> @@ -591,7 +591,7 @@
->         sodipodi:open="true" />
->      <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="256.75986"
->         y="586.99133"
->         id="text4648-5-2"
-> @@ -615,7 +615,7 @@
->         sodipodi:open="true" />
->      <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="546.22791"
->         y="213.91006"
->         id="text4461-2-5"
-> @@ -626,7 +626,7 @@
->           y="213.91006">thread3()</tspan></text>
->      <text
->         xml:space="preserve"
-> -       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Symbol;-inkscape-font-specification:Symbol"
-> +       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:monospace;-inkscape-font-specification:monospace"
->         x="684.00067"
->         y="213.91006"
->         id="text4461-2-1"
-> 
-> base-commit: 2fef638a161f05fe94df7c8f7b52721131a83cde
-> -- 
-> 2.17.1
-> 
