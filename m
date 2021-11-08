@@ -2,159 +2,161 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 66A93C433EF
-	for <rcu@archiver.kernel.org>; Mon,  8 Nov 2021 12:23:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 69A2CC433F5
+	for <rcu@archiver.kernel.org>; Mon,  8 Nov 2021 14:07:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4C47A61242
-	for <rcu@archiver.kernel.org>; Mon,  8 Nov 2021 12:23:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4C57E610F8
+	for <rcu@archiver.kernel.org>; Mon,  8 Nov 2021 14:07:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237626AbhKHMZo (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 8 Nov 2021 07:25:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232912AbhKHMZo (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 8 Nov 2021 07:25:44 -0500
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34493C061714
-        for <rcu@vger.kernel.org>; Mon,  8 Nov 2021 04:23:00 -0800 (PST)
-Received: by mail-ot1-x333.google.com with SMTP id z2-20020a9d71c2000000b0055c6a7d08b8so12985563otj.5
-        for <rcu@vger.kernel.org>; Mon, 08 Nov 2021 04:23:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=oWxAh99exjntWaHx951+lk35+JEy7HDXRjBJyaOouWU=;
-        b=TMWKPx9Mlu1gt1Dsql9V5i6foiLkmYoluQWW2TZGLNH9JOIfWbU3kOAlTrgWmJU18L
-         6t+dAkMC0bLe9uBOUXznq2AchZWKNXA8QGz1X5dGFyuODtusu3svwNtw42mDoyLY2c1z
-         n0q7RrPftmR6gKSGND2PkG+Io+Cb9i2PzKvOrGbg3Vt6sRTQQCgossWdxIM4/1rm2GDY
-         AqMzY4atHP5Nmn6iaNooPg0xfx4Lgu451Ie6jcjWyrH9kMsVRCxJ5fJ0mcl9klsHLC7L
-         4xte54RsrSavj+bV+2BjwG30ATpN8QSaIKLXmVQgv1i+vmexgkEKcDvnWfyjOUM5iGqQ
-         JAMg==
+        id S240296AbhKHOKK convert rfc822-to-8bit (ORCPT
+        <rfc822;rcu@archiver.kernel.org>); Mon, 8 Nov 2021 09:10:10 -0500
+Received: from mail-ua1-f54.google.com ([209.85.222.54]:34507 "EHLO
+        mail-ua1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240246AbhKHOKC (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 8 Nov 2021 09:10:02 -0500
+Received: by mail-ua1-f54.google.com with SMTP id b3so31739471uam.1;
+        Mon, 08 Nov 2021 06:07:16 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=oWxAh99exjntWaHx951+lk35+JEy7HDXRjBJyaOouWU=;
-        b=Lsdkp8LTF7LThibv18z+V6MoJvhLjyskuuHPAoHjukuVhG0xN6rr9xECEil7U8BzEm
-         wu52KECrQZEkbqdq0F+iOpJC87kWTFbvp5693LAPws8LaDzhO7Rp3cvq4Z/X9a54XtVm
-         NxVVMDH4NB7BDW4gGz+aQo6q2JIm7Izn3dNZLx0GnjCOXlq6L5E2cCLjd4pFQbLVj0oE
-         61uH+2KUKQc77Nr3bzaP7acY1hg5hDorLkdgfRCidVxqJBWWsdmcg75ljpzoKCssX2Ah
-         hIe2r+mN4HmNE3GoSK97hiPCa+E/CDn16H1ovouKo7ZUe37MNg9nNGP3jCvAnaVkxVhn
-         BxnQ==
-X-Gm-Message-State: AOAM531c0Uqn1N2HRbQHxt1xBsVQ2v33jBerA5+eRiRAeIorSxuc292X
-        tI7Mv1MQ3dbsld2/ITFLpQsOWC4ZBPrO3wvpwRVI4w==
-X-Google-Smtp-Source: ABdhPJwY6iY3P7gjSdKE3FL0f53VDSp7ma6kV0PenUej/5Wv3VnkI+lYk+RF5GRmXbPONupQsEfVwY+asQAkq08knik=
-X-Received: by 2002:a9d:2ac2:: with SMTP id e60mr60084401otb.92.1636374179281;
- Mon, 08 Nov 2021 04:22:59 -0800 (PST)
+        bh=srssYsTsVb5ivMDmTAt6Y7lXgP/lHHGiJX97jzZpFII=;
+        b=lT7Q627YXwAYYti9TyWmhNrAwxF37ER+DnnHvi8ZOaxozyOw/rwlQ66wlApkNuyNN0
+         l/36WyzNYJX7UwsJU1aMV3bW5Sz7j/IP33Z/kZbh3aJA6GtHX+o7tNp9p+l7GF4QkKIB
+         sjbbINID3WCsCkZrFWfMUwfrp9PjYh6onoNzXUnoEQ/95F5HYU5n5UHmTstBfe0urn4h
+         1SE5gPNj3Pc2mvjTTyE8StQTFs4/Z7quYn3ZeZl33bFkXJAPxUlQqv23fQ05cU4PyTMU
+         am1ot2b90FgHRA4kFfiBdu8fFSdh6YxyoBpITiqz4ORJJJdFb9hLqYTU1fxm5MWEErbR
+         0b5Q==
+X-Gm-Message-State: AOAM531VcfMwSWKNLwI/Nir0vc2ScGiGBGnffpEeKxm2KOJGi6tJeJ4f
+        ZdyVgO2KwEjymrO3gMZbXCXik2FZgi7ZJAl7
+X-Google-Smtp-Source: ABdhPJx9G54VGw4oc23XJRelgp9dkMEtXydk+uvqLajllgER83nLii76Q7zBboH+kgBjAPFdw36B5A==
+X-Received: by 2002:ab0:3e3:: with SMTP id 90mr185644uau.102.1636380435783;
+        Mon, 08 Nov 2021 06:07:15 -0800 (PST)
+Received: from mail-vk1-f171.google.com (mail-vk1-f171.google.com. [209.85.221.171])
+        by smtp.gmail.com with ESMTPSA id c11sm3226781vsh.22.2021.11.08.06.07.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Nov 2021 06:07:14 -0800 (PST)
+Received: by mail-vk1-f171.google.com with SMTP id a129so8254621vkb.8;
+        Mon, 08 Nov 2021 06:07:14 -0800 (PST)
+X-Received: by 2002:a05:6122:1350:: with SMTP id f16mr21288847vkp.26.1636380434409;
+ Mon, 08 Nov 2021 06:07:14 -0800 (PST)
 MIME-Version: 1.0
-References: <20211101103158.3725704-1-jun.miao@windriver.com>
- <96f9d669-b9da-f387-199e-e6bf36081fbd@windriver.com> <CA+KHdyU98uHkf1VKbvFs0wcXz7SaizENRXn4BEpKJhe+KmXZuw@mail.gmail.com>
- <baa768a3-aacf-ba3a-8d20-0abc78eca2f7@windriver.com> <CA+KHdyUEtBQjh61Xx+4a-AS0+z18CW1W5GzaRVsihuy=PUpUxA@mail.gmail.com>
- <20211103181315.GT880162@paulmck-ThinkPad-P17-Gen-1> <20211103212117.GA631708@paulmck-ThinkPad-P17-Gen-1>
- <309b8284-1c31-7cc4-eb40-ba6d8d136c09@windriver.com> <20211104012843.GD641268@paulmck-ThinkPad-P17-Gen-1>
- <CACT4Y+bih9gX2+XvRh3q7XYe8rbgCDF5=5eMV8cxBimvPLQtug@mail.gmail.com>
-In-Reply-To: <CACT4Y+bih9gX2+XvRh3q7XYe8rbgCDF5=5eMV8cxBimvPLQtug@mail.gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Mon, 8 Nov 2021 13:22:47 +0100
-Message-ID: <CANpmjNOHvG-9tWK-1Kk4o+L=XXd09xBac_KpCr9PR5us2m-vTA@mail.gmail.com>
-Subject: Re: [PATCH] rcu: avoid alloc_pages() when recording stack
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     paulmck@kernel.org, kasan-dev <kasan-dev@googlegroups.com>,
-        Jun Miao <jun.miao@windriver.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
+References: <20211108101157.15189-1-bp@alien8.de> <20211108101157.15189-43-bp@alien8.de>
+In-Reply-To: <20211108101157.15189-43-bp@alien8.de>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 8 Nov 2021 15:07:03 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWH+txiSP_d7Jc4f_bU8Lf9iWpT4E3o5o7BJr-YdA6-VA@mail.gmail.com>
+Message-ID: <CAMuHMdWH+txiSP_d7Jc4f_bU8Lf9iWpT4E3o5o7BJr-YdA6-VA@mail.gmail.com>
+Subject: Re: [PATCH v0 42/42] notifier: Return an error when callback is
+ already registered
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        qiang.zhang1211@gmail.com, RCU <rcu@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, miaojun0823@163.com,
-        ryabinin.a.a@gmail.com, Alexander Potapenko <glider@google.com>,
-        jianwei.hu@windriver.com, melver@google.com
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        intel-gvt-dev@lists.freedesktop.org,
+        alpha <linux-alpha@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        linux-edac@vger.kernel.org,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        linux-hyperv@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-leds <linux-leds@vger.kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM" 
+        <linux-remoteproc@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        scsi <linux-scsi@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        linux-staging@lists.linux.dev,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        linux-um <linux-um@lists.infradead.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>, netdev <netdev@vger.kernel.org>,
+        openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org,
+        sparclinux <sparclinux@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        xen-devel@lists.xenproject.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, 8 Nov 2021 at 12:42, 'Dmitry Vyukov' via kasan-dev
-<kasan-dev@googlegroups.com> wrote:
-[...]
-> > > > > > Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > > > > I have queued it for review and testing, thank you both!  I do ha=
-ve
-> > > > > some remaining concerns about this code being starved for memory.=
-  I am
-> > > > > wondering if the code needs to check the interrupt state.  And pe=
-rhaps
-> > > > > also whether locks are held.  I of course will refrain from sendi=
-ng
-> > > > > this to mainline until these concerns are resolved.
-> > > > >
-> > > > > Marco, Dmitry, thoughts?
+Hi Borislav,
 
-It's a general limitation of kasan_record_aux_stack_noalloc(), and if
-stackdepot's pool is exhausted, we just don't record the stacktrace.
-But given we just can't allocate any memory at all, I think it's the
-best we can do.
-
-However, given there are enough normal (with allocation allowed) uses
-of stackdepot with KASAN enabled, the chances of stackdepot having
-exhausted its pool when calling this are small. The condition when
-recording the stack with the _noalloc() variant would fail is:
-stackdepot runs out of space AND the same stack trace has not been
-recorded before. And the only time we'd notice this is if we actually
-hit a kernel bug that KASAN wants to report. The aggregate probability
-of all this happening is very very low.
-
-The original series has some more explanation:
-https://lkml.kernel.org/r/20210913112609.2651084-1-elver@google.com
-
-> > > > Well, the compiler does have an opinion:
-> > > >
-> > > > kernel/rcu/tree.c: In function =E2=80=98__call_rcu=E2=80=99:
-> > > > kernel/rcu/tree.c:3029:2: error: implicit declaration of function =
-=E2=80=98kasan_record_aux_stack_noalloc=E2=80=99; did you mean =E2=80=98kas=
-an_record_aux_stack=E2=80=99? [-Werror=3Dimplicit-function-declaration]
-> > > >   3029 |  kasan_record_aux_stack_noalloc(head);
-> > > >        |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > > >        |  kasan_record_aux_stack
-> > > >
-> > > > I get the same message after merging in current mainline.
-> > > >
-> > > > I have therefore dropped this patch for the time being.
-> > > >
-> > > >                                                          Thanx, Pau=
-l
-> > > Hi Paul E,
-> > > The kasan_record_aux_stack_noalloc() is just introduce to linux-next =
-now,
-> > > and marking "Notice: this object is not reachable from any branch." i=
-n
-> > > commit.
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/c=
-ommit/include/linux/kasan.h?h=3Dnext-20211029&id=3D2f64acf6b653d01fbdc92a69=
-3f12bbf71a205926
-
-"Notice: this object is not reachable from any branch." because it
-kept changing the hash since it's in the -mm tree.
-
-> > That would explain it!  Feel free to resend once the functionality is
-> > more generally available.
+On Mon, Nov 8, 2021 at 11:13 AM Borislav Petkov <bp@alien8.de> wrote:
+> From: Borislav Petkov <bp@suse.de>
 >
-> +kasan-dev@googlegroups.com mailing list
+> The notifier registration routine doesn't return a proper error value
+> when a callback has already been registered, leading people to track
+> whether that registration has happened at the call site:
 >
-> I found the full commit with kasan_record_aux_stack_noalloc() implementat=
-ion:
-> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commi=
-t/?h=3Dnext-20211029&id=3D2f64acf6b653d01fbdc92a693f12bbf71a205926
+>   https://lore.kernel.org/amd-gfx/20210512013058.6827-1-mukul.joshi@amd.com/
 >
-> but it calls kasan_save_stack() with second bool argument, and
-> kasan_save_stack() accepts only 1 argument:
-> https://elixir.bootlin.com/linux/latest/source/mm/kasan/common.c#L33
-> so I am lost and can't comment on any of the Paul's questions re
-> interrupts/spinlocks.
+> Which is unnecessary.
+>
+> Return -EEXIST to signal that case so that callers can act accordingly.
+> Enforce callers to check the return value, leading to loud screaming
+> during build:
+>
+>   arch/x86/kernel/cpu/mce/core.c: In function ‘mce_register_decode_chain’:
+>   arch/x86/kernel/cpu/mce/core.c:167:2: error: ignoring return value of \
+>    ‘blocking_notifier_chain_register’, declared with attribute warn_unused_result [-Werror=unused-result]
+>     blocking_notifier_chain_register(&x86_mce_decoder_chain, nb);
+>   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>
+> Drop the WARN too, while at it.
+>
+> Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+> Signed-off-by: Borislav Petkov <bp@suse.de>
 
-None of the kasan_record_aux_stack_noalloc() code and its dependencies
-were in mainline yet. I think it landed a few days ago, but too late
-for the patches here.
+Thanks for your patch!
+
+> --- a/include/linux/notifier.h
+> +++ b/include/linux/notifier.h
+> @@ -141,13 +141,13 @@ extern void srcu_init_notifier_head(struct srcu_notifier_head *nh);
+>
+>  #ifdef __KERNEL__
+>
+> -extern int atomic_notifier_chain_register(struct atomic_notifier_head *nh,
+> +extern int __must_check atomic_notifier_chain_register(struct atomic_notifier_head *nh,
+>                 struct notifier_block *nb);
+> -extern int blocking_notifier_chain_register(struct blocking_notifier_head *nh,
+> +extern int __must_check blocking_notifier_chain_register(struct blocking_notifier_head *nh,
+>                 struct notifier_block *nb);
+> -extern int raw_notifier_chain_register(struct raw_notifier_head *nh,
+> +extern int __must_check raw_notifier_chain_register(struct raw_notifier_head *nh,
+>                 struct notifier_block *nb);
+> -extern int srcu_notifier_chain_register(struct srcu_notifier_head *nh,
+> +extern int __must_check srcu_notifier_chain_register(struct srcu_notifier_head *nh,
+>                 struct notifier_block *nb);
+
+I think the addition of __must_check is overkill, leading to the
+addition of useless error checks and message printing.  Many callers
+call this where it cannot fail, and where nothing can be done in the
+very unlikely event that the call would ever start to fail.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
