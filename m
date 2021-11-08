@@ -2,259 +2,263 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DFFD2C433EF
-	for <rcu@archiver.kernel.org>; Mon,  8 Nov 2021 10:20:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F0FEC433F5
+	for <rcu@archiver.kernel.org>; Mon,  8 Nov 2021 11:42:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CB19360F45
-	for <rcu@archiver.kernel.org>; Mon,  8 Nov 2021 10:20:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8757761181
+	for <rcu@archiver.kernel.org>; Mon,  8 Nov 2021 11:42:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237949AbhKHKWu (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 8 Nov 2021 05:22:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40058 "EHLO
+        id S239315AbhKHLpb (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 8 Nov 2021 06:45:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239068AbhKHKWT (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 8 Nov 2021 05:22:19 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2901C061208;
-        Mon,  8 Nov 2021 02:19:29 -0800 (PST)
-Received: from zn.tnic (p200300ec2f33110088892b77bd117736.dip0.t-ipconnect.de [IPv6:2003:ec:2f33:1100:8889:2b77:bd11:7736])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 295D81EC04E0;
-        Mon,  8 Nov 2021 11:19:28 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1636366768;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CDGB0dpLCqhyN2VLkOyFdq64uDUd6G/RUsDL3dC+Ipo=;
-        b=OmXDZQiNXAykW6msgQxQV2D3jyNeh8L8Ur0LKSqcBbS8Z5Dq+lMoh+uc1KE9lZoNFhTNi5
-        HSfl5kEDRsOkXKmO9qqEW67WUQUsv5GaQK9Erwx9IjY3o31Y8ehQnIfkizrSs0P3bzV/5j
-        Fq9nLmulJEIgHjmCW/c8QaecUsrUi0U=
-From:   Borislav Petkov <bp@alien8.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        alsa-devel@alsa-project.org, bcm-kernel-feedback-list@broadcom.com,
-        intel-gfx@lists.freedesktop.org,
-        intel-gvt-dev@lists.freedesktop.org, linux-alpha@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-edac@vger.kernel.org,
-        linux-fbdev@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-iio@vger.kernel.org, linux-leds@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-pm@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-remoteproc@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-sh@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-tegra@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-usb@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org,
-        openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org,
-        sparclinux@vger.kernel.org, x86@kernel.org,
-        xen-devel@lists.xenproject.org
-Subject: [PATCH v0 00/42] notifiers: Return an error when callback is already registered
-Date:   Mon,  8 Nov 2021 11:19:24 +0100
-Message-Id: <20211108101924.15759-1-bp@alien8.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20211108101157.15189-1-bp@alien8.de>
-References: <20211108101157.15189-1-bp@alien8.de>
+        with ESMTP id S239319AbhKHLpa (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 8 Nov 2021 06:45:30 -0500
+Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2001CC061570
+        for <rcu@vger.kernel.org>; Mon,  8 Nov 2021 03:42:46 -0800 (PST)
+Received: by mail-oo1-xc34.google.com with SMTP id b31-20020a4a98e2000000b002bce352296cso5778269ooj.1
+        for <rcu@vger.kernel.org>; Mon, 08 Nov 2021 03:42:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=t0CLCOJqTl97SWBVXsn+FLxAY1FZRpeC0I3mqMnmY7M=;
+        b=YeQ9YEBX0/EP2xCb4Fta2SNFU7V+AoXW9wHVW96D2JLtRlaqyRxueKtSfWfueRA0Zy
+         /mTnyskH/Ya3wSfbksZ5oTVSCRUsfZVQERTE9AKK1I8uceYm2F+AA2nvNKCTSSqjeOil
+         egnAujjAzh6v6qasb5a2o5w1Hl5eEyjfng94BvfTRjUl8eYBK5BA4jcF9jqTACjn+k0B
+         FE2npDNJWFqx4z5dbvMylRmamqqzBhH/13RNLjYYikMHx5iU5Ydg/E0V0afws/pVN/+h
+         R4IUvfifL9C5AtMnTmxRdr/Li5RKVaHc35GvaUSJ3MOg29MpzfwuNkpS6XuusFt3z7Kt
+         nMAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=t0CLCOJqTl97SWBVXsn+FLxAY1FZRpeC0I3mqMnmY7M=;
+        b=Aq5IYoIgCuAUYlXrH8eTd7gzrEvzKDZN756GE3VuMx49+Kz7a00UsNq6ol/wSScmm9
+         nNWpP0u89Vey4V8ICX8OlEG3WTNtccj9lSOGfK22pdVMnUqIEfyFghFpDmh70EZyLIzt
+         ONiOZXErM1fGYy0NT4+cvNNffrB2orAsrr/koubQrhSVR9ZGJLuwYCQkU/WupCMTR6ZJ
+         0AuoYjVHleJAZRydi1pYXCudkNhxrVigsFua2aNPx6SHzFj6Y3krQy7HzWX3kLqRr6H1
+         6OU8+XTrhpFobFXxD9Dfx1vMuOjeXVcNcO0Z+BE9YQFqCHxbau5kFSeR83Z9uPuztuWs
+         7bgg==
+X-Gm-Message-State: AOAM53278R/EywNigdLvK9RnxRLNq1I7jhpmfX5QgAy7MtqFGCKQT0OX
+        kyW5mzy0AyPtmd2Cz6IYdRaZZ0sMCV4tbglWVhOSnw==
+X-Google-Smtp-Source: ABdhPJwMq0zCvcdOH8Kk+ghhIqH6+gsgQtW4xZS7m3AB5AtS+GQRFYGvZUE6VWhUikati0pKXGYi3h7bHwumcPWQAHc=
+X-Received: by 2002:a4a:b385:: with SMTP id p5mr21194703ooo.21.1636371764628;
+ Mon, 08 Nov 2021 03:42:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20211101103158.3725704-1-jun.miao@windriver.com>
+ <96f9d669-b9da-f387-199e-e6bf36081fbd@windriver.com> <CA+KHdyU98uHkf1VKbvFs0wcXz7SaizENRXn4BEpKJhe+KmXZuw@mail.gmail.com>
+ <baa768a3-aacf-ba3a-8d20-0abc78eca2f7@windriver.com> <CA+KHdyUEtBQjh61Xx+4a-AS0+z18CW1W5GzaRVsihuy=PUpUxA@mail.gmail.com>
+ <20211103181315.GT880162@paulmck-ThinkPad-P17-Gen-1> <20211103212117.GA631708@paulmck-ThinkPad-P17-Gen-1>
+ <309b8284-1c31-7cc4-eb40-ba6d8d136c09@windriver.com> <20211104012843.GD641268@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20211104012843.GD641268@paulmck-ThinkPad-P17-Gen-1>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 8 Nov 2021 12:42:33 +0100
+Message-ID: <CACT4Y+bih9gX2+XvRh3q7XYe8rbgCDF5=5eMV8cxBimvPLQtug@mail.gmail.com>
+Subject: Re: [PATCH] rcu: avoid alloc_pages() when recording stack
+To:     paulmck@kernel.org, kasan-dev <kasan-dev@googlegroups.com>
+Cc:     Jun Miao <jun.miao@windriver.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        qiang.zhang1211@gmail.com, RCU <rcu@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, miaojun0823@163.com,
+        ryabinin.a.a@gmail.com, Alexander Potapenko <glider@google.com>,
+        jianwei.hu@windriver.com, melver@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Borislav Petkov <bp@suse.de>
+On Thu, 4 Nov 2021 at 02:28, Paul E. McKenney <paulmck@kernel.org> wrote:
+>
+> On Thu, Nov 04, 2021 at 09:09:24AM +0800, Jun Miao wrote:
+> >
+> > On 11/4/21 5:21 AM, Paul E. McKenney wrote:
+> > > [Please note: This e-mail is from an EXTERNAL e-mail address]
+> > >
+> > > On Wed, Nov 03, 2021 at 11:13:15AM -0700, Paul E. McKenney wrote:
+> > > > On Wed, Nov 03, 2021 at 02:55:48PM +0100, Uladzislau Rezki wrote:
+> > > > > On Wed, Nov 3, 2021 at 7:51 AM Jun Miao <jun.miao@windriver.com> =
+wrote:
+> > > > > >
+> > > > > > On 11/2/21 10:53 PM, Uladzislau Rezki wrote:
+> > > > > > > [Please note: This e-mail is from an EXTERNAL e-mail address]
+> > > > > > >
+> > > > > > > > Add KASAN maintainers
+> > > > > > > >
+> > > > > > > > On 11/1/21 6:31 PM, Jun Miao wrote:
+> > > > > > > > > The default kasan_record_aux_stack() calls stack_depot_sa=
+ve() with GFP_NOWAIT,
+> > > > > > > > > which in turn can then call alloc_pages(GFP_NOWAIT, ...).=
+  In general, however,
+> > > > > > > > > it is not even possible to use either GFP_ATOMIC nor GFP_=
+NOWAIT in certain
+> > > > > > > > > non-preemptive contexts/RT kernel including raw_spin_lock=
+s (see gfp.h and ab00db216c9c7).
+> > > > > > > > >
+> > > > > > > > > Fix it by instructing stackdepot to not expand stack stor=
+age via alloc_pages()
+> > > > > > > > > in case it runs out by using kasan_record_aux_stack_noall=
+oc().
+> > > > > > > > >
+> > > > > > > > > Jianwei Hu reported:
+> > > > > > > > >     BUG: sleeping function called from invalid context at=
+ kernel/locking/rtmutex.c:969
+> > > > > > > > >     in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid=
+: 15319, name: python3
+> > > > > > > > >     INFO: lockdep is turned off.
+> > > > > > > > >     irq event stamp: 0
+> > > > > > > > >     hardirqs last  enabled at (0): [<0000000000000000>] 0=
+x0
+> > > > > > > > >     hardirqs last disabled at (0): [<ffffffff856c8b13>] c=
+opy_process+0xaf3/0x2590
+> > > > > > > > >     softirqs last  enabled at (0): [<ffffffff856c8b13>] c=
+opy_process+0xaf3/0x2590
+> > > > > > > > >     softirqs last disabled at (0): [<0000000000000000>] 0=
+x0
+> > > > > > > > >     CPU: 6 PID: 15319 Comm: python3 Tainted: G        W  =
+O 5.15-rc7-preempt-rt #1
+> > > > > > > > >     Hardware name: Supermicro SYS-E300-9A-8C/A2SDi-8C-HLN=
+4F, BIOS 1.1b 12/17/2018
+> > > > > > > > >     Call Trace:
+> > > > > > > > >      show_stack+0x52/0x58
+> > > > > > > > >      dump_stack+0xa1/0xd6
+> > > > > > > > >      ___might_sleep.cold+0x11c/0x12d
+> > > > > > > > >      rt_spin_lock+0x3f/0xc0
+> > > > > > > > >      rmqueue+0x100/0x1460
+> > > > > > > > >      rmqueue+0x100/0x1460
+> > > > > > > > >      mark_usage+0x1a0/0x1a0
+> > > > > > > > >      ftrace_graph_ret_addr+0x2a/0xb0
+> > > > > > > > >      rmqueue_pcplist.constprop.0+0x6a0/0x6a0
+> > > > > > > > >       __kasan_check_read+0x11/0x20
+> > > > > > > > >       __zone_watermark_ok+0x114/0x270
+> > > > > > > > >       get_page_from_freelist+0x148/0x630
+> > > > > > > > >       is_module_text_address+0x32/0xa0
+> > > > > > > > >       __alloc_pages_nodemask+0x2f6/0x790
+> > > > > > > > >       __alloc_pages_slowpath.constprop.0+0x12d0/0x12d0
+> > > > > > > > >       create_prof_cpu_mask+0x30/0x30
+> > > > > > > > >       alloc_pages_current+0xb1/0x150
+> > > > > > > > >       stack_depot_save+0x39f/0x490
+> > > > > > > > >       kasan_save_stack+0x42/0x50
+> > > > > > > > >       kasan_save_stack+0x23/0x50
+> > > > > > > > >       kasan_record_aux_stack+0xa9/0xc0
+> > > > > > > > >       __call_rcu+0xff/0x9c0
+> > > > > > > > >       call_rcu+0xe/0x10
+> > > > > > > > >       put_object+0x53/0x70
+> > > > > > > > >       __delete_object+0x7b/0x90
+> > > > > > > > >       kmemleak_free+0x46/0x70
+> > > > > > > > >       slab_free_freelist_hook+0xb4/0x160
+> > > > > > > > >       kfree+0xe5/0x420
+> > > > > > > > >       kfree_const+0x17/0x30
+> > > > > > > > >       kobject_cleanup+0xaa/0x230
+> > > > > > > > >       kobject_put+0x76/0x90
+> > > > > > > > >       netdev_queue_update_kobjects+0x17d/0x1f0
+> > > > > > > > >       ... ...
+> > > > > > > > >       ksys_write+0xd9/0x180
+> > > > > > > > >       __x64_sys_write+0x42/0x50
+> > > > > > > > >       do_syscall_64+0x38/0x50
+> > > > > > > > >       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > > > > > > > >
+> > > > > > > > > Fixes: 84109ab58590 ("rcu: Record kvfree_call_rcu() call =
+stack for KASAN")
+> > > > > > > > > Fixes: 26e760c9a7c8 ("rcu: kasan: record and print call_r=
+cu() call stack")
+> > > > > > > > > Reported-by: Jianwei Hu <jianwei.hu@windriver.com>
+> > > > > > > > > Signed-off-by: Jun Miao <jun.miao@windriver.com>
+> > > > > > > > > ---
+> > > > > > > > >     kernel/rcu/tree.c | 4 ++--
+> > > > > > > > >     1 file changed, 2 insertions(+), 2 deletions(-)
+> > > > > > > > >
+> > > > > > > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > > > > > > > index 8270e58cd0f3..2c1034580f15 100644
+> > > > > > > > > --- a/kernel/rcu/tree.c
+> > > > > > > > > +++ b/kernel/rcu/tree.c
+> > > > > > > > > @@ -3026,7 +3026,7 @@ __call_rcu(struct rcu_head *head, r=
+cu_callback_t func)
+> > > > > > > > >         head->func =3D func;
+> > > > > > > > >         head->next =3D NULL;
+> > > > > > > > >         local_irq_save(flags);
+> > > > > > > > > -     kasan_record_aux_stack(head);
+> > > > > > > > > +     kasan_record_aux_stack_noalloc(head);
+> > > > > > > > >         rdp =3D this_cpu_ptr(&rcu_data);
+> > > > > > > > >
+> > > > > > > > >         /* Add the callback to our list. */
+> > > > > > > > > @@ -3591,7 +3591,7 @@ void kvfree_call_rcu(struct rcu_hea=
+d *head, rcu_callback_t func)
+> > > > > > > > >                 return;
+> > > > > > > > >         }
+> > > > > > > > >
+> > > > > > > > > -     kasan_record_aux_stack(ptr);
+> > > > > > > > > +     kasan_record_aux_stack_noalloc(ptr);
+> > > > > > > > >         success =3D add_ptr_to_bulk_krc_lock(&krcp, &flag=
+s, ptr, !head);
+> > > > > > > > >         if (!success) {
+> > > > > > > > >                 run_page_cache_worker(krcp);
+> > > > > > > Yep an allocation is tricky here. This change looks correct t=
+o me at
+> > > > > > > least from the point that it does not allocate.
+> > > > > > >
+> > > > > > > --
+> > > > > > > Uladzislau Rezki
+> > > > > > Thanks your approval. Could you like to give me a review?
+> > > > > >
+> > > > > Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > > > I have queued it for review and testing, thank you both!  I do have
+> > > > some remaining concerns about this code being starved for memory.  =
+I am
+> > > > wondering if the code needs to check the interrupt state.  And perh=
+aps
+> > > > also whether locks are held.  I of course will refrain from sending
+> > > > this to mainline until these concerns are resolved.
+> > > >
+> > > > Marco, Dmitry, thoughts?
+> > > Well, the compiler does have an opinion:
+> > >
+> > > kernel/rcu/tree.c: In function =E2=80=98__call_rcu=E2=80=99:
+> > > kernel/rcu/tree.c:3029:2: error: implicit declaration of function =E2=
+=80=98kasan_record_aux_stack_noalloc=E2=80=99; did you mean =E2=80=98kasan_=
+record_aux_stack=E2=80=99? [-Werror=3Dimplicit-function-declaration]
+> > >   3029 |  kasan_record_aux_stack_noalloc(head);
+> > >        |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > >        |  kasan_record_aux_stack
+> > >
+> > > I get the same message after merging in current mainline.
+> > >
+> > > I have therefore dropped this patch for the time being.
+> > >
+> > >                                                          Thanx, Paul
+> > Hi Paul E,
+> > The kasan_record_aux_stack_noalloc() is just introduce to linux-next no=
+w,
+> > and marking "Notice: this object is not reachable from any branch." in
+> > commit.
+> > https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/com=
+mit/include/linux/kasan.h?h=3Dnext-20211029&id=3D2f64acf6b653d01fbdc92a693f=
+12bbf71a205926
+>
+> That would explain it!  Feel free to resend once the functionality is
+> more generally available.
 
-Hi all,
++kasan-dev@googlegroups.com mailing list
 
-this is a huge patchset for something which is really trivial - it
-changes the notifier registration routines to return an error value
-if a notifier callback is already present on the respective list of
-callbacks. For more details scroll to the last patch.
+I found the full commit with kasan_record_aux_stack_noalloc() implementatio=
+n:
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/=
+?h=3Dnext-20211029&id=3D2f64acf6b653d01fbdc92a693f12bbf71a205926
 
-Everything before it is converting the callers to check the return value
-of the registration routines and issue a warning, instead of the WARN()
-notifier_chain_register() does now.
+but it calls kasan_save_stack() with second bool argument, and
+kasan_save_stack() accepts only 1 argument:
+https://elixir.bootlin.com/linux/latest/source/mm/kasan/common.c#L33
+so I am lost and can't comment on any of the Paul's questions re
+interrupts/spinlocks.
 
-Before the last patch has been applied, though, that checking is a
-NOP which would make the application of those patches trivial - every
-maintainer can pick a patch at her/his discretion - only the last one
-enables the build warnings and that one will be queued only after the
-preceding patches have all been merged so that there are no build
-warnings.
+When re-sending this, please add kasan-dev@ mailing list and add links
+to the dependencies.
 
-Due to the sheer volume of the patches, I have addressed the respective
-patch and the last one, which enables the warning, with addressees for
-each maintained area so as not to spam people unnecessarily.
-
-If people prefer I carry some through tip, instead, I'll gladly do so -
-your call.
-
-And, if you think the warning messages need to be more precise, feel
-free to adjust them before committing.
-
-Thanks!
-
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Ayush Sawal <ayush.sawal@chelsio.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Rohit Maheshwari <rohitm@chelsio.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Vinay Kumar Yadav <vinay.yadav@chelsio.com> 
-Cc: alsa-devel@alsa-project.org
-Cc: bcm-kernel-feedback-list@broadcom.com
-Cc: intel-gfx@lists.freedesktop.org
-Cc: intel-gvt-dev@lists.freedesktop.org
-Cc: linux-alpha@vger.kernel.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-clk@vger.kernel.org
-Cc: linux-crypto@vger.kernel.org
-Cc: linux-edac@vger.kernel.org
-Cc: linux-fbdev@vger.kernel.org
-Cc: linux-hyperv@vger.kernel.org
-Cc: linux-iio@vger.kernel.org
-Cc: linux-leds@vger.kernel.org
-Cc: linux-mips@vger.kernel.org
-Cc: linux-parisc@vger.kernel.org
-Cc: linux-pm@vger.kernel.org
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: linux-remoteproc@vger.kernel.org
-Cc: linux-renesas-soc@vger.kernel.org
-Cc: linux-s390@vger.kernel.org
-Cc: linux-scsi@vger.kernel.org
-Cc: linux-sh@vger.kernel.org
-Cc: linux-staging@lists.linux.dev
-Cc: linux-tegra@vger.kernel.org
-Cc: linux-um@lists.infradead.org
-Cc: linux-usb@vger.kernel.org
-Cc: linux-xtensa@linux-xtensa.org
-Cc: netdev@vger.kernel.org
-Cc: openipmi-developer@lists.sourceforge.net
-Cc: rcu@vger.kernel.org
-Cc: sparclinux@vger.kernel.org
-Cc: x86@kernel.org
-Cc: xen-devel@lists.xenproject.org
-
-Borislav Petkov (42):
-  x86: Check notifier registration return value
-  xen/x86: Check notifier registration return value
-  impi: Check notifier registration return value
-  clk: renesas: Check notifier registration return value
-  dca: Check notifier registration return value
-  firmware: Check notifier registration return value
-  drm/i915: Check notifier registration return value
-  Drivers: hv: vmbus: Check notifier registration return value
-  iio: proximity: cros_ec: Check notifier registration return value
-  leds: trigger: Check notifier registration return value
-  misc: Check notifier registration return value
-  ethernet: chelsio: Check notifier registration return value
-  power: reset: Check notifier registration return value
-  remoteproc: Check notifier registration return value
-  scsi: target: Check notifier registration return value
-  USB: Check notifier registration return value
-  drivers: video: Check notifier registration return value
-  drivers/xen: Check notifier registration return value
-  kernel/hung_task: Check notifier registration return value
-  rcu: Check notifier registration return value
-  tracing: Check notifier registration return value
-  net: fib_notifier: Check notifier registration return value
-  ASoC: soc-jack: Check notifier registration return value
-  staging: olpc_dcon: Check notifier registration return value
-  arch/um: Check notifier registration return value
-  alpha: Check notifier registration return value
-  bus: brcmstb_gisb: Check notifier registration return value
-  soc: bcm: brcmstb: pm: pm-arm: Check notifier registration return
-    value
-  arm64: Check notifier registration return value
-  soc/tegra: Check notifier registration return value
-  parisc: Check notifier registration return value
-  macintosh/adb: Check notifier registration return value
-  mips: Check notifier registration return value
-  powerpc: Check notifier registration return value
-  sh: Check notifier registration return value
-  s390: Check notifier registration return value
-  sparc: Check notifier registration return value
-  xtensa: Check notifier registration return value
-  crypto: ccree - check notifier registration return value
-  EDAC/altera: Check notifier registration return value
-  power: supply: ab8500: Check notifier registration return value
-  notifier: Return an error when callback is already registered
-
- arch/alpha/kernel/setup.c                     |  5 +--
- arch/arm64/kernel/setup.c                     |  6 ++--
- arch/mips/kernel/relocate.c                   |  6 ++--
- arch/mips/sgi-ip22/ip22-reset.c               |  4 ++-
- arch/mips/sgi-ip32/ip32-reset.c               |  4 ++-
- arch/parisc/kernel/pdc_chassis.c              |  5 +--
- arch/powerpc/kernel/setup-common.c            | 12 ++++---
- arch/s390/kernel/ipl.c                        |  4 ++-
- arch/s390/kvm/kvm-s390.c                      |  7 ++--
- arch/sh/kernel/cpu/sh4a/setup-sh7724.c        | 11 +++---
- arch/sparc/kernel/sstate.c                    |  6 ++--
- arch/um/drivers/mconsole_kern.c               |  6 ++--
- arch/um/kernel/um_arch.c                      |  5 +--
- arch/x86/kernel/cpu/mce/core.c                |  3 +-
- arch/x86/kernel/cpu/mce/dev-mcelog.c          |  3 +-
- arch/x86/kernel/setup.c                       |  7 ++--
- arch/x86/xen/enlighten.c                      |  4 ++-
- arch/xtensa/platforms/iss/setup.c             |  3 +-
- drivers/bus/brcmstb_gisb.c                    |  6 ++--
- drivers/char/ipmi/ipmi_msghandler.c           |  3 +-
- drivers/clk/renesas/clk-div6.c                |  4 ++-
- drivers/clk/renesas/rcar-cpg-lib.c            |  4 ++-
- drivers/crypto/ccree/cc_fips.c                |  4 ++-
- drivers/dca/dca-core.c                        |  3 +-
- drivers/edac/altera_edac.c                    |  6 ++--
- drivers/firmware/arm_scmi/notify.c            |  3 +-
- drivers/firmware/google/gsmi.c                |  6 ++--
- drivers/gpu/drm/i915/gvt/scheduler.c          |  6 ++--
- drivers/hv/vmbus_drv.c                        |  4 +--
- .../iio/proximity/cros_ec_mkbp_proximity.c    |  3 +-
- drivers/leds/trigger/ledtrig-activity.c       |  6 ++--
- drivers/leds/trigger/ledtrig-heartbeat.c      |  6 ++--
- drivers/leds/trigger/ledtrig-panic.c          |  4 +--
- drivers/macintosh/adbhid.c                    |  4 +--
- drivers/misc/ibmasm/heartbeat.c               |  3 +-
- drivers/misc/pvpanic/pvpanic.c                |  3 +-
- .../chelsio/inline_crypto/chtls/chtls_main.c  |  5 ++-
- drivers/parisc/power.c                        |  5 +--
- drivers/power/reset/ltc2952-poweroff.c        |  6 ++--
- drivers/power/supply/ab8500_charger.c         |  8 ++---
- drivers/remoteproc/qcom_common.c              |  3 +-
- drivers/remoteproc/qcom_sysmon.c              |  4 ++-
- drivers/remoteproc/remoteproc_core.c          |  4 ++-
- drivers/s390/char/con3215.c                   |  5 ++-
- drivers/s390/char/con3270.c                   |  5 ++-
- drivers/s390/char/sclp_con.c                  |  4 ++-
- drivers/s390/char/sclp_vt220.c                |  4 ++-
- drivers/s390/char/zcore.c                     |  4 ++-
- drivers/soc/bcm/brcmstb/pm/pm-arm.c           |  5 +--
- drivers/soc/tegra/ari-tegra186.c              |  7 ++--
- drivers/staging/olpc_dcon/olpc_dcon.c         |  4 ++-
- drivers/target/tcm_fc/tfc_conf.c              |  4 ++-
- drivers/usb/core/notify.c                     |  3 +-
- drivers/video/console/dummycon.c              |  3 +-
- drivers/video/fbdev/hyperv_fb.c               |  5 +--
- drivers/xen/manage.c                          |  3 +-
- drivers/xen/xenbus/xenbus_probe.c             |  8 +++--
- include/linux/notifier.h                      |  8 ++---
- kernel/hung_task.c                            |  3 +-
- kernel/notifier.c                             | 36 ++++++++++---------
- kernel/rcu/tree_stall.h                       |  4 ++-
- kernel/trace/trace.c                          |  4 +--
- net/core/fib_notifier.c                       |  4 ++-
- sound/soc/soc-jack.c                          |  3 +-
- 64 files changed, 222 insertions(+), 118 deletions(-)
-
--- 
-2.29.2
-
+Thanks
