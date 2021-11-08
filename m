@@ -2,125 +2,171 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 01C0EC197A0
-	for <rcu@archiver.kernel.org>; Mon,  8 Nov 2021 21:19:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE9F1C433EF
+	for <rcu@archiver.kernel.org>; Tue,  9 Nov 2021 00:59:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DB026614C8
-	for <rcu@archiver.kernel.org>; Mon,  8 Nov 2021 21:19:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D3B016128B
+	for <rcu@archiver.kernel.org>; Tue,  9 Nov 2021 00:59:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240020AbhKHVW1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 8 Nov 2021 16:22:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239990AbhKHVVk (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 8 Nov 2021 16:21:40 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24F44C061570;
-        Mon,  8 Nov 2021 13:18:55 -0800 (PST)
-Received: from zn.tnic (p200300ec2f3311007827e440708b1099.dip0.t-ipconnect.de [IPv6:2003:ec:2f33:1100:7827:e440:708b:1099])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E3BE71EC051F;
-        Mon,  8 Nov 2021 22:18:52 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1636406333;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=AU7V4fSHGUK4yNvIX3QFWGgL2mpvsQwlJrzk1EYTZE4=;
-        b=HI4wHVqdPFUaTmLfTawRP0YuILjCSvy0XvR7UY6GhjpkLZ7Jcpensq3GPz/wKuSVQPh/ah
-        JjfisFcmsOLL77YybjTfUcF4SOtfsMptjoCY2iNpL/QAVX8IlmhT4tll2zqUciAF4fFC2q
-        GhOxoJIWWV9UKbtfg9ziQ2wDV7UERPU=
-Date:   Mon, 8 Nov 2021 22:18:47 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        intel-gvt-dev@lists.freedesktop.org,
-        alpha <linux-alpha@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        linux-edac@vger.kernel.org,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        linux-hyperv@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-leds <linux-leds@vger.kernel.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM" 
-        <linux-remoteproc@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        scsi <linux-scsi@vger.kernel.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        linux-staging@lists.linux.dev,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        linux-um <linux-um@lists.infradead.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>, netdev <netdev@vger.kernel.org>,
-        openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org,
-        sparclinux <sparclinux@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        xen-devel@lists.xenproject.org
-Subject: Re: [PATCH v0 42/42] notifier: Return an error when callback is
- already registered
-Message-ID: <YYmUN69Y7z9xITas@zn.tnic>
-References: <20211108101157.15189-1-bp@alien8.de>
- <20211108101157.15189-43-bp@alien8.de>
- <CAMuHMdWH+txiSP_d7Jc4f_bU8Lf9iWpT4E3o5o7BJr-YdA6-VA@mail.gmail.com>
- <YYkyUEqcsOwQMb1S@zn.tnic>
- <CAMuHMdXiBEQyEXJagSfpH44hxVA2t0sDH7B7YubLGHrb2MJLLA@mail.gmail.com>
- <YYlJQYLiIrhjwOmT@zn.tnic>
- <CAMuHMdXHikGrmUzuq0WG5JRHUUE=5zsaVCTF+e4TiHpM5tc5kA@mail.gmail.com>
- <YYlOmd0AeA8DSluD@zn.tnic>
- <20211108205926.GA1678880@rowland.harvard.edu>
+        id S241491AbhKIBCk (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 8 Nov 2021 20:02:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58590 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236525AbhKIBCi (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 8 Nov 2021 20:02:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 28E3E61284;
+        Tue,  9 Nov 2021 00:59:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636419593;
+        bh=bnoyRb1o4+QmN4johhpzJ4PbjQX/YTEdqHj4bCwY+Fc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=F/gchRFDT5s6Bj4aAMIzmxLrZp+Mc0A1JzB8QcXDIs5IuYBkM/NvC7QRJtN1odBx8
+         z9+XkHdxAeYUbkpDtkj8chQYQiLrSdeGSZ3IWja8lZiJm5y+gBp2oZiDxIkYdc7dBH
+         1M/sVOwUjMzmSX9BYlQckvlzO+R7mqz0e1lOS0bryQlFvHWiDv+DO5TIM7o/ehmnK/
+         KnasCkHGX/ao9K6KOcI9MgCVlQWx5kKXqvv6n/XkVdCQp8J9AjiuEeJtX1MKENuGaO
+         kJf52YCTeaFhsVD1HtWksBdUtv6P6bPRr+A9ucPpyZktZQzJUxKAGEMhbpykGdH+ik
+         2XYCMQKbiff/A==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Scott Wood <swood@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, dave@stgolabs.net,
+        josh@joshtriplett.org, rcu@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 009/146] rcutorture: Avoid problematic critical section nesting on PREEMPT_RT
+Date:   Mon,  8 Nov 2021 12:42:36 -0500
+Message-Id: <20211108174453.1187052-9-sashal@kernel.org>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20211108174453.1187052-1-sashal@kernel.org>
+References: <20211108174453.1187052-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211108205926.GA1678880@rowland.harvard.edu>
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Nov 08, 2021 at 03:59:26PM -0500, Alan Stern wrote:
-> Is there really any reason for returning an error code?  For example, is 
-> it anticipated that at some point in the future these registration calls 
-> might fail?
-> 
-> Currently, the only reason for failing...
+From: Scott Wood <swood@redhat.com>
 
-Right, I believe with not making it return void we're leaving the door
-open for some, *hypothetical* future return values if we decide we need
-to return them too, at some point.
+[ Upstream commit 71921a9606ddbcc1d98c00eca7ae82c373d1fecd ]
 
-Yes, I can't think of another fact to state besides that the callback
-was already registered or return success but who knows what we wanna do
-in the future...
+rcutorture is generating some nesting scenarios that are not compatible on PREEMPT_RT.
+For example:
+	preempt_disable();
+	rcu_read_lock_bh();
+	preempt_enable();
+	rcu_read_unlock_bh();
 
-And so if we change them all to void now, I think it'll be a lot more
-churn to switch back to returning a non-void value and having the
-callers who choose to handle that value, do so again.
+The problem here is that on PREEMPT_RT the bottom halves have to be
+disabled and enabled in preemptible context.
 
-So, long story short, keeping the retval - albeit not very useful right
-now - is probably easier.
+Reorder locking: start with BH locking and continue with then with
+disabling preemption or interrupts. In the unlocking do it reverse by
+first enabling interrupts and preemption and BH at the very end.
+Ensure that on PREEMPT_RT BH locking remains unchanged if in
+non-preemptible context.
 
-I hope I'm making some sense here.
+Link: https://lkml.kernel.org/r/20190911165729.11178-6-swood@redhat.com
+Link: https://lkml.kernel.org/r/20210819182035.GF4126399@paulmck-ThinkPad-P17-Gen-1
+Signed-off-by: Scott Wood <swood@redhat.com>
+[bigeasy: Drop ATOM_BH, make it only about changing BH in atomic
+context. Allow enabling RCU in IRQ-off section. Reword commit message.]
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ kernel/rcu/rcutorture.c | 48 ++++++++++++++++++++++++++++++-----------
+ 1 file changed, 36 insertions(+), 12 deletions(-)
 
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index ab4215266ebee..968696ace8f3f 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -1432,28 +1432,34 @@ static void rcutorture_one_extend(int *readstate, int newstate,
+ 	/* First, put new protection in place to avoid critical-section gap. */
+ 	if (statesnew & RCUTORTURE_RDR_BH)
+ 		local_bh_disable();
++	if (statesnew & RCUTORTURE_RDR_RBH)
++		rcu_read_lock_bh();
+ 	if (statesnew & RCUTORTURE_RDR_IRQ)
+ 		local_irq_disable();
+ 	if (statesnew & RCUTORTURE_RDR_PREEMPT)
+ 		preempt_disable();
+-	if (statesnew & RCUTORTURE_RDR_RBH)
+-		rcu_read_lock_bh();
+ 	if (statesnew & RCUTORTURE_RDR_SCHED)
+ 		rcu_read_lock_sched();
+ 	if (statesnew & RCUTORTURE_RDR_RCU)
+ 		idxnew = cur_ops->readlock() << RCUTORTURE_RDR_SHIFT;
+ 
+-	/* Next, remove old protection, irq first due to bh conflict. */
++	/*
++	 * Next, remove old protection, in decreasing order of strength
++	 * to avoid unlock paths that aren't safe in the stronger
++	 * context. Namely: BH can not be enabled with disabled interrupts.
++	 * Additionally PREEMPT_RT requires that BH is enabled in preemptible
++	 * context.
++	 */
+ 	if (statesold & RCUTORTURE_RDR_IRQ)
+ 		local_irq_enable();
+-	if (statesold & RCUTORTURE_RDR_BH)
+-		local_bh_enable();
+ 	if (statesold & RCUTORTURE_RDR_PREEMPT)
+ 		preempt_enable();
+-	if (statesold & RCUTORTURE_RDR_RBH)
+-		rcu_read_unlock_bh();
+ 	if (statesold & RCUTORTURE_RDR_SCHED)
+ 		rcu_read_unlock_sched();
++	if (statesold & RCUTORTURE_RDR_BH)
++		local_bh_enable();
++	if (statesold & RCUTORTURE_RDR_RBH)
++		rcu_read_unlock_bh();
+ 	if (statesold & RCUTORTURE_RDR_RCU) {
+ 		bool lockit = !statesnew && !(torture_random(trsp) & 0xffff);
+ 
+@@ -1496,6 +1502,9 @@ rcutorture_extend_mask(int oldmask, struct torture_random_state *trsp)
+ 	int mask = rcutorture_extend_mask_max();
+ 	unsigned long randmask1 = torture_random(trsp) >> 8;
+ 	unsigned long randmask2 = randmask1 >> 3;
++	unsigned long preempts = RCUTORTURE_RDR_PREEMPT | RCUTORTURE_RDR_SCHED;
++	unsigned long preempts_irq = preempts | RCUTORTURE_RDR_IRQ;
++	unsigned long bhs = RCUTORTURE_RDR_BH | RCUTORTURE_RDR_RBH;
+ 
+ 	WARN_ON_ONCE(mask >> RCUTORTURE_RDR_SHIFT);
+ 	/* Mostly only one bit (need preemption!), sometimes lots of bits. */
+@@ -1503,11 +1512,26 @@ rcutorture_extend_mask(int oldmask, struct torture_random_state *trsp)
+ 		mask = mask & randmask2;
+ 	else
+ 		mask = mask & (1 << (randmask2 % RCUTORTURE_RDR_NBITS));
+-	/* Can't enable bh w/irq disabled. */
+-	if ((mask & RCUTORTURE_RDR_IRQ) &&
+-	    ((!(mask & RCUTORTURE_RDR_BH) && (oldmask & RCUTORTURE_RDR_BH)) ||
+-	     (!(mask & RCUTORTURE_RDR_RBH) && (oldmask & RCUTORTURE_RDR_RBH))))
+-		mask |= RCUTORTURE_RDR_BH | RCUTORTURE_RDR_RBH;
++
++	/*
++	 * Can't enable bh w/irq disabled.
++	 */
++	if (mask & RCUTORTURE_RDR_IRQ)
++		mask |= oldmask & bhs;
++
++	/*
++	 * Ideally these sequences would be detected in debug builds
++	 * (regardless of RT), but until then don't stop testing
++	 * them on non-RT.
++	 */
++	if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
++		/* Can't modify BH in atomic context */
++		if (oldmask & preempts_irq)
++			mask &= ~bhs;
++		if ((oldmask | mask) & preempts_irq)
++			mask |= oldmask & bhs;
++	}
++
+ 	return mask ?: RCUTORTURE_RDR_RCU;
+ }
+ 
 -- 
-Regards/Gruss,
-    Boris.
+2.33.0
 
-https://people.kernel.org/tglx/notes-about-netiquette
