@@ -2,40 +2,39 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D8F85C433EF
-	for <rcu@archiver.kernel.org>; Tue,  9 Nov 2021 01:07:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BEFAFC4332F
+	for <rcu@archiver.kernel.org>; Tue,  9 Nov 2021 01:07:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C2B5E61381
-	for <rcu@archiver.kernel.org>; Tue,  9 Nov 2021 01:07:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A911D61AE0
+	for <rcu@archiver.kernel.org>; Tue,  9 Nov 2021 01:07:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241607AbhKIBKO (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 8 Nov 2021 20:10:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60822 "EHLO mail.kernel.org"
+        id S241094AbhKIBKR (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 8 Nov 2021 20:10:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38486 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241857AbhKIBIZ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 8 Nov 2021 20:08:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 295A86128B;
-        Tue,  9 Nov 2021 01:03:28 +0000 (UTC)
+        id S241937AbhKIBIl (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 8 Nov 2021 20:08:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2ED9261A53;
+        Tue,  9 Nov 2021 01:03:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636419809;
-        bh=om3b0jWfh4vkI31mYk+O3SoGRIxpoZuNrJyjNaWbxCE=;
+        s=k20201202; t=1636419822;
+        bh=hR4ICX3tXYvIkW3B4efAgzXjfCatBYlsMopUVhGREaY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A3ZrhJnupQVxi/4KWogJ7QZ6QbnbZXL6Ah9JUHguFp6TRyR6gSC+9MP9/KrUxESPa
-         nbki5u9qXTfgROzpjShMt8eDgNNZbSbwQPY+eTR9n6N7oTFASd9XFw3NbJ0j0Z4W+2
-         bZWU1SjGpa5R8B1sQQlUKfsqJucfNbCix3ymNFH/JzlRS/8sx7KpES2XDd1mT//sFM
-         o+00adaCEgfJoEvkhtuFPgeO2BzzXkJBuDHIBiCcbGadZQKEBZTyjVQsd823SJWWpg
-         hPC5Og2j/nP1c9adQ5M3vf9JfU3UDSpefKLdtrX8JWkVaN5o2I1IvUuwGcjqLl3I3I
-         0qrgPuVxVmc0Q==
+        b=klg/KCHN1EBFuKWVFqhXNElEP0KzffEiK+vbNDc21dqpIHVJTD1qLIANGcBsBZBZC
+         AHuKZnIlU/A+o7Pz+PyyWw84/JyGFvNd/lIAxpJQxq6vVeeKY3me9fMXVXV7nFXk2l
+         4EvSWmf19Fw+tmkr7LoXB5lCvb7umEUm2bfvQX7JbLWyIgAz7XYIiUihzKDJGHNJf8
+         6L/6jQVaQnJ/KItroDtnGbn4Q/UC155TJh+nr9p/PYt7TwiW4Zf3OvkV4pBInDrtba
+         itlFqViYeUSXRUqGnlAEVW+BG3PuHIObqiDdYWRlLu9h6ennEBLoYeSBdiVxwcbXYC
+         BganmqYznnfTg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Scott Wood <swood@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, dave@stgolabs.net,
-        josh@joshtriplett.org, rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 008/101] rcutorture: Avoid problematic critical section nesting on PREEMPT_RT
-Date:   Mon,  8 Nov 2021 12:46:58 -0500
-Message-Id: <20211108174832.1189312-8-sashal@kernel.org>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>, josh@joshtriplett.org,
+        rcu@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 014/101] rcu-tasks: Move RTGS_WAIT_CBS to beginning of rcu_tasks_kthread() loop
+Date:   Mon,  8 Nov 2021 12:47:04 -0500
+Message-Id: <20211108174832.1189312-14-sashal@kernel.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211108174832.1189312-1-sashal@kernel.org>
 References: <20211108174832.1189312-1-sashal@kernel.org>
@@ -47,124 +46,41 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Scott Wood <swood@redhat.com>
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-[ Upstream commit 71921a9606ddbcc1d98c00eca7ae82c373d1fecd ]
+[ Upstream commit 0db7c32ad3160ae06f497d48a74bd46a2a35e6bf ]
 
-rcutorture is generating some nesting scenarios that are not compatible on PREEMPT_RT.
-For example:
-	preempt_disable();
-	rcu_read_lock_bh();
-	preempt_enable();
-	rcu_read_unlock_bh();
+Early in debugging, it made some sense to differentiate the first
+iteration from subsequent iterations, but now this just causes confusion.
+This commit therefore moves the "set_tasks_gp_state(rtp, RTGS_WAIT_CBS)"
+statement to the beginning of the "for" loop in rcu_tasks_kthread().
 
-The problem here is that on PREEMPT_RT the bottom halves have to be
-disabled and enabled in preemptible context.
-
-Reorder locking: start with BH locking and continue with then with
-disabling preemption or interrupts. In the unlocking do it reverse by
-first enabling interrupts and preemption and BH at the very end.
-Ensure that on PREEMPT_RT BH locking remains unchanged if in
-non-preemptible context.
-
-Link: https://lkml.kernel.org/r/20190911165729.11178-6-swood@redhat.com
-Link: https://lkml.kernel.org/r/20210819182035.GF4126399@paulmck-ThinkPad-P17-Gen-1
-Signed-off-by: Scott Wood <swood@redhat.com>
-[bigeasy: Drop ATOM_BH, make it only about changing BH in atomic
-context. Allow enabling RCU in IRQ-off section. Reword commit message.]
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Reported-by: Neeraj Upadhyay <neeraju@codeaurora.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/rcu/rcutorture.c | 48 ++++++++++++++++++++++++++++++-----------
- 1 file changed, 36 insertions(+), 12 deletions(-)
+ kernel/rcu/tasks.h | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 916ea4f66e4b2..6c1aea48a79a1 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -1238,28 +1238,34 @@ static void rcutorture_one_extend(int *readstate, int newstate,
- 	/* First, put new protection in place to avoid critical-section gap. */
- 	if (statesnew & RCUTORTURE_RDR_BH)
- 		local_bh_disable();
-+	if (statesnew & RCUTORTURE_RDR_RBH)
-+		rcu_read_lock_bh();
- 	if (statesnew & RCUTORTURE_RDR_IRQ)
- 		local_irq_disable();
- 	if (statesnew & RCUTORTURE_RDR_PREEMPT)
- 		preempt_disable();
--	if (statesnew & RCUTORTURE_RDR_RBH)
--		rcu_read_lock_bh();
- 	if (statesnew & RCUTORTURE_RDR_SCHED)
- 		rcu_read_lock_sched();
- 	if (statesnew & RCUTORTURE_RDR_RCU)
- 		idxnew = cur_ops->readlock() << RCUTORTURE_RDR_SHIFT;
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index b338f514ee5aa..7c05c5ab78653 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -197,6 +197,7 @@ static int __noreturn rcu_tasks_kthread(void *arg)
+ 	 * This loop is terminated by the system going down.  ;-)
+ 	 */
+ 	for (;;) {
++		set_tasks_gp_state(rtp, RTGS_WAIT_CBS);
  
--	/* Next, remove old protection, irq first due to bh conflict. */
-+	/*
-+	 * Next, remove old protection, in decreasing order of strength
-+	 * to avoid unlock paths that aren't safe in the stronger
-+	 * context. Namely: BH can not be enabled with disabled interrupts.
-+	 * Additionally PREEMPT_RT requires that BH is enabled in preemptible
-+	 * context.
-+	 */
- 	if (statesold & RCUTORTURE_RDR_IRQ)
- 		local_irq_enable();
--	if (statesold & RCUTORTURE_RDR_BH)
--		local_bh_enable();
- 	if (statesold & RCUTORTURE_RDR_PREEMPT)
- 		preempt_enable();
--	if (statesold & RCUTORTURE_RDR_RBH)
--		rcu_read_unlock_bh();
- 	if (statesold & RCUTORTURE_RDR_SCHED)
- 		rcu_read_unlock_sched();
-+	if (statesold & RCUTORTURE_RDR_BH)
-+		local_bh_enable();
-+	if (statesold & RCUTORTURE_RDR_RBH)
-+		rcu_read_unlock_bh();
- 	if (statesold & RCUTORTURE_RDR_RCU) {
- 		bool lockit = !statesnew && !(torture_random(trsp) & 0xffff);
- 
-@@ -1302,6 +1308,9 @@ rcutorture_extend_mask(int oldmask, struct torture_random_state *trsp)
- 	int mask = rcutorture_extend_mask_max();
- 	unsigned long randmask1 = torture_random(trsp) >> 8;
- 	unsigned long randmask2 = randmask1 >> 3;
-+	unsigned long preempts = RCUTORTURE_RDR_PREEMPT | RCUTORTURE_RDR_SCHED;
-+	unsigned long preempts_irq = preempts | RCUTORTURE_RDR_IRQ;
-+	unsigned long bhs = RCUTORTURE_RDR_BH | RCUTORTURE_RDR_RBH;
- 
- 	WARN_ON_ONCE(mask >> RCUTORTURE_RDR_SHIFT);
- 	/* Mostly only one bit (need preemption!), sometimes lots of bits. */
-@@ -1309,11 +1318,26 @@ rcutorture_extend_mask(int oldmask, struct torture_random_state *trsp)
- 		mask = mask & randmask2;
- 	else
- 		mask = mask & (1 << (randmask2 % RCUTORTURE_RDR_NBITS));
--	/* Can't enable bh w/irq disabled. */
--	if ((mask & RCUTORTURE_RDR_IRQ) &&
--	    ((!(mask & RCUTORTURE_RDR_BH) && (oldmask & RCUTORTURE_RDR_BH)) ||
--	     (!(mask & RCUTORTURE_RDR_RBH) && (oldmask & RCUTORTURE_RDR_RBH))))
--		mask |= RCUTORTURE_RDR_BH | RCUTORTURE_RDR_RBH;
-+
-+	/*
-+	 * Can't enable bh w/irq disabled.
-+	 */
-+	if (mask & RCUTORTURE_RDR_IRQ)
-+		mask |= oldmask & bhs;
-+
-+	/*
-+	 * Ideally these sequences would be detected in debug builds
-+	 * (regardless of RT), but until then don't stop testing
-+	 * them on non-RT.
-+	 */
-+	if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
-+		/* Can't modify BH in atomic context */
-+		if (oldmask & preempts_irq)
-+			mask &= ~bhs;
-+		if ((oldmask | mask) & preempts_irq)
-+			mask |= oldmask & bhs;
-+	}
-+
- 	return mask ?: RCUTORTURE_RDR_RCU;
+ 		/* Pick up any new callbacks. */
+ 		raw_spin_lock_irqsave(&rtp->cbs_lock, flags);
+@@ -236,8 +237,6 @@ static int __noreturn rcu_tasks_kthread(void *arg)
+ 		}
+ 		/* Paranoid sleep to keep this from entering a tight loop */
+ 		schedule_timeout_idle(rtp->gp_sleep);
+-
+-		set_tasks_gp_state(rtp, RTGS_WAIT_CBS);
+ 	}
  }
  
 -- 
