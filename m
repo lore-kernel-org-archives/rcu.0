@@ -2,77 +2,87 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CA2FC433F5
-	for <rcu@archiver.kernel.org>; Tue, 16 Nov 2021 10:26:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5ACEBC433EF
+	for <rcu@archiver.kernel.org>; Tue, 16 Nov 2021 17:40:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 477AF61AAD
-	for <rcu@archiver.kernel.org>; Tue, 16 Nov 2021 10:26:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2AB3C61BCF
+	for <rcu@archiver.kernel.org>; Tue, 16 Nov 2021 17:40:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234068AbhKPK3t (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 16 Nov 2021 05:29:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40486 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234050AbhKPK3o (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 16 Nov 2021 05:29:44 -0500
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBBE1C061746
-        for <rcu@vger.kernel.org>; Tue, 16 Nov 2021 02:26:47 -0800 (PST)
-Received: by mail-ot1-x32b.google.com with SMTP id x43-20020a056830246b00b00570d09d34ebso19136943otr.2
-        for <rcu@vger.kernel.org>; Tue, 16 Nov 2021 02:26:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8Dvv3p8AhGCNVaVD1e1tbe7DzFesl+DjfsxOQoQusrw=;
-        b=KkKSymEqLAsn2XjVnLWw5pathlZuu/RYIcZmMDs7Dfbw4+F4WQCf9AKNiYGp2UnQcG
-         RJx3jkKFn3g6f3aaj4Tx44RGmVteItlKyYP212n2hzYQ8cqyLZktsvt/LQ5e8biArnPe
-         OYo/Xs/eUBlU7UZLLCk98rs5U6Zo6KyAhEewlLzpQbfB+ot0YnFLMbPPVW30fnZiZsTy
-         fB5TEGcCmg/HPR9WfZJ2qtLVGaaWHqHE9bGR5nHqszd+I/uAaTWc6/VFwIHNFCKZ78VZ
-         JhEDmFvD0rVJlg0HTdkgTDxb6l8L6WjTYuBDyMFoC6ToV00tYAx6U2lLRGAq4n6TbuLh
-         KZrA==
+        id S238916AbhKPRnD (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 16 Nov 2021 12:43:03 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:45471 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238906AbhKPRnD (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Tue, 16 Nov 2021 12:43:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637084405;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Nr+r2xGROsXNBH9KeOUTHUo6tYTD1I9AjqYWE2OJRlU=;
+        b=GG7HzQOY5yiS4EBoMplyfF7hGsZ0zQwSogTr0ithf3z3AcnfIkSKtFc1srSL4HVBCRNdvn
+        0zaGnGj1Ni52v44DwMA5bQzpmf1WhtN7CJHAemrHXOVFW5rQwlUwZvGKu3V9kNPS2hbPZT
+        l8n7R8T+ukdJf0gOJCFeysId1BO8+ws=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-137-MLrqI6XqO9ecS5t1SEtM5Q-1; Tue, 16 Nov 2021 12:40:04 -0500
+X-MC-Unique: MLrqI6XqO9ecS5t1SEtM5Q-1
+Received: by mail-wm1-f69.google.com with SMTP id j193-20020a1c23ca000000b003306ae8bfb7so7652728wmj.7
+        for <rcu@vger.kernel.org>; Tue, 16 Nov 2021 09:40:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8Dvv3p8AhGCNVaVD1e1tbe7DzFesl+DjfsxOQoQusrw=;
-        b=XklfoAy74HbqQw4rCyTcxorkNsFdsl5y12XjT5LUJfUYxTVAUrAxMxZ/LCEIjotuOe
-         +mf74AdIt9cxloWanLc3UaFlBdwBDLsOYoGC6om7wP50MdWCfipFAQGW2ad7px6exy+F
-         79Ngsore/m1kHG6NeKg77bDLNRK4MKKxcjsX1XF+VF6fRxtQ+balsOIlUr8uFa9q20k2
-         jdbILT8FTHOjMccx5PXWrOgy8hCc2QVBnWFO7FPbYtnFFm4e2m5QYI3ToE/q+edclmyh
-         uSnK+7aNomgLYl0CAwmDaCisP6uuX+mf9xzzsQCttLY+cFDY9UcnBHD2w8LPB6nDVre9
-         6m6w==
-X-Gm-Message-State: AOAM530osYkmBqipAldVLqppv7fuY+XwhRTa3EKviLsEtKZ7RztTWraR
-        FE8i2s+fzLfS6vwdsvhzPq+N0uEJp9dWJDdAs89HBg==
-X-Google-Smtp-Source: ABdhPJyLXEqEcFI01acWY0dYye0LGYIZgjW2Rr0DfEljikEjacL8VzWCz7iNSulN75wRZprm5paZTzPcItY+u32pQSY=
-X-Received: by 2002:a9d:662:: with SMTP id 89mr5027714otn.157.1637058407013;
- Tue, 16 Nov 2021 02:26:47 -0800 (PST)
-MIME-Version: 1.0
-References: <1637018582-10788-1-git-send-email-jun.miao@intel.com>
-In-Reply-To: <1637018582-10788-1-git-send-email-jun.miao@intel.com>
-From:   Marco Elver <elver@google.com>
-Date:   Tue, 16 Nov 2021 11:26:35 +0100
-Message-ID: <CANpmjNPqwOCwEP374wYaFg=-rLRWZ6fHit6zQxmH8sxuigVvew@mail.gmail.com>
-Subject: Re: [V2][PATCH] rcu: avoid alloc_pages() when recording stack
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Nr+r2xGROsXNBH9KeOUTHUo6tYTD1I9AjqYWE2OJRlU=;
+        b=Cvog69XfgwQC8vFkx5+MZ/5E7/wI7Nkpnkuv+skrhDeuxKYJ9eKScLZ8nIbT6eUb0K
+         qxhIwM4IfNMGP2KXDb8guzIxK3YxyTV4gBqUZZ+ERykNAgYPuFs6ecyKOPiCRZBaGrGN
+         X82QsbHmmBW4B/tuzS7KFmPsynB5BOn0aF6sRwbbuuslsMoh+0gUuws3UbQ+iaduMAvk
+         OxfaXW1IGj+y6XMrlueqpTWSslApVK6NeyCE9yRR0ERsnuRp91cAVCS+RwE7vhP/+2nS
+         SJOuaiHOC7JQ0YvFy3stwcDFAhLIp1SRSiixa0tdyPgEsuL0DOBCrxomfE8VYOC34rz9
+         eCzg==
+X-Gm-Message-State: AOAM5309GL9WGyTgO7E/RFGCSW1yCi2XvfghmtvnYmOBhvgd9cLG+/ca
+        XUxzPWl2YcVGPyZG7RPQG07enZJqAYAEC82V9vuc09ZQi+x9i5iyy69eXUOS3ulFggm0Kps/eqS
+        YbnFPfUfa9a1T
+X-Received: by 2002:a05:600c:4f10:: with SMTP id l16mr9855671wmq.47.1637084401702;
+        Tue, 16 Nov 2021 09:40:01 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxIaqukIZg2H4AH04sfIIA67Str6EuFC/VMDJ9CEaTdZiKqNmNI+IZ5i0hXoAFbt+HoaWJyvQ==
+X-Received: by 2002:a05:600c:4f10:: with SMTP id l16mr9855643wmq.47.1637084401466;
+        Tue, 16 Nov 2021 09:40:01 -0800 (PST)
+Received: from localhost.localdomain ([2a00:23c6:4a17:4f01:3a16:ae0:112c:ba92])
+        by smtp.gmail.com with ESMTPSA id n1sm3718108wmq.6.2021.11.16.09.40.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Nov 2021 09:40:01 -0800 (PST)
+Date:   Tue, 16 Nov 2021 17:39:59 +0000
+From:   Juri Lelli <juri.lelli@redhat.com>
 To:     Jun Miao <jun.miao@intel.com>
-Cc:     paulmck@kernel.org, urezki@gmail.com, josh@joshtriplett.org,
-        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
-        jiangshanlai@gmail.com, joel@joelfernandes.org,
-        qiang.zhang1211@gmail.com, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        jianwei.hu@windriver.com
-Content-Type: text/plain; charset="UTF-8"
+Cc:     paulmck@kernel.org, urezki@gmail.com, elver@google.com,
+        josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, qiang.zhang1211@gmail.com,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com, jianwei.hu@windriver.com
+Subject: Re: [V2][PATCH] rcu: avoid alloc_pages() when recording stack
+Message-ID: <20211116173959.osdzlvv7niyxthd6@localhost.localdomain>
+References: <1637018582-10788-1-git-send-email-jun.miao@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1637018582-10788-1-git-send-email-jun.miao@intel.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, 16 Nov 2021 at 08:46, Jun Miao <jun.miao@intel.com> wrote:
+Hi,
+
+On 16/11/21 07:23, Jun Miao wrote:
 > The default kasan_record_aux_stack() calls stack_depot_save() with GFP_NOWAIT,
 > which in turn can then call alloc_pages(GFP_NOWAIT, ...).  In general, however,
 > it is not even possible to use either GFP_ATOMIC nor GFP_NOWAIT in certain
 > non-preemptive contexts/RT kernel including raw_spin_locks (see gfp.h and ab00db216c9c7).
 > Fix it by instructing stackdepot to not expand stack storage via alloc_pages()
 > in case it runs out by using kasan_record_aux_stack_noalloc().
->
+> 
 > Jianwei Hu reported:
 > BUG: sleeping function called from invalid context at kernel/locking/rtmutex.c:969
 > in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 15319, name: python3
@@ -122,42 +132,19 @@ On Tue, 16 Nov 2021 at 08:46, Jun Miao <jun.miao@intel.com> wrote:
 >      __x64_sys_write+0x42/0x50
 >      do_syscall_64+0x38/0x50
 >      entry_SYSCALL_64_after_hwframe+0x44/0xa9
->
+> 
 > Links: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/include/linux/kasan.h?id=7cb3007ce2da27ec02a1a3211941e7fe6875b642
 > Fixes: 84109ab58590 ("rcu: Record kvfree_call_rcu() call stack for KASAN")
 > Fixes: 26e760c9a7c8 ("rcu: kasan: record and print call_rcu() call stack")
 > Reported-by: Jianwei Hu <jianwei.hu@windriver.com>
 > Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 > Signed-off-by: Jun Miao <jun.miao@intel.com>
-
-Acked-by: Marco Elver <elver@google.com>
-
 > ---
->  kernel/rcu/tree.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index ef8d36f580fc..906b6887622d 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -2982,7 +2982,7 @@ __call_rcu(struct rcu_head *head, rcu_callback_t func)
->         head->func = func;
->         head->next = NULL;
->         local_irq_save(flags);
-> -       kasan_record_aux_stack(head);
-> +       kasan_record_aux_stack_noalloc(head);
->         rdp = this_cpu_ptr(&rcu_data);
->
->         /* Add the callback to our list. */
-> @@ -3547,7 +3547,7 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
->                 return;
->         }
->
-> -       kasan_record_aux_stack(ptr);
-> +       kasan_record_aux_stack_noalloc(ptr);
->         success = add_ptr_to_bulk_krc_lock(&krcp, &flags, ptr, !head);
->         if (!success) {
->                 run_page_cache_worker(krcp);
-> --
-> 2.32.0
->
+
+I gave this a quick try on RT. No splats. Nice!
+
+Tested-by: Juri Lelli <juri.lelli@redhat.com>
+
+Best,
+Juri
+
