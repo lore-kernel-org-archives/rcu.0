@@ -2,127 +2,137 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BDC5C433EF
-	for <rcu@archiver.kernel.org>; Tue, 16 Nov 2021 20:34:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EDE62C433EF
+	for <rcu@archiver.kernel.org>; Tue, 16 Nov 2021 21:01:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6953B61414
-	for <rcu@archiver.kernel.org>; Tue, 16 Nov 2021 20:34:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CFC1C61BF5
+	for <rcu@archiver.kernel.org>; Tue, 16 Nov 2021 21:01:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230159AbhKPUhD (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 16 Nov 2021 15:37:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49768 "EHLO mail.kernel.org"
+        id S231818AbhKPVEv convert rfc822-to-8bit (ORCPT
+        <rfc822;rcu@archiver.kernel.org>); Tue, 16 Nov 2021 16:04:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40710 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229649AbhKPUhC (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 16 Nov 2021 15:37:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7519461037;
-        Tue, 16 Nov 2021 20:34:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637094845;
-        bh=l/dWLarqEiULV16loJz9pqYO1tl43IJkf7N+4+RSMzE=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=YLPy/WNNfSlbTj+TTVBESv/gmHmoJKN32uvTyYzN4V5tbpANersFwEMW/292UASzp
-         wUqGPtBlKzik90k28oMg+JtiThX1F0EOxq0TZ/+mpAzpwW4ZQlUAR8n5e853LnSyu0
-         cbwwvrf2jmaG8mDO/hcBe+26HrVmTD5nLH686HpU5VXl4JTr/yneopjFqXCmI3WAH3
-         lFAn3RjCvqsm6QMbxA6CUTz7bhxBCI/tOPBSHmvANsEAd6vJDOmN4StThB64eqaEIK
-         7ccshRwY3i9dOdGuUGHspO5aB2mZ41xJ6K2bRpJOH4/bQL7hzNno89XvIWgrFy4TW8
-         vJC54KSjm1oTQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 428345C0433; Tue, 16 Nov 2021 12:34:05 -0800 (PST)
-Date:   Tue, 16 Nov 2021 12:34:05 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Juri Lelli <juri.lelli@redhat.com>
-Cc:     Jun Miao <jun.miao@intel.com>, urezki@gmail.com, elver@google.com,
-        josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, qiang.zhang1211@gmail.com,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com, jianwei.hu@windriver.com
-Subject: Re: [V2][PATCH] rcu: avoid alloc_pages() when recording stack
-Message-ID: <20211116203405.GU641268@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <1637018582-10788-1-git-send-email-jun.miao@intel.com>
- <20211116173959.osdzlvv7niyxthd6@localhost.localdomain>
+        id S231624AbhKPVEu (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 16 Nov 2021 16:04:50 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9A76461A8D;
+        Tue, 16 Nov 2021 21:01:51 +0000 (UTC)
+Date:   Tue, 16 Nov 2021 16:01:50 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Cai,Huoqing" <caihuoqing@baidu.com>
+Cc:     Bernard Metzler <bmt@zurich.ibm.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        "Ingo Molnar" <mingo@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v3 1/6] kthread: Add the helper function
+ kthread_run_on_cpu()
+Message-ID: <20211116160150.44267ea8@gandalf.local.home>
+In-Reply-To: <40fae23eb02c4363bc75649e23f78c1c@baidu.com>
+References: <20211022025711.3673-1-caihuoqing@baidu.com>
+        <20211022025711.3673-2-caihuoqing@baidu.com>
+        <40fae23eb02c4363bc75649e23f78c1c@baidu.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211116173959.osdzlvv7niyxthd6@localhost.localdomain>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 05:39:59PM +0000, Juri Lelli wrote:
-> Hi,
-> 
-> On 16/11/21 07:23, Jun Miao wrote:
-> > The default kasan_record_aux_stack() calls stack_depot_save() with GFP_NOWAIT,
-> > which in turn can then call alloc_pages(GFP_NOWAIT, ...).  In general, however,
-> > it is not even possible to use either GFP_ATOMIC nor GFP_NOWAIT in certain
-> > non-preemptive contexts/RT kernel including raw_spin_locks (see gfp.h and ab00db216c9c7).
-> > Fix it by instructing stackdepot to not expand stack storage via alloc_pages()
-> > in case it runs out by using kasan_record_aux_stack_noalloc().
+On Tue, 26 Oct 2021 08:32:30 +0000
+"Cai,Huoqing" <caihuoqing@baidu.com> wrote:
+
+> Hello,
+> Just a ping, to see if there are any more comments :-P
+
+I have no real issue with this patch set. As it seems to be a generic clean
+up, perhaps Andrew might like to take a look at it, and if he's fine with
+it, he can take it through his tree?
+
+-- Steve
+
+
+> > -----Original Message-----
+> > From: Cai,Huoqing <caihuoqing@baidu.com>
+> > Sent: 2021年10月22日 10:57
+> > Subject: [PATCH v3 1/6] kthread: Add the helper function kthread_run_on_cpu()
 > > 
-> > Jianwei Hu reported:
-> > BUG: sleeping function called from invalid context at kernel/locking/rtmutex.c:969
-> > in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 15319, name: python3
-> > INFO: lockdep is turned off.
-> > irq event stamp: 0
-> >   hardirqs last  enabled at (0): [<0000000000000000>] 0x0
-> >   hardirqs last disabled at (0): [<ffffffff856c8b13>] copy_process+0xaf3/0x2590
-> >   softirqs last  enabled at (0): [<ffffffff856c8b13>] copy_process+0xaf3/0x2590
-> >   softirqs last disabled at (0): [<0000000000000000>] 0x0
-> >   CPU: 6 PID: 15319 Comm: python3 Tainted: G        W  O 5.15-rc7-preempt-rt #1
-> >   Hardware name: Supermicro SYS-E300-9A-8C/A2SDi-8C-HLN4F, BIOS 1.1b 12/17/2018
-> >   Call Trace:
-> >     show_stack+0x52/0x58
-> >     dump_stack+0xa1/0xd6
-> >     ___might_sleep.cold+0x11c/0x12d
-> >     rt_spin_lock+0x3f/0xc0
-> >     rmqueue+0x100/0x1460
-> >     rmqueue+0x100/0x1460
-> >     mark_usage+0x1a0/0x1a0
-> >     ftrace_graph_ret_addr+0x2a/0xb0
-> >     rmqueue_pcplist.constprop.0+0x6a0/0x6a0
-> >      __kasan_check_read+0x11/0x20
-> >      __zone_watermark_ok+0x114/0x270
-> >      get_page_from_freelist+0x148/0x630
-> >      is_module_text_address+0x32/0xa0
-> >      __alloc_pages_nodemask+0x2f6/0x790
-> >      __alloc_pages_slowpath.constprop.0+0x12d0/0x12d0
-> >      create_prof_cpu_mask+0x30/0x30
-> >      alloc_pages_current+0xb1/0x150
-> >      stack_depot_save+0x39f/0x490
-> >      kasan_save_stack+0x42/0x50
-> >      kasan_save_stack+0x23/0x50
-> >      kasan_record_aux_stack+0xa9/0xc0
-> >      __call_rcu+0xff/0x9c0
-> >      call_rcu+0xe/0x10
-> >      put_object+0x53/0x70
-> >      __delete_object+0x7b/0x90
-> >      kmemleak_free+0x46/0x70
-> >      slab_free_freelist_hook+0xb4/0x160
-> >      kfree+0xe5/0x420
-> >      kfree_const+0x17/0x30
-> >      kobject_cleanup+0xaa/0x230
-> >      kobject_put+0x76/0x90
-> >      netdev_queue_update_kobjects+0x17d/0x1f0
-> >      ... ...
-> >      ksys_write+0xd9/0x180
-> >      __x64_sys_write+0x42/0x50
-> >      do_syscall_64+0x38/0x50
-> >      entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > the helper function kthread_run_on_cpu() includes
+> > kthread_create_on_cpu/wake_up_process().
+> > In some cases, use kthread_run_on_cpu() directly instead of
+> > kthread_create_on_node/kthread_bind/wake_up_process() or
+> > kthread_create_on_cpu/wake_up_process() or
+> > kthreadd_create/kthread_bind/wake_up_process() to simplify the code.
 > > 
-> > Links: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/include/linux/kasan.h?id=7cb3007ce2da27ec02a1a3211941e7fe6875b642
-> > Fixes: 84109ab58590 ("rcu: Record kvfree_call_rcu() call stack for KASAN")
-> > Fixes: 26e760c9a7c8 ("rcu: kasan: record and print call_rcu() call stack")
-> > Reported-by: Jianwei Hu <jianwei.hu@windriver.com>
-> > Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > Signed-off-by: Jun Miao <jun.miao@intel.com>
+> > Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
 > > ---
+> > v1->v2:
+> > 	*Remove cpu_to_node from kthread_create_on_cpu params.
+> > 	*Updated the macro description comment.
+> > v2->v3:
+> > 	*Convert this helper macro to static inline function
+> > 	*Fix typo in changelog
+> > 
+> > v1 link:
+> > 	https://lore.kernel.org/lkml/20211021120135.3003-2-
+> > caihuoqing@baidu.com/
+> > v2 link:
+> > 	https://lore.kernel.org/lkml/20211021122758.3092-2-
+> > caihuoqing@baidu.com/
+> > 
+> >  include/linux/kthread.h | 25 +++++++++++++++++++++++++
+> >  1 file changed, 25 insertions(+)
+> > 
+> > diff --git a/include/linux/kthread.h b/include/linux/kthread.h
+> > index 346b0f269161..db47aae7c481 100644
+> > --- a/include/linux/kthread.h
+> > +++ b/include/linux/kthread.h
+> > @@ -56,6 +56,31 @@ bool kthread_is_per_cpu(struct task_struct *k);
+> >  	__k;								   \
+> >  })
+> > 
+> > +/**
+> > + * kthread_run_on_cpu - create and wake a cpu bound thread.
+> > + * @threadfn: the function to run until signal_pending(current).
+> > + * @data: data ptr for @threadfn.
+> > + * @cpu: The cpu on which the thread should be bound,
+> > + * @namefmt: printf-style name for the thread. Format is restricted
+> > + *	     to "name.*%u". Code fills in cpu number.
+> > + *
+> > + * Description: Convenient wrapper for kthread_create_on_cpu()
+> > + * followed by wake_up_process().  Returns the kthread or
+> > + * ERR_PTR(-ENOMEM).
+> > + */
+> > +static inline struct task_struct *
+> > +kthread_run_on_cpu(int (*threadfn)(void *data), void *data,
+> > +			unsigned int cpu, const char *namefmt)
+> > +{
+> > +	struct task_struct *p;
+> > +
+> > +	p = kthread_create_on_cpu(threadfn, data, cpu, namefmt);
+> > +	if (!IS_ERR(p))
+> > +		wake_up_process(p);
+> > +
+> > +	return p;
+> > +}
+> > +
+> >  void free_kthread_struct(struct task_struct *k);
+> >  void kthread_bind(struct task_struct *k, unsigned int cpu);
+> >  void kthread_bind_mask(struct task_struct *k, const struct cpumask *mask);
+> > --
+> > 2.25.1  
 > 
-> I gave this a quick try on RT. No splats. Nice!
-> 
-> Tested-by: Juri Lelli <juri.lelli@redhat.com>
 
-Applied with Juri's Tested-by and Marco's Acked-by.  Thank you all!
-
-							Thanx, Paul
