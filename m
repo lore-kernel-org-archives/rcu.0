@@ -2,116 +2,143 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 26501C433EF
-	for <rcu@archiver.kernel.org>; Tue, 16 Nov 2021 08:25:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 10588C433F5
+	for <rcu@archiver.kernel.org>; Tue, 16 Nov 2021 09:53:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0C08461B2A
-	for <rcu@archiver.kernel.org>; Tue, 16 Nov 2021 08:25:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E78DB63227
+	for <rcu@archiver.kernel.org>; Tue, 16 Nov 2021 09:53:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231953AbhKPI2e (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 16 Nov 2021 03:28:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40568 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231942AbhKPI2c (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 16 Nov 2021 03:28:32 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68815C061570
-        for <rcu@vger.kernel.org>; Tue, 16 Nov 2021 00:25:36 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id np3so15121764pjb.4
-        for <rcu@vger.kernel.org>; Tue, 16 Nov 2021 00:25:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=/k7ZQTqFPkVe68fPluKvdaKWxmA9a158887sw7Su1/4=;
-        b=gLogDyhZU9sK0BSc6HsmO9xUvr3Aa0msUi4iNIOMyKknMCxjkBZUFNTjDNE3ITZ4IU
-         dxAEiZ/nHAyvE7WdRnGePxamCaPcSLfDfe+2HIv9vnWpQjuH098iXl/hi7I2Uomy4CT6
-         vX53QncWyakrpgV6TIInfFmwpY3X8Jno43gPIZkA9ypMugvwZR0oEJF30lFkIpGbm7B3
-         XBYkGdUute6bJNMM23cavnEtz1iX+r5did5r5aDa5Q8+QD7ICT9ePoS5vnekAlzSg3Dj
-         AiobkzNHk//otAr/iVcQasZBYRb0DaXUxcXlbl0EdYo8sBY6CFNaz/6VveMCQU6EuIph
-         eUKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/k7ZQTqFPkVe68fPluKvdaKWxmA9a158887sw7Su1/4=;
-        b=oQR98JQmvJVSSzz3D/koFMz8xGkDBB77MC2YrPGAF5VtnDTrjwFxlKAFRuQfS9Z1jr
-         jT8niYbWVUt28Rj5xFEaWd2O6IQTAL9kMDcGm7NJCurgZEESKaqFbZnTlQUr2rrpx3PJ
-         DNu2ITdUxlsWyKCqkhAgW7xXN8pljCp1oy7xYK0wSwy0UV59ao4uvq++bEZ9f9s0iHZ5
-         J9UWoZf50GBSNRYj+U1s4Ye+9gGjyJGPjUjxI8WwxoMWzXGjDESBSVaMEqoXHYRGOkFv
-         3TULjjX/XpfkhDBfUUdY+OaVyU2l3RRPqAhw5hTzBeqRLochjNSiAcof9sAGq3p1ZL4W
-         QfKg==
-X-Gm-Message-State: AOAM532AXsVM3U7/53Bh2OnfB/PzCdp222wUI0U54R1jQoZNwtTjkTKt
-        4uFvi3YbyDR65WP/SP7Jcg==
-X-Google-Smtp-Source: ABdhPJzmw70bzQWlkimM0FYveFOEKi10kbRk4Q8PEUVrScT8iKsxaUDdDV6cRHFB0t2eyRD8LqF2NA==
-X-Received: by 2002:a17:90b:4b48:: with SMTP id mi8mr1126119pjb.214.1637051136061;
-        Tue, 16 Nov 2021 00:25:36 -0800 (PST)
-Received: from piliu.users.ipa.redhat.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id 11sm17104011pfl.41.2021.11.16.00.25.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Nov 2021 00:25:35 -0800 (PST)
-From:   Pingfan Liu <kernelfans@gmail.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     Pingfan Liu <kernelfans@gmail.com>,
+        id S233559AbhKPJ4Z (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 16 Nov 2021 04:56:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37984 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232139AbhKPJ4Y (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 16 Nov 2021 04:56:24 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4355D63223;
+        Tue, 16 Nov 2021 09:53:28 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mmv9a-005nSP-2L; Tue, 16 Nov 2021 09:53:26 +0000
+Date:   Tue, 16 Nov 2021 09:53:25 +0000
+Message-ID: <878rxo8m0a.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Pingfan Liu <kernelfans@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
         Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Joey Gouly <joey.gouly@arm.com>,
+        Joey Gouly <joey.gouly@arm.com>,
         Sami Tolvanen <samitolvanen@google.com>,
         Julien Thierry <julien.thierry@arm.com>,
         Yuichi Ito <ito-yuichi@fujitsu.com>, rcu@vger.kernel.org
-Subject: [PATCHv3 4/4] arm64: entry: remove pNMI judgement in __el1_interrupt() path
-Date:   Tue, 16 Nov 2021 16:24:50 +0800
-Message-Id: <20211116082450.10357-5-kernelfans@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211116082450.10357-1-kernelfans@gmail.com>
+Subject: Re: [PATCHv3 3/4] irqchip: GICv3: expose pNMI discriminator
+In-Reply-To: <20211116082450.10357-4-kernelfans@gmail.com>
 References: <20211116082450.10357-1-kernelfans@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        <20211116082450.10357-4-kernelfans@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: kernelfans@gmail.com, linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com, joey.gouly@arm.com, samitolvanen@google.com, julien.thierry@arm.com, ito-yuichi@fujitsu.com, rcu@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Now, all pNMI can be detected before the dispatching of __el1_pnmi() or
-__el1_interrupt(), and __el1_interrupt() will never be called in pNMI
-context. As a result, the judgement of pNMI in
-arm64_preempt_schedule_irq() becomes unnecessary.
+Hi Pingfan,
 
-Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Joey Gouly <joey.gouly@arm.com>
-Cc: Sami Tolvanen <samitolvanen@google.com>
-Cc: Julien Thierry <julien.thierry@arm.com>
-Cc: Yuichi Ito <ito-yuichi@fujitsu.com>
-Cc: rcu@vger.kernel.org
-To: linux-arm-kernel@lists.infradead.org
----
- arch/arm64/kernel/entry-common.c | 9 ---------
- 1 file changed, 9 deletions(-)
+On Tue, 16 Nov 2021 08:24:49 +0000,
+Pingfan Liu <kernelfans@gmail.com> wrote:
+> 
+> Arch level code is ready to take over the nmi_enter()/nmi_exit()
+> housekeeping.
+> 
+> GICv3 can expose the pNMI discriminator, then simply remove the
+> housekeeping.
+> 
+> Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: Joey Gouly <joey.gouly@arm.com>
+> Cc: Sami Tolvanen <samitolvanen@google.com>
+> Cc: Julien Thierry <julien.thierry@arm.com>
+> Cc: Yuichi Ito <ito-yuichi@fujitsu.com>
+> Cc: rcu@vger.kernel.org
+> To: linux-arm-kernel@lists.infradead.org
+> ---
+>  drivers/irqchip/irq-gic-v3.c | 18 ++++++++++++------
+>  1 file changed, 12 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
+> index daec3309b014..aa2bcb47b47e 100644
+> --- a/drivers/irqchip/irq-gic-v3.c
+> +++ b/drivers/irqchip/irq-gic-v3.c
+> @@ -646,12 +646,8 @@ static void gic_deactivate_unhandled(u32 irqnr)
+>  
+>  static inline void gic_handle_nmi(u32 irqnr, struct pt_regs *regs)
+>  {
+> -	bool irqs_enabled = interrupts_enabled(regs);
+>  	int err;
+>  
+> -	if (irqs_enabled)
+> -		nmi_enter();
+> -
+>  	if (static_branch_likely(&supports_deactivate_key))
+>  		gic_write_eoir(irqnr);
+>  	/*
+> @@ -664,8 +660,6 @@ static inline void gic_handle_nmi(u32 irqnr, struct pt_regs *regs)
+>  	if (err)
+>  		gic_deactivate_unhandled(irqnr);
+>  
+> -	if (irqs_enabled)
+> -		nmi_exit();
+>  }
+>  
+>  static u32 do_read_iar(struct pt_regs *regs)
+> @@ -702,6 +696,15 @@ static u32 do_read_iar(struct pt_regs *regs)
+>  	return iar;
+>  }
+>  
+> +static bool gic_is_in_nmi(void)
+> +{
+> +	if (gic_supports_nmi() &&
+> +	    unlikely(gic_read_rpr() == GICD_INT_RPR_PRI(GICD_INT_NMI_PRI)))
+> +		return true;
 
-diff --git a/arch/arm64/kernel/entry-common.c b/arch/arm64/kernel/entry-common.c
-index afcde43f1b73..57d654b915a5 100644
---- a/arch/arm64/kernel/entry-common.c
-+++ b/arch/arm64/kernel/entry-common.c
-@@ -224,15 +224,6 @@ static void __sched arm64_preempt_schedule_irq(void)
- {
- 	lockdep_assert_irqs_disabled();
- 
--	/*
--	 * DAIF.DA are cleared at the start of IRQ/FIQ handling, and when GIC
--	 * priority masking is used the GIC irqchip driver will clear DAIF.IF
--	 * using gic_arch_enable_irqs() for normal IRQs. If anything is set in
--	 * DAIF we must have handled an NMI, so skip preemption.
--	 */
--	if (system_uses_irq_prio_masking() && read_sysreg(daif))
--		return;
--
- 	/*
- 	 * Preempting a task from an IRQ means we leave copies of PSTATE
- 	 * on the stack. cpufeature's enable calls may modify PSTATE, but
+I don't think this fixes anything.
+
+RPR stands for 'Running Priority Register', which in GIC speak reports
+the priority of the most recently Ack'ed interrupt.
+
+You cannot use this to find out whether the interrupt that you /will/
+ack is a NMI or not. Actually, you cannot find out about *any*
+priority until you actually ack the interrupt. What you are asking for
+is the equivalent of a crystal ball, and we're in short supply... ;-)
+
+The only case where ICC_RPR_EL1 will return something that is equal to
+GICD_INT_NMI_PRI is when you are *already* in an NMI context. So
+unless I have completely misunderstood your approach (which is always
+possible), I don't see how this can work.
+
+If you want to distinguish between NMI and IRQ early on (before
+acknowledging the interrupt), the only solution is to turn the NMI
+into a Group-0 interrupt so that it is presented to the CPU as a
+FIQ. At which point, you have the information by construction.
+
+Unfortunately, this will only work in VMs, as Group-0 interrupts are
+usually routed to EL3 on bare metal systems.
+
+	M.
+
 -- 
-2.31.1
-
+Without deviation from the norm, progress is not possible.
