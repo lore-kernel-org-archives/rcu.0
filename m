@@ -2,27 +2,27 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0149FC433F5
-	for <rcu@archiver.kernel.org>; Tue, 23 Nov 2021 00:37:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FFDFC433F5
+	for <rcu@archiver.kernel.org>; Tue, 23 Nov 2021 00:37:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231974AbhKWAkq (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 22 Nov 2021 19:40:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48452 "EHLO mail.kernel.org"
+        id S232468AbhKWAk5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 22 Nov 2021 19:40:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48478 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232101AbhKWAkc (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 22 Nov 2021 19:40:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A19D60F70;
-        Tue, 23 Nov 2021 00:37:23 +0000 (UTC)
+        id S232053AbhKWAke (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 22 Nov 2021 19:40:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C703D60698;
+        Tue, 23 Nov 2021 00:37:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637627845;
-        bh=RQwilzt+jdf9Hm51kXPsmwXnDYa/Gvy9HLQhoOOpsv0=;
+        s=k20201202; t=1637627847;
+        bh=icI5/M2hLsyGCbhSphBc5coM9+SCPQ4/0Gx+CvfZzhU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WXYuTcGDv3cPjS567uZkmObGG0QIVFouVLrah7PGHX9IiRKMeZTe7O6YFLQI6dv/S
-         tCS4hDkMESmmHkeJ1AaFyXfxxEHXwLyxfUGn9EN4W/gkSurqIVo/B/wnuwM5DRZcd3
-         AzZJHR6RnYB7luldIMGEPqCHqImAGlvPbbgXfW0b5giJVeR+DqUrlkyMogYmfsbSqQ
-         jWm2UImsPnPp6n36LYYgMhqlyzKykiZ7UZ2FfbFQcvMao+qjD+mGxjoLSUS8uUXAqK
-         7sKsh9sw0a0YcNNOdtRUZOyOlYKVn7wwQpmlibEhOG3RgvMWUn0WorbGtM3ih8Q9wZ
-         wAWwoY40yc3Iw==
+        b=RBUK5rdkpegzgDD2OFNfoLYh6rHYgUdMWN019V51TelYBY3xJFtlgcWgX9S63/fPh
+         /ezq2HRjyKYiwRHYopGYphRH5mEKIwVKRAqTbezGmcxT56GeJqXAObR19hAjJ+TXJs
+         18ba02urR+7wtGfEUT5q01ZyKmdW3tlS7V7VX73ZolbXoekGhPSZkrxrD7Zapzahcq
+         q3im0kTGKNAZmtnYBGVWWXeT7nwgkULAS0KGy2XseoYnH2B7xQ6fLYqqSOVSv3VRm/
+         mR8AOHgYbhWZzuu3SllyQqmuRN2rYsDL3x8nmW7Em7mhtN4jV/d25XRmZcntI/cz6j
+         rnTF6xPOh8nRQ==
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     "Paul E . McKenney" <paulmck@kernel.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
@@ -32,9 +32,9 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Boqun Feng <boqun.feng@gmail.com>,
         Josh Triplett <josh@joshtriplett.org>,
         Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: [PATCH 4/6] rcu/nocb: Create kthreads on all CPUs if "rcu_nocb=" or "nohz_full=" are passed
-Date:   Tue, 23 Nov 2021 01:37:06 +0100
-Message-Id: <20211123003708.468409-5-frederic@kernel.org>
+Subject: [PATCH 5/6] rcu/nocb: Allow empty "rcu_nocbs" kernel parameter
+Date:   Tue, 23 Nov 2021 01:37:07 +0100
+Message-Id: <20211123003708.468409-6-frederic@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211123003708.468409-1-frederic@kernel.org>
 References: <20211123003708.468409-1-frederic@kernel.org>
@@ -44,10 +44,10 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-In order to be able to (de-)offload any CPU using cpuset in the future,
-create a NOCB kthread for all possible CPUs. For now this is done only
-as long as the "rcu_nocb=" or "nohz_full=" kernel parameters are passed
-to avoid the unnecessary overhead for most users.
+If a user wants to boot without any CPU in offloaded mode initially but
+with the possibility to offload them later using cpusets, provide a way
+to simply pass an empty "rcu_nocbs" kernel parameter which will enforce
+the creation of dormant nocb kthreads.
 
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
@@ -56,55 +56,77 @@ Cc: Uladzislau Rezki <urezki@gmail.com>
 Cc: Josh Triplett <josh@joshtriplett.org>
 Cc: Joel Fernandes <joel@joelfernandes.org>
 ---
- kernel/rcu/tree_nocb.h | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ .../admin-guide/kernel-parameters.txt         | 26 ++++++++++++-------
+ kernel/rcu/tree_nocb.h                        | 10 ++++---
+ 2 files changed, 23 insertions(+), 13 deletions(-)
 
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index cd860dc7c60b..6ff1a5f06383 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -4351,20 +4351,28 @@
+ 				Disable the Correctable Errors Collector,
+ 				see CONFIG_RAS_CEC help text.
+ 
+-	rcu_nocbs=	[KNL]
+-			The argument is a cpu list, as described above.
++	rcu_nocbs[=cpu-list]
++			[KNL] The optional argument is a cpu list,
++			as described above.
+ 
+-			In kernels built with CONFIG_RCU_NOCB_CPU=y, set
+-			the specified list of CPUs to be no-callback CPUs.
+-			Invocation of these CPUs' RCU callbacks will be
+-			offloaded to "rcuox/N" kthreads created for that
+-			purpose, where "x" is "p" for RCU-preempt, and
+-			"s" for RCU-sched, and "N" is the CPU number.
+-			This reduces OS jitter on the offloaded CPUs,
++			In kernels built with CONFIG_RCU_NOCB_CPU=y, enable the
++			no-callback CPU mode. Invocation of such CPUs' RCU
++			callbacks will be offloaded to "rcuox/N" kthreads
++			created	for that purpose, where "x" is "p" for
++			RCU-preempt, and "s" for RCU-sched, and "N" is the CPU
++			number.	This reduces OS jitter on the offloaded CPUs,
+ 			which can be useful for HPC and real-time
+ 			workloads.  It can also improve energy efficiency
+ 			for asymmetric multiprocessors.
+ 
++			If a cpulist is passed as an argument, the specified
++			list of	CPUs is set to no-callback mode from boot.
++
++			If otherwise the '=' sign and the cpulist arguments are
++			omitted, no CPU will be set to no-callback mode from
++			boot but cpuset will allow for toggling that mode at
++			runtime.
++
+ 	rcu_nocb_poll	[KNL]
+ 			Rather than requiring that offloaded CPUs
+ 			(specified by rcu_nocbs= above) explicitly
 diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index d8ed3ee47a67..9d37916278d4 100644
+index 9d37916278d4..d915780d40c8 100644
 --- a/kernel/rcu/tree_nocb.h
 +++ b/kernel/rcu/tree_nocb.h
-@@ -1229,11 +1229,8 @@ static void rcu_spawn_one_nocb_kthread(int cpu)
- 	struct rcu_data *rdp_gp;
- 	struct task_struct *t;
- 
--	/*
--	 * If this isn't a no-CBs CPU or if it already has an rcuo kthread,
--	 * then nothing to do.
--	 */
--	if (!rcu_is_nocb_cpu(cpu) || rdp->nocb_cb_kthread)
-+	/* If it already has an rcuo kthread, then nothing to do. */
-+	if (rdp->nocb_cb_kthread)
- 		return;
- 
- 	/* If we didn't spawn the GP kthread first, reorganize! */
-@@ -1261,7 +1258,7 @@ static void rcu_spawn_one_nocb_kthread(int cpu)
-  */
- static void rcu_spawn_cpu_nocb_kthread(int cpu)
+@@ -66,14 +66,16 @@ static bool rcu_nocb_is_setup;
+ static int __init rcu_nocb_setup(char *str)
  {
--	if (rcu_scheduler_fully_active)
-+	if (rcu_scheduler_fully_active && rcu_nocb_is_setup)
- 		rcu_spawn_one_nocb_kthread(cpu);
- }
- 
-@@ -1311,7 +1308,7 @@ static void __init rcu_organize_nocb_kthreads(void)
- 	 * Should the corresponding CPU come online in the future, then
- 	 * we will spawn the needed set of rcu_nocb_kthread() kthreads.
- 	 */
--	for_each_cpu(cpu, rcu_nocb_mask) {
-+	for_each_possible_cpu(cpu) {
- 		rdp = per_cpu_ptr(&rcu_data, cpu);
- 		if (rdp->cpu >= nl) {
- 			/* New GP kthread, set up for CBs & next GP. */
-@@ -1335,7 +1332,8 @@ static void __init rcu_organize_nocb_kthreads(void)
- 				pr_cont(" %d", cpu);
- 		}
- 		rdp->nocb_gp_rdp = rdp_gp;
--		list_add_tail(&rdp->nocb_entry_rdp, &rdp_gp->nocb_head_rdp);
-+		if (cpumask_test_cpu(cpu, rcu_nocb_mask))
-+			list_add_tail(&rdp->nocb_entry_rdp, &rdp_gp->nocb_head_rdp);
+ 	alloc_bootmem_cpumask_var(&rcu_nocb_mask);
+-	if (cpulist_parse(str, rcu_nocb_mask)) {
+-		pr_warn("rcu_nocbs= bad CPU range, all CPUs set\n");
+-		cpumask_setall(rcu_nocb_mask);
++	if (*str == '=') {
++		if (cpulist_parse(++str, rcu_nocb_mask)) {
++			pr_warn("rcu_nocbs= bad CPU range, all CPUs set\n");
++			cpumask_setall(rcu_nocb_mask);
++		}
  	}
- 	if (gotnocbs && dump_tree)
- 		pr_cont("%s\n", gotnocbscbs ? "" : " (self only)");
+ 	rcu_nocb_is_setup = true;
+ 	return 1;
+ }
+-__setup("rcu_nocbs=", rcu_nocb_setup);
++__setup("rcu_nocbs", rcu_nocb_setup);
+ 
+ static int __init parse_rcu_nocb_poll(char *arg)
+ {
 -- 
 2.25.1
 
