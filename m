@@ -2,55 +2,55 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 35516C433F5
-	for <rcu@archiver.kernel.org>; Tue, 23 Nov 2021 17:25:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 076FAC433F5
+	for <rcu@archiver.kernel.org>; Tue, 23 Nov 2021 17:28:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238919AbhKWR2t (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 23 Nov 2021 12:28:49 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:24225 "EHLO
+        id S237655AbhKWRb2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 23 Nov 2021 12:31:28 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34051 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233922AbhKWR2t (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Tue, 23 Nov 2021 12:28:49 -0500
+        by vger.kernel.org with ESMTP id S233865AbhKWRb1 (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Tue, 23 Nov 2021 12:31:27 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637688340;
+        s=mimecast20190719; t=1637688499;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=ygX9stNObBwTwa4yUUs6NE8vyjejsSHuXhBtzRR0RVw=;
-        b=IFoM3vTOdVYGSVH5bwQWT4b+JFQhBfZlAbEgUtBK2R4DTz9A8ASzIoPCf8EDoCtSvkoScw
-        mvAqelllmx3dMWGiwCOY+sdrhpouFUn5BPA1Hu/ORUNe1I8Qi3cZuNRGy4Mn/VIDEp3vcH
-        mhRuNXU4Fj7mHzVdnZKmjJ3B3ZngEPk=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=rbwewLFsABuwwFA7Yf68+QvHaRv0OksbhJ5ANLDADx0=;
+        b=gztDFCs8PhEXMFTOqn0H+WBWISYbneO/qTAmBvrdDtPAponahIwuyjq9NUh2R46cu4GEDW
+        WQtesxVHKm61GnB3elLKl0/DUEV3rveJ8zec+kBBbR91hx17nL5dj6Uu/gm1tkElnyd3ql
+        9owEe9mPkAVuTnK57oxIRlPILM/iQTE=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-435-Cu5vddAiOgKdFRsA28-fPA-1; Tue, 23 Nov 2021 12:25:39 -0500
-X-MC-Unique: Cu5vddAiOgKdFRsA28-fPA-1
-Received: by mail-wm1-f69.google.com with SMTP id 187-20020a1c02c4000000b003335872db8dso8282351wmc.2
-        for <rcu@vger.kernel.org>; Tue, 23 Nov 2021 09:25:39 -0800 (PST)
+ us-mta-390-Uyz1qc3SPgqhEGFXCuydXA-1; Tue, 23 Nov 2021 12:28:17 -0500
+X-MC-Unique: Uyz1qc3SPgqhEGFXCuydXA-1
+Received: by mail-wr1-f71.google.com with SMTP id k8-20020a5d5248000000b001763e7c9ce5so3871349wrc.22
+        for <rcu@vger.kernel.org>; Tue, 23 Nov 2021 09:28:17 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=ygX9stNObBwTwa4yUUs6NE8vyjejsSHuXhBtzRR0RVw=;
-        b=muqUVyEosyY0CE5I05EdDk3FfbieS/AZe+eOcAfY11zg2UbabHgnsztAaTmi5Zykek
-         cnKGCD5p4mG2ZZWgqzcAxjmdj6WHFapdQnDfVLjk+oRAO1mIUKtfvd8dnpFWvNDW2T+v
-         /PiCn+rMlhxWtU1Swlf2YFUJYt7O0K8rojb1ajkK9f5Ubs/o7LKSoD/tLaggBqz+uyrg
-         8SYWooCAjUV1kG0xVuaWjGKmKx6gFsMu0sIcJPugyfW+eU5yciJuU+1L5suCeYUrdq2p
-         Jzl0jywLGAfJ2G2CU0NwODL8clfgt+wq9yK4SNjz7ObVcaydxUTjIQiz/1seESUlJFKM
-         vjhA==
-X-Gm-Message-State: AOAM532WmOEi0/cz2bpQw6vcMsOchlsXEceRSp2tgyimyUuEJ0aomYnq
-        cJwPyTBVqRnYAMgrqkkUtG32sb59K5mOwR9B68ySWfG411hn3YUz94y5M9efj4ddYhFJOhuqA6a
-        watOYoHcsSo4o
-X-Received: by 2002:adf:f708:: with SMTP id r8mr9172768wrp.198.1637688337090;
-        Tue, 23 Nov 2021 09:25:37 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJysPEMbhEoCEjBU+0lOVwkGDJAd1JCc2Oie62LzmXyvWxSm0wdinZHG7f/zAbM739fUr3LvyA==
-X-Received: by 2002:adf:f708:: with SMTP id r8mr9172716wrp.198.1637688336836;
-        Tue, 23 Nov 2021 09:25:36 -0800 (PST)
+        bh=rbwewLFsABuwwFA7Yf68+QvHaRv0OksbhJ5ANLDADx0=;
+        b=UfTSnQLr0CGCxXqgwHHoDroFfVl+mQn2teCcXksfy+y6a4b6jktmGDiPoWKBf56726
+         b2hwVN4pE1FZTN2GQX+mOGLSDRrKfY/lwtQBQ5at8NQ9CrGUMcFA5ksxFVBn22Jiqu5c
+         VuTXNlP8RZ7RaQdo3IZCB81CZbeYNsN75+LmPaXI1VMtn10dwFTM8LWTzl8HC70jingU
+         9Kgi2BC6tBcmbKhLzuFqqWrlVvZSxm5gq6k3duK3QFuAFkc5tuPcH617dKv3fnV4LmAc
+         T561c/6/Deviv33v3j8s6A9d6F3jdKrnjAUyv5n2N6VmDiVW6612MdSKdtaNM92vardx
+         dnnA==
+X-Gm-Message-State: AOAM5337jmXqTq+q4VWWPH1+d94GKX13eZ3V6C5S2wfWxTUeQrsrRdYw
+        GlYQk0kC8tWvE1QHn8RS4Mg3L8/5VF7+VmyaIh43AU/8ii62GlOjG9ILPba0KuNGd9AnuEkzbG8
+        MmGqlkBPMO7aT
+X-Received: by 2002:a05:600c:4e94:: with SMTP id f20mr4980354wmq.77.1637688496429;
+        Tue, 23 Nov 2021 09:28:16 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzkGcSDFJfJ/eExQMmeWAJzI8oQYUpvN8NFnVUgfIHLPXSuqBAOg/ZJ3gCDo+Vofun2YxFzkA==
+X-Received: by 2002:a05:600c:4e94:: with SMTP id f20mr4980310wmq.77.1637688496191;
+        Tue, 23 Nov 2021 09:28:16 -0800 (PST)
 Received: from localhost.localdomain ([2a00:23c6:4a17:4f01:3a16:ae0:112c:ba92])
-        by smtp.gmail.com with ESMTPSA id h3sm11524486wrv.69.2021.11.23.09.25.36
+        by smtp.gmail.com with ESMTPSA id p62sm1827353wmp.10.2021.11.23.09.28.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Nov 2021 09:25:36 -0800 (PST)
-Date:   Tue, 23 Nov 2021 17:25:34 +0000
+        Tue, 23 Nov 2021 09:28:15 -0800 (PST)
+Date:   Tue, 23 Nov 2021 17:28:14 +0000
 From:   Juri Lelli <juri.lelli@redhat.com>
 To:     Frederic Weisbecker <frederic@kernel.org>
 Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
@@ -60,13 +60,15 @@ Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
         Boqun Feng <boqun.feng@gmail.com>,
         Josh Triplett <josh@joshtriplett.org>,
         Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: Re: [PATCH 0/6] rcu/nocb: Last prep work before cpuset interface v2
-Message-ID: <20211123172534.iaaagfa4eygfsjew@localhost.localdomain>
+Subject: Re: [PATCH 4/6] rcu/nocb: Create kthreads on all CPUs if "rcu_nocb="
+ or "nohz_full=" are passed
+Message-ID: <20211123172814.4rev7z45onxvjmy4@localhost.localdomain>
 References: <20211123003708.468409-1-frederic@kernel.org>
+ <20211123003708.468409-5-frederic@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211123003708.468409-1-frederic@kernel.org>
+In-Reply-To: <20211123003708.468409-5-frederic@kernel.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
@@ -74,26 +76,14 @@ X-Mailing-List: rcu@vger.kernel.org
 Hi,
 
 On 23/11/21 01:37, Frederic Weisbecker wrote:
-> Changes since v1 after Paul's reviews:
-> 
-> * Clarify why the DEL vs ADD possible race on rdp group list is ok [1/6]
-> * Update kernel parameters documentation [5/6]
-> * Only create rcuo[sp] kthreads for CPUs that have ever come online [4/6]
-> * Consider nohz_full= on changelogs
-> 
-> git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
-> 	rcu/nocb
-> 
-> HEAD: da51363e5ddf54d6ce9c2cfbab946f8914519290
+> In order to be able to (de-)offload any CPU using cpuset in the future,
+> create a NOCB kthread for all possible CPUs. For now this is done only
+> as long as the "rcu_nocb=" or "nohz_full=" kernel parameters are passed
 
-I run this on RT. It survived rcutorture on different kernel cmdline
-configurations and creation of rcuox/N kthreads seemed sane. :)
+Super nitpick! In subject and above sentence, "rcu_nocb=" is actually
+"rcu_nocbs=", isn't it?
 
-FWIW, feel free to add
-
-Tested-by: Juri Lelli <juri.lelli@redhat.com>
-
-Thanks for working on this!
+Feel free to ignore the noise, of course. :)
 
 Best,
 Juri
