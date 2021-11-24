@@ -2,51 +2,51 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 32FBCC433EF
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6409EC433FE
 	for <rcu@archiver.kernel.org>; Wed, 24 Nov 2021 11:03:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241687AbhKXLGi (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 24 Nov 2021 06:06:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59238 "EHLO
+        id S241709AbhKXLGk (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 24 Nov 2021 06:06:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241696AbhKXLGg (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 24 Nov 2021 06:06:36 -0500
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C5CCC061746;
-        Wed, 24 Nov 2021 03:03:26 -0800 (PST)
-Received: by mail-lj1-x22f.google.com with SMTP id 13so4536682ljj.11;
-        Wed, 24 Nov 2021 03:03:26 -0800 (PST)
+        with ESMTP id S241692AbhKXLGf (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 24 Nov 2021 06:06:35 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8AD6C061574;
+        Wed, 24 Nov 2021 03:03:25 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id n12so6220169lfe.1;
+        Wed, 24 Nov 2021 03:03:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=0mkcpIpQNADy47v7UAKca+3VWMypeY9VF9pVuI+LVzY=;
-        b=ey2K3nRcbbZeV/uan6W4S3mEARiTMSaMJ01/DdUVxZIwF57H+GdJU0YpCCiGMuFf50
-         9gJhRg6PYTTjyZKniU1PhCR9qdxLT8zipAd2xF3EcIYTZLlYFhxAnmxJ2ns4QgeOBua6
-         pxvptbmqRQgt3NkXPvOqQ+5cl6XWnjEeJa3+nZtm0GCu0QrPHwegHqxF1gn3omBFfwaO
-         NJgajACvCV7kwIkmDPpmust/l8YYKzcJYI/4OMD0XrYmSXBKRqLaGiY1GD9EyBHO0Dc7
-         96OqwowgOXuYjbFYRlCX/84+oCukq+/elVcXfaxBCRp+zSoEO88C4vSH+dlLKiMQwnF2
-         Yxyw==
+        bh=6GS9qnVuLxYBDvzRkgzw+4+LD4QN5MInzOQXeRmrw4c=;
+        b=P3f1cHcqNkKOo+ZzRvgAaB+6LqOoWQbDM7aIDJS4rtcJFeiOd7VanKVn8OC/F90Faq
+         L6sculJ3MKjIEN+0yxGbnWChGMG6PN954z6zwSBLjQGjc7iKGWLJnL2TtezkRLKECZ+N
+         dNw71c2Hjj83e7JA8J9177/IYphCCI4ueJP2aU2d/9wCV/jle1jO6WxgyjKDG6LbwrtW
+         mRSD20jr0ASdEsaYMTiakchtZJR4fK91LH5IWBHRb+QIJ/9LtZaG1RQ1zDrGMCYayQ6y
+         rMMXj3MIpHWXZCSeLxgP30DdXbjbj7AKrTtuo7sFBV80W/iAwR11YHGwi3YJk+86+OwU
+         Etwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=0mkcpIpQNADy47v7UAKca+3VWMypeY9VF9pVuI+LVzY=;
-        b=zBPIomFNTHAdKSnbQGL6IPp62PiJsJL6137313tefczt1QjtE7UR0/fG6AIjDVSvDk
-         U+Pg9TbWAtBOqlmCL3zGFloTZo5HWGYwAT39T9AsBWveTKIAplEovsXnJ9BYmiw26XrD
-         ZZzgEcs3HPqBxL81nNtKs+EFUEkSE9ldp7oHCSjouOT7D8CXkwvLiEIvRh1SHMyp8ljn
-         qZG+tSa5S8dl2dqkfwc6vsjtz0gL9AImv3xxqj1ODSKAugj9Tp7I5xnr0vTBZ5CutoO8
-         fSvuGpieRNbtNHdm2zo9eBeecR+kTv93BYnCOZwj2Nd4zu7/YmoY+izGCtbhicUWnpaP
-         jQmw==
-X-Gm-Message-State: AOAM530X5vQQQBX4agTVIoX3HYVEaJFd4GcKUbbSvhbMHcJivpgviIDb
-        +6kV9jZCuCIOOhz7p8TsAwuJP6uZSI67d1MG
-X-Google-Smtp-Source: ABdhPJzrxbCFTXZT1whgakmiIpUUZhz4fomG2WKSaLOLwn/11GPAx1Ls9V3b43pmVd+C2zURw7NO7g==
-X-Received: by 2002:a2e:a706:: with SMTP id s6mr14489438lje.370.1637751804801;
-        Wed, 24 Nov 2021 03:03:24 -0800 (PST)
+        bh=6GS9qnVuLxYBDvzRkgzw+4+LD4QN5MInzOQXeRmrw4c=;
+        b=kXnspyXNv4uC9DCPvoeBhH97U3q4lRimcs+8L56GMPhKKJdP6SvHB58Om/xv4ap0Pl
+         S/bD0v6DFoOKOrRKVtgmY8EW8qwPlvs3LpUWdn772PSyWxQX+zKpPnXDUIpOoAiGb8MH
+         ytmgoFiLPQb2aOFbRnNMniQdM4pLUt0JPOGBhHbeTHoZWIEok6uWf6yeE5NUYBsgH9l2
+         OsC2APmBcsSXZtdcJY4RcV029SVBAu8y93F/MUz1ToxokMA4Z4KhLhBeiH+kwNui5Jsl
+         VCpX89pWki8jW+PACQFswfewiJuD4EeBcaGBtMag+flIAJpYmW7SNNoq9DqUkzxZfF65
+         jgjg==
+X-Gm-Message-State: AOAM533g2ZIWCuoUDWvKpeiDfiKSfKJ5j5sQdgF6uX7g5m+AghJFla/N
+        YIsnh6qka1cn4xepdb/BOmOkdwh2sYCuOBfp
+X-Google-Smtp-Source: ABdhPJzohli7Ud490pl1E17PQOWk3ntoxBiEWp6nSdOhtIOfiv293LJSYvfzEgyW6mD03GObn2milw==
+X-Received: by 2002:a05:6512:3e09:: with SMTP id i9mr13635811lfv.239.1637751803778;
+        Wed, 24 Nov 2021 03:03:23 -0800 (PST)
 Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id u22sm1579907lff.118.2021.11.24.03.03.23
+        by smtp.gmail.com with ESMTPSA id u22sm1579907lff.118.2021.11.24.03.03.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 03:03:24 -0800 (PST)
+        Wed, 24 Nov 2021 03:03:23 -0800 (PST)
 From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
         "Paul E . McKenney" <paulmck@kernel.org>
@@ -62,10 +62,10 @@ Cc:     Michal Hocko <mhocko@suse.com>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Uladzislau Rezki <urezki@gmail.com>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Jon Maloy <jmaloy@redhat.com>
-Subject: [PATCH 6/9] net/tipc: Switch to kvfree_rcu() API
-Date:   Wed, 24 Nov 2021 12:03:05 +0100
-Message-Id: <20211124110308.2053-7-urezki@gmail.com>
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [PATCH 5/9] x86/mm: Switch to kvfree_rcu() API
+Date:   Wed, 24 Nov 2021 12:03:04 +0100
+Message-Id: <20211124110308.2053-6-urezki@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211124110308.2053-1-urezki@gmail.com>
 References: <20211124110308.2053-1-urezki@gmail.com>
@@ -79,26 +79,29 @@ Instead of invoking a synchronize_rcu() to free a pointer
 after a grace period we can directly make use of new API
 that does the same but in more efficient way.
 
-CC: Jon Maloy <jmaloy@redhat.com>
+CC: Steven Rostedt <rostedt@goodmis.org>
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- net/tipc/crypto.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ arch/x86/mm/mmio-mod.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/net/tipc/crypto.c b/net/tipc/crypto.c
-index b4d9419a015b..c2d16c40778d 100644
---- a/net/tipc/crypto.c
-+++ b/net/tipc/crypto.c
-@@ -2391,8 +2391,7 @@ static void tipc_crypto_work_rx(struct work_struct *work)
- 			resched = true;
- 			break;
- 		default:
--			synchronize_rcu();
--			kfree(rx->skey);
-+			kvfree_rcu(rx->skey);
- 			rx->skey = NULL;
- 			break;
- 		}
+diff --git a/arch/x86/mm/mmio-mod.c b/arch/x86/mm/mmio-mod.c
+index 933a2ebad471..e75137a06c32 100644
+--- a/arch/x86/mm/mmio-mod.c
++++ b/arch/x86/mm/mmio-mod.c
+@@ -307,10 +307,8 @@ static void iounmap_trace_core(volatile void __iomem *addr)
+ 
+ not_enabled:
+ 	spin_unlock_irq(&trace_lock);
+-	if (found_trace) {
+-		synchronize_rcu(); /* unregister_kmmio_probe() requirement */
+-		kfree(found_trace);
+-	}
++	if (found_trace)
++		kvfree_rcu(found_trace); /* unregister_kmmio_probe() requirement */
+ }
+ 
+ void mmiotrace_iounmap(volatile void __iomem *addr)
 -- 
 2.30.2
 
