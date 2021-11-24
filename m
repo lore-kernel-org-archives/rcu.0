@@ -2,89 +2,148 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 076FAC433F5
-	for <rcu@archiver.kernel.org>; Tue, 23 Nov 2021 17:28:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ACC5CC433F5
+	for <rcu@archiver.kernel.org>; Wed, 24 Nov 2021 11:03:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237655AbhKWRb2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 23 Nov 2021 12:31:28 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34051 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233865AbhKWRb1 (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Tue, 23 Nov 2021 12:31:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637688499;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=rbwewLFsABuwwFA7Yf68+QvHaRv0OksbhJ5ANLDADx0=;
-        b=gztDFCs8PhEXMFTOqn0H+WBWISYbneO/qTAmBvrdDtPAponahIwuyjq9NUh2R46cu4GEDW
-        WQtesxVHKm61GnB3elLKl0/DUEV3rveJ8zec+kBBbR91hx17nL5dj6Uu/gm1tkElnyd3ql
-        9owEe9mPkAVuTnK57oxIRlPILM/iQTE=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-390-Uyz1qc3SPgqhEGFXCuydXA-1; Tue, 23 Nov 2021 12:28:17 -0500
-X-MC-Unique: Uyz1qc3SPgqhEGFXCuydXA-1
-Received: by mail-wr1-f71.google.com with SMTP id k8-20020a5d5248000000b001763e7c9ce5so3871349wrc.22
-        for <rcu@vger.kernel.org>; Tue, 23 Nov 2021 09:28:17 -0800 (PST)
+        id S241671AbhKXLGb (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 24 Nov 2021 06:06:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241669AbhKXLGa (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 24 Nov 2021 06:06:30 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF0D0C061574;
+        Wed, 24 Nov 2021 03:03:20 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id t26so6110201lfk.9;
+        Wed, 24 Nov 2021 03:03:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3N50/V+FAPxYOLPbnr4c7VJsA7/kRWtvGKg6E6hbmCk=;
+        b=ebdLj1Vp/Jmn0r84mzENAbeb8Bo+vp03OogPVQtLqDNwTMf3gUd9B02hJNlzDNyg5d
+         AIY2hNld3XLebU4S+1EBPqVAk9WBFR4Qysut6s2TmwfhEm1rqOZU6bSqDJm0YDaz2CO0
+         PPg9/Fpxs3K0Sa1fWHBHAkQNz3GzR4Dh8bANqO0pKjGJEcESI3Bp3hmH3Kl5YQABNw9l
+         ShKoqJ0ELhmFjBvU7G222Yfmv8rKJyN/uXSE0lfQHejfMcaMCOEjxLs43wszWOkExcM4
+         QFHws6r1512OkYtWHlSbiD/NVGXz13g90O0Zx1bqE52CaEvxznO2EV2VLOUeCSYWw3G/
+         4PBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rbwewLFsABuwwFA7Yf68+QvHaRv0OksbhJ5ANLDADx0=;
-        b=UfTSnQLr0CGCxXqgwHHoDroFfVl+mQn2teCcXksfy+y6a4b6jktmGDiPoWKBf56726
-         b2hwVN4pE1FZTN2GQX+mOGLSDRrKfY/lwtQBQ5at8NQ9CrGUMcFA5ksxFVBn22Jiqu5c
-         VuTXNlP8RZ7RaQdo3IZCB81CZbeYNsN75+LmPaXI1VMtn10dwFTM8LWTzl8HC70jingU
-         9Kgi2BC6tBcmbKhLzuFqqWrlVvZSxm5gq6k3duK3QFuAFkc5tuPcH617dKv3fnV4LmAc
-         T561c/6/Deviv33v3j8s6A9d6F3jdKrnjAUyv5n2N6VmDiVW6612MdSKdtaNM92vardx
-         dnnA==
-X-Gm-Message-State: AOAM5337jmXqTq+q4VWWPH1+d94GKX13eZ3V6C5S2wfWxTUeQrsrRdYw
-        GlYQk0kC8tWvE1QHn8RS4Mg3L8/5VF7+VmyaIh43AU/8ii62GlOjG9ILPba0KuNGd9AnuEkzbG8
-        MmGqlkBPMO7aT
-X-Received: by 2002:a05:600c:4e94:: with SMTP id f20mr4980354wmq.77.1637688496429;
-        Tue, 23 Nov 2021 09:28:16 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzkGcSDFJfJ/eExQMmeWAJzI8oQYUpvN8NFnVUgfIHLPXSuqBAOg/ZJ3gCDo+Vofun2YxFzkA==
-X-Received: by 2002:a05:600c:4e94:: with SMTP id f20mr4980310wmq.77.1637688496191;
-        Tue, 23 Nov 2021 09:28:16 -0800 (PST)
-Received: from localhost.localdomain ([2a00:23c6:4a17:4f01:3a16:ae0:112c:ba92])
-        by smtp.gmail.com with ESMTPSA id p62sm1827353wmp.10.2021.11.23.09.28.15
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3N50/V+FAPxYOLPbnr4c7VJsA7/kRWtvGKg6E6hbmCk=;
+        b=dL4iKzuyW9ejsocF+q5OGLf4jyklRsI31IW4oXenWKCemivp/8LQjhqD1nvrVJfO8E
+         lm0TZIelmG5E9LiO+OUWq+Lzekar/mmlqla9/KPPQsn4avOtZMfi5X3/AAhgo9mG/89z
+         vuOvPyalE/hIxh47dsgesYlvlN7ZcmRMYdM1wXxvzzzgdceSnHyS7AFRZKRzAlZvISK4
+         yhSCcLLCuQQ4eU4XsjqFGI/S9rTNNJMkr7ljasEogwWue8vv7j5z80e+tyoVuLoXNgq9
+         2d15QymY3O1lVlqlRRyp4uMVyPqPzz6sp0HPpRp29sxfL4pTlWQYenCC6ES7OQTn0vTH
+         dQsA==
+X-Gm-Message-State: AOAM530FsP3YJmlj0fwUvhh41RLZF8soMtsYz/KfKB0KwUBHWCG83/Wa
+        MwAESG11dUM85nHEqhWgCoOQBNORNZMOPnVf
+X-Google-Smtp-Source: ABdhPJz4VHlL3F56HzgKCa1QmfLtWMUe01Ozb9a0ShiOun3PJ7owmFumsfHa8mQIHHSM2Z3tAd4eqQ==
+X-Received: by 2002:a05:6512:3404:: with SMTP id i4mr13418996lfr.689.1637751797993;
+        Wed, 24 Nov 2021 03:03:17 -0800 (PST)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id u22sm1579907lff.118.2021.11.24.03.03.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Nov 2021 09:28:15 -0800 (PST)
-Date:   Tue, 23 Nov 2021 17:28:14 +0000
-From:   Juri Lelli <juri.lelli@redhat.com>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
+        Wed, 24 Nov 2021 03:03:17 -0800 (PST)
+From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Uladzislau Rezki <urezki@gmail.com>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: Re: [PATCH 4/6] rcu/nocb: Create kthreads on all CPUs if "rcu_nocb="
- or "nohz_full=" are passed
-Message-ID: <20211123172814.4rev7z45onxvjmy4@localhost.localdomain>
-References: <20211123003708.468409-1-frederic@kernel.org>
- <20211123003708.468409-5-frederic@kernel.org>
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: [PATCH 0/9] Switch to single argument kvfree_rcu() API
+Date:   Wed, 24 Nov 2021 12:02:59 +0100
+Message-Id: <20211124110308.2053-1-urezki@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211123003708.468409-5-frederic@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi,
+Hi!
 
-On 23/11/21 01:37, Frederic Weisbecker wrote:
-> In order to be able to (de-)offload any CPU using cpuset in the future,
-> create a NOCB kthread for all possible CPUs. For now this is done only
-> as long as the "rcu_nocb=" or "nohz_full=" kernel parameters are passed
+This is an attempt to replace places in the Linux kernel for using
+single argument of kvfree_rcu() API. In short, a single argument
+API allows something like below:
 
-Super nitpick! In subject and above sentence, "rcu_nocb=" is actually
-"rcu_nocbs=", isn't it?
+<snip>
+    void *ptr = kvmalloc(some_bytes, GFP_KERNEL);
+        if (ptr)
+            kvfree_rcu(ptr);
+<snip>
 
-Feel free to ignore the noise, of course. :)
+i.e. to free a pointer after a grace period of object that does not
+have any rcu_head field inside its structure. Due to lacking of such
+mechanism users just do:
 
-Best,
-Juri
+<snip>
+    synchronize_rcu();
+    kfree(p);
+<snip>
+
+if they do not want to have an rcu_head element in their data. Thus
+this series replaces mentioned places to go with the single argument API.
+
+It is based on the 5.16.0-rc2 also it can be applied on Paul's latest RCU
+"dev" branch. 
+
+Thanks!
+
+Uladzislau Rezki (2):
+  ext4: Switch to kvfree_rcu() API
+  fs: nfs: sysfs: Switch to kvfree_rcu() API
+
+Uladzislau Rezki (Sony) (7):
+  ext4: Replace ext4_kvfree_array_rcu() by kvfree_rcu() API
+  drivers: Switch to kvfree_rcu() API
+  x86/mm: Switch to kvfree_rcu() API
+  net/tipc: Switch to kvfree_rcu() API
+  net/core: Switch to kvfree_rcu() API
+  module: Switch to kvfree_rcu() API
+  tracing: Switch to kvfree_rcu() API
+
+ arch/x86/mm/mmio-mod.c                        |  6 ++--
+ drivers/block/drbd/drbd_nl.c                  |  9 ++----
+ drivers/block/drbd/drbd_receiver.c            |  6 ++--
+ drivers/block/drbd/drbd_state.c               |  3 +-
+ drivers/block/rnbd/rnbd-srv.c                 |  3 +-
+ drivers/crypto/nx/nx-common-pseries.c         |  3 +-
+ drivers/infiniband/hw/hfi1/sdma.c             |  3 +-
+ drivers/ipack/carriers/tpci200.c              |  3 +-
+ drivers/mfd/dln2.c                            |  6 ++--
+ drivers/misc/vmw_vmci/vmci_context.c          |  6 ++--
+ drivers/misc/vmw_vmci/vmci_event.c            |  3 +-
+ .../net/ethernet/chelsio/cxgb4/cxgb4_main.c   |  3 +-
+ .../net/ethernet/mellanox/mlx5/core/en/qos.c  |  3 +-
+ .../ethernet/mellanox/mlx5/core/fpga/tls.c    |  3 +-
+ drivers/net/ethernet/mellanox/mlxsw/core.c    |  3 +-
+ drivers/scsi/device_handler/scsi_dh_alua.c    |  3 +-
+ drivers/scsi/device_handler/scsi_dh_rdac.c    |  3 +-
+ drivers/staging/fwserial/fwserial.c           |  3 +-
+ fs/ext4/ext4.h                                |  1 -
+ fs/ext4/mballoc.c                             |  2 +-
+ fs/ext4/resize.c                              | 31 ++-----------------
+ fs/ext4/super.c                               |  5 ++-
+ fs/nfs/sysfs.c                                |  7 ++---
+ kernel/module.c                               |  3 +-
+ kernel/trace/trace_osnoise.c                  |  3 +-
+ kernel/trace/trace_probe.c                    |  3 +-
+ net/core/sysctl_net_core.c                    |  3 +-
+ net/tipc/crypto.c                             |  3 +-
+ 28 files changed, 37 insertions(+), 96 deletions(-)
+
+-- 
+2.30.2
 
