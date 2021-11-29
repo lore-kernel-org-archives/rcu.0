@@ -2,155 +2,280 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 564DDC433EF
-	for <rcu@archiver.kernel.org>; Mon, 29 Nov 2021 17:21:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 925BBC433FE
+	for <rcu@archiver.kernel.org>; Mon, 29 Nov 2021 18:52:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235868AbhK2RYc (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 29 Nov 2021 12:24:32 -0500
-Received: from mail-mw2nam12on2133.outbound.protection.outlook.com ([40.107.244.133]:29665
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1348295AbhK2RWb (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 29 Nov 2021 12:22:31 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ClEX6fNMQV7ZpllvbePkl91GjR2FUaW/z45gZr1xSDfA9rCrsryGll1xIkkyM+Rb+RukC/iQQ9annt++4+FDCmIplrVG+89368pEwol86S6tgSnbFvnORnQOn7oQrcGuq5ag0l4fnewwBbivMDOekXLeRnaAp/GhEeBJp1AVY4I3sO99/d6tjrOsYwGt5KZ02KZkzosrVkbUcLV86n2iG46UY1gtxq5k2Q612EaSW+tkZWRPTa5tjtdOnq6vxNO/dAtA+Ho0iUuMwzh1+B5p1YqwXfH3NSrsti3/feBCPuqswmJt24HmcA1SGuZrCcm2mhwvlDjD8UzWL0cZ0mFgWQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=y153pBrnUFab34Evm1zGVR1ipTLZhC6XqKfLwg91obk=;
- b=QhTK73p6olCwgyXcf2gsI636Bj3apQZf5SgAnB3RP1iVWzX84A1oP67I4+zBZtLhUUfnOnkBq040k3cdd07qrG46RV8Or4UGPQYFOCMBtRWkB4RoVE4/YOpCVjIzSbYjgOIQo/S7M1tybx/jcM+NIA6t90ksTh6i90QL85w7nQgk6pZYifYMXyp10f9JHQdaWlONRrHSj9L4HCPuaZg5NbEx/oaFmeHzYZgg6CQt+pZQ5suCTOsVyOsmtansmKMcWS6iJ7Ggpz2kzaaTHPuy5JoXgH7YIq8Haw3qE35P6RQ2tnrgWX0yx3bT5u8Ir5KCZC3aediHkAsEVidHOC458w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
- header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=y153pBrnUFab34Evm1zGVR1ipTLZhC6XqKfLwg91obk=;
- b=Ny50ZyWstGyiJLpGgu5mcDAf6Bbl3eoRYt7HwiddeXgrenHGqkLb9qcGBGHTpCygOJEd8aiLKazcAwdmSgc5Bk5w6h4+6mCjvuQLFx69JJ0pUNoNhyZyPwVxa9U/pWd22+9WGsgUwDr1WoSbCXxZWYuC0WmAHtBZNRLcYpmTewmlCn58LyE2saavtQDy7vlK9+fjALb6dxzurd6wmkY1gW65is94qgOl/desyTPnKK1lozZKBmuyb+UsCIDSMBOC/gAra58MKwFuFLifXjFiEiAV/WfonQak9qZwq0pgqeyKeRB98A0Vxrve6JUV+u0YrGVMXmTpH8+8u5pqqr8DNA==
-Received: from CH0PR01MB7153.prod.exchangelabs.com (2603:10b6:610:ea::7) by
- CH2PR01MB5957.prod.exchangelabs.com (2603:10b6:610:49::22) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4734.23; Mon, 29 Nov 2021 17:19:12 +0000
-Received: from CH0PR01MB7153.prod.exchangelabs.com
- ([fe80::bdea:4e22:1b89:24e0]) by CH0PR01MB7153.prod.exchangelabs.com
- ([fe80::bdea:4e22:1b89:24e0%9]) with mapi id 15.20.4734.024; Mon, 29 Nov 2021
- 17:19:12 +0000
-From:   "Marciniszyn, Mike" <mike.marciniszyn@cornelisnetworks.com>
-To:     Lee Jones <lee.jones@linaro.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-CC:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
+        id S1379903AbhK2SzX (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 29 Nov 2021 13:55:23 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:45470 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1380204AbhK2SxX (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 29 Nov 2021 13:53:23 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: gtucker)
+        with ESMTPSA id 686D51F449C6
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
+        t=1638211803; bh=DTF6/FoSwYiYGCQeoAe8IMEzQbDr/Pj8OzaQzKmLoHE=;
+        h=Subject:To:References:Cc:From:Date:In-Reply-To:From;
+        b=bV7vNqcFjGUj3U7+VKWwZ0rIe3g02ThjK/M9MaaPfPUD+/z/CatifaJg6bCIdaHRU
+         +hRlBpC3X24dKfxHnihxPLvhN8HxhOQA4cv7/ojx6FJZmDL0C4FgLuHYteg82Sa9k/
+         dCdzKn+2a1oWb41jTwdqvMaqZP/86Pews4ieAW50b0qcf155Cg1sqH0lVkcNQxwQR8
+         2BM+vdseCcv5eu1d9OTrSCTpQm7VEHDF6Sn7QlPuPv4CKej6Mj24oEpVRglCH971Se
+         X7uWL6MVNOcvbMkNGWkZMX5EJT8XbvOTBrEahreeo+9EW9pxSAAXPNMmLHQPvGtTiP
+         ulZWTb1ZoXYgQ==
+Subject: Re: next/master bisection: baseline.dmesg.alert on
+ qemu_arm64-virt-gicv3
+To:     "Paul E. McKenney" <paulmck@kernel.org>, Martin Lau <kafai@fb.com>
+References: <61a14e72.1c69fb81.a607d.66fb@mx.google.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
         Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        linux-doc@vger.kernel.org, "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Joerg Roedel <jroedel@suse.de>, rcu@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>, kernelci@groups.io,
         Joel Fernandes <joel@joelfernandes.org>,
+        linux-kernel@vger.kernel.org,
         Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Philipp Reisner <philipp.reisner@linbit.com>,
-        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Raju Rangoju <rajur@chelsio.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Jiri Pirko <jiri@nvidia.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: RE: [PATCH 4/9] drivers: Switch to kvfree_rcu() API
-Thread-Topic: [PATCH 4/9] drivers: Switch to kvfree_rcu() API
-Thread-Index: AQHX4SLovqOHzi8zakW5pKSla04gRqwaf1+AgABClqA=
-Date:   Mon, 29 Nov 2021 17:19:12 +0000
-Message-ID: <CH0PR01MB715310E9D87D76A15FEF96E2F2669@CH0PR01MB7153.prod.exchangelabs.com>
-References: <20211124110308.2053-1-urezki@gmail.com>
- <20211124110308.2053-5-urezki@gmail.com> <YaTOfSi99jV6EGfM@google.com>
-In-Reply-To: <YaTOfSi99jV6EGfM@google.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=cornelisnetworks.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: c22b1bda-4619-4a57-550e-08d9b35c5c99
-x-ms-traffictypediagnostic: CH2PR01MB5957:
-x-microsoft-antispam-prvs: <CH2PR01MB5957D3A536EF5DB5DA96A9E3F2669@CH2PR01MB5957.prod.exchangelabs.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: wUSd2kI5DhsqG5D3EKYgy/iEYlJVA8UDVtPjHs7fQC5htjC3p7qKvDRkqDMenq3ofk13WZXroxVJ5CV348ITqMRkyGbJD4URSttLBhm7gASBy2UTZbDpozlyssefTa0wI+TJgwQAhc2ZpLxSb1HxRFiHtW6IRD9mwAiodfQF8LjOO+1s06WzZq0xUImcOg2sJD+IMYLiOvj+qW/zc7FDzeNX3wYDG0Dv3Ljp3bBSiokgNeRa3RMLQYle2PtcMAvo9gR2MGaSHNkrCbm/Cbec6vhhMhxRJL2ts5/bRuLZdyPfOqrB7Akikyw5YLAvdZbjgCYtuVE0Zv55qylTqQRe0xV9EkSN8QSDI1Vx4Yks7OADNmP2pSzu1mzeQxJn03LhaWg5rVbhG3VXHNiFlwAWLD7urp4DL4MflenHcNuOAnNL+60o8ebFgZecpKZXeY28rHSwcTVOdQyfG+mOGA9Ec+NbCwKQhVkiVc12JbgBCvB/Fg/yXGr76j6m/7uqrExDhF2QfsosFwJRXimpDarmflBNp7FMe61rDjHcpBhDAnSWj4v7WZXFRACx8OBrMc+9KM8ICsAWBvfygQFbWTJTwyGCUOsL7p1BGs23DltftCL3N0yq0jQAMx32mLZMaRir05DPOQQsgXq33uvKY6ruKY7MiUj33diDsX0uTKwsyBhrrOrwyPv6eAfbDCMyNujG8OfsJIiVEQEFkOOeLAy1Dw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR01MB7153.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(366004)(136003)(396003)(39830400003)(110136005)(186003)(4744005)(54906003)(8676002)(55016003)(122000001)(26005)(86362001)(4326008)(38100700002)(8936002)(52536014)(316002)(9686003)(33656002)(66556008)(66946007)(66476007)(66446008)(64756008)(2906002)(38070700005)(76116006)(7416002)(6506007)(5660300002)(7696005)(71200400001)(508600001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?RGZWWXBtaTdoRkpQd1ViOUZ2ZTlpRnpoeDRxZWxwNzg4MVdVcTNmNVRJcVRp?=
- =?utf-8?B?RFdPbzFwbFlaM25ocWlWL0QxbGNUSlhhcVY4SUZHSUNxRzJYSTFEdUhkUHBk?=
- =?utf-8?B?STRSWTl0QUtXK1hoaThnaUs1VjF1dGUycE1aanZyT2lsOE42S1d6Q08xcFlT?=
- =?utf-8?B?NTFKaGRRdjFUZ05KZktnQ0FxOE96UVlHakh6cnZBZmRndmZEdTVReDBxZU12?=
- =?utf-8?B?RjcrZTBqTm1GZFZoZEc0RFpNOUV1WGdnSTFWekFMeEZnVXIvSytNdGN3eUpv?=
- =?utf-8?B?b2hyeGg4dm91TkNIUGxQZWtHV1NPUThpdkZKTTNWazI1TkFMY2dEL09PVHFv?=
- =?utf-8?B?UHRIYmhpYXozb3BqeUF5a1pYVUplOFhIcnZyQ2thekZxZnlTb3BGQUJvTUIz?=
- =?utf-8?B?TkNOS3g4ckUyaURFRTRFYlBnaVdKN3hOa2ROSVF2a2taMTR5eXdvZG9CcnlS?=
- =?utf-8?B?aUU1NG5RbHk4VURrWktTblQrNmE3eUlHaFJNWjMxVXRoQWlNZmhkVU5USkRE?=
- =?utf-8?B?dUxCVmt2Y2EwYnJvZ0dIV3dMZm4xbUE2Nk9IMHZON2RWUTdxZ2lxblE5RHJJ?=
- =?utf-8?B?RUl6QS9XdGI5ZDl3Tk8rTWRhYjRjbjdIWjlYbzFDekY1Mlo4QzNoUWo2UE4v?=
- =?utf-8?B?bWhoanhtWHJCVnlsclU0Sm1oeGdYV2xDQUFiNUdHajhDZFNOaGgvdjNTWHEx?=
- =?utf-8?B?bmc3bThqeHdiYW9PQURUYmczRS85Q1p0ekFxNERWU1pNaUJZZVlQK1JIOEVo?=
- =?utf-8?B?TmlyeElWVy9xYjBoMlI4Rmw1MEJEUWJocWplYm52VnFzMitjT1M0eG0vcG1a?=
- =?utf-8?B?Ti9MVlJqNThmUE9PSGsrUUhuelR1SWsyanhiWmRya1RnZldQUGZiSGZONDBD?=
- =?utf-8?B?TkZDc1dmN2ZPUHh1dGFDWDI0NkQ2Qk1nTG9COFlRckNLcEtlelhKTzdvT0JY?=
- =?utf-8?B?M1RJQUI1UysxNCtkQ2pMMmplOU9KZHRYZmZuTXhIejE4d1lHWmllZjZYWWdu?=
- =?utf-8?B?aEVMN1hnK1lKTDRlZnRwanhIYy9yNFEvN1NVQmNwSXZOSmp1cjhFSEw1b3Q1?=
- =?utf-8?B?c3hmemZEcG0rTXhSSGcrVXV0UCthUTg4QjFkVkp2WlhHSldVSXI3S0RhTWQ2?=
- =?utf-8?B?UERTRWdoTlhpVWNZSEhYUCtmdzlLYmVHN0IrcUNJQTU3L3d6ZmZWeVdKd0JY?=
- =?utf-8?B?eTNRVDBjd083NFBIWnpUU09YOE5pY2cxeWlqcGRZOXN6eDZEMXl1dHFSN2FY?=
- =?utf-8?B?K2REb2RuSEczUTl3cG9yUnhVWE1IOWNTbVh6Z1VwUmdsUzlITmZaZXNMb0sw?=
- =?utf-8?B?MWhmaVNOTGkzalVPR3hSSjFmNTVFTkdrUHhVZ0Rjc0ZaVEY2NXFBTFFERXow?=
- =?utf-8?B?RWs2NDBKeUEvTDFLbFBMRWl2dUc4VFZORTM3UklickE1cFV0czRxVXZUSEww?=
- =?utf-8?B?T29idnREQUIxWmZPMUUxeHVIcGRGa0FUVFpKUU9tWnA1SklWK3BMQ1ROZ0tE?=
- =?utf-8?B?UnczMHJkOTVVbytjRDhrQVZ4WGdJN1pXdlp0MHV0bzBxc2czUklVQ0gzTkg1?=
- =?utf-8?B?TFhKQ2xtU0Z3N2M2RTk1bzZ1dFJMOG95UnNFMXZmc2dJRU9JdjcrVWwvSzAz?=
- =?utf-8?B?dFpZb01hNnhhYVIwTVRjOXpGT2hsdnc5eUJJc3dIVzgrQ1FwRk9BRS9YTFk2?=
- =?utf-8?B?ZHpuaFpKK1dpc1ZFKzVSWXNTTER4YVRHTlg1aDJqNjduQzJ5ci9HQWIydUlR?=
- =?utf-8?B?TUV6TmZSeXJ6VU5iL0o4dmg5UjJZc05jWDlhK2JWNWx0bmFBVjB6TFdFeUYz?=
- =?utf-8?B?RXJxN011NG5yRGt6TUt4RmNwYkZXam9lV3R3ODVmU01kUFJjaHB1NlRiUzQx?=
- =?utf-8?B?WFFxQkpLZUpJSlEraElEK2JQUXpFcUhWOHU4ZDYydm5PV1IwTEpsczVTSkww?=
- =?utf-8?B?WDlITTRDdGFTNldmNzRzTUhPWFFaZnM2R2c5MXlHM0M5QVBrNUJmVkEzZTgy?=
- =?utf-8?B?cFBTRCtBR2JaU0U5NVoyQ0xvdWNKZGFwK1NaMSs1RzZvQmZTVGxRSm9aU251?=
- =?utf-8?B?Q3Y1Wms2S0llYUtYOHFVN0l6V0xEN0lOV3puSWVid2NZQkhxcTJGbzlKNVFl?=
- =?utf-8?B?cys2Q3BaWXRTQkp1REZDY3JWcWFOWG9Mb2RacjBYQnhNSndKbmR0Z3RCcWly?=
- =?utf-8?B?U2NyT0R0VStiQ0dzQ3krb1pXRlUwVGFoK2VmSjlyWjhFTmNMYkE5c3VJVVAw?=
- =?utf-8?B?WFVzd0pWOGJzVHJDaU9pSk1nWTZkejNROWEybGxkaVJLSEpWcU03a2RKRU9R?=
- =?utf-8?Q?tO46kqTA0uJ++wxfJe?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+From:   Guillaume Tucker <guillaume.tucker@collabora.com>
+Message-ID: <42cba265-2616-9382-324f-11718c8dca0c@collabora.com>
+Date:   Mon, 29 Nov 2021 18:50:01 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CH0PR01MB7153.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c22b1bda-4619-4a57-550e-08d9b35c5c99
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Nov 2021 17:19:12.0595
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: VwUVG9QzU6coLv9V2sU/to3liuiZNkv1NlP+SwUT0nTJ/1FRzs7I92/l6fmevUyMOy0RsSMlwHR6I0dh20eRCok/rl9FMW87As1zb504RloN8ZmdTlVHiUYRR/Yv4CIP
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR01MB5957
+In-Reply-To: <61a14e72.1c69fb81.a607d.66fb@mx.google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-PiBTdWJqZWN0OiBSZTogW1BBVENIIDQvOV0gZHJpdmVyczogU3dpdGNoIHRvIGt2ZnJlZV9yY3Uo
-KSBBUEkNCj4gDQo+IE9uIFdlZCwgMjQgTm92IDIwMjEsIFVsYWR6aXNsYXUgUmV6a2kgKFNvbnkp
-IHdyb3RlOg0KPiANCj4gPiBJbnN0ZWFkIG9mIGludm9raW5nIGEgc3luY2hyb25pemVfcmN1KCkg
-dG8gZnJlZSBhIHBvaW50ZXIgYWZ0ZXIgYQ0KPiA+IGdyYWNlIHBlcmlvZCB3ZSBjYW4gZGlyZWN0
-bHkgbWFrZSB1c2Ugb2YgbmV3IEFQSSB0aGF0IGRvZXMgdGhlIHNhbWUNCj4gPiBidXQgaW4gbW9y
-ZSBlZmZpY2llbnQgd2F5Lg0KPiA+DQorLS0NCj4gPiAgZHJpdmVycy9pbmZpbmliYW5kL2h3L2hm
-aTEvc2RtYS5jICAgICAgICAgICAgICAgICAgfCAzICstLQ0KDQpUaGUgc2RtYSBwb3J0aW9uIG9m
-IHRoZSBjaGFuZ2UgbG9va3MgZ29vZCENCg0KTWlrZQ0KDQpBY2tlZC1ieTogTWlrZSBNYXJjaW5p
-c3p5biA8bWlrZS5tYXJjaW5pc3p5bkBjb3JuZWxpc25ldHdvcmtzLmNvbT4NCg==
+Hi Paul,
+
+Please see the bisection report below about a new kernel alert
+message.
+
+Reports aren't automatically sent to the public while we're
+trialing new bisection features on kernelci.org but this one
+looks valid.
+
+Some more details can be found here:
+
+  https://linux.kernelci.org/test/case/id/61a4f02ad5a9e3a5f218f6f6/
+
+The bisection was run on QEMU but it seems to appear on all
+platforms as it's not an architecture-specific change.
+Presumably, none of the platforms in KernelCI is setting a value
+for rcu_task_enqueue_lim at the moment.
+
+Alert messages normally highlight potential problems, so ideally
+they would need to be resolved.  Should the message in this case
+really be a pr_alert(), and if so what would be the recommended
+way to avoid it?
+
+Best wishes,
+Guillaume
+
+
+GitHub: https://github.com/kernelci/kernelci-project/issues/78
+
+On 26/11/2021 21:15, kernelci.org bot wrote:
+> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+> * This automated bisection report was sent to you on the basis  *
+> * that you may be involved with the breaking commit it has      *
+> * found.  No manual investigation has been done to verify it,   *
+> * and the root cause of the problem may be somewhere else.      *
+> *                                                               *
+> * If you do send a fix, please include this trailer:            *
+> *   Reported-by: "kernelci.org bot" <bot@kernelci.org>          *
+> *                                                               *
+> * Hope this helps!                                              *
+> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+> 
+> next/master bisection: baseline.dmesg.alert on qemu_arm64-virt-gicv3
+> 
+> Summary:
+>   Start:      f30a24ed97b40 Add linux-next specific files for 20211126
+>   Plain log:  https://storage.kernelci.org/next/master/next-20211126/arm64/defconfig+CONFIG_ARM64_64K_PAGES=y/clang-13/lab-collabora/baseline-qemu_arm64-virt-gicv3.txt
+>   HTML log:   https://storage.kernelci.org/next/master/next-20211126/arm64/defconfig+CONFIG_ARM64_64K_PAGES=y/clang-13/lab-collabora/baseline-qemu_arm64-virt-gicv3.html
+>   Result:     dc9166f1253df rcu-tasks: Use more callback queues if contention encountered
+> 
+> Checks:
+>   revert:     PASS
+>   verify:     PASS
+> 
+> Parameters:
+>   Tree:       next
+>   URL:        https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+>   Branch:     master
+>   Target:     qemu_arm64-virt-gicv3
+>   CPU arch:   arm64
+>   Lab:        lab-collabora
+>   Compiler:   clang-13
+>   Config:     defconfig+CONFIG_ARM64_64K_PAGES=y
+>   Test case:  baseline.dmesg.alert
+> 
+> Breaking commit found:
+> 
+> -------------------------------------------------------------------------------
+> commit dc9166f1253df20e01b0132ece22efaeb5b0a7e0
+> Author: Paul E. McKenney <paulmck@kernel.org>
+> Date:   Wed Nov 24 15:12:15 2021 -0800
+> 
+>     rcu-tasks: Use more callback queues if contention encountered
+>     
+>     The rcupdate.rcu_task_enqueue_lim module parameter allows system
+>     administrators to tune the number of callback queues used by the RCU
+>     Tasks flavors.  However if callback storms are infrequent, it would
+>     be better to operate with a single queue on a given system unless and
+>     until that system actually needed more queues.  Systems not needing
+>     more queues can then avoid the overhead of checking the extra queues
+>     and especially avoid the overhead of fanning workqueue handlers out to
+>     all CPUs to invoke callbacks.
+>     
+>     This commit therefore switches to using all the CPUs' callback queues if
+>     call_rcu_tasks_generic() encounters too much lock contention.  The amount
+>     of lock contention to tolerate defaults to 100 contended lock acquisitions
+>     per jiffy, and can be adjusted using the new rcupdate.rcu_task_contend_lim
+>     module parameter.
+>     
+>     Such switching is undertaken only if the rcupdate.rcu_task_enqueue_lim
+>     module parameter is negative, which is its default value (-1).
+>     This allows savvy systems administrators to set the number of queues
+>     to some known good value and to not have to worry about the kernel doing
+>     any second guessing.
+>     
+>     Reported-by: Martin Lau <kafai@fb.com>
+>     Cc: Neeraj Upadhyay <neeraj.iitr10@gmail.com>
+>     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> 
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index f1f3761fe42c8..fc5e20afaeefa 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -4813,6 +4813,14 @@
+>  			period to instead use normal non-expedited
+>  			grace-period processing.
+>  
+> +	rcupdate.rcu_task_contend_lim= [KNL]
+> +			Set the minimum number of callback-queuing-time
+> +			lock-contention events per jiffy required to
+> +			cause the RCU Tasks flavors to switch to per-CPU
+> +			callback queuing.  This switching only occurs
+> +			when rcupdate.rcu_task_enqueue_lim is set to
+> +			the default value of -1.
+> +
+>  	rcupdate.rcu_task_enqueue_lim= [KNL]
+>  			Set the number of callback queues to use for the
+>  			RCU Tasks family of RCU flavors.  The default
+> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> index 0cb20e5b3e856..7da3b500fb901 100644
+> --- a/kernel/rcu/tasks.h
+> +++ b/kernel/rcu/tasks.h
+> @@ -142,6 +142,10 @@ module_param(rcu_task_stall_timeout, int, 0644);
+>  static int rcu_task_enqueue_lim __read_mostly = -1;
+>  module_param(rcu_task_enqueue_lim, int, 0444);
+>  
+> +static bool rcu_task_cb_adjust;
+> +static int rcu_task_contend_lim __read_mostly = 100;
+> +module_param(rcu_task_contend_lim, int, 0444);
+> +
+>  /* RCU tasks grace-period state for debugging. */
+>  #define RTGS_INIT		 0
+>  #define RTGS_WAIT_WAIT_CBS	 1
+> @@ -207,8 +211,11 @@ static void cblist_init_generic(struct rcu_tasks *rtp)
+>  	int lim;
+>  
+>  	raw_spin_lock_irqsave(&rtp->cbs_gbl_lock, flags);
+> -	if (rcu_task_enqueue_lim < 0)
+> -		rcu_task_enqueue_lim = nr_cpu_ids;
+> +	if (rcu_task_enqueue_lim < 0) {
+> +		rcu_task_enqueue_lim = 1;
+> +		rcu_task_cb_adjust = true;
+> +		pr_alert("%s: Setting adjustable number of callback queues.\n", __func__);
+> +	}
+>  	else if (rcu_task_enqueue_lim == 0)
+>  		rcu_task_enqueue_lim = 1;
+>  	lim = rcu_task_enqueue_lim;
+> @@ -251,6 +258,7 @@ static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
+>  {
+>  	unsigned long flags;
+>  	unsigned long j;
+> +	bool needadjust = false;
+>  	bool needwake;
+>  	struct rcu_tasks_percpu *rtpcp;
+>  
+> @@ -266,7 +274,9 @@ static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
+>  			rtpcp->rtp_jiffies = j;
+>  			rtpcp->rtp_n_lock_retries = 0;
+>  		}
+> -		rtpcp->rtp_n_lock_retries++;
+> +		if (rcu_task_cb_adjust && ++rtpcp->rtp_n_lock_retries > rcu_task_contend_lim &&
+> +		    READ_ONCE(rtp->percpu_enqueue_lim) != nr_cpu_ids)
+> +			needadjust = true;  // Defer adjustment to avoid deadlock.
+>  	}
+>  	if (!rcu_segcblist_is_enabled(&rtpcp->cblist)) {
+>  		raw_spin_unlock_rcu_node(rtpcp); // irqs remain disabled.
+> @@ -276,6 +286,15 @@ static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
+>  	needwake = rcu_segcblist_empty(&rtpcp->cblist);
+>  	rcu_segcblist_enqueue(&rtpcp->cblist, rhp);
+>  	raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
+> +	if (unlikely(needadjust)) {
+> +		raw_spin_lock_irqsave(&rtp->cbs_gbl_lock, flags);
+> +		if (rtp->percpu_enqueue_lim != nr_cpu_ids) {
+> +			WRITE_ONCE(rtp->percpu_enqueue_shift, ilog2(nr_cpu_ids));
+> +			smp_store_release(&rtp->percpu_enqueue_lim, nr_cpu_ids);
+> +			pr_alert("Switching %s to per-CPU callback queuing.\n", rtp->name);
+> +		}
+> +		raw_spin_unlock_irqrestore(&rtp->cbs_gbl_lock, flags);
+> +	}
+>  	/* We can't create the thread unless interrupts are enabled. */
+>  	if (needwake && READ_ONCE(rtp->kthread_ptr)) {
+>  		irq_work_queue(&rtpcp->rtp_irq_work);
+> -------------------------------------------------------------------------------
+> 
+> 
+> Git bisection log:
+> 
+> -------------------------------------------------------------------------------
+> git bisect start
+> # good: [8ced7ca3570333998ad2088d5a6275701970e28e] Merge tag 'block-5.16-2021-11-25' of git://git.kernel.dk/linux-block
+> git bisect good 8ced7ca3570333998ad2088d5a6275701970e28e
+> # bad: [f30a24ed97b401416118756fa35fbe5d28f999e3] Add linux-next specific files for 20211126
+> git bisect bad f30a24ed97b401416118756fa35fbe5d28f999e3
+> # good: [d7359ce68f20102beeec57e760b746e1f76ab65c] Merge branch 'mtd/next' of git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git
+> git bisect good d7359ce68f20102beeec57e760b746e1f76ab65c
+> # good: [6eb0c6fb36d50e66ca0b686ec0eebd7eddff811b] Merge branch 'next' of git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git
+> git bisect good 6eb0c6fb36d50e66ca0b686ec0eebd7eddff811b
+> # bad: [e62c6fa2d7d055d657c00734314d6abc664d28b5] Merge branch 'staging-next' of git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git
+> git bisect bad e62c6fa2d7d055d657c00734314d6abc664d28b5
+> # good: [0ebaaa3b9daaf0341c75a66b8b33399e23e40a8f] Merge branch 'edac-for-next' of git://git.kernel.org/pub/scm/linux/kernel/git/ras/ras.git
+> git bisect good 0ebaaa3b9daaf0341c75a66b8b33399e23e40a8f
+> # bad: [556fc834ce0be2f0dbfd8ae2bfb3840326d12cb9] Merge branch 'for-next' of git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git
+> git bisect bad 556fc834ce0be2f0dbfd8ae2bfb3840326d12cb9
+> # good: [ad3b4071d577f2779c706a22956b6d167710459b] refscale: Simplify the errexit checkpoint
+> git bisect good ad3b4071d577f2779c706a22956b6d167710459b
+> # good: [24f474cf45326225f613b58b191600311109695b] rcutorture: Cause TREE02 and TREE10 scenarios to do more callback flooding
+> git bisect good 24f474cf45326225f613b58b191600311109695b
+> # bad: [731f2830b96ce040e52b227346087e0dc3a6f5d0] Merge branch 'linux-next' of git://git.kernel.org/pub/scm/linux/kernel/git/xen/tip.git
+> git bisect bad 731f2830b96ce040e52b227346087e0dc3a6f5d0
+> # bad: [3a528960b4b5d4069e4b066a1d9278862e902abc] Merge branch 'rcu/next' of git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git
+> git bisect bad 3a528960b4b5d4069e4b066a1d9278862e902abc
+> # bad: [a106e93308b6c60944c9021fc2cad377639584a2] rcu/nocb: Remove rdp from nocb list when de-offloaded
+> git bisect bad a106e93308b6c60944c9021fc2cad377639584a2
+> # good: [a3d09240cbfd98525dbd7038a4ec1afb4bc896a2] rcu-tasks: Avoid raw-spinlocked wakeups from call_rcu_tasks_generic()
+> git bisect good a3d09240cbfd98525dbd7038a4ec1afb4bc896a2
+> # bad: [4e83e8074d198b5849926d4a7d921063b24c0250] rcutorture: Test RCU Tasks lock-contention detection
+> git bisect bad 4e83e8074d198b5849926d4a7d921063b24c0250
+> # bad: [dc9166f1253df20e01b0132ece22efaeb5b0a7e0] rcu-tasks: Use more callback queues if contention encountered
+> git bisect bad dc9166f1253df20e01b0132ece22efaeb5b0a7e0
+> # first bad commit: [dc9166f1253df20e01b0132ece22efaeb5b0a7e0] rcu-tasks: Use more callback queues if contention encountered
+> -------------------------------------------------------------------------------
+> 
+
