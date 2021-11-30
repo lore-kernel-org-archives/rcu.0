@@ -2,44 +2,33 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AE162C433F5
-	for <rcu@archiver.kernel.org>; Tue, 30 Nov 2021 12:05:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7760CC433EF
+	for <rcu@archiver.kernel.org>; Tue, 30 Nov 2021 12:50:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241274AbhK3MIk (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 30 Nov 2021 07:08:40 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:48450 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241281AbhK3MIj (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 30 Nov 2021 07:08:39 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 8146BB81846;
-        Tue, 30 Nov 2021 12:05:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 940D1C53FCF;
-        Tue, 30 Nov 2021 12:05:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638273915;
-        bh=BKaO6kLYHyi6gZ59PeSbDaTBZNbumFvE8rNJV7KzBlo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hOF11PwF8K02hkwjdiO7NNATq3dgnUdSInx6jH8I2MQrgB14tcs6k1ABlD5nF09Kk
-         YQevQKXR/0LMspeXSihyjYp+weSiCKaNtt2SYK7aEaSYk6rApaJ6x4M3JRTDejckk9
-         0TSBp31MYGDXStoZhwTz/J1PfdJzZsnallQrkqLRsF8KRy5N3zeMxK1SgTgF8OzAJ/
-         0IkmYPur0X91lab3GZ/relF9o28mWTSdSO2/0wnmTjFuwCmIRXA4HiUq2AARUA28q1
-         ZA4MjzIiazd1BYwA07/g5ALL77md8TEcC2jkNCZxDifGIWT80v/UW/bQ6fhZbx2lmV
-         nKwBMfWClWjLw==
-Date:   Tue, 30 Nov 2021 13:05:11 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
+        id S231908AbhK3Mx6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 30 Nov 2021 07:53:58 -0500
+Received: from foss.arm.com ([217.140.110.172]:37236 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230150AbhK3Mx5 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 30 Nov 2021 07:53:57 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 781E41042;
+        Tue, 30 Nov 2021 04:50:38 -0800 (PST)
+Received: from FVFF77S0Q05N (unknown [10.57.66.132])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DA15C3F5A1;
+        Tue, 30 Nov 2021 04:50:36 -0800 (PST)
+Date:   Tue, 30 Nov 2021 12:50:30 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
 To:     Nicolas Saenz Julienne <nsaenzju@redhat.com>
 Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
         linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
         rcu@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
         Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>, paulmck@kernel.org,
-        mtosatti <mtosatti@redhat.com>
+        Steven Rostedt <rostedt@goodmis.org>,
+        mtosatti <mtosatti@redhat.com>, frederic <frederic@kernel.org>,
+        paulmck@kernel.org
 Subject: Re: Question WRT early IRQ/NMI entry code
-Message-ID: <20211130120511.GB599355@lothringen>
+Message-ID: <YaYeFu4hi3uVkhkN@FVFF77S0Q05N>
 References: <8719ad46cc29a2c5d7baac3c35770e5460ab8d5c.camel@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
@@ -52,18 +41,52 @@ X-Mailing-List: rcu@vger.kernel.org
 
 On Tue, Nov 30, 2021 at 12:28:41PM +0100, Nicolas Saenz Julienne wrote:
 > Hi All,
+
+Hi Nicolas,
+
 > while going over the IRQ/NMI entry code I've found a small 'inconsistency':
 > while in the IRQ entry path, we inform RCU of the context change *before*
 > incrementing the preempt counter, the opposite happens for the NMI entry
 > path. This applies to both arm64 and x86[1].
-> 
+
+For arm64, the style was copied from the x86 code, and (AFAIK) I had no
+particular reason for following either order other than consistency with x86.
+
 > Actually, rcu_nmi_enter() — which is also the main RCU context switch function
 > for the IRQ entry path — uses the preempt counter to verify it's not in NMI
 > context. So it would make sense to assume all callers have the same updated
 > view of the preempt count, which isn't true ATM.
-> 
+
+I agree consistency would be nice, assuming there's no issue preventing us from
+moving the IRQ preempt_count logic earlier.
+
+It sounds like today the ordering is only *required* when entering an NMI, and
+we already do the right thing there. Do you see a case where something would go
+wrong (or would behave differently with the flipped ordering) for IRQ today?
+
 > I'm sure there an obscure/non-obvious reason for this, right?
 
-At least I can't find an immediate reason for it either :-)
+TBH I suspect this is mostly oversight / legacy, and likely something we can
+tighten up.
 
-Thanks!
+Thanks,
+Mark.
+
+> 
+> Thanks!
+> Nicolas
+> 
+> [1] 
+> IRQ path:
+>   -> x86_64 asm (entry_64.S)
+>   -> irqentry_enter() -> rcu_irq_enter() -> *rcu_nmi_enter()*
+>   -> run_irq_on_irqstack_cond() -> irq_exit_rcu() -> *preempt_count_add(HARDIRQ_OFFSET)*
+>   -> // Run IRQ...
+> 
+> NMI path:
+>   -> x86_64 asm (entry_64.S)
+>   -> irqentry_nmi_enter() -> __nmi_enter() -> *__preempt_count_add(NMI_OFFSET + HARDIRQ_OFFSET)*
+>                           -> *rcu_nmi_enter()*
+> 
+> For arm64, see 'arch/arm64/kernel/entry-common.c'.
+> 
