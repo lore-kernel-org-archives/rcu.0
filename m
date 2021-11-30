@@ -2,102 +2,101 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 10999C433F5
-	for <rcu@archiver.kernel.org>; Tue, 30 Nov 2021 11:04:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3619FC433F5
+	for <rcu@archiver.kernel.org>; Tue, 30 Nov 2021 11:28:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236616AbhK3LHm (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 30 Nov 2021 06:07:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235795AbhK3LHm (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 30 Nov 2021 06:07:42 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EF54C061574;
-        Tue, 30 Nov 2021 03:04:23 -0800 (PST)
-Date:   Tue, 30 Nov 2021 12:04:19 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1638270260;
+        id S232824AbhK3LcE (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 30 Nov 2021 06:32:04 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59278 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231402AbhK3LcE (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Tue, 30 Nov 2021 06:32:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1638271724;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=42E3Yf17eG7PdQAJ0EhkMdoRgBLf0V9bPk5gtIFAKrs=;
-        b=W7EGFP1oIceRJ5lrXCWf/0YlMmWTzMCHHhBfUwsEyjxTRiNpJfOxpNGMEnpfx9j0pEb9ZN
-        H26KYBlVmkCDOMlBr8tgSiUYnLLe6Xctcy8Ij4SFkY9TD0vVMeBs56RE03hZv7IBWraBVy
-        puHP93MVui/hwhHS/A9eTT2lBCyMcCiNH/F2iJ9g4mhsxf28ExGfyHv1BuZIHl8WBx10Ri
-        hGTzao8o0+Yp6fegfCnuRWsM3QKruH9Mkst2kwDIuQBEMYsEPBNLyY95B81CYOFYlvDC2u
-        aevZRpxoFgfaLDKNOl5zTPZQTPLTTwppcSrM+u4AQsMufp8AQumo6MDRZAgHJw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1638270260;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=42E3Yf17eG7PdQAJ0EhkMdoRgBLf0V9bPk5gtIFAKrs=;
-        b=M1LhNaEefSaZOeYf0nPo1WyzYvRWCWKyM+Y7xVG66Xw1I+ATLjVr3WpOhmi5nTQS54p5dR
-        dH2bIlCEatkf5YCQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Miroslav Benes <mbenes@suse.cz>
-Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
+         content-transfer-encoding:content-transfer-encoding;
+        bh=yZqFBMQmU1IhB8ncRVftJNI3p0Vlo844LTlyhHxLazk=;
+        b=UYjWY9uAOXDzXKY+TcBbNXEl+AKwQ77gjcUSM8QggFjFzKzZxJJPRJvmpxP6ZUUTYLKtbf
+        3MzUxIaNeOgG5PcIhIpDDrH4wNkgUSpK2/7MG59NnlM+zce67XA3k/rL86znKn1XYWCzxm
+        kswGx4MC2eJSqwaKNgGVKOvVm3hWzXI=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-376-3NJfoqs0ND61Tje3DQBeoQ-1; Tue, 30 Nov 2021 06:28:43 -0500
+X-MC-Unique: 3NJfoqs0ND61Tje3DQBeoQ-1
+Received: by mail-wm1-f71.google.com with SMTP id a85-20020a1c7f58000000b0033ddc0eacc8so11716569wmd.9
+        for <rcu@vger.kernel.org>; Tue, 30 Nov 2021 03:28:43 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=yZqFBMQmU1IhB8ncRVftJNI3p0Vlo844LTlyhHxLazk=;
+        b=yuWLoXUiWGSr7vDXWm9AQl1caJH8TPJScJLEQhYXkiI2RiJLk/mYB/shzCb4XW+mmc
+         1uFqr5wphLOU+12YakHjP3aSodZcU+b4i7VP/kDJwfjv8KFfAWVD4hXTd8XBH06MVD0c
+         NS5zcfHJgY/XJxUu17YKPkKKatD40aMA73Z326PGy/UusCsexxbo6rOGPw/pr/csIzON
+         +tuLjlS5QMRYOa5BhYm5ldVValpFYfFJQaqQKHTAl3SlkFN82tMTgH9+59O2/wR2Gy8Q
+         PMrdAmAICkyWGvoNi5N6BFWVPHeE/Vt4rYNsP+xfZOAlMiqfVArvY94mRRv7wyosTI/D
+         U0bw==
+X-Gm-Message-State: AOAM533a4B5AN8oIWp1d/Z/x9+KjsD8/vt8K0m+hnGzPoecHoZDvBgIu
+        v+pDXy26XJC0B7/Vps5Th1/wOpSxY7Keju8Bjw+B/061ImX0hmmrilrHfD2iGp1Z9NNhZjjmUeD
+        uDVE+rwGFQiys
+X-Received: by 2002:a05:600c:4c96:: with SMTP id g22mr4254406wmp.46.1638271722537;
+        Tue, 30 Nov 2021 03:28:42 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx/9GrALUeaBbvZUBckwc79sI7gw19bJw72Npbegb+eXE0pVIKTWiKgjhI8d3++hkKkU2yZJw==
+X-Received: by 2002:a05:600c:4c96:: with SMTP id g22mr4254381wmp.46.1638271722371;
+        Tue, 30 Nov 2021 03:28:42 -0800 (PST)
+Received: from ?IPv6:2a0c:5a80:3c10:3400:3c70:6643:6e71:7eae? ([2a0c:5a80:3c10:3400:3c70:6643:6e71:7eae])
+        by smtp.gmail.com with ESMTPSA id k37sm2413311wms.21.2021.11.30.03.28.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Nov 2021 03:28:42 -0800 (PST)
+Message-ID: <8719ad46cc29a2c5d7baac3c35770e5460ab8d5c.camel@redhat.com>
+Subject: Question WRT early IRQ/NMI entry code
+From:   Nicolas Saenz Julienne <nsaenzju@redhat.com>
+To:     linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        rcu@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Luis Chamberlain <mcgrof@kernel.org>, jeyu@kernel.org
-Subject: Re: [PATCH 8/9] module: Switch to kvfree_rcu() API
-Message-ID: <20211130110419.hxcexzckbbz77xps@linutronix.de>
-References: <20211124110308.2053-1-urezki@gmail.com>
- <20211124110308.2053-9-urezki@gmail.com>
- <alpine.LSU.2.21.2111301132220.3922@pobox.suse.cz>
+        Mark Rutland <mark.rutland@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>, paulmck@kernel.org,
+        mtosatti <mtosatti@redhat.com>, frederic <frederic@kernel.org>
+Date:   Tue, 30 Nov 2021 12:28:41 +0100
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.1 (3.42.1-1.fc35) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.21.2111301132220.3922@pobox.suse.cz>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 2021-11-30 11:39:09 [+0100], Miroslav Benes wrote:
-> > --- a/kernel/module.c
-> > +++ b/kernel/module.c
-> > @@ -4150,8 +4150,7 @@ static int load_module(struct load_info *info, const char __user *uargs,
-> >   ddebug_cleanup:
-> >  	ftrace_release_mod(mod);
-> >  	dynamic_debug_remove(mod, info->debug);
-> > -	synchronize_rcu();
-> > -	kfree(mod->args);
-> > +	kvfree_rcu(mod->args);
-> >   free_arch_cleanup:
-> >  	cfi_cleanup(mod);
-> >  	module_arch_cleanup(mod);
-> 
-> hm, if I am not missing something, synchronize_rcu() is not really 
-> connected to kfree(mod->args) there. synchronize_rcu() was added a long 
-> time ago when kernel/module.c removed stop_machine() from the code and 
-> replaced it with RCU to protect (at least?) mod->list. You can find 
-> list_del_rcu(&mod->list) a couple of lines below.
+Hi All,
+while going over the IRQ/NMI entry code I've found a small 'inconsistency':
+while in the IRQ entry path, we inform RCU of the context change *before*
+incrementing the preempt counter, the opposite happens for the NMI entry
+path. This applies to both arm64 and x86[1].
 
-so instead synchronize_rcu() + kfree() you could do
-call_rcu(&mod->args->rcu, kfree()) but since you have no RCU-head around
-in args you wait for the grace period and then invoke kfree.
+Actually, rcu_nmi_enter() — which is also the main RCU context switch function
+for the IRQ entry path — uses the preempt counter to verify it's not in NMI
+context. So it would make sense to assume all callers have the same updated
+view of the preempt count, which isn't true ATM.
 
-kvfree_rcu() is somehow like call_rcu() + kfree() but without the needed
-RCU-head. 
-So you avoid waiting for the grace period but mod->args is freed later,
-after as expected.
+I'm sure there an obscure/non-obvious reason for this, right?
 
-> And yes, one could ask how this all works. The error/cleanup sequence in 
-> load_module() is a giant mess... well, load_module() is a mess too, but 
-> the error path is really not nice.
+Thanks!
+Nicolas
 
-Well, spring is coming :)
+[1] 
+IRQ path:
+  -> x86_64 asm (entry_64.S)
+  -> irqentry_enter() -> rcu_irq_enter() -> *rcu_nmi_enter()*
+  -> run_irq_on_irqstack_cond() -> irq_exit_rcu() -> *preempt_count_add(HARDIRQ_OFFSET)*
+  -> // Run IRQ...
 
-> Miroslav
+NMI path:
+  -> x86_64 asm (entry_64.S)
+  -> irqentry_nmi_enter() -> __nmi_enter() -> *__preempt_count_add(NMI_OFFSET + HARDIRQ_OFFSET)*
+                          -> *rcu_nmi_enter()*
 
-Sebastian
+For arm64, see 'arch/arm64/kernel/entry-common.c'.
+
