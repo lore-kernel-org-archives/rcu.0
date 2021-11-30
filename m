@@ -2,113 +2,115 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2050EC433FE
-	for <rcu@archiver.kernel.org>; Tue, 30 Nov 2021 17:02:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 637F9C433F5
+	for <rcu@archiver.kernel.org>; Tue, 30 Nov 2021 18:44:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244541AbhK3RF0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 30 Nov 2021 12:05:26 -0500
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:32631 "EHLO
-        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244535AbhK3RFZ (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Tue, 30 Nov 2021 12:05:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1638291726; x=1669827726;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=+mK++W47HMwEMFNKuyUJKDP/LccL4vEScUgf0gu9vq8=;
-  b=Tt/03SzfU0Qx47zPLv391v6j3if5wNmlwpXyRBFcLsPJVzFCMGRDylSB
-   yc9ya8Uq+t9mmUsUfHVl15coHzV8fhN8vrTeKOe2LmdA/zPn6+XRtIzpH
-   Tu9Uk26rKjKAhet1nU1T3WXtzpOChW8u2ZKPpsyaxsT7s2S5dW8GwNs/v
-   U=;
-Received: from unknown (HELO ironmsg05-sd.qualcomm.com) ([10.53.140.145])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 30 Nov 2021 09:02:05 -0800
-X-QCInternal: smtphost
-Received: from nasanex01b.na.qualcomm.com ([10.46.141.250])
-  by ironmsg05-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2021 09:02:04 -0800
-Received: from [10.216.9.218] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.19; Tue, 30 Nov
- 2021 09:02:01 -0800
-Message-ID: <dee700be-bad1-e497-ccfc-916b98d7d593@quicinc.com>
-Date:   Tue, 30 Nov 2021 22:31:57 +0530
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.2
-Subject: Re: [PATCH] rcu/exp: Mark current CPU as exp-QS in IPI loop second
- pass
-Content-Language: en-US
-To:     Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-CC:     LKML <linux-kernel@vger.kernel.org>,
+        id S245559AbhK3SrY (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 30 Nov 2021 13:47:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239001AbhK3SrX (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 30 Nov 2021 13:47:23 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54444C061574;
+        Tue, 30 Nov 2021 10:44:04 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id BA652B818F9;
+        Tue, 30 Nov 2021 18:44:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 755BEC53FCC;
+        Tue, 30 Nov 2021 18:44:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1638297841;
+        bh=yzwzdvZPVaXvumoAuMDXivXL3sY8OxSX0FQtSCsIB1Q=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Oxq2g5zyWfwC6jHkw/kNS3pL7MMvPQBBhlu3nEGppKb41J6xw3meGxedtYWyJXp88
+         8uQqluaB8OG3yu1Xu8GW78URZL2YJGfYfNDmy/10jXswPZ0Ef8iVnyoZWDI9CHsS7x
+         p1tiiwWsP8W9X0TK6ElbI8wlft2PHkOjogf7RE5ukfSezyk1BBiTG/Fwl9gmpYc07u
+         hnELVr2LTQRfBo3tXYNjNr0eiDBvd12Pj4S9cgSziyncVQgePZO/VzyFagqID8PRYF
+         NVAxNz03RYqOcUtTSKtDJsaN+Pnvzdky/STxkgNbYM1gl5O7zMuuMsfyU38u1nPx+C
+         vq/4DMutPVKyA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 3ADC95C0367; Tue, 30 Nov 2021 10:44:01 -0800 (PST)
+Date:   Tue, 30 Nov 2021 10:44:01 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Neeraj Upadhyay <quic_neeraju@quicinc.com>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
         Uladzislau Rezki <urezki@gmail.com>,
         Boqun Feng <boqun.feng@gmail.com>,
         Josh Triplett <josh@joshtriplett.org>,
-        Joel Fernandes <joel@joelfernandes.org>, <rcu@vger.kernel.org>
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
+Subject: Re: [PATCH] rcu/exp: Mark current CPU as exp-QS in IPI loop second
+ pass
+Message-ID: <20211130184401.GX641268@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 References: <20211130162108.605092-1-frederic@kernel.org>
-From:   Neeraj Upadhyay <quic_neeraju@quicinc.com>
-In-Reply-To: <20211130162108.605092-1-frederic@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
+ <dee700be-bad1-e497-ccfc-916b98d7d593@quicinc.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dee700be-bad1-e497-ccfc-916b98d7d593@quicinc.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-
-
-On 11/30/2021 9:51 PM, Frederic Weisbecker wrote:
-> While looping through the rnp's CPUs to IPI for an expedited grace
-> period, a first pass excludes the current CPU and the CPUs in dynticks
-> idle mode. The workqueue will report their QS on their behalf later.
+On Tue, Nov 30, 2021 at 10:31:57PM +0530, Neeraj Upadhyay wrote:
 > 
-> The second pass processes the IPIs and also ignores the current CPU,
-> assuming it has been previously included in the group of CPUs whose
-> QS are to be reported by the workqueue.
 > 
-> Unfortunately the current CPU may have changed between the first and
-> second pass, due to the rnp lock being dropped, re-enabling preemption.
-> As a result the current CPU, if different in the second pass, may be
-> ignored by the expedited grace period. No IPI will be sent to it
-> so it won't be requested to report an expedited quiescent state.
+> On 11/30/2021 9:51 PM, Frederic Weisbecker wrote:
+> > While looping through the rnp's CPUs to IPI for an expedited grace
+> > period, a first pass excludes the current CPU and the CPUs in dynticks
+> > idle mode. The workqueue will report their QS on their behalf later.
+> > 
+> > The second pass processes the IPIs and also ignores the current CPU,
+> > assuming it has been previously included in the group of CPUs whose
+> > QS are to be reported by the workqueue.
+> > 
+> > Unfortunately the current CPU may have changed between the first and
+> > second pass, due to the rnp lock being dropped, re-enabling preemption.
+> > As a result the current CPU, if different in the second pass, may be
+> > ignored by the expedited grace period. No IPI will be sent to it
+> > so it won't be requested to report an expedited quiescent state.
+> > 
+> > This ends up in an expedited grace period stall.
+> > 
+> > Fix this with including the current CPU in the second round in the group
+> > of CPUs to report a QS for by the workqueue.
+> > 
+> > Fixes: b9ad4d6ed18e ("rcu: Avoid self-IPI in sync_rcu_exp_select_node_cpus()")
+> > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> > Cc: Uladzislau Rezki <urezki@gmail.com>
+> > Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+> > Cc: Boqun Feng <boqun.feng@gmail.com>
+> > Cc: Josh Triplett <josh@joshtriplett.org>
+> > Cc: Joel Fernandes <joel@joelfernandes.org>
+> > ---
 > 
-> This ends up in an expedited grace period stall.
+> Reviewed-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+
+Applied, thank you both!
+
+							Thanx, Paul
+
+> Thanks
+> Neeraj
 > 
-> Fix this with including the current CPU in the second round in the group
-> of CPUs to report a QS for by the workqueue.
 > 
-> Fixes: b9ad4d6ed18e ("rcu: Avoid self-IPI in sync_rcu_exp_select_node_cpus()")
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> Cc: Uladzislau Rezki <urezki@gmail.com>
-> Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
-> Cc: Boqun Feng <boqun.feng@gmail.com>
-> Cc: Josh Triplett <josh@joshtriplett.org>
-> Cc: Joel Fernandes <joel@joelfernandes.org>
-> ---
-
-Reviewed-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
-
-
-
-Thanks
-Neeraj
-
-
->   kernel/rcu/tree_exp.h | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-> index a96d17206d87..237a79989aba 100644
-> --- a/kernel/rcu/tree_exp.h
-> +++ b/kernel/rcu/tree_exp.h
-> @@ -387,6 +387,7 @@ static void sync_rcu_exp_select_node_cpus(struct work_struct *wp)
->   			continue;
->   		}
->   		if (get_cpu() == cpu) {
-> +			mask_ofl_test |= mask;
->   			put_cpu();
->   			continue;
->   		}
-> 
+> >   kernel/rcu/tree_exp.h | 1 +
+> >   1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+> > index a96d17206d87..237a79989aba 100644
+> > --- a/kernel/rcu/tree_exp.h
+> > +++ b/kernel/rcu/tree_exp.h
+> > @@ -387,6 +387,7 @@ static void sync_rcu_exp_select_node_cpus(struct work_struct *wp)
+> >   			continue;
+> >   		}
+> >   		if (get_cpu() == cpu) {
+> > +			mask_ofl_test |= mask;
+> >   			put_cpu();
+> >   			continue;
+> >   		}
+> > 
