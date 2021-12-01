@@ -2,103 +2,73 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EC323C433FE
-	for <rcu@archiver.kernel.org>; Wed,  1 Dec 2021 14:41:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 67762C433EF
+	for <rcu@archiver.kernel.org>; Wed,  1 Dec 2021 16:48:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350957AbhLAOoU (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Dec 2021 09:44:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46568 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350689AbhLAOmT (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 1 Dec 2021 09:42:19 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F05F8C061396;
-        Wed,  1 Dec 2021 06:37:37 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id B35A9B81FE1;
-        Wed,  1 Dec 2021 14:37:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B47FC53FCC;
-        Wed,  1 Dec 2021 14:37:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638369455;
-        bh=8tI1ueqtoUGBHxIn0DIOwwe7EpQvXK0zlIGQBD3fb9c=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=PHiMNFYCwyGnWE8n56PQo0IO8rkI2Bu88RWUIVQb//+aCZsL/0KgrQbx7U4r9XKsN
-         GqkTbMLWZIX2poQ0ZDJEPiqZe9W/c587gEv9gA3syh0FIZnB6kgVIbz4t3RHWvgt8V
-         Foadylp3qypcQOaP89z97ZUrux1OouGmigGTUs3CrYnWJ+zShY0IpES7m2g0iVN9xm
-         Bt9eZ63w4Q7bB2RSvHJ+DFRNlYEj69dvx0hmtIFilwKpvUlT7dKkAvdpoUg7J/ZVhF
-         gv1w5S3kq/Wwdbs1FHX1A5ywYI8WeBpOGxJsNBp42sphx6yhmyj2s1SX0dpMYD85+D
-         6E/xQFPSCaHHg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 3508C5C0668; Wed,  1 Dec 2021 06:37:35 -0800 (PST)
-Date:   Wed, 1 Dec 2021 06:37:35 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH v2] rcu: Fix description of kvfree_rcu()
-Message-ID: <20211201143735.GE641268@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20211201092053.2000-1-urezki@gmail.com>
+        id S234527AbhLAQwA (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 1 Dec 2021 11:52:00 -0500
+Received: from smtprelay0198.hostedemail.com ([216.40.44.198]:59726 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230390AbhLAQwA (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Wed, 1 Dec 2021 11:52:00 -0500
+X-Greylist: delayed 383 seconds by postgrey-1.27 at vger.kernel.org; Wed, 01 Dec 2021 11:52:00 EST
+Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
+        by smtpgrave07.hostedemail.com (Postfix) with ESMTP id CA781181616C5
+        for <rcu@vger.kernel.org>; Wed,  1 Dec 2021 16:42:29 +0000 (UTC)
+Received: from omf12.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id DF0A1182CED5B;
+        Wed,  1 Dec 2021 16:42:12 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf12.hostedemail.com (Postfix) with ESMTPA id D6FC919;
+        Wed,  1 Dec 2021 16:42:11 +0000 (UTC)
+Message-ID: <b5a72137f2f412e0794987ff1f03adee93ffc92a.camel@perches.com>
+Subject: Re: [PATCH] MAINTAINERS:  Add Frederic and Neeraj to their RCU files
+From:   Joe Perches <joe@perches.com>
+To:     paulmck@kernel.org, quic_neeraju@quicinc.com, frederic@kernel.org
+Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Date:   Wed, 01 Dec 2021 08:42:11 -0800
+In-Reply-To: <20211201143312.GA3103715@paulmck-ThinkPad-P17-Gen-1>
+References: <20211201143312.GA3103715@paulmck-ThinkPad-P17-Gen-1>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.4-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211201092053.2000-1-urezki@gmail.com>
+Content-Transfer-Encoding: 7bit
+X-Stat-Signature: dp4jmj6fhpouzj5t19c5y7ues6opho8g
+X-Rspamd-Server: rspamout04
+X-Rspamd-Queue-Id: D6FC919
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1+3VTWOCwI1kgc+COb0JzfbH9l5rQhiHjI=
+X-HE-Tag: 1638376931-224778
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Dec 01, 2021 at 10:20:53AM +0100, Uladzislau Rezki (Sony) wrote:
-> The passed "ptr" parameter might be wrongly interpreted
-> therefore rephrase it to prevent people from being confused.
-> 
-> Reported-by: Steven Rostedt <rostedt@goodmis.org>
-> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+On Wed, 2021-12-01 at 06:33 -0800, Paul E. McKenney wrote:
+> Adding Frederic as an RCU maintainer for kernel/rcu/tree_nocb.h given his
+> work with offloading and de-offloading callbacks from CPUs.  Also adding
+> Neeraj for kernel/rcu/tasks.h given his focused work on RCU Tasks Trace.
+> As in I am reasonably certain that each understands the full contents
+> of the corresponding file.
+[]
+> diff --git a/MAINTAINERS b/MAINTAINERS
+[]
+> @@ -16084,6 +16084,8 @@ F:	tools/testing/selftests/resctrl/
+>  
+>  READ-COPY UPDATE (RCU)
+>  M:	"Paul E. McKenney" <paulmck@kernel.org>
+> +M:	Frederic Weisbecker <frederic@kernel.org> (kernel/rcu/tree_nocb.h)
+> +M:	Neeraj Upadhyay <quic_neeraju@quicinc.com> (kernel/rcu/tasks.h)
 
-Thank you both!  Queued with wordsmithed commit log as shown below,
-so please check to see if I messed anything up.
+The words used in parentheses are email address comments and not
+file matches so get_maintainer will still show them on any file
+that matches the F:/X: patterns specified in the maintainers
+section block.
 
-							Thanx, Paul
+MAINTAINERS-F:  Documentation/RCU/
+MAINTAINERS-F:  include/linux/rcu*
+MAINTAINERS-F:  kernel/rcu/
+MAINTAINERS-X:  Documentation/RCU/torture.rst
+MAINTAINERS-X:  include/linux/srcu*.h
+MAINTAINERS-X:  kernel/rcu/srcu*.c
 
-------------------------------------------------------------------------
 
-commit 59ef229194204b023bb7bde95ce769d4e94a4b62
-Author: Uladzislau Rezki (Sony) <urezki@gmail.com>
-Date:   Wed Dec 1 10:20:53 2021 +0100
 
-    rcu: Fix description of kvfree_rcu()
-    
-    The kvfree_rcu() header comment's description of the "ptr" parameter
-    is unclear, therefore rephrase it to make it clear that it is a pointer
-    to the memory to eventually be passed to kvfree().
-    
-    Reported-by: Steven Rostedt <rostedt@goodmis.org>
-    Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index 88b42eb464068..9d7df8d36af07 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -924,7 +924,7 @@ static inline notrace void rcu_read_unlock_sched_notrace(void)
-  *
-  *     kvfree_rcu(ptr);
-  *
-- * where @ptr is a pointer to kvfree().
-+ * where @ptr is the pointer to be freed by kvfree().
-  *
-  * Please note, head-less way of freeing is permitted to
-  * use from a context that has to follow might_sleep()
