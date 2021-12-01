@@ -2,41 +2,40 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 61272C433F5
-	for <rcu@archiver.kernel.org>; Wed,  1 Dec 2021 09:25:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FF1CC433EF
+	for <rcu@archiver.kernel.org>; Wed,  1 Dec 2021 09:26:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348167AbhLAJ3P (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Dec 2021 04:29:15 -0500
-Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:10837 "EHLO
+        id S242016AbhLAJ3p (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 1 Dec 2021 04:29:45 -0500
+Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:10975 "EHLO
         alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242016AbhLAJ3O (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Wed, 1 Dec 2021 04:29:14 -0500
+        by vger.kernel.org with ESMTP id S1348203AbhLAJ3o (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Wed, 1 Dec 2021 04:29:44 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1638350753; x=1669886753;
+  t=1638350784; x=1669886784;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=RuZH4w90n5W5nJ9qxjET1aTW0ME4PBkPQ1uu/8hLefg=;
-  b=pfWFMYuUtp9rcZBTNMuhS0lKMCZlyvoXGnGyAZDxTX+4yDgz6yXAz6da
-   e3m7ssgKDLQWQ1yybSQEjyumLuFcevEFZfYTjIPL3GBfbKGtehb4XdDDF
-   LFPqjJCKrPnBDzp8G8XZFWSa9UcHp1yGwOPqGwV7uw0uLyQbVfPNmdtVA
-   4=;
-Received: from unknown (HELO ironmsg05-sd.qualcomm.com) ([10.53.140.145])
-  by alexa-out-sd-01.qualcomm.com with ESMTP; 01 Dec 2021 01:25:53 -0800
+  bh=KGYZYTDg5dnuCQwKnhxYJTqdcyPScNChmwtnWbo6LOE=;
+  b=oPXjAG+66J8OsnwD0XwRk1Rlgj06RoV2QIuLCVwdVBEGdXwPg0coVN80
+   y5gFOrExnpBHff37obYq1qWqMg++miyluMkZuOrS48FJ6Te6r9LL0WBci
+   3X1GuQSSHdUXRHzbaLat6lKIOzf5UwrSskMdcOAFInYuwYlVG3aLSHc1C
+   I=;
+Received: from unknown (HELO ironmsg03-sd.qualcomm.com) ([10.53.140.143])
+  by alexa-out-sd-01.qualcomm.com with ESMTP; 01 Dec 2021 01:26:24 -0800
 X-QCInternal: smtphost
 Received: from nasanex01b.na.qualcomm.com ([10.46.141.250])
-  by ironmsg05-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2021 01:25:52 -0800
+  by ironmsg03-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2021 01:26:23 -0800
 Received: from [10.216.8.32] (10.80.80.8) by nasanex01b.na.qualcomm.com
  (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.19; Wed, 1 Dec 2021
- 01:25:50 -0800
-Message-ID: <4b192489-ed1d-179b-ea35-cc9b23b8f389@quicinc.com>
-Date:   Wed, 1 Dec 2021 14:55:46 +0530
+ 01:26:21 -0800
+Message-ID: <1c74b167-eb1e-42d8-2c8d-e1740240ca2b@quicinc.com>
+Date:   Wed, 1 Dec 2021 14:56:18 +0530
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
  Thunderbird/91.3.2
-Subject: Re: [PATCH 2/6] rcu/nocb: Prepare nocb_cb_wait() to start with a
- non-offloaded rdp
+Subject: Re: [PATCH 3/6] rcu/nocb: Optimize kthreads and rdp initialization
 Content-Language: en-US
 To:     Frederic Weisbecker <frederic@kernel.org>,
         "Paul E . McKenney" <paulmck@kernel.org>
@@ -46,13 +45,13 @@ CC:     LKML <linux-kernel@vger.kernel.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Joel Fernandes <joel@joelfernandes.org>, <rcu@vger.kernel.org>
 References: <20211123003708.468409-1-frederic@kernel.org>
- <20211123003708.468409-3-frederic@kernel.org>
+ <20211123003708.468409-4-frederic@kernel.org>
 From:   Neeraj Upadhyay <quic_neeraju@quicinc.com>
-In-Reply-To: <20211123003708.468409-3-frederic@kernel.org>
+In-Reply-To: <20211123003708.468409-4-frederic@kernel.org>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
  nasanex01b.na.qualcomm.com (10.46.141.250)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
@@ -61,14 +60,15 @@ X-Mailing-List: rcu@vger.kernel.org
 
 
 On 11/23/2021 6:07 AM, Frederic Weisbecker wrote:
-> In order to be able to toggle the offloaded state from cpusets, a nocb
-> kthread will need to be created for all possible CPUs whenever the
-> "rcu_nocbs=" or "nohz_full=" parameters are passed.
+> Currently cpumask_available() is used to prevent from unwanted
+> NOCB initialization. However if neither "rcu_nocbs=" nor "nohz_full="
+> parameters are passed but CONFIG_CPUMASK_OFFSTACK=n, the initialization
+> path is still taken, running through all sorts of needless operations
+> and iterations on an empty cpumask.
 > 
-> Therefore nocb_cb_wait() kthread must prepare to start running on a
-> de-offloaded rdp. Simply move the sleeping condition in the beginning
-> of the kthread callback is enough to prevent from running callbacks
-> before the rdp ever becomes offloaded.
+> Fix this with relying on a real initialization state instead. This
+> also optimize kthreads creation, sparing iteration over all online CPUs
+> when nocb isn't initialized.
 > 
 > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 > Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
@@ -80,52 +80,65 @@ On 11/23/2021 6:07 AM, Frederic Weisbecker wrote:
 
 Reviewed-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
 
-
-Thanks
-Neeraj
-
->   kernel/rcu/tree_nocb.h | 23 ++++++++++++-----------
->   1 file changed, 12 insertions(+), 11 deletions(-)
+>   kernel/rcu/tree_nocb.h | 24 +++++++++++++++++-------
+>   1 file changed, 17 insertions(+), 7 deletions(-)
 > 
 > diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-> index cc1165559177..e1cb06840454 100644
+> index e1cb06840454..d8ed3ee47a67 100644
 > --- a/kernel/rcu/tree_nocb.h
 > +++ b/kernel/rcu/tree_nocb.h
-> @@ -797,6 +797,18 @@ static void nocb_cb_wait(struct rcu_data *rdp)
->   	bool can_sleep = true;
->   	struct rcu_node *rnp = rdp->mynode;
+> @@ -60,6 +60,9 @@ static inline bool rcu_current_is_nocb_kthread(struct rcu_data *rdp)
+>    * Parse the boot-time rcu_nocb_mask CPU list from the kernel parameters.
+>    * If the list is invalid, a warning is emitted and all CPUs are offloaded.
+>    */
+> +
+> +static bool rcu_nocb_is_setup;
+> +
+>   static int __init rcu_nocb_setup(char *str)
+>   {
+>   	alloc_bootmem_cpumask_var(&rcu_nocb_mask);
+> @@ -67,6 +70,7 @@ static int __init rcu_nocb_setup(char *str)
+>   		pr_warn("rcu_nocbs= bad CPU range, all CPUs set\n");
+>   		cpumask_setall(rcu_nocb_mask);
+>   	}
+> +	rcu_nocb_is_setup = true;
+>   	return 1;
+>   }
+>   __setup("rcu_nocbs=", rcu_nocb_setup);
+> @@ -1159,13 +1163,17 @@ void __init rcu_init_nohz(void)
+>   		need_rcu_nocb_mask = true;
+>   #endif /* #if defined(CONFIG_NO_HZ_FULL) */
 >   
-> +	do {
-> +		swait_event_interruptible_exclusive(rdp->nocb_cb_wq,
-> +						    nocb_cb_wait_cond(rdp));
+> -	if (!cpumask_available(rcu_nocb_mask) && need_rcu_nocb_mask) {
+> -		if (!zalloc_cpumask_var(&rcu_nocb_mask, GFP_KERNEL)) {
+> -			pr_info("rcu_nocb_mask allocation failed, callback offloading disabled.\n");
+> -			return;
+> +	if (need_rcu_nocb_mask) {
+> +		if (!cpumask_available(rcu_nocb_mask)) {
+> +			if (!zalloc_cpumask_var(&rcu_nocb_mask, GFP_KERNEL)) {
+> +				pr_info("rcu_nocb_mask allocation failed, callback offloading disabled.\n");
+> +				return;
+> +			}
+>   		}
+> +		rcu_nocb_is_setup = true;
+>   	}
+> -	if (!cpumask_available(rcu_nocb_mask))
 > +
-> +		// VVV Ensure CB invocation follows _sleep test.
-> +		if (smp_load_acquire(&rdp->nocb_cb_sleep)) { // ^^^
-> +			WARN_ON(signal_pending(current));
-> +			trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("WokeEmpty"));
-> +		}
-> +	} while (!nocb_cb_can_run(rdp));
-> +
-> +
->   	local_irq_save(flags);
->   	rcu_momentary_dyntick_idle();
->   	local_irq_restore(flags);
-> @@ -849,17 +861,6 @@ static void nocb_cb_wait(struct rcu_data *rdp)
+> +	if (!rcu_nocb_is_setup)
+>   		return;
 >   
->   	if (needwake_state)
->   		swake_up_one(&rdp->nocb_state_wq);
-> -
-> -	do {
-> -		swait_event_interruptible_exclusive(rdp->nocb_cb_wq,
-> -						    nocb_cb_wait_cond(rdp));
-> -
-> -		// VVV Ensure CB invocation follows _sleep test.
-> -		if (smp_load_acquire(&rdp->nocb_cb_sleep)) { // ^^^
-> -			WARN_ON(signal_pending(current));
-> -			trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("WokeEmpty"));
-> -		}
-> -	} while (!nocb_cb_can_run(rdp));
+>   #if defined(CONFIG_NO_HZ_FULL)
+> @@ -1267,8 +1275,10 @@ static void __init rcu_spawn_nocb_kthreads(void)
+>   {
+>   	int cpu;
+>   
+> -	for_each_online_cpu(cpu)
+> -		rcu_spawn_cpu_nocb_kthread(cpu);
+> +	if (rcu_nocb_is_setup) {
+> +		for_each_online_cpu(cpu)
+> +			rcu_spawn_cpu_nocb_kthread(cpu);
+> +	}
 >   }
 >   
->   /*
+>   /* How many CB CPU IDs per GP kthread?  Default of -1 for sqrt(nr_cpu_ids). */
 > 
