@@ -2,432 +2,134 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 933FAC433EF
-	for <rcu@archiver.kernel.org>; Wed,  1 Dec 2021 10:56:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 73816C433EF
+	for <rcu@archiver.kernel.org>; Wed,  1 Dec 2021 12:55:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348794AbhLAK7v (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Dec 2021 05:59:51 -0500
-Received: from foss.arm.com ([217.140.110.172]:33900 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232093AbhLAK7u (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 1 Dec 2021 05:59:50 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ADA5611B3;
-        Wed,  1 Dec 2021 02:56:29 -0800 (PST)
-Received: from FVFF77S0Q05N (unknown [10.57.65.205])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E0FA03F694;
-        Wed,  1 Dec 2021 02:56:26 -0800 (PST)
-Date:   Wed, 1 Dec 2021 10:56:21 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        rcu@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-        paulmck@kernel.org, mtosatti <mtosatti@redhat.com>,
-        frederic <frederic@kernel.org>, Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH] Documentation: Fill the gaps about entry/noinstr
- constraints
-Message-ID: <YadU1aSE6/0yGWny@FVFF77S0Q05N>
-References: <8719ad46cc29a2c5d7baac3c35770e5460ab8d5c.camel@redhat.com>
- <875ys9dacq.ffs@tglx>
- <20211130091356.7336e277@gandalf.local.home>
- <878rx5b7i5.ffs@tglx>
+        id S243345AbhLAM6a (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 1 Dec 2021 07:58:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229894AbhLAM6a (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 1 Dec 2021 07:58:30 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01B1FC061574;
+        Wed,  1 Dec 2021 04:55:09 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id C6974B81EA9;
+        Wed,  1 Dec 2021 12:55:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C53E8C53FCC;
+        Wed,  1 Dec 2021 12:55:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1638363306;
+        bh=pmKIfhrbcsA/n/M1SjDP4i44MGxZbrvPg+xuCfjviak=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cZ6auHDW1ro+TA1+yR0PIuNfL2QgL8W1JMC4IJVqH06nbkmPcHZxmacHNbz/HOD48
+         cBOJvcC6OCYYCr4g7SWrR7FwoLDQjiCv2Ie8JltHtQpGnLUUi6yhH+XwzX562lhlpm
+         DCriXDJv7fZDrWN5+UNh2SXcG78mDMxS6tB3uUV0EPJTNxVGCULDU6tTzusuFKv15k
+         cEZ6hWqzrwxjc9Gf4rdjPpm7mGrqeh5hryraRWkvNmLk0Lb25nnOBDHb4eMCNWJAxm
+         rkgfN9pkDabZGV13Ab1vhul6UvdqeXuCAJMYj113s2yh5cht9r6NU9JzPSizFTyq4j
+         xiks9f044vqCw==
+Date:   Wed, 1 Dec 2021 13:55:02 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Neeraj Upadhyay <quic_neeraju@quicinc.com>
+Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
+Subject: Re: [PATCH 1/6] rcu/nocb: Remove rdp from nocb list when de-offloaded
+Message-ID: <20211201125502.GA628470@lothringen>
+References: <20211123003708.468409-1-frederic@kernel.org>
+ <20211123003708.468409-2-frederic@kernel.org>
+ <84ab6b4a-6fc4-be3f-d990-1f46265a46e6@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <878rx5b7i5.ffs@tglx>
+In-Reply-To: <84ab6b4a-6fc4-be3f-d990-1f46265a46e6@quicinc.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Thomas,
-
-On Tue, Nov 30, 2021 at 11:31:30PM +0100, Thomas Gleixner wrote:
-> The entry/exit handling for exceptions, interrupts, syscalls and KVM is
-> not really documented except for some comments.
+On Wed, Dec 01, 2021 at 02:55:16PM +0530, Neeraj Upadhyay wrote:
+> > diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> > index 2461fe8d0c23..cc1165559177 100644
+> > --- a/kernel/rcu/tree_nocb.h
+> > +++ b/kernel/rcu/tree_nocb.h
+> > @@ -625,7 +625,15 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
+> >   	 * and the global grace-period kthread are awakened if needed.
+> >   	 */
+> >   	WARN_ON_ONCE(my_rdp->nocb_gp_rdp != my_rdp);
+> > -	for (rdp = my_rdp; rdp; rdp = rdp->nocb_next_cb_rdp) {
+> > +	/*
+> > +	 * An rdp can be removed from the list after being de-offloaded or added
+> > +	 * to the list before being (re-)offloaded. If the below loop happens while
+> > +	 * an rdp is de-offloaded and then re-offloaded shortly afterward, we may
+> > +	 * shortcut and ignore a part of the rdp list due to racy list iteration.
+> > +	 * Fortunately a new run through the entire loop is forced after an rdp is
+> > +	 * added here so that such race get quickly fixed.
+> > +	 */
+> > +	list_for_each_entry_rcu(rdp, &my_rdp->nocb_head_rdp, nocb_entry_rdp, 1) {
 > 
-> Fill the gaps.
+> Can we hit a (unlikely) case where repeated calls to de-offload/offload
+> cause this loop to continue for long time?
 
-Thanks for this! Now there's less chance I'll get this wrong. :)
+Probably not, I guess the only situation for that to happen would be:
 
-I have a couple of minor comments below -- mostly typo/formatting junk.
+	 DEOFFLOAD rdp 0
+	 OFFLOAD rdp 0
+ 	 DEOFFLOAD rdp 1
+	 OFFLOAD rdp 1
+ 	 DEOFFLOAD rdp 2
+	 OFFLOAD rdp 2
+	 etc...
+
+But even then you'd need a very bad luck.
 
 > 
-> Reported-by: Nicolas Saenz Julienne <nsaenzju@redhat.com>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> ---
->  Documentation/core-api/entry.rst |  268 +++++++++++++++++++++++++++++++++++++++
->  Documentation/core-api/index.rst |    8 +
->  kernel/entry/common.c            |    1 
-
-I think the change to kernel/entry/common.c got included by accident?
-
->  3 files changed, 276 insertions(+), 1 deletion(-)
 > 
-> --- /dev/null
-> +++ b/Documentation/core-api/entry.rst
-> @@ -0,0 +1,268 @@
-> +Entry/exit handling for exceptions, interrupts, syscalls and KVM
-> +================================================================
-> +
-> +For any transition from one execution domain into another the kernel
-> +requires update of various states. The state updates have strict rules
-> +versus ordering.
-> +
-> +The states which need to be updated are:
-> +
-> +  * Lockdep
-> +  * RCU
-> +  * Preemption counter
-> +  * Tracing
-> +  * Time accounting
-> +
-> +The update order depends on the transition type and is explained below in
-> +the transition type sections.
-> +
-> +Non-instrumentable code - noinstr
-> +---------------------------------
-> +
-> +Low level transition code cannot be instrumented before RCU is watching and
-> +after RCU went into a non watching state (NOHZ, NOHZ_FULL) as most
-> +instrumentation facilities depend on RCU.
-> +
-> +Aside of that many architectures have to save register state, e.g. debug or
-> +cause registers before another exception of the same type can happen. A
-> +breakpoint in the breakpoint entry code would overwrite the debug registers
-> +of the inital breakpoint.
-> +
-> +Such code has to be marked with the 'noinstr' attribute. That places the
-> +code into a special section which is taboo for instrumentation and debug
-> +facilities.
-> +
-> +In a function which is marked 'noinstr' it's only allowed to call into
-> +non-instrumentable code except when the invocation of instrumentable code
-> +is annotated with a instrumentation_begin()/instrumentation_end() pair::
-> +
-> +  noinstr void entry(void)
-> +  {
-> +  	handle_entry();     <-- must be 'noinstr' or '__always_inline'
-> +	...
-> +	instrumentation_begin();
-> +	handle_context();   <-- instrumentable code
-> +	instrumentation_end();
-> +	...
-> +	handle_exit();     <-- must be 'noinstr' or '__always_inline'
-> +  }
-> +
-> +This allows verification of the 'noinstr' restrictions via objtool on
-> +supported architectures.
-> +
-> +Invoking non-instrumentable functions from instrumentable context has no
-> +restrictions and is useful to protect e.g. state switching which would
-> +cause malfunction if instrumented.
-> +
-> +All non-instrumentable entry/exit code sections before and after the RCU
-> +state transitions must run with interrupts disabled.
-> +
-> +Syscalls
-> +--------
-> +
-> +Syscall entry exit code starts obviously in low level architecture specific
+> >   		bool needwake_state = false;
+> >   		if (!nocb_gp_enabled_cb(rdp))
+> 
+> Now that we can probe flags here, without holding the nocb_gp_lock first (
+> the case where de-offload and offload happens while we are iterating the
+> list); can it cause a WARNING from below code?
+> 
+> 
+> 	WARN_ON_ONCE(!rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_GP));
+> 	rcu_segcblist_clear_flags(cblist, SEGCBLIST_KTHREAD_GP);
+> 
+> The sequence like this is possible?
+> 
+> 1. <de-offload>
+>     Clear SEGCBLIST_OFFLOADED
+> 2. nocb_gp_wait() clears SEGCBLIST_KTHREAD_GP in
+> nocb_gp_update_state_deoffloading() and continues to next rdp.
+> 3. <offload>
+>     rdp_offload_toggle() hasn't been called yet.
+> 4. rcuog thread migrates to different CPU, while executing the
+> loop in nocb_gp_wait().
+> 5. nocb_gp_wait() reaches the tail rdp.
+> 6. Current CPU , where  rcog thread is running hasn't observed
+> SEGCBLIST_OFFLOADED clearing done in step 1; so, nocb_gp_enabled_cb()
+> passes.
 
-As a small nit, can we remove the "obviously"? It's certainly obvious to you
-and me, but it doesn't meaningfully affect the sentence either way.
+This shouldn't happen. If a task migrates from CPU X to CPU Y, CPU Y is
+guaranteed to see what CPU X saw due to scheduler ordering.
 
-> +assembly code and calls out into C-code after establishing low level
-> +architecture specific state and stack frames. This low level code must not
-> +be instrumented. A typical syscall handling function invoked from low level
-> +assembly code looks like this::
-> +
-> +  noinstr void do_syscall(struct pt_regs \*regs, int nr)
-                                            ^^
+But you have a good point that checking those flags outside the nocb lock
+is asking for trouble. It used to be an optimization but now that the rdp
+entries are removed when they are not needed anymore, we should probably
+lock unconditionally before the call to nocb_gp_enabled_cb().
 
-Is `\*` necessary here? ... and/or should this be an explicit code block (which
-IIUC doesn't require this esacping), e.g.
+Thanks.
 
-.. code-block:: c
-
-      noinstr void do_syscall(struct pt_regs *regs, int nr)
-	{
-		...
-	}
-
-Similar comment for the other code snippets in this patch.
-
-> +  {
-> +	arch_syscall_enter(regs);
-> +	nr = syscall_enter_from_user_mode(regs, nr);
-> +
-> +	instrumentation_begin();
-> +
-> +	if (!invoke_syscall(regs, nr) && nr != -1)
-> +	 	result_reg(regs) = __sys_ni_syscall(regs);
-> +
-> +	instrumentation_end();
-> +
-> +	syscall_exit_to_user_mode(regs);
-> +  }
-> +
-> +syscall_enter_from_user_mode() first invokes enter_from_user_mode() which
-> +establishes state in the following order:
-> +
-> +  * Lockdep
-> +  * RCU / Context tracking
-> +  * Tracing
-> +
-> +and then invokes the various entry work functions like ptrace, seccomp,
-> +audit, syscall tracing etc. After the function returns instrumentable code
-> +can be invoked. After returning from the syscall handler the instrumentable
-> +code section ends and syscall_exit_to_user_mode() is invoked.
-> +
-> +syscall_exit_to_user_mode() handles all work which needs to be done before
-> +returning to user space like tracing, audit, signals, task work etc. After
-> +that it invokes exit_to_user_mode() which again handles the state
-> +transition in the reverse order:
-> +
-> +  * Tracing
-> +  * RCU / Context tracking
-> +  * Lockdep
-> +
-> +syscall_enter_from_user_mode() and syscall_exit_to_user_mode() are also
-> +available as fine grained subfunctions in cases where the architecture code
-> +has to do extra work between the various steps. In such cases it has to
-> +ensure that enter_from_user_mode() is called first on entry and
-> +exit_to_user_mode() is called last on exit.
-> +
-> +
-> +KVM
-> +---
-> +
-> +Entering or exiting guest mode is very similar to syscalls. From the host
-> +kernel point of view the CPU goes off into user space when entering the
-> +guest and returns to the kernel on exit.
-> +
-> +kvm_guest_enter_irqoff() is a KVM specific variant of exit_to_user_mode()
-> +and kvm_guest_exit_irqoff() is the KVM variant of enter_from_user_mode().
-> +The state operations have the same ordering.
-> +
-> +Task work handling is done separately for guest at the boundary of the
-> +vcpu_run() loop via xfer_to_guest_mode_handle_work() which is a subset of
-> +the work handled on return to user space.
-> +
-> +Interrupts and regular exceptions
-> +---------------------------------
-> +
-> +Interrupts entry and exit handling is slightly more complex than syscalls
-> +and KVM transitions.
-> +
-> +If an interrupt is raised while the CPU executes in user space, the entry
-> +and exit handling is exactly the same as for syscalls.
-> +
-> +If the interrupt is raised while the CPU executes in kernel space the entry
-> +and exit handling is slightly different. RCU state is only updated when the
-> +interrupt was raised in context of the idle task because that's the only
-
-Since we have an idle task for each cpu, perhaps either:
-
-  s/the idle task/an idle task/
-  s/the idle task/the CPU's idle task/
-
-> +kernel context where RCU can be not watching on NOHZ enabled kernels.
-> +Lockdep and tracing have to be updated unconditionally.
-> +
-> +irqentry_enter() and irqentry_exit() provide the implementation for this.
-> +
-> +The architecture specific part looks similar to syscall handling::
-> +
-> +  noinstr void do_interrupt(struct pt_regs \*regs, int nr)
-> +  {
-> +	arch_interrupt_enter(regs);
-> +	state = irqentry_enter(regs);
-> +
-> +	instrumentation_begin();
-> +
-> +	irq_enter_rcu();
-> +	invoke_irq_handler(regs, nr);
-> +	irq_exit_rcu();
-> +
-> +	instrumentation_end();
-> +
-> +	irqentry_exit(regs, state);
-> +  }
-> +
-> +Note, that the invocation of the actual interrupt handler is within a
-> +irq_enter_rcu() and irq_exit_rcu() pair.
-> +
-> +irq_enter_rcu() updates the preemption count which makes in_hardirq()
-> +return true, handles NOHZ tick state and interrupt time accounting. This
-> +means that up to the point where irq_enter_rcu() is invoked in_hardirq()
-> +returns false.
-> +
-> +irq_exit_rcu() handles interrupt time accounting, undoes the preemption
-> +count update and eventually handles soft interrupts and NOHZ tick state.
-> +
-> +The preemption count could be established in irqentry_enter() already, but
-> +there is no real value to do so. This allows the preemption count to be
-> +traced and just puts a restriction on the early entry code up to
-> +irq_enter_rcu().
-> +
-> +This also keeps the handling vs. irq_exit_rcu() symmetric and
-> +irq_exit_rcu() must undo the preempt count elevation before handling soft
-> +interrupts and irqentry_exit() also requires that because it might
-> +schedule.
-> +
-> +
-> +NMI and NMI-like exceptions
-> +---------------------------
-> +
-> +NMIs and NMI like exceptions, e.g. Machine checks, double faults, debug
-> +interrupts etc. can hit any context and have to be extra careful vs. the
-> +state.
-> +
-> +Debug exceptions can handle user space breakpoints or watchpoints in the
-> +same way as an interrupt which was raised while executing in user space,
-> +but kernel mode debug exceptions have to be treated like NMIs as they can
-> +even happen in NMI context, e.g. due to code patching.
-> +
-> +Also Machine check exceptions can handle user mode exceptions like regular
-> +interrupts, but for kernel mode exceptions they have to be treated like
-> +NMIs.
-> +
-> +NMIs and the other NMI-like exceptions handle state transitions in the most
-> +straight forward way and do not differentiate between user and kernel mode
-> +origin.
-> +
-> +The state update on entry is handled in irqentry_nmi_enter() which updates
-> +state in the following order:
-> +
-> +  * Preemption counter
-> +  * Lockdep
-> +  * RCU
-> +  * Tracing
-> +
-> +The exit counterpart irqenttry_nmi_exit() does the reverse operation in the
-                        ^^^^^^^^^
-
- s/irqenttry/irqentry/
-
-> +reverse order.
-> +
-> +Note, that the update of the preemption counter has to be the first
-> +operation on enter and the last operation on exit. The reason is that both
-> +lockdep and RCU rely on in_nmi() returning true in this case. The
-> +preemption count modification in the NMI entry/exit case can obviously not
-> +be traced.
-
-Could we say "must not" instead of "can not", e.g.
-
-  The preemption count modification in the NMI entry/exit must not be traced.
-
-That way it's clearly a requirement, rather than a limitation.
-
-> +Architecture specific code looks like this::
-> +
-> +  noinstr void do_nmi(struct pt_regs \*regs)
-> +  {
-> +	arch_nmi_enter(regs);
-> +	state = irqentry_nmi_enter(regs);
-> +
-> +	instrumentation_begin();
-> +
-> +	invoke_nmi_handler(regs);
-> +
-> +	instrumentation_end();
-> +	irqentry_nmi_exit(regs);
-> +  }
-
-To keep the begin/end and enter/exit calls visually balanced, should the
-instrumentation_end() call have trailing a line space, e.g.
-
-e.g.
-
-	arch_nmi_enter(regs);
-	state = irqentry_nmi_enter(regs);
-
-	instrumentation_begin();
-
-	invoke_nmi_handler(regs);
-
-	instrumentation_end();
-
-	irqentry_nmi_exit(regs);
-
-... or sandwiched around invoke_nmi_handler(), e.g.
-
-	arch_nmi_enter(regs);
-	state = irqentry_nmi_enter(regs);
-
-	instrumentation_begin();
-	invoke_nmi_handler(regs);
-	instrumentation_end();
-
-	irqentry_nmi_exit(regs);
-
-Since the examples in this file are fairly simple I'd suggest the latter.
-
-> +and for e.g. a debug exception it can look like this::
-> +
-> +  noinstr void do_debug(struct pt_regs \*regs)
-> +  {
-> +	arch_nmi_enter(regs);
-> +
-> +	debug_regs = save_debug_regs();
-> +
-> +	if (user_mode(regs)) {
-> +		state = irqentry_enter(regs);
-> +
-> +		instrumentation_begin();
-> +
-> +		user_mode_debug_handler(regs, debug_regs);
-> +
-> +		instrumentation_end();
-> +
-> +		irqentry_exit(regs, state);
-> +  	} else {
-> +  		state = irqentry_nmi_enter(regs);
-> +
-> +		instrumentation_begin();
-> +
-> +		kernel_mode_debug_handler(regs, debug_regs);
-> +
-> +		instrumentation_end();
-> +
-> +		irqentry_nmi_exit(regs, state);
-> +	}
-> +  }
-> +
-> +There is no combined irqentry_nmi_if_kernel() function available as the
-> +above cannot be handled in an exception agnostic way.
-> --- a/Documentation/core-api/index.rst
-> +++ b/Documentation/core-api/index.rst
-> @@ -44,6 +44,14 @@ Library functionality that is used throu
->     timekeeping
->     errseq
->  
-> +Low level entry and exit
-> +========================
-> +
-> +.. toctree::
-> +   :maxdepth: 1
-> +
-> +   entry
-> +
->  Concurrency primitives
->  ======================
->  
-> --- a/kernel/entry/common.c
-> +++ b/kernel/entry/common.c
-> @@ -1,5 +1,4 @@
->  // SPDX-License-Identifier: GPL-2.0
-> -
-
-Unrelated whitespace change?
-
-Thanks,
-Mark.
-
->  #include <linux/context_tracking.h>
->  #include <linux/entry-common.h>
->  #include <linux/highmem.h>
+> 7. nocb_gp_wait() acquires the rdp's nocb lock and read the state to
+> be deoffloaded; however, SEGCBLIST_KTHREAD_GP is not set and
+> we hit WARN_ON_ONCE(!rcu_segcblist_test_flags(cblist,
+> SEGCBLIST_KTHREAD_GP));
+> 
+> Thanks
+> Neeraj
