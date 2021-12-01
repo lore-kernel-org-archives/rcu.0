@@ -2,83 +2,140 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 43B65C433F5
-	for <rcu@archiver.kernel.org>; Wed,  1 Dec 2021 17:10:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 73647C433EF
+	for <rcu@archiver.kernel.org>; Wed,  1 Dec 2021 18:15:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242165AbhLARNw (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Dec 2021 12:13:52 -0500
-Received: from sin.source.kernel.org ([145.40.73.55]:35430 "EHLO
-        sin.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243475AbhLARNp (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 1 Dec 2021 12:13:45 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id B80E4CE1FD9;
-        Wed,  1 Dec 2021 17:10:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9CECC53FAD;
-        Wed,  1 Dec 2021 17:10:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638378621;
-        bh=bR784jvzgGguSIueCPcbkWB/+GPwwBYa575LKG41YzQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=pYqDVCvOqSHUpcSoGEDNRReaOGd7AvFyVW81EM/HSOhIFrHLfT87TLkGTJbqSkOOr
-         awIT/Co2E4J0W5p5k07h/sZjfTpMbOZwthTbvmNbBGytjBRa95veTmhLctOIKBuKn1
-         XrlZnDTGdjtmGOfamj9ENvfwU2TTxBv00/UQFfKt4rS9/JWJGSCbpPr6Br47Q8LjNj
-         zYiyTZV1/CyXHLUkcbBGdQL6zSNHnHKlpmx+VTZn5MAgJ8iXC09icczAppsy/jVtgc
-         sl71zW78wzU6B5s3SaekEtJIUDHYptxru+aVjOks/tBWoH5v0FC+8TbvE6ApTo1gWK
-         M4qmfDVluNdaQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 937065C0FC6; Wed,  1 Dec 2021 09:10:20 -0800 (PST)
-Date:   Wed, 1 Dec 2021 09:10:20 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     quic_neeraju@quicinc.com, frederic@kernel.org,
-        linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS:  Add Frederic and Neeraj to their RCU files
-Message-ID: <20211201171020.GG641268@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20211201143312.GA3103715@paulmck-ThinkPad-P17-Gen-1>
- <b5a72137f2f412e0794987ff1f03adee93ffc92a.camel@perches.com>
+        id S244218AbhLASTA (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 1 Dec 2021 13:19:00 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:42310 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352178AbhLASSD (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 1 Dec 2021 13:18:03 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1638382481;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JZSAb6/GFXzqpAkYaa0pvVxSQ5TTrlFnUbJk4nsZrsA=;
+        b=DvbCwi72msZcA00dJHqF3+3iW8LIiuY+HpMxUmh/hG36VK54nzgl3NHbhHgp0M1i+szj7n
+        GxfG8XYcOhYYlWBSVILducd6aXk3m1Q0btlSojo+RDo5iS5Axgj2bE+ezh8C5lz505ensb
+        bj1n1kW23SBs8jPxVvJo50UxMD/Blk5YVbf9pHVY4Or9jmcMn+ReWqXXEwqzfbaybN6ugr
+        SpSWfuuC+xz4jDknr4WLRRzKwBmuid9uUr8R2cjGQTSIzidPAgI6dxPEPeLZ804fn06PTJ
+        cNWzO1rMczXs1YBRiFfdvYS7LUm6R1JBti8Gz8UaImAbdu6tgQdFsJVzaboH6g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1638382481;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JZSAb6/GFXzqpAkYaa0pvVxSQ5TTrlFnUbJk4nsZrsA=;
+        b=BU4nDLcVS+KX4XoXWPPEHhIV6eGmxMLyHXhp7cuQ7inHdhdJVp8fjqli2rFj4wvFCjxxJt
+        oiskv79DUnb8NzCA==
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        rcu@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+        paulmck@kernel.org, mtosatti <mtosatti@redhat.com>,
+        frederic <frederic@kernel.org>, Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH] Documentation: Fill the gaps about entry/noinstr
+ constraints
+In-Reply-To: <YadU1aSE6/0yGWny@FVFF77S0Q05N>
+References: <8719ad46cc29a2c5d7baac3c35770e5460ab8d5c.camel@redhat.com>
+ <875ys9dacq.ffs@tglx> <20211130091356.7336e277@gandalf.local.home>
+ <878rx5b7i5.ffs@tglx> <YadU1aSE6/0yGWny@FVFF77S0Q05N>
+Date:   Wed, 01 Dec 2021 19:14:41 +0100
+Message-ID: <87v9088a5q.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b5a72137f2f412e0794987ff1f03adee93ffc92a.camel@perches.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Dec 01, 2021 at 08:42:11AM -0800, Joe Perches wrote:
-> On Wed, 2021-12-01 at 06:33 -0800, Paul E. McKenney wrote:
-> > Adding Frederic as an RCU maintainer for kernel/rcu/tree_nocb.h given his
-> > work with offloading and de-offloading callbacks from CPUs.  Also adding
-> > Neeraj for kernel/rcu/tasks.h given his focused work on RCU Tasks Trace.
-> > As in I am reasonably certain that each understands the full contents
-> > of the corresponding file.
-> []
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> []
-> > @@ -16084,6 +16084,8 @@ F:	tools/testing/selftests/resctrl/
-> >  
-> >  READ-COPY UPDATE (RCU)
-> >  M:	"Paul E. McKenney" <paulmck@kernel.org>
-> > +M:	Frederic Weisbecker <frederic@kernel.org> (kernel/rcu/tree_nocb.h)
-> > +M:	Neeraj Upadhyay <quic_neeraju@quicinc.com> (kernel/rcu/tasks.h)
-> 
-> The words used in parentheses are email address comments and not
-> file matches so get_maintainer will still show them on any file
-> that matches the F:/X: patterns specified in the maintainers
-> section block.
-> 
-> MAINTAINERS-F:  Documentation/RCU/
-> MAINTAINERS-F:  include/linux/rcu*
-> MAINTAINERS-F:  kernel/rcu/
-> MAINTAINERS-X:  Documentation/RCU/torture.rst
-> MAINTAINERS-X:  include/linux/srcu*.h
-> MAINTAINERS-X:  kernel/rcu/srcu*.c
+Mark,
 
-Understood, and the files in parentheses are only intended for human
-consumption.  I am personally in favor on Frederic and Neeraj seeing
-RCU-related patches.  ;-)
+On Wed, Dec 01 2021 at 10:56, Mark Rutland wrote:
+> On Tue, Nov 30, 2021 at 11:31:30PM +0100, Thomas Gleixner wrote:
+>> ---
+>>  Documentation/core-api/entry.rst |  268 +++++++++++++++++++++++++++++++++++++++
+>>  Documentation/core-api/index.rst |    8 +
+>>  kernel/entry/common.c            |    1 
+>
+> I think the change to kernel/entry/common.c got included by accident?
 
-							Thanx, Paul
+That's what I get from doing such things 30 minutes before midnight...
+
+>> +
+>> +Syscall entry exit code starts obviously in low level architecture specific
+>
+> As a small nit, can we remove the "obviously"? It's certainly obvious to you
+> and me, but it doesn't meaningfully affect the sentence either way.
+
+Indeed.
+
+>> +assembly code and calls out into C-code after establishing low level
+>> +architecture specific state and stack frames. This low level code must not
+>> +be instrumented. A typical syscall handling function invoked from low level
+>> +assembly code looks like this::
+>> +
+>> +  noinstr void do_syscall(struct pt_regs \*regs, int nr)
+>                                             ^^
+>
+> Is `\*` necessary here? ... and/or should this be an explicit code block (which
+> IIUC doesn't require this esacping), e.g.
+>
+> .. code-block:: c
+
+Right. Let me try that.
+
+>       noinstr void do_syscall(struct pt_regs *regs, int nr)
+>> +
+>> +If the interrupt is raised while the CPU executes in kernel space the entry
+>> +and exit handling is slightly different. RCU state is only updated when the
+>> +interrupt was raised in context of the idle task because that's the only
+>
+> Since we have an idle task for each cpu, perhaps either:
+>
+>   s/the idle task/an idle task/
+>   s/the idle task/the CPU's idle task/
+
+Yes, that's more precise
+
+>> +Note, that the update of the preemption counter has to be the first
+>> +operation on enter and the last operation on exit. The reason is that both
+>> +lockdep and RCU rely on in_nmi() returning true in this case. The
+>> +preemption count modification in the NMI entry/exit case can obviously not
+>> +be traced.
+>
+> Could we say "must not" instead of "can not", e.g.
+>
+>   The preemption count modification in the NMI entry/exit must not be traced.
+>
+> That way it's clearly a requirement, rather than a limitation.
+
+Yes.
+
+>> +Architecture specific code looks like this::
+>> +
+>> +  noinstr void do_nmi(struct pt_regs \*regs)
+>> +  {
+>> +	arch_nmi_enter(regs);
+>> +	state = irqentry_nmi_enter(regs);
+>> +
+>> +	instrumentation_begin();
+>> +
+>> +	invoke_nmi_handler(regs);
+>> +
+>> +	instrumentation_end();
+>> +	irqentry_nmi_exit(regs);
+>> +  }
+>
+> To keep the begin/end and enter/exit calls visually balanced, should the
+> instrumentation_end() call have trailing a line space, e.g.
+
+Yup.
+
+Thanks,
+
+        tglx
