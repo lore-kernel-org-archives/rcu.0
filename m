@@ -2,37 +2,34 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D2E0C43217
-	for <rcu@archiver.kernel.org>; Thu,  2 Dec 2021 00:29:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 96AD0C4332F
+	for <rcu@archiver.kernel.org>; Thu,  2 Dec 2021 00:29:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354331AbhLBAco (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Dec 2021 19:32:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354272AbhLBAcl (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 1 Dec 2021 19:32:41 -0500
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E933C061748;
-        Wed,  1 Dec 2021 16:29:19 -0800 (PST)
+        id S1354329AbhLBAcp (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 1 Dec 2021 19:32:45 -0500
+Received: from sin.source.kernel.org ([145.40.73.55]:51954 "EHLO
+        sin.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344828AbhLBAck (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 1 Dec 2021 19:32:40 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id D0057CE2139;
+        by sin.source.kernel.org (Postfix) with ESMTPS id AFD87CE213F;
         Thu,  2 Dec 2021 00:29:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCBCAC58324;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD78EC58326;
         Thu,  2 Dec 2021 00:29:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1638404954;
-        bh=Qd/EpGdyevNA++m6zhqUVS71bNUavrZjH0rRok92euU=;
+        bh=s3AZrbFEY7mQ4FEK2Fw3R8UNO82a9tvDi5H7msuMihQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dd+GR5BFnboiwEzyVwoTOrt5UoHZXWu/5oiJNR3QPASBoGqo6AZZmeiPpKlUih3gV
-         ilV2CgR2/TiSR5kbU8aOqclWRRfUTvFRKuLWakMMP+djIf9cShJ723m8Sf6LTr9Cyw
-         IkxYXFSxxpiqqraZLfTJmX0+JCXxZUJtRLoU5s+8aZ1cEvZElduTrwhjLJy6uObQpV
-         jZhFg9AanpywX3t6G6GRdXP8I7VoFslXsJz/COJ+XGc2qVRRL+RIX0iDOl6/8JNLEI
-         mpTmCpvQZelSQGwYGhtHlFrnZCQUgcscT+LuSgGPcVsUTg+FWPBEdyRR4ZHOe5MlZE
-         XP7UwgaYCUr+A==
+        b=G27nKuPcAJzrBOjSrPINW/PtC+BLoLD2dCkx4TJdVWqJhTQ4DpmDsPkjX8BH+pueH
+         i3y4OdGEFmoe+vPEIGfx1/RZ4763AjG8OAXO9fGKGBYl0pfJHpPorqlYoHoKakml2k
+         ekuh5XiAaP+xT9Wr8Iq/gFhp/9hh2r96IOjOl0TU+pLHpEeQUfHYZGQw/GrZb/8ZYc
+         B6oX2ZHnOPGrO0GnIi2nHoLcaFWsXYQ/Ooinbs+NFVnJB6MTSezDKj04ewIXPWQDvN
+         daw/g6imMFlsG/5yShyQF5ECwcVyS3q5e5MitlH368zglbfqYSqaUVt9NltEwfHWbZ
+         IBU/3sf31ewWw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 682FE5C1184; Wed,  1 Dec 2021 16:29:14 -0800 (PST)
+        id 6C7795C12FE; Wed,  1 Dec 2021 16:29:14 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -48,9 +45,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         Neeraj Upadhyay <neeraju@codeaurora.org>,
         Uladzislau Rezki <urezki@gmail.com>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 06/18] rcu/nocb: Make rcu_core() callbacks acceleration (de-)offloading safe
-Date:   Wed,  1 Dec 2021 16:29:00 -0800
-Message-Id: <20211202002912.3127710-6-paulmck@kernel.org>
+Subject: [PATCH rcu 08/18] rcu/nocb: Use appropriate rcu_nocb_lock_irqsave()
+Date:   Wed,  1 Dec 2021 16:29:02 -0800
+Message-Id: <20211202002912.3127710-8-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20211202002848.GA3127439@paulmck-ThinkPad-P17-Gen-1>
 References: <20211202002848.GA3127439@paulmck-ThinkPad-P17-Gen-1>
@@ -62,18 +59,11 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: Frederic Weisbecker <frederic@kernel.org>
 
-When callbacks are offloaded, the NOCB kthreads handle the callbacks
-progression on behalf of rcu_core().
+Instead of hardcoding IRQ save and nocb lock, use the consolidated
+API (and fix a comment as per Valentin Schneider's suggestion).
 
-However during the (de-)offloading process, the kthread may not be
-entirely up to the task. As a result some callbacks grace period
-sequence number may remain stale for a while because rcu_core() won't
-take care of them either.
-
-Fix this with forcing callbacks acceleration from rcu_core() as long
-as the offloading process isn't complete.
-
-Reported-and-tested-by: Valentin Schneider <valentin.schneider@arm.com>
+Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+Tested-by: Valentin Schneider <valentin.schneider@arm.com>
 Tested-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Cc: Valentin Schneider <valentin.schneider@arm.com>
@@ -87,53 +77,38 @@ Cc: Uladzislau Rezki <urezki@gmail.com>
 Cc: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
+ kernel/rcu/tree.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 5985698f33414..cb9abb80377fe 100644
+index 4cbfc4e4fa9ed..20587d035d03b 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -2278,6 +2278,7 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
- 	unsigned long flags;
- 	unsigned long mask;
- 	bool needwake = false;
-+	bool needacc = false;
- 	struct rcu_node *rnp;
- 
- 	WARN_ON_ONCE(rdp->cpu != smp_processor_id());
-@@ -2305,16 +2306,29 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
- 		 * This GP can't end until cpu checks in, so all of our
- 		 * callbacks can be processed during the next GP.
- 		 *
--		 * NOCB kthreads have their own way to deal with that.
-+		 * NOCB kthreads have their own way to deal with that...
- 		 */
--		if (!rcu_rdp_is_offloaded(rdp))
-+		if (!rcu_rdp_is_offloaded(rdp)) {
- 			needwake = rcu_accelerate_cbs(rnp, rdp);
-+		} else if (!rcu_segcblist_completely_offloaded(&rdp->cblist)) {
-+			/*
-+			 * ...but NOCB kthreads may miss or delay callbacks acceleration
-+			 * if in the middle of a (de-)offloading process.
-+			 */
-+			needacc = true;
-+		}
- 
- 		rcu_disable_urgency_upon_qs(rdp);
- 		rcu_report_qs_rnp(mask, rnp, rnp->gp_seq, flags);
- 		/* ^^^ Released rnp->lock */
- 		if (needwake)
- 			rcu_gp_kthread_wake();
-+
-+		if (needacc) {
-+			rcu_nocb_lock_irqsave(rdp, flags);
-+			rcu_accelerate_cbs_unlocked(rnp, rdp);
-+			rcu_nocb_unlock_irqrestore(rdp, flags);
-+		}
+@@ -2478,12 +2478,11 @@ static void rcu_do_batch(struct rcu_data *rdp)
  	}
- }
  
+ 	/*
+-	 * Extract the list of ready callbacks, disabling to prevent
++	 * Extract the list of ready callbacks, disabling IRQs to prevent
+ 	 * races with call_rcu() from interrupt handlers.  Leave the
+ 	 * callback counts, as rcu_barrier() needs to be conservative.
+ 	 */
+-	local_irq_save(flags);
+-	rcu_nocb_lock(rdp);
++	rcu_nocb_lock_irqsave(rdp, flags);
+ 	WARN_ON_ONCE(cpu_is_offline(smp_processor_id()));
+ 	pending = rcu_segcblist_n_cbs(&rdp->cblist);
+ 	div = READ_ONCE(rcu_divisor);
+@@ -2546,8 +2545,7 @@ static void rcu_do_batch(struct rcu_data *rdp)
+ 		}
+ 	}
+ 
+-	local_irq_save(flags);
+-	rcu_nocb_lock(rdp);
++	rcu_nocb_lock_irqsave(rdp, flags);
+ 	rdp->n_cbs_invoked += count;
+ 	trace_rcu_batch_end(rcu_state.name, count, !!rcl.head, need_resched(),
+ 			    is_idle_task(current), rcu_is_callbacks_kthread());
 -- 
 2.31.1.189.g2e36527f23
 
