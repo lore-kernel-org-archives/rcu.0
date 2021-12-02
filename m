@@ -2,108 +2,104 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DFE6AC433EF
-	for <rcu@archiver.kernel.org>; Thu,  2 Dec 2021 00:47:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9A7DC433F5
+	for <rcu@archiver.kernel.org>; Thu,  2 Dec 2021 00:56:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355059AbhLBAvB (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Dec 2021 19:51:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48432 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354799AbhLBAuC (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 1 Dec 2021 19:50:02 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA4A2C061574;
-        Wed,  1 Dec 2021 16:46:40 -0800 (PST)
+        id S1344592AbhLBA7X (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 1 Dec 2021 19:59:23 -0500
+Received: from sin.source.kernel.org ([145.40.73.55]:35524 "EHLO
+        sin.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344172AbhLBA7V (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 1 Dec 2021 19:59:21 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 8FE3BB8219C;
-        Thu,  2 Dec 2021 00:46:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0AB4C5831C;
-        Thu,  2 Dec 2021 00:46:36 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 64E34CE2102;
+        Thu,  2 Dec 2021 00:55:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B339C00446;
+        Thu,  2 Dec 2021 00:55:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638405997;
-        bh=RaKtqnNJ6qnBg/bu+KqQ3tMZ/08WLSnoSUoDuXE3sEg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BVDa7dBBbQRyQtthYI1QZ8wkSgQzjvh16u5iLQXE7In40Alr8YnCdRaTs/isaX4N7
-         LAD0eq+yGrNgpf/9B8gVPeQjRoV5KjamHHZX3lpQx3beZ/FTsaSU/WyX5M0G+prizP
-         vms8qt3em0AJjoU7Z8dSy64z/XlraoGXVCYT1iyiuggnA65rtjPLYo3clsKELzp/jr
-         ShKz3dzGCbOT00SEvisuk97UuKZVae/l3CAEg2G7LO6apFneRfQmBmWMl1lV7x5F9Z
-         JCOeZSStI4yYgi+aaTYHmsgeYqqdBh1Hg5dQ7Yh/4F+jb4pqWnnPAAbyPJkBmb3iWa
-         SC5bHLVfMeBVw==
+        s=k20201202; t=1638406556;
+        bh=5IKgYnygaasdmaiH6qemymXUNXF2DOAESa/A+qitKNA=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=nXJALkqOVMY1EIJb/kfHjJ1jn6bTtFr+r+tQo4Ny2wj5J3nus+U5vW4WEnP8mBU3c
+         SwhN6rlS9O3bUv+YmXpR5/Xp4JFwV2YajvdJi4kYuk0CmQpHfT34t7M4+vKdSwgGwV
+         CSzH/+EBCddsk1q19PQx3JWKrJ8Vbun5cHHpPrNsMjnz9edwR18Xxprq2xgwgHaDnB
+         0F28OUELxoSgrFZxrdhgfdEQc8heUyllnZzCzTNqr6RRL0TG7KoZeMYD9Pekr71BRz
+         nb0hBA7AG3nv8BRMwJxuKlCBWVHP7Sj0RgjgLXiS9pd3yN+d+p2aRe03Iy6wqlc870
+         e36e4huNhIp4w==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 712C85C1184; Wed,  1 Dec 2021 16:46:36 -0800 (PST)
+        id 48C9A5C0FCD; Wed,  1 Dec 2021 16:55:56 -0800 (PST)
+Date:   Wed, 1 Dec 2021 16:55:56 -0800
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, akpm@linux-foundation.org,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 8/8] torture: Properly redirect kvm-remote.sh "echo" commands
-Date:   Wed,  1 Dec 2021 16:46:34 -0800
-Message-Id: <20211202004634.3130489-8-paulmck@kernel.org>
-X-Mailer: git-send-email 2.31.1.189.g2e36527f23
-In-Reply-To: <20211202004615.GA3130415@paulmck-ThinkPad-P17-Gen-1>
-References: <20211202004615.GA3130415@paulmck-ThinkPad-P17-Gen-1>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
+        Guillaume Morin <guillaume@morinfr.org>
+Subject: Re: [PATCH rcu 01/18] rcu: Tighten rcu_advance_cbs_nowake() checks
+Message-ID: <20211202005556.GM641268@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20211202002848.GA3127439@paulmck-ThinkPad-P17-Gen-1>
+ <20211202002912.3127710-1-paulmck@kernel.org>
+ <20211202004142.GA631289@lothringen>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211202004142.GA631289@lothringen>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The echo commands following initialization of the "oldrun" variable need
-to be "tee"d to $oldrun/remote-log.  This commit fixes several stragglers.
+On Thu, Dec 02, 2021 at 01:41:42AM +0100, Frederic Weisbecker wrote:
+> On Wed, Dec 01, 2021 at 04:28:55PM -0800, Paul E. McKenney wrote:
+> > Currently, rcu_advance_cbs_nowake() checks that a grace period is in
+> > progress, however, that grace period could end just after the check.
+> > This commit rechecks that a grace period is still in progress the lock.
+> 
+> *while holding the node lock.
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- tools/testing/selftests/rcutorture/bin/kvm-remote.sh | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+Good eyes, thank you!  I will fix on next rebase.
 
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-remote.sh b/tools/testing/selftests/rcutorture/bin/kvm-remote.sh
-index 7ab79b0d5ad19..e09b1bc787084 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-remote.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-remote.sh
-@@ -184,16 +184,16 @@ checkremotefile () {
- 		ret=$?
- 		if test "$ret" -eq 255
- 		then
--			echo " ---" ssh failure to $1 checking for file $2, retry after $sleeptime seconds. `date`
-+			echo " ---" ssh failure to $1 checking for file $2, retry after $sleeptime seconds. `date` | tee -a "$oldrun/remote-log"
- 		elif test "$ret" -eq 0
- 		then
- 			return 0
- 		elif test "$ret" -eq 1
- 		then
--			echo " ---" File \"$2\" not found: ssh $1 test -f \"$2\"
-+			echo " ---" File \"$2\" not found: ssh $1 test -f \"$2\" | tee -a "$oldrun/remote-log"
- 			return 1
- 		else
--			echo " ---" Exit code $ret: ssh $1 test -f \"$2\", retry after $sleeptime seconds. `date`
-+			echo " ---" Exit code $ret: ssh $1 test -f \"$2\", retry after $sleeptime seconds. `date` | tee -a "$oldrun/remote-log"
- 			return $ret
- 		fi
- 		sleep $sleeptime
-@@ -252,7 +252,7 @@ do
- 		sleep 30
- 	fi
- done
--echo All batches started. `date`
-+echo All batches started. `date` | tee -a "$oldrun/remote-log"
- 
- # Wait for all remaining scenarios to complete and collect results.
- for i in $systems
-@@ -261,7 +261,7 @@ do
- 	do
- 		sleep 30
- 	done
--	echo " ---" Collecting results from $i `date`
-+	echo " ---" Collecting results from $i `date` | tee -a "$oldrun/remote-log"
- 	( cd "$oldrun"; ssh $i "cd $rundir; tar -czf - kvm-remote-*.sh.out */console.log */kvm-test-1-run*.sh.out */qemu[_-]pid */qemu-retval */qemu-affinity; rm -rf $T > /dev/null 2>&1" | tar -xzf - )
- done
- 
--- 
-2.31.1.189.g2e36527f23
+							Thanx, Paul
 
+> > The grace period cannot end while the current CPU's rcu_node structure's
+> > ->lock is held, thus avoiding false positives from the WARN_ON_ONCE().
+> > 
+> > As Daniel Vacek noted, it is not necessary for the rcu_node structure
+> > to have a CPU that has not yet passed through its quiescent state.
+> > 
+> > Tested-By: Guillaume Morin <guillaume@morinfr.org>
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> 
+> Thanks!
+> 
+> > ---
+> >  kernel/rcu/tree.c | 7 ++++---
+> >  1 file changed, 4 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index ef8d36f580fc3..8706b30c2ac88 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -1590,10 +1590,11 @@ static void __maybe_unused rcu_advance_cbs_nowake(struct rcu_node *rnp,
+> >  						  struct rcu_data *rdp)
+> >  {
+> >  	rcu_lockdep_assert_cblist_protected(rdp);
+> > -	if (!rcu_seq_state(rcu_seq_current(&rnp->gp_seq)) ||
+> > -	    !raw_spin_trylock_rcu_node(rnp))
+> > +	if (!rcu_seq_state(rcu_seq_current(&rnp->gp_seq)) || !raw_spin_trylock_rcu_node(rnp))
+> >  		return;
+> > -	WARN_ON_ONCE(rcu_advance_cbs(rnp, rdp));
+> > +	// The grace period cannot end while we hold the rcu_node lock.
+> > +	if (rcu_seq_state(rcu_seq_current(&rnp->gp_seq)))
+> > +		WARN_ON_ONCE(rcu_advance_cbs(rnp, rdp));
+> >  	raw_spin_unlock_rcu_node(rnp);
+> >  }
+> >  
+> > -- 
+> > 2.31.1.189.g2e36527f23
+> > 
