@@ -2,34 +2,34 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C866C433FE
-	for <rcu@archiver.kernel.org>; Thu,  2 Dec 2021 00:29:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 19B1CC433F5
+	for <rcu@archiver.kernel.org>; Thu,  2 Dec 2021 00:29:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354337AbhLBAcq (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Dec 2021 19:32:46 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:60058 "EHLO
+        id S1354368AbhLBAcr (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 1 Dec 2021 19:32:47 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:59978 "EHLO
         ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345008AbhLBAcl (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 1 Dec 2021 19:32:41 -0500
+        with ESMTP id S1344693AbhLBAck (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 1 Dec 2021 19:32:40 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id C24A6B821A1;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 4E538B82190;
         Thu,  2 Dec 2021 00:29:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35F89C84000;
-        Thu,  2 Dec 2021 00:29:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBC2EC5831A;
+        Thu,  2 Dec 2021 00:29:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638404955;
-        bh=1307fJQLUiGcVK9ulIi8SIucgepBGPIcipaEEWkmZNY=;
+        s=k20201202; t=1638404954;
+        bh=kCOlLK//e4LEgC73l0i+/mMJ7uIJzwXcEac9OYTBdlc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OLU3giOIvwMArLpALXQ/Sez22hcWEuHdEstc8E0W5nATC1iq+703Z/FZTwIo/Puj5
-         xXrLoNBG3WRmycPchERv/ChQehcsST3StUp/wuUAlOxiUv+IXBjvw/nu9vF3kF+fVO
-         1zxGLNqqMRoUoLFD0bOepCtCufxNTNT3kLdxGy9221E2s34dBgg3RH2jYyymFWIITT
-         rIyTtAbhJ5aiEva/Jv70Mm3bpKqcM97GjjHF0jiOitfG6hBeJVNKFPq2RwlSIfdqgz
-         blG8hqFFLTaeQWw9x8YfVWkZeJohFACotXNmeG7UZ0UJTMpjudPgIIkDNaoqlfawpa
-         o+qdmvE7fi5Mw==
+        b=RTbNWQlGXvMX1ryABodMf5bK4a8v1xmyEP/iZZUZLPi2jWiav3zljQwShvSG988du
+         FNKuonrW43j94/5WsgO7Acp7BnVTQ4dsK3d9vb5ODZ5TMRDgL82aL9tQg5LtURTCEF
+         wasc2w09akl78sqRIGjTPrIrKt7Uw5bOIcCQ/+nTf/U0HSO2aefjkV2AKM1c0ImVHZ
+         HjdvXJ9QO9E1gHvC7+sFszMr2HeDKy3gw0eEXPuQDBY/M/7+YrzGiArKEB/GxdPoby
+         jEBmpQBfpTJVHsytJfhEbZOu1X3vAV12lkhB1aaqjEIbM/qU4Su6n45whAQucEHP3K
+         t6q/9tNgImnAQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 7E6535C14E0; Wed,  1 Dec 2021 16:29:14 -0800 (PST)
+        id 6A84B5C1278; Wed,  1 Dec 2021 16:29:14 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -39,14 +39,15 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Boqun Feng <boqun.feng@gmail.com>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
         Uladzislau Rezki <urezki@gmail.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 17/18] rcu/nocb: Allow empty "rcu_nocbs" kernel parameter
-Date:   Wed,  1 Dec 2021 16:29:11 -0800
-Message-Id: <20211202002912.3127710-17-paulmck@kernel.org>
+Subject: [PATCH rcu 07/18] rcu/nocb: Check a stable offloaded state to manipulate qlen_last_fqs_check
+Date:   Wed,  1 Dec 2021 16:29:01 -0800
+Message-Id: <20211202002912.3127710-7-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20211202002848.GA3127439@paulmck-ThinkPad-P17-Gen-1>
 References: <20211202002848.GA3127439@paulmck-ThinkPad-P17-Gen-1>
@@ -58,104 +59,126 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: Frederic Weisbecker <frederic@kernel.org>
 
-Allow the rcu_nocbs kernel parameter to be specified just by itself,
-without specifying any CPUs.  This allows systems administrators to use
-"rcu_nocbs" to specify that none of the CPUs are to be offloaded at boot
-time, but than any of them may be offloaded at runtime via cpusets.
+It's not entirely obvious why rdp->qlen_last_fqs_check is updated before
+processing the queue only on offloaded rdp. There can be different
+effect to that, either in favour of triggering the force quiescent state
+path or not. For example:
 
-In contrast, if the "rcu_nocbs" or "nohz_full" kernel parameters are not
-specified at all, then not only are none of the CPUs offloaded at boot,
-none of them can be offloaded at runtime, either.
+1) If the number of callbacks has decreased since the last
+   rdp->qlen_last_fqs_check update (because we recently called
+   rcu_do_batch() and we executed below qhimark callbacks) and the number
+   of processed callbacks on a subsequent do_batch() arranges for
+   exceeding qhimark on non-offloaded but not on offloaded setup, then we
+   may spare a later run to the force quiescent state
+   slow path on __call_rcu_nocb_wake(), as compared to the non-offloaded
+   counterpart scenario.
 
-While in the area, modernize the description of the "rcuo" kthreads'
-naming scheme.
+   Here is such an offloaded scenario instance:
 
+    qhimark = 1000
+    rdp->last_qlen_last_fqs_check = 3000
+    rcu_segcblist_n_cbs(rdp) = 2000
+
+    rcu_do_batch() {
+        if (offloaded)
+            rdp->last_qlen_fqs_check = rcu_segcblist_n_cbs(rdp) // 2000
+        // run 1000 callback
+        rcu_segcblist_n_cbs(rdp) = 1000
+        // Not updating rdp->qlen_last_fqs_check
+        if (count < rdp->qlen_last_fqs_check - qhimark)
+            rdp->qlen_last_fqs_check = count;
+    }
+
+    call_rcu() * 1001 {
+        __call_rcu_nocb_wake() {
+            // not taking the fqs slowpath:
+            // rcu_segcblist_n_cbs(rdp) == 2001
+            // rdp->qlen_last_fqs_check == 2000
+            // qhimark == 1000
+            if (len > rdp->qlen_last_fqs_check + qhimark)
+                ...
+    }
+
+    In the case of a non-offloaded scenario, rdp->qlen_last_fqs_check
+    would be 1000 and the fqs slowpath would have executed.
+
+2) If the number of callbacks has increased since the last
+   rdp->qlen_last_fqs_check update (because we recently queued below
+   qhimark callbacks) and the number of callbacks executed in rcu_do_batch()
+   doesn't exceed qhimark for either offloaded or non-offloaded setup,
+   then it's possible that the offloaded scenario later run the force
+   quiescent state slow path on __call_rcu_nocb_wake() while the
+   non-offloaded doesn't.
+
+    qhimark = 1000
+    rdp->last_qlen_last_fqs_check = 3000
+    rcu_segcblist_n_cbs(rdp) = 2000
+
+    rcu_do_batch() {
+        if (offloaded)
+            rdp->last_qlen_last_fqs_check = rcu_segcblist_n_cbs(rdp) // 2000
+        // run 100 callbacks
+        // concurrent queued 100
+        rcu_segcblist_n_cbs(rdp) = 2000
+        // Not updating rdp->qlen_last_fqs_check
+        if (count < rdp->qlen_last_fqs_check - qhimark)
+            rdp->qlen_last_fqs_check = count;
+    }
+
+    call_rcu() * 1001 {
+        __call_rcu_nocb_wake() {
+            // Taking the fqs slowpath:
+            // rcu_segcblist_n_cbs(rdp) == 3001
+            // rdp->qlen_last_fqs_check == 2000
+            // qhimark == 1000
+            if (len > rdp->qlen_last_fqs_check + qhimark)
+                ...
+    }
+
+    In the case of a non-offloaded scenario, rdp->qlen_last_fqs_check
+    would be 3000 and the fqs slowpath would have executed.
+
+The reason for updating rdp->qlen_last_fqs_check when invoking callbacks
+for offloaded CPUs is that there is usually no point in waking up either
+the rcuog or rcuoc kthreads while in this state.  After all, both threads
+are prohibited from indefinite sleeps.
+
+The exception is when some huge number of callbacks are enqueued while
+rcu_do_batch() is in the midst of invoking, in which case interrupting
+the rcuog kthread's timed sleep might get more callbacks set up for the
+next grace period.
+
+Reported-and-tested-by: Valentin Schneider <valentin.schneider@arm.com>
+Tested-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Original-patch-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
-Cc: Boqun Feng <boqun.feng@gmail.com>
-Cc: Uladzislau Rezki <urezki@gmail.com>
+Cc: Valentin Schneider <valentin.schneider@arm.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Cc: Josh Triplett <josh@joshtriplett.org>
 Cc: Joel Fernandes <joel@joelfernandes.org>
-Tested-by: Juri Lelli <juri.lelli@redhat.com>
+Cc: Boqun Feng <boqun.feng@gmail.com>
+Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
+Cc: Uladzislau Rezki <urezki@gmail.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- .../admin-guide/kernel-parameters.txt         | 37 ++++++++++++-------
- kernel/rcu/tree_nocb.h                        | 10 +++--
- 2 files changed, 30 insertions(+), 17 deletions(-)
+ kernel/rcu/tree.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 9725c546a0d46..8b5da10f932e2 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -4343,19 +4343,30 @@
- 				Disable the Correctable Errors Collector,
- 				see CONFIG_RAS_CEC help text.
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index cb9abb80377fe..4cbfc4e4fa9ed 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2498,7 +2498,7 @@ static void rcu_do_batch(struct rcu_data *rdp)
+ 	trace_rcu_batch_start(rcu_state.name,
+ 			      rcu_segcblist_n_cbs(&rdp->cblist), bl);
+ 	rcu_segcblist_extract_done_cbs(&rdp->cblist, &rcl);
+-	if (offloaded)
++	if (rcu_rdp_is_offloaded(rdp))
+ 		rdp->qlen_last_fqs_check = rcu_segcblist_n_cbs(&rdp->cblist);
  
--	rcu_nocbs=	[KNL]
--			The argument is a cpu list, as described above.
--
--			In kernels built with CONFIG_RCU_NOCB_CPU=y, set
--			the specified list of CPUs to be no-callback CPUs.
--			Invocation of these CPUs' RCU callbacks will be
--			offloaded to "rcuox/N" kthreads created for that
--			purpose, where "x" is "p" for RCU-preempt, and
--			"s" for RCU-sched, and "N" is the CPU number.
--			This reduces OS jitter on the offloaded CPUs,
--			which can be useful for HPC and real-time
--			workloads.  It can also improve energy efficiency
--			for asymmetric multiprocessors.
-+	rcu_nocbs[=cpu-list]
-+			[KNL] The optional argument is a cpu list,
-+			as described above.
-+
-+			In kernels built with CONFIG_RCU_NOCB_CPU=y,
-+			enable the no-callback CPU mode, which prevents
-+			such CPUs' callbacks from being invoked in
-+			softirq context.  Invocation of such CPUs' RCU
-+			callbacks will instead be offloaded to "rcuox/N"
-+			kthreads created for that purpose, where "x" is
-+			"p" for RCU-preempt, "s" for RCU-sched, and "g"
-+			for the kthreads that mediate grace periods; and
-+			"N" is the CPU number. This reduces OS jitter on
-+			the offloaded CPUs, which can be useful for HPC
-+			and real-time workloads.  It can also improve
-+			energy efficiency for asymmetric multiprocessors.
-+
-+			If a cpulist is passed as an argument, the specified
-+			list of	CPUs is set to no-callback mode from boot.
-+
-+			Otherwise, if the '=' sign and the cpulist
-+			arguments are omitted, no CPU will be set to
-+			no-callback mode from boot but the mode may be
-+			toggled at runtime via cpusets.
- 
- 	rcu_nocb_poll	[KNL]
- 			Rather than requiring that offloaded CPUs
-diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index f580a6b2e74e3..0c1802ce4764c 100644
---- a/kernel/rcu/tree_nocb.h
-+++ b/kernel/rcu/tree_nocb.h
-@@ -66,14 +66,16 @@ static bool rcu_nocb_is_setup;
- static int __init rcu_nocb_setup(char *str)
- {
- 	alloc_bootmem_cpumask_var(&rcu_nocb_mask);
--	if (cpulist_parse(str, rcu_nocb_mask)) {
--		pr_warn("rcu_nocbs= bad CPU range, all CPUs set\n");
--		cpumask_setall(rcu_nocb_mask);
-+	if (*str == '=') {
-+		if (cpulist_parse(++str, rcu_nocb_mask)) {
-+			pr_warn("rcu_nocbs= bad CPU range, all CPUs set\n");
-+			cpumask_setall(rcu_nocb_mask);
-+		}
- 	}
- 	rcu_nocb_is_setup = true;
- 	return 1;
- }
--__setup("rcu_nocbs=", rcu_nocb_setup);
-+__setup("rcu_nocbs", rcu_nocb_setup);
- 
- static int __init parse_rcu_nocb_poll(char *arg)
- {
+ 	trace_rcu_segcb_stats(&rdp->cblist, TPS("SegCbDequeued"));
 -- 
 2.31.1.189.g2e36527f23
 
