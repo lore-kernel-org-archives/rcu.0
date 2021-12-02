@@ -2,34 +2,34 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F1AD5C433F5
-	for <rcu@archiver.kernel.org>; Thu,  2 Dec 2021 00:29:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 17C4AC433EF
+	for <rcu@archiver.kernel.org>; Thu,  2 Dec 2021 00:29:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354409AbhLBAc6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Dec 2021 19:32:58 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:60084 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354214AbhLBAcl (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1354420AbhLBAc7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 1 Dec 2021 19:32:59 -0500
+Received: from sin.source.kernel.org ([145.40.73.55]:51962 "EHLO
+        sin.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345031AbhLBAcl (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 1 Dec 2021 19:32:41 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id B6757B821A4;
+        by sin.source.kernel.org (Postfix) with ESMTPS id 00639CE213B;
         Thu,  2 Dec 2021 00:29:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 363D0C84002;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10C3CC58332;
         Thu,  2 Dec 2021 00:29:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1638404955;
-        bh=wnWj9C/HY6SdM6WKhHvoIWPJ+tLMRpSzJCCtNJqaQZM=;
+        bh=GHgGsDCq17POu9DvYzdzZrkC23Mrj2IPIVzBqt/uUnE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r/IVs22gPTRomHZHaIDznab9J0FVzTU/JoOEX+JPZ1J8gLyOi7GsDtWDmiXauT2bU
-         aj43zRIJYQwC1RlfoolUkdYOceftg0hQM+G5VIs+9d8tQLskrHTZwOKimD/AqjWe8O
-         v6RF+IvxCvYvehLVbvLiyHOB5arRnxcFD5RRGsEc5UoUOPXYMtF+YUgC9i1P4Mj4xw
-         FXMbovoRndk9lh66ZMmukEWf5kNQgMiyUd7iD+pU7so3oH9k3eq6M94CIqTJNchQy8
-         zarVA7yqDxBFAK5GijjWprZmLS9FM08a5YKIgtBvTnEY/S6osuQlqTDBeIuV9MV0e5
-         JloSC/Cy5K0uA==
+        b=p27+L0n0+0Su0ARbygCsvpjseu9Gr8Ko+ylfJEr5ZAZDc+A11iUq+j6Im2HV9Gzep
+         KecqD6595+/NvwNC4ribBr75BobF+GttIU2ih57gc+GOzHYUdwBHD/x1djDojb/zUq
+         a41TeW/A1G1ZTqMP1v3M9SI7pplZQVNiI4pHAsO+IuxtSlkyAUFziIOqkmGpj59RW/
+         PcpgihlpDVlC2WUJEe8ekmv0FdgQ2aygKtNobBdXVKjtNAqVtInQg5nElaaMagOhDW
+         VlUxOj6z9QKszpnSPnfN3v/LwfX8fx6FR6whiLfLPiZbDy6UqM6cuJNwWFDgfwh1CR
+         oG9Bn1aEaScPA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 7C7F95C14CB; Wed,  1 Dec 2021 16:29:14 -0800 (PST)
+        id 7468A5C1411; Wed,  1 Dec 2021 16:29:14 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -39,14 +39,15 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Boqun Feng <boqun.feng@gmail.com>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
         Uladzislau Rezki <urezki@gmail.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 16/18] rcu/nocb: Create kthreads on all CPUs if "rcu_nocbs=" or "nohz_full=" are passed
-Date:   Wed,  1 Dec 2021 16:29:10 -0800
-Message-Id: <20211202002912.3127710-16-paulmck@kernel.org>
+Subject: [PATCH rcu 12/18] rcu/nocb: Don't invoke local rcu core on callback overload from nocb kthread
+Date:   Wed,  1 Dec 2021 16:29:06 -0800
+Message-Id: <20211202002912.3127710-12-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20211202002848.GA3127439@paulmck-ThinkPad-P17-Gen-1>
 References: <20211202002848.GA3127439@paulmck-ThinkPad-P17-Gen-1>
@@ -58,74 +59,74 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: Frederic Weisbecker <frederic@kernel.org>
 
-In order to be able to (de-)offload any CPU using cpusets in the future,
-create the NOCB data structures for all possible CPUs.  For now this is
-done only as long as the "rcu_nocbs=" or "nohz_full=" kernel parameters
-are passed to avoid the unnecessary overhead for most users.
+rcu_core() tries to ensure that its self-invocation in case of callbacks
+overload only happen in softirq/rcuc mode. Indeed it doesn't make sense
+to trigger local RCU core from nocb_cb kthread since it can execute
+on a CPU different from the target rdp. Also in case of overload, the
+nocb_cb kthread simply iterates a new loop of callbacks processing.
 
-Note that the rcuog and rcuoc kthreads are not created until at least
-one of the corresponding CPUs comes online.  This approach avoids the
-creation of excess kthreads when firmware lies about the number of CPUs
-present on the system.
+However the "offloaded" check that aims at preventing misplaced
+rcu_core() invocations is wrong. First of all that state is volatile
+and second: softirq/rcuc can execute while the target rdp is offloaded.
+As a result rcu_core() can be invoked on the wrong CPU while in the
+process of (de-)offloading.
 
+Fix that with moving the rcu_core() self-invocation to rcu_core() itself,
+irrespective of the rdp offloaded state.
+
+Tested-by: Valentin Schneider <valentin.schneider@arm.com>
+Tested-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
-Cc: Boqun Feng <boqun.feng@gmail.com>
-Cc: Uladzislau Rezki <urezki@gmail.com>
+Cc: Valentin Schneider <valentin.schneider@arm.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Cc: Josh Triplett <josh@joshtriplett.org>
 Cc: Joel Fernandes <joel@joelfernandes.org>
-Tested-by: Juri Lelli <juri.lelli@redhat.com>
+Cc: Boqun Feng <boqun.feng@gmail.com>
+Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
+Cc: Uladzislau Rezki <urezki@gmail.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_nocb.h | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ kernel/rcu/tree.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index 42092de677054..f580a6b2e74e3 100644
---- a/kernel/rcu/tree_nocb.h
-+++ b/kernel/rcu/tree_nocb.h
-@@ -1237,11 +1237,8 @@ static void rcu_spawn_one_nocb_kthread(int cpu)
- 	struct rcu_data *rdp_gp;
- 	struct task_struct *t;
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 1b31fad9f1a0a..03c038f324a09 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2460,7 +2460,6 @@ static void rcu_do_batch(struct rcu_data *rdp)
+ 	int div;
+ 	bool __maybe_unused empty;
+ 	unsigned long flags;
+-	const bool offloaded = rcu_rdp_is_offloaded(rdp);
+ 	struct rcu_head *rhp;
+ 	struct rcu_cblist rcl = RCU_CBLIST_INITIALIZER(rcl);
+ 	long bl, count = 0;
+@@ -2582,9 +2581,6 @@ static void rcu_do_batch(struct rcu_data *rdp)
  
--	/*
--	 * If this isn't a no-CBs CPU or if it already has an rcuo kthread,
--	 * then nothing to do.
--	 */
--	if (!rcu_is_nocb_cpu(cpu) || rdp->nocb_cb_kthread)
-+	/* If there already is an rcuo kthread, then nothing to do. */
-+	if (rdp->nocb_cb_kthread)
- 		return;
+ 	rcu_nocb_unlock_irqrestore(rdp, flags);
  
- 	/* If we didn't spawn the GP kthread first, reorganize! */
-@@ -1269,7 +1266,7 @@ static void rcu_spawn_one_nocb_kthread(int cpu)
-  */
- static void rcu_spawn_cpu_nocb_kthread(int cpu)
- {
--	if (rcu_scheduler_fully_active)
-+	if (rcu_scheduler_fully_active && rcu_nocb_is_setup)
- 		rcu_spawn_one_nocb_kthread(cpu);
+-	/* Re-invoke RCU core processing if there are callbacks remaining. */
+-	if (!offloaded && rcu_segcblist_ready_cbs(&rdp->cblist))
+-		invoke_rcu_core();
+ 	tick_dep_clear_task(current, TICK_DEP_BIT_RCU);
  }
  
-@@ -1319,7 +1316,7 @@ static void __init rcu_organize_nocb_kthreads(void)
- 	 * Should the corresponding CPU come online in the future, then
- 	 * we will spawn the needed set of rcu_nocb_kthread() kthreads.
- 	 */
--	for_each_cpu(cpu, rcu_nocb_mask) {
-+	for_each_possible_cpu(cpu) {
- 		rdp = per_cpu_ptr(&rcu_data, cpu);
- 		if (rdp->cpu >= nl) {
- 			/* New GP kthread, set up for CBs & next GP. */
-@@ -1343,7 +1340,8 @@ static void __init rcu_organize_nocb_kthreads(void)
- 				pr_cont(" %d", cpu);
- 		}
- 		rdp->nocb_gp_rdp = rdp_gp;
--		list_add_tail(&rdp->nocb_entry_rdp, &rdp_gp->nocb_head_rdp);
-+		if (cpumask_test_cpu(cpu, rcu_nocb_mask))
-+			list_add_tail(&rdp->nocb_entry_rdp, &rdp_gp->nocb_head_rdp);
- 	}
- 	if (gotnocbs && dump_tree)
- 		pr_cont("%s\n", gotnocbscbs ? "" : " (self only)");
+@@ -2771,8 +2767,12 @@ static __latent_entropy void rcu_core(void)
+ 
+ 	/* If there are callbacks ready, invoke them. */
+ 	if (do_batch && rcu_segcblist_ready_cbs(&rdp->cblist) &&
+-	    likely(READ_ONCE(rcu_scheduler_fully_active)))
++	    likely(READ_ONCE(rcu_scheduler_fully_active))) {
+ 		rcu_do_batch(rdp);
++		/* Re-invoke RCU core processing if there are callbacks remaining. */
++		if (rcu_segcblist_ready_cbs(&rdp->cblist))
++			invoke_rcu_core();
++	}
+ 
+ 	/* Do any needed deferred wakeups of rcuo kthreads. */
+ 	do_nocb_deferred_wakeup(rdp);
 -- 
 2.31.1.189.g2e36527f23
 
