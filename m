@@ -2,37 +2,37 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E8ABC43217
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AE8DEC433FE
 	for <rcu@archiver.kernel.org>; Thu,  2 Dec 2021 00:39:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354798AbhLBAnI (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Dec 2021 19:43:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46494 "EHLO
+        id S1354808AbhLBAnL (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 1 Dec 2021 19:43:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354669AbhLBAmn (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 1 Dec 2021 19:42:43 -0500
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B388FC06175B;
-        Wed,  1 Dec 2021 16:39:05 -0800 (PST)
+        with ESMTP id S1354664AbhLBAmj (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 1 Dec 2021 19:42:39 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCB8FC061758;
+        Wed,  1 Dec 2021 16:39:04 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 02A44CE2134;
-        Thu,  2 Dec 2021 00:39:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFFA7C58322;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 7AAF1B8219A;
+        Thu,  2 Dec 2021 00:39:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDD8BC5674A;
         Thu,  2 Dec 2021 00:39:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1638405540;
-        bh=wFxhk+ioAyHFQIkcJ9i4zIh9hCEoLMMuqFEpy5nc77k=;
+        bh=1u6E8u+Bz8q5xa9pvKSIwzql70OpTkl+wXJfuBVm9e8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G4mh5Oui3Uba7WuAc+Xe7LexrAZoUh5WsN/e+1g6q9gsFwYInmBjT6NkiC8bzRLjt
-         9p2pqT7a/ldW7KR3vvWEypH91pg/BORXAbFIYpCZb+DOpwcwLAFpu0Rv55As8teH0w
-         TXl5RtyC6ZOEUPoZMEyRdunSJmkpaf6rK639UQO72RhPPlcmdus1x6nx2Y5oqywZCY
-         2ikrt0KKVX/ZJVAuAfZajhH6LbLHRuvyKM2THy4okqGR7Seyn/aEbvMgJj5Qmyz73m
-         wy58JDZnVaSSsYSbCn1eh/wELrkrDgv3dlmtE9YntT1z67aj7M+eNUL4hKWmlmb2VE
-         UdhHFAKJ/BLog==
+        b=eFQogbFcscvyY3Ji0FUUmPeWIhlU1Z8bLF0R8Im7abGbaTygxK+3YY6R8tVv8buuu
+         dNTbtG/11tv7XXiUx4abwGJ4U4n3f12uUKmuxj/pkWLb37R3iVwgGd5zUTGk2kmBly
+         W5SwL411z7bXaIqqsRG+xtfKZ+2BtY4JOUWhARtapNvYgXJ0lKjmRW15/7mBkCYo2s
+         87lBVkpLoC/rBxrhBumNT8ArNobYV3F4+AxKVT+R9LI8++kx7BDW5dz/xIS/IQP7rG
+         pMc/vxC+CLvv7zTZoc4/asuUCby/wNkJ2WPILZV8FHpSqNBxP7tBEuGQdF7rlHasJR
+         k/9HaB9zViKnA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 5448A5C12AB; Wed,  1 Dec 2021 16:39:00 -0800 (PST)
+        id 50A635C1183; Wed,  1 Dec 2021 16:39:00 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -41,11 +41,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>, Martin Lau <kafai@fb.com>,
-        Neeraj Upadhyay <neeraj.iitr10@gmail.com>
-Subject: [PATCH rcu 09/18] rcu-tasks: Abstract checking of callback lists
-Date:   Wed,  1 Dec 2021 16:38:49 -0800
-Message-Id: <20211202003858.3129628-9-paulmck@kernel.org>
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 07/18] rcu-tasks: Inspect stalled task's trc state in locked state
+Date:   Wed,  1 Dec 2021 16:38:47 -0800
+Message-Id: <20211202003858.3129628-7-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20211202003826.GA3129369@paulmck-ThinkPad-P17-Gen-1>
 References: <20211202003826.GA3129369@paulmck-ThinkPad-P17-Gen-1>
@@ -55,112 +55,120 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This commit adds a rcu_tasks_need_gpcb() function that returns an
-indication of whether another grace period is required, and if no grace
-period is required, whether there are callbacks that need to be invoked.
-The function scans all per-CPU lists currently in use.
+From: Neeraj Upadhyay <quic_neeraju@quicinc.com>
 
-Reported-by: Martin Lau <kafai@fb.com>
-Cc: Neeraj Upadhyay <neeraj.iitr10@gmail.com>
+On RCU tasks trace stall, inspect the RCU-tasks-trace specific
+states of stalled task in locked down state, using try_invoke_
+on_locked_down_task(), to get reliable trc state of a non-running
+stalled task.
+
+This was tested using the following command:
+
+tools/testing/selftests/rcutorture/bin/kvm.sh --cpus 8 --configs TRACE01 \
+--bootargs "rcutorture.torture_type=tasks-tracing rcutorture.stall_cpu=10 \
+rcutorture.stall_cpu_block=1 rcupdate.rcu_task_stall_timeout=100" --trust-make
+
+As expected, this produced the following console output for running and
+sleeping tasks.
+
+[   21.520291] INFO: rcu_tasks_trace detected stalls on tasks:
+[   21.521292] P85: ... nesting: 1N cpu: 2
+[   21.521966] task:rcu_torture_sta state:D stack:15080 pid:   85 ppid:     2
+flags:0x00004000
+[   21.523384] Call Trace:
+[   21.523808]  __schedule+0x273/0x6e0
+[   21.524428]  schedule+0x35/0xa0
+[   21.524971]  schedule_timeout+0x1ed/0x270
+[   21.525690]  ? del_timer_sync+0x30/0x30
+[   21.526371]  ? rcu_torture_writer+0x720/0x720
+[   21.527106]  rcu_torture_stall+0x24a/0x270
+[   21.527816]  kthread+0x115/0x140
+[   21.528401]  ? set_kthread_struct+0x40/0x40
+[   21.529136]  ret_from_fork+0x22/0x30
+[   21.529766]  1 holdouts
+[   21.632300] INFO: rcu_tasks_trace detected stalls on tasks:
+[   21.632345] rcu_torture_stall end.
+[   21.633293] P85: .
+[   21.633294] task:rcu_torture_sta state:R  running task stack:15080 pid:
+85 ppid:     2 flags:0x00004000
+[   21.633299] Call Trace:
+[   21.633301]  ? vprintk_emit+0xab/0x180
+[   21.633306]  ? vprintk_emit+0x11a/0x180
+[   21.633308]  ? _printk+0x4d/0x69
+[   21.633311]  ? __default_send_IPI_shortcut+0x1f/0x40
+
+[ paulmck: Update to new v5.16 task_call_func() name. ]
+
+Signed-off-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tasks.h | 63 ++++++++++++++++++++++++++++------------------
- 1 file changed, 39 insertions(+), 24 deletions(-)
+ kernel/rcu/tasks.h | 43 ++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 34 insertions(+), 9 deletions(-)
 
 diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 1c7cf8e8d65e7..bb37d4a4e48de 100644
+index e9f59a88637cf..b3d15600f4fe9 100644
 --- a/kernel/rcu/tasks.h
 +++ b/kernel/rcu/tasks.h
-@@ -229,11 +229,39 @@ static void synchronize_rcu_tasks_generic(struct rcu_tasks *rtp)
- 	wait_rcu_gp(rtp->call_func);
+@@ -1134,25 +1134,50 @@ static void rcu_tasks_trace_postscan(struct list_head *hop)
+ 	// Any tasks that exit after this point will set ->trc_reader_checked.
  }
  
-+// Advance callbacks and indicate whether either a grace period or
-+// callback invocation is needed.
-+static int rcu_tasks_need_gpcb(struct rcu_tasks *rtp)
++/* Communicate task state back to the RCU tasks trace stall warning request. */
++struct trc_stall_chk_rdr {
++	int nesting;
++	int ipi_to_cpu;
++	u8 needqs;
++};
++
++static int trc_check_slow_task(struct task_struct *t, void *arg)
 +{
-+	int cpu;
-+	unsigned long flags;
-+	int needgpcb = 0;
++	struct trc_stall_chk_rdr *trc_rdrp = arg;
 +
-+	for (cpu = 0; cpu < rtp->percpu_enqueue_lim; cpu++) {
-+		struct rcu_tasks_percpu *rtpcp = per_cpu_ptr(rtp->rtpcpu, cpu);
-+
-+		/* Advance and accelerate any new callbacks. */
-+		if (rcu_segcblist_empty(&rtpcp->cblist))
-+			continue;
-+		raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
-+		smp_mb__after_spinlock(); // Order updates vs. GP.
-+		rcu_segcblist_advance(&rtpcp->cblist, rcu_seq_current(&rtp->tasks_gp_seq));
-+		(void)rcu_segcblist_accelerate(&rtpcp->cblist, rcu_seq_snap(&rtp->tasks_gp_seq));
-+		if (rcu_segcblist_pend_cbs(&rtpcp->cblist))
-+			needgpcb |= 0x3;
-+		if (!rcu_segcblist_empty(&rtpcp->cblist))
-+			needgpcb |= 0x1;
-+		raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
-+	}
-+	return needgpcb;
++	if (task_curr(t))
++		return false; // It is running, so decline to inspect it.
++	trc_rdrp->nesting = READ_ONCE(t->trc_reader_nesting);
++	trc_rdrp->ipi_to_cpu = READ_ONCE(t->trc_ipi_to_cpu);
++	trc_rdrp->needqs = READ_ONCE(t->trc_reader_special.b.need_qs);
++	return true;
 +}
 +
- /* RCU-tasks kthread that detects grace periods and invokes callbacks. */
- static int __noreturn rcu_tasks_kthread(void *arg)
+ /* Show the state of a task stalling the current RCU tasks trace GP. */
+ static void show_stalled_task_trace(struct task_struct *t, bool *firstreport)
  {
- 	unsigned long flags;
- 	int len;
-+	int needgpcb;
- 	struct rcu_cblist rcl = RCU_CBLIST_INITIALIZER(rcl);
- 	struct rcu_head *rhp;
- 	struct rcu_tasks *rtp = arg;
-@@ -249,38 +277,25 @@ static int __noreturn rcu_tasks_kthread(void *arg)
- 	 * This loop is terminated by the system going down.  ;-)
- 	 */
- 	for (;;) {
--		struct rcu_tasks_percpu *rtpcp = per_cpu_ptr(rtp->rtpcpu, 0);  // for_each...
-+		struct rcu_tasks_percpu *rtpcp;
+ 	int cpu;
++	struct trc_stall_chk_rdr trc_rdr;
++	bool is_idle_tsk = is_idle_task(t);
  
- 		set_tasks_gp_state(rtp, RTGS_WAIT_CBS);
+ 	if (*firstreport) {
+ 		pr_err("INFO: rcu_tasks_trace detected stalls on tasks:\n");
+ 		*firstreport = false;
+ 	}
+-	// FIXME: This should attempt to use try_invoke_on_nonrunning_task().
+ 	cpu = task_cpu(t);
+-	pr_alert("P%d: %c%c%c nesting: %d%c cpu: %d\n",
+-		 t->pid,
+-		 ".I"[READ_ONCE(t->trc_ipi_to_cpu) >= 0],
+-		 ".i"[is_idle_task(t)],
+-		 ".N"[cpu >= 0 && tick_nohz_full_cpu(cpu)],
+-		 READ_ONCE(t->trc_reader_nesting),
+-		 " N"[!!READ_ONCE(t->trc_reader_special.b.need_qs)],
+-		 cpu);
++	if (!task_call_func(t, trc_check_slow_task, &trc_rdr))
++		pr_alert("P%d: %c\n",
++			 t->pid,
++			 ".i"[is_idle_tsk]);
++	else
++		pr_alert("P%d: %c%c%c nesting: %d%c cpu: %d\n",
++			 t->pid,
++			 ".I"[trc_rdr.ipi_to_cpu >= 0],
++			 ".i"[is_idle_tsk],
++			 ".N"[cpu >= 0 && tick_nohz_full_cpu(cpu)],
++			 trc_rdr.nesting,
++			 " N"[!!trc_rdr.needqs],
++			 cpu);
+ 	sched_show_task(t);
+ }
  
--		/* Pick up any new callbacks. */
--		raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
--		smp_mb__after_spinlock(); // Order updates vs. GP.
--		rcu_segcblist_advance(&rtpcp->cblist, rcu_seq_current(&rtp->tasks_gp_seq));
--		(void)rcu_segcblist_accelerate(&rtpcp->cblist, rcu_seq_snap(&rtp->tasks_gp_seq));
--		raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
--
- 		/* If there were none, wait a bit and start over. */
--		if (!rcu_segcblist_pend_cbs(&rtpcp->cblist)) {
--			wait_event_interruptible(rtp->cbs_wq,
--						 rcu_segcblist_pend_cbs(&rtpcp->cblist));
--			if (!rcu_segcblist_pend_cbs(&rtpcp->cblist)) {
--				WARN_ON(signal_pending(current));
--				set_tasks_gp_state(rtp, RTGS_WAIT_WAIT_CBS);
--				schedule_timeout_idle(HZ/10);
--			}
--			continue;
-+		wait_event_idle(rtp->cbs_wq, (needgpcb = rcu_tasks_need_gpcb(rtp)));
-+
-+		if (needgpcb & 0x2) {
-+			// Wait for one grace period.
-+			set_tasks_gp_state(rtp, RTGS_WAIT_GP);
-+			rtp->gp_start = jiffies;
-+			rcu_seq_start(&rtp->tasks_gp_seq);
-+			rtp->gp_func(rtp);
-+			rcu_seq_end(&rtp->tasks_gp_seq);
- 		}
- 
--		// Wait for one grace period.
--		set_tasks_gp_state(rtp, RTGS_WAIT_GP);
--		rtp->gp_start = jiffies;
--		rcu_seq_start(&rtp->tasks_gp_seq);
--		rtp->gp_func(rtp);
--		rcu_seq_end(&rtp->tasks_gp_seq);
--
- 		/* Invoke the callbacks. */
- 		set_tasks_gp_state(rtp, RTGS_INVOKE_CBS);
-+		rtpcp = per_cpu_ptr(rtp->rtpcpu, 0);
- 		raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
- 		smp_mb__after_spinlock(); // Order updates vs. GP.
- 		rcu_segcblist_advance(&rtpcp->cblist, rcu_seq_current(&rtp->tasks_gp_seq));
 -- 
 2.31.1.189.g2e36527f23
 
