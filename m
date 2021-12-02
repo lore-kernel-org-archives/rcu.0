@@ -2,34 +2,37 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 10634C433F5
-	for <rcu@archiver.kernel.org>; Thu,  2 Dec 2021 00:19:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 670E7C433EF
+	for <rcu@archiver.kernel.org>; Thu,  2 Dec 2021 00:19:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354163AbhLBAWc (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Dec 2021 19:22:32 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:55538 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240671AbhLBAWb (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1354174AbhLBAWd (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 1 Dec 2021 19:22:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1354149AbhLBAWb (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 1 Dec 2021 19:22:31 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD4B8C061748;
+        Wed,  1 Dec 2021 16:19:09 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 69527B82198;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 6AE4FB82199;
         Thu,  2 Dec 2021 00:19:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12D0AC53FCD;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0FAD3C53FCC;
         Thu,  2 Dec 2021 00:19:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1638404347;
-        bh=IaDmmqKe4B8y0bdSwq3mak9uJot/QRrYn0p8THs6BIk=;
+        bh=MVGE7AB+O9btxcTp2REeyOO6iGU+ax0Ts0rM26H3Zi0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l4zE9K/QrOzaJ7DfixC4yiWaT/CTCyzJPBt/8ZVsaNL+ouMXUjtrhRatT0czAD9wE
-         jzy03V6pSvG9GJnGdeEdLbhkjCY+tCfN7wFWzWVhoioEp61hW6RnkD1AGZBvbaqwB9
-         qUCuUuN7QRahtZ/HrD1MOufEWKG8+eJjg84fPAmEaWYk3i1UmYDYqtloLHRO1BMRLb
-         o1yOMSeD2SeSEqwuiXoWCiKmeGxIweG4RVWgkZgcnYlAfjlLPk9SIm3V8xkmys0oKr
-         +J7e+KTLju0Ti/ignFS8x1zexfpOgN838K8RKVOhaSBJ3CRKigenTpU/mPRyAmO+Vr
-         MQAVkgcZEk0Dg==
+        b=UkgYSeFwrGyXajiQBpVa/6oCyLvC4mpp5CXkw17xd/+vwy7hXXKxAAMKoxCeADP0B
+         BtXIiMxGC/6L3U6bjxvc/wqjweMA+8gdjA1In0xfX46CkZP6m+7k0iZ0AUt6VLDZ20
+         1By5rnUHRav8/h7qRXEYyn9pIp/X8AAruqAhE3isdrhYoAoy5PAGCuEV3HjX6L1+fc
+         LPqm6eNyOX0H5B6UMPObT3PVleoBvePJm9m45SQMQEl0Pl189R2daeo/VOFO5mALre
+         t7RjqKbQnyR/vAR5ISSqNzPI3hRKFCerKV5+HPHXSisynqjf6BC5hNtfN2IoWfGFB4
+         TsRi2+fvZfe9Q==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id C9C965C117F; Wed,  1 Dec 2021 16:19:06 -0800 (PST)
+        id C548E5C1108; Wed,  1 Dec 2021 16:19:06 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -39,9 +42,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 4/4] rcu: Move rcu_needs_cpu() to tree.c
-Date:   Wed,  1 Dec 2021 16:19:04 -0800
-Message-Id: <20211202001904.3126929-4-paulmck@kernel.org>
+Subject: [PATCH rcu 2/4] torture: Remove RCU_FAST_NO_HZ from rcu scenarios
+Date:   Wed,  1 Dec 2021 16:19:02 -0800
+Message-Id: <20211202001904.3126929-2-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20211202001838.GA3126627@paulmck-ThinkPad-P17-Gen-1>
 References: <20211202001838.GA3126627@paulmck-ThinkPad-P17-Gen-1>
@@ -51,72 +54,92 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Now that RCU_FAST_NO_HZ is no more, there is but one implementation of
-the rcu_needs_cpu() function.  This commit therefore moves this function
-from kernel/rcu/tree_plugin.c to kernel/rcu/tree.c.
+All of the rcu scenarios that mentioning CONFIG_RCU_FAST_NO_HZ disable it.
+But this Kconfig option is disabled by default, so this commit removes
+the pointless "CONFIG_RCU_FAST_NO_HZ=n" lines from these scenarios.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c        | 18 ++++++++++++++++++
- kernel/rcu/tree_plugin.h | 16 ----------------
- 2 files changed, 18 insertions(+), 16 deletions(-)
+ tools/testing/selftests/rcutorture/configs/rcu/TREE02 | 1 -
+ tools/testing/selftests/rcutorture/configs/rcu/TREE05 | 1 -
+ tools/testing/selftests/rcutorture/configs/rcu/TREE06 | 1 -
+ tools/testing/selftests/rcutorture/configs/rcu/TREE07 | 1 -
+ tools/testing/selftests/rcutorture/configs/rcu/TREE08 | 1 -
+ tools/testing/selftests/rcutorture/configs/rcu/TREE10 | 1 -
+ 6 files changed, 6 deletions(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 5e98257c2910e..4ac019e9b25ff 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -1075,6 +1075,24 @@ void rcu_irq_enter_irqson(void)
- 	local_irq_restore(flags);
- }
- 
-+/*
-+ * Check to see if any future non-offloaded RCU-related work will need
-+ * to be done by the current CPU, even if none need be done immediately,
-+ * returning 1 if so.  This function is part of the RCU implementation;
-+ * it is -not- an exported member of the RCU API.  This is used by
-+ * the idle-entry code to figure out whether it is safe to disable the
-+ * scheduler-clock interrupt.
-+ *
-+ * Just check whether or not this CPU has non-offloaded RCU callbacks
-+ * queued.
-+ */
-+int rcu_needs_cpu(u64 basemono, u64 *nextevt)
-+{
-+	*nextevt = KTIME_MAX;
-+	return !rcu_segcblist_empty(&this_cpu_ptr(&rcu_data)->cblist) &&
-+		!rcu_rdp_is_offloaded(this_cpu_ptr(&rcu_data));
-+}
-+
- /*
-  * If any sort of urgency was applied to the current CPU (for example,
-  * the scheduler-clock interrupt was enabled on a nohz_full CPU) in order
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 19f7d578cedb3..0575757a0f8fc 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -1251,22 +1251,6 @@ static void __init rcu_spawn_boost_kthreads(void)
- 
- #endif /* #else #ifdef CONFIG_RCU_BOOST */
- 
--/*
-- * Check to see if any future non-offloaded RCU-related work will need
-- * to be done by the current CPU, even if none need be done immediately,
-- * returning 1 if so.  This function is part of the RCU implementation;
-- * it is -not- an exported member of the RCU API.
-- *
-- * Just check whether or not this CPU has non-offloaded RCU callbacks
-- * queued.
-- */
--int rcu_needs_cpu(u64 basemono, u64 *nextevt)
--{
--	*nextevt = KTIME_MAX;
--	return !rcu_segcblist_empty(&this_cpu_ptr(&rcu_data)->cblist) &&
--		!rcu_rdp_is_offloaded(this_cpu_ptr(&rcu_data));
--}
--
- /*
-  * Is this CPU a NO_HZ_FULL CPU that should ignore RCU so that the
-  * grace-period kthread will do force_quiescent_state() processing?
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE02 b/tools/testing/selftests/rcutorture/configs/rcu/TREE02
+index 65daee4fbf5a3..2871ee599891d 100644
+--- a/tools/testing/selftests/rcutorture/configs/rcu/TREE02
++++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE02
+@@ -7,7 +7,6 @@ CONFIG_PREEMPT=y
+ CONFIG_HZ_PERIODIC=n
+ CONFIG_NO_HZ_IDLE=y
+ CONFIG_NO_HZ_FULL=n
+-CONFIG_RCU_FAST_NO_HZ=n
+ CONFIG_RCU_TRACE=n
+ CONFIG_RCU_FANOUT=3
+ CONFIG_RCU_FANOUT_LEAF=3
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE05 b/tools/testing/selftests/rcutorture/configs/rcu/TREE05
+index 4f95f8544f3f0..9f48c73709ec3 100644
+--- a/tools/testing/selftests/rcutorture/configs/rcu/TREE05
++++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE05
+@@ -7,7 +7,6 @@ CONFIG_PREEMPT=n
+ CONFIG_HZ_PERIODIC=n
+ CONFIG_NO_HZ_IDLE=y
+ CONFIG_NO_HZ_FULL=n
+-CONFIG_RCU_FAST_NO_HZ=n
+ CONFIG_RCU_TRACE=n
+ CONFIG_HOTPLUG_CPU=y
+ CONFIG_RCU_FANOUT=6
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE06 b/tools/testing/selftests/rcutorture/configs/rcu/TREE06
+index bf4980d606b50..db27651de04b8 100644
+--- a/tools/testing/selftests/rcutorture/configs/rcu/TREE06
++++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE06
+@@ -7,7 +7,6 @@ CONFIG_PREEMPT=n
+ CONFIG_HZ_PERIODIC=n
+ CONFIG_NO_HZ_IDLE=y
+ CONFIG_NO_HZ_FULL=n
+-CONFIG_RCU_FAST_NO_HZ=n
+ CONFIG_RCU_TRACE=n
+ CONFIG_RCU_FANOUT=6
+ CONFIG_RCU_FANOUT_LEAF=6
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE07 b/tools/testing/selftests/rcutorture/configs/rcu/TREE07
+index d7afb271a586d..2789b47e4ecd7 100644
+--- a/tools/testing/selftests/rcutorture/configs/rcu/TREE07
++++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE07
+@@ -7,7 +7,6 @@ CONFIG_PREEMPT=n
+ CONFIG_HZ_PERIODIC=n
+ CONFIG_NO_HZ_IDLE=n
+ CONFIG_NO_HZ_FULL=y
+-CONFIG_RCU_FAST_NO_HZ=n
+ CONFIG_RCU_TRACE=y
+ CONFIG_HOTPLUG_CPU=y
+ CONFIG_RCU_FANOUT=2
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE08 b/tools/testing/selftests/rcutorture/configs/rcu/TREE08
+index c810c5276a89f..8b561355b9ef2 100644
+--- a/tools/testing/selftests/rcutorture/configs/rcu/TREE08
++++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE08
+@@ -7,7 +7,6 @@ CONFIG_PREEMPT=y
+ CONFIG_HZ_PERIODIC=n
+ CONFIG_NO_HZ_IDLE=y
+ CONFIG_NO_HZ_FULL=n
+-CONFIG_RCU_FAST_NO_HZ=n
+ CONFIG_RCU_TRACE=n
+ CONFIG_RCU_FANOUT=3
+ CONFIG_RCU_FANOUT_LEAF=2
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE10 b/tools/testing/selftests/rcutorture/configs/rcu/TREE10
+index 7311f84a58765..4a00539bfdd71 100644
+--- a/tools/testing/selftests/rcutorture/configs/rcu/TREE10
++++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE10
+@@ -7,7 +7,6 @@ CONFIG_PREEMPT=n
+ CONFIG_HZ_PERIODIC=n
+ CONFIG_NO_HZ_IDLE=y
+ CONFIG_NO_HZ_FULL=n
+-CONFIG_RCU_FAST_NO_HZ=n
+ CONFIG_RCU_TRACE=n
+ CONFIG_RCU_NOCB_CPU=n
+ CONFIG_DEBUG_LOCK_ALLOC=n
 -- 
 2.31.1.189.g2e36527f23
 
