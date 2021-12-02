@@ -2,90 +2,79 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E679DC433EF
-	for <rcu@archiver.kernel.org>; Wed,  1 Dec 2021 21:09:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8689EC433FE
+	for <rcu@archiver.kernel.org>; Thu,  2 Dec 2021 00:05:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343766AbhLAVNF (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Dec 2021 16:13:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54830 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245319AbhLAVND (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 1 Dec 2021 16:13:03 -0500
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 635F3C061748;
-        Wed,  1 Dec 2021 13:09:42 -0800 (PST)
+        id S1354023AbhLBAJG (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 1 Dec 2021 19:09:06 -0500
+Received: from sin.source.kernel.org ([145.40.73.55]:42244 "EHLO
+        sin.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1353970AbhLBAJF (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 1 Dec 2021 19:09:05 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id ADAC8CE20EC;
-        Wed,  1 Dec 2021 21:09:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5625C53FCD;
-        Wed,  1 Dec 2021 21:09:38 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id BBB30CE2080;
+        Thu,  2 Dec 2021 00:05:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3544C53FCC;
+        Thu,  2 Dec 2021 00:05:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638392978;
-        bh=16Nfdd8O1UZIPT+mMKwLqE1crTPMbdMUdXr+0/0h0fU=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=O3ylG/108bQIwvBrXqecGHm8DjYoBBRtWM14LWqRYpLrmF+vvD2DyNiurWSpFb0t2
-         oWe0QD5EnDi0q/Gh8pWlaPEMUTvxA+yUZQ39spr9FqPA1iV2oq0WOBVA9MMWYYws3E
-         LpUTQp1jRacpFywVHrW4aaC6uE8xo8ld2jK8zlHX2B9mE7OLR5QEBxd3siKTVFUSeZ
-         4OWPNRTBHEtznbuTUCy0BEQRtwtRhB7UcKo6+/rkzWCSLH2Wy9WSE1N0ImEC9BXpbQ
-         42NApEttKJ+P9isVpNxjPbORbXHts6bqvZhUClJG76TXb4tSXqElF/I+XWqG1QjNHs
-         26EQNz2B0toSg==
+        s=k20201202; t=1638403541;
+        bh=yv6egV7wJcg0dwAsYJ3wz7B0sWH+VRiZCvekSgd5UDo=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=lHSb6VZMtfbib5QMzZ0CeV/Sd6+AVwHVupnPQb8X5x+2SMsQhvVqFvIl2Foe5V9GT
+         IUn2EDFkllanznegw24JJriQqkKsEQQKzXOWVxPs7zVnWMeWhovrbl3ZLbCuNmH0NN
+         LybFRu3/US73Bk5OULm3BUeKv4326zepiGRPCrzkBq2IrzDCzs0FxX6Zt7kPifjiSn
+         vM5rLMV5IjtnyLyhF/4NtGIVDByr/WJw5cvPbEPXndmlgIRQy6zg9YvEhDBVcBDkmy
+         7EZrofOTKrtz/aI8XK6q7xAogA9RBfebXVJogXvFjc7Qug5Po3+gI1vZtNq/7RWABL
+         /8AnqD7ejY9gw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 90C405C1107; Wed,  1 Dec 2021 13:09:38 -0800 (PST)
-Date:   Wed, 1 Dec 2021 13:09:38 -0800
+        id A37735C1107; Wed,  1 Dec 2021 16:05:40 -0800 (PST)
+Date:   Wed, 1 Dec 2021 16:05:40 -0800
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     syzbot <syzbot+fe9d8c955bd1d0f02dc1@syzkaller.appspotmail.com>
-Cc:     bigeasy@linutronix.de, jgross@suse.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, josh@joshtriplett.org,
-        linux-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
-        mingo@kernel.org, namit@vmware.com, netdev@vger.kernel.org,
-        peterz@infradead.org, rcu@vger.kernel.org, rdunlap@infradead.org,
-        rostedt@goodmis.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] WARNING in trc_read_check_handler
-Message-ID: <20211201210938.GL641268@paulmck-ThinkPad-P17-Gen-1>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org
+Subject: [PATCH rcu 0/3] Documentation updates for v5.17
+Message-ID: <20211202000540.GA3125972@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <00000000000069924b05c8cc3b84@google.com>
- <000000000000b7e3ee05d21bd19d@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <000000000000b7e3ee05d21bd19d@google.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Dec 01, 2021 at 12:50:07PM -0800, syzbot wrote:
-> syzbot suspects this issue was fixed by commit:
-> 
-> commit 96017bf9039763a2e02dcc6adaa18592cd73a39d
-> Author: Paul E. McKenney <paulmck@kernel.org>
-> Date:   Wed Jul 28 17:53:41 2021 +0000
-> 
->     rcu-tasks: Simplify trc_read_check_handler() atomic operations
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1281d89db00000
-> start commit:   5319255b8df9 selftests/bpf: Skip verifier tests that fail ..
-> git tree:       bpf-next
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=9290a409049988d4
-> dashboard link: https://syzkaller.appspot.com/bug?extid=fe9d8c955bd1d0f02dc1
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14990477300000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=105ebd84b00000
-> 
-> If the result looks correct, please mark the issue as fixed by replying with:
+Hello!
 
-#syz fix: rcu-tasks: Simplify trc_read_check_handler() atomic operations
+This series contains documentation updates:
 
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+1.	Remove obsolete kernel-per-CPU-kthreads RCU_FAST_NO_HZ advice.
 
-Give or take.  There were quite a few related bugs, so some or all of
-the following commits might also have helped:
+2.	Add refcount analogy to What is RCU, courtesy of NeilBrown.
 
-cbe0d8d91415c rcu-tasks: Wait for trc_read_check_handler() IPIs
-18f08e758f34e rcu-tasks: Add trc_inspect_reader() checks for exiting critical section
-46aa886c483f5 rcu-tasks: Fix IPI failure handling in trc_wait_for_one_reader
+3.	RCU: Avoid 'Symbol' font-family in SVG figures, courtesy of
+	Akira Yokosawa.
 
-Quibbles aside, it is nice to get an automated email about having fixed
-a bug as opposed to having added one.  ;-)
+						Thanx, Paul
 
-							Thanx, Paul
+------------------------------------------------------------------------
+
+ RCU/Design/Expedited-Grace-Periods/Funnel0.svg  |    4 -
+ RCU/Design/Expedited-Grace-Periods/Funnel1.svg  |    4 -
+ RCU/Design/Expedited-Grace-Periods/Funnel2.svg  |    4 -
+ RCU/Design/Expedited-Grace-Periods/Funnel3.svg  |    4 -
+ RCU/Design/Expedited-Grace-Periods/Funnel4.svg  |    4 -
+ RCU/Design/Expedited-Grace-Periods/Funnel5.svg  |    4 -
+ RCU/Design/Expedited-Grace-Periods/Funnel6.svg  |    4 -
+ RCU/Design/Expedited-Grace-Periods/Funnel7.svg  |    4 -
+ RCU/Design/Expedited-Grace-Periods/Funnel8.svg  |    4 -
+ RCU/Design/Requirements/GPpartitionReaders1.svg |   36 ++++-----
+ RCU/Design/Requirements/ReadersPartitionGP1.svg |   62 ++++++++--------
+ RCU/whatisRCU.rst                               |   90 +++++++++++++++++++++---
+ admin-guide/kernel-per-CPU-kthreads.rst         |    2 
+ 13 files changed, 150 insertions(+), 76 deletions(-)
