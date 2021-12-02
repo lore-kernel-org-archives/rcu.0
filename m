@@ -2,37 +2,37 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D4869C433EF
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EA044C4167D
 	for <rcu@archiver.kernel.org>; Thu,  2 Dec 2021 00:43:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344533AbhLBArE (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Dec 2021 19:47:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47604 "EHLO
+        id S1354683AbhLBArF (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 1 Dec 2021 19:47:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344179AbhLBArC (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 1 Dec 2021 19:47:02 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D599C061574;
-        Wed,  1 Dec 2021 16:43:41 -0800 (PST)
+        with ESMTP id S1344326AbhLBArD (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 1 Dec 2021 19:47:03 -0500
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C747C061748;
+        Wed,  1 Dec 2021 16:43:42 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D921CB8219A;
-        Thu,  2 Dec 2021 00:43:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 881E2C53FD0;
+        by sin.source.kernel.org (Postfix) with ESMTPS id 5893DCE1DC7;
+        Thu,  2 Dec 2021 00:43:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8006BC53FCC;
         Thu,  2 Dec 2021 00:43:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1638405818;
-        bh=L7SE/GrqWx2gqKn883A6xZadTZz51AxngoJZVux8K7I=;
+        bh=uOWnjx1bRd9B2FlFMLTKtpnUxOJQUoZ8Ey4kwag2k98=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WYhamq5rEY/Z3xRjPNV7NBZf3va1LgtuWaqhCkAk+Re0YutLrMW3qrP9cND4nm8oD
-         GB8cFOsBlTqBlm6lGV6zAAtkQ9XE6Mj/3gQusZ1/Wt8XZZ9ug1HwYq2TdnQcS8wxCX
-         +l7RI4HuuejsdDk+HIUD7grxxJXe2jZUWtSGqCKUuKYb1c/rzti8jNcAjwRfjJZfBv
-         ybUjRv/sTwaUrt159F9Z0z4Z5crP8x8qFvJSpp1a2GBLVeIL+K5uD6ZGrGdKB0FY4a
-         Ak/Hzr0zvso+jQi7I3J+kvRN8khm9onqhpFHBSAFjSrAhlpQ6DgfrxIpxilFuJQk9O
-         uCX9tPLbqHnjw==
+        b=Niccbgu/bIs3XkI2Qmx8JqUw9qk3ZYY+lU160edDmpq8TnfniYY76IEw4pQ9V299Z
+         jdqIHxp/xBJE8NzlZ8PIrdav3NXZDv4JUMRYhUfgU7tRo8+bq18L/fjqonC+xfRqXG
+         CPL+vC2tv3M8ba3w6A4YqTLjb4pelRF5y+rW6nWomb5e4UfamKfEpr41K2NTD62EXg
+         vKVFSHucyTe0/gOMMHkyVnszXlVxcBGZeCsr2vAOiyz7LdcNJv6NIDhZhYrTl2LVeA
+         hfOQpAn+aJuqO8xUcgjF5jvdZ6hniOe05G4F3JnlUjZVfel6JG0/zK7090GXSUq58x
+         EceupB35a6Oew==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 502935C110A; Wed,  1 Dec 2021 16:43:38 -0800 (PST)
+        id 4C3CA5C1010; Wed,  1 Dec 2021 16:43:38 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -41,13 +41,10 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        Li Zhijian <lizhijian@cn.fujitsu.com>,
-        Philip Li <philip.li@intel.com>,
-        kernel test robot <lkp@intel.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 05/17] refscale: Prevent buffer to pr_alert() being too long
-Date:   Wed,  1 Dec 2021 16:43:24 -0800
-Message-Id: <20211202004337.3130175-5-paulmck@kernel.org>
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 03/17] rcutorture: Suppress pi-lock-across read-unlock testing for Tiny SRCU
+Date:   Wed,  1 Dec 2021 16:43:22 -0800
+Message-Id: <20211202004337.3130175-3-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20211202004245.GA3129966@paulmck-ThinkPad-P17-Gen-1>
 References: <20211202004245.GA3129966@paulmck-ThinkPad-P17-Gen-1>
@@ -57,89 +54,65 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Li Zhijian <lizhijian@cn.fujitsu.com>
+Because Tiny srcu_read_unlock() directly calls swake_up_one(), lockdep
+complains when a pi lock is held across that srcu_read_unlock().
+Although this is a lockdep false positive (there is no other CPU to
+complete the deadlock cycle), lockdep is what it is at the moment.
+This commit therefore prevents rcutorture from holding pi lock across
+a Tiny srcu_read_unlock().
 
-0Day/LKP observed that the refscale results fail to complete when larger
-values of nrun (such as 300) are specified.  The problem is that printk()
-can accept at most a 1024-byte buffer.  This commit therefore prints
-the buffer whenever its length exceeds 800 bytes.
-
-CC: Philip Li <philip.li@intel.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/refscale.c | 23 +++++++++++++----------
- 1 file changed, 13 insertions(+), 10 deletions(-)
+ kernel/rcu/rcutorture.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
-index b59457cef88d5..d8ed1ca3adc04 100644
---- a/kernel/rcu/refscale.c
-+++ b/kernel/rcu/refscale.c
-@@ -604,7 +604,7 @@ static u64 process_durations(int n)
- 	char *buf;
- 	u64 sum = 0;
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index d295da380fb4f..503e14e62e8f2 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -349,6 +349,7 @@ struct rcu_torture_ops {
+ 	int can_boost;
+ 	int extendables;
+ 	int slow_gps;
++	int no_pi_lock;
+ 	const char *name;
+ };
  
--	buf = kmalloc(128 + nreaders * 32, GFP_KERNEL);
-+	buf = kmalloc(800 + 64, GFP_KERNEL);
- 	if (!buf)
- 		return 0;
- 	buf[0] = 0;
-@@ -617,13 +617,15 @@ static u64 process_durations(int n)
+@@ -670,6 +671,7 @@ static struct rcu_torture_ops srcu_ops = {
+ 	.cb_barrier	= srcu_torture_barrier,
+ 	.stats		= srcu_torture_stats,
+ 	.irq_capable	= 1,
++	.no_pi_lock	= IS_ENABLED(CONFIG_TINY_SRCU),
+ 	.name		= "srcu"
+ };
  
- 		if (i % 5 == 0)
- 			strcat(buf, "\n");
-+		if (strlen(buf) >= 800) {
-+			pr_alert("%s", buf);
-+			buf[0] = 0;
-+		}
- 		strcat(buf, buf1);
+@@ -703,6 +705,7 @@ static struct rcu_torture_ops srcud_ops = {
+ 	.cb_barrier	= srcu_torture_barrier,
+ 	.stats		= srcu_torture_stats,
+ 	.irq_capable	= 1,
++	.no_pi_lock	= IS_ENABLED(CONFIG_TINY_SRCU),
+ 	.name		= "srcud"
+ };
  
- 		sum += rt->last_duration_ns;
+@@ -723,6 +726,7 @@ static struct rcu_torture_ops busted_srcud_ops = {
+ 	.cb_barrier	= srcu_torture_barrier,
+ 	.stats		= srcu_torture_stats,
+ 	.irq_capable	= 1,
++	.no_pi_lock	= IS_ENABLED(CONFIG_TINY_SRCU),
+ 	.extendables	= RCUTORTURE_MAX_EXTEND,
+ 	.name		= "busted_srcud"
+ };
+@@ -1473,8 +1477,9 @@ static void rcutorture_one_extend(int *readstate, int newstate,
+ 		idxold2 = 0;
  	}
--	strcat(buf, "\n");
--
--	SCALEOUT("%s\n", buf);
-+	pr_alert("%s\n", buf);
+ 	if (statesold & RCUTORTURE_RDR_RCU_1) {
+-		bool lockit = !statesnew && !(torture_random(trsp) & 0xffff);
++		bool lockit;
  
- 	kfree(buf);
- 	return sum;
-@@ -647,7 +649,7 @@ static int main_func(void *arg)
- 
- 	VERBOSE_SCALEOUT("main_func task started");
- 	result_avg = kzalloc(nruns * sizeof(*result_avg), GFP_KERNEL);
--	buf = kzalloc(64 + nruns * 32, GFP_KERNEL);
-+	buf = kzalloc(800 + 64, GFP_KERNEL);
- 	if (!result_avg || !buf) {
- 		VERBOSE_SCALEOUT_ERRSTRING("out of memory");
- 		goto oom_exit;
-@@ -695,10 +697,7 @@ static int main_func(void *arg)
- 	// Print the average of all experiments
- 	SCALEOUT("END OF TEST. Calculating average duration per loop (nanoseconds)...\n");
- 
--	buf[0] = 0;
--	strcat(buf, "\n");
--	strcat(buf, "Runs\tTime(ns)\n");
--
-+	pr_alert("Runs\tTime(ns)\n");
- 	for (exp = 0; exp < nruns; exp++) {
- 		u64 avg;
- 		u32 rem;
-@@ -706,9 +705,13 @@ static int main_func(void *arg)
- 		avg = div_u64_rem(result_avg[exp], 1000, &rem);
- 		sprintf(buf1, "%d\t%llu.%03u\n", exp + 1, avg, rem);
- 		strcat(buf, buf1);
-+		if (strlen(buf) >= 800) {
-+			pr_alert("%s", buf);
-+			buf[0] = 0;
-+		}
- 	}
- 
--	SCALEOUT("%s", buf);
-+	pr_alert("%s", buf);
- 
- oom_exit:
- 	// This will shutdown everything including us.
++		lockit = !cur_ops->no_pi_lock && !statesnew && !(torture_random(trsp) & 0xffff);
+ 		if (lockit)
+ 			raw_spin_lock_irqsave(&current->pi_lock, flags);
+ 		cur_ops->readunlock((idxold1 >> RCUTORTURE_RDR_SHIFT_1) & 0x1);
 -- 
 2.31.1.189.g2e36527f23
 
