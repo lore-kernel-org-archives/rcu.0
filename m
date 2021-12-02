@@ -2,113 +2,93 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 61638C433EF
-	for <rcu@archiver.kernel.org>; Thu,  2 Dec 2021 18:01:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 95FB2C433F5
+	for <rcu@archiver.kernel.org>; Thu,  2 Dec 2021 18:03:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376525AbhLBSFI (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 2 Dec 2021 13:05:08 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:39380 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376514AbhLBSFI (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 2 Dec 2021 13:05:08 -0500
+        id S1376557AbhLBSGw (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 2 Dec 2021 13:06:52 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:36436 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1376542AbhLBSGq (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 2 Dec 2021 13:06:46 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5652B62781;
-        Thu,  2 Dec 2021 18:01:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2BF7C00446;
-        Thu,  2 Dec 2021 18:01:44 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id A0271B82457;
+        Thu,  2 Dec 2021 18:03:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBD41C00446;
+        Thu,  2 Dec 2021 18:03:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638468104;
-        bh=rUJ1eh03NM7a4uieufJQmw/DNhjhDKnTz4ClhbW3e8c=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=r+HD++bj+UMTcnYVQ1gdqWg/oqocjlfpAUqA2gE1reYf8HYTz4/D4v1IF0Saj5v7c
-         IJeiNp6gjKxW6MVtxJisWIHQPsqD5NFOcDcZkoC3uAen5BCsSeHyPVrnovKekvcipA
-         nyQqRvvBsqhQBwj54InzKBB1MjSZ4k0Ja9B8r6u/y1lnYGKXwetVh4+kPck/OaAn/9
-         /rPSrwL8HFDqHYkp9LOB7uG6QODVUhafXMeqdrEVSpX+Khj12QcwVNTpWjqeTbXqx3
-         +UELdbz4KSpYhxLFFSGEoP4lmYlaiXKUL506mr4dP12kDmNVY5JV6zt1RK02Mfotzm
-         KxqaaLI5IXvdw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 4E93F5C04D3; Thu,  2 Dec 2021 10:01:44 -0800 (PST)
-Date:   Thu, 2 Dec 2021 10:01:44 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
-Subject: Re: [PATCH rcu 0/18] RCU no-CBs CPU updates for v5.17
-Message-ID: <20211202180144.GN641268@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20211202002848.GA3127439@paulmck-ThinkPad-P17-Gen-1>
- <20211202020347.GB430494@lapt>
+        s=k20201202; t=1638468201;
+        bh=fLX8yTzi3C/MVxPPHtVZDC60kahx5AF+GQ/U6puoweo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oXUPjA1BPkcPaei7ZKfsPCzloH6n5iPQxgfZ/u7AIq4V8VFWBB7PZ6I8AQG8Nii/A
+         woMeQzLyG5FNCBXCKb7/kh1aVP14NlF0AO9H8o5jPxtl5Bbr/yx1mipIfaqMXhtoft
+         WuwmHbiTI5vCPhyUPEzkAK6+xtV09hmzyjRAlZXl8oYp5X5JcKPylc4nDB97XULByc
+         lDzwEa/ylvGMjkrv8TAN1EpgYsIudakWLbpQL5q6B7dkHYe80vLZFuTA/BfooS6r9G
+         +fBaoPF842UoIeMKBIp3dw0rXIZjZQrKEcP+Lfgl7OYlSLpTGAfk+/lBXBj0xDU/P1
+         5H5aeInfEKvTg==
+Date:   Thu, 2 Dec 2021 19:03:18 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Neeraj Upadhyay <quic_neeraju@quicinc.com>
+Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
+Subject: Re: [PATCH 4/6] rcu/nocb: Create kthreads on all CPUs if "rcu_nocb="
+ or "nohz_full=" are passed
+Message-ID: <20211202180318.GC648659@lothringen>
+References: <20211123003708.468409-1-frederic@kernel.org>
+ <20211123003708.468409-5-frederic@kernel.org>
+ <5010f7fa-faf4-1857-81d7-36cc08956f49@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211202020347.GB430494@lapt>
+In-Reply-To: <5010f7fa-faf4-1857-81d7-36cc08956f49@quicinc.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Dec 01, 2021 at 06:03:47PM -0800, Yury Norov wrote:
-> On Wed, Dec 01, 2021 at 04:28:48PM -0800, Paul E. McKenney wrote:
-> > Hello!
+On Wed, Dec 01, 2021 at 02:57:18PM +0530, Neeraj Upadhyay wrote:
 > 
-> ...
 > 
-> > 17.	Allow empty "rcu_nocbs" kernel parameter, courtesy of Frederic
-> > 	Weisbecker.
+> On 11/23/2021 6:07 AM, Frederic Weisbecker wrote:
+> > In order to be able to (de-)offload any CPU using cpuset in the future,
+> > create a NOCB kthread for all possible CPUs. For now this is done only
+> > as long as the "rcu_nocb=" or "nohz_full=" kernel parameters are passed
+> > to avoid the unnecessary overhead for most users.
+> > 
+> > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> > Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+> > Cc: Boqun Feng <boqun.feng@gmail.com>
+> > Cc: Uladzislau Rezki <urezki@gmail.com>
+> > Cc: Josh Triplett <josh@joshtriplett.org>
+> > Cc: Joel Fernandes <joel@joelfernandes.org>
+> > ---
 > 
-> ...
+> Reviewed-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
 > 
-> > Note that #17 might be updated given some ongoing work by Yury Norov
-> > to support "none" for bitmaps, including the cpumask taken by the
-> > rcu_nocbs kernel-boot parameter.
 > 
-> Hi Paul,
+> >   kernel/rcu/tree_nocb.h | 14 ++++++--------
+> >   1 file changed, 6 insertions(+), 8 deletions(-)
+> > 
+> > diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> > index d8ed3ee47a67..9d37916278d4 100644
+> > --- a/kernel/rcu/tree_nocb.h
+> > +++ b/kernel/rcu/tree_nocb.h
+> > @@ -1229,11 +1229,8 @@ static void rcu_spawn_one_nocb_kthread(int cpu)
+> >   	struct rcu_data *rdp_gp;
+> >   	struct task_struct *t;
+> > -	/*
+> > -	 * If this isn't a no-CBs CPU or if it already has an rcuo kthread,
+> > -	 * then nothing to do.
+> > -	 */
+> > -	if (!rcu_is_nocb_cpu(cpu) || rdp->nocb_cb_kthread)
 > 
-> This is the only work that is needed to support 'none':
-> 
-> https://lkml.org/lkml/2021/11/24/2642
-> 
-> >From the last discussion, it's not clear is this 'none' needed or not.
-> If needed, I'll submit the patch.
+> As rcu_is_nocb_cpu() does not have a user, we can probably remove it?
 
-The question is whether rcu_nocbs= semantics like this are reasonable.
-In other words, will systems administrators be OK with the idea of
-differentiation between "rcu_nocbs=none" on the one hand and not
-specifying rcu_nocbs at all on the other.
+Ah nice, I'll check that.
 
-Thoughts?
-
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
-	rcu_nocbs=	[KNL]
-			The argument is a cpu list, as described above.
-
-			In kernels built with CONFIG_RCU_NOCB_CPU=y,
-			enable the no-callback CPU mode, which prevents
-			such CPUs' callbacks from being invoked in
-			softirq context.  Invocation of such CPUs' RCU
-			callbacks will instead be offloaded to "rcuox/N"
-			kthreads created for that purpose, where "x" is
-			"p" for RCU-preempt, "s" for RCU-sched, and "g"
-			for the kthreads that mediate grace periods; and
-			"N" is the CPU number. This reduces OS jitter on
-			the offloaded CPUs, which can be useful for HPC
-			and real-time workloads.  It can also improve
-			energy efficiency, especially for asymmetric
-			multiprocessors.
-
-			The cpulist specifies which are to be set to
-			no-callback mode from boot.  In particular,
-			"rcu_nocbs=none" specifies that no CPUs are in
-			no-callback mode at boot, but that any of them
-			can be offloaded at runtime.  In contrast, in
-			kernels that boot with no rcu_nocbs kernel boot
-			parameter, CPUs are not only in no-callback mode
-			at boot, but they remain that way throughout.
+Thanks!
