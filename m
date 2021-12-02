@@ -2,37 +2,37 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C51C6C433EF
-	for <rcu@archiver.kernel.org>; Thu,  2 Dec 2021 00:39:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 68D35C433EF
+	for <rcu@archiver.kernel.org>; Thu,  2 Dec 2021 00:39:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354745AbhLBAm5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Dec 2021 19:42:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46516 "EHLO
+        id S1354674AbhLBAm7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 1 Dec 2021 19:42:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354684AbhLBAms (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S1354686AbhLBAms (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 1 Dec 2021 19:42:48 -0500
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F8E2C06175E;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EE1BC061761;
         Wed,  1 Dec 2021 16:39:07 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 20065B821AA;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 01BD9B821A8;
         Thu,  2 Dec 2021 00:39:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2670DC58336;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01928C5832D;
         Thu,  2 Dec 2021 00:39:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1638405541;
-        bh=rfme3z2tPZe5A5xdacykD7wfiYb3HjKaoqKcbyxcwPQ=;
+        bh=+IFt9OFSW3Ctl8+D1e3VoGj6xA5HF/KHuA7Kpb5z/ZQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fg8wnFXwavy/Yu0HhJK2JuIoiV8liqexB3nfThCdWwmMyTKqr9R3AD0EkkmqNWW3P
-         nF4UnMZcNuymaUPUQ1khceguYs+hOSG0YxqgteVdgi4/ucHaxGVNUKEiFNbCbZJlXN
-         cQiis9EcnAGXqBHclF66hkaUXYU1zrIBpU9cUG3s4D+oBVJYz2FqWuTIhck4qg1Fvj
-         x2g9Bpwf9Wv6SmQnlZDN3LpGCAKOw/nqY82l+CAMswzfdeTjk0F7FBpkEi3rF/c2E/
-         EcpvErxt6G3Aw8GGifAsCnumeBa+YzalatJkLIemQ2N2Cafx91yiTwrEthYOhKBkw0
-         4OC1RnWCRespg==
+        b=j79KlzmukAs6Xuty5yRcvIFAraxdXB0XwmgFkM5fIQLEQjMyS3udWKTl3Jg/C02iU
+         amxZAkhGYDcQidEkKQDjEtw/ygTejdjxsZnzIuHVJHGpg6G9dMHf9iQhf3l3MAkfjM
+         474DH/+5nkFT2GybsRkrTZRi8X+Ld0TLuMsIdR3gKZ84HGW6vpOe12NdluXkxyLlNN
+         nY8SWDzIB2f2pRjfBEyZ7S/YM2BY8EBokNzvm2XEP8y0O4v1rYT2Z4VAn1hwnkfyKg
+         IMtyNke7ellwCFIMb3P8PoOCHQBvqAGJMoA9fXRo0BOq+v3osEr0XYRt7ZoFZwPGSX
+         8RtjTTv7u5Q3w==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 6120E5C134A; Wed,  1 Dec 2021 16:39:00 -0800 (PST)
+        id 5D6075C1339; Wed,  1 Dec 2021 16:39:00 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -43,9 +43,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>, Martin Lau <kafai@fb.com>,
         Neeraj Upadhyay <neeraj.iitr10@gmail.com>
-Subject: [PATCH rcu 16/18] rcu-tasks: Use more callback queues if contention encountered
-Date:   Wed,  1 Dec 2021 16:38:56 -0800
-Message-Id: <20211202003858.3129628-16-paulmck@kernel.org>
+Subject: [PATCH rcu 14/18] rcu-tasks: Count trylocks to estimate call_rcu_tasks() contention
+Date:   Wed,  1 Dec 2021 16:38:54 -0800
+Message-Id: <20211202003858.3129628-14-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20211202003826.GA3129369@paulmck-ThinkPad-P17-Gen-1>
 References: <20211202003826.GA3129369@paulmck-ThinkPad-P17-Gen-1>
@@ -55,123 +55,68 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The rcupdate.rcu_task_enqueue_lim module parameter allows system
-administrators to tune the number of callback queues used by the RCU
-Tasks flavors.  However if callback storms are infrequent, it would
-be better to operate with a single queue on a given system unless and
-until that system actually needed more queues.  Systems not needing
-more queues can then avoid the overhead of checking the extra queues
-and especially avoid the overhead of fanning workqueue handlers out to
-all CPUs to invoke callbacks.
+This commit converts the unconditional raw_spin_lock_rcu_node() lock
+acquisition in call_rcu_tasks_generic() to a trylock followed by an
+unconditional acquisition if the trylock fails.  If the trylock fails,
+the failure is counted, but the count is reset to zero on each new jiffy.
 
-This commit therefore switches to using all the CPUs' callback queues if
-call_rcu_tasks_generic() encounters too much lock contention.  The amount
-of lock contention to tolerate defaults to 100 contended lock acquisitions
-per jiffy, and can be adjusted using the new rcupdate.rcu_task_contend_lim
-module parameter.
-
-Such switching is undertaken only if the rcupdate.rcu_task_enqueue_lim
-module parameter is negative, which is its default value (-1).
-This allows savvy systems administrators to set the number of queues
-to some known good value and to not have to worry about the kernel doing
-any second guessing.
-
-[ paulmck: Apply feedback from Guillaume Tucker and kernelci. ]
+This statistic will be used to determine when to move from a single
+callback queue to per-CPU callback queues.
 
 Reported-by: Martin Lau <kafai@fb.com>
 Cc: Neeraj Upadhyay <neeraj.iitr10@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- .../admin-guide/kernel-parameters.txt         |  8 ++++++
- kernel/rcu/tasks.h                            | 27 ++++++++++++++++---
- 2 files changed, 31 insertions(+), 4 deletions(-)
+ kernel/rcu/tasks.h | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 9b09fc5dfe665..089f4c5f8225b 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -4805,6 +4805,14 @@
- 			period to instead use normal non-expedited
- 			grace-period processing.
- 
-+	rcupdate.rcu_task_contend_lim= [KNL]
-+			Set the minimum number of callback-queuing-time
-+			lock-contention events per jiffy required to
-+			cause the RCU Tasks flavors to switch to per-CPU
-+			callback queuing.  This switching only occurs
-+			when rcupdate.rcu_task_enqueue_lim is set to
-+			the default value of -1.
-+
- 	rcupdate.rcu_task_enqueue_lim= [KNL]
- 			Set the number of callback queues to use for the
- 			RCU Tasks family of RCU flavors.  The default
 diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 652f51eec5f34..1695da0f6985e 100644
+index 2b148f6743150..3f25022a0db9a 100644
 --- a/kernel/rcu/tasks.h
 +++ b/kernel/rcu/tasks.h
-@@ -142,6 +142,10 @@ module_param(rcu_task_stall_timeout, int, 0644);
- static int rcu_task_enqueue_lim __read_mostly = -1;
- module_param(rcu_task_enqueue_lim, int, 0444);
- 
-+static bool rcu_task_cb_adjust;
-+static int rcu_task_contend_lim __read_mostly = 100;
-+module_param(rcu_task_contend_lim, int, 0444);
-+
- /* RCU tasks grace-period state for debugging. */
- #define RTGS_INIT		 0
- #define RTGS_WAIT_WAIT_CBS	 1
-@@ -207,10 +211,13 @@ static void cblist_init_generic(struct rcu_tasks *rtp)
- 	int lim;
- 
- 	raw_spin_lock_irqsave(&rtp->cbs_gbl_lock, flags);
--	if (rcu_task_enqueue_lim < 0)
--		rcu_task_enqueue_lim = nr_cpu_ids;
--	else if (rcu_task_enqueue_lim == 0)
-+	if (rcu_task_enqueue_lim < 0) {
-+		rcu_task_enqueue_lim = 1;
-+		rcu_task_cb_adjust = true;
-+		pr_info("%s: Setting adjustable number of callback queues.\n", __func__);
-+	} else if (rcu_task_enqueue_lim == 0) {
- 		rcu_task_enqueue_lim = 1;
-+	}
- 	lim = rcu_task_enqueue_lim;
- 
- 	if (lim > nr_cpu_ids)
-@@ -251,6 +258,7 @@ static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
+@@ -24,6 +24,8 @@ typedef void (*postgp_func_t)(struct rcu_tasks *rtp);
+  * struct rcu_tasks_percpu - Per-CPU component of definition for a Tasks-RCU-like mechanism.
+  * @cblist: Callback list.
+  * @lock: Lock protecting per-CPU callback list.
++ * @rtp_jiffies: Jiffies counter value for statistics.
++ * @rtp_n_lock_retries: Rough lock-contention statistic.
+  * @rtp_work: Work queue for invoking callbacks.
+  * @barrier_q_head: RCU callback for barrier operation.
+  * @cpu: CPU number corresponding to this entry.
+@@ -32,6 +34,8 @@ typedef void (*postgp_func_t)(struct rcu_tasks *rtp);
+ struct rcu_tasks_percpu {
+ 	struct rcu_segcblist cblist;
+ 	raw_spinlock_t __private lock;
++	unsigned long rtp_jiffies;
++	unsigned long rtp_n_lock_retries;
+ 	struct work_struct rtp_work;
+ 	struct rcu_head barrier_q_head;
+ 	int cpu;
+@@ -231,6 +235,7 @@ static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
+ 				   struct rcu_tasks *rtp)
  {
  	unsigned long flags;
- 	unsigned long j;
-+	bool needadjust = false;
++	unsigned long j;
  	bool needwake;
  	struct rcu_tasks_percpu *rtpcp;
  
-@@ -266,7 +274,9 @@ static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
- 			rtpcp->rtp_jiffies = j;
- 			rtpcp->rtp_n_lock_retries = 0;
- 		}
--		rtpcp->rtp_n_lock_retries++;
-+		if (rcu_task_cb_adjust && ++rtpcp->rtp_n_lock_retries > rcu_task_contend_lim &&
-+		    READ_ONCE(rtp->percpu_enqueue_lim) != nr_cpu_ids)
-+			needadjust = true;  // Defer adjustment to avoid deadlock.
- 	}
+@@ -239,7 +244,15 @@ static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
+ 	local_irq_save(flags);
+ 	rtpcp = per_cpu_ptr(rtp->rtpcpu,
+ 			    smp_processor_id() >> READ_ONCE(rtp->percpu_enqueue_shift));
+-	raw_spin_lock_rcu_node(rtpcp); // irqs already disabled.
++	if (!raw_spin_trylock_rcu_node(rtpcp)) { // irqs already disabled.
++		raw_spin_lock_rcu_node(rtpcp); // irqs already disabled.
++		j = jiffies;
++		if (rtpcp->rtp_jiffies != j) {
++			rtpcp->rtp_jiffies = j;
++			rtpcp->rtp_n_lock_retries = 0;
++		}
++		rtpcp->rtp_n_lock_retries++;
++	}
  	if (!rcu_segcblist_is_enabled(&rtpcp->cblist)) {
  		raw_spin_unlock_rcu_node(rtpcp); // irqs remain disabled.
-@@ -276,6 +286,15 @@ static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
- 	needwake = rcu_segcblist_empty(&rtpcp->cblist);
- 	rcu_segcblist_enqueue(&rtpcp->cblist, rhp);
- 	raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
-+	if (unlikely(needadjust)) {
-+		raw_spin_lock_irqsave(&rtp->cbs_gbl_lock, flags);
-+		if (rtp->percpu_enqueue_lim != nr_cpu_ids) {
-+			WRITE_ONCE(rtp->percpu_enqueue_shift, ilog2(nr_cpu_ids));
-+			smp_store_release(&rtp->percpu_enqueue_lim, nr_cpu_ids);
-+			pr_info("Switching %s to per-CPU callback queuing.\n", rtp->name);
-+		}
-+		raw_spin_unlock_irqrestore(&rtp->cbs_gbl_lock, flags);
-+	}
- 	/* We can't create the thread unless interrupts are enabled. */
- 	if (needwake && READ_ONCE(rtp->kthread_ptr)) {
- 		irq_work_queue(&rtpcp->rtp_irq_work);
+ 		cblist_init_generic(rtp);
 -- 
 2.31.1.189.g2e36527f23
 
