@@ -2,37 +2,37 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3538C43219
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 90A73C433EF
 	for <rcu@archiver.kernel.org>; Thu,  2 Dec 2021 00:21:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235723AbhLBAYZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Dec 2021 19:24:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41852 "EHLO
+        id S1354234AbhLBAYY (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 1 Dec 2021 19:24:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354212AbhLBAYX (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 1 Dec 2021 19:24:23 -0500
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7785C061574;
-        Wed,  1 Dec 2021 16:21:01 -0800 (PST)
+        with ESMTP id S1354215AbhLBAYV (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 1 Dec 2021 19:24:21 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4318FC061748;
+        Wed,  1 Dec 2021 16:20:59 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id F0E67CE2139;
-        Thu,  2 Dec 2021 00:20:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05931C5831C;
-        Thu,  2 Dec 2021 00:20:57 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 08650B82197;
+        Thu,  2 Dec 2021 00:20:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC8FFC53FAD;
+        Thu,  2 Dec 2021 00:20:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638404457;
-        bh=mdx5ahCUCGFGj7gmVOIaiUUse9lvAR8mGrQIois7W3k=;
+        s=k20201202; t=1638404456;
+        bh=bjpFm8qUZpgPKpuFrR71fV6y4tQEfZk4CPbtfDeNWck=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mYkBa/D+yiJW8Vo/rf3DDegin8gXI/migd+DM7gMD7ZcE/W7uYm9hwuFJ6SZ+ci3v
-         hbVLIpsb/F/d4WIuv/2Y14LTCGdNO4qwkGeHv5B5ue0xj0ockFvTiubkeOJeka4o/V
-         a2DxJW1eoPGDSIL7mvt9fc4RKTm4yPB65Dcbqgm/fN6oMqc7J1VhgheFkuMS/rnzDc
-         VDF+ndAOoZc2kiJx/MUrBsBRqoDqKRxKcm+6Zf7UFnzvoSX96jhY9Jau+1vre5G3wu
-         LyDS7jbzpXNHwXwwTZVZ5mg2svFnoM9VVN1TxC/6ZtEHBYPg8WxdNuyTCDViFybZXZ
-         rRtXzH3oBelXA==
+        b=Yt2V6ZLPDnndmxLpA1kzfyR2LdrJ3sDBJZ2/oZZw94+5ukPlSA1o1STiiRbFmdAn2
+         D2XQ5HFvnGOW7bdNvbZUR1TG7gXEs1AaW8AJGC86syS0gV/aS5SMuf9jgK1ny4Ebya
+         Va2t4w84sq/LnhD29rRKmbuZ5X0fg9KMQaOFD1J1aj55TjCKOiTGIAzE9rWEbJBhkL
+         9mQwcx11Itc1BTzXBKF+/UWOOyp9Q0KpAkNprrAR/n1VGYSojW0AeOKScIvShkJPn7
+         AFVS8NNr8A/qFsDkimrlxwk1cEISqhY9qFVLaU0UggZllagkHnS+WKR0vjusbYr32c
+         tv6rRAJ53T/LA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 8AF105C1184; Wed,  1 Dec 2021 16:20:56 -0800 (PST)
+        id 7EEB25C1107; Wed,  1 Dec 2021 16:20:56 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -41,10 +41,12 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 6/6] srcu: Prevent redundant __srcu_read_unlock() wakeup
-Date:   Wed,  1 Dec 2021 16:20:55 -0800
-Message-Id: <20211202002055.3127133-6-paulmck@kernel.org>
+        Chun-Hung Tseng <henrybear327@gmail.com>,
+        Jim Huang <jserv@ccns.ncku.edu.tw>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 1/6] rcu: Replace ________p1 and _________p1 with __UNIQUE_ID(rcu)
+Date:   Wed,  1 Dec 2021 16:20:50 -0800
+Message-Id: <20211202002055.3127133-1-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20211202002031.GA3127068@paulmck-ThinkPad-P17-Gen-1>
 References: <20211202002031.GA3127068@paulmck-ThinkPad-P17-Gen-1>
@@ -54,132 +56,169 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Tiny SRCU readers can appear at task level, but also in interrupt and
-softirq handlers.  Because Tiny SRCU is selected only in kernels built
-with CONFIG_SMP=n and CONFIG_PREEMPTION=n, it is not possible for a grace
-period to start while there is a non-task-level SRCU reader executing.
-This means that it does not make sense for __srcu_read_unlock() to awaken
-the Tiny SRCU grace period, because that can only happen when the grace
-period is waiting for one value of ->srcu_idx and __srcu_read_unlock()
-is ending the last reader for some other value of ->srcu_idx.  After all,
-any such wakeup will be redundant.
+From: Chun-Hung Tseng <henrybear327@gmail.com>
 
-Worse yet, in some cases, such wakeups generate lockdep splats:
+This commit replaces both ________p1 and _________p1 with __UNIQUE_ID(rcu),
+and also adjusts the callers of the affected macros.
 
-	======================================================
-	WARNING: possible circular locking dependency detected
-	5.15.0-rc1+ #3758 Not tainted
-	------------------------------------------------------
-	rcu_torture_rea/53 is trying to acquire lock:
-	ffffffff9514e6a8 (srcu_ctl.srcu_wq.lock){..-.}-{2:2}, at:
-	xa/0x30
+__UNIQUE_ID(rcu) will generate unique variable names during compilation,
+which eliminates the need of ________p1 and _________p1 (both having 4
+occurrences prior to the code change).  This also avoids the variable
+name shadowing issue, or at least makes those wishing to cause shadowing
+problems work much harder to do so.
 
-	but task is already holding lock:
-	ffff95c642479d80 (&p->pi_lock){-.-.}-{2:2}, at:
-	_extend+0x370/0x400
+The same idea is used for the min/max macros (commit 589a978 and commit
+e9092d0).
 
-	which lock already depends on the new lock.
-
-	the existing dependency chain (in reverse order) is:
-
-	-> #1 (&p->pi_lock){-.-.}-{2:2}:
-	       _raw_spin_lock_irqsave+0x2f/0x50
-	       try_to_wake_up+0x50/0x580
-	       swake_up_locked.part.7+0xe/0x30
-	       swake_up_one+0x22/0x30
-	       rcutorture_one_extend+0x1b6/0x400
-	       rcu_torture_one_read+0x290/0x5d0
-	       rcu_torture_timer+0x1a/0x70
-	       call_timer_fn+0xa6/0x230
-	       run_timer_softirq+0x493/0x4c0
-	       __do_softirq+0xc0/0x371
-	       irq_exit+0x73/0x90
-	       sysvec_apic_timer_interrupt+0x63/0x80
-	       asm_sysvec_apic_timer_interrupt+0x12/0x20
-	       default_idle+0xb/0x10
-	       default_idle_call+0x5e/0x170
-	       do_idle+0x18a/0x1f0
-	       cpu_startup_entry+0xa/0x10
-	       start_kernel+0x678/0x69f
-	       secondary_startup_64_no_verify+0xc2/0xcb
-
-	-> #0 (srcu_ctl.srcu_wq.lock){..-.}-{2:2}:
-	       __lock_acquire+0x130c/0x2440
-	       lock_acquire+0xc2/0x270
-	       _raw_spin_lock_irqsave+0x2f/0x50
-	       swake_up_one+0xa/0x30
-	       rcutorture_one_extend+0x387/0x400
-	       rcu_torture_one_read+0x290/0x5d0
-	       rcu_torture_reader+0xac/0x200
-	       kthread+0x12d/0x150
-	       ret_from_fork+0x22/0x30
-
-	other info that might help us debug this:
-
-	 Possible unsafe locking scenario:
-
-	       CPU0                    CPU1
-	       ----                    ----
-	  lock(&p->pi_lock);
-				       lock(srcu_ctl.srcu_wq.lock);
-				       lock(&p->pi_lock);
-	  lock(srcu_ctl.srcu_wq.lock);
-
-	 *** DEADLOCK ***
-
-	1 lock held by rcu_torture_rea/53:
-	 #0: ffff95c642479d80 (&p->pi_lock){-.-.}-{2:2}, at:
-	_extend+0x370/0x400
-
-	stack backtrace:
-	CPU: 0 PID: 53 Comm: rcu_torture_rea Not tainted 5.15.0-rc1+
-
-	Hardware name: Red Hat KVM/RHEL-AV, BIOS
-	e_el8.5.0+746+bbd5d70c 04/01/2014
-	Call Trace:
-	 check_noncircular+0xfe/0x110
-	 ? find_held_lock+0x2d/0x90
-	 __lock_acquire+0x130c/0x2440
-	 lock_acquire+0xc2/0x270
-	 ? swake_up_one+0xa/0x30
-	 ? find_held_lock+0x72/0x90
-	 _raw_spin_lock_irqsave+0x2f/0x50
-	 ? swake_up_one+0xa/0x30
-	 swake_up_one+0xa/0x30
-	 rcutorture_one_extend+0x387/0x400
-	 rcu_torture_one_read+0x290/0x5d0
-	 rcu_torture_reader+0xac/0x200
-	 ? rcutorture_oom_notify+0xf0/0xf0
-	 ? __kthread_parkme+0x61/0x90
-	 ? rcu_torture_one_read+0x5d0/0x5d0
-	 kthread+0x12d/0x150
-	 ? set_kthread_struct+0x40/0x40
-	 ret_from_fork+0x22/0x30
-
-This is a false positive because there is only one CPU, and both locks
-are raw (non-preemptible) spinlocks.  However, it is worthwhile getting
-rid of the redundant wakeup, which has the side effect of breaking
-the theoretical deadlock cycle.  This commit therefore eliminates the
-redundant wakeups.
-
+Signed-off-by: Jim Huang <jserv@ccns.ncku.edu.tw>
+Signed-off-by: Chun-Hung Tseng <henrybear327@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/srcutiny.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/rcupdate.h | 50 ++++++++++++++++++++++------------------
+ include/linux/srcu.h     |  3 ++-
+ 2 files changed, 30 insertions(+), 23 deletions(-)
 
-diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
-index a0ba2ed49bc61..92c002d654828 100644
---- a/kernel/rcu/srcutiny.c
-+++ b/kernel/rcu/srcutiny.c
-@@ -99,7 +99,7 @@ void __srcu_read_unlock(struct srcu_struct *ssp, int idx)
- 	int newval = READ_ONCE(ssp->srcu_lock_nesting[idx]) - 1;
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index 5e0beb5c5659a..88b42eb464068 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -364,6 +364,12 @@ static inline void rcu_preempt_sleep_check(void) { }
+ #define rcu_check_sparse(p, space)
+ #endif /* #else #ifdef __CHECKER__ */
  
- 	WRITE_ONCE(ssp->srcu_lock_nesting[idx], newval);
--	if (!newval && READ_ONCE(ssp->srcu_gp_waiting))
-+	if (!newval && READ_ONCE(ssp->srcu_gp_waiting) && in_task())
- 		swake_up_one(&ssp->srcu_wq);
- }
- EXPORT_SYMBOL_GPL(__srcu_read_unlock);
++#define __unrcu_pointer(p, local)					\
++({									\
++	typeof(*p) *local = (typeof(*p) *__force)(p);			\
++	rcu_check_sparse(p, __rcu);					\
++	((typeof(*p) __force __kernel *)(local)); 			\
++})
+ /**
+  * unrcu_pointer - mark a pointer as not being RCU protected
+  * @p: pointer needing to lose its __rcu property
+@@ -371,39 +377,35 @@ static inline void rcu_preempt_sleep_check(void) { }
+  * Converts @p from an __rcu pointer to a __kernel pointer.
+  * This allows an __rcu pointer to be used with xchg() and friends.
+  */
+-#define unrcu_pointer(p)						\
+-({									\
+-	typeof(*p) *_________p1 = (typeof(*p) *__force)(p);		\
+-	rcu_check_sparse(p, __rcu);					\
+-	((typeof(*p) __force __kernel *)(_________p1)); 		\
+-})
++#define unrcu_pointer(p) __unrcu_pointer(p, __UNIQUE_ID(rcu))
+ 
+-#define __rcu_access_pointer(p, space) \
++#define __rcu_access_pointer(p, local, space) \
+ ({ \
+-	typeof(*p) *_________p1 = (typeof(*p) *__force)READ_ONCE(p); \
++	typeof(*p) *local = (typeof(*p) *__force)READ_ONCE(p); \
+ 	rcu_check_sparse(p, space); \
+-	((typeof(*p) __force __kernel *)(_________p1)); \
++	((typeof(*p) __force __kernel *)(local)); \
+ })
+-#define __rcu_dereference_check(p, c, space) \
++#define __rcu_dereference_check(p, local, c, space) \
+ ({ \
+ 	/* Dependency order vs. p above. */ \
+-	typeof(*p) *________p1 = (typeof(*p) *__force)READ_ONCE(p); \
++	typeof(*p) *local = (typeof(*p) *__force)READ_ONCE(p); \
+ 	RCU_LOCKDEP_WARN(!(c), "suspicious rcu_dereference_check() usage"); \
+ 	rcu_check_sparse(p, space); \
+-	((typeof(*p) __force __kernel *)(________p1)); \
++	((typeof(*p) __force __kernel *)(local)); \
+ })
+-#define __rcu_dereference_protected(p, c, space) \
++#define __rcu_dereference_protected(p, local, c, space) \
+ ({ \
+ 	RCU_LOCKDEP_WARN(!(c), "suspicious rcu_dereference_protected() usage"); \
+ 	rcu_check_sparse(p, space); \
+ 	((typeof(*p) __force __kernel *)(p)); \
+ })
+-#define rcu_dereference_raw(p) \
++#define __rcu_dereference_raw(p, local) \
+ ({ \
+ 	/* Dependency order vs. p above. */ \
+-	typeof(p) ________p1 = READ_ONCE(p); \
+-	((typeof(*p) __force __kernel *)(________p1)); \
++	typeof(p) local = READ_ONCE(p); \
++	((typeof(*p) __force __kernel *)(local)); \
+ })
++#define rcu_dereference_raw(p) __rcu_dereference_raw(p, __UNIQUE_ID(rcu))
+ 
+ /**
+  * RCU_INITIALIZER() - statically initialize an RCU-protected global variable
+@@ -490,7 +492,7 @@ do {									      \
+  * when tearing down multi-linked structures after a grace period
+  * has elapsed.
+  */
+-#define rcu_access_pointer(p) __rcu_access_pointer((p), __rcu)
++#define rcu_access_pointer(p) __rcu_access_pointer((p), __UNIQUE_ID(rcu), __rcu)
+ 
+ /**
+  * rcu_dereference_check() - rcu_dereference with debug checking
+@@ -526,7 +528,8 @@ do {									      \
+  * annotated as __rcu.
+  */
+ #define rcu_dereference_check(p, c) \
+-	__rcu_dereference_check((p), (c) || rcu_read_lock_held(), __rcu)
++	__rcu_dereference_check((p), __UNIQUE_ID(rcu), \
++				(c) || rcu_read_lock_held(), __rcu)
+ 
+ /**
+  * rcu_dereference_bh_check() - rcu_dereference_bh with debug checking
+@@ -541,7 +544,8 @@ do {									      \
+  * rcu_read_lock() but also rcu_read_lock_bh() into account.
+  */
+ #define rcu_dereference_bh_check(p, c) \
+-	__rcu_dereference_check((p), (c) || rcu_read_lock_bh_held(), __rcu)
++	__rcu_dereference_check((p), __UNIQUE_ID(rcu), \
++				(c) || rcu_read_lock_bh_held(), __rcu)
+ 
+ /**
+  * rcu_dereference_sched_check() - rcu_dereference_sched with debug checking
+@@ -556,7 +560,8 @@ do {									      \
+  * only rcu_read_lock() but also rcu_read_lock_sched() into account.
+  */
+ #define rcu_dereference_sched_check(p, c) \
+-	__rcu_dereference_check((p), (c) || rcu_read_lock_sched_held(), \
++	__rcu_dereference_check((p), __UNIQUE_ID(rcu), \
++				(c) || rcu_read_lock_sched_held(), \
+ 				__rcu)
+ 
+ /*
+@@ -566,7 +571,8 @@ do {									      \
+  * The no-tracing version of rcu_dereference_raw() must not call
+  * rcu_read_lock_held().
+  */
+-#define rcu_dereference_raw_check(p) __rcu_dereference_check((p), 1, __rcu)
++#define rcu_dereference_raw_check(p) \
++	__rcu_dereference_check((p), __UNIQUE_ID(rcu), 1, __rcu)
+ 
+ /**
+  * rcu_dereference_protected() - fetch RCU pointer when updates prevented
+@@ -585,7 +591,7 @@ do {									      \
+  * but very ugly failures.
+  */
+ #define rcu_dereference_protected(p, c) \
+-	__rcu_dereference_protected((p), (c), __rcu)
++	__rcu_dereference_protected((p), __UNIQUE_ID(rcu), (c), __rcu)
+ 
+ 
+ /**
+diff --git a/include/linux/srcu.h b/include/linux/srcu.h
+index e6011a9975af2..01226e4d960a0 100644
+--- a/include/linux/srcu.h
++++ b/include/linux/srcu.h
+@@ -117,7 +117,8 @@ static inline int srcu_read_lock_held(const struct srcu_struct *ssp)
+  * lockdep_is_held() calls.
+  */
+ #define srcu_dereference_check(p, ssp, c) \
+-	__rcu_dereference_check((p), (c) || srcu_read_lock_held(ssp), __rcu)
++	__rcu_dereference_check((p), __UNIQUE_ID(rcu), \
++				(c) || srcu_read_lock_held(ssp), __rcu)
+ 
+ /**
+  * srcu_dereference - fetch SRCU-protected pointer for later dereferencing
 -- 
 2.31.1.189.g2e36527f23
 
