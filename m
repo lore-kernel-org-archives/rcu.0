@@ -2,34 +2,38 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 17C4AC433EF
-	for <rcu@archiver.kernel.org>; Thu,  2 Dec 2021 00:29:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E0481C433EF
+	for <rcu@archiver.kernel.org>; Thu,  2 Dec 2021 00:33:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354420AbhLBAc7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Dec 2021 19:32:59 -0500
-Received: from sin.source.kernel.org ([145.40.73.55]:51962 "EHLO
-        sin.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345031AbhLBAcl (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 1 Dec 2021 19:32:41 -0500
+        id S1344566AbhLBAgs (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 1 Dec 2021 19:36:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234629AbhLBAgs (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 1 Dec 2021 19:36:48 -0500
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2A2DC061574;
+        Wed,  1 Dec 2021 16:33:26 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 00639CE213B;
-        Thu,  2 Dec 2021 00:29:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10C3CC58332;
-        Thu,  2 Dec 2021 00:29:15 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 0A57ECE1DC7;
+        Thu,  2 Dec 2021 00:33:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B983C00446;
+        Thu,  2 Dec 2021 00:33:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638404955;
-        bh=GHgGsDCq17POu9DvYzdzZrkC23Mrj2IPIVzBqt/uUnE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p27+L0n0+0Su0ARbygCsvpjseu9Gr8Ko+ylfJEr5ZAZDc+A11iUq+j6Im2HV9Gzep
-         KecqD6595+/NvwNC4ribBr75BobF+GttIU2ih57gc+GOzHYUdwBHD/x1djDojb/zUq
-         a41TeW/A1G1ZTqMP1v3M9SI7pplZQVNiI4pHAsO+IuxtSlkyAUFziIOqkmGpj59RW/
-         PcpgihlpDVlC2WUJEe8ekmv0FdgQ2aygKtNobBdXVKjtNAqVtInQg5nElaaMagOhDW
-         VlUxOj6z9QKszpnSPnfN3v/LwfX8fx6FR6whiLfLPiZbDy6UqM6cuJNwWFDgfwh1CR
-         oG9Bn1aEaScPA==
+        s=k20201202; t=1638405203;
+        bh=Ds/eO3dfiMAcQ/6iKBSMK4xpLlZdjck5M+IsTr0LZSI=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=ItYZaJmdHOeyp3JiWqPdSjfXse+RS08UpC8Nm95vOcWlfJ5nKaTDvVy5cj7fSKTmK
+         0t2pXhJ5awCROoCVM53Sf5DPvr9Pp8iuKHoCATqcDJGZ05hjlNPtPPggbDMD+hooir
+         BEJF7vZhFWm//pofSWBNQZJYzom3F/3kEPqtuN2LQ6AGiqWsOAcBtSk8fNaIYSjSHO
+         gfYtzJ8Ar8FAgwv/JpsqRLxFZJcbo7/5+ZGsU/PsYajfj/fQC1acC+winoSnxkk7Py
+         /swDa+ro/oPfsQYSlzXKpBPy7Ohkbec7SHRbOA55Jdxj4ptJ3gKHqrSgmYonMkmiNN
+         F07UQIRKk/d4A==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 7468A5C1411; Wed,  1 Dec 2021 16:29:14 -0800 (PST)
+        id 01F7D5C0FCD; Wed,  1 Dec 2021 16:33:22 -0800 (PST)
+Date:   Wed, 1 Dec 2021 16:33:22 -0800
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -37,96 +41,40 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 12/18] rcu/nocb: Don't invoke local rcu core on callback overload from nocb kthread
-Date:   Wed,  1 Dec 2021 16:29:06 -0800
-Message-Id: <20211202002912.3127710-12-paulmck@kernel.org>
-X-Mailer: git-send-email 2.31.1.189.g2e36527f23
-In-Reply-To: <20211202002848.GA3127439@paulmck-ThinkPad-P17-Gen-1>
-References: <20211202002848.GA3127439@paulmck-ThinkPad-P17-Gen-1>
+        oleg@redhat.com, joel@joelfernandes.org
+Subject: [PATCH rcu 0/6] nolibc updates for v5.17
+Message-ID: <20211202003322.GA3128775@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Frederic Weisbecker <frederic@kernel.org>
+Hello!
 
-rcu_core() tries to ensure that its self-invocation in case of callbacks
-overload only happen in softirq/rcuc mode. Indeed it doesn't make sense
-to trigger local RCU core from nocb_cb kthread since it can execute
-on a CPU different from the target rdp. Also in case of overload, the
-nocb_cb kthread simply iterates a new loop of callbacks processing.
+This series provides nolibc updates, perhaps most notably the addition
+of the gettid() system call:
 
-However the "offloaded" check that aims at preventing misplaced
-rcu_core() invocations is wrong. First of all that state is volatile
-and second: softirq/rcuc can execute while the target rdp is offloaded.
-As a result rcu_core() can be invoked on the wrong CPU while in the
-process of (de-)offloading.
+1.	x86-64: Fix startup code bug, courtesy of Ammar Faizi.
 
-Fix that with moving the rcu_core() self-invocation to rcu_core() itself,
-irrespective of the rdp offloaded state.
+2.	i386: fix initial stack alignment, courtesy of Willy Tarreau.
 
-Tested-by: Valentin Schneider <valentin.schneider@arm.com>
-Tested-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Cc: Valentin Schneider <valentin.schneider@arm.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Josh Triplett <josh@joshtriplett.org>
-Cc: Joel Fernandes <joel@joelfernandes.org>
-Cc: Boqun Feng <boqun.feng@gmail.com>
-Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
-Cc: Uladzislau Rezki <urezki@gmail.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/rcu/tree.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+3.	fix incorrect truncation of exit code, courtesy of Willy Tarreau.
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 1b31fad9f1a0a..03c038f324a09 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2460,7 +2460,6 @@ static void rcu_do_batch(struct rcu_data *rdp)
- 	int div;
- 	bool __maybe_unused empty;
- 	unsigned long flags;
--	const bool offloaded = rcu_rdp_is_offloaded(rdp);
- 	struct rcu_head *rhp;
- 	struct rcu_cblist rcl = RCU_CBLIST_INITIALIZER(rcl);
- 	long bl, count = 0;
-@@ -2582,9 +2581,6 @@ static void rcu_do_batch(struct rcu_data *rdp)
- 
- 	rcu_nocb_unlock_irqrestore(rdp, flags);
- 
--	/* Re-invoke RCU core processing if there are callbacks remaining. */
--	if (!offloaded && rcu_segcblist_ready_cbs(&rdp->cblist))
--		invoke_rcu_core();
- 	tick_dep_clear_task(current, TICK_DEP_BIT_RCU);
- }
- 
-@@ -2771,8 +2767,12 @@ static __latent_entropy void rcu_core(void)
- 
- 	/* If there are callbacks ready, invoke them. */
- 	if (do_batch && rcu_segcblist_ready_cbs(&rdp->cblist) &&
--	    likely(READ_ONCE(rcu_scheduler_fully_active)))
-+	    likely(READ_ONCE(rcu_scheduler_fully_active))) {
- 		rcu_do_batch(rdp);
-+		/* Re-invoke RCU core processing if there are callbacks remaining. */
-+		if (rcu_segcblist_ready_cbs(&rdp->cblist))
-+			invoke_rcu_core();
-+	}
- 
- 	/* Do any needed deferred wakeups of rcuo kthreads. */
- 	do_nocb_deferred_wakeup(rdp);
--- 
-2.31.1.189.g2e36527f23
+4.	x86: Remove `r8`, `r9` and `r10` from the clobber list, courtesy
+	of Ammar Faizi.
 
+5.	x86-64: Use `mov $60,%eax` instead of `mov $60,%rax`, courtesy
+	of Ammar Faizi.
+
+6.	Implement gettid(), courtesy of Mark Brown.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ b/tools/include/nolibc/nolibc.h |   10 ++++-
+ tools/include/nolibc/nolibc.h   |   76 +++++++++++++++++++++++++++-------------
+ 2 files changed, 60 insertions(+), 26 deletions(-)
