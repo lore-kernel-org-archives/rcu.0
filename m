@@ -2,38 +2,37 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D83E6C433EF
-	for <rcu@archiver.kernel.org>; Thu,  2 Dec 2021 00:18:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C14CC433FE
+	for <rcu@archiver.kernel.org>; Thu,  2 Dec 2021 00:19:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354112AbhLBAWG (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Dec 2021 19:22:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41270 "EHLO
+        id S1354158AbhLBAWc (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 1 Dec 2021 19:22:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344287AbhLBAWF (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 1 Dec 2021 19:22:05 -0500
+        with ESMTP id S1354130AbhLBAWb (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 1 Dec 2021 19:22:31 -0500
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E411CC061574;
-        Wed,  1 Dec 2021 16:18:41 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8008FC061574;
+        Wed,  1 Dec 2021 16:19:09 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 72805B8210E;
-        Thu,  2 Dec 2021 00:18:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E914C53FCC;
-        Thu,  2 Dec 2021 00:18:39 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 48128B8210E;
+        Thu,  2 Dec 2021 00:19:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F316BC53FAD;
+        Thu,  2 Dec 2021 00:19:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638404319;
-        bh=qgWP/Rv554H+pR+gHHeG3HZ4uwuAwa8dDkUx4Tv579U=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=sZpHyUwSp/pz6OTjw80fUAkY1TPZNjFo7kMxsBlRGjcsOTegdfUP7WGHoRNj7SztF
-         wjCDnQZqBCUh6jY+D9r1NQV8VLCuK+Tp2AFP2xu2On/MnQOa8Y+9VMalNMX5EG2EuC
-         ytHfQlW3Dc6w+PlT906rw8iyZy+/x0eyc566pgcTI48MJ5CaLSoTB+b/qdQowr+jp5
-         f7m+ZCTGv3cQFu/RFpzCyT6g9HqiCCjhprbFM0ClHaIWgwjC4xQIZKzNi+VmvpZfG2
-         UzEQ+pHgN4ddIMt9Is9ZJq76GwlqMhMVfFUZB9fNHI3zZZR/4qocMuEUNEMxYr9dxh
-         v0RSTJ6YVrDYA==
+        s=k20201202; t=1638404347;
+        bh=fTzinK33PcZDFaHv7z1fe+4X03/KelxR0tcF1N+eP1M=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=aPQxE5K8Vfo4Bg4WqvEdLbRFLJLX/K7fiDeEg64xVmj72SAQ9ls+7SWQrm2/gLMxG
+         N7DLtOMIuv4c/vnVnafUBod44+00lCdgQY6++lcLcYAIHm5P7VLZ0K04brojxRZyZs
+         yia63DoD6euETBaHSrhUXKE9t4U/k2XMzjyHa71Smf9CFgRHWzq1qCviYjuA7h7NNq
+         o2NAU94Zyr1jzNTxVLKYH/k1uRX0XcH7DETzhq/Crek6uKZ+h/JQ1g3WvaGkFQLUPJ
+         fjGqM2Nd1/f18dDwMx3n4ij+gjY+Ql/7mR619R1bcgOmSTQlBTTdOA4xM2Zw2sNHTT
+         o/pGXI0iT8nnw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id C950D5C1107; Wed,  1 Dec 2021 16:18:38 -0800 (PST)
-Date:   Wed, 1 Dec 2021 16:18:38 -0800
+        id C2F665C1107; Wed,  1 Dec 2021 16:19:06 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -41,67 +40,107 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org
-Subject: [PATCH rcu 0/4] CONFIG_RCU_FAST_NO_HZ removal for v5.17
-Message-ID: <20211202001838.GA3126627@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        oleg@redhat.com, joel@joelfernandes.org,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 1/4] torture: Remove RCU_FAST_NO_HZ from rcuscale and refscale scenarios
+Date:   Wed,  1 Dec 2021 16:19:01 -0800
+Message-Id: <20211202001904.3126929-1-paulmck@kernel.org>
+X-Mailer: git-send-email 2.31.1.189.g2e36527f23
+In-Reply-To: <20211202001838.GA3126627@paulmck-ThinkPad-P17-Gen-1>
+References: <20211202001838.GA3126627@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello!
+All of the rcuscale and refscale scenarios that mention the Kconfig option
+CONFIG_RCU_FAST_NO_HZ disable it.  But this Kconfig option is disabled by
+default, so this commit removes the pointless "CONFIG_RCU_FAST_NO_HZ=n"
+lines from these scenarios.
 
-This series removes CONFIG_RCU_FAST_NO_HZ support.  The reason for
-taking this step is that in every case that I know of where kernels
-are built with CONFIG_RCU_FAST_NO_HZ=y, those kernels also offload RCU
-callbacks from all CPUs, for example, by booting with rcu_nocbs=0-N.
-This is counterproductive because CONFIG_RCU_FAST_NO_HZ only applies
-to CPUs that do not offload their callbacks.  For CPUs with offloaded
-callbacks, this Kconfig option does nothing but (slightly) increase your
-to/from idle latencies, which is not normally what anyone wants.
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ tools/testing/selftests/rcutorture/configs/rcuscale/TINY      | 1 -
+ tools/testing/selftests/rcutorture/configs/rcuscale/TRACE01   | 1 -
+ tools/testing/selftests/rcutorture/configs/rcuscale/TREE      | 1 -
+ tools/testing/selftests/rcutorture/configs/rcuscale/TREE54    | 1 -
+ tools/testing/selftests/rcutorture/configs/refscale/NOPREEMPT | 1 -
+ tools/testing/selftests/rcutorture/configs/refscale/PREEMPT   | 1 -
+ 6 files changed, 6 deletions(-)
 
-So if you know of someone who is gaining real benefit from building their
-kernels with CONFIG_RCU_FAST_NO_HZ=y, this would be a most excellent
-time to make me aware of this fact.  ;-)
+diff --git a/tools/testing/selftests/rcutorture/configs/rcuscale/TINY b/tools/testing/selftests/rcutorture/configs/rcuscale/TINY
+index 64e9490c1f797..0fa2dc086e10c 100644
+--- a/tools/testing/selftests/rcutorture/configs/rcuscale/TINY
++++ b/tools/testing/selftests/rcutorture/configs/rcuscale/TINY
+@@ -7,7 +7,6 @@ CONFIG_PREEMPT_DYNAMIC=n
+ CONFIG_HZ_PERIODIC=n
+ CONFIG_NO_HZ_IDLE=y
+ CONFIG_NO_HZ_FULL=n
+-CONFIG_RCU_FAST_NO_HZ=n
+ CONFIG_RCU_NOCB_CPU=n
+ CONFIG_DEBUG_LOCK_ALLOC=n
+ CONFIG_PROVE_LOCKING=n
+diff --git a/tools/testing/selftests/rcutorture/configs/rcuscale/TRACE01 b/tools/testing/selftests/rcutorture/configs/rcuscale/TRACE01
+index e6baa2fbaeb33..227aba7783aff 100644
+--- a/tools/testing/selftests/rcutorture/configs/rcuscale/TRACE01
++++ b/tools/testing/selftests/rcutorture/configs/rcuscale/TRACE01
+@@ -5,7 +5,6 @@ CONFIG_PREEMPT=n
+ CONFIG_HZ_PERIODIC=n
+ CONFIG_NO_HZ_IDLE=y
+ CONFIG_NO_HZ_FULL=n
+-CONFIG_RCU_FAST_NO_HZ=n
+ CONFIG_RCU_NOCB_CPU=n
+ CONFIG_DEBUG_LOCK_ALLOC=n
+ CONFIG_PROVE_LOCKING=n
+diff --git a/tools/testing/selftests/rcutorture/configs/rcuscale/TREE b/tools/testing/selftests/rcutorture/configs/rcuscale/TREE
+index 4cc1cc5813214..f110d9ffbe4cb 100644
+--- a/tools/testing/selftests/rcutorture/configs/rcuscale/TREE
++++ b/tools/testing/selftests/rcutorture/configs/rcuscale/TREE
+@@ -6,7 +6,6 @@ CONFIG_PREEMPT=y
+ CONFIG_HZ_PERIODIC=n
+ CONFIG_NO_HZ_IDLE=y
+ CONFIG_NO_HZ_FULL=n
+-CONFIG_RCU_FAST_NO_HZ=n
+ CONFIG_HOTPLUG_CPU=y
+ CONFIG_SUSPEND=n
+ CONFIG_HIBERNATION=n
+diff --git a/tools/testing/selftests/rcutorture/configs/rcuscale/TREE54 b/tools/testing/selftests/rcutorture/configs/rcuscale/TREE54
+index f5952061fde7b..9f83e53727969 100644
+--- a/tools/testing/selftests/rcutorture/configs/rcuscale/TREE54
++++ b/tools/testing/selftests/rcutorture/configs/rcuscale/TREE54
+@@ -7,7 +7,6 @@ CONFIG_PREEMPT=y
+ CONFIG_HZ_PERIODIC=n
+ CONFIG_NO_HZ_IDLE=y
+ CONFIG_NO_HZ_FULL=n
+-CONFIG_RCU_FAST_NO_HZ=n
+ CONFIG_HOTPLUG_CPU=y
+ CONFIG_SUSPEND=n
+ CONFIG_HIBERNATION=n
+diff --git a/tools/testing/selftests/rcutorture/configs/refscale/NOPREEMPT b/tools/testing/selftests/rcutorture/configs/refscale/NOPREEMPT
+index ad505a887bec4..7f06838a91e61 100644
+--- a/tools/testing/selftests/rcutorture/configs/refscale/NOPREEMPT
++++ b/tools/testing/selftests/rcutorture/configs/refscale/NOPREEMPT
+@@ -6,7 +6,6 @@ CONFIG_PREEMPT=n
+ CONFIG_HZ_PERIODIC=n
+ CONFIG_NO_HZ_IDLE=y
+ CONFIG_NO_HZ_FULL=n
+-CONFIG_RCU_FAST_NO_HZ=n
+ CONFIG_HOTPLUG_CPU=y
+ CONFIG_SUSPEND=n
+ CONFIG_HIBERNATION=n
+diff --git a/tools/testing/selftests/rcutorture/configs/refscale/PREEMPT b/tools/testing/selftests/rcutorture/configs/refscale/PREEMPT
+index 4f08e641bb6b8..52e3ef6740567 100644
+--- a/tools/testing/selftests/rcutorture/configs/refscale/PREEMPT
++++ b/tools/testing/selftests/rcutorture/configs/refscale/PREEMPT
+@@ -6,7 +6,6 @@ CONFIG_PREEMPT=y
+ CONFIG_HZ_PERIODIC=n
+ CONFIG_NO_HZ_IDLE=y
+ CONFIG_NO_HZ_FULL=n
+-CONFIG_RCU_FAST_NO_HZ=n
+ CONFIG_HOTPLUG_CPU=y
+ CONFIG_SUSPEND=n
+ CONFIG_HIBERNATION=n
+-- 
+2.31.1.189.g2e36527f23
 
-1.	Remove RCU_FAST_NO_HZ from rcuscale and refscale scenarios.
-
-2.	Remove RCU_FAST_NO_HZ from rcu scenarios.
-
-3.	Remove the RCU_FAST_NO_HZ Kconfig option.
-
-4.	Move rcu_needs_cpu() to tree.c.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- b/Documentation/RCU/stallwarn.rst                               |   11 
- b/Documentation/admin-guide/kernel-parameters.txt               |    4 
- b/Documentation/timers/no_hz.rst                                |   10 
- b/kernel/rcu/Kconfig                                            |   18 
- b/kernel/rcu/tree.c                                             |   11 
- b/kernel/rcu/tree.h                                             |    7 
- b/kernel/rcu/tree_plugin.h                                      |  185 ----------
- b/kernel/rcu/tree_stall.h                                       |   27 -
- b/tools/testing/selftests/rcutorture/configs/rcu/TREE01         |    1 
- b/tools/testing/selftests/rcutorture/configs/rcu/TREE02         |    1 
- b/tools/testing/selftests/rcutorture/configs/rcu/TREE04         |    1 
- b/tools/testing/selftests/rcutorture/configs/rcu/TREE05         |    1 
- b/tools/testing/selftests/rcutorture/configs/rcu/TREE06         |    1 
- b/tools/testing/selftests/rcutorture/configs/rcu/TREE07         |    1 
- b/tools/testing/selftests/rcutorture/configs/rcu/TREE08         |    1 
- b/tools/testing/selftests/rcutorture/configs/rcu/TREE10         |    1 
- b/tools/testing/selftests/rcutorture/configs/rcuscale/TINY      |    1 
- b/tools/testing/selftests/rcutorture/configs/rcuscale/TRACE01   |    1 
- b/tools/testing/selftests/rcutorture/configs/rcuscale/TREE      |    1 
- b/tools/testing/selftests/rcutorture/configs/rcuscale/TREE54    |    1 
- b/tools/testing/selftests/rcutorture/configs/refscale/NOPREEMPT |    1 
- b/tools/testing/selftests/rcutorture/configs/refscale/PREEMPT   |    1 
- b/tools/testing/selftests/rcutorture/doc/TREE_RCU-kconfig.txt   |    1 
- kernel/rcu/tree.c                                               |   18 
- kernel/rcu/tree_plugin.h                                        |   16 
- 25 files changed, 25 insertions(+), 297 deletions(-)
