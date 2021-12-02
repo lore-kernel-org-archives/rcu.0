@@ -2,34 +2,37 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 11E3DC433EF
-	for <rcu@archiver.kernel.org>; Thu,  2 Dec 2021 00:43:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D51ACC433FE
+	for <rcu@archiver.kernel.org>; Thu,  2 Dec 2021 00:43:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354803AbhLBArJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Dec 2021 19:47:09 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:39234 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344426AbhLBArE (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1354813AbhLBArK (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 1 Dec 2021 19:47:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47614 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344466AbhLBArE (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 1 Dec 2021 19:47:04 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82D59C06174A;
+        Wed,  1 Dec 2021 16:43:42 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id C27ABB821A2;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 4B608B82197;
         Thu,  2 Dec 2021 00:43:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3909C58324;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C87E1C5831B;
         Thu,  2 Dec 2021 00:43:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1638405818;
-        bh=eL+euvuzQ5Lzuz/udVG7kV9oFa8ERST2BS75W1bjwzU=;
+        bh=6xNAyz7Jtw09cJifsyQ60FXipRtHoNcO2JuOTeAmxEg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iBz7SuAvtzH+0Js2QEjIb1D9O05g3Gje2maFbZjEgqTy4jczTYdQcrHdz0dstymfc
-         tcTSRxLHzbbKf96oY1ykRKUGj5djp7V8UjJqdGC7p43ca6pHRQ8bZHpJMlb8x2kGT8
-         +Yastfg4ArpSEJvhdNMWyFat3ol1oBKjU0gjNkgnFkfA9kqUEowjhauUBrS5u6U8Hs
-         7ZMdkw95KiQd9bFRmdGsG2f+knWn0cFxg9mF7X/8MqtlKho0xE5kSALfgUhUY/huFb
-         sA2Ohb32Z/HDgvYmEzerW/26K9tmTyxGxiIMDntXsR9iRv3PCnM3hmaij5wtaInOtF
-         QO+jXRChieGDg==
+        b=NGHjBU14hJPni1i9HMqF+TXIovFjhcMV1FnaNAXe0UvVdtYDrybW5lEMn0Cd+AIkt
+         FSzrl1DTlONWNTjHcxkgsp4PmXmxUB+s4R6ze+KwzIoCcycIRoK/1HnW7gK7qH5M4U
+         WvhB40AKWWhBwkIvZKEwpHnDhAt0AcU7NBmg+THFAwlMZD0zpTz0cZKZHpqHEspWOx
+         Od92UKlj+uY9/Ar4H550CvSpTbokOpHttK8KALeUJun1IXgHnlObsn/u5/dmtSM4Ap
+         g8NtJfynIrLfJKegKDE1cA4JgGNdNRwCzmCtttvFx4b+CyhzwGffarzpjbDUBLsSix
+         M/RUg0qUrqgSw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 5E82D5C12FE; Wed,  1 Dec 2021 16:43:38 -0800 (PST)
+        id 55B3D5C1184; Wed,  1 Dec 2021 16:43:38 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -38,11 +41,12 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        Wander Lairson Costa <wander@redhat.com>,
+        Li Zhijian <zhijianx.li@intel.com>,
+        Davidlohr Bueso <dbueso@suse.de>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 13/17] rcutorture: Avoid soft lockup during cpu stall
-Date:   Wed,  1 Dec 2021 16:43:32 -0800
-Message-Id: <20211202004337.3130175-13-paulmck@kernel.org>
+Subject: [PATCH rcu 08/17] scftorture: Add missing '\n' to flush message
+Date:   Wed,  1 Dec 2021 16:43:27 -0800
+Message-Id: <20211202004337.3130175-8-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20211202004245.GA3129966@paulmck-ThinkPad-P17-Gen-1>
 References: <20211202004245.GA3129966@paulmck-ThinkPad-P17-Gen-1>
@@ -52,50 +56,43 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Wander Lairson Costa <wander@redhat.com>
+From: Li Zhijian <zhijianx.li@intel.com>
 
-If we use the module stall_cpu option, we may get a soft lockup warning
-in case we also don't pass the stall_cpu_block option.
+Add '\n' to macros to flush message for each call.
 
-Introduce the stall_no_softlockup option to avoid a soft lockup on
-cpu stall even if we don't use the stall_cpu_block option.
-
-Signed-off-by: Wander Lairson Costa <wander@redhat.com>
+Acked-by: Davidlohr Bueso <dbueso@suse.de>
+Signed-off-by: Li Zhijian <zhijianx.li@intel.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/rcutorture.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ kernel/scftorture.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 36a273589a35c..bc854f9355488 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -46,6 +46,7 @@
- #include <linux/oom.h>
- #include <linux/tick.h>
- #include <linux/rcupdate_trace.h>
-+#include <linux/nmi.h>
+diff --git a/kernel/scftorture.c b/kernel/scftorture.c
+index 5d42f44e3e1a1..9cff573b7eb4f 100644
+--- a/kernel/scftorture.c
++++ b/kernel/scftorture.c
+@@ -42,10 +42,10 @@
+ 	pr_alert(SCFTORT_FLAG s, ## x)
  
- #include "rcu.h"
+ #define VERBOSE_SCFTORTOUT(s, x...) \
+-	do { if (verbose) pr_alert(SCFTORT_FLAG s, ## x); } while (0)
++	do { if (verbose) pr_alert(SCFTORT_FLAG s "\n", ## x); } while (0)
  
-@@ -112,6 +113,8 @@ torture_param(int, shutdown_secs, 0, "Shutdown time (s), <= zero to disable.");
- torture_param(int, stall_cpu, 0, "Stall duration (s), zero to disable.");
- torture_param(int, stall_cpu_holdoff, 10,
- 	     "Time to wait before starting stall (s).");
-+torture_param(bool, stall_no_softlockup, false,
-+	     "Avoid softlockup warning during cpu stall.");
- torture_param(int, stall_cpu_irqsoff, 0, "Disable interrupts while stalling.");
- torture_param(int, stall_cpu_block, 0, "Sleep while stalling.");
- torture_param(int, stall_gp_kthread, 0,
-@@ -2085,6 +2088,8 @@ static int rcu_torture_stall(void *args)
- #else
- 				schedule_timeout_uninterruptible(HZ);
- #endif
-+			} else if (stall_no_softlockup) {
-+				touch_softlockup_watchdog();
- 			}
- 		if (stall_cpu_irqsoff)
- 			local_irq_enable();
+ #define VERBOSE_SCFTORTOUT_ERRSTRING(s, x...) \
+-	do { if (verbose) pr_alert(SCFTORT_FLAG "!!! " s, ## x); } while (0)
++	do { if (verbose) pr_alert(SCFTORT_FLAG "!!! " s "\n", ## x); } while (0)
+ 
+ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("Paul E. McKenney <paulmck@kernel.org>");
+@@ -630,7 +630,7 @@ static int __init scf_torture_init(void)
+ 		goto unwind;
+ 	}
+ 
+-	VERBOSE_SCFTORTOUT("Starting %d smp_call_function() threads\n", nthreads);
++	VERBOSE_SCFTORTOUT("Starting %d smp_call_function() threads", nthreads);
+ 
+ 	atomic_set(&n_started, nthreads);
+ 	for (i = 0; i < nthreads; i++) {
 -- 
 2.31.1.189.g2e36527f23
 
