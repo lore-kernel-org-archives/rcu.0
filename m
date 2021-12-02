@@ -2,34 +2,34 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 695C4C433EF
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F834C433FE
 	for <rcu@archiver.kernel.org>; Thu,  2 Dec 2021 00:44:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354671AbhLBArf (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Dec 2021 19:47:35 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:39260 "EHLO
+        id S240617AbhLBArh (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 1 Dec 2021 19:47:37 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:39264 "EHLO
         ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344523AbhLBArF (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 1 Dec 2021 19:47:05 -0500
+        with ESMTP id S1344508AbhLBArE (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 1 Dec 2021 19:47:04 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D477BB821A5;
+        by ams.source.kernel.org (Postfix) with ESMTPS id E7913B821A6;
         Thu,  2 Dec 2021 00:43:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7522C58326;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB998C5832A;
         Thu,  2 Dec 2021 00:43:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1638405818;
-        bh=Qzqztv8FrhL/cwpGA1IO0f3L9VhLXs9fpNRz0N3MM7o=;
+        bh=CDWYIZN0egYDtkPi1rKVE2ouFIuZD+ikXLuy7Mkx7HY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qp3S3P8ySom5S1ArxKmK9rq3X0EwtSGgPpIuCIISZPlqpewA5r4opxnvnLQ4J12cf
-         Xn9ODc4HffNve9O/3gJ6WPUkD/IFbKCp9RVMlHH3FfGddu5FMny3zbdu9YQz2Asu5I
-         xhbU1e3yM8J9mvYmRBodazlvqx1kofU2DANCVpjiH6Iuz358f7J3w2/Mr/wQigmiUI
-         6C7KsjryoYdKs1NIVzOy1QDtnX4hUwZaZ3FjSOm4JfF9AwdZzg4ovbY9rqx3prGKNj
-         uzyrE5l0Vno2TIR3P37f9+pZ00LZlJhbiai8mb9VaiY92A7xEIpJ7mcjED3j5vAGiT
-         F1I9NAKJxkF6A==
+        b=Toi8sGV9mzgN4A0RiwkSn5IZB2iNxN5uND65xOJGkTJOwFwjcq7/wYmd1Eq9j/Jh7
+         RAJ+AvCilxyZg+VspEtGCLW7o7aqwRkmOqeDTC9nD7T0tGPD7Y06v/X0rWqRj+kJTu
+         jO4otO6ico3SpvKoJPCzKdEGJilL+XtiXfF1Y7RRmuKrupRKaAOiSVst3w4dB86a3l
+         +IazD3XkRIdLOAB4ouc2zbxVtKO517WCP3KLbiEk9uJAL/M+vREG1uW0E+AqRnEipq
+         /6eVSKFcHv0pARzm5ZteDy11zhQ9sto8Tw6wsO+V1Yj3KI5AL8/jrckzWkH9wOkIC3
+         6j0JEdEI0hjyw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 5CBBC5C12E4; Wed,  1 Dec 2021 16:43:38 -0800 (PST)
+        id 603975C1339; Wed,  1 Dec 2021 16:43:38 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -38,12 +38,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        Li Zhijian <zhijianx.li@intel.com>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 12/17] locktorture,rcutorture,torture: Always log error message
-Date:   Wed,  1 Dec 2021 16:43:31 -0800
-Message-Id: <20211202004337.3130175-12-paulmck@kernel.org>
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Neeraj Upadhyay <neeraj.iitr10@gmail.com>
+Subject: [PATCH rcu 14/17] rcutorture: Test RCU-tasks multiqueue callback queueing
+Date:   Wed,  1 Dec 2021 16:43:33 -0800
+Message-Id: <20211202004337.3130175-14-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20211202004245.GA3129966@paulmck-ThinkPad-P17-Gen-1>
 References: <20211202004245.GA3129966@paulmck-ThinkPad-P17-Gen-1>
@@ -53,124 +52,32 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Li Zhijian <zhijianx.li@intel.com>
+This commit modifies the TASKS01 scenario to use four callback queues
+and the TRACE01 scenario to use two queues, thus providing testing of
+multiple queues by default.
 
-Unconditionally log messages corresponding to errors.
-
-Acked-by: Davidlohr Bueso <dbueso@suse.de>
-Signed-off-by: Li Zhijian <zhijianx.li@intel.com>
+Cc: Neeraj Upadhyay <neeraj.iitr10@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/torture.h      | 9 ++-------
- kernel/locking/locktorture.c | 4 ++--
- kernel/rcu/rcutorture.c      | 8 ++++----
- kernel/torture.c             | 4 ++--
- 4 files changed, 10 insertions(+), 15 deletions(-)
+ tools/testing/selftests/rcutorture/configs/rcu/TASKS01.boot | 1 +
+ tools/testing/selftests/rcutorture/configs/rcu/TRACE01.boot | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/include/linux/torture.h b/include/linux/torture.h
-index 24f58e50a94b8..63fa4196e51cb 100644
---- a/include/linux/torture.h
-+++ b/include/linux/torture.h
-@@ -38,13 +38,8 @@ do {										\
- 		pr_alert("%s" TORTURE_FLAG " %s\n", torture_type, s);		\
- 	}									\
- } while (0)
--#define VERBOSE_TOROUT_ERRSTRING(s) \
--do {										\
--	if (verbose) {								\
--		verbose_torout_sleep();						\
--		pr_alert("%s" TORTURE_FLAG "!!! %s\n", torture_type, s);	\
--	}									\
--} while (0)
-+#define TOROUT_ERRSTRING(s) \
-+	pr_alert("%s" TORTURE_FLAG "!!! %s\n", torture_type, s)
- void verbose_torout_sleep(void);
- 
- #define torture_init_error(firsterr)						\
-diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
-index 397ac13d2ef75..9c2fb613a55d2 100644
---- a/kernel/locking/locktorture.c
-+++ b/kernel/locking/locktorture.c
-@@ -1047,7 +1047,7 @@ static int __init lock_torture_init(void)
- 				       sizeof(writer_tasks[0]),
- 				       GFP_KERNEL);
- 		if (writer_tasks == NULL) {
--			VERBOSE_TOROUT_ERRSTRING("writer_tasks: Out of memory");
-+			TOROUT_ERRSTRING("writer_tasks: Out of memory");
- 			firsterr = -ENOMEM;
- 			goto unwind;
- 		}
-@@ -1058,7 +1058,7 @@ static int __init lock_torture_init(void)
- 				       sizeof(reader_tasks[0]),
- 				       GFP_KERNEL);
- 		if (reader_tasks == NULL) {
--			VERBOSE_TOROUT_ERRSTRING("reader_tasks: Out of memory");
-+			TOROUT_ERRSTRING("reader_tasks: Out of memory");
- 			kfree(writer_tasks);
- 			writer_tasks = NULL;
- 			firsterr = -ENOMEM;
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 503e14e62e8f2..36a273589a35c 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -2774,7 +2774,7 @@ static int rcu_torture_read_exit(void *unused)
- 				     &trs, "%s",
- 				     "rcu_torture_read_exit_child");
- 		if (IS_ERR(tsp)) {
--			VERBOSE_TOROUT_ERRSTRING("out of memory");
-+			TOROUT_ERRSTRING("out of memory");
- 			errexit = true;
- 			tsp = NULL;
- 			break;
-@@ -3101,7 +3101,7 @@ rcu_torture_init(void)
- 					   sizeof(fakewriter_tasks[0]),
- 					   GFP_KERNEL);
- 		if (fakewriter_tasks == NULL) {
--			VERBOSE_TOROUT_ERRSTRING("out of memory");
-+			TOROUT_ERRSTRING("out of memory");
- 			firsterr = -ENOMEM;
- 			goto unwind;
- 		}
-@@ -3117,7 +3117,7 @@ rcu_torture_init(void)
- 	rcu_torture_reader_mbchk = kcalloc(nrealreaders, sizeof(*rcu_torture_reader_mbchk),
- 					   GFP_KERNEL);
- 	if (!reader_tasks || !rcu_torture_reader_mbchk) {
--		VERBOSE_TOROUT_ERRSTRING("out of memory");
-+		TOROUT_ERRSTRING("out of memory");
- 		firsterr = -ENOMEM;
- 		goto unwind;
- 	}
-@@ -3136,7 +3136,7 @@ rcu_torture_init(void)
- 	if (nrealnocbers > 0) {
- 		nocb_tasks = kcalloc(nrealnocbers, sizeof(nocb_tasks[0]), GFP_KERNEL);
- 		if (nocb_tasks == NULL) {
--			VERBOSE_TOROUT_ERRSTRING("out of memory");
-+			TOROUT_ERRSTRING("out of memory");
- 			firsterr = -ENOMEM;
- 			goto unwind;
- 		}
-diff --git a/kernel/torture.c b/kernel/torture.c
-index bb8f411c974b8..ef27a6c824514 100644
---- a/kernel/torture.c
-+++ b/kernel/torture.c
-@@ -570,7 +570,7 @@ int torture_shuffle_init(long shuffint)
- 	shuffle_idle_cpu = -1;
- 
- 	if (!alloc_cpumask_var(&shuffle_tmp_mask, GFP_KERNEL)) {
--		VERBOSE_TOROUT_ERRSTRING("Failed to alloc mask");
-+		TOROUT_ERRSTRING("Failed to alloc mask");
- 		return -ENOMEM;
- 	}
- 
-@@ -934,7 +934,7 @@ int _torture_create_kthread(int (*fn)(void *arg), void *arg, char *s, char *m,
- 	*tp = kthread_run(fn, arg, "%s", s);
- 	if (IS_ERR(*tp)) {
- 		ret = PTR_ERR(*tp);
--		VERBOSE_TOROUT_ERRSTRING(f);
-+		TOROUT_ERRSTRING(f);
- 		*tp = NULL;
- 	}
- 	torture_shuffle_task_register(*tp);
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TASKS01.boot b/tools/testing/selftests/rcutorture/configs/rcu/TASKS01.boot
+index 22cdeced98ea8..30ca5b493c4b1 100644
+--- a/tools/testing/selftests/rcutorture/configs/rcu/TASKS01.boot
++++ b/tools/testing/selftests/rcutorture/configs/rcu/TASKS01.boot
+@@ -1,2 +1,3 @@
+ rcutorture.torture_type=tasks
+ rcutree.use_softirq=0
++rcupdate.rcu_task_enqueue_lim=4
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TRACE01.boot b/tools/testing/selftests/rcutorture/configs/rcu/TRACE01.boot
+index 9675ad632dcc2..ba6d636a48564 100644
+--- a/tools/testing/selftests/rcutorture/configs/rcu/TRACE01.boot
++++ b/tools/testing/selftests/rcutorture/configs/rcu/TRACE01.boot
+@@ -1 +1,2 @@
+ rcutorture.torture_type=tasks-tracing
++rcupdate.rcu_task_enqueue_lim=2
 -- 
 2.31.1.189.g2e36527f23
 
