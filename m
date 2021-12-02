@@ -2,37 +2,34 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 839ADC433F5
-	for <rcu@archiver.kernel.org>; Thu,  2 Dec 2021 00:11:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C4EDC433EF
+	for <rcu@archiver.kernel.org>; Thu,  2 Dec 2021 00:11:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354006AbhLBAOU (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Dec 2021 19:14:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353980AbhLBAOI (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1354109AbhLBAO0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 1 Dec 2021 19:14:26 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:51168 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1354105AbhLBAOI (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 1 Dec 2021 19:14:08 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9716C061574;
-        Wed,  1 Dec 2021 16:10:44 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id AF4F6B80DAC;
-        Thu,  2 Dec 2021 00:10:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 476E6C53FAD;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 0361EB8219B;
+        Thu,  2 Dec 2021 00:10:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97E2DC58324;
         Thu,  2 Dec 2021 00:10:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1638403842;
-        bh=52XEynZloXWwVtzz1EFj1h+AtswKgvYUoRYI3uiXyuY=;
+        bh=y9EN+/OPkGO4O1mufKguG8R1zCHZiRRXgzOSedxyZGw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=okyI2d7QKoAtNu+EMFWn865umLaigxB+JuCoqS0yBhxe09rYooGJ94ZBymoMzxquC
-         naZdqyDrHLRn4VmTC0tfu02zinRMWoxq8GHtg9B2S2eta6sNVphMx3/GBkQEuKniyP
-         0tBbpizqPvecFaw1gv5fM+ik9Y4b3Q3LUjSKJ8pgCuYDktNz3cMxNq+Cm7OUPuUBpA
-         VusHL+2w5JZMec59206FG1pWJkryZd17A5Ki3+QoErUjBUSBtY9kaaJ4KGYwPr531a
-         86QrWF7NEcfkgg1C0YQJXGxQJMkCbLxUa/Gmmv2H6jKsk2AvDuvyCdfFTlEFfKYX8E
-         SL1gtxH/yUfYA==
+        b=YR7tp1ZnjwXf/3QqJvXXVPRwCFyfUUVk/xjVQzxrobJtt3Njt1yZC3lgIfoFIDzpZ
+         rAMm/ezl3FnPazEjkbTQqXnOihQXWYDHVsfQrQst5xaXChPMkoPL0igywqRHh4XBAS
+         qRi9z2SrvVHRVbCOGaGQ3j2NWV0I/txuJlCnWEFoWnfbCVPtiA68fNMK58fDLavI5B
+         iaq1awGeHGwFpRW4Hx/NXGSmvMyYoxE9z+q4A/NN07SAljxNJ0gNnkzB92LjYHiplE
+         kOqqhNjVpysSWFb584kYYMtubY3QvARbV/wTX72wvB/XzFe8+CXHVT/TyX51540Jh3
+         SlKWaPPWfcjjw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id F269C5C1109; Wed,  1 Dec 2021 16:10:41 -0800 (PST)
+        id 069645C1278; Wed,  1 Dec 2021 16:10:42 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -42,10 +39,13 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 3/7] rcu: Remove rcu_data.exp_deferred_qs and convert to rcu_data.cpu no_qs.b.exp
-Date:   Wed,  1 Dec 2021 16:10:36 -0800
-Message-Id: <20211202001040.3126390-3-paulmck@kernel.org>
+Subject: [PATCH rcu 7/7] rcu/exp: Mark current CPU as exp-QS in IPI loop second pass
+Date:   Wed,  1 Dec 2021 16:10:40 -0800
+Message-Id: <20211202001040.3126390-7-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20211202001016.GA3126278@paulmck-ThinkPad-P17-Gen-1>
 References: <20211202001016.GA3126278@paulmck-ThinkPad-P17-Gen-1>
@@ -57,117 +57,54 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: Frederic Weisbecker <frederic@kernel.org>
 
-Having two fields for the same purpose with subtle differences on
-different RCU flavours is confusing, especially when both fields always
-exist on both RCU flavours.
+Expedited RCU grace periods invoke sync_rcu_exp_select_node_cpus(), which
+takes two passes over the leaf rcu_node structure's CPUs.  The first
+pass gathers up the current CPU and CPUs that are in dynticks idle mode.
+The workqueue will report a quiescent state on their behalf later.
+The second pass sends IPIs to the rest of the CPUs, but excludes the
+current CPU, incorrectly assuming it has been included in the first
+pass's list of CPUs.
 
-Fortunately, it is now safe for preemptible RCU to rely on the rcu_data
-structure's ->cpu_no_qs.b.exp field, just like non-preemptible RCU.
-This commit therefore removes the ad-hoc ->exp_deferred_qs field.
+Unfortunately the current CPU may have changed between the first and
+second pass, due to the fact that the various rcu_node structures'
+->lock fields have been dropped, thus momentarily enabling preemption.
+This means that if the second pass's CPU was not on the first pass's
+list, it will be ignored completely.  There will be no IPI sent to
+it, and there will be no reporting of quiescent states on its behalf.
+Unfortunately, the expedited grace period will nevertheless be waiting
+for that CPU to report a quiescent state, but with that CPU having no
+reason to believe that such a report is needed.
 
+The result will be an expedited grace period stall.
+
+Fix this by no longer excluding the current CPU from consideration during
+the second pass.
+
+Fixes: b9ad4d6ed18e ("rcu: Avoid self-IPI in sync_rcu_exp_select_node_cpus()")
+Reviewed-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Cc: Uladzislau Rezki <urezki@gmail.com>
+Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+Cc: Boqun Feng <boqun.feng@gmail.com>
+Cc: Josh Triplett <josh@joshtriplett.org>
+Cc: Joel Fernandes <joel@joelfernandes.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.h        |  1 -
- kernel/rcu/tree_exp.h    |  5 ++---
- kernel/rcu/tree_plugin.h | 12 ++++++------
- 3 files changed, 8 insertions(+), 10 deletions(-)
+ kernel/rcu/tree_exp.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index 305cf6aeb4086..ea46ed40f6bc1 100644
---- a/kernel/rcu/tree.h
-+++ b/kernel/rcu/tree.h
-@@ -157,7 +157,6 @@ struct rcu_data {
- 	bool		core_needs_qs;	/* Core waits for quiescent state. */
- 	bool		beenonline;	/* CPU online at least once. */
- 	bool		gpwrap;		/* Possible ->gp_seq wrap. */
--	bool		exp_deferred_qs; /* This CPU awaiting a deferred QS? */
- 	bool		cpu_started;	/* RCU watching this onlining CPU. */
- 	struct rcu_node *mynode;	/* This CPU's leaf of hierarchy */
- 	unsigned long grpmask;		/* Mask to apply to leaf qsmask. */
 diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index 6c6eb32203852..fc2ee326a6f73 100644
+index a96d17206d87a..237a79989abae 100644
 --- a/kernel/rcu/tree_exp.h
 +++ b/kernel/rcu/tree_exp.h
-@@ -255,7 +255,6 @@ static void rcu_report_exp_cpu_mult(struct rcu_node *rnp,
-  */
- static void rcu_report_exp_rdp(struct rcu_data *rdp)
- {
--	WRITE_ONCE(rdp->exp_deferred_qs, false);
- 	WRITE_ONCE(rdp->cpu_no_qs.b.exp, false);
- 	rcu_report_exp_cpu_mult(rdp->mynode, rdp->grpmask, true);
- }
-@@ -656,7 +655,7 @@ static void rcu_exp_handler(void *unused)
- 		    rcu_dynticks_curr_cpu_in_eqs()) {
- 			rcu_report_exp_rdp(rdp);
- 		} else {
--			rdp->exp_deferred_qs = true;
-+			WRITE_ONCE(rdp->cpu_no_qs.b.exp, true);
- 			set_tsk_need_resched(t);
- 			set_preempt_need_resched();
+@@ -387,6 +387,7 @@ static void sync_rcu_exp_select_node_cpus(struct work_struct *wp)
+ 			continue;
  		}
-@@ -678,7 +677,7 @@ static void rcu_exp_handler(void *unused)
- 	if (depth > 0) {
- 		raw_spin_lock_irqsave_rcu_node(rnp, flags);
- 		if (rnp->expmask & rdp->grpmask) {
--			rdp->exp_deferred_qs = true;
-+			WRITE_ONCE(rdp->cpu_no_qs.b.exp, true);
- 			t->rcu_read_unlock_special.b.exp_hint = true;
+ 		if (get_cpu() == cpu) {
++			mask_ofl_test |= mask;
+ 			put_cpu();
+ 			continue;
  		}
- 		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 1e4b4e7630735..972acb114ce3c 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -260,10 +260,10 @@ static void rcu_preempt_ctxt_queue(struct rcu_node *rnp, struct rcu_data *rdp)
- 	 * no need to check for a subsequent expedited GP.  (Though we are
- 	 * still in a quiescent state in any case.)
- 	 */
--	if (blkd_state & RCU_EXP_BLKD && rdp->exp_deferred_qs)
-+	if (blkd_state & RCU_EXP_BLKD && rdp->cpu_no_qs.b.exp)
- 		rcu_report_exp_rdp(rdp);
- 	else
--		WARN_ON_ONCE(rdp->exp_deferred_qs);
-+		WARN_ON_ONCE(rdp->cpu_no_qs.b.exp);
- }
- 
- /*
-@@ -354,7 +354,7 @@ void rcu_note_context_switch(bool preempt)
- 	 * means that we continue to block the current grace period.
- 	 */
- 	rcu_qs();
--	if (rdp->exp_deferred_qs)
-+	if (rdp->cpu_no_qs.b.exp)
- 		rcu_report_exp_rdp(rdp);
- 	rcu_tasks_qs(current, preempt);
- 	trace_rcu_utilization(TPS("End context switch"));
-@@ -481,7 +481,7 @@ rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
- 	 */
- 	special = t->rcu_read_unlock_special;
- 	rdp = this_cpu_ptr(&rcu_data);
--	if (!special.s && !rdp->exp_deferred_qs) {
-+	if (!special.s && !rdp->cpu_no_qs.b.exp) {
- 		local_irq_restore(flags);
- 		return;
- 	}
-@@ -501,7 +501,7 @@ rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
- 	 * tasks are handled when removing the task from the
- 	 * blocked-tasks list below.
- 	 */
--	if (rdp->exp_deferred_qs)
-+	if (rdp->cpu_no_qs.b.exp)
- 		rcu_report_exp_rdp(rdp);
- 
- 	/* Clean up if blocked during RCU read-side critical section. */
-@@ -584,7 +584,7 @@ rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
-  */
- static bool rcu_preempt_need_deferred_qs(struct task_struct *t)
- {
--	return (__this_cpu_read(rcu_data.exp_deferred_qs) ||
-+	return (__this_cpu_read(rcu_data.cpu_no_qs.b.exp) ||
- 		READ_ONCE(t->rcu_read_unlock_special.s)) &&
- 	       rcu_preempt_depth() == 0;
- }
 -- 
 2.31.1.189.g2e36527f23
 
