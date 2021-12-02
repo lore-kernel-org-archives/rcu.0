@@ -2,37 +2,37 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F1D41C4332F
-	for <rcu@archiver.kernel.org>; Thu,  2 Dec 2021 00:39:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E8ABC43217
+	for <rcu@archiver.kernel.org>; Thu,  2 Dec 2021 00:39:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354736AbhLBAnB (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Dec 2021 19:43:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46492 "EHLO
+        id S1354798AbhLBAnI (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 1 Dec 2021 19:43:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354638AbhLBAmn (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S1354669AbhLBAmn (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 1 Dec 2021 19:42:43 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A4E4C06175A;
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B388FC06175B;
         Wed,  1 Dec 2021 16:39:05 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id E5129B821A6;
-        Thu,  2 Dec 2021 00:39:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCADDC5831B;
+        by sin.source.kernel.org (Postfix) with ESMTPS id 02A44CE2134;
+        Thu,  2 Dec 2021 00:39:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFFA7C58322;
         Thu,  2 Dec 2021 00:39:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1638405540;
-        bh=I3ALel5Fzv6uEO8Qc85Bkq6/BICHpW3vrp1Rzaurv/k=;
+        bh=wFxhk+ioAyHFQIkcJ9i4zIh9hCEoLMMuqFEpy5nc77k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K1m/t1wZ/ebtjUWdFg0H/8SWkUefoB5i9MCMDKvMvXKDXSJCA3768DvvF3Yy5EaGi
-         bq67dc/xiRzIwg4JcZqpLiBsUsxJnOK5GCGa5PDUL6pfKrVsBdGpfuFUph0AhhDHGC
-         scm4BS9OgcFqmeHXJcuQVBzy1dnIsiYpEDvNpRDFdjkn4Jo31wnq7ObyBuIdcYiDJD
-         6pxf+2eT85Z9UTdmvJ00XnlkQjzF4DdHUybTnIkaiPO2G9dAq5ejiLT8BPzCVKmMlh
-         G6KhGBSeoldSMN6TXb3+wKGWW4E/w5NqmfU74Wwezci3f1xAIbeRAsBF4d46hpCa80
-         6EZ10z70OOYKA==
+        b=G4mh5Oui3Uba7WuAc+Xe7LexrAZoUh5WsN/e+1g6q9gsFwYInmBjT6NkiC8bzRLjt
+         9p2pqT7a/ldW7KR3vvWEypH91pg/BORXAbFIYpCZb+DOpwcwLAFpu0Rv55As8teH0w
+         TXl5RtyC6ZOEUPoZMEyRdunSJmkpaf6rK639UQO72RhPPlcmdus1x6nx2Y5oqywZCY
+         2ikrt0KKVX/ZJVAuAfZajhH6LbLHRuvyKM2THy4okqGR7Seyn/aEbvMgJj5Qmyz73m
+         wy58JDZnVaSSsYSbCn1eh/wELrkrDgv3dlmtE9YntT1z67aj7M+eNUL4hKWmlmb2VE
+         UdhHFAKJ/BLog==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 580095C12B3; Wed,  1 Dec 2021 16:39:00 -0800 (PST)
+        id 5448A5C12AB; Wed,  1 Dec 2021 16:39:00 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -43,9 +43,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>, Martin Lau <kafai@fb.com>,
         Neeraj Upadhyay <neeraj.iitr10@gmail.com>
-Subject: [PATCH rcu 11/18] rcu-tasks: Use workqueues for multiple rcu_tasks_invoke_cbs() invocations
-Date:   Wed,  1 Dec 2021 16:38:51 -0800
-Message-Id: <20211202003858.3129628-11-paulmck@kernel.org>
+Subject: [PATCH rcu 09/18] rcu-tasks: Abstract checking of callback lists
+Date:   Wed,  1 Dec 2021 16:38:49 -0800
+Message-Id: <20211202003858.3129628-9-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20211202003826.GA3129369@paulmck-ThinkPad-P17-Gen-1>
 References: <20211202003826.GA3129369@paulmck-ThinkPad-P17-Gen-1>
@@ -55,144 +55,112 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-If there is a flood of callbacks, it is necessary to put multiple
-CPUs to work invoking those callbacks.  This commit therefore uses a
-workqueue-flooding approach to parallelize RCU Tasks callback execution.
+This commit adds a rcu_tasks_need_gpcb() function that returns an
+indication of whether another grace period is required, and if no grace
+period is required, whether there are callbacks that need to be invoked.
+The function scans all per-CPU lists currently in use.
 
 Reported-by: Martin Lau <kafai@fb.com>
 Cc: Neeraj Upadhyay <neeraj.iitr10@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tasks.h | 77 +++++++++++++++++++++++++++++++---------------
- 1 file changed, 53 insertions(+), 24 deletions(-)
+ kernel/rcu/tasks.h | 63 ++++++++++++++++++++++++++++------------------
+ 1 file changed, 39 insertions(+), 24 deletions(-)
 
 diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 3bc0edb6a7bb6..a75a4ca78a621 100644
+index 1c7cf8e8d65e7..bb37d4a4e48de 100644
 --- a/kernel/rcu/tasks.h
 +++ b/kernel/rcu/tasks.h
-@@ -24,10 +24,14 @@ typedef void (*postgp_func_t)(struct rcu_tasks *rtp);
-  * struct rcu_tasks_percpu - Per-CPU component of definition for a Tasks-RCU-like mechanism.
-  * @cblist: Callback list.
-  * @lock: Lock protecting per-CPU callback list.
-+ * @rtp_work: Work queue for invoking callbacks.
-  */
- struct rcu_tasks_percpu {
- 	struct rcu_segcblist cblist;
- 	raw_spinlock_t __private lock;
-+	struct work_struct rtp_work;
-+	int cpu;
-+	struct rcu_tasks *rtpp;
- };
- 
- /**
-@@ -146,6 +150,8 @@ static const char * const rcu_tasks_gp_state_names[] = {
- //
- // Generic code.
- 
-+static void rcu_tasks_invoke_cbs_wq(struct work_struct *wp);
-+
- /* Record grace-period phase and time. */
- static void set_tasks_gp_state(struct rcu_tasks *rtp, int newstate)
- {
-@@ -185,6 +191,9 @@ static void cblist_init_generic(struct rcu_tasks *rtp)
- 		raw_spin_lock_rcu_node(rtpcp); // irqs already disabled.
- 		if (rcu_segcblist_empty(&rtpcp->cblist))
- 			rcu_segcblist_init(&rtpcp->cblist);
-+		INIT_WORK(&rtpcp->rtp_work, rcu_tasks_invoke_cbs_wq);
-+		rtpcp->cpu = cpu;
-+		rtpcp->rtpp = rtp;
- 		raw_spin_unlock_rcu_node(rtpcp); // irqs remain disabled.
- 	}
- 	raw_spin_unlock_irqrestore(&rtp->cbs_gbl_lock, flags);
-@@ -257,36 +266,56 @@ static int rcu_tasks_need_gpcb(struct rcu_tasks *rtp)
+@@ -229,11 +229,39 @@ static void synchronize_rcu_tasks_generic(struct rcu_tasks *rtp)
+ 	wait_rcu_gp(rtp->call_func);
  }
  
- // Advance callbacks and invoke any that are ready.
--static void rcu_tasks_invoke_cbs(struct rcu_tasks *rtp)
-+static void rcu_tasks_invoke_cbs(struct rcu_tasks *rtp, struct rcu_tasks_percpu *rtpcp)
++// Advance callbacks and indicate whether either a grace period or
++// callback invocation is needed.
++static int rcu_tasks_need_gpcb(struct rcu_tasks *rtp)
++{
++	int cpu;
++	unsigned long flags;
++	int needgpcb = 0;
++
++	for (cpu = 0; cpu < rtp->percpu_enqueue_lim; cpu++) {
++		struct rcu_tasks_percpu *rtpcp = per_cpu_ptr(rtp->rtpcpu, cpu);
++
++		/* Advance and accelerate any new callbacks. */
++		if (rcu_segcblist_empty(&rtpcp->cblist))
++			continue;
++		raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
++		smp_mb__after_spinlock(); // Order updates vs. GP.
++		rcu_segcblist_advance(&rtpcp->cblist, rcu_seq_current(&rtp->tasks_gp_seq));
++		(void)rcu_segcblist_accelerate(&rtpcp->cblist, rcu_seq_snap(&rtp->tasks_gp_seq));
++		if (rcu_segcblist_pend_cbs(&rtpcp->cblist))
++			needgpcb |= 0x3;
++		if (!rcu_segcblist_empty(&rtpcp->cblist))
++			needgpcb |= 0x1;
++		raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
++	}
++	return needgpcb;
++}
++
+ /* RCU-tasks kthread that detects grace periods and invokes callbacks. */
+ static int __noreturn rcu_tasks_kthread(void *arg)
  {
- 	int cpu;
-+	int cpunext;
  	unsigned long flags;
  	int len;
--	struct rcu_cblist rcl = RCU_CBLIST_INITIALIZER(rcl);
++	int needgpcb;
+ 	struct rcu_cblist rcl = RCU_CBLIST_INITIALIZER(rcl);
  	struct rcu_head *rhp;
--
--	for (cpu = 0; cpu < rtp->percpu_enqueue_lim; cpu++) {
--		struct rcu_tasks_percpu *rtpcp = per_cpu_ptr(rtp->rtpcpu, cpu);
--
--		if (rcu_segcblist_empty(&rtpcp->cblist))
--			continue;
+ 	struct rcu_tasks *rtp = arg;
+@@ -249,38 +277,25 @@ static int __noreturn rcu_tasks_kthread(void *arg)
+ 	 * This loop is terminated by the system going down.  ;-)
+ 	 */
+ 	for (;;) {
+-		struct rcu_tasks_percpu *rtpcp = per_cpu_ptr(rtp->rtpcpu, 0);  // for_each...
++		struct rcu_tasks_percpu *rtpcp;
+ 
+ 		set_tasks_gp_state(rtp, RTGS_WAIT_CBS);
+ 
+-		/* Pick up any new callbacks. */
 -		raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
 -		smp_mb__after_spinlock(); // Order updates vs. GP.
 -		rcu_segcblist_advance(&rtpcp->cblist, rcu_seq_current(&rtp->tasks_gp_seq));
--		rcu_segcblist_extract_done_cbs(&rtpcp->cblist, &rcl);
--		raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
--		len = rcl.len;
--		for (rhp = rcu_cblist_dequeue(&rcl); rhp; rhp = rcu_cblist_dequeue(&rcl)) {
--			local_bh_disable();
--			rhp->func(rhp);
--			local_bh_enable();
--			cond_resched();
-+	struct rcu_cblist rcl = RCU_CBLIST_INITIALIZER(rcl);
-+	struct rcu_tasks_percpu *rtpcp_next;
-+
-+	cpu = rtpcp->cpu;
-+	cpunext = cpu * 2 + 1;
-+	if (cpunext < rtp->percpu_enqueue_lim) {
-+		rtpcp_next = per_cpu_ptr(rtp->rtpcpu, cpunext);
-+		queue_work_on(cpunext, system_wq, &rtpcp_next->rtp_work);
-+		cpunext++;
-+		if (cpunext < rtp->percpu_enqueue_lim) {
-+			rtpcp_next = per_cpu_ptr(rtp->rtpcpu, cpunext);
-+			queue_work_on(cpunext, system_wq, &rtpcp_next->rtp_work);
- 		}
--		raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
--		rcu_segcblist_add_len(&rtpcp->cblist, -len);
 -		(void)rcu_segcblist_accelerate(&rtpcp->cblist, rcu_seq_snap(&rtp->tasks_gp_seq));
 -		raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
- 	}
+-
+ 		/* If there were none, wait a bit and start over. */
+-		if (!rcu_segcblist_pend_cbs(&rtpcp->cblist)) {
+-			wait_event_interruptible(rtp->cbs_wq,
+-						 rcu_segcblist_pend_cbs(&rtpcp->cblist));
+-			if (!rcu_segcblist_pend_cbs(&rtpcp->cblist)) {
+-				WARN_ON(signal_pending(current));
+-				set_tasks_gp_state(rtp, RTGS_WAIT_WAIT_CBS);
+-				schedule_timeout_idle(HZ/10);
+-			}
+-			continue;
++		wait_event_idle(rtp->cbs_wq, (needgpcb = rcu_tasks_need_gpcb(rtp)));
 +
-+	if (rcu_segcblist_empty(&rtpcp->cblist))
-+		return;
-+	raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
-+	smp_mb__after_spinlock(); // Order updates vs. GP.
-+	rcu_segcblist_advance(&rtpcp->cblist, rcu_seq_current(&rtp->tasks_gp_seq));
-+	rcu_segcblist_extract_done_cbs(&rtpcp->cblist, &rcl);
-+	raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
-+	len = rcl.len;
-+	for (rhp = rcu_cblist_dequeue(&rcl); rhp; rhp = rcu_cblist_dequeue(&rcl)) {
-+		local_bh_disable();
-+		rhp->func(rhp);
-+		local_bh_enable();
-+		cond_resched();
-+	}
-+	raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
-+	rcu_segcblist_add_len(&rtpcp->cblist, -len);
-+	(void)rcu_segcblist_accelerate(&rtpcp->cblist, rcu_seq_snap(&rtp->tasks_gp_seq));
-+	raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
-+}
-+
-+// Workqueue flood to advance callbacks and invoke any that are ready.
-+static void rcu_tasks_invoke_cbs_wq(struct work_struct *wp)
-+{
-+	struct rcu_tasks *rtp;
-+	struct rcu_tasks_percpu *rtpcp = container_of(wp, struct rcu_tasks_percpu, rtp_work);
-+
-+	rtp = rtpcp->rtpp;
-+	rcu_tasks_invoke_cbs(rtp, rtpcp);
- }
++		if (needgpcb & 0x2) {
++			// Wait for one grace period.
++			set_tasks_gp_state(rtp, RTGS_WAIT_GP);
++			rtp->gp_start = jiffies;
++			rcu_seq_start(&rtp->tasks_gp_seq);
++			rtp->gp_func(rtp);
++			rcu_seq_end(&rtp->tasks_gp_seq);
+ 		}
  
- /* RCU-tasks kthread that detects grace periods and invokes callbacks. */
-@@ -322,7 +351,7 @@ static int __noreturn rcu_tasks_kthread(void *arg)
- 
- 		/* Invoke callbacks. */
+-		// Wait for one grace period.
+-		set_tasks_gp_state(rtp, RTGS_WAIT_GP);
+-		rtp->gp_start = jiffies;
+-		rcu_seq_start(&rtp->tasks_gp_seq);
+-		rtp->gp_func(rtp);
+-		rcu_seq_end(&rtp->tasks_gp_seq);
+-
+ 		/* Invoke the callbacks. */
  		set_tasks_gp_state(rtp, RTGS_INVOKE_CBS);
--		rcu_tasks_invoke_cbs(rtp);
-+		rcu_tasks_invoke_cbs(rtp, per_cpu_ptr(rtp->rtpcpu, 0));
- 
- 		/* Paranoid sleep to keep this from entering a tight loop */
- 		schedule_timeout_idle(rtp->gp_sleep);
++		rtpcp = per_cpu_ptr(rtp->rtpcpu, 0);
+ 		raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
+ 		smp_mb__after_spinlock(); // Order updates vs. GP.
+ 		rcu_segcblist_advance(&rtpcp->cblist, rcu_seq_current(&rtp->tasks_gp_seq));
 -- 
 2.31.1.189.g2e36527f23
 
