@@ -2,38 +2,34 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DB5E0C433EF
-	for <rcu@archiver.kernel.org>; Thu,  2 Dec 2021 00:20:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 75ECEC433EF
+	for <rcu@archiver.kernel.org>; Thu,  2 Dec 2021 00:21:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344287AbhLBAX5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Dec 2021 19:23:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235723AbhLBAX4 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 1 Dec 2021 19:23:56 -0500
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9CA1C061574;
-        Wed,  1 Dec 2021 16:20:34 -0800 (PST)
+        id S1354217AbhLBAYW (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 1 Dec 2021 19:24:22 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:56360 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235723AbhLBAYU (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 1 Dec 2021 19:24:20 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 31535CE2136;
-        Thu,  2 Dec 2021 00:20:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F4FAC53FAD;
-        Thu,  2 Dec 2021 00:20:31 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 180E0B82199;
+        Thu,  2 Dec 2021 00:20:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B55E8C53FCD;
+        Thu,  2 Dec 2021 00:20:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638404431;
-        bh=HsY5D5AZm3MHulZ/zGBkgfyJinMbbykm6U8eWzL/6o8=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=CDdsr2j54jBfor009mZrglIQidKHdBsmieSuRSBmgdnLbfS9qprWy+2/dbQd3JH0u
-         z2FLfzgvJuxcDESBiE9rBlh5hJjqtWMJvICAoDdUd0aYuSQ6m3Nkn7sM3SBkEB1USx
-         wIIWWOfpLTEu1i4PxzYgBiFLLgJj7NRLuWhdtamvCEBdJG/AYR3tc1wGv35tzCTQUW
-         rzR/MZOf0EdTF4J/+ku7weGxLDPtc77DlUgoieBAARTGgx1SzJdR11Qne+bbHiBB1C
-         Tt5J8XE9YplrFBx41nBZYjM3zw2VF0cNgNq4rTzX5pK3qqujB/YyZ9L/A3xN8PJ3Yt
-         xVHzBDzJ5NItg==
+        s=k20201202; t=1638404456;
+        bh=j/yruGReoUu66uud5qAGKXP7ISE/6BX3PdiqkKSbxJk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=dbm6je0AS+6unmfJ9aIzbIB2aqfsJDG3IKvGxbmDryQiGwKQzdSYRWSgsisSxp/U0
+         Qef4Sq31kjXFUr1OGznnuNzC7mS3yzuEuOj1tXaTalarKWkx+Fau66UahOJTsU9GSf
+         b4aACKSl0+v8lGjRXRwsjlj224r6hejG8UO9AyNRnTn8bINb5p0YEG4W5JxcuQtrlH
+         Mt8QQ7ip2AuiSsVoTTuRxmC0dLACkFev6YZwM05b+HdSZ45h56InmJupx3Yv3uz/9N
+         yqSLDhnKHcbBLqDY4a6i1Fy1Y+02O9QfXNopZg+gcRqVTGNeHX5RmmtjuSrRiUim87
+         aq1HSgEhFURHA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 236FD5C1107; Wed,  1 Dec 2021 16:20:31 -0800 (PST)
-Date:   Wed, 1 Dec 2021 16:20:31 -0800
+        id 81E5A5C1108; Wed,  1 Dec 2021 16:20:56 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -41,45 +37,73 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org
-Subject: [PATCH rcu 0/6] Miscellaneous fixes for v5.17
-Message-ID: <20211202002031.GA3127068@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        oleg@redhat.com, joel@joelfernandes.org,
+        Changbin Du <changbin.du@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 2/6] rcu: in_irq() cleanup
+Date:   Wed,  1 Dec 2021 16:20:51 -0800
+Message-Id: <20211202002055.3127133-2-paulmck@kernel.org>
+X-Mailer: git-send-email 2.31.1.189.g2e36527f23
+In-Reply-To: <20211202002031.GA3127068@paulmck-ThinkPad-P17-Gen-1>
+References: <20211202002031.GA3127068@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello!
+From: Changbin Du <changbin.du@gmail.com>
 
-This series contains miscellaneous fixes:
+This commit replaces the obsolete and ambiguous macro in_irq() with its
+shiny new in_hardirq() equivalent.
 
-1.	Replace ________p1 and _________p1 with __UNIQUE_ID(rcu),
-	courtesy of Chun-Hung Tseng.
+Signed-off-by: Changbin Du <changbin.du@gmail.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ include/linux/rcutiny.h  | 2 +-
+ kernel/rcu/tree.c        | 2 +-
+ kernel/rcu/tree_plugin.h | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-2.	in_irq() cleanup, courtesy of Changbin Du.
+diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
+index 9be015305f9f9..858f4d429946d 100644
+--- a/include/linux/rcutiny.h
++++ b/include/linux/rcutiny.h
+@@ -85,7 +85,7 @@ static inline void rcu_irq_enter_irqson(void) { }
+ static inline void rcu_irq_exit(void) { }
+ static inline void rcu_irq_exit_check_preempt(void) { }
+ #define rcu_is_idle_cpu(cpu) \
+-	(is_idle_task(current) && !in_nmi() && !in_irq() && !in_serving_softirq())
++	(is_idle_task(current) && !in_nmi() && !in_hardirq() && !in_serving_softirq())
+ static inline void exit_rcu(void) { }
+ static inline bool rcu_preempt_need_deferred_qs(struct task_struct *t)
+ {
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index ef8d36f580fc3..f0f19dc7f19ec 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -1467,7 +1467,7 @@ static void rcu_gp_kthread_wake(void)
+ {
+ 	struct task_struct *t = READ_ONCE(rcu_state.gp_kthread);
+ 
+-	if ((current == t && !in_irq() && !in_serving_softirq()) ||
++	if ((current == t && !in_hardirq() && !in_serving_softirq()) ||
+ 	    !READ_ONCE(rcu_state.gp_flags) || !t)
+ 		return;
+ 	WRITE_ONCE(rcu_state.gp_wake_time, jiffies);
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index 5199559fbbf0c..599084c4c21fd 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -642,7 +642,7 @@ static void rcu_read_unlock_special(struct task_struct *t)
+ 			   (IS_ENABLED(CONFIG_RCU_BOOST) && irqs_were_disabled &&
+ 			    t->rcu_blocked_node);
+ 		// Need to defer quiescent state until everything is enabled.
+-		if (use_softirq && (in_irq() || (expboost && !irqs_were_disabled))) {
++		if (use_softirq && (in_hardirq() || (expboost && !irqs_were_disabled))) {
+ 			// Using softirq, safe to awaken, and either the
+ 			// wakeup is free or there is either an expedited
+ 			// GP in flight or a potential need to deboost.
+-- 
+2.31.1.189.g2e36527f23
 
-3.	Improve tree_plugin.h comments and add code cleanups, courtesy
-	of Zhouyi Zhou.
-
-4.	Avoid running boost kthreads on isolated CPUs, courtesy of Zqiang.
-
-5.	Avoid alloc_pages() when recording stack, courtesy of Jun Miao.
-
-6.	Prevent redundant __srcu_read_unlock() wakeup.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- b/include/linux/rcupdate.h |   50 +++++++++++++++++++++++++--------------------
- b/include/linux/rcutiny.h  |    2 -
- b/include/linux/srcu.h     |    3 +-
- b/kernel/rcu/srcutiny.c    |    2 -
- b/kernel/rcu/tree.c        |    2 -
- b/kernel/rcu/tree_plugin.h |    2 -
- kernel/rcu/tree.c          |    4 +--
- kernel/rcu/tree_plugin.h   |   14 ++++++------
- 8 files changed, 43 insertions(+), 36 deletions(-)
