@@ -2,63 +2,68 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 95FB2C433F5
-	for <rcu@archiver.kernel.org>; Thu,  2 Dec 2021 18:03:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F1967C433EF
+	for <rcu@archiver.kernel.org>; Thu,  2 Dec 2021 18:10:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376557AbhLBSGw (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 2 Dec 2021 13:06:52 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:36436 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376542AbhLBSGq (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 2 Dec 2021 13:06:46 -0500
+        id S1348106AbhLBSOH (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 2 Dec 2021 13:14:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59700 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242332AbhLBSOH (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 2 Dec 2021 13:14:07 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF50DC06174A;
+        Thu,  2 Dec 2021 10:10:44 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id A0271B82457;
-        Thu,  2 Dec 2021 18:03:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBD41C00446;
-        Thu,  2 Dec 2021 18:03:20 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9CEB662775;
+        Thu,  2 Dec 2021 18:10:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DB81C00446;
+        Thu,  2 Dec 2021 18:10:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638468201;
-        bh=fLX8yTzi3C/MVxPPHtVZDC60kahx5AF+GQ/U6puoweo=;
+        s=k20201202; t=1638468643;
+        bh=CkCfHiYoyPWJgpr/6rkRitpkFqNjSvuV+yEJkRwlAwM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oXUPjA1BPkcPaei7ZKfsPCzloH6n5iPQxgfZ/u7AIq4V8VFWBB7PZ6I8AQG8Nii/A
-         woMeQzLyG5FNCBXCKb7/kh1aVP14NlF0AO9H8o5jPxtl5Bbr/yx1mipIfaqMXhtoft
-         WuwmHbiTI5vCPhyUPEzkAK6+xtV09hmzyjRAlZXl8oYp5X5JcKPylc4nDB97XULByc
-         lDzwEa/ylvGMjkrv8TAN1EpgYsIudakWLbpQL5q6B7dkHYe80vLZFuTA/BfooS6r9G
-         +fBaoPF842UoIeMKBIp3dw0rXIZjZQrKEcP+Lfgl7OYlSLpTGAfk+/lBXBj0xDU/P1
-         5H5aeInfEKvTg==
-Date:   Thu, 2 Dec 2021 19:03:18 +0100
+        b=uXoZFUbn3LP33RkEdVB9vNcTxzdb83ZUnPL14JSUUx5n8QE8cOtg6FB0aJj2HhmnB
+         DzMzedYV4DAcnadWLkRwcOqvL8jj/kJb/7ETLntynpPBI+sH2AZboU9WGN1hoq9BFZ
+         3am1W5yc11pO29PcpwfljNmegTPy5WImKDamTsQou6lfXqx2Ll6t9ws+qSwZ3qkg+H
+         UUGTFn9KrB4bajXhxA7h4bXQBFN29dFrDTR+djXI/bBKKscpS1HKHN61EuJUz7u9Gi
+         knL3/ZsQ0IuR6t3/THxlFrsmLfVzOO3n2sx28dfdsGiqx2k99iKG7Xf9iHB/gDzVyL
+         5BqIWTOO16M+Q==
+Date:   Thu, 2 Dec 2021 19:10:39 +0100
 From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Neeraj Upadhyay <quic_neeraju@quicinc.com>
-Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
         Uladzislau Rezki <urezki@gmail.com>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Boqun Feng <boqun.feng@gmail.com>,
         Josh Triplett <josh@joshtriplett.org>,
         Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: Re: [PATCH 4/6] rcu/nocb: Create kthreads on all CPUs if "rcu_nocb="
- or "nohz_full=" are passed
-Message-ID: <20211202180318.GC648659@lothringen>
+Subject: Re: [PATCH 3/6] rcu/nocb: Optimize kthreads and rdp initialization
+Message-ID: <20211202181039.GD648659@lothringen>
 References: <20211123003708.468409-1-frederic@kernel.org>
- <20211123003708.468409-5-frederic@kernel.org>
- <5010f7fa-faf4-1857-81d7-36cc08956f49@quicinc.com>
+ <20211123003708.468409-4-frederic@kernel.org>
+ <20211125003026.GT641268@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5010f7fa-faf4-1857-81d7-36cc08956f49@quicinc.com>
+In-Reply-To: <20211125003026.GT641268@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Dec 01, 2021 at 02:57:18PM +0530, Neeraj Upadhyay wrote:
-> 
-> 
-> On 11/23/2021 6:07 AM, Frederic Weisbecker wrote:
-> > In order to be able to (de-)offload any CPU using cpuset in the future,
-> > create a NOCB kthread for all possible CPUs. For now this is done only
-> > as long as the "rcu_nocb=" or "nohz_full=" kernel parameters are passed
-> > to avoid the unnecessary overhead for most users.
+On Wed, Nov 24, 2021 at 04:30:26PM -0800, Paul E. McKenney wrote:
+> On Tue, Nov 23, 2021 at 01:37:05AM +0100, Frederic Weisbecker wrote:
+> > Currently cpumask_available() is used to prevent from unwanted
+> > NOCB initialization. However if neither "rcu_nocbs=" nor "nohz_full="
+> > parameters are passed but CONFIG_CPUMASK_OFFSTACK=n, the initialization
+> > path is still taken, running through all sorts of needless operations
+> > and iterations on an empty cpumask.
+> > 
+> > Fix this with relying on a real initialization state instead. This
+> > also optimize kthreads creation, sparing iteration over all online CPUs
+> > when nocb isn't initialized.
 > > 
 > > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 > > Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
@@ -67,28 +72,27 @@ On Wed, Dec 01, 2021 at 02:57:18PM +0530, Neeraj Upadhyay wrote:
 > > Cc: Josh Triplett <josh@joshtriplett.org>
 > > Cc: Joel Fernandes <joel@joelfernandes.org>
 > > ---
-> 
-> Reviewed-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
-> 
-> 
-> >   kernel/rcu/tree_nocb.h | 14 ++++++--------
-> >   1 file changed, 6 insertions(+), 8 deletions(-)
+> >  kernel/rcu/tree_nocb.h | 24 +++++++++++++++++-------
+> >  1 file changed, 17 insertions(+), 7 deletions(-)
 > > 
 > > diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-> > index d8ed3ee47a67..9d37916278d4 100644
+> > index e1cb06840454..d8ed3ee47a67 100644
 > > --- a/kernel/rcu/tree_nocb.h
 > > +++ b/kernel/rcu/tree_nocb.h
-> > @@ -1229,11 +1229,8 @@ static void rcu_spawn_one_nocb_kthread(int cpu)
-> >   	struct rcu_data *rdp_gp;
-> >   	struct task_struct *t;
-> > -	/*
-> > -	 * If this isn't a no-CBs CPU or if it already has an rcuo kthread,
-> > -	 * then nothing to do.
-> > -	 */
-> > -	if (!rcu_is_nocb_cpu(cpu) || rdp->nocb_cb_kthread)
+> > @@ -60,6 +60,9 @@ static inline bool rcu_current_is_nocb_kthread(struct rcu_data *rdp)
+> >   * Parse the boot-time rcu_nocb_mask CPU list from the kernel parameters.
+> >   * If the list is invalid, a warning is emitted and all CPUs are offloaded.
+> >   */
+> > +
+> > +static bool rcu_nocb_is_setup;
 > 
-> As rcu_is_nocb_cpu() does not have a user, we can probably remove it?
+> I am taking this as is for now (modulo wordsmithing), but should this
+> variable instead be in the rcu_state structure?  The advantage of putting
+> it there is keeping the state together.  The corresponding disadvantage
+> is that the state is globally visible within RCU.
+> 
+> Thoughts?
 
-Ah nice, I'll check that.
+Yes good point, will do!
 
 Thanks!
