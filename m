@@ -2,37 +2,34 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4339EC433F5
-	for <rcu@archiver.kernel.org>; Thu,  2 Dec 2021 00:43:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C4982C433EF
+	for <rcu@archiver.kernel.org>; Thu,  2 Dec 2021 00:43:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354821AbhLBArK (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Dec 2021 19:47:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344437AbhLBArE (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1354827AbhLBArM (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 1 Dec 2021 19:47:12 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:39232 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344461AbhLBArE (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 1 Dec 2021 19:47:04 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86029C061756;
-        Wed,  1 Dec 2021 16:43:42 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 4DA5DB821A1;
+        by ams.source.kernel.org (Postfix) with ESMTPS id BF7D2B821A0;
         Thu,  2 Dec 2021 00:43:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8A44C58322;
-        Thu,  2 Dec 2021 00:43:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DBCDC5833A;
+        Thu,  2 Dec 2021 00:43:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638405818;
-        bh=1583yWcgPcSd7iLBHTApnMwXtF4QzzcZxd9zWwGmZrM=;
+        s=k20201202; t=1638405819;
+        bh=RwTiSH2043ckm/NhwtIpkSHOCAoEdVxq1VCFeZwpy9Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RMvd8ZTBr05cpX+hB3PVyspQxoRYRZE1roeM8HlLuNZPxzVkhyliLRbi/PWwuYv6u
-         WMKXCv/5MW+jNueFFZ6+x7uxW6/eirx8OZ7J6Mgkdzxq7i8xvPW2NkHbGP+pI2XH4N
-         P4nVnkTznvaNFhtq1YDxI3o4YFdXAWHYL8yDHK+YkD8pqdEr3r6knfFrNcJYq7HvrQ
-         dh8U2adVSQrmarSc34mtQhM70Y7BXT9RTupQIAaLWk5k9lcE+ZKJAf4KbavhCe4RGY
-         QZCHVUKaiiOI7auft2kcaO1Y/Y2j3faK/Nz7rvx2N+3i0Rv+u2v4/M0/JEECJ4r0Ck
-         0jZApj+Kvraag==
+        b=uMoy1de7+T25BKnyoO7RpsnE2u65/38GkEh5SnXdEeeaGcp9uEIJUFPLRhPzl/3bR
+         5FDwa9TcWlufOSUOO3krcj1q8VYnuwJU2rp2WGnfeckzYKG6TPxiAJZzGp2CqzcbMy
+         VRKCt/UgfpVOiOUJM+KuJgyBzddUEVFIJbrrRJ2HbRg5Ro9pZRYf1GooCulSfpta1E
+         LraesdALAJNgd98umi9RwEBDlmACfxj67GaaCZ3VPpYplACuB9LVtMV2rpjBic0nhu
+         r8ryE5RH4Vf48nD6I7uzxJT3N3jB2AiCo+hP4+BHxUKlA/iLTfoJ+3/B5vYNca0e6w
+         PIIDQQqMMSlYg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 53E265C1183; Wed,  1 Dec 2021 16:43:38 -0800 (PST)
+        id 65F385C1357; Wed,  1 Dec 2021 16:43:38 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -41,12 +38,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        Li Zhijian <zhijianx.li@intel.com>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 07/17] refscale: Add missing '\n' to flush message
-Date:   Wed,  1 Dec 2021 16:43:26 -0800
-Message-Id: <20211202004337.3130175-7-paulmck@kernel.org>
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Neeraj Upadhyay <neeraj.iitr10@gmail.com>
+Subject: [PATCH rcu 17/17] rcutorture: Combine n_max_cbs from all kthreads in a callback flood
+Date:   Wed,  1 Dec 2021 16:43:36 -0800
+Message-Id: <20211202004337.3130175-17-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20211202004245.GA3129966@paulmck-ThinkPad-P17-Gen-1>
 References: <20211202004245.GA3129966@paulmck-ThinkPad-P17-Gen-1>
@@ -56,57 +52,72 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Li Zhijian <zhijianx.li@intel.com>
+With the addition of multiple callback-flood kthreads, the maximum number
+of callbacks from any one of those kthreads is reported in the rcutorture
+run summary.  This commit changes this to report the sum of each kthread's
+maximum number of callbacks in a given callback-flooding episode.
 
-Add '\n' to macros to flush message for each call.
-
-Acked-by: Davidlohr Bueso <dbueso@suse.de>
-Signed-off-by: Li Zhijian <zhijianx.li@intel.com>
+Cc: Neeraj Upadhyay <neeraj.iitr10@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/refscale.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ kernel/rcu/rcutorture.c                                  | 9 +++++++++
+ .../testing/selftests/rcutorture/bin/kvm-recheck-rcu.sh  | 2 +-
+ 2 files changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
-index e5b0c2160592b..bbf2e915f835c 100644
---- a/kernel/rcu/refscale.c
-+++ b/kernel/rcu/refscale.c
-@@ -44,7 +44,10 @@
- 	pr_alert("%s" SCALE_FLAG s, scale_type, ## x)
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 1e8360d159200..33ea446101b30 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -2170,6 +2170,7 @@ struct rcu_fwd {
+ static DEFINE_MUTEX(rcu_fwd_mutex);
+ static struct rcu_fwd *rcu_fwds;
+ static unsigned long rcu_fwd_seq;
++static atomic_long_t rcu_fwd_max_cbs;
+ static bool rcu_fwd_emergency_stop;
  
- #define VERBOSE_SCALEOUT(s, x...) \
--	do { if (verbose) pr_alert("%s" SCALE_FLAG s, scale_type, ## x); } while (0)
-+	do { \
-+		if (verbose) \
-+			pr_alert("%s" SCALE_FLAG s "\n", scale_type, ## x); \
-+	} while (0)
- 
- static atomic_t verbose_batch_ctr;
- 
-@@ -54,12 +57,12 @@ do {											\
- 	    (verbose_batched <= 0 ||							\
- 	     !(atomic_inc_return(&verbose_batch_ctr) % verbose_batched))) {		\
- 		schedule_timeout_uninterruptible(1);					\
--		pr_alert("%s" SCALE_FLAG s, scale_type, ## x);				\
-+		pr_alert("%s" SCALE_FLAG s "\n", scale_type, ## x);			\
- 	}										\
- } while (0)
- 
- #define SCALEOUT_ERRSTRING(s, x...) \
--	do { pr_alert("%s" SCALE_FLAG "!!! " s, scale_type, ## x); } while (0)
-+	do { pr_alert("%s" SCALE_FLAG "!!! " s "\n", scale_type, ## x); } while (0)
- 
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Joel Fernandes (Google) <joel@joelfernandes.org>");
-@@ -842,7 +845,7 @@ ref_scale_init(void)
- 		goto unwind;
+ static void rcu_torture_fwd_cb_hist(struct rcu_fwd *rfp)
+@@ -2428,6 +2429,7 @@ static void rcu_torture_fwd_prog_cr(struct rcu_fwd *rfp)
+ 			 n_launders + n_max_cbs - n_launders_cb_snap,
+ 			 n_launders, n_launders_sa,
+ 			 n_max_gps, n_max_cbs, cver, gps);
++		atomic_long_add(n_max_cbs, &rcu_fwd_max_cbs);
+ 		rcu_torture_fwd_cb_hist(rfp);
  	}
- 
--	VERBOSE_SCALEOUT("Starting %d reader threads\n", nreaders);
-+	VERBOSE_SCALEOUT("Starting %d reader threads", nreaders);
- 
- 	for (i = 0; i < nreaders; i++) {
- 		firsterr = torture_create_kthread(ref_scale_reader, (void *)i,
+ 	schedule_timeout_uninterruptible(HZ); /* Let CBs drain. */
+@@ -2489,6 +2491,8 @@ static struct notifier_block rcutorture_oom_nb = {
+ /* Carry out grace-period forward-progress testing. */
+ static int rcu_torture_fwd_prog(void *args)
+ {
++	bool firsttime = true;
++	long max_cbs;
+ 	int oldnice = task_nice(current);
+ 	unsigned long oldseq = READ_ONCE(rcu_fwd_seq);
+ 	struct rcu_fwd *rfp = args;
+@@ -2503,6 +2507,11 @@ static int rcu_torture_fwd_prog(void *args)
+ 		if (!rfp->rcu_fwd_id) {
+ 			schedule_timeout_interruptible(fwd_progress_holdoff * HZ);
+ 			WRITE_ONCE(rcu_fwd_emergency_stop, false);
++			if (!firsttime) {
++				max_cbs = atomic_long_xchg(&rcu_fwd_max_cbs, 0);
++				pr_alert("%s n_max_cbs: %ld\n", __func__, max_cbs);
++			}
++			firsttime = false;
+ 			WRITE_ONCE(rcu_fwd_seq, rcu_fwd_seq + 1);
+ 		} else {
+ 			while (READ_ONCE(rcu_fwd_seq) == oldseq)
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-recheck-rcu.sh b/tools/testing/selftests/rcutorture/bin/kvm-recheck-rcu.sh
+index fbdf162b6acdf..1c4c2c727dad1 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm-recheck-rcu.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm-recheck-rcu.sh
+@@ -25,7 +25,7 @@ stopstate="`grep 'End-test grace-period state: g' $i/console.log 2> /dev/null |
+ 	    tail -1 | sed -e 's/^\[[ 0-9.]*] //' |
+ 	    awk '{ print \"[\" $1 \" \" $5 \" \" $6 \" \" $7 \"]\"; }' |
+ 	    tr -d '\012\015'`"
+-fwdprog="`grep 'rcu_torture_fwd_prog_cr Duration' $i/console.log 2> /dev/null | sed -e 's/^\[[^]]*] //' | sort -k15nr | head -1 | awk '{ print $14 " " $15 }'`"
++fwdprog="`grep 'rcu_torture_fwd_prog n_max_cbs: ' $i/console.log 2> /dev/null | sed -e 's/^\[[^]]*] //' | sort -k3nr | head -1 | awk '{ print $2 " " $3 }'`"
+ if test -z "$ngps"
+ then
+ 	echo "$configfile ------- " $stopstate
 -- 
 2.31.1.189.g2e36527f23
 
