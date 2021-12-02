@@ -2,37 +2,37 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 77B77C433EF
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CE8FCC4167B
 	for <rcu@archiver.kernel.org>; Thu,  2 Dec 2021 00:33:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234629AbhLBAhQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Dec 2021 19:37:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45174 "EHLO
+        id S1354614AbhLBAhR (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 1 Dec 2021 19:37:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354470AbhLBAhN (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S1354452AbhLBAhN (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 1 Dec 2021 19:37:13 -0500
 Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF0AAC061748;
-        Wed,  1 Dec 2021 16:33:51 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FF99C061756;
+        Wed,  1 Dec 2021 16:33:52 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 4843ECE207A;
+        by sin.source.kernel.org (Postfix) with ESMTPS id 5C83DCE2102;
         Thu,  2 Dec 2021 00:33:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70C09C53FAD;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 794F9C53FCD;
         Thu,  2 Dec 2021 00:33:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1638405228;
-        bh=BeuD0OdxB65KhgHIaFtCjVcFOJPO0wx8Xc+Aw91Yuyo=;
+        bh=g+7nuxIfYjwEiU7oMZgIjDo88pW5Hnt4IgPSfwVJ9WA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jv5DyS2XdePi4pTnDhaALrNxHEeLypXJiRunnuI0QYVcSU46zF6XVozpv8iXN8+zh
-         iOTs9AHDDZwEUWMBWToF+NTJ0l8b2nsdRb5GWVvKp9LM83OMRLYJmjJl44YMRko+Lc
-         JybIU+DfU+HuGjYdenXXGbFQRiQ+hH70PnGWy9jtI9Wv1yCXykLLXYzKcS4rcoz7q8
-         s9GoncMxJ3JL9+olGc4pwN+KVNHYb2tDICNm3uAhZJCz8mCAZVGn6q5SyiP6OCy71F
-         SW73TSyEWjUNXoQUUGgNOmjix4XLU1jR4YMJ6cAAV+WlYdbbe8m7j09bQuG/yAKUeg
-         0bzbwBPdGdepA==
+        b=OiXk2jLCde0qI1OXqOk2o6B9/6t9RzBYQHG20UCbJ6slcP5iqdVI4xWwnNDJutBz2
+         HdOVRRlljCljuWJITk0rXQbX9PUVoPbhQZeuktSeYsGW/t/IqW8Pn6FhAiIFgJeV+2
+         7wNFk20GIB/z4O33ynMM3NTktQfOpzPKRrx7HjX/cjO+Xm0cnIuE+LD8oJF0V8leZt
+         1M9UYH9fi3jR5A4y14PMGG8MzRW0THMD3YacHJJuzgsUDZxwIfWQtfaaSPBILApO5w
+         WdKG20h4lDA52lgxyDL4w4hrtyZUwSTmAPhzjwViDtCgstoKkacspHAlfhnhl6GVpU
+         7XTTFEvLoDIoA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 3BD535C100F; Wed,  1 Dec 2021 16:33:48 -0800 (PST)
+        id 42D7C5C110A; Wed,  1 Dec 2021 16:33:48 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -40,12 +40,13 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org, Willy Tarreau <w@1wt.eu>,
+        oleg@redhat.com, joel@joelfernandes.org,
         Ammar Faizi <ammar.faizi@students.amikom.ac.id>,
-        stable@vger.kernel.org, "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 2/6] tools/nolibc: i386: fix initial stack alignment
-Date:   Wed,  1 Dec 2021 16:33:42 -0800
-Message-Id: <20211202003346.3129110-2-paulmck@kernel.org>
+        Willy Tarreau <w@1wt.eu>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 5/6] tools/nolibc: x86-64: Use `mov $60,%eax` instead of `mov $60,%rax`
+Date:   Wed,  1 Dec 2021 16:33:45 -0800
+Message-Id: <20211202003346.3129110-5-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20211202003322.GA3128775@paulmck-ThinkPad-P17-Gen-1>
 References: <20211202003322.GA3128775@paulmck-ThinkPad-P17-Gen-1>
@@ -55,51 +56,37 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Willy Tarreau <w@1wt.eu>
+From: Ammar Faizi <ammar.faizi@students.amikom.ac.id>
 
-After re-checking in the spec and comparing stack offsets with glibc,
-The last pushed argument must be 16-byte aligned (i.e. aligned before the
-call) so that in the callee esp+4 is multiple of 16, so the principle is
-the 32-bit equivalent to what Ammar fixed for x86_64. It's possible that
-32-bit code using SSE2 or MMX could have been affected. In addition the
-frame pointer ought to be zero at the deepest level.
+Note that mov to 32-bit register will zero extend to 64-bit register.
+Thus `mov $60,%eax` has the same effect with `mov $60,%rax`. Use the
+shorter opcode to achieve the same thing.
+```
+  b8 3c 00 00 00       	mov    $60,%eax (5 bytes) [1]
+  48 c7 c0 3c 00 00 00 	mov    $60,%rax (7 bytes) [2]
+```
+Currently, we use [2]. Change it to [1] for shorter code.
 
-Link: https://gitlab.com/x86-psABIs/i386-ABI/-/wikis/Intel386-psABI
-Cc: Ammar Faizi <ammar.faizi@students.amikom.ac.id>
-Cc: stable@vger.kernel.org
+Signed-off-by: Ammar Faizi <ammar.faizi@students.amikom.ac.id>
 Signed-off-by: Willy Tarreau <w@1wt.eu>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/include/nolibc/nolibc.h | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ tools/include/nolibc/nolibc.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/tools/include/nolibc/nolibc.h b/tools/include/nolibc/nolibc.h
-index 96b6d56acb572..7f300dc379e70 100644
+index f9afe89ec6f26..4988866af0b58 100644
 --- a/tools/include/nolibc/nolibc.h
 +++ b/tools/include/nolibc/nolibc.h
-@@ -583,13 +583,21 @@ struct sys_stat_struct {
- })
- 
- /* startup code */
-+/*
-+ * i386 System V ABI mandates:
-+ * 1) last pushed argument must be 16-byte aligned.
-+ * 2) The deepest stack frame should be set to zero
-+ *
-+ */
- asm(".section .text\n"
-     ".global _start\n"
-     "_start:\n"
-     "pop %eax\n"                // argc   (first arg, %eax)
-     "mov %esp, %ebx\n"          // argv[] (second arg, %ebx)
-     "lea 4(%ebx,%eax,4),%ecx\n" // then a NULL then envp (third arg, %ecx)
--    "and $-16, %esp\n"          // x86 ABI : esp must be 16-byte aligned when
-+    "xor %ebp, %ebp\n"          // zero the stack frame
-+    "and $-16, %esp\n"          // x86 ABI : esp must be 16-byte aligned before
-+    "sub $4, %esp\n"            // the call instruction (args are aligned)
-     "push %ecx\n"               // push all registers on the stack so that we
-     "push %ebx\n"               // support both regparm and plain stack modes
-     "push %eax\n"
+@@ -420,7 +420,7 @@ asm(".section .text\n"
+     "and $-16, %rsp\n"          // x86 ABI : esp must be 16-byte aligned before call
+     "call main\n"               // main() returns the status code, we'll exit with it.
+     "mov %eax, %edi\n"          // retrieve exit code (32 bit)
+-    "mov $60, %rax\n"           // NR_exit == 60
++    "mov $60, %eax\n"           // NR_exit == 60
+     "syscall\n"                 // really exit
+     "hlt\n"                     // ensure it does not return
+     "");
 -- 
 2.31.1.189.g2e36527f23
 
