@@ -2,34 +2,37 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 16E1EC433FE
-	for <rcu@archiver.kernel.org>; Thu,  2 Dec 2021 00:43:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 745D2C433F5
+	for <rcu@archiver.kernel.org>; Thu,  2 Dec 2021 00:43:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354856AbhLBArO (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Dec 2021 19:47:14 -0500
-Received: from sin.source.kernel.org ([145.40.73.55]:58712 "EHLO
-        sin.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344514AbhLBArF (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1354869AbhLBArP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 1 Dec 2021 19:47:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1354668AbhLBArF (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 1 Dec 2021 19:47:05 -0500
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83512C061759;
+        Wed,  1 Dec 2021 16:43:43 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id D97A2CE2142;
+        by sin.source.kernel.org (Postfix) with ESMTPS id D1679CE207F;
         Thu,  2 Dec 2021 00:43:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB0C8C58323;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9C31C58321;
         Thu,  2 Dec 2021 00:43:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1638405818;
-        bh=H6iGr+5NaCUtqsPo+PjOMSuWeKaEvUsxZhFUGuls/5I=;
+        bh=rwVqvi1IWwEdfk1wEd0A2iHdrVb4tYgODH0yAL0CndA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QBV8RDuLQxcindlYciRWcbBUw7/ESd+fkN/kImdGdfYMS2y1QclRsutKPSvxbuEov
-         vplKIeFY6yvl4OXKDThibtK7MCIQilB+GNgNGUbhR3VHfqo83LyBaa88x6RKH3jYmD
-         SR6heaklnbi7mx3kuQOpPAOnK90BXdwkM+/61hQWQq1GldbCkkbDz2fK6pnH8ZCJpT
-         XG2Ewr2oDahZ35G44FBwL0d/mnT5uc01PIxfyvmGI6/ouY7xFYOtbBb5Ogk6lfy/62
-         gu+/8p7Fd8Vf6ORoDEMTP1nPE9v9wb+2yHa5abCaSzaEFYGZSXNc3S3JoslJBBoz3U
-         /Bzts099EmdBg==
+        b=RKuivoJ83rkIOGZ+wf+xcRRTUiTV6XpgQfuEXpQjYdoT6LRqMVTF2CKJ7II/1fo7S
+         Byd7CaK7uvVjI2XYZDCTqXeIMuBxTW3+j7RLkpZJx+DUtOHBp/h3A7Kqa8XjhYFssd
+         Np1GeY2GQ1kM7z2UdzPhiAh+aw49sPhgYIGDHJV14D0h4xcGyMEcLJHC79i2TowN3w
+         tvwjr2bQlTdGPKobfEjP/xstK1UJRCGRDf/xpeqlOVejX66bP7DiVm8PWVDLxKjMM1
+         pkI0Eox7yphWZM8h6krHiggcO8M5ZNm7YO4yGXnj0NVX1AI9A28nUS1an3liuBoH/1
+         6qDJqUMP013dA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 593B95C12AF; Wed,  1 Dec 2021 16:43:38 -0800 (PST)
+        id 5778C5C12AB; Wed,  1 Dec 2021 16:43:38 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -41,9 +44,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         Li Zhijian <zhijianx.li@intel.com>,
         Davidlohr Bueso <dbueso@suse.de>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 10/17] rcuscale: Always log error message
-Date:   Wed,  1 Dec 2021 16:43:29 -0800
-Message-Id: <20211202004337.3130175-10-paulmck@kernel.org>
+Subject: [PATCH rcu 09/17] scftorture: Remove unused SCFTORTOUT
+Date:   Wed,  1 Dec 2021 16:43:28 -0800
+Message-Id: <20211202004337.3130175-9-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20211202004245.GA3129966@paulmck-ThinkPad-P17-Gen-1>
 References: <20211202004245.GA3129966@paulmck-ThinkPad-P17-Gen-1>
@@ -55,63 +58,29 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: Li Zhijian <zhijianx.li@intel.com>
 
-Unconditionally log messages corresponding to errors.
+There are no longer any users of SCFTORTOUT(), so this commit removes it.
 
 Acked-by: Davidlohr Bueso <dbueso@suse.de>
 Signed-off-by: Li Zhijian <zhijianx.li@intel.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/rcuscale.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ kernel/scftorture.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
-index 228f143bf935d..5e4f1f83d38e7 100644
---- a/kernel/rcu/rcuscale.c
-+++ b/kernel/rcu/rcuscale.c
-@@ -50,8 +50,8 @@ MODULE_AUTHOR("Paul E. McKenney <paulmck@linux.ibm.com>");
- 	pr_alert("%s" SCALE_FLAG " %s\n", scale_type, s)
- #define VERBOSE_SCALEOUT_STRING(s) \
- 	do { if (verbose) pr_alert("%s" SCALE_FLAG " %s\n", scale_type, s); } while (0)
--#define VERBOSE_SCALEOUT_ERRSTRING(s) \
--	do { if (verbose) pr_alert("%s" SCALE_FLAG "!!! %s\n", scale_type, s); } while (0)
-+#define SCALEOUT_ERRSTRING(s) \
-+	pr_alert("%s" SCALE_FLAG "!!! %s\n", scale_type, s)
+diff --git a/kernel/scftorture.c b/kernel/scftorture.c
+index 9cff573b7eb4f..a0df767897a1d 100644
+--- a/kernel/scftorture.c
++++ b/kernel/scftorture.c
+@@ -38,9 +38,6 @@
+ #define SCFTORT_STRING "scftorture"
+ #define SCFTORT_FLAG SCFTORT_STRING ": "
  
- /*
-  * The intended use cases for the nreaders and nwriters module parameters
-@@ -514,11 +514,11 @@ rcu_scale_cleanup(void)
- 	 * during the mid-boot phase, so have to wait till the end.
- 	 */
- 	if (rcu_gp_is_expedited() && !rcu_gp_is_normal() && !gp_exp)
--		VERBOSE_SCALEOUT_ERRSTRING("All grace periods expedited, no normal ones to measure!");
-+		SCALEOUT_ERRSTRING("All grace periods expedited, no normal ones to measure!");
- 	if (rcu_gp_is_normal() && gp_exp)
--		VERBOSE_SCALEOUT_ERRSTRING("All grace periods normal, no expedited ones to measure!");
-+		SCALEOUT_ERRSTRING("All grace periods normal, no expedited ones to measure!");
- 	if (gp_exp && gp_async)
--		VERBOSE_SCALEOUT_ERRSTRING("No expedited async GPs, so went with async!");
-+		SCALEOUT_ERRSTRING("No expedited async GPs, so went with async!");
+-#define SCFTORTOUT(s, x...) \
+-	pr_alert(SCFTORT_FLAG s, ## x)
+-
+ #define VERBOSE_SCFTORTOUT(s, x...) \
+ 	do { if (verbose) pr_alert(SCFTORT_FLAG s "\n", ## x); } while (0)
  
- 	if (torture_cleanup_begin())
- 		return;
-@@ -845,7 +845,7 @@ rcu_scale_init(void)
- 	reader_tasks = kcalloc(nrealreaders, sizeof(reader_tasks[0]),
- 			       GFP_KERNEL);
- 	if (reader_tasks == NULL) {
--		VERBOSE_SCALEOUT_ERRSTRING("out of memory");
-+		SCALEOUT_ERRSTRING("out of memory");
- 		firsterr = -ENOMEM;
- 		goto unwind;
- 	}
-@@ -865,7 +865,7 @@ rcu_scale_init(void)
- 		kcalloc(nrealwriters, sizeof(*writer_n_durations),
- 			GFP_KERNEL);
- 	if (!writer_tasks || !writer_durations || !writer_n_durations) {
--		VERBOSE_SCALEOUT_ERRSTRING("out of memory");
-+		SCALEOUT_ERRSTRING("out of memory");
- 		firsterr = -ENOMEM;
- 		goto unwind;
- 	}
 -- 
 2.31.1.189.g2e36527f23
 
