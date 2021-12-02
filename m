@@ -2,34 +2,37 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D8A7FC433F5
-	for <rcu@archiver.kernel.org>; Thu,  2 Dec 2021 00:39:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 66F97C433FE
+	for <rcu@archiver.kernel.org>; Thu,  2 Dec 2021 00:39:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354709AbhLBAmv (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Dec 2021 19:42:51 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:37308 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354672AbhLBAm1 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 1 Dec 2021 19:42:27 -0500
+        id S1354721AbhLBAmy (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 1 Dec 2021 19:42:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1354661AbhLBAms (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 1 Dec 2021 19:42:48 -0500
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48126C06175C;
+        Wed,  1 Dec 2021 16:39:06 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D45E9B821A0;
-        Thu,  2 Dec 2021 00:39:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1D1CC58323;
+        by sin.source.kernel.org (Postfix) with ESMTPS id 60774CE213A;
+        Thu,  2 Dec 2021 00:39:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFF1BC58321;
         Thu,  2 Dec 2021 00:39:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1638405540;
-        bh=BRHANxcsivGosPx0a9A/RcSuNJZDaN1XchfalbMwHgE=;
+        bh=jodB1Ct+g1sN2XlmPcunsbFb5G67/ZwqPjHP2Cj0Iyc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m8YF/fOzUUiUgaIHpowdLrl7SxyQj+zyqBBRJ2Uc74TVqkqSDdgsa03Vssw7W4Ve+
-         afaBgN1o9CJF2Ujq+zkDYuY/HkcS/bpAt8twqlh29ONB6phHolcpIZq7v8L8u+pwPs
-         34C6ElfvHmUs446NAG/T2mtzYn63nqigMzRdzoPQRtk+k6jSRp42DxgDYDFX4BwpAN
-         UZpCVizXa0qWF/0aDa3QdZVba3/hRxD2z/Pnl01EbtLx/hdvahlmiKzbMUtmj0otvU
-         zWSqsartL3IC40+/O0LIvr3qpdFvna8nKpjssNcOuYSZhLcvHmX2emzS7MaEmqOFrQ
-         K8BBnr/YV59ZQ==
+        b=YAKcIdVKLHHhs0dbFKNzCgTlgCcMlbWldQqJKRJFEIDqslPslC3GnvvcmN6sqLhSv
+         uKSPD3bPeHSKxt/5JvkegIxaiD6e7A/OviS84O08vDYXog7w+qOoOP3XD4PhzJLlAQ
+         HKWVlh2Vz25QhFPP9kc5E3dwN2qHbkOlO4KTFCdH5RUfw0Jxnu00mbFHiwwJG6qz6V
+         LIw7z006gvlJJWxq9/FunavXw6SCnuTaNwUX9reh/Aq6Jock4icAfPvd53aYDh05ah
+         8fTFOQHPJhv1sv/uIHTxdYlj89bpednrTDuJJ+ZDC6YcJoFH7P4wBdIg1ICgfPKDsh
+         8IbHzOtvfmuMw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 5611E5C12AF; Wed,  1 Dec 2021 16:39:00 -0800 (PST)
+        id 527ED5C1184; Wed,  1 Dec 2021 16:39:00 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -40,9 +43,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>, Martin Lau <kafai@fb.com>,
         Neeraj Upadhyay <neeraj.iitr10@gmail.com>
-Subject: [PATCH rcu 10/18] rcu-tasks: Abstract invocations of callbacks
-Date:   Wed,  1 Dec 2021 16:38:50 -0800
-Message-Id: <20211202003858.3129628-10-paulmck@kernel.org>
+Subject: [PATCH rcu 08/18] rcu-tasks: Add a ->percpu_enqueue_lim to the rcu_tasks structure
+Date:   Wed,  1 Dec 2021 16:38:48 -0800
+Message-Id: <20211202003858.3129628-8-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20211202003826.GA3129369@paulmck-ThinkPad-P17-Gen-1>
 References: <20211202003826.GA3129369@paulmck-ThinkPad-P17-Gen-1>
@@ -52,105 +55,55 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This commit adds a rcu_tasks_invoke_cbs() function that invokes all
-ready callbacks on all of the per-CPU lists that are currently in use.
+This commit adds a ->percpu_enqueue_lim field to the rcu_tasks structure.
+This field contains two to the power of the ->percpu_enqueue_shift
+field, easing construction of iterators over the per-CPU queues that
+might contain RCU Tasks callbacks.  Such iterators will be introduced
+in later commits.
 
 Reported-by: Martin Lau <kafai@fb.com>
 Cc: Neeraj Upadhyay <neeraj.iitr10@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tasks.h | 58 ++++++++++++++++++++++++++++------------------
- 1 file changed, 35 insertions(+), 23 deletions(-)
+ kernel/rcu/tasks.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index bb37d4a4e48de..3bc0edb6a7bb6 100644
+index b3d15600f4fe9..1c7cf8e8d65e7 100644
 --- a/kernel/rcu/tasks.h
 +++ b/kernel/rcu/tasks.h
-@@ -256,14 +256,43 @@ static int rcu_tasks_need_gpcb(struct rcu_tasks *rtp)
- 	return needgpcb;
+@@ -52,6 +52,7 @@ struct rcu_tasks_percpu {
+  * @call_func: This flavor's call_rcu()-equivalent function.
+  * @rtpcpu: This flavor's rcu_tasks_percpu structure.
+  * @percpu_enqueue_shift: Shift down CPU ID this much when enqueuing callbacks.
++ * @percpu_enqueue_lim: Number of per-CPU callback queues in use.
+  * @name: This flavor's textual name.
+  * @kname: This flavor's kthread name.
+  */
+@@ -76,6 +77,7 @@ struct rcu_tasks {
+ 	call_rcu_func_t call_func;
+ 	struct rcu_tasks_percpu __percpu *rtpcpu;
+ 	int percpu_enqueue_shift;
++	int percpu_enqueue_lim;
+ 	char *name;
+ 	char *kname;
+ };
+@@ -93,6 +95,7 @@ static struct rcu_tasks rt_name =							\
+ 	.rtpcpu = &rt_name ## __percpu,							\
+ 	.name = n,									\
+ 	.percpu_enqueue_shift = ilog2(CONFIG_NR_CPUS),					\
++	.percpu_enqueue_lim = 1,							\
+ 	.kname = #rt_name,								\
  }
  
--/* RCU-tasks kthread that detects grace periods and invokes callbacks. */
--static int __noreturn rcu_tasks_kthread(void *arg)
-+// Advance callbacks and invoke any that are ready.
-+static void rcu_tasks_invoke_cbs(struct rcu_tasks *rtp)
- {
-+	int cpu;
- 	unsigned long flags;
- 	int len;
--	int needgpcb;
- 	struct rcu_cblist rcl = RCU_CBLIST_INITIALIZER(rcl);
- 	struct rcu_head *rhp;
-+
-+	for (cpu = 0; cpu < rtp->percpu_enqueue_lim; cpu++) {
-+		struct rcu_tasks_percpu *rtpcp = per_cpu_ptr(rtp->rtpcpu, cpu);
-+
-+		if (rcu_segcblist_empty(&rtpcp->cblist))
-+			continue;
-+		raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
-+		smp_mb__after_spinlock(); // Order updates vs. GP.
-+		rcu_segcblist_advance(&rtpcp->cblist, rcu_seq_current(&rtp->tasks_gp_seq));
-+		rcu_segcblist_extract_done_cbs(&rtpcp->cblist, &rcl);
-+		raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
-+		len = rcl.len;
-+		for (rhp = rcu_cblist_dequeue(&rcl); rhp; rhp = rcu_cblist_dequeue(&rcl)) {
-+			local_bh_disable();
-+			rhp->func(rhp);
-+			local_bh_enable();
-+			cond_resched();
-+		}
-+		raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
-+		rcu_segcblist_add_len(&rtpcp->cblist, -len);
-+		(void)rcu_segcblist_accelerate(&rtpcp->cblist, rcu_seq_snap(&rtp->tasks_gp_seq));
-+		raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
-+	}
-+}
-+
-+/* RCU-tasks kthread that detects grace periods and invokes callbacks. */
-+static int __noreturn rcu_tasks_kthread(void *arg)
-+{
-+	int needgpcb;
- 	struct rcu_tasks *rtp = arg;
+@@ -172,6 +175,7 @@ static void cblist_init_generic(struct rcu_tasks *rtp)
  
- 	/* Run on housekeeping CPUs by default.  Sysadm can move if desired. */
-@@ -277,8 +306,6 @@ static int __noreturn rcu_tasks_kthread(void *arg)
- 	 * This loop is terminated by the system going down.  ;-)
- 	 */
- 	for (;;) {
--		struct rcu_tasks_percpu *rtpcp;
--
- 		set_tasks_gp_state(rtp, RTGS_WAIT_CBS);
+ 	raw_spin_lock_irqsave(&rtp->cbs_gbl_lock, flags);
+ 	rtp->percpu_enqueue_shift = ilog2(nr_cpu_ids);
++	rtp->percpu_enqueue_lim = 1;
+ 	for_each_possible_cpu(cpu) {
+ 		struct rcu_tasks_percpu *rtpcp = per_cpu_ptr(rtp->rtpcpu, cpu);
  
- 		/* If there were none, wait a bit and start over. */
-@@ -293,25 +320,10 @@ static int __noreturn rcu_tasks_kthread(void *arg)
- 			rcu_seq_end(&rtp->tasks_gp_seq);
- 		}
- 
--		/* Invoke the callbacks. */
-+		/* Invoke callbacks. */
- 		set_tasks_gp_state(rtp, RTGS_INVOKE_CBS);
--		rtpcp = per_cpu_ptr(rtp->rtpcpu, 0);
--		raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
--		smp_mb__after_spinlock(); // Order updates vs. GP.
--		rcu_segcblist_advance(&rtpcp->cblist, rcu_seq_current(&rtp->tasks_gp_seq));
--		rcu_segcblist_extract_done_cbs(&rtpcp->cblist, &rcl);
--		raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
--		len = rcl.len;
--		for (rhp = rcu_cblist_dequeue(&rcl); rhp; rhp = rcu_cblist_dequeue(&rcl)) {
--			local_bh_disable();
--			rhp->func(rhp);
--			local_bh_enable();
--			cond_resched();
--		}
--		raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
--		rcu_segcblist_add_len(&rtpcp->cblist, -len);
--		(void)rcu_segcblist_accelerate(&rtpcp->cblist, rcu_seq_snap(&rtp->tasks_gp_seq));
--		raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
-+		rcu_tasks_invoke_cbs(rtp);
-+
- 		/* Paranoid sleep to keep this from entering a tight loop */
- 		schedule_timeout_idle(rtp->gp_sleep);
- 	}
 -- 
 2.31.1.189.g2e36527f23
 
