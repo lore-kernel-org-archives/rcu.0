@@ -2,34 +2,34 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AE38BC433EF
-	for <rcu@archiver.kernel.org>; Thu,  2 Dec 2021 00:29:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 00610C433F5
+	for <rcu@archiver.kernel.org>; Thu,  2 Dec 2021 00:29:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354278AbhLBAcl (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Dec 2021 19:32:41 -0500
-Received: from sin.source.kernel.org ([145.40.73.55]:51878 "EHLO
-        sin.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344661AbhLBAcj (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 1 Dec 2021 19:32:39 -0500
+        id S1354327AbhLBAcn (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 1 Dec 2021 19:32:43 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:59982 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344802AbhLBAck (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 1 Dec 2021 19:32:40 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 45772CE213A;
-        Thu,  2 Dec 2021 00:29:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FB48C53FAD;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 7A26EB82193;
+        Thu,  2 Dec 2021 00:29:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBA99C58325;
         Thu,  2 Dec 2021 00:29:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638404954;
-        bh=2v7+FPf9diZj5Aa7QlJClMx/gzTSbjL4TQgGFYiUYIE=;
+        s=k20201202; t=1638404955;
+        bh=2DdkVuz5c3cWAsQ97esB1iNtkrTH2B/c1ewNeW407Lk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X0qb98MchxgKJIryzrF7a80+eIvdU39ApB+WyLPiI6RhwOVBXtPXnXctYaxil838w
-         2k4UlgWBkUpc+S96r1hU0hYXdT9hnU7iHNYMui2AoGIq7B293/2aMlU1pvSAZBX6eu
-         PuL09w+XK4zhbbaBvtz9zMvz/9hEJy85uQUnFV+0tdYgSL9Tipmm2/ma3YIfYKLyyO
-         dLTfi9aSFSg74V8BU4Ag4Sa4ZVb69fFjPFYVXcaB8fhPJff1Dicpa9fNde8+z5C/VP
-         8FJxmXyHVZOt3/QiePTDChCgBpjxdJz7L9iJx2arf1Ot5ohAGSIT7qmzyeNGiKJfTW
-         RATmUF2IRKS2Q==
+        b=TKMcpTs92KleWAZDiSAXG5h6pUFy6ojSw1D2xHm3KOZjwM78WuVM9+pYgBv4qE4yG
+         NkJ6lU22YUcPgBvBaB4S4eY6/olGO5a0JrQcwGORolqFE2FwjXDdC+26+Z53gGa1JQ
+         Gwb8ubc2yuALC61/PrYA+7GV28dcowP3Qfds6H7BDvbB5hZWV7/+zZeM7ok1leVqMX
+         J/IkamBvFE0a5D9iE0MYh0Oj3cTOX4LAHZOe7lAiMZVsdUjndAyUDRoRJwqbRyq+8/
+         aCHERHi8jBVkNX1P6HJn+5pVhu8opxQmVmprpxlfRkWNoj0EcbuU1gK5uIo+xa/tys
+         L+ZQAZpO/GqbQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 5FD2C5C1108; Wed,  1 Dec 2021 16:29:14 -0800 (PST)
+        id 6EA775C13F5; Wed,  1 Dec 2021 16:29:14 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -45,9 +45,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         Neeraj Upadhyay <neeraju@codeaurora.org>,
         Uladzislau Rezki <urezki@gmail.com>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 02/18] rcu/nocb: Make local rcu_nocb_lock_irqsave() safe against concurrent deoffloading
-Date:   Wed,  1 Dec 2021 16:28:56 -0800
-Message-Id: <20211202002912.3127710-2-paulmck@kernel.org>
+Subject: [PATCH rcu 09/18] rcu/nocb: Limit number of softirq callbacks only on softirq
+Date:   Wed,  1 Dec 2021 16:29:03 -0800
+Message-Id: <20211202002912.3127710-9-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20211202002848.GA3127439@paulmck-ThinkPad-P17-Gen-1>
 References: <20211202002848.GA3127439@paulmck-ThinkPad-P17-Gen-1>
@@ -59,18 +59,26 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: Frederic Weisbecker <frederic@kernel.org>
 
-rcu_nocb_lock_irqsave() can be preempted between the call to
-rcu_segcblist_is_offloaded() and the actual locking. This matters now
-that rcu_core() is preemptible on PREEMPT_RT and the (de-)offloading
-process can interrupt the softirq or the rcuc kthread.
+The current condition to limit the number of callbacks executed in a
+row checks the offloaded state of the rdp. Not only is it volatile
+but it is also misleading: the rcu_core() may well be executing
+callbacks concurrently with NOCB kthreads, and the offloaded state
+would then be verified on both cases. As a result the limit would
+spuriously not apply anymore on softirq while in the middle of
+(de-)offloading process.
 
-As a result we may locklessly call into code that requires nocb locking.
-In practice this is a problem while we accelerate callbacks on rcu_core().
+Fix and clarify the condition with those constraints in mind:
 
-Simply disabling interrupts before (instead of after) checking the NOCB
-offload state fixes the issue.
+_ If callbacks are processed either by rcuc or NOCB kthread, the call
+  to cond_resched_tasks_rcu_qs() is enough to take care of the overload.
 
-Reported-and-tested-by: Valentin Schneider <valentin.schneider@arm.com>
+_ If instead callbacks are processed by softirqs:
+  * If need_resched(), exit the callbacks processing
+  * Otherwise if CPU is idle we can continue
+  * Otherwise exit because a softirq shouldn't interrupt a task for too
+    long nor deprive other pending softirq vectors of the CPU.
+
+Tested-by: Valentin Schneider <valentin.schneider@arm.com>
 Tested-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Cc: Valentin Schneider <valentin.schneider@arm.com>
@@ -84,36 +92,25 @@ Cc: Uladzislau Rezki <urezki@gmail.com>
 Cc: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.h | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
+ kernel/rcu/tree.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index 305cf6aeb4086..4f6c67b3ccd5e 100644
---- a/kernel/rcu/tree.h
-+++ b/kernel/rcu/tree.h
-@@ -447,12 +447,16 @@ static void rcu_nocb_unlock_irqrestore(struct rcu_data *rdp,
- static void rcu_lockdep_assert_cblist_protected(struct rcu_data *rdp);
- #ifdef CONFIG_RCU_NOCB_CPU
- static void __init rcu_organize_nocb_kthreads(void);
--#define rcu_nocb_lock_irqsave(rdp, flags)				\
--do {									\
--	if (!rcu_segcblist_is_offloaded(&(rdp)->cblist))		\
--		local_irq_save(flags);					\
--	else								\
--		raw_spin_lock_irqsave(&(rdp)->nocb_lock, (flags));	\
-+
-+/*
-+ * Disable IRQs before checking offloaded state so that local
-+ * locking is safe against concurrent de-offloading.
-+ */
-+#define rcu_nocb_lock_irqsave(rdp, flags)			\
-+do {								\
-+	local_irq_save(flags);					\
-+	if (rcu_segcblist_is_offloaded(&(rdp)->cblist))	\
-+		raw_spin_lock(&(rdp)->nocb_lock);		\
- } while (0)
- #else /* #ifdef CONFIG_RCU_NOCB_CPU */
- #define rcu_nocb_lock_irqsave(rdp, flags) local_irq_save(flags)
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 20587d035d03b..4f4d9ea6a9cb5 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2525,9 +2525,8 @@ static void rcu_do_batch(struct rcu_data *rdp)
+ 		/*
+ 		 * Stop only if limit reached and CPU has something to do.
+ 		 */
+-		if (count >= bl && !offloaded &&
+-		    (need_resched() ||
+-		     (!is_idle_task(current) && !rcu_is_callbacks_kthread())))
++		if (count >= bl && in_serving_softirq() &&
++		    (need_resched() || !is_idle_task(current)))
+ 			break;
+ 		if (unlikely(tlimit)) {
+ 			/* only call local_clock() every 32 callbacks */
 -- 
 2.31.1.189.g2e36527f23
 
