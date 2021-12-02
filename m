@@ -2,37 +2,37 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BED74C433F5
-	for <rcu@archiver.kernel.org>; Thu,  2 Dec 2021 00:39:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CF01CC433EF
+	for <rcu@archiver.kernel.org>; Thu,  2 Dec 2021 00:39:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354759AbhLBAnA (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Dec 2021 19:43:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46514 "EHLO
+        id S1354781AbhLBAnE (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 1 Dec 2021 19:43:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354671AbhLBAms (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 1 Dec 2021 19:42:48 -0500
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58C00C06175D;
-        Wed,  1 Dec 2021 16:39:06 -0800 (PST)
+        with ESMTP id S1354668AbhLBAmj (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 1 Dec 2021 19:42:39 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35D8EC061759;
+        Wed,  1 Dec 2021 16:39:05 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 791BDCE2140;
-        Thu,  2 Dec 2021 00:39:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02018C58333;
-        Thu,  2 Dec 2021 00:39:01 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id D237AB821A3;
+        Thu,  2 Dec 2021 00:39:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF130C5831C;
+        Thu,  2 Dec 2021 00:39:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638405541;
-        bh=9xOSk3gYZu1N5WP5WvuyaDDXPeakndsyQwP0MNyBGBQ=;
+        s=k20201202; t=1638405540;
+        bh=YbUFw30tQaTpKjLc/x9GE0wRx8kCUi1zKFA0wr+P57Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Mb9q/RQlbQjcGup18+46zzYDzFatq3LpvCB10rkPu+3BKYxueVMyIMfpqtEgq+3n+
-         4OS5TWB6YXN9jam3GgjHCxfZbV/IfpEsRF6f2GH9R11cB87rISDEWYEVruHEhu/RNQ
-         vhOX0QdgWJHJyB2gD22Uef6emUfsFkAQJrhj1BiHpgK81Udyj+J1toD0E1tBH/Y+qw
-         MCXmNOQlkm79xtgX+us5r36+3QyOU/vhYgnKG/GUPWElFowu5O9W1nFRTWuEoSP7N+
-         1o8e69I4eXm7e1VtD2J2tqZuZII29Kc75yGcIbr2t1mYr5bsFQWaJmpwszVVJYtVPR
-         IvBdWW6YKgYHg==
+        b=YldjkgY1+KfUB/DqMCXaf5tlF1HhypFEi6tjbMk+cvil5pqocTcEY3RiEtNMjNsV9
+         KD3znHGG2ekCjctG9OKAQw25f8g4qyna7SXVMFG3r7w7Sc2/ZP0D9GBWtCyWyHkzad
+         FuuGuieiecpBKjpvg6dS0XEs9bfyboIrbQu/vqVIfV7LM1hY3N+z2d0nFlbR06Afua
+         N5haLX5lWyrwJJCntkJDMc3kAOY+J6naLYfVhfqbH8YPtGXCBH6+uJxICgRuudnq0f
+         KqvHSr3kHJPX0Lm4gYhAd71ZA+BDx824IyUTdTmWC2o0r8kwx6FRWdtuUjTxq+cuqL
+         vUx+KqDrbQlzw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 5F42F5C1349; Wed,  1 Dec 2021 16:39:00 -0800 (PST)
+        id 4E4505C1180; Wed,  1 Dec 2021 16:39:00 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -43,9 +43,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>, Martin Lau <kafai@fb.com>,
         Neeraj Upadhyay <neeraj.iitr10@gmail.com>
-Subject: [PATCH rcu 15/18] rcu-tasks: Avoid raw-spinlocked wakeups from call_rcu_tasks_generic()
-Date:   Wed,  1 Dec 2021 16:38:55 -0800
-Message-Id: <20211202003858.3129628-15-paulmck@kernel.org>
+Subject: [PATCH rcu 06/18] rcu-tasks: Use spin_lock_rcu_node() and friends
+Date:   Wed,  1 Dec 2021 16:38:46 -0800
+Message-Id: <20211202003858.3129628-6-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20211202003826.GA3129369@paulmck-ThinkPad-P17-Gen-1>
 References: <20211202003826.GA3129369@paulmck-ThinkPad-P17-Gen-1>
@@ -55,87 +55,123 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-If the caller of of call_rcu_tasks(), call_rcu_tasks_rude(),
-or call_rcu_tasks_trace() holds a raw spinlock, and then if
-call_rcu_tasks_generic() determines that the grace-period kthread must
-be awakened, then the wakeup might acquire a normal spinlock while a
-raw spinlock is held.  This results in lockdep splats when the
-kernel is built with CONFIG_PROVE_RAW_LOCK_NESTING=y.
+This commit renames the rcu_tasks_percpu structure's ->cbs_pcpu_lock
+to ->lock and then uses spin_lock_rcu_node() and friends to acquire and
+release this lock, preparing for upcoming commits that will spread the
+grace-period process across multiple CPUs and kthreads.
 
-This commit therefore defers the wakeup using irq_work_queue().
-
-It would be nice to directly invoke wakeup when a raw spinlock is not
-held, but there is currently no way to check for this in all kernels.
+[ paulmck: Apply feedback from kernel test robot. ]
 
 Reported-by: Martin Lau <kafai@fb.com>
 Cc: Neeraj Upadhyay <neeraj.iitr10@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tasks.h | 20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
+ kernel/rcu/tasks.h | 32 ++++++++++++++++----------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
 
 diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 3f25022a0db9a..652f51eec5f34 100644
+index 2e58d7fa2da41..e9f59a88637cf 100644
 --- a/kernel/rcu/tasks.h
 +++ b/kernel/rcu/tasks.h
-@@ -27,6 +27,7 @@ typedef void (*postgp_func_t)(struct rcu_tasks *rtp);
-  * @rtp_jiffies: Jiffies counter value for statistics.
-  * @rtp_n_lock_retries: Rough lock-contention statistic.
-  * @rtp_work: Work queue for invoking callbacks.
-+ * @rtp_irq_work: IRQ work queue for deferred wakeups.
-  * @barrier_q_head: RCU callback for barrier operation.
-  * @cpu: CPU number corresponding to this entry.
-  * @rtpp: Pointer to the rcu_tasks structure.
-@@ -37,6 +38,7 @@ struct rcu_tasks_percpu {
- 	unsigned long rtp_jiffies;
- 	unsigned long rtp_n_lock_retries;
- 	struct work_struct rtp_work;
-+	struct irq_work rtp_irq_work;
- 	struct rcu_head barrier_q_head;
- 	int cpu;
- 	struct rcu_tasks *rtpp;
-@@ -102,9 +104,12 @@ struct rcu_tasks {
- 	char *kname;
+@@ -23,11 +23,11 @@ typedef void (*postgp_func_t)(struct rcu_tasks *rtp);
+ /**
+  * struct rcu_tasks_percpu - Per-CPU component of definition for a Tasks-RCU-like mechanism.
+  * @cblist: Callback list.
+- * @cbs_pcpu_lock: Lock protecting per-CPU callback list.
++ * @lock: Lock protecting per-CPU callback list.
+  */
+ struct rcu_tasks_percpu {
+ 	struct rcu_segcblist cblist;
+-	raw_spinlock_t cbs_pcpu_lock;
++	raw_spinlock_t __private lock;
  };
  
-+static void call_rcu_tasks_iw_wakeup(struct irq_work *iwp);
-+
+ /**
+@@ -82,7 +82,7 @@ struct rcu_tasks {
+ 
  #define DEFINE_RCU_TASKS(rt_name, gp, call, n)						\
  static DEFINE_PER_CPU(struct rcu_tasks_percpu, rt_name ## __percpu) = {			\
- 	.lock = __RAW_SPIN_LOCK_UNLOCKED(rt_name ## __percpu.cbs_pcpu_lock),		\
-+	.rtp_irq_work = IRQ_WORK_INIT(call_rcu_tasks_iw_wakeup),			\
+-	.cbs_pcpu_lock = __RAW_SPIN_LOCK_UNLOCKED(rt_name ## __percpu.cbs_pcpu_lock),	\
++	.lock = __RAW_SPIN_LOCK_UNLOCKED(rt_name ## __percpu.cbs_pcpu_lock),		\
  };											\
  static struct rcu_tasks rt_name =							\
  {											\
-@@ -230,6 +235,16 @@ static void cblist_init_generic(struct rcu_tasks *rtp)
- 	pr_info("%s: Setting shift to %d and lim to %d.\n", __func__, data_race(rtp->percpu_enqueue_shift), data_race(rtp->percpu_enqueue_lim));
- }
+@@ -177,11 +177,11 @@ static void cblist_init_generic(struct rcu_tasks *rtp)
  
-+// IRQ-work handler that does deferred wakeup for call_rcu_tasks_generic().
-+static void call_rcu_tasks_iw_wakeup(struct irq_work *iwp)
-+{
-+	struct rcu_tasks *rtp;
-+	struct rcu_tasks_percpu *rtpcp = container_of(iwp, struct rcu_tasks_percpu, rtp_irq_work);
-+
-+	rtp = rtpcp->rtpp;
-+	wake_up(&rtp->cbs_wq);
-+}
-+
- // Enqueue a callback for the specified flavor of Tasks RCU.
- static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
- 				   struct rcu_tasks *rtp)
-@@ -262,8 +277,9 @@ static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
+ 		WARN_ON_ONCE(!rtpcp);
+ 		if (cpu)
+-			raw_spin_lock_init(&rtpcp->cbs_pcpu_lock);
+-		raw_spin_lock(&rtpcp->cbs_pcpu_lock); // irqs already disabled.
++			raw_spin_lock_init(&ACCESS_PRIVATE(rtpcp, lock));
++		raw_spin_lock_rcu_node(rtpcp); // irqs already disabled.
+ 		if (rcu_segcblist_empty(&rtpcp->cblist))
+ 			rcu_segcblist_init(&rtpcp->cblist);
+-		raw_spin_unlock(&rtpcp->cbs_pcpu_lock); // irqs remain disabled.
++		raw_spin_unlock_rcu_node(rtpcp); // irqs remain disabled.
+ 	}
+ 	raw_spin_unlock_irqrestore(&rtp->cbs_gbl_lock, flags);
+ 
+@@ -200,15 +200,15 @@ static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
+ 	local_irq_save(flags);
+ 	rtpcp = per_cpu_ptr(rtp->rtpcpu,
+ 			    smp_processor_id() >> READ_ONCE(rtp->percpu_enqueue_shift));
+-	raw_spin_lock(&rtpcp->cbs_pcpu_lock);
++	raw_spin_lock_rcu_node(rtpcp); // irqs already disabled.
+ 	if (!rcu_segcblist_is_enabled(&rtpcp->cblist)) {
+-		raw_spin_unlock(&rtpcp->cbs_pcpu_lock); // irqs remain disabled.
++		raw_spin_unlock_rcu_node(rtpcp); // irqs remain disabled.
+ 		cblist_init_generic(rtp);
+-		raw_spin_lock(&rtpcp->cbs_pcpu_lock); // irqs already disabled.
++		raw_spin_lock_rcu_node(rtpcp); // irqs already disabled.
+ 	}
+ 	needwake = rcu_segcblist_empty(&rtpcp->cblist);
  	rcu_segcblist_enqueue(&rtpcp->cblist, rhp);
- 	raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
+-	raw_spin_unlock_irqrestore(&rtpcp->cbs_pcpu_lock, flags);
++	raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
  	/* We can't create the thread unless interrupts are enabled. */
--	if (needwake && READ_ONCE(rtp->kthread_ptr))
--		wake_up(&rtp->cbs_wq);
-+	if (needwake && READ_ONCE(rtp->kthread_ptr)) {
-+		irq_work_queue(&rtpcp->rtp_irq_work);
-+	}
- }
+ 	if (needwake && READ_ONCE(rtp->kthread_ptr))
+ 		wake_up(&rtp->cbs_wq);
+@@ -250,11 +250,11 @@ static int __noreturn rcu_tasks_kthread(void *arg)
+ 		set_tasks_gp_state(rtp, RTGS_WAIT_CBS);
  
- // Wait for a grace period for the specified flavor of Tasks RCU.
+ 		/* Pick up any new callbacks. */
+-		raw_spin_lock_irqsave(&rtpcp->cbs_pcpu_lock, flags);
++		raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
+ 		smp_mb__after_spinlock(); // Order updates vs. GP.
+ 		rcu_segcblist_advance(&rtpcp->cblist, rcu_seq_current(&rtp->tasks_gp_seq));
+ 		(void)rcu_segcblist_accelerate(&rtpcp->cblist, rcu_seq_snap(&rtp->tasks_gp_seq));
+-		raw_spin_unlock_irqrestore(&rtpcp->cbs_pcpu_lock, flags);
++		raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
+ 
+ 		/* If there were none, wait a bit and start over. */
+ 		if (!rcu_segcblist_pend_cbs(&rtpcp->cblist)) {
+@@ -277,11 +277,11 @@ static int __noreturn rcu_tasks_kthread(void *arg)
+ 
+ 		/* Invoke the callbacks. */
+ 		set_tasks_gp_state(rtp, RTGS_INVOKE_CBS);
+-		raw_spin_lock_irqsave(&rtpcp->cbs_pcpu_lock, flags);
++		raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
+ 		smp_mb__after_spinlock(); // Order updates vs. GP.
+ 		rcu_segcblist_advance(&rtpcp->cblist, rcu_seq_current(&rtp->tasks_gp_seq));
+ 		rcu_segcblist_extract_done_cbs(&rtpcp->cblist, &rcl);
+-		raw_spin_unlock_irqrestore(&rtpcp->cbs_pcpu_lock, flags);
++		raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
+ 		len = rcl.len;
+ 		for (rhp = rcu_cblist_dequeue(&rcl); rhp; rhp = rcu_cblist_dequeue(&rcl)) {
+ 			local_bh_disable();
+@@ -289,10 +289,10 @@ static int __noreturn rcu_tasks_kthread(void *arg)
+ 			local_bh_enable();
+ 			cond_resched();
+ 		}
+-		raw_spin_lock_irqsave(&rtpcp->cbs_pcpu_lock, flags);
++		raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
+ 		rcu_segcblist_add_len(&rtpcp->cblist, -len);
+ 		(void)rcu_segcblist_accelerate(&rtpcp->cblist, rcu_seq_snap(&rtp->tasks_gp_seq));
+-		raw_spin_unlock_irqrestore(&rtpcp->cbs_pcpu_lock, flags);
++		raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
+ 		/* Paranoid sleep to keep this from entering a tight loop */
+ 		schedule_timeout_idle(rtp->gp_sleep);
+ 	}
 -- 
 2.31.1.189.g2e36527f23
 
