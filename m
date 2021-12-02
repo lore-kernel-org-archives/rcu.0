@@ -2,34 +2,34 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B245C433FE
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BF2FEC4332F
 	for <rcu@archiver.kernel.org>; Thu,  2 Dec 2021 00:29:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354321AbhLBAcm (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S1354323AbhLBAcm (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Wed, 1 Dec 2021 19:32:42 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:59968 "EHLO
+Received: from ams.source.kernel.org ([145.40.68.75]:59956 "EHLO
         ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245739AbhLBAci (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S230023AbhLBAci (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 1 Dec 2021 19:32:38 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 1F55EB82197;
-        Thu,  2 Dec 2021 00:29:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD0CAC53FD3;
+        by ams.source.kernel.org (Postfix) with ESMTPS id DC0DAB80DAC;
+        Thu,  2 Dec 2021 00:29:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 939EEC53FCD;
         Thu,  2 Dec 2021 00:29:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1638404954;
-        bh=ChitOAD9GWPJHkVi+DRX3MJw9PUq6OJcuq26w/uVy7k=;
+        bh=5AbQ0ckihc7MT5sAb2Vp/Hh2tLondw2b2CClNs1ma3k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZSYgp/LCbAEF1V43OLMv2FG4HD2B1bBSxomRrGIRSTjRdfnxasifxSjJyFWskdmkU
-         FAkkUmzZdBnCDnxKbN64Nr/PoVbz5xDYlksCboBuKbbePOgomBn4AvCqsjmDyDKmKQ
-         qYa/uJEOVsFXCCTg61vozk2R6ypbGX79dmEmeWFd0/zK6sIHF85LRkhOgBNAWVer8D
-         ZS/D/MBg4HACKsPezVLUd+D6SQuvRbO5DZvp7adpHWqEqCX/ROJy28ySULzwkWzUBk
-         Hnbmt9zRpPx4hGEZ5zGoTL8xNG86d+dzuhAUTVwzY7v6E1sl1mLs91QCswOmxpA4N6
-         k163+wPLxWj+A==
+        b=Lwkm+IahV5WZjLn3o8TsMg0NbELVCw6LvCQqj3w3FGTeCQ24RFz5qBN1YzSIb21/e
+         69DU+96FkNrvgcjWMWN7LN2iRorgB4AjcYYcz31mN//PfJ+qMYD11GpAtVfgUnyVrg
+         WGok3tfPT4Y0WTzTIZpAd/N14Rh5tq1T0FIiMPPvv0LrwX3GPg9I7Rigr39Znfn2zg
+         kygmYPy4zfatwj5UmTIB7P0fG5jd1M8VuEnChmIt9DX/ozSBv7LbnEYem+FjYUdB+y
+         qUBQm78zZZU+HRHG9zjefskNHZBwyT9gajIqOB8J2125tgauTRP8Kzx4vN1nayVVRS
+         u71zXcr39z3xg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 663175C1180; Wed,  1 Dec 2021 16:29:14 -0800 (PST)
+        id 5CAC95C1107; Wed,  1 Dec 2021 16:29:14 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -38,16 +38,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 05/18] rcu/nocb: Make rcu_core() callbacks acceleration preempt-safe
-Date:   Wed,  1 Dec 2021 16:28:59 -0800
-Message-Id: <20211202002912.3127710-5-paulmck@kernel.org>
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Guillaume Morin <guillaume@morinfr.org>
+Subject: [PATCH rcu 01/18] rcu: Tighten rcu_advance_cbs_nowake() checks
+Date:   Wed,  1 Dec 2021 16:28:55 -0800
+Message-Id: <20211202002912.3127710-1-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20211202002848.GA3127439@paulmck-ThinkPad-P17-Gen-1>
 References: <20211202002848.GA3127439@paulmck-ThinkPad-P17-Gen-1>
@@ -57,67 +52,40 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+Currently, rcu_advance_cbs_nowake() checks that a grace period is in
+progress, however, that grace period could end just after the check.
+This commit rechecks that a grace period is still in progress the lock.
+The grace period cannot end while the current CPU's rcu_node structure's
+->lock is held, thus avoiding false positives from the WARN_ON_ONCE().
 
-While reporting a quiescent state for a given CPU, rcu_core() takes
-advantage of the freshly loaded grace period sequence number and the
-locked rnp to accelerate the callbacks whose sequence number have been
-assigned a stale value.
+As Daniel Vacek noted, it is not necessary for the rcu_node structure
+to have a CPU that has not yet passed through its quiescent state.
 
-This action is only necessary when the rdp isn't offloaded, otherwise
-the NOCB kthreads already take care of the callbacks progression.
-
-However the check for the offloaded state is volatile because it is
-performed outside the IRQs disabled section. It's possible for the
-offloading process to preempt rcu_core() at that point on PREEMPT_RT.
-
-This is dangerous because rcu_core() may end up accelerating callbacks
-concurrently with NOCB kthreads without appropriate locking.
-
-Fix this with moving the offloaded check inside the rnp locking section.
-
-Reported-and-tested-by: Valentin Schneider <valentin.schneider@arm.com>
-Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-Tested-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Josh Triplett <josh@joshtriplett.org>
-Cc: Joel Fernandes <joel@joelfernandes.org>
-Cc: Boqun Feng <boqun.feng@gmail.com>
-Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
-Cc: Uladzislau Rezki <urezki@gmail.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Tested-By: Guillaume Morin <guillaume@morinfr.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ kernel/rcu/tree.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index a329adfece86e..5985698f33414 100644
+index ef8d36f580fc3..8706b30c2ac88 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -2278,7 +2278,6 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
- 	unsigned long flags;
- 	unsigned long mask;
- 	bool needwake = false;
--	const bool offloaded = rcu_rdp_is_offloaded(rdp);
- 	struct rcu_node *rnp;
+@@ -1590,10 +1590,11 @@ static void __maybe_unused rcu_advance_cbs_nowake(struct rcu_node *rnp,
+ 						  struct rcu_data *rdp)
+ {
+ 	rcu_lockdep_assert_cblist_protected(rdp);
+-	if (!rcu_seq_state(rcu_seq_current(&rnp->gp_seq)) ||
+-	    !raw_spin_trylock_rcu_node(rnp))
++	if (!rcu_seq_state(rcu_seq_current(&rnp->gp_seq)) || !raw_spin_trylock_rcu_node(rnp))
+ 		return;
+-	WARN_ON_ONCE(rcu_advance_cbs(rnp, rdp));
++	// The grace period cannot end while we hold the rcu_node lock.
++	if (rcu_seq_state(rcu_seq_current(&rnp->gp_seq)))
++		WARN_ON_ONCE(rcu_advance_cbs(rnp, rdp));
+ 	raw_spin_unlock_rcu_node(rnp);
+ }
  
- 	WARN_ON_ONCE(rdp->cpu != smp_processor_id());
-@@ -2305,8 +2304,10 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
- 		/*
- 		 * This GP can't end until cpu checks in, so all of our
- 		 * callbacks can be processed during the next GP.
-+		 *
-+		 * NOCB kthreads have their own way to deal with that.
- 		 */
--		if (!offloaded)
-+		if (!rcu_rdp_is_offloaded(rdp))
- 			needwake = rcu_accelerate_cbs(rnp, rdp);
- 
- 		rcu_disable_urgency_upon_qs(rdp);
 -- 
 2.31.1.189.g2e36527f23
 
