@@ -2,67 +2,67 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A6931C433EF
-	for <rcu@archiver.kernel.org>; Fri,  3 Dec 2021 20:08:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CEA67C433EF
+	for <rcu@archiver.kernel.org>; Sat,  4 Dec 2021 03:48:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383016AbhLCULh (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 3 Dec 2021 15:11:37 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:57052 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1383020AbhLCULg (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 3 Dec 2021 15:11:36 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 7CFDBB8293D;
-        Fri,  3 Dec 2021 20:08:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13C93C53FCD;
-        Fri,  3 Dec 2021 20:08:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638562089;
-        bh=eIm0LQXQ7LaCGNOp4mV8WUsoxv4zNluQOJ0CqZwn6aw=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=g2zd/0JmGk+oY3ct7QTPRKNmIp0oZYZmj1qJoVcfQVU2W/pbGLgEwqLWUs5fyiByW
-         +R6TBxVedajdoQdgrTFnR3V7uLVajQM9iQakNjdLvbUBErcwDTqK0lytHPPO449cxr
-         JvSI4w0Bzs265OYNxvmx8oGnqyUFHSPsrfw3pSve4tyffmf43CnXRV8WwzOqqSSM+o
-         1jpfdK93z/I/tute5LqJI3tBVxZNu4KN3Qm7PDtBszmIjGEq9JoNdHCPLXNtn/BurW
-         B+UUgNz45tgje4wzLOke4GNa+Uya3AltrmPYdp6IQI7/rLqYIjM2wcb6JL4liba5VL
-         ddqrF0kaIjamg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id C55465C1108; Fri,  3 Dec 2021 12:08:08 -0800 (PST)
-Date:   Fri, 3 Dec 2021 12:08:08 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
+        id S1347077AbhLDDwC (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 3 Dec 2021 22:52:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344410AbhLDDwC (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 3 Dec 2021 22:52:02 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DB8FC061751;
+        Fri,  3 Dec 2021 19:48:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=snAkXuk4LTeI+kODmtUTOg9xNgHBiPTDHUE1jikRfHc=; b=nkVEl0cjfbh+xbwA4JOEtHivm1
+        UPX4N/ZAbXcsAGnPmvVmZISKroHygOlOAHdiJxsPIDMKE5xaFehmTSSY0ZJprEzRFyLDTJ8sye6FW
+        de9fVpWHT98KtMTr7OgpHfUH1JoCb0eJc+CdJoLY9lGVfY0XJ4xF0sCIvoZidw/rGvXdOQQ84nUOP
+        +eBZQ8OF+0rLNtH+yXjVvQuJsDi+e7PzeR2HKyQ0C4IIX+FTga4F/itVPty9C94fcNJI5F+9nMHlk
+        r1bDkvV9zQMZCeuiEfmPN5XM6pLMAF9K+twK7pmY5HcNwUyGVpGqqJHnJBK/oFD0Xh/iCy9r0qN61
+        ILlcBC5w==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mtM20-00BUow-Ny; Sat, 04 Dec 2021 03:48:13 +0000
+Message-ID: <1158239c-4e65-d3d9-41b3-4fedac856622@infradead.org>
+Date:   Fri, 3 Dec 2021 19:48:08 -0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.2
+Subject: Re: [PATCH v2] Documentation: Fill the gaps about entry/noinstr
+ constraints
+Content-Language: en-US
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Mark Rutland <mark.rutland@arm.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
         Nicolas Saenz Julienne <nsaenzju@redhat.com>,
         linux-kernel <linux-kernel@vger.kernel.org>,
         linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
         rcu@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-        mtosatti <mtosatti@redhat.com>, frederic <frederic@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH v2] Documentation: Fill the gaps about entry/noinstr
- constraints
-Message-ID: <20211203200808.GT641268@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        paulmck@kernel.org, mtosatti <mtosatti@redhat.com>,
+        frederic <frederic@kernel.org>, Jonathan Corbet <corbet@lwn.net>
 References: <8719ad46cc29a2c5d7baac3c35770e5460ab8d5c.camel@redhat.com>
- <875ys9dacq.ffs@tglx>
- <20211130091356.7336e277@gandalf.local.home>
- <878rx5b7i5.ffs@tglx>
- <YadU1aSE6/0yGWny@FVFF77S0Q05N>
- <87v9088a5q.ffs@tglx>
- <Yae9tbtZW5mjcBVt@FVFF77S0Q05N>
- <87ee6w83yw.ffs@tglx>
- <87bl2083mu.ffs@tglx>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+ <875ys9dacq.ffs@tglx> <20211130091356.7336e277@gandalf.local.home>
+ <878rx5b7i5.ffs@tglx> <YadU1aSE6/0yGWny@FVFF77S0Q05N> <87v9088a5q.ffs@tglx>
+ <Yae9tbtZW5mjcBVt@FVFF77S0Q05N> <87ee6w83yw.ffs@tglx> <87bl2083mu.ffs@tglx>
+From:   Randy Dunlap <rdunlap@infradead.org>
 In-Reply-To: <87bl2083mu.ffs@tglx>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Dec 01, 2021 at 09:35:37PM +0100, Thomas Gleixner wrote:
+Hi Thomas,
+
+Just some editing. I read Paul's comments but I am mostly ignoring them
+for this review.
+
+
+On 12/1/21 12:35, Thomas Gleixner wrote:
 > The entry/exit handling for exceptions, interrupts, syscalls and KVM is
 > not really documented except for some comments.
 > 
@@ -70,17 +70,6 @@ On Wed, Dec 01, 2021 at 09:35:37PM +0100, Thomas Gleixner wrote:
 > 
 > Reported-by: Nicolas Saenz Julienne <nsaenzju@redhat.com>
 > Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-
-Good stuff, thank you very much!  I hope that this documentation helps
-people bringing up new hardware, and from a more selfish viewpoint, I
-especially hope that it reduces the number of "RCU is broken!" complaints
-from them.  ;-)
-
-Some native-English-speaker wordsmithing below.  Anything that might be
-important from a technical viewpoint is marked "!!!".
-
-							Thanx, Paul
-
 > ---
 > V2: Be more precise, fix formatting and typos - Mark 
 > ---
@@ -98,57 +87,44 @@ important from a technical viewpoint is marked "!!!".
 > +requires update of various states. The state updates have strict rules
 > +versus ordering.
 > +
-> +
 > +The states which need to be updated are:
-
-I suggest reworking the above two paragraphs together something like
-the following:
-
-All transitions between execution domains require state updates which
-are subject to strict ordering constraints.  State updates are required
-for the following:
-
+> +
 > +  * Lockdep
 > +  * RCU
-
-!!! As you do below, I suggest replacing "RCU" with:
-
-  * RCU / Context tracking
-
-With some luck, RCU's dyntick-idle tracking will be pulled into the
-context-tracking code.  Doing this could allow a pair of atomic RMW
-operations to be combined into one, at least if appropriate adjustments
-can be applied.
-
 > +  * Preemption counter
 > +  * Tracing
 > +  * Time accounting
 > +
 > +The update order depends on the transition type and is explained below in
 > +the transition type sections.
-@@@
 > +
 > +Non-instrumentable code - noinstr
 > +---------------------------------
 > +
 > +Low level transition code cannot be instrumented before RCU is watching and
+
+   Low-level
+
 > +after RCU went into a non watching state (NOHZ, NOHZ_FULL) as most
+
+                         non-watching
+
 > +instrumentation facilities depend on RCU.
 > +
 > +Aside of that many architectures have to save register state, e.g. debug or
+
+                                                          state (e.g. debug) or
+
 > +cause registers before another exception of the same type can happen. A
+
+   ^^^^^ cannot parse (with or without the change to the previous line)
+
 > +breakpoint in the breakpoint entry code would overwrite the debug registers
 > +of the inital breakpoint.
 
-I suggest combining the above two paragraphs something like the following:
+          initial
 
-Most instrumentation facilities depend on RCU, so intrumentation is
-prohibited for entry code before RCU starts watching and exit code
-after RCU stops watching.  In addition, many architectures must save
-and restore register state, which means that (for example) a breakpoint
-in the breakpoint entry code would overwrite the debug registers of the
-initial breakpoint.
-
+> +
 > +Such code has to be marked with the 'noinstr' attribute. That places the
 > +code into a special section which is taboo for instrumentation and debug
 > +facilities.
@@ -156,15 +132,7 @@ initial breakpoint.
 > +In a function which is marked 'noinstr' it's only allowed to call into
 > +non-instrumentable code except when the invocation of instrumentable code
 > +is annotated with a instrumentation_begin()/instrumentation_end() pair:
-
-I suggest combining the above two paragraphs something like the following:
-
-Such code must be marked with the 'noinstr' attribute, placing that
-code into a special section inaccessible to instrumentation and debug
-facilities.  Some functions are partially instrumentable, which is
-handled by marking them nointr and using instrumentation_begin() and
-instrumentation_end() to flag the instrumentable ranges of code:
-
+> +
 > +.. code-block:: c
 > +
 > +  noinstr void entry(void)
@@ -194,22 +162,23 @@ instrumentation_end() to flag the instrumentable ranges of code:
 > +--------
 > +
 > +Syscall entry code starts in low level architecture specific assembly code
+
+                                low-level architecture-specific
+
 > +and calls out into C-code after establishing low level architecture
+
+                                                low-level architecture-
+
 > +specific state and stack frames. This low level code must not be
+
+                                         low-level
+
 > +instrumented. A typical syscall handling function invoked from low level
+
+                                                                  low-level
+
 > +assembly code looks like this:
-
-(Nits, but whatever.  I am (perhaps misguidedly) asserting that assembly
-code is by definition low-level and architecture-specific.  That lets
-"low-level" tag the C code, helping the reader make the connection
-between the two mentions of C code.  The above paragraph then looks
-something like this.)
-
-Syscall-entry code starts in assembly code and calls out into low-level
-C code after establishing low-level architecture-specific state and stack
-frames. This low-level C code must not be instrumented. A typical syscall
-handling function invoked from low-level assembly code looks like this:
-
+> +
 > +.. code-block:: c
 > +
 > +  noinstr void syscall(struct pt_regs *regs, int nr)
@@ -236,15 +205,7 @@ handling function invoked from low-level assembly code looks like this:
 > +audit, syscall tracing etc. After the function returns instrumentable code
 > +can be invoked. After returning from the syscall handler the instrumentable
 > +code section ends and syscall_exit_to_user_mode() is invoked.
-
-Not at all a big deal, but I suggest reworking the above paragraphs as
-follows to avoid the ambiguous "the function" in the second sentence:
-
-and then invokes the various entry work functions like ptrace, seccomp,
-audit, syscall tracing, etc. After all that is done, the instrumentable
-invoke_syscall function can be invoked. The instrumentable code section
-then ends, after which syscall_exit_to_user_mode() is invoked.
-
+> +
 > +syscall_exit_to_user_mode() handles all work which needs to be done before
 > +returning to user space like tracing, audit, signals, task work etc. After
 > +that it invokes exit_to_user_mode() which again handles the state
@@ -259,14 +220,8 @@ then ends, after which syscall_exit_to_user_mode() is invoked.
 > +has to do extra work between the various steps. In such cases it has to
 > +ensure that enter_from_user_mode() is called first on entry and
 > +exit_to_user_mode() is called last on exit.
-
-!!! Here I have a question.  Can calls to enter_from_user_mode()
-be nested?  RCU is OK with this, but I am not so sure that everything
-else is.  If nesting is prohibited, this paragraph should explicitly
-say that.  If nesting is theoretically possible, but should be avoided,
-it would be good to say that as well.  (Otherwise "It looks like it
-might work, so let's go for it!")
-
+> +
+> +
 > +KVM
 > +---
 > +
@@ -275,6 +230,9 @@ might work, so let's go for it!")
 > +guest and returns to the kernel on exit.
 > +
 > +kvm_guest_enter_irqoff() is a KVM specific variant of exit_to_user_mode()
+
+                                 KVM-specific
+
 > +and kvm_guest_exit_irqoff() is the KVM variant of enter_from_user_mode().
 > +The state operations have the same ordering.
 > +
@@ -297,14 +255,13 @@ might work, so let's go for it!")
 > +interrupt was raised in context of the CPU's idle task because that's the
 > +only kernel context where RCU can be not watching on NOHZ enabled kernels.
 > +Lockdep and tracing have to be updated unconditionally.
-
-!!! You lost me on this one.  Does that second-to-last sentence instead
-want to end something like this?  "... where RCU will not be watching
-when running on non-nohz_full CPUs."
-
+> +
 > +irqentry_enter() and irqentry_exit() provide the implementation for this.
 > +
 > +The architecture specific part looks similar to syscall handling:
+
+       architecture-specific
+
 > +
 > +.. code-block:: c
 > +
@@ -325,10 +282,12 @@ when running on non-nohz_full CPUs."
 > +  }
 > +
 > +Note, that the invocation of the actual interrupt handler is within a
+
+   Note that
+(as Paul said)
+
 > +irq_enter_rcu() and irq_exit_rcu() pair.
-
-Nit:  You don't need the comma.  "Note that the invocation..."
-
+> +
 > +irq_enter_rcu() updates the preemption count which makes in_hardirq()
 > +return true, handles NOHZ tick state and interrupt time accounting. This
 > +means that up to the point where irq_enter_rcu() is invoked in_hardirq()
@@ -341,45 +300,23 @@ Nit:  You don't need the comma.  "Note that the invocation..."
 > +there is no real value to do so. This allows the preemption count to be
 > +traced and just puts a restriction on the early entry code up to
 > +irq_enter_rcu().
-
-It took me awhile to work out that the "This" refers to in "This
-allows".  So I suggest the following for that last paragraph:
-
-In theory, the preemption count could be updated in irqentry_enter().
-In practice, deferring this update to irq_enter_rcu() allows the
-preemption-count code to be traced, while also maintaining symmetry
-with irq_exit_rcu() and irqentry_exit(), which are described in the
-next paragraph.  The only downside is that the early entry code up to
-irq_enter_rcu() must be aware that the preemption count has not yet been
-updated with the HARDIRQ_OFFSET state.
-
+> +
 > +This also keeps the handling vs. irq_exit_rcu() symmetric and
 > +irq_exit_rcu() must undo the preempt count elevation before handling soft
 > +interrupts and irqentry_exit() also requires that because it might
 > +schedule.
-
-I suggest reworking the preceding paragraph something like this:
-
-Note that irq_exit_rcu() must remove HARDIRQ_OFFSET from the preemption
-count before it handles soft interrupts, whose handlers must run in BH
-context rather than irq-disabled context.  In addition, irqentry_exit()
-might schedule, which also requires that HARDIRQ_OFFSET has been removed
-from the preemption count.
-
+> +
+> +
 > +NMI and NMI-like exceptions
 > +---------------------------
 > +
 > +NMIs and NMI like exceptions, e.g. Machine checks, double faults, debug
+
+            NMI-like
+
 > +interrupts etc. can hit any context and have to be extra careful vs. the
 > +state.
-
-I suggest the following for the above paragraph, but at least please
-translate "Maschine" the rest of the way to "machine".  ;-)
-
-NMIs and NMI-like exceptions (machine checks, double faults, debug
-interrupts, etc.) can hit any context and must be extra careful with
-the state.
-
+> +
 > +Debug exceptions can handle user space breakpoints or watchpoints in the
 > +same way as an interrupt which was raised while executing in user space,
 > +but kernel mode debug exceptions have to be treated like NMIs as they can
@@ -388,50 +325,35 @@ the state.
 > +Also Machine check exceptions can handle user mode exceptions like regular
 > +interrupts, but for kernel mode exceptions they have to be treated like
 > +NMIs.
-
-If I understand correctly, for the purpose of state transitions, debug
-exceptions work the same way as machine-check exceptions.  If so, I
-suggest combining the above two paragraphs something like the following:
-
-State changes for debug exceptions and machine-check exceptions depend
-on whether these exceptions happened in userspace (breakpoints or
-watchpoints) or in kernel mode (code patching).  From userspace, they
-are treated like interrupts, while from kernel mode they are treated
-like NMIs.
-
+> +
 > +NMIs and the other NMI-like exceptions handle state transitions in the most
 > +straight forward way and do not differentiate between user and kernel mode
+
+   straightforward
+
 > +origin.
-
-I suggest something like the following for the above paragraph:
-
-NMIs and other NMI-like exceptions handle state transitions without
-distinguishing between user-mode and kernel-mode origin.
-
+> +
 > +The state update on entry is handled in irqentry_nmi_enter() which updates
 > +state in the following order:
 > +
 > +  * Preemption counter
 > +  * Lockdep
 > +  * RCU
-
-Here too, I suggest replacing that "RCU" with this:
-
-  * RCU / Context tracking
-
 > +  * Tracing
 > +
 > +The exit counterpart irqentry_nmi_exit() does the reverse operation in the
 > +reverse order.
 > +
 > +Note, that the update of the preemption counter has to be the first
+
+   Note that
+(as Paul said)
+
 > +operation on enter and the last operation on exit. The reason is that both
 > +lockdep and RCU rely on in_nmi() returning true in this case. The
 > +preemption count modification in the NMI entry/exit case must not be
 > +traced.
-
-Please remove the comma following "Note".
-
+> +
 > +Architecture specific code looks like this:
 > +
 > +.. code-block:: c
@@ -479,20 +401,9 @@ Please remove the comma following "Note".
 > +
 > +There is no combined irqentry_nmi_if_kernel() function available as the
 > +above cannot be handled in an exception agnostic way.
-> --- a/Documentation/core-api/index.rst
-> +++ b/Documentation/core-api/index.rst
-> @@ -44,6 +44,14 @@ Library functionality that is used throu
->     timekeeping
->     errseq
->  
-> +Low level entry and exit
-> +========================
-> +
-> +.. toctree::
-> +   :maxdepth: 1
-> +
-> +   entry
-> +
->  Concurrency primitives
->  ======================
->  
+
+                                 exception-agnostic
+
+
+-- 
+~Randy
