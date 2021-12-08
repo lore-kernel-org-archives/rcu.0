@@ -2,103 +2,108 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0537AC433EF
-	for <rcu@archiver.kernel.org>; Mon,  6 Dec 2021 21:37:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0105CC433EF
+	for <rcu@archiver.kernel.org>; Wed,  8 Dec 2021 14:36:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351960AbhLFVkd (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 6 Dec 2021 16:40:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36366 "EHLO
+        id S230418AbhLHOj5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 8 Dec 2021 09:39:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236606AbhLFVkd (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 6 Dec 2021 16:40:33 -0500
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04368C061746;
-        Mon,  6 Dec 2021 13:37:04 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 35B36CE1862;
-        Mon,  6 Dec 2021 21:37:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50800C341C6;
-        Mon,  6 Dec 2021 21:37:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638826620;
-        bh=f84xs3ZWRDRi5yCnS5uMKiSpraAqjxG5xApNM0KlV+M=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=rwJzyqjSjn+0tt76jOh96QKag8reoQ4QQlKYk8l22coi3ErZXW2bVShMEaXc88I/O
-         6nwFfz/0BEWv5Bk1JhdvEVTW8QxhGlsX+at1OBrrTl0X3nU8zyTUWqhh2xjOoj8na0
-         Jl2p2JEKtdw/tEbu8aOqsOwSMlBmT2Ret/VslgthhXcrZQaACF9YxjsqllLbIRpQdq
-         hvImLAgFS3xrr8ifDN0XDGMg05YL7UnEkHC5d+OYyYyNYfnoTSEHbfKwhJl/kxcnij
-         LDXZQydiehFCjBaa9iT/wimDjeaT1dnxgZhTxA5D/zPEXzXjErVzIR7l2Rld+iukqV
-         zWNgoNG0MmG3Q==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id E83665C14E6; Mon,  6 Dec 2021 13:36:59 -0800 (PST)
-Date:   Mon, 6 Dec 2021 13:36:59 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        rcu@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-        mtosatti <mtosatti@redhat.com>, frederic <frederic@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH v2] Documentation: Fill the gaps about entry/noinstr
- constraints
-Message-ID: <20211206213659.GI641268@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <878rx5b7i5.ffs@tglx>
- <YadU1aSE6/0yGWny@FVFF77S0Q05N>
- <87v9088a5q.ffs@tglx>
- <Yae9tbtZW5mjcBVt@FVFF77S0Q05N>
- <87ee6w83yw.ffs@tglx>
- <87bl2083mu.ffs@tglx>
- <1158239c-4e65-d3d9-41b3-4fedac856622@infradead.org>
- <Ya5KM05XaUBjlthn@FVFF77S0Q05N>
- <20211206175323.GB641268@paulmck-ThinkPad-P17-Gen-1>
- <9ff94a5f-bb7e-501a-65cf-f260ae75b506@infradead.org>
+        with ESMTP id S229611AbhLHOj5 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 8 Dec 2021 09:39:57 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B888C061746;
+        Wed,  8 Dec 2021 06:36:25 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id y12so8870673eda.12;
+        Wed, 08 Dec 2021 06:36:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4oCIz8X6Xpr951fQV2/0BZURheht/YvLFt2PkopgfJE=;
+        b=Cyhf//uI31/yt0r1WBKeFQqjck9z6NMKw8tn5j6nXohEAMsyLup6KRjtmrEOwKUVvL
+         8XyGc45YrlPm1DfLNkJPldbmxKoFIxdKlYLoxoqTDClxwAxcDq8HFdHTP0rqfY1EON1A
+         0zeZEqTH5rBLHhxafh9DJP4ljLqegOtluB/vLcL9mRRgHCHP8HHH7VAjWlWNNx3fxGQ0
+         4mexkwuHcPBdlVMxDOfA9f977qq3+G1iUxk7IIDkYwYdeiCVOsiJPYGSI+SL453uZrk6
+         AzVTh6aH3cjCYL7atemJO4Q7COuOQZhpO8Z+VHv7INAsp4suRHSPnR858V2KA6cwhCun
+         9HiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4oCIz8X6Xpr951fQV2/0BZURheht/YvLFt2PkopgfJE=;
+        b=ACvo/K5Gz+eU3H8ODqzPc4NCqBliHSDL1U3pFb80cAyG5qlBqg0y35yyRKvFZrX5dR
+         l1YqWaR+TxbEL30dx3+Dgtb4y2j7EzYq646Q/mEXPSIKzWesI3fajbIjh45+rZ8P8A/s
+         wNAKVyzpvfGZd4zTBvzj/sZOj/8DgU+lBlsB6NK0rRwTMnnraHgtv9NLq1u9BuehHU/D
+         3Bhh9nhxeH3Zz/sBmmVC7Ng0Pq1zbMkR8HUqLdiUT6QY0C06C0QZLKD984vWky9P058Y
+         Lv4HqK4B06FO+RUCk2EutNgwG9aB1ZU+RJzgxYwZPf87uUeNiopsWEzPhstqpge7z9AQ
+         aJwA==
+X-Gm-Message-State: AOAM531m63Z7b/48lpdF7pjx13Z0Vzy2ZDeOgOndnRyJywZ/6OJ8gCQW
+        1+CEnTHxvBxh6ARZcArGOmed2HeuT4sNObBlxPTGbQ4WCKROmhoU
+X-Google-Smtp-Source: ABdhPJwllokWo7JWP9j5GegebcD7IQmd9EWI6+Wk0gSVMJHyThfOLWZmpMPCOa7IbJPy8Q3dpgveat73HZ8lAT4sMAU=
+X-Received: by 2002:a17:907:868e:: with SMTP id qa14mr8228487ejc.564.1638974181817;
+ Wed, 08 Dec 2021 06:36:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9ff94a5f-bb7e-501a-65cf-f260ae75b506@infradead.org>
+References: <20211124110308.2053-1-urezki@gmail.com> <20211124110308.2053-2-urezki@gmail.com>
+In-Reply-To: <20211124110308.2053-2-urezki@gmail.com>
+From:   Uladzislau Rezki <urezki@gmail.com>
+Date:   Wed, 8 Dec 2021 15:36:09 +0100
+Message-ID: <CA+KHdyUvoB9bbm34=fJ8oi21=r0JEYfRw9R6HQRZ1obpBnaOHg@mail.gmail.com>
+Subject: Re: [PATCH 1/9] ext4: Switch to kvfree_rcu() API
+To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Uladzislau Rezki <uladzislau.rezki@sony.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Dec 06, 2021 at 01:24:03PM -0800, Randy Dunlap wrote:
-> 
-> 
-> On 12/6/21 09:53, Paul E. McKenney wrote:
-> > On Mon, Dec 06, 2021 at 05:36:51PM +0000, Mark Rutland wrote:
-> >> On Fri, Dec 03, 2021 at 07:48:08PM -0800, Randy Dunlap wrote:
-> >>> On 12/1/21 12:35, Thomas Gleixner wrote:
-> >>>> +Aside of that many architectures have to save register state, e.g. debug or
-> >>>
-> >>>                                                           state (e.g. debug) or
-> >>>
-> >>>> +cause registers before another exception of the same type can happen. A
-> >>>
-> >>>    ^^^^^ cannot parse (with or without the change to the previous line)
-> >>
-> >> I think the difficulty here is with "cause register"? That' a register which
-> >> indicates the cause of an exception, e.g.
-> 
-> Oh. I see. Thanks.
-> 
-> >> * MIPS has `cause` (coprocessor 0 register 13)
-> >> * arm64 / AArch64 has `ESR_ELx` (Exception Syndrome Register, ELx)
-> >>
-> >> We could probably clarify this as "exception cause registers" or "exception
-> >> status registers", if that helps?
-> > 
-> > Or to make it word-by-word unambiguous, "exception-cause registers"
-> > and "exception-status registers".
-> 
-> Any of those works. Or even 'cause' registers.
++ linux-ext4@vger.kernel.org
 
-Agreed, careful use of quotation marks can also do the trick.  That is the
-"wonderful" thing about English, so very many ways to say the same thing...
+On Wed, Nov 24, 2021 at 12:03 PM Uladzislau Rezki (Sony)
+<urezki@gmail.com> wrote:
+>
+> From: Uladzislau Rezki <uladzislau.rezki@sony.com>
+>
+> Instead of invoking a synchronize_rcu() to free a pointer
+> after a grace period we can directly make use of new API
+> that does the same but in more efficient way.
+>
+> CC: "Theodore Ts'o" <tytso@mit.edu>
+> Signed-off-by: Uladzislau Rezki <uladzislau.rezki@sony.com>
+> ---
+>  fs/ext4/super.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index 4e33b5eca694..111b0498a232 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -1886,8 +1886,7 @@ static int clear_qf_name(struct super_block *sb, int qtype)
+>                 return -1;
+>         }
+>         rcu_assign_pointer(sbi->s_qf_names[qtype], NULL);
+> -       synchronize_rcu();
+> -       kfree(old_qname);
+> +       kvfree_rcu(old_qname);
+>         return 1;
+>  }
+>  #endif
+> --
+> 2.30.2
+>
 
-							Thanx, Paul
+
+-- 
+Uladzislau Rezki
