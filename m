@@ -2,33 +2,33 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 98C7BC433F5
-	for <rcu@archiver.kernel.org>; Thu,  9 Dec 2021 15:10:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 05157C4332F
+	for <rcu@archiver.kernel.org>; Thu,  9 Dec 2021 15:10:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239298AbhLIPNm (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 9 Dec 2021 10:13:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42992 "EHLO
+        id S239445AbhLIPNt (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 9 Dec 2021 10:13:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239277AbhLIPNk (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 9 Dec 2021 10:13:40 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A2CDC061746;
-        Thu,  9 Dec 2021 07:10:06 -0800 (PST)
+        with ESMTP id S239430AbhLIPNs (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 9 Dec 2021 10:13:48 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C11EC061A32;
+        Thu,  9 Dec 2021 07:10:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Sender:Content-Transfer-Encoding:
+        d=infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
         Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=pscP5Qxj01ZR+jbBvs92DKjLY49eRRxXh0yJ0fYAtQw=; b=UacDAuRZu2hvgR7cIEq6G4Q3iH
-        OOU/sfg9iP4LU4nZobOXVJsDbyCJQ7ChpBf33k0RGPSa41qzR9t88rSN60hM39H4+GDSyZDO9AgmF
-        hCZOU6xcRoG/g+7bobNSCBWV0kbt+vGICM52uuCdsqFWsINcWvfplLBGAoWPpaPhzdQSNuJuHgRde
-        z7Mz9Hz3bpnBLIvHpahkbZ83ecuYYlRHD0R8WlIwYWpKRxqixrbcLros+colI38ypElV6NEoJ+3Ko
-        8BNB+tSorMJ98fSbxaIWlYrqm9BkOwip843mjWVSXDH5SzLDlDrCBb/pjSZ0vFBv8U28XwQeoiOoA
-        zmmkvYwg==;
+        bh=0JGthK67jDzJ2xiAruiA3t9j36JRwt1Voo3P+6fkLBg=; b=NTkeKAsanWRM6hhCiuYmrWeDkB
+        24fJKKOur5Ch+X3kHsZ36jT9ob/XYOGrdBEHuRjEmykxZ+TiaZeaq1EluFxpUT0TMZhfAK1owvp0D
+        Pa7D40zSJS5f5b7Laam5HkxG4qmnMPWZvKnUnFTnUQjWefmkp1AhxjtSsyqHCTOxhcBtzYZxlp1Ai
+        KNbKkowRqgyaY7Vn8r8Ixa0fi58VdXflnnMVhgRMiKG/yDVclbc1l2Pj5hizbEPc4AA3oJ5gBWOw3
+        GxrBxARcf53nbQZBmvHP8McaV7ykrfijER7ZkNOr3QCfQ5NheRSq7Rv+DVV9QLe2P8vidgN0FyGgJ
+        ahyOX2ZQ==;
 Received: from i7.infradead.org ([2001:8b0:10b:1:21e:67ff:fecb:7a92])
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mvL3J-009RsA-Pf; Thu, 09 Dec 2021 15:09:46 +0000
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mvL3J-000Nou-PG; Thu, 09 Dec 2021 15:09:45 +0000
 Received: from dwoodhou by i7.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mvL3K-0000yJ-11; Thu, 09 Dec 2021 15:09:46 +0000
+        id 1mvL3J-0000xq-Dn; Thu, 09 Dec 2021 15:09:45 +0000
 From:   David Woodhouse <dwmw2@infradead.org>
 To:     Thomas Gleixner <tglx@linutronix.de>
 Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
@@ -39,330 +39,226 @@ Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
         rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
         hushiyuan@huawei.com, luolongjun@huawei.com, hejingxian@huawei.com
-Subject: [PATCH 09/11] x86/boot: Support parallel startup of secondary CPUs
-Date:   Thu,  9 Dec 2021 15:09:36 +0000
-Message-Id: <20211209150938.3518-10-dwmw2@infradead.org>
+Subject: [PATCH 02/11] rcu: Kill rnp->ofl_seq and use only rcu_state.ofl_lock for exclusion
+Date:   Thu,  9 Dec 2021 15:09:29 +0000
+Message-Id: <20211209150938.3518-3-dwmw2@infradead.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211209150938.3518-1-dwmw2@infradead.org>
 References: <20211209150938.3518-1-dwmw2@infradead.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: David Woodhouse <dwmw2@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by desiato.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: David Woodhouse <dwmw@amazon.co.uk>
 
-To allow for parallel AP bringup, we need to avoid the use of global
-variables for passing information to the APs, as well as preventing them
-from all trying to use the same real-mode stack simultaneously.
+If we allow architectures to bring APs online in parallel, then we end
+up requiring rcu_cpu_starting() to be reentrant. But currently, the
+manipulation of rnp->ofl_seq is not thread-safe.
 
-So, introduce a 'lock' field in struct trampoline_header to use as a
-simple bit-spinlock for the real-mode stack. That lock also protects
-the global variables initial_gs, initial_stack and early_gdt_descr,
-which can now be calculated...
+However, rnp->ofl_seq is also fairly much pointless anyway since both
+rcu_cpu_starting() and rcu_report_dead() hold rcu_state.ofl_lock for
+fairly much the whole time that rnp->ofl_seq is set to an odd number
+to indicate that an operation is in progress.
 
-So how do we calculate those addresses? Well, they they can all be found
-from the per_cpu data for this CPU. Simples! Except... how does it know
-what its CPU# is? OK, we export the cpuid_to_apicid[] array and it can
-search it to find its APIC ID in there.
+So drop rnp->ofl_seq completely, and use only rcu_state.ofl_lock.
 
-But now you whine at me that it doesn't even know its APIC ID? Well, if
-it's a relatively modern CPU then the APIC ID is in CPUID leaf 0x0B so
-we can use that. Otherwise... erm... OK, otherwise it can't have parallel
-CPU bringup for now. We'll still use a global variable for those CPUs and
-bring them up one at a time.
+This has a couple of minor complexities: lockdep will complain when we
+take rcu_state.ofl_lock, and currently accepts the 'excuse' of having
+an odd value in rnp->ofl_seq. So switch it to an arch_spinlock_t to
+avoid that false positive complaint. Since we're killing rnp->ofl_seq
+of course that 'excuse' has to be changed too, so make it check for
+arch_spin_is_locked(rcu_state.ofl_lock).
 
-So add a global 'smpboot_control' field which either contains the APIC
-ID, or a flag indicating that it can be found in CPUID.
+There's no arch_spin_lock_irqsave() so we have to manually save and
+restore local interrupts around the locking.
 
-Not-signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: David Woodhouse <dwmw2@infradead.org>
+At Paul's request, make rcu_gp_init not just wait but *exclude* any
+CPU online/offline activity, which was fairly much true already by
+virtue of it holding rcu_state.ofl_lock.
+
+Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
 ---
- arch/x86/include/asm/realmode.h      |  3 ++
- arch/x86/include/asm/smp.h           |  9 +++-
- arch/x86/kernel/acpi/sleep.c         |  1 +
- arch/x86/kernel/apic/apic.c          |  2 +-
- arch/x86/kernel/head_64.S            | 71 ++++++++++++++++++++++++++++
- arch/x86/kernel/smpboot.c            | 19 +++++++-
- arch/x86/realmode/init.c             |  3 ++
- arch/x86/realmode/rm/trampoline_64.S | 14 ++++++
- kernel/smpboot.c                     |  2 +-
- 9 files changed, 119 insertions(+), 5 deletions(-)
+ kernel/rcu/tree.c | 64 +++++++++++++++++++++++------------------------
+ kernel/rcu/tree.h |  4 +--
+ 2 files changed, 32 insertions(+), 36 deletions(-)
 
-diff --git a/arch/x86/include/asm/realmode.h b/arch/x86/include/asm/realmode.h
-index 5db5d083c873..e1cc4bc746bc 100644
---- a/arch/x86/include/asm/realmode.h
-+++ b/arch/x86/include/asm/realmode.h
-@@ -51,6 +51,7 @@ struct trampoline_header {
- 	u64 efer;
- 	u32 cr4;
- 	u32 flags;
-+	u32 lock;
- #endif
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index ef8d36f580fc..a1bb0b1229ed 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -91,7 +91,7 @@ static struct rcu_state rcu_state = {
+ 	.abbr = RCU_ABBR,
+ 	.exp_mutex = __MUTEX_INITIALIZER(rcu_state.exp_mutex),
+ 	.exp_wake_mutex = __MUTEX_INITIALIZER(rcu_state.exp_wake_mutex),
+-	.ofl_lock = __RAW_SPIN_LOCK_UNLOCKED(rcu_state.ofl_lock),
++	.ofl_lock = __ARCH_SPIN_LOCK_UNLOCKED,
  };
  
-@@ -64,6 +65,8 @@ extern unsigned long initial_stack;
- extern unsigned long initial_vc_handler;
- #endif
- 
-+extern u32 *trampoline_lock;
-+
- extern unsigned char real_mode_blob[];
- extern unsigned char real_mode_relocs[];
- 
-diff --git a/arch/x86/include/asm/smp.h b/arch/x86/include/asm/smp.h
-index 81a0211a372d..ca807c29dc34 100644
---- a/arch/x86/include/asm/smp.h
-+++ b/arch/x86/include/asm/smp.h
-@@ -196,5 +196,12 @@ extern void nmi_selftest(void);
- #define nmi_selftest() do { } while (0)
- #endif
- 
--#endif /* __ASSEMBLY__ */
-+extern unsigned int smpboot_control;
-+
-+#endif /* !__ASSEMBLY__ */
-+
-+/* Control bits for startup_64 */
-+#define	STARTUP_USE_APICID	0x10000
-+#define	STARTUP_USE_CPUID_0B	0x20000
-+
- #endif /* _ASM_X86_SMP_H */
-diff --git a/arch/x86/kernel/acpi/sleep.c b/arch/x86/kernel/acpi/sleep.c
-index 3f85fcae450c..9598ebf4f9d6 100644
---- a/arch/x86/kernel/acpi/sleep.c
-+++ b/arch/x86/kernel/acpi/sleep.c
-@@ -114,6 +114,7 @@ int x86_acpi_suspend_lowlevel(void)
- 	early_gdt_descr.address =
- 			(unsigned long)get_cpu_gdt_rw(smp_processor_id());
- 	initial_gs = per_cpu_offset(smp_processor_id());
-+	smpboot_control = 0;
- #endif
- 	initial_code = (unsigned long)wakeup_long64;
-        saved_magic = 0x123456789abcdef0L;
-diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
-index b70344bf6600..5b20e051d84c 100644
---- a/arch/x86/kernel/apic/apic.c
-+++ b/arch/x86/kernel/apic/apic.c
-@@ -2335,7 +2335,7 @@ static int nr_logical_cpuids = 1;
- /*
-  * Used to store mapping between logical CPU IDs and APIC IDs.
+ /* Dump rcu_node combining tree at boot to verify correct setup. */
+@@ -1168,7 +1168,15 @@ bool rcu_lockdep_current_cpu_online(void)
+ 	preempt_disable_notrace();
+ 	rdp = this_cpu_ptr(&rcu_data);
+ 	rnp = rdp->mynode;
+-	if (rdp->grpmask & rcu_rnp_online_cpus(rnp) || READ_ONCE(rnp->ofl_seq) & 0x1)
++	/*
++	 * Strictly, we care here about the case where the current CPU is
++	 * in rcu_cpu_starting() and thus has an excuse for rdp->grpmask
++	 * not being up to date. So arch_spin_is_locked() might have a
++	 * false positive if it's held by some *other* CPU, but that's
++	 * OK because that just means a false *negative* on the warning.
++	 */
++	if (rdp->grpmask & rcu_rnp_online_cpus(rnp) ||
++	    arch_spin_is_locked(&rcu_state.ofl_lock))
+ 		ret = true;
+ 	preempt_enable_notrace();
+ 	return ret;
+@@ -1731,7 +1739,6 @@ static void rcu_strict_gp_boundary(void *unused)
   */
--static int cpuid_to_apicid[] = {
-+int cpuid_to_apicid[] = {
- 	[0 ... NR_CPUS - 1] = -1,
- };
- 
-diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
-index d8b3ebd2bb85..0249212e23d2 100644
---- a/arch/x86/kernel/head_64.S
-+++ b/arch/x86/kernel/head_64.S
-@@ -25,6 +25,7 @@
- #include <asm/export.h>
- #include <asm/nospec-branch.h>
- #include <asm/fixmap.h>
-+#include <asm/smp.h>
- 
- /*
-  * We are not able to switch in one step to the final KERNEL ADDRESS SPACE
-@@ -176,6 +177,64 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
- 1:
- 	UNWIND_HINT_EMPTY
- 
-+	/*
-+	 * Is this the boot CPU coming up? If so everything is available
-+	 * in initial_gs, initial_stack and early_gdt_descr.
-+	 */
-+	movl	smpboot_control(%rip), %eax
-+	testl	%eax, %eax
-+	jz	.Lsetup_cpu
-+
-+	/*
-+	 * Secondary CPUs find out the offsets via the APIC ID. For parallel
-+	 * boot the APIC ID is retrieved from CPUID, otherwise it's encoded
-+	 * in smpboot_control:
-+	 * Bit 0-15	APICID if STARTUP_USE_CPUID_0B is not set
-+	 * Bit 16 	Secondary boot flag
-+	 * Bit 17	Parallel boot flag
-+	 */
-+	testl	$STARTUP_USE_CPUID_0B, %eax
-+	jz	.Lsetup_AP
-+
-+	mov	$0x0B, %eax
-+	xorl	%ecx, %ecx
-+	cpuid
-+	mov	%edx, %eax
-+
-+.Lsetup_AP:
-+	/* EAX contains the APICID of the current CPU */
-+	andl	$0xFFFF, %eax
-+	xorl	%ecx, %ecx
-+	leaq	cpuid_to_apicid(%rip), %rbx
-+
-+.Lfind_cpunr:
-+	cmpl	(%rbx), %eax
-+	jz	.Linit_cpu_data
-+	addq	$4, %rbx
-+	addq	$8, %rcx
-+	jmp	.Lfind_cpunr
-+
-+.Linit_cpu_data:
-+	/* Get the per cpu offset */
-+	leaq	__per_cpu_offset(%rip), %rbx
-+	addq	%rcx, %rbx
-+	movq	(%rbx), %rbx
-+	/* Save it for GS BASE setup */
-+	movq	%rbx, initial_gs(%rip)
-+
-+	/* Calculate the GDT address */
-+	movq	$gdt_page, %rcx
-+	addq	%rbx, %rcx
-+	movq	%rcx, early_gdt_descr_base(%rip)
-+
-+	/* Find the idle task stack */
-+	movq	$idle_threads, %rcx
-+	addq	%rbx, %rcx
-+	movq	(%rcx), %rcx
-+	movq	TASK_threadsp(%rcx), %rcx
-+	movq	%rcx, initial_stack(%rip)
-+
-+.Lsetup_cpu:
- 	/*
- 	 * We must switch to a new descriptor in kernel space for the GDT
- 	 * because soon the kernel won't have access anymore to the userspace
-@@ -216,6 +275,14 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
+ static noinline_for_stack bool rcu_gp_init(void)
+ {
+-	unsigned long firstseq;
+ 	unsigned long flags;
+ 	unsigned long oldmask;
+ 	unsigned long mask;
+@@ -1774,22 +1781,17 @@ static noinline_for_stack bool rcu_gp_init(void)
+ 	 * of RCU's Requirements documentation.
  	 */
- 	movq initial_stack(%rip), %rsp
+ 	WRITE_ONCE(rcu_state.gp_state, RCU_GP_ONOFF);
++	/* Exclude CPU hotplug operations. */
+ 	rcu_for_each_leaf_node(rnp) {
+-		// Wait for CPU-hotplug operations that might have
+-		// started before this grace period did.
+-		smp_mb(); // Pair with barriers used when updating ->ofl_seq to odd values.
+-		firstseq = READ_ONCE(rnp->ofl_seq);
+-		if (firstseq & 0x1)
+-			while (firstseq == READ_ONCE(rnp->ofl_seq))
+-				schedule_timeout_idle(1);  // Can't wake unless RCU is watching.
+-		smp_mb(); // Pair with barriers used when updating ->ofl_seq to even values.
+-		raw_spin_lock(&rcu_state.ofl_lock);
+-		raw_spin_lock_irq_rcu_node(rnp);
++		local_irq_save(flags);
++		arch_spin_lock(&rcu_state.ofl_lock);
++		raw_spin_lock_rcu_node(rnp);
+ 		if (rnp->qsmaskinit == rnp->qsmaskinitnext &&
+ 		    !rnp->wait_blkd_tasks) {
+ 			/* Nothing to do on this leaf rcu_node structure. */
+-			raw_spin_unlock_irq_rcu_node(rnp);
+-			raw_spin_unlock(&rcu_state.ofl_lock);
++			raw_spin_unlock_rcu_node(rnp);
++			arch_spin_unlock(&rcu_state.ofl_lock);
++			local_irq_restore(flags);
+ 			continue;
+ 		}
  
-+	/* Drop the realmode protection. For the boot CPU the pointer is NULL! */
-+	movq	trampoline_lock(%rip), %rax
-+	testq	%rax, %rax
-+	jz	.Lsetup_idt
-+	lock
-+	btrl	$0, (%rax)
-+
-+.Lsetup_idt:
- 	/* Setup and Load IDT */
- 	pushq	%rsi
- 	call	early_setup_idt
-@@ -347,6 +414,7 @@ SYM_DATA(initial_vc_handler,	.quad handle_vc_boot_ghcb)
-  * reliably detect the end of the stack.
+@@ -1824,8 +1826,9 @@ static noinline_for_stack bool rcu_gp_init(void)
+ 				rcu_cleanup_dead_rnp(rnp);
+ 		}
+ 
+-		raw_spin_unlock_irq_rcu_node(rnp);
+-		raw_spin_unlock(&rcu_state.ofl_lock);
++		raw_spin_unlock_rcu_node(rnp);
++		arch_spin_unlock(&rcu_state.ofl_lock);
++		local_irq_restore(flags);
+ 	}
+ 	rcu_gp_slow(gp_preinit_delay); /* Races with CPU hotplug. */
+ 
+@@ -4233,7 +4236,7 @@ int rcutree_offline_cpu(unsigned int cpu)
   */
- SYM_DATA(initial_stack, .quad init_thread_union + THREAD_SIZE - FRAME_SIZE)
-+SYM_DATA(trampoline_lock, .quad 0);
- 	__FINITDATA
+ void rcu_cpu_starting(unsigned int cpu)
+ {
+-	unsigned long flags;
++	unsigned long flags, seq_flags;
+ 	unsigned long mask;
+ 	struct rcu_data *rdp;
+ 	struct rcu_node *rnp;
+@@ -4246,11 +4249,11 @@ void rcu_cpu_starting(unsigned int cpu)
  
- 	__INIT
-@@ -572,6 +640,9 @@ SYM_DATA_END(level1_fixmap_pgt)
- SYM_DATA(early_gdt_descr,		.word GDT_ENTRIES*8-1)
- SYM_DATA_LOCAL(early_gdt_descr_base,	.quad INIT_PER_CPU_VAR(gdt_page))
- 
-+	.align 16
-+SYM_DATA(smpboot_control,		.long 0)
-+
- 	.align 16
- /* This must match the first entry in level2_kernel_pgt */
- SYM_DATA(phys_base, .quad 0x0)
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index 11ef434a93a1..8fdf889acf5d 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -1069,6 +1069,16 @@ int common_cpu_up(unsigned int cpu, struct task_struct *idle)
- 	return 0;
+ 	rnp = rdp->mynode;
+ 	mask = rdp->grpmask;
+-	WRITE_ONCE(rnp->ofl_seq, rnp->ofl_seq + 1);
+-	WARN_ON_ONCE(!(rnp->ofl_seq & 0x1));
++	local_irq_save(seq_flags);
++	arch_spin_lock(&rcu_state.ofl_lock);
+ 	rcu_dynticks_eqs_online();
+ 	smp_mb(); // Pair with rcu_gp_cleanup()'s ->ofl_seq barrier().
+-	raw_spin_lock_irqsave_rcu_node(rnp, flags);
++	raw_spin_lock_rcu_node(rnp);
+ 	WRITE_ONCE(rnp->qsmaskinitnext, rnp->qsmaskinitnext | mask);
+ 	newcpu = !(rnp->expmaskinitnext & mask);
+ 	rnp->expmaskinitnext |= mask;
+@@ -4269,9 +4272,8 @@ void rcu_cpu_starting(unsigned int cpu)
+ 	} else {
+ 		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+ 	}
+-	smp_mb(); // Pair with rcu_gp_cleanup()'s ->ofl_seq barrier().
+-	WRITE_ONCE(rnp->ofl_seq, rnp->ofl_seq + 1);
+-	WARN_ON_ONCE(rnp->ofl_seq & 0x1);
++	arch_spin_unlock(&rcu_state.ofl_lock);
++	local_irq_restore(seq_flags);
+ 	smp_mb(); /* Ensure RCU read-side usage follows above initialization. */
  }
  
-+static void setup_smpboot_control(unsigned int apicid)
-+{
-+#ifdef CONFIG_X86_64
-+	if (boot_cpu_data.cpuid_level < 0x0B)
-+		smpboot_control = apicid | STARTUP_USE_APICID;
-+	else
-+		smpboot_control = STARTUP_USE_CPUID_0B;
-+#endif
-+}
-+
- /*
-  * NOTE - on most systems this is a PHYSICAL apic ID, but on multiquad
-  * (ie clustered apic addressing mode), this is a LOGICAL apic ID.
-@@ -1083,9 +1093,14 @@ static int do_boot_cpu(int apicid, int cpu, struct task_struct *idle,
- 	unsigned long boot_error = 0;
- 
- 	idle->thread.sp = (unsigned long)task_pt_regs(idle);
--	early_gdt_descr.address = (unsigned long)get_cpu_gdt_rw(cpu);
- 	initial_code = (unsigned long)start_secondary;
--	initial_stack  = idle->thread.sp;
-+
-+	if (IS_ENABLED(CONFIG_X86_32)) {
-+		early_gdt_descr.address = (unsigned long)get_cpu_gdt_rw(cpu);
-+		initial_stack  = idle->thread.sp;
-+	}
-+
-+	setup_smpboot_control(apicid);
- 
- 	/* Enable the espfix hack for this CPU */
- 	init_espfix_ap(cpu);
-diff --git a/arch/x86/realmode/init.c b/arch/x86/realmode/init.c
-index 4a3da7592b99..7dc2e817bd02 100644
---- a/arch/x86/realmode/init.c
-+++ b/arch/x86/realmode/init.c
-@@ -127,6 +127,9 @@ static void __init setup_real_mode(void)
- 
- 	trampoline_header->flags = 0;
- 
-+	trampoline_lock = &trampoline_header->lock;
-+	*trampoline_lock = 0;
-+
- 	trampoline_pgd = (u64 *) __va(real_mode_header->trampoline_pgd);
- 	trampoline_pgd[0] = trampoline_pgd_entry.pgd;
- 	trampoline_pgd[511] = init_top_pgt[511].pgd;
-diff --git a/arch/x86/realmode/rm/trampoline_64.S b/arch/x86/realmode/rm/trampoline_64.S
-index cc8391f86cdb..801b03d3c5a8 100644
---- a/arch/x86/realmode/rm/trampoline_64.S
-+++ b/arch/x86/realmode/rm/trampoline_64.S
-@@ -49,6 +49,19 @@ SYM_CODE_START(trampoline_start)
- 	mov	%ax, %es
- 	mov	%ax, %ss
- 
-+	/*
-+	 * Make sure only one CPU fiddles with the realmode stack
-+	 */
-+.Llock_rm:
-+	btw	$0, tr_lock
-+	jnc	2f
-+	pause
-+	jmp	.Llock_rm
-+2:
-+	lock
-+	btsw	$0, tr_lock
-+	jc	.Llock_rm
-+
- 	# Setup stack
- 	movl	$rm_stack_end, %esp
- 
-@@ -192,6 +205,7 @@ SYM_DATA_START(trampoline_header)
- 	SYM_DATA(tr_efer,		.space 8)
- 	SYM_DATA(tr_cr4,		.space 4)
- 	SYM_DATA(tr_flags,		.space 4)
-+	SYM_DATA(tr_lock,		.space 4)
- SYM_DATA_END(trampoline_header)
- 
- #include "trampoline_common.S"
-diff --git a/kernel/smpboot.c b/kernel/smpboot.c
-index f6bc0bc8a2aa..934e64ff4eed 100644
---- a/kernel/smpboot.c
-+++ b/kernel/smpboot.c
-@@ -25,7 +25,7 @@
-  * For the hotplug case we keep the task structs around and reuse
-  * them.
+@@ -4285,7 +4287,7 @@ void rcu_cpu_starting(unsigned int cpu)
   */
--static DEFINE_PER_CPU(struct task_struct *, idle_threads);
-+DEFINE_PER_CPU(struct task_struct *, idle_threads);
- 
- struct task_struct *idle_thread_get(unsigned int cpu)
+ void rcu_report_dead(unsigned int cpu)
  {
+-	unsigned long flags;
++	unsigned long flags, seq_flags;
+ 	unsigned long mask;
+ 	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
+ 	struct rcu_node *rnp = rdp->mynode;  /* Outgoing CPU's rdp & rnp. */
+@@ -4299,10 +4301,8 @@ void rcu_report_dead(unsigned int cpu)
+ 
+ 	/* Remove outgoing CPU from mask in the leaf rcu_node structure. */
+ 	mask = rdp->grpmask;
+-	WRITE_ONCE(rnp->ofl_seq, rnp->ofl_seq + 1);
+-	WARN_ON_ONCE(!(rnp->ofl_seq & 0x1));
+-	smp_mb(); // Pair with rcu_gp_cleanup()'s ->ofl_seq barrier().
+-	raw_spin_lock(&rcu_state.ofl_lock);
++	local_irq_save(seq_flags);
++	arch_spin_lock(&rcu_state.ofl_lock);
+ 	raw_spin_lock_irqsave_rcu_node(rnp, flags); /* Enforce GP memory-order guarantee. */
+ 	rdp->rcu_ofl_gp_seq = READ_ONCE(rcu_state.gp_seq);
+ 	rdp->rcu_ofl_gp_flags = READ_ONCE(rcu_state.gp_flags);
+@@ -4313,10 +4313,8 @@ void rcu_report_dead(unsigned int cpu)
+ 	}
+ 	WRITE_ONCE(rnp->qsmaskinitnext, rnp->qsmaskinitnext & ~mask);
+ 	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+-	raw_spin_unlock(&rcu_state.ofl_lock);
+-	smp_mb(); // Pair with rcu_gp_cleanup()'s ->ofl_seq barrier().
+-	WRITE_ONCE(rnp->ofl_seq, rnp->ofl_seq + 1);
+-	WARN_ON_ONCE(rnp->ofl_seq & 0x1);
++	arch_spin_unlock(&rcu_state.ofl_lock);
++	local_irq_restore(seq_flags);
+ 
+ 	rdp->cpu_started = false;
+ }
+diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+index 305cf6aeb408..aff4cc9303fb 100644
+--- a/kernel/rcu/tree.h
++++ b/kernel/rcu/tree.h
+@@ -56,8 +56,6 @@ struct rcu_node {
+ 				/*  Initialized from ->qsmaskinitnext at the */
+ 				/*  beginning of each grace period. */
+ 	unsigned long qsmaskinitnext;
+-	unsigned long ofl_seq;	/* CPU-hotplug operation sequence count. */
+-				/* Online CPUs for next grace period. */
+ 	unsigned long expmask;	/* CPUs or groups that need to check in */
+ 				/*  to allow the current expedited GP */
+ 				/*  to complete. */
+@@ -358,7 +356,7 @@ struct rcu_state {
+ 	const char *name;			/* Name of structure. */
+ 	char abbr;				/* Abbreviated name. */
+ 
+-	raw_spinlock_t ofl_lock ____cacheline_internodealigned_in_smp;
++	arch_spinlock_t ofl_lock ____cacheline_internodealigned_in_smp;
+ 						/* Synchronize offline with */
+ 						/*  GP pre-initialization. */
+ };
 -- 
 2.31.1
 
