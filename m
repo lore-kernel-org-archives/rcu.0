@@ -2,52 +2,51 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B975EC433F5
-	for <rcu@archiver.kernel.org>; Thu,  9 Dec 2021 18:43:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BC037C433F5
+	for <rcu@archiver.kernel.org>; Thu,  9 Dec 2021 18:53:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229548AbhLISrZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 9 Dec 2021 13:47:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39896 "EHLO
+        id S229878AbhLIS4l (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 9 Dec 2021 13:56:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbhLISrZ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 9 Dec 2021 13:47:25 -0500
+        with ESMTP id S229838AbhLIS4l (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 9 Dec 2021 13:56:41 -0500
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DB17C061746;
-        Thu,  9 Dec 2021 10:43:51 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0178C061746;
+        Thu,  9 Dec 2021 10:53:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=MIME-Version:Content-Type:References:
         In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=4G3kmEjO1FSeu+BBXIYFvONCqu6PiAfYev3kCcCiBR4=; b=ySW6lxuhIFGTbZV5nCYgdOjV3s
-        OgPi/kNLAx+BrGJ5PWvM4tiO6W6QiqRCVJsU9KxY1a+WKjwW1L2KpyQIJIlJ1gJtWXrXGaR+UO9Z3
-        I/2r7Tx0tFinNPDlGbAoWjns3+RIcYI7tzdssXBPIll8q/wAUzulCDLQQzkankYIq9tN3BHWXN7gl
-        V16Yle3P9t5zrG+aOc7VYHzH6gqpMHOT4w1pRknCX1BXhpXsqKVGQeTr16zwllHyKpxBmg3hvHisv
-        nF7rOd8ZApTug4+OJgKDyL1nmW+fBFGl4vl4jAN3q/vpSCh7/zwatNKofzdAvQoTdDiIK7PN6uhni
-        rlX5FS5g==;
+        bh=BFrLxGUiIRqxUQhCc8N76rz+mSv72D196MLG7EzwFts=; b=DYoCDW2Axsi5f5VOwddO62QCv/
+        cQSSQLHpyw41XFgCDJORelDzCdpy3Q5e4pYHl3KH0HHmxI5N6CZBvAgSg7N7bvuoQICv7iYtShmrn
+        FiQJAh4AmW73FzW7NBisqLNNS4DWprUREhNHGNuBmdaXrz71f0nAEpjDIPfSkxnt+iRDIs8bfVM1+
+        AHp+8+sRRg+X7UKHb6cf8PccoSLSlbyIv/qxCmuCxaKM9hqN3OsbEDbdUJ3mwD/8rw1M73SB0Y09g
+        aNk3yqB8ZV4l86cP9Lxab3dtNwCiNfXhbVs5WJCBu3N70xzZy0JtBBn7EnPByRkJmhu9SIwpWp872
+        vNW3sM2Q==;
 Received: from 54-240-197-234.amazon.com ([54.240.197.234] helo=freeip.amazon.com)
         by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mvOOE-00HGI5-UW; Thu, 09 Dec 2021 18:43:35 +0000
-Message-ID: <3731b8da4dc46febc8adef331d6c97b21283428a.camel@infradead.org>
+        id 1mvOXK-00HHSv-GR; Thu, 09 Dec 2021 18:52:58 +0000
+Message-ID: <cfe8835fced30f09285004c6e92ece9c073d8948.camel@infradead.org>
 Subject: Re: [PATCH 02/11] rcu: Kill rnp->ofl_seq and use only
  rcu_state.ofl_lock for exclusion
 From:   David Woodhouse <dwmw2@infradead.org>
-To:     Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+To:     paulmck@kernel.org, Neeraj Upadhyay <quic_neeraju@quicinc.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
         "H. Peter Anvin" <hpa@zytor.com>,
         Paolo Bonzini <pbonzini@redhat.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
         linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
         rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
         hushiyuan@huawei.com, luolongjun@huawei.com, hejingxian@huawei.com
-Date:   Thu, 09 Dec 2021 18:43:30 +0000
-In-Reply-To: <dfa110f0-8fd0-0f37-2c37-89eccac1ad08@quicinc.com>
+Date:   Thu, 09 Dec 2021 18:52:54 +0000
+In-Reply-To: <20211209171835.GD641268@paulmck-ThinkPad-P17-Gen-1>
 References: <20211209150938.3518-1-dwmw2@infradead.org>
          <20211209150938.3518-3-dwmw2@infradead.org>
-         <dfa110f0-8fd0-0f37-2c37-89eccac1ad08@quicinc.com>
+         <20211209171835.GD641268@paulmck-ThinkPad-P17-Gen-1>
 Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
-        boundary="=-zjrVyy1PKK76w+1F/bJU"
+        boundary="=-wGaLQYKPyWhorAKKu7IV"
 User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
 X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
@@ -56,45 +55,73 @@ List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
 
---=-zjrVyy1PKK76w+1F/bJU
+--=-wGaLQYKPyWhorAKKu7IV
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2021-12-10 at 00:01 +0530, Neeraj Upadhyay wrote:
-> > @@ -4246,11 +4249,11 @@ void rcu_cpu_starting(unsigned int cpu)
-> >   =20
-> >        rnp =3D rdp->mynode;
-> >        mask =3D rdp->grpmask;
-> > -     WRITE_ONCE(rnp->ofl_seq, rnp->ofl_seq + 1);
-> > -     WARN_ON_ONCE(!(rnp->ofl_seq & 0x1));
-> > +     local_irq_save(seq_flags);
-> > +     arch_spin_lock(&rcu_state.ofl_lock);
-> >        rcu_dynticks_eqs_online();
-> >        smp_mb(); // Pair with rcu_gp_cleanup()'s ->ofl_seq barrier().
+On Thu, 2021-12-09 at 09:18 -0800, Paul E. McKenney wrote:
+> On Thu, Dec 09, 2021 at 03:09:29PM +0000, David Woodhouse wrote:
+> > From: David Woodhouse <
+> > dwmw@amazon.co.uk
+> > >
+> >=20
+> > If we allow architectures to bring APs online in parallel, then we end
+> > up requiring rcu_cpu_starting() to be reentrant. But currently, the
+> > manipulation of rnp->ofl_seq is not thread-safe.
+> >=20
+> > However, rnp->ofl_seq is also fairly much pointless anyway since both
+> > rcu_cpu_starting() and rcu_report_dead() hold rcu_state.ofl_lock for
+> > fairly much the whole time that rnp->ofl_seq is set to an odd number
+> > to indicate that an operation is in progress.
+> >=20
+> > So drop rnp->ofl_seq completely, and use only rcu_state.ofl_lock.
+> >=20
+> > This has a couple of minor complexities: lockdep will complain when we
+> > take rcu_state.ofl_lock, and currently accepts the 'excuse' of having
+> > an odd value in rnp->ofl_seq. So switch it to an arch_spinlock_t to
+> > avoid that false positive complaint. Since we're killing rnp->ofl_seq
+> > of course that 'excuse' has to be changed too, so make it check for
+> > arch_spin_is_locked(rcu_state.ofl_lock).
+> >=20
+> > There's no arch_spin_lock_irqsave() so we have to manually save and
+> > restore local interrupts around the locking.
+> >=20
+> > At Paul's request, make rcu_gp_init not just wait but *exclude* any
+> > CPU online/offline activity, which was fairly much true already by
+> > virtue of it holding rcu_state.ofl_lock.
 >=20
-> Can we drop this smp_mb(),as arch_spin_lock(&rcu_state.ofl_lock)=20
-> provides the ordering now?
-
-Yes, thanks.
-
-> > -     raw_spin_lock_irqsave_rcu_node(rnp, flags);
-> > +     raw_spin_lock_rcu_node(rnp);
-> >        WRITE_ONCE(rnp->qsmaskinitnext, rnp->qsmaskinitnext | mask);
-> >        newcpu =3D !(rnp->expmaskinitnext & mask);
-> >        rnp->expmaskinitnext |=3D mask;
-> > @@ -4269,9 +4272,8 @@ void rcu_cpu_starting(unsigned int cpu)
-> >        } else {
-> >                raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+> Looks good!
 >=20
-> 'flags' is uninitialized now?
+> Could you please also make the first clause read something like this?
+>=20
+> 	"At Paul's request based on Neeraj's analysis, ..."
+>=20
+> I am going to pull this into -rcu for more intensive testing of this
+> code for non-concurrent CPU-online operations (making the above change
+> to the commit log).  At some point, rcutorture needs to learn how to
+> do concurrent CPU-online operations, but it would be good to bake the
+> RCU-specific patches for a bit beforehand.
+>=20
+> Depending on timing, you might wish to send this patch with the
+> rest of this group, so:
+>=20
+> Acked-by: Paul E. McKenney <paulmck@kernel.org>
+>=20
+> If testing goes well and if you don't get it there first, I expect
+> to push this during the v5.18 merge window.
 
-Ah yes, that suffered from the fact that saving the flags is pointless
-because we know we already disabled interrupts... but
-rcu_report_qs_rnp() *really* wants to be given some flags to restore.
 
-Will fix that too; thanks again.
+Thanks.
 
---=-zjrVyy1PKK76w+1F/bJU
+I think the best option is probably to let all the cleanups and fixes
+get merged separately through whatever tree is most appropriate, and
+then we can just merge that final patch to actually *enable* parallel
+boot for x86 last of all.
+
+I'll address Neeraj's feedback and repost this one.
+
+
+--=-wGaLQYKPyWhorAKKu7IV
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Disposition: attachment; filename="smime.p7s"
 Content-Transfer-Encoding: base64
@@ -177,20 +204,20 @@ BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
 BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
 ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA4rtJSHkq7AnpxKUY8ZlYZjANBglghkgB
 ZQMEAgEFAKCCAe0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjEx
-MjA5MTg0MzMwWjAvBgkqhkiG9w0BCQQxIgQga7KgYIWS7Ss7dIhi78Qp+vhrQm45qh8P+eTgdEZV
-yrswgb4GCSsGAQQBgjcQBDGBsDCBrTCBlzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIg
+MjA5MTg1MjU0WjAvBgkqhkiG9w0BCQQxIgQg1X9gQVwgZaOETfY9LvGKISIABNAvtI4U4iKUyz+z
+P8Qwgb4GCSsGAQQBgjcQBDGBsDCBrTCBlzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIg
 TWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQx
 PTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1h
 aWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMIHABgsqhkiG9w0BCRACCzGBsKCBrTCBlzELMAkGA1UE
 BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
 A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
 bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMA0GCSqGSIb3
-DQEBAQUABIIBAK2JSfXsrd4UDc+YmSVg8nnF9O9Mli9OiiwecoXdtlevRWWeSr5DcN7YR+JUasjF
-bhUIwT+wwnJ915hXaSnK31aamRgn+SDILgip+hcxBXAH98VCho+gXmMeE6NhVVyy3/gbFpLR2rTF
-vHmCX/dfWOJflFieR9weYK2rJpx+SQn7EaDvdHYxAxQkGOcrZkiCCOEc2gecs37BaQkBprShT6IF
-9dtQDOym/ZwclxJ1ihb8DFlZTeK8U0S4csc0mCG8UQCSGKDvsC05SFtSUlDSVh4EeiCjl0USiGjO
-7CppSGbccWitd+9cBxjY+ykLCbLGrN+5bav/O60vDVO2QSt+KtMAAAAAAAA=
+DQEBAQUABIIBAK6c3EDVu3U33lgiuwX9jHsH9pOWnSuslQOYBltYy8MgdnGBKxUvTwDer/ZISKn+
+2XS+WIHUTrr5KDqdklHK3qx2jnx5EFlv/zUEhA8VU6BtJ2KAG4vqmh98/2uWzMNbllKTAQJZYm+t
+gwI6aYckIGXpboTa1D35sWuA3dGEClMp9CH9Li7TUruVmnukhSF6KslxlOipLhfbrisC4NEYfK8d
+1rJGFPQsd7+EoIvlN5YsiukHYrFf97d+2w25gBEX6aJXBVLg6EZAbVZkGUMxnSwf+owQhoR7imKV
+5d0rYxcWcaWSEj65ocIAzvWKgEUA7K6fVUw6j1cK6TqvUu+w2Q4AAAAAAAA=
 
 
---=-zjrVyy1PKK76w+1F/bJU--
+--=-wGaLQYKPyWhorAKKu7IV--
 
