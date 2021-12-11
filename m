@@ -2,33 +2,33 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF65EC433F5
-	for <rcu@archiver.kernel.org>; Sat, 11 Dec 2021 16:55:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D4AD3C433EF
+	for <rcu@archiver.kernel.org>; Sat, 11 Dec 2021 17:01:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231482AbhLKQzN (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 11 Dec 2021 11:55:13 -0500
-Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:19753 "EHLO
-        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230329AbhLKQzN (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Sat, 11 Dec 2021 11:55:13 -0500
+        id S231509AbhLKRBu (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 11 Dec 2021 12:01:50 -0500
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:6878 "EHLO
+        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230329AbhLKRBu (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Sat, 11 Dec 2021 12:01:50 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1639241713; x=1670777713;
+  t=1639242110; x=1670778110;
   h=from:to:cc:subject:date:message-id:mime-version;
-  bh=wchISsOEFSv6Ol6CYQ0EaOyLO0V1xkmknzcqVarbNVQ=;
-  b=NnClYQ/XDPYXCx/Aw3HUJk2Yg3GrPk2gfaXJFG8s3PUJGgFS4zDg64gG
-   eiAOuAc/FX1pYSrHHRLUr3FVZxBMrqRRo93dc6zVWRvkZI80JRqXlnnPA
-   x9G0k9sGlGIu4zLsu7WmEgszdUIHi9+gUmnzSY6cj0fVoCBlAm/U+ukQZ
-   k=;
-Received: from unknown (HELO ironmsg01-sd.qualcomm.com) ([10.53.140.141])
-  by alexa-out-sd-01.qualcomm.com with ESMTP; 11 Dec 2021 08:55:12 -0800
+  bh=kc4ChivxnKqTtqShprBba873IHUEimnTHtXQZYmU6UA=;
+  b=COR4TfFsAZMWS4ugmTZGGfvq+eYQVHoLY3u834cP21qWJT58zXs3FZKG
+   nS7ekQ9iMDouuPjRo1N9TmO3xOrgg+QkeeaoW69+PD1niRXOn3BFB0e7B
+   3+kJTR9QCsuN+2a4k6E3xAJjs61+WdCJhxWX8j3+tyECrs+nsGWZwRvtv
+   U=;
+Received: from unknown (HELO ironmsg05-sd.qualcomm.com) ([10.53.140.145])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 11 Dec 2021 09:01:50 -0800
 X-QCInternal: smtphost
 Received: from nasanex01b.na.qualcomm.com ([10.46.141.250])
-  by ironmsg01-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2021 08:55:12 -0800
+  by ironmsg05-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2021 09:01:49 -0800
 Received: from localhost (10.80.80.8) by nasanex01b.na.qualcomm.com
  (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.19; Sat, 11 Dec
- 2021 08:55:11 -0800
+ 2021 09:01:48 -0800
 From:   Neeraj Upadhyay <quic_neeraju@quicinc.com>
 To:     <paulmck@kernel.org>, <frederic@kernel.org>, <dwmw@amazon.co.uk>,
         <josh@joshtriplett.org>, <rostedt@goodmis.org>,
@@ -37,14 +37,14 @@ To:     <paulmck@kernel.org>, <frederic@kernel.org>, <dwmw@amazon.co.uk>,
 CC:     <rcu@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <urezki@gmail.com>, <boqun.feng@gmail.com>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>
-Subject: [PATCH] rcu/nocb: Handle concurrent nocb kthreads creation
-Date:   Sat, 11 Dec 2021 22:25:01 +0530
-Message-ID: <20211211165501.19395-1-quic_neeraju@quicinc.com>
+Subject: [PATCH v2] rcu/nocb: Handle concurrent nocb kthreads creation
+Date:   Sat, 11 Dec 2021 22:31:39 +0530
+Message-ID: <20211211170139.27711-1-quic_neeraju@quicinc.com>
 X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
  nasanex01b.na.qualcomm.com (10.46.141.250)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
@@ -57,9 +57,12 @@ provide mutual exclusion for the rcuog kthread creation code.
 
 Signed-off-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
 ---
+Change in v2:
+ Fix missing mutex_unlock in nocb gp kthread creation err path.
+
  kernel/rcu/tree.h      | 2 ++
- kernel/rcu/tree_nocb.h | 3 +++
- 2 files changed, 5 insertions(+)
+ kernel/rcu/tree_nocb.h | 7 ++++++-
+ 2 files changed, 8 insertions(+), 1 deletion(-)
 
 diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
 index 4b889081f4f4..9815b7844e58 100644
@@ -75,7 +78,7 @@ index 4b889081f4f4..9815b7844e58 100644
  	/* The following fields are used by call_rcu, hence own cacheline. */
  	raw_spinlock_t nocb_bypass_lock ____cacheline_internodealigned_in_smp;
 diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index eeafb546a7a0..4f67e7d026b6 100644
+index eeafb546a7a0..dd4753219dca 100644
 --- a/kernel/rcu/tree_nocb.h
 +++ b/kernel/rcu/tree_nocb.h
 @@ -1226,6 +1226,7 @@ static void __init rcu_boot_init_nocb_percpu_data(struct rcu_data *rdp)
@@ -86,7 +89,7 @@ index eeafb546a7a0..4f67e7d026b6 100644
  }
  
  /*
-@@ -1248,6 +1249,7 @@ static void rcu_spawn_cpu_nocb_kthread(int cpu)
+@@ -1248,13 +1249,17 @@ static void rcu_spawn_cpu_nocb_kthread(int cpu)
  
  	/* If we didn't spawn the GP kthread first, reorganize! */
  	rdp_gp = rdp->nocb_gp_rdp;
@@ -94,8 +97,11 @@ index eeafb546a7a0..4f67e7d026b6 100644
  	if (!rdp_gp->nocb_gp_kthread) {
  		t = kthread_run(rcu_nocb_gp_kthread, rdp_gp,
  				"rcuog/%d", rdp_gp->cpu);
-@@ -1255,6 +1257,7 @@ static void rcu_spawn_cpu_nocb_kthread(int cpu)
+-		if (WARN_ONCE(IS_ERR(t), "%s: Could not start rcuo GP kthread, OOM is now expected behavior\n", __func__))
++		if (WARN_ONCE(IS_ERR(t), "%s: Could not start rcuo GP kthread, OOM is now expected behavior\n", __func__)) {
++			mutex_unlock(&rdp_gp->nocb_gp_kthread_mutex);
  			return;
++		}
  		WRITE_ONCE(rdp_gp->nocb_gp_kthread, t);
  	}
 +	 mutex_unlock(&rdp_gp->nocb_gp_kthread_mutex);
