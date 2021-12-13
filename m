@@ -2,83 +2,75 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BFFC9C433EF
-	for <rcu@archiver.kernel.org>; Mon, 13 Dec 2021 11:35:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F2E0CC433F5
+	for <rcu@archiver.kernel.org>; Mon, 13 Dec 2021 13:06:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233076AbhLMLfB (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 13 Dec 2021 06:35:01 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:44104 "EHLO
+        id S230155AbhLMNGj (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 13 Dec 2021 08:06:39 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:57384 "EHLO
         ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232879AbhLMLfB (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 13 Dec 2021 06:35:01 -0500
+        with ESMTP id S231837AbhLMNGj (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 13 Dec 2021 08:06:39 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 00CE7B81071;
-        Mon, 13 Dec 2021 11:35:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23454C34604;
-        Mon, 13 Dec 2021 11:34:57 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id E5B19B80ED5;
+        Mon, 13 Dec 2021 13:06:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BA89C34601;
+        Mon, 13 Dec 2021 13:06:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1639395298;
-        bh=tF7vAmUoMebaQ7l7tabIPUqZ3TeZCV4ZMKEWEWCvULk=;
+        s=k20201202; t=1639400796;
+        bh=5DDNREbgZYf2Wb465q9DL6mzRWB+Z8LHhxEBmfk3qrk=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=g98NkDGLqnVqMw388Ak7V1i2xSv3di3+ZOct6RmffIsB2KRnWawnzRwU8slApd0Cl
-         JxWOJxn/PnpRI0dcXyeYa5cnqMsz/r5YoDQz8C0RHuVHQCMP9clcoTarkIRqVdm2Y/
-         x23LYlQb6nPO4Qkvs8zO2E2PeSHpJOH9iuBpOCq7potNaXGAuggJZ64Pk6dRibkKaW
-         jORqgByvfeIP4Pw3aq8GTFmlw0Qp+zzrdOJhZ1R65j+K0VjCdiZrMUGPY8/d9l6gdU
-         PZMq6Am5JuHK8yIhqZYTBa77g2nC4UFcLiNWqY3EFFjItTEEaUWhkFDXOruH6DOI3I
-         McDAcAoeJDl0w==
-Date:   Mon, 13 Dec 2021 12:34:55 +0100
+        b=SpMRuR5JGp88zDszictVmc1bG5OG3CEMB/w7h+X8vGUA7ZjqJy6ZMHSo3sYLCxomL
+         aP955FXE0g5iEXRHKjyB3+W2QMszHm14s6qstnxKCj1iqR5VS47Ta15MrivV72/JRy
+         GUmfh6nhgyHBqWhWUIsKaV0LyQnVGIrFHCIehvkZTJdH56pOiLLkOc5JL6Btjm99eZ
+         CyV5gYHBWuHnbewpcz0ZTbRgIVufLZqJsVKFY6XfaKJGoo6jaUXamIKwUvc/ZXOY/E
+         VHc8dczIB864pWVeUuF4YS4UhP94Brto0O9mqhNX0k/y5IXWdI2taWAfLzSpbegdGb
+         nwDT5hRpEl3Kw==
+Date:   Mon, 13 Dec 2021 14:06:33 +0100
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     Neeraj Upadhyay <quic_neeraju@quicinc.com>
-Cc:     paulmck@kernel.org, josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, urezki@gmail.com,
-        boqun.feng@gmail.com
-Subject: Re: [PATCH] rcu/exp: Fix check for idle context in rcu_exp_handler
-Message-ID: <20211213113455.GB782195@lothringen>
-References: <20211213061024.24285-1-quic_neeraju@quicinc.com>
+Cc:     paulmck@kernel.org, dwmw@amazon.co.uk, josh@joshtriplett.org,
+        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+        jiangshanlai@gmail.com, joel@joelfernandes.org,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        urezki@gmail.com, boqun.feng@gmail.com
+Subject: Re: [PATCH] rcu: Make rcu_state.n_online_cpus updates atomic
+Message-ID: <20211213130633.GC782195@lothringen>
+References: <20211213070059.6381-1-quic_neeraju@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211213061024.24285-1-quic_neeraju@quicinc.com>
+In-Reply-To: <20211213070059.6381-1-quic_neeraju@quicinc.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Dec 13, 2021 at 11:40:24AM +0530, Neeraj Upadhyay wrote:
-> For PREEMPT_RCU, the rcu_exp_handler() function checks
-> whether the current CPU is in idle, by calling
-> rcu_dynticks_curr_cpu_in_eqs(). However, rcu_exp_handler()
-> is called in IPI handler context. So, it should be checking
-> the idle context using rcu_is_cpu_rrupt_from_idle(). Fix this
-> by using rcu_is_cpu_rrupt_from_idle() instead of
-> rcu_dynticks_curr_cpu_in_eqs(). Non-preempt configuration
-> already uses the correct check.
+On Mon, Dec 13, 2021 at 12:30:59PM +0530, Neeraj Upadhyay wrote:
+> To support onlining multiple CPUs concurrently,
+> change rcu_state.n_online_cpus updates to be atomic.
+> Note, it's ok for rcu_blocking_is_gp() to do a
+> atomic_read(&rcu_state.n_online_cpus), as the
+> value of .n_online_cpus switches from 1->2, in
+> rcutree_prepare_cpu(), which runs before the new
+> CPU comes online. Similarly 2->1 transition happens
+> from rcutree_dead_cpu(), which executes after the
+> CPU is offlined, and runs on the last online CPU.
 > 
 > Signed-off-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
 
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+That's a step but I can imagine much more complications to handle while looking
+at rcutree_dead_cpu() VS rcutree_dead_cpu() (or other hotplug operations)
+inside the same rnp calling rcu_boost_kthread_setaffinity() concurrently
+or more generally rcu_boost_kthread_setaffinity() against concurrent onlining/offlining.
 
+This function fetches the online CPUs to decide the affinity of boosting.
+This can go quite wrong if CPUs can be concurrently onlined/offlined.
 
-> ---
->  kernel/rcu/tree_exp.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-> index 237a79989aba..1568c8ef185b 100644
-> --- a/kernel/rcu/tree_exp.h
-> +++ b/kernel/rcu/tree_exp.h
-> @@ -656,7 +656,7 @@ static void rcu_exp_handler(void *unused)
->  	 */
->  	if (!depth) {
->  		if (!(preempt_count() & (PREEMPT_MASK | SOFTIRQ_MASK)) ||
-> -		    rcu_dynticks_curr_cpu_in_eqs()) {
-> +		    rcu_is_cpu_rrupt_from_idle()) {
->  			rcu_report_exp_rdp(rdp);
->  		} else {
->  			WRITE_ONCE(rdp->cpu_no_qs.b.exp, true);
-> -- 
-> 2.17.1
-> 
+And I don't know how such problems are going to be solved in the future
+but some new CPU hotplug concurrency primitives will be needed...
+
+That's one more reason why I think it is a bit early to handle this wide problem...
+
+Thanks.
