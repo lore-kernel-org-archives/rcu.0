@@ -2,98 +2,94 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 875F9C433F5
-	for <rcu@archiver.kernel.org>; Mon, 13 Dec 2021 19:41:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DA185C433F5
+	for <rcu@archiver.kernel.org>; Mon, 13 Dec 2021 21:21:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242449AbhLMTlz (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 13 Dec 2021 14:41:55 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:36058 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242436AbhLMTly (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 13 Dec 2021 14:41:54 -0500
+        id S237262AbhLMVVM (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 13 Dec 2021 16:21:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52442 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236959AbhLMVVM (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 13 Dec 2021 16:21:12 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20E80C061574;
+        Mon, 13 Dec 2021 13:21:12 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 55FED611DA;
-        Mon, 13 Dec 2021 19:41:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA740C34602;
-        Mon, 13 Dec 2021 19:41:53 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B3FCD61200;
+        Mon, 13 Dec 2021 21:21:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA4ACC34600;
+        Mon, 13 Dec 2021 21:21:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1639424513;
-        bh=qW9T2rELRJWjZiDK05qYGlaZ7KW6KZTBlr8kXEFzOF8=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=L6GrtPu/82K+1q5q+iloPMWSevPfO/rE6Z/nmV/BSxv1Nchxsclgri48S3QB0SC0d
-         YSN06jvilRT/b3o/cRfcLJrmMdCc+ZwZL1FCyNAfrkDJRxX+wO+4jrauoHPC22aI/J
-         Kg/j8HU1or80fC7DJ5BbRfQ9mbmOrbufX9bGUSPD381TnunCebvyf+Up7ICBi9yOvP
-         rFIgNfRTUyUwsUefNaDnXxBmu9JmrZkNIOu82XE/8UGm/J42HSV72eOyX4F/0xQLW/
-         XoKi6LWgsyUPxK74YQlOqbEMgzZtX9ouelgAulFV2nCZSPsktXkGyKoaLLSawtroV+
-         05tW6uf4QBDcQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 5F9105C0B9E; Mon, 13 Dec 2021 11:41:53 -0800 (PST)
-Date:   Mon, 13 Dec 2021 11:41:53 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Neeraj Upadhyay <quic_neeraju@quicinc.com>
-Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, urezki@gmail.com,
-        frederic@kernel.org, boqun.feng@gmail.com
-Subject: Re: [PATCH] rcu: Remove unused rcu_state.boost
-Message-ID: <20211213194153.GS641268@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20211213070209.7464-1-quic_neeraju@quicinc.com>
+        s=k20201202; t=1639430471;
+        bh=GrHbSxqXx73VbcyZxEt/rRuHYXIzZgAk1CrFskaxZJk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gf2smHO+B8C93MQsZoZEQ10uLweZ/089cOtKwmYDiPN97H39PRNygyFYjwOQyfkRO
+         1ifYxB7z+5L5a8C1kt2zY2d+8yoG/yqTn0JCbjMgbhlJ0Sy/7/KeONadWGhMc/0ThH
+         mlaf3X0cyfiQB+qlISYX99hbcFc1a4/A5tkZstuNI4magOmrqLwPYJEXIMVrFSAk4v
+         qgx5DuLFPh2DHbOSq4qWVG7DHVSCm6FkJ0RnO8Ji43JRa/xZCiLf/K/3lSzCwfRhas
+         pSK9hlmGbPKcIYjU+6I9MEOAfxalEm+rMt0tuwhgoz/9xOUiAukRgDGIyzyYi07eCm
+         M1yGFxJyuH+1A==
+Date:   Mon, 13 Dec 2021 22:21:08 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     "Woodhouse, David" <dwmw@amazon.co.uk>,
+        "mathieu.desnoyers@efficios.com" <mathieu.desnoyers@efficios.com>,
+        "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>,
+        "jiangshanlai@gmail.com" <jiangshanlai@gmail.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "josh@joshtriplett.org" <josh@joshtriplett.org>,
+        "joel@joelfernandes.org" <joel@joelfernandes.org>,
+        "urezki@gmail.com" <urezki@gmail.com>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "boqun.feng@gmail.com" <boqun.feng@gmail.com>
+Subject: Re: [PATCH] rcu: Make rcu_state.n_online_cpus updates atomic
+Message-ID: <20211213212108.GA786870@lothringen>
+References: <20211213070059.6381-1-quic_neeraju@quicinc.com>
+ <471d6615f245168d4c6c96c7ac1ccabf56b75945.camel@amazon.co.uk>
+ <20211213193256.GR641268@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211213070209.7464-1-quic_neeraju@quicinc.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211213193256.GR641268@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Dec 13, 2021 at 12:32:09PM +0530, Neeraj Upadhyay wrote:
-> Signed-off-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
-
-Good eyes!  This has since been replaced by the ->can_boost field of
-the rcu_torture_ops structure.
-
-Queued for review and testing, thank you!
-
-							Thanx, Paul
-
-> ---
->  kernel/rcu/tree.h        | 5 ++---
->  kernel/rcu/tree_plugin.h | 2 --
->  2 files changed, 2 insertions(+), 5 deletions(-)
+On Mon, Dec 13, 2021 at 11:32:56AM -0800, Paul E. McKenney wrote:
+> On Mon, Dec 13, 2021 at 08:09:22AM +0000, Woodhouse, David wrote:
+> > On Mon, 2021-12-13 at 12:30 +0530, Neeraj Upadhyay wrote:
+> > > To support onlining multiple CPUs concurrently,
+> > > change rcu_state.n_online_cpus updates to be atomic.
+> > > Note, it's ok for rcu_blocking_is_gp() to do a
+> > > atomic_read(&rcu_state.n_online_cpus), as the
+> > > value of .n_online_cpus switches from 1->2, in
+> > > rcutree_prepare_cpu(), which runs before the new
+> > > CPU comes online. Similarly 2->1 transition happens
+> > > from rcutree_dead_cpu(), which executes after the
+> > > CPU is offlined, and runs on the last online CPU.
+> > > 
+> > > Signed-off-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+> > 
+> > In my parallel-bringup series, the prepare stages are still being
+> > executed in series on the BSP, so I don't think this patch is needed
+> > yet. I'm not sure we'd ever end up with the prepare stages being done
+> > in parallel — the most I see us doing is onlining a single *batch* of
+> > CPUs at a time, much like bringup_nonboot_cpus() does.
+> > 
+> > But this patch certainly doesn't *hurt*.
+> > 
+> > Acked-by: David Woodhouse <dwmw@amazon.co.uk>
 > 
-> diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-> index 4b889081f4f4..caea946700f3 100644
-> --- a/kernel/rcu/tree.h
-> +++ b/kernel/rcu/tree.h
-> @@ -303,9 +303,8 @@ struct rcu_state {
->  
->  	/* The following fields are guarded by the root rcu_node's lock. */
->  
-> -	u8	boost ____cacheline_internodealigned_in_smp;
-> -						/* Subject to priority boost. */
-> -	unsigned long gp_seq;			/* Grace-period sequence #. */
-> +	unsigned long gp_seq ____cacheline_internodealigned_in_smp;
-> +						/* Grace-period sequence #. */
->  	unsigned long gp_max;			/* Maximum GP duration in */
->  						/*  jiffies. */
->  	struct task_struct *gp_kthread;		/* Task for grace periods. */
-> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> index 1439cb3680eb..54ef0e8c8742 100644
-> --- a/kernel/rcu/tree_plugin.h
-> +++ b/kernel/rcu/tree_plugin.h
-> @@ -1174,8 +1174,6 @@ static void rcu_spawn_one_boost_kthread(struct rcu_node *rnp)
->  	if (rnp->boost_kthread_task || !rcu_scheduler_fully_active)
->  		goto out;
->  
-> -	rcu_state.boost = 1;
-> -
->  	t = kthread_create(rcu_boost_kthread, (void *)rnp,
->  			   "rcub/%d", rnp_index);
->  	if (WARN_ON_ONCE(IS_ERR(t)))
-> -- 
-> 2.17.1
+> Queued for further review and testing.
 > 
+> To Frederic's point, this won't go to mainline unless it is actually
+> needed, but it will at least be pulled into a branch in -rcu marked with
+> a tag for future reference.
+
+Ok, sounds reasonable then.
+
+Thanks!
