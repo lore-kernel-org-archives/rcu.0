@@ -2,91 +2,94 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B68AC433F5
-	for <rcu@archiver.kernel.org>; Mon, 13 Dec 2021 19:00:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 27685C433EF
+	for <rcu@archiver.kernel.org>; Mon, 13 Dec 2021 19:20:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240061AbhLMTAI (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 13 Dec 2021 14:00:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47984 "EHLO
+        id S238822AbhLMTUQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 13 Dec 2021 14:20:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232416AbhLMTAI (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 13 Dec 2021 14:00:08 -0500
+        with ESMTP id S238814AbhLMTUQ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 13 Dec 2021 14:20:16 -0500
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22B8DC061574;
-        Mon, 13 Dec 2021 11:00:08 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BA15C061574;
+        Mon, 13 Dec 2021 11:20:16 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id DF811B81255;
-        Mon, 13 Dec 2021 19:00:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A90AAC34600;
-        Mon, 13 Dec 2021 19:00:05 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 58BF0B812A9;
+        Mon, 13 Dec 2021 19:20:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BDA6C34602;
+        Mon, 13 Dec 2021 19:20:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1639422005;
-        bh=7r2b3zIykqzLviEJZiXs7snpV80iotoqxiNSSC/IIdQ=;
+        s=k20201202; t=1639423213;
+        bh=dVOQkoPSpvtHpQHWFwN+bzQdI2n0UetrZqTKARhnvJw=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=bhWWvKxJqH1GrV3KQJ4HIG943VnstdXGJUBUbcpftai8/XZtnux5qInMFxr9IKiPv
-         OP1Y2pbz0wSdlKpfH4I/Hr5aoiHUWO5Rix8Ri0TeEJSJKMCtmqnqFO5/z2PmA1R+u+
-         0APpNLLUuKxHfjCiUWPIyuaWMbQDZm+fyveadObECvWL6u4gC2sgjACdy7Q9wmfkC7
-         Inyb9witJxd4CLY79U4GeGPJls+Iqj1LJmUczy9+lBkHr6Hqj06sC0He1JYARESX26
-         BpSBo3mNQVQqOax1kcg6Q2/lKEMtk3AAqaXzz5G9ArditI9ef8Fu5EjasL9Cfz/35D
-         2WSZ95tgmJouQ==
+        b=KcYA8pr5SP80aeDn8a6cV0q2h+gJKeexOAmYyF0MiZTki1vM30gh7mWUuuEAdxxB+
+         a8wi9WMj8vySayN+ta1q4cr0cRZbnQ6OpWGgdJQiZ/7if1Nuy6VJKMhlbosz24AZCE
+         EvEzNDrtOKX0lFvYQED2eoOULa5ptXLjapfXlu8+ttZ94WaZALmKougseWNHPaQ2WI
+         ZTsaPJu54nKFrWntnV036bbdxv/OhTtf+6uj1LKE3olVU1nG0tOiqTC86+8U0TJ3ds
+         pptklgkj4Gd4GIaU95d1W6wo8NY9rVpejmjLKhTFA5HcuXOna1e37lEvMyqbr/BRk8
+         us+cKZ3tb/Ayw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 680BC5C0B9E; Mon, 13 Dec 2021 11:00:05 -0800 (PST)
-Date:   Mon, 13 Dec 2021 11:00:05 -0800
+        id EA0E35C0B9E; Mon, 13 Dec 2021 11:20:12 -0800 (PST)
+Date:   Mon, 13 Dec 2021 11:20:12 -0800
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     David Woodhouse <dwmw2@infradead.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, urezki@gmail.com,
-        boqun.feng@gmail.com
-Subject: Re: [PATCH v2] rcu/nocb: Handle concurrent nocb kthreads creation
-Message-ID: <20211213190005.GP641268@paulmck-ThinkPad-P17-Gen-1>
+Cc:     Neeraj Upadhyay <quic_neeraju@quicinc.com>, josh@joshtriplett.org,
+        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+        jiangshanlai@gmail.com, joel@joelfernandes.org,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        urezki@gmail.com, boqun.feng@gmail.com
+Subject: Re: [PATCH] rcu/exp: Fix check for idle context in rcu_exp_handler
+Message-ID: <20211213192012.GQ641268@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20211211170139.27711-1-quic_neeraju@quicinc.com>
- <6c184b9ffc5c641736d53bb7598f814d6b4c3fe0.camel@infradead.org>
- <601ecb12-ae2e-9608-7127-c2cddc8038a6@quicinc.com>
- <20211213112246.GA782195@lothringen>
- <984a63d4c11d04e2ee8a83fc9c61006413bf209e.camel@infradead.org>
- <20211213131407.GD782195@lothringen>
+References: <20211213061024.24285-1-quic_neeraju@quicinc.com>
+ <20211213113455.GB782195@lothringen>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211213131407.GD782195@lothringen>
+In-Reply-To: <20211213113455.GB782195@lothringen>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Dec 13, 2021 at 02:14:07PM +0100, Frederic Weisbecker wrote:
-> On Mon, Dec 13, 2021 at 11:28:45AM +0000, David Woodhouse wrote:
-> > On Mon, 2021-12-13 at 12:22 +0100, Frederic Weisbecker wrote:
-> > > I was about to ack the patch but, should we really add code that isn't going to
-> > > be necessary before a long while?
+On Mon, Dec 13, 2021 at 12:34:55PM +0100, Frederic Weisbecker wrote:
+> On Mon, Dec 13, 2021 at 11:40:24AM +0530, Neeraj Upadhyay wrote:
+> > For PREEMPT_RCU, the rcu_exp_handler() function checks
+> > whether the current CPU is in idle, by calling
+> > rcu_dynticks_curr_cpu_in_eqs(). However, rcu_exp_handler()
+> > is called in IPI handler context. So, it should be checking
+> > the idle context using rcu_is_cpu_rrupt_from_idle(). Fix this
+> > by using rcu_is_cpu_rrupt_from_idle() instead of
+> > rcu_dynticks_curr_cpu_in_eqs(). Non-preempt configuration
+> > already uses the correct check.
 > > 
-> > Yeah, I'm torn on that. In this case it's harmless enough and it makes
-> > the code reentrant in its own right instead of relying on the fact that
-> > the cpuhp code won't invoke it multiple times in parallel. So I think
-> > that's reasonable defensive programming.
+> > Signed-off-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
 > 
-> The thing is that RCU code is already quite complicated. Are we even at least
-> sure that we'll ever make CPU hotplug allow concurrent CPU onlining/offlining?
-> 
-> This will require much more thoughts and a new hotplug concurrency
-> infrastructure that we'll need to base RCU on. IMHO it's a bit early to handle
-> that on hotplug individual callbacks.
-> 
-> But anyway, let's see what Paul thinks about it...
+> Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 
-We need to at least think through parallelizing the various RCU
-CPU-hotplug notifiers.  For one thing, it might turn out to be necessary
-to parallelize those notifiers, perhaps on some non-x86 architecture or
-on some non-Amazon .config.  For another thing, doing so might suggest
-some simplifications, as has happened in my ongoing rcu_barrier() work.
-
-My thought is to pull in the patches and at the very least leave a
-tag recording them for later possible use.
+Queued for further review and testing, thank you both!
 
 							Thanx, Paul
+
+> > ---
+> >  kernel/rcu/tree_exp.h | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+> > index 237a79989aba..1568c8ef185b 100644
+> > --- a/kernel/rcu/tree_exp.h
+> > +++ b/kernel/rcu/tree_exp.h
+> > @@ -656,7 +656,7 @@ static void rcu_exp_handler(void *unused)
+> >  	 */
+> >  	if (!depth) {
+> >  		if (!(preempt_count() & (PREEMPT_MASK | SOFTIRQ_MASK)) ||
+> > -		    rcu_dynticks_curr_cpu_in_eqs()) {
+> > +		    rcu_is_cpu_rrupt_from_idle()) {
+> >  			rcu_report_exp_rdp(rdp);
+> >  		} else {
+> >  			WRITE_ONCE(rdp->cpu_no_qs.b.exp, true);
+> > -- 
+> > 2.17.1
+> > 
