@@ -2,88 +2,96 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D310C433EF
-	for <rcu@archiver.kernel.org>; Mon, 13 Dec 2021 07:02:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AE89C433EF
+	for <rcu@archiver.kernel.org>; Mon, 13 Dec 2021 08:09:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230467AbhLMHCQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 13 Dec 2021 02:02:16 -0500
-Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:29673 "EHLO
-        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230448AbhLMHCP (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Mon, 13 Dec 2021 02:02:15 -0500
+        id S231497AbhLMIJg (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 13 Dec 2021 03:09:36 -0500
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:26452 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229674AbhLMIJg (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 13 Dec 2021 03:09:36 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1639378935; x=1670914935;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=JaG/DFFZFJrBkI6fs+X0z1whBY96eJ6Ijc9JSXwC+PY=;
-  b=kjrhWofwZtiKkKKBuRHlBEGkgjaNRikhy+CILYkloYcvrJRT2/9q1217
-   GOLr7HwL1nj8CidEmcQrLtUIlxudVkmTf771RQjaWBg7PWUFEir1NNSK/
-   kammjPsb6LROGUJe/I5qKq6lmQ6aMXctoEHjINd8aCMqp78bcd46TYcrB
+  d=amazon.co.uk; i=@amazon.co.uk; q=dns/txt;
+  s=amazon201209; t=1639382977; x=1670918977;
+  h=from:to:cc:date:message-id:references:in-reply-to:
+   content-id:mime-version:content-transfer-encoding:subject;
+  bh=HEqR7xY/rPRkimxZEj9DB/Dz8QTd6cXAzU4HJhnSYM4=;
+  b=AzulLClo0LWLVUu5+jQCNIn6UGjPqMwjNkOEQhxgljdUIWtI/gkfiae9
+   ZbfV4Pk9/E8FPkueOsA7PZMLthqxCk9HmK4LWyjQeCLFnpctMcjtBcde+
+   rdK4t/QRCI/PbbVZ4UfkwHFb5oXRZPoCFds0xygOHkUWmLMUwVEQj/Uha
    A=;
-Received: from unknown (HELO ironmsg05-sd.qualcomm.com) ([10.53.140.145])
-  by alexa-out-sd-01.qualcomm.com with ESMTP; 12 Dec 2021 23:02:15 -0800
-X-QCInternal: smtphost
-Received: from nasanex01b.na.qualcomm.com ([10.46.141.250])
-  by ironmsg05-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2021 23:02:13 -0800
-Received: from localhost (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.19; Sun, 12 Dec
- 2021 23:02:12 -0800
-From:   Neeraj Upadhyay <quic_neeraju@quicinc.com>
-To:     <paulmck@kernel.org>, <josh@joshtriplett.org>,
-        <rostedt@goodmis.org>, <mathieu.desnoyers@efficios.com>,
-        <jiangshanlai@gmail.com>, <joel@joelfernandes.org>
-CC:     <rcu@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <urezki@gmail.com>, <frederic@kernel.org>, <boqun.feng@gmail.com>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>
-Subject: [PATCH] rcu: Remove unused rcu_state.boost
-Date:   Mon, 13 Dec 2021 12:32:09 +0530
-Message-ID: <20211213070209.7464-1-quic_neeraju@quicinc.com>
-X-Mailer: git-send-email 2.17.1
+X-IronPort-AV: E=Sophos;i="5.88,202,1635206400"; 
+   d="scan'208";a="161612729"
+Subject: Re: [PATCH] rcu: Make rcu_state.n_online_cpus updates atomic
+Thread-Topic: [PATCH] rcu: Make rcu_state.n_online_cpus updates atomic
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-iad-1e-98691110.us-east-1.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-6002.iad6.amazon.com with ESMTP; 13 Dec 2021 08:09:26 +0000
+Received: from EX13MTAUEE002.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-iad-1e-98691110.us-east-1.amazon.com (Postfix) with ESMTPS id 7101B81657;
+        Mon, 13 Dec 2021 08:09:23 +0000 (UTC)
+Received: from EX13D08UEE001.ant.amazon.com (10.43.62.126) by
+ EX13MTAUEE002.ant.amazon.com (10.43.62.24) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.26; Mon, 13 Dec 2021 08:09:23 +0000
+Received: from EX13D08UEE001.ant.amazon.com (10.43.62.126) by
+ EX13D08UEE001.ant.amazon.com (10.43.62.126) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.26; Mon, 13 Dec 2021 08:09:23 +0000
+Received: from EX13D08UEE001.ant.amazon.com ([10.43.62.126]) by
+ EX13D08UEE001.ant.amazon.com ([10.43.62.126]) with mapi id 15.00.1497.026;
+ Mon, 13 Dec 2021 08:09:22 +0000
+From:   "Woodhouse, David" <dwmw@amazon.co.uk>
+To:     "mathieu.desnoyers@efficios.com" <mathieu.desnoyers@efficios.com>,
+        "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>,
+        "paulmck@kernel.org" <paulmck@kernel.org>,
+        "jiangshanlai@gmail.com" <jiangshanlai@gmail.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "josh@joshtriplett.org" <josh@joshtriplett.org>,
+        "joel@joelfernandes.org" <joel@joelfernandes.org>
+CC:     "urezki@gmail.com" <urezki@gmail.com>,
+        "frederic@kernel.org" <frederic@kernel.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "boqun.feng@gmail.com" <boqun.feng@gmail.com>
+Thread-Index: AQHX7+9Fj7dj9oU08EGA6BJE2KIvlawwEZiA
+Date:   Mon, 13 Dec 2021 08:09:22 +0000
+Message-ID: <471d6615f245168d4c6c96c7ac1ccabf56b75945.camel@amazon.co.uk>
+References: <20211213070059.6381-1-quic_neeraju@quicinc.com>
+In-Reply-To: <20211213070059.6381-1-quic_neeraju@quicinc.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.43.61.68]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <643E4E5EC7C22449905E6B939C753E81@amazon.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Signed-off-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
----
- kernel/rcu/tree.h        | 5 ++---
- kernel/rcu/tree_plugin.h | 2 --
- 2 files changed, 2 insertions(+), 5 deletions(-)
-
-diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index 4b889081f4f4..caea946700f3 100644
---- a/kernel/rcu/tree.h
-+++ b/kernel/rcu/tree.h
-@@ -303,9 +303,8 @@ struct rcu_state {
- 
- 	/* The following fields are guarded by the root rcu_node's lock. */
- 
--	u8	boost ____cacheline_internodealigned_in_smp;
--						/* Subject to priority boost. */
--	unsigned long gp_seq;			/* Grace-period sequence #. */
-+	unsigned long gp_seq ____cacheline_internodealigned_in_smp;
-+						/* Grace-period sequence #. */
- 	unsigned long gp_max;			/* Maximum GP duration in */
- 						/*  jiffies. */
- 	struct task_struct *gp_kthread;		/* Task for grace periods. */
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 1439cb3680eb..54ef0e8c8742 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -1174,8 +1174,6 @@ static void rcu_spawn_one_boost_kthread(struct rcu_node *rnp)
- 	if (rnp->boost_kthread_task || !rcu_scheduler_fully_active)
- 		goto out;
- 
--	rcu_state.boost = 1;
--
- 	t = kthread_create(rcu_boost_kthread, (void *)rnp,
- 			   "rcub/%d", rnp_index);
- 	if (WARN_ON_ONCE(IS_ERR(t)))
--- 
-2.17.1
+T24gTW9uLCAyMDIxLTEyLTEzIGF0IDEyOjMwICswNTMwLCBOZWVyYWogVXBhZGh5YXkgd3JvdGU6
+DQo+IFRvIHN1cHBvcnQgb25saW5pbmcgbXVsdGlwbGUgQ1BVcyBjb25jdXJyZW50bHksDQo+IGNo
+YW5nZSByY3Vfc3RhdGUubl9vbmxpbmVfY3B1cyB1cGRhdGVzIHRvIGJlIGF0b21pYy4NCj4gTm90
+ZSwgaXQncyBvayBmb3IgcmN1X2Jsb2NraW5nX2lzX2dwKCkgdG8gZG8gYQ0KPiBhdG9taWNfcmVh
+ZCgmcmN1X3N0YXRlLm5fb25saW5lX2NwdXMpLCBhcyB0aGUNCj4gdmFsdWUgb2YgLm5fb25saW5l
+X2NwdXMgc3dpdGNoZXMgZnJvbSAxLT4yLCBpbg0KPiByY3V0cmVlX3ByZXBhcmVfY3B1KCksIHdo
+aWNoIHJ1bnMgYmVmb3JlIHRoZSBuZXcNCj4gQ1BVIGNvbWVzIG9ubGluZS4gU2ltaWxhcmx5IDIt
+PjEgdHJhbnNpdGlvbiBoYXBwZW5zDQo+IGZyb20gcmN1dHJlZV9kZWFkX2NwdSgpLCB3aGljaCBl
+eGVjdXRlcyBhZnRlciB0aGUNCj4gQ1BVIGlzIG9mZmxpbmVkLCBhbmQgcnVucyBvbiB0aGUgbGFz
+dCBvbmxpbmUgQ1BVLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogTmVlcmFqIFVwYWRoeWF5IDxxdWlj
+X25lZXJhanVAcXVpY2luYy5jb20+DQoNCkluIG15IHBhcmFsbGVsLWJyaW5ndXAgc2VyaWVzLCB0
+aGUgcHJlcGFyZSBzdGFnZXMgYXJlIHN0aWxsIGJlaW5nDQpleGVjdXRlZCBpbiBzZXJpZXMgb24g
+dGhlIEJTUCwgc28gSSBkb24ndCB0aGluayB0aGlzIHBhdGNoIGlzIG5lZWRlZA0KeWV0LiBJJ20g
+bm90IHN1cmUgd2UnZCBldmVyIGVuZCB1cCB3aXRoIHRoZSBwcmVwYXJlIHN0YWdlcyBiZWluZyBk
+b25lDQppbiBwYXJhbGxlbCDigJQgdGhlIG1vc3QgSSBzZWUgdXMgZG9pbmcgaXMgb25saW5pbmcg
+YSBzaW5nbGUgKmJhdGNoKiBvZg0KQ1BVcyBhdCBhIHRpbWUsIG11Y2ggbGlrZSBicmluZ3VwX25v
+bmJvb3RfY3B1cygpIGRvZXMuDQoNCkJ1dCB0aGlzIHBhdGNoIGNlcnRhaW5seSBkb2Vzbid0ICpo
+dXJ0Ki4NCg0KQWNrZWQtYnk6IERhdmlkIFdvb2Rob3VzZSA8ZHdtd0BhbWF6b24uY28udWs+DQoN
+Cg0KCgoKQW1hem9uIERldmVsb3BtZW50IENlbnRyZSAoTG9uZG9uKSBMdGQuIFJlZ2lzdGVyZWQg
+aW4gRW5nbGFuZCBhbmQgV2FsZXMgd2l0aCByZWdpc3RyYXRpb24gbnVtYmVyIDA0NTQzMjMyIHdp
+dGggaXRzIHJlZ2lzdGVyZWQgb2ZmaWNlIGF0IDEgUHJpbmNpcGFsIFBsYWNlLCBXb3JzaGlwIFN0
+cmVldCwgTG9uZG9uIEVDMkEgMkZBLCBVbml0ZWQgS2luZ2RvbS4KCgo=
 
