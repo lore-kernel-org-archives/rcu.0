@@ -2,75 +2,75 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F2E0CC433F5
-	for <rcu@archiver.kernel.org>; Mon, 13 Dec 2021 13:06:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 82145C433F5
+	for <rcu@archiver.kernel.org>; Mon, 13 Dec 2021 13:14:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230155AbhLMNGj (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 13 Dec 2021 08:06:39 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:57384 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231837AbhLMNGj (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 13 Dec 2021 08:06:39 -0500
+        id S232266AbhLMNOO (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 13 Dec 2021 08:14:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49930 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235545AbhLMNON (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 13 Dec 2021 08:14:13 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 563F3C061574;
+        Mon, 13 Dec 2021 05:14:13 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id E5B19B80ED5;
-        Mon, 13 Dec 2021 13:06:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BA89C34601;
-        Mon, 13 Dec 2021 13:06:35 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id D075FB80EC5;
+        Mon, 13 Dec 2021 13:14:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F7A3C34601;
+        Mon, 13 Dec 2021 13:14:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1639400796;
-        bh=5DDNREbgZYf2Wb465q9DL6mzRWB+Z8LHhxEBmfk3qrk=;
+        s=k20201202; t=1639401250;
+        bh=OVweQvmZKFfqAuaSOIp2hmI5/sL+o0R2iimYcXG2TOk=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SpMRuR5JGp88zDszictVmc1bG5OG3CEMB/w7h+X8vGUA7ZjqJy6ZMHSo3sYLCxomL
-         aP955FXE0g5iEXRHKjyB3+W2QMszHm14s6qstnxKCj1iqR5VS47Ta15MrivV72/JRy
-         GUmfh6nhgyHBqWhWUIsKaV0LyQnVGIrFHCIehvkZTJdH56pOiLLkOc5JL6Btjm99eZ
-         CyV5gYHBWuHnbewpcz0ZTbRgIVufLZqJsVKFY6XfaKJGoo6jaUXamIKwUvc/ZXOY/E
-         VHc8dczIB864pWVeUuF4YS4UhP94Brto0O9mqhNX0k/y5IXWdI2taWAfLzSpbegdGb
-         nwDT5hRpEl3Kw==
-Date:   Mon, 13 Dec 2021 14:06:33 +0100
+        b=KcdygRrC0K9Su4AuW6zbwv4KhXvBB09wTuw2FiPKaeiNSwf3s8Yfp4euDDDVbGim9
+         439RCSaUUCm/wWLZm9saJ1LMNSuTXzOKXJ7vUgXUkGv/C+pyBZdop4IW1SqGhOF4RG
+         VlFXeiT90lWsHNcWIVAHzllD43apcJOTy0N/1HnvpndnhMoRUUQcXt2r9Aswd8LtdL
+         3xQZkZLcEKKpifZWyFou7uKcWba12h4tUC9bpWtuHOO9r/WbSSyfmL9P98zCV7jpTV
+         Nkat7lfm9lafE9GLfOT1qcdsy7XIcV6KOm9Fp2pTuc+YJjsU66JK1VYTz+OYYedzP+
+         yA4sXXLNbSo4g==
+Date:   Mon, 13 Dec 2021 14:14:07 +0100
 From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Neeraj Upadhyay <quic_neeraju@quicinc.com>
-Cc:     paulmck@kernel.org, dwmw@amazon.co.uk, josh@joshtriplett.org,
-        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
-        jiangshanlai@gmail.com, joel@joelfernandes.org,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        urezki@gmail.com, boqun.feng@gmail.com
-Subject: Re: [PATCH] rcu: Make rcu_state.n_online_cpus updates atomic
-Message-ID: <20211213130633.GC782195@lothringen>
-References: <20211213070059.6381-1-quic_neeraju@quicinc.com>
+To:     David Woodhouse <dwmw2@infradead.org>
+Cc:     Neeraj Upadhyay <quic_neeraju@quicinc.com>, paulmck@kernel.org,
+        josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, urezki@gmail.com,
+        boqun.feng@gmail.com
+Subject: Re: [PATCH v2] rcu/nocb: Handle concurrent nocb kthreads creation
+Message-ID: <20211213131407.GD782195@lothringen>
+References: <20211211170139.27711-1-quic_neeraju@quicinc.com>
+ <6c184b9ffc5c641736d53bb7598f814d6b4c3fe0.camel@infradead.org>
+ <601ecb12-ae2e-9608-7127-c2cddc8038a6@quicinc.com>
+ <20211213112246.GA782195@lothringen>
+ <984a63d4c11d04e2ee8a83fc9c61006413bf209e.camel@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211213070059.6381-1-quic_neeraju@quicinc.com>
+In-Reply-To: <984a63d4c11d04e2ee8a83fc9c61006413bf209e.camel@infradead.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Dec 13, 2021 at 12:30:59PM +0530, Neeraj Upadhyay wrote:
-> To support onlining multiple CPUs concurrently,
-> change rcu_state.n_online_cpus updates to be atomic.
-> Note, it's ok for rcu_blocking_is_gp() to do a
-> atomic_read(&rcu_state.n_online_cpus), as the
-> value of .n_online_cpus switches from 1->2, in
-> rcutree_prepare_cpu(), which runs before the new
-> CPU comes online. Similarly 2->1 transition happens
-> from rcutree_dead_cpu(), which executes after the
-> CPU is offlined, and runs on the last online CPU.
+On Mon, Dec 13, 2021 at 11:28:45AM +0000, David Woodhouse wrote:
+> On Mon, 2021-12-13 at 12:22 +0100, Frederic Weisbecker wrote:
+> > I was about to ack the patch but, should we really add code that isn't going to
+> > be necessary before a long while?
 > 
-> Signed-off-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+> Yeah, I'm torn on that. In this case it's harmless enough and it makes
+> the code reentrant in its own right instead of relying on the fact that
+> the cpuhp code won't invoke it multiple times in parallel. So I think
+> that's reasonable defensive programming.
+> 
 
-That's a step but I can imagine much more complications to handle while looking
-at rcutree_dead_cpu() VS rcutree_dead_cpu() (or other hotplug operations)
-inside the same rnp calling rcu_boost_kthread_setaffinity() concurrently
-or more generally rcu_boost_kthread_setaffinity() against concurrent onlining/offlining.
+The thing is that RCU code is already quite complicated. Are we even at least
+sure that we'll ever make CPU hotplug allow concurrent CPU onlining/offlining?
 
-This function fetches the online CPUs to decide the affinity of boosting.
-This can go quite wrong if CPUs can be concurrently onlined/offlined.
+This will require much more thoughts and a new hotplug concurrency
+infrastructure that we'll need to base RCU on. IMHO it's a bit early to handle
+that on hotplug individual callbacks.
 
-And I don't know how such problems are going to be solved in the future
-but some new CPU hotplug concurrency primitives will be needed...
-
-That's one more reason why I think it is a bit early to handle this wide problem...
-
-Thanks.
+But anyway, let's see what Paul thinks about it...
