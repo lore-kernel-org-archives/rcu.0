@@ -2,33 +2,33 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EA3B4C433F5
-	for <rcu@archiver.kernel.org>; Tue, 14 Dec 2021 12:33:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 99CEEC433F5
+	for <rcu@archiver.kernel.org>; Tue, 14 Dec 2021 12:33:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231495AbhLNMdN (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 14 Dec 2021 07:33:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33658 "EHLO
+        id S229622AbhLNMdP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 14 Dec 2021 07:33:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229622AbhLNMdM (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 14 Dec 2021 07:33:12 -0500
+        with ESMTP id S231874AbhLNMdN (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 14 Dec 2021 07:33:13 -0500
 Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BAC1C061574;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9D34C061574;
         Tue, 14 Dec 2021 04:33:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding:
         Content-Type:MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:
         To:From:Reply-To:Content-ID:Content-Description;
-        bh=lhHn2kiA8oUwFBYVA6aNjog75ME7409J8cIOPHIQIpI=; b=Q38ECZBp5a84p4TK7jdd8sUYfJ
-        wLTD4zD6vc038/RMSCFk+Wc5x9gqbrrvTZAEHU751F82BVEL5E9/2x7wEO2vr19ZKJnFXgfGLqNwQ
-        UMbrSZgpf2JbYU8jJhIogDy3FsGcekHYBBV34Q8fl4ulL2/B0ygMODR6+0jo8pX5Kz/2UtXbDHGzN
-        4kzVG/3zXVA97QRUeDI4drPmtokp9RTgHCv+A3oaYpRLzKWPLFyV87Ph9uBQT7LE3V2E2ic/2MyKf
-        qBFvbBjv04bw3ul8Zwdelks20StgAfqicPO4MQXuGvBR0egl3QzZmeC1apm20oTUltOYF0Nm8mQEc
-        RkWiVc3g==;
+        bh=Tc77RILQLKEcS45J/6Ljdmr/xCkfDC7wsVb7jXcmkrE=; b=cPfKU14VOngDWTmvO86XchHKaN
+        HtdNnRrH4rQjyhFJU+Pck1CGPAgLMMDgpx9lc3BHYOJ0Mj5ot0y2JkayUJP4DG+gZz5mDjWlQkOhk
+        N3fwinyKWzjJSwBHPgump325+QMp5xkeW1C5pFN82Nd//7AYpF3c9QAjt5BWLJcF98dq8Iu0ZQWZg
+        ObO7VpsCCnei+QTsj3DLQWLLKJxzb1U8fXYVorQ2qzjBVuo7hx/iTS1xOKZZh7JaQbotDQ/18NZgJ
+        O5gn/fF6RJuTZcCGnEDGJetxT2iJnq9rHdpnY2y1liOzyjeM1EVf6pwamMtMp9Kf/ubWJG0bzhR6v
+        ygF/nj5Q==;
 Received: from i7.infradead.org ([2001:8b0:10b:1:21e:67ff:fecb:7a92])
         by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mx6zF-001JJQ-99; Tue, 14 Dec 2021 12:32:53 +0000
+        id 1mx6zE-001JJL-Uw; Tue, 14 Dec 2021 12:32:53 +0000
 Received: from dwoodhou by i7.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mx6zE-000N6n-UQ; Tue, 14 Dec 2021 12:32:52 +0000
+        id 1mx6zE-000N6X-JD; Tue, 14 Dec 2021 12:32:52 +0000
 From:   David Woodhouse <dwmw2@infradead.org>
 To:     Thomas Gleixner <tglx@linutronix.de>
 Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
@@ -39,9 +39,9 @@ Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
         rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
         hushiyuan@huawei.com, luolongjun@huawei.com, hejingxian@huawei.com
-Subject: [PATCH v2 7/7] x86/smpboot: Send INIT/SIPI/SIPI to secondary CPUs in parallel
-Date:   Tue, 14 Dec 2021 12:32:50 +0000
-Message-Id: <20211214123250.88230-8-dwmw2@infradead.org>
+Subject: [PATCH v2 3/7] cpu/hotplug: Add dynamic parallel bringup states before CPUHP_BRINGUP_CPU
+Date:   Tue, 14 Dec 2021 12:32:46 +0000
+Message-Id: <20211214123250.88230-4-dwmw2@infradead.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211214123250.88230-1-dwmw2@infradead.org>
 References: <20211214123250.88230-1-dwmw2@infradead.org>
@@ -56,118 +56,112 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: David Woodhouse <dwmw@amazon.co.uk>
 
-When the APs can find their own APIC ID without assistance, we can do
-the AP bringup in parallel.
+If the platform registers these states, bring all CPUs to each registered
+state in turn, before the final bringup to CPUHP_BRINGUP_CPU. This allows
+the architecture to parallelise the slow asynchronous tasks like sending
+INIT/SIPI and waiting for the AP to come to life.
 
-Register a CPUHP_BP_PARALLEL_DYN stage "x86/cpu:kick" which just calls
-do_boot_cpu() to deliver INIT/SIPI/SIPI to each AP in turn before the
-normal native_cpu_up() does the rest of the hand-holding.
+There is a subtlety here: even with an empty CPUHP_BP_PARALLEL_DYN step,
+this means that *all* CPUs are brought through the prepare states and to
+CPUHP_BP_PREPARE_DYN before any of them are taken to CPUHP_BRINGUP_CPU
+and then are allowed to run for themselves to CPUHP_ONLINE.
 
-The APs will then take turns through the real mode code (which has its
-own bitlock for exclusion) until they make it to their own stack, then
-proceed through the first few lines of start_secondary() and execute
-these parts in parallel:
+So any combination of prepare/start calls which depend on A-B ordering
+for each CPU in turn, such as the X2APIC code which used to allocate a
+cluster mask 'just in case' and store it in a global variable in the
+prep stage, then potentially consume that preallocated structure from
+the AP and set the global pointer to NULL to be reallocated in
+CPUHP_X2APIC_PREPARE for the next CPU... would explode horribly.
 
- start_secondary()
-    -> cr4_init()
-    -> (some 32-bit only stuff so not in the parallel cases)
-    -> cpu_init_secondary()
-       -> cpu_init_exception_handling()
-       -> cpu_init()
-          -> wait_for_master_cpu()
+We believe that X2APIC was the only such case, for x86. But this is why
+it remains an architecture opt-in. For now.
 
-At this point they wait for the BSP to set their bit in cpu_callout_mask
-(from do_wait_cpu_initialized()), and release them to continue through
-the rest of cpu_init() and beyond.
-
-This reduces the time taken for bringup on my 28-thread Haswell system
-from about 120ms to 80ms. On a socket 96-thread Skylake it takes the
-bringup time from 500ms to 100ms.
-
-There is more speedup to be had by doing the remaining parts in parallel
-too — especially notify_cpu_starting() in which the AP takes itself
-through all the stages from CPUHP_BRINGUP_CPU to CPUHP_ONLINE. But those
-require careful auditing to ensure they are reentrant, before we can go
-that far.
+Note that the new parallel stages do *not* yet bring each AP to the
+CPUHP_BRINGUP_CPU state. The final loop in bringup_nonboot_cpus() is
+untouched, bringing each AP in turn from the final PARALLEL_DYN state
+(or all the way from CPUHP_OFFLINE) to CPUHP_BRINGUP_CPU and then
+waiting for that AP to do its own processing and reach CPUHP_ONLINE
+before releasing the next. Parallelising that part by bringing them all
+to CPUHP_BRINGUP_CPU and then waiting for them all is an exercise for
+the future.
 
 Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
 ---
- arch/x86/kernel/smpboot.c | 37 ++++++++++++++++++++++++++++++++++---
- 1 file changed, 34 insertions(+), 3 deletions(-)
+ include/linux/cpuhotplug.h |  2 ++
+ kernel/cpu.c               | 27 +++++++++++++++++++++++++--
+ 2 files changed, 27 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index 1e38d44c3603..d194116305a7 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -57,6 +57,7 @@
- #include <linux/pgtable.h>
- #include <linux/overflow.h>
- #include <linux/syscore_ops.h>
-+#include <linux/smpboot.h>
+diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
+index 773c83730906..45c327538321 100644
+--- a/include/linux/cpuhotplug.h
++++ b/include/linux/cpuhotplug.h
+@@ -131,6 +131,8 @@ enum cpuhp_state {
+ 	CPUHP_MIPS_SOC_PREPARE,
+ 	CPUHP_BP_PREPARE_DYN,
+ 	CPUHP_BP_PREPARE_DYN_END		= CPUHP_BP_PREPARE_DYN + 20,
++	CPUHP_BP_PARALLEL_DYN,
++	CPUHP_BP_PARALLEL_DYN_END		= CPUHP_BP_PARALLEL_DYN + 4,
+ 	CPUHP_BRINGUP_CPU,
  
- #include <asm/acpi.h>
- #include <asm/desc.h>
-@@ -1309,13 +1310,26 @@ int do_cpu_up(unsigned int cpu, struct task_struct *tidle)
- 	return ret;
- }
- 
-+static bool do_parallel_bringup = true;
-+
-+static int __init no_parallel_bringup(char *str)
-+{
-+	do_parallel_bringup = false;
-+
-+	return 0;
-+}
-+early_param("no_parallel_bringup", no_parallel_bringup);
-+
- int native_cpu_up(unsigned int cpu, struct task_struct *tidle)
+ 	/*
+diff --git a/kernel/cpu.c b/kernel/cpu.c
+index 192e43a87407..1a46eb57d8f7 100644
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -1462,6 +1462,24 @@ int bringup_hibernate_cpu(unsigned int sleep_cpu)
+ void bringup_nonboot_cpus(unsigned int setup_max_cpus)
  {
- 	int ret;
- 
--	ret = do_cpu_up(cpu, tidle);
--	if (ret)
--		return ret;
-+	/* If parallel AP bringup isn't enabled, perform the first steps now. */
-+	if (!do_parallel_bringup) {
-+		ret = do_cpu_up(cpu, tidle);
-+		if (ret)
-+			return ret;
+ 	unsigned int cpu;
++	int n = setup_max_cpus - num_online_cpus();
++
++	/* ∀ parallel pre-bringup state, bring N CPUs to it */
++	if (n > 0) {
++		enum cpuhp_state st = CPUHP_BP_PARALLEL_DYN;
++
++		while (st <= CPUHP_BP_PARALLEL_DYN_END &&
++		       cpuhp_hp_states[st].name) {
++			int i = n;
++
++			for_each_present_cpu(cpu) {
++				cpu_up(cpu, st);
++				if (!--i)
++					break;
++			}
++			st++;
++		}
 +	}
  
- 	ret = do_wait_cpu_initialized(cpu);
- 	if (ret)
-@@ -1337,6 +1351,12 @@ int native_cpu_up(unsigned int cpu, struct task_struct *tidle)
- 	return ret;
- }
- 
-+/* Bringup step one: Send INIT/SIPI to the target AP */
-+static int native_cpu_kick(unsigned int cpu)
-+{
-+	return do_cpu_up(cpu, idle_thread_get(cpu));
-+}
-+
- /**
-  * arch_disable_smp_support() - disables SMP support for x86 at runtime
-  */
-@@ -1515,6 +1535,17 @@ void __init native_smp_prepare_cpus(unsigned int max_cpus)
- 	smp_quirk_init_udelay();
- 
- 	speculative_store_bypass_ht_init();
-+
-+	/*
-+	 * We can do 64-bit AP bringup in parallel if the CPU reports its
-+	 * APIC ID in CPUID leaf 0x0B. Otherwise it's too hard.
-+	 */
-+	if (IS_ENABLED(CONFIG_X86_32) || boot_cpu_data.cpuid_level < 0x0B)
-+		do_parallel_bringup = false;
-+
-+	if (do_parallel_bringup)
-+		cpuhp_setup_state_nocalls(CPUHP_BP_PARALLEL_DYN, "x86/cpu:kick",
-+					  native_cpu_kick, NULL);
- }
- 
- void arch_thaw_secondary_cpus_begin(void)
+ 	for_each_present_cpu(cpu) {
+ 		if (num_online_cpus() >= setup_max_cpus)
+@@ -1829,6 +1847,10 @@ static int cpuhp_reserve_state(enum cpuhp_state state)
+ 		step = cpuhp_hp_states + CPUHP_BP_PREPARE_DYN;
+ 		end = CPUHP_BP_PREPARE_DYN_END;
+ 		break;
++	case CPUHP_BP_PARALLEL_DYN:
++		step = cpuhp_hp_states + CPUHP_BP_PARALLEL_DYN;
++		end = CPUHP_BP_PARALLEL_DYN_END;
++		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
+@@ -1853,14 +1875,15 @@ static int cpuhp_store_callbacks(enum cpuhp_state state, const char *name,
+ 	/*
+ 	 * If name is NULL, then the state gets removed.
+ 	 *
+-	 * CPUHP_AP_ONLINE_DYN and CPUHP_BP_PREPARE_DYN are handed out on
++	 * CPUHP_AP_ONLINE_DYN and CPUHP_BP_P*_DYN are handed out on
+ 	 * the first allocation from these dynamic ranges, so the removal
+ 	 * would trigger a new allocation and clear the wrong (already
+ 	 * empty) state, leaving the callbacks of the to be cleared state
+ 	 * dangling, which causes wreckage on the next hotplug operation.
+ 	 */
+ 	if (name && (state == CPUHP_AP_ONLINE_DYN ||
+-		     state == CPUHP_BP_PREPARE_DYN)) {
++		     state == CPUHP_BP_PREPARE_DYN ||
++		     state == CPUHP_BP_PARALLEL_DYN)) {
+ 		ret = cpuhp_reserve_state(state);
+ 		if (ret < 0)
+ 			return ret;
 -- 
 2.31.1
 
