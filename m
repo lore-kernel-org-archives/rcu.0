@@ -2,56 +2,56 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4144EC433FE
-	for <rcu@archiver.kernel.org>; Wed, 15 Dec 2021 19:42:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 28B81C433F5
+	for <rcu@archiver.kernel.org>; Wed, 15 Dec 2021 19:44:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229690AbhLOTmd (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 15 Dec 2021 14:42:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39716 "EHLO
+        id S230073AbhLOToD (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 15 Dec 2021 14:44:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229492AbhLOTmc (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 15 Dec 2021 14:42:32 -0500
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F7EAC061574;
-        Wed, 15 Dec 2021 11:42:32 -0800 (PST)
-Received: by mail-lj1-x229.google.com with SMTP id p8so34968648ljo.5;
-        Wed, 15 Dec 2021 11:42:32 -0800 (PST)
+        with ESMTP id S229492AbhLOToD (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 15 Dec 2021 14:44:03 -0500
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8C8CC061574;
+        Wed, 15 Dec 2021 11:44:02 -0800 (PST)
+Received: by mail-lj1-x22c.google.com with SMTP id 13so34832374ljj.11;
+        Wed, 15 Dec 2021 11:44:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:date:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=70I3XKgjVxOnssN3Y7VD9oVCTE00v9aFYw9UJkkTL/8=;
-        b=DJXGSRt8E2cwa0ZC2shtObOqEHrMtRABv/9p2t5PnNLPkoeAl4CUkB/RJ1UGcbF62P
-         mcRn0z5zYGPZj9D0bwZslGBSgCoSm7cKbzCToML2/WX71GzFiFTfKsCMM9ZGfpOUGHOF
-         GpiIWWr1ZDs8HA8n10waFZIU4Z43NDbL/3xmw0HQWs1tjjpxzwqIB8iPXp4BIL0szmnv
-         LMBXGtr1eCW7aRMb1pf0OLZSBQkrCEGIuupRaPwj/g2yZiuHUWEXn9diE9rhVlZLBIj6
-         Z1XexEQlUmWMyNTO9p5T3Vbf3AH9JsfCJZDi/JNBeFaoM//IsxEMIT1+rGFR6QrfuIr0
-         TBRw==
+        bh=l8LbkgeOuF1NFCsdQoXLkD/5dTY/no2XlRKkmb1RC6o=;
+        b=ALZ0oy71pz7jkih6vTdLH/REKeB9XfVGw01bYk/kVZmXYvQRzfeT+FYFlFjU4gkAm0
+         oH5NudVBWAhEjO3IwWVcw9J1LNOFuZTIVFesTfVpDUKusns6RrXX4QXtK1XrHYmNAgKB
+         6LUctJMoNAQeCJzTRKXip0/R+Ucj+wkar34JiywxQ+mIDm5GB+uH4yA4Q1PmsI8nDwEn
+         TnINkRpOFuXQRQbSJAvOp2WIjoWKj+4wJqYsd3pyvyhwM/MIquQ68Q0qaebxVga++Vky
+         ZM8avxoY1EMvBm6SbwN4qgvmsHNsa/5Lk26kYKGqJPGLNAK0tZXt4Oz9sJYxmJmIRbjv
+         Tp0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:date:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=70I3XKgjVxOnssN3Y7VD9oVCTE00v9aFYw9UJkkTL/8=;
-        b=b94kkFESjIHkE4N00m1sWQSefQCGnZaMdGa/ScTabMWenQUKIZVWSszQhItjUa9T30
-         U85aUtFxDmpirwDZ6Qwgqs0vg7cw4j34vUPzuoivW/56FJ9rnxrYUlOVDMlPmpAGUDJr
-         rZOMjNodndeOta0AXNBBHTJY+BzSUxMdcAvnjZU+f2zsv25+2jN+COSZZf/gn48z+i/3
-         1yP+ltNapDIveFOcff4mWgY2LCLbRdg7mUfa3FZz8l6g+J7erN3od+t7mtHJirnpQk4T
-         I9RpKzplyA76FH5ZYAZtZM17R4oXA0X0ig/0kMAiDyjgtQ0DnCaaYSMDOtv04v++2Xj5
-         mzPQ==
-X-Gm-Message-State: AOAM532DjkgVNIYUIsg8OaiGGj9OEDa2l2z3ThHJIOkKQeOy11jeXLmo
-        DuiZ5AZR35+cvO6oDIWCtr4=
-X-Google-Smtp-Source: ABdhPJyeuuVKsuBEw5JonRzmNW6Gb/En127TGwXzeaPtwAjOjS3c4C/2rtl40XGT974UjprJfiIoKA==
-X-Received: by 2002:a2e:390c:: with SMTP id g12mr11872791lja.118.1639597350753;
-        Wed, 15 Dec 2021 11:42:30 -0800 (PST)
+        bh=l8LbkgeOuF1NFCsdQoXLkD/5dTY/no2XlRKkmb1RC6o=;
+        b=E6MasPGhmQ3lYsRCjNfdkjUfoJQD24T1umj6PRbRqBx1Yt+dyAn1XWEMSPNsNwc8p1
+         ha4WRTMJ7wBa/IbtEmDFGrUrIzxi8A4ozZeJkANSkOm2a4YGYers+GfjByJ5R6EjfK9b
+         FvLvinmnwfRc+iUWHNwP5ajgBdw+HvcjbSmzOQgRPOcDHhM+BF7AUeUp9BOmYPiwj13X
+         wOfVoGhR8OMq53OsNGr13AJTHzq/MUl7q3+lE7shKyOUDd6FDS8WCtpGFqSIR7Nhwy61
+         q9+USY9gTrh4V6J/z4Esa+FkXXOyE8F5dz+7xLzrlNfZyt/hoTXvjS+Bo4PUe6iADZ/9
+         kVVg==
+X-Gm-Message-State: AOAM533KeINPqzi3820iwErtxkZ211Z0/hC17TLRsn6RRv+rPYcVtdLg
+        bupEhbfsJViE6PzQpcCVfJA=
+X-Google-Smtp-Source: ABdhPJy8vBMl/BU1gYTWShY8doWiTiWPMEQvKiFbwGWjGI/AJu9xDtb2GMFizlsUOSEjT/eTAHUR5A==
+X-Received: by 2002:a2e:a409:: with SMTP id p9mr11700493ljn.412.1639597441101;
+        Wed, 15 Dec 2021 11:44:01 -0800 (PST)
 Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id n7sm465439lfu.116.2021.12.15.11.42.29
+        by smtp.gmail.com with ESMTPSA id a29sm462118lfi.302.2021.12.15.11.43.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Dec 2021 11:42:29 -0800 (PST)
+        Wed, 15 Dec 2021 11:44:00 -0800 (PST)
 From:   Uladzislau Rezki <urezki@gmail.com>
 X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Wed, 15 Dec 2021 20:42:27 +0100
-To:     Trond Myklebust <trond.myklebust@hammerspace.com>,
-        linux-nfs@vger.kernel.org
+Date:   Wed, 15 Dec 2021 20:43:58 +0100
+To:     Lee Jones <lee.jones@linaro.org>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
 Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
         "Paul E . McKenney" <paulmck@kernel.org>,
         Michal Hocko <mhocko@suse.com>,
@@ -64,57 +64,53 @@ Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         "Theodore Y . Ts'o" <tytso@mit.edu>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Uladzislau Rezki <uladzislau.rezki@sony.com>
-Subject: Re: [PATCH] fs: nfs: sysfs: Switch to kvfree_rcu() API
-Message-ID: <YbpFI7c8hSnbPixn@pc638.lan>
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH] mfd: dln2: Switch to kvfree_rcu() API
+Message-ID: <YbpFfsTvB96g4+yU@pc638.lan>
 References: <20211215111845.2514-1-urezki@gmail.com>
- <20211215111845.2514-4-urezki@gmail.com>
+ <20211215111845.2514-5-urezki@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211215111845.2514-4-urezki@gmail.com>
+In-Reply-To: <20211215111845.2514-5-urezki@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Dec 15, 2021 at 12:18:40PM +0100, Uladzislau Rezki (Sony) wrote:
-> From: Uladzislau Rezki <uladzislau.rezki@sony.com>
-> 
+On Wed, Dec 15, 2021 at 12:18:41PM +0100, Uladzislau Rezki (Sony) wrote:
 > Instead of invoking a synchronize_rcu() to free a pointer
 > after a grace period we can directly make use of new API
 > that does the same but in more efficient way.
 > 
-> TO: Trond Myklebust <trond.myklebust@hammerspace.com>
-> TO: linux-nfs@vger.kernel.org
-> Signed-off-by: Uladzislau Rezki <uladzislau.rezki@sony.com>
+> TO: Lee Jones <lee.jones@linaro.org>
+> TO: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 > ---
->  fs/nfs/sysfs.c | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
+>  drivers/mfd/dln2.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
 > 
-> diff --git a/fs/nfs/sysfs.c b/fs/nfs/sysfs.c
-> index 8cb70755e3c9..ff88d5d58e1e 100644
-> --- a/fs/nfs/sysfs.c
-> +++ b/fs/nfs/sysfs.c
-> @@ -113,10 +113,9 @@ static ssize_t nfs_netns_identifier_store(struct kobject *kobj,
->  	if (!p)
->  		return -ENOMEM;
->  	old = rcu_dereference_protected(xchg(&c->identifier, (char __rcu *)p), 1);
-> -	if (old) {
+> diff --git a/drivers/mfd/dln2.c b/drivers/mfd/dln2.c
+> index 852129ea0766..365e3e77cac4 100644
+> --- a/drivers/mfd/dln2.c
+> +++ b/drivers/mfd/dln2.c
+> @@ -179,10 +179,8 @@ void dln2_unregister_event_cb(struct platform_device *pdev, u16 id)
+>  
+>  	spin_unlock_irqrestore(&dln2->event_cb_lock, flags);
+>  
+> -	if (found) {
 > -		synchronize_rcu();
-> -		kfree(old);
+> -		kfree(i);
 > -	}
-> +	if (old)
-> +		kvfree_rcu(old);
-> +
->  	return count;
+> +	if (found)
+> +		kvfree_rcu(i);
 >  }
+>  EXPORT_SYMBOL(dln2_unregister_event_cb);
 >  
 > -- 
 > 2.30.2
 > 
-+ Trond Myklebust <trond.myklebust@hammerspace.com>                                                                                                                                    
-+ linux-nfs@vger.kernel.org  
++ Lee Jones <lee.jones@linaro.org>                                                                                                                                                     
++ Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
 
 --
 Vlad Rezki
