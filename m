@@ -2,291 +2,179 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F4ADC433F5
-	for <rcu@archiver.kernel.org>; Wed, 15 Dec 2021 15:16:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C3BAAC433EF
+	for <rcu@archiver.kernel.org>; Wed, 15 Dec 2021 19:38:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243866AbhLOPQs (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 15 Dec 2021 10:16:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33164 "EHLO
+        id S231266AbhLOTiw (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 15 Dec 2021 14:38:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242637AbhLOPQr (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 15 Dec 2021 10:16:47 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C00AC061574;
-        Wed, 15 Dec 2021 07:16:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=MIME-Version:Content-Type:References:
-        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=B4tpyQga7SH+7JGSMwW7fY4N3Vkn2z/AXyXu7q+/GAg=; b=d2NhVMFQtnUHLgOY/a42pNO4zb
-        jZP0ORdf1Xj0s9Glneacaa8TV/kjMf56Lu0mXSswtnnT12AKLh0n4NS287cCdgiQMc3ROlfLSPlo/
-        u/0Uy759pFo1hEUu5bhK83WECfAjU86QOcIrUOjbdxLxspvc4JK4EinB2FM+zaf/nIR4P1nGp/EAX
-        uFVB6BD3NM3fZkQUlLxblvdKPN08v+WMsHAuMzVTD9H+VHveVEpKHqpdpXam3ABlsu1Mfq8UI4rs7
-        1xKw0mlTrSq4IM66F1gSnQz+/QsstTW8yOOyFvn4PEY1xO1UpB/xFfx8Ubjh+7Qib6ko08hXrqj+z
-        ihHVFhoQ==;
-Received: from [2001:8b0:10b:1::3ae] (helo=u3832b3a9db3152.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mxW15-001K2L-0I; Wed, 15 Dec 2021 15:16:27 +0000
-Message-ID: <fed94af87bdfa94287b98a5e681cf374aecffa9d.camel@infradead.org>
-Subject: Re: [PATCH v2 3/7] cpu/hotplug: Add dynamic parallel bringup states
- before CPUHP_BRINGUP_CPU
-From:   David Woodhouse <dwmw2@infradead.org>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
+        with ESMTP id S230009AbhLOTiv (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 15 Dec 2021 14:38:51 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F97DC061574;
+        Wed, 15 Dec 2021 11:38:51 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id b22so592836lfb.9;
+        Wed, 15 Dec 2021 11:38:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fOcjE2pXavuKbJCrwB9ewcw0SQq3JyvpjoJ4QyUms+k=;
+        b=o5dMU0DcaUlE+/2CiW05vzfTnr1Z77oVBKfCUQNAWnB/OsBNdI4o54ecYJjM75u9vg
+         rumPl1ANlnY1sGQ5A8QVq5e3qtaAm8tQdpLkLl6uwWVNO1qOYYy6subpsVjKQTyVYwaF
+         03H1MXlzz7LF7VHLRfMSOkuPwwpEwN2pV2cy+59gHDAcZluJ4dV2vm3VfCKKzjP4D1CO
+         dVef13FjgFkkTF+9AKC/EoeP86pYpw3adJVaB3Tb4Oh/qNDgjSA3rT63sUTaCPG2OuPy
+         BKEnXMGA8P0cCLGpbAjuV2s0vSeIsxQblkAns4Dko7VUXD3bBpkBCVsAGh0oAizWbzcL
+         2j/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fOcjE2pXavuKbJCrwB9ewcw0SQq3JyvpjoJ4QyUms+k=;
+        b=q0aPhhld57jN5bfvvCD5mnnI2AiUm+fEw9JU8wMvH42kQ8gLKTSi/NBwhwaNHCFzHn
+         qEpWJpPDnOVbqfUumSGgemsinVmWGUJkcofigR6pgTHuWCGf+Wimj2m7Z+PHuDbT1AUB
+         3u+R5vXuEqI/f321iHWx+qy+X9fvBDe6q/gcjpKmKN1mJ4WsFdNJnJx66hOlJwOBk4dT
+         2zahbCCdVWrgDZiu+mK9Uw6dmjrEaJMcYG9BglIYu6HWFJFBxD3BrA2sNKflM498KA+e
+         S8/iAFzE1kiC+APkbc8QLMnaUNiYqVZosP6XFU3g+F/oR1bfZiAKRnMKtt8Iz+VOOr6j
+         5LIQ==
+X-Gm-Message-State: AOAM530M6wNt+10VZ7Z5DeUPjut91e8i4DTyzjSa6lFFrhenz/1xELli
+        jjoz6Gc3ImNbq7iwaGtRjw4=
+X-Google-Smtp-Source: ABdhPJxHpQcpecZHC7OldNt5DYzoOYI16J+5esNrAprCo/D3ilVrZV5uhXycQ2Cd340qZ/0p+0tZhA==
+X-Received: by 2002:a05:6512:2347:: with SMTP id p7mr11387141lfu.304.1639597129414;
+        Wed, 15 Dec 2021 11:38:49 -0800 (PST)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id u22sm463719lff.118.2021.12.15.11.38.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Dec 2021 11:38:48 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Wed, 15 Dec 2021 20:38:46 +0100
+To:     Jens Axboe <axboe@kernel.dk>,
+        Philipp Reisner <philipp.reisner@linbit.com>,
+        Jason Gunthorpe <jgg@nvidia.com>, drbd-dev@lists.linbit.com,
+        linux-block@vger.kernel.org
+Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
         "Paul E . McKenney" <paulmck@kernel.org>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
-        hushiyuan@huawei.com, luolongjun@huawei.com, hejingxian@huawei.com
-Date:   Wed, 15 Dec 2021 15:16:22 +0000
-In-Reply-To: <YbnNLkXTOtFiDMpc@FVFF77S0Q05N>
-References: <20211214123250.88230-1-dwmw2@infradead.org>
-         <20211214123250.88230-4-dwmw2@infradead.org>
-         <YbipFmlKSf1UuisZ@FVFF77S0Q05N>
-         <d48f836d202d3b76b2a6cbaaf3d57f0c8077d986.camel@infradead.org>
-         <YbnNLkXTOtFiDMpc@FVFF77S0Q05N>
-Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
-        boundary="=-VjU8phqa4WulPKIa+BnH"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH] drdb: Switch to kvfree_rcu() API
+Message-ID: <YbpERiPKO4ufe1hf@pc638.lan>
+References: <20211215111845.2514-1-urezki@gmail.com>
 MIME-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211215111845.2514-1-urezki@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Wed, Dec 15, 2021 at 12:18:37PM +0100, Uladzislau Rezki (Sony) wrote:
+> Instead of invoking a synchronize_rcu() to free a pointer
+> after a grace period we can directly make use of new API
+> that does the same but in more efficient way.
+> 
+> TO: Jens Axboe <axboe@kernel.dk>
+> TO: Philipp Reisner <philipp.reisner@linbit.com>
+> TO: Jason Gunthorpe <jgg@nvidia.com>
+> TO: drbd-dev@lists.linbit.com
+> TO: linux-block@vger.kernel.org
+> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> ---
+>  drivers/block/drbd/drbd_nl.c       | 9 +++------
+>  drivers/block/drbd/drbd_receiver.c | 6 ++----
+>  drivers/block/drbd/drbd_state.c    | 3 +--
+>  3 files changed, 6 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/block/drbd/drbd_nl.c b/drivers/block/drbd/drbd_nl.c
+> index 44ccf8b4f4b2..28f4d84945fd 100644
+> --- a/drivers/block/drbd/drbd_nl.c
+> +++ b/drivers/block/drbd/drbd_nl.c
+> @@ -1679,8 +1679,7 @@ int drbd_adm_disk_opts(struct sk_buff *skb, struct genl_info *info)
+>  			drbd_send_sync_param(peer_device);
+>  	}
+>  
+> -	synchronize_rcu();
+> -	kfree(old_disk_conf);
+> +	kvfree_rcu(old_disk_conf);
+>  	kfree(old_plan);
+>  	mod_timer(&device->request_timer, jiffies + HZ);
+>  	goto success;
+> @@ -2511,8 +2510,7 @@ int drbd_adm_net_opts(struct sk_buff *skb, struct genl_info *info)
+>  
+>  	mutex_unlock(&connection->resource->conf_update);
+>  	mutex_unlock(&connection->data.mutex);
+> -	synchronize_rcu();
+> -	kfree(old_net_conf);
+> +	kvfree_rcu(old_net_conf);
+>  
+>  	if (connection->cstate >= C_WF_REPORT_PARAMS) {
+>  		struct drbd_peer_device *peer_device;
+> @@ -2925,8 +2923,7 @@ int drbd_adm_resize(struct sk_buff *skb, struct genl_info *info)
+>  		new_disk_conf->disk_size = (sector_t)rs.resize_size;
+>  		rcu_assign_pointer(device->ldev->disk_conf, new_disk_conf);
+>  		mutex_unlock(&device->resource->conf_update);
+> -		synchronize_rcu();
+> -		kfree(old_disk_conf);
+> +		kvfree_rcu(old_disk_conf);
+>  		new_disk_conf = NULL;
+>  	}
+>  
+> diff --git a/drivers/block/drbd/drbd_receiver.c b/drivers/block/drbd/drbd_receiver.c
+> index 1f740e42e457..d73a53242a75 100644
+> --- a/drivers/block/drbd/drbd_receiver.c
+> +++ b/drivers/block/drbd/drbd_receiver.c
+> @@ -3799,8 +3799,7 @@ static int receive_protocol(struct drbd_connection *connection, struct packet_in
+>  		drbd_info(connection, "peer data-integrity-alg: %s\n",
+>  			  integrity_alg[0] ? integrity_alg : "(none)");
+>  
+> -	synchronize_rcu();
+> -	kfree(old_net_conf);
+> +	kvfree_rcu(old_net_conf);
+>  	return 0;
+>  
+>  disconnect_rcu_unlock:
+> @@ -4168,8 +4167,7 @@ static int receive_sizes(struct drbd_connection *connection, struct packet_info
+>  
+>  			rcu_assign_pointer(device->ldev->disk_conf, new_disk_conf);
+>  			mutex_unlock(&connection->resource->conf_update);
+> -			synchronize_rcu();
+> -			kfree(old_disk_conf);
+> +			kvfree_rcu(old_disk_conf);
+>  
+>  			drbd_info(device, "Peer sets u_size to %lu sectors (old: %lu)\n",
+>  				 (unsigned long)p_usize, (unsigned long)my_usize);
+> diff --git a/drivers/block/drbd/drbd_state.c b/drivers/block/drbd/drbd_state.c
+> index b8a27818ab3f..826e496821c7 100644
+> --- a/drivers/block/drbd/drbd_state.c
+> +++ b/drivers/block/drbd/drbd_state.c
+> @@ -2071,8 +2071,7 @@ static int w_after_conn_state_ch(struct drbd_work *w, int unused)
+>  		conn_free_crypto(connection);
+>  		mutex_unlock(&connection->resource->conf_update);
+>  
+> -		synchronize_rcu();
+> -		kfree(old_conf);
+> +		kvfree_rcu(old_conf);
+>  	}
+>  
+>  	if (ns_max.susp_fen) {
+> -- 
+> 2.30.2
+> 
++ Jens Axboe <axboe@kernel.dk>
++ Philipp Reisner <philipp.reisner@linbit.com>
++ Jason Gunthorpe <jgg@nvidia.com>
++ drbd-dev@lists.linbit.com
++ linux-block@vger.kernel.org
 
---=-VjU8phqa4WulPKIa+BnH
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, 2021-12-15 at 11:10 +0000, Mark Rutland wrote:
-> On Tue, Dec 14, 2021 at 08:32:29PM +0000, David Woodhouse wrote:
-> > On Tue, 2021-12-14 at 14:24 +0000, Mark Rutland wrote:
-> > > On Tue, Dec 14, 2021 at 12:32:46PM +0000, David Woodhouse wrote:
-> > > > From: David Woodhouse <
-> > > > dwmw@amazon.co.uk
-> > > >=20
-> > > >=20
-> > > > If the platform registers these states, bring all CPUs to each regi=
-stered
-> > > > state in turn, before the final bringup to CPUHP_BRINGUP_CPU. This =
-allows
-> > > > the architecture to parallelise the slow asynchronous tasks like se=
-nding
-> > > > INIT/SIPI and waiting for the AP to come to life.
-> > > >=20
-> > > > There is a subtlety here: even with an empty CPUHP_BP_PARALLEL_DYN =
-step,
-> > > > this means that *all* CPUs are brought through the prepare states a=
-nd to
-> > > > CPUHP_BP_PREPARE_DYN before any of them are taken to CPUHP_BRINGUP_=
-CPU
-> > > > and then are allowed to run for themselves to CPUHP_ONLINE.
-> > > >=20
-> > > > So any combination of prepare/start calls which depend on A-B order=
-ing
-> > > > for each CPU in turn, such as the X2APIC code which used to allocat=
-e a
-> > > > cluster mask 'just in case' and store it in a global variable in th=
-e
-> > > > prep stage, then potentially consume that preallocated structure fr=
-om
-> > > > the AP and set the global pointer to NULL to be reallocated in
-> > > > CPUHP_X2APIC_PREPARE for the next CPU... would explode horribly.
-> > > >=20
-> > > > We believe that X2APIC was the only such case, for x86. But this is=
- why
-> > > > it remains an architecture opt-in. For now.
-> > >=20
-> > > It might be worth elaborating with a non-x86 example, e.g.
-> > >=20
-> > > >  We believe that X2APIC was the only such case, for x86. Other arch=
-itectures
-> > > >  have similar requirements with global variables used during bringu=
-p (e.g.
-> > > >  `secondary_data` on arm/arm64), so architectures must opt-in for n=
-ow.
-> > >=20
-> > > ... so that we have a specific example of how unconditionally enablin=
-g this for
-> > > all architectures would definitely break things today.
-> >=20
-> > I do not have such an example, and I do not know that it would
-> > definitely break things to turn it on for all architectures today.
-> >=20
-> > The x2apic one is an example of why it *might* break random
-> > architectures and thus why it needs to be an architecture opt-in.
->=20
-> Ah; I had thought we did the `secondary_data` setup in a PREPARE step, an=
-d
-> hence it was a comparable example, but I was mistaken. Sorry for the nois=
-e!
->=20
-
-Right, that's entirely within your __cpu_up(). You can stare at
-Thomas's patch for inspiration on how to cope with that one.
-
-In arch/arm64/kernel/smp.c you have a comment saying
-
- * as from 2.5, kernels no longer have an init_tasks structure
- * so we need some other way of telling a new secondary core
- * where to place its SVC stack
-
-In x86, the idle task pointer is in the per_cpu data. The real mode
-bringup now starts with the CPU's APICID (which it can get from CPUID),
-looks that up in the cpuid_to_apicid[] array to find the CPU#, then
-finds its own per_cpu data, and gets everything else it needs
-(including the initial stack) from there.
-
-> > > FWIW, that's something I would like to cleanup for arm64 for general
-> > > robustness, and if that would make it possible for us to have paralle=
-l bringup
-> > > in future that would be a nice bonus.
-> >=20
-> > Yes. But although I lay the groundwork here, the arch can't *actually*
-> > do parallel bringup without some arch-specific work, so auditing the
-> > pre-bringup states is the easy part. :)
->=20
-> Sure; that was trying to be a combination of:
->=20
-> * This looks nice, I'd like to use this (eventually) on arm64.
->=20
-> * I'm aware of some arm64-specific groundwork we need to do before arm64 =
-can
->   use this.
->=20
-> So I think we're agreed. :)
-
-I'd love to have at least one more architecture come along for the ride
-as I do the next step. After this series, the largest chunk of time
-seems to be spent waiting for each AP as they transition to
-CPUHP_AP_ONLINE_IDLE and then all the way to CPUHP_ONLINE.
-
-So I'm going to look at making bringup_nonboot_cpus() prod *all* the
-APs to move to CPUHP_AP_ONLINE_IDLE without waiting for them to get
-there. Then do another pass waiting for that and prodding them to move
-to CPUHP_ONLINE. And then do a final pass of waiting for them to have
-got *there*.
-
-
-> > +     int n =3D setup_max_cpus - num_online_cpus();
-> > +
-> > +     /* =E2=88=80 parallel pre-bringup state, bring N CPUs to it */
->=20
-> I see you have a fancy maths keyboard. ;)
-
-Nah, standard UK layout keyboard. I just happen to remember U+2200 as
-it's *right* at the beginning of the mathematical symbols block and is
-fairly easy to type ;)
-
-> It might be worth using a few more words here for clarity, e.g.
->=20
->        /*
->         * Bring all nonboot CPUs through each pre-bringup state in turn
->         */
-
-But it isn't *all* nonboot CPUs; it really is only up to N of them.
-
---=-VjU8phqa4WulPKIa+BnH
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCECow
-ggUcMIIEBKADAgECAhEA4rtJSHkq7AnpxKUY8ZlYZjANBgkqhkiG9w0BAQsFADCBlzELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
-A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
-bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0EwHhcNMTkwMTAyMDAwMDAwWhcNMjIwMTAxMjM1
-OTU5WjAkMSIwIAYJKoZIhvcNAQkBFhNkd213MkBpbmZyYWRlYWQub3JnMIIBIjANBgkqhkiG9w0B
-AQEFAAOCAQ8AMIIBCgKCAQEAsv3wObLTCbUA7GJqKj9vHGf+Fa+tpkO+ZRVve9EpNsMsfXhvFpb8
-RgL8vD+L133wK6csYoDU7zKiAo92FMUWaY1Hy6HqvVr9oevfTV3xhB5rQO1RHJoAfkvhy+wpjo7Q
-cXuzkOpibq2YurVStHAiGqAOMGMXhcVGqPuGhcVcVzVUjsvEzAV9Po9K2rpZ52FE4rDkpDK1pBK+
-uOAyOkgIg/cD8Kugav5tyapydeWMZRJQH1vMQ6OVT24CyAn2yXm2NgTQMS1mpzStP2ioPtTnszIQ
-Ih7ASVzhV6csHb8Yrkx8mgllOyrt9Y2kWRRJFm/FPRNEurOeNV6lnYAXOymVJwIDAQABo4IB0zCC
-Ac8wHwYDVR0jBBgwFoAUgq9sjPjF/pZhfOgfPStxSF7Ei8AwHQYDVR0OBBYEFLfuNf820LvaT4AK
-xrGK3EKx1DE7MA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMBAf8EAjAAMB0GA1UdJQQWMBQGCCsGAQUF
-BwMEBggrBgEFBQcDAjBGBgNVHSAEPzA9MDsGDCsGAQQBsjEBAgEDBTArMCkGCCsGAQUFBwIBFh1o
-dHRwczovL3NlY3VyZS5jb21vZG8ubmV0L0NQUzBaBgNVHR8EUzBRME+gTaBLhklodHRwOi8vY3Js
-LmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWls
-Q0EuY3JsMIGLBggrBgEFBQcBAQR/MH0wVQYIKwYBBQUHMAKGSWh0dHA6Ly9jcnQuY29tb2RvY2Eu
-Y29tL0NPTU9ET1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcnQwJAYI
-KwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmNvbW9kb2NhLmNvbTAeBgNVHREEFzAVgRNkd213MkBpbmZy
-YWRlYWQub3JnMA0GCSqGSIb3DQEBCwUAA4IBAQALbSykFusvvVkSIWttcEeifOGGKs7Wx2f5f45b
-nv2ghcxK5URjUvCnJhg+soxOMoQLG6+nbhzzb2rLTdRVGbvjZH0fOOzq0LShq0EXsqnJbbuwJhK+
-PnBtqX5O23PMHutP1l88AtVN+Rb72oSvnD+dK6708JqqUx2MAFLMevrhJRXLjKb2Mm+/8XBpEw+B
-7DisN4TMlLB/d55WnT9UPNHmQ+3KFL7QrTO8hYExkU849g58Dn3Nw3oCbMUgny81ocrLlB2Z5fFG
-Qu1AdNiBA+kg/UxzyJZpFbKfCITd5yX49bOriL692aMVDyqUvh8fP+T99PqorH4cIJP6OxSTdxKM
-MIIFHDCCBASgAwIBAgIRAOK7SUh5KuwJ6cSlGPGZWGYwDQYJKoZIhvcNAQELBQAwgZcxCzAJBgNV
-BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
-BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
-ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTE5MDEwMjAwMDAwMFoXDTIyMDEwMTIz
-NTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCASIwDQYJKoZIhvcN
-AQEBBQADggEPADCCAQoCggEBALL98Dmy0wm1AOxiaio/bxxn/hWvraZDvmUVb3vRKTbDLH14bxaW
-/EYC/Lw/i9d98CunLGKA1O8yogKPdhTFFmmNR8uh6r1a/aHr301d8YQea0DtURyaAH5L4cvsKY6O
-0HF7s5DqYm6tmLq1UrRwIhqgDjBjF4XFRqj7hoXFXFc1VI7LxMwFfT6PStq6WedhROKw5KQytaQS
-vrjgMjpICIP3A/CroGr+bcmqcnXljGUSUB9bzEOjlU9uAsgJ9sl5tjYE0DEtZqc0rT9oqD7U57My
-ECIewElc4VenLB2/GK5MfJoJZTsq7fWNpFkUSRZvxT0TRLqznjVepZ2AFzsplScCAwEAAaOCAdMw
-ggHPMB8GA1UdIwQYMBaAFIKvbIz4xf6WYXzoHz0rcUhexIvAMB0GA1UdDgQWBBS37jX/NtC72k+A
-CsaxitxCsdQxOzAOBgNVHQ8BAf8EBAMCBaAwDAYDVR0TAQH/BAIwADAdBgNVHSUEFjAUBggrBgEF
-BQcDBAYIKwYBBQUHAwIwRgYDVR0gBD8wPTA7BgwrBgEEAbIxAQIBAwUwKzApBggrBgEFBQcCARYd
-aHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9DUFMwWgYDVR0fBFMwUTBPoE2gS4ZJaHR0cDovL2Ny
-bC5jb21vZG9jYS5jb20vQ09NT0RPUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFp
-bENBLmNybDCBiwYIKwYBBQUHAQEEfzB9MFUGCCsGAQUFBzAChklodHRwOi8vY3J0LmNvbW9kb2Nh
-LmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWlsQ0EuY3J0MCQG
-CCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
-cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAC20spBbrL71ZEiFrbXBHonzhhirO1sdn+X+O
-W579oIXMSuVEY1LwpyYYPrKMTjKECxuvp24c829qy03UVRm742R9Hzjs6tC0oatBF7KpyW27sCYS
-vj5wbal+TttzzB7rT9ZfPALVTfkW+9qEr5w/nSuu9PCaqlMdjABSzHr64SUVy4ym9jJvv/FwaRMP
-gew4rDeEzJSwf3eeVp0/VDzR5kPtyhS+0K0zvIWBMZFPOPYOfA59zcN6AmzFIJ8vNaHKy5QdmeXx
-RkLtQHTYgQPpIP1Mc8iWaRWynwiE3ecl+PWzq4i+vdmjFQ8qlL4fHz/k/fT6qKx+HCCT+jsUk3cS
-jDCCBeYwggPOoAMCAQICEGqb4Tg7/ytrnwHV2binUlYwDQYJKoZIhvcNAQEMBQAwgYUxCzAJBgNV
-BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
-BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMSswKQYDVQQDEyJDT01PRE8gUlNBIENlcnRpZmljYXRp
-b24gQXV0aG9yaXR5MB4XDTEzMDExMDAwMDAwMFoXDTI4MDEwOTIzNTk1OVowgZcxCzAJBgNVBAYT
-AkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNV
-BAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRoZW50
-aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
-AQEAvrOeV6wodnVAFsc4A5jTxhh2IVDzJXkLTLWg0X06WD6cpzEup/Y0dtmEatrQPTRI5Or1u6zf
-+bGBSyD9aH95dDSmeny1nxdlYCeXIoymMv6pQHJGNcIDpFDIMypVpVSRsivlJTRENf+RKwrB6vcf
-WlP8dSsE3Rfywq09N0ZfxcBa39V0wsGtkGWC+eQKiz4pBZYKjrc5NOpG9qrxpZxyb4o4yNNwTqza
-aPpGRqXB7IMjtf7tTmU2jqPMLxFNe1VXj9XB1rHvbRikw8lBoNoSWY66nJN/VCJv5ym6Q0mdCbDK
-CMPybTjoNCQuelc0IAaO4nLUXk0BOSxSxt8kCvsUtQIDAQABo4IBPDCCATgwHwYDVR0jBBgwFoAU
-u69+Aj36pvE8hI6t7jiY7NkyMtQwHQYDVR0OBBYEFIKvbIz4xf6WYXzoHz0rcUhexIvAMA4GA1Ud
-DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMBEGA1UdIAQKMAgwBgYEVR0gADBMBgNVHR8E
-RTBDMEGgP6A9hjtodHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDZXJ0aWZpY2F0aW9u
-QXV0aG9yaXR5LmNybDBxBggrBgEFBQcBAQRlMGMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9jcnQuY29t
-b2RvY2EuY29tL0NPTU9ET1JTQUFkZFRydXN0Q0EuY3J0MCQGCCsGAQUFBzABhhhodHRwOi8vb2Nz
-cC5jb21vZG9jYS5jb20wDQYJKoZIhvcNAQEMBQADggIBAHhcsoEoNE887l9Wzp+XVuyPomsX9vP2
-SQgG1NgvNc3fQP7TcePo7EIMERoh42awGGsma65u/ITse2hKZHzT0CBxhuhb6txM1n/y78e/4ZOs
-0j8CGpfb+SJA3GaBQ+394k+z3ZByWPQedXLL1OdK8aRINTsjk/H5Ns77zwbjOKkDamxlpZ4TKSDM
-KVmU/PUWNMKSTvtlenlxBhh7ETrN543j/Q6qqgCWgWuMAXijnRglp9fyadqGOncjZjaaSOGTTFB+
-E2pvOUtY+hPebuPtTbq7vODqzCM6ryEhNhzf+enm0zlpXK7q332nXttNtjv7VFNYG+I31gnMrwfH
-M5tdhYF/8v5UY5g2xANPECTQdu9vWPoqNSGDt87b3gXb1AiGGaI06vzgkejL580ul+9hz9D0S0U4
-jkhJiA7EuTecP/CFtR72uYRBcunwwH3fciPjviDDAI9SnC/2aPY8ydehzuZutLbZdRJ5PDEJM/1t
-yZR2niOYihZ+FCbtf3D9mB12D4ln9icgc7CwaxpNSCPt8i/GqK2HsOgkL3VYnwtx7cJUmpvVdZ4o
-gnzgXtgtdk3ShrtOS1iAN2ZBXFiRmjVzmehoMof06r1xub+85hFQzVxZx5/bRaTKTlL8YXLI8nAb
-R9HWdFqzcOoB/hxfEyIQpx9/s81rgzdEZOofSlZHynoSMYIDyjCCA8YCAQEwga0wgZcxCzAJBgNV
-BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
-BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
-ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA4rtJSHkq7AnpxKUY8ZlYZjANBglghkgB
-ZQMEAgEFAKCCAe0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjEx
-MjE1MTUxNjIyWjAvBgkqhkiG9w0BCQQxIgQgudemqi8NlL9ncPFHrItct2sMSBqwRr247/pXtEEs
-PJwwgb4GCSsGAQQBgjcQBDGBsDCBrTCBlzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIg
-TWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQx
-PTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1h
-aWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMIHABgsqhkiG9w0BCRACCzGBsKCBrTCBlzELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
-A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
-bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMA0GCSqGSIb3
-DQEBAQUABIIBAILt+OFkVqqc7rDtVMu4ABuQ4mAsW6GttclLHjUB1B832BLSbdaes6I7sGSNdVp6
-KIPREAsqme0l1T1nZ5s6yYiLhtXchSyGfn/ZuHSfs09N5V3RTR/zUuRSJ5doerqzZYTxnrPLnuPm
-MBApA9fk5rgxanu8Z5yuSxSSi5E6ijQfKTUt2Yi45h+ntasJt7GezzYfqmxOsOpGEdec7gxHjiYX
-39dVW/GyjGvmZCpwVb4BjA+HaHcAZIiw56fhDpT3tkZZvuBor1fcO/8pm1d1gJx+vlG6gIPiFHRn
-nIHVhcPQXeUn3cBOTpdNnv35CL+0Ik0+c/Leiv5OHsWZ/OZMi9UAAAAAAAA=
-
-
---=-VjU8phqa4WulPKIa+BnH--
-
+--
+Vlad Rezki
