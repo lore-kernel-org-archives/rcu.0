@@ -2,33 +2,33 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 99AA0C433FE
-	for <rcu@archiver.kernel.org>; Wed, 15 Dec 2021 14:57:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 625F6C433F5
+	for <rcu@archiver.kernel.org>; Wed, 15 Dec 2021 14:57:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243615AbhLOO5a (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 15 Dec 2021 09:57:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56622 "EHLO
+        id S243623AbhLOO5b (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 15 Dec 2021 09:57:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243636AbhLOO5F (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S243635AbhLOO5F (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 15 Dec 2021 09:57:05 -0500
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C13CC061751;
-        Wed, 15 Dec 2021 06:57:01 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F763C061748;
+        Wed, 15 Dec 2021 06:56:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Sender:Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
         Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=t2pDyF9HlQXxBdiqGoBBzI2HbMJFOJNGsErAvpwpL8w=; b=q5UKw9lwQpDCPq1F5CZm91rqFI
-        rrS51RgWzyboIZ9hEirjGwm5E2Y3ec5Xo3gnDy6LMLfPdiWaN7iRwwuw/J6H9+nHH/11P3Cp/OR4x
-        N0RTh+n0r8OX4GQvitPo64ZroJxq2P2sOegny3PIwoVum/ISwUvI7jrZuItmvywwFGBPhVcCwSUwc
-        OMTYRgBGgY9QPxgc7wLh+24GUQzvgShBSOfFy1jNfN5ELcodynYRWpUISakChBfmSgvIL1Nk5Ozeb
-        16/aNdPDWQkAWTrTK5GRgFpNOZyhrBM30jNCug5XjlCwsP9/8Ey6wy98LbvM7+MMT7ehwSQRqQCNd
-        uKWrcDXQ==;
+        bh=Ke8ciBugLC80if5uJRaaRiPAjJCLqJPU9OJ4HWG2Fyg=; b=JD52mjXfcn7XML/o0cmJcQxTvM
+        20GxGGxNrFYMwmakSB5fNmlyW/2jngDRDE86kBzZMUptQBIkPGD8qsPQqRkw+AhxAg9UMIqNPUIzQ
+        nrbhf8f9VdkyKhJ6vPuNfxrTSKV6DWt+9vCIc/FLE3LHyQ2W0y6VO7Ruwnv7l84s9Z0dvWEWQBKVN
+        vZWkOA7eejxMwievB67CQ9QDYSnP5QB3b8Bx+SMWPaRd9zhoyipM4EcDBWDWMmueX3XaKU4g5sotS
+        f+9N/aUWMzTVLJ02/qkHJwOaXIBIJFzeehtbqkc5wiiYWu53ZdJJiScGcDlTJFXkJCaln1bUwrIMA
+        kLek0Xzw==;
 Received: from i7.infradead.org ([2001:8b0:10b:1:21e:67ff:fecb:7a92])
         by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mxVhq-00EjwM-JA; Wed, 15 Dec 2021 14:56:35 +0000
+        id 1mxVhq-00EjwQ-UR; Wed, 15 Dec 2021 14:56:35 +0000
 Received: from dwoodhou by i7.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mxVhq-0001Ng-Q6; Wed, 15 Dec 2021 14:56:34 +0000
+        id 1mxVhr-0001Nw-3g; Wed, 15 Dec 2021 14:56:35 +0000
 From:   David Woodhouse <dwmw2@infradead.org>
 To:     Thomas Gleixner <tglx@linutronix.de>
 Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
@@ -39,9 +39,9 @@ Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
         rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
         hushiyuan@huawei.com, luolongjun@huawei.com, hejingxian@huawei.com
-Subject: [PATCH v3 1/9] x86/apic/x2apic: Fix parallel handling of cluster_mask
-Date:   Wed, 15 Dec 2021 14:56:25 +0000
-Message-Id: <20211215145633.5238-2-dwmw2@infradead.org>
+Subject: [PATCH v3 5/9] x86/smpboot: Split up native_cpu_up into separate phases and document them
+Date:   Wed, 15 Dec 2021 14:56:29 +0000
+Message-Id: <20211215145633.5238-6-dwmw2@infradead.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211215145633.5238-1-dwmw2@infradead.org>
 References: <20211215145633.5238-1-dwmw2@infradead.org>
@@ -55,205 +55,288 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: David Woodhouse <dwmw@amazon.co.uk>
 
-For each CPU being brought up, the alloc_clustermask() function
-allocates a new struct cluster_mask just in case it's needed. Then the
-target CPU actually runs, and in init_x2apic_ldr() it either uses a
-cluster_mask from a previous CPU in the same cluster, or consumes the
-"spare" one and sets the global pointer to NULL.
+There are four logical parts to what native_cpu_up() does on the BSP (or
+on the controlling CPU for a later hotplug).
 
-That isn't going to parallelise stunningly well.
+First it actually wakes the AP by sending the INIT/SIPI/SIPI sequence.
 
-Ditch the global variable, let alloc_clustermask() install the struct
-*directly* in the per_cpu data for the CPU being brought up. As an
-optimisation, actually make it do so for *all* present CPUs in the same
-cluster, which means only one iteration over for_each_present_cpu()
-instead of doing so repeatedly, once for each CPU.
+Second, it waits for the AP to make it as far as wait_for_master_cpu()
+which sets that CPU's bit in cpu_initialized_mask, then sets the bit in
+cpu_callout_mask to let the AP proceed through cpu_init().
 
-Now, in fact, there's no point in the 'node' or 'clusterid' members of
-the struct cluster_mask, so just kill it and use struct cpumask instead.
+Then, it waits for the AP to finish cpu_init() and get as far as the
+smp_callin() call, which sets that CPU's bit in cpu_callin_mask.
 
-This was a harmless "bug" while CPU bringup wasn't actually happening in
-parallel. It's about to become less harmless...
+Finally, it does the TSC synchronization and waits for the AP to actually
+mark itself online in cpu_online_mask.
 
-Fixes: 023a611748fd5 ("x86/apic/x2apic: Simplify cluster management")
+This commit should have no behavioural change, but merely splits those
+phases out into separate functions so that future commits can make them
+happen in parallel for all APs. And adds some comments around them on
+both the BSP and AP code paths.
+
 Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
 ---
- arch/x86/kernel/apic/x2apic_cluster.c | 108 +++++++++++++++-----------
- 1 file changed, 62 insertions(+), 46 deletions(-)
+ arch/x86/kernel/smpboot.c | 183 ++++++++++++++++++++++++++------------
+ 1 file changed, 128 insertions(+), 55 deletions(-)
 
-diff --git a/arch/x86/kernel/apic/x2apic_cluster.c b/arch/x86/kernel/apic/x2apic_cluster.c
-index e696e22d0531..e116dfaf5922 100644
---- a/arch/x86/kernel/apic/x2apic_cluster.c
-+++ b/arch/x86/kernel/apic/x2apic_cluster.c
-@@ -9,11 +9,7 @@
+diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+index 99c705935f94..7a763b84b6e5 100644
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -214,6 +214,10 @@ static void smp_callin(void)
  
- #include "local.h"
+ 	wmb();
  
--struct cluster_mask {
--	unsigned int	clusterid;
--	int		node;
--	struct cpumask	mask;
--};
-+#define apic_cluster(apicid) ((apicid) >> 4)
++	/*
++	 * This runs the AP through all the cpuhp states to its target
++	 * state (CPUHP_ONLINE in the case of serial bringup).
++	 */
+ 	notify_cpu_starting(cpuid);
  
- /*
-  * __x2apic_send_IPI_mask() possibly needs to read
-@@ -23,8 +19,7 @@ struct cluster_mask {
- static u32 *x86_cpu_to_logical_apicid __read_mostly;
+ 	/*
+@@ -241,17 +245,33 @@ static void notrace start_secondary(void *unused)
+ 	load_cr3(swapper_pg_dir);
+ 	__flush_tlb_all();
+ #endif
++	/*
++	 * Sync point with do_wait_cpu_initialized(). On boot, all secondary
++	 * CPUs reach this stage after receiving INIT/SIPI from do_cpu_up()
++	 * in the x86/cpu:kick cpuhp stage. At the start of cpu_init() they
++	 * will wait for do_wait_cpu_initialized() to set their bit in
++	 * smp_callout_mask to release them.
++	 */
+ 	cpu_init_secondary();
+ 	rcu_cpu_starting(raw_smp_processor_id());
+ 	x86_cpuinit.early_percpu_clock_init();
++
++	/*
++	 * Sync point with do_wait_cpu_callin(). The AP doesn't wait here
++	 * but just sets the bit to let the controlling CPU (BSP) know that
++	 * it's got this far.
++	 */
+ 	smp_callin();
  
- static DEFINE_PER_CPU(cpumask_var_t, ipi_mask);
--static DEFINE_PER_CPU_READ_MOSTLY(struct cluster_mask *, cluster_masks);
--static struct cluster_mask *cluster_hotplug_mask;
-+static DEFINE_PER_CPU_READ_MOSTLY(struct cpumask *, cluster_masks);
+ 	enable_start_cpu0 = 0;
  
- static int x2apic_acpi_madt_oem_check(char *oem_id, char *oem_table_id)
+ 	/* otherwise gcc will move up smp_processor_id before the cpu_init */
+ 	barrier();
++
+ 	/*
+-	 * Check TSC synchronization with the boot CPU:
++	 * Check TSC synchronization with the boot CPU (or whichever CPU
++	 * is controlling the bringup). It will do its part of this from
++	 * do_wait_cpu_online(), making it an implicit sync point.
+ 	 */
+ 	check_tsc_sync_target();
+ 
+@@ -264,6 +284,7 @@ static void notrace start_secondary(void *unused)
+ 	 * half valid vector space.
+ 	 */
+ 	lock_vector_lock();
++	/* Sync point with do_wait_cpu_online() */
+ 	set_cpu_online(smp_processor_id(), true);
+ 	lapic_online();
+ 	unlock_vector_lock();
+@@ -1080,9 +1101,7 @@ static int do_boot_cpu(int apicid, int cpu, struct task_struct *idle,
  {
-@@ -60,10 +55,10 @@ __x2apic_send_IPI_mask(const struct cpumask *mask, int vector, int apic_dest)
- 
- 	/* Collapse cpus in a cluster so a single IPI per cluster is sent */
- 	for_each_cpu(cpu, tmpmsk) {
--		struct cluster_mask *cmsk = per_cpu(cluster_masks, cpu);
-+		struct cpumask *cmsk = per_cpu(cluster_masks, cpu);
- 
- 		dest = 0;
--		for_each_cpu_and(clustercpu, tmpmsk, &cmsk->mask)
-+		for_each_cpu_and(clustercpu, tmpmsk, cmsk)
- 			dest |= x86_cpu_to_logical_apicid[clustercpu];
- 
- 		if (!dest)
-@@ -71,7 +66,7 @@ __x2apic_send_IPI_mask(const struct cpumask *mask, int vector, int apic_dest)
- 
- 		__x2apic_send_IPI_dest(dest, vector, APIC_DEST_LOGICAL);
- 		/* Remove cluster CPUs from tmpmask */
--		cpumask_andnot(tmpmsk, tmpmsk, &cmsk->mask);
-+		cpumask_andnot(tmpmsk, tmpmsk, cmsk);
- 	}
- 
- 	local_irq_restore(flags);
-@@ -105,55 +100,76 @@ static u32 x2apic_calc_apicid(unsigned int cpu)
- 
- static void init_x2apic_ldr(void)
- {
--	struct cluster_mask *cmsk = this_cpu_read(cluster_masks);
--	u32 cluster, apicid = apic_read(APIC_LDR);
--	unsigned int cpu;
-+	struct cpumask *cmsk = this_cpu_read(cluster_masks);
- 
--	x86_cpu_to_logical_apicid[smp_processor_id()] = apicid;
-+	BUG_ON(!cmsk);
- 
--	if (cmsk)
--		goto update;
+ 	/* start_ip had better be page-aligned! */
+ 	unsigned long start_ip = real_mode_header->trampoline_start;
 -
--	cluster = apicid >> 16;
--	for_each_online_cpu(cpu) {
--		cmsk = per_cpu(cluster_masks, cpu);
--		/* Matching cluster found. Link and update it. */
--		if (cmsk && cmsk->clusterid == cluster)
--			goto update;
-+	cpumask_set_cpu(smp_processor_id(), cmsk);
+ 	unsigned long boot_error = 0;
+-	unsigned long timeout;
+ 
+ 	idle->thread.sp = (unsigned long)task_pt_regs(idle);
+ 	early_gdt_descr.address = (unsigned long)get_cpu_gdt_rw(cpu);
+@@ -1135,55 +1154,94 @@ static int do_boot_cpu(int apicid, int cpu, struct task_struct *idle,
+ 		boot_error = wakeup_cpu_via_init_nmi(cpu, start_ip, apicid,
+ 						     cpu0_nmi_registered);
+ 
+-	if (!boot_error) {
+-		/*
+-		 * Wait 10s total for first sign of life from AP
+-		 */
+-		boot_error = -1;
+-		timeout = jiffies + 10*HZ;
+-		while (time_before(jiffies, timeout)) {
+-			if (cpumask_test_cpu(cpu, cpu_initialized_mask)) {
+-				/*
+-				 * Tell AP to proceed with initialization
+-				 */
+-				cpumask_set_cpu(cpu, cpu_callout_mask);
+-				boot_error = 0;
+-				break;
+-			}
+-			schedule();
+-		}
+-	}
++	return boot_error;
++}
+ 
+-	if (!boot_error) {
+-		/*
+-		 * Wait till AP completes initial initialization
+-		 */
+-		while (!cpumask_test_cpu(cpu, cpu_callin_mask)) {
+-			/*
+-			 * Allow other tasks to run while we wait for the
+-			 * AP to come online. This also gives a chance
+-			 * for the MTRR work(triggered by the AP coming online)
+-			 * to be completed in the stop machine context.
+-			 */
+-			schedule();
+-		}
++static int do_wait_cpu_cpumask(unsigned int cpu, const struct cpumask *mask)
++{
++	unsigned long timeout;
++
++	/*
++	 * Wait up to 10s for the CPU to report in.
++	 */
++	timeout = jiffies + 10*HZ;
++	while (time_before(jiffies, timeout)) {
++		if (cpumask_test_cpu(cpu, mask))
++			return 0;
++
++		schedule();
+ 	}
++	return -1;
++}
+ 
+-	if (x86_platform.legacy.warm_reset) {
+-		/*
+-		 * Cleanup possible dangling ends...
+-		 */
+-		smpboot_restore_warm_reset_vector();
++/*
++ * Bringup step two: Wait for the target AP to reach cpu_init_secondary()
++ * and thus wait_for_master_cpu(), then set cpu_callout_mask to allow it
++ * to proceed.  The AP will then proceed past setting its 'callin' bit
++ * and end up waiting in check_tsc_sync_target() until we reach
++ * do_wait_cpu_online() to tend to it.
++ */
++static int do_wait_cpu_initialized(unsigned int cpu)
++{
++	/*
++	 * Wait for first sign of life from AP.
++	 */
++	if (do_wait_cpu_cpumask(cpu, cpu_initialized_mask))
++		return -1;
++
++	cpumask_set_cpu(cpu, cpu_callout_mask);
++	return 0;
 +}
 +
 +/*
-+ * As an optimisation during boot, set the cluster_mask for *all*
-+ * present CPUs at once, to prevent *each* of them having to iterate
-+ * over the others to find the existing cluster_mask.
++ * Bringup step three: Wait for the target AP to reach smp_callin().
++ * The AP is not waiting for us here so we don't need to parallelise
++ * this step. Not entirely clear why we care about this, since we just
++ * proceed directly to TSC synchronization which is the next sync
++ * point with the AP anyway.
 + */
-+static void prefill_clustermask(struct cpumask *cmsk, u32 cluster)
++static int do_wait_cpu_callin(unsigned int cpu)
 +{
-+	int cpu;
++	/*
++	 * Wait till AP completes initial initialization.
++	 */
++	return do_wait_cpu_cpumask(cpu, cpu_callin_mask);
++}
 +
-+	for_each_present_cpu(cpu) {
-+		u32 apicid = apic->cpu_present_to_apicid(cpu);
-+		if (apicid != BAD_APICID && apic_cluster(apicid) == cluster) {
-+			struct cpumask **cpu_cmsk = &per_cpu(cluster_masks, cpu);
++/*
++ * Bringup step four: Synchronize the TSC and wait for the target AP
++ * to reach set_cpu_online() in start_secondary().
++ */
++static int do_wait_cpu_online(unsigned int cpu)
++{
++	unsigned long flags;
 +
-+			BUG_ON(*cpu_cmsk && *cpu_cmsk != cmsk);
-+			*cpu_cmsk = cmsk;
-+		}
++	/*
++	 * Check TSC synchronization with the AP (keep irqs disabled
++	 * while doing so):
++	 */
++	local_irq_save(flags);
++	check_tsc_sync_source(cpu);
++	local_irq_restore(flags);
++
++	/*
++	 * Wait for the AP to mark itself online. Not entirely
++	 * clear why we care, since the generic cpuhp code will
++	 * wait for it to each CPUHP_AP_ONLINE_IDLE before going
++	 * ahead with the rest of the bringup anyway.
++	 */
++	while (!cpu_online(cpu)) {
++		cpu_relax();
++		touch_nmi_watchdog();
  	}
--	cmsk = cluster_hotplug_mask;
--	cmsk->clusterid = cluster;
--	cluster_hotplug_mask = NULL;
--update:
--	this_cpu_write(cluster_masks, cmsk);
--	cpumask_set_cpu(smp_processor_id(), &cmsk->mask);
+ 
+-	return boot_error;
++	return 0;
  }
  
--static int alloc_clustermask(unsigned int cpu, int node)
-+static int alloc_clustermask(unsigned int cpu, u32 cluster, int node)
+-int native_cpu_up(unsigned int cpu, struct task_struct *tidle)
++int do_cpu_up(unsigned int cpu, struct task_struct *tidle)
  {
-+	struct cpumask *cmsk = NULL;
-+	unsigned int cpu_i;
-+	u32 apicid;
-+
- 	if (per_cpu(cluster_masks, cpu))
- 		return 0;
+ 	int apicid = apic->cpu_present_to_apicid(cpu);
+ 	int cpu0_nmi_registered = 0;
+-	unsigned long flags;
+ 	int err, ret = 0;
+ 
+ 	lockdep_assert_irqs_enabled();
+@@ -1230,19 +1288,6 @@ int native_cpu_up(unsigned int cpu, struct task_struct *tidle)
+ 		goto unreg_nmi;
+ 	}
+ 
 -	/*
--	 * If a hotplug spare mask exists, check whether it's on the right
--	 * node. If not, free it and allocate a new one.
+-	 * Check TSC synchronization with the AP (keep irqs disabled
+-	 * while doing so):
 -	 */
--	if (cluster_hotplug_mask) {
--		if (cluster_hotplug_mask->node == node)
--			return 0;
--		kfree(cluster_hotplug_mask);
+-	local_irq_save(flags);
+-	check_tsc_sync_source(cpu);
+-	local_irq_restore(flags);
+-
+-	while (!cpu_online(cpu)) {
+-		cpu_relax();
+-		touch_nmi_watchdog();
+-	}
+-
+ unreg_nmi:
+ 	/*
+ 	 * Clean up the nmi handler. Do this after the callin and callout sync
+@@ -1254,6 +1299,34 @@ int native_cpu_up(unsigned int cpu, struct task_struct *tidle)
+ 	return ret;
+ }
+ 
++int native_cpu_up(unsigned int cpu, struct task_struct *tidle)
++{
++	int ret;
 +
-+	/* For the hotplug case, don't always allocate a new one */
-+	if (system_state >= SYSTEM_RUNNING) {
-+		for_each_present_cpu(cpu_i) {
-+			apicid = apic->cpu_present_to_apicid(cpu_i);
-+			if (apicid != BAD_APICID && apic_cluster(apicid) == cluster) {
-+				cmsk = per_cpu(cluster_masks, cpu_i);
-+				if (cmsk)
-+					break;
-+			}
-+		}
++	ret = do_cpu_up(cpu, tidle);
++	if (ret)
++		return ret;
++
++	ret = do_wait_cpu_initialized(cpu);
++	if (ret)
++		return ret;
++
++	ret = do_wait_cpu_callin(cpu);
++	if (ret)
++		return ret;
++
++	ret = do_wait_cpu_online(cpu);
++
++	if (x86_platform.legacy.warm_reset) {
++		/*
++		 * Cleanup possible dangling ends...
++		 */
++		smpboot_restore_warm_reset_vector();
 +	}
-+	if (!cmsk) {
-+		cmsk = kzalloc_node(sizeof(*cmsk), GFP_KERNEL, node);
-+		if (!cmsk)
-+			return -ENOMEM;
- 	}
- 
--	cluster_hotplug_mask = kzalloc_node(sizeof(*cluster_hotplug_mask),
--					    GFP_KERNEL, node);
--	if (!cluster_hotplug_mask)
--		return -ENOMEM;
--	cluster_hotplug_mask->node = node;
-+	per_cpu(cluster_masks, cpu) = cmsk;
 +
-+	if (system_state < SYSTEM_RUNNING)
-+		prefill_clustermask(cmsk, cluster);
++	return ret;
++}
 +
- 	return 0;
- }
- 
- static int x2apic_prepare_cpu(unsigned int cpu)
- {
--	if (alloc_clustermask(cpu, cpu_to_node(cpu)) < 0)
-+	u32 phys_apicid = apic->cpu_present_to_apicid(cpu);
-+	u32 cluster = apic_cluster(phys_apicid);
-+	u32 logical_apicid = (cluster << 16) | (1 << (phys_apicid & 0xf));
-+
-+	x86_cpu_to_logical_apicid[cpu] = logical_apicid;
-+
-+	if (alloc_clustermask(cpu, cluster, cpu_to_node(cpu)) < 0)
- 		return -ENOMEM;
- 	if (!zalloc_cpumask_var(&per_cpu(ipi_mask, cpu), GFP_KERNEL))
- 		return -ENOMEM;
-@@ -162,10 +178,10 @@ static int x2apic_prepare_cpu(unsigned int cpu)
- 
- static int x2apic_dead_cpu(unsigned int dead_cpu)
- {
--	struct cluster_mask *cmsk = per_cpu(cluster_masks, dead_cpu);
-+	struct cpumask *cmsk = per_cpu(cluster_masks, dead_cpu);
- 
- 	if (cmsk)
--		cpumask_clear_cpu(dead_cpu, &cmsk->mask);
-+		cpumask_clear_cpu(dead_cpu, cmsk);
- 	free_cpumask_var(per_cpu(ipi_mask, dead_cpu));
- 	return 0;
- }
+ /**
+  * arch_disable_smp_support() - disables SMP support for x86 at runtime
+  */
 -- 
 2.31.1
 
