@@ -2,58 +2,39 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48F78C433F5
-	for <rcu@archiver.kernel.org>; Wed, 15 Dec 2021 20:52:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F1C8EC433F5
+	for <rcu@archiver.kernel.org>; Wed, 15 Dec 2021 23:38:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234690AbhLOUwL (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 15 Dec 2021 15:52:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56524 "EHLO
+        id S232138AbhLOXiH (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 15 Dec 2021 18:38:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230092AbhLOUwL (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 15 Dec 2021 15:52:11 -0500
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17D95C06173E;
-        Wed, 15 Dec 2021 12:52:11 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id b7so19976057edd.6;
-        Wed, 15 Dec 2021 12:52:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ykWVuEkJPX6pUAAxvof1FIo/afOxa44cYEh33Y562v8=;
-        b=YH6X+CDp4rJCNysACqkEwJgzIYmUM/WTXgENJMxwdH/QpFhl0QpgmoeL3MULutYgqG
-         +ohu3tneuITECHisVjBMK3Aik//5wLq4q9J4/Q/DbPWhyaeqdY8P/zHA7qzmN49sNkWs
-         nR3K+H5NI4Mh8R6nAFu4gwX19CbGtlqz2pEQaprXHYu2eFMWBY4zN27OlWAQHaGtcSI3
-         Dphem7RchLOQrbflAce+cTPGogccqpJEYqlQ0YxZFgQhnaSeMHi5WBa36UFKCnNA8ZPI
-         fojeAfNPl6XauRs3Zr+mVKSrYBt2wC+wxBsIraYlf0L3zABSiOq4zD6gMvE0ZvwMZ4Nr
-         q0ag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ykWVuEkJPX6pUAAxvof1FIo/afOxa44cYEh33Y562v8=;
-        b=VBQh91adCxI/g5m4vLzkEDNdauBFTAS6/iqThp4mqU0WWV3Md87/Zd5udo40Jidpg6
-         bOBbjL6+gwzDhqHVhOjBPTo35uVdGOdwLMwe2SsaKc0ZHBDQg+c9dtOcbfdxpRFqxjKk
-         X0L9AWdK+tS7uphg1PJ0XkLXjZ3dQNlc/G2BnD0tv4nAgXq59nOeTMgU9Sx2fRiqgIL0
-         xdOmNzEYrC6mEZyb7e9jORLwZF4s88kjSYjSJP6evohMMIT8FBt8u56o6pMeuiKjKET3
-         2GVe2gJ8eWk2lp7GO4DrBVOcSjjuu1Jn+E8mzEI5ld+msGmYbedu+JHbcPxPfrrlxAjL
-         Tjbw==
-X-Gm-Message-State: AOAM530ZgHNqRpXxBqS0aA8CmSERjino9OaB35sDoqGvBbcsJ/Doqt4+
-        ZVwptwNb5scU52ldRqHRMAKDqWwfohS9erAl3VE=
-X-Google-Smtp-Source: ABdhPJwMIctubBZSGRFLeDH0OE/gyWFLjnj5kRplIzj2r8tet1dkYqI4lhQ3LzMuXiyMtKJwHmUMvGtkhem3RpanpRo=
-X-Received: by 2002:a05:6402:d09:: with SMTP id eb9mr16696784edb.216.1639601529688;
- Wed, 15 Dec 2021 12:52:09 -0800 (PST)
-MIME-Version: 1.0
-References: <20211215111845.2514-1-urezki@gmail.com> <20211215111845.2514-8-urezki@gmail.com>
- <YbpGWpskiByQNcJO@pc638.lan> <20211215194952.GY6385@nvidia.com>
-In-Reply-To: <20211215194952.GY6385@nvidia.com>
-From:   Uladzislau Rezki <urezki@gmail.com>
-Date:   Wed, 15 Dec 2021 21:51:58 +0100
-Message-ID: <CA+KHdyVtaf+Upz=ns9evt5osnHb6LL=+dfsMxPeruEnQUqej1A@mail.gmail.com>
-Subject: Re: [PATCH] RDMA/hfi1: Switch to kvfree_rcu() API
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        with ESMTP id S232096AbhLOXiH (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 15 Dec 2021 18:38:07 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BE27C061574;
+        Wed, 15 Dec 2021 15:38:07 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id C8133B8220D;
+        Wed, 15 Dec 2021 23:38:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1698DC36AE1;
+        Wed, 15 Dec 2021 23:38:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1639611484;
+        bh=vzJgSPIy3+FHuUEYJTupv6VKwZpeq9MrPhdrbiF18RA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ANz/ETbml50S824SkAB5kzDn+n29RP5TbLUtlWMXovvekvB+x5Lgy9pynHYKEiu0C
+         1fiQdo0teCmi4XMCTcOGqu6vKgliy6OfKwgUMS9EMd3LGbi6ogYCdxJaLlE6NKf9AE
+         rEhKW/hENf7QO9OVA9Ct21XrIR7L3o3HZm8fGcQ9EAo09ckYaNU/j93JY7uNc7TgdK
+         EF6+tLpu29AbmWoQ5ORhDs9wxQD+qYNI6do86w1ud+pN9Fiql8+arh2K+OuXIfz4LZ
+         f6vtHHyJzDnlTy1Xnc0mMcnh4IfjeSIJadeDhSSfkt2Lr/iDhOkGYzjRWOeNdCK7z1
+         LngdwpD6EaZAQ==
+Date:   Wed, 15 Dec 2021 15:38:03 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
         LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
         "Paul E . McKenney" <paulmck@kernel.org>,
         Michal Hocko <mhocko@suse.com>,
@@ -67,57 +48,50 @@ Cc:     linux-rdma@vger.kernel.org,
         "Theodore Y . Ts'o" <tytso@mit.edu>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH] mlxsw: core: Switch to kvfree_rcu() API
+Message-ID: <20211215153803.7f14b0d6@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <YbpGGiTtBvJnYvmZ@pc638.lan>
+References: <20211215111845.2514-1-urezki@gmail.com>
+        <20211215111845.2514-7-urezki@gmail.com>
+        <YbpGGiTtBvJnYvmZ@pc638.lan>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Dec 15, 2021 at 8:49 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
->
-> On Wed, Dec 15, 2021 at 08:47:38PM +0100, Uladzislau Rezki wrote:
-> > On Wed, Dec 15, 2021 at 12:18:44PM +0100, Uladzislau Rezki (Sony) wrote:
-> > > Instead of invoking a synchronize_rcu() to free a pointer
-> > > after a grace period we can directly make use of new API
-> > > that does the same but in more efficient way.
-> > >
-> > > TO: linux-rdma@vger.kernel.org
-> > > TO: Jason Gunthorpe <jgg@nvidia.com>
-> > > TO: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
-> > > Acked-by: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
-> > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > >  drivers/infiniband/hw/hfi1/sdma.c | 3 +--
-> > >  1 file changed, 1 insertion(+), 2 deletions(-)
-> > >
-> > > diff --git a/drivers/infiniband/hw/hfi1/sdma.c b/drivers/infiniband/hw/hfi1/sdma.c
-> > > index f07d328689d3..7264a35e8f4c 100644
-> > > +++ b/drivers/infiniband/hw/hfi1/sdma.c
-> > > @@ -1292,8 +1292,7 @@ void sdma_clean(struct hfi1_devdata *dd, size_t num_engines)
-> > >     sdma_map_free(rcu_access_pointer(dd->sdma_map));
-> > >     RCU_INIT_POINTER(dd->sdma_map, NULL);
-> > >     spin_unlock_irq(&dd->sde_map_lock);
-> > > -   synchronize_rcu();
-> > > -   kfree(dd->per_sdma);
-> > > +   kvfree_rcu(dd->per_sdma);
-> > >     dd->per_sdma = NULL;
-> > >
-> > >     if (dd->sdma_rht) {
-> > + linux-rdma@vger.kernel.org
-> > + Jason Gunthorpe <jgg@nvidia.com>
-> > + Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
->
-> If it is not in the rdma patchworks it won't get applied..
->
-> https://patchwork.kernel.org/project/linux-rdma/list/
->
-Do you mean that i should:
+On Wed, 15 Dec 2021 20:46:34 +0100 Uladzislau Rezki wrote:
+> On Wed, Dec 15, 2021 at 12:18:43PM +0100, Uladzislau Rezki (Sony) wrote:
+> > Instead of invoking a synchronize_rcu() to free a pointer
+> > after a grace period we can directly make use of new API
+> > that does the same but in more efficient way.
+> > 
+> > TO: David S. Miller <davem@davemloft.net>
+> > TO: Jakub Kicinski <kuba@kernel.org>
+> > TO: netdev@vger.kernel.org
+> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > ---
+> >  drivers/net/ethernet/mellanox/mlxsw/core.c | 3 +--
+> >  1 file changed, 1 insertion(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/net/ethernet/mellanox/mlxsw/core.c b/drivers/net/ethernet/mellanox/mlxsw/core.c
+> > index 3fd3812b8f31..47c29769759b 100644
+> > --- a/drivers/net/ethernet/mellanox/mlxsw/core.c
+> > +++ b/drivers/net/ethernet/mellanox/mlxsw/core.c
+> > @@ -2190,8 +2190,7 @@ void mlxsw_core_rx_listener_unregister(struct mlxsw_core *mlxsw_core,
+> >  	if (!rxl_item)
+> >  		return;
+> >  	list_del_rcu(&rxl_item->list);
+> > -	synchronize_rcu();
+> > -	kfree(rxl_item);
+> > +	kvfree_rcu(rxl_item);
+> >  }
+> >  EXPORT_SYMBOL(mlxsw_core_rx_listener_unregister);
+> 
+> + David S. Miller <davem@davemloft.net>
+> + Jakub Kicinski <kuba@kernel.org>
+> + netdev@vger.kernel.org
 
-Cc: <linux-rdma@vger.kernel.org>
-Cc: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
-
-instead?
-
-Thanks!
-
--- 
-Uladzislau Rezki
+Impressive CC list. Please make a fresh posting to netdev@
+and use ./scripts/get_maintainer.pl.
