@@ -2,36 +2,38 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3866CC433EF
-	for <rcu@archiver.kernel.org>; Wed, 15 Dec 2021 14:58:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F4ADC433F5
+	for <rcu@archiver.kernel.org>; Wed, 15 Dec 2021 15:16:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243665AbhLOO5h (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 15 Dec 2021 09:57:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56664 "EHLO
+        id S243866AbhLOPQs (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 15 Dec 2021 10:16:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243653AbhLOO5O (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 15 Dec 2021 09:57:14 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60235C06175A;
-        Wed, 15 Dec 2021 06:57:04 -0800 (PST)
+        with ESMTP id S242637AbhLOPQr (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 15 Dec 2021 10:16:47 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C00AC061574;
+        Wed, 15 Dec 2021 07:16:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-        Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=JRJ9oSUgWPDlmSMC+D0In2tFCVfBKxWqYwFaYUGh2hw=; b=WVVF0K5F5o7MNPvNiI5QTWZV71
-        tF+FBU+FEwn8Q+CziqTtu4z5XC/iiXWF/MOa3RbqtVCrfvrUt8Q6sf4zXl+HiWcRr5bb9eZ6HMyjb
-        i1wLDezIl+iV9BQnqboLY69efuLcnreaXKOVJhWWavIF5FJ2cGhvhRr11rx5o92y3xPWfH4tQtqVb
-        2LFCR3rBlKGJQDv8hAT5vLmBFgjz42IeOefG+YjGXjPHZZO9BCs8cJngV0Nsyno1o3hJiTDXrdu5D
-        3X3AGYD0ypxx9MMzD3HFL5k4xsp1XC2tI/mb1tbeJC1E3YD/ca0XprhK8PkgAxY1RyTfNu7GB8ld3
-        RnvRo/1A==;
-Received: from i7.infradead.org ([2001:8b0:10b:1:21e:67ff:fecb:7a92])
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mxVhr-001WOv-KP; Wed, 15 Dec 2021 14:56:35 +0000
-Received: from dwoodhou by i7.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mxVhr-0001O0-7m; Wed, 15 Dec 2021 14:56:35 +0000
+        d=infradead.org; s=bombadil.20210309; h=MIME-Version:Content-Type:References:
+        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=B4tpyQga7SH+7JGSMwW7fY4N3Vkn2z/AXyXu7q+/GAg=; b=d2NhVMFQtnUHLgOY/a42pNO4zb
+        jZP0ORdf1Xj0s9Glneacaa8TV/kjMf56Lu0mXSswtnnT12AKLh0n4NS287cCdgiQMc3ROlfLSPlo/
+        u/0Uy759pFo1hEUu5bhK83WECfAjU86QOcIrUOjbdxLxspvc4JK4EinB2FM+zaf/nIR4P1nGp/EAX
+        uFVB6BD3NM3fZkQUlLxblvdKPN08v+WMsHAuMzVTD9H+VHveVEpKHqpdpXam3ABlsu1Mfq8UI4rs7
+        1xKw0mlTrSq4IM66F1gSnQz+/QsstTW8yOOyFvn4PEY1xO1UpB/xFfx8Ubjh+7Qib6ko08hXrqj+z
+        ihHVFhoQ==;
+Received: from [2001:8b0:10b:1::3ae] (helo=u3832b3a9db3152.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mxW15-001K2L-0I; Wed, 15 Dec 2021 15:16:27 +0000
+Message-ID: <fed94af87bdfa94287b98a5e681cf374aecffa9d.camel@infradead.org>
+Subject: Re: [PATCH v2 3/7] cpu/hotplug: Add dynamic parallel bringup states
+ before CPUHP_BRINGUP_CPU
 From:   David Woodhouse <dwmw2@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
         "H . Peter Anvin" <hpa@zytor.com>,
         Paolo Bonzini <pbonzini@redhat.com>,
@@ -39,319 +41,252 @@ Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
         rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
         hushiyuan@huawei.com, luolongjun@huawei.com, hejingxian@huawei.com
-Subject: [PATCH v3 6/9] x86/smpboot: Support parallel startup of secondary CPUs
-Date:   Wed, 15 Dec 2021 14:56:30 +0000
-Message-Id: <20211215145633.5238-7-dwmw2@infradead.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211215145633.5238-1-dwmw2@infradead.org>
-References: <20211215145633.5238-1-dwmw2@infradead.org>
+Date:   Wed, 15 Dec 2021 15:16:22 +0000
+In-Reply-To: <YbnNLkXTOtFiDMpc@FVFF77S0Q05N>
+References: <20211214123250.88230-1-dwmw2@infradead.org>
+         <20211214123250.88230-4-dwmw2@infradead.org>
+         <YbipFmlKSf1UuisZ@FVFF77S0Q05N>
+         <d48f836d202d3b76b2a6cbaaf3d57f0c8077d986.camel@infradead.org>
+         <YbnNLkXTOtFiDMpc@FVFF77S0Q05N>
+Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
+        boundary="=-VjU8phqa4WulPKIa+BnH"
+User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: David Woodhouse <dwmw2@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by desiato.infradead.org. See http://www.infradead.org/rpr.html
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
 
-To allow for parallel AP bringup, we need to avoid the use of global
-variables for passing information to the APs, as well as preventing them
-from all trying to use the same real-mode stack simultaneously.
+--=-VjU8phqa4WulPKIa+BnH
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-So, introduce a 'lock' field in struct trampoline_header to use as a
-simple bit-spinlock for the real-mode stack. That lock also protects
-the global variables initial_gs, initial_stack and early_gdt_descr,
-which can now be calculated...
+On Wed, 2021-12-15 at 11:10 +0000, Mark Rutland wrote:
+> On Tue, Dec 14, 2021 at 08:32:29PM +0000, David Woodhouse wrote:
+> > On Tue, 2021-12-14 at 14:24 +0000, Mark Rutland wrote:
+> > > On Tue, Dec 14, 2021 at 12:32:46PM +0000, David Woodhouse wrote:
+> > > > From: David Woodhouse <
+> > > > dwmw@amazon.co.uk
+> > > >=20
+> > > >=20
+> > > > If the platform registers these states, bring all CPUs to each regi=
+stered
+> > > > state in turn, before the final bringup to CPUHP_BRINGUP_CPU. This =
+allows
+> > > > the architecture to parallelise the slow asynchronous tasks like se=
+nding
+> > > > INIT/SIPI and waiting for the AP to come to life.
+> > > >=20
+> > > > There is a subtlety here: even with an empty CPUHP_BP_PARALLEL_DYN =
+step,
+> > > > this means that *all* CPUs are brought through the prepare states a=
+nd to
+> > > > CPUHP_BP_PREPARE_DYN before any of them are taken to CPUHP_BRINGUP_=
+CPU
+> > > > and then are allowed to run for themselves to CPUHP_ONLINE.
+> > > >=20
+> > > > So any combination of prepare/start calls which depend on A-B order=
+ing
+> > > > for each CPU in turn, such as the X2APIC code which used to allocat=
+e a
+> > > > cluster mask 'just in case' and store it in a global variable in th=
+e
+> > > > prep stage, then potentially consume that preallocated structure fr=
+om
+> > > > the AP and set the global pointer to NULL to be reallocated in
+> > > > CPUHP_X2APIC_PREPARE for the next CPU... would explode horribly.
+> > > >=20
+> > > > We believe that X2APIC was the only such case, for x86. But this is=
+ why
+> > > > it remains an architecture opt-in. For now.
+> > >=20
+> > > It might be worth elaborating with a non-x86 example, e.g.
+> > >=20
+> > > >  We believe that X2APIC was the only such case, for x86. Other arch=
+itectures
+> > > >  have similar requirements with global variables used during bringu=
+p (e.g.
+> > > >  `secondary_data` on arm/arm64), so architectures must opt-in for n=
+ow.
+> > >=20
+> > > ... so that we have a specific example of how unconditionally enablin=
+g this for
+> > > all architectures would definitely break things today.
+> >=20
+> > I do not have such an example, and I do not know that it would
+> > definitely break things to turn it on for all architectures today.
+> >=20
+> > The x2apic one is an example of why it *might* break random
+> > architectures and thus why it needs to be an architecture opt-in.
+>=20
+> Ah; I had thought we did the `secondary_data` setup in a PREPARE step, an=
+d
+> hence it was a comparable example, but I was mistaken. Sorry for the nois=
+e!
+>=20
 
-So how do we calculate those addresses? Well, they they can all be found
-from the per_cpu data for this CPU. Simples! Except... how does it know
-what its CPU# is? OK, we export the cpuid_to_apicid[] array and it can
-search it to find its APIC ID in there.
+Right, that's entirely within your __cpu_up(). You can stare at
+Thomas's patch for inspiration on how to cope with that one.
 
-But now you whine at me that it doesn't even know its APIC ID? Well, if
-it's a relatively modern CPU then the APIC ID is in CPUID leaf 0x0B so
-we can use that. Otherwise... erm... OK, otherwise it can't have parallel
-CPU bringup for now. We'll still use a global variable for those CPUs and
-bring them up one at a time.
+In arch/arm64/kernel/smp.c you have a comment saying
 
-So add a global 'smpboot_control' field which either contains the APIC
-ID, or a flag indicating that it can be found in CPUID.
+ * as from 2.5, kernels no longer have an init_tasks structure
+ * so we need some other way of telling a new secondary core
+ * where to place its SVC stack
 
-[ dwmw2: Minor tweaks, write a commit message ]
-Not-signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: David Woodhouse <dwmw2@infradead.org>
----
- arch/x86/include/asm/realmode.h      |  3 ++
- arch/x86/include/asm/smp.h           |  9 +++-
- arch/x86/kernel/acpi/sleep.c         |  1 +
- arch/x86/kernel/apic/apic.c          |  2 +-
- arch/x86/kernel/head_64.S            | 71 ++++++++++++++++++++++++++++
- arch/x86/kernel/smpboot.c            | 14 +++++-
- arch/x86/realmode/init.c             |  3 ++
- arch/x86/realmode/rm/trampoline_64.S | 14 ++++++
- kernel/smpboot.c                     |  2 +-
- 9 files changed, 114 insertions(+), 5 deletions(-)
+In x86, the idle task pointer is in the per_cpu data. The real mode
+bringup now starts with the CPU's APICID (which it can get from CPUID),
+looks that up in the cpuid_to_apicid[] array to find the CPU#, then
+finds its own per_cpu data, and gets everything else it needs
+(including the initial stack) from there.
 
-diff --git a/arch/x86/include/asm/realmode.h b/arch/x86/include/asm/realmode.h
-index 5db5d083c873..e1cc4bc746bc 100644
---- a/arch/x86/include/asm/realmode.h
-+++ b/arch/x86/include/asm/realmode.h
-@@ -51,6 +51,7 @@ struct trampoline_header {
- 	u64 efer;
- 	u32 cr4;
- 	u32 flags;
-+	u32 lock;
- #endif
- };
- 
-@@ -64,6 +65,8 @@ extern unsigned long initial_stack;
- extern unsigned long initial_vc_handler;
- #endif
- 
-+extern u32 *trampoline_lock;
-+
- extern unsigned char real_mode_blob[];
- extern unsigned char real_mode_relocs[];
- 
-diff --git a/arch/x86/include/asm/smp.h b/arch/x86/include/asm/smp.h
-index 81a0211a372d..ca807c29dc34 100644
---- a/arch/x86/include/asm/smp.h
-+++ b/arch/x86/include/asm/smp.h
-@@ -196,5 +196,12 @@ extern void nmi_selftest(void);
- #define nmi_selftest() do { } while (0)
- #endif
- 
--#endif /* __ASSEMBLY__ */
-+extern unsigned int smpboot_control;
-+
-+#endif /* !__ASSEMBLY__ */
-+
-+/* Control bits for startup_64 */
-+#define	STARTUP_USE_APICID	0x10000
-+#define	STARTUP_USE_CPUID_0B	0x20000
-+
- #endif /* _ASM_X86_SMP_H */
-diff --git a/arch/x86/kernel/acpi/sleep.c b/arch/x86/kernel/acpi/sleep.c
-index 3f85fcae450c..9598ebf4f9d6 100644
---- a/arch/x86/kernel/acpi/sleep.c
-+++ b/arch/x86/kernel/acpi/sleep.c
-@@ -114,6 +114,7 @@ int x86_acpi_suspend_lowlevel(void)
- 	early_gdt_descr.address =
- 			(unsigned long)get_cpu_gdt_rw(smp_processor_id());
- 	initial_gs = per_cpu_offset(smp_processor_id());
-+	smpboot_control = 0;
- #endif
- 	initial_code = (unsigned long)wakeup_long64;
-        saved_magic = 0x123456789abcdef0L;
-diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
-index b70344bf6600..5b20e051d84c 100644
---- a/arch/x86/kernel/apic/apic.c
-+++ b/arch/x86/kernel/apic/apic.c
-@@ -2335,7 +2335,7 @@ static int nr_logical_cpuids = 1;
- /*
-  * Used to store mapping between logical CPU IDs and APIC IDs.
-  */
--static int cpuid_to_apicid[] = {
-+int cpuid_to_apicid[] = {
- 	[0 ... NR_CPUS - 1] = -1,
- };
- 
-diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
-index d8b3ebd2bb85..0249212e23d2 100644
---- a/arch/x86/kernel/head_64.S
-+++ b/arch/x86/kernel/head_64.S
-@@ -25,6 +25,7 @@
- #include <asm/export.h>
- #include <asm/nospec-branch.h>
- #include <asm/fixmap.h>
-+#include <asm/smp.h>
- 
- /*
-  * We are not able to switch in one step to the final KERNEL ADDRESS SPACE
-@@ -176,6 +177,64 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
- 1:
- 	UNWIND_HINT_EMPTY
- 
-+	/*
-+	 * Is this the boot CPU coming up? If so everything is available
-+	 * in initial_gs, initial_stack and early_gdt_descr.
-+	 */
-+	movl	smpboot_control(%rip), %eax
-+	testl	%eax, %eax
-+	jz	.Lsetup_cpu
-+
-+	/*
-+	 * Secondary CPUs find out the offsets via the APIC ID. For parallel
-+	 * boot the APIC ID is retrieved from CPUID, otherwise it's encoded
-+	 * in smpboot_control:
-+	 * Bit 0-15	APICID if STARTUP_USE_CPUID_0B is not set
-+	 * Bit 16 	Secondary boot flag
-+	 * Bit 17	Parallel boot flag
-+	 */
-+	testl	$STARTUP_USE_CPUID_0B, %eax
-+	jz	.Lsetup_AP
-+
-+	mov	$0x0B, %eax
-+	xorl	%ecx, %ecx
-+	cpuid
-+	mov	%edx, %eax
-+
-+.Lsetup_AP:
-+	/* EAX contains the APICID of the current CPU */
-+	andl	$0xFFFF, %eax
-+	xorl	%ecx, %ecx
-+	leaq	cpuid_to_apicid(%rip), %rbx
-+
-+.Lfind_cpunr:
-+	cmpl	(%rbx), %eax
-+	jz	.Linit_cpu_data
-+	addq	$4, %rbx
-+	addq	$8, %rcx
-+	jmp	.Lfind_cpunr
-+
-+.Linit_cpu_data:
-+	/* Get the per cpu offset */
-+	leaq	__per_cpu_offset(%rip), %rbx
-+	addq	%rcx, %rbx
-+	movq	(%rbx), %rbx
-+	/* Save it for GS BASE setup */
-+	movq	%rbx, initial_gs(%rip)
-+
-+	/* Calculate the GDT address */
-+	movq	$gdt_page, %rcx
-+	addq	%rbx, %rcx
-+	movq	%rcx, early_gdt_descr_base(%rip)
-+
-+	/* Find the idle task stack */
-+	movq	$idle_threads, %rcx
-+	addq	%rbx, %rcx
-+	movq	(%rcx), %rcx
-+	movq	TASK_threadsp(%rcx), %rcx
-+	movq	%rcx, initial_stack(%rip)
-+
-+.Lsetup_cpu:
- 	/*
- 	 * We must switch to a new descriptor in kernel space for the GDT
- 	 * because soon the kernel won't have access anymore to the userspace
-@@ -216,6 +275,14 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
- 	 */
- 	movq initial_stack(%rip), %rsp
- 
-+	/* Drop the realmode protection. For the boot CPU the pointer is NULL! */
-+	movq	trampoline_lock(%rip), %rax
-+	testq	%rax, %rax
-+	jz	.Lsetup_idt
-+	lock
-+	btrl	$0, (%rax)
-+
-+.Lsetup_idt:
- 	/* Setup and Load IDT */
- 	pushq	%rsi
- 	call	early_setup_idt
-@@ -347,6 +414,7 @@ SYM_DATA(initial_vc_handler,	.quad handle_vc_boot_ghcb)
-  * reliably detect the end of the stack.
-  */
- SYM_DATA(initial_stack, .quad init_thread_union + THREAD_SIZE - FRAME_SIZE)
-+SYM_DATA(trampoline_lock, .quad 0);
- 	__FINITDATA
- 
- 	__INIT
-@@ -572,6 +640,9 @@ SYM_DATA_END(level1_fixmap_pgt)
- SYM_DATA(early_gdt_descr,		.word GDT_ENTRIES*8-1)
- SYM_DATA_LOCAL(early_gdt_descr_base,	.quad INIT_PER_CPU_VAR(gdt_page))
- 
-+	.align 16
-+SYM_DATA(smpboot_control,		.long 0)
-+
- 	.align 16
- /* This must match the first entry in level2_kernel_pgt */
- SYM_DATA(phys_base, .quad 0x0)
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index 7a763b84b6e5..1e38d44c3603 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -1104,9 +1104,19 @@ static int do_boot_cpu(int apicid, int cpu, struct task_struct *idle,
- 	unsigned long boot_error = 0;
- 
- 	idle->thread.sp = (unsigned long)task_pt_regs(idle);
--	early_gdt_descr.address = (unsigned long)get_cpu_gdt_rw(cpu);
- 	initial_code = (unsigned long)start_secondary;
--	initial_stack  = idle->thread.sp;
-+
-+	if (IS_ENABLED(CONFIG_X86_32)) {
-+		early_gdt_descr.address = (unsigned long)get_cpu_gdt_rw(cpu);
-+		initial_stack  = idle->thread.sp;
-+	} else if (boot_cpu_data.cpuid_level < 0x0B) {
-+		/* Anything with X2APIC should have CPUID leaf 0x0B */
-+		if (WARN_ON_ONCE(x2apic_mode) && apicid > 0xffff)
-+			return -EIO;
-+		smpboot_control = apicid | STARTUP_USE_APICID;
-+	} else {
-+		smpboot_control = STARTUP_USE_CPUID_0B;
-+	}
- 
- 	/* Enable the espfix hack for this CPU */
- 	init_espfix_ap(cpu);
-diff --git a/arch/x86/realmode/init.c b/arch/x86/realmode/init.c
-index 4a3da7592b99..7dc2e817bd02 100644
---- a/arch/x86/realmode/init.c
-+++ b/arch/x86/realmode/init.c
-@@ -127,6 +127,9 @@ static void __init setup_real_mode(void)
- 
- 	trampoline_header->flags = 0;
- 
-+	trampoline_lock = &trampoline_header->lock;
-+	*trampoline_lock = 0;
-+
- 	trampoline_pgd = (u64 *) __va(real_mode_header->trampoline_pgd);
- 	trampoline_pgd[0] = trampoline_pgd_entry.pgd;
- 	trampoline_pgd[511] = init_top_pgt[511].pgd;
-diff --git a/arch/x86/realmode/rm/trampoline_64.S b/arch/x86/realmode/rm/trampoline_64.S
-index cc8391f86cdb..12a540904e80 100644
---- a/arch/x86/realmode/rm/trampoline_64.S
-+++ b/arch/x86/realmode/rm/trampoline_64.S
-@@ -49,6 +49,19 @@ SYM_CODE_START(trampoline_start)
- 	mov	%ax, %es
- 	mov	%ax, %ss
- 
-+	/*
-+	 * Make sure only one CPU fiddles with the realmode stack
-+	 */
-+.Llock_rm:
-+	btl	$0, tr_lock
-+	jnc	2f
-+	pause
-+	jmp	.Llock_rm
-+2:
-+	lock
-+	btsl	$0, tr_lock
-+	jc	.Llock_rm
-+
- 	# Setup stack
- 	movl	$rm_stack_end, %esp
- 
-@@ -192,6 +205,7 @@ SYM_DATA_START(trampoline_header)
- 	SYM_DATA(tr_efer,		.space 8)
- 	SYM_DATA(tr_cr4,		.space 4)
- 	SYM_DATA(tr_flags,		.space 4)
-+	SYM_DATA(tr_lock,		.space 4)
- SYM_DATA_END(trampoline_header)
- 
- #include "trampoline_common.S"
-diff --git a/kernel/smpboot.c b/kernel/smpboot.c
-index f6bc0bc8a2aa..934e64ff4eed 100644
---- a/kernel/smpboot.c
-+++ b/kernel/smpboot.c
-@@ -25,7 +25,7 @@
-  * For the hotplug case we keep the task structs around and reuse
-  * them.
-  */
--static DEFINE_PER_CPU(struct task_struct *, idle_threads);
-+DEFINE_PER_CPU(struct task_struct *, idle_threads);
- 
- struct task_struct *idle_thread_get(unsigned int cpu)
- {
--- 
-2.31.1
+> > > FWIW, that's something I would like to cleanup for arm64 for general
+> > > robustness, and if that would make it possible for us to have paralle=
+l bringup
+> > > in future that would be a nice bonus.
+> >=20
+> > Yes. But although I lay the groundwork here, the arch can't *actually*
+> > do parallel bringup without some arch-specific work, so auditing the
+> > pre-bringup states is the easy part. :)
+>=20
+> Sure; that was trying to be a combination of:
+>=20
+> * This looks nice, I'd like to use this (eventually) on arm64.
+>=20
+> * I'm aware of some arm64-specific groundwork we need to do before arm64 =
+can
+>   use this.
+>=20
+> So I think we're agreed. :)
+
+I'd love to have at least one more architecture come along for the ride
+as I do the next step. After this series, the largest chunk of time
+seems to be spent waiting for each AP as they transition to
+CPUHP_AP_ONLINE_IDLE and then all the way to CPUHP_ONLINE.
+
+So I'm going to look at making bringup_nonboot_cpus() prod *all* the
+APs to move to CPUHP_AP_ONLINE_IDLE without waiting for them to get
+there. Then do another pass waiting for that and prodding them to move
+to CPUHP_ONLINE. And then do a final pass of waiting for them to have
+got *there*.
+
+
+> > +     int n =3D setup_max_cpus - num_online_cpus();
+> > +
+> > +     /* =E2=88=80 parallel pre-bringup state, bring N CPUs to it */
+>=20
+> I see you have a fancy maths keyboard. ;)
+
+Nah, standard UK layout keyboard. I just happen to remember U+2200 as
+it's *right* at the beginning of the mathematical symbols block and is
+fairly easy to type ;)
+
+> It might be worth using a few more words here for clarity, e.g.
+>=20
+>        /*
+>         * Bring all nonboot CPUs through each pre-bringup state in turn
+>         */
+
+But it isn't *all* nonboot CPUs; it really is only up to N of them.
+
+--=-VjU8phqa4WulPKIa+BnH
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCECow
+ggUcMIIEBKADAgECAhEA4rtJSHkq7AnpxKUY8ZlYZjANBgkqhkiG9w0BAQsFADCBlzELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
+A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
+bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0EwHhcNMTkwMTAyMDAwMDAwWhcNMjIwMTAxMjM1
+OTU5WjAkMSIwIAYJKoZIhvcNAQkBFhNkd213MkBpbmZyYWRlYWQub3JnMIIBIjANBgkqhkiG9w0B
+AQEFAAOCAQ8AMIIBCgKCAQEAsv3wObLTCbUA7GJqKj9vHGf+Fa+tpkO+ZRVve9EpNsMsfXhvFpb8
+RgL8vD+L133wK6csYoDU7zKiAo92FMUWaY1Hy6HqvVr9oevfTV3xhB5rQO1RHJoAfkvhy+wpjo7Q
+cXuzkOpibq2YurVStHAiGqAOMGMXhcVGqPuGhcVcVzVUjsvEzAV9Po9K2rpZ52FE4rDkpDK1pBK+
+uOAyOkgIg/cD8Kugav5tyapydeWMZRJQH1vMQ6OVT24CyAn2yXm2NgTQMS1mpzStP2ioPtTnszIQ
+Ih7ASVzhV6csHb8Yrkx8mgllOyrt9Y2kWRRJFm/FPRNEurOeNV6lnYAXOymVJwIDAQABo4IB0zCC
+Ac8wHwYDVR0jBBgwFoAUgq9sjPjF/pZhfOgfPStxSF7Ei8AwHQYDVR0OBBYEFLfuNf820LvaT4AK
+xrGK3EKx1DE7MA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMBAf8EAjAAMB0GA1UdJQQWMBQGCCsGAQUF
+BwMEBggrBgEFBQcDAjBGBgNVHSAEPzA9MDsGDCsGAQQBsjEBAgEDBTArMCkGCCsGAQUFBwIBFh1o
+dHRwczovL3NlY3VyZS5jb21vZG8ubmV0L0NQUzBaBgNVHR8EUzBRME+gTaBLhklodHRwOi8vY3Js
+LmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWls
+Q0EuY3JsMIGLBggrBgEFBQcBAQR/MH0wVQYIKwYBBQUHMAKGSWh0dHA6Ly9jcnQuY29tb2RvY2Eu
+Y29tL0NPTU9ET1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcnQwJAYI
+KwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmNvbW9kb2NhLmNvbTAeBgNVHREEFzAVgRNkd213MkBpbmZy
+YWRlYWQub3JnMA0GCSqGSIb3DQEBCwUAA4IBAQALbSykFusvvVkSIWttcEeifOGGKs7Wx2f5f45b
+nv2ghcxK5URjUvCnJhg+soxOMoQLG6+nbhzzb2rLTdRVGbvjZH0fOOzq0LShq0EXsqnJbbuwJhK+
+PnBtqX5O23PMHutP1l88AtVN+Rb72oSvnD+dK6708JqqUx2MAFLMevrhJRXLjKb2Mm+/8XBpEw+B
+7DisN4TMlLB/d55WnT9UPNHmQ+3KFL7QrTO8hYExkU849g58Dn3Nw3oCbMUgny81ocrLlB2Z5fFG
+Qu1AdNiBA+kg/UxzyJZpFbKfCITd5yX49bOriL692aMVDyqUvh8fP+T99PqorH4cIJP6OxSTdxKM
+MIIFHDCCBASgAwIBAgIRAOK7SUh5KuwJ6cSlGPGZWGYwDQYJKoZIhvcNAQELBQAwgZcxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
+ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTE5MDEwMjAwMDAwMFoXDTIyMDEwMTIz
+NTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCASIwDQYJKoZIhvcN
+AQEBBQADggEPADCCAQoCggEBALL98Dmy0wm1AOxiaio/bxxn/hWvraZDvmUVb3vRKTbDLH14bxaW
+/EYC/Lw/i9d98CunLGKA1O8yogKPdhTFFmmNR8uh6r1a/aHr301d8YQea0DtURyaAH5L4cvsKY6O
+0HF7s5DqYm6tmLq1UrRwIhqgDjBjF4XFRqj7hoXFXFc1VI7LxMwFfT6PStq6WedhROKw5KQytaQS
+vrjgMjpICIP3A/CroGr+bcmqcnXljGUSUB9bzEOjlU9uAsgJ9sl5tjYE0DEtZqc0rT9oqD7U57My
+ECIewElc4VenLB2/GK5MfJoJZTsq7fWNpFkUSRZvxT0TRLqznjVepZ2AFzsplScCAwEAAaOCAdMw
+ggHPMB8GA1UdIwQYMBaAFIKvbIz4xf6WYXzoHz0rcUhexIvAMB0GA1UdDgQWBBS37jX/NtC72k+A
+CsaxitxCsdQxOzAOBgNVHQ8BAf8EBAMCBaAwDAYDVR0TAQH/BAIwADAdBgNVHSUEFjAUBggrBgEF
+BQcDBAYIKwYBBQUHAwIwRgYDVR0gBD8wPTA7BgwrBgEEAbIxAQIBAwUwKzApBggrBgEFBQcCARYd
+aHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9DUFMwWgYDVR0fBFMwUTBPoE2gS4ZJaHR0cDovL2Ny
+bC5jb21vZG9jYS5jb20vQ09NT0RPUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFp
+bENBLmNybDCBiwYIKwYBBQUHAQEEfzB9MFUGCCsGAQUFBzAChklodHRwOi8vY3J0LmNvbW9kb2Nh
+LmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWlsQ0EuY3J0MCQG
+CCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
+cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAC20spBbrL71ZEiFrbXBHonzhhirO1sdn+X+O
+W579oIXMSuVEY1LwpyYYPrKMTjKECxuvp24c829qy03UVRm742R9Hzjs6tC0oatBF7KpyW27sCYS
+vj5wbal+TttzzB7rT9ZfPALVTfkW+9qEr5w/nSuu9PCaqlMdjABSzHr64SUVy4ym9jJvv/FwaRMP
+gew4rDeEzJSwf3eeVp0/VDzR5kPtyhS+0K0zvIWBMZFPOPYOfA59zcN6AmzFIJ8vNaHKy5QdmeXx
+RkLtQHTYgQPpIP1Mc8iWaRWynwiE3ecl+PWzq4i+vdmjFQ8qlL4fHz/k/fT6qKx+HCCT+jsUk3cS
+jDCCBeYwggPOoAMCAQICEGqb4Tg7/ytrnwHV2binUlYwDQYJKoZIhvcNAQEMBQAwgYUxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMSswKQYDVQQDEyJDT01PRE8gUlNBIENlcnRpZmljYXRp
+b24gQXV0aG9yaXR5MB4XDTEzMDExMDAwMDAwMFoXDTI4MDEwOTIzNTk1OVowgZcxCzAJBgNVBAYT
+AkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNV
+BAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRoZW50
+aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAvrOeV6wodnVAFsc4A5jTxhh2IVDzJXkLTLWg0X06WD6cpzEup/Y0dtmEatrQPTRI5Or1u6zf
++bGBSyD9aH95dDSmeny1nxdlYCeXIoymMv6pQHJGNcIDpFDIMypVpVSRsivlJTRENf+RKwrB6vcf
+WlP8dSsE3Rfywq09N0ZfxcBa39V0wsGtkGWC+eQKiz4pBZYKjrc5NOpG9qrxpZxyb4o4yNNwTqza
+aPpGRqXB7IMjtf7tTmU2jqPMLxFNe1VXj9XB1rHvbRikw8lBoNoSWY66nJN/VCJv5ym6Q0mdCbDK
+CMPybTjoNCQuelc0IAaO4nLUXk0BOSxSxt8kCvsUtQIDAQABo4IBPDCCATgwHwYDVR0jBBgwFoAU
+u69+Aj36pvE8hI6t7jiY7NkyMtQwHQYDVR0OBBYEFIKvbIz4xf6WYXzoHz0rcUhexIvAMA4GA1Ud
+DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMBEGA1UdIAQKMAgwBgYEVR0gADBMBgNVHR8E
+RTBDMEGgP6A9hjtodHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDZXJ0aWZpY2F0aW9u
+QXV0aG9yaXR5LmNybDBxBggrBgEFBQcBAQRlMGMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9jcnQuY29t
+b2RvY2EuY29tL0NPTU9ET1JTQUFkZFRydXN0Q0EuY3J0MCQGCCsGAQUFBzABhhhodHRwOi8vb2Nz
+cC5jb21vZG9jYS5jb20wDQYJKoZIhvcNAQEMBQADggIBAHhcsoEoNE887l9Wzp+XVuyPomsX9vP2
+SQgG1NgvNc3fQP7TcePo7EIMERoh42awGGsma65u/ITse2hKZHzT0CBxhuhb6txM1n/y78e/4ZOs
+0j8CGpfb+SJA3GaBQ+394k+z3ZByWPQedXLL1OdK8aRINTsjk/H5Ns77zwbjOKkDamxlpZ4TKSDM
+KVmU/PUWNMKSTvtlenlxBhh7ETrN543j/Q6qqgCWgWuMAXijnRglp9fyadqGOncjZjaaSOGTTFB+
+E2pvOUtY+hPebuPtTbq7vODqzCM6ryEhNhzf+enm0zlpXK7q332nXttNtjv7VFNYG+I31gnMrwfH
+M5tdhYF/8v5UY5g2xANPECTQdu9vWPoqNSGDt87b3gXb1AiGGaI06vzgkejL580ul+9hz9D0S0U4
+jkhJiA7EuTecP/CFtR72uYRBcunwwH3fciPjviDDAI9SnC/2aPY8ydehzuZutLbZdRJ5PDEJM/1t
+yZR2niOYihZ+FCbtf3D9mB12D4ln9icgc7CwaxpNSCPt8i/GqK2HsOgkL3VYnwtx7cJUmpvVdZ4o
+gnzgXtgtdk3ShrtOS1iAN2ZBXFiRmjVzmehoMof06r1xub+85hFQzVxZx5/bRaTKTlL8YXLI8nAb
+R9HWdFqzcOoB/hxfEyIQpx9/s81rgzdEZOofSlZHynoSMYIDyjCCA8YCAQEwga0wgZcxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
+ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA4rtJSHkq7AnpxKUY8ZlYZjANBglghkgB
+ZQMEAgEFAKCCAe0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjEx
+MjE1MTUxNjIyWjAvBgkqhkiG9w0BCQQxIgQgudemqi8NlL9ncPFHrItct2sMSBqwRr247/pXtEEs
+PJwwgb4GCSsGAQQBgjcQBDGBsDCBrTCBlzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIg
+TWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQx
+PTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1h
+aWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMIHABgsqhkiG9w0BCRACCzGBsKCBrTCBlzELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
+A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
+bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMA0GCSqGSIb3
+DQEBAQUABIIBAILt+OFkVqqc7rDtVMu4ABuQ4mAsW6GttclLHjUB1B832BLSbdaes6I7sGSNdVp6
+KIPREAsqme0l1T1nZ5s6yYiLhtXchSyGfn/ZuHSfs09N5V3RTR/zUuRSJ5doerqzZYTxnrPLnuPm
+MBApA9fk5rgxanu8Z5yuSxSSi5E6ijQfKTUt2Yi45h+ntasJt7GezzYfqmxOsOpGEdec7gxHjiYX
+39dVW/GyjGvmZCpwVb4BjA+HaHcAZIiw56fhDpT3tkZZvuBor1fcO/8pm1d1gJx+vlG6gIPiFHRn
+nIHVhcPQXeUn3cBOTpdNnv35CL+0Ik0+c/Leiv5OHsWZ/OZMi9UAAAAAAAA=
+
+
+--=-VjU8phqa4WulPKIa+BnH--
 
