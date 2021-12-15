@@ -2,33 +2,33 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DAE0BC4332F
-	for <rcu@archiver.kernel.org>; Wed, 15 Dec 2021 14:57:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 99AA0C433FE
+	for <rcu@archiver.kernel.org>; Wed, 15 Dec 2021 14:57:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243611AbhLOO53 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 15 Dec 2021 09:57:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56602 "EHLO
+        id S243615AbhLOO5a (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 15 Dec 2021 09:57:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243625AbhLOO5A (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 15 Dec 2021 09:57:00 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F657C061747;
-        Wed, 15 Dec 2021 06:56:59 -0800 (PST)
+        with ESMTP id S243636AbhLOO5F (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 15 Dec 2021 09:57:05 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C13CC061751;
+        Wed, 15 Dec 2021 06:57:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding:
+        d=infradead.org; s=casper.20170209; h=Sender:Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
         Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=wg0k7R7A8fci8ain5v82X0pb+QdbF55AubTtIBBP1xE=; b=p6InNOvqFNRU2dzUay6kZSC7w8
-        Nq4+CHwhRO3FpPNHj6SJUP1Xf8KuMaXWxiUJb4ZnecuZZTp3e1ajGhUYXtECteV/pGiDVVF/GVmIh
-        +pyPPGq38clR8VDlV47cBatpfSlBE/eYadcny6wR3CoovZ4yd3adVOyG9AcaruUrM339eMf/Cxqmn
-        oIP1YNw92p5ibf6a7664bDBXf/vAcAkTi/QJBAgSi4+aWuKaL7OyzxA6e/qt28151yX3gnpbzGLhm
-        UEQ8uPFkWs9dwyPsa+Xtz4AZvGzHw4DV4R3I+pmhCotTCGu/FnhjpZ9YZUkYvleMsMMvIsBZ0LyVl
-        AG8lwfHg==;
+        bh=t2pDyF9HlQXxBdiqGoBBzI2HbMJFOJNGsErAvpwpL8w=; b=q5UKw9lwQpDCPq1F5CZm91rqFI
+        rrS51RgWzyboIZ9hEirjGwm5E2Y3ec5Xo3gnDy6LMLfPdiWaN7iRwwuw/J6H9+nHH/11P3Cp/OR4x
+        N0RTh+n0r8OX4GQvitPo64ZroJxq2P2sOegny3PIwoVum/ISwUvI7jrZuItmvywwFGBPhVcCwSUwc
+        OMTYRgBGgY9QPxgc7wLh+24GUQzvgShBSOfFy1jNfN5ELcodynYRWpUISakChBfmSgvIL1Nk5Ozeb
+        16/aNdPDWQkAWTrTK5GRgFpNOZyhrBM30jNCug5XjlCwsP9/8Ey6wy98LbvM7+MMT7ehwSQRqQCNd
+        uKWrcDXQ==;
 Received: from i7.infradead.org ([2001:8b0:10b:1:21e:67ff:fecb:7a92])
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mxVhr-001WP0-Rs; Wed, 15 Dec 2021 14:56:36 +0000
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mxVhq-00EjwM-JA; Wed, 15 Dec 2021 14:56:35 +0000
 Received: from dwoodhou by i7.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mxVhr-0001OC-GK; Wed, 15 Dec 2021 14:56:35 +0000
+        id 1mxVhq-0001Ng-Q6; Wed, 15 Dec 2021 14:56:34 +0000
 From:   David Woodhouse <dwmw2@infradead.org>
 To:     Thomas Gleixner <tglx@linutronix.de>
 Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
@@ -39,264 +39,221 @@ Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
         rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
         hushiyuan@huawei.com, luolongjun@huawei.com, hejingxian@huawei.com
-Subject: [PATCH v3 9/9] x86/smpboot: Serialize topology updates for secondary bringup
-Date:   Wed, 15 Dec 2021 14:56:33 +0000
-Message-Id: <20211215145633.5238-10-dwmw2@infradead.org>
+Subject: [PATCH v3 1/9] x86/apic/x2apic: Fix parallel handling of cluster_mask
+Date:   Wed, 15 Dec 2021 14:56:25 +0000
+Message-Id: <20211215145633.5238-2-dwmw2@infradead.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211215145633.5238-1-dwmw2@infradead.org>
 References: <20211215145633.5238-1-dwmw2@infradead.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: David Woodhouse <dwmw2@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by desiato.infradead.org. See http://www.infradead.org/rpr.html
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
 From: David Woodhouse <dwmw@amazon.co.uk>
 
-If we bring up secondaries in parallel they might get confused unless we
-impose some ordering here:
+For each CPU being brought up, the alloc_clustermask() function
+allocates a new struct cluster_mask just in case it's needed. Then the
+target CPU actually runs, and in init_x2apic_ldr() it either uses a
+cluster_mask from a previous CPU in the same cluster, or consumes the
+"spare" one and sets the global pointer to NULL.
 
-[    1.360149] x86: Booting SMP configuration:
-[    1.360221] .... node  #0, CPUs:        #1  #2  #3  #4  #5  #6  #7  #8  #9 #10 #11 #12 #13 #14 #15 #16 #17 #18 #19 #20 #21 #22 #23
-[    1.366225] .... node  #1, CPUs:   #24 #25 #26 #27 #28 #29 #30 #31 #32 #33 #34 #35 #36 #37 #38 #39 #40 #41 #42 #43 #44 #45 #46 #47
-[    1.370219] .... node  #0, CPUs:   #48 #49 #50 #51 #52 #53 #54 #55 #56 #57 #58 #59 #60 #61 #62 #63 #64 #65 #66 #67 #68 #69 #70 #71
-[    1.378226] .... node  #1, CPUs:   #72 #73 #74 #75 #76 #77 #78 #79 #80 #81 #82 #83 #84 #85 #86 #87 #88 #89 #90 #91 #92 #93 #94 #95
-[    1.382037] Brought 96 CPUs to x86/cpu:kick in 72232606 cycles
-[    0.104104] smpboot: CPU 26 Converting physical 0 to logical die 1
-[    0.104104] smpboot: CPU 27 Converting physical 1 to logical package 2
-[    0.104104] smpboot: CPU 24 Converting physical 1 to logical package 3
-[    0.104104] smpboot: CPU 27 Converting physical 0 to logical die 2
-[    0.104104] smpboot: CPU 25 Converting physical 1 to logical package 4
-[    1.385609] Brought 96 CPUs to x86/cpu:wait-init in 9269218 cycles
-[    1.395285] Brought CPUs online in 28930764 cycles
-[    1.395469] smp: Brought up 2 nodes, 96 CPUs
-[    1.395689] smpboot: Max logical packages: 2
-[    1.396222] smpboot: Total of 96 processors activated (576000.00 BogoMIPS)
+That isn't going to parallelise stunningly well.
 
-Do the full topology update in smp_store_cpu_info() under a spinlock
-to ensure that things remain consistent.
+Ditch the global variable, let alloc_clustermask() install the struct
+*directly* in the per_cpu data for the CPU being brought up. As an
+optimisation, actually make it do so for *all* present CPUs in the same
+cluster, which means only one iteration over for_each_present_cpu()
+instead of doing so repeatedly, once for each CPU.
 
+Now, in fact, there's no point in the 'node' or 'clusterid' members of
+the struct cluster_mask, so just kill it and use struct cpumask instead.
+
+This was a harmless "bug" while CPU bringup wasn't actually happening in
+parallel. It's about to become less harmless...
+
+Fixes: 023a611748fd5 ("x86/apic/x2apic: Simplify cluster management")
 Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
 ---
- arch/x86/include/asm/smp.h      |  4 +-
- arch/x86/include/asm/topology.h |  2 -
- arch/x86/kernel/cpu/common.c    |  6 +--
- arch/x86/kernel/smpboot.c       | 73 ++++++++++++++++++++-------------
- arch/x86/xen/smp_pv.c           |  4 +-
- 5 files changed, 48 insertions(+), 41 deletions(-)
+ arch/x86/kernel/apic/x2apic_cluster.c | 108 +++++++++++++++-----------
+ 1 file changed, 62 insertions(+), 46 deletions(-)
 
-diff --git a/arch/x86/include/asm/smp.h b/arch/x86/include/asm/smp.h
-index ca807c29dc34..0b6012fd3e55 100644
---- a/arch/x86/include/asm/smp.h
-+++ b/arch/x86/include/asm/smp.h
-@@ -59,8 +59,6 @@ struct smp_ops {
- };
+diff --git a/arch/x86/kernel/apic/x2apic_cluster.c b/arch/x86/kernel/apic/x2apic_cluster.c
+index e696e22d0531..e116dfaf5922 100644
+--- a/arch/x86/kernel/apic/x2apic_cluster.c
++++ b/arch/x86/kernel/apic/x2apic_cluster.c
+@@ -9,11 +9,7 @@
  
- /* Globals due to paravirt */
--extern void set_cpu_sibling_map(int cpu);
--
- #ifdef CONFIG_SMP
- extern struct smp_ops smp_ops;
+ #include "local.h"
  
-@@ -148,7 +146,7 @@ void native_send_call_func_single_ipi(int cpu);
- void x86_idle_thread_init(unsigned int cpu, struct task_struct *idle);
+-struct cluster_mask {
+-	unsigned int	clusterid;
+-	int		node;
+-	struct cpumask	mask;
+-};
++#define apic_cluster(apicid) ((apicid) >> 4)
  
- void smp_store_boot_cpu_info(void);
--void smp_store_cpu_info(int id);
-+void smp_store_cpu_info(int id, bool force_single_core);
+ /*
+  * __x2apic_send_IPI_mask() possibly needs to read
+@@ -23,8 +19,7 @@ struct cluster_mask {
+ static u32 *x86_cpu_to_logical_apicid __read_mostly;
  
- asmlinkage __visible void smp_reboot_interrupt(void);
- __visible void smp_reschedule_interrupt(struct pt_regs *regs);
-diff --git a/arch/x86/include/asm/topology.h b/arch/x86/include/asm/topology.h
-index cc164777e661..4fe2591f5d8d 100644
---- a/arch/x86/include/asm/topology.h
-+++ b/arch/x86/include/asm/topology.h
-@@ -135,8 +135,6 @@ static inline int topology_max_smt_threads(void)
- 	return __max_smt_threads;
- }
+ static DEFINE_PER_CPU(cpumask_var_t, ipi_mask);
+-static DEFINE_PER_CPU_READ_MOSTLY(struct cluster_mask *, cluster_masks);
+-static struct cluster_mask *cluster_hotplug_mask;
++static DEFINE_PER_CPU_READ_MOSTLY(struct cpumask *, cluster_masks);
  
--int topology_update_package_map(unsigned int apicid, unsigned int cpu);
--int topology_update_die_map(unsigned int dieid, unsigned int cpu);
- int topology_phys_to_logical_pkg(unsigned int pkg);
- int topology_phys_to_logical_die(unsigned int die, unsigned int cpu);
- bool topology_is_primary_thread(unsigned int cpu);
-diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-index 0083464de5e3..98b4697b2c9b 100644
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -1517,7 +1517,7 @@ static void generic_identify(struct cpuinfo_x86 *c)
-  * Validate that ACPI/mptables have the same information about the
-  * effective APIC id and update the package map.
-  */
--static void validate_apic_and_package_id(struct cpuinfo_x86 *c)
-+static void validate_apic_id(struct cpuinfo_x86 *c)
+ static int x2apic_acpi_madt_oem_check(char *oem_id, char *oem_table_id)
  {
- #ifdef CONFIG_SMP
- 	unsigned int apicid, cpu = smp_processor_id();
-@@ -1528,8 +1528,6 @@ static void validate_apic_and_package_id(struct cpuinfo_x86 *c)
- 		pr_err(FW_BUG "CPU%u: APIC id mismatch. Firmware: %x APIC: %x\n",
- 		       cpu, apicid, c->initial_apicid);
+@@ -60,10 +55,10 @@ __x2apic_send_IPI_mask(const struct cpumask *mask, int vector, int apic_dest)
+ 
+ 	/* Collapse cpus in a cluster so a single IPI per cluster is sent */
+ 	for_each_cpu(cpu, tmpmsk) {
+-		struct cluster_mask *cmsk = per_cpu(cluster_masks, cpu);
++		struct cpumask *cmsk = per_cpu(cluster_masks, cpu);
+ 
+ 		dest = 0;
+-		for_each_cpu_and(clustercpu, tmpmsk, &cmsk->mask)
++		for_each_cpu_and(clustercpu, tmpmsk, cmsk)
+ 			dest |= x86_cpu_to_logical_apicid[clustercpu];
+ 
+ 		if (!dest)
+@@ -71,7 +66,7 @@ __x2apic_send_IPI_mask(const struct cpumask *mask, int vector, int apic_dest)
+ 
+ 		__x2apic_send_IPI_dest(dest, vector, APIC_DEST_LOGICAL);
+ 		/* Remove cluster CPUs from tmpmask */
+-		cpumask_andnot(tmpmsk, tmpmsk, &cmsk->mask);
++		cpumask_andnot(tmpmsk, tmpmsk, cmsk);
  	}
--	BUG_ON(topology_update_package_map(c->phys_proc_id, cpu));
--	BUG_ON(topology_update_die_map(c->cpu_die_id, cpu));
- #else
- 	c->logical_proc_id = 0;
- #endif
-@@ -1716,7 +1714,7 @@ void identify_secondary_cpu(struct cpuinfo_x86 *c)
- 	enable_sep_cpu();
- #endif
- 	mtrr_ap_init();
--	validate_apic_and_package_id(c);
-+	validate_apic_id(c);
- 	x86_spec_ctrl_setup_ap();
- 	update_srbds_msr();
- }
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index d194116305a7..725fede281ac 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -190,16 +190,12 @@ static void smp_callin(void)
- 	apic_ap_setup();
  
- 	/*
--	 * Save our processor parameters. Note: this information
--	 * is needed for clock calibration.
--	 */
--	smp_store_cpu_info(cpuid);
+ 	local_irq_restore(flags);
+@@ -105,55 +100,76 @@ static u32 x2apic_calc_apicid(unsigned int cpu)
+ 
+ static void init_x2apic_ldr(void)
+ {
+-	struct cluster_mask *cmsk = this_cpu_read(cluster_masks);
+-	u32 cluster, apicid = apic_read(APIC_LDR);
+-	unsigned int cpu;
++	struct cpumask *cmsk = this_cpu_read(cluster_masks);
+ 
+-	x86_cpu_to_logical_apicid[smp_processor_id()] = apicid;
++	BUG_ON(!cmsk);
+ 
+-	if (cmsk)
+-		goto update;
 -
--	/*
-+	 * Save our processor parameters and update topology.
-+	 * Note: this information is needed for clock calibration.
- 	 * The topology information must be up to date before
- 	 * calibrate_delay() and notify_cpu_starting().
- 	 */
--	set_cpu_sibling_map(raw_smp_processor_id());
-+	smp_store_cpu_info(cpuid, false);
- 
- 	init_freq_invariance(true, false);
- 
-@@ -254,6 +250,12 @@ static void notrace start_secondary(void *unused)
- 	 * smp_callout_mask to release them.
- 	 */
- 	cpu_init_secondary();
-+
-+	/*
-+	 * Even though notify_cpu_starting() will do this, it does so too late
-+	 * as the AP may already have triggered lockdep splats by then. See
-+	 * commit 29368e093 ("x86/smpboot:  Move rcu_cpu_starting() earlier").
-+	 */
- 	rcu_cpu_starting(raw_smp_processor_id());
- 	x86_cpuinit.early_percpu_clock_init();
- 
-@@ -362,7 +364,7 @@ EXPORT_SYMBOL(topology_phys_to_logical_die);
-  * @pkg:	The physical package id as retrieved via CPUID
-  * @cpu:	The cpu for which this is updated
-  */
--int topology_update_package_map(unsigned int pkg, unsigned int cpu)
-+static int topology_update_package_map(unsigned int pkg, unsigned int cpu)
- {
- 	int new;
- 
-@@ -385,7 +387,7 @@ int topology_update_package_map(unsigned int pkg, unsigned int cpu)
-  * @die:	The die id as retrieved via CPUID
-  * @cpu:	The cpu for which this is updated
-  */
--int topology_update_die_map(unsigned int die, unsigned int cpu)
-+static int topology_update_die_map(unsigned int die, unsigned int cpu)
- {
- 	int new;
- 
-@@ -416,25 +418,7 @@ void __init smp_store_boot_cpu_info(void)
- 	c->initialized = true;
- }
- 
--/*
-- * The bootstrap kernel entry code has set these up. Save them for
-- * a given CPU
-- */
--void smp_store_cpu_info(int id)
--{
--	struct cpuinfo_x86 *c = &cpu_data(id);
--
--	/* Copy boot_cpu_data only on the first bringup */
--	if (!c->initialized)
--		*c = boot_cpu_data;
--	c->cpu_index = id;
--	/*
--	 * During boot time, CPU0 has this setup already. Save the info when
--	 * bringing up AP or offlined CPU0.
--	 */
--	identify_secondary_cpu(c);
--	c->initialized = true;
--}
-+static arch_spinlock_t topology_lock = __ARCH_SPIN_LOCK_UNLOCKED;
- 
- static bool
- topology_same_node(struct cpuinfo_x86 *c, struct cpuinfo_x86 *o)
-@@ -629,7 +613,7 @@ static struct sched_domain_topology_level x86_topology[] = {
-  */
- static bool x86_has_numa_in_package;
- 
--void set_cpu_sibling_map(int cpu)
-+static void set_cpu_sibling_map(int cpu)
- {
- 	bool has_smt = smp_num_siblings > 1;
- 	bool has_mp = has_smt || boot_cpu_data.x86_max_cores > 1;
-@@ -708,6 +692,37 @@ void set_cpu_sibling_map(int cpu)
- 	}
- }
- 
-+/*
-+ * The bootstrap kernel entry code has set these up. Save them for
-+ * a given CPU
-+ */
-+void smp_store_cpu_info(int id, bool force_single_core)
-+{
-+	struct cpuinfo_x86 *c = &cpu_data(id);
-+
-+	/* Copy boot_cpu_data only on the first bringup */
-+	if (!c->initialized)
-+		*c = boot_cpu_data;
-+	c->cpu_index = id;
-+	/*
-+	 * During boot time, CPU0 has this setup already. Save the info when
-+	 * bringing up AP or offlined CPU0.
-+	 */
-+	identify_secondary_cpu(c);
-+
-+	arch_spin_lock(&topology_lock);
-+	BUG_ON(topology_update_package_map(c->phys_proc_id, id));
-+	BUG_ON(topology_update_die_map(c->cpu_die_id, id));
-+	c->initialized = true;
-+
-+	/* For Xen PV */
-+	if (force_single_core)
-+		c->x86_max_cores = 1;
-+
-+	set_cpu_sibling_map(id);
-+	arch_spin_unlock(&topology_lock);
+-	cluster = apicid >> 16;
+-	for_each_online_cpu(cpu) {
+-		cmsk = per_cpu(cluster_masks, cpu);
+-		/* Matching cluster found. Link and update it. */
+-		if (cmsk && cmsk->clusterid == cluster)
+-			goto update;
++	cpumask_set_cpu(smp_processor_id(), cmsk);
 +}
 +
- /* maps the cpu to the sched domain representing multi-core */
- const struct cpumask *cpu_coregroup_mask(int cpu)
- {
-diff --git a/arch/x86/xen/smp_pv.c b/arch/x86/xen/smp_pv.c
-index 6a8f3b53ab83..ff37dff20dc0 100644
---- a/arch/x86/xen/smp_pv.c
-+++ b/arch/x86/xen/smp_pv.c
-@@ -71,9 +71,7 @@ static void cpu_bringup(void)
- 		xen_enable_syscall();
++/*
++ * As an optimisation during boot, set the cluster_mask for *all*
++ * present CPUs at once, to prevent *each* of them having to iterate
++ * over the others to find the existing cluster_mask.
++ */
++static void prefill_clustermask(struct cpumask *cmsk, u32 cluster)
++{
++	int cpu;
++
++	for_each_present_cpu(cpu) {
++		u32 apicid = apic->cpu_present_to_apicid(cpu);
++		if (apicid != BAD_APICID && apic_cluster(apicid) == cluster) {
++			struct cpumask **cpu_cmsk = &per_cpu(cluster_masks, cpu);
++
++			BUG_ON(*cpu_cmsk && *cpu_cmsk != cmsk);
++			*cpu_cmsk = cmsk;
++		}
  	}
- 	cpu = smp_processor_id();
--	smp_store_cpu_info(cpu);
--	cpu_data(cpu).x86_max_cores = 1;
--	set_cpu_sibling_map(cpu);
-+	smp_store_cpu_info(cpu, true);
+-	cmsk = cluster_hotplug_mask;
+-	cmsk->clusterid = cluster;
+-	cluster_hotplug_mask = NULL;
+-update:
+-	this_cpu_write(cluster_masks, cmsk);
+-	cpumask_set_cpu(smp_processor_id(), &cmsk->mask);
+ }
  
- 	speculative_store_bypass_ht_init();
+-static int alloc_clustermask(unsigned int cpu, int node)
++static int alloc_clustermask(unsigned int cpu, u32 cluster, int node)
+ {
++	struct cpumask *cmsk = NULL;
++	unsigned int cpu_i;
++	u32 apicid;
++
+ 	if (per_cpu(cluster_masks, cpu))
+ 		return 0;
+-	/*
+-	 * If a hotplug spare mask exists, check whether it's on the right
+-	 * node. If not, free it and allocate a new one.
+-	 */
+-	if (cluster_hotplug_mask) {
+-		if (cluster_hotplug_mask->node == node)
+-			return 0;
+-		kfree(cluster_hotplug_mask);
++
++	/* For the hotplug case, don't always allocate a new one */
++	if (system_state >= SYSTEM_RUNNING) {
++		for_each_present_cpu(cpu_i) {
++			apicid = apic->cpu_present_to_apicid(cpu_i);
++			if (apicid != BAD_APICID && apic_cluster(apicid) == cluster) {
++				cmsk = per_cpu(cluster_masks, cpu_i);
++				if (cmsk)
++					break;
++			}
++		}
++	}
++	if (!cmsk) {
++		cmsk = kzalloc_node(sizeof(*cmsk), GFP_KERNEL, node);
++		if (!cmsk)
++			return -ENOMEM;
+ 	}
  
+-	cluster_hotplug_mask = kzalloc_node(sizeof(*cluster_hotplug_mask),
+-					    GFP_KERNEL, node);
+-	if (!cluster_hotplug_mask)
+-		return -ENOMEM;
+-	cluster_hotplug_mask->node = node;
++	per_cpu(cluster_masks, cpu) = cmsk;
++
++	if (system_state < SYSTEM_RUNNING)
++		prefill_clustermask(cmsk, cluster);
++
+ 	return 0;
+ }
+ 
+ static int x2apic_prepare_cpu(unsigned int cpu)
+ {
+-	if (alloc_clustermask(cpu, cpu_to_node(cpu)) < 0)
++	u32 phys_apicid = apic->cpu_present_to_apicid(cpu);
++	u32 cluster = apic_cluster(phys_apicid);
++	u32 logical_apicid = (cluster << 16) | (1 << (phys_apicid & 0xf));
++
++	x86_cpu_to_logical_apicid[cpu] = logical_apicid;
++
++	if (alloc_clustermask(cpu, cluster, cpu_to_node(cpu)) < 0)
+ 		return -ENOMEM;
+ 	if (!zalloc_cpumask_var(&per_cpu(ipi_mask, cpu), GFP_KERNEL))
+ 		return -ENOMEM;
+@@ -162,10 +178,10 @@ static int x2apic_prepare_cpu(unsigned int cpu)
+ 
+ static int x2apic_dead_cpu(unsigned int dead_cpu)
+ {
+-	struct cluster_mask *cmsk = per_cpu(cluster_masks, dead_cpu);
++	struct cpumask *cmsk = per_cpu(cluster_masks, dead_cpu);
+ 
+ 	if (cmsk)
+-		cpumask_clear_cpu(dead_cpu, &cmsk->mask);
++		cpumask_clear_cpu(dead_cpu, cmsk);
+ 	free_cpumask_var(per_cpu(ipi_mask, dead_cpu));
+ 	return 0;
+ }
 -- 
 2.31.1
 
