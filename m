@@ -2,51 +2,51 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 684C8C433F5
-	for <rcu@archiver.kernel.org>; Wed, 15 Dec 2021 11:19:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 75D76C433EF
+	for <rcu@archiver.kernel.org>; Wed, 15 Dec 2021 11:19:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242019AbhLOLTE (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 15 Dec 2021 06:19:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34734 "EHLO
+        id S242051AbhLOLTH (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 15 Dec 2021 06:19:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241979AbhLOLTB (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 15 Dec 2021 06:19:01 -0500
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FC7FC061574;
-        Wed, 15 Dec 2021 03:19:01 -0800 (PST)
-Received: by mail-lj1-x229.google.com with SMTP id l7so32810239lja.2;
-        Wed, 15 Dec 2021 03:19:00 -0800 (PST)
+        with ESMTP id S241991AbhLOLTE (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 15 Dec 2021 06:19:04 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9D64C06173E;
+        Wed, 15 Dec 2021 03:19:03 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id c32so42558835lfv.4;
+        Wed, 15 Dec 2021 03:19:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=z8R4atPrceTHEd56iw5wcGba7a8UslOFrqwu80FDwnk=;
-        b=pU4mwNtFOQpVcKcXNusTjsKTqm6uD1qZxg99Z+ijuyr38/pd7Y7TC8N38LIKzoKST/
-         SIyWMHJODG38VFZGw8xu+LJa0MezapU3CFvCoxEuMmQEUPh5PBcl7aN+Z8SyjBNbL0zJ
-         pzHkYh+tlKww1gSNc0dz/lXDqDMC6e8LD5P68MWTmIhe4rx7JGqZPJwJaaAFKwzyhBLq
-         HOjqTwSoLGe25yn8uNKFB7E84JmumX50rFjOOewPZGrxTpn13SX4bmMRdjxYVCFM1A12
-         2txPbMDKzV8+lFniYWDASXRd/1iWnD8UW6gBaHMMenkDTjgGq2yqXwEZeeMhZ7ZmjC7a
-         Tb0A==
+        bh=L/jLQjejN2VfR5T/xeA4fzGNyg1b3us8WnkzpdD0XGQ=;
+        b=gGKaat8yo/0W8Tjp3XG6PFBmspGD+tbqkJvA4viw9U2nfdEoNclDAHLFfHcxIIuJtE
+         abaY8jBpo9vqe0tfiosMNyfVvKTWwOFIE19DaDmfU8KkhTfD5gMfJ6fl/KhTxZJm8N7y
+         b9RU+WZR4L1NLFsiwAVUjQOZOL2Adr0108Ta2lEIUa2eMSJafrBXNSGQlfw0j3GM97SG
+         QeJLGG+di3ZTW/DS2a/lEdqLwg+CIepipQctHNrfkskiLEPwhw/mZA/36CppvBRjOeOV
+         mZ59S2whDAms0L8j0Iqp78YG0icPWe2loWoD/sudwXUi3ZcGYuaHINKexPLnXBfALHP8
+         uXPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=z8R4atPrceTHEd56iw5wcGba7a8UslOFrqwu80FDwnk=;
-        b=xacL/YJhIt+2GA16ZtwlFbXAFXiXm7v3nyxOCSqZKigijaZF9cEjdH69EJYPOgA8xt
-         atATf5ozuWLBo+Z+o8e142VXE6aGIvlScB7NjPG/OE1i+xEzEHrESrnpu+lyjNC1+xyQ
-         HNTYV6sSFydC+ehwVUGBCHakfaHhqcTmN7aTZmJTDPRDLv2xYjc1ItUkd0+mS4guiBoq
-         w0EfZl6q3drWHDupjEHXl8Im4S2YOtkNHwjIsgln4R1OZQwzW/bQR1YVkURecYBqHPxn
-         fWVBwFTKhLCRVblG0Udgq2/hRAe4kVDl9qZ4L7EChKoBv0z62EFU/KVNmePLFpFI1lL5
-         jEEA==
-X-Gm-Message-State: AOAM533gcWbFeSI8GRl8DP2+DQW4NrYgmY5P04kG66F204F8LcF3QpNd
-        Ect2JgHeUOpwvuEAZKZw5gMITNa3Wl8YPsBn
-X-Google-Smtp-Source: ABdhPJyDghtgwy7V7iPYz2zXnf6XnlD7nagpFZgrQ1xC9An9wY7GM0BsoESJaEilsJnIUlT4Be3fxQ==
-X-Received: by 2002:a2e:86da:: with SMTP id n26mr9303933ljj.522.1639567139331;
-        Wed, 15 Dec 2021 03:18:59 -0800 (PST)
+        bh=L/jLQjejN2VfR5T/xeA4fzGNyg1b3us8WnkzpdD0XGQ=;
+        b=zsSCUU5OcoZRNOt8Iu7Q0tFTvpaY4+efqeJJ/tu7Cq1eV6kssaq2rjcFmQzsKjaMpo
+         VgXV/9WPCOgoSpc+F5CHWw6n0RmlHX4OUe5KGOp62hmvZXaU7VttmpuoDXxQ0LkG7o8u
+         I0xhlHBRbGlydkZNfBomsuc69XA2c+cuPcrBZOQ3GopMNZxnlLUX8YoY17ocd0b5yp5e
+         vytfWdEhelzL1+Rdiy5T8QKHoTIxFNJ+pwQNeEdeAlXwjhX9wH9FQXatiPDBN9hewvPB
+         8hdCM2kh1X+YsLIPMVq5EKWcWHue1hB/ZKYmLC0fMvg39Vr/dPylhttLppJk06hSZVth
+         nR7g==
+X-Gm-Message-State: AOAM5327hJ/+2ArpNU0rEl0LzDS4gIKIz5i095orV39pBqcSM4/tNUsI
+        53N3wTA7A5mKlvJZggHi2RCEcme4rbYRBch3
+X-Google-Smtp-Source: ABdhPJxZ9nsFQpG6k9CX3mAY2mTc3bLpL5l93/9TYo3Y/en64cPwugDYDlt1Izg0U7wr9USTRq24NA==
+X-Received: by 2002:a19:c350:: with SMTP id t77mr9461676lff.152.1639567142108;
+        Wed, 15 Dec 2021 03:19:02 -0800 (PST)
 Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id n17sm383906ljg.128.2021.12.15.03.18.58
+        by smtp.gmail.com with ESMTPSA id n17sm383906ljg.128.2021.12.15.03.19.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Dec 2021 03:18:58 -0800 (PST)
+        Wed, 15 Dec 2021 03:19:01 -0800 (PST)
 From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
         "Paul E . McKenney" <paulmck@kernel.org>
@@ -61,11 +61,10 @@ Cc:     Michal Hocko <mhocko@suse.com>,
         "Theodore Y . Ts'o" <tytso@mit.edu>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Uladzislau Rezki <urezki@gmail.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH] misc: vmw_vmci: Switch to kvfree_rcu() API
-Date:   Wed, 15 Dec 2021 12:18:42 +0100
-Message-Id: <20211215111845.2514-6-urezki@gmail.com>
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: [PATCH] scsi: core: Switch to kvfree_rcu() API
+Date:   Wed, 15 Dec 2021 12:18:45 +0100
+Message-Id: <20211215111845.2514-9-urezki@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211215111845.2514-1-urezki@gmail.com>
 References: <20211215111845.2514-1-urezki@gmail.com>
@@ -79,48 +78,43 @@ Instead of invoking a synchronize_rcu() to free a pointer
 after a grace period we can directly make use of new API
 that does the same but in more efficient way.
 
-CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-TO: Jorgen Hansen <jhansen@vmware.com>
-TO: Vishnu Dasa <vdasa@vmware.com>
-TO: pv-drivers@vmware.com
-
+TO: James E.J. Bottomley <jejb@linux.ibm.com>
+TO: Martin K. Petersen <martin.petersen@oracle.com>
+TO: linux-scsi@vger.kernel.org
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- drivers/misc/vmw_vmci/vmci_context.c | 6 ++----
- drivers/misc/vmw_vmci/vmci_event.c   | 3 +--
- 2 files changed, 3 insertions(+), 6 deletions(-)
+ drivers/scsi/device_handler/scsi_dh_alua.c | 3 +--
+ drivers/scsi/device_handler/scsi_dh_rdac.c | 3 +--
+ 2 files changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/misc/vmw_vmci/vmci_context.c b/drivers/misc/vmw_vmci/vmci_context.c
-index c0b5e339d5a1..6cf3e21c7604 100644
---- a/drivers/misc/vmw_vmci/vmci_context.c
-+++ b/drivers/misc/vmw_vmci/vmci_context.c
-@@ -687,10 +687,8 @@ int vmci_ctx_remove_notification(u32 context_id, u32 remote_cid)
+diff --git a/drivers/scsi/device_handler/scsi_dh_alua.c b/drivers/scsi/device_handler/scsi_dh_alua.c
+index 37d06f993b76..308246ce346a 100644
+--- a/drivers/scsi/device_handler/scsi_dh_alua.c
++++ b/drivers/scsi/device_handler/scsi_dh_alua.c
+@@ -1238,8 +1238,7 @@ static void alua_bus_detach(struct scsi_device *sdev)
+ 		kref_put(&pg->kref, release_port_group);
  	}
- 	spin_unlock(&context->lock);
- 
--	if (found) {
--		synchronize_rcu();
--		kfree(notifier);
--	}
-+	if (found)
-+		kvfree_rcu(notifier);
- 
- 	vmci_ctx_put(context);
- 
-diff --git a/drivers/misc/vmw_vmci/vmci_event.c b/drivers/misc/vmw_vmci/vmci_event.c
-index e3436abf39f4..2100297c94ad 100644
---- a/drivers/misc/vmw_vmci/vmci_event.c
-+++ b/drivers/misc/vmw_vmci/vmci_event.c
-@@ -209,8 +209,7 @@ int vmci_event_unsubscribe(u32 sub_id)
- 	if (!s)
- 		return VMCI_ERROR_NOT_FOUND;
- 
+ 	sdev->handler_data = NULL;
 -	synchronize_rcu();
--	kfree(s);
-+	kvfree_rcu(s);
- 
- 	return VMCI_SUCCESS;
+-	kfree(h);
++	kvfree_rcu(h);
  }
+ 
+ static struct scsi_device_handler alua_dh = {
+diff --git a/drivers/scsi/device_handler/scsi_dh_rdac.c b/drivers/scsi/device_handler/scsi_dh_rdac.c
+index 66652ab409cc..dc687021ff3a 100644
+--- a/drivers/scsi/device_handler/scsi_dh_rdac.c
++++ b/drivers/scsi/device_handler/scsi_dh_rdac.c
+@@ -782,8 +782,7 @@ static void rdac_bus_detach( struct scsi_device *sdev )
+ 	}
+ 	spin_unlock(&list_lock);
+ 	sdev->handler_data = NULL;
+-	synchronize_rcu();
+-	kfree(h);
++	kvfree_rcu(h);
+ }
+ 
+ static struct scsi_device_handler rdac_dh = {
 -- 
 2.30.2
 
