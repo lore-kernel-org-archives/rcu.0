@@ -2,94 +2,118 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A08F8C433F5
-	for <rcu@archiver.kernel.org>; Fri, 17 Dec 2021 14:51:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7303EC433F5
+	for <rcu@archiver.kernel.org>; Fri, 17 Dec 2021 15:06:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237567AbhLQOvW (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 17 Dec 2021 09:51:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47678 "EHLO
+        id S237825AbhLQPGS (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 17 Dec 2021 10:06:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237552AbhLQOvW (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 17 Dec 2021 09:51:22 -0500
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4F0EC061574;
-        Fri, 17 Dec 2021 06:51:21 -0800 (PST)
-Received: by mail-wr1-x42f.google.com with SMTP id i22so4467992wrb.13;
-        Fri, 17 Dec 2021 06:51:21 -0800 (PST)
+        with ESMTP id S237801AbhLQPGS (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 17 Dec 2021 10:06:18 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3661AC061574;
+        Fri, 17 Dec 2021 07:06:18 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id g14so8885603edb.8;
+        Fri, 17 Dec 2021 07:06:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=sender:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=mnebuQGqRVJGN2DsZ9eHW1+KpUOSevBvrqS9hjun5HA=;
-        b=ZjTNEfc6zK60plX/MF6o4daNldO/KbO+PvVYiMB+SaIqCvXZ7TyjN1ZuSFyxaBe0ZG
-         rGdblOWXBUAlA4vJY9vIHZilZZdkP6G4OQvKA9HBbK+/POhbux6DZV+Xn9aZh+7D25gw
-         YsI/wAiMr6cVQl5HhqR6J96714rjxCTwE0QG5DjZLonH69P1U/gTHclxEM49QmKKeu0U
-         iqIv5Da3muuv/zmHQ0QMecdPqFGvv/ZIN4VGGVgh4WJstnMFjj3ogLdiDmqH16wu06NS
-         1QGuE4q9HejJCgL+FS/XIgsS0/2noHo3BdkBa/ZZu60rQrVxcpJul8pShfrUNGvuJ1S5
-         G8AQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LrO+5tCBVwi3dHMMdMTZMMTrnVmLv4B3ynaYuBuEgWI=;
+        b=W0L3ZZe0yg5YXP3H04rCaj1LWLOfuJQ/YqsO6rJ7yYUHmpJt+lLzbzJkPKi9zLEcnV
+         0kb2/tvBgoFG4+Ot3zW4aZcxBYx1VkpPVxdFyXRceygy/5UivxxPCHnuXDdK+qNqYjwR
+         /8vlS1Ii6w5io6oEEq3fvbEM9R89+ukzlWIN2rTKbpAyVqiqRvr4NrrbTIq66ilh6rPv
+         vqtp5DiBirwjn9VKW4yA6ecAIA/WvbWmS1Vw077ptAaQsgj6Pma2J395Q/qtkcexAmh5
+         mxPWaz0wXnwof8Uk0ZsX/lh0+7cGoi9q4MgB2dXLwuFJ7scWJr8KA/gvMJyRKX7MKNSm
+         B2pA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:message-id:date:mime-version:user-agent
-         :subject:content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=mnebuQGqRVJGN2DsZ9eHW1+KpUOSevBvrqS9hjun5HA=;
-        b=c+XghLGBsK/E0hVZJzvvWocizrRT4R0FWyW3fL5bBAgRMHegTqHtbsfaPvyqmE1fTF
-         oVVGRwQBtdsh0pmZCSLW9Qghf/cAjdixhLFreC/YSHZU5GAhq2VLaS5AFcmoIwA534xk
-         4gE5+mgzGN77okMlZy2V8NRltxcAzD6xGi6M1zcl/d+Fyv6onWN6HiH3ThaG6VBsAbNI
-         pgl/hUi7tPZlffyiNew0RBu3o5dz6RHQ+vc8pyV/r4lGzL/w6zKsryFLn3UYblTjedzU
-         5oH8jDgqGq4dKo4p9E7s/JsnWpkzOekfd16Z+0FsPJGXZOP2RzfsYT9okVUGAEzXe8V8
-         11rQ==
-X-Gm-Message-State: AOAM532Axy0IRU8KpVp28j0JW13sJ3lW4gejlnEGzXKyB++9ff2BHz1Y
-        OmSnhQs9DIt9yLM8kzqnif4=
-X-Google-Smtp-Source: ABdhPJxEcEhIcUYsKzOAN6IqL39vwVjInx/LM/aFur/79bTs0fYRfHfINZo6PTnpTWAnMXXZlNDMJg==
-X-Received: by 2002:adf:ca0f:: with SMTP id o15mr2828708wrh.457.1639752680231;
-        Fri, 17 Dec 2021 06:51:20 -0800 (PST)
-Received: from ?IPV6:2001:b07:6468:f312:48f9:bea:a04c:3dfe? ([2001:b07:6468:f312:48f9:bea:a04c:3dfe])
-        by smtp.googlemail.com with ESMTPSA id a10sm12136566wmq.27.2021.12.17.06.51.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Dec 2021 06:51:19 -0800 (PST)
-Sender: Paolo Bonzini <paolo.bonzini@gmail.com>
-Message-ID: <ada9b2aa-f1e7-d566-0384-002890441a30@redhat.com>
-Date:   Fri, 17 Dec 2021 15:51:14 +0100
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LrO+5tCBVwi3dHMMdMTZMMTrnVmLv4B3ynaYuBuEgWI=;
+        b=DOwTHMcGqKFU22q6vrhnKGEYOie2ZNh1sAGtS//AqLI478PaDZtE7ih1LlbnLAqNqi
+         U/DVVTHue93NarOaawDinzf15h1igmdl187IG3NuCd1cGxRnuUWF78K2f2lHtzSRI57C
+         fx59xVEEdXFRwYZcUKmKJhAXIZ2GDK6cWIK3cURSm3qdEJrHkX8gj1m81OmhbLiHBm60
+         4oTag7YVXYEDNP76Hy7RAnxjWkjkBIkh4luPBGxLLC0l1135sO1rnfMJ7OsWxiC8fRTA
+         zA2v0CmpeqkRMz+TdYAC31a9w7kEcmhXSgq+PlcmE8QJFG44OKSJPBvdOlTG2Vyn4pRW
+         mvRg==
+X-Gm-Message-State: AOAM532ut7uU3yjp6DWl5eZi21+DxobDOJi8ficsXiqfcVuY9DjA2Vtj
+        sdiJs+uuKHIwaE/wRGT6QqO5w83KKPXkjK5Gffc=
+X-Google-Smtp-Source: ABdhPJwsMhiSSh7ZunvjuEXkwXYl6bLbA4p+WWapf8ST/Zlcwju0BVfRGdsZuLBjpVr7cpXFX9roobxiu5pEHS4NRNg=
+X-Received: by 2002:a50:9d48:: with SMTP id j8mr3181101edk.192.1639753576821;
+ Fri, 17 Dec 2021 07:06:16 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: Possible nohz-full/RCU issue in arm64 KVM
-Content-Language: en-US
-To:     Mark Rutland <mark.rutland@arm.com>,
-        Nicolas Saenz Julienne <nsaenzju@redhat.com>
-Cc:     paulmck <paulmck@kernel.org>, maz <maz@kernel.org>,
-        frederic <frederic@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        rcu <rcu@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "kvm-riscv@lists.infradead.org" <kvm-riscv@lists.infradead.org>,
-        Anup Patel <Anup.Patel@wdc.com>
-References: <d80e440375896f75d45e227d40af60ca7ba24ceb.camel@redhat.com>
- <YbyO40zDW/kvUHEE@FVFF77S0Q05N>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <YbyO40zDW/kvUHEE@FVFF77S0Q05N>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20211215111845.2514-1-urezki@gmail.com> <20211215111845.2514-5-urezki@gmail.com>
+ <YbpFfsTvB96g4+yU@pc638.lan> <YbtxBvfGR97C8r8U@google.com>
+In-Reply-To: <YbtxBvfGR97C8r8U@google.com>
+From:   Uladzislau Rezki <urezki@gmail.com>
+Date:   Fri, 17 Dec 2021 16:06:05 +0100
+Message-ID: <CA+KHdyWn=+Y=EHK6zWvMQBrh37gxqtiMAe-5yPh=rqPXF_GkmA@mail.gmail.com>
+Subject: Re: [PATCH] mfd: dln2: Switch to kvfree_rcu() API
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 12/17/21 14:21, Mark Rutland wrote:
-> I'm not immediately sure what we*should*  do here. What does x86 do for an IRQ
-> taken from a guest mode? I couldn't spot any handling of that case, but I'm not
-> familiar enough with the x86 exception model to know if I'm looking in the
-> right place.
+On Thu, Dec 16, 2021 at 6:02 PM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> On Wed, 15 Dec 2021, Uladzislau Rezki wrote:
+>
+> > On Wed, Dec 15, 2021 at 12:18:41PM +0100, Uladzislau Rezki (Sony) wrote:
+> > > Instead of invoking a synchronize_rcu() to free a pointer
+> > > after a grace period we can directly make use of new API
+> > > that does the same but in more efficient way.
+> > >
+> > > TO: Lee Jones <lee.jones@linaro.org>
+> > > TO: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+> > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > > ---
+> > >  drivers/mfd/dln2.c | 6 ++----
+> > >  1 file changed, 2 insertions(+), 4 deletions(-)
+> > >
+> > > diff --git a/drivers/mfd/dln2.c b/drivers/mfd/dln2.c
+> > > index 852129ea0766..365e3e77cac4 100644
+> > > --- a/drivers/mfd/dln2.c
+> > > +++ b/drivers/mfd/dln2.c
+> > > @@ -179,10 +179,8 @@ void dln2_unregister_event_cb(struct platform_device *pdev, u16 id)
+> > >
+> > >     spin_unlock_irqrestore(&dln2->event_cb_lock, flags);
+> > >
+> > > -   if (found) {
+> > > -           synchronize_rcu();
+> > > -           kfree(i);
+> > > -   }
+> > > +   if (found)
+> > > +           kvfree_rcu(i);
+> > >  }
+> > >  EXPORT_SYMBOL(dln2_unregister_event_cb);
+> > >
+> > + Lee Jones <lee.jones@linaro.org>
+> > + Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+>
+> I can't do anything with this.
+>
+> Send it properly please.
+>
+I got. Will do.
 
-ARM is missing something like commit 160457140187 ("KVM: x86: Defer 
-vtime accounting 'til after IRQ handling", 2021-05-05).
+Thanks!
 
-With that change, it would be possible to move guest_exit() in the 
-irq-disabled region without breaking time accounting.
-
-RISC-V has the same issue and it would be fixed in the same way, so 
-let's Cc Anup too.
-
-Paolo
+-- 
+Uladzislau Rezki
