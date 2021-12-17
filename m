@@ -2,80 +2,109 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F1122C433EF
-	for <rcu@archiver.kernel.org>; Fri, 17 Dec 2021 16:07:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BE379C433EF
+	for <rcu@archiver.kernel.org>; Fri, 17 Dec 2021 16:20:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235239AbhLQQHv (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 17 Dec 2021 11:07:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235181AbhLQQHv (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 17 Dec 2021 11:07:51 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 251BDC061574;
-        Fri, 17 Dec 2021 08:07:51 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B6BE1622D6;
-        Fri, 17 Dec 2021 16:07:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21AF3C36AE7;
-        Fri, 17 Dec 2021 16:07:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1639757270;
-        bh=CLb/vJNslUVn2r+sZTAnMRXCOXn59toIUCwh/IkwYQc=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=CauBV+W9fQqYJLQzdeFA0ISzNJpiTCqIKyxongSwUvHWWkmV6ZD9Fz7RP0oQ0HBqY
-         cMixjLYJ6SzKCdfisxaElhQrLY9OTob7qk2q5CMOldEHODGQRb++uLrqE0Bsij7oBd
-         Sny8bv8CbPIc1qIylGoq0z+KgoMCXO916kbjwDU5VgipqhhmbDonLjrNwKYZE6mMiC
-         lrSvid8A7axsjUwi7wLgvumi7Q6GMMEUZBFoGZlR79akUsGpEWTFlDlE/IhWSFfO7g
-         A47nTjy8S6M8YD1L3F8xNYUTLIkoH/EtFPc5eoqGUzNIr1k3C/wOEm8glNIEVob0i2
-         U/5/faGEZFJqA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id D3C9F5C0610; Fri, 17 Dec 2021 08:07:49 -0800 (PST)
-Date:   Fri, 17 Dec 2021 08:07:49 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
-        maz <maz@kernel.org>, frederic <frederic@kernel.org>,
+        id S239043AbhLQQUZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 17 Dec 2021 11:20:25 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47219 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239023AbhLQQUZ (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Fri, 17 Dec 2021 11:20:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1639758024;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yeSLiX88ywUnJSn3OPy2dA6dAW/L5+XCxa+K1ZsSMkg=;
+        b=NOw0MKAnc0pj9/G80WgJMwBpp8NVc+QKkyUM7G66odslwzBeYnP3Q7pUbc/pAUbqnzbtAw
+        fJO+d2d2prpFVY4pFUuxR3DLhpSGDYPq2Lqy1Oj2WVDO0+FHLLU62MEEAcO+sP9zVqzve6
+        MKyalSIiDubC1LQmQZSNc/tbxIRehTY=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-670-WK_NywesMnWt69tsm8lJAA-1; Fri, 17 Dec 2021 11:20:23 -0500
+X-MC-Unique: WK_NywesMnWt69tsm8lJAA-1
+Received: by mail-wr1-f69.google.com with SMTP id l9-20020adfa389000000b001a23bd1c661so763353wrb.6
+        for <rcu@vger.kernel.org>; Fri, 17 Dec 2021 08:20:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=yeSLiX88ywUnJSn3OPy2dA6dAW/L5+XCxa+K1ZsSMkg=;
+        b=31X5OxQWfU2/3v26p7qP7eVyKA8Y5TyyiVoqVL5OmJuotMlp1pu3emldjjB2L/gXGv
+         y29TSeP0YhoKpWXepB9guv4/fWaI6cL20Bl1+APAN3b6p4MsZe7dDrNY94rw+Gxz/zm5
+         F/iMRquZsPwWU89D44xCyv2MBZoCZsB1KQq7tcxcrAXBAE9WITubaULgh3f+NAaR2P4l
+         PdBr+4zMnvLXrbMc1qSw6hWPBqJ9USNhhOEjNEMbI3BVTCoYQzjwlaQ107rq6rRYdGP7
+         Y63pJk9iykS9K6Kc9l7To51kxk0o4kUqB6iDH75ZfjPQ5a+WUoTGzlWVAbJ5VZaPQSup
+         TRrg==
+X-Gm-Message-State: AOAM533q0VaRNlXKlU5dhJfdkoevoVGitmI6C9GvhDZZNL6nz5pTqJOP
+        S1xdcFQ8VyHnBTln+VYswKZkrBJfUyITnNa008yToZEvasO3n6cseqiODwKJv35Hj0lS6K5RI7u
+        u0bvZ1zWJ3iRl
+X-Received: by 2002:a5d:6483:: with SMTP id o3mr3128436wri.634.1639758022084;
+        Fri, 17 Dec 2021 08:20:22 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwk2ba7Tbij6WYWb1HqhmTZxhP9T+f29JbPI5KYAluKtYZQtdJHeX0aXwhZAJkm79KXnc0PuQ==
+X-Received: by 2002:a5d:6483:: with SMTP id o3mr3128421wri.634.1639758021885;
+        Fri, 17 Dec 2021 08:20:21 -0800 (PST)
+Received: from ?IPv6:2a0c:5a80:3511:9200:f938:102b:34c2:d5db? ([2a0c:5a80:3511:9200:f938:102b:34c2:d5db])
+        by smtp.gmail.com with ESMTPSA id b10sm8204839wrg.19.2021.12.17.08.20.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Dec 2021 08:20:21 -0800 (PST)
+Message-ID: <27231550b5600072da918aa41c07404dea13590e.camel@redhat.com>
+Subject: Re: Possible nohz-full/RCU issue in arm64 KVM
+From:   Nicolas Saenz Julienne <nsaenzju@redhat.com>
+To:     paulmck@kernel.org, Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Mark Rutland <mark.rutland@arm.com>, maz <maz@kernel.org>,
+        frederic <frederic@kernel.org>,
         linux-kernel <linux-kernel@vger.kernel.org>,
         rcu <rcu@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
         Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
         linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Subject: Re: Possible nohz-full/RCU issue in arm64 KVM
-Message-ID: <20211217160749.GS641268@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+Date:   Fri, 17 Dec 2021 17:20:21 +0100
+In-Reply-To: <20211217160749.GS641268@paulmck-ThinkPad-P17-Gen-1>
 References: <d80e440375896f75d45e227d40af60ca7ba24ceb.camel@redhat.com>
- <YbyO40zDW/kvUHEE@FVFF77S0Q05N>
- <70f112072d9496d21901946ea82832d3ed3a8cb2.camel@redhat.com>
- <Ybyg1r/Q6EfeuXGV@FVFF77S0Q05N>
- <9ab8107f-ff41-6a9e-57e1-a261bea93aca@redhat.com>
+         <YbyO40zDW/kvUHEE@FVFF77S0Q05N>
+         <70f112072d9496d21901946ea82832d3ed3a8cb2.camel@redhat.com>
+         <Ybyg1r/Q6EfeuXGV@FVFF77S0Q05N>
+         <9ab8107f-ff41-6a9e-57e1-a261bea93aca@redhat.com>
+         <20211217160749.GS641268@paulmck-ThinkPad-P17-Gen-1>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.2 (3.42.2-1.fc35) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9ab8107f-ff41-6a9e-57e1-a261bea93aca@redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Dec 17, 2021 at 04:54:22PM +0100, Paolo Bonzini wrote:
-> On 12/17/21 15:38, Mark Rutland wrote:
-> > For example kvm_guest_enter_irqoff() calls guest_enter_irq_off() which calls
-> > vtime_account_guest_enter(), but kvm_guest_exit_irqoff() doesn't call
-> > guest_exit_irq_off() and the call to vtime_account_guest_exit() is open-coded
-> > elsewhere. Also, guest_enter_irq_off() conditionally calls
-> > rcu_virt_note_context_switch(), but I can't immediately spot anything on the
-> > exit side that corresponded with that, which looks suspicious.
-> 
-> rcu_note_context_switch() is a point-in-time notification; it's not strictly
-> necessary, but it may improve performance a bit by avoiding unnecessary IPIs
-> from the RCU subsystem.
-> 
-> There's no benefit from doing it when you're back from the guest, because at
-> that point the CPU is just running normal kernel code.
+Hi Paul,
 
-Do scheduling-clock interrupts from guest mode have the "user" parameter
-set?  If so, that would keep RCU happy.
+On Fri, 2021-12-17 at 08:07 -0800, Paul E. McKenney wrote:
+> On Fri, Dec 17, 2021 at 04:54:22PM +0100, Paolo Bonzini wrote:
+> > On 12/17/21 15:38, Mark Rutland wrote:
+> > > For example kvm_guest_enter_irqoff() calls guest_enter_irq_off() which calls
+> > > vtime_account_guest_enter(), but kvm_guest_exit_irqoff() doesn't call
+> > > guest_exit_irq_off() and the call to vtime_account_guest_exit() is open-coded
+> > > elsewhere. Also, guest_enter_irq_off() conditionally calls
+> > > rcu_virt_note_context_switch(), but I can't immediately spot anything on the
+> > > exit side that corresponded with that, which looks suspicious.
+> > 
+> > rcu_note_context_switch() is a point-in-time notification; it's not strictly
+> > necessary, but it may improve performance a bit by avoiding unnecessary IPIs
+> > from the RCU subsystem.
+> > 
+> > There's no benefit from doing it when you're back from the guest, because at
+> > that point the CPU is just running normal kernel code.
+> 
+> Do scheduling-clock interrupts from guest mode have the "user" parameter
+> set?  If so, that would keep RCU happy.
 
-							Thanx, Paul
+Are you referring to the user_mode() check in irqentry_enter()? If so I don't
+think it'll help, arm64 doesn't use that function. It directly calls
+enter_from_{user,kernel}_mode() through its custom entry/exit routines.
+
+Regards,
+
+-- 
+Nicolás Sáenz
+
