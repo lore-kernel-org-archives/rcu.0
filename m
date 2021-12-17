@@ -2,46 +2,46 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E2DAC433F5
-	for <rcu@archiver.kernel.org>; Fri, 17 Dec 2021 16:43:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4EFC2C433F5
+	for <rcu@archiver.kernel.org>; Fri, 17 Dec 2021 16:45:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239270AbhLQQnu (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 17 Dec 2021 11:43:50 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:38040 "EHLO
+        id S239288AbhLQQpg (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 17 Dec 2021 11:45:36 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:38948 "EHLO
         dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239263AbhLQQnq (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 17 Dec 2021 11:43:46 -0500
+        with ESMTP id S239286AbhLQQpg (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 17 Dec 2021 11:45:36 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9968A6230A;
-        Fri, 17 Dec 2021 16:43:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02971C36AE7;
-        Fri, 17 Dec 2021 16:43:46 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2A3DC622FD;
+        Fri, 17 Dec 2021 16:45:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 875B4C36AE1;
+        Fri, 17 Dec 2021 16:45:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1639759426;
-        bh=xkjazaXf9e0HqFX4MjQxPv2BOTPj/MpAXhlPTHttWyk=;
+        s=k20201202; t=1639759535;
+        bh=+Z8HaNORlefmFC0iorPRnnxWsiru7mFwmG4mt8j06g4=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=YTyCfVjTbg8mkVA2Tl/PRClrCiLA5+/UCpd2WHbEicmlSu1k3xM+dYHodKxffl8b1
-         oLAiR6feNwRR4jQoVGH/HJ8fMd5Kq1xMf4rm7gvYH1W7xCCFaaNU8NlGU/rUbBfaIE
-         UjAd8hWR1dkLvYeB3mHyP96fW28SU3ai4apASxn63KF/33o/jJN1XtpLoXy1F8m4C4
-         BRE9Dgxkf9WqlnBX6gvB9+qFh5atzLePTsxhNhwzgGfqduKE+hzHHS8iVr2ZQ3fy7p
-         diHCHPtH7Cdw1rxSh7MA7FvwC34TyKXEoZ2fCr6rB74jgDrY4xQEKd4DxnT2c2Wy+H
-         fZ5rTE4xchqqw==
+        b=Uxtf76sJEP4I9ft93wAfQue9vIwowuCrbeQOafQU8q5x25anDEvL/i0tGoheL5fIG
+         UrUvxGSD0HapyDwZ4QB4fN5FUdjRJljktSyF2/kBTSBcVNRWcseC9Vtw0evM/f6Pyy
+         Kx0OZlk5IGVD0g9NdVSJ/9pZKBifhSDE0VEI9m5dzhW0EuJYIyN8CQ2QvywsjjYkaG
+         1ON6eJPNElI0OVa6p7txk8YagpmccK7Cp104iB2f9i9TX17j2NsvjA8XIyqMzCZYWY
+         7PxU2dUqKUOA/8r+hXqvGh3aB/xAjxfZlmmc+JQubmkDcrDxUxbFwePVAQvLZO7/9A
+         gps/Rws4WD2ZQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id AFDCB5C0610; Fri, 17 Dec 2021 08:43:45 -0800 (PST)
-Date:   Fri, 17 Dec 2021 08:43:45 -0800
+        id 4AEEA5C0610; Fri, 17 Dec 2021 08:45:35 -0800 (PST)
+Date:   Fri, 17 Dec 2021 08:45:35 -0800
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Nicolas Saenz Julienne <nsaenzju@redhat.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>, maz <maz@kernel.org>,
-        frederic <frederic@kernel.org>,
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+        maz <maz@kernel.org>, frederic <frederic@kernel.org>,
         linux-kernel <linux-kernel@vger.kernel.org>,
         rcu <rcu@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
         Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
         linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 Subject: Re: Possible nohz-full/RCU issue in arm64 KVM
-Message-ID: <20211217164345.GT641268@paulmck-ThinkPad-P17-Gen-1>
+Message-ID: <20211217164535.GU641268@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
 References: <d80e440375896f75d45e227d40af60ca7ba24ceb.camel@redhat.com>
  <YbyO40zDW/kvUHEE@FVFF77S0Q05N>
@@ -49,28 +49,17 @@ References: <d80e440375896f75d45e227d40af60ca7ba24ceb.camel@redhat.com>
  <Ybyg1r/Q6EfeuXGV@FVFF77S0Q05N>
  <9ab8107f-ff41-6a9e-57e1-a261bea93aca@redhat.com>
  <20211217160749.GS641268@paulmck-ThinkPad-P17-Gen-1>
- <27231550b5600072da918aa41c07404dea13590e.camel@redhat.com>
+ <f3d6095a-70aa-3da0-08a6-3caff2638809@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <27231550b5600072da918aa41c07404dea13590e.camel@redhat.com>
+In-Reply-To: <f3d6095a-70aa-3da0-08a6-3caff2638809@redhat.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Dec 17, 2021 at 05:20:21PM +0100, Nicolas Saenz Julienne wrote:
-> Hi Paul,
-> 
-> On Fri, 2021-12-17 at 08:07 -0800, Paul E. McKenney wrote:
-> > On Fri, Dec 17, 2021 at 04:54:22PM +0100, Paolo Bonzini wrote:
-> > > On 12/17/21 15:38, Mark Rutland wrote:
-> > > > For example kvm_guest_enter_irqoff() calls guest_enter_irq_off() which calls
-> > > > vtime_account_guest_enter(), but kvm_guest_exit_irqoff() doesn't call
-> > > > guest_exit_irq_off() and the call to vtime_account_guest_exit() is open-coded
-> > > > elsewhere. Also, guest_enter_irq_off() conditionally calls
-> > > > rcu_virt_note_context_switch(), but I can't immediately spot anything on the
-> > > > exit side that corresponded with that, which looks suspicious.
-> > > 
+On Fri, Dec 17, 2021 at 05:34:04PM +0100, Paolo Bonzini wrote:
+> On 12/17/21 17:07, Paul E. McKenney wrote:
 > > > rcu_note_context_switch() is a point-in-time notification; it's not strictly
 > > > necessary, but it may improve performance a bit by avoiding unnecessary IPIs
 > > > from the RCU subsystem.
@@ -81,17 +70,21 @@ On Fri, Dec 17, 2021 at 05:20:21PM +0100, Nicolas Saenz Julienne wrote:
 > > Do scheduling-clock interrupts from guest mode have the "user" parameter
 > > set?  If so, that would keep RCU happy.
 > 
-> Are you referring to the user_mode() check in irqentry_enter()? If so I don't
-> think it'll help, arm64 doesn't use that function. It directly calls
-> enter_from_{user,kernel}_mode() through its custom entry/exit routines.
+> No, thread is in supervisor mode.  But after every interrupt (timer tick or
+> anything), one of three things can happen:
+> 
+> * KVM will go around the execution loop and invoke rcu_note_context_switch()
+> again
+> 
+> * or KVM will go back to user space
 
-I am talking about rcu_sched_clock_irq(), which is called from
-update_process_times(), which is called from various places depending
-on .config.  These call sites pass in either user_mode(regs) or
-user_mode(get_irq_regs()).
+Here "user space" is a user process as opposed to a guest OS?
 
-Huh.  Maybe I should be looking into using user_mode(get_irq_regs())
-in other places within RCU.  Except that I bet the possibility of RCU
-being invoked from NMI handlers makes this a bit tricky.
+> * or the thread will be preempted
+> 
+> and either will keep RCU happy as far as I understand.
 
-							Thanx, Paul
+Regardless of the answer to my question above, yes, these will keep
+RCU happy.  ;-)
+
+						Thanx, Paul
