@@ -2,197 +2,370 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B5A2C433F5
-	for <rcu@archiver.kernel.org>; Fri, 17 Dec 2021 17:48:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B92DC433EF
+	for <rcu@archiver.kernel.org>; Fri, 17 Dec 2021 17:51:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235821AbhLQRs5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 17 Dec 2021 12:48:57 -0500
-Received: from mail-dm3nam07on2075.outbound.protection.outlook.com ([40.107.95.75]:50912
-        "EHLO NAM02-DM3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229736AbhLQRs4 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 17 Dec 2021 12:48:56 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AjWSA2BFCiMe1YlH7pizdSzOvQj9gSsVIkRy1ClKQsTywJpRtSWLFoaj7kBrte9FIjfm+9DjoxLOk4rnHnzXz8oNP2mPZ5OjITxiT2dYSKPtdGZcNB6nHrL8f4sGXWbzDviPlniXLHfWINIi0znHK1+afeAraajoeZzcNkAxUba3OZ2Kmx1NNZ1KjKdpVg/MH3ZzjsVuDcsT0RzpdV+HVtsKEoaD8nKcA64EDnW/zrvTjQVPtd2ALsDnaomOZZq109uF5NBy6Pr39WUMquNd5uDkdbUltUnvYyUp5k2KNMX4YESY3z0AXYiaShX7SS1X7ty0W4Ry4Afj0VUADAQppg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=nbToKbUbBjDm4F788XgWT0Vw1lQPJx3WFD1pl2YAkvw=;
- b=YjflbNMFjyKXjJbLr8I/vN0SwznIvg3b/h5iaB4z9TwReTxtcVcVId1AOfNL5K1xMmbj4+LQ5IL+hq3hVZJlwHcFZJnu1014CqTebJM3o6516bA9bAHMECS/CV+OSXkpB8/XdylAXYOK0s52SX3dR2HcvG5ACM7CEcrjGFA79MAdHtwBcQARrkovQsvprK1SyiO0oWLswq+8w55WLlDOUwJfeJM3UMluG87fmSSQW2WC7lYYyMraZXJ3MGQVsasE/+5exFM8HBh3jFEAGaDS1fI/4revRRCB557A5kK8I5sNLvPzPl4yhviONAgFnYhqkV7Jw9V6KSupF1CWIrO0gQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nbToKbUbBjDm4F788XgWT0Vw1lQPJx3WFD1pl2YAkvw=;
- b=sf5xU3Qb278Bs3bW7VZt50K2O3gYedFJmwIF4csgOrC44c7bw9ZdyZHGo4lQxLeJgTKL1NYIIf7YBTf7htyLM69G+INT10Nbro92QbEeDZ1yDy2iQ8svx/aNKgIIONXDhysz1oI1BCDtOmrCDycLgyB1QcA3SdOTH8vqG85qHWQ=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DM4PR12MB5229.namprd12.prod.outlook.com (2603:10b6:5:398::12)
- by DM4PR12MB5245.namprd12.prod.outlook.com (2603:10b6:5:398::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4801.15; Fri, 17 Dec
- 2021 17:48:52 +0000
-Received: from DM4PR12MB5229.namprd12.prod.outlook.com
- ([fe80::1ddd:71e4:5803:e44a]) by DM4PR12MB5229.namprd12.prod.outlook.com
- ([fe80::1ddd:71e4:5803:e44a%3]) with mapi id 15.20.4734.028; Fri, 17 Dec 2021
- 17:48:52 +0000
-Subject: Re: [PATCH v3 0/9] Parallel CPU bringup for x86_64
-To:     David Woodhouse <dwmw2@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "mimoja@mimoja.de" <mimoja@mimoja.de>,
-        "hewenliang4@huawei.com" <hewenliang4@huawei.com>,
-        "hushiyuan@huawei.com" <hushiyuan@huawei.com>,
-        "luolongjun@huawei.com" <luolongjun@huawei.com>,
-        "hejingxian@huawei.com" <hejingxian@huawei.com>
-References: <20211215145633.5238-1-dwmw2@infradead.org>
- <761c1552-0ca0-403b-3461-8426198180d0@amd.com>
- <ca0751c864570015ffe4d8cccdc94e0a5ef3086d.camel@infradead.org>
- <b13eac6c-ea87-aef9-437f-7266be2e2031@amd.com>
- <721484e0fa719e99f9b8f13e67de05033dd7cc86.camel@infradead.org>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-Message-ID: <1401c5a1-c8a2-cca1-e548-cab143f59d8f@amd.com>
-Date:   Fri, 17 Dec 2021 11:48:49 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <721484e0fa719e99f9b8f13e67de05033dd7cc86.camel@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SA0PR11CA0071.namprd11.prod.outlook.com
- (2603:10b6:806:d2::16) To DM4PR12MB5229.namprd12.prod.outlook.com
- (2603:10b6:5:398::12)
+        id S235805AbhLQRvu (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 17 Dec 2021 12:51:50 -0500
+Received: from sin.source.kernel.org ([145.40.73.55]:44956 "EHLO
+        sin.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233190AbhLQRvu (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 17 Dec 2021 12:51:50 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 774F6CE2615;
+        Fri, 17 Dec 2021 17:51:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2DEDC36AE1;
+        Fri, 17 Dec 2021 17:51:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1639763506;
+        bh=YIw75rLbHq8QXcUrRvg+laP52VN0uzCd6RBUBmS90rc=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Zu/lKXbgV3uOqIxHecBxLbFp9TUXYSi+ruViUvRyjdlgCPM4ymAGwNbOwMLJxNwoj
+         F+zKesl2U1LCVjU5Hb5flTA0Nu3p/mXIlHWsdDhxrkPGc8jnf37wzV8qxaPi7sKMka
+         1KJpkn+VeWqyEqpSts3xAm8Dh0nZaxoACDiWV5i3mJsm3qTqZcvmwim+iHac3sUWDI
+         wDFgr+DkSwX91XrhQUQdHCQdISabGY9BwpQ8H1anhwfbLWAQeZgkLDTmtcENu4G8ub
+         hupdyb2hdA7BK2MlDlBmE/eLmyx7zlSGwd+eMULz5fm2XLunkuiTCVAaC3KDcXiXxy
+         CtQT9VeQplXVw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 4C74E5C0610; Fri, 17 Dec 2021 09:51:46 -0800 (PST)
+Date:   Fri, 17 Dec 2021 09:51:46 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Nicolas Saenz Julienne <nsaenzju@redhat.com>
+Cc:     tglx@linutronix.de, mark.rutland@arm.com, rostedt@goodmis.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        rcu@vger.kernel.org, peterz@infradead.org, mtosatti@redhat.com,
+        frederic@kernel.org, corbet@lwn.net
+Subject: Re: [PATCH v3 1/2] Documentation: Fill the gaps about entry/noinstr
+ constraints
+Message-ID: <20211217175146.GY641268@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20211217105753.892855-1-nsaenzju@redhat.com>
 MIME-Version: 1.0
-Received: from office-ryzen.texastahm.com (67.79.209.213) by SA0PR11CA0071.namprd11.prod.outlook.com (2603:10b6:806:d2::16) with Microsoft SMTP Server (version=TLS1_2, cipher=) via Frontend Transport; Fri, 17 Dec 2021 17:48:50 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2cd79d46-b6df-4431-d7ec-08d9c1857d09
-X-MS-TrafficTypeDiagnostic: DM4PR12MB5245:EE_
-X-Microsoft-Antispam-PRVS: <DM4PR12MB52457B27E7C0F655CD470D1DEC789@DM4PR12MB5245.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Y+kpfAb0zu2BxI9CvOIaJkXw0UBgSJ4RBw4oftf69TR79VXLPFLZ9EiduN0JyYL3eEw1SBh1xEhvpD10Z4P5CxnqJwp++fd2RyhlGGJq2Tok04Ija4p3ZsOLEV/qchRseNWbCuNc8iM/5lxsdMGmi6yoWnC2m0vA59JsVUZgyRMWSdEocI7QNsewY0dEqdREiaoDrZAKJoCloFoLRC+XsRamvQn/lK24XBIDdRWLPHjo67BclfUatGp9jVd8gleN2I0pHt/D8mtp3PNxmEpfJ7K51oHJjnOKfiMWXZK5uTI4QAHjhMPFGAmE0AISgh8e4qOduPAWKbOjwH9CFOL/gFJ6wd9VMBMM/hZLDF5wajYtCk5fn6zba4oCtWeD6+qAevzDx7sYcI4a1GJTHsUrwIok5F8sQ0suwiVhR++t8nOvv5TTVXEeJNsgt4/eAGD76ZF3q4aIRLjrmuKMX86oyjMHNUeQwcq9KZCLSsskopBkrW/x4Dra+IbeFDFJrXyO1yyx9mTF1x2U0TVHjUW/lIyNLOjgwMfFXojECckjKjazYda/fY/MSMTdOzIp3kMxhwD4vfFG4FdycNhMpzqGTdv3T9k8iPbFvR3vebXdH/RUdq05sSd0LG7mo7G5KWIOKdp0PS3ex32EPKgTjxBBfqTKfx2B0OqoMLv4jUlvUrkGP2FULQYEywZG7t2figAq5JgoJ0s4ycRn4DkUO7H0V5TN7LZ7JUGAKVtD1N0bnTAw0NvPRBME5iyK76MMUi9a
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5229.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(7416002)(6506007)(31696002)(4326008)(8676002)(86362001)(66946007)(66556008)(31686004)(66476007)(508600001)(4001150100001)(53546011)(8936002)(110136005)(956004)(2906002)(38100700002)(83380400001)(6486002)(6512007)(36756003)(316002)(2616005)(186003)(5660300002)(26005)(54906003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WENGRnJSSFdMQWxoWU5jQkY0SW1zSGdzUlZpak9UTmxXaTJYTXo2Rnl6SWFB?=
- =?utf-8?B?M1BNUnl3N0Zkczd5aGlzb1RLOW1iNmtCTm1rcXZwVjk1eUtiQ1JqQjNUd1R1?=
- =?utf-8?B?ZWk3UFkyUlJ4YUtjV2dVeWs4VVQ3SW5vVjhmeCtlcEpJWW5Td0R4WlVhdWxs?=
- =?utf-8?B?Z3hVaDRKVkxlSUhUUEhpV2g3MmJockR2MlZGS3QrZFJvRlZqQWhmZmdMMVcx?=
- =?utf-8?B?SXpKNGlHdEREMkh1TkxmZGZwTjhDN1lsWFArTjZEcHBYKzNTVUFMRjRqaEJ6?=
- =?utf-8?B?NzNmWDRHSkRlYkNpcHJ5UnFPTXB3ajZqVytoYzJXU0N0ZlJ4SjV4VlU4L0dn?=
- =?utf-8?B?UHZvWGluVnI3WGhacmFNTWNnOE05dUVzUTkwVzBPUGxQUVVjK09Tdms2Nkhz?=
- =?utf-8?B?RDVhd0hjK2lrYzJOQmxlbzg2WU1hcmhiK3I3RFYrMEppdjBsSXB4ZFlHaENM?=
- =?utf-8?B?MFZHMDFmdTM5cnhqY2pvNUVINkdneUorWVlGdC8wd1BWTUdQZ1Jld0F4QUxr?=
- =?utf-8?B?czdyV2VQZzBoRnVGZTZPYXc0MkZGbGhGQWtOUmZiOFFMWXRtTlBYR1lHallM?=
- =?utf-8?B?bDBqMDNJUDJKSkF4K1B2TVlOc1NoR0NkWHhMR0xnbFVHWTRMa3NQeEFyUm9y?=
- =?utf-8?B?bElwS0NSaDhXOUFGQ2lQNkdXYStFR3RoL05DTzR4MUxIV3hzQzlvelVtOVVo?=
- =?utf-8?B?K3pic3Z1ekJnaFFNOXFmSjRCTFNhUjVTaDF3VFlGQXFjYitFYXpyQjN0dGl1?=
- =?utf-8?B?RmlKbjN2ZXFDaW8yTmVjWU5DR3kvY3pQOXpkWXFIUkJ5eUtmQlZ1RnFMMDE5?=
- =?utf-8?B?TzRlM2ZXV0xpbDQ1cWk5T1ZnMDI3WjJ2dkVqRXEwTThxTnkwem1sazBwbFha?=
- =?utf-8?B?SDh5TitrQnNQUWxUY1ZwbldUbUZVMVA4RDhEU2MxZzlGQXJNMDdwemFiR3M0?=
- =?utf-8?B?OVRXVDkwYnlKbWh5WFZCYVVuWDlGalRVVVdwSGg3Rk9KNWx0a3RNb2ZCdDkz?=
- =?utf-8?B?aVBtZU96ODFXUk5UVGZiRjkyUHgwbWRUSUJzWG5JeVZrZDR1WVpMVUEvZCsr?=
- =?utf-8?B?TUlOUlJDWU8vQ0Z0d2F0R0R4eUJLUE82WDBHWCtRb1h2dFpzNFVVUHc3WlUx?=
- =?utf-8?B?TENWbFo0aGRoTWJZYlVSMVJEWWhjRTdoaDFhQWxtTFhIYkJXS1BJZkxEc0Vs?=
- =?utf-8?B?b1NTUlNLSDQ3L1B2UWdxMFI4WFJVMlk4cFRmOE1TOTJNUm5GTnNDRVpyNkV0?=
- =?utf-8?B?MmE5V1ZDWTRRTXQzYXNUTnJ5NjVZazdVUExwVHFiMm55YUpSWVgrTXV0KzJ6?=
- =?utf-8?B?VlJtYjhncFFwd0d2YXN4b3RYcEVXYi9FaTVkd0d5dk1ENXNLMWZjUlRWZ1gr?=
- =?utf-8?B?T2I2MkVCMkFuTURQQmtqTW9zdjk0SDhRcVZzSUxseThmbTAwaStGNFhvaVlE?=
- =?utf-8?B?ZGJMSURiaEJraVlTcGdDTzhLclB1TmdielR0Ymx1NCt5SXgxN245M2dqYXFv?=
- =?utf-8?B?djkwVmQ5SjJkWFUyaVRDZnR5SnBXZDl2T2pldlgvbzB0Q1AvS21FclNhYytQ?=
- =?utf-8?B?dlhQSjgxVktGNDVaSWx6bUM1S1owVWJETC9zdmk5V3dhajRIek5wLy9JaUc0?=
- =?utf-8?B?MTVmL1pWYmtsc0dzVU5iTkl1Y1BjY2tFZlZUT3NmOTRmZ0lBTXRlUkRLSUtQ?=
- =?utf-8?B?cmwxbitnY0FPQlE1ZjYwcWtJelFYNUNoSTZaMUpmQlUwUVVHSmVUSGExcnFI?=
- =?utf-8?B?Mk9hZU1uQklNemJRcUlpd044Qkhva0N4WEdCMTdwVk9lOEcwZm1CWFU2VHVM?=
- =?utf-8?B?MUthVytCejZLQzlNVWE0QjJaTlBBa0lSeVhVd0V6bzloZFRNUE5zZ0MyMlZl?=
- =?utf-8?B?WkhMRmVHWEhJSjRZY1U1UkhnMW1GeE5KMkhPb1o1MERZSEhjVWFYeXdFWW5v?=
- =?utf-8?B?NDhGNXMzMG04eDljekpVMjNReVYzMVhPU1hzNXhFR1R2b0tUNHhNamlyZkRq?=
- =?utf-8?B?SEg0YlF4NmJvNXYzNTVOT0k2T1pIalRpUFRiOXlMSmNuYnZnSDhzR1BUaG5H?=
- =?utf-8?B?bVRlcWRuNW8yc3VoNU9KVm9OUUZvaXlYTjdnYWo4cFpaNWpCSGdWczRvOXlP?=
- =?utf-8?B?VjBGRnp2UllSaE5GQm05YWlLVkUzK0JTaVRVb2k3dERXaEZseGF4ck9OakVl?=
- =?utf-8?Q?9Mi6G/xYZ6K+e0ZGsFVeanI=3D?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2cd79d46-b6df-4431-d7ec-08d9c1857d09
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5229.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Dec 2021 17:48:52.4185
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 5s2l7miwEgaerbQFONmca2MppswnswDFmzMsS7JK8iodIHAxrTYrm/cPG142v7fSaj9L9c4iboBJgNdXxdLuFQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5245
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211217105753.892855-1-nsaenzju@redhat.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 12/16/21 6:13 PM, David Woodhouse wrote:
-> On Thu, 2021-12-16 at 16:52 -0600, Tom Lendacky wrote:
->> On baremetal, I haven't seen an issue. This only seems to have a problem
->> with Qemu/KVM.
->>
->> With 191f08997577 I could boot without issues with and without the
->> no_parallel_bringup. Only after I applied e78fa57dd642 did the failure happen.
->>
->> With e78fa57dd642 I could boot 64 vCPUs pretty consistently, but when I
->> jumped to 128 vCPUs it failed again. When I moved the series to
->> df9726cb7178, then 64 vCPUs also failed pretty consistently.
->>
->> Strange thing is it is random. Sometimes (rarely) it works on the first
->> boot and then sometimes it doesn't, at which point it will reset and
->> reboot 3 or 4 times and then make it past the failure and fully boot.
+On Fri, Dec 17, 2021 at 11:57:52AM +0100, Nicolas Saenz Julienne wrote:
+> From: Thomas Gleixner <tglx@linutronix.de>
 > 
-> Hm, some of that is just artifacts of timing, I'm sure. But now I'm
-> staring at the way that early_setup_idt() can run in parallel on all
-> CPUs, rewriting bringup_idt_descr and loading it.
+> The entry/exit handling for exceptions, interrupts, syscalls and KVM is
+> not really documented except for some comments.
 > 
-> To start with, let's try unlocking the trampoline_lock much later,
-> after cpu_init_exception_handling() has loaded the real IDT.
+> Fill the gaps.
 > 
-> I think we can probably make secondaries load the real IDT early and
-> never use bringup_idt_descr at all, can't we? But let's see if this
-> makes it go away, to start with...
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de
+> Co-developed-by: Nicolas Saenz Julienne <nsaenzju@redhat.com>
+> Signed-off-by: Nicolas Saenz Julienne <nsaenzju@redhat.com>
+> Reviewed-by: Mark Rutland <mark.rutland@arm.com>
+
+Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+
+> ----
 > 
-
-This still fails. I ran with -d cpu_reset on the command line and will
-forward the full log to you. I ran "grep "[ER]IP=" stderr.log | uniq -c"
-and got:
-
-     128 EIP=00000000 EFL=00000000 [-------] CPL=0 II=0 A20=0 SMM=0 HLT=0
-     128 EIP=0000fff0 EFL=00000002 [-------] CPL=0 II=0 A20=1 SMM=0 HLT=0
-These are before running any of the vCPUs.
-
-       1 RIP=ffffffff810705c6 RFL=00000206 [-----P-] CPL=0 II=0 A20=1 SMM=0 HLT=0
-This is where vCPU0 is at the time of the reset. This address tends to
-be different all the time and so I think it is just where it happens to
-be when the reset occurs and isn't contributing to the reset.
-   
-       5 RIP=ffffffff8104aefb RFL=00000046 [---Z-P-] CPL=0 II=0 A20=1 SMM=0 HLT=0
-       1 RIP=ffffffff8104af06 RFL=00000046 [---Z-P-] CPL=0 II=0 A20=1 SMM=0 HLT=0
-      15 RIP=ffffffff8104aefb RFL=00000046 [---Z-P-] CPL=0 II=0 A20=1 SMM=0 HLT=0
-These are some of the APs and all are in wait_for_master_cpu().
-
-       1 EIP=0000101b EFL=00000003 [------C] CPL=0 II=0 A20=1 SMM=0 HLT=0
-This seems ok because: CS =9900 00099000 0000ffff 00009b00
-So likely in the trampoline code.
-
-       1 EIP=0000fff0 EFL=00000002 [-------] CPL=0 II=0 A20=1 SMM=0 HLT=0
-This one seems odd... could it be the one causing the reset?
-CS =f000 ffff0000 0000ffff 00009a00
-
-       3 RIP=ffffffff8104aefb RFL=00000046 [---Z-P-] CPL=0 II=0 A20=1 SMM=0 HLT=0
-       2 EIP=0000101b EFL=00000003 [------C] CPL=0 II=0 A20=1 SMM=0 HLT=0
-      99 EIP=3f36e11b EFL=00000046 [---Z-P-] CPL=0 II=0 A20=1 SMM=0 HLT=1
-
-Thanks,
-Tom
+> Changes since v2:
+>  - No big content changes, just style corrections, so it should be
+>    pretty clean at this stage. In the light of this, I kept Mark's
+>    Reviewed-by.
+>  - Paul's style and paragraph re-writes
+>  - Randy's style comments
+>  - Add links to transition type sections
+> 
+>  Documentation/core-api/entry.rst | 261 +++++++++++++++++++++++++++++++
+>  Documentation/core-api/index.rst |   8 +
+>  2 files changed, 269 insertions(+)
+>  create mode 100644 Documentation/core-api/entry.rst
+> 
+> diff --git a/Documentation/core-api/entry.rst b/Documentation/core-api/entry.rst
+> new file mode 100644
+> index 000000000000..3f80537f2826
+> --- /dev/null
+> +++ b/Documentation/core-api/entry.rst
+> @@ -0,0 +1,261 @@
+> +Entry/exit handling for exceptions, interrupts, syscalls and KVM
+> +================================================================
+> +
+> +All transitions between execution domains require state updates which are
+> +subject to strict ordering constraints. State updates are required for the
+> +following:
+> +
+> +  * Lockdep
+> +  * RCU / Context tracking
+> +  * Preemption counter
+> +  * Tracing
+> +  * Time accounting
+> +
+> +The update order depends on the transition type and is explained below in
+> +the transition type sections: `Syscalls`_, `KVM`_, `Interrupts and regular
+> +exceptions`_, `NMI and NMI-like exceptions`_.
+> +
+> +Non-instrumentable code - noinstr
+> +---------------------------------
+> +
+> +Most instrumentation facilities depend on RCU, so intrumentation is prohibited
+> +for entry code before RCU starts watching and exit code after RCU stops
+> +watching. In addition, many architectures must save and restore register state,
+> +which means that (for example) a breakpoint in the breakpoint entry code would
+> +overwrite the debug registers of the initial breakpoint.
+> +
+> +Such code must be marked with the 'noinstr' attribute, placing that code into a
+> +special section inaccessible to instrumentation and debug facilities. Some
+> +functions are partially instrumentable, which is handled by marking them nointr
+> +and using instrumentation_begin() and instrumentation_end() to flag the
+> +instrumentable ranges of code:
+> +
+> +.. code-block:: c
+> +
+> +  noinstr void entry(void)
+> +  {
+> +  	handle_entry();     // <-- must be 'noinstr' or '__always_inline'
+> +	...
+> +
+> +	instrumentation_begin();
+> +	handle_context();   // <-- instrumentable code
+> +	instrumentation_end();
+> +
+> +	...
+> +	handle_exit();      // <-- must be 'noinstr' or '__always_inline'
+> +  }
+> +
+> +This allows verification of the 'noinstr' restrictions via objtool on
+> +supported architectures.
+> +
+> +Invoking non-instrumentable functions from instrumentable context has no
+> +restrictions and is useful to protect e.g. state switching which would
+> +cause malfunction if instrumented.
+> +
+> +All non-instrumentable entry/exit code sections before and after the RCU
+> +state transitions must run with interrupts disabled.
+> +
+> +Syscalls
+> +--------
+> +
+> +Syscall-entry code starts in assembly code and calls out into low-level C code
+> +after establishing low-level architecture-specific state and stack frames. This
+> +low-level C code must not be instrumented. A typical syscall handling function
+> +invoked from low-level assembly code looks like this:
+> +
+> +.. code-block:: c
+> +
+> +  noinstr void syscall(struct pt_regs *regs, int nr)
+> +  {
+> +	arch_syscall_enter(regs);
+> +	nr = syscall_enter_from_user_mode(regs, nr);
+> +
+> +	instrumentation_begin();
+> +	if (!invoke_syscall(regs, nr) && nr != -1)
+> +	 	result_reg(regs) = __sys_ni_syscall(regs);
+> +	instrumentation_end();
+> +
+> +	syscall_exit_to_user_mode(regs);
+> +  }
+> +
+> +syscall_enter_from_user_mode() first invokes enter_from_user_mode() which
+> +establishes state in the following order:
+> +
+> +  * Lockdep
+> +  * RCU / Context tracking
+> +  * Tracing
+> +
+> +and then invokes the various entry work functions like ptrace, seccomp, audit,
+> +syscall tracing, etc. After all that is done, the instrumentable invoke_syscall
+> +function can be invoked. The instrumentable code section then ends, after which
+> +syscall_exit_to_user_mode() is invoked.
+> +
+> +syscall_exit_to_user_mode() handles all work which needs to be done before
+> +returning to user space like tracing, audit, signals, task work etc. After
+> +that it invokes exit_to_user_mode() which again handles the state
+> +transition in the reverse order:
+> +
+> +  * Tracing
+> +  * RCU / Context tracking
+> +  * Lockdep
+> +
+> +syscall_enter_from_user_mode() and syscall_exit_to_user_mode() are also
+> +available as fine grained subfunctions in cases where the architecture code
+> +has to do extra work between the various steps. In such cases it has to
+> +ensure that enter_from_user_mode() is called first on entry and
+> +exit_to_user_mode() is called last on exit.
+> +
+> +
+> +KVM
+> +---
+> +
+> +Entering or exiting guest mode is very similar to syscalls. From the host
+> +kernel point of view the CPU goes off into user space when entering the
+> +guest and returns to the kernel on exit.
+> +
+> +kvm_guest_enter_irqoff() is a KVM-specific variant of exit_to_user_mode()
+> +and kvm_guest_exit_irqoff() is the KVM variant of enter_from_user_mode().
+> +The state operations have the same ordering.
+> +
+> +Task work handling is done separately for guest at the boundary of the
+> +vcpu_run() loop via xfer_to_guest_mode_handle_work() which is a subset of
+> +the work handled on return to user space.
+> +
+> +Interrupts and regular exceptions
+> +---------------------------------
+> +
+> +Interrupts entry and exit handling is slightly more complex than syscalls
+> +and KVM transitions.
+> +
+> +If an interrupt is raised while the CPU executes in user space, the entry
+> +and exit handling is exactly the same as for syscalls.
+> +
+> +If the interrupt is raised while the CPU executes in kernel space the entry and
+> +exit handling is slightly different. RCU state is only updated when the
+> +interrupt is raised in the context of the CPU's idle task. Otherwise, RCU will
+> +already be watching. Lockdep and tracing have to be updated unconditionally.
+> +
+> +irqentry_enter() and irqentry_exit() provide the implementation for this.
+> +
+> +The architecture-specific part looks similar to syscall handling:
+> +
+> +.. code-block:: c
+> +
+> +  noinstr void interrupt(struct pt_regs *regs, int nr)
+> +  {
+> +	arch_interrupt_enter(regs);
+> +	state = irqentry_enter(regs);
+> +
+> +	instrumentation_begin();
+> +
+> +	irq_enter_rcu();
+> +	invoke_irq_handler(regs, nr);
+> +	irq_exit_rcu();
+> +
+> +	instrumentation_end();
+> +
+> +	irqentry_exit(regs, state);
+> +  }
+> +
+> +Note that the invocation of the actual interrupt handler is within a
+> +irq_enter_rcu() and irq_exit_rcu() pair.
+> +
+> +irq_enter_rcu() updates the preemption count which makes in_hardirq()
+> +return true, handles NOHZ tick state and interrupt time accounting. This
+> +means that up to the point where irq_enter_rcu() is invoked in_hardirq()
+> +returns false.
+> +
+> +irq_exit_rcu() handles interrupt time accounting, undoes the preemption
+> +count update and eventually handles soft interrupts and NOHZ tick state.
+> +
+> +In theory, the preemption count could be updated in irqentry_enter(). In
+> +practice, deferring this update to irq_enter_rcu() allows the preemption-count
+> +code to be traced, while also maintaining symmetry with irq_exit_rcu() and
+> +irqentry_exit(), which are described in the next paragraph. The only downside
+> +is that the early entry code up to irq_enter_rcu() must be aware that the
+> +preemption count has not yet been updated with the HARDIRQ_OFFSET state.
+> +
+> +Note that irq_exit_rcu() must remove HARDIRQ_OFFSET from the preemption count
+> +before it handles soft interrupts, whose handlers must run in BH context rather
+> +than irq-disabled context. In addition, irqentry_exit() might schedule, which
+> +also requires that HARDIRQ_OFFSET has been removed from the preemption count.
+> +
+> +NMI and NMI-like exceptions
+> +---------------------------
+> +
+> +NMIs and NMI-like exceptions (machine checks, double faults, debug
+> +interrupts, etc.) can hit any context and must be extra careful with
+> +the state.
+> +
+> +State changes for debug exceptions and machine-check exceptions depend on
+> +whether these exceptions happened in user-space (breakpoints or watchpoints) or
+> +in kernel mode (code patching). From user-space, they are treated like
+> +interrupts, while from kernel mode they are treated like NMIs.
+> +
+> +NMIs and other NMI-like exceptions handle state transitions without
+> +distinguishing between user-mode and kernel-mode origin.
+> +
+> +The state update on entry is handled in irqentry_nmi_enter() which updates
+> +state in the following order:
+> +
+> +  * Preemption counter
+> +  * Lockdep
+> +  * RCU / Context tracking
+> +  * Tracing
+> +
+> +The exit counterpart irqentry_nmi_exit() does the reverse operation in the
+> +reverse order.
+> +
+> +Note that the update of the preemption counter has to be the first
+> +operation on enter and the last operation on exit. The reason is that both
+> +lockdep and RCU rely on in_nmi() returning true in this case. The
+> +preemption count modification in the NMI entry/exit case must not be
+> +traced.
+> +
+> +Architecture-specific code looks like this:
+> +
+> +.. code-block:: c
+> +
+> +  noinstr void nmi(struct pt_regs *regs)
+> +  {
+> +	arch_nmi_enter(regs);
+> +	state = irqentry_nmi_enter(regs);
+> +
+> +	instrumentation_begin();
+> +	nmi_handler(regs);
+> +	instrumentation_end();
+> +
+> +	irqentry_nmi_exit(regs);
+> +  }
+> +
+> +and for e.g. a debug exception it can look like this:
+> +
+> +.. code-block:: c
+> +
+> +  noinstr void debug(struct pt_regs *regs)
+> +  {
+> +	arch_nmi_enter(regs);
+> +
+> +	debug_regs = save_debug_regs();
+> +
+> +	if (user_mode(regs)) {
+> +		state = irqentry_enter(regs);
+> +
+> +		instrumentation_begin();
+> +		user_mode_debug_handler(regs, debug_regs);
+> +		instrumentation_end();
+> +
+> +		irqentry_exit(regs, state);
+> +  	} else {
+> +  		state = irqentry_nmi_enter(regs);
+> +
+> +		instrumentation_begin();
+> +		kernel_mode_debug_handler(regs, debug_regs);
+> +		instrumentation_end();
+> +
+> +		irqentry_nmi_exit(regs, state);
+> +	}
+> +  }
+> +
+> +There is no combined irqentry_nmi_if_kernel() function available as the
+> +above cannot be handled in an exception-agnostic way.
+> diff --git a/Documentation/core-api/index.rst b/Documentation/core-api/index.rst
+> index 5de2c7a4b1b3..972d46a5ddf6 100644
+> --- a/Documentation/core-api/index.rst
+> +++ b/Documentation/core-api/index.rst
+> @@ -44,6 +44,14 @@ Library functionality that is used throughout the kernel.
+>     timekeeping
+>     errseq
+>  
+> +Low level entry and exit
+> +========================
+> +
+> +.. toctree::
+> +   :maxdepth: 1
+> +
+> +   entry
+> +
+>  Concurrency primitives
+>  ======================
+>  
+> -- 
+> 2.33.1
+> 
