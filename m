@@ -2,44 +2,35 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4928CC433EF
-	for <rcu@archiver.kernel.org>; Thu, 16 Dec 2021 22:52:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2CD69C433EF
+	for <rcu@archiver.kernel.org>; Fri, 17 Dec 2021 00:13:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233990AbhLPWwm (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 16 Dec 2021 17:52:42 -0500
-Received: from mail-dm6nam10on2057.outbound.protection.outlook.com ([40.107.93.57]:44641
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231652AbhLPWwl (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 16 Dec 2021 17:52:41 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IqXgXcj46qqVm+vg6gFbfJL1V73QXKtfl8zMtWsSiReoMiGgXUu2IexcnbjLGKhMAFde1uW48oeEFg0uea67z9BU3PM1f/7RYL+nKTlMBsHNf558gYw37DDQfCphfMcNPvVwvJDk2y2P2jiXzITuA8kiLmNMasOOzfbwdaOqwFkazh+cja57ZFxKmnvETTfDMbAk7Y81VYpSd84OBVAFtKbVoYIjKIfwg1kPC2/4IwBIGgKM/4aN6FcMPPWsphSupRh/zljhDGkoKZg74KDMa+PFKei81eTF5ZpzwR0EZCSz2Xv/zbuAZbUK8jPcq3nAUf+HkcO3mG2dLoY4I8WcCw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HyzXxyzLksW0UQJyY4fCdeNh5+beTnO0ygBp5l4QftE=;
- b=PwG2oXCA0ofHijFUwZNEkUotRSlfrLKiWbCg1UIjJfy+Hhns5wkXaRo5Z2PdPBc+ZIE7uh2Qi+nfn0P6WOSQ8UgOu53YCTShxzZwPBGOvZ6esnFHSamlm3ySwGJVHVuSPQ1wfgqM0//cRdq/O2y8Cr7qANjOrmHt9tqD6Zrx+Vhj3jpeK7LoqonPX2mlNwrOdCSy2dzP6az8wWynT9skO73DiyQa5qAukewUgVxht5fKExBnFuUrKdwKhJY710jv4HNagjaDh/xhDbE7f7rKK32qNjRWKC+vvMjGLo0ojb4nE3HxQytIbK1OrqeAJ3xfrh4ikUShoxBdWqxyU+UFJA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HyzXxyzLksW0UQJyY4fCdeNh5+beTnO0ygBp5l4QftE=;
- b=gBdqfsAfLK0tsSVAnVZPJgZVs8AjIpK550ehdv+J3HpTmbZCnME086Aiq0RI7ktYTRMOO89cpfel7XmNT4WeXkHbUR/obfqEhQmc+p4Xclc8PQmFYjMUc17n/jVElVNyOYFhqd4wNhdk/0a6QKKLAc+xLOb14KJdb6l8Yh9GY9g=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DM4PR12MB5229.namprd12.prod.outlook.com (2603:10b6:5:398::12)
- by DM6PR12MB5567.namprd12.prod.outlook.com (2603:10b6:5:1ba::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4801.15; Thu, 16 Dec
- 2021 22:52:39 +0000
-Received: from DM4PR12MB5229.namprd12.prod.outlook.com
- ([fe80::1ddd:71e4:5803:e44a]) by DM4PR12MB5229.namprd12.prod.outlook.com
- ([fe80::1ddd:71e4:5803:e44a%3]) with mapi id 15.20.4734.028; Thu, 16 Dec 2021
- 22:52:39 +0000
-From:   Tom Lendacky <thomas.lendacky@amd.com>
+        id S229826AbhLQANv (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 16 Dec 2021 19:13:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229525AbhLQANv (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 16 Dec 2021 19:13:51 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 671D6C061574;
+        Thu, 16 Dec 2021 16:13:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=MIME-Version:Content-Type:References:
+        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=rawG0vRRNmO41OmmJfitNK2c42i0dmNpNba91jNZcAg=; b=j6fid68HKd5sQ2Il9fZeL+XAk2
+        yo97LdW9pESuCVJdHblgTjCt/ZfOaK5Ok/EgM+JYw03jMjdFXtJBxxb3X/w3FInUSn1OEZPJ8TiI3
+        Ti9mfYocRv75ciRQqVUj5Onm1VfnGh3b4Mh5ltr1fS9G8Ia32Ardrd96G0dW1o84d7ZwaQL5PJ4PY
+        AxY9xj9/lz341BWJfPyuJublDmWzgGzK4NDTNeISqaITGCqwDINwXUAy7zKlpuBvri1M94FFxku+F
+        tn0t4J49L8i3WOSRxflztLejEi4nGcYGP1LdYUQuZUkND3VtatYlzKmZDHRdOdVw73bPPbNchDEFs
+        1hfNuAmw==;
+Received: from [2001:8b0:10b:1::3ae] (helo=u3832b3a9db3152.ant.amazon.com)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1my0sD-0083Ve-0I; Fri, 17 Dec 2021 00:13:21 +0000
+Message-ID: <721484e0fa719e99f9b8f13e67de05033dd7cc86.camel@infradead.org>
 Subject: Re: [PATCH v3 0/9] Parallel CPU bringup for x86_64
-To:     David Woodhouse <dwmw2@infradead.org>,
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     Tom Lendacky <thomas.lendacky@amd.com>,
         Thomas Gleixner <tglx@linutronix.de>
 Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         Dave Hansen <dave.hansen@linux.intel.com>,
@@ -55,145 +46,195 @@ Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         "hushiyuan@huawei.com" <hushiyuan@huawei.com>,
         "luolongjun@huawei.com" <luolongjun@huawei.com>,
         "hejingxian@huawei.com" <hejingxian@huawei.com>
+Date:   Fri, 17 Dec 2021 00:13:16 +0000
+In-Reply-To: <b13eac6c-ea87-aef9-437f-7266be2e2031@amd.com>
 References: <20211215145633.5238-1-dwmw2@infradead.org>
- <761c1552-0ca0-403b-3461-8426198180d0@amd.com>
- <ca0751c864570015ffe4d8cccdc94e0a5ef3086d.camel@infradead.org>
-Message-ID: <b13eac6c-ea87-aef9-437f-7266be2e2031@amd.com>
-Date:   Thu, 16 Dec 2021 16:52:36 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <ca0751c864570015ffe4d8cccdc94e0a5ef3086d.camel@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SA0PR11CA0143.namprd11.prod.outlook.com
- (2603:10b6:806:131::28) To DM4PR12MB5229.namprd12.prod.outlook.com
- (2603:10b6:5:398::12)
+         <761c1552-0ca0-403b-3461-8426198180d0@amd.com>
+         <ca0751c864570015ffe4d8cccdc94e0a5ef3086d.camel@infradead.org>
+         <b13eac6c-ea87-aef9-437f-7266be2e2031@amd.com>
+Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
+        boundary="=-NNF9tUzP2tOJLy2sYuBZ"
+User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
-Received: from office-ryzen.texastahm.com (67.79.209.213) by SA0PR11CA0143.namprd11.prod.outlook.com (2603:10b6:806:131::28) with Microsoft SMTP Server (version=TLS1_2, cipher=) via Frontend Transport; Thu, 16 Dec 2021 22:52:37 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f8b8cdc0-c179-47df-ef10-08d9c0e6c2b8
-X-MS-TrafficTypeDiagnostic: DM6PR12MB5567:EE_
-X-Microsoft-Antispam-PRVS: <DM6PR12MB55670FB3DE64F735680896BBEC779@DM6PR12MB5567.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: AtFaivfoknwFVBnocKvWK3wozBHg641Zj/JhIBL4SejBCwWEcfXZTDMEJdNguwz0KiDEIzv2dyNU7sAR8pc4TJJs4OuocT7Zb9OiCu6PVnQ9p/ZMxBT6K3XBdt5RIfUhawImRlhyBYR9lX/LpzyXWfFmfruvBIQ4Ae+CbdsgEPSXW2YMUJXxxYcax/dffI6hx0APdlyEV+IampyuVlCwq7GWoIFvIcFiGEPCsIsvCSP68sopfEWO98OTLsSu4A/pXMrOyNrj5DCtvldJwey0ZC0dZtqo/gPCkwI8l0v3JkRcgQaVEMUb1EWAJF0+tnp8A9U7VyA8D66VDhplND46ijVYoQ+Nb19WvufVZ+71RtUnVTQ0toTLayk7s6cXGWPQDKUgBN9DlgHPGpFbgENEQtKAXJdO4LBzbn/D4CbSCqTTNIMKjOmyqLfvJKrakoysoNm444vphCcA8zdUsBaJgTE6mzfm0ztz5P3XUj6xyzlBp+f3OoWrmjmV9xc6PP9qOuIFa/Bs1SuXVwY70uw3KLhXLrwj0xB4PEAwtiohy8J2JeNRVtrIQSuIShDfRDHy0FprFUUDCmuqRBoMEUhohjrMz04yECCfBrOHRSRgj42W+RbJkPGDxmn1BUnt+Db2AvMso6nIeimKB6QYwmOzuYYVBniydxlGRf+E0NNy0JW38EI7mhq+xE0wFbSGu08uHLxuP8HzPKuiW5f795EYRV6StIjO/Ouv6rCluktAm4WLDT+XKH+63Cj+foKtOd7p
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5229.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(83380400001)(36756003)(66476007)(66946007)(38100700002)(508600001)(66556008)(54906003)(316002)(8936002)(110136005)(4001150100001)(86362001)(4326008)(53546011)(2616005)(186003)(6506007)(6512007)(31686004)(31696002)(26005)(8676002)(5660300002)(2906002)(7416002)(956004)(6486002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NjlRbEt3WTVSNmNZZDkrR2RETlA1aFBiT3o2NTk0N28wK0c0UFVqaWZSalNj?=
- =?utf-8?B?TEZ3UGs2aWNxR1dvVTNNWVI3bzFEOTFsSDExdGtHUHBBRXcxME9hRHoyMHM3?=
- =?utf-8?B?SnI1YmRzV0hiVFFlcVlvN1lrZk5wK3BBQjFtNG9xWGhJcWJMU0psN2JOZHkx?=
- =?utf-8?B?RkVoM2dQWUtZQjY3aDB2NWsvTXZURmF1K1p6bU9IbFh3MXFPRDlScHRHNC9I?=
- =?utf-8?B?Mm1VTXhYRWZlRVk0cFBJd1VlSVdWcWhBcVRybk02V201Q1FBN0xWT20yWERq?=
- =?utf-8?B?alFFTXBsUVp2ZStHUjBDRHk1M1RaeDRLZURURGhDMDUrelkzVTgzV2t4TGRT?=
- =?utf-8?B?VkNycGkyWklOWTlNMXI5UlNncGJkSy82L2VyVDNmQlNCV0krQWhkaTZKbyt4?=
- =?utf-8?B?WGVzUVB4bnhQNkJ6U2JTeUlDSTcxTURXYmlERGRrQ3R0NVp2d0RYa05wY0t3?=
- =?utf-8?B?K0E4NzllZkQwdHNkaVlwcm4rOGVTTjg3NmI0dytVQkcrWi9vL1RselpsRVpI?=
- =?utf-8?B?SzIzOFVjQ29rNWc3M01xZ0FNQXJxWW1LU2xiTndmSHR1THVpbElCclMwaW5I?=
- =?utf-8?B?SkdlYSthK2ZnbC9PMk5vN1ZtWjQxM2h3ejl4ZDltcDhmdmhtNWY0eXRoYTRt?=
- =?utf-8?B?VnVhRUNadmc4UmZPaFEvTng4Z3J5VTBpYUdQQkdnTHJxMWVVaktiYzFyZWhP?=
- =?utf-8?B?VkJIRHhvWlVQL0ZhZit6R2pieUJXNzM0cFNJditXa21MQVliU2ZpZXdSd2ha?=
- =?utf-8?B?cndXT1NxVnlTNDR6NW5qWG8vQ2NSakswdDJLc0dNaWJhSElQeVh2WGpiR0NX?=
- =?utf-8?B?WnI2OUNJaHBta09UdGtKbHp2ZlBBN0RaRFVCekxNYW9SQzRjdm1yWE50Z2Vj?=
- =?utf-8?B?UDNQL3dTVUpnS0VneWhOanloVDJMaWZiZWVvS1dHYi9HWitnamFCMmFkN2Zq?=
- =?utf-8?B?clRtb1FheS9DSHJTK3NkcncyWjhxWUgvbWJyYXNLWlI0blF2cUNScXRYRzRD?=
- =?utf-8?B?QWdTaGQxbWZ0RjROTlZGRmxiUlJlbmpRYjgvZk0rVTZRNHRPTDdMSGtTbHg2?=
- =?utf-8?B?UFRHRGZmZzF2ZDNNc01WZE1UTmhLUml2UXVDVHZ6Y0ozem8yUTZBMVI1dUFj?=
- =?utf-8?B?SVI2d2doRDZvaUhqWTl0dkswdEpkaWlsNU82eUJkMWwyQ0N4c002SHppNmNJ?=
- =?utf-8?B?RFRlZzdpemlPWlZSNEpYMGJzRnp4dmh3RnFMeHJ1c3IxWjJPZ1pBK1VCc2g4?=
- =?utf-8?B?SGtqSU1LdnBFMEcwNmtwZkhJYzhYRUZJZGdMSjVxMkhpWjBXc0dsWmFaMFNV?=
- =?utf-8?B?T2p4Y3hIdENXMlFXdVNYWUlPYUtlTlZZcVNTT0xLVFZRbnJmOUdiSHZwS1Fo?=
- =?utf-8?B?TWNpRVczamVjSllWU0VQNFhXVC9lbWNlcXVxQzdxODB1d1RyUVFIQ0xVWUZZ?=
- =?utf-8?B?czBucVV2U1hURk9TUjhzTitPWVo4TDA5LzhETDB5RzF1K0MrTTZEK1VNaita?=
- =?utf-8?B?bnlDZnpNd2twaWhYRWdqWXZvODFTazZYRFFjVHBDT1Q5dC9mUFlhVVZCQWRG?=
- =?utf-8?B?dzVlbEltelNzNzhLYmEydWlvWUVyY2xZS1VzZ1N3d29DK1dNUE1hV2F3VVpI?=
- =?utf-8?B?WWtnMmpjemNWbzh6NDZwenliYmQ0L1lIZW1CcUkzKzZJcDRZTFJkZml2WnRZ?=
- =?utf-8?B?NzlWYmI5dWJmRmc5UVNTbkI1UDByeDJaRFZWWmdmWFBBaHpMSkFUMkFMdEcz?=
- =?utf-8?B?RjNrejU1cmlkUkRHQnhTdTliNGNwNXVNVHI0cFVET1haY2puWThtN0VqOHVK?=
- =?utf-8?B?a0NUT2txbkxSWHo0elNGTGpCejhFV29PdWFibUdTalQrMWFYVG1JcjFEL3kr?=
- =?utf-8?B?aHM4MWlKNllJR0dnRFNJZ0h1K3pSdE9vbFk0ZFJjTWxadThyNzJsZ1VxOE4r?=
- =?utf-8?B?VzRWL2hxeTBqaTRQNVJHUTdDUFlXTFNXQ1A5MGIweUVzZm1xbFN2TkZSNVRG?=
- =?utf-8?B?cjlTdk5FQzBqbWY2N0YrK2xQd1A2QTBaYkhOd29UVXRWK2xFRzl0cFlqT0NT?=
- =?utf-8?B?L25iTTBDSDdQWUxYcEQ4RUVMM3FPZlpCVm9NMFphR1daZ1E2VzU2MlZKSmdV?=
- =?utf-8?B?NHUvR2ExdDZrZklwRlBkZkhYMmZ0VHlvdG5VS05OYm93UXRCU0NUcDh1V3cv?=
- =?utf-8?Q?gbKSXUWabIQzh4leUZLa1uI=3D?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f8b8cdc0-c179-47df-ef10-08d9c0e6c2b8
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5229.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Dec 2021 22:52:39.3488
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: i1JVWUlRAPUga+Vk+/kUrEDXKMpjZv3MPF3HzTmyr1Ac9vq0thBfqvaRMpOHzzkMOHRM6MsFN9xXw4ZxtFg1Ew==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB5567
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 12/16/21 1:24 PM, David Woodhouse wrote:
-> On Thu, 2021-12-16 at 10:27 -0600, Tom Lendacky wrote:
->> On 12/15/21 8:56 AM, David Woodhouse wrote:
->>> Doing the INIT/SIPI/SIPI in parallel for all APs and *then* waiting for
->>> them shaves about 80% off the AP bringup time on a 96-thread socket
->>> Skylake box (EC2 c5.metal) — from about 500ms to 100ms.
->>>
->>> There are more wins to be had with further parallelisation, but this is
->>> the simple part.
->>
->> I applied this series and began booting a regular non-SEV guest and hit a
->> failure at 39 vCPUs. No panic or warning, just a reset and OVMF was
->> executing again. I'll try to debug what's going, but not sure how quickly
->> I'll arrive at anything.
-> 
-> Thanks for testing. This is working for me with BIOS and EFI boots in
-> qemu and real hardware but it's mostly been Intel so far. I'll try
-> harder on an AMD box.
 
-On baremetal, I haven't seen an issue. This only seems to have a problem 
-with Qemu/KVM.
+--=-NNF9tUzP2tOJLy2sYuBZ
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-With 191f08997577 I could boot without issues with and without the 
-no_parallel_bringup. Only after I applied e78fa57dd642 did the failure happen.
+On Thu, 2021-12-16 at 16:52 -0600, Tom Lendacky wrote:
+> On baremetal, I haven't seen an issue. This only seems to have a problem=
+=20
+> with Qemu/KVM.
+>=20
+> With 191f08997577 I could boot without issues with and without the=20
+> no_parallel_bringup. Only after I applied e78fa57dd642 did the failure ha=
+ppen.
+>=20
+> With e78fa57dd642 I could boot 64 vCPUs pretty consistently, but when I=
+=20
+> jumped to 128 vCPUs it failed again. When I moved the series to=20
+> df9726cb7178, then 64 vCPUs also failed pretty consistently.
+>=20
+> Strange thing is it is random. Sometimes (rarely) it works on the first=
+=20
+> boot and then sometimes it doesn't, at which point it will reset and=20
+> reboot 3 or 4 times and then make it past the failure and fully boot.
 
-With e78fa57dd642 I could boot 64 vCPUs pretty consistently, but when I 
-jumped to 128 vCPUs it failed again. When I moved the series to 
-df9726cb7178, then 64 vCPUs also failed pretty consistently.
+Hm, some of that is just artifacts of timing, I'm sure. But now I'm
+staring at the way that early_setup_idt() can run in parallel on all
+CPUs, rewriting bringup_idt_descr and loading it.
 
-Strange thing is it is random. Sometimes (rarely) it works on the first 
-boot and then sometimes it doesn't, at which point it will reset and 
-reboot 3 or 4 times and then make it past the failure and fully boot.
+To start with, let's try unlocking the trampoline_lock much later,
+after cpu_init_exception_handling() has loaded the real IDT.=20
 
-> 
-> Anything else special about your setup, kernel config or qemu
-> invocation that might help me reproduce?
+I think we can probably make secondaries load the real IDT early and
+never use bringup_idt_descr at all, can't we? But let's see if this
+makes it go away, to start with...
 
-Shouldn't be anything special that I'm aware of:
-  - EPYC 3rd Gen (Milan)
-  - Qemu 6.1.0
-  - OVMF edk2-stable202111
+diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
+index 0cd6373bc3f2..2307f7575ab4 100644
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -59,7 +59,7 @@
+ #include <asm/cpu_device_id.h>
+ #include <asm/uv/uv.h>
+ #include <asm/sigframe.h>
+-
++#include <asm/realmode.h>
+ #include "cpu.h"
+=20
+ u32 elf_hwcap2 __read_mostly;
+@@ -2060,6 +2060,7 @@ void cpu_init_secondary(void)
+ 	 * on this CPU in cpu_init_exception_handling().
+ 	 */
+ 	cpu_init_exception_handling();
++	clear_bit(0, (unsigned long *)trampoline_lock);
+ 	cpu_init();
+ }
+ #endif
+diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
+index 3e4c3c416bce..db01b56574cd 100644
+--- a/arch/x86/kernel/head_64.S
++++ b/arch/x86/kernel/head_64.S
+@@ -273,14 +273,6 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_=
+GLOBAL)
+ 	 */
+ 	movq initial_stack(%rip), %rsp
+=20
+-	/* Drop the realmode protection. For the boot CPU the pointer is NULL! */
+-	movq	trampoline_lock(%rip), %rax
+-	testq	%rax, %rax
+-	jz	.Lsetup_idt
+-	lock
+-	btrl	$0, (%rax)
+-
+-.Lsetup_idt:
+ 	/* Setup and Load IDT */
+ 	pushq	%rsi
+ 	call	early_setup_idt
 
-The qemu command line is:
-qemu-system-x86_64 -enable-kvm -cpu EPYC,host-phys-bits=true -smp 128 -m 
-1G -machine type=q35 -drive 
-if=pflash,format=raw,unit=0,file=/root/kernels/qemu-install/OVMF_CODE.fd,readonly=on 
--drive if=pflash,format=raw,unit=1,file=./diskless.fd -nographic -kernel 
-/root/kernels/linux-build-x86_64/arch/x86/boot/bzImage -append 
-"console=ttyS0,115200n8" -monitor pty -monitor unix:monitor,server,nowait
+--=-NNF9tUzP2tOJLy2sYuBZ
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
 
-I can send the kernel config to you offlist if you're unable to repro with 
-yours.
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCECow
+ggUcMIIEBKADAgECAhEA4rtJSHkq7AnpxKUY8ZlYZjANBgkqhkiG9w0BAQsFADCBlzELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
+A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
+bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0EwHhcNMTkwMTAyMDAwMDAwWhcNMjIwMTAxMjM1
+OTU5WjAkMSIwIAYJKoZIhvcNAQkBFhNkd213MkBpbmZyYWRlYWQub3JnMIIBIjANBgkqhkiG9w0B
+AQEFAAOCAQ8AMIIBCgKCAQEAsv3wObLTCbUA7GJqKj9vHGf+Fa+tpkO+ZRVve9EpNsMsfXhvFpb8
+RgL8vD+L133wK6csYoDU7zKiAo92FMUWaY1Hy6HqvVr9oevfTV3xhB5rQO1RHJoAfkvhy+wpjo7Q
+cXuzkOpibq2YurVStHAiGqAOMGMXhcVGqPuGhcVcVzVUjsvEzAV9Po9K2rpZ52FE4rDkpDK1pBK+
+uOAyOkgIg/cD8Kugav5tyapydeWMZRJQH1vMQ6OVT24CyAn2yXm2NgTQMS1mpzStP2ioPtTnszIQ
+Ih7ASVzhV6csHb8Yrkx8mgllOyrt9Y2kWRRJFm/FPRNEurOeNV6lnYAXOymVJwIDAQABo4IB0zCC
+Ac8wHwYDVR0jBBgwFoAUgq9sjPjF/pZhfOgfPStxSF7Ei8AwHQYDVR0OBBYEFLfuNf820LvaT4AK
+xrGK3EKx1DE7MA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMBAf8EAjAAMB0GA1UdJQQWMBQGCCsGAQUF
+BwMEBggrBgEFBQcDAjBGBgNVHSAEPzA9MDsGDCsGAQQBsjEBAgEDBTArMCkGCCsGAQUFBwIBFh1o
+dHRwczovL3NlY3VyZS5jb21vZG8ubmV0L0NQUzBaBgNVHR8EUzBRME+gTaBLhklodHRwOi8vY3Js
+LmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWls
+Q0EuY3JsMIGLBggrBgEFBQcBAQR/MH0wVQYIKwYBBQUHMAKGSWh0dHA6Ly9jcnQuY29tb2RvY2Eu
+Y29tL0NPTU9ET1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcnQwJAYI
+KwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmNvbW9kb2NhLmNvbTAeBgNVHREEFzAVgRNkd213MkBpbmZy
+YWRlYWQub3JnMA0GCSqGSIb3DQEBCwUAA4IBAQALbSykFusvvVkSIWttcEeifOGGKs7Wx2f5f45b
+nv2ghcxK5URjUvCnJhg+soxOMoQLG6+nbhzzb2rLTdRVGbvjZH0fOOzq0LShq0EXsqnJbbuwJhK+
+PnBtqX5O23PMHutP1l88AtVN+Rb72oSvnD+dK6708JqqUx2MAFLMevrhJRXLjKb2Mm+/8XBpEw+B
+7DisN4TMlLB/d55WnT9UPNHmQ+3KFL7QrTO8hYExkU849g58Dn3Nw3oCbMUgny81ocrLlB2Z5fFG
+Qu1AdNiBA+kg/UxzyJZpFbKfCITd5yX49bOriL692aMVDyqUvh8fP+T99PqorH4cIJP6OxSTdxKM
+MIIFHDCCBASgAwIBAgIRAOK7SUh5KuwJ6cSlGPGZWGYwDQYJKoZIhvcNAQELBQAwgZcxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
+ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTE5MDEwMjAwMDAwMFoXDTIyMDEwMTIz
+NTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCASIwDQYJKoZIhvcN
+AQEBBQADggEPADCCAQoCggEBALL98Dmy0wm1AOxiaio/bxxn/hWvraZDvmUVb3vRKTbDLH14bxaW
+/EYC/Lw/i9d98CunLGKA1O8yogKPdhTFFmmNR8uh6r1a/aHr301d8YQea0DtURyaAH5L4cvsKY6O
+0HF7s5DqYm6tmLq1UrRwIhqgDjBjF4XFRqj7hoXFXFc1VI7LxMwFfT6PStq6WedhROKw5KQytaQS
+vrjgMjpICIP3A/CroGr+bcmqcnXljGUSUB9bzEOjlU9uAsgJ9sl5tjYE0DEtZqc0rT9oqD7U57My
+ECIewElc4VenLB2/GK5MfJoJZTsq7fWNpFkUSRZvxT0TRLqznjVepZ2AFzsplScCAwEAAaOCAdMw
+ggHPMB8GA1UdIwQYMBaAFIKvbIz4xf6WYXzoHz0rcUhexIvAMB0GA1UdDgQWBBS37jX/NtC72k+A
+CsaxitxCsdQxOzAOBgNVHQ8BAf8EBAMCBaAwDAYDVR0TAQH/BAIwADAdBgNVHSUEFjAUBggrBgEF
+BQcDBAYIKwYBBQUHAwIwRgYDVR0gBD8wPTA7BgwrBgEEAbIxAQIBAwUwKzApBggrBgEFBQcCARYd
+aHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9DUFMwWgYDVR0fBFMwUTBPoE2gS4ZJaHR0cDovL2Ny
+bC5jb21vZG9jYS5jb20vQ09NT0RPUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFp
+bENBLmNybDCBiwYIKwYBBQUHAQEEfzB9MFUGCCsGAQUFBzAChklodHRwOi8vY3J0LmNvbW9kb2Nh
+LmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWlsQ0EuY3J0MCQG
+CCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
+cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAC20spBbrL71ZEiFrbXBHonzhhirO1sdn+X+O
+W579oIXMSuVEY1LwpyYYPrKMTjKECxuvp24c829qy03UVRm742R9Hzjs6tC0oatBF7KpyW27sCYS
+vj5wbal+TttzzB7rT9ZfPALVTfkW+9qEr5w/nSuu9PCaqlMdjABSzHr64SUVy4ym9jJvv/FwaRMP
+gew4rDeEzJSwf3eeVp0/VDzR5kPtyhS+0K0zvIWBMZFPOPYOfA59zcN6AmzFIJ8vNaHKy5QdmeXx
+RkLtQHTYgQPpIP1Mc8iWaRWynwiE3ecl+PWzq4i+vdmjFQ8qlL4fHz/k/fT6qKx+HCCT+jsUk3cS
+jDCCBeYwggPOoAMCAQICEGqb4Tg7/ytrnwHV2binUlYwDQYJKoZIhvcNAQEMBQAwgYUxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMSswKQYDVQQDEyJDT01PRE8gUlNBIENlcnRpZmljYXRp
+b24gQXV0aG9yaXR5MB4XDTEzMDExMDAwMDAwMFoXDTI4MDEwOTIzNTk1OVowgZcxCzAJBgNVBAYT
+AkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNV
+BAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRoZW50
+aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAvrOeV6wodnVAFsc4A5jTxhh2IVDzJXkLTLWg0X06WD6cpzEup/Y0dtmEatrQPTRI5Or1u6zf
++bGBSyD9aH95dDSmeny1nxdlYCeXIoymMv6pQHJGNcIDpFDIMypVpVSRsivlJTRENf+RKwrB6vcf
+WlP8dSsE3Rfywq09N0ZfxcBa39V0wsGtkGWC+eQKiz4pBZYKjrc5NOpG9qrxpZxyb4o4yNNwTqza
+aPpGRqXB7IMjtf7tTmU2jqPMLxFNe1VXj9XB1rHvbRikw8lBoNoSWY66nJN/VCJv5ym6Q0mdCbDK
+CMPybTjoNCQuelc0IAaO4nLUXk0BOSxSxt8kCvsUtQIDAQABo4IBPDCCATgwHwYDVR0jBBgwFoAU
+u69+Aj36pvE8hI6t7jiY7NkyMtQwHQYDVR0OBBYEFIKvbIz4xf6WYXzoHz0rcUhexIvAMA4GA1Ud
+DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMBEGA1UdIAQKMAgwBgYEVR0gADBMBgNVHR8E
+RTBDMEGgP6A9hjtodHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDZXJ0aWZpY2F0aW9u
+QXV0aG9yaXR5LmNybDBxBggrBgEFBQcBAQRlMGMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9jcnQuY29t
+b2RvY2EuY29tL0NPTU9ET1JTQUFkZFRydXN0Q0EuY3J0MCQGCCsGAQUFBzABhhhodHRwOi8vb2Nz
+cC5jb21vZG9jYS5jb20wDQYJKoZIhvcNAQEMBQADggIBAHhcsoEoNE887l9Wzp+XVuyPomsX9vP2
+SQgG1NgvNc3fQP7TcePo7EIMERoh42awGGsma65u/ITse2hKZHzT0CBxhuhb6txM1n/y78e/4ZOs
+0j8CGpfb+SJA3GaBQ+394k+z3ZByWPQedXLL1OdK8aRINTsjk/H5Ns77zwbjOKkDamxlpZ4TKSDM
+KVmU/PUWNMKSTvtlenlxBhh7ETrN543j/Q6qqgCWgWuMAXijnRglp9fyadqGOncjZjaaSOGTTFB+
+E2pvOUtY+hPebuPtTbq7vODqzCM6ryEhNhzf+enm0zlpXK7q332nXttNtjv7VFNYG+I31gnMrwfH
+M5tdhYF/8v5UY5g2xANPECTQdu9vWPoqNSGDt87b3gXb1AiGGaI06vzgkejL580ul+9hz9D0S0U4
+jkhJiA7EuTecP/CFtR72uYRBcunwwH3fciPjviDDAI9SnC/2aPY8ydehzuZutLbZdRJ5PDEJM/1t
+yZR2niOYihZ+FCbtf3D9mB12D4ln9icgc7CwaxpNSCPt8i/GqK2HsOgkL3VYnwtx7cJUmpvVdZ4o
+gnzgXtgtdk3ShrtOS1iAN2ZBXFiRmjVzmehoMof06r1xub+85hFQzVxZx5/bRaTKTlL8YXLI8nAb
+R9HWdFqzcOoB/hxfEyIQpx9/s81rgzdEZOofSlZHynoSMYIDyjCCA8YCAQEwga0wgZcxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
+ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA4rtJSHkq7AnpxKUY8ZlYZjANBglghkgB
+ZQMEAgEFAKCCAe0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjEx
+MjE3MDAxMzE2WjAvBgkqhkiG9w0BCQQxIgQgUu6VF5yMajtbwwNgG3O7Ohll2w0UgSMNpfo7xGC6
+ORgwgb4GCSsGAQQBgjcQBDGBsDCBrTCBlzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIg
+TWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQx
+PTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1h
+aWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMIHABgsqhkiG9w0BCRACCzGBsKCBrTCBlzELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
+A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
+bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMA0GCSqGSIb3
+DQEBAQUABIIBAFtk5qoymBTxPNycr748zcdPQJQwgko8nU6PsDFoxwrNeIrBqZVqvHseyBY2WJs4
+maQyFSYbSLLtwsS3JWBc13gcX6ZP9K3N9Q5+CDZb9zaXX8eYyCcTR4F83raKV/98GcrnkHTw2M1y
+PduLMMapd5bI4/qfQrk+XdWblr5Wn0TGdY32FHpsQwlyRnyipYwmOltrNLYGXryIsfBtFE8id7j3
+Z+Za+3WD32GsH2sprOr0eXy5uqLjdgV2nhevT9QUEZPwgjq/5fXkcHNKvoQGYhuNU3J8Z9GA2ozB
+7rlT3zQNVau675uq5zVXXuZnCGZzsDNKN+TR1/oXE6+D3B3bZigAAAAAAAA=
 
-> 
-> If it can repro without KVM, 'qemu -d in_asm' can be extremely useful
-> for this kind of thing btw.
 
-I didn't repro the failure without KVM.
+--=-NNF9tUzP2tOJLy2sYuBZ--
 
-Thanks,
-Tom
-
-> 
