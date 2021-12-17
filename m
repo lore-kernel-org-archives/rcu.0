@@ -2,136 +2,419 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C3D87C433EF
-	for <rcu@archiver.kernel.org>; Fri, 17 Dec 2021 17:56:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7709DC433EF
+	for <rcu@archiver.kernel.org>; Fri, 17 Dec 2021 19:11:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236398AbhLQR4t (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 17 Dec 2021 12:56:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36224 "EHLO
+        id S234208AbhLQTLh (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 17 Dec 2021 14:11:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231484AbhLQR4t (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 17 Dec 2021 12:56:49 -0500
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C04BFC061574;
-        Fri, 17 Dec 2021 09:56:48 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 18DC1CE2607;
-        Fri, 17 Dec 2021 17:56:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36499C36AE7;
-        Fri, 17 Dec 2021 17:56:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1639763805;
-        bh=KCW1lWZbjvReZP/7JHwJgi2VLsdq6dNTG2h9PueIXys=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=lBl8FVniEwJfkBmgdSXJFmxAheEHcfrVw/KdDB+ms3HfMEGVNQ7Udc0tHWXOJ+0Dz
-         7Kjc/ixxEYm6+B7KlAnFE72+CxHqlA7clgt/Yg7kIGzJFKOdtHT4eTob82aGJgjxSn
-         GTIpnE1tSX70kd8XAOWJtnZk/2V0xZ+bIoJgKGSSiBteTVJ9NUmYhU36dHeyTIw5S6
-         V3UlJPhGlxRuE+WueVoPLbsqryiW6MwHOOJsmqvZUygA7JYIBvY+GOb60l76rCDWXH
-         n+3EJ0meGUWqznHNexIqX969cErMbsPErb376bShbzm6DVvZoy+IKPJmUOl5FGpd+K
-         WotDMYD4jYgnQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 000EE5C0610; Fri, 17 Dec 2021 09:56:44 -0800 (PST)
-Date:   Fri, 17 Dec 2021 09:56:44 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Nicolas Saenz Julienne <nsaenzju@redhat.com>
-Cc:     tglx@linutronix.de, mark.rutland@arm.com, rostedt@goodmis.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        rcu@vger.kernel.org, peterz@infradead.org, mtosatti@redhat.com,
-        frederic@kernel.org, corbet@lwn.net
-Subject: Re: [PATCH v3 2/2] Documentation: core-api: entry: Add comments
- about nesting
-Message-ID: <20211217175644.GZ641268@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20211217105753.892855-1-nsaenzju@redhat.com>
- <20211217105753.892855-2-nsaenzju@redhat.com>
+        with ESMTP id S232853AbhLQTLg (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 17 Dec 2021 14:11:36 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E348C061574;
+        Fri, 17 Dec 2021 11:11:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=MIME-Version:Content-Type:References:
+        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=J4ub23026kjPlOzjxHivVJq/4ie0Dz90kkwgKbGyc4Q=; b=Go3CvrSCf7Eomrvxd8QnPeQ5pd
+        dVwe61EIpJFpAIC+qHZO7DRK7lYHh9UBKV3k2t4bunC8Y36ruEQZuMBKWFqb1Edblscpka5SDRjJs
+        CKB4l75kYxoB4B3E85rGKSQIIXIdW4sPjF4QG+eqSRYx9y1NXae33m4Yx22QKM7EiLesU5zsj8Ue/
+        oPOE9o2EwDU4isLTWCf5YWtGGH7l+aUSA03aAu9+m6ljQZFQ884f961WKHomzO8BLrTaQYccQMUNY
+        UD5zWIGYIciXYPveQ6JuO+d69RWwUq1HwPPCHNcXUaMViAQiyMiC0OvJBUUsIWoF11Bkb1y4kF1Xi
+        rI7qSegA==;
+Received: from [2001:8b0:10b:1::3ae] (helo=u3832b3a9db3152.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1myIdR-00C4ir-N7; Fri, 17 Dec 2021 19:11:18 +0000
+Message-ID: <2bfb13ed5d565ab09bd794f69a6ef2b1b75e507a.camel@infradead.org>
+Subject: Re: [PATCH v3 0/9] Parallel CPU bringup for x86_64
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "mimoja@mimoja.de" <mimoja@mimoja.de>,
+        "hewenliang4@huawei.com" <hewenliang4@huawei.com>,
+        "hushiyuan@huawei.com" <hushiyuan@huawei.com>,
+        "luolongjun@huawei.com" <luolongjun@huawei.com>,
+        "hejingxian@huawei.com" <hejingxian@huawei.com>
+Date:   Fri, 17 Dec 2021 19:11:12 +0000
+In-Reply-To: <1401c5a1-c8a2-cca1-e548-cab143f59d8f@amd.com>
+References: <20211215145633.5238-1-dwmw2@infradead.org>
+         <761c1552-0ca0-403b-3461-8426198180d0@amd.com>
+         <ca0751c864570015ffe4d8cccdc94e0a5ef3086d.camel@infradead.org>
+         <b13eac6c-ea87-aef9-437f-7266be2e2031@amd.com>
+         <721484e0fa719e99f9b8f13e67de05033dd7cc86.camel@infradead.org>
+         <1401c5a1-c8a2-cca1-e548-cab143f59d8f@amd.com>
+Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
+        boundary="=-OuLVbXvPdBitGtpIQfSd"
+User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211217105753.892855-2-nsaenzju@redhat.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Dec 17, 2021 at 11:57:53AM +0100, Nicolas Saenz Julienne wrote:
-> The topic of nesting and reentrancy in the context of early entry code
-> hasn't been addressed so far. So do it.
-> 
-> Signed-off-by: Nicolas Saenz Julienne <nsaenzju@redhat.com>
 
-Looks good!  Just a few small suggestions below.
+--=-OuLVbXvPdBitGtpIQfSd
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-							Thanx, Paul
+On Fri, 2021-12-17 at 11:48 -0600, Tom Lendacky wrote:
+> On 12/16/21 6:13 PM, David Woodhouse wrote:
+> > On Thu, 2021-12-16 at 16:52 -0600, Tom Lendacky wrote:
+> > > On baremetal, I haven't seen an issue. This only seems to have a prob=
+lem
+> > > with Qemu/KVM.
+> > >=20
+> > > With 191f08997577 I could boot without issues with and without the
+> > > no_parallel_bringup. Only after I applied e78fa57dd642 did the failur=
+e happen.
+> > >=20
+> > > With e78fa57dd642 I could boot 64 vCPUs pretty consistently, but when=
+ I
+> > > jumped to 128 vCPUs it failed again. When I moved the series to
+> > > df9726cb7178, then 64 vCPUs also failed pretty consistently.
+> > >=20
+> > > Strange thing is it is random. Sometimes (rarely) it works on the fir=
+st
+> > > boot and then sometimes it doesn't, at which point it will reset and
+> > > reboot 3 or 4 times and then make it past the failure and fully boot.
+> >=20
+> > Hm, some of that is just artifacts of timing, I'm sure. But now I'm
+> > staring at the way that early_setup_idt() can run in parallel on all
+> > CPUs, rewriting bringup_idt_descr and loading it.
+> >=20
+> > To start with, let's try unlocking the trampoline_lock much later,
+> > after cpu_init_exception_handling() has loaded the real IDT.
+> >=20
+> > I think we can probably make secondaries load the real IDT early and
+> > never use bringup_idt_descr at all, can't we? But let's see if this
+> > makes it go away, to start with...
+> >=20
+>=20
+> This still fails. I ran with -d cpu_reset on the command line and will
+> forward the full log to you. I ran "grep "[ER]IP=3D" stderr.log | uniq -c=
+"
+> and got:
+>=20
+>      128 EIP=3D00000000 EFL=3D00000000 [-------] CPL=3D0 II=3D0 A20=3D0 S=
+MM=3D0 HLT=3D0
+>      128 EIP=3D0000fff0 EFL=3D00000002 [-------] CPL=3D0 II=3D0 A20=3D1 S=
+MM=3D0 HLT=3D0
+> These are before running any of the vCPUs.
+>
+>        1 RIP=3Dffffffff810705c6 RFL=3D00000206 [-----P-] CPL=3D0 II=3D0 A=
+20=3D1 SMM=3D0 HLT=3D0
+> This is where vCPU0 is at the time of the reset. This address tends to
+> be different all the time and so I think it is just where it happens to
+> be when the reset occurs and isn't contributing to the reset.
 
-> ---
-> 
-> NOTE: I moved this into a separate patch to simplify the review.
-> 
->  Documentation/core-api/entry.rst | 19 +++++++++++++++++++
->  1 file changed, 19 insertions(+)
-> 
-> diff --git a/Documentation/core-api/entry.rst b/Documentation/core-api/entry.rst
-> index 3f80537f2826..f665f201ead0 100644
-> --- a/Documentation/core-api/entry.rst
-> +++ b/Documentation/core-api/entry.rst
-> @@ -105,6 +105,8 @@ has to do extra work between the various steps. In such cases it has to
->  ensure that enter_from_user_mode() is called first on entry and
->  exit_to_user_mode() is called last on exit.
->  
-> +Syscalls shouldn't nest. If it were to happen, RCU / context tracking will
-> +catch the misbehavior and print out a warning.
+I note that one is in native_write_msr() though. I wonder what it's writing=
+?
 
-How about like this?
+Do you have console output (perhaps with earlyprintk=3DttyS0) to go with th=
+is?
 
-Do not nest syscalls.  Nested systcalls will cause RCU and/or context
-tracking to print a warning.
+>        5 RIP=3Dffffffff8104aefb RFL=3D00000046 [---Z-P-] CPL=3D0 II=3D0 A=
+20=3D1 SMM=3D0 HLT=3D0
+>        1 RIP=3Dffffffff8104af06 RFL=3D00000046 [---Z-P-] CPL=3D0 II=3D0 A=
+20=3D1 SMM=3D0 HLT=3D0
+>       15 RIP=3Dffffffff8104aefb RFL=3D00000046 [---Z-P-] CPL=3D0 II=3D0 A=
+20=3D1 SMM=3D0 HLT=3D0
+> These are some of the APs and all are in wait_for_master_cpu().
 
->  KVM
->  ---
-> @@ -121,6 +123,9 @@ Task work handling is done separately for guest at the boundary of the
->  vcpu_run() loop via xfer_to_guest_mode_handle_work() which is a subset of
->  the work handled on return to user space.
->  
-> +Nesting doesn't make sense in the context of KVM entry/exit transitions, it
-> +shouldn't happen.
+As is right and proper. They should be coming up to that point and
+waiting for the... erm... controlling CPU to tell them to go any
+further.
 
-Like this?
 
-Do not nest KVM entry/exit transitions because doing so is nonsensical.
+>        1 EIP=3D0000101b EFL=3D00000003 [------C] CPL=3D0 II=3D0 A20=3D1 S=
+MM=3D0 HLT=3D0
+> This seems ok because: CS =3D9900 00099000 0000ffff 00009b00
+> So likely in the trampoline code.
 
->  Interrupts and regular exceptions
->  ---------------------------------
->  
-> @@ -180,6 +185,16 @@ before it handles soft interrupts, whose handlers must run in BH context rather
->  than irq-disabled context. In addition, irqentry_exit() might schedule, which
->  also requires that HARDIRQ_OFFSET has been removed from the preemption count.
->  
-> +Even though interrupt handlers are expected to run with local interrupts
-> +disabled, interrupt nesting is common from an entry/exit perspective. For
-> +example, softirq handling happens within an irqentry_{enter,exit}() block, with
+Yeah, that'll be in the bitlock waiting for its turn through the real
+mode stack.
 
-The last comma on the above line needs to be removed, so just a space
-character between "block" and "with".
+    1010:       66 0f ba 26 18          btw    $0x18,(%esi)
+    1015:       40                      inc    %eax
+    1016:       00 73 04                add    %dh,0x4(%ebx)
+    1019:       f3 90                   pause =20
+    101b:       eb f3                   jmp    1010 <trampoline_start+0x10>
+>        1 EIP=3D0000fff0 EFL=3D00000002 [-------] CPL=3D0 II=3D0 A20=3D1 S=
+MM=3D0 HLT=3D0
+> This one seems odd... could it be the one causing the reset?
+> CS =3Df000 ffff0000 0000ffff 00009a00
 
-> +local interrupts enabled. Also, although uncommon, nothing prevents an
-> +interrupt handler from re-enabling interrupts.
-> +
-> +Interrupt entry/exit code doesn't strictly need to handle reentrancy, since it
-> +runs with local interrupts disabled. But NMIs can happen anytime, and a lot of
-> +the entry code is shared between the two.
-> +
->  NMI and NMI-like exceptions
->  ---------------------------
->  
-> @@ -259,3 +274,7 @@ and for e.g. a debug exception it can look like this:
->  
->  There is no combined irqentry_nmi_if_kernel() function available as the
->  above cannot be handled in an exception-agnostic way.
-> +
-> +NMIs can happen in any context. For example, an NMI-like exception triggered
-> +while handling an NMI. So NMI entry code has to be reentrant and state updates
-> +need to handle nesting.
-> -- 
-> 2.33.1
-> 
+
+Yeah. I'm finding it slightly easier without the 'uniq'...
+
+> CPU Reset (CPU 0)
+> RIP=3Dffffffff810705c6 RFL=3D00000206 [-----P-] CPL=3D0 II=3D0 A20=3D1 SM=
+M=3D0 HLT=3D0
+> CPU Reset (CPU 1)
+> RIP=3Dffffffff8104aefb RFL=3D00000046 [---Z-P-] CPL=3D0 II=3D0 A20=3D1 SM=
+M=3D0 HLT=3D0
+> CPU Reset (CPU 2)
+> RIP=3Dffffffff8104aefb RFL=3D00000046 [---Z-P-] CPL=3D0 II=3D0 A20=3D1 SM=
+M=3D0 HLT=3D0
+> CPU Reset (CPU 3)
+> RIP=3Dffffffff8104aefb RFL=3D00000046 [---Z-P-] CPL=3D0 II=3D0 A20=3D1 SM=
+M=3D0 HLT=3D0
+> CPU Reset (CPU 4)
+> RIP=3Dffffffff8104aefb RFL=3D00000046 [---Z-P-] CPL=3D0 II=3D0 A20=3D1 SM=
+M=3D0 HLT=3D0
+> CPU Reset (CPU 5)
+> RIP=3Dffffffff8104aefb RFL=3D00000046 [---Z-P-] CPL=3D0 II=3D0 A20=3D1 SM=
+M=3D0 HLT=3D0
+> CPU Reset (CPU 6)
+> RIP=3Dffffffff8104af06 RFL=3D00000046 [---Z-P-] CPL=3D0 II=3D0 A20=3D1 SM=
+M=3D0 HLT=3D0
+> CPU Reset (CPU 7)
+> RIP=3Dffffffff8104aefb RFL=3D00000046 [---Z-P-] CPL=3D0 II=3D0 A20=3D1 SM=
+M=3D0 HLT=3D0
+> CPU Reset (CPU 8)
+> RIP=3Dffffffff8104aefb RFL=3D00000046 [---Z-P-] CPL=3D0 II=3D0 A20=3D1 SM=
+M=3D0 HLT=3D0
+> CPU Reset (CPU 9)
+> RIP=3Dffffffff8104aefb RFL=3D00000046 [---Z-P-] CPL=3D0 II=3D0 A20=3D1 SM=
+M=3D0 HLT=3D0
+> CPU Reset (CPU 10)
+> RIP=3Dffffffff8104aefb RFL=3D00000046 [---Z-P-] CPL=3D0 II=3D0 A20=3D1 SM=
+M=3D0 HLT=3D0
+> CPU Reset (CPU 11)
+> RIP=3Dffffffff8104aefb RFL=3D00000046 [---Z-P-] CPL=3D0 II=3D0 A20=3D1 SM=
+M=3D0 HLT=3D0
+> CPU Reset (CPU 12)
+> RIP=3Dffffffff8104aefb RFL=3D00000046 [---Z-P-] CPL=3D0 II=3D0 A20=3D1 SM=
+M=3D0 HLT=3D0
+> CPU Reset (CPU 13)
+> RIP=3Dffffffff8104aefb RFL=3D00000046 [---Z-P-] CPL=3D0 II=3D0 A20=3D1 SM=
+M=3D0 HLT=3D0
+> CPU Reset (CPU 14)
+> RIP=3Dffffffff8104aefb RFL=3D00000046 [---Z-P-] CPL=3D0 II=3D0 A20=3D1 SM=
+M=3D0 HLT=3D0
+> CPU Reset (CPU 15)
+> RIP=3Dffffffff8104aefb RFL=3D00000046 [---Z-P-] CPL=3D0 II=3D0 A20=3D1 SM=
+M=3D0 HLT=3D0
+> CPU Reset (CPU 16)
+> RIP=3Dffffffff8104aefb RFL=3D00000046 [---Z-P-] CPL=3D0 II=3D0 A20=3D1 SM=
+M=3D0 HLT=3D0
+> CPU Reset (CPU 17)
+> RIP=3Dffffffff8104aefb RFL=3D00000046 [---Z-P-] CPL=3D0 II=3D0 A20=3D1 SM=
+M=3D0 HLT=3D0
+> CPU Reset (CPU 18)
+> RIP=3Dffffffff8104aefb RFL=3D00000046 [---Z-P-] CPL=3D0 II=3D0 A20=3D1 SM=
+M=3D0 HLT=3D0
+> CPU Reset (CPU 19)
+> RIP=3Dffffffff8104aefb RFL=3D00000046 [---Z-P-] CPL=3D0 II=3D0 A20=3D1 SM=
+M=3D0 HLT=3D0
+> CPU Reset (CPU 20)
+> RIP=3Dffffffff8104aefb RFL=3D00000046 [---Z-P-] CPL=3D0 II=3D0 A20=3D1 SM=
+M=3D0 HLT=3D0
+> CPU Reset (CPU 21)
+> RIP=3Dffffffff8104aefb RFL=3D00000046 [---Z-P-] CPL=3D0 II=3D0 A20=3D1 SM=
+M=3D0 HLT=3D0
+
+All those came up and are waiting in wait_for_master_cpu() as they
+should.
+
+
+> CPU Reset (CPU 22)
+> EIP=3D0000101b EFL=3D00000003 [------C] CPL=3D0 II=3D0 A20=3D1 SMM=3D0 HL=
+T=3D0
+
+That one's in the bitlock, also waiting.
+
+> CPU Reset (CPU 23)
+> EIP=3D0000fff0 EFL=3D00000002 [-------] CPL=3D0 II=3D0 A20=3D1 SMM=3D0 HL=
+T=3D0
+
+This one we suspect. Is this what a triple-fault would look like? Not
+if it's *already* at f000:fff0, surely?=20
+
+CPU Reset (CPU 23)
+EAX=3D00000000 EBX=3D00000000 ECX=3D00000000 EDX=3D00800f12
+ESI=3D00000000 EDI=3D00000000 EBP=3D00000000 ESP=3D00000000
+EIP=3D0000fff0 EFL=3D00000002 [-------] CPL=3D0 II=3D0 A20=3D1 SMM=3D0 HLT=
+=3D0
+ES =3D0000 00000000 0000ffff 00009300
+CS =3Df000 ffff0000 0000ffff 00009a00
+SS =3D0000 00000000 0000ffff 00009200
+DS =3D0000 00000000 0000ffff 00009300
+FS =3D0000 00000000 0000ffff 00009300
+GS =3D0000 00000000 0000ffff 00009300
+LDT=3D0000 00000000 0000ffff 00008200
+TR =3D0000 00000000 0000ffff 00008300
+GDT=3D     00000000 0000ffff
+IDT=3D     00000000 0000ffff
+CR0=3D00000010 CR2=3D00000000 CR3=3D00000000 CR4=3D00000000
+DR0=3D0000000000000000 DR1=3D0000000000000000 DR2=3D0000000000000000 DR3=3D=
+0000000000000000=20
+DR6=3D00000000ffff0ff0 DR7=3D0000000000000400
+CCS=3D00000000 CCD=3D00000000 CCO=3DDYNAMIC=20
+EFER=3D0000000000000000
+FCW=3D037f FSW=3D0000 [ST=3D0] FTW=3D00 MXCSR=3D00001f80
+FPR0=3D0000000000000000 0000 FPR1=3D0000000000000000 0000
+FPR2=3D0000000000000000 0000 FPR3=3D0000000000000000 0000
+FPR4=3D0000000000000000 0000 FPR5=3D0000000000000000 0000
+FPR6=3D0000000000000000 0000 FPR7=3D0000000000000000 0000
+XMM00=3D0000000000000000 0000000000000000 XMM01=3D0000000000000000 00000000=
+00000000
+XMM02=3D0000000000000000 0000000000000000 XMM03=3D0000000000000000 00000000=
+00000000
+XMM04=3D0000000000000000 0000000000000000 XMM05=3D0000000000000000 00000000=
+00000000
+XMM06=3D0000000000000000 0000000000000000 XMM07=3D0000000000000000 00000000=
+00000000
+
+
+> CPU Reset (CPU 24)
+> RIP=3Dffffffff8104aefb RFL=3D00000046 [---Z-P-] CPL=3D0 II=3D0 A20=3D1 SM=
+M=3D0 HLT=3D0
+> CPU Reset (CPU 25)
+> RIP=3Dffffffff8104aefb RFL=3D00000046 [---Z-P-] CPL=3D0 II=3D0 A20=3D1 SM=
+M=3D0 HLT=3D0
+> CPU Reset (CPU 26)
+> RIP=3Dffffffff8104aefb RFL=3D00000046 [---Z-P-] CPL=3D0 II=3D0 A20=3D1 SM=
+M=3D0 HLT=3D0
+
+These ones made it through the real mode first and are also waiting.
+
+> CPU Reset (CPU 27)
+> EIP=3D0000101b EFL=3D00000003 [------C] CPL=3D0 II=3D0 A20=3D1 SMM=3D0 HL=
+T=3D0
+> CPU Reset (CPU 28)
+> EIP=3D0000101b EFL=3D00000003 [------C] CPL=3D0 II=3D0 A20=3D1 SMM=3D0 HL=
+T=3D0
+> CPU Reset (CPU 29)
+
+Still in the real mode bitlock. And after this point they are still
+halted in presumably 32-bit BIOS code because the BSP hasn't even
+touched them yet.
+
+> EIP=3D3f36e11b EFL=3D00000046 [---Z-P-] CPL=3D0 II=3D0 A20=3D1 SMM=3D0 HL=
+T=3D1
+> CPU Reset (CPU 30)
+> EIP=3D3f36e11b EFL=3D00000046 [---Z-P-] CPL=3D0 II=3D0 A20=3D1 SMM=3D0 HL=
+T=3D1
+> CPU Reset (CPU 31)
+> EIP=3D3f36e11b EFL=3D00000046 [---Z-P-] CPL=3D0 II=3D0 A20=3D1 SMM=3D0 HL=
+T=3D1
+> CPU Reset (CPU 32)
+> ...
+> CPU Reset (CPU 127)
+> EIP=3D3f36e11b EFL=3D00000046 [---Z-P-] CPL=3D0 II=3D0 A20=3D1 SMM=3D0 HL=
+T=3D1
+
+
+
+--=-OuLVbXvPdBitGtpIQfSd
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCECow
+ggUcMIIEBKADAgECAhEA4rtJSHkq7AnpxKUY8ZlYZjANBgkqhkiG9w0BAQsFADCBlzELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
+A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
+bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0EwHhcNMTkwMTAyMDAwMDAwWhcNMjIwMTAxMjM1
+OTU5WjAkMSIwIAYJKoZIhvcNAQkBFhNkd213MkBpbmZyYWRlYWQub3JnMIIBIjANBgkqhkiG9w0B
+AQEFAAOCAQ8AMIIBCgKCAQEAsv3wObLTCbUA7GJqKj9vHGf+Fa+tpkO+ZRVve9EpNsMsfXhvFpb8
+RgL8vD+L133wK6csYoDU7zKiAo92FMUWaY1Hy6HqvVr9oevfTV3xhB5rQO1RHJoAfkvhy+wpjo7Q
+cXuzkOpibq2YurVStHAiGqAOMGMXhcVGqPuGhcVcVzVUjsvEzAV9Po9K2rpZ52FE4rDkpDK1pBK+
+uOAyOkgIg/cD8Kugav5tyapydeWMZRJQH1vMQ6OVT24CyAn2yXm2NgTQMS1mpzStP2ioPtTnszIQ
+Ih7ASVzhV6csHb8Yrkx8mgllOyrt9Y2kWRRJFm/FPRNEurOeNV6lnYAXOymVJwIDAQABo4IB0zCC
+Ac8wHwYDVR0jBBgwFoAUgq9sjPjF/pZhfOgfPStxSF7Ei8AwHQYDVR0OBBYEFLfuNf820LvaT4AK
+xrGK3EKx1DE7MA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMBAf8EAjAAMB0GA1UdJQQWMBQGCCsGAQUF
+BwMEBggrBgEFBQcDAjBGBgNVHSAEPzA9MDsGDCsGAQQBsjEBAgEDBTArMCkGCCsGAQUFBwIBFh1o
+dHRwczovL3NlY3VyZS5jb21vZG8ubmV0L0NQUzBaBgNVHR8EUzBRME+gTaBLhklodHRwOi8vY3Js
+LmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWls
+Q0EuY3JsMIGLBggrBgEFBQcBAQR/MH0wVQYIKwYBBQUHMAKGSWh0dHA6Ly9jcnQuY29tb2RvY2Eu
+Y29tL0NPTU9ET1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcnQwJAYI
+KwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmNvbW9kb2NhLmNvbTAeBgNVHREEFzAVgRNkd213MkBpbmZy
+YWRlYWQub3JnMA0GCSqGSIb3DQEBCwUAA4IBAQALbSykFusvvVkSIWttcEeifOGGKs7Wx2f5f45b
+nv2ghcxK5URjUvCnJhg+soxOMoQLG6+nbhzzb2rLTdRVGbvjZH0fOOzq0LShq0EXsqnJbbuwJhK+
+PnBtqX5O23PMHutP1l88AtVN+Rb72oSvnD+dK6708JqqUx2MAFLMevrhJRXLjKb2Mm+/8XBpEw+B
+7DisN4TMlLB/d55WnT9UPNHmQ+3KFL7QrTO8hYExkU849g58Dn3Nw3oCbMUgny81ocrLlB2Z5fFG
+Qu1AdNiBA+kg/UxzyJZpFbKfCITd5yX49bOriL692aMVDyqUvh8fP+T99PqorH4cIJP6OxSTdxKM
+MIIFHDCCBASgAwIBAgIRAOK7SUh5KuwJ6cSlGPGZWGYwDQYJKoZIhvcNAQELBQAwgZcxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
+ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTE5MDEwMjAwMDAwMFoXDTIyMDEwMTIz
+NTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCASIwDQYJKoZIhvcN
+AQEBBQADggEPADCCAQoCggEBALL98Dmy0wm1AOxiaio/bxxn/hWvraZDvmUVb3vRKTbDLH14bxaW
+/EYC/Lw/i9d98CunLGKA1O8yogKPdhTFFmmNR8uh6r1a/aHr301d8YQea0DtURyaAH5L4cvsKY6O
+0HF7s5DqYm6tmLq1UrRwIhqgDjBjF4XFRqj7hoXFXFc1VI7LxMwFfT6PStq6WedhROKw5KQytaQS
+vrjgMjpICIP3A/CroGr+bcmqcnXljGUSUB9bzEOjlU9uAsgJ9sl5tjYE0DEtZqc0rT9oqD7U57My
+ECIewElc4VenLB2/GK5MfJoJZTsq7fWNpFkUSRZvxT0TRLqznjVepZ2AFzsplScCAwEAAaOCAdMw
+ggHPMB8GA1UdIwQYMBaAFIKvbIz4xf6WYXzoHz0rcUhexIvAMB0GA1UdDgQWBBS37jX/NtC72k+A
+CsaxitxCsdQxOzAOBgNVHQ8BAf8EBAMCBaAwDAYDVR0TAQH/BAIwADAdBgNVHSUEFjAUBggrBgEF
+BQcDBAYIKwYBBQUHAwIwRgYDVR0gBD8wPTA7BgwrBgEEAbIxAQIBAwUwKzApBggrBgEFBQcCARYd
+aHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9DUFMwWgYDVR0fBFMwUTBPoE2gS4ZJaHR0cDovL2Ny
+bC5jb21vZG9jYS5jb20vQ09NT0RPUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFp
+bENBLmNybDCBiwYIKwYBBQUHAQEEfzB9MFUGCCsGAQUFBzAChklodHRwOi8vY3J0LmNvbW9kb2Nh
+LmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWlsQ0EuY3J0MCQG
+CCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
+cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAC20spBbrL71ZEiFrbXBHonzhhirO1sdn+X+O
+W579oIXMSuVEY1LwpyYYPrKMTjKECxuvp24c829qy03UVRm742R9Hzjs6tC0oatBF7KpyW27sCYS
+vj5wbal+TttzzB7rT9ZfPALVTfkW+9qEr5w/nSuu9PCaqlMdjABSzHr64SUVy4ym9jJvv/FwaRMP
+gew4rDeEzJSwf3eeVp0/VDzR5kPtyhS+0K0zvIWBMZFPOPYOfA59zcN6AmzFIJ8vNaHKy5QdmeXx
+RkLtQHTYgQPpIP1Mc8iWaRWynwiE3ecl+PWzq4i+vdmjFQ8qlL4fHz/k/fT6qKx+HCCT+jsUk3cS
+jDCCBeYwggPOoAMCAQICEGqb4Tg7/ytrnwHV2binUlYwDQYJKoZIhvcNAQEMBQAwgYUxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMSswKQYDVQQDEyJDT01PRE8gUlNBIENlcnRpZmljYXRp
+b24gQXV0aG9yaXR5MB4XDTEzMDExMDAwMDAwMFoXDTI4MDEwOTIzNTk1OVowgZcxCzAJBgNVBAYT
+AkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNV
+BAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRoZW50
+aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAvrOeV6wodnVAFsc4A5jTxhh2IVDzJXkLTLWg0X06WD6cpzEup/Y0dtmEatrQPTRI5Or1u6zf
++bGBSyD9aH95dDSmeny1nxdlYCeXIoymMv6pQHJGNcIDpFDIMypVpVSRsivlJTRENf+RKwrB6vcf
+WlP8dSsE3Rfywq09N0ZfxcBa39V0wsGtkGWC+eQKiz4pBZYKjrc5NOpG9qrxpZxyb4o4yNNwTqza
+aPpGRqXB7IMjtf7tTmU2jqPMLxFNe1VXj9XB1rHvbRikw8lBoNoSWY66nJN/VCJv5ym6Q0mdCbDK
+CMPybTjoNCQuelc0IAaO4nLUXk0BOSxSxt8kCvsUtQIDAQABo4IBPDCCATgwHwYDVR0jBBgwFoAU
+u69+Aj36pvE8hI6t7jiY7NkyMtQwHQYDVR0OBBYEFIKvbIz4xf6WYXzoHz0rcUhexIvAMA4GA1Ud
+DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMBEGA1UdIAQKMAgwBgYEVR0gADBMBgNVHR8E
+RTBDMEGgP6A9hjtodHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDZXJ0aWZpY2F0aW9u
+QXV0aG9yaXR5LmNybDBxBggrBgEFBQcBAQRlMGMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9jcnQuY29t
+b2RvY2EuY29tL0NPTU9ET1JTQUFkZFRydXN0Q0EuY3J0MCQGCCsGAQUFBzABhhhodHRwOi8vb2Nz
+cC5jb21vZG9jYS5jb20wDQYJKoZIhvcNAQEMBQADggIBAHhcsoEoNE887l9Wzp+XVuyPomsX9vP2
+SQgG1NgvNc3fQP7TcePo7EIMERoh42awGGsma65u/ITse2hKZHzT0CBxhuhb6txM1n/y78e/4ZOs
+0j8CGpfb+SJA3GaBQ+394k+z3ZByWPQedXLL1OdK8aRINTsjk/H5Ns77zwbjOKkDamxlpZ4TKSDM
+KVmU/PUWNMKSTvtlenlxBhh7ETrN543j/Q6qqgCWgWuMAXijnRglp9fyadqGOncjZjaaSOGTTFB+
+E2pvOUtY+hPebuPtTbq7vODqzCM6ryEhNhzf+enm0zlpXK7q332nXttNtjv7VFNYG+I31gnMrwfH
+M5tdhYF/8v5UY5g2xANPECTQdu9vWPoqNSGDt87b3gXb1AiGGaI06vzgkejL580ul+9hz9D0S0U4
+jkhJiA7EuTecP/CFtR72uYRBcunwwH3fciPjviDDAI9SnC/2aPY8ydehzuZutLbZdRJ5PDEJM/1t
+yZR2niOYihZ+FCbtf3D9mB12D4ln9icgc7CwaxpNSCPt8i/GqK2HsOgkL3VYnwtx7cJUmpvVdZ4o
+gnzgXtgtdk3ShrtOS1iAN2ZBXFiRmjVzmehoMof06r1xub+85hFQzVxZx5/bRaTKTlL8YXLI8nAb
+R9HWdFqzcOoB/hxfEyIQpx9/s81rgzdEZOofSlZHynoSMYIDyjCCA8YCAQEwga0wgZcxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
+ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA4rtJSHkq7AnpxKUY8ZlYZjANBglghkgB
+ZQMEAgEFAKCCAe0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjEx
+MjE3MTkxMTEyWjAvBgkqhkiG9w0BCQQxIgQgFnoGqr8l+yZVl/VyuA6a6Vps5YTVLzuf39m/8Wu5
++8swgb4GCSsGAQQBgjcQBDGBsDCBrTCBlzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIg
+TWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQx
+PTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1h
+aWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMIHABgsqhkiG9w0BCRACCzGBsKCBrTCBlzELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
+A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
+bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMA0GCSqGSIb3
+DQEBAQUABIIBAJA6Md6kDTKaTjK3gPxQhx6OZLRZ8EXHbWVpvBCGU47GNYN1dgu5qn1wR+2fICe/
+jxN04Sgo3iIDJlEWkTDDsDX+2PB15dJ7CSJuhHhZxVSaNgl/NQ4ozwpPbRJog99tI6pWB7FtxQt5
+dbHFhBKwxFRBB1DxhiL4bAZif8Gaf904PYyrioE1wPZYeumLShogpXn08Up+VFp4NuXPLrdMKQ5R
+WNpzJEXKl5iDe440+06ygOjFqQJL2hrgesN+L2wBBIx5/JQ44sPZeYRACk3Kn3ECC1VAlYVbcYB5
+RteBnjLbyiMOtrkqpjdBJJnV7tH/sv2m6WFMOeDJ7hpGEhpWnn4AAAAAAAA=
+
+
+--=-OuLVbXvPdBitGtpIQfSd--
+
