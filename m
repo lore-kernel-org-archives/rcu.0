@@ -2,105 +2,52 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9621FC433F5
-	for <rcu@archiver.kernel.org>; Mon, 27 Dec 2021 16:57:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A7DDC433F5
+	for <rcu@archiver.kernel.org>; Tue, 28 Dec 2021 07:56:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229831AbhL0Q5w (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 27 Dec 2021 11:57:52 -0500
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:39869 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229644AbhL0Q5v (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 27 Dec 2021 11:57:51 -0500
-Received: from [192.168.0.2] (ip5f5aea86.dynamic.kabel-deutschland.de [95.90.234.134])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 42C6E61EA1922;
-        Mon, 27 Dec 2021 17:57:49 +0100 (CET)
-Message-ID: <9a47b5ec-f2d1-94d9-3a48-9b326c88cfcb@molgen.mpg.de>
-Date:   Mon, 27 Dec 2021 17:57:48 +0100
+        id S235425AbhL1H4v (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 28 Dec 2021 02:56:51 -0500
+Received: from mail.BETTERBIZ.PL ([45.86.209.138]:47198 "EHLO
+        mail.betterbiz.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233186AbhL1H4v (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 28 Dec 2021 02:56:51 -0500
+X-Greylist: delayed 352 seconds by postgrey-1.27 at vger.kernel.org; Tue, 28 Dec 2021 02:56:51 EST
+Received: by mail.betterbiz.pl (Postfix, from userid 1001)
+        id 011B2826C8; Tue, 28 Dec 2021 02:46:04 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=betterbiz.pl; s=mail;
+        t=1640677859; bh=07NAgW1e0WiNB9zqagiM2BnwZfWBCpNa2E4+ccxBPgw=;
+        h=Date:From:To:Subject:From;
+        b=CkOmVg/+hlI3O7TB2NKtjjjAwZ9fObj1aHSXt3Qk4T9dGJv+jOKmZWiZjDGyYqLCE
+         I/F1Wpbk9BDHhqmZhI/o3g9hpsL7mKQCdBrnP0/N+0Q8Bn9gKELID1WQEy1krwh5FA
+         UYrbxD11njtODDThygLTdACBG5qA0BBefCNkwIWWQsZ21Bh1nijZZMFiIgXc1Inn6z
+         p988XztRAhkU6j2ejlDSuuNNv4D9Ik5wtUy49MAUBfsuVRzpkGcll5W/xJzyu3fiHZ
+         RugmmtHTBGILNk55fekYtgR0YPA6q3ajaPAW2K6DASHddSUHzqU97AIDeviRiizXGl
+         5S2pUX4r+exWg==
+Received: by mail.betterbiz.pl for <rcu@vger.kernel.org>; Tue, 28 Dec 2021 07:45:59 GMT
+Message-ID: <20211228024500-0.1.h.1c20.0.636pfp7c7a@betterbiz.pl>
+Date:   Tue, 28 Dec 2021 07:45:59 GMT
+From:   "Jakub Daroch" <jakub.daroch@betterbiz.pl>
+To:     <rcu@vger.kernel.org>
+Subject: Wycena paneli fotowoltaicznych
+X-Mailer: mail.betterbiz.pl
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.1
-Subject: Re: [PATCH v3 0/9] Parallel CPU bringup for x86_64
-Content-Language: en-US
-To:     David Woodhouse <dwmw2@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
-        hushiyuan@huawei.com, luolongjun@huawei.com, hejingxian@huawei.com
-References: <20211215145633.5238-1-dwmw2@infradead.org>
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <20211215145633.5238-1-dwmw2@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Dear David,
+Dzie=C5=84 dobry,
+
+dostrzegam mo=C5=BCliwo=C5=9B=C4=87 wsp=C3=B3=C5=82pracy z Pa=C5=84stwa f=
+irm=C4=85.
+
+=C5=9Awiadczymy kompleksow=C4=85 obs=C5=82ug=C4=99 inwestycji w fotowolta=
+ik=C4=99, kt=C3=B3ra obni=C5=BCa koszty energii elektrycznej nawet o 90%.
+
+Czy s=C4=85 Pa=C5=84stwo zainteresowani weryfikacj=C4=85 wst=C4=99pnych p=
+ropozycji?
 
 
-Am 15.12.21 um 15:56 schrieb David Woodhouse:
-> Doing the INIT/SIPI/SIPI in parallel for all APs and *then* waiting for
-> them shaves about 80% off the AP bringup time on a 96-thread socket
-> Skylake box (EC2 c5.metal) — from about 500ms to 100ms.
-> 
-> There are more wins to be had with further parallelisation, but this is
-> the simple part.
-> 
-> v2: Cut it back to just INIT/SIPI/SIPI in parallel for now, nothing more
-> v3: Clean up x2apic patch, add MTRR optimisation, lock topology update
->      in preparation for more parallelisation.
-> 
-> 
-> David Woodhouse (8):
->        x86/apic/x2apic: Fix parallel handling of cluster_mask
->        cpu/hotplug: Move idle_thread_get() to <linux/smpboot.h>
->        cpu/hotplug: Add dynamic parallel bringup states before CPUHP_BRINGUP_CPU
->        x86/smpboot: Reference count on smpboot_setup_warm_reset_vector()
->        x86/smpboot: Split up native_cpu_up into separate phases and document them
->        x86/smpboot: Send INIT/SIPI/SIPI to secondary CPUs in parallel
->        x86/mtrr: Avoid repeated save of MTRRs on boot-time CPU bringup
->        x86/smpboot: Serialize topology updates for secondary bringup
-> 
-> Thomas Gleixner (1):
->        x86/smpboot: Support parallel startup of secondary CPUs
-> 
->   arch/x86/include/asm/realmode.h       |   3 +
->   arch/x86/include/asm/smp.h            |  13 +-
->   arch/x86/include/asm/topology.h       |   2 -
->   arch/x86/kernel/acpi/sleep.c          |   1 +
->   arch/x86/kernel/apic/apic.c           |   2 +-
->   arch/x86/kernel/apic/x2apic_cluster.c | 108 +++++++-----
->   arch/x86/kernel/cpu/common.c          |   6 +-
->   arch/x86/kernel/cpu/mtrr/mtrr.c       |   9 +
->   arch/x86/kernel/head_64.S             |  71 ++++++++
->   arch/x86/kernel/smpboot.c             | 324 ++++++++++++++++++++++++----------
->   arch/x86/realmode/init.c              |   3 +
->   arch/x86/realmode/rm/trampoline_64.S  |  14 ++
->   arch/x86/xen/smp_pv.c                 |   4 +-
->   include/linux/cpuhotplug.h            |   2 +
->   include/linux/smpboot.h               |   7 +
->   kernel/cpu.c                          |  27 ++-
->   kernel/smpboot.c                      |   2 +-
->   kernel/smpboot.h                      |   2 -
->   18 files changed, 441 insertions(+), 159 deletions(-)
-
-Thank you for working on this. I tested this on a MSI MS-7A37/B350M 
-MORTAR (BIOS 1.MW 11/01/2021) with a Ryzen 3 2200G, but nothing was 
-printed to the screen after the GRUB loading messages, so it crashed or 
-hung somewhere. Unfortunately, this device is used by others, and no 
-serial console is connected and I do not know how to capture the Linux 
-log with other means.
-
-
-Kind regards,
-
-Paul
+Pozdrawiam,
+Jakub Daroch
