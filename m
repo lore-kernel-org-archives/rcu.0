@@ -2,111 +2,190 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E1B05C433F5
-	for <rcu@archiver.kernel.org>; Tue,  4 Jan 2022 17:10:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BD725C433F5
+	for <rcu@archiver.kernel.org>; Tue,  4 Jan 2022 18:42:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232022AbiADRKG (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 4 Jan 2022 12:10:06 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:33785 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231733AbiADRKG (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Tue, 4 Jan 2022 12:10:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1641316205;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PLTIaY5gg/CGkjyFI0nVD1Ynp1qrSv98dwVoxTGL/gk=;
-        b=AJW0duqdvpbTpNkkJJBxxZay8mHvtWn+4v0iQjIkvZi9YAb6hK0/S6XFzVUI7df99hSsn8
-        8277Of9jev/146U9Q4n5RnY1SNlZYnbVV0T2B5GvD22qVhdBPw5kfaMEu8pJ2sZ0aZLoBJ
-        d1+KF6U9RBMMiAU2HKyjQKbzaDmZwgA=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-673-2G1aP8SkPjWL4HS2Yy6xcA-1; Tue, 04 Jan 2022 12:10:04 -0500
-X-MC-Unique: 2G1aP8SkPjWL4HS2Yy6xcA-1
-Received: by mail-ed1-f71.google.com with SMTP id i5-20020a05640242c500b003f84839a8c3so25792539edc.6
-        for <rcu@vger.kernel.org>; Tue, 04 Jan 2022 09:10:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=PLTIaY5gg/CGkjyFI0nVD1Ynp1qrSv98dwVoxTGL/gk=;
-        b=cVHoCVNKFcILtAAHOfp5iiBxo+X2jRwZPzwKIS3KY0XnT3Dx+j521h2Ws+9ehGZqZk
-         joHLrlzrI7yzHDPu26o4cI5wfAi64NUFhIb/JMWFAKGbSbiteGFXpHJPh6rrx/UWvwS/
-         U3drqk/nazP/ZxKr/AKeG03dC5srTYNIczgH70Vj8RO3w+MBekmsQ3xJO3YuFRHw3X/F
-         wSS4Ljju9mAUBifiGkUtW6PIp4nFJifEW8Nfe/Dj07ax1Vh3FOwDJDOIeaL9lkLM8V3A
-         eAOlcVdJgYHJWVKS8CvoMGYElpUB4VeHLN9I5XOxMISTz2jJ4BFWgG8uq2Eplk1xh4N8
-         AcGA==
-X-Gm-Message-State: AOAM533G8y+4RTwwK0ovzF/EqanLKd1o6lOZa6Xy+64ZWeS9tcjeCxHB
-        MBAEZ5hgHW+F2rFRtx9SvFrQ6Ucqd9HEH2QxzS0p5Q9/egg5/4c/6tByc+QMVuNfDxGiqkGhIUi
-        jEf4quH28u1/+
-X-Received: by 2002:a17:906:9f01:: with SMTP id fy1mr6911395ejc.475.1641316202910;
-        Tue, 04 Jan 2022 09:10:02 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzg4c8oC/snOnarWsLYe2OuhHx3dyq7Vui9X2KCh4F+Gwu3wSidctLFczPe7rbJzItTjhvIEQ==
-X-Received: by 2002:a17:906:9f01:: with SMTP id fy1mr6911372ejc.475.1641316202670;
-        Tue, 04 Jan 2022 09:10:02 -0800 (PST)
-Received: from ?IPV6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.googlemail.com with ESMTPSA id w17sm14932963edu.48.2022.01.04.09.07.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 04 Jan 2022 09:10:02 -0800 (PST)
-Message-ID: <b8e273bf-ae2c-cc5c-0d20-33f3dd12053c@redhat.com>
-Date:   Tue, 4 Jan 2022 18:07:32 +0100
+        id S234619AbiADSmz (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 4 Jan 2022 13:42:55 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:41560 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229543AbiADSmz (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 4 Jan 2022 13:42:55 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AAE8861466
+        for <rcu@vger.kernel.org>; Tue,  4 Jan 2022 18:42:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DBCEC36AE9;
+        Tue,  4 Jan 2022 18:42:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1641321774;
+        bh=vTt9UJFXE9jkBPW596tLjigi/X16slHy4DDJyGuzutI=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=YHdIJ3BHRw2iNU/ZWNKVAmKhM1/CYiC4Js1Hl5dmAn6ZXIugV3uj+JgHnb78GEWU5
+         dhoLSTwtF4QWfeeMLdgW3hZCtkFHyr3tZd7Lc9Jqm1TOTiB2KOWOcnLtnVgOiXtpXS
+         iOAtYKJX4CgAV86qDv602/8hA5T9rUAMxzjIY6HMJtf+KI/M+d/0AWjY4Qq//+a31+
+         BgYCyeteFJRHytDNB2wZNPJ0Hca1eocMj1VWscpQkKI/9yQwAeA77MxvvSfzwt4Qu5
+         v6thwDOXtEkXVG4LCwQLbFhKs8zNn3ZgKSMSJg3qefqU++/bDSUuRxp9/flsoK8/ar
+         OMSbeMy/mI3nQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id C7C645C0C34; Tue,  4 Jan 2022 10:42:53 -0800 (PST)
+Date:   Tue, 4 Jan 2022 10:42:53 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Zhouyi Zhou <zhouzhouyi@gmail.com>
+Cc:     Marco Elver <elver@google.com>, rcu <rcu@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: FYI, a few new KCSAN splats
+Message-ID: <20220104184253.GE4202@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20211214045758.GA1713844@paulmck-ThinkPad-P17-Gen-1>
+ <CAABZP2xOHYLxSAfSfQgCXXEuNXYM=uU-cDS_KO+MLcQAV_yCoQ@mail.gmail.com>
+ <CANpmjNMpm0ZnWKzpWOFRtOU8EfFDP2t2spyOnW2Rx8LFGO2S-w@mail.gmail.com>
+ <CAABZP2w8+bZWWP_bRi+Vfokm-xDwOga5TrjFnJwEmx2zGiMHiw@mail.gmail.com>
+ <CAABZP2xWFVLYmrMF0ADDm2zaHtxizfZMbCfHeNDDqpqyEO4MNA@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.0
-Subject: Re: Possible nohz-full/RCU issue in arm64 KVM
-Content-Language: en-US
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Nicolas Saenz Julienne <nsaenzju@redhat.com>,
-        paulmck <paulmck@kernel.org>, maz <maz@kernel.org>,
-        frederic <frederic@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        rcu <rcu@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Anup Patel <Anup.Patel@wdc.com>
-References: <d80e440375896f75d45e227d40af60ca7ba24ceb.camel@redhat.com>
- <YbyO40zDW/kvUHEE@FVFF77S0Q05N>
- <70f112072d9496d21901946ea82832d3ed3a8cb2.camel@redhat.com>
- <Ybyg1r/Q6EfeuXGV@FVFF77S0Q05N>
- <9ab8107f-ff41-6a9e-57e1-a261bea93aca@redhat.com>
- <YdR4N9QVYOzjowAb@FVFF77S0Q05N>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <YdR4N9QVYOzjowAb@FVFF77S0Q05N>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAABZP2xWFVLYmrMF0ADDm2zaHtxizfZMbCfHeNDDqpqyEO4MNA@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 1/4/22 17:39, Mark Rutland wrote:
-> My main issue here was just that it's really difficult to see how the
-> entry/exit logic is balanced, and I reckon we can solve that by splitting
-> guest_{enter,exit}_irqoff() into helper functions to handle the vtime
-> accounting separately from the context tracking, so that arch code can do
-> something like:
+On Sun, Jan 02, 2022 at 08:27:29AM +0800, Zhouyi Zhou wrote:
+> Thanks Paul and Marco for giving me valuable advice.
 > 
->    guest_timing_enter_irqoff();
->    
->    guest_eqs_enter_irqoff();
->    < actually run vCPU here >
->    guest_eqs_exit_irqoff();
->    
->    < handle pending IRQs here >
->    
->    guest_timing_exit_irqoff();
+> I studied the structure of kvm.sh and I found enabling
+> CONFIG_KCSAN_STRICT and lower kcsan.skip_watch will make the KCSAN
+> detect RCU's data-race within half an hour (I tried this for two
+> times).
+> Following is my command:
+> linux-rcu$git config --get remote.origin.url
+> https://kernel.source.codeaurora.cn/pub/scm/linux/kernel/git/paulmck/linux-rcu.git/
+> linux-rcu$tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus
+> --duration 10h --configs "TREE01" --kcsan --kmake-arg "CC=clang-12"
+> --trust-make --kconfig CONFIG_KCSAN_STRICT=y --bootargs
+> kcsan.skip_watch=1000
 > 
-> ... which I hope should work for RISC-V too.
 > 
-> I've had a go, and I've pushed out a WIP to:
+> [ 1289.504892] rcu: De-offloading 5^M
+> [ 1289.761495] rcu: De-offloading 7^M
+> [ 1289.763556] ==================================================================^M
+> [ 1289.764531] BUG: KCSAN: data-race in call_rcu / rcu_nocb_cb_kthread^M
+> [ 1289.765388] ^M
+> [ 1289.765599] read (marked) to 0xffff94f2db7ec608 of 1 bytes by
+> interrupt on cpu 7:^M
+> [ 1289.766588]  call_rcu+0xad/0xfd0^M
+> [ 1289.767035]  rcu_torture_timer+0xdc/0xf0^M
+> [ 1289.767566]  call_timer_fn+0x87/0x150^M
+> [ 1289.768065]  __run_timers+0x2fd/0x450^M
+> [ 1289.768562]  run_timer_softirq+0x29/0x60^M
+> [ 1289.769093]  __do_softirq+0x1d9/0x35c^M
+> [ 1289.769540]  __irq_exit_rcu+0x13d/0x150^M
+> [ 1289.770047]  irq_exit_rcu+0x5/0x20^M
+> [ 1289.770520]  sysvec_apic_timer_interrupt+0x8d/0xb0^M
+> [ 1289.771168]  asm_sysvec_apic_timer_interrupt+0x12/0x20^M
+> [ 1289.771854]  _raw_spin_unlock_irqrestore+0x33/0x50^M
+> [ 1289.772499]  rdp_offload_toggle+0xc9/0x150^M
+> [ 1289.773050]  rcu_nocb_rdp_deoffload+0x163/0x2c0^M
+> [ 1289.773670]  work_for_cpu_fn+0x28/0x40^M
+> [ 1289.774185]  process_one_work+0x50f/0x800^M
+> [ 1289.774726]  worker_thread+0x71c/0x9f0^M
+> [ 1289.775237]  kthread+0x23e/0x270^M
+> [ 1289.775675]  ret_from_fork+0x22/0x30^M
+> [ 1289.776162] ^M
+> [ 1289.776377] 3 locks held by kworker/7:2/294:^M
+> [ 1289.776955]  #0: ffff94f2c1050738
+> ((wq_completion)events){+.+.}-{0:0}, at:
+> process_one_work+0x49c/0x800^M
+> [ 1289.778245]  #1: ffffa5434093bde0
+> ((work_completion)(&wfc.work)){+.+.}-{0:0}, at:
+> process_one_work+0x4cd/0x800^M
+> [ 1289.779605]  #2: ffffa5434029cdf8 ((&t)){+.-.}-{0:0}, at:
+> call_timer_fn+0x51/0x150^M
+> [ 1289.780666] irq event stamp: 215649^M
+> [ 1289.781186] hardirqs last  enabled at (215648):
+> [<ffffffff8d6afec2>] __local_bh_enable_ip+0xc2/0x120^M
+> [ 1289.782471] hardirqs last disabled at (215649):
+> [<ffffffff8d77c6a3>] call_rcu+0x73/0xfd0^M
+> [ 1289.783632] softirqs last  enabled at (214628):
+> [<ffffffff8d6b03dd>] __irq_exit_rcu+0x13d/0x150^M
+> [ 1289.784866] softirqs last disabled at (215635):
+> [<ffffffff8d6b03dd>] __irq_exit_rcu+0x13d/0x150^M
+> [ 1289.786147] ^M
+> [ 1289.786379] write to 0xffff94f2db7ec608 of 1 bytes by task 63 on cpu 15:^M
+> [ 1289.787342]  rcu_nocb_cb_kthread+0x2f7/0x740^M
+> [ 1289.787970]  kthread+0x23e/0x270^M
+> [ 1289.788450]  ret_from_fork+0x22/0x30^M
+> [ 1289.788964] ^M
 > 
->    https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/log/?h=arm64/kvm/rcu
+> The reader is at
+> 0xffffffff8117c6dd: file kernel/rcu/tree.c, line 2991
+> 2986        local_irq_save(flags);
+> 2987        kasan_record_aux_stack(head);
+> 2988        rdp = this_cpu_ptr(&rcu_data);
+> 2989
+> 2990        /* Add the callback to our list. */
+> 2991        if (unlikely(!rcu_segcblist_is_enabled(&rdp->cblist))) {
+> 2992            // This can trigger due to call_rcu() from offline CPU:
+> 2993            WARN_ON_ONCE(rcu_scheduler_active != RCU_SCHEDULER_INACTIVE);
+> 2994            WARN_ON_ONCE(!rcu_is_watching());
+> 2995            // Very early boot, before rcu_init().  Initialize if needed
+> 
+> The writer is at
+> 0xffffffff81191977: file kernel/rcu/rcu_segcblist.h, line 65
+> 60    }
+> 61
+> 62    static inline void rcu_segcblist_clear_flags(struct rcu_segcblist *rsclp,
+> 63                             int flags)
+> 64    {
+> 65        rsclp->flags &= ~flags;
+> 66    }
+> 67
+> 
+> I gained a lot during the study ;-)
 
-Yes, you have a point and it makes sense for x86 too.  You can send me a 
-topic branch once you get all the acks.  Thanks!
+Glad the process was educational.  ;-)
 
-Paolo
+Thoughts on the alleged fix below?
 
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+commit 66b153e7e3980067de018ec8c478aa0aaf7ba2bd
+Author: Paul E. McKenney <paulmck@kernel.org>
+Date:   Tue Jan 4 10:34:34 2022 -0800
+
+    rcu: Mark writes to the rcu_segcblist structure's ->flags field
+    
+    KCSAN reports data races between the rcu_segcblist_clear_flags() and
+    rcu_segcblist_set_flags() functions, though misreporting the latter
+    as a call to rcu_segcblist_is_enabled() from call_rcu().  This commit
+    converts the updates of this field to WRITE_ONCE(), relying on the
+    resulting unmarked reads to continue to detect buggy concurrent writes
+    to this field.
+    
+    Reported-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+    Cc: Frederic Weisbecker <frederic@kernel.org>
+
+diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
+index e373fbe44da5e..431cee212467d 100644
+--- a/kernel/rcu/rcu_segcblist.h
++++ b/kernel/rcu/rcu_segcblist.h
+@@ -56,13 +56,13 @@ static inline long rcu_segcblist_n_cbs(struct rcu_segcblist *rsclp)
+ static inline void rcu_segcblist_set_flags(struct rcu_segcblist *rsclp,
+ 					   int flags)
+ {
+-	rsclp->flags |= flags;
++	WRITE_ONCE(rsclp->flags, rsclp->flags | flags);
+ }
+ 
+ static inline void rcu_segcblist_clear_flags(struct rcu_segcblist *rsclp,
+ 					     int flags)
+ {
+-	rsclp->flags &= ~flags;
++	WRITE_ONCE(rsclp->flags, rsclp->flags & ~flags);
+ }
+ 
+ static inline bool rcu_segcblist_test_flags(struct rcu_segcblist *rsclp,
