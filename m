@@ -2,265 +2,387 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 374E9C433EF
-	for <rcu@archiver.kernel.org>; Wed,  5 Jan 2022 00:42:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D68EC433F5
+	for <rcu@archiver.kernel.org>; Mon, 10 Jan 2022 10:51:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234715AbiAEAl7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 4 Jan 2022 19:41:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232884AbiAEAl7 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 4 Jan 2022 19:41:59 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46C1FC061761
-        for <rcu@vger.kernel.org>; Tue,  4 Jan 2022 16:41:59 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id y22so155168170edq.2
-        for <rcu@vger.kernel.org>; Tue, 04 Jan 2022 16:41:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=RC1XgSSCkVEowqarTm3J7ndLtytT48zhZNmZpFRQMMY=;
-        b=lbVPllPChCOgjpzk5PuqOvUXrsGEsgOBXVCm6kwBBfQ8IzpgzcuDTStHPmZUuQ8NA8
-         BBFikU9td/G6IPIP5zncwJWNEczmer8LwwKDkgaWPS7LItuJiFVpa9b6OwZFbYIoLFYm
-         nIOmC3Rd2CvWZTcDPmdjmd5zv17yAYdlK1JRW55Ps2/yAyfoS79W1bdjJDtQiyQYMk3v
-         48uLQ/Tda6/jkzQcSUh0svuI0+vzIpyfh04B2WsBGyv3CPv+3lm4NTSNAFqcFriio23t
-         /XueaSb0T5WUtW10DwYD+avwMR8Uqk7n/nbOU5rba3s0DkTe6ZP2BxnZNMtFwQJlGOEW
-         oxcA==
+        id S244240AbiAJKvE (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 10 Jan 2022 05:51:04 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:40394 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244243AbiAJKuu (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Mon, 10 Jan 2022 05:50:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1641811849;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=JF+rYfpzHGIglrO9vkJKJQja/RFuTD0r11BkCYSCOaI=;
+        b=fv8SpQc5s/Xge1KNj1RGxqSrei7G7VNFwDCcPj2mpUCqpvrEjCeGyGRD3XbKm8UyYsGsLa
+        CHTou0DdGHN7a7cx6KhOhkt706RhH/FMIzPOBBN88J/GSRm1IEdc/c+wQeCr6kganoM16h
+        Vm3F7m5begtJSLoJ+YNwHuInsMXKJF0=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-595-MylLDALoOzivXBjajgEYbA-1; Mon, 10 Jan 2022 05:50:48 -0500
+X-MC-Unique: MylLDALoOzivXBjajgEYbA-1
+Received: by mail-wr1-f71.google.com with SMTP id o28-20020adfa11c000000b001a60fd79c21so2352119wro.19
+        for <rcu@vger.kernel.org>; Mon, 10 Jan 2022 02:50:48 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=RC1XgSSCkVEowqarTm3J7ndLtytT48zhZNmZpFRQMMY=;
-        b=m+TzTZNMbzREVaadVF39Oo41JMPNGtgAvc4gUUl9PW9QJz9sHWuR6FUiangVi9Ly17
-         sDEPxp9SGyF07rvtJqJ7CE2Px4DLk0GK118d0u3jHb9+z5TSq+pZ2Nf4plLiJQa0lHKH
-         yRKfNJeRk1zH2M2eRP6ev/Hpx0i3E4hlE6OXrh42ddUFl0u2Ehu+du/QE+aWAjqANtSw
-         Lh8v016rXn9JN9Na1mCATo4QEN3SyfG+yL8XNdwrojOOBIa3N17HZ6kgcqONXoj8OMeO
-         YupTcXbFiSxfiWlXFlizgfaRSeN6e8GwyuMXtR10cBHTHj3IM+EBEg2Mc5yVbLG+Uwmm
-         FMNw==
-X-Gm-Message-State: AOAM530AClMFhbTJIh4iFhshvEBVGSvY7Mvodx7MfqN+b3Xpn4Mr/Y7s
-        8hfidGpPCMThSrMuK5q4c3vhjFOEZWLz7FTj/pM=
-X-Google-Smtp-Source: ABdhPJw8JVEMbcD8uoYViCU+LwVSYD6e8E1WDA6ZgNiX/bpWZmIJkLYnPxOUxaJWz897HRH9rNg0xBvErNYJri6cl68=
-X-Received: by 2002:a17:907:1c89:: with SMTP id nb9mr40704072ejc.713.1641343317869;
- Tue, 04 Jan 2022 16:41:57 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JF+rYfpzHGIglrO9vkJKJQja/RFuTD0r11BkCYSCOaI=;
+        b=nDtA4D9rc+DrjH4z81VV7Vs5QpPJxWm+H1e7dVkAPcCNpTgL+1w9im1bRhLWbLAMSJ
+         umPTxzj6lb+fD27TT9vs54BtiZVBZjS9Yv3esXjmQMQCTsPv3XFvaKfNvAc298CEmBsf
+         ko/1ecVpFyJFFh4I3EQQ357/wGIlATB0XgyXP4/KyoaZb4Awtd95QlkgirXBCgTXXRy9
+         j6im6wc0Kbg0tndJkZEmO7CdCtcq9AiVom+vOP+gXbrCcleJivONZrbUBUF56E0j2Ziq
+         RMcQT3qcOK8JHd2LVUP0J6cHr9OX4IoMuubhsB69XuPb967OteODzGFQc8uS8J2xXGOs
+         xjbw==
+X-Gm-Message-State: AOAM533PWx7l75ibLEFw027qVBQ97oKn7pH1aQ5hhcDaBbtM4tamif4x
+        0/VxjMx6LGgrhnsdSuGyuEoRowGqQ6uoRn3nZmNkj5FeskBh+tF9pVs3DNh/AdrvHBlSjZcePbU
+        NgX41SKcOwGIa
+X-Received: by 2002:a05:600c:d6:: with SMTP id u22mr8274276wmm.102.1641811847190;
+        Mon, 10 Jan 2022 02:50:47 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyQgyTH5kMFHghHqribHNL9ve0vLVpw9fdnfWGTda2VN49IIh4n7obYyTAz9rli69lYiUgkMw==
+X-Received: by 2002:a05:600c:d6:: with SMTP id u22mr8274249wmm.102.1641811846900;
+        Mon, 10 Jan 2022 02:50:46 -0800 (PST)
+Received: from vian.redhat.com ([2a0c:5a80:1e09:d600:637e:7f1b:a4a0:fc92])
+        by smtp.gmail.com with ESMTPSA id r1sm7051224wrz.30.2022.01.10.02.50.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 Jan 2022 02:50:46 -0800 (PST)
+From:   Nicolas Saenz Julienne <nsaenzju@redhat.com>
+To:     tglx@linutronix.de, mark.rutland@arm.com, paulmck@kernel.org
+Cc:     rostedt@goodmis.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, rcu@vger.kernel.org,
+        peterz@infradead.org, mtosatti@redhat.com, frederic@kernel.org,
+        corbet@lwn.net, Nicolas Saenz Julienne <nsaenzju@redhat.com>
+Subject: [PATCH v4 1/2] Documentation: Fill the gaps about entry/noinstr constraints
+Date:   Mon, 10 Jan 2022 11:50:43 +0100
+Message-Id: <20220110105044.94423-1-nsaenzju@redhat.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20211214045758.GA1713844@paulmck-ThinkPad-P17-Gen-1>
- <CAABZP2xOHYLxSAfSfQgCXXEuNXYM=uU-cDS_KO+MLcQAV_yCoQ@mail.gmail.com>
- <CANpmjNMpm0ZnWKzpWOFRtOU8EfFDP2t2spyOnW2Rx8LFGO2S-w@mail.gmail.com>
- <CAABZP2w8+bZWWP_bRi+Vfokm-xDwOga5TrjFnJwEmx2zGiMHiw@mail.gmail.com>
- <CAABZP2xWFVLYmrMF0ADDm2zaHtxizfZMbCfHeNDDqpqyEO4MNA@mail.gmail.com>
- <20220104184253.GE4202@paulmck-ThinkPad-P17-Gen-1> <CAABZP2zX_iD9s7JGevOUmKwibE7nMPhBnc_f1+qoxE19Q9oD6Q@mail.gmail.com>
- <20220104235805.GH4202@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20220104235805.GH4202@paulmck-ThinkPad-P17-Gen-1>
-From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
-Date:   Wed, 5 Jan 2022 08:41:46 +0800
-Message-ID: <CAABZP2x_Auz5xHX9zVuCudQJkXygQ+wLE7+cT_GQmt55D7gfqg@mail.gmail.com>
-Subject: Re: FYI, a few new KCSAN splats
-To:     paulmck@kernel.org
-Cc:     Marco Elver <elver@google.com>, rcu <rcu@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Thank Paul for analyzing the phenomenon for me.
+From: Thomas Gleixner <tglx@linutronix.de>
 
-I realize that the original git log covers both cases (1. the compiler
-optimizing case; 2. the debugging information inlining case)=EF=BC=8C
-and I think the original git log by Paul suits the patch better.
+The entry/exit handling for exceptions, interrupts, syscalls and KVM is
+not really documented except for some comments.
 
-Besides, I am very interested in studying the mechanism of debugging
-information processing (I call this "research" for myself ;-)),
-But this process will take an unpredictable long time for me ;-)
+Fill the gaps.
 
-So, again, I think the original git log by Paul suits the patch better.
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de
+Co-developed-by: Nicolas Saenz Julienne <nsaenzju@redhat.com>
+Signed-off-by: Nicolas Saenz Julienne <nsaenzju@redhat.com>
+Reviewed-by: Mark Rutland <mark.rutland@arm.com>
+Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 
-Many thanks
-Zhouyi
+----
 
-On Wed, Jan 5, 2022 at 7:58 AM Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> On Wed, Jan 05, 2022 at 06:51:49AM +0800, Zhouyi Zhou wrote:
-> > Thank Paul for your encouragement
-> >
-> > May I make bold to suggest a possible small modification to git log as
-> > below (use the knowledge and terms I learned from perfbook)
-> >
-> > Thanks
-> > Zhouyi
-> > On Wed, Jan 5, 2022 at 2:42 AM Paul E. McKenney <paulmck@kernel.org> wr=
-ote:
-> > >
-> > > On Sun, Jan 02, 2022 at 08:27:29AM +0800, Zhouyi Zhou wrote:
-> > > > Thanks Paul and Marco for giving me valuable advice.
-> > > >
-> > > > I studied the structure of kvm.sh and I found enabling
-> > > > CONFIG_KCSAN_STRICT and lower kcsan.skip_watch will make the KCSAN
-> > > > detect RCU's data-race within half an hour (I tried this for two
-> > > > times).
-> > > > Following is my command:
-> > > > linux-rcu$git config --get remote.origin.url
-> > > > https://kernel.source.codeaurora.cn/pub/scm/linux/kernel/git/paulmc=
-k/linux-rcu.git/
-> > > > linux-rcu$tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus
-> > > > --duration 10h --configs "TREE01" --kcsan --kmake-arg "CC=3Dclang-1=
-2"
-> > > > --trust-make --kconfig CONFIG_KCSAN_STRICT=3Dy --bootargs
-> > > > kcsan.skip_watch=3D1000
-> > > >
-> > > >
-> > > > [ 1289.504892] rcu: De-offloading 5^M
-> > > > [ 1289.761495] rcu: De-offloading 7^M
-> > > > [ 1289.763556] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D^M
-> > > > [ 1289.764531] BUG: KCSAN: data-race in call_rcu / rcu_nocb_cb_kthr=
-ead^M
-> > > > [ 1289.765388] ^M
-> > > > [ 1289.765599] read (marked) to 0xffff94f2db7ec608 of 1 bytes by
-> > > > interrupt on cpu 7:^M
-> > > > [ 1289.766588]  call_rcu+0xad/0xfd0^M
-> > > > [ 1289.767035]  rcu_torture_timer+0xdc/0xf0^M
-> > > > [ 1289.767566]  call_timer_fn+0x87/0x150^M
-> > > > [ 1289.768065]  __run_timers+0x2fd/0x450^M
-> > > > [ 1289.768562]  run_timer_softirq+0x29/0x60^M
-> > > > [ 1289.769093]  __do_softirq+0x1d9/0x35c^M
-> > > > [ 1289.769540]  __irq_exit_rcu+0x13d/0x150^M
-> > > > [ 1289.770047]  irq_exit_rcu+0x5/0x20^M
-> > > > [ 1289.770520]  sysvec_apic_timer_interrupt+0x8d/0xb0^M
-> > > > [ 1289.771168]  asm_sysvec_apic_timer_interrupt+0x12/0x20^M
-> > > > [ 1289.771854]  _raw_spin_unlock_irqrestore+0x33/0x50^M
-> > > > [ 1289.772499]  rdp_offload_toggle+0xc9/0x150^M
-> > > > [ 1289.773050]  rcu_nocb_rdp_deoffload+0x163/0x2c0^M
-> > > > [ 1289.773670]  work_for_cpu_fn+0x28/0x40^M
-> > > > [ 1289.774185]  process_one_work+0x50f/0x800^M
-> > > > [ 1289.774726]  worker_thread+0x71c/0x9f0^M
-> > > > [ 1289.775237]  kthread+0x23e/0x270^M
-> > > > [ 1289.775675]  ret_from_fork+0x22/0x30^M
-> > > > [ 1289.776162] ^M
-> > > > [ 1289.776377] 3 locks held by kworker/7:2/294:^M
-> > > > [ 1289.776955]  #0: ffff94f2c1050738
-> > > > ((wq_completion)events){+.+.}-{0:0}, at:
-> > > > process_one_work+0x49c/0x800^M
-> > > > [ 1289.778245]  #1: ffffa5434093bde0
-> > > > ((work_completion)(&wfc.work)){+.+.}-{0:0}, at:
-> > > > process_one_work+0x4cd/0x800^M
-> > > > [ 1289.779605]  #2: ffffa5434029cdf8 ((&t)){+.-.}-{0:0}, at:
-> > > > call_timer_fn+0x51/0x150^M
-> > > > [ 1289.780666] irq event stamp: 215649^M
-> > > > [ 1289.781186] hardirqs last  enabled at (215648):
-> > > > [<ffffffff8d6afec2>] __local_bh_enable_ip+0xc2/0x120^M
-> > > > [ 1289.782471] hardirqs last disabled at (215649):
-> > > > [<ffffffff8d77c6a3>] call_rcu+0x73/0xfd0^M
-> > > > [ 1289.783632] softirqs last  enabled at (214628):
-> > > > [<ffffffff8d6b03dd>] __irq_exit_rcu+0x13d/0x150^M
-> > > > [ 1289.784866] softirqs last disabled at (215635):
-> > > > [<ffffffff8d6b03dd>] __irq_exit_rcu+0x13d/0x150^M
-> > > > [ 1289.786147] ^M
-> > > > [ 1289.786379] write to 0xffff94f2db7ec608 of 1 bytes by task 63 on=
- cpu 15:^M
-> > > > [ 1289.787342]  rcu_nocb_cb_kthread+0x2f7/0x740^M
-> > > > [ 1289.787970]  kthread+0x23e/0x270^M
-> > > > [ 1289.788450]  ret_from_fork+0x22/0x30^M
-> > > > [ 1289.788964] ^M
-> > > >
-> > > > The reader is at
-> > > > 0xffffffff8117c6dd: file kernel/rcu/tree.c, line 2991
-> > > > 2986        local_irq_save(flags);
-> > > > 2987        kasan_record_aux_stack(head);
-> > > > 2988        rdp =3D this_cpu_ptr(&rcu_data);
-> > > > 2989
-> > > > 2990        /* Add the callback to our list. */
-> > > > 2991        if (unlikely(!rcu_segcblist_is_enabled(&rdp->cblist))) =
-{
-> > > > 2992            // This can trigger due to call_rcu() from offline =
-CPU:
-> > > > 2993            WARN_ON_ONCE(rcu_scheduler_active !=3D RCU_SCHEDULE=
-R_INACTIVE);
-> > > > 2994            WARN_ON_ONCE(!rcu_is_watching());
-> > > > 2995            // Very early boot, before rcu_init().  Initialize =
-if needed
-> > > >
-> > > > The writer is at
-> > > > 0xffffffff81191977: file kernel/rcu/rcu_segcblist.h, line 65
-> > > > 60    }
-> > > > 61
-> > > > 62    static inline void rcu_segcblist_clear_flags(struct rcu_segcb=
-list *rsclp,
-> > > > 63                             int flags)
-> > > > 64    {
-> > > > 65        rsclp->flags &=3D ~flags;
-> > > > 66    }
-> > > > 67
-> > > >
-> > > > I gained a lot during the study ;-)
-> > >
-> > > Glad the process was educational.  ;-)
-> > >
-> > > Thoughts on the alleged fix below?
-> > >
-> > >                                                         Thanx, Paul
-> > >
-> > > ---------------------------------------------------------------------=
----
-> > >
-> > > commit 66b153e7e3980067de018ec8c478aa0aaf7ba2bd
-> > > Author: Paul E. McKenney <paulmck@kernel.org>
-> > > Date:   Tue Jan 4 10:34:34 2022 -0800
-> > >
-> > >     rcu: Mark writes to the rcu_segcblist structure's ->flags field
-> > >
-> > >     KCSAN reports data races between the rcu_segcblist_clear_flags() =
-and
-> > >     rcu_segcblist_set_flags() functions, though misreporting the latt=
-er
-> > >     as a call to rcu_segcblist_is_enabled() from call_rcu().  This co=
-mmit
-> >        as a call to rcu_segcblist_is_enabled() from call_rcu() because
-> > the compiler
-> >        optimizes the intermediate functions away. This commit
->
-> I agree, except that the rumor I heard was that the debugging information
-> was supposed to handle such inlining.  And it has done so for me in
-> many cases.
->
-> Who knows?  Maybe I have just been getting lucky.  ;-)
->
->                                                         Thanx, Paul
->
-> > >     converts the updates of this field to WRITE_ONCE(), relying on th=
-e
-> > >     resulting unmarked reads to continue to detect buggy concurrent w=
-rites
-> > >     to this field.
-> > >
-> > >     Reported-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> > >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > >     Cc: Frederic Weisbecker <frederic@kernel.org>
-> > >
-> > > diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
-> > > index e373fbe44da5e..431cee212467d 100644
-> > > --- a/kernel/rcu/rcu_segcblist.h
-> > > +++ b/kernel/rcu/rcu_segcblist.h
-> > > @@ -56,13 +56,13 @@ static inline long rcu_segcblist_n_cbs(struct rcu=
-_segcblist *rsclp)
-> > >  static inline void rcu_segcblist_set_flags(struct rcu_segcblist *rsc=
-lp,
-> > >                                            int flags)
-> > >  {
-> > > -       rsclp->flags |=3D flags;
-> > > +       WRITE_ONCE(rsclp->flags, rsclp->flags | flags);
-> > >  }
-> > >
-> > >  static inline void rcu_segcblist_clear_flags(struct rcu_segcblist *r=
-sclp,
-> > >                                              int flags)
-> > >  {
-> > > -       rsclp->flags &=3D ~flags;
-> > > +       WRITE_ONCE(rsclp->flags, rsclp->flags & ~flags);
-> > >  }
-> > >
-> > >  static inline bool rcu_segcblist_test_flags(struct rcu_segcblist *rs=
-clp,
+Changes since v3:
+ - s/nointr/noinstr/
+
+Changes since v2:
+ - No big content changes, just style corrections, so it should be
+   pretty clean at this stage. In the light of this, I kept Mark's
+   Reviewed-by.
+ - Paul's style and paragraph re-writes
+ - Randy's style comments
+ - Add links to transition type sections
+
+ Documentation/core-api/entry.rst | 261 +++++++++++++++++++++++++++++++
+ Documentation/core-api/index.rst |   8 +
+ 2 files changed, 269 insertions(+)
+ create mode 100644 Documentation/core-api/entry.rst
+
+diff --git a/Documentation/core-api/entry.rst b/Documentation/core-api/entry.rst
+new file mode 100644
+index 000000000000..c6f8e22c88fe
+--- /dev/null
++++ b/Documentation/core-api/entry.rst
+@@ -0,0 +1,261 @@
++Entry/exit handling for exceptions, interrupts, syscalls and KVM
++================================================================
++
++All transitions between execution domains require state updates which are
++subject to strict ordering constraints. State updates are required for the
++following:
++
++  * Lockdep
++  * RCU / Context tracking
++  * Preemption counter
++  * Tracing
++  * Time accounting
++
++The update order depends on the transition type and is explained below in
++the transition type sections: `Syscalls`_, `KVM`_, `Interrupts and regular
++exceptions`_, `NMI and NMI-like exceptions`_.
++
++Non-instrumentable code - noinstr
++---------------------------------
++
++Most instrumentation facilities depend on RCU, so intrumentation is prohibited
++for entry code before RCU starts watching and exit code after RCU stops
++watching. In addition, many architectures must save and restore register state,
++which means that (for example) a breakpoint in the breakpoint entry code would
++overwrite the debug registers of the initial breakpoint.
++
++Such code must be marked with the 'noinstr' attribute, placing that code into a
++special section inaccessible to instrumentation and debug facilities. Some
++functions are partially instrumentable, which is handled by marking them
++noinstr and using instrumentation_begin() and instrumentation_end() to flag the
++instrumentable ranges of code:
++
++.. code-block:: c
++
++  noinstr void entry(void)
++  {
++  	handle_entry();     // <-- must be 'noinstr' or '__always_inline'
++	...
++
++	instrumentation_begin();
++	handle_context();   // <-- instrumentable code
++	instrumentation_end();
++
++	...
++	handle_exit();      // <-- must be 'noinstr' or '__always_inline'
++  }
++
++This allows verification of the 'noinstr' restrictions via objtool on
++supported architectures.
++
++Invoking non-instrumentable functions from instrumentable context has no
++restrictions and is useful to protect e.g. state switching which would
++cause malfunction if instrumented.
++
++All non-instrumentable entry/exit code sections before and after the RCU
++state transitions must run with interrupts disabled.
++
++Syscalls
++--------
++
++Syscall-entry code starts in assembly code and calls out into low-level C code
++after establishing low-level architecture-specific state and stack frames. This
++low-level C code must not be instrumented. A typical syscall handling function
++invoked from low-level assembly code looks like this:
++
++.. code-block:: c
++
++  noinstr void syscall(struct pt_regs *regs, int nr)
++  {
++	arch_syscall_enter(regs);
++	nr = syscall_enter_from_user_mode(regs, nr);
++
++	instrumentation_begin();
++	if (!invoke_syscall(regs, nr) && nr != -1)
++	 	result_reg(regs) = __sys_ni_syscall(regs);
++	instrumentation_end();
++
++	syscall_exit_to_user_mode(regs);
++  }
++
++syscall_enter_from_user_mode() first invokes enter_from_user_mode() which
++establishes state in the following order:
++
++  * Lockdep
++  * RCU / Context tracking
++  * Tracing
++
++and then invokes the various entry work functions like ptrace, seccomp, audit,
++syscall tracing, etc. After all that is done, the instrumentable invoke_syscall
++function can be invoked. The instrumentable code section then ends, after which
++syscall_exit_to_user_mode() is invoked.
++
++syscall_exit_to_user_mode() handles all work which needs to be done before
++returning to user space like tracing, audit, signals, task work etc. After
++that it invokes exit_to_user_mode() which again handles the state
++transition in the reverse order:
++
++  * Tracing
++  * RCU / Context tracking
++  * Lockdep
++
++syscall_enter_from_user_mode() and syscall_exit_to_user_mode() are also
++available as fine grained subfunctions in cases where the architecture code
++has to do extra work between the various steps. In such cases it has to
++ensure that enter_from_user_mode() is called first on entry and
++exit_to_user_mode() is called last on exit.
++
++
++KVM
++---
++
++Entering or exiting guest mode is very similar to syscalls. From the host
++kernel point of view the CPU goes off into user space when entering the
++guest and returns to the kernel on exit.
++
++kvm_guest_enter_irqoff() is a KVM-specific variant of exit_to_user_mode()
++and kvm_guest_exit_irqoff() is the KVM variant of enter_from_user_mode().
++The state operations have the same ordering.
++
++Task work handling is done separately for guest at the boundary of the
++vcpu_run() loop via xfer_to_guest_mode_handle_work() which is a subset of
++the work handled on return to user space.
++
++Interrupts and regular exceptions
++---------------------------------
++
++Interrupts entry and exit handling is slightly more complex than syscalls
++and KVM transitions.
++
++If an interrupt is raised while the CPU executes in user space, the entry
++and exit handling is exactly the same as for syscalls.
++
++If the interrupt is raised while the CPU executes in kernel space the entry and
++exit handling is slightly different. RCU state is only updated when the
++interrupt is raised in the context of the CPU's idle task. Otherwise, RCU will
++already be watching. Lockdep and tracing have to be updated unconditionally.
++
++irqentry_enter() and irqentry_exit() provide the implementation for this.
++
++The architecture-specific part looks similar to syscall handling:
++
++.. code-block:: c
++
++  noinstr void interrupt(struct pt_regs *regs, int nr)
++  {
++	arch_interrupt_enter(regs);
++	state = irqentry_enter(regs);
++
++	instrumentation_begin();
++
++	irq_enter_rcu();
++	invoke_irq_handler(regs, nr);
++	irq_exit_rcu();
++
++	instrumentation_end();
++
++	irqentry_exit(regs, state);
++  }
++
++Note that the invocation of the actual interrupt handler is within a
++irq_enter_rcu() and irq_exit_rcu() pair.
++
++irq_enter_rcu() updates the preemption count which makes in_hardirq()
++return true, handles NOHZ tick state and interrupt time accounting. This
++means that up to the point where irq_enter_rcu() is invoked in_hardirq()
++returns false.
++
++irq_exit_rcu() handles interrupt time accounting, undoes the preemption
++count update and eventually handles soft interrupts and NOHZ tick state.
++
++In theory, the preemption count could be updated in irqentry_enter(). In
++practice, deferring this update to irq_enter_rcu() allows the preemption-count
++code to be traced, while also maintaining symmetry with irq_exit_rcu() and
++irqentry_exit(), which are described in the next paragraph. The only downside
++is that the early entry code up to irq_enter_rcu() must be aware that the
++preemption count has not yet been updated with the HARDIRQ_OFFSET state.
++
++Note that irq_exit_rcu() must remove HARDIRQ_OFFSET from the preemption count
++before it handles soft interrupts, whose handlers must run in BH context rather
++than irq-disabled context. In addition, irqentry_exit() might schedule, which
++also requires that HARDIRQ_OFFSET has been removed from the preemption count.
++
++NMI and NMI-like exceptions
++---------------------------
++
++NMIs and NMI-like exceptions (machine checks, double faults, debug
++interrupts, etc.) can hit any context and must be extra careful with
++the state.
++
++State changes for debug exceptions and machine-check exceptions depend on
++whether these exceptions happened in user-space (breakpoints or watchpoints) or
++in kernel mode (code patching). From user-space, they are treated like
++interrupts, while from kernel mode they are treated like NMIs.
++
++NMIs and other NMI-like exceptions handle state transitions without
++distinguishing between user-mode and kernel-mode origin.
++
++The state update on entry is handled in irqentry_nmi_enter() which updates
++state in the following order:
++
++  * Preemption counter
++  * Lockdep
++  * RCU / Context tracking
++  * Tracing
++
++The exit counterpart irqentry_nmi_exit() does the reverse operation in the
++reverse order.
++
++Note that the update of the preemption counter has to be the first
++operation on enter and the last operation on exit. The reason is that both
++lockdep and RCU rely on in_nmi() returning true in this case. The
++preemption count modification in the NMI entry/exit case must not be
++traced.
++
++Architecture-specific code looks like this:
++
++.. code-block:: c
++
++  noinstr void nmi(struct pt_regs *regs)
++  {
++	arch_nmi_enter(regs);
++	state = irqentry_nmi_enter(regs);
++
++	instrumentation_begin();
++	nmi_handler(regs);
++	instrumentation_end();
++
++	irqentry_nmi_exit(regs);
++  }
++
++and for e.g. a debug exception it can look like this:
++
++.. code-block:: c
++
++  noinstr void debug(struct pt_regs *regs)
++  {
++	arch_nmi_enter(regs);
++
++	debug_regs = save_debug_regs();
++
++	if (user_mode(regs)) {
++		state = irqentry_enter(regs);
++
++		instrumentation_begin();
++		user_mode_debug_handler(regs, debug_regs);
++		instrumentation_end();
++
++		irqentry_exit(regs, state);
++  	} else {
++  		state = irqentry_nmi_enter(regs);
++
++		instrumentation_begin();
++		kernel_mode_debug_handler(regs, debug_regs);
++		instrumentation_end();
++
++		irqentry_nmi_exit(regs, state);
++	}
++  }
++
++There is no combined irqentry_nmi_if_kernel() function available as the
++above cannot be handled in an exception-agnostic way.
+diff --git a/Documentation/core-api/index.rst b/Documentation/core-api/index.rst
+index 5de2c7a4b1b3..972d46a5ddf6 100644
+--- a/Documentation/core-api/index.rst
++++ b/Documentation/core-api/index.rst
+@@ -44,6 +44,14 @@ Library functionality that is used throughout the kernel.
+    timekeeping
+    errseq
+ 
++Low level entry and exit
++========================
++
++.. toctree::
++   :maxdepth: 1
++
++   entry
++
+ Concurrency primitives
+ ======================
+ 
+-- 
+2.34.1
+
