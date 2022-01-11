@@ -2,275 +2,130 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D7EBC433EF
-	for <rcu@archiver.kernel.org>; Mon, 10 Jan 2022 18:36:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 57E59C433F5
+	for <rcu@archiver.kernel.org>; Tue, 11 Jan 2022 11:32:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241308AbiAJSgU (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 10 Jan 2022 13:36:20 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:43488 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243461AbiAJSfb (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 10 Jan 2022 13:35:31 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 787D661338;
-        Mon, 10 Jan 2022 18:35:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D62EDC36AE3;
-        Mon, 10 Jan 2022 18:35:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1641839729;
-        bh=1VUPCtUzqqWqJ/NTUreqHZAfyQUNWCk/Z3kkWgGgK3I=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=HAk7ECSdpYT282lXarSCgQ4qYWlpCO/VHGuBEmgLSSf1mbO+og7QcjRE6rsbYkW3R
-         w+8Z/pe8qZAlTxz3qNxh2HAzd/QO7EAX/Upmm7rRelXGo2NGQfmLL2dUp3E5C50kS5
-         0i4b90LoH3pABQkphxkgVEErZ4KKlOreu8FS7Sgzs5yrjYJ+T7h8nzrltf1iJfqnUi
-         Qsfa0o3N+tQTCwkDcs9M/aY1BaI4KH0qEBfbo8kZvQ2C1OeVi7XdHC+h2y0H/mXEJW
-         pPAfQ4hw/L0nht2HR+bPI6QrpOsvSz/hqAS64Db1RlgYNF5z76dxDZEQKRSh5WlDFW
-         l58DpMQWHJIXQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 8FBE85C0388; Mon, 10 Jan 2022 10:35:29 -0800 (PST)
-Date:   Mon, 10 Jan 2022 10:35:29 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     torvalds@linux-foundation.org
-Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        rcu@vger.kernel.org, kernel-team@fb.com
-Subject: [GIT PULL] RCU changes for v5.17
-Message-ID: <20220110183529.GA1012375@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        id S1349508AbiAKLcp (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 11 Jan 2022 06:32:45 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:37452 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1349505AbiAKLcm (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Tue, 11 Jan 2022 06:32:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1641900762;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ntz4OdwBNqZu8v1ik+qX1K0Vqvd5kyFiJX82I/JSWBM=;
+        b=ExeJO+MH2HDcaP5egKhOAmQMP4Qe45hQmP0MpMkZ56xPoBCxmBAjHSBvW1eKUn5+xZ5Pjy
+        h/UaaFHYoqttZCk82zKrSGbIdpsjmgQLS0lYdkXIwQNe+qGBexKPqM/jRK4u2IT7Idgz1K
+        xDE9JdfhZQ9MH0Us63ZXdgzixCT4y+A=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-317-92TVHzWbMu6HsgO6cdSSFg-1; Tue, 11 Jan 2022 06:32:40 -0500
+X-MC-Unique: 92TVHzWbMu6HsgO6cdSSFg-1
+Received: by mail-wm1-f70.google.com with SMTP id n14-20020a7bcbce000000b003488820f0d9so1645820wmi.8
+        for <rcu@vger.kernel.org>; Tue, 11 Jan 2022 03:32:40 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=Ntz4OdwBNqZu8v1ik+qX1K0Vqvd5kyFiJX82I/JSWBM=;
+        b=DDMXvSPH7lMARqbX8ZlkWHH5lSPZh3hye6VXOcDYwB+LKrjkfgZq0++hAtNH/vTMpf
+         V9RuYWI2PPYHRiqab6fb07NEf+DXQ82sW77qvFuyfOG6bkzQIMJK1JuQiRb5Zx6uMpcd
+         YBPgigh8MOrRRLz8pHUuElUAl6QHVzUcrUsbNK5oW5m/pWKW1I8zTTkOzw84ZNo6206y
+         Trwn6N55GWJ+lAaFRlAxPmxDULPnwgbaeA1iLAdGkkkheKGmJdKskGRApLRRPabPKQAG
+         O/A65qe2Fb6j2yHXBt5Dvs96gtrCuSyhAwY0hL8TSQoqpAIg3X/S7wzCeI+mKL23qSMe
+         MFZg==
+X-Gm-Message-State: AOAM531EZ3qOCceRjRVuiXideFmOtoCDfTQjVpSl74ME3lDWaa5Whi1c
+        oPcpZnCIjC9+1h22BMEK1QmfMsOelcim6oDG5OI9W+NQY6SY+4XVITV99G5urTqQ4dYDCcpo17w
+        E8TtgKBVHvsTf
+X-Received: by 2002:a05:600c:1f16:: with SMTP id bd22mr638649wmb.55.1641900759548;
+        Tue, 11 Jan 2022 03:32:39 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxVL3iNrW3WKpYn6GzQuj8SMBM75HxOEOHTlJ+vpSpokIuvZWIzUcmFzLx+N+TQE1uqDKbg/Q==
+X-Received: by 2002:a05:600c:1f16:: with SMTP id bd22mr638624wmb.55.1641900759341;
+        Tue, 11 Jan 2022 03:32:39 -0800 (PST)
+Received: from ?IPv6:2a0c:5a80:1e09:d600:637e:7f1b:a4a0:fc92? ([2a0c:5a80:1e09:d600:637e:7f1b:a4a0:fc92])
+        by smtp.gmail.com with ESMTPSA id u3sm11320283wrs.0.2022.01.11.03.32.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Jan 2022 03:32:39 -0800 (PST)
+Message-ID: <399d8805ca09f7d3c905b8c653abf60dd7141574.camel@redhat.com>
+Subject: Re: Possible nohz-full/RCU issue in arm64 KVM
+From:   Nicolas Saenz Julienne <nsaenzju@redhat.com>
+To:     Mark Rutland <mark.rutland@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     paulmck <paulmck@kernel.org>, maz <maz@kernel.org>,
+        frederic <frederic@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        rcu <rcu@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Anup Patel <Anup.Patel@wdc.com>
+Date:   Tue, 11 Jan 2022 12:32:38 +0100
+In-Reply-To: <YdR4N9QVYOzjowAb@FVFF77S0Q05N>
+References: <d80e440375896f75d45e227d40af60ca7ba24ceb.camel@redhat.com>
+         <YbyO40zDW/kvUHEE@FVFF77S0Q05N>
+         <70f112072d9496d21901946ea82832d3ed3a8cb2.camel@redhat.com>
+         <Ybyg1r/Q6EfeuXGV@FVFF77S0Q05N>
+         <9ab8107f-ff41-6a9e-57e1-a261bea93aca@redhat.com>
+         <YdR4N9QVYOzjowAb@FVFF77S0Q05N>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.2 (3.42.2-1.fc35) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello, Linus,
+Hi Mark,
 
-Please pull the latest RCU git tree from:
+On Tue, 2022-01-04 at 16:39 +0000, Mark Rutland wrote:
+> On Fri, Dec 17, 2021 at 04:54:22PM +0100, Paolo Bonzini wrote:
+> > On 12/17/21 15:38, Mark Rutland wrote:
+> > > For example kvm_guest_enter_irqoff() calls guest_enter_irq_off() which calls
+> > > vtime_account_guest_enter(), but kvm_guest_exit_irqoff() doesn't call
+> > > guest_exit_irq_off() and the call to vtime_account_guest_exit() is open-coded
+> > > elsewhere. Also, guest_enter_irq_off() conditionally calls
+> > > rcu_virt_note_context_switch(), but I can't immediately spot anything on the
+> > > exit side that corresponded with that, which looks suspicious.
+> > 
+> > rcu_note_context_switch() is a point-in-time notification; it's not strictly
+> > necessary, but it may improve performance a bit by avoiding unnecessary IPIs
+> > from the RCU subsystem.
+> > 
+> > There's no benefit from doing it when you're back from the guest, because at
+> > that point the CPU is just running normal kernel code.
+> 
+> I see.
+> 
+> My main issue here was just that it's really difficult to see how the
+> entry/exit logic is balanced, and I reckon we can solve that by splitting
+> guest_{enter,exit}_irqoff() into helper functions to handle the vtime
+> accounting separately from the context tracking, so that arch code can do
+> something like:
+> 
+>   guest_timing_enter_irqoff();
+>   
+>   guest_eqs_enter_irqoff();
+>   < actually run vCPU here >
+>   guest_eqs_exit_irqoff();
+>   
+>   < handle pending IRQs here >
+>   
+>   guest_timing_exit_irqoff();
+> 
+> ... which I hope should work for RISC-V too.
+> 
+> I've had a go, and I've pushed out a WIP to:
+> 
+>   https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/log/?h=arm64/kvm/rcu
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git tags/rcu.2022.01.09a
-  # HEAD: f80fe66c38d561a006fb4f514b0ee5d11cbe2673 Merge branches 'doc.2021.11.30c', 'exp.2021.12.07a', 'fastnohz.2021.11.30c', 'fixes.2021.11.30c', 'nocb.2021.12.09a', 'nolibc.2021.11.30c', 'tasks.2021.12.09a', 'torture.2021.12.07a' and 'torturescript.2021.11.30c' into HEAD
+Had a look at the patches and they seeem OK to me.
 
-RCU changes for this cycle were:
+Thanks!
 
-doc.2021.11.30c: Documentation updates, perhaps most notably Neil Brown's
-	writeup of the reference-counting analogy to RCU.
+-- 
+Nicolás Sáenz
 
-exp.2021.12.07a: Expedited grace-period cleanups.
-
-fastnohz.2021.11.30c: Remove CONFIG_RCU_FAST_NO_HZ due to lack of valid
-	users. I have asked around, posted a blog entry, and sent this
-	series to LKML without result.
-
-fixes.2021.11.30c: Miscellaneous fixes.
-
-nocb.2021.12.09a: RCU callback offloading updates, perhaps most notably
-	Frederic Weisbecker's updates allowing CPUs booted in the
-	de-offloaded state to be offloaded at runtime.
-
-nolibc.2021.11.30c: nolibc fixes from Willy Tarreau and Anmar Faizi, but
-	also including Mark Brown's addition of gettid().
-
-tasks.2021.12.09a: RCU Tasks Trace fixes, including changes that increase
-	the scalability of call_rcu_tasks_trace() for the BPF folks
-	(Martin Lau and KP Singh).
-
-torture.2021.12.07a: Various fixes including those from Wander Lairson
-	Costa and Li Zhijian.
-
-torturescript.2021.11.30c: Fixes plus addition of tests for the increased
-	call_rcu_tasks_trace() scalability.
-
-----------------------------------------------------------------
-Akira Yokosawa (1):
-      doc: RCU: Avoid 'Symbol' font-family in SVG figures
-
-Ammar Faizi (3):
-      tools/nolibc: x86-64: Fix startup code bug
-      tools/nolibc: x86: Remove `r8`, `r9` and `r10` from the clobber list
-      tools/nolibc: x86-64: Use `mov $60,%eax` instead of `mov $60,%rax`
-
-Changbin Du (1):
-      rcu: in_irq() cleanup
-
-Chun-Hung Tseng (1):
-      rcu: Replace ________p1 and _________p1 with __UNIQUE_ID(rcu)
-
-Frederic Weisbecker (20):
-      rcu: Ignore rdp.cpu_no_qs.b.exp on preemptible RCU's rcu_qs()
-      rcu: Move rcu_data.cpu_no_qs.b.exp reset to rcu_export_exp_rdp()
-      rcu: Remove rcu_data.exp_deferred_qs and convert to rcu_data.cpu no_qs.b.exp
-      rcu/exp: Mark current CPU as exp-QS in IPI loop second pass
-      rcu/nocb: Make local rcu_nocb_lock_irqsave() safe against concurrent deoffloading
-      rcu/nocb: Prepare state machine for a new step
-      rcu/nocb: Invoke rcu_core() at the start of deoffloading
-      rcu/nocb: Make rcu_core() callbacks acceleration (de-)offloading safe
-      rcu/nocb: Check a stable offloaded state to manipulate qlen_last_fqs_check
-      rcu/nocb: Use appropriate rcu_nocb_lock_irqsave()
-      rcu/nocb: Limit number of softirq callbacks only on softirq
-      rcu: Fix callbacks processing time limit retaining cond_resched()
-      rcu: Apply callbacks processing time limit only on softirq
-      rcu/nocb: Don't invoke local rcu core on callback overload from nocb kthread
-      rcu/nocb: Remove rcu_node structure from nocb list when de-offloaded
-      rcu/nocb: Prepare nocb_cb_wait() to start with a non-offloaded rdp
-      rcu/nocb: Optimize kthreads and rdp initialization
-      rcu/nocb: Create kthreads on all CPUs if "rcu_nocbs=" or "nohz_full=" are passed
-      rcu/nocb: Allow empty "rcu_nocbs" kernel parameter
-      rcu/nocb: Merge rcu_spawn_cpu_nocb_kthread() and rcu_spawn_one_nocb_kthread()
-
-Jun Miao (1):
-      rcu: Avoid alloc_pages() when recording stack
-
-Li Zhijian (9):
-      refscale: Simplify the errexit checkpoint
-      refscale: Prevent buffer to pr_alert() being too long
-      refscale: Always log the error message
-      refscale: Add missing '\n' to flush message
-      scftorture: Add missing '\n' to flush message
-      scftorture: Remove unused SCFTORTOUT
-      rcuscale: Always log error message
-      scftorture: Always log error message
-      locktorture,rcutorture,torture: Always log error message
-
-Mark Brown (1):
-      tools/nolibc: Implement gettid()
-
-Neeraj Upadhyay (1):
-      rcu-tasks: Inspect stalled task's trc state in locked state
-
-NeilBrown (1):
-      doc: Add refcount analogy to What is RCU
-
-Paul E. McKenney (43):
-      rcutorture: Add CONFIG_PREEMPT_DYNAMIC=n to tiny scenarios
-      doc: Remove obsolete kernel-per-CPU-kthreads RCU_FAST_NO_HZ advice
-      torture: Remove RCU_FAST_NO_HZ from rcuscale and refscale scenarios
-      torture: Remove RCU_FAST_NO_HZ from rcu scenarios
-      rcu: Remove the RCU_FAST_NO_HZ Kconfig option
-      rcu: Move rcu_needs_cpu() to tree.c
-      srcu: Prevent redundant __srcu_read_unlock() wakeup
-      rcu-tasks: Don't remove tasks with pending IPIs from holdout list
-      rcutorture: Sanitize RCUTORTURE_RDR_MASK
-      rcutorture: More thoroughly test nested readers
-      rcutorture: Suppress pi-lock-across read-unlock testing for Tiny SRCU
-      torture: Catch kvm.sh help text up with actual options
-      torture: Make kvm-find-errors.sh report link-time undefined symbols
-      torture: Retry download once before giving up
-      rcutorture: Cause TREE02 and TREE10 scenarios to do more callback flooding
-      rcutorture: Test RCU Tasks lock-contention detection
-      torture: Fix incorrectly redirected "exit" in kvm-remote.sh
-      torture: Properly redirect kvm-remote.sh "echo" commands
-      rcu: Mark sync_sched_exp_online_cleanup() ->cpu_no_qs.b.exp load
-      rcu: Prevent expedited GP from enabling tick on offline CPU
-      rcu: Make idle entry report expedited quiescent states
-      rcu: Tighten rcu_advance_cbs_nowake() checks
-      rcu-tasks: Create per-CPU callback lists
-      rcu-tasks: Introduce ->percpu_enqueue_shift for dynamic queue selection
-      rcu-tasks: Convert grace-period counter to grace-period sequence number
-      rcu_tasks: Convert bespoke callback list to rcu_segcblist structure
-      rcutorture: Test RCU-tasks multiqueue callback queueing
-      rcutorture: Enable multiple concurrent callback-flood kthreads
-      rcutorture: Add ability to limit callback-flood intensity
-      rcutorture: Combine n_max_cbs from all kthreads in a callback flood
-      rcu-tasks: Use spin_lock_rcu_node() and friends
-      rcu-tasks: Add a ->percpu_enqueue_lim to the rcu_tasks structure
-      rcu-tasks: Abstract checking of callback lists
-      rcu-tasks: Abstract invocations of callbacks
-      rcu-tasks: Use workqueues for multiple rcu_tasks_invoke_cbs() invocations
-      rcu-tasks: Make rcu_barrier_tasks*() handle multiple callback queues
-      rcu-tasks: Add rcupdate.rcu_task_enqueue_lim to set initial queueing
-      rcu-tasks: Count trylocks to estimate call_rcu_tasks() contention
-      rcu-tasks: Avoid raw-spinlocked wakeups from call_rcu_tasks_generic()
-      rcu-tasks: Use more callback queues if contention encountered
-      rcu-tasks: Use separate ->percpu_dequeue_lim for callback dequeueing
-      rcu-tasks: Use fewer callbacks queues if callback flood ends
-      Merge branches 'doc.2021.11.30c', 'exp.2021.12.07a', 'fastnohz.2021.11.30c', 'fixes.2021.11.30c', 'nocb.2021.12.09a', 'nolibc.2021.11.30c', 'tasks.2021.12.09a', 'torture.2021.12.07a' and 'torturescript.2021.11.30c' into HEAD
-
-Thomas Gleixner (1):
-      rcu/nocb: Make rcu_core() callbacks acceleration preempt-safe
-
-Wander Lairson Costa (1):
-      rcutorture: Avoid soft lockup during cpu stall
-
-Willy Tarreau (2):
-      tools/nolibc: i386: fix initial stack alignment
-      tools/nolibc: fix incorrect truncation of exit code
-
-Zhouyi Zhou (1):
-      rcu: Improve tree_plugin.h comments and add code cleanups
-
-Zqiang (1):
-      rcu: Avoid running boost kthreads on isolated CPUs
-
- .../RCU/Design/Expedited-Grace-Periods/Funnel0.svg |   4 +-
- .../RCU/Design/Expedited-Grace-Periods/Funnel1.svg |   4 +-
- .../RCU/Design/Expedited-Grace-Periods/Funnel2.svg |   4 +-
- .../RCU/Design/Expedited-Grace-Periods/Funnel3.svg |   4 +-
- .../RCU/Design/Expedited-Grace-Periods/Funnel4.svg |   4 +-
- .../RCU/Design/Expedited-Grace-Periods/Funnel5.svg |   4 +-
- .../RCU/Design/Expedited-Grace-Periods/Funnel6.svg |   4 +-
- .../RCU/Design/Expedited-Grace-Periods/Funnel7.svg |   4 +-
- .../RCU/Design/Expedited-Grace-Periods/Funnel8.svg |   4 +-
- .../Design/Requirements/GPpartitionReaders1.svg    |  36 +-
- .../Design/Requirements/ReadersPartitionGP1.svg    |  62 +--
- Documentation/RCU/stallwarn.rst                    |  11 -
- Documentation/RCU/whatisRCU.rst                    |  90 +++-
- Documentation/admin-guide/kernel-parameters.txt    |  70 ++-
- .../admin-guide/kernel-per-CPU-kthreads.rst        |   2 +-
- Documentation/timers/no_hz.rst                     |  10 +-
- include/linux/rcu_segcblist.h                      |  51 ++-
- include/linux/rcupdate.h                           |  50 ++-
- include/linux/rcutiny.h                            |   2 +-
- include/linux/srcu.h                               |   3 +-
- include/linux/torture.h                            |   9 +-
- kernel/locking/locktorture.c                       |   4 +-
- kernel/rcu/Kconfig                                 |  20 +-
- kernel/rcu/rcu_segcblist.c                         |  10 +-
- kernel/rcu/rcu_segcblist.h                         |  12 +-
- kernel/rcu/rcuscale.c                              |  14 +-
- kernel/rcu/rcutorture.c                            | 234 +++++++---
- kernel/rcu/refscale.c                              |  50 ++-
- kernel/rcu/srcutiny.c                              |   2 +-
- kernel/rcu/tasks.h                                 | 476 +++++++++++++++++----
- kernel/rcu/tree.c                                  | 131 ++++--
- kernel/rcu/tree.h                                  |  31 +-
- kernel/rcu/tree_exp.h                              |  14 +-
- kernel/rcu/tree_nocb.h                             | 160 ++++---
- kernel/rcu/tree_plugin.h                           | 250 ++---------
- kernel/rcu/tree_stall.h                            |  27 +-
- kernel/scftorture.c                                |  16 +-
- kernel/torture.c                                   |   4 +-
- tools/include/nolibc/nolibc.h                      |  86 ++--
- .../selftests/rcutorture/bin/kvm-find-errors.sh    |   4 +-
- .../selftests/rcutorture/bin/kvm-recheck-rcu.sh    |   2 +-
- .../testing/selftests/rcutorture/bin/kvm-remote.sh |  23 +-
- tools/testing/selftests/rcutorture/bin/kvm.sh      |   9 +-
- .../selftests/rcutorture/bin/parse-build.sh        |   3 +-
- .../selftests/rcutorture/configs/rcu/SRCU-T        |   1 +
- .../selftests/rcutorture/configs/rcu/SRCU-U        |   1 +
- .../selftests/rcutorture/configs/rcu/TASKS01.boot  |   1 +
- .../selftests/rcutorture/configs/rcu/TINY01        |   1 +
- .../selftests/rcutorture/configs/rcu/TINY02        |   1 +
- .../selftests/rcutorture/configs/rcu/TRACE01.boot  |   1 +
- .../selftests/rcutorture/configs/rcu/TRACE02.boot  |   1 +
- .../selftests/rcutorture/configs/rcu/TREE01        |   1 -
- .../selftests/rcutorture/configs/rcu/TREE02        |   1 -
- .../selftests/rcutorture/configs/rcu/TREE02.boot   |   1 +
- .../selftests/rcutorture/configs/rcu/TREE04        |   1 -
- .../selftests/rcutorture/configs/rcu/TREE05        |   1 -
- .../selftests/rcutorture/configs/rcu/TREE06        |   1 -
- .../selftests/rcutorture/configs/rcu/TREE07        |   1 -
- .../selftests/rcutorture/configs/rcu/TREE08        |   1 -
- .../selftests/rcutorture/configs/rcu/TREE10        |   1 -
- .../selftests/rcutorture/configs/rcu/TREE10.boot   |   1 +
- .../selftests/rcutorture/configs/rcuscale/TINY     |   2 +-
- .../selftests/rcutorture/configs/rcuscale/TRACE01  |   1 -
- .../selftests/rcutorture/configs/rcuscale/TREE     |   1 -
- .../selftests/rcutorture/configs/rcuscale/TREE54   |   1 -
- .../rcutorture/configs/refscale/NOPREEMPT          |   1 -
- .../selftests/rcutorture/configs/refscale/PREEMPT  |   1 -
- .../selftests/rcutorture/doc/TREE_RCU-kconfig.txt  |   1 -
- 68 files changed, 1244 insertions(+), 795 deletions(-)
- create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/TREE02.boot
- create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/TREE10.boot
