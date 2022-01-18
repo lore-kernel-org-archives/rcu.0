@@ -2,47 +2,47 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BA27AC433EF
-	for <rcu@archiver.kernel.org>; Tue, 18 Jan 2022 02:29:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B6311C43217
+	for <rcu@archiver.kernel.org>; Tue, 18 Jan 2022 03:48:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244840AbiARC3L (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 17 Jan 2022 21:29:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57180 "EHLO
+        id S1347160AbiARDsO (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 17 Jan 2022 22:48:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343713AbiARC0y (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 17 Jan 2022 21:26:54 -0500
+        with ESMTP id S1347086AbiARCki (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 17 Jan 2022 21:40:38 -0500
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0DD3C061794;
-        Mon, 17 Jan 2022 18:25:12 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECE95C07E5F8;
+        Mon, 17 Jan 2022 18:36:19 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 334506104B;
-        Tue, 18 Jan 2022 02:25:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD0C5C36AF3;
-        Tue, 18 Jan 2022 02:25:10 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8A07260C74;
+        Tue, 18 Jan 2022 02:36:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21A79C36AEF;
+        Tue, 18 Jan 2022 02:36:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1642472711;
-        bh=lt6mIJfzkqvFPg0u6qu+wckvaEO9qenNedKzRuOJshc=;
+        s=k20201202; t=1642473379;
+        bh=1XtZLBYLo8vRVDv6RwMfDJXo36eB71DbQs/OchA+8xU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NOQk48UNsMjTotl+e18vkk2mK5zNK8mreMUzs7ln0ejpzhO22wCnTTB4gfE6ZuJdF
-         5CAOzDt0d1NRvNmHm2rB6rewcqKigRoPsy80EBf6cdWNtGVCPpGXTjxHumWJDMnQVN
-         iFjJNsv9uUmQC1pfOAn9X/kQMWqeQ1YwhxtyRMOQgIJY4jNPIT94gEig55nNcZdg35
-         1AnQ/VBI2mAdEjgVEWvvmaLJxXRK1GoPRM2/r+xMWuiGnhrrXF1BjWiohsNJacAObP
-         Dj2VvNxKDP9UvGtnbhPrrONYdVKlyFdFcndi9EtVjccvkBCHSZuZDtwy3sDAUA55CG
-         T+zqwFtENq+9A==
+        b=acyHblEAmKy3DGkNKxTbQ91FPvQeQNeyJebsxkW20PQ5/gBcQlNWkaXhRZFqQxePR
+         M6HUzT4frlXPRz5sdHxl1/mCSzTPNizM/uvvfqdldUlUMiJiplNfb+uAQaEqiYBNbJ
+         VvgVae6MPiaWDF/HpVsscCmt9SYhx1eaqZWTcVNUNiwjW0dxjngNgiEoRGPSQ8Kw9K
+         pycXhf5zKzfhlc3hIB809XD5zkCg1iv8mYnJALAK6oz2Vjqx5my84MzlUl9PXHwu9v
+         F/8exNN504zR1pP76Cmuaq8/j+9H2/u93kyl8HTfSKYHYoCRSUr9bPXy0MZWxdQfqo
+         Nur/aEcyO0W7w==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Wander Lairson Costa <wander@redhat.com>,
         "Paul E . McKenney" <paulmck@kernel.org>,
         Sasha Levin <sashal@kernel.org>, dave@stgolabs.net,
         josh@joshtriplett.org, rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.16 107/217] rcutorture: Avoid soft lockup during cpu stall
-Date:   Mon, 17 Jan 2022 21:17:50 -0500
-Message-Id: <20220118021940.1942199-107-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 092/188] rcutorture: Avoid soft lockup during cpu stall
+Date:   Mon, 17 Jan 2022 21:30:16 -0500
+Message-Id: <20220118023152.1948105-92-sashal@kernel.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220118021940.1942199-1-sashal@kernel.org>
-References: <20220118021940.1942199-1-sashal@kernel.org>
+In-Reply-To: <20220118023152.1948105-1-sashal@kernel.org>
+References: <20220118023152.1948105-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -69,7 +69,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 5 insertions(+)
 
 diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 8b410d982990c..05e4d6c28d1f5 100644
+index 968696ace8f3f..f922937eb39ad 100644
 --- a/kernel/rcu/rcutorture.c
 +++ b/kernel/rcu/rcutorture.c
 @@ -46,6 +46,7 @@
