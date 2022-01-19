@@ -2,151 +2,187 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7E7DC4332F
-	for <rcu@archiver.kernel.org>; Wed, 19 Jan 2022 14:34:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 04428C433EF
+	for <rcu@archiver.kernel.org>; Wed, 19 Jan 2022 18:21:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355169AbiASOeu (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 19 Jan 2022 09:34:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241536AbiASOes (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 19 Jan 2022 09:34:48 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52F15C06161C;
-        Wed, 19 Jan 2022 06:34:48 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id m3so10415867lfu.0;
-        Wed, 19 Jan 2022 06:34:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=z9oiupD+98sSYT2szp0bLOwe4Lp388kc2c/Co3Zp20I=;
-        b=BqIimrRZwmOvFgyx9cgzcBJ/EblWz477Ctm8bBNPsnGN9/8bwRPd9sXHUAvAsUFhic
-         qzYX5IzN2AlbVcGY7yf9K4FmRJczFYFGjA/zlQ9oVc94iZm/eRlCxoLyRd1YZ2I8Exyj
-         /IGK6EYBVTo9Vj0j7WNdz47Reb65G+0A6qXyKlkoeKBYBtpBds1DD0jQfJbaVsj5z1B2
-         jo6+3p3JN93iFtvgRMIK72klJOwn8ncFmICDMbY+/yffT1Y1xYiVpDH8lTGPwmTFgCfV
-         BJ4Cf9JuzHBnjNabCXD6zYao/5fzFzoFAqZbIv/uqJ2hyHCAs+MtqiBK0d6U/XlDHW+1
-         xzkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=z9oiupD+98sSYT2szp0bLOwe4Lp388kc2c/Co3Zp20I=;
-        b=PtNZ4alEO/pJGuOmcumsoIgQ6cQ4WZjQcrm6xdIe9LMXCxFC8bW43cHwYzhjkSv6Ib
-         4lu5ZnN0ChQbEJ0Sual0BKA1xVXEPw03d38p1MlC0ZPnp0b2WxOkP66cAiUN81ep6ayw
-         4E15Rq9Y9rJ1e4M9z8vzhx8ivWt7OBdypkAYcEFOyGK0Fsf4HgWTKFn+IA5rksuxmu5E
-         tGZnhx0TjSd0xyjOD0m/YfeyPJfKk5L+gDi905gxY8d2+3w1pOhaRwNDb2ZvNvVs5UqO
-         SkRs5wT/Mrnb1cOU2FCS1mLuBrySn6+B/1svW1iO/kyaPf6kpJgU1nhnGYunoS/RwpLV
-         JIpA==
-X-Gm-Message-State: AOAM530f3MdK4sJm/zL5hGP39j8hBKOX6bUYkrPS/QBwMxL2h9Kwu6SC
-        YjudbAWsy0veMerpsiWKVsZ92j1ZNCBUuQ==
-X-Google-Smtp-Source: ABdhPJze4R1mTMf13f6kPCl8W3juFpZNbCCHquzQQtr0pRw0f1EZguXPvQjzTYEjbEidx87nOeWJpg==
-X-Received: by 2002:a05:6512:3e5:: with SMTP id n5mr27231331lfq.146.1642602886707;
-        Wed, 19 Jan 2022 06:34:46 -0800 (PST)
-Received: from pc638.lan ([155.137.26.201])
-        by smtp.gmail.com with ESMTPSA id br14sm546234lfb.14.2022.01.19.06.34.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jan 2022 06:34:46 -0800 (PST)
-From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Vasily Averin <vvs@virtuozzo.com>
-Subject: [PATCH 3/3] mm/vmalloc: Eliminate an extra orig_gfp_mask
-Date:   Wed, 19 Jan 2022 15:34:34 +0100
-Message-Id: <20220119143434.601059-3-urezki@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220119143434.601059-1-urezki@gmail.com>
-References: <20220119143434.601059-1-urezki@gmail.com>
+        id S1346058AbiASSVq (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 19 Jan 2022 13:21:46 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:39878 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235941AbiASSVq (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 19 Jan 2022 13:21:46 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 1E7FEB81B07;
+        Wed, 19 Jan 2022 18:21:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC5D7C004E1;
+        Wed, 19 Jan 2022 18:21:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1642616504;
+        bh=BuImWbqYq69nOMZkBpTAU93WuBzLV4DNP0kX4Cmszlk=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=JY+CuIBpkjqD21WE87UU734nigV5injGm6x+zQFMQZkm7hFy6K5FPUKCHs2YPoEVd
+         pMTjfXufrf443hjwk6V0aQgSv78CqtpcuwpVhjrWmuVeBVJ/9fazskczbBRSJ7ATEc
+         eIryEWKsn22V3Mv0hDViWjkhuxUoEzn3FItSUXTYCIA3TN3i61kSfxrlLM+cPHGMAt
+         7s4FTmb25NqFSrkWGJUW6SKQMM7vJnIPdKc1v5Gw8knsrdwxp/DoFUGaoi2IQKM9Mt
+         YMM3riInromvKfte7O6vudkcR3gh0epcNxYbHVQv31rA2+JIp+qZeyMpjNW7IMSHCx
+         z43mnvbQixOiA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id B1A315C015D; Wed, 19 Jan 2022 10:21:43 -0800 (PST)
+Date:   Wed, 19 Jan 2022 10:21:43 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Zhouyi Zhou <zhouzhouyi@gmail.com>
+Cc:     Paul Menzel <pmenzel@molgen.mpg.de>,
+        Josh Triplett <josh@joshtriplett.org>,
+        rcu <rcu@vger.kernel.org>, linux-kselftest@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: Problems with rcutorture on ppc64le: allmodconfig(2) and other
+ failures
+Message-ID: <20220119182143.GA2183703@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <36bd91e4-8eda-5677-7fde-40295932a640@molgen.mpg.de>
+ <CAABZP2wxXW2RqpKevt9erkYg3po0ByUEFvYsgy3cRty5Rt1Qyw@mail.gmail.com>
+ <d744e653-5e8f-b874-6991-3005e6b8afd4@molgen.mpg.de>
+ <20220118172904.GG947480@paulmck-ThinkPad-P17-Gen-1>
+ <20220118234656.GA3120763@paulmck-ThinkPad-P17-Gen-1>
+ <CAABZP2yffDyg31smcCyqENFBvQPfmFCT_YwDM_DJ=S-3rjxKuQ@mail.gmail.com>
+ <20220119044649.GL947480@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20220119044649.GL947480@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-That extra variable has been introduced just for keeping an original
-passed gfp_mask because it is updated with __GFP_NOWARN on entry, thus
-error handling messages were broken.
+On Tue, Jan 18, 2022 at 08:46:49PM -0800, Paul E. McKenney wrote:
+> On Wed, Jan 19, 2022 at 10:07:42AM +0800, Zhouyi Zhou wrote:
+> > Thanks Paul for looking into this
+> > 
+> > On Wed, Jan 19, 2022 at 7:46 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+> > >
+> > > On Tue, Jan 18, 2022 at 09:29:04AM -0800, Paul E. McKenney wrote:
+> > > > On Tue, Jan 18, 2022 at 08:56:24AM +0100, Paul Menzel wrote:
+> > > > > Dear Zhouyi,
+> > > > >
+> > > > >
+> > > > > Thank you for your quick response.
+> > > > >
+> > > > >
+> > > > > Am 18.01.22 um 08:34 schrieb Zhouyi Zhou:
+> > > > >
+> > > > > > I have studied the rcu torture test recently. I am also interested in
+> > > > > > this topic.
+> > > > > > But I can't open
+> > > > > > [1]: https://owww.molgen.mpg.de/~pmenzel/allmodconf-Make.out.txt
+> > > > > > [2]: https://owww.molgen.mpg.de/~pmenzel/rcutorture-log.txt
+> > > > >
+> > > > > Sorry, about that. I should have checked those. I had put them into a
+> > > > > directory:
+> > > > >
+> > > > > [1]: https://owww.molgen.mpg.de/~pmenzel/rcutorture/allmodconf-Make.out.txt
+> > > > > [2]: https://owww.molgen.mpg.de/~pmenzel/rcutorture/rcutorture-log.txt
+> > > > >
+> > > > > I am going to try to test your suggestions at the end of the day.
+> > > >
+> > > > On x86 rcutorture builds successfully.  However, allmodconfig
+> > > > on semi-recent -next got me "Can't open perl script
+> > > > "./usr/include/headers_check.pl": No such file or directory".
+> > > > Which might well be a local problem or might well be fixed by now.
+> > >
+> > > Not fixed as of next-20220118.  Chasing it down...  ;-)
+> > I can do allmodconfig on -next,
+> > $git describe
+> > next-20220118
+> > $tools/testing/selftests/rcutorture/bin/torture.sh --duration 10
+> >  ---  tools/testing/selftests/rcutorture/bin/torture.sh --duration 10
+> >  --- Results directory:  2022.01.19-09.14.39-torture
+> > $ ps -aux|grep qemu-system
+> > zzy       470309  773  0.3 1876544 153936 pts/0  Sl+  09:55  31:27
+> > qemu-system-x86_64 -enable-kvm -nographic -smp 16 -net none -machine
+> > q35,accel=kvm -cpu kvm64 -serial
+> > file:/tmp/linux-next/tools/testing/selftests/rcutorture/res/2022.01.19-09.14.39-torture/results-rcutorture/TREE03/console.log
+> > -m 512 -kernel /tmp/linux-next/tools/testing/selftests/rcutorture/res/2022.01.19-09.14.39-torture/results-rcutorture/TREE03/bzImage
+> > -append debug_boot_weak_hash panic=-1 selinux=0 initcall_debug debug
+> > console=ttyS0 rcupdate.rcu_cpu_stall_suppress_at_boot=1
+> > torture.disable_onoff_at_boot rcupdate.rcu_task_stall_timeout=30000
+> > rcutorture.onoff_interval=200 rcutorture.onoff_holdoff=30
+> > rcutree.gp_preinit_delay=12 rcutree.gp_init_delay=3
+> > rcutree.gp_cleanup_delay=3 rcutree.kthread_prio=2 threadirqs
+> > tree.use_softirq=0 rcutorture.n_barrier_cbs=4
+> > rcutorture.stat_interval=15 rcutorture.shutdown_secs=420
+> > rcutorture.test_no_idle_hz=1 rcutorture.verbose=1
+> > zzy       755865  0.0  0.0  17676  2876 pts/2    S+   09:59   0:00
+> > grep --color=auto qemu-system
+> > $ ls -l vmlinux
+> > -rwxrwxr-x 1 zzy zzy 69349872 1月  19 09:55 vmlinux
+> > 
+> > Could you please try the following command ?
+> > linux-next$ perl ./usr/include/headers_check.pl usr/include x86
+> > usr/include/rdma/hfi/hfi1_user.h
+> > linux-next$ echo $?
+> > 0
+> > The headers_check.pl in linux-next
+> > (https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/usr/include/headers_check.pl)
+> > is used to check the validity of head files in ./usr/include
+> 
+> I am currently bisecting, but once that finishes I will give this a
+> try, thank you!
 
-Instead we can keep an original gfp_mask without modifying it and add
-an extra __GFP_NOWARN flag together with gfp_mask as a parameter to
-the vm_area_alloc_pages() function. It will make it less confused.
+And the bisection converged badly due to there being more than one build
+failure.
 
-Cc: Vasily Averin <vvs@virtuozzo.com>
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
----
- mm/vmalloc.c | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+So I ran the command above and then the build succeeded.
 
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index 52ee67107046..04edd32ba6bc 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -2953,7 +2953,6 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
- 				 int node)
- {
- 	const gfp_t nested_gfp = (gfp_mask & GFP_RECLAIM_MASK) | __GFP_ZERO;
--	const gfp_t orig_gfp_mask = gfp_mask;
- 	bool nofail = gfp_mask & __GFP_NOFAIL;
- 	unsigned long addr = (unsigned long)area->addr;
- 	unsigned long size = get_vm_area_size(area);
-@@ -2967,7 +2966,6 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
- 	max_small_pages = ALIGN(size, 1UL << page_shift) >> PAGE_SHIFT;
- 
- 	array_size = (unsigned long)max_small_pages * sizeof(struct page *);
--	gfp_mask |= __GFP_NOWARN;
- 	if (!(gfp_mask & (GFP_DMA | GFP_DMA32)))
- 		gfp_mask |= __GFP_HIGHMEM;
- 
-@@ -2980,7 +2978,7 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
- 	}
- 
- 	if (!area->pages) {
--		warn_alloc(orig_gfp_mask, NULL,
-+		warn_alloc(gfp_mask, NULL,
- 			"vmalloc error: size %lu, failed to allocated page array size %lu",
- 			nr_small_pages * PAGE_SIZE, array_size);
- 		free_vm_area(area);
-@@ -2990,8 +2988,8 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
- 	set_vm_area_page_order(area, page_shift - PAGE_SHIFT);
- 	page_order = vm_area_page_order(area);
- 
--	area->nr_pages = vm_area_alloc_pages(gfp_mask, node,
--		page_order, nr_small_pages, area->pages);
-+	area->nr_pages = vm_area_alloc_pages(gfp_mask | __GFP_NOWARN,
-+		node, page_order, nr_small_pages, area->pages);
- 
- 	atomic_long_add(area->nr_pages, &nr_vmalloc_pages);
- 	if (gfp_mask & __GFP_ACCOUNT) {
-@@ -3007,7 +3005,7 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
- 	 * allocation request, free them via __vfree() if any.
- 	 */
- 	if (area->nr_pages != nr_small_pages) {
--		warn_alloc(orig_gfp_mask, NULL,
-+		warn_alloc(gfp_mask, NULL,
- 			"vmalloc error: size %lu, page order %u, failed to allocate pages",
- 			area->nr_pages * PAGE_SIZE, page_order);
- 		goto fail;
-@@ -3035,7 +3033,7 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
- 		memalloc_noio_restore(flags);
- 
- 	if (ret < 0) {
--		warn_alloc(orig_gfp_mask, NULL,
-+		warn_alloc(gfp_mask, NULL,
- 			"vmalloc error: size %lu, failed to map pages",
- 			area->nr_pages * PAGE_SIZE);
- 		goto fail;
--- 
-2.30.2
+Though it would be good if the build worked from "make distclean"...
 
+							Thanx, Paul
+
+> > > > Either way, it looks like I need to upgrade the torture.sh script's
+> > > > checks for failed builds.  Thank you for reporting this!
+> > >
+> > > Does this make torture.sh more reliably report build failures?
+> > I studied this commit line by line several times and benefited a lot. Thank you!
+> > >
+> > >                                                 Thanx, Paul
+> > >
+> > > ------------------------------------------------------------------------
+> > >
+> > > commit 0d302830515307ceb58e89d5fb91e81b6d22e0bf
+> > > Author: Paul E. McKenney <paulmck@kernel.org>
+> > > Date:   Tue Jan 18 15:40:49 2022 -0800
+> > >
+> > >     torture: Make kvm-find-errors.sh notice missing vmlinux file
+> > >
+> > >     Currently, an obtuse compiler diagnostic can fool kvm-find-errors.sh
+> > >     into believing that the build was successful.  This commit therefore
+> > >     adds a check for a missing vmlinux file.
+> > >
+> > >     Link: https://lore.kernel.org/lkml/36bd91e4-8eda-5677-7fde-40295932a640@molgen.mpg.de/
+> > >     Reported-by: Paul Menzel <pmenzel@molgen.mpg.de>
+> > >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > >
+> > > diff --git a/tools/testing/selftests/rcutorture/bin/kvm-find-errors.sh b/tools/testing/selftests/rcutorture/bin/kvm-find-errors.sh
+> > > index 2e9e9e2eedb69..7d3e11a6b8290 100755
+> > > --- a/tools/testing/selftests/rcutorture/bin/kvm-find-errors.sh
+> > > +++ b/tools/testing/selftests/rcutorture/bin/kvm-find-errors.sh
+> > > @@ -30,10 +30,15 @@ editor=${EDITOR-vi}
+> > >  files=
+> > >  for i in ${rundir}/*/Make.out
+> > >  do
+> > > +       scenariodir="`dirname $i`"
+> > >         if egrep -q "error:|warning:|^ld: .*undefined reference to" < $i
+> > >         then
+> > >                 egrep "error:|warning:|^ld: .*undefined reference to" < $i > $i.diags
+> > >                 files="$files $i.diags $i"
+> > > +       elif ! test -f ${scenariodir}/vmlinux
+> > > +       then
+> > > +               echo No ${scenariodir}/vmlinux file > $i.diags
+> > > +               files="$files $i.diags $i"
+> > >         fi
+> > >  done
+> > >  if test -n "$files"
+> > Thanks
+> > Zhouyi
