@@ -2,138 +2,119 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 74BC5C433FE
-	for <rcu@archiver.kernel.org>; Sun, 23 Jan 2022 18:43:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 807D7C433F5
+	for <rcu@archiver.kernel.org>; Sun, 23 Jan 2022 22:43:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240133AbiAWSnF (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 23 Jan 2022 13:43:05 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:57015 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240132AbiAWSmG (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Sun, 23 Jan 2022 13:42:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1642963325;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cY1U+lDZEduaUwZDUPPFY/UPA4Nbu9quyT81CXEx4PE=;
-        b=HvVLQmQidGjOBF0JntWxCmqZp4PAvN17jypkrI5lCT2u1CCb1MBMctnpCK5g9qa8dJy/3F
-        I0lRYYHjHEDkQiYhRnOwT/OxAm/7ux3dM2zagq7pEy5VNV+JgrFI6tarF56EgBXqKRir6l
-        XWV7prv4PE6+HbtlMtKM59PFHUg0EjY=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-593-wlMoSROVOqekpdHLAsM0Iw-1; Sun, 23 Jan 2022 13:42:03 -0500
-X-MC-Unique: wlMoSROVOqekpdHLAsM0Iw-1
-Received: by mail-qk1-f197.google.com with SMTP id b13-20020a05620a270d00b0047ba5ddde8dso10612665qkp.2
-        for <rcu@vger.kernel.org>; Sun, 23 Jan 2022 10:42:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cY1U+lDZEduaUwZDUPPFY/UPA4Nbu9quyT81CXEx4PE=;
-        b=uFhy7JYJVgnGor39iCZYrqMOTxce0OpDiJ6C90hkU8uBevtiWAJgtNo1qcEZFoxjDU
-         8zGB6OGugPGIKazJcMKFJzi2wmA/hHg0ftWONfyYm5matY3PezGDKeeLgyqCMhEkUHJe
-         69Yuyvfb4YZPRiVvehSEG9lHHWS86ZgxgRvxORU9lOFB+XZg5h+vdMOm0xV0is3PkyiJ
-         ykYhUD6BVpsvPR6+XTYnzmctuyrpIJsu7llOblpULOhZwhilMVGjOBkU6JBzdBEpSdl3
-         tui3gFJuxtwQXNTk/R8BMOlhpH0gttUl5Grmt6XZmpidVkymMjoUGjIxXtxg7S/gu0M3
-         g9pQ==
-X-Gm-Message-State: AOAM531wGoYS0QeMBydlYCcBrDS/yIbS9oIy35IAAX2oHNfoJYV1mbHI
-        Y2bNYO+zBAFeVo+TDh7bVlqcfWk3PlAFQclzcHbNLkD5ADlyTRu90F0fZs/H9cBvE+olVGpgBfR
-        r0DajjyQoT+eyqJ0gUCkJIDHovhXw
-X-Received: by 2002:ac8:7fce:: with SMTP id b14mr9929568qtk.339.1642963323222;
-        Sun, 23 Jan 2022 10:42:03 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzgrnfftQev+/e1bfthcVXrqsS2NkZk7XaembGAyAtcFzDuZvrfItLL05jZqccEw/AGJEmBtbd/PLqLmStx2NU=
-X-Received: by 2002:ac8:7fce:: with SMTP id b14mr9929550qtk.339.1642963322945;
- Sun, 23 Jan 2022 10:42:02 -0800 (PST)
+        id S230057AbiAWWnw (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 23 Jan 2022 17:43:52 -0500
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:56113 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229944AbiAWWnv (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Sun, 23 Jan 2022 17:43:51 -0500
+Received: from dread.disaster.area (pa49-179-45-11.pa.nsw.optusnet.com.au [49.179.45.11])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id F3D1B10C3792;
+        Mon, 24 Jan 2022 09:43:47 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1nBlaM-003Q3T-C9; Mon, 24 Jan 2022 09:43:46 +1100
+Date:   Mon, 24 Jan 2022 09:43:46 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Brian Foster <bfoster@redhat.com>
+Cc:     linux-xfs@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
+        Ian Kent <raven@themaw.net>, rcu@vger.kernel.org
+Subject: Re: [PATCH] xfs: require an rcu grace period before inode recycle
+Message-ID: <20220123224346.GJ59729@dread.disaster.area>
+References: <20220121142454.1994916-1-bfoster@redhat.com>
 MIME-Version: 1.0
-References: <202201221028.YKA8kSdm-lkp@intel.com> <CAK-6q+h_hb94J3DSXPk=E44kCxiwZ+BE3kMJe09iShRzMb=vzQ@mail.gmail.com>
- <91901e7b-7d82-116c-aaf2-c74c6a6b999c@infradead.org>
-In-Reply-To: <91901e7b-7d82-116c-aaf2-c74c6a6b999c@infradead.org>
-From:   Alexander Aring <aahringo@redhat.com>
-Date:   Sun, 23 Jan 2022 13:41:52 -0500
-Message-ID: <CAK-6q+j2jc3pBmbvQ-DCmxveC-UMV75SFc2nC1zwXKe9wm4YPg@mail.gmail.com>
-Subject: Re: fs/dlm/midcomms.c:913:22: sparse: sparse: restricted __le32
- degrades to integer
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, David Teigland <teigland@redhat.com>,
-        cluster-devel <cluster-devel@redhat.com>,
-        linux-sparse@vger.kernel.org, rcu@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220121142454.1994916-1-bfoster@redhat.com>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.4 cv=e9dl9Yl/ c=1 sm=1 tr=0 ts=61edda25
+        a=Eslsx4mF8WGvnV49LKizaA==:117 a=Eslsx4mF8WGvnV49LKizaA==:17
+        a=kj9zAlcOel0A:10 a=DghFqjY3_ZEA:10 a=7-415B0cAAAA:8
+        a=wUPi4CxvGOlWWrG8X90A:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Randy,
+On Fri, Jan 21, 2022 at 09:24:54AM -0500, Brian Foster wrote:
+> The XFS inode allocation algorithm aggressively reuses recently
+> freed inodes. This is historical behavior that has been in place for
+> quite some time, since XFS was imported to mainline Linux. Once the
+> VFS adopted RCUwalk path lookups (also some time ago), this behavior
+> became slightly incompatible because the inode recycle path doesn't
+> isolate concurrent access to the inode from the VFS.
+> 
+> This has recently manifested as problems in the VFS when XFS happens
+> to change the type or properties of a recently unlinked inode while
+> still involved in an RCU lookup. For example, if the VFS refers to a
+> previous incarnation of a symlink inode, obtains the ->get_link()
+> callback from inode_operations, and the latter happens to change to
+> a non-symlink type via a recycle event, the ->get_link() callback
+> pointer is reset to NULL and the lookup results in a crash.
+> 
+> To avoid this class of problem, isolate in-core inodes for recycling
+> with an RCU grace period. This is the same level of protection the
+> VFS expects for inactivated inodes that are never reused, and so
+> guarantees no further concurrent access before the type or
+> properties of the inode change. We don't want an unconditional
+> synchronize_rcu() event here because that would result in a
+> significant performance impact to mixed inode allocation workloads.
+> 
+> Fortunately, we can take advantage of the recently added deferred
+> inactivation mechanism to mitigate the need for an RCU wait in most
+> cases. Deferred inactivation queues and batches the on-disk freeing
+> of recently destroyed inodes, and so significantly increases the
+> likelihood that a grace period has elapsed by the time an inode is
+> freed and observable by the allocation code as a reuse candidate.
+> Capture the current RCU grace period cookie at inode destroy time
+> and refer to it at allocation time to conditionally wait for an RCU
+> grace period if one hadn't expired in the meantime.  Since only
+> unlinked inodes are recycle candidates and unlinked inodes always
+> require inactivation, we only need to poll and assign RCU state in
+> the inactivation codepath.
 
-On Sat, Jan 22, 2022 at 2:19 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->
->
->
-> On 1/22/22 10:28, Alexander Aring wrote:
-> > Hi,
-> >
-> > On Fri, Jan 21, 2022 at 9:45 PM kernel test robot <lkp@intel.com> wrote:
-> >>
-> >> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> >> head:   9b57f458985742bd1c585f4c7f36d04634ce1143
-> >> commit: 658bd576f95ed597e519cdadf1c86ac87c17aea5 fs: dlm: move version conversion to compile time
-> >> date:   3 months ago
-> >> config: x86_64-rhel-8.3-kselftests (https://download.01.org/0day-ci/archive/20220122/202201221028.YKA8kSdm-lkp@intel.com/config)
-> >> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-> >> reproduce:
-> >>         # apt-get install sparse
-> >>         # sparse version: v0.6.4-dirty
-> >>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=658bd576f95ed597e519cdadf1c86ac87c17aea5
-> >>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-> >>         git fetch --no-tags linus master
-> >>         git checkout 658bd576f95ed597e519cdadf1c86ac87c17aea5
-> >>         # save the config file to linux build tree
-> >>         mkdir build_dir
-> >>         make W=1 C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=x86_64 SHELL=/bin/bash
-> >>
-> >> If you fix the issue, kindly add following tag as appropriate
-> >
-> > I have it on my list but it isn't easy to make sparse happy here...
-> > this is the second time the robot reported this issue. Is there a way
-> > to turn the robot off in that case?
-> >
-> > Maybe some human who reads that knows the answer?
->
-> Hi Alex,
->
-> In the source file, you can surround the "offending" line(s) with
->
-> #ifndef __CHECKER__
->  ...
-> #endif
->
-> to prevent sparse from checking those lines.
-> Sometimes there needs to be an "#else" branch also.
->
-> 'git grep __CHECKER__' will show you quite a few other examples.
->
+I think this assertion is incorrect.
 
-Thanks, I will try that to stop the false positives and endianness
-warnings (temporarily).
+Recycling can occur on any inode that has been evicted from the VFS
+cache. i.e. while the inode is sitting in XFS_IRECLAIMABLE state
+waiting for the background inodegc to run (every ~5s by default) a
+->lookup from the VFS can occur and we find that same inode sitting
+there in XFS_IRECLAIMABLE state. This lookup then hits the recycle
+path.
 
-I see also:
+In this case, even though we re-instantiate the inode into the same
+identity, it goes through a transient state where the inode has it's
+identity returned to the default initial "just allocated" VFS state
+and this transient state can be visible from RCU lookups within the
+RCU grace period the inode was evicted from. This means the RCU
+lookup could see the inode with i_ops having been reset to
+&empty_ops, which means any method called on the inode at this time
+(e.g. ->get_link) will hit a NULL pointer dereference.
 
-fs/dlm/midcomms.c:213:1: sparse: sparse: symbol
-'__srcu_struct_nodes_srcu' was not declared. Should it be static?
+This requires multiple concurrent lookups on the same inode that
+just got evicted, some which the RCU pathwalk finds the old stale
+dentry/inode pair, and others that don't find that old pair. This is
+much harder to trip over but, IIRC, we used to see this quite a lot
+with NFS server workloads when multiple operations on a single inode
+could come in from multiple clients and be processed in parallel by
+knfsd threads. This was quite a hot path before the NFS server had an
+open-file cache added to it, and it probably still is if the NFS
+server OFC is not large enough for the working set of files being
+accessed...
 
-For a macro which contains the "static" keyword, it's
-"DEFINE_STATIC_SRCU()". Either sparse should be teached to deal with
-that or everybody should use "static DEFINE_SRCU()" instead of using
-"DEFINE_STATIC_SRCU()".
-I would like to see the second way because everybody can see "static"
-is being used, that means maybe we should remove
-"DEFINE_STATIC_SRCU()"? The alternative by doing nothing would be to
-use "#ifndef __CHECKER__".
+Hence we have to ensure that RCU lookups can't find an evicted inode
+through anything other than xfs_iget() while we are re-instantiating
+the VFS inode state in xfs_iget_recycle().  Hence the RCU state
+sampling needs to be done unconditionally for all inodes going
+through ->destroy_inode so we can ensure grace periods expire for
+all inodes being recycled, not just those that required
+inactivation...
 
-I cc here rcu@vger.kernel.org and linux-sparse@vger.kernel.org, maybe
-this can be discussed?
+Cheers,
 
-- Alex
-
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
