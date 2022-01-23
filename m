@@ -2,96 +2,130 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D76AC433EF
-	for <rcu@archiver.kernel.org>; Sat, 22 Jan 2022 16:56:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 52810C433FE
+	for <rcu@archiver.kernel.org>; Sun, 23 Jan 2022 18:41:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234555AbiAVQ4C (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 22 Jan 2022 11:56:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55390 "EHLO
+        id S239991AbiAWSlZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 23 Jan 2022 13:41:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230136AbiAVQ4B (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 22 Jan 2022 11:56:01 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02524C06173B;
-        Sat, 22 Jan 2022 08:56:01 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id BD627B80917;
-        Sat, 22 Jan 2022 16:55:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C1A1C004E1;
-        Sat, 22 Jan 2022 16:55:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1642870558;
-        bh=etDQxPI3s/HzeW+iAu/0gOZXdv9GZeRBZzPSolI+6LU=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=UM6GVdJtcHEoAdda150uWQgUf4lKL82phaC0OO+rCmfQMBTYAN+swJH+h7VxQHMUi
-         3MkNm+5xAFhycIe2BuTtVgZd5L0fGBzaSNM3zBI6jaq1OrF9Zel13rrrBgeKwVQ2UO
-         DIWmBjQnTRIIMQ2CZ9eChsQxC/qHwpTMUbZenWHBS+PLO05MMVAw3IhbNBi865iaiA
-         ir7ql+eLPszi5gM1EsVYm0Nb0lItfLci7qNvV9s5CggCCn1APotSrUmN51BAFJ57an
-         /pLv3bvdvxkKWbkHL63OI1IKqX6t/oWeP/pwSq1ljcfsErFf9hagbcAVh4BMHONLsY
-         jKdJa6c8Dky9g==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 154A25C0F71; Sat, 22 Jan 2022 08:55:58 -0800 (PST)
-Date:   Sat, 22 Jan 2022 08:55:58 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Brian Foster <bfoster@redhat.com>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
-        Dave Chinner <david@fromorbit.com>,
-        Al Viro <viro@zeniv.linux.org.uk>, Ian Kent <raven@themaw.net>,
-        rcu@vger.kernel.org
-Subject: Re: [PATCH] xfs: require an rcu grace period before inode recycle
-Message-ID: <20220122165558.GA827430@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220121142454.1994916-1-bfoster@redhat.com>
- <20220121172603.GR13540@magnolia>
- <Yer8iqBIcwfLwh5s@bfoster>
- <20220122053019.GE947480@paulmck-ThinkPad-P17-Gen-1>
+        with ESMTP id S239715AbiAWSk6 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 23 Jan 2022 13:40:58 -0500
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9CD8C06173D;
+        Sun, 23 Jan 2022 10:40:57 -0800 (PST)
+Received: by mail-pg1-x533.google.com with SMTP id v3so7873287pgc.1;
+        Sun, 23 Jan 2022 10:40:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+         :content-transfer-encoding;
+        bh=UUKJUI5LEQZKArKXE5kTNrLEuODfkVdvxUFHk4GiAXc=;
+        b=B8p8tHIZv+dHEfVHl/No8uGC1d6rBNR6KHiGIhB03BC1EQYyDbAFs0hZR8USDjt7YJ
+         3BoLtDJ5s3uk+CrF8kCmGokKb4I5AxPFFEYJNS2upRFlOrifOivmrVCyvvbSblPt+8QR
+         STKpfwVdgogy51f2LObUIq3MF8dfBcNvricle3FbVfD/Lvk9zeg90qAhFoz9FJ7BxJn/
+         GM/zJCtI9FWyBo11QplwdknQKRo4mmbbO9dcmA2AMQ2r6h4D/R+C/6Z5Upz2H+6FwawR
+         McHv69WPqBt6COW7wuNPvTYLatkej8o2lExGiIEITYQDhZ07nISE4qjY1T0p/V3fyJXa
+         +iXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=UUKJUI5LEQZKArKXE5kTNrLEuODfkVdvxUFHk4GiAXc=;
+        b=jY6QJ0zklMjv6hqzQGgfMJMWOCj1OigQws7E2DIA7QIF+ywjUYshnSxbkppqTHE3qz
+         ScCBrRuokyUfDZMjMN5T7I0g+KONAI80+lxu8dAaJhGRzqCo5NhXwXc1VLAbWwmhgG/P
+         r4Dtkj41jH/eVcDFBllI9CQwipw8lSGLyowygGsCzeoIe1jT3LNJRfBmHfNORmvxwh9c
+         a1BFTwexAsZB3PV19KuKua5yMLMI8I8UggvxwdE4/YVNnko5FtjlBKoa4DKik8nRd16c
+         VvsvL1ftk162yIXQJs5cLIT6pultr5ev6P2cI+7pm/78TKZLKybboKJdbfRI+rA827kE
+         amgA==
+X-Gm-Message-State: AOAM532F9vb8toge0AiG3g2TZ0YM8o98ji3alqL8g5kVrTlUWNEshQDb
+        VNuIJ1rPp1Wnk1bBwKfzWuQOPpfls9U=
+X-Google-Smtp-Source: ABdhPJx6P1H1G7heLbutA+icIyViqrkaWle0teU4GGguSdO0pA8FIAznKJQS2GmROqlo2H6iYL8uJg==
+X-Received: by 2002:a62:dd56:0:b0:4c7:8603:3ffe with SMTP id w83-20020a62dd56000000b004c786033ffemr8567637pff.15.1642963257316;
+        Sun, 23 Jan 2022 10:40:57 -0800 (PST)
+Received: from localhost (searspoint.nvidia.com. [216.228.112.21])
+        by smtp.gmail.com with ESMTPSA id v8sm3258809pfu.186.2022.01.23.10.40.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 23 Jan 2022 10:40:57 -0800 (PST)
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Yury Norov <yury.norov@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        David Laight <David.Laight@aculab.com>,
+        Joe Perches <joe@perches.com>, Dennis Zhou <dennis@kernel.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Alexey Klimov <aklimov@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
+Subject: [PATCH 22/54] rcu: replace cpumask_weight with cpumask_empty where appropriate
+Date:   Sun, 23 Jan 2022 10:38:53 -0800
+Message-Id: <20220123183925.1052919-23-yury.norov@gmail.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220123183925.1052919-1-yury.norov@gmail.com>
+References: <20220123183925.1052919-1-yury.norov@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220122053019.GE947480@paulmck-ThinkPad-P17-Gen-1>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Jan 21, 2022 at 09:30:19PM -0800, Paul E. McKenney wrote:
-> On Fri, Jan 21, 2022 at 01:33:46PM -0500, Brian Foster wrote:
+In some places, RCU code calls cpumask_weight() to check if any bit of a
+given cpumask is set. We can do it more efficiently with cpumask_empty()
+because cpumask_empty() stops traversing the cpumask as soon as it finds
+first set bit, while cpumask_weight() counts all bits unconditionally.
 
-[ . . . ]
+Signed-off-by: Yury Norov <yury.norov@gmail.com>
+---
+ kernel/rcu/tree_nocb.h   | 4 ++--
+ kernel/rcu/tree_plugin.h | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-> > My previous experiments on a teardown grace period had me thinking
-> > batching would occur, but I don't recall which RCU call I was using at
-> > the time so I'd probably have to throw a tracepoint in there to dump
-> > some of the grace period values and double check to be sure. (If this is
-> > not the case, that might be a good reason to tweak things as discussed
-> > above).
-> 
-> An RCU grace period typically takes some milliseconds to complete, so a
-> great many inodes would end up being tagged for the same grace period.
-> For example, if "rm -rf" could delete one file per microsecond, the
-> first few thousand files would be tagged with one grace period,
-> the next few thousand with the next grace period, and so on.
-> 
-> In the unlikely event that RCU was totally idle when the "rm -rf"
-> started, the very first file might get its own grace period, but
-> they would batch in the thousands thereafter.
-> 
-> On start_poll_synchronize_rcu() vs. get_state_synchronize_rcu(), if
-> there is always other RCU update activity, get_state_synchronize_rcu()
-> is just fine.  So if XFS does a call_rcu() or synchronize_rcu() every
-> so often, all you need here is get_state_synchronize_rcu()().
-> 
-> Another approach is to do a start_poll_synchronize_rcu() every 1,000
-> events, and use get_state_synchronize_rcu() otherwise.  And there are
-> a lot of possible variations on that theme.
-> 
-> But why not just try always doing start_poll_synchronize_rcu() and
-> only bother with get_state_synchronize_rcu() if that turns out to
-> be too slow?
+diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+index eeafb546a7a0..f83c7b1d6110 100644
+--- a/kernel/rcu/tree_nocb.h
++++ b/kernel/rcu/tree_nocb.h
+@@ -1169,7 +1169,7 @@ void __init rcu_init_nohz(void)
+ 	struct rcu_data *rdp;
+ 
+ #if defined(CONFIG_NO_HZ_FULL)
+-	if (tick_nohz_full_running && cpumask_weight(tick_nohz_full_mask))
++	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask))
+ 		need_rcu_nocb_mask = true;
+ #endif /* #if defined(CONFIG_NO_HZ_FULL) */
+ 
+@@ -1348,7 +1348,7 @@ static void __init rcu_organize_nocb_kthreads(void)
+  */
+ void rcu_bind_current_to_nocb(void)
+ {
+-	if (cpumask_available(rcu_nocb_mask) && cpumask_weight(rcu_nocb_mask))
++	if (cpumask_available(rcu_nocb_mask) && !cpumask_empty(rcu_nocb_mask))
+ 		WARN_ON(sched_setaffinity(current->pid, rcu_nocb_mask));
+ }
+ EXPORT_SYMBOL_GPL(rcu_bind_current_to_nocb);
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index c5b45c2f68a1..0dc0c8d6717c 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -1215,7 +1215,7 @@ static void rcu_boost_kthread_setaffinity(struct rcu_node *rnp, int outgoingcpu)
+ 		    cpu != outgoingcpu)
+ 			cpumask_set_cpu(cpu, cm);
+ 	cpumask_and(cm, cm, housekeeping_cpumask(HK_FLAG_RCU));
+-	if (cpumask_weight(cm) == 0)
++	if (cpumask_empty(cm))
+ 		cpumask_copy(cm, housekeeping_cpumask(HK_FLAG_RCU));
+ 	set_cpus_allowed_ptr(t, cm);
+ 	free_cpumask_var(cm);
+-- 
+2.30.2
 
-Plus there are a few optimizations I could apply that would speed up
-get_state_synchronize_rcu(), for example, reducing lock contention.
-But I would of course have to see a need before increasing complexity.
-
-							Thanx, Paul
