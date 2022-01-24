@@ -2,296 +2,155 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 62F67C433EF
-	for <rcu@archiver.kernel.org>; Tue, 25 Jan 2022 02:11:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0FAFDC433F5
+	for <rcu@archiver.kernel.org>; Tue, 25 Jan 2022 02:11:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353012AbiAYCLJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 24 Jan 2022 21:11:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33568 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1842999AbiAXX31 (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Mon, 24 Jan 2022 18:29:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1643066963;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jx3Ro6S3xws9rd8tdWZmYUjl65K1O4tRyj4n/OFarU8=;
-        b=ciU1w3RCE6ZBH5Bbyg6I565v6f5oVDcUPMp8xanf/ksH1GJIlw5G3buCH4DI+2foNlrTRl
-        bzYL6cG9KMZ9XN8kRXW5eg035yDbh/6CHJs6BbgJ/pVl6d453BOY3ZckHMwSJRFkAt9lO1
-        tse+/kyHffymqYmo6OvI6t4Phb4hndY=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-392-ooJFsRiUPxC3aZ2ZQmb0aQ-1; Mon, 24 Jan 2022 18:29:22 -0500
-X-MC-Unique: ooJFsRiUPxC3aZ2ZQmb0aQ-1
-Received: by mail-qk1-f199.google.com with SMTP id u17-20020a05620a431100b004765c0dc33cso13478941qko.14
-        for <rcu@vger.kernel.org>; Mon, 24 Jan 2022 15:29:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jx3Ro6S3xws9rd8tdWZmYUjl65K1O4tRyj4n/OFarU8=;
-        b=wUTSrKn0dYPoz9uV+MjtwuPG/P+bEhGgwZZEpbVVwYFqVvR98QZXgfsT0qsoM9rzts
-         ZW30zkv49GhypZ+06qU0ELecjvV7QHbDiBweNpjouciHnBC2PDAoLuN12QG36bVVBs2l
-         p8tXIUa2B96W/TXmXikBPrqe54VrTprREWpKClS3EVY6x9s77yh+x7TLLj/C3lOGauPs
-         oky2FGwUgZJcqyNFtg4v1Azv/d842+azjkdfDWZpTCNwVonzzD18VNTyFussnzoZYTOu
-         ZBLE91HLfqDA6rrDg1lLqTFzJIid4Lk+RymPpFk0olLmPKRBk3cpqQCkgZI6guNDNId+
-         K9Rw==
-X-Gm-Message-State: AOAM532UAub6p+1tLvmcfixUn6Xr0iwz15L2bJcnleijfx+8seuVUnUv
-        bq9/X3zVtcXBnT3V4fMYcCin9ZdDvVaBo7EYRz+fSoc0QkiKx8xCLOJJbz/Ce5ez7E6aa6BoN+w
-        8DRs6HoyTtT7A
-X-Received: by 2002:ad4:4c50:: with SMTP id cs16mr17152227qvb.74.1643066961283;
-        Mon, 24 Jan 2022 15:29:21 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzhDqRtdkxn4Dhygdtg8YvjttWgPinxk5iVhgAGWQ3pp2CiPoyi7efbRpFWsP4J6Et4Sl9Ktw==
-X-Received: by 2002:ad4:4c50:: with SMTP id cs16mr17152207qvb.74.1643066960862;
-        Mon, 24 Jan 2022 15:29:20 -0800 (PST)
-Received: from bfoster (c-24-61-119-116.hsd1.ma.comcast.net. [24.61.119.116])
-        by smtp.gmail.com with ESMTPSA id k15sm8766131qko.82.2022.01.24.15.29.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jan 2022 15:29:20 -0800 (PST)
-Date:   Mon, 24 Jan 2022 18:29:18 -0500
-From:   Brian Foster <bfoster@redhat.com>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     linux-xfs@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
-        Ian Kent <raven@themaw.net>, rcu@vger.kernel.org
-Subject: Re: [PATCH] xfs: require an rcu grace period before inode recycle
-Message-ID: <Ye82TgBY0VmtTjMc@bfoster>
-References: <20220121142454.1994916-1-bfoster@redhat.com>
- <Ye6/g+XMSyp9vYvY@bfoster>
- <20220124220853.GN59729@dread.disaster.area>
+        id S3417780AbiAYCLZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 24 Jan 2022 21:11:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S3408501AbiAYAWz (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 24 Jan 2022 19:22:55 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 352DBC036BE4;
+        Mon, 24 Jan 2022 14:06:30 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C2767615CF;
+        Mon, 24 Jan 2022 22:06:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2ACCBC340F8;
+        Mon, 24 Jan 2022 22:06:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1643061989;
+        bh=s0Q2iLX9dyK6zBfXvE6AmOg6Y4MPmiUDjoi2MZ8nbRI=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=BB8Mpx1LnwvDuTkbA0cXddeZ/rQmtoz8pUu0UU6grzafB6tLVMViJeDK0RQZji0pa
+         ALjXmDrGSFz3XxbxVxzAwQI37Jrd1WyjAs4m0uinFAz/wQMNAGxQ+XlElHAM7N9Z2O
+         CNuHrOf/n3Osqripl7Pwbn+uu34DRbgdl8p2qx+km9d9A51sLduueP3C2eCmviHrQM
+         kWhX/ZhSpD9LMiR/NvcdNf5eocL/fFS9RK/MFN7rIxhtS4ddTPaXsHQfQq7uGT86Nf
+         TVaZfoKOH0mQklFjLmq4GHpu0BEGXBmTNPAQqUG/7IbD9zXl2timujV65yhcCpbQFr
+         HTcL+lDGlz7Yg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id DDF295C0FCD; Mon, 24 Jan 2022 14:06:28 -0800 (PST)
+Date:   Mon, 24 Jan 2022 14:06:28 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Alexander Aring <aahringo@redhat.com>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, David Teigland <teigland@redhat.com>,
+        cluster-devel <cluster-devel@redhat.com>,
+        linux-sparse@vger.kernel.org, rcu@vger.kernel.org
+Subject: Re: fs/dlm/midcomms.c:913:22: sparse: sparse: restricted __le32
+ degrades to integer
+Message-ID: <20220124220628.GL4285@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <202201221028.YKA8kSdm-lkp@intel.com>
+ <CAK-6q+h_hb94J3DSXPk=E44kCxiwZ+BE3kMJe09iShRzMb=vzQ@mail.gmail.com>
+ <91901e7b-7d82-116c-aaf2-c74c6a6b999c@infradead.org>
+ <CAK-6q+j2jc3pBmbvQ-DCmxveC-UMV75SFc2nC1zwXKe9wm4YPg@mail.gmail.com>
+ <20220124124530.GS1951@kadam>
+ <CAK-6q+iZfY=FyOxJfS7cY7MqScs+nU=U3B4NnLnvcLH3fofuAg@mail.gmail.com>
+ <CAK-6q+ga2zT2h4oY0=aCXFeU=oaFHbSXGzuVRptB8Hg-YKR7Gw@mail.gmail.com>
+ <CAK-6q+jfA2k1TFrLqK4YN2vshgLidD=6r_CCV6df_VRFMFO7ag@mail.gmail.com>
+ <20220124201417.GI4285@paulmck-ThinkPad-P17-Gen-1>
+ <CAK-6q+gGx68Wx8mBJAdo0ygpBWPoHW+L+HD11U6UQSOjSXVP3w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220124220853.GN59729@dread.disaster.area>
+In-Reply-To: <CAK-6q+gGx68Wx8mBJAdo0ygpBWPoHW+L+HD11U6UQSOjSXVP3w@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Jan 25, 2022 at 09:08:53AM +1100, Dave Chinner wrote:
-> On Mon, Jan 24, 2022 at 10:02:27AM -0500, Brian Foster wrote:
-> > On Fri, Jan 21, 2022 at 09:24:54AM -0500, Brian Foster wrote:
-> > > The XFS inode allocation algorithm aggressively reuses recently
-> > > freed inodes. This is historical behavior that has been in place for
-> > > quite some time, since XFS was imported to mainline Linux. Once the
-> > > VFS adopted RCUwalk path lookups (also some time ago), this behavior
-> > > became slightly incompatible because the inode recycle path doesn't
-> > > isolate concurrent access to the inode from the VFS.
-> > > 
-> > > This has recently manifested as problems in the VFS when XFS happens
-> > > to change the type or properties of a recently unlinked inode while
-> > > still involved in an RCU lookup. For example, if the VFS refers to a
-> > > previous incarnation of a symlink inode, obtains the ->get_link()
-> > > callback from inode_operations, and the latter happens to change to
-> > > a non-symlink type via a recycle event, the ->get_link() callback
-> > > pointer is reset to NULL and the lookup results in a crash.
-> > > 
-> > > To avoid this class of problem, isolate in-core inodes for recycling
-> > > with an RCU grace period. This is the same level of protection the
-> > > VFS expects for inactivated inodes that are never reused, and so
-> > > guarantees no further concurrent access before the type or
-> > > properties of the inode change. We don't want an unconditional
-> > > synchronize_rcu() event here because that would result in a
-> > > significant performance impact to mixed inode allocation workloads.
-> > > 
-> > > Fortunately, we can take advantage of the recently added deferred
-> > > inactivation mechanism to mitigate the need for an RCU wait in most
-> > > cases. Deferred inactivation queues and batches the on-disk freeing
-> > > of recently destroyed inodes, and so significantly increases the
-> > > likelihood that a grace period has elapsed by the time an inode is
-> > > freed and observable by the allocation code as a reuse candidate.
-> > > Capture the current RCU grace period cookie at inode destroy time
-> > > and refer to it at allocation time to conditionally wait for an RCU
-> > > grace period if one hadn't expired in the meantime.  Since only
-> > > unlinked inodes are recycle candidates and unlinked inodes always
-> > > require inactivation, we only need to poll and assign RCU state in
-> > > the inactivation codepath. Slightly adjust struct xfs_inode to fit
-> > > the new field into padding holes that conveniently preexist in the
-> > > same cacheline as the deferred inactivation list.
-> > > 
-> > > Finally, note that the ideal long term solution here is to
-> > > rearchitect bits of XFS' internal inode lifecycle management such
-> > > that this additional stall point is not required, but this requires
-> > > more thought, time and work to address. This approach restores
-> > > functional correctness in the meantime.
-> > > 
-> > > Signed-off-by: Brian Foster <bfoster@redhat.com>
-> > > ---
-> > > 
-> > > Hi all,
-> > > 
-> > > Here's the RCU fixup patch for inode reuse that I've been playing with,
-> > > re: the vfs patch discussion [1]. I've put it in pretty much the most
-> > > basic form, but I think there are a couple aspects worth thinking about:
-> > > 
-> > > 1. Use and frequency of start_poll_synchronize_rcu() (vs.
-> > > get_state_synchronize_rcu()). The former is a bit more active than the
-> > > latter in that it triggers the start of a grace period, when necessary.
-> > > This currently invokes per inode, which is the ideal frequency in
-> > > theory, but could be reduced, associated with the xfs_inogegc thresholds
-> > > in some manner, etc., if there is good reason to do that.
-> > > 
-> > > 2. The rcu cookie lifecycle. This variant updates it on inactivation
-> > > queue and nowhere else because the RCU docs imply that counter rollover
-> > > is not a significant problem. In practice, I think this means that if an
-> > > inode is stamped at least once, and the counter rolls over, future
-> > > (non-inactivation, non-unlinked) eviction -> repopulation cycles could
-> > > trigger rcu syncs. I think this would require repeated
-> > > eviction/reinstantiation cycles within a small window to be noticeable,
-> > > so I'm not sure how likely this is to occur. We could be more defensive
-> > > by resetting or refreshing the cookie. E.g., refresh (or reset to zero)
-> > > at recycle time, unconditionally refresh at destroy time (using
-> > > get_state_synchronize_rcu() for non-inactivation), etc.
-> > > 
-> > > Otherwise testing is ongoing, but this version at least survives an
-> > > fstests regression run.
-> > > 
-> > 
-> > FYI, I modified my repeated alloc/free test to do some batching and form
-> > it into something more able to measure the potential side effect / cost
-> > of the grace period sync. The test is a single threaded, file alloc/free
-> > loop using a variable per iteration batch size. The test runs for ~60s
-> > and reports how many total files were allocated/freed in that period
-> > with the specified batch size. Note that this particular test ran
-> > without any background workload. Results are as follows:
-> > 
-> > 	files		baseline	test
-> > 
-> > 	1		38480		38437
-> > 	4		126055		111080
-> > 	8		218299		134469
-> > 	16		306619		141968
-> > 	32		397909		152267
-> > 	64		418603		200875
-> > 	128		469077		289365
-> > 	256		684117		566016
-> > 	512		931328		878933
-> > 	1024		1126741		1118891
+On Mon, Jan 24, 2022 at 04:36:55PM -0500, Alexander Aring wrote:
+> Hi,
 > 
-> Can you post the test code, because 38,000 alloc/unlinks in 60s is
-> extremely slow for a single tight open-unlink-close loop. I'd be
-> expecting at least ~10,000 alloc/unlink iterations per second, not
-> 650/second.
+> On Mon, Jan 24, 2022 at 3:23 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > On Mon, Jan 24, 2022 at 12:41:04PM -0500, Alexander Aring wrote:
+> > > Hi,
+> > >
+> > > On Mon, Jan 24, 2022 at 12:36 PM Alexander Aring <aahringo@redhat.com> wrote:
+> > > >
+> > > > Hi,
+> > > >
+> > > > On Mon, Jan 24, 2022 at 12:21 PM Alexander Aring <aahringo@redhat.com> wrote:
+> > > > >
+> > > > > Hi,
+> > > > >
+> > > > > On Mon, Jan 24, 2022 at 7:46 AM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+> > > > > >
+> > > > > > On Sun, Jan 23, 2022 at 01:41:52PM -0500, Alexander Aring wrote:
+> > > > > > >
+> > > > > > > I see also:
+> > > > > > >
+> > > > > > > fs/dlm/midcomms.c:213:1: sparse: sparse: symbol
+> > > > > > > '__srcu_struct_nodes_srcu' was not declared. Should it be static?
+> > > > > > >
+> > > > > >
+> > > > > > Why not just do this?  (Untested.  Maybe I don't understand?)
+> > > > > >
+> > > > > > diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
+> > > > > > index cb1f4351e8ba..a164089abec4 100644
+> > > > > > --- a/include/linux/srcutree.h
+> > > > > > +++ b/include/linux/srcutree.h
+> > > > > > @@ -121,7 +121,7 @@ struct srcu_struct {
+> > > > > >  #ifdef MODULE
+> > > > > >  # define __DEFINE_SRCU(name, is_static)                                        \
+> > > > > >         is_static struct srcu_struct name;                              \
+> > > > > > -       struct srcu_struct * const __srcu_struct_##name                 \
+> > > > > > +       is_static struct srcu_struct * const __srcu_struct_##name       \
+> > > > > >                 __section("___srcu_struct_ptrs") = &name
+> > > > > >  #else
+> > > > > >  # define __DEFINE_SRCU(name, is_static)                                        \
+> > > > > >
+> > > > >
+> > > > > I tried it and yes it will fix the issue and introduce another one
+> > > > > about "is_static struct srcu_struct * const __srcu_struct_##name" is
+> > > > > unused ("-Wunused-const-variable").
+> > > > > I added a __maybe_unused after the introduced is_static and it seems
+> > > > > to fix the introduced issue, now it compiles and sparse is happy. I am
+> > > > > not sure if this is the right fix?
+> > > >
+> > > > it is obviously unused, but it has something to do with
+> > > > "__section("___srcu_struct_ptrs")" and during module loading it, I
+> > > > suppose, srcu tries to access it to find whatever needs to be
+> > > > registered?
+> > >
+> > > Sorry, but if this is true then it can't be declared as static... and
+> > > we are at the beginning again.
+> >
+> > Welcome to my world!!!  ;-)
+> >
+> > More seriously, thank you for chasing this down.  But would it work to
+> > add a declaration just before?
+> >
 > 
+> only if I add an "extern" in front of the declaration before, so it looks like:
+> 
+> extern struct srcu_struct * const __srcu_struct_##name;
+> 
+> (compile and sparse tested only)
 
-Hm, Ok. My test was just a bash script doing a 'touch <files>; rm
-<files>' loop. I know there was application overhead because if I
-tweaked the script to open an fd directly rather than use touch, the
-single file performance jumped up a bit, but it seemed to wash away as I
-increased the file count so I kept running it with larger sizes. This
-seems off so I'll port it over to C code and see how much the numbers
-change.
+If that works for everyone, it seems worth persuing.
 
-> A quick test here with "batch size == 1" main loop on a vanilla
-> 5.17-rc1 kernel:
-> 
->         for (i = 0; i < iters; i++) {
->                 int fd = open(file, O_CREAT|O_RDWR, 0777);
-> 
->                 if (fd < 0) {
->                         perror("open");
->                         exit(1);
->                 }
->                 unlink(file);
->                 close(fd);
->         }
-> 
-> 
-> $ time ./open-unlink 10000 /mnt/scratch/blah
-> 
-> real    0m0.962s
-> user    0m0.022s
-> sys     0m0.775s
-> 
-> Shows pretty much 10,000 alloc/unlinks a second without any specific
-> batching on my slow machine. And my "fast" machine (3yr old 2.1GHz
-> Xeons)
-> 
-> $ time sudo ./open-unlink 40000 /mnt/scratch/foo
-> 
-> real    0m0.958s
-> user    0m0.033s
-> sys     0m0.770s
-> 
-> Runs single loop iterations at 40,000 alloc/unlink iterations per
-> second.
-> 
-> So I'm either not understanding the test you are running and/or the
-> kernel/patches that you are comparing here. Is the "baseline" just a
-> vanilla, unmodified upstream kernel, or something else?
-> 
+One way to test this is as follows:
 
-Yeah, the baseline was just the XFS for-next branch.
+1.	Build a kernel with CONFIG_RCU_TORTURE_TEST=m.  Boot this and
+	type "modprobe rcutorture torture_type=srcu".
 
-> > That's just a test of a quick hack, however. Since there is no real
-> > urgency to inactivate an unlinked inode (it has no potential users until
-> > it's freed),
-> 
-> On the contrary, there is extreme urgency to inactivate inodes
-> quickly.
-> 
+	If you want to stop the torture test, type "rmmod rcutorture".
 
-Ok, I think we're talking about slightly different things. What I mean
-above is that if a task removes a file and goes off doing unrelated
-$work, that inode will just sit on the percpu queue indefinitely. That's
-fine, as there's no functional need for us to process it immediately
-unless we're around -ENOSPC thresholds or some such that demand reclaim
-of the inode. It sounds like what you're talking about is specifically
-the behavior/performance of sustained file removal (which is important
-obviously), where apparently there is a notable degradation if the
-queues become deep enough to push the inode batches out of CPU cache. So
-that makes sense...
+	This will test DEFINE_SRCU() for the module case.
 
-> Darrick made the original assumption that we could delay
-> inactivation indefinitely and so he allowed really deep queues of up
-> to 64k deferred inactivations. But with queues this deep, we could
-> never get that background inactivation code to perform anywhere near
-> the original synchronous background inactivation code. e.g. I
-> measured 60-70% performance degradataions on my scalability tests,
-> and nothing stood out in the profiles until I started looking at
-> CPU data cache misses.
-> 
+2.	At the top-level directory of your Linux-kernel source tree,
+	type "tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 3 --configs 'SRCU-N' --trust-make"
 
-... but could you elaborate on the scalability tests involved here so I
-can get a better sense of it in practice and perhaps observe the impact
-of changes in this path?
+	This will test DEFINE_SRCU() for the non-module case.
 
-Brian
+If those both work, and if there are no other objections or complications,
+please do send a patch.
 
-> What we found was that if we don't run the background inactivation
-> while the inodes are still hot in the CPU cache, the cost of bring
-> the inodes back into the CPU cache at a later time is extremely
-> expensive and cannot be avoided. That's where all the performance
-> was lost and so this is exactly what the current per-cpu background
-> inactivation implementation avoids. i.e. we have shallow queues,
-> early throttling and CPU affinity to ensure that the inodes are
-> processed before they are evicted from the CPU caches and ensure we
-> don't take a performance hit.
-> 
-> IOWs, the deferred inactivation queues are designed to minimise
-> inactivation delay, generally trying to delay inactivation for a
-> couple of milliseconds at most during typical fast-path
-> inactivations (i.e. an extent or two per inode needing to be freed,
-> plus maybe the inode itself). Such inactivations generally take
-> 50-100us of CPU time each to process, and we try to keep the
-> inactivation batch size down to 32 inodes...
-> 
-> > I suspect that result can be further optimized to absorb
-> > the cost of an rcu delay by deferring the steps that make the inode
-> > available for reallocation in the first place.
-> 
-> A typical RCU grace period delay is longer than the latency we
-> require to keep the inodes hot in cache for efficient background
-> inactivation. We can't move the "we need to RCU delay inactivation"
-> overhead to the background inactivation code without taking a
-> global performance hit to the filesystem performance due to the CPU
-> cache thrashing it will introduce....
-> 
-> Cheers,
-> 
-> Dave.
-> -- 
-> Dave Chinner
-> david@fromorbit.com
-> 
-
+							Thanx, Paul
