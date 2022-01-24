@@ -2,167 +2,259 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 38D4DC433F5
-	for <rcu@archiver.kernel.org>; Mon, 24 Jan 2022 12:46:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BB227C433F5
+	for <rcu@archiver.kernel.org>; Mon, 24 Jan 2022 15:02:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241887AbiAXMqO (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 24 Jan 2022 07:46:14 -0500
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:39034 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241913AbiAXMqN (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Mon, 24 Jan 2022 07:46:13 -0500
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 20OAtEfY006305;
-        Mon, 24 Jan 2022 12:46:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2021-07-09;
- bh=vbSR80DiNPEl/rg4/HPGwgxAmEKWW/yVNGV3BwAXSlw=;
- b=IQYkLrt4FRGqhrvQRZYL+HpBJYJ/TLb9HYXxjKH8/hhPlPxxYPQ1ClCb2UbDR6EOKoD1
- Uycwz1KQZG4S5KGi4VPslJ6wNayJ4Zny3V+GPbBTRsyBiao6zAbnx84IaR/RGEXZzKjw
- FqGBQ7/Hhpj6HH/iGzAkY08r09o0xqE8H6zqeRyQEl8Xkhi7sdptoo1ruoydT+3eufu1
- ucxOk8+HEXg/fKYOeL1v082FKrR8P+BTkoy+/zvMIrvYul5UlmDKo3reckNZu7X02wyS
- iq/3gqNZg3fCM0B8dK6wiptexcZOOFLoRZGKbhtVDHXT+w43nrKUMx3mKk2+K0xYkw3C iw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3dr9hsm05s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 24 Jan 2022 12:46:02 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 20OCeMpl084025;
-        Mon, 24 Jan 2022 12:46:01 GMT
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2177.outbound.protection.outlook.com [104.47.57.177])
-        by userp3020.oracle.com with ESMTP id 3drbckbxkh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 24 Jan 2022 12:46:01 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=U9A9ETjl7XVkpTRBFF4uvOfYjq14XtmisviwMUkaqVZ/txo+6ZG4G/6BVTr6iXH0+UMUEw67ha5zCaGpGBIDLc83FJ/Hji9yhUAbnRRFJSJi4atxu8dvZQ1iWVwRKr4siLneJWYBUhve2IoamgbaHvadtsIIjMSlpSUE/OgcJmqEZfSHhH5bRR8+Boz4quHrtfPvM3+WaRH7jleh3odFK5QqJ9X4dPQvSX+XNADgG7QCA8NdzSWqnsfKYldhWC3MJaUgFb1E0RNCc5zOkEHbUE1FlZekgNKLTn/EUULHSft42sOjXh8j9ccBel7YI4MLycJk5XYW8qV1j+FxjDhrLA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vbSR80DiNPEl/rg4/HPGwgxAmEKWW/yVNGV3BwAXSlw=;
- b=Ei55kILbJ3JRZnqZMFKkAeLQ2eSRisb8RDkZpwCZebN2lkInn7hJ9m6tAP2PWgf02ieYSTjBXNQTpPesgRGELS1f1yFOwWvHT3jsrhnpixm2P0T6zmxXz2FhxBKpi6gZRYlTKyKWXsnogoBcMaQPZxNycVWUBnrUbOPT/nHWsuTXEaZKFbVZ7TaMC3p9qCAAyA51ePkOUgaeevzdrEOqsJR5yi62Pt20tjnJgnlK73Ki9s6pDmi8IeWJIG9GuqnqUjHiQWJqlSCrZ9c+f7uGjZFUvZjB+mw6b3WOKe5O/ncvLbhcYUD0j0ckIRuIepeH8An4x4sNQX+JtONwgRzKdA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vbSR80DiNPEl/rg4/HPGwgxAmEKWW/yVNGV3BwAXSlw=;
- b=fUAU8mp2GEioS1fxCccWEQT/2b7/T9Td3dZ/McVDzO7FZxDRMHR7Ek/6KB+4pC7U0kPIhijcL2OqxmCumDQlNY1G6qa/1LYpnruj9F5Mzh7iYEvCmbU+TkLkhiYolKJFBcC0gOjat6HuQ5ix6upbPNBOys0a19vckveKIW45+9c=
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28) by BYAPR10MB3367.namprd10.prod.outlook.com
- (2603:10b6:a03:15d::18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4909.12; Mon, 24 Jan
- 2022 12:45:59 +0000
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::c13b:5812:a403:6d96]) by MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::c13b:5812:a403:6d96%6]) with mapi id 15.20.4909.017; Mon, 24 Jan 2022
- 12:45:59 +0000
-Date:   Mon, 24 Jan 2022 15:45:30 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Alexander Aring <aahringo@redhat.com>,
-        "Paul E. McKenney" <paulmck@linux.ibm.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, David Teigland <teigland@redhat.com>,
-        cluster-devel <cluster-devel@redhat.com>,
-        linux-sparse@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: fs/dlm/midcomms.c:913:22: sparse: sparse: restricted __le32
- degrades to integer
-Message-ID: <20220124124530.GS1951@kadam>
-References: <202201221028.YKA8kSdm-lkp@intel.com>
- <CAK-6q+h_hb94J3DSXPk=E44kCxiwZ+BE3kMJe09iShRzMb=vzQ@mail.gmail.com>
- <91901e7b-7d82-116c-aaf2-c74c6a6b999c@infradead.org>
- <CAK-6q+j2jc3pBmbvQ-DCmxveC-UMV75SFc2nC1zwXKe9wm4YPg@mail.gmail.com>
+        id S240105AbiAXPCo (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 24 Jan 2022 10:02:44 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40424 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240243AbiAXPCd (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Mon, 24 Jan 2022 10:02:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1643036553;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=E8EquiIcUBJfn8xcqQL5HufGk41Op3sdFjRnJQbDAs8=;
+        b=YNXTY8sjkGEd+DMncRYkZ0lY6OYCFI15IRZXDsGM+jRaTw9fBueljPz3JAoncBzfXoGOqi
+        UgmK5ANOIfQLAoLzedpoImJMuzXxKuudgd2VYAkqcdTfc/XIytVVPhOy/UZVAH5GDTOnuT
+        qWKD+81CSEeu0dthnSfZedywGSIwKU0=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-590--ryBuZT8PLq6L91fHJFXxw-1; Mon, 24 Jan 2022 10:02:31 -0500
+X-MC-Unique: -ryBuZT8PLq6L91fHJFXxw-1
+Received: by mail-qk1-f198.google.com with SMTP id q5-20020a05620a0d8500b004738c1b48beso12408396qkl.7
+        for <rcu@vger.kernel.org>; Mon, 24 Jan 2022 07:02:31 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=E8EquiIcUBJfn8xcqQL5HufGk41Op3sdFjRnJQbDAs8=;
+        b=P3a7aOE+Q7YCSzZK+mu+4gCOhbC+/Zvz+cVI9QWbt51+QQo6bK3TRCklTKvP110zSW
+         tdKhz3JeotTheSE6u78ogQlHIh2BgbiMqm0/7ingmGmE15NMJJ1u/KzdST3mLRYuIsKI
+         aQ+E3qag2kJbrSeRUFEVJLD7KNKPqUCYYaIGBJlwZ9Rs+GAmKeqcmbxJqPfYJ1wwZRtu
+         67vLohIiF388eEddZq4eYRdSk7dOUPkuzfaq5miYm/BK1XuePq66syWSAH3QanWVkfaN
+         u8a4chVeLhVSzVLZJGURQ9jmFpE/wNWHpCR3biMJ2S2ZlrDRbvHeAIvogkWjCuAj9Cvq
+         LBAg==
+X-Gm-Message-State: AOAM533CzzE8E88BQgA87T1Yd3yt3Wfq3Y8YETJCnajzr9aquKBAj7Lo
+        IkZ+enFSacIf8/dB/smu0TO0x5CxjVM9pV4C+MFvIgK2LEOmnnvlD5mDskO7vJWI6iLWjq73sOS
+        AIn/t7k/AJQK3
+X-Received: by 2002:a05:6214:c22:: with SMTP id a2mr12044798qvd.112.1643036550695;
+        Mon, 24 Jan 2022 07:02:30 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxNa9VV4aeR0cBjNt9B3fsuOxQGJbUorLWhJO4QneUIHZdgH4UMrDx6YX7oXruOjGv6CByNDw==
+X-Received: by 2002:a05:6214:c22:: with SMTP id a2mr12044717qvd.112.1643036549979;
+        Mon, 24 Jan 2022 07:02:29 -0800 (PST)
+Received: from bfoster (c-24-61-119-116.hsd1.ma.comcast.net. [24.61.119.116])
+        by smtp.gmail.com with ESMTPSA id j14sm7770487qkp.70.2022.01.24.07.02.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Jan 2022 07:02:29 -0800 (PST)
+Date:   Mon, 24 Jan 2022 10:02:27 -0500
+From:   Brian Foster <bfoster@redhat.com>
+To:     linux-xfs@vger.kernel.org
+Cc:     Dave Chinner <david@fromorbit.com>,
+        Al Viro <viro@zeniv.linux.org.uk>, Ian Kent <raven@themaw.net>,
+        rcu@vger.kernel.org
+Subject: Re: [PATCH] xfs: require an rcu grace period before inode recycle
+Message-ID: <Ye6/g+XMSyp9vYvY@bfoster>
+References: <20220121142454.1994916-1-bfoster@redhat.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAK-6q+j2jc3pBmbvQ-DCmxveC-UMV75SFc2nC1zwXKe9wm4YPg@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: JNAP275CA0022.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4d::8)
- To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0eeb727b-a0e7-4042-c179-08d9df37782e
-X-MS-TrafficTypeDiagnostic: BYAPR10MB3367:EE_
-X-Microsoft-Antispam-PRVS: <BYAPR10MB33679F8B0E98D03F986E2E3F8E5E9@BYAPR10MB3367.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: O7H6ZIwdKLFzx4/GYhnuld4lezQJzfihg4AmVCZM6LI5vRrvUpOl36Vge+xMW/Sya5AJ75NZ5LlUp/txn6b6ncLG1tYDKKaQPwzQbZjm9m6VuDDTM1pxZE2mWi21oRzFS771/YJvOCVUgbIaNDFlLhvdNQln7K8pCdzN2pCIgJvG2i57KmgL3IvWHPyf0satuHLxK+CkmUlme5W61gdJ4CN5QWdXJEu3/67gtEqCHD33stwl3PGP4wHAaUNZoiLWzhrheor4pPY27rlNC1AXLp9KLsg9q52PnZ8KwCb0E7Pl353Lslew6ffRHACU84FnwRbaeoFttSy8n4zdbFU26v8jkCT3IBxtSIE8O1MRsl+K3QVWBvwjtf8vOfKMpCWY0PVSWLDO+DsVaFIBkiz9h4ALNvJIePZV8/ug3WIlqMqemvlQcN43fQTLDIatv/6Lw+slPf/XJ5wrGd861a+OpMbOncIxK23mz0DtO/9rwSmNnxbJl64Wcfj0EpaQ6B94jqV9uCWex3mgNgj5FGhVKYczBqFluwJKe8sJysIZLDQ/A3e68Fshx/oOs8Ms+WrLVVnaByRsJqHpSt0JvDq11YyDKHyNc7+nnw+6pw0GU86LqJKajmNE6/cm9I5y1kL6Mu0cIvbSuIKrZhWmyG8hoV9sfK6oyRYZ7tyXrtNHB9+m9Qzzh2h1II47dqGyFYMqQW4CGqCcBGz1ZnLzEI0LUw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(366004)(6666004)(1076003)(6486002)(9686003)(316002)(5660300002)(186003)(8676002)(4744005)(8936002)(6512007)(86362001)(26005)(66476007)(38350700002)(33656002)(66946007)(110136005)(52116002)(66556008)(33716001)(38100700002)(6506007)(7416002)(4326008)(508600001)(2906002)(54906003)(44832011);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?qtNMAB34ubxmFQwNy6RDw9ntOFp9bTidUXsSdAleVJ1RcDzamM4kX7SqardS?=
- =?us-ascii?Q?eS09aZ6omzRvSPK/zAV53B1Nbs0/suIkyP/ayCcvnIQA5AvEXxQ0B/swm4pw?=
- =?us-ascii?Q?1rNB6ft0ACY+TURHxRyUm6kUeODKzrjFgr6Ug0BUZ891Q2Gypi60HcXkbaNq?=
- =?us-ascii?Q?IJ/laKes8grwQFR5UQliBa1GdXUZYpJMrBHD9Mocc6n5MFfCLCDP6HLaqw1j?=
- =?us-ascii?Q?xYt1bgpoH73GuDPNatuy3lFKLvvHCbl3xWMZJPjv6NEFW8MPHsIumQ28lNPr?=
- =?us-ascii?Q?2j5bL5C1hPMjTwj+W6ZGys5B7zOTTDB+C9N311ChOLpnSz1SnYhSZV48tgyq?=
- =?us-ascii?Q?Trbdt4a1kmYt7uuTBT57HANBD2Itp8YgllYCQ63fLCr4OoajVPnsMY7ZDv6V?=
- =?us-ascii?Q?69LGQPA7W7c/9fVEMRJzBnrnixEFmm+A32A76onlcC0JF81CbmLXIUfQvlZM?=
- =?us-ascii?Q?TDTE3ojrE5cgtq6V8A2mQpdKs3mgmSO3Rp/gqQf73Qrh9ncEUMkltPBQv3SY?=
- =?us-ascii?Q?b2qJkIIe1KBjMK802D03yaJtoUa5BcQmjH/bx5Og5UdeN3v5mz6XTkTmZnOb?=
- =?us-ascii?Q?mhkBGrKB3HKOtHb/ulQ8VQDG+6vy81eRI0XaqfrAoojVkZxrVdaP5tLIIUH2?=
- =?us-ascii?Q?TOLQ58bH5Je1fdd2cvjjIfMArVzY7tDXM02tyG+GNq4W6QkZktx675IOfYTe?=
- =?us-ascii?Q?fDSTomrtCegzduFt5OPRj5GuYzZG0DINzvmI5XBAhDVNLbMnpTgtaAMtT3OY?=
- =?us-ascii?Q?2AA6ql3NUQrfq8FWCm4qwp1Flm3XMW8jHESy4Y4fg/M8gqQ9ivAAhLDYmk3t?=
- =?us-ascii?Q?WiDyl3c4QjjSI/9dJbEQh0dPEjqCVVbpLh8/PZ+n+GLgKgvu0bVKte7HL2Y5?=
- =?us-ascii?Q?g+4v4zTtO04GKJOTmqBVubiS6Qe/8SBOvws5tGib4/qZFsudyoZOq8k8RRTe?=
- =?us-ascii?Q?2BE9IeRqyjUjJ3l8SO/jRY5RwReZc7C99nr1S+hA/exqpYQBiwYGOMg49Yba?=
- =?us-ascii?Q?XUrksA3OrR0UsILlcJqtWfib4JFTAfgFkUB7yES+vrDVuRx6GC0BjFZ1yV+Q?=
- =?us-ascii?Q?fhwjYwKou4vkdwtOcxkU/dNaVNb3AZpNK31JqtpTjWytWPA2ToVPBUcCBJpZ?=
- =?us-ascii?Q?obFh4YQvOj7IRzkKl5fg6sqUHXRgq9uLF0ht6Ej9+3qKB6aWcmwJgcqYKonQ?=
- =?us-ascii?Q?gWkHJaZcUlFChwRQORdu9tIDNSHzxFiddpC0tFzqpusGNxbkvq87k+/DcfMx?=
- =?us-ascii?Q?Wss9RpGrmu2/5gV9cgVdQtugBrtj+7igR2s/hep+WZOJjTze05xeSqsZ0u7M?=
- =?us-ascii?Q?2t/u4T9xnnErhhDONePJ3JrJ+QN9Bpi0g1xPVDMvnr7GjHFuGmPhuCrtwxJf?=
- =?us-ascii?Q?Tgr0mbtJl4J9uskTVKjzKIFp8fHidYCUmW+97vJYduszjJN/QdQ23P1pHIG+?=
- =?us-ascii?Q?ZLgCeKxupbkDmFcV6+HJl+/UCIZ45/ezZ6LuMuoSVBTmzKpLRgAUL+IkIOgh?=
- =?us-ascii?Q?nuWkqGlWNdtejBoG1Yl3cuJIkvA9Ae9sgGvM2Cx0BEvzCRuzEf2x+3MMq3qz?=
- =?us-ascii?Q?6QImTQm8zLcEfxMTMduVl8TpjSw5xjbF1n4ncoiC1hLIhxX2m4itVpDEVTfm?=
- =?us-ascii?Q?NmkEw1em5Jb3FAxmD9wxRGt+iKaMKpOfBlP++4sy0aQqgrTRWcaUlZUHxJCQ?=
- =?us-ascii?Q?X2ySLJyO4duaUMi+jPSbGc/o6fM=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0eeb727b-a0e7-4042-c179-08d9df37782e
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jan 2022 12:45:58.9816
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: sL9540FA3GJEeH3vD/1PPykg4qvuXRBs5ugr9U2mHpBTTBryz8xmk4RZ0VQrm4WBQtoAYJhTo3YBql1tXHDfVfe2+Mah1NeviWv0KfKoSvM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB3367
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10236 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0 malwarescore=0
- spamscore=0 phishscore=0 suspectscore=0 adultscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2201110000
- definitions=main-2201240084
-X-Proofpoint-GUID: NjJ2FSWQDrppWJl_4tVn3WS7nwGKclI9
-X-Proofpoint-ORIG-GUID: NjJ2FSWQDrppWJl_4tVn3WS7nwGKclI9
+In-Reply-To: <20220121142454.1994916-1-bfoster@redhat.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sun, Jan 23, 2022 at 01:41:52PM -0500, Alexander Aring wrote:
+On Fri, Jan 21, 2022 at 09:24:54AM -0500, Brian Foster wrote:
+> The XFS inode allocation algorithm aggressively reuses recently
+> freed inodes. This is historical behavior that has been in place for
+> quite some time, since XFS was imported to mainline Linux. Once the
+> VFS adopted RCUwalk path lookups (also some time ago), this behavior
+> became slightly incompatible because the inode recycle path doesn't
+> isolate concurrent access to the inode from the VFS.
 > 
-> I see also:
+> This has recently manifested as problems in the VFS when XFS happens
+> to change the type or properties of a recently unlinked inode while
+> still involved in an RCU lookup. For example, if the VFS refers to a
+> previous incarnation of a symlink inode, obtains the ->get_link()
+> callback from inode_operations, and the latter happens to change to
+> a non-symlink type via a recycle event, the ->get_link() callback
+> pointer is reset to NULL and the lookup results in a crash.
 > 
-> fs/dlm/midcomms.c:213:1: sparse: sparse: symbol
-> '__srcu_struct_nodes_srcu' was not declared. Should it be static?
+> To avoid this class of problem, isolate in-core inodes for recycling
+> with an RCU grace period. This is the same level of protection the
+> VFS expects for inactivated inodes that are never reused, and so
+> guarantees no further concurrent access before the type or
+> properties of the inode change. We don't want an unconditional
+> synchronize_rcu() event here because that would result in a
+> significant performance impact to mixed inode allocation workloads.
+> 
+> Fortunately, we can take advantage of the recently added deferred
+> inactivation mechanism to mitigate the need for an RCU wait in most
+> cases. Deferred inactivation queues and batches the on-disk freeing
+> of recently destroyed inodes, and so significantly increases the
+> likelihood that a grace period has elapsed by the time an inode is
+> freed and observable by the allocation code as a reuse candidate.
+> Capture the current RCU grace period cookie at inode destroy time
+> and refer to it at allocation time to conditionally wait for an RCU
+> grace period if one hadn't expired in the meantime.  Since only
+> unlinked inodes are recycle candidates and unlinked inodes always
+> require inactivation, we only need to poll and assign RCU state in
+> the inactivation codepath. Slightly adjust struct xfs_inode to fit
+> the new field into padding holes that conveniently preexist in the
+> same cacheline as the deferred inactivation list.
+> 
+> Finally, note that the ideal long term solution here is to
+> rearchitect bits of XFS' internal inode lifecycle management such
+> that this additional stall point is not required, but this requires
+> more thought, time and work to address. This approach restores
+> functional correctness in the meantime.
+> 
+> Signed-off-by: Brian Foster <bfoster@redhat.com>
+> ---
+> 
+> Hi all,
+> 
+> Here's the RCU fixup patch for inode reuse that I've been playing with,
+> re: the vfs patch discussion [1]. I've put it in pretty much the most
+> basic form, but I think there are a couple aspects worth thinking about:
+> 
+> 1. Use and frequency of start_poll_synchronize_rcu() (vs.
+> get_state_synchronize_rcu()). The former is a bit more active than the
+> latter in that it triggers the start of a grace period, when necessary.
+> This currently invokes per inode, which is the ideal frequency in
+> theory, but could be reduced, associated with the xfs_inogegc thresholds
+> in some manner, etc., if there is good reason to do that.
+> 
+> 2. The rcu cookie lifecycle. This variant updates it on inactivation
+> queue and nowhere else because the RCU docs imply that counter rollover
+> is not a significant problem. In practice, I think this means that if an
+> inode is stamped at least once, and the counter rolls over, future
+> (non-inactivation, non-unlinked) eviction -> repopulation cycles could
+> trigger rcu syncs. I think this would require repeated
+> eviction/reinstantiation cycles within a small window to be noticeable,
+> so I'm not sure how likely this is to occur. We could be more defensive
+> by resetting or refreshing the cookie. E.g., refresh (or reset to zero)
+> at recycle time, unconditionally refresh at destroy time (using
+> get_state_synchronize_rcu() for non-inactivation), etc.
+> 
+> Otherwise testing is ongoing, but this version at least survives an
+> fstests regression run.
 > 
 
-Why not just do this?  (Untested.  Maybe I don't understand?)
+FYI, I modified my repeated alloc/free test to do some batching and form
+it into something more able to measure the potential side effect / cost
+of the grace period sync. The test is a single threaded, file alloc/free
+loop using a variable per iteration batch size. The test runs for ~60s
+and reports how many total files were allocated/freed in that period
+with the specified batch size. Note that this particular test ran
+without any background workload. Results are as follows:
 
-diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
-index cb1f4351e8ba..a164089abec4 100644
---- a/include/linux/srcutree.h
-+++ b/include/linux/srcutree.h
-@@ -121,7 +121,7 @@ struct srcu_struct {
- #ifdef MODULE
- # define __DEFINE_SRCU(name, is_static)					\
- 	is_static struct srcu_struct name;				\
--	struct srcu_struct * const __srcu_struct_##name			\
-+	is_static struct srcu_struct * const __srcu_struct_##name	\
- 		__section("___srcu_struct_ptrs") = &name
- #else
- # define __DEFINE_SRCU(name, is_static)					\
+	files		baseline	test
+
+	1		38480		38437
+	4		126055		111080
+	8		218299		134469
+	16		306619		141968
+	32		397909		152267
+	64		418603		200875
+	128		469077		289365
+	256		684117		566016
+	512		931328		878933
+	1024		1126741		1118891
+
+The first column shows the batch size of the test run while the second
+and third show results (averaged across three test runs) for the
+baseline (5.16.0-rc5) and test kernels. This basically shows that as the
+inactivation queue more efficiently batches removals, the number of
+stalls on the allocation side increase accordingly and thus slow the
+task down. This becomes significant by around 8 files per alloc/free
+iteration and seems to recover at around 512 files per iteration.
+Outside of those values, the additional overhead appears to be mostly
+masked.
+
+I'm not sure how realistic this sort of symmetric/predictable workload
+is in the wild, but this is more designed to show potential impact of
+the change. The delay cost can be shifted to the remove side to some
+degree if we wanted to go that route. E.g., a quick experiment to add an
+rcu sync in the inactivation path right before the inode is freed allows
+this test to behave much more in line with baseline up through about the
+256 file mark, after which point results start to fall off as I suspect
+we start to measure stalls in the remove side.
+
+That's just a test of a quick hack, however. Since there is no real
+urgency to inactivate an unlinked inode (it has no potential users until
+it's freed), I suspect that result can be further optimized to absorb
+the cost of an rcu delay by deferring the steps that make the inode
+available for reallocation in the first place. In theory if that can be
+made completely asynchronous, then there is no real latency cost at all
+because nothing can use the inode until it's ultimately free on disk.
+However in reality we must have thresholds and whatnot to ensure the
+outstanding queue cannot grow out of control. My previous experiments
+suggest that an RCU delay on the inactivation side is measureable via a
+simple 'rm -rf' with the current thresholds, but can be mitigated if the
+pipeline/thresholds are tuned up a bit to accomodate the added delay.
+This has more complexity and tradeoffs, but IMO, this is something we
+should be thinking about at least as a next step to something like this
+patch.
+
+Brian
+
+> Brian
+> 
+> [1] https://lore.kernel.org/linux-fsdevel/164180589176.86426.501271559065590169.stgit@mickey.themaw.net/
+> 
+>  fs/xfs/xfs_icache.c | 11 +++++++++++
+>  fs/xfs/xfs_inode.h  |  3 ++-
+>  2 files changed, 13 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/xfs/xfs_icache.c b/fs/xfs/xfs_icache.c
+> index d019c98eb839..4931daa45ca4 100644
+> --- a/fs/xfs/xfs_icache.c
+> +++ b/fs/xfs/xfs_icache.c
+> @@ -349,6 +349,16 @@ xfs_iget_recycle(
+>  	spin_unlock(&ip->i_flags_lock);
+>  	rcu_read_unlock();
+>  
+> +	/*
+> +	 * VFS RCU pathwalk lookups dictate the same lifecycle rules for an
+> +	 * inode recycle as for freeing an inode. I.e., we cannot repurpose the
+> +	 * inode until a grace period has elapsed from the time the previous
+> +	 * version of the inode was destroyed. In most cases a grace period has
+> +	 * already elapsed if the inode was (deferred) inactivated, but
+> +	 * synchronize here as a last resort to guarantee correctness.
+> +	 */
+> +	cond_synchronize_rcu(ip->i_destroy_gp);
+> +
+>  	ASSERT(!rwsem_is_locked(&inode->i_rwsem));
+>  	error = xfs_reinit_inode(mp, inode);
+>  	if (error) {
+> @@ -2019,6 +2029,7 @@ xfs_inodegc_queue(
+>  	trace_xfs_inode_set_need_inactive(ip);
+>  	spin_lock(&ip->i_flags_lock);
+>  	ip->i_flags |= XFS_NEED_INACTIVE;
+> +	ip->i_destroy_gp = start_poll_synchronize_rcu();
+>  	spin_unlock(&ip->i_flags_lock);
+>  
+>  	gc = get_cpu_ptr(mp->m_inodegc);
+> diff --git a/fs/xfs/xfs_inode.h b/fs/xfs/xfs_inode.h
+> index c447bf04205a..2153e3edbb86 100644
+> --- a/fs/xfs/xfs_inode.h
+> +++ b/fs/xfs/xfs_inode.h
+> @@ -40,8 +40,9 @@ typedef struct xfs_inode {
+>  	/* Transaction and locking information. */
+>  	struct xfs_inode_log_item *i_itemp;	/* logging information */
+>  	mrlock_t		i_lock;		/* inode lock */
+> -	atomic_t		i_pincount;	/* inode pin count */
+>  	struct llist_node	i_gclist;	/* deferred inactivation list */
+> +	unsigned long		i_destroy_gp;	/* destroy rcugp cookie */
+> +	atomic_t		i_pincount;	/* inode pin count */
+>  
+>  	/*
+>  	 * Bitsets of inode metadata that have been checked and/or are sick.
+> -- 
+> 2.31.1
+> 
 
