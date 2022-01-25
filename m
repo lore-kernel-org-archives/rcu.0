@@ -2,224 +2,298 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 641EDC433EF
-	for <rcu@archiver.kernel.org>; Tue, 25 Jan 2022 19:13:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 27427C433EF
+	for <rcu@archiver.kernel.org>; Tue, 25 Jan 2022 20:08:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229667AbiAYTNk (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 25 Jan 2022 14:13:40 -0500
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:48533 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229653AbiAYTNe (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 25 Jan 2022 14:13:34 -0500
-Received: from [192.168.0.2] (ip5f5aeaa2.dynamic.kabel-deutschland.de [95.90.234.162])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id C2CEF61E6478B;
-        Tue, 25 Jan 2022 20:13:27 +0100 (CET)
-Message-ID: <159db05f-539c-fe29-608b-91b036588033@molgen.mpg.de>
-Date:   Tue, 25 Jan 2022 20:13:27 +0100
+        id S231404AbiAYUIH (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 25 Jan 2022 15:08:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44352 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231397AbiAYUH7 (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Tue, 25 Jan 2022 15:07:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1643141279;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CT4LYvH45/Alq1wDcBaDP4ycKsdqJNKxJgixR6bTR7E=;
+        b=Uy2BL8UHvcfFq7NlohtHRZknWptz5DutDaJJyWMbLtPNLiMwNvfPiIhjKBzLnb2HlK+AkN
+        a57rK9EpxlIZiAjMN9FRmwSeC6IcpdgBcaE35QgFStS+c66hov4DjUNVbtIFkeiRY1958E
+        UIHq3kzlBmGQRaAqG8kh/N/5i1SG+vA=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-504-q8R2xSzBPH6iuzOZjPOoXQ-1; Tue, 25 Jan 2022 15:07:57 -0500
+X-MC-Unique: q8R2xSzBPH6iuzOZjPOoXQ-1
+Received: by mail-qv1-f72.google.com with SMTP id kk18-20020a056214509200b004228ef1fafeso10491047qvb.23
+        for <rcu@vger.kernel.org>; Tue, 25 Jan 2022 12:07:57 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CT4LYvH45/Alq1wDcBaDP4ycKsdqJNKxJgixR6bTR7E=;
+        b=w2dgv70u8xcNyAUzB1ZO4z53Av4tREOqURLVQDbWgNWh+XuujyRmFCvBwSV4bfQzkV
+         FF+2hKJm32jLBolqL1DO6ddBOj7NP0pCR3pZ9yMOkuiD+fzuXeWSm83xyn3buA9+9fDZ
+         A6AAlWm6Vt14x3NNPgv3EtYi5axy0Ind6CXqBGujVIiDN24fYOpc8MGns8Gp7hUujIKS
+         CgaqtnznhFPqhbKMCGHzQ4+esCZbCoAAbS9nglquin+xFwSd3Ve7s6vcbbwlAJNlpznq
+         +Yuq1aj2+OY44KdF6LIJ+9XoXUvGW6gRjdHBEpnbcOlrDdGa2uLEDaMhq5T8uaf0y1Am
+         ArJQ==
+X-Gm-Message-State: AOAM531Uz282f6jfyS58IRL7twCokM5c01pfuLeU0dcwLQ6Rv3gy/ARn
+        Wa8Wkv5HaBt7oYBtNdnZ0OgM1/0grd0C1EK95/zcWSPzhXNy2CwSJ/RxbQBhQa8LUOpCKHQp0pg
+        T+HEETAsGgHND
+X-Received: by 2002:ac8:57c8:: with SMTP id w8mr18018385qta.630.1643141275706;
+        Tue, 25 Jan 2022 12:07:55 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyzEcG92c+guKG7LgdaQ7EfKx+GVUDpsf98mpNRCwdSDw/CJ2newvyMhFVebHKypbaSZbX94w==
+X-Received: by 2002:ac8:57c8:: with SMTP id w8mr18018227qta.630.1643141273872;
+        Tue, 25 Jan 2022 12:07:53 -0800 (PST)
+Received: from bfoster (c-24-61-119-116.hsd1.ma.comcast.net. [24.61.119.116])
+        by smtp.gmail.com with ESMTPSA id h6sm3212606qko.7.2022.01.25.12.07.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jan 2022 12:07:53 -0800 (PST)
+Date:   Tue, 25 Jan 2022 15:07:51 -0500
+From:   Brian Foster <bfoster@redhat.com>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     linux-xfs@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
+        Ian Kent <raven@themaw.net>, rcu@vger.kernel.org
+Subject: Re: [PATCH] xfs: require an rcu grace period before inode recycle
+Message-ID: <YfBYl583QOWtwJ74@bfoster>
+References: <20220121142454.1994916-1-bfoster@redhat.com>
+ <Ye6/g+XMSyp9vYvY@bfoster>
+ <20220124220853.GN59729@dread.disaster.area>
+ <Ye82TgBY0VmtTjMc@bfoster>
+ <20220125003120.GO59729@dread.disaster.area>
+ <YfBBzHascwVnefYY@bfoster>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Content-Language: en-US
-To:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>
-Cc:     rcu@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-Subject: BUG: Kernel NULL pointer dereference on write at 0x00000000
- (rtmsg_ifinfo_build_skb)
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YfBBzHascwVnefYY@bfoster>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Dear Linux folks,
+On Tue, Jan 25, 2022 at 01:30:36PM -0500, Brian Foster wrote:
+> On Tue, Jan 25, 2022 at 11:31:20AM +1100, Dave Chinner wrote:
+> > On Mon, Jan 24, 2022 at 06:29:18PM -0500, Brian Foster wrote:
+> > > On Tue, Jan 25, 2022 at 09:08:53AM +1100, Dave Chinner wrote:
+> > > > > FYI, I modified my repeated alloc/free test to do some batching and form
+> > > > > it into something more able to measure the potential side effect / cost
+> > > > > of the grace period sync. The test is a single threaded, file alloc/free
+> > > > > loop using a variable per iteration batch size. The test runs for ~60s
+> > > > > and reports how many total files were allocated/freed in that period
+> > > > > with the specified batch size. Note that this particular test ran
+> > > > > without any background workload. Results are as follows:
+> > > > > 
+> > > > > 	files		baseline	test
+> > > > > 
+> > > > > 	1		38480		38437
+> > > > > 	4		126055		111080
+> > > > > 	8		218299		134469
+> > > > > 	16		306619		141968
+> > > > > 	32		397909		152267
+> > > > > 	64		418603		200875
+> > > > > 	128		469077		289365
+> > > > > 	256		684117		566016
+> > > > > 	512		931328		878933
+> > > > > 	1024		1126741		1118891
+> > > > 
+> > > > Can you post the test code, because 38,000 alloc/unlinks in 60s is
+> > > > extremely slow for a single tight open-unlink-close loop. I'd be
+> > > > expecting at least ~10,000 alloc/unlink iterations per second, not
+> > > > 650/second.
+> > > > 
+> > > 
+> > > Hm, Ok. My test was just a bash script doing a 'touch <files>; rm
+> > > <files>' loop. I know there was application overhead because if I
+> > > tweaked the script to open an fd directly rather than use touch, the
+> > > single file performance jumped up a bit, but it seemed to wash away as I
+> > > increased the file count so I kept running it with larger sizes. This
+> > > seems off so I'll port it over to C code and see how much the numbers
+> > > change.
+> > 
+> > Yeah, using touch/rm becomes fork/exec bound very quickly. You'll
+> > find that using "echo > <file>" is much faster than "touch <file>"
+> > because it runs a shell built-in operation without fork/exec
+> > overhead to create the file. But you can't play tricks like that to
+> > replace rm:
+> > 
+> 
+> I had used 'exec' to open an fd (same idea) in the single file case and
+> tested with that, saw that the increase was consistent and took that
+> along with the increasing performance as batch sizes increased to mean
+> that the application overhead wasn't a factor as the test scaled. That
+> was clearly wrong, because if I port the whole thing to a C program the
+> baseline numbers are way off. I think what also threw me off is that the
+> single file test kernel case is actually fairly accurate between the two
+> tests. Anyways, here's a series of (single run, no averaging, etc.) test
+> runs with the updated test. Note that I reduced the runtime to 10s here
+> since the test was running so much faster. Otherwise this is the same
+> batched open/close -> unlink behavior:
+> 
+>                 baseline        test
+> batch:  1       files:  893579  files:  41841
+> batch:  2       files:  912502  files:  41922
+> batch:  4       files:  930424  files:  42084
+> batch:  8       files:  932072  files:  41536
+> batch:  16      files:  930624  files:  41616
+> batch:  32      files:  777088  files:  41120
+> batch:  64      files:  567936  files:  57216
+> batch:  128     files:  579840  files:  96256
+> batch:  256     files:  548608  files:  174080
+> batch:  512     files:  546816  files:  246784
+> batch:  1024    files:  509952  files:  328704
+> batch:  2048    files:  505856  files:  399360
+> batch:  4096    files:  479232  files:  438272
+> 
+> So this shows that the performance delta is actually massive from the
+> start. For reference, a single threaded, empty file, non syncing,
+> fs_mark workload stabilizes at around ~55k files/sec on this fs. Both
+> kernels sort of converge to that rate as the batch size increases, only
+> the baseline kernel starts much faster and normalizes while the test
+> kernel starts much slower and improves (and still really doesn't hit the
+> mark even at a 4k batch size).
+> 
+> My takeaway from this is that we may need to find a way to mitigate this
+> overhead somewhat better than what the current patch does. Otherwise,
+> this is a significant dropoff from even a pure allocation workload in
+> simple mixed workload scenarios...
+> 
+> > $ time for ((i=0;i<1000;i++)); do touch /mnt/scratch/foo; rm /mnt/scratch/foo ; done
+> > 
+> > real    0m2.653s
+> > user    0m0.910s
+> > sys     0m2.051s
+> > $ time for ((i=0;i<1000;i++)); do echo > /mnt/scratch/foo; rm /mnt/scratch/foo ; done
+> > 
+> > real    0m1.260s
+> > user    0m0.452s
+> > sys     0m0.913s
+> > $ time ./open-unlink 1000 /mnt/scratch/foo
+> > 
+> > real    0m0.037s
+> > user    0m0.001s
+> > sys     0m0.030s
+> > $
+> > 
+> > Note the difference in system time between the three operations -
+> > almost all the difference in system CPU time is the overhead of
+> > fork/exec to run the touch/rm binaries, not do the filesystem
+> > operations....
+> > 
+> > > > > That's just a test of a quick hack, however. Since there is no real
+> > > > > urgency to inactivate an unlinked inode (it has no potential users until
+> > > > > it's freed),
+> > > > 
+> > > > On the contrary, there is extreme urgency to inactivate inodes
+> > > > quickly.
+> > > > 
+> > > 
+> > > Ok, I think we're talking about slightly different things. What I mean
+> > > above is that if a task removes a file and goes off doing unrelated
+> > > $work, that inode will just sit on the percpu queue indefinitely. That's
+> > > fine, as there's no functional need for us to process it immediately
+> > > unless we're around -ENOSPC thresholds or some such that demand reclaim
+> > > of the inode.
+> > 
+> > Yup, an occasional unlink sitting around for a while on an unlinked
+> > list isn't going to cause a performance problem.  Indeed, such
+> > workloads are more likely to benefit from the reduced unlink()
+> > syscall overhead and won't even notice the increase in background
+> > CPU overhead for inactivation of those occasional inodes.
+> > 
+> > > It sounds like what you're talking about is specifically
+> > > the behavior/performance of sustained file removal (which is important
+> > > obviously), where apparently there is a notable degradation if the
+> > > queues become deep enough to push the inode batches out of CPU cache. So
+> > > that makes sense...
+> > 
+> > Yup, sustained bulk throughput is where cache residency really
+> > matters. And for unlink, sustained unlink workloads are quite
+> > common; they often are something people wait for on the command line
+> > or make up a performance critical component of a highly concurrent
+> > workload so it's pretty important to get this part right.
+> > 
+> > > > Darrick made the original assumption that we could delay
+> > > > inactivation indefinitely and so he allowed really deep queues of up
+> > > > to 64k deferred inactivations. But with queues this deep, we could
+> > > > never get that background inactivation code to perform anywhere near
+> > > > the original synchronous background inactivation code. e.g. I
+> > > > measured 60-70% performance degradataions on my scalability tests,
+> > > > and nothing stood out in the profiles until I started looking at
+> > > > CPU data cache misses.
+> > > > 
+> > > 
+> > > ... but could you elaborate on the scalability tests involved here so I
+> > > can get a better sense of it in practice and perhaps observe the impact
+> > > of changes in this path?
+> > 
+> > The same conconrrent fsmark create/traverse/unlink workloads I've
+> > been running for the past decade+ demonstrates it pretty simply. I
+> > also saw regressions with dbench (both op latency and throughput) as
+> > the clinet count (concurrency) increased, and with compilebench.  I
+> > didn't look much further because all the common benchmarks I ran
+> > showed perf degradations with arbitrary delays that went away with
+> > the current code we have.  ISTR that parts of aim7/reaim scalability
+> > workloads that the intel zero-day infrastructure runs are quite
+> > sensitive to background inactivation delays as well because that's a
+> > CPU bound workload and hence any reduction in cache residency
+> > results in a reduction of the number of concurrent jobs that can be
+> > run.
+> > 
+> 
+> Ok, so if I (single threaded) create (via fs_mark), sync and remove 5m
+> empty files, the remove takes about a minute. If I just bump out the
+> current queue and block thresholds by 10x and repeat, that time
+> increases to about ~1m24s. If I hack up a kernel to disable queueing
+> entirely (i.e. fully synchronous inactivation), then I'm back to about a
+> minute again. So I'm not producing any performance benefit with
+> queueing/batching in this single threaded scenario, but I suspect the
+> 10x threshold delta is at least measuring the negative effect of poor
+> caching..? (Any decent way to confirm that..?).
+> 
+> And of course if I take the baseline kernel and stick a
+> cond_synchronize_rcu() in xfs_inactive_ifree() it brings the batch test
+> numbers right back but slows the removal test way down. What I find
+> interesting however is that if I hack up something more mild like invoke
+> cond_synchronize_rcu() on the oldest inode in the current inactivation
+> batch, bump out the blocking threshold as above (but leave the queueing
+> threshold at 32), and leave the iget side cond_sync_rcu() to catch
+> whatever falls through, my 5m file remove test now completes ~5-10s
+> faster than baseline and I see the following results from the batched
+> alloc/free test:
+> 
+> batch:  1       files:  731923
+> batch:  2       files:  693020
+> batch:  4       files:  750948
+> batch:  8       files:  743296
+> batch:  16      files:  738720
+> batch:  32      files:  746240
+> batch:  64      files:  598464
+> batch:  128     files:  672896
+> batch:  256     files:  633856
+> batch:  512     files:  605184
+> batch:  1024    files:  569344
+> batch:  2048    files:  555008
+> batch:  4096    files:  524288
+> 
 
+This experiment had a bug that was dropping some inactivations on the
+floor. With that fixed, the numbers aren't quite as good. The batch test
+numbers still improve significantly from the posted patch (i.e. up in
+the range of 38-45k files/sec), but still lag the normal allocation
+rate, and the large rm test goes up to 1m40s (instead of 1m on
+baseline).
 
-I do not know, if this is an rcutorture issue, or if rcutorture found a 
-bug with `rtmsg_ifinfo_build_skb()`.
+Brian
 
+> Hm?
+> 
+> Brian
+> 
+> > Cheers,
+> > 
+> > Dave.
+> > -- 
+> > Dave Chinner
+> > david@fromorbit.com
+> > 
 
-Building Linux 5.17-rc1+ (dd81e1c7d5fb) under Ubuntu 21.04 with
-
-     CONFIG_TORTURE_TEST=y
-     CONFIG_RCU_TORTURE_TEST=y
-
-and
-
-     $ clang --version
-     Ubuntu clang version 12.0.0-3ubuntu1~21.04.2
-     Target: powerpc64le-unknown-linux-gnu
-     Thread model: posix
-     InstalledDir: /usr/bin
-     $ make -j100 LLVM=1 LLVM_IAS=0 bindeb-pkg
-
-and booting it on an IBM S822LC, Linux paniced with a null pointer 
-dereference, and the watchdog rebooted, and I found the message below in 
-`/sys/fs/pstore/dmesg-nvram-2.enc.z`.
-
-```
-[    T1] Key type id_legacy registered
-[    T1] SGI XFS with ACLs, security attributes, no debug enabled
-[    T1] Block layer SCSI generic (bsg) driver version 0.4 loaded (major 
-248)
-[    T1] io scheduler mq-deadline registered
-[    T1] io scheduler kyber registered
-[  T198] cryptomgr_test (198) used greatest stack depth: 13536 bytes left
-[    T1] pci 0021:10:00.0: enabling device (0141 -> 0143)
-[    T1] Using unsupported 1024x768 (null) at 3fe882010000, depth=32, 
-pitch=4096
-[    T1] Console: switching to colour frame buffer device 128x48
-[    T1] fb0: Open Firmware frame buffer device on 
-/pciex@3fffe41100000/pci@0/pci@0/pci@b/pci@0/vga@0
-[    T1] hvc0: raw protocol on /ibm,opal/consoles/serial@0 (boot console)
-[    T1] hvc0: No interrupts property, using OPAL event
-[    T1] Serial: 8250/16550 driver, 4 ports, IRQ sharing disabled
-[    T1] Non-volatile memory driver v1.3
-[    T1] brd: module loaded
-[    T1] loop: module loaded
-[    T1] ipr: IBM Power RAID SCSI Device Driver version: 2.6.4 (March 
-14, 2017)
-[    T1] ahci 0021:0e:00.0: version 3.0
-[    T1] ahci 0021:0e:00.0: enabling device (0141 -> 0143)
-[    T1] ahci 0021:0e:00.0: AHCI 0001.0000 32 slots 4 ports 6 Gbps 0xf 
-impl SATA mode
-[    T1] ahci 0021:0e:00.0: flags: 64bit ncq sntf led only pmp fbs pio 
-slum part sxs
-[    T1] scsi host0: ahci
-[    T1] scsi host1: ahci
-[    T1] scsi host2: ahci
-[    T1] scsi host3: ahci
-[    T1] ata1: SATA max UDMA/133 abar m2048@0x3fe881000000 port 
-0x3fe881000100 irq 39
-[    T1] ata2: SATA max UDMA/133 abar m2048@0x3fe881000000 port 
-0x3fe881000180 irq 39
-[    T1] ata3: SATA max UDMA/133 abar m2048@0x3fe881000000 port 
-0x3fe881000200 irq 39
-[    T1] ata4: SATA max UDMA/133 abar m2048@0x3fe881000000 port 
-0x3fe881000280 irq 39
-[    T1] e100: Intel(R) PRO/100 Network Driver
-[    T1] e100: Copyright(c) 1999-2006 Intel Corporation
-[    T1] e1000: Intel(R) PRO/1000 Network Driver
-[    T1] e1000: Copyright (c) 1999-2006 Intel Corporation.
-[    T1] e1000e: Intel(R) PRO/1000 Network Driver
-[    T1] e1000e: Copyright(c) 1999 - 2015 Intel Corporation.
-[    T1] ehci_hcd: USB 2.0 'Enhanced' Host Controller (EHCI) Driver
-[    T1] ehci-pci: EHCI PCI platform driver
-[    T1] ohci_hcd: USB 1.1 'Open' Host Controller (OHCI) Driver
-[    T1] ohci-pci: OHCI PCI platform driver
-[    T1] rtc-opal opal-rtc: registered as rtc0
-[    T1] rtc-opal opal-rtc: setting system clock to 2022-01-24T18:21:45 
-UTC (1643048505)
-[    T1] i2c_dev: i2c /dev entries driver
-[    T1] device-mapper: uevent: version 1.0.3
-[    T1] device-mapper: ioctl: 4.45.0-ioctl (2021-03-22) initialised: 
-dm-devel@redhat.com
-[    T1] powernv-cpufreq: cpufreq pstate min 0xffffffd5 nominal 
-0xffffffef max 0x0
-[    T1] powernv-cpufreq: Workload Optimized Frequency is disabled in 
-the platform
-[    T1] powernv_idle_driver registered
-[    T1] nx_compress_powernv: coprocessor found on chip 0, CT 3 CI 1
-[    T1] nx_compress_powernv: coprocessor found on chip 8, CT 3 CI 9
-[    T1] usbcore: registered new interface driver usbhid
-[    T1] usbhid: USB HID core driver
-[    T1] ipip: IPv4 and MPLS over IPv4 tunneling driver
-[    T1] NET: Registered PF_INET6 protocol family
-[    T1] Segment Routing with IPv6
-[    T1] In-situ OAM (IOAM) with IPv6
-[    T1] sit: IPv6, IPv4 and MPLS over IPv4 tunneling driver
-[    T1] BUG: Kernel NULL pointer dereference on write at 0x00000000
-[    T1] Faulting instruction address: 0xc0000000008e2400
-[    T1] Oops: Kernel access of bad area, sig: 11 [#1]
-[    T1] LE PAGE_SIZE=64K MMU=Hash PREEMPT SMP NR_CPUS=16 NUMA PowerNV
-[    T1] Modules linked in:
-[    T1] CPU: 11 PID: 1 Comm: swapper/0 Not tainted 
-5.17.0-rc1-00032-gdd81e1c7d5fb #29
-[    T1] NIP:  c0000000008e2400 LR: c000000000d65db0 CTR: c000000000f0bb60
-[    T1] REGS: c0000000125033e0 TRAP: 0380   Not tainted 
-(5.17.0-rc1-00032-gdd81e1c7d5fb)
-[    T1] MSR:  9000000000009033 <SF,HV,EE,ME,IR,DR,RI,LE>  CR: 42800c40 
-XER: 00000000
-[    T1] CFAR: c000000000d65dac IRQMASK: 0
-[    T1] GPR00: c000000000d65b40 c000000012503680 c00000000290c600 
-0000000000000000
-[    T1] GPR04: ffffffffffffffff 00000000ffffffff 0000000000000000 
-0000000000000cc0
-[    T1] GPR08: 0000000000000000 0000000000000000 ffffffffffffffff 
-0000000000000001
-[    T1] GPR12: 0000000000000000 c000007fffff6c00 c000000000012478 
-0000000000000000
-[    T1] GPR16: 0000000000000000 0000000000000000 0000000000000000 
-0000000000000000
-[    T1] GPR20: 0000000000000000 c000000002810100 0000000000000cc0 
-0000000000000000
-[    T1] GPR24: 0000000000000010 c00000000294cf50 0000000000000000 
-0000000000000000
-[    T1] GPR28: 0000000000000000 c00000001ec61000 0000000000000000 
-c000000012503680
-[    T1] NIP [c0000000008e2400] strlen+0x10/0x30
-[    T1] LR [c000000000d65db0] if_nlmsg_size+0x150/0x360
-[    T1] Call Trace:
-[    T1] [c000000012503680] [c0000000125036c0] 0xc0000000125036c0 
-(unreliable)
-[    T1] [c0000000125036f0] [c000000000d65b40] 
-rtmsg_ifinfo_build_skb+0x80/0x1a0
-[    T1] [c0000000125037b0] [c000000000d66be0] rtmsg_ifinfo+0x70/0xd0
-[    T1] [c000000012503800] [c000000000d4de50] 
-register_netdevice+0x690/0x770
-[    T1] [c000000012503890] [c000000000d4e2bc] register_netdev+0x4c/0x80
-[    T1] [c0000000125038c0] [c000000000f4784c] sit_init_net+0x10c/0x1d0
-[    T1] [c000000012503910] [c000000000d33c0c] ops_init+0x13c/0x1b0
-[    T1] [c000000012503970] [c000000000d331bc] 
-register_pernet_operations+0xec/0x1e0
-[    T1] [c0000000125039d0] [c000000000d33440] 
-register_pernet_device+0x60/0xd0
-[    T1] [c000000012503a20] [c000000002085478] sit_init+0x54/0x160
-[    T1] [c000000012503ab0] [c000000000011ba8] do_one_initcall+0xd8/0x3b0
-[    T1] [c000000012503c70] [c000000002006064] do_initcall_level+0xe4/0x1c4
-[    T1] [c000000012503cc0] [c000000002005f20] do_initcalls+0x84/0xe4
-[    T1] [c000000012503d40] [c000000002005c7c] 
-kernel_init_freeable+0x160/0x1ec
-[    T1] [c000000012503da0] [c0000000000124ac] kernel_init+0x3c/0x270
-[    T1] [c000000012503e10] [c00000000000cd64] 
-ret_from_kernel_thread+0x5c/0x64
-[    T1] Instruction dump:
-[    T1] eb81ffe0 7c0803a6 4e800020 00000000 00000000 00000000 60000000 
-60000000
-[    T1] 3883ffff 60000000 60000000 60000000 <8ca40001> 28050000 
-4082fff8 7c632050
-[    T1] ---[ end trace 0000000000000000 ]---
-[    T1]
-[  T206] ata4: SATA link down (SStatus 0 SControl 300)
-[  T204] ata3: SATA link down (SStatus 0 SControl 300)
-[  T200] ata1: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
-[  T200] ata1.00: ATA-10: ST1000NX0313         00LY266 00LY265IBM, BE33, 
-max UDMA/133
-[  T200] ata1.00: 1953525168 sectors, multi 0: LBA48 NCQ (depth 32), AA
-[  T200] ata1.00: configured for UDMA/133
-[    T7] scsi 0:0:0:0: Direct-Access     ATA      ST1000NX0313     BE33 
-PQ: 0 ANSI: 5
-[    T7] sd 0:0:0:0: Attached scsi generic sg0 type 0
-[  T209] sd 0:0:0:0: [sda] 1953525168 512-byte logical blocks: (1.00 
-TB/932 GiB)
-[  T209] sd 0:0:0:0: [sda] 4096-byte physical blocks
-[  T209] sd 0:0:0:0: [sda] Write Protect is off
-[  T209] sd 0:0:0:0: [sda] Mode Sense: 00 3a 00 00
-[  T209] sd 0:0:0:0: [sda] Write cache: enabled, read cache: enabled, 
-doesn't support DPO or FUA
-[  T209]  sda: sda1 sda2
-[  T209] sd 0:0:0:0: [sda] Attached SCSI removable disk
-[    T1] Kernel panic - not syncing: Attempted to kill init! 
-exitcode=0x0000000b
-```
-
-
-Kind regards,
-
-Paul
