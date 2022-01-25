@@ -2,155 +2,173 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0FAFDC433F5
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C6719C433EF
 	for <rcu@archiver.kernel.org>; Tue, 25 Jan 2022 02:11:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S3417780AbiAYCLZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 24 Jan 2022 21:11:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S3408501AbiAYAWz (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 24 Jan 2022 19:22:55 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 352DBC036BE4;
-        Mon, 24 Jan 2022 14:06:30 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C2767615CF;
-        Mon, 24 Jan 2022 22:06:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2ACCBC340F8;
-        Mon, 24 Jan 2022 22:06:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1643061989;
-        bh=s0Q2iLX9dyK6zBfXvE6AmOg6Y4MPmiUDjoi2MZ8nbRI=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=BB8Mpx1LnwvDuTkbA0cXddeZ/rQmtoz8pUu0UU6grzafB6tLVMViJeDK0RQZji0pa
-         ALjXmDrGSFz3XxbxVxzAwQI37Jrd1WyjAs4m0uinFAz/wQMNAGxQ+XlElHAM7N9Z2O
-         CNuHrOf/n3Osqripl7Pwbn+uu34DRbgdl8p2qx+km9d9A51sLduueP3C2eCmviHrQM
-         kWhX/ZhSpD9LMiR/NvcdNf5eocL/fFS9RK/MFN7rIxhtS4ddTPaXsHQfQq7uGT86Nf
-         TVaZfoKOH0mQklFjLmq4GHpu0BEGXBmTNPAQqUG/7IbD9zXl2timujV65yhcCpbQFr
-         HTcL+lDGlz7Yg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id DDF295C0FCD; Mon, 24 Jan 2022 14:06:28 -0800 (PST)
-Date:   Mon, 24 Jan 2022 14:06:28 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Alexander Aring <aahringo@redhat.com>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, David Teigland <teigland@redhat.com>,
-        cluster-devel <cluster-devel@redhat.com>,
-        linux-sparse@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: fs/dlm/midcomms.c:913:22: sparse: sparse: restricted __le32
- degrades to integer
-Message-ID: <20220124220628.GL4285@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <202201221028.YKA8kSdm-lkp@intel.com>
- <CAK-6q+h_hb94J3DSXPk=E44kCxiwZ+BE3kMJe09iShRzMb=vzQ@mail.gmail.com>
- <91901e7b-7d82-116c-aaf2-c74c6a6b999c@infradead.org>
- <CAK-6q+j2jc3pBmbvQ-DCmxveC-UMV75SFc2nC1zwXKe9wm4YPg@mail.gmail.com>
- <20220124124530.GS1951@kadam>
- <CAK-6q+iZfY=FyOxJfS7cY7MqScs+nU=U3B4NnLnvcLH3fofuAg@mail.gmail.com>
- <CAK-6q+ga2zT2h4oY0=aCXFeU=oaFHbSXGzuVRptB8Hg-YKR7Gw@mail.gmail.com>
- <CAK-6q+jfA2k1TFrLqK4YN2vshgLidD=6r_CCV6df_VRFMFO7ag@mail.gmail.com>
- <20220124201417.GI4285@paulmck-ThinkPad-P17-Gen-1>
- <CAK-6q+gGx68Wx8mBJAdo0ygpBWPoHW+L+HD11U6UQSOjSXVP3w@mail.gmail.com>
+        id S1355703AbiAYCLh (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 24 Jan 2022 21:11:37 -0500
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:56982 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S3410981AbiAYAb2 (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Mon, 24 Jan 2022 19:31:28 -0500
+Received: from dread.disaster.area (pa49-179-45-11.pa.nsw.optusnet.com.au [49.179.45.11])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id D14C410C30E1;
+        Tue, 25 Jan 2022 11:31:22 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1nC9k0-003qOb-Rk; Tue, 25 Jan 2022 11:31:20 +1100
+Date:   Tue, 25 Jan 2022 11:31:20 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Brian Foster <bfoster@redhat.com>
+Cc:     linux-xfs@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
+        Ian Kent <raven@themaw.net>, rcu@vger.kernel.org
+Subject: Re: [PATCH] xfs: require an rcu grace period before inode recycle
+Message-ID: <20220125003120.GO59729@dread.disaster.area>
+References: <20220121142454.1994916-1-bfoster@redhat.com>
+ <Ye6/g+XMSyp9vYvY@bfoster>
+ <20220124220853.GN59729@dread.disaster.area>
+ <Ye82TgBY0VmtTjMc@bfoster>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAK-6q+gGx68Wx8mBJAdo0ygpBWPoHW+L+HD11U6UQSOjSXVP3w@mail.gmail.com>
+In-Reply-To: <Ye82TgBY0VmtTjMc@bfoster>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.4 cv=e9dl9Yl/ c=1 sm=1 tr=0 ts=61ef44db
+        a=Eslsx4mF8WGvnV49LKizaA==:117 a=Eslsx4mF8WGvnV49LKizaA==:17
+        a=kj9zAlcOel0A:10 a=DghFqjY3_ZEA:10 a=7-415B0cAAAA:8
+        a=Xbp24aNU5GC-INWE7skA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Jan 24, 2022 at 04:36:55PM -0500, Alexander Aring wrote:
-> Hi,
+On Mon, Jan 24, 2022 at 06:29:18PM -0500, Brian Foster wrote:
+> On Tue, Jan 25, 2022 at 09:08:53AM +1100, Dave Chinner wrote:
+> > > FYI, I modified my repeated alloc/free test to do some batching and form
+> > > it into something more able to measure the potential side effect / cost
+> > > of the grace period sync. The test is a single threaded, file alloc/free
+> > > loop using a variable per iteration batch size. The test runs for ~60s
+> > > and reports how many total files were allocated/freed in that period
+> > > with the specified batch size. Note that this particular test ran
+> > > without any background workload. Results are as follows:
+> > > 
+> > > 	files		baseline	test
+> > > 
+> > > 	1		38480		38437
+> > > 	4		126055		111080
+> > > 	8		218299		134469
+> > > 	16		306619		141968
+> > > 	32		397909		152267
+> > > 	64		418603		200875
+> > > 	128		469077		289365
+> > > 	256		684117		566016
+> > > 	512		931328		878933
+> > > 	1024		1126741		1118891
+> > 
+> > Can you post the test code, because 38,000 alloc/unlinks in 60s is
+> > extremely slow for a single tight open-unlink-close loop. I'd be
+> > expecting at least ~10,000 alloc/unlink iterations per second, not
+> > 650/second.
+> > 
 > 
-> On Mon, Jan 24, 2022 at 3:23 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Mon, Jan 24, 2022 at 12:41:04PM -0500, Alexander Aring wrote:
-> > > Hi,
-> > >
-> > > On Mon, Jan 24, 2022 at 12:36 PM Alexander Aring <aahringo@redhat.com> wrote:
-> > > >
-> > > > Hi,
-> > > >
-> > > > On Mon, Jan 24, 2022 at 12:21 PM Alexander Aring <aahringo@redhat.com> wrote:
-> > > > >
-> > > > > Hi,
-> > > > >
-> > > > > On Mon, Jan 24, 2022 at 7:46 AM Dan Carpenter <dan.carpenter@oracle.com> wrote:
-> > > > > >
-> > > > > > On Sun, Jan 23, 2022 at 01:41:52PM -0500, Alexander Aring wrote:
-> > > > > > >
-> > > > > > > I see also:
-> > > > > > >
-> > > > > > > fs/dlm/midcomms.c:213:1: sparse: sparse: symbol
-> > > > > > > '__srcu_struct_nodes_srcu' was not declared. Should it be static?
-> > > > > > >
-> > > > > >
-> > > > > > Why not just do this?  (Untested.  Maybe I don't understand?)
-> > > > > >
-> > > > > > diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
-> > > > > > index cb1f4351e8ba..a164089abec4 100644
-> > > > > > --- a/include/linux/srcutree.h
-> > > > > > +++ b/include/linux/srcutree.h
-> > > > > > @@ -121,7 +121,7 @@ struct srcu_struct {
-> > > > > >  #ifdef MODULE
-> > > > > >  # define __DEFINE_SRCU(name, is_static)                                        \
-> > > > > >         is_static struct srcu_struct name;                              \
-> > > > > > -       struct srcu_struct * const __srcu_struct_##name                 \
-> > > > > > +       is_static struct srcu_struct * const __srcu_struct_##name       \
-> > > > > >                 __section("___srcu_struct_ptrs") = &name
-> > > > > >  #else
-> > > > > >  # define __DEFINE_SRCU(name, is_static)                                        \
-> > > > > >
-> > > > >
-> > > > > I tried it and yes it will fix the issue and introduce another one
-> > > > > about "is_static struct srcu_struct * const __srcu_struct_##name" is
-> > > > > unused ("-Wunused-const-variable").
-> > > > > I added a __maybe_unused after the introduced is_static and it seems
-> > > > > to fix the introduced issue, now it compiles and sparse is happy. I am
-> > > > > not sure if this is the right fix?
-> > > >
-> > > > it is obviously unused, but it has something to do with
-> > > > "__section("___srcu_struct_ptrs")" and during module loading it, I
-> > > > suppose, srcu tries to access it to find whatever needs to be
-> > > > registered?
-> > >
-> > > Sorry, but if this is true then it can't be declared as static... and
-> > > we are at the beginning again.
-> >
-> > Welcome to my world!!!  ;-)
-> >
-> > More seriously, thank you for chasing this down.  But would it work to
-> > add a declaration just before?
-> >
+> Hm, Ok. My test was just a bash script doing a 'touch <files>; rm
+> <files>' loop. I know there was application overhead because if I
+> tweaked the script to open an fd directly rather than use touch, the
+> single file performance jumped up a bit, but it seemed to wash away as I
+> increased the file count so I kept running it with larger sizes. This
+> seems off so I'll port it over to C code and see how much the numbers
+> change.
+
+Yeah, using touch/rm becomes fork/exec bound very quickly. You'll
+find that using "echo > <file>" is much faster than "touch <file>"
+because it runs a shell built-in operation without fork/exec
+overhead to create the file. But you can't play tricks like that to
+replace rm:
+
+$ time for ((i=0;i<1000;i++)); do touch /mnt/scratch/foo; rm /mnt/scratch/foo ; done
+
+real    0m2.653s
+user    0m0.910s
+sys     0m2.051s
+$ time for ((i=0;i<1000;i++)); do echo > /mnt/scratch/foo; rm /mnt/scratch/foo ; done
+
+real    0m1.260s
+user    0m0.452s
+sys     0m0.913s
+$ time ./open-unlink 1000 /mnt/scratch/foo
+
+real    0m0.037s
+user    0m0.001s
+sys     0m0.030s
+$
+
+Note the difference in system time between the three operations -
+almost all the difference in system CPU time is the overhead of
+fork/exec to run the touch/rm binaries, not do the filesystem
+operations....
+
+> > > That's just a test of a quick hack, however. Since there is no real
+> > > urgency to inactivate an unlinked inode (it has no potential users until
+> > > it's freed),
+> > 
+> > On the contrary, there is extreme urgency to inactivate inodes
+> > quickly.
+> > 
 > 
-> only if I add an "extern" in front of the declaration before, so it looks like:
+> Ok, I think we're talking about slightly different things. What I mean
+> above is that if a task removes a file and goes off doing unrelated
+> $work, that inode will just sit on the percpu queue indefinitely. That's
+> fine, as there's no functional need for us to process it immediately
+> unless we're around -ENOSPC thresholds or some such that demand reclaim
+> of the inode.
+
+Yup, an occasional unlink sitting around for a while on an unlinked
+list isn't going to cause a performance problem.  Indeed, such
+workloads are more likely to benefit from the reduced unlink()
+syscall overhead and won't even notice the increase in background
+CPU overhead for inactivation of those occasional inodes.
+
+> It sounds like what you're talking about is specifically
+> the behavior/performance of sustained file removal (which is important
+> obviously), where apparently there is a notable degradation if the
+> queues become deep enough to push the inode batches out of CPU cache. So
+> that makes sense...
+
+Yup, sustained bulk throughput is where cache residency really
+matters. And for unlink, sustained unlink workloads are quite
+common; they often are something people wait for on the command line
+or make up a performance critical component of a highly concurrent
+workload so it's pretty important to get this part right.
+
+> > Darrick made the original assumption that we could delay
+> > inactivation indefinitely and so he allowed really deep queues of up
+> > to 64k deferred inactivations. But with queues this deep, we could
+> > never get that background inactivation code to perform anywhere near
+> > the original synchronous background inactivation code. e.g. I
+> > measured 60-70% performance degradataions on my scalability tests,
+> > and nothing stood out in the profiles until I started looking at
+> > CPU data cache misses.
+> > 
 > 
-> extern struct srcu_struct * const __srcu_struct_##name;
-> 
-> (compile and sparse tested only)
+> ... but could you elaborate on the scalability tests involved here so I
+> can get a better sense of it in practice and perhaps observe the impact
+> of changes in this path?
 
-If that works for everyone, it seems worth persuing.
+The same conconrrent fsmark create/traverse/unlink workloads I've
+been running for the past decade+ demonstrates it pretty simply. I
+also saw regressions with dbench (both op latency and throughput) as
+the clinet count (concurrency) increased, and with compilebench.  I
+didn't look much further because all the common benchmarks I ran
+showed perf degradations with arbitrary delays that went away with
+the current code we have.  ISTR that parts of aim7/reaim scalability
+workloads that the intel zero-day infrastructure runs are quite
+sensitive to background inactivation delays as well because that's a
+CPU bound workload and hence any reduction in cache residency
+results in a reduction of the number of concurrent jobs that can be
+run.
 
-One way to test this is as follows:
+Cheers,
 
-1.	Build a kernel with CONFIG_RCU_TORTURE_TEST=m.  Boot this and
-	type "modprobe rcutorture torture_type=srcu".
-
-	If you want to stop the torture test, type "rmmod rcutorture".
-
-	This will test DEFINE_SRCU() for the module case.
-
-2.	At the top-level directory of your Linux-kernel source tree,
-	type "tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 3 --configs 'SRCU-N' --trust-make"
-
-	This will test DEFINE_SRCU() for the non-module case.
-
-If those both work, and if there are no other objections or complications,
-please do send a patch.
-
-							Thanx, Paul
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
