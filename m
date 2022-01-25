@@ -2,290 +2,286 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ED1BDC433FE
-	for <rcu@archiver.kernel.org>; Tue, 25 Jan 2022 18:09:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5BF33C43217
+	for <rcu@archiver.kernel.org>; Tue, 25 Jan 2022 18:30:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244332AbiAYSJN (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 25 Jan 2022 13:09:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60518 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244241AbiAYSJJ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 25 Jan 2022 13:09:09 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A3B8C061744;
-        Tue, 25 Jan 2022 10:09:08 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 08ED361559;
-        Tue, 25 Jan 2022 18:09:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FBDDC340E0;
-        Tue, 25 Jan 2022 18:09:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1643134147;
-        bh=RCwubrryEcnOGjNUPjDunBN36HJmqoNuQe1mX3V8b90=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=hhV16HqANs3S39YkxwkTuGzIzTuVPDFdJyyEwuzVN2gupGy5MsJ42Cgy4I0cjrhJZ
-         hp4BZvsm1UQEowJOyGVuKjyMiR23DcaiGpFsmKsAkhTGZpAtCv9kKGK30Uy3vhma4Z
-         g0WvNyAjN0GgGRnnYZAST34DWEpL5RuB5n0uVrfNy58+7y7Qv5AP7ZPg32JvkUfL7x
-         XdNvdDiAJEhv6dIAEeohf+I691BOEz/hCkQ8DUn+Bhut+Yy7VOcumAv9Y4WAF1u0sq
-         41oRwEnhTtIYVDMGOoiv51fBpnFrBQgNPU4H/U4F52Wgj6YxTgvd7tZtriK9Isoes4
-         bAjBgbBm0hZTA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 219025C0641; Tue, 25 Jan 2022 10:09:07 -0800 (PST)
-Date:   Tue, 25 Jan 2022 10:09:07 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Zhouyi Zhou <zhouzhouyi@gmail.com>
-Cc:     Paul Menzel <pmenzel@molgen.mpg.de>,
-        Josh Triplett <josh@joshtriplett.org>,
-        rcu <rcu@vger.kernel.org>, linux-kselftest@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: Problems with rcutorture on ppc64le: allmodconfig(2) and other
- failures
-Message-ID: <20220125180907.GN4285@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <d744e653-5e8f-b874-6991-3005e6b8afd4@molgen.mpg.de>
- <20220118172904.GG947480@paulmck-ThinkPad-P17-Gen-1>
- <20220118234656.GA3120763@paulmck-ThinkPad-P17-Gen-1>
- <CAABZP2yffDyg31smcCyqENFBvQPfmFCT_YwDM_DJ=S-3rjxKuQ@mail.gmail.com>
- <20220119044649.GL947480@paulmck-ThinkPad-P17-Gen-1>
- <20220119182143.GA2183703@paulmck-ThinkPad-P17-Gen-1>
- <CAABZP2x-esy+9R4iiMZR5UV7YnYQxikAgsAQM+PU-o9+m9WMpw@mail.gmail.com>
- <20220120210636.GR947480@paulmck-ThinkPad-P17-Gen-1>
- <CAABZP2zCWJ1S3We1f6UNVW=Q6h7cz8uMbR7PTzt9UWH9CjSZuw@mail.gmail.com>
- <CAABZP2z=ESWA1EYf1LGS40ipJxcVOAUkvJHA-rdDP6_0Oqjgsg@mail.gmail.com>
+        id S232185AbiAYSap (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 25 Jan 2022 13:30:45 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:35841 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232208AbiAYSan (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Tue, 25 Jan 2022 13:30:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1643135442;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/e0a+5HrKHOBNvI1PZDCmx3Xe//5Y7Jt5G2as4trqKw=;
+        b=H84p083ZwiTDNN/X2xFyMtjDFH+iOCpswZvH0+R76uNfF9xFcPowAq7Q/2OJDyHtSVoaeY
+        lbVqAQ5qJFjvmBgvAbqTmILNnDTxp3nYMAHSnRwVcoLll3eVHL28lGYGSfyOp571NHUUho
+        v1xVdtMlKPQBAJXvudlQtvBE7/zcuUo=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-435--18Q1_-3PYOBKMr8lSM8IA-1; Tue, 25 Jan 2022 13:30:40 -0500
+X-MC-Unique: -18Q1_-3PYOBKMr8lSM8IA-1
+Received: by mail-qv1-f72.google.com with SMTP id hu4-20020a056214234400b0041ad4e40960so22350956qvb.13
+        for <rcu@vger.kernel.org>; Tue, 25 Jan 2022 10:30:40 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/e0a+5HrKHOBNvI1PZDCmx3Xe//5Y7Jt5G2as4trqKw=;
+        b=rI1MmBIjZ/HX63r729gCL0+igf41r8UGYzoA2gs/5gJBrgiDykDQKRf0RuzgHl1wuF
+         NKOkl2su44CXL/pkqyTD93RX/GWi4FhyR6erjZYGBfq0IY6XJImI82sV7mggiF5JrLoG
+         nS4hhXxd8LXCKMRocD5F9jcXLDdvB5yf+irdg5XyfVUcSSBmfj/Pfq6/0J+kK4cigHeE
+         s+sAk1aNvglXmPb3ypkUkxv46g1zYsBOydQVAUKOHdMGsPKfdLamj56T1ipeC22Zi+EW
+         snzUFCOXTGqApu2imIMbO+Wjpkz+4mFbXomgB0YExQ5NbplwA9aq43bOmq9gGYkxl1By
+         YsVA==
+X-Gm-Message-State: AOAM533xCpyLMr37kgH3L3FLXEp+WuxFS3TQq7cheQapzeSpP2n9RFGO
+        GJaK0k0uF4pKfUZW6npJ4n+Vwbj1me5F7AdHZsTuQYKXeUu0bDKHiLdiKI4kSJ2be3NEIpJfq7q
+        K0eRyBj+aynfW
+X-Received: by 2002:a05:6214:e6c:: with SMTP id jz12mr12886534qvb.42.1643135439574;
+        Tue, 25 Jan 2022 10:30:39 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxT/O4hH8WE0OaOC1Z3oBqKR/Zb+xiWOotm4QWB1TzUQoCCF7mrOEYRP+9cljNB25NisH90cQ==
+X-Received: by 2002:a05:6214:e6c:: with SMTP id jz12mr12886497qvb.42.1643135439194;
+        Tue, 25 Jan 2022 10:30:39 -0800 (PST)
+Received: from bfoster (c-24-61-119-116.hsd1.ma.comcast.net. [24.61.119.116])
+        by smtp.gmail.com with ESMTPSA id bs33sm1164242qkb.103.2022.01.25.10.30.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jan 2022 10:30:38 -0800 (PST)
+Date:   Tue, 25 Jan 2022 13:30:36 -0500
+From:   Brian Foster <bfoster@redhat.com>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     linux-xfs@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
+        Ian Kent <raven@themaw.net>, rcu@vger.kernel.org
+Subject: Re: [PATCH] xfs: require an rcu grace period before inode recycle
+Message-ID: <YfBBzHascwVnefYY@bfoster>
+References: <20220121142454.1994916-1-bfoster@redhat.com>
+ <Ye6/g+XMSyp9vYvY@bfoster>
+ <20220124220853.GN59729@dread.disaster.area>
+ <Ye82TgBY0VmtTjMc@bfoster>
+ <20220125003120.GO59729@dread.disaster.area>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAABZP2z=ESWA1EYf1LGS40ipJxcVOAUkvJHA-rdDP6_0Oqjgsg@mail.gmail.com>
+In-Reply-To: <20220125003120.GO59729@dread.disaster.area>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Jan 26, 2022 at 12:19:58AM +0800, Zhouyi Zhou wrote:
-> Hi Paul
+On Tue, Jan 25, 2022 at 11:31:20AM +1100, Dave Chinner wrote:
+> On Mon, Jan 24, 2022 at 06:29:18PM -0500, Brian Foster wrote:
+> > On Tue, Jan 25, 2022 at 09:08:53AM +1100, Dave Chinner wrote:
+> > > > FYI, I modified my repeated alloc/free test to do some batching and form
+> > > > it into something more able to measure the potential side effect / cost
+> > > > of the grace period sync. The test is a single threaded, file alloc/free
+> > > > loop using a variable per iteration batch size. The test runs for ~60s
+> > > > and reports how many total files were allocated/freed in that period
+> > > > with the specified batch size. Note that this particular test ran
+> > > > without any background workload. Results are as follows:
+> > > > 
+> > > > 	files		baseline	test
+> > > > 
+> > > > 	1		38480		38437
+> > > > 	4		126055		111080
+> > > > 	8		218299		134469
+> > > > 	16		306619		141968
+> > > > 	32		397909		152267
+> > > > 	64		418603		200875
+> > > > 	128		469077		289365
+> > > > 	256		684117		566016
+> > > > 	512		931328		878933
+> > > > 	1024		1126741		1118891
+> > > 
+> > > Can you post the test code, because 38,000 alloc/unlinks in 60s is
+> > > extremely slow for a single tight open-unlink-close loop. I'd be
+> > > expecting at least ~10,000 alloc/unlink iterations per second, not
+> > > 650/second.
+> > > 
+> > 
+> > Hm, Ok. My test was just a bash script doing a 'touch <files>; rm
+> > <files>' loop. I know there was application overhead because if I
+> > tweaked the script to open an fd directly rather than use touch, the
+> > single file performance jumped up a bit, but it seemed to wash away as I
+> > increased the file count so I kept running it with larger sizes. This
+> > seems off so I'll port it over to C code and see how much the numbers
+> > change.
 > 
-> On Fri, Jan 21, 2022 at 8:44 AM Zhouyi Zhou <zhouzhouyi@gmail.com> wrote:
-> >
-> > Thank Paul for your guidance!
-> >
-> > On Fri, Jan 21, 2022 at 5:06 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > >
-> > > On Thu, Jan 20, 2022 at 03:30:54AM +0800, Zhouyi Zhou wrote:
-> > > > On Thu, Jan 20, 2022 at 2:21 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > > >
-> > > > > On Tue, Jan 18, 2022 at 08:46:49PM -0800, Paul E. McKenney wrote:
-> > > > > > On Wed, Jan 19, 2022 at 10:07:42AM +0800, Zhouyi Zhou wrote:
-> > > > > > > Thanks Paul for looking into this
-> > > > > > >
-> > > > > > > On Wed, Jan 19, 2022 at 7:46 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > > > > > >
-> > > > > > > > On Tue, Jan 18, 2022 at 09:29:04AM -0800, Paul E. McKenney wrote:
-> > > > > > > > > On Tue, Jan 18, 2022 at 08:56:24AM +0100, Paul Menzel wrote:
-> > > > > > > > > > Dear Zhouyi,
-> > > > > > > > > >
-> > > > > > > > > >
-> > > > > > > > > > Thank you for your quick response.
-> > > > > > > > > >
-> > > > > > > > > >
-> > > > > > > > > > Am 18.01.22 um 08:34 schrieb Zhouyi Zhou:
-> > > > > > > > > >
-> > > > > > > > > > > I have studied the rcu torture test recently. I am also interested in
-> > > > > > > > > > > this topic.
-> > > > > > > > > > > But I can't open
-> > > > > > > > > > > [1]: https://owww.molgen.mpg.de/~pmenzel/allmodconf-Make.out.txt
-> > > > > > > > > > > [2]: https://owww.molgen.mpg.de/~pmenzel/rcutorture-log.txt
-> > > > > > > > > >
-> > > > > > > > > > Sorry, about that. I should have checked those. I had put them into a
-> > > > > > > > > > directory:
-> > > > > > > > > >
-> > > > > > > > > > [1]: https://owww.molgen.mpg.de/~pmenzel/rcutorture/allmodconf-Make.out.txt
-> > > > > > > > > > [2]: https://owww.molgen.mpg.de/~pmenzel/rcutorture/rcutorture-log.txt
-> > > > > > > > > >
-> > > > > > > > > > I am going to try to test your suggestions at the end of the day.
-> > > > > > > > >
-> > > > > > > > > On x86 rcutorture builds successfully.  However, allmodconfig
-> > > > > > > > > on semi-recent -next got me "Can't open perl script
-> > > > > > > > > "./usr/include/headers_check.pl": No such file or directory".
-> > > > > > > > > Which might well be a local problem or might well be fixed by now.
-> > > > > > > >
-> > > > > > > > Not fixed as of next-20220118.  Chasing it down...  ;-)
-> > > > > > > I can do allmodconfig on -next,
-> > > > > > > $git describe
-> > > > > > > next-20220118
-> > > > > > > $tools/testing/selftests/rcutorture/bin/torture.sh --duration 10
-> > > > > > >  ---  tools/testing/selftests/rcutorture/bin/torture.sh --duration 10
-> > > > > > >  --- Results directory:  2022.01.19-09.14.39-torture
-> > > > > > > $ ps -aux|grep qemu-system
-> > > > > > > zzy       470309  773  0.3 1876544 153936 pts/0  Sl+  09:55  31:27
-> > > > > > > qemu-system-x86_64 -enable-kvm -nographic -smp 16 -net none -machine
-> > > > > > > q35,accel=kvm -cpu kvm64 -serial
-> > > > > > > file:/tmp/linux-next/tools/testing/selftests/rcutorture/res/2022.01.19-09.14.39-torture/results-rcutorture/TREE03/console.log
-> > > > > > > -m 512 -kernel /tmp/linux-next/tools/testing/selftests/rcutorture/res/2022.01.19-09.14.39-torture/results-rcutorture/TREE03/bzImage
-> > > > > > > -append debug_boot_weak_hash panic=-1 selinux=0 initcall_debug debug
-> > > > > > > console=ttyS0 rcupdate.rcu_cpu_stall_suppress_at_boot=1
-> > > > > > > torture.disable_onoff_at_boot rcupdate.rcu_task_stall_timeout=30000
-> > > > > > > rcutorture.onoff_interval=200 rcutorture.onoff_holdoff=30
-> > > > > > > rcutree.gp_preinit_delay=12 rcutree.gp_init_delay=3
-> > > > > > > rcutree.gp_cleanup_delay=3 rcutree.kthread_prio=2 threadirqs
-> > > > > > > tree.use_softirq=0 rcutorture.n_barrier_cbs=4
-> > > > > > > rcutorture.stat_interval=15 rcutorture.shutdown_secs=420
-> > > > > > > rcutorture.test_no_idle_hz=1 rcutorture.verbose=1
-> > > > > > > zzy       755865  0.0  0.0  17676  2876 pts/2    S+   09:59   0:00
-> > > > > > > grep --color=auto qemu-system
-> > > > > > > $ ls -l vmlinux
-> > > > > > > -rwxrwxr-x 1 zzy zzy 69349872 1月  19 09:55 vmlinux
-> > > > > > >
-> > > > > > > Could you please try the following command ?
-> > > > > > > linux-next$ perl ./usr/include/headers_check.pl usr/include x86
-> > > > > > > usr/include/rdma/hfi/hfi1_user.h
-> > > > > > > linux-next$ echo $?
-> > > > > > > 0
-> > > > > > > The headers_check.pl in linux-next
-> > > > > > > (https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/usr/include/headers_check.pl)
-> > > > > > > is used to check the validity of head files in ./usr/include
-> > > > > >
-> > > > > > I am currently bisecting, but once that finishes I will give this a
-> > > > > > try, thank you!
-> > > > >
-> > > > > And the bisection converged badly due to there being more than one build
-> > > > > failure.
-> > > > Sorry to hear the bisection is not successful.
-> > > > >
-> > > > > So I ran the command above and then the build succeeded.
-> > > > I'm very happy that the command works.
-> > > > >
-> > > > > Though it would be good if the build worked from "make distclean"...
-> > > > I would be very honored if I could join the efforts to make the -next better.linux-next/tools/testing/selftests/rcutorture/res/2022.01.25-23.10.36-torture/allmodconfig
-> > >
-> > > One approach would be to download the -next kernels as they appear and
-> > > run tests on them.  Reporting bugs is good, and of course fixing them
-> > > even better.
-> > This provides a nice way of participating the efforts to make -next
-> > better, and provides me a good way to learn new knowledge in -next!
-> >
-> > >
-> > > You can clone -next from here:
-> > >
-> > >         git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-> > >
-> > > Individual -next releases are tagged, for example, "next-20220118".
-> > I will clone -next from the tree, and will download the -next releases from
-> > https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-> I cloned -next, and try to test rcu:
-> $git clone https://kernel.source.codeaurora.cn/pub/scm/linux/kernel/git/next/linux-next.git
-> (kernel.source.codeaurora.cn is Chinese mirror of  git.kernel.org)
-> $cd linux-next
-> $git describe
-> next-20220125
-> $tools/testing/selftests/rcutorture/bin/torture.sh --duration 10
-> $cd linux-next/tools/testing/selftests/rcutorture/res/2022.01.25-23.10.36-torture/allmodconfig
-> $cat Make.exitcode
-> 2
-> $grep Stop Make.out
-> make[2]: *** No rule to make target
-> 'arch/x86/kvm//home/zzy/Program/linux-next/linux-next/tools/testing/selftests/rcutorture/kvm_main.o',
-> needed by 'arch/x86/kvm/kvm.o'.  Stop.
-> I tried the above two times in two different machines today, they all failed.
+> Yeah, using touch/rm becomes fork/exec bound very quickly. You'll
+> find that using "echo > <file>" is much faster than "touch <file>"
+> because it runs a shell built-in operation without fork/exec
+> overhead to create the file. But you can't play tricks like that to
+> replace rm:
 > 
+
+I had used 'exec' to open an fd (same idea) in the single file case and
+tested with that, saw that the increase was consistent and took that
+along with the increasing performance as batch sizes increased to mean
+that the application overhead wasn't a factor as the test scaled. That
+was clearly wrong, because if I port the whole thing to a C program the
+baseline numbers are way off. I think what also threw me off is that the
+single file test kernel case is actually fairly accurate between the two
+tests. Anyways, here's a series of (single run, no averaging, etc.) test
+runs with the updated test. Note that I reduced the runtime to 10s here
+since the test was running so much faster. Otherwise this is the same
+batched open/close -> unlink behavior:
+
+                baseline        test
+batch:  1       files:  893579  files:  41841
+batch:  2       files:  912502  files:  41922
+batch:  4       files:  930424  files:  42084
+batch:  8       files:  932072  files:  41536
+batch:  16      files:  930624  files:  41616
+batch:  32      files:  777088  files:  41120
+batch:  64      files:  567936  files:  57216
+batch:  128     files:  579840  files:  96256
+batch:  256     files:  548608  files:  174080
+batch:  512     files:  546816  files:  246784
+batch:  1024    files:  509952  files:  328704
+batch:  2048    files:  505856  files:  399360
+batch:  4096    files:  479232  files:  438272
+
+So this shows that the performance delta is actually massive from the
+start. For reference, a single threaded, empty file, non syncing,
+fs_mark workload stabilizes at around ~55k files/sec on this fs. Both
+kernels sort of converge to that rate as the batch size increases, only
+the baseline kernel starts much faster and normalizes while the test
+kernel starts much slower and improves (and still really doesn't hit the
+mark even at a 4k batch size).
+
+My takeaway from this is that we may need to find a way to mitigate this
+overhead somewhat better than what the current patch does. Otherwise,
+this is a significant dropoff from even a pure allocation workload in
+simple mixed workload scenarios...
+
+> $ time for ((i=0;i<1000;i++)); do touch /mnt/scratch/foo; rm /mnt/scratch/foo ; done
 > 
-> Meanwhile I can config and build the kernel successfully by invoking
-> the build commands by hand:
-> $git clone https://kernel.source.codeaurora.cn/pub/scm/linux/kernel/git/next/linux-next.git
-> $cd linux-next
-> $git describe
-> next-20220125
-
-Huh.  What happens if you do a "make clean" betweentimes?
-
-Alternatively, what happens if you change these two lines from torture.sh:
-
-	echo " --- make clean" > "$amcdir/Make.out" 2>&1
-	make -j$MAKE_ALLOTED_CPUS clean >> "$amcdir/Make.out" 2>&1
-
-To this:
-
-	echo " --- make distclean" > "$amcdir/Make.out" 2>&1
-	make -j$MAKE_ALLOTED_CPUS distclean >> "$amcdir/Make.out" 2>&1
-
-And then run torture.sh in the same way that got you the error?
-
-							Thanx, Paul
-
-> $make allmodconfig
-> $make -j 16
-> Kernel: arch/x86/boot/bzImage is ready  (#2)
->   GEN     Module.symvers
-> $echo $?
-> 0
+> real    0m2.653s
+> user    0m0.910s
+> sys     0m2.051s
+> $ time for ((i=0;i<1000;i++)); do echo > /mnt/scratch/foo; rm /mnt/scratch/foo ; done
 > 
-> I am very interested in this problem and I am eager to try to dig out
-> what happened and fix it before this Sunday. And it is more delightful
-> to me that other developers can solve this problem because they are
-> more mature than me ;-)
+> real    0m1.260s
+> user    0m0.452s
+> sys     0m0.913s
+> $ time ./open-unlink 1000 /mnt/scratch/foo
 > 
-> Many thanks
-> Zhouyi
-> > >
-> > > Me, I run torture.sh on them from time to time, depending on how much
-> > > other testing I am doing.  So maybe once or twice a week.  ;-)
-> > You are the example worth learning in my life, to be honest , I will
-> > do the same way as you do!
-> >
-> > Sincerely
-> > Zhouyi
-> > >
-> > >                                                 Thanx, Paul
-> > >
-> > > > Many thanks
-> > > > Zhouyi
-> > > > >
-> > > > >                                                         Thanx, Paul
-> > > > >
-> > > > > > > > > Either way, it looks like I need to upgrade the torture.sh script's
-> > > > > > > > > checks for failed builds.  Thank you for reporting this!
-> > > > > > > >
-> > > > > > > > Does this make torture.sh more reliably report build failures?
-> > > > > > > I studied this commit line by line several times and benefited a lot. Thank you!
-> > > > > > > >
-> > > > > > > >                                                 Thanx, Paul
-> > > > > > > >
-> > > > > > > > ------------------------------------------------------------------------
-> > > > > > > >
-> > > > > > > > commit 0d302830515307ceb58e89d5fb91e81b6d22e0bf
-> > > > > > > > Author: Paul E. McKenney <paulmck@kernel.org>
-> > > > > > > > Date:   Tue Jan 18 15:40:49 2022 -0800
-> > > > > > > >
-> > > > > > > >     torture: Make kvm-find-errors.sh notice missing vmlinux file
-> > > > > > > >
-> > > > > > > >     Currently, an obtuse compiler diagnostic can fool kvm-find-errors.sh
-> > > > > > > >     into believing that the build was successful.  This commit therefore
-> > > > > > > >     adds a check for a missing vmlinux file.
-> > > > > > > >
-> > > > > > > >     Link: https://lore.kernel.org/lkml/36bd91e4-8eda-5677-7fde-40295932a640@molgen.mpg.de/
-> > > > > > > >     Reported-by: Paul Menzel <pmenzel@molgen.mpg.de>
-> > > > > > > >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > > > > > >
-> > > > > > > > diff --git a/tools/testing/selftests/rcutorture/bin/kvm-find-errors.sh b/tools/testing/selftests/rcutorture/bin/kvm-find-errors.sh
-> > > > > > > > index 2e9e9e2eedb69..7d3e11a6b8290 100755
-> > > > > > > > --- a/tools/testing/selftests/rcutorture/bin/kvm-find-errors.sh
-> > > > > > > > +++ b/tools/testing/selftests/rcutorture/bin/kvm-find-errors.sh
-> > > > > > > > @@ -30,10 +30,15 @@ editor=${EDITOR-vi}
-> > > > > > > >  files=
-> > > > > > > >  for i in ${rundir}/*/Make.out
-> > > > > > > >  do
-> > > > > > > > +       scenariodir="`dirname $i`"
-> > > > > > > >         if egrep -q "error:|warning:|^ld: .*undefined reference to" < $i
-> > > > > > > >         then
-> > > > > > > >                 egrep "error:|warning:|^ld: .*undefined reference to" < $i > $i.diags
-> > > > > > > >                 files="$files $i.diags $i"
-> > > > > > > > +       elif ! test -f ${scenariodir}/vmlinux
-> > > > > > > > +       then
-> > > > > > > > +               echo No ${scenariodir}/vmlinux file > $i.diags
-> > > > > > > > +               files="$files $i.diags $i"
-> > > > > > > >         fi
-> > > > > > > >  done
-> > > > > > > >  if test -n "$files"
-> > > > > > > Thanks
-> > > > > > > Zhouyi
+> real    0m0.037s
+> user    0m0.001s
+> sys     0m0.030s
+> $
+> 
+> Note the difference in system time between the three operations -
+> almost all the difference in system CPU time is the overhead of
+> fork/exec to run the touch/rm binaries, not do the filesystem
+> operations....
+> 
+> > > > That's just a test of a quick hack, however. Since there is no real
+> > > > urgency to inactivate an unlinked inode (it has no potential users until
+> > > > it's freed),
+> > > 
+> > > On the contrary, there is extreme urgency to inactivate inodes
+> > > quickly.
+> > > 
+> > 
+> > Ok, I think we're talking about slightly different things. What I mean
+> > above is that if a task removes a file and goes off doing unrelated
+> > $work, that inode will just sit on the percpu queue indefinitely. That's
+> > fine, as there's no functional need for us to process it immediately
+> > unless we're around -ENOSPC thresholds or some such that demand reclaim
+> > of the inode.
+> 
+> Yup, an occasional unlink sitting around for a while on an unlinked
+> list isn't going to cause a performance problem.  Indeed, such
+> workloads are more likely to benefit from the reduced unlink()
+> syscall overhead and won't even notice the increase in background
+> CPU overhead for inactivation of those occasional inodes.
+> 
+> > It sounds like what you're talking about is specifically
+> > the behavior/performance of sustained file removal (which is important
+> > obviously), where apparently there is a notable degradation if the
+> > queues become deep enough to push the inode batches out of CPU cache. So
+> > that makes sense...
+> 
+> Yup, sustained bulk throughput is where cache residency really
+> matters. And for unlink, sustained unlink workloads are quite
+> common; they often are something people wait for on the command line
+> or make up a performance critical component of a highly concurrent
+> workload so it's pretty important to get this part right.
+> 
+> > > Darrick made the original assumption that we could delay
+> > > inactivation indefinitely and so he allowed really deep queues of up
+> > > to 64k deferred inactivations. But with queues this deep, we could
+> > > never get that background inactivation code to perform anywhere near
+> > > the original synchronous background inactivation code. e.g. I
+> > > measured 60-70% performance degradataions on my scalability tests,
+> > > and nothing stood out in the profiles until I started looking at
+> > > CPU data cache misses.
+> > > 
+> > 
+> > ... but could you elaborate on the scalability tests involved here so I
+> > can get a better sense of it in practice and perhaps observe the impact
+> > of changes in this path?
+> 
+> The same conconrrent fsmark create/traverse/unlink workloads I've
+> been running for the past decade+ demonstrates it pretty simply. I
+> also saw regressions with dbench (both op latency and throughput) as
+> the clinet count (concurrency) increased, and with compilebench.  I
+> didn't look much further because all the common benchmarks I ran
+> showed perf degradations with arbitrary delays that went away with
+> the current code we have.  ISTR that parts of aim7/reaim scalability
+> workloads that the intel zero-day infrastructure runs are quite
+> sensitive to background inactivation delays as well because that's a
+> CPU bound workload and hence any reduction in cache residency
+> results in a reduction of the number of concurrent jobs that can be
+> run.
+> 
+
+Ok, so if I (single threaded) create (via fs_mark), sync and remove 5m
+empty files, the remove takes about a minute. If I just bump out the
+current queue and block thresholds by 10x and repeat, that time
+increases to about ~1m24s. If I hack up a kernel to disable queueing
+entirely (i.e. fully synchronous inactivation), then I'm back to about a
+minute again. So I'm not producing any performance benefit with
+queueing/batching in this single threaded scenario, but I suspect the
+10x threshold delta is at least measuring the negative effect of poor
+caching..? (Any decent way to confirm that..?).
+
+And of course if I take the baseline kernel and stick a
+cond_synchronize_rcu() in xfs_inactive_ifree() it brings the batch test
+numbers right back but slows the removal test way down. What I find
+interesting however is that if I hack up something more mild like invoke
+cond_synchronize_rcu() on the oldest inode in the current inactivation
+batch, bump out the blocking threshold as above (but leave the queueing
+threshold at 32), and leave the iget side cond_sync_rcu() to catch
+whatever falls through, my 5m file remove test now completes ~5-10s
+faster than baseline and I see the following results from the batched
+alloc/free test:
+
+batch:  1       files:  731923
+batch:  2       files:  693020
+batch:  4       files:  750948
+batch:  8       files:  743296
+batch:  16      files:  738720
+batch:  32      files:  746240
+batch:  64      files:  598464
+batch:  128     files:  672896
+batch:  256     files:  633856
+batch:  512     files:  605184
+batch:  1024    files:  569344
+batch:  2048    files:  555008
+batch:  4096    files:  524288
+
+Hm?
+
+Brian
+
+> Cheers,
+> 
+> Dave.
+> -- 
+> Dave Chinner
+> david@fromorbit.com
+> 
+
