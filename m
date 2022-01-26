@@ -2,83 +2,88 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D8CDC28CF5
-	for <rcu@archiver.kernel.org>; Wed, 26 Jan 2022 15:04:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 605A3C2BA4C
+	for <rcu@archiver.kernel.org>; Wed, 26 Jan 2022 16:56:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242545AbiAZPEf (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 26 Jan 2022 10:04:35 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:26975 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235639AbiAZPEe (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Wed, 26 Jan 2022 10:04:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1643209474;
+        id S243342AbiAZQ4H (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 26 Jan 2022 11:56:07 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:58172 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232405AbiAZQ4G (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 26 Jan 2022 11:56:06 -0500
+Date:   Wed, 26 Jan 2022 17:56:03 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1643216165;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=PwDpPFsxTrq2rRtwOqI7ZJIt9eR/2qLQnt7AqyYtFWc=;
-        b=ZQoWjxvyUigwNB2o8ZhWqqtOS2WhtM8WuFSCsWbsVZrkUPlNHG3RMV0HJDu3sMYl/cYiQm
-        +Tj70oZ/I1+dsPLnSHOnzIMj/KfE6i0mLY3IWrQkA4rKyQDQyP+WKm3/pjb5gYCS6BJ83P
-        vtpwpZXN/Ta78tzUTFpJe7obVlbyRE4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-85-xtC81mBQNpa7dKO_zDclCA-1; Wed, 26 Jan 2022 10:04:30 -0500
-X-MC-Unique: xtC81mBQNpa7dKO_zDclCA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F1CAF1934102;
-        Wed, 26 Jan 2022 15:04:28 +0000 (UTC)
-Received: from fs-i40c-03.fs.lab.eng.bos.redhat.com (fs-i40c-03.fs.lab.eng.bos.redhat.com [10.16.224.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D92A570D30;
-        Wed, 26 Jan 2022 15:04:06 +0000 (UTC)
-From:   Alexander Aring <aahringo@redhat.com>
-To:     jiangshanlai@gmail.com
-Cc:     paulmck@kernel.org, josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, rcu@vger.kernel.org,
-        cluster-devel@redhat.com
-Subject: [PATCH] srcutree: use export for srcu_struct defined by DEFINE_STATIC_SRCU()
-Date:   Wed, 26 Jan 2022 10:03:54 -0500
-Message-Id: <20220126150354.3644838-1-aahringo@redhat.com>
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0L8WSSuR0odZJs+6WFfAZW0UhB7u98hCsghYO6wbK4s=;
+        b=ijFxUU7WFv4kWnpX8Wgv8O8XPf8AszJUenXeuT20Ku8wHdLHRJs4z1uZUAAvLsW0dRv47L
+        k1nNy9SsGo6iMATOrHKHVFIMSLT0bvg2D/m7ti9kny4pt35XeycWzd2VCMxDecO+cNgoLf
+        10jTzRXtvMvl1cb4jSIde47Bs6Ijr5o49gjNm07N/W5s1zbw7vDk15UkjDgATIcQmCidee
+        WhcB0U7o3gpXp3NGofEBPmwd77qOmJMulqyQB0Qrr1wvqI7miKAA9dRTIyFuh2/QMNsXp4
+        X0S2eWmFyYZlI85WYLw08zAInP19yrkFt3KahfhKzcfFFZW0L/ZE0+U7Q/JsAA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1643216165;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0L8WSSuR0odZJs+6WFfAZW0UhB7u98hCsghYO6wbK4s=;
+        b=nd9g+7eSpH4nkdDkOGhgCCTGxokksgQ45bs5vi4p/Uzk5D6wf2zNlziw58OoLv73Vw0xu7
+        zrbnnnoSgjywHJDQ==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        rcu@vger.kernel.org, linux-rt-users@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mike Galbraith <efault@gmx.de>
+Subject: Re: [PATCH v3 2/4] sched: Introduce migratable()
+Message-ID: <YfF9I5PcZJA5532B@linutronix.de>
+References: <20210811201354.1976839-1-valentin.schneider@arm.com>
+ <20210811201354.1976839-3-valentin.schneider@arm.com>
+ <20210817170925.2jwqvgvmqab2glwu@linutronix.de>
+ <87czq573et.mognet@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <87czq573et.mognet@arm.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This patch fixes a sparse issue if DEFINE_STATIC_SRCU() of srcutree is
-used by a module. Sparse will show:
+On 2021-08-22 19:14:18 [+0100], Valentin Schneider wrote:
+> Thanks for carrying it through, I'll keep that change for the next versio=
+n.
 
-sparse: symbol '__srcu_struct_nodes_srcu' was not declared. Should it be static?
+Just a quick question. This series ended with 3 patches in my queue. It
+got decimated further due to Frederic series which ended up in
+v5.17-rc1. I still have
+| 2021-08-11 21:13 +0100 Valentin Schneider    =E2=88=99 sched: Introduce m=
+igratable()
+| 2021-08-11 21:13 +0100 Valentin Schneider    =E2=88=99 arm64: mm: Make ar=
+ch_faults_on_old_pte() check for migratability
 
-The problem is here that the DEFINE_STATIC_SRCU() of srcutree uses
-__DEFINE_SRCU() and define a non-static srcu_struct. This srcu_struct
-will be exported by inserting it in a special module section
-'__section("___srcu_struct_ptrs")'. During load/unloading srcutree runs
-their init/cleanup functionality. It seems sparse does not understand
-this connection. To avoid the sparse warning we make a prototype of the
-exported srcu_struct with an export keyword. This way we tell the
-that the srcu_struct might be used outside of the module.
-
-Signed-off-by: Alexander Aring <aahringo@redhat.com>
----
- include/linux/srcutree.h | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
-index cb1f4351e8ba..f81be0749484 100644
---- a/include/linux/srcutree.h
-+++ b/include/linux/srcutree.h
-@@ -121,6 +121,7 @@ struct srcu_struct {
- #ifdef MODULE
- # define __DEFINE_SRCU(name, is_static)					\
- 	is_static struct srcu_struct name;				\
-+	extern struct srcu_struct * const __srcu_struct_##name;		\
- 	struct srcu_struct * const __srcu_struct_##name			\
- 		__section("___srcu_struct_ptrs") = &name
- #else
--- 
-2.31.1
-
+what do we do about these two? I could repost these two if there are no
+objections=E2=80=A6
+=20
+Sebastian
