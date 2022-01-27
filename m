@@ -2,42 +2,23 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CADC9C433F5
-	for <rcu@archiver.kernel.org>; Thu, 27 Jan 2022 10:07:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 70713C433EF
+	for <rcu@archiver.kernel.org>; Thu, 27 Jan 2022 18:23:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236254AbiA0KH3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 27 Jan 2022 05:07:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43490 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231903AbiA0KH3 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 27 Jan 2022 05:07:29 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4A26C061714;
-        Thu, 27 Jan 2022 02:07:28 -0800 (PST)
-Date:   Thu, 27 Jan 2022 11:07:25 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1643278047;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BYR/PyGx3Is3z5vyQ7uQWePnywgy3STS2Zjh/6oWB0g=;
-        b=3+jlgIGZnwa7n1WXDDDEEw2Ii2QECYNqe0NSkpNOyQa0ccXogPSRQVQlY0JP9w/VOOLbY3
-        XO4sO6UZGNagabhsBj4oKGt/QOAeK6eQ89GS/GEiC6CvsSursMfYyvzfl3fHOZ3fcYd/iE
-        /yVypAZLNeNcJLH7bd2g2JiwD8d/IOKyovEg8LuO933QoPh9y9jFUE6NvcU7XjxMuBPIHy
-        gDLKJlxyvw0iuTk1nWJxwDw/byAdRbSXMli6CDm43Ank0LGP1a6DmxdbFiwHw6q0MrvQ7v
-        IPdJouVa3nk0AUmrUgD4A8m5UX3ygaOT9gMH16Pkk8F0G+3YJm9ZdW3IsS5xow==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1643278047;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BYR/PyGx3Is3z5vyQ7uQWePnywgy3STS2Zjh/6oWB0g=;
-        b=5zGFD1PQXG0Ly0F6dyiuD/oNCcrKyXOQdoSoXU26xwYejsI2F9UnIvYnCJJyiruCS3gzBE
-        U1LW0uCPDzDycSAQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Valentin Schneider <valentin.schneider@arm.com>
+        id S231638AbiA0SXx convert rfc822-to-8bit (ORCPT
+        <rfc822;rcu@archiver.kernel.org>); Thu, 27 Jan 2022 13:23:53 -0500
+Received: from foss.arm.com ([217.140.110.172]:48012 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244957AbiA0SXx (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 27 Jan 2022 13:23:53 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D19A0113E;
+        Thu, 27 Jan 2022 10:23:52 -0800 (PST)
+Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D754F3F7D7;
+        Thu, 27 Jan 2022 10:23:49 -0800 (PST)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         rcu@vger.kernel.org, linux-rt-users@vger.kernel.org,
         Catalin Marinas <catalin.marinas@arm.com>,
@@ -60,33 +41,30 @@ Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         Boqun Feng <boqun.feng@gmail.com>,
         Mike Galbraith <efault@gmx.de>
 Subject: Re: [PATCH v3 2/4] sched: Introduce migratable()
-Message-ID: <YfJu3Z9wKOAjLuad@linutronix.de>
-References: <20210811201354.1976839-1-valentin.schneider@arm.com>
- <20210811201354.1976839-3-valentin.schneider@arm.com>
- <20210817170925.2jwqvgvmqab2glwu@linutronix.de>
- <87czq573et.mognet@arm.com>
- <YfF9I5PcZJA5532B@linutronix.de>
- <87r18u2wr8.mognet@arm.com>
+In-Reply-To: <YfJu3Z9wKOAjLuad@linutronix.de>
+References: <20210811201354.1976839-1-valentin.schneider@arm.com> <20210811201354.1976839-3-valentin.schneider@arm.com> <20210817170925.2jwqvgvmqab2glwu@linutronix.de> <87czq573et.mognet@arm.com> <YfF9I5PcZJA5532B@linutronix.de> <87r18u2wr8.mognet@arm.com> <YfJu3Z9wKOAjLuad@linutronix.de>
+Date:   Thu, 27 Jan 2022 18:23:44 +0000
+Message-ID: <87o83x2g27.mognet@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <87r18u2wr8.mognet@arm.com>
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 2022-01-26 18:10:51 [+0000], Valentin Schneider wrote:
-> > | 2021-08-11 21:13 +0100 Valentin Schneider    =E2=88=99 sched: Introdu=
-ce migratable()
-> > | 2021-08-11 21:13 +0100 Valentin Schneider    =E2=88=99 arm64: mm: Mak=
-e arch_faults_on_old_pte() check for migratability
-=E2=80=A6
-> Heh, had forgotten about those - I'm happy to repost with the
-> s/migratable/is_migratable/. I also need to go back to those splats I got
-> on my emag and fix the PMU/GPIO warnings...
+On 27/01/22 11:07, Sebastian Andrzej Siewior wrote:
+> On 2022-01-26 18:10:51 [+0000], Valentin Schneider wrote:
+>> > | 2021-08-11 21:13 +0100 Valentin Schneider    ∙ sched: Introduce migratable()
+>> > | 2021-08-11 21:13 +0100 Valentin Schneider    ∙ arm64: mm: Make arch_faults_on_old_pte() check for migratability
+> …
+>> Heh, had forgotten about those - I'm happy to repost with the
+>> s/migratable/is_migratable/. I also need to go back to those splats I got
+>> on my emag and fix the PMU/GPIO warnings...
+>
+> Now that I look at it gain, you might want to drop #1 and then #2 would
+> switch to cant_migrate(). This might work…
+>
 
-Now that I look at it gain, you might want to drop #1 and then #2 would
-switch to cant_migrate(). This might work=E2=80=A6
+Wasn't aware of cant_migrate(), that does look even better. Lemme give it a shot.
 
-Sebastian
+> Sebastian
