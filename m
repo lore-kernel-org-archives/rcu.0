@@ -2,229 +2,216 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 15251C433F5
-	for <rcu@archiver.kernel.org>; Fri, 28 Jan 2022 21:39:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B330C433EF
+	for <rcu@archiver.kernel.org>; Fri, 28 Jan 2022 21:40:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351550AbiA1VjP (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 28 Jan 2022 16:39:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57254 "EHLO
+        id S243174AbiA1Vks (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 28 Jan 2022 16:40:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343843AbiA1VjP (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 28 Jan 2022 16:39:15 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6372C061714;
-        Fri, 28 Jan 2022 13:39:14 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 7FE7BB826FF;
-        Fri, 28 Jan 2022 21:39:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CBE8C340E7;
-        Fri, 28 Jan 2022 21:39:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1643405952;
-        bh=pfTSZr+oowt8m9XU1BCW2D/3Mub057KW35Ushs3z1Kk=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=FUd53TwAe6hEKNk1bAs+8x0TX+H/rkZ1XtNMLmVDA4Wh2U/bqrmXScVH2z2kXW2EP
-         cQCSIIiDLvZlxD+g8qTfg6R6bZ24Hi0Emk5sboq2NINjosvfPMNfRetY7VA+kJ1CEz
-         b+dA1mGSwmEuLgRZ89YNgb4vEeikHuT66slfKNHlMJpeyws/mPzv1tobM2qL8HV6ZG
-         NZKB14WSuTC/73rUqbZCs792pLeYqAtzEw4ZIYPm9H+Zxhrpe6+bzpOQWtPFSjqoqY
-         VTQcjWfUyuGmQoPr0n++3zw7fVt++0SxJSacfiRLlsLPe/3FEGEIfv87MB9yIMlmHk
-         a1HIG6MU2udnA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id ED7FD5C09F1; Fri, 28 Jan 2022 13:39:11 -0800 (PST)
-Date:   Fri, 28 Jan 2022 13:39:11 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Brian Foster <bfoster@redhat.com>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Al Viro <viro@zeniv.linux.org.uk>, linux-xfs@vger.kernel.org,
-        Ian Kent <raven@themaw.net>, rcu@vger.kernel.org
-Subject: Re: [PATCH] xfs: require an rcu grace period before inode recycle
-Message-ID: <20220128213911.GO4285@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220121142454.1994916-1-bfoster@redhat.com>
- <Ye6/g+XMSyp9vYvY@bfoster>
- <20220124220853.GN59729@dread.disaster.area>
- <Ye82TgBY0VmtTjMc@bfoster>
- <20220125003120.GO59729@dread.disaster.area>
- <YfBBzHascwVnefYY@bfoster>
- <20220125224551.GQ59729@dread.disaster.area>
- <YfIdVq6R6xEWxy0K@zeniv-ca.linux.org.uk>
- <20220127052609.GR59729@dread.disaster.area>
- <YfLsBdPBSsyPFgHJ@bfoster>
+        with ESMTP id S233520AbiA1Vkr (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 28 Jan 2022 16:40:47 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10E3AC061714
+        for <rcu@vger.kernel.org>; Fri, 28 Jan 2022 13:40:47 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id i30so7335120pfk.8
+        for <rcu@vger.kernel.org>; Fri, 28 Jan 2022 13:40:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=k6jLROMjFao7umAdNdU2nps7DNd/2hCKqNaRX+GNrNE=;
+        b=pOYMyVsviS5ZXyX7QpGw6+81A8UaDif16k7CLTQFrvekf8dwrkBhGLAWdz93ScVtOu
+         WMnDA2tm/ZDx7NT4hH8D/wd3r/3ErWY8XEErncthtxDnP/u9tNqoFOAEgc+0PPU2BJi2
+         n+M2JJO5eDxOGM6u+sFuk6CAapVGxZuYUp/vh0JHmvgNjNfxun9dnMJoJopoU1rGVGJ8
+         4S3p0HKBn8N6qFb+mHlD4p6yJ4iwqGMZkmGm7jODd0R1VotNaJJQTkA/qFyXVTme98Az
+         9kXNWt1Giuo9RQEEEapqrs4qhvm4WVPV3X5mTU+69VWMFb+xqjd/FXkBBgMByFvYHn2U
+         axAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=k6jLROMjFao7umAdNdU2nps7DNd/2hCKqNaRX+GNrNE=;
+        b=j6m9xr804MhkcfNN/NiSNp+YP0hArjafyNcNdtqDoe6orTRXj4asAvwnuemGp526nt
+         P6ZXFMHb5Tqk2WC7yJxjnQleu4Qc+hJvX7D4EzD+zPbcwrlS3axwVvDx4cpnmlh94/yu
+         Q+91K13M+d1O4u61/mWqOZTIAn9AAKxxwJSGnHkFlf0I1gvZza7FvnoBumQg5g1EVwfn
+         XpUWaZcXoi8rzk41XN5wnYyNpBXgREY3N/DyzQNRMmTaRhk8XHiWCwdV8+51o7stOYAl
+         gkJoyIIHmtpMcxDZ+WAmL26LoN4I5sjmlVxfiMJmAYds/oWIKJRIS9kdUrna4Y1V/ZKY
+         kFdA==
+X-Gm-Message-State: AOAM533uopuA4j3y9Bm0aPFp56nXmTEml6EU9Jq7yH7AFeUs+1hThM81
+        tLFTSWH51+hn26AozayVNJwRGw==
+X-Google-Smtp-Source: ABdhPJzXoBblVcuVDnL1lifFneIqQS9ZvH4X/NVw99B5JBvAaq0FNjqEHxxVES3PMPWNKxnlAGqtBQ==
+X-Received: by 2002:a63:2a92:: with SMTP id q140mr8072875pgq.379.1643406046304;
+        Fri, 28 Jan 2022 13:40:46 -0800 (PST)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id u16sm10756333pfg.192.2022.01.28.13.40.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Jan 2022 13:40:45 -0800 (PST)
+Date:   Fri, 28 Jan 2022 21:40:42 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     David Woodhouse <dwmw2@infradead.org>
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "mimoja@mimoja.de" <mimoja@mimoja.de>,
+        "hewenliang4@huawei.com" <hewenliang4@huawei.com>,
+        "hushiyuan@huawei.com" <hushiyuan@huawei.com>,
+        "luolongjun@huawei.com" <luolongjun@huawei.com>,
+        "hejingxian@huawei.com" <hejingxian@huawei.com>
+Subject: Re: [PATCH v3 0/9] Parallel CPU bringup for x86_64
+Message-ID: <YfRi2sY0hVfri5eR@google.com>
+References: <761c1552-0ca0-403b-3461-8426198180d0@amd.com>
+ <ca0751c864570015ffe4d8cccdc94e0a5ef3086d.camel@infradead.org>
+ <b13eac6c-ea87-aef9-437f-7266be2e2031@amd.com>
+ <721484e0fa719e99f9b8f13e67de05033dd7cc86.camel@infradead.org>
+ <1401c5a1-c8a2-cca1-e548-cab143f59d8f@amd.com>
+ <2bfb13ed5d565ab09bd794f69a6ef2b1b75e507a.camel@infradead.org>
+ <b798bcef-d750-ce42-986c-0d11d0bb47b0@amd.com>
+ <41e63d89f1b2debc0280f243d7c8c3212e9499ee.camel@infradead.org>
+ <c3dbd3b9-accf-bc28-f808-1d842d642309@amd.com>
+ <7e92a196e67b1bfa37c1e61a789f2b75a735c06f.camel@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YfLsBdPBSsyPFgHJ@bfoster>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7e92a196e67b1bfa37c1e61a789f2b75a735c06f.camel@infradead.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jan 27, 2022 at 02:01:25PM -0500, Brian Foster wrote:
-> On Thu, Jan 27, 2022 at 04:26:09PM +1100, Dave Chinner wrote:
-> > On Thu, Jan 27, 2022 at 04:19:34AM +0000, Al Viro wrote:
-> > > On Wed, Jan 26, 2022 at 09:45:51AM +1100, Dave Chinner wrote:
+On Fri, Jan 28, 2022, David Woodhouse wrote:
+> On Fri, 2021-12-17 at 14:55 -0600, Tom Lendacky wrote:
+> > On 12/17/21 2:13 PM, David Woodhouse wrote:
+> > > On Fri, 2021-12-17 at 13:46 -0600, Tom Lendacky wrote:
+> > > > There's no WARN or PANIC, just a reset. I can look to try and capture some
+> > > > KVM trace data if that would help. If so, let me know what events you'd
+> > > > like captured.
 > > > 
-> > > > Right, background inactivation does not improve performance - it's
-> > > > necessary to get the transactions out of the evict() path. All we
-> > > > wanted was to ensure that there were no performance degradations as
-> > > > a result of background inactivation, not that it was faster.
-> > > > 
-> > > > If you want to confirm that there is an increase in cold cache
-> > > > access when the batch size is increased, cpu profiles with 'perf
-> > > > top'/'perf record/report' and CPU cache performance metric reporting
-> > > > via 'perf stat -dddd' are your friend. See elsewhere in the thread
-> > > > where I mention those things to Paul.
 > > > 
-> > > Dave, do you see a plausible way to eventually drop Ian's bandaid?
-> > > I'm not asking for that to happen this cycle and for backports Ian's
-> > > patch is obviously fine.
+> > > Could start with just kvm_run_exit?
+> > > 
+> > > Reason 8 would be KVM_EXIT_SHUTDOWN and would potentially indicate a
+> > > triple fault.
 > > 
-> > Yes, but not in the near term.
+> > qemu-system-x86-24093   [005] .....  1601.759486: kvm_exit: vcpu 112 reason shutdown rip 0xffffffff81070574 info1 0x0000000000000000 info2 0x0000000000000000 intr_info 0x80000b08 error_code 0x00000000
 > > 
-> > > What I really want to avoid is the situation when we are stuck with
-> > > keeping that bandaid in fs/namei.c, since all ways to avoid seeing
-> > > reused inodes would hurt XFS too badly.  And the benchmarks in this
-> > > thread do look like that.
+> > # addr2line -e woodhouse-build-x86_64/vmlinux 0xffffffff81070574
+> > /root/kernels/woodhouse-build-x86_64/./arch/x86/include/asm/desc.h:272
 > > 
-> > The simplest way I think is to have the XFS inode allocation track
-> > "busy inodes" in the same way we track "busy extents". A busy extent
-> > is an extent that has been freed by the user, but is not yet marked
-> > free in the journal/on disk. If we try to reallocate that busy
-> > extent, we either select a different free extent to allocate, or if
-> > we can't find any we force the journal to disk, wait for it to
-> > complete (hence unbusying the extents) and retry the allocation
-> > again.
-> > 
-> > We can do something similar for inode allocation - it's actually a
-> > lockless tag lookup on the radix tree entry for the candidate inode
-> > number. If we find the reclaimable radix tree tag set, the we select
-> > a different inode. If we can't allocate a new inode, then we kick
-> > synchronize_rcu() and retry the allocation, allowing inodes to be
-> > recycled this time.
+> > Which is: asm volatile("ltr %w0"::"q" (GDT_ENTRY_TSS*8));
 > 
-> I'm starting to poke around this area since it's become clear that the
-> currently proposed scheme just involves too much latency (unless Paul
-> chimes in with his expedited grace period variant, at which point I will
-> revisit) in the fast allocation/recycle path. ISTM so far that a simple
-> "skip inodes in the radix tree, sync rcu if unsuccessful" algorithm will
-> have pretty much the same pattern of behavior as this patch: one
-> synchronize_rcu() per batch.
+> So, I remain utterly bemused by this, and the Milan *guests* I have
+> access to can't even kexec with a stock kernel; that is also "too fast"
+> and they take a triple fault during the bringup in much the same way —
+> even without my parallel patches, and even going back to fairly old
+> kernels.
+> 
+> I wasn't able to follow up with raw serial output during the bringup to
+> pinpoint precisely where it happens, because the VM would tear itself
+> down in response to the triple fault without actually flushing the last
+> virtual serial output :)
+> 
+> It would be really useful to get access to a suitable host where I can
+> spawn this in qemu and watch it fail. I am suspecting a chip-specific
+> quirk or bug at this point.
 
-Apologies for being slow, but there have been some distractions.
-One of the distractions was trying to put together atheoretically
-attractive but massively overcomplicated implementation of
-poll_state_synchronize_rcu_expedited().  It currently looks like a
-somewhat suboptimal but much simpler approach is available.  This
-assumes that XFS is not in the picture until after both the scheduler
-and workqueues are operational.
+Nope.  You missed a spot.  This also reproduces on a sufficiently large Intel
+system (and Milan).  initial_gs gets overwritten by common_cpu_up(), which leads
+to a CPU getting the wrong MSR_GS_BASE and then the wrong raw_smp_processor_id(),
+resulting in cpu_init_exception_handling() stuffing the wrong GDT and leaving a
+NULL TR descriptor for itself.
 
-And yes, the complicated version might prove necessary, but let's
-see if this whole thing is even useful first.  ;-)
+You also have a lurking bug in the x2APIC ID handling.  Stripping the boot flags
+from the prescribed APICID needs to happen before retrieving the x2APIC ID from
+CPUID, otherwise bits 31:16 of the ID will be lost.
 
-In the meantime, if you want to look at an extremely unbaked view,
-here you go:
+You owe me two beers ;-)
 
-https://docs.google.com/document/d/1RNKWW9jQyfjxw2E8dsXVTdvZYh0HnYeSHDKog9jhdN8/edit?usp=sharing
+diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
+index dcdf49a137d6..23df88c86a0e 100644
+--- a/arch/x86/kernel/head_64.S
++++ b/arch/x86/kernel/head_64.S
+@@ -208,11 +208,14 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
+         * in smpboot_control:
+         * Bit 0-15     APICID if STARTUP_USE_CPUID_0B is not set
+         * Bit 16       Secondary boot flag
+-        * Bit 17       Parallel boot flag
++        * Bit 17       Parallel boot flag (STARTUP_USE_CPUID_0B)
+         */
+        testl   $STARTUP_USE_CPUID_0B, %eax
+-       jz      .Lsetup_AP
++       jnz     .Luse_cpuid_0b
++       andl    $0xFFFF, %eax
++       jmp     .Lsetup_AP
 
-							Thanx, Paul
++.Luse_cpuid_0b:
+        mov     $0x0B, %eax
+        xorl    %ecx, %ecx
+        cpuid
+@@ -220,7 +223,6 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
 
-> IOW, background reclaim only kicks in after 30s by default, so the pool
-> of free inodes pretty much always consists of 100% reclaimable inodes.
-> On top of that, at smaller batch sizes, the pool tends to have a uniform
-> (!elapsed) grace period cookie, so a stall is required to be able to
-> allocate any of them. As the batch size increases, I do see the
-> population of free inodes start to contain a mix of expired and
-> non-expired grace period cookies. It's fairly easy to hack up an
-> internal icwalk scan to locate already expired inodes, but the problem
-> is that the recycle rate is so much faster than the grace period latency
-> that it doesn't really matter. We'll still have to stall by the time we
-> get to the non-expired inodes, and so we're back to one stall per batch
-> and the same general performance characteristic of this patch.
-> 
-> So given all of this, I'm wondering about something like the following
-> high level inode allocation algorithm:
-> 
-> 1. If the AG has any reclaimable inodes, scan for one with an expired
-> grace period. If found, target that inode for physical allocation.
-> 
-> 2. If the AG free inode count == the AG reclaimable count and we know
-> all reclaimable inodes are most likely pending a grace period (because
-> the previous step failed), allocate a new inode chunk (and target it in
-> this allocation).
-> 
-> 3. If the AG free inode count > the reclaimable count, scan the finobt
-> for an inode that is not present in the radix tree (i.e. Dave's logic
-> above).
-> 
-> Each of those steps could involve some heuristics to maintain
-> predictable behavior and avoid large scans and such, but the general
-> idea is that the repeated alloc/free inode workload naturally populates
-> the AG with enough physical inodes to always be able to satisfy an
-> allocation without waiting on a grace period. IOW, this is effectively
-> similar behavior to if physical inode freeing was delayed to an rcu
-> callback, with the tradeoff of complicating the allocation path rather
-> than stalling in the inactivation pipeline. Thoughts?
-> 
-> This of course is more involved than this patch (or similarly simple
-> variants of RCU delaying preexisting bits of code) and requires some
-> more investigation, but certainly shouldn't be a multi-year thing. The
-> question is probably more of whether it's enough complexity to justify
-> in the meantime...
-> 
-> > > Are there any realistic prospects of having xfs_iget() deal with
-> > > reuse case by allocating new in-core inode and flipping whatever
-> > > references you've got in XFS journalling data structures to the
-> > > new copy?  If I understood what you said on IRC correctly, that is...
-> > 
-> > That's ... much harder.
-> > 
-> > One of the problems is that once an inode has a log item attached to
-> > it, it assumes that it can be accessed without specific locking,
-> > etc. see xfs_inode_clean(), for example. So there's some life-cycle
-> > stuff that needs to be taken care of in XFS first, and the inode <->
-> > log item relationship is tangled.
-> > 
-> > I've been working towards removing that tangle - but taht stuff is
-> > quite a distance down my logging rework patch queue. THat queue has
-> > been stuck now for a year trying to get the first handful of rework
-> > and scalability modifications reviewed and merged, so I'm not
-> > holding my breathe as to how long a more substantial rework of
-> > internal logging code will take to review and merge.
-> > 
-> > Really, though, we need the inactivation stuff to be done as part of
-> > the VFS inode lifecycle. I have some ideas on what to do here, but I
-> > suspect we'll need some changes to iput_final()/evict() to allow us
-> > to process final unlinks in the bakground and then call evict()
-> > ourselves when the unlink completes. That way ->destroy_inode() can
-> > just call xfs_reclaim_inode() to free it directly, which also helps
-> > us get rid of background inode freeing and hence inode recycling
-> > from XFS altogether. I think we _might_ be able to do this without
-> > needing to change any of the logging code in XFS, but I haven't
-> > looked any further than this into it as yet.
-> > 
-> 
-> ... of whatever this ends up looking like.
-> 
-> Can you elaborate on what you mean by processing unlinks in the
-> background? I can see the value of being able to eliminate the recycle
-> code in XFS, but wouldn't we still have to limit and throttle against
-> background work to maintain sustained removal performance? IOW, what's
-> the general teardown behavior you're getting at here, aside from what
-> parts push into the vfs or not?
-> 
-> Brian
-> 
-> > > Again, I'm not asking if it can be done this cycle; having a
-> > > realistic path to doing that eventually would be fine by me.
-> > 
-> > We're talking a year at least, probably two, before we get there...
-> > 
-> > Cheers,
-> > 
-> > Dave.
-> > -- 
-> > Dave Chinner
-> > david@fromorbit.com
-> > 
-> 
+ .Lsetup_AP:
+        /* EAX contains the APICID of the current CPU */
+-       andl    $0xFFFF, %eax
+        xorl    %ecx, %ecx
+        leaq    cpuid_to_apicid(%rip), %rbx
+
+diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+index 04f5c8de5606..e7fda406f39a 100644
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -1093,6 +1093,17 @@ wakeup_cpu_via_init_nmi(int cpu, unsigned long start_ip, int apicid,
+        return boot_error;
+ }
+
++static bool do_parallel_bringup = true;
++
++static int __init no_parallel_bringup(char *str)
++{
++       do_parallel_bringup = false;
++
++       return 0;
++}
++early_param("no_parallel_bringup", no_parallel_bringup);
++
++
+ int common_cpu_up(unsigned int cpu, struct task_struct *idle)
+ {
+        int ret;
+@@ -1112,7 +1123,8 @@ int common_cpu_up(unsigned int cpu, struct task_struct *idle)
+        /* Stack for startup_32 can be just as for start_secondary onwards */
+        per_cpu(cpu_current_top_of_stack, cpu) = task_top_of_stack(idle);
+ #else
+-       initial_gs = per_cpu_offset(cpu);
++       if (!do_parallel_bringup)
++               initial_gs = per_cpu_offset(cpu);
+ #endif
+        return 0;
+ }
+@@ -1336,16 +1348,6 @@ int do_cpu_up(unsigned int cpu, struct task_struct *tidle)
+        return ret;
+ }
+
+-static bool do_parallel_bringup = true;
+-
+-static int __init no_parallel_bringup(char *str)
+-{
+-       do_parallel_bringup = false;
+-
+-       return 0;
+-}
+-early_param("no_parallel_bringup", no_parallel_bringup);
+-
+ int native_cpu_up(unsigned int cpu, struct task_struct *tidle)
+ {
+        int ret;
+
