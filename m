@@ -2,87 +2,67 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0AC2DC43217
-	for <rcu@archiver.kernel.org>; Fri, 28 Jan 2022 14:32:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CC3FDC433EF
+	for <rcu@archiver.kernel.org>; Fri, 28 Jan 2022 17:36:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349223AbiA1Ocx (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 28 Jan 2022 09:32:53 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:55290 "EHLO
+        id S1349578AbiA1RgD (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 28 Jan 2022 12:36:03 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:43860 "EHLO
         dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349286AbiA1Ocw (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 28 Jan 2022 09:32:52 -0500
+        with ESMTP id S1343996AbiA1Rfy (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 28 Jan 2022 12:35:54 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2534F61DF2;
-        Fri, 28 Jan 2022 14:32:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EFCDC340E0;
-        Fri, 28 Jan 2022 14:32:51 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D30F16174A;
+        Fri, 28 Jan 2022 17:35:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 3F750C340E0;
+        Fri, 28 Jan 2022 17:35:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1643380371;
-        bh=q/+SlKWLFfFYnY/uUsQHFniHbZLaOmbQkD9uTXnzcP8=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=uGvtbRDIhUurwgW0lEL45dAWO9bElyol3mNLZmo6fexrxyfpXWE+r2kYzWUQzM5fh
-         DWU/5M5pKwFyT8nYzvpDW12ONzAkRnDVsfKNw4RPbxntORYF1M6ObAZcpPW0mszvoc
-         lZlJLs9r/+NYnh34zeZBKQAYa00BNg3VH0dDqARiRtiDXi+ptrHDHlI4Srm8fD+iBV
-         0Tn+Mk3oTmGHLF+xr0ivu6e2fJqCw8nRKj+WjcyJ99AYfVw+8gyxBLGsUMeyq41e7j
-         p4uNJzUPtjHJ5RJ6yBkLUuCsx1R6H4S7FeO0jKsw3cJZhe64OD2WH5BZgxTbfHICam
-         jMAsb1ZLyByJQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 55A1B5C010C; Fri, 28 Jan 2022 06:32:51 -0800 (PST)
-Date:   Fri, 28 Jan 2022 06:32:51 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        andrii.nakryiko@gmail.com, kafai@fb.com, neeraj.iitr10@gmail.com,
-        Mark.Rutland@arm.com, hca@linux.ibm.com, kernel-team@fb.com
-Subject: [GIT PULL] RCU Tasks fix for systems with non-power-of-two numbers
+        s=k20201202; t=1643391353;
+        bh=/Tzn423wGCZKenoTa6p6kiJ0VgXX2np/EV2OSXFEMiQ=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=JdUqmgg9wRsSvQwNILyOnmXAKZtiTusB078OLlxaeVsw4/wp9eYB6oG7TXLiyRApx
+         KTL+v3z1yJbN/LQhzgYL4u1AQHQ0DridZyjI8900Swt9NwV/uEQmhh79njZFanPyIW
+         hEEovGNlnRat4yhF4p5ggJuKqTG+Psc8t0EwOUcDHas9S/n9fl4d9kepl2PUA9Xcin
+         nTT3FKj9t0ZlaWmXPHcz7DC8jnWFM1UctIJLOX253h3fTVQ2VR7Z9VEWZSttzQUbxl
+         O0A1AzHLFs28hkGluOTvFOPR0re3/UqDTcYLHl+uVc0akJqUKl3lUUxvO42tGaug5H
+         c0C/OOuRSgdxA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 2C0AFF6079F;
+        Fri, 28 Jan 2022 17:35:53 +0000 (UTC)
+Subject: Re: [GIT PULL] RCU Tasks fix for systems with non-power-of-two numbers
  of CPUs
-Message-ID: <20220128143251.GA2398275@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20220128143251.GA2398275@paulmck-ThinkPad-P17-Gen-1>
+References: <20220128143251.GA2398275@paulmck-ThinkPad-P17-Gen-1>
+X-PR-Tracked-List-Id: <rcu.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20220128143251.GA2398275@paulmck-ThinkPad-P17-Gen-1>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git tags/rcu-urgent.2022.01.26a
+X-PR-Tracked-Commit-Id: da123016ca8cb5697366c0b2dd55059b976e67e4
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: a773abf72eb0cac008743891068ca6edecc44683
+Message-Id: <164339135317.16649.17815520284057549170.pr-tracker-bot@kernel.org>
+Date:   Fri, 28 Jan 2022 17:35:53 +0000
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        rcu@vger.kernel.org, andrii.nakryiko@gmail.com, kafai@fb.com,
+        neeraj.iitr10@gmail.com, Mark.Rutland@arm.com, hca@linux.ibm.com,
+        kernel-team@fb.com
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello, Linus,
+The pull request you sent on Fri, 28 Jan 2022 06:32:51 -0800:
 
-This pull request fixes a brown-paper-bag bug in RCU tasks that
-causes things like BPF and ftrace to fail miserably on systems with
-non-power-of-two numbers of CPUs.
+> git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git tags/rcu-urgent.2022.01.26a
 
-And yes, I will be adding non-power-of-two scenarios to rcutorture,
-in case you were wondering.  But that can wait for v5.19.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/a773abf72eb0cac008743891068ca6edecc44683
 
-The following changes since commit e783362eb54cd99b2cac8b3a9aeac942e6f6ac07:
+Thank you!
 
-  Linux 5.17-rc1 (2022-01-23 10:12:53 +0200)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git tags/rcu-urgent.2022.01.26a
-
-for you to fetch changes up to da123016ca8cb5697366c0b2dd55059b976e67e4:
-
-  rcu-tasks: Fix computation of CPU-to-list shift counts (2022-01-26 13:04:05 -0800)
-
-----------------------------------------------------------------
-Urgent RCU pull request for v5.17
-
-This pull request fixes a math error added in 7a30871b6a27 ("rcu-tasks:
-Introduce ->percpu_enqueue_shift for dynamic queue selection') during the
-v5.17 merge window.  This commit works correctly only on systems with a
-power-of-two number of CPUs, which just so happens to be the kind that
-rcutorture always uses by default.
-
-This pull request fixes the math so that things also work on systems
-that don't happen to have a power-of-two number of CPUs.
-
-----------------------------------------------------------------
-Paul E. McKenney (1):
-      rcu-tasks: Fix computation of CPU-to-list shift counts
-
- kernel/rcu/tasks.h | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
