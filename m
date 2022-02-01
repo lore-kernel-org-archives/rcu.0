@@ -2,33 +2,33 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 43A17C43219
-	for <rcu@archiver.kernel.org>; Tue,  1 Feb 2022 20:53:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BE2DDC433F5
+	for <rcu@archiver.kernel.org>; Tue,  1 Feb 2022 20:54:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229685AbiBAUx4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 1 Feb 2022 15:53:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58856 "EHLO
+        id S231602AbiBAUyA (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 1 Feb 2022 15:54:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229674AbiBAUxz (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 1 Feb 2022 15:53:55 -0500
+        with ESMTP id S229763AbiBAUx4 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 1 Feb 2022 15:53:56 -0500
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30891C061714;
-        Tue,  1 Feb 2022 12:53:55 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3EC8C06173B;
+        Tue,  1 Feb 2022 12:53:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Sender:Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-        Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=CNHlsGNFnhBz+gDjfoGHbEVKdyZwv/HeIui/6+scf6U=; b=iz1g0cmPbRWT37m7j8R4VYnz7t
-        nIDBmYPbmOexTUFVcrrA8a6LAIFuyE/Kk+OjQ29he09t2+4sti4k3/xyhCZyBAKjiBW3WtmeD3N/S
-        GaABRgzsO7U56MgiTekuqOer1LHr2wgmTfWzbs20PIhn9hAUcjKvIPSRdeS7kYEXkcEu6flxlrr69
-        z09ZxHcd2q+0vj5G1vBuamdLi3Q2jTsFitNEgN7QTmwgaKhFllm0RkcbU54y8vmOwHKDM9sleV6gu
-        j3rmg9fuHxTNG/vp4Ob86nnLEaISc18URPyj4eaSF9lFuJjCczep8jV84tG8RiuxXS/byj4yhW66G
-        /MMT36WQ==;
+        Content-Type:MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=ACFUAk/bShXqd5wXRlEcrHBvlAiJ8WaYggjcEl+oAos=; b=TkyYKckQglj0xJZbd3gaQeoeXW
+        HIyE5R6JeVcq+UTACO0suBrW53GYtJLBnF3a/T3qTRZK5w2csSfWhBBcCYDVmApP1EUQ8wGdQa4Z4
+        xlFsuBah6FgFo7mSph7nT8TZCmyCVOw+nuHRxNbE090x3vuCxmkBpNDW/qVFU/7Ip0r0e5MoGMO7f
+        PNOdeyeYVnoRcCl50wx7VawlGTBoGsELYiBNVACcd84QskfFEseTqNqW+GwOKMHCCU9Dmkk78nJk9
+        RxWZOGcSJAypfmz9z7utpgIFSwg/8NxcL8VOkmFu7ZEX5DqviyxxxIg/HhIO/3RsU4Z/He3va7j97
+        xNR+XzKA==;
 Received: from [2001:8b0:10b:1:85c4:81a:fb42:714d] (helo=i7.infradead.org)
         by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nF09b-00D5Cd-SY; Tue, 01 Feb 2022 20:53:32 +0000
+        id 1nF09b-00D5CQ-Bv; Tue, 01 Feb 2022 20:53:31 +0000
 Received: from dwoodhou by i7.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nF09a-001Edl-22; Tue, 01 Feb 2022 20:53:30 +0000
+        id 1nF09Z-001EdZ-Uz; Tue, 01 Feb 2022 20:53:29 +0000
 From:   David Woodhouse <dwmw2@infradead.org>
 To:     Thomas Gleixner <tglx@linutronix.de>
 Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
@@ -42,13 +42,12 @@ Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         Tom Lendacky <thomas.lendacky@amd.com>,
         Sean Christopherson <seanjc@google.com>,
         Paul Menzel <pmenzel@molgen.mpg.de>
-Subject: [PATCH v4 4/9] x86/smpboot: Reference count on smpboot_setup_warm_reset_vector()
-Date:   Tue,  1 Feb 2022 20:53:23 +0000
-Message-Id: <20220201205328.123066-5-dwmw2@infradead.org>
+Subject: [PATCH v4 0/9] Parallel CPU bringup for x86_64
+Date:   Tue,  1 Feb 2022 20:53:19 +0000
+Message-Id: <20220201205328.123066-1-dwmw2@infradead.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20220201205328.123066-1-dwmw2@infradead.org>
-References: <20220201205328.123066-1-dwmw2@infradead.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: David Woodhouse <dwmw2@infradead.org>
 X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
@@ -56,65 +55,56 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: David Woodhouse <dwmw@amazon.co.uk>
+Doing the INIT/SIPI/SIPI in parallel for all APs and *then* waiting for
+them shaves about 80% off the AP bringup time on a 96-thread 2-socket
+Skylake box (EC2 c5.metal) — from about 500ms to 100ms.
 
-If we want to do parallel CPU bringup, we're going to need to set this up
-and leave it until all CPUs are done. Might as well use the RTC spinlock
-to protect the refcount, as we need to take it anyway.
+There are more wins to be had with further parallelisation, but this is
+the simple part.
 
-Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
----
- arch/x86/kernel/smpboot.c | 23 +++++++++++++++--------
- 1 file changed, 15 insertions(+), 8 deletions(-)
+v2: Cut it back to just INIT/SIPI/SIPI in parallel for now, nothing more
+v3: Clean up x2apic patch, add MTRR optimisation, lock topology update
+    in preparation for more parallelisation.
+v4: Fixes to the real mode parallelisation patch spotted by SeanC, to
+    avoid scribbling on initial_gs in common_cpu_up(), and to allow all
+    24 bits of the physical X2APIC ID to be used. That patch still needs
+    a Signed-off-by from its original author, who once claimed not to
+    remember writing it at all. But now we've fixed it, hopefully he'll
+    admit it now :)
 
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index 617012f4619f..84a6048d7b69 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -127,17 +127,22 @@ int arch_update_cpu_topology(void)
- 	return retval;
- }
- 
-+
-+static unsigned int smpboot_warm_reset_vector_count;
-+
- static inline void smpboot_setup_warm_reset_vector(unsigned long start_eip)
- {
- 	unsigned long flags;
- 
- 	spin_lock_irqsave(&rtc_lock, flags);
--	CMOS_WRITE(0xa, 0xf);
-+	if (!smpboot_warm_reset_vector_count++) {
-+		CMOS_WRITE(0xa, 0xf);
-+		*((volatile unsigned short *)phys_to_virt(TRAMPOLINE_PHYS_HIGH)) =
-+			start_eip >> 4;
-+		*((volatile unsigned short *)phys_to_virt(TRAMPOLINE_PHYS_LOW)) =
-+			start_eip & 0xf;
-+	}
- 	spin_unlock_irqrestore(&rtc_lock, flags);
--	*((volatile unsigned short *)phys_to_virt(TRAMPOLINE_PHYS_HIGH)) =
--							start_eip >> 4;
--	*((volatile unsigned short *)phys_to_virt(TRAMPOLINE_PHYS_LOW)) =
--							start_eip & 0xf;
- }
- 
- static inline void smpboot_restore_warm_reset_vector(void)
-@@ -149,10 +154,12 @@ static inline void smpboot_restore_warm_reset_vector(void)
- 	 * to default values.
- 	 */
- 	spin_lock_irqsave(&rtc_lock, flags);
--	CMOS_WRITE(0, 0xf);
--	spin_unlock_irqrestore(&rtc_lock, flags);
-+	if (!--smpboot_warm_reset_vector_count) {
-+		CMOS_WRITE(0, 0xf);
- 
--	*((volatile u32 *)phys_to_virt(TRAMPOLINE_PHYS_LOW)) = 0;
-+		*((volatile u32 *)phys_to_virt(TRAMPOLINE_PHYS_LOW)) = 0;
-+	}
-+	spin_unlock_irqrestore(&rtc_lock, flags);
- }
- 
- static void init_freq_invariance(bool secondary, bool cppc_ready);
--- 
-2.33.1
+David Woodhouse (8):
+      x86/apic/x2apic: Fix parallel handling of cluster_mask
+      cpu/hotplug: Move idle_thread_get() to <linux/smpboot.h>
+      cpu/hotplug: Add dynamic parallel bringup states before CPUHP_BRINGUP_CPU
+      x86/smpboot: Reference count on smpboot_setup_warm_reset_vector()
+      x86/smpboot: Split up native_cpu_up into separate phases and document them
+      x86/smpboot: Send INIT/SIPI/SIPI to secondary CPUs in parallel
+      x86/mtrr: Avoid repeated save of MTRRs on boot-time CPU bringup
+      x86/smpboot: Serialize topology updates for secondary bringup
+
+Thomas Gleixner (1):
+      x86/smpboot: Support parallel startup of secondary CPUs
+
+[dwoodhou@i7 linux-2.6]$ git diff --stat  v5.17-rc2..share/parallel-5.17-part1 
+ arch/x86/include/asm/realmode.h       |   3 +
+ arch/x86/include/asm/smp.h            |  13 +-
+ arch/x86/include/asm/topology.h       |   2 -
+ arch/x86/kernel/acpi/sleep.c          |   1 +
+ arch/x86/kernel/apic/apic.c           |   2 +-
+ arch/x86/kernel/apic/x2apic_cluster.c | 108 ++++++-----
+ arch/x86/kernel/cpu/common.c          |   6 +-
+ arch/x86/kernel/cpu/mtrr/mtrr.c       |   9 +
+ arch/x86/kernel/head_64.S             |  73 ++++++++
+ arch/x86/kernel/smpboot.c             | 325 ++++++++++++++++++++++++----------
+ arch/x86/realmode/init.c              |   3 +
+ arch/x86/realmode/rm/trampoline_64.S  |  14 ++
+ arch/x86/xen/smp_pv.c                 |   4 +-
+ include/linux/cpuhotplug.h            |   2 +
+ include/linux/smpboot.h               |   7 +
+ kernel/cpu.c                          |  27 ++-
+ kernel/smpboot.c                      |   2 +-
+ kernel/smpboot.h                      |   2 -
+ 18 files changed, 442 insertions(+), 161 deletions(-)
+
+
 
