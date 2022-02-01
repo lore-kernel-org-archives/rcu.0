@@ -2,33 +2,33 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BE2DDC433F5
-	for <rcu@archiver.kernel.org>; Tue,  1 Feb 2022 20:54:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BE9D1C433EF
+	for <rcu@archiver.kernel.org>; Tue,  1 Feb 2022 20:54:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231602AbiBAUyA (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 1 Feb 2022 15:54:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58864 "EHLO
+        id S229821AbiBAUyC (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 1 Feb 2022 15:54:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229763AbiBAUx4 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 1 Feb 2022 15:53:56 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3EC8C06173B;
-        Tue,  1 Feb 2022 12:53:56 -0800 (PST)
+        with ESMTP id S231462AbiBAUx7 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 1 Feb 2022 15:53:59 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45B05C061714;
+        Tue,  1 Feb 2022 12:53:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Sender:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=ACFUAk/bShXqd5wXRlEcrHBvlAiJ8WaYggjcEl+oAos=; b=TkyYKckQglj0xJZbd3gaQeoeXW
-        HIyE5R6JeVcq+UTACO0suBrW53GYtJLBnF3a/T3qTRZK5w2csSfWhBBcCYDVmApP1EUQ8wGdQa4Z4
-        xlFsuBah6FgFo7mSph7nT8TZCmyCVOw+nuHRxNbE090x3vuCxmkBpNDW/qVFU/7Ip0r0e5MoGMO7f
-        PNOdeyeYVnoRcCl50wx7VawlGTBoGsELYiBNVACcd84QskfFEseTqNqW+GwOKMHCCU9Dmkk78nJk9
-        RxWZOGcSJAypfmz9z7utpgIFSwg/8NxcL8VOkmFu7ZEX5DqviyxxxIg/HhIO/3RsU4Z/He3va7j97
-        xNR+XzKA==;
+        d=infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding:
+        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+        Reply-To:Content-Type:Content-ID:Content-Description;
+        bh=+m8b4MmnKaFM8Q1bbPHzHVcSGwWaH9UePP2ld8ZDDu4=; b=jumZSShVUETirl1tLnJB+5NYYC
+        U4fv5mm0n3ULCb+EoTIMFKrJPrLiWC5MckRt95sOuOZ7uS4alEW5cdx3rkQEzNSn+kkOc5tjXWbPb
+        WFWl/YWMnxgSD2sHS+7CfeDW2M1bpKyW9VQQFrplzHaTjNaYvTfOoWcY9ApGyJ3Kn+IwTu+Po4nzL
+        6UbXjnFonlP9sshUu8QUQ9rHfj9WCf6qE7kKfyZh8Kd2ynBLHITACtZqXwJPzxbrMAz9MNBiYTRkN
+        Up0U6Q5TWIIwvc3xcByAl+zY2IZyzx8+EtnBKdeLKrberpZFvOi5QYvExEM4vgaPo9MZMBr5zo0+a
+        vOTeXKhA==;
 Received: from [2001:8b0:10b:1:85c4:81a:fb42:714d] (helo=i7.infradead.org)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nF09b-00D5CQ-Bv; Tue, 01 Feb 2022 20:53:31 +0000
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1nF09b-005yYQ-UV; Tue, 01 Feb 2022 20:53:32 +0000
 Received: from dwoodhou by i7.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nF09Z-001EdZ-Uz; Tue, 01 Feb 2022 20:53:29 +0000
+        id 1nF09a-001Edf-0U; Tue, 01 Feb 2022 20:53:30 +0000
 From:   David Woodhouse <dwmw2@infradead.org>
 To:     Thomas Gleixner <tglx@linutronix.de>
 Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
@@ -42,69 +42,74 @@ Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         Tom Lendacky <thomas.lendacky@amd.com>,
         Sean Christopherson <seanjc@google.com>,
         Paul Menzel <pmenzel@molgen.mpg.de>
-Subject: [PATCH v4 0/9] Parallel CPU bringup for x86_64
-Date:   Tue,  1 Feb 2022 20:53:19 +0000
-Message-Id: <20220201205328.123066-1-dwmw2@infradead.org>
+Subject: [PATCH v4 2/9] cpu/hotplug: Move idle_thread_get() to <linux/smpboot.h>
+Date:   Tue,  1 Feb 2022 20:53:21 +0000
+Message-Id: <20220201205328.123066-3-dwmw2@infradead.org>
 X-Mailer: git-send-email 2.33.1
+In-Reply-To: <20220201205328.123066-1-dwmw2@infradead.org>
+References: <20220201205328.123066-1-dwmw2@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: David Woodhouse <dwmw2@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by desiato.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Doing the INIT/SIPI/SIPI in parallel for all APs and *then* waiting for
-them shaves about 80% off the AP bringup time on a 96-thread 2-socket
-Skylake box (EC2 c5.metal) — from about 500ms to 100ms.
+From: David Woodhouse <dwmw@amazon.co.uk>
 
-There are more wins to be had with further parallelisation, but this is
-the simple part.
+Instead of relying purely on the special-case wrapper in bringup_cpu()
+to pass the idle thread to __cpu_up(), expose idle_thread_get() so that
+the architecture code can obtain it directly when necessary.
 
-v2: Cut it back to just INIT/SIPI/SIPI in parallel for now, nothing more
-v3: Clean up x2apic patch, add MTRR optimisation, lock topology update
-    in preparation for more parallelisation.
-v4: Fixes to the real mode parallelisation patch spotted by SeanC, to
-    avoid scribbling on initial_gs in common_cpu_up(), and to allow all
-    24 bits of the physical X2APIC ID to be used. That patch still needs
-    a Signed-off-by from its original author, who once claimed not to
-    remember writing it at all. But now we've fixed it, hopefully he'll
-    admit it now :)
+This will be useful when the existing __cpu_up() is split into multiple
+phases, only *one* of which will actually need the idle thread.
 
-David Woodhouse (8):
-      x86/apic/x2apic: Fix parallel handling of cluster_mask
-      cpu/hotplug: Move idle_thread_get() to <linux/smpboot.h>
-      cpu/hotplug: Add dynamic parallel bringup states before CPUHP_BRINGUP_CPU
-      x86/smpboot: Reference count on smpboot_setup_warm_reset_vector()
-      x86/smpboot: Split up native_cpu_up into separate phases and document them
-      x86/smpboot: Send INIT/SIPI/SIPI to secondary CPUs in parallel
-      x86/mtrr: Avoid repeated save of MTRRs on boot-time CPU bringup
-      x86/smpboot: Serialize topology updates for secondary bringup
+If the architecture code is to register its new pre-bringup states with
+the cpuhp core, having a special-case wrapper to pass extra arguments is
+non-trivial and it's easier just to let the arch register its function
+pointer to be invoked with the standard API.
 
-Thomas Gleixner (1):
-      x86/smpboot: Support parallel startup of secondary CPUs
+Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+---
+ include/linux/smpboot.h | 7 +++++++
+ kernel/smpboot.h        | 2 --
+ 2 files changed, 7 insertions(+), 2 deletions(-)
 
-[dwoodhou@i7 linux-2.6]$ git diff --stat  v5.17-rc2..share/parallel-5.17-part1 
- arch/x86/include/asm/realmode.h       |   3 +
- arch/x86/include/asm/smp.h            |  13 +-
- arch/x86/include/asm/topology.h       |   2 -
- arch/x86/kernel/acpi/sleep.c          |   1 +
- arch/x86/kernel/apic/apic.c           |   2 +-
- arch/x86/kernel/apic/x2apic_cluster.c | 108 ++++++-----
- arch/x86/kernel/cpu/common.c          |   6 +-
- arch/x86/kernel/cpu/mtrr/mtrr.c       |   9 +
- arch/x86/kernel/head_64.S             |  73 ++++++++
- arch/x86/kernel/smpboot.c             | 325 ++++++++++++++++++++++++----------
- arch/x86/realmode/init.c              |   3 +
- arch/x86/realmode/rm/trampoline_64.S  |  14 ++
- arch/x86/xen/smp_pv.c                 |   4 +-
- include/linux/cpuhotplug.h            |   2 +
- include/linux/smpboot.h               |   7 +
- kernel/cpu.c                          |  27 ++-
- kernel/smpboot.c                      |   2 +-
- kernel/smpboot.h                      |   2 -
- 18 files changed, 442 insertions(+), 161 deletions(-)
-
-
+diff --git a/include/linux/smpboot.h b/include/linux/smpboot.h
+index 9d1bc65d226c..3862addcaa34 100644
+--- a/include/linux/smpboot.h
++++ b/include/linux/smpboot.h
+@@ -5,6 +5,13 @@
+ #include <linux/types.h>
+ 
+ struct task_struct;
++
++#ifdef CONFIG_GENERIC_SMP_IDLE_THREAD
++struct task_struct *idle_thread_get(unsigned int cpu);
++#else
++static inline struct task_struct *idle_thread_get(unsigned int cpu) { return NULL; }
++#endif
++
+ /* Cookie handed to the thread_fn*/
+ struct smpboot_thread_data;
+ 
+diff --git a/kernel/smpboot.h b/kernel/smpboot.h
+index 34dd3d7ba40b..60c609318ad6 100644
+--- a/kernel/smpboot.h
++++ b/kernel/smpboot.h
+@@ -5,11 +5,9 @@
+ struct task_struct;
+ 
+ #ifdef CONFIG_GENERIC_SMP_IDLE_THREAD
+-struct task_struct *idle_thread_get(unsigned int cpu);
+ void idle_thread_set_boot_cpu(void);
+ void idle_threads_init(void);
+ #else
+-static inline struct task_struct *idle_thread_get(unsigned int cpu) { return NULL; }
+ static inline void idle_thread_set_boot_cpu(void) { }
+ static inline void idle_threads_init(void) { }
+ #endif
+-- 
+2.33.1
 
