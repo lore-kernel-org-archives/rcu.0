@@ -2,33 +2,33 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 78E46C43217
-	for <rcu@archiver.kernel.org>; Tue,  1 Feb 2022 20:53:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 43A17C43219
+	for <rcu@archiver.kernel.org>; Tue,  1 Feb 2022 20:53:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229604AbiBAUxx (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 1 Feb 2022 15:53:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58842 "EHLO
+        id S229685AbiBAUx4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 1 Feb 2022 15:53:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229594AbiBAUxw (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 1 Feb 2022 15:53:52 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 858F9C061714;
-        Tue,  1 Feb 2022 12:53:52 -0800 (PST)
+        with ESMTP id S229674AbiBAUxz (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 1 Feb 2022 15:53:55 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30891C061714;
+        Tue,  1 Feb 2022 12:53:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding:
+        d=infradead.org; s=casper.20170209; h=Sender:Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
         Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=1M1edGgPzgILKdJUiSqTwwikytr9BGM/TzJKIYK0oI8=; b=pbjAcAQ51wm5vtxJGSbAPU38Tk
-        uYBAtAH7w+juQf3EfyZ7jH8Y+k0mw+uDqFvOfNlaJr9IUYmmbco0UspCvHmkriZe0jBlbUkYLloRW
-        MSCLxivbmATS9Uo7Ggv4yJE+ck5LrNy8oKaodPiSfOUDYNszyGl/ea/NmO3O6v3rlOjhphf9Eeaz6
-        7Evgxf6IFqRYL0IESL+zcSqCf0hCNbxE/ZAhBCp/cXbImUL4hoDw6rWjB0f+KC/xWuH+LjHTzuTMX
-        1qQcNCBgCID6WghNro4lCeUXJiam9KMXXDTA5x/xbjFUgXYy1QhgFMsiwBcZxzju/UIEKhmrL/tQX
-        bZ8t85xQ==;
+        bh=CNHlsGNFnhBz+gDjfoGHbEVKdyZwv/HeIui/6+scf6U=; b=iz1g0cmPbRWT37m7j8R4VYnz7t
+        nIDBmYPbmOexTUFVcrrA8a6LAIFuyE/Kk+OjQ29he09t2+4sti4k3/xyhCZyBAKjiBW3WtmeD3N/S
+        GaABRgzsO7U56MgiTekuqOer1LHr2wgmTfWzbs20PIhn9hAUcjKvIPSRdeS7kYEXkcEu6flxlrr69
+        z09ZxHcd2q+0vj5G1vBuamdLi3Q2jTsFitNEgN7QTmwgaKhFllm0RkcbU54y8vmOwHKDM9sleV6gu
+        j3rmg9fuHxTNG/vp4Ob86nnLEaISc18URPyj4eaSF9lFuJjCczep8jV84tG8RiuxXS/byj4yhW66G
+        /MMT36WQ==;
 Received: from [2001:8b0:10b:1:85c4:81a:fb42:714d] (helo=i7.infradead.org)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nF09c-005yYS-4p; Tue, 01 Feb 2022 20:53:32 +0000
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1nF09b-00D5Cd-SY; Tue, 01 Feb 2022 20:53:32 +0000
 Received: from dwoodhou by i7.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nF09a-001Edx-5U; Tue, 01 Feb 2022 20:53:30 +0000
+        id 1nF09a-001Edl-22; Tue, 01 Feb 2022 20:53:30 +0000
 From:   David Woodhouse <dwmw2@infradead.org>
 To:     Thomas Gleixner <tglx@linutronix.de>
 Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
@@ -42,56 +42,79 @@ Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         Tom Lendacky <thomas.lendacky@amd.com>,
         Sean Christopherson <seanjc@google.com>,
         Paul Menzel <pmenzel@molgen.mpg.de>
-Subject: [PATCH v4 8/9] x86/mtrr: Avoid repeated save of MTRRs on boot-time CPU bringup
-Date:   Tue,  1 Feb 2022 20:53:27 +0000
-Message-Id: <20220201205328.123066-9-dwmw2@infradead.org>
+Subject: [PATCH v4 4/9] x86/smpboot: Reference count on smpboot_setup_warm_reset_vector()
+Date:   Tue,  1 Feb 2022 20:53:23 +0000
+Message-Id: <20220201205328.123066-5-dwmw2@infradead.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20220201205328.123066-1-dwmw2@infradead.org>
 References: <20220201205328.123066-1-dwmw2@infradead.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: David Woodhouse <dwmw2@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by desiato.infradead.org. See http://www.infradead.org/rpr.html
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
 From: David Woodhouse <dwmw@amazon.co.uk>
 
-There's no need to repeatedly save the BSP's MTRRs for each AP we bring
-up at boot time. And there's no need to use smp_call_function_single()
-even for the one time we *do* want to do it.
+If we want to do parallel CPU bringup, we're going to need to set this up
+and leave it until all CPUs are done. Might as well use the RTC spinlock
+to protect the refcount, as we need to take it anyway.
 
 Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
 ---
- arch/x86/kernel/cpu/mtrr/mtrr.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ arch/x86/kernel/smpboot.c | 23 +++++++++++++++--------
+ 1 file changed, 15 insertions(+), 8 deletions(-)
 
-diff --git a/arch/x86/kernel/cpu/mtrr/mtrr.c b/arch/x86/kernel/cpu/mtrr/mtrr.c
-index 2746cac9d8a9..2884017586f1 100644
---- a/arch/x86/kernel/cpu/mtrr/mtrr.c
-+++ b/arch/x86/kernel/cpu/mtrr/mtrr.c
-@@ -814,11 +814,20 @@ void mtrr_ap_init(void)
-  */
- void mtrr_save_state(void)
- {
-+	static bool mtrr_saved;
- 	int first_cpu;
- 
- 	if (!mtrr_enabled())
- 		return;
- 
-+	if (system_state < SYSTEM_RUNNING) {
-+		if (!mtrr_saved) {
-+			mtrr_save_fixed_ranges(NULL);
-+			mtrr_saved = true;
-+		}
-+		return;
-+	}
-+
- 	first_cpu = cpumask_first(cpu_online_mask);
- 	smp_call_function_single(first_cpu, mtrr_save_fixed_ranges, NULL, 1);
+diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+index 617012f4619f..84a6048d7b69 100644
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -127,17 +127,22 @@ int arch_update_cpu_topology(void)
+ 	return retval;
  }
+ 
++
++static unsigned int smpboot_warm_reset_vector_count;
++
+ static inline void smpboot_setup_warm_reset_vector(unsigned long start_eip)
+ {
+ 	unsigned long flags;
+ 
+ 	spin_lock_irqsave(&rtc_lock, flags);
+-	CMOS_WRITE(0xa, 0xf);
++	if (!smpboot_warm_reset_vector_count++) {
++		CMOS_WRITE(0xa, 0xf);
++		*((volatile unsigned short *)phys_to_virt(TRAMPOLINE_PHYS_HIGH)) =
++			start_eip >> 4;
++		*((volatile unsigned short *)phys_to_virt(TRAMPOLINE_PHYS_LOW)) =
++			start_eip & 0xf;
++	}
+ 	spin_unlock_irqrestore(&rtc_lock, flags);
+-	*((volatile unsigned short *)phys_to_virt(TRAMPOLINE_PHYS_HIGH)) =
+-							start_eip >> 4;
+-	*((volatile unsigned short *)phys_to_virt(TRAMPOLINE_PHYS_LOW)) =
+-							start_eip & 0xf;
+ }
+ 
+ static inline void smpboot_restore_warm_reset_vector(void)
+@@ -149,10 +154,12 @@ static inline void smpboot_restore_warm_reset_vector(void)
+ 	 * to default values.
+ 	 */
+ 	spin_lock_irqsave(&rtc_lock, flags);
+-	CMOS_WRITE(0, 0xf);
+-	spin_unlock_irqrestore(&rtc_lock, flags);
++	if (!--smpboot_warm_reset_vector_count) {
++		CMOS_WRITE(0, 0xf);
+ 
+-	*((volatile u32 *)phys_to_virt(TRAMPOLINE_PHYS_LOW)) = 0;
++		*((volatile u32 *)phys_to_virt(TRAMPOLINE_PHYS_LOW)) = 0;
++	}
++	spin_unlock_irqrestore(&rtc_lock, flags);
+ }
+ 
+ static void init_freq_invariance(bool secondary, bool cppc_ready);
 -- 
 2.33.1
 
