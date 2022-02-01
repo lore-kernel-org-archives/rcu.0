@@ -2,226 +2,379 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A2787C433EF
-	for <rcu@archiver.kernel.org>; Tue,  1 Feb 2022 13:03:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 41129C433EF
+	for <rcu@archiver.kernel.org>; Tue,  1 Feb 2022 17:50:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238277AbiBANDO (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 1 Feb 2022 08:03:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33564 "EHLO
+        id S233569AbiBARu2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 1 Feb 2022 12:50:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238296AbiBANDN (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 1 Feb 2022 08:03:13 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40997C061714;
-        Tue,  1 Feb 2022 05:03:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=MIME-Version:Content-Type:References:
-        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=+cenig26CEMDrJZSe6d50GaNiuK9eRAMxMmzvg2Tb5c=; b=0g7aHCgY5N4ZQIa0UW3PhsN5Ne
-        igup74GbptGT1IZZrsJLjwyg+Hdk+k6bcYgs05BR5xfvrCDYa6f36YWxae5A2xzxbU1yywnUbpT+x
-        el/B6ejXSftRIISbCO5e4ejyJeokOyTpxtUvt9w6aOBQT2YinHaWaMuc+AKjqaF5R9vpSMnrl0JYI
-        O3NLhXSXtPfC+jkNDpxXMgNNK9nh687Hl6YDYlm/G2gTFMBW5p1dEdbI2bKOuhgwH/+MJP5FAibXI
-        rPe/sMMR+IMD5DMDLcUdKSeU2S7fL5tJmVLGcWXmbVrSF2TjrMWcVnb79Ynjg5s/caXdOP5XCNB4B
-        qDuXWSvg==;
-Received: from [2001:8b0:10b:1::3ae] (helo=u3832b3a9db3152.ant.amazon.com)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nEsoD-00CBPZ-S4; Tue, 01 Feb 2022 13:02:58 +0000
-Message-ID: <258ca9c3dd8cd909ef4b3065ed6e935ccecc91cf.camel@infradead.org>
-Subject: Re: [PATCH v3 6/9] x86/smpboot: Support parallel startup of
- secondary CPUs
-From:   David Woodhouse <dwmw2@infradead.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sean Christopherson <seanjc@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "mimoja@mimoja.de" <mimoja@mimoja.de>,
-        "hewenliang4@huawei.com" <hewenliang4@huawei.com>,
-        "hushiyuan@huawei.com" <hushiyuan@huawei.com>,
-        "luolongjun@huawei.com" <luolongjun@huawei.com>,
-        "hejingxian@huawei.com" <hejingxian@huawei.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>
-Date:   Tue, 01 Feb 2022 13:02:51 +0000
-In-Reply-To: <Yfkt4sX094so/Kub@zn.tnic>
-References: <20211215145633.5238-7-dwmw2@infradead.org>
-         <d10f529e-b1ee-6220-c6fc-80435f0061ee@amd.com>
-         <f25c6ad00689fee6ce3e294393c13f3dcdd5985f.camel@infradead.org>
-         <3d8e2d0d-1830-48fb-bc2d-995099f39ef0@amd.com>
-         <e742473935bf81be84adea6fa8061ce0846cc630.camel@infradead.org>
-         <330bedfee12022c1180d8752fb4abe908dac08d1.camel@infradead.org>
-         <YffrVMiO/NalRZjL@zn.tnic>
-         <3bc401a9f110a24a429316371c767507b493025a.camel@infradead.org>
-         <YfkRyLV/auNzczfF@zn.tnic>
-         <c83673d74bc161b8e5bfcc3049ccfecf5c9e96f5.camel@infradead.org>
-         <Yfkt4sX094so/Kub@zn.tnic>
-Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
-        boundary="=-fZBedZ16puWv/aZcMIbH"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        with ESMTP id S233237AbiBARu2 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 1 Feb 2022 12:50:28 -0500
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5FEDC061714;
+        Tue,  1 Feb 2022 09:50:27 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id D4AB9CE1A59;
+        Tue,  1 Feb 2022 17:50:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01DB8C340EB;
+        Tue,  1 Feb 2022 17:50:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1643737824;
+        bh=pcBEAiJy6A2HwZd9563pmFy1sMOqcq7pdb7o0wdfzXo=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=RbHdVZP+VOfh7KRE4SV9zaHdcI1rgB4sPMRViFMIXguabKu8oSQBwQXK4MNHlW4Di
+         6Kih+Wqx5s6rrrwnAxGLTlDbLklvU6fWfBoTgvYvavS69I/gibOznMN3zg0nIihEn7
+         J6+oOhazAyi4Iy9vBFYXyYdNBWfqC6W6ZqrHQMvujP1yX/WHoZ35moGFwzwCMjte8I
+         nZllRIhcXlUz++1R1NzLBl3X9LYuf6WMXopkH8U320kqbxcWKR5LP232PLqHRqXy2e
+         BiqkUcsJf5vVIOP/vhgbEEPfvY3ZMA3Oh9JVtYIhafP08+75tc9YboDGJQfZfPuec3
+         shL8qYq6OVMnA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id BAEBB5C0326; Tue,  1 Feb 2022 09:50:23 -0800 (PST)
+Date:   Tue, 1 Feb 2022 09:50:23 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Zhouyi Zhou <zhouzhouyi@gmail.com>
+Cc:     Paul Menzel <pmenzel@molgen.mpg.de>,
+        Josh Triplett <josh@joshtriplett.org>,
+        rcu <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+Subject: Re: BUG: Kernel NULL pointer dereference on write at 0x00000000
+ (rtmsg_ifinfo_build_skb)
+Message-ID: <20220201175023.GW4285@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <159db05f-539c-fe29-608b-91b036588033@molgen.mpg.de>
+ <CAABZP2xampOLo8k93OLgaOfv9LreJ+f0g0_1mXwqtrv_LKewQg@mail.gmail.com>
+ <3534d781-7d01-b42a-8974-0b1c367946f0@molgen.mpg.de>
+ <CAABZP2zFDY-hrZqE=-c0uW8vFMH+Q9XezYd2DcBX4Wm+sxzK1g@mail.gmail.com>
+ <04a597dc-64aa-57e6-f7fb-17bd2ec58159@molgen.mpg.de>
+ <CAABZP2yb7-xa4F_2c6tuzkv7x902wU-hqgD_pqRooGC6C7S20A@mail.gmail.com>
+ <20220130174421.GS4285@paulmck-ThinkPad-P17-Gen-1>
+ <CAABZP2w8ysVFmxRo7CMSHunnU0GqtS=+bU6tLqcsXDUyf60-Dw@mail.gmail.com>
 MIME-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAABZP2w8ysVFmxRo7CMSHunnU0GqtS=+bU6tLqcsXDUyf60-Dw@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Mon, Jan 31, 2022 at 09:08:40AM +0800, Zhouyi Zhou wrote:
+> Thank Paul for joining us!
+> 
+> On Mon, Jan 31, 2022 at 1:44 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > On Sun, Jan 30, 2022 at 09:24:44PM +0800, Zhouyi Zhou wrote:
+> > > Dear Paul
+> > >
+> > > On Sun, Jan 30, 2022 at 4:19 PM Paul Menzel <pmenzel@molgen.mpg.de> wrote:
+> > > >
+> > > > Dear Zhouyi,
+> > > >
+> > > >
+> > > > Am 30.01.22 um 01:21 schrieb Zhouyi Zhou:
+> > > >
+> > > > > Thank you for your instructions, I learned a lot from this process.
+> > > >
+> > > > Same on my end.
+> > > >
+> > > > > On Sun, Jan 30, 2022 at 12:52 AM Paul Menzel <pmenzel@molgen.mpg.de> wrote:
+> > > >
+> > > > >> Am 29.01.22 um 03:23 schrieb Zhouyi Zhou:
+> > > > >>
+> > > > >>> I don't have an IBM machine, but I tried to analyze the problem using
+> > > > >>> my x86_64 kvm virtual machine, I can't reproduce the bug using my
+> > > > >>> x86_64 kvm virtual machine.
+> > > > >>
+> > > > >> No idea, if it’s architecture specific.
+> > > > >>
+> > > > >>> I saw the panic is caused by registration of sit device (A sit device
+> > > > >>> is a type of virtual network device that takes our IPv6 traffic,
+> > > > >>> encapsulates/decapsulates it in IPv4 packets, and sends/receives it
+> > > > >>> over the IPv4 Internet to another host)
+> > > > >>>
+> > > > >>> sit device is registered in function sit_init_net:
+> > > > >>> 1895    static int __net_init sit_init_net(struct net *net)
+> > > > >>> 1896    {
+> > > > >>> 1897        struct sit_net *sitn = net_generic(net, sit_net_id);
+> > > > >>> 1898        struct ip_tunnel *t;
+> > > > >>> 1899        int err;
+> > > > >>> 1900
+> > > > >>> 1901        sitn->tunnels[0] = sitn->tunnels_wc;
+> > > > >>> 1902        sitn->tunnels[1] = sitn->tunnels_l;
+> > > > >>> 1903        sitn->tunnels[2] = sitn->tunnels_r;
+> > > > >>> 1904        sitn->tunnels[3] = sitn->tunnels_r_l;
+> > > > >>> 1905
+> > > > >>> 1906        if (!net_has_fallback_tunnels(net))
+> > > > >>> 1907            return 0;
+> > > > >>> 1908
+> > > > >>> 1909        sitn->fb_tunnel_dev = alloc_netdev(sizeof(struct ip_tunnel), "sit0",
+> > > > >>> 1910                           NET_NAME_UNKNOWN,
+> > > > >>> 1911                           ipip6_tunnel_setup);
+> > > > >>> 1912        if (!sitn->fb_tunnel_dev) {
+> > > > >>> 1913            err = -ENOMEM;
+> > > > >>> 1914            goto err_alloc_dev;
+> > > > >>> 1915        }
+> > > > >>> 1916        dev_net_set(sitn->fb_tunnel_dev, net);
+> > > > >>> 1917        sitn->fb_tunnel_dev->rtnl_link_ops = &sit_link_ops;
+> > > > >>> 1918        /* FB netdevice is special: we have one, and only one per netns.
+> > > > >>> 1919         * Allowing to move it to another netns is clearly unsafe.
+> > > > >>> 1920         */
+> > > > >>> 1921        sitn->fb_tunnel_dev->features |= NETIF_F_NETNS_LOCAL;
+> > > > >>> 1922
+> > > > >>> 1923        err = register_netdev(sitn->fb_tunnel_dev);
+> > > > >>> register_netdev on line 1923 will call if_nlmsg_size indirectly.
+> > > > >>>
+> > > > >>> On the other hand, the function that calls the paniced strlen is if_nlmsg_size:
+> > > > >>> (gdb) disassemble if_nlmsg_size
+> > > > >>> Dump of assembler code for function if_nlmsg_size:
+> > > > >>>      0xffffffff81a0dc20 <+0>:    nopl   0x0(%rax,%rax,1)
+> > > > >>>      0xffffffff81a0dc25 <+5>:    push   %rbp
+> > > > >>>      0xffffffff81a0dc26 <+6>:    push   %r15
+> > > > >>>      0xffffffff81a0dd04 <+228>:    je     0xffffffff81a0de20 <if_nlmsg_size+512>
+> > > > >>>      0xffffffff81a0dd0a <+234>:    mov    0x10(%rbp),%rdi
+> > > > >>>      ...
+> > > > >>>    => 0xffffffff81a0dd0e <+238>:    callq  0xffffffff817532d0 <strlen>
+> > > > >>>      0xffffffff81a0dd13 <+243>:    add    $0x10,%eax
+> > > > >>>      0xffffffff81a0dd16 <+246>:    movslq %eax,%r12
+> > > > >>
+> > > > >> Excuse my ignorance, would that look the same for ppc64le?
+> > > > >> Unfortunately, I didn’t save the problematic `vmlinuz` file, but on a
+> > > > >> current build (without rcutorture) I have the line below, where strlen
+> > > > >> shows up.
+> > > > >>
+> > > > >>       (gdb) disassemble if_nlmsg_size
+> > > > >>       […]
+> > > > >>       0xc000000000f7f82c <+332>: bl      0xc000000000a10e30 <strlen>
+> > > > >>       […]
+> > > > >>
+> > > > >>> and the C code for 0xffffffff81a0dd0e is following (line 524):
+> > > > >>> 515    static size_t rtnl_link_get_size(const struct net_device *dev)
+> > > > >>> 516    {
+> > > > >>> 517        const struct rtnl_link_ops *ops = dev->rtnl_link_ops;
+> > > > >>> 518        size_t size;
+> > > > >>> 519
+> > > > >>> 520        if (!ops)
+> > > > >>> 521            return 0;
+> > > > >>> 522
+> > > > >>> 523        size = nla_total_size(sizeof(struct nlattr)) + /* IFLA_LINKINFO */
+> > > > >>> 524               nla_total_size(strlen(ops->kind) + 1);  /* IFLA_INFO_KIND */
+> > > > >>
+> > > > >> How do I connect the disassemby output with the corresponding line?
+> > > > > I use "make  ARCH=powerpc CC=powerpc64le-linux-gnu-gcc-9
+> > > > > CROSS_COMPILE=powerpc64le-linux-gnu- -j 16" to cross compile kernel
+> > > > > for powerpc64le in my Ubuntu 20.04 x86_64.
+> > > > >
+> > > > > gdb-multiarch ./vmlinux
+> > > > > (gdb)disassemble if_nlmsg_size
+> > > > > [...]
+> > > > > 0xc00000000191bf40 <+112>:    bl      0xc000000001c28ad0 <strlen>
+> > > > > [...]
+> > > > > (gdb) break *0xc00000000191bf40
+> > > > > Breakpoint 1 at 0xc00000000191bf40: file ./include/net/netlink.h, line 1112.
+> > > > >
+> > > > > But in include/net/netlink.h:1112, I can't find the call to strlen
+> > > > > 1110static inline int nla_total_size(int payload)
+> > > > > 1111{
+> > > > > 1112        return NLA_ALIGN(nla_attr_size(payload));
+> > > > > 1113}
+> > > > > This may be due to the compiler wrongly encode the debug information, I guess.
+> > > >
+> > > > `rtnl_link_get_size()` contains:
+> > > >
+> > > >              size = nla_total_size(sizeof(struct nlattr)) + /*
+> > > > IFLA_LINKINFO */
+> > > >                     nla_total_size(strlen(ops->kind) + 1);  /*
+> > > > IFLA_INFO_KIND */
+> > > >
+> > > > Is that inlined(?) and the code at fault?
+> > > Yes, that is inlined! because
+> > > (gdb) disassemble if_nlmsg_size
+> > > Dump of assembler code for function if_nlmsg_size:
+> > > [...]
+> > > 0xc00000000191bf38 <+104>:    beq     0xc00000000191c1f0 <if_nlmsg_size+800>
+> > > 0xc00000000191bf3c <+108>:    ld      r3,16(r31)
+> > > 0xc00000000191bf40 <+112>:    bl      0xc000000001c28ad0 <strlen>
+> > > [...]
+> > > (gdb)
+> > > (gdb) break *0xc00000000191bf40
+> > > Breakpoint 1 at 0xc00000000191bf40: file ./include/net/netlink.h, line 1112.
+> > > (gdb) break *0xc00000000191bf38
+> > > Breakpoint 2 at 0xc00000000191bf38: file net/core/rtnetlink.c, line 520.
+> >
+> > I suggest building your kernel with CONFIG_DEBUG_INFO=y if you are not
+> > already doing so.  That gives gdb a lot more information about things
+> > like inlining.
+> I check my .config file, CONFIG_DEBUG_INFO=y is here:
+> linux-next$ grep CONFIG_DEBUG_INFO .config
+> CONFIG_DEBUG_INFO=y
+> Then I invoke "make clean" and rebuild the kernel, the behavior of gdb
+> and vmlinux remain unchanged, sorry for that
 
---=-fZBedZ16puWv/aZcMIbH
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Glad you were already on top of this one!
 
-On Tue, 2022-02-01 at 13:56 +0100, Borislav Petkov wrote:
-> On Tue, Feb 01, 2022 at 12:39:17PM +0000, David Woodhouse wrote:
-> > In the top of my git tree, you can see a half-baked 'parallel part 2'
-> > commit which introduces a new x86/cpu:wait-init cpuhp state that would
-> > invoke do_wait_cpu_initialized() for each CPU in turn, which *would*
-> > release them all into load_ucode_bsp() at the same time and have
-> > precisely the problem you're describing.
->=20
-> The load_ucode_bsp() is the variant that runs on the boot CPU but
-> yeah...
+> I am trying to reproduce the bug on my bare metal x86_64 machines in
+> the coming days, and am also trying to work with Mr Menzel after he
+> comes back to the office.
 
-Right. Brain not fully online today.  Sorry.
+This URL used to allow community members such as yourself to request
+access to Power systems: https://osuosl.org/services/powerdev/
 
-> > Hm, not sure I see how that's protecting itself from someone
-> > simultaneously echoing 1 > /sys/devices/system/cpu/cpu${SIBLING}/online
->=20
-> So
->=20
-> echo 1 > ../online
->=20
-> means onlining the sibling.
->=20
-> But reload_store() grabs the CPU hotplug lock *first* and *then* runs
-> check_online_cpus() to see if all CPUs are online. It doesn't do the
-> update if even one CPU is missing. You can't offline any CPU for the
-> duration of the update...
->=20
-> So I guess you'd need to explain in more detail what protection hole
-> you're seeing because I might be missing something here.
+In case that helps.
 
-No, I'd just missed cpus_read_lock() because I was looking for
-something else. My fault; it looks fine. Thanks.
+							Thanx, Paul
 
---=-fZBedZ16puWv/aZcMIbH
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
-ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
-EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
-FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
-aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
-EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
-VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
-aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
-AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
-ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
-QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
-rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
-ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
-U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
-DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
-BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
-dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
-BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
-QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
-CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
-xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
-IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
-kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
-eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
-KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
-1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
-OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
-x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
-5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
-DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
-VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
-UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
-MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
-ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
-oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
-SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
-xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
-RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
-bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
-NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
-KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
-5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
-C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
-gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
-VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
-MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
-by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
-b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
-BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
-QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
-c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
-AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
-qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
-v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
-Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
-tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
-Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
-YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
-ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
-IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
-ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
-GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
-h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
-9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
-P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
-2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
-BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
-7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
-lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
-lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
-AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
-Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
-FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
-BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
-cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
-aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
-LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
-BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
-cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
-Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
-lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
-WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
-hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
-IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
-dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
-NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
-xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
-DQEHATAcBgkqhkiG9w0BCQUxDxcNMjIwMjAxMTMwMjUxWjAvBgkqhkiG9w0BCQQxIgQg0f951DFC
-zf4riiGpmLK0d0zMASAfdkyO9HMUsJ5MM1Awgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
-A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
-dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
-DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
-MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
-Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
-lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgB/941M7Ra9xCBG4EzXE2GDYA1bKQQyTETJ
-T05Tcmo8bAWiq8T8eJs2m9gypq/JWHARzoj5Fmx+3hh/o/ANZhw/mcQqz9t+8QF6y3+Ruk3OLgon
-yQHv2a8BPSCKXYQeSYaxRBwDy3oOQeTRycSXetjBAP7SyDGNGZAEsyDglopQtvnPW4CYeLD/o2jY
-AFbrq46K+0gzpD9PZmQyLRk2y8FzYm2iaXmJotCHbbp2IrxCvFlo9yWKQHRUlVZEJWHePOdpy5dv
-Jgitdg+OZv6fyJIzheVl7tCSx/PGx2qgl8FgvIEyjz82gHfX6GUHrsLp3HqzuxENmCEqvOCerqsu
-JIOL+Pmulc6aiB/+xIe2NTrJeMLMXFHAEdfAVc8JIIi7fJ9k5eJxMlkfIYtVvNRLuGm9OkLNzQIL
-NLfIG/L4KCuWDBArL9gauMoCoMOuQ/0Pw/OSAzH6rKmL1F2a8XE2qglBh0gWE2eeePxkrPSvNjhN
-uJnIlkBS+cmLrfjJH/ysO+zioY6iH4CnM23hcnb/H0NI0nQ51CYmv/U8+WiNQuO3pcdTSfmY9B7h
-XZI/gRTWF6lpFv0Ezgn39oDcT+pnfaD8+k+fvgBbUv+3cL1ob79nFxff9qPHaEKH0LlvTQjo8goM
-9v3hXIG2QPFk2ALM2Sp0edmAO8ThlI2sHmffGXl/9gAAAAAAAA==
-
-
---=-fZBedZ16puWv/aZcMIbH--
-
+> Thanks
+> Zhouyi
+> >
+> >                                                         Thanx, Paul
+> >
+> > > > >>> But ops is assigned the value of sit_link_ops in function sit_init_net
+> > > > >>> line 1917, so I guess something must happened between the calls.
+> > > > >>>
+> > > > >>> Do we have KASAN in IBM machine? would KASAN help us find out what
+> > > > >>> happened in between?
+> > > > >>
+> > > > >> Unfortunately, KASAN is not support on Power, I have, as far as I can
+> > > > >> see. From `arch/powerpc/Kconfig`:
+> > > > >>
+> > > > >>           select HAVE_ARCH_KASAN                  if PPC32 && PPC_PAGE_SHIFT <= 14
+> > > > >>           select HAVE_ARCH_KASAN_VMALLOC          if PPC32 && PPC_PAGE_SHIFT <= 14
+> > > > >>
+> > > > > en, agree, I invoke "make  menuconfig  ARCH=powerpc
+> > > > > CC=powerpc64le-linux-gnu-gcc-9 CROSS_COMPILE=powerpc64le-linux-gnu- -j
+> > > > > 16", I can't find KASAN under Memory Debugging, I guess we should find
+> > > > > the bug by bisecting instead.
+> > > >
+> > > > I do not know, if it is a regression, as it was the first time I tried
+> > > > to run a Linux kernel built with rcutorture on real hardware.
+> > > I tried to add some debug statements to the kernel to locate the bug
+> > > more accurately,  you can try it when you're not busy in the future,
+> > > or just ignore it if the following patch looks not very effective ;-)
+> > > diff --git a/net/core/dev.c b/net/core/dev.c
+> > > index 1baab07820f6..969ac7c540cc 100644
+> > > --- a/net/core/dev.c
+> > > +++ b/net/core/dev.c
+> > > @@ -9707,6 +9707,9 @@ int register_netdevice(struct net_device *dev)
+> > >       *    Prevent userspace races by waiting until the network
+> > >       *    device is fully setup before sending notifications.
+> > >       */
+> > > +    if (dev->rtnl_link_ops)
+> > > +        printk(KERN_INFO "%lx IFLA_INFO_KIND %s %s\n", dev->rtnl_link_ops,
+> > > +               dev->rtnl_link_ops->kind, __FUNCTION__);
+> > >      if (!dev->rtnl_link_ops ||
+> > >          dev->rtnl_link_state == RTNL_LINK_INITIALIZED)
+> > >          rtmsg_ifinfo(RTM_NEWLINK, dev, ~0U, GFP_KERNEL);
+> > > @@ -9788,6 +9791,9 @@ int register_netdev(struct net_device *dev)
+> > >
+> > >      if (rtnl_lock_killable())
+> > >          return -EINTR;
+> > > +    if (dev->rtnl_link_ops)
+> > > +        printk(KERN_INFO "%lx IFLA_INFO_KIND %s %s\n", dev->rtnl_link_ops,
+> > > +               dev->rtnl_link_ops->kind, __FUNCTION__);
+> > >      err = register_netdevice(dev);
+> > >      rtnl_unlock();
+> > >      return err;
+> > > diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
+> > > index e476403231f0..e08986ae6238 100644
+> > > --- a/net/core/rtnetlink.c
+> > > +++ b/net/core/rtnetlink.c
+> > > @@ -520,6 +520,8 @@ static size_t rtnl_link_get_size(const struct
+> > > net_device *dev)
+> > >      if (!ops)
+> > >          return 0;
+> > >
+> > > +    printk(KERN_INFO "%lx IFLA_INFO_KIND %s %s\n", ops,
+> > > +           ops->kind, __FUNCTION__);
+> > >      size = nla_total_size(sizeof(struct nlattr)) + /* IFLA_LINKINFO */
+> > >             nla_total_size(strlen(ops->kind) + 1);  /* IFLA_INFO_KIND */
+> > >
+> > > @@ -1006,6 +1008,9 @@ static size_t rtnl_proto_down_size(const struct
+> > > net_device *dev)
+> > >  static noinline size_t if_nlmsg_size(const struct net_device *dev,
+> > >                       u32 ext_filter_mask)
+> > >  {
+> > > +    if (dev->rtnl_link_ops)
+> > > +        printk(KERN_INFO "%lx IFLA_INFO_KIND  %s %s\n", dev->rtnl_link_ops,
+> > > +               dev->rtnl_link_ops->kind, __FUNCTION__);
+> > >      return NLMSG_ALIGN(sizeof(struct ifinfomsg))
+> > >             + nla_total_size(IFNAMSIZ) /* IFLA_IFNAME */
+> > >             + nla_total_size(IFALIASZ) /* IFLA_IFALIAS */
+> > > @@ -3825,7 +3830,9 @@ struct sk_buff *rtmsg_ifinfo_build_skb(int type,
+> > > struct net_device *dev,
+> > >      struct net *net = dev_net(dev);
+> > >      struct sk_buff *skb;
+> > >      int err = -ENOBUFS;
+> > > -
+> > > +    if (dev->rtnl_link_ops)
+> > > +        printk(KERN_INFO "%lx IFLA_INFO_KIND %s %s\n", dev->rtnl_link_ops,
+> > > +               dev->rtnl_link_ops->kind, __FUNCTION__);
+> > >      skb = nlmsg_new(if_nlmsg_size(dev, 0), flags);
+> > >      if (skb == NULL)
+> > >          goto errout;
+> > > @@ -3861,7 +3868,9 @@ static void rtmsg_ifinfo_event(int type, struct
+> > > net_device *dev,
+> > >
+> > >      if (dev->reg_state != NETREG_REGISTERED)
+> > >          return;
+> > > -
+> > > +    if (dev->rtnl_link_ops)
+> > > +        printk(KERN_INFO "%lx IFLA_INFO_KIND  %s %s\n", dev->rtnl_link_ops,
+> > > +               dev->rtnl_link_ops->kind, __FUNCTION__);
+> > >      skb = rtmsg_ifinfo_build_skb(type, dev, change, event, flags, new_nsid,
+> > >                       new_ifindex);
+> > >      if (skb)
+> > > @@ -3871,6 +3880,9 @@ static void rtmsg_ifinfo_event(int type, struct
+> > > net_device *dev,
+> > >  void rtmsg_ifinfo(int type, struct net_device *dev, unsigned int change,
+> > >            gfp_t flags)
+> > >  {
+> > > +    if (dev->rtnl_link_ops)
+> > > +        printk(KERN_INFO "%lx IFLA_INFO_KIND  %s %s\n", dev->rtnl_link_ops,
+> > > +               dev->rtnl_link_ops->kind, __FUNCTION__);
+> > >      rtmsg_ifinfo_event(type, dev, change, rtnl_get_event(0), flags,
+> > >                 NULL, 0);
+> > >  }
+> > > diff --git a/net/ipv6/sit.c b/net/ipv6/sit.c
+> > > index c0b138c20992..fa5b2725811c 100644
+> > > --- a/net/ipv6/sit.c
+> > > +++ b/net/ipv6/sit.c
+> > > @@ -1919,6 +1919,8 @@ static int __net_init sit_init_net(struct net *net)
+> > >       * Allowing to move it to another netns is clearly unsafe.
+> > >       */
+> > >      sitn->fb_tunnel_dev->features |= NETIF_F_NETNS_LOCAL;
+> > > -
+> > > +    printk(KERN_INFO "%lx IFLA_INFO_KIND %s %s\n",
+> > > +           sitn->fb_tunnel_dev->rtnl_link_ops,
+> > > +           sitn->fb_tunnel_dev->rtnl_link_ops->kind, __FUNCTION__);
+> > >      err = register_netdev(sitn->fb_tunnel_dev);
+> > >      if (err)
+> > >          goto err_reg_dev;
+> > > >
+> > > > >>> Hope I can be of more helpful.
+> > > > >>
+> > > > >> Some distributions support multi-arch, so they easily allow
+> > > > >> crosscompiling for different architectures.
+> > > > > I use "make  ARCH=powerpc CC=powerpc64le-linux-gnu-gcc-9
+> > > > > CROSS_COMPILE=powerpc64le-linux-gnu- -j 16" to cross compile kernel
+> > > > > for powerpc64le in my Ubuntu 20.04 x86_64. But I can't boot the
+> > > > > compiled kernel using "qemu-system-ppc64le -M pseries -nographic -smp
+> > > > > 4 -net none -m 4G -kernel arch/powerpc/boot/zImage". I will continue
+> > > > > to explore it.
+> > > >
+> > > > Oh, that does not sound good. But I have not tried that in a long time
+> > > > either. It’s a separate issue, but maybe some of the PPC
+> > > > maintainers/folks could help.
+> > > I will do further research on this later.
+> > >
+> > > Thanks for your time
+> > > Kind regards
+> > > Zhouyi
+> > > >
+> > > >
+> > > > Kind regards,
+> > > >
+> > > > Paul
