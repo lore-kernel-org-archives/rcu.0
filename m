@@ -2,467 +2,479 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 80840C433F5
-	for <rcu@archiver.kernel.org>; Wed,  2 Feb 2022 02:39:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 47C36C433EF
+	for <rcu@archiver.kernel.org>; Thu,  3 Feb 2022 18:50:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231437AbiBBCjo (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 1 Feb 2022 21:39:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231372AbiBBCjn (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 1 Feb 2022 21:39:43 -0500
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3173DC061714;
-        Tue,  1 Feb 2022 18:39:43 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id m4so60518486ejb.9;
-        Tue, 01 Feb 2022 18:39:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=BuOtPq4Q7UgFzvgg5CA/ND7Ty2Q0na2BEdJNf9ub5LE=;
-        b=kmLuhYuOi5pflUaDxQ48tLOO9QGWaTobXhrGUWwkQH+NV/atrOmDyM9D4eUDIGZwqp
-         kfISaqBDQoX1ME7OfygHbqleiUOBZJmcsOnWIUkCjQGXqD3JbRSptsvmLMRP0r3+4rjb
-         lYiU0812qQQ5bxvGnU2wcOtW5aD7r5gat3vUrRka4HnZ74MyXOavX/pnVpwDDr4jTCow
-         xqCTD7eyoFU/RjPf6IQBZS9H3m3k8rms0lpLYtyPmpcb/ek1FAaK1ASqIq36zS/2+3XF
-         LEWlO0LehMrQh79S/q5R8M0GH/2Y47LtdAC8IGAB7Uj+gd+pRKPH4xY0y1Zmk2ymWAFm
-         w11g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=BuOtPq4Q7UgFzvgg5CA/ND7Ty2Q0na2BEdJNf9ub5LE=;
-        b=H2B6nl7QULiJJYniBGGmehfKHuxWM8vcWEfdK9Y69anvcClaxAZ+u6RJYWVbjEw9O5
-         briA2nKT6eEegtnAIoxrFIJYSEjPMk/cY3itFJzTKvJVwHX3h1qXLrqrB8UhHbsKxcJk
-         rJfn2Is1jZ5Ojj36HDPaX2G2YYEL12aNvZiK9DFCZGfhgQw594qCMuOaceeZSb6xpFBq
-         UP0aLAnsbaS5I5U3iiSognGRpDK0ycmzfRuMLCBmxb14WDZ/hz/o/yC1dEth0Nr9dSIs
-         0BTnCFoWfGG0ZWxeblnCUc3iG2wX2KB2mktNLviNsNVUPjuO353M2acgOhGW3R6Pquaz
-         fUcg==
-X-Gm-Message-State: AOAM5336lEz6mOK2mrTrY6PnUkwWSuEPOe3sS0taiKqpH4g1l7qTFDhe
-        msNIZe8rqqbQ7TRCpjRLNhyFc/mkwj10e4KgGoPkQq71vd0=
-X-Google-Smtp-Source: ABdhPJwFbNW3RjDytwCs+m0S5xb6bitFXCwiBuWv7n5NvJKJ38xG2BbjUiwLpwtpUqKYvP1BB1ikJ1BnSd2DKcuCYUo=
-X-Received: by 2002:a17:907:2da0:: with SMTP id gt32mr22228440ejc.545.1643769581539;
- Tue, 01 Feb 2022 18:39:41 -0800 (PST)
+        id S239207AbiBCSuA (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 3 Feb 2022 13:50:00 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:56458 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235692AbiBCSuA (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 3 Feb 2022 13:50:00 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id BA7C3B83555;
+        Thu,  3 Feb 2022 18:49:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 764FBC340E8;
+        Thu,  3 Feb 2022 18:49:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1643914197;
+        bh=wj1UJoQ90DxvgZg2Oi/TQjbpDGuTdE19hSU0XlES1EY=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=P6MJYt+hMSd4Zm3Qgsrn908Xx969S1hC70J54YhGyck0YwXzK4zCwG4WjG7TGXJS/
+         n8YKHnTgqwpRS/BoqqdwGt6BvkjLDLpJqUK3tUgmESMnGaHaFUUgm2K0bx4H0C1V/q
+         WJrkqZf+1RgqZCZ4GYid0UMn9iMx2NuTE8NDjy/qFuycflsuemyeR7io3MQwVbSR+a
+         LxEo5BQVflV5Xu7Ic6ZXd4F1TvrZIUdV2N/ufdF6jvX78kpkLFRu8007CG++YQccjS
+         1GPvCHYhdMpwNsioiBOPPZjLOE0fzzvC4Vbthxla5ipm3V8gDdBVndAry164So7VgK
+         p9NiaiBWsDiyA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 36EB95C0454; Thu,  3 Feb 2022 10:49:57 -0800 (PST)
+Date:   Thu, 3 Feb 2022 10:49:57 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Brian Foster <bfoster@redhat.com>
+Cc:     Dave Chinner <david@fromorbit.com>,
+        Al Viro <viro@zeniv.linux.org.uk>, linux-xfs@vger.kernel.org,
+        Ian Kent <raven@themaw.net>, rcu@vger.kernel.org,
+        quic_neeraju@quicinc.com
+Subject: Re: [PATCH] xfs: require an rcu grace period before inode recycle
+Message-ID: <20220203184957.GA1109647@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <Ye82TgBY0VmtTjMc@bfoster>
+ <20220125003120.GO59729@dread.disaster.area>
+ <YfBBzHascwVnefYY@bfoster>
+ <20220125224551.GQ59729@dread.disaster.area>
+ <YfIdVq6R6xEWxy0K@zeniv-ca.linux.org.uk>
+ <20220127052609.GR59729@dread.disaster.area>
+ <YfLsBdPBSsyPFgHJ@bfoster>
+ <20220128213911.GO4285@paulmck-ThinkPad-P17-Gen-1>
+ <Yffioz+t9cjZbIBv@bfoster>
+ <20220201220028.GH4285@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-References: <159db05f-539c-fe29-608b-91b036588033@molgen.mpg.de>
- <CAABZP2xampOLo8k93OLgaOfv9LreJ+f0g0_1mXwqtrv_LKewQg@mail.gmail.com>
- <3534d781-7d01-b42a-8974-0b1c367946f0@molgen.mpg.de> <CAABZP2zFDY-hrZqE=-c0uW8vFMH+Q9XezYd2DcBX4Wm+sxzK1g@mail.gmail.com>
- <04a597dc-64aa-57e6-f7fb-17bd2ec58159@molgen.mpg.de> <CAABZP2yb7-xa4F_2c6tuzkv7x902wU-hqgD_pqRooGC6C7S20A@mail.gmail.com>
- <20220130174421.GS4285@paulmck-ThinkPad-P17-Gen-1> <CAABZP2w8ysVFmxRo7CMSHunnU0GqtS=+bU6tLqcsXDUyf60-Dw@mail.gmail.com>
- <20220201175023.GW4285@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20220201175023.GW4285@paulmck-ThinkPad-P17-Gen-1>
-From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
-Date:   Wed, 2 Feb 2022 10:39:29 +0800
-Message-ID: <CAABZP2zsyf238t6FGaszY+vwuBocFWQj=7k2pGd2OA3E7G525g@mail.gmail.com>
-Subject: Re: BUG: Kernel NULL pointer dereference on write at 0x00000000 (rtmsg_ifinfo_build_skb)
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Paul Menzel <pmenzel@molgen.mpg.de>,
-        Josh Triplett <josh@joshtriplett.org>,
-        rcu <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220201220028.GH4285@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Thank Paul for your encouragement!
+On Tue, Feb 01, 2022 at 02:00:28PM -0800, Paul E. McKenney wrote:
+> On Mon, Jan 31, 2022 at 08:22:43AM -0500, Brian Foster wrote:
+> > On Fri, Jan 28, 2022 at 01:39:11PM -0800, Paul E. McKenney wrote:
+> > > On Thu, Jan 27, 2022 at 02:01:25PM -0500, Brian Foster wrote:
+> > > > On Thu, Jan 27, 2022 at 04:26:09PM +1100, Dave Chinner wrote:
+> > > > > On Thu, Jan 27, 2022 at 04:19:34AM +0000, Al Viro wrote:
+> > > > > > On Wed, Jan 26, 2022 at 09:45:51AM +1100, Dave Chinner wrote:
+> > > > > > 
+> > > > > > > Right, background inactivation does not improve performance - it's
+> > > > > > > necessary to get the transactions out of the evict() path. All we
+> > > > > > > wanted was to ensure that there were no performance degradations as
+> > > > > > > a result of background inactivation, not that it was faster.
+> > > > > > > 
+> > > > > > > If you want to confirm that there is an increase in cold cache
+> > > > > > > access when the batch size is increased, cpu profiles with 'perf
+> > > > > > > top'/'perf record/report' and CPU cache performance metric reporting
+> > > > > > > via 'perf stat -dddd' are your friend. See elsewhere in the thread
+> > > > > > > where I mention those things to Paul.
+> > > > > > 
+> > > > > > Dave, do you see a plausible way to eventually drop Ian's bandaid?
+> > > > > > I'm not asking for that to happen this cycle and for backports Ian's
+> > > > > > patch is obviously fine.
+> > > > > 
+> > > > > Yes, but not in the near term.
+> > > > > 
+> > > > > > What I really want to avoid is the situation when we are stuck with
+> > > > > > keeping that bandaid in fs/namei.c, since all ways to avoid seeing
+> > > > > > reused inodes would hurt XFS too badly.  And the benchmarks in this
+> > > > > > thread do look like that.
+> > > > > 
+> > > > > The simplest way I think is to have the XFS inode allocation track
+> > > > > "busy inodes" in the same way we track "busy extents". A busy extent
+> > > > > is an extent that has been freed by the user, but is not yet marked
+> > > > > free in the journal/on disk. If we try to reallocate that busy
+> > > > > extent, we either select a different free extent to allocate, or if
+> > > > > we can't find any we force the journal to disk, wait for it to
+> > > > > complete (hence unbusying the extents) and retry the allocation
+> > > > > again.
+> > > > > 
+> > > > > We can do something similar for inode allocation - it's actually a
+> > > > > lockless tag lookup on the radix tree entry for the candidate inode
+> > > > > number. If we find the reclaimable radix tree tag set, the we select
+> > > > > a different inode. If we can't allocate a new inode, then we kick
+> > > > > synchronize_rcu() and retry the allocation, allowing inodes to be
+> > > > > recycled this time.
+> > > > 
+> > > > I'm starting to poke around this area since it's become clear that the
+> > > > currently proposed scheme just involves too much latency (unless Paul
+> > > > chimes in with his expedited grace period variant, at which point I will
+> > > > revisit) in the fast allocation/recycle path. ISTM so far that a simple
+> > > > "skip inodes in the radix tree, sync rcu if unsuccessful" algorithm will
+> > > > have pretty much the same pattern of behavior as this patch: one
+> > > > synchronize_rcu() per batch.
+> > > 
+> > > Apologies for being slow, but there have been some distractions.
+> > > One of the distractions was trying to put together atheoretically
+> > > attractive but massively overcomplicated implementation of
+> > > poll_state_synchronize_rcu_expedited().  It currently looks like a
+> > > somewhat suboptimal but much simpler approach is available.  This
+> > > assumes that XFS is not in the picture until after both the scheduler
+> > > and workqueues are operational.
+> > > 
+> > 
+> > No worries.. I don't think that would be a roadblock for us. ;)
+> > 
+> > > And yes, the complicated version might prove necessary, but let's
+> > > see if this whole thing is even useful first.  ;-)
+> > > 
+> > 
+> > Indeed. This patch only really requires a single poll/sync pair of
+> > calls, so assuming the expedited grace period usage plays nice enough
+> > with typical !expedited usage elsewhere in the kernel for some basic
+> > tests, it would be fairly trivial to port this over and at least get an
+> > idea of what the worst case behavior might be with expedited grace
+> > periods, whether it satisfies the existing latency requirements, etc.
+> > 
+> > Brian
+> > 
+> > > In the meantime, if you want to look at an extremely unbaked view,
+> > > here you go:
+> > > 
+> > > https://docs.google.com/document/d/1RNKWW9jQyfjxw2E8dsXVTdvZYh0HnYeSHDKog9jhdN8/edit?usp=sharing
+> 
+> And here is a version that passes moderate rcutorture testing.  So no
+> obvious bugs.  Probably a few non-obvious ones, though!  ;-)
+> 
+> This commit is on -rcu's "dev" branch along with this rcutorture
+> addition:
+> 
+> cd7bd64af59f ("EXP rcutorture: Test polled expedited grace-period primitives")
+> 
+> I will carry these in -rcu's "dev" branch until at least the upcoming
+> merge window, fixing bugs as and when they becom apparent.  If I don't
+> hear otherwise by that time, I will create a tag for it and leave
+> it behind.
+> 
+> The backport to v5.17-rc2 just requires removing:
+> 
+> 	mutex_init(&rnp->boost_kthread_mutex);
+> 
+> From rcu_init_one().  This line is added by this -rcu commit:
+> 
+> 02a50b09c31f ("rcu: Add mutex for rcu boost kthread spawning and affinity setting")
 
-On Wed, Feb 2, 2022 at 1:50 AM Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> On Mon, Jan 31, 2022 at 09:08:40AM +0800, Zhouyi Zhou wrote:
-> > Thank Paul for joining us!
-> >
-> > On Mon, Jan 31, 2022 at 1:44 AM Paul E. McKenney <paulmck@kernel.org> w=
-rote:
-> > >
-> > > On Sun, Jan 30, 2022 at 09:24:44PM +0800, Zhouyi Zhou wrote:
-> > > > Dear Paul
-> > > >
-> > > > On Sun, Jan 30, 2022 at 4:19 PM Paul Menzel <pmenzel@molgen.mpg.de>=
- wrote:
-> > > > >
-> > > > > Dear Zhouyi,
-> > > > >
-> > > > >
-> > > > > Am 30.01.22 um 01:21 schrieb Zhouyi Zhou:
-> > > > >
-> > > > > > Thank you for your instructions, I learned a lot from this proc=
-ess.
-> > > > >
-> > > > > Same on my end.
-> > > > >
-> > > > > > On Sun, Jan 30, 2022 at 12:52 AM Paul Menzel <pmenzel@molgen.mp=
-g.de> wrote:
-> > > > >
-> > > > > >> Am 29.01.22 um 03:23 schrieb Zhouyi Zhou:
-> > > > > >>
-> > > > > >>> I don't have an IBM machine, but I tried to analyze the probl=
-em using
-> > > > > >>> my x86_64 kvm virtual machine, I can't reproduce the bug usin=
-g my
-> > > > > >>> x86_64 kvm virtual machine.
-> > > > > >>
-> > > > > >> No idea, if it=E2=80=99s architecture specific.
-> > > > > >>
-> > > > > >>> I saw the panic is caused by registration of sit device (A si=
-t device
-> > > > > >>> is a type of virtual network device that takes our IPv6 traff=
-ic,
-> > > > > >>> encapsulates/decapsulates it in IPv4 packets, and sends/recei=
-ves it
-> > > > > >>> over the IPv4 Internet to another host)
-> > > > > >>>
-> > > > > >>> sit device is registered in function sit_init_net:
-> > > > > >>> 1895    static int __net_init sit_init_net(struct net *net)
-> > > > > >>> 1896    {
-> > > > > >>> 1897        struct sit_net *sitn =3D net_generic(net, sit_net=
-_id);
-> > > > > >>> 1898        struct ip_tunnel *t;
-> > > > > >>> 1899        int err;
-> > > > > >>> 1900
-> > > > > >>> 1901        sitn->tunnels[0] =3D sitn->tunnels_wc;
-> > > > > >>> 1902        sitn->tunnels[1] =3D sitn->tunnels_l;
-> > > > > >>> 1903        sitn->tunnels[2] =3D sitn->tunnels_r;
-> > > > > >>> 1904        sitn->tunnels[3] =3D sitn->tunnels_r_l;
-> > > > > >>> 1905
-> > > > > >>> 1906        if (!net_has_fallback_tunnels(net))
-> > > > > >>> 1907            return 0;
-> > > > > >>> 1908
-> > > > > >>> 1909        sitn->fb_tunnel_dev =3D alloc_netdev(sizeof(struc=
-t ip_tunnel), "sit0",
-> > > > > >>> 1910                           NET_NAME_UNKNOWN,
-> > > > > >>> 1911                           ipip6_tunnel_setup);
-> > > > > >>> 1912        if (!sitn->fb_tunnel_dev) {
-> > > > > >>> 1913            err =3D -ENOMEM;
-> > > > > >>> 1914            goto err_alloc_dev;
-> > > > > >>> 1915        }
-> > > > > >>> 1916        dev_net_set(sitn->fb_tunnel_dev, net);
-> > > > > >>> 1917        sitn->fb_tunnel_dev->rtnl_link_ops =3D &sit_link_=
-ops;
-> > > > > >>> 1918        /* FB netdevice is special: we have one, and only=
- one per netns.
-> > > > > >>> 1919         * Allowing to move it to another netns is clearl=
-y unsafe.
-> > > > > >>> 1920         */
-> > > > > >>> 1921        sitn->fb_tunnel_dev->features |=3D NETIF_F_NETNS_=
-LOCAL;
-> > > > > >>> 1922
-> > > > > >>> 1923        err =3D register_netdev(sitn->fb_tunnel_dev);
-> > > > > >>> register_netdev on line 1923 will call if_nlmsg_size indirect=
-ly.
-> > > > > >>>
-> > > > > >>> On the other hand, the function that calls the paniced strlen=
- is if_nlmsg_size:
-> > > > > >>> (gdb) disassemble if_nlmsg_size
-> > > > > >>> Dump of assembler code for function if_nlmsg_size:
-> > > > > >>>      0xffffffff81a0dc20 <+0>:    nopl   0x0(%rax,%rax,1)
-> > > > > >>>      0xffffffff81a0dc25 <+5>:    push   %rbp
-> > > > > >>>      0xffffffff81a0dc26 <+6>:    push   %r15
-> > > > > >>>      0xffffffff81a0dd04 <+228>:    je     0xffffffff81a0de20 =
-<if_nlmsg_size+512>
-> > > > > >>>      0xffffffff81a0dd0a <+234>:    mov    0x10(%rbp),%rdi
-> > > > > >>>      ...
-> > > > > >>>    =3D> 0xffffffff81a0dd0e <+238>:    callq  0xffffffff817532=
-d0 <strlen>
-> > > > > >>>      0xffffffff81a0dd13 <+243>:    add    $0x10,%eax
-> > > > > >>>      0xffffffff81a0dd16 <+246>:    movslq %eax,%r12
-> > > > > >>
-> > > > > >> Excuse my ignorance, would that look the same for ppc64le?
-> > > > > >> Unfortunately, I didn=E2=80=99t save the problematic `vmlinuz`=
- file, but on a
-> > > > > >> current build (without rcutorture) I have the line below, wher=
-e strlen
-> > > > > >> shows up.
-> > > > > >>
-> > > > > >>       (gdb) disassemble if_nlmsg_size
-> > > > > >>       [=E2=80=A6]
-> > > > > >>       0xc000000000f7f82c <+332>: bl      0xc000000000a10e30 <s=
-trlen>
-> > > > > >>       [=E2=80=A6]
-> > > > > >>
-> > > > > >>> and the C code for 0xffffffff81a0dd0e is following (line 524)=
-:
-> > > > > >>> 515    static size_t rtnl_link_get_size(const struct net_devi=
-ce *dev)
-> > > > > >>> 516    {
-> > > > > >>> 517        const struct rtnl_link_ops *ops =3D dev->rtnl_link=
-_ops;
-> > > > > >>> 518        size_t size;
-> > > > > >>> 519
-> > > > > >>> 520        if (!ops)
-> > > > > >>> 521            return 0;
-> > > > > >>> 522
-> > > > > >>> 523        size =3D nla_total_size(sizeof(struct nlattr)) + /=
-* IFLA_LINKINFO */
-> > > > > >>> 524               nla_total_size(strlen(ops->kind) + 1);  /* =
-IFLA_INFO_KIND */
-> > > > > >>
-> > > > > >> How do I connect the disassemby output with the corresponding =
-line?
-> > > > > > I use "make  ARCH=3Dpowerpc CC=3Dpowerpc64le-linux-gnu-gcc-9
-> > > > > > CROSS_COMPILE=3Dpowerpc64le-linux-gnu- -j 16" to cross compile =
-kernel
-> > > > > > for powerpc64le in my Ubuntu 20.04 x86_64.
-> > > > > >
-> > > > > > gdb-multiarch ./vmlinux
-> > > > > > (gdb)disassemble if_nlmsg_size
-> > > > > > [...]
-> > > > > > 0xc00000000191bf40 <+112>:    bl      0xc000000001c28ad0 <strle=
-n>
-> > > > > > [...]
-> > > > > > (gdb) break *0xc00000000191bf40
-> > > > > > Breakpoint 1 at 0xc00000000191bf40: file ./include/net/netlink.=
-h, line 1112.
-> > > > > >
-> > > > > > But in include/net/netlink.h:1112, I can't find the call to str=
-len
-> > > > > > 1110static inline int nla_total_size(int payload)
-> > > > > > 1111{
-> > > > > > 1112        return NLA_ALIGN(nla_attr_size(payload));
-> > > > > > 1113}
-> > > > > > This may be due to the compiler wrongly encode the debug inform=
-ation, I guess.
-> > > > >
-> > > > > `rtnl_link_get_size()` contains:
-> > > > >
-> > > > >              size =3D nla_total_size(sizeof(struct nlattr)) + /*
-> > > > > IFLA_LINKINFO */
-> > > > >                     nla_total_size(strlen(ops->kind) + 1);  /*
-> > > > > IFLA_INFO_KIND */
-> > > > >
-> > > > > Is that inlined(?) and the code at fault?
-> > > > Yes, that is inlined! because
-> > > > (gdb) disassemble if_nlmsg_size
-> > > > Dump of assembler code for function if_nlmsg_size:
-> > > > [...]
-> > > > 0xc00000000191bf38 <+104>:    beq     0xc00000000191c1f0 <if_nlmsg_=
-size+800>
-> > > > 0xc00000000191bf3c <+108>:    ld      r3,16(r31)
-> > > > 0xc00000000191bf40 <+112>:    bl      0xc000000001c28ad0 <strlen>
-> > > > [...]
-> > > > (gdb)
-> > > > (gdb) break *0xc00000000191bf40
-> > > > Breakpoint 1 at 0xc00000000191bf40: file ./include/net/netlink.h, l=
-ine 1112.
-> > > > (gdb) break *0xc00000000191bf38
-> > > > Breakpoint 2 at 0xc00000000191bf38: file net/core/rtnetlink.c, line=
- 520.
-> > >
-> > > I suggest building your kernel with CONFIG_DEBUG_INFO=3Dy if you are =
-not
-> > > already doing so.  That gives gdb a lot more information about things
-> > > like inlining.
-> > I check my .config file, CONFIG_DEBUG_INFO=3Dy is here:
-> > linux-next$ grep CONFIG_DEBUG_INFO .config
-> > CONFIG_DEBUG_INFO=3Dy
-> > Then I invoke "make clean" and rebuild the kernel, the behavior of gdb
-> > and vmlinux remain unchanged, sorry for that
->
-> Glad you were already on top of this one!
-I am very pleased to contribute my tiny effort to the process of
-making Linux better ;-)
->
-> > I am trying to reproduce the bug on my bare metal x86_64 machines in
-> > the coming days, and am also trying to work with Mr Menzel after he
-> > comes back to the office.
->
-> This URL used to allow community members such as yourself to request
-> access to Power systems: https://osuosl.org/services/powerdev/
-I have filled the request form on
-https://osuosl.org/services/powerdev/ and now wait for them to deploy
-the environment for me.
+And with some alleged fixes of issues Neeraj found when reviewing this,
+perhaps most notably the ability to run on real-time kernels booted
+with rcupdate.rcu_normal=1.  This version passes reasonably heavy-duty
+rcutorture testing.  Must mean bugs in rcutorture...  :-/
 
-Thanks again
-Zhouyi
->
-> In case that helps.
->
->                                                         Thanx, Paul
->
-> > Thanks
-> > Zhouyi
-> > >
-> > >                                                         Thanx, Paul
-> > >
-> > > > > >>> But ops is assigned the value of sit_link_ops in function sit=
-_init_net
-> > > > > >>> line 1917, so I guess something must happened between the cal=
-ls.
-> > > > > >>>
-> > > > > >>> Do we have KASAN in IBM machine? would KASAN help us find out=
- what
-> > > > > >>> happened in between?
-> > > > > >>
-> > > > > >> Unfortunately, KASAN is not support on Power, I have, as far a=
-s I can
-> > > > > >> see. From `arch/powerpc/Kconfig`:
-> > > > > >>
-> > > > > >>           select HAVE_ARCH_KASAN                  if PPC32 && =
-PPC_PAGE_SHIFT <=3D 14
-> > > > > >>           select HAVE_ARCH_KASAN_VMALLOC          if PPC32 && =
-PPC_PAGE_SHIFT <=3D 14
-> > > > > >>
-> > > > > > en, agree, I invoke "make  menuconfig  ARCH=3Dpowerpc
-> > > > > > CC=3Dpowerpc64le-linux-gnu-gcc-9 CROSS_COMPILE=3Dpowerpc64le-li=
-nux-gnu- -j
-> > > > > > 16", I can't find KASAN under Memory Debugging, I guess we shou=
-ld find
-> > > > > > the bug by bisecting instead.
-> > > > >
-> > > > > I do not know, if it is a regression, as it was the first time I =
-tried
-> > > > > to run a Linux kernel built with rcutorture on real hardware.
-> > > > I tried to add some debug statements to the kernel to locate the bu=
-g
-> > > > more accurately,  you can try it when you're not busy in the future=
-,
-> > > > or just ignore it if the following patch looks not very effective ;=
--)
-> > > > diff --git a/net/core/dev.c b/net/core/dev.c
-> > > > index 1baab07820f6..969ac7c540cc 100644
-> > > > --- a/net/core/dev.c
-> > > > +++ b/net/core/dev.c
-> > > > @@ -9707,6 +9707,9 @@ int register_netdevice(struct net_device *dev=
-)
-> > > >       *    Prevent userspace races by waiting until the network
-> > > >       *    device is fully setup before sending notifications.
-> > > >       */
-> > > > +    if (dev->rtnl_link_ops)
-> > > > +        printk(KERN_INFO "%lx IFLA_INFO_KIND %s %s\n", dev->rtnl_l=
-ink_ops,
-> > > > +               dev->rtnl_link_ops->kind, __FUNCTION__);
-> > > >      if (!dev->rtnl_link_ops ||
-> > > >          dev->rtnl_link_state =3D=3D RTNL_LINK_INITIALIZED)
-> > > >          rtmsg_ifinfo(RTM_NEWLINK, dev, ~0U, GFP_KERNEL);
-> > > > @@ -9788,6 +9791,9 @@ int register_netdev(struct net_device *dev)
-> > > >
-> > > >      if (rtnl_lock_killable())
-> > > >          return -EINTR;
-> > > > +    if (dev->rtnl_link_ops)
-> > > > +        printk(KERN_INFO "%lx IFLA_INFO_KIND %s %s\n", dev->rtnl_l=
-ink_ops,
-> > > > +               dev->rtnl_link_ops->kind, __FUNCTION__);
-> > > >      err =3D register_netdevice(dev);
-> > > >      rtnl_unlock();
-> > > >      return err;
-> > > > diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
-> > > > index e476403231f0..e08986ae6238 100644
-> > > > --- a/net/core/rtnetlink.c
-> > > > +++ b/net/core/rtnetlink.c
-> > > > @@ -520,6 +520,8 @@ static size_t rtnl_link_get_size(const struct
-> > > > net_device *dev)
-> > > >      if (!ops)
-> > > >          return 0;
-> > > >
-> > > > +    printk(KERN_INFO "%lx IFLA_INFO_KIND %s %s\n", ops,
-> > > > +           ops->kind, __FUNCTION__);
-> > > >      size =3D nla_total_size(sizeof(struct nlattr)) + /* IFLA_LINKI=
-NFO */
-> > > >             nla_total_size(strlen(ops->kind) + 1);  /* IFLA_INFO_KI=
-ND */
-> > > >
-> > > > @@ -1006,6 +1008,9 @@ static size_t rtnl_proto_down_size(const stru=
-ct
-> > > > net_device *dev)
-> > > >  static noinline size_t if_nlmsg_size(const struct net_device *dev,
-> > > >                       u32 ext_filter_mask)
-> > > >  {
-> > > > +    if (dev->rtnl_link_ops)
-> > > > +        printk(KERN_INFO "%lx IFLA_INFO_KIND  %s %s\n", dev->rtnl_=
-link_ops,
-> > > > +               dev->rtnl_link_ops->kind, __FUNCTION__);
-> > > >      return NLMSG_ALIGN(sizeof(struct ifinfomsg))
-> > > >             + nla_total_size(IFNAMSIZ) /* IFLA_IFNAME */
-> > > >             + nla_total_size(IFALIASZ) /* IFLA_IFALIAS */
-> > > > @@ -3825,7 +3830,9 @@ struct sk_buff *rtmsg_ifinfo_build_skb(int ty=
-pe,
-> > > > struct net_device *dev,
-> > > >      struct net *net =3D dev_net(dev);
-> > > >      struct sk_buff *skb;
-> > > >      int err =3D -ENOBUFS;
-> > > > -
-> > > > +    if (dev->rtnl_link_ops)
-> > > > +        printk(KERN_INFO "%lx IFLA_INFO_KIND %s %s\n", dev->rtnl_l=
-ink_ops,
-> > > > +               dev->rtnl_link_ops->kind, __FUNCTION__);
-> > > >      skb =3D nlmsg_new(if_nlmsg_size(dev, 0), flags);
-> > > >      if (skb =3D=3D NULL)
-> > > >          goto errout;
-> > > > @@ -3861,7 +3868,9 @@ static void rtmsg_ifinfo_event(int type, stru=
-ct
-> > > > net_device *dev,
-> > > >
-> > > >      if (dev->reg_state !=3D NETREG_REGISTERED)
-> > > >          return;
-> > > > -
-> > > > +    if (dev->rtnl_link_ops)
-> > > > +        printk(KERN_INFO "%lx IFLA_INFO_KIND  %s %s\n", dev->rtnl_=
-link_ops,
-> > > > +               dev->rtnl_link_ops->kind, __FUNCTION__);
-> > > >      skb =3D rtmsg_ifinfo_build_skb(type, dev, change, event, flags=
-, new_nsid,
-> > > >                       new_ifindex);
-> > > >      if (skb)
-> > > > @@ -3871,6 +3880,9 @@ static void rtmsg_ifinfo_event(int type, stru=
-ct
-> > > > net_device *dev,
-> > > >  void rtmsg_ifinfo(int type, struct net_device *dev, unsigned int c=
-hange,
-> > > >            gfp_t flags)
-> > > >  {
-> > > > +    if (dev->rtnl_link_ops)
-> > > > +        printk(KERN_INFO "%lx IFLA_INFO_KIND  %s %s\n", dev->rtnl_=
-link_ops,
-> > > > +               dev->rtnl_link_ops->kind, __FUNCTION__);
-> > > >      rtmsg_ifinfo_event(type, dev, change, rtnl_get_event(0), flags=
-,
-> > > >                 NULL, 0);
-> > > >  }
-> > > > diff --git a/net/ipv6/sit.c b/net/ipv6/sit.c
-> > > > index c0b138c20992..fa5b2725811c 100644
-> > > > --- a/net/ipv6/sit.c
-> > > > +++ b/net/ipv6/sit.c
-> > > > @@ -1919,6 +1919,8 @@ static int __net_init sit_init_net(struct net=
- *net)
-> > > >       * Allowing to move it to another netns is clearly unsafe.
-> > > >       */
-> > > >      sitn->fb_tunnel_dev->features |=3D NETIF_F_NETNS_LOCAL;
-> > > > -
-> > > > +    printk(KERN_INFO "%lx IFLA_INFO_KIND %s %s\n",
-> > > > +           sitn->fb_tunnel_dev->rtnl_link_ops,
-> > > > +           sitn->fb_tunnel_dev->rtnl_link_ops->kind, __FUNCTION__)=
-;
-> > > >      err =3D register_netdev(sitn->fb_tunnel_dev);
-> > > >      if (err)
-> > > >          goto err_reg_dev;
-> > > > >
-> > > > > >>> Hope I can be of more helpful.
-> > > > > >>
-> > > > > >> Some distributions support multi-arch, so they easily allow
-> > > > > >> crosscompiling for different architectures.
-> > > > > > I use "make  ARCH=3Dpowerpc CC=3Dpowerpc64le-linux-gnu-gcc-9
-> > > > > > CROSS_COMPILE=3Dpowerpc64le-linux-gnu- -j 16" to cross compile =
-kernel
-> > > > > > for powerpc64le in my Ubuntu 20.04 x86_64. But I can't boot the
-> > > > > > compiled kernel using "qemu-system-ppc64le -M pseries -nographi=
-c -smp
-> > > > > > 4 -net none -m 4G -kernel arch/powerpc/boot/zImage". I will con=
-tinue
-> > > > > > to explore it.
-> > > > >
-> > > > > Oh, that does not sound good. But I have not tried that in a long=
- time
-> > > > > either. It=E2=80=99s a separate issue, but maybe some of the PPC
-> > > > > maintainers/folks could help.
-> > > > I will do further research on this later.
-> > > >
-> > > > Thanks for your time
-> > > > Kind regards
-> > > > Zhouyi
-> > > > >
-> > > > >
-> > > > > Kind regards,
-> > > > >
-> > > > > Paul
+f93fa07011bd ("EXP rcu: Add polled expedited grace-period primitives")
+
+Again, please let me know how it goes!
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+commit f93fa07011bd2460f222e570d17968baff21fa90
+Author: Paul E. McKenney <paulmck@kernel.org>
+Date:   Mon Jan 31 16:55:52 2022 -0800
+
+    EXP rcu: Add polled expedited grace-period primitives
+    
+    This is an experimental proof of concept of polled expedited grace-period
+    functions.  These functions are get_state_synchronize_rcu_expedited(),
+    start_poll_synchronize_rcu_expedited(), poll_state_synchronize_rcu_expedited(),
+    and cond_synchronize_rcu_expedited(), which are similar to
+    get_state_synchronize_rcu(), start_poll_synchronize_rcu(),
+    poll_state_synchronize_rcu(), and cond_synchronize_rcu(), respectively.
+    
+    One limitation is that start_poll_synchronize_rcu_expedited() cannot
+    be invoked before workqueues are initialized.
+    
+    Link: https://lore.kernel.org/all/20220121142454.1994916-1-bfoster@redhat.com/
+    Link: https://docs.google.com/document/d/1RNKWW9jQyfjxw2E8dsXVTdvZYh0HnYeSHDKog9jhdN8/edit?usp=sharing
+    Cc: Brian Foster <bfoster@redhat.com>
+    Cc: Dave Chinner <david@fromorbit.com>
+    Cc: Al Viro <viro@zeniv.linux.org.uk>
+    Cc: Ian Kent <raven@themaw.net>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
+index 858f4d429946d..ca139b4b2d25f 100644
+--- a/include/linux/rcutiny.h
++++ b/include/linux/rcutiny.h
+@@ -23,6 +23,26 @@ static inline void cond_synchronize_rcu(unsigned long oldstate)
+ 	might_sleep();
+ }
+ 
++static inline unsigned long get_state_synchronize_rcu_expedited(void)
++{
++	return get_state_synchronize_rcu();
++}
++
++static inline unsigned long start_poll_synchronize_rcu_expedited(void)
++{
++	return start_poll_synchronize_rcu();
++}
++
++static inline bool poll_state_synchronize_rcu_expedited(unsigned long oldstate)
++{
++	return poll_state_synchronize_rcu(oldstate);
++}
++
++static inline void cond_synchronize_rcu_expedited(unsigned long oldstate)
++{
++	cond_synchronize_rcu(oldstate);
++}
++
+ extern void rcu_barrier(void);
+ 
+ static inline void synchronize_rcu_expedited(void)
+diff --git a/include/linux/rcutree.h b/include/linux/rcutree.h
+index 76665db179fa1..eb774e9be21bf 100644
+--- a/include/linux/rcutree.h
++++ b/include/linux/rcutree.h
+@@ -40,6 +40,10 @@ bool rcu_eqs_special_set(int cpu);
+ void rcu_momentary_dyntick_idle(void);
+ void kfree_rcu_scheduler_running(void);
+ bool rcu_gp_might_be_stalled(void);
++unsigned long get_state_synchronize_rcu_expedited(void);
++unsigned long start_poll_synchronize_rcu_expedited(void);
++bool poll_state_synchronize_rcu_expedited(unsigned long oldstate);
++void cond_synchronize_rcu_expedited(unsigned long oldstate);
+ unsigned long get_state_synchronize_rcu(void);
+ unsigned long start_poll_synchronize_rcu(void);
+ bool poll_state_synchronize_rcu(unsigned long oldstate);
+diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+index 24b5f2c2de87b..5b61cf20c91e9 100644
+--- a/kernel/rcu/rcu.h
++++ b/kernel/rcu/rcu.h
+@@ -23,6 +23,13 @@
+ #define RCU_SEQ_CTR_SHIFT	2
+ #define RCU_SEQ_STATE_MASK	((1 << RCU_SEQ_CTR_SHIFT) - 1)
+ 
++/*
++ * Low-order bit definitions for polled grace-period APIs.
++ */
++#define RCU_GET_STATE_FROM_EXPEDITED	0x1
++#define RCU_GET_STATE_USE_NORMAL	0x2
++#define RCU_GET_STATE_BAD_FOR_NORMAL	(RCU_GET_STATE_FROM_EXPEDITED | RCU_GET_STATE_USE_NORMAL)
++
+ /*
+  * Return the counter portion of a sequence number previously returned
+  * by rcu_seq_snap() or rcu_seq_current().
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index e6ad532cffe78..135d5e2bce879 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3871,7 +3871,8 @@ EXPORT_SYMBOL_GPL(start_poll_synchronize_rcu);
+  */
+ bool poll_state_synchronize_rcu(unsigned long oldstate)
+ {
+-	if (rcu_seq_done(&rcu_state.gp_seq, oldstate)) {
++	if (rcu_seq_done(&rcu_state.gp_seq, oldstate) &&
++	    !WARN_ON_ONCE(oldstate & RCU_GET_STATE_BAD_FOR_NORMAL)) {
+ 		smp_mb(); /* Ensure GP ends before subsequent accesses. */
+ 		return true;
+ 	}
+@@ -3900,7 +3901,8 @@ EXPORT_SYMBOL_GPL(poll_state_synchronize_rcu);
+  */
+ void cond_synchronize_rcu(unsigned long oldstate)
+ {
+-	if (!poll_state_synchronize_rcu(oldstate))
++	if (!poll_state_synchronize_rcu(oldstate) ||
++	    WARN_ON_ONCE(oldstate & RCU_GET_STATE_BAD_FOR_NORMAL))
+ 		synchronize_rcu();
+ }
+ EXPORT_SYMBOL_GPL(cond_synchronize_rcu);
+@@ -4593,6 +4595,9 @@ static void __init rcu_init_one(void)
+ 			init_waitqueue_head(&rnp->exp_wq[3]);
+ 			spin_lock_init(&rnp->exp_lock);
+ 			mutex_init(&rnp->boost_kthread_mutex);
++			raw_spin_lock_init(&rnp->exp_poll_lock);
++			rnp->exp_seq_poll_rq = 0x1;
++			INIT_WORK(&rnp->exp_poll_wq, sync_rcu_do_polled_gp);
+ 		}
+ 	}
+ 
+diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+index 926673ebe355f..19fc9acce3ce2 100644
+--- a/kernel/rcu/tree.h
++++ b/kernel/rcu/tree.h
+@@ -128,6 +128,10 @@ struct rcu_node {
+ 	wait_queue_head_t exp_wq[4];
+ 	struct rcu_exp_work rew;
+ 	bool exp_need_flush;	/* Need to flush workitem? */
++	raw_spinlock_t exp_poll_lock;
++				/* Lock and data for polled expedited grace periods. */
++	unsigned long exp_seq_poll_rq;
++	struct work_struct exp_poll_wq;
+ } ____cacheline_internodealigned_in_smp;
+ 
+ /*
+@@ -476,3 +480,6 @@ static void rcu_iw_handler(struct irq_work *iwp);
+ static void check_cpu_stall(struct rcu_data *rdp);
+ static void rcu_check_gp_start_stall(struct rcu_node *rnp, struct rcu_data *rdp,
+ 				     const unsigned long gpssdelay);
++
++/* Forward declarations for tree_exp.h. */
++static void sync_rcu_do_polled_gp(struct work_struct *wp);
+diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+index 1a45667402260..4041988086830 100644
+--- a/kernel/rcu/tree_exp.h
++++ b/kernel/rcu/tree_exp.h
+@@ -871,3 +871,154 @@ void synchronize_rcu_expedited(void)
+ 		destroy_work_on_stack(&rew.rew_work);
+ }
+ EXPORT_SYMBOL_GPL(synchronize_rcu_expedited);
++
++/**
++ * get_state_synchronize_rcu_expedited - Snapshot current expedited RCU state
++ *
++ * Returns a cookie to pass to a call to cond_synchronize_rcu_expedited()
++ * or poll_state_synchronize_rcu_expedited(), allowing them to determine
++ * whether or not a full expedited grace period has elapsed in the meantime.
++ */
++unsigned long get_state_synchronize_rcu_expedited(void)
++{
++	if (rcu_gp_is_normal())
++		return get_state_synchronize_rcu() |
++		       RCU_GET_STATE_FROM_EXPEDITED | RCU_GET_STATE_USE_NORMAL;
++
++	// Any prior manipulation of RCU-protected data must happen
++	// before the load from ->expedited_sequence, and this ordering is
++	// provided by rcu_exp_gp_seq_snap().
++	return rcu_exp_gp_seq_snap() | RCU_GET_STATE_FROM_EXPEDITED;
++}
++EXPORT_SYMBOL_GPL(get_state_synchronize_rcu_expedited);
++
++/*
++ * Ensure that start_poll_synchronize_rcu_expedited() has the expedited
++ * RCU grace periods that it needs.
++ */
++static void sync_rcu_do_polled_gp(struct work_struct *wp)
++{
++	unsigned long flags;
++	struct rcu_node *rnp = container_of(wp, struct rcu_node, exp_poll_wq);
++	unsigned long s;
++
++	raw_spin_lock_irqsave(&rnp->exp_poll_lock, flags);
++	s = rnp->exp_seq_poll_rq;
++	rnp->exp_seq_poll_rq |= 0x1;
++	raw_spin_unlock_irqrestore(&rnp->exp_poll_lock, flags);
++	if (s & 0x1)
++		return;
++	while (!sync_exp_work_done(s))
++		synchronize_rcu_expedited();
++	raw_spin_lock_irqsave(&rnp->exp_poll_lock, flags);
++	s = rnp->exp_seq_poll_rq;
++	if (!(s & 0x1) && !sync_exp_work_done(s))
++		queue_work(rcu_gp_wq, &rnp->exp_poll_wq);
++	else
++		rnp->exp_seq_poll_rq |= 0x1;
++	raw_spin_unlock_irqrestore(&rnp->exp_poll_lock, flags);
++}
++
++/**
++ * start_poll_synchronize_rcu_expedited - Snapshot current expedited RCU state and start grace period
++ *
++ * Returns a cookie to pass to a call to cond_synchronize_rcu_expedited()
++ * or poll_state_synchronize_rcu_expedited(), allowing them to determine
++ * whether or not a full expedited grace period has elapsed in the meantime.
++ * If the needed grace period is not already slated to start, initiates
++ * that grace period.
++ */
++
++unsigned long start_poll_synchronize_rcu_expedited(void)
++{
++	unsigned long flags;
++	struct rcu_data *rdp;
++	struct rcu_node *rnp;
++	unsigned long s;
++
++	if (rcu_gp_is_normal())
++		return start_poll_synchronize_rcu() |
++		       RCU_GET_STATE_FROM_EXPEDITED | RCU_GET_STATE_USE_NORMAL;
++
++	s = rcu_exp_gp_seq_snap();
++	rdp = per_cpu_ptr(&rcu_data, raw_smp_processor_id());
++	rnp = rdp->mynode;
++	raw_spin_lock_irqsave(&rnp->exp_poll_lock, flags);
++	if ((rnp->exp_seq_poll_rq & 0x1) || ULONG_CMP_LT(rnp->exp_seq_poll_rq, s)) {
++		rnp->exp_seq_poll_rq = s;
++		queue_work(rcu_gp_wq, &rnp->exp_poll_wq);
++	}
++	raw_spin_unlock_irqrestore(&rnp->exp_poll_lock, flags);
++
++	return s | RCU_GET_STATE_FROM_EXPEDITED;
++}
++EXPORT_SYMBOL_GPL(start_poll_synchronize_rcu_expedited);
++
++/**
++ * poll_state_synchronize_rcu_expedited - Conditionally wait for an expedited RCU grace period
++ *
++ * @oldstate: value from get_state_synchronize_rcu_expedited() or start_poll_synchronize_rcu_expedited()
++ *
++ * If a full expedited RCU grace period has elapsed since the earlier call
++ * from which oldstate was obtained, return @true, otherwise return @false.
++ * If @false is returned, it is the caller's responsibility to invoke
++ * this function later on until it does return @true.  Alternatively,
++ * the caller can explicitly wait for a grace period, for example, by
++ * passing @oldstate to cond_synchronize_rcu_expedited() or by directly
++ * invoking synchronize_rcu_expedited().
++ *
++ * Yes, this function does not take counter wrap into account.
++ * But counter wrap is harmless.  If the counter wraps, we have waited for
++ * more than 2 billion grace periods (and way more on a 64-bit system!).
++ * Those needing to keep oldstate values for very long time periods
++ * (several hours even on 32-bit systems) should check them occasionally
++ * and either refresh them or set a flag indicating that the grace period
++ * has completed.
++ *
++ * This function provides the same memory-ordering guarantees that would
++ * be provided by a synchronize_rcu_expedited() that was invoked at the
++ * call to the function that provided @oldstate, and that returned at the
++ * end of this function.
++ */
++bool poll_state_synchronize_rcu_expedited(unsigned long oldstate)
++{
++	WARN_ON_ONCE(!(oldstate & RCU_GET_STATE_FROM_EXPEDITED));
++	if (oldstate & RCU_GET_STATE_USE_NORMAL)
++		return poll_state_synchronize_rcu(oldstate & ~RCU_GET_STATE_BAD_FOR_NORMAL);
++	if (!rcu_exp_gp_seq_done(oldstate & ~RCU_SEQ_STATE_MASK))
++		return false;
++	smp_mb(); /* Ensure GP ends before subsequent accesses. */
++	return true;
++}
++EXPORT_SYMBOL_GPL(poll_state_synchronize_rcu_expedited);
++
++/**
++ * cond_synchronize_rcu_expedited - Conditionally wait for an expedited RCU grace period
++ *
++ * @oldstate: value from get_state_synchronize_rcu_expedited() or start_poll_synchronize_rcu_expedited()
++ *
++ * If a full expedited RCU grace period has elapsed since the earlier
++ * call from which oldstate was obtained, just return.  Otherwise, invoke
++ * synchronize_rcu_expedited() to wait for a full grace period.
++ *
++ * Yes, this function does not take counter wrap into account.  But
++ * counter wrap is harmless.  If the counter wraps, we have waited for
++ * more than 2 billion grace periods (and way more on a 64-bit system!),
++ * so waiting for one additional grace period should be just fine.
++ *
++ * This function provides the same memory-ordering guarantees that would
++ * be provided by a synchronize_rcu_expedited() that was invoked at the
++ * call to the function that provided @oldstate, and that returned at the
++ * end of this function.
++ */
++void cond_synchronize_rcu_expedited(unsigned long oldstate)
++{
++	WARN_ON_ONCE(!(oldstate & RCU_GET_STATE_FROM_EXPEDITED));
++	if (poll_state_synchronize_rcu_expedited(oldstate))
++		return;
++	if (oldstate & RCU_GET_STATE_USE_NORMAL)
++		synchronize_rcu();
++	else
++		synchronize_rcu_expedited();
++}
++EXPORT_SYMBOL_GPL(cond_synchronize_rcu_expedited);
