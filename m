@@ -2,44 +2,44 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D0BDC433EF
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D34ACC433FE
 	for <rcu@archiver.kernel.org>; Fri,  4 Feb 2022 23:56:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378557AbiBDX4M (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 4 Feb 2022 18:56:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52166 "EHLO
+        id S1378527AbiBDX4N (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 4 Feb 2022 18:56:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378484AbiBDX4H (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 4 Feb 2022 18:56:07 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44E7BDB788C2;
-        Fri,  4 Feb 2022 15:56:04 -0800 (PST)
+        with ESMTP id S1378496AbiBDX4I (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 4 Feb 2022 18:56:08 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3E0EDB788CD;
+        Fri,  4 Feb 2022 15:56:05 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A3AC961CB0;
-        Fri,  4 Feb 2022 23:56:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA708C340F7;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 6F978B8397C;
+        Fri,  4 Feb 2022 23:56:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CEDF8C340FB;
         Fri,  4 Feb 2022 23:56:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1644018962;
-        bh=xZePTPvdeMNKn6sTItV8Y+MIp/pcS8E3CgnOqzP3cbY=;
+        bh=5LHH/udgFWNwegl1ai3PJBMHlKqUN4SkpOmVzHlGIQE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UqqQsunXUKAcpm/Zld16EZ4UYx91XDOKE9ODXhLRtd65n/a6jazUpskuYjL5FivVy
-         2ljvobmMpun5Oy5OT4Ll7nhy2Y65d47ufLqXzW3SErAIF/lo/SgVeibiSF/HFi/GwG
-         tzqoYoDpRmUn0Shlz0hFqlhUAaKdW8LZSTfa8yBcYwgeVyb0oOn2AsmwEtd/03qIRJ
-         qNCzzpWHdMbVtg4ykVrgbq0ABgqCUCQ1WvQPawvwo8Bs6XoY/y7BKoMUTZESS/F56h
-         vYv6YOinnuqvLIJscdW5QitT51k7CJiHEM23ZHQUVSy233k+xBW50yUQ2U4F6WGbnu
-         2If/wvbFXvWYg==
+        b=gBVhtPaP0NXHORAbnAmOOAJnlOZCs1CQ1VXCxLIXYcdMdXuW67+Z/NT90qEgdhTHY
+         JGKXFlSs4Cj/Rj5IjkrIpPy9Rhfvur0xHnmY8lS5mS0sR6dsZhJlJbeaRaBu1vHS4t
+         cXyX5nt01Ohy5KEx8nFgTSkdOduCdH6qjhOYark0Q9qaZr1mbXLITlsSWzonX9f82H
+         twrtuQDNeGvtnre3eiaL+OlfJ2j3FA6lamprPookVOnVhyCCh0NeoIvIush6I563cL
+         71NLkXCzXhHp7BCBoom8QlEIogBuSL2kOsM9FrlDuwpSIsR+8bg7VPVOsn6ntt+U6T
+         xknyJNZh/G2+A==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 5ED2E5C0A0A; Fri,  4 Feb 2022 15:56:02 -0800 (PST)
+        id 676995C0DB8; Fri,  4 Feb 2022 15:56:02 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
         rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 06/13] torture: Compress KCSAN as well as KASAN vmlinux files
-Date:   Fri,  4 Feb 2022 15:55:54 -0800
-Message-Id: <20220204235601.3438-6-paulmck@kernel.org>
+Subject: [PATCH rcu 11/13] torture: Make torture.sh help message match reality
+Date:   Fri,  4 Feb 2022 15:55:59 -0800
+Message-Id: <20220204235601.3438-11-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220204235558.GA3221@paulmck-ThinkPad-P17-Gen-1>
 References: <20220204235558.GA3221@paulmck-ThinkPad-P17-Gen-1>
@@ -49,76 +49,29 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Compressing KASAN vmlinux files reduces torture.sh res file size from
-about 100G to about 50G, which is good, but the KCSAN vmlinux files
-are also large.  Compressing them reduces their size from about 700M to
-about 100M (but of course your mileage may vary).  This commit therefore
-compresses both KASAN and KCSAN vmlinux files.
+This commit fixes a couple of typos: s/--doall/--do-all/ and
+s/--doallmodconfig/--do-allmodconfig/.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- .../selftests/rcutorture/bin/torture.sh        | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ tools/testing/selftests/rcutorture/bin/torture.sh | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/tools/testing/selftests/rcutorture/bin/torture.sh b/tools/testing/selftests/rcutorture/bin/torture.sh
-index bddce72ea5ce4..a5f1c5fbefe4c 100755
+index e00e60efb2310..bfe09e2829c8d 100755
 --- a/tools/testing/selftests/rcutorture/bin/torture.sh
 +++ b/tools/testing/selftests/rcutorture/bin/torture.sh
-@@ -37,7 +37,7 @@ configs_scftorture=
- kcsan_kmake_args=
- 
- # Default compression, duration, and apportionment.
--compress_kasan_vmlinux="`identify_qemu_vcpus`"
-+compress_concurrency="`identify_qemu_vcpus`"
- duration_base=10
- duration_rcutorture_frac=7
- duration_locktorture_frac=1
-@@ -67,7 +67,7 @@ function doyesno () {
- 
- usage () {
- 	echo "Usage: $scriptname optional arguments:"
--	echo "       --compress-kasan-vmlinux concurrency"
-+	echo "       --compress-concurrency concurrency"
+@@ -71,8 +71,8 @@ usage () {
  	echo "       --configs-rcutorture \"config-file list w/ repeat factor (3*TINY01)\""
  	echo "       --configs-locktorture \"config-file list w/ repeat factor (10*LOCK01)\""
  	echo "       --configs-scftorture \"config-file list w/ repeat factor (2*CFLIST)\""
-@@ -91,9 +91,9 @@ usage () {
- while test $# -gt 0
- do
- 	case "$1" in
--	--compress-kasan-vmlinux)
--		checkarg --compress-kasan-vmlinux "(concurrency level)" $# "$2" '^[0-9][0-9]*$' '^error'
--		compress_kasan_vmlinux=$2
-+	--compress-concurrency)
-+		checkarg --compress-concurrency "(concurrency level)" $# "$2" '^[0-9][0-9]*$' '^error'
-+		compress_concurrency=$2
- 		shift
- 		;;
- 	--config-rcutorture|--configs-rcutorture)
-@@ -435,11 +435,11 @@ then
- 	echo "  All bugs were KCSAN failures."
- fi
- tdir="`cat $T/successes $T/failures | head -1 | awk '{ print $NF }' | sed -e 's,/[^/]\+/*$,,'`"
--if test -n "$tdir" && test $compress_kasan_vmlinux -gt 0
-+if test -n "$tdir" && test $compress_concurrency -gt 0
- then
- 	# KASAN vmlinux files can approach 1GB in size, so compress them.
--	echo Looking for KASAN files to compress: `date` > "$tdir/log-xz" 2>&1
--	find "$tdir" -type d -name '*-kasan' -print > $T/xz-todo
-+	echo Looking for K[AC]SAN files to compress: `date` > "$tdir/log-xz" 2>&1
-+	find "$tdir" -type d -name '*-k[ac]san' -print > $T/xz-todo
- 	ncompresses=0
- 	batchno=1
- 	if test -s $T/xz-todo
-@@ -457,7 +457,7 @@ then
- 			do
- 				xz "$j" >> "$tdir/log-xz" 2>&1 &
- 				ncompresses=$((ncompresses+1))
--				if test $ncompresses -ge $compress_kasan_vmlinux
-+				if test $ncompresses -ge $compress_concurrency
- 				then
- 					echo Waiting for batch $batchno of $ncompresses compressions `date` | tee -a "$tdir/log-xz" | tee -a $T/log
- 					wait
+-	echo "       --doall"
+-	echo "       --doallmodconfig / --do-no-allmodconfig"
++	echo "       --do-all"
++	echo "       --do-allmodconfig / --do-no-allmodconfig"
+ 	echo "       --do-clocksourcewd / --do-no-clocksourcewd"
+ 	echo "       --do-kasan / --do-no-kasan"
+ 	echo "       --do-kcsan / --do-no-kcsan"
 -- 
 2.31.1.189.g2e36527f23
 
