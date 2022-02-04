@@ -2,44 +2,41 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C0927C433FE
-	for <rcu@archiver.kernel.org>; Fri,  4 Feb 2022 23:39:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24D1AC433EF
+	for <rcu@archiver.kernel.org>; Fri,  4 Feb 2022 23:39:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378314AbiBDXjP (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 4 Feb 2022 18:39:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378269AbiBDXjI (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1378325AbiBDXjR (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 4 Feb 2022 18:39:17 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:39422 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1378267AbiBDXjI (ORCPT <rfc822;rcu@vger.kernel.org>);
         Fri, 4 Feb 2022 18:39:08 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B651E025B34;
-        Fri,  4 Feb 2022 15:39:07 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 14F00B83961;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 929A3B83976;
         Fri,  4 Feb 2022 23:39:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7763CC340FF;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CFF6C34104;
         Fri,  4 Feb 2022 23:39:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1644017944;
-        bh=Q0Hs9+xdt5kC0I4NW3DFLJXE6gilkL4WWu77Q0NgULo=;
+        bh=B3ldLUHX3CEZ1V3crg0anclvyymU/4MkEs5XFCophWg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qPQYS/2yHEy5lqMaWQ3v73ycqTdQ4l/7422evQyMBa8ez3GmlR4LdHOjXQluVzmyj
-         cCMn44aX+64HG1a9xsi3wJvmFYpSnBzwcxKdGtDwF2prNpcjXkQebXgyAOR4UCCNGj
-         BER/+BePZGePl5csnYBc7HpIZzKNNsEkgQ7Dpp5kvLi3pNiFqe/wyK7h8D0zlLfQZg
-         HWI5BdbxjItvCoD0H75Zr/fR+d6hn0XAsx17dLpBjdXCwesud0L9VXbaP0etrdDAGu
-         ulMyr8AajqQv6s0CoOJDjLHuONTz/OyjEf3sRwHxhfWOjnAZ2TVrkAmhINXdJnwJiI
-         VRQ9P6PzWm6bA==
+        b=sqWN18zcs/lhFJxDxrLLN0UUifOkhaNMImXVXjJDP5G6zvNlMwgMAN9qrYoSdfdu8
+         xQlCTInpa6eYhzEKPi0f3lx0OrRRoKisPEU8eT6akFIDeTiEU/o7nVhO9FZm1AVbCv
+         W/+Jg9FhPlALnAiyktKBHlEOK8gCx3OEi/F8GQczqQ5iHNcRsz4gtTwYY6Iv47tWXQ
+         jzYTySAQ7qOpEb+YcFF0R1zD4y13VhoEF7O+3CUTLioQr6kSc2nA5NB+S68eLIrJIY
+         ddg/veNR55yb4+DKy5f6pDBC7G6lsPem0DsPzYsI2caOAArfOpgrJaKyptQwp3GyQx
+         jHkg9DlPJ1TeQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 08DAA5C0E5E; Fri,  4 Feb 2022 15:39:04 -0800 (PST)
+        id 0E7935C10CE; Fri,  4 Feb 2022 15:39:04 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
         rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 12/19] srcu: Avoid NULL dereference in srcu_torture_stats_print()
-Date:   Fri,  4 Feb 2022 15:38:55 -0800
-Message-Id: <20220204233902.1902-12-paulmck@kernel.org>
+Subject: [PATCH rcu 15/19] srcu: Create concurrency-safe helper for initiating size transition
+Date:   Fri,  4 Feb 2022 15:38:58 -0800
+Message-Id: <20220204233902.1902-15-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220204233858.GA1469@paulmck-ThinkPad-P17-Gen-1>
 References: <20220204233858.GA1469@paulmck-ThinkPad-P17-Gen-1>
@@ -49,93 +46,58 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-You really shouldn't invoke srcu_torture_stats_print() after invoking
-cleanup_srcu_struct(), but there is really no reason to get a
-compiler-obfuscated per-CPU-variable NULL pointer dereference as the
-diagnostic.  This commit therefore checks for NULL ->sda and makes a
-more polite console-message complaint in that case.
+Once there are contention-initiated size transitions, it will be
+possible for rcutorture to initiate a transition at the same time
+as a contention-initiated transition.  This commit therefore creates
+a concurrency-safe helper function named srcu_transition_to_big() to
+safely initiate size transitions.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/srcutree.c | 62 ++++++++++++++++++++++++-------------------
- 1 file changed, 34 insertions(+), 28 deletions(-)
+ kernel/rcu/srcutree.c | 23 +++++++++++++++++++++--
+ 1 file changed, 21 insertions(+), 2 deletions(-)
 
 diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 4201815744d85..767487ad5440a 100644
+index d16104405c8f9..5eee113531cdc 100644
 --- a/kernel/rcu/srcutree.c
 +++ b/kernel/rcu/srcutree.c
-@@ -1448,37 +1448,43 @@ void srcu_torture_stats_print(struct srcu_struct *ssp, char *tt, char *tf)
- 	idx = ssp->srcu_idx & 0x1;
- 	if (ss_state < 0 || ss_state >= ARRAY_SIZE(srcu_size_state_name))
- 		ss_state_idx = ARRAY_SIZE(srcu_size_state_name) - 1;
--	pr_alert("%s%s Tree SRCU g%ld state %d (%s) per-CPU(idx=%d):",
-+	pr_alert("%s%s Tree SRCU g%ld state %d (%s)",
- 		 tt, tf, rcu_seq_current(&ssp->srcu_gp_seq), ss_state,
--		 srcu_size_state_name[ss_state_idx], idx);
--	for_each_possible_cpu(cpu) {
--		unsigned long l0, l1;
--		unsigned long u0, u1;
--		long c0, c1;
--		struct srcu_data *sdp;
--
--		sdp = per_cpu_ptr(ssp->sda, cpu);
--		u0 = data_race(sdp->srcu_unlock_count[!idx]);
--		u1 = data_race(sdp->srcu_unlock_count[idx]);
-+		 srcu_size_state_name[ss_state_idx]);
-+	if (!ssp->sda) {
-+		// Called after cleanup_srcu_struct(), perhaps.
-+		pr_cont(" No per-CPU srcu_data structures (->sda == NULL).\n");
-+	} else {
-+		pr_cont(" per-CPU(idx=%d):", idx);
-+		for_each_possible_cpu(cpu) {
-+			unsigned long l0, l1;
-+			unsigned long u0, u1;
-+			long c0, c1;
-+			struct srcu_data *sdp;
+@@ -262,6 +262,25 @@ EXPORT_SYMBOL_GPL(init_srcu_struct);
  
--		/*
--		 * Make sure that a lock is always counted if the corresponding
--		 * unlock is counted.
--		 */
--		smp_rmb();
--
--		l0 = data_race(sdp->srcu_lock_count[!idx]);
--		l1 = data_race(sdp->srcu_lock_count[idx]);
--
--		c0 = l0 - u0;
--		c1 = l1 - u1;
--		pr_cont(" %d(%ld,%ld %c)",
--			cpu, c0, c1,
--			"C."[rcu_segcblist_empty(&sdp->srcu_cblist)]);
--		s0 += c0;
--		s1 += c1;
-+			sdp = per_cpu_ptr(ssp->sda, cpu);
-+			u0 = data_race(sdp->srcu_unlock_count[!idx]);
-+			u1 = data_race(sdp->srcu_unlock_count[idx]);
+ #endif /* #else #ifdef CONFIG_DEBUG_LOCK_ALLOC */
+ 
++/*
++ * Initiate an idempotent transition to SRCU_SIZE_BIG.
++ */
++static void srcu_transition_to_big(struct srcu_struct *ssp)
++{
++	unsigned long flags;
 +
-+			/*
-+			 * Make sure that a lock is always counted if the corresponding
-+			 * unlock is counted.
-+			 */
-+			smp_rmb();
++	/* Double-checked locking on ->srcu_size-state. */
++	if (smp_load_acquire(&ssp->srcu_size_state) != SRCU_SIZE_SMALL)
++		return;
++	spin_lock_irqsave_rcu_node(ssp, flags);
++	if (smp_load_acquire(&ssp->srcu_size_state) != SRCU_SIZE_SMALL) {
++		spin_unlock_irqrestore_rcu_node(ssp, flags);
++		return;
++	}
++	smp_store_release(&ssp->srcu_size_state, SRCU_SIZE_ALLOC);
++	spin_unlock_irqrestore_rcu_node(ssp, flags);
++}
 +
-+			l0 = data_race(sdp->srcu_lock_count[!idx]);
-+			l1 = data_race(sdp->srcu_lock_count[idx]);
-+
-+			c0 = l0 - u0;
-+			c1 = l1 - u1;
-+			pr_cont(" %d(%ld,%ld %c)",
-+				cpu, c0, c1,
-+				"C."[rcu_segcblist_empty(&sdp->srcu_cblist)]);
-+			s0 += c0;
-+			s1 += c1;
-+		}
-+		pr_cont(" T(%ld,%ld)\n", s0, s1);
+ /*
+  * First-use initialization of statically allocated srcu_struct
+  * structure.  Wiring up the combining tree is more than can be
+@@ -1496,8 +1515,8 @@ void srcu_torture_stats_print(struct srcu_struct *ssp, char *tt, char *tf)
+ 		}
+ 		pr_cont(" T(%ld,%ld)\n", s0, s1);
  	}
--	pr_cont(" T(%ld,%ld)\n", s0, s1);
- 	if (READ_ONCE(ssp->srcu_size_state) == SRCU_SIZE_SMALL && convert_to_big == 2)
- 		WRITE_ONCE(ssp->srcu_size_state, SRCU_SIZE_ALLOC);
+-	if (READ_ONCE(ssp->srcu_size_state) == SRCU_SIZE_SMALL && convert_to_big == 2)
+-		WRITE_ONCE(ssp->srcu_size_state, SRCU_SIZE_ALLOC);
++	if (convert_to_big == 2)
++		srcu_transition_to_big(ssp);
  }
+ EXPORT_SYMBOL_GPL(srcu_torture_stats_print);
+ 
 -- 
 2.31.1.189.g2e36527f23
 
