@@ -2,76 +2,134 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E9F5C433EF
-	for <rcu@archiver.kernel.org>; Fri,  4 Feb 2022 23:20:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 27CB5C433F5
+	for <rcu@archiver.kernel.org>; Fri,  4 Feb 2022 23:20:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235429AbiBDXU3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 4 Feb 2022 18:20:29 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:59414 "EHLO
+        id S1378024AbiBDXUl (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 4 Feb 2022 18:20:41 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:59500 "EHLO
         ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233885AbiBDXU3 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 4 Feb 2022 18:20:29 -0500
+        with ESMTP id S1378026AbiBDXUk (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 4 Feb 2022 18:20:40 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 76448B83968;
-        Fri,  4 Feb 2022 23:20:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 449FBC004E1;
-        Fri,  4 Feb 2022 23:20:27 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 36F0BB83938;
+        Fri,  4 Feb 2022 23:20:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D29D1C340ED;
+        Fri,  4 Feb 2022 23:20:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1644016827;
-        bh=GfCkjzsfVNABMf46P+mNJkGnvDu0PQgKZ94eQR22RO4=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=sCiWSpOuddLFACqG/EEtiNpZaNSdlqFF27huReh2PDGnzetBqR1Qz4hFhxQ+hqk4l
-         SVbJchnLaDgdxEo3KXCatuZ3A1y8fdZ7pK86SdH1jdVSEgTQG64es++F0xQdb7B0ds
-         YdVXL52sdMMsnMPU7lNZvFdwXDGTVD1Eiub0d2FZN5pI6WIetFeLH8fxKvpI9ZYyrB
-         1BvANZ/rK9Ob7GiIuItBsKHCFVHgj+K5z4jT0bX5h/EWMU/0N4S1npPgTsp/ZwGtR4
-         zevGy0kdLSLSVryFFiN+MnyIa2ALHcz4CSc2HrWFViH/ZoePc5MYpEX2Iup9UiZmxV
-         VPmzWOAnt6W1g==
+        s=k20201202; t=1644016837;
+        bh=aPqpQB1V+ial4RA4tbGtfUo/DpQXz9yRajIkK4rcS3Q=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=MVWZi99bWMS34YhGfPTLsbxyF2nQVo5mmIeoFG8CZQvc69HEUc49kClUrDUBuaYY3
+         91cJenx5fhKD3Qh5z2qQrUw/mIvtfB2tqR+3YMIP2o71yg/PWcgUDGljfaOjeDaKTI
+         M9XePeCZlR3Q9ZgaNGReUBtIzgT+joeaIP2ElDPMA6UH3zSt+V25KjZPt6/25Osxjd
+         NGm4pOwGOTD+smf28ndce5g8tY22MkCkAmI59YdaIzARABqAyntVYc+Q8Ga27TJtZm
+         VWkn86zXnsAPH4PoQlrHBv4zzTMedEWGqNC6vJdWBRS1k7RnnqYcEbWRJKGKuwOsYH
+         CL06t2GgVxsfg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 102B55C0418; Fri,  4 Feb 2022 15:20:27 -0800 (PST)
-Date:   Fri, 4 Feb 2022 15:20:27 -0800
+        id A36795C0829; Fri,  4 Feb 2022 15:20:37 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org
-Subject: [PATCH rcu 0/5] Extricate rcu_barrier() from CPU hotplug
-Message-ID: <20220204232027.GA4194214@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 2/5] rcu: Refactor rcu_barrier() empty-list handling
+Date:   Fri,  4 Feb 2022 15:20:33 -0800
+Message-Id: <20220204232036.460-2-paulmck@kernel.org>
+X-Mailer: git-send-email 2.31.1.189.g2e36527f23
+In-Reply-To: <20220204232027.GA4194214@paulmck-ThinkPad-P17-Gen-1>
+References: <20220204232027.GA4194214@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello!
+This commit saves a few lines by checking first for an empty callback
+list.  If the callback list is empty, then that CPU is taken care of,
+regardless of its online or nocb state.  Also simplify tracing accordingly
+and fold a few lines together.
 
-This series reworks rcu_barrier() to remove its calls to cpus_read_lock()
-and cpus_read_unlock().  This improves modularity, gets rid of an
-acquisition of a wide-spectrum synchronization mechanism, and allows
-rcu_barrier() to be invoked from CPU-hotplug notifiers that permit
-blocking.  Not that this last is necessarily a good idea.
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ include/trace/events/rcu.h |  9 ++++-----
+ kernel/rcu/tree.c          | 25 ++++++++-----------------
+ 2 files changed, 12 insertions(+), 22 deletions(-)
 
-1.	Kill rnp->ofl_seq and use only rcu_state.ofl_lock for exclusion,
-	courtesy of David Woodhouse.
+diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
+index 670e41783edd8..90b2fb0292cb1 100644
+--- a/include/trace/events/rcu.h
++++ b/include/trace/events/rcu.h
+@@ -794,16 +794,15 @@ TRACE_EVENT_RCU(rcu_torture_read,
+  * Tracepoint for rcu_barrier() execution.  The string "s" describes
+  * the rcu_barrier phase:
+  *	"Begin": rcu_barrier() started.
++ *	"CB": An rcu_barrier_callback() invoked a callback, not the last.
+  *	"EarlyExit": rcu_barrier() piggybacked, thus early exit.
+  *	"Inc1": rcu_barrier() piggyback check counter incremented.
+- *	"OfflineNoCBQ": rcu_barrier() found offline no-CBs CPU with callbacks.
+- *	"OnlineQ": rcu_barrier() found online CPU with callbacks.
+- *	"OnlineNQ": rcu_barrier() found online CPU, no callbacks.
++ *	"Inc2": rcu_barrier() piggyback check counter incremented.
+  *	"IRQ": An rcu_barrier_callback() callback posted on remote CPU.
+  *	"IRQNQ": An rcu_barrier_callback() callback found no callbacks.
+- *	"CB": An rcu_barrier_callback() invoked a callback, not the last.
+  *	"LastCB": An rcu_barrier_callback() invoked the last callback.
+- *	"Inc2": rcu_barrier() piggyback check counter incremented.
++ *	"NQ": rcu_barrier() found a CPU with no callbacks.
++ *	"OnlineQ": rcu_barrier() found online CPU with callbacks.
+  * The "cpu" argument is the CPU or -1 if meaningless, the "cnt" argument
+  * is the count of remaining callbacks, and "done" is the piggybacking count.
+  */
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 8f6cf86a76c2d..87ea516f87779 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -4030,8 +4030,7 @@ void rcu_barrier(void)
+ 
+ 	/* Did someone else do our work for us? */
+ 	if (rcu_seq_done(&rcu_state.barrier_sequence, s)) {
+-		rcu_barrier_trace(TPS("EarlyExit"), -1,
+-				  rcu_state.barrier_sequence);
++		rcu_barrier_trace(TPS("EarlyExit"), -1, rcu_state.barrier_sequence);
+ 		smp_mb(); /* caller's subsequent code after above check. */
+ 		mutex_unlock(&rcu_state.barrier_mutex);
+ 		return;
+@@ -4059,26 +4058,18 @@ void rcu_barrier(void)
+ 	 */
+ 	for_each_possible_cpu(cpu) {
+ 		rdp = per_cpu_ptr(&rcu_data, cpu);
+-		if (cpu_is_offline(cpu) &&
+-		    !rcu_rdp_is_offloaded(rdp))
++		if (!rcu_segcblist_n_cbs(&rdp->cblist)) {
++			rcu_barrier_trace(TPS("NQ"), cpu, rcu_state.barrier_sequence);
+ 			continue;
+-		if (rcu_segcblist_n_cbs(&rdp->cblist) && cpu_online(cpu)) {
+-			rcu_barrier_trace(TPS("OnlineQ"), cpu,
+-					  rcu_state.barrier_sequence);
++		}
++		if (cpu_online(cpu)) {
++			rcu_barrier_trace(TPS("OnlineQ"), cpu, rcu_state.barrier_sequence);
+ 			smp_call_function_single(cpu, rcu_barrier_func, (void *)cpu, 1);
+-		} else if (rcu_segcblist_n_cbs(&rdp->cblist) &&
+-			   cpu_is_offline(cpu)) {
+-			rcu_barrier_trace(TPS("OfflineNoCBQ"), cpu,
+-					  rcu_state.barrier_sequence);
++		} else {
++			rcu_barrier_trace(TPS("OfflineNoCBQ"), cpu, rcu_state.barrier_sequence);
+ 			local_irq_disable();
+ 			rcu_barrier_func((void *)cpu);
+ 			local_irq_enable();
+-		} else if (cpu_is_offline(cpu)) {
+-			rcu_barrier_trace(TPS("OfflineNoCBNoQ"), cpu,
+-					  rcu_state.barrier_sequence);
+-		} else {
+-			rcu_barrier_trace(TPS("OnlineNQ"), cpu,
+-					  rcu_state.barrier_sequence);
+ 		}
+ 	}
+ 	cpus_read_unlock();
+-- 
+2.31.1.189.g2e36527f23
 
-2.	Refactor rcu_barrier() empty-list handling.
-
-3.	Rework rcu_barrier() and callback-migration logic.
-
-4.	Make rcu_barrier() no longer block CPU-hotplug operations.
-
-5.	Create and use an rcu_rdp_cpu_online().
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- b/include/trace/events/rcu.h |    9 +-
- b/kernel/rcu/tree.c          |   71 ++++++++++----------
- b/kernel/rcu/tree.h          |    4 -
- b/kernel/rcu/tree_plugin.h   |    6 -
- kernel/rcu/tree.c            |  151 +++++++++++++++++++++++++++----------------
- kernel/rcu/tree.h            |    5 +
- 6 files changed, 143 insertions(+), 103 deletions(-)
