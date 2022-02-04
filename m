@@ -2,44 +2,41 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F3787C433F5
-	for <rcu@archiver.kernel.org>; Fri,  4 Feb 2022 23:53:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8215FC43219
+	for <rcu@archiver.kernel.org>; Fri,  4 Feb 2022 23:53:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378344AbiBDXxf (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S1378388AbiBDXxf (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Fri, 4 Feb 2022 18:53:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378408AbiBDXxc (ORCPT <rfc822;rcu@vger.kernel.org>);
+Received: from ams.source.kernel.org ([145.40.68.75]:45758 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1378359AbiBDXxc (ORCPT <rfc822;rcu@vger.kernel.org>);
         Fri, 4 Feb 2022 18:53:32 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3506BC06C94B;
-        Fri,  4 Feb 2022 15:53:32 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id E5716B81210;
-        Fri,  4 Feb 2022 23:53:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0F34C340ED;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 13AA2B83975;
+        Fri,  4 Feb 2022 23:53:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B35BBC340F1;
         Fri,  4 Feb 2022 23:53:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1644018809;
-        bh=VaAGDBn6uKvflCX1P8zwNnB516OO2C64Im2j7PiEN0k=;
+        bh=gMEkExdEIHtGZYJMcRMC5CtUw2Kr5Mwkvh0M24YUqF4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=e+4yQqHfLjxmEfTpGG2f9Qe5YDGC/USJBSM1y1O2HxfrTF3eCj+hIzoGT1cgCcQ0G
-         KbwezbnPbEWA33WkavozgBA/eMsJzr+7TeFDIIqSuewVMwGCRpgM+nqKvlIDH1a7IG
-         MhsbuqnBOSmdAXrJSBT6RLBKFfDUYnVeZCefx9cLHdxdRU2UtsgAU7EL6Fh4zw2OQX
-         FbrNHtaOAfThPKV/UnoFoQUdWBMo7Mlvyy7umZnQoholFJeO8AopqcMNfxcD6l6rxB
-         /fkxBqN9hjoqA1BQAIqUs/n28y4A8i54PXc7WA+pF3E6XwXD06KBamTDvYGycQCu2i
-         ROmOpH6Am4cgg==
+        b=KhV/RYYSsjDjI0qNGqJ2DYRoSz3pTf8cKxagRcd+9QoYKmI3uUV7Mam1AktBDSs6K
+         6y8L3f429/ykLR6JpaWRKCrcJEqzKXn8T9jmM6VKzwJ7QbbZDGU69Z0ErpSS6J489J
+         bqvvHrLbHICjkSINdERcgRtIuHeE6DCFtvsEyn2b4xW3rU50bZp5dTAHw7JxZ1eeNx
+         hYc2itObZwxmBahnDjoGJD9HoPbcZrU95Nm5omIRgNjdsMGAIDObXCcHlSmRD3vN/h
+         toLSPJFe5M/VX/kf22JQRro5foc+1Y3DnQWzp7hGFEG7e0uv2DCiJ8rEvz46O2CfhS
+         gnX/siPw5wkQQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 76BA75C0829; Fri,  4 Feb 2022 15:53:29 -0800 (PST)
+        id 78C555C08B7; Fri,  4 Feb 2022 15:53:29 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
         rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 2/8] torture: Distinguish kthread stopping and being asked to stop
-Date:   Fri,  4 Feb 2022 15:53:21 -0800
-Message-Id: <20220204235327.2948-2-paulmck@kernel.org>
+Subject: [PATCH rcu 3/8] rcutorture: Increase visibility of forward-progress hangs
+Date:   Fri,  4 Feb 2022 15:53:22 -0800
+Message-Id: <20220204235327.2948-3-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220204235321.GA2511@paulmck-ThinkPad-P17-Gen-1>
 References: <20220204235321.GA2511@paulmck-ThinkPad-P17-Gen-1>
@@ -49,34 +46,50 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Right now, if a given kthread (call it "kthread") realizes that it needs
-to stop, "Stopping kthread" is written to the console.  When the cleanup
-code decides that it is time to stop that kthread, "Stopping kthread
-tasks" is written to the console.  These two events might happen in
-either order, especially in the case of time-based torture-test shutdown.
-
-But it is hard to distinguish these, especially for those unfamiliar with
-the torture tests.  This commit therefore changes the first case from
-"Stopping kthread" to "kthread is stopping" to make things more clear.
+This commit adds a few pr_alert() calls to rcutorture's forward-progress
+testing in order to better diagnose shutdown-time hangs.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/torture.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/rcu/rcutorture.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/kernel/torture.c b/kernel/torture.c
-index ef27a6c824514..f55d803f995d4 100644
---- a/kernel/torture.c
-+++ b/kernel/torture.c
-@@ -911,7 +911,7 @@ void torture_kthread_stopping(char *title)
- {
- 	char buf[128];
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 00400aef58184..fefc3fa1a9c2a 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -2281,6 +2281,7 @@ static void rcu_torture_fwd_prog_nr(struct rcu_fwd *rfp,
+ 	unsigned long stopat;
+ 	static DEFINE_TORTURE_RANDOM(trs);
  
--	snprintf(buf, sizeof(buf), "Stopping %s", title);
-+	snprintf(buf, sizeof(buf), "%s is stopping", title);
- 	VERBOSE_TOROUT_STRING(buf);
- 	while (!kthread_should_stop()) {
- 		torture_shutdown_absorb(title);
++	pr_alert("%s: Starting forward-progress test %d\n", __func__, rfp->rcu_fwd_id);
+ 	if (!cur_ops->sync)
+ 		return; // Cannot do need_resched() forward progress testing without ->sync.
+ 	if (cur_ops->call && cur_ops->cb_barrier) {
+@@ -2325,6 +2326,7 @@ static void rcu_torture_fwd_prog_nr(struct rcu_fwd *rfp,
+ 	if (selfpropcb) {
+ 		WRITE_ONCE(fcs.stop, 1);
+ 		cur_ops->sync(); /* Wait for running CB to complete. */
++		pr_alert("%s: Waiting for CBs: %pS() %d\n", __func__, cur_ops->cb_barrier, rfp->rcu_fwd_id);
+ 		cur_ops->cb_barrier(); /* Wait for queued callbacks. */
+ 	}
+ 
+@@ -2353,6 +2355,7 @@ static void rcu_torture_fwd_prog_cr(struct rcu_fwd *rfp)
+ 	unsigned long stopat;
+ 	unsigned long stoppedat;
+ 
++	pr_alert("%s: Starting forward-progress test %d\n", __func__, rfp->rcu_fwd_id);
+ 	if (READ_ONCE(rcu_fwd_emergency_stop))
+ 		return; /* Get out of the way quickly, no GP wait! */
+ 	if (!cur_ops->call)
+@@ -2414,6 +2417,7 @@ static void rcu_torture_fwd_prog_cr(struct rcu_fwd *rfp)
+ 	n_launders_cb_snap = READ_ONCE(rfp->n_launders_cb);
+ 	cver = READ_ONCE(rcu_torture_current_version) - cver;
+ 	gps = rcutorture_seq_diff(cur_ops->get_gp_seq(), gps);
++	pr_alert("%s: Waiting for CBs: %pS() %d\n", __func__, cur_ops->cb_barrier, rfp->rcu_fwd_id);
+ 	cur_ops->cb_barrier(); /* Wait for callbacks to be invoked. */
+ 	(void)rcu_torture_fwd_prog_cbfree(rfp);
+ 
 -- 
 2.31.1.189.g2e36527f23
 
