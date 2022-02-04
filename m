@@ -2,114 +2,105 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E14EC433FE
-	for <rcu@archiver.kernel.org>; Fri,  4 Feb 2022 23:24:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 645FFC433F5
+	for <rcu@archiver.kernel.org>; Fri,  4 Feb 2022 23:39:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378140AbiBDXYQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 4 Feb 2022 18:24:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42350 "EHLO
+        id S1351015AbiBDXjD (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 4 Feb 2022 18:39:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378131AbiBDXYO (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 4 Feb 2022 18:24:14 -0500
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E85FFDFC13FC;
-        Fri,  4 Feb 2022 15:24:12 -0800 (PST)
+        with ESMTP id S230020AbiBDXjC (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 4 Feb 2022 18:39:02 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 203DCE025B1E;
+        Fri,  4 Feb 2022 15:39:01 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 31C38CE24C5;
-        Fri,  4 Feb 2022 23:24:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3EFB6C340FA;
-        Fri,  4 Feb 2022 23:24:08 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id CD7DAB838EB;
+        Fri,  4 Feb 2022 23:38:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56E6CC004E1;
+        Fri,  4 Feb 2022 23:38:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1644017048;
-        bh=JV+QYVqegQ9o52kCXFiEB9n9SUhqCcXNcpjWqfXua+M=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B6Qjk6ScEl/hJ3/TxQCYUyLdoPTGafyqax0qSGcvEQGAeErtwXX7A1Ca7j800prlo
-         rWzlDkmo1osvzqQECSYmFrweK5t9xlSWykuGRGgHyrW2iOigJaUzYG7DPHLDeqZ6eW
-         eUGlMCXUzBVlc59asHeZD+8l47SF4rZv14t0Cq/SF+r3GfIbkF98uqfH3OwQ0k/x05
-         orZxGKndEskRpSBryalm3EqW82dKNeFSHMWYxZD5p68201fDAJbZ5KjS4zlWM2/jR7
-         jD2puXGxQRqUzfUgrxXDq16BVjaDpTALRlmBaJhpxRVRhe4DQ7Iie0iixYWFsYclY6
-         68s+1HnzAuJWA==
+        s=k20201202; t=1644017938;
+        bh=+HaRJ6tKdg7Lo/ikTwIrxa09KYNzLZvPNomKsueEx/w=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=OyY7iix577ACnhoT8F+cVw5/arCXHBWY85X949Aj3o71eZL7nIgXV5IqFwmgKhuJm
+         F9cgDi06fRVbjmBixRKGaRQitUJFeZP0/FL8tKvm//JvOgFzMS8wMHnz+4pRQlYwoK
+         Yt28pwG4Y7FX5qiblfjvOATcL1SYPS5+wDQerHHvqrrbLy5aSvOvahibJ1CR4jPXwY
+         1JOzw9Yl8jSBKjYNCO4mSFv8kPvt1U0n6QUsn5sltG+zE1/uG8xhSBx15Qo4wcC+qy
+         JkMM3BLZuP1f3kfVWPM/82MxnUjWPvUPy9H9diWBw82+QxflsmQ3jZwLpdEgxy9+e4
+         ezKgrbxiviTfQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id CF1DC5C0AEF; Fri,  4 Feb 2022 15:24:07 -0800 (PST)
+        id 277FB5C0418; Fri,  4 Feb 2022 15:38:58 -0800 (PST)
+Date:   Fri, 4 Feb 2022 15:38:58 -0800
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Murray <timmurray@google.com>,
-        Joel Fernandes <joelaf@google.com>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Todd Kjos <tkjos@google.com>,
-        Sandeep Patil <sspatil@google.com>, stable@vger.kernel.org
-Subject: [PATCH rcu 09/10] rcu: Don't deboost before reporting expedited quiescent state
-Date:   Fri,  4 Feb 2022 15:24:05 -0800
-Message-Id: <20220204232406.814-9-paulmck@kernel.org>
-X-Mailer: git-send-email 2.31.1.189.g2e36527f23
-In-Reply-To: <20220204232355.GA728@paulmck-ThinkPad-P17-Gen-1>
-References: <20220204232355.GA728@paulmck-ThinkPad-P17-Gen-1>
+        rostedt@goodmis.org
+Subject: [PATCH rcu 0/19] SRCU updates for v5.18
+Message-ID: <20220204233858.GA1469@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Currently rcu_preempt_deferred_qs_irqrestore() releases rnp->boost_mtx
-before reporting the expedited quiescent state.  Under heavy real-time
-load, this can result in this function being preempted before the
-quiescent state is reported, which can in turn prevent the expedited grace
-period from completing.  Tim Murray reports that the resulting expedited
-grace periods can take hundreds of milliseconds and even more than one
-second, when they should normally complete in less than a millisecond.
+Hello!
 
-This was fine given that there were no particular response-time
-constraints for synchronize_rcu_expedited(), as it was designed
-for throughput rather than latency.  However, some users now need
-sub-100-millisecond response-time constratints.
+This series provides SRCU updates, perhaps most notably some changes
+that greatly reduce the size of the srcu_struct structure in kernels
+built with large values for the CONFIG_NR_CPUS Kconfig option.
 
-This patch therefore follows Neeraj's suggestion (seconded by Tim and
-by Uladzislau Rezki) of simply reversing the two operations.
+1.	Tighten cleanup_srcu_struct() GP checks.
 
-Reported-by: Tim Murray <timmurray@google.com>
-Reported-by: Joel Fernandes <joelaf@google.com>
-Reported-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
-Reviewed-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
-Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-Tested-by: Tim Murray <timmurray@google.com>
-Cc: Todd Kjos <tkjos@google.com>
-Cc: Sandeep Patil <sspatil@google.com>
-Cc: <stable@vger.kernel.org> # 5.4.x
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/rcu/tree_plugin.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+2.	Fix s/is/if/ typo in srcu_node comment.
 
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 109429e70a642..02ac057ba3f83 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -556,16 +556,16 @@ rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
- 			raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
- 		}
- 
--		/* Unboost if we were boosted. */
--		if (IS_ENABLED(CONFIG_RCU_BOOST) && drop_boost_mutex)
--			rt_mutex_futex_unlock(&rnp->boost_mtx.rtmutex);
--
- 		/*
- 		 * If this was the last task on the expedited lists,
- 		 * then we need to report up the rcu_node hierarchy.
- 		 */
- 		if (!empty_exp && empty_exp_now)
- 			rcu_report_exp_rnp(rnp, true);
-+
-+		/* Unboost if we were boosted. */
-+		if (IS_ENABLED(CONFIG_RCU_BOOST) && drop_boost_mutex)
-+			rt_mutex_futex_unlock(&rnp->boost_mtx.rtmutex);
- 	} else {
- 		local_irq_restore(flags);
- 	}
--- 
-2.31.1.189.g2e36527f23
+3.	Make srcu_funnel_gp_start() cache ->mynode in snp_leaf.
 
+4.	Dynamically allocate srcu_node array.
+
+5.	Make Tree SRCU able to operate without snp_node array.
+
+6.	Add size-state transitioning code.
+
+7.	Make rcutorture dump the SRCU size state.
+
+8.	Add boot-time control over srcu_node array allocation.
+
+9.	Use export for srcu_struct defined by DEFINE_STATIC_SRCU(),
+	courtesy of Alexander Aring.
+
+10.	Compute snp_seq earlier in srcu_funnel_gp_start().
+
+11.	Use invalid initial value for srcu_node GP sequence numbers.
+
+12.	Avoid NULL dereference in srcu_torture_stats_print().
+
+13.	Prevent cleanup_srcu_struct() from freeing non-dynamic ->sda.
+
+14.	Explain srcu_funnel_gp_start() call to list_add() is safe.
+
+15.	Create concurrency-safe helper for initiating size transition.
+
+16.	Add contention-triggered addition of srcu_node tree.
+
+17.	Make srcu_size_state_name static, courtesy of Jiapeng Chong.
+
+18.	Automatically determine size-transition strategy at boot.
+
+19.	Add contention check to call_srcu() srcu_data ->lock acquisition.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ Documentation/admin-guide/kernel-parameters.txt   |    9 
+ b/Documentation/admin-guide/kernel-parameters.txt |   22 
+ b/include/linux/srcutree.h                        |    8 
+ b/kernel/rcu/srcutree.c                           |    6 
+ include/linux/srcutree.h                          |   20 
+ kernel/rcu/srcutree.c                             |  644 +++++++++++++++-------
+ 6 files changed, 500 insertions(+), 209 deletions(-)
