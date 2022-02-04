@@ -2,102 +2,76 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6FD42C4332F
-	for <rcu@archiver.kernel.org>; Fri,  4 Feb 2022 23:08:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E9F5C433EF
+	for <rcu@archiver.kernel.org>; Fri,  4 Feb 2022 23:20:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377919AbiBDXIQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 4 Feb 2022 18:08:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377898AbiBDXII (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 4 Feb 2022 18:08:08 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82252DF99CE5;
-        Fri,  4 Feb 2022 15:08:08 -0800 (PST)
+        id S235429AbiBDXU3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 4 Feb 2022 18:20:29 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:59414 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233885AbiBDXU3 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 4 Feb 2022 18:20:29 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1EE1C61BB6;
-        Fri,  4 Feb 2022 23:08:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 218BBC340F5;
-        Fri,  4 Feb 2022 23:08:07 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 76448B83968;
+        Fri,  4 Feb 2022 23:20:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 449FBC004E1;
+        Fri,  4 Feb 2022 23:20:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1644016087;
-        bh=B7FvPqeozGPDV9tkcqYeb//UtgSVBahiXAeDSDUUo24=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HQYQ6V+U0M9A0ZYoUl1E6hknxd/84B6yAj5N6tmmlFgkFkw516jAFK6PzAtcc6cIC
-         XlQPgMF0rTfzhNgVZMFPBt2cGYRc5ABd+nB8O6QWD5Ko+Tfku0XqBLYRvyEkYlb5FW
-         poraXgASREN6c7pKHn3vDhGGKfLiHhnyEAY4O+aOHzJLvzIkgYCJXnXJsW8iAgwPB2
-         MZLqc9XIFLAhDL01TGADSOCTlHTP/xWRs0/crxnJ0Lrlt6DOjEpG21T8PxjWU4ni8k
-         2FDdEfdyGJI0pynGLHMrry4NF2WaH1bnfw/GQIVNJ0pRZJKsNpAElwOTdhHoLyzzKd
-         65qBiw666a1cw==
+        s=k20201202; t=1644016827;
+        bh=GfCkjzsfVNABMf46P+mNJkGnvDu0PQgKZ94eQR22RO4=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=sCiWSpOuddLFACqG/EEtiNpZaNSdlqFF27huReh2PDGnzetBqR1Qz4hFhxQ+hqk4l
+         SVbJchnLaDgdxEo3KXCatuZ3A1y8fdZ7pK86SdH1jdVSEgTQG64es++F0xQdb7B0ds
+         YdVXL52sdMMsnMPU7lNZvFdwXDGTVD1Eiub0d2FZN5pI6WIetFeLH8fxKvpI9ZYyrB
+         1BvANZ/rK9Ob7GiIuItBsKHCFVHgj+K5z4jT0bX5h/EWMU/0N4S1npPgTsp/ZwGtR4
+         zevGy0kdLSLSVryFFiN+MnyIa2ALHcz4CSc2HrWFViH/ZoePc5MYpEX2Iup9UiZmxV
+         VPmzWOAnt6W1g==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id A26005C0A21; Fri,  4 Feb 2022 15:08:06 -0800 (PST)
+        id 102B55C0418; Fri,  4 Feb 2022 15:20:27 -0800 (PST)
+Date:   Fri, 4 Feb 2022 15:20:27 -0800
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org, Ingo Molnar <mingo@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 7/9] rcu: Uninline multi-use function: finish_rcuwait()
-Date:   Fri,  4 Feb 2022 15:08:03 -0800
-Message-Id: <20220204230805.4193767-7-paulmck@kernel.org>
-X-Mailer: git-send-email 2.31.1.189.g2e36527f23
-In-Reply-To: <20220204230751.GA4193671@paulmck-ThinkPad-P17-Gen-1>
-References: <20220204230751.GA4193671@paulmck-ThinkPad-P17-Gen-1>
+        rostedt@goodmis.org
+Subject: [PATCH rcu 0/5] Extricate rcu_barrier() from CPU hotplug
+Message-ID: <20220204232027.GA4194214@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Ingo Molnar <mingo@kernel.org>
+Hello!
 
-This is a rarely used function, so uninlining its 3 instructions
-is probably a win or a wash - but the main motivation is to
-make <linux/rcuwait.h> independent of task_struct details.
+This series reworks rcu_barrier() to remove its calls to cpus_read_lock()
+and cpus_read_unlock().  This improves modularity, gets rid of an
+acquisition of a wide-spectrum synchronization mechanism, and allows
+rcu_barrier() to be invoked from CPU-hotplug notifiers that permit
+blocking.  Not that this last is necessarily a good idea.
 
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- include/linux/rcuwait.h | 6 +-----
- kernel/rcu/update.c     | 7 +++++++
- 2 files changed, 8 insertions(+), 5 deletions(-)
+1.	Kill rnp->ofl_seq and use only rcu_state.ofl_lock for exclusion,
+	courtesy of David Woodhouse.
 
-diff --git a/include/linux/rcuwait.h b/include/linux/rcuwait.h
-index 61c56cca95c43..8052d34da7826 100644
---- a/include/linux/rcuwait.h
-+++ b/include/linux/rcuwait.h
-@@ -47,11 +47,7 @@ static inline void prepare_to_rcuwait(struct rcuwait *w)
- 	rcu_assign_pointer(w->task, current);
- }
- 
--static inline void finish_rcuwait(struct rcuwait *w)
--{
--        rcu_assign_pointer(w->task, NULL);
--	__set_current_state(TASK_RUNNING);
--}
-+extern void finish_rcuwait(struct rcuwait *w);
- 
- #define rcuwait_wait_event(w, condition, state)				\
- ({									\
-diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
-index 156892c22bb56..df6197f0d5ce8 100644
---- a/kernel/rcu/update.c
-+++ b/kernel/rcu/update.c
-@@ -407,6 +407,13 @@ void __wait_rcu_gp(bool checktiny, int n, call_rcu_func_t *crcu_array,
- }
- EXPORT_SYMBOL_GPL(__wait_rcu_gp);
- 
-+void finish_rcuwait(struct rcuwait *w)
-+{
-+        rcu_assign_pointer(w->task, NULL);
-+	__set_current_state(TASK_RUNNING);
-+}
-+EXPORT_SYMBOL_GPL(finish_rcuwait);
-+
- #ifdef CONFIG_DEBUG_OBJECTS_RCU_HEAD
- void init_rcu_head(struct rcu_head *head)
- {
--- 
-2.31.1.189.g2e36527f23
+2.	Refactor rcu_barrier() empty-list handling.
 
+3.	Rework rcu_barrier() and callback-migration logic.
+
+4.	Make rcu_barrier() no longer block CPU-hotplug operations.
+
+5.	Create and use an rcu_rdp_cpu_online().
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ b/include/trace/events/rcu.h |    9 +-
+ b/kernel/rcu/tree.c          |   71 ++++++++++----------
+ b/kernel/rcu/tree.h          |    4 -
+ b/kernel/rcu/tree_plugin.h   |    6 -
+ kernel/rcu/tree.c            |  151 +++++++++++++++++++++++++++----------------
+ kernel/rcu/tree.h            |    5 +
+ 6 files changed, 143 insertions(+), 103 deletions(-)
