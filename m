@@ -2,90 +2,67 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 216D5C433F5
-	for <rcu@archiver.kernel.org>; Fri,  4 Feb 2022 09:25:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7DAC0C433EF
+	for <rcu@archiver.kernel.org>; Fri,  4 Feb 2022 22:54:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358108AbiBDJZ1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 4 Feb 2022 04:25:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60986 "EHLO
+        id S1353924AbiBDWyL (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 4 Feb 2022 17:54:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357593AbiBDJYa (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 4 Feb 2022 04:24:30 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B7C4C061759;
-        Fri,  4 Feb 2022 01:24:30 -0800 (PST)
-Date:   Fri, 4 Feb 2022 10:24:25 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1643966667;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=A1OquCNeqBrmSz1l+c7aggW4kgLy2MKoprxou4C3Lds=;
-        b=gPEs6AT/BsmdvBXVrkFPpf1gIUZh4ZepiJtkxEXOQI+h4zPxl7Ewut4c/sti4Cv6QvyLo5
-        qQS7Fh9I25FxXiXjvgYtGUKqQtrAfEF7hcrC9g9ozeoAywRT+Vpboq77CsEaOq9WWEjsHC
-        LLWAUEAeF53XOOX9GxzW4yKyW6oaGd6Bt9csn9kDqBo697qkM/Ceij65ZIVE1/b0EYvvI6
-        p8cKl8q3WOIDwE7Lji6ZZBy6wpx2PYhUsHFnD5YbioKZEtHYD7HsssaRWTywavro8GuZPr
-        SDVJHE6Xev9tPagiuDV0CyjqE1FyYdb598WpjE+3UPE18Ki807iB9om+B5MAKQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1643966667;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=A1OquCNeqBrmSz1l+c7aggW4kgLy2MKoprxou4C3Lds=;
-        b=ohfrdA8XNt14v/qtvuGcHuIt9fP7Ul8cAktixgFJE1U1guZl3f9HoU+g3end07R64deWKT
-        isP5+PQiTyB7CuCA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        rcu@vger.kernel.org, linux-rt-users@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mike Galbraith <efault@gmx.de>
-Subject: Re: [PATCH v3 2/4] sched: Introduce migratable()
-Message-ID: <YfzwycgvDlVSGrB1@linutronix.de>
-References: <20210811201354.1976839-1-valentin.schneider@arm.com>
- <20210811201354.1976839-3-valentin.schneider@arm.com>
- <20210817170925.2jwqvgvmqab2glwu@linutronix.de>
- <87czq573et.mognet@arm.com>
- <YfF9I5PcZJA5532B@linutronix.de>
- <87v8y5nflv.mognet@arm.com>
+        with ESMTP id S234056AbiBDWyL (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 4 Feb 2022 17:54:11 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3B60C06134B;
+        Fri,  4 Feb 2022 14:54:10 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 73B6161A60;
+        Fri,  4 Feb 2022 22:54:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC733C004E1;
+        Fri,  4 Feb 2022 22:54:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1644015249;
+        bh=uwQXLbWhaPjyy/J2caZF9btjWvoBfJ0LSQaXFvNklkU=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=Pn6aZQxepVxMXVp6OTHli6rmi4n7qzf0iRixiMBz0L6yD8gytDhzv3aYvBcsek4Gi
+         srhjXNxHsFdikdUN38ZNaVYGJ8goc6XlUQK8P9hz5+a0CQmjIROepkpS/9+7HpaHE6
+         W4eaxgetKHplMfWhpZTIAL7AOgF5FsQANZJdD1BPNH8aRUrrOYa8P8TUjb2Zr/E7aF
+         YbSvQY4I5Uhfd47Rze/il6hYep/iLHSh2FGVGuNZrj6xe7uVgJAto14UC/4VUssK6q
+         kgoXeIdGB1ORso/yWhtUsNCeFqLyL7cyRxUrmWQIkh6kD7hUEwEpaWnNloD0D6RCr5
+         2L4pFKL2ntFcA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id A4B505C0418; Fri,  4 Feb 2022 14:54:09 -0800 (PST)
+Date:   Fri, 4 Feb 2022 14:54:09 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
+        rostedt@goodmis.org
+Subject: [PATCH rcu 0/3] Expedited-grace-period updates for v5.18
+Message-ID: <20220204225409.GA4193020@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87v8y5nflv.mognet@arm.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 2022-01-27 19:27:56 [+0000], Valentin Schneider wrote:
+Hello!
 
-Sorry, got distracted.
+This series provides updates for RCU expedited grace periods:
 
-> While I'm at it, I see you're still carrying
-> 
->   6ab5bb09040d arm64/sve: Make kernel FPU protection RT friendly
-> 
-> If you're OK with it, I'll repost that:
-> https://lore.kernel.org/lkml/20210722175157.1367122-1-valentin.schneider@arm.com/
+1.	Fix check for idle context in rcu_exp_handler, courtesy of
+	Neeraj Upadhyay.
 
-I'm not too keen about preempt_enable_bh(). I would prefer the current
-approach maybe with a comment why BH here and preemption there is
-correct.
- 
-Sebastian
+2.	Mark ->expmask access in synchronize_rcu_expedited_wait().
+
+3.	Allow expedited RCU grace periods on incoming CPUs.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ b/kernel/rcu/tree_exp.h |    2 +-
+ kernel/rcu/tree_exp.h   |   17 ++++++++++++-----
+ 2 files changed, 13 insertions(+), 6 deletions(-)
