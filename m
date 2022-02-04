@@ -2,41 +2,44 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C57B6C433FE
-	for <rcu@archiver.kernel.org>; Fri,  4 Feb 2022 23:53:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5128AC4321E
+	for <rcu@archiver.kernel.org>; Fri,  4 Feb 2022 23:53:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243691AbiBDXxg (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 4 Feb 2022 18:53:36 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:45760 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378366AbiBDXxc (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 4 Feb 2022 18:53:32 -0500
+        id S1378439AbiBDXxh (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 4 Feb 2022 18:53:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1378372AbiBDXxb (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 4 Feb 2022 18:53:31 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5360CC06C947;
+        Fri,  4 Feb 2022 15:53:31 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 27266B83973;
-        Fri,  4 Feb 2022 23:53:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B69F9C340F2;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E226B61CD2;
+        Fri,  4 Feb 2022 23:53:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F32A5C340FB;
         Fri,  4 Feb 2022 23:53:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1644018809;
-        bh=Io8OOvJ7kPMPed5CAYEEfGmPgC4ynlJcaTeSoyVPSfk=;
+        s=k20201202; t=1644018810;
+        bh=DMOYvBAXRRoyhUBWRSAHpF/K+fQJIPweBMqt5Vj1ut4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HvNySBPy41L+uE/AP+XKfXsUGiEqyb6EvS/9P6HLdyXgpjXyBfIV0YYNoaIVH58Rz
-         p98ba9dZ1AoeEbEHrXJBsI7b6kjz+cFVYO75jhjJSUiJuN4XGpv94eZYtoLVoUjUWI
-         jRXJuBh8hNGb+jDxKTdYmzWeJgTBtCXv0lv8Wnp/LjkJVuPGVVPf1v0A5Jy7Oiltdk
-         IL6RQfsMazxQsnSztHWdfEwZFh8bS6hIKKAnbZ8EbAbKLIc8b8jqQs+73PUG1Egy0P
-         f49trSNrhjlM5m852TStUkHy1IInkA96Qf+3zEvsuw02KB3NloIvWPGDfD6ky2WJGf
-         ePoBnkn5hLG3A==
+        b=RBYslGhwBQmT+Vmi/yvglKk9gle9XuyxAV9Hu8qw8KkKubmzitiBFmK3HWguDf5t7
+         oASQMjriPISvy+9Ucl5DzJEGyNlBRSkJ07H4FCosb1SPcot3euRLOebTIvOMMBeEbM
+         hVaj+S4sGQP8jWpAL7kHRMKR4TjatpxTy+Ff364TPtbUUA53XXFVR9r6JKLOO5W+Tj
+         XSuf83pCL1TwbLqLXv9pR6vzs5cYx++tLfqZWto45n2mHQknl1Bn7wj/3ja+JRtJ9+
+         YtwCzjyGgKMMRhOxXv4URAxe+aiZAmiUDeiSJ+pWMm0sA0/4OK3dlpsmffp5fiqbM4
+         ekunvp1ng26IA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 7AF635C08DD; Fri,  4 Feb 2022 15:53:29 -0800 (PST)
+        id 828025C0A6A; Fri,  4 Feb 2022 15:53:29 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
         rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 4/8] rcutorture: Make rcu_fwd_cb_nodelay be a counter
-Date:   Fri,  4 Feb 2022 15:53:23 -0800
-Message-Id: <20220204235327.2948-4-paulmck@kernel.org>
+Subject: [PATCH rcu 8/8] rcutorture: Enable limited callback-flooding tests of SRCU
+Date:   Fri,  4 Feb 2022 15:53:27 -0800
+Message-Id: <20220204235327.2948-8-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220204235321.GA2511@paulmck-ThinkPad-P17-Gen-1>
 References: <20220204235321.GA2511@paulmck-ThinkPad-P17-Gen-1>
@@ -46,86 +49,36 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Back when only one rcutorture kthread could do forward-progress testing,
-it was just fine for rcu_fwd_cb_nodelay to be a non-atomic bool.  It was
-set at the start of forward-progress testing and cleared at the end.
-But now that there are multiple threads, the value can be cleared while
-one of the threads is still doing forward-progress testing.  This commit
-therefore makes rcu_fwd_cb_nodelay be an atomic counter, replacing the
-WRITE_ONCE() operations with atomic_inc() and atomic_dec().
+This commit allows up to 50,000 callbacks worth of callback-flooding
+tests of SRCU.  The goal of this change is to exercise Tree SRCU's
+ability to transition from SRCU_SIZE_SMALL to SRCU_SIZE_BIG triggered
+by callback-queue-time lock contention.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/rcutorture.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ kernel/rcu/rcutorture.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index fefc3fa1a9c2a..afe95c6948957 100644
+index 1c8f40b90f70b..b41db719085ef 100644
 --- a/kernel/rcu/rcutorture.c
 +++ b/kernel/rcu/rcutorture.c
-@@ -284,7 +284,7 @@ static atomic_t barrier_cbs_invoked;	/* Barrier callbacks invoked. */
- static wait_queue_head_t *barrier_cbs_wq; /* Coordinate barrier testing. */
- static DECLARE_WAIT_QUEUE_HEAD(barrier_wq);
- 
--static bool rcu_fwd_cb_nodelay;		/* Short rcu_torture_delay() delays. */
-+static atomic_t rcu_fwd_cb_nodelay;	/* Short rcu_torture_delay() delays. */
- 
- /*
-  * Allocate an element from the rcu_tortures pool.
-@@ -387,7 +387,7 @@ rcu_read_delay(struct torture_random_state *rrsp, struct rt_read_seg *rtrsp)
- 	 * period, and we want a long delay occasionally to trigger
- 	 * force_quiescent_state. */
- 
--	if (!READ_ONCE(rcu_fwd_cb_nodelay) &&
-+	if (!atomic_read(&rcu_fwd_cb_nodelay) &&
- 	    !(torture_random(rrsp) % (nrealreaders * 2000 * longdelay_ms))) {
- 		started = cur_ops->get_gp_seq();
- 		ts = rcu_trace_clock_local();
-@@ -1276,7 +1276,7 @@ rcu_torture_writer(void *arg)
- 		boot_ended = rcu_inkernel_boot_has_ended();
- 		stutter_waited = stutter_wait("rcu_torture_writer");
- 		if (stutter_waited &&
--		    !READ_ONCE(rcu_fwd_cb_nodelay) &&
-+		    !atomic_read(&rcu_fwd_cb_nodelay) &&
- 		    !cur_ops->slow_gps &&
- 		    !torture_must_stop() &&
- 		    boot_ended)
-@@ -2290,7 +2290,7 @@ static void rcu_torture_fwd_prog_nr(struct rcu_fwd *rfp,
- 	}
- 
- 	/* Tight loop containing cond_resched(). */
--	WRITE_ONCE(rcu_fwd_cb_nodelay, true);
-+	atomic_inc(&rcu_fwd_cb_nodelay);
- 	cur_ops->sync(); /* Later readers see above write. */
- 	if  (selfpropcb) {
- 		WRITE_ONCE(fcs.stop, 0);
-@@ -2335,7 +2335,7 @@ static void rcu_torture_fwd_prog_nr(struct rcu_fwd *rfp,
- 		destroy_rcu_head_on_stack(&fcs.rh);
- 	}
- 	schedule_timeout_uninterruptible(HZ / 10); /* Let kthreads recover. */
--	WRITE_ONCE(rcu_fwd_cb_nodelay, false);
-+	atomic_dec(&rcu_fwd_cb_nodelay);
- }
- 
- /* Carry out call_rcu() forward-progress testing. */
-@@ -2362,7 +2362,7 @@ static void rcu_torture_fwd_prog_cr(struct rcu_fwd *rfp)
- 		return; /* Can't do call_rcu() fwd prog without ->call. */
- 
- 	/* Loop continuously posting RCU callbacks. */
--	WRITE_ONCE(rcu_fwd_cb_nodelay, true);
-+	atomic_inc(&rcu_fwd_cb_nodelay);
- 	cur_ops->sync(); /* Later readers see above write. */
- 	WRITE_ONCE(rfp->rcu_fwd_startat, jiffies);
- 	stopat = rfp->rcu_fwd_startat + MAX_FWD_CB_JIFFIES;
-@@ -2435,7 +2435,7 @@ static void rcu_torture_fwd_prog_cr(struct rcu_fwd *rfp)
- 	}
- 	schedule_timeout_uninterruptible(HZ); /* Let CBs drain. */
- 	tick_dep_clear_task(current, TICK_DEP_BIT_RCU);
--	WRITE_ONCE(rcu_fwd_cb_nodelay, false);
-+	atomic_dec(&rcu_fwd_cb_nodelay);
- }
- 
- 
+@@ -674,6 +674,7 @@ static struct rcu_torture_ops srcu_ops = {
+ 	.call		= srcu_torture_call,
+ 	.cb_barrier	= srcu_torture_barrier,
+ 	.stats		= srcu_torture_stats,
++	.cbflood_max	= 50000,
+ 	.irq_capable	= 1,
+ 	.no_pi_lock	= IS_ENABLED(CONFIG_TINY_SRCU),
+ 	.name		= "srcu"
+@@ -708,6 +709,7 @@ static struct rcu_torture_ops srcud_ops = {
+ 	.call		= srcu_torture_call,
+ 	.cb_barrier	= srcu_torture_barrier,
+ 	.stats		= srcu_torture_stats,
++	.cbflood_max	= 50000,
+ 	.irq_capable	= 1,
+ 	.no_pi_lock	= IS_ENABLED(CONFIG_TINY_SRCU),
+ 	.name		= "srcud"
 -- 
 2.31.1.189.g2e36527f23
 
