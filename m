@@ -2,43 +2,45 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4BB78C4332F
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BB40FC43217
 	for <rcu@archiver.kernel.org>; Fri,  4 Feb 2022 23:08:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377908AbiBDXIM (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 4 Feb 2022 18:08:12 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:53366 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377900AbiBDXIJ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 4 Feb 2022 18:08:09 -0500
+        id S1377910AbiBDXIN (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 4 Feb 2022 18:08:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234736AbiBDXII (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 4 Feb 2022 18:08:08 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E19FBDF99CDC;
+        Fri,  4 Feb 2022 15:08:07 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 6230FB83967;
-        Fri,  4 Feb 2022 23:08:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09C6EC340F1;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 812D961B9C;
         Fri,  4 Feb 2022 23:08:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D30CDC340EF;
+        Fri,  4 Feb 2022 23:08:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1644016087;
-        bh=F0tWzgWyTYIaOE59H/lt7xyxwXQQkMt7UW6k3PjcRfI=;
+        s=k20201202; t=1644016086;
+        bh=oGrMHn07x9XfkVQxwaEWPiDvFUjbNzIN/CwooO7F/ew=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KwMVc5kHGt9LR4D9VYGVwl6A0quOy2YKoBtx1/u+nLM9XeDt3jyxmRqfu2bo4niXn
-         w+WPAwrBt9D6gcQwGgUyMjLorhqF0sym7cctQiIA3VHSbWHB9j3AWCbVORY9FCDc1S
-         O4uthPcIySi1ixNzcltPZvye5kP3m/Yu/OuWZDlTUZ7TxpI3w1ReRy24yNS0zEq8MV
-         Awyj4r/rUMTRyetyWqeYjaIN39BYEnyvlRrHjV3bukPm58ZqiPAyjhlvTfatDlq/Ap
-         O2WDPi46M2UZH12XJR2/25ymYx9bPCC2BZxdQwO74nP17mr4O32JfgGcGgqYe/T0nm
-         +cIqXasP51y0A==
+        b=QvcWvQ5U8uCqJRP4iTgCQNvSdUEH+kJiQdkYsoBOsDZ4WjPJ+x/+PJUjTLpkuhmAF
+         hAqz4amEGFBL0MD+pYhLVKGjXEAVL8x/IO8/3mgsYaz4bq+JjMu7UiEYRgy1ROe8xo
+         NrdWFtzIamgg/3Ygkwt5A+iv3ytCwJdUOLpFsg1nglJBgBGso6bY2wI3+IbBMh0Kc1
+         4hcLDSvLifEcTAyjOWwpPIhc0bt03O0TF6BKh7XiUilIHArVTO9Lxd9zwAe5OwVT/m
+         GM9kEowtj5TqTk3PauqhXrqSpzW1rqmLzXwqtzD9bwJML//JIGh5TwfHufDqyrPE94
+         y5J6z/1ALTlpA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 9E9F05C0992; Fri,  4 Feb 2022 15:08:06 -0800 (PST)
+        id 98CC65C0829; Fri,  4 Feb 2022 15:08:06 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org, Zqiang <qiang1.zhang@intel.com>,
-        Marco Elver <elver@google.com>,
+        rostedt@goodmis.org, "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 5/9] kasan: Record work creation stack trace with interrupts enabled
-Date:   Fri,  4 Feb 2022 15:08:01 -0800
-Message-Id: <20220204230805.4193767-5-paulmck@kernel.org>
+Subject: [PATCH rcu 2/9] rcu: Fix description of kvfree_rcu()
+Date:   Fri,  4 Feb 2022 15:07:58 -0800
+Message-Id: <20220204230805.4193767-2-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220204230751.GA4193671@paulmck-ThinkPad-P17-Gen-1>
 References: <20220204230751.GA4193671@paulmck-ThinkPad-P17-Gen-1>
@@ -48,39 +50,32 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Zqiang <qiang1.zhang@intel.com>
+From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 
-Recording the work creation stack trace for KASAN reports in
-call_rcu() is expensive, due to unwinding the stack, but also
-due to acquiring depot_lock inside stackdepot (which may be contended).
-Because calling kasan_record_aux_stack_noalloc() does not require
-interrupts to already be disabled, this may unnecessarily extend
-the time with interrupts disabled.
+The kvfree_rcu() header comment's description of the "ptr" parameter
+is unclear, therefore rephrase it to make it clear that it is a pointer
+to the memory to eventually be passed to kvfree().
 
-Therefore, move calling kasan_record_aux_stack() before the section
-with interrupts disabled.
-
-Acked-by: Marco Elver <elver@google.com>
-Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+Reported-by: Steven Rostedt <rostedt@goodmis.org>
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c | 2 +-
+ include/linux/rcupdate.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index f1bb7ccc00847..ca8d7dd026eeb 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3060,8 +3060,8 @@ void call_rcu(struct rcu_head *head, rcu_callback_t func)
- 	}
- 	head->func = func;
- 	head->next = NULL;
--	local_irq_save(flags);
- 	kasan_record_aux_stack_noalloc(head);
-+	local_irq_save(flags);
- 	rdp = this_cpu_ptr(&rcu_data);
- 
- 	/* Add the callback to our list. */
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index 88b42eb464068..9d7df8d36af07 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -924,7 +924,7 @@ static inline notrace void rcu_read_unlock_sched_notrace(void)
+  *
+  *     kvfree_rcu(ptr);
+  *
+- * where @ptr is a pointer to kvfree().
++ * where @ptr is the pointer to be freed by kvfree().
+  *
+  * Please note, head-less way of freeing is permitted to
+  * use from a context that has to follow might_sleep()
 -- 
 2.31.1.189.g2e36527f23
 
