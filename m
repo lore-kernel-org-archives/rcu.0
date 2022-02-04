@@ -2,165 +2,93 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 11F91C433FE
-	for <rcu@archiver.kernel.org>; Fri,  4 Feb 2022 23:20:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 87A73C433EF
+	for <rcu@archiver.kernel.org>; Fri,  4 Feb 2022 23:23:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378051AbiBDXUp (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 4 Feb 2022 18:20:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41174 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378039AbiBDXUm (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 4 Feb 2022 18:20:42 -0500
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56358DFBC71F;
-        Fri,  4 Feb 2022 15:20:41 -0800 (PST)
+        id S1378095AbiBDXX7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 4 Feb 2022 18:23:59 -0500
+Received: from sin.source.kernel.org ([145.40.73.55]:45732 "EHLO
+        sin.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346197AbiBDXX6 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 4 Feb 2022 18:23:58 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id A715FCE24B8;
-        Fri,  4 Feb 2022 23:20:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9FDAC340F1;
-        Fri,  4 Feb 2022 23:20:37 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 3B752CE24BC;
+        Fri,  4 Feb 2022 23:23:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADCD5C004E1;
+        Fri,  4 Feb 2022 23:23:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1644016837;
-        bh=S4eE3S6LI0fVFBCvPzoWLKyt6VIRD7KnrVxSw8qANRc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oNoKmx5gENNnY/2V1bzrutS0sYA6WM4B/GMjlKQiXLTKKEnTAyhVXWJ4cyoFNQeAS
-         4wEy0YO4KGIPtaOcKl1t7d9ohzzF4xFBOhXANuI1YTwNyxsngNePAIsU+KJ5p87XKO
-         9+bvRFnHcocUSPLpXXUfHtyrqEBFB2HuyffyT4w7n5fmsYHhm3f9urnVZ7QYQDl5mw
-         kEHsmzgDdAE7zj+YEDWv54X9oajDaUZ6TTty2mdGdACNRb4CREa0kZ3q1LgdxKGDg/
-         N2KVx7vG2YgZOH49WMxZmpYxyDTBoUU307O2faVd9PC1BIqhhrhQtp74jqXr1UP69f
-         uuOlp2KFBsItQ==
+        s=k20201202; t=1644017035;
+        bh=b/qWUsU6i+4L1ic9GtIUoK+xe4iHh0IrR+QA65q2pgA=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=t1Kp5HVMsc2c6XRPzEmwhTujJDnQADYh3wPbFcbHmL912gQJoiWzsTcgmEKSQVqHF
+         bCmhRbMeia0e3jT4vCNBLxNxaf2NNcRezuQlx3DhvJB/HgAgVIMQTCxerpbVhiS+yn
+         Yuj7d3U0SpNOm+Wvb/M65aBGi1Qt0euMk0c1UJSMaIu1hLVyqG5lwVoykFuxb7ud0K
+         4Kr82tAzUUqzH6Ynbgpnz1aerqe4jW5BEzBRoqnvb+aqMXsHoJ2Dnp8An5YDXd9AIL
+         9nsbe+G3fPK2DfH6nLzX3kfH04joJdsWUkxd6qtJ5d+xyPPryIhnC72ZhLRpsrIigF
+         ZhWdSNaqq0srw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id AA35F5C0992; Fri,  4 Feb 2022 15:20:37 -0800 (PST)
+        id 6B9655C0418; Fri,  4 Feb 2022 15:23:55 -0800 (PST)
+Date:   Fri, 4 Feb 2022 15:23:55 -0800
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 5/5] rcu: Create and use an rcu_rdp_cpu_online()
-Date:   Fri,  4 Feb 2022 15:20:36 -0800
-Message-Id: <20220204232036.460-5-paulmck@kernel.org>
-X-Mailer: git-send-email 2.31.1.189.g2e36527f23
-In-Reply-To: <20220204232027.GA4194214@paulmck-ThinkPad-P17-Gen-1>
-References: <20220204232027.GA4194214@paulmck-ThinkPad-P17-Gen-1>
+        rostedt@goodmis.org
+Subject: [PATCH rcu 0/10] Real-time-related updates for v5.18
+Message-ID: <20220204232355.GA728@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The pattern "rdp->grpmask & rcu_rnp_online_cpus(rnp)" occurs frequently
-in RCU code in order to determine whether rdp->cpu is online from an
-RCU perspective.  This commit therefore creates an rcu_rdp_cpu_online()
-function to replace it.
+Hello!
 
-[ paulmck: Apply kernel test robot unused-variable feedback. ]
+This series provides real-time-related RCU updates:
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/rcu/tree.c        | 21 +++++++++++++--------
- kernel/rcu/tree_plugin.h |  6 ++----
- 2 files changed, 15 insertions(+), 12 deletions(-)
+1.	Mark accesses to boost_starttime.
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 1c30a01692076..6a470bb93b485 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -222,6 +222,16 @@ static unsigned long rcu_rnp_online_cpus(struct rcu_node *rnp)
- 	return READ_ONCE(rnp->qsmaskinitnext);
- }
- 
-+/*
-+ * Is the CPU corresponding to the specified rcu_data structure online
-+ * from RCU's perspective?  This perspective is given by that structure's
-+ * ->qsmaskinitnext field rather than by the global cpu_online_mask.
-+ */
-+static bool rcu_rdp_cpu_online(struct rcu_data *rdp)
-+{
-+	return !!(rdp->grpmask & rcu_rnp_online_cpus(rdp->mynode));
-+}
-+
- /*
-  * Return true if an RCU grace period is in progress.  The READ_ONCE()s
-  * permit this function to be invoked without holding the root rcu_node
-@@ -1168,14 +1178,12 @@ void rcu_request_urgent_qs_task(struct task_struct *t)
- bool rcu_lockdep_current_cpu_online(void)
- {
- 	struct rcu_data *rdp;
--	struct rcu_node *rnp;
- 	bool ret = false;
- 
- 	if (in_nmi() || !rcu_scheduler_fully_active)
- 		return true;
- 	preempt_disable_notrace();
- 	rdp = this_cpu_ptr(&rcu_data);
--	rnp = rdp->mynode;
- 	/*
- 	 * Strictly, we care here about the case where the current CPU is
- 	 * in rcu_cpu_starting() and thus has an excuse for rdp->grpmask
-@@ -1183,8 +1191,7 @@ bool rcu_lockdep_current_cpu_online(void)
- 	 * false positive if it's held by some *other* CPU, but that's
- 	 * OK because that just means a false *negative* on the warning.
- 	 */
--	if (rdp->grpmask & rcu_rnp_online_cpus(rnp) ||
--	    arch_spin_is_locked(&rcu_state.ofl_lock))
-+	if (rcu_rdp_cpu_online(rdp) || arch_spin_is_locked(&rcu_state.ofl_lock))
- 		ret = true;
- 	preempt_enable_notrace();
- 	return ret;
-@@ -1269,8 +1276,7 @@ static int rcu_implicit_dynticks_qs(struct rcu_data *rdp)
- 	 * For more detail, please refer to the "Hotplug CPU" section
- 	 * of RCU's Requirements documentation.
- 	 */
--	if (WARN_ON_ONCE(!(rdp->grpmask & rcu_rnp_online_cpus(rnp)))) {
--		bool onl;
-+	if (WARN_ON_ONCE(!rcu_rdp_cpu_online(rdp))) {
- 		struct rcu_node *rnp1;
- 
- 		pr_info("%s: grp: %d-%d level: %d ->gp_seq %ld ->completedqs %ld\n",
-@@ -1279,9 +1285,8 @@ static int rcu_implicit_dynticks_qs(struct rcu_data *rdp)
- 		for (rnp1 = rnp; rnp1; rnp1 = rnp1->parent)
- 			pr_info("%s: %d:%d ->qsmask %#lx ->qsmaskinit %#lx ->qsmaskinitnext %#lx ->rcu_gp_init_mask %#lx\n",
- 				__func__, rnp1->grplo, rnp1->grphi, rnp1->qsmask, rnp1->qsmaskinit, rnp1->qsmaskinitnext, rnp1->rcu_gp_init_mask);
--		onl = !!(rdp->grpmask & rcu_rnp_online_cpus(rnp));
- 		pr_info("%s %d: %c online: %ld(%d) offline: %ld(%d)\n",
--			__func__, rdp->cpu, ".o"[onl],
-+			__func__, rdp->cpu, ".o"[rcu_rdp_cpu_online(rdp)],
- 			(long)rdp->rcu_onl_gp_seq, rdp->rcu_onl_gp_flags,
- 			(long)rdp->rcu_ofl_gp_seq, rdp->rcu_ofl_gp_flags);
- 		return 1; /* Break things loose after complaining. */
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index c5b45c2f68a15..d3db2168598ef 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -330,7 +330,7 @@ void rcu_note_context_switch(bool preempt)
- 		 * then queue the task as required based on the states
- 		 * of any ongoing and expedited grace periods.
- 		 */
--		WARN_ON_ONCE((rdp->grpmask & rcu_rnp_online_cpus(rnp)) == 0);
-+		WARN_ON_ONCE(!rcu_rdp_cpu_online(rdp));
- 		WARN_ON_ONCE(!list_empty(&t->rcu_node_entry));
- 		trace_rcu_preempt_task(rcu_state.name,
- 				       t->pid,
-@@ -773,7 +773,6 @@ dump_blkd_tasks(struct rcu_node *rnp, int ncheck)
- 	int cpu;
- 	int i;
- 	struct list_head *lhp;
--	bool onl;
- 	struct rcu_data *rdp;
- 	struct rcu_node *rnp1;
- 
-@@ -797,9 +796,8 @@ dump_blkd_tasks(struct rcu_node *rnp, int ncheck)
- 	pr_cont("\n");
- 	for (cpu = rnp->grplo; cpu <= rnp->grphi; cpu++) {
- 		rdp = per_cpu_ptr(&rcu_data, cpu);
--		onl = !!(rdp->grpmask & rcu_rnp_online_cpus(rnp));
- 		pr_info("\t%d: %c online: %ld(%d) offline: %ld(%d)\n",
--			cpu, ".o"[onl],
-+			cpu, ".o"[rcu_rdp_cpu_online(rdp)],
- 			(long)rdp->rcu_onl_gp_seq, rdp->rcu_onl_gp_flags,
- 			(long)rdp->rcu_ofl_gp_seq, rdp->rcu_ofl_gp_flags);
- 	}
--- 
-2.31.1.189.g2e36527f23
+2.	Handle concurrent nocb kthreads creation, courtesy of Neeraj
+	Upadhyay.
 
+3.	Remove unused rcu_state.boost, courtesy of Neeraj Upadhyay.
+
+4.	Create per-cpu rcuc kthreads only when rcutree.use_softirq=0,
+	courtesy of Zqiang.
+
+5.	Move kthread_prio bounds-check to a separate function, courtesy
+	of Alison Chaiken.
+
+6.	Make priority of grace-period thread consistent, courtesy of
+	Alison Chaiken.
+
+7.	Elevate priority of offloaded callback threads, courtesy of
+	Alison Chaiken.
+
+8.	Update documentation regarding kthread_prio cmdline parameter,
+	courtesy of Alison Chaiken.
+
+9.	Don't deboost before reporting expedited quiescent state.
+
+10.	Add per-CPU rcuc task dumps to RCU CPU stall warnings, courtesy
+	of Zqiang.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ b/Documentation/admin-guide/kernel-parameters.txt |    2 +
+ b/kernel/rcu/rcutorture.c                         |    7 ++-
+ b/kernel/rcu/tree.c                               |    2 -
+ b/kernel/rcu/tree.h                               |    2 +
+ b/kernel/rcu/tree_nocb.h                          |    7 +++
+ b/kernel/rcu/tree_plugin.h                        |    2 -
+ b/kernel/rcu/tree_stall.h                         |   35 +++++++++++++++++
+ kernel/rcu/tree.c                                 |   44 +++++++++++++---------
+ kernel/rcu/tree.h                                 |    6 +--
+ kernel/rcu/tree_nocb.h                            |    7 +++
+ kernel/rcu/tree_plugin.h                          |   11 +++--
+ 11 files changed, 94 insertions(+), 31 deletions(-)
