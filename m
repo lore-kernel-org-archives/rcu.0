@@ -2,45 +2,45 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A57B8C433EF
-	for <rcu@archiver.kernel.org>; Fri,  4 Feb 2022 23:24:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8303CC4332F
+	for <rcu@archiver.kernel.org>; Fri,  4 Feb 2022 23:24:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378127AbiBDXYN (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 4 Feb 2022 18:24:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42312 "EHLO
+        id S1355735AbiBDXYO (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 4 Feb 2022 18:24:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346197AbiBDXYM (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S1378119AbiBDXYM (ORCPT <rfc822;rcu@vger.kernel.org>);
         Fri, 4 Feb 2022 18:24:12 -0500
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BB06DFC13FC;
-        Fri,  4 Feb 2022 15:24:11 -0800 (PST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11D0EDFC13F7;
+        Fri,  4 Feb 2022 15:24:12 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id BB447CE24C2;
-        Fri,  4 Feb 2022 23:24:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09A1CC36AE2;
+        by ams.source.kernel.org (Postfix) with ESMTPS id C11E9B83976;
+        Fri,  4 Feb 2022 23:24:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31E16C340F7;
         Fri,  4 Feb 2022 23:24:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1644017048;
-        bh=2W4MLM7m8I6vA/YIMpHFfSjn+OnxWplMJIEA37I40k8=;
+        bh=VXP8VoUHOvneEifMGVYTGH44aYLtxxiEIdVb15Xe2Eg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=flUuBFwvI4fLaQDspE1Sab5DOwLJiY5hHXQnfrf7d7Nxfx6oAY5dMvW2eY6p23hZk
-         7ed3S1kFjkaU/Qom8jYy0zwgtg7u/anfmWCE3Yy7WdSSN4dak2RjV4CK45U+X2pbDs
-         5G2lkbVPr/TXXccd/pFZ1GJC3OyV3MLZEvnlCeY1zixz1oB1GpSRoeJyEQDvxYi3a0
-         QScKepFutglBWAvqtbMEYeJdQdaNSoVXfPA8PSxpQWH/TrokdwK0tNknzCaj1MBxaQ
-         fKyhy0xEaSLYabrVehm/BfRw5t7DfWJtD6rK5+q6sEFmCxvb071jEkyvDYTYs9OQTF
-         zD59ojt8CWZlw==
+        b=eLojOQH9n0ljY6gSgQseyW6vKL294dJgpjiOU4Vxt3ueIcnQvB1/GnTx6VGT0EQC2
+         un7xVli6wtNGgs8tprBm1dB4y9opDKU51K7ZPFkLQwiUaMJ7oGUd+fP2k8MsV2CKMp
+         WRBiF5KLV9SVyKsh/ipxKGnKQnOPvwSoHwFzFShpEz6/njukgYdUNM+Dk8bjOhcvrn
+         G633QHVzGajPXPnoyU+15tGf9bY5awneHhqyr5kfm18T743u4vmBsR0GS6hnRhYhL6
+         z9zi60UVvtPEicPT8aQtf8gqtIK2nMPp7SI9POjjYfx91Zf7mcJyIcrV+ocaWlAKtu
+         n9ZR3J7p4oQsg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id C76395C0992; Fri,  4 Feb 2022 15:24:07 -0800 (PST)
+        id CB71D5C0A21; Fri,  4 Feb 2022 15:24:07 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
         rostedt@goodmis.org, Alison Chaiken <achaiken@aurora.tech>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 05/10] rcu: Move kthread_prio bounds-check to a separate function
-Date:   Fri,  4 Feb 2022 15:24:01 -0800
-Message-Id: <20220204232406.814-5-paulmck@kernel.org>
+Subject: [PATCH rcu 07/10] rcu: Elevate priority of offloaded callback threads
+Date:   Fri,  4 Feb 2022 15:24:03 -0800
+Message-Id: <20220204232406.814-7-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220204232355.GA728@paulmck-ThinkPad-P17-Gen-1>
 References: <20220204232355.GA728@paulmck-ThinkPad-P17-Gen-1>
@@ -52,83 +52,52 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: Alison Chaiken <achaiken@aurora.tech>
 
-Move the bounds-check of the kthread_prio cmdline parameter to a new
-function in order to faciliate a different callsite.
+When CONFIG_PREEMPT_RT=y, the rcutree.kthread_prio command-line
+parameter signals initialization code to boost the priority of rcuc
+callbacks to the designated value.  With the additional
+CONFIG_RCU_NOCB_CPU=y configuration and an additional rcu_nocbs
+command-line parameter, the callbacks on the listed cores are
+offloaded to new rcuop kthreads that are not pinned to the cores whose
+post-grace-period work is performed.  While the rcuop kthreads perform
+the same function as the rcuc kthreads they offload, the kthread_prio
+parameter only boosts the priority of the rcuc kthreads.  Fix this
+inconsistency by elevating rcuop kthreads to the same priority as the rcuc
+kthreads.
 
 Signed-off-by: Alison Chaiken <achaiken@aurora.tech>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c | 39 +++++++++++++++++++++++----------------
- 1 file changed, 23 insertions(+), 16 deletions(-)
+ kernel/rcu/tree.c      | 2 +-
+ kernel/rcu/tree_nocb.h | 3 +++
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 4e5e37e5ee3c9..5bf0312f66760 100644
+index 5bf0312f66760..9e4c5b281f003 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -4440,26 +4440,10 @@ static int rcu_pm_notify(struct notifier_block *self,
- static int __init rcu_spawn_gp_kthread(void)
- {
- 	unsigned long flags;
--	int kthread_prio_in = kthread_prio;
- 	struct rcu_node *rnp;
- 	struct sched_param sp;
- 	struct task_struct *t;
+@@ -153,7 +153,7 @@ static void sync_sched_exp_online_cleanup(int cpu);
+ static void check_cb_ovld_locked(struct rcu_data *rdp, struct rcu_node *rnp);
+ static bool rcu_rdp_is_offloaded(struct rcu_data *rdp);
  
--	/* Force priority into range. */
--	if (IS_ENABLED(CONFIG_RCU_BOOST) && kthread_prio < 2
--	    && IS_BUILTIN(CONFIG_RCU_TORTURE_TEST))
--		kthread_prio = 2;
--	else if (IS_ENABLED(CONFIG_RCU_BOOST) && kthread_prio < 1)
--		kthread_prio = 1;
--	else if (kthread_prio < 0)
--		kthread_prio = 0;
--	else if (kthread_prio > 99)
--		kthread_prio = 99;
--
--	if (kthread_prio != kthread_prio_in)
--		pr_alert("rcu_spawn_gp_kthread(): Limited prio to %d from %d\n",
--			 kthread_prio, kthread_prio_in);
--
- 	rcu_scheduler_fully_active = 1;
- 	t = kthread_create(rcu_gp_kthread, NULL, "%s", rcu_state.name);
- 	if (WARN_ONCE(IS_ERR(t), "%s: Could not start grace-period kthread, OOM is now expected behavior\n", __func__))
-@@ -4584,6 +4568,28 @@ static void __init rcu_init_one(void)
- 	}
+-/* rcuc/rcub kthread realtime priority */
++/* rcuc/rcub/rcuop kthread realtime priority */
+ static int kthread_prio = IS_ENABLED(CONFIG_RCU_BOOST) ? 1 : 0;
+ module_param(kthread_prio, int, 0444);
+ 
+diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+index ea889cbfc3b95..547c41437c767 100644
+--- a/kernel/rcu/tree_nocb.h
++++ b/kernel/rcu/tree_nocb.h
+@@ -1270,6 +1270,9 @@ static void rcu_spawn_cpu_nocb_kthread(int cpu)
+ 			"rcuo%c/%d", rcu_state.abbr, cpu);
+ 	if (WARN_ONCE(IS_ERR(t), "%s: Could not start rcuo CB kthread, OOM is now expected behavior\n", __func__))
+ 		return;
++
++	if (kthread_prio)
++		sched_setscheduler_nocheck(t, SCHED_FIFO, &sp);
+ 	WRITE_ONCE(rdp->nocb_cb_kthread, t);
+ 	WRITE_ONCE(rdp->nocb_gp_kthread, rdp_gp->nocb_gp_kthread);
  }
- 
-+/*
-+ * Force priority from the kernel command-line into range.
-+ */
-+static void __init sanitize_kthread_prio(void)
-+{
-+	int kthread_prio_in = kthread_prio;
-+
-+	if (IS_ENABLED(CONFIG_RCU_BOOST) && kthread_prio < 2
-+	    && IS_BUILTIN(CONFIG_RCU_TORTURE_TEST))
-+		kthread_prio = 2;
-+	else if (IS_ENABLED(CONFIG_RCU_BOOST) && kthread_prio < 1)
-+		kthread_prio = 1;
-+	else if (kthread_prio < 0)
-+		kthread_prio = 0;
-+	else if (kthread_prio > 99)
-+		kthread_prio = 99;
-+
-+	if (kthread_prio != kthread_prio_in)
-+		pr_alert("%s: Limited prio to %d from %d\n",
-+			 __func__, kthread_prio, kthread_prio_in);
-+}
-+
- /*
-  * Compute the rcu_node tree geometry from kernel parameters.  This cannot
-  * replace the definitions in tree.h because those are needed to size
-@@ -4744,6 +4750,7 @@ void __init rcu_init(void)
- 
- 	kfree_rcu_batch_init();
- 	rcu_bootup_announce();
-+	sanitize_kthread_prio();
- 	rcu_init_geometry();
- 	rcu_init_one();
- 	if (dump_tree)
 -- 
 2.31.1.189.g2e36527f23
 
