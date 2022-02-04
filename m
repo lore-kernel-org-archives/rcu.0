@@ -2,101 +2,76 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9461CC433EF
-	for <rcu@archiver.kernel.org>; Fri,  4 Feb 2022 23:56:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 00718C433F5
+	for <rcu@archiver.kernel.org>; Fri,  4 Feb 2022 23:56:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235696AbiBDX4C (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 4 Feb 2022 18:56:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52100 "EHLO
+        id S1378511AbiBDX4I (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 4 Feb 2022 18:56:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232201AbiBDX4B (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 4 Feb 2022 18:56:01 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3407D84F2B6;
-        Fri,  4 Feb 2022 15:56:00 -0800 (PST)
+        with ESMTP id S1378473AbiBDX4G (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 4 Feb 2022 18:56:06 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44F72DB788C4;
+        Fri,  4 Feb 2022 15:56:04 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id A78A0B83971;
-        Fri,  4 Feb 2022 23:55:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D5DFC004E1;
-        Fri,  4 Feb 2022 23:55:58 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1517D61CE1;
+        Fri,  4 Feb 2022 23:56:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7AEAEC004E1;
+        Fri,  4 Feb 2022 23:56:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1644018958;
-        bh=BktStQzin+/As+Ke35kasrGp3jVELJq1EFpMB9fq+z0=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=QXmkIRZtwyNFQfNOY4Wo1mHy+Vmi5ssWLKvJwkaTgfPsbG+/2pRAFHUkeBk22QPOS
-         X46DHEvEcVygITv/UlmnoBv9lJmNWvFTwDFae+rmLQ39jbDMAMlwiM3w/ZkkbyGQqW
-         Kbh0JlIWmA+B5eSLU8gAgVf9TCo3++sIG30AmwN2k1xbvPa8usQIwWLrhGR+9JHDeV
-         vxIaNqrSno9YFeI6mYat6hzObtToxbRFMjz8ySeED4cSzKOnh9i1jro44eiGGGw410
-         BCBJxokZ/nEkbxlu4yXQZRo1siqELjkNGsmUSJuOhX/lJnRwjkYm4a/YF0BD1HdkIF
-         j1lQpnvYE2vJg==
+        s=k20201202; t=1644018962;
+        bh=yUiNHffYq6iT3ABSzr7h3OVqLh7zD9OXsmxGVa+fEq0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=W5pCX4FJ/JXJTCj22BdQ+GkLccILl1kgLKnViF97QgPStPC335Yw4Uzb2Xn96r9t5
+         uNnZBBP/Wa54y1hjglJrKOgIFe2+WrN8sgLgTGCSPSm7yjshooGeVqZAbr+AdBH4Ir
+         6nyir0++SQoT1IObj36eSLkslW7FMRonlwAzQognFXC0MeGGnezc7JFWO5srt37Yix
+         eYqyqD3nWXP24eA5fMTIyqxerfngcp6+kPSUDwldX+CRpg74BzsmrxxOYVd/NUCZjT
+         8bmVUZkv64McuqflXF5EwQ6S5qWGB2lvYSL8L3IUM6ovFS/Xp+lu81lPdsnirIlxg0
+         eGazvMKfalbdA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 229655C0418; Fri,  4 Feb 2022 15:55:58 -0800 (PST)
-Date:   Fri, 4 Feb 2022 15:55:58 -0800
+        id 51F955C0418; Fri,  4 Feb 2022 15:56:02 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org
-Subject: [PATCH rcu 0/13] Torture-test scripting updates for v5.18
-Message-ID: <20220204235558.GA3221@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 01/13] torture: Drop trailing ^M from console output
+Date:   Fri,  4 Feb 2022 15:55:49 -0800
+Message-Id: <20220204235601.3438-1-paulmck@kernel.org>
+X-Mailer: git-send-email 2.31.1.189.g2e36527f23
+In-Reply-To: <20220204235558.GA3221@paulmck-ThinkPad-P17-Gen-1>
+References: <20220204235558.GA3221@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello!
+Console logs can sometimes have trailing control-M characters, which the
+forward-progress evaluation code in kvm-recheck-rcu.sh passes through
+to the user output.  Which does not cause a technical problem, but which
+can look ugly.  This commit therefore strips the control-M characters.
 
-This series provides updates to the torture-test scripting.
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ tools/testing/selftests/rcutorture/bin/kvm-recheck-rcu.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-1.	Drop trailing ^M from console output.
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-recheck-rcu.sh b/tools/testing/selftests/rcutorture/bin/kvm-recheck-rcu.sh
+index 1c4c2c727dad1..43e1387234d11 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm-recheck-rcu.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm-recheck-rcu.sh
+@@ -25,7 +25,7 @@ stopstate="`grep 'End-test grace-period state: g' $i/console.log 2> /dev/null |
+ 	    tail -1 | sed -e 's/^\[[ 0-9.]*] //' |
+ 	    awk '{ print \"[\" $1 \" \" $5 \" \" $6 \" \" $7 \"]\"; }' |
+ 	    tr -d '\012\015'`"
+-fwdprog="`grep 'rcu_torture_fwd_prog n_max_cbs: ' $i/console.log 2> /dev/null | sed -e 's/^\[[^]]*] //' | sort -k3nr | head -1 | awk '{ print $2 " " $3 }'`"
++fwdprog="`grep 'rcu_torture_fwd_prog n_max_cbs: ' $i/console.log 2> /dev/null | sed -e 's/^\[[^]]*] //' | sort -k3nr | head -1 | awk '{ print $2 " " $3 }' | tr -d '\015'`"
+ if test -z "$ngps"
+ then
+ 	echo "$configfile ------- " $stopstate
+-- 
+2.31.1.189.g2e36527f23
 
-2.	Allow four-digit repetition numbers for --configs parameter.
-
-3.	Output per-failed-run summary lines from torture.sh.
-
-4.	Make kvm.sh summaries note runs having only KCSAN reports.
-
-5.	Indicate which torture.sh runs' bugs are all KCSAN reports.
-
-6.	Compress KCSAN as well as KASAN vmlinux files.
-
-7.	Make kvm-remote.sh try multiple times to download tarball.
-
-8.	Print only one summary line per run.
-
-9.	Make kvm-find-errors.sh notice missing vmlinux file.
-
-10.	Change KVM environment variable to RCUTORTURE.
-
-11.	Make torture.sh help message match reality.
-
-12.	Test SRCU size transitions.
-
-13.	Provide non-power-of-two Tasks RCU scenarios.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- b/tools/testing/selftests/rcutorture/bin/console-badness.sh    |    2 
- b/tools/testing/selftests/rcutorture/bin/kvm-again.sh          |    4 -
- b/tools/testing/selftests/rcutorture/bin/kvm-check-branches.sh |    4 -
- b/tools/testing/selftests/rcutorture/bin/kvm-end-run-stats.sh  |    4 -
- b/tools/testing/selftests/rcutorture/bin/kvm-find-errors.sh    |    6 +
- b/tools/testing/selftests/rcutorture/bin/kvm-recheck-rcu.sh    |    2 
- b/tools/testing/selftests/rcutorture/bin/kvm-remote.sh         |   17 ++--
- b/tools/testing/selftests/rcutorture/bin/kvm.sh                |    2 
- b/tools/testing/selftests/rcutorture/bin/parse-console.sh      |   10 ++
- b/tools/testing/selftests/rcutorture/bin/torture.sh            |    2 
- b/tools/testing/selftests/rcutorture/configs/rcu/RUDE01        |    2 
- b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-N.boot   |    1 
- b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-P.boot   |    2 
- b/tools/testing/selftests/rcutorture/configs/rcu/TRACE01       |    2 
- tools/testing/selftests/rcutorture/bin/kvm-remote.sh           |    8 +-
- tools/testing/selftests/rcutorture/bin/kvm.sh                  |   14 +--
- tools/testing/selftests/rcutorture/bin/torture.sh              |   40 ++++++----
- 17 files changed, 78 insertions(+), 44 deletions(-)
