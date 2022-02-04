@@ -2,42 +2,41 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 308CBC433EF
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C57B6C433FE
 	for <rcu@archiver.kernel.org>; Fri,  4 Feb 2022 23:53:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378323AbiBDXxg (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S243691AbiBDXxg (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Fri, 4 Feb 2022 18:53:36 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:45768 "EHLO
+Received: from ams.source.kernel.org ([145.40.68.75]:45760 "EHLO
         ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348892AbiBDXxc (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S1378366AbiBDXxc (ORCPT <rfc822;rcu@vger.kernel.org>);
         Fri, 4 Feb 2022 18:53:32 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 64386B83976;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 27266B83973;
         Fri,  4 Feb 2022 23:53:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDBB6C340F8;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B69F9C340F2;
         Fri,  4 Feb 2022 23:53:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1644018809;
-        bh=APu/3aCknEcXKDub4KhH82mNQhHQnTLKFoAZJqOduhQ=;
+        bh=Io8OOvJ7kPMPed5CAYEEfGmPgC4ynlJcaTeSoyVPSfk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dfkC9LUybIqs2n0dPhwuQnRc26yt6r/p/apaszeMcH0pg6us27JpbULe1XBcHApTE
-         azvpSnaP0wnwkN1GoQnLAU2CBy3pW2/aA5PKC8lqGKtCHEttE/pzY3X4cByS5QH61s
-         RmDHW78RErt2BxgZItCM28DyjkKcqocZQ5NvneYFsKwrRFq0nYKWa5q8IoUw/tLY7q
-         X++KW2KY2B2ifNeC3i7CmEt4a31UN/USnz7DKRUkOqTz30AK9yI//zc1UZB6FtFnRq
-         yxL/nYmEJwE6+7MJvvvudzfpDAHj2KptLMgx7PfCD9lLNuurpr6l52dZstgWkD/JUR
-         LFE2v8cXAipwg==
+        b=HvNySBPy41L+uE/AP+XKfXsUGiEqyb6EvS/9P6HLdyXgpjXyBfIV0YYNoaIVH58Rz
+         p98ba9dZ1AoeEbEHrXJBsI7b6kjz+cFVYO75jhjJSUiJuN4XGpv94eZYtoLVoUjUWI
+         jRXJuBh8hNGb+jDxKTdYmzWeJgTBtCXv0lv8Wnp/LjkJVuPGVVPf1v0A5Jy7Oiltdk
+         IL6RQfsMazxQsnSztHWdfEwZFh8bS6hIKKAnbZ8EbAbKLIc8b8jqQs+73PUG1Egy0P
+         f49trSNrhjlM5m852TStUkHy1IInkA96Qf+3zEvsuw02KB3NloIvWPGDfD6ky2WJGf
+         ePoBnkn5hLG3A==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 7EADC5C0A0A; Fri,  4 Feb 2022 15:53:29 -0800 (PST)
+        id 7AF635C08DD; Fri,  4 Feb 2022 15:53:29 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        kernel test robot <oliver.sang@intel.com>
-Subject: [PATCH rcu 6/8] rcutorture: Fix rcu_fwd_mutex deadlock
-Date:   Fri,  4 Feb 2022 15:53:25 -0800
-Message-Id: <20220204235327.2948-6-paulmck@kernel.org>
+        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 4/8] rcutorture: Make rcu_fwd_cb_nodelay be a counter
+Date:   Fri,  4 Feb 2022 15:53:23 -0800
+Message-Id: <20220204235327.2948-4-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220204235321.GA2511@paulmck-ThinkPad-P17-Gen-1>
 References: <20220204235321.GA2511@paulmck-ThinkPad-P17-Gen-1>
@@ -47,47 +46,86 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The rcu_torture_fwd_cb_hist() function acquires rcu_fwd_mutex, but is
-invoked from rcutorture_oom_notify() function, which hold this same
-mutex across this call.  This commit fixes the resulting deadlock.
+Back when only one rcutorture kthread could do forward-progress testing,
+it was just fine for rcu_fwd_cb_nodelay to be a non-atomic bool.  It was
+set at the start of forward-progress testing and cleared at the end.
+But now that there are multiple threads, the value can be cleared while
+one of the threads is still doing forward-progress testing.  This commit
+therefore makes rcu_fwd_cb_nodelay be an atomic counter, replacing the
+WRITE_ONCE() operations with atomic_inc() and atomic_dec().
 
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Tested-by: Oliver Sang <oliver.sang@intel.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/rcutorture.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/rcu/rcutorture.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
 diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index e99658efd97f4..1c8f40b90f70b 100644
+index fefc3fa1a9c2a..afe95c6948957 100644
 --- a/kernel/rcu/rcutorture.c
 +++ b/kernel/rcu/rcutorture.c
-@@ -2180,7 +2180,6 @@ static void rcu_torture_fwd_cb_hist(struct rcu_fwd *rfp)
- 	for (i = ARRAY_SIZE(rfp->n_launders_hist) - 1; i > 0; i--)
- 		if (rfp->n_launders_hist[i].n_launders > 0)
- 			break;
--	mutex_lock(&rcu_fwd_mutex); // Serialize histograms.
- 	pr_alert("%s: Callback-invocation histogram %d (duration %lu jiffies):",
- 		 __func__, rfp->rcu_fwd_id, jiffies - rfp->rcu_fwd_startat);
- 	gps_old = rfp->rcu_launder_gp_seq_start;
-@@ -2193,7 +2192,6 @@ static void rcu_torture_fwd_cb_hist(struct rcu_fwd *rfp)
- 		gps_old = gps;
+@@ -284,7 +284,7 @@ static atomic_t barrier_cbs_invoked;	/* Barrier callbacks invoked. */
+ static wait_queue_head_t *barrier_cbs_wq; /* Coordinate barrier testing. */
+ static DECLARE_WAIT_QUEUE_HEAD(barrier_wq);
+ 
+-static bool rcu_fwd_cb_nodelay;		/* Short rcu_torture_delay() delays. */
++static atomic_t rcu_fwd_cb_nodelay;	/* Short rcu_torture_delay() delays. */
+ 
+ /*
+  * Allocate an element from the rcu_tortures pool.
+@@ -387,7 +387,7 @@ rcu_read_delay(struct torture_random_state *rrsp, struct rt_read_seg *rtrsp)
+ 	 * period, and we want a long delay occasionally to trigger
+ 	 * force_quiescent_state. */
+ 
+-	if (!READ_ONCE(rcu_fwd_cb_nodelay) &&
++	if (!atomic_read(&rcu_fwd_cb_nodelay) &&
+ 	    !(torture_random(rrsp) % (nrealreaders * 2000 * longdelay_ms))) {
+ 		started = cur_ops->get_gp_seq();
+ 		ts = rcu_trace_clock_local();
+@@ -1276,7 +1276,7 @@ rcu_torture_writer(void *arg)
+ 		boot_ended = rcu_inkernel_boot_has_ended();
+ 		stutter_waited = stutter_wait("rcu_torture_writer");
+ 		if (stutter_waited &&
+-		    !READ_ONCE(rcu_fwd_cb_nodelay) &&
++		    !atomic_read(&rcu_fwd_cb_nodelay) &&
+ 		    !cur_ops->slow_gps &&
+ 		    !torture_must_stop() &&
+ 		    boot_ended)
+@@ -2290,7 +2290,7 @@ static void rcu_torture_fwd_prog_nr(struct rcu_fwd *rfp,
  	}
- 	pr_cont("\n");
--	mutex_unlock(&rcu_fwd_mutex);
+ 
+ 	/* Tight loop containing cond_resched(). */
+-	WRITE_ONCE(rcu_fwd_cb_nodelay, true);
++	atomic_inc(&rcu_fwd_cb_nodelay);
+ 	cur_ops->sync(); /* Later readers see above write. */
+ 	if  (selfpropcb) {
+ 		WRITE_ONCE(fcs.stop, 0);
+@@ -2335,7 +2335,7 @@ static void rcu_torture_fwd_prog_nr(struct rcu_fwd *rfp,
+ 		destroy_rcu_head_on_stack(&fcs.rh);
+ 	}
+ 	schedule_timeout_uninterruptible(HZ / 10); /* Let kthreads recover. */
+-	WRITE_ONCE(rcu_fwd_cb_nodelay, false);
++	atomic_dec(&rcu_fwd_cb_nodelay);
  }
  
- /* Callback function for continuous-flood RCU callbacks. */
-@@ -2431,7 +2429,9 @@ static void rcu_torture_fwd_prog_cr(struct rcu_fwd *rfp)
- 			 n_launders, n_launders_sa,
- 			 n_max_gps, n_max_cbs, cver, gps);
- 		atomic_long_add(n_max_cbs, &rcu_fwd_max_cbs);
-+		mutex_lock(&rcu_fwd_mutex); // Serialize histograms.
- 		rcu_torture_fwd_cb_hist(rfp);
-+		mutex_unlock(&rcu_fwd_mutex);
+ /* Carry out call_rcu() forward-progress testing. */
+@@ -2362,7 +2362,7 @@ static void rcu_torture_fwd_prog_cr(struct rcu_fwd *rfp)
+ 		return; /* Can't do call_rcu() fwd prog without ->call. */
+ 
+ 	/* Loop continuously posting RCU callbacks. */
+-	WRITE_ONCE(rcu_fwd_cb_nodelay, true);
++	atomic_inc(&rcu_fwd_cb_nodelay);
+ 	cur_ops->sync(); /* Later readers see above write. */
+ 	WRITE_ONCE(rfp->rcu_fwd_startat, jiffies);
+ 	stopat = rfp->rcu_fwd_startat + MAX_FWD_CB_JIFFIES;
+@@ -2435,7 +2435,7 @@ static void rcu_torture_fwd_prog_cr(struct rcu_fwd *rfp)
  	}
  	schedule_timeout_uninterruptible(HZ); /* Let CBs drain. */
  	tick_dep_clear_task(current, TICK_DEP_BIT_RCU);
+-	WRITE_ONCE(rcu_fwd_cb_nodelay, false);
++	atomic_dec(&rcu_fwd_cb_nodelay);
+ }
+ 
+ 
 -- 
 2.31.1.189.g2e36527f23
 
