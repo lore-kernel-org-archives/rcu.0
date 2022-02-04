@@ -2,41 +2,44 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88F92C43219
-	for <rcu@archiver.kernel.org>; Fri,  4 Feb 2022 23:39:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 62EA3C4332F
+	for <rcu@archiver.kernel.org>; Fri,  4 Feb 2022 23:39:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378274AbiBDXjJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 4 Feb 2022 18:39:09 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:47904 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378241AbiBDXjG (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1378283AbiBDXjK (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 4 Feb 2022 18:39:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1378247AbiBDXjG (ORCPT <rfc822;rcu@vger.kernel.org>);
         Fri, 4 Feb 2022 18:39:06 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03D0CE025B34;
+        Fri,  4 Feb 2022 15:39:06 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6F7F661CAE;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 47E0761CAB;
         Fri,  4 Feb 2022 23:39:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A862C34101;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DD1CC340F9;
         Fri,  4 Feb 2022 23:39:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1644017944;
-        bh=N5jnqfLu0rIDFCwoYEN18JsUpJw3bRQcJZW9jv7EzbM=;
+        bh=vMfcdUf1wVddckJ+Hs5AKckEdG/I81gYVH5ZKNn9rPc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Mx1x6Z3tsckbbkDcQLaxbGSdko9wjpCJpgpqS3fUnp3WDOwvzTGqFmCDQfDXfvosh
-         00zS8VtHbzV5TU/QPm/2Agnevzv9x4E6B0Et9IPIONnV387Tdmq2ZFbU6dKZyyuyid
-         wmwa0df42hHC73YchWBFUH65y5IKVDLfgbAQOeDTtCOsQ2uMYq1mJFXE6DutRIzDmq
-         8hwohOugZIk7uXKEzeDcPOrFOlyYyUg69sSNXHe6uoWIWFUySH7ibuVJE7j3/eU5Fp
-         1hIQ/mFaaxzSxLE56qPamJXJot1A7/71y367TkwseQXWfZQMrn9Wl9I7Ow9tzwdyOi
-         AU0INPor/pZVA==
+        b=Du9GrBbcTixFYdS8ZTNv8eGpml/GYOZkQ78syOhoE+k9dZGyoiOH4fZLIVD/sKd2y
+         Z7T7MJ1ZgLfxiPtZF41d2TwVGNYnJDJ3Oc7X7ZHs39cIfFGlksGXJDmQM61AZazQ9e
+         SkHJrLBHoZ44LXSahR/vlco0K3WgQ22ANDyi1/31Gr0y+6eUI29PQgctO09im7neTg
+         tgXj1DkuXVtEs5cgjyoUMcbSXytKwbBFS/YmkaUa9Yf6ZjT0PL60Q2szsK/OSnqZhW
+         vYJiIFb3hxvTyAprfcgBG6TUNEmcAVcj+tZ23L+7DcptS1Sr3hDQDPXlsObZzMWJdI
+         59dccLjtUrIVg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 0A8F85C0F91; Fri,  4 Feb 2022 15:39:04 -0800 (PST)
+        id F37795C0A21; Fri,  4 Feb 2022 15:39:03 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
         rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 13/19] srcu: Prevent cleanup_srcu_struct() from freeing non-dynamic ->sda
-Date:   Fri,  4 Feb 2022 15:38:56 -0800
-Message-Id: <20220204233902.1902-13-paulmck@kernel.org>
+Subject: [PATCH rcu 07/19] srcu: Make rcutorture dump the SRCU size state
+Date:   Fri,  4 Feb 2022 15:38:50 -0800
+Message-Id: <20220204233902.1902-7-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220204233858.GA1469@paulmck-ThinkPad-P17-Gen-1>
 References: <20220204233858.GA1469@paulmck-ThinkPad-P17-Gen-1>
@@ -46,78 +49,57 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-When an srcu_struct structure is created (but not in a kernel module)
-by DEFINE_SRCU() and friends, the per-CPU srcu_data structure is
-statically allocated.  In all other cases, that structure is obtained
-from alloc_percpu(), in which case cleanup_srcu_struct() must invoke
-free_percpu() on the resulting ->sda pointer in the srcu_struct pointer.
+This commit adds the numeric and string version of ->srcu_size_state to
+the Tree-SRCU-specific portion of the rcutorture output.
 
-Which it does.
-
-Except that it also invokes free_percpu() on the ->sda pointer
-referencing the statically allocated per-CPU srcu_data structures.
-Which free_percpu() is surprisingly OK with.
-
-This commit nevertheless stops cleanup_srcu_struct() from freeing
-statically allocated per-CPU srcu_data structures.
+[ paulmck: Apply feedback from kernel test robot and Dan Carpenter. ]
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/srcutree.h |  1 +
- kernel/rcu/srcutree.c    | 13 +++++++++----
- 2 files changed, 10 insertions(+), 4 deletions(-)
+ kernel/rcu/srcutree.c | 23 +++++++++++++++++++++--
+ 1 file changed, 21 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
-index 44e998643f483..44bd204498a11 100644
---- a/include/linux/srcutree.h
-+++ b/include/linux/srcutree.h
-@@ -73,6 +73,7 @@ struct srcu_struct {
- 	unsigned long srcu_gp_seq_needed_exp;	/* Furthest future exp GP. */
- 	unsigned long srcu_last_gp_end;		/* Last GP end timestamp (ns) */
- 	struct srcu_data __percpu *sda;		/* Per-CPU srcu_data array. */
-+	bool sda_is_static;			/* May ->sda be passed to free_percpu()? */
- 	unsigned long srcu_barrier_seq;		/* srcu_barrier seq #. */
- 	struct mutex srcu_barrier_mutex;	/* Serialize barrier ops. */
- 	struct completion srcu_barrier_completion;
 diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 767487ad5440a..39dc3015dfeba 100644
+index fce041b648ee3..550991cc213d3 100644
 --- a/kernel/rcu/srcutree.c
 +++ b/kernel/rcu/srcutree.c
-@@ -206,8 +206,11 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
- 	mutex_init(&ssp->srcu_barrier_mutex);
- 	atomic_set(&ssp->srcu_barrier_cpu_cnt, 0);
- 	INIT_DELAYED_WORK(&ssp->work, process_srcu);
--	if (!is_static)
-+	ssp->sda_is_static = false;
-+	if (!is_static) {
- 		ssp->sda = alloc_percpu(struct srcu_data);
-+		ssp->sda_is_static = true;
-+	}
- 	if (!ssp->sda)
- 		return -ENOMEM;
- 	init_srcu_struct_data(ssp);
-@@ -215,7 +218,7 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
- 	ssp->srcu_last_gp_end = ktime_get_mono_fast_ns();
- 	if (READ_ONCE(ssp->srcu_size_state) == SRCU_SIZE_SMALL && convert_to_big == 1) {
- 		if (!init_srcu_struct_nodes(ssp, GFP_ATOMIC)) {
--			if (!is_static) {
-+			if (ssp->sda_is_static) {
- 				free_percpu(ssp->sda);
- 				ssp->sda = NULL;
- 			}
-@@ -434,8 +437,10 @@ void cleanup_srcu_struct(struct srcu_struct *ssp)
- 			rcu_seq_current(&ssp->srcu_gp_seq), ssp->srcu_gp_seq_needed);
- 		return; /* Caller forgot to stop doing call_srcu()? */
- 	}
--	free_percpu(ssp->sda);
--	ssp->sda = NULL;
-+	if (ssp->sda_is_static) {
-+		free_percpu(ssp->sda);
-+		ssp->sda = NULL;
-+	}
- 	kfree(ssp->node);
- 	ssp->node = NULL;
- 	ssp->srcu_size_state = SRCU_SIZE_SMALL;
+@@ -1400,15 +1400,34 @@ void srcutorture_get_gp_data(enum rcutorture_type test_type,
+ }
+ EXPORT_SYMBOL_GPL(srcutorture_get_gp_data);
+ 
++const char * const srcu_size_state_name[] =
++{
++	"SRCU_SIZE_SMALL",
++	"SRCU_SIZE_ALLOC",
++	"SRCU_SIZE_WAIT_BARRIER",
++	"SRCU_SIZE_WAIT_CALL",
++	"SRCU_SIZE_WAIT_CBS1",
++	"SRCU_SIZE_WAIT_CBS2",
++	"SRCU_SIZE_WAIT_CBS3",
++	"SRCU_SIZE_WAIT_CBS4",
++	"SRCU_SIZE_BIG",
++	"SRCU_SIZE_???",
++};
++
+ void srcu_torture_stats_print(struct srcu_struct *ssp, char *tt, char *tf)
+ {
+ 	int cpu;
+ 	int idx;
+ 	unsigned long s0 = 0, s1 = 0;
++	int ss_state = READ_ONCE(ssp->srcu_size_state);
++	int ss_state_idx = ss_state;
+ 
+ 	idx = ssp->srcu_idx & 0x1;
+-	pr_alert("%s%s Tree SRCU g%ld per-CPU(idx=%d):",
+-		 tt, tf, rcu_seq_current(&ssp->srcu_gp_seq), idx);
++	if (ss_state < 0 || ss_state >= ARRAY_SIZE(srcu_size_state_name))
++		ss_state_idx = ARRAY_SIZE(srcu_size_state_name) - 1;
++	pr_alert("%s%s Tree SRCU g%ld state %d (%s) per-CPU(idx=%d):",
++		 tt, tf, rcu_seq_current(&ssp->srcu_gp_seq), ss_state,
++		 srcu_size_state_name[ss_state_idx], idx);
+ 	for_each_possible_cpu(cpu) {
+ 		unsigned long l0, l1;
+ 		unsigned long u0, u1;
 -- 
 2.31.1.189.g2e36527f23
 
