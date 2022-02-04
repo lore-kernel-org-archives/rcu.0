@@ -2,42 +2,41 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3912EC4321E
-	for <rcu@archiver.kernel.org>; Fri,  4 Feb 2022 23:24:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F9C7C433FE
+	for <rcu@archiver.kernel.org>; Fri,  4 Feb 2022 23:24:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378118AbiBDXYL (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S1378114AbiBDXYL (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Fri, 4 Feb 2022 18:24:11 -0500
-Received: from sin.source.kernel.org ([145.40.73.55]:45782 "EHLO
+Received: from sin.source.kernel.org ([145.40.73.55]:45774 "EHLO
         sin.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378103AbiBDXYL (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S231625AbiBDXYL (ORCPT <rfc822;rcu@vger.kernel.org>);
         Fri, 4 Feb 2022 18:24:11 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id B08A8CE24C1;
+        by sin.source.kernel.org (Postfix) with ESMTPS id 9C4DCCE24BD;
         Fri,  4 Feb 2022 23:24:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02851C340EF;
-        Fri,  4 Feb 2022 23:24:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5082C004E1;
+        Fri,  4 Feb 2022 23:24:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1644017048;
-        bh=lXaKWM2nPsvGaA4M3xknAyaLNPy151HXLW17hO5rkR0=;
+        s=k20201202; t=1644017047;
+        bh=om82ARS4XbnxrZfOOyNn+KdAReXpStBVl0i5dOwAfCc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QnImF1IPtt2zc7pNIiSc2VDYAKsr5iB+XuE8GMXgIErTZEXiwud2gsJLyx82dKXSJ
-         gr5xTuvTk3XW7wT32rpThhKRiTROaVolrxdCn2HnTeQn9gmHJpp7T5b4R9W4UXtzDo
-         chgLeBoJvXe711StkHFdLSA7zfQ92UsTxAq7hhbIbu8ap5YHXXfUDvSwXccd+980Nn
-         SVtPd+GXllM9hQQ1yEL36+SOyBAOoMmvRY4G8xzujEKG6p2ikTSS7s79+QmEvw9+5W
-         3lT9H2Wmntc1Wxfz0Bv7dOv8ueWgry79JhnhLpG/K6iKm/NIInF7PDsdkYHpF9ITm7
-         ILyofZD1mdihA==
+        b=eH9L3qfUwFpU1qxP9tcvZ3+1JxgGPh2mh8iXH8s0bpgBkH1tdPxemeEil2VwEVOjC
+         HdGLUveCUhPyU2x4av3UXkvEtNC+XVRwJH59rftrQxBYhMhNwyiO1YMLsS1Z6iJPwv
+         ts9IzhUNJxm/d3QROQOqEL2dxfDK3cJSAa11DrnC17j2CxiE1sRwoR23GELmAIBenN
+         CI2xbR+R6iLc+boGgk2+xrrxGuFahMB0jDG77hJvp9lA+lGBAVtXp5HuMUb2cODoot
+         HGAKbNWurGw9NKub3JMNzT1zxeZuxT3FDflZ7GMhL5X2+zBVUuKj3GNFUn/AibDYdO
+         3UuL85/84bhrw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id C3B355C08B7; Fri,  4 Feb 2022 15:24:07 -0800 (PST)
+        id BDB145C0418; Fri,  4 Feb 2022 15:24:07 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org, Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 03/10] rcu: Remove unused rcu_state.boost
-Date:   Fri,  4 Feb 2022 15:23:59 -0800
-Message-Id: <20220204232406.814-3-paulmck@kernel.org>
+        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 01/10] rcu: Mark accesses to boost_starttime
+Date:   Fri,  4 Feb 2022 15:23:57 -0800
+Message-Id: <20220204232406.814-1-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220204232355.GA728@paulmck-ThinkPad-P17-Gen-1>
 References: <20220204232355.GA728@paulmck-ThinkPad-P17-Gen-1>
@@ -47,44 +46,42 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+The boost_starttime shared variable has conflicting unmarked C-language
+accesses, which are dangerous at best.  This commit therefore adds
+appropriate marking.  This was found by KCSAN.
 
-Signed-off-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.h        | 5 ++---
- kernel/rcu/tree_plugin.h | 2 --
- 2 files changed, 2 insertions(+), 5 deletions(-)
+ kernel/rcu/rcutorture.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index 24dd4b0d805f1..e9990945483f1 100644
---- a/kernel/rcu/tree.h
-+++ b/kernel/rcu/tree.h
-@@ -304,9 +304,8 @@ struct rcu_state {
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 422f7e4cc08de..829ae0b7d3c04 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -997,7 +997,7 @@ static int rcu_torture_boost(void *arg)
+ 			goto checkwait;
  
- 	/* The following fields are guarded by the root rcu_node's lock. */
- 
--	u8	boost ____cacheline_internodealigned_in_smp;
--						/* Subject to priority boost. */
--	unsigned long gp_seq;			/* Grace-period sequence #. */
-+	unsigned long gp_seq ____cacheline_internodealigned_in_smp;
-+						/* Grace-period sequence #. */
- 	unsigned long gp_max;			/* Maximum GP duration in */
- 						/*  jiffies. */
- 	struct task_struct *gp_kthread;		/* Task for grace periods. */
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index c5b45c2f68a15..109429e70a642 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -1175,8 +1175,6 @@ static void rcu_spawn_one_boost_kthread(struct rcu_node *rnp)
- 	if (rnp->boost_kthread_task || !rcu_scheduler_fully_active)
- 		return;
- 
--	rcu_state.boost = 1;
--
- 	t = kthread_create(rcu_boost_kthread, (void *)rnp,
- 			   "rcub/%d", rnp_index);
- 	if (WARN_ON_ONCE(IS_ERR(t)))
+ 		/* Wait for the next test interval. */
+-		oldstarttime = boost_starttime;
++		oldstarttime = READ_ONCE(boost_starttime);
+ 		while (time_before(jiffies, oldstarttime)) {
+ 			schedule_timeout_interruptible(oldstarttime - jiffies);
+ 			if (stutter_wait("rcu_torture_boost"))
+@@ -1041,10 +1041,11 @@ static int rcu_torture_boost(void *arg)
+ 		 * interval.  Besides, we are running at RT priority,
+ 		 * so delays should be relatively rare.
+ 		 */
+-		while (oldstarttime == boost_starttime && !kthread_should_stop()) {
++		while (oldstarttime == READ_ONCE(boost_starttime) && !kthread_should_stop()) {
+ 			if (mutex_trylock(&boost_mutex)) {
+ 				if (oldstarttime == boost_starttime) {
+-					boost_starttime = jiffies + test_boost_interval * HZ;
++					WRITE_ONCE(boost_starttime,
++						   jiffies + test_boost_interval * HZ);
+ 					n_rcu_torture_boosts++;
+ 				}
+ 				mutex_unlock(&boost_mutex);
 -- 
 2.31.1.189.g2e36527f23
 
