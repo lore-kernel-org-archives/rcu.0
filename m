@@ -2,41 +2,44 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 466E7C4332F
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7AC01C433FE
 	for <rcu@archiver.kernel.org>; Fri,  4 Feb 2022 23:39:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378296AbiBDXjM (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 4 Feb 2022 18:39:12 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:39388 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378244AbiBDXjH (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1378287AbiBDXjN (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 4 Feb 2022 18:39:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1378259AbiBDXjH (ORCPT <rfc822;rcu@vger.kernel.org>);
         Fri, 4 Feb 2022 18:39:07 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC101E025B38;
+        Fri,  4 Feb 2022 15:39:06 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id E157FB83975;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 609EEB83907;
         Fri,  4 Feb 2022 23:39:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 613EBC340FA;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C6A9C340EF;
         Fri,  4 Feb 2022 23:39:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1644017944;
-        bh=nCSQipMnQYydZIPhraT+nyb+OMvwqOwj8Ix07rY+kdY=;
+        bh=221MY6qzRj/ZNQOo8A/J8gIIMZFreoPNXKFxD592S9c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V4kMvhyl60zgrjHY7bYaZtCXznXyENURYnxdfo4Er+bbyIqpdDzOkXxfeI4JpwQPW
-         KJl4ENf/51ixYVgXIZTplwD/9BHycOcQyaDOuC5dB/4XNsiTZQ+WI7Oaper4Txa5IM
-         k3ey1mAC8ScItixP4B8b2+qzEHeFt7bUD+Go3mycKbZFIm3UFhmdIzJbeBy+JvIdvr
-         YkXLYLP9TcXFOyBg/rXxLyisuEuIh5Bne1e9EbUYDhwnxwX3Ms3lhnmeoYGFA3/Kli
-         Mrro8Ve7XfLNlHo8R1t5LuzxPuPh9trnzqVq2v+ZAXCsS2Z1H92A+J6o3a4buiforZ
-         ivT/3RDF/96FQ==
+        b=jYLUlJ/hVFOcHTJMUyYKrPMXjifFCArym2p/WIl6HUltxLWc1jDx7KP8fqG9uYao0
+         qAV3EQmZchihYALL5wXdBG1Q9LAn6Lo242o2jEDIvRGd5RS2eBIo8xJWtJEfO0Y1w9
+         iUPWYhokK178NcmyWOKoK6kK6gVpAr+ll3544kqBM/si1cRDQUqeEjo2VVQRvSosG8
+         Jhw8qDaf8V8fzOLXPyZ3YGSDe4jNFhzQw7PnmiUbYGHXlqYYX/U6Yk52JBov23W9YD
+         vy5MERi1LmqmZIckYPo9QqV0Qk7aWDemNHhhLZijBE8imaXr/y7/72NwpoFj8PQ6nR
+         Q1H/XjWuBbp/Q==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 0166B5C0A6A; Fri,  4 Feb 2022 15:39:03 -0800 (PST)
+        id EDB1E5C08DD; Fri,  4 Feb 2022 15:39:03 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
         rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 08/19] srcu: Add boot-time control over srcu_node array allocation
-Date:   Fri,  4 Feb 2022 15:38:51 -0800
-Message-Id: <20220204233902.1902-8-paulmck@kernel.org>
+Subject: [PATCH rcu 04/19] srcu: Dynamically allocate srcu_node array
+Date:   Fri,  4 Feb 2022 15:38:47 -0800
+Message-Id: <20220204233902.1902-4-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220204233858.GA1469@paulmck-ThinkPad-P17-Gen-1>
 References: <20220204233858.GA1469@paulmck-ThinkPad-P17-Gen-1>
@@ -46,88 +49,159 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This commit adds an srcu_tree.convert_to_big kernel parameter that either
-refuses to convert at all (0), converts immediately at init_srcu_struct()
-time (1), or lets rcutorture convert it (2).  An addition contention-based
-dynamic convertion choice will be added, along with documentation.
+This commit shrinks the srcu_struct structure by converting its ->node
+field from a fixed-size compile-time array to a pointer to a dynamically
+allocated array.  In kernels built with large values of NR_CPUS that boot
+on systems with smaller numbers of CPUs, this can save significant memory.
 
+[ paulmck: Apply kernel test robot feedback. ]
+
+Reported-by: A cast of thousands
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/srcutree.c | 27 ++++++++++++++++++++++++---
- 1 file changed, 24 insertions(+), 3 deletions(-)
+ include/linux/srcutree.h |  2 +-
+ kernel/rcu/srcutree.c    | 58 ++++++++++++++++++++++++++++++----------
+ 2 files changed, 45 insertions(+), 15 deletions(-)
 
+diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
+index 4025840ba9a38..f7190058fb8ab 100644
+--- a/include/linux/srcutree.h
++++ b/include/linux/srcutree.h
+@@ -60,7 +60,7 @@ struct srcu_node {
+  * Per-SRCU-domain structure, similar in function to rcu_state.
+  */
+ struct srcu_struct {
+-	struct srcu_node node[NUM_RCU_NODES];	/* Combining tree. */
++	struct srcu_node *node;			/* Combining tree. */
+ 	struct srcu_node *level[RCU_NUM_LVLS + 1];
+ 						/* First node at each level. */
+ 	struct mutex srcu_cb_mutex;		/* Serialize CB preparation. */
 diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 550991cc213d3..d1f1ff930acf5 100644
+index 7d13e35e5d277..eaf00c354a631 100644
 --- a/kernel/rcu/srcutree.c
 +++ b/kernel/rcu/srcutree.c
-@@ -39,6 +39,15 @@ module_param(exp_holdoff, ulong, 0444);
- static ulong counter_wrap_check = (ULONG_MAX >> 2);
- module_param(counter_wrap_check, ulong, 0444);
+@@ -24,6 +24,7 @@
+ #include <linux/smp.h>
+ #include <linux/delay.h>
+ #include <linux/module.h>
++#include <linux/slab.h>
+ #include <linux/srcu.h>
  
-+/*
-+ * Control conversion to SRCU_SIZE_BIG:
-+ * 0: Don't convert at all (default).
-+ * 1: Convert at init_srcu_struct() time.
-+ * 2: Convert when rcutorture invokes srcu_torture_stats_print().
+ #include "rcu.h"
+@@ -75,12 +76,44 @@ do {									\
+ 	spin_unlock_irqrestore(&ACCESS_PRIVATE(p, lock), flags)	\
+ 
+ /*
+- * Initialize SRCU combining tree.  Note that statically allocated
++ * Initialize SRCU per-CPU data.  Note that statically allocated
+  * srcu_struct structures might already have srcu_read_lock() and
+  * srcu_read_unlock() running against them.  So if the is_static parameter
+  * is set, don't initialize ->srcu_lock_count[] and ->srcu_unlock_count[].
++ *
++ * Returns @true if allocation succeeded and @false otherwise.
 + */
-+static int convert_to_big;
-+module_param(convert_to_big, int, 0444);
++static void init_srcu_struct_data(struct srcu_struct *ssp)
++{
++	int cpu;
++	struct srcu_data *sdp;
 +
- /* Early-boot callback-management, so early that no lock is required! */
- static LIST_HEAD(srcu_boot_list);
- static bool __read_mostly srcu_init_done;
-@@ -113,7 +122,7 @@ static void init_srcu_struct_data(struct srcu_struct *ssp)
-  * Allocated and initialize SRCU combining tree.  Returns @true if
-  * allocation succeeded and @false otherwise.
++	/*
++	 * Initialize the per-CPU srcu_data array, which feeds into the
++	 * leaves of the srcu_node tree.
++	 */
++	WARN_ON_ONCE(ARRAY_SIZE(sdp->srcu_lock_count) !=
++		     ARRAY_SIZE(sdp->srcu_unlock_count));
++	for_each_possible_cpu(cpu) {
++		sdp = per_cpu_ptr(ssp->sda, cpu);
++		spin_lock_init(&ACCESS_PRIVATE(sdp, lock));
++		rcu_segcblist_init(&sdp->srcu_cblist);
++		sdp->srcu_cblist_invoking = false;
++		sdp->srcu_gp_seq_needed = ssp->srcu_gp_seq;
++		sdp->srcu_gp_seq_needed_exp = ssp->srcu_gp_seq;
++		sdp->mynode = NULL;
++		sdp->cpu = cpu;
++		INIT_WORK(&sdp->work, srcu_invoke_callbacks);
++		timer_setup(&sdp->delay_work, srcu_delay_timer, 0);
++		sdp->ssp = ssp;
++	}
++}
++
++/*
++ * Allocated and initialize SRCU combining tree.  Returns @true if
++ * allocation succeeded and @false otherwise.
   */
--static bool init_srcu_struct_nodes(struct srcu_struct *ssp)
-+static bool init_srcu_struct_nodes(struct srcu_struct *ssp, gfp_t gfp_flags)
+-static void init_srcu_struct_nodes(struct srcu_struct *ssp)
++static bool init_srcu_struct_nodes(struct srcu_struct *ssp)
  {
  	int cpu;
  	int i;
-@@ -125,7 +134,7 @@ static bool init_srcu_struct_nodes(struct srcu_struct *ssp)
+@@ -92,6 +125,9 @@ static void init_srcu_struct_nodes(struct srcu_struct *ssp)
  
  	/* Initialize geometry if it has not already been initialized. */
  	rcu_init_geometry();
--	ssp->node = kcalloc(rcu_num_nodes, sizeof(*ssp->node), GFP_ATOMIC);
-+	ssp->node = kcalloc(rcu_num_nodes, sizeof(*ssp->node), gfp_flags);
- 	if (!ssp->node)
- 		return false;
++	ssp->node = kcalloc(rcu_num_nodes, sizeof(*ssp->node), GFP_ATOMIC);
++	if (!ssp->node)
++		return false;
  
-@@ -204,6 +213,16 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
- 	init_srcu_struct_data(ssp);
+ 	/* Work out the overall tree geometry. */
+ 	ssp->level[0] = &ssp->node[0];
+@@ -129,29 +165,19 @@ static void init_srcu_struct_nodes(struct srcu_struct *ssp)
+ 	 * Initialize the per-CPU srcu_data array, which feeds into the
+ 	 * leaves of the srcu_node tree.
+ 	 */
+-	WARN_ON_ONCE(ARRAY_SIZE(sdp->srcu_lock_count) !=
+-		     ARRAY_SIZE(sdp->srcu_unlock_count));
+ 	level = rcu_num_lvls - 1;
+ 	snp_first = ssp->level[level];
+ 	for_each_possible_cpu(cpu) {
+ 		sdp = per_cpu_ptr(ssp->sda, cpu);
+-		spin_lock_init(&ACCESS_PRIVATE(sdp, lock));
+-		rcu_segcblist_init(&sdp->srcu_cblist);
+-		sdp->srcu_cblist_invoking = false;
+-		sdp->srcu_gp_seq_needed = ssp->srcu_gp_seq;
+-		sdp->srcu_gp_seq_needed_exp = ssp->srcu_gp_seq;
+ 		sdp->mynode = &snp_first[cpu / levelspread[level]];
+ 		for (snp = sdp->mynode; snp != NULL; snp = snp->srcu_parent) {
+ 			if (snp->grplo < 0)
+ 				snp->grplo = cpu;
+ 			snp->grphi = cpu;
+ 		}
+-		sdp->cpu = cpu;
+-		INIT_WORK(&sdp->work, srcu_invoke_callbacks);
+-		timer_setup(&sdp->delay_work, srcu_delay_timer, 0);
+-		sdp->ssp = ssp;
+ 		sdp->grpmask = 1 << (cpu - sdp->mynode->grplo);
+ 	}
++	return true;
+ }
+ 
+ /*
+@@ -162,6 +188,7 @@ static void init_srcu_struct_nodes(struct srcu_struct *ssp)
+  */
+ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
+ {
++	ssp->node = NULL;
+ 	mutex_init(&ssp->srcu_cb_mutex);
+ 	mutex_init(&ssp->srcu_gp_mutex);
+ 	ssp->srcu_idx = 0;
+@@ -174,7 +201,8 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
+ 		ssp->sda = alloc_percpu(struct srcu_data);
+ 	if (!ssp->sda)
+ 		return -ENOMEM;
+-	init_srcu_struct_nodes(ssp);
++	init_srcu_struct_data(ssp);
++	WARN_ON_ONCE(!init_srcu_struct_nodes(ssp));
  	ssp->srcu_gp_seq_needed_exp = 0;
  	ssp->srcu_last_gp_end = ktime_get_mono_fast_ns();
-+	if (READ_ONCE(ssp->srcu_size_state) == SRCU_SIZE_SMALL && convert_to_big == 1) {
-+		if (!init_srcu_struct_nodes(ssp, GFP_ATOMIC)) {
-+			if (!is_static) {
-+				free_percpu(ssp->sda);
-+				ssp->sda = NULL;
-+			}
-+			return -ENOMEM;
-+		}
-+		WRITE_ONCE(ssp->srcu_size_state, SRCU_SIZE_BIG);
-+	}
  	smp_store_release(&ssp->srcu_gp_seq_needed, 0); /* Init done. */
- 	return 0;
- }
-@@ -627,7 +646,7 @@ static void srcu_gp_end(struct srcu_struct *ssp)
- 	ss_state = smp_load_acquire(&ssp->srcu_size_state);
- 	if (ss_state && ss_state != SRCU_SIZE_BIG) {
- 		if (ss_state == SRCU_SIZE_ALLOC)
--			init_srcu_struct_nodes(ssp);
-+			init_srcu_struct_nodes(ssp, GFP_KERNEL);
- 		else
- 			smp_store_release(&ssp->srcu_size_state, ss_state + 1);
+@@ -391,6 +419,8 @@ void cleanup_srcu_struct(struct srcu_struct *ssp)
  	}
-@@ -1456,6 +1475,8 @@ void srcu_torture_stats_print(struct srcu_struct *ssp, char *tt, char *tf)
- 		s1 += c1;
- 	}
- 	pr_cont(" T(%ld,%ld)\n", s0, s1);
-+	if (READ_ONCE(ssp->srcu_size_state) == SRCU_SIZE_SMALL && convert_to_big == 2)
-+		WRITE_ONCE(ssp->srcu_size_state, SRCU_SIZE_ALLOC);
+ 	free_percpu(ssp->sda);
+ 	ssp->sda = NULL;
++	kfree(ssp->node);
++	ssp->node = NULL;
  }
- EXPORT_SYMBOL_GPL(srcu_torture_stats_print);
+ EXPORT_SYMBOL_GPL(cleanup_srcu_struct);
  
 -- 
 2.31.1.189.g2e36527f23
