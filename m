@@ -2,45 +2,49 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 72C59C433EF
-	for <rcu@archiver.kernel.org>; Mon,  7 Feb 2022 19:46:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 74742C35271
+	for <rcu@archiver.kernel.org>; Mon,  7 Feb 2022 19:46:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239071AbiBGTpg (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 7 Feb 2022 14:45:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59282 "EHLO
+        id S238932AbiBGTqV (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 7 Feb 2022 14:46:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240721AbiBGTnd (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 7 Feb 2022 14:43:33 -0500
+        with ESMTP id S240362AbiBGTna (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 7 Feb 2022 14:43:30 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34162C0401E4;
-        Mon,  7 Feb 2022 11:43:31 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81463C0401E0;
+        Mon,  7 Feb 2022 11:43:28 -0800 (PST)
 From:   John Ogness <john.ogness@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1644263009;
+        s=2020; t=1644263005;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eOR5WbQJrKK+I/SA7qP7nQGJ8obD2pFQ2CzlcnvaYpM=;
-        b=oLAXtihwjw5NTCGy6UBmwHk0N4OD7qItM20ufBP6OKE7TM8ipSAWNpGRF7N4ljR8p+5p0p
-        DTtaFUJzjgrEITlidqxpEvEbxDmY1uHZXshwJr/DKl1efthMM6hrbEsIDB5f0YteiwuWCT
-        yILCLoXaVIm7jnNUBB2O67+8G1Wd5DL3peSac3bz+/7a1uW7eLInWBMp9SEqi+YDh5L9vA
-        BlSXWRUUT05Pr4c/z/PCn8lf0J8KGcQEr2xr7mgwGVDNj5OtSK8kWwyq9aUpMTYcKKedqO
-        W04ZK8c4CV7eIuKLpdobpP1Yj7Qk5SfUxPLuz8teKbW48WYrrjo7hhxCwXo+Ig==
+         content-transfer-encoding:content-transfer-encoding;
+        bh=MdxDRNNBc3a7TPDYRAGdfkzwCVJZGysq69JGSiTARZo=;
+        b=KZEy10hDutMfaU7BOQdyVVOPIBOS4KP6ewAyK4hKFQNiuO/SRjJehVsWlroqzy26l9Muso
+        B7BHJLcCPExCZ1f2hpqX79R3YV0v50wgdf+FuV7bQt24SZJaHYTcIU3jghXaWvD40sjAFJ
+        RwrhOFKAO9siMogdq7KTdebml/AeKNACYhNlx+oBI+CNBRUu491sSOxz9/rceBUn7XE0Cz
+        a9OorMkDOcXoI8zeyE9NNmrFwLy2qp+MdHnVSbSPRGvFPzZ2niy8e23MzmIHL9CzA2aJqt
+        x6k8TXhJ2veAGeTtJLQV/v/cVPUt4W4imq0xwijbiOhEC7Sq0PEg/4fCvbIG2Q==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1644263009;
+        s=2020e; t=1644263005;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eOR5WbQJrKK+I/SA7qP7nQGJ8obD2pFQ2CzlcnvaYpM=;
-        b=NFEyFRFN1R95oj98NXvw4e9vVBpYcdZOhVckpRFgjcguUzktJwy67jB4w3UOsG8aQrES9m
-        rffhgvIhlH9GJ2BQ==
+         content-transfer-encoding:content-transfer-encoding;
+        bh=MdxDRNNBc3a7TPDYRAGdfkzwCVJZGysq69JGSiTARZo=;
+        b=aea7eqXhsYSTt2SiFzTd8KOQ9QlKly9EhstysiNyYY7FxfrEpEg55FSdRKEg1ZAHNCaOsh
+        Ep3r1Hcy/lnMRLBw==
 To:     Petr Mladek <pmladek@suse.com>
 Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marco Elver <elver@google.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Alexander Potapenko <glider@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Jiri Slaby <jirislaby@kernel.org>,
         "Paul E. McKenney" <paulmck@kernel.org>,
@@ -61,394 +65,94 @@ Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
         "Eric W. Biederman" <ebiederm@xmission.com>,
         Shawn Guo <shawn.guo@linaro.org>,
         Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
         Wang Qing <wangqing@vivo.com>, Tejun Heo <tj@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Alexander Potapenko <glider@google.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>, rcu@vger.kernel.org
-Subject: [PATCH printk v1 09/13] printk: add functions to allow direct printing
-Date:   Mon,  7 Feb 2022 20:49:19 +0106
-Message-Id: <20220207194323.273637-10-john.ogness@linutronix.de>
-In-Reply-To: <20220207194323.273637-1-john.ogness@linutronix.de>
-References: <20220207194323.273637-1-john.ogness@linutronix.de>
+        Stephen Boyd <sboyd@kernel.org>, rcu@vger.kernel.org,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        David Sterba <dsterba@suse.com>,
+        =?UTF-8?q?Samuel=20Iglesias=20Gons=C3=A1lvez?= 
+        <siglesias@igalia.com>, Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        nick black <dankamongmen@gmail.com>
+Subject: [PATCH printk v1 00/13] implement threaded console printing
+Date:   Mon,  7 Feb 2022 20:49:10 +0106
+Message-Id: <20220207194323.273637-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Once kthread printing is introduced, console printing will no longer
-occur in the context of the printk caller. However, there are some
-special contexts where it is desirable for the printk caller to
-directly print out kernel messages. Using pr_flush() to wait for
-threaded printers is only possible if the caller is in a sleepable
-context and the kthreads are active. That is not always the case.
+This is the next part of our printk-rework effort (points 2 and 6 of
+the LPC 2019 summary [0]).
 
-Introduce printk_direct_enter() and printk_direct_exit() functions
-to explicitly (and globally) activate/deactivate direct console
-printing.
+This series implements a kthread for each registered console. The
+kthreads locklessly retrieve the records from the printk ringbuffer
+and also do not cause any lock contention between one another. This
+allows consoles to run at full speed. For example, a netconsole is
+able to dump records much faster than a serial or vt console.
 
-Activate direct printing for:
- - sysrq
- - emergency reboot/shutdown
- - cpu and rcu stalls
- - hard and soft lockups
- - hung tasks
- - stack dumps
+There are situations where kthread printing is not sufficient. For
+example, during early boot before kthreads exist or during panic
+situations, where the kthreads may not get a chance to schedule. In
+these cases, the current method of printing directly within the
+printk() caller context is used. New functions printk_direct_enter()
+and printk_direct_exit() are made available to mark areas of the
+kernel where direct printing should be used.
 
-Signed-off-by: John Ogness <john.ogness@linutronix.de>
----
- drivers/tty/sysrq.c     |  2 ++
- include/linux/printk.h  | 11 +++++++++++
- kernel/hung_task.c      | 11 ++++++++++-
- kernel/printk/printk.c  | 39 ++++++++++++++++++++++++++++++++++++++-
- kernel/rcu/tree_stall.h |  2 ++
- kernel/reboot.c         | 14 +++++++++++++-
- kernel/watchdog.c       |  4 ++++
- kernel/watchdog_hld.c   |  4 ++++
- lib/dump_stack.c        |  2 ++
- lib/nmi_backtrace.c     |  2 ++
- 10 files changed, 88 insertions(+), 3 deletions(-)
+This series also introduces pr_flush(): a might_sleep() function
+that will block until all active printing threads have caught up
+to the latest record at the time of the pr_flush() call. This
+function is useful, for example, to wait until pending records
+are flushed to consoles before suspending.
 
-diff --git a/drivers/tty/sysrq.c b/drivers/tty/sysrq.c
-index bbfd004449b5..a809f56c392f 100644
---- a/drivers/tty/sysrq.c
-+++ b/drivers/tty/sysrq.c
-@@ -594,9 +594,11 @@ void __handle_sysrq(int key, bool check_mask)
- 		 * should not) and is the invoked operation enabled?
- 		 */
- 		if (!check_mask || sysrq_on_mask(op_p->enable_mask)) {
-+			printk_direct_enter();
- 			pr_info("%s\n", op_p->action_msg);
- 			console_loglevel = orig_log_level;
- 			op_p->handler(key);
-+			printk_direct_exit();
- 		} else {
- 			pr_info("This sysrq operation is disabled.\n");
- 			console_loglevel = orig_log_level;
-diff --git a/include/linux/printk.h b/include/linux/printk.h
-index 6596f02d1f05..eedf7546ff89 100644
---- a/include/linux/printk.h
-+++ b/include/linux/printk.h
-@@ -170,6 +170,9 @@ extern void __printk_safe_exit(void);
- #define printk_deferred_enter __printk_safe_enter
- #define printk_deferred_exit __printk_safe_exit
- 
-+extern void printk_direct_enter(void);
-+extern void printk_direct_exit(void);
-+
- extern bool pr_flush(int timeout_ms, bool reset_on_progress);
- 
- /*
-@@ -226,6 +229,14 @@ static inline void printk_deferred_exit(void)
- {
- }
- 
-+static inline void printk_direct_enter(void)
-+{
-+}
-+
-+static inline void printk_direct_exit(void)
-+{
-+}
-+
- static inline bool pr_flush(int timeout_ms, bool reset_on_progress)
- {
- 	return true;
-diff --git a/kernel/hung_task.c b/kernel/hung_task.c
-index 9888e2bc8c76..6de7cec90c3b 100644
---- a/kernel/hung_task.c
-+++ b/kernel/hung_task.c
-@@ -125,6 +125,8 @@ static void check_hung_task(struct task_struct *t, unsigned long timeout)
- 	 * complain:
- 	 */
- 	if (sysctl_hung_task_warnings) {
-+		printk_direct_enter();
-+
- 		if (sysctl_hung_task_warnings > 0)
- 			sysctl_hung_task_warnings--;
- 		pr_err("INFO: task %s:%d blocked for more than %ld seconds.\n",
-@@ -140,6 +142,8 @@ static void check_hung_task(struct task_struct *t, unsigned long timeout)
- 
- 		if (sysctl_hung_task_all_cpu_backtrace)
- 			hung_task_show_all_bt = true;
-+
-+		printk_direct_exit();
- 	}
- 
- 	touch_nmi_watchdog();
-@@ -202,12 +206,17 @@ static void check_hung_uninterruptible_tasks(unsigned long timeout)
- 	}
-  unlock:
- 	rcu_read_unlock();
--	if (hung_task_show_lock)
-+	if (hung_task_show_lock) {
-+		printk_direct_enter();
- 		debug_show_all_locks();
-+		printk_direct_exit();
-+	}
- 
- 	if (hung_task_show_all_bt) {
- 		hung_task_show_all_bt = false;
-+		printk_direct_enter();
- 		trigger_all_cpu_backtrace();
-+		printk_direct_exit();
- 	}
- 
- 	if (hung_task_call_panic)
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index 1e80fd052bd5..719b05e6ce3b 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -348,6 +348,31 @@ static int console_msg_format = MSG_FORMAT_DEFAULT;
- static DEFINE_MUTEX(syslog_lock);
- 
- #ifdef CONFIG_PRINTK
-+static atomic_t printk_direct = ATOMIC_INIT(0);
-+
-+/**
-+ * printk_direct_enter - cause console printing to occur in the context of
-+ *                       printk() callers
-+ *
-+ * This globally effects all printk() callers.
-+ *
-+ * Context: Any context.
-+ */
-+void printk_direct_enter(void)
-+{
-+	atomic_inc(&printk_direct);
-+}
-+
-+/**
-+ * printk_direct_exit - restore console printing behavior from direct
-+ *
-+ * Context: Any context.
-+ */
-+void printk_direct_exit(void)
-+{
-+	atomic_dec(&printk_direct);
-+}
-+
- DECLARE_WAIT_QUEUE_HEAD(log_wait);
- /* All 3 protected by @syslog_lock. */
- /* the next printk record to read by syslog(READ) or /proc/kmsg */
-@@ -3325,6 +3350,7 @@ EXPORT_SYMBOL(pr_flush);
-  */
- #define PRINTK_PENDING_WAKEUP	0x01
- #define PRINTK_PENDING_OUTPUT	0x02
-+#define PRINTK_DIRECT_OUTPUT	0x04
- 
- static DEFINE_PER_CPU(int, printk_pending);
- 
-@@ -3333,9 +3359,15 @@ static void wake_up_klogd_work_func(struct irq_work *irq_work)
- 	int pending = __this_cpu_xchg(printk_pending, 0);
- 
- 	if (pending & PRINTK_PENDING_OUTPUT) {
-+		if (pending & PRINTK_DIRECT_OUTPUT)
-+			printk_direct_enter();
-+
- 		/* If trylock fails, someone else is doing the printing */
- 		if (console_trylock())
- 			console_unlock();
-+
-+		if (pending & PRINTK_DIRECT_OUTPUT)
-+			printk_direct_exit();
- 	}
- 
- 	if (pending & PRINTK_PENDING_WAKEUP)
-@@ -3360,11 +3392,16 @@ void wake_up_klogd(void)
- 
- void defer_console_output(void)
- {
-+	int val = PRINTK_PENDING_OUTPUT;
-+
- 	if (!printk_percpu_data_ready())
- 		return;
- 
-+	if (atomic_read(&printk_direct))
-+		val |= PRINTK_DIRECT_OUTPUT;
-+
- 	preempt_disable();
--	__this_cpu_or(printk_pending, PRINTK_PENDING_OUTPUT);
-+	__this_cpu_or(printk_pending, val);
- 	irq_work_queue(this_cpu_ptr(&wake_up_klogd_work));
- 	preempt_enable();
- }
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index 5e2fa6fd97f1..26953f9b2ab2 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -610,6 +610,7 @@ static void print_cpu_stall(unsigned long gps)
- 	 * See Documentation/RCU/stallwarn.rst for info on how to debug
- 	 * RCU CPU stall warnings.
- 	 */
-+	printk_direct_enter();
- 	trace_rcu_stall_warning(rcu_state.name, TPS("SelfDetected"));
- 	pr_err("INFO: %s self-detected stall on CPU\n", rcu_state.name);
- 	raw_spin_lock_irqsave_rcu_node(rdp->mynode, flags);
-@@ -644,6 +645,7 @@ static void print_cpu_stall(unsigned long gps)
- 	 */
- 	set_tsk_need_resched(current);
- 	set_preempt_need_resched();
-+	printk_direct_exit();
- }
- 
- static void check_cpu_stall(struct rcu_data *rdp)
-diff --git a/kernel/reboot.c b/kernel/reboot.c
-index 6bcc5d6a6572..0f219ce610fc 100644
---- a/kernel/reboot.c
-+++ b/kernel/reboot.c
-@@ -447,9 +447,11 @@ static int __orderly_reboot(void)
- 	ret = run_cmd(reboot_cmd);
- 
- 	if (ret) {
-+		printk_direct_enter();
- 		pr_warn("Failed to start orderly reboot: forcing the issue\n");
- 		emergency_sync();
- 		kernel_restart(NULL);
-+		printk_direct_exit();
- 	}
- 
- 	return ret;
-@@ -462,6 +464,7 @@ static int __orderly_poweroff(bool force)
- 	ret = run_cmd(poweroff_cmd);
- 
- 	if (ret && force) {
-+		printk_direct_enter();
- 		pr_warn("Failed to start orderly shutdown: forcing the issue\n");
- 
- 		/*
-@@ -471,6 +474,7 @@ static int __orderly_poweroff(bool force)
- 		 */
- 		emergency_sync();
- 		kernel_power_off();
-+		printk_direct_exit();
- 	}
- 
- 	return ret;
-@@ -528,6 +532,8 @@ EXPORT_SYMBOL_GPL(orderly_reboot);
-  */
- static void hw_failure_emergency_poweroff_func(struct work_struct *work)
- {
-+	printk_direct_enter();
-+
- 	/*
- 	 * We have reached here after the emergency shutdown waiting period has
- 	 * expired. This means orderly_poweroff has not been able to shut off
-@@ -544,6 +550,8 @@ static void hw_failure_emergency_poweroff_func(struct work_struct *work)
- 	 */
- 	pr_emerg("Hardware protection shutdown failed. Trying emergency restart\n");
- 	emergency_restart();
-+
-+	printk_direct_exit();
- }
- 
- static DECLARE_DELAYED_WORK(hw_failure_emergency_poweroff_work,
-@@ -582,11 +590,13 @@ void hw_protection_shutdown(const char *reason, int ms_until_forced)
- {
- 	static atomic_t allow_proceed = ATOMIC_INIT(1);
- 
-+	printk_direct_enter();
-+
- 	pr_emerg("HARDWARE PROTECTION shutdown (%s)\n", reason);
- 
- 	/* Shutdown should be initiated only once. */
- 	if (!atomic_dec_and_test(&allow_proceed))
--		return;
-+		goto out;
- 
- 	/*
- 	 * Queue a backup emergency shutdown in the event of
-@@ -594,6 +604,8 @@ void hw_protection_shutdown(const char *reason, int ms_until_forced)
- 	 */
- 	hw_failure_emergency_poweroff(ms_until_forced);
- 	orderly_poweroff(true);
-+out:
-+	printk_direct_exit();
- }
- EXPORT_SYMBOL_GPL(hw_protection_shutdown);
- 
-diff --git a/kernel/watchdog.c b/kernel/watchdog.c
-index ad912511a0c0..930563f155ee 100644
---- a/kernel/watchdog.c
-+++ b/kernel/watchdog.c
-@@ -424,6 +424,8 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
- 		/* Start period for the next softlockup warning. */
- 		update_report_ts();
- 
-+		printk_direct_enter();
-+
- 		pr_emerg("BUG: soft lockup - CPU#%d stuck for %us! [%s:%d]\n",
- 			smp_processor_id(), duration,
- 			current->comm, task_pid_nr(current));
-@@ -442,6 +444,8 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
- 		add_taint(TAINT_SOFTLOCKUP, LOCKDEP_STILL_OK);
- 		if (softlockup_panic)
- 			panic("softlockup: hung tasks");
-+
-+		printk_direct_exit();
- 	}
- 
- 	return HRTIMER_RESTART;
-diff --git a/kernel/watchdog_hld.c b/kernel/watchdog_hld.c
-index 247bf0b1582c..56cfbae94c42 100644
---- a/kernel/watchdog_hld.c
-+++ b/kernel/watchdog_hld.c
-@@ -135,6 +135,8 @@ static void watchdog_overflow_callback(struct perf_event *event,
- 		if (__this_cpu_read(hard_watchdog_warn) == true)
- 			return;
- 
-+		printk_direct_enter();
-+
- 		pr_emerg("Watchdog detected hard LOCKUP on cpu %d\n",
- 			 this_cpu);
- 		print_modules();
-@@ -155,6 +157,8 @@ static void watchdog_overflow_callback(struct perf_event *event,
- 		if (hardlockup_panic)
- 			nmi_panic(regs, "Hard LOCKUP");
- 
-+		printk_direct_exit();
-+
- 		__this_cpu_write(hard_watchdog_warn, true);
- 		return;
- 	}
-diff --git a/lib/dump_stack.c b/lib/dump_stack.c
-index 83471e81501a..e3b4eeb1dcb4 100644
---- a/lib/dump_stack.c
-+++ b/lib/dump_stack.c
-@@ -102,9 +102,11 @@ asmlinkage __visible void dump_stack_lvl(const char *log_lvl)
- 	 * Permit this cpu to perform nested stack dumps while serialising
- 	 * against other CPUs
- 	 */
-+	printk_direct_enter();
- 	printk_cpu_sync_get_irqsave(flags);
- 	__dump_stack(log_lvl);
- 	printk_cpu_sync_put_irqrestore(flags);
-+	printk_direct_exit();
- }
- EXPORT_SYMBOL(dump_stack_lvl);
- 
-diff --git a/lib/nmi_backtrace.c b/lib/nmi_backtrace.c
-index d01aec6ae15c..dabeb35bc8dc 100644
---- a/lib/nmi_backtrace.c
-+++ b/lib/nmi_backtrace.c
-@@ -99,6 +99,7 @@ bool nmi_cpu_backtrace(struct pt_regs *regs)
- 		 * Allow nested NMI backtraces while serializing
- 		 * against other CPUs.
- 		 */
-+		printk_direct_enter();
- 		printk_cpu_sync_get_irqsave(flags);
- 		if (!READ_ONCE(backtrace_idle) && regs && cpu_in_idle(instruction_pointer(regs))) {
- 			pr_warn("NMI backtrace for cpu %d skipped: idling at %pS\n",
-@@ -111,6 +112,7 @@ bool nmi_cpu_backtrace(struct pt_regs *regs)
- 				dump_stack();
- 		}
- 		printk_cpu_sync_put_irqrestore(flags);
-+		printk_direct_exit();
- 		cpumask_clear_cpu(cpu, to_cpumask(backtrace_mask));
- 		return true;
- 	}
+And finally, this series introduces a new console flag
+CON_MIGHT_SLEEP that can be set by consoles that only want their
+write() callback called in sleepable contexts. This was requested
+by Daniel Vetter [1] due to the many and growing number of deadlock
+situations in the fbcon code.
+
+Note that this series does *not* increase the reliability of console
+printing. Rather it focuses on the non-interference aspect of
+printk() by decoupling printk() callers from printing (during normal
+operation). Nonetheless, the reliability aspect should not worsen
+due to this series (with perhaps the exception of the fbcon, which
+will only print from sleepable contexts).
+
+[0] https://lore.kernel.org/lkml/87k1acz5rx.fsf@linutronix.de
+[1] https://lore.kernel.org/all/YYuS1uNhxWOEX1Ci@phenom.ffwll.local
+
+John Ogness (13):
+  printk: rename cpulock functions
+  printk: cpu sync always disable interrupts
+  printk: use percpu flag instead of cpu_online()
+  printk: get caller_id/timestamp after migration disable
+  printk: call boot_delay_msec() in printk_delay()
+  printk: refactor and rework printing logic
+  printk: move buffer definitions into console_emit_next_record() caller
+  printk: add pr_flush()
+  printk: add functions to allow direct printing
+  printk: add kthread console printers
+  printk: reimplement console_lock for proper kthread support
+  printk: remove @console_locked
+  console: introduce CON_MIGHT_SLEEP for vt
+
+ drivers/tty/sysrq.c     |   2 +
+ drivers/tty/vt/vt.c     |   2 +-
+ include/linux/console.h |  22 +-
+ include/linux/printk.h  |  70 ++--
+ kernel/hung_task.c      |  11 +-
+ kernel/printk/printk.c  | 903 +++++++++++++++++++++++++++++-----------
+ kernel/rcu/tree_stall.h |   2 +
+ kernel/reboot.c         |  14 +-
+ kernel/watchdog.c       |   4 +
+ kernel/watchdog_hld.c   |   4 +
+ lib/dump_stack.c        |   6 +-
+ lib/nmi_backtrace.c     |   6 +-
+ 12 files changed, 765 insertions(+), 281 deletions(-)
+
+
+base-commit: a229327733b86aa585effdb0d27a87b12aa51597
 -- 
 2.30.2
 
