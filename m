@@ -2,190 +2,453 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 381ABC43219
-	for <rcu@archiver.kernel.org>; Mon,  7 Feb 2022 18:54:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 72C59C433EF
+	for <rcu@archiver.kernel.org>; Mon,  7 Feb 2022 19:46:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235595AbiBGSyc (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 7 Feb 2022 13:54:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33084 "EHLO
+        id S239071AbiBGTpg (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 7 Feb 2022 14:45:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235602AbiBGSum (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 7 Feb 2022 13:50:42 -0500
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2079.outbound.protection.outlook.com [40.107.236.79])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68E4FC0401DA;
-        Mon,  7 Feb 2022 10:50:41 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UN4gHAKsP/+fs7POMjSJ/jmE+5MomPtlFhIdzmxBAsaqxt0hZIxROiYga/En/np57oCWJPIs5pJVpXAQuQtGF3hNlcm0wkt5qLMAEhDac1eEreeZeDZoaHYR+SAxS4a+fHM8NgMx+oMHS1oTVds74KBy7mp2m4N8Y1k8n36QPD3hW2OYDlEn+mZqq2PmOKBPLsgKCLfIgmDt0ELOIgFHSXdH0K9ji8ibIlBNnv25wswiVh7PBGcEuCTBqd6sEywb7thjiQkhNvCaQIdFFpdCC26ur6WEKgVurSOrmtHYsEUDrCl7CPisCwteTYeTC09u/nFHycqEAtOYsZHo2I9icA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jDjP0vgTHjrDSmU6PqYxXwb1yFblzA5G/98vZeaZzcc=;
- b=V5+Ok7U8DsWo7f0OzyPH+rpzIBPvfTqZvFMVLME2MW0q+qV5kvFjfxT1GTxLXPogNtHj4SbeO8mXBbECWdA08HnrHCAa3Zz2LDhQ35+ouchdvOurLZwMA5q5e+C7APv+0ddDhPDG8679E0cTeO2lWvF6XjISBdaD5hDjsfYO5cfUSIdlChxOYiZ/t6uJY8vyoY99RAZNf1cvssK9HE1+BzVV2IUbwoGRoPHI/gEm3u9BsFa2smyZ7ZY/JqguQYmJTk0NKyuV/s5Gny++53C2V71vFqIWbszN8Ae4wTCsXtrMRMz6zfSioTuvhIQGe9GFfRWcGA4xMwoubpUjbOQSEA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jDjP0vgTHjrDSmU6PqYxXwb1yFblzA5G/98vZeaZzcc=;
- b=N/cGk1s4uibSMH1HECjR+K2y+JjMBfQwFz83WgWbrboNLO/8BDKxI4rOzESsypITwNWZ1Gupd0GT2hGS0A7Db1d4XNUt9CnkR/ZDu7H98MiJ6oKA8zw9FmESKfEd2UADMscgrOi8/Idr00X/vqv8sTcMolHEhjYzj9BHZONRxcQ=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BL1PR12MB5221.namprd12.prod.outlook.com (2603:10b6:208:30b::9)
- by CY4PR12MB1429.namprd12.prod.outlook.com (2603:10b6:903:42::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4951.18; Mon, 7 Feb
- 2022 18:50:39 +0000
-Received: from BL1PR12MB5221.namprd12.prod.outlook.com
- ([fe80::b9af:8be3:36e5:1a13]) by BL1PR12MB5221.namprd12.prod.outlook.com
- ([fe80::b9af:8be3:36e5:1a13%7]) with mapi id 15.20.4951.019; Mon, 7 Feb 2022
- 18:50:38 +0000
-Message-ID: <ea03061e-14aa-8159-4935-869f694a4715@amd.com>
-Date:   Mon, 7 Feb 2022 12:50:35 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [PATCH v4 0/9] Parallel CPU bringup for x86_64
-Content-Language: en-US
-To:     David Woodhouse <dwmw2@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
-        hushiyuan@huawei.com, luolongjun@huawei.com, hejingxian@huawei.com,
-        Sean Christopherson <seanjc@google.com>,
-        Paul Menzel <pmenzel@molgen.mpg.de>
-References: <20220201205328.123066-1-dwmw2@infradead.org>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-In-Reply-To: <20220201205328.123066-1-dwmw2@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: CH2PR12CA0007.namprd12.prod.outlook.com
- (2603:10b6:610:57::17) To BL1PR12MB5221.namprd12.prod.outlook.com
- (2603:10b6:208:30b::9)
+        with ESMTP id S240721AbiBGTnd (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 7 Feb 2022 14:43:33 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34162C0401E4;
+        Mon,  7 Feb 2022 11:43:31 -0800 (PST)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1644263009;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=eOR5WbQJrKK+I/SA7qP7nQGJ8obD2pFQ2CzlcnvaYpM=;
+        b=oLAXtihwjw5NTCGy6UBmwHk0N4OD7qItM20ufBP6OKE7TM8ipSAWNpGRF7N4ljR8p+5p0p
+        DTtaFUJzjgrEITlidqxpEvEbxDmY1uHZXshwJr/DKl1efthMM6hrbEsIDB5f0YteiwuWCT
+        yILCLoXaVIm7jnNUBB2O67+8G1Wd5DL3peSac3bz+/7a1uW7eLInWBMp9SEqi+YDh5L9vA
+        BlSXWRUUT05Pr4c/z/PCn8lf0J8KGcQEr2xr7mgwGVDNj5OtSK8kWwyq9aUpMTYcKKedqO
+        W04ZK8c4CV7eIuKLpdobpP1Yj7Qk5SfUxPLuz8teKbW48WYrrjo7hhxCwXo+Ig==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1644263009;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=eOR5WbQJrKK+I/SA7qP7nQGJ8obD2pFQ2CzlcnvaYpM=;
+        b=NFEyFRFN1R95oj98NXvw4e9vVBpYcdZOhVckpRFgjcguUzktJwy67jB4w3UOsG8aQrES9m
+        rffhgvIhlH9GJ2BQ==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Corey Minyard <cminyard@mvista.com>,
+        Kees Cook <keescook@chromium.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Shawn Guo <shawn.guo@linaro.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Wang Qing <wangqing@vivo.com>, Tejun Heo <tj@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Alexander Potapenko <glider@google.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>, rcu@vger.kernel.org
+Subject: [PATCH printk v1 09/13] printk: add functions to allow direct printing
+Date:   Mon,  7 Feb 2022 20:49:19 +0106
+Message-Id: <20220207194323.273637-10-john.ogness@linutronix.de>
+In-Reply-To: <20220207194323.273637-1-john.ogness@linutronix.de>
+References: <20220207194323.273637-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: bce39e9f-71cb-4991-5f80-08d9ea6abb70
-X-MS-TrafficTypeDiagnostic: CY4PR12MB1429:EE_
-X-Microsoft-Antispam-PRVS: <CY4PR12MB14299E07088DB27320343A22EC2C9@CY4PR12MB1429.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XemMfJimSxGyZM25/F4w7bbpJkQsuwWmI8Ywa0c30V1lPDd6GFdMVeB2rq9WBzOouHdqKNJj7E5oYIHRSAQXzBKX8/KrQ7EFBiZ7Cq3bbUsadMgw951ccyMvRzP2cphLq3WjfyPyMBD8c3VyQCmkfIJBzohmlaBzxGvhKyUKoDpA5Y771vjbQ85VHoWfcRKW3pBiTSaYr9S0wF1zR6vfclXBIpIoDSH8DZqjYe7n+C6EDSP8KMcoacBS3BTheEflymyGrR9wb0iHFuT/Ia/7/Dov0srVKxMH/xqfYbB+5SIZZ4IxQcGbol4RaRHJGZtFjZB11n1eszsvZUENoLxHmgiTc5GwprUtMzKeD2TUmHuW4zEaxHqzlP+hbYiqH/a8/+EqqMGGeC9fzvYJYNoZ7bb/vwqqJqJx02ACEu2mCBx4WTWsvkLjLSQXM5zHx4DVfIXm3oNfTqE6cLmdIlClNxeVNiWGonnG7t+J0fdYX07BocMczlCwck1O26+tspnGBtwtHu3ywMddzR+U2+zdn9fIDOd/CGKfWr207EpNs2kJwtCng29O5Cn/vM3tciB29I4btIrPhtMKQyEArkND2YgN/jNBdwlyt+rg3l2i8tSrq5XEpyW6xj0Q1/iVMAUdfp4zrA5x2gvq8l9HfeM1IjJK1O4iOnCvmWxnbvpXLTgn/TmqhnVFejlcpYwLa0ysLfhzoEfLjsQE/o8UNDWUuVLFPM0kq/7+KS+ImB7I2dsKBrSTmPqqKGfDGx0Z7gCZ
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5221.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(6506007)(6666004)(6512007)(2616005)(53546011)(508600001)(66946007)(83380400001)(8936002)(8676002)(66556008)(54906003)(66476007)(38100700002)(110136005)(4326008)(31696002)(86362001)(26005)(186003)(316002)(31686004)(5660300002)(2906002)(7416002)(36756003)(6486002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?V0FtQytSMFFjMnRXZ2xDd1RvUEJiMlAyMjhkWjNyV0gvTjQ4a0hQN3ljL1c2?=
- =?utf-8?B?TWhUOE9aQTJab3RCdWRRNkZpazRGVXl0NE85L0dNQW9VQ0hTUGRVVFlkUUM4?=
- =?utf-8?B?NlpiNGxJd2gxaUJRRU1Vc3E4eWZwN2V5L3NqOGJSZlVWUERsZi9meCt0N1V5?=
- =?utf-8?B?dERETmU1UmJxZzJINFdIWFIyQjR1ZzZtaWU4dHhjL2FDcEVtVFpBZnp2dERS?=
- =?utf-8?B?RDVhclFHV3pYemdsSTNaMmpZZUJ0M0hta2haOWFNc1ZMYlRKMjBrU1FDd21M?=
- =?utf-8?B?UmNMQnVOYnpUZkhweVhCZm92THBLZ2FES3U2ZER6YWpUdDVTSXVXcUJCUGdt?=
- =?utf-8?B?MFNNMnRxdFJyY1hXdCs2aDFlbVphSzk4Mk1lKzVnc1pHaGxmL2Q4NDhOSVYv?=
- =?utf-8?B?KzNxaW9yUXNqcGlsQklPQXdGTWhIR1dkaGk0M1o0MkYvZEp6bEFxT1lwUm50?=
- =?utf-8?B?bHhkUk5sVEQzdHZqckU0R1BlUVhzdGJ5VDZhdDR2SnhWcEhFQXpIRmxxNUZS?=
- =?utf-8?B?aVl5OGwrSzlMbm9CL1B0RGJIQXdNQjdvTmFSa0c1cDF4OGkyb296WkZWRUhQ?=
- =?utf-8?B?eDdnN3oyQmFJeFBUR1JQZ3dDUlNZanpsUTdHWVl2eE83YTVnOXpDMEtqT290?=
- =?utf-8?B?TVprcDJhUHlaOWUySDF4OXliMVZqRUo5RVdLSkRFVU9pRXliUXM2NXFocnAw?=
- =?utf-8?B?S3hDRGROSndXcG5rWVBFQkdZNitSczM5TldKSVV0eWZNWlMxbXJsOG9IQkhy?=
- =?utf-8?B?a2FvaVFWZW1VS0FvWHFtMks2dk0rRHIyelgyVk9JYzFUanNzeW5FSGczTFht?=
- =?utf-8?B?SHJXTzdOdWlUVkUzbmlnMmpuL1ZGOFVDbGh3TkxZaC9qYUYxWm81UWcxWnRU?=
- =?utf-8?B?WlhCdnJvS2ExSk5TQitOdGk3YVFCem5WZnZrZFNqY2duSGNaN3N1VXFhT1pE?=
- =?utf-8?B?RkpSNS9UVzQzcjJ1MlRscmF2bFlxRFBpNnhvWUpVblZaZTBWWXVoUzY5R3lL?=
- =?utf-8?B?SEErb1NZdytmRmUxWVJrczRVYjRoZnRUVmVNNDFPaDQ0MVBDemhSdmpobmhM?=
- =?utf-8?B?ZXRZNG5lV0tLcEVaWlIvTG1YUHhLOU1UQXRFNy9zeWNGR29sRmZ3MytGb2FY?=
- =?utf-8?B?TzVEcFc2bXJieXFCYUg4UytCaDhEMjlzd2tHZHI5TW9BN3FMUFZPUXJOWnht?=
- =?utf-8?B?bHB5dnZXemt5MUNRK2FNM0FVNzRVNjIwbVFUcENFak9UZ3NDeXdOdms1Mmlu?=
- =?utf-8?B?SHM2aVlCU0hZR0VWMTJuZHBRYU5QZzFDV2kxZUw5YmNXZmtuZ1FsbjJaNmZU?=
- =?utf-8?B?VU00VFFvVDd2SUtvYWJvbGRjc1JPQXFNU25GTGsxb2JHTHF5Tmg2Zi9sbzFx?=
- =?utf-8?B?aW0wZUpCRkNZTldRcER4OGJmSHNrNjYvb1NGSWlpMVMyTUxTRWJHbjJ4SXBn?=
- =?utf-8?B?TldYMW9FT3BxVFZRQzlCNVVrWVByaWMzSFk2a0F1eDFobjhsK2hNWHcyRTht?=
- =?utf-8?B?QVBrbmc5djlxVUFia0FZeDk0ZTN1ME1weVRUVC80UncyRmt3d3RNT0dKeFZQ?=
- =?utf-8?B?QWJDcHp1NVpRYjV6cXlsQ3NHNENycW1DLzFMRFpIMWgwRmxrcmpiZGdsR0hX?=
- =?utf-8?B?UmhwVDRDejkvY0drdktQSUhKVWQ4Q05ROXpsTnFOWjNCejUzZ2xzVlY3MGkz?=
- =?utf-8?B?K1lnRUZnM1hHWmR4WlJJZnAxYzVtbllweHljUmU1QW53VldSVXJCNmZ1bjBu?=
- =?utf-8?B?dVhySHh4VjhqQyt5S2lCa1l2YlR3VGMyS0dFcG9JMjhkeGt6Qk9SQ1dhUXFR?=
- =?utf-8?B?cjY1bDhqNW02V0VZcTJ1R1FQRGQ3OXBqMkg5VHJWQzAvaVFiTDRXRXZQc3A3?=
- =?utf-8?B?ZklPdnIwQkFXcXNpblBPd0ZTbWRwdDhKTmFjdEpEZGg5WnZIVnQxMTNtY2Zv?=
- =?utf-8?B?TjJHSk40OEpFeCs2bXI2L2RyVzNPT3FSWlRGQWZkTkFYNmwreTRuRWl1YWlB?=
- =?utf-8?B?dFU1NUdvYUN3OEphTHdEWmlTaHFESWVoOUhQendOaGZ3T3p0LzFvUEJiaUwy?=
- =?utf-8?B?ZUFDN1o5QVF5WGVuODNETEpmdEVjcUszdnR6NWppV2tsWExmRFZ5bkMvN0k2?=
- =?utf-8?B?MzQrRnE1N1lRVmR0K0RtL2NzMXBFdnJuUnBFV0lYS1RkUEJmNWZSblhzcjdu?=
- =?utf-8?Q?9l0s0FKnF9LrP/l3sZhSNAc=3D?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bce39e9f-71cb-4991-5f80-08d9ea6abb70
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5221.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Feb 2022 18:50:38.6146
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ypIAvwLPSWKruux4a8HSoD9T3AIamnpzKtp/TwEVZ+BOV9kYdfjbvbTd6YyRM0+7V9s4jS4DLA4LpSN4th+Q3w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1429
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 2/1/22 14:53, David Woodhouse wrote:
-> Doing the INIT/SIPI/SIPI in parallel for all APs and *then* waiting for
-> them shaves about 80% off the AP bringup time on a 96-thread 2-socket
-> Skylake box (EC2 c5.metal) — from about 500ms to 100ms.
-> 
-> There are more wins to be had with further parallelisation, but this is
-> the simple part.
-> 
-> v2: Cut it back to just INIT/SIPI/SIPI in parallel for now, nothing more
-> v3: Clean up x2apic patch, add MTRR optimisation, lock topology update
->      in preparation for more parallelisation.
-> v4: Fixes to the real mode parallelisation patch spotted by SeanC, to
->      avoid scribbling on initial_gs in common_cpu_up(), and to allow all
->      24 bits of the physical X2APIC ID to be used. That patch still needs
->      a Signed-off-by from its original author, who once claimed not to
->      remember writing it at all. But now we've fixed it, hopefully he'll
->      admit it now :)
+Once kthread printing is introduced, console printing will no longer
+occur in the context of the printk caller. However, there are some
+special contexts where it is desirable for the printk caller to
+directly print out kernel messages. Using pr_flush() to wait for
+threaded printers is only possible if the caller is in a sleepable
+context and the kthreads are active. That is not always the case.
 
-I'm no longer seeing crashes launching high vCPU-count guests with this 
-series.
+Introduce printk_direct_enter() and printk_direct_exit() functions
+to explicitly (and globally) activate/deactivate direct console
+printing.
 
-Thanks,
-Tom
+Activate direct printing for:
+ - sysrq
+ - emergency reboot/shutdown
+ - cpu and rcu stalls
+ - hard and soft lockups
+ - hung tasks
+ - stack dumps
 
-> 
-> David Woodhouse (8):
->        x86/apic/x2apic: Fix parallel handling of cluster_mask
->        cpu/hotplug: Move idle_thread_get() to <linux/smpboot.h>
->        cpu/hotplug: Add dynamic parallel bringup states before CPUHP_BRINGUP_CPU
->        x86/smpboot: Reference count on smpboot_setup_warm_reset_vector()
->        x86/smpboot: Split up native_cpu_up into separate phases and document them
->        x86/smpboot: Send INIT/SIPI/SIPI to secondary CPUs in parallel
->        x86/mtrr: Avoid repeated save of MTRRs on boot-time CPU bringup
->        x86/smpboot: Serialize topology updates for secondary bringup
-> 
-> Thomas Gleixner (1):
->        x86/smpboot: Support parallel startup of secondary CPUs
-> 
-> [dwoodhou@i7 linux-2.6]$ git diff --stat  v5.17-rc2..share/parallel-5.17-part1
->   arch/x86/include/asm/realmode.h       |   3 +
->   arch/x86/include/asm/smp.h            |  13 +-
->   arch/x86/include/asm/topology.h       |   2 -
->   arch/x86/kernel/acpi/sleep.c          |   1 +
->   arch/x86/kernel/apic/apic.c           |   2 +-
->   arch/x86/kernel/apic/x2apic_cluster.c | 108 ++++++-----
->   arch/x86/kernel/cpu/common.c          |   6 +-
->   arch/x86/kernel/cpu/mtrr/mtrr.c       |   9 +
->   arch/x86/kernel/head_64.S             |  73 ++++++++
->   arch/x86/kernel/smpboot.c             | 325 ++++++++++++++++++++++++----------
->   arch/x86/realmode/init.c              |   3 +
->   arch/x86/realmode/rm/trampoline_64.S  |  14 ++
->   arch/x86/xen/smp_pv.c                 |   4 +-
->   include/linux/cpuhotplug.h            |   2 +
->   include/linux/smpboot.h               |   7 +
->   kernel/cpu.c                          |  27 ++-
->   kernel/smpboot.c                      |   2 +-
->   kernel/smpboot.h                      |   2 -
->   18 files changed, 442 insertions(+), 161 deletions(-)
-> 
-> 
-> 
+Signed-off-by: John Ogness <john.ogness@linutronix.de>
+---
+ drivers/tty/sysrq.c     |  2 ++
+ include/linux/printk.h  | 11 +++++++++++
+ kernel/hung_task.c      | 11 ++++++++++-
+ kernel/printk/printk.c  | 39 ++++++++++++++++++++++++++++++++++++++-
+ kernel/rcu/tree_stall.h |  2 ++
+ kernel/reboot.c         | 14 +++++++++++++-
+ kernel/watchdog.c       |  4 ++++
+ kernel/watchdog_hld.c   |  4 ++++
+ lib/dump_stack.c        |  2 ++
+ lib/nmi_backtrace.c     |  2 ++
+ 10 files changed, 88 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/tty/sysrq.c b/drivers/tty/sysrq.c
+index bbfd004449b5..a809f56c392f 100644
+--- a/drivers/tty/sysrq.c
++++ b/drivers/tty/sysrq.c
+@@ -594,9 +594,11 @@ void __handle_sysrq(int key, bool check_mask)
+ 		 * should not) and is the invoked operation enabled?
+ 		 */
+ 		if (!check_mask || sysrq_on_mask(op_p->enable_mask)) {
++			printk_direct_enter();
+ 			pr_info("%s\n", op_p->action_msg);
+ 			console_loglevel = orig_log_level;
+ 			op_p->handler(key);
++			printk_direct_exit();
+ 		} else {
+ 			pr_info("This sysrq operation is disabled.\n");
+ 			console_loglevel = orig_log_level;
+diff --git a/include/linux/printk.h b/include/linux/printk.h
+index 6596f02d1f05..eedf7546ff89 100644
+--- a/include/linux/printk.h
++++ b/include/linux/printk.h
+@@ -170,6 +170,9 @@ extern void __printk_safe_exit(void);
+ #define printk_deferred_enter __printk_safe_enter
+ #define printk_deferred_exit __printk_safe_exit
+ 
++extern void printk_direct_enter(void);
++extern void printk_direct_exit(void);
++
+ extern bool pr_flush(int timeout_ms, bool reset_on_progress);
+ 
+ /*
+@@ -226,6 +229,14 @@ static inline void printk_deferred_exit(void)
+ {
+ }
+ 
++static inline void printk_direct_enter(void)
++{
++}
++
++static inline void printk_direct_exit(void)
++{
++}
++
+ static inline bool pr_flush(int timeout_ms, bool reset_on_progress)
+ {
+ 	return true;
+diff --git a/kernel/hung_task.c b/kernel/hung_task.c
+index 9888e2bc8c76..6de7cec90c3b 100644
+--- a/kernel/hung_task.c
++++ b/kernel/hung_task.c
+@@ -125,6 +125,8 @@ static void check_hung_task(struct task_struct *t, unsigned long timeout)
+ 	 * complain:
+ 	 */
+ 	if (sysctl_hung_task_warnings) {
++		printk_direct_enter();
++
+ 		if (sysctl_hung_task_warnings > 0)
+ 			sysctl_hung_task_warnings--;
+ 		pr_err("INFO: task %s:%d blocked for more than %ld seconds.\n",
+@@ -140,6 +142,8 @@ static void check_hung_task(struct task_struct *t, unsigned long timeout)
+ 
+ 		if (sysctl_hung_task_all_cpu_backtrace)
+ 			hung_task_show_all_bt = true;
++
++		printk_direct_exit();
+ 	}
+ 
+ 	touch_nmi_watchdog();
+@@ -202,12 +206,17 @@ static void check_hung_uninterruptible_tasks(unsigned long timeout)
+ 	}
+  unlock:
+ 	rcu_read_unlock();
+-	if (hung_task_show_lock)
++	if (hung_task_show_lock) {
++		printk_direct_enter();
+ 		debug_show_all_locks();
++		printk_direct_exit();
++	}
+ 
+ 	if (hung_task_show_all_bt) {
+ 		hung_task_show_all_bt = false;
++		printk_direct_enter();
+ 		trigger_all_cpu_backtrace();
++		printk_direct_exit();
+ 	}
+ 
+ 	if (hung_task_call_panic)
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index 1e80fd052bd5..719b05e6ce3b 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -348,6 +348,31 @@ static int console_msg_format = MSG_FORMAT_DEFAULT;
+ static DEFINE_MUTEX(syslog_lock);
+ 
+ #ifdef CONFIG_PRINTK
++static atomic_t printk_direct = ATOMIC_INIT(0);
++
++/**
++ * printk_direct_enter - cause console printing to occur in the context of
++ *                       printk() callers
++ *
++ * This globally effects all printk() callers.
++ *
++ * Context: Any context.
++ */
++void printk_direct_enter(void)
++{
++	atomic_inc(&printk_direct);
++}
++
++/**
++ * printk_direct_exit - restore console printing behavior from direct
++ *
++ * Context: Any context.
++ */
++void printk_direct_exit(void)
++{
++	atomic_dec(&printk_direct);
++}
++
+ DECLARE_WAIT_QUEUE_HEAD(log_wait);
+ /* All 3 protected by @syslog_lock. */
+ /* the next printk record to read by syslog(READ) or /proc/kmsg */
+@@ -3325,6 +3350,7 @@ EXPORT_SYMBOL(pr_flush);
+  */
+ #define PRINTK_PENDING_WAKEUP	0x01
+ #define PRINTK_PENDING_OUTPUT	0x02
++#define PRINTK_DIRECT_OUTPUT	0x04
+ 
+ static DEFINE_PER_CPU(int, printk_pending);
+ 
+@@ -3333,9 +3359,15 @@ static void wake_up_klogd_work_func(struct irq_work *irq_work)
+ 	int pending = __this_cpu_xchg(printk_pending, 0);
+ 
+ 	if (pending & PRINTK_PENDING_OUTPUT) {
++		if (pending & PRINTK_DIRECT_OUTPUT)
++			printk_direct_enter();
++
+ 		/* If trylock fails, someone else is doing the printing */
+ 		if (console_trylock())
+ 			console_unlock();
++
++		if (pending & PRINTK_DIRECT_OUTPUT)
++			printk_direct_exit();
+ 	}
+ 
+ 	if (pending & PRINTK_PENDING_WAKEUP)
+@@ -3360,11 +3392,16 @@ void wake_up_klogd(void)
+ 
+ void defer_console_output(void)
+ {
++	int val = PRINTK_PENDING_OUTPUT;
++
+ 	if (!printk_percpu_data_ready())
+ 		return;
+ 
++	if (atomic_read(&printk_direct))
++		val |= PRINTK_DIRECT_OUTPUT;
++
+ 	preempt_disable();
+-	__this_cpu_or(printk_pending, PRINTK_PENDING_OUTPUT);
++	__this_cpu_or(printk_pending, val);
+ 	irq_work_queue(this_cpu_ptr(&wake_up_klogd_work));
+ 	preempt_enable();
+ }
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index 5e2fa6fd97f1..26953f9b2ab2 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -610,6 +610,7 @@ static void print_cpu_stall(unsigned long gps)
+ 	 * See Documentation/RCU/stallwarn.rst for info on how to debug
+ 	 * RCU CPU stall warnings.
+ 	 */
++	printk_direct_enter();
+ 	trace_rcu_stall_warning(rcu_state.name, TPS("SelfDetected"));
+ 	pr_err("INFO: %s self-detected stall on CPU\n", rcu_state.name);
+ 	raw_spin_lock_irqsave_rcu_node(rdp->mynode, flags);
+@@ -644,6 +645,7 @@ static void print_cpu_stall(unsigned long gps)
+ 	 */
+ 	set_tsk_need_resched(current);
+ 	set_preempt_need_resched();
++	printk_direct_exit();
+ }
+ 
+ static void check_cpu_stall(struct rcu_data *rdp)
+diff --git a/kernel/reboot.c b/kernel/reboot.c
+index 6bcc5d6a6572..0f219ce610fc 100644
+--- a/kernel/reboot.c
++++ b/kernel/reboot.c
+@@ -447,9 +447,11 @@ static int __orderly_reboot(void)
+ 	ret = run_cmd(reboot_cmd);
+ 
+ 	if (ret) {
++		printk_direct_enter();
+ 		pr_warn("Failed to start orderly reboot: forcing the issue\n");
+ 		emergency_sync();
+ 		kernel_restart(NULL);
++		printk_direct_exit();
+ 	}
+ 
+ 	return ret;
+@@ -462,6 +464,7 @@ static int __orderly_poweroff(bool force)
+ 	ret = run_cmd(poweroff_cmd);
+ 
+ 	if (ret && force) {
++		printk_direct_enter();
+ 		pr_warn("Failed to start orderly shutdown: forcing the issue\n");
+ 
+ 		/*
+@@ -471,6 +474,7 @@ static int __orderly_poweroff(bool force)
+ 		 */
+ 		emergency_sync();
+ 		kernel_power_off();
++		printk_direct_exit();
+ 	}
+ 
+ 	return ret;
+@@ -528,6 +532,8 @@ EXPORT_SYMBOL_GPL(orderly_reboot);
+  */
+ static void hw_failure_emergency_poweroff_func(struct work_struct *work)
+ {
++	printk_direct_enter();
++
+ 	/*
+ 	 * We have reached here after the emergency shutdown waiting period has
+ 	 * expired. This means orderly_poweroff has not been able to shut off
+@@ -544,6 +550,8 @@ static void hw_failure_emergency_poweroff_func(struct work_struct *work)
+ 	 */
+ 	pr_emerg("Hardware protection shutdown failed. Trying emergency restart\n");
+ 	emergency_restart();
++
++	printk_direct_exit();
+ }
+ 
+ static DECLARE_DELAYED_WORK(hw_failure_emergency_poweroff_work,
+@@ -582,11 +590,13 @@ void hw_protection_shutdown(const char *reason, int ms_until_forced)
+ {
+ 	static atomic_t allow_proceed = ATOMIC_INIT(1);
+ 
++	printk_direct_enter();
++
+ 	pr_emerg("HARDWARE PROTECTION shutdown (%s)\n", reason);
+ 
+ 	/* Shutdown should be initiated only once. */
+ 	if (!atomic_dec_and_test(&allow_proceed))
+-		return;
++		goto out;
+ 
+ 	/*
+ 	 * Queue a backup emergency shutdown in the event of
+@@ -594,6 +604,8 @@ void hw_protection_shutdown(const char *reason, int ms_until_forced)
+ 	 */
+ 	hw_failure_emergency_poweroff(ms_until_forced);
+ 	orderly_poweroff(true);
++out:
++	printk_direct_exit();
+ }
+ EXPORT_SYMBOL_GPL(hw_protection_shutdown);
+ 
+diff --git a/kernel/watchdog.c b/kernel/watchdog.c
+index ad912511a0c0..930563f155ee 100644
+--- a/kernel/watchdog.c
++++ b/kernel/watchdog.c
+@@ -424,6 +424,8 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
+ 		/* Start period for the next softlockup warning. */
+ 		update_report_ts();
+ 
++		printk_direct_enter();
++
+ 		pr_emerg("BUG: soft lockup - CPU#%d stuck for %us! [%s:%d]\n",
+ 			smp_processor_id(), duration,
+ 			current->comm, task_pid_nr(current));
+@@ -442,6 +444,8 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
+ 		add_taint(TAINT_SOFTLOCKUP, LOCKDEP_STILL_OK);
+ 		if (softlockup_panic)
+ 			panic("softlockup: hung tasks");
++
++		printk_direct_exit();
+ 	}
+ 
+ 	return HRTIMER_RESTART;
+diff --git a/kernel/watchdog_hld.c b/kernel/watchdog_hld.c
+index 247bf0b1582c..56cfbae94c42 100644
+--- a/kernel/watchdog_hld.c
++++ b/kernel/watchdog_hld.c
+@@ -135,6 +135,8 @@ static void watchdog_overflow_callback(struct perf_event *event,
+ 		if (__this_cpu_read(hard_watchdog_warn) == true)
+ 			return;
+ 
++		printk_direct_enter();
++
+ 		pr_emerg("Watchdog detected hard LOCKUP on cpu %d\n",
+ 			 this_cpu);
+ 		print_modules();
+@@ -155,6 +157,8 @@ static void watchdog_overflow_callback(struct perf_event *event,
+ 		if (hardlockup_panic)
+ 			nmi_panic(regs, "Hard LOCKUP");
+ 
++		printk_direct_exit();
++
+ 		__this_cpu_write(hard_watchdog_warn, true);
+ 		return;
+ 	}
+diff --git a/lib/dump_stack.c b/lib/dump_stack.c
+index 83471e81501a..e3b4eeb1dcb4 100644
+--- a/lib/dump_stack.c
++++ b/lib/dump_stack.c
+@@ -102,9 +102,11 @@ asmlinkage __visible void dump_stack_lvl(const char *log_lvl)
+ 	 * Permit this cpu to perform nested stack dumps while serialising
+ 	 * against other CPUs
+ 	 */
++	printk_direct_enter();
+ 	printk_cpu_sync_get_irqsave(flags);
+ 	__dump_stack(log_lvl);
+ 	printk_cpu_sync_put_irqrestore(flags);
++	printk_direct_exit();
+ }
+ EXPORT_SYMBOL(dump_stack_lvl);
+ 
+diff --git a/lib/nmi_backtrace.c b/lib/nmi_backtrace.c
+index d01aec6ae15c..dabeb35bc8dc 100644
+--- a/lib/nmi_backtrace.c
++++ b/lib/nmi_backtrace.c
+@@ -99,6 +99,7 @@ bool nmi_cpu_backtrace(struct pt_regs *regs)
+ 		 * Allow nested NMI backtraces while serializing
+ 		 * against other CPUs.
+ 		 */
++		printk_direct_enter();
+ 		printk_cpu_sync_get_irqsave(flags);
+ 		if (!READ_ONCE(backtrace_idle) && regs && cpu_in_idle(instruction_pointer(regs))) {
+ 			pr_warn("NMI backtrace for cpu %d skipped: idling at %pS\n",
+@@ -111,6 +112,7 @@ bool nmi_cpu_backtrace(struct pt_regs *regs)
+ 				dump_stack();
+ 		}
+ 		printk_cpu_sync_put_irqrestore(flags);
++		printk_direct_exit();
+ 		cpumask_clear_cpu(cpu, to_cpumask(backtrace_mask));
+ 		return true;
+ 	}
+-- 
+2.30.2
+
