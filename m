@@ -2,536 +2,284 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 51B8EC4321E
-	for <rcu@archiver.kernel.org>; Tue,  8 Feb 2022 22:21:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 325A9C433F5
+	for <rcu@archiver.kernel.org>; Tue,  8 Feb 2022 22:21:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1387043AbiBHWVp (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 8 Feb 2022 17:21:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49622 "EHLO
+        id S1387120AbiBHWVr (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 8 Feb 2022 17:21:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1386339AbiBHUKm (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 8 Feb 2022 15:10:42 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 682E1C0613CB;
-        Tue,  8 Feb 2022 12:10:40 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id y3so1047224ejf.2;
-        Tue, 08 Feb 2022 12:10:40 -0800 (PST)
+        with ESMTP id S1386194AbiBHTnh (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 8 Feb 2022 14:43:37 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6273C0613CB;
+        Tue,  8 Feb 2022 11:43:36 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id w20so221012plq.12;
+        Tue, 08 Feb 2022 11:43:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=LqpS1C58rEre6k1Ish5WUbwOdRiZi0f8EFHi+i5WIvo=;
-        b=S6Eh7lva1WoZBEDwp+ntAxc6UTzGvE268VB2ZOvJrE3kx7bfpIdHK2pFiNWZq8DDb1
-         C5GOG1D17V4xl4okMH6Jh+QNoYUs99YVS4y0/rLJh+jM9sDWjxkmV0zJFkQMZeTRmlHG
-         kCaCv1UGhByN9XKDjE9H/OTbwelG6rz4igNyLeBlDfgtBh+MHgapRuALdkl6K+ZCvn0Q
-         mrSZk57aoLP1gddt2x4654GT9Gk5Cb2lb5jMqNJNuqzdfee0miBBMmukdIIb+GhItwgJ
-         WtUqRETIkXiw+3CehiKM0L6xbyQOZSpdo3InuusC0ZgEfDiyidann1XdezKcrYFj9TKV
-         Dkew==
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=k3ImYAmlfRKBZkC/pLF9BVzBCr+7P+OE/oDyEYAOAPQ=;
+        b=RSk9d3qmUd4qYszbyz1ANvzT1zanWxXRFOsL6+7w9bKoGrI/+i5ySpouQXJyrqUIfL
+         oC7RstqRX7MpfHBVJ3qKOPvM2BtsmoKGJi1utEYXQE9ntJNNhnQiBWtnnACiY3fhwHMP
+         lmeaj3JpoNOOzymhWEDUxQTplKUmuNsoEf8dFHpUUT0ewQwsItB2l3YzSjmBq+poSuKX
+         0l1QzuC7w1xxfSNSGUzUiEkj9zHkCopGQNPAwj1cyjRwiyR2/0BK+UNChrCuKVwKY+nj
+         oY7b69LyjPwbT7tZYcMfDUtEFR3mEVHEuF9uFfS64DN0Glg9zHz/G1ZVKXS0tlAhFdub
+         5/Pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=LqpS1C58rEre6k1Ish5WUbwOdRiZi0f8EFHi+i5WIvo=;
-        b=xwFs/N52UlyBjfVISpg1PRQzEyKhk16h6soWlTxHLEG1JY7Ipm/pWzY1HwFVj0TLmB
-         KPyLg/CzhBrR5BS8CMovwytrZfBA7S/6XpL/T+/wsVovQZ2Rmjx5qaTPK8icYP9q53jU
-         B/igMyXR5msSQinYEfCZZHFuWhlHy2nDk0IR6HG7SzkZ7WrE1UV3WwrlGrTYGtbgRLg5
-         vXeCS0UXrnrNyA3hkA5oZETSsVhSQ4ZG7Dl1TX5WQhsFM8zvRPgl+vkYLd8i9LAa6JN9
-         hv8N0eEfX6svTImLKpYby9xgiei1oY9s8N0XFZdmA0dOUZ9Ur98RxI0bzBf5mDER5dxs
-         BWeQ==
-X-Gm-Message-State: AOAM530TowMt0AnSnLv6rKnmd4h3bRzrokx4AJlsEPjrfmkY9hSScMWg
-        8KFKw9cgdnTtIZ33iwzcMwYbjOdztIkget7y/WMYyEOlI46VSw==
-X-Google-Smtp-Source: ABdhPJwTfhhiIuNgwW0z2YamYq660O9jrbcrgJBsQqaEJJ7UuuabvkknKnwttu0PEpBZ2QtMVSdpwn6Q8t32jw2L/HI=
-X-Received: by 2002:a17:907:6d17:: with SMTP id sa23mr4821509ejc.551.1644351038635;
- Tue, 08 Feb 2022 12:10:38 -0800 (PST)
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=k3ImYAmlfRKBZkC/pLF9BVzBCr+7P+OE/oDyEYAOAPQ=;
+        b=J08zdvTMUfLBgKv4zy7C7t/+QmKRf/GPesOFPgDAM8mZIhlZAKDVhbDM93NLOnhT3X
+         22fhbqQOwPww8mxC4LizzLE7ctjBc+cPi1B7q69huoKQBgWBnXYh+dAgqM4nDS2voxWh
+         qL62WF8lVHimrDWZbL9+pYAltQQjGoub2QgCWWokOiVHuQN6yOMVD6KhuwYCsSXc3Jts
+         rqUfYpoPrTtIjoN20z79MR4b7VaB3w4SuAn0Oc2Q6II5MFc+7KuKFCEi5EOJl7nsWI8O
+         1Z9AdN1fBA5LDk3XuNqsSvrib97yNRXhUXL0ESpZeFIene7vEUanuVoJKOjiJNP5ebwQ
+         9jeg==
+X-Gm-Message-State: AOAM532HAaToKMOn+GXmBZ4voBh9kThDeYvTWAMiAz8tlpGUMqg5veGP
+        1F7uc7D0tD2fS2W3bZLxDKI=
+X-Google-Smtp-Source: ABdhPJxdROXUt/+NpwRLoiVRuI5Fkp69z4w5V7oVsLdzS6wbeh4k2qfYnhWIH93Nq9q1XFfnjyp7cQ==
+X-Received: by 2002:a17:902:7489:: with SMTP id h9mr2349321pll.8.1644349415950;
+        Tue, 08 Feb 2022 11:43:35 -0800 (PST)
+Received: from balhae.hsd1.ca.comcast.net ([2601:647:4800:c6f0:347f:e607:176:4358])
+        by smtp.gmail.com with ESMTPSA id w11sm16876839pfu.50.2022.02.08.11.43.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Feb 2022 11:43:35 -0800 (PST)
+Sender: Namhyung Kim <namhyung@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Byungchul Park <byungchul.park@lge.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Radoslaw Burny <rburny@google.com>, Tejun Heo <tj@kernel.org>,
+        rcu@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, intel-gfx@lists.freedesktop.org
+Subject: [RFC RESEND 00/12] locking: Separate lock tracepoints from lockdep/lock_stat (v1.1)
+Date:   Tue,  8 Feb 2022 11:43:12 -0800
+Message-Id: <20220208194324.85333-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.35.0.263.gb82422642f-goog
 MIME-Version: 1.0
-References: <159db05f-539c-fe29-608b-91b036588033@molgen.mpg.de>
- <CAABZP2xampOLo8k93OLgaOfv9LreJ+f0g0_1mXwqtrv_LKewQg@mail.gmail.com>
- <3534d781-7d01-b42a-8974-0b1c367946f0@molgen.mpg.de> <CAABZP2zFDY-hrZqE=-c0uW8vFMH+Q9XezYd2DcBX4Wm+sxzK1g@mail.gmail.com>
- <04a597dc-64aa-57e6-f7fb-17bd2ec58159@molgen.mpg.de> <CAABZP2yb7-xa4F_2c6tuzkv7x902wU-hqgD_pqRooGC6C7S20A@mail.gmail.com>
- <20220130174421.GS4285@paulmck-ThinkPad-P17-Gen-1> <CAABZP2w8ysVFmxRo7CMSHunnU0GqtS=+bU6tLqcsXDUyf60-Dw@mail.gmail.com>
- <20220201175023.GW4285@paulmck-ThinkPad-P17-Gen-1> <CAABZP2zsyf238t6FGaszY+vwuBocFWQj=7k2pGd2OA3E7G525g@mail.gmail.com>
-In-Reply-To: <CAABZP2zsyf238t6FGaszY+vwuBocFWQj=7k2pGd2OA3E7G525g@mail.gmail.com>
-From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
-Date:   Wed, 9 Feb 2022 04:10:26 +0800
-Message-ID: <CAABZP2xS8zPZxve=Yx=UKMGYxjKmgjL-GA4YOngH7BSn5Tf7Gw@mail.gmail.com>
-Subject: Re: BUG: Kernel NULL pointer dereference on write at 0x00000000 (rtmsg_ifinfo_build_skb)
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Paul Menzel <pmenzel@molgen.mpg.de>,
-        Josh Triplett <josh@joshtriplett.org>,
-        rcu <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Paul
+Hello,
 
-Below are my preliminary test results tested on PPC VM supplied by
-Open source lab of Oregon State University, thank you for your
-support!
+(Resending with Paul's correct email address, sorry!)
 
-[Preliminary test results on ppc64le virtual guest]
+There have been some requests for low-overhead kernel lock contention
+monitoring.  The kernel has CONFIG_LOCK_STAT to provide such an infra
+either via /proc/lock_stat or tracepoints directly.
 
-1. Conclusion
-Some other kernel configuration besides RCU may lead to "BUG: Kernel
-NULL pointer dereference" at boot
+However it's not light-weight and hard to be used in production.  So
+I'm trying to separate out the tracepoints and using them as a base to
+build a new monitoring system.
+
+* Changes in v1.1
+ - add some Acked-by's
+ - add comments on cgroup rstat cpu lock
+ 
+As the lockdep and lock_stat provide good hooks in the lock functions,
+it'd be natural to reuse them.  Actually I tried to use lockdep as is
+but disables the functionality at runtime (initialize debug_locks = 0,
+lock_stat = 0).  But it still has unacceptable overhead and the
+lockdep data structures also increase memory footprint unnecessarily.
+
+So I'm proposing a separate tracepoint-only configuration and keeping
+lockdep_map only with minimal information needed for tracepoints (for
+now, it's just name).  And then the existing lockdep hooks can be used
+for the tracepoints.
+
+The patch 01-06 are preparation for the work.  In a few places in the
+kernel, they calls lockdep annotation explicitly to deal with
+limitations in the lockdep implementation.  In my understanding, they
+are not needed to analyze lock contention.
+
+To make matters worse, they rely on the compiler optimization (or
+macro magic) so that it can get rid of the annotations and their
+arguments when lockdep is not configured.
+
+But it's not true any more when lock tracepoints are added and it'd
+cause build errors.  So I added #ifdef guards for LOCKDEP in the code
+to prevent such errors.
+
+In the patch 07 I mechanically changed most of code that depend on
+CONFIG_LOCKDEP or CONFIG_DEBUG_LOCK_ALLOC to CONFIG_LOCK_INFO.  It
+paves the way for the codes to be shared for lockdep and tracepoints.
+Mostly, it makes sure that locks are initialized with a proper name,
+like in the patch 08 and 09.
+
+I didn't change some places intentionally - for example, timer and
+workqueue depend on LOCKDEP explicitly since they use some lockdep
+annotations to work around the "held lock freed" warnings.  The ocfs2
+directly accesses lockdep_map.key so I didn't touch the code for now.
+And RCU was because it generates too much overhead thanks to the
+rcu_read_lock().  Maybe I need to revisit some of them later.
+
+I added CONFIG_LOCK_TRACEPOINTS in the patch 10 to make it optional.
+I found that it adds 2~3% of overhead when I ran `perf bench sched
+messaging` even when the tracepoints are disabled.  The benchmark
+creates a lot of processes and make them communicate by socket pairs
+(or pipes).  I measured that around 15% of lock acquisition creates
+contentions and it's mostly for spin locks (alc->lock and u->lock).
+
+I ran perf record + report with the workload and it showed 50% of the
+cpu cycles are in the spin lock slow path.  So it's highly affected by
+the spin lock slow path.  Actually LOCK_CONTENDED() macro transforms
+the spin lock code (and others) to use trylock first and then fall
+back to real lock function if failed.  Thus it'd add more (atomic)
+operations and cache line bouncing for the contended cases:
+
+  #define LOCK_CONTENDED(_lock, try, lock)		\
+  do {							\
+      if (!try(_lock)) {				\
+          lock_contended(&(_lock)->dep_map, _RET_IP_);	\
+          lock(_lock);					\
+      }							\
+      lock_acquired(&(_lock)->dep_map, _RET_IP_);	\
+  } while (0)
+
+If I modify the macro not to use trylock and to call the real lock
+function directly (so the lock_contended tracepoint would be called
+always, if enabled), the overhead goes down to 0.x% when the
+tracepoints are disabled.
+
+I don't have a good solution as long as we use LOCK_CONTENDED() macro
+to separate the contended locking path.  Maybe we can make it call
+some (generic) slow path lock function directly after failing trylock.
+Or move the lockdep annotations into the each lock function bodies and
+get rid of the LOCK_CONTENDED() macro entirely.  Ideas?
+
+Actually the patch 11 handles the same issue on the mutex code.  The
+fast version of mutex trylock was attempted only if LOCKDEP is not
+enabled and it affects the mutex lock performance in the uncontended
+cases too.  So I partially reverted the change in the patch 07 to use
+the fast functions with lock tracepoints too.  Maybe we can use it
+with LOCKDEP as well?
+
+The last patch 12 might be controversial and I'd like to move the
+lock_acquired annotation into the if(!try) block in the LOCK_CONTEDED
+macro so that it can only be called when there's a contention.
+
+Eventually I'm mostly interested in the contended locks only and I
+want to reduce the overhead in the fast path.  By moving that, it'd be
+easy to track contended locks with timing by using two tracepoints.
+
+It'd change lock hold time calculation in lock_stat for the fast path,
+but I assume time difference between lock_acquire and lock_acquired
+would be small when the lock is not contended.  So I think we can use
+the timestamp in lock_acquire.  If it's not acceptable, we might
+consider adding a new tracepoint to track the timing of contended
+locks.
+
+This series base on the current tip/locking/core and you get it from
+'locking/tracepoint-v1' branch in my tree at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
 
 
-2. Test Environment
-2.1 host hardware
-8 core ppc64le virtual guest with 16G ram and 160G disk
-cpu        : POWER9 (architected), altivec supported
-clock        : 2200.000000MHz
-revision    : 2.2 (pvr 004e 1202)
-
-2.2 host software
-Operating System: Ubuntu 20.04.3 LTS, Compiler: gcc version 9.3.0
+Thanks,
+Namhyung
 
 
-3. Test Procedure
-3.1 kernel source
-next-20220203
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Byungchul Park <byungchul.park@lge.com>
+Cc: rcu@vger.kernel.org
+Cc: cgroups@vger.kernel.org
+Cc: linux-btrfs@vger.kernel.org
+Cc: intel-gfx@lists.freedesktop.org
 
-3.2 build and boot the kernel with CONFIG_DRM_BOCHS=3Dm and
-CONFIG_RCU_TORTURE_TEST=3Dy
-test result: "BUG: Kernel NULL pointer dereference" at boot
-config file: http://154.223.142.244/Feb2022/config-5.17.0-rc2-next.bochs.to=
-rture
-boot msg: http://154.223.142.244/Feb2022/dmesg.torture.bochs
 
-3.3 build and boot the kernel with CONFIG_DRM_BOCHS=3Dm
-test result: "BUG: Kernel NULL pointer dereference" at boot
-config file: http://154.223.142.244/Feb2022/config-5.17.0-rc2-next.bochs
-boot msg: http://154.223.142.244/Feb2022/dmesg.bochs
+Namhyung Kim (12):
+  locking: Pass correct outer wait type info
+  cgroup: rstat: Make cgroup_rstat_cpu_lock name readable
+  timer: Protect lockdep functions with #ifdef
+  workqueue: Protect lockdep functions with #ifdef
+  drm/i915: Protect lockdep functions with #ifdef
+  btrfs: change lockdep class size check using ks->names
+  locking: Introduce CONFIG_LOCK_INFO
+  locking/mutex: Init name properly w/ CONFIG_LOCK_INFO
+  locking: Add more static lockdep init macros
+  locking: Add CONFIG_LOCK_TRACEPOINTS option
+  locking/mutex: Revive fast functions for LOCK_TRACEPOINTS
+  locking: Move lock_acquired() from the fast path
 
-3.4 build and boot the kernel with CONFIG_RCU_TORTURE_TEST=3Dy (without
-CONFIG_DRM_BOCHS)
-test result: boot without error
-config file: http://154.223.142.244/Feb2022/config-5.17.0-rc2-next.torture
-boot msg: http://154.223.142.244/Feb2022/dmesg.torture
+ drivers/gpu/drm/drm_connector.c               |   7 +-
+ drivers/gpu/drm/i915/i915_sw_fence.h          |   2 +-
+ drivers/gpu/drm/i915/intel_wakeref.c          |   3 +
+ drivers/gpu/drm/i915/selftests/lib_sw_fence.h |   2 +-
+ .../net/wireless/intel/iwlwifi/iwl-trans.c    |   4 +-
+ .../net/wireless/intel/iwlwifi/iwl-trans.h    |   2 +-
+ drivers/tty/tty_ldsem.c                       |   2 +-
+ fs/btrfs/disk-io.c                            |   4 +-
+ fs/btrfs/disk-io.h                            |   2 +-
+ fs/cifs/connect.c                             |   2 +-
+ fs/kernfs/file.c                              |   2 +-
+ include/linux/completion.h                    |   2 +-
+ include/linux/jbd2.h                          |   2 +-
+ include/linux/kernfs.h                        |   2 +-
+ include/linux/kthread.h                       |   2 +-
+ include/linux/local_lock_internal.h           |  18 +-
+ include/linux/lockdep.h                       | 170 ++++++++++++++++--
+ include/linux/lockdep_types.h                 |   8 +-
+ include/linux/mmu_notifier.h                  |   2 +-
+ include/linux/mutex.h                         |  12 +-
+ include/linux/percpu-rwsem.h                  |   4 +-
+ include/linux/regmap.h                        |   4 +-
+ include/linux/rtmutex.h                       |  14 +-
+ include/linux/rwlock_api_smp.h                |   4 +-
+ include/linux/rwlock_rt.h                     |   4 +-
+ include/linux/rwlock_types.h                  |  11 +-
+ include/linux/rwsem.h                         |  14 +-
+ include/linux/seqlock.h                       |   4 +-
+ include/linux/spinlock_api_smp.h              |   4 +-
+ include/linux/spinlock_rt.h                   |   4 +-
+ include/linux/spinlock_types.h                |   4 +-
+ include/linux/spinlock_types_raw.h            |  28 ++-
+ include/linux/swait.h                         |   2 +-
+ include/linux/tty_ldisc.h                     |   2 +-
+ include/linux/wait.h                          |   2 +-
+ include/linux/ww_mutex.h                      |   6 +-
+ include/media/v4l2-ctrls.h                    |   2 +-
+ include/net/sock.h                            |   2 +-
+ include/trace/events/lock.h                   |   4 +-
+ kernel/cgroup/rstat.c                         |   7 +-
+ kernel/locking/Makefile                       |   1 +
+ kernel/locking/lockdep.c                      |  40 ++++-
+ kernel/locking/mutex-debug.c                  |   2 +-
+ kernel/locking/mutex.c                        |  22 ++-
+ kernel/locking/mutex.h                        |   7 +
+ kernel/locking/percpu-rwsem.c                 |   2 +-
+ kernel/locking/rtmutex_api.c                  |  10 +-
+ kernel/locking/rwsem.c                        |   4 +-
+ kernel/locking/spinlock.c                     |   2 +-
+ kernel/locking/spinlock_debug.c               |   4 +-
+ kernel/locking/spinlock_rt.c                  |   8 +-
+ kernel/locking/ww_rt_mutex.c                  |   2 +-
+ kernel/printk/printk.c                        |  14 +-
+ kernel/rcu/update.c                           |  27 +--
+ kernel/time/timer.c                           |   8 +-
+ kernel/workqueue.c                            |  13 ++
+ lib/Kconfig.debug                             |  14 ++
+ mm/memcontrol.c                               |   7 +-
+ mm/mmu_notifier.c                             |   2 +-
+ net/core/dev.c                                |   2 +-
+ net/sunrpc/svcsock.c                          |   2 +-
+ net/sunrpc/xprtsock.c                         |   2 +-
+ 62 files changed, 391 insertions(+), 180 deletions(-)
 
-3.5 build and boot the kernel with CONFIG_RCU_TORTURE_TEST=3Dm (without
-CONFIG_DRM_BOCHS)
-test result: boot without error
-config file: http://154.223.142.244/Feb2022/config-5.17.0-rc2-next
-boot msg: http://154.223.142.244/Feb2022/dmesg
 
-4. Acknowledgement
-Thank Open source lab of Oregon State University and Paul Menzel and
-all other community members who support my tiny research.
-
-Thanks
-Zhouyi
-
-On Wed, Feb 2, 2022 at 10:39 AM Zhouyi Zhou <zhouzhouyi@gmail.com> wrote:
->
-> Thank Paul for your encouragement!
->
-> On Wed, Feb 2, 2022 at 1:50 AM Paul E. McKenney <paulmck@kernel.org> wrot=
-e:
-> >
-> > On Mon, Jan 31, 2022 at 09:08:40AM +0800, Zhouyi Zhou wrote:
-> > > Thank Paul for joining us!
-> > >
-> > > On Mon, Jan 31, 2022 at 1:44 AM Paul E. McKenney <paulmck@kernel.org>=
- wrote:
-> > > >
-> > > > On Sun, Jan 30, 2022 at 09:24:44PM +0800, Zhouyi Zhou wrote:
-> > > > > Dear Paul
-> > > > >
-> > > > > On Sun, Jan 30, 2022 at 4:19 PM Paul Menzel <pmenzel@molgen.mpg.d=
-e> wrote:
-> > > > > >
-> > > > > > Dear Zhouyi,
-> > > > > >
-> > > > > >
-> > > > > > Am 30.01.22 um 01:21 schrieb Zhouyi Zhou:
-> > > > > >
-> > > > > > > Thank you for your instructions, I learned a lot from this pr=
-ocess.
-> > > > > >
-> > > > > > Same on my end.
-> > > > > >
-> > > > > > > On Sun, Jan 30, 2022 at 12:52 AM Paul Menzel <pmenzel@molgen.=
-mpg.de> wrote:
-> > > > > >
-> > > > > > >> Am 29.01.22 um 03:23 schrieb Zhouyi Zhou:
-> > > > > > >>
-> > > > > > >>> I don't have an IBM machine, but I tried to analyze the pro=
-blem using
-> > > > > > >>> my x86_64 kvm virtual machine, I can't reproduce the bug us=
-ing my
-> > > > > > >>> x86_64 kvm virtual machine.
-> > > > > > >>
-> > > > > > >> No idea, if it=E2=80=99s architecture specific.
-> > > > > > >>
-> > > > > > >>> I saw the panic is caused by registration of sit device (A =
-sit device
-> > > > > > >>> is a type of virtual network device that takes our IPv6 tra=
-ffic,
-> > > > > > >>> encapsulates/decapsulates it in IPv4 packets, and sends/rec=
-eives it
-> > > > > > >>> over the IPv4 Internet to another host)
-> > > > > > >>>
-> > > > > > >>> sit device is registered in function sit_init_net:
-> > > > > > >>> 1895    static int __net_init sit_init_net(struct net *net)
-> > > > > > >>> 1896    {
-> > > > > > >>> 1897        struct sit_net *sitn =3D net_generic(net, sit_n=
-et_id);
-> > > > > > >>> 1898        struct ip_tunnel *t;
-> > > > > > >>> 1899        int err;
-> > > > > > >>> 1900
-> > > > > > >>> 1901        sitn->tunnels[0] =3D sitn->tunnels_wc;
-> > > > > > >>> 1902        sitn->tunnels[1] =3D sitn->tunnels_l;
-> > > > > > >>> 1903        sitn->tunnels[2] =3D sitn->tunnels_r;
-> > > > > > >>> 1904        sitn->tunnels[3] =3D sitn->tunnels_r_l;
-> > > > > > >>> 1905
-> > > > > > >>> 1906        if (!net_has_fallback_tunnels(net))
-> > > > > > >>> 1907            return 0;
-> > > > > > >>> 1908
-> > > > > > >>> 1909        sitn->fb_tunnel_dev =3D alloc_netdev(sizeof(str=
-uct ip_tunnel), "sit0",
-> > > > > > >>> 1910                           NET_NAME_UNKNOWN,
-> > > > > > >>> 1911                           ipip6_tunnel_setup);
-> > > > > > >>> 1912        if (!sitn->fb_tunnel_dev) {
-> > > > > > >>> 1913            err =3D -ENOMEM;
-> > > > > > >>> 1914            goto err_alloc_dev;
-> > > > > > >>> 1915        }
-> > > > > > >>> 1916        dev_net_set(sitn->fb_tunnel_dev, net);
-> > > > > > >>> 1917        sitn->fb_tunnel_dev->rtnl_link_ops =3D &sit_lin=
-k_ops;
-> > > > > > >>> 1918        /* FB netdevice is special: we have one, and on=
-ly one per netns.
-> > > > > > >>> 1919         * Allowing to move it to another netns is clea=
-rly unsafe.
-> > > > > > >>> 1920         */
-> > > > > > >>> 1921        sitn->fb_tunnel_dev->features |=3D NETIF_F_NETN=
-S_LOCAL;
-> > > > > > >>> 1922
-> > > > > > >>> 1923        err =3D register_netdev(sitn->fb_tunnel_dev);
-> > > > > > >>> register_netdev on line 1923 will call if_nlmsg_size indire=
-ctly.
-> > > > > > >>>
-> > > > > > >>> On the other hand, the function that calls the paniced strl=
-en is if_nlmsg_size:
-> > > > > > >>> (gdb) disassemble if_nlmsg_size
-> > > > > > >>> Dump of assembler code for function if_nlmsg_size:
-> > > > > > >>>      0xffffffff81a0dc20 <+0>:    nopl   0x0(%rax,%rax,1)
-> > > > > > >>>      0xffffffff81a0dc25 <+5>:    push   %rbp
-> > > > > > >>>      0xffffffff81a0dc26 <+6>:    push   %r15
-> > > > > > >>>      0xffffffff81a0dd04 <+228>:    je     0xffffffff81a0de2=
-0 <if_nlmsg_size+512>
-> > > > > > >>>      0xffffffff81a0dd0a <+234>:    mov    0x10(%rbp),%rdi
-> > > > > > >>>      ...
-> > > > > > >>>    =3D> 0xffffffff81a0dd0e <+238>:    callq  0xffffffff8175=
-32d0 <strlen>
-> > > > > > >>>      0xffffffff81a0dd13 <+243>:    add    $0x10,%eax
-> > > > > > >>>      0xffffffff81a0dd16 <+246>:    movslq %eax,%r12
-> > > > > > >>
-> > > > > > >> Excuse my ignorance, would that look the same for ppc64le?
-> > > > > > >> Unfortunately, I didn=E2=80=99t save the problematic `vmlinu=
-z` file, but on a
-> > > > > > >> current build (without rcutorture) I have the line below, wh=
-ere strlen
-> > > > > > >> shows up.
-> > > > > > >>
-> > > > > > >>       (gdb) disassemble if_nlmsg_size
-> > > > > > >>       [=E2=80=A6]
-> > > > > > >>       0xc000000000f7f82c <+332>: bl      0xc000000000a10e30 =
-<strlen>
-> > > > > > >>       [=E2=80=A6]
-> > > > > > >>
-> > > > > > >>> and the C code for 0xffffffff81a0dd0e is following (line 52=
-4):
-> > > > > > >>> 515    static size_t rtnl_link_get_size(const struct net_de=
-vice *dev)
-> > > > > > >>> 516    {
-> > > > > > >>> 517        const struct rtnl_link_ops *ops =3D dev->rtnl_li=
-nk_ops;
-> > > > > > >>> 518        size_t size;
-> > > > > > >>> 519
-> > > > > > >>> 520        if (!ops)
-> > > > > > >>> 521            return 0;
-> > > > > > >>> 522
-> > > > > > >>> 523        size =3D nla_total_size(sizeof(struct nlattr)) +=
- /* IFLA_LINKINFO */
-> > > > > > >>> 524               nla_total_size(strlen(ops->kind) + 1);  /=
-* IFLA_INFO_KIND */
-> > > > > > >>
-> > > > > > >> How do I connect the disassemby output with the correspondin=
-g line?
-> > > > > > > I use "make  ARCH=3Dpowerpc CC=3Dpowerpc64le-linux-gnu-gcc-9
-> > > > > > > CROSS_COMPILE=3Dpowerpc64le-linux-gnu- -j 16" to cross compil=
-e kernel
-> > > > > > > for powerpc64le in my Ubuntu 20.04 x86_64.
-> > > > > > >
-> > > > > > > gdb-multiarch ./vmlinux
-> > > > > > > (gdb)disassemble if_nlmsg_size
-> > > > > > > [...]
-> > > > > > > 0xc00000000191bf40 <+112>:    bl      0xc000000001c28ad0 <str=
-len>
-> > > > > > > [...]
-> > > > > > > (gdb) break *0xc00000000191bf40
-> > > > > > > Breakpoint 1 at 0xc00000000191bf40: file ./include/net/netlin=
-k.h, line 1112.
-> > > > > > >
-> > > > > > > But in include/net/netlink.h:1112, I can't find the call to s=
-trlen
-> > > > > > > 1110static inline int nla_total_size(int payload)
-> > > > > > > 1111{
-> > > > > > > 1112        return NLA_ALIGN(nla_attr_size(payload));
-> > > > > > > 1113}
-> > > > > > > This may be due to the compiler wrongly encode the debug info=
-rmation, I guess.
-> > > > > >
-> > > > > > `rtnl_link_get_size()` contains:
-> > > > > >
-> > > > > >              size =3D nla_total_size(sizeof(struct nlattr)) + /=
-*
-> > > > > > IFLA_LINKINFO */
-> > > > > >                     nla_total_size(strlen(ops->kind) + 1);  /*
-> > > > > > IFLA_INFO_KIND */
-> > > > > >
-> > > > > > Is that inlined(?) and the code at fault?
-> > > > > Yes, that is inlined! because
-> > > > > (gdb) disassemble if_nlmsg_size
-> > > > > Dump of assembler code for function if_nlmsg_size:
-> > > > > [...]
-> > > > > 0xc00000000191bf38 <+104>:    beq     0xc00000000191c1f0 <if_nlms=
-g_size+800>
-> > > > > 0xc00000000191bf3c <+108>:    ld      r3,16(r31)
-> > > > > 0xc00000000191bf40 <+112>:    bl      0xc000000001c28ad0 <strlen>
-> > > > > [...]
-> > > > > (gdb)
-> > > > > (gdb) break *0xc00000000191bf40
-> > > > > Breakpoint 1 at 0xc00000000191bf40: file ./include/net/netlink.h,=
- line 1112.
-> > > > > (gdb) break *0xc00000000191bf38
-> > > > > Breakpoint 2 at 0xc00000000191bf38: file net/core/rtnetlink.c, li=
-ne 520.
-> > > >
-> > > > I suggest building your kernel with CONFIG_DEBUG_INFO=3Dy if you ar=
-e not
-> > > > already doing so.  That gives gdb a lot more information about thin=
-gs
-> > > > like inlining.
-> > > I check my .config file, CONFIG_DEBUG_INFO=3Dy is here:
-> > > linux-next$ grep CONFIG_DEBUG_INFO .config
-> > > CONFIG_DEBUG_INFO=3Dy
-> > > Then I invoke "make clean" and rebuild the kernel, the behavior of gd=
-b
-> > > and vmlinux remain unchanged, sorry for that
-> >
-> > Glad you were already on top of this one!
-> I am very pleased to contribute my tiny effort to the process of
-> making Linux better ;-)
-> >
-> > > I am trying to reproduce the bug on my bare metal x86_64 machines in
-> > > the coming days, and am also trying to work with Mr Menzel after he
-> > > comes back to the office.
-> >
-> > This URL used to allow community members such as yourself to request
-> > access to Power systems: https://osuosl.org/services/powerdev/
-> I have filled the request form on
-> https://osuosl.org/services/powerdev/ and now wait for them to deploy
-> the environment for me.
->
-> Thanks again
-> Zhouyi
-> >
-> > In case that helps.
-> >
-> >                                                         Thanx, Paul
-> >
-> > > Thanks
-> > > Zhouyi
-> > > >
-> > > >                                                         Thanx, Paul
-> > > >
-> > > > > > >>> But ops is assigned the value of sit_link_ops in function s=
-it_init_net
-> > > > > > >>> line 1917, so I guess something must happened between the c=
-alls.
-> > > > > > >>>
-> > > > > > >>> Do we have KASAN in IBM machine? would KASAN help us find o=
-ut what
-> > > > > > >>> happened in between?
-> > > > > > >>
-> > > > > > >> Unfortunately, KASAN is not support on Power, I have, as far=
- as I can
-> > > > > > >> see. From `arch/powerpc/Kconfig`:
-> > > > > > >>
-> > > > > > >>           select HAVE_ARCH_KASAN                  if PPC32 &=
-& PPC_PAGE_SHIFT <=3D 14
-> > > > > > >>           select HAVE_ARCH_KASAN_VMALLOC          if PPC32 &=
-& PPC_PAGE_SHIFT <=3D 14
-> > > > > > >>
-> > > > > > > en, agree, I invoke "make  menuconfig  ARCH=3Dpowerpc
-> > > > > > > CC=3Dpowerpc64le-linux-gnu-gcc-9 CROSS_COMPILE=3Dpowerpc64le-=
-linux-gnu- -j
-> > > > > > > 16", I can't find KASAN under Memory Debugging, I guess we sh=
-ould find
-> > > > > > > the bug by bisecting instead.
-> > > > > >
-> > > > > > I do not know, if it is a regression, as it was the first time =
-I tried
-> > > > > > to run a Linux kernel built with rcutorture on real hardware.
-> > > > > I tried to add some debug statements to the kernel to locate the =
-bug
-> > > > > more accurately,  you can try it when you're not busy in the futu=
-re,
-> > > > > or just ignore it if the following patch looks not very effective=
- ;-)
-> > > > > diff --git a/net/core/dev.c b/net/core/dev.c
-> > > > > index 1baab07820f6..969ac7c540cc 100644
-> > > > > --- a/net/core/dev.c
-> > > > > +++ b/net/core/dev.c
-> > > > > @@ -9707,6 +9707,9 @@ int register_netdevice(struct net_device *d=
-ev)
-> > > > >       *    Prevent userspace races by waiting until the network
-> > > > >       *    device is fully setup before sending notifications.
-> > > > >       */
-> > > > > +    if (dev->rtnl_link_ops)
-> > > > > +        printk(KERN_INFO "%lx IFLA_INFO_KIND %s %s\n", dev->rtnl=
-_link_ops,
-> > > > > +               dev->rtnl_link_ops->kind, __FUNCTION__);
-> > > > >      if (!dev->rtnl_link_ops ||
-> > > > >          dev->rtnl_link_state =3D=3D RTNL_LINK_INITIALIZED)
-> > > > >          rtmsg_ifinfo(RTM_NEWLINK, dev, ~0U, GFP_KERNEL);
-> > > > > @@ -9788,6 +9791,9 @@ int register_netdev(struct net_device *dev)
-> > > > >
-> > > > >      if (rtnl_lock_killable())
-> > > > >          return -EINTR;
-> > > > > +    if (dev->rtnl_link_ops)
-> > > > > +        printk(KERN_INFO "%lx IFLA_INFO_KIND %s %s\n", dev->rtnl=
-_link_ops,
-> > > > > +               dev->rtnl_link_ops->kind, __FUNCTION__);
-> > > > >      err =3D register_netdevice(dev);
-> > > > >      rtnl_unlock();
-> > > > >      return err;
-> > > > > diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
-> > > > > index e476403231f0..e08986ae6238 100644
-> > > > > --- a/net/core/rtnetlink.c
-> > > > > +++ b/net/core/rtnetlink.c
-> > > > > @@ -520,6 +520,8 @@ static size_t rtnl_link_get_size(const struct
-> > > > > net_device *dev)
-> > > > >      if (!ops)
-> > > > >          return 0;
-> > > > >
-> > > > > +    printk(KERN_INFO "%lx IFLA_INFO_KIND %s %s\n", ops,
-> > > > > +           ops->kind, __FUNCTION__);
-> > > > >      size =3D nla_total_size(sizeof(struct nlattr)) + /* IFLA_LIN=
-KINFO */
-> > > > >             nla_total_size(strlen(ops->kind) + 1);  /* IFLA_INFO_=
-KIND */
-> > > > >
-> > > > > @@ -1006,6 +1008,9 @@ static size_t rtnl_proto_down_size(const st=
-ruct
-> > > > > net_device *dev)
-> > > > >  static noinline size_t if_nlmsg_size(const struct net_device *de=
-v,
-> > > > >                       u32 ext_filter_mask)
-> > > > >  {
-> > > > > +    if (dev->rtnl_link_ops)
-> > > > > +        printk(KERN_INFO "%lx IFLA_INFO_KIND  %s %s\n", dev->rtn=
-l_link_ops,
-> > > > > +               dev->rtnl_link_ops->kind, __FUNCTION__);
-> > > > >      return NLMSG_ALIGN(sizeof(struct ifinfomsg))
-> > > > >             + nla_total_size(IFNAMSIZ) /* IFLA_IFNAME */
-> > > > >             + nla_total_size(IFALIASZ) /* IFLA_IFALIAS */
-> > > > > @@ -3825,7 +3830,9 @@ struct sk_buff *rtmsg_ifinfo_build_skb(int =
-type,
-> > > > > struct net_device *dev,
-> > > > >      struct net *net =3D dev_net(dev);
-> > > > >      struct sk_buff *skb;
-> > > > >      int err =3D -ENOBUFS;
-> > > > > -
-> > > > > +    if (dev->rtnl_link_ops)
-> > > > > +        printk(KERN_INFO "%lx IFLA_INFO_KIND %s %s\n", dev->rtnl=
-_link_ops,
-> > > > > +               dev->rtnl_link_ops->kind, __FUNCTION__);
-> > > > >      skb =3D nlmsg_new(if_nlmsg_size(dev, 0), flags);
-> > > > >      if (skb =3D=3D NULL)
-> > > > >          goto errout;
-> > > > > @@ -3861,7 +3868,9 @@ static void rtmsg_ifinfo_event(int type, st=
-ruct
-> > > > > net_device *dev,
-> > > > >
-> > > > >      if (dev->reg_state !=3D NETREG_REGISTERED)
-> > > > >          return;
-> > > > > -
-> > > > > +    if (dev->rtnl_link_ops)
-> > > > > +        printk(KERN_INFO "%lx IFLA_INFO_KIND  %s %s\n", dev->rtn=
-l_link_ops,
-> > > > > +               dev->rtnl_link_ops->kind, __FUNCTION__);
-> > > > >      skb =3D rtmsg_ifinfo_build_skb(type, dev, change, event, fla=
-gs, new_nsid,
-> > > > >                       new_ifindex);
-> > > > >      if (skb)
-> > > > > @@ -3871,6 +3880,9 @@ static void rtmsg_ifinfo_event(int type, st=
-ruct
-> > > > > net_device *dev,
-> > > > >  void rtmsg_ifinfo(int type, struct net_device *dev, unsigned int=
- change,
-> > > > >            gfp_t flags)
-> > > > >  {
-> > > > > +    if (dev->rtnl_link_ops)
-> > > > > +        printk(KERN_INFO "%lx IFLA_INFO_KIND  %s %s\n", dev->rtn=
-l_link_ops,
-> > > > > +               dev->rtnl_link_ops->kind, __FUNCTION__);
-> > > > >      rtmsg_ifinfo_event(type, dev, change, rtnl_get_event(0), fla=
-gs,
-> > > > >                 NULL, 0);
-> > > > >  }
-> > > > > diff --git a/net/ipv6/sit.c b/net/ipv6/sit.c
-> > > > > index c0b138c20992..fa5b2725811c 100644
-> > > > > --- a/net/ipv6/sit.c
-> > > > > +++ b/net/ipv6/sit.c
-> > > > > @@ -1919,6 +1919,8 @@ static int __net_init sit_init_net(struct n=
-et *net)
-> > > > >       * Allowing to move it to another netns is clearly unsafe.
-> > > > >       */
-> > > > >      sitn->fb_tunnel_dev->features |=3D NETIF_F_NETNS_LOCAL;
-> > > > > -
-> > > > > +    printk(KERN_INFO "%lx IFLA_INFO_KIND %s %s\n",
-> > > > > +           sitn->fb_tunnel_dev->rtnl_link_ops,
-> > > > > +           sitn->fb_tunnel_dev->rtnl_link_ops->kind, __FUNCTION_=
-_);
-> > > > >      err =3D register_netdev(sitn->fb_tunnel_dev);
-> > > > >      if (err)
-> > > > >          goto err_reg_dev;
-> > > > > >
-> > > > > > >>> Hope I can be of more helpful.
-> > > > > > >>
-> > > > > > >> Some distributions support multi-arch, so they easily allow
-> > > > > > >> crosscompiling for different architectures.
-> > > > > > > I use "make  ARCH=3Dpowerpc CC=3Dpowerpc64le-linux-gnu-gcc-9
-> > > > > > > CROSS_COMPILE=3Dpowerpc64le-linux-gnu- -j 16" to cross compil=
-e kernel
-> > > > > > > for powerpc64le in my Ubuntu 20.04 x86_64. But I can't boot t=
-he
-> > > > > > > compiled kernel using "qemu-system-ppc64le -M pseries -nograp=
-hic -smp
-> > > > > > > 4 -net none -m 4G -kernel arch/powerpc/boot/zImage". I will c=
-ontinue
-> > > > > > > to explore it.
-> > > > > >
-> > > > > > Oh, that does not sound good. But I have not tried that in a lo=
-ng time
-> > > > > > either. It=E2=80=99s a separate issue, but maybe some of the PP=
-C
-> > > > > > maintainers/folks could help.
-> > > > > I will do further research on this later.
-> > > > >
-> > > > > Thanks for your time
-> > > > > Kind regards
-> > > > > Zhouyi
-> > > > > >
-> > > > > >
-> > > > > > Kind regards,
-> > > > > >
-> > > > > > Paul
+base-commit: 1dc01abad6544cb9d884071b626b706e37aa9601
+-- 
+2.35.0.263.gb82422642f-goog
