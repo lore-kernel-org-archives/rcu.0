@@ -2,222 +2,137 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F940C433EF
-	for <rcu@archiver.kernel.org>; Tue,  8 Feb 2022 06:08:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 83866C4332F
+	for <rcu@archiver.kernel.org>; Tue,  8 Feb 2022 11:31:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236586AbiBHGI3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 8 Feb 2022 01:08:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55874 "EHLO
+        id S1356060AbiBHLbf (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 8 Feb 2022 06:31:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233167AbiBHGI2 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 8 Feb 2022 01:08:28 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F5B4C0401DC
-        for <rcu@vger.kernel.org>; Mon,  7 Feb 2022 22:08:27 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id m11so35189340edi.13
-        for <rcu@vger.kernel.org>; Mon, 07 Feb 2022 22:08:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HSoBw25ClBPC/8rhLlCFfHxN+d20Sf4n2fpZSweaWsQ=;
-        b=JosSCXEX0fv6ktN3jvNLDjKjamlYP6AEuWx59C6UDKvzYPJ0CUMnOw6VTpLcsyOkoA
-         90dvm+5ktI3MXUyO0K5exU78HANaH++erJWugoRuqZfC7wHWNX+BhSdZrYsR0wIowggq
-         C/r0JQGBVW7TSvLcabhWutmGNz9Sx+TR+6EOPTqcK+92ZqQ6OrecvewVUSQpCZjoKDPu
-         jP+hzWO5aHcJFMiXI7sSMsPXr6LR6xKYmNfCCNfG00gwkFCDqbJt7XeyvR+d2yEtEmPU
-         2mHtVrBkLYTh4bt/BAevIFgTNVPm82zBuda407Jpz7ImTJZ23IAl0Mb2J5GvgKNkEBKh
-         pXwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HSoBw25ClBPC/8rhLlCFfHxN+d20Sf4n2fpZSweaWsQ=;
-        b=HblWnRQHgLezO5UEzmqfZb3k5SjOCuu604fBbADDgoQ31A3g7JS+u9GPXbkp8JIj7b
-         5oPGKc5kB4oVXmX1wqNvvj0t1PK4YAfcede+4Wh/i83ulleYqBfK0xFbcxpIateDzIiu
-         PCP+B/U5I7s/algW67PlBBroc74dTmeBO/jJ44TwueO6XNk51qk85khWpjZ5pSUOnnFl
-         7TpSht0U225A2kOz27YmvqNxtDjsHzuBX4sDPmIviNT6N2ptSkHr6VfazYjSFHhMKYsb
-         UzzpeKy19JPfC/Ys8YtB9MgLPdGmJ1lOQ7bRFd3sIcvmuSvItSZWem5d8D/Pdiy78I+u
-         nYZw==
-X-Gm-Message-State: AOAM533zV7byo4+nWZc06MWcjq7TSJgXOFL2BDoPy6UOrnjfl5tTGaBn
-        lQwpHXGHRAPEY51DivCPMQ+mdYb0HDx4bgoNh4VpYdiOwVNT6A==
-X-Google-Smtp-Source: ABdhPJxtPJx92R9zg25Ywv6jUvrUJa9JuHS6yZ5Nd6hlF0s3kiGqSOn/4Mv9RHul5+MQhbhOtpLd/O5txX8k/iSzO38=
-X-Received: by 2002:a05:6402:35c3:: with SMTP id z3mr2805237edc.17.1644300505846;
- Mon, 07 Feb 2022 22:08:25 -0800 (PST)
-MIME-Version: 1.0
+        with ESMTP id S1356088AbiBHKJ3 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 8 Feb 2022 05:09:29 -0500
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8E12C03FEC0
+        for <rcu@vger.kernel.org>; Tue,  8 Feb 2022 02:09:25 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4JtJdY3sdhz4xPv;
+        Tue,  8 Feb 2022 21:09:19 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1644314961;
+        bh=yXl3AZYQrZw7s0aZ+eXOJCs/xZwv0TDb10KVrRwKODQ=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=TVpfDjy5jul5ib8mSA4h72sf6YI/NtL03fJM0sCVMh/ly3qtkU0Ci/IvFKMM2R0QS
+         Xa0ssQO5Y1fT8rjdBVzdB5gLkDB4SwJktxcXIqYnbgw/NPBPgTADxUPqNGOVx540vd
+         jz6Br5lRCM3hczXqnVE51xC54zswEDRWg6dXeDdjWZ7tsunqATFsxOUBMPOftapOfN
+         w1uBuBMeo1yuGsv+6SKIH7Gf8fkmRvkK61IwNZAiC6hbz2dLIru+EfCPtZgqAX62sU
+         TSKqxo74XXCbZqgI9JQx8JKi0taIAafwQRnoQftTbO3U9KozfbdpfZKxhMDGq9YNvq
+         vd0FjngpX++nw==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Paul Menzel <pmenzel@molgen.mpg.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linuxppc-dev@lists.ozlabs.org, rcu@vger.kernel.org
+Subject: Re: =?utf-8?Q?rcutorture=E2=80=99s?= init segfaults in ppc64le VM
+In-Reply-To: <565038d7-7374-1005-31bf-df2f051845ff@molgen.mpg.de>
 References: <565038d7-7374-1005-31bf-df2f051845ff@molgen.mpg.de>
- <20220207175139.GD4285@paulmck-ThinkPad-P17-Gen-1> <CAABZP2y10vv+fUWO+NWY=ckAX-cOkCPfQ1jsoSA=i2PzeFMkUg@mail.gmail.com>
-In-Reply-To: <CAABZP2y10vv+fUWO+NWY=ckAX-cOkCPfQ1jsoSA=i2PzeFMkUg@mail.gmail.com>
-From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
-Date:   Tue, 8 Feb 2022 14:08:14 +0800
-Message-ID: <CAABZP2xUX0CPGhhXkux8xmBXsekXA=f6bqf-FeeaogSZxAc+NQ@mail.gmail.com>
-Subject: =?UTF-8?Q?Re=3A_rcutorture=E2=80=99s_init_segfaults_in_ppc64le_VM?=
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Paul Menzel <pmenzel@molgen.mpg.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linuxppc-dev@lists.ozlabs.org, rcu <rcu@vger.kernel.org>, w@1wt.eu
-Content-Type: text/plain; charset="UTF-8"
+Date:   Tue, 08 Feb 2022 21:09:17 +1100
+Message-ID: <871r0dmzzm.fsf@mpe.ellerman.id.au>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi,
+Paul Menzel <pmenzel@molgen.mpg.de> writes:
+> Dear Linux folks,
 
-The mailing list forward the emails to me in periodic style, very
-sorry not seeing Willy's email until I visited
-https://lore.kernel.org/rcu/20220207180901.GB14608@1wt.eu/T/#u,  I am
-also very interested in testing Willy's proposal.
+Hi Paul,
 
-Thanks a lot
-Zhouyi
+> On the POWER8 server IBM S822LC running Ubuntu 21.10, building Linux 
+> 5.17-rc2+ with rcutorture tests
 
-On Tue, Feb 8, 2022 at 1:46 PM Zhouyi Zhou <zhouzhouyi@gmail.com> wrote:
+I'm not sure if that's the host kernel version or the version you're
+using of rcutorture? Can you tell us the sha1 of your host kernel and of
+the tree you're running rcutorture from?
+
+>      $ tools/testing/selftests/rcutorture/bin/torture.sh --duration 10
 >
-> Dear Paul
+> the built init
 >
-> I am also very interested in the topic.
-> The Open source lab of Oregon State University has lent me a 8 core
-> power ppc64el VM for 3 months, I guess I can try reproducing this bug
-> in the Virtual Machine by executing qemu in non hardware accelerated
-> mode (using -no-kvm argument).
-> I am currently doing research on
-> https://lore.kernel.org/rcu/20220201175023.GW4285@paulmck-ThinkPad-P17-Gen-1/T/#mc7e5f8ec99e3794bec1e38fbbb130e71172e4759,
-> I think I can give a preliminary short report on that previous topic
-> tomorrow. And I am very interested in doing a search on the new topic
-> the day after tomorrow.
+>      $ file tools/testing/selftests/rcutorture/initrd/init
+>      tools/testing/selftests/rcutorture/initrd/init: ELF 64-bit LSB 
+> executable, 64-bit PowerPC or cisco 7500, version 1 (SYSV), statically 
+> linked, BuildID[sha1]=0ded0e45649184a296f30d611f7a03cc51ecb616, for 
+> GNU/Linux 3.10.0, stripped
+
+Mine looks pretty much identical:
+
+  $ file tools/testing/selftests/rcutorture/initrd/init
+  tools/testing/selftests/rcutorture/initrd/init: ELF 64-bit LSB
+  executable, 64-bit PowerPC or cisco 7500, version 1 (SYSV), statically
+  linked, BuildID[sha1]=86078bf6e5d54ab0860d36aa9a65d52818b972c8, for
+  GNU/Linux 3.10.0, stripped
+
+
+> segfaults in QEMU. From one of the log files
+
+But mine doesn't segfault, it runs fine and the test completes.
+
+What qemu version are you using?
+
+I tried 4.2.1 and 6.2.0, both worked.
+
+
+> /dev/shm/linux/tools/testing/selftests/rcutorture/res/2022.02.01-21.52.37-torture/results-rcutorture/TREE03/console.log
 >
-> Thank you both for providing me an opportunity to improve myself ;-)
->
-> Thanks again
-> Zhouyi
->
-> On Tue, Feb 8, 2022 at 12:10 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Mon, Feb 07, 2022 at 05:44:47PM +0100, Paul Menzel wrote:
-> > > Dear Linux folks,
-> > >
-> > >
-> > > On the POWER8 server IBM S822LC running Ubuntu 21.10, building Linux
-> > > 5.17-rc2+ with rcutorture tests
-> > >
-> > >     $ tools/testing/selftests/rcutorture/bin/torture.sh --duration 10
-> > >
-> > > the built init
-> > >
-> > >     $ file tools/testing/selftests/rcutorture/initrd/init
-> > >     tools/testing/selftests/rcutorture/initrd/init: ELF 64-bit LSB
-> > > executable, 64-bit PowerPC or cisco 7500, version 1 (SYSV), statically
-> > > linked, BuildID[sha1]=0ded0e45649184a296f30d611f7a03cc51ecb616, for
-> > > GNU/Linux 3.10.0, stripped
-> > >
-> > > segfaults in QEMU. From one of the log files
-> > >
-> > >
-> > > /dev/shm/linux/tools/testing/selftests/rcutorture/res/2022.02.01-21.52.37-torture/results-rcutorture/TREE03/console.log
-> > >
-> > >     [    1.119803][    T1] Run /init as init process
-> > >     [    1.122011][    T1] init[1]: segfault (11) at f0656d90 nip 10000a18
-> > > lr 0 code 1 in init[10000000+d0000]
-> > >     [    1.124863][    T1] init[1]: code: 2c2903e7 f9210030 4081ff84
-> > > 4bffff58 00000000 01000000 00000580 3c40100f
-> > >     [    1.128823][    T1] init[1]: code: 38427c00 7c290b78 782106e4
-> > > 38000000 <f821ff81> 7c0803a6 f8010000 e9028010
-> > >
-> > > Executing the init, which just seems to be an endless loop, from userspace
-> > > work:
-> > >
-> > >     $ strace ./tools/testing/selftests/rcutorture/initrd/init
-> > >     execve("./tools/testing/selftests/rcutorture/initrd/init",
-> > > ["./tools/testing/selftests/rcutor"...], 0x7ffffdb9e860 /* 31 vars */) = 0
-> > >     brk(NULL)                               = 0x1001d940000
-> > >     brk(0x1001d940b98)                      = 0x1001d940b98
-> > >     set_tid_address(0x1001d9400d0)          = 2890832
-> > >     set_robust_list(0x1001d9400e0, 24)      = 0
-> > >     uname({sysname="Linux",
-> > > nodename="flughafenberlinbrandenburgwillybrandt.molgen.mpg.de", ...}) = 0
-> > >     prlimit64(0, RLIMIT_STACK, NULL, {rlim_cur=8192*1024,
-> > > rlim_max=RLIM64_INFINITY}) = 0
-> > >     readlink("/proc/self/exe", "/dev/shm/linux/tools/testing/sel"..., 4096)
-> > > = 61
-> > >     getrandom("\xf1\x30\x4c\x9e\x82\x8d\x26\xd7", 8, GRND_NONBLOCK) = 8
-> > >     brk(0x1001d970b98)                      = 0x1001d970b98
-> > >     brk(0x1001d980000)                      = 0x1001d980000
-> > >     mprotect(0x100e0000, 65536, PROT_READ)  = 0
-> > >     clock_nanosleep(CLOCK_REALTIME, 0, {tv_sec=1, tv_nsec=0},
-> > > 0x7ffffb22c8a8) = 0
-> > >     clock_nanosleep(CLOCK_REALTIME, 0, {tv_sec=1, tv_nsec=0},
-> > > 0x7ffffb22c8a8) = 0
-> > >     clock_nanosleep(CLOCK_REALTIME, 0, {tv_sec=1, tv_nsec=0}, ^C{tv_sec=0,
-> > > tv_nsec=872674044}) = ? ERESTART_RESTARTBLOCK (Interrupted by signal)
-> > >     strace: Process 2890832 detached
-> >
-> > Huh.  In PowerPC, is there some difference between system calls
-> > executed in initrd and those same system calls executed in userspace?
-> >
-> > And just to make sure, the above strace was from exactly the same
-> > binary "init" file that is included in initrd, correct?
-> >
-> > Adding Willy Tarreau for his thoughts.
-> >
-> >                                                         Thanx, Paul
-> >
-> > > Any ideas, what `mkinitrd.sh` [2] should do differently?
-> > >
-> > > ```
-> > > cat > init.c << '___EOF___'
-> > > #ifndef NOLIBC
-> > > #include <unistd.h>
-> > > #include <sys/time.h>
-> > > #endif
-> > >
-> > > volatile unsigned long delaycount;
-> > >
-> > > int main(int argc, int argv[])
-> > > {
-> > >       int i;
-> > >       struct timeval tv;
-> > >       struct timeval tvb;
-> > >
-> > >       for (;;) {
-> > >               sleep(1);
-> > >               /* Need some userspace time. */
-> > >               if (gettimeofday(&tvb, NULL))
-> > >                       continue;
-> > >               do {
-> > >                       for (i = 0; i < 1000 * 100; i++)
-> > >                               delaycount = i * i;
-> > >                       if (gettimeofday(&tv, NULL))
-> > >                               break;
-> > >                       tv.tv_sec -= tvb.tv_sec;
-> > >                       if (tv.tv_sec > 1)
-> > >                               break;
-> > >                       tv.tv_usec += tv.tv_sec * 1000 * 1000;
-> > >                       tv.tv_usec -= tvb.tv_usec;
-> > >               } while (tv.tv_usec < 1000);
-> > >       }
-> > >       return 0;
-> > > }
-> > > ___EOF___
-> > >
-> > > # build using nolibc on supported archs (smaller executable) and fall
-> > > # back to regular glibc on other ones.
-> > > if echo -e "#if __x86_64__||__i386__||__i486__||__i586__||__i686__" \
-> > >            "||__ARM_EABI__||__aarch64__\nyes\n#endif" \
-> > >    | ${CROSS_COMPILE}gcc -E -nostdlib -xc - \
-> > >    | grep -q '^yes'; then
-> > >       # architecture supported by nolibc
-> > >         ${CROSS_COMPILE}gcc -fno-asynchronous-unwind-tables -fno-ident \
-> > >               -nostdlib -include ../../../../include/nolibc/nolibc.h \
-> > >               -s -static -Os -o init init.c -lgcc
-> > > else
-> > >       ${CROSS_COMPILE}gcc -s -static -Os -o init init.c
-> > > fi
-> > > ```
-> > >
-> > >
-> > > Kind regards,
-> > >
-> > > Paul
-> > >
-> > >
-> > > [1]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/testing/selftests/rcutorture/doc/initrd.txt
-> > > [2]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/testing/selftests/rcutorture/bin/mkinitrd.sh
+>      [    1.119803][    T1] Run /init as init process
+>      [    1.122011][    T1] init[1]: segfault (11) at f0656d90 nip 10000a18 lr 0 code 1 in init[10000000+d0000]
+>      [    1.124863][    T1] init[1]: code: 2c2903e7 f9210030 4081ff84 4bffff58 00000000 01000000 00000580 3c40100f
+>      [    1.128823][    T1] init[1]: code: 38427c00 7c290b78 782106e4 38000000 <f821ff81> 7c0803a6 f8010000 e9028010
+
+The disassembly from 3c40100f is:
+  lis     r2,4111
+  addi    r2,r2,31744
+  mr      r9,r1
+  rldicr  r1,r1,0,59
+  li      r0,0
+  stdu    r1,-128(r1)		<- fault
+  mtlr    r0
+  std     r0,0(r1)
+  ld      r8,-32752(r2)
+
+
+I think you'll find that's the code at the ELF entry point. You can
+check with:
+
+ $ readelf -e tools/testing/selftests/rcutorture/initrd/init | grep Entry
+   Entry point address:               0x10000c0c
+
+ $ objdump -d tools/testing/selftests/rcutorture/initrd/init | grep -m 1 -A 8 10000c0c
+    10000c0c:   0e 10 40 3c     lis     r2,4110
+    10000c10:   00 7b 42 38     addi    r2,r2,31488
+    10000c14:   78 0b 29 7c     mr      r9,r1
+    10000c18:   e4 06 21 78     rldicr  r1,r1,0,59
+    10000c1c:   00 00 00 38     li      r0,0
+    10000c20:   81 ff 21 f8     stdu    r1,-128(r1)
+    10000c24:   a6 03 08 7c     mtlr    r0
+    10000c28:   00 00 01 f8     std     r0,0(r1)
+    10000c2c:   10 80 02 e9     ld      r8,-32752(r2)
+
+
+The fault you're seeing is the first store using the stack pointer (r1),
+which is setup by the kernel.
+
+The fault address f0656d90 is weirdly low, the stack should be up near 128TB.
+
+I'm not sure how we end up with a bad r1.
+
+Can you dump some info about the kernel that was built, something like:
+
+$ file /dev/shm/linux/tools/testing/selftests/rcutorture/res/2022.02.01-21.52.37-torture/results-rcutorture/TREE03/vmlinux
+
+And maybe paste/attach the full log, maybe there's a clue somewhere.
+
+cheers
