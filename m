@@ -2,157 +2,209 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 74742C35271
-	for <rcu@archiver.kernel.org>; Mon,  7 Feb 2022 19:46:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 50F71C433EF
+	for <rcu@archiver.kernel.org>; Tue,  8 Feb 2022 05:47:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238932AbiBGTqV (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 7 Feb 2022 14:46:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59230 "EHLO
+        id S238838AbiBHFrG (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 8 Feb 2022 00:47:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240362AbiBGTna (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 7 Feb 2022 14:43:30 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81463C0401E0;
-        Mon,  7 Feb 2022 11:43:28 -0800 (PST)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1644263005;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=MdxDRNNBc3a7TPDYRAGdfkzwCVJZGysq69JGSiTARZo=;
-        b=KZEy10hDutMfaU7BOQdyVVOPIBOS4KP6ewAyK4hKFQNiuO/SRjJehVsWlroqzy26l9Muso
-        B7BHJLcCPExCZ1f2hpqX79R3YV0v50wgdf+FuV7bQt24SZJaHYTcIU3jghXaWvD40sjAFJ
-        RwrhOFKAO9siMogdq7KTdebml/AeKNACYhNlx+oBI+CNBRUu491sSOxz9/rceBUn7XE0Cz
-        a9OorMkDOcXoI8zeyE9NNmrFwLy2qp+MdHnVSbSPRGvFPzZ2niy8e23MzmIHL9CzA2aJqt
-        x6k8TXhJ2veAGeTtJLQV/v/cVPUt4W4imq0xwijbiOhEC7Sq0PEg/4fCvbIG2Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1644263005;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=MdxDRNNBc3a7TPDYRAGdfkzwCVJZGysq69JGSiTARZo=;
-        b=aea7eqXhsYSTt2SiFzTd8KOQ9QlKly9EhstysiNyYY7FxfrEpEg55FSdRKEg1ZAHNCaOsh
-        Ep3r1Hcy/lnMRLBw==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Marco Elver <elver@google.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Alexander Potapenko <glider@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Corey Minyard <cminyard@mvista.com>,
-        Kees Cook <keescook@chromium.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Shawn Guo <shawn.guo@linaro.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Wang Qing <wangqing@vivo.com>, Tejun Heo <tj@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>, rcu@vger.kernel.org,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        David Sterba <dsterba@suse.com>,
-        =?UTF-8?q?Samuel=20Iglesias=20Gons=C3=A1lvez?= 
-        <siglesias@igalia.com>, Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        nick black <dankamongmen@gmail.com>
-Subject: [PATCH printk v1 00/13] implement threaded console printing
-Date:   Mon,  7 Feb 2022 20:49:10 +0106
-Message-Id: <20220207194323.273637-1-john.ogness@linutronix.de>
+        with ESMTP id S236541AbiBHFrF (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 8 Feb 2022 00:47:05 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5BEEC0401EA
+        for <rcu@vger.kernel.org>; Mon,  7 Feb 2022 21:47:03 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id d10so49030248eje.10
+        for <rcu@vger.kernel.org>; Mon, 07 Feb 2022 21:47:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9XKxIIpT2t2nZ0KKm8eAvonTnPWqXXz6sYvY98ijfT0=;
+        b=ltJ8MHlzD623a1jNvewPYVr4IRM9RFk/Q+UmJ85fvmL7p3tyW40eZyzj9b1JNouhph
+         VMPRTqJ8Mj2phY66GLfgeGgA8Xukt7IMOHHcivo3vFQe56omAEGhpZ8VUjveZt5C2jkA
+         F4v8ZZxzIlvQCkqV9FR7+xRn81KGXKeoxL5p1Mm1D+cqMj1MtuDI+OYMNyHBgD6X4KXg
+         hcY8O3ZgdcHNvS28D9G7thEpFqdavYSgZ5bgz6sdFZ6sVvgePjLmYgLS2XRKBrXJfWKq
+         rxEOfaPFqrCva6Q6UmxiM5yNBN611YTE4/1py9BWaCWutNwTinedaxE9+B8WhTVNucfs
+         XRjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9XKxIIpT2t2nZ0KKm8eAvonTnPWqXXz6sYvY98ijfT0=;
+        b=3KzPlgYtjEtGWbIxBMLf5SI94ahX+oqdMRxOIaLBAWLbrhN00xbhzGIjEMqju+B3Hn
+         0GL3SWBN7Y1tyUVs1B2Oj6/iwAOejBmm/hsk6ADH1t7jVM5ERe7EPRdk7Oj50ejpcwjY
+         UNcVUh6b2bYUi8lZvzHedbdrW6j8QI9JQSuKD0J3y49s47D1s8688TS9Inpa8vXARP3s
+         sJ4YaND61OzgqI99BPRsn/yuH6GIM15fTYyOc1wzDPwUaiOLklEcHW1CK8QWZBmWSb4A
+         sk6GVxw05oj2uj9ZKHNMZaXbzQ1kt1dWf+1mkRRVmecu9914pWjm7PFXEcdnO8WpiQmF
+         VA3A==
+X-Gm-Message-State: AOAM531lnFAYkl75iRVJoj3LOK5t8g6sXklMOR7klQxOm3IW4ZB5kybV
+        VeOp5xKDwN3KkTNnH83uZvgLNnGbBhweQlo3B8X6+kh0VD4jMw==
+X-Google-Smtp-Source: ABdhPJxeoesIQZpZHa5JqtGnEIG43Rf1JaqNiDWLaxQYRgHEexAgFbNCsvEZjqCDSeJcx+La2twl8O4azvFPeNy88QA=
+X-Received: by 2002:a17:907:2da0:: with SMTP id gt32mr2200927ejc.545.1644299222205;
+ Mon, 07 Feb 2022 21:47:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <565038d7-7374-1005-31bf-df2f051845ff@molgen.mpg.de> <20220207175139.GD4285@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20220207175139.GD4285@paulmck-ThinkPad-P17-Gen-1>
+From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
+Date:   Tue, 8 Feb 2022 13:46:50 +0800
+Message-ID: <CAABZP2y10vv+fUWO+NWY=ckAX-cOkCPfQ1jsoSA=i2PzeFMkUg@mail.gmail.com>
+Subject: =?UTF-8?Q?Re=3A_rcutorture=E2=80=99s_init_segfaults_in_ppc64le_VM?=
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Paul Menzel <pmenzel@molgen.mpg.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev@lists.ozlabs.org, rcu <rcu@vger.kernel.org>, w@1wt.eu
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This is the next part of our printk-rework effort (points 2 and 6 of
-the LPC 2019 summary [0]).
+Dear Paul
 
-This series implements a kthread for each registered console. The
-kthreads locklessly retrieve the records from the printk ringbuffer
-and also do not cause any lock contention between one another. This
-allows consoles to run at full speed. For example, a netconsole is
-able to dump records much faster than a serial or vt console.
+I am also very interested in the topic.
+The Open source lab of Oregon State University has lent me a 8 core
+power ppc64el VM for 3 months, I guess I can try reproducing this bug
+in the Virtual Machine by executing qemu in non hardware accelerated
+mode (using -no-kvm argument).
+I am currently doing research on
+https://lore.kernel.org/rcu/20220201175023.GW4285@paulmck-ThinkPad-P17-Gen-1/T/#mc7e5f8ec99e3794bec1e38fbbb130e71172e4759,
+I think I can give a preliminary short report on that previous topic
+tomorrow. And I am very interested in doing a search on the new topic
+the day after tomorrow.
 
-There are situations where kthread printing is not sufficient. For
-example, during early boot before kthreads exist or during panic
-situations, where the kthreads may not get a chance to schedule. In
-these cases, the current method of printing directly within the
-printk() caller context is used. New functions printk_direct_enter()
-and printk_direct_exit() are made available to mark areas of the
-kernel where direct printing should be used.
+Thank you both for providing me an opportunity to improve myself ;-)
 
-This series also introduces pr_flush(): a might_sleep() function
-that will block until all active printing threads have caught up
-to the latest record at the time of the pr_flush() call. This
-function is useful, for example, to wait until pending records
-are flushed to consoles before suspending.
+Thanks again
+Zhouyi
 
-And finally, this series introduces a new console flag
-CON_MIGHT_SLEEP that can be set by consoles that only want their
-write() callback called in sleepable contexts. This was requested
-by Daniel Vetter [1] due to the many and growing number of deadlock
-situations in the fbcon code.
-
-Note that this series does *not* increase the reliability of console
-printing. Rather it focuses on the non-interference aspect of
-printk() by decoupling printk() callers from printing (during normal
-operation). Nonetheless, the reliability aspect should not worsen
-due to this series (with perhaps the exception of the fbcon, which
-will only print from sleepable contexts).
-
-[0] https://lore.kernel.org/lkml/87k1acz5rx.fsf@linutronix.de
-[1] https://lore.kernel.org/all/YYuS1uNhxWOEX1Ci@phenom.ffwll.local
-
-John Ogness (13):
-  printk: rename cpulock functions
-  printk: cpu sync always disable interrupts
-  printk: use percpu flag instead of cpu_online()
-  printk: get caller_id/timestamp after migration disable
-  printk: call boot_delay_msec() in printk_delay()
-  printk: refactor and rework printing logic
-  printk: move buffer definitions into console_emit_next_record() caller
-  printk: add pr_flush()
-  printk: add functions to allow direct printing
-  printk: add kthread console printers
-  printk: reimplement console_lock for proper kthread support
-  printk: remove @console_locked
-  console: introduce CON_MIGHT_SLEEP for vt
-
- drivers/tty/sysrq.c     |   2 +
- drivers/tty/vt/vt.c     |   2 +-
- include/linux/console.h |  22 +-
- include/linux/printk.h  |  70 ++--
- kernel/hung_task.c      |  11 +-
- kernel/printk/printk.c  | 903 +++++++++++++++++++++++++++++-----------
- kernel/rcu/tree_stall.h |   2 +
- kernel/reboot.c         |  14 +-
- kernel/watchdog.c       |   4 +
- kernel/watchdog_hld.c   |   4 +
- lib/dump_stack.c        |   6 +-
- lib/nmi_backtrace.c     |   6 +-
- 12 files changed, 765 insertions(+), 281 deletions(-)
-
-
-base-commit: a229327733b86aa585effdb0d27a87b12aa51597
--- 
-2.30.2
-
+On Tue, Feb 8, 2022 at 12:10 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+>
+> On Mon, Feb 07, 2022 at 05:44:47PM +0100, Paul Menzel wrote:
+> > Dear Linux folks,
+> >
+> >
+> > On the POWER8 server IBM S822LC running Ubuntu 21.10, building Linux
+> > 5.17-rc2+ with rcutorture tests
+> >
+> >     $ tools/testing/selftests/rcutorture/bin/torture.sh --duration 10
+> >
+> > the built init
+> >
+> >     $ file tools/testing/selftests/rcutorture/initrd/init
+> >     tools/testing/selftests/rcutorture/initrd/init: ELF 64-bit LSB
+> > executable, 64-bit PowerPC or cisco 7500, version 1 (SYSV), statically
+> > linked, BuildID[sha1]=0ded0e45649184a296f30d611f7a03cc51ecb616, for
+> > GNU/Linux 3.10.0, stripped
+> >
+> > segfaults in QEMU. From one of the log files
+> >
+> >
+> > /dev/shm/linux/tools/testing/selftests/rcutorture/res/2022.02.01-21.52.37-torture/results-rcutorture/TREE03/console.log
+> >
+> >     [    1.119803][    T1] Run /init as init process
+> >     [    1.122011][    T1] init[1]: segfault (11) at f0656d90 nip 10000a18
+> > lr 0 code 1 in init[10000000+d0000]
+> >     [    1.124863][    T1] init[1]: code: 2c2903e7 f9210030 4081ff84
+> > 4bffff58 00000000 01000000 00000580 3c40100f
+> >     [    1.128823][    T1] init[1]: code: 38427c00 7c290b78 782106e4
+> > 38000000 <f821ff81> 7c0803a6 f8010000 e9028010
+> >
+> > Executing the init, which just seems to be an endless loop, from userspace
+> > work:
+> >
+> >     $ strace ./tools/testing/selftests/rcutorture/initrd/init
+> >     execve("./tools/testing/selftests/rcutorture/initrd/init",
+> > ["./tools/testing/selftests/rcutor"...], 0x7ffffdb9e860 /* 31 vars */) = 0
+> >     brk(NULL)                               = 0x1001d940000
+> >     brk(0x1001d940b98)                      = 0x1001d940b98
+> >     set_tid_address(0x1001d9400d0)          = 2890832
+> >     set_robust_list(0x1001d9400e0, 24)      = 0
+> >     uname({sysname="Linux",
+> > nodename="flughafenberlinbrandenburgwillybrandt.molgen.mpg.de", ...}) = 0
+> >     prlimit64(0, RLIMIT_STACK, NULL, {rlim_cur=8192*1024,
+> > rlim_max=RLIM64_INFINITY}) = 0
+> >     readlink("/proc/self/exe", "/dev/shm/linux/tools/testing/sel"..., 4096)
+> > = 61
+> >     getrandom("\xf1\x30\x4c\x9e\x82\x8d\x26\xd7", 8, GRND_NONBLOCK) = 8
+> >     brk(0x1001d970b98)                      = 0x1001d970b98
+> >     brk(0x1001d980000)                      = 0x1001d980000
+> >     mprotect(0x100e0000, 65536, PROT_READ)  = 0
+> >     clock_nanosleep(CLOCK_REALTIME, 0, {tv_sec=1, tv_nsec=0},
+> > 0x7ffffb22c8a8) = 0
+> >     clock_nanosleep(CLOCK_REALTIME, 0, {tv_sec=1, tv_nsec=0},
+> > 0x7ffffb22c8a8) = 0
+> >     clock_nanosleep(CLOCK_REALTIME, 0, {tv_sec=1, tv_nsec=0}, ^C{tv_sec=0,
+> > tv_nsec=872674044}) = ? ERESTART_RESTARTBLOCK (Interrupted by signal)
+> >     strace: Process 2890832 detached
+>
+> Huh.  In PowerPC, is there some difference between system calls
+> executed in initrd and those same system calls executed in userspace?
+>
+> And just to make sure, the above strace was from exactly the same
+> binary "init" file that is included in initrd, correct?
+>
+> Adding Willy Tarreau for his thoughts.
+>
+>                                                         Thanx, Paul
+>
+> > Any ideas, what `mkinitrd.sh` [2] should do differently?
+> >
+> > ```
+> > cat > init.c << '___EOF___'
+> > #ifndef NOLIBC
+> > #include <unistd.h>
+> > #include <sys/time.h>
+> > #endif
+> >
+> > volatile unsigned long delaycount;
+> >
+> > int main(int argc, int argv[])
+> > {
+> >       int i;
+> >       struct timeval tv;
+> >       struct timeval tvb;
+> >
+> >       for (;;) {
+> >               sleep(1);
+> >               /* Need some userspace time. */
+> >               if (gettimeofday(&tvb, NULL))
+> >                       continue;
+> >               do {
+> >                       for (i = 0; i < 1000 * 100; i++)
+> >                               delaycount = i * i;
+> >                       if (gettimeofday(&tv, NULL))
+> >                               break;
+> >                       tv.tv_sec -= tvb.tv_sec;
+> >                       if (tv.tv_sec > 1)
+> >                               break;
+> >                       tv.tv_usec += tv.tv_sec * 1000 * 1000;
+> >                       tv.tv_usec -= tvb.tv_usec;
+> >               } while (tv.tv_usec < 1000);
+> >       }
+> >       return 0;
+> > }
+> > ___EOF___
+> >
+> > # build using nolibc on supported archs (smaller executable) and fall
+> > # back to regular glibc on other ones.
+> > if echo -e "#if __x86_64__||__i386__||__i486__||__i586__||__i686__" \
+> >            "||__ARM_EABI__||__aarch64__\nyes\n#endif" \
+> >    | ${CROSS_COMPILE}gcc -E -nostdlib -xc - \
+> >    | grep -q '^yes'; then
+> >       # architecture supported by nolibc
+> >         ${CROSS_COMPILE}gcc -fno-asynchronous-unwind-tables -fno-ident \
+> >               -nostdlib -include ../../../../include/nolibc/nolibc.h \
+> >               -s -static -Os -o init init.c -lgcc
+> > else
+> >       ${CROSS_COMPILE}gcc -s -static -Os -o init init.c
+> > fi
+> > ```
+> >
+> >
+> > Kind regards,
+> >
+> > Paul
+> >
+> >
+> > [1]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/testing/selftests/rcutorture/doc/initrd.txt
+> > [2]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/testing/selftests/rcutorture/bin/mkinitrd.sh
