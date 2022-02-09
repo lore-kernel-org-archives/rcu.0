@@ -2,118 +2,117 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E85C4C433F5
-	for <rcu@archiver.kernel.org>; Wed,  9 Feb 2022 19:56:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F7E7C433EF
+	for <rcu@archiver.kernel.org>; Wed,  9 Feb 2022 20:11:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229514AbiBIT4k (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 9 Feb 2022 14:56:40 -0500
-Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:39846 "EHLO
+        id S229946AbiBIULh (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 9 Feb 2022 15:11:37 -0500
+Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:49832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229853AbiBIT4Y (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 9 Feb 2022 14:56:24 -0500
-Received: from mail.efficios.com (mail.efficios.com [167.114.26.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E3DEE063140;
-        Wed,  9 Feb 2022 11:56:25 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 9417B3B5086;
-        Wed,  9 Feb 2022 14:56:24 -0500 (EST)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 07TCclwxL99S; Wed,  9 Feb 2022 14:56:24 -0500 (EST)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id E627B3B4E7F;
-        Wed,  9 Feb 2022 14:56:23 -0500 (EST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com E627B3B4E7F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1644436583;
-        bh=TGXHNcESyLk7e4fzBk383pOUPG79qFlYdVN8p53Ep/Q=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=o2rMAwb82gk7CvIC1/Lg6Ovt8Ys6ualxXZZEJUIKPgpUsZnCRkpg0CTrB6sSGJHw4
-         OGw22rdi0SSLref9YrWriHrt4yZXTgoVohqZF5bRFmtFF1xwyls8hv2A+THlk0FHMu
-         tiOkWfGSipmXDJGG0hD9nxGnUNw28RXeYFKHNvJMTJEt19vk9eFeRK3AKqT6Zd+Rfq
-         Eli3lK06XO9htl+iJXGczHmHtM5VJoxV8wYgHNYdOXotrFgrQh2BcLtrwe1a/9VVfJ
-         z4tNmAat+9f3PE1+P2dRQt+/bBMnlw44dJZYqv1P6HvSjjbIakgi7sEATlyFrZynWi
-         WsAcN9S5ot38g==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id nabkake81CbX; Wed,  9 Feb 2022 14:56:23 -0500 (EST)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id D177F3B4BD0;
-        Wed,  9 Feb 2022 14:56:23 -0500 (EST)
-Date:   Wed, 9 Feb 2022 14:56:23 -0500 (EST)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Waiman Long <longman@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        rostedt <rostedt@goodmis.org>,
-        Byungchul Park <byungchul.park@lge.com>,
-        Radoslaw Burny <rburny@google.com>, Tejun Heo <tj@kernel.org>,
-        rcu <rcu@vger.kernel.org>, cgroups <cgroups@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        paulmck <paulmck@kernel.org>
-Message-ID: <575163430.50481.1644436583757.JavaMail.zimbra@efficios.com>
-In-Reply-To: <CAM9d7cj=tj6pA48q_wkQOGn-2vUc9FRj63bMBOm5R7OukmMbTQ@mail.gmail.com>
-References: <20220208184208.79303-1-namhyung@kernel.org> <20220209090908.GK23216@worktop.programming.kicks-ass.net> <24fe6a08-5931-8e8d-8d77-459388c4654e@redhat.com> <919214156.50301.1644431371345.JavaMail.zimbra@efficios.com> <69e5f778-8715-4acf-c027-58b6ec4a9e77@redhat.com> <CAM9d7ci=N2NVj57k=W0ebqBzfW+ThBqYSrx-CZbgwGcbOSrEGA@mail.gmail.com> <718973621.50447.1644434890744.JavaMail.zimbra@efficios.com> <CAM9d7cj=tj6pA48q_wkQOGn-2vUc9FRj63bMBOm5R7OukmMbTQ@mail.gmail.com>
-Subject: Re: [RFC 00/12] locking: Separate lock tracepoints from
- lockdep/lock_stat (v1)
+        with ESMTP id S229517AbiBIULg (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 9 Feb 2022 15:11:36 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A690E0918DC;
+        Wed,  9 Feb 2022 12:11:38 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 43ECA61AB2;
+        Wed,  9 Feb 2022 20:11:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8E70C340E7;
+        Wed,  9 Feb 2022 20:11:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1644437497;
+        bh=zOp2gUWewyoep3PgpK5NGqgBJCUg+nncwwjeYsUzoFU=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=sf9wnonBO85hj+/La/zqX9PVOmY1Zdkdw/QxjYzJQupMZr3kiZYcZk5CuD5hnFSjn
+         qdIjN6YGrYHL2Sqsv6Ij7e1e/qBWmDayXc+5m5ovlFEyR7zipSK+YQ3FtjWXWarHzU
+         3WXaYXrdrEE+zGaRxubyFd8pFEvkOJxdqKmSbIYf9bFciLGKnIEejQvSAkZP96Vcyc
+         V/pgLUegGjlMhk3kxBWDmeA4DEk25UV+IRyJlfHTmstDpllLfUQO03JeKrpr9t+LML
+         jt8DygIzA5GSUOedCiZ6bvOIMGyjid6vwCNg6XWIudp60W01nFu9yV/B0RVQqjxWSn
+         0T7x/VN1zFQEw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 5F4DE5C03C6; Wed,  9 Feb 2022 12:11:37 -0800 (PST)
+Date:   Wed, 9 Feb 2022 12:11:37 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Qian Cai <quic_qiancai@quicinc.com>, Theodore Ts'o <tytso@mit.edu>,
+        Jan Kara <jack@suse.com>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boqun Feng <boqun.feng@gmail.com>, linux-ext4@vger.kernel.org,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] jbd2: avoid __GFP_ZERO with SLAB_TYPESAFE_BY_RCU
+Message-ID: <20220209201137.GY4285@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20220209165742.5659-1-quic_qiancai@quicinc.com>
+ <20220209181010.gfn66rvip56i54df@quack3.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_4203 (ZimbraWebClient - FF96 (Linux)/8.8.15_GA_4203)
-Thread-Topic: locking: Separate lock tracepoints from lockdep/lock_stat (v1)
-Thread-Index: 8v1yUUmpj7eA9y5pJI4+3hvYOKV87w==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220209181010.gfn66rvip56i54df@quack3.lan>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
------ On Feb 9, 2022, at 2:45 PM, Namhyung Kim namhyung@kernel.org wrote:
-
-> On Wed, Feb 9, 2022 at 11:28 AM Mathieu Desnoyers
-> <mathieu.desnoyers@efficios.com> wrote:
->>
->> ----- On Feb 9, 2022, at 2:22 PM, Namhyung Kim namhyung@kernel.org wrote:
->> > I'm also concerning dynamic allocated locks in a data structure.
->> > If we keep the info in a hash table, we should delete it when the
->> > lock is gone.  I'm not sure we have a good place to hook it up all.
->>
->> I was wondering about this use case as well. Can we make it mandatory to
->> declare the lock "class" (including the name) statically, even though the
->> lock per-se is allocated dynamically ? Then the initialization of the lock
->> embedded within the data structure would simply refer to the lock class
->> definition.
+On Wed, Feb 09, 2022 at 07:10:10PM +0100, Jan Kara wrote:
+> On Wed 09-02-22 11:57:42, Qian Cai wrote:
+> > Since the linux-next commit 120aa5e57479 (mm: Check for
+> > SLAB_TYPESAFE_BY_RCU and __GFP_ZERO slab allocation), we will get a
+> > boot warning. Avoid it by calling synchronize_rcu() before the zeroing.
+> > 
+> > Signed-off-by: Qian Cai <quic_qiancai@quicinc.com>
 > 
-> Isn't it still the same if we have static lock classes that the entry needs
-> to be deleted from the hash table when it frees the data structure?
-> I'm more concerned about free than alloc as there seems to be no
-> API to track that in a place.
+> No, the performance impact of this would be just horrible. Can you
+> ellaborate a bit why SLAB_TYPESAFE_BY_RCU + __GFP_ZERO is a problem and why
+> synchronize_rcu() would be needed here before the memset() please? I mean
+> how is zeroing here any different from the memory just being used?
 
-If the lock class is defined statically, even for dynamically initialized
-locks, then its associated object sits either in the core kernel or within
-a module.
+Suppose a reader picks up a pointer to a memory block, then that memory
+is freed.  No problem, given that this is a SLAB_TYPESAFE_BY_RCU slab,
+so the memory won't be freed while the reader is accessing it.  But while
+the reader is in the process of validating the block, it is zeroed.
 
-So if it's in the core kernel, it could be added to the hash table at kernel
-init and stay there forever.
+How does the validation step handle this in all cases?
 
-If it's in a module, it would be added to the hash table on module load and
-removed on module unload. We would have to be careful about how the ftrace
-printout to human readable text deals with missing hash table data, because
-that printout will happen after buffering, so an untimely module unload could
-make this address to string mapping unavailable for a few events. If we care
-about getting this corner case right there are a few things we could do as
-well.
+If you have a way of handling this, I will of course drop the patch.
+And learn something new, which is always a good thing.  ;-)
 
-Thanks,
+							Thanx, Paul
 
-Mathieu
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+> > ---
+> >  fs/jbd2/journal.c | 9 ++++++---
+> >  1 file changed, 6 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+> > index c2cf74b01ddb..323112de5921 100644
+> > --- a/fs/jbd2/journal.c
+> > +++ b/fs/jbd2/journal.c
+> > @@ -2861,15 +2861,18 @@ static struct journal_head *journal_alloc_journal_head(void)
+> >  #ifdef CONFIG_JBD2_DEBUG
+> >  	atomic_inc(&nr_journal_heads);
+> >  #endif
+> > -	ret = kmem_cache_zalloc(jbd2_journal_head_cache, GFP_NOFS);
+> > +	ret = kmem_cache_alloc(jbd2_journal_head_cache, GFP_NOFS);
+> >  	if (!ret) {
+> >  		jbd_debug(1, "out of memory for journal_head\n");
+> >  		pr_notice_ratelimited("ENOMEM in %s, retrying.\n", __func__);
+> > -		ret = kmem_cache_zalloc(jbd2_journal_head_cache,
+> > +		ret = kmem_cache_alloc(jbd2_journal_head_cache,
+> >  				GFP_NOFS | __GFP_NOFAIL);
+> >  	}
+> > -	if (ret)
+> > +	if (ret) {
+> > +		synchronize_rcu();
+> > +		memset(ret, 0, sizeof(*ret));
+> >  		spin_lock_init(&ret->b_state_lock);
+> > +	}
+> >  	return ret;
+> >  }
+> >  
+> > -- 
+> > 2.30.2
+> > 
+> -- 
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
