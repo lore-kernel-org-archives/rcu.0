@@ -2,103 +2,130 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E4A9AC433FE
-	for <rcu@archiver.kernel.org>; Wed,  9 Feb 2022 20:18:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 851F3C433F5
+	for <rcu@archiver.kernel.org>; Wed,  9 Feb 2022 22:06:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230508AbiBIURy (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 9 Feb 2022 15:17:54 -0500
-Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:37296 "EHLO
+        id S234968AbiBIWGD (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 9 Feb 2022 17:06:03 -0500
+Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:53658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230446AbiBIURx (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 9 Feb 2022 15:17:53 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4551DE033CE8
-        for <rcu@vger.kernel.org>; Wed,  9 Feb 2022 12:17:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1644437869;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KHy+FrMszZUXNvq7VkE1Sw+oLSzIRN5aM5gdNpzgAuE=;
-        b=QWpkt8Rx7zxPIlCq7TT5uu/V7eU0lUUgZFYhIbk5ieJAUEqQocehCIuitrDtqlzK/rLp7y
-        r8/mlmr+NJuVpH9UJIYCwM/b30fq+pXepIjPamun8g20HiI3G7GPNUWAK693qOyZUGDW9O
-        Xe64LEpQXJj7QIB+5ZBDrvctGV07reQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-62-9Cqsjq2nPzOSvqBNqWFcoA-1; Wed, 09 Feb 2022 15:17:44 -0500
-X-MC-Unique: 9Cqsjq2nPzOSvqBNqWFcoA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        with ESMTP id S234925AbiBIWGC (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 9 Feb 2022 17:06:02 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08E21E015649;
+        Wed,  9 Feb 2022 14:06:03 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E37D4814243;
-        Wed,  9 Feb 2022 20:17:41 +0000 (UTC)
-Received: from [10.22.9.207] (unknown [10.22.9.207])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 12EB55D6D5;
-        Wed,  9 Feb 2022 20:17:38 +0000 (UTC)
-Message-ID: <f8b7760f-16a2-6ada-de88-9e21a7e8fef9@redhat.com>
-Date:   Wed, 9 Feb 2022 15:17:38 -0500
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A3B9261BF2;
+        Wed,  9 Feb 2022 22:06:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13E94C340EB;
+        Wed,  9 Feb 2022 22:06:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1644444362;
+        bh=9eTZzuMwvMRMOvxFPlctPZEOfJOPYNJAQtcV0k5GrM8=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=lsrPkyTqlfqVoGi5RhV4UmkRNs5ctkf/Kp7eRbp9J11M7mwxdlVxRH6zzEpRbaJ3Z
+         cRd99TWZM2EL23O6g/LmNzXweVV6zRZiOEvNjiN32q3qSRZqjBQLMu9iTcvQ15DHMd
+         96hlHYDh9AYhKyAm2ADp87eJ9sbCc6PwksqSjCyYb4BfOIPiAs5lYtj2MmAtuzk67D
+         Rl2ct4teSgr3/n4sMR9HfsG72nOyYAZA3u9Az9Opdq5YZfmMkNJJjytTQW8r9rnbco
+         dnHetFQYYPQdmGU11US78pxIfRFyHCk7P679KLwH92EtGZtMs3Za9GXz14OescIuI2
+         40zwIvE6WyMcA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id B30E85C03C6; Wed,  9 Feb 2022 14:06:01 -0800 (PST)
+Date:   Wed, 9 Feb 2022 14:06:01 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Mukesh Ojha <quic_mojha@quicinc.com>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, rostedt@goodmis.org, Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH rcu 3/3] rcu: Allow expedited RCU grace periods on
+ incoming CPUs
+Message-ID: <20220209220601.GB4285@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20220204225409.GA4193020@paulmck-ThinkPad-P17-Gen-1>
+ <20220204225507.4193113-3-paulmck@kernel.org>
+ <de3a9710-fbf4-8005-a781-adc95ae4a090@quicinc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.0
-Subject: Re: [RFC 00/12] locking: Separate lock tracepoints from
- lockdep/lock_stat (v1)
-Content-Language: en-US
-To:     Namhyung Kim <namhyung@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        rostedt <rostedt@goodmis.org>,
-        Byungchul Park <byungchul.park@lge.com>,
-        Radoslaw Burny <rburny@google.com>, Tejun Heo <tj@kernel.org>,
-        rcu <rcu@vger.kernel.org>, cgroups <cgroups@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        paulmck <paulmck@kernel.org>
-References: <20220208184208.79303-1-namhyung@kernel.org>
- <20220209090908.GK23216@worktop.programming.kicks-ass.net>
- <24fe6a08-5931-8e8d-8d77-459388c4654e@redhat.com>
- <919214156.50301.1644431371345.JavaMail.zimbra@efficios.com>
- <69e5f778-8715-4acf-c027-58b6ec4a9e77@redhat.com>
- <CAM9d7ci=N2NVj57k=W0ebqBzfW+ThBqYSrx-CZbgwGcbOSrEGA@mail.gmail.com>
- <718973621.50447.1644434890744.JavaMail.zimbra@efficios.com>
- <CAM9d7cj=tj6pA48q_wkQOGn-2vUc9FRj63bMBOm5R7OukmMbTQ@mail.gmail.com>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <CAM9d7cj=tj6pA48q_wkQOGn-2vUc9FRj63bMBOm5R7OukmMbTQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <de3a9710-fbf4-8005-a781-adc95ae4a090@quicinc.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Wed, Feb 09, 2022 at 11:53:33PM +0530, Mukesh Ojha wrote:
+> 
+> On 2/5/2022 4:25 AM, Paul E. McKenney wrote:
+> > Although it is usually safe to invoke synchronize_rcu_expedited() from a
+> > preemption-enabled CPU-hotplug notifier, if it is invoked from a notifier
+> > between CPUHP_AP_RCUTREE_ONLINE and CPUHP_AP_ACTIVE, its attempts to
+> > invoke a workqueue handler will hang due to RCU waiting on a CPU that
+> > the scheduler is not paying attention to.  This commit therefore expands
+> > use of the existing workqueue-independent synchronize_rcu_expedited()
+> > from early boot to also include CPUs that are being hotplugged.
+> > 
+> > Link: https://lore.kernel.org/lkml/7359f994-8aaf-3cea-f5cf-c0d3929689d6@quicinc.com/
+> > Reported-by: Mukesh Ojha <quic_mojha@quicinc.com>
+> > Cc: Tejun Heo <tj@kernel.org>
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > ---
+> >   kernel/rcu/tree_exp.h | 14 ++++++++++----
+> >   1 file changed, 10 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+> > index 60197ea24ceb9..1a45667402260 100644
+> > --- a/kernel/rcu/tree_exp.h
+> > +++ b/kernel/rcu/tree_exp.h
+> > @@ -816,7 +816,7 @@ static int rcu_print_task_exp_stall(struct rcu_node *rnp)
+> >    */
+> >   void synchronize_rcu_expedited(void)
+> >   {
+> > -	bool boottime = (rcu_scheduler_active == RCU_SCHEDULER_INIT);
+> > +	bool no_wq;
+> >   	struct rcu_exp_work rew;
+> >   	struct rcu_node *rnp;
+> >   	unsigned long s;
+> > @@ -841,9 +841,15 @@ void synchronize_rcu_expedited(void)
+> >   	if (exp_funnel_lock(s))
+> >   		return;  /* Someone else did our work for us. */
+> > +	/* Don't use workqueue during boot or from an incoming CPU. */
+> > +	preempt_disable();
+> > +	no_wq = rcu_scheduler_active == RCU_SCHEDULER_INIT ||
+> > +		!cpumask_test_cpu(smp_processor_id(), cpu_active_mask);
+> > +	preempt_enable();
+> > +
+> >   	/* Ensure that load happens before action based on it. */
+> > -	if (unlikely(boottime)) {
+> > -		/* Direct call during scheduler init and early_initcalls(). */
+> > +	if (unlikely(no_wq)) {
+> > +		/* Direct call for scheduler init, early_initcall()s, and incoming CPUs. */
+> >   		rcu_exp_sel_wait_wake(s);
+> >   	} else {
+> >   		/* Marshall arguments & schedule the expedited grace period. */
+> > @@ -861,7 +867,7 @@ void synchronize_rcu_expedited(void)
+> >   	/* Let the next expedited grace period start. */
+> >   	mutex_unlock(&rcu_state.exp_mutex);
+> > -	if (likely(!boottime))
+> > +	if (likely(!no_wq))
+> >   		destroy_work_on_stack(&rew.rew_work);
+> >   }
+> >   EXPORT_SYMBOL_GPL(synchronize_rcu_expedited);
+> 
+> Can we reach a condition after this change where no_wq = true and during
+> rcu_stall report where exp_task = 0 list and exp_mask contain only this cpu
+> ?
 
-On 2/9/22 14:45, Namhyung Kim wrote:
-> On Wed, Feb 9, 2022 at 11:28 AM Mathieu Desnoyers
-> <mathieu.desnoyers@efficios.com> wrote:
->> ----- On Feb 9, 2022, at 2:22 PM, Namhyung Kim namhyung@kernel.org wrote:
->>> I'm also concerning dynamic allocated locks in a data structure.
->>> If we keep the info in a hash table, we should delete it when the
->>> lock is gone.  I'm not sure we have a good place to hook it up all.
->> I was wondering about this use case as well. Can we make it mandatory to
->> declare the lock "class" (including the name) statically, even though the
->> lock per-se is allocated dynamically ? Then the initialization of the lock
->> embedded within the data structure would simply refer to the lock class
->> definition.
-> Isn't it still the same if we have static lock classes that the entry needs
-> to be deleted from the hash table when it frees the data structure?
-> I'm more concerned about free than alloc as there seems to be no
-> API to track that in a place.
+Hello, Mukesh, and thank you for looking this over!
 
-We may have to invent some new APIs to do that. For example, 
-spin_lock_exit() can be the counterpart of spin_lock_init() and so on. 
-Of course, existing kernel code have to be modified to designate the 
-point after which a lock is no longer being used or is freed.
+At first glance, I do not believe that this can happen because the
+expedited grace-period machinery avoids waiting on the current CPU.
+(See sync_rcu_exp_select_node_cpus(), both the raw_smp_processor_id()
+early in the function and the get_cpu() later in the function.)
 
-Cheers,
-Longman
+But please let me know if I am missing something here.
 
+But suppose that we could in fact reach this condition.  What bad thing
+would happen?  Other than a resched_cpu() having been invoked several
+times on a not-yet-online CPU, of course.  ;-)
+
+							Thanx, Paul
