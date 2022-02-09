@@ -2,77 +2,98 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B00FAC433F5
-	for <rcu@archiver.kernel.org>; Wed,  9 Feb 2022 09:10:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B92BC433F5
+	for <rcu@archiver.kernel.org>; Wed,  9 Feb 2022 16:58:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233508AbiBIJKH (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 9 Feb 2022 04:10:07 -0500
-Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:49264 "EHLO
+        id S237621AbiBIQ6T (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 9 Feb 2022 11:58:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233465AbiBIJKA (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 9 Feb 2022 04:10:00 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA8C7E078229;
-        Wed,  9 Feb 2022 01:09:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=kNBxEECZ8nYVRQBlRi4s4bPsYk+6wGvc+UHQLe+LfQY=; b=FuT01ILcnQE1hlwV0N6QoRzje7
-        8leIgTUsGHbhfy7cNPjN8ZrjHcSG0wypOKtgyb8t04GcdHB5bH2yXofjaCs8wpl1CIqqOkec3R9OV
-        nApYAVlzrV8ZfypyHa4mIELkzUQhBcEibVe6rjqueMf/NegoUT6rvZNNsoc4Uw2YqsFP9t1UTNqIf
-        jNC72U1XwX8JGYxfA0nQlHqSjCcVfzkGjPBeAtSDlLt6otVC5r0jjKiMiAMeC9xmjVZ1sMuKSSBys
-        rCFVdCTkXxb8dN7UTtpmiYJWVdWQaduq6Qanmd7JpqkCzBgIpJKnbvw5fQS2u7k6VjPF4p+ScGV/Y
-        cDMFRHqA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nHiyL-007ELN-4I; Wed, 09 Feb 2022 09:09:09 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id B7873986226; Wed,  9 Feb 2022 10:09:08 +0100 (CET)
-Date:   Wed, 9 Feb 2022 10:09:08 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
+        with ESMTP id S237605AbiBIQ6G (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 9 Feb 2022 11:58:06 -0500
+Received: from alexa-out-sd-02.qualcomm.com (alexa-out-sd-02.qualcomm.com [199.106.114.39])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 059BEC05CB87;
+        Wed,  9 Feb 2022 08:58:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1644425890; x=1675961890;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=QoxB7339BnBkugvaYIedB66T9O8oyGrxlDFYROzaZRk=;
+  b=rjJLLrpB9Gnq8IzsA+WruPIGHdYtEE4IaZHEEq9jnIdoIhJKnUK1cVV+
+   /RpCnLX7qYzRrX2KeF4mFxiqfvXz8E83ETXJxVZG63Tuf2SxR05nHtZbE
+   nID/zrSVW2qZ1r8BKhwfnjYOYdrGbmfXClyQKUpOlN5Lpj0yXfaEZCoUK
+   c=;
+Received: from unknown (HELO ironmsg-SD-alpha.qualcomm.com) ([10.53.140.30])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 09 Feb 2022 08:58:09 -0800
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+  by ironmsg-SD-alpha.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2022 08:58:09 -0800
+Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.922.19; Wed, 9 Feb 2022 08:58:09 -0800
+Received: from lsbug.qualcomm.com (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.19; Wed, 9 Feb 2022
+ 08:58:07 -0800
+From:   Qian Cai <quic_qiancai@quicinc.com>
+To:     Theodore Ts'o <tytso@mit.edu>
+CC:     Jan Kara <jack@suse.com>, "Paul E. McKenney" <paulmck@kernel.org>,
+        "Neeraj Upadhyay" <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
         Boqun Feng <boqun.feng@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Byungchul Park <byungchul.park@lge.com>,
-        "Paul E. McKenney" <paul.mckenney@linaro.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Radoslaw Burny <rburny@google.com>, Tejun Heo <tj@kernel.org>,
-        rcu@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, intel-gfx@lists.freedesktop.org
-Subject: Re: [RFC 00/12] locking: Separate lock tracepoints from
- lockdep/lock_stat (v1)
-Message-ID: <20220209090908.GK23216@worktop.programming.kicks-ass.net>
-References: <20220208184208.79303-1-namhyung@kernel.org>
+        <linux-ext4@vger.kernel.org>, <rcu@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Qian Cai <quic_qiancai@quicinc.com>
+Subject: [RFC PATCH] jbd2: avoid __GFP_ZERO with SLAB_TYPESAFE_BY_RCU
+Date:   Wed, 9 Feb 2022 11:57:42 -0500
+Message-ID: <20220209165742.5659-1-quic_qiancai@quicinc.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220208184208.79303-1-namhyung@kernel.org>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Feb 08, 2022 at 10:41:56AM -0800, Namhyung Kim wrote:
+Since the linux-next commit 120aa5e57479 (mm: Check for
+SLAB_TYPESAFE_BY_RCU and __GFP_ZERO slab allocation), we will get a
+boot warning. Avoid it by calling synchronize_rcu() before the zeroing.
 
-> Eventually I'm mostly interested in the contended locks only and I
-> want to reduce the overhead in the fast path.  By moving that, it'd be
-> easy to track contended locks with timing by using two tracepoints.
+Signed-off-by: Qian Cai <quic_qiancai@quicinc.com>
+---
+ fs/jbd2/journal.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-So why not put in two new tracepoints and call it a day?
+diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+index c2cf74b01ddb..323112de5921 100644
+--- a/fs/jbd2/journal.c
++++ b/fs/jbd2/journal.c
+@@ -2861,15 +2861,18 @@ static struct journal_head *journal_alloc_journal_head(void)
+ #ifdef CONFIG_JBD2_DEBUG
+ 	atomic_inc(&nr_journal_heads);
+ #endif
+-	ret = kmem_cache_zalloc(jbd2_journal_head_cache, GFP_NOFS);
++	ret = kmem_cache_alloc(jbd2_journal_head_cache, GFP_NOFS);
+ 	if (!ret) {
+ 		jbd_debug(1, "out of memory for journal_head\n");
+ 		pr_notice_ratelimited("ENOMEM in %s, retrying.\n", __func__);
+-		ret = kmem_cache_zalloc(jbd2_journal_head_cache,
++		ret = kmem_cache_alloc(jbd2_journal_head_cache,
+ 				GFP_NOFS | __GFP_NOFAIL);
+ 	}
+-	if (ret)
++	if (ret) {
++		synchronize_rcu();
++		memset(ret, 0, sizeof(*ret));
+ 		spin_lock_init(&ret->b_state_lock);
++	}
+ 	return ret;
+ }
+ 
+-- 
+2.30.2
 
-Why muck about with all that lockdep stuff just to preserve the name
-(and in the process continue to blow up data structures etc..). This
-leaves distros in a bind, will they enable this config and provide
-tracepoints while bloating the data structures and destroying things
-like lockref (which relies on sizeof(spinlock_t)), or not provide this
-at all.
-
-Yes, the name is convenient, but it's just not worth it IMO. It makes
-the whole proposition too much of a trade-off.
-
-Would it not be possible to reconstruct enough useful information from
-the lock callsite?
