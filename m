@@ -2,117 +2,103 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F7E7C433EF
-	for <rcu@archiver.kernel.org>; Wed,  9 Feb 2022 20:11:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E4A9AC433FE
+	for <rcu@archiver.kernel.org>; Wed,  9 Feb 2022 20:18:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229946AbiBIULh (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 9 Feb 2022 15:11:37 -0500
-Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:49832 "EHLO
+        id S230508AbiBIURy (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 9 Feb 2022 15:17:54 -0500
+Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:37296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbiBIULg (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 9 Feb 2022 15:11:36 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A690E0918DC;
-        Wed,  9 Feb 2022 12:11:38 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S230446AbiBIURx (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 9 Feb 2022 15:17:53 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4551DE033CE8
+        for <rcu@vger.kernel.org>; Wed,  9 Feb 2022 12:17:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1644437869;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KHy+FrMszZUXNvq7VkE1Sw+oLSzIRN5aM5gdNpzgAuE=;
+        b=QWpkt8Rx7zxPIlCq7TT5uu/V7eU0lUUgZFYhIbk5ieJAUEqQocehCIuitrDtqlzK/rLp7y
+        r8/mlmr+NJuVpH9UJIYCwM/b30fq+pXepIjPamun8g20HiI3G7GPNUWAK693qOyZUGDW9O
+        Xe64LEpQXJj7QIB+5ZBDrvctGV07reQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-62-9Cqsjq2nPzOSvqBNqWFcoA-1; Wed, 09 Feb 2022 15:17:44 -0500
+X-MC-Unique: 9Cqsjq2nPzOSvqBNqWFcoA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 43ECA61AB2;
-        Wed,  9 Feb 2022 20:11:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8E70C340E7;
-        Wed,  9 Feb 2022 20:11:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1644437497;
-        bh=zOp2gUWewyoep3PgpK5NGqgBJCUg+nncwwjeYsUzoFU=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=sf9wnonBO85hj+/La/zqX9PVOmY1Zdkdw/QxjYzJQupMZr3kiZYcZk5CuD5hnFSjn
-         qdIjN6YGrYHL2Sqsv6Ij7e1e/qBWmDayXc+5m5ovlFEyR7zipSK+YQ3FtjWXWarHzU
-         3WXaYXrdrEE+zGaRxubyFd8pFEvkOJxdqKmSbIYf9bFciLGKnIEejQvSAkZP96Vcyc
-         V/pgLUegGjlMhk3kxBWDmeA4DEk25UV+IRyJlfHTmstDpllLfUQO03JeKrpr9t+LML
-         jt8DygIzA5GSUOedCiZ6bvOIMGyjid6vwCNg6XWIudp60W01nFu9yV/B0RVQqjxWSn
-         0T7x/VN1zFQEw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 5F4DE5C03C6; Wed,  9 Feb 2022 12:11:37 -0800 (PST)
-Date:   Wed, 9 Feb 2022 12:11:37 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Qian Cai <quic_qiancai@quicinc.com>, Theodore Ts'o <tytso@mit.edu>,
-        Jan Kara <jack@suse.com>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boqun Feng <boqun.feng@gmail.com>, linux-ext4@vger.kernel.org,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] jbd2: avoid __GFP_ZERO with SLAB_TYPESAFE_BY_RCU
-Message-ID: <20220209201137.GY4285@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220209165742.5659-1-quic_qiancai@quicinc.com>
- <20220209181010.gfn66rvip56i54df@quack3.lan>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E37D4814243;
+        Wed,  9 Feb 2022 20:17:41 +0000 (UTC)
+Received: from [10.22.9.207] (unknown [10.22.9.207])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 12EB55D6D5;
+        Wed,  9 Feb 2022 20:17:38 +0000 (UTC)
+Message-ID: <f8b7760f-16a2-6ada-de88-9e21a7e8fef9@redhat.com>
+Date:   Wed, 9 Feb 2022 15:17:38 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220209181010.gfn66rvip56i54df@quack3.lan>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.4.0
+Subject: Re: [RFC 00/12] locking: Separate lock tracepoints from
+ lockdep/lock_stat (v1)
+Content-Language: en-US
+To:     Namhyung Kim <namhyung@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        rostedt <rostedt@goodmis.org>,
+        Byungchul Park <byungchul.park@lge.com>,
+        Radoslaw Burny <rburny@google.com>, Tejun Heo <tj@kernel.org>,
+        rcu <rcu@vger.kernel.org>, cgroups <cgroups@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        paulmck <paulmck@kernel.org>
+References: <20220208184208.79303-1-namhyung@kernel.org>
+ <20220209090908.GK23216@worktop.programming.kicks-ass.net>
+ <24fe6a08-5931-8e8d-8d77-459388c4654e@redhat.com>
+ <919214156.50301.1644431371345.JavaMail.zimbra@efficios.com>
+ <69e5f778-8715-4acf-c027-58b6ec4a9e77@redhat.com>
+ <CAM9d7ci=N2NVj57k=W0ebqBzfW+ThBqYSrx-CZbgwGcbOSrEGA@mail.gmail.com>
+ <718973621.50447.1644434890744.JavaMail.zimbra@efficios.com>
+ <CAM9d7cj=tj6pA48q_wkQOGn-2vUc9FRj63bMBOm5R7OukmMbTQ@mail.gmail.com>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <CAM9d7cj=tj6pA48q_wkQOGn-2vUc9FRj63bMBOm5R7OukmMbTQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Feb 09, 2022 at 07:10:10PM +0100, Jan Kara wrote:
-> On Wed 09-02-22 11:57:42, Qian Cai wrote:
-> > Since the linux-next commit 120aa5e57479 (mm: Check for
-> > SLAB_TYPESAFE_BY_RCU and __GFP_ZERO slab allocation), we will get a
-> > boot warning. Avoid it by calling synchronize_rcu() before the zeroing.
-> > 
-> > Signed-off-by: Qian Cai <quic_qiancai@quicinc.com>
-> 
-> No, the performance impact of this would be just horrible. Can you
-> ellaborate a bit why SLAB_TYPESAFE_BY_RCU + __GFP_ZERO is a problem and why
-> synchronize_rcu() would be needed here before the memset() please? I mean
-> how is zeroing here any different from the memory just being used?
 
-Suppose a reader picks up a pointer to a memory block, then that memory
-is freed.  No problem, given that this is a SLAB_TYPESAFE_BY_RCU slab,
-so the memory won't be freed while the reader is accessing it.  But while
-the reader is in the process of validating the block, it is zeroed.
+On 2/9/22 14:45, Namhyung Kim wrote:
+> On Wed, Feb 9, 2022 at 11:28 AM Mathieu Desnoyers
+> <mathieu.desnoyers@efficios.com> wrote:
+>> ----- On Feb 9, 2022, at 2:22 PM, Namhyung Kim namhyung@kernel.org wrote:
+>>> I'm also concerning dynamic allocated locks in a data structure.
+>>> If we keep the info in a hash table, we should delete it when the
+>>> lock is gone.  I'm not sure we have a good place to hook it up all.
+>> I was wondering about this use case as well. Can we make it mandatory to
+>> declare the lock "class" (including the name) statically, even though the
+>> lock per-se is allocated dynamically ? Then the initialization of the lock
+>> embedded within the data structure would simply refer to the lock class
+>> definition.
+> Isn't it still the same if we have static lock classes that the entry needs
+> to be deleted from the hash table when it frees the data structure?
+> I'm more concerned about free than alloc as there seems to be no
+> API to track that in a place.
 
-How does the validation step handle this in all cases?
+We may have to invent some new APIs to do that. For example, 
+spin_lock_exit() can be the counterpart of spin_lock_init() and so on. 
+Of course, existing kernel code have to be modified to designate the 
+point after which a lock is no longer being used or is freed.
 
-If you have a way of handling this, I will of course drop the patch.
-And learn something new, which is always a good thing.  ;-)
+Cheers,
+Longman
 
-							Thanx, Paul
-
-> > ---
-> >  fs/jbd2/journal.c | 9 ++++++---
-> >  1 file changed, 6 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-> > index c2cf74b01ddb..323112de5921 100644
-> > --- a/fs/jbd2/journal.c
-> > +++ b/fs/jbd2/journal.c
-> > @@ -2861,15 +2861,18 @@ static struct journal_head *journal_alloc_journal_head(void)
-> >  #ifdef CONFIG_JBD2_DEBUG
-> >  	atomic_inc(&nr_journal_heads);
-> >  #endif
-> > -	ret = kmem_cache_zalloc(jbd2_journal_head_cache, GFP_NOFS);
-> > +	ret = kmem_cache_alloc(jbd2_journal_head_cache, GFP_NOFS);
-> >  	if (!ret) {
-> >  		jbd_debug(1, "out of memory for journal_head\n");
-> >  		pr_notice_ratelimited("ENOMEM in %s, retrying.\n", __func__);
-> > -		ret = kmem_cache_zalloc(jbd2_journal_head_cache,
-> > +		ret = kmem_cache_alloc(jbd2_journal_head_cache,
-> >  				GFP_NOFS | __GFP_NOFAIL);
-> >  	}
-> > -	if (ret)
-> > +	if (ret) {
-> > +		synchronize_rcu();
-> > +		memset(ret, 0, sizeof(*ret));
-> >  		spin_lock_init(&ret->b_state_lock);
-> > +	}
-> >  	return ret;
-> >  }
-> >  
-> > -- 
-> > 2.30.2
-> > 
-> -- 
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
