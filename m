@@ -2,130 +2,87 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 851F3C433F5
-	for <rcu@archiver.kernel.org>; Wed,  9 Feb 2022 22:06:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 440E8C433F5
+	for <rcu@archiver.kernel.org>; Wed,  9 Feb 2022 23:38:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234968AbiBIWGD (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 9 Feb 2022 17:06:03 -0500
-Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:53658 "EHLO
+        id S230372AbiBIXib (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 9 Feb 2022 18:38:31 -0500
+Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:50596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234925AbiBIWGC (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 9 Feb 2022 17:06:02 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08E21E015649;
-        Wed,  9 Feb 2022 14:06:03 -0800 (PST)
+        with ESMTP id S231149AbiBIXiN (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 9 Feb 2022 18:38:13 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81F41E02E500;
+        Wed,  9 Feb 2022 15:38:15 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A3B9261BF2;
-        Wed,  9 Feb 2022 22:06:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13E94C340EB;
-        Wed,  9 Feb 2022 22:06:02 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1B73E616B7;
+        Wed,  9 Feb 2022 23:38:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5AA8C340E7;
+        Wed,  9 Feb 2022 23:38:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1644444362;
-        bh=9eTZzuMwvMRMOvxFPlctPZEOfJOPYNJAQtcV0k5GrM8=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=lsrPkyTqlfqVoGi5RhV4UmkRNs5ctkf/Kp7eRbp9J11M7mwxdlVxRH6zzEpRbaJ3Z
-         cRd99TWZM2EL23O6g/LmNzXweVV6zRZiOEvNjiN32q3qSRZqjBQLMu9iTcvQ15DHMd
-         96hlHYDh9AYhKyAm2ADp87eJ9sbCc6PwksqSjCyYb4BfOIPiAs5lYtj2MmAtuzk67D
-         Rl2ct4teSgr3/n4sMR9HfsG72nOyYAZA3u9Az9Opdq5YZfmMkNJJjytTQW8r9rnbco
-         dnHetFQYYPQdmGU11US78pxIfRFyHCk7P679KLwH92EtGZtMs3Za9GXz14OescIuI2
-         40zwIvE6WyMcA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id B30E85C03C6; Wed,  9 Feb 2022 14:06:01 -0800 (PST)
-Date:   Wed, 9 Feb 2022 14:06:01 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Mukesh Ojha <quic_mojha@quicinc.com>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, rostedt@goodmis.org, Tejun Heo <tj@kernel.org>
+        s=k20201202; t=1644449894;
+        bh=KFa4++TEaAXLAeJN/VQvwvpnzo4zYedWhTuwEdr/RBg=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=LKykyeSv7GnzxiJou5lpGzYV3DCEIbYLSKi37Nj0oF8LSdWvhvx6GpMG6xjxU43SF
+         LygnFVjUlrY/Svo4iTz/gLAkHA3vSQv0bDcFUuw/RGWEgn5c2BPkvN9lHzcYcBrYwI
+         G4uISAsfpbjzxcDgZv9kX3598i6879SKnqnIuRj43L+pBfmTQ7RBRRYTD2SiCmttRi
+         oxPWxjWK+6EcHDeNtsmzTUObwhvfJUK6Ew1YV4JipsD9zRyAlvggvUfsP8HVPcCVNf
+         TrzehjBljVulydJUJzAqO2Bh4jpH675Ye9NiJWvPz0EMMRGBANNMrQXP67WLviCWns
+         FSvRoAmtapdhA==
+Date:   Thu, 10 Feb 2022 00:38:11 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     paulmck@kernel.org
+Cc:     kernel-team@fb.com, linux-kernel@vger.kernel.org,
+        quic_mojha@quicinc.com, rcu@vger.kernel.org, rostedt@goodmis.org,
+        tj@kernel.org, Peter Zijlstra <peterz@infradead.org>
 Subject: Re: [PATCH rcu 3/3] rcu: Allow expedited RCU grace periods on
  incoming CPUs
-Message-ID: <20220209220601.GB4285@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220204225409.GA4193020@paulmck-ThinkPad-P17-Gen-1>
- <20220204225507.4193113-3-paulmck@kernel.org>
- <de3a9710-fbf4-8005-a781-adc95ae4a090@quicinc.com>
+Message-ID: <20220209233811.GC557593@lothringen>
+Reply-To: 20220204225507.4193113-3-paulmck@kernel.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <de3a9710-fbf4-8005-a781-adc95ae4a090@quicinc.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Feb 09, 2022 at 11:53:33PM +0530, Mukesh Ojha wrote:
+On Fri, Feb 04, 2022 at 02:55:07PM -0800, Paul E. McKenney wrote:
+> Although it is usually safe to invoke synchronize_rcu_expedited() from a
+> preemption-enabled CPU-hotplug notifier, if it is invoked from a notifier
+> between CPUHP_AP_RCUTREE_ONLINE and CPUHP_AP_ACTIVE, its attempts to
+> invoke a workqueue handler will hang due to RCU waiting on a CPU that
+> the scheduler is not paying attention to.  This commit therefore expands
+> use of the existing workqueue-independent synchronize_rcu_expedited()
+> from early boot to also include CPUs that are being hotplugged.
 > 
-> On 2/5/2022 4:25 AM, Paul E. McKenney wrote:
-> > Although it is usually safe to invoke synchronize_rcu_expedited() from a
-> > preemption-enabled CPU-hotplug notifier, if it is invoked from a notifier
-> > between CPUHP_AP_RCUTREE_ONLINE and CPUHP_AP_ACTIVE, its attempts to
-> > invoke a workqueue handler will hang due to RCU waiting on a CPU that
-> > the scheduler is not paying attention to.  This commit therefore expands
-> > use of the existing workqueue-independent synchronize_rcu_expedited()
-> > from early boot to also include CPUs that are being hotplugged.
-> > 
-> > Link: https://lore.kernel.org/lkml/7359f994-8aaf-3cea-f5cf-c0d3929689d6@quicinc.com/
-> > Reported-by: Mukesh Ojha <quic_mojha@quicinc.com>
-> > Cc: Tejun Heo <tj@kernel.org>
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > ---
-> >   kernel/rcu/tree_exp.h | 14 ++++++++++----
-> >   1 file changed, 10 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-> > index 60197ea24ceb9..1a45667402260 100644
-> > --- a/kernel/rcu/tree_exp.h
-> > +++ b/kernel/rcu/tree_exp.h
-> > @@ -816,7 +816,7 @@ static int rcu_print_task_exp_stall(struct rcu_node *rnp)
-> >    */
-> >   void synchronize_rcu_expedited(void)
-> >   {
-> > -	bool boottime = (rcu_scheduler_active == RCU_SCHEDULER_INIT);
-> > +	bool no_wq;
-> >   	struct rcu_exp_work rew;
-> >   	struct rcu_node *rnp;
-> >   	unsigned long s;
-> > @@ -841,9 +841,15 @@ void synchronize_rcu_expedited(void)
-> >   	if (exp_funnel_lock(s))
-> >   		return;  /* Someone else did our work for us. */
-> > +	/* Don't use workqueue during boot or from an incoming CPU. */
-> > +	preempt_disable();
-> > +	no_wq = rcu_scheduler_active == RCU_SCHEDULER_INIT ||
-> > +		!cpumask_test_cpu(smp_processor_id(), cpu_active_mask);
-> > +	preempt_enable();
-> > +
-> >   	/* Ensure that load happens before action based on it. */
-> > -	if (unlikely(boottime)) {
-> > -		/* Direct call during scheduler init and early_initcalls(). */
-> > +	if (unlikely(no_wq)) {
-> > +		/* Direct call for scheduler init, early_initcall()s, and incoming CPUs. */
-> >   		rcu_exp_sel_wait_wake(s);
-> >   	} else {
-> >   		/* Marshall arguments & schedule the expedited grace period. */
-> > @@ -861,7 +867,7 @@ void synchronize_rcu_expedited(void)
-> >   	/* Let the next expedited grace period start. */
-> >   	mutex_unlock(&rcu_state.exp_mutex);
-> > -	if (likely(!boottime))
-> > +	if (likely(!no_wq))
-> >   		destroy_work_on_stack(&rew.rew_work);
-> >   }
-> >   EXPORT_SYMBOL_GPL(synchronize_rcu_expedited);
-> 
-> Can we reach a condition after this change where no_wq = true and during
-> rcu_stall report where exp_task = 0 list and exp_mask contain only this cpu
-> ?
+> Link: https://lore.kernel.org/lkml/7359f994-8aaf-3cea-f5cf-c0d3929689d6@quicinc.com/
+> Reported-by: Mukesh Ojha <quic_mojha@quicinc.com>
+> Cc: Tejun Heo <tj@kernel.org>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
-Hello, Mukesh, and thank you for looking this over!
+I'm surprised by this scheduler behaviour.
 
-At first glance, I do not believe that this can happen because the
-expedited grace-period machinery avoids waiting on the current CPU.
-(See sync_rcu_exp_select_node_cpus(), both the raw_smp_processor_id()
-early in the function and the get_cpu() later in the function.)
+Since sched_cpu_activate() hasn't been called yet,
+rq->balance_callback = balance_push_callback. As a result, balance_push() should
+be called at the end of schedule() when the workqueue is picked as the next task.
+Then eventually the workqueue should be immediately preempted by the stop task to
+be migrated elsewhere.
 
-But please let me know if I am missing something here.
+So I must be missing something. For the fun, I booted the following and it
+didn't produce any issue:
 
-But suppose that we could in fact reach this condition.  What bad thing
-would happen?  Other than a resched_cpu() having been invoked several
-times on a not-yet-online CPU, of course.  ;-)
-
-							Thanx, Paul
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 80faf2273ce9..b1e74a508881 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -4234,6 +4234,8 @@ int rcutree_online_cpu(unsigned int cpu)
+ 
+ 	// Stop-machine done, so allow nohz_full to disable tick.
+ 	tick_dep_clear(TICK_DEP_BIT_RCU);
++	if (cpu != 0)
++		synchronize_rcu_expedited();
+ 	return 0;
+ }
+ 
