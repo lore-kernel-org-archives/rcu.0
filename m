@@ -2,98 +2,147 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 22C99C433EF
-	for <rcu@archiver.kernel.org>; Thu, 10 Feb 2022 09:14:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E8B8C433EF
+	for <rcu@archiver.kernel.org>; Thu, 10 Feb 2022 09:16:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238312AbiBJJO0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 10 Feb 2022 04:14:26 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:43594 "EHLO
+        id S238351AbiBJJQy (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 10 Feb 2022 04:16:54 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:44450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238298AbiBJJOZ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 10 Feb 2022 04:14:25 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37AC9F1C;
-        Thu, 10 Feb 2022 01:14:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=WhfsZGHRyj3BiYrePm2T7nfqolEn4234PiR7dKjI6oY=; b=q4NJZI6DxE2Kvi7IDsQkKmgYd+
-        CdvNqs4GIuOeJFL07OBuo6jwtRivpLI81AjuWAK6/X5/bATwaztFCccoCMOKOgc03i6EibzJI3zex
-        jiDMkf3RS+yh8mPUne5xny6D2Hs+o1qHbOe3Pv8xVEJTTnWkR82+c2sVrEy5oTt+Ov89Jtd6yla1l
-        JQmlCNuH0gck2TW8MO0xMhXcUQEkiPSaCSjD/eLqgX5JiM+NGur6WVyM/z3L/l2TnzwosdxIuUC20
-        3dBDXEmpxjcWUKkFe36yEwmqw0YpwEFQHpAS0mFAAPeVksb0F+hagIQzkB9qTmDOw9En54KjuiBnA
-        zuhFipnw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nI5WW-008f0W-PO; Thu, 10 Feb 2022 09:13:56 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 33B2F3002DB;
-        Thu, 10 Feb 2022 10:13:54 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 04AD2201D84A1; Thu, 10 Feb 2022 10:13:54 +0100 (CET)
-Date:   Thu, 10 Feb 2022 10:13:53 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Byungchul Park <byungchul.park@lge.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Radoslaw Burny <rburny@google.com>, Tejun Heo <tj@kernel.org>,
-        rcu <rcu@vger.kernel.org>, cgroups <cgroups@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: Re: [RFC 00/12] locking: Separate lock tracepoints from
- lockdep/lock_stat (v1)
-Message-ID: <YgTXUQ9CBoo3+A+c@hirez.programming.kicks-ass.net>
-References: <20220208184208.79303-1-namhyung@kernel.org>
- <20220209090908.GK23216@worktop.programming.kicks-ass.net>
- <CAM9d7cgq+jxu6FJuKhZkprn7dO4DiG5pDjmYZzneQYTfKOM85g@mail.gmail.com>
+        with ESMTP id S238352AbiBJJQy (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 10 Feb 2022 04:16:54 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9038BD94;
+        Thu, 10 Feb 2022 01:16:53 -0800 (PST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 209F01F391;
+        Thu, 10 Feb 2022 09:16:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1644484612; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=f7gjGLzCcS+dkKB2LjGxdCXQVS6KGJXLTYsZFU0/hOo=;
+        b=jKnfpg5tL+Xo5HCdCLh3mQSmaHKsDRFLMIpyfYfC0pV3P/CO4KF1v0cPaa1OnuKpPpkhiQ
+        l9jt5PPc+0r4uy193DSqIbPCGOMckfaYkSz+8wk07jMGiLv/AXAj4RyES9ZYV/4KJHe2eF
+        ztcXs1tVIcUDqw4JWtLth2QPTxHuoWM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1644484612;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=f7gjGLzCcS+dkKB2LjGxdCXQVS6KGJXLTYsZFU0/hOo=;
+        b=DE8G87xZnZbTvDbaSkCuOMTmoqD+OgDSA8NvmDz9ICPbbr0h6sKcDh5e/tFSMR9J+l8tP+
+        ZJtYB52aKP8t7dBQ==
+Received: from quack3.suse.cz (unknown [10.163.28.18])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 09AE4A3B81;
+        Thu, 10 Feb 2022 09:16:52 +0000 (UTC)
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id B15E3A05BC; Thu, 10 Feb 2022 10:16:48 +0100 (CET)
+Date:   Thu, 10 Feb 2022 10:16:48 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Jan Kara <jack@suse.cz>, Qian Cai <quic_qiancai@quicinc.com>,
+        Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.com>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boqun Feng <boqun.feng@gmail.com>, linux-ext4@vger.kernel.org,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] jbd2: avoid __GFP_ZERO with SLAB_TYPESAFE_BY_RCU
+Message-ID: <20220210091648.w5wie3llqri5kfw3@quack3.lan>
+References: <20220209165742.5659-1-quic_qiancai@quicinc.com>
+ <20220209181010.gfn66rvip56i54df@quack3.lan>
+ <20220209201137.GY4285@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAM9d7cgq+jxu6FJuKhZkprn7dO4DiG5pDjmYZzneQYTfKOM85g@mail.gmail.com>
+In-Reply-To: <20220209201137.GY4285@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Feb 09, 2022 at 04:32:58PM -0800, Namhyung Kim wrote:
-> On Wed, Feb 9, 2022 at 1:09 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > On Tue, Feb 08, 2022 at 10:41:56AM -0800, Namhyung Kim wrote:
-> >
-> > > Eventually I'm mostly interested in the contended locks only and I
-> > > want to reduce the overhead in the fast path.  By moving that, it'd be
-> > > easy to track contended locks with timing by using two tracepoints.
-> >
-> > So why not put in two new tracepoints and call it a day?
-> >
-> > Why muck about with all that lockdep stuff just to preserve the name
-> > (and in the process continue to blow up data structures etc..). This
-> > leaves distros in a bind, will they enable this config and provide
-> > tracepoints while bloating the data structures and destroying things
-> > like lockref (which relies on sizeof(spinlock_t)), or not provide this
-> > at all.
+On Wed 09-02-22 12:11:37, Paul E. McKenney wrote:
+> On Wed, Feb 09, 2022 at 07:10:10PM +0100, Jan Kara wrote:
+> > On Wed 09-02-22 11:57:42, Qian Cai wrote:
+> > > Since the linux-next commit 120aa5e57479 (mm: Check for
+> > > SLAB_TYPESAFE_BY_RCU and __GFP_ZERO slab allocation), we will get a
+> > > boot warning. Avoid it by calling synchronize_rcu() before the zeroing.
+> > > 
+> > > Signed-off-by: Qian Cai <quic_qiancai@quicinc.com>
+> > 
+> > No, the performance impact of this would be just horrible. Can you
+> > ellaborate a bit why SLAB_TYPESAFE_BY_RCU + __GFP_ZERO is a problem and why
+> > synchronize_rcu() would be needed here before the memset() please? I mean
+> > how is zeroing here any different from the memory just being used?
 > 
-> If it's only lockref, is it possible to change it to use arch_spinlock_t
-> so that it can remain in 4 bytes?  It'd be really nice if we can keep
-> spin lock size, but it'd be easier to carry the name with it for
-> analysis IMHO.
+> Suppose a reader picks up a pointer to a memory block, then that memory
+> is freed.  No problem, given that this is a SLAB_TYPESAFE_BY_RCU slab,
+> so the memory won't be freed while the reader is accessing it.  But while
+> the reader is in the process of validating the block, it is zeroed.
+> 
+> How does the validation step handle this in all cases?
+> 
+> If you have a way of handling this, I will of course drop the patch.
+> And learn something new, which is always a good thing.  ;-)
 
-It's just vile and disgusting to blow up the lock size for convenience
-like this.
+So I maybe missed something when implementing the usage of journal_heads
+under RCU but let's have a look. An example of RCU user of journal heads
+is fs/jbd2/transaction.c:jbd2_write_access_granted(). It does:
 
-And no, there's more of that around. A lot of effort has been spend to
-make sure spinlocks are 32bit and we're not going to give that up for
-something as daft as this.
+        rcu_read_lock();
 
-Just think harder on the analysis side. Like said; I'm thinking the
-caller IP should be good enough most of the time.
+	// This part fetches journal_head from buffer_head - not related to
+	// our slab RCU discussion
+
+        if (!buffer_jbd(bh))
+                goto out;
+        /* This should be bh2jh() but that doesn't work with inline functions */
+        jh = READ_ONCE(bh->b_private);
+        if (!jh)
+                goto out;
+
+	// The validation comes here
+
+        /* For undo access buffer must have data copied */
+        if (undo && !jh->b_committed_data)
+                goto out;
+        if (READ_ONCE(jh->b_transaction) != handle->h_transaction &&
+            READ_ONCE(jh->b_next_transaction) != handle->h_transaction)
+                goto out;
+	
+	// Then some more checks unrelated to the slab itself.
+
+        /*
+         * There are two reasons for the barrier here:
+         * 1) Make sure to fetch b_bh after we did previous checks so that we
+         * detect when jh went through free, realloc, attach to transaction
+         * while we were checking. Paired with implicit barrier in that path.
+         * 2) So that access to bh done after jbd2_write_access_granted()
+         * doesn't get reordered and see inconsistent state of concurrent
+         * do_get_write_access().
+         */
+        smp_mb();
+        if (unlikely(jh->b_bh != bh))
+                goto out;
+
+	// If all passed
+
+	rcu_read_unlock();
+	return true;
+
+So if we are going to return true from the function, we know that 'jh' was
+attached to handle->h_transaction at some point. And when 'jh' was attached
+to handle->h_transaction, the transaction was holding reference to the 'jh'
+and our 'handle' holds reference to the transaction so 'jh' could not be
+freed since that moment. I.e., we are sure our reference to the handle keeps
+'jh' alive and we can safely use it.
+
+I don't see how any amount of scribbling over 'jh' could break this
+validation. But maybe it is just a lack of my imagination :).
+
+								Honza
+
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
