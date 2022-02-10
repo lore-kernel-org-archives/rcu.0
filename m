@@ -2,114 +2,71 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 68954C433FE
-	for <rcu@archiver.kernel.org>; Thu, 10 Feb 2022 02:12:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D104C433F5
+	for <rcu@archiver.kernel.org>; Thu, 10 Feb 2022 04:38:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229805AbiBJCMc (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 9 Feb 2022 21:12:32 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:35006 "EHLO
+        id S233352AbiBJEiy (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 9 Feb 2022 23:38:54 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:59710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbiBJCM2 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 9 Feb 2022 21:12:28 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9D4231172
-        for <rcu@vger.kernel.org>; Wed,  9 Feb 2022 18:12:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1644459149;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=P6vE7TMM8XQmUx/JZEXZ7KbzC9HN6qrtMSQNLqqgwc0=;
-        b=ddXPrwNEO+pE2Uf6q345g5Y8KJxn5AHWSTDjxUpNBr4enafjaHDtsLgV5UH5kCKCZZfBbz
-        ua0wTvdWiwPU8wD/scrA7E8QYltoKcuPWX8XDFD4HKeZr9PgMr8YWP43aFXw9yaBWryXtQ
-        3cQri0oLi+wpLo4helgocVc2MLQTAJM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-319-ouDSCyF9O2mGWJ3xs_HXuA-1; Wed, 09 Feb 2022 21:12:26 -0500
-X-MC-Unique: ouDSCyF9O2mGWJ3xs_HXuA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8A4731937FC1;
-        Thu, 10 Feb 2022 02:12:23 +0000 (UTC)
-Received: from [10.22.9.207] (unknown [10.22.9.207])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9BD924ABAF;
-        Thu, 10 Feb 2022 02:12:20 +0000 (UTC)
-Message-ID: <8c85f624-690e-1b96-2e7e-2c1695373437@redhat.com>
-Date:   Wed, 9 Feb 2022 21:12:20 -0500
+        with ESMTP id S229489AbiBJEix (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 9 Feb 2022 23:38:53 -0500
+X-Greylist: delayed 1774 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 09 Feb 2022 20:38:55 PST
+Received: from mail104.syd.optusnet.com.au (mail104.syd.optusnet.com.au [211.29.132.246])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 252C013E
+        for <rcu@vger.kernel.org>; Wed,  9 Feb 2022 20:38:55 -0800 (PST)
+Received: from dread.disaster.area (pa49-180-69-7.pa.nsw.optusnet.com.au [49.180.69.7])
+        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 8620652CDF8;
+        Thu, 10 Feb 2022 15:09:18 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1nI0lh-00AD2c-GS; Thu, 10 Feb 2022 15:09:17 +1100
+Date:   Thu, 10 Feb 2022 15:09:17 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Brian Foster <bfoster@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>, linux-xfs@vger.kernel.org,
+        Ian Kent <raven@themaw.net>, rcu@vger.kernel.org
+Subject: Re: [PATCH] xfs: require an rcu grace period before inode recycle
+Message-ID: <20220210040917.GN59729@dread.disaster.area>
+References: <YfBBzHascwVnefYY@bfoster>
+ <20220125224551.GQ59729@dread.disaster.area>
+ <YfIdVq6R6xEWxy0K@zeniv-ca.linux.org.uk>
+ <20220127052609.GR59729@dread.disaster.area>
+ <YfLsBdPBSsyPFgHJ@bfoster>
+ <20220128213911.GO4285@paulmck-ThinkPad-P17-Gen-1>
+ <Yffioz+t9cjZbIBv@bfoster>
+ <20220201220028.GH4285@paulmck-ThinkPad-P17-Gen-1>
+ <YgEe21z+WUvpQa0N@bfoster>
+ <20220207163621.GC4285@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.0
-Subject: Re: [RFC 00/12] locking: Separate lock tracepoints from
- lockdep/lock_stat (v1)
-Content-Language: en-US
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        rostedt <rostedt@goodmis.org>,
-        Byungchul Park <byungchul.park@lge.com>,
-        Radoslaw Burny <rburny@google.com>, Tejun Heo <tj@kernel.org>,
-        rcu <rcu@vger.kernel.org>, cgroups <cgroups@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        paulmck <paulmck@kernel.org>
-References: <20220208184208.79303-1-namhyung@kernel.org>
- <20220209090908.GK23216@worktop.programming.kicks-ass.net>
- <24fe6a08-5931-8e8d-8d77-459388c4654e@redhat.com>
- <919214156.50301.1644431371345.JavaMail.zimbra@efficios.com>
- <69e5f778-8715-4acf-c027-58b6ec4a9e77@redhat.com>
- <CAM9d7ci=N2NVj57k=W0ebqBzfW+ThBqYSrx-CZbgwGcbOSrEGA@mail.gmail.com>
- <718973621.50447.1644434890744.JavaMail.zimbra@efficios.com>
- <CAM9d7cj=tj6pA48q_wkQOGn-2vUc9FRj63bMBOm5R7OukmMbTQ@mail.gmail.com>
- <f8b7760f-16a2-6ada-de88-9e21a7e8fef9@redhat.com>
- <CAM9d7chH0Pvxx_FURL0sZvawwenRmjPyfac_9oinOaRwv8isng@mail.gmail.com>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <CAM9d7chH0Pvxx_FURL0sZvawwenRmjPyfac_9oinOaRwv8isng@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220207163621.GC4285@paulmck-ThinkPad-P17-Gen-1>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.4 cv=e9dl9Yl/ c=1 sm=1 tr=0 ts=62048ff0
+        a=NB+Ng1P8A7U24Uo7qoRq4Q==:117 a=NB+Ng1P8A7U24Uo7qoRq4Q==:17
+        a=kj9zAlcOel0A:10 a=oGFeUVbbRNcA:10 a=7-415B0cAAAA:8
+        a=C9m1K0M7fvvbcdc01KQA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Mon, Feb 07, 2022 at 08:36:21AM -0800, Paul E. McKenney wrote:
+> On Mon, Feb 07, 2022 at 08:30:03AM -0500, Brian Foster wrote:
+> Another approach is to use SLAB_TYPESAFE_BY_RCU.  This allows immediate
+> reuse of freed memory, but also requires pointer traversals to the memory
+> to do a revalidation operation.  (Sorry, no free lunch here!)
 
-On 2/9/22 19:27, Namhyung Kim wrote:
-> On Wed, Feb 9, 2022 at 12:17 PM Waiman Long <longman@redhat.com> wrote:
->>
->> On 2/9/22 14:45, Namhyung Kim wrote:
->>> On Wed, Feb 9, 2022 at 11:28 AM Mathieu Desnoyers
->>> <mathieu.desnoyers@efficios.com> wrote:
->>>> ----- On Feb 9, 2022, at 2:22 PM, Namhyung Kim namhyung@kernel.org wrote:
->>>>> I'm also concerning dynamic allocated locks in a data structure.
->>>>> If we keep the info in a hash table, we should delete it when the
->>>>> lock is gone.  I'm not sure we have a good place to hook it up all.
->>>> I was wondering about this use case as well. Can we make it mandatory to
->>>> declare the lock "class" (including the name) statically, even though the
->>>> lock per-se is allocated dynamically ? Then the initialization of the lock
->>>> embedded within the data structure would simply refer to the lock class
->>>> definition.
->>> Isn't it still the same if we have static lock classes that the entry needs
->>> to be deleted from the hash table when it frees the data structure?
->>> I'm more concerned about free than alloc as there seems to be no
->>> API to track that in a place.
->> We may have to invent some new APIs to do that. For example,
->> spin_lock_exit() can be the counterpart of spin_lock_init() and so on.
->> Of course, existing kernel code have to be modified to designate the
->> point after which a lock is no longer being used or is freed.
-> Yeah, but I'm afraid that it could be easy to miss something.
-> Also it would add some runtime overhead due to maintaining
-> the hash table even if the tracepoints are not used.
-
-Yes, there is some overhead at lock init and exit time, but it is 
-generally negligible if the lock is used multiple times. The hash table 
-will consume some additional memory if configured, but it shouldn't be much.
+Can't do that with inodes - newly allocated/reused inodes have to go
+through inode_init_always() which is the very function that causes
+the problems we have now with path-walk tripping over inodes in an
+intermediate re-initialised state because we recycled it inside a
+RCU grace period.
 
 Cheers,
-Longman
 
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
