@@ -2,104 +2,98 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88B0DC433F5
-	for <rcu@archiver.kernel.org>; Thu, 10 Feb 2022 06:58:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 22C99C433EF
+	for <rcu@archiver.kernel.org>; Thu, 10 Feb 2022 09:14:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235768AbiBJG6p (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 10 Feb 2022 01:58:45 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:59150 "EHLO
+        id S238312AbiBJJO0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 10 Feb 2022 04:14:26 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:43594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232769AbiBJG6p (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 10 Feb 2022 01:58:45 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D683E10A6;
-        Wed,  9 Feb 2022 22:58:46 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id s18so7762254wrv.7;
-        Wed, 09 Feb 2022 22:58:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=u78B18o9gcsc4cL6IkzErLE1PeBzNrlXsUNhAfo/eQA=;
-        b=Z+CyvLG7KD/HpWPAArX/wKn2XNrlxk7iy8frG7an2ljCw2UYm4L+d2nlDwDzVHi3lP
-         jFbwovb1dRqTM/2101G1HUM/8mtO8uLvQ0gVqEf3ulnKJeMOY6IJVtgcy35mntS9byQy
-         alpXiBuP+DJ5fBtj4gakO1YdgI1d2qoUG5bvX2ecVuzvRQZkkl7FOGaxxOeyvuAXZpsa
-         Cmss2vfY1cWUZu/F+ggYvG6vOhgeVCyXVfM820UicCMYzO15VyUl9/aH3zciHnzreBM6
-         GuOrzWPgzGxeROCjQqdoDth5TVAsYGaY6KRNT/CU6VNNsoVZsMWbHG4/qIdEXwyFqVcQ
-         zIVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=u78B18o9gcsc4cL6IkzErLE1PeBzNrlXsUNhAfo/eQA=;
-        b=7hQC74p9wrnPHl090WuYi3ahoM5g4Z96XBRKq3MA8yWl8ASFqKZABGB8ab1ajuFKtq
-         L4abT5xbAtG3CvnKVgoOBhXDpm24bLzT3oWCvWkbCRYRsEKEfJXBR2osEOFnx2zDKE+/
-         f9f3GphJEVuYgvbpDgCp5LZvwUHWjp1mdNCxFs4gRaWKdBZJWLu72EPOoAmmpg4fMEJj
-         VoOZeFOak1U5u4Tpqnkd5vfIOE4lR9rS7VudbTskFLy6y4GI5qNTXr4j622/wbI0UHlj
-         Xze8dThYKTyTtvE5aVpUyrySCeKQSSq59lkrQiZvp1AbMH57url3FeFAI9/Kx4s9V7k9
-         a7Cg==
-X-Gm-Message-State: AOAM5306zu3pR1xbwZx03Am2sUF4IfcgqjoPmIQkrZOadUltZPhohb1L
-        0gPfqh0apENiWffzl99RW3+JqztSp33T7q4R
-X-Google-Smtp-Source: ABdhPJwe+XGoIjBrzTJSHQ7oKv5mlppiFkBHW6003ML4aU0ugi6ehTht+78ijXA2D7tO+Ul/JUwQrA==
-X-Received: by 2002:a05:6000:178f:: with SMTP id e15mr5133719wrg.439.1644476324368;
-        Wed, 09 Feb 2022 22:58:44 -0800 (PST)
-Received: from localhost.localdomain ([64.64.123.24])
-        by smtp.gmail.com with ESMTPSA id v9sm6621456wrw.84.2022.02.09.22.58.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Feb 2022 22:58:44 -0800 (PST)
-From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
-To:     daniel@ffwll.ch, deller@gmx.de, sam@ravnborg.org,
-        linux@roeck-us.net, willy@infradead.org,
-        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, paulmck@kernel.org,
-        rcu@vger.kernel.org, pmenzel@molgen.mpg.de
-Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>
-Subject: [PATCH linux-next] video: fbdev: fbmem: fix pointer reference to null device field
-Date:   Thu, 10 Feb 2022 14:58:24 +0800
-Message-Id: <20220210065824.368355-1-zhouzhouyi@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S238298AbiBJJOZ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 10 Feb 2022 04:14:25 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37AC9F1C;
+        Thu, 10 Feb 2022 01:14:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=WhfsZGHRyj3BiYrePm2T7nfqolEn4234PiR7dKjI6oY=; b=q4NJZI6DxE2Kvi7IDsQkKmgYd+
+        CdvNqs4GIuOeJFL07OBuo6jwtRivpLI81AjuWAK6/X5/bATwaztFCccoCMOKOgc03i6EibzJI3zex
+        jiDMkf3RS+yh8mPUne5xny6D2Hs+o1qHbOe3Pv8xVEJTTnWkR82+c2sVrEy5oTt+Ov89Jtd6yla1l
+        JQmlCNuH0gck2TW8MO0xMhXcUQEkiPSaCSjD/eLqgX5JiM+NGur6WVyM/z3L/l2TnzwosdxIuUC20
+        3dBDXEmpxjcWUKkFe36yEwmqw0YpwEFQHpAS0mFAAPeVksb0F+hagIQzkB9qTmDOw9En54KjuiBnA
+        zuhFipnw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1nI5WW-008f0W-PO; Thu, 10 Feb 2022 09:13:56 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 33B2F3002DB;
+        Thu, 10 Feb 2022 10:13:54 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 04AD2201D84A1; Thu, 10 Feb 2022 10:13:54 +0100 (CET)
+Date:   Thu, 10 Feb 2022 10:13:53 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Byungchul Park <byungchul.park@lge.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Radoslaw Burny <rburny@google.com>, Tejun Heo <tj@kernel.org>,
+        rcu <rcu@vger.kernel.org>, cgroups <cgroups@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: Re: [RFC 00/12] locking: Separate lock tracepoints from
+ lockdep/lock_stat (v1)
+Message-ID: <YgTXUQ9CBoo3+A+c@hirez.programming.kicks-ass.net>
+References: <20220208184208.79303-1-namhyung@kernel.org>
+ <20220209090908.GK23216@worktop.programming.kicks-ass.net>
+ <CAM9d7cgq+jxu6FJuKhZkprn7dO4DiG5pDjmYZzneQYTfKOM85g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAM9d7cgq+jxu6FJuKhZkprn7dO4DiG5pDjmYZzneQYTfKOM85g@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-In function do_remove_conflicting_framebuffers, if device is NULL, there
-will be null pointer reference. The patch add a check to the if expression.
+On Wed, Feb 09, 2022 at 04:32:58PM -0800, Namhyung Kim wrote:
+> On Wed, Feb 9, 2022 at 1:09 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > On Tue, Feb 08, 2022 at 10:41:56AM -0800, Namhyung Kim wrote:
+> >
+> > > Eventually I'm mostly interested in the contended locks only and I
+> > > want to reduce the overhead in the fast path.  By moving that, it'd be
+> > > easy to track contended locks with timing by using two tracepoints.
+> >
+> > So why not put in two new tracepoints and call it a day?
+> >
+> > Why muck about with all that lockdep stuff just to preserve the name
+> > (and in the process continue to blow up data structures etc..). This
+> > leaves distros in a bind, will they enable this config and provide
+> > tracepoints while bloating the data structures and destroying things
+> > like lockref (which relies on sizeof(spinlock_t)), or not provide this
+> > at all.
+> 
+> If it's only lockref, is it possible to change it to use arch_spinlock_t
+> so that it can remain in 4 bytes?  It'd be really nice if we can keep
+> spin lock size, but it'd be easier to carry the name with it for
+> analysis IMHO.
 
-Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
----
-Dear Linux folks
+It's just vile and disgusting to blow up the lock size for convenience
+like this.
 
-I discover this bug in the PowerPC VM provided by
-Open source lab of Oregon State University:
+And no, there's more of that around. A lot of effort has been spend to
+make sure spinlocks are 32bit and we're not going to give that up for
+something as daft as this.
 
-https://lkml.org/lkml/2022/2/8/1145
-
-I found that the root cause of null device field is in offb_init_fb:
-info = framebuffer_alloc(sizeof(u32) * 16, NULL);
-
-I have tested the patch in the PowerPC VM. Hope my patch can be correct.
-
-Many Thanks
-Zhouyi
---
- drivers/video/fbdev/core/fbmem.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/video/fbdev/core/fbmem.c b/drivers/video/fbdev/core/fbmem.c
-index 34d6bb1bf82e..422b1fc01722 100644
---- a/drivers/video/fbdev/core/fbmem.c
-+++ b/drivers/video/fbdev/core/fbmem.c
-@@ -1579,7 +1579,7 @@ static void do_remove_conflicting_framebuffers(struct apertures_struct *a,
- 			 * If it's not a platform device, at least print a warning. A
- 			 * fix would add code to remove the device from the system.
- 			 */
--			if (dev_is_platform(device)) {
-+			if (device && dev_is_platform(device)) {
- 				registered_fb[i]->forced_out = true;
- 				platform_device_unregister(to_platform_device(device));
- 			} else {
--- 
-2.25.1
-
+Just think harder on the analysis side. Like said; I'm thinking the
+caller IP should be good enough most of the time.
