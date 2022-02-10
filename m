@@ -2,71 +2,114 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D104C433F5
-	for <rcu@archiver.kernel.org>; Thu, 10 Feb 2022 04:38:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DADFEC433EF
+	for <rcu@archiver.kernel.org>; Thu, 10 Feb 2022 05:11:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233352AbiBJEiy (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 9 Feb 2022 23:38:54 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:59710 "EHLO
+        id S232536AbiBJFLT (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 10 Feb 2022 00:11:19 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:43080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229489AbiBJEix (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 9 Feb 2022 23:38:53 -0500
-X-Greylist: delayed 1774 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 09 Feb 2022 20:38:55 PST
-Received: from mail104.syd.optusnet.com.au (mail104.syd.optusnet.com.au [211.29.132.246])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 252C013E
-        for <rcu@vger.kernel.org>; Wed,  9 Feb 2022 20:38:55 -0800 (PST)
-Received: from dread.disaster.area (pa49-180-69-7.pa.nsw.optusnet.com.au [49.180.69.7])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 8620652CDF8;
-        Thu, 10 Feb 2022 15:09:18 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1nI0lh-00AD2c-GS; Thu, 10 Feb 2022 15:09:17 +1100
-Date:   Thu, 10 Feb 2022 15:09:17 +1100
-From:   Dave Chinner <david@fromorbit.com>
+        with ESMTP id S231807AbiBJFLT (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 10 Feb 2022 00:11:19 -0500
+X-Greylist: delayed 200 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 09 Feb 2022 21:11:20 PST
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBFED290
+        for <rcu@vger.kernel.org>; Wed,  9 Feb 2022 21:11:19 -0800 (PST)
+Received: from cwcc.thunk.org (pool-108-7-220-252.bstnma.fios.verizon.net [108.7.220.252])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 21A57X4O005422
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Feb 2022 00:07:34 -0500
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 96ED815C0040; Thu, 10 Feb 2022 00:07:33 -0500 (EST)
+Date:   Thu, 10 Feb 2022 00:07:33 -0500
+From:   "Theodore Ts'o" <tytso@mit.edu>
 To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Brian Foster <bfoster@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>, linux-xfs@vger.kernel.org,
-        Ian Kent <raven@themaw.net>, rcu@vger.kernel.org
-Subject: Re: [PATCH] xfs: require an rcu grace period before inode recycle
-Message-ID: <20220210040917.GN59729@dread.disaster.area>
-References: <YfBBzHascwVnefYY@bfoster>
- <20220125224551.GQ59729@dread.disaster.area>
- <YfIdVq6R6xEWxy0K@zeniv-ca.linux.org.uk>
- <20220127052609.GR59729@dread.disaster.area>
- <YfLsBdPBSsyPFgHJ@bfoster>
- <20220128213911.GO4285@paulmck-ThinkPad-P17-Gen-1>
- <Yffioz+t9cjZbIBv@bfoster>
- <20220201220028.GH4285@paulmck-ThinkPad-P17-Gen-1>
- <YgEe21z+WUvpQa0N@bfoster>
- <20220207163621.GC4285@paulmck-ThinkPad-P17-Gen-1>
+Cc:     Jan Kara <jack@suse.cz>, Qian Cai <quic_qiancai@quicinc.com>,
+        Jan Kara <jack@suse.com>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boqun Feng <boqun.feng@gmail.com>, linux-ext4@vger.kernel.org,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] jbd2: avoid __GFP_ZERO with SLAB_TYPESAFE_BY_RCU
+Message-ID: <YgSdlew4B5FWY6Qm@mit.edu>
+References: <20220209165742.5659-1-quic_qiancai@quicinc.com>
+ <20220209181010.gfn66rvip56i54df@quack3.lan>
+ <20220209201137.GY4285@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220207163621.GC4285@paulmck-ThinkPad-P17-Gen-1>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.4 cv=e9dl9Yl/ c=1 sm=1 tr=0 ts=62048ff0
-        a=NB+Ng1P8A7U24Uo7qoRq4Q==:117 a=NB+Ng1P8A7U24Uo7qoRq4Q==:17
-        a=kj9zAlcOel0A:10 a=oGFeUVbbRNcA:10 a=7-415B0cAAAA:8
-        a=C9m1K0M7fvvbcdc01KQA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <20220209201137.GY4285@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Feb 07, 2022 at 08:36:21AM -0800, Paul E. McKenney wrote:
-> On Mon, Feb 07, 2022 at 08:30:03AM -0500, Brian Foster wrote:
-> Another approach is to use SLAB_TYPESAFE_BY_RCU.  This allows immediate
-> reuse of freed memory, but also requires pointer traversals to the memory
-> to do a revalidation operation.  (Sorry, no free lunch here!)
+On Wed, Feb 09, 2022 at 12:11:37PM -0800, Paul E. McKenney wrote:
+> On Wed, Feb 09, 2022 at 07:10:10PM +0100, Jan Kara wrote:
+> > 
+> > No, the performance impact of this would be just horrible. Can you
+> > ellaborate a bit why SLAB_TYPESAFE_BY_RCU + __GFP_ZERO is a problem and why
+> > synchronize_rcu() would be needed here before the memset() please? I mean
+> > how is zeroing here any different from the memory just being used?
+> 
+> Suppose a reader picks up a pointer to a memory block, then that memory
+> is freed.  No problem, given that this is a SLAB_TYPESAFE_BY_RCU slab,
+> so the memory won't be freed while the reader is accessing it.  But while
+> the reader is in the process of validating the block, it is zeroed.
+> 
+> How does the validation step handle this in all cases?
+> 
+> If you have a way of handling this, I will of course drop the patch.
+> And learn something new, which is always a good thing.  ;-)
 
-Can't do that with inodes - newly allocated/reused inodes have to go
-through inode_init_always() which is the very function that causes
-the problems we have now with path-walk tripping over inodes in an
-intermediate re-initialised state because we recycled it inside a
-RCU grace period.
+I must be missing something.  The change is on the allocation path,
+and why would kmem_cache_[z]alloc() return a memory chunk which could
+still be in use by a reader?  Shouldn't the allocator _not_ return a
+particular chunk until it is sure there aren't any readers left that
+would be discombobulated by that memory being used for some new use
+case?
 
-Cheers,
+Otherwise we would have to add synchronize_rcu(); after every single
+kmem_cache allocation which might be using RCU, and that would be
+terrible, no?
 
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+					- Ted
+
+
+> > > ---
+> > >  fs/jbd2/journal.c | 9 ++++++---
+> > >  1 file changed, 6 insertions(+), 3 deletions(-)
+> > > 
+> > > diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+> > > index c2cf74b01ddb..323112de5921 100644
+> > > --- a/fs/jbd2/journal.c
+> > > +++ b/fs/jbd2/journal.c
+> > > @@ -2861,15 +2861,18 @@ static struct journal_head *journal_alloc_journal_head(void)
+> > >  #ifdef CONFIG_JBD2_DEBUG
+> > >  	atomic_inc(&nr_journal_heads);
+> > >  #endif
+> > > -	ret = kmem_cache_zalloc(jbd2_journal_head_cache, GFP_NOFS);
+> > > +	ret = kmem_cache_alloc(jbd2_journal_head_cache, GFP_NOFS);
+> > >  	if (!ret) {
+> > >  		jbd_debug(1, "out of memory for journal_head\n");
+> > >  		pr_notice_ratelimited("ENOMEM in %s, retrying.\n", __func__);
+> > > -		ret = kmem_cache_zalloc(jbd2_journal_head_cache,
+> > > +		ret = kmem_cache_alloc(jbd2_journal_head_cache,
+> > >  				GFP_NOFS | __GFP_NOFAIL);
+> > >  	}
+> > > -	if (ret)
+> > > +	if (ret) {
+> > > +		synchronize_rcu();
+> > > +		memset(ret, 0, sizeof(*ret));
+> > >  		spin_lock_init(&ret->b_state_lock);
+> > > +	}
+> > >  	return ret;
+> > >  }
+> > >  
+> > > -- 
+> > > 2.30.2
+> > > 
+> > -- 
+> > Jan Kara <jack@suse.com>
+> > SUSE Labs, CR
