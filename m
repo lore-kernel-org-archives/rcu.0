@@ -2,114 +2,62 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DB9C0C433F5
-	for <rcu@archiver.kernel.org>; Fri, 11 Feb 2022 05:57:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 77FBAC433EF
+	for <rcu@archiver.kernel.org>; Fri, 11 Feb 2022 08:42:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237171AbiBKF55 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 11 Feb 2022 00:57:57 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:40330 "EHLO
+        id S231966AbiBKIma (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 11 Feb 2022 03:42:30 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:34900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235310AbiBKF55 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 11 Feb 2022 00:57:57 -0500
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2FBBB98;
-        Thu, 10 Feb 2022 21:57:56 -0800 (PST)
-Received: by mail-lf1-f50.google.com with SMTP id i34so14570177lfv.2;
-        Thu, 10 Feb 2022 21:57:56 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YHj2jwcJGwmoQOFICOnj7VYD0ZfKr1aHs76v7p1GNas=;
-        b=uwhFFmZaoJ0Cr/wimNIHZZ6x4a/+thc3/aS8+HS65kdqj1dm1UHjNKzHcxEQAuTk0z
-         phMs+5h3zEdSmiuDODWMVs2PIaEgINGUz1lsxLjf3qd56szk8QAUu9oMCTJD5yogmJhM
-         jF77iSL6eB+659tby+T2+CKs3EZ2iH1iTMQ0pAoaKUsdiKnG1WN6Z6CRaJwLE0LPKIAS
-         rEINvMt2KQAlNLorAaTv4JVBIAGjGksB+vZ3jk2yr3sHlujQjBm2f5sspgdjakqd4inv
-         AD+4pRRB1WvR6AKuT8QpapzOJZft6MiAF4ChmUR06WNHPtRei8coh5IGxO3aZgflOOgS
-         jbYQ==
-X-Gm-Message-State: AOAM531bK8J1RQZyOuJcdBKg5JKSd7LKo1TuF+K/FSjRIrI5UhabkRJh
-        esU+YmVcImVZVtk+mSQhqh7azqW7cd+tx9qx6IAZ8WSa
-X-Google-Smtp-Source: ABdhPJy2dlN3fWiUhcT5boKFhlYkHBnGFHgB3K+4K4i+akzobdalchyFHlfYniU0eYARcVvOesbduvyh2ZcH9Ept6BA=
-X-Received: by 2002:a05:6512:3186:: with SMTP id i6mr131920lfe.47.1644559074965;
- Thu, 10 Feb 2022 21:57:54 -0800 (PST)
+        with ESMTP id S240464AbiBKIma (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 11 Feb 2022 03:42:30 -0500
+X-Greylist: delayed 334 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 11 Feb 2022 00:42:29 PST
+Received: from mail.24vie.pl (mail.24vie.pl [217.61.120.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFDD7E65
+        for <rcu@vger.kernel.org>; Fri, 11 Feb 2022 00:42:29 -0800 (PST)
+Received: by mail.24vie.pl (Postfix, from userid 1001)
+        id B0CE4A291F; Fri, 11 Feb 2022 08:36:32 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=24vie.pl; s=mail;
+        t=1644568613; bh=F7xWRdlpFQ24umbJm+VOTepUBB16dhzzDWjrh2jn0x4=;
+        h=Date:From:To:Subject:From;
+        b=lcir0nUBIJkPULlK9wtYUSxmGRUjukJZ5h73leKg5P66JGWTGXnYVe/Xq+UY93pYg
+         MIIpsU7qPiWhRhI4JtI3K5mMwUDBzSXMrVrY+YRz8QMrfHhdHhye4XOk247aRO1mrP
+         GYg4FA+kefCJa8cqT+7cBWHF7WpfNmMXFfkyhEOOoTlOi8Qao23/ij4nRrflX5a0M3
+         ovLaiongmkVqxVwjwaBazT1uqsVa+28FO71Lqp1xWIG8Mm0plteICH+PIWMNilaDSk
+         6nb4GrboK4m7NRqZPBy3KNdgxNSgyUuIhtzZfI9U1cW3hee4a5c6lXexaBcjSAWtZL
+         DOIDPdK9nG2lA==
+Received: by mail.24vie.pl for <rcu@vger.kernel.org>; Fri, 11 Feb 2022 08:36:12 GMT
+Message-ID: <20220211074500-0.1.4h.dke7.0.iaf9fvcnu6@24vie.pl>
+Date:   Fri, 11 Feb 2022 08:36:12 GMT
+From:   =?UTF-8?Q? "Przemys=C5=82aw_Wr=C3=B3blewski" ?= 
+        <przemyslaw.wroblewski@24vie.pl>
+To:     <rcu@vger.kernel.org>
+Subject: Fotowoltaika- propozycja instalacji
+X-Mailer: mail.24vie.pl
 MIME-Version: 1.0
-References: <20220208184208.79303-1-namhyung@kernel.org> <20220209090908.GK23216@worktop.programming.kicks-ass.net>
- <CAM9d7cgq+jxu6FJuKhZkprn7dO4DiG5pDjmYZzneQYTfKOM85g@mail.gmail.com>
- <YgTXUQ9CBoo3+A+c@hirez.programming.kicks-ass.net> <20220210191404.GM4285@paulmck-ThinkPad-P17-Gen-1>
- <52de2e14-33d9-bdda-4b37-3e72ae9954c7@redhat.com> <20220210201058.GP4285@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20220210201058.GP4285@paulmck-ThinkPad-P17-Gen-1>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Thu, 10 Feb 2022 21:57:43 -0800
-Message-ID: <CAM9d7cj-PhX16jKu8DT=tfVf=OfH78xYYaMB8BVk-Hj_eoR4kQ@mail.gmail.com>
-Subject: Re: [RFC 00/12] locking: Separate lock tracepoints from
- lockdep/lock_stat (v1)
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Waiman Long <longman@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Byungchul Park <byungchul.park@lge.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Radoslaw Burny <rburny@google.com>, Tejun Heo <tj@kernel.org>,
-        rcu <rcu@vger.kernel.org>, cgroups <cgroups@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Paul,
+Dzie=C5=84 dobry,
+=20
+Czy rozwa=C5=BCali Pa=C5=84stwo monta=C5=BC systemu fotowoltaicznego?
+=20
+Instalacja fotowoltaiczna jest najlepszym sposobem na obni=C5=BCenie wyso=
+ko=C5=9Bci rachunk=C3=B3w za pr=C4=85d (pozostaj=C4=85 tylko op=C5=82aty =
+sta=C5=82e) i zabezpieczenie si=C4=99 przed rosn=C4=85cymi cenami energii=
+ elektrycznej. Jest to w pe=C5=82ni odnawialne i bezemisyjne =C5=BAr=C3=B3=
+d=C5=82o energii, dzi=C4=99ki czemu przyczyniamy si=C4=99 do ochrony =C5=9B=
+rodowiska naturalnego.
+=20
+Dzia=C5=82amy od wielu lat na rynku energetycznym. Przygotujemy projekt, =
+wycen=C4=99 oraz kompleksowo wykonamy i zg=C5=82osimy realizacj=C4=99 do =
+zak=C5=82adu energetycznego.=20
+=20
+Czy chc=C4=85 Pa=C5=84stwo pozna=C4=87 nasz=C4=85 propozycj=C4=99? =20
 
-On Thu, Feb 10, 2022 at 12:10 PM Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> On Thu, Feb 10, 2022 at 02:27:11PM -0500, Waiman Long wrote:
-> > On 2/10/22 14:14, Paul E. McKenney wrote:
-> > > On Thu, Feb 10, 2022 at 10:13:53AM +0100, Peter Zijlstra wrote:
-> > > > On Wed, Feb 09, 2022 at 04:32:58PM -0800, Namhyung Kim wrote:
-> > > > > On Wed, Feb 9, 2022 at 1:09 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> > > > > > On Tue, Feb 08, 2022 at 10:41:56AM -0800, Namhyung Kim wrote:
-> > > > > >
-> > > > > > > Eventually I'm mostly interested in the contended locks only and I
-> > > > > > > want to reduce the overhead in the fast path.  By moving that, it'd be
-> > > > > > > easy to track contended locks with timing by using two tracepoints.
-> > > > > > So why not put in two new tracepoints and call it a day?
-> > > > > >
-> > > > > > Why muck about with all that lockdep stuff just to preserve the name
-> > > > > > (and in the process continue to blow up data structures etc..). This
-> > > > > > leaves distros in a bind, will they enable this config and provide
-> > > > > > tracepoints while bloating the data structures and destroying things
-> > > > > > like lockref (which relies on sizeof(spinlock_t)), or not provide this
-> > > > > > at all.
-> > > > > If it's only lockref, is it possible to change it to use arch_spinlock_t
-> > > > > so that it can remain in 4 bytes?  It'd be really nice if we can keep
-> > > > > spin lock size, but it'd be easier to carry the name with it for
-> > > > > analysis IMHO.
-> > > > It's just vile and disgusting to blow up the lock size for convenience
-> > > > like this.
-> > > >
-> > > > And no, there's more of that around. A lot of effort has been spend to
-> > > > make sure spinlocks are 32bit and we're not going to give that up for
-> > > > something as daft as this.
-> > > >
-> > > > Just think harder on the analysis side. Like said; I'm thinking the
-> > > > caller IP should be good enough most of the time.
-> > >
-> > > Another option is to keep any additional storage in a separate data
-> > > structure keyed off of lock address, lockdep class, or whatever.
-> > >
-> > > Whether or not this is a -good- option, well, who knows?  ;-)
-> >
-> > I have suggested that too. Unfortunately, I was replying to an email with
-> > your wrong email address. So you might not have received it.
->
-> Plus I was too lazy to go look at lore.  ;-)
 
-Sorry for the noise about the email address in the first place.
-It has been so long since the last time I sent you a patch..
-
-Thanks,
-Namhyung
+Pozdrawiam,
+Przemys=C5=82aw Wr=C3=B3blewski
