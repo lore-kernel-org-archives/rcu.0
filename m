@@ -2,95 +2,104 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A192C433F5
-	for <rcu@archiver.kernel.org>; Fri, 11 Feb 2022 15:42:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 52161C433F5
+	for <rcu@archiver.kernel.org>; Fri, 11 Feb 2022 15:43:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240844AbiBKPmt (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 11 Feb 2022 10:42:49 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:54802 "EHLO
+        id S242899AbiBKPnv (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 11 Feb 2022 10:43:51 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:55526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343923AbiBKPms (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 11 Feb 2022 10:42:48 -0500
-Received: from mx1.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE8D5F4
-        for <rcu@vger.kernel.org>; Fri, 11 Feb 2022 07:42:46 -0800 (PST)
-Received: from [192.168.0.2] (ip5f5aebe1.dynamic.kabel-deutschland.de [95.90.235.225])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        with ESMTP id S245198AbiBKPnu (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 11 Feb 2022 10:43:50 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F24021B5;
+        Fri, 11 Feb 2022 07:43:47 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 9531461E6478B;
-        Fri, 11 Feb 2022 16:42:44 +0100 (CET)
-Message-ID: <b3f392b1-5418-c64b-502b-f0637df13f86@molgen.mpg.de>
-Date:   Fri, 11 Feb 2022 16:42:44 +0100
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 84F4262018;
+        Fri, 11 Feb 2022 15:43:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58CC4C340E9;
+        Fri, 11 Feb 2022 15:43:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1644594226;
+        bh=tc9vPw1lHjzGW9lJiQO7bBzDxlY8TMaxbA9HQedzYlU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SyBGd7Zpz4rKxpWBjcze6Ekj6fkF9awCmwcE3VJtjLY0Tm2aRuEOHQ2Ut6pddPsNO
+         Sm3OBbvCfAgF7rxR62j+XDP1kBYeUgIFg+63EhfcWG89uDVAw0xzRrMAWee+TS11Q6
+         no9hYTHD9iktK6pnsPk9eMl4cGo1JYmnFtkTSYtC0EhlaNX4xgpvmecWpixz1Uh2ZV
+         dX1GTZ2B4GvD4Sud0z8uqYcJ7LUHqAVLBUd9PQPlmBN35UmcFneuA0uyjM086+RW+X
+         mGsbi+btOt/nUAu4U0CtBvY6iHCe9AelKuRcdHM1L/muQQ/dIxDDbOisYLalOlPl2K
+         n6I+rX6p5vTcA==
+Date:   Fri, 11 Feb 2022 16:43:44 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, rostedt@goodmis.org,
+        David Woodhouse <dwmw@amazon.co.uk>
+Subject: Re: [PATCH rcu 3/9] rcu: Add mutex for rcu boost kthread spawning
+ and affinity setting
+Message-ID: <20220211154344.GD588079@lothringen>
+References: <20220204230751.GA4193671@paulmck-ThinkPad-P17-Gen-1>
+ <20220204230805.4193767-3-paulmck@kernel.org>
+ <20220211145757.GA587320@lothringen>
+ <20220211151148.GA588079@lothringen>
+ <20220211154203.GB4285@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.1
-Subject: =?UTF-8?Q?Re=3a_rcutorture=e2=80=99s_init_segfaults_in_ppc64le_VM?=
-Content-Language: en-US
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linuxppc-dev@lists.ozlabs.org, rcu@vger.kernel.org,
-        Willy Tarreau <w@1wt.eu>, Zhouyi Zhou <zhouzhouyi@gmail.com>
-References: <565038d7-7374-1005-31bf-df2f051845ff@molgen.mpg.de>
- <871r0dmzzm.fsf@mpe.ellerman.id.au>
- <e7498a9d-7420-ff52-99e4-8194f3d177f0@molgen.mpg.de>
- <87y22irx5k.fsf@mpe.ellerman.id.au>
- <6ae23d59-fe88-6f14-7d9f-648afa3dc298@molgen.mpg.de>
-In-Reply-To: <6ae23d59-fe88-6f14-7d9f-648afa3dc298@molgen.mpg.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220211154203.GB4285@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Dear Michael,
-
-
-Am 11.02.22 um 15:19 schrieb Paul Menzel:
-
-> Am 11.02.22 um 02:48 schrieb Michael Ellerman:
->> Paul Menzel writes:
->>> Am 08.02.22 um 11:09 schrieb Michael Ellerman:
->>>> Paul Menzel writes:
->>>
->>> […]
->>>
->>>>> On the POWER8 server IBM S822LC running Ubuntu 21.10, building Linux
->>>>> 5.17-rc2+ with rcutorture tests
->>>>
->>>> I'm not sure if that's the host kernel version or the version you're
->>>> using of rcutorture? Can you tell us the sha1 of your host kernel 
->>>> and of the tree you're running rcutorture from?
->>>
->>> The host system runs Linux 5.17-rc1+ started with kexec. Unfortunately,
->>> I am unable to find the exact sha1.
->>>
->>>       $ more /proc/version
->>>       Linux version 5.17.0-rc1+ (x@eddb.molgen.mpg.de) (Ubuntu clang version 13.0.0-2, LLD 13.0.0) #1 SMP Fri Jan 28 17:13:04 CET 2022
->>
->> OK. In general rc1 kernels can have issues, so it might be worth
->> rebooting the host into either v5.17-rc3 or a distro or stable kernel.
->> Just to rule out any issues on the host.
+On Fri, Feb 11, 2022 at 07:42:03AM -0800, Paul E. McKenney wrote:
+> On Fri, Feb 11, 2022 at 04:11:48PM +0100, Frederic Weisbecker wrote:
+> > On Fri, Feb 11, 2022 at 03:57:57PM +0100, Frederic Weisbecker wrote:
+> > > On Fri, Feb 04, 2022 at 03:07:59PM -0800, Paul E. McKenney wrote:
+> > > > From: David Woodhouse <dwmw@amazon.co.uk>
+> > > > 
+> > > > As we handle parallel CPU bringup, we will need to take care to avoid
+> > > > spawning multiple boost threads, or race conditions when setting their
+> > > > affinity. Spotted by Paul McKenney.
+> > > > 
+> > > > Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+> > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > 
+> > > Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+> > > 
+> > > Speaking of, we have:
+> > > 
+> > > rcu_init()
+> > >    for_each_online_cpu(cpu) // should be boot CPU only at this stage ?
+> > >        rcutree_prepare_cpu(cpu)
+> > >            rcu_spawn_one_boost_kthread(cpu)
+> > > 
+> > > 
+> > > early_initcall()
+> > >     rcu_spawn_gp_kthread()
+> > >         rcu_spawn_boost_kthreads()
+> > > 	    rcu_for_each_leaf_node(rnp)
+> > > 	        rcu_rnp_online_cpus(rnp) // as above, only boot CPU at this stage.
+> > >                     rcu_spawn_one_boost_kthread(cpu)
+> > > 
+> > > cpu_up()
+> > >     rcutree_prepare_cpu(cpu)
+> > >         rcu_spawn_one_boost_kthread(cpu)
+> > > 
+> > > 
+> > > My guess is that we could remove rcu_spawn_boost_kthreads() and simplify
+> > > rcu_init(). Something like this (untested yet):
 > 
-> Yes, that was a good test. It works with Ubuntu’s 5.13 Linux kernel.
+> If you also add a WARN_ON() for more than one CPU being online at
+> rcu_init() time, I am good with this approach.  The main danger that
+> the pre-rcu_init() portion of the boot time becomes the long straw in
+> the eternal quest to make systems boot faster, but it is not hard to
+> put it back.  Hence the WARN_ON() to make it clear that adjustment
+> is needed.  ;-)
 > 
->      $ more /proc/version
->      Linux version 5.13.0-28-generic (buildd@bos02-ppc64el-013) (gcc (Ubuntu 11.2.0-7ubuntu2) 11.2.0, GNU ld (GNU Binutils for Ubuntu) 2.37) #31-Ubuntu SMP Thu Jan 13 17:40:19 UTC 2022
-> 
-> I have to do more tests, but it could be LLVM/clang related.
+> 							Thanx, Paul
 
-Building commit f1baf68e1383 (Merge tag 'net-5.17-rc4' of 
-git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net) with the ata 
-patches on top with GCC, I am unable to reproduce the issue. Before I 
-built it with
+Make sense. On my TODO list then.
 
-     make -j100 LLVM=1 LLVM_IAS=0 bindeb-pkg
-
-[…]
-
-
-Kind regards,
-
-Paul
+Thanks!
