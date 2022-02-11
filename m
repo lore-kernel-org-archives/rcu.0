@@ -2,177 +2,103 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A85B4C433F5
-	for <rcu@archiver.kernel.org>; Fri, 11 Feb 2022 01:48:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F28FAC433F5
+	for <rcu@archiver.kernel.org>; Fri, 11 Feb 2022 05:55:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245042AbiBKBsd (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 10 Feb 2022 20:48:33 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:52520 "EHLO
+        id S237150AbiBKFzl (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 11 Feb 2022 00:55:41 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:38234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230175AbiBKBsc (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 10 Feb 2022 20:48:32 -0500
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9492F10FF
-        for <rcu@vger.kernel.org>; Thu, 10 Feb 2022 17:48:31 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4JvxND3dLJz4xRB;
-        Fri, 11 Feb 2022 12:48:27 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1644544108;
-        bh=oiur8ROejXDAFfftCT4xiG8PdwuDd8kRMQstnmOp138=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=qYDJADX8qT7w4qPH8/4rcADkwBUxflRX0kT6rXATHLjhXoRbHKsfeFpMq6CxJyNXv
-         cUDVhWz0XMdy5CSSHgSYXMrGMLEq39hnadmzvkAsWBkA846yOdpcBbZiOSbZbY/QYy
-         ESB9GW6QDAXDVTrRwLxqYsZIhMb+tfL9xf3FP6bnkGhpLc8+K54DQ4+cAabEaiZ0ak
-         5rjKBv9Q142TMn7wUkMQgCza8RPJ4poBsUrCM0ZxSUmzfUHdfwZI9I6JBkP1Fq7gZs
-         Pm6kNSUCz0N61mWE8kEEyq4fzL7m44rk1Paphgei+c8X1l1Qcu/+XMSZ1VSBCZWzzp
-         GZxUhZ+2pmRMA==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Paul Menzel <pmenzel@molgen.mpg.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linuxppc-dev@lists.ozlabs.org, rcu@vger.kernel.org,
-        Willy Tarreau <w@1wt.eu>, Zhouyi Zhou <zhouzhouyi@gmail.com>
-Subject: Re: =?utf-8?Q?rcutorture=E2=80=99s?= init segfaults in ppc64le VM
-In-Reply-To: <e7498a9d-7420-ff52-99e4-8194f3d177f0@molgen.mpg.de>
-References: <565038d7-7374-1005-31bf-df2f051845ff@molgen.mpg.de>
- <871r0dmzzm.fsf@mpe.ellerman.id.au>
- <e7498a9d-7420-ff52-99e4-8194f3d177f0@molgen.mpg.de>
-Date:   Fri, 11 Feb 2022 12:48:23 +1100
-Message-ID: <87y22irx5k.fsf@mpe.ellerman.id.au>
+        with ESMTP id S235310AbiBKFzl (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 11 Feb 2022 00:55:41 -0500
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7577102F;
+        Thu, 10 Feb 2022 21:55:40 -0800 (PST)
+Received: by mail-lj1-f175.google.com with SMTP id o17so11143142ljp.1;
+        Thu, 10 Feb 2022 21:55:40 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nC1KApq7e2Tv1mRrJaVJbGFX4EPFBr5Wq82MxBaNzD0=;
+        b=7kLiSQdB+67poBRL/OG48goLLOYPRN4hM0qliz9Rq72HKkp3z1sBsES/sKySUdj0DJ
+         /shIxVGD3VlnCzaPHwaN+9ToowVByp9Xu/KaGXIvJWS7XtOkjti8OSh4ajo8Sr6EIUg8
+         6iF5o0H/JOlSffKiLmqeGw8TGCCngN+4ElqiE7zQPqtcWSpnHi/ll9Q6U6DlMAE4OY9J
+         2zCy2k2IMReMHZMZ9kIqOinhR7V/1uvyqaKfIxOnKB4d726JLn81tJqaXOU8vbfmFfxy
+         NvdfH+ENthTDdZzwEweChOjZH8Fexp2Ubxih2CimR4VfSlXUwKFVaPGVSU+dqViCQmqb
+         qbGw==
+X-Gm-Message-State: AOAM530Buvtn9WtnBpPB6BZ0tfZBhLZnTA8pWBimqxv/zhm8kbkusLYw
+        3qMXJ5pgg2j+QHltNe7lygHhqgI8h9u2b08wPBc=
+X-Google-Smtp-Source: ABdhPJzbOzw/0zV4IgkYBd1T8G0wbLX3SjAMswL8OAcpI2VPdwnBvfBks/G9AKwLofLucGjL/8xeS4WMPSxifL2SCtI=
+X-Received: by 2002:a05:651c:a04:: with SMTP id k4mr74921ljq.180.1644558938779;
+ Thu, 10 Feb 2022 21:55:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+References: <20220208184208.79303-1-namhyung@kernel.org> <20220209090908.GK23216@worktop.programming.kicks-ass.net>
+ <CAM9d7cgq+jxu6FJuKhZkprn7dO4DiG5pDjmYZzneQYTfKOM85g@mail.gmail.com> <YgTXUQ9CBoo3+A+c@hirez.programming.kicks-ass.net>
+In-Reply-To: <YgTXUQ9CBoo3+A+c@hirez.programming.kicks-ass.net>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Thu, 10 Feb 2022 21:55:27 -0800
+Message-ID: <CAM9d7cgPFLjQyopX04MwG6Leq6DwDJF2q6BxOL_Nw6J2LEZF4g@mail.gmail.com>
+Subject: Re: [RFC 00/12] locking: Separate lock tracepoints from
+ lockdep/lock_stat (v1)
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Byungchul Park <byungchul.park@lge.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Radoslaw Burny <rburny@google.com>, Tejun Heo <tj@kernel.org>,
+        rcu <rcu@vger.kernel.org>, cgroups <cgroups@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Paul Menzel <pmenzel@molgen.mpg.de> writes:
-> Am 08.02.22 um 11:09 schrieb Michael Ellerman:
->> Paul Menzel writes:
+On Thu, Feb 10, 2022 at 1:14 AM Peter Zijlstra <peterz@infradead.org> wrote:
 >
-> [=E2=80=A6]
+> On Wed, Feb 09, 2022 at 04:32:58PM -0800, Namhyung Kim wrote:
+> > On Wed, Feb 9, 2022 at 1:09 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> > >
+> > > On Tue, Feb 08, 2022 at 10:41:56AM -0800, Namhyung Kim wrote:
+> > >
+> > > > Eventually I'm mostly interested in the contended locks only and I
+> > > > want to reduce the overhead in the fast path.  By moving that, it'd be
+> > > > easy to track contended locks with timing by using two tracepoints.
+> > >
+> > > So why not put in two new tracepoints and call it a day?
+> > >
+> > > Why muck about with all that lockdep stuff just to preserve the name
+> > > (and in the process continue to blow up data structures etc..). This
+> > > leaves distros in a bind, will they enable this config and provide
+> > > tracepoints while bloating the data structures and destroying things
+> > > like lockref (which relies on sizeof(spinlock_t)), or not provide this
+> > > at all.
+> >
+> > If it's only lockref, is it possible to change it to use arch_spinlock_t
+> > so that it can remain in 4 bytes?  It'd be really nice if we can keep
+> > spin lock size, but it'd be easier to carry the name with it for
+> > analysis IMHO.
 >
->>> On the POWER8 server IBM S822LC running Ubuntu 21.10, building Linux
->>> 5.17-rc2+ with rcutorture tests
->>=20
->> I'm not sure if that's the host kernel version or the version you're
->> using of rcutorture? Can you tell us the sha1 of your host kernel and of
->> the tree you're running rcutorture from?
+> It's just vile and disgusting to blow up the lock size for convenience
+> like this.
 >
-> The host system runs Linux 5.17-rc1+ started with kexec. Unfortunately,=20
-> I am unable to find the exact sha1.
+> And no, there's more of that around. A lot of effort has been spend to
+> make sure spinlocks are 32bit and we're not going to give that up for
+> something as daft as this.
 >
->      $ more /proc/version
->      Linux version 5.17.0-rc1+=20
-> (pmenzel@flughafenberlinbrandenburgwillybrandt.molgen.mpg.de) (Ubuntu=20
-> clang version 13.0.0-2, LLD 13.0.0) #1 SMP Fri Jan 28
-> 17:13:04 CET 2022
+> Just think harder on the analysis side. Like said; I'm thinking the
+> caller IP should be good enough most of the time.
 
-OK. In general rc1 kernels can have issues, so it might be worth
-rebooting the host into either v5.17-rc3 or a distro or stable kernel.
-Just to rule out any issues on the host.
+Ok, I'll go in this direction then.
 
-> The Linux tree, from where I run rcutorture from, is at commit=20
-> dfd42facf1e4 (Linux 5.17-rc3) with four patches on top:
->
->      $ git log --oneline -6
->      207cec79e752 (HEAD -> master, origin/master, origin/HEAD) Problems=20
-> with rcutorture on ppc64le: allmodconfig(2) and other failures
->      8c82f96fbe57 ata: libata-sata: improve sata_link_debounce()
->      a447541d925f ata: libata-sata: remove debounce delay by default
->      afd84e1eeafc ata: libata-sata: introduce struct sata_deb_timing
->      f4caf7e48b75 ata: libata-sata: Simplify sata_link_resume() interface
->      dfd42facf1e4 (tag: v5.17-rc3) Linux 5.17-rc3
->
->>>       $ tools/testing/selftests/rcutorture/bin/torture.sh --duration 10
->>>
->>> the built init
->>>
->>>       $ file tools/testing/selftests/rcutorture/initrd/init
->>>       tools/testing/selftests/rcutorture/initrd/init: ELF 64-bit LSB ex=
-ecutable, 64-bit PowerPC or cisco 7500, version 1 (SYSV), statically linked=
-, BuildID[sha1]=3D0ded0e45649184a296f30d611f7a03cc51ecb616, for GNU/Linux 3=
-.10.0, stripped
->>=20
->> Mine looks pretty much identical:
->>=20
->>    $ file tools/testing/selftests/rcutorture/initrd/init
->>    tools/testing/selftests/rcutorture/initrd/init: ELF 64-bit LSB execut=
-able, 64-bit PowerPC or cisco 7500, version 1 (SYSV), statically linked, Bu=
-ildID[sha1]=3D86078bf6e5d54ab0860d36aa9a65d52818b972c8, for GNU/Linux 3.10.=
-0, stripped
->>=20
->>> segfaults in QEMU. From one of the log files
->>=20
->> But mine doesn't segfault, it runs fine and the test completes.
->>=20
->> What qemu version are you using?
->>=20
->> I tried 4.2.1 and 6.2.0, both worked.
->
->      $ qemu-system-ppc64le --version
->      QEMU emulator version 6.0.0 (Debian 1:6.0+dfsg-2expubuntu1.1)
->      Copyright (c) 2003-2021 Fabrice Bellard and the QEMU Project develop=
-ers
+So you are ok with adding two new tracepoints, even if they are
+similar to what we already have in lockdep/lock_stat, right?
 
-OK, that's one difference between our setups, but I'd be surprised if it
-explains this bug, but I guess anything's possible.
-
-
->>> /dev/shm/linux/tools/testing/selftests/rcutorture/res/2022.02.01-21.52.=
-37-torture/results-rcutorture/TREE03/console.log
->
-> Sorry, that was the wrong path/test. The correct one for the excerpt=20
-> below is:
->
->=20=20
-> /dev/shm/linux/tools/testing/selftests/rcutorture/res/2022.02.01-21.52.37=
--torture/results-locktorture-kasan/LOCK01/console.log
->
-> (For TREE03, QEMU does not start the Linux kernel at all, that means no=20
-> output after:
->
->      Booting Linux via __start() @ 0x0000000000400000 ...
-
-OK yeah I see that too.
-
-Removing "threadirqs" from tools/testing/selftests/rcutorture/configs/rcu/T=
-REE03.boot
-seems to fix it.
-
-I still see some preempt related warnings, we clearly have some bugs
-with preempt enabled.
-
-> You can now download the content of=20
-> `/dev/shm/linux/tools/testing/selftests/rcutorture/res/2022.02.01-21.52.3=
-7-torture/results-locktorture-kasan/LOCK01`=20
-> [1, 65 MB].
->
-> Can you reproduce the segmentation fault with the line below?
->
->      $ qemu-system-ppc64 -enable-kvm -nographic -smp cores=3D1,threads=3D=
-8=20
-> -net none -enable-kvm -M pseries -nodefaults -device spapr-vscsi -serial=
-=20
-> stdio -m 512 -kernel=20
-> /dev/shm/linux/tools/testing/selftests/rcutorture/res/2022.02.01-21.52.37=
--torture/results-locktorture-kasan/LOCK01/vmlinux=20
-> -append "debug_boot_weak_hash panic=3D-1 console=3DttyS0=20
-> torture.disable_onoff_at_boot locktorture.onoff_interval=3D3=20
-> locktorture.onoff_holdoff=3D30 locktorture.stat_interval=3D15=20
-> locktorture.shutdown_secs=3D60 locktorture.verbose=3D1"
-
-That works fine for me, boots and runs the test, then shuts down.
-
-I assume you see the segfault on every boot, not intermittently?
-
-So the differences between our setups are the host kernel and the qemu
-version. Can you try a different host kernel easily?
-
-The other thing would be to try a different qemu version, you might need
-to build from source, but it's not that hard :)
-
-cheers
+Thanks,
+Namhyung
