@@ -2,173 +2,157 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A9A5C433F5
-	for <rcu@archiver.kernel.org>; Fri, 11 Feb 2022 14:19:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 59FFBC433F5
+	for <rcu@archiver.kernel.org>; Fri, 11 Feb 2022 14:58:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347749AbiBKOTr (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 11 Feb 2022 09:19:47 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:56468 "EHLO
+        id S240022AbiBKO6D (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 11 Feb 2022 09:58:03 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:51524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241051AbiBKOTr (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 11 Feb 2022 09:19:47 -0500
-Received: from mx1.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF30521D
-        for <rcu@vger.kernel.org>; Fri, 11 Feb 2022 06:19:44 -0800 (PST)
-Received: from [192.168.0.7] (ip5f5aebe1.dynamic.kabel-deutschland.de [95.90.235.225])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        with ESMTP id S1351173AbiBKO6C (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 11 Feb 2022 09:58:02 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B13A6125;
+        Fri, 11 Feb 2022 06:58:01 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 6B30261EA1927;
-        Fri, 11 Feb 2022 15:19:43 +0100 (CET)
-Message-ID: <6ae23d59-fe88-6f14-7d9f-648afa3dc298@molgen.mpg.de>
-Date:   Fri, 11 Feb 2022 15:19:42 +0100
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4E8B861FAF;
+        Fri, 11 Feb 2022 14:58:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50F8DC340E9;
+        Fri, 11 Feb 2022 14:58:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1644591480;
+        bh=wvwK2W4hbMr27rsRNMCpqnOBInU3E432y3W3J06Y8/Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MzeXyrZlK+D48w6VIrjQa8E5uXoncps96Bjr3iQXKYkhbVO5MvbYX0+WJRM6tehnv
+         KaOhZkfNAiUv9p1UfMo77SjZPS4ADAgeFc51eOMlhL333+YSKSVl7rYQwqO+6Xg9wh
+         SdjV1c0CUHD90Wj6PTdwFQGfMnHwQH3B4p2XrqTVXYu9UuVLu9/ed4vjO7BFNgvRsE
+         ytYy62dNRpE+Yd30z7u3fQ5l3Xf4vfPqECqIjTrssKBrmSEcC3uNNfKvgUZUO90XrP
+         9LKtXt+Ut7Ij3mYt5Nydf7tR5mDlD2U5tsOLQTiD4wsl6Aj9dMT4a3p9pcMap0URwQ
+         iK0l32V8loN8w==
+Date:   Fri, 11 Feb 2022 15:57:57 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, rostedt@goodmis.org,
+        David Woodhouse <dwmw@amazon.co.uk>
+Subject: Re: [PATCH rcu 3/9] rcu: Add mutex for rcu boost kthread spawning
+ and affinity setting
+Message-ID: <20220211145757.GA587320@lothringen>
+References: <20220204230751.GA4193671@paulmck-ThinkPad-P17-Gen-1>
+ <20220204230805.4193767-3-paulmck@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.1
-Subject: =?UTF-8?Q?Re=3a_rcutorture=e2=80=99s_init_segfaults_in_ppc64le_VM?=
-Content-Language: en-US
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linuxppc-dev@lists.ozlabs.org, rcu@vger.kernel.org,
-        Willy Tarreau <w@1wt.eu>, Zhouyi Zhou <zhouzhouyi@gmail.com>
-References: <565038d7-7374-1005-31bf-df2f051845ff@molgen.mpg.de>
- <871r0dmzzm.fsf@mpe.ellerman.id.au>
- <e7498a9d-7420-ff52-99e4-8194f3d177f0@molgen.mpg.de>
- <87y22irx5k.fsf@mpe.ellerman.id.au>
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <87y22irx5k.fsf@mpe.ellerman.id.au>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220204230805.4193767-3-paulmck@kernel.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Dear Michael,
-
-
-Am 11.02.22 um 02:48 schrieb Michael Ellerman:
-> Paul Menzel writes:
->> Am 08.02.22 um 11:09 schrieb Michael Ellerman:
->>> Paul Menzel writes:
->>
->> […]
->>
->>>> On the POWER8 server IBM S822LC running Ubuntu 21.10, building Linux
->>>> 5.17-rc2+ with rcutorture tests
->>>
->>> I'm not sure if that's the host kernel version or the version you're
->>> using of rcutorture? Can you tell us the sha1 of your host kernel and of
->>> the tree you're running rcutorture from?
->>
->> The host system runs Linux 5.17-rc1+ started with kexec. Unfortunately,
->> I am unable to find the exact sha1.
->>
->>       $ more /proc/version
->>       Linux version 5.17.0-rc1+ (x@eddb.molgen.mpg.de) (Ubuntu clang version 13.0.0-2, LLD 13.0.0) #1 SMP Fri Jan 28 17:13:04 CET 2022
+On Fri, Feb 04, 2022 at 03:07:59PM -0800, Paul E. McKenney wrote:
+> From: David Woodhouse <dwmw@amazon.co.uk>
 > 
-> OK. In general rc1 kernels can have issues, so it might be worth
-> rebooting the host into either v5.17-rc3 or a distro or stable kernel.
-> Just to rule out any issues on the host.
-
-Yes, that was a good test. It works with Ubuntu’s 5.13 Linux kernel.
-
-     $ more /proc/version
-     Linux version 5.13.0-28-generic (buildd@bos02-ppc64el-013) (gcc 
-(Ubuntu 11.2.0-7ubuntu2) 11.2.0, GNU ld (GNU Binutils for Ubuntu) 2.37) 
-#31-Ubuntu SMP Thu Jan 13 17:40:19 UTC 2022
-
-I have to do more tests, but it could be LLVM/clang related.
-
->> The Linux tree, from where I run rcutorture from, is at commit
->> dfd42facf1e4 (Linux 5.17-rc3) with four patches on top:
->>
->>       $ git log --oneline -6
->>       207cec79e752 (HEAD -> master, origin/master, origin/HEAD) Problems with rcutorture on ppc64le: allmodconfig(2) and other failures
->>       8c82f96fbe57 ata: libata-sata: improve sata_link_debounce()
->>       a447541d925f ata: libata-sata: remove debounce delay by default
->>       afd84e1eeafc ata: libata-sata: introduce struct sata_deb_timing
->>       f4caf7e48b75 ata: libata-sata: Simplify sata_link_resume() interface
->>       dfd42facf1e4 (tag: v5.17-rc3) Linux 5.17-rc3
->>
->>>>        $ tools/testing/selftests/rcutorture/bin/torture.sh --duration 10
->>>>
->>>> the built init
->>>>
->>>>        $ file tools/testing/selftests/rcutorture/initrd/init
->>>>        tools/testing/selftests/rcutorture/initrd/init: ELF 64-bit LSB executable, 64-bit PowerPC or cisco 7500, version 1 (SYSV), statically linked, BuildID[sha1]=0ded0e45649184a296f30d611f7a03cc51ecb616, for GNU/Linux 3.10.0, stripped
->>>
->>> Mine looks pretty much identical:
->>>
->>>     $ file tools/testing/selftests/rcutorture/initrd/init
->>>     tools/testing/selftests/rcutorture/initrd/init: ELF 64-bit LSB executable, 64-bit PowerPC or cisco 7500, version 1 (SYSV), statically linked, BuildID[sha1]=86078bf6e5d54ab0860d36aa9a65d52818b972c8, for GNU/Linux 3.10.0, stripped
->>>
->>>> segfaults in QEMU. From one of the log files
->>>
->>> But mine doesn't segfault, it runs fine and the test completes.
->>>
->>> What qemu version are you using?
->>>
->>> I tried 4.2.1 and 6.2.0, both worked.
->>
->>       $ qemu-system-ppc64le --version
->>       QEMU emulator version 6.0.0 (Debian 1:6.0+dfsg-2expubuntu1.1)
->>       Copyright (c) 2003-2021 Fabrice Bellard and the QEMU Project developers
+> As we handle parallel CPU bringup, we will need to take care to avoid
+> spawning multiple boost threads, or race conditions when setting their
+> affinity. Spotted by Paul McKenney.
 > 
-> OK, that's one difference between our setups, but I'd be surprised if it
-> explains this bug, but I guess anything's possible.
-> 
->>>> /dev/shm/linux/tools/testing/selftests/rcutorture/res/2022.02.01-21.52.37-torture/results-rcutorture/TREE03/console.log
->>
->> Sorry, that was the wrong path/test. The correct one for the excerpt
->> below is:
->>
->>   
->> /dev/shm/linux/tools/testing/selftests/rcutorture/res/2022.02.01-21.52.37-torture/results-locktorture-kasan/LOCK01/console.log
->>
->> (For TREE03, QEMU does not start the Linux kernel at all, that means no
->> output after:
->>
->>       Booting Linux via __start() @ 0x0000000000400000 ...
-> 
-> OK yeah I see that too.
-> 
-> Removing "threadirqs" from tools/testing/selftests/rcutorture/configs/rcu/TREE03.boot
-> seems to fix it.
+> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
-Nice find. I have no idea, what that means though.
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 
-> I still see some preempt related warnings, we clearly have some bugs
-> with preempt enabled.
-> 
->> You can now download the content of
->> `/dev/shm/linux/tools/testing/selftests/rcutorture/res/2022.02.01-21.52.37-torture/results-locktorture-kasan/LOCK01`
->> [1, 65 MB].
->>
->> Can you reproduce the segmentation fault with the line below?
->>
->>       $ qemu-system-ppc64 -enable-kvm -nographic -smp cores=1,threads=8 \
->>       -net none -enable-kvm -M pseries -nodefaults -device spapr-vscsi -serial stdio -m 512 \
->>       -kernel /dev/shm/linux/tools/testing/selftests/rcutorture/res/2022.02.01-21.52.37-torture/results-locktorture-kasan/LOCK01/vmlinux \
->>       -append "debug_boot_weak_hash panic=-1 console=ttyS0 \
->>       torture.disable_onoff_at_boot locktorture.onoff_interval=3 \
->>       locktorture.onoff_holdoff=30 locktorture.stat_interval=15 \
->>       locktorture.shutdown_secs=60 locktorture.verbose=1"
-> 
-> That works fine for me, boots and runs the test, then shuts down.
-> 
-> I assume you see the segfault on every boot, not intermittently?
-> 
-> So the differences between our setups are the host kernel and the qemu
-> version. Can you try a different host kernel easily?
-> 
-> The other thing would be to try a different qemu version, you might need
-> to build from source, but it's not that hard :)
+Speaking of, we have:
 
-Indeed. I needed to find a current Meson, but then it didn’t make a 
-difference, as found out above, it’s related to the Linux kernel.
+rcu_init()
+   for_each_online_cpu(cpu) // should be boot CPU only at this stage ?
+       rcutree_prepare_cpu(cpu)
+           rcu_spawn_one_boost_kthread(cpu)
 
 
-Kind regards,
+early_initcall()
+    rcu_spawn_gp_kthread()
+        rcu_spawn_boost_kthreads()
+	    rcu_for_each_leaf_node(rnp)
+	        rcu_rnp_online_cpus(rnp) // as above, only boot CPU at this stage.
+                    rcu_spawn_one_boost_kthread(cpu)
 
-Paul
+cpu_up()
+    rcutree_prepare_cpu(cpu)
+        rcu_spawn_one_boost_kthread(cpu)
+
+
+My guess is that we could remove rcu_spawn_boost_kthreads() and simplify
+rcu_init(). Something like this (untested yet):
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 86eec6a0f1a1..da8ac2b6f8cc 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -4526,7 +4526,6 @@ static int __init rcu_spawn_gp_kthread(void)
+ 	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+ 	wake_up_process(t);
+ 	rcu_spawn_nocb_kthreads();
+-	rcu_spawn_boost_kthreads();
+ 	rcu_spawn_core_kthreads();
+ 	return 0;
+ }
+@@ -4813,7 +4812,7 @@ static void __init kfree_rcu_batch_init(void)
+ 
+ void __init rcu_init(void)
+ {
+-	int cpu;
++	int cpu = smp_processor_id();
+ 
+ 	rcu_early_boot_tests();
+ 
+@@ -4833,11 +4832,10 @@ void __init rcu_init(void)
+ 	 * or the scheduler are operational.
+ 	 */
+ 	pm_notifier(rcu_pm_notify, 0);
+-	for_each_online_cpu(cpu) {
+-		rcutree_prepare_cpu(cpu);
+-		rcu_cpu_starting(cpu);
+-		rcutree_online_cpu(cpu);
+-	}
++
++	rcutree_prepare_cpu(cpu);
++	rcu_cpu_starting(cpu);
++	rcutree_online_cpu(cpu);
+ 
+ 	/* Create workqueue for Tree SRCU and for expedited GPs. */
+ 	rcu_gp_wq = alloc_workqueue("rcu_gp", WQ_MEM_RECLAIM, 0);
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index 6082dd23408f..90925a589774 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -1226,18 +1226,6 @@ static void rcu_boost_kthread_setaffinity(struct rcu_node *rnp, int outgoingcpu)
+ 	free_cpumask_var(cm);
+ }
+ 
+-/*
+- * Spawn boost kthreads -- called as soon as the scheduler is running.
+- */
+-static void __init rcu_spawn_boost_kthreads(void)
+-{
+-	struct rcu_node *rnp;
+-
+-	rcu_for_each_leaf_node(rnp)
+-		if (rcu_rnp_online_cpus(rnp))
+-			rcu_spawn_one_boost_kthread(rnp);
+-}
+-
+ #else /* #ifdef CONFIG_RCU_BOOST */
+ 
+ static void rcu_initiate_boost(struct rcu_node *rnp, unsigned long flags)
+@@ -1263,10 +1251,6 @@ static void rcu_boost_kthread_setaffinity(struct rcu_node *rnp, int outgoingcpu)
+ {
+ }
+ 
+-static void __init rcu_spawn_boost_kthreads(void)
+-{
+-}
+-
+ #endif /* #else #ifdef CONFIG_RCU_BOOST */
+ 
+ /*
