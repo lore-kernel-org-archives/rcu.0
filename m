@@ -2,104 +2,76 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 52161C433F5
-	for <rcu@archiver.kernel.org>; Fri, 11 Feb 2022 15:43:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 067CBC433F5
+	for <rcu@archiver.kernel.org>; Fri, 11 Feb 2022 16:40:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242899AbiBKPnv (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 11 Feb 2022 10:43:51 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:55526 "EHLO
+        id S1351619AbiBKQkl (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 11 Feb 2022 11:40:41 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:43332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245198AbiBKPnu (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 11 Feb 2022 10:43:50 -0500
+        with ESMTP id S1347115AbiBKQkl (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 11 Feb 2022 11:40:41 -0500
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F24021B5;
-        Fri, 11 Feb 2022 07:43:47 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CC0BD4B;
+        Fri, 11 Feb 2022 08:40:40 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 84F4262018;
-        Fri, 11 Feb 2022 15:43:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58CC4C340E9;
-        Fri, 11 Feb 2022 15:43:46 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EC74361599;
+        Fri, 11 Feb 2022 16:40:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F83EC340E9;
+        Fri, 11 Feb 2022 16:40:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1644594226;
-        bh=tc9vPw1lHjzGW9lJiQO7bBzDxlY8TMaxbA9HQedzYlU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SyBGd7Zpz4rKxpWBjcze6Ekj6fkF9awCmwcE3VJtjLY0Tm2aRuEOHQ2Ut6pddPsNO
-         Sm3OBbvCfAgF7rxR62j+XDP1kBYeUgIFg+63EhfcWG89uDVAw0xzRrMAWee+TS11Q6
-         no9hYTHD9iktK6pnsPk9eMl4cGo1JYmnFtkTSYtC0EhlaNX4xgpvmecWpixz1Uh2ZV
-         dX1GTZ2B4GvD4Sud0z8uqYcJ7LUHqAVLBUd9PQPlmBN35UmcFneuA0uyjM086+RW+X
-         mGsbi+btOt/nUAu4U0CtBvY6iHCe9AelKuRcdHM1L/muQQ/dIxDDbOisYLalOlPl2K
-         n6I+rX6p5vTcA==
-Date:   Fri, 11 Feb 2022 16:43:44 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
+        s=k20201202; t=1644597639;
+        bh=eeqTVzL/a+DOXrq9H7lm817bPYxq+xj7pXgT/P+7nP8=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=cWPKHw0iprqzFyBRz0nUwBKTgEClmy/NxMfEUCd+FhZ+5A6VsxiRFrd7wvnS+RRCY
+         8+Va3pNDFnbIOmGkzSvANjgyl69LSNVvjdbbjUpVusaD4JOUgKAUhG/XGhJi7IyDLP
+         CI6NyRI20lbPBKRb9/ddT6YmIAhZHTrVqrURKAE/CtM/SwPtxcGzWGo9iydD4Dl0p+
+         itookMCj+wx3PqadIFpyjI7txtblAoJzgfAyINuuk/eQtzzMomy7dGqFqp+lK0+No3
+         K4QFKcA4YIvLUD9n/4ZGNvOvyUDwEsFrjS3wDDSvq1WRiTRjE5ZdzuM1LByn2PRscJ
+         886ljIfSDlfTg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 25A905C0610; Fri, 11 Feb 2022 08:40:39 -0800 (PST)
+Date:   Fri, 11 Feb 2022 08:40:39 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel-team@fb.com, rostedt@goodmis.org,
-        David Woodhouse <dwmw@amazon.co.uk>
-Subject: Re: [PATCH rcu 3/9] rcu: Add mutex for rcu boost kthread spawning
- and affinity setting
-Message-ID: <20220211154344.GD588079@lothringen>
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>
+Subject: Re: [PATCH rcu 1/9] MAINTAINERS:  Add Frederic and Neeraj to their
+ RCU files
+Message-ID: <20220211164039.GE4285@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 References: <20220204230751.GA4193671@paulmck-ThinkPad-P17-Gen-1>
- <20220204230805.4193767-3-paulmck@kernel.org>
- <20220211145757.GA587320@lothringen>
- <20220211151148.GA588079@lothringen>
- <20220211154203.GB4285@paulmck-ThinkPad-P17-Gen-1>
+ <20220204230805.4193767-1-paulmck@kernel.org>
+ <20220211151529.GB588079@lothringen>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220211154203.GB4285@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20220211151529.GB588079@lothringen>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Feb 11, 2022 at 07:42:03AM -0800, Paul E. McKenney wrote:
-> On Fri, Feb 11, 2022 at 04:11:48PM +0100, Frederic Weisbecker wrote:
-> > On Fri, Feb 11, 2022 at 03:57:57PM +0100, Frederic Weisbecker wrote:
-> > > On Fri, Feb 04, 2022 at 03:07:59PM -0800, Paul E. McKenney wrote:
-> > > > From: David Woodhouse <dwmw@amazon.co.uk>
-> > > > 
-> > > > As we handle parallel CPU bringup, we will need to take care to avoid
-> > > > spawning multiple boost threads, or race conditions when setting their
-> > > > affinity. Spotted by Paul McKenney.
-> > > > 
-> > > > Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
-> > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > 
-> > > Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-> > > 
-> > > Speaking of, we have:
-> > > 
-> > > rcu_init()
-> > >    for_each_online_cpu(cpu) // should be boot CPU only at this stage ?
-> > >        rcutree_prepare_cpu(cpu)
-> > >            rcu_spawn_one_boost_kthread(cpu)
-> > > 
-> > > 
-> > > early_initcall()
-> > >     rcu_spawn_gp_kthread()
-> > >         rcu_spawn_boost_kthreads()
-> > > 	    rcu_for_each_leaf_node(rnp)
-> > > 	        rcu_rnp_online_cpus(rnp) // as above, only boot CPU at this stage.
-> > >                     rcu_spawn_one_boost_kthread(cpu)
-> > > 
-> > > cpu_up()
-> > >     rcutree_prepare_cpu(cpu)
-> > >         rcu_spawn_one_boost_kthread(cpu)
-> > > 
-> > > 
-> > > My guess is that we could remove rcu_spawn_boost_kthreads() and simplify
-> > > rcu_init(). Something like this (untested yet):
+On Fri, Feb 11, 2022 at 04:15:29PM +0100, Frederic Weisbecker wrote:
+> On Fri, Feb 04, 2022 at 03:07:57PM -0800, Paul E. McKenney wrote:
+> > Adding Frederic as an RCU maintainer for kernel/rcu/tree_nocb.h given his
+> > work with offloading and de-offloading callbacks from CPUs.  Also adding
+> > Neeraj for kernel/rcu/tasks.h given his focused work on RCU Tasks Trace.
+> > As in I am reasonably certain that each understands the full contents
+> > of the corresponding file.
+> > 
+> > Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+> > Cc: Frederic Weisbecker <frederic@kernel.org>
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 > 
-> If you also add a WARN_ON() for more than one CPU being online at
-> rcu_init() time, I am good with this approach.  The main danger that
-> the pre-rcu_init() portion of the boot time becomes the long straw in
-> the eternal quest to make systems boot faster, but it is not hard to
-> put it back.  Hence the WARN_ON() to make it clear that adjustment
-> is needed.  ;-)
+> Acked-by: Frederic Weisbecker <frederic@kernel.org>
 > 
-> 							Thanx, Paul
+> Thanks! :)
 
-Make sense. On my TODO list then.
+Thank -you- for all the help with RCU!
 
-Thanks!
+I will apply on my next rebase.
+
+							Thanx, Paul
