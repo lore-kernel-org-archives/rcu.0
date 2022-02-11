@@ -2,231 +2,95 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 28B25C433F5
-	for <rcu@archiver.kernel.org>; Fri, 11 Feb 2022 15:42:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A192C433F5
+	for <rcu@archiver.kernel.org>; Fri, 11 Feb 2022 15:42:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242288AbiBKPmK (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 11 Feb 2022 10:42:10 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:53890 "EHLO
+        id S240844AbiBKPmt (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 11 Feb 2022 10:42:49 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:54802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239456AbiBKPmI (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 11 Feb 2022 10:42:08 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB97A13A;
-        Fri, 11 Feb 2022 07:42:06 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S1343923AbiBKPms (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 11 Feb 2022 10:42:48 -0500
+Received: from mx1.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE8D5F4
+        for <rcu@vger.kernel.org>; Fri, 11 Feb 2022 07:42:46 -0800 (PST)
+Received: from [192.168.0.2] (ip5f5aebe1.dynamic.kabel-deutschland.de [95.90.235.225])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 70D0FB82A7D;
-        Fri, 11 Feb 2022 15:42:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1ED28C340E9;
-        Fri, 11 Feb 2022 15:42:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1644594124;
-        bh=1IOQIsBXt9tifPX8k37h229+w+eF8mGJRQS30luffQo=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=o9Yp+famhRlTn4syzmcOswMSFOMD2a6fIbLIcEA21RMp5v1fD0Ybic4cSMEFwouOq
-         L+6cA7nXPFMTa7pQpQ4h/xZkYXyQ8fScbF/wrOPCk88vVfIsQAYvEZV5ryuv8Ajvt/
-         RVQdFEQc7R3UfuqAUzwTOTQ3E7G8FChc4ea0bGRz2p3Lr4Bxj6Y/MFVq5crwSSM7YE
-         SYJYyTzU7N5W3Ak/LBbGh7GQyltbNE1oMkralFXUTw5HJBBuV+2VTmzNc7VuorgR3a
-         9Tpppa8yjnQrIZ4d+GGip78i9crjVM9C6eMe6M1T+zTILN0XdI4OkJxacWsnBBrPmJ
-         XmAnOxNdG9nKw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id C03465C0610; Fri, 11 Feb 2022 07:42:03 -0800 (PST)
-Date:   Fri, 11 Feb 2022 07:42:03 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, rostedt@goodmis.org,
-        David Woodhouse <dwmw@amazon.co.uk>
-Subject: Re: [PATCH rcu 3/9] rcu: Add mutex for rcu boost kthread spawning
- and affinity setting
-Message-ID: <20220211154203.GB4285@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220204230751.GA4193671@paulmck-ThinkPad-P17-Gen-1>
- <20220204230805.4193767-3-paulmck@kernel.org>
- <20220211145757.GA587320@lothringen>
- <20220211151148.GA588079@lothringen>
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 9531461E6478B;
+        Fri, 11 Feb 2022 16:42:44 +0100 (CET)
+Message-ID: <b3f392b1-5418-c64b-502b-f0637df13f86@molgen.mpg.de>
+Date:   Fri, 11 Feb 2022 16:42:44 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220211151148.GA588079@lothringen>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.1
+Subject: =?UTF-8?Q?Re=3a_rcutorture=e2=80=99s_init_segfaults_in_ppc64le_VM?=
+Content-Language: en-US
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linuxppc-dev@lists.ozlabs.org, rcu@vger.kernel.org,
+        Willy Tarreau <w@1wt.eu>, Zhouyi Zhou <zhouzhouyi@gmail.com>
+References: <565038d7-7374-1005-31bf-df2f051845ff@molgen.mpg.de>
+ <871r0dmzzm.fsf@mpe.ellerman.id.au>
+ <e7498a9d-7420-ff52-99e4-8194f3d177f0@molgen.mpg.de>
+ <87y22irx5k.fsf@mpe.ellerman.id.au>
+ <6ae23d59-fe88-6f14-7d9f-648afa3dc298@molgen.mpg.de>
+In-Reply-To: <6ae23d59-fe88-6f14-7d9f-648afa3dc298@molgen.mpg.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Feb 11, 2022 at 04:11:48PM +0100, Frederic Weisbecker wrote:
-> On Fri, Feb 11, 2022 at 03:57:57PM +0100, Frederic Weisbecker wrote:
-> > On Fri, Feb 04, 2022 at 03:07:59PM -0800, Paul E. McKenney wrote:
-> > > From: David Woodhouse <dwmw@amazon.co.uk>
-> > > 
-> > > As we handle parallel CPU bringup, we will need to take care to avoid
-> > > spawning multiple boost threads, or race conditions when setting their
-> > > affinity. Spotted by Paul McKenney.
-> > > 
-> > > Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
-> > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > 
-> > Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-> > 
-> > Speaking of, we have:
-> > 
-> > rcu_init()
-> >    for_each_online_cpu(cpu) // should be boot CPU only at this stage ?
-> >        rcutree_prepare_cpu(cpu)
-> >            rcu_spawn_one_boost_kthread(cpu)
-> > 
-> > 
-> > early_initcall()
-> >     rcu_spawn_gp_kthread()
-> >         rcu_spawn_boost_kthreads()
-> > 	    rcu_for_each_leaf_node(rnp)
-> > 	        rcu_rnp_online_cpus(rnp) // as above, only boot CPU at this stage.
-> >                     rcu_spawn_one_boost_kthread(cpu)
-> > 
-> > cpu_up()
-> >     rcutree_prepare_cpu(cpu)
-> >         rcu_spawn_one_boost_kthread(cpu)
-> > 
-> > 
-> > My guess is that we could remove rcu_spawn_boost_kthreads() and simplify
-> > rcu_init(). Something like this (untested yet):
+Dear Michael,
 
-If you also add a WARN_ON() for more than one CPU being online at
-rcu_init() time, I am good with this approach.  The main danger that
-the pre-rcu_init() portion of the boot time becomes the long straw in
-the eternal quest to make systems boot faster, but it is not hard to
-put it back.  Hence the WARN_ON() to make it clear that adjustment
-is needed.  ;-)
 
-							Thanx, Paul
+Am 11.02.22 um 15:19 schrieb Paul Menzel:
 
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index 86eec6a0f1a1..da8ac2b6f8cc 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -4526,7 +4526,6 @@ static int __init rcu_spawn_gp_kthread(void)
-> >  	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-> >  	wake_up_process(t);
-> >  	rcu_spawn_nocb_kthreads();
-> > -	rcu_spawn_boost_kthreads();
-> >  	rcu_spawn_core_kthreads();
-> >  	return 0;
-> >  }
-> > @@ -4813,7 +4812,7 @@ static void __init kfree_rcu_batch_init(void)
-> >  
-> >  void __init rcu_init(void)
-> >  {
-> > -	int cpu;
-> > +	int cpu = smp_processor_id();
-> >  
-> >  	rcu_early_boot_tests();
-> >  
-> > @@ -4833,11 +4832,10 @@ void __init rcu_init(void)
-> >  	 * or the scheduler are operational.
-> >  	 */
-> >  	pm_notifier(rcu_pm_notify, 0);
-> > -	for_each_online_cpu(cpu) {
-> > -		rcutree_prepare_cpu(cpu);
-> > -		rcu_cpu_starting(cpu);
-> > -		rcutree_online_cpu(cpu);
-> > -	}
-> > +
-> > +	rcutree_prepare_cpu(cpu);
-> > +	rcu_cpu_starting(cpu);
-> > +	rcutree_online_cpu(cpu);
-> >  
-> >  	/* Create workqueue for Tree SRCU and for expedited GPs. */
-> >  	rcu_gp_wq = alloc_workqueue("rcu_gp", WQ_MEM_RECLAIM, 0);
-> > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> > index 6082dd23408f..90925a589774 100644
-> > --- a/kernel/rcu/tree_plugin.h
-> > +++ b/kernel/rcu/tree_plugin.h
-> > @@ -1226,18 +1226,6 @@ static void rcu_boost_kthread_setaffinity(struct rcu_node *rnp, int outgoingcpu)
-> >  	free_cpumask_var(cm);
-> >  }
-> >  
-> > -/*
-> > - * Spawn boost kthreads -- called as soon as the scheduler is running.
-> > - */
-> > -static void __init rcu_spawn_boost_kthreads(void)
-> > -{
-> > -	struct rcu_node *rnp;
-> > -
-> > -	rcu_for_each_leaf_node(rnp)
-> > -		if (rcu_rnp_online_cpus(rnp))
-> > -			rcu_spawn_one_boost_kthread(rnp);
-> > -}
-> > -
-> >  #else /* #ifdef CONFIG_RCU_BOOST */
-> >  
-> >  static void rcu_initiate_boost(struct rcu_node *rnp, unsigned long flags)
-> > @@ -1263,10 +1251,6 @@ static void rcu_boost_kthread_setaffinity(struct rcu_node *rnp, int outgoingcpu)
-> >  {
-> >  }
-> >  
-> > -static void __init rcu_spawn_boost_kthreads(void)
-> > -{
-> > -}
-> > -
-> >  #endif /* #else #ifdef CONFIG_RCU_BOOST */
-> >  
-> >  /*
+> Am 11.02.22 um 02:48 schrieb Michael Ellerman:
+>> Paul Menzel writes:
+>>> Am 08.02.22 um 11:09 schrieb Michael Ellerman:
+>>>> Paul Menzel writes:
+>>>
+>>> […]
+>>>
+>>>>> On the POWER8 server IBM S822LC running Ubuntu 21.10, building Linux
+>>>>> 5.17-rc2+ with rcutorture tests
+>>>>
+>>>> I'm not sure if that's the host kernel version or the version you're
+>>>> using of rcutorture? Can you tell us the sha1 of your host kernel 
+>>>> and of the tree you're running rcutorture from?
+>>>
+>>> The host system runs Linux 5.17-rc1+ started with kexec. Unfortunately,
+>>> I am unable to find the exact sha1.
+>>>
+>>>       $ more /proc/version
+>>>       Linux version 5.17.0-rc1+ (x@eddb.molgen.mpg.de) (Ubuntu clang version 13.0.0-2, LLD 13.0.0) #1 SMP Fri Jan 28 17:13:04 CET 2022
+>>
+>> OK. In general rc1 kernels can have issues, so it might be worth
+>> rebooting the host into either v5.17-rc3 or a distro or stable kernel.
+>> Just to rule out any issues on the host.
 > 
-> nocb kthread creation is similar but it depends on the gp kthread.
-> So we can't rely on rcu_init() -> rcu_prepare_cpu() and we must keep
-> the early_initcall() -> rcu_spawn_gp_kthread().
+> Yes, that was a good test. It works with Ubuntu’s 5.13 Linux kernel.
 > 
-> That would become (untested again):
+>      $ more /proc/version
+>      Linux version 5.13.0-28-generic (buildd@bos02-ppc64el-013) (gcc (Ubuntu 11.2.0-7ubuntu2) 11.2.0, GNU ld (GNU Binutils for Ubuntu) 2.37) #31-Ubuntu SMP Thu Jan 13 17:40:19 UTC 2022
 > 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index da8ac2b6f8cc..9284625a9a50 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -4525,7 +4525,7 @@ static int __init rcu_spawn_gp_kthread(void)
->  	smp_store_release(&rcu_state.gp_kthread, t);  /* ^^^ */
->  	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
->  	wake_up_process(t);
-> -	rcu_spawn_nocb_kthreads();
-> +	rcu_spawn_cpu_nocb_kthread(smp_processor_id());
->  	rcu_spawn_core_kthreads();
->  	return 0;
->  }
-> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-> index 636d0546a4e9..711f6eb7f7e1 100644
-> --- a/kernel/rcu/tree_nocb.h
-> +++ b/kernel/rcu/tree_nocb.h
-> @@ -1277,22 +1277,6 @@ static void rcu_spawn_cpu_nocb_kthread(int cpu)
->  	WRITE_ONCE(rdp->nocb_gp_kthread, rdp_gp->nocb_gp_kthread);
->  }
->  
-> -/*
-> - * Once the scheduler is running, spawn rcuo kthreads for all online
-> - * no-CBs CPUs.  This assumes that the early_initcall()s happen before
-> - * non-boot CPUs come online -- if this changes, we will need to add
-> - * some mutual exclusion.
-> - */
-> -static void __init rcu_spawn_nocb_kthreads(void)
-> -{
-> -	int cpu;
-> -
-> -	if (rcu_nocb_is_setup) {
-> -		for_each_online_cpu(cpu)
-> -			rcu_spawn_cpu_nocb_kthread(cpu);
-> -	}
-> -}
-> -
->  /* How many CB CPU IDs per GP kthread?  Default of -1 for sqrt(nr_cpu_ids). */
->  static int rcu_nocb_gp_stride = -1;
->  module_param(rcu_nocb_gp_stride, int, 0444);
-> @@ -1549,10 +1533,6 @@ static void rcu_spawn_cpu_nocb_kthread(int cpu)
->  {
->  }
->  
-> -static void __init rcu_spawn_nocb_kthreads(void)
-> -{
-> -}
-> -
->  static void show_rcu_nocb_state(struct rcu_data *rdp)
->  {
->  }
+> I have to do more tests, but it could be LLVM/clang related.
+
+Building commit f1baf68e1383 (Merge tag 'net-5.17-rc4' of 
+git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net) with the ata 
+patches on top with GCC, I am unable to reproduce the issue. Before I 
+built it with
+
+     make -j100 LLVM=1 LLVM_IAS=0 bindeb-pkg
+
+[…]
+
+
+Kind regards,
+
+Paul
