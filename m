@@ -2,88 +2,103 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DED57C433EF
-	for <rcu@archiver.kernel.org>; Sun, 13 Feb 2022 14:43:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A09BC433EF
+	for <rcu@archiver.kernel.org>; Sun, 13 Feb 2022 17:27:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236578AbiBMOnb (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 13 Feb 2022 09:43:31 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:47012 "EHLO
+        id S237413AbiBMR1E (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 13 Feb 2022 12:27:04 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:43238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232223AbiBMOnb (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 13 Feb 2022 09:43:31 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C9B25AEF9;
-        Sun, 13 Feb 2022 06:43:26 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S233208AbiBMR1D (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 13 Feb 2022 12:27:03 -0500
+Received: from mx1.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 323552F7;
+        Sun, 13 Feb 2022 09:26:57 -0800 (PST)
+Received: from [192.168.0.2] (ip5f5aee62.dynamic.kabel-deutschland.de [95.90.238.98])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B74A0611AE;
-        Sun, 13 Feb 2022 14:43:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16D43C004E1;
-        Sun, 13 Feb 2022 14:43:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1644763405;
-        bh=+cp9bFzWg3wGwAIw5MZ8QkoVpxGR06Zjxx+eGBXCGw8=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Jg1QyIMc8V3GphRky+NikI9HdaTdF40pBqhQ+G+BtFUCG81tTvrYmwLA8c3zqi9EQ
-         wwSSnH9VOh3UkH7Ssoc5T5/lYwvB8h2SqW2Rer6LHpa9bXhtcguAVHlkzq8eYj9qa3
-         OZYdQmNqTS7uyv2AfVEj+UUUDvXd606n9L9qqJlWX/G4TyOzBul2P36fh7qex0ZwGI
-         CrlryOYjpPQR8tsapJF4OCDMsd1sxz8O0W4574BltOz44dxrukIhC9QAiAUokrYVt1
-         pmX6IdHKsJv4A/PuHqyzWoNJh5dApI2oBmlu/53fik15aO2Deux7uu2Xjf1sPmCS4N
-         jqxb1JavYydUQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 9A1DD5C0951; Sun, 13 Feb 2022 06:43:24 -0800 (PST)
-Date:   Sun, 13 Feb 2022 06:43:24 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Paul Menzel <pmenzel@molgen.mpg.de>
-Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rcu <rcu@vger.kernel.org>
-Subject: Re: Set environment variable `KVM` makes build fail
-Message-ID: <20220213144324.GS4285@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <d3e6a461-5b37-ecfb-d63c-d35af27f2682@molgen.mpg.de>
- <CAABZP2yOA2n-xux8uUC72vVYc14JfCawoOzp_pnTGDvY8cRSnw@mail.gmail.com>
- <f63abe64-6d4f-1374-5fd3-874a34c1c22f@molgen.mpg.de>
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 7352161E64846;
+        Sun, 13 Feb 2022 18:26:54 +0100 (CET)
+Message-ID: <18464474-77e9-1a53-265f-b9718d43e8cd@molgen.mpg.de>
+Date:   Sun, 13 Feb 2022 18:26:53 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.0
+Subject: Re: BUG: sleeping function called from invalid context at
+ include/linux/sched/mm.h:256
+Content-Language: en-US
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jason Baron <jbaron@akamai.com>, rcu@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Zhouyi Zhou <zhouzhouyi@gmail.com>
+References: <244218af-df6a-236e-0a52-268247dd8271@molgen.mpg.de>
+ <20220212234802.GR4285@paulmck-ThinkPad-P17-Gen-1>
+ <3fa9ec7e-0bc1-b972-c21b-473a9ef2e15f@molgen.mpg.de>
+ <20220213144542.GT4285@paulmck-ThinkPad-P17-Gen-1>
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+In-Reply-To: <20220213144542.GT4285@paulmck-ThinkPad-P17-Gen-1>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <f63abe64-6d4f-1374-5fd3-874a34c1c22f@molgen.mpg.de>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sun, Feb 13, 2022 at 10:45:11AM +0100, Paul Menzel wrote:
-> Dear Zhouyi,
-> 
-> 
-> Am 13.02.22 um 09:07 schrieb Zhouyi Zhou:, and
-> 
-> > Thank you for your trust in me.
-> 
-> Thank you for your help.
-> 
-> > I think the following patch has a good explanation of what happened ;-)
-> > https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/tools/testing/selftests/rcutorture/bin/torture.sh?id=a7d89cfb8e1269cb6d22453adba56b8d0218589f
-> > "The torture-test scripting's long-standing use of KVM as the
-> > environment variable tracking the pathname of the rcutorture directory
-> > now conflicts with allmodconfig builds due to the
-> > virt/kvm/Makefile.kvm file's use of this as a makefile variable"
-> 
-> Indeed. In my script I had added the remote for the rcu git archive, but
-> forgot to actually fetch the objects and refs, and missed the error message
-> in the output.
-> 
-> Sorry for the noise, though the variable name should probably namespaced, as
-> at least for the name `KVM` the chance are higher (still very small) that
-> it’s set in the environment.
+Dear Paul,
 
-In -rcu and -next, it is now named "RCUTORTURE".  But if there are
-other rcutorture environment variables in need of namespacing, please
-let me know.
 
-							Thanx, Paul
+Am 13.02.22 um 15:45 schrieb Paul E. McKenney:
+> On Sun, Feb 13, 2022 at 08:39:13AM +0100, Paul Menzel wrote:
+
+>> Am 13.02.22 um 00:48 schrieb Paul E. McKenney:
+>>> On Sun, Feb 13, 2022 at 12:05:50AM +0100, Paul Menzel wrote:
+>>
+>> […]
+>>
+>>>> Running rcutorture on the POWER8 system IBM S822LC with Ubuntu 20.10, it
+>>>> found the bug below. I more or less used rcu/dev (0ba8896d2fd7
+>>>> (lib/irq_poll: Declare IRQ_POLL softirq vector as ksoftirqd-parking safe))
+>>>> [1]. The bug manifested for the four configurations below.
+>>>>
+>>>> 1.  results-rcutorture-kasan/SRCU-T
+>>>> 2.  results-rcutorture-kasan/TINY02
+>>>> 3.  results-rcutorture/SRCU-T
+>>>> 4.  results-rcutorture/TINY02
+>>>
+>>> Adding Frederic on CC...
+>>>
+>>> I am dropping these three for the moment:
+>>>
+>>> 0ba8896d2fd75 lib/irq_poll: Declare IRQ_POLL softirq vector as ksoftirqd-parking safe
+>>> efa8027149a1f tick/rcu: Stop allowing RCU_SOFTIRQ in idle
+>>> d338d22b9d338 tick/rcu: Remove obsolete rcu_needs_cpu() parameters
+>>>
+>>> Though it might be that these are victims of circumstance, in other
+>>> words, that the original bug that Paul Menzel reported was caused by
+>>> something else.
+>>
+>> Even without these three patches, the issue is reproducible. I tested commit
+>> 7a935b7ac61b (tools/nolibc/stdlib: implement abort()).
+> 
+> Ah, I thought you were saying that the issue was caused by them.
+> 
+> I will put them back.  And apologies to Frederic for kicking his
+> patches out!
+
+Sorry for being unclear.
+
+> Are you able to bisect to see what commit introduced the problem?
+
+I have not checked yet, if it’s a regression. I am going to test it next 
+week.
+
+[…]
+
+
+Kind regards,
+
