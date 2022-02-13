@@ -2,96 +2,74 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 042BDC433FE
-	for <rcu@archiver.kernel.org>; Sun, 13 Feb 2022 04:18:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CAAEDC433F5
+	for <rcu@archiver.kernel.org>; Sun, 13 Feb 2022 06:03:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233370AbiBMESJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 12 Feb 2022 23:18:09 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:57394 "EHLO
+        id S233907AbiBMGDU (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 13 Feb 2022 01:03:20 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:44168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232021AbiBMESI (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 12 Feb 2022 23:18:08 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 990793BA7E;
-        Sat, 12 Feb 2022 20:18:03 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id e7so26631367ejn.13;
-        Sat, 12 Feb 2022 20:18:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+Ti2nk4zjdGL9qCHPI+wkzn/Zj6E+wju9LT/x+vfYco=;
-        b=SJ6s05Ho3VIte1Mhbqxs8Q947UYeapNKgS4LOd6Axu7Z8VB6gv8gJZ9AINJY1KcmOH
-         h36FRJQk0+lQUzhfc62qbJmbP+xH3+aWmiVe+Jj7U22WCA3UXwIEauB5ZElfOFAgryyx
-         yfhhEwpu2SM4gF7Gq38FM8mJszOxGLFqOjEwq3Ll/qeMlQLbRvCsB3VkLDaovvSoRX87
-         jlaEfHDD8lmDMWXLrVl3dar/7CbcBtrd/EEss3XFvivZBEmZSd1IHF9YCRbSyE4biYiY
-         kVy0u87wlNNfdYFK0DHxCsS0FEURSP9j5NVjvuHqdFRNUJ8GPXMOxkSXKonydSxM4Kiv
-         xDCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+Ti2nk4zjdGL9qCHPI+wkzn/Zj6E+wju9LT/x+vfYco=;
-        b=Ms8lVNNsS2yxSaYc106sSwPLETi+WJa5Ghdj0d9+BERcKNurpFpz4t3yumi6reXsGF
-         JHrn3XnI6o1MAczVmBeZuhViLKASkdf60aU+EQTydvO9e0Rduw0ECkCJjZgbXihkxAf3
-         wyYaq9My9yag2sJTXcdwnc9DFc6nOq/RjyhewpcYPtmk6xUt7c6HUylOe/9RI0zd1jAL
-         XmQMb+Hdj8t1200IHHW4f1zFFf/SGQP0LgH3sHDd2dpJqX2CwKsngP8NCT9e3FQHPEqs
-         fi/2zadOJlnIY9xu2QULBHJuelDBvfqsG48ICSyfmgXwcuxiZtX5Vc3oQzpw/goNhv6e
-         3buw==
-X-Gm-Message-State: AOAM532aTrKpMf5t+InD2NeStAqWHVGM0WqOOw3T763I0zYtrivTND4d
-        fDF37ZBPVzum+TWxJ3DW08rf93ZfVjI8ZCjv6Cs=
-X-Google-Smtp-Source: ABdhPJwxvsg2Ij6Z1o4x4TJvJwWJbP3hliNKXgonsOvcal8S7E6rhGePIR3CkCEEU3tglVkveoHAxt8qUGlZFAWHAJI=
-X-Received: by 2002:a17:906:77d5:: with SMTP id m21mr1660225ejn.486.1644725882017;
- Sat, 12 Feb 2022 20:18:02 -0800 (PST)
+        with ESMTP id S233868AbiBMGDU (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 13 Feb 2022 01:03:20 -0500
+Received: from mx1.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2587F5E778;
+        Sat, 12 Feb 2022 22:03:14 -0800 (PST)
+Received: from [192.168.0.2] (ip5f5aebcd.dynamic.kabel-deutschland.de [95.90.235.205])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 05C8D61E64846;
+        Sun, 13 Feb 2022 07:03:11 +0100 (CET)
+Message-ID: <d3e6a461-5b37-ecfb-d63c-d35af27f2682@molgen.mpg.de>
+Date:   Sun, 13 Feb 2022 07:03:10 +0100
 MIME-Version: 1.0
-References: <244218af-df6a-236e-0a52-268247dd8271@molgen.mpg.de>
- <CAABZP2ycCjiZ0CySc2Lgr_DnUfuDf1iagEKnWwNEkVkR9-gADA@mail.gmail.com> <YgiEeHzz4JZFszJD@casper.infradead.org>
-In-Reply-To: <YgiEeHzz4JZFszJD@casper.infradead.org>
-From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
-Date:   Sun, 13 Feb 2022 12:17:50 +0800
-Message-ID: <CAABZP2wNEUpM0OyhpKb+EtKY2RynpeU2N2tu9Jw_9B6iv6jGNQ@mail.gmail.com>
-Subject: Re: BUG: sleeping function called from invalid context at include/linux/sched/mm.h:256
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Paul Menzel <pmenzel@molgen.mpg.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linuxppc-dev@lists.ozlabs.org, Linux-MM <linux-mm@kvack.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jason Baron <jbaron@akamai.com>, rcu <rcu@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.0
+Content-Language: en-US
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     kvm@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rcu@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Zhouyi Zhou <zhouzhouyi@gmail.com>
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+Subject: Set environment variable `KVM` makes build fail
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Thank Matthew for correcting me
+Dear Linux folks,
 
-On Sun, Feb 13, 2022 at 12:09 PM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Sun, Feb 13, 2022 at 11:19:09AM +0800, Zhouyi Zhou wrote:
-> > I think the key to the problem lies in your attached console.log
-> > (pasted below), at times 0.014987 and 0.015995, I see there are two
-> > locks (cpu_hotplug_lock and jump_label_mutex)  holded while
-> > kmem_cache_alloc calls __might_resched (0.023356).
->
-> Those are both sleeping locks (a percpu_rwsem and mutex, respectively).
-> There is no problem with sleeping while holding a mutex or rwsem.
-From console.log, I see
-[    0.012154][    T1] BUG: sleeping function called from invalid
-context at include/linux/sched/mm.h:256
-[    0.013128][    T1] in_atomic(): 0, irqs_disabled(): 1, non_block:
-0, pid: 1, name: swapper/0
-From ___might_sleep, I see
 
-9506         if ((preempt_count_equals(preempt_offset) && !irqs_disabled() &&
-9507              !is_idle_task(current) && !current->non_block_count) ||
-9508             system_state == SYSTEM_BOOTING || system_state >
-SYSTEM_RUNNING ||
-9509             oops_in_progress)
-9510                 return;
+Playing with rcutorture 
+(`tools/testing/selftests/rcutorture/bin/torture.sh`), a Linux kernel 
+build failed, because the script sets and exports the environment 
+variable `KVM`. I was able to reproduce that manually (on x86_64):
 
-I guess it is irq_disable which cause the bug.
+     $ make defconfig
+     $ scripts/config -m KVM
+     $ scripts/config -m KVM_INTEL
+     $ scripts/config -d KVM_AMD
+     $ scripts/config -d KVM_XEN
+     $ scripts/config -d KVM_MMU_AUDIT
+     $ export KVM=XXX
+     $ make arch/x86/kvm/kvm.o
+     […]
+       LINK    /dev/shm/linux-kvm/tools/objtool/objtool
+     make[2]: *** No rule to make target 'arch/x86/kvm/XXX/kvm_main.o', 
+needed by 'arch/x86/kvm/kvm.o'.  Stop.
+     make[1]: *** [scripts/Makefile.build:550: arch/x86/kvm] Error 2
+     make: *** [Makefile:1831: arch/x86] Error 2
 
-Thanks
-Zhouyi
+The directory `arch/x86/kvm/XXX` is created somehow.
+
+Is that expected? Do you know what is going on? I wasn’t able to 
+reproduce this with other variables like `SND_HDA` for example.
+
+
+Kind regards,
+
+Paul
