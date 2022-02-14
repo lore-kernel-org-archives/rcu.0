@@ -2,94 +2,101 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B5556C433F5
-	for <rcu@archiver.kernel.org>; Mon, 14 Feb 2022 14:49:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 12E83C433F5
+	for <rcu@archiver.kernel.org>; Mon, 14 Feb 2022 16:44:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235186AbiBNOte (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 14 Feb 2022 09:49:34 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:52720 "EHLO
+        id S231733AbiBNQoo (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 14 Feb 2022 11:44:44 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:49652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355374AbiBNOte (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 14 Feb 2022 09:49:34 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB7034D633;
-        Mon, 14 Feb 2022 06:49:23 -0800 (PST)
+        with ESMTP id S1353459AbiBNQoo (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 14 Feb 2022 11:44:44 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 821F960D8F;
+        Mon, 14 Feb 2022 08:44:36 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 62D8AB80E94;
-        Mon, 14 Feb 2022 14:49:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11EFEC340E9;
-        Mon, 14 Feb 2022 14:49:21 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1EDD7614D0;
+        Mon, 14 Feb 2022 16:44:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 847A8C340E9;
+        Mon, 14 Feb 2022 16:44:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1644850161;
-        bh=tW5tpOyD9L8lrf0v8sM7CbDrJrETT01Kr4ZyOCo19kw=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=ogW0c8kQiioskibNJS4YjOrrZOfjr6yd/JLEfz7wfD+bIaUKH0DuvNrKiBudoJiUv
-         ZvdBf3a4Tn7YDG2qVFV91viJCSBk08YrhBfz+RFr9jZ82VK9nrOvqKE9hnZwzqsLbo
-         2HS4o7Q7/NIQL3sWzIj794somI7G619oPA9P3W6gFVvX8gpuK60O9YsVC75QDMHlTR
-         3f5SwgqOGVBEUDfHSY5XzzxiD54ZvnEjzzWy0S80A9Mcs4FPcV9xDJ3WW4zU1hfxd2
-         Azn8NhIuaRm7MCDLYCEsSGJEK/XMASGJDyXAnV57Pt48Utnv4mDUAmYNYssCFhngAU
-         w/qIem7yVEVrQ==
+        s=k20201202; t=1644857075;
+        bh=+Ul9ZI9HN2iowXmQeqpOx9t7aXHQnEWGLPnkZRHoU9w=;
+        h=Date:From:To:Subject:Reply-To:References:In-Reply-To:From;
+        b=o+X5xWqh+9cqj0N8XiHp7Bf2Bf2IhiKT+CVLnEAtRecTNBPDCk91/txutU2fhrM1e
+         2bqNDcrIr5YviKcca3mWiRFgPmbk/o5dT3bD0La1aSMT8Rv8hQK0Afkgo/Pvu13oi0
+         aCpipqIoHN5GYj06aF1tAFpqCkRA/eL68WNlaynsRqaAiddPdpr6Zb7ORCj2lmL0WR
+         DgymN7V9lT3YNIDRk7ydtMsZJGLWDgZKd4oUzkmkSsZUg2GaYec419MjwrH7GM31Zf
+         8sHGc9qhxQ7C+pE71Sir2xy4hKYQdzyMSl7FiQCirIQX3PaItxJYMnCbP+XMh27C/k
+         1phAgMGQLQMZQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id C65C45C034B; Mon, 14 Feb 2022 06:49:20 -0800 (PST)
-Date:   Mon, 14 Feb 2022 06:49:20 -0800
+        id 46C405C0388; Mon, 14 Feb 2022 08:44:35 -0800 (PST)
+Date:   Mon, 14 Feb 2022 08:44:35 -0800
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     Yu Liao <liaoyu15@huawei.com>, linux-kernel@vger.kernel.org,
-        liwei391@huawei.com, rcu@vger.kernel.org
-Subject: Re: Question about nohz and sysidle
-Message-ID: <20220214144920.GW4285@paulmck-ThinkPad-P17-Gen-1>
+To:     kernel-team@fb.com, linux-kernel@vger.kernel.org,
+        quic_mojha@quicinc.com, rcu@vger.kernel.org, rostedt@goodmis.org,
+        tj@kernel.org, Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH rcu 3/3] rcu: Allow expedited RCU grace periods on
+ incoming CPUs
+Message-ID: <20220214164435.GA2805255@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <b881759b-d281-fdc3-71b7-4429d84cd734@huawei.com>
- <b6dc758b-492d-1000-24e5-643e38d3166e@huawei.com>
- <20220214105744.GA663287@lothringen>
+References: <20220209233811.GC557593@lothringen>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220214105744.GA663287@lothringen>
+In-Reply-To: <20220209233811.GC557593@lothringen>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Feb 14, 2022 at 11:57:44AM +0100, Frederic Weisbecker wrote:
-> On Mon, Feb 14, 2022 at 05:40:55PM +0800, Yu Liao wrote:
-> 
-> Hi Yu Liao,
-> 
+On Thu, Feb 10, 2022 at 12:38:11AM +0100, Frederic Weisbecker wrote:
+> On Fri, Feb 04, 2022 at 02:55:07PM -0800, Paul E. McKenney wrote:
+> > Although it is usually safe to invoke synchronize_rcu_expedited() from a
+> > preemption-enabled CPU-hotplug notifier, if it is invoked from a notifier
+> > between CPUHP_AP_RCUTREE_ONLINE and CPUHP_AP_ACTIVE, its attempts to
+> > invoke a workqueue handler will hang due to RCU waiting on a CPU that
+> > the scheduler is not paying attention to.  This commit therefore expands
+> > use of the existing workqueue-independent synchronize_rcu_expedited()
+> > from early boot to also include CPUs that are being hotplugged.
 > > 
-> > On 2022/2/14 16:28, Yu Liao wrote:
-> > > Hi Frederic,
-> > > 
-> > > I'm working on an issue about nohz. When NO_HZ_FULL is enabled, CPU 0
-> > > handles the timekeeping duty on behalf of all other CPUs, which means
-> > > CPU 0 never stop tick even in sysidle state. This is a powersaving
-> > > issue.
-> > > 
-> > > I found your patchset (nohz: Support sysidle) in the below link.
-> > > https://lore.kernel.org/all/1406569056-30217-1-git-send-email-fweisbec@gmail.com/
-> > > 
-> > > But these patches haven't been merged into mainline yet and sysidle
-> > > state detection has been removed by commit fe5ac724d81a (rcu: Remove
-> > > nohz_full full-system-idle state machine) as well.
-> > > 
-> > > I tried your patches and it does work, why are we no longer working on
-> > > stopping timekeeping duty when all full dynticks CPUs are idle?
+> > Link: https://lore.kernel.org/lkml/7359f994-8aaf-3cea-f5cf-c0d3929689d6@quicinc.com/
+> > Reported-by: Mukesh Ojha <quic_mojha@quicinc.com>
+> > Cc: Tejun Heo <tj@kernel.org>
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 > 
-> Because it was not a priority at that time. There were so many things to handle
-> first (and we are not even done yet) that we postponed that feature until
-> someone ever comes up with powersaving issues on nohz_full. We were waiting for
-> you :)
+> I'm surprised by this scheduler behaviour.
 > 
-> It's possible to unearth this. I think the first step will be to merge the
-> RCU dynticks counters into context tracking, something that was on my queue
-> anyway, and then revive this:
+> Since sched_cpu_activate() hasn't been called yet,
+> rq->balance_callback = balance_push_callback. As a result, balance_push() should
+> be called at the end of schedule() when the workqueue is picked as the next task.
+> Then eventually the workqueue should be immediately preempted by the stop task to
+> be migrated elsewhere.
 > 
-> 	https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git/commit/?h=sysidle.2017.05.11a&id=fe5ac724d81a3c7803e60c2232718f212f3f38d4
+> So I must be missing something. For the fun, I booted the following and it
+> didn't produce any issue:
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 80faf2273ce9..b1e74a508881 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -4234,6 +4234,8 @@ int rcutree_online_cpu(unsigned int cpu)
+>  
+>  	// Stop-machine done, so allow nohz_full to disable tick.
+>  	tick_dep_clear(TICK_DEP_BIT_RCU);
+> +	if (cpu != 0)
+> +		synchronize_rcu_expedited();
+>  	return 0;
+>  }
 
-Given a valid use case, getting that functionality back would be fine
-by me.  But yes, properly merging RCU dynticks into context tracking
-would reduce the resulting idle-entry/exit performance penalty, so it
-would be good to do that first.
+That does seem compelling.  And others have argued that the workqueue
+system's handling of offline CPUs should deal with this.
+
+Mukesh, was this a theoretical bug, or did you actually make it happen?
+If you made it happen, as seems to have been the case given your original
+email [1], could you please post your reproducer?
 
 							Thanx, Paul
+
+[1] https://lore.kernel.org/lkml/7359f994-8aaf-3cea-f5cf-c0d3929689d6@quicinc.com/
