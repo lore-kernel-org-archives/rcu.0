@@ -2,84 +2,116 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 37B1CC4332F
-	for <rcu@archiver.kernel.org>; Mon, 14 Feb 2022 11:22:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 490ECC433EF
+	for <rcu@archiver.kernel.org>; Mon, 14 Feb 2022 13:45:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351107AbiBNLWH (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 14 Feb 2022 06:22:07 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:51454 "EHLO
+        id S1353908AbiBNNqC (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 14 Feb 2022 08:46:02 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:58250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350665AbiBNLVp (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 14 Feb 2022 06:21:45 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A174D13D60;
-        Mon, 14 Feb 2022 02:57:48 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S1354731AbiBNNqB (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 14 Feb 2022 08:46:01 -0500
+Received: from mx1.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2D8EB849;
+        Mon, 14 Feb 2022 05:45:51 -0800 (PST)
+Received: from [192.168.0.2] (ip5f5aebfe.dynamic.kabel-deutschland.de [95.90.235.254])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3BC8B60E84;
-        Mon, 14 Feb 2022 10:57:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E529C340E9;
-        Mon, 14 Feb 2022 10:57:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1644836267;
-        bh=xH46V2BfUDEk4tfDK5AlSlTasUAt3mbtgoN2tyCrJuE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NY49rm1oYN8KMtEh7BNsW9o9HRKwbmuz+DUYhCUNjfjYjKlX/syU9fRRmA4f1+oig
-         ZNImXBF5GRqIZQghhPYmCucic71XuMLiJrP6RjqIb1+SzBwKeRThx8T95HhuJYwHKD
-         7/ZqrxEnVPV4dkAA2IUKdjh4GtpePda3FAgvhm9YF4CtGyLNt6v4vjtvZ6xGxjdXX/
-         +giS63sVuurdMRgDjEIkSdmHs3ZqzdaReEs1/ALdInTmhQsfy4DDSF1vanX7qymwCt
-         gMRwQtsGdHkCBUYZVnz1mrLc3A15gmCzXS5SHBPcpPSrNlKaSnPCpqF6t/IVEnjNbR
-         Gb3zGDlw6xb4Q==
-Date:   Mon, 14 Feb 2022 11:57:44 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Yu Liao <liaoyu15@huawei.com>
-Cc:     paulmck@kernel.org, linux-kernel@vger.kernel.org,
-        liwei391@huawei.com, rcu@vger.kernel.org
-Subject: Re: Question about nohz and sysidle
-Message-ID: <20220214105744.GA663287@lothringen>
-References: <b881759b-d281-fdc3-71b7-4429d84cd734@huawei.com>
- <b6dc758b-492d-1000-24e5-643e38d3166e@huawei.com>
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 9D27261EA1927;
+        Mon, 14 Feb 2022 14:45:49 +0100 (CET)
+Message-ID: <74d2302f-88fc-c75c-6d2d-4aece1a515bb@molgen.mpg.de>
+Date:   Mon, 14 Feb 2022 14:45:49 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b6dc758b-492d-1000-24e5-643e38d3166e@huawei.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.0
+Subject: Re: [PATCH v3 0/9] Parallel CPU bringup for x86_64
+Content-Language: en-US
+To:     David Woodhouse <dwmw2@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
+        hushiyuan@huawei.com, luolongjun@huawei.com, hejingxian@huawei.com
+References: <20211215145633.5238-1-dwmw2@infradead.org>
+ <9a47b5ec-f2d1-94d9-3a48-9b326c88cfcb@molgen.mpg.de>
+ <ab28d2ce-4a9c-387d-9eda-558045a0c35b@molgen.mpg.de>
+ <3bfacf45d2d0f3dfa3789ff5a2dcb46744aacff7.camel@infradead.org>
+ <ea433e41-0038-554d-3348-70aa98aff9e1@molgen.mpg.de>
+ <efbe0d3d92e6c279e3a6d7a4191ca7470bc4beec.camel@infradead.org>
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+In-Reply-To: <efbe0d3d92e6c279e3a6d7a4191ca7470bc4beec.camel@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Feb 14, 2022 at 05:40:55PM +0800, Yu Liao wrote:
+Dear David,
 
-Hi Yu Liao,
 
+Am 29.12.21 um 14:54 schrieb David Woodhouse:
+> On Wed, 2021-12-29 at 14:18 +0100, Paul Menzel wrote:
+>>> Or the one in
+>>> https://lore.kernel.org/lkml/d4cde50b4aab24612823714dfcbe69bc4bb63b60.camel@infradead.org
+>>>
+>>> which makes it do nothing except prepare all the CPUs before bringing
+>>> them up one at a time?
+>>
+>> I applied it on top the other one, and it made no difference either.
 > 
-> On 2022/2/14 16:28, Yu Liao wrote:
-> > Hi Frederic,
-> > 
-> > I'm working on an issue about nohz. When NO_HZ_FULL is enabled, CPU 0
-> > handles the timekeeping duty on behalf of all other CPUs, which means
-> > CPU 0 never stop tick even in sysidle state. This is a powersaving
-> > issue.
-> > 
-> > I found your patchset (nohz: Support sysidle) in the below link.
-> > https://lore.kernel.org/all/1406569056-30217-1-git-send-email-fweisbec@gmail.com/
-> > 
-> > But these patches haven't been merged into mainline yet and sysidle
-> > state detection has been removed by commit fe5ac724d81a (rcu: Remove
-> > nohz_full full-system-idle state machine) as well.
-> > 
-> > I tried your patches and it does work, why are we no longer working on
-> > stopping timekeeping duty when all full dynticks CPUs are idle?
+> It's possible I missed something else in the prepare stage that doesn't
+> cope with all CPUs being prepared first.
+> 
+> My next attempt might be to change the loop in bringup_nonboot_cpus()
+> to bring all the CPUs not to the CPUHP_BP_PARALLEL_DYN state(s) but
+> instead just bring them to somewhere like CPUHP_RCUTREE_PREP, which is
+> somewhere in the middle between CPUHP_OFFLINE and CPUHP_BRINGUP_CPU.
+> 
+> Then a binary chop search — if that one boots, try maybe
+> CPUHP_TOPOLOGY_PREPARE. And if not, try CPUHP_PROFILE_PREPARE. Etc.
+> 
+>>> My current theory (not that I've spent that much time thinking about it
+>>> in the last week) is that there's something about the existing CPU
+>>> bringup, possibly a CPU bug or something special about the AMD CPUs,
+>>> which is triggered by just making it a little bit *faster*, which is
+>>> why bringing them up from kexec (especially in qemu) can cause it too?
+>>
+>> Would having the serial console enabled make a difference?
+>
+> Yes. I couldn't make this fail in my EC2 m6a instance (for clean boots;
+> I have never managed to kexec it) until I turned off the serial console
+> to make things go faster.
+> 
+>>> Tom seemed to find that it was in load_TR_desc(), so if you could try
+>>> this hack on a machine that doesn't magically wink out of existence on
+>>> a triplefault before even flushing its serial output, that would be
+>>> much appreciated...
+> 
+>> Unfortunately, no more messages were printed on the serial console.
+> 
+> I suppose we need to litter those outputs somewhere earlier in the
+> trampoline then, perhaps it *isn't* getting to load_TR_desc() in your
+> case?
+> 
+> Will be back online properly next week and can actually provide some of
+> the above suggestions in patch form if you're willing to keep testing.
 
-Because it was not a priority at that time. There were so many things to handle
-first (and we are not even done yet) that we postponed that feature until
-someone ever comes up with powersaving issues on nohz_full. We were waiting for
-you :)
+Sorry for replying so late. I saw your v4 patches, and tried commit 
+5e3524d21d2a () from your branch `parallel-5.17-part1`. Unfortunately, 
+the boot problem still persists on an AMD Ryzen 3 2200 g system, I 
+tested with. Please tell, where I should report these results too (here 
+or posted v4 patches).
 
-It's possible to unearth this. I think the first step will be to merge the
-RCU dynticks counters into context tracking, something that was on my queue
-anyway, and then revive this:
+Also, do you have (physical) access to a system with an AMD CPU? If not, 
+maybe we can get you one, so it’s more convenient for you to test.
 
-	https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git/commit/?h=sysidle.2017.05.11a&id=fe5ac724d81a3c7803e60c2232718f212f3f38d4
 
-Thanks.
+Kind regards,
+
+Paul
