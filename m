@@ -2,103 +2,74 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A09BC433EF
-	for <rcu@archiver.kernel.org>; Sun, 13 Feb 2022 17:27:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E00D6C433FE
+	for <rcu@archiver.kernel.org>; Mon, 14 Feb 2022 09:41:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237413AbiBMR1E (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 13 Feb 2022 12:27:04 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:43238 "EHLO
+        id S244465AbiBNJlu (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 14 Feb 2022 04:41:50 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:34464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233208AbiBMR1D (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 13 Feb 2022 12:27:03 -0500
-Received: from mx1.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 323552F7;
-        Sun, 13 Feb 2022 09:26:57 -0800 (PST)
-Received: from [192.168.0.2] (ip5f5aee62.dynamic.kabel-deutschland.de [95.90.238.98])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 7352161E64846;
-        Sun, 13 Feb 2022 18:26:54 +0100 (CET)
-Message-ID: <18464474-77e9-1a53-265f-b9718d43e8cd@molgen.mpg.de>
-Date:   Sun, 13 Feb 2022 18:26:53 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.0
-Subject: Re: BUG: sleeping function called from invalid context at
- include/linux/sched/mm.h:256
-Content-Language: en-US
-To:     "Paul E. McKenney" <paulmck@kernel.org>
+        with ESMTP id S244595AbiBNJkr (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 14 Feb 2022 04:40:47 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B54A1B85D;
+        Mon, 14 Feb 2022 01:35:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=/kVIgFJ8ubFPieTzVWtZtI9HqscvRt6tDLYaMfGuR94=; b=r8H/h8Igq0GzYQRu9lX+4vZpkz
+        PZT8xyiFTwmYfH8zubh1ywbnAQuGsxBwPjrNNrXA/o5U2JjK2PG0V0xRX/sJIDHEu54dC9/6UiQmL
+        F+Y3JW1EqyYpAxhmND0M+vmbJxIzO/juCEX+l1Qxgp3yY0pks+vRezLo8UnjVQpQDnV21BZMIq5eU
+        cLBiNTmqSIIC6wmCTCn7UcAw94DlAlbMufV+uEMoQM32jv5F+3qmu69tvjWwB6IZXb47Xsbg77XjX
+        QWG7HLXHrI/r9z3omtqEEq49GOXiD1gj/PIcUnY9oVdJvwe1GhbBV1iVjaieum7WgA5MFUOuUx9Vo
+        TDY7Hsgw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1nJXlV-00CkQY-Gv; Mon, 14 Feb 2022 09:35:25 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CF6CF300472;
+        Mon, 14 Feb 2022 10:35:22 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 94416203C074A; Mon, 14 Feb 2022 10:35:22 +0100 (CET)
+Date:   Mon, 14 Feb 2022 10:35:22 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Paul Menzel <pmenzel@molgen.mpg.de>
 Cc:     Michael Ellerman <mpe@ellerman.id.au>,
         linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
-        Peter Zijlstra <peterz@infradead.org>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
         Jason Baron <jbaron@akamai.com>, rcu@vger.kernel.org,
         LKML <linux-kernel@vger.kernel.org>,
-        Zhouyi Zhou <zhouzhouyi@gmail.com>
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Zhouyi Zhou <zhouzhouyi@gmail.com>, christophe.leroy@csgroup.eu
+Subject: Re: BUG: sleeping function called from invalid context at
+ include/linux/sched/mm.h:256
+Message-ID: <YgoiWlNZvTusk1B9@hirez.programming.kicks-ass.net>
 References: <244218af-df6a-236e-0a52-268247dd8271@molgen.mpg.de>
- <20220212234802.GR4285@paulmck-ThinkPad-P17-Gen-1>
- <3fa9ec7e-0bc1-b972-c21b-473a9ef2e15f@molgen.mpg.de>
- <20220213144542.GT4285@paulmck-ThinkPad-P17-Gen-1>
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <20220213144542.GT4285@paulmck-ThinkPad-P17-Gen-1>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <244218af-df6a-236e-0a52-268247dd8271@molgen.mpg.de>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Dear Paul,
+On Sun, Feb 13, 2022 at 12:05:50AM +0100, Paul Menzel wrote:
 
+> [    0.012154][    T1] BUG: sleeping function called from invalid context at
 
-Am 13.02.22 um 15:45 schrieb Paul E. McKenney:
-> On Sun, Feb 13, 2022 at 08:39:13AM +0100, Paul Menzel wrote:
+> [    0.022443][    T1] [c0000000084837d0] [c000000000961aac] > dump_stack_lvl+0xa0/0xec (unreliable)
+> [    0.023356][    T1] [c000000008483820] [c00000000019b314] > __might_resched+0x2f4/0x310
+> [    0.024174][    T1] [c0000000084838b0] [c0000000004c0c70] > kmem_cache_alloc+0x220/0x4b0
+> [    0.025000][    T1] [c000000008483920] [c000000000448af4] > __pud_alloc+0x74/0x1d0
+> [    0.025772][    T1] [c000000008483970] [c00000000008fe3c] > hash__map_kernel_page+0x2cc/0x390
+> [    0.026643][    T1] [c000000008483a20] [c0000000000a9944] > do_patch_instruction+0x134/0x4a0
 
->> Am 13.02.22 um 00:48 schrieb Paul E. McKenney:
->>> On Sun, Feb 13, 2022 at 12:05:50AM +0100, Paul Menzel wrote:
->>
->> […]
->>
->>>> Running rcutorture on the POWER8 system IBM S822LC with Ubuntu 20.10, it
->>>> found the bug below. I more or less used rcu/dev (0ba8896d2fd7
->>>> (lib/irq_poll: Declare IRQ_POLL softirq vector as ksoftirqd-parking safe))
->>>> [1]. The bug manifested for the four configurations below.
->>>>
->>>> 1.  results-rcutorture-kasan/SRCU-T
->>>> 2.  results-rcutorture-kasan/TINY02
->>>> 3.  results-rcutorture/SRCU-T
->>>> 4.  results-rcutorture/TINY02
->>>
->>> Adding Frederic on CC...
->>>
->>> I am dropping these three for the moment:
->>>
->>> 0ba8896d2fd75 lib/irq_poll: Declare IRQ_POLL softirq vector as ksoftirqd-parking safe
->>> efa8027149a1f tick/rcu: Stop allowing RCU_SOFTIRQ in idle
->>> d338d22b9d338 tick/rcu: Remove obsolete rcu_needs_cpu() parameters
->>>
->>> Though it might be that these are victims of circumstance, in other
->>> words, that the original bug that Paul Menzel reported was caused by
->>> something else.
->>
->> Even without these three patches, the issue is reproducible. I tested commit
->> 7a935b7ac61b (tools/nolibc/stdlib: implement abort()).
-> 
-> Ah, I thought you were saying that the issue was caused by them.
-> 
-> I will put them back.  And apologies to Frederic for kicking his
-> patches out!
+do_patch_instruction() rightfully disables IRQs, but then it goes and
+tries a memory alloc, which seems a bit daft.
 
-Sorry for being unclear.
-
-> Are you able to bisect to see what commit introduced the problem?
-
-I have not checked yet, if it’s a regression. I am going to test it next 
-week.
-
-[…]
-
-
-Kind regards,
-
+I'm thinking Christophe might know more... he's recently been poking at
+Power text poking..
