@@ -2,74 +2,159 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E00D6C433FE
-	for <rcu@archiver.kernel.org>; Mon, 14 Feb 2022 09:41:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4956BC433F5
+	for <rcu@archiver.kernel.org>; Mon, 14 Feb 2022 10:09:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244465AbiBNJlu (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 14 Feb 2022 04:41:50 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:34464 "EHLO
+        id S1344905AbiBNKJP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 14 Feb 2022 05:09:15 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:35396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244595AbiBNJkr (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 14 Feb 2022 04:40:47 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B54A1B85D;
-        Mon, 14 Feb 2022 01:35:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/kVIgFJ8ubFPieTzVWtZtI9HqscvRt6tDLYaMfGuR94=; b=r8H/h8Igq0GzYQRu9lX+4vZpkz
-        PZT8xyiFTwmYfH8zubh1ywbnAQuGsxBwPjrNNrXA/o5U2JjK2PG0V0xRX/sJIDHEu54dC9/6UiQmL
-        F+Y3JW1EqyYpAxhmND0M+vmbJxIzO/juCEX+l1Qxgp3yY0pks+vRezLo8UnjVQpQDnV21BZMIq5eU
-        cLBiNTmqSIIC6wmCTCn7UcAw94DlAlbMufV+uEMoQM32jv5F+3qmu69tvjWwB6IZXb47Xsbg77XjX
-        QWG7HLXHrI/r9z3omtqEEq49GOXiD1gj/PIcUnY9oVdJvwe1GhbBV1iVjaieum7WgA5MFUOuUx9Vo
-        TDY7Hsgw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nJXlV-00CkQY-Gv; Mon, 14 Feb 2022 09:35:25 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CF6CF300472;
-        Mon, 14 Feb 2022 10:35:22 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 94416203C074A; Mon, 14 Feb 2022 10:35:22 +0100 (CET)
-Date:   Mon, 14 Feb 2022 10:35:22 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Paul Menzel <pmenzel@molgen.mpg.de>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
+        with ESMTP id S1344939AbiBNKH5 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 14 Feb 2022 05:07:57 -0500
+Received: from FRA01-MR2-obe.outbound.protection.outlook.com (mail-eopbgr90053.outbound.protection.outlook.com [40.107.9.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D13CCA19F;
+        Mon, 14 Feb 2022 01:50:09 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HVwurtrXI6thWtpp02ieVL/fXssYImd46SOadrUUzJnrjKoqQEqEoR82xTiEgSDuh9Iti5K4iZjWVklWWWEDYN0sTz6/g266HwWtfwyxgtTnzMZoasjs9rDgSyD/cvfqCP43oeP0Y7ERWXwZeYN2A1qUmkxg8vE7QGswv8mtY6xxhWme1rFSGmnfXl89DbJPXcOG4bdnySdHvLLLhX5yKPs1kJHZkszkptHiZm8N9ZC3ovuFjOTwbZZT3LaYiG4uTbz9Qn4pXGqjrtpvw2A5BaCVOcAAP4XhZIyDS0kOsJb4Qr27wajdqpAVpN2Sy3v9LFudW0gNWvdjpD+KcZdK5A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=zxhp1B9rFrYNbQRG/k9f5ggPlijXbahKeg1rQaRkyM0=;
+ b=iT8HwJUf2R3G4OzEJP44Slc/tz5iFebg1zk334kEkv3dAHDlWt/dWva6+OYHUVDvTz9QRPJyVHFPuVQj5/6vBcOZRMMiQthPeP+r18ZYNDdXaIo8CgOMoA4fFgWcQyRWCH6KTSdKZVuqD1SHj7btL26QjuJ7YPVgtiLd0VQ2LCStsndgfADZFa9M1z6aF5UwOsZdStWD7JDBhFuwl0e96244QvWe70VCTY6AoOtt5mXZ58XVQHvuD+6CSE39agq3e9zSLOXAIWeFhOCLKfj04I52Rp2AggHQfACAYiz9N2KZ4RQjrXeBDTPAEmCNTLIdKeZmzW3ME9LXYJbvXoJPtA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
+ by PR2P264MB0160.FRAP264.PROD.OUTLOOK.COM (2603:10a6:101:7::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4975.15; Mon, 14 Feb
+ 2022 09:50:06 +0000
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::c9a2:1db0:5469:54e1]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::c9a2:1db0:5469:54e1%9]) with mapi id 15.20.4975.019; Mon, 14 Feb 2022
+ 09:50:06 +0000
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        Michael Ellerman <mpe@ellerman.id.au>
+CC:     "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jason Baron <jbaron@akamai.com>, rcu@vger.kernel.org,
+        Jason Baron <jbaron@akamai.com>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
         "Paul E. McKenney" <paulmck@kernel.org>,
-        Zhouyi Zhou <zhouzhouyi@gmail.com>, christophe.leroy@csgroup.eu
+        Zhouyi Zhou <zhouzhouyi@gmail.com>
 Subject: Re: BUG: sleeping function called from invalid context at
  include/linux/sched/mm.h:256
-Message-ID: <YgoiWlNZvTusk1B9@hirez.programming.kicks-ass.net>
+Thread-Topic: BUG: sleeping function called from invalid context at
+ include/linux/sched/mm.h:256
+Thread-Index: AQHYIGUrh/GHNmjCTEyAzDxYump2zqySy5UAgAAEHgA=
+Date:   Mon, 14 Feb 2022 09:50:06 +0000
+Message-ID: <af4ecc95-8cb0-10a8-1819-cb6431b02156@csgroup.eu>
 References: <244218af-df6a-236e-0a52-268247dd8271@molgen.mpg.de>
+ <YgoiWlNZvTusk1B9@hirez.programming.kicks-ass.net>
+In-Reply-To: <YgoiWlNZvTusk1B9@hirez.programming.kicks-ass.net>
+Accept-Language: fr-FR, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=csgroup.eu;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 6b81f382-ba79-4d26-245b-08d9ef9f61c8
+x-ms-traffictypediagnostic: PR2P264MB0160:EE_
+x-microsoft-antispam-prvs: <PR2P264MB0160BBBB4816D4D37FF6174AED339@PR2P264MB0160.FRAP264.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: /lmsLmNVY/qOT6K7+ozzEZMG/h3RlZy4A5HBUoZxWLmJk9Bbr5neFScxhxYyDFIIHskRXiek52KGP6YBKEMJQgZ//4OwHh+jEfgdk8WzXZPdBhQTzmzR+iWtFV4eVgz5FReejeBgPbuxOEc7SK58v0y5bNUszBkdhoXdLZHQKqnL9kmgX41vjW1xfLjQar95dPzKWCSdV+iBmj3Wl1KAJLNNXhsTcjzJAJceCupsueWVIxgO68EC/sCMZMhzr78b9OfxdCHSNOSL9wGadp92PgqJSkFNFUfqWLfE31Yjv4SosR9BXfGB5VOK7F6cQHSxoCpJav8kOtERxx9ZAxvLdRLj1U7arCclzqzFIk5tTnrHuPwiMoM3GBooa7RkzMAhVsqErHrEC+7ND0JhCnmiZoLfDQ6GLDH5DmbLux9xWs0Ko2GFRICBkvsTG+Ua0pk+mELpEOaEtrY4QA7g6pCCmUaQGPQojK/WpElPHWZRXWZ6TpRp4oF94CyVWPZJGdSIUP4e2Hbw8QxQM065MA53eqND06lbH2cBu9kMWB809ZRQ8Ykhrep/SH+QZUdW2KBNk3+5dnuq112ynWhx6HIpMDahL/Q9vZ3YRYGwzAt83EBB5uanUfIKCrZ9MMnkhgqauGNRfRHN7YkQCOjMpM4KyuQ6bkCxyBwDL134kyY4cLtVD00bNbFaarVUwPV9ZQLOndylYQS1XpcSbWbPpMPRVhDHPQO03Zlzsv7+Xku0D/7ny8tX244gHx9SDqw7dvzSo2Z7YPOhCOaf63EGg0p35Q==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(83380400001)(110136005)(316002)(64756008)(54906003)(38070700005)(2616005)(8676002)(4326008)(26005)(186003)(86362001)(66556008)(66476007)(66446008)(76116006)(91956017)(31696002)(66946007)(6486002)(122000001)(38100700002)(71200400001)(6506007)(6512007)(5660300002)(508600001)(31686004)(44832011)(2906002)(36756003)(7416002)(8936002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?d1hBdjV3VXlJcUliZkVGTVdodjV0VjVxYzQwa0FuS0VkNHhHOEgzU0RDZWs1?=
+ =?utf-8?B?dlhsNzFkYmpsOUVCNUlYR28veHJTTDhUTnFwRUt2ZnZFL0pVc0djdzEzU2RC?=
+ =?utf-8?B?elErWUdqc2FvQ242UVRaZk5FQVNqUlQ0Sm1YWW9aYUw0Q2l1RmN6bGtPdVov?=
+ =?utf-8?B?YWNFVjV2RXcwOHhmTTFaMHl3UnJMTEk5eVdlcWlrbFR0UGtTYlIxMmRnVUxy?=
+ =?utf-8?B?dVpjSWwzUWRqcVlTNUFyS0FmZlJFVkVrbVJYaTczWlcrT3lkYnZlUEs0b0lB?=
+ =?utf-8?B?T2FBdDJMZXpGcTRYYlFrU2g3RWx3c0N5RVZPZUdkRnVTdWsyanAzK3NYcmdD?=
+ =?utf-8?B?OUpuQitsWm8zRUpsUW0xMkVQRjJmbWo3TVY0MktPME5Ta2xCbHdjQ1l1T21H?=
+ =?utf-8?B?cHpPZlEzU2Fza0lrZnpPQ0lNTGd6NnpobVRKMGs3NHpJZUpxOTNwY3Q3Q1N1?=
+ =?utf-8?B?TDJ0MzQxT1phZTFOMGVaMytRdTZtb1lEMHN4aFFaMVJ3c2tZbkNyQVVUaEJC?=
+ =?utf-8?B?VzhUd242VnMranZhVmYxMDJ0TUVVTENGWkozZGw2YjFHbG1RZkgwSm9uSnUr?=
+ =?utf-8?B?R09oZTY0VjhsQmJnaS9RREJ5QzFyTVZ0MG5WV09FNEg5Q3diT1ZOU3VDY2hH?=
+ =?utf-8?B?bEZpZG5WZUI2KzR4R203bXJMa1dWb0p3cCt5NTl4YkZmK0ZhMStEVGpQL0My?=
+ =?utf-8?B?eXYxWlFyb3c3aHZJZUhKWkxCYjlLb1lTMnM1TjRMc1dMSFN1dnhtWlVJTmZG?=
+ =?utf-8?B?ekpBcFg0ejlSSTRiN0xOUFk2dUIyaXZQUERNVmZBSGhzLzJPWHg3UHBEcVpX?=
+ =?utf-8?B?TjJZWUZxUWV2SStEc0NMTFAvaVYvL1BCN2pIbTlNejU5NStleEg4bUtadjkv?=
+ =?utf-8?B?ZW1Fa0Znb1lxTkVqdjA0Z09BZmoxekUrZGZEbGZ4UnJsaU1mY2VNdm9NcEJq?=
+ =?utf-8?B?dExtc1BaS0dkdHp3M2pqbEh4cmtpWXdPUFo1S1hlTlExLys2SStOME1Ja3Ew?=
+ =?utf-8?B?Q0NFMk5FV0ZNamNtQXZ5ZmVuWis2c2ZzbWJzQ3dBRUhhWUJwTUhRMlJXVys5?=
+ =?utf-8?B?RmNueHp1U0N1am9KZGV3M0NXa1dtVEsvMVBBVHViV3hEUmRJa1djNFVlREpR?=
+ =?utf-8?B?amRXMVFxL2VVTzg2UHBCNjVGRlBBWmwxbnBUWEtLbXc0L1ZYMit2RGhabFFt?=
+ =?utf-8?B?bmFCR3ZWSVExamo3VXdUQU5wcmtiaUxsd1MxczI4blpYRWpuVGZIT2VNaXdD?=
+ =?utf-8?B?UHhuNVdtMUpLTTlXVEh1bGNqRzE3UDhsajFmNkVBaDM5N3N0RFpacytOTSsv?=
+ =?utf-8?B?TFljbVhFbW1sN3hpK2dZRGJFYVFZTDRqNzhxeXVIRjE5cXRvRGtKZFhYN2Zq?=
+ =?utf-8?B?bHdodm8zekFJUzFkK3FGcTY0NHNxbDdJdDA2aTRyNmNkMHN4QjB1bG9mOFRL?=
+ =?utf-8?B?b01ZY09OUVdwUDlrWVUwM05rTGFaSytoK2pJMnJrVEVRYW9HRys5a1loNEtO?=
+ =?utf-8?B?bWc5TTZkeFdxOHZnemhwM1EvTDBCYjNQQ0VQU3d3OVM4RmVDOVRUeGlsUmNi?=
+ =?utf-8?B?TFIvYThpNndJM2tjTzNRZk5UbVV6Ris3MStMRGJnb1NzeTZaVHhraDg2ZCsx?=
+ =?utf-8?B?aVgzaWQ0MmZrc2FpNmFEWnhwWUZCNEtLVzJGUXJxYXZTVURYNjdieE00S1Z1?=
+ =?utf-8?B?RlJrT2lmSjZmekt4UVNDY3ZvMkpPMjZIN2E2eE9KeVpVNFlXL1Z6VmJrWCtt?=
+ =?utf-8?B?dGxla1JzQ0ZHWnJpa29hUHB3aE0rYWM1UFUrV2t1bVlzVldKVEx1SFJ4dHB6?=
+ =?utf-8?B?UnVrTWI4ODNpaUp0M0kzZ1lxY0Z2a0NDTzFOSm9xL0htRzFic3k3SnJIWUQy?=
+ =?utf-8?B?eW5tU3AvSVVTSVJydlQyNGVTM01CZ2tkaTJGaG5GZDJuMW9ROWtmL1plVmtB?=
+ =?utf-8?B?TGozMVNHblIrYlVMc1RLRHFXVkFuak45bnU5UHRLelB2MlREZnVXc0lBOGdW?=
+ =?utf-8?B?SU1iUlFKazlEZVhhVms0RVZmdjBuWjhJV3Q2NE9oLzZDK3IwdlJJY2wyaXcy?=
+ =?utf-8?B?MTBJSGVwdHVhbWFkT2c1ZkRnczE0b1RBcGg2S0V4L1IvWXFMYnJXalpMTS9j?=
+ =?utf-8?B?SkU1MG12VTFMcXFlcktIYlhsbGJzV0gxMDR0N1czVDFyOHhvelB2bFlEaVpq?=
+ =?utf-8?B?Zyt2TFViNjJZVUZPRFlBR0VtbkJQTVczMHk4OWlrMCsrQ3ZlRGc2RHQ2WEpU?=
+ =?utf-8?Q?b0OT0FnJEpSQ2gsAwuzsnGh52C8UgTlDPNcjdIKt38=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <ED5D6D17E9010E468233B008563408D3@FRAP264.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <244218af-df6a-236e-0a52-268247dd8271@molgen.mpg.de>
+X-OriginatorOrg: csgroup.eu
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6b81f382-ba79-4d26-245b-08d9ef9f61c8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Feb 2022 09:50:06.8355
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: LFNavLzCvMZhZoGlhwNlgZCKvufBxr1XcP7k1RLcqFxhuxCiizluMMIY8b/4XqEsFVtOihxQFcVpgtoHqYqk589gXFkXUuhel577IIvf1lg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR2P264MB0160
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sun, Feb 13, 2022 at 12:05:50AM +0100, Paul Menzel wrote:
-
-> [    0.012154][    T1] BUG: sleeping function called from invalid context at
-
-> [    0.022443][    T1] [c0000000084837d0] [c000000000961aac] > dump_stack_lvl+0xa0/0xec (unreliable)
-> [    0.023356][    T1] [c000000008483820] [c00000000019b314] > __might_resched+0x2f4/0x310
-> [    0.024174][    T1] [c0000000084838b0] [c0000000004c0c70] > kmem_cache_alloc+0x220/0x4b0
-> [    0.025000][    T1] [c000000008483920] [c000000000448af4] > __pud_alloc+0x74/0x1d0
-> [    0.025772][    T1] [c000000008483970] [c00000000008fe3c] > hash__map_kernel_page+0x2cc/0x390
-> [    0.026643][    T1] [c000000008483a20] [c0000000000a9944] > do_patch_instruction+0x134/0x4a0
-
-do_patch_instruction() rightfully disables IRQs, but then it goes and
-tries a memory alloc, which seems a bit daft.
-
-I'm thinking Christophe might know more... he's recently been poking at
-Power text poking..
+DQoNCkxlIDE0LzAyLzIwMjIgw6AgMTA6MzUsIFBldGVyIFppamxzdHJhIGEgw6ljcml0wqA6DQo+
+IE9uIFN1biwgRmViIDEzLCAyMDIyIGF0IDEyOjA1OjUwQU0gKzAxMDAsIFBhdWwgTWVuemVsIHdy
+b3RlOg0KPiANCj4+IFsgICAgMC4wMTIxNTRdWyAgICBUMV0gQlVHOiBzbGVlcGluZyBmdW5jdGlv
+biBjYWxsZWQgZnJvbSBpbnZhbGlkIGNvbnRleHQgYXQNCj4gDQo+PiBbICAgIDAuMDIyNDQzXVsg
+ICAgVDFdIFtjMDAwMDAwMDA4NDgzN2QwXSBbYzAwMDAwMDAwMDk2MWFhY10gPiBkdW1wX3N0YWNr
+X2x2bCsweGEwLzB4ZWMgKHVucmVsaWFibGUpDQo+PiBbICAgIDAuMDIzMzU2XVsgICAgVDFdIFtj
+MDAwMDAwMDA4NDgzODIwXSBbYzAwMDAwMDAwMDE5YjMxNF0gPiBfX21pZ2h0X3Jlc2NoZWQrMHgy
+ZjQvMHgzMTANCj4+IFsgICAgMC4wMjQxNzRdWyAgICBUMV0gW2MwMDAwMDAwMDg0ODM4YjBdIFtj
+MDAwMDAwMDAwNGMwYzcwXSA+IGttZW1fY2FjaGVfYWxsb2MrMHgyMjAvMHg0YjANCj4+IFsgICAg
+MC4wMjUwMDBdWyAgICBUMV0gW2MwMDAwMDAwMDg0ODM5MjBdIFtjMDAwMDAwMDAwNDQ4YWY0XSA+
+IF9fcHVkX2FsbG9jKzB4NzQvMHgxZDANCj4+IFsgICAgMC4wMjU3NzJdWyAgICBUMV0gW2MwMDAw
+MDAwMDg0ODM5NzBdIFtjMDAwMDAwMDAwMDhmZTNjXSA+IGhhc2hfX21hcF9rZXJuZWxfcGFnZSsw
+eDJjYy8weDM5MA0KPj4gWyAgICAwLjAyNjY0M11bICAgIFQxXSBbYzAwMDAwMDAwODQ4M2EyMF0g
+W2MwMDAwMDAwMDAwYTk5NDRdID4gZG9fcGF0Y2hfaW5zdHJ1Y3Rpb24rMHgxMzQvMHg0YTANCj4g
+DQo+IGRvX3BhdGNoX2luc3RydWN0aW9uKCkgcmlnaHRmdWxseSBkaXNhYmxlcyBJUlFzLCBidXQg
+dGhlbiBpdCBnb2VzIGFuZA0KPiB0cmllcyBhIG1lbW9yeSBhbGxvYywgd2hpY2ggc2VlbXMgYSBi
+aXQgZGFmdC4NCj4gDQo+IEknbSB0aGlua2luZyBDaHJpc3RvcGhlIG1pZ2h0IGtub3cgbW9yZS4u
+LiBoZSdzIHJlY2VudGx5IGJlZW4gcG9raW5nIGF0DQo+IFBvd2VyIHRleHQgcG9raW5nLi4NCg0K
+DQpJIGRvbid0IGtub3cgYWxsIGRldGFpbHMgYWJvdXQgUFBDNjQsIGJ1dCBoZXJlIGl0IHNlZW1z
+IGxpa2UgDQpoYXNoX19tYXBfa2VybmVsX3BhZ2UoKSBhbGxvY2F0ZXMgaW50ZXJtZWRpYXRlIHBh
+Z2UgZGlyZWN0b3JpZXMgd2hlbiANCnRoZXJlIGlzIG5vdCBvbmUgeWV0LiBTbyBpZiB0aGF0J3Mg
+dGhlIGZpcnN0IHRpbWUgDQpoYXNoX19tYXBfa2VybmVsX3BhZ2UoKSBpcyBjYWxsZWQgZm9yIHRo
+ZSB0ZXh0X3Bva2VfYWRkcigpIGl0IGFsbG9jYXRlZCANClBVRCBhbmQgUE1EIGlmIG5lY2Vzc2Fy
+eS4NCg0KQXMgaXQgaXMga2VybmVsIG1lbW9yeSwgb25jZSBQVUQgYW5kIFBNRCBhcmUgYWxsb2Nh
+dGVkIHRoZXkgd2lsbCByZW1haW4gDQpmb3JldmVyIEkgdGhpbmsuIFNvIG1heWJlIHRoZSBvbmx5
+IHRoaW5nIHRvIGRvIGl0IHRvIHBlcmZvcm0gYSBkdW1teSANCm1hcHBpbmcvdW5tYXBwaW5nIGlu
+IHRleHRfYXJlYV9jcHVfdXAoKSB0byBlbnN1cmUgdGhlIHBhZ2UgZGlyZWN0b3J5IGFyZSANCmNy
+ZWF0ZWQgaW4gYWR2YW5jZS4NCg0KQ2hyaXN0b3BoZQ==
