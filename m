@@ -2,123 +2,107 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DB6DC433F5
-	for <rcu@archiver.kernel.org>; Thu, 17 Feb 2022 17:52:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 54D39C433EF
+	for <rcu@archiver.kernel.org>; Fri, 18 Feb 2022 09:00:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243891AbiBQRwv (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 17 Feb 2022 12:52:51 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:54712 "EHLO
+        id S232950AbiBRJBJ convert rfc822-to-8bit (ORCPT
+        <rfc822;rcu@archiver.kernel.org>); Fri, 18 Feb 2022 04:01:09 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:54196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243307AbiBQRwt (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 17 Feb 2022 12:52:49 -0500
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83B17294135;
-        Thu, 17 Feb 2022 09:52:34 -0800 (PST)
-Received: by mail-lj1-x229.google.com with SMTP id bn33so593701ljb.6;
-        Thu, 17 Feb 2022 09:52:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=odal8DH5pq4vSKy8tZSfPA+PF6EZNhV2ZjcnGJCW6aw=;
-        b=FEQtUlzEqs4JH4nRW0z84i6cKotJD4Wy5qjTbbgz811YfzovswR7InsAo9d8fncgDi
-         jZ1RzFmE9zZEjMf04CIVEqbnorx7HIyft8mMPmDeaXdpTYnCdYPYndtzBAkKfYgUtJNq
-         oH6v6+lgvDOzE7H/zduVedPvtOUGJCO2UnIZX+PqNdLoPvy3xgd1w5vlu0XXwd+v+REX
-         Ypj7lyd2mvp0CJ2K0ziAYKoPLrzBeqn7BrNGNp4SQjOe2mPSOmZ7UGOsRKvU8w47iugT
-         e15/ye1m8INw9AzALYjDNHc1AQR/WQ1eZnlFzcQLtTsODkNrpSvaUDc/PzuMZRClE8Kk
-         wSyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=odal8DH5pq4vSKy8tZSfPA+PF6EZNhV2ZjcnGJCW6aw=;
-        b=qcFUqz3FThutI7t4hXfvPY9ognRuvDAoF08XMSs3wnSqeWH7PTfE22IprQmBLxd6bc
-         1MofmzPZWA0GwZ31sqlQ5KNTVs+mdrK1HvC292g0yJkyBNSwIXL2D3LZb4qE6JKA7IJw
-         Cu4pSgyCUNyRKtv3bFrLePlLHL+8WNj0Q/P+RmdwWEY2NgPthDG+HQF5uZuYq1dUEBQo
-         Rg1KPQF//3jjtKkKuH6qvWB1KlzfoSPT7sLISiZCqnxIGvfRqedp58k7v113FjsZxbxB
-         NppYDDxc6cH/1WRF9SUrxlQjXtkgDgKO4+x0ByihYiw3kr/XPvko0LUkPN9MQAB3B26L
-         OIcQ==
-X-Gm-Message-State: AOAM530TMYLdJVX2GdqSCJSfG4U5Lr+LCOXoRMQkr4RrLmBkcS9hjKgD
-        WfZQJDGVve9TkrH3kDjG3mQ=
-X-Google-Smtp-Source: ABdhPJzIpumdgpKYKZdpvSS42smT5+JGOqe04EHV949NqkDTnxLaXe0V7OI4rDbw4/jBJ+K3L/Ud5Q==
-X-Received: by 2002:a05:651c:202:b0:244:c45d:102 with SMTP id y2-20020a05651c020200b00244c45d0102mr2881890ljn.29.1645120352742;
-        Thu, 17 Feb 2022 09:52:32 -0800 (PST)
-Received: from pc638.lan ([155.137.26.201])
-        by smtp.gmail.com with ESMTPSA id c11sm26512lfm.32.2022.02.17.09.52.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Feb 2022 09:52:32 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Thu, 17 Feb 2022 18:52:30 +0100
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
+        with ESMTP id S232948AbiBRJBI (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 18 Feb 2022 04:01:08 -0500
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 389AE170D7D
+        for <rcu@vger.kernel.org>; Fri, 18 Feb 2022 01:00:51 -0800 (PST)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-117-Paf7cxtnMtCmxTJ17km-zA-1; Fri, 18 Feb 2022 09:00:48 +0000
+X-MC-Unique: Paf7cxtnMtCmxTJ17km-zA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.28; Fri, 18 Feb 2022 09:00:46 +0000
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.028; Fri, 18 Feb 2022 09:00:46 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Petr Mladek' <pmladek@suse.com>,
+        John Ogness <john.ogness@linutronix.de>
+CC:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Uladzislau Rezki <uladzislau.rezki@sony.com>
-Subject: Re: [PATCH 1/1] rcu: Introduce CONFIG_RCU_EXP_CPU_STALL_TIMEOUT
-Message-ID: <Yg6LXv+XS85TXoEb@pc638.lan>
-References: <20220216135209.3070-1-urezki@gmail.com>
- <20220216195508.GM4285@paulmck-ThinkPad-P17-Gen-1>
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Josh Triplett" <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Corey Minyard <cminyard@mvista.com>,
+        Kees Cook <keescook@chromium.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Shawn Guo" <shawn.guo@linaro.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Wang Qing <wangqing@vivo.com>, Tejun Heo <tj@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Alexander Potapenko <glider@google.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>
+Subject: RE: [PATCH printk v1 09/13] printk: add functions to allow direct
+ printing
+Thread-Topic: [PATCH printk v1 09/13] printk: add functions to allow direct
+ printing
+Thread-Index: AQHYI/0/7XPqOu2p+UeF1AvHpJcIY6yZAzcg
+Date:   Fri, 18 Feb 2022 09:00:46 +0000
+Message-ID: <ca5b7ec96aa444c292b3413a6374028b@AcuMS.aculab.com>
+References: <20220207194323.273637-1-john.ogness@linutronix.de>
+ <20220207194323.273637-10-john.ogness@linutronix.de> <Yg5FCVF5c1jDo116@alley>
+In-Reply-To: <Yg5FCVF5c1jDo116@alley>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220216195508.GM4285@paulmck-ThinkPad-P17-Gen-1>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Feb 16, 2022 at 11:55:08AM -0800, Paul E. McKenney wrote:
-> On Wed, Feb 16, 2022 at 02:52:09PM +0100, Uladzislau Rezki (Sony) wrote:
-> > From: Uladzislau Rezki <uladzislau.rezki@sony.com>
-> > 
-> > Currently for both expedited and regular grace periods stall
-> > warnings are emitted based on one timeout value that is defined
-> > in seconds. The problem is that, a stall timeout in seconds for
-> > expedited grace period is a way long.
-> > 
-> > The idea of expedited grace period is to force CPUs to report
-> > their quiescent states as fast as possible. If in RCU read-side
-> > critical section, it will request the next rcu_read_unlock() to
-> > record the quiescent state. If not either it reports immediately
-> > or set TIF_NEED_RESCHED to initiate the task switch.
-> > 
-> > Therefore introduce the CONFIG_RCU_EXP_CPU_STALL_TIMEOUT kernel
-> > configuration that is set to 20 msec. It also can be changed in
-> > run-time via: /sys/.../parameters/rcu_exp_cpu_stall_timeout.
-> > 
-> > Signed-off-by: Uladzislau Rezki <uladzislau.rezki@sony.com>
-> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> 
-> Nice, thank you!
-> 
-> I have queued this, with the usual wordsmithing.
-> 
-> I also changed the CONFIG_RCU_EXP_CPU_STALL_TIMEOUT kconfig option's
-> default to be 20 milliseconds only no CONFIG_ANDROID=y kernel builds.  For
-> one, rcutorture gets expedited stall warnings even at 200 milliseconds,
-> and for another, larger systems often have longer-running readers.
-> It might be a very good thing to decrease the non-Android default
-> expedited stall warning timeout, but 20 milliseconds is not likely the
-> place to start that effort.  Though it would be one way to find out
-> when in the process large-system users started testing.  ;-)
-> 
-> My guess is that this change will result in some breakage even on Android,
-> and that adjustments will be needed.  Once that effort is complete,
-> it would probably make sense to take another look at the non-Android
-> default for CONFIG_RCU_EXP_CPU_STALL_TIMEOUT.
-> 
-Yep, totally agree. There will be needed an addition adjustment later on to
-find some better floor value :) 
+> On Mon 2022-02-07 20:49:19, John Ogness wrote:
+> > Once kthread printing is introduced, console printing will no longer
+> > occur in the context of the printk caller. However, there are some
+> > special contexts where it is desirable for the printk caller to
+> > directly print out kernel messages.
 
---
-Vlad Rezki
+Yes - most of them.
+
+It is going to be pretty impossible to do 'hard' kernel debugging
+if printk get deferred.
+
+Typically there already is a deferral method.
+The prints aren't done by the kernel, but by syslogd.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
