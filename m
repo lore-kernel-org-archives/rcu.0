@@ -2,40 +2,46 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 54D39C433EF
-	for <rcu@archiver.kernel.org>; Fri, 18 Feb 2022 09:00:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D73B1C433FE
+	for <rcu@archiver.kernel.org>; Fri, 18 Feb 2022 12:52:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232950AbiBRJBJ convert rfc822-to-8bit (ORCPT
-        <rfc822;rcu@archiver.kernel.org>); Fri, 18 Feb 2022 04:01:09 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:54196 "EHLO
+        id S233069AbiBRMwt (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 18 Feb 2022 07:52:49 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:44764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232948AbiBRJBI (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 18 Feb 2022 04:01:08 -0500
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 389AE170D7D
-        for <rcu@vger.kernel.org>; Fri, 18 Feb 2022 01:00:51 -0800 (PST)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-117-Paf7cxtnMtCmxTJ17km-zA-1; Fri, 18 Feb 2022 09:00:48 +0000
-X-MC-Unique: Paf7cxtnMtCmxTJ17km-zA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.28; Fri, 18 Feb 2022 09:00:46 +0000
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.028; Fri, 18 Feb 2022 09:00:46 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Petr Mladek' <pmladek@suse.com>,
-        John Ogness <john.ogness@linutronix.de>
-CC:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        with ESMTP id S233102AbiBRMwr (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 18 Feb 2022 07:52:47 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9631129C119;
+        Fri, 18 Feb 2022 04:52:30 -0800 (PST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id CA9FE1F37E;
+        Fri, 18 Feb 2022 12:52:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1645188748; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=S4IZUhjyn1DHXSRgbOfbbnOadkzvb3ybW3FaLTMPVUc=;
+        b=DJo7j+eYEv6tDBrb+EJzaquW1aG6cQiFQXpw2eWsXi+7nkwUyADoCIi63VeIKPocuNHeHz
+        7uOoFs+vzzzRJhEvVQruWz6C8JNytup98z76EcPo/ugXo0g37RI7NjBz3fakVv4tTf2/wX
+        rV5gImHMPmSCAaGf3LeBKCZqaQ3PExY=
+Received: from suse.cz (unknown [10.100.216.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id B43CFA3B85;
+        Fri, 18 Feb 2022 12:52:26 +0000 (UTC)
+Date:   Fri, 18 Feb 2022 13:52:23 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     John Ogness <john.ogness@linutronix.de>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Jiri Slaby <jirislaby@kernel.org>,
         "Paul E. McKenney" <paulmck@kernel.org>,
-        "Josh Triplett" <josh@joshtriplett.org>,
+        Josh Triplett <josh@joshtriplett.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>,
@@ -50,7 +56,7 @@ CC:     Sergey Senozhatsky <senozhatsky@chromium.org>,
         Mark Brown <broonie@kernel.org>,
         Josef Bacik <josef@toxicpanda.com>,
         "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Shawn Guo" <shawn.guo@linaro.org>,
+        Shawn Guo <shawn.guo@linaro.org>,
         Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Wang Qing <wangqing@vivo.com>, Tejun Heo <tj@kernel.org>,
@@ -59,50 +65,63 @@ CC:     Sergey Senozhatsky <senozhatsky@chromium.org>,
         Stephen Boyd <sboyd@kernel.org>,
         Nicholas Piggin <npiggin@gmail.com>,
         "rcu@vger.kernel.org" <rcu@vger.kernel.org>
-Subject: RE: [PATCH printk v1 09/13] printk: add functions to allow direct
+Subject: Re: [PATCH printk v1 09/13] printk: add functions to allow direct
  printing
-Thread-Topic: [PATCH printk v1 09/13] printk: add functions to allow direct
- printing
-Thread-Index: AQHYI/0/7XPqOu2p+UeF1AvHpJcIY6yZAzcg
-Date:   Fri, 18 Feb 2022 09:00:46 +0000
-Message-ID: <ca5b7ec96aa444c292b3413a6374028b@AcuMS.aculab.com>
+Message-ID: <Yg+Wh45hckprBxdp@alley>
 References: <20220207194323.273637-1-john.ogness@linutronix.de>
- <20220207194323.273637-10-john.ogness@linutronix.de> <Yg5FCVF5c1jDo116@alley>
-In-Reply-To: <Yg5FCVF5c1jDo116@alley>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+ <20220207194323.273637-10-john.ogness@linutronix.de>
+ <Yg5FCVF5c1jDo116@alley>
+ <ca5b7ec96aa444c292b3413a6374028b@AcuMS.aculab.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ca5b7ec96aa444c292b3413a6374028b@AcuMS.aculab.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-> On Mon 2022-02-07 20:49:19, John Ogness wrote:
-> > Once kthread printing is introduced, console printing will no longer
-> > occur in the context of the printk caller. However, there are some
-> > special contexts where it is desirable for the printk caller to
-> > directly print out kernel messages.
+On Fri 2022-02-18 09:00:46, David Laight wrote:
+> > On Mon 2022-02-07 20:49:19, John Ogness wrote:
+> > > Once kthread printing is introduced, console printing will no longer
+> > > occur in the context of the printk caller. However, there are some
+> > > special contexts where it is desirable for the printk caller to
+> > > directly print out kernel messages.
+> 
+> Yes - most of them.
+> 
+> It is going to be pretty impossible to do 'hard' kernel debugging
+> if printk get deferred.
 
-Yes - most of them.
+What do you exactly mean by 'hard' kernel debugging, please?
+What exactly won't be possible, please?
 
-It is going to be pretty impossible to do 'hard' kernel debugging
-if printk get deferred.
+It is really important to talk about real scenarios because we
+do our best to address them. This patchset disables the deferred
+console handling in several situations, especially during panic,
+reboot, kexec. The consoles are flushed during suspend, etc.
 
-Typically there already is a deferral method.
-The prints aren't done by the kernel, but by syslogd.
+The patchset solves real problems, soft and live-lockups and even
+deadlocks.
 
-	David
+It will actually allow debugging when too many messages caused
+softlockups and the system died. I saw it many times during boot
+of systems with many network interfaces or disks. Backtraces
+from all CPUs and processes, detailed Oops reports, and similar
+extensive output was able to kill the system.
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+In each case, the legacy "direct" mode will still be around.
 
+
+> Typically there already is a deferral method.
+> The prints aren't done by the kernel, but by syslogd.
+
+syslogd helps only when userspace works and the messages
+can be stored on a filesystems.
+
+And it is perfectly fine and much more safe to defer consoles
+most of the time. I have seen many reports where consoles put
+the system into knees. And sometime printk() was the root of all
+problems.
+
+Best Regards,
+Petr
