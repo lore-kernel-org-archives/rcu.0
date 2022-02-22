@@ -2,166 +2,68 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E5E3CC433EF
-	for <rcu@archiver.kernel.org>; Tue, 22 Feb 2022 06:09:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7152CC433F5
+	for <rcu@archiver.kernel.org>; Tue, 22 Feb 2022 12:07:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230078AbiBVGJd (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 22 Feb 2022 01:09:33 -0500
-Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:48306 "EHLO
+        id S230465AbiBVMIG (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 22 Feb 2022 07:08:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230161AbiBVGJb (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 22 Feb 2022 01:09:31 -0500
-Received: from alexa-out-sd-02.qualcomm.com (alexa-out-sd-02.qualcomm.com [199.106.114.39])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BC6098F6C;
-        Mon, 21 Feb 2022 22:09:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1645510147; x=1677046147;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=djX8wxkJFxPlSpPJqVXmWAPqMbtb4YNhhuMTE7AdUmc=;
-  b=I/lGYDoTLYHU76oNYYOVmMG3tzFedl1KnVwgbotYEbmzJtESAjvQrHgZ
-   cLcNMKLVjRd0h2Vw2efPWwPap6MPcyKh3kNVyWIgxXV+uN6htLU32hSbw
-   IN9Qxd8OL4AEt6C1vLpoDtXjcTVc3Krq7AkGXuvkKMzB27ha7UFWAJcOC
-   I=;
-Received: from unknown (HELO ironmsg05-sd.qualcomm.com) ([10.53.140.145])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 21 Feb 2022 22:09:06 -0800
-X-QCInternal: smtphost
-Received: from nasanex01b.na.qualcomm.com ([10.46.141.250])
-  by ironmsg05-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2022 22:09:06 -0800
-Received: from localhost (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.15; Mon, 21 Feb
- 2022 22:09:05 -0800
-From:   Neeraj Upadhyay <quic_neeraju@quicinc.com>
-To:     <paulmck@kernel.org>, <josh@joshtriplett.org>,
-        <rostedt@goodmis.org>, <mathieu.desnoyers@efficios.com>,
-        <jiangshanlai@gmail.com>, <joel@joelfernandes.org>
-CC:     <rcu@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <urezki@gmail.com>, <frederic@kernel.org>, <boqun.feng@gmail.com>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>
-Subject: [PATCH] srcu: Ensure snp nodes tree is fully initialized before traversal
-Date:   Tue, 22 Feb 2022 11:39:01 +0530
-Message-ID: <20220222060901.24531-1-quic_neeraju@quicinc.com>
-X-Mailer: git-send-email 2.17.1
+        with ESMTP id S229437AbiBVMIE (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 22 Feb 2022 07:08:04 -0500
+Received: from mx1.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B165492D32;
+        Tue, 22 Feb 2022 04:07:38 -0800 (PST)
+Received: from localhost.localdomain (ip5f5aebb8.dynamic.kabel-deutschland.de [95.90.235.184])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 3D66261E6478B;
+        Tue, 22 Feb 2022 13:07:35 +0100 (CET)
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+To:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     Paul Menzel <pmenzel@molgen.mpg.de>,
+        Zhouyi Zhou <zhouzhouyi@gmail.com>, rcu@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] torture: Select line in sed and replace grep
+Date:   Tue, 22 Feb 2022 13:07:16 +0100
+Message-Id: <20220222120718.17141-1-pmenzel@molgen.mpg.de>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-For configurations where snp node tree is not initialized at
-init time (SRCU_SIZING_IS_INIT() is false), srcu_funnel_gp_start()
-and srcu_funnel_exp_start() can potential traverse and observe
-the snp nodes' transient (uninitialized) states. This can potentially
-happen, when init_srcu_struct_nodes() initialization of sdp->mynode
-races with srcu_funnel_gp_start() and srcu_funnel_exp_start()
+sed’s switch `-n` (`--silent`) suppresses the automatic printing of
+the pattern space, therefore, allowing to replace grep by only
+printing the current pattern space using the command `p`.
 
-Consider the case below where srcu_funnel_gp_start() observes
-sdp->mynode to be not NULL and uses an uninitialized sdp->grpmask
-
-          P1                                  P2
-
-init_srcu_struct_nodes()           void srcu_funnel_gp_start(...)
-{
-for_each_possible_cpu(cpu) {
-  ...
-  sdp->mynode = &snp_first[...];
-  for (snp = sdp->mynode;...)       struct srcu_node *snp_leaf =
-                                       smp_load_acquire(&sdp->mynode)
-    ...                             if (snp_leaf) {
-                                      for (snp = snp_leaf; ...)
-                                        ...
-					if (snp == snp_leaf)
-                                         snp->srcu_data_have_cbs[idx] |=
-                                           sdp->grpmask;
-    sdp->grpmask =
-      1 << (cpu - sdp->mynode->grplo);
-  }
-}
-
-Similarly, init_srcu_struct_nodes() and srcu_funnel_exp_start() can
-race, where srcu_funnel_exp_start() could observe state of snp lock
-before spin_lock_init().
-
-          P1                                      P2
-
-init_srcu_struct_nodes()               void srcu_funnel_exp_start(...)
-{
-  srcu_for_each_node_breadth_first(ssp, snp) {      for (; ...) {
-                                                      spin_lock_...(snp, )
-	spin_lock_init(&ACCESS_PRIVATE(snp, lock));
-    ...
-  }
-  for_each_possible_cpu(cpu) {
-    ...
-    sdp->mynode = &snp_first[...];
-
-To avoid these issues, ensure that snp node tree initialization is
-complete i.e. after SRCU_SIZE_WAIT_BARRIER srcu_size_state is reached,
-before traversing the tree. Given that srcu_funnel_gp_start() and
-srcu_funnel_exp_start() are called within SRCU read side critical
-sections, this check is safe, in the sense that all callbacks are
-enqueued on CPU0 srcu_cblist until SRCU_SIZE_WAIT_CALL is entered,
-and these read side critical sections (containing srcu_funnel_gp_start()
-and srcu_funnel_exp_start()) need to complete, before SRCU_SIZE_WAIT_CALL
-is reached.
-
-Signed-off-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
 ---
- kernel/rcu/srcutree.c | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
+ tools/testing/selftests/rcutorture/bin/functions.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index e3cb84649b2a..c6ba40370c2c 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -818,9 +818,15 @@ static void srcu_funnel_gp_start(struct srcu_struct *ssp, struct srcu_data *sdp,
- 	int idx = rcu_seq_ctr(s) % ARRAY_SIZE(sdp->mynode->srcu_have_cbs);
- 	unsigned long sgsne;
- 	struct srcu_node *snp;
--	struct srcu_node *snp_leaf = smp_load_acquire(&sdp->mynode);
-+	struct srcu_node *snp_leaf;
- 	unsigned long snp_seq;
- 
-+	/* Ensure that snp node tree is fully initialized before traversing it */
-+	if (smp_load_acquire(&ssp->srcu_size_state) < SRCU_SIZE_WAIT_BARRIER)
-+		snp_leaf = NULL;
-+	else
-+		snp_leaf = sdp->mynode;
-+
- 	if (snp_leaf)
- 		/* Each pass through the loop does one level of the srcu_node tree. */
- 		for (snp = snp_leaf; snp != NULL; snp = snp->srcu_parent) {
-@@ -1008,6 +1014,7 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
- 	bool needgp = false;
- 	unsigned long s;
- 	struct srcu_data *sdp;
-+	struct srcu_node *sdp_mynode;
- 
- 	check_init_srcu_struct(ssp);
- 	idx = srcu_read_lock(ssp);
-@@ -1031,10 +1038,17 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
- 		needexp = true;
- 	}
- 	spin_unlock_irqrestore_rcu_node(sdp, flags);
-+
-+	/* Ensure that snp node tree is fully initialized before traversing it */
-+	if (smp_load_acquire(&ssp->srcu_size_state) < SRCU_SIZE_WAIT_BARRIER)
-+		sdp_mynode = NULL;
-+	else
-+		sdp_mynode = sdp->mynode;
-+
- 	if (needgp)
- 		srcu_funnel_gp_start(ssp, sdp, s, do_norm);
- 	else if (needexp)
--		srcu_funnel_exp_start(ssp, smp_load_acquire(&sdp->mynode), s);
-+		srcu_funnel_exp_start(ssp, sdp_mynode, s);
- 	srcu_read_unlock(ssp, idx);
- 	return s;
- }
+diff --git a/tools/testing/selftests/rcutorture/bin/functions.sh b/tools/testing/selftests/rcutorture/bin/functions.sh
+index c35ba24f994c..5cff520955e6 100644
+--- a/tools/testing/selftests/rcutorture/bin/functions.sh
++++ b/tools/testing/selftests/rcutorture/bin/functions.sh
+@@ -301,7 +301,7 @@ specify_qemu_cpus () {
+ 			echo $2 -smp $3
+ 			;;
+ 		qemu-system-ppc64)
+-			nt="`lscpu | grep '^NUMA node0' | sed -e 's/^[^,]*,\([0-9]*\),.*$/\1/'`"
++			nt="`lscpu | sed -n -e '/^NUMA node0/s/^[^,]*,\([0-9]*\),.*$/\1/p'`"
+ 			echo $2 -smp cores=`expr \( $3 + $nt - 1 \) / $nt`,threads=$nt
+ 			;;
+ 		esac
 -- 
-2.17.1
+2.35.1
 
