@@ -2,182 +2,124 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 08156C433FE
-	for <rcu@archiver.kernel.org>; Tue, 22 Feb 2022 16:59:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D2A94C433FE
+	for <rcu@archiver.kernel.org>; Tue, 22 Feb 2022 17:43:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234437AbiBVQ73 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 22 Feb 2022 11:59:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52430 "EHLO
+        id S234372AbiBVRn4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 22 Feb 2022 12:43:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234436AbiBVQ71 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 22 Feb 2022 11:59:27 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A99D16C4D1;
-        Tue, 22 Feb 2022 08:59:02 -0800 (PST)
+        with ESMTP id S231901AbiBVRnz (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 22 Feb 2022 12:43:55 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DCA01688F9;
+        Tue, 22 Feb 2022 09:43:30 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E65096117D;
-        Tue, 22 Feb 2022 16:59:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C92DC340F1;
-        Tue, 22 Feb 2022 16:59:01 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CADEB6135F;
+        Tue, 22 Feb 2022 17:43:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35572C340E8;
+        Tue, 22 Feb 2022 17:43:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1645549141;
-        bh=mcVbNA4RiJ6SesKl5tKDIPRvmxcaUwbH9SGtI9DHx2A=;
+        s=k20201202; t=1645551809;
+        bh=DmHgyuRJSQJXP4y4nwKOfhnNvc5tuz329RwqznVDwN8=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=mlC2ADN585kEmAHpiwY+yeVr1D5KH7GlEtOp7uX8ZY0EuBj91LKIPWUTvSRYxI5V1
-         UGYqp3pfbW8hp3gJ0XSRUYJoIsnzAl0Ogu3eFPkFwzBnMxruaRTnOY3cs6w+MBI0op
-         PFEKVeBqSMqhu+ETgleHpFT+kvkcAnDpgimpCr5pr5Qc9w8kmkm9ktp4mrL+LRz2c3
-         aRZvEucigtS9FeQUvqV6hDToh1OClD/Shvs/zX1TNBOE5OoqJUIReTBcifmNt36Q4d
-         1VUCTxvmok8FNV10x+dD+cBLfA4tkZoQmRZK9UICCT/aTkGEw4Fst2pOgh8n8W16Fy
-         Vn3OU69omUNVA==
+        b=JM5TDoR6PLHEOElzcfgrnX1loUapcSrdjr7XcOcrIjsueMby9+yUu4DOD1tR2K2BE
+         DtZGtIpWShSj52o9Se+0WlnzqiZLRJ5as4EETAQhVJI9vco8jEqxR76h6uaYMkeMJh
+         4xNZPKeq29P4sQpuSWyT8h6wW9PV/2yT6w5vQDVVQm56MWOeG8IFMxpgzbDioWnu1L
+         tO9CL/Rm0QXUzVRSBUk6LSQNiGpj/jsfQJXB5GW7Uz43N4yVnjzkSJ3bM8htdu/6oa
+         LKlJ+DmxlScYISA5nd6eWFGnVdbx2a9uSfpKuxVQSvMt9KXbgRukiGrj/yqCmonDl2
+         uarqfHSejNm9g==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id E61465C031F; Tue, 22 Feb 2022 08:59:00 -0800 (PST)
-Date:   Tue, 22 Feb 2022 08:59:00 -0800
+        id E2E105C031F; Tue, 22 Feb 2022 09:43:28 -0800 (PST)
+Date:   Tue, 22 Feb 2022 09:43:28 -0800
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Neeraj Upadhyay <quic_neeraju@quicinc.com>
-Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, urezki@gmail.com,
-        frederic@kernel.org, boqun.feng@gmail.com
-Subject: Re: [PATCH] srcu: Ensure snp nodes tree is fully initialized before
- traversal
-Message-ID: <20220222165900.GI4285@paulmck-ThinkPad-P17-Gen-1>
+To:     Paul Menzel <pmenzel@molgen.mpg.de>
+Cc:     Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Zhouyi Zhou <zhouzhouyi@gmail.com>, rcu@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] torture: Make thread detection more robust by using
+ lspcu
+Message-ID: <20220222174328.GL4285@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20220222060901.24531-1-quic_neeraju@quicinc.com>
+References: <20220222120718.17141-1-pmenzel@molgen.mpg.de>
+ <20220222120718.17141-2-pmenzel@molgen.mpg.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220222060901.24531-1-quic_neeraju@quicinc.com>
+In-Reply-To: <20220222120718.17141-2-pmenzel@molgen.mpg.de>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Feb 22, 2022 at 11:39:01AM +0530, Neeraj Upadhyay wrote:
-> For configurations where snp node tree is not initialized at
-> init time (SRCU_SIZING_IS_INIT() is false), srcu_funnel_gp_start()
-> and srcu_funnel_exp_start() can potential traverse and observe
-> the snp nodes' transient (uninitialized) states. This can potentially
-> happen, when init_srcu_struct_nodes() initialization of sdp->mynode
-> races with srcu_funnel_gp_start() and srcu_funnel_exp_start()
+On Tue, Feb 22, 2022 at 01:07:17PM +0100, Paul Menzel wrote:
+> For consecutive numbers *lscpu* collapses the output and just shows the
+> range with start and end. The processors are numbered that way on POWER8.
 > 
-> Consider the case below where srcu_funnel_gp_start() observes
-> sdp->mynode to be not NULL and uses an uninitialized sdp->grpmask
+>     $ sudo ppc64_cpu --smt=8
+>     $ lscpu | grep '^NUMA node'
+>     NUMA node(s):                    2
+>     NUMA node0 CPU(s):               0-79
+>     NUMA node8 CPU(s):               80-159
 > 
->           P1                                  P2
+> This causes the heuristic to detect the number threads per core, looking
+> for the number after the first comma, to fail, and QEMU aborts because of
+> invalid arguments.
 > 
-> init_srcu_struct_nodes()           void srcu_funnel_gp_start(...)
-> {
-> for_each_possible_cpu(cpu) {
->   ...
->   sdp->mynode = &snp_first[...];
->   for (snp = sdp->mynode;...)       struct srcu_node *snp_leaf =
->                                        smp_load_acquire(&sdp->mynode)
->     ...                             if (snp_leaf) {
->                                       for (snp = snp_leaf; ...)
->                                         ...
-> 					if (snp == snp_leaf)
->                                          snp->srcu_data_have_cbs[idx] |=
->                                            sdp->grpmask;
->     sdp->grpmask =
->       1 << (cpu - sdp->mynode->grplo);
->   }
-> }
+>     $ lscpu | sed -n -e '/^NUMA node0/s/^[^,]*,\([0-9]*\),.*$/\1/p'
+>     $
 > 
-> Similarly, init_srcu_struct_nodes() and srcu_funnel_exp_start() can
-> race, where srcu_funnel_exp_start() could observe state of snp lock
-> before spin_lock_init().
+> (Before the last patch, the whole line was returned.)
 > 
->           P1                                      P2
+>     $ lscpu | grep '^NUMA node0' | sed -e 's/^[^,-]*(,|\-)\([0-9]*\),.*$/\1/'
+>     NUMA node0 CPU(s):               0-79
 > 
-> init_srcu_struct_nodes()               void srcu_funnel_exp_start(...)
-> {
->   srcu_for_each_node_breadth_first(ssp, snp) {      for (; ...) {
->                                                       spin_lock_...(snp, )
-> 	spin_lock_init(&ACCESS_PRIVATE(snp, lock));
->     ...
->   }
->   for_each_possible_cpu(cpu) {
->     ...
->     sdp->mynode = &snp_first[...];
+> *lscpu* shows the number of threads per core, so use that value directly.
 > 
-> To avoid these issues, ensure that snp node tree initialization is
-> complete i.e. after SRCU_SIZE_WAIT_BARRIER srcu_size_state is reached,
-> before traversing the tree. Given that srcu_funnel_gp_start() and
-> srcu_funnel_exp_start() are called within SRCU read side critical
-> sections, this check is safe, in the sense that all callbacks are
-> enqueued on CPU0 srcu_cblist until SRCU_SIZE_WAIT_CALL is entered,
-> and these read side critical sections (containing srcu_funnel_gp_start()
-> and srcu_funnel_exp_start()) need to complete, before SRCU_SIZE_WAIT_CALL
-> is reached.
+>     $ sudo ppc64_cpu --smt=8
+>     $ lscpu | grep 'Thread(s) per core'
+>     Thread(s) per core:              8
+>     $ sudo ppc64_cpu --smt=off
+>     $ lscpu | grep 'Thread(s) per core'
+>     Thread(s) per core:              1
 > 
-> Signed-off-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+> Note, the replaced heuristic is also incorrect for that case, where the
+> threads per core are disabled.
+> 
+>     $ lscpu | sed -n -e '/^NUMA node0/s/^[^,]*,\([0-9]*\),.*$/\1/p'
+>     8
+> 
+> Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
 
-Good catch, and a hard one to hit!  Thank you for chasing this down!!!
+Makes sense, and thank you for chasing this down and for the fix!
 
-I have queued this for testing and review.  I am beginning to suspect
-that the SRCU branch might not be ready for mainline, so I will also redo
-the merge to pull it in separately.  This allows deferring the decision
-on whether it goes into the upcoming merge window or the next one.
-
-After all, although the size of the srcu_struct can be annoying, random
-bugs can be even more annoying.
+But should this patch and 1/2 be merged?  Or am I confused and they
+are somehow affecting two different lines of scripting?
 
 							Thanx, Paul
 
 > ---
->  kernel/rcu/srcutree.c | 18 ++++++++++++++++--
->  1 file changed, 16 insertions(+), 2 deletions(-)
+>  tools/testing/selftests/rcutorture/bin/functions.sh | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> index e3cb84649b2a..c6ba40370c2c 100644
-> --- a/kernel/rcu/srcutree.c
-> +++ b/kernel/rcu/srcutree.c
-> @@ -818,9 +818,15 @@ static void srcu_funnel_gp_start(struct srcu_struct *ssp, struct srcu_data *sdp,
->  	int idx = rcu_seq_ctr(s) % ARRAY_SIZE(sdp->mynode->srcu_have_cbs);
->  	unsigned long sgsne;
->  	struct srcu_node *snp;
-> -	struct srcu_node *snp_leaf = smp_load_acquire(&sdp->mynode);
-> +	struct srcu_node *snp_leaf;
->  	unsigned long snp_seq;
->  
-> +	/* Ensure that snp node tree is fully initialized before traversing it */
-> +	if (smp_load_acquire(&ssp->srcu_size_state) < SRCU_SIZE_WAIT_BARRIER)
-> +		snp_leaf = NULL;
-> +	else
-> +		snp_leaf = sdp->mynode;
-> +
->  	if (snp_leaf)
->  		/* Each pass through the loop does one level of the srcu_node tree. */
->  		for (snp = snp_leaf; snp != NULL; snp = snp->srcu_parent) {
-> @@ -1008,6 +1014,7 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
->  	bool needgp = false;
->  	unsigned long s;
->  	struct srcu_data *sdp;
-> +	struct srcu_node *sdp_mynode;
->  
->  	check_init_srcu_struct(ssp);
->  	idx = srcu_read_lock(ssp);
-> @@ -1031,10 +1038,17 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
->  		needexp = true;
->  	}
->  	spin_unlock_irqrestore_rcu_node(sdp, flags);
-> +
-> +	/* Ensure that snp node tree is fully initialized before traversing it */
-> +	if (smp_load_acquire(&ssp->srcu_size_state) < SRCU_SIZE_WAIT_BARRIER)
-> +		sdp_mynode = NULL;
-> +	else
-> +		sdp_mynode = sdp->mynode;
-> +
->  	if (needgp)
->  		srcu_funnel_gp_start(ssp, sdp, s, do_norm);
->  	else if (needexp)
-> -		srcu_funnel_exp_start(ssp, smp_load_acquire(&sdp->mynode), s);
-> +		srcu_funnel_exp_start(ssp, sdp_mynode, s);
->  	srcu_read_unlock(ssp, idx);
->  	return s;
->  }
+> diff --git a/tools/testing/selftests/rcutorture/bin/functions.sh b/tools/testing/selftests/rcutorture/bin/functions.sh
+> index 5cff520955e6..66d0414d8e4b 100644
+> --- a/tools/testing/selftests/rcutorture/bin/functions.sh
+> +++ b/tools/testing/selftests/rcutorture/bin/functions.sh
+> @@ -301,7 +301,7 @@ specify_qemu_cpus () {
+>  			echo $2 -smp $3
+>  			;;
+>  		qemu-system-ppc64)
+> -			nt="`lscpu | sed -n -e '/^NUMA node0/s/^[^,]*,\([0-9]*\),.*$/\1/p'`"
+> +			nt="`lscpu | sed -n 's/^Thread(s) per core:\s*//p'`"
+>  			echo $2 -smp cores=`expr \( $3 + $nt - 1 \) / $nt`,threads=$nt
+>  			;;
+>  		esac
 > -- 
-> 2.17.1
+> 2.35.1
 > 
