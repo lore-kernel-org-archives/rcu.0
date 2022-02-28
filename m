@@ -2,182 +2,56 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B704C433F5
-	for <rcu@archiver.kernel.org>; Fri, 25 Feb 2022 20:45:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B171C433EF
+	for <rcu@archiver.kernel.org>; Mon, 28 Feb 2022 08:44:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237175AbiBYUqA (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 25 Feb 2022 15:46:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32890 "EHLO
+        id S232684AbiB1IpP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 28 Feb 2022 03:45:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237248AbiBYUp7 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 25 Feb 2022 15:45:59 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B626A21CD29;
-        Fri, 25 Feb 2022 12:45:26 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5040A61A2D;
-        Fri, 25 Feb 2022 20:45:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B094EC340E7;
-        Fri, 25 Feb 2022 20:45:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1645821925;
-        bh=vld9XorWUfjGbFW2+iZOPGxq8V89Q6Px0LoIq9ABYE8=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=DeWKLKC1mLoR+BXhFALLNEEiJ87s9TqKY9q/yv2NMKUQNjUuJZ2kNBVoYGtse4v0U
-         tFmmHFUvl2eS0fQ8fvPuBT9Vo4YJ6J13/4TDRk0jwGi1A/TKHcKZ4d/TtodcPPW8xk
-         K6KShJ+Ilgbmkhk93dzR+mpYpP0IFyrQNcJnk7ZVq9KvhRxXOeRsNWBRvCc3/3SI4g
-         JyQXctb9Ih1Yxpx+RUx2UrlIeLXv5AOTZn5E5SNy6ZQhOKXAQkRqTz/I83yK6YQRyd
-         C7mPr7yBnLpA46t8dWQ3qsA5vBwoep9tQtRGdEix3kmJbhGkXXe8GJbBkfnhRGrVNZ
-         njx8FconVCvOg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 5808F5C0144; Fri, 25 Feb 2022 12:45:25 -0800 (PST)
-Date:   Fri, 25 Feb 2022 12:45:25 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Paul Menzel <pmenzel@molgen.mpg.de>
-Cc:     Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Zhouyi Zhou <zhouzhouyi@gmail.com>, rcu@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] torture: Make thread detection more robust by using
- lspcu
-Message-ID: <20220225204525.GK4285@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220222120718.17141-1-pmenzel@molgen.mpg.de>
- <20220222120718.17141-2-pmenzel@molgen.mpg.de>
- <20220222174328.GL4285@paulmck-ThinkPad-P17-Gen-1>
- <1084da08-f67d-b5d7-add4-580e9246b7b7@molgen.mpg.de>
- <20220224205617.GY4285@paulmck-ThinkPad-P17-Gen-1>
- <bfab82a0-bf21-7782-f6fb-3adaf827ad25@molgen.mpg.de>
+        with ESMTP id S233913AbiB1IpO (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 28 Feb 2022 03:45:14 -0500
+X-Greylist: delayed 505 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 28 Feb 2022 00:44:34 PST
+Received: from mail.extrapart.com.pl (mail.extrapart.com.pl [217.61.21.221])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 755C61A82A
+        for <rcu@vger.kernel.org>; Mon, 28 Feb 2022 00:44:34 -0800 (PST)
+Received: by mail.extrapart.com.pl (Postfix, from userid 1001)
+        id E268EA16DA; Mon, 28 Feb 2022 08:35:59 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=extrapart.com.pl;
+        s=mail; t=1646037365;
+        bh=buBwkictM90Vyd8ElDbF20ov3CLfq+fIaZvvC+nvN7k=;
+        h=Date:From:To:Subject:From;
+        b=oU/TR4r0d1LX6rRtYRE7sEKMvnVKBJAYY1Vipz79RW4Y+KKpEUPZA/A70yMSmgmQv
+         LGWyC+ib8+OzRYyD84Wp8LnWhRkj0YpXIFTx0IQcFoadsn+2oPK+AvDz4yPJE3AXgP
+         RDbcOobiNABTOolqx7OiG5iMBKyjiZ4e1DHoCR1KPK/qbSDXSeQ8Kk46lGoQWTOSDD
+         hSA1KuI+twiH7sXEwdAVh9AeRSZ+TJTSQRfoHugANT7DDPd5lyQC2/PvqXj9m0sygv
+         LbmAwygL+XdMMxSnr+MJKByRCzdQyRHfi+FTgondbN+jgrQ2RdWBzABFOE/84pFva0
+         /ujpSyoQaeZaA==
+Received: by mail.extrapart.com.pl for <rcu@vger.kernel.org>; Mon, 28 Feb 2022 08:35:49 GMT
+Message-ID: <20220228074500-0.1.p.9n9.0.m00wo2fmee@extrapart.com.pl>
+Date:   Mon, 28 Feb 2022 08:35:49 GMT
+From:   "Jacek Szkudlarski" <jacek.szkudlarski@extrapart.com.pl>
+To:     <rcu@vger.kernel.org>
+Subject: Wycena paneli fotowoltaicznych
+X-Mailer: mail.extrapart.com.pl
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <bfab82a0-bf21-7782-f6fb-3adaf827ad25@molgen.mpg.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Feb 25, 2022 at 06:49:32AM +0100, Paul Menzel wrote:
-> Dear Paul,
-> 
-> 
-> Am 24.02.22 um 21:56 schrieb Paul E. McKenney:
-> > On Thu, Feb 24, 2022 at 09:24:11AM +0100, Paul Menzel wrote:
-> 
-> > > Am 22.02.22 um 18:43 schrieb Paul E. McKenney:
-> > > > On Tue, Feb 22, 2022 at 01:07:17PM +0100, Paul Menzel wrote:
-> > > > > For consecutive numbers *lscpu* collapses the output and just shows the
-> > > > > range with start and end. The processors are numbered that way on POWER8.
-> > > > > 
-> > > > >       $ sudo ppc64_cpu --smt=8
-> > > > >       $ lscpu | grep '^NUMA node'
-> > > > >       NUMA node(s):                    2
-> > > > >       NUMA node0 CPU(s):               0-79
-> > > > >       NUMA node8 CPU(s):               80-159
-> > > > > 
-> > > > > This causes the heuristic to detect the number threads per core, looking
-> > > > > for the number after the first comma, to fail, and QEMU aborts because of
-> > > > > invalid arguments.
-> > > > > 
-> > > > >       $ lscpu | sed -n -e '/^NUMA node0/s/^[^,]*,\([0-9]*\),.*$/\1/p'
-> > > > >       $
-> > > > > 
-> > > > > (Before the last patch, the whole line was returned.)
-> > > > > 
-> > > > >       $ lscpu | grep '^NUMA node0' | sed -e 's/^[^,-]*(,|\-)\([0-9]*\),.*$/\1/'
-> > > > >       NUMA node0 CPU(s):               0-79
-> > > > > 
-> > > > > *lscpu* shows the number of threads per core, so use that value directly.
-> > > > > 
-> > > > >       $ sudo ppc64_cpu --smt=8
-> > > > >       $ lscpu | grep 'Thread(s) per core'
-> > > > >       Thread(s) per core:              8
-> > > > >       $ sudo ppc64_cpu --smt=off
-> > > > >       $ lscpu | grep 'Thread(s) per core'
-> > > > >       Thread(s) per core:              1
-> > > > > 
-> > > > > Note, the replaced heuristic is also incorrect for that case, where the
-> > > > > threads per core are disabled.
-> > > > > 
-> > > > >       $ lscpu | sed -n -e '/^NUMA node0/s/^[^,]*,\([0-9]*\),.*$/\1/p'
-> > > > >       8
-> > > > > 
-> > > > > Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
-> > > > 
-> > > > Makes sense, and thank you for chasing this down and for the fix!
-> > > > 
-> > > > But should this patch and 1/2 be merged?  Or am I confused and they
-> > > > are somehow affecting two different lines of scripting?
-> > > 
-> > > You are right. I guess with 1/2 I just wanted to document clearly, what I
-> > > learned in #sed@irc.libera.chat, that means, how to avoid using grep, when
-> > > sed is used.
-> > 
-> > Nothing wrong with that!
-> > 
-> > I have merged the two patches as shown below.  Does this work for you?
-> > 
-> > 							Thanx, Paul
-> > 
-> > ------------------------------------------------------------------------
-> > 
-> > commit 9f0daba62e958c31326c7a9eae33651e3a3cc6b4
-> > Author: Paul Menzel <pmenzel@molgen.mpg.de>
-> > Date:   Tue Feb 22 13:07:16 2022 +0100
-> > 
-> >      torture: Make thread detection more robust by using lspcu
-> >      For consecutive numbers the lscpu command collapses the output and just
-> >      shows the range with start and end. The processors are numbered that
-> >      way on POWER8.
-> >          $ sudo ppc64_cpu --smt=8
-> >          $ lscpu | grep '^NUMA node'
-> >          NUMA node(s):                    2
-> >          NUMA node0 CPU(s):               0-79
-> >          NUMA node8 CPU(s):               80-159
-> >      This causes the heuristic to detect the number threads per core, looking
-> >      for the number after the first comma, to fail, and QEMU aborts because of
-> >      invalid arguments.
-> >          $ lscpu | grep '^NUMA node0' | sed -e 's/^[^,-]*(,|\-)\([0-9]*\),.*$/\1/'
-> >          NUMA node0 CPU(s):               0-79
-> >      But the lscpu command shows the number of threads per core:
-> >          $ sudo ppc64_cpu --smt=8
-> >          $ lscpu | grep 'Thread(s) per core'
-> >          Thread(s) per core:              8
-> >          $ sudo ppc64_cpu --smt=off
-> >          $ lscpu | grep 'Thread(s) per core'
-> >          Thread(s) per core:              1
-> >      This commit therefore directly uses that value.
-> 
-> Maybe extend: …, and replaces `grep` by using using sed’s switch `-n` and
-> the command p.
+Dzie=C5=84 dobry,
 
-Ah, good point -- I will update this on the next rebase.
+dostrzegam mo=C5=BCliwo=C5=9B=C4=87 wsp=C3=B3=C5=82pracy z Pa=C5=84stwa f=
+irm=C4=85.
 
-> >      Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
-> >      Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > 
-> > diff --git a/tools/testing/selftests/rcutorture/bin/functions.sh b/tools/testing/selftests/rcutorture/bin/functions.sh
-> > index c35ba24f994c3..66d0414d8e4bc 100644
-> > --- a/tools/testing/selftests/rcutorture/bin/functions.sh
-> > +++ b/tools/testing/selftests/rcutorture/bin/functions.sh
-> > @@ -301,7 +301,7 @@ specify_qemu_cpus () {
-> >   			echo $2 -smp $3
-> >   			;;
-> >   		qemu-system-ppc64)
-> > -			nt="`lscpu | grep '^NUMA node0' | sed -e 's/^[^,]*,\([0-9]*\),.*$/\1/'`"
-> > +			nt="`lscpu | sed -n 's/^Thread(s) per core:\s*//p'`"
-> >   			echo $2 -smp cores=`expr \( $3 + $nt - 1 \) / $nt`,threads=$nt
-> >   			;;
-> >   		esac
-> 
-> Thank you for doing that, and sorry for the extra work.
+=C5=9Awiadczymy kompleksow=C4=85 obs=C5=82ug=C4=99 inwestycji w fotowolta=
+ik=C4=99, kt=C3=B3ra obni=C5=BCa koszty energii elektrycznej nawet o 90%.
 
-No complaints!  You are after all testing on powerpc, and getting that
-working better is a good thing.
+Czy s=C4=85 Pa=C5=84stwo zainteresowani weryfikacj=C4=85 wst=C4=99pnych p=
+ropozycji?
 
-							Thanx, Paul
+
+Pozdrawiam,
+Jacek Szkudlarski
