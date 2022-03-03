@@ -2,255 +2,228 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 66E1CC433EF
-	for <rcu@archiver.kernel.org>; Thu,  3 Mar 2022 14:37:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 33C56C433F5
+	for <rcu@archiver.kernel.org>; Thu,  3 Mar 2022 20:02:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230193AbiCCOht (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 3 Mar 2022 09:37:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42860 "EHLO
+        id S236156AbiCCUDi (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 3 Mar 2022 15:03:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234071AbiCCOhs (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 3 Mar 2022 09:37:48 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 526C418E40A;
-        Thu,  3 Mar 2022 06:37:03 -0800 (PST)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1646318221;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to; bh=EtdZg/6U94OdYMSqhjBiWjZ+bM7DHb05euHX5YcqsEw=;
-        b=AlL3t/k/701s9pNkMnd+L5tdXkxLydMGn0JLzYf5bKsg1Nj2gOfqfV9iBoNmrftKGx9lHv
-        sRTHi8M3aEF4qw3apyc2cYa9uU25erymkMk3ZREMPaok+8YM/Y6iX4QxwQPddzHGJFINg0
-        6SRi/wioYGNimhHOvP1knzVVssiCEBmzW9V9C0eAaUFnOJF53WtqOechyWaGT+tc/URG4j
-        n6UJ6dOrEDFQCZqMPuf9PspzQ80ZFxumbcHn7iIBJ+TAwQwikXL8Ka0s07x+ycePn6Ne2Y
-        R48U/Bu+CrJVKXWpqBQuPX+uh3k/aTW+u7cMXauve3sXoQ979ji9fDSafQZzMg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1646318221;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to; bh=EtdZg/6U94OdYMSqhjBiWjZ+bM7DHb05euHX5YcqsEw=;
-        b=ZdzlD/AKeYc47xfcG7CvYfWHaIvxE6h1mxDBZNkADhwmATnk9vIPpnSQl3OsLaWA2elmml
-        hZ1HCR5zbRUsJlDA==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
+        with ESMTP id S236087AbiCCUDh (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 3 Mar 2022 15:03:37 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B99E327CE6
+        for <rcu@vger.kernel.org>; Thu,  3 Mar 2022 12:02:40 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 3232BB826D3
+        for <rcu@vger.kernel.org>; Thu,  3 Mar 2022 20:02:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2E66C004E1;
+        Thu,  3 Mar 2022 20:02:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1646337758;
+        bh=7GVnrM+KOUqLSK/9rhqTpUveiIpHYHWtM0D21LkQKlE=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=KQ92ppFXdQKwZ92/B6I5but+KUxZHypDqHuH5OALoIheVmzUNaMqirJI5etpbp7hF
+         /EWc0OwSgOV5SD9W8ime1HfCES/j7VxBNHqTwV5rRxQkQ9BQaG1smbBPvZcOc+obms
+         tRNhYLzC5RgWeuI0UPHudHEyzPTNKYidRqDR4a7ebNTsQYdsgBtLen35b7g8MOnjTQ
+         7D/lbTDa0vEM9QTTtlDrBzwuD60hyI3+DCoiV54HP5WYG2Yk3cMSJt7U/IDDmVYRJ9
+         jkmPaVGLWZ0kCm8SQKuvsJrRCYNbQ/FDOI4zv79UGMHkSFN2hO87888VSSPS4GQ+04
+         VMevEwBwiyJgA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 97BDC5C0ADD; Thu,  3 Mar 2022 12:02:37 -0800 (PST)
+Date:   Thu, 3 Mar 2022 12:02:37 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     rcu@vger.kernel.org, Joel Fernandes <joel@joelfernandes.org>,
         Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Corey Minyard <cminyard@mvista.com>,
-        Kees Cook <keescook@chromium.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Shawn Guo <shawn.guo@linaro.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Wang Qing <wangqing@vivo.com>, Tejun Heo <tj@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Alexander Potapenko <glider@google.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>, rcu@vger.kernel.org
-Subject: Re: [PATCH printk v1 09/13] printk: add functions to allow direct
- printing
-In-Reply-To: <Yg5FCVF5c1jDo116@alley>
-Date:   Thu, 03 Mar 2022 15:43:00 +0106
-Message-ID: <8735jz9k6r.fsf@jogness.linutronix.de>
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH] rcu: Delay the RCU-selftests during boot.
+Message-ID: <20220303200237.GE4285@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <Yh5bJZmAXXGtgTIl@linutronix.de>
+ <20220302054217.GV4285@paulmck-ThinkPad-P17-Gen-1>
+ <Yh9QdtWL+MBXTY7x@linutronix.de>
+ <20220303043650.GA4285@paulmck-ThinkPad-P17-Gen-1>
+ <YiCT/i3jlgg9LX/r@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YiCT/i3jlgg9LX/r@linutronix.de>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 2022-02-17, Petr Mladek <pmladek@suse.com> wrote:
-> On Mon 2022-02-07 20:49:19, John Ogness wrote:
->> Once kthread printing is introduced, console printing will no longer
->> occur in the context of the printk caller. However, there are some
->> special contexts where it is desirable for the printk caller to
->> directly print out kernel messages. Using pr_flush() to wait for
->> threaded printers is only possible if the caller is in a sleepable
->> context and the kthreads are active. That is not always the case.
->> 
->> Introduce printk_direct_enter() and printk_direct_exit() functions
->> to explicitly (and globally) activate/deactivate direct console
->> printing.
->
-> We should make it more clear what direct console printing means.
->
-> It is just the best effort to print messages on consoles when
-> they are unused at the moment. By other words, it is the legacy
-> mode that uses trylock to get access to consoles.
+On Thu, Mar 03, 2022 at 11:10:06AM +0100, Sebastian Andrzej Siewior wrote:
+> On 2022-03-02 20:36:50 [-0800], Paul E. McKenney wrote:
+> > > To simply move the test from rcu_init_tasks_generic() to after
+> > > do_pre_smp_initcalls(). If we can't move rcu_init_tasks_generic() after
+> > > do_pre_smp_initcalls() or at least the test part because we need working
+> > > synchronize_rcu() in early_initcall() then I need to move the RT
+> > > requirements before. Simple ;)
+> > 
+> > As long as RT confines itself to configurations that do not need a
+> > working synchronize_rcu() in the intervening code, yes, simple.  ;-)
+> 
+> ;)
+> 
+> > > The requirements are:
+> > > 
+> > > --- a/init/main.c
+> > > +++ b/init/main.c
+> > > @@ -1598,6 +1601,9 @@ static noinline void __init kernel_init_freeable(void)
+> > >  
+> > >         init_mm_internals();
+> > >  
+> > > +       spawn_ksoftirqd();
+> > > +       irq_work_init_threads();
+> > > +
+> > >         rcu_init_tasks_generic();
+> > >         do_pre_smp_initcalls();
+> > >         lockup_detector_init();
+> > > 
+> > > spawn_ksoftirqd() is what I mentioned. What I just figured out is
+> > > irq_work_init_threads() due to
+> > > 	call_rcu_tasks_iw_wakeup()
+> > > 
+> > > I can't move this to hard-IRQ context because it invokes wake_up() which
+> > > acquires sleeping locks. If you say that rtp->cbs_wq has only one waiter
+> > > and something like rcuwait_wait_event() / rcuwait_wake_up() would work
+> > > as well then call_rcu_tasks_iw_wakeup() could be lifter to hard-IRQ
+> > > context and we need to worry only about spawn_ksoftirqd() :)
+> > 
+> > OK, I was expecting that the swait_event_timeout_exclusive() call from
+> > synchronize_rcu_expedited_wait_once() would be the problem.  Are you
+> > saying that this swait_event_timeout_exclusive() works fine?  
+> 
+> swait_event_timeout_exclusive() uses schedule_timeout() which uses a
+> timer_list timer and this one requires ksoftirqd to work.
 
-OK, I will clarify that.
+OK, at least things are consistent, then.  ;-)
 
->> Activate direct printing for:
->>  - sysrq
->>  - emergency reboot/shutdown
->>  - cpu and rcu stalls
->>  - hard and soft lockups
->>  - hung tasks
->>  - stack dumps
->
-> It would be great to mention what rules of thumb were used to choose
-> these locations, see below.
+> > Or are you
+> > instead saying that the call_rcu_tasks_iw_wakeup() issues cause trouble
+> > before that swait_event_timeout_exclusive() gets a chance to cause its
+> > own trouble?
+> 
+> Both is needed:
+> - ksoftirqd thread for timer_list timers handling.
+> - irq_work thread for irq_work which is not done in hard-IRQ context.
 
-OK.
+Understood.
 
->> --- a/drivers/tty/sysrq.c
->> +++ b/drivers/tty/sysrq.c
->> @@ -594,9 +594,11 @@ void __handle_sysrq(int key, bool check_mask)
->>  		 * should not) and is the invoked operation enabled?
->>  		 */
->>  		if (!check_mask || sysrq_on_mask(op_p->enable_mask)) {
->> +			printk_direct_enter();
->>  			pr_info("%s\n", op_p->action_msg);
->>  			console_loglevel = orig_log_level;
->>  			op_p->handler(key);
->> +			printk_direct_exit();
->>  		} else {
->>  			pr_info("This sysrq operation is disabled.\n");
->>  			console_loglevel = orig_log_level;
->
-> We should handle all messages the same way, including "This sysrq operation
-> is disabled" and "HELP:" section. @suppress_printk is disabled
-> for all these messages as well.
+> What I observe during boot:
+> | [    0.184838] cblist_init_generic: Setting adjustable number of callback queues.
+> | [    0.184853] cblist_init_generic: Setting shift to 2 and lim to 1.
+> | [    0.188116] irq_work_single() wake_up_klogd_work_func+0x0/0x70 26
+> | [    0.188861] cblist_init_generic: Setting shift to 2 and lim to 1.
+> | [    0.189671] Running RCU-tasks wait API self tests
+> | [    0.190254] irq_work_single() call_rcu_tasks_iw_wakeup+0x0/0x20 22
+> | [    0.292569] expire_timers() process_timeout+0x0/0x10
+> | [    0.292655] irq_work_single() call_rcu_tasks_iw_wakeup+0x0/0x20 22
+> | [    0.295082] irq_work_single() call_rcu_tasks_iw_wakeup+0x0/0x20 22
+> | [    0.296481] irq_work_single() call_rcu_tasks_iw_wakeup+0x0/0x20 22
+> | [    0.304685] rcu: Hierarchical SRCU implementation.
+> | [    0.311415] Callback from call_rcu_tasks_trace() invoked.
+> | [    0.344100] smp: Bringing up secondary CPUs ...
+> 
+> 1x schedule_timeout() and 4x call_rcu_tasks_iw_wakeup(). Both are
+> crucial.
 
-OK.
+Got it, thank you!
 
->> --- a/kernel/printk/printk.c
->> +++ b/kernel/printk/printk.c
->> @@ -3333,9 +3359,15 @@ static void wake_up_klogd_work_func(struct irq_work *irq_work)
->>  	int pending = __this_cpu_xchg(printk_pending, 0);
->>  
->>  	if (pending & PRINTK_PENDING_OUTPUT) {
->> +		if (pending & PRINTK_DIRECT_OUTPUT)
->> +			printk_direct_enter();
->> +
->>  		/* If trylock fails, someone else is doing the printing */
->>  		if (console_trylock())
->>  			console_unlock();
->> +
->> +		if (pending & PRINTK_DIRECT_OUTPUT)
->> +			printk_direct_exit();
->>  	}
->
-> I want to be sure that we are on the same page.
->
-> This is a good example where the direct output is used in a
-> non-preemtive context. It means that it might cause soft or
-> live-lockups. And it might break RT guarantees.
+> > Either way, it sounds like that irq_work_queue(&rtpcp->rtp_irq_work) in
+> > call_rcu_tasks_generic() needs some adjustment to work in RT.  This should
+> > be doable.  Given this, and given that the corresponding diagnostic
+> > function rcu_tasks_verify_self_tests() is a late_initcall() function,
+> > you don't need to move the call to rcu_init_tasks_generic(), correct?
+> 
+> #1 ksoftirqd must be spawned first in order to get timer_list timer to
+>    work. I'm going to do that, this should not be a problem.
 
-The idea here is that somewhere something was supposed to be direct
-printed, but the printing was deferred to irq_work. Then probably it
-should be direct printed here.
+I very much appreciate your flexibility on this, but it would be even
+better if there was a good way to avoid the dependency on ksoftirqd,
+at least during boot time.  Spawning ksoftirqd first would narrow the
+window of RCU unavailability in RT, but it would be good to have RCU
+work throughout, as it currently does in !RT.  (Give or take a short
+time during the midst of the scheduler putting itself together.)
 
-Also note that I implemented it incorrectly. Really
-wake_up_klogd_work_func() should have been changed to:
+This might seem a bit utopian or even unreasonable, but please keep in
+mind that both the scheduler and the idle loop use RCU.
 
-static void wake_up_klogd_work_func(struct irq_work *irq_work)
-{
-        int pending = __this_cpu_xchg(printk_pending, 0);
+However, that swait_event_timeout_exclusive() doesn't need exact timing
+during boot.  Anything that let other tasks run for at least a few tens
+of microseconds (up to say a millisecond) could easily work just fine.
+Is there any such thing in RT?
 
-        if (pending & PRINTK_PENDING_OUTPUT &&
-            pending & PRINTK_DIRECT_OUTPUT) {
-                /* If trylock fails, someone else is doing the printing */
-                if (console_trylock())
-                        console_unlock();
-        }
+> #2 call_rcu_tasks_iw_wakeup. Here we have the following options:
+>    - Don't use, delay, …
 
-        if (pending & PRINTK_PENDING_WAKEUP)
-                wake_up_interruptible(&log_wait);
-}
+What is the form of the delay?  All this code is trying to do is to make
+the specified function execute in a clean environment so as to avoid
+potential deadlocks.  So the range of possible solutions is quite broad.
 
-For v2 I will _not_ create a new PRINTK_DIRECT_OUTPUT flag value nor
-will I modify wake_up_klogd_work_func(). Instead I will modify
-defer_console_output() like this:
+>    - if you can guarantee that there is only _one_ waiter
+>      => Replace rcu_tasks::cbs_wq with rcuwait. Let this irq_work run
+>         then in hard-IRQ context.
 
-@@ -3256,11 +3659,16 @@ void wake_up_klogd(void)
- 
- void defer_console_output(void)
- {
-+	int val = PRINTK_PENDING_WAKEUP;
-+
- 	if (!printk_percpu_data_ready())
- 		return;
- 
-+	if (atomic_read(&printk_direct))
-+		val |= PRINTK_PENDING_OUTPUT;
-+
- 	preempt_disable();
--	__this_cpu_or(printk_pending, PRINTK_PENDING_OUTPUT);
-+	__this_cpu_or(printk_pending, val);
- 	irq_work_queue(this_cpu_ptr(&wake_up_klogd_work));
- 	preempt_enable();
- }
+There is indeed only ever one waiter.  
 
-So PRINTK_PENDING_WAKEUP will always be sent and PRINTK_PENDING_OUTPUT
-will be used for direct output.
+But rcuwait is going to acquire scheduler locks, correct?  It would be
+better to avoid that potential deadlock.
 
-> It might be worth it when the system already is in big troubles
-> and RT guarantees are already broken. This might be true for:
->
->     + emergency reboot/shutdown
->
-> We probably should use it also when @suppress_printk is already
-> disabled:
->
->     + sysrq
->
-> But I am not sure about situations where only a particular process
-> or CPU is in troubles:
->
->     + cpu and rcu stalls
->     + hard and soft lockups
->     + hung tasks
->     + "generic" stack dumps
->
-> The risks:
->
-> On one hand, I like that it is a conservative approach. It reduces
-> the risk of bad user experience with switching to printk kthreads.
->
-> On the other hand, it means that the problem with soft/live-lockups
-> will still be there. Also the direct output is global and affects
-> any messages. It means that we will still need to keep and maintain
-> printk_deferred() for scheduler, NMI, console drivers, ...
+>    - if you can't guarantee that there is only _one_ waiter
+>      => spawn the irq-work thread early.
 
-The reason I was so conservative is because we do not yet have atomic
-consoles. Right now direct printing is the only way to achieve some
-reliability. I am concerned that putting too much on the threads now
-might cause some bad taste for users and put the kthread approach at
-risk. All the above scenarios are things that should not occur on a
-normally functioning system.
+Spawning the irq-work kthread early still leaves a hole.
 
-> My preferences:
->
-> I prefer to do the changes proposed by this patch (with updated sysrq
-> handling) in the 1st stage. It is more conservative. The switch to
-> kthreads in most other situations will be big enough step.
+> As for #2, I managed to trigger the wakeup via tracing (and stumbled
+> into a bug un related to this) and I see only one waiter. Doesn't mean I
+> do it right and they can't be a second waiter.
 
-Agreed.
+Only one waiter!  ;-)
 
-> But I think that we might go even further in the future. After all,
-> the plan was to use the direct printing only when the system is about
-> to die. This might eventually allow to remove printk_deferred()
-> and all the possible soft/live-lockups.
+Other approaches:
 
-Yes. Reliability will come from the planned atomic consoles. For systems
-that will have atomic consoles available, direct printing should be safe
-from all contexts. For systems without atomic consoles, we may need to
-keep the "legacy" direct printing alive.
+o	For the swait_event_timeout_exclusive(), I could make early
+	boot uses instead do swait_event_exclusive() and make early boot
+	rcu_sched_clock_irq() do an unconditional wakeup.  This would
+	require a loop around one of the swait_event_exclusive()
+	calls (cheaper than making rcu_sched_clock_irq() worry about
+	durations).
 
-John
+	RCU would need to be informed of the end of "early boot",
+	for example, by invoking some TBD RCU function as soon
+	as the ksoftirqd kthreads are created.
+
+	This would also require that rcu_needs_cpu() always return
+	true during early boot.
+
+	Static branches could be used if required, as they might be in
+	rcu_needs_cpu() and maybe also in rcu_sched_clock_irq().
+
+o	A similar TBD RCU function could cause call_rcu_tasks_generic()
+	to avoid invoking irq_work_queue() until after the relevant
+	kthread was created, but to do any needed wakeup at that point.
+	If wakeups are needed before that time (which they might),
+	then perhaps the combination of rcu_sched_clock_irq() and
+	rcu_needs_cpu() can help out there as well.
+
+These would be conditioned on IS_ENABLED(CONFIG_PREEMPT_RT).
+
+But now you are going to tell me that wakeups cannot be done from the
+scheduler tick interrupt handler?  If that is the case, are there other
+approaches?
+
+> > Back over to you so that I can learn what I am still missing.  ;-)
+> 
+> Hope that helps.
+
+Maybe?  You tell me!  ;-)
+
+							Thanx, Paul
