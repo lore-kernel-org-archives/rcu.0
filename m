@@ -2,95 +2,134 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3345C433EF
-	for <rcu@archiver.kernel.org>; Mon,  7 Mar 2022 17:58:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E2B8EC433F5
+	for <rcu@archiver.kernel.org>; Mon,  7 Mar 2022 19:15:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238544AbiCGR65 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 7 Mar 2022 12:58:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42740 "EHLO
+        id S234148AbiCGTQM (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 7 Mar 2022 14:16:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234549AbiCGR65 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 7 Mar 2022 12:58:57 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5593C22BD5
-        for <rcu@vger.kernel.org>; Mon,  7 Mar 2022 09:58:02 -0800 (PST)
-Date:   Mon, 7 Mar 2022 18:57:59 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1646675880;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DHePnKRgEAubu98Ld1vEdOQE2k29ZqhWVqmmoMoftJc=;
-        b=LeAXhe+X/LVhUdq0onlh0nXBRywGlZ8/BIQKQf26zsBgtjD+jZGlLvfHO7Noz1V3P6T2hF
-        NaqrOjdm5oMyZ88hJ9fijSuiiYvOJOYW96GDG5IS5TuozraYEHCqzEPGaRi6CVIvQ1S6Pp
-        hFc+vNM/C/YI4kZxcFGu/iWRNgJYIQ783BEbto8qPraB1nN6J8IqwgR5g2n8b0YevomptV
-        VK6QsPV7HGQ1pq9ygEB/Lh5Mm8SCpvFrWEEt1YMtukpqfSigji9dgFuEzmLUK2koqe5vqg
-        MEISeX8igiilweL9d3UCstoUKysj3/xWY8yMbWV1vxla00dYSF8DqM1Bt70LMg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1646675880;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DHePnKRgEAubu98Ld1vEdOQE2k29ZqhWVqmmoMoftJc=;
-        b=VvIMxD88JgRxZrKcSAL2uPX1kwqczVfLYaHsZeCw9GUG/a/MIQi+ILEx57n/e7TZ0mOf3b
-        VSfx6eqOFbKjkKDw==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     rcu@vger.kernel.org, Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH] rcu-tasks: Use rcuwait for the rcu_tasks_kthread().
-Message-ID: <YiZHp68bPJvLzvhV@linutronix.de>
-References: <Yh5bJZmAXXGtgTIl@linutronix.de>
- <20220302054217.GV4285@paulmck-ThinkPad-P17-Gen-1>
- <Yh9QdtWL+MBXTY7x@linutronix.de>
- <20220303043650.GA4285@paulmck-ThinkPad-P17-Gen-1>
- <YiCT/i3jlgg9LX/r@linutronix.de>
- <20220303200237.GE4285@paulmck-ThinkPad-P17-Gen-1>
- <YiHy7Y5fTU3jRdMi@linutronix.de>
- <20220305044007.GV4285@paulmck-ThinkPad-P17-Gen-1>
- <YiXp4+2atG0Ni2rJ@linutronix.de>
- <20220307150913.GI4285@paulmck-ThinkPad-P17-Gen-1>
+        with ESMTP id S230143AbiCGTQL (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 7 Mar 2022 14:16:11 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED9AB7CDCA;
+        Mon,  7 Mar 2022 11:15:15 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id A4646B8167A;
+        Mon,  7 Mar 2022 19:15:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42696C340EB;
+        Mon,  7 Mar 2022 19:15:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1646680513;
+        bh=td5XA/vasPQzk2dJn/2PdCjukKMBaa8j+bLAS4+mKCk=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=YYUCqr68s2efIf+qL+Ov/nYK3ID7rndO+/BzWZHEFEbH/vNmfXqBlPQ94F70Phi+X
+         6654CSGtwy1huUQfFeTpRK3H2ltjd49oX6wMHzXzyKH9d5bbzSmaSbSziJgYcuqdnC
+         tRdS1fgQ1gXcU9SM+mk/ST/NCrWVw0GiBNhpecYdbMWw5mpSz7EOf6boWRy6SAFaPd
+         Sj0jsy3CNCWdZwVOzPTAl17vnNKeIz16/O0t0Nsaui8A6hftRN+YzUqOmziWBXZSfP
+         /3HCcaPc4DRjQRDq7nP2LfRQgZr9avKOKM+qsBagBFLyKNsguSXtvwDfn7y7l5uTJf
+         0NB/vQGOavZFQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id E44925C0260; Mon,  7 Mar 2022 11:15:12 -0800 (PST)
+Date:   Mon, 7 Mar 2022 11:15:12 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
+Cc:     Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        "frederic@kernel.org" <frederic@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        rcu@vger.kernel.org, bigeasy@linutronix.de
+Subject: Re: [PATCH] rcu: Only boost rcu reader tasks with lower priority
+ than boost kthreads
+Message-ID: <20220307191512.GN4285@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20220304092631.4123188-1-qiang1.zhang@intel.com>
+ <81f69dd4-6ca9-760c-bec5-5cb27afbe788@quicinc.com>
+ <PH0PR11MB5880026EBBE3E195549E2245DA089@PH0PR11MB5880.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20220307150913.GI4285@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <PH0PR11MB5880026EBBE3E195549E2245DA089@PH0PR11MB5880.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 2022-03-07 07:09:13 [-0800], Paul E. McKenney wrote:
-> > Correct. Possible due to the removal of wait_queue_head (plus there is
-> > nothing else that would stand in the way otherwise).
->=20
-> Very good!
->=20
-> If the overhead becomes a problem in mainline, presumably we can do
-> a compile-time switch based on CONFIG_PREEMPT_RT or similar.
+On Mon, Mar 07, 2022 at 02:03:17AM +0000, Zhang, Qiang1 wrote:
+> On 3/4/2022 2:56 PM, Zqiang wrote:
+> > When RCU_BOOST is enabled, the boost kthreads will boosting readers
+> > who are blocking a given grace period, if the current reader tasks
+> > have a higher priority than boost kthreads(the boost kthreads priority
+> > not always 1, if the kthread_prio is set), boosting is useless, skip
+> > current task and select next task to boosting, reduce the time for a
+> > given grace period.
+> > 
+> > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 
-the rcuwake is a lot cheaper than waitqueue in terms of code or data
-involved, locks, =E2=80=A6. The _HARD flag is a nop on !RT.
-So it should be a win-win situation here.
+Adding to CC to get more eyes on this.  I am not necessarily opposed to
+it, but I don't do that much RT work myself these days.
 
-> > > If so, I am wondering if there are other
-> > > irq_work instances that need to move to _HARD.
-> >=20
-> > We already have:
-> > kernel/rcu/tree.c:      rdp->rcu_iw =3D IRQ_WORK_INIT_HARD(rcu_iw_handl=
-er);
->=20
-> Because you prompted me to change it from IRQ_WORK_INIT() some time
-> back?  ;-)
+							Thanx, Paul
 
-Right. We have printk() for instance using the !HARD irq-work so this
-mostly a case-by-case decision usually avoiding HARD.
-
-> 							Thanx, Paul
-
-Sebastian
+> > ---
+> >   kernel/rcu/tree_plugin.h | 10 +++++++++-
+> >   1 file changed, 9 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> > index c3d212bc5338..d35b6da66bbd 100644
+> > --- a/kernel/rcu/tree_plugin.h
+> > +++ b/kernel/rcu/tree_plugin.h
+> > @@ -12,6 +12,7 @@
+> >    */
+> >   
+> >   #include "../locking/rtmutex_common.h"
+> > +#include <linux/sched/deadline.h>
+> >   
+> >   static bool rcu_rdp_is_offloaded(struct rcu_data *rdp)
+> >   {
+> > @@ -1065,13 +1066,20 @@ static int rcu_boost(struct rcu_node *rnp)
+> >   	 * section.
+> >   	 */
+> >   	t = container_of(tb, struct task_struct, rcu_node_entry);
+> > +	if (!rnp->exp_tasks && (dl_task(t) || t->prio <= current->prio)) {
+> > +		tb = rcu_next_node_entry(t, rnp);
+> > +		WRITE_ONCE(rnp->boost_tasks, tb);
+> > +		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+> > +		goto end;
+> > +	}
+> > +
+> >   	rt_mutex_init_proxy_locked(&rnp->boost_mtx.rtmutex, t);
+> >   	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+> >   	/* Lock only for side effect: boosts task t's priority. */
+> >   	rt_mutex_lock(&rnp->boost_mtx);
+> >   	rt_mutex_unlock(&rnp->boost_mtx);  /* Then keep lockdep happy. */
+> >   	rnp->n_boosts++;
+> > -
+> > +end:
+> >>
+> >>Nit: maybe rename the label to "skip_boost:" ?
+> >>
+> >>Code looks fine; however, out of curiosity; given that the higher 
+> >>priority tasks, in general, would exit their read side critical section
+> >>quickly and boost the next blocking reader on exiting their read side 
+> >>section; do you see noticeable reduction in grace period timings with 
+> >>the change for certain type of workloads?
+> 
+> Thanks for feedback ,  In preempt-RT systems, there will be many real-time threads (most
+> of them are created by users themselves ),  their priority is higher or lower than boost kthreads
+> (kthread_prio is set),  for rt tasks  with higher priority than boost kthreads, maybe it will exit
+> read side critical quickly,  maybe not, if it is preempted by a higher priority task,  If try to boost operation, 
+> this increases the boosts kthread waiting time, as a result, the next blkd tasks cannot be
+> boosted in time.  of course, I don't deny it,  there are also reasons that user priority setting is inappropriate.
+> 
+> Thanks
+> Zqiang
+> 
+> >>
+> >>
+> >>Thanks
+> >>Neeraj
+> 
+> >   	return READ_ONCE(rnp->exp_tasks) != NULL ||
+> >   	       READ_ONCE(rnp->boost_tasks) != NULL;
+> >   }
