@@ -2,123 +2,182 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 89F41C433F5
-	for <rcu@archiver.kernel.org>; Tue,  8 Mar 2022 18:04:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4BC6BC433F5
+	for <rcu@archiver.kernel.org>; Tue,  8 Mar 2022 18:10:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348821AbiCHSF2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 8 Mar 2022 13:05:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41956 "EHLO
+        id S1349415AbiCHSLj (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 8 Mar 2022 13:11:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231637AbiCHSFZ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 8 Mar 2022 13:05:25 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EB735521D;
-        Tue,  8 Mar 2022 10:04:28 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id h14so8686110lfk.11;
-        Tue, 08 Mar 2022 10:04:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6SHxHLXJ2eYyw1tnxtVXf2yck6AofzgpVIfso9u7DAE=;
-        b=YWxBm6Jx9v7Wlb2fdyVA4R/eCLykHIu5057o5yoxhiNe1ckeEcYcuoIlvL0CXgyUUS
-         iCcHfjSkiUebD2r7d935yPKizxOzpol4fVwzGhe1sxB1SXtbSjuBLWqAfhVvXomhyf7V
-         BnXT8+SGpjmpIZ/L55h1bxZ3H2uZjmLJz3IlPnl59Ufs7nykyUUz1vFD+GJdAuAbfX72
-         aDVKhnqFKkHplJiX2aOCMqJuGarphm3J7iBCGW4p41f350GRxKuiNvo8YaK6XmNTj1kT
-         RwpAlAlpMgMInq7c/Fe45mxLaG95Ut4PwQ1pI+fqY/6Q5msR6vrqmQMsjGVAp/pbCwXr
-         RpyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6SHxHLXJ2eYyw1tnxtVXf2yck6AofzgpVIfso9u7DAE=;
-        b=lDBaT3/xIImb5z61/nNpvi8aXv8Y4u3xWma3Mru8rgRiKz8DwQQfWkHs/yqAl1RV2a
-         ipNPpbtjG1/krBElTnAafrP3eB4DeV+5/Zi1PTFHkA2JOxNCLVt0iAX9pKEqSDetiyRx
-         PMnWlXVpM4ycZr5jOfiJbz2m7hR6LFjjOthfyb7Od2CN8ZqSbKC+eNVdUtgL4S0KO8sT
-         UlCMIhw5Feg8EHurBigsWQeHAO7Vad/mL9tdmGtQR0YwxD5bwbyIAx9hZ46KhY4LOiDn
-         +14/7AAqm0WFUXSkHPeF2H/04tZxuFVSZeYpAWhGIr0wmpU9EQMPoJ/ep7THYb0e6WUZ
-         GJbg==
-X-Gm-Message-State: AOAM530Om+IiySecn3ONSCXt1YrYXdYk5v8uqFSNjeiy6FeegCkvWXQH
-        aeevQD85h6yZUjWmRk4Juxc=
-X-Google-Smtp-Source: ABdhPJzM/6dGiiSrzkwSlZG8G/sBalDM4RxDurXpIFsD9rt6m80xcXA4TbZGf9jQFZCFTRpLPDs6cA==
-X-Received: by 2002:a05:6512:3ca2:b0:445:98f6:40df with SMTP id h34-20020a0565123ca200b0044598f640dfmr11391467lfv.293.1646762664244;
-        Tue, 08 Mar 2022 10:04:24 -0800 (PST)
-Received: from pc638.lan ([155.137.26.201])
-        by smtp.gmail.com with ESMTPSA id l11-20020a2e834b000000b00246308690e2sm3986488ljh.85.2022.03.08.10.04.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Mar 2022 10:04:23 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Tue, 8 Mar 2022 19:04:21 +0100
-To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
-Cc:     "Zhang, Qiang1" <qiang1.zhang@intel.com>, paulmck@kernel.org,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        "frederic@kernel.org" <frederic@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        rcu@vger.kernel.org, bigeasy@linutronix.de
-Subject: Re: [PATCH] rcu: Only boost rcu reader tasks with lower priority
- than boost kthreads
-Message-ID: <YieapfzKvy2chaHT@pc638.lan>
-References: <20220304092631.4123188-1-qiang1.zhang@intel.com>
- <81f69dd4-6ca9-760c-bec5-5cb27afbe788@quicinc.com>
- <PH0PR11MB5880026EBBE3E195549E2245DA089@PH0PR11MB5880.namprd11.prod.outlook.com>
- <20220307191512.GN4285@paulmck-ThinkPad-P17-Gen-1>
+        with ESMTP id S1349413AbiCHSLi (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 8 Mar 2022 13:11:38 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 689B45676D
+        for <rcu@vger.kernel.org>; Tue,  8 Mar 2022 10:10:41 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0782D6152E
+        for <rcu@vger.kernel.org>; Tue,  8 Mar 2022 18:10:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67EF3C340F7;
+        Tue,  8 Mar 2022 18:10:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1646763040;
+        bh=KkPihUI/HStIAufz0PnU0WjYUTGObU+HYEiqP+5X5i0=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=k6cu1QJWvbu7zQqTBJSvXGKPNU9Spwgk49cD0MwFMZeyEy/0h+T8o+FHubBqsfhPF
+         PNbZwAEcKrDObw/nZxgyfUsTp1LMy4isqoop1+2c6Ay007H7kZwckBUW38JYGU8hna
+         fx7n1a80aSVdEO4KOiYg1iXFcTlV+f/EptNs+IC/d94Zi0qj358G2KXEjuFeG6zR9U
+         jLsQpEPQxyZjZI1Ps6G1+bmx7v82VeT96a1AkWBCR5mfo9J5mV1fzDY5P9QFhGaBZF
+         QPdheQkxUpmQBN7MygGLFjJiEWAGbkqwXRSf4JVxYvV2tHXN571xJHZ1xVvbLvj5Vy
+         f1uWBTsq/UCQA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 0E25E5C08A0; Tue,  8 Mar 2022 10:10:40 -0800 (PST)
+Date:   Tue, 8 Mar 2022 10:10:40 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     rcu@vger.kernel.org, Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH] rcu: Delay the RCU-selftests during boot.
+Message-ID: <20220308181040.GV4285@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20220302054217.GV4285@paulmck-ThinkPad-P17-Gen-1>
+ <Yh9QdtWL+MBXTY7x@linutronix.de>
+ <20220303043650.GA4285@paulmck-ThinkPad-P17-Gen-1>
+ <YiCT/i3jlgg9LX/r@linutronix.de>
+ <20220303200237.GE4285@paulmck-ThinkPad-P17-Gen-1>
+ <YiIrtog8fQOExyVl@linutronix.de>
+ <20220305050025.GX4285@paulmck-ThinkPad-P17-Gen-1>
+ <YiZGwQltzDSzMMDg@linutronix.de>
+ <20220307215327.GO4285@paulmck-ThinkPad-P17-Gen-1>
+ <Yic+K7javne8UY5U@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220307191512.GN4285@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <Yic+K7javne8UY5U@linutronix.de>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-> On Mon, Mar 07, 2022 at 02:03:17AM +0000, Zhang, Qiang1 wrote:
-> > On 3/4/2022 2:56 PM, Zqiang wrote:
-> > > When RCU_BOOST is enabled, the boost kthreads will boosting readers
-> > > who are blocking a given grace period, if the current reader tasks
-> > > have a higher priority than boost kthreads(the boost kthreads priority
-> > > not always 1, if the kthread_prio is set), boosting is useless, skip
-> > > current task and select next task to boosting, reduce the time for a
-> > > given grace period.
-> > > 
-> > > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+On Tue, Mar 08, 2022 at 12:29:47PM +0100, Sebastian Andrzej Siewior wrote:
+> On 2022-03-07 13:53:27 [-0800], Paul E. McKenney wrote:
+> > > Correct, verified. But this means, that a task within a rcu_read_lock()
+> > > section gets preempted for > 26 seconds before that timer fires. That
+> > > delay during boot implies that something went wrong while it might
+> > > happen at run-time under "normal" circumstances. So I wouldn't try to
+> > > get this case covered.
+> > 
+> > The point being that there is no problem with the timer being queued,
+> > just that it won't go off until later in the boot process.  Which in
+> > turn means that all that is lost is the RCU CPU stall warning should one
+> > be needed.  Is that correct, or am I missing a turn in there somewhere?
 > 
-> Adding to CC to get more eyes on this.  I am not necessarily opposed to
-> it, but I don't do that much RT work myself these days.
-> 
-> 							Thanx, Paul
-> 
-> > > ---
-> > >   kernel/rcu/tree_plugin.h | 10 +++++++++-
-> > >   1 file changed, 9 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> > > index c3d212bc5338..d35b6da66bbd 100644
-> > > --- a/kernel/rcu/tree_plugin.h
-> > > +++ b/kernel/rcu/tree_plugin.h
-> > > @@ -12,6 +12,7 @@
-> > >    */
-> > >   
-> > >   #include "../locking/rtmutex_common.h"
-> > > +#include <linux/sched/deadline.h>
-> > >   
-> > >   static bool rcu_rdp_is_offloaded(struct rcu_data *rdp)
-> > >   {
-> > > @@ -1065,13 +1066,20 @@ static int rcu_boost(struct rcu_node *rnp)
-> > >   	 * section.
-> > >   	 */
-> > >   	t = container_of(tb, struct task_struct, rcu_node_entry);
-> > > +	if (!rnp->exp_tasks && (dl_task(t) || t->prio <= current->prio)) {
-> > > +		tb = rcu_next_node_entry(t, rnp);
-> > > +		WRITE_ONCE(rnp->boost_tasks, tb);
-> > > +		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-> > > +		goto end;
-> > > +	}
-> > > +
-Why do you bypass the expedited grace period and boost any tasks anyway?
-Same way the expedited gp can be blocked by higher prior tasks SCHED_DEADLINE
-or SCHED_FIFO.
+> Correct. Before do_pre_smp_initcalls() there is no ksoftirqd so timers
+> won't be processed. Therefore even the 26secs timer triggers, there
+> will be no RCU-stall warning. Also I'm not sure how much of preemption
+> can happen at this point since there is not much going on.
+> Any delay at this points to a lockup and at this point the lockup
+> detector isn't even fully operational (it does not trigger here during
+> test).
 
-Thanks!
+Is sysrq operational at this point in RT?  If so, that can be used
+to diagnose the hang, at least in development environments.  If the
+need to use sysrq becomes a problem, checks/wakeups can be added to
+rcu_sched_clock_irq().
 
---
-Vlad Rezki
+> > > > > swait_event_timeout_exclusive() appears innocent.
+> > > > 
+> > > > I agree that it would rarely need to block, but if the task executing the
+> > > > synchronize_rcu() preempted one of the readers, wouldn't it have to block?
+> > > > Or am I missing some code path that excludes that possibility?
+> > > 
+> > > As explained above, it means ~20secs delay during bootup which I don't
+> > > see happen. Once ksoftirqd is up, it is covered.
+> > > Also: If _more_ users require a timer to expire so the system can
+> > > continue to boot I am willing to investigate _why_ this is needed
+> > > because it does delay boot up progress of the system.
+> > 
+> > Just to double-check -- in RT, ksoftirqd is up and running before the boot
+> > sequence reaches the call to rcu_end_inkernel_boot() from kernel_init()?
+> 
+> Yes, this is the case.
+> rcu_end_inkernel_boot() is really at the end of the boot process, we
+> reached even SYSTEM_RUNNING ;)
+
+Whew!  ;-)
+
+> > This looks good to me, independent of the other discussion.  From what
+> > I can see, this code path is infrequent, so using hrtimer all the time
+> > should not be a problem.
+> 
+> Okay.
+> 
+> > Unless there are objections, I will pull this one in.
+> 
+> Good. Less patches for me to carry around.
+> Thank you.
+
+And here is what I ended up hand-applying, presumably due to differences
+between -rt and -rcu.  I also expanded the changelog a bit.  Could you
+please check to make sure that I didn't mess something up?
+
+Oh, and I also couldn't resist taking advantage of 100 columns...
+What can I say?
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+commit 2895b3bb5f8a0ebe565c62b1d2e3e1efca669962
+Author: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Date:   Tue Mar 8 09:54:13 2022 -0800
+
+    rcu-tasks: Use schedule_hrtimeout_range() to wait for grace periods
+    
+    The synchronous RCU-tasks grace-period-wait primitives invoke
+    schedule_timeout_idle() to give readers a chance to exit their
+    read-side critical sections.  Unfortunately, this fails during early
+    boot on PREEMPT_RT because PREEMPT_RT relies solely on ksoftirqd to run
+    timer handlers.  Because ksoftirqd cannot operate until its kthreads
+    are spawned, there is a brief period of time following scheduler
+    initialization where PREEMPT_RT cannot run the timer handlers that
+    schedule_timeout_idle() relies on, resulting in a hang.
+    
+    To avoid this boot-time hang, this commit replaces schedule_timeout_idle()
+    with schedule_hrtimeout(), so that the timer expires in hardirq context.
+    This is ensures that the timer fires even on PREEMPT_RT throughout the
+    irqs-enabled portions of boot as well as during runtime.
+    
+    The timer is set to expire between fract and fract + HZ / 2 jiffies in
+    order to align with any other timers that might expire during that time,
+    thus reducing the number of wakeups.
+    
+    Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index 79eb280b1cd2a..bbad6b3376947 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -652,13 +652,16 @@ static void rcu_tasks_wait_gp(struct rcu_tasks *rtp)
+ 	fract = rtp->init_fract;
+ 
+ 	while (!list_empty(&holdouts)) {
++		ktime_t exp;
+ 		bool firstreport;
+ 		bool needreport;
+ 		int rtst;
+ 
+ 		// Slowly back off waiting for holdouts
+ 		set_tasks_gp_state(rtp, RTGS_WAIT_SCAN_HOLDOUTS);
+-		schedule_timeout_idle(fract);
++		exp = jiffies_to_nsecs(fract);
++		__set_current_state(TASK_IDLE);
++		schedule_hrtimeout_range(&exp, jiffies_to_nsecs(HZ / 2), HRTIMER_MODE_REL_HARD);
+ 
+ 		if (fract < HZ)
+ 			fract++;
