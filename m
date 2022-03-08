@@ -2,71 +2,117 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 80033C433EF
-	for <rcu@archiver.kernel.org>; Tue,  8 Mar 2022 09:22:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 64310C433EF
+	for <rcu@archiver.kernel.org>; Tue,  8 Mar 2022 11:29:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345458AbiCHJXJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 8 Mar 2022 04:23:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49380 "EHLO
+        id S238426AbiCHLav (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 8 Mar 2022 06:30:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345370AbiCHJWy (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 8 Mar 2022 04:22:54 -0500
-X-Greylist: delayed 339 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 08 Mar 2022 01:21:57 PST
-Received: from mail.tireplot.pl (mail.tireplot.pl [46.183.184.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BA2641315
-        for <rcu@vger.kernel.org>; Tue,  8 Mar 2022 01:21:57 -0800 (PST)
-Received: by mail.tireplot.pl (Postfix, from userid 1001)
-        id 1126C41124; Tue,  8 Mar 2022 10:16:14 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tireplot.pl; s=mail;
-        t=1646730976; bh=MTqcFBIX/kr8wDnIctG2wOS+EBZtWqXUPN7/r6qxG+c=;
-        h=Date:From:To:Subject:From;
-        b=Ig8fGfKbSN1s0g/awX0npIqzGDVKk+3thCvh6o8Ec36zBz9c/99xxKUtWZ2AjUwl0
-         edtaw9jR4ziOh/V8YCoIlTwcg6zTH01z3v5VXMfEJ/wDma6LKqk9DUpCGIJX73IDI7
-         NPJjNltMhUWUsTTRP6YuF3rSJXTr0AUthgVH6NcEERgt1uNZF9lYs2gULQh2YIpO/X
-         ygbm5kwYQtPVe7gxe9rhDqB8t4d9K6AZWxtqydUg2WUOdXfyfxHzru0hsEUZGsDJJU
-         Sh3QU94Ry17O6k+4tl9JcZnROpvJtlB4jcANTLxEiJnTOdaa4acrNEXxOJ8Og4k/YH
-         z50B8A+jdJYNw==
-Received: by mail.tireplot.pl for <rcu@vger.kernel.org>; Tue,  8 Mar 2022 09:16:10 GMT
-Message-ID: <20220308084500-0.1.1x.8dqh.0.9buiai1kaf@tireplot.pl>
-Date:   Tue,  8 Mar 2022 09:16:10 GMT
-From:   =?UTF-8?Q? "Pawe=C5=82_Kodura" ?= <pawel.kodura@tireplot.pl>
-To:     <rcu@vger.kernel.org>
-Subject: Termin szkolenia
-X-Mailer: mail.tireplot.pl
+        with ESMTP id S237257AbiCHLau (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 8 Mar 2022 06:30:50 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FC9C37A85
+        for <rcu@vger.kernel.org>; Tue,  8 Mar 2022 03:29:51 -0800 (PST)
+Date:   Tue, 8 Mar 2022 12:29:47 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1646738989;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=h/qfsgD9ItUtzRa+Ttz7xXBBtbkjfeW+Nt3lD3dPyLo=;
+        b=RFnYCHoJK4ii00A69NLQRx+snAiaZMdKsBcuvQREVpxYZB0INclpMhSbmoYCk7mmXHGvfj
+        cpuCYO2qQTe5uno2Kt3jo6322p30xvDEX5d12xJJcfi+IPDtB0oXjSTxbdp3u15CKYJ/d4
+        nG28BRt7lYt9OdJSqWesxPJOSH7goZ5qJWbgG3dqwPaPSmAeoKTGW9FlhVVajOmfifnnoH
+        NZNaCLdG1FWKkPSfg8oIawYEIB9zBHfgFpoqZm73e8W0751On94R9fJY6PYE0f8MJaIp8B
+        y5MIBzxgrsEJeXc8N3FytpDMun8Jfx9uuqlHTfiyxBwKUgh2MNHchhvAk2uVUw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1646738989;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=h/qfsgD9ItUtzRa+Ttz7xXBBtbkjfeW+Nt3lD3dPyLo=;
+        b=X0TLigsChOm+3NxiAbTd2z4Qn3wxPKQmNZIc6fSU4Eof3lDG2lb3KCzjJczKqvgd4+k8E2
+        OTeYlZOtH23kkHCw==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     rcu@vger.kernel.org, Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH] rcu: Delay the RCU-selftests during boot.
+Message-ID: <Yic+K7javne8UY5U@linutronix.de>
+References: <Yh5bJZmAXXGtgTIl@linutronix.de>
+ <20220302054217.GV4285@paulmck-ThinkPad-P17-Gen-1>
+ <Yh9QdtWL+MBXTY7x@linutronix.de>
+ <20220303043650.GA4285@paulmck-ThinkPad-P17-Gen-1>
+ <YiCT/i3jlgg9LX/r@linutronix.de>
+ <20220303200237.GE4285@paulmck-ThinkPad-P17-Gen-1>
+ <YiIrtog8fQOExyVl@linutronix.de>
+ <20220305050025.GX4285@paulmck-ThinkPad-P17-Gen-1>
+ <YiZGwQltzDSzMMDg@linutronix.de>
+ <20220307215327.GO4285@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20220307215327.GO4285@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Dzie=C5=84 dobry,
+On 2022-03-07 13:53:27 [-0800], Paul E. McKenney wrote:
+> > Correct, verified. But this means, that a task within a rcu_read_lock()
+> > section gets preempted for > 26 seconds before that timer fires. That
+> > delay during boot implies that something went wrong while it might
+> > happen at run-time under "normal" circumstances. So I wouldn't try to
+> > get this case covered.
+> 
+> The point being that there is no problem with the timer being queued,
+> just that it won't go off until later in the boot process.  Which in
+> turn means that all that is lost is the RCU CPU stall warning should one
+> be needed.  Is that correct, or am I missing a turn in there somewhere?
 
-organizujemy profesjonalne warsztaty online z zakresu wykorzystania produ=
-kt=C3=B3w Microsoft 365, kt=C3=B3re podwy=C5=BCszaj=C4=85 efektywno=C5=9B=
-=C4=87 pracy kadry.=20
+Correct. Before do_pre_smp_initcalls() there is no ksoftirqd so timers
+won't be processed. Therefore even the 26secs timer triggers, there
+will be no RCU-stall warning. Also I'm not sure how much of preemption
+can happen at this point since there is not much going on.
+Any delay at this points to a lockup and at this point the lockup
+detector isn't even fully operational (it does not trigger here during
+test).
 
-Od wielu lat jeste=C5=9Bmy partnerem Microsoft i znajdujemy si=C4=99 w mi=
-=C4=99dzynarodowej czo=C5=82=C3=B3wce firm certyfikowanych, z a=C5=BC 16 =
-z=C5=82otymi kompetencjami producenta.
+> > > > swait_event_timeout_exclusive() appears innocent.
+> > > 
+> > > I agree that it would rarely need to block, but if the task executing the
+> > > synchronize_rcu() preempted one of the readers, wouldn't it have to block?
+> > > Or am I missing some code path that excludes that possibility?
+> > 
+> > As explained above, it means ~20secs delay during bootup which I don't
+> > see happen. Once ksoftirqd is up, it is covered.
+> > Also: If _more_ users require a timer to expire so the system can
+> > continue to boot I am willing to investigate _why_ this is needed
+> > because it does delay boot up progress of the system.
+> 
+> Just to double-check -- in RT, ksoftirqd is up and running before the boot
+> sequence reaches the call to rcu_end_inkernel_boot() from kernel_init()?
 
-Nasze rozwi=C4=85zania pomagaj=C4=85 podnie=C5=9B=C4=87 produktywno=C5=9B=
-=C4=87 zespo=C5=82u, obni=C5=BCy=C4=87 wydatki na infrastruktur=C4=99 IT,=
-  zewn=C4=99trznych dostawc=C3=B3w i zmniejszy=C4=87 ryzyko zwi=C4=85zane=
- z bezpiecze=C5=84stwem w firmie.
+Yes, this is the case.
+rcu_end_inkernel_boot() is really at the end of the boot process, we
+reached even SYSTEM_RUNNING ;)
 
-Du=C5=BCa dawka praktycznej wiedzy na temat aplikacji pakietu Office (w t=
-ym m.in.. Outlook, Word, Excel, PowerPoint) oraz Microsoft Teams pozwoli =
-uczestnikom stworzy=C4=87 wsp=C3=B3lne =C5=9Brodowisko efektywnej pracy w=
- czasie rzeczywistym.
-=20
-Pracownicy poznaj=C4=85 spos=C3=B3b, jak chroni=C4=87 firm=C4=99 przed za=
-gro=C5=BCeniami w cyberprzestrzeni, jak kontrolowa=C4=87 dost=C4=99p do d=
-anych oraz jak zabezpieczy=C4=87 urz=C4=85dzenia, kt=C3=B3re maj=C4=85 do=
- nich dost=C4=99p.
+> This looks good to me, independent of the other discussion.  From what
+> I can see, this code path is infrequent, so using hrtimer all the time
+> should not be a problem.
 
-Czy chcieliby Pa=C5=84stwo porozmawia=C4=87 o szczeg=C3=B3=C5=82ach takie=
-go projektu?
+Okay.
 
-Pozdrawiam
-Pawe=C5=82 Kodura
+> Unless there are objections, I will pull this one in.
+
+Good. Less patches for me to carry around.
+Thank you.
+
+> 							Thanx, Paul
+> 
+
+Sebastian
