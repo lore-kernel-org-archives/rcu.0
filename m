@@ -2,117 +2,123 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 64310C433EF
-	for <rcu@archiver.kernel.org>; Tue,  8 Mar 2022 11:29:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 89F41C433F5
+	for <rcu@archiver.kernel.org>; Tue,  8 Mar 2022 18:04:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238426AbiCHLav (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 8 Mar 2022 06:30:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53326 "EHLO
+        id S1348821AbiCHSF2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 8 Mar 2022 13:05:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237257AbiCHLau (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 8 Mar 2022 06:30:50 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FC9C37A85
-        for <rcu@vger.kernel.org>; Tue,  8 Mar 2022 03:29:51 -0800 (PST)
-Date:   Tue, 8 Mar 2022 12:29:47 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1646738989;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=h/qfsgD9ItUtzRa+Ttz7xXBBtbkjfeW+Nt3lD3dPyLo=;
-        b=RFnYCHoJK4ii00A69NLQRx+snAiaZMdKsBcuvQREVpxYZB0INclpMhSbmoYCk7mmXHGvfj
-        cpuCYO2qQTe5uno2Kt3jo6322p30xvDEX5d12xJJcfi+IPDtB0oXjSTxbdp3u15CKYJ/d4
-        nG28BRt7lYt9OdJSqWesxPJOSH7goZ5qJWbgG3dqwPaPSmAeoKTGW9FlhVVajOmfifnnoH
-        NZNaCLdG1FWKkPSfg8oIawYEIB9zBHfgFpoqZm73e8W0751On94R9fJY6PYE0f8MJaIp8B
-        y5MIBzxgrsEJeXc8N3FytpDMun8Jfx9uuqlHTfiyxBwKUgh2MNHchhvAk2uVUw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1646738989;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=h/qfsgD9ItUtzRa+Ttz7xXBBtbkjfeW+Nt3lD3dPyLo=;
-        b=X0TLigsChOm+3NxiAbTd2z4Qn3wxPKQmNZIc6fSU4Eof3lDG2lb3KCzjJczKqvgd4+k8E2
-        OTeYlZOtH23kkHCw==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     rcu@vger.kernel.org, Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH] rcu: Delay the RCU-selftests during boot.
-Message-ID: <Yic+K7javne8UY5U@linutronix.de>
-References: <Yh5bJZmAXXGtgTIl@linutronix.de>
- <20220302054217.GV4285@paulmck-ThinkPad-P17-Gen-1>
- <Yh9QdtWL+MBXTY7x@linutronix.de>
- <20220303043650.GA4285@paulmck-ThinkPad-P17-Gen-1>
- <YiCT/i3jlgg9LX/r@linutronix.de>
- <20220303200237.GE4285@paulmck-ThinkPad-P17-Gen-1>
- <YiIrtog8fQOExyVl@linutronix.de>
- <20220305050025.GX4285@paulmck-ThinkPad-P17-Gen-1>
- <YiZGwQltzDSzMMDg@linutronix.de>
- <20220307215327.GO4285@paulmck-ThinkPad-P17-Gen-1>
+        with ESMTP id S231637AbiCHSFZ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 8 Mar 2022 13:05:25 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EB735521D;
+        Tue,  8 Mar 2022 10:04:28 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id h14so8686110lfk.11;
+        Tue, 08 Mar 2022 10:04:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=6SHxHLXJ2eYyw1tnxtVXf2yck6AofzgpVIfso9u7DAE=;
+        b=YWxBm6Jx9v7Wlb2fdyVA4R/eCLykHIu5057o5yoxhiNe1ckeEcYcuoIlvL0CXgyUUS
+         iCcHfjSkiUebD2r7d935yPKizxOzpol4fVwzGhe1sxB1SXtbSjuBLWqAfhVvXomhyf7V
+         BnXT8+SGpjmpIZ/L55h1bxZ3H2uZjmLJz3IlPnl59Ufs7nykyUUz1vFD+GJdAuAbfX72
+         aDVKhnqFKkHplJiX2aOCMqJuGarphm3J7iBCGW4p41f350GRxKuiNvo8YaK6XmNTj1kT
+         RwpAlAlpMgMInq7c/Fe45mxLaG95Ut4PwQ1pI+fqY/6Q5msR6vrqmQMsjGVAp/pbCwXr
+         RpyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6SHxHLXJ2eYyw1tnxtVXf2yck6AofzgpVIfso9u7DAE=;
+        b=lDBaT3/xIImb5z61/nNpvi8aXv8Y4u3xWma3Mru8rgRiKz8DwQQfWkHs/yqAl1RV2a
+         ipNPpbtjG1/krBElTnAafrP3eB4DeV+5/Zi1PTFHkA2JOxNCLVt0iAX9pKEqSDetiyRx
+         PMnWlXVpM4ycZr5jOfiJbz2m7hR6LFjjOthfyb7Od2CN8ZqSbKC+eNVdUtgL4S0KO8sT
+         UlCMIhw5Feg8EHurBigsWQeHAO7Vad/mL9tdmGtQR0YwxD5bwbyIAx9hZ46KhY4LOiDn
+         +14/7AAqm0WFUXSkHPeF2H/04tZxuFVSZeYpAWhGIr0wmpU9EQMPoJ/ep7THYb0e6WUZ
+         GJbg==
+X-Gm-Message-State: AOAM530Om+IiySecn3ONSCXt1YrYXdYk5v8uqFSNjeiy6FeegCkvWXQH
+        aeevQD85h6yZUjWmRk4Juxc=
+X-Google-Smtp-Source: ABdhPJzM/6dGiiSrzkwSlZG8G/sBalDM4RxDurXpIFsD9rt6m80xcXA4TbZGf9jQFZCFTRpLPDs6cA==
+X-Received: by 2002:a05:6512:3ca2:b0:445:98f6:40df with SMTP id h34-20020a0565123ca200b0044598f640dfmr11391467lfv.293.1646762664244;
+        Tue, 08 Mar 2022 10:04:24 -0800 (PST)
+Received: from pc638.lan ([155.137.26.201])
+        by smtp.gmail.com with ESMTPSA id l11-20020a2e834b000000b00246308690e2sm3986488ljh.85.2022.03.08.10.04.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Mar 2022 10:04:23 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Tue, 8 Mar 2022 19:04:21 +0100
+To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
+Cc:     "Zhang, Qiang1" <qiang1.zhang@intel.com>, paulmck@kernel.org,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        "frederic@kernel.org" <frederic@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        rcu@vger.kernel.org, bigeasy@linutronix.de
+Subject: Re: [PATCH] rcu: Only boost rcu reader tasks with lower priority
+ than boost kthreads
+Message-ID: <YieapfzKvy2chaHT@pc638.lan>
+References: <20220304092631.4123188-1-qiang1.zhang@intel.com>
+ <81f69dd4-6ca9-760c-bec5-5cb27afbe788@quicinc.com>
+ <PH0PR11MB5880026EBBE3E195549E2245DA089@PH0PR11MB5880.namprd11.prod.outlook.com>
+ <20220307191512.GN4285@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220307215327.GO4285@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20220307191512.GN4285@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 2022-03-07 13:53:27 [-0800], Paul E. McKenney wrote:
-> > Correct, verified. But this means, that a task within a rcu_read_lock()
-> > section gets preempted for > 26 seconds before that timer fires. That
-> > delay during boot implies that something went wrong while it might
-> > happen at run-time under "normal" circumstances. So I wouldn't try to
-> > get this case covered.
-> 
-> The point being that there is no problem with the timer being queued,
-> just that it won't go off until later in the boot process.  Which in
-> turn means that all that is lost is the RCU CPU stall warning should one
-> be needed.  Is that correct, or am I missing a turn in there somewhere?
-
-Correct. Before do_pre_smp_initcalls() there is no ksoftirqd so timers
-won't be processed. Therefore even the 26secs timer triggers, there
-will be no RCU-stall warning. Also I'm not sure how much of preemption
-can happen at this point since there is not much going on.
-Any delay at this points to a lockup and at this point the lockup
-detector isn't even fully operational (it does not trigger here during
-test).
-
-> > > > swait_event_timeout_exclusive() appears innocent.
+> On Mon, Mar 07, 2022 at 02:03:17AM +0000, Zhang, Qiang1 wrote:
+> > On 3/4/2022 2:56 PM, Zqiang wrote:
+> > > When RCU_BOOST is enabled, the boost kthreads will boosting readers
+> > > who are blocking a given grace period, if the current reader tasks
+> > > have a higher priority than boost kthreads(the boost kthreads priority
+> > > not always 1, if the kthread_prio is set), boosting is useless, skip
+> > > current task and select next task to boosting, reduce the time for a
+> > > given grace period.
 > > > 
-> > > I agree that it would rarely need to block, but if the task executing the
-> > > synchronize_rcu() preempted one of the readers, wouldn't it have to block?
-> > > Or am I missing some code path that excludes that possibility?
-> > 
-> > As explained above, it means ~20secs delay during bootup which I don't
-> > see happen. Once ksoftirqd is up, it is covered.
-> > Also: If _more_ users require a timer to expire so the system can
-> > continue to boot I am willing to investigate _why_ this is needed
-> > because it does delay boot up progress of the system.
+> > > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 > 
-> Just to double-check -- in RT, ksoftirqd is up and running before the boot
-> sequence reaches the call to rcu_end_inkernel_boot() from kernel_init()?
-
-Yes, this is the case.
-rcu_end_inkernel_boot() is really at the end of the boot process, we
-reached even SYSTEM_RUNNING ;)
-
-> This looks good to me, independent of the other discussion.  From what
-> I can see, this code path is infrequent, so using hrtimer all the time
-> should not be a problem.
-
-Okay.
-
-> Unless there are objections, I will pull this one in.
-
-Good. Less patches for me to carry around.
-Thank you.
-
+> Adding to CC to get more eyes on this.  I am not necessarily opposed to
+> it, but I don't do that much RT work myself these days.
+> 
 > 							Thanx, Paul
 > 
+> > > ---
+> > >   kernel/rcu/tree_plugin.h | 10 +++++++++-
+> > >   1 file changed, 9 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> > > index c3d212bc5338..d35b6da66bbd 100644
+> > > --- a/kernel/rcu/tree_plugin.h
+> > > +++ b/kernel/rcu/tree_plugin.h
+> > > @@ -12,6 +12,7 @@
+> > >    */
+> > >   
+> > >   #include "../locking/rtmutex_common.h"
+> > > +#include <linux/sched/deadline.h>
+> > >   
+> > >   static bool rcu_rdp_is_offloaded(struct rcu_data *rdp)
+> > >   {
+> > > @@ -1065,13 +1066,20 @@ static int rcu_boost(struct rcu_node *rnp)
+> > >   	 * section.
+> > >   	 */
+> > >   	t = container_of(tb, struct task_struct, rcu_node_entry);
+> > > +	if (!rnp->exp_tasks && (dl_task(t) || t->prio <= current->prio)) {
+> > > +		tb = rcu_next_node_entry(t, rnp);
+> > > +		WRITE_ONCE(rnp->boost_tasks, tb);
+> > > +		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+> > > +		goto end;
+> > > +	}
+> > > +
+Why do you bypass the expedited grace period and boost any tasks anyway?
+Same way the expedited gp can be blocked by higher prior tasks SCHED_DEADLINE
+or SCHED_FIFO.
 
-Sebastian
+Thanks!
+
+--
+Vlad Rezki
