@@ -2,189 +2,146 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B235C433F5
-	for <rcu@archiver.kernel.org>; Wed,  9 Mar 2022 08:14:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 417A0C433F5
+	for <rcu@archiver.kernel.org>; Wed,  9 Mar 2022 10:19:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229601AbiCIIPk (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 9 Mar 2022 03:15:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34592 "EHLO
+        id S229540AbiCIKUD (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 9 Mar 2022 05:20:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229785AbiCIIPj (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 9 Mar 2022 03:15:39 -0500
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EB59EB166;
-        Wed,  9 Mar 2022 00:14:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1646813681; x=1678349681;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=INwh7wf9yUTzAqL1clBsB0C8mwgobM+LmmSdQXzNAQk=;
-  b=cKSbjPegtfZiZtdoQDNVuNOw5Ds73iuff/em0uGmevUK5SSb7SlmNMeM
-   eRop/zRduBKIJpJkTsQwDWesxUYeqkwyvr8eeuAhLxcfJ5CPSGkeJvkS2
-   2s27gxQoJJ/yymUXISeJiu8cJvegIu4MB3KWg4RY11lgStgjemnRIlHse
-   myCRtKB7yTRl+KpN6e1NtVR+i4IGAP3f6BNIO+QvA2m+oiVk/wyBMmxF9
-   w09VOsY29sUP92NWZE0JwNKKQjWnRuUshsQN+OaOkBcu9ZwJr6RH6iUeD
-   OO0GhLLuoF/XOwaaJIywW4eT5QvzUk6qYaDL9VQSG5FXP0mrLJ3ms+26Y
-   w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10280"; a="279642452"
-X-IronPort-AV: E=Sophos;i="5.90,167,1643702400"; 
-   d="scan'208";a="279642452"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2022 00:14:41 -0800
-X-IronPort-AV: E=Sophos;i="5.90,167,1643702400"; 
-   d="scan'208";a="688220746"
-Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.125])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2022 00:14:38 -0800
-From:   Zqiang <qiang1.zhang@intel.com>
-To:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
-        josh@joshtriplett.org, urezki@gmail.com
-Cc:     bigeasy@linutronix.de, juri.lelli@redhat.com, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] rcu: Only boost rcu reader tasks with lower priority than boost kthreads
-Date:   Wed,  9 Mar 2022 16:15:23 +0800
-Message-Id: <20220309081523.348450-1-qiang1.zhang@intel.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S229492AbiCIKUC (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 9 Mar 2022 05:20:02 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3AF914F996
+        for <rcu@vger.kernel.org>; Wed,  9 Mar 2022 02:19:03 -0800 (PST)
+Date:   Wed, 9 Mar 2022 11:19:00 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1646821141;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=z+F6GOwOVVSYsnTelFzgfgwLAhz0qKOVhpVgxR/DE90=;
+        b=SglJfVqQS/KBZ2J+w+88DqPuHVsOuwwd7lBeDS2FrbcjaBs5GWhyKXhYb0sFvdjDppfeNu
+        rr17FN+F70oAnlfDLMwj9Y6T0jgqvj0SvOgYE11D9UXUhoJ5wFiP7o+1yiCnhV0QlboIa1
+        4sGC2OHgTk0otHKRsiOYbXAe6llCL0Yf6GpRXX2jbbI2XDsiRS33pwX4qloU1AMJFTkYdU
+        KOvA/QS49u2DR/g73NCvrJ6pQ1Dy8bM3LH+DyDRzTRtx8Tj0Gacspnc5nteBWEz0N67Oor
+        4okZtqnjxNN0H0/1IoF6lHdGdXY9L/eil5q/6IxgxdX0VQf7LUq4xItDBYFgrA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1646821141;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=z+F6GOwOVVSYsnTelFzgfgwLAhz0qKOVhpVgxR/DE90=;
+        b=P0FMv0xYY/zrl7M62lEZB4q0fX7yAgdE6T9INT+/5aw0xWgzEZEyRA4RMoje5aDjhfHLse
+        BonF18qcP/NSvbDA==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     rcu@vger.kernel.org, Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH] rcu: Delay the RCU-selftests during boot.
+Message-ID: <Yih/FAZqGpqDMA4l@linutronix.de>
+References: <Yh9QdtWL+MBXTY7x@linutronix.de>
+ <20220303043650.GA4285@paulmck-ThinkPad-P17-Gen-1>
+ <YiCT/i3jlgg9LX/r@linutronix.de>
+ <20220303200237.GE4285@paulmck-ThinkPad-P17-Gen-1>
+ <YiIrtog8fQOExyVl@linutronix.de>
+ <20220305050025.GX4285@paulmck-ThinkPad-P17-Gen-1>
+ <YiZGwQltzDSzMMDg@linutronix.de>
+ <20220307215327.GO4285@paulmck-ThinkPad-P17-Gen-1>
+ <Yic+K7javne8UY5U@linutronix.de>
+ <20220308181040.GV4285@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20220308181040.GV4285@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-When RCU_BOOST is enabled, the boost kthreads will boosting readers
-who are blocking a given grace period, if the current reader tasks
-have a higher priority than boost kthreads(the boost kthreads priority
-not always 1, if the kthread_prio is set), boosting is useless, skip
-current task and select next task to boosting, reduce the time for a
-given grace period.
+On 2022-03-08 10:10:40 [-0800], Paul E. McKenney wrote:
+> > Correct. Before do_pre_smp_initcalls() there is no ksoftirqd so timers
+> > won't be processed. Therefore even the 26secs timer triggers, there
+> > will be no RCU-stall warning. Also I'm not sure how much of preemption
+> > can happen at this point since there is not much going on.
+> > Any delay at this points to a lockup and at this point the lockup
+> > detector isn't even fully operational (it does not trigger here during
+> > test).
+> 
+> Is sysrq operational at this point in RT?  If so, that can be used
+> to diagnose the hang, at least in development environments.  If the
+> need to use sysrq becomes a problem, checks/wakeups can be added to
+> rcu_sched_clock_irq().
 
-Signed-off-by: Zqiang <qiang1.zhang@intel.com>
----
- v1->v2:
- rename label 'end' to 'skip_boost'.
- add 'boost_exp_tasks' pointer to point 'rnp->exp_tasks'
- do the similar thing as normal grace period.
+I doubt (including !RT). The UART driver isn't yet loaded and any kind
+of output is provided by an early_printk implementation which is just
+output not input.
 
- kernel/rcu/tree.h        |  2 ++
- kernel/rcu/tree_plugin.h | 31 +++++++++++++++++++++++--------
- 2 files changed, 25 insertions(+), 8 deletions(-)
+> And here is what I ended up hand-applying, presumably due to differences
+> between -rt and -rcu.  I also expanded the changelog a bit.  Could you
+> please check to make sure that I didn't mess something up?
 
-diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index b8d07bf92d29..862ca09b56c7 100644
---- a/kernel/rcu/tree.h
-+++ b/kernel/rcu/tree.h
-@@ -103,6 +103,8 @@ struct rcu_node {
- 				/*  queued on this rcu_node structure that */
- 				/*  are blocking the current grace period, */
- 				/*  there can be no such task. */
-+	struct list_head *boost_exp_tasks;
-+
- 	struct rt_mutex boost_mtx;
- 				/* Used only for the priority-boosting */
- 				/*  side effect, not as a lock. */
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index c3d212bc5338..22bf5a8040f5 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -12,6 +12,7 @@
-  */
- 
- #include "../locking/rtmutex_common.h"
-+#include <linux/sched/deadline.h>
- 
- static bool rcu_rdp_is_offloaded(struct rcu_data *rdp)
- {
-@@ -535,6 +536,8 @@ rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
- 			drop_boost_mutex = rt_mutex_owner(&rnp->boost_mtx.rtmutex) == t;
- 			if (&t->rcu_node_entry == rnp->boost_tasks)
- 				WRITE_ONCE(rnp->boost_tasks, np);
-+			if (&t->rcu_node_entry == rnp->boost_exp_tasks)
-+				WRITE_ONCE(rnp->boost_exp_tasks, np);
- 		}
- 
- 		/*
-@@ -1022,7 +1025,7 @@ static int rcu_boost(struct rcu_node *rnp)
- 	struct task_struct *t;
- 	struct list_head *tb;
- 
--	if (READ_ONCE(rnp->exp_tasks) == NULL &&
-+	if (READ_ONCE(rnp->boost_exp_tasks) == NULL &&
- 	    READ_ONCE(rnp->boost_tasks) == NULL)
- 		return 0;  /* Nothing left to boost. */
- 
-@@ -1032,7 +1035,7 @@ static int rcu_boost(struct rcu_node *rnp)
- 	 * Recheck under the lock: all tasks in need of boosting
- 	 * might exit their RCU read-side critical sections on their own.
- 	 */
--	if (rnp->exp_tasks == NULL && rnp->boost_tasks == NULL) {
-+	if (rnp->boost_exp_tasks == NULL && rnp->boost_tasks == NULL) {
- 		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
- 		return 0;
- 	}
-@@ -1043,8 +1046,8 @@ static int rcu_boost(struct rcu_node *rnp)
- 	 * expedited grace period must boost all blocked tasks, including
- 	 * those blocking the pre-existing normal grace period.
- 	 */
--	if (rnp->exp_tasks != NULL)
--		tb = rnp->exp_tasks;
-+	if (rnp->boost_exp_tasks != NULL)
-+		tb = rnp->boost_exp_tasks;
- 	else
- 		tb = rnp->boost_tasks;
- 
-@@ -1065,14 +1068,24 @@ static int rcu_boost(struct rcu_node *rnp)
- 	 * section.
- 	 */
- 	t = container_of(tb, struct task_struct, rcu_node_entry);
-+	if (dl_task(t) || t->prio <= current->prio) {
-+		tb = rcu_next_node_entry(t, rnp);
-+		if (rnp->boost_exp_tasks)
-+			WRITE_ONCE(rnp->boost_exp_tasks, tb);
-+		else
-+			WRITE_ONCE(rnp->boost_tasks, tb);
-+		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-+		goto skip_boost;
-+	}
-+
- 	rt_mutex_init_proxy_locked(&rnp->boost_mtx.rtmutex, t);
- 	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
- 	/* Lock only for side effect: boosts task t's priority. */
- 	rt_mutex_lock(&rnp->boost_mtx);
- 	rt_mutex_unlock(&rnp->boost_mtx);  /* Then keep lockdep happy. */
- 	rnp->n_boosts++;
--
--	return READ_ONCE(rnp->exp_tasks) != NULL ||
-+skip_boost:
-+	return READ_ONCE(rnp->boost_exp_tasks) != NULL ||
- 	       READ_ONCE(rnp->boost_tasks) != NULL;
- }
- 
-@@ -1090,7 +1103,7 @@ static int rcu_boost_kthread(void *arg)
- 		WRITE_ONCE(rnp->boost_kthread_status, RCU_KTHREAD_WAITING);
- 		trace_rcu_utilization(TPS("End boost kthread@rcu_wait"));
- 		rcu_wait(READ_ONCE(rnp->boost_tasks) ||
--			 READ_ONCE(rnp->exp_tasks));
-+			 READ_ONCE(rnp->boost_exp_tasks));
- 		trace_rcu_utilization(TPS("Start boost kthread@rcu_wait"));
- 		WRITE_ONCE(rnp->boost_kthread_status, RCU_KTHREAD_RUNNING);
- 		more2boost = rcu_boost(rnp);
-@@ -1129,13 +1142,15 @@ static void rcu_initiate_boost(struct rcu_node *rnp, unsigned long flags)
- 		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
- 		return;
- 	}
--	if (rnp->exp_tasks != NULL ||
-+	if ((rnp->exp_tasks != NULL && rnp->boost_exp_tasks == NULL) ||
- 	    (rnp->gp_tasks != NULL &&
- 	     rnp->boost_tasks == NULL &&
- 	     rnp->qsmask == 0 &&
- 	     (!time_after(rnp->boost_time, jiffies) || rcu_state.cbovld))) {
- 		if (rnp->exp_tasks == NULL)
- 			WRITE_ONCE(rnp->boost_tasks, rnp->gp_tasks);
-+		else
-+			WRITE_ONCE(rnp->boost_exp_tasks, rnp->exp_tasks);
- 		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
- 		rcu_wake_cond(rnp->boost_kthread_task,
- 			      READ_ONCE(rnp->boost_kthread_status));
--- 
-2.25.1
+Nope, good, I added something to the description.
 
+> Oh, and I also couldn't resist taking advantage of 100 columns...
+> What can I say?
+
+You may not believe it but since last week I am indeed an owner of an
+wide screen. So I do enjoy the 100 columns. Also I still try to figure
+out what to do with the other half of the screen ;)
+
+> 
+> 							Thanx, Paul
+> 
+> ------------------------------------------------------------------------
+> 
+> commit 2895b3bb5f8a0ebe565c62b1d2e3e1efca669962
+> Author: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> Date:   Tue Mar 8 09:54:13 2022 -0800
+> 
+>     rcu-tasks: Use schedule_hrtimeout_range() to wait for grace periods
+>     
+>     The synchronous RCU-tasks grace-period-wait primitives invoke
+>     schedule_timeout_idle() to give readers a chance to exit their
+>     read-side critical sections.  Unfortunately, this fails during early
+>     boot on PREEMPT_RT because PREEMPT_RT relies solely on ksoftirqd to run
+>     timer handlers.  Because ksoftirqd cannot operate until its kthreads
+>     are spawned, there is a brief period of time following scheduler
+>     initialization where PREEMPT_RT cannot run the timer handlers that
+>     schedule_timeout_idle() relies on, resulting in a hang.
+
+Could we add something like:
+   The delay here is used infrequent so it can be made to expire in
+   hard-IRQ context on PREEMPT_RT without increasing the overall system
+   latency.
+
+My problem here is not to use this (timer does not expire during boot,
+lets make it raw) as a general example how things should be handled in
+future.
+I only managed to trigger this delay via the dynamic ftrace interface/
+samples so I'm comfortable with this.
+Moreover I don't think that this timer, if batched with another one, will
+not increase the latency substantially given that we trade here the wake
+of ksoftirqd with the wake of the actual thread and that one wake up
+shouldn't make much of a difference. The difference is that with
+ksoftirqd, if we expire multiple timer then each timer is expired with
+enabled interrupts - preemtible.
+That is why I favoured spawning ksoftirqd earlier but I think this
+works, too.
+
+>     To avoid this boot-time hang, this commit replaces schedule_timeout_idle()
+>     with schedule_hrtimeout(), so that the timer expires in hardirq context.
+>     This is ensures that the timer fires even on PREEMPT_RT throughout the
+>     irqs-enabled portions of boot as well as during runtime.
+>     
+>     The timer is set to expire between fract and fract + HZ / 2 jiffies in
+>     order to align with any other timers that might expire during that time,
+>     thus reducing the number of wakeups.
+>     
+>     Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+>     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+Sebastian
