@@ -2,147 +2,168 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C854C433EF
-	for <rcu@archiver.kernel.org>; Thu, 10 Mar 2022 08:10:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D1930C433EF
+	for <rcu@archiver.kernel.org>; Thu, 10 Mar 2022 18:27:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238607AbiCJILc (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 10 Mar 2022 03:11:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59524 "EHLO
+        id S234820AbiCJS2Z (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 10 Mar 2022 13:28:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240225AbiCJILb (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 10 Mar 2022 03:11:31 -0500
-Received: from mx1.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D249133970
-        for <rcu@vger.kernel.org>; Thu, 10 Mar 2022 00:10:30 -0800 (PST)
-Received: from [192.168.0.3] (ip5f5ae8f6.dynamic.kabel-deutschland.de [95.90.232.246])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 43CA561E6478B;
-        Thu, 10 Mar 2022 09:10:27 +0100 (CET)
-Message-ID: <e473c17a-c61c-de8c-f4b4-0956922d220b@molgen.mpg.de>
-Date:   Thu, 10 Mar 2022 09:10:26 +0100
+        with ESMTP id S241941AbiCJS2Z (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 10 Mar 2022 13:28:25 -0500
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12DED15879D;
+        Thu, 10 Mar 2022 10:27:24 -0800 (PST)
+Received: by mail-lf1-x12e.google.com with SMTP id g17so10969977lfh.2;
+        Thu, 10 Mar 2022 10:27:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=P6oWdxh9V+xLTQuoPpvAfo4h7fMG+CWSaFZ8smjaHug=;
+        b=Jvll4mGLapG3jwa2+jNblG4oFFQDzO5VVEnNYfdbeNdQV5j7iauHT0iRQ1lxw8NHu5
+         mivegElAAw2khUuTLjcZk2fWnj9nU8OJ0GMculAsFETExAPBnPPyDdMmAKwOcCwnaln4
+         QD2TNkwgAnAIjwUpAyNuWED6rlyyflj4Y/Ewdz6DfAnE7353zP3rqqWRvoQSOprsjkY8
+         f6kllS78dQdXEHzG51WCueQFWMWFCsjsbjyuOPImiuVp2Nkf6RrE3p8OfRQxxMeFt/SM
+         EmcUAaNI79qkbZjI2kSKB1RCCoT/PfosASo7Fz/WHeC/3x4WPZ6eANIwZ+B4X6ca6Jsi
+         kZHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=P6oWdxh9V+xLTQuoPpvAfo4h7fMG+CWSaFZ8smjaHug=;
+        b=ZmXrEfVlalPXjXR+NCZb3SUUK2mTiLsyzjal7qwhu33pG8BkRYkKgW/c3M9BlsDAsD
+         1das0HeWFnXjVJuYcxdHfM3BqZfoS5JejvAOXhW45rkHdxYznFt45x4MEfNFsR/aMZ7N
+         qSF07RTGiHc3R5mWqAUwjn9ARKt+wn1nS6DfVrTFvo/ZZ2K190+HWf1rZjmX7YsxoT/S
+         KSAfwLf/dwDwkT/PobQPjfHwcq+dABZsyY0SyXkvROuXzXTFEOgQiMVAoJ3pDWTu29ZL
+         E0voOCNojlbQiRfh2pE9MM+tC5TKCHlN3aX8M2OiScKayJIypY9piin5Utdk9fCrxjR4
+         JYAg==
+X-Gm-Message-State: AOAM531cjfGKwSN1EODgOH6z4otsTpYk058fYzpq4ohR2HMJYZatnhxB
+        uXIpEojq0JpNMtkmpv1UiDs=
+X-Google-Smtp-Source: ABdhPJyzdEEm0fhrVQgGGALV/Oh0tMWxpJRM1wQEILjLYiSbYAxD/LTMYOk7pKzAEPhNvLeIHawb4Q==
+X-Received: by 2002:a05:6512:c13:b0:448:62ce:2dff with SMTP id z19-20020a0565120c1300b0044862ce2dffmr2351443lfu.141.1646936842222;
+        Thu, 10 Mar 2022 10:27:22 -0800 (PST)
+Received: from pc638.lan ([155.137.26.201])
+        by smtp.gmail.com with ESMTPSA id a15-20020ac2520f000000b00445bcfca45fsm1110941lfl.248.2022.03.10.10.27.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Mar 2022 10:27:21 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Thu, 10 Mar 2022 19:27:19 +0100
+To:     Zqiang <qiang1.zhang@intel.com>
+Cc:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
+        josh@joshtriplett.org, urezki@gmail.com, bigeasy@linutronix.de,
+        juri.lelli@redhat.com, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] rcu: Only boost rcu reader tasks with lower priority
+ than boost kthreads
+Message-ID: <YipDBx137UdsieWV@pc638.lan>
+References: <20220309081523.348450-1-qiang1.zhang@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.2
-Subject: =?UTF-8?Q?Re=3a_rcutorture=e2=80=99s_init_segfaults_in_ppc64le_VM?=
-Content-Language: en-US
-To:     Zhouyi Zhou <zhouzhouyi@gmail.com>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, rcu@vger.kernel.org,
-        Willy Tarreau <w@1wt.eu>
-References: <565038d7-7374-1005-31bf-df2f051845ff@molgen.mpg.de>
- <871r0dmzzm.fsf@mpe.ellerman.id.au>
- <e7498a9d-7420-ff52-99e4-8194f3d177f0@molgen.mpg.de>
- <CAABZP2zdyWr8qYuQa-5DU2LszaThyZPQ8hi-wyDU2F8hLJCOWQ@mail.gmail.com>
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <CAABZP2zdyWr8qYuQa-5DU2LszaThyZPQ8hi-wyDU2F8hLJCOWQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220309081523.348450-1-qiang1.zhang@intel.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Dear Zhouyi,
-
-
-Thank you for still looking into this.
-
-
-Am 10.03.22 um 03:37 schrieb Zhouyi Zhou:
-
-> I try to reproduce the bug in ppc64 VM in Oregon State University
-> using the vmlinux extracted from
-> https://owww.molgen.mpg.de/~pmenzel/rcutorture-2022.02.01-21.52.37-torture-locktorture-kasan-lock01.tar.xz
+> When RCU_BOOST is enabled, the boost kthreads will boosting readers
+> who are blocking a given grace period, if the current reader tasks
+> have a higher priority than boost kthreads(the boost kthreads priority
+> not always 1, if the kthread_prio is set), boosting is useless, skip
+> current task and select next task to boosting, reduce the time for a
+> given grace period.
 > 
-> the ppc64 VM in which I run the qemu without hardware acceleration is:
-> Linux version 5.4.0-100-generic (buildd@bos02-ppc64el-021) (gcc version 9.3.0 (Ubuntu 9.3.0-17ubuntu1~20.04)) #113-Ubuntu SMP Thu Feb 3 18:43:11 UTC 2022 (Ubuntu 5.4.0-100.113-generic 5.4.166)
+> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+> ---
+>  v1->v2:
+>  rename label 'end' to 'skip_boost'.
+>  add 'boost_exp_tasks' pointer to point 'rnp->exp_tasks'
+>  do the similar thing as normal grace period.
 > 
+>  kernel/rcu/tree.h        |  2 ++
+>  kernel/rcu/tree_plugin.h | 31 +++++++++++++++++++++++--------
+>  2 files changed, 25 insertions(+), 8 deletions(-)
 > 
-> The qemu command I use to test:
-> cd /tmp/dev/shm/linux/tools/testing/selftests/rcutorture/res/2022.02.01-21.52.37-torture/results-locktorture-kasan/LOCK01$
-> $qemu-system-ppc64   -nographic -smp cores=2,threads=1 -net none -M
-> pseries -nodefaults -device spapr-vscsi -serial file:/tmp/console.log
-> -m 512 -kernel ./vmlinux -append "debug_boot_weak_hash panic=-1
-> console=ttyS0 rcutorture.onoff_interval=200
-> rcutorture.onoff_holdoff=30 rcutree.gp_preinit_delay=12
-> rcutree.gp_init_delay=3 rcutree.gp_cleanup_delay=3
-> rcutree.kthread_prio=2 threadirqs tree.use_softirq=0
-> rcutorture.n_barrier_cbs=4 rcutorture.stat_interval=15
-> rcutorture.shutdown_secs=1800 rcutorture.test_no_idle_hz=1
-> rcutorture.verbose=1"
-> 
-> The console.log is uploaded to:
-> http://154.223.142.244/logs/20220310/console.paul.log
-> The log tells us it is illegal instruction that causes the trouble:
-> [    4.246387][    T1] init[1]: illegal instruction (4) at 1002c308 nip 1002c308 lr 10001684 code 1 in init[10000000+d0000]
-> [    4.251400][    T1] init[1]: code: f90d88c0 f92a0008 f9480008 7c2004ac 2c2d0000 f9490000 386d88d0 380000e8
-> [    4.253416][    T1] init[1]: code: 41820098 e92d8f98 75290010 4182008c <44000001> 2c2d0000 60000000 8902f438
-> 
-> 
-> Meanwhile, the vmlinux compiled by myself runs smoothly.
+> diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+> index b8d07bf92d29..862ca09b56c7 100644
+> --- a/kernel/rcu/tree.h
+> +++ b/kernel/rcu/tree.h
+> @@ -103,6 +103,8 @@ struct rcu_node {
+>  				/*  queued on this rcu_node structure that */
+>  				/*  are blocking the current grace period, */
+>  				/*  there can be no such task. */
+> +	struct list_head *boost_exp_tasks;
+> +
+>  	struct rt_mutex boost_mtx;
+>  				/* Used only for the priority-boosting */
+>  				/*  side effect, not as a lock. */
+> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> index c3d212bc5338..22bf5a8040f5 100644
+> --- a/kernel/rcu/tree_plugin.h
+> +++ b/kernel/rcu/tree_plugin.h
+> @@ -12,6 +12,7 @@
+>   */
+>  
+>  #include "../locking/rtmutex_common.h"
+> +#include <linux/sched/deadline.h>
+>  
+>  static bool rcu_rdp_is_offloaded(struct rcu_data *rdp)
+>  {
+> @@ -535,6 +536,8 @@ rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
+>  			drop_boost_mutex = rt_mutex_owner(&rnp->boost_mtx.rtmutex) == t;
+>  			if (&t->rcu_node_entry == rnp->boost_tasks)
+>  				WRITE_ONCE(rnp->boost_tasks, np);
+> +			if (&t->rcu_node_entry == rnp->boost_exp_tasks)
+> +				WRITE_ONCE(rnp->boost_exp_tasks, np);
+>  		}
+>  
+>  		/*
+> @@ -1022,7 +1025,7 @@ static int rcu_boost(struct rcu_node *rnp)
+>  	struct task_struct *t;
+>  	struct list_head *tb;
+>  
+> -	if (READ_ONCE(rnp->exp_tasks) == NULL &&
+> +	if (READ_ONCE(rnp->boost_exp_tasks) == NULL &&
+>  	    READ_ONCE(rnp->boost_tasks) == NULL)
+>  		return 0;  /* Nothing left to boost. */
+>  
+> @@ -1032,7 +1035,7 @@ static int rcu_boost(struct rcu_node *rnp)
+>  	 * Recheck under the lock: all tasks in need of boosting
+>  	 * might exit their RCU read-side critical sections on their own.
+>  	 */
+> -	if (rnp->exp_tasks == NULL && rnp->boost_tasks == NULL) {
+> +	if (rnp->boost_exp_tasks == NULL && rnp->boost_tasks == NULL) {
+>  		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+>  		return 0;
+>  	}
+> @@ -1043,8 +1046,8 @@ static int rcu_boost(struct rcu_node *rnp)
+>  	 * expedited grace period must boost all blocked tasks, including
+>  	 * those blocking the pre-existing normal grace period.
+>  	 */
+> -	if (rnp->exp_tasks != NULL)
+> -		tb = rnp->exp_tasks;
+> +	if (rnp->boost_exp_tasks != NULL)
+> +		tb = rnp->boost_exp_tasks;
+>  	else
+>  		tb = rnp->boost_tasks;
+>  
+> @@ -1065,14 +1068,24 @@ static int rcu_boost(struct rcu_node *rnp)
+>  	 * section.
+>  	 */
+>  	t = container_of(tb, struct task_struct, rcu_node_entry);
+> +	if (dl_task(t) || t->prio <= current->prio) {
+This is a bit confusing to me. We know that "current" has SCHED_FIFO
+class. In this scenario if "t->prio" has lower value(higher priority)
+the task falls into all real-time categories anyway and is either:
+  - SCHED_FIFO
+  - SCHED_RR
+  - SCHED_DEADLINE
 
-How did you build it? Using GCC or clang? I forgot, if the problem was 
-only reproducible if the host Linux kernel was built with clang or the 
-VM kernel.
+Checking whether the task is dl_task() sounds like unnecessary there.
+Am i missing something? Could you please comment on it?
 
-> Then I modify mkinitrd.sh to let it panic manually:
-> http://154.223.142.244/logs/20220310/mkinitrd.sh
+Thanks!
 
-I only see the change:
-
-     -
-     +	int *ptr = 0;
-     +	*ptr =  0;
-
-> The log tells us it is a segfault (instead of a illegal instruction):
-> http://154.223.142.244/logs/20220310/console.zhouyi.log
-> 
-> Then I use gdb to debug the init in host:
-> ubuntu@zhouzhouyi-1:~/newkernel/linux-next$ gdb
-> tools/testing/selftests/rcutorture/initrd/init
-> (gdb) run
-> Starting program:
-> /home/ubuntu/newkernel/linux-next/tools/testing/selftests/rcutorture/initrd/init
-> 
-> Program received signal SIGSEGV, Segmentation fault.
-> 0x0000000010000b2c in ?? ()
-> (gdb) x/10i $pc
-> => 0x10000b2c:    stw     r9,0(r9)
->     0x10000b30:    trap
->     0x10000b34:    .long 0x0
->     0x10000b38:    .long 0x0
->     0x10000b3c:    .long 0x0
->     0x10000b40:    lis     r2,4110
->     0x10000b44:    addi    r2,r2,31488
->     0x10000b48:    mr      r9,r1
->     0x10000b4c:    rldicr  r1,r1,0,59
->     0x10000b50:    li      r0,0
-> (gdb) p $r9
-> $1 = 0
-> (gdb) x/30x $pc - 0x30
-> 0x10000afc:    0x38840040    0x387f0040    0xf8010040    0x48026919
-> 0x10000b0c:    0x60000000    0xe8010040    0x7c0803a6    0x4bffff24
-> 0x10000b1c:    0x00000000    0x01000000    0x00000180    0x39200000
-> 0x10000b2c:    0x91290000    0x7fe00008    0x00000000    0x00000000
-> which matches the hex content of
-> http://154.223.142.244/logs/20220310/console.zhouyi.log:
-> [    5.077431][    T1] init[1]: segfault (11) at 0 nip 10000b2c lr 10001024 code 1 in init[10000000+d0000]
-> [    5.087167][    T1] init[1]: code: 38840040 387f0040 f8010040 48026919 60000000 e8010040 7c0803a6 4bffff24
-> [    5.093987][    T1] init[1]: code: 00000000 01000000 00000180 39200000 <91290000> 7fe00008 00000000 00000000
-> 
-> 
-> Conclusions: there might be something wrong when packing the init into
-> vmlinux in your environment.
-> 
-> I will continue to do research on this interesting problem with you.
-
-As written I think it’s a problem with LLVM/clang. Unfortunately, I 
-won’t be able to retest before next week.
-
-
-Kind regards,
-
-Paul
+--
+Vlad Rezki
