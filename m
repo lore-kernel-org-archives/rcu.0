@@ -2,136 +2,146 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0352AC433F5
-	for <rcu@archiver.kernel.org>; Tue, 15 Mar 2022 17:04:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E07BC433EF
+	for <rcu@archiver.kernel.org>; Wed, 16 Mar 2022 16:59:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245632AbiCORGG (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 15 Mar 2022 13:06:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34176 "EHLO
+        id S235591AbiCPRAu (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 16 Mar 2022 13:00:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241768AbiCORGF (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 15 Mar 2022 13:06:05 -0400
-Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 564F6764D;
-        Tue, 15 Mar 2022 10:04:53 -0700 (PDT)
-Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-2d07ae0b1c0so210248987b3.2;
-        Tue, 15 Mar 2022 10:04:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=r+2Wx94qR8PPYpieBxCaSAJOgTPVSgK4NLclIZE2QSE=;
-        b=VU2ZTPE4gsQsOfyPkhKPVHADz9GDZAE/HlAGRCEUu+xUDcx/Wf2ta1VdEEEq7t756w
-         fsFJ0cvcNp7ucnzA2PC/KlAPaW93HjwlujXe8zJKny8YHiS2mmY0ny/OjLModqDJ1too
-         2kjjl7r1KQj7a9CGx8+yfIBIUBTZSmgj5z4tjkaLbywUQvPosXlryEUGRtNQpwDX6MJ4
-         8vVF5S8FVXCi7SmoZAhAmLCdLjMOjvk1D+lPRxi+Y5z5Gb0gOI1K5XjZBcoTnl5YmoLa
-         OvdRqcIcOQ1YZ2m6FHLyU7jjtHldTA6Zn3uZjIlDmvRLFjJW0a49qj/5nwHdBXSyGiag
-         sYOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=r+2Wx94qR8PPYpieBxCaSAJOgTPVSgK4NLclIZE2QSE=;
-        b=j/WJm1zNImPoSjbhnDpT9RAgu+Jt0kWusPxmLnGLSOldTRUL4wQsKTxImn0bzbll29
-         ECU4FjJha67iXof0QP81rNVvWVY+HaXY7X0yhN73tP8H0oJx0qnD1VFoTKeH2ejJ9g+l
-         QaML+6ZSlFkqOPlbqzhv1XfdLh8GPocSdJdd6LpWOIP20nLS5uCzeF3mcdp5Lq6XOSum
-         rbMZSfIbaIzNMz9tzxMUxRYXB96LCI3nYyht2QRO8v8lMdlY2JiVhT3rFhob+V9gX9rN
-         XViu/72EtB07PzlG442JjRRJrm2XwRfQ2DavS66uuylkPcj9JIAqLBuwUb4tz2PV1gfz
-         FKKQ==
-X-Gm-Message-State: AOAM533G1BqxXZE/tLJKv6x6LFy3Wq1oN1UArDUgBDiW6xmpgPOIxIvf
-        8cXVKdI44ywK5K4Pqz2Il/l0dJXJyGye7YIu4Pw=
-X-Google-Smtp-Source: ABdhPJyNXyKLd6XUld5HuAr0JLq083IQ0Kq+tt6eTffugaX0Zc++5S7Oc9JYPGLEx9Rc+UIeW91TAIkUVjWrceahyTY=
-X-Received: by 2002:a81:196:0:b0:2dc:73c9:925 with SMTP id 144-20020a810196000000b002dc73c90925mr25025274ywb.481.1647363892467;
- Tue, 15 Mar 2022 10:04:52 -0700 (PDT)
+        with ESMTP id S232373AbiCPRAu (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 16 Mar 2022 13:00:50 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8B9453E12;
+        Wed, 16 Mar 2022 09:59:34 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 7517EB81A66;
+        Wed, 16 Mar 2022 16:59:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29167C340E9;
+        Wed, 16 Mar 2022 16:59:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1647449972;
+        bh=cnadLeya2RVXcK9hXSU+BT7h71m43eVlGL4w/1EEdG0=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Asm6Trp5HmdK9kspYRj08hT5NKP0OhV2Al4rL93IFQ0r1FAazVmg9SAzV04GjP61b
+         MgQY93B68fUm903vgOutIvTisAm8staIjJdU1+Ru2lc5yuuoOj7Jh+DO0/hJqdIc1Q
+         tEiGYO+u4ZCM7IgMeNJ/gk43NUzg+gzjyLRkVOTOogknfrqwBXGZuiuvKtj5OLI6K9
+         ogvO4cRzGXnLcolLB1jzhiiCMNZp6xmJ38Zblk2cUwxbsyJmaPX/7S78whfvSXf8x/
+         39Nn0DjCJ2aGIVexvzNq6U7zp3EN7iobNjo3O9xiIrOY/kmrz1UcETdmS6NdCSkJgz
+         xE64vCC36WSOg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id B75675C0387; Wed, 16 Mar 2022 09:59:31 -0700 (PDT)
+Date:   Wed, 16 Mar 2022 09:59:31 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "frederic@kernel.org" <frederic@kernel.org>,
+        "urezki@gmail.com" <urezki@gmail.com>,
+        "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>,
+        "josh@joshtriplett.org" <josh@joshtriplett.org>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3] rcu: Only boost rcu reader tasks with lower priority
+ than boost kthreads
+Message-ID: <20220316165931.GI4285@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20220311022226.595905-1-qiang1.zhang@intel.com>
+ <Yist4IWWR/6BZzeK@linutronix.de>
+ <PH0PR11MB58802B8804EDFFC73BA676F2DA0D9@PH0PR11MB5880.namprd11.prod.outlook.com>
+ <PH0PR11MB58807AD9A1BAA122218B92DBDA0D9@PH0PR11MB5880.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-References: <20220315085549.22033-1-lukas.bulwahn@gmail.com> <20220315165228.GD4285@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20220315165228.GD4285@paulmck-ThinkPad-P17-Gen-1>
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Tue, 15 Mar 2022 18:04:41 +0100
-Message-ID: <CAKXUXMy7TqCZjVMKwiQJj5bYUDpdGZE2hhbB2WfSA2AX1hM=zQ@mail.gmail.com>
-Subject: Re: [PATCH] srcu: drop the needless initialization in srcu_gp_start()
-To:     Paul McKenny <paulmck@kernel.org>
-Cc:     rcu@vger.kernel.org, Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        kernel-janitors <kernel-janitors@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <PH0PR11MB58807AD9A1BAA122218B92DBDA0D9@PH0PR11MB5880.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Mar 15, 2022 at 5:52 PM Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> On Tue, Mar 15, 2022 at 09:55:49AM +0100, Lukas Bulwahn wrote:
-> > Commit 9c7ef4c30f12 ("srcu: Make Tree SRCU able to operate without snp_node
-> > array") initializes the local variable sdp differently depending on the
-> > srcu's state in srcu_gp_start().
-> >
-> > Hence, the initialization of sdp with the variable definition is not used
-> > before its second initialization.
-> >
-> > Drop the needless initialization in srcu_gp_start() to have clear code.
-> >
-> > No functional change. Some changes in the resulting object code due to
-> > various rearrangements by the compiler.
-> >
-> > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> > ---
-> > Paul, please pick this minor non-urgent clean-up patch.
->
-> Good eyes, thank you!
->
-> I have pulled this in for testing and review.  If things go will,
-> I expect to push it into the v5.19 merge window (that is, not the one
-> that will likely open next week, but the one after that).
->
-> As usual, I could not resist wordsmithing the commit log.  Could you
-> please check out the wordsmithed version below to make sure that I did
-> not mess something up?
->
+On Sat, Mar 12, 2022 at 03:11:04AM +0000, Zhang, Qiang1 wrote:
+> On 2022-03-11 10:22:26 [+0800], Zqiang wrote:
+> > When RCU_BOOST is enabled, the boost kthreads will boosting readers
+> > who are blocking a given grace period, if the current reader tasks
+>                                        ^ Period.
+> 
+> > have a higher priority than boost kthreads(the boost kthreads priority
+> > not always 1, if the kthread_prio is set), 
+> 
+> >>This confuses me:
+> >>- Why does this matter
+> 
+> In preempt-rt system, if the kthread_prio is not set, it prio is 1.
+> the boost kthreads can preempt almost  rt task, It will affect
+> the real-time performance of some user rt  tasks.  In preempt-rt systems,
+> in most scenarios, this kthread_prio will be configured.
 
-Wordsmithing was good. I am basically still reading in your versions
-what I intended to state with my commit message; +1!
+Just following up...  These questions might have been answered, but
+I am not seeing those answers right off-hand.
 
-And of course, you are a native speaker; so, I trust your English is
-better than mine.
+Is the grace-period latency effect of choosing not to boost high-priority
+tasks visible at the system level in any actual workload?
 
-Lukas
+Suppose that a SCHED_DEADLINE task has exhausted its time quantum,
+and has thus been preempted within an RCU read-side critical section.
+Can priority boosting from a SCHED_FIFO prio-1 task cause it to start
+running?
 
->                                                         Thanx, Paul
->
-> ------------------------------------------------------------------------
->
-> commit a0c59d99e87c52d6832e1ad39421b4a4386cdfd6
-> Author: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> Date:   Tue Mar 15 09:55:49 2022 +0100
->
->     srcu: Drop needless initialization of sdp in srcu_gp_start()
->
->     Commit 9c7ef4c30f12 ("srcu: Make Tree SRCU able to operate without
->     snp_node array") initializes the local variable sdp differently depending
->     on the srcu's state in srcu_gp_start().  Either way, this initialization
->     overwrites the value used when sdp is defined.
->
->     This commit therefore drops this pointless definition-time initialization.
->     Although there is no functional change, compiler code generation may
->     be affected.
->
->     Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
->     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
->
-> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> index e78b1c7929d6..3bc8267c5d0b 100644
-> --- a/kernel/rcu/srcutree.c
-> +++ b/kernel/rcu/srcutree.c
-> @@ -609,7 +609,7 @@ EXPORT_SYMBOL_GPL(__srcu_read_unlock);
->   */
->  static void srcu_gp_start(struct srcu_struct *ssp)
->  {
-> -       struct srcu_data *sdp = this_cpu_ptr(ssp->sda);
-> +       struct srcu_data *sdp;
->         int state;
->
->         if (smp_load_acquire(&ssp->srcu_size_state) < SRCU_SIZE_WAIT_BARRIER)
+Do delays in RCU priority boosting cause excessive grace-period
+latencies on real workloads, even when all the to-be-boosted
+tasks are SCHED_OTHER?
+
+Thoughts?
+
+							Thanx, Paul
+
+> Thanks
+> Zqiang
+> 
+> >>- If it is not RT prio, what is then? Higher or lower? Afaik it is
+> >>  always >= 1.
+> 
+> >>>If it is not RT prio, the sanitize_kthread_prio() will limit RT prio
+> 
+> > boosting is useless, skip
+> > current task and select next task to boosting, reduce the time for a
+> > given grace period.
+> 
+> >>So if the task, that is stuck in a rcu_read() section, has a higher
+> >>priority than the boosting thread then boosting is futile. Understood.
+> >>
+> >>Please correct me if I'm wrong but this is intended for !SCHED_OTHER
+> >>tasks since there shouldn't a be PI chain on boost_mtx so that its
+> >>default RT priority is boosted above what has been configured.
+> 
+> >>>Yes, you are right. If the boosting task which itself already boosted due to PI chain,
+> >>>and Its priority may only be temporarily higher than boost kthreads,  once that
+> >>>PI boost is lifted the task may still be in a RCU section, but if we have been skipped it,
+> >>>this task have been missed the opportunity to be boosted.
+> 
+> >>
+> >>You skip boosting tasks which are itself already boosted due to a PI
+> >>chain. Once that PI boost is lifted the task may still be in a RCU
+> >>section. But if I understand you right, your intention is skip boosting
+> >>tasks with a higher priority and concentrate and those which are in
+> >>need. This shouldn't make a difference unless the scheduler is able to
+> >>move the rcu-boosted task to another CPU.
+> >>
+> 
+> >>>Yes, It make sense when the rcu-boosted kthreads and task which to be boosting
+> >>>should run  difference CPU .
+> 
+> >>Am I right so far? If so this should be part of the commit message (the
+> >>intention and the result). Also, please add that part with
+> >>boost_exp_tasks. The comment above boost_mtx is now above
+> >>boost_exp_tasks with a space so it looks (at least to me) like these two
+> >>don't belong together.
+> 
+> >>>Yes, I will add your description to the commit  information.
+> 
+> 
+> > Suggested-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+> 
+> >Sebastian
