@@ -2,60 +2,81 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E964AC433EF
-	for <rcu@archiver.kernel.org>; Thu, 17 Mar 2022 08:48:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D2E3C433EF
+	for <rcu@archiver.kernel.org>; Thu, 17 Mar 2022 11:33:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230413AbiCQItu (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 17 Mar 2022 04:49:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35762 "EHLO
+        id S230383AbiCQLeQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 17 Mar 2022 07:34:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231555AbiCQIsC (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 17 Mar 2022 04:48:02 -0400
-Received: from mail.tireplot.pl (mail.tireplot.pl [46.183.184.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBE391CABDC
-        for <rcu@vger.kernel.org>; Thu, 17 Mar 2022 01:46:44 -0700 (PDT)
-Received: by mail.tireplot.pl (Postfix, from userid 1001)
-        id 0389541E67; Thu, 17 Mar 2022 09:46:28 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tireplot.pl; s=mail;
-        t=1647506803; bh=SK3nPnoJ7AtJKLH2rsbhbkFZqpZg9vLjdahoXcP4zik=;
-        h=Date:From:To:Subject:From;
-        b=lWoHqoWkwGqYvR0syjTdM2Ww0dTKReLSKq2Eu64RQWKv6QQdiwXKp5kewxo2eOY01
-         rffYRvinRG0ixMI5uviU7q61/OqeVG14umzS5tRc6jvQ8wRP3vXGC2kra6SE0g0OSh
-         68KeKlWFKqh67HcJ7fyxh1s7y2yW5IBRPQFPXGCI5l3ZoUR3rIczQXGYyiUopjL6va
-         gg65Pwb+Hnj04h++WPBczC4B2cbJVI5tehvn23Wga0f2i2+H/8mGsZpqNZEWfreojv
-         JAvjDIspKeUKWL1st0UkpY7+5HVaKBj3AQmWV0CJuiTNpQ+8ie622LKZ6x4qOMQsAD
-         DPZpp0jo0+O1g==
-Received: by mail.tireplot.pl for <rcu@vger.kernel.org>; Thu, 17 Mar 2022 08:46:10 GMT
-Message-ID: <20220317084500-0.1.25.8dqh.0.6qcmydhs3r@tireplot.pl>
-Date:   Thu, 17 Mar 2022 08:46:10 GMT
-From:   =?UTF-8?Q? "Pawe=C5=82_Kodura" ?= <pawel.kodura@tireplot.pl>
-To:     <rcu@vger.kernel.org>
-Subject: =?UTF-8?Q?Dost=C4=99p_do_pakietu_Office_365?=
-X-Mailer: mail.tireplot.pl
+        with ESMTP id S233049AbiCQLeP (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 17 Mar 2022 07:34:15 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA046B43;
+        Thu, 17 Mar 2022 04:32:58 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id l4-20020a17090a49c400b001c6840df4a3so1426535pjm.0;
+        Thu, 17 Mar 2022 04:32:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=D1r2+ujwtgn46Z8IW9rsnE8ina0uSN8BH1oaJ82ex2s=;
+        b=C090cHSsTT/XY1HvyyGEEbnYVln+2jSkSncoauLw4cuTHsmDy8LhH3sb3db0JoG/TO
+         7B9zFaWm7eB6tFQ7nNsGKtC0rwM0MkAtSMh7jJOjvtIUgocKM73fqvXTT+m2GQZVDjGR
+         kKbhNW20spLTZrW+1pGk/nRHZVmpuRUfIRlU4Bik5YU8yiINh4h4b4mv5Mq4okPhAwYM
+         EgZ+y20MndMxzw655ovZpE+3Vu/1nT4KGhUzPEtt0pUgBW3LWa2UpyTH/QoEUG4+hg31
+         MgFarz5drfd8lEXoRUJV0rytmJYQ6N4vm5KLdVdVnLqcWUEYv8JwMjp1BdHB4UbghOy8
+         kP5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=D1r2+ujwtgn46Z8IW9rsnE8ina0uSN8BH1oaJ82ex2s=;
+        b=t2M8UHEDxYxuW7C80g1jBCgAsAJ1TCNfjhdO+LZAkQzPFH0LnGD0sQIs40H99s3g2Y
+         xo+JOzroElw8XkQWSofsNagTsmtKzLaBrIlsUhK1chW/lBgntLgSK6Rzkr4lR4hATiT0
+         zQZE0MOWti4fTaYvarT7N6u4LhlO3AWezR0RoXTjST66D7Ds4tepoKcnqapr1jUgc8TX
+         MAFi6yGxK44YeSYbCi4jtdfXFJErGJcrD6SRjwBrZ4umxZgPwcaXlry7DMWA7WtyagmI
+         VJ8QUdbNY344EoQ9lBlU0WivJzHCfRxVt3iUgrkvwARFkAcH4oHezHZZ8M/POZO0ZNJ3
+         ytKQ==
+X-Gm-Message-State: AOAM5325vJpCZU67g9HrhMLsocZwuDJxZFsiQXlkz8XIymXEg52leBP3
+        xdxMym807N9giEpvd3K/0SOTyxRVrzCazw==
+X-Google-Smtp-Source: ABdhPJxgb0qWeAujzMIl9E8TyRyXqgQbnoynbbARMY0OiKTJJ/cfUeu5waSoEQ8hAiDsuZL2r2I0pw==
+X-Received: by 2002:a17:903:41c1:b0:151:f026:8048 with SMTP id u1-20020a17090341c100b00151f0268048mr4086675ple.41.1647516777848;
+        Thu, 17 Mar 2022 04:32:57 -0700 (PDT)
+Received: from ip-172-31-19-208.ap-northeast-1.compute.internal (ec2-18-181-137-102.ap-northeast-1.compute.amazonaws.com. [18.181.137.102])
+        by smtp.gmail.com with ESMTPSA id oo17-20020a17090b1c9100b001bf0ccc59c2sm10097718pjb.16.2022.03.17.04.32.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Mar 2022 04:32:57 -0700 (PDT)
+Date:   Thu, 17 Mar 2022 11:32:53 +0000
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     rcu@vger.kernel.org
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: RCU: undefined reference to irq_work_queue
+Message-ID: <YjMcZexG/kJepYDi@ip-172-31-19-208.ap-northeast-1.compute.internal>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Dzie=C5=84 dobry,
+Hello RCU folks,
 
-chcia=C5=82bym zaprosi=C4=87 Pa=C5=84stwa na profesjonalne warsztaty z wy=
-korzystania pakiet=C3=B3w biurowych Microsoft 365, kt=C3=B3re podwy=C5=BC=
-szaj=C4=85 efektywno=C5=9B=C4=87 pracy kadry.=20
+I like to use minimal configuration for kernel development.
+when building with tinyconfig + CONFIG_PREEMPT=y on arm64:
 
-Du=C5=BCa dawka praktycznej wiedzy i poznanie nowych funkcji pozwala prac=
-ownikom wykonywa=C4=87 swoje zadania szybciej i wydajniej.=20
+ld: kernel/rcu/update.o: in function `call_rcu_tasks':
+update.c:(.text+0xb2c): undefined reference to `irq_work_queue'
+update.c:(.text+0xb2c): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `irq_work_queue'
+make: *** [Makefile:1155: vmlinux] Error 1
 
-Jeste=C5=9Bmy partnerem Microsoft i znajdujemy si=C4=99 w mi=C4=99dzynaro=
-dowej czo=C5=82=C3=B3wce firm certyfikowanych, z a=C5=BC 16 z=C5=82otymi =
-kompetencjami producenta.
+It seems RCU calls irq_work_queue() without checking if CONFIG_IRQ_WORK is enabled.
 
-Je=C5=BCeli s=C4=85 Pa=C5=84stwo zainteresowani podniesieniem kwalifikacj=
-i swoich wsp=C3=B3=C5=82pracownik=C3=B3w w tym zakresie, prosz=C4=99 o ko=
-ntakt.=20
-
-
-Pozdrawiam
-Pawe=C5=82 Kodura
+-- 
+Thank you, You are awesome!
+Hyeonggon :-)
