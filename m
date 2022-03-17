@@ -2,81 +2,88 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D2E3C433EF
-	for <rcu@archiver.kernel.org>; Thu, 17 Mar 2022 11:33:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F946C433FE
+	for <rcu@archiver.kernel.org>; Thu, 17 Mar 2022 14:00:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230383AbiCQLeQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 17 Mar 2022 07:34:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35520 "EHLO
+        id S234796AbiCQOB0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 17 Mar 2022 10:01:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233049AbiCQLeP (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 17 Mar 2022 07:34:15 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA046B43;
-        Thu, 17 Mar 2022 04:32:58 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id l4-20020a17090a49c400b001c6840df4a3so1426535pjm.0;
-        Thu, 17 Mar 2022 04:32:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=D1r2+ujwtgn46Z8IW9rsnE8ina0uSN8BH1oaJ82ex2s=;
-        b=C090cHSsTT/XY1HvyyGEEbnYVln+2jSkSncoauLw4cuTHsmDy8LhH3sb3db0JoG/TO
-         7B9zFaWm7eB6tFQ7nNsGKtC0rwM0MkAtSMh7jJOjvtIUgocKM73fqvXTT+m2GQZVDjGR
-         kKbhNW20spLTZrW+1pGk/nRHZVmpuRUfIRlU4Bik5YU8yiINh4h4b4mv5Mq4okPhAwYM
-         EgZ+y20MndMxzw655ovZpE+3Vu/1nT4KGhUzPEtt0pUgBW3LWa2UpyTH/QoEUG4+hg31
-         MgFarz5drfd8lEXoRUJV0rytmJYQ6N4vm5KLdVdVnLqcWUEYv8JwMjp1BdHB4UbghOy8
-         kP5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=D1r2+ujwtgn46Z8IW9rsnE8ina0uSN8BH1oaJ82ex2s=;
-        b=t2M8UHEDxYxuW7C80g1jBCgAsAJ1TCNfjhdO+LZAkQzPFH0LnGD0sQIs40H99s3g2Y
-         xo+JOzroElw8XkQWSofsNagTsmtKzLaBrIlsUhK1chW/lBgntLgSK6Rzkr4lR4hATiT0
-         zQZE0MOWti4fTaYvarT7N6u4LhlO3AWezR0RoXTjST66D7Ds4tepoKcnqapr1jUgc8TX
-         MAFi6yGxK44YeSYbCi4jtdfXFJErGJcrD6SRjwBrZ4umxZgPwcaXlry7DMWA7WtyagmI
-         VJ8QUdbNY344EoQ9lBlU0WivJzHCfRxVt3iUgrkvwARFkAcH4oHezHZZ8M/POZO0ZNJ3
-         ytKQ==
-X-Gm-Message-State: AOAM5325vJpCZU67g9HrhMLsocZwuDJxZFsiQXlkz8XIymXEg52leBP3
-        xdxMym807N9giEpvd3K/0SOTyxRVrzCazw==
-X-Google-Smtp-Source: ABdhPJxgb0qWeAujzMIl9E8TyRyXqgQbnoynbbARMY0OiKTJJ/cfUeu5waSoEQ8hAiDsuZL2r2I0pw==
-X-Received: by 2002:a17:903:41c1:b0:151:f026:8048 with SMTP id u1-20020a17090341c100b00151f0268048mr4086675ple.41.1647516777848;
-        Thu, 17 Mar 2022 04:32:57 -0700 (PDT)
-Received: from ip-172-31-19-208.ap-northeast-1.compute.internal (ec2-18-181-137-102.ap-northeast-1.compute.amazonaws.com. [18.181.137.102])
-        by smtp.gmail.com with ESMTPSA id oo17-20020a17090b1c9100b001bf0ccc59c2sm10097718pjb.16.2022.03.17.04.32.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Mar 2022 04:32:57 -0700 (PDT)
-Date:   Thu, 17 Mar 2022 11:32:53 +0000
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-To:     rcu@vger.kernel.org
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
+        with ESMTP id S234825AbiCQOBU (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 17 Mar 2022 10:01:20 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52B8E1E31BA;
+        Thu, 17 Mar 2022 07:00:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id E44E3B81E9E;
+        Thu, 17 Mar 2022 14:00:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACF4FC340ED;
+        Thu, 17 Mar 2022 14:00:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1647525600;
+        bh=FsXnLpvuwrnZJL+9hSDFu0U3Tmtv14ERqUsxk7V5DjQ=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=oY75XE6PhHFsePv/9o7mdFpveQpH2BeQ9lmEsb2rwhFLl/8IzIiNeHWjYPXRY0zpz
+         gWNtfka58zm05oQbUQGycnFBKqBaiEb8NM4Fv98gJMsCZUWNZPDm5quSTMR8SJI/e/
+         VxTAPFMDzqX7luucRDawg30/KCAMfJzCBhakUVCvzoKts5Nnu+kvVNmRL7wxTlE5tl
+         vAEcvEcXCRX5OCIP+KvjOxYX4WbSUxzsd3AgexF65DoOTPRhWvzZ9QG7TMYJfEWHRk
+         kdBCnGe41QS7HVPBFDiqGsja3m2Ids2gR4sqr09qfZNFCddt3no5ScZU/50d8BWWwK
+         lZX2pTb1VJVfQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 54F9B5C0341; Thu, 17 Mar 2022 07:00:00 -0700 (PDT)
+Date:   Thu, 17 Mar 2022 07:00:00 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Cc:     rcu@vger.kernel.org, Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Joel Fernandes <joel@joelfernandes.org>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
         linux-kernel@vger.kernel.org
-Subject: RCU: undefined reference to irq_work_queue
-Message-ID: <YjMcZexG/kJepYDi@ip-172-31-19-208.ap-northeast-1.compute.internal>
+Subject: Re: RCU: undefined reference to irq_work_queue
+Message-ID: <20220317140000.GO4285@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <YjMcZexG/kJepYDi@ip-172-31-19-208.ap-northeast-1.compute.internal>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <YjMcZexG/kJepYDi@ip-172-31-19-208.ap-northeast-1.compute.internal>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello RCU folks,
+On Thu, Mar 17, 2022 at 11:32:53AM +0000, Hyeonggon Yoo wrote:
+> Hello RCU folks,
+> 
+> I like to use minimal configuration for kernel development.
+> when building with tinyconfig + CONFIG_PREEMPT=y on arm64:
+> 
+> ld: kernel/rcu/update.o: in function `call_rcu_tasks':
+> update.c:(.text+0xb2c): undefined reference to `irq_work_queue'
+> update.c:(.text+0xb2c): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `irq_work_queue'
+> make: *** [Makefile:1155: vmlinux] Error 1
+> 
+> It seems RCU calls irq_work_queue() without checking if CONFIG_IRQ_WORK is enabled.
 
-I like to use minimal configuration for kernel development.
-when building with tinyconfig + CONFIG_PREEMPT=y on arm64:
+Indeed it does!
 
-ld: kernel/rcu/update.o: in function `call_rcu_tasks':
-update.c:(.text+0xb2c): undefined reference to `irq_work_queue'
-update.c:(.text+0xb2c): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `irq_work_queue'
-make: *** [Makefile:1155: vmlinux] Error 1
+And kernel/rcu/Kconfig shows why:
 
-It seems RCU calls irq_work_queue() without checking if CONFIG_IRQ_WORK is enabled.
+config TASKS_TRACE_RCU
+	def_bool 0
+	select IRQ_WORK
+	help
+	  This option enables a task-based RCU implementation that uses
+	  explicit rcu_read_lock_trace() read-side markers, and allows
+	  these readers to appear in the idle loop as well as on the CPU
+	  hotplug code paths.  It can force IPIs on online CPUs, including
+	  idle ones, so use with caution.
 
--- 
-Thank you, You are awesome!
-Hyeonggon :-)
+So the solution is to further minimize your configuration so as to
+deselect TASKS_TRACE_RCU.  This means making sure that both BPF and
+the various RCU torture tests are all deselected.
+
+Or turn on IRQ_WORK, for example, if you need to use BPF.
+
+							Thanx, Paul
