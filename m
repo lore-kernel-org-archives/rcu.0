@@ -2,126 +2,154 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6EFD1C433EF
-	for <rcu@archiver.kernel.org>; Thu, 17 Mar 2022 15:54:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F144C433F5
+	for <rcu@archiver.kernel.org>; Thu, 17 Mar 2022 16:20:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236073AbiCQP4O (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 17 Mar 2022 11:56:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45422 "EHLO
+        id S236351AbiCQQVy (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 17 Mar 2022 12:21:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbiCQP4N (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 17 Mar 2022 11:56:13 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B14312013DC;
-        Thu, 17 Mar 2022 08:54:56 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id w8so4779574pll.10;
-        Thu, 17 Mar 2022 08:54:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mMOjieI0qzIYfRMDlfr5HCocAdYTGwybirX7HeVkJU4=;
-        b=JI1FfV3dtK4SWgK8jB1/DulUo5IGShqwyM+DnQc7ctLk1RRIqBYwEJkXjlWXfw+GaH
-         1NPxSFy4whY9/lMlGDGORM6mL/wIENFVmcb1cadAFVhpnxZs/iXEkWAzhABiCi5TrGqs
-         hK6QUwVpZpKycjOwbXtlziVa/7XqQrVnEwANFp178Gzzc9TBNrMQVJdSWK5/FYVLKqEn
-         AuwkTKQh6tHJKRVXCsqUD2YL94pERiYQZ6QzfwALFFl9kiLzRiGqqIZfwKcvbJrpEcZN
-         uE3bKv8V8RGs/MPrKECYJt9Z7jQTzdltZl//5aweUbOWPKCiSRCZEkGoOb4ev98F9Mau
-         sxLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mMOjieI0qzIYfRMDlfr5HCocAdYTGwybirX7HeVkJU4=;
-        b=NNgGOELtzEJ2sW3qGH4x6nEEC6t6o02E1AIcoYSj0OuIDsZYS73LPzEt4kYSVIYUCb
-         vD4/BNIO4yZ+u/RvSjx8dwSZQxF04yQ39u9VFsd3XxP0zXIODK/uL/U9svMhLVIaYw4S
-         LLiUu4ZkUQjO5PDWVDzexbebRci9d2cpearkw37IVBm9ITfqjNn887J50enn1sA5sxmF
-         dpz1jVuNRw4cv+3IBxYgnnrIdto/nXgXvTmrtsT8YmwttuEeXjuT+wQ9xl7rwdryLBOg
-         LCrlecu3lTZePSkuqk+AnVsXJm+R6qbfNkCsSg6OcjqczvXp0G+h7/1Kytnqu4DaNXLw
-         hpfg==
-X-Gm-Message-State: AOAM533TKODcWeMSZkQfAhocx+OTgUbBteIdyMpTnLEJSzEsONPra+Om
-        Dq/WHU5wGhVKOFStZpqkk+s=
-X-Google-Smtp-Source: ABdhPJxTUsWJRzKPehFk9oW8+4UiaTh7irzqPW+toW8+lAAD8aF/O5DgiVyHD14uXvxupvng4JXIjg==
-X-Received: by 2002:a17:902:7610:b0:151:6152:549c with SMTP id k16-20020a170902761000b001516152549cmr5466701pll.91.1647532496165;
-        Thu, 17 Mar 2022 08:54:56 -0700 (PDT)
-Received: from ip-172-31-19-208.ap-northeast-1.compute.internal (ec2-18-181-137-102.ap-northeast-1.compute.amazonaws.com. [18.181.137.102])
-        by smtp.gmail.com with ESMTPSA id b2-20020a056a000a8200b004f1111c66afsm7904707pfl.148.2022.03.17.08.54.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Mar 2022 08:54:55 -0700 (PDT)
-Date:   Thu, 17 Mar 2022 15:54:51 +0000
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-To:     Zhouyi Zhou <zhouzhouyi@gmail.com>
-Cc:     rcu <rcu@vger.kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
+        with ESMTP id S236443AbiCQQVx (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 17 Mar 2022 12:21:53 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AAFC20DB16;
+        Thu, 17 Mar 2022 09:20:37 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 97818B81F25;
+        Thu, 17 Mar 2022 16:20:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 396BBC340EF;
+        Thu, 17 Mar 2022 16:20:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1647534034;
+        bh=/+CHBTGFlXDKJZW/jGmX5qQz2Po3iveVuzuR9CMSbek=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=JJoaAiuewj4hihUicGFfgIeEGWmgHBMKmb7ZX4njN9MGBZBJTioXnQua7fSnVIxUx
+         g6FsIaOwoTtrR6BPOGkUctg77v3LcxEHTMZRSR2cYvhJYXKk5o1F9ynfXmZn+ZXk6C
+         na0ggp+zkr0utwZjq8umbm04+oc0TKzJYBEKIObEftZ7RoqCOZ7qaI17GlCGDdiOdJ
+         rqGYsbVW+dF7fkKgwYUUv9Igx+AQ6FoAAVwxu71xKeepppgmFZMUu7fYy/F85gUYRr
+         xKse3T8Nsp4r69wOKn03/sA3Vfv1vcPgV+46qSZCsuKYwOcCTJixROORygHB07q3jf
+         M/+tMKZ9Cqbbw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id D37B65C051B; Thu, 17 Mar 2022 09:20:33 -0700 (PDT)
+Date:   Thu, 17 Mar 2022 09:20:33 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Cc:     rcu@vger.kernel.org, Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Joel Fernandes <joel@joelfernandes.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+        linux-kernel@vger.kernel.org
 Subject: Re: RCU: undefined reference to irq_work_queue
-Message-ID: <YjNZy2luiN0E1JNN@ip-172-31-19-208.ap-northeast-1.compute.internal>
+Message-ID: <20220317162033.GP4285@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 References: <YjMcZexG/kJepYDi@ip-172-31-19-208.ap-northeast-1.compute.internal>
- <CAABZP2wZgZGAg5iVry21suEZ3e2PXhAhfwLvRCPvMRU5+zGG+g@mail.gmail.com>
+ <20220317140000.GO4285@paulmck-ThinkPad-P17-Gen-1>
+ <YjNSuprCqjAgGgqB@ip-172-31-19-208.ap-northeast-1.compute.internal>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAABZP2wZgZGAg5iVry21suEZ3e2PXhAhfwLvRCPvMRU5+zGG+g@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YjNSuprCqjAgGgqB@ip-172-31-19-208.ap-northeast-1.compute.internal>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Mar 17, 2022 at 11:22:28PM +0800, Zhouyi Zhou wrote:
-> Hi,
+On Thu, Mar 17, 2022 at 03:24:42PM +0000, Hyeonggon Yoo wrote:
+> On Thu, Mar 17, 2022 at 07:00:00AM -0700, Paul E. McKenney wrote:
+> > On Thu, Mar 17, 2022 at 11:32:53AM +0000, Hyeonggon Yoo wrote:
+> > > Hello RCU folks,
+> > > 
+> > > I like to use minimal configuration for kernel development.
+> > > when building with tinyconfig + CONFIG_PREEMPT=y on arm64:
+> > > 
+> > > ld: kernel/rcu/update.o: in function `call_rcu_tasks':
+> > > update.c:(.text+0xb2c): undefined reference to `irq_work_queue'
+> > > update.c:(.text+0xb2c): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `irq_work_queue'
+> > > make: *** [Makefile:1155: vmlinux] Error 1
+> > > 
+> > > It seems RCU calls irq_work_queue() without checking if CONFIG_IRQ_WORK is enabled.
+> > 
+> > Indeed it does!
+> > 
+> > And kernel/rcu/Kconfig shows why:
+> > 
+> > config TASKS_TRACE_RCU
+> > 	def_bool 0
+> > 	select IRQ_WORK
+> > 	help
+> > 	  This option enables a task-based RCU implementation that uses
+> > 	  explicit rcu_read_lock_trace() read-side markers, and allows
+> > 	  these readers to appear in the idle loop as well as on the CPU
+> > 	  hotplug code paths.  It can force IPIs on online CPUs, including
+> > 	  idle ones, so use with caution.
+> > 
+> > So the solution is to further minimize your configuration so as to
+> > deselect TASKS_TRACE_RCU.
 > 
-> On Thu, Mar 17, 2022 at 8:48 PM Hyeonggon Yoo <42.hyeyoo@gmail.com> wrote:
-> >
-> > Hello RCU folks,
-> >
-> > I like to use minimal configuration for kernel development.
-> > when building with tinyconfig + CONFIG_PREEMPT=y on arm64:
-> I invoke cross compiler to reproduce the bug on my X86 machine
-> $make  ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-
-> CC=aarch64-linux-gnu-gcc-10 tinyconfig
-> let CONFIG_PREEMPT=y  in .config
-> $make  ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-
-> CC=aarch64-linux-gnu-gcc-10 -j 16
-> LD      vmlinux
-> aarch64-linux-gnu-ld: kernel/rcu/update.o: in function `call_rcu_tasks':
-> update.c:(.text+0xb30): undefined reference to `irq_work_queue'
-> update.c:(.text+0xb30): relocation truncated to fit: R_AARCH64_CALL26
-> against undefined symbol `irq_work_queue'
+> They are already not selected.
 
-Right. that was exactly what I faced :)
+Good, thank you.
 
-> >
-> > ld: kernel/rcu/update.o: in function `call_rcu_tasks':
-> > update.c:(.text+0xb2c): undefined reference to `irq_work_queue'
-> > update.c:(.text+0xb2c): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `irq_work_queue'
-> > make: *** [Makefile:1155: vmlinux] Error 1
-> >
-> > It seems RCU calls irq_work_queue() without checking if CONFIG_IRQ_WORK is enabled.
-> >
-> > --
-> > Thank you, You are awesome!
-> > Hyeonggon :-)
+How about TASKS_RUDE_RCU, TASKS_TRACE_RCU, and TASKS_RCU_GENERIC?
 
-> Meanwhile, there is no error for doing the same to build X86 kernel.
-> I think the reason is:
-> arch/x86/Kconfig select PERF_EVENT
-> and PERF_EVENT select IRQ_WORK
+> > This means making sure that both BPF and
+> > the various RCU torture tests are all deselected.
+> 
+> I wanted to say call_rcu_tasks() can be referenced even when IRQ_WORK is not
+> selected, making it fail to build.
 
-Right. selecting anything that selects IRQ_WORK solves the problem.
-Simply enabling printk also solves this.
+I am guessing because TASKS_RCU_GENERIC is selected?
 
-> Hope my little research could provide some clues to solve the problem ;-)
+If so, does the patch at the end of this email help?
 
-Thank you for kind reply!
+> > > ld: kernel/rcu/update.o: in function `call_rcu_tasks':
+> > > update.c:(.text+0xb2c): undefined reference to `irq_work_queue'
+> > > update.c:(.text+0xb2c): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `irq_work_queue'
+> > > make: *** [Makefile:1155: vmlinux] Error 1
+> 
+> Isn't it better to fix this build failure?
 
-BTW, can we just fix this? (e.g. by conditionally compiling the problematic
-code or always selecting IRQ_WORK)
+But of course!  However, first I need to know exactly what is causing your
+build failure.  I cannot see your .config file, so I am having to guess.
 
-> You are welcome
-> Cheers
-> Zhouyi
+Don't get me wrong, I do have a lot of practice guessing, but it is still
+just guessing.  ;-)
 
--- 
-Thank you, You are awesome!
-Hyeonggon :-)
+> It fails to build when both TASKS_TRACE_RCU and IRQ_WORK are not selected
+> and PREEMPT is selected.
+> 
+>   │ Symbol: TASKS_TRACE_RCU [=n]                                            │
+>   │ Type  : bool                                                            │
+>   │ Defined at kernel/rcu/Kconfig:96                                        │
+>   │ Selects: IRQ_WORK [=n]                                                  │
+>   │ Selected by [n]:                                                        │
+>   │   - BPF_SYSCALL [=n]                                                    │
+>   │   - RCU_SCALE_TEST [=n] && DEBUG_KERNEL [=y]                            │
+>   │   - RCU_TORTURE_TEST [=n] && DEBUG_KERNEL [=y]                          │
+>   │   - RCU_REF_SCALE_TEST [=n] && DEBUG_KERNEL [=y]
+> 
+> Thanks!
+> 
+> > 
+> > Or turn on IRQ_WORK, for example, if you need to use BPF.
+
+Or do you already have TASKS_RCU_GENERIC deselected?
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+index bf8e341e75b4..f559870fbf8b 100644
+--- a/kernel/rcu/Kconfig
++++ b/kernel/rcu/Kconfig
+@@ -86,6 +86,7 @@ config TASKS_RCU
+ 
+ config TASKS_RUDE_RCU
+ 	def_bool 0
++	select IRQ_WORK
+ 	help
+ 	  This option enables a task-based RCU implementation that uses
+ 	  only context switch (including preemption) and user-mode
