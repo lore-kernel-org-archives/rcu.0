@@ -2,280 +2,194 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C48A8C433F5
-	for <rcu@archiver.kernel.org>; Fri, 18 Mar 2022 14:43:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D61E2C433EF
+	for <rcu@archiver.kernel.org>; Fri, 18 Mar 2022 14:57:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237374AbiCROoZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 18 Mar 2022 10:44:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52080 "EHLO
+        id S236385AbiCRO7C (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 18 Mar 2022 10:59:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237382AbiCROoX (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 18 Mar 2022 10:44:23 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F3332E5774;
-        Fri, 18 Mar 2022 07:43:04 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id t14so5209894pgr.3;
-        Fri, 18 Mar 2022 07:43:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=nrjSRmwoPXm9IXez3B/MaglDMOOF6v3FYdXaRwm67HA=;
-        b=eLDDVu9ZuvuLkGIST++mBWWLjCy/VLhXaBS8g6MpgUmLzKluGxJ25YGKwYkodQEU51
-         NZblYY23TRSQjBdg8MVsKnchLi2OvQ0v6u5AWti7m/M/TIlQJ1fJnJ0UNyx4/CXqAhJj
-         C86JdIwnpFefgq81464bJMi/Sw2s7Ux616j5sBJuwXyan5fI/aw8i4glVrs0vCuKC+VS
-         /R1EjGvXjS6basgBXD62BDqIoof92BY9wSW5HiSsaSaL1pfqkf5J/poNeFD8rz3Zwo92
-         QQgG0OKLCv9BEk+KFvci7ucgtEXMKaUbmL33M6xrYdia2vvWFm/8uLndtdzzeJafwQ6e
-         Z3cQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=nrjSRmwoPXm9IXez3B/MaglDMOOF6v3FYdXaRwm67HA=;
-        b=sOc1Ab+WejQJ/MmTwb0O/vrxHW6trqWxKQY8RQFg6vBJaJBVCY6GZnjbRqcOGjm0Rg
-         XjGfCJXkiOy/MoIJnrU6IJe51HhJZ6bJyR+G8tjKx4HHc8VHkgITlUlIzl8bhJ1B7Rdn
-         C4ghy5Ez9lFsFZv4z2NNtxiiHczET5iTs1t7gHEE93EYrYWajDc0SexqbRTX9+K4USv2
-         zCwtTM6BTbfofj4/fBST/5SEwgG1D3HOsDlXeZfaC2SiFALvuTq+Arm8kzsCSQwT6KEv
-         w0WuXoBGqsbN6dSnyJVOjSN2YOOk9uIKJghdXBVGC0HUvyI53xI3HPE99ltL8NilZNP7
-         +J6Q==
-X-Gm-Message-State: AOAM533JyWbeMCeJTAWpaDYZmrF9AcojPT3nPWbxPPqQofC/k9ijyGV9
-        6p0Mk49z+dDycsBXT7zra0A=
-X-Google-Smtp-Source: ABdhPJz2GoQsyYrWQ312FD2ddDQF1giO9+21WQTyXIp5nBVMjID6GnNjDJQLHzHbq7vHIpUFEtFB1Q==
-X-Received: by 2002:aa7:942d:0:b0:4fa:662c:6621 with SMTP id y13-20020aa7942d000000b004fa662c6621mr5892856pfo.25.1647614583969;
-        Fri, 18 Mar 2022 07:43:03 -0700 (PDT)
-Received: from ip-172-31-19-208.ap-northeast-1.compute.internal (ec2-18-181-137-102.ap-northeast-1.compute.amazonaws.com. [18.181.137.102])
-        by smtp.gmail.com with ESMTPSA id e19-20020a637453000000b003821bdb8103sm3392015pgn.83.2022.03.18.07.43.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Mar 2022 07:43:03 -0700 (PDT)
-Date:   Fri, 18 Mar 2022 14:42:58 +0000
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>, rcu <rcu@vger.kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: RCU: undefined reference to irq_work_queue
-Message-ID: <YjSaciKQVuyaLqUa@ip-172-31-19-208.ap-northeast-1.compute.internal>
-References: <YjMcZexG/kJepYDi@ip-172-31-19-208.ap-northeast-1.compute.internal>
- <20220317140000.GO4285@paulmck-ThinkPad-P17-Gen-1>
- <YjNSuprCqjAgGgqB@ip-172-31-19-208.ap-northeast-1.compute.internal>
- <20220317162033.GP4285@paulmck-ThinkPad-P17-Gen-1>
- <YjNll+Iv++LORS0n@ip-172-31-19-208.ap-northeast-1.compute.internal>
- <20220317173621.GQ4285@paulmck-ThinkPad-P17-Gen-1>
- <CAABZP2zu3Qiqtnw=DRnFUig8xO3WtvKuVkf=gqQ6kRihOmDTLQ@mail.gmail.com>
- <20220317205339.GT4285@paulmck-ThinkPad-P17-Gen-1>
+        with ESMTP id S237676AbiCRO7B (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 18 Mar 2022 10:59:01 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D78F5111DF9;
+        Fri, 18 Mar 2022 07:57:41 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 63AF6B821A5;
+        Fri, 18 Mar 2022 14:57:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAECBC340EF;
+        Fri, 18 Mar 2022 14:57:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1647615459;
+        bh=Gnz4QaOXs0bhWCz1P8uq4YZhQKqIxGRhaSaTHKGnuGk=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=VWoZE7yf0kJW63Q3zTDQupjhdUA5qZs39yRVJ6UaBkUuFF5DtSRWwNSu+RhHjmpkl
+         YZixTQ7hQqNMfSrZ3GzWi7RcUpBpWynCAyk6XZlI00QOaj2P1ESWZYSaGxs9GS+rUg
+         IzGtQcCAywqB04sxrMkEoKO4SLv1UzjhCHuYNNqHUczv//R/hV8ymFO/81G9Si/wxY
+         S+Ve/t9arUvqITBxtPM5dlxv1HNpIKK2hjCXHtnIwa02/yV6G6mNn2beznBshD4srs
+         7HeUzTa7PRx5p/3qpLdEFOUoGdLd9WOU6FeXjgvQTmnO4ynjtLhfybP+7z5W+do86z
+         Mo1mT+loT2XzQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 8D2625C04E0; Fri, 18 Mar 2022 07:57:38 -0700 (PDT)
+Date:   Fri, 18 Mar 2022 07:57:38 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "frederic@kernel.org" <frederic@kernel.org>,
+        "urezki@gmail.com" <urezki@gmail.com>,
+        "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>,
+        "josh@joshtriplett.org" <josh@joshtriplett.org>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3] rcu: Only boost rcu reader tasks with lower priority
+ than boost kthreads
+Message-ID: <20220318145738.GY4285@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20220311022226.595905-1-qiang1.zhang@intel.com>
+ <Yist4IWWR/6BZzeK@linutronix.de>
+ <PH0PR11MB58802B8804EDFFC73BA676F2DA0D9@PH0PR11MB5880.namprd11.prod.outlook.com>
+ <PH0PR11MB58807AD9A1BAA122218B92DBDA0D9@PH0PR11MB5880.namprd11.prod.outlook.com>
+ <20220316165931.GI4285@paulmck-ThinkPad-P17-Gen-1>
+ <PH0PR11MB58806B59FC8148C9C5160A5FDA139@PH0PR11MB5880.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220317205339.GT4285@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <PH0PR11MB58806B59FC8148C9C5160A5FDA139@PH0PR11MB5880.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Mar 17, 2022 at 01:53:39PM -0700, Paul E. McKenney wrote:
-> On Fri, Mar 18, 2022 at 04:41:59AM +0800, Zhouyi Zhou wrote:
-> > hi
+On Fri, Mar 18, 2022 at 05:50:35AM +0000, Zhang, Qiang1 wrote:
+> On Sat, Mar 12, 2022 at 03:11:04AM +0000, Zhang, Qiang1 wrote:
+> > On 2022-03-11 10:22:26 [+0800], Zqiang wrote:
+> > > When RCU_BOOST is enabled, the boost kthreads will boosting readers
+> > > who are blocking a given grace period, if the current reader tasks
+> >                                        ^ Period.
 > > 
-> > On Fri, Mar 18, 2022 at 4:20 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > >
-> > > On Thu, Mar 17, 2022 at 04:45:11PM +0000, Hyeonggon Yoo wrote:
-> > > > On Thu, Mar 17, 2022 at 09:20:33AM -0700, Paul E. McKenney wrote:
-> > > > > On Thu, Mar 17, 2022 at 03:24:42PM +0000, Hyeonggon Yoo wrote:
-> > > > > > On Thu, Mar 17, 2022 at 07:00:00AM -0700, Paul E. McKenney wrote:
-> > > > > > > On Thu, Mar 17, 2022 at 11:32:53AM +0000, Hyeonggon Yoo wrote:
-> > > > > > > > Hello RCU folks,
-> > > > > > > >
-> > > > > > > > I like to use minimal configuration for kernel development.
-> > > > > > > > when building with tinyconfig + CONFIG_PREEMPT=y on arm64:
-> > > > > > > >
-> > > > > > > > ld: kernel/rcu/update.o: in function `call_rcu_tasks':
-> > > > > > > > update.c:(.text+0xb2c): undefined reference to `irq_work_queue'
-> > > > > > > > update.c:(.text+0xb2c): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `irq_work_queue'
-> > > > > > > > make: *** [Makefile:1155: vmlinux] Error 1
-> > > > > > > >
-> > > > > > > > It seems RCU calls irq_work_queue() without checking if CONFIG_IRQ_WORK is enabled.
-> > > > > > >
-> > > > > > > Indeed it does!
-> > > > > > >
-> > > > > > > And kernel/rcu/Kconfig shows why:
-> > > > > > >
-> > > > > > > config TASKS_TRACE_RCU
-> > > > > > >         def_bool 0
-> > > > > > >         select IRQ_WORK
-> > > > > > >         help
-> > > > > > >           This option enables a task-based RCU implementation that uses
-> > > > > > >           explicit rcu_read_lock_trace() read-side markers, and allows
-> > > > > > >           these readers to appear in the idle loop as well as on the CPU
-> > > > > > >           hotplug code paths.  It can force IPIs on online CPUs, including
-> > > > > > >           idle ones, so use with caution.
-> > > > > > >
-> > > > > > > So the solution is to further minimize your configuration so as to
-> > > > > > > deselect TASKS_TRACE_RCU.
-> > > > > >
-> > > > > > They are already not selected.
-> > > > >
-> > > > > Good, thank you.
-> > > > >
-> > > > > How about TASKS_RUDE_RCU, TASKS_TRACE_RCU, and TASKS_RCU_GENERIC?
-> > > >
-> > > > TASKS_RUDE_RCU=n
-> > > > TASKS_TRACE_RCU=n
-> > > > TASKS_RCU_GENERIC=y
-> > > > TASKS_RCU=y
-> > > >
-> > > > > > > This means making sure that both BPF and
-> > > > > > > the various RCU torture tests are all deselected.
-> > > > > >
-> > > > > > I wanted to say call_rcu_tasks() can be referenced even when IRQ_WORK is not
-> > > > > > selected, making it fail to build.
-> > > > >
-> > > > > I am guessing because TASKS_RCU_GENERIC is selected?
-> > > > >
-> > > >
-> > > > Right.
-> > > >
-> > > > > If so, does the patch at the end of this email help?
-> > > > >
-> > > >
-> > > > No. did not help.
-> > > >
-> > > > I think I found reason...
-> > > > with PREEMPTION=y,
-> > > >
-> > > > in kernel/rcu/Kconfig:
-> > > > config TASKS_RCU
-> > > >         def_bool PREEMPTION
-> > > >         help
-> > > >           This option enables a task-based RCU implementation that uses
-> > > >           only voluntary context switch (not preemption!), idle, and
-> > > >           user-mode execution as quiescent states.  Not for manual selection.
-> > > >
-> > > > in kernel/rcu/Kconfig:
-> > > > config TASKS_RCU_GENERIC
-> > > >         def_bool TASKS_RCU || TASKS_RUDE_RCU || TASKS_TRACE_RCU
-> > > >         select SRCU
-> > > >         help
-> > > >           This option enables generic infrastructure code supporting
-> > > >           task-based RCU implementations.  Not for manual selection.
-> > >
-> > > Ah, this is because some of the tracing code uses TASKS_RCU only
-> > > when PREEMPTION=y.  That would be KPROBES and TRACING.  Maybe also
-> > > TRACE_CLOCK and TRACEPOINTS, but I would hope that TRACING would
-> > > cover those.  Adding the tracing guys for their thoughts.
-> > >
-> > > > > > > > ld: kernel/rcu/update.o: in function `call_rcu_tasks':
-> > > > > > > > update.c:(.text+0xb2c): undefined reference to `irq_work_queue'
-> > > > > > > > update.c:(.text+0xb2c): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `irq_work_queue'
-> > > > > > > > make: *** [Makefile:1155: vmlinux] Error 1
-> > > > > >
-> > > > > > Isn't it better to fix this build failure?
-> > > > >
-> > > > > But of course!  However, first I need to know exactly what is causing your
-> > > > > build failure.  I cannot see your .config file, so I am having to guess.
-> > > > >
-> > > > > Don't get me wrong, I do have a lot of practice guessing, but it is still
-> > > > > just guessing.  ;-)
-> > > >
-> > > > Sorry to make you guess. Maybe too late, but added config as attachment ;)
-> > >
-> > > Perhaps I needed the practice.  ;-)
-> > >
-> > > > > > It fails to build when both TASKS_TRACE_RCU and IRQ_WORK are not selected
-> > > > > > and PREEMPT is selected.
-> > > > > >
-> > > > > >   │ Symbol: TASKS_TRACE_RCU [=n]                                            │
-> > > > > >   │ Type  : bool                                                            │
-> > > > > >   │ Defined at kernel/rcu/Kconfig:96                                        │
-> > > > > >   │ Selects: IRQ_WORK [=n]                                                  │
-> > > > > >   │ Selected by [n]:                                                        │
-> > > > > >   │   - BPF_SYSCALL [=n]                                                    │
-> > > > > >   │   - RCU_SCALE_TEST [=n] && DEBUG_KERNEL [=y]                            │
-> > > > > >   │   - RCU_TORTURE_TEST [=n] && DEBUG_KERNEL [=y]                          │
-> > > > > >   │   - RCU_REF_SCALE_TEST [=n] && DEBUG_KERNEL [=y]
-> > > > > >
-> > > > > > Thanks!
-> > > > > >
-> > > > > > >
-> > > > > > > Or turn on IRQ_WORK, for example, if you need to use BPF.
-> > > > >
-> > > > > Or do you already have TASKS_RCU_GENERIC deselected?
-> > > > >
-> > > >
-> > > > No, this is selected. TASKS_RCU_GENERIC=y. because of PREEMPTION=y.
-> > >
-> > > OK, the patch shown below allows me to get TASKS_RCU_GENERIC=n even
-> > > with PREEMPTION=y.  This might somehow subtly break tracing, but in
-> > > that case further adjustments can be made.  Untested other than
-> > > generating a few .config combinations.
-> > >
-> > > Thoughts?
-> > >
-> > >                                                         Thanx, Paul
-> > >
-> > > ------------------------------------------------------------------------
-> > >
-> > > diff --git a/arch/Kconfig b/arch/Kconfig
-> > > index 678a80713b21..66c5b5543511 100644
-> > > --- a/arch/Kconfig
-> > > +++ b/arch/Kconfig
-> > > @@ -38,6 +38,7 @@ config KPROBES
-> > >         depends on MODULES
-> > >         depends on HAVE_KPROBES
-> > >         select KALLSYMS
-> > > +       select TASKS_RCU if PREEMPTION
-> > >         help
-> > >           Kprobes allows you to trap at almost any kernel address and
-> > >           execute a callback function.  register_kprobe() establishes
-> > > diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
-> > > index f559870fbf8b..4f665ae0cf55 100644
-> > > --- a/kernel/rcu/Kconfig
-> > > +++ b/kernel/rcu/Kconfig
-> > > @@ -78,7 +78,8 @@ config TASKS_RCU_GENERIC
-> > >           task-based RCU implementations.  Not for manual selection.
-> > >
-> > >  config TASKS_RCU
-> > > -       def_bool PREEMPTION
-> > > +       def_bool 0
-> > > +       select IRQ_WORK
-> > >         help
-> > >           This option enables a task-based RCU implementation that uses
-> > >           only voluntary context switch (not preemption!), idle, and
-> > > diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
-> > > index 752ed89a293b..a7aaf150b704 100644
-> > > --- a/kernel/trace/Kconfig
-> > > +++ b/kernel/trace/Kconfig
-> > > @@ -127,6 +127,7 @@ config TRACING
-> > >         select BINARY_PRINTF
-> > >         select EVENT_TRACING
-> > >         select TRACE_CLOCK
-> > > +       select TASKS_RCU if PREEMPTION
-> > >
-> > >  config GENERIC_TRACER
-> > >         bool
-> > I apply above patch, and invoke
-> > $make  ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-
-> > CC=aarch64-linux-gnu-gcc-10 tinyconfig
-> > $make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-
-> > CC=aarch64-linux-gnu-gcc-10 -j 16
-> > kernel build successful this time (without above patch, kernel build
-> > will quit with undefined reference to `irq_work_queue'
-> > Tested-by: Zhouyi Zhou<zhouzhouyi@gmail.com>
+> > > have a higher priority than boost kthreads(the boost kthreads priority
+> > > not always 1, if the kthread_prio is set), 
+> > 
+> > >>This confuses me:
+> > >>- Why does this matter
+> > 
+> > In preempt-rt system, if the kthread_prio is not set, it prio is 1.
+> > the boost kthreads can preempt almost  rt task, It will affect
+> > the real-time performance of some user rt  tasks.  In preempt-rt systems,
+> > in most scenarios, this kthread_prio will be configured.
+> >
+> >Just following up...  These questions might have been answered, but
+> >I am not seeing those answers right off-hand.
+> >
+> >Is the grace-period latency effect of choosing not to boost high-priority
+> >tasks visible at the system level in any actual workload?
+> >
+> >Suppose that a SCHED_DEADLINE task has exhausted its time quantum,
+> >and has thus been preempted within an RCU read-side critical section.
+> >Can priority boosting from a SCHED_FIFO prio-1 task cause it to start
+> >running?
+> >
+> >Do delays in RCU priority boosting cause excessive grace-period
+> >latencies on real workloads, even when all the to-be-boosted
+> >tasks are SCHED_OTHER?
+> >
+> >Thoughts?
 > 
-> I will apply on my next rebase, thank you!
->
+> I have tested this modification these days,  I originally planned to generate a Kconfig option to control
+> whether to skip tasks with higher priority than boost kthreads. but it doesn't seem necessary
+>  because I find it's optimization is not particularly
+> obvious in the actual scene, I find that tasks with higher priority than boost kthreads 
+> will quickly exit the rcu critical area , even if be preempted in the rcu critical area.
+> sorry for the noise.
 
-Works for configurations I use.
+Thank you for getting back with this information, and no need to
+apologize.  We all get excited about a potential change from time to time.
+Part of us maintainers' jobs is to ask hard questions when that appears
+to be happening.  ;-)
 
-Reported-and-tested-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+If you have continued interest in this area, it would be good to keep
+looking.  After all, neither RCU expedited grace periods nor RCU priority
+boosting were designed with these new use cases in mind, so it is quite
+likely that there is a useful change to be made in there somewhere.
 
-Thanks!
+You see, RCU expedited grace periods were designed for throughput rather
+than latency.  The original use case was an old networking API that
+needed to wait for a grace period on each and every one of a series of
+some tens of thousands of system calls.  If one or two of those system
+calls took a few hundred milliseconds, but the rest completed in less than
+a millisecond, no harm done.  (Yes, there are now newer APIs that allow
+many changes to be made with only the one grace-period wait.  But the
+kernel must continue to support the old API: Never Break Userspace.)
 
-> 							Thanx, Paul
+For its part, RCU priority boosting was originally designed for
+debuggging.  The point was to avoid OOMing the system when someone
+misconfigured their application's real-time priorities.  As you know,
+such misconfiguration can easily prevent low-priority RCU readers from
+ever completing.
 
--- 
-Thank you, You are awesome!
-Hyeonggon :-)
+So it is reasonably likely that some change or another is needed.  After
+all, new use cases require new functionality and new fixes.  The trick
+is figuring out which change makes sense amongst the huge group of other
+possible changes that each add much more complexity than improvement.
+But part of the process of finding that change that makes sense is trying
+out quite a few changes that don't help all that much.  ;-)
+
+							Thanx, Paul
+
+> Thanks,
+> Zqiang
+> 
+> >
+> >							Thanx, Paul
+> >
+> > Thanks
+> > Zqiang
+> > 
+> > >>- If it is not RT prio, what is then? Higher or lower? Afaik it is
+> > >>  always >= 1.
+> > 
+> > >>>If it is not RT prio, the sanitize_kthread_prio() will limit RT prio
+> > 
+> > > boosting is useless, skip
+> > > current task and select next task to boosting, reduce the time for a
+> > > given grace period.
+> > 
+> > >>So if the task, that is stuck in a rcu_read() section, has a higher
+> > >>priority than the boosting thread then boosting is futile. Understood.
+> > >>
+> > >>Please correct me if I'm wrong but this is intended for !SCHED_OTHER
+> > >>tasks since there shouldn't a be PI chain on boost_mtx so that its
+> > >>default RT priority is boosted above what has been configured.
+> > 
+> > >>>Yes, you are right. If the boosting task which itself already boosted due to PI chain,
+> > >>>and Its priority may only be temporarily higher than boost kthreads,  once that
+> > >>>PI boost is lifted the task may still be in a RCU section, but if we have been skipped it,
+> > >>>this task have been missed the opportunity to be boosted.
+> > 
+> > >>
+> > >>You skip boosting tasks which are itself already boosted due to a PI
+> > >>chain. Once that PI boost is lifted the task may still be in a RCU
+> > >>section. But if I understand you right, your intention is skip boosting
+> > >>tasks with a higher priority and concentrate and those which are in
+> > >>need. This shouldn't make a difference unless the scheduler is able to
+> > >>move the rcu-boosted task to another CPU.
+> > >>
+> > 
+> > >>>Yes, It make sense when the rcu-boosted kthreads and task which to be boosting
+> > >>>should run  difference CPU .
+> > 
+> > >>Am I right so far? If so this should be part of the commit message (the
+> > >>intention and the result). Also, please add that part with
+> > >>boost_exp_tasks. The comment above boost_mtx is now above
+> > >>boost_exp_tasks with a space so it looks (at least to me) like these two
+> > >>don't belong together.
+> > 
+> > >>>Yes, I will add your description to the commit  information.
+> > 
+> > 
+> > > Suggested-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+> > 
+> > >Sebastian
