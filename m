@@ -2,98 +2,116 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 29B9CC433EF
-	for <rcu@archiver.kernel.org>; Tue, 22 Mar 2022 12:30:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 94368C433EF
+	for <rcu@archiver.kernel.org>; Tue, 22 Mar 2022 12:31:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233549AbiCVMcF (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 22 Mar 2022 08:32:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60732 "EHLO
+        id S232214AbiCVMdE (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 22 Mar 2022 08:33:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232851AbiCVMcE (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 22 Mar 2022 08:32:04 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AB4874DE1;
-        Tue, 22 Mar 2022 05:30:34 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B95E0614BA;
-        Tue, 22 Mar 2022 12:30:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98175C340EC;
-        Tue, 22 Mar 2022 12:30:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1647952233;
-        bh=8UgqJKeD83b+41XF6fMFtLi8TcWYbvRRK9SI91LW1cQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XDt4sQWbciCLej+F53LbxtOwznRDJXiHwX8xDrGNpy2FeqBhzp8RltICjsB7lpMK0
-         A6OutEYTGQW/yjcxckDM2YlHZYdazmmJ3rqy983SP6XeE2waaFYRxa8UXg+TCcey2/
-         xSBtMXlaoMT9O9jLcS3xkeO047HMcQkKfsnG4UGUqpgv+zkLII5mgzmZIoviFHCetJ
-         qcX9Er/uH19nc36w9RrkmNwvyARkrBhsqUxhR+TPV2Aj9IYF7GS4fWo/T8dNiHqunh
-         iyUPG3YGN3sR5MWZSZQEWBHWvCEE67cD1uBVrfIwYr1bQHVLBwpN3kGQnRfVQSWnMY
-         JkHjcM1YR9kFg==
-Date:   Tue, 22 Mar 2022 13:30:29 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Zqiang <qiang1.zhang@intel.com>
-Cc:     paulmck@kernel.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] rcu: Call rcu_nocb_rdp_deoffload() directly after
- rcuog/op kthreads spawn failed
-Message-ID: <20220322123029.GC701946@lothringen>
-References: <20220318080719.1501471-1-qiang1.zhang@intel.com>
- <20220318080719.1501471-2-qiang1.zhang@intel.com>
+        with ESMTP id S233214AbiCVMdD (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 22 Mar 2022 08:33:03 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09CD17DA9A
+        for <rcu@vger.kernel.org>; Tue, 22 Mar 2022 05:31:34 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id c62so1967712edf.5
+        for <rcu@vger.kernel.org>; Tue, 22 Mar 2022 05:31:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kq+06BP6vD8UbXUJT7pklQ3S/G87xpUpKpomd/gP9DU=;
+        b=Vw6LmalGbNmPByBCq9wt5VZZF3SNR4TW6DehiwRdmb0ta+G/spWaFZ1+74w8hN44MD
+         1zcrg9uKYhqG7d/aWsH8Szv6/OYuYtGxkZABT7tQG60J5luLCCoytKLGssz2LtDqqpZX
+         +z9WL2ZM5NsVchckzfojeBMISYSEz6+Aq9bX7mWEMXyz+pKMxM66Wwzh3DAQuPWdagw5
+         sya4DRGECqPAinSTt8/5pjh8M0CtnFhL0OHj2bMAbO/d2V1ddE7vobAE1/UPZyCmzw3t
+         Bk8pK9mULn5YdqWDRKIeydC/QUrqWkidUOMRecqSk4TfOc9f+wyQsKAAP21b1NFJOnGa
+         LKzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kq+06BP6vD8UbXUJT7pklQ3S/G87xpUpKpomd/gP9DU=;
+        b=tuGdiT7x0H+E4FX4mHgM+Avo547h3oC3zFAA65Yn/1yhAupiGbuM+1NrPVsHNIEUEl
+         3LECc5zoXgQ7nlQszTZTJt1D9lbOYIAGwMcYEeMzbKKKj2CF1mOcdBUF2t50t0nQIaL3
+         lpDp4xQcuI5iqjjMrEEzvFye9sv9+ViEmohPVi2n0d71A1/jzJw6K+gKfIQ323Ojc2gD
+         VDcU8Yyj7v6sZFBhVoRuGQ9cP4ZsQpH7GnC4joG/MVZ/jdirAGM1Xb90AFAXWYKoaVMm
+         hNKGVKyaJWF4FTd67BoptxYy7GcdaEN6KHe52nbVZx4ct9BnE4bis6xDYRXuOlV+H91x
+         5S3w==
+X-Gm-Message-State: AOAM531ZtZtV/9IUDLbZDCha0vZVIRfR69G4tBjliG+NVvkn3dnK9KDD
+        zW25h3bkYrBHfUvLK3Ard86fsdknajVQJB/qgSs=
+X-Google-Smtp-Source: ABdhPJwYXoL8V0rzCT1HlBVgWH19LUfsipWEaeq5b/amcY1hPu7vBSUAKprQeQxF1NgyLI3NGHvmTNlyDZ0mx9yZK2E=
+X-Received: by 2002:a05:6402:3715:b0:410:a415:fd95 with SMTP id
+ ek21-20020a056402371500b00410a415fd95mr27839328edb.288.1647952293015; Tue, 22
+ Mar 2022 05:31:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220318080719.1501471-2-qiang1.zhang@intel.com>
+References: <Yje18NgLjpPo7VEp@casper.infradead.org> <SA1PR15MB49655CF8AC3998CA9A7CE903B8169@SA1PR15MB4965.namprd15.prod.outlook.com>
+ <20220321043813.GF4285@paulmck-ThinkPad-P17-Gen-1> <20220321071327.GA798064@paulmck-ThinkPad-P17-Gen-1>
+ <CAABZP2woW2UuPg1rSYYc+S6k7qd9JwM4gJFMHhiVcBkDewE_Nw@mail.gmail.com>
+ <20220321155746.GG4285@paulmck-ThinkPad-P17-Gen-1> <20220322104909.GB701946@lothringen>
+In-Reply-To: <20220322104909.GB701946@lothringen>
+From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
+Date:   Tue, 22 Mar 2022 20:31:21 +0800
+Message-ID: <CAABZP2ws9oP9sv0Pzbb059+Fm=dmaNWD5VxMZt92QB7m7Nm=GQ@mail.gmail.com>
+Subject: Re: Fw: rc6 splat
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Paul McKenney <paulmckrcu@fb.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        rcu <rcu@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Mar 18, 2022 at 04:07:18PM +0800, Zqiang wrote:
-> @@ -1009,10 +1015,33 @@ static long rcu_nocb_rdp_deoffload(void *arg)
->  	 */
->  	rcu_segcblist_set_flags(cblist, SEGCBLIST_RCU_CORE);
->  	invoke_rcu_core();
-> -	ret = rdp_offload_toggle(rdp, false, flags);
-> -	swait_event_exclusive(rdp->nocb_state_wq,
-> -			      !rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_CB |
-> -							SEGCBLIST_KTHREAD_GP));
-> +	wake_gp = rdp_offload_toggle(rdp, false, flags);
-> +
-> +	mutex_lock(&rdp_gp->nocb_gp_kthread_mutex);
-> +	if (rdp_gp->nocb_gp_kthread) {
-> +		if (wake_gp)
-> +			wake_up_process(rdp_gp->nocb_gp_kthread);
-> +
-> +		if (rdp->nocb_cb_kthread) {
-> +			condition = SEGCBLIST_KTHREAD_CB | SEGCBLIST_KTHREAD_GP;
-> +		} else {
-> +			/*
-> +			 *If rcuop kthread spawn failed, direct remove SEGCBLIST_KTHREAD_CB
-> +			 *just wait SEGCBLIST_KTHREAD_GP to be cleared.
-> +			 */
-> +			condition = SEGCBLIST_KTHREAD_GP;
-> +			rcu_segcblist_clear_flags(&rdp->cblist,
-> SEGCBLIST_KTHREAD_CB);
+Dear Frederic
 
-You may be running concurrently againt nocb_gp_wait() ->
-nocb_gp_update_state_deoffloading() -> rcu_segcblist_clear_flags(cblist,
-SEGCBLIST_KTHREAD_GP)
+I may not be right, please correct me if so
 
-So you need to protect the flags clear with rcu_nocb lock.
+On Tue, Mar 22, 2022 at 6:49 PM Frederic Weisbecker <frederic@kernel.org> wrote:
+>
+> On Mon, Mar 21, 2022 at 08:57:46AM -0700, Paul E. McKenney wrote:
+> > On Mon, Mar 21, 2022 at 11:46:28PM +0800, Zhouyi Zhou wrote:
+> > > Hi Paul and Willy
+> > >
+> > > I can reproduce the bug. Following is what I do:
+> > > 1.1 git clone https://kernel.source.codeaurora.cn/pub/scm/linux/kernel/git/torvalds/linux.git
+> > > 1.2 cd linux
+> > > 1.3 cp http://154.223.142.244/20220321/config-20220321 to .config
+> > > 1.4 make vmlinux -j 16
+> > > 1.5 kvm -smp 4 -net none     -serial file:/tmp/console.log -m 512
+> > > -kernel vmlinux -append "console=ttyS0"
+> > > 1.6 the /tmp/console.log is uploaded to
+> > > http://154.223.142.244/20220321/console.log
+> > >
+> > > 2.1 wget https://kernel.source.codeaurora.cn/pub/scm/linux/kernel/git/torvalds/linux.git/snapshot/linux-5.17-rc6.tar.gz
+> > > 2.2 - 2.6 the result is similar.
+> > >
+> > > I am very interested in this topic.
+> > > Could you please give me about a week to make a full understand of the
+> > > meaning of the warning, and try the fixes one by one, and
+> > > find out what happens?
+> >
+> > Works for me!  The eventual fix likely involves some version of Valentin
+> > Schneider's patchset that provides APIs that allow RCU to detect the
+> > current preemption state.  Which can change at runtime.  A prototype of
+> > this patch is on -rcu here:
+> >
+> > 2436ee0b4cea ("EXP preempt/dynamic: Introduce preempt mode accessors")
+> >
+> > It is entirely possible that the fix might need to go to mainline sooner
+> > rather than later.
+>
+> I guess it's possible to do that but that patch alone shouldn't fix anything.
+> Also, what is the issue exactly? :-)
+The issue is with certain kernel configuration
+(http://154.223.142.244/20220321/config-2022032), the mainline (and
+-rcu ) kernel  will warn
+"call_rcu_tasks() has been failed" in rcu_tasks_verify_self_tests.
+(http://154.223.142.244/20220321/console.log)
 
-
-
-
-> +		}
-> +		swait_event_exclusive(rdp->nocb_state_wq,
-> +					!rcu_segcblist_test_flags(cblist, condition));
-> +	} else {
-> +		rcu_nocb_lock_irqsave(rdp, flags);
-> +		rcu_segcblist_clear_flags(&rdp->cblist,
-> +				SEGCBLIST_KTHREAD_CB | SEGCBLIST_KTHREAD_GP);
-> +		rcu_nocb_unlock_irqrestore(rdp, flags);
-
-Like you're doing here.
-
-Thanks!
+Kind Regard
+Zhouyi
+> I can't rewind far enough the conversation.
+>
+> Thanks.
