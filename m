@@ -2,92 +2,98 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C092C433F5
-	for <rcu@archiver.kernel.org>; Tue, 22 Mar 2022 10:49:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29B9CC433EF
+	for <rcu@archiver.kernel.org>; Tue, 22 Mar 2022 12:30:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231843AbiCVKuo (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 22 Mar 2022 06:50:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35460 "EHLO
+        id S233549AbiCVMcF (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 22 Mar 2022 08:32:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232589AbiCVKun (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 22 Mar 2022 06:50:43 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B11DA814BC
-        for <rcu@vger.kernel.org>; Tue, 22 Mar 2022 03:49:15 -0700 (PDT)
+        with ESMTP id S232851AbiCVMcE (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 22 Mar 2022 08:32:04 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AB4874DE1;
+        Tue, 22 Mar 2022 05:30:34 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 649E7B81C94
-        for <rcu@vger.kernel.org>; Tue, 22 Mar 2022 10:49:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D5EEC340EC;
-        Tue, 22 Mar 2022 10:49:12 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B95E0614BA;
+        Tue, 22 Mar 2022 12:30:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98175C340EC;
+        Tue, 22 Mar 2022 12:30:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1647946153;
-        bh=Z1L/Hr4DtTFYB17HEzf0n9pRecFYGAznxsxCxUy+qpE=;
+        s=k20201202; t=1647952233;
+        bh=8UgqJKeD83b+41XF6fMFtLi8TcWYbvRRK9SI91LW1cQ=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WOB2g26MfT5hTF1cdNqskhS+M0XggbUGUertORSbClxgSX476zmqPkpfxUEOUtzGG
-         e+z2gEyj2ElOmkBRlHVuYbsyXozCaOAFCmKXSnYqIdCFG2EO8UOmA+xrowkY7tqr8L
-         yqebjbJwumYIxjHyycDofzYMhVP6v4QpANOjjbT4HnzoHE9Ja7uS2C4iHFVxF/ufCD
-         J0WkjYN5hJ1Zt799CAT5YZWaVqJyjZnOilUiJxFnW1D8w0zzu3P16QqgxBT+Cz0FJA
-         UZNOOoTN/TaCD/wEMHPzd1PA4FevVEGwDFJhAC+UFYCo1TR2NTBmDGpo3lsJ6dFTaf
-         pvCdtv562QWlA==
-Date:   Tue, 22 Mar 2022 11:49:09 +0100
+        b=XDt4sQWbciCLej+F53LbxtOwznRDJXiHwX8xDrGNpy2FeqBhzp8RltICjsB7lpMK0
+         A6OutEYTGQW/yjcxckDM2YlHZYdazmmJ3rqy983SP6XeE2waaFYRxa8UXg+TCcey2/
+         xSBtMXlaoMT9O9jLcS3xkeO047HMcQkKfsnG4UGUqpgv+zkLII5mgzmZIoviFHCetJ
+         qcX9Er/uH19nc36w9RrkmNwvyARkrBhsqUxhR+TPV2Aj9IYF7GS4fWo/T8dNiHqunh
+         iyUPG3YGN3sR5MWZSZQEWBHWvCEE67cD1uBVrfIwYr1bQHVLBwpN3kGQnRfVQSWnMY
+         JkHjcM1YR9kFg==
+Date:   Tue, 22 Mar 2022 13:30:29 +0100
 From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>,
-        Paul McKenney <paulmckrcu@fb.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        rcu <rcu@vger.kernel.org>
-Subject: Re: Fw: rc6 splat
-Message-ID: <20220322104909.GB701946@lothringen>
-References: <Yje18NgLjpPo7VEp@casper.infradead.org>
- <SA1PR15MB49655CF8AC3998CA9A7CE903B8169@SA1PR15MB4965.namprd15.prod.outlook.com>
- <20220321043813.GF4285@paulmck-ThinkPad-P17-Gen-1>
- <20220321071327.GA798064@paulmck-ThinkPad-P17-Gen-1>
- <CAABZP2woW2UuPg1rSYYc+S6k7qd9JwM4gJFMHhiVcBkDewE_Nw@mail.gmail.com>
- <20220321155746.GG4285@paulmck-ThinkPad-P17-Gen-1>
+To:     Zqiang <qiang1.zhang@intel.com>
+Cc:     paulmck@kernel.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] rcu: Call rcu_nocb_rdp_deoffload() directly after
+ rcuog/op kthreads spawn failed
+Message-ID: <20220322123029.GC701946@lothringen>
+References: <20220318080719.1501471-1-qiang1.zhang@intel.com>
+ <20220318080719.1501471-2-qiang1.zhang@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220321155746.GG4285@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20220318080719.1501471-2-qiang1.zhang@intel.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Mar 21, 2022 at 08:57:46AM -0700, Paul E. McKenney wrote:
-> On Mon, Mar 21, 2022 at 11:46:28PM +0800, Zhouyi Zhou wrote:
-> > Hi Paul and Willy
-> > 
-> > I can reproduce the bug. Following is what I do:
-> > 1.1 git clone https://kernel.source.codeaurora.cn/pub/scm/linux/kernel/git/torvalds/linux.git
-> > 1.2 cd linux
-> > 1.3 cp http://154.223.142.244/20220321/config-20220321 to .config
-> > 1.4 make vmlinux -j 16
-> > 1.5 kvm -smp 4 -net none     -serial file:/tmp/console.log -m 512
-> > -kernel vmlinux -append "console=ttyS0"
-> > 1.6 the /tmp/console.log is uploaded to
-> > http://154.223.142.244/20220321/console.log
-> > 
-> > 2.1 wget https://kernel.source.codeaurora.cn/pub/scm/linux/kernel/git/torvalds/linux.git/snapshot/linux-5.17-rc6.tar.gz
-> > 2.2 - 2.6 the result is similar.
-> > 
-> > I am very interested in this topic.
-> > Could you please give me about a week to make a full understand of the
-> > meaning of the warning, and try the fixes one by one, and
-> > find out what happens?
-> 
-> Works for me!  The eventual fix likely involves some version of Valentin
-> Schneider's patchset that provides APIs that allow RCU to detect the
-> current preemption state.  Which can change at runtime.  A prototype of
-> this patch is on -rcu here:
-> 
-> 2436ee0b4cea ("EXP preempt/dynamic: Introduce preempt mode accessors")
-> 
-> It is entirely possible that the fix might need to go to mainline sooner
-> rather than later.
+On Fri, Mar 18, 2022 at 04:07:18PM +0800, Zqiang wrote:
+> @@ -1009,10 +1015,33 @@ static long rcu_nocb_rdp_deoffload(void *arg)
+>  	 */
+>  	rcu_segcblist_set_flags(cblist, SEGCBLIST_RCU_CORE);
+>  	invoke_rcu_core();
+> -	ret = rdp_offload_toggle(rdp, false, flags);
+> -	swait_event_exclusive(rdp->nocb_state_wq,
+> -			      !rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_CB |
+> -							SEGCBLIST_KTHREAD_GP));
+> +	wake_gp = rdp_offload_toggle(rdp, false, flags);
+> +
+> +	mutex_lock(&rdp_gp->nocb_gp_kthread_mutex);
+> +	if (rdp_gp->nocb_gp_kthread) {
+> +		if (wake_gp)
+> +			wake_up_process(rdp_gp->nocb_gp_kthread);
+> +
+> +		if (rdp->nocb_cb_kthread) {
+> +			condition = SEGCBLIST_KTHREAD_CB | SEGCBLIST_KTHREAD_GP;
+> +		} else {
+> +			/*
+> +			 *If rcuop kthread spawn failed, direct remove SEGCBLIST_KTHREAD_CB
+> +			 *just wait SEGCBLIST_KTHREAD_GP to be cleared.
+> +			 */
+> +			condition = SEGCBLIST_KTHREAD_GP;
+> +			rcu_segcblist_clear_flags(&rdp->cblist,
+> SEGCBLIST_KTHREAD_CB);
 
-I guess it's possible to do that but that patch alone shouldn't fix anything.
-Also, what is the issue exactly? :-)
-I can't rewind far enough the conversation.
+You may be running concurrently againt nocb_gp_wait() ->
+nocb_gp_update_state_deoffloading() -> rcu_segcblist_clear_flags(cblist,
+SEGCBLIST_KTHREAD_GP)
 
-Thanks.
+So you need to protect the flags clear with rcu_nocb lock.
+
+
+
+
+> +		}
+> +		swait_event_exclusive(rdp->nocb_state_wq,
+> +					!rcu_segcblist_test_flags(cblist, condition));
+> +	} else {
+> +		rcu_nocb_lock_irqsave(rdp, flags);
+> +		rcu_segcblist_clear_flags(&rdp->cblist,
+> +				SEGCBLIST_KTHREAD_CB | SEGCBLIST_KTHREAD_GP);
+> +		rcu_nocb_unlock_irqrestore(rdp, flags);
+
+Like you're doing here.
+
+Thanks!
