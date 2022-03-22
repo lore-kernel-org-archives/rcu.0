@@ -2,80 +2,57 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E8F63C433FE
-	for <rcu@archiver.kernel.org>; Tue, 22 Mar 2022 13:17:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D5F4CC433F5
+	for <rcu@archiver.kernel.org>; Tue, 22 Mar 2022 13:20:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235287AbiCVNSu (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 22 Mar 2022 09:18:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60140 "EHLO
+        id S231388AbiCVNVg (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 22 Mar 2022 09:21:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235269AbiCVNSq (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 22 Mar 2022 09:18:46 -0400
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C45FD64712;
-        Tue, 22 Mar 2022 06:17:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1647955038; x=1679491038;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=dAcxrMAdYGWi8WSTjO6a3fMaU21hxA6oy2q2nk6xPPc=;
-  b=dZs5xOzUCW1TpjMvTbS9UluzpgVIuu5dS4IVYTVQVUIkR7kZeLk1+xdn
-   hv0Ya2wwNO4IZop33ERGUfYTjI+DQxF3y7X0BbBqIQ3rjtND0Hh402u8f
-   rleea1KXPdeAY2WyuYcPRZCyz6EeOrjOrgH/DB+KIyWeqt34taim7xDjN
-   kRFJ7tBJPYC0KYa+KQ2MJ2JfqHeyQNuh6tdkg4MyaOp/Ne8RS0akYoqbV
-   RU2OlQLJGBuHBJex/XcsRim1R4MhPZS2yaLDnEyzsfbUF5HHjoxuO0ykE
-   XHmrJJ6T7OO2a0msl/Wup4kBVtQ8yN0u9Gx/rs36+LRCcQktJpRzKUR+R
-   w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10293"; a="237755597"
-X-IronPort-AV: E=Sophos;i="5.90,201,1643702400"; 
-   d="scan'208";a="237755597"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2022 06:17:17 -0700
-X-IronPort-AV: E=Sophos;i="5.90,201,1643702400"; 
-   d="scan'208";a="543686431"
-Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.125])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2022 06:17:16 -0700
-From:   Zqiang <qiang1.zhang@intel.com>
-To:     paulmck@kernel.org, frederic@kernel.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 0/2] rcu: Deoffload rdp if rcuop/rcuog kthreads spawn failed
-Date:   Tue, 22 Mar 2022 21:17:51 +0800
-Message-Id: <20220322131753.1680329-1-qiang1.zhang@intel.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S234779AbiCVNVf (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 22 Mar 2022 09:21:35 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 037D469CDA;
+        Tue, 22 Mar 2022 06:20:07 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id D02D1B81C94;
+        Tue, 22 Mar 2022 13:20:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D58B5C340EC;
+        Tue, 22 Mar 2022 13:20:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1647955204;
+        bh=GEP1hA952KtJkcY3mrrjdwlTd5xU8O8M7KG/kyoH+p8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qr7pyXMuaUdXxZF0V13kF5lL33LBkzJ1/elTp31hNhcj6wY51NTdwGzMoSjolSujO
+         p2RFS8ljwNC8oZPOw74TZ7rD8FqZJsXCz6SFEa908GOiGcCoDP2DWHfN9sgUxGRLFc
+         RnSirtJem5EaZg4DgM8C6IA5tMrwiICWxFryfXWXefatQtf7jaYB4UU7BOQYMarCqR
+         /XDHqvMf1xrLRKIVsf/u9tBcaqD+jj6Xz4l9Eovmva7h30fNoRHQMBu4ixze7TBS/l
+         5XNUsBIUqok/jtNsY8cyvqkAmdaq74IEVpRviQ0vm5jVG+vqxuiJh4BaIsRId9jVsZ
+         zX56FAhQJc1zQ==
+Date:   Tue, 22 Mar 2022 14:20:01 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Zqiang <qiang1.zhang@intel.com>
+Cc:     paulmck@kernel.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 0/2] rcu: Deoffload rdp if rcuop/rcuog kthreads spawn
+ failed
+Message-ID: <20220322132001.GA705324@lothringen>
+References: <20220322131753.1680329-1-qiang1.zhang@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220322131753.1680329-1-qiang1.zhang@intel.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-When CONFIG_RCU_NOCB_CPU is enabled and 'rcu_nocbs' is set, the rcuop
-and rcuog kthreads is created. however the rcuop or rcuog kthreads
-creation may fail, if failed, deoffload the offloaded rdp.
+On Tue, Mar 22, 2022 at 09:17:51PM +0800, Zqiang wrote:
+> When CONFIG_RCU_NOCB_CPU is enabled and 'rcu_nocbs' is set, the rcuop
+> and rcuog kthreads is created. however the rcuop or rcuog kthreads
+> creation may fail, if failed, deoffload the offloaded rdp.
 
----
- v1->v2:
- Invert the locking dependency order between rcu_state.barrier_mutex
- and hotplug lock.
-
- Holding nocb_gp_kthread_mutex, ensure that the nocb_gp_kthread exists.
-
- v2->v3:
- Adjust the position of the nocb_gp_kthread_mutex, in rdp_gp->nocb_gp_kthread
- check upper lock nocb_gp_kthread_mutex.
-
- Do the locking order change in a separate patch.
-
- v3->v4:
- Protect SEGCBLIST_KTHREAD_CB flags clear with rcu_nocb lock.
-
- Zqiang(2):
- rcu: Call rcu_nocb_rdp_deoffload() directly after rcuog/op kthreads spawn failed
- rcu: Invert the locking dependency order between rcu_state.barrier_mutex and hotplug lock
-
- kernel/rcu/tree_nocb.h | 85 ++++++++++++++++++++++++++++++++----------
- 1 file changed, 65 insertions(+), 20 deletions(-)
-
--- 
-2.25.1
-
+Thanks! I'm queuing these. I might split things and reword a bit.
+Also I'll put the second patch first, otherwise bisection will be
+broken.
