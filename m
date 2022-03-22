@@ -2,201 +2,79 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D4748C433FE
-	for <rcu@archiver.kernel.org>; Tue, 22 Mar 2022 07:44:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 66966C433F5
+	for <rcu@archiver.kernel.org>; Tue, 22 Mar 2022 08:17:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229807AbiCVHpK (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 22 Mar 2022 03:45:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46772 "EHLO
+        id S230084AbiCVISj (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 22 Mar 2022 04:18:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231324AbiCVHob (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 22 Mar 2022 03:44:31 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF94E280
-        for <rcu@vger.kernel.org>; Tue, 22 Mar 2022 00:37:23 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id l2so32143223ybe.8
-        for <rcu@vger.kernel.org>; Tue, 22 Mar 2022 00:37:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=Mb+xIEW59K1ZB7JeQIqggKVm6yQ70+u2EGq5PySJ9L0=;
-        b=zXlZqTgqZoDxNOA0MJjXq4WWfpvRgUImx6SnOY8s6b9gF4bb1S2E5uuxbw7/TJ2u3M
-         pcDxMyhlO4n8gUfJfzZecrWiJQDoSlFXQzxiteXgVjAxGXT3tQNAPuGX4beq3lymspW/
-         VMlqR2s+arUpSskLZjspfndI8csXkNkkEr0NZ2mDFVJslYftWcMLGZbNrF6AUdfasNQY
-         8o419MNY++AHlgjr00dD+ildrgPnnxCS2VVHuDFaqp2EkSAMM+rA3A8zqOe1S+JkLnQR
-         JxpwAKetqFDwDrddy+OTZCSiZIsoW0wlQIIgTQUPn6HS5iFpAW6OcuKZM+uYgn42EMEV
-         B61Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=Mb+xIEW59K1ZB7JeQIqggKVm6yQ70+u2EGq5PySJ9L0=;
-        b=X/CX4sH8XRYZLU+flw5PNtR5ngaIloLH6es5/Lo5spib5mMgkQKg97Z2b48AEi3Cb1
-         b/Fs3oGavyjG4/p/E7yI6saZYPhnAIeNERtk7zPx6fBAq1FAkMoK3lDmPMd82Y+agl1K
-         4wl2bqwwVdYOGNfFk5qDLURCTLBm2rmgp7AjIm0Clcpb5C328VkgF1cJeA9f/pmX8KsI
-         0cd3oJjhYtTW03xyap1rdiMNQH+8X2d9H9blZMuEDaM8U1Knqp2lrmMbdia58K2ylwpL
-         ljZ1ZawvQo33p5shOQ8JTyymppa442cBHm6goL5WHB84bJ3S14VFIWM9+dNw2HPSTshp
-         mfmA==
-X-Gm-Message-State: AOAM533n38khEfN1URRVJ3AAwqrwmPaFpzF472010YdPQ+z6zd4d3TKO
-        7B/C7XVskr6g/JgSUiFs3shnekKEu3FaZC1we8aJeg==
-X-Google-Smtp-Source: ABdhPJxluSKeXS66jhWemtnQAJQY0JcIr5zVe3IkwMjQoQOUhcV8E/b9uGRg4t9T9qgGJTOa3zVDCNKEhHg3jStcF4M=
-X-Received: by 2002:a25:a0c5:0:b0:633:63da:5ead with SMTP id
- i5-20020a25a0c5000000b0063363da5eadmr26371770ybm.412.1647934642439; Tue, 22
- Mar 2022 00:37:22 -0700 (PDT)
+        with ESMTP id S229971AbiCVISj (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 22 Mar 2022 04:18:39 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EF8552B3B;
+        Tue, 22 Mar 2022 01:17:12 -0700 (PDT)
+Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4KN46y2PCGzfYyN;
+        Tue, 22 Mar 2022 16:15:38 +0800 (CST)
+Received: from dggpeml500018.china.huawei.com (7.185.36.186) by
+ dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Tue, 22 Mar 2022 16:17:10 +0800
+Received: from [10.67.111.186] (10.67.111.186) by
+ dggpeml500018.china.huawei.com (7.185.36.186) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Tue, 22 Mar 2022 16:17:10 +0800
+Message-ID: <655251c9-9d60-c825-a977-31df83b05cda@huawei.com>
+Date:   Tue, 22 Mar 2022 16:17:10 +0800
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 22 Mar 2022 13:07:11 +0530
-Message-ID: <CA+G9fYv6_mytUwaa9bgQTuMUhrGfkg-yFKC0u_Ujh7sRTtgNfw@mail.gmail.com>
-Subject: WARNING: possible recursive locking detected - lock(&irq_desc_lock_class);
-To:     open list <linux-kernel@vger.kernel.org>,
-        rcu <rcu@vger.kernel.org>, linux-remoteproc@vger.kernel.org,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>, lkft-triage@lists.linaro.org
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Vinod Koul <vinod.koul@linaro.org>,
-        Nicolas Dechesne <nicolas.dechesne@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: Re: [PATCH] rcu: Use printk_deferred when holding rtp->cbs_gbl_lock
+To:     Steven Rostedt <rostedt@goodmis.org>
+CC:     <paulmck@kernel.org>, <josh@joshtriplett.org>,
+        <mathieu.desnoyers@efficios.com>, <jiangshanlai@gmail.com>,
+        <joel@joelfernandes.org>, <rcu@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20220317084726.77336-1-zhangqiao22@huawei.com>
+ <20220317114924.791c6500@gandalf.local.home>
+From:   Zhang Qiao <zhangqiao22@huawei.com>
+In-Reply-To: <20220317114924.791c6500@gandalf.local.home>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.111.186]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500018.china.huawei.com (7.185.36.186)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-While booting linux mainline kernel v5.17.0 on arm64 dragonboard 845c
-the following kernel deadlock warning was noticed.
-
-This build config is generated by kselftest-merge configs.
-
-[   11.472323] qcom_q6v5_pas remoteproc-adsp: supply cx not found,
-using dummy regulator
-[   11.482690] qcom_q6v5_pas remoteproc-adsp: supply px not found,
-using dummy regulator
-[   11.643728] qcom,slim-ngd-ctrl 171c0000.slim: Adding to iommu group 1
-[   11.647956] NET: Registered PF_QIPCRTR protocol family
-[   11.655652] failed to send lookup registration: -19
-[   11.679730] remoteproc remoteproc0: remoteproc-adsp is available
-[   11.688073] remoteproc remoteproc0: Direct firmware load for
-qcom/sdm845/adsp.mbn failed with error -2
-[   11.698131] remoteproc remoteproc0: powering up remoteproc-adsp
-[   11.704730] remoteproc remoteproc0: Direct firmware load for
-qcom/sdm845/adsp.mbn failed with error -2
-[   11.714571] remoteproc remoteproc0: request_firmware failed: -2
-[   11.753156] cpu cpu0: EM: created perf domain
-[   11.773034]
-[   11.774570] ============================================
-[   11.779933] WARNING: possible recursive locking detected
-[   11.785303] 5.17.0 #1 Not tainted
-[   11.788662] --------------------------------------------
-[   11.794029] kworker/u16:2/80 is trying to acquire lock:
-[   11.798293] qcom_q6v5_pas remoteproc-cdsp: supply cx not found,
-using dummy regulator
-[   11.799312] ffff7e0cc11b28f8 (&irq_desc_lock_class){-.-.}-{2:2},
-at: __irq_get_desc_lock+0x64/0xa4
-[   11.816285]
-[   11.816285] but task is already holding lock:
-[   11.822173] ffff7e0cc0fd38f8 (&irq_desc_lock_class){-.-.}-{2:2},
-at: __irq_get_desc_lock+0x64/0xa4
-[   11.823425] qcom_q6v5_pas remoteproc-cdsp: supply px not found,
-using dummy regulator
-[   11.831231]
-[   11.831231] other info that might help us debug this:
-[   11.831234]  Possible unsafe locking scenario:
-[   11.831234]
-[   11.831236]        CPU0
-[   11.831238]        ----
-[   11.831240]   lock(&irq_desc_lock_class);
-[   11.831245]   lock(&irq_desc_lock_class);
-[   11.831251]
-[   11.831251]  *** DEADLOCK ***
-[   11.831251]
-[   11.831253]  May be due to missing lock nesting notation
-[   11.831253]
-[   11.831255] 6 locks held by kworker/u16:2/80:
-[   11.831259]  #0: ffff7e0cc0018d38
-((wq_completion)events_unbound){+.+.}-{0:0}, at:
-process_one_work+0x1e8/0x6f4
-[   11.862787] cfg80211: Loading compiled-in X.509 certificates for
-regulatory database
-[   11.864788]  #1: ffff800008673dd0
-(deferred_probe_work){+.+.}-{0:0}, at: process_one_work+0x1e8/0x6f4
-[   11.864808]  #2: ffff7e0cc12bf188 (&dev->mutex
-[   11.882336] cfg80211: Loaded X.509 cert 'sforshee: 00b28ddf47aef9cea7'
-[   11.892239] ){....}-{3:3}, at: __device_attach+0x44/0x1c0
-[   11.892255]  #3: ffffb99e189d0870 (cpu_hotplug_lock){++++}-{0:0},
-at: cpus_read_lock+0x1c/0x30
-[   11.892276]  #4:
-[   11.900398] platform regulatory.0: Direct firmware load for
-regulatory.db failed with error -2
-[   11.909407] ffff7e0cc0f98918 (subsys mutex#8){+.+.}-{3:3}, at:
-subsys_interface_register+0x64/0x150
-[   11.909429]  #5: ffff7e0cc0fd38f8
-(&irq_desc_lock_class){-.-.}-{2:2}, at: __irq_get_desc_lock+0x64/0xa4
-[   11.913956] cfg80211: failed to load regulatory.db
-[   11.920518]
-[   11.920518] stack backtrace:
-[   11.920523] CPU: 4 PID: 80 Comm: kworker/u16:2 Not tainted 5.17.0 #1
-[   11.920530] Hardware name: Thundercomm Dragonboard 845c (DT)
-[   11.920535] Workqueue: events_unbound deferred_probe_work_func
-[   11.957146] remoteproc remoteproc1: remoteproc-cdsp is available
-[   11.963917]
-[   11.963921] Call trace:
-[   11.963924]  dump_backtrace+0xf8/0x130
-[   11.963933]  show_stack+0x24/0x80
-[   11.963937]  dump_stack_lvl+0x8c/0xb8
-[   11.963948]  dump_stack+0x18/0x34
-[   11.985142] remoteproc remoteproc1: Direct firmware load for
-qcom/sdm845/cdsp.mbn failed with error -2
-[   11.985323]  __lock_acquire+0xbc8/0x20cc
-[   11.991270] remoteproc remoteproc1: powering up remoteproc-cdsp
-[   11.997292]  lock_acquire.part.0+0xe0/0x230
-[   11.997301]  lock_acquire+0x68/0x84
-[   11.997309]  _raw_spin_lock_irqsave+0x88/0x150
-[   11.997317]  __irq_get_desc_lock+0x64/0xa4
-[   11.997324]  enable_irq+0x40/0xb0
-[   11.998891] remoteproc remoteproc1: Direct firmware load for
-qcom/sdm845/cdsp.mbn failed with error -2
-[   12.001316]  lmh_enable_interrupt+0x38/0x44 [lmh]
-[   12.001329]  irq_enable+0x4c/0xa0
-[   12.001337]  __irq_startup+0x80/0xb0
-[   12.005282] remoteproc remoteproc1: request_firmware failed: -2
-[   12.008487]  irq_startup+0x84/0x174
-[   12.008495]  __enable_irq+0x7c/0x90
-[   12.008501]  enable_irq+0x54/0xb0
-[   12.008508]  qcom_cpufreq_ready+0x2c/0x3c
-[   12.096152]  cpufreq_online+0x5a8/0xa60
-[   12.096160]  cpufreq_add_dev+0xc8/0xe0
-[   12.096167]  subsys_interface_register+0x138/0x150
-[   12.096176]  cpufreq_register_driver+0x180/0x300
- OK   Started udev Coldplug all Devices.[   12.113357]
-qcom_cpufreq_hw_driver_probe+0xe0/0x150
-[   12.123101]  platform_probe+0x74/0xf0
-[   12.126994]  really_probe+0x1c4/0x440
-[   12.130706]  __driver_probe_device+0x11c/0x190
-[   12.135201]  driver_probe_device+0x48/0x104
-[   12.139429]  __device_attach_driver+0xa4/0x140
-[   12.143927]  bus_for_each_drv+0x84/0xe0
-[   12.147810]  __device_attach+0xe4/0x1c0
-[   12.151695]  device_initial_probe+0x20/0x30
-[   12.155934]  bus_probe_device+0xac/0xb4
-[   12.159817]  deferred_probe_work_func+0xc8/0x120
-[   12.164486]  process_one_work+0x280/0x6f4
-[   12.168540]  worker_thread+0x80/0x450
-[   12.172256]  kthread+0x10c/0x120
-[   12.172264]  ret_from_fork+0x10/0x20
-
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-metadata:
-  git_ref: master
-  git_repo: https://gitlab.com/Linaro/lkft/mirrors/torvalds/linux-mainline
-  git_sha: f443e374ae131c168a065ea1748feac6b2e76613
-  git_describe: v5.17
-  kernel_version: 5.17.0
-  kernel-config: https://builds.tuxbuild.com/26fPPSbBmMfOqElIN3NGgvUWHeW/config
 
 
---
-Linaro LKFT
-https://lkft.linaro.org
-[1] https://lkft.validation.linaro.org/scheduler/job/4754457#L3342
+在 2022/3/17 23:49, Steven Rostedt 写道:
+> On Thu, 17 Mar 2022 16:47:26 +0800
+> Zhang Qiao <zhangqiao22@huawei.com> wrote:
+> 
+>> This patch tries to avoid this issue by using printk_deferred().
+> 
+> Isn't the new printk work suppose to resolve this?
+> 
+> If so, can we have another way to quiet these splats if that work is not in
+> yet?
+
+
+hello,
+
+can we change the cbs_gbl_lock to spinlock_t?
+
+thanks.
+
+Zhang Qiao.
+
+
+
+> 
+> -- Steve
+> .
+> 
