@@ -2,64 +2,86 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FCF6C433F5
-	for <rcu@archiver.kernel.org>; Thu, 24 Mar 2022 11:14:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 76389C433F5
+	for <rcu@archiver.kernel.org>; Thu, 24 Mar 2022 16:00:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346318AbiCXLQT (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 24 Mar 2022 07:16:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59644 "EHLO
+        id S243565AbiCXQBh (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 24 Mar 2022 12:01:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239751AbiCXLQT (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 24 Mar 2022 07:16:19 -0400
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC8219F6C8;
-        Thu, 24 Mar 2022 04:14:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1648120487; x=1679656487;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=82T1//IDxRxWMoKx8jXyzu8qZyLKygsREbSeX2E2PMA=;
-  b=jltTZbK5SuOJnc7mZDr4RSP8jJWju0AcCNLisFii5n3n/f3NDDclPeSQ
-   cczdu1oPQdO3ztM7k4bwEPATbzvFhZnUHgqTRLwbSWaiIXC0Ha6JrBsPU
-   7p6d8ajmBjcBFsfqbpx9mbOjnw1kknBT6KY5bCs0hJD0f4M0ftjGAYuHe
-   GsOYQ8VWto2G3Fy6gpxWCMH1S+lZGPugTJkp0Te3OmsRjrHZan4j6NQu8
-   86Uv5C0P3vyGV6ks4FvtxQVn5hDsXE6Js7kKIS39JSRSvqRMi7p40BVlK
-   qeEs5zcWiwQRYJ42E1kN6VRr7Cs3vjNYy+nJiN/qVowoBk3yy0u/ggkzQ
-   g==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10295"; a="258302716"
-X-IronPort-AV: E=Sophos;i="5.90,207,1643702400"; 
-   d="scan'208";a="258302716"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2022 04:14:41 -0700
-X-IronPort-AV: E=Sophos;i="5.90,207,1643702400"; 
-   d="scan'208";a="519742130"
-Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.125])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2022 04:14:39 -0700
-From:   Zqiang <qiang1.zhang@intel.com>
-To:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] rcu: Check the validity of the boost_kthread_task pointer
-Date:   Thu, 24 Mar 2022 19:15:15 +0800
-Message-Id: <20220324111515.1810160-1-qiang1.zhang@intel.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S243557AbiCXQBh (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 24 Mar 2022 12:01:37 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07B922AEE;
+        Thu, 24 Mar 2022 09:00:04 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 9E1CDB8244B;
+        Thu, 24 Mar 2022 16:00:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E065C340EC;
+        Thu, 24 Mar 2022 16:00:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1648137602;
+        bh=q79PIwzbW5QyaiQJBSuk3Pa/tpfdQBQe9SrvS827vms=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=k5Na4eSW+izeWfyLYrfuSc5u8bEfOXsp9mr+vV3qSgmWRiCPBwiXmxkg/2bmdzaiS
+         3NC/6ee9I+k8oy1xsC1EFNIWjakUKiQ2jUc5L3nMncOM1qNuzpSuI43Oj8n/wCbfCw
+         XXjy8MaVA9Hga2onOxhQzR2Uh1KDLht2iOaZd6CuEQy/1Sdtx1eFHZ2TZEx3wS6ENr
+         1hc/6l0Bmjvar4MK75StKp2fzJTO6CWhvxSXXL4b0Ift6SwLahCoIYkFI2/g/rijiw
+         RP40SpJdeoW841Hf7bwo8Pf2SVAlyhUA8hDCjgJu9sGcKXhrlul1PTLRvqz3ekMacH
+         a52HvOQylyBBA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 823E75C0192; Thu, 24 Mar 2022 09:00:01 -0700 (PDT)
+Date:   Thu, 24 Mar 2022 09:00:01 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Zqiang <qiang1.zhang@intel.com>
+Cc:     frederic@kernel.org, quic_neeraju@quicinc.com, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu: Check the validity of the boost_kthread_task pointer
+Message-ID: <20220324160001.GW4285@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20220324111515.1810160-1-qiang1.zhang@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220324111515.1810160-1-qiang1.zhang@intel.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The boost kthreads may spawn failed, although the probability of
-creation failure is very low, in consideration of the robustness
-of the code, add boost_kthread_task pointer detection.
+On Thu, Mar 24, 2022 at 07:15:15PM +0800, Zqiang wrote:
+> The boost kthreads may spawn failed, although the probability of
+> creation failure is very low, in consideration of the robustness
+> of the code, add boost_kthread_task pointer detection.
+> 
+> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 
-Signed-off-by: Zqiang <qiang1.zhang@intel.com>
----
- kernel/rcu/tree_plugin.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Good catch!  As you say, rare, but definitely worth fixing.
+
+I could not resist a bit of wordsmithing.  Could you please check
+to see if I messed something up?
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+commit ad3c438e248cbc41fe30a41287621c3dbfcdf51c
+Author: Zqiang <qiang1.zhang@intel.com>
+Date:   Thu Mar 24 19:15:15 2022 +0800
+
+    rcu: Check for successful spawn of ->boost_kthread_task
+    
+    For the spawning of the priority-boost kthreads can fail, improbable
+    though this might seem.  This commit therefore refrains from attemoting
+    to initiate RCU priority boosting when The ->boost_kthread_task pointer
+    is NULL.
+    
+    Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
 diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 6b9bcd45c7b2..fd642f14f31f 100644
+index 6b9bcd45c7b2..d58f6d6073bf 100644
 --- a/kernel/rcu/tree_plugin.h
 +++ b/kernel/rcu/tree_plugin.h
 @@ -1125,7 +1125,8 @@ static void rcu_initiate_boost(struct rcu_node *rnp, unsigned long flags)
@@ -68,10 +90,7 @@ index 6b9bcd45c7b2..fd642f14f31f 100644
  	raw_lockdep_assert_held_rcu_node(rnp);
 -	if (!rcu_preempt_blocked_readers_cgp(rnp) && rnp->exp_tasks == NULL) {
 +	if (!rnp->boost_kthread_task ||
-+			(!rcu_preempt_blocked_readers_cgp(rnp) && rnp->exp_tasks == NULL)) {
++	    (!rcu_preempt_blocked_readers_cgp(rnp) && !rnp->exp_tasks)) {
  		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
  		return;
  	}
--- 
-2.25.1
-
