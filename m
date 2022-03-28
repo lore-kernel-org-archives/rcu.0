@@ -2,205 +2,269 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B128AC433F5
-	for <rcu@archiver.kernel.org>; Fri, 25 Mar 2022 00:00:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A9D2CC433EF
+	for <rcu@archiver.kernel.org>; Mon, 28 Mar 2022 11:19:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353336AbiCYACZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 24 Mar 2022 20:02:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40942 "EHLO
+        id S240643AbiC1LUz (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 28 Mar 2022 07:20:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244412AbiCYACZ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 24 Mar 2022 20:02:25 -0400
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32B43B6D13;
-        Thu, 24 Mar 2022 17:00:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1648166450; x=1679702450;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=RtHvMDCBZ8X9BFaSRDzN2AAGL6yQIwu5ycQhW/1bXkw=;
-  b=laJmWP8MQXCVzLpHgjgrbyy93cWHTSYADmTRg1RabuZ8MMaOav03BUO7
-   akpuCmmgsIVZdXXLS0Ukh3SKeGHHlcPU63W17YyON2KtNJd97N701p1cy
-   vlW1X3s7Su45BSZH31+fiCO4z/hGNyGiXIcuusE55u2ZYmgnSupYg9btT
-   TdM8s4cbtv3DSXp7N0Gkxbym45FIV8RW/GPJoks5io87BDYKR6eQXdYdw
-   L1kCoQW+dLa1DzkzvZuZ51f0mNrVt3CCB/FcBALISy3yyOAfhkwPxuueZ
-   IBZyXPQXvBj0vDFqVY7QERO0uUkVpNs8WjJV/Rg8lRnWrfulJN4084ai2
-   w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10296"; a="321714454"
-X-IronPort-AV: E=Sophos;i="5.90,208,1643702400"; 
-   d="scan'208";a="321714454"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2022 17:00:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,208,1643702400"; 
-   d="scan'208";a="519999703"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orsmga006.jf.intel.com with ESMTP; 24 Mar 2022 17:00:49 -0700
-Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.27; Thu, 24 Mar 2022 17:00:49 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.27 via Frontend Transport; Thu, 24 Mar 2022 17:00:49 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.169)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2308.21; Thu, 24 Mar 2022 17:00:48 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RuKPsXBwcBXlJEuQF/hqni/M2tu7Sr9SgozkhLE/XOU8sRQZMIqMoZWpHNdZ1KEUPmki1VXQ9uU+edr+1e3VsKoqIWRVgU2EgehLcVcjHQLnFb3nd2d/ygP8h2njQ/D2+0WsmbzJKtzSsjoykNmNOz2hijAdPCH31mhiwVqBMcicm8ZbvfnI1AOdmkUaqcsq3u1LGqzTQljHPwk8lEbIjky5XCxdhBLvzN1/cNTnq1d6By3ANaCLe25OqoWTC5gvO3B0FNVrATuEpNtFpWN4YKcx+i0NSTOuAFfe4TmnyWkYtuc+nH0EUKnZJyADIhe3qULbUCm4jNh6H3JLlDASkA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=smxVyUlKa5IMrEA9rgUzxws8AtAezjVs4uezJzYoU6g=;
- b=iFCWJ+QhUnBLJ9TWmNg6AdUfiXrtfaZ1IiGqLTregdKs6pZhWfw8Lgy0wayF2VD1k/LpBQJsTDUk0NXTp22AcICOdm1/GAlnmcbZ2t66MA7NLIXKt56gCvcqK8NTej4YLmzsdxPUMvrMd07URVn+8l0f7Z0pxFYsePcagOWH4EuVzqVTQROpw6uEHgoafy/bZJGEXnUlxb7dqp2/8POnbqIse0O+PTELhzP/OJqYbmeKx8AQzNUAslCBJ10gOggrnzIoQN//GRMNhag1MO+0P0C9NieJGSBqNijkTlFWN58fF51EuWIM1SrHUrWaYtO1F6sK6lXned6HMQWRtvQ8zA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from PH0PR11MB5880.namprd11.prod.outlook.com (2603:10b6:510:143::14)
- by PH7PR11MB6054.namprd11.prod.outlook.com (2603:10b6:510:1d2::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5102.19; Fri, 25 Mar
- 2022 00:00:47 +0000
-Received: from PH0PR11MB5880.namprd11.prod.outlook.com
- ([fe80::d90e:5a21:8192:7c54]) by PH0PR11MB5880.namprd11.prod.outlook.com
- ([fe80::d90e:5a21:8192:7c54%7]) with mapi id 15.20.5102.018; Fri, 25 Mar 2022
- 00:00:47 +0000
-From:   "Zhang, Qiang1" <qiang1.zhang@intel.com>
-To:     "paulmck@kernel.org" <paulmck@kernel.org>
-CC:     "frederic@kernel.org" <frederic@kernel.org>,
-        "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] rcu: Check the validity of the boost_kthread_task pointer
-Thread-Topic: [PATCH] rcu: Check the validity of the boost_kthread_task
- pointer
-Thread-Index: AQHYP3Bozuxnyt+Oy0WTfpuy9UBnzazOsY6AgACE/YA=
-Date:   Fri, 25 Mar 2022 00:00:47 +0000
-Message-ID: <PH0PR11MB5880D7F86F013AE3CD799E08DA1A9@PH0PR11MB5880.namprd11.prod.outlook.com>
-References: <20220324111515.1810160-1-qiang1.zhang@intel.com>
- <20220324160001.GW4285@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20220324160001.GW4285@paulmck-ThinkPad-P17-Gen-1>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-version: 11.6.401.20
-dlp-reaction: no-action
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 170f0dc4-800e-4de9-2732-08da0df28407
-x-ms-traffictypediagnostic: PH7PR11MB6054:EE_
-x-microsoft-antispam-prvs: <PH7PR11MB6054A74F5B6BF74858B815AEDA1A9@PH7PR11MB6054.namprd11.prod.outlook.com>
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ExQ1Y3792wGf8jy9x7C2cZyUs7vT1qMXXzBcnhjUgwrCpsrmIfRa860efJXsj/dzsrwJh8lFB7Pv9ak/F54AzpaFx32D6sgZ377a25KjBgodXQAhcrPxW4pTjfEw0eVMfa/JzpLUn2SXzUnhdgYJ1XNvqUVHWHcErZ/Fe1WFt1nuLAxfjGxu5+hGehvlYA9Mw0Hx0ZelZxgm1CkVgk1pfm4uuWJgR/qar/aSw5r4CDCkeqB+EfPscqfqsdVg/HgBsP8qekqu3ExIR4+surTBBvTdCwkBSHAtQYxiALffV8WxrtAf64E7IJBFymDPU7lb0o9fwyiQh5F5CtukHgIgMub2LBgCSn+i9InlcIQrry+iSJbRupbz2M8dP8DFP6yksTJa6QTmZ0cCYNx4vwZMXIjDrQdBGYwxMWsEIvoGzTzPz4g8mHOb+7bLn7U1YinYMnkJRDyIudFha/H3dhvwCA0e2rFt6S2j1a3VygyRwORm8Z0hRwGAaQWQAs5Uc+/TzeDiZ4zD3XgNjlSSYb+MK1RpI4nRVrfirwtbBvxCHY8fV1ndj2kb20Evf3BNZ63bQRISqEZMGcbjqLGybZgqqCWtJry/KARpYnNQhW6gOgywsKwwf5Hfha/R4uhR1jx12f8VGTj4HO/+kNoDCBccnqB94FQUh2BneARjgCU0+SGoXLEeivG77JbZcBvBv1VFrmEUWOwa8tOgVdqy8h6/aw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5880.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(38070700005)(83380400001)(76116006)(66556008)(66476007)(66446008)(8676002)(64756008)(4326008)(71200400001)(66946007)(316002)(54906003)(6916009)(38100700002)(82960400001)(55016003)(122000001)(9686003)(33656002)(86362001)(508600001)(52536014)(2906002)(6506007)(7696005)(5660300002)(186003)(26005)(8936002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?J+MbkyeQsPR2WzPqM3flnVeK3j7Dg9TK0h08NoO+K+wF6+Aovh9AkpGdIgCU?=
- =?us-ascii?Q?5NXf25ikM5huLjylm2v/BkhDEafk0tMT7Y0Nb4EAY3I208AJdJmle/Xdggox?=
- =?us-ascii?Q?MYDcAJGxPaZleSgBfwb8mZ/hZp9yfVuHG5VijU0wUqw0By9iVV+y0usP9zrA?=
- =?us-ascii?Q?34W6WO2oBqg8PwMzcPHJPp791ZtG6Bn+rdQFmusJ6+qH1YqQBwJ3CNvAj6UK?=
- =?us-ascii?Q?tPvckU2cU+OU9GrtWHddKzQmxMd4KqFWPtOFVWk17MHM2SELO/nLrWdsEtW1?=
- =?us-ascii?Q?0QZSkv3LxnCFL97JfocQXHDLOAIYYT1uq9kf4iNvnjIowphjmnsBBSzJ02Wu?=
- =?us-ascii?Q?FRXpMbge3LeuuNfnzKIm3qoSQ2N0QGRRiTFuEPs7LmLOWmg7ElR+vUBoTYPP?=
- =?us-ascii?Q?be2zWQp/hhER12nYDLk8krH2u9edKv4jqOcdqhtuHc81dZxJ5Zj81axONuug?=
- =?us-ascii?Q?tUT1aGqtKZZSJqbGyU2v6EKJrpAHdHWsD22cBbEm3hNUbQiCa0Nw8ERUTxHc?=
- =?us-ascii?Q?UJMpbueP5ahgS+VMvhE7kvqcptZ3pTgNTQaNvT+6J2G32sVv+LtZp15UskCw?=
- =?us-ascii?Q?o2Eiuu0qWPpCJwrGNJPIi1hqN+rN6vctIMGmKgsvsCpZzk/wQT0pwuMYrM4g?=
- =?us-ascii?Q?8HUPtnIC9V8yu+4JIvlkWY2HxNfh+cXN6IznL9Y+YEfgzqMWAmi4v1HjtbTW?=
- =?us-ascii?Q?6f5E6vCrViDvrp9xohSozWgU7eeUMinS6UpGADl6J2IToeu8dNCZ/ymD3/UW?=
- =?us-ascii?Q?2QefSIu0XZ68n8ZdP6Mk93nWtEAXk7slc8pm0xftiQ03PoeV8uMfTX8323Ko?=
- =?us-ascii?Q?LPkSIzSClKgEox7F01sTue99i6BD34M0Zf4CBRWL3pOAgr8n4jNlJIQV/UrK?=
- =?us-ascii?Q?ufCIsY0pCUfsbxn8svNlBmW3lNKR9v/T4MOM+PSQvxsSGmIk5v9YbE6QAvps?=
- =?us-ascii?Q?rM2YI8U5neNHuPZ9fqxkHqdpZl+rl2q1VeOy4eEnHWN1rN2U1YNxGPIosJ3/?=
- =?us-ascii?Q?6RdpZ23y5EPhgz5qFr2hi4vwLcA6aFeme00envnhQv9Y+j5i7/1t9UPabLPb?=
- =?us-ascii?Q?c5e1E9ebXEMDGD0nDV8UVUzyhZemoRhaNJ0bhhtgdsBXu6XTmwbt+h7xW64a?=
- =?us-ascii?Q?fsFl1U9m7ksPLBSRaPChqRqGq56tbk5V98q9D42ZVfSD5NCtVqQDqwd+WmA3?=
- =?us-ascii?Q?NSJK2ZknVqwfQKpxiEDc26GlJwd1WUZ9jEryNsHAd/9C3SjEmA6pGmfJy3lC?=
- =?us-ascii?Q?INmlDDBK4vavue9pdvKh96aZqc0dJwoSJ11inUbS+W749oaURvwPM2hmcGEu?=
- =?us-ascii?Q?oQRXxedO4HyXBGgIbYao5sQpUgOm7Pl7KF9A8g/Yc8tDKN/K+yNfBDsmd2DZ?=
- =?us-ascii?Q?OzXk/To53LOD4k3D6t8bPjTNlR0/u+uRPWOfz/qciw5wUikocpkPQYu5aDMc?=
- =?us-ascii?Q?6Mbuh96oPtJDCe8f9pDiJtmw5zJX5EjXxwHXTXUAf/X+zfjFZO+SkbdV3LP/?=
- =?us-ascii?Q?Wq5pq9yPPQ8JA39J9SyzF8hRdYpmXRJ57J/WWzAmfHZeUDjR9o0BgqlRUoU9?=
- =?us-ascii?Q?tvJQokLZ663+lzDje0WyAy+fp0u5nvccpEkwTYuWdR74bvz7eI5B49uP1EZE?=
- =?us-ascii?Q?ZQY9KJyMed+HIjHuoC7wuEXTiDjVTrrVw5L0M6YGN/HTWNaoYz2NLj2+3q9j?=
- =?us-ascii?Q?lgJg5m6krPv2ZPWqABdLoZUUv4LkJd5Tpm7+SwltDWZuwj38CqqLWGnpc1dy?=
- =?us-ascii?Q?rPzTwVNjJA=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        with ESMTP id S240583AbiC1LU2 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 28 Mar 2022 07:20:28 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA12D55759;
+        Mon, 28 Mar 2022 04:18:43 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D667E6114A;
+        Mon, 28 Mar 2022 11:18:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4393BC340EC;
+        Mon, 28 Mar 2022 11:18:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1648466322;
+        bh=2ncRTTPX3hIETBFICl5p5zP4ZHOlcCFDMCrPZS07OeY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=QOlYCyhAyP9rpIdayW4xuVUWGP1ams/4RzUIFnK9BVtnPdRI0PCWsr9F+G1wCPEum
+         Y6DGwTpYPH9A0NdsT0QOAE8+1nj/umjX4bEc1HKrs6X8Xdmyo7nOudQOaHzkPQTlnQ
+         GDFgP/3/7wZT2BHrugkQmw4lTUYWmoTSU4o7pQarL8lbGIFEBo8uNa+AheDhNnnfto
+         Ze/urRgjktwyOVhssGDnYfSlRMbStJslhvZeizREKikszQj8dm8KVhOieVsDCEnrLR
+         gmLWGdjq2tAw4MzmqV+wG68vYpjbvohFXf8sL6jmaZz9LHNamMLeWtUz7k5/Ku7ijG
+         b57zZNXF/s0Og==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     David Woodhouse <dwmw@amazon.co.uk>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, frederic@kernel.org,
+        quic_neeraju@quicinc.com, josh@joshtriplett.org,
+        rcu@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.17 06/43] rcu: Kill rnp->ofl_seq and use only rcu_state.ofl_lock for exclusion
+Date:   Mon, 28 Mar 2022 07:17:50 -0400
+Message-Id: <20220328111828.1554086-6-sashal@kernel.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220328111828.1554086-1-sashal@kernel.org>
+References: <20220328111828.1554086-1-sashal@kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5880.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 170f0dc4-800e-4de9-2732-08da0df28407
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Mar 2022 00:00:47.3872
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: BpM8QMnyFgnPHUs0ELV6Sd2UPYzzMsMCY9fAecLUhjQyoa0SDcbELNj++LZvE0w8XF71aFR0fzwlQSV09jUDhQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB6054
-X-OriginatorOrg: intel.com
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Mar 24, 2022 at 07:15:15PM +0800, Zqiang wrote:
-> The boost kthreads may spawn failed, although the probability of=20
-> creation failure is very low, in consideration of the robustness of=20
-> the code, add boost_kthread_task pointer detection.
->=20
-> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
->
->Good catch!  As you say, rare, but definitely worth fixing.
->
->I could not resist a bit of wordsmithing.  Could you please check to see i=
-f I messed something up?
+From: David Woodhouse <dwmw@amazon.co.uk>
 
-Thanks wordsmithing, I think it's ok.
+[ Upstream commit 82980b1622d97017053c6792382469d7dc26a486 ]
 
-Thanks,
-Zqiang
+If we allow architectures to bring APs online in parallel, then we end
+up requiring rcu_cpu_starting() to be reentrant. But currently, the
+manipulation of rnp->ofl_seq is not thread-safe.
 
->
->							Thanx, Paul
->
->------------------------------------------------------------------------
->
->commit ad3c438e248cbc41fe30a41287621c3dbfcdf51c
->Author: Zqiang <qiang1.zhang@intel.com>
->Date:   Thu Mar 24 19:15:15 2022 +0800
->
->    rcu: Check for successful spawn of ->boost_kthread_task
->   =20
->    For the spawning of the priority-boost kthreads can fail, improbable
->    though this might seem.  This commit therefore refrains from attemotin=
-g
->    to initiate RCU priority boosting when The ->boost_kthread_task pointe=
-r
->    is NULL.
->   =20
->    Signed-off-by: Zqiang <qiang1.zhang@intel.com>
->    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
->
->diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h index 6b9=
-bcd45c7b2..d58f6d6073bf 100644
->--- a/kernel/rcu/tree_plugin.h
->+++ b/kernel/rcu/tree_plugin.h
->@@ -1125,7 +1125,8 @@ static void rcu_initiate_boost(struct rcu_node *rnp,=
- unsigned long flags)
-> 	__releases(rnp->lock)
-> {
-> 	raw_lockdep_assert_held_rcu_node(rnp);
->-	if (!rcu_preempt_blocked_readers_cgp(rnp) && rnp->exp_tasks =3D=3D NULL)=
+However, rnp->ofl_seq is also fairly much pointless anyway since both
+rcu_cpu_starting() and rcu_report_dead() hold rcu_state.ofl_lock for
+fairly much the whole time that rnp->ofl_seq is set to an odd number
+to indicate that an operation is in progress.
+
+So drop rnp->ofl_seq completely, and use only rcu_state.ofl_lock.
+
+This has a couple of minor complexities: lockdep will complain when we
+take rcu_state.ofl_lock, and currently accepts the 'excuse' of having
+an odd value in rnp->ofl_seq. So switch it to an arch_spinlock_t to
+avoid that false positive complaint. Since we're killing rnp->ofl_seq
+of course that 'excuse' has to be changed too, so make it check for
+arch_spin_is_locked(rcu_state.ofl_lock).
+
+There's no arch_spin_lock_irqsave() so we have to manually save and
+restore local interrupts around the locking.
+
+At Paul's request based on Neeraj's analysis, make rcu_gp_init not just
+wait but *exclude* any CPU online/offline activity, which was fairly
+much true already by virtue of it holding rcu_state.ofl_lock.
+
+Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ kernel/rcu/tree.c | 71 ++++++++++++++++++++++++-----------------------
+ kernel/rcu/tree.h |  4 +--
+ 2 files changed, 37 insertions(+), 38 deletions(-)
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index a4c25a6283b0..73a4c9d07b86 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -91,7 +91,7 @@ static struct rcu_state rcu_state = {
+ 	.abbr = RCU_ABBR,
+ 	.exp_mutex = __MUTEX_INITIALIZER(rcu_state.exp_mutex),
+ 	.exp_wake_mutex = __MUTEX_INITIALIZER(rcu_state.exp_wake_mutex),
+-	.ofl_lock = __RAW_SPIN_LOCK_UNLOCKED(rcu_state.ofl_lock),
++	.ofl_lock = __ARCH_SPIN_LOCK_UNLOCKED,
+ };
+ 
+ /* Dump rcu_node combining tree at boot to verify correct setup. */
+@@ -1175,7 +1175,15 @@ bool rcu_lockdep_current_cpu_online(void)
+ 	preempt_disable_notrace();
+ 	rdp = this_cpu_ptr(&rcu_data);
+ 	rnp = rdp->mynode;
+-	if (rdp->grpmask & rcu_rnp_online_cpus(rnp) || READ_ONCE(rnp->ofl_seq) & 0x1)
++	/*
++	 * Strictly, we care here about the case where the current CPU is
++	 * in rcu_cpu_starting() and thus has an excuse for rdp->grpmask
++	 * not being up to date. So arch_spin_is_locked() might have a
++	 * false positive if it's held by some *other* CPU, but that's
++	 * OK because that just means a false *negative* on the warning.
++	 */
++	if (rdp->grpmask & rcu_rnp_online_cpus(rnp) ||
++	    arch_spin_is_locked(&rcu_state.ofl_lock))
+ 		ret = true;
+ 	preempt_enable_notrace();
+ 	return ret;
+@@ -1739,7 +1747,6 @@ static void rcu_strict_gp_boundary(void *unused)
+  */
+ static noinline_for_stack bool rcu_gp_init(void)
  {
->+	if (!rnp->boost_kthread_task ||
->+	    (!rcu_preempt_blocked_readers_cgp(rnp) && !rnp->exp_tasks)) {
-> 		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-> 		return;
-> 	}
+-	unsigned long firstseq;
+ 	unsigned long flags;
+ 	unsigned long oldmask;
+ 	unsigned long mask;
+@@ -1782,22 +1789,17 @@ static noinline_for_stack bool rcu_gp_init(void)
+ 	 * of RCU's Requirements documentation.
+ 	 */
+ 	WRITE_ONCE(rcu_state.gp_state, RCU_GP_ONOFF);
++	/* Exclude CPU hotplug operations. */
+ 	rcu_for_each_leaf_node(rnp) {
+-		// Wait for CPU-hotplug operations that might have
+-		// started before this grace period did.
+-		smp_mb(); // Pair with barriers used when updating ->ofl_seq to odd values.
+-		firstseq = READ_ONCE(rnp->ofl_seq);
+-		if (firstseq & 0x1)
+-			while (firstseq == READ_ONCE(rnp->ofl_seq))
+-				schedule_timeout_idle(1);  // Can't wake unless RCU is watching.
+-		smp_mb(); // Pair with barriers used when updating ->ofl_seq to even values.
+-		raw_spin_lock(&rcu_state.ofl_lock);
+-		raw_spin_lock_irq_rcu_node(rnp);
++		local_irq_save(flags);
++		arch_spin_lock(&rcu_state.ofl_lock);
++		raw_spin_lock_rcu_node(rnp);
+ 		if (rnp->qsmaskinit == rnp->qsmaskinitnext &&
+ 		    !rnp->wait_blkd_tasks) {
+ 			/* Nothing to do on this leaf rcu_node structure. */
+-			raw_spin_unlock_irq_rcu_node(rnp);
+-			raw_spin_unlock(&rcu_state.ofl_lock);
++			raw_spin_unlock_rcu_node(rnp);
++			arch_spin_unlock(&rcu_state.ofl_lock);
++			local_irq_restore(flags);
+ 			continue;
+ 		}
+ 
+@@ -1832,8 +1834,9 @@ static noinline_for_stack bool rcu_gp_init(void)
+ 				rcu_cleanup_dead_rnp(rnp);
+ 		}
+ 
+-		raw_spin_unlock_irq_rcu_node(rnp);
+-		raw_spin_unlock(&rcu_state.ofl_lock);
++		raw_spin_unlock_rcu_node(rnp);
++		arch_spin_unlock(&rcu_state.ofl_lock);
++		local_irq_restore(flags);
+ 	}
+ 	rcu_gp_slow(gp_preinit_delay); /* Races with CPU hotplug. */
+ 
+@@ -4287,11 +4290,10 @@ void rcu_cpu_starting(unsigned int cpu)
+ 
+ 	rnp = rdp->mynode;
+ 	mask = rdp->grpmask;
+-	WRITE_ONCE(rnp->ofl_seq, rnp->ofl_seq + 1);
+-	WARN_ON_ONCE(!(rnp->ofl_seq & 0x1));
++	local_irq_save(flags);
++	arch_spin_lock(&rcu_state.ofl_lock);
+ 	rcu_dynticks_eqs_online();
+-	smp_mb(); // Pair with rcu_gp_cleanup()'s ->ofl_seq barrier().
+-	raw_spin_lock_irqsave_rcu_node(rnp, flags);
++	raw_spin_lock_rcu_node(rnp);
+ 	WRITE_ONCE(rnp->qsmaskinitnext, rnp->qsmaskinitnext | mask);
+ 	newcpu = !(rnp->expmaskinitnext & mask);
+ 	rnp->expmaskinitnext |= mask;
+@@ -4304,15 +4306,18 @@ void rcu_cpu_starting(unsigned int cpu)
+ 
+ 	/* An incoming CPU should never be blocking a grace period. */
+ 	if (WARN_ON_ONCE(rnp->qsmask & mask)) { /* RCU waiting on incoming CPU? */
++		/* rcu_report_qs_rnp() *really* wants some flags to restore */
++		unsigned long flags2;
++
++		local_irq_save(flags2);
+ 		rcu_disable_urgency_upon_qs(rdp);
+ 		/* Report QS -after- changing ->qsmaskinitnext! */
+-		rcu_report_qs_rnp(mask, rnp, rnp->gp_seq, flags);
++		rcu_report_qs_rnp(mask, rnp, rnp->gp_seq, flags2);
+ 	} else {
+-		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
++		raw_spin_unlock_rcu_node(rnp);
+ 	}
+-	smp_mb(); // Pair with rcu_gp_cleanup()'s ->ofl_seq barrier().
+-	WRITE_ONCE(rnp->ofl_seq, rnp->ofl_seq + 1);
+-	WARN_ON_ONCE(rnp->ofl_seq & 0x1);
++	arch_spin_unlock(&rcu_state.ofl_lock);
++	local_irq_restore(flags);
+ 	smp_mb(); /* Ensure RCU read-side usage follows above initialization. */
+ }
+ 
+@@ -4326,7 +4331,7 @@ void rcu_cpu_starting(unsigned int cpu)
+  */
+ void rcu_report_dead(unsigned int cpu)
+ {
+-	unsigned long flags;
++	unsigned long flags, seq_flags;
+ 	unsigned long mask;
+ 	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
+ 	struct rcu_node *rnp = rdp->mynode;  /* Outgoing CPU's rdp & rnp. */
+@@ -4340,10 +4345,8 @@ void rcu_report_dead(unsigned int cpu)
+ 
+ 	/* Remove outgoing CPU from mask in the leaf rcu_node structure. */
+ 	mask = rdp->grpmask;
+-	WRITE_ONCE(rnp->ofl_seq, rnp->ofl_seq + 1);
+-	WARN_ON_ONCE(!(rnp->ofl_seq & 0x1));
+-	smp_mb(); // Pair with rcu_gp_cleanup()'s ->ofl_seq barrier().
+-	raw_spin_lock(&rcu_state.ofl_lock);
++	local_irq_save(seq_flags);
++	arch_spin_lock(&rcu_state.ofl_lock);
+ 	raw_spin_lock_irqsave_rcu_node(rnp, flags); /* Enforce GP memory-order guarantee. */
+ 	rdp->rcu_ofl_gp_seq = READ_ONCE(rcu_state.gp_seq);
+ 	rdp->rcu_ofl_gp_flags = READ_ONCE(rcu_state.gp_flags);
+@@ -4354,10 +4357,8 @@ void rcu_report_dead(unsigned int cpu)
+ 	}
+ 	WRITE_ONCE(rnp->qsmaskinitnext, rnp->qsmaskinitnext & ~mask);
+ 	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+-	raw_spin_unlock(&rcu_state.ofl_lock);
+-	smp_mb(); // Pair with rcu_gp_cleanup()'s ->ofl_seq barrier().
+-	WRITE_ONCE(rnp->ofl_seq, rnp->ofl_seq + 1);
+-	WARN_ON_ONCE(rnp->ofl_seq & 0x1);
++	arch_spin_unlock(&rcu_state.ofl_lock);
++	local_irq_restore(seq_flags);
+ 
+ 	rdp->cpu_started = false;
+ }
+diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+index 486fc901bd08..4b4bcef8a974 100644
+--- a/kernel/rcu/tree.h
++++ b/kernel/rcu/tree.h
+@@ -56,8 +56,6 @@ struct rcu_node {
+ 				/*  Initialized from ->qsmaskinitnext at the */
+ 				/*  beginning of each grace period. */
+ 	unsigned long qsmaskinitnext;
+-	unsigned long ofl_seq;	/* CPU-hotplug operation sequence count. */
+-				/* Online CPUs for next grace period. */
+ 	unsigned long expmask;	/* CPUs or groups that need to check in */
+ 				/*  to allow the current expedited GP */
+ 				/*  to complete. */
+@@ -355,7 +353,7 @@ struct rcu_state {
+ 	const char *name;			/* Name of structure. */
+ 	char abbr;				/* Abbreviated name. */
+ 
+-	raw_spinlock_t ofl_lock ____cacheline_internodealigned_in_smp;
++	arch_spinlock_t ofl_lock ____cacheline_internodealigned_in_smp;
+ 						/* Synchronize offline with */
+ 						/*  GP pre-initialization. */
+ };
+-- 
+2.34.1
+
