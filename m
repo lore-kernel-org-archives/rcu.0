@@ -2,35 +2,35 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F43BC433F5
-	for <rcu@archiver.kernel.org>; Mon, 28 Mar 2022 11:19:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7FAA0C433F5
+	for <rcu@archiver.kernel.org>; Mon, 28 Mar 2022 11:23:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240612AbiC1LU6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 28 Mar 2022 07:20:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55054 "EHLO
+        id S240898AbiC1LYj (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 28 Mar 2022 07:24:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240618AbiC1LU3 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 28 Mar 2022 07:20:29 -0400
+        with ESMTP id S241278AbiC1LX1 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 28 Mar 2022 07:23:27 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A319655BC1;
-        Mon, 28 Mar 2022 04:18:46 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 359CE58E5C;
+        Mon, 28 Mar 2022 04:20:31 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 163F461164;
-        Mon, 28 Mar 2022 11:18:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A3FDC340F3;
-        Mon, 28 Mar 2022 11:18:44 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 18ACC61197;
+        Mon, 28 Mar 2022 11:20:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B41BC340EC;
+        Mon, 28 Mar 2022 11:20:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1648466325;
-        bh=nzRawaQS045Wza+ALG2+UpplqPvhpXdSly+LWy6udjI=;
+        s=k20201202; t=1648466423;
+        bh=Ho2phXuAtWLZ+sQ5jklOkkrTmMsQa1r7GS6WxYIvvEQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dNCmCipPZzrm1HOaccamotJDYZzMQe3RdrPoqH20iyxjGbIo1DYgEt/wAyfaIqJpU
-         menysWj5rPaMT3Ht1R1JyQjGAb/VxYx5n/jQebqRR96VtqQC6/wS0ylSnN8+UN20s3
-         QMufU1dklsxsMLbtFYpkhYPdLEG4vm7k9L5ARE9QOvF42nOxguk6dgTtXjwbiGrg6H
-         7U/vgnPiD9d/rSQhx9ZorBY3bquEB/tncwxw0dIFlJRueZn+yTmSskJtGw6EEvUJeh
-         5jjskZ9TD7T2RUiY4HvqTau65dqP/btcptLgi3wkaIUBLbk+uMf/yS2Ao3YaZpjo3t
-         xYuw1ErCZjgcg==
+        b=qLTU24t1c/41MHcqW2SdadGMbeKKrNuj1Jkl9vGUL64B9Gh9KqVclb1w4sPqvnYYa
+         2hKDCyAmbx+5l0tQ+ekjmsuLQXQhulspfmNp57y6E4g/DDoW+W8NOMe7PLe1/Dfzvx
+         AOQT5X3v0Nqhr0oer0oJsDxAt20q+FvvexDXvAY4So668udVxmX7vU7DbzC8ICrga4
+         NgXvOcLY1sF5Ca8lEAmjy4v8zyuuvFSUE/guBD85fD0bI8r6wCDJ7Evk2o04Ipgftp
+         htA8XFlavnYRpUDqhiNWoibd18CQQG8u3OrcNbiehda0lUa45xsQXTcYBcDQzI+MaI
+         1lulNN0c5DvOA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
@@ -38,12 +38,12 @@ Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
         Frederic Weisbecker <frederic@kernel.org>,
         Sasha Levin <sashal@kernel.org>, quic_neeraju@quicinc.com,
         josh@joshtriplett.org, rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.17 08/43] rcu: Mark writes to the rcu_segcblist structure's ->flags field
-Date:   Mon, 28 Mar 2022 07:17:52 -0400
-Message-Id: <20220328111828.1554086-8-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.16 07/35] rcu: Mark writes to the rcu_segcblist structure's ->flags field
+Date:   Mon, 28 Mar 2022 07:19:43 -0400
+Message-Id: <20220328112011.1555169-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220328111828.1554086-1-sashal@kernel.org>
-References: <20220328111828.1554086-1-sashal@kernel.org>
+In-Reply-To: <20220328112011.1555169-1-sashal@kernel.org>
+References: <20220328112011.1555169-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -72,7 +72,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
-index e373fbe44da5..431cee212467 100644
+index 9a19328ff251..5d405943823e 100644
 --- a/kernel/rcu/rcu_segcblist.h
 +++ b/kernel/rcu/rcu_segcblist.h
 @@ -56,13 +56,13 @@ static inline long rcu_segcblist_n_cbs(struct rcu_segcblist *rsclp)
