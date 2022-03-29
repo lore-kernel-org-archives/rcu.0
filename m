@@ -2,95 +2,87 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F0D6C433FE
-	for <rcu@archiver.kernel.org>; Mon, 28 Mar 2022 11:24:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CABDBC433F5
+	for <rcu@archiver.kernel.org>; Tue, 29 Mar 2022 22:26:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241189AbiC1LZz (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 28 Mar 2022 07:25:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40160 "EHLO
+        id S236937AbiC2W2W (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 29 Mar 2022 18:28:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241708AbiC1LYI (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 28 Mar 2022 07:24:08 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72F9055BFB;
-        Mon, 28 Mar 2022 04:21:44 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 54458611B5;
-        Mon, 28 Mar 2022 11:21:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C3F6C34112;
-        Mon, 28 Mar 2022 11:21:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1648466503;
-        bh=Ho2phXuAtWLZ+sQ5jklOkkrTmMsQa1r7GS6WxYIvvEQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LyCjFEmoinZSvBOYO+TvDVI3W4CCg33cxO590W2Nd/3UekArBaPaecJloTkDQnAl+
-         70TZmlJTUzKarDEA8HwCjl0utBKBF9JkmK3w2SdtL++c6nbUpo+Xkk/3zK/eucsfU6
-         Ou1N9uJY4QHrAkw8br1Yfx3aboHZ+grlMmKmuYfCFslOA+dccxSxDYlYRYgQ0g7bnv
-         UOcDoERdijrioO9tRhd01iAvNe0yJ8xcqVnY4NcKiPPgi3iaqEqsI3JNaeqERcqKBz
-         Ys0ntH6+QOiQwlzDndPqoE+mxUsZz42z/RFIjaEL5HCJBQejcWtkkpOtZNqUcPOzys
-         7zkMvl/zPxEag==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Zhouyi Zhou <zhouzhouyi@gmail.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, quic_neeraju@quicinc.com,
-        josh@joshtriplett.org, rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 06/29] rcu: Mark writes to the rcu_segcblist structure's ->flags field
-Date:   Mon, 28 Mar 2022 07:21:08 -0400
-Message-Id: <20220328112132.1555683-6-sashal@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220328112132.1555683-1-sashal@kernel.org>
-References: <20220328112132.1555683-1-sashal@kernel.org>
+        with ESMTP id S237039AbiC2W2V (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 29 Mar 2022 18:28:21 -0400
+Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6380F18D9A6;
+        Tue, 29 Mar 2022 15:26:37 -0700 (PDT)
+Received: by mail-qk1-f178.google.com with SMTP id p25so15299648qkj.10;
+        Tue, 29 Mar 2022 15:26:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=O3foGavVNwfbREiKmr8AbNd4bifzDoligkt5atunexc=;
+        b=J1ALKYPb4gnohsP4AJkNNz0pE2Y7AB9omrosmGi1KjZ8Z5FPTCDjAwtAaRfKeDCVH3
+         goDKd55ZIr3Bg5ARTzrP4GkudWn+D0To+1PnXttK3+H4lLmNprgyCBG3819raKODpRod
+         aFqDJ/o/j5PWEUsuLztSyDXFqdEO8YruMPol9pajrEDKAGBtZbs0nG7eHavjkM+MftZh
+         yc+zxyTu/OSwwh2vZCfw+GNMlJQY6jZljA5NIyblYl5S5tSBXArjpjSqdth7t9Uxn63F
+         pq8299TFZGTPPZ9+jrugSP/EiT8n90vCiQRPumHaSzOCy19X3Trtmg+rKyllU/GuYYTM
+         1ncg==
+X-Gm-Message-State: AOAM5312Put3DvhTiYAV1Jyw13Y4O4zQ/urhhIwo8VuEE4/Jz2zell+U
+        QTJc6+b1Z3KYzc3SieM4+Oo=
+X-Google-Smtp-Source: ABdhPJx6vBYBzYBY5PYN3s/bKFLNClcQvdisQY9+ZzrlmCGx1ilSLJpdGJ5aJ12Hrp9UY8lkCB/WzA==
+X-Received: by 2002:a37:a54b:0:b0:67b:309c:e9e1 with SMTP id o72-20020a37a54b000000b0067b309ce9e1mr22707924qke.178.1648592796253;
+        Tue, 29 Mar 2022 15:26:36 -0700 (PDT)
+Received: from localhost (fwdproxy-ash-008.fbsv.net. [2a03:2880:20ff:8::face:b00c])
+        by smtp.gmail.com with ESMTPSA id g5-20020ac87f45000000b002e125ef0ba3sm16026890qtk.82.2022.03.29.15.26.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Mar 2022 15:26:35 -0700 (PDT)
+From:   David Vernet <void@manifault.com>
+To:     frederic@kernel.org, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, josh@joshtriplett.org,
+        linux-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
+        paulmck@kernel.org, quic_neeraju@quicinc.com, rcu@vger.kernel.org,
+        rostedt@goodmis.org
+Subject: [PATCH] rcu_sync: Fix comment to properly reflect rcu_sync_exit() behavior
+Date:   Tue, 29 Mar 2022 15:26:13 -0700
+Message-Id: <20220329222612.1001586-1-void@manifault.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+rcu_sync_enter() is an rcu_sync API used by updaters which forces RCU
+readers (e.g. percpu-rwsem) to take a slow-path during an update. It does
+this by setting the gp_state of the rcu_sync object to GP_ENTER (i.e. > 0).
+In this state, readers will take a "slow path", such as having percpu-rwsem
+readers wait on a semaphore rather than just incrementing a reader count.
+When the updater has completed their work, they must invoke rcu_sync_exit()
+to signal to readers that they may again take their fastpaths.
 
-[ Upstream commit c09929031018913b5783872a8b8cdddef4a543c7 ]
+rcu_sync_enter() currently has a comment that stipulates that a later call
+to rcu_sync_exit() (by an updater) will re-enable reader "slowpaths". This
+patch corrects the comment to properly reflect that rcu_sync_exit()
+re-enables reader fastpaths.
 
-KCSAN reports data races between the rcu_segcblist_clear_flags() and
-rcu_segcblist_set_flags() functions, though misreporting the latter
-as a call to rcu_segcblist_is_enabled() from call_rcu().  This commit
-converts the updates of this field to WRITE_ONCE(), relying on the
-resulting unmarked reads to continue to detect buggy concurrent writes
-to this field.
-
-Reported-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Frederic Weisbecker <frederic@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: David Vernet <void@manifault.com>
 ---
- kernel/rcu/rcu_segcblist.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/rcu/sync.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
-index 9a19328ff251..5d405943823e 100644
---- a/kernel/rcu/rcu_segcblist.h
-+++ b/kernel/rcu/rcu_segcblist.h
-@@ -56,13 +56,13 @@ static inline long rcu_segcblist_n_cbs(struct rcu_segcblist *rsclp)
- static inline void rcu_segcblist_set_flags(struct rcu_segcblist *rsclp,
- 					   int flags)
- {
--	rsclp->flags |= flags;
-+	WRITE_ONCE(rsclp->flags, rsclp->flags | flags);
- }
- 
- static inline void rcu_segcblist_clear_flags(struct rcu_segcblist *rsclp,
- 					     int flags)
- {
--	rsclp->flags &= ~flags;
-+	WRITE_ONCE(rsclp->flags, rsclp->flags & ~flags);
- }
- 
- static inline bool rcu_segcblist_test_flags(struct rcu_segcblist *rsclp,
+diff --git a/kernel/rcu/sync.c b/kernel/rcu/sync.c
+index 33d896d85902..5cefc702158f 100644
+--- a/kernel/rcu/sync.c
++++ b/kernel/rcu/sync.c
+@@ -111,7 +111,7 @@ static void rcu_sync_func(struct rcu_head *rhp)
+  * a slowpath during the update.  After this function returns, all
+  * subsequent calls to rcu_sync_is_idle() will return false, which
+  * tells readers to stay off their fastpaths.  A later call to
+- * rcu_sync_exit() re-enables reader slowpaths.
++ * rcu_sync_exit() re-enables reader fastpaths.
+  *
+  * When called in isolation, rcu_sync_enter() must wait for a grace
+  * period, however, closely spaced calls to rcu_sync_enter() can
 -- 
-2.34.1
+2.30.2
 
