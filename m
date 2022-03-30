@@ -2,104 +2,166 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 62E78C433EF
-	for <rcu@archiver.kernel.org>; Wed, 30 Mar 2022 19:08:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1346BC433EF
+	for <rcu@archiver.kernel.org>; Wed, 30 Mar 2022 19:35:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350494AbiC3TJr (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 30 Mar 2022 15:09:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47428 "EHLO
+        id S1350054AbiC3Th3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 30 Mar 2022 15:37:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350513AbiC3THq (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 30 Mar 2022 15:07:46 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9ACC3206D;
-        Wed, 30 Mar 2022 12:05:59 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 9C2D1B81D56;
-        Wed, 30 Mar 2022 19:05:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A0D2C340EE;
-        Wed, 30 Mar 2022 19:05:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1648667157;
-        bh=K/Hh5iZiT3Tgk4PM6Gqemuqu9GkWgUOCQ66X/KVmIBg=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=XznOoE8f3EmTAn1Cpr8DrpPIzGWff+sVsZjMOCNpPyi34T+KR2Frr8ybxfnXrNy60
-         +VhQ/Eg5u0Qt9tTncB+cykfd0xQo23Pd6o3gTpq2gjgV4ZjZ4q2sb6GVKXJlaVqOUN
-         MaKD1A/eVUzHIZyYBuqgiTCzgSAI7Q8vN/0gifKzw4WLUW3skKgTnIX3iGL5f3M97Y
-         6VTFeiyTHNQf4Anw3mtnu9rabM9fguWihBQBxIhTyofYZoYw95MMewQRe8I4LPXrbf
-         RCtTtVfOfcnfvljz6MW3mQxGV4o8flHEjFZTYUNSvDPcIrHM7XN9eHf+msD6JxC414
-         6A3nJ/N7W9MiQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id EEA585C12E4; Wed, 30 Mar 2022 12:05:56 -0700 (PDT)
-Date:   Wed, 30 Mar 2022 12:05:56 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Zqiang <qiang1.zhang@intel.com>
-Cc:     frederic@kernel.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu-tasks: Check the atomic variable
- trc_n_readers_need_end again when wait timeout
-Message-ID: <20220330190556.GL4285@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220330112014.2587148-1-qiang1.zhang@intel.com>
+        with ESMTP id S243020AbiC3Th0 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 30 Mar 2022 15:37:26 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2D1B43EF4;
+        Wed, 30 Mar 2022 12:35:39 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id bu29so37734259lfb.0;
+        Wed, 30 Mar 2022 12:35:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IFsqv1oaAdQe9qXxPZqxM0d4mVwloIwzyCl6BJ2d4mA=;
+        b=JtkEzWQSfPteeoho9q+o1Fj8ns9onoRt427Rl2xx3ZMkFC+IfmukecerLvdoJH1WrM
+         9IB5ERM6zto0lxq98wm6YTj3JaXgzTsB/9xBWSbeGKmG+FMkNDH3/AEjMjQqepqIZgW0
+         LOUMvvLPWP7HMRQCFsml7EE2KjXZU7hkxGfNj4Rv8f7sqyKmzSFHzf5oNMJRElWJQjYf
+         DDvUnDgAtPcjYLKtpg0SF1NT8kcjYF0JpJQs71LRKeiAdFkk24l4GgWGqSzUQQL5N3WQ
+         K04wuCRRT/6W85JJIjSQYfyia+2caM6zU1Mjkaz8xgr0zB8qrt5TUTxLVrKmRsWLdEQ4
+         WB4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IFsqv1oaAdQe9qXxPZqxM0d4mVwloIwzyCl6BJ2d4mA=;
+        b=htBFkipLFzQB4xWIra+CU08pdp2ru03tsNYKHsShQIG2AdHs2f7ZCOu/kc7Q3Wt4TZ
+         Tx6RSuYVSQ3LX1hm2IE2q8Dk3SlCgClOQ7dZzQ4Zxae73Hajeyk9VggCZOBgDz5dKvS1
+         C6jki50Jm9uhY7IJkjI9kspA0zkxPk/WU7FBcR/mzljcMw2MnN+B/au95kbt7SgzYKTr
+         yfTIn2b748OGnH5n0Y7lXqRYQjOl3nRhAeHDZo8IjGIxkC1Do5OPuC5JZ03JWjyQkycz
+         7Ix9p1MP2Qfrd5OL+tpkMTYWCy+6KnlpR1VfpRg/x3J/abnIRbUcqnMQesZGUPAEEBJQ
+         +PKg==
+X-Gm-Message-State: AOAM530sYwJPfc8fd7qVT1mwv0gWUBNUE2DI/haXYy0mnV6kIxe8I/vw
+        kLTLyJbjMwh2u7TrPAWVv2cECUGr0VAWmQ==
+X-Google-Smtp-Source: ABdhPJzYxrayHLEq28gi1pY81vEHwqW/E31kKsNkQnePYcjsD6l1PI6JGyTkqCPk/rEwwje4TvX7qA==
+X-Received: by 2002:a05:6512:3e15:b0:44a:4d88:4dcf with SMTP id i21-20020a0565123e1500b0044a4d884dcfmr7810659lfv.227.1648668935218;
+        Wed, 30 Mar 2022 12:35:35 -0700 (PDT)
+Received: from pc638.lan ([155.137.26.201])
+        by smtp.gmail.com with ESMTPSA id y9-20020a2e95c9000000b0024af5798ebasm58782ljh.49.2022.03.30.12.35.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Mar 2022 12:35:34 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Wed, 30 Mar 2022 21:35:26 +0200
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     "Zhang, Qiang1" <qiang1.zhang@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "frederic@kernel.org" <frederic@kernel.org>,
+        "urezki@gmail.com" <urezki@gmail.com>,
+        "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>,
+        "josh@joshtriplett.org" <josh@joshtriplett.org>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3] rcu: Only boost rcu reader tasks with lower priority
+ than boost kthreads
+Message-ID: <YkSw/oc496GftWld@pc638.lan>
+References: <20220311022226.595905-1-qiang1.zhang@intel.com>
+ <Yist4IWWR/6BZzeK@linutronix.de>
+ <PH0PR11MB58802B8804EDFFC73BA676F2DA0D9@PH0PR11MB5880.namprd11.prod.outlook.com>
+ <PH0PR11MB58807AD9A1BAA122218B92DBDA0D9@PH0PR11MB5880.namprd11.prod.outlook.com>
+ <20220316165931.GI4285@paulmck-ThinkPad-P17-Gen-1>
+ <PH0PR11MB58806B59FC8148C9C5160A5FDA139@PH0PR11MB5880.namprd11.prod.outlook.com>
+ <20220318145738.GY4285@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220330112014.2587148-1-qiang1.zhang@intel.com>
+In-Reply-To: <20220318145738.GY4285@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Mar 30, 2022 at 07:20:14PM +0800, Zqiang wrote:
-> When the trc_wait waitqueue timeout, the atomic variable
-> trc_n_readers_need_end need to be checked again, perhaps the
-> conditions have been established at this time, avoid invalid
-> stall information output.
-
-But are you actually seeing this invalid stall information?  Either way,
-please seem my comments and question below.
-
-Please don't get me wrong, we do have similar checks for normal vanilla
-RCU stall warnings, for example, this statement in print_other_cpu_stall()
-in kernel/rcu/tree_stall.h:
-
-	pr_err("INFO: Stall ended before state dump start\n");
-
-However, the approach used there did benefit from significant real-world
-experience with its absence.  ;-)
-
-							Thanx, Paul
-
-> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-> ---
->  kernel/rcu/tasks.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> On Fri, Mar 18, 2022 at 05:50:35AM +0000, Zhang, Qiang1 wrote:
+> > On Sat, Mar 12, 2022 at 03:11:04AM +0000, Zhang, Qiang1 wrote:
+> > > On 2022-03-11 10:22:26 [+0800], Zqiang wrote:
+> > > > When RCU_BOOST is enabled, the boost kthreads will boosting readers
+> > > > who are blocking a given grace period, if the current reader tasks
+> > >                                        ^ Period.
+> > > 
+> > > > have a higher priority than boost kthreads(the boost kthreads priority
+> > > > not always 1, if the kthread_prio is set), 
+> > > 
+> > > >>This confuses me:
+> > > >>- Why does this matter
+> > > 
+> > > In preempt-rt system, if the kthread_prio is not set, it prio is 1.
+> > > the boost kthreads can preempt almost  rt task, It will affect
+> > > the real-time performance of some user rt  tasks.  In preempt-rt systems,
+> > > in most scenarios, this kthread_prio will be configured.
+> > >
+> > >Just following up...  These questions might have been answered, but
+> > >I am not seeing those answers right off-hand.
+> > >
+> > >Is the grace-period latency effect of choosing not to boost high-priority
+> > >tasks visible at the system level in any actual workload?
+> > >
+> > >Suppose that a SCHED_DEADLINE task has exhausted its time quantum,
+> > >and has thus been preempted within an RCU read-side critical section.
+> > >Can priority boosting from a SCHED_FIFO prio-1 task cause it to start
+> > >running?
+> > >
+> > >Do delays in RCU priority boosting cause excessive grace-period
+> > >latencies on real workloads, even when all the to-be-boosted
+> > >tasks are SCHED_OTHER?
+> > >
+> > >Thoughts?
+> > 
+> > I have tested this modification these days,  I originally planned to generate a Kconfig option to control
+> > whether to skip tasks with higher priority than boost kthreads. but it doesn't seem necessary
+> >  because I find it's optimization is not particularly
+> > obvious in the actual scene, I find that tasks with higher priority than boost kthreads 
+> > will quickly exit the rcu critical area , even if be preempted in the rcu critical area.
+> > sorry for the noise.
 > 
-> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> index 65d6e21a607a..b73a2b362d6b 100644
-> --- a/kernel/rcu/tasks.h
-> +++ b/kernel/rcu/tasks.h
-> @@ -1544,7 +1544,7 @@ static void rcu_tasks_trace_postgp(struct rcu_tasks *rtp)
->  				trc_wait,
->  				atomic_read(&trc_n_readers_need_end) == 0,
->  				READ_ONCE(rcu_task_stall_timeout));
-
-If I understand correctly, this patch is intended to handle a situation
-where the wait_event_idle_exclusive_timeout() timed out, but where the
-value of trc_n_readers_need_end decreased to zero just at this point.
-If so, please see my question below.  If not, please show me the exact
-sequence of events leading up to the problem.
-
-> -		if (ret)
-> +		if (ret || !atomic_read(&trc_n_readers_need_end))
->  			break;  // Count reached zero.
-
-Couldn't the value of trc_n_readers_need_end decrease to zero right
-here, still resulting in invalid stall information?
-
->  		// Stall warning time, so make a list of the offenders.
->  		rcu_read_lock();
-> -- 
-> 2.25.1
+> Thank you for getting back with this information, and no need to
+> apologize.  We all get excited about a potential change from time to time.
+> Part of us maintainers' jobs is to ask hard questions when that appears
+> to be happening.  ;-)
 > 
+> If you have continued interest in this area, it would be good to keep
+> looking.  After all, neither RCU expedited grace periods nor RCU priority
+> boosting were designed with these new use cases in mind, so it is quite
+> likely that there is a useful change to be made in there somewhere.
+> 
+> You see, RCU expedited grace periods were designed for throughput rather
+> than latency.  The original use case was an old networking API that
+> needed to wait for a grace period on each and every one of a series of
+> some tens of thousands of system calls.  If one or two of those system
+> calls took a few hundred milliseconds, but the rest completed in less than
+> a millisecond, no harm done.  (Yes, there are now newer APIs that allow
+> many changes to be made with only the one grace-period wait.  But the
+> kernel must continue to support the old API: Never Break Userspace.)
+> 
+> For its part, RCU priority boosting was originally designed for
+> debuggging.  The point was to avoid OOMing the system when someone
+> misconfigured their application's real-time priorities.  As you know,
+> such misconfiguration can easily prevent low-priority RCU readers from
+> ever completing.
+> 
+> So it is reasonably likely that some change or another is needed.  After
+> all, new use cases require new functionality and new fixes.  The trick
+> is figuring out which change makes sense amongst the huge group of other
+> possible changes that each add much more complexity than improvement.
+> But part of the process of finding that change that makes sense is trying
+> out quite a few changes that don't help all that much.  ;-)
+> 
+Sorry for the late response, but i think i should comment on it since i
+have tried to simulate and test this patch on Android device. Basically
+we do have RT tasks in Android and i do not see that the patch that is
+in question makes any difference. Actually i was not able to trigger its
+functionality at all.
+
+From the other hand, i have tried to simulate it making an RT environment
+with SCHED_FIFO tasks and some synchronize_rcu_expedited() users. Indeed
+i can trigger it but it is very specific env. and number of triggering or
+tasks bypassing(high prio) is almost zero.
+
+--
+Uladzislau Rezki
