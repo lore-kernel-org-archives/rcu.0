@@ -2,166 +2,106 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1346BC433EF
-	for <rcu@archiver.kernel.org>; Wed, 30 Mar 2022 19:35:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4ABC6C433F5
+	for <rcu@archiver.kernel.org>; Wed, 30 Mar 2022 20:16:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350054AbiC3Th3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 30 Mar 2022 15:37:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38272 "EHLO
+        id S232037AbiC3USM (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 30 Mar 2022 16:18:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243020AbiC3Th0 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 30 Mar 2022 15:37:26 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2D1B43EF4;
-        Wed, 30 Mar 2022 12:35:39 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id bu29so37734259lfb.0;
-        Wed, 30 Mar 2022 12:35:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=IFsqv1oaAdQe9qXxPZqxM0d4mVwloIwzyCl6BJ2d4mA=;
-        b=JtkEzWQSfPteeoho9q+o1Fj8ns9onoRt427Rl2xx3ZMkFC+IfmukecerLvdoJH1WrM
-         9IB5ERM6zto0lxq98wm6YTj3JaXgzTsB/9xBWSbeGKmG+FMkNDH3/AEjMjQqepqIZgW0
-         LOUMvvLPWP7HMRQCFsml7EE2KjXZU7hkxGfNj4Rv8f7sqyKmzSFHzf5oNMJRElWJQjYf
-         DDvUnDgAtPcjYLKtpg0SF1NT8kcjYF0JpJQs71LRKeiAdFkk24l4GgWGqSzUQQL5N3WQ
-         K04wuCRRT/6W85JJIjSQYfyia+2caM6zU1Mjkaz8xgr0zB8qrt5TUTxLVrKmRsWLdEQ4
-         WB4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IFsqv1oaAdQe9qXxPZqxM0d4mVwloIwzyCl6BJ2d4mA=;
-        b=htBFkipLFzQB4xWIra+CU08pdp2ru03tsNYKHsShQIG2AdHs2f7ZCOu/kc7Q3Wt4TZ
-         Tx6RSuYVSQ3LX1hm2IE2q8Dk3SlCgClOQ7dZzQ4Zxae73Hajeyk9VggCZOBgDz5dKvS1
-         C6jki50Jm9uhY7IJkjI9kspA0zkxPk/WU7FBcR/mzljcMw2MnN+B/au95kbt7SgzYKTr
-         yfTIn2b748OGnH5n0Y7lXqRYQjOl3nRhAeHDZo8IjGIxkC1Do5OPuC5JZ03JWjyQkycz
-         7Ix9p1MP2Qfrd5OL+tpkMTYWCy+6KnlpR1VfpRg/x3J/abnIRbUcqnMQesZGUPAEEBJQ
-         +PKg==
-X-Gm-Message-State: AOAM530sYwJPfc8fd7qVT1mwv0gWUBNUE2DI/haXYy0mnV6kIxe8I/vw
-        kLTLyJbjMwh2u7TrPAWVv2cECUGr0VAWmQ==
-X-Google-Smtp-Source: ABdhPJzYxrayHLEq28gi1pY81vEHwqW/E31kKsNkQnePYcjsD6l1PI6JGyTkqCPk/rEwwje4TvX7qA==
-X-Received: by 2002:a05:6512:3e15:b0:44a:4d88:4dcf with SMTP id i21-20020a0565123e1500b0044a4d884dcfmr7810659lfv.227.1648668935218;
-        Wed, 30 Mar 2022 12:35:35 -0700 (PDT)
-Received: from pc638.lan ([155.137.26.201])
-        by smtp.gmail.com with ESMTPSA id y9-20020a2e95c9000000b0024af5798ebasm58782ljh.49.2022.03.30.12.35.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Mar 2022 12:35:34 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Wed, 30 Mar 2022 21:35:26 +0200
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     "Zhang, Qiang1" <qiang1.zhang@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        "frederic@kernel.org" <frederic@kernel.org>,
-        "urezki@gmail.com" <urezki@gmail.com>,
-        "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>,
-        "josh@joshtriplett.org" <josh@joshtriplett.org>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3] rcu: Only boost rcu reader tasks with lower priority
- than boost kthreads
-Message-ID: <YkSw/oc496GftWld@pc638.lan>
-References: <20220311022226.595905-1-qiang1.zhang@intel.com>
- <Yist4IWWR/6BZzeK@linutronix.de>
- <PH0PR11MB58802B8804EDFFC73BA676F2DA0D9@PH0PR11MB5880.namprd11.prod.outlook.com>
- <PH0PR11MB58807AD9A1BAA122218B92DBDA0D9@PH0PR11MB5880.namprd11.prod.outlook.com>
- <20220316165931.GI4285@paulmck-ThinkPad-P17-Gen-1>
- <PH0PR11MB58806B59FC8148C9C5160A5FDA139@PH0PR11MB5880.namprd11.prod.outlook.com>
- <20220318145738.GY4285@paulmck-ThinkPad-P17-Gen-1>
+        with ESMTP id S1350967AbiC3USJ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 30 Mar 2022 16:18:09 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D424413DF8;
+        Wed, 30 Mar 2022 13:16:21 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5B6C0615E7;
+        Wed, 30 Mar 2022 20:16:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF1EDC340EC;
+        Wed, 30 Mar 2022 20:16:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1648671380;
+        bh=dFReK6G/ccqgxyvll3RmFnqr4xK5lD8zAWj5KJcsY9k=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=dEQJQG9lABs7yWkrhMxL9f9z14ZF87wT3ku3wy2CbRtmMLAIVhVqvqrRRlTev1z4s
+         POhXsVvUz9Kz1UJkHsUofSmTNFDoq8zKSZRhpxkEN+Njo7u8dWt7/2UsJDQEFlxrr4
+         SJamsoRTAklkUWzUuIdbe2pKhZZSUWlAa3K+cafOlGwrXFEJAOgmqsbV+r6DKrBb1H
+         +8N1XPu8syL3CkAkeW+5r6i+X9fAPNj5BKhFkVaMaaabUMzCBi3HV6/3DNbMpcsyvA
+         epip0Sy5+tVn22fpHk5vA3+ht1E9g7NMfeSVGGdqWERPsTpQlGsvGqiKOBOqnqwmm1
+         yIZR68TNVIFNA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 4D6895C12E4; Wed, 30 Mar 2022 13:16:20 -0700 (PDT)
+Date:   Wed, 30 Mar 2022 13:16:20 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Zqiang <qiang1.zhang@intel.com>
+Cc:     frederic@kernel.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu: Put the irq work into hard interrupt context for
+ execution
+Message-ID: <20220330201620.GM4285@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20220330060012.2470054-1-qiang1.zhang@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220318145738.GY4285@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20220330060012.2470054-1-qiang1.zhang@intel.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-> On Fri, Mar 18, 2022 at 05:50:35AM +0000, Zhang, Qiang1 wrote:
-> > On Sat, Mar 12, 2022 at 03:11:04AM +0000, Zhang, Qiang1 wrote:
-> > > On 2022-03-11 10:22:26 [+0800], Zqiang wrote:
-> > > > When RCU_BOOST is enabled, the boost kthreads will boosting readers
-> > > > who are blocking a given grace period, if the current reader tasks
-> > >                                        ^ Period.
-> > > 
-> > > > have a higher priority than boost kthreads(the boost kthreads priority
-> > > > not always 1, if the kthread_prio is set), 
-> > > 
-> > > >>This confuses me:
-> > > >>- Why does this matter
-> > > 
-> > > In preempt-rt system, if the kthread_prio is not set, it prio is 1.
-> > > the boost kthreads can preempt almost  rt task, It will affect
-> > > the real-time performance of some user rt  tasks.  In preempt-rt systems,
-> > > in most scenarios, this kthread_prio will be configured.
-> > >
-> > >Just following up...  These questions might have been answered, but
-> > >I am not seeing those answers right off-hand.
-> > >
-> > >Is the grace-period latency effect of choosing not to boost high-priority
-> > >tasks visible at the system level in any actual workload?
-> > >
-> > >Suppose that a SCHED_DEADLINE task has exhausted its time quantum,
-> > >and has thus been preempted within an RCU read-side critical section.
-> > >Can priority boosting from a SCHED_FIFO prio-1 task cause it to start
-> > >running?
-> > >
-> > >Do delays in RCU priority boosting cause excessive grace-period
-> > >latencies on real workloads, even when all the to-be-boosted
-> > >tasks are SCHED_OTHER?
-> > >
-> > >Thoughts?
-> > 
-> > I have tested this modification these days,  I originally planned to generate a Kconfig option to control
-> > whether to skip tasks with higher priority than boost kthreads. but it doesn't seem necessary
-> >  because I find it's optimization is not particularly
-> > obvious in the actual scene, I find that tasks with higher priority than boost kthreads 
-> > will quickly exit the rcu critical area , even if be preempted in the rcu critical area.
-> > sorry for the noise.
+On Wed, Mar 30, 2022 at 02:00:12PM +0800, Zqiang wrote:
+> In PREEMPT_RT kernel, if irq work flags is not set, it will be
+> executed in per-CPU irq_work kthreads. set IRQ_WORK_HARD_IRQ flags
+> to irq work, put it in the context of hard interrupt execution,
+> accelerate scheduler to re-evaluate.
 > 
-> Thank you for getting back with this information, and no need to
-> apologize.  We all get excited about a potential change from time to time.
-> Part of us maintainers' jobs is to ask hard questions when that appears
-> to be happening.  ;-)
+> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+> ---
+>  kernel/rcu/tree.c        | 2 +-
+>  kernel/rcu/tree_plugin.h | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
 > 
-> If you have continued interest in this area, it would be good to keep
-> looking.  After all, neither RCU expedited grace periods nor RCU priority
-> boosting were designed with these new use cases in mind, so it is quite
-> likely that there is a useful change to be made in there somewhere.
-> 
-> You see, RCU expedited grace periods were designed for throughput rather
-> than latency.  The original use case was an old networking API that
-> needed to wait for a grace period on each and every one of a series of
-> some tens of thousands of system calls.  If one or two of those system
-> calls took a few hundred milliseconds, but the rest completed in less than
-> a millisecond, no harm done.  (Yes, there are now newer APIs that allow
-> many changes to be made with only the one grace-period wait.  But the
-> kernel must continue to support the old API: Never Break Userspace.)
-> 
-> For its part, RCU priority boosting was originally designed for
-> debuggging.  The point was to avoid OOMing the system when someone
-> misconfigured their application's real-time priorities.  As you know,
-> such misconfiguration can easily prevent low-priority RCU readers from
-> ever completing.
-> 
-> So it is reasonably likely that some change or another is needed.  After
-> all, new use cases require new functionality and new fixes.  The trick
-> is figuring out which change makes sense amongst the huge group of other
-> possible changes that each add much more complexity than improvement.
-> But part of the process of finding that change that makes sense is trying
-> out quite a few changes that don't help all that much.  ;-)
-> 
-Sorry for the late response, but i think i should comment on it since i
-have tried to simulate and test this patch on Android device. Basically
-we do have RT tasks in Android and i do not see that the patch that is
-in question makes any difference. Actually i was not able to trigger its
-functionality at all.
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index e2ffbeceba69..a69587773a85 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -678,7 +678,7 @@ static void late_wakeup_func(struct irq_work *work)
+>  }
+>  
+>  static DEFINE_PER_CPU(struct irq_work, late_wakeup_work) =
+> -	IRQ_WORK_INIT(late_wakeup_func);
+> +	IRQ_WORK_INIT_HARD(late_wakeup_func);
 
-From the other hand, i have tried to simulate it making an RT environment
-with SCHED_FIFO tasks and some synchronize_rcu_expedited() users. Indeed
-i can trigger it but it is very specific env. and number of triggering or
-tasks bypassing(high prio) is almost zero.
+This is used only by rcu_irq_work_resched(), which is invoked only by
+rcu_user_enter(), which is never invoked until userspace is enabled,
+by which time all of the various kthreads will have been spawned, correct?
 
---
-Uladzislau Rezki
+Either way, please show me the exact sequence of events that lead to a
+problem with the current IRQ_WORK_INIT().
+
+>  /*
+>   * If either:
+> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> index 3037c2536e1f..cf7bd28af8ef 100644
+> --- a/kernel/rcu/tree_plugin.h
+> +++ b/kernel/rcu/tree_plugin.h
+> @@ -661,7 +661,7 @@ static void rcu_read_unlock_special(struct task_struct *t)
+>  			    expboost && !rdp->defer_qs_iw_pending && cpu_online(rdp->cpu)) {
+>  				// Get scheduler to re-evaluate and call hooks.
+>  				// If !IRQ_WORK, FQS scan will eventually IPI.
+> -				init_irq_work(&rdp->defer_qs_iw, rcu_preempt_deferred_qs_handler);
+> +				rdp->defer_qs_iw = IRQ_WORK_INIT_HARD(rcu_preempt_deferred_qs_handler);
+>  				rdp->defer_qs_iw_pending = true;
+>  				irq_work_queue_on(&rdp->defer_qs_iw, rdp->cpu);
+>  			}
+
+OK, in theory, rcu_read_unlock() could get to this point before all of
+the various kthreads were spawned.  In practice, the next time that the
+boot CPU went idle, the end of the quiescent state would be noticed.
+
+Or has this been failing in some other manner?  If so, please let me
+know the exact sequence of events.
+
+							Thanx, Paul
