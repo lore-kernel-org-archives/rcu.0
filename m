@@ -2,120 +2,122 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E78CC433F5
-	for <rcu@archiver.kernel.org>; Wed, 30 Mar 2022 14:41:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BADE0C433F5
+	for <rcu@archiver.kernel.org>; Wed, 30 Mar 2022 18:40:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347028AbiC3Omu (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 30 Mar 2022 10:42:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47132 "EHLO
+        id S1350050AbiC3SmS (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 30 Mar 2022 14:42:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244502AbiC3Omt (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 30 Mar 2022 10:42:49 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BE6C2E9F1;
-        Wed, 30 Mar 2022 07:41:03 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id j13so20603363plj.8;
-        Wed, 30 Mar 2022 07:41:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:content-language:to:cc:from
-         :subject:content-transfer-encoding;
-        bh=IcfBD0sELg/ZTWJkVPat8J+2pY01NDhVI/wBavqAMyY=;
-        b=bM1OyGc5GcmKq5WOuU4NxOxSEXvy8CD5AnWC9L9XxUrGyJpMWMD8e6DNkdDaZnxurY
-         Lx/T2wjGuaPYQ9WDPjnhrfw7I12DG9A0U0Z7SPaLsmUcz0VvvCd2qViYNTaJKRwyx8Dv
-         TB0PDWRxpQT2U6Yre3Je702HePGq/bQKp9ZfWApEwcISWs2OyxS/OSDIomImyjJkwcMr
-         yx/fnaHfPDlXmItPzvDIjDWpuleV8z38WKG8zqEk+zrQE6AbEm3UxrJiDM2jVtpsYKlC
-         zJS42g9zeoDi+2opyrPQp/MrgNfyucYIIZSum9UN43bT7zVU6wyfKsZ6AHlmKz350BBq
-         /vjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent
-         :content-language:to:cc:from:subject:content-transfer-encoding;
-        bh=IcfBD0sELg/ZTWJkVPat8J+2pY01NDhVI/wBavqAMyY=;
-        b=1fnWmzQbqDQ0eJEeGTxwEEJfk0ZutGn0yMn0ZMsg4ZxlGQWgEaVscYED+5VUU+akhk
-         BtgmOPsodcmarXiEcjF9REzLTT9vu3De6r+rjfkMJ0Sv959j18cQJnbIgHIxUTGM6mm+
-         tsr5CvTdbZaXve7ahJnrtvJ6l1hljLGklPUzaNtOY1RikpGiAwtkOcTuhHuNn4C6ajif
-         WYb7RJljlWq8MaaEyG4D50tl+4RWNgsNa7UBwAUcLMhJjcrvpfa/ihUvGH3g6ZexRzNW
-         3U+pIoST1QBg8Up0Jg399ge377IG8gGFYj4HLmHq0Pe26+dktEqozwB/1Xzzx8Ly/DOB
-         t2Fw==
-X-Gm-Message-State: AOAM533h6AkEXuHw3/yYyOBi2R7uuKAxOgr8Oharz50iLog8pEwP8KH0
-        yHTl4D0qPWE5bHMshwddC23Qwpo6aD4=
-X-Google-Smtp-Source: ABdhPJzNNdHYcgomArdMlQGqoQ/Sau8iwEAZAigTu4S6f2NvqlVmlAhDFP0zjBuiLCmcYyC132pVSg==
-X-Received: by 2002:a17:90b:380e:b0:1c7:74f6:ae60 with SMTP id mq14-20020a17090b380e00b001c774f6ae60mr5390082pjb.5.1648651262830;
-        Wed, 30 Mar 2022 07:41:02 -0700 (PDT)
-Received: from [192.168.11.5] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
-        by smtp.gmail.com with ESMTPSA id p11-20020a17090a4f0b00b001c6e4898a36sm6650364pjh.28.2022.03.30.07.41.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Mar 2022 07:41:02 -0700 (PDT)
-Message-ID: <22710880-6bf8-261e-d3bc-ad9baaf50f53@gmail.com>
-Date:   Wed, 30 Mar 2022 23:41:00 +0900
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Content-Language: en-US
-To:     "Paul E. McKenney" <paulmck@kernel.org>
+        with ESMTP id S238087AbiC3SmG (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 30 Mar 2022 14:42:06 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1076B2DAB1;
+        Wed, 30 Mar 2022 11:38:05 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 84A87B81D51;
+        Wed, 30 Mar 2022 18:38:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45369C340EC;
+        Wed, 30 Mar 2022 18:38:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1648665483;
+        bh=AHTTgpHE9fw4K0wOKg8Bck1kQmWsSsi/ndtLHELnkFU=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=lvWagMA2cHDK4vucBJIu6tXnStfxTg8lIPNLO6FY+dVYO8agRYPck4VrBNWyzqIv6
+         6G4Ln1eFF62WRTEzTRsHNoDUPv5RQxHXBLVMX0KhhDjX+wrFS6+8dilsNJKyn6HULL
+         WgwA78Zmdec0VX/DXycn8UmpQ953zIBGHsq01wNnc7llaHXMecOZRakgNjdzwttu/E
+         234IFEYAXmg2FVs8eDaXwMqsgEODs0GZJBRCdcECtBKztqLuwRZjaSFIycaFvYyOgj
+         CNLQsRFMSf8ElU6WT1QkCdp2kDgccYRp5p0UiPAwmLsvNtFHmN+GhG0XqD6MIm75lX
+         bbpTOx7GB/8jw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id D449E5C1289; Wed, 30 Mar 2022 11:38:02 -0700 (PDT)
+Date:   Wed, 30 Mar 2022 11:38:02 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Akira Yokosawa <akiyks@gmail.com>
 Cc:     rcu@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Akira Yokosawa <akiyks@gmail.com>
-From:   Akira Yokosawa <akiyks@gmail.com>
-Subject: [PATCH -rcu] rcu: docs: Update cross-references as suggested in
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -rcu] rcu: docs: Update cross-references as suggested in
  doc-guide
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Message-ID: <20220330183802.GJ4285@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <22710880-6bf8-261e-d3bc-ad9baaf50f53@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <22710880-6bf8-261e-d3bc-ad9baaf50f53@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-There are cross references which are sub-optimal with regard
-to the practices mentioned in doc-guide/sphinx.rst.
+On Wed, Mar 30, 2022 at 11:41:00PM +0900, Akira Yokosawa wrote:
+> There are cross references which are sub-optimal with regard
+> to the practices mentioned in doc-guide/sphinx.rst.
+> 
+> There are also a couple of references to RCU documentation via URL.
+> They can be expressed by file paths.
+> 
+> Update them and adjust surrounding words.
+> 
+> Summary of changes:
+> 
+>   - out-of-date plaintext file names (*.txt) -> *.rst
+>   - references by :ref: tags -> path names of *.rst
+>     * use relative paths to .rst files under the RCU/ subdirectory
+>     * use abs paths of Documentation/xxx for other .rst files
+>   - references by URL under https://www.kernel.org/ -> paths of *.rst
+>   - adjust surrounding words of some of updated references.
+> 
+> Note:
+>   The automarkup.py script interprets references via "*.txt" as if they
+> were via "*.rst", so the hyperlinks in the resulting HTML pages works
+> without this change.
+> 
+> Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
+> Cc: rcu@vger.kernel.org
+> Cc: linux-doc@vger.kernel.org
 
-There are also a couple of references to RCU documentation via URL.
-They can be expressed by file paths.
+Nice!  I have queued these for testing and review, thank you!
 
-Update them and adjust surrounding words.
+(As usual, I could not resist a bit of wordsmithing, so please check
+to see if I messed something up.)
 
-Summary of changes:
+							Thanx, Paul
 
-  - out-of-date plaintext file names (*.txt) -> *.rst
-  - references by :ref: tags -> path names of *.rst
-    * use relative paths to .rst files under the RCU/ subdirectory
-    * use abs paths of Documentation/xxx for other .rst files
-  - references by URL under https://www.kernel.org/ -> paths of *.rst
-  - adjust surrounding words of some of updated references.
+------------------------------------------------------------------------
 
-Note:
-  The automarkup.py script interprets references via "*.txt" as if they
-were via "*.rst", so the hyperlinks in the resulting HTML pages works
-without this change.
+commit 66150a50090d7bd97d572bc40fd676ab9c1a0d35
+Author: Akira Yokosawa <akiyks@gmail.com>
+Date:   Wed Mar 30 23:41:00 2022 +0900
 
-Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
-Cc: rcu@vger.kernel.org
-Cc: linux-doc@vger.kernel.org
----
-Hi Paul,
-
-I noticed these old-fashioned cross references in RCU docs
-while testing my sphinx related updates.
-
-This change follows suggestions mentioned at
-https://www.kernel.org/doc/html/latest/doc-guide/sphinx.html#cross-referencing
-
-I could split these changes into more granular chunks, but in
-the end, they are all about cross references, and I think the change
-in each hunk should be obvious enough.
-
-If you think otherwise, please let me know.
-
-        Thanks, Akira
---
- .../Design/Data-Structures/Data-Structures.rst |  2 +-
- .../Expedited-Grace-Periods.rst                |  2 +-
- .../RCU/Design/Requirements/Requirements.rst   |  4 ++--
- Documentation/RCU/arrayRCU.rst                 |  4 ++--
- Documentation/RCU/checklist.rst                |  9 ++++-----
- Documentation/RCU/rcu.rst                      | 13 ++++++-------
- Documentation/RCU/rculist_nulls.rst            |  2 +-
- Documentation/RCU/whatisRCU.rst                | 18 ++++++++----------
- 8 files changed, 25 insertions(+), 29 deletions(-)
+    docs: Update RCU cross-references as suggested in doc-guide
+    
+    The RCU documentation contains old-style cross references which
+    do not follow the best practices outlined in doc-guide/sphinx.rst.
+    In addition, some of the cross references use URLs that should be replaced
+    by pathnames.
+    
+    Update all of these cross references and adjust the surrounding words.
+    
+    Summary of changes:
+    
+      - out-of-date plaintext file names (*.txt) -> *.rst
+      - references by :ref: tags -> path names of *.rst
+        * use relative paths to .rst files under the RCU/ subdirectory
+        * use abs paths of Documentation/xxx for other .rst files
+      - references by URL under https://www.kernel.org/ -> paths of *.rst
+      - adjust surrounding words of some of updated references.
+    
+    Note:
+      The automarkup.py script interprets references via "*.txt" as if they
+    were via "*.rst", so the *.txt -> *.rst changes should be regarded as
+    cleanups rather than bug fixes.
+    
+    Cc: rcu@vger.kernel.org
+    Cc: linux-doc@vger.kernel.org
+    Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
 diff --git a/Documentation/RCU/Design/Data-Structures/Data-Structures.rst b/Documentation/RCU/Design/Data-Structures/Data-Structures.rst
 index f4efd6897b09..b34990c7c377 100644
@@ -330,8 +332,3 @@ index c34d2212eaca..77ea260efd12 100644
  
  It is possible to nest rcu_read_lock(), since reader-writer locks may
  be recursively acquired.  Note also that rcu_read_lock() is immune
-
-base-commit: 76ed10710f21241c498e4463f4c3636921ef81fd
--- 
-2.25.1
-
