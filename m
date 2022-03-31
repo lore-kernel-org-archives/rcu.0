@@ -2,219 +2,358 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9CFEDC433FE
-	for <rcu@archiver.kernel.org>; Wed, 30 Mar 2022 22:47:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CE803C433F5
+	for <rcu@archiver.kernel.org>; Thu, 31 Mar 2022 01:10:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351737AbiC3WtY (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 30 Mar 2022 18:49:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47926 "EHLO
+        id S229777AbiCaBM0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 30 Mar 2022 21:12:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351731AbiC3WtX (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 30 Mar 2022 18:49:23 -0400
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4D4C5575C;
-        Wed, 30 Mar 2022 15:47:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1648680456; x=1680216456;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=4My1AUsHng4+UOnB14zKb0zvS9pSmm9KIweqB2+AVbQ=;
-  b=BTEr0OiDP0tGwBK9yv0qTwXLhtnqaHTT5eJBf1NRfiZnMXHiWxsO9Jgw
-   O5duZOITDhG6b9KKyRt0Dmrwaf4mWalqGRvoQUhrcr1UqFOk94yiFg0ZY
-   rgveAdr8j0ym4Ep0kQaZC6ydg7TU3McbckmISJ0BUHCROW6cktMeIPIF5
-   tfG03rKX35SAFsgcWoRbkxM74VvsWvh7loG1LGf2BjszNW0vBC2UQuQrO
-   bBhzGpGMHN1OvlpCJws1rIxEfPAPwbx/i8jME0NLEX8ydzb+7ZPC3qskR
-   IHbXCVWHBr4g3FaQPj1I3GjR3dEIRPpOvISjxWcasv8VWcNp8QcGVLYbw
-   A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10302"; a="346099699"
-X-IronPort-AV: E=Sophos;i="5.90,223,1643702400"; 
-   d="scan'208";a="346099699"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2022 15:47:33 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,223,1643702400"; 
-   d="scan'208";a="788177336"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by fmsmga006.fm.intel.com with ESMTP; 30 Mar 2022 15:47:33 -0700
-Received: from orsmsx604.amr.corp.intel.com (10.22.229.17) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.27; Wed, 30 Mar 2022 15:47:32 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx604.amr.corp.intel.com (10.22.229.17) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.27 via Frontend Transport; Wed, 30 Mar 2022 15:47:32 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.174)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2308.21; Wed, 30 Mar 2022 15:47:07 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SavQOepF17bzX3YgorqV29D7oRodu6V/3KChZ8uLaQq1xjFJqjmiF8ly1qAXhYkoRnTneaP82ci00cVjk6WpOBxlTfwZnuanTqErjkSlZ68FfTpe8Vxm3lpXV23U64cLao5poOB90lkjTW1S5chDq6dji9ZkuAv1TU5JPMg+AlbHNS28jTOOPzkTCcBITzNoGtACPJBE5phTJBLfDXBr7jwoC81J6lPqvvmO9qBGclQ9RJ3LbKsjlGGCgCSYAmzcj9C3Alz4tlJXhNl6eOlfInEXL+px8uYeZ07yGgmTAcC38Iko62G91vjqg1jrbj6OtSmHOUvxnTodGdYGpz3leA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=10paIMtKq3nImwooQyAqjceC3XijQHTrabU1goc6dI4=;
- b=PR8xISidY7wy2koYS67/pg3KFGQIqpV5slds61Ld8x1PGKfcAMiKe1znT1bzBP8tBaAfZ3KtxbwKFDYDM8zsyMWiGuJmfH0SxoZsmYtWpkFUb2tow2p6s5kp/CWDjde7+zqUUBe5OH72xAxzqRclQKB/LdXlIFZYRg+c72mhZyb3ERSO/6TjrjQmCVFlYjMjePbYwQ/I8XKqr2XgLeVE1/2EfgbcUMM51uLG7vHTaWxiTDjpa0ginh0w6xACU/ylfYpsowwHHAVuSr9Pc3UfD2YgYNJoKrphvi3KGSus99SqiSIW0m8Qpr3qCY+1O12yIXZyBCnItk3aCQanWpvQLg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from PH0PR11MB5880.namprd11.prod.outlook.com (2603:10b6:510:143::14)
- by BYAPR11MB3431.namprd11.prod.outlook.com (2603:10b6:a03:8d::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5102.17; Wed, 30 Mar
- 2022 22:47:05 +0000
-Received: from PH0PR11MB5880.namprd11.prod.outlook.com
- ([fe80::d90e:5a21:8192:7c54]) by PH0PR11MB5880.namprd11.prod.outlook.com
- ([fe80::d90e:5a21:8192:7c54%7]) with mapi id 15.20.5102.023; Wed, 30 Mar 2022
- 22:47:05 +0000
-From:   "Zhang, Qiang1" <qiang1.zhang@intel.com>
-To:     "paulmck@kernel.org" <paulmck@kernel.org>
-CC:     "frederic@kernel.org" <frederic@kernel.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] rcu: Put the irq work into hard interrupt context for
- execution
-Thread-Topic: [PATCH] rcu: Put the irq work into hard interrupt context for
- execution
-Thread-Index: AQHYQ/uAOn2CUwsFkEWWhrezlLtpoqzYXhIAgAAlweA=
-Date:   Wed, 30 Mar 2022 22:47:05 +0000
-Message-ID: <PH0PR11MB58802C1246C6F4FB895BDDA9DA1F9@PH0PR11MB5880.namprd11.prod.outlook.com>
-References: <20220330060012.2470054-1-qiang1.zhang@intel.com>
- <20220330201620.GM4285@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20220330201620.GM4285@paulmck-ThinkPad-P17-Gen-1>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-version: 11.6.401.20
-dlp-reaction: no-action
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 6f6bf35b-d63d-4e4b-bc94-08da129f36cb
-x-ms-traffictypediagnostic: BYAPR11MB3431:EE_
-x-microsoft-antispam-prvs: <BYAPR11MB3431ACE2167EEF19D41EEAC9DA1F9@BYAPR11MB3431.namprd11.prod.outlook.com>
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ZtbilfPcmvr9dcNr+PBQGjMY+BnqtkA2JF+NkQkf84ZTonNzV27OlObZF3ABb7NiBZBycxTZ2ajg7oBryDNb61QDrmZ7QP2tAQuugQVMqR6u/x9W86UPIgRbhOcZiiVgSX9GoFwKHnWp78kzkwrTK7Dvn0cr2KrkVTIlkl9iTITCbSzDQNla/7uY5vr0/misdcMVhMXrTT4Tq1uL8yAuzWpbJVjCqH+LJew6qFo99sydCgOakuCtsGLikxeZv1pIV/n7F+DzHMbk3vE1b2CtfXg9pgQvwzPAzJ1EUWNc9QaOMhOmV7vq32wjpGrCSjRT+MA4v5CZ34UfhWzNZuuDSyBL6JLtJrVwQyNRf6Qs9e62qPDgqnyZJLFSxZF8G6y09z+TwU1ARnPN5T91/O9h1Kv+fOf/rY5Hl7EHCoHrQ0ZG2FCnv86rvkKxbF+pp7QrNLfw+1M514piGwUnC4tR2hqi3v9T6FgmJ+1hXcGiyzxrC8G4q59/DaCL9TeCKGnDwMuVHTKhbb1pYYo6H/GG8tmgqFcO1G4NNzaAnn8VI8i8xbaccUPgNQSbuQziPIaVk2CEqsZYgUcIKpmzSxzyPouPBja/RRr7ofiQZUtomCCHQH9tLVGfUXea64tDcR3vqjSczC9+krowaeV44NFl8kQoh00i2fKbQyIXR3pIlAB0Z/bTBmqw2iEjPbk3ry9qxWUp8kkP4jK9HD62gzfUzA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5880.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(8936002)(66476007)(5660300002)(38070700005)(52536014)(26005)(33656002)(8676002)(66574015)(186003)(64756008)(66556008)(66446008)(4326008)(76116006)(66946007)(2906002)(86362001)(316002)(82960400001)(6506007)(71200400001)(55016003)(508600001)(122000001)(9686003)(38100700002)(6916009)(7696005)(54906003)(83380400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?WmqkVcv8uejcpQtbApFlTEbhwx+RehcHjG2lcs1r+fokejaFCoKTDyK9tf4w?=
- =?us-ascii?Q?wmSum7/Lvn78oQHf3epch6EtfOKPCUatL3c5+qKgesbgOLJ8Us3Ah3YTWTeI?=
- =?us-ascii?Q?aqIN3ZaVtjx+nrULiyaVevIUaXHPKpS30AqW4JMWoMpQUurfbDd03esiLmvb?=
- =?us-ascii?Q?Gk1KM/BIB7EtbHdhLgacQSlofDuYTM77Y+El0IgxguNJGyNd4osyjGwGxD1b?=
- =?us-ascii?Q?lY8DUzDEm4UdZGedJtU2BFBxi7d9KA9Az0V8/Z2IsBDr2zkw9JkwZBK0pR5q?=
- =?us-ascii?Q?+nsyp1SBWC1Ql+tEOq0pN1a2UCh2w8IJ+73IInSWDlpjg+5FEO1WIdgqBa1b?=
- =?us-ascii?Q?T+j51lu+sND5eMTZDlvLNH5Q/WXwAze9PuzlsmWRNUxlwLw/6NqQyQrbNCV/?=
- =?us-ascii?Q?OhGxa2d4FougX8v4iD1AI7gEt9CQaeflfrNbZcTXp001grBOS5bfryo3oFXB?=
- =?us-ascii?Q?EkngKbBmTAw4NE3IGCPwP8ao6T5OAZZKwsnMLUckVpOr+IHKypJJ8qJUVDrP?=
- =?us-ascii?Q?QO8gz0ElgB+vByS6Eb5lVkrgoDkkB1mt3nhoZ/+z+EeT8TbUuMbQp8SSMvsQ?=
- =?us-ascii?Q?JQ1iGug5GGpmWzafnnbjWY7l9OR64rpYngP0uFcrZF4qh6GGOjHEHJ0NZogp?=
- =?us-ascii?Q?Nl7Ewj+4rJBbmuumeT1W/6xVRF8Y5ENhvYuJ7VSGkgWkq9Y+gMk+E8UTearv?=
- =?us-ascii?Q?WFN49O28Ewks3bB1DAvMbMKvW8rZ9dj+L2zDvaDrqGBaurM8bNmT6JT39BRC?=
- =?us-ascii?Q?vu/7N5eEHGuROwTws8IJXJl92o9z6RCP/uvRQ9WDEa6dwPt/bmTdION23EIk?=
- =?us-ascii?Q?Ci6nqDjks2WaYQpTO454TCuLHDYgcru/fbI8n0Em+Dh4DzbtyRorCgqOr0OJ?=
- =?us-ascii?Q?cuUybQh9cK9Lrn9nJA7nHMCKNvnyMBCz+rZSXLOGacv23qrpcrOAkyRRIgAb?=
- =?us-ascii?Q?LgK4PllWYyxgwcxq+ZcI8pR49KFPM2kIWcWGlSbAUtrjeSzHZthidnL7K6me?=
- =?us-ascii?Q?UWYshIw2xb2zityfiNOTiayxMslITo3xwBZlewgw2rhYw1D6TNfuq3CQlO0Y?=
- =?us-ascii?Q?u/UN8zkxQOg/dI+FTutNfJPQSzXEqiMigilIbE3HP8dgAg1SJhdafQCg2pfZ?=
- =?us-ascii?Q?3OWHnp/RswaiCvE8e5NOwVDQFLPx4wtczk813vW/MO1SlOcztpZTyJPa3Pq3?=
- =?us-ascii?Q?29g75M7hvaqbifrUXEzrdCRuDTVPvDQEJv0Xb/KHosxCgRr73OKqEXMx+3wZ?=
- =?us-ascii?Q?B14U1uSzGkHNzv//tAptZWb3AluJbw4woaLBep0XlBBpEou5RnqW/q4E+M+I?=
- =?us-ascii?Q?kagOfBHK6MaQt3IOtfDDFH/SzqLm+fST/qvFVEO1IF7raksBbDj+d9PetPPl?=
- =?us-ascii?Q?OGbGKGc5WXnpIhHVOTAVZg6abqT6W5Dl422Zj4Lc3jhFyt7gSzPavT0O2FKd?=
- =?us-ascii?Q?sSRN+X6Gc5VG2H1ZoyO0Xfl6fAnV+evpPwLenYCkxaiTjRoMjOaivDc2Efrg?=
- =?us-ascii?Q?9Zyim3dL7og9Z9iSz0jcsA/sCb/PcG8oyr8tkElEWQrJXRUoTEnIEmRONRaw?=
- =?us-ascii?Q?sTVyVO/WuvNQ8AwdxeRB8nMtc/o0xFwHuTfh1WLTEivz9RzWhjtL4vudFGvz?=
- =?us-ascii?Q?E0YLjGufpwOoEuUDqo6NtX0XAXhR0QgFTbzS4jmdZ6R2Y6d59Ki3OKKj78ov?=
- =?us-ascii?Q?F6hv1Z7oo6K2MpHgY4qH0Sgbnh8OPOEnhqvjMYsjFk6PaF0NQYkThvJN/wPu?=
- =?us-ascii?Q?kG1ckPJJNQ=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        with ESMTP id S229666AbiCaBMZ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 30 Mar 2022 21:12:25 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03F8966219;
+        Wed, 30 Mar 2022 18:10:39 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id h19so19480420pfv.1;
+        Wed, 30 Mar 2022 18:10:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=asLhBvigKgbIlddppqIOBe5Mpl4LLwjREEuyzn5ytxk=;
+        b=fahE0l8frtavmT0uDlQo8pf35y0psfb0y83ZE5DcD01UpEsPWhmPAkEPZchOevK8m8
+         YaALp+piXnbVBHqtifdx7YwCoLqacDRllwXfV3lgqYBnueuCebShEkvNvFxdKOHVMWfu
+         uTQoAdVCn/PDkhRWTB6/qsDHqDilLbYsPAGrCurCz6zCg7WNYvzbl7fh1q2yVOyC3UcQ
+         lLknqr5Mz4U7oNNgKOaN6W6iL+KKt8cFuWyLjObmov9mTktw40V8E1tyt7I6dWa1Xrvv
+         w9pITwyduYQ39n2j3Gl6ryKEsFOsIMP+AaR8BSa1NdkWNC8at1hfJucr3fCeJXAFXitt
+         EkLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=asLhBvigKgbIlddppqIOBe5Mpl4LLwjREEuyzn5ytxk=;
+        b=7nxsj0+3+2+bwoT9wlqGpaYAILTQW2DQVa4i/Ic8TP6V70zq/dY7dlbtJ/mhsbSX7P
+         deRLW2HmHcZ38/G3Aj18m3YHxffs3Px9erWyrQyVywIW/yoib5ecDlhg9tkLPOn3PLIP
+         YPJdb7ej/ElvX9z5g4WsREatJ0sAmsvE4eehQGYll9fIABQ7T6IJcKjXAXX87tsD+Ms5
+         mBZ1gzI3NozNTxFiSci0umHr4xVqNH8wHaB31v8VN3ZBGGiMLopEzJTrG/v/rLIG4W83
+         bRZxiOT9AEtPjmS7i9FZm50TXPFP1n7K8SCeSsie514Oe+POGJWZpE/DmIgDUnQTwuXU
+         bORw==
+X-Gm-Message-State: AOAM531kfd70BeUZLxeibrMLkDaH38YZrl4O66ndofd4KQgUdtNwEbA4
+        NiqEfkB5G34ut3eHN1Jr7L3atOAsFAw=
+X-Google-Smtp-Source: ABdhPJwwJmtOlOMIGJHK9J0uF5+4Vxju1Gc/DVJBM25WImPhzbBAtnzQtwPtzrJCJLJfAKQzwJVzQg==
+X-Received: by 2002:a05:6a00:1d92:b0:4fa:dfbd:d7f0 with SMTP id z18-20020a056a001d9200b004fadfbdd7f0mr2592389pfw.31.1648689037810;
+        Wed, 30 Mar 2022 18:10:37 -0700 (PDT)
+Received: from [192.168.11.5] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
+        by smtp.gmail.com with ESMTPSA id d16-20020a056a00245000b004f771b48736sm25444571pfj.194.2022.03.30.18.10.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Mar 2022 18:10:37 -0700 (PDT)
+Message-ID: <e3379080-7c6e-5981-1271-16c57ac8e74a@gmail.com>
+Date:   Thu, 31 Mar 2022 10:10:34 +0900
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5880.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6f6bf35b-d63d-4e4b-bc94-08da129f36cb
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Mar 2022 22:47:05.3987
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: zH7VRhRwJV+BqNSbw9Ryg01zRm3rt+GHFzdL0OwFFZwIdxzJw32YYmDa+XLTB7nuY3Z8j/hZMRVP2TKIMz88mw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3431
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: [PATCH -rcu] rcu: docs: Update cross-references as suggested in
+ doc-guide
+Content-Language: en-US
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     rcu@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <22710880-6bf8-261e-d3bc-ad9baaf50f53@gmail.com>
+ <20220330183802.GJ4285@paulmck-ThinkPad-P17-Gen-1>
+From:   Akira Yokosawa <akiyks@gmail.com>
+In-Reply-To: <20220330183802.GJ4285@paulmck-ThinkPad-P17-Gen-1>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Mar 30, 2022 at 02:00:12PM +0800, Zqiang wrote:
-> In PREEMPT_RT kernel, if irq work flags is not set, it will be=20
-> executed in per-CPU irq_work kthreads. set IRQ_WORK_HARD_IRQ flags to=20
-> irq work, put it in the context of hard interrupt execution,=20
-> accelerate scheduler to re-evaluate.
->=20
-> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-> ---
->  kernel/rcu/tree.c        | 2 +-
->  kernel/rcu/tree_plugin.h | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c index=20
-> e2ffbeceba69..a69587773a85 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -678,7 +678,7 @@ static void late_wakeup_func(struct irq_work=20
-> *work)  }
-> =20
->  static DEFINE_PER_CPU(struct irq_work, late_wakeup_work) =3D
-> -	IRQ_WORK_INIT(late_wakeup_func);
-> +	IRQ_WORK_INIT_HARD(late_wakeup_func);
+On Wed, 30 Mar 2022 11:38:02 -0700,
+Paul E. McKenney wrote:
+> On Wed, Mar 30, 2022 at 11:41:00PM +0900, Akira Yokosawa wrote:
+>> There are cross references which are sub-optimal with regard
+>> to the practices mentioned in doc-guide/sphinx.rst.
+>>
+>> There are also a couple of references to RCU documentation via URL.
+>> They can be expressed by file paths.
+>>
+>> Update them and adjust surrounding words.
+>>
+>> Summary of changes:
+>>
+>>   - out-of-date plaintext file names (*.txt) -> *.rst
+>>   - references by :ref: tags -> path names of *.rst
+>>     * use relative paths to .rst files under the RCU/ subdirectory
+>>     * use abs paths of Documentation/xxx for other .rst files
+>>   - references by URL under https://www.kernel.org/ -> paths of *.rst
+>>   - adjust surrounding words of some of updated references.
+>>
+>> Note:
+>>   The automarkup.py script interprets references via "*.txt" as if they
+>> were via "*.rst", so the hyperlinks in the resulting HTML pages works
+>> without this change.
+>>
+>> Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
+>> Cc: rcu@vger.kernel.org
+>> Cc: linux-doc@vger.kernel.org
+> 
+> Nice!  I have queued these for testing and review, thank you!
+> 
+> (As usual, I could not resist a bit of wordsmithing, so please check
+> to see if I messed something up.)
+> 
+> 							Thanx, Paul
+> 
+> ------------------------------------------------------------------------
+> 
+> commit 66150a50090d7bd97d572bc40fd676ab9c1a0d35
+> Author: Akira Yokosawa <akiyks@gmail.com>
+> Date:   Wed Mar 30 23:41:00 2022 +0900
+> 
+>     docs: Update RCU cross-references as suggested in doc-guide
+>     
+>     The RCU documentation contains old-style cross references which
+>     do not follow the best practices outlined in doc-guide/sphinx.rst.
+>     In addition, some of the cross references use URLs that should be replaced
+>     by pathnames.
+>     
+>     Update all of these cross references and adjust the surrounding words.
+>     
+>     Summary of changes:
+>     
+>       - out-of-date plaintext file names (*.txt) -> *.rst
+>       - references by :ref: tags -> path names of *.rst
+>         * use relative paths to .rst files under the RCU/ subdirectory
+>         * use abs paths of Documentation/xxx for other .rst files
+>       - references by URL under https://www.kernel.org/ -> paths of *.rst
+>       - adjust surrounding words of some of updated references.
+>     
+>     Note:
+>       The automarkup.py script interprets references via "*.txt" as if they
+>     were via "*.rst", so the *.txt -> *.rst changes should be regarded as
+>     cleanups rather than bug fixes.
 
->This is used only by rcu_irq_work_resched(), which is invoked only by rcu_=
-user_enter(), which is never invoked until userspace is enabled, by which t=
-ime all of the various kthreads will have been spawned, correct?
->
->Either way, please show me the exact sequence of events that lead to a pro=
-blem with the current IRQ_WORK_INIT().
->
->  /*
->   * If either:
-> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h index=20
-> 3037c2536e1f..cf7bd28af8ef 100644
-> --- a/kernel/rcu/tree_plugin.h
-> +++ b/kernel/rcu/tree_plugin.h
-> @@ -661,7 +661,7 @@ static void rcu_read_unlock_special(struct task_struc=
-t *t)
->  			    expboost && !rdp->defer_qs_iw_pending && cpu_online(rdp->cpu)) {
->  				// Get scheduler to re-evaluate and call hooks.
->  				// If !IRQ_WORK, FQS scan will eventually IPI.
-> -				init_irq_work(&rdp->defer_qs_iw, rcu_preempt_deferred_qs_handler);
-> +				rdp->defer_qs_iw =3D=20
-> +IRQ_WORK_INIT_HARD(rcu_preempt_deferred_qs_handler);
->  				rdp->defer_qs_iw_pending =3D true;
->  				irq_work_queue_on(&rdp->defer_qs_iw, rdp->cpu);
->  			}
->
->OK, in theory, rcu_read_unlock() could get to this point before all of the=
- various kthreads were spawned.  In practice, the next time that the boot C=
-PU went idle, the end of the quiescent state would be noticed.
+Looks pretty nice and easy to follow. ;-)
 
-Through my understanding, use irq_work in order to make the quiescent state=
- be noticed earlier,
-Because the irq_work execute in interrupt, this irq_work can be executed in=
- time, but In RT kernel
-The irq_work  is put into the kthread for execution, when it is executed, i=
-t is affected by the scheduling delay.
-Is there anything I missed?
+        Thanks, Akira
 
-Thanks
-Zqiang=09
-
->
->Or has this been failing in some other manner?  If so, please let me know =
-the exact sequence of events.
->
->							Thanx, Paul
+>     
+>     Cc: rcu@vger.kernel.org
+>     Cc: linux-doc@vger.kernel.org
+>     Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
+>     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> 
+> diff --git a/Documentation/RCU/Design/Data-Structures/Data-Structures.rst b/Documentation/RCU/Design/Data-Structures/Data-Structures.rst
+> index f4efd6897b09..b34990c7c377 100644
+> --- a/Documentation/RCU/Design/Data-Structures/Data-Structures.rst
+> +++ b/Documentation/RCU/Design/Data-Structures/Data-Structures.rst
+> @@ -973,7 +973,7 @@ The ``->dynticks`` field counts the corresponding CPU's transitions to
+>  and from either dyntick-idle or user mode, so that this counter has an
+>  even value when the CPU is in dyntick-idle mode or user mode and an odd
+>  value otherwise. The transitions to/from user mode need to be counted
+> -for user mode adaptive-ticks support (see timers/NO_HZ.txt).
+> +for user mode adaptive-ticks support (see Documentation/timers/no_hz.rst).
+>  
+>  The ``->rcu_need_heavy_qs`` field is used to record the fact that the
+>  RCU core code would really like to see a quiescent state from the
+> diff --git a/Documentation/RCU/Design/Expedited-Grace-Periods/Expedited-Grace-Periods.rst b/Documentation/RCU/Design/Expedited-Grace-Periods/Expedited-Grace-Periods.rst
+> index 6f89cf1e567d..c9c957c85bac 100644
+> --- a/Documentation/RCU/Design/Expedited-Grace-Periods/Expedited-Grace-Periods.rst
+> +++ b/Documentation/RCU/Design/Expedited-Grace-Periods/Expedited-Grace-Periods.rst
+> @@ -406,7 +406,7 @@ In earlier implementations, the task requesting the expedited grace
+>  period also drove it to completion. This straightforward approach had
+>  the disadvantage of needing to account for POSIX signals sent to user
+>  tasks, so more recent implemementations use the Linux kernel's
+> -`workqueues <https://www.kernel.org/doc/Documentation/core-api/workqueue.rst>`__.
+> +workqueues (see Documentation/core-api/workqueue.rst).
+>  
+>  The requesting task still does counter snapshotting and funnel-lock
+>  processing, but the task reaching the top of the funnel lock does a
+> diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
+> index ff2be1ac54c4..04ed8bf27a0e 100644
+> --- a/Documentation/RCU/Design/Requirements/Requirements.rst
+> +++ b/Documentation/RCU/Design/Requirements/Requirements.rst
+> @@ -370,8 +370,8 @@ pointer fetched by rcu_dereference() may not be used outside of the
+>  outermost RCU read-side critical section containing that
+>  rcu_dereference(), unless protection of the corresponding data
+>  element has been passed from RCU to some other synchronization
+> -mechanism, most commonly locking or `reference
+> -counting <https://www.kernel.org/doc/Documentation/RCU/rcuref.txt>`__.
+> +mechanism, most commonly locking or reference counting
+> +(see ../../rcuref.rst).
+>  
+>  .. |high-quality implementation of C11 memory_order_consume [PDF]| replace:: high-quality implementation of C11 ``memory_order_consume`` [PDF]
+>  .. _high-quality implementation of C11 memory_order_consume [PDF]: http://www.rdrop.com/users/paulmck/RCU/consume.2015.07.13a.pdf
+> diff --git a/Documentation/RCU/arrayRCU.rst b/Documentation/RCU/arrayRCU.rst
+> index 4051ea3871ef..a5f2ff8fc54c 100644
+> --- a/Documentation/RCU/arrayRCU.rst
+> +++ b/Documentation/RCU/arrayRCU.rst
+> @@ -33,8 +33,8 @@ Situation 1: Hash Tables
+>  
+>  Hash tables are often implemented as an array, where each array entry
+>  has a linked-list hash chain.  Each hash chain can be protected by RCU
+> -as described in the listRCU.txt document.  This approach also applies
+> -to other array-of-list situations, such as radix trees.
+> +as described in listRCU.rst.  This approach also applies to other
+> +array-of-list situations, such as radix trees.
+>  
+>  .. _static_arrays:
+>  
+> diff --git a/Documentation/RCU/checklist.rst b/Documentation/RCU/checklist.rst
+> index f4545b7c9a63..42cc5d891bd2 100644
+> --- a/Documentation/RCU/checklist.rst
+> +++ b/Documentation/RCU/checklist.rst
+> @@ -140,8 +140,7 @@ over a rather long period of time, but improvements are always welcome!
+>  		prevents destructive compiler optimizations.  However,
+>  		with a bit of devious creativity, it is possible to
+>  		mishandle the return value from rcu_dereference().
+> -		Please see rcu_dereference.txt in this directory for
+> -		more information.
+> +		Please see rcu_dereference.rst for more information.
+>  
+>  		The rcu_dereference() primitive is used by the
+>  		various "_rcu()" list-traversal primitives, such
+> @@ -151,7 +150,7 @@ over a rather long period of time, but improvements are always welcome!
+>  		primitives.  This is particularly useful in code that
+>  		is common to readers and updaters.  However, lockdep
+>  		will complain if you access rcu_dereference() outside
+> -		of an RCU read-side critical section.  See lockdep.txt
+> +		of an RCU read-side critical section.  See lockdep.rst
+>  		to learn what to do about this.
+>  
+>  		Of course, neither rcu_dereference() nor the "_rcu()"
+> @@ -323,7 +322,7 @@ over a rather long period of time, but improvements are always welcome!
+>  	primitives when the update-side lock is held is that doing so
+>  	can be quite helpful in reducing code bloat when common code is
+>  	shared between readers and updaters.  Additional primitives
+> -	are provided for this case, as discussed in lockdep.txt.
+> +	are provided for this case, as discussed in lockdep.rst.
+>  
+>  	One exception to this rule is when data is only ever added to
+>  	the linked data structure, and is never removed during any
+> @@ -480,4 +479,4 @@ over a rather long period of time, but improvements are always welcome!
+>  	both rcu_barrier() and synchronize_rcu(), if necessary, using
+>  	something like workqueues to to execute them concurrently.
+>  
+> -	See rcubarrier.txt for more information.
+> +	See rcubarrier.rst for more information.
+> diff --git a/Documentation/RCU/rcu.rst b/Documentation/RCU/rcu.rst
+> index 0e03c6ef3147..3cfe01ba9a49 100644
+> --- a/Documentation/RCU/rcu.rst
+> +++ b/Documentation/RCU/rcu.rst
+> @@ -10,9 +10,8 @@ A "grace period" must elapse between the two parts, and this grace period
+>  must be long enough that any readers accessing the item being deleted have
+>  since dropped their references.  For example, an RCU-protected deletion
+>  from a linked list would first remove the item from the list, wait for
+> -a grace period to elapse, then free the element.  See the
+> -:ref:`Documentation/RCU/listRCU.rst <list_rcu_doc>` for more information on
+> -using RCU with linked lists.
+> +a grace period to elapse, then free the element.  See listRCU.rst for more
+> +information on using RCU with linked lists.
+>  
+>  Frequently Asked Questions
+>  --------------------------
+> @@ -50,7 +49,7 @@ Frequently Asked Questions
+>  - If I am running on a uniprocessor kernel, which can only do one
+>    thing at a time, why should I wait for a grace period?
+>  
+> -  See :ref:`Documentation/RCU/UP.rst <up_doc>` for more information.
+> +  See UP.rst for more information.
+>  
+>  - How can I see where RCU is currently used in the Linux kernel?
+>  
+> @@ -64,13 +63,13 @@ Frequently Asked Questions
+>  
+>  - What guidelines should I follow when writing code that uses RCU?
+>  
+> -  See the checklist.txt file in this directory.
+> +  See checklist.rst.
+>  
+>  - Why the name "RCU"?
+>  
+>    "RCU" stands for "read-copy update".
+> -  :ref:`Documentation/RCU/listRCU.rst <list_rcu_doc>` has more information on where
+> -  this name came from, search for "read-copy update" to find it.
+> +  listRCU.rst has more information on where this name came from, search
+> +  for "read-copy update" to find it.
+>  
+>  - I hear that RCU is patented?  What is with that?
+>  
+> diff --git a/Documentation/RCU/rculist_nulls.rst b/Documentation/RCU/rculist_nulls.rst
+> index a9fc774bc400..ca4692775ad4 100644
+> --- a/Documentation/RCU/rculist_nulls.rst
+> +++ b/Documentation/RCU/rculist_nulls.rst
+> @@ -8,7 +8,7 @@ This section describes how to use hlist_nulls to
+>  protect read-mostly linked lists and
+>  objects using SLAB_TYPESAFE_BY_RCU allocations.
+>  
+> -Please read the basics in Documentation/RCU/listRCU.rst
+> +Please read the basics in listRCU.rst.
+>  
+>  Using 'nulls'
+>  =============
+> diff --git a/Documentation/RCU/whatisRCU.rst b/Documentation/RCU/whatisRCU.rst
+> index c34d2212eaca..77ea260efd12 100644
+> --- a/Documentation/RCU/whatisRCU.rst
+> +++ b/Documentation/RCU/whatisRCU.rst
+> @@ -224,7 +224,7 @@ synchronize_rcu()
+>  	be delayed.  This property results in system resilience in face
+>  	of denial-of-service attacks.  Code using call_rcu() should limit
+>  	update rate in order to gain this same sort of resilience.  See
+> -	checklist.txt for some approaches to limiting the update rate.
+> +	checklist.rst for some approaches to limiting the update rate.
+>  
+>  rcu_assign_pointer()
+>  ^^^^^^^^^^^^^^^^^^^^
+> @@ -318,7 +318,7 @@ rcu_dereference()
+>  	must prohibit.	The rcu_dereference_protected() variant takes
+>  	a lockdep expression to indicate which locks must be acquired
+>  	by the caller. If the indicated protection is not provided,
+> -	a lockdep splat is emitted.  See Documentation/RCU/Design/Requirements/Requirements.rst
+> +	a lockdep splat is emitted.  See Design/Requirements/Requirements.rst
+>  	and the API's code comments for more details and example usage.
+>  
+>  .. 	[2] If the list_for_each_entry_rcu() instance might be used by
+> @@ -399,8 +399,7 @@ for specialized uses, but are relatively uncommon.
+>  
+>  This section shows a simple use of the core RCU API to protect a
+>  global pointer to a dynamically allocated structure.  More-typical
+> -uses of RCU may be found in :ref:`listRCU.rst <list_rcu_doc>`,
+> -:ref:`arrayRCU.rst <array_rcu_doc>`, and :ref:`NMI-RCU.rst <NMI_rcu_doc>`.
+> +uses of RCU may be found in listRCU.rst, arrayRCU.rst, and NMI-RCU.rst.
+>  ::
+>  
+>  	struct foo {
+> @@ -482,10 +481,9 @@ So, to sum up:
+>  	RCU read-side critical sections that might be referencing that
+>  	data item.
+>  
+> -See checklist.txt for additional rules to follow when using RCU.
+> -And again, more-typical uses of RCU may be found in :ref:`listRCU.rst
+> -<list_rcu_doc>`, :ref:`arrayRCU.rst <array_rcu_doc>`, and :ref:`NMI-RCU.rst
+> -<NMI_rcu_doc>`.
+> +See checklist.rst for additional rules to follow when using RCU.
+> +And again, more-typical uses of RCU may be found in listRCU.rst,
+> +arrayRCU.rst, and NMI-RCU.rst.
+>  
+>  .. _4_whatisRCU:
+>  
+> @@ -579,7 +577,7 @@ to avoid having to write your own callback::
+>  
+>  	kfree_rcu(old_fp, rcu);
+>  
+> -Again, see checklist.txt for additional rules governing the use of RCU.
+> +Again, see checklist.rst for additional rules governing the use of RCU.
+>  
+>  .. _5_whatisRCU:
+>  
+> @@ -663,7 +661,7 @@ been able to write-acquire the lock otherwise.  The smp_mb__after_spinlock()
+>  promotes synchronize_rcu() to a full memory barrier in compliance with
+>  the "Memory-Barrier Guarantees" listed in:
+>  
+> -	Documentation/RCU/Design/Requirements/Requirements.rst
+> +	Design/Requirements/Requirements.rst
+>  
+>  It is possible to nest rcu_read_lock(), since reader-writer locks may
+>  be recursively acquired.  Note also that rcu_read_lock() is immune
