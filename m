@@ -2,140 +2,145 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 67FABC433F5
-	for <rcu@archiver.kernel.org>; Thu, 31 Mar 2022 17:29:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29B05C433F5
+	for <rcu@archiver.kernel.org>; Thu, 31 Mar 2022 19:24:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230369AbiCaRbe (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 31 Mar 2022 13:31:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36204 "EHLO
+        id S240622AbiCaT0g (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 31 Mar 2022 15:26:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230220AbiCaRbe (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 31 Mar 2022 13:31:34 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61AA342A02;
-        Thu, 31 Mar 2022 10:29:46 -0700 (PDT)
+        with ESMTP id S240545AbiCaT0g (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 31 Mar 2022 15:26:36 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB0E4985BD;
+        Thu, 31 Mar 2022 12:24:47 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 0FADAB8218F;
-        Thu, 31 Mar 2022 17:29:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A66F5C340ED;
-        Thu, 31 Mar 2022 17:29:43 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 95093619B9;
+        Thu, 31 Mar 2022 19:24:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E81E0C340ED;
+        Thu, 31 Mar 2022 19:24:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1648747783;
-        bh=h1XiuSYIgdAIxUaaBOhGB1kjwsbePEAFlHK5pZHYeHg=;
+        s=k20201202; t=1648754687;
+        bh=2YLPnxnGGpnjAUfupvEro5SVvRCj9YJPBfUDltAJqIw=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Jb3C3btk8HoND9C9FXrW7dJkMaAFpA96M6WhPjMQxob+JlxbgOHgLd1zZJ7HqxlSo
-         7jN24x5AU2Rd7mS/+7FHMmRGWodqpBeOR6xJdWQCV506kPxJ5HB44IG4xid44kCew9
-         ROgz2b2IGQrOrFVYg6pVKrYhezemTUopl6sPCESpBtm6Vg3F2x9pxvM9OC6jd7J5bP
-         N515B3kEKYtjS5oTYYMgPU+lyywZD7Xkov914XW3mcNOeyNv7NPMZR9kyan0Msx4uq
-         UG57iq5hJHpTS5KP8UziwgaOotIty7nkzGEl4tGyFFs0D1LJ7M+qIUAU3fjbPlfWsu
-         ZMUqSN2FmZsZg==
+        b=YyZ/5YPVjV0rxlrttmzBoDbSLVuXSYsZtrLHE/H4kKcjAh/WSG13LEndwH0arm1VC
+         1tYjb0GGoALQmOt03LB5eAvZIXe9W8jd6zAXPHJ1DppITqcQm/h2Lpe4Ri8Afae3bT
+         4bpna44e+/OBKfTKtWA7k3DdKXNWIvR+hkJmhUgQNKrWq+hO8KMdTqqdN77lEexyC4
+         PRflvcrV1sh+zvh5tS7/vO1Wm7mgOSPJIXAy5FVv+Auosw0BwUi2tAZk5yK9vztyVQ
+         +oT+NMveHAiAbCF4el9ELzPrpyryeOCXtRqilUzF2MbqLXyqoD50PlKBvio7xvUh1f
+         U7tSEYe9LfMiA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 458EC5C0A0E; Thu, 31 Mar 2022 10:29:43 -0700 (PDT)
-Date:   Thu, 31 Mar 2022 10:29:43 -0700
+        id 6E28C5C0A0E; Thu, 31 Mar 2022 12:24:46 -0700 (PDT)
+Date:   Thu, 31 Mar 2022 12:24:46 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
 Cc:     "frederic@kernel.org" <frederic@kernel.org>,
         "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] rcu: Put the irq work into hard interrupt context for
- execution
-Message-ID: <20220331172943.GV4285@paulmck-ThinkPad-P17-Gen-1>
+Subject: Re: [PATCH] rcu-tasks: Check the atomic variable
+ trc_n_readers_need_end again when wait timeout
+Message-ID: <20220331192446.GW4285@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20220330060012.2470054-1-qiang1.zhang@intel.com>
- <20220330201620.GM4285@paulmck-ThinkPad-P17-Gen-1>
- <PH0PR11MB58802C1246C6F4FB895BDDA9DA1F9@PH0PR11MB5880.namprd11.prod.outlook.com>
+References: <20220330112014.2587148-1-qiang1.zhang@intel.com>
+ <20220330190556.GL4285@paulmck-ThinkPad-P17-Gen-1>
+ <PH0PR11MB5880D6B11469266144C58032DA1F9@PH0PR11MB5880.namprd11.prod.outlook.com>
+ <MW5PR11MB58585FA7332315F46FA36CD0DAE19@MW5PR11MB5858.namprd11.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <PH0PR11MB58802C1246C6F4FB895BDDA9DA1F9@PH0PR11MB5880.namprd11.prod.outlook.com>
+In-Reply-To: <MW5PR11MB58585FA7332315F46FA36CD0DAE19@MW5PR11MB5858.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Mar 30, 2022 at 10:47:05PM +0000, Zhang, Qiang1 wrote:
-> On Wed, Mar 30, 2022 at 02:00:12PM +0800, Zqiang wrote:
-> > In PREEMPT_RT kernel, if irq work flags is not set, it will be 
-> > executed in per-CPU irq_work kthreads. set IRQ_WORK_HARD_IRQ flags to 
-> > irq work, put it in the context of hard interrupt execution, 
-> > accelerate scheduler to re-evaluate.
-> > 
+On Thu, Mar 31, 2022 at 02:03:26AM +0000, Zhang, Qiang1 wrote:
+> 
+> On Wed, Mar 30, 2022 at 07:20:14PM +0800, Zqiang wrote:
+> > When the trc_wait waitqueue timeout, the atomic variable 
+> > trc_n_readers_need_end need to be checked again, perhaps the 
+> > conditions have been established at this time, avoid invalid stall 
+> > information output.
+> >
+> >But are you actually seeing this invalid stall information?  Either way, please seem my comments and question below.
+> >
+> >Please don't get me wrong, we do have similar checks for normal vanilla RCU stall warnings, for example, this statement in print_other_cpu_stall() in kernel/rcu/tree_stall.h:
+> >
+> >	pr_err("INFO: Stall ended before state dump start\n");
+> >
+> >However, the approach used there did benefit from significant 
+> >real-world experience with its absence.  ;-)
+> >
+> >							Thanx, Paul
+> >
 > > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 > > ---
-> >  kernel/rcu/tree.c        | 2 +-
-> >  kernel/rcu/tree_plugin.h | 2 +-
-> >  2 files changed, 2 insertions(+), 2 deletions(-)
+> >  kernel/rcu/tasks.h | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
 > > 
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c index 
-> > e2ffbeceba69..a69587773a85 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -678,7 +678,7 @@ static void late_wakeup_func(struct irq_work 
-> > *work)  }
-> >  
-> >  static DEFINE_PER_CPU(struct irq_work, late_wakeup_work) =
-> > -	IRQ_WORK_INIT(late_wakeup_func);
-> > +	IRQ_WORK_INIT_HARD(late_wakeup_func);
+> > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h index 
+> > 65d6e21a607a..b73a2b362d6b 100644
+> > --- a/kernel/rcu/tasks.h
+> > +++ b/kernel/rcu/tasks.h
+> > @@ -1544,7 +1544,7 @@ static void rcu_tasks_trace_postgp(struct rcu_tasks *rtp)
+> >  				trc_wait,
+> >  				atomic_read(&trc_n_readers_need_end) == 0,
+> >  				READ_ONCE(rcu_task_stall_timeout));
 > 
-> >This is used only by rcu_irq_work_resched(), which is invoked only by rcu_user_enter(), which is never invoked until userspace is enabled, by which time all of the various kthreads will have been spawned, correct?
-> >
-> >Either way, please show me the exact sequence of events that lead to a problem with the current IRQ_WORK_INIT().
-> >
-> >  /*
-> >   * If either:
-> > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h index 
-> > 3037c2536e1f..cf7bd28af8ef 100644
-> > --- a/kernel/rcu/tree_plugin.h
-> > +++ b/kernel/rcu/tree_plugin.h
-> > @@ -661,7 +661,7 @@ static void rcu_read_unlock_special(struct task_struct *t)
-> >  			    expboost && !rdp->defer_qs_iw_pending && cpu_online(rdp->cpu)) {
-> >  				// Get scheduler to re-evaluate and call hooks.
-> >  				// If !IRQ_WORK, FQS scan will eventually IPI.
-> > -				init_irq_work(&rdp->defer_qs_iw, rcu_preempt_deferred_qs_handler);
-> > +				rdp->defer_qs_iw = 
-> > +IRQ_WORK_INIT_HARD(rcu_preempt_deferred_qs_handler);
-> >  				rdp->defer_qs_iw_pending = true;
-> >  				irq_work_queue_on(&rdp->defer_qs_iw, rdp->cpu);
-> >  			}
-> >
-> >OK, in theory, rcu_read_unlock() could get to this point before all of the various kthreads were spawned.  In practice, the next time that the boot CPU went idle, the end of the quiescent state would be noticed.
+> >If I understand correctly, this patch is intended to handle a situation where the wait_event_idle_exclusive_timeout() timed out, but where the value of trc_n_readers_need_end decreased to zero just at this point.
+> >>
+> >>Yes,  this patch is intended to handle a situation.
 > 
-> Through my understanding, use irq_work in order to make the quiescent state be noticed earlier,
-> Because the irq_work execute in interrupt, this irq_work can be executed in time, but In RT kernel
-> The irq_work  is put into the kthread for execution, when it is executed, it is affected by the scheduling delay.
-> Is there anything I missed?
+> >If so, please see my question below.  If not, please show me the exact sequence of events leading up to the problem.
+> 
+> > -		if (ret)
+> > +		if (ret || !atomic_read(&trc_n_readers_need_end))
+> >  			break;  // Count reached zero.
+> 
+> >Couldn't the value of trc_n_readers_need_end decrease to zero right here, still resulting in invalid stall information?
+> >
+> >>The value of trc_n_readers_need_end decrease to zero right here, indicates that the current grace period has been completed.
+> >>Even if we go to print some task with condition 't->trc_reader_special.b.need_qs' as true,  and these task  will not affect the current grace period. Is my understanding correct?
+> >>
+> 
+> Is my commit  information not clear? Is this description more clearly
+> 
+> When the wait_event_idle_exclusive_timeout() timed out, if the value of
+> trc_n_readers_need_end  decrease to zero just at this point
+> this indicates that the current grace period is just completed at this point,
+> direct break  and  avoid printing stall information.
 
-Yes, in that I am not seeing any actual data showing that this fix really
-makes things better.  Please in mind that IRQ_WORK_INIT_HARD does have
-performance disadvantages of its own.  So although I agree with your
-words saying that IRQ_WORK_INIT_HARD -might- be helpful, those words
-are not sufficient.
+Lack of clarity is not the problem.  The problem is instead lack of
+justification.  My questions were intended to help you understand how
+best to justify this sort of change, and also to help you determine on
+your own whether or not future changes can be justified.
 
-So, can you show a statistically significant benefit on a real system?
-For example, by measuring the time required for a expedited grace period
-to complete?  That would argue for this change, though it would need to be
-conditional, so that systems that don't care that much about the latency
-of expedited RCU grace periods don't need to pay the IRQ_WORK_INIT_HARD
-performance penalties.  Or you would need to demonstrate that these
-performance penalties don't cause problems.  (But such a demonstration
-is not easy given the wide variety of systems that Linux supports.)
+Please keep in mind that we reach that code when the grace period has
+been stalled for ten full -minutes-.  If the system has 64 CPUs, this
+means that the interarrival rate of decrements to trc_n_readers_need_end
+is roughly 0.1 per second.  The time between the wakeup-timeout test of
+trc_n_readers_need_end and the "if (ret)" will normally be small numbers
+of microseconds, let's say ten of them.  The probability of this change
+making any difference is therefore on the order of one in a million.
 
-Now, I could imagine that the current code could cause problems during
-boot on CONFIG_PREEMPT_RT kernels.  But, believe me, I can imagine all
-sorts of horrible problems.  But we should fix those that happen not
-just in my imagination, but also in the real world.  ;-)
+And the next step is to traverse the entire tasks list, which could take
+quite a few milliseconds.  So there is is something like 1000 times more
+likely that the value of trc_n_readers_need_end will change in that loop
+than before the "if (ret)" check.
 
-So if you can make such a problem happen in real life, then I would be
-happy to take a patch that fixed this on CONFIG_PREEMPT_RT but kept the
-current code otherwise.
+Therefore, I am having a very hard time believing that this change
+is worthwhile.
+
+My turn.  Is this explanation clear?  ;-)
 
 							Thanx, Paul
 
-> Thanks
-> Zqiang	
+> >>Thanks
+> >>Zqiang
 > 
-> >
-> >Or has this been failing in some other manner?  If so, please let me know the exact sequence of events.
-> >
-> >							Thanx, Paul
+> >  		// Stall warning time, so make a list of the offenders.
+> >  		rcu_read_lock();
+> > --
+> > 2.25.1
+> > 
