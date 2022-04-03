@@ -2,107 +2,647 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CEDA7C43217
-	for <rcu@archiver.kernel.org>; Sun,  3 Apr 2022 15:46:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9EEC3C433F5
+	for <rcu@archiver.kernel.org>; Sun,  3 Apr 2022 22:20:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239741AbiDCPsa (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 3 Apr 2022 11:48:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52726 "EHLO
+        id S1376539AbiDCWWV (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 3 Apr 2022 18:22:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359367AbiDCPsY (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 3 Apr 2022 11:48:24 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1D61326FA;
-        Sun,  3 Apr 2022 08:46:29 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 8B923B80D59;
-        Sun,  3 Apr 2022 15:46:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05D6EC340ED;
-        Sun,  3 Apr 2022 15:46:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649000787;
-        bh=AjbUxfWQZJ9LYtaZniXFzkk6R9dJGhR3P9jE0QaU830=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=CS+s8AcA46FV07MxUpkF1gm4zEp8aFD09GumCLkzkZZbsCM7faRoRPXNulXM9F1dB
-         rJSj62/xWhZbDVZ9RxK5UsSQrQUTQla7JRatMCJnJA+TTJSiaY8XxxtfJ6pSufhY1Q
-         iNO1niut5f2NPYoEdhZF61FsMY0drUJwDz0ExNRGsr3g7E1bj44lpM0njvsSrczIPY
-         /ogzxg9Gt7SycUxE5/jQoAIKpDOkkBz5gN6w+8gc7avNf8dHM74yWWgVj/8JpneTRb
-         idC1OnfcNHyUONGAjbIWweQ0v0+NOnY7MKxiNanIyEtmhtQWezbGH7zXWS0TTrIraB
-         hlyTsP6G8lzUg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 805B25C0555; Sun,  3 Apr 2022 08:46:26 -0700 (PDT)
-Date:   Sun, 3 Apr 2022 08:46:26 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Zqiang <qiang1.zhang@intel.com>
-Cc:     frederic@kernel.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu: Use IRQ_WORK_INIT_HARD() to initialize defer_qs_iw
- on PREEMPT_RT kernel
-Message-ID: <20220403154626.GO4285@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220403061440.2762522-1-qiang1.zhang@intel.com>
+        with ESMTP id S1353021AbiDCWWV (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 3 Apr 2022 18:22:21 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2523324F1C
+        for <rcu@vger.kernel.org>; Sun,  3 Apr 2022 15:20:25 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id n63-20020a1c2742000000b0038d0c31db6eso4604594wmn.1
+        for <rcu@vger.kernel.org>; Sun, 03 Apr 2022 15:20:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=c2PQS4RlFfS8mbNZcsqBav1JPPGPkrt7drAJKlu7oLo=;
+        b=cnRZAmCAFPmBIBhudyQrmCZpRddMdbYVH4W2UADsvsHQHIsyXwHz9csXJTnzLk/bYh
+         3BWKcFZlu6NwSBCkv6CmT9FoP3wDXMulwB+4QWrGRSbiDdVM/03jJecLpy9QEHqUjSca
+         3CCfIWqXTHZLPueTFrSYJ3jT+Ub/uyLezVw/dnulnUS3gMSGJkKbAh/kinh0t6IIpPpR
+         3iM5zO8Qfvs8HyDHm9shkmtKpc+GrUOA59Dkji13B2ldA0u20YQcEUKwGdE/L+iMrGqO
+         IFpwc0sVTgkUQVTCqNbVlONArID5QGAB4QW3D/evg/3YrbgzSbsAQasJf/0lBUsS0TjD
+         eI1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=c2PQS4RlFfS8mbNZcsqBav1JPPGPkrt7drAJKlu7oLo=;
+        b=idnKeLvzdchH06mQnxxJgENdtCPNFlNCyonLBrv1OSt02pd0AJrZQhiKPuXcjbERwS
+         XGQ62Tktkq6upOCLKwLUwKsubPmyPNpAB/SSSHlmOybX2amFt5eiB4jxwYv41Ky43lUh
+         ItnBdHvKVETpJ580FMUyn9e/Thrb3QP9fce3wQ/AyJsyTtvrDrjZ3R159wRauIgxMEPQ
+         UOlJ90LLTq6bj1355Gz07ih5A/VbyYbq4pSHj19HP4TAdJW+LYr3Kd8NcHkZPqhvXzic
+         rs726YiRDJVSW0gbDqHKhVyU5xzLP6KMBQxe3xEZpfmlABKT3k2Ca0TIDocUn9ngtcDC
+         100A==
+X-Gm-Message-State: AOAM532G8+uMY0OFjR+1M/hNGMSmLAXxizXXC9YQRiAHccr30pMcaFpU
+        WaKxoXdvekhtir7slREq4cWOy4y9W+GYsKCpdhrlaA==
+X-Google-Smtp-Source: ABdhPJwbIXG0goAYJYBc7QmbcY8NaIdLvbphMGJSUAn83jbOCEn4316bCO5ENgKJ/fs32WB3RrpeNwq3xoVaLLwnwS4=
+X-Received: by 2002:a7b:c057:0:b0:37b:ebad:c9c8 with SMTP id
+ u23-20020a7bc057000000b0037bebadc9c8mr16728987wmc.61.1649024423232; Sun, 03
+ Apr 2022 15:20:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220403061440.2762522-1-qiang1.zhang@intel.com>
+References: <20220401225740.1984689-1-kaleshsingh@google.com> <20220402003021.GI4285@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20220402003021.GI4285@paulmck-ThinkPad-P17-Gen-1>
+From:   Kalesh Singh <kaleshsingh@google.com>
+Date:   Sun, 3 Apr 2022 15:20:12 -0700
+Message-ID: <CAC_TJvceeXW6b__nmYfq_3XpE4H7mpU4HuTq7moQhC1ZrDG1Zg@mail.gmail.com>
+Subject: Re: [PATCH] RCU: Move expedited grace period (GP) work to RT kthread_worker
+To:     paulmck@kernel.org
+Cc:     Suren Baghdasaryan <surenb@google.com>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Tejun Heo <tj@kernel.org>, Tim Murray <timmurray@google.com>,
+        Wei Wang <wvw@google.com>, Kyle Lin <kylelin@google.com>,
+        Chunwei Lu <chunweilu@google.com>,
+        Lulu Wang <luluw@google.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sun, Apr 03, 2022 at 02:14:40PM +0800, Zqiang wrote:
-> On non-PREEMPT_RT kernel, the init_irq_work() make the defer_qs_iw irq-work
-> execute in interrupt context. however, on PREEMPT_RT kernel, the
-> init_irq_work() make defer_qs_iq irq-work execute in rt-fifo irq_work
-> kthreads. when system booting, and the CONFIG_RCU_STRICT_GRACE_PERIOD
-> is enabled, there are a lot of defer_qs_iw irq-work to be processed
-> in rt-fifo irq_work kthreads, it occupies boot CPU for long time and
-> cause other kthread cannot get the boot CPU, the boot process occurs
-> hang. use IRQ_WORK_INIT_HARD() to initialize defer_qs_iw irq-work, can
-> ensure the defer_qs_iw irq-work always execute in interrupt context,
-> whether PREEMPT_RT or non PREEMPT_RT kernel.
+On Fri, Apr 1, 2022 at 5:30 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+>
+> On Fri, Apr 01, 2022 at 03:57:40PM -0700, Kalesh Singh wrote:
+> > It was noticed that enabling CONFIG_RCU_BOOST did not help RCU
+> > performance because the workqueues that runs expedited GP work are
+> > subject to scheduling delays. This patch moves the expedited GP
+> > work items to RT kthread_worker.
+> >
+> > The results were evaluated on arm64 Android devices (6GB ram) running
+> > 5.10 kernel, and caturing trace data during critical user journeys.
+> >
+> > The table below compares the time synchronize_rcu_expedited() is blocked:
+> >
+> >  ----------------------------------------------------------------------
+> > |                   |      Using WQ    | Using kthead_worker |  Diff   |
+> > -----------------------------------------------------------------------
+> > | Max duration (ns) |    372766967     |     2329671         | -99.38% |
+> > -----------------------------------------------------------------------
+> > | Avg duration (ns) |      2746353.16  |      151242.311     | -94.49% |
+> >  ----------------------------------------------------------------------
+>
+> Impressive reductions in latency!!!  151 microsecond average and two
+> millisecond maximum, not bad at all.  ;-)
 
-This is a much better justification of the need for a change, thank you!
+Hi Paul. Thanks for the detailed review.
 
-But it looks like I need to clarify a sentence in my previous email.
+>
+> We will need number of samples and some sort of information on variation,
+> for example, a range of maximums and a standard deviation to go with
+> the average.  These might seem silly given that you have up to two orders
+> of magnitude effect sizes, but we should still set a good example.
+>
+> I have queued this on an experimental -rcu branch fastexp.2022.04.01a for
+> testing purposes, but I cannot send it upstream in this form.  However,
+> I believe that a few adjustments can make it into something that can be
+> upstreamed, maybe even as early as the next (v5.19) merge window.
 
-Please note that you were using the debugging RCU_STRICT_GRACE_PERIOD
-Kconfig option, so this is a potential problem as opposed to an immediate
-bug.  Yes, we must fix bugs, but it is also very important to avoid
-harming other workloads, which are after all the vast majority of the
-uses of the Linux kernel.
+Agreed, I'll provide the additional data with v2.
 
-And a major purpose of things like RCU_STRICT_GRACE_PERIOD is to give
-us advanced warning of bugs so that we can fix them properly, without
-hurting other workloads.
+>
+> As in I probably will need to revert it after running tests, but let's
+> see how it goes.
+>
+> Please see below for questions and comments.
+>
+> Also, as usual, I could not resist the urge to do a bit of wordsmithing,
+> most especially inserting commas into the big numbers.  Please see the
+> end of this email for the variant queued.
+>
+> Oh, and I do have Uladzislau's CONFIG_RCU_EXP_CPU_STALL_TIMEOUT commit
+> already queued, which will be helpful in finding overly long RCU read-side
+> critical sections.
+>
+> Good stuff!!!
+>
+>                                                         Thanx, Paul
+>
+> > Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> > Cc: Tejun Heo <tj@kernel.org>
+> > Reported-by: Tim Murray <timmurray@google.com>
+> > Reported-by: Wei Wang <wvw@google.com>
+> > Tested-by: Kyle Lin <kylelin@google.com>
+> > Tested-by: Chunwei Lu <chunweilu@google.com>
+> > Tested-by: Lulu Wang <luluw@google.com>
+> > Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
+> > ---
+> >  kernel/rcu/rcu.h      |  3 ++-
+> >  kernel/rcu/tree.c     | 41 +++++++++++++++++++++++++++++++++++++----
+> >  kernel/rcu/tree.h     |  3 ++-
+> >  kernel/rcu/tree_exp.h | 35 +++++++++++++++--------------------
+> >  4 files changed, 56 insertions(+), 26 deletions(-)
+> >
+> > diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+> > index 24b5f2c2de87..13d2b74bf19f 100644
+> > --- a/kernel/rcu/rcu.h
+> > +++ b/kernel/rcu/rcu.h
+> > @@ -534,7 +534,8 @@ int rcu_get_gp_kthreads_prio(void);
+> >  void rcu_fwd_progress_check(unsigned long j);
+> >  void rcu_force_quiescent_state(void);
+> >  extern struct workqueue_struct *rcu_gp_wq;
+> > -extern struct workqueue_struct *rcu_par_gp_wq;
+> > +extern struct kthread_worker *rcu_exp_gp_kworker;
+> > +extern struct kthread_worker *rcu_exp_par_gp_kworker;
+> >  #endif /* #else #ifdef CONFIG_TINY_RCU */
+> >
+> >  #ifdef CONFIG_RCU_NOCB_CPU
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index a4b8189455d5..bd5e672ffa5a 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -4471,6 +4471,33 @@ static int rcu_pm_notify(struct notifier_block *self,
+> >       return NOTIFY_OK;
+> >  }
+> >
+> > +struct kthread_worker *rcu_exp_gp_kworker;
+> > +struct kthread_worker *rcu_exp_par_gp_kworker;
+> > +
+> > +static void __init rcu_start_exp_gp_kworkers(void)
+> > +{
+> > +     const char *par_gp_kworker_name = "rcu_exp_par_gp_kthread_worker";
+> > +     const char *gp_kworker_name = "rcu_exp_gp_kthread_worker";
+> > +     struct sched_param param = { .sched_priority = kthread_prio };
+> > +
+> > +     rcu_exp_gp_kworker = kthread_create_worker(0, gp_kworker_name);
+> > +     if (IS_ERR_OR_NULL(rcu_exp_gp_kworker)) {
+> > +             pr_err("Failed to create %s!\n", gp_kworker_name);
+> > +             return;
+> > +     }
+> > +
+> > +     rcu_exp_par_gp_kworker = kthread_create_worker(0, par_gp_kworker_name);
+> > +     if (IS_ERR_OR_NULL(rcu_exp_par_gp_kworker)) {
+> > +             pr_err("Failed to create %s!\n", par_gp_kworker_name);
+> > +             kthread_destroy_worker(rcu_exp_gp_kworker);
+> > +             return;
+> > +     }
+> > +
+> > +     sched_setscheduler_nocheck(rcu_exp_gp_kworker->task, SCHED_FIFO, &param);
+> > +     sched_setscheduler_nocheck(rcu_exp_par_gp_kworker->task, SCHED_FIFO,
+> > +                                &param);
+>
+> What happens when kthread_prio is zero, as it is by default on systems
+> built with CONFIG_RCU_BOOST=n?
+>
+> My guess is that we need to use normal workqueues when CONFIG_RCU_BOOST=n.
+>
+> The real-time guys usually completely disable expedited grace periods
+> except during boot, so they might also want normal workqueues as well.
+> They build with CONFIG_PREEMPT_RT=y.
 
-So, does this patch guarantee exactly the same performance and scalability
-as before for !PREEMPT_RT systems?  If so, please add an explanation to
-the commit log.
+Ack. Will make this dependent on RCU_BOOST && !PREEMPT_RT, else we'll
+fallback to work queues.
 
-Otherwise, please adjust the code to provide this guarantee.
+>
+> > +}
+> > +
+> >  /*
+> >   * Spawn the kthreads that handle RCU's grace periods.
+> >   */
+> > @@ -4500,6 +4527,10 @@ static int __init rcu_spawn_gp_kthread(void)
+> >       rcu_spawn_nocb_kthreads();
+> >       rcu_spawn_boost_kthreads();
+> >       rcu_spawn_core_kthreads();
+> > +
+> > +     /* Create kthread worker for expedited GPs */
+> > +     rcu_start_exp_gp_kworkers();
+> > +
+> >       return 0;
+> >  }
+> >  early_initcall(rcu_spawn_gp_kthread);
+> > @@ -4745,7 +4776,6 @@ static void __init rcu_dump_rcu_node_tree(void)
+> >  }
+> >
+> >  struct workqueue_struct *rcu_gp_wq;
+> > -struct workqueue_struct *rcu_par_gp_wq;
+> >
+> >  static void __init kfree_rcu_batch_init(void)
+> >  {
+> > @@ -4808,11 +4838,14 @@ void __init rcu_init(void)
+> >               rcutree_online_cpu(cpu);
+> >       }
+> >
+> > -     /* Create workqueue for Tree SRCU and for expedited GPs. */
+> > +     /*
+> > +      * Create workqueue for Tree SRCU.
+> > +      *
+> > +      * Expedited GPs use RT kthread_worker.
+> > +      * See: rcu_start_exp_gp_kworkers()
+> > +      */
+> >       rcu_gp_wq = alloc_workqueue("rcu_gp", WQ_MEM_RECLAIM, 0);
+> >       WARN_ON(!rcu_gp_wq);
+> > -     rcu_par_gp_wq = alloc_workqueue("rcu_par_gp", WQ_MEM_RECLAIM, 0);
+> > -     WARN_ON(!rcu_par_gp_wq);
+> >
+> >       /* Fill in default value for rcutree.qovld boot parameter. */
+> >       /* -After- the rcu_node ->lock fields are initialized! */
+> > diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+> > index 926673ebe355..0193d67a706a 100644
+> > --- a/kernel/rcu/tree.h
+> > +++ b/kernel/rcu/tree.h
+> > @@ -10,6 +10,7 @@
+> >   */
+> >
+> >  #include <linux/cache.h>
+> > +#include <linux/kthread.h>
+> >  #include <linux/spinlock.h>
+> >  #include <linux/rtmutex.h>
+> >  #include <linux/threads.h>
+> > @@ -23,7 +24,7 @@
+> >  /* Communicate arguments to a workqueue handler. */
+> >  struct rcu_exp_work {
+> >       unsigned long rew_s;
+> > -     struct work_struct rew_work;
+> > +     struct kthread_work rew_work;
+> >  };
+> >
+> >  /* RCU's kthread states for tracing. */
+> > diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+> > index 60197ea24ceb..f5f3722c0a74 100644
+> > --- a/kernel/rcu/tree_exp.h
+> > +++ b/kernel/rcu/tree_exp.h
+> > @@ -334,7 +334,7 @@ static bool exp_funnel_lock(unsigned long s)
+> >   * Select the CPUs within the specified rcu_node that the upcoming
+> >   * expedited grace period needs to wait for.
+> >   */
+> > -static void sync_rcu_exp_select_node_cpus(struct work_struct *wp)
+> > +static void sync_rcu_exp_select_node_cpus(struct kthread_work *wp)
+> >  {
+> >       int cpu;
+> >       unsigned long flags;
+> > @@ -423,7 +423,6 @@ static void sync_rcu_exp_select_node_cpus(struct work_struct *wp)
+> >   */
+> >  static void sync_rcu_exp_select_cpus(void)
+> >  {
+> > -     int cpu;
+> >       struct rcu_node *rnp;
+> >
+> >       trace_rcu_exp_grace_period(rcu_state.name, rcu_exp_gp_seq_endval(), TPS("reset"));
+> > @@ -435,28 +434,27 @@ static void sync_rcu_exp_select_cpus(void)
+> >               rnp->exp_need_flush = false;
+> >               if (!READ_ONCE(rnp->expmask))
+> >                       continue; /* Avoid early boot non-existent wq. */
+> > -             if (!READ_ONCE(rcu_par_gp_wq) ||
+> > +             if (!READ_ONCE(rcu_exp_par_gp_kworker) ||
+> >                   rcu_scheduler_active != RCU_SCHEDULER_RUNNING ||
+> >                   rcu_is_last_leaf_node(rnp)) {
+> > -                     /* No workqueues yet or last leaf, do direct call. */
+> > +                     /* kthread worker not started yet or last leaf, do direct call. */
+> >                       sync_rcu_exp_select_node_cpus(&rnp->rew.rew_work);
+> >                       continue;
+> >               }
+> > -             INIT_WORK(&rnp->rew.rew_work, sync_rcu_exp_select_node_cpus);
+> > -             cpu = find_next_bit(&rnp->ffmask, BITS_PER_LONG, -1);
+> > -             /* If all offline, queue the work on an unbound CPU. */
+> > -             if (unlikely(cpu > rnp->grphi - rnp->grplo))
+> > -                     cpu = WORK_CPU_UNBOUND;
+> > -             else
+> > -                     cpu += rnp->grplo;
+> > -             queue_work_on(cpu, rcu_par_gp_wq, &rnp->rew.rew_work);
+> > +             kthread_init_work(&rnp->rew.rew_work, sync_rcu_exp_select_node_cpus);
+> > +             /*
+> > +              * Use rcu_exp_par_gp_kworker, because flushing a work item from
+> > +              * another work item on the same kthread worker can result in
+> > +              * deadlock.
+> > +              */
+> > +             kthread_queue_work(rcu_exp_par_gp_kworker, &rnp->rew.rew_work);
+>
+> It looks like kthread_queue_work() uses a single lock per worker.  This is
+> likely to be problematic on large systems having multiple leaf rcu_node
+> structures, both due to lock contention and due to reduced concurrency.
+> For a point of reference, I have gotten RCU bug reports for issues on
+> systems with 256 leaf rcu_node structures.
+>
+> One approach would be to create a new Kconfig option to select the
+> kthread_queue implementation on small systems.  This Kconfig option
+> could choose its default based on system size, perhaps with 32 or
+> more CPUs continuing to use workqueues.  Or it could choose its
+> default based on CONFIG_ANDROID.
 
-							Thanx, Paul
+I was concerned about the reduced concurrency here but wasn't sure if
+it's a problem in practice. Thanks for the explanation. Your
+suggestion of using the number of CPUs makes sense to me (we want to
+avoid making it android specific if possible). Perhaps
+CONFIG_RCU_EXP_KTHREAD?
 
-> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-> ---
->  kernel/rcu/tree_plugin.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> index 3037c2536e1f..cf7bd28af8ef 100644
-> --- a/kernel/rcu/tree_plugin.h
-> +++ b/kernel/rcu/tree_plugin.h
-> @@ -661,7 +661,7 @@ static void rcu_read_unlock_special(struct task_struct *t)
->  			    expboost && !rdp->defer_qs_iw_pending && cpu_online(rdp->cpu)) {
->  				// Get scheduler to re-evaluate and call hooks.
->  				// If !IRQ_WORK, FQS scan will eventually IPI.
-> -				init_irq_work(&rdp->defer_qs_iw, rcu_preempt_deferred_qs_handler);
-> +				rdp->defer_qs_iw = IRQ_WORK_INIT_HARD(rcu_preempt_deferred_qs_handler);
->  				rdp->defer_qs_iw_pending = true;
->  				irq_work_queue_on(&rdp->defer_qs_iw, rdp->cpu);
->  			}
-> -- 
-> 2.25.1
-> 
+Thanks,
+Kalesh
+
+>
+> Another approach would be to have a separate kthread_worker for each
+> leaf rcu_node structure.
+>
+> The first approach would be safer in that it would avoid changing
+> behavior for systems not needing ultrafast expedited grace-period
+> latencies.  It might also make more sense for systems built with
+> CONFIG_PREEMPT_NONE=y or CONFIG_PREEMPT_VOLUNTARY=y.
+>
+> I don't see a reason to make this switchable at boot time, but others
+> might be able to provide good reasons.
+>
+> Either way, good encapsulation will of course be necessary.
+>
+> >               rnp->exp_need_flush = true;
+> >       }
+> >
+> >       /* Wait for workqueue jobs (if any) to complete. */
+> >       rcu_for_each_leaf_node(rnp)
+> >               if (rnp->exp_need_flush)
+> > -                     flush_work(&rnp->rew.rew_work);
+> > +                     kthread_flush_work(&rnp->rew.rew_work);
+> >  }
+> >
+> >  /*
+> > @@ -625,7 +623,7 @@ static void rcu_exp_sel_wait_wake(unsigned long s)
+> >  /*
+> >   * Work-queue handler to drive an expedited grace period forward.
+> >   */
+> > -static void wait_rcu_exp_gp(struct work_struct *wp)
+> > +static void wait_rcu_exp_gp(struct kthread_work *wp)
+> >  {
+> >       struct rcu_exp_work *rewp;
+> >
+> > @@ -848,20 +846,17 @@ void synchronize_rcu_expedited(void)
+> >       } else {
+> >               /* Marshall arguments & schedule the expedited grace period. */
+> >               rew.rew_s = s;
+> > -             INIT_WORK_ONSTACK(&rew.rew_work, wait_rcu_exp_gp);
+> > -             queue_work(rcu_gp_wq, &rew.rew_work);
+> > +             kthread_init_work(&rew.rew_work, wait_rcu_exp_gp);
+> > +             kthread_queue_work(rcu_exp_gp_kworker, &rew.rew_work);
+> >       }
+> >
+> >       /* Wait for expedited grace period to complete. */
+> >       rnp = rcu_get_root();
+> >       wait_event(rnp->exp_wq[rcu_seq_ctr(s) & 0x3],
+> >                  sync_exp_work_done(s));
+> > -     smp_mb(); /* Workqueue actions happen before return. */
+> > +     smp_mb(); /* kthread actions happen before return. */
+> >
+> >       /* Let the next expedited grace period start. */
+> >       mutex_unlock(&rcu_state.exp_mutex);
+> > -
+> > -     if (likely(!boottime))
+> > -             destroy_work_on_stack(&rew.rew_work);
+> >  }
+> >  EXPORT_SYMBOL_GPL(synchronize_rcu_expedited);
+> >
+> > base-commit: 7a3ecddc571cc3294e5d6bb5948ff2b0cfa12735
+> > --
+> > 2.35.1.1094.g7c7d902a7c-goog
+>
+> ------------------------------------------------------------------------
+>
+> commit d9f3e7d671416fdf5b61f094765754269b652db0
+> Author: Kalesh Singh <kaleshsingh@google.com>
+> Date:   Fri Apr 1 15:57:40 2022 -0700
+>
+>     EXP rcu: Move expedited grace period (GP) work to RT kthread_worker
+>
+>     Enabling CONFIG_RCU_BOOST did not reduce RCU expedited grace-period
+>     latency because its workqueues run at SCHED_OTHER, and thus can be
+>     delayed by normal processes.  This commit avoids these delays by moving
+>     the expedited GP work items to a real-time-priority kthread_worker.
+>
+>     The results were evaluated on arm64 Android devices (6GB ram) running
+>     5.10 kernel, and capturing trace data in critical user-level code.
+>
+>     The table below shows the resulting order-of-magnitude improvements
+>     in synchronize_rcu_expedited() latency:
+>
+>      ---------------------------------------------------------------
+>     |                   |   workqueues  |  kthead_worker  |    Diff |
+>     ----------------------------------------------------------------
+>     | Max duration (ns) |  372,766,967  |      2,329,671  | -99.38% |
+>     ----------------------------------------------------------------
+>     | Avg duration (ns) |    2,746,353  |        151,242  | -94.49% |
+>      ---------------------------------------------------------------
+>
+>     Cc: "Paul E. McKenney" <paulmck@kernel.org>
+>     Cc: Tejun Heo <tj@kernel.org>
+>     Reported-by: Tim Murray <timmurray@google.com>
+>     Reported-by: Wei Wang <wvw@google.com>
+>     Tested-by: Kyle Lin <kylelin@google.com>
+>     Tested-by: Chunwei Lu <chunweilu@google.com>
+>     Tested-by: Lulu Wang <luluw@google.com>
+>     Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
+>     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+>
+> diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+> index 23c877fa220e..a7f6c6665b01 100644
+> --- a/kernel/rcu/rcu.h
+> +++ b/kernel/rcu/rcu.h
+> @@ -566,6 +566,8 @@ void rcu_fwd_progress_check(unsigned long j);
+>  void rcu_force_quiescent_state(void);
+>  extern struct workqueue_struct *rcu_gp_wq;
+>  extern struct workqueue_struct *rcu_par_gp_wq;
+> +extern struct kthread_worker *rcu_exp_gp_kworker;
+> +extern struct kthread_worker *rcu_exp_par_gp_kworker;
+>  void rcu_gp_slow_register(atomic_t *rgssp);
+>  void rcu_gp_slow_unregister(atomic_t *rgssp);
+>  #endif /* #else #ifdef CONFIG_TINY_RCU */
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 542cb514567f..2c7e714d34e9 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -4559,6 +4559,33 @@ static int rcu_pm_notify(struct notifier_block *self,
+>         return NOTIFY_OK;
+>  }
+>
+> +struct kthread_worker *rcu_exp_gp_kworker;
+> +struct kthread_worker *rcu_exp_par_gp_kworker;
+> +
+> +static void __init rcu_start_exp_gp_kworkers(void)
+> +{
+> +       const char *par_gp_kworker_name = "rcu_exp_par_gp_kthread_worker";
+> +       const char *gp_kworker_name = "rcu_exp_gp_kthread_worker";
+> +       struct sched_param param = { .sched_priority = kthread_prio };
+> +
+> +       rcu_exp_gp_kworker = kthread_create_worker(0, gp_kworker_name);
+> +       if (IS_ERR_OR_NULL(rcu_exp_gp_kworker)) {
+> +               pr_err("Failed to create %s!\n", gp_kworker_name);
+> +               return;
+> +       }
+> +
+> +       rcu_exp_par_gp_kworker = kthread_create_worker(0, par_gp_kworker_name);
+> +       if (IS_ERR_OR_NULL(rcu_exp_par_gp_kworker)) {
+> +               pr_err("Failed to create %s!\n", par_gp_kworker_name);
+> +               kthread_destroy_worker(rcu_exp_gp_kworker);
+> +               return;
+> +       }
+> +
+> +       sched_setscheduler_nocheck(rcu_exp_gp_kworker->task, SCHED_FIFO, &param);
+> +       sched_setscheduler_nocheck(rcu_exp_par_gp_kworker->task, SCHED_FIFO,
+> +                                  &param);
+> +}
+> +
+>  /*
+>   * Spawn the kthreads that handle RCU's grace periods.
+>   */
+> @@ -4595,6 +4622,10 @@ static int __init rcu_spawn_gp_kthread(void)
+>         rcu_spawn_cpu_nocb_kthread(smp_processor_id());
+>         rcu_spawn_one_boost_kthread(rdp->mynode);
+>         rcu_spawn_core_kthreads();
+> +
+> +       /* Create kthread worker for expedited GPs */
+> +       rcu_start_exp_gp_kworkers();
+> +
+>         return 0;
+>  }
+>  early_initcall(rcu_spawn_gp_kthread);
+> @@ -4843,7 +4874,6 @@ static void __init rcu_dump_rcu_node_tree(void)
+>  }
+>
+>  struct workqueue_struct *rcu_gp_wq;
+> -struct workqueue_struct *rcu_par_gp_wq;
+>
+>  static void __init kfree_rcu_batch_init(void)
+>  {
+> @@ -4905,11 +4935,14 @@ void __init rcu_init(void)
+>         rcu_cpu_starting(cpu);
+>         rcutree_online_cpu(cpu);
+>
+> -       /* Create workqueue for Tree SRCU and for expedited GPs. */
+> +       /*
+> +        * Create workqueue for Tree SRCU.
+> +        *
+> +        * Expedited GPs use RT kthread_worker.
+> +        * See: rcu_start_exp_gp_kworkers()
+> +        */
+>         rcu_gp_wq = alloc_workqueue("rcu_gp", WQ_MEM_RECLAIM, 0);
+>         WARN_ON(!rcu_gp_wq);
+> -       rcu_par_gp_wq = alloc_workqueue("rcu_par_gp", WQ_MEM_RECLAIM, 0);
+> -       WARN_ON(!rcu_par_gp_wq);
+>
+>         /* Fill in default value for rcutree.qovld boot parameter. */
+>         /* -After- the rcu_node ->lock fields are initialized! */
+> diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+> index b8d07bf92d29..b0afcc36a896 100644
+> --- a/kernel/rcu/tree.h
+> +++ b/kernel/rcu/tree.h
+> @@ -10,6 +10,7 @@
+>   */
+>
+>  #include <linux/cache.h>
+> +#include <linux/kthread.h>
+>  #include <linux/spinlock.h>
+>  #include <linux/rtmutex.h>
+>  #include <linux/threads.h>
+> @@ -23,7 +24,7 @@
+>  /* Communicate arguments to a workqueue handler. */
+>  struct rcu_exp_work {
+>         unsigned long rew_s;
+> -       struct work_struct rew_work;
+> +       struct kthread_work rew_work;
+>  };
+>
+>  /* RCU's kthread states for tracing. */
+> diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+> index bd47fce0e08c..cdb299e80cff 100644
+> --- a/kernel/rcu/tree_exp.h
+> +++ b/kernel/rcu/tree_exp.h
+> @@ -334,7 +334,7 @@ static bool exp_funnel_lock(unsigned long s)
+>   * Select the CPUs within the specified rcu_node that the upcoming
+>   * expedited grace period needs to wait for.
+>   */
+> -static void sync_rcu_exp_select_node_cpus(struct work_struct *wp)
+> +static void sync_rcu_exp_select_node_cpus(struct kthread_work *wp)
+>  {
+>         int cpu;
+>         unsigned long flags;
+> @@ -423,7 +423,6 @@ static void sync_rcu_exp_select_node_cpus(struct work_struct *wp)
+>   */
+>  static void sync_rcu_exp_select_cpus(void)
+>  {
+> -       int cpu;
+>         struct rcu_node *rnp;
+>
+>         trace_rcu_exp_grace_period(rcu_state.name, rcu_exp_gp_seq_endval(), TPS("reset"));
+> @@ -435,28 +434,27 @@ static void sync_rcu_exp_select_cpus(void)
+>                 rnp->exp_need_flush = false;
+>                 if (!READ_ONCE(rnp->expmask))
+>                         continue; /* Avoid early boot non-existent wq. */
+> -               if (!READ_ONCE(rcu_par_gp_wq) ||
+> +               if (!READ_ONCE(rcu_exp_par_gp_kworker) ||
+>                     rcu_scheduler_active != RCU_SCHEDULER_RUNNING ||
+>                     rcu_is_last_leaf_node(rnp)) {
+> -                       /* No workqueues yet or last leaf, do direct call. */
+> +                       /* kthread worker not started yet or last leaf, do direct call. */
+>                         sync_rcu_exp_select_node_cpus(&rnp->rew.rew_work);
+>                         continue;
+>                 }
+> -               INIT_WORK(&rnp->rew.rew_work, sync_rcu_exp_select_node_cpus);
+> -               cpu = find_next_bit(&rnp->ffmask, BITS_PER_LONG, -1);
+> -               /* If all offline, queue the work on an unbound CPU. */
+> -               if (unlikely(cpu > rnp->grphi - rnp->grplo))
+> -                       cpu = WORK_CPU_UNBOUND;
+> -               else
+> -                       cpu += rnp->grplo;
+> -               queue_work_on(cpu, rcu_par_gp_wq, &rnp->rew.rew_work);
+> +               kthread_init_work(&rnp->rew.rew_work, sync_rcu_exp_select_node_cpus);
+> +               /*
+> +                * Use rcu_exp_par_gp_kworker, because flushing a work item from
+> +                * another work item on the same kthread worker can result in
+> +                * deadlock.
+> +                */
+> +               kthread_queue_work(rcu_exp_par_gp_kworker, &rnp->rew.rew_work);
+>                 rnp->exp_need_flush = true;
+>         }
+>
+>         /* Wait for workqueue jobs (if any) to complete. */
+>         rcu_for_each_leaf_node(rnp)
+>                 if (rnp->exp_need_flush)
+> -                       flush_work(&rnp->rew.rew_work);
+> +                       kthread_flush_work(&rnp->rew.rew_work);
+>  }
+>
+>  /*
+> @@ -625,7 +623,7 @@ static void rcu_exp_sel_wait_wake(unsigned long s)
+>  /*
+>   * Work-queue handler to drive an expedited grace period forward.
+>   */
+> -static void wait_rcu_exp_gp(struct work_struct *wp)
+> +static void wait_rcu_exp_gp(struct kthread_work *wp)
+>  {
+>         struct rcu_exp_work *rewp;
+>
+> @@ -835,22 +833,18 @@ static void __synchronize_rcu_expedited(bool polling)
+>         } else {
+>                 /* Marshall arguments & schedule the expedited grace period. */
+>                 rew.rew_s = s;
+> -               INIT_WORK_ONSTACK(&rew.rew_work, wait_rcu_exp_gp);
+> -               queue_work(rcu_gp_wq, &rew.rew_work);
+> +               kthread_init_work(&rew.rew_work, wait_rcu_exp_gp);
+> +               kthread_queue_work(rcu_exp_gp_kworker, &rew.rew_work);
+>         }
+>
+>         /* Wait for expedited grace period to complete. */
+>         rnp = rcu_get_root();
+>         wait_event(rnp->exp_wq[rcu_seq_ctr(s) & 0x3],
+>                    sync_exp_work_done(s));
+> -       smp_mb(); /* Workqueue actions happen before return. */
+> +       smp_mb(); /* kthread actions happen before return. */
+>
+>         /* Let the next expedited grace period start. */
+>         mutex_unlock(&rcu_state.exp_mutex);
+> -
+> -       if (likely(!boottime))
+> -               destroy_work_on_stack(&rew.rew_work);
+> -
+>  }
+>
+>  /**
+>
+> --
+> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
+>
