@@ -2,169 +2,82 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A58D5C433EF
-	for <rcu@archiver.kernel.org>; Sun,  3 Apr 2022 03:40:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C59B2C433F5
+	for <rcu@archiver.kernel.org>; Sun,  3 Apr 2022 06:14:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231793AbiDCDmM (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 2 Apr 2022 23:42:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58322 "EHLO
+        id S234036AbiDCGQG (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 3 Apr 2022 02:16:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231704AbiDCDmK (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 2 Apr 2022 23:42:10 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E8F62E6AE;
-        Sat,  2 Apr 2022 20:40:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 2A899B8093C;
-        Sun,  3 Apr 2022 03:40:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2A8BC340ED;
-        Sun,  3 Apr 2022 03:40:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1648957214;
-        bh=vyDw1LW1hToLuXx1bLNdBKfd5IwUMTVc4aGJHpgMUGA=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=pm0T6SrJZdqebaCCx5nz3OsLJW2z8/dkTGfpvZDhqUvoTw9t64e5jTKCHqxlhayKj
-         86aX6oXux7llW9f5pFRb726zL/nwmEJrQstiW4xBZUHrmWAWW3bRNTV6xswSY/yWya
-         Con7s9N2WKyzeyAi/DebS+3CXPEpdTGQn4qgfoSupQ5jtrr5mCvMXJnJOGQuhI6jjw
-         sJoSpBK0XmwiZd3AirCmRAM9/hvf7cS5sTwsyhih/r03DUprGLH4O1VlyOQsl71z5t
-         Q7VjeTe+ag8bWQcqxImmi3g7DNtQtbGHLn1hZ/VzjqhGDz6SAx6b2Vc17fsZO3ZuNa
-         1zpwCwWOHjQXg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 8B9195C098F; Sat,  2 Apr 2022 20:40:14 -0700 (PDT)
-Date:   Sat, 2 Apr 2022 20:40:14 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
-Cc:     "frederic@kernel.org" <frederic@kernel.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] rcu: Put the irq work into hard interrupt context for
- execution
-Message-ID: <20220403034014.GL4285@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220330060012.2470054-1-qiang1.zhang@intel.com>
- <20220330201620.GM4285@paulmck-ThinkPad-P17-Gen-1>
- <PH0PR11MB58802C1246C6F4FB895BDDA9DA1F9@PH0PR11MB5880.namprd11.prod.outlook.com>
- <20220331172943.GV4285@paulmck-ThinkPad-P17-Gen-1>
- <PH0PR11MB5880709B39EC5BDAACBD340FDAE09@PH0PR11MB5880.namprd11.prod.outlook.com>
- <20220401165524.GF4285@paulmck-ThinkPad-P17-Gen-1>
- <PH0PR11MB5880CDD975CC12FDF7BF89DEDAE39@PH0PR11MB5880.namprd11.prod.outlook.com>
+        with ESMTP id S232663AbiDCGQG (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 3 Apr 2022 02:16:06 -0400
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BB8BBC03;
+        Sat,  2 Apr 2022 23:14:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1648966453; x=1680502453;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=HiyotpaX2vP6TLwEpXSXpxsDN8hTJfCPw9+FmUKPPTc=;
+  b=Cx+EzT3rVk+j0Ayf3/XZZXwsF1WZq1lPCej3xm7zVg5gD5oBQ2lDPSB9
+   ZAA0VoMBkzaM3VIeyoKf+NYpPfhvt0CirQ16Cr2D3y65wFmVqUG3Ybc2d
+   +QSa09Oue4siq7AlRpkB8/HlaxEtTogfWtFasuVey8CEKCdn0bRhE+pl8
+   4Kot2gFuaXoFnR5wPNwCk/bTh1pc61cXOI/BwiA+05YjBPSsodbrw44XO
+   +x5EkkgXU7XFCjTw/IN3WPmJtmgktuVT/TctTVFhXLT+ttuLbKzz1MGVw
+   sb6Lau48S8O5c5MJo0MnEpScwQvZRKdbxx7WS5Hp3d7pt9Gy2/Z1hzWXo
+   g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10305"; a="242499780"
+X-IronPort-AV: E=Sophos;i="5.90,231,1643702400"; 
+   d="scan'208";a="242499780"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2022 23:14:12 -0700
+X-IronPort-AV: E=Sophos;i="5.90,231,1643702400"; 
+   d="scan'208";a="568744391"
+Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.125])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2022 23:14:11 -0700
+From:   Zqiang <qiang1.zhang@intel.com>
+To:     paulmck@kernel.org, frederic@kernel.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] rcu: Use IRQ_WORK_INIT_HARD() to initialize defer_qs_iw on PREEMPT_RT kernel
+Date:   Sun,  3 Apr 2022 14:14:40 +0800
+Message-Id: <20220403061440.2762522-1-qiang1.zhang@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <PH0PR11MB5880CDD975CC12FDF7BF89DEDAE39@PH0PR11MB5880.namprd11.prod.outlook.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, Apr 02, 2022 at 06:29:04AM +0000, Zhang, Qiang1 wrote:
-> 
-> On Fri, Apr 01, 2022 at 01:55:51AM +0000, Zhang, Qiang1 wrote:
-> > 
-> > On Wed, Mar 30, 2022 at 10:47:05PM +0000, Zhang, Qiang1 wrote:
-> > > On Wed, Mar 30, 2022 at 02:00:12PM +0800, Zqiang wrote:
-> > > > In PREEMPT_RT kernel, if irq work flags is not set, it will be 
-> > > > executed in per-CPU irq_work kthreads. set IRQ_WORK_HARD_IRQ flags 
-> > > > to irq work, put it in the context of hard interrupt execution, 
-> > > > accelerate scheduler to re-evaluate.
-> > > > 
-> > > > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-> > > > ---
-> > > >  kernel/rcu/tree.c        | 2 +-
-> > > >  kernel/rcu/tree_plugin.h | 2 +-
-> > > >  2 files changed, 2 insertions(+), 2 deletions(-)
-> > > > 
-> > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c index
-> > > > e2ffbeceba69..a69587773a85 100644
-> > > > --- a/kernel/rcu/tree.c
-> > > > +++ b/kernel/rcu/tree.c
-> > > > @@ -678,7 +678,7 @@ static void late_wakeup_func(struct irq_work
-> > > > *work)  }
-> > > >  
-> > > >  static DEFINE_PER_CPU(struct irq_work, late_wakeup_work) =
-> > > > -	IRQ_WORK_INIT(late_wakeup_func);
-> > > > +	IRQ_WORK_INIT_HARD(late_wakeup_func);
-> > > 
-> > > >This is used only by rcu_irq_work_resched(), which is invoked only by rcu_user_enter(), which is never invoked until userspace is enabled, by which time all of the various kthreads will have been spawned, correct?
-> > > >
-> > > >Either way, please show me the exact sequence of events that lead to a problem with the current IRQ_WORK_INIT().
-> > > >
-> > > >  /*
-> > > >   * If either:
-> > > > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h 
-> > > > index 3037c2536e1f..cf7bd28af8ef 100644
-> > > > --- a/kernel/rcu/tree_plugin.h
-> > > > +++ b/kernel/rcu/tree_plugin.h
-> > > > @@ -661,7 +661,7 @@ static void rcu_read_unlock_special(struct task_struct *t)
-> > > >  			    expboost && !rdp->defer_qs_iw_pending && cpu_online(rdp->cpu)) {
-> > > >  				// Get scheduler to re-evaluate and call hooks.
-> > > >  				// If !IRQ_WORK, FQS scan will eventually IPI.
-> > > > -				init_irq_work(&rdp->defer_qs_iw, rcu_preempt_deferred_qs_handler);
-> > > > +				rdp->defer_qs_iw =
-> > > > +IRQ_WORK_INIT_HARD(rcu_preempt_deferred_qs_handler);
-> > > >  				rdp->defer_qs_iw_pending = true;
-> > > >  				irq_work_queue_on(&rdp->defer_qs_iw, rdp->cpu);
-> > > >  			}
-> > > >
-> > > >OK, in theory, rcu_read_unlock() could get to this point before all of the various kthreads were spawned.  In practice, the next time that the boot CPU went idle, the end of the quiescent state would be noticed.
-> > > 
-> > > Through my understanding, use irq_work in order to make the 
-> > > quiescent state be noticed earlier, Because the irq_work execute in 
-> > > interrupt, this irq_work can be executed in time, but In RT kernel The irq_work  is put into the kthread for execution, when it is executed, it is affected by the scheduling delay.
-> > > Is there anything I missed?
-> > 
-> > >Yes, in that I am not seeing any actual data showing that this fix really makes things better.  Please in mind that IRQ_WORK_INIT_HARD does have performance disadvantages of its own.  So although I agree with your words saying that IRQ_WORK_INIT_HARD -might- be helpful, those words are not sufficient.
-> > >
-> > >So, can you show a statistically significant benefit on a real system?
-> > >For example, by measuring the time required for a expedited grace 
-> > >period to complete?  That would argue for this change, though it 
-> > >would need to be conditional, so that systems that don't care that 
-> > >much about the latency of expedited RCU grace periods don't need to 
-> > >pay the IRQ_WORK_INIT_HARD performance penalties.  Or you would need 
-> > >to demonstrate that these performance penalties don't cause problems.  
-> > >(But such a demonstration is not easy given the wide variety of 
-> > >systems that Linux supports.)
-> > >
-> > >Now, I could imagine that the current code could cause problems 
-> > >during boot on CONFIG_PREEMPT_RT kernels.  But, believe me, I can 
-> > >imagine all sorts of horrible problems.  But we should fix those that 
-> > >happen not just in my imagination, but also in the real world.  ;-)
-> > 
-> > Thanks, agree.  I'll test it according to your suggestion.
-> >
-> >Very good!  I am looking forward to seeing what you come up with.
-> 
-> Hello, Paul
-> 
-> I use v5.17.1-rt16 PREEMPT_RT kernel and enable CONFIG_RCU_STRICT_GRACE_PERIOD.
-> When boot, find a lot of  'defer_qs_iw' irq-work is handled in the 'irq_work/0', the 'irq_work/0' is RT fifo
-> Kthreads,  it occupies boot CPU for a long time,  the kernel_init kthread cannot get the boot CPU to start
-> Up other CPU,  the boot process occurs hang.
-> Replace  init_irq_work (&rdp->defer_qs_iw) with IRQ_WORK_INIT_HARD can fix.
+On non-PREEMPT_RT kernel, the init_irq_work() make the defer_qs_iw irq-work
+execute in interrupt context. however, on PREEMPT_RT kernel, the
+init_irq_work() make defer_qs_iq irq-work execute in rt-fifo irq_work
+kthreads. when system booting, and the CONFIG_RCU_STRICT_GRACE_PERIOD
+is enabled, there are a lot of defer_qs_iw irq-work to be processed
+in rt-fifo irq_work kthreads, it occupies boot CPU for long time and
+cause other kthread cannot get the boot CPU, the boot process occurs
+hang. use IRQ_WORK_INIT_HARD() to initialize defer_qs_iw irq-work, can
+ensure the defer_qs_iw irq-work always execute in interrupt context,
+whether PREEMPT_RT or non PREEMPT_RT kernel.
 
-Very good on making it happen!
+Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+---
+ kernel/rcu/tree_plugin.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-But please make the fix use IRQ_WORK_INIT_HARD only for PREEMPT_RT
-kernels.  That way the performance of other systems won't be degraded
-by this fix for a PREEMPT_RT bug.
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index 3037c2536e1f..cf7bd28af8ef 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -661,7 +661,7 @@ static void rcu_read_unlock_special(struct task_struct *t)
+ 			    expboost && !rdp->defer_qs_iw_pending && cpu_online(rdp->cpu)) {
+ 				// Get scheduler to re-evaluate and call hooks.
+ 				// If !IRQ_WORK, FQS scan will eventually IPI.
+-				init_irq_work(&rdp->defer_qs_iw, rcu_preempt_deferred_qs_handler);
++				rdp->defer_qs_iw = IRQ_WORK_INIT_HARD(rcu_preempt_deferred_qs_handler);
+ 				rdp->defer_qs_iw_pending = true;
+ 				irq_work_queue_on(&rdp->defer_qs_iw, rdp->cpu);
+ 			}
+-- 
+2.25.1
 
-							Thanx, Paul
-
-> Thanks
-> Zqiang
-> 
-> >
-> >							Thanx, Paul
-> 
-> > >So if you can make such a problem happen in real life, then I would be happy to take a patch that fixed this on CONFIG_PREEMPT_RT but kept the current code otherwise.
-> > >
-> > >							Thanx, Paul
-> > 
-> > > Thanks
-> > > Zqiang	
-> > > 
-> > > >
-> > > >Or has this been failing in some other manner?  If so, please let me know the exact sequence of events.
-> > > >
-> > > >							Thanx, Paul
