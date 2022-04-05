@@ -2,40 +2,49 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BE99C43217
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A9D68C4167B
 	for <rcu@archiver.kernel.org>; Tue,  5 Apr 2022 21:03:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229524AbiDEU70 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 5 Apr 2022 16:59:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57584 "EHLO
+        id S237588AbiDEU7h (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 5 Apr 2022 16:59:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352131AbiDEPLv (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 5 Apr 2022 11:11:51 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43BC8108741;
-        Tue,  5 Apr 2022 06:25:40 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1649165137;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=3uTtNKEIWvK40el6X/tph7T5OFPK+Qu+KPdH0jY6/NM=;
-        b=nUIDNekKdxeQDgfR6WR0r5ry08qg4CHFu3HMoiENog4Pmqwzgiz6j/H2nDVwQ7X4I7ZBTc
-        LVVeIErmf+0eMJDu4z0m+MkgJzZo8H14BoaXZXvBixke8URYXcOQhspk0wehzCD8X/8bFM
-        7k3eUay7ycFm2+USCUYO5oGn9ycxvvx7mnfHkhx0aiVAaM8Vsb1au1biFYfol0cQxVTOd6
-        RD8qnVXDU+0N64DgudnxcD9o/K5D/emT5HCKSX91o99sx/ni4aTlPxj0hZPYhA2fnVoSiU
-        OS81aVoCcwLrLKl1GgemvSl6WE6akmtyeV/FtctY5sKo0MDpCTaxGt90OdpGZw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1649165137;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=3uTtNKEIWvK40el6X/tph7T5OFPK+Qu+KPdH0jY6/NM=;
-        b=+nzqxfmjtL5R0gTBDsuIkCbGDRHq1Z/T5zsfM/DHW+QxwPbN/tyS1il78axqHyzAVBdv5p
-        vCw069dKqi684iCQ==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        with ESMTP id S1454522AbiDEP6f (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 5 Apr 2022 11:58:35 -0400
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 019E638D8B;
+        Tue,  5 Apr 2022 08:04:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1649171072; x=1680707072;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=JuJEj7FBhgDkCn5WeO0N79dzrUVDGVen+PgutrVZgfs=;
+  b=T61m0Sc35fW/mdLnUJsw5clVpEA1Cq7PtwqvxU5b3fy/SU7zp7eV2Hw2
+   VXcrnxtq8N3vefpnLOJTT5KhMjbo19qik5MmQV+vkEKCuj9bZ2H7g2gPJ
+   EB+3yh8CJ3Md4QDj1q8CblmquNEWy7GT4FG6Xf+yYZAxGT07W0up/AuYs
+   ZKdb1B+hAl/f5fccFSKH+Ua3qr55TwuRfCkqnuusBSyiXzxefo9fT9Hpq
+   JrhxusgEAohGJRJ6LNJ/nCtY+4lzXbnVvT7hFfYRb/h16jGECtMe5bi4T
+   8ikQQBfJboZ+lgEcI2Mzh9k7qaLwZA44idbi5QjEcVwxEkjMhaBzQvsAS
+   A==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10307"; a="242912032"
+X-IronPort-AV: E=Sophos;i="5.90,236,1643702400"; 
+   d="scan'208";a="242912032"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2022 08:04:23 -0700
+X-IronPort-AV: E=Sophos;i="5.90,236,1643702400"; 
+   d="scan'208";a="620387693"
+Received: from smile.fi.intel.com ([10.237.72.59])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2022 08:04:15 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1nbkid-00DQTI-OJ;
+        Tue, 05 Apr 2022 18:03:43 +0300
+Date:   Tue, 5 Apr 2022 18:03:43 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         linux-kernel@vger.kernel.org,
@@ -59,7 +68,6 @@ Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
         Wei Liu <wei.liu@kernel.org>,
         Xiaoming Ni <nixiaoming@huawei.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Helge Deller <deller@gmx.de>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Daniel Lezcano <daniel.lezcano@linaro.org>,
@@ -70,178 +78,58 @@ Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
         Phil Auld <pauld@redhat.com>,
         Juri Lelli <juri.lelli@redhat.com>,
         Wang Qing <wangqing@vivo.com>, rcu@vger.kernel.org
-Subject: [PATCH printk v2 00/12] implement threaded console printing
-Date:   Tue,  5 Apr 2022 15:31:23 +0206
-Message-Id: <20220405132535.649171-1-john.ogness@linutronix.de>
+Subject: Re: [PATCH printk v2 00/12] implement threaded console printing
+Message-ID: <YkxaTy08ClcNj0P3@smile.fi.intel.com>
+References: <20220405132535.649171-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220405132535.649171-1-john.ogness@linutronix.de>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This is v2 of a series to implement a kthread for each registered
-console. v1 is here [0]. The kthreads locklessly retrieve the
-records from the printk ringbuffer and also do not cause any lock
-contention between each other. This allows consoles to run at full
-speed. For example, a netconsole is able to dump records much
-faster than a serial or vt console. Also, during normal operation,
-it completely decouples printk() callers from console printing.
+On Tue, Apr 05, 2022 at 03:31:23PM +0206, John Ogness wrote:
+> This is v2 of a series to implement a kthread for each registered
+> console. v1 is here [0]. The kthreads locklessly retrieve the
+> records from the printk ringbuffer and also do not cause any lock
+> contention between each other. This allows consoles to run at full
+> speed. For example, a netconsole is able to dump records much
+> faster than a serial or vt console. Also, during normal operation,
+> it completely decouples printk() callers from console printing.
+> 
+> There are situations where kthread printing is not sufficient. For
+> example, during panic situations, where the kthreads may not get a
+> chance to schedule. In such cases, the current method of attempting
+> to print directly within the printk() caller context is used. New
+> functions printk_prefer_direct_enter() and
+> printk_prefer_direct_exit() are made available to mark areas of the
+> kernel where direct printing is preferred. (These should only be
+> areas that do not occur during normal operation.)
+> 
+> This series also introduces pr_flush(): a might_sleep() function
+> that will block until all active printing threads have caught up
+> to the latest record at the time of the pr_flush() call. This
+> function is useful, for example, to wait until pending records
+> are flushed to consoles before suspending.
+> 
+> Note that this series does *not* increase the reliability of console
+> printing. Rather it focuses on the non-interference aspect of
+> printk() by decoupling printk() callers from printing (during normal
+> operation). Nonetheless, the reliability aspect should not worsen
+> due to this series.
 
-There are situations where kthread printing is not sufficient. For
-example, during panic situations, where the kthreads may not get a
-chance to schedule. In such cases, the current method of attempting
-to print directly within the printk() caller context is used. New
-functions printk_prefer_direct_enter() and
-printk_prefer_direct_exit() are made available to mark areas of the
-kernel where direct printing is preferred. (These should only be
-areas that do not occur during normal operation.)
+From the list of patches and the only one I am Cc'ed to I can't find the
+answer to my question, i.e. does it take care about console_unregister()
+cases at run time? (We have some drivers to call ->exit() for console in
+that case, perhaps it should do something before calling it.)
 
-This series also introduces pr_flush(): a might_sleep() function
-that will block until all active printing threads have caught up
-to the latest record at the time of the pr_flush() call. This
-function is useful, for example, to wait until pending records
-are flushed to consoles before suspending.
+Would be nice to see some pointers where I can find the answer and
+maybe even describing in the cover-letter/commit message/documentation.
 
-Note that this series does *not* increase the reliability of console
-printing. Rather it focuses on the non-interference aspect of
-printk() by decoupling printk() callers from printing (during normal
-operation). Nonetheless, the reliability aspect should not worsen
-due to this series.
-
-Changes since v1:
-
-- Rename nearly all new variables, functions, macros, and flags:
-
-  variables:
-  @console_lock_count        --> @console_kthreads_active
-  @consoles_paused           --> @console_kthreads_blocked
-  @kthreads_started          --> @printk_kthreads_available
-  @printk_direct             --> @printk_prefer_direct
-
-  functions/macros:
-  console_excl_trylock()     --> console_kthreads_atomic_tryblock()
-  console_excl_unlock()      --> console_kthreads_atomic_unblock()
-  console_printer_tryenter() --> console_kthread_printing_tryenter()
-  console_printer_exit()     --> console_kthread_printing_exit()
-  pause_all_consoles()       --> console_kthreads_block()
-  unpause_all_consoles()     --> console_kthreads_unblock()
-  printk_direct_enter()      --> printk_prefer_direct_enter()
-  printk_direct_exit()       --> printk_prefer_direct_exit()
-  start_printk_kthread()     --> printk_start_kthread()
-
-  console flags:
-  CON_PAUSED                 --> CON_THD_BLOCKED
-
-- Drop the patch to avoid VT printing if in an atomic context. (This
-  can only be done after the Linux BSoD feature is implemented.)
-
-- Keep printk_delay() in the printk() context. (We may want to move
-  this into printer contexts later.)
-
-- Keep console_trylock() usage to reacquire the console lock in
-  console_unlock().
-
-- Keep cpu_online(raw_smp_processor_id()) in the check if a console
-  is usable and remove the printk_percpu_data_ready() check (percpu
-  data is always ready for consoles).
-
-- Start console printer threads as an early_initcall. This means
-  threads are active before multiple CPUs come online.
-
-- Remove "system_state < SYSTEM_RUNNING" as a reason to allow direct
-  printing. @kthreads_started is used for the early boot decision.
-
-- Add console_kthreads_atomically_blocked() macro.
-
-- Add printk_console_msg() macro to printk messages with console
-  details. The macro allows print indexing.
-
-- Add __pr_flush() to allow waiting for only a single console.
-
-- Add a full memory barrier in wake_up_klogd() to ensure new records
-  are visible before checking if the waitqueue is empty.
-
-- Wake kthreads when exiting preferred direct mode.
-
-- Wake kthreads when a CPU comes online.
-
-- In unregister_console(), stop the printer thread before acquiring
-  the console lock.
-
-- Print "thread started" message after all allocations successful.
-
-- Permanently enable preferred direct printing if there are any
-  errors setting up any of the threaded console printers.
-
-- Keep threaded printers asleep if there is no con->write()
-  callback.
-
-- Keep threaded printers asleep if preferred direct printing is
-  active.
-
-- Always allow handovers if the console is locked.
-
-- Only stop irqsoff tracing if handovers are allowed.
-
-- console_emit_next_record() is for when the console is not locked,
-  console_emit_next_record_transferable() is for when the console is
-  locked.
-
-- Wait for console printers to catch up after unblanking the screen.
-
-- In console_stop(), only wait for the stopping console.
-
-- In console_start(), only wait for the starting console.
-
-- Print only 1 record per wait cycle to increase chances of direct
-  printing taking over.
-
-- Repurpose the irqwork flag PRINTK_PENDING_OUTPUT for direct
-  printing.
-
-- Add caution notice and tips to description of
-  printk_cpu_sync_get_irqsave() on how to use it correctly.
-
-- Improve the comments explaining why preemption is disabled during
-  direct printing.
-
-- Improve commit message to explain the motivation for expanding the
-  console lock and how it works.
-
-John Ogness
-
-[0] https://lore.kernel.org/all/20220207194323.273637-1-john.ogness@linutronix.de
-
-John Ogness (12):
-  printk: rename cpulock functions
-  printk: cpu sync always disable interrupts
-  printk: get caller_id/timestamp after migration disable
-  printk: call boot_delay_msec() in printk_delay()
-  printk: add macro for console detail messages
-  printk: refactor and rework printing logic
-  printk: move buffer definitions into console_emit_next_record() caller
-  printk: add pr_flush()
-  printk: add functions to prefer direct printing
-  printk: add kthread console printers
-  printk: extend console_lock for proper kthread support
-  printk: remove @console_locked
-
- drivers/tty/sysrq.c     |    2 +
- include/linux/console.h |   19 +
- include/linux/printk.h  |   82 ++-
- kernel/hung_task.c      |   11 +-
- kernel/panic.c          |    4 +
- kernel/printk/printk.c  | 1070 +++++++++++++++++++++++++++++----------
- kernel/rcu/tree_stall.h |    2 +
- kernel/reboot.c         |   14 +-
- kernel/watchdog.c       |    4 +
- kernel/watchdog_hld.c   |    4 +
- lib/dump_stack.c        |    4 +-
- lib/nmi_backtrace.c     |    4 +-
- 12 files changed, 908 insertions(+), 312 deletions(-)
-
-
-base-commit: 3ef4ea3d84ca568dcd57816b9521e82e3bd94f08
 -- 
-2.30.2
+With Best Regards,
+Andy Shevchenko
+
 
