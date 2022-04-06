@@ -2,219 +2,236 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A6884C433EF
-	for <rcu@archiver.kernel.org>; Wed,  6 Apr 2022 16:06:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 30DD2C43217
+	for <rcu@archiver.kernel.org>; Wed,  6 Apr 2022 18:18:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237177AbiDFQIx (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 6 Apr 2022 12:08:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55962 "EHLO
+        id S240402AbiDFSUW (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 6 Apr 2022 14:20:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237307AbiDFQHb (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 6 Apr 2022 12:07:31 -0400
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1215810CF36;
-        Tue,  5 Apr 2022 21:41:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1649220117; x=1680756117;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=u09UX1cpftFlDy+04/8/MBoFJokE196Rc05lVOYWpk8=;
-  b=L+XUUApL9XUrHol0gK5rHzMCgyF+QF6TPQ80nJOra4pp8XaqPsrqyQVy
-   x8ZtJT6uYTzi9wAk2z+ykb5bINH+8yasBJVwRxWJELyDtKyO2THLnIwm+
-   ORxUIBiieNiuDrMTVeH1P/VFKfAUeGJ9/xYaSH+kezboJa5Njm5I5roFJ
-   ktNyxui44yJ2Isxz97BYAHYRYHRTmmqxavbGIOT+D/E0M4Uy7ebLXQB87
-   m7HJ7CReIen0prXE5OJFElV4x2TU9/VtQsX0vZFvPnfX7kocY3DK5K4ed
-   OwFxQ9JGMn5KGZaUWnwvmadLF4hXcxYhtXL6DSu0+lhv3/8TcHJ22rp66
-   g==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10308"; a="324119942"
-X-IronPort-AV: E=Sophos;i="5.90,239,1643702400"; 
-   d="scan'208";a="324119942"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2022 21:41:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,239,1643702400"; 
-   d="scan'208";a="697221694"
-Received: from orsmsx606.amr.corp.intel.com ([10.22.229.19])
-  by fmsmga001.fm.intel.com with ESMTP; 05 Apr 2022 21:41:55 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.27; Tue, 5 Apr 2022 21:41:55 -0700
-Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.27; Tue, 5 Apr 2022 21:41:55 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.27 via Frontend Transport; Tue, 5 Apr 2022 21:41:55 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.169)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2308.27; Tue, 5 Apr 2022 21:41:52 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lCVhFPpNjrcZ0A6WK7Fakd4A3LZbDiASBID01190mxFfZLUVbCzl4FoesfaF23Bwed4L5BR3rFq4AVz5jwYa+9GairWLHOgI+ZF72bY7OoHR+lv3quutMOUAvBVleDQg/x6HnqOz4Mnq//S2BDgDVHvwxWnNu6c6B6qf5CTQZ7Y2UAVoZzFghcR0rKTr4DUMGtB+GftG7OC9B/SUiMeeclAR8Fm+xObzn4xvLztcL6llBuvpgky4dJssIm/9Gv/bSIowc26FCVwOOp9NxDHhCehi8X/h90zZyX0QFMGndjfAgqdhPPhv3PAOEvXGEEWppcXQt7pd8PpG9y+bH9svZg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=GQYr+FCBhBQAdzZj79Sc2QCE7ib6vwE1DNrYMPZwJ/g=;
- b=TL/f3LYJn2Vr0OhrmDEzw241tXcfnn6ErZ0/Fcaei2t6IDeOE3vvgWUwXwiE+QTxflCboClu6GFbBB8IYTb5Nza1BKSapG+XGY/xPsJIGe9aISndxXGBo92NMGWyIqO2COhTO9EGYyCx7JkX4wmqw0ziO6YYtwDsiuOdQbzll5CYqny6Os/DhKExikfngD50ZscMGnP3bMI43uAIp+3sjsk78QxFwq196VL3bhOyCWFwksUkEj/g7OfHAfTQkYd0pOxZZ/oPgc/3+g0UMmvUEqOdMP3/KCaD2XcvhwIEOyeuWfOj/rZ1OL2vFbmG6CEdd1EQeBcuHQDzfkHP4nOc4Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from PH0PR11MB5880.namprd11.prod.outlook.com (2603:10b6:510:143::14)
- by DM5PR11MB1657.namprd11.prod.outlook.com (2603:10b6:4:c::16) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.5123.31; Wed, 6 Apr 2022 04:41:46 +0000
-Received: from PH0PR11MB5880.namprd11.prod.outlook.com
- ([fe80::6439:b0f1:f43f:54d3]) by PH0PR11MB5880.namprd11.prod.outlook.com
- ([fe80::6439:b0f1:f43f:54d3%7]) with mapi id 15.20.5123.031; Wed, 6 Apr 2022
- 04:41:46 +0000
-From:   "Zhang, Qiang1" <qiang1.zhang@intel.com>
-To:     "paulmck@kernel.org" <paulmck@kernel.org>
-CC:     "frederic@kernel.org" <frederic@kernel.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] rcu: Use IRQ_WORK_INIT_HARD() to initialize defer_qs_iw
- on PREEMPT_RT kernel
-Thread-Topic: [PATCH] rcu: Use IRQ_WORK_INIT_HARD() to initialize defer_qs_iw
- on PREEMPT_RT kernel
-Thread-Index: AQHYRyIUb1aC3TohkEGqUigSyiIkjazeVbAAgAP8uAA=
-Date:   Wed, 6 Apr 2022 04:41:46 +0000
-Message-ID: <PH0PR11MB58802019D7B5F23CEACE2D69DAE79@PH0PR11MB5880.namprd11.prod.outlook.com>
-References: <20220403061440.2762522-1-qiang1.zhang@intel.com>
- <20220403154626.GO4285@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20220403154626.GO4285@paulmck-ThinkPad-P17-Gen-1>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-version: 11.6.401.20
-dlp-reaction: no-action
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: e5a7724f-dfe0-4ee2-6bec-08da1787c201
-x-ms-traffictypediagnostic: DM5PR11MB1657:EE_
-x-microsoft-antispam-prvs: <DM5PR11MB165788B1BDC7AAC871DE3564DAE79@DM5PR11MB1657.namprd11.prod.outlook.com>
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: BxFx8nSt1vF+e6IZ+8QzjSnwI4jHtHLqNux6+eGRjU5aFB1OooWsLyRBS9CRq0d0wV1dwaCNUywsOdHGB8hROJvJPGmknrzUCEUNPNqleGD6yzfPcYSzQ3hsy7N6vRJbwVST3Ou08k4fU1EhEzkxGviMmFZXuq8VclI9UWH+tA0oEFfER8iuciiPx5FGBYPBvST7XYwvy2P5d93rSFY1V6yS1ckc7E/q7BbO/I4s7fXKaUUlKO1QAO9sZmE+a1cICBavJTcS0WeQZ/HfMsxv2phs6XvwfnM/UCxg3ohdrFu/3giiS4fIDd0KU+EmUlT0hPWDOc2V/hQBqdtE+iWNvyORHcD72y8ETIEIDHQDeaovIvYZLMMGqhT6b2x9823o93WsoYZPobD85efAZv0VAXu3uDdw2OVwTe3Dho22nWoRuy2m4EaQATxM+V49hkTejLa3SafpaNoQ8NbPtFYNLVsDfZT30BnrCi0QLbNNUP3NR4s8DxOlwK4gFyLcy1b03Oi96iMHQbOood8iDbfq4nwny5Z9xTsBttx1kwP6jZ8cPwIkC3DtENwaNUPiu7xopy1BT7+A7be8gHqeLfvV4eI9lI6v6M5xrGWiAG8vlNrxt3MlIAipKXwJBuRGzqrY2x4pyNB/RbMAwK8fYqXnPoH1CiEcclSIoaarwEiW8gQo3K5/G4LdTnK7lHGfncXT+mIxP7j/Y5Oevy0PGPSqKQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5880.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(66574015)(6506007)(52536014)(26005)(186003)(508600001)(33656002)(86362001)(2906002)(7696005)(66946007)(5660300002)(4326008)(66556008)(66446008)(66476007)(83380400001)(64756008)(76116006)(316002)(122000001)(82960400001)(38100700002)(71200400001)(9686003)(55016003)(54906003)(8936002)(38070700005)(6916009)(8676002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?NhEIP9IgXGQwEmHJWFVaN2idkNkJzgmwa3O15zvLOT16P40hYkr1ncPGWFIM?=
- =?us-ascii?Q?bfhVPlpXdkuPTqhFGti0i7xIFYmPNtyIiWQOj5F1Y4hXxCr0ibT6yuCKLxA4?=
- =?us-ascii?Q?gJUMsSExPKtwMMgvdKzq7GynZ8K4NeSvWrGvlALFo5rxyTlO1ADPjx4fvgeW?=
- =?us-ascii?Q?553+WHzlGlXK+P4P0fN+34C13Kje6i/cdUAJwEVrA36yRmSJ9OxQnRXLrxhL?=
- =?us-ascii?Q?dLdipOhg/1fh1XwIwuBky9DoLUKjhEvZInXAGUDPb2A0dfJbQVCmvIPuFZ0i?=
- =?us-ascii?Q?FZVQXbwQy8ARNGAModoOreMbBLm+gPKRMvIJ4gaYseCrUOD7W+tkbFky5rch?=
- =?us-ascii?Q?PGgiquhl3iZ2ip0b2zdniP8QdgKTdeqNhxZ3tvRIfZ9mMnTV5yDCBUt8dgoL?=
- =?us-ascii?Q?FbQapXH31G9Xka87yauFxVS1NHxfM2ms6liRM1ArdPp/zEbvfKfZgWxFy0XW?=
- =?us-ascii?Q?WlY0JeiXgo4M3NDin7zghrYQ9ZXgjKXNoTUJBdmUT5M7/x1EOt/gOMTY40rf?=
- =?us-ascii?Q?06iBrbeUqJRaV6V1bgp+LOZIvXs1xhEcuAYMZmrd75G3zmhzPUZewvLz4+mM?=
- =?us-ascii?Q?IVSEYVspAdZ8ePBwf+21t03saVUrIjjzGuHXvynccom0KGLpyKWVdhMsf84v?=
- =?us-ascii?Q?6NYLbeQRy3oDKtp3q+28kHEVp8sqwmrxXTxbYMHjA4bqThQwPQhC+Wr1rS9B?=
- =?us-ascii?Q?Wwx5PqH/2q94X7NgJZh9nZEqiP/NRR7ZAMZ95y2pcq737poU3a7qZR47ZDgR?=
- =?us-ascii?Q?fTRflvl2YQ3VWvYdfWuk5+kufA2Qc9kuwJoQ6sObLLLyIC8LklYnKUXqtIK3?=
- =?us-ascii?Q?HSXzWZwYc13Y6dhs1AC78u31o104u3uiVr0tajm0uWlqi/7W0XCwt6NQXXtA?=
- =?us-ascii?Q?R18kuFVgm0cqHMj4MM4mcFi8nmYFWbZFy4s5RiVqBia1cP5CVN8mXUvyuy04?=
- =?us-ascii?Q?/QX0ivkrX5+QI1mxHqi49oZNfig+Dnc6S55itV1vGPNnU3oG8feHK2vB5Hmj?=
- =?us-ascii?Q?F7pP/m1WrmZyg1w7udNa+nN9bw70tHHzFGyzMGpiflx81jcpbHVgckHixMLg?=
- =?us-ascii?Q?QN1gf9dEcFf5B+8Q2oKnDRIsZy70FGLsTFdgRcwDrUfs2lLBmYJVrBQw14i2?=
- =?us-ascii?Q?ubnYRxJ78sm0RRrLPnBH/OReTHxtsi+Hn45Kt5WWEmXng5I4I+iFe8kE9v+n?=
- =?us-ascii?Q?N28Ktx55J7wZY3Ay651zO1n/YsgRaF6yjQmM+j5uFEnKwDkZ51p0d9yWzXKe?=
- =?us-ascii?Q?S22gFcGrQnhe6YLIALWjNn76II/R5tl09nn5gGbvA8ybqEOXTtjSpagrYyOJ?=
- =?us-ascii?Q?gjzaq2gbWeQxuC7Le4Ye30c8n4//MXVjDKdKlgtSVSI/EbmfGma/x0SLrJN4?=
- =?us-ascii?Q?1NVWfNp7cX0yK1Cyc2jHIFT2KIj2ocgCifon+CJvuootjojdgmul4rHfG8Kq?=
- =?us-ascii?Q?y4GUZPSpGCClqXnSA8S/e+YzYuSlAT8a5FRawRn2jFgdKOy3ldX1XkYbp57c?=
- =?us-ascii?Q?weCJ2zSocVSvMROiU3ey1XDXvboLAh594ursAzsRIXmGHxfWY+GHZcmZtQ4s?=
- =?us-ascii?Q?6ivrA6Qj1wMyP2GHtXGXKaBeAACH/N71rH8Gyipc/gSfJtVIXsS1kObku7BW?=
- =?us-ascii?Q?1giDJ/z3tKCFEWLfJiEfmeTGd3+8/3taCwVqsxzfnlm3/emhplGjIUmRjE/i?=
- =?us-ascii?Q?BuMu+G2Ta1HrUfbi/QIlu8wiawTYKQiuShCX98U8EQsWYoX+ptbvignDLV05?=
- =?us-ascii?Q?h3nhh1dD+w=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        with ESMTP id S240460AbiDFSTf (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 6 Apr 2022 14:19:35 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 129E331DD1
+        for <rcu@vger.kernel.org>; Wed,  6 Apr 2022 10:00:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 2FE3FCE24C2
+        for <rcu@vger.kernel.org>; Wed,  6 Apr 2022 17:00:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68B60C385A3;
+        Wed,  6 Apr 2022 17:00:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1649264413;
+        bh=0v4mn++C4XjLpo6ejIpKMOa1vJXmdoPnkfHYKPvV8+o=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=qAWe+iUbho3SfFoBv8SW2Ch5M8i94uIQiT+xgIld+ajyg2eqzjfgneEuQHiWHHxP+
+         0+qMIJmUN+1OJiIkV1rV1GGj0gd67VH6QMBvMhy/ijSFmAl/VRT2FuLE+TVR+KMBAb
+         1bMZjEytjMwavu1texTO6kpyO670Miz56HEN59sF/XI7bcvFXkYfhf4ImmQAudqrBq
+         dA+oThZ2U1s05KYHgSwJ3jospcNd5Ujg0nK62+TbF+7iB8flOJ9VsiigdzsRPmv4Kr
+         k2H+tb15k1z0249JKt0nS6kUPSQBmtyAouY2t79HHC2xxasj8g6RS2qkw/xK+TZGyl
+         hsl/ghlCxOn5w==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id F095C5C0B85; Wed,  6 Apr 2022 10:00:12 -0700 (PDT)
+Date:   Wed, 6 Apr 2022 10:00:12 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Zhouyi Zhou <zhouzhouyi@gmail.com>
+Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        rcu <rcu@vger.kernel.org>
+Subject: Re: rcu_sched self-detected stall on CPU
+Message-ID: <20220406170012.GO4285@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <CANiq72k+5Rdj7i3Df2dcE6_OPYPXK3z5EWLKnY56sSMz4G3OvA@mail.gmail.com>
+ <CAABZP2z64aYWfVSdXHaQopWc+BAbJJUGqtrju2iWER3DDTDFWg@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5880.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e5a7724f-dfe0-4ee2-6bec-08da1787c201
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Apr 2022 04:41:46.8149
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: P9FsRgOPh0npzjCVfEbq3FwPqAt0rd6DvFgJVvGpgvRr01Hty8vXFJGtG6Ce80lCQeDjZ2I1eoGleqDfKl4UgQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR11MB1657
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAABZP2z64aYWfVSdXHaQopWc+BAbJJUGqtrju2iWER3DDTDFWg@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Wed, Apr 06, 2022 at 05:31:10PM +0800, Zhouyi Zhou wrote:
+> Hi
+> 
+> I can reproduce it in a ppc virtual cloud server provided by Oregon
+> State University.  Following is what I do:
+> 1) curl -l https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/snapshot/linux-5.18-rc1.tar.gz
+> -o linux-5.18-rc1.tar.gz
+> 2) tar zxf linux-5.18-rc1.tar.gz
+> 3) cp config linux-5.18-rc1/.config
+> 4) cd linux-5.18-rc1
+> 5) make vmlinux -j 8
+> 6) qemu-system-ppc64 -kernel vmlinux -nographic -vga none -no-reboot
+> -smp 2 (QEMU 4.2.1)
+> 7) after 12 rounds, the bug got reproduced:
+> (http://154.223.142.244/logs/20220406/qemu.log.txt)
 
-On Sun, Apr 03, 2022 at 02:14:40PM +0800, Zqiang wrote:
-> On non-PREEMPT_RT kernel, the init_irq_work() make the defer_qs_iw=20
-> irq-work execute in interrupt context. however, on PREEMPT_RT kernel,=20
-> the
-> init_irq_work() make defer_qs_iq irq-work execute in rt-fifo irq_work=20
-> kthreads. when system booting, and the CONFIG_RCU_STRICT_GRACE_PERIOD=20
-> is enabled, there are a lot of defer_qs_iw irq-work to be processed in=20
-> rt-fifo irq_work kthreads, it occupies boot CPU for long time and=20
-> cause other kthread cannot get the boot CPU, the boot process occurs=20
-> hang. use IRQ_WORK_INIT_HARD() to initialize defer_qs_iw irq-work, can=20
-> ensure the defer_qs_iw irq-work always execute in interrupt context,=20
-> whether PREEMPT_RT or non PREEMPT_RT kernel.
+Just to make sure, are you both seeing the same thing?  Last I knew,
+Zhouyi was chasing an RCU-tasks issue that appears only in kernels
+built with CONFIG_PROVE_RCU=y, which Miguel does not have set.  Or did
+I miss something?
 
-This is a much better justification of the need for a change, thank you!
+Miguel is instead seeing an RCU CPU stall warning where RCU's grace-period
+kthread slept for three milliseconds, but did not wake up for more than
+20 seconds.  This kthread would normally have awakened on CPU 1, but
+CPU 1 looks to me to be very unhealthy, as can be seen in your console
+output below (but maybe my idea of what is healthy for powerpc systems
+is outdated).  Please see also the inline annotations.
 
->But it looks like I need to clarify a sentence in my previous email.
->
->Please note that you were using the debugging RCU_STRICT_GRACE_PERIOD Kcon=
-fig option, so this is a potential problem as opposed to an immediate bug. =
- Yes, we must fix bugs, but it is also very important to avoid harming othe=
-r workloads, which are after all the vast majority of the uses of the Linux=
- kernel.
->
->And a major purpose of things like RCU_STRICT_GRACE_PERIOD is to give us a=
-dvanced warning of bugs so that we can fix them properly, without hurting o=
-ther workloads.
->
->So, does this patch guarantee exactly the same performance and scalability=
- as before for !PREEMPT_RT systems?  If so, please add an explanation to th=
-e commit log.
->
->Otherwise, please adjust the code to provide this guarantee.
+Thoughts from the PPC guys?
 
-Thanks, I have been adjusted code and resend v2.
+							Thanx, Paul
 
-Thanks
-Zqiang
+------------------------------------------------------------------------
 
->
->							Thanx, Paul
+[   21.186912] rcu: INFO: rcu_sched self-detected stall on CPU
+[   21.187331] rcu: 	1-...!: (4712629 ticks this GP) idle=2c1/0/0x3 softirq=8/8 fqs=0 
+[   21.187529] 	(t=21000 jiffies g=-1183 q=3)
+[   21.187681] rcu: rcu_sched kthread timer wakeup didn't happen for 20997 jiffies! g-1183 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402
 
-> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-> ---
->  kernel/rcu/tree_plugin.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h index=20
-> 3037c2536e1f..cf7bd28af8ef 100644
-> --- a/kernel/rcu/tree_plugin.h
-> +++ b/kernel/rcu/tree_plugin.h
-> @@ -661,7 +661,7 @@ static void rcu_read_unlock_special(struct task_struc=
-t *t)
->  			    expboost && !rdp->defer_qs_iw_pending && cpu_online(rdp->cpu)) {
->  				// Get scheduler to re-evaluate and call hooks.
->  				// If !IRQ_WORK, FQS scan will eventually IPI.
-> -				init_irq_work(&rdp->defer_qs_iw, rcu_preempt_deferred_qs_handler);
-> +				rdp->defer_qs_iw =3D=20
-> +IRQ_WORK_INIT_HARD(rcu_preempt_deferred_qs_handler);
->  				rdp->defer_qs_iw_pending =3D true;
->  				irq_work_queue_on(&rdp->defer_qs_iw, rdp->cpu);
->  			}
-> --
-> 2.25.1
->=20
+	The grace-period kthread is still asleep (->state=0x402).
+	This indicates that the three-jiffy timer has somehow been
+	prevented from expiring for almost a full 21 seconds.  Of course,
+	if timers don't work, RCU cannot work.
+
+[   21.187770] rcu: 	Possible timer handling issue on cpu=1 timer-softirq=1
+[   21.187927] rcu: rcu_sched kthread starved for 21001 jiffies! g-1183 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402 ->cpu=1
+[   21.188019] rcu: 	Unless rcu_sched kthread gets sufficient CPU time, OOM is now expected behavior.
+[   21.188087] rcu: RCU grace-period kthread stack dump:
+[   21.188196] task:rcu_sched       state:I stack:    0 pid:   10 ppid:     2 flags:0x00000800
+[   21.188453] Call Trace:
+[   21.188525] [c0000000061e78a0] [c0000000061e78e0] 0xc0000000061e78e0 (unreliable)
+[   21.188900] [c0000000061e7a90] [c000000000017210] __switch_to+0x250/0x310
+[   21.189210] [c0000000061e7b00] [c0000000003ed660] __schedule+0x210/0x660
+[   21.189315] [c0000000061e7b80] [c0000000003edb14] schedule+0x64/0x110
+[   21.189387] [c0000000061e7bb0] [c0000000003f6648] schedule_timeout+0x1d8/0x390
+[   21.189473] [c0000000061e7c80] [c00000000011111c] rcu_gp_fqs_loop+0x2dc/0x3d0
+[   21.189555] [c0000000061e7d30] [c0000000001144ec] rcu_gp_kthread+0x13c/0x160
+[   21.189633] [c0000000061e7dc0] [c0000000000c1770] kthread+0x110/0x120
+[   21.189714] [c0000000061e7e10] [c00000000000c9e4] ret_from_kernel_thread+0x5c/0x64
+
+	The above stack trace is expected behavior when the RCU
+	grace-period kthread is waiting to do its next FQS scan.
+
+[   21.189938] rcu: Stack dump where RCU GP kthread last ran:
+
+	And here is the stalled CPU, which also happens to be the CPU
+	that RCU last ran on:
+
+[   21.189992] Task dump for CPU 1:
+[   21.190059] task:swapper/1       state:R  running task     stack:    0 pid:    0 ppid:     1 flags:0x00000804
+[   21.190169] Call Trace:
+[   21.190194] [c0000000061ef2d0] [c0000000000c9a40] sched_show_task+0x180/0x1c0 (unreliable)
+[   21.190278] [c0000000061ef340] [c000000000116ca0] rcu_check_gp_kthread_starvation+0x16c/0x19c
+[   21.190370] [c0000000061ef3c0] [c000000000114f7c] rcu_sched_clock_irq+0x7ec/0xaf0
+[   21.190448] [c0000000061ef4b0] [c000000000120fdc] update_process_times+0xbc/0x140
+[   21.190524] [c0000000061ef4f0] [c000000000136a24] tick_nohz_handler+0xf4/0x1b0
+[   21.190608] [c0000000061ef540] [c00000000001c828] timer_interrupt+0x148/0x2d0
+[   21.190699] [c0000000061ef590] [c0000000000098e8] decrementer_common_virt+0x208/0x210
+[   21.190837] --- interrupt: 900 at arch_local_irq_restore+0x168/0x170
+
+	Up through this point is just the stack trace of the the
+	code doing the stack dump that the RCU CPU stall warning code
+	asked for.
+
+[   21.190941] NIP:  c000000000013608 LR: c0000000003f8114 CTR: c0000000000dc630
+
+	This NIP does not look at all good to me.  But I freely confess
+	that I am out of date on what Power machines do.
+
+[   21.191031] REGS: c0000000061ef600 TRAP: 0900   Not tainted  (5.18.0-rc1)
+[   21.191109] MSR:  8000000000009033 <SF,EE,ME,IR,DR,RI,LE>  CR: 22000202  XER: 00000000
+[   21.191274] CFAR: 0000000000000000 IRQMASK: 0 
+[   21.191274] GPR00: c00000000009c368 c0000000061ef8a0 c00000000116a700 0000000000000000 
+[   21.191274] GPR04: 0000000000000000 0000000000000000 000000001ee30000 ffffffffffffffff 
+[   21.191274] GPR08: 000000001ee30000 0000000000000000 0000000000008002 7265677368657265 
+[   21.191274] GPR12: c0000000000dc630 c00000001ffe5800 0000000000000000 0000000000000000 
+[   21.191274] GPR16: 0000000000000282 0000000000000000 0000000000000000 c0000000061eff00 
+[   21.191274] GPR20: 0000000000000000 0000000000000001 c0000000061b9f80 c000000001195a10 
+[   21.191274] GPR24: c000000001193a00 00000000fffb6cc4 000000000000000a c0000000010721e8 
+[   21.191274] GPR28: c000000001076800 c000000001070380 c0000000010716d8 c0000000061b9f80 
+[   21.191932] NIP [c000000000013608] arch_local_irq_restore+0x168/0x170
+[   21.192024] LR [c0000000003f8114] __do_softirq+0xd4/0x2ec
+[   21.192118] --- interrupt: 900
+[   21.192158] [c0000000061ef8a0] [c0000000061b9f80] 0xc0000000061b9f80 (unreliable)
+[   21.192227] [c0000000061ef9b0] [c00000000009c368] irq_exit+0xc8/0x110
+[   21.192307] [c0000000061ef9d0] [c00000000001c858] timer_interrupt+0x178/0x2d0
+[   21.192397] [c0000000061efa20] [c0000000000098e8] decrementer_common_virt+0x208/0x210
+[   21.192495] --- interrupt: 900 at plpar_hcall_norets_notrace+0x18/0x2c
+[   21.192566] NIP:  c000000000072988 LR: c000000000074fa8 CTR: c000000000074f10
+[   21.192615] REGS: c0000000061efa90 TRAP: 0900   Not tainted  (5.18.0-rc1)
+[   21.192659] MSR:  8000000000009033 <SF,EE,ME,IR,DR,RI,LE>  CR: 28000202  XER: 00000000
+[   21.192755] CFAR: 0000000000000000 IRQMASK: 0 
+[   21.192755] GPR00: 0000000028000202 c0000000061efd30 c00000000116a700 0000000000000000 
+[   21.192755] GPR04: c00000001fea0280 ffffffffffffffff 0000000001f40000 000000019d088fcf 
+[   21.192755] GPR08: 000000001ee30000 c00000001ffe5400 0000000000000001 0000000100000000 
+[   21.192755] GPR12: c000000000074f10 c00000001ffe5800 0000000000000000 0000000000000000 
+[   21.192755] GPR16: 0000000000000000 0000000000000000 0000000000000000 c0000000061eff00 
+[   21.192755] GPR20: c00000000003d440 0000000000000001 c000000001195b30 c000000001195a10 
+[   21.192755] GPR24: 0000000000080000 c0000000061ba000 c000000001195a98 0000000000000001 
+[   21.192755] GPR28: 0000000000000001 c0000000010716d0 c0000000010716d8 c0000000010716d0 
+[   21.193290] NIP [c000000000072988] plpar_hcall_norets_notrace+0x18/0x2c
+[   21.193363] LR [c000000000074fa8] pseries_lpar_idle+0x98/0x1b0
+[   21.193428] --- interrupt: 900
+[   21.193457] [c0000000061efd30] [0000000000000001] 0x1 (unreliable)
+[   21.193512] [c0000000061efdb0] [c000000000018b54] arch_cpu_idle+0x44/0x180
+[   21.193590] [c0000000061efde0] [c0000000003f75bc] default_idle_call+0x4c/0x7c
+[   21.193679] [c0000000061efe00] [c0000000000e1384] do_idle+0x114/0x1e0
+[   21.193747] [c0000000061efe60] [c0000000000e1664] cpu_startup_entry+0x34/0x40
+[   21.193901] [c0000000061efe90] [c00000000003f044] start_secondary+0x624/0xa00
+[   21.194002] [c0000000061eff90] [c00000000000cd54] start_secondary_prolog+0x10/0x14
+[   21.194245] Task dump for CPU 1:
+[   21.194284] task:swapper/1       state:R  running task     stack:    0 pid:    0 ppid:     1 flags:0x00000804
+[   21.194374] Call Trace:
+[   21.194400] [c0000000061ef2b0] [c0000000000c9a40] sched_show_task+0x180/0x1c0 (unreliable)
+[   21.194479] [c0000000061ef320] [c000000000116df8] rcu_dump_cpu_stacks+0x128/0x188
+[   21.194567] [c0000000061ef3c0] [c000000000114f9c] rcu_sched_clock_irq+0x80c/0xaf0
+[   21.194642] [c0000000061ef4b0] [c000000000120fdc] update_process_times+0xbc/0x140
+[   21.194712] [c0000000061ef4f0] [c000000000136a24] tick_nohz_handler+0xf4/0x1b0
+[   21.194828] [c0000000061ef540] [c00000000001c828] timer_interrupt+0x148/0x2d0
+[   21.194942] [c0000000061ef590] [c0000000000098e8] decrementer_common_virt+0x208/0x210
+[   21.195035] --- interrupt: 900 at arch_local_irq_restore+0x168/0x170
+[   21.195104] NIP:  c000000000013608 LR: c0000000003f8114 CTR: c0000000000dc630
+[   21.195152] REGS: c0000000061ef600 TRAP: 0900   Not tainted  (5.18.0-rc1)
+[   21.195199] MSR:  8000000000009033 <SF,EE,ME,IR,DR,RI,LE>  CR: 22000202  XER: 00000000
+[   21.195296] CFAR: 0000000000000000 IRQMASK: 0 
+[   21.195296] GPR00: c00000000009c368 c0000000061ef8a0 c00000000116a700 0000000000000000 
+[   21.195296] GPR04: 0000000000000000 0000000000000000 000000001ee30000 ffffffffffffffff 
+[   21.195296] GPR08: 000000001ee30000 0000000000000000 0000000000008002 7265677368657265 
+[   21.195296] GPR12: c0000000000dc630 c00000001ffe5800 0000000000000000 0000000000000000 
+[   21.195296] GPR16: 0000000000000282 0000000000000000 0000000000000000 c0000000061eff00 
+[   21.195296] GPR20: 0000000000000000 0000000000000001 c0000000061b9f80 c000000001195a10 
+[   21.195296] GPR24: c000000001193a00 00000000fffb6cc4 000000000000000a c0000000010721e8 
+[   21.195296] GPR28: c000000001076800 c000000001070380 c0000000010716d8 c0000000061b9f80 
+[   21.195850] NIP [c000000000013608] arch_local_irq_restore+0x168/0x170
+[   21.195944] LR [c0000000003f8114] __do_softirq+0xd4/0x2ec
+[   21.196027] --- interrupt: 900
+[   21.196056] [c0000000061ef8a0] [c0000000061b9f80] 0xc0000000061b9f80 (unreliable)
+[   21.196119] [c0000000061ef9b0] [c00000000009c368] irq_exit+0xc8/0x110
+[   21.196192] [c0000000061ef9d0] [c00000000001c858] timer_interrupt+0x178/0x2d0
+[   21.196282] [c0000000061efa20] [c0000000000098e8] decrementer_common_virt+0x208/0x210
+[   21.196373] --- interrupt: 900 at plpar_hcall_norets_notrace+0x18/0x2c
+[   21.196439] NIP:  c000000000072988 LR: c000000000074fa8 CTR: c000000000074f10
+[   21.196489] REGS: c0000000061efa90 TRAP: 0900   Not tainted  (5.18.0-rc1)
+[   21.196534] MSR:  8000000000009033 <SF,EE,ME,IR,DR,RI,LE>  CR: 28000202  XER: 00000000
+[   21.196627] CFAR: 0000000000000000 IRQMASK: 0 
+[   21.196627] GPR00: 0000000028000202 c0000000061efd30 c00000000116a700 0000000000000000 
+[   21.196627] GPR04: c00000001fea0280 ffffffffffffffff 0000000001f40000 000000019d088fcf 
+[   21.196627] GPR08: 000000001ee30000 c00000001ffe5400 0000000000000001 0000000100000000 
+[   21.196627] GPR12: c000000000074f10 c00000001ffe5800 0000000000000000 0000000000000000 
+[   21.196627] GPR16: 0000000000000000 0000000000000000 0000000000000000 c0000000061eff00 
+[   21.196627] GPR20: c00000000003d440 0000000000000001 c000000001195b30 c000000001195a10 
+[   21.196627] GPR24: 0000000000080000 c0000000061ba000 c000000001195a98 0000000000000001 
+[   21.196627] GPR28: 0000000000000001 c0000000010716d0 c0000000010716d8 c0000000010716d0 
+[   21.197168] NIP [c000000000072988] plpar_hcall_norets_notrace+0x18/0x2c
+[   21.197239] LR [c000000000074fa8] pseries_lpar_idle+0x98/0x1b0
+[   21.197305] --- interrupt: 900
+[   21.197333] [c0000000061efd30] [0000000000000001] 0x1 (unreliable)
+[   21.197390] [c0000000061efdb0] [c000000000018b54] arch_cpu_idle+0x44/0x180
+[   21.197470] [c0000000061efde0] [c0000000003f75bc] default_idle_call+0x4c/0x7c
+[   21.197556] [c0000000061efe00] [c0000000000e1384] do_idle+0x114/0x1e0
+[   21.197620] [c0000000061efe60] [c0000000000e1664] cpu_startup_entry+0x34/0x40
+[   21.197696] [c0000000061efe90] [c00000000003f044] start_secondary+0x624/0xa00
+[   21.197820] [c0000000061eff90] [c00000000000cd54] start_secondary_prolog+0x10/0x1I4
