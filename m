@@ -2,141 +2,126 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B054DC433F5
-	for <rcu@archiver.kernel.org>; Thu,  7 Apr 2022 20:36:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 80BE1C433F5
+	for <rcu@archiver.kernel.org>; Thu,  7 Apr 2022 21:07:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229843AbiDGUiQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 7 Apr 2022 16:38:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39410 "EHLO
+        id S230478AbiDGVJz (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 7 Apr 2022 17:09:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230258AbiDGUhX (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 7 Apr 2022 16:37:23 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23259364786;
-        Thu,  7 Apr 2022 13:24:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1649362938;
-        bh=ImyuGelXfK/3By3p0LZU4LiBApMy/j1Ptb46Jf+Biz4=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=TxSy/35dCJSdh0sNIk3fkYh/1dlFujjV9D56JtFQQ12mUp9apitJjLS3+XYD2mjda
-         hnXY87qQIw3165Dc9upLAl+xAIrjazLtkLrCBKqMwQxeefR89hpEU0tTuv2rLtwcPP
-         wGlK1KTU8a5Km0Ze1pEINc4FODSQGAPwukPD2gFE=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.20.60] ([92.116.161.122]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1Mw9QC-1nt7Wf32ea-00s8YX; Thu, 07
- Apr 2022 22:22:17 +0200
-Message-ID: <4bcfd2b3-66fd-c5df-a8df-c51a89a0bce4@gmx.de>
-Date:   Thu, 7 Apr 2022 22:20:30 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [PATCH printk v2 09/12] printk: add functions to prefer direct
- printing
-Content-Language: en-US
-To:     John Ogness <john.ogness@linutronix.de>,
-        Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        with ESMTP id S230460AbiDGVJy (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 7 Apr 2022 17:09:54 -0400
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD303179B30
+        for <rcu@vger.kernel.org>; Thu,  7 Apr 2022 14:07:53 -0700 (PDT)
+Received: by mail-qv1-xf35.google.com with SMTP id f3so5989110qvz.10
+        for <rcu@vger.kernel.org>; Thu, 07 Apr 2022 14:07:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hxKxY+DBpoByF0mtjo+UB7bPjCEPBSOvES4J4XomWfw=;
+        b=jwQg9dQrHOSiG8lPloLqQ/bp8O7sK5UOZyz9D/aVa4j2kiHcO2my5h+zwWBcJxgOC0
+         z6UbFO8G2TDI4B9chEJiAFxEa79J08iPbDo3ggVSuH2+rR9uPX++uhbY28MqAULtWQvO
+         JoiusccmH4T9pSjjUbI19eDJ4crl6IHyUGXQk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hxKxY+DBpoByF0mtjo+UB7bPjCEPBSOvES4J4XomWfw=;
+        b=zrJYZY/i+krdPXjPRhd5Bkwl6ERT0yHIh91YuiVDtmm/7wlKnIImYHb8cS+z0b9rBX
+         vBFo8zac6b6BrB4K1kqzlam5gKndL8klvSi8fOEdyzH8RvKSEp3cYnQ9q0p9voaCJVWZ
+         h61W3VsnWdWr7rOWpl5DALnv+Av9pMzfSDSuGFS4k+1mgrZbJH/+NN0hcxhd5VT+5yI5
+         LG5Pzwyc9l0eWZub/tH2tNXR0hMn3QF3d91Ea6djVyxKsntjBxkcig060oYxpv/A/vLY
+         1GznYcMORPAk0APfZYTf7+44NqU7UB9uS7Vt8Pka0Dk4KIE63kpurxlsaINnXOtQ4jHQ
+         f/Vg==
+X-Gm-Message-State: AOAM533NxXPsEmJIrYw4XaP3uJKdZRX70FQf4JDZXa1VUTWvRtcCm5L5
+        BmAyM0x1a6PSj34tgc6uhl2Mzw==
+X-Google-Smtp-Source: ABdhPJzwtvpZaHmk9lriKJMPmnSalngNgvvJoX3cZ2JPuR2Hll7aVpCqu3lWkR/jk381xr2DKPRpGA==
+X-Received: by 2002:a05:6214:4017:b0:443:e335:efd3 with SMTP id kd23-20020a056214401700b00443e335efd3mr14132649qvb.131.1649365672835;
+        Thu, 07 Apr 2022 14:07:52 -0700 (PDT)
+Received: from joelboxx.c.googlers.com.com (228.221.150.34.bc.googleusercontent.com. [34.150.221.228])
+        by smtp.gmail.com with ESMTPSA id d3-20020a05622a15c300b002eb9af4c945sm18230376qty.3.2022.04.07.14.07.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Apr 2022 14:07:52 -0700 (PDT)
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
         Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Wei Liu <wei.liu@kernel.org>,
-        Xiaoming Ni <nixiaoming@huawei.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Marco Elver <elver@google.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Shawn Guo <shawn.guo@linaro.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Phil Auld <pauld@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Wang Qing <wangqing@vivo.com>, rcu@vger.kernel.org
-References: <20220405132535.649171-1-john.ogness@linutronix.de>
- <20220405132535.649171-10-john.ogness@linutronix.de> <Yk61Q+w7tWTjh8xl@alley>
- <b746d99e-729f-ca0d-5d30-6d803d1cd833@gmx.de>
- <87zgkxnepg.fsf@jogness.linutronix.de>
- <7fc5853e-dbe6-c2d2-2130-003e3b9777bc@gmx.de>
- <878rsgvews.fsf@jogness.linutronix.de>
-From:   Helge Deller <deller@gmx.de>
-In-Reply-To: <878rsgvews.fsf@jogness.linutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:MCP30BvgA48w2S6vbv0ww52S5IiHA5LgrkHY6aW/ilw2XmF20zj
- CyKNOA5UGd74GOaKDHhMTmRwVtC4l/zv7bG6nGoodZt2BMVqfZs8qs7iFD1g6j4HdHlFSYt
- M9qAQNgU+kmybrXaiBU+tw3h56jsi9KdJclSDdbiPtdLDIw55WXvoNyO6Sv+l4ecl8F0JeS
- Ux7LP2pLcpZrBw+3jhz3w==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:vWjPjiUs2e8=:SQtDJq0Z8yB+0l9naVWmtO
- F61p2nma+jSN0aMMzp9zjTqH22d7/mHOFOJplbDT+DxS9WclQF/7bqe6aUbx6YBS2Ok/R5WqD
- l7HdE6leWz4eJkYBHqKS5K1eQw/pdA4mAGjFxEkNDHkGoAh/qrwOgs3jhjmPnFMr7omIkfT6G
- 9cvi88qfUETke7/Rc/S9OnM27+SE4s9ZwEMSyTCpAqdzkHIwnK9I+hc2pIB5OD9EAEmIr8dyj
- tBgt4Sra5qo+Gcw2EoevPrWO3Qtrku2OK99ZGfrJ9a2btWiPtnqI/r/6HxiX/48oJZE2mWW0B
- lhRrYQAcvRdPsOhDuH7SzC0a7TP71bPZs/0MOQyfIQ7sZimmtbW3BZUBPcDg1LRfFYqWcVIJE
- GhYSLpLyGMv6ch+wpXSFVixYk29FTA3iO+obfQNjnk53kwF116msTVfaWOEVSdwrdJQ3+v5J9
- kj2HV+4Vk0IQeYZPDmF8ocDTHQx/AwwJNGvK6a+IOZZHN8kNvRPZPOQaFolTY7X3SWKH9fIN8
- qJSpiYJvoqMkeNfyczKH9lyBIZBhaB/z2gcIrUktOyEkh9yECSdWFhbsu9LKiNQ5AIXIu0rXw
- 91MNnmeFX2nbfpF8TkkdQh6DQ5w7JIrdB04l0CmhVuds2vGkOgRo7jOKxNtplv59juDPMvm3y
- NhgQ3RAvrCULv+BvXzZEfWoyvs3qb2RqIQw0012Ms34C7+WE19NipEC7XENB6SyNVm0c4AztR
- 3VLt2XkdAbtS+G8swtENY2wHUFHWPpwmGKexieQLvQQEhfnJiK3jYvvHlxMnqU2Kj0juJoWLb
- cJl6R2LN7/P2rw41ch1tSaauQsDUa12L4dnP+cngZ826OjpLQ4P2fKyIW9eJBdXvH4x7oQ3vh
- htkC0OvJ5BPUhBr+GWZF+H8bs5fKMTcmMW7/EkJzpXwLgEr/LJobYWzvgc1CpTKgLvXnxrmVl
- p8WUytMBZP3BmE7m7NPjHey8HRtE/jqB5XEYSAaeE+rF5+D7W5qWHQE6VoN5smCXNBkMqtcWN
- nax6p74t6lkWGu69Ft0Icl7Ck2kYpzN1g7E/qcfXMP1nSLg86AL+QDko/IqehI453JnRLD5OE
- NTB9BhlSaFV9oI=
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [PATCH RFC] rcu/nocb: Provide default all-CPUs mask for RCU_NOCB_CPU=y
+Date:   Thu,  7 Apr 2022 21:07:33 +0000
+Message-Id: <20220407210734.2548973-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.35.1.1178.g4f1659d476-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 4/7/22 22:04, John Ogness wrote:
-> On 2022-04-07, Helge Deller <deller@gmx.de> wrote:
->> In my case - while I debug low-level kernel code - I then just need to
->> use pr_warn() or pr_emerg() and get it printed non-threadened. That's
->> sufficient for me.
->
-> Actually, no. The loglevel does not determine if a message is direct
-> printed or not. By "warn" I was referring to WARN_ON(condition).
+On systems with CONFIG_RCU_NOCB_CPU=y, there is no default mask provided
+which ends up not offloading any CPU. This patch removes yet another
+dependency from the bootloader having to know about RCU, about how many
+CPUs the system has, and about how to provide the mask. Basically, I
+think we should stop pretending that the user knows what they are doing :).
+In other words, if NO_CB_CPU is enabled, lets make use of it.
 
-Oh, then there was a misunderstanding on my side.
+My goal is to make RCU as zero-config as possible with sane defaults. If
+user wants to provide rcu_nocbs= or nohz_full= options, then those will
+take precedence and this patch will have no effect.
 
-> If you are debugging low-level kernel code, you usually will _want_
-> threaded printing. The timestamps match the printk() call, so you will
-> get accurate logs. And the runtime performance of your low-level kernel
-> code will not be significantly affected by the printk() call.
+I tested providing rcu_nocbs= option, ensuring that is preferred over this.
 
-That really much depends on what you debug.
-Currently I'm debugging some CPU hotplug stuff, and I really want my
-debug info printed immediately, otherwise it's too late to analyze what's
-going wrong. I can imaginge other use cases like trying to find memory
-leaks are similiar.
+Signed-off-by: Joel Fernandes <joel@joelfernandes.org>
+---
+ kernel/rcu/tree_nocb.h | 20 ++++++++++++++++++--
+ 1 file changed, 18 insertions(+), 2 deletions(-)
 
-> If for some reason you really want non-threaded printing, the patch we
-> are discussing creates new functions to manually activate it:
->
-> printk_prefer_direct_enter();
-> pr_info("debugging\n");
-> printk_prefer_direct_exit();
+diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+index eeafb546a7a0..607fbf843467 100644
+--- a/kernel/rcu/tree_nocb.h
++++ b/kernel/rcu/tree_nocb.h
+@@ -1165,12 +1165,25 @@ EXPORT_SYMBOL_GPL(rcu_nocb_cpu_offload);
+ void __init rcu_init_nohz(void)
+ {
+ 	int cpu;
+-	bool need_rcu_nocb_mask = false;
++	bool need_rcu_nocb_mask = false, set_nocb_mask_all = false;
+ 	struct rcu_data *rdp;
+ 
++	/*
++	 * In case rcu_nocbs= was not passed on the kernel command line,
++	 * provide a sane default by offloading all CPUs. This provides a
++	 * sane default for rcu_nocbs and prevents users overlooking these
++	 * details.
++	 */
++	if (!rcu_nocb_is_setup) {
++		need_rcu_nocb_mask = true;
++		set_nocb_mask_all = true;
++	}
++
+ #if defined(CONFIG_NO_HZ_FULL)
+-	if (tick_nohz_full_running && cpumask_weight(tick_nohz_full_mask))
++	if (tick_nohz_full_running && cpumask_weight(tick_nohz_full_mask)) {
+ 		need_rcu_nocb_mask = true;
++		set_nocb_mask_all = false; /* NO_HZ_FULL provides its own mask. */
++	}
+ #endif /* #if defined(CONFIG_NO_HZ_FULL) */
+ 
+ 	if (need_rcu_nocb_mask) {
+@@ -1191,6 +1204,9 @@ void __init rcu_init_nohz(void)
+ 		cpumask_or(rcu_nocb_mask, rcu_nocb_mask, tick_nohz_full_mask);
+ #endif /* #if defined(CONFIG_NO_HZ_FULL) */
+ 
++	if (set_nocb_mask_all)
++		cpumask_setall(rcu_nocb_mask);
++
+ 	if (!cpumask_subset(rcu_nocb_mask, cpu_possible_mask)) {
+ 		pr_info("\tNote: kernel parameter 'rcu_nocbs=', 'nohz_full', or 'isolcpus=' contains nonexistent CPUs.\n");
+ 		cpumask_and(rcu_nocb_mask, cpu_possible_mask,
+-- 
+2.35.1.1178.g4f1659d476-goog
 
-That's quite unhandy. At least I would have thought that pr_emerg() would
-do that call sequence.
-Wouldn't it make sense to make pr_emerg() work unthreadened, as it's
-used quite seldom and only in special situations...
-
-> But then your pr_info() will cause significant latencies. The timestamp
-> would be the same, with or without direct printing.
-
-Yes, but that would be Ok in my case.
-
-Helge
