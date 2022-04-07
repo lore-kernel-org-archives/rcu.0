@@ -2,39 +2,39 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 47C1DC433EF
-	for <rcu@archiver.kernel.org>; Thu,  7 Apr 2022 13:39:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 66656C433F5
+	for <rcu@archiver.kernel.org>; Thu,  7 Apr 2022 14:36:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239960AbiDGNlR (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 7 Apr 2022 09:41:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51808 "EHLO
+        id S243154AbiDGOi4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 7 Apr 2022 10:38:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343771AbiDGNlP (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 7 Apr 2022 09:41:15 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 704D0DA6C1;
-        Thu,  7 Apr 2022 06:39:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1649338659;
-        bh=srSDucO9JCz+e/axzg63E52u8hZL05pvFM7DVOLvqgs=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=FaxvCXmKape8nj5YnKm7r4QqP7PBx5l+hofgAanXwTmu1b20GPyIvUAGZQZB7vd7f
-         ENVyXRUtDkKx9XdorlsQlhqD/AfjL8WElJmF4JJ2x/tUh5+1l3ZbpvSe5Gay4oGa7t
-         5l1l00Pm/LdD4POFyN2kj6L2scWjmpuDvMhWaqwk=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.20.60] ([92.116.161.122]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MzhnN-1nyXYY0CyP-00vjRi; Thu, 07
- Apr 2022 15:37:39 +0200
-Message-ID: <b746d99e-729f-ca0d-5d30-6d803d1cd833@gmx.de>
-Date:   Thu, 7 Apr 2022 15:35:53 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [PATCH printk v2 09/12] printk: add functions to prefer direct
- printing
-Content-Language: en-US
-To:     Petr Mladek <pmladek@suse.com>,
-        John Ogness <john.ogness@linutronix.de>
+        with ESMTP id S237013AbiDGOiy (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 7 Apr 2022 10:38:54 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9B3213858C;
+        Thu,  7 Apr 2022 07:36:53 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1649342157;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=oPpZ0m/EoTYA7DrLIFgnk4y1wQaBSP5g0/ujxGiQvG4=;
+        b=JFPSDWgcDH5/nzr9OLV61NtbaX5cpcuOs0hCg8p6nRk238Xbe0DHd2splLnhZ405VuJZu6
+        xgEvmbSFbT/qtWM9R9GrfswIOAjgDSzfsfV2CB+7/DW5obz6l9CJwCl66hMhg4n6mZ+nsq
+        aNtV9/xHjb0xq6rrikMXHYDKy2ZmNYHRuYTnNi4kjix/MIL0MchiXeuf3Hlmf+ZKuC9dwE
+        ZmaxHiDtf0s1V6eIY211e/y9mKy4SCwts89QsH9DlYpczA64TfX9Tk+P8jw2fHQapThy1V
+        oxxOqPfVyQnyApAm5w5/Lr4rQlnQpgnbvny6d+WM8SuwKit/G68ZhHRtEChmwA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1649342157;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=oPpZ0m/EoTYA7DrLIFgnk4y1wQaBSP5g0/ujxGiQvG4=;
+        b=jbnaZA7raEVl7ThYX+0bKwEQFI//kGVTC1fXb4kYxTvQG3olAl4sxy4B0WZmtBbTd/SJsB
+        2DGlpoopNMzpHwCw==
+To:     Helge Deller <deller@gmx.de>, Petr Mladek <pmladek@suse.com>
 Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Thomas Gleixner <tglx@linutronix.de>,
@@ -65,82 +65,66 @@ Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
         Phil Auld <pauld@redhat.com>,
         Juri Lelli <juri.lelli@redhat.com>,
         Wang Qing <wangqing@vivo.com>, rcu@vger.kernel.org
+Subject: Re: [PATCH printk v2 09/12] printk: add functions to prefer direct
+ printing
+In-Reply-To: <b746d99e-729f-ca0d-5d30-6d803d1cd833@gmx.de>
 References: <20220405132535.649171-1-john.ogness@linutronix.de>
- <20220405132535.649171-10-john.ogness@linutronix.de> <Yk61Q+w7tWTjh8xl@alley>
-From:   Helge Deller <deller@gmx.de>
-In-Reply-To: <Yk61Q+w7tWTjh8xl@alley>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:JaEcsKumoa/42DP+KZnrk1e+TWkwx4ruVfxnnOtiQ7Au5u4Twhg
- +KhoSlOexUZPQduFumRmC3jpOv1bQYEx+uUt/NCfkb0Ij2HKGwVzbnBDt5PwrNjbdkpggrl
- ZGRFhiQmI1tJsjypMgxj6W57emRkCBCHK7gDMPN9vnOwAJeOf4voVnC/Bn4pfwXZ64IQ8nw
- BmvSq1+lxPp0b/T/Ds37w==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:GCFEJvGCtYM=:Ox6o93hANqENEMVYywv3Xv
- rr64vK0b8s9Kf6oqt7g2OjVpl6y4pCtmLtJUeIOv7MZq3eXKld89RuZwbo+qoB/lk9iSe5jzT
- ltopTXUE5HnpBF4ROTl2vFDUqZBbEJxbqXbU9MLwioBM07yypmr/2Uzlg07riy648LFDJrKLz
- Bfg35OBwyQPLSY2iEuccjUKQM7umbwYF7uIpcDrfRuRRMy46I9Oh96+NM3y7eEVNowwrP69VH
- hKvxckT3p/YPWbepYHDbHi60wfsggtTzadf8iYesnqMiTM/KtUMqk89q6J0pjJdjMs5MrZtf4
- HTVdRUL5M1NT9cD5dtz6pDTxMmNydYL7IxTLoXjKh9OVvG0HTzBHenJqTkN6VTPZyrf3r1AaN
- 1L0HBNz2kfy8jzFeB8fWui9nVKLr3gsW0woNiz0dKF1C1HSlUR34ClVtlJOks7RpXPQLEjKyO
- jtdgmnQkgydS79KdowPX+K0jQZ238oboFsTj0Fwkp91ZKFSmcmZcFFKknw/TIxvrP2/X3KsQq
- cKAmh47yix2jhYjbhu9Uzo3UQr/+g68dcbtO0uUv7PyHB7lz/xxbOUNSu2sZ+plm1BKK5mlc+
- ytzj/G/VhTdDMBWdBNQjqqleyfD03pEXb+52z/3VTXPcmfCwhZc6RRJ9crI+JDb61jHLTop/Q
- MIeMzkS0GADy0ZhBv4N+I4FgDQeqtvLscZbKeQqg3Ot8MdMn/xfCt+HuCKh0HewAdm9UCklNk
- QPnosXrTe47+uhkagM1NrPOQxmbeY44buv5N1GfIiR6aFrQRI++ZC0fRtt/D8EkadM+W9W55M
- pJw4/TRMDboprt6tRAYrGrv7XvYkA3w+7CMp06dTjHr827oULLlGNttrqmjC+qS1LZ4rf+4FB
- r8jZeUMxv+C5Ka8GGxskPXV3AjYz0mcHQfeATo/SJ5MItfxg+M97pKdB/sUWDiiHLqDwuvubk
- F0r5q5B33L2bb2EHO0XhZjbqd/d9NmVyGId7xWK4+Qzv47hbgX7q8u4pwU4zGa7Ka4Z0Rnfs0
- zgXajA/zrSF6gLm9lzM5nWt/0aZuJy2YtOfi55mRXUS8GYZpbxpTBMHYM7ZINkE+2AeuBIkzr
- gwfZyu384KaErg=
+ <20220405132535.649171-10-john.ogness@linutronix.de>
+ <Yk61Q+w7tWTjh8xl@alley> <b746d99e-729f-ca0d-5d30-6d803d1cd833@gmx.de>
+Date:   Thu, 07 Apr 2022 16:41:55 +0206
+Message-ID: <87zgkxnepg.fsf@jogness.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 4/7/22 11:56, Petr Mladek wrote:
-> On Tue 2022-04-05 15:31:32, John Ogness wrote:
->> Once kthread printing is available, console printing will no longer
->> occur in the context of the printk caller. However, there are some
->> special contexts where it is desirable for the printk caller to
->> directly print out kernel messages. Using pr_flush() to wait for
->> threaded printers is only possible if the caller is in a sleepable
->> context and the kthreads are active. That is not always the case.
->>
->> Introduce printk_prefer_direct_enter() and printk_prefer_direct_exit()
->> functions to explicitly (and globally) activate/deactivate preferred
->> direct console printing. The term "direct console printing" refers to
->> printing to all enabled consoles from the context of the printk
->> caller. The term "prefer" is used because this type of printing is
->> only best effort. If the console is currently locked or other
->> printers are already actively printing, the printk caller will need
->> to rely on the other contexts to handle the printing.
->>
->> This preferred direct printing is how all printing is currently
->> handled (unless explicitly deferred).
->>
->> When kthread printing is introduced, there may be some unanticipated
->> problems due to kthreads being unable to flush important messages.
->> In order to minimize such risks, preferred direct printing is
->> activated for the primary important messages when the system
->> experiences general types of major errors. These are:
->>
->>  - emergency reboot/shutdown
->>  - cpu and rcu stalls
->>  - hard and soft lockups
->>  - hung tasks
->>  - warn
->>  - sysrq
+On 2022-04-07, Helge Deller <deller@gmx.de> wrote:
+>>>  - emergency reboot/shutdown
+>>>  - cpu and rcu stalls
+>>>  - hard and soft lockups
+>>>  - hung tasks
+>>>  - warn
+>>>  - sysrq
+>
+> I agree that those needs direct printing.
+> Did you maybe checked how much (e.g. in percentage) of a normal log is
+> then still left to be printed threadened?  Just in case it's not much,
+> is there still a benefit to introduce threadened printing?
 
-I agree that those needs direct printing.
-Did you maybe checked how much (e.g. in percentage) of a normal log is then
-still left to be printed threadened?  Just in case it's not much,
-is there still a benefit to introduce threadened printing?
+A "normal" log can still contain many many messages. There have been
+reports [0] where the system died because _printk_ killed it. This was
+not any of the scenarios that we want direct printing for. It was just a
+lot of messages that some driver wanted to output.
 
-Or another example, e.g. when running on a slow console (the best
-testcase I know of is a 9600 baud serial port), where some printks
-are threadened. Then a warn printk() has to be shown, doesn't it mean
-all threadened printks have to be flushed (waited for) until
-the warning can be shown. Will there then still be a measureable time benefit?
+Until now the response was always to reduce printk usage or avoid it
+altogether. printk has a bad reputation because it is so unpredictable
+and expensive. So we are fixing printk. With threaded printers, we make
+a dramatic change. printk becomes 100% lockless and consistently quite
+fast. You can use it to debug or log messages within any code in the
+kernel and not need to worry about horrible latencies being introduced.
 
-Just wondering...
+For drivers that start dumping tons of messages, there is no concern
+that the system will die because of the messages.
 
-Helge
+> Or another example, e.g. when running on a slow console (the best
+> testcase I know of is a 9600 baud serial port), where some printks are
+> threadened. Then a warn printk() has to be shown, doesn't it mean all
+> threadened printks have to be flushed (waited for) until the warning
+> can be shown. Will there then still be a measureable time benefit?
+
+Now you are talking about something else, unrelated to the threaded
+printing. A warn is considered a serious non-normal event. In this case,
+printk temporarily falls back to the direct, slow, unpredictable,
+printk-caller-context behavior we know today.
+
+If we see that direct printing is being used during normal operation
+(i.e. developers are performing warns just for fun), then we should not
+mark warns for direct printing. We will need to get some real-world
+experience here, but the goal is that systems do not use direct printing
+unless a real serious emergency is going on. Otherwise, the system risks
+dying because of the messages rather than the problem being reported.
+
+John
+
+[0] https://lore.kernel.org/all/20190306171943.12345598@oasis.local.home
