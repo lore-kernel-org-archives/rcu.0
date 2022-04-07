@@ -2,126 +2,79 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BD2FEC433F5
-	for <rcu@archiver.kernel.org>; Thu,  7 Apr 2022 09:56:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D8FB1C433EF
+	for <rcu@archiver.kernel.org>; Thu,  7 Apr 2022 10:07:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232688AbiDGJ6p (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 7 Apr 2022 05:58:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59156 "EHLO
+        id S237630AbiDGKJv (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 7 Apr 2022 06:09:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244051AbiDGJ6o (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 7 Apr 2022 05:58:44 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE6E6FEF;
-        Thu,  7 Apr 2022 02:56:23 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 8F167212B7;
-        Thu,  7 Apr 2022 09:56:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1649325381; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IlRD7m/alIJncAcf5ZsFIg2sRj4ry7LBP76Q3+m8Fv0=;
-        b=UKcH9KkS3V5pJFKjQTrgHntE36GmrRlMKttleodgavjTOO4sIry5rjlFnvmWUk+RlhxYpD
-        UULtSZJpg0Ou1egwUxOTGJfzoz2l0kn9b21jZF6g7Ixb97QLzQkRiSBe3koCPaQLd63jYl
-        kZKL4+gZ1GU9ZkRrER5szKvrJZF+QoM=
-Received: from suse.cz (unknown [10.100.216.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id BAFEFA3B83;
-        Thu,  7 Apr 2022 09:56:19 +0000 (UTC)
-Date:   Thu, 7 Apr 2022 11:56:19 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Wei Liu <wei.liu@kernel.org>,
-        Xiaoming Ni <nixiaoming@huawei.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Helge Deller <deller@gmx.de>, Marco Elver <elver@google.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Shawn Guo <shawn.guo@linaro.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Phil Auld <pauld@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Wang Qing <wangqing@vivo.com>, rcu@vger.kernel.org
-Subject: Re: [PATCH printk v2 09/12] printk: add functions to prefer direct
- printing
-Message-ID: <Yk61Q+w7tWTjh8xl@alley>
-References: <20220405132535.649171-1-john.ogness@linutronix.de>
- <20220405132535.649171-10-john.ogness@linutronix.de>
+        with ESMTP id S231316AbiDGKJu (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 7 Apr 2022 06:09:50 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE57022EBD5
+        for <rcu@vger.kernel.org>; Thu,  7 Apr 2022 03:07:46 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id p21so6173621ioj.4
+        for <rcu@vger.kernel.org>; Thu, 07 Apr 2022 03:07:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=t+20wf0GtDSgwHKQPUIDUWXlshKcm23UV/5tifZ3qNQ=;
+        b=CErb0NImHMXyWQaIX785WKOmy6LabafXklmq4w2GQC1o9NrCsnU5agIsDqEvUbNrtV
+         LIUmI2DcrX6P59Z01TArpie430Im7o9yO77jivJ1UNmaOtloUOa1gro0ZbQZTPSvfOav
+         oNMdgoK4CYEX1Wbawm01PtyLEo+kUhv4OzP4UloVbsrksGUDgbM1JlS652xyxJqeUL/U
+         dlAPav2DQzkM5zixnH/llhORre1N2pE+E7IG3rznR7kXV9HFnvICKAOgY2c9EbnU3PYX
+         JqS3INeNlD0S2Hvx9om7ZFfo2U0O+uUl51TubDHv3rJxSx7CAQCWHu7qi0Ruzh7B3pF6
+         8P2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=t+20wf0GtDSgwHKQPUIDUWXlshKcm23UV/5tifZ3qNQ=;
+        b=iLk9wGTJjY0cyWzBw8bu5CiKBkxmgmxf40PdZCske2JDxXX2ih71mm77IMSiPHkkxJ
+         TlSr4XQkaFwZ5PMRKcuGbeJ6k7T5JFLCyX0/hnCzyQg2PA1+JtAVXo0Blnvnj/BzNX13
+         PVp+V98r4UIY7TzqzkxUYHyIJbFUbesuQ/tZI9N1+8raWaaxrYW+MA8fnGFfmja4FPtL
+         bRZuWwxb5pNh0LUZ4MjM5dNlUHMLHy88uuTIQkbxOb8mvlNqxLDZyPDrDFvMUv9lPlw5
+         l5E9f1y0jXOu3bcAcbY0FCCFjC0bcA1FrqX/MkiZuprtlm6VP7y5ypQBEWvQHSRr2nMi
+         yvRg==
+X-Gm-Message-State: AOAM531jwDaZMTy5VojWm2z7Wmx/t7ijrvksz17gF0T4KbIhg0kozRdT
+        qlDiERDzLBVyXFbsbX7o6fo89HJQQ6vP3zNWG/hwzjChWlw=
+X-Google-Smtp-Source: ABdhPJxUPNYRorI9eAmMjOiqWAV3/Dg4IX9tjX/hdBgbEMkZi8T/5za5C9ftAX0TYRjxX+B0fSqX6M9cZ3U/vLNuKWw=
+X-Received: by 2002:a02:ab87:0:b0:324:2157:2b4 with SMTP id
+ t7-20020a02ab87000000b00324215702b4mr1514815jan.186.1649326065883; Thu, 07
+ Apr 2022 03:07:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220405132535.649171-10-john.ogness@linutronix.de>
+References: <CANiq72k+5Rdj7i3Df2dcE6_OPYPXK3z5EWLKnY56sSMz4G3OvA@mail.gmail.com>
+ <CAABZP2z64aYWfVSdXHaQopWc+BAbJJUGqtrju2iWER3DDTDFWg@mail.gmail.com>
+ <20220406170012.GO4285@paulmck-ThinkPad-P17-Gen-1> <CAABZP2zhZaN0+KqP7oMoyXTSkDhLjZwWvnj7coa1ZVve9M+jsQ@mail.gmail.com>
+ <20220406195011.GP4285@paulmck-ThinkPad-P17-Gen-1> <CAABZP2x8_783jhEhC3AozH9=xj40UO-rZT2BRJsg5gaLdBz=9w@mail.gmail.com>
+In-Reply-To: <CAABZP2x8_783jhEhC3AozH9=xj40UO-rZT2BRJsg5gaLdBz=9w@mail.gmail.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Thu, 7 Apr 2022 12:07:34 +0200
+Message-ID: <CANiq72mYXnQo_Y39k23rY-rdJay8GEPJ8MhU-y7-bjkw=zRC+Q@mail.gmail.com>
+Subject: Re: rcu_sched self-detected stall on CPU
+To:     Zhouyi Zhou <zhouzhouyi@gmail.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        rcu <rcu@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue 2022-04-05 15:31:32, John Ogness wrote:
-> Once kthread printing is available, console printing will no longer
-> occur in the context of the printk caller. However, there are some
-> special contexts where it is desirable for the printk caller to
-> directly print out kernel messages. Using pr_flush() to wait for
-> threaded printers is only possible if the caller is in a sleepable
-> context and the kthreads are active. That is not always the case.
-> 
-> Introduce printk_prefer_direct_enter() and printk_prefer_direct_exit()
-> functions to explicitly (and globally) activate/deactivate preferred
-> direct console printing. The term "direct console printing" refers to
-> printing to all enabled consoles from the context of the printk
-> caller. The term "prefer" is used because this type of printing is
-> only best effort. If the console is currently locked or other
-> printers are already actively printing, the printk caller will need
-> to rely on the other contexts to handle the printing.
-> 
-> This preferred direct printing is how all printing is currently
-> handled (unless explicitly deferred).
-> 
-> When kthread printing is introduced, there may be some unanticipated
-> problems due to kthreads being unable to flush important messages.
-> In order to minimize such risks, preferred direct printing is
-> activated for the primary important messages when the system
-> experiences general types of major errors. These are:
-> 
->  - emergency reboot/shutdown
->  - cpu and rcu stalls
->  - hard and soft lockups
->  - hung tasks
->  - warn
->  - sysrq
-> 
-> Note that since kthread printing does not yet exist, no behavior
-> changes result from this commit. This is only implementing the
-> counter and marking the various places where preferred direct
-> printing is active.
-> 
-> Signed-off-by: John Ogness <john.ogness@linutronix.de>
+On Thu, Apr 7, 2022 at 4:27 AM Zhouyi Zhou <zhouzhouyi@gmail.com> wrote:
+>
+> Yes, this happens within 30 seconds after kernel boot.  If we take all
+> into account (qemu preparing, kernel loading), we can do one test
+> within 54 seconds.
 
-Looks good to me. Let's see how it works in practice.
-It is possible that we will need to add it on more
-locations. But it is also possible that we will be
-able to remove it somewhere.
+When it does not trigger, the run should be 20 seconds quicker than
+that (e.g. 10 seconds), since we don't wait for the stall timeout. I
+guess the timeout could also be reduced a fair bit to make failures
+quicker, but they do not contribute as much as the successes anyway.
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
+Thanks a lot for running the bisect on that server, Zhouyi!
 
-Best Regards,
-Petr
+Cheers,
+Miguel
