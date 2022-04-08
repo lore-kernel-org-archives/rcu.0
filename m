@@ -2,135 +2,139 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E2EF6C433FE
-	for <rcu@archiver.kernel.org>; Fri,  8 Apr 2022 14:22:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E55D9C433EF
+	for <rcu@archiver.kernel.org>; Fri,  8 Apr 2022 14:25:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235567AbiDHOYk (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 8 Apr 2022 10:24:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46534 "EHLO
+        id S232699AbiDHO1i (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 8 Apr 2022 10:27:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236841AbiDHOYj (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 8 Apr 2022 10:24:39 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4365AE52;
-        Fri,  8 Apr 2022 07:22:35 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 8DEECB82B33;
-        Fri,  8 Apr 2022 14:22:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3651C385A8;
-        Fri,  8 Apr 2022 14:22:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649427753;
-        bh=wqwNWjFCQv2uKOQH0N9XEjIi+ply5xjP2/rcog9fdME=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=eG4BUp59OLKBuhz3H+N8kfCu/EmsQlar6kqueci+Ww+6bDJsP0SSzaq4WmeVa9uq8
-         fnB0bQFU5jBI0XPB2u3Xop3cc7RtgGjoil7vfoPq7yl4WdRe5lkUVp8wr79o7PCWIN
-         aA6tTZEJ97WAMUDnnFwfwPWv1pFECiurciLaRDkKxX5J1DsGVgzPEszugxXfXD9yA0
-         E/aRwMvvi8Q8pF1267tvEnZevVpFH4/XKmftRcbW2HPE74zAhip/Qud5awS93yTaKH
-         oSYlML4oCy5t4FF7WDm263UnAiT6v+77aMj2Z6F90wkJjYZ62ZkIqTHy0kg6xoOxzv
-         +V/0AX9zEJw5g==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 862DC5C0176; Fri,  8 Apr 2022 07:22:32 -0700 (PDT)
-Date:   Fri, 8 Apr 2022 07:22:32 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH RFC] rcu/nocb: Provide default all-CPUs mask for
- RCU_NOCB_CPU=y
-Message-ID: <20220408142232.GA4285@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220407210734.2548973-1-joel@joelfernandes.org>
+        with ESMTP id S236875AbiDHO1i (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 8 Apr 2022 10:27:38 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92E1D353A9B
+        for <rcu@vger.kernel.org>; Fri,  8 Apr 2022 07:25:33 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id bg10so17729132ejb.4
+        for <rcu@vger.kernel.org>; Fri, 08 Apr 2022 07:25:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=u2DoQQgFz7qw9MRtc8eSxOedE/fArJRIQcISz938HxU=;
+        b=BAdiVnHZN6uxLx/6Snzgs112QvtFvU1KZQqXra3goU8hv0ht1R+cuXXr6/+lMuwzt1
+         4PO2rKowkKCAkKi5hwhDWRvRWAmaRFSdiBhrjcbPy5ezs0m46X5nX9B6pteN/kbX2PEo
+         R/3lgpXq7nPscncCc6hP4VWo0bdt3YE684mbwXJ3HUn9uL9ZbLYyFPq4hD+jCPj54Kp5
+         TEM0KoJPpY8J/ALpOoosmnVdeKL9Sk1p5uTHl0WiFWMAymGXWNuEBM9lo3NnCkpvDQOa
+         ZFp4mMIxadHfGdrSARV+hWlJq9VTcWRZLlI7u+L3uyZ0U2a+UhYvnhqVlUB+gdXE7+69
+         dXng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=u2DoQQgFz7qw9MRtc8eSxOedE/fArJRIQcISz938HxU=;
+        b=ZeAB+G2xBKl0HY5L2yDTHGJa11qIsymzemzaLMtdQe1Z1/d8xwdsOWrngysHrmuyj4
+         q4gipUvssdLNnwPkKmHWOOzt+MLTFejCR3QJ/PAH/cWESxrBt3gXLqMMcwiRZ31l+eGG
+         QyoqoT/ryWjFf3+76nxUuqQkTtR2OB3iKq71Uf1C5n8HUK/w2aB67gPlHwisHlAhEzZ3
+         kpiMFZzHYSw0EnpMsur4tvtOi8YMabt4IEY6T+QxqmX9M4c/SgPWjOlIaT1GVzU1DzyK
+         xKgmlaW9rUWi98zxlp8MZ6YWuGalkpZsccO4DQpXv74w5urmwsbFvaMD2IHlg+JRdOuD
+         PxOQ==
+X-Gm-Message-State: AOAM53267Znlu54M6AetQM7C/tIA49lUqCBLXWKzoM2s3biTDNuvg6dR
+        YSkV2qlNX07Vc5byaO/F6Q+CEBmEaDo4sGXm57I=
+X-Google-Smtp-Source: ABdhPJwMMe6CWFJwjcXGuD2SKEWs4JkfV9lHITjThhdtLlmqkmLABQYXc9h+iYmaeyssvf47ZyEN/O3Ml6qX00pak4M=
+X-Received: by 2002:a17:907:d1e:b0:6e1:3aa5:8e5 with SMTP id
+ gn30-20020a1709070d1e00b006e13aa508e5mr18285929ejc.324.1649427932107; Fri, 08
+ Apr 2022 07:25:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220407210734.2548973-1-joel@joelfernandes.org>
+References: <CANiq72k+5Rdj7i3Df2dcE6_OPYPXK3z5EWLKnY56sSMz4G3OvA@mail.gmail.com>
+ <CAABZP2z64aYWfVSdXHaQopWc+BAbJJUGqtrju2iWER3DDTDFWg@mail.gmail.com>
+ <20220406170012.GO4285@paulmck-ThinkPad-P17-Gen-1> <87pmls6nt7.fsf@mpe.ellerman.id.au>
+ <CAABZP2wVAzybDTjUWxwGG4HmWK7V8rJVVFxpRx-3F9n5oST3+A@mail.gmail.com> <20220408140712.GZ4285@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20220408140712.GZ4285@paulmck-ThinkPad-P17-Gen-1>
+From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
+Date:   Fri, 8 Apr 2022 22:25:20 +0800
+Message-ID: <CAABZP2zEU8eULq30ZLcUeqxjXuLTKO4b3wm_Jo458Nq_JJ7pEw@mail.gmail.com>
+Subject: Re: rcu_sched self-detected stall on CPU
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>, rcu <rcu@vger.kernel.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Nicholas Piggin <npiggin@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Apr 07, 2022 at 09:07:33PM +0000, Joel Fernandes wrote:
-> On systems with CONFIG_RCU_NOCB_CPU=y, there is no default mask provided
-> which ends up not offloading any CPU. This patch removes yet another
-> dependency from the bootloader having to know about RCU, about how many
-> CPUs the system has, and about how to provide the mask. Basically, I
-> think we should stop pretending that the user knows what they are doing :).
-> In other words, if NO_CB_CPU is enabled, lets make use of it.
-> 
-> My goal is to make RCU as zero-config as possible with sane defaults. If
-> user wants to provide rcu_nocbs= or nohz_full= options, then those will
-> take precedence and this patch will have no effect.
-> 
-> I tested providing rcu_nocbs= option, ensuring that is preferred over this.
+On Fri, Apr 8, 2022 at 10:07 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+>
+> On Fri, Apr 08, 2022 at 06:02:19PM +0800, Zhouyi Zhou wrote:
+> > On Fri, Apr 8, 2022 at 3:23 PM Michael Ellerman <mpe@ellerman.id.au> wrote:
+> > >
+> > > "Paul E. McKenney" <paulmck@kernel.org> writes:
+> > > > On Wed, Apr 06, 2022 at 05:31:10PM +0800, Zhouyi Zhou wrote:
+> > > >> Hi
+> > > >>
+> > > >> I can reproduce it in a ppc virtual cloud server provided by Oregon
+> > > >> State University.  Following is what I do:
+> > > >> 1) curl -l https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/snapshot/linux-5.18-rc1.tar.gz
+> > > >> -o linux-5.18-rc1.tar.gz
+> > > >> 2) tar zxf linux-5.18-rc1.tar.gz
+> > > >> 3) cp config linux-5.18-rc1/.config
+> > > >> 4) cd linux-5.18-rc1
+> > > >> 5) make vmlinux -j 8
+> > > >> 6) qemu-system-ppc64 -kernel vmlinux -nographic -vga none -no-reboot
+> > > >> -smp 2 (QEMU 4.2.1)
+> > > >> 7) after 12 rounds, the bug got reproduced:
+> > > >> (http://154.223.142.244/logs/20220406/qemu.log.txt)
+> > > >
+> > > > Just to make sure, are you both seeing the same thing?  Last I knew,
+> > > > Zhouyi was chasing an RCU-tasks issue that appears only in kernels
+> > > > built with CONFIG_PROVE_RCU=y, which Miguel does not have set.  Or did
+> > > > I miss something?
+> > > >
+> > > > Miguel is instead seeing an RCU CPU stall warning where RCU's grace-period
+> > > > kthread slept for three milliseconds, but did not wake up for more than
+> > > > 20 seconds.  This kthread would normally have awakened on CPU 1, but
+> > > > CPU 1 looks to me to be very unhealthy, as can be seen in your console
+> > > > output below (but maybe my idea of what is healthy for powerpc systems
+> > > > is outdated).  Please see also the inline annotations.
+> > > >
+> > > > Thoughts from the PPC guys?
+> > >
+> > > I haven't seen it in my testing. But using Miguel's config I can
+> > > reproduce it seemingly on every boot.
+> > >
+> > > For me it bisects to:
+> > >
+> > >   35de589cb879 ("powerpc/time: improve decrementer clockevent processing")
+> > >
+> > > Which seems plausible.
+> > I also bisect to 35de589cb879 ("powerpc/time: improve decrementer
+> > clockevent processing")
+>
+> Very good!  Thank you all!!!
+You are very welcome ;-)  and Thank you all!!!!
+>
+>                                                         Thanx, Paul
+>
+> > > Reverting that on mainline makes the bug go away.
+> > I also revert that on the mainline, and am currently doing a pressure
+> > test (by repeatedly invoking qemu and checking the console.log) on PPC
+> > VM in Oregon State University.
+After 306 rounds of stress test on mainline without triggering the bug
+(last for 4 hours and 27 minutes), I think the bug is indeed caused by
+35de589cb879 ("powerpc/time: improve decrementer clockevent
+processing") and stop the test for now.
 
-Unless something has changed, this would change behavior relied upon
-the enterprise distros.  Last I checked, they want to supply a single
-binary, as evidenced by the recent CONFIG_PREEMPT_DYNAMIC Kconfig option,
-and they also want the default to be non-offloaded.  That is, given a
-kernel built with CONFIG_RCU_NOCB_CPU=y and without either a nohz_full
-or a nocbs_cpu boot parameter, all of the CPUs must be non-offloaded.
-
-So for me to push this to mainline, I need an ack from someone from each
-of the enterprise distros, and each of those someones needs to understand
-the single-binary strategy used by the corresponding distro.
-
-And is it really all -that- hard to specify an additional boot parameter
-across ChromeOS devices?  Android seems to manage it.  ;-)
-
-							Thanx, Paul
-
-> Signed-off-by: Joel Fernandes <joel@joelfernandes.org>
-> ---
->  kernel/rcu/tree_nocb.h | 20 ++++++++++++++++++--
->  1 file changed, 18 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-> index eeafb546a7a0..607fbf843467 100644
-> --- a/kernel/rcu/tree_nocb.h
-> +++ b/kernel/rcu/tree_nocb.h
-> @@ -1165,12 +1165,25 @@ EXPORT_SYMBOL_GPL(rcu_nocb_cpu_offload);
->  void __init rcu_init_nohz(void)
->  {
->  	int cpu;
-> -	bool need_rcu_nocb_mask = false;
-> +	bool need_rcu_nocb_mask = false, set_nocb_mask_all = false;
->  	struct rcu_data *rdp;
->  
-> +	/*
-> +	 * In case rcu_nocbs= was not passed on the kernel command line,
-> +	 * provide a sane default by offloading all CPUs. This provides a
-> +	 * sane default for rcu_nocbs and prevents users overlooking these
-> +	 * details.
-> +	 */
-> +	if (!rcu_nocb_is_setup) {
-> +		need_rcu_nocb_mask = true;
-> +		set_nocb_mask_all = true;
-> +	}
-> +
->  #if defined(CONFIG_NO_HZ_FULL)
-> -	if (tick_nohz_full_running && cpumask_weight(tick_nohz_full_mask))
-> +	if (tick_nohz_full_running && cpumask_weight(tick_nohz_full_mask)) {
->  		need_rcu_nocb_mask = true;
-> +		set_nocb_mask_all = false; /* NO_HZ_FULL provides its own mask. */
-> +	}
->  #endif /* #if defined(CONFIG_NO_HZ_FULL) */
->  
->  	if (need_rcu_nocb_mask) {
-> @@ -1191,6 +1204,9 @@ void __init rcu_init_nohz(void)
->  		cpumask_or(rcu_nocb_mask, rcu_nocb_mask, tick_nohz_full_mask);
->  #endif /* #if defined(CONFIG_NO_HZ_FULL) */
->  
-> +	if (set_nocb_mask_all)
-> +		cpumask_setall(rcu_nocb_mask);
-> +
->  	if (!cpumask_subset(rcu_nocb_mask, cpu_possible_mask)) {
->  		pr_info("\tNote: kernel parameter 'rcu_nocbs=', 'nohz_full', or 'isolcpus=' contains nonexistent CPUs.\n");
->  		cpumask_and(rcu_nocb_mask, cpu_possible_mask,
-> -- 
-> 2.35.1.1178.g4f1659d476-goog
-> 
+Thanks ;-)
+Zhouyi
+> > >
+> > > I don't see an obvious bug in the diff, but I could be wrong, or the old
+> > > code was papering over an existing bug?
+> > >
+> > > I'll try and work out what it is about Miguel's config that exposes
+> > > this vs our defconfig, that might give us a clue.
+> > Great job!
+> > >
+> > > cheers
+> > Thanks
+> > Zhouyi
