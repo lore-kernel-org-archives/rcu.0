@@ -2,119 +2,114 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6BE79C433F5
-	for <rcu@archiver.kernel.org>; Fri,  8 Apr 2022 14:42:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 32647C433EF
+	for <rcu@archiver.kernel.org>; Fri,  8 Apr 2022 14:52:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235608AbiDHOoy (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 8 Apr 2022 10:44:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37528 "EHLO
+        id S234531AbiDHOyk (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 8 Apr 2022 10:54:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233339AbiDHOox (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 8 Apr 2022 10:44:53 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9814BF94EF
-        for <rcu@vger.kernel.org>; Fri,  8 Apr 2022 07:42:49 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4KZgvm2CQ9z4xR1;
-        Sat,  9 Apr 2022 00:42:44 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1649428964;
-        bh=EZHCP6PqnVf23desNVAgG8DT5zERwIhvdfa/BbmKnpQ=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=l7MWlC+BihqhZwSLnIwDvuqwoMsplYU/BcQR/V08MYFAm0U7iqxy9lC+r0NOzgeAV
-         hNPmsS67SC1ll/pWfMCuIgiYiqWAlmPjuAGBgBOCpVD0odQa/9d8jZ7bxJhNl/ASzQ
-         oDfpeJ0DTe7y/beXmI/n9S2v+mLjXhXYILhL52u56MuvIYQSxRIq3SIwCqVOOCfsYz
-         /jl1RO+0I1xkf7aZUzqzLfxOHTH69BiDBWYK3ADucPofheJPCEpzvN+v70fLGYsKRM
-         cOO9hZMay/pnLTnwBcPFZgZ1o6dfUSUIsZkLbeBB1y8BjoyPWFCAhNwCBFjw2dxQPs
-         e0btYqr4hIacQ==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     paulmck@kernel.org, Zhouyi Zhou <zhouzhouyi@gmail.com>
-Cc:     rcu <rcu@vger.kernel.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: rcu_sched self-detected stall on CPU
-In-Reply-To: <87pmls6nt7.fsf@mpe.ellerman.id.au>
-References: <CANiq72k+5Rdj7i3Df2dcE6_OPYPXK3z5EWLKnY56sSMz4G3OvA@mail.gmail.com>
- <CAABZP2z64aYWfVSdXHaQopWc+BAbJJUGqtrju2iWER3DDTDFWg@mail.gmail.com>
- <20220406170012.GO4285@paulmck-ThinkPad-P17-Gen-1>
- <87pmls6nt7.fsf@mpe.ellerman.id.au>
-Date:   Sat, 09 Apr 2022 00:42:39 +1000
-Message-ID: <87k0bz7i1s.fsf@mpe.ellerman.id.au>
+        with ESMTP id S230376AbiDHOyi (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 8 Apr 2022 10:54:38 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9515116B5D
+        for <rcu@vger.kernel.org>; Fri,  8 Apr 2022 07:52:34 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id z6so10950654iot.0
+        for <rcu@vger.kernel.org>; Fri, 08 Apr 2022 07:52:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8VRYQ19FRWWgFB7eclpNXP2B+Re0MnAnD9mT5UitObs=;
+        b=K1wi6jy6dYdW+QpMSK3lfRGk4zGJJ8ogB8ZcDlfiGH3GEEOszOV9MxSDftrmkKhTz3
+         szCu7VsuIjubs5IEfqfb/bfE8LOTX934fRkIGREGB0ChGz9X8hy5IXOCfkarC2fUJRVw
+         Hu8rHgf0l2L0a8T1HtK35w2olAaeJfU7uETgM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8VRYQ19FRWWgFB7eclpNXP2B+Re0MnAnD9mT5UitObs=;
+        b=Yh2lllciMUmFM/67pdhUaQZgGD9upNAk6w3esNDDPVytMLiJT9JwWbgMftLPWDp0gL
+         swxynaByOPfeD0pCQ8eewRekzBuV1hztN3X0K+ZCXNULsfxEfFpfFrZcT/jKYzlqJsye
+         gla7r4C5fIavSjvMTMuxQUwzjrwJbJR0GxBFc/okbn+MzDBXAGOvGdNq+anRb+3gNO6T
+         AcFwSHSjCg/9gjcOpyBRFTDKZ5hvr8nlGUBPWmfhp+pzXyMjhBCv5ZSLmXImU9v5YUnc
+         e46vKvOFWwfMAjixMFfN4M44XoXOqpneHR3MrzlxF3JS7AfcveRnHJit4T+cvGs3RkIj
+         zjXQ==
+X-Gm-Message-State: AOAM53374Pf1jRCy8cE1ltmGP3/l82N9Jw+dMcCiG2/Xh80GoOQ+273/
+        coJuW7b6s2BIjcQi8QM8oXM52d024TU6OQNO+xq69A==
+X-Google-Smtp-Source: ABdhPJz1dIbPRtI2UatBy2KD/GE6d9cFkS0wAFaLtoor9dgLbnw2qoyzh4xp7F/X2+FFjvYqH9TMgWjgexBcH1bqCCM=
+X-Received: by 2002:a5e:8d15:0:b0:645:c856:e84a with SMTP id
+ m21-20020a5e8d15000000b00645c856e84amr8616203ioj.84.1649429554195; Fri, 08
+ Apr 2022 07:52:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20220407210734.2548973-1-joel@joelfernandes.org> <20220408142232.GA4285@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20220408142232.GA4285@paulmck-ThinkPad-P17-Gen-1>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Fri, 8 Apr 2022 10:52:21 -0400
+Message-ID: <CAEXW_YQWeqfcKdAKmCn4fFGyWXjOGd=29wvi6bL3k7s2bGkDJw@mail.gmail.com>
+Subject: Re: [PATCH RFC] rcu/nocb: Provide default all-CPUs mask for RCU_NOCB_CPU=y
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        rcu <rcu@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Michael Ellerman <mpe@ellerman.id.au> writes:
-> "Paul E. McKenney" <paulmck@kernel.org> writes:
->> On Wed, Apr 06, 2022 at 05:31:10PM +0800, Zhouyi Zhou wrote:
->>> Hi
->>> 
->>> I can reproduce it in a ppc virtual cloud server provided by Oregon
->>> State University.  Following is what I do:
->>> 1) curl -l https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/snapshot/linux-5.18-rc1.tar.gz
->>> -o linux-5.18-rc1.tar.gz
->>> 2) tar zxf linux-5.18-rc1.tar.gz
->>> 3) cp config linux-5.18-rc1/.config
->>> 4) cd linux-5.18-rc1
->>> 5) make vmlinux -j 8
->>> 6) qemu-system-ppc64 -kernel vmlinux -nographic -vga none -no-reboot
->>> -smp 2 (QEMU 4.2.1)
->>> 7) after 12 rounds, the bug got reproduced:
->>> (http://154.223.142.244/logs/20220406/qemu.log.txt)
->>
->> Just to make sure, are you both seeing the same thing?  Last I knew,
->> Zhouyi was chasing an RCU-tasks issue that appears only in kernels
->> built with CONFIG_PROVE_RCU=y, which Miguel does not have set.  Or did
->> I miss something?
->>
->> Miguel is instead seeing an RCU CPU stall warning where RCU's grace-period
->> kthread slept for three milliseconds, but did not wake up for more than
->> 20 seconds.  This kthread would normally have awakened on CPU 1, but
->> CPU 1 looks to me to be very unhealthy, as can be seen in your console
->> output below (but maybe my idea of what is healthy for powerpc systems
->> is outdated).  Please see also the inline annotations.
->>
->> Thoughts from the PPC guys?
+On Fri, Apr 8, 2022 at 10:22 AM Paul E. McKenney <paulmck@kernel.org> wrote:
 >
-> I haven't seen it in my testing. But using Miguel's config I can
-> reproduce it seemingly on every boot.
+> On Thu, Apr 07, 2022 at 09:07:33PM +0000, Joel Fernandes wrote:
+> > On systems with CONFIG_RCU_NOCB_CPU=y, there is no default mask provided
+> > which ends up not offloading any CPU. This patch removes yet another
+> > dependency from the bootloader having to know about RCU, about how many
+> > CPUs the system has, and about how to provide the mask. Basically, I
+> > think we should stop pretending that the user knows what they are doing :).
+> > In other words, if NO_CB_CPU is enabled, lets make use of it.
+> >
+> > My goal is to make RCU as zero-config as possible with sane defaults. If
+> > user wants to provide rcu_nocbs= or nohz_full= options, then those will
+> > take precedence and this patch will have no effect.
+> >
+> > I tested providing rcu_nocbs= option, ensuring that is preferred over this.
 >
-> For me it bisects to:
->
->   35de589cb879 ("powerpc/time: improve decrementer clockevent processing")
->
-> Which seems plausible.
->
-> Reverting that on mainline makes the bug go away.
->
-> I don't see an obvious bug in the diff, but I could be wrong, or the old
-> code was papering over an existing bug?
->
-> I'll try and work out what it is about Miguel's config that exposes
-> this vs our defconfig, that might give us a clue.
+> Unless something has changed, this would change behavior relied upon
+> the enterprise distros.  Last I checked, they want to supply a single
+> binary, as evidenced by the recent CONFIG_PREEMPT_DYNAMIC Kconfig option,
+> and they also want the default to be non-offloaded.  That is, given a
+> kernel built with CONFIG_RCU_NOCB_CPU=y and without either a nohz_full
+> or a nocbs_cpu boot parameter, all of the CPUs must be non-offloaded.
 
-It's CONFIG_HIGH_RES_TIMERS=n which triggers the stall.
+Just curious, do you have information (like data, experiment results)
+on why they want default non-offloaded? Or maybe they haven't tried
+the recent work done in NOCB code?
 
-I can reproduce just with:
+Another option I think is to make it enforce NOCB if NR_CPUS <= 32 if
+that makes sense.
 
-  $ make ppc64le_guest_defconfig
-  $ ./scripts/config -d HIGH_RES_TIMERS
+> So for me to push this to mainline, I need an ack from someone from each
+> of the enterprise distros, and each of those someones needs to understand
+> the single-binary strategy used by the corresponding distro.
 
-We have no defconfigs that disable HIGH_RES_TIMERS, I didn't even
-realise you could disable it TBH :)
+Ok.
 
-The Rust CI has it disabled because I copied that from the x86 defconfig
-they were using back when I added the Rust support. I think that was
-meant to be a stripped down fast config for CI, but the result is it's
-just using a badly tested combination which is not helpful.
+> And is it really all -that- hard to specify an additional boot parameter
+> across ChromeOS devices?  Android seems to manage it.  ;-)
 
-So I'll send a patch to turn HIGH_RES_TIMERS on for the Rust CI, and we
-can debug this further without blocking them.
+That's not the hard part I think. The hard part is to make sure a
+future Linux user who is not an RCU expert does not forget to turn it
+on. ChromeOS is not the only OS that I've seen someone forget to do it
+;-D. AFAIR, there were Android devices too in the past where I saw
+this forgotten. I don't think we should rely on the users doing the
+right thing (as much as possible).
 
-cheers
+The single kernel binary point makes sense but in this case, I think
+the bigger question that I'd have is what is the default behavior and
+what do *most* users of RCU want. So we can keep sane defaults for the
+majority and reduce human errors related to configuration.
+
+thanks,
+
+-Joel
