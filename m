@@ -2,114 +2,137 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 32647C433EF
-	for <rcu@archiver.kernel.org>; Fri,  8 Apr 2022 14:52:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AB607C433F5
+	for <rcu@archiver.kernel.org>; Fri,  8 Apr 2022 15:25:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234531AbiDHOyk (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 8 Apr 2022 10:54:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46948 "EHLO
+        id S230484AbiDHP1X (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 8 Apr 2022 11:27:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230376AbiDHOyi (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 8 Apr 2022 10:54:38 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9515116B5D
-        for <rcu@vger.kernel.org>; Fri,  8 Apr 2022 07:52:34 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id z6so10950654iot.0
-        for <rcu@vger.kernel.org>; Fri, 08 Apr 2022 07:52:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8VRYQ19FRWWgFB7eclpNXP2B+Re0MnAnD9mT5UitObs=;
-        b=K1wi6jy6dYdW+QpMSK3lfRGk4zGJJ8ogB8ZcDlfiGH3GEEOszOV9MxSDftrmkKhTz3
-         szCu7VsuIjubs5IEfqfb/bfE8LOTX934fRkIGREGB0ChGz9X8hy5IXOCfkarC2fUJRVw
-         Hu8rHgf0l2L0a8T1HtK35w2olAaeJfU7uETgM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8VRYQ19FRWWgFB7eclpNXP2B+Re0MnAnD9mT5UitObs=;
-        b=Yh2lllciMUmFM/67pdhUaQZgGD9upNAk6w3esNDDPVytMLiJT9JwWbgMftLPWDp0gL
-         swxynaByOPfeD0pCQ8eewRekzBuV1hztN3X0K+ZCXNULsfxEfFpfFrZcT/jKYzlqJsye
-         gla7r4C5fIavSjvMTMuxQUwzjrwJbJR0GxBFc/okbn+MzDBXAGOvGdNq+anRb+3gNO6T
-         AcFwSHSjCg/9gjcOpyBRFTDKZ5hvr8nlGUBPWmfhp+pzXyMjhBCv5ZSLmXImU9v5YUnc
-         e46vKvOFWwfMAjixMFfN4M44XoXOqpneHR3MrzlxF3JS7AfcveRnHJit4T+cvGs3RkIj
-         zjXQ==
-X-Gm-Message-State: AOAM53374Pf1jRCy8cE1ltmGP3/l82N9Jw+dMcCiG2/Xh80GoOQ+273/
-        coJuW7b6s2BIjcQi8QM8oXM52d024TU6OQNO+xq69A==
-X-Google-Smtp-Source: ABdhPJz1dIbPRtI2UatBy2KD/GE6d9cFkS0wAFaLtoor9dgLbnw2qoyzh4xp7F/X2+FFjvYqH9TMgWjgexBcH1bqCCM=
-X-Received: by 2002:a5e:8d15:0:b0:645:c856:e84a with SMTP id
- m21-20020a5e8d15000000b00645c856e84amr8616203ioj.84.1649429554195; Fri, 08
- Apr 2022 07:52:34 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220407210734.2548973-1-joel@joelfernandes.org> <20220408142232.GA4285@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20220408142232.GA4285@paulmck-ThinkPad-P17-Gen-1>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Fri, 8 Apr 2022 10:52:21 -0400
-Message-ID: <CAEXW_YQWeqfcKdAKmCn4fFGyWXjOGd=29wvi6bL3k7s2bGkDJw@mail.gmail.com>
-Subject: Re: [PATCH RFC] rcu/nocb: Provide default all-CPUs mask for RCU_NOCB_CPU=y
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
+        with ESMTP id S233157AbiDHP1W (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 8 Apr 2022 11:27:22 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3254C31DD4;
+        Fri,  8 Apr 2022 08:25:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id DCB4FB82BAC;
+        Fri,  8 Apr 2022 15:25:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9EE7DC385A1;
+        Fri,  8 Apr 2022 15:25:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1649431515;
+        bh=lLdH9Tp31qVuDIwxFUvLKg4vvD9EROe9TrYZvdNywfQ=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=THHFFrQvwqFwzDRCdt2DzTm841P3QGqq+p7YQ+zaVRrbSElHj4UFnGfdZ4pXn3EhR
+         19UN/LqO0/pdPVb5eiOeXwOgTsTeTk6PF7ExmjsVDW2tR3+8DP7/QMW41Nuu4kzMTu
+         uo4Ze2BcNIlGXH8sUMfeIw/L4WjC5dLl5lJalT5U2ABIsXnVUDsggQxZjefAS3PksJ
+         k9aS+E66brH29s7RwwuEGQKe/AGTHg0g/5ImZkQpEDOfLVPrQzMKlgWdCuX1CGJ9G4
+         EdVzIKOPmOfgLjX7RAFNeyMRrSEWo6r3AbiBjueAVCQODho/ydcIk+lSS+9D2/aZvB
+         LoKKPJCmtDghg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 457AE5C0176; Fri,  8 Apr 2022 08:25:15 -0700 (PDT)
+Date:   Fri, 8 Apr 2022 08:25:15 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Kalesh Singh <kaleshsingh@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        kernel-team <kernel-team@android.com>, Tejun Heo <tj@kernel.org>,
+        Tim Murray <timmurray@google.com>, Wei Wang <wvw@google.com>,
+        Kyle Lin <kylelin@google.com>,
+        Chunwei Lu <chunweilu@google.com>,
+        Lulu Wang <luluw@google.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        rcu <rcu@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>
-Content-Type: text/plain; charset="UTF-8"
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        rcu <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] EXP rcu: Move expedited grace period (GP) work to RT
+ kthread_worker
+Message-ID: <20220408152515.GD4285@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20220408045734.1158817-1-kaleshsingh@google.com>
+ <CAEXW_YSqY2nFZrn4AjpUzJ+dwZc7jaVMG9RG5gvTyb3zFYWtQA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEXW_YSqY2nFZrn4AjpUzJ+dwZc7jaVMG9RG5gvTyb3zFYWtQA@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Apr 8, 2022 at 10:22 AM Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> On Thu, Apr 07, 2022 at 09:07:33PM +0000, Joel Fernandes wrote:
-> > On systems with CONFIG_RCU_NOCB_CPU=y, there is no default mask provided
-> > which ends up not offloading any CPU. This patch removes yet another
-> > dependency from the bootloader having to know about RCU, about how many
-> > CPUs the system has, and about how to provide the mask. Basically, I
-> > think we should stop pretending that the user knows what they are doing :).
-> > In other words, if NO_CB_CPU is enabled, lets make use of it.
-> >
-> > My goal is to make RCU as zero-config as possible with sane defaults. If
-> > user wants to provide rcu_nocbs= or nohz_full= options, then those will
-> > take precedence and this patch will have no effect.
-> >
-> > I tested providing rcu_nocbs= option, ensuring that is preferred over this.
->
-> Unless something has changed, this would change behavior relied upon
-> the enterprise distros.  Last I checked, they want to supply a single
-> binary, as evidenced by the recent CONFIG_PREEMPT_DYNAMIC Kconfig option,
-> and they also want the default to be non-offloaded.  That is, given a
-> kernel built with CONFIG_RCU_NOCB_CPU=y and without either a nohz_full
-> or a nocbs_cpu boot parameter, all of the CPUs must be non-offloaded.
+On Fri, Apr 08, 2022 at 06:21:03AM -0400, Joel Fernandes wrote:
+> On Fri, Apr 8, 2022 at 12:57 AM Kalesh Singh <kaleshsingh@google.com> wrote:
+> [..]
+> > +config RCU_EXP_KTHREAD
+> > +       bool "Perform RCU expedited work in a real-time kthread"
+> > +       depends on RCU_BOOST && RCU_EXPERT
+> 
+> Doesn't this disable the fix if a system is not RCU_EXPERT ?  Please
+> see the definition of RCU_EXPERT:
+> "This option needs to be enabled if you wish to make expert-level
+> adjustments to RCU configuration."
+> 
+> I don't think a bug fix counts as an expert-level adjustment.
 
-Just curious, do you have information (like data, experiment results)
-on why they want default non-offloaded? Or maybe they haven't tried
-the recent work done in NOCB code?
+Good catch!
 
-Another option I think is to make it enforce NOCB if NR_CPUS <= 32 if
-that makes sense.
+The constraints that this Kconfig option must meet are as follows:
 
-> So for me to push this to mainline, I need an ack from someone from each
-> of the enterprise distros, and each of those someones needs to understand
-> the single-binary strategy used by the corresponding distro.
+1.	It must not expose innocent bystanders to additional questions
+	in response to "make oldconfig" and friends.  So, if you build
+	a kernel, then apply this patch, then run "make oldconfig",
+	this last must run to completion without waiting for user input.
 
-Ok.
+	This point is not trivial, and everyone who has submitted a
+	mainline pull request violating this rule can attest.  ;-)
 
-> And is it really all -that- hard to specify an additional boot parameter
-> across ChromeOS devices?  Android seems to manage it.  ;-)
+2.	Enabing RCU_EXPERT should be the exception rather than the
+	rule.  (This rule is all too often honored in the breach.)
 
-That's not the hard part I think. The hard part is to make sure a
-future Linux user who is not an RCU expert does not forget to turn it
-on. ChromeOS is not the only OS that I've seen someone forget to do it
-;-D. AFAIR, there were Android devices too in the past where I saw
-this forgotten. I don't think we should rely on the users doing the
-right thing (as much as possible).
+3.	If a given Kconfig option is to be selected, it must not depend
+	on RCU_EXPERT.  (Otherwise, the build system complains.)
 
-The single kernel binary point makes sense but in this case, I think
-the bigger question that I'd have is what is the default behavior and
-what do *most* users of RCU want. So we can keep sane defaults for the
-majority and reduce human errors related to configuration.
+So the question is "Does Android already enable RCU_EXPERT?"  If so,
+having this depend on RCU_EXPERT, though not great, is OK given that
+Android is the only expected user.  If not, another option is to make
+this option depend on ANDROID or some similar Kconfig option that Linus
+does not enable in his kernel builds.
 
-thanks,
+> > +       default !PREEMPT_RT && NR_CPUS <= 32
+> 
+> What is the benefit of turning it off on PREEMPT_RT, even if
+> PREEMPT_RT does not use expedited GPs much post-boot? I would think in
+> the future if PREEMPT_RT ever uses expedited GPs, they would want this
+> feature even more. I'd rather be future-proof now as I don't see any
+> advantages of disabling it on !PREEMPT_RT (And a drawback that the fix
+> won't apply to those systems). Also will keep the config simple.
 
--Joel
+Current PREEMPT_RT workloads do not care about synchronize_rcu_expedited()
+latencies, so much so that they boot with rcupdate.rcu_normal=y.  Plus
+the kthread_create_worker() function does not yet have that many users.
+So it makes sense to fence in the effects of this change.
+
+Of course, if you are instead saying that ChromeOS also wants low-latency
+synchronize_rcu_expedited(), let's figure out the best way to get this
+change to ChromeOS users as well as to Android users.  ;-)
+
+							Thanx, Paul
+
+> > +       help
+> > +         Use this option to further reduce the latencies of expedited
+> > +         grace periods at the expense of being more disruptive.
+> > +
+> > +         Accept the default if unsure.
+> > +
+> >  config RCU_NOCB_CPU
+> >         bool "Offload RCU callback processing from boot-selected CPUs"
+> >         depends on TREE_RCU
+> [...]
+> 
+> Thanks,
+> 
+>  - Joel
