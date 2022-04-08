@@ -2,197 +2,72 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 27F64C433F5
-	for <rcu@archiver.kernel.org>; Fri,  8 Apr 2022 20:54:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F2B5CC433F5
+	for <rcu@archiver.kernel.org>; Fri,  8 Apr 2022 21:27:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239550AbiDHU4u (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 8 Apr 2022 16:56:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52300 "EHLO
+        id S234602AbiDHV3X (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 8 Apr 2022 17:29:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbiDHU4s (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 8 Apr 2022 16:56:48 -0400
+        with ESMTP id S229733AbiDHV3W (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 8 Apr 2022 17:29:22 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D62DCCBE6E;
-        Fri,  8 Apr 2022 13:54:41 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83FB83EAB7;
+        Fri,  8 Apr 2022 14:27:18 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 847EC61F24;
-        Fri,  8 Apr 2022 20:54:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8B7CC385A6;
-        Fri,  8 Apr 2022 20:54:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649451280;
-        bh=aVx+7KRXZiRyoZH9LxFoTN9QELSD9fR7MzxNu6nP+2w=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=H1oihdWiRyUUZgaZGwE+yAACPzLClGT7Wvslha58NQudg9qh6dxWSQ7IpG+bqHWRJ
-         Wn/tPPjNZXXJMNMMUzXyY6jZvlhj7yjuzyk8N5va1dGtT9UKq5JnSRKp7JpXhixt9O
-         xFY/ZJEql7iqGOqbKr890IXJniUMIr59d3He+Qfz4vaWbEyAgqPULyWOZs0Td97NZ6
-         SjGosIF/BwW7dhBQcQgmoXmZ/rdNJ7EN3nz9E+4y6ObAQgKQXDbZXdr+lKoqz60YHa
-         XLEGL8C0bN53Uyz2blIChXMZigl2HRzak6SVGjJFvyhUoyyFouNyFKfwMuBC8qa22c
-         QnBVFSAh4SEsw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 616B65C015D; Fri,  8 Apr 2022 13:54:40 -0700 (PDT)
-Date:   Fri, 8 Apr 2022 13:54:40 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 20AC961B2A;
+        Fri,  8 Apr 2022 21:27:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E281C385A1;
+        Fri,  8 Apr 2022 21:27:15 +0000 (UTC)
+Date:   Fri, 8 Apr 2022 17:27:14 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        kernel-team <kernel-team@android.com>, Tejun Heo <tj@kernel.org>,
+        Tim Murray <timmurray@google.com>, Wei Wang <wvw@google.com>,
+        Kyle Lin <kylelin@google.com>,
+        Chunwei Lu <chunweilu@google.com>,
+        Lulu Wang <luluw@google.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        rcu <rcu@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
-        frederic@kernel.org
-Subject: Re: [PATCH RFC] rcu/nocb: Provide default all-CPUs mask for
- RCU_NOCB_CPU=y
-Message-ID: <20220408205440.GL4285@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220407210734.2548973-1-joel@joelfernandes.org>
- <20220408142232.GA4285@paulmck-ThinkPad-P17-Gen-1>
- <CAEXW_YQWeqfcKdAKmCn4fFGyWXjOGd=29wvi6bL3k7s2bGkDJw@mail.gmail.com>
- <20220408155002.GF4285@paulmck-ThinkPad-P17-Gen-1>
- <CAEXW_YQDgSO2XkkVhN3RBBz3vwYdAtTuPz-xYYsAPnwEnbYZPA@mail.gmail.com>
- <20220408174908.GK4285@paulmck-ThinkPad-P17-Gen-1>
- <CAEXW_YQ+oE3xQ0tLnBMFxRXLqKZkT5UfjF+CULxnhf9F-dEA2g@mail.gmail.com>
- <CAEXW_YRK2t2JO4RyBTd8cR9sTVpgP7Z5Ywhb1g7CRz3HJ_kNQA@mail.gmail.com>
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        rcu <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] EXP rcu: Move expedited grace period (GP) work to RT
+ kthread_worker
+Message-ID: <20220408172714.52d64c84@gandalf.local.home>
+In-Reply-To: <20220408155834.GI4285@paulmck-ThinkPad-P17-Gen-1>
+References: <20220408045734.1158817-1-kaleshsingh@google.com>
+        <CAEXW_YSqY2nFZrn4AjpUzJ+dwZc7jaVMG9RG5gvTyb3zFYWtQA@mail.gmail.com>
+        <20220408113946.056c083e@gandalf.local.home>
+        <20220408155834.GI4285@paulmck-ThinkPad-P17-Gen-1>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEXW_YRK2t2JO4RyBTd8cR9sTVpgP7Z5Ywhb1g7CRz3HJ_kNQA@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Apr 08, 2022 at 02:23:34PM -0400, Joel Fernandes wrote:
-> On Fri, Apr 8, 2022 at 2:22 PM Joel Fernandes <joel@joelfernandes.org> wrote:
-> >
-> > On Fri, Apr 8, 2022 at 1:49 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > >
-> > > On Fri, Apr 08, 2022 at 01:20:02PM -0400, Joel Fernandes wrote:
-> > > > On Fri, Apr 8, 2022 at 11:50 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > > >
-> > > > > On Fri, Apr 08, 2022 at 10:52:21AM -0400, Joel Fernandes wrote:
-> > > > > > On Fri, Apr 8, 2022 at 10:22 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > > > > >
-> > > > > > > On Thu, Apr 07, 2022 at 09:07:33PM +0000, Joel Fernandes wrote:
-> > > > > > > > On systems with CONFIG_RCU_NOCB_CPU=y, there is no default mask provided
-> > > > > > > > which ends up not offloading any CPU. This patch removes yet another
-> > > > > > > > dependency from the bootloader having to know about RCU, about how many
-> > > > > > > > CPUs the system has, and about how to provide the mask. Basically, I
-> > > > > > > > think we should stop pretending that the user knows what they are doing :).
-> > > > > > > > In other words, if NO_CB_CPU is enabled, lets make use of it.
-> > > > > > > >
-> > > > > > > > My goal is to make RCU as zero-config as possible with sane defaults. If
-> > > > > > > > user wants to provide rcu_nocbs= or nohz_full= options, then those will
-> > > > > > > > take precedence and this patch will have no effect.
-> > > > > > > >
-> > > > > > > > I tested providing rcu_nocbs= option, ensuring that is preferred over this.
-> > > > > > >
-> > > > > > > Unless something has changed, this would change behavior relied upon
-> > > > > > > the enterprise distros.  Last I checked, they want to supply a single
-> > > > > > > binary, as evidenced by the recent CONFIG_PREEMPT_DYNAMIC Kconfig option,
-> > > > > > > and they also want the default to be non-offloaded.  That is, given a
-> > > > > > > kernel built with CONFIG_RCU_NOCB_CPU=y and without either a nohz_full
-> > > > > > > or a nocbs_cpu boot parameter, all of the CPUs must be non-offloaded.
-> > > > > >
-> > > > > > Just curious, do you have information (like data, experiment results)
-> > > > > > on why they want default non-offloaded? Or maybe they haven't tried
-> > > > > > the recent work done in NOCB code?
-> > > > >
-> > > > > I most definitely do.  When I first introduced callback offloading, I
-> > > > > made it completely replace softirq callback invocation.  There were some
-> > > > > important throughput-oriented workloads that got hit with significant
-> > > > > performance degradation due to this change.  Enterprise Java workloads
-> > > > > were the worst hit.
-> > > > >
-> > > > > Android does not run these workloads, and I am not aware of ChromeOS
-> > > > > running them, either.
-> > > >
-> > > > Thanks a lot for mentioning this, I was not aware and will make note
-> > > > of it :-). I wonder if the scheduler had something to do with the
-> > > > degradation.
-> > >
-> > > It is all too easy to blame the scheduler and all too easy to forget
-> > > that the scheduler has a hard job.  ;-)
-> > >
-> > > And in this case, the scheduler was just doing what it was told.
-> >
-> > No was just saying the scheduler has to do more work with NOCB because
-> > of the extra threads, so that likely degrades the workloads (context
-> > switch, wake ups, etc).
-> >
-> > > > > > > And is it really all -that- hard to specify an additional boot parameter
-> > > > > > > across ChromeOS devices?  Android seems to manage it.  ;-)
-> > > > > >
-> > > > > > That's not the hard part I think. The hard part is to make sure a
-> > > > > > future Linux user who is not an RCU expert does not forget to turn it
-> > > > > > on. ChromeOS is not the only OS that I've seen someone forget to do it
-> > > > > > ;-D. AFAIR, there were Android devices too in the past where I saw
-> > > > > > this forgotten. I don't think we should rely on the users doing the
-> > > > > > right thing (as much as possible).
-> > > > > >
-> > > > > > The single kernel binary point makes sense but in this case, I think
-> > > > > > the bigger question that I'd have is what is the default behavior and
-> > > > > > what do *most* users of RCU want. So we can keep sane defaults for the
-> > > > > > majority and reduce human errors related to configuration.
-> > > > >
-> > > > > If both the ChromeOS and Android guys need it, I could reinstate the
-> > > > > old RCU_NOCB_CPU_ALL Kconfig option.  This was removed due to complaints
-> > > > > about RCU Kconfig complexity, but I believe that Reviewed-by from ChromeOS
-> > > > > and Android movers and shakers would overcome lingering objections.
-> > > > >
-> > > > > Would that help?
-> > > >
-> > > > Yes, I think I would love for such a change. I am planning to add a
-> > > > test to ChromeOS to check whether config options were correctly set
-> > > > up. So I can test for both the RCU_NOCB_CPU options.
-> > >
-> > > Very good!
-> > >
-> > > Do you love such a change enough to create the patch and to collect
-> > > convincing Reviewed-by tags?
-> >
-> > Yes sure, just so I understand - basically I have to make the code in
-> > my patch run when RCU_NOCB_CPU_ALL option is passed (and keep the
-> > option default disabled), but otherwise default to the current
-> > behavior, right?
+On Fri, 8 Apr 2022 08:58:34 -0700
+"Paul E. McKenney" <paulmck@kernel.org> wrote:
+
+> > I do not see why PREEMPT_RT is special here. Why was it singled out?  
 > 
-> Sorry rephrasing, "make the code in my patch run when the new
-> CONFIG_RCU_NOCB_CPU_ALL is enabled".
+> Because I didn't see the point of doing kthread_create_worker() to create
+> a pair of kthread_worker structuress that were never going to be used
+> in PREEMPT_RT kernels.
+> 
+> Or are PREEMPT_RT kernels no longer booting with rcupdate.rcu_normal?
+> Last I knew, they all did this to avoid IPI latencies from expedited
+> grace periods.  Has this changed?
 
-Here is what I believe you are proposing:
+Honestly, I don't know. But I guess I can go and find out ;-)
 
+-- Steve
 
-				---	rcu_nocbs	rcu_nocbs=???
-
-CONFIG_RCU_NOCB_CPU_ALL=n	[1]	[2]		[3]
-
-CONFIG_RCU_NOCB_CPU_ALL=y	[4]	[4]		[3]
-
-
-[1]	No CPUs are offloaded at boot.	CPUs cannot be offloaded at
-	runtime.
-
-[2]	No CPUs are offloaded at boot, but any CPU can be offloaded
-	(and later de-offloaded) at runtime.
-
-[3]	The set of CPUs that are offloaded at boot are specified by the
-	mask, represented above with "???".  The CPUs that are offloaded
-	at boot can be de-offloaded and offloaded at runtime.  The CPUs
-	not offloaded at boot cannot be offloaded at runtime.
-
-[4]	All CPUs are offloaded at boot, and any CPU can be de-offloaded
-	and offloaded at runtime.  This is the same behavior that
-	you would currently get with CONFIG_RCU_NOCB_CPU_ALL=n and
-	rcu_nocbs=0-N.
-
-
-I am adding Frederic on CC, who will not be shy about correcting any
-confusion I be suffering from have with respect to the current code.
-
-Either way, if this is not what you had in mind, what are you suggesting
-instead?
-
-I believe that Steve Rostedt's review would carry weight for ChromeOS,
-however, I am suffering a senior moment on the right person for Android.
-
-							Thanx, Paul
