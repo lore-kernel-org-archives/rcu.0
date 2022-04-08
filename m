@@ -2,129 +2,94 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B9A8C433F5
-	for <rcu@archiver.kernel.org>; Fri,  8 Apr 2022 15:52:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AA83AC433EF
+	for <rcu@archiver.kernel.org>; Fri,  8 Apr 2022 15:58:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230268AbiDHPyr (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 8 Apr 2022 11:54:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42744 "EHLO
+        id S236704AbiDHQAq (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 8 Apr 2022 12:00:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230006AbiDHPyn (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 8 Apr 2022 11:54:43 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B606CDC
-        for <rcu@vger.kernel.org>; Fri,  8 Apr 2022 08:52:40 -0700 (PDT)
+        with ESMTP id S231631AbiDHQAm (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 8 Apr 2022 12:00:42 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECEF6AE6A;
+        Fri,  8 Apr 2022 08:58:37 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9C6176204F
-        for <rcu@vger.kernel.org>; Fri,  8 Apr 2022 15:52:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 079CAC385A3;
-        Fri,  8 Apr 2022 15:52:39 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 428C6CE2A4D;
+        Fri,  8 Apr 2022 15:58:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98943C385A1;
+        Fri,  8 Apr 2022 15:58:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649433159;
-        bh=MIPO6NzLS3OATyraPtetroejBNzc206DoT0mn5TCp+I=;
+        s=k20201202; t=1649433514;
+        bh=0w7CX4PrjpdyKdIGRRbs32uv6uKXSuvOdR768kCHqEc=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=bYkO4hwlm/P9fnSaQQxTFvjEGgVT1QyTcZ8X9i4p3D4YiuPBNSmFjSEfxAAFzF4US
-         dyoz0WO5QiQw4iSoUlLyg+9Bq05k+9DoNP3spsvp4skXez5LTYBQlwAC/WaA2XC2++
-         UcmjfzurU8isRCRKtlCCm0fn6o3elVM90mz1bzexYfE53nUMfRU7EDh2KisWaWMfc/
-         5yusXZMK4U69psC7ZCyyknnuHWdqHS3xUlCXbvn2X5gA6XniXEi2UO0PXiVjc2a8WF
-         S/jJ92BE+jn2Lw2DaqE8emWc2LYF+e42VRpxDO4jRb69w/UyCRxvWEZyEvA74G/U89
-         2BekZ+lhEIwHA==
+        b=hofeAabyDR6ibecdIuTeVv4ItV78H+h3JySoIZU/YELvkfkhJsWqckY9RabMpVXRh
+         FbOqk2qW6ggGrXszDGlIavBvL2hI5CpappCPwb8dVLBc7ZXhFVmHmRY0zvpYWt9ftL
+         FncN++P7beuG4N3bSPS52bIbDrIDVoxchA54f10HreJpRTHBP2JN7nRzyRMFsd7lBV
+         0QwGDlj0/SQUkTBT+KhQR5MeHpvl9xCQRgQl369iN6Fra//GU8e+Rl4bBxXe1Gn+Ww
+         WA/VcHDOcyhkapwuf5IiWgFRoejxUo8iv9uHKL+XzcMjWBHGl2yl0o3qjMeocmRa12
+         8oS6lWbUVxz2A==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id A69865C0176; Fri,  8 Apr 2022 08:52:38 -0700 (PDT)
-Date:   Fri, 8 Apr 2022 08:52:38 -0700
+        id 34DAB5C0176; Fri,  8 Apr 2022 08:58:34 -0700 (PDT)
+Date:   Fri, 8 Apr 2022 08:58:34 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>, rcu <rcu@vger.kernel.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: rcu_sched self-detected stall on CPU
-Message-ID: <20220408155238.GG4285@paulmck-ThinkPad-P17-Gen-1>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        kernel-team <kernel-team@android.com>, Tejun Heo <tj@kernel.org>,
+        Tim Murray <timmurray@google.com>, Wei Wang <wvw@google.com>,
+        Kyle Lin <kylelin@google.com>,
+        Chunwei Lu <chunweilu@google.com>,
+        Lulu Wang <luluw@google.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        rcu <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] EXP rcu: Move expedited grace period (GP) work to RT
+ kthread_worker
+Message-ID: <20220408155834.GI4285@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <CANiq72k+5Rdj7i3Df2dcE6_OPYPXK3z5EWLKnY56sSMz4G3OvA@mail.gmail.com>
- <CAABZP2z64aYWfVSdXHaQopWc+BAbJJUGqtrju2iWER3DDTDFWg@mail.gmail.com>
- <20220406170012.GO4285@paulmck-ThinkPad-P17-Gen-1>
- <87pmls6nt7.fsf@mpe.ellerman.id.au>
- <87k0bz7i1s.fsf@mpe.ellerman.id.au>
+References: <20220408045734.1158817-1-kaleshsingh@google.com>
+ <CAEXW_YSqY2nFZrn4AjpUzJ+dwZc7jaVMG9RG5gvTyb3zFYWtQA@mail.gmail.com>
+ <20220408113946.056c083e@gandalf.local.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87k0bz7i1s.fsf@mpe.ellerman.id.au>
+In-Reply-To: <20220408113946.056c083e@gandalf.local.home>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, Apr 09, 2022 at 12:42:39AM +1000, Michael Ellerman wrote:
-> Michael Ellerman <mpe@ellerman.id.au> writes:
-> > "Paul E. McKenney" <paulmck@kernel.org> writes:
-> >> On Wed, Apr 06, 2022 at 05:31:10PM +0800, Zhouyi Zhou wrote:
-> >>> Hi
-> >>> 
-> >>> I can reproduce it in a ppc virtual cloud server provided by Oregon
-> >>> State University.  Following is what I do:
-> >>> 1) curl -l https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/snapshot/linux-5.18-rc1.tar.gz
-> >>> -o linux-5.18-rc1.tar.gz
-> >>> 2) tar zxf linux-5.18-rc1.tar.gz
-> >>> 3) cp config linux-5.18-rc1/.config
-> >>> 4) cd linux-5.18-rc1
-> >>> 5) make vmlinux -j 8
-> >>> 6) qemu-system-ppc64 -kernel vmlinux -nographic -vga none -no-reboot
-> >>> -smp 2 (QEMU 4.2.1)
-> >>> 7) after 12 rounds, the bug got reproduced:
-> >>> (http://154.223.142.244/logs/20220406/qemu.log.txt)
-> >>
-> >> Just to make sure, are you both seeing the same thing?  Last I knew,
-> >> Zhouyi was chasing an RCU-tasks issue that appears only in kernels
-> >> built with CONFIG_PROVE_RCU=y, which Miguel does not have set.  Or did
-> >> I miss something?
-> >>
-> >> Miguel is instead seeing an RCU CPU stall warning where RCU's grace-period
-> >> kthread slept for three milliseconds, but did not wake up for more than
-> >> 20 seconds.  This kthread would normally have awakened on CPU 1, but
-> >> CPU 1 looks to me to be very unhealthy, as can be seen in your console
-> >> output below (but maybe my idea of what is healthy for powerpc systems
-> >> is outdated).  Please see also the inline annotations.
-> >>
-> >> Thoughts from the PPC guys?
-> >
-> > I haven't seen it in my testing. But using Miguel's config I can
-> > reproduce it seemingly on every boot.
-> >
-> > For me it bisects to:
-> >
-> >   35de589cb879 ("powerpc/time: improve decrementer clockevent processing")
-> >
-> > Which seems plausible.
-> >
-> > Reverting that on mainline makes the bug go away.
-> >
-> > I don't see an obvious bug in the diff, but I could be wrong, or the old
-> > code was papering over an existing bug?
-> >
-> > I'll try and work out what it is about Miguel's config that exposes
-> > this vs our defconfig, that might give us a clue.
+On Fri, Apr 08, 2022 at 11:39:46AM -0400, Steven Rostedt wrote:
+> On Fri, 8 Apr 2022 06:21:03 -0400
+> Joel Fernandes <joel@joelfernandes.org> wrote:
 > 
-> It's CONFIG_HIGH_RES_TIMERS=n which triggers the stall.
+> > > +       default !PREEMPT_RT && NR_CPUS <= 32  
+> > 
+> > What is the benefit of turning it off on PREEMPT_RT, even if
+> > PREEMPT_RT does not use expedited GPs much post-boot? I would think in
+> > the future if PREEMPT_RT ever uses expedited GPs, they would want this
+> > feature even more. I'd rather be future-proof now as I don't see any
+> > advantages of disabling it on !PREEMPT_RT (And a drawback that the fix
+> > won't apply to those systems). Also will keep the config simple.
 > 
-> I can reproduce just with:
+> The default kthread priority is 1. This should not affect PREEMPT_RT, as
+> PREEMPT_RT users are usually more concerned by the performance of their
+> higher priority tasks. Priority 1 is not considered an issue.
 > 
->   $ make ppc64le_guest_defconfig
->   $ ./scripts/config -d HIGH_RES_TIMERS
-> 
-> We have no defconfigs that disable HIGH_RES_TIMERS, I didn't even
-> realise you could disable it TBH :)
-> 
-> The Rust CI has it disabled because I copied that from the x86 defconfig
-> they were using back when I added the Rust support. I think that was
-> meant to be a stripped down fast config for CI, but the result is it's
-> just using a badly tested combination which is not helpful.
-> 
-> So I'll send a patch to turn HIGH_RES_TIMERS on for the Rust CI, and we
-> can debug this further without blocking them.
+> I do not see why PREEMPT_RT is special here. Why was it singled out?
 
-Would it make sense to select HIGH_RES_TIMERS from one of the Kconfig*
-files in arch/powerpc?  Asking for a friend.  ;-)
+Because I didn't see the point of doing kthread_create_worker() to create
+a pair of kthread_worker structuress that were never going to be used
+in PREEMPT_RT kernels.
+
+Or are PREEMPT_RT kernels no longer booting with rcupdate.rcu_normal?
+Last I knew, they all did this to avoid IPI latencies from expedited
+grace periods.  Has this changed?
 
 							Thanx, Paul
