@@ -2,80 +2,190 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CCA7DC433F5
-	for <rcu@archiver.kernel.org>; Fri,  8 Apr 2022 17:02:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 094E3C433F5
+	for <rcu@archiver.kernel.org>; Fri,  8 Apr 2022 17:14:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231248AbiDHRE4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 8 Apr 2022 13:04:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52078 "EHLO
+        id S238043AbiDHRQz (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 8 Apr 2022 13:16:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238035AbiDHREr (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 8 Apr 2022 13:04:47 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32E2D2493EE
-        for <rcu@vger.kernel.org>; Fri,  8 Apr 2022 10:02:42 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id e1so6902516ile.2
-        for <rcu@vger.kernel.org>; Fri, 08 Apr 2022 10:02:41 -0700 (PDT)
+        with ESMTP id S238041AbiDHRQx (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 8 Apr 2022 13:16:53 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85BDA49682
+        for <rcu@vger.kernel.org>; Fri,  8 Apr 2022 10:14:47 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id p21so11418395ioj.4
+        for <rcu@vger.kernel.org>; Fri, 08 Apr 2022 10:14:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=joelfernandes.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=+cmSU0Va28wW3Wv27B01VfHd9CC4OB3jfpn/xb5rpDI=;
-        b=k/HNWFMWUhwt5qbzB1IFJsSLxCUYI+nUO25IG7WP0fG4xUGslpD7gKg8IgZyAe2Z5T
-         XTkga/PZ7VkogQDCJUAvDf+jS5PdNFlfp2Sfyvtma0bfgOLuV4TULJVHCVc+TADLwsXQ
-         fSAeFByQvHnpplIJfZbugAjZoRxjB8bj69g+X7yNEWHVX9EgRXYihshUH3DxwFwD+b30
-         Jt7m5F0KXE8CaOQpNOi0ObrsZt6tlXk0Xbqcpa1k3nRlsWqsquZVqGcqeb/db6D70r55
-         +u8NeL9/JhKD4GVWqqEkYllK28NpQmzHgbDBVhW4kGssvNffQAI4/QCquN3Kpj3DmMjZ
-         9giA==
+        bh=7R4f+94qI2K6ExVGY0p3omvs96ezNwS+NBDPlgD2fHw=;
+        b=x7VZ4v6GavJUvP98gYT0IO36JWQHaZDKGngI52NebyKbuqK1pSLvcTw9VmD10ofbT2
+         UUqEY7AwTmD5wYhvsg1tBmxANERQwy4l2DC4yKxpmdgLiYK6e7hUGs/bKF/j3zuFEJnX
+         hNbki2Le1C2/sceqwksGM2w1gCbZ0sbRHsdNU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=+cmSU0Va28wW3Wv27B01VfHd9CC4OB3jfpn/xb5rpDI=;
-        b=w3VMnd8SuUaxVRzR0UDh7FtRjDQ7GGB37BAb6y29HvS9Zm/DnFk+JuEKNt3TuP6obm
-         okLBTgRoVetr7wwvAOMK7tdKDPhK9fOYtyUOQKPGr2MDvIkgQwhkUaWrwO8iQYp1uHFC
-         iTjJnOFTJd8qTN5zZEz3OSpCMLW8l3V99rumXJWluPvgNwOhegGDv0vExH4CB9OkUkfr
-         z+tvpAHlwXpMoLoyVnIBjMx5tQkUdsPM2A32qBZbCUTXIthwPy0nTXf0VwF+CIxcXxms
-         zfMqSJMiEp7/fD8YjLhe8YR7rN34A9Hwi91A9Q3zrvljimEFnNGv4sdmjXtyU2rP015q
-         jwhg==
-X-Gm-Message-State: AOAM533qwqZsPLcXhcwqawLHFN5rfbY3VOWvHrK1yg1Bbb0m3aIZj4wV
-        YGpCjnyNCmUl4ybI/0ULs2OA0HawG9ft3lJTXuNLw1iL
-X-Google-Smtp-Source: ABdhPJxuX89crWnUYos8OlxCY0JszVtXNikV3THYVoau7sPe8UOdn4n0i+tRO5nTSPvJh54DHbIACrJtJqwLHCU1HcU=
-X-Received: by 2002:a05:6e02:1846:b0:2c7:b032:5d92 with SMTP id
- b6-20020a056e02184600b002c7b0325d92mr9261539ilv.237.1649437361331; Fri, 08
- Apr 2022 10:02:41 -0700 (PDT)
+        bh=7R4f+94qI2K6ExVGY0p3omvs96ezNwS+NBDPlgD2fHw=;
+        b=R1Q/dVo4GwE36Ma+mpETHuhb/Z+tsI70Nbz4+sjWlz6yAAKHFX4G4G3LCVuffvHMyk
+         h1Qx3PGYuZDC92fgyF2VGpUXbDlB+mHxzwMwYroIgjGgv1Al+kRPB/bgSajWcg0ohzaa
+         vWj9NSn0++SVwIMITXhzIvlrkQ7vrE31N3TD1ve51gxEgz3FEJwn3iLXYBrb5KUok/S9
+         lXbpC6JM8TmjWtEIzYSLCDR69QtdWS+E+F9wl+OClPvPPjyZrhOLhXL8jDU/LkLTq89J
+         RrrGxUX8JonxdABnGsJmhzOFln5lVIniOBUkmnIeWl2mccfh6UEZ+HOsFSUqPS7HngAG
+         CWoQ==
+X-Gm-Message-State: AOAM533jS249nNZidP46x7kRGLZ5dAvk4bAcEc7OFtDasiXzppR59BJn
+        xMyE+3cMLjCChSU7gvMIufrpYB36Z+J0oL4bxvat3g==
+X-Google-Smtp-Source: ABdhPJwodPR0Ms5rL/IPObV1MciwN2GKTSLms5DXA4ge0kHspY7LbH6tZPyh4NeU9b7ai5sRsjAiGZP96oCCaiFyuGA=
+X-Received: by 2002:a05:6638:737:b0:317:d5e0:2b3a with SMTP id
+ j23-20020a056638073700b00317d5e02b3amr9614023jad.52.1649438087384; Fri, 08
+ Apr 2022 10:14:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <CANiq72k+5Rdj7i3Df2dcE6_OPYPXK3z5EWLKnY56sSMz4G3OvA@mail.gmail.com>
- <CAABZP2z64aYWfVSdXHaQopWc+BAbJJUGqtrju2iWER3DDTDFWg@mail.gmail.com>
- <20220406170012.GO4285@paulmck-ThinkPad-P17-Gen-1> <87pmls6nt7.fsf@mpe.ellerman.id.au>
- <87k0bz7i1s.fsf@mpe.ellerman.id.au>
-In-Reply-To: <87k0bz7i1s.fsf@mpe.ellerman.id.au>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Fri, 8 Apr 2022 19:02:30 +0200
-Message-ID: <CANiq72=UXURR-caoXrP7zQNWmeKRtzZGRwF1iTi9svZEuHP22g@mail.gmail.com>
-Subject: Re: rcu_sched self-detected stall on CPU
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Zhouyi Zhou <zhouzhouyi@gmail.com>, rcu <rcu@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Nicholas Piggin <npiggin@gmail.com>
+References: <20220408045734.1158817-1-kaleshsingh@google.com>
+ <CAEXW_YQ6_VpneJnBfhTOMr6DwJhNmvMAKDRMnpr8LxB9Gtt=Xg@mail.gmail.com>
+ <20220408143444.GC4285@paulmck-ThinkPad-P17-Gen-1> <CAEXW_YSrGKXh5DiJyrNvmbssSXbWBkA-XUjGRdS8HtGvW1r6hw@mail.gmail.com>
+ <20220408153447.GE4285@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20220408153447.GE4285@paulmck-ThinkPad-P17-Gen-1>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Fri, 8 Apr 2022 13:14:35 -0400
+Message-ID: <CAEXW_YT-vJmXgWPQ_1J34iTb+ZhrAgN7c-HPz7kW17HmvKzJ3A@mail.gmail.com>
+Subject: Re: [PATCH v2] EXP rcu: Move expedited grace period (GP) work to RT kthread_worker
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Kalesh Singh <kaleshsingh@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        kernel-team <kernel-team@android.com>, Tejun Heo <tj@kernel.org>,
+        Tim Murray <timmurray@google.com>, Wei Wang <wvw@google.com>,
+        Kyle Lin <kylelin@google.com>,
+        Chunwei Lu <chunweilu@google.com>,
+        Lulu Wang <luluw@google.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        rcu <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Apr 8, 2022 at 4:42 PM Michael Ellerman <mpe@ellerman.id.au> wrote:
+On Fri, Apr 8, 2022 at 11:34 AM Paul E. McKenney <paulmck@kernel.org> wrote:
 >
-> The Rust CI has it disabled because I copied that from the x86 defconfig
-> they were using back when I added the Rust support. I think that was
-> meant to be a stripped down fast config for CI, but the result is it's
+> On Fri, Apr 08, 2022 at 10:41:26AM -0400, Joel Fernandes wrote:
+> > On Fri, Apr 8, 2022 at 10:34 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+> > >
+> > > On Fri, Apr 08, 2022 at 06:42:42AM -0400, Joel Fernandes wrote:
+> > > > On Fri, Apr 8, 2022 at 12:57 AM Kalesh Singh <kaleshsingh@google.com> wrote:
+> > > > >
+> > > > [...]
+> > > > > @@ -334,15 +334,13 @@ static bool exp_funnel_lock(unsigned long s)
+> > > > >   * Select the CPUs within the specified rcu_node that the upcoming
+> > > > >   * expedited grace period needs to wait for.
+> > > > >   */
+> > > > > -static void sync_rcu_exp_select_node_cpus(struct work_struct *wp)
+> > > > > +static void __sync_rcu_exp_select_node_cpus(struct rcu_exp_work *rewp)
+> > > > >  {
+> > > > >         int cpu;
+> > > > >         unsigned long flags;
+> > > > >         unsigned long mask_ofl_test;
+> > > > >         unsigned long mask_ofl_ipi;
+> > > > >         int ret;
+> > > > > -       struct rcu_exp_work *rewp =
+> > > > > -               container_of(wp, struct rcu_exp_work, rew_work);
+> > > > >         struct rcu_node *rnp = container_of(rewp, struct rcu_node, rew);
+> > > > >
+> > > > >         raw_spin_lock_irqsave_rcu_node(rnp, flags);
+> > > > > @@ -417,13 +415,119 @@ static void sync_rcu_exp_select_node_cpus(struct work_struct *wp)
+> > > > >                 rcu_report_exp_cpu_mult(rnp, mask_ofl_test, false);
+> > > > >  }
+> > > > >
+> > > > > +static void rcu_exp_sel_wait_wake(unsigned long s);
+> > > > > +
+> > > > > +#ifdef CONFIG_RCU_EXP_KTHREAD
+> > > >
+> > > > Just my 2c:
+> > > >
+> > > > Honestly, I am not sure if the benefits of duplicating the code to use
+> > > > normal workqueues outweighs the drawbacks (namely code complexity,
+> > > > code duplication - which can in turn cause more bugs and maintenance
+> > > > headaches down the line). The code is harder to read and adding more
+> > > > 30 character function names does not help.
+> > > >
+> > > > For something as important as expedited GPs, I can't imagine a
+> > > > scenario where an RT kthread worker would cause "issues". If it does
+> > > > cause issues, that's what the -rc cycles and the stable releases are
+> > > > for. I prefer to trust the process than take a one-foot-in-the-door
+> > > > approach.
+> > > >
+> > > > So please, can we just keep it simple?
+> > >
+> > > Yes and no.
+> > >
+> > > This is a bug fix, but only for those systems that are expecting real-time
+> > > response from synchronize_rcu_expedited().  As far as I know, this is only
+> > > Android.  The rest of the systems are just fine with the current behavior.
+> >
+> > As far as you know, but are you sure?
+>
+> None of us are sure.  We are balancing risks and potential benefits.
 
-Indeed, that was my intention when I created the original config.
+Right.
 
-> So I'll send a patch to turn HIGH_RES_TIMERS on for the Rust CI, and we
-> can debug this further without blocking them.
+> > > In addition, this bug fix introduces significant risks, especially in
+> > > terms of performance for throughput-oriented workloads.
+> >
+> > Could you explain what the risk is? That's the part I did not follow.
+> > How can making synchronize_rcu_expedited() work getting priority
+> > introduce throughput issues?
+>
+> Status quo has synchronize_rcu_expedited() workqueues running as
+> SCHED_OTHER.
 
-Thanks! I can also do it on your behalf, if you prefer, when I sync with -rc1.
+Yeah, so if we go by this, you are saying RCU_BOOST likely does not
+work correctly on status quo right? I do not see what in the commit
+message indicates that this is an Android-only issue, let me know what
+I am missing.
 
-Cheers,
-Miguel
+The users affected by this will instead have these running
+> as SCHED_FIFO.  That changes scheduling.  For users not explicitly
+> needing low-latency synchronize_rcu_expedited(), this change is very
+> unlikely to be for the better.  And historically, unnecessarily running
+> portions of RCU at real-time priorities has been a change for the worse.
+> As in greatly increased context-switch rates and consequently degraded
+> performance.  Please note that this is not a theoretical statement:  Real
+> users have really been burned by too much SCHED_FIFO in RCU kthreads in
+> the past.
+
+Android also has suffered from too much SCHED_FIFO in the past. I
+remember the display thread called 'surfaceflinger' had to be dropped
+from RT privilege at one point.
+
+> > > So yes, let's do this bug fix (with appropriate adjustment), but let's
+> > > also avoid exposing the non-Android workloads to risks from the inevitable
+> > > unintended consequences.  ;-)
+> >
+> > I would argue the risk is also adding code complexity and more bugs
+> > without clear rationale for why it is being done. There's always risk
+> > with any change, but that's the -rc cycles and stable kernels help
+> > catch those. I think we should not add more code complexity if it is a
+> > theoretical concern.
+> >
+> > There's also another possible risk - there is a possible hidden
+> > problem here that probably the non-Android folks haven't noticed or
+> > been able to debug. I would rather just do the right thing.
+> >
+> > Just my 2c,
+>
+> Sorry, but my answer is still "no".
+>
+> Your suggested change risks visiting unacceptable performance
+> degradation on a very large number of innocent users for whom current
+> synchronize_rcu_expedited() latency is plenty good enough.
+
+I believe the process will catch any such risk, but it is your call! ;-)
+
+Thanks,
+
+- Joel
