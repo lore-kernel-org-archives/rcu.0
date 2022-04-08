@@ -2,134 +2,129 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DC1DC433EF
-	for <rcu@archiver.kernel.org>; Fri,  8 Apr 2022 15:50:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B9A8C433F5
+	for <rcu@archiver.kernel.org>; Fri,  8 Apr 2022 15:52:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbiDHPwL (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 8 Apr 2022 11:52:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32794 "EHLO
+        id S230268AbiDHPyr (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 8 Apr 2022 11:54:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237793AbiDHPwJ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 8 Apr 2022 11:52:09 -0400
+        with ESMTP id S230006AbiDHPyn (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 8 Apr 2022 11:54:43 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEB20BF977;
-        Fri,  8 Apr 2022 08:50:04 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B606CDC
+        for <rcu@vger.kernel.org>; Fri,  8 Apr 2022 08:52:40 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B84A96203A;
-        Fri,  8 Apr 2022 15:50:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21F22C385A1;
-        Fri,  8 Apr 2022 15:50:03 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9C6176204F
+        for <rcu@vger.kernel.org>; Fri,  8 Apr 2022 15:52:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 079CAC385A3;
+        Fri,  8 Apr 2022 15:52:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649433003;
-        bh=kBmTJCLbW+s+x6LAS7oTt0/tmQ0W6s9Ng/wKteoUYNs=;
+        s=k20201202; t=1649433159;
+        bh=MIPO6NzLS3OATyraPtetroejBNzc206DoT0mn5TCp+I=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=qB4BxEoM2FCXFMhOCbAeD+c/kdum0N5FQNtWab0Zu24WOy+sAE07ikjdQJGzt/hWP
-         ncjSKel0UbEQ3lR89Jt/kVIf6zgkWFQDtrEO04gLvknveWFrh/deJqfJ4iki64m9a6
-         SyCufW/KtmxHrQdxdfB0d8LRuK+pY65C52YMWQKXTbxPly7GOpzOpGlgiL5MM0I2N5
-         3CISACp21l2pD/inWa6pvK4XXzkMZlS+dJdSLWVi0jw3qaXel6rTf6zHRWvc82ojpr
-         j2Mhm6KHKfoeAqql7LsPiW68aOy1Pjrmxu1//RsEZ7+U0SiLj1wOIyBwidpB5C/1Vo
-         PP9FTgFCy9xEA==
+        b=bYkO4hwlm/P9fnSaQQxTFvjEGgVT1QyTcZ8X9i4p3D4YiuPBNSmFjSEfxAAFzF4US
+         dyoz0WO5QiQw4iSoUlLyg+9Bq05k+9DoNP3spsvp4skXez5LTYBQlwAC/WaA2XC2++
+         UcmjfzurU8isRCRKtlCCm0fn6o3elVM90mz1bzexYfE53nUMfRU7EDh2KisWaWMfc/
+         5yusXZMK4U69psC7ZCyyknnuHWdqHS3xUlCXbvn2X5gA6XniXEi2UO0PXiVjc2a8WF
+         S/jJ92BE+jn2Lw2DaqE8emWc2LYF+e42VRpxDO4jRb69w/UyCRxvWEZyEvA74G/U89
+         2BekZ+lhEIwHA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id AA8345C0176; Fri,  8 Apr 2022 08:50:02 -0700 (PDT)
-Date:   Fri, 8 Apr 2022 08:50:02 -0700
+        id A69865C0176; Fri,  8 Apr 2022 08:52:38 -0700 (PDT)
+Date:   Fri, 8 Apr 2022 08:52:38 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        rcu <rcu@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH RFC] rcu/nocb: Provide default all-CPUs mask for
- RCU_NOCB_CPU=y
-Message-ID: <20220408155002.GF4285@paulmck-ThinkPad-P17-Gen-1>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>, rcu <rcu@vger.kernel.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: rcu_sched self-detected stall on CPU
+Message-ID: <20220408155238.GG4285@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20220407210734.2548973-1-joel@joelfernandes.org>
- <20220408142232.GA4285@paulmck-ThinkPad-P17-Gen-1>
- <CAEXW_YQWeqfcKdAKmCn4fFGyWXjOGd=29wvi6bL3k7s2bGkDJw@mail.gmail.com>
+References: <CANiq72k+5Rdj7i3Df2dcE6_OPYPXK3z5EWLKnY56sSMz4G3OvA@mail.gmail.com>
+ <CAABZP2z64aYWfVSdXHaQopWc+BAbJJUGqtrju2iWER3DDTDFWg@mail.gmail.com>
+ <20220406170012.GO4285@paulmck-ThinkPad-P17-Gen-1>
+ <87pmls6nt7.fsf@mpe.ellerman.id.au>
+ <87k0bz7i1s.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEXW_YQWeqfcKdAKmCn4fFGyWXjOGd=29wvi6bL3k7s2bGkDJw@mail.gmail.com>
+In-Reply-To: <87k0bz7i1s.fsf@mpe.ellerman.id.au>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Apr 08, 2022 at 10:52:21AM -0400, Joel Fernandes wrote:
-> On Fri, Apr 8, 2022 at 10:22 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+On Sat, Apr 09, 2022 at 12:42:39AM +1000, Michael Ellerman wrote:
+> Michael Ellerman <mpe@ellerman.id.au> writes:
+> > "Paul E. McKenney" <paulmck@kernel.org> writes:
+> >> On Wed, Apr 06, 2022 at 05:31:10PM +0800, Zhouyi Zhou wrote:
+> >>> Hi
+> >>> 
+> >>> I can reproduce it in a ppc virtual cloud server provided by Oregon
+> >>> State University.  Following is what I do:
+> >>> 1) curl -l https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/snapshot/linux-5.18-rc1.tar.gz
+> >>> -o linux-5.18-rc1.tar.gz
+> >>> 2) tar zxf linux-5.18-rc1.tar.gz
+> >>> 3) cp config linux-5.18-rc1/.config
+> >>> 4) cd linux-5.18-rc1
+> >>> 5) make vmlinux -j 8
+> >>> 6) qemu-system-ppc64 -kernel vmlinux -nographic -vga none -no-reboot
+> >>> -smp 2 (QEMU 4.2.1)
+> >>> 7) after 12 rounds, the bug got reproduced:
+> >>> (http://154.223.142.244/logs/20220406/qemu.log.txt)
+> >>
+> >> Just to make sure, are you both seeing the same thing?  Last I knew,
+> >> Zhouyi was chasing an RCU-tasks issue that appears only in kernels
+> >> built with CONFIG_PROVE_RCU=y, which Miguel does not have set.  Or did
+> >> I miss something?
+> >>
+> >> Miguel is instead seeing an RCU CPU stall warning where RCU's grace-period
+> >> kthread slept for three milliseconds, but did not wake up for more than
+> >> 20 seconds.  This kthread would normally have awakened on CPU 1, but
+> >> CPU 1 looks to me to be very unhealthy, as can be seen in your console
+> >> output below (but maybe my idea of what is healthy for powerpc systems
+> >> is outdated).  Please see also the inline annotations.
+> >>
+> >> Thoughts from the PPC guys?
 > >
-> > On Thu, Apr 07, 2022 at 09:07:33PM +0000, Joel Fernandes wrote:
-> > > On systems with CONFIG_RCU_NOCB_CPU=y, there is no default mask provided
-> > > which ends up not offloading any CPU. This patch removes yet another
-> > > dependency from the bootloader having to know about RCU, about how many
-> > > CPUs the system has, and about how to provide the mask. Basically, I
-> > > think we should stop pretending that the user knows what they are doing :).
-> > > In other words, if NO_CB_CPU is enabled, lets make use of it.
-> > >
-> > > My goal is to make RCU as zero-config as possible with sane defaults. If
-> > > user wants to provide rcu_nocbs= or nohz_full= options, then those will
-> > > take precedence and this patch will have no effect.
-> > >
-> > > I tested providing rcu_nocbs= option, ensuring that is preferred over this.
+> > I haven't seen it in my testing. But using Miguel's config I can
+> > reproduce it seemingly on every boot.
 > >
-> > Unless something has changed, this would change behavior relied upon
-> > the enterprise distros.  Last I checked, they want to supply a single
-> > binary, as evidenced by the recent CONFIG_PREEMPT_DYNAMIC Kconfig option,
-> > and they also want the default to be non-offloaded.  That is, given a
-> > kernel built with CONFIG_RCU_NOCB_CPU=y and without either a nohz_full
-> > or a nocbs_cpu boot parameter, all of the CPUs must be non-offloaded.
+> > For me it bisects to:
+> >
+> >   35de589cb879 ("powerpc/time: improve decrementer clockevent processing")
+> >
+> > Which seems plausible.
+> >
+> > Reverting that on mainline makes the bug go away.
+> >
+> > I don't see an obvious bug in the diff, but I could be wrong, or the old
+> > code was papering over an existing bug?
+> >
+> > I'll try and work out what it is about Miguel's config that exposes
+> > this vs our defconfig, that might give us a clue.
 > 
-> Just curious, do you have information (like data, experiment results)
-> on why they want default non-offloaded? Or maybe they haven't tried
-> the recent work done in NOCB code?
-
-I most definitely do.  When I first introduced callback offloading, I
-made it completely replace softirq callback invocation.  There were some
-important throughput-oriented workloads that got hit with significant
-performance degradation due to this change.  Enterprise Java workloads
-were the worst hit.
-
-Android does not run these workloads, and I am not aware of ChromeOS
-running them, either.
-
-> Another option I think is to make it enforce NOCB if NR_CPUS <= 32 if
-> that makes sense.
-
-That would avoid hurting RHEL and SLES users, so this would be better
-than making the change unconditionally.  But there are a lot of distros
-out there.
-
-I have to ask...  Isn't there already a way of specifying a set of kernel
-boot parameters that are required for ChromeOS?  If so, add rcu_nocbs=0-N
-to that list and be happy.
-
-> > So for me to push this to mainline, I need an ack from someone from each
-> > of the enterprise distros, and each of those someones needs to understand
-> > the single-binary strategy used by the corresponding distro.
+> It's CONFIG_HIGH_RES_TIMERS=n which triggers the stall.
 > 
-> Ok.
+> I can reproduce just with:
 > 
-> > And is it really all -that- hard to specify an additional boot parameter
-> > across ChromeOS devices?  Android seems to manage it.  ;-)
+>   $ make ppc64le_guest_defconfig
+>   $ ./scripts/config -d HIGH_RES_TIMERS
 > 
-> That's not the hard part I think. The hard part is to make sure a
-> future Linux user who is not an RCU expert does not forget to turn it
-> on. ChromeOS is not the only OS that I've seen someone forget to do it
-> ;-D. AFAIR, there were Android devices too in the past where I saw
-> this forgotten. I don't think we should rely on the users doing the
-> right thing (as much as possible).
+> We have no defconfigs that disable HIGH_RES_TIMERS, I didn't even
+> realise you could disable it TBH :)
 > 
-> The single kernel binary point makes sense but in this case, I think
-> the bigger question that I'd have is what is the default behavior and
-> what do *most* users of RCU want. So we can keep sane defaults for the
-> majority and reduce human errors related to configuration.
+> The Rust CI has it disabled because I copied that from the x86 defconfig
+> they were using back when I added the Rust support. I think that was
+> meant to be a stripped down fast config for CI, but the result is it's
+> just using a badly tested combination which is not helpful.
+> 
+> So I'll send a patch to turn HIGH_RES_TIMERS on for the Rust CI, and we
+> can debug this further without blocking them.
 
-If both the ChromeOS and Android guys need it, I could reinstate the
-old RCU_NOCB_CPU_ALL Kconfig option.  This was removed due to complaints
-about RCU Kconfig complexity, but I believe that Reviewed-by from ChromeOS
-and Android movers and shakers would overcome lingering objections.
-
-Would that help?
+Would it make sense to select HIGH_RES_TIMERS from one of the Kconfig*
+files in arch/powerpc?  Asking for a friend.  ;-)
 
 							Thanx, Paul
