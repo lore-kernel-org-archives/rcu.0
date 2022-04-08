@@ -2,94 +2,80 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AA83AC433EF
-	for <rcu@archiver.kernel.org>; Fri,  8 Apr 2022 15:58:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CCA7DC433F5
+	for <rcu@archiver.kernel.org>; Fri,  8 Apr 2022 17:02:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236704AbiDHQAq (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 8 Apr 2022 12:00:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38344 "EHLO
+        id S231248AbiDHRE4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 8 Apr 2022 13:04:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231631AbiDHQAm (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 8 Apr 2022 12:00:42 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECEF6AE6A;
-        Fri,  8 Apr 2022 08:58:37 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 428C6CE2A4D;
-        Fri,  8 Apr 2022 15:58:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98943C385A1;
-        Fri,  8 Apr 2022 15:58:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649433514;
-        bh=0w7CX4PrjpdyKdIGRRbs32uv6uKXSuvOdR768kCHqEc=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=hofeAabyDR6ibecdIuTeVv4ItV78H+h3JySoIZU/YELvkfkhJsWqckY9RabMpVXRh
-         FbOqk2qW6ggGrXszDGlIavBvL2hI5CpappCPwb8dVLBc7ZXhFVmHmRY0zvpYWt9ftL
-         FncN++P7beuG4N3bSPS52bIbDrIDVoxchA54f10HreJpRTHBP2JN7nRzyRMFsd7lBV
-         0QwGDlj0/SQUkTBT+KhQR5MeHpvl9xCQRgQl369iN6Fra//GU8e+Rl4bBxXe1Gn+Ww
-         WA/VcHDOcyhkapwuf5IiWgFRoejxUo8iv9uHKL+XzcMjWBHGl2yl0o3qjMeocmRa12
-         8oS6lWbUVxz2A==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 34DAB5C0176; Fri,  8 Apr 2022 08:58:34 -0700 (PDT)
-Date:   Fri, 8 Apr 2022 08:58:34 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        kernel-team <kernel-team@android.com>, Tejun Heo <tj@kernel.org>,
-        Tim Murray <timmurray@google.com>, Wei Wang <wvw@google.com>,
-        Kyle Lin <kylelin@google.com>,
-        Chunwei Lu <chunweilu@google.com>,
-        Lulu Wang <luluw@google.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        rcu <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] EXP rcu: Move expedited grace period (GP) work to RT
- kthread_worker
-Message-ID: <20220408155834.GI4285@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220408045734.1158817-1-kaleshsingh@google.com>
- <CAEXW_YSqY2nFZrn4AjpUzJ+dwZc7jaVMG9RG5gvTyb3zFYWtQA@mail.gmail.com>
- <20220408113946.056c083e@gandalf.local.home>
+        with ESMTP id S238035AbiDHREr (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 8 Apr 2022 13:04:47 -0400
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32E2D2493EE
+        for <rcu@vger.kernel.org>; Fri,  8 Apr 2022 10:02:42 -0700 (PDT)
+Received: by mail-il1-x12b.google.com with SMTP id e1so6902516ile.2
+        for <rcu@vger.kernel.org>; Fri, 08 Apr 2022 10:02:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+cmSU0Va28wW3Wv27B01VfHd9CC4OB3jfpn/xb5rpDI=;
+        b=k/HNWFMWUhwt5qbzB1IFJsSLxCUYI+nUO25IG7WP0fG4xUGslpD7gKg8IgZyAe2Z5T
+         XTkga/PZ7VkogQDCJUAvDf+jS5PdNFlfp2Sfyvtma0bfgOLuV4TULJVHCVc+TADLwsXQ
+         fSAeFByQvHnpplIJfZbugAjZoRxjB8bj69g+X7yNEWHVX9EgRXYihshUH3DxwFwD+b30
+         Jt7m5F0KXE8CaOQpNOi0ObrsZt6tlXk0Xbqcpa1k3nRlsWqsquZVqGcqeb/db6D70r55
+         +u8NeL9/JhKD4GVWqqEkYllK28NpQmzHgbDBVhW4kGssvNffQAI4/QCquN3Kpj3DmMjZ
+         9giA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+cmSU0Va28wW3Wv27B01VfHd9CC4OB3jfpn/xb5rpDI=;
+        b=w3VMnd8SuUaxVRzR0UDh7FtRjDQ7GGB37BAb6y29HvS9Zm/DnFk+JuEKNt3TuP6obm
+         okLBTgRoVetr7wwvAOMK7tdKDPhK9fOYtyUOQKPGr2MDvIkgQwhkUaWrwO8iQYp1uHFC
+         iTjJnOFTJd8qTN5zZEz3OSpCMLW8l3V99rumXJWluPvgNwOhegGDv0vExH4CB9OkUkfr
+         z+tvpAHlwXpMoLoyVnIBjMx5tQkUdsPM2A32qBZbCUTXIthwPy0nTXf0VwF+CIxcXxms
+         zfMqSJMiEp7/fD8YjLhe8YR7rN34A9Hwi91A9Q3zrvljimEFnNGv4sdmjXtyU2rP015q
+         jwhg==
+X-Gm-Message-State: AOAM533qwqZsPLcXhcwqawLHFN5rfbY3VOWvHrK1yg1Bbb0m3aIZj4wV
+        YGpCjnyNCmUl4ybI/0ULs2OA0HawG9ft3lJTXuNLw1iL
+X-Google-Smtp-Source: ABdhPJxuX89crWnUYos8OlxCY0JszVtXNikV3THYVoau7sPe8UOdn4n0i+tRO5nTSPvJh54DHbIACrJtJqwLHCU1HcU=
+X-Received: by 2002:a05:6e02:1846:b0:2c7:b032:5d92 with SMTP id
+ b6-20020a056e02184600b002c7b0325d92mr9261539ilv.237.1649437361331; Fri, 08
+ Apr 2022 10:02:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220408113946.056c083e@gandalf.local.home>
+References: <CANiq72k+5Rdj7i3Df2dcE6_OPYPXK3z5EWLKnY56sSMz4G3OvA@mail.gmail.com>
+ <CAABZP2z64aYWfVSdXHaQopWc+BAbJJUGqtrju2iWER3DDTDFWg@mail.gmail.com>
+ <20220406170012.GO4285@paulmck-ThinkPad-P17-Gen-1> <87pmls6nt7.fsf@mpe.ellerman.id.au>
+ <87k0bz7i1s.fsf@mpe.ellerman.id.au>
+In-Reply-To: <87k0bz7i1s.fsf@mpe.ellerman.id.au>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Fri, 8 Apr 2022 19:02:30 +0200
+Message-ID: <CANiq72=UXURR-caoXrP7zQNWmeKRtzZGRwF1iTi9svZEuHP22g@mail.gmail.com>
+Subject: Re: rcu_sched self-detected stall on CPU
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Zhouyi Zhou <zhouzhouyi@gmail.com>, rcu <rcu@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Nicholas Piggin <npiggin@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Apr 08, 2022 at 11:39:46AM -0400, Steven Rostedt wrote:
-> On Fri, 8 Apr 2022 06:21:03 -0400
-> Joel Fernandes <joel@joelfernandes.org> wrote:
-> 
-> > > +       default !PREEMPT_RT && NR_CPUS <= 32  
-> > 
-> > What is the benefit of turning it off on PREEMPT_RT, even if
-> > PREEMPT_RT does not use expedited GPs much post-boot? I would think in
-> > the future if PREEMPT_RT ever uses expedited GPs, they would want this
-> > feature even more. I'd rather be future-proof now as I don't see any
-> > advantages of disabling it on !PREEMPT_RT (And a drawback that the fix
-> > won't apply to those systems). Also will keep the config simple.
-> 
-> The default kthread priority is 1. This should not affect PREEMPT_RT, as
-> PREEMPT_RT users are usually more concerned by the performance of their
-> higher priority tasks. Priority 1 is not considered an issue.
-> 
-> I do not see why PREEMPT_RT is special here. Why was it singled out?
+On Fri, Apr 8, 2022 at 4:42 PM Michael Ellerman <mpe@ellerman.id.au> wrote:
+>
+> The Rust CI has it disabled because I copied that from the x86 defconfig
+> they were using back when I added the Rust support. I think that was
+> meant to be a stripped down fast config for CI, but the result is it's
 
-Because I didn't see the point of doing kthread_create_worker() to create
-a pair of kthread_worker structuress that were never going to be used
-in PREEMPT_RT kernels.
+Indeed, that was my intention when I created the original config.
 
-Or are PREEMPT_RT kernels no longer booting with rcupdate.rcu_normal?
-Last I knew, they all did this to avoid IPI latencies from expedited
-grace periods.  Has this changed?
+> So I'll send a patch to turn HIGH_RES_TIMERS on for the Rust CI, and we
+> can debug this further without blocking them.
 
-							Thanx, Paul
+Thanks! I can also do it on your behalf, if you prefer, when I sync with -rc1.
+
+Cheers,
+Miguel
