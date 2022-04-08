@@ -2,190 +2,147 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 094E3C433F5
-	for <rcu@archiver.kernel.org>; Fri,  8 Apr 2022 17:14:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F331C433FE
+	for <rcu@archiver.kernel.org>; Fri,  8 Apr 2022 17:20:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238043AbiDHRQz (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 8 Apr 2022 13:16:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39808 "EHLO
+        id S238082AbiDHRWT (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 8 Apr 2022 13:22:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238041AbiDHRQx (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 8 Apr 2022 13:16:53 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85BDA49682
-        for <rcu@vger.kernel.org>; Fri,  8 Apr 2022 10:14:47 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id p21so11418395ioj.4
-        for <rcu@vger.kernel.org>; Fri, 08 Apr 2022 10:14:47 -0700 (PDT)
+        with ESMTP id S236334AbiDHRWS (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 8 Apr 2022 13:22:18 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9425F10709F
+        for <rcu@vger.kernel.org>; Fri,  8 Apr 2022 10:20:14 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id h63so11365283iof.12
+        for <rcu@vger.kernel.org>; Fri, 08 Apr 2022 10:20:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=7R4f+94qI2K6ExVGY0p3omvs96ezNwS+NBDPlgD2fHw=;
-        b=x7VZ4v6GavJUvP98gYT0IO36JWQHaZDKGngI52NebyKbuqK1pSLvcTw9VmD10ofbT2
-         UUqEY7AwTmD5wYhvsg1tBmxANERQwy4l2DC4yKxpmdgLiYK6e7hUGs/bKF/j3zuFEJnX
-         hNbki2Le1C2/sceqwksGM2w1gCbZ0sbRHsdNU=
+        bh=ap3imm5PObX8OjFwHiIq7wbaVhzckxpuYj3ptqq60vU=;
+        b=UHfQeD1lAhbtCeKgODYSJwUtX5auhDWffFb658RRF9FBEG0q8T22o2gnveOVKsicw8
+         WPPubOCK3XBImjGPd2oXbXzmrv//eSoK6K+C33aybOXhaYYBgnPsHrNbf7BaGA88Onnz
+         ZQNYOORMnV0l6+5mPh1/MfHdNERrz9SgOPaz8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=7R4f+94qI2K6ExVGY0p3omvs96ezNwS+NBDPlgD2fHw=;
-        b=R1Q/dVo4GwE36Ma+mpETHuhb/Z+tsI70Nbz4+sjWlz6yAAKHFX4G4G3LCVuffvHMyk
-         h1Qx3PGYuZDC92fgyF2VGpUXbDlB+mHxzwMwYroIgjGgv1Al+kRPB/bgSajWcg0ohzaa
-         vWj9NSn0++SVwIMITXhzIvlrkQ7vrE31N3TD1ve51gxEgz3FEJwn3iLXYBrb5KUok/S9
-         lXbpC6JM8TmjWtEIzYSLCDR69QtdWS+E+F9wl+OClPvPPjyZrhOLhXL8jDU/LkLTq89J
-         RrrGxUX8JonxdABnGsJmhzOFln5lVIniOBUkmnIeWl2mccfh6UEZ+HOsFSUqPS7HngAG
-         CWoQ==
-X-Gm-Message-State: AOAM533jS249nNZidP46x7kRGLZ5dAvk4bAcEc7OFtDasiXzppR59BJn
-        xMyE+3cMLjCChSU7gvMIufrpYB36Z+J0oL4bxvat3g==
-X-Google-Smtp-Source: ABdhPJwodPR0Ms5rL/IPObV1MciwN2GKTSLms5DXA4ge0kHspY7LbH6tZPyh4NeU9b7ai5sRsjAiGZP96oCCaiFyuGA=
-X-Received: by 2002:a05:6638:737:b0:317:d5e0:2b3a with SMTP id
- j23-20020a056638073700b00317d5e02b3amr9614023jad.52.1649438087384; Fri, 08
- Apr 2022 10:14:47 -0700 (PDT)
+        bh=ap3imm5PObX8OjFwHiIq7wbaVhzckxpuYj3ptqq60vU=;
+        b=Y7fVxhkKu3W+B7DumaRs9vqT2uQxd4op5n06UydZ24Stpv98pCtHhi0n17Wl9+2HA9
+         T7cWvH3LAOSeA+rdy6I7+Rp+2uEpAiW6AbQ4T05pbGhB5MkMQZFPSaWfxrq1CzD1SbvU
+         zsn6WybvNNq9dg5o7uDW9n1vaG6zxPUGWJkMylktNLs2jIo4P9m+XDdXZ10a5pjKmhEu
+         Yykjkfz2qYACm3/IH+8E1Iqa8upQa/VEsnQXRZg9o2P8PP6Qs6Za0xTz2BG83K1pNMeW
+         aorFxgDWDRFBdiPFU6HDuRgCX4+A70QptLXZsygJXlNrj5Al2scHdHv4ON1/Zvulvo2I
+         LV8A==
+X-Gm-Message-State: AOAM532Ni2GgLn7YLwrNeqSPeP1rqKzTI1sADNnebPEDbqRQ2ttxkKPR
+        Ud6c6KxbBJDv9LdxgEHvRv3xdalJzU4nI9BcBnv2+Q==
+X-Google-Smtp-Source: ABdhPJwSKMj/cXiIp4ghHfKmz6M7gvuI55nrfQzJ50c1hNzfslGXmGEkmDdAfPwq9YV2BrL4R+7XwysmOAj5/jCxK9k=
+X-Received: by 2002:a05:6638:223:b0:326:22:e1c5 with SMTP id
+ f3-20020a056638022300b003260022e1c5mr1367996jaq.259.1649438413882; Fri, 08
+ Apr 2022 10:20:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220408045734.1158817-1-kaleshsingh@google.com>
- <CAEXW_YQ6_VpneJnBfhTOMr6DwJhNmvMAKDRMnpr8LxB9Gtt=Xg@mail.gmail.com>
- <20220408143444.GC4285@paulmck-ThinkPad-P17-Gen-1> <CAEXW_YSrGKXh5DiJyrNvmbssSXbWBkA-XUjGRdS8HtGvW1r6hw@mail.gmail.com>
- <20220408153447.GE4285@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20220408153447.GE4285@paulmck-ThinkPad-P17-Gen-1>
+References: <20220407210734.2548973-1-joel@joelfernandes.org>
+ <20220408142232.GA4285@paulmck-ThinkPad-P17-Gen-1> <CAEXW_YQWeqfcKdAKmCn4fFGyWXjOGd=29wvi6bL3k7s2bGkDJw@mail.gmail.com>
+ <20220408155002.GF4285@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20220408155002.GF4285@paulmck-ThinkPad-P17-Gen-1>
 From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Fri, 8 Apr 2022 13:14:35 -0400
-Message-ID: <CAEXW_YT-vJmXgWPQ_1J34iTb+ZhrAgN7c-HPz7kW17HmvKzJ3A@mail.gmail.com>
-Subject: Re: [PATCH v2] EXP rcu: Move expedited grace period (GP) work to RT kthread_worker
+Date:   Fri, 8 Apr 2022 13:20:02 -0400
+Message-ID: <CAEXW_YQDgSO2XkkVhN3RBBz3vwYdAtTuPz-xYYsAPnwEnbYZPA@mail.gmail.com>
+Subject: Re: [PATCH RFC] rcu/nocb: Provide default all-CPUs mask for RCU_NOCB_CPU=y
 To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Kalesh Singh <kaleshsingh@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        kernel-team <kernel-team@android.com>, Tejun Heo <tj@kernel.org>,
-        Tim Murray <timmurray@google.com>, Wei Wang <wvw@google.com>,
-        Kyle Lin <kylelin@google.com>,
-        Chunwei Lu <chunweilu@google.com>,
-        Lulu Wang <luluw@google.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+Cc:     LKML <linux-kernel@vger.kernel.org>,
         Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        rcu <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        rcu <rcu@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Apr 8, 2022 at 11:34 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+On Fri, Apr 8, 2022 at 11:50 AM Paul E. McKenney <paulmck@kernel.org> wrote:
 >
-> On Fri, Apr 08, 2022 at 10:41:26AM -0400, Joel Fernandes wrote:
-> > On Fri, Apr 8, 2022 at 10:34 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+> On Fri, Apr 08, 2022 at 10:52:21AM -0400, Joel Fernandes wrote:
+> > On Fri, Apr 8, 2022 at 10:22 AM Paul E. McKenney <paulmck@kernel.org> wrote:
 > > >
-> > > On Fri, Apr 08, 2022 at 06:42:42AM -0400, Joel Fernandes wrote:
-> > > > On Fri, Apr 8, 2022 at 12:57 AM Kalesh Singh <kaleshsingh@google.com> wrote:
-> > > > >
-> > > > [...]
-> > > > > @@ -334,15 +334,13 @@ static bool exp_funnel_lock(unsigned long s)
-> > > > >   * Select the CPUs within the specified rcu_node that the upcoming
-> > > > >   * expedited grace period needs to wait for.
-> > > > >   */
-> > > > > -static void sync_rcu_exp_select_node_cpus(struct work_struct *wp)
-> > > > > +static void __sync_rcu_exp_select_node_cpus(struct rcu_exp_work *rewp)
-> > > > >  {
-> > > > >         int cpu;
-> > > > >         unsigned long flags;
-> > > > >         unsigned long mask_ofl_test;
-> > > > >         unsigned long mask_ofl_ipi;
-> > > > >         int ret;
-> > > > > -       struct rcu_exp_work *rewp =
-> > > > > -               container_of(wp, struct rcu_exp_work, rew_work);
-> > > > >         struct rcu_node *rnp = container_of(rewp, struct rcu_node, rew);
-> > > > >
-> > > > >         raw_spin_lock_irqsave_rcu_node(rnp, flags);
-> > > > > @@ -417,13 +415,119 @@ static void sync_rcu_exp_select_node_cpus(struct work_struct *wp)
-> > > > >                 rcu_report_exp_cpu_mult(rnp, mask_ofl_test, false);
-> > > > >  }
-> > > > >
-> > > > > +static void rcu_exp_sel_wait_wake(unsigned long s);
-> > > > > +
-> > > > > +#ifdef CONFIG_RCU_EXP_KTHREAD
+> > > On Thu, Apr 07, 2022 at 09:07:33PM +0000, Joel Fernandes wrote:
+> > > > On systems with CONFIG_RCU_NOCB_CPU=y, there is no default mask provided
+> > > > which ends up not offloading any CPU. This patch removes yet another
+> > > > dependency from the bootloader having to know about RCU, about how many
+> > > > CPUs the system has, and about how to provide the mask. Basically, I
+> > > > think we should stop pretending that the user knows what they are doing :).
+> > > > In other words, if NO_CB_CPU is enabled, lets make use of it.
 > > > >
-> > > > Just my 2c:
+> > > > My goal is to make RCU as zero-config as possible with sane defaults. If
+> > > > user wants to provide rcu_nocbs= or nohz_full= options, then those will
+> > > > take precedence and this patch will have no effect.
 > > > >
-> > > > Honestly, I am not sure if the benefits of duplicating the code to use
-> > > > normal workqueues outweighs the drawbacks (namely code complexity,
-> > > > code duplication - which can in turn cause more bugs and maintenance
-> > > > headaches down the line). The code is harder to read and adding more
-> > > > 30 character function names does not help.
-> > > >
-> > > > For something as important as expedited GPs, I can't imagine a
-> > > > scenario where an RT kthread worker would cause "issues". If it does
-> > > > cause issues, that's what the -rc cycles and the stable releases are
-> > > > for. I prefer to trust the process than take a one-foot-in-the-door
-> > > > approach.
-> > > >
-> > > > So please, can we just keep it simple?
+> > > > I tested providing rcu_nocbs= option, ensuring that is preferred over this.
 > > >
-> > > Yes and no.
-> > >
-> > > This is a bug fix, but only for those systems that are expecting real-time
-> > > response from synchronize_rcu_expedited().  As far as I know, this is only
-> > > Android.  The rest of the systems are just fine with the current behavior.
+> > > Unless something has changed, this would change behavior relied upon
+> > > the enterprise distros.  Last I checked, they want to supply a single
+> > > binary, as evidenced by the recent CONFIG_PREEMPT_DYNAMIC Kconfig option,
+> > > and they also want the default to be non-offloaded.  That is, given a
+> > > kernel built with CONFIG_RCU_NOCB_CPU=y and without either a nohz_full
+> > > or a nocbs_cpu boot parameter, all of the CPUs must be non-offloaded.
 > >
-> > As far as you know, but are you sure?
+> > Just curious, do you have information (like data, experiment results)
+> > on why they want default non-offloaded? Or maybe they haven't tried
+> > the recent work done in NOCB code?
 >
-> None of us are sure.  We are balancing risks and potential benefits.
-
-Right.
-
-> > > In addition, this bug fix introduces significant risks, especially in
-> > > terms of performance for throughput-oriented workloads.
-> >
-> > Could you explain what the risk is? That's the part I did not follow.
-> > How can making synchronize_rcu_expedited() work getting priority
-> > introduce throughput issues?
+> I most definitely do.  When I first introduced callback offloading, I
+> made it completely replace softirq callback invocation.  There were some
+> important throughput-oriented workloads that got hit with significant
+> performance degradation due to this change.  Enterprise Java workloads
+> were the worst hit.
 >
-> Status quo has synchronize_rcu_expedited() workqueues running as
-> SCHED_OTHER.
+> Android does not run these workloads, and I am not aware of ChromeOS
+> running them, either.
 
-Yeah, so if we go by this, you are saying RCU_BOOST likely does not
-work correctly on status quo right? I do not see what in the commit
-message indicates that this is an Android-only issue, let me know what
-I am missing.
+Thanks a lot for mentioning this, I was not aware and will make note
+of it :-). I wonder if the scheduler had something to do with the
+degradation.
 
-The users affected by this will instead have these running
-> as SCHED_FIFO.  That changes scheduling.  For users not explicitly
-> needing low-latency synchronize_rcu_expedited(), this change is very
-> unlikely to be for the better.  And historically, unnecessarily running
-> portions of RCU at real-time priorities has been a change for the worse.
-> As in greatly increased context-switch rates and consequently degraded
-> performance.  Please note that this is not a theoretical statement:  Real
-> users have really been burned by too much SCHED_FIFO in RCU kthreads in
-> the past.
-
-Android also has suffered from too much SCHED_FIFO in the past. I
-remember the display thread called 'surfaceflinger' had to be dropped
-from RT privilege at one point.
-
-> > > So yes, let's do this bug fix (with appropriate adjustment), but let's
-> > > also avoid exposing the non-Android workloads to risks from the inevitable
-> > > unintended consequences.  ;-)
-> >
-> > I would argue the risk is also adding code complexity and more bugs
-> > without clear rationale for why it is being done. There's always risk
-> > with any change, but that's the -rc cycles and stable kernels help
-> > catch those. I think we should not add more code complexity if it is a
-> > theoretical concern.
-> >
-> > There's also another possible risk - there is a possible hidden
-> > problem here that probably the non-Android folks haven't noticed or
-> > been able to debug. I would rather just do the right thing.
-> >
-> > Just my 2c,
+> > Another option I think is to make it enforce NOCB if NR_CPUS <= 32 if
+> > that makes sense.
 >
-> Sorry, but my answer is still "no".
+> That would avoid hurting RHEL and SLES users, so this would be better
+> than making the change unconditionally.  But there are a lot of distros
+> out there.
 >
-> Your suggested change risks visiting unacceptable performance
-> degradation on a very large number of innocent users for whom current
-> synchronize_rcu_expedited() latency is plenty good enough.
+> I have to ask...  Isn't there already a way of specifying a set of kernel
+> boot parameters that are required for ChromeOS?  If so, add rcu_nocbs=0-N
+> to that list and be happy.
 
-I believe the process will catch any such risk, but it is your call! ;-)
+Yes, that's doable.
 
-Thanks,
+> > > And is it really all -that- hard to specify an additional boot parameter
+> > > across ChromeOS devices?  Android seems to manage it.  ;-)
+> >
+> > That's not the hard part I think. The hard part is to make sure a
+> > future Linux user who is not an RCU expert does not forget to turn it
+> > on. ChromeOS is not the only OS that I've seen someone forget to do it
+> > ;-D. AFAIR, there were Android devices too in the past where I saw
+> > this forgotten. I don't think we should rely on the users doing the
+> > right thing (as much as possible).
+> >
+> > The single kernel binary point makes sense but in this case, I think
+> > the bigger question that I'd have is what is the default behavior and
+> > what do *most* users of RCU want. So we can keep sane defaults for the
+> > majority and reduce human errors related to configuration.
+>
+> If both the ChromeOS and Android guys need it, I could reinstate the
+> old RCU_NOCB_CPU_ALL Kconfig option.  This was removed due to complaints
+> about RCU Kconfig complexity, but I believe that Reviewed-by from ChromeOS
+> and Android movers and shakers would overcome lingering objections.
+>
+> Would that help?
+
+Yes, I think I would love for such a change. I am planning to add a
+test to ChromeOS to check whether config options were correctly set
+up. So I can test for both the RCU_NOCB_CPU options.
+
+Thanks!
 
 - Joel
