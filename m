@@ -2,30 +2,29 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F2B5CC433F5
-	for <rcu@archiver.kernel.org>; Fri,  8 Apr 2022 21:27:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CE96CC433EF
+	for <rcu@archiver.kernel.org>; Fri,  8 Apr 2022 21:42:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234602AbiDHV3X (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 8 Apr 2022 17:29:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36686 "EHLO
+        id S234210AbiDHVoy convert rfc822-to-8bit (ORCPT
+        <rfc822;rcu@archiver.kernel.org>); Fri, 8 Apr 2022 17:44:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229733AbiDHV3W (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 8 Apr 2022 17:29:22 -0400
+        with ESMTP id S232842AbiDHVox (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 8 Apr 2022 17:44:53 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83FB83EAB7;
-        Fri,  8 Apr 2022 14:27:18 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7957E27E;
+        Fri,  8 Apr 2022 14:42:49 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 20AC961B2A;
-        Fri,  8 Apr 2022 21:27:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E281C385A1;
-        Fri,  8 Apr 2022 21:27:15 +0000 (UTC)
-Date:   Fri, 8 Apr 2022 17:27:14 -0400
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1665E62085;
+        Fri,  8 Apr 2022 21:42:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91469C385A1;
+        Fri,  8 Apr 2022 21:42:46 +0000 (UTC)
+Date:   Fri, 8 Apr 2022 17:42:45 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
+To:     Kalesh Singh <kaleshsingh@google.com>
+Cc:     paulmck@kernel.org, Joel Fernandes <joel@joelfernandes.org>,
         Suren Baghdasaryan <surenb@google.com>,
         kernel-team <kernel-team@android.com>, Tejun Heo <tj@kernel.org>,
         Tim Murray <timmurray@google.com>, Wei Wang <wvw@google.com>,
@@ -40,34 +39,36 @@ Cc:     Joel Fernandes <joel@joelfernandes.org>,
         rcu <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
 Subject: Re: [PATCH v2] EXP rcu: Move expedited grace period (GP) work to RT
  kthread_worker
-Message-ID: <20220408172714.52d64c84@gandalf.local.home>
-In-Reply-To: <20220408155834.GI4285@paulmck-ThinkPad-P17-Gen-1>
+Message-ID: <20220408174245.65e1ec98@gandalf.local.home>
+In-Reply-To: <CAC_TJvf_ubOPUVpNYK9UUWXn5J5hpiTkOt2++kYTGbF9bM_pYw@mail.gmail.com>
 References: <20220408045734.1158817-1-kaleshsingh@google.com>
-        <CAEXW_YSqY2nFZrn4AjpUzJ+dwZc7jaVMG9RG5gvTyb3zFYWtQA@mail.gmail.com>
-        <20220408113946.056c083e@gandalf.local.home>
-        <20220408155834.GI4285@paulmck-ThinkPad-P17-Gen-1>
+        <CAEXW_YQ6_VpneJnBfhTOMr6DwJhNmvMAKDRMnpr8LxB9Gtt=Xg@mail.gmail.com>
+        <20220408143444.GC4285@paulmck-ThinkPad-P17-Gen-1>
+        <CAEXW_YSrGKXh5DiJyrNvmbssSXbWBkA-XUjGRdS8HtGvW1r6hw@mail.gmail.com>
+        <20220408153447.GE4285@paulmck-ThinkPad-P17-Gen-1>
+        <CAEXW_YT-vJmXgWPQ_1J34iTb+ZhrAgN7c-HPz7kW17HmvKzJ3A@mail.gmail.com>
+        <20220408173908.GJ4285@paulmck-ThinkPad-P17-Gen-1>
+        <CAC_TJvf_ubOPUVpNYK9UUWXn5J5hpiTkOt2++kYTGbF9bM_pYw@mail.gmail.com>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, 8 Apr 2022 08:58:34 -0700
-"Paul E. McKenney" <paulmck@kernel.org> wrote:
+On Fri, 8 Apr 2022 10:53:53 -0700
+Kalesh Singh <kaleshsingh@google.com> wrote:
 
-> > I do not see why PREEMPT_RT is special here. Why was it singled out?  
-> 
-> Because I didn't see the point of doing kthread_create_worker() to create
-> a pair of kthread_worker structuress that were never going to be used
-> in PREEMPT_RT kernels.
-> 
-> Or are PREEMPT_RT kernels no longer booting with rcupdate.rcu_normal?
-> Last I knew, they all did this to avoid IPI latencies from expedited
-> grace periods.  Has this changed?
+> If PREEMT_RT systems don’t disable expedited grace periods, we can
+> remove default off for those. Steve?
 
-Honestly, I don't know. But I guess I can go and find out ;-)
+Yep, commit 36221e109eb20 ("rcu: Enable rcu_normal_after_boot
+unconditionally for RT") is still there.
+
+OK, that explains it. I missed that change, so I didn't see the relation to
+PREEMPT_RT. It wasn't described in the change log nor was there any
+comment in the kconfig to say why it was special. Perhaps that should be
+added for those that don't know all this tribal knowledge ;-)
 
 -- Steve
-
