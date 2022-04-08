@@ -2,40 +2,54 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B27DDC433EF
-	for <rcu@archiver.kernel.org>; Fri,  8 Apr 2022 14:34:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 03A63C433F5
+	for <rcu@archiver.kernel.org>; Fri,  8 Apr 2022 14:41:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235625AbiDHOgu (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 8 Apr 2022 10:36:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35218 "EHLO
+        id S237126AbiDHOno (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 8 Apr 2022 10:43:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236959AbiDHOgt (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 8 Apr 2022 10:36:49 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB3F62028AB;
-        Fri,  8 Apr 2022 07:34:45 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4762561DF5;
-        Fri,  8 Apr 2022 14:34:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 979CEC385A3;
-        Fri,  8 Apr 2022 14:34:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649428484;
-        bh=iNMjEMAYMa8luBgIaD0sCbs0TBSyme2H9hScCvGGeB0=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=iXy9Y7xGobT80KZOQr+0DBjXmNlY1f3O+pSVZCOPdQmX80aVVj3dKd1wGIhAi9XBU
-         NaWWkzy0YHzcPGHQuJnGVjoGFFCi8PX4KEaT2BGkn8G6/Uuo4hU58ix4I8d05uPHNb
-         HGmRQkYr8qMo7ZG5UA4cFNUQfMQCY1Wc/ErpwSOtvnrnJQys1LQt7NWWfLF4SKHPeL
-         aFV7eo76CAfjNVf7RlYV8YZC0Gp63kwtb6vXFOpP04Uqs8Uf6h6laevGy0IqRcFFg9
-         gLy2PTxhhHj0KRmFxGgIwlB0IoPiTmBbwLZQSTZY9UJiDfHaI0NTxo2AZu9+t5gutI
-         IiTRmBmH6mYXQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 38E9D5C0176; Fri,  8 Apr 2022 07:34:44 -0700 (PDT)
-Date:   Fri, 8 Apr 2022 07:34:44 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
+        with ESMTP id S237132AbiDHOnn (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 8 Apr 2022 10:43:43 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78CB5EF788
+        for <rcu@vger.kernel.org>; Fri,  8 Apr 2022 07:41:39 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id q11so10819863iod.6
+        for <rcu@vger.kernel.org>; Fri, 08 Apr 2022 07:41:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OQ3yXPs/ePkmyqPbhNIG1CvTCw2rw1NphQOx38b16uI=;
+        b=cuJUaTKW54ST5EiyzqertJtD6UBOB75Rl7LRp5oTlOLilLM1b5cNmhXmelDcK8pxff
+         o609683EyCDOtYG5OMxQ1qC9F3WRVoYqS/L4d4piVvR77abxl3PmjhKc7gXn0k6KyOe5
+         P3sSPvO2afz1ae/Jhl3lPQXf0fKINpu3z4wJc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OQ3yXPs/ePkmyqPbhNIG1CvTCw2rw1NphQOx38b16uI=;
+        b=PTkqAyJGvjeB7HuHUFj9y/OlbHt66tf+jV6XMai25f/1thxpY4g9Oca3i7dTLmtFnF
+         IyZJadS/mon8P0rLaDm1YKYykic8mtJQmUdGZISUFD71jZtg5BqW8xvrokvwzDrlRAJw
+         y2zyj4eIk9WivmACH8da37ITGJQ8qj29NSVDsxcZkkhd1yT+iOYL0IFNpmme75a+a/sw
+         1z0L2WZ76kgUlQX8St8b6xZt6ymmb+L8TActvHL024FceXmB1ChunqZHqH3yiehIPnuc
+         xXzV2h+2WPkQHiSQvFCSUQABdw+opaaM385q7SSDM3POBrSNdh1F+QM4Mx+hMR3dt+xP
+         lahQ==
+X-Gm-Message-State: AOAM531ZVKS6SDoOI1o0cmP4Xquj8Cvdxa5z6VXpHdP1IwS1kvqHykSI
+        f1ibjLq0r0lBCHFQ3BXrc2fFvb5uunnM54vPEoqCjg==
+X-Google-Smtp-Source: ABdhPJxvU3IVVe50ePmySFKNUEu7iHmHKf/skHVJ7dDB1DN4PpZOWIBMP4sEbtOIlyCZSWShHMothIPOw6rDFr9bJTc=
+X-Received: by 2002:a5d:8450:0:b0:64c:cc87:c5fc with SMTP id
+ w16-20020a5d8450000000b0064ccc87c5fcmr8326802ior.190.1649428898763; Fri, 08
+ Apr 2022 07:41:38 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220408045734.1158817-1-kaleshsingh@google.com>
+ <CAEXW_YQ6_VpneJnBfhTOMr6DwJhNmvMAKDRMnpr8LxB9Gtt=Xg@mail.gmail.com> <20220408143444.GC4285@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20220408143444.GC4285@paulmck-ThinkPad-P17-Gen-1>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Fri, 8 Apr 2022 10:41:26 -0400
+Message-ID: <CAEXW_YSrGKXh5DiJyrNvmbssSXbWBkA-XUjGRdS8HtGvW1r6hw@mail.gmail.com>
+Subject: Re: [PATCH v2] EXP rcu: Move expedited grace period (GP) work to RT kthread_worker
+To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     Kalesh Singh <kaleshsingh@google.com>,
         Suren Baghdasaryan <surenb@google.com>,
         kernel-team <kernel-team@android.com>, Tejun Heo <tj@kernel.org>,
@@ -50,277 +64,292 @@ Cc:     Kalesh Singh <kaleshsingh@google.com>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         rcu <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] EXP rcu: Move expedited grace period (GP) work to RT
- kthread_worker
-Message-ID: <20220408143444.GC4285@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220408045734.1158817-1-kaleshsingh@google.com>
- <CAEXW_YQ6_VpneJnBfhTOMr6DwJhNmvMAKDRMnpr8LxB9Gtt=Xg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEXW_YQ6_VpneJnBfhTOMr6DwJhNmvMAKDRMnpr8LxB9Gtt=Xg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Apr 08, 2022 at 06:42:42AM -0400, Joel Fernandes wrote:
-> On Fri, Apr 8, 2022 at 12:57 AM Kalesh Singh <kaleshsingh@google.com> wrote:
+On Fri, Apr 8, 2022 at 10:34 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+>
+> On Fri, Apr 08, 2022 at 06:42:42AM -0400, Joel Fernandes wrote:
+> > On Fri, Apr 8, 2022 at 12:57 AM Kalesh Singh <kaleshsingh@google.com> wrote:
+> > >
+> > [...]
+> > > @@ -334,15 +334,13 @@ static bool exp_funnel_lock(unsigned long s)
+> > >   * Select the CPUs within the specified rcu_node that the upcoming
+> > >   * expedited grace period needs to wait for.
+> > >   */
+> > > -static void sync_rcu_exp_select_node_cpus(struct work_struct *wp)
+> > > +static void __sync_rcu_exp_select_node_cpus(struct rcu_exp_work *rewp)
+> > >  {
+> > >         int cpu;
+> > >         unsigned long flags;
+> > >         unsigned long mask_ofl_test;
+> > >         unsigned long mask_ofl_ipi;
+> > >         int ret;
+> > > -       struct rcu_exp_work *rewp =
+> > > -               container_of(wp, struct rcu_exp_work, rew_work);
+> > >         struct rcu_node *rnp = container_of(rewp, struct rcu_node, rew);
+> > >
+> > >         raw_spin_lock_irqsave_rcu_node(rnp, flags);
+> > > @@ -417,13 +415,119 @@ static void sync_rcu_exp_select_node_cpus(struct work_struct *wp)
+> > >                 rcu_report_exp_cpu_mult(rnp, mask_ofl_test, false);
+> > >  }
+> > >
+> > > +static void rcu_exp_sel_wait_wake(unsigned long s);
+> > > +
+> > > +#ifdef CONFIG_RCU_EXP_KTHREAD
 > >
-> [...]
-> > @@ -334,15 +334,13 @@ static bool exp_funnel_lock(unsigned long s)
-> >   * Select the CPUs within the specified rcu_node that the upcoming
-> >   * expedited grace period needs to wait for.
-> >   */
-> > -static void sync_rcu_exp_select_node_cpus(struct work_struct *wp)
-> > +static void __sync_rcu_exp_select_node_cpus(struct rcu_exp_work *rewp)
-> >  {
-> >         int cpu;
-> >         unsigned long flags;
-> >         unsigned long mask_ofl_test;
-> >         unsigned long mask_ofl_ipi;
-> >         int ret;
-> > -       struct rcu_exp_work *rewp =
-> > -               container_of(wp, struct rcu_exp_work, rew_work);
-> >         struct rcu_node *rnp = container_of(rewp, struct rcu_node, rew);
+> > Just my 2c:
 > >
-> >         raw_spin_lock_irqsave_rcu_node(rnp, flags);
-> > @@ -417,13 +415,119 @@ static void sync_rcu_exp_select_node_cpus(struct work_struct *wp)
-> >                 rcu_report_exp_cpu_mult(rnp, mask_ofl_test, false);
-> >  }
+> > Honestly, I am not sure if the benefits of duplicating the code to use
+> > normal workqueues outweighs the drawbacks (namely code complexity,
+> > code duplication - which can in turn cause more bugs and maintenance
+> > headaches down the line). The code is harder to read and adding more
+> > 30 character function names does not help.
 > >
-> > +static void rcu_exp_sel_wait_wake(unsigned long s);
-> > +
-> > +#ifdef CONFIG_RCU_EXP_KTHREAD
-> 
-> Just my 2c:
-> 
-> Honestly, I am not sure if the benefits of duplicating the code to use
-> normal workqueues outweighs the drawbacks (namely code complexity,
-> code duplication - which can in turn cause more bugs and maintenance
-> headaches down the line). The code is harder to read and adding more
-> 30 character function names does not help.
-> 
-> For something as important as expedited GPs, I can't imagine a
-> scenario where an RT kthread worker would cause "issues". If it does
-> cause issues, that's what the -rc cycles and the stable releases are
-> for. I prefer to trust the process than take a one-foot-in-the-door
-> approach.
-> 
-> So please, can we just keep it simple?
+> > For something as important as expedited GPs, I can't imagine a
+> > scenario where an RT kthread worker would cause "issues". If it does
+> > cause issues, that's what the -rc cycles and the stable releases are
+> > for. I prefer to trust the process than take a one-foot-in-the-door
+> > approach.
+> >
+> > So please, can we just keep it simple?
+>
+> Yes and no.
+>
+> This is a bug fix, but only for those systems that are expecting real-time
+> response from synchronize_rcu_expedited().  As far as I know, this is only
+> Android.  The rest of the systems are just fine with the current behavior.
 
-Yes and no.
+As far as you know, but are you sure?
 
-This is a bug fix, but only for those systems that are expecting real-time
-response from synchronize_rcu_expedited().  As far as I know, this is only
-Android.  The rest of the systems are just fine with the current behavior.
+> In addition, this bug fix introduces significant risks, especially in
+> terms of performance for throughput-oriented workloads.
 
-In addition, this bug fix introduces significant risks, especially in
-terms of performance for throughput-oriented workloads.
+Could you explain what the risk is? That's the part I did not follow.
+How can making synchronize_rcu_expedited() work getting priority
+introduce throughput issues?
 
-So yes, let's do this bug fix (with appropriate adjustment), but let's
-also avoid exposing the non-Android workloads to risks from the inevitable
-unintended consequences.  ;-)
+> So yes, let's do this bug fix (with appropriate adjustment), but let's
+> also avoid exposing the non-Android workloads to risks from the inevitable
+> unintended consequences.  ;-)
 
-							Thanx, Paul
+I would argue the risk is also adding code complexity and more bugs
+without clear rationale for why it is being done. There's always risk
+with any change, but that's the -rc cycles and stable kernels help
+catch those. I think we should not add more code complexity if it is a
+theoretical concern.
 
-> Thanks,
-> 
->  - Joel
-> 
-> 
-> > +static void sync_rcu_exp_select_node_cpus(struct kthread_work *wp)
-> > +{
-> > +       struct rcu_exp_work *rewp =
-> > +               container_of(wp, struct rcu_exp_work, rew_work);
-> > +
-> > +       __sync_rcu_exp_select_node_cpus(rewp);
-> > +}
-> > +
-> > +static inline bool rcu_gp_par_worker_started(void)
-> > +{
-> > +       return !!READ_ONCE(rcu_exp_par_gp_kworker);
-> > +}
-> > +
-> > +static inline void sync_rcu_exp_select_cpus_queue_work(struct rcu_node *rnp)
-> > +{
-> > +       kthread_init_work(&rnp->rew.rew_work, sync_rcu_exp_select_node_cpus);
-> > +       /*
-> > +        * Use rcu_exp_par_gp_kworker, because flushing a work item from
-> > +        * another work item on the same kthread worker can result in
-> > +        * deadlock.
-> > +        */
-> > +       kthread_queue_work(rcu_exp_par_gp_kworker, &rnp->rew.rew_work);
-> > +}
-> > +
-> > +static inline void sync_rcu_exp_select_cpus_flush_work(struct rcu_node *rnp)
-> > +{
-> > +       kthread_flush_work(&rnp->rew.rew_work);
-> > +}
-> > +
-> > +/*
-> > + * Work-queue handler to drive an expedited grace period forward.
-> > + */
-> > +static void wait_rcu_exp_gp(struct kthread_work *wp)
-> > +{
-> > +       struct rcu_exp_work *rewp;
-> > +
-> > +       rewp = container_of(wp, struct rcu_exp_work, rew_work);
-> > +       rcu_exp_sel_wait_wake(rewp->rew_s);
-> > +}
-> > +
-> > +static inline void synchronize_rcu_expedited_queue_work(struct rcu_exp_work *rew)
-> > +{
-> > +       kthread_init_work(&rew->rew_work, wait_rcu_exp_gp);
-> > +       kthread_queue_work(rcu_exp_gp_kworker, &rew->rew_work);
-> > +}
-> > +
-> > +static inline void synchronize_rcu_expedited_destroy_work(struct rcu_exp_work *rew)
-> > +{
-> > +}
-> > +#else /* !CONFIG_RCU_EXP_KTHREAD */
-> > +static void sync_rcu_exp_select_node_cpus(struct work_struct *wp)
-> > +{
-> > +       struct rcu_exp_work *rewp =
-> > +               container_of(wp, struct rcu_exp_work, rew_work);
-> > +
-> > +       __sync_rcu_exp_select_node_cpus(rewp);
-> > +}
-> > +
-> > +static inline bool rcu_gp_par_worker_started(void)
-> > +{
-> > +       return !!READ_ONCE(rcu_par_gp_wq);
-> > +}
-> > +
-> > +static inline void sync_rcu_exp_select_cpus_queue_work(struct rcu_node *rnp)
-> > +{
-> > +       int cpu = find_next_bit(&rnp->ffmask, BITS_PER_LONG, -1);
-> > +
-> > +       INIT_WORK(&rnp->rew.rew_work, sync_rcu_exp_select_node_cpus);
-> > +       /* If all offline, queue the work on an unbound CPU. */
-> > +       if (unlikely(cpu > rnp->grphi - rnp->grplo))
-> > +               cpu = WORK_CPU_UNBOUND;
-> > +       else
-> > +               cpu += rnp->grplo;
-> > +       queue_work_on(cpu, rcu_par_gp_wq, &rnp->rew.rew_work);
-> > +}
-> > +
-> > +static inline void sync_rcu_exp_select_cpus_flush_work(struct rcu_node *rnp)
-> > +{
-> > +       flush_work(&rnp->rew.rew_work);
-> > +}
-> > +
-> > +/*
-> > + * Work-queue handler to drive an expedited grace period forward.
-> > + */
-> > +static void wait_rcu_exp_gp(struct work_struct *wp)
-> > +{
-> > +       struct rcu_exp_work *rewp;
-> > +
-> > +       rewp = container_of(wp, struct rcu_exp_work, rew_work);
-> > +       rcu_exp_sel_wait_wake(rewp->rew_s);
-> > +}
-> > +
-> > +static inline void synchronize_rcu_expedited_queue_work(struct rcu_exp_work *rew)
-> > +{
-> > +       INIT_WORK_ONSTACK(&rew->rew_work, wait_rcu_exp_gp);
-> > +       queue_work(rcu_gp_wq, &rew->rew_work);
-> > +}
-> > +
-> > +static inline void synchronize_rcu_expedited_destroy_work(struct rcu_exp_work *rew)
-> > +{
-> > +       destroy_work_on_stack(&rew->rew_work);
-> > +}
-> > +#endif /* CONFIG_RCU_EXP_KTHREAD */
-> > +
-> >  /*
-> >   * Select the nodes that the upcoming expedited grace period needs
-> >   * to wait for.
-> >   */
-> >  static void sync_rcu_exp_select_cpus(void)
-> >  {
-> > -       int cpu;
-> >         struct rcu_node *rnp;
+There's also another possible risk - there is a possible hidden
+problem here that probably the non-Android folks haven't noticed or
+been able to debug. I would rather just do the right thing.
+
+Just my 2c,
+
+- Joel
+
+
+>
+>                                                         Thanx, Paul
+>
+> > Thanks,
 > >
-> >         trace_rcu_exp_grace_period(rcu_state.name, rcu_exp_gp_seq_endval(), TPS("reset"));
-> > @@ -435,28 +539,21 @@ static void sync_rcu_exp_select_cpus(void)
-> >                 rnp->exp_need_flush = false;
-> >                 if (!READ_ONCE(rnp->expmask))
-> >                         continue; /* Avoid early boot non-existent wq. */
-> > -               if (!READ_ONCE(rcu_par_gp_wq) ||
-> > +               if (!rcu_gp_par_worker_started() ||
-> >                     rcu_scheduler_active != RCU_SCHEDULER_RUNNING ||
-> >                     rcu_is_last_leaf_node(rnp)) {
-> > -                       /* No workqueues yet or last leaf, do direct call. */
-> > +                       /* No worker started yet or last leaf, do direct call. */
-> >                         sync_rcu_exp_select_node_cpus(&rnp->rew.rew_work);
-> >                         continue;
-> >                 }
-> > -               INIT_WORK(&rnp->rew.rew_work, sync_rcu_exp_select_node_cpus);
-> > -               cpu = find_next_bit(&rnp->ffmask, BITS_PER_LONG, -1);
-> > -               /* If all offline, queue the work on an unbound CPU. */
-> > -               if (unlikely(cpu > rnp->grphi - rnp->grplo))
-> > -                       cpu = WORK_CPU_UNBOUND;
-> > -               else
-> > -                       cpu += rnp->grplo;
-> > -               queue_work_on(cpu, rcu_par_gp_wq, &rnp->rew.rew_work);
-> > +               sync_rcu_exp_select_cpus_queue_work(rnp);
-> >                 rnp->exp_need_flush = true;
-> >         }
+> >  - Joel
 > >
-> > -       /* Wait for workqueue jobs (if any) to complete. */
-> > +       /* Wait for jobs (if any) to complete. */
-> >         rcu_for_each_leaf_node(rnp)
-> >                 if (rnp->exp_need_flush)
-> > -                       flush_work(&rnp->rew.rew_work);
-> > +                       sync_rcu_exp_select_cpus_flush_work(rnp);
-> >  }
 > >
-> >  /*
-> > @@ -622,17 +719,6 @@ static void rcu_exp_sel_wait_wake(unsigned long s)
-> >         rcu_exp_wait_wake(s);
-> >  }
-> >
-> > -/*
-> > - * Work-queue handler to drive an expedited grace period forward.
-> > - */
-> > -static void wait_rcu_exp_gp(struct work_struct *wp)
-> > -{
-> > -       struct rcu_exp_work *rewp;
-> > -
-> > -       rewp = container_of(wp, struct rcu_exp_work, rew_work);
-> > -       rcu_exp_sel_wait_wake(rewp->rew_s);
-> > -}
-> > -
-> >  #ifdef CONFIG_PREEMPT_RCU
-> >
-> >  /*
-> > @@ -848,20 +934,19 @@ void synchronize_rcu_expedited(void)
-> >         } else {
-> >                 /* Marshall arguments & schedule the expedited grace period. */
-> >                 rew.rew_s = s;
-> > -               INIT_WORK_ONSTACK(&rew.rew_work, wait_rcu_exp_gp);
-> > -               queue_work(rcu_gp_wq, &rew.rew_work);
-> > +               synchronize_rcu_expedited_queue_work(&rew);
-> >         }
-> >
-> >         /* Wait for expedited grace period to complete. */
-> >         rnp = rcu_get_root();
-> >         wait_event(rnp->exp_wq[rcu_seq_ctr(s) & 0x3],
-> >                    sync_exp_work_done(s));
-> > -       smp_mb(); /* Workqueue actions happen before return. */
-> > +       smp_mb(); /* Work actions happen before return. */
-> >
-> >         /* Let the next expedited grace period start. */
-> >         mutex_unlock(&rcu_state.exp_mutex);
-> >
-> >         if (likely(!boottime))
-> > -               destroy_work_on_stack(&rew.rew_work);
-> > +               synchronize_rcu_expedited_destroy_work(&rew);
-> >  }
-> >  EXPORT_SYMBOL_GPL(synchronize_rcu_expedited);
-> >
-> > base-commit: 42e7a03d3badebd4e70aea5362d6914dfc7c220b
-> > --
-> > 2.35.1.1178.g4f1659d476-goog
-> >
+> > > +static void sync_rcu_exp_select_node_cpus(struct kthread_work *wp)
+> > > +{
+> > > +       struct rcu_exp_work *rewp =
+> > > +               container_of(wp, struct rcu_exp_work, rew_work);
+> > > +
+> > > +       __sync_rcu_exp_select_node_cpus(rewp);
+> > > +}
+> > > +
+> > > +static inline bool rcu_gp_par_worker_started(void)
+> > > +{
+> > > +       return !!READ_ONCE(rcu_exp_par_gp_kworker);
+> > > +}
+> > > +
+> > > +static inline void sync_rcu_exp_select_cpus_queue_work(struct rcu_node *rnp)
+> > > +{
+> > > +       kthread_init_work(&rnp->rew.rew_work, sync_rcu_exp_select_node_cpus);
+> > > +       /*
+> > > +        * Use rcu_exp_par_gp_kworker, because flushing a work item from
+> > > +        * another work item on the same kthread worker can result in
+> > > +        * deadlock.
+> > > +        */
+> > > +       kthread_queue_work(rcu_exp_par_gp_kworker, &rnp->rew.rew_work);
+> > > +}
+> > > +
+> > > +static inline void sync_rcu_exp_select_cpus_flush_work(struct rcu_node *rnp)
+> > > +{
+> > > +       kthread_flush_work(&rnp->rew.rew_work);
+> > > +}
+> > > +
+> > > +/*
+> > > + * Work-queue handler to drive an expedited grace period forward.
+> > > + */
+> > > +static void wait_rcu_exp_gp(struct kthread_work *wp)
+> > > +{
+> > > +       struct rcu_exp_work *rewp;
+> > > +
+> > > +       rewp = container_of(wp, struct rcu_exp_work, rew_work);
+> > > +       rcu_exp_sel_wait_wake(rewp->rew_s);
+> > > +}
+> > > +
+> > > +static inline void synchronize_rcu_expedited_queue_work(struct rcu_exp_work *rew)
+> > > +{
+> > > +       kthread_init_work(&rew->rew_work, wait_rcu_exp_gp);
+> > > +       kthread_queue_work(rcu_exp_gp_kworker, &rew->rew_work);
+> > > +}
+> > > +
+> > > +static inline void synchronize_rcu_expedited_destroy_work(struct rcu_exp_work *rew)
+> > > +{
+> > > +}
+> > > +#else /* !CONFIG_RCU_EXP_KTHREAD */
+> > > +static void sync_rcu_exp_select_node_cpus(struct work_struct *wp)
+> > > +{
+> > > +       struct rcu_exp_work *rewp =
+> > > +               container_of(wp, struct rcu_exp_work, rew_work);
+> > > +
+> > > +       __sync_rcu_exp_select_node_cpus(rewp);
+> > > +}
+> > > +
+> > > +static inline bool rcu_gp_par_worker_started(void)
+> > > +{
+> > > +       return !!READ_ONCE(rcu_par_gp_wq);
+> > > +}
+> > > +
+> > > +static inline void sync_rcu_exp_select_cpus_queue_work(struct rcu_node *rnp)
+> > > +{
+> > > +       int cpu = find_next_bit(&rnp->ffmask, BITS_PER_LONG, -1);
+> > > +
+> > > +       INIT_WORK(&rnp->rew.rew_work, sync_rcu_exp_select_node_cpus);
+> > > +       /* If all offline, queue the work on an unbound CPU. */
+> > > +       if (unlikely(cpu > rnp->grphi - rnp->grplo))
+> > > +               cpu = WORK_CPU_UNBOUND;
+> > > +       else
+> > > +               cpu += rnp->grplo;
+> > > +       queue_work_on(cpu, rcu_par_gp_wq, &rnp->rew.rew_work);
+> > > +}
+> > > +
+> > > +static inline void sync_rcu_exp_select_cpus_flush_work(struct rcu_node *rnp)
+> > > +{
+> > > +       flush_work(&rnp->rew.rew_work);
+> > > +}
+> > > +
+> > > +/*
+> > > + * Work-queue handler to drive an expedited grace period forward.
+> > > + */
+> > > +static void wait_rcu_exp_gp(struct work_struct *wp)
+> > > +{
+> > > +       struct rcu_exp_work *rewp;
+> > > +
+> > > +       rewp = container_of(wp, struct rcu_exp_work, rew_work);
+> > > +       rcu_exp_sel_wait_wake(rewp->rew_s);
+> > > +}
+> > > +
+> > > +static inline void synchronize_rcu_expedited_queue_work(struct rcu_exp_work *rew)
+> > > +{
+> > > +       INIT_WORK_ONSTACK(&rew->rew_work, wait_rcu_exp_gp);
+> > > +       queue_work(rcu_gp_wq, &rew->rew_work);
+> > > +}
+> > > +
+> > > +static inline void synchronize_rcu_expedited_destroy_work(struct rcu_exp_work *rew)
+> > > +{
+> > > +       destroy_work_on_stack(&rew->rew_work);
+> > > +}
+> > > +#endif /* CONFIG_RCU_EXP_KTHREAD */
+> > > +
+> > >  /*
+> > >   * Select the nodes that the upcoming expedited grace period needs
+> > >   * to wait for.
+> > >   */
+> > >  static void sync_rcu_exp_select_cpus(void)
+> > >  {
+> > > -       int cpu;
+> > >         struct rcu_node *rnp;
+> > >
+> > >         trace_rcu_exp_grace_period(rcu_state.name, rcu_exp_gp_seq_endval(), TPS("reset"));
+> > > @@ -435,28 +539,21 @@ static void sync_rcu_exp_select_cpus(void)
+> > >                 rnp->exp_need_flush = false;
+> > >                 if (!READ_ONCE(rnp->expmask))
+> > >                         continue; /* Avoid early boot non-existent wq. */
+> > > -               if (!READ_ONCE(rcu_par_gp_wq) ||
+> > > +               if (!rcu_gp_par_worker_started() ||
+> > >                     rcu_scheduler_active != RCU_SCHEDULER_RUNNING ||
+> > >                     rcu_is_last_leaf_node(rnp)) {
+> > > -                       /* No workqueues yet or last leaf, do direct call. */
+> > > +                       /* No worker started yet or last leaf, do direct call. */
+> > >                         sync_rcu_exp_select_node_cpus(&rnp->rew.rew_work);
+> > >                         continue;
+> > >                 }
+> > > -               INIT_WORK(&rnp->rew.rew_work, sync_rcu_exp_select_node_cpus);
+> > > -               cpu = find_next_bit(&rnp->ffmask, BITS_PER_LONG, -1);
+> > > -               /* If all offline, queue the work on an unbound CPU. */
+> > > -               if (unlikely(cpu > rnp->grphi - rnp->grplo))
+> > > -                       cpu = WORK_CPU_UNBOUND;
+> > > -               else
+> > > -                       cpu += rnp->grplo;
+> > > -               queue_work_on(cpu, rcu_par_gp_wq, &rnp->rew.rew_work);
+> > > +               sync_rcu_exp_select_cpus_queue_work(rnp);
+> > >                 rnp->exp_need_flush = true;
+> > >         }
+> > >
+> > > -       /* Wait for workqueue jobs (if any) to complete. */
+> > > +       /* Wait for jobs (if any) to complete. */
+> > >         rcu_for_each_leaf_node(rnp)
+> > >                 if (rnp->exp_need_flush)
+> > > -                       flush_work(&rnp->rew.rew_work);
+> > > +                       sync_rcu_exp_select_cpus_flush_work(rnp);
+> > >  }
+> > >
+> > >  /*
+> > > @@ -622,17 +719,6 @@ static void rcu_exp_sel_wait_wake(unsigned long s)
+> > >         rcu_exp_wait_wake(s);
+> > >  }
+> > >
+> > > -/*
+> > > - * Work-queue handler to drive an expedited grace period forward.
+> > > - */
+> > > -static void wait_rcu_exp_gp(struct work_struct *wp)
+> > > -{
+> > > -       struct rcu_exp_work *rewp;
+> > > -
+> > > -       rewp = container_of(wp, struct rcu_exp_work, rew_work);
+> > > -       rcu_exp_sel_wait_wake(rewp->rew_s);
+> > > -}
+> > > -
+> > >  #ifdef CONFIG_PREEMPT_RCU
+> > >
+> > >  /*
+> > > @@ -848,20 +934,19 @@ void synchronize_rcu_expedited(void)
+> > >         } else {
+> > >                 /* Marshall arguments & schedule the expedited grace period. */
+> > >                 rew.rew_s = s;
+> > > -               INIT_WORK_ONSTACK(&rew.rew_work, wait_rcu_exp_gp);
+> > > -               queue_work(rcu_gp_wq, &rew.rew_work);
+> > > +               synchronize_rcu_expedited_queue_work(&rew);
+> > >         }
+> > >
+> > >         /* Wait for expedited grace period to complete. */
+> > >         rnp = rcu_get_root();
+> > >         wait_event(rnp->exp_wq[rcu_seq_ctr(s) & 0x3],
+> > >                    sync_exp_work_done(s));
+> > > -       smp_mb(); /* Workqueue actions happen before return. */
+> > > +       smp_mb(); /* Work actions happen before return. */
+> > >
+> > >         /* Let the next expedited grace period start. */
+> > >         mutex_unlock(&rcu_state.exp_mutex);
+> > >
+> > >         if (likely(!boottime))
+> > > -               destroy_work_on_stack(&rew.rew_work);
+> > > +               synchronize_rcu_expedited_destroy_work(&rew);
+> > >  }
+> > >  EXPORT_SYMBOL_GPL(synchronize_rcu_expedited);
+> > >
+> > > base-commit: 42e7a03d3badebd4e70aea5362d6914dfc7c220b
+> > > --
+> > > 2.35.1.1178.g4f1659d476-goog
+> > >
