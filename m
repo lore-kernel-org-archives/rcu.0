@@ -2,525 +2,429 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A6C34C433EF
-	for <rcu@archiver.kernel.org>; Sat,  9 Apr 2022 00:35:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 777F6C433F5
+	for <rcu@archiver.kernel.org>; Sat,  9 Apr 2022 15:57:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234898AbiDIAhm (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 8 Apr 2022 20:37:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48014 "EHLO
+        id S234296AbiDIP7l (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 9 Apr 2022 11:59:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232310AbiDIAhl (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 8 Apr 2022 20:37:41 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70618DEB90
-        for <rcu@vger.kernel.org>; Fri,  8 Apr 2022 17:35:35 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-2eb5980c4f8so89276427b3.23
-        for <rcu@vger.kernel.org>; Fri, 08 Apr 2022 17:35:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:cc;
-        bh=TCfmygAlNib7zVXwX3bVBJq4CaYN01HQYK7s1aXYeys=;
-        b=DEPk7XiJrejfA4c43In0L/FwP5J46tG2UZAzwSjVVaxlQVgGJaZY3P6NgnCqU4e7He
-         NtgUhLr+uEpZnWECDnjBMiTHPM45uknEqK2DAiTjElHswubNaQIHsEj6PFi1/ckVKIwL
-         ubyrgJA8ylJb0BOIwVuwq8pTRpTlFf/8D1BYViqV0RuUf3uWSk4qHFgXpUF/uThjzcZ1
-         aXyfdZh7BqQ98HUH/neh/MtymghH5W2n4gWS0+sA9jXgN+8ha/eMklOx04eJSEfzKnIC
-         oL2wF14ZEcDV3KehF3DDytwUY+3ymfvf+oMaTXelCm5QaoayfjPWz7mXH3aCD1AFBw/a
-         JWoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:cc;
-        bh=TCfmygAlNib7zVXwX3bVBJq4CaYN01HQYK7s1aXYeys=;
-        b=5aMMizcFk2Ntix+hX2PnXYTK/NvApGT+/imPOR8UEGGkL6cfZgHKFUHU3pom1mFYgL
-         iuMc9aMneAlrU5IRfGlslOohchnbx/dH16fkPx4EX1UihHewzeix2EnJzM7PvOGaydza
-         d34fygBuiCFuEDhmNuind/f685DXXS3uPr6jODavZT2ZQ3YlNffE2AJuRMW+xvmv9h9k
-         HWJUkJEfy5OVuvDiPOmX9StqyPeU1sfBxoITv9931mr2ZOWeNatlgfcVIHEd1MKG/p86
-         5tQueDYojNoNZ3Wm7fV4Fu9CGFBu0xYyl2BRgAWHhZIsZ2nO89MwdoytnvcFFCBy+q6+
-         Q3wA==
-X-Gm-Message-State: AOAM530ytyYQIHxh/zXs1wBcxjpfgc/rbsxNNvajIo1Mb1YSrOVUfAme
-        zsFpi+C29ih0xcT+YvNC4eerCgLN/2anhOuTMg==
-X-Google-Smtp-Source: ABdhPJyf0AOsATvlaZp+t/zuSHrUCuaDDU2GjX59ggo2ysI6kRfi0rst9Wlz89o3RoRoyvILAmdI93DOn7BehS2ZWQ==
-X-Received: from kaleshsingh.mtv.corp.google.com ([2620:15c:211:200:2ab4:46a4:a745:b3d2])
- (user=kaleshsingh job=sendgmr) by 2002:a5b:247:0:b0:624:4d24:94ee with SMTP
- id g7-20020a5b0247000000b006244d2494eemr15656181ybp.197.1649464534611; Fri,
- 08 Apr 2022 17:35:34 -0700 (PDT)
-Date:   Fri,  8 Apr 2022 17:35:27 -0700
-Message-Id: <20220409003527.1587028-1-kaleshsingh@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.35.1.1178.g4f1659d476-goog
-Subject: [PATCH v3] EXP rcu: Move expedited grace period (GP) work to RT kthread_worker
-From:   Kalesh Singh <kaleshsingh@google.com>
-Cc:     surenb@google.com, kernel-team@android.com,
-        Kalesh Singh <kaleshsingh@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Tim Murray <timmurray@google.com>, Wei Wang <wvw@google.com>,
-        Kyle Lin <kylelin@google.com>,
-        Chunwei Lu <chunweilu@google.com>,
-        Lulu Wang <luluw@google.com>,
+        with ESMTP id S229936AbiDIP7k (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 9 Apr 2022 11:59:40 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EA531B60BB;
+        Sat,  9 Apr 2022 08:57:32 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 11B5860B3D;
+        Sat,  9 Apr 2022 15:57:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66CA3C385A0;
+        Sat,  9 Apr 2022 15:57:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1649519851;
+        bh=vHrf3GlPWwjvas0y0BFsbrS1upMqeKahsNTbwbLOZfA=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=EJ+hQ8oxkGIKACi4leHIaD5I/w08kzqdIJXVfWGvFZmEB/h2DnXtBdSl7pdLkRGPK
+         FQknp/w+JLzSfClVJLEDC7yZirrDoT9sM/sFIf4AJw5/gga0PkxL+bJah0L8Mc8bcP
+         grXeuJpCTpT/t4NzWM8pgFNbnBlT0Pcj4jaf8ulmVnQ3ccNBJHBZI/64PE3SddACWM
+         P3Smdke5eYGlvxXmXlubd4pyGT5ElthN5EoySolyU9EgHsLRRXewqZtwy//tZ6vSpJ
+         Q99yiOdu9CB+OKkY8wK0Jg7Juzl9N4E4mST220iXxGjTHQbvtY7DLOQblWaNP+Ctjj
+         gHfx5JUrZh8sg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 11C515C09EF; Sat,  9 Apr 2022 08:57:31 -0700 (PDT)
+Date:   Sat, 9 Apr 2022 08:57:31 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
         Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-To:     unlisted-recipients:; (no To-header on input)
+        Joel Fernandes <joel@joelfernandes.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Wei Liu <wei.liu@kernel.org>,
+        Xiaoming Ni <nixiaoming@huawei.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Helge Deller <deller@gmx.de>, Marco Elver <elver@google.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Shawn Guo <shawn.guo@linaro.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Phil Auld <pauld@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Wang Qing <wangqing@vivo.com>, rcu@vger.kernel.org
+Subject: Re: [PATCH printk v2 09/12] printk: add functions to prefer direct
+ printing
+Message-ID: <20220409155731.GP4285@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20220405132535.649171-1-john.ogness@linutronix.de>
+ <20220405132535.649171-10-john.ogness@linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220405132535.649171-10-john.ogness@linutronix.de>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Enabling CONFIG_RCU_BOOST did not reduce RCU expedited grace-period
-latency because its workqueues run at SCHED_OTHER, and thus can be
-delayed by normal processes.  This commit avoids these delays by moving
-the expedited GP work items to a real-time-priority kthread_worker.
+On Tue, Apr 05, 2022 at 03:31:32PM +0206, John Ogness wrote:
+> Once kthread printing is available, console printing will no longer
+> occur in the context of the printk caller. However, there are some
+> special contexts where it is desirable for the printk caller to
+> directly print out kernel messages. Using pr_flush() to wait for
+> threaded printers is only possible if the caller is in a sleepable
+> context and the kthreads are active. That is not always the case.
+> 
+> Introduce printk_prefer_direct_enter() and printk_prefer_direct_exit()
+> functions to explicitly (and globally) activate/deactivate preferred
+> direct console printing. The term "direct console printing" refers to
+> printing to all enabled consoles from the context of the printk
+> caller. The term "prefer" is used because this type of printing is
+> only best effort. If the console is currently locked or other
+> printers are already actively printing, the printk caller will need
+> to rely on the other contexts to handle the printing.
+> 
+> This preferred direct printing is how all printing is currently
+> handled (unless explicitly deferred).
+> 
+> When kthread printing is introduced, there may be some unanticipated
+> problems due to kthreads being unable to flush important messages.
+> In order to minimize such risks, preferred direct printing is
+> activated for the primary important messages when the system
+> experiences general types of major errors. These are:
+> 
+>  - emergency reboot/shutdown
+>  - cpu and rcu stalls
+>  - hard and soft lockups
+>  - hung tasks
+>  - warn
+>  - sysrq
+> 
+> Note that since kthread printing does not yet exist, no behavior
+> changes result from this commit. This is only implementing the
+> counter and marking the various places where preferred direct
+> printing is active.
+> 
+> Signed-off-by: John Ogness <john.ogness@linutronix.de>
 
-This option is controlled by CONFIG_RCU_EXP_KTHREAD and disabled by
-default on PREEMPT_RT=y kernels which disable expedited grace periods
-after boot by unconditionally setting rcupdate.rcu_normal_after_boot=1.
+From an RCU perspective:
 
-The results were evaluated on arm64 Android devices (6GB ram) running
-5.10 kernel, and capturing trace data in critical user-level code.
+Acked-by: Paul E. McKenney <paulmck@kernel.org>
 
-The table below shows the resulting order-of-magnitude improvements
-in synchronize_rcu_expedited() latency:
-
-------------------------------------------------------------------------
-|                          |   workqueues  |  kthread_worker |  Diff   |
-------------------------------------------------------------------------
-| Count                    |          725  |            688  |         |
-------------------------------------------------------------------------
-| Min Duration       (ns)  |          326  |            447  |  37.12% |
-------------------------------------------------------------------------
-| Q1                 (ns)  |       39,428  |         38,971  |  -1.16% |
-------------------------------------------------------------------------
-| Q2 - Median        (ns)  |       98,225  |         69,743  | -29.00% |
-------------------------------------------------------------------------
-| Q3                 (ns)  |      342,122  |        126,638  | -62.98% |
-------------------------------------------------------------------------
-| Max Duration       (ns)  |  372,766,967  |      2,329,671  | -99.38% |
-------------------------------------------------------------------------
-| Avg Duration       (ns)  |    2,746,353  |        151,242  | -94.49% |
-------------------------------------------------------------------------
-| Standard Deviation (ns)  |   19,327,765  |        294,408  |         |
-------------------------------------------------------------------------
-
-The below table show the range of maximums/minimums for
-synchronize_rcu_expedited() latency from all experiments:
-
-------------------------------------------------------------------------
-|                          |   workqueues  |  kthread_worker |  Diff   |
-------------------------------------------------------------------------
-| Total No. of Experiments |           25  |             23  |         |
-------------------------------------------------------------------------
-| Largest  Maximum   (ns)  |  372,766,967  |      2,329,671  | -99.38% |
-------------------------------------------------------------------------
-| Smallest Maximum   (ns)  |       38,819  |         86,954  | 124.00% |
-------------------------------------------------------------------------
-| Range of Maximums  (ns)  |  372,728,148  |      2,242,717  |         |
-------------------------------------------------------------------------
-| Largest  Minimum   (ns)  |       88,623  |         27,588  | -68.87% |
-------------------------------------------------------------------------
-| Smallest Minimum   (ns)  |          326  |            447  |  37.12% |
-------------------------------------------------------------------------
-| Range of Minimums  (ns)  |       88,297  |         27,141  |         |
-------------------------------------------------------------------------
-
-Cc: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Tejun Heo <tj@kernel.org>
-Reported-by: Tim Murray <timmurray@google.com>
-Reported-by: Wei Wang <wvw@google.com>
-Tested-by: Kyle Lin <kylelin@google.com>
-Tested-by: Chunwei Lu <chunweilu@google.com>
-Tested-by: Lulu Wang <luluw@google.com>
-Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
----
-
-Changes in v3:
-  - Update Kconfig and commit text describing default RCU_EXP_KTHREAD value
-    for PREEMT_RT kernels; per Steve
-
-Changes in v2:
-  - Add stats on variation: standard deviation, range of maxs, etc; per Paul
-  - Make this optimization configurable (CONFIG_RCU_EXP_KTHREAD); per Paul
-
-
- kernel/rcu/Kconfig    |  14 ++++
- kernel/rcu/rcu.h      |   5 ++
- kernel/rcu/tree.c     |  51 ++++++++++++++-
- kernel/rcu/tree.h     |   5 ++
- kernel/rcu/tree_exp.h | 147 +++++++++++++++++++++++++++++++++---------
- 5 files changed, 188 insertions(+), 34 deletions(-)
-
-diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
-index bf8e341e75b4..fd64a75823cb 100644
---- a/kernel/rcu/Kconfig
-+++ b/kernel/rcu/Kconfig
-@@ -195,6 +195,20 @@ config RCU_BOOST_DELAY
- 
- 	  Accept the default if unsure.
- 
-+config RCU_EXP_KTHREAD
-+	bool "Perform RCU expedited work in a real-time kthread"
-+	depends on RCU_BOOST && RCU_EXPERT
-+	default !PREEMPT_RT && NR_CPUS <= 32
-+	help
-+	  Use this option to further reduce the latencies of expedited
-+	  grace periods at the expense of being more disruptive.
-+
-+	  This option is disabled by default on PREEMPT_RT=y kernels which
-+	  disable expedited grace periods after boot by unconditionally
-+	  setting rcupdate.rcu_normal_after_boot=1.
-+
-+	  Accept the default if unsure.
-+
- config RCU_NOCB_CPU
- 	bool "Offload RCU callback processing from boot-selected CPUs"
- 	depends on TREE_RCU
-diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-index 24b5f2c2de87..5510d2231c32 100644
---- a/kernel/rcu/rcu.h
-+++ b/kernel/rcu/rcu.h
-@@ -534,7 +534,12 @@ int rcu_get_gp_kthreads_prio(void);
- void rcu_fwd_progress_check(unsigned long j);
- void rcu_force_quiescent_state(void);
- extern struct workqueue_struct *rcu_gp_wq;
-+#ifdef CONFIG_RCU_EXP_KTHREAD
-+extern struct kthread_worker *rcu_exp_gp_kworker;
-+extern struct kthread_worker *rcu_exp_par_gp_kworker;
-+#else /* !CONFIG_RCU_EXP_KTHREAD */
- extern struct workqueue_struct *rcu_par_gp_wq;
-+#endif /* CONFIG_RCU_EXP_KTHREAD */
- #endif /* #else #ifdef CONFIG_TINY_RCU */
- 
- #ifdef CONFIG_RCU_NOCB_CPU
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index a4b8189455d5..763e45fdf49b 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -4471,6 +4471,51 @@ static int rcu_pm_notify(struct notifier_block *self,
- 	return NOTIFY_OK;
- }
- 
-+#ifdef CONFIG_RCU_EXP_KTHREAD
-+struct kthread_worker *rcu_exp_gp_kworker;
-+struct kthread_worker *rcu_exp_par_gp_kworker;
-+
-+static void __init rcu_start_exp_gp_kworkers(void)
-+{
-+	const char *par_gp_kworker_name = "rcu_exp_par_gp_kthread_worker";
-+	const char *gp_kworker_name = "rcu_exp_gp_kthread_worker";
-+	struct sched_param param = { .sched_priority = kthread_prio };
-+
-+	rcu_exp_gp_kworker = kthread_create_worker(0, gp_kworker_name);
-+	if (IS_ERR_OR_NULL(rcu_exp_gp_kworker)) {
-+		pr_err("Failed to create %s!\n", gp_kworker_name);
-+		return;
-+	}
-+
-+	rcu_exp_par_gp_kworker = kthread_create_worker(0, par_gp_kworker_name);
-+	if (IS_ERR_OR_NULL(rcu_exp_par_gp_kworker)) {
-+		pr_err("Failed to create %s!\n", par_gp_kworker_name);
-+		kthread_destroy_worker(rcu_exp_gp_kworker);
-+		return;
-+	}
-+
-+	sched_setscheduler_nocheck(rcu_exp_gp_kworker->task, SCHED_FIFO, &param);
-+	sched_setscheduler_nocheck(rcu_exp_par_gp_kworker->task, SCHED_FIFO,
-+				   &param);
-+}
-+
-+static inline void rcu_alloc_par_gp_wq(void)
-+{
-+}
-+#else /* !CONFIG_RCU_EXP_KTHREAD */
-+struct workqueue_struct *rcu_par_gp_wq;
-+
-+static void __init rcu_start_exp_gp_kworkers(void)
-+{
-+}
-+
-+static inline void rcu_alloc_par_gp_wq(void)
-+{
-+	rcu_par_gp_wq = alloc_workqueue("rcu_par_gp", WQ_MEM_RECLAIM, 0);
-+	WARN_ON(!rcu_par_gp_wq);
-+}
-+#endif /* CONFIG_RCU_EXP_KTHREAD */
-+
- /*
-  * Spawn the kthreads that handle RCU's grace periods.
-  */
-@@ -4500,6 +4545,8 @@ static int __init rcu_spawn_gp_kthread(void)
- 	rcu_spawn_nocb_kthreads();
- 	rcu_spawn_boost_kthreads();
- 	rcu_spawn_core_kthreads();
-+	/* Create kthread worker for expedited GPs */
-+	rcu_start_exp_gp_kworkers();
- 	return 0;
- }
- early_initcall(rcu_spawn_gp_kthread);
-@@ -4745,7 +4792,6 @@ static void __init rcu_dump_rcu_node_tree(void)
- }
- 
- struct workqueue_struct *rcu_gp_wq;
--struct workqueue_struct *rcu_par_gp_wq;
- 
- static void __init kfree_rcu_batch_init(void)
- {
-@@ -4811,8 +4857,7 @@ void __init rcu_init(void)
- 	/* Create workqueue for Tree SRCU and for expedited GPs. */
- 	rcu_gp_wq = alloc_workqueue("rcu_gp", WQ_MEM_RECLAIM, 0);
- 	WARN_ON(!rcu_gp_wq);
--	rcu_par_gp_wq = alloc_workqueue("rcu_par_gp", WQ_MEM_RECLAIM, 0);
--	WARN_ON(!rcu_par_gp_wq);
-+	rcu_alloc_par_gp_wq();
- 
- 	/* Fill in default value for rcutree.qovld boot parameter. */
- 	/* -After- the rcu_node ->lock fields are initialized! */
-diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index 926673ebe355..b577cdfdc851 100644
---- a/kernel/rcu/tree.h
-+++ b/kernel/rcu/tree.h
-@@ -10,6 +10,7 @@
-  */
- 
- #include <linux/cache.h>
-+#include <linux/kthread.h>
- #include <linux/spinlock.h>
- #include <linux/rtmutex.h>
- #include <linux/threads.h>
-@@ -23,7 +24,11 @@
- /* Communicate arguments to a workqueue handler. */
- struct rcu_exp_work {
- 	unsigned long rew_s;
-+#ifdef CONFIG_RCU_EXP_KTHREAD
-+	struct kthread_work rew_work;
-+#else
- 	struct work_struct rew_work;
-+#endif /* CONFIG_RCU_EXP_KTHREAD */
- };
- 
- /* RCU's kthread states for tracing. */
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index 60197ea24ceb..2c6c0e0bc83a 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -334,15 +334,13 @@ static bool exp_funnel_lock(unsigned long s)
-  * Select the CPUs within the specified rcu_node that the upcoming
-  * expedited grace period needs to wait for.
-  */
--static void sync_rcu_exp_select_node_cpus(struct work_struct *wp)
-+static void __sync_rcu_exp_select_node_cpus(struct rcu_exp_work *rewp)
- {
- 	int cpu;
- 	unsigned long flags;
- 	unsigned long mask_ofl_test;
- 	unsigned long mask_ofl_ipi;
- 	int ret;
--	struct rcu_exp_work *rewp =
--		container_of(wp, struct rcu_exp_work, rew_work);
- 	struct rcu_node *rnp = container_of(rewp, struct rcu_node, rew);
- 
- 	raw_spin_lock_irqsave_rcu_node(rnp, flags);
-@@ -417,13 +415,119 @@ static void sync_rcu_exp_select_node_cpus(struct work_struct *wp)
- 		rcu_report_exp_cpu_mult(rnp, mask_ofl_test, false);
- }
- 
-+static void rcu_exp_sel_wait_wake(unsigned long s);
-+
-+#ifdef CONFIG_RCU_EXP_KTHREAD
-+static void sync_rcu_exp_select_node_cpus(struct kthread_work *wp)
-+{
-+	struct rcu_exp_work *rewp =
-+		container_of(wp, struct rcu_exp_work, rew_work);
-+
-+	__sync_rcu_exp_select_node_cpus(rewp);
-+}
-+
-+static inline bool rcu_gp_par_worker_started(void)
-+{
-+	return !!READ_ONCE(rcu_exp_par_gp_kworker);
-+}
-+
-+static inline void sync_rcu_exp_select_cpus_queue_work(struct rcu_node *rnp)
-+{
-+	kthread_init_work(&rnp->rew.rew_work, sync_rcu_exp_select_node_cpus);
-+	/*
-+	 * Use rcu_exp_par_gp_kworker, because flushing a work item from
-+	 * another work item on the same kthread worker can result in
-+	 * deadlock.
-+	 */
-+	kthread_queue_work(rcu_exp_par_gp_kworker, &rnp->rew.rew_work);
-+}
-+
-+static inline void sync_rcu_exp_select_cpus_flush_work(struct rcu_node *rnp)
-+{
-+	kthread_flush_work(&rnp->rew.rew_work);
-+}
-+
-+/*
-+ * Work-queue handler to drive an expedited grace period forward.
-+ */
-+static void wait_rcu_exp_gp(struct kthread_work *wp)
-+{
-+	struct rcu_exp_work *rewp;
-+
-+	rewp = container_of(wp, struct rcu_exp_work, rew_work);
-+	rcu_exp_sel_wait_wake(rewp->rew_s);
-+}
-+
-+static inline void synchronize_rcu_expedited_queue_work(struct rcu_exp_work *rew)
-+{
-+	kthread_init_work(&rew->rew_work, wait_rcu_exp_gp);
-+	kthread_queue_work(rcu_exp_gp_kworker, &rew->rew_work);
-+}
-+
-+static inline void synchronize_rcu_expedited_destroy_work(struct rcu_exp_work *rew)
-+{
-+}
-+#else /* !CONFIG_RCU_EXP_KTHREAD */
-+static void sync_rcu_exp_select_node_cpus(struct work_struct *wp)
-+{
-+	struct rcu_exp_work *rewp =
-+		container_of(wp, struct rcu_exp_work, rew_work);
-+
-+	__sync_rcu_exp_select_node_cpus(rewp);
-+}
-+
-+static inline bool rcu_gp_par_worker_started(void)
-+{
-+	return !!READ_ONCE(rcu_par_gp_wq);
-+}
-+
-+static inline void sync_rcu_exp_select_cpus_queue_work(struct rcu_node *rnp)
-+{
-+	int cpu = find_next_bit(&rnp->ffmask, BITS_PER_LONG, -1);
-+
-+	INIT_WORK(&rnp->rew.rew_work, sync_rcu_exp_select_node_cpus);
-+	/* If all offline, queue the work on an unbound CPU. */
-+	if (unlikely(cpu > rnp->grphi - rnp->grplo))
-+		cpu = WORK_CPU_UNBOUND;
-+	else
-+		cpu += rnp->grplo;
-+	queue_work_on(cpu, rcu_par_gp_wq, &rnp->rew.rew_work);
-+}
-+
-+static inline void sync_rcu_exp_select_cpus_flush_work(struct rcu_node *rnp)
-+{
-+	flush_work(&rnp->rew.rew_work);
-+}
-+
-+/*
-+ * Work-queue handler to drive an expedited grace period forward.
-+ */
-+static void wait_rcu_exp_gp(struct work_struct *wp)
-+{
-+	struct rcu_exp_work *rewp;
-+
-+	rewp = container_of(wp, struct rcu_exp_work, rew_work);
-+	rcu_exp_sel_wait_wake(rewp->rew_s);
-+}
-+
-+static inline void synchronize_rcu_expedited_queue_work(struct rcu_exp_work *rew)
-+{
-+	INIT_WORK_ONSTACK(&rew->rew_work, wait_rcu_exp_gp);
-+	queue_work(rcu_gp_wq, &rew->rew_work);
-+}
-+
-+static inline void synchronize_rcu_expedited_destroy_work(struct rcu_exp_work *rew)
-+{
-+	destroy_work_on_stack(&rew->rew_work);
-+}
-+#endif /* CONFIG_RCU_EXP_KTHREAD */
-+
- /*
-  * Select the nodes that the upcoming expedited grace period needs
-  * to wait for.
-  */
- static void sync_rcu_exp_select_cpus(void)
- {
--	int cpu;
- 	struct rcu_node *rnp;
- 
- 	trace_rcu_exp_grace_period(rcu_state.name, rcu_exp_gp_seq_endval(), TPS("reset"));
-@@ -435,28 +539,21 @@ static void sync_rcu_exp_select_cpus(void)
- 		rnp->exp_need_flush = false;
- 		if (!READ_ONCE(rnp->expmask))
- 			continue; /* Avoid early boot non-existent wq. */
--		if (!READ_ONCE(rcu_par_gp_wq) ||
-+		if (!rcu_gp_par_worker_started() ||
- 		    rcu_scheduler_active != RCU_SCHEDULER_RUNNING ||
- 		    rcu_is_last_leaf_node(rnp)) {
--			/* No workqueues yet or last leaf, do direct call. */
-+			/* No worker started yet or last leaf, do direct call. */
- 			sync_rcu_exp_select_node_cpus(&rnp->rew.rew_work);
- 			continue;
- 		}
--		INIT_WORK(&rnp->rew.rew_work, sync_rcu_exp_select_node_cpus);
--		cpu = find_next_bit(&rnp->ffmask, BITS_PER_LONG, -1);
--		/* If all offline, queue the work on an unbound CPU. */
--		if (unlikely(cpu > rnp->grphi - rnp->grplo))
--			cpu = WORK_CPU_UNBOUND;
--		else
--			cpu += rnp->grplo;
--		queue_work_on(cpu, rcu_par_gp_wq, &rnp->rew.rew_work);
-+		sync_rcu_exp_select_cpus_queue_work(rnp);
- 		rnp->exp_need_flush = true;
- 	}
- 
--	/* Wait for workqueue jobs (if any) to complete. */
-+	/* Wait for jobs (if any) to complete. */
- 	rcu_for_each_leaf_node(rnp)
- 		if (rnp->exp_need_flush)
--			flush_work(&rnp->rew.rew_work);
-+			sync_rcu_exp_select_cpus_flush_work(rnp);
- }
- 
- /*
-@@ -622,17 +719,6 @@ static void rcu_exp_sel_wait_wake(unsigned long s)
- 	rcu_exp_wait_wake(s);
- }
- 
--/*
-- * Work-queue handler to drive an expedited grace period forward.
-- */
--static void wait_rcu_exp_gp(struct work_struct *wp)
--{
--	struct rcu_exp_work *rewp;
--
--	rewp = container_of(wp, struct rcu_exp_work, rew_work);
--	rcu_exp_sel_wait_wake(rewp->rew_s);
--}
--
- #ifdef CONFIG_PREEMPT_RCU
- 
- /*
-@@ -848,20 +934,19 @@ void synchronize_rcu_expedited(void)
- 	} else {
- 		/* Marshall arguments & schedule the expedited grace period. */
- 		rew.rew_s = s;
--		INIT_WORK_ONSTACK(&rew.rew_work, wait_rcu_exp_gp);
--		queue_work(rcu_gp_wq, &rew.rew_work);
-+		synchronize_rcu_expedited_queue_work(&rew);
- 	}
- 
- 	/* Wait for expedited grace period to complete. */
- 	rnp = rcu_get_root();
- 	wait_event(rnp->exp_wq[rcu_seq_ctr(s) & 0x3],
- 		   sync_exp_work_done(s));
--	smp_mb(); /* Workqueue actions happen before return. */
-+	smp_mb(); /* Work actions happen before return. */
- 
- 	/* Let the next expedited grace period start. */
- 	mutex_unlock(&rcu_state.exp_mutex);
- 
- 	if (likely(!boottime))
--		destroy_work_on_stack(&rew.rew_work);
-+		synchronize_rcu_expedited_destroy_work(&rew);
- }
- EXPORT_SYMBOL_GPL(synchronize_rcu_expedited);
-
-base-commit: 1a3b1bba7c7a5eb8a11513cf88427cb9d77bc60a
--- 
-2.35.1.1178.g4f1659d476-goog
-
+> ---
+>  drivers/tty/sysrq.c     |  2 ++
+>  include/linux/printk.h  | 11 +++++++++++
+>  kernel/hung_task.c      | 11 ++++++++++-
+>  kernel/panic.c          |  4 ++++
+>  kernel/printk/printk.c  | 28 ++++++++++++++++++++++++++++
+>  kernel/rcu/tree_stall.h |  2 ++
+>  kernel/reboot.c         | 14 +++++++++++++-
+>  kernel/watchdog.c       |  4 ++++
+>  kernel/watchdog_hld.c   |  4 ++++
+>  9 files changed, 78 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/tty/sysrq.c b/drivers/tty/sysrq.c
+> index bbfd004449b5..2884cd638d64 100644
+> --- a/drivers/tty/sysrq.c
+> +++ b/drivers/tty/sysrq.c
+> @@ -578,6 +578,7 @@ void __handle_sysrq(int key, bool check_mask)
+>  
+>  	rcu_sysrq_start();
+>  	rcu_read_lock();
+> +	printk_prefer_direct_enter();
+>  	/*
+>  	 * Raise the apparent loglevel to maximum so that the sysrq header
+>  	 * is shown to provide the user with positive feedback.  We do not
+> @@ -619,6 +620,7 @@ void __handle_sysrq(int key, bool check_mask)
+>  		pr_cont("\n");
+>  		console_loglevel = orig_log_level;
+>  	}
+> +	printk_prefer_direct_exit();
+>  	rcu_read_unlock();
+>  	rcu_sysrq_end();
+>  
+> diff --git a/include/linux/printk.h b/include/linux/printk.h
+> index 091fba7283e1..cd26aab0ab2a 100644
+> --- a/include/linux/printk.h
+> +++ b/include/linux/printk.h
+> @@ -170,6 +170,9 @@ extern void __printk_safe_exit(void);
+>  #define printk_deferred_enter __printk_safe_enter
+>  #define printk_deferred_exit __printk_safe_exit
+>  
+> +extern void printk_prefer_direct_enter(void);
+> +extern void printk_prefer_direct_exit(void);
+> +
+>  extern bool pr_flush(int timeout_ms, bool reset_on_progress);
+>  
+>  /*
+> @@ -222,6 +225,14 @@ static inline void printk_deferred_exit(void)
+>  {
+>  }
+>  
+> +static inline void printk_prefer_direct_enter(void)
+> +{
+> +}
+> +
+> +static inline void printk_prefer_direct_exit(void)
+> +{
+> +}
+> +
+>  static inline bool pr_flush(int timeout_ms, bool reset_on_progress)
+>  {
+>  	return true;
+> diff --git a/kernel/hung_task.c b/kernel/hung_task.c
+> index 52501e5f7655..02a65d554340 100644
+> --- a/kernel/hung_task.c
+> +++ b/kernel/hung_task.c
+> @@ -127,6 +127,8 @@ static void check_hung_task(struct task_struct *t, unsigned long timeout)
+>  	 * complain:
+>  	 */
+>  	if (sysctl_hung_task_warnings) {
+> +		printk_prefer_direct_enter();
+> +
+>  		if (sysctl_hung_task_warnings > 0)
+>  			sysctl_hung_task_warnings--;
+>  		pr_err("INFO: task %s:%d blocked for more than %ld seconds.\n",
+> @@ -142,6 +144,8 @@ static void check_hung_task(struct task_struct *t, unsigned long timeout)
+>  
+>  		if (sysctl_hung_task_all_cpu_backtrace)
+>  			hung_task_show_all_bt = true;
+> +
+> +		printk_prefer_direct_exit();
+>  	}
+>  
+>  	touch_nmi_watchdog();
+> @@ -204,12 +208,17 @@ static void check_hung_uninterruptible_tasks(unsigned long timeout)
+>  	}
+>   unlock:
+>  	rcu_read_unlock();
+> -	if (hung_task_show_lock)
+> +	if (hung_task_show_lock) {
+> +		printk_prefer_direct_enter();
+>  		debug_show_all_locks();
+> +		printk_prefer_direct_exit();
+> +	}
+>  
+>  	if (hung_task_show_all_bt) {
+>  		hung_task_show_all_bt = false;
+> +		printk_prefer_direct_enter();
+>  		trigger_all_cpu_backtrace();
+> +		printk_prefer_direct_exit();
+>  	}
+>  
+>  	if (hung_task_call_panic)
+> diff --git a/kernel/panic.c b/kernel/panic.c
+> index 55b50e052ec3..7d422597403f 100644
+> --- a/kernel/panic.c
+> +++ b/kernel/panic.c
+> @@ -560,6 +560,8 @@ void __warn(const char *file, int line, void *caller, unsigned taint,
+>  {
+>  	disable_trace_on_warning();
+>  
+> +	printk_prefer_direct_enter();
+> +
+>  	if (file)
+>  		pr_warn("WARNING: CPU: %d PID: %d at %s:%d %pS\n",
+>  			raw_smp_processor_id(), current->pid, file, line,
+> @@ -597,6 +599,8 @@ void __warn(const char *file, int line, void *caller, unsigned taint,
+>  
+>  	/* Just a warning, don't kill lockdep. */
+>  	add_taint(taint, LOCKDEP_STILL_OK);
+> +
+> +	printk_prefer_direct_exit();
+>  }
+>  
+>  #ifndef __WARN_FLAGS
+> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+> index d0369afaf365..258d02cff140 100644
+> --- a/kernel/printk/printk.c
+> +++ b/kernel/printk/printk.c
+> @@ -362,6 +362,34 @@ static int console_msg_format = MSG_FORMAT_DEFAULT;
+>  static DEFINE_MUTEX(syslog_lock);
+>  
+>  #ifdef CONFIG_PRINTK
+> +static atomic_t printk_prefer_direct = ATOMIC_INIT(0);
+> +
+> +/**
+> + * printk_prefer_direct_enter - cause printk() calls to attempt direct
+> + *                              printing to all enabled consoles
+> + *
+> + * Since it is not possible to call into the console printing code from any
+> + * context, there is no guarantee that direct printing will occur.
+> + *
+> + * This globally effects all printk() callers.
+> + *
+> + * Context: Any context.
+> + */
+> +void printk_prefer_direct_enter(void)
+> +{
+> +	atomic_inc(&printk_prefer_direct);
+> +}
+> +
+> +/**
+> + * printk_prefer_direct_exit - restore printk() behavior
+> + *
+> + * Context: Any context.
+> + */
+> +void printk_prefer_direct_exit(void)
+> +{
+> +	WARN_ON(atomic_dec_if_positive(&printk_prefer_direct) < 0);
+> +}
+> +
+>  DECLARE_WAIT_QUEUE_HEAD(log_wait);
+>  /* All 3 protected by @syslog_lock. */
+>  /* the next printk record to read by syslog(READ) or /proc/kmsg */
+> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+> index 0c5d8516516a..d612707c2ed0 100644
+> --- a/kernel/rcu/tree_stall.h
+> +++ b/kernel/rcu/tree_stall.h
+> @@ -619,6 +619,7 @@ static void print_cpu_stall(unsigned long gps)
+>  	 * See Documentation/RCU/stallwarn.rst for info on how to debug
+>  	 * RCU CPU stall warnings.
+>  	 */
+> +	printk_prefer_direct_enter();
+>  	trace_rcu_stall_warning(rcu_state.name, TPS("SelfDetected"));
+>  	pr_err("INFO: %s self-detected stall on CPU\n", rcu_state.name);
+>  	raw_spin_lock_irqsave_rcu_node(rdp->mynode, flags);
+> @@ -656,6 +657,7 @@ static void print_cpu_stall(unsigned long gps)
+>  	 */
+>  	set_tsk_need_resched(current);
+>  	set_preempt_need_resched();
+> +	printk_prefer_direct_exit();
+>  }
+>  
+>  static void check_cpu_stall(struct rcu_data *rdp)
+> diff --git a/kernel/reboot.c b/kernel/reboot.c
+> index 6bcc5d6a6572..4177645e74d6 100644
+> --- a/kernel/reboot.c
+> +++ b/kernel/reboot.c
+> @@ -447,9 +447,11 @@ static int __orderly_reboot(void)
+>  	ret = run_cmd(reboot_cmd);
+>  
+>  	if (ret) {
+> +		printk_prefer_direct_enter();
+>  		pr_warn("Failed to start orderly reboot: forcing the issue\n");
+>  		emergency_sync();
+>  		kernel_restart(NULL);
+> +		printk_prefer_direct_exit();
+>  	}
+>  
+>  	return ret;
+> @@ -462,6 +464,7 @@ static int __orderly_poweroff(bool force)
+>  	ret = run_cmd(poweroff_cmd);
+>  
+>  	if (ret && force) {
+> +		printk_prefer_direct_enter();
+>  		pr_warn("Failed to start orderly shutdown: forcing the issue\n");
+>  
+>  		/*
+> @@ -471,6 +474,7 @@ static int __orderly_poweroff(bool force)
+>  		 */
+>  		emergency_sync();
+>  		kernel_power_off();
+> +		printk_prefer_direct_exit();
+>  	}
+>  
+>  	return ret;
+> @@ -528,6 +532,8 @@ EXPORT_SYMBOL_GPL(orderly_reboot);
+>   */
+>  static void hw_failure_emergency_poweroff_func(struct work_struct *work)
+>  {
+> +	printk_prefer_direct_enter();
+> +
+>  	/*
+>  	 * We have reached here after the emergency shutdown waiting period has
+>  	 * expired. This means orderly_poweroff has not been able to shut off
+> @@ -544,6 +550,8 @@ static void hw_failure_emergency_poweroff_func(struct work_struct *work)
+>  	 */
+>  	pr_emerg("Hardware protection shutdown failed. Trying emergency restart\n");
+>  	emergency_restart();
+> +
+> +	printk_prefer_direct_exit();
+>  }
+>  
+>  static DECLARE_DELAYED_WORK(hw_failure_emergency_poweroff_work,
+> @@ -582,11 +590,13 @@ void hw_protection_shutdown(const char *reason, int ms_until_forced)
+>  {
+>  	static atomic_t allow_proceed = ATOMIC_INIT(1);
+>  
+> +	printk_prefer_direct_enter();
+> +
+>  	pr_emerg("HARDWARE PROTECTION shutdown (%s)\n", reason);
+>  
+>  	/* Shutdown should be initiated only once. */
+>  	if (!atomic_dec_and_test(&allow_proceed))
+> -		return;
+> +		goto out;
+>  
+>  	/*
+>  	 * Queue a backup emergency shutdown in the event of
+> @@ -594,6 +604,8 @@ void hw_protection_shutdown(const char *reason, int ms_until_forced)
+>  	 */
+>  	hw_failure_emergency_poweroff(ms_until_forced);
+>  	orderly_poweroff(true);
+> +out:
+> +	printk_prefer_direct_exit();
+>  }
+>  EXPORT_SYMBOL_GPL(hw_protection_shutdown);
+>  
+> diff --git a/kernel/watchdog.c b/kernel/watchdog.c
+> index 9166220457bc..40024e03d422 100644
+> --- a/kernel/watchdog.c
+> +++ b/kernel/watchdog.c
+> @@ -424,6 +424,8 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
+>  		/* Start period for the next softlockup warning. */
+>  		update_report_ts();
+>  
+> +		printk_prefer_direct_enter();
+> +
+>  		pr_emerg("BUG: soft lockup - CPU#%d stuck for %us! [%s:%d]\n",
+>  			smp_processor_id(), duration,
+>  			current->comm, task_pid_nr(current));
+> @@ -442,6 +444,8 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
+>  		add_taint(TAINT_SOFTLOCKUP, LOCKDEP_STILL_OK);
+>  		if (softlockup_panic)
+>  			panic("softlockup: hung tasks");
+> +
+> +		printk_prefer_direct_exit();
+>  	}
+>  
+>  	return HRTIMER_RESTART;
+> diff --git a/kernel/watchdog_hld.c b/kernel/watchdog_hld.c
+> index 247bf0b1582c..701f35f0e2d4 100644
+> --- a/kernel/watchdog_hld.c
+> +++ b/kernel/watchdog_hld.c
+> @@ -135,6 +135,8 @@ static void watchdog_overflow_callback(struct perf_event *event,
+>  		if (__this_cpu_read(hard_watchdog_warn) == true)
+>  			return;
+>  
+> +		printk_prefer_direct_enter();
+> +
+>  		pr_emerg("Watchdog detected hard LOCKUP on cpu %d\n",
+>  			 this_cpu);
+>  		print_modules();
+> @@ -155,6 +157,8 @@ static void watchdog_overflow_callback(struct perf_event *event,
+>  		if (hardlockup_panic)
+>  			nmi_panic(regs, "Hard LOCKUP");
+>  
+> +		printk_prefer_direct_exit();
+> +
+>  		__this_cpu_write(hard_watchdog_warn, true);
+>  		return;
+>  	}
+> -- 
+> 2.30.2
+> 
