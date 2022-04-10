@@ -2,148 +2,95 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E3881C433EF
-	for <rcu@archiver.kernel.org>; Sat,  9 Apr 2022 16:37:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BDBDCC433F5
+	for <rcu@archiver.kernel.org>; Sun, 10 Apr 2022 11:33:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242751AbiDIQjy (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 9 Apr 2022 12:39:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53264 "EHLO
+        id S238477AbiDJLf6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 10 Apr 2022 07:35:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242745AbiDIQjy (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 9 Apr 2022 12:39:54 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7835E388
-        for <rcu@vger.kernel.org>; Sat,  9 Apr 2022 09:37:45 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S230057AbiDJLf5 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 10 Apr 2022 07:35:57 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4813B58E44
+        for <rcu@vger.kernel.org>; Sun, 10 Apr 2022 04:33:47 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3D41760B59
-        for <rcu@vger.kernel.org>; Sat,  9 Apr 2022 16:37:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CD06C385A4;
-        Sat,  9 Apr 2022 16:37:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649522264;
-        bh=HqhPPP25sGb3cKXbG1r9CNONuKBKnGkPq3ApzIa1Hmc=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=KUTarF0+mp4M5YrktNrmlCWQXlmruS/pKYIMU+/J9ZnXD+VQxpSEjj2/A5DrnYXZV
-         NchjKRuEdQdpM4LTANHvIP6jWIJnwmQJIXSgRHUNTnDARpjgfAzH/9Yy2NrWVE+0LU
-         kVWreRoSbyNNB5eAESycBqNYFOXn97PHY7gQjiT7pBmCKbgej72zDegOlab5ikk0Nq
-         eUbq0qUb6DR9jvhemw4AhO0cSGa7QKth7lKGVdIxShfY7i41yINHQ9ib47sqbXPyiq
-         wXfCGXVRPK30tENFtaSjy2ewmgii+NmWP0WCUVL2PP1MnKxPgMeHzxiJ2JCtpCCuUB
-         q4hS1gBBfs+ZQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 1D0E45C09EF; Sat,  9 Apr 2022 09:37:44 -0700 (PDT)
-Date:   Sat, 9 Apr 2022 09:37:44 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Zhouyi Zhou <zhouzhouyi@gmail.com>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        Paul McKenney <paulmckrcu@fb.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        rcu <rcu@vger.kernel.org>
-Subject: Re: Fw: rc6 splat
-Message-ID: <20220409163744.GR4285@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <Yje18NgLjpPo7VEp@casper.infradead.org>
- <SA1PR15MB49655CF8AC3998CA9A7CE903B8169@SA1PR15MB4965.namprd15.prod.outlook.com>
- <20220321043813.GF4285@paulmck-ThinkPad-P17-Gen-1>
- <20220321071327.GA798064@paulmck-ThinkPad-P17-Gen-1>
- <CAABZP2woW2UuPg1rSYYc+S6k7qd9JwM4gJFMHhiVcBkDewE_Nw@mail.gmail.com>
- <20220321155746.GG4285@paulmck-ThinkPad-P17-Gen-1>
- <20220322104909.GB701946@lothringen>
- <CAABZP2ws9oP9sv0Pzbb059+Fm=dmaNWD5VxMZt92QB7m7Nm=GQ@mail.gmail.com>
- <CAABZP2yzi6ZPxoVu=3+EHiBW3EFEjxTkibSL-FbnSLaj9LBcrQ@mail.gmail.com>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Kbqcm0Qzdz4xLT;
+        Sun, 10 Apr 2022 21:33:44 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1649590424;
+        bh=8f4PE/GIp3JZl1tbeUfCm8Jv9/KkWtCPiuEasvbGIAA=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=ABKNUeSeLo3WdS/+bOvS2AJ1X/1pZe4Kef4f27If8oRAovqbCa2TkEHR9K8gX/bun
+         PQrm/tRn0DUnxAhqxq+TbWuwu5foVhU12i71rskhcLZg3coQlqL5tM1ssPfjFVEaLP
+         y4ItLOpgqylvXYGRC7RHBFmLvgLe3YMr7zAesd5a8odeiD6NXTQNRtSJEKKeg+n8hv
+         Mn85WXh5Ea5Rwe9OpzubQcnXhvg2174MlHYK9meczsgUQCe5mNkvrGfR1r2Dl1Lshk
+         aaKsMqo0x7RG3Yt1WtyiccwzKdx6F13J6LUCeqsXtI2LJ5fE0+0KAx8wicNbbRfxfO
+         kpqeLxwEwO9Mw==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Zhouyi Zhou <zhouzhouyi@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     rcu <rcu@vger.kernel.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: rcu_sched self-detected stall on CPU
+In-Reply-To: <CAABZP2zEU8eULq30ZLcUeqxjXuLTKO4b3wm_Jo458Nq_JJ7pEw@mail.gmail.com>
+References: <CANiq72k+5Rdj7i3Df2dcE6_OPYPXK3z5EWLKnY56sSMz4G3OvA@mail.gmail.com>
+ <CAABZP2z64aYWfVSdXHaQopWc+BAbJJUGqtrju2iWER3DDTDFWg@mail.gmail.com>
+ <20220406170012.GO4285@paulmck-ThinkPad-P17-Gen-1>
+ <87pmls6nt7.fsf@mpe.ellerman.id.au>
+ <CAABZP2wVAzybDTjUWxwGG4HmWK7V8rJVVFxpRx-3F9n5oST3+A@mail.gmail.com>
+ <20220408140712.GZ4285@paulmck-ThinkPad-P17-Gen-1>
+ <CAABZP2zEU8eULq30ZLcUeqxjXuLTKO4b3wm_Jo458Nq_JJ7pEw@mail.gmail.com>
+Date:   Sun, 10 Apr 2022 21:33:43 +1000
+Message-ID: <871qy56ulk.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAABZP2yzi6ZPxoVu=3+EHiBW3EFEjxTkibSL-FbnSLaj9LBcrQ@mail.gmail.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, Apr 09, 2022 at 06:44:27AM +0800, Zhouyi Zhou wrote:
-> [CC RCU and Frederic and Matthew]
-> 
-> Hi Paul
-> 
-> After several days'  experiment on my Thinkpad P1 gen 4 (Intel 11800H
-> 8 core 16 threads), I found that it is CONFIG_NFS_V4 that makes the
-> difference.
-> If I remove CONFIG_NFS_V4 from TASKS01, the probability of triggering
-> the warning is significantly increased!
-> 
-> And, Yes, there is no CONFIG_NFS_V4 in Matthew's original email.
-> 
-> This is very interesting. After debugging the kernel, I found
-> init_nfs_v4 does a lot of work, did it lend grace period to the test?
-> I am very happy to continue to do research on this topic ;-)
-> 
-> Thank you for your guidance!
+Zhouyi Zhou <zhouzhouyi@gmail.com> writes:
+> On Fri, Apr 8, 2022 at 10:07 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+>> On Fri, Apr 08, 2022 at 06:02:19PM +0800, Zhouyi Zhou wrote:
+>> > On Fri, Apr 8, 2022 at 3:23 PM Michael Ellerman <mpe@ellerman.id.au> wrote:
+...
+>> > > I haven't seen it in my testing. But using Miguel's config I can
+>> > > reproduce it seemingly on every boot.
+>> > >
+>> > > For me it bisects to:
+>> > >
+>> > >   35de589cb879 ("powerpc/time: improve decrementer clockevent processing")
+>> > >
+>> > > Which seems plausible.
+>> > I also bisect to 35de589cb879 ("powerpc/time: improve decrementer
+>> > clockevent processing")
+...
+>>
+>> > > Reverting that on mainline makes the bug go away.
 
-Thank you for chasing this down!  I am running some tests with
-"--kconfig CONFIG_NFS_V4=n" to see what happens.
+>> > I also revert that on the mainline, and am currently doing a pressure
+>> > test (by repeatedly invoking qemu and checking the console.log) on PPC
+>> > VM in Oregon State University.
 
-I am having some trouble imagining how init_nfs_v4() would help RCU Tasks
-grace period go forwards, but it is a proven fact that the objective
-universe has a much more capable imagination than I do.  ;-)
+> After 306 rounds of stress test on mainline without triggering the bug
+> (last for 4 hours and 27 minutes), I think the bug is indeed caused by
+> 35de589cb879 ("powerpc/time: improve decrementer clockevent
+> processing") and stop the test for now.
 
-If left to yourself, what would be the next debugging step that you
-would take?
+Thanks for testing, that's pretty conclusive.
 
-							Thanx, Paul
+I'm not inclined to actually revert it yet.
 
-> Thanks
-> Zhouyi
-> 
-> On Tue, Mar 22, 2022 at 8:31 PM Zhouyi Zhou <zhouzhouyi@gmail.com> wrote:
-> >
-> > Dear Frederic
-> >
-> > I may not be right, please correct me if so
-> >
-> > On Tue, Mar 22, 2022 at 6:49 PM Frederic Weisbecker <frederic@kernel.org> wrote:
-> > >
-> > > On Mon, Mar 21, 2022 at 08:57:46AM -0700, Paul E. McKenney wrote:
-> > > > On Mon, Mar 21, 2022 at 11:46:28PM +0800, Zhouyi Zhou wrote:
-> > > > > Hi Paul and Willy
-> > > > >
-> > > > > I can reproduce the bug. Following is what I do:
-> > > > > 1.1 git clone https://kernel.source.codeaurora.cn/pub/scm/linux/kernel/git/torvalds/linux.git
-> > > > > 1.2 cd linux
-> > > > > 1.3 cp http://154.223.142.244/20220321/config-20220321 to .config
-> > > > > 1.4 make vmlinux -j 16
-> > > > > 1.5 kvm -smp 4 -net none     -serial file:/tmp/console.log -m 512
-> > > > > -kernel vmlinux -append "console=ttyS0"
-> > > > > 1.6 the /tmp/console.log is uploaded to
-> > > > > http://154.223.142.244/20220321/console.log
-> > > > >
-> > > > > 2.1 wget https://kernel.source.codeaurora.cn/pub/scm/linux/kernel/git/torvalds/linux.git/snapshot/linux-5.17-rc6.tar.gz
-> > > > > 2.2 - 2.6 the result is similar.
-> > > > >
-> > > > > I am very interested in this topic.
-> > > > > Could you please give me about a week to make a full understand of the
-> > > > > meaning of the warning, and try the fixes one by one, and
-> > > > > find out what happens?
-> > > >
-> > > > Works for me!  The eventual fix likely involves some version of Valentin
-> > > > Schneider's patchset that provides APIs that allow RCU to detect the
-> > > > current preemption state.  Which can change at runtime.  A prototype of
-> > > > this patch is on -rcu here:
-> > > >
-> > > > 2436ee0b4cea ("EXP preempt/dynamic: Introduce preempt mode accessors")
-> > > >
-> > > > It is entirely possible that the fix might need to go to mainline sooner
-> > > > rather than later.
-> > >
-> > > I guess it's possible to do that but that patch alone shouldn't fix anything.
-> > > Also, what is the issue exactly? :-)
-> > The issue is with certain kernel configuration
-> > (http://154.223.142.244/20220321/config-2022032), the mainline (and
-> > -rcu ) kernel  will warn
-> > "call_rcu_tasks() has been failed" in rcu_tasks_verify_self_tests.
-> > (http://154.223.142.244/20220321/console.log)
-> >
-> > Kind Regard
-> > Zhouyi
-> > > I can't rewind far enough the conversation.
-> > >
-> > > Thanks.
+We need to understand if there's actually a bug in the patch, or if it's
+just exposing some existing bug/bad behavior we have. The fact that it
+only appears with CONFIG_HIGH_RES_TIMERS=n is suspicious.
+
+Do we have some code that inadvertently relies on something enabled by
+HIGH_RES_TIMERS=y, or do we have a bug that is hidden by HIGH_RES_TIMERS=y ?
+
+cheers
