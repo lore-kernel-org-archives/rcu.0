@@ -2,109 +2,153 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D29BC433F5
-	for <rcu@archiver.kernel.org>; Mon, 11 Apr 2022 03:05:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2CFD9C433EF
+	for <rcu@archiver.kernel.org>; Mon, 11 Apr 2022 12:50:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234168AbiDKDIK (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 10 Apr 2022 23:08:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36362 "EHLO
+        id S1346132AbiDKMwq (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 11 Apr 2022 08:52:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231749AbiDKDIJ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 10 Apr 2022 23:08:09 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 775FD1BEBB
-        for <rcu@vger.kernel.org>; Sun, 10 Apr 2022 20:05:55 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        with ESMTP id S1346258AbiDKMwh (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 11 Apr 2022 08:52:37 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F010132992;
+        Mon, 11 Apr 2022 05:50:22 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 95CB91F7AC;
+        Mon, 11 Apr 2022 12:50:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1649681421; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mRb2hfkCPyR9bsV16wzMVvKahkyDBmTBDlcwwDQpb7o=;
+        b=VHN8EV/Y286zoCF2jOJDqFhPHphTWVuRTckwFBpJE/8W2WMU1LotwgbJs0BUIMjr9X/3/g
+        sGFKZdfJ4Prr0Y6io2MqAnJlYKrbogAsx4KEYQS+Jlffyh1vXXZezFjcwFjc8vvkDELc56
+        BnZJy5Y4DkvcsyyO2mP1f0mslERm5i8=
+Received: from suse.cz (unknown [10.100.224.162])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1659561177
-        for <rcu@vger.kernel.org>; Mon, 11 Apr 2022 03:05:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6BF10C385A4;
-        Mon, 11 Apr 2022 03:05:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649646354;
-        bh=IvH2K714ZJftEd/ZPXSUdzCGHyJn1Co1Gf2UZBpDtrE=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=JTlzZdFyFL7xW+yZVJ5jAAOVQE1ro7fDM6Wf+Dh30MQutB42z991S7VUIk9uoBaUv
-         gjkMk9mZuQNSXzUJUoqpFmq7LjUMj343BuoZ2jnzZD7XqWtFgU9i5JaLrx8VgkGmn2
-         nZHGntccoHV8u11+ALuR3wg1cfC2TKns/Wgd5D0lB69Q9DPSkKzsNjF84IcFmd+anl
-         qZP+aRUtlYVFU8Giqn1BBW4zsY0WDq7s13uqtHM4UGR9EohwhijID27LLWjImR/xW/
-         UUtMcf1ZlfnqhFRP5Y3tq9uzDUIyb58ojlpOuGCCHG6GdZqG+4uqq8spW5vGa7LkWW
-         3d+R50PViYAIg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id F2B1C5C04C8; Sun, 10 Apr 2022 20:05:53 -0700 (PDT)
-Date:   Sun, 10 Apr 2022 20:05:53 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>, rcu <rcu@vger.kernel.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: rcu_sched self-detected stall on CPU
-Message-ID: <20220411030553.GW4285@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <CANiq72k+5Rdj7i3Df2dcE6_OPYPXK3z5EWLKnY56sSMz4G3OvA@mail.gmail.com>
- <CAABZP2z64aYWfVSdXHaQopWc+BAbJJUGqtrju2iWER3DDTDFWg@mail.gmail.com>
- <20220406170012.GO4285@paulmck-ThinkPad-P17-Gen-1>
- <87pmls6nt7.fsf@mpe.ellerman.id.au>
- <CAABZP2wVAzybDTjUWxwGG4HmWK7V8rJVVFxpRx-3F9n5oST3+A@mail.gmail.com>
- <20220408140712.GZ4285@paulmck-ThinkPad-P17-Gen-1>
- <CAABZP2zEU8eULq30ZLcUeqxjXuLTKO4b3wm_Jo458Nq_JJ7pEw@mail.gmail.com>
- <871qy56ulk.fsf@mpe.ellerman.id.au>
+        by relay2.suse.de (Postfix) with ESMTPS id C19EAA3B8A;
+        Mon, 11 Apr 2022 12:50:19 +0000 (UTC)
+Date:   Mon, 11 Apr 2022 14:50:19 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Helge Deller <deller@gmx.de>
+Cc:     John Ogness <john.ogness@linutronix.de>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Wei Liu <wei.liu@kernel.org>,
+        Xiaoming Ni <nixiaoming@huawei.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Marco Elver <elver@google.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Shawn Guo <shawn.guo@linaro.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Phil Auld <pauld@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Wang Qing <wangqing@vivo.com>, rcu@vger.kernel.org
+Subject: Re: [PATCH printk v2 09/12] printk: add functions to prefer direct
+ printing
+Message-ID: <YlQkC0jddnjb8Mbr@alley>
+References: <20220405132535.649171-1-john.ogness@linutronix.de>
+ <20220405132535.649171-10-john.ogness@linutronix.de>
+ <Yk61Q+w7tWTjh8xl@alley>
+ <b746d99e-729f-ca0d-5d30-6d803d1cd833@gmx.de>
+ <87zgkxnepg.fsf@jogness.linutronix.de>
+ <7fc5853e-dbe6-c2d2-2130-003e3b9777bc@gmx.de>
+ <878rsgvews.fsf@jogness.linutronix.de>
+ <4bcfd2b3-66fd-c5df-a8df-c51a89a0bce4@gmx.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <871qy56ulk.fsf@mpe.ellerman.id.au>
+In-Reply-To: <4bcfd2b3-66fd-c5df-a8df-c51a89a0bce4@gmx.de>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sun, Apr 10, 2022 at 09:33:43PM +1000, Michael Ellerman wrote:
-> Zhouyi Zhou <zhouzhouyi@gmail.com> writes:
-> > On Fri, Apr 8, 2022 at 10:07 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >> On Fri, Apr 08, 2022 at 06:02:19PM +0800, Zhouyi Zhou wrote:
-> >> > On Fri, Apr 8, 2022 at 3:23 PM Michael Ellerman <mpe@ellerman.id.au> wrote:
-> ...
-> >> > > I haven't seen it in my testing. But using Miguel's config I can
-> >> > > reproduce it seemingly on every boot.
-> >> > >
-> >> > > For me it bisects to:
-> >> > >
-> >> > >   35de589cb879 ("powerpc/time: improve decrementer clockevent processing")
-> >> > >
-> >> > > Which seems plausible.
-> >> > I also bisect to 35de589cb879 ("powerpc/time: improve decrementer
-> >> > clockevent processing")
-> ...
-> >>
-> >> > > Reverting that on mainline makes the bug go away.
+On Thu 2022-04-07 22:20:30, Helge Deller wrote:
+> On 4/7/22 22:04, John Ogness wrote:
+> > On 2022-04-07, Helge Deller <deller@gmx.de> wrote:
+> >> In my case - while I debug low-level kernel code - I then just need to
+> >> use pr_warn() or pr_emerg() and get it printed non-threadened. That's
+> >> sufficient for me.
+> >
+> > Actually, no. The loglevel does not determine if a message is direct
+> > printed or not. By "warn" I was referring to WARN_ON(condition).
 > 
-> >> > I also revert that on the mainline, and am currently doing a pressure
-> >> > test (by repeatedly invoking qemu and checking the console.log) on PPC
-> >> > VM in Oregon State University.
+> Oh, then there was a misunderstanding on my side.
 > 
-> > After 306 rounds of stress test on mainline without triggering the bug
-> > (last for 4 hours and 27 minutes), I think the bug is indeed caused by
-> > 35de589cb879 ("powerpc/time: improve decrementer clockevent
-> > processing") and stop the test for now.
+> > If you are debugging low-level kernel code, you usually will _want_
+> > threaded printing. The timestamps match the printk() call, so you will
+> > get accurate logs. And the runtime performance of your low-level kernel
+> > code will not be significantly affected by the printk() call.
 > 
-> Thanks for testing, that's pretty conclusive.
-> 
-> I'm not inclined to actually revert it yet.
-> 
-> We need to understand if there's actually a bug in the patch, or if it's
-> just exposing some existing bug/bad behavior we have. The fact that it
-> only appears with CONFIG_HIGH_RES_TIMERS=n is suspicious.
-> 
-> Do we have some code that inadvertently relies on something enabled by
-> HIGH_RES_TIMERS=y, or do we have a bug that is hidden by HIGH_RES_TIMERS=y ?
+> That really much depends on what you debug.
+> Currently I'm debugging some CPU hotplug stuff, and I really want my
+> debug info printed immediately, otherwise it's too late to analyze what's
+> going wrong. I can imaginge other use cases like trying to find memory
+> leaks are similiar.
 
-For whatever it is worth, moderate rcutorture runs to completion without
-errors with CONFIG_HIGH_RES_TIMERS=n on 64-bit x86.
+So, it is not about severity of the messages but about the context,
+in this case the suspend. We try to address this. 10th patch from
+this patchset adds:
 
-Also for whatever it is worth, I don't know of anything other than
-microcontrollers or the larger IoT devices that would want their kernels
-built with CONFIG_HIGH_RES_TIMERS=n.  Which might be a failure of
-imagination on my part, but so it goes.
+static inline bool allow_direct_printing(void)
+{
+	return (!printk_kthreads_available ||
+		system_state > SYSTEM_RUNNING ||
+		oops_in_progress ||
+		atomic_read(&printk_prefer_direct));
+}
 
-							Thanx, Paul
+It means that printk() inside the SYSTEM_SUSPEND state will
+automatically try to handle the console directly.
+
+I intentionally mention "try" because printk() uses console_trylock().
+It fails when anyone else already does the printing, including
+a kthread. trylock() is needed because printk() must be usable also
+in atomic context. It has worked this way for more than two decades.
+It came with SMP support.
+
+
+> > If for some reason you really want non-threaded printing, the patch we
+> > are discussing creates new functions to manually activate it:
+> >
+> > printk_prefer_direct_enter();
+> > pr_info("debugging\n");
+> > printk_prefer_direct_exit();
+> 
+> That's quite unhandy. At least I would have thought that pr_emerg() would
+> do that call sequence.
+> Wouldn't it make sense to make pr_emerg() work unthreadened, as it's
+> used quite seldom and only in special situations...
+
+It is true that pr_emerg() is relatively special.
+
+But I would really like to avoid a situation where developers
+use non-appropriate printk level just to get the message
+directly.
+
+Instead, we should allow using the direct context in some
+situation easily. We could also add a command line parameter
+to disable the kthreads completely.
+
+Best Regards,
+Petr
