@@ -2,97 +2,119 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BC842C433EF
-	for <rcu@archiver.kernel.org>; Mon, 11 Apr 2022 13:49:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 08FF8C433F5
+	for <rcu@archiver.kernel.org>; Mon, 11 Apr 2022 14:08:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346722AbiDKNva (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 11 Apr 2022 09:51:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34546 "EHLO
+        id S1346868AbiDKOLC (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 11 Apr 2022 10:11:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346713AbiDKNv3 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 11 Apr 2022 09:51:29 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 748BBE9E;
-        Mon, 11 Apr 2022 06:49:11 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id j9so18674166lfe.9;
-        Mon, 11 Apr 2022 06:49:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=PkN/YPLKEZdAM9V2FBeosmLHfRbFWABiz3XxuNQjD+Q=;
-        b=SUa8CsoXr03RR4kN8/AInlQTgRpEOGYqWTb9Zxb7/5p/yEUdMM2fjjjPyPAKoIpIJg
-         EV9HX17csYvmT0J64+tSBnfWSnykGRbwpwYRn1EcXEM/xcsIILq+mtPCUzoZSx4iKYPM
-         GjsVzngnHmg++K80BJyPFdTYu5pOQv4JHK3rjB3mlfnqMrFicLj5TZccQthnyfeKJd38
-         KAQ77FFjemO+SqXEmCupiq829SKgmu9eh/Rwed1izkYr1hDhuR9OYmaTm3xHUdblIkEy
-         a1KVa+8thyl4t6inpPBxz31Pi5XfiyDfnCMdd3PWd9DDAwUNLHZEE4Rt1lLp1LYgCauN
-         rv/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PkN/YPLKEZdAM9V2FBeosmLHfRbFWABiz3XxuNQjD+Q=;
-        b=0YK49eyfXeWpyAkel+NmVAb5kpcdgEgljus4Eq/mwxrJSVqZWJzvOKUwfCGIUMKJL7
-         qc8/gLQWwzWluvbGg5EQUpeNQBATNKMNxh/cZHb7gC8wUlpBMfjb9jJsYUSETZPCTFOJ
-         SBon+ssnjELpEnCwu+hujTbRcOH6rkYKthZOdvdTUKtzh+bOcKiqhP5KLfyZbQ6eE93v
-         qqaKnBAZ1DCGyR4bEg+Z8zVfnl226s59SNr5K4bEYQ9D6cf5lYPag5EnrGML0JqJ8Rah
-         e0hDSTgczF985K20P1E2T+C1+bDi+FWwHMcwCLzf23rIAreOx4bNXJHRgO6iZgcms/Q+
-         CA8w==
-X-Gm-Message-State: AOAM531Saa2HaW5VwyD7QQHEOrgvqrI7iwf+Bbk84ULj2xIl25KrAVPJ
-        v+rgjClaRc4e7f6bJvB7vFJ46ZRofxFOqQ==
-X-Google-Smtp-Source: ABdhPJxYxVWC7yPU+iEIvG36S2hNqTVv6gc7ajosdoq3FqOkz7lrnRoqMCiDKXtlA1Yql4QYfLl1cQ==
-X-Received: by 2002:a05:6512:13a3:b0:44a:6ac3:754d with SMTP id p35-20020a05651213a300b0044a6ac3754dmr20912101lfa.92.1649684949553;
-        Mon, 11 Apr 2022 06:49:09 -0700 (PDT)
-Received: from pc638.lan ([155.137.26.201])
-        by smtp.gmail.com with ESMTPSA id f20-20020a056512229400b0044a6ac1af69sm3323340lfu.181.2022.04.11.06.49.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Apr 2022 06:49:08 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Mon, 11 Apr 2022 15:49:06 +0200
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org,
+        with ESMTP id S1346861AbiDKOLB (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 11 Apr 2022 10:11:01 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E631C329B8;
+        Mon, 11 Apr 2022 07:08:47 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8585761259;
+        Mon, 11 Apr 2022 14:08:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD2E0C385A5;
+        Mon, 11 Apr 2022 14:08:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1649686127;
+        bh=SJ4YeANA3X9NeGRCACiLeL5RF0SBq7ZEod7p7S6oEgw=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=NHDcacSw2ejC7GR7NcxKVYjrW5gmzrk+7KUXVjKEyBSnagI7zSwLn/gE6I7QRbRK8
+         aEY+RqKQwnPkZ3Tcq1tfES01nz4FuM2w8IMwlVNHU/0mpqtBKmZknnAhVSFo5B24D4
+         39WqKM8ZcCWMjrzEwRAp1nN/3maAUNZVE1MmEfkb+vr7H9P4hCoa5pdJCUtHgKdCOI
+         P0Cr7Px72DAz/51JGRwI6miR4FuY4k89Em2AwDfPmBuZejLgjWNyhY7PsRyv3bMrkj
+         nSzq41sapWapHvrDg+lRxWgPDDcdx9hHkhpHaHdW/c7ZwHJNEPt42PDUErmcjP+L9p
+         x9vrnWcSfecew==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 7E0795C0144; Mon, 11 Apr 2022 07:08:46 -0700 (PDT)
+Date:   Mon, 11 Apr 2022 07:08:46 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        LKML <linux-kernel@vger.kernel.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
+        rcu <rcu@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+        frederic@kernel.org
 Subject: Re: [PATCH RFC] rcu/nocb: Provide default all-CPUs mask for
  RCU_NOCB_CPU=y
-Message-ID: <YlQx0rZzrdWIA5w+@pc638.lan>
+Message-ID: <20220411140846.GA84069@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 References: <20220407210734.2548973-1-joel@joelfernandes.org>
+ <20220408142232.GA4285@paulmck-ThinkPad-P17-Gen-1>
+ <CAEXW_YQWeqfcKdAKmCn4fFGyWXjOGd=29wvi6bL3k7s2bGkDJw@mail.gmail.com>
+ <20220408155002.GF4285@paulmck-ThinkPad-P17-Gen-1>
+ <CAEXW_YQDgSO2XkkVhN3RBBz3vwYdAtTuPz-xYYsAPnwEnbYZPA@mail.gmail.com>
+ <20220408174908.GK4285@paulmck-ThinkPad-P17-Gen-1>
+ <CAEXW_YQ+oE3xQ0tLnBMFxRXLqKZkT5UfjF+CULxnhf9F-dEA2g@mail.gmail.com>
+ <CAEXW_YRK2t2JO4RyBTd8cR9sTVpgP7Z5Ywhb1g7CRz3HJ_kNQA@mail.gmail.com>
+ <20220408205440.GL4285@paulmck-ThinkPad-P17-Gen-1>
+ <YlCtJzlJDj1DBHQB@pc638.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220407210734.2548973-1-joel@joelfernandes.org>
+In-Reply-To: <YlCtJzlJDj1DBHQB@pc638.lan>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello, Joel.
-
-> On systems with CONFIG_RCU_NOCB_CPU=y, there is no default mask provided
-> which ends up not offloading any CPU. This patch removes yet another
-> dependency from the bootloader having to know about RCU, about how many
-> CPUs the system has, and about how to provide the mask. Basically, I
-> think we should stop pretending that the user knows what they are doing :).
-> In other words, if NO_CB_CPU is enabled, lets make use of it.
+On Fri, Apr 08, 2022 at 11:46:15PM +0200, Uladzislau Rezki wrote:
+> > 
+> > Here is what I believe you are proposing:
+> > 
+> > 
+> > 				---	rcu_nocbs	rcu_nocbs=???
+> > 
+> > CONFIG_RCU_NOCB_CPU_ALL=n	[1]	[2]		[3]
+> > 
+> > CONFIG_RCU_NOCB_CPU_ALL=y	[4]	[4]		[3]
+> > 
+> > 
+> > [1]	No CPUs are offloaded at boot.	CPUs cannot be offloaded at
+> > 	runtime.
+> > 
+> > [2]	No CPUs are offloaded at boot, but any CPU can be offloaded
+> > 	(and later de-offloaded) at runtime.
+> > 
+> > [3]	The set of CPUs that are offloaded at boot are specified by the
+> > 	mask, represented above with "???".  The CPUs that are offloaded
+> > 	at boot can be de-offloaded and offloaded at runtime.  The CPUs
+> > 	not offloaded at boot cannot be offloaded at runtime.
+> > 
+> > [4]	All CPUs are offloaded at boot, and any CPU can be de-offloaded
+> > 	and offloaded at runtime.  This is the same behavior that
+> > 	you would currently get with CONFIG_RCU_NOCB_CPU_ALL=n and
+> > 	rcu_nocbs=0-N.
+> > 
+> > 
+> > I am adding Frederic on CC, who will not be shy about correcting any
+> > confusion I be suffering from have with respect to the current code.
+> > 
+> > Either way, if this is not what you had in mind, what are you suggesting
+> > instead?
+> > 
+> > I believe that Steve Rostedt's review would carry weight for ChromeOS,
+> > however, I am suffering a senior moment on the right person for Android.
+> > 
+> We(in Sony) mark all CPUs as offloaded ones because of power reasons. The
+> energy aware scheduler has a better knowledge where to place an rcuop/x
+> task to invoke callbacks. The decision is taken based on many reason and
+> the most important is to drain less power as a result of task placement.
+> For example, power table, if OPP becomes higher or not, CPU is idle, etc.
 > 
-Could you also please modify the documentation accordingly and send v2?
+> What Joel does in this patch sounds natural to me at least from the first
+> glance. I mean converting the RCU_NOCB_CPU=y to make all CPUs to do offloading.
 
-<snip>
-urezki@pc638:~/data/raid0/coding/linux-rcu.git$ grep -rn RCU_NOCB_CPU ./Documentation/
-./Documentation/timers/no_hz.rst:188:using the CONFIG_RCU_NOCB_CPU=y Kconfig option.  The specific CPUs to
-./Documentation/admin-guide/kernel-parameters.txt:4380:                 In kernels built with CONFIG_RCU_NOCB_CPU=y,
-./Documentation/admin-guide/kernel-parameters.txt:4507:                 When RCU_NOCB_CPU is set, also adjust the
-./Documentation/admin-guide/kernel-per-CPU-kthreads.rst:311:3.  Build with CONFIG_RCU_NOCB_CPU=y and boot with the rcu_nocbs=
-./Documentation/admin-guide/kernel-per-CPU-kthreads.rst:331:2.  Build with CONFIG_RCU_NOCB_CPU=n, which will prevent these
-./Documentation/RCU/Design/Requirements/Requirements.rst:1424:``CONFIG_RCU_NOCB_CPU=y`` and booted with ``rcu_nocbs=1-63``, where
-urezki@pc638:~/data/raid0/coding/linux-rcu.git$ grep -rn RCU_NOCB_CPU ./kernel/rcu/
-...
-./kernel/rcu/Kconfig:198:config RCU_NOCB_CPU
-..
-<snip>
+Just to be very clear, given appropriate acks/reviews, adding something
+like CONFIG_RCU_NOCB_CPU_ALL to get default rcu_nocbs=0-N is fine.
+However, Joel's original patch would not be good for the enterprise
+distros, which rely on the current default.
 
---
-Uladzislau Rezki
+							Thanx, Paul
