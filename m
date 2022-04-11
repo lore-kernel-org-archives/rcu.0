@@ -2,94 +2,80 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DD796C433F5
-	for <rcu@archiver.kernel.org>; Mon, 11 Apr 2022 15:18:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D0103C433F5
+	for <rcu@archiver.kernel.org>; Mon, 11 Apr 2022 15:19:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347626AbiDKPUW (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 11 Apr 2022 11:20:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33396 "EHLO
+        id S1347702AbiDKPV3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 11 Apr 2022 11:21:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347616AbiDKPUV (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 11 Apr 2022 11:20:21 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C50D732987
-        for <rcu@vger.kernel.org>; Mon, 11 Apr 2022 08:18:06 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id 125so19029331iov.10
-        for <rcu@vger.kernel.org>; Mon, 11 Apr 2022 08:18:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Qxxqdzsm5NNvKuddue8zfK73fgd0MVUdg9etiRzf7DY=;
-        b=gOztIOTJCTDJDS0gZRh6PiXx3DtEHbXV0VsbvU5swCYUaAQYltS3JN/06k00LN+Wfp
-         Q3AeuhuUlXCCgShBxW2ELxPF/Q20PTQpuLzhwQRCIdkti08VI+7tVafICMNE2B2P7Ysb
-         4hc3a2NrVX4muD6KhVlsiEhObJYy/cJUnJJtY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Qxxqdzsm5NNvKuddue8zfK73fgd0MVUdg9etiRzf7DY=;
-        b=r4u8CtaMrDheNnOZ+xDu9eqSXBMZpRFNHc6bgUEXP7tiuJ1lOF7HgbRCWoT5KPb4VG
-         Wn2f3Q4tgVuO5cZ0E9xDTz6H5tw7tIzA1lkafHULiAPwNt94/769HEIMYYfJrvk2I0kR
-         RlkX9cQbsvG5K1fr0fOWiFcdfCPqcFlQDjj/r0fixTP8M5NsZ6eSolV0Z03BXq/VBmMK
-         YB8XbVqEWGcTUQ85nRJXjt0/R1NDpoDUkm9NBrvYJcmSzgD+lu5W5Jr6gA5EJ7N3mP+n
-         98hlBK7xdtnR7TEy9qxmyP6DTr0OXYI2liMp+PE7D6i5SLhYPPfuQEEWc0athOSqsUYq
-         1nbQ==
-X-Gm-Message-State: AOAM531yje8DWBV5maf/o4UNymHfmL6MeQtdnIDhAdtf5Q3iZZTIZUBu
-        LKZ+4QrxfsmoneVkIhVTiVMxNr53fMtftOXyUvgFDg==
-X-Google-Smtp-Source: ABdhPJyTacRRyhXpUmMsFf0hOhTvn/aPNyPMKJSLnnAgP89m51SL+egsDhPkNYhtboj1sxiUJnHKWrhMT7chg4SYG9s=
-X-Received: by 2002:a5d:94c2:0:b0:60b:bd34:bb6f with SMTP id
- y2-20020a5d94c2000000b0060bbd34bb6fmr13306775ior.32.1649690285953; Mon, 11
- Apr 2022 08:18:05 -0700 (PDT)
+        with ESMTP id S1347777AbiDKPV2 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 11 Apr 2022 11:21:28 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90836625D;
+        Mon, 11 Apr 2022 08:19:12 -0700 (PDT)
+From:   Anna-Maria Behnsen <anna-maria@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1649690351;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=NmWU2hHPYbcLm3As00YP4pmz7fm1ZhKTVUH/i4HM8Ic=;
+        b=qSzzWZ4RrhqpnxfCqhFGOGjz3b0CAIvjPdrlaR0ULm0096qqQGnbxrgL2pkax/kio3vt+n
+        RAi2oJ8owPK17hYfWiPhIdAnpZYPdp4ONCeERMJnrtS9mFWK2x7ABPxh8QIWmSURAI690q
+        mqG87unIKfga6k5V2GMwCPOpr9YQQ7hwH121mGGATDg0Ho5c/7eymfM8kpRPLZiVPS5Xk+
+        3VWYnJREsCLoCRTlKIaY1/iS0Ti0ky3mmL78DqUAKX+eQPM/9Dop6RBK05Ly4H4aFq0URJ
+        iXvAmqphR3hAmf+jpH/pcTTBQxvpgVLnNjtV1CuTRTDw1X+w2Vs0aCzWCvuCZQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1649690351;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=NmWU2hHPYbcLm3As00YP4pmz7fm1ZhKTVUH/i4HM8Ic=;
+        b=xLRJtSTE6Pn3pdtgiWo0sqPkApwUVzCOS81wSVbR/y4jVPuZfYWCLQdnKuELZECI8zEtUu
+        WqyoV9fJsRShhOAQ==
+To:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Benedikt Spranger <b.spranger@linutronix.de>
+Subject: [PATCH] rcu/torture: Change order of warning and trace dump
+Date:   Mon, 11 Apr 2022 17:19:03 +0200
+Message-Id: <20220411151903.28167-1-anna-maria@linutronix.de>
 MIME-Version: 1.0
-References: <20220407210734.2548973-1-joel@joelfernandes.org> <YlQx0rZzrdWIA5w+@pc638.lan>
-In-Reply-To: <YlQx0rZzrdWIA5w+@pc638.lan>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Mon, 11 Apr 2022 11:17:56 -0400
-Message-ID: <CAEXW_YRu8z0tHn0nOpzd4PtsL0vKpgSuN86CgwXeWCEEiXbaog@mail.gmail.com>
-Subject: Re: [PATCH RFC] rcu/nocb: Provide default all-CPUs mask for RCU_NOCB_CPU=y
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu <rcu@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Apr 11, 2022 at 9:49 AM Uladzislau Rezki <urezki@gmail.com> wrote:
->
-> Hello, Joel.
->
-> > On systems with CONFIG_RCU_NOCB_CPU=y, there is no default mask provided
-> > which ends up not offloading any CPU. This patch removes yet another
-> > dependency from the bootloader having to know about RCU, about how many
-> > CPUs the system has, and about how to provide the mask. Basically, I
-> > think we should stop pretending that the user knows what they are doing :).
-> > In other words, if NO_CB_CPU is enabled, lets make use of it.
-> >
-> Could you also please modify the documentation accordingly and send v2?
+Dumping a big ftrace buffer could lead to a RCU stall. So there is the
+ftrace buffer and the stall information which needs to be printed. When
+there is additionaly a WARN_ON() which describes the reason for the ftrace
+buffer dump and the WARN_ON() is executed _after_ ftrace buffer dump, the
+information get lost in the middle of the RCU stall information.
 
-Yes good point, I can go clean that up in v2.
+Therefore print WARN_ON() message before dumping the ftrace buffer in
+rcu_torture_writer().
 
- - Joel
+Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
+Reviewed-by: Benedikt Spranger <b.spranger@linutronix.de>
+---
+ kernel/rcu/rcutorture.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> <snip>
-> urezki@pc638:~/data/raid0/coding/linux-rcu.git$ grep -rn RCU_NOCB_CPU ./Documentation/
-> ./Documentation/timers/no_hz.rst:188:using the CONFIG_RCU_NOCB_CPU=y Kconfig option.  The specific CPUs to
-> ./Documentation/admin-guide/kernel-parameters.txt:4380:                 In kernels built with CONFIG_RCU_NOCB_CPU=y,
-> ./Documentation/admin-guide/kernel-parameters.txt:4507:                 When RCU_NOCB_CPU is set, also adjust the
-> ./Documentation/admin-guide/kernel-per-CPU-kthreads.rst:311:3.  Build with CONFIG_RCU_NOCB_CPU=y and boot with the rcu_nocbs=
-> ./Documentation/admin-guide/kernel-per-CPU-kthreads.rst:331:2.  Build with CONFIG_RCU_NOCB_CPU=n, which will prevent these
-> ./Documentation/RCU/Design/Requirements/Requirements.rst:1424:``CONFIG_RCU_NOCB_CPU=y`` and booted with ``rcu_nocbs=1-63``, where
-> urezki@pc638:~/data/raid0/coding/linux-rcu.git$ grep -rn RCU_NOCB_CPU ./kernel/rcu/
-> ...
-> ./kernel/rcu/Kconfig:198:config RCU_NOCB_CPU
-> ..
-> <snip>
->
-> --
-> Uladzislau Rezki
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 55d049c39608..cbbe37d7701e 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -1287,8 +1287,8 @@ rcu_torture_writer(void *arg)
+ 				if (list_empty(&rcu_tortures[i].rtort_free) &&
+ 				    rcu_access_pointer(rcu_torture_current) !=
+ 				    &rcu_tortures[i]) {
+-					rcu_ftrace_dump(DUMP_ALL);
+ 					WARN(1, "%s: rtort_pipe_count: %d\n", __func__, rcu_tortures[i].rtort_pipe_count);
++					rcu_ftrace_dump(DUMP_ALL);
+ 				}
+ 		if (stutter_waited)
+ 			sched_set_normal(current, oldnice);
+-- 
+2.20.1
+
