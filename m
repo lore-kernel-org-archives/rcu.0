@@ -2,153 +2,97 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2CFD9C433EF
-	for <rcu@archiver.kernel.org>; Mon, 11 Apr 2022 12:50:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BC842C433EF
+	for <rcu@archiver.kernel.org>; Mon, 11 Apr 2022 13:49:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346132AbiDKMwq (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 11 Apr 2022 08:52:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52760 "EHLO
+        id S1346722AbiDKNva (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 11 Apr 2022 09:51:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346258AbiDKMwh (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 11 Apr 2022 08:52:37 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F010132992;
-        Mon, 11 Apr 2022 05:50:22 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 95CB91F7AC;
-        Mon, 11 Apr 2022 12:50:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1649681421; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mRb2hfkCPyR9bsV16wzMVvKahkyDBmTBDlcwwDQpb7o=;
-        b=VHN8EV/Y286zoCF2jOJDqFhPHphTWVuRTckwFBpJE/8W2WMU1LotwgbJs0BUIMjr9X/3/g
-        sGFKZdfJ4Prr0Y6io2MqAnJlYKrbogAsx4KEYQS+Jlffyh1vXXZezFjcwFjc8vvkDELc56
-        BnZJy5Y4DkvcsyyO2mP1f0mslERm5i8=
-Received: from suse.cz (unknown [10.100.224.162])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id C19EAA3B8A;
-        Mon, 11 Apr 2022 12:50:19 +0000 (UTC)
-Date:   Mon, 11 Apr 2022 14:50:19 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Helge Deller <deller@gmx.de>
-Cc:     John Ogness <john.ogness@linutronix.de>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        with ESMTP id S1346713AbiDKNv3 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 11 Apr 2022 09:51:29 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 748BBE9E;
+        Mon, 11 Apr 2022 06:49:11 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id j9so18674166lfe.9;
+        Mon, 11 Apr 2022 06:49:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=PkN/YPLKEZdAM9V2FBeosmLHfRbFWABiz3XxuNQjD+Q=;
+        b=SUa8CsoXr03RR4kN8/AInlQTgRpEOGYqWTb9Zxb7/5p/yEUdMM2fjjjPyPAKoIpIJg
+         EV9HX17csYvmT0J64+tSBnfWSnykGRbwpwYRn1EcXEM/xcsIILq+mtPCUzoZSx4iKYPM
+         GjsVzngnHmg++K80BJyPFdTYu5pOQv4JHK3rjB3mlfnqMrFicLj5TZccQthnyfeKJd38
+         KAQ77FFjemO+SqXEmCupiq829SKgmu9eh/Rwed1izkYr1hDhuR9OYmaTm3xHUdblIkEy
+         a1KVa+8thyl4t6inpPBxz31Pi5XfiyDfnCMdd3PWd9DDAwUNLHZEE4Rt1lLp1LYgCauN
+         rv/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PkN/YPLKEZdAM9V2FBeosmLHfRbFWABiz3XxuNQjD+Q=;
+        b=0YK49eyfXeWpyAkel+NmVAb5kpcdgEgljus4Eq/mwxrJSVqZWJzvOKUwfCGIUMKJL7
+         qc8/gLQWwzWluvbGg5EQUpeNQBATNKMNxh/cZHb7gC8wUlpBMfjb9jJsYUSETZPCTFOJ
+         SBon+ssnjELpEnCwu+hujTbRcOH6rkYKthZOdvdTUKtzh+bOcKiqhP5KLfyZbQ6eE93v
+         qqaKnBAZ1DCGyR4bEg+Z8zVfnl226s59SNr5K4bEYQ9D6cf5lYPag5EnrGML0JqJ8Rah
+         e0hDSTgczF985K20P1E2T+C1+bDi+FWwHMcwCLzf23rIAreOx4bNXJHRgO6iZgcms/Q+
+         CA8w==
+X-Gm-Message-State: AOAM531Saa2HaW5VwyD7QQHEOrgvqrI7iwf+Bbk84ULj2xIl25KrAVPJ
+        v+rgjClaRc4e7f6bJvB7vFJ46ZRofxFOqQ==
+X-Google-Smtp-Source: ABdhPJxYxVWC7yPU+iEIvG36S2hNqTVv6gc7ajosdoq3FqOkz7lrnRoqMCiDKXtlA1Yql4QYfLl1cQ==
+X-Received: by 2002:a05:6512:13a3:b0:44a:6ac3:754d with SMTP id p35-20020a05651213a300b0044a6ac3754dmr20912101lfa.92.1649684949553;
+        Mon, 11 Apr 2022 06:49:09 -0700 (PDT)
+Received: from pc638.lan ([155.137.26.201])
+        by smtp.gmail.com with ESMTPSA id f20-20020a056512229400b0044a6ac1af69sm3323340lfu.181.2022.04.11.06.49.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Apr 2022 06:49:08 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Mon, 11 Apr 2022 15:49:06 +0200
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org,
         Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Wei Liu <wei.liu@kernel.org>,
-        Xiaoming Ni <nixiaoming@huawei.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Marco Elver <elver@google.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Shawn Guo <shawn.guo@linaro.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Phil Auld <pauld@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Wang Qing <wangqing@vivo.com>, rcu@vger.kernel.org
-Subject: Re: [PATCH printk v2 09/12] printk: add functions to prefer direct
- printing
-Message-ID: <YlQkC0jddnjb8Mbr@alley>
-References: <20220405132535.649171-1-john.ogness@linutronix.de>
- <20220405132535.649171-10-john.ogness@linutronix.de>
- <Yk61Q+w7tWTjh8xl@alley>
- <b746d99e-729f-ca0d-5d30-6d803d1cd833@gmx.de>
- <87zgkxnepg.fsf@jogness.linutronix.de>
- <7fc5853e-dbe6-c2d2-2130-003e3b9777bc@gmx.de>
- <878rsgvews.fsf@jogness.linutronix.de>
- <4bcfd2b3-66fd-c5df-a8df-c51a89a0bce4@gmx.de>
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH RFC] rcu/nocb: Provide default all-CPUs mask for
+ RCU_NOCB_CPU=y
+Message-ID: <YlQx0rZzrdWIA5w+@pc638.lan>
+References: <20220407210734.2548973-1-joel@joelfernandes.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4bcfd2b3-66fd-c5df-a8df-c51a89a0bce4@gmx.de>
+In-Reply-To: <20220407210734.2548973-1-joel@joelfernandes.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu 2022-04-07 22:20:30, Helge Deller wrote:
-> On 4/7/22 22:04, John Ogness wrote:
-> > On 2022-04-07, Helge Deller <deller@gmx.de> wrote:
-> >> In my case - while I debug low-level kernel code - I then just need to
-> >> use pr_warn() or pr_emerg() and get it printed non-threadened. That's
-> >> sufficient for me.
-> >
-> > Actually, no. The loglevel does not determine if a message is direct
-> > printed or not. By "warn" I was referring to WARN_ON(condition).
+Hello, Joel.
+
+> On systems with CONFIG_RCU_NOCB_CPU=y, there is no default mask provided
+> which ends up not offloading any CPU. This patch removes yet another
+> dependency from the bootloader having to know about RCU, about how many
+> CPUs the system has, and about how to provide the mask. Basically, I
+> think we should stop pretending that the user knows what they are doing :).
+> In other words, if NO_CB_CPU is enabled, lets make use of it.
 > 
-> Oh, then there was a misunderstanding on my side.
-> 
-> > If you are debugging low-level kernel code, you usually will _want_
-> > threaded printing. The timestamps match the printk() call, so you will
-> > get accurate logs. And the runtime performance of your low-level kernel
-> > code will not be significantly affected by the printk() call.
-> 
-> That really much depends on what you debug.
-> Currently I'm debugging some CPU hotplug stuff, and I really want my
-> debug info printed immediately, otherwise it's too late to analyze what's
-> going wrong. I can imaginge other use cases like trying to find memory
-> leaks are similiar.
+Could you also please modify the documentation accordingly and send v2?
 
-So, it is not about severity of the messages but about the context,
-in this case the suspend. We try to address this. 10th patch from
-this patchset adds:
+<snip>
+urezki@pc638:~/data/raid0/coding/linux-rcu.git$ grep -rn RCU_NOCB_CPU ./Documentation/
+./Documentation/timers/no_hz.rst:188:using the CONFIG_RCU_NOCB_CPU=y Kconfig option.  The specific CPUs to
+./Documentation/admin-guide/kernel-parameters.txt:4380:                 In kernels built with CONFIG_RCU_NOCB_CPU=y,
+./Documentation/admin-guide/kernel-parameters.txt:4507:                 When RCU_NOCB_CPU is set, also adjust the
+./Documentation/admin-guide/kernel-per-CPU-kthreads.rst:311:3.  Build with CONFIG_RCU_NOCB_CPU=y and boot with the rcu_nocbs=
+./Documentation/admin-guide/kernel-per-CPU-kthreads.rst:331:2.  Build with CONFIG_RCU_NOCB_CPU=n, which will prevent these
+./Documentation/RCU/Design/Requirements/Requirements.rst:1424:``CONFIG_RCU_NOCB_CPU=y`` and booted with ``rcu_nocbs=1-63``, where
+urezki@pc638:~/data/raid0/coding/linux-rcu.git$ grep -rn RCU_NOCB_CPU ./kernel/rcu/
+...
+./kernel/rcu/Kconfig:198:config RCU_NOCB_CPU
+..
+<snip>
 
-static inline bool allow_direct_printing(void)
-{
-	return (!printk_kthreads_available ||
-		system_state > SYSTEM_RUNNING ||
-		oops_in_progress ||
-		atomic_read(&printk_prefer_direct));
-}
-
-It means that printk() inside the SYSTEM_SUSPEND state will
-automatically try to handle the console directly.
-
-I intentionally mention "try" because printk() uses console_trylock().
-It fails when anyone else already does the printing, including
-a kthread. trylock() is needed because printk() must be usable also
-in atomic context. It has worked this way for more than two decades.
-It came with SMP support.
-
-
-> > If for some reason you really want non-threaded printing, the patch we
-> > are discussing creates new functions to manually activate it:
-> >
-> > printk_prefer_direct_enter();
-> > pr_info("debugging\n");
-> > printk_prefer_direct_exit();
-> 
-> That's quite unhandy. At least I would have thought that pr_emerg() would
-> do that call sequence.
-> Wouldn't it make sense to make pr_emerg() work unthreadened, as it's
-> used quite seldom and only in special situations...
-
-It is true that pr_emerg() is relatively special.
-
-But I would really like to avoid a situation where developers
-use non-appropriate printk level just to get the message
-directly.
-
-Instead, we should allow using the direct context in some
-situation easily. We could also add a command line parameter
-to disable the kthreads completely.
-
-Best Regards,
-Petr
+--
+Uladzislau Rezki
