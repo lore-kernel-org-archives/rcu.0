@@ -2,173 +2,98 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C4E5C433EF
-	for <rcu@archiver.kernel.org>; Mon, 11 Apr 2022 15:41:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F84CC433EF
+	for <rcu@archiver.kernel.org>; Mon, 11 Apr 2022 18:09:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348092AbiDKPn2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 11 Apr 2022 11:43:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40414 "EHLO
+        id S1349077AbiDKSLl (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 11 Apr 2022 14:11:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344484AbiDKPn0 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 11 Apr 2022 11:43:26 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EA713A727;
-        Mon, 11 Apr 2022 08:41:12 -0700 (PDT)
+        with ESMTP id S1349085AbiDKSLi (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 11 Apr 2022 14:11:38 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18F05B6C;
+        Mon, 11 Apr 2022 11:09:18 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id F30FFB816C8;
-        Mon, 11 Apr 2022 15:41:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C66DC385A9;
-        Mon, 11 Apr 2022 15:41:09 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id CBA12B817F4;
+        Mon, 11 Apr 2022 18:09:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80238C385A4;
+        Mon, 11 Apr 2022 18:09:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649691669;
-        bh=npFtzkXL9USbwxc64uUOhv5ZdsUEMzFWqJDnGZ7iBGw=;
+        s=k20201202; t=1649700555;
+        bh=w6PoLjw8G+naEx79XURY52W6ATgEyDErTxZAGt5VmOw=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=HH3/N7+vsaNjto7aVHZmveOHTYoh/M8ahb1OZiT0kA6zuSWE8N+vITBUo2NMABJsD
-         3guCebWhcV7Ppvw3uSR5E4yg/1UiQRKpZJZeUTzi9F8MYkBoNiwWejcsZUP0DhHIZi
-         nudCOsM0n/EK3PR+7R16NBa4MWHQgvU2lFcKoBf10SDCRX8CNDF8GNGNZJfVwTYKZF
-         WCfAqeG9UrTaP7vMnLHl7Fhoe8r7C6BK8Ha6pFFGzNnJMnSLYpLKZgtnByPfwYvVaz
-         Llzs5E+O0fSczABA8nHpn3l7fbXFAvj/jtuaP/gZ8qed9FW4c4pu0t8imDp78W0ohn
-         DRGeuwpqOEUVQ==
+        b=Vu9plXhPWPeAxFemuyozy1NFs+/TZ4ahvK/3iMhbkl3TQubVGermfxgjn5r3UyuQ+
+         bGaIP5MuqkX85+7b0X/E2OP7pDKi6ApTCLQFGhqzpXqunfkGu2mlh2ywbGJZaeYaBn
+         YAXqIs5Pt+iu1x5yojduy92aBiPWkFxnOOY7hB8SOC0CZhEDDdC71Orkokj6zhWWaI
+         9vcycgEX+l/xZKzsoq+2yO6m6xXG+CPH99++CDyvy40T6xj0U3Q+QjuzU6W1AhqSiK
+         +Ks2PBn4r03kU4qZVnpvnwy9V9Q1bXfn1DrKJsQgErP47dJmUUNon7TKszpmw8TsRm
+         eJGX09HANXq9Q==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 3F9165C03AE; Mon, 11 Apr 2022 08:41:09 -0700 (PDT)
-Date:   Mon, 11 Apr 2022 08:41:09 -0700
+        id 1BF625C03AE; Mon, 11 Apr 2022 11:09:15 -0700 (PDT)
+Date:   Mon, 11 Apr 2022 11:09:15 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        rcu <rcu@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH RFC] rcu/nocb: Provide default all-CPUs mask for
- RCU_NOCB_CPU=y
-Message-ID: <20220411154109.GX4285@paulmck-ThinkPad-P17-Gen-1>
+To:     Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Benedikt Spranger <b.spranger@linutronix.de>
+Subject: Re: [PATCH] rcu/torture: Change order of warning and trace dump
+Message-ID: <20220411180915.GY4285@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20220407210734.2548973-1-joel@joelfernandes.org>
- <20220408142232.GA4285@paulmck-ThinkPad-P17-Gen-1>
- <CAEXW_YQWeqfcKdAKmCn4fFGyWXjOGd=29wvi6bL3k7s2bGkDJw@mail.gmail.com>
- <20220408155002.GF4285@paulmck-ThinkPad-P17-Gen-1>
- <CAEXW_YQDgSO2XkkVhN3RBBz3vwYdAtTuPz-xYYsAPnwEnbYZPA@mail.gmail.com>
- <20220408174908.GK4285@paulmck-ThinkPad-P17-Gen-1>
- <CAEXW_YQ+oE3xQ0tLnBMFxRXLqKZkT5UfjF+CULxnhf9F-dEA2g@mail.gmail.com>
- <CAEXW_YRK2t2JO4RyBTd8cR9sTVpgP7Z5Ywhb1g7CRz3HJ_kNQA@mail.gmail.com>
- <20220408205440.GL4285@paulmck-ThinkPad-P17-Gen-1>
- <CAEXW_YTunj5j7cxT3VYGGmJwcQowpDiyqmewiwHjyXP-zJd4FA@mail.gmail.com>
+References: <20220411151903.28167-1-anna-maria@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEXW_YTunj5j7cxT3VYGGmJwcQowpDiyqmewiwHjyXP-zJd4FA@mail.gmail.com>
+In-Reply-To: <20220411151903.28167-1-anna-maria@linutronix.de>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Apr 11, 2022 at 11:17:02AM -0400, Joel Fernandes wrote:
-> Hi Paul,
+On Mon, Apr 11, 2022 at 05:19:03PM +0200, Anna-Maria Behnsen wrote:
+> Dumping a big ftrace buffer could lead to a RCU stall. So there is the
+> ftrace buffer and the stall information which needs to be printed. When
+> there is additionaly a WARN_ON() which describes the reason for the ftrace
+> buffer dump and the WARN_ON() is executed _after_ ftrace buffer dump, the
+> information get lost in the middle of the RCU stall information.
 > 
-> On Fri, Apr 8, 2022 at 4:54 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> [...]
-> > > > > > > > > And is it really all -that- hard to specify an additional boot parameter
-> > > > > > > > > across ChromeOS devices?  Android seems to manage it.  ;-)
-> > > > > > > >
-> > > > > > > > That's not the hard part I think. The hard part is to make sure a
-> > > > > > > > future Linux user who is not an RCU expert does not forget to turn it
-> > > > > > > > on. ChromeOS is not the only OS that I've seen someone forget to do it
-> > > > > > > > ;-D. AFAIR, there were Android devices too in the past where I saw
-> > > > > > > > this forgotten. I don't think we should rely on the users doing the
-> > > > > > > > right thing (as much as possible).
-> > > > > > > >
-> > > > > > > > The single kernel binary point makes sense but in this case, I think
-> > > > > > > > the bigger question that I'd have is what is the default behavior and
-> > > > > > > > what do *most* users of RCU want. So we can keep sane defaults for the
-> > > > > > > > majority and reduce human errors related to configuration.
-> > > > > > >
-> > > > > > > If both the ChromeOS and Android guys need it, I could reinstate the
-> > > > > > > old RCU_NOCB_CPU_ALL Kconfig option.  This was removed due to complaints
-> > > > > > > about RCU Kconfig complexity, but I believe that Reviewed-by from ChromeOS
-> > > > > > > and Android movers and shakers would overcome lingering objections.
-> > > > > > >
-> > > > > > > Would that help?
-> > > > > >
-> > > > > > Yes, I think I would love for such a change. I am planning to add a
-> > > > > > test to ChromeOS to check whether config options were correctly set
-> > > > > > up. So I can test for both the RCU_NOCB_CPU options.
-> > > > >
-> > > > > Very good!
-> > > > >
-> > > > > Do you love such a change enough to create the patch and to collect
-> > > > > convincing Reviewed-by tags?
-> > > >
-> > > > Yes sure, just so I understand - basically I have to make the code in
-> > > > my patch run when RCU_NOCB_CPU_ALL option is passed (and keep the
-> > > > option default disabled), but otherwise default to the current
-> > > > behavior, right?
-> > >
-> > > Sorry rephrasing, "make the code in my patch run when the new
-> > > CONFIG_RCU_NOCB_CPU_ALL is enabled".
-> >
-> > Here is what I believe you are proposing:
-> >
-> >
-> >                                 ---     rcu_nocbs       rcu_nocbs=???
-> >
-> > CONFIG_RCU_NOCB_CPU_ALL=n       [1]     [2]             [3]
-> >
-> > CONFIG_RCU_NOCB_CPU_ALL=y       [4]     [4]             [3]
+> Therefore print WARN_ON() message before dumping the ftrace buffer in
+> rcu_torture_writer().
 > 
-> It is always a pleasure to read your well thought out emails ;-)
-> 
-> >
-> > [1]     No CPUs are offloaded at boot.  CPUs cannot be offloaded at
-> >         runtime.
-> >
-> > [2]     No CPUs are offloaded at boot, but any CPU can be offloaded
-> >         (and later de-offloaded) at runtime.
-> >
-> > [3]     The set of CPUs that are offloaded at boot are specified by the
-> >         mask, represented above with "???".  The CPUs that are offloaded
-> >         at boot can be de-offloaded and offloaded at runtime.  The CPUs
-> >         not offloaded at boot cannot be offloaded at runtime.
-> 
-> Hmm, in other words you are saying that in current code, if only
-> select CPUs are offloaded at boot - then only those can be toggled,
-> but the others are deemed not offload-able? I am happy to leave that
-> quirk/behavior alone as I don't care much right now (for our use
-> cases) for runtime toggling.
+> Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
+> Reviewed-by: Benedikt Spranger <b.spranger@linutronix.de>
 
-That is intentional behavior.  To see why, suppose that only CPU 0 was
-offloaded at boot.  Now try offloading some other CPU.  A large quantity
-of previously read-only data becomes read-write.  Synchronization is
-not pretty.
+Hello, Anna-Maria!
 
-On the other hand, default-enabling (de-)offloading on all CPUs creates
-lots of unneeded rcuo kthreads.
+Good point, but we get caught out either way.  Either we take the chance
+of losing the WARN() message as you say, or we take the chance of the
+activity in the WARN() message overwriting needed information in the
+trace buffer.
 
-So we didn't get here by accident.  ;-)
-
-If this becomes a problem, I would be thinking in terms of an additional
-kernel-boot parameter that made all CPUs offloadable by default.  But if
-you have a better idea, please do not keep it a secret!
-
-> > [4]     All CPUs are offloaded at boot, and any CPU can be de-offloaded
-> >         and offloaded at runtime.  This is the same behavior that
-> >         you would currently get with CONFIG_RCU_NOCB_CPU_ALL=n and
-> >         rcu_nocbs=0-N.
-> 
-> Yes, this is the behavior I intend. So then there would not be a need
-> to pass a mask (and I suspect for a large number of users, it
-> simplifies boot params).
-
-Very good, and from what I can see, this should work for everyone.
-
-> > I believe that Steve Rostedt's review would carry weight for ChromeOS,
-> > however, I am suffering a senior moment on the right person for Android.
-> 
-> I think for Android, Kalesh Singh is in the kernel team and Tim Murray
-> is the performance lead. They could appropriately represent their RCU
-> needs.
-
-Sounds good!  Please collect a Reviewed-by from one or both of them.
+Would it work to shut off tracing, do the WARN(), and only then do the
+rcu_ftrace_dump()?
 
 							Thanx, Paul
+
+> ---
+>  kernel/rcu/rcutorture.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+> index 55d049c39608..cbbe37d7701e 100644
+> --- a/kernel/rcu/rcutorture.c
+> +++ b/kernel/rcu/rcutorture.c
+> @@ -1287,8 +1287,8 @@ rcu_torture_writer(void *arg)
+>  				if (list_empty(&rcu_tortures[i].rtort_free) &&
+>  				    rcu_access_pointer(rcu_torture_current) !=
+>  				    &rcu_tortures[i]) {
+> -					rcu_ftrace_dump(DUMP_ALL);
+>  					WARN(1, "%s: rtort_pipe_count: %d\n", __func__, rcu_tortures[i].rtort_pipe_count);
+> +					rcu_ftrace_dump(DUMP_ALL);
+>  				}
+>  		if (stutter_waited)
+>  			sched_set_normal(current, oldnice);
+> -- 
+> 2.20.1
+> 
