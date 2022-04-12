@@ -2,121 +2,107 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 930CFC433EF
-	for <rcu@archiver.kernel.org>; Tue, 12 Apr 2022 13:37:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 06867C433EF
+	for <rcu@archiver.kernel.org>; Tue, 12 Apr 2022 15:25:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241798AbiDLNjS (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 12 Apr 2022 09:39:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45558 "EHLO
+        id S1346458AbiDLP1Y (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 12 Apr 2022 11:27:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229870AbiDLNjR (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 12 Apr 2022 09:39:17 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42B2C2DD66
-        for <rcu@vger.kernel.org>; Tue, 12 Apr 2022 06:37:00 -0700 (PDT)
+        with ESMTP id S1351692AbiDLP1U (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 12 Apr 2022 11:27:20 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF60D1D0C1;
+        Tue, 12 Apr 2022 08:25:02 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 7A1BEB81D7A
-        for <rcu@vger.kernel.org>; Tue, 12 Apr 2022 13:36:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21E80C385A1;
-        Tue, 12 Apr 2022 13:36:56 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7396C61681;
+        Tue, 12 Apr 2022 15:25:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCA35C385A1;
+        Tue, 12 Apr 2022 15:25:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649770616;
-        bh=iBfkWMq45w9adg6yGPWTZznzfwj5o+ruETsOfu7AndM=;
+        s=k20201202; t=1649777101;
+        bh=qTHICTuekXrpH6b/BwbRVneUr43m2u13rD5wYaHb0tk=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=D0afFjv6iJ6TQ7QIaz3L2dFs1PVUgMXLvO8w+J0g+dC1Rzi6FuEsaMoXxvR3jImI5
-         KX7FdNy6SIBt2bUm4GAR/v7wqtB54XmJy5Cl4QLpwA7TtTi8H+PWiEaqosTMAEPnq0
-         4eghqFKPeoaBZctEbqmrsBqmb3h2UzxNJLhouQIkQFKN5fMW+VKhKIN5U25poKC56G
-         ITmhTjLOPW1TvgphmRoddNjQ0TPcnpRdc+xJ4kjipsLNsUskBs/sKr4Wjh8Rc5Qbby
-         CNAWYpKpM4gQ/kP+hgcaIr35aWgl+VRC4sMD9VNJbg7YpjDoTGINSh6qXpzyyF2ar+
-         Kg9oHIsQgj/zg==
+        b=WfDqhk+fPIg5mcfjCE+N1SsIzxi1aotYZTuPp6JL9cTOpz6s6sXshi+atLVdIOaQI
+         RB08bc/c5kwvkqHTfwu4i4BBVR15DmO2vHeVcxV7RUF1Pj+8hmof+2+frADbYuhiUn
+         acQIjanYSd9qnxrNiFUmgOoTK32QC74rlYcCybUAZWCYiOEXnl7a45E5p2cg6t/NFZ
+         M+CuMg5tbTLVRdcH5hO95hF49+n3cZk2IJKpmhLmRSqYnNJMGdXd6ACIqvbAuIhWwH
+         BlpyfT87MseV5BPL86N3wLY0F+V0YXEy2LdyNBxgDfqjOPIgVGc9UuPV0C/z3nUy1/
+         5UQeobwrtfzHA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id BEE045C08B7; Tue, 12 Apr 2022 06:36:55 -0700 (PDT)
-Date:   Tue, 12 Apr 2022 06:36:55 -0700
+        id 685795C0E58; Tue, 12 Apr 2022 08:25:01 -0700 (PDT)
+Date:   Tue, 12 Apr 2022 08:25:01 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>, rcu <rcu@vger.kernel.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: rcu_sched self-detected stall on CPU
-Message-ID: <20220412133655.GE4285@paulmck-ThinkPad-P17-Gen-1>
+To:     Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Benedikt Spranger <b.spranger@linutronix.de>
+Subject: Re: [PATCH] rcu/torture: Change order of warning and trace dump
+Message-ID: <20220412152501.GA2557395@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <CANiq72k+5Rdj7i3Df2dcE6_OPYPXK3z5EWLKnY56sSMz4G3OvA@mail.gmail.com>
- <CAABZP2z64aYWfVSdXHaQopWc+BAbJJUGqtrju2iWER3DDTDFWg@mail.gmail.com>
- <20220406170012.GO4285@paulmck-ThinkPad-P17-Gen-1>
- <87pmls6nt7.fsf@mpe.ellerman.id.au>
- <CAABZP2wVAzybDTjUWxwGG4HmWK7V8rJVVFxpRx-3F9n5oST3+A@mail.gmail.com>
- <20220408140712.GZ4285@paulmck-ThinkPad-P17-Gen-1>
- <CAABZP2zEU8eULq30ZLcUeqxjXuLTKO4b3wm_Jo458Nq_JJ7pEw@mail.gmail.com>
- <871qy56ulk.fsf@mpe.ellerman.id.au>
- <20220411030553.GW4285@paulmck-ThinkPad-P17-Gen-1>
- <87mtgq6be5.fsf@mpe.ellerman.id.au>
+References: <20220411151903.28167-1-anna-maria@linutronix.de>
+ <20220411180915.GY4285@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87mtgq6be5.fsf@mpe.ellerman.id.au>
+In-Reply-To: <20220411180915.GY4285@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Apr 12, 2022 at 04:53:06PM +1000, Michael Ellerman wrote:
-> "Paul E. McKenney" <paulmck@kernel.org> writes:
-> > On Sun, Apr 10, 2022 at 09:33:43PM +1000, Michael Ellerman wrote:
-> >> Zhouyi Zhou <zhouzhouyi@gmail.com> writes:
-> >> > On Fri, Apr 8, 2022 at 10:07 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >> >> On Fri, Apr 08, 2022 at 06:02:19PM +0800, Zhouyi Zhou wrote:
-> >> >> > On Fri, Apr 8, 2022 at 3:23 PM Michael Ellerman <mpe@ellerman.id.au> wrote:
-> >> ...
-> >> >> > > I haven't seen it in my testing. But using Miguel's config I can
-> >> >> > > reproduce it seemingly on every boot.
-> >> >> > >
-> >> >> > > For me it bisects to:
-> >> >> > >
-> >> >> > >   35de589cb879 ("powerpc/time: improve decrementer clockevent processing")
-> >> >> > >
-> >> >> > > Which seems plausible.
-> >> >> > I also bisect to 35de589cb879 ("powerpc/time: improve decrementer
-> >> >> > clockevent processing")
-> >> ...
-> >> >>
-> >> >> > > Reverting that on mainline makes the bug go away.
-> >> 
-> >> >> > I also revert that on the mainline, and am currently doing a pressure
-> >> >> > test (by repeatedly invoking qemu and checking the console.log) on PPC
-> >> >> > VM in Oregon State University.
-> >> 
-> >> > After 306 rounds of stress test on mainline without triggering the bug
-> >> > (last for 4 hours and 27 minutes), I think the bug is indeed caused by
-> >> > 35de589cb879 ("powerpc/time: improve decrementer clockevent
-> >> > processing") and stop the test for now.
-> >> 
-> >> Thanks for testing, that's pretty conclusive.
-> >> 
-> >> I'm not inclined to actually revert it yet.
-> >> 
-> >> We need to understand if there's actually a bug in the patch, or if it's
-> >> just exposing some existing bug/bad behavior we have. The fact that it
-> >> only appears with CONFIG_HIGH_RES_TIMERS=n is suspicious.
-> >> 
-> >> Do we have some code that inadvertently relies on something enabled by
-> >> HIGH_RES_TIMERS=y, or do we have a bug that is hidden by HIGH_RES_TIMERS=y ?
-> >
-> > For whatever it is worth, moderate rcutorture runs to completion without
-> > errors with CONFIG_HIGH_RES_TIMERS=n on 64-bit x86.
+On Mon, Apr 11, 2022 at 11:09:15AM -0700, Paul E. McKenney wrote:
+> On Mon, Apr 11, 2022 at 05:19:03PM +0200, Anna-Maria Behnsen wrote:
+> > Dumping a big ftrace buffer could lead to a RCU stall. So there is the
+> > ftrace buffer and the stall information which needs to be printed. When
+> > there is additionaly a WARN_ON() which describes the reason for the ftrace
+> > buffer dump and the WARN_ON() is executed _after_ ftrace buffer dump, the
+> > information get lost in the middle of the RCU stall information.
+> > 
+> > Therefore print WARN_ON() message before dumping the ftrace buffer in
+> > rcu_torture_writer().
+> > 
+> > Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
+> > Reviewed-by: Benedikt Spranger <b.spranger@linutronix.de>
 > 
-> Thanks for testing that, I don't have any big x86 machines to test on :)
+> Hello, Anna-Maria!
 > 
-> > Also for whatever it is worth, I don't know of anything other than
-> > microcontrollers or the larger IoT devices that would want their kernels
-> > built with CONFIG_HIGH_RES_TIMERS=n.  Which might be a failure of
-> > imagination on my part, but so it goes.
+> Good point, but we get caught out either way.  Either we take the chance
+> of losing the WARN() message as you say, or we take the chance of the
+> activity in the WARN() message overwriting needed information in the
+> trace buffer.
 > 
-> Yeah I agree, like I said before I wasn't even aware you could turn it
-> off. So I think we'll definitely add a select HIGH_RES_TIMERS in future,
-> but first I need to work out why we are seeing stalls with it disabled.
+> Would it work to shut off tracing, do the WARN(), and only then do the
+> rcu_ftrace_dump()?
 
-Good point, and fair enough!
+And presumably you are looking at this because your testing is
+triggering it.  This WARN() assumes that the system running rcutorture
+is otherwise idle.  If you are (say) running kernel builds while also
+running rcutorture, then this WARN() is expected behavior.  So if you need
+this sort of testing, we need do something like adding another rcutorture
+module parameter (background_load?) that suppresses this warning.
 
 							Thanx, Paul
+
+> > ---
+> >  kernel/rcu/rcutorture.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+> > index 55d049c39608..cbbe37d7701e 100644
+> > --- a/kernel/rcu/rcutorture.c
+> > +++ b/kernel/rcu/rcutorture.c
+> > @@ -1287,8 +1287,8 @@ rcu_torture_writer(void *arg)
+> >  				if (list_empty(&rcu_tortures[i].rtort_free) &&
+> >  				    rcu_access_pointer(rcu_torture_current) !=
+> >  				    &rcu_tortures[i]) {
+> > -					rcu_ftrace_dump(DUMP_ALL);
+> >  					WARN(1, "%s: rtort_pipe_count: %d\n", __func__, rcu_tortures[i].rtort_pipe_count);
+> > +					rcu_ftrace_dump(DUMP_ALL);
+> >  				}
+> >  		if (stutter_waited)
+> >  			sched_set_normal(current, oldnice);
+> > -- 
+> > 2.20.1
+> > 
