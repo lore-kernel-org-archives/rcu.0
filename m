@@ -2,107 +2,210 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 06867C433EF
-	for <rcu@archiver.kernel.org>; Tue, 12 Apr 2022 15:25:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B7396C433F5
+	for <rcu@archiver.kernel.org>; Wed, 13 Apr 2022 06:12:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346458AbiDLP1Y (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 12 Apr 2022 11:27:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53086 "EHLO
+        id S230381AbiDMGO1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 13 Apr 2022 02:14:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351692AbiDLP1U (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 12 Apr 2022 11:27:20 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF60D1D0C1;
-        Tue, 12 Apr 2022 08:25:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7396C61681;
-        Tue, 12 Apr 2022 15:25:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCA35C385A1;
-        Tue, 12 Apr 2022 15:25:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649777101;
-        bh=qTHICTuekXrpH6b/BwbRVneUr43m2u13rD5wYaHb0tk=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=WfDqhk+fPIg5mcfjCE+N1SsIzxi1aotYZTuPp6JL9cTOpz6s6sXshi+atLVdIOaQI
-         RB08bc/c5kwvkqHTfwu4i4BBVR15DmO2vHeVcxV7RUF1Pj+8hmof+2+frADbYuhiUn
-         acQIjanYSd9qnxrNiFUmgOoTK32QC74rlYcCybUAZWCYiOEXnl7a45E5p2cg6t/NFZ
-         M+CuMg5tbTLVRdcH5hO95hF49+n3cZk2IJKpmhLmRSqYnNJMGdXd6ACIqvbAuIhWwH
-         BlpyfT87MseV5BPL86N3wLY0F+V0YXEy2LdyNBxgDfqjOPIgVGc9UuPV0C/z3nUy1/
-         5UQeobwrtfzHA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 685795C0E58; Tue, 12 Apr 2022 08:25:01 -0700 (PDT)
-Date:   Tue, 12 Apr 2022 08:25:01 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Anna-Maria Behnsen <anna-maria@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Benedikt Spranger <b.spranger@linutronix.de>
-Subject: Re: [PATCH] rcu/torture: Change order of warning and trace dump
-Message-ID: <20220412152501.GA2557395@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220411151903.28167-1-anna-maria@linutronix.de>
- <20220411180915.GY4285@paulmck-ThinkPad-P17-Gen-1>
+        with ESMTP id S233172AbiDMGMb (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 13 Apr 2022 02:12:31 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 309F7369F3;
+        Tue, 12 Apr 2022 23:10:08 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id h23-20020a17090a051700b001c9c1dd3acbso1066958pjh.3;
+        Tue, 12 Apr 2022 23:10:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=0g9UcE2zL5w+G01NTjUcugLriSQ8wpxoQjCrz2R0018=;
+        b=I2VW7T5lmrxE21qiKPO9lndJB6OgiCBkcMN5noH755MjocM5a4fiUTmOIIm2TkCFK+
+         0dPWv4t4FK9A+A2QucvMbMDu4RgXm9Wqj53zCnwCtHb+LXNhrRdhMqexatsIJc2BYQEK
+         n/vhUydLYp8dwRFLlT++nQpMFc2+AuV0L6TusfGFeckcFvnb3KIt4gs1ZaDovrtx9y20
+         qaiB6n9fI9Ypixj6f8nRwHMFW8WaNK4Yr9y/IBbyEnUF57x2iLURIHkp6vLJX4tVKU92
+         S5pbE89v3RQIc8669YQwHiuEpWdhHh0hlUVzfp8f4KfKvwCY0IiAtunVRb59uUJR1Os+
+         k9gA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=0g9UcE2zL5w+G01NTjUcugLriSQ8wpxoQjCrz2R0018=;
+        b=EVgLsIPfKv2H+BlXEJ3CJuFpkg1oLIfoWKv0uH8Gsi/lkWwR/jC2yH2eX9IRG/uZ5E
+         0VnMTfM1AOFjD9vmn9QysMKxYycPx72vaJn8ROEitHrsNy3F9WvltNLg4HTkMidBCDQ9
+         AVDrFB6C/UVStbDzD6g6vj7YgZOTvI42RjYrYesFF9zxpMLkKN7Sx0Q08AqQG9wPvfGR
+         Mv3Wwu869+Gnu0s7rRu6IrLamUy7eaS6Ez8Mcr/G0OrYALHkP+vrh592LOZF9nq9dUdE
+         W/JHO7sDH1emCREvjuWOzDf0Wg8vPCSdkJrR6qL4qCat1tq6M6XA/gGMkGV641sUGC0w
+         1fPw==
+X-Gm-Message-State: AOAM5319DFuf623K/3lGlHlP6ZCaygFUtpnmXcBF3SbvhgBnhEy3Ky1F
+        TDYE9i+dv+FabgG6dnCg6oo=
+X-Google-Smtp-Source: ABdhPJwZGUY1wE3FwLT56wfTkox589sv0KFwbe72PnNBrsjgcyxpDTyj5tceVyPohBuu8hSyRW7Qag==
+X-Received: by 2002:a17:90b:1bc4:b0:1cb:c3db:5f4c with SMTP id oa4-20020a17090b1bc400b001cbc3db5f4cmr7738423pjb.125.1649830207617;
+        Tue, 12 Apr 2022 23:10:07 -0700 (PDT)
+Received: from localhost (220-235-208-104.tpgi.com.au. [220.235.208.104])
+        by smtp.gmail.com with ESMTPSA id z5-20020a056a00240500b004e15d39f15fsm41452636pfh.83.2022.04.12.23.10.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Apr 2022 23:10:07 -0700 (PDT)
+Date:   Wed, 13 Apr 2022 16:10:02 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Low-res tick handler device not going to ONESHOT_STOPPED when tick is
+ stopped (was: rcu_sched self-detected stall on CPU)
+To:     Michael Ellerman <mpe@ellerman.id.au>, paulmck@kernel.org,
+        Zhouyi Zhou <zhouzhouyi@gmail.com>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-kernel@vger.kernel.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        rcu <rcu@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+References: <CANiq72k+5Rdj7i3Df2dcE6_OPYPXK3z5EWLKnY56sSMz4G3OvA@mail.gmail.com>
+        <CAABZP2z64aYWfVSdXHaQopWc+BAbJJUGqtrju2iWER3DDTDFWg@mail.gmail.com>
+        <20220406170012.GO4285@paulmck-ThinkPad-P17-Gen-1>
+        <87pmls6nt7.fsf@mpe.ellerman.id.au> <87k0bz7i1s.fsf@mpe.ellerman.id.au>
+        <1649818529.j46672mh2p.astroid@bobo.none>
+In-Reply-To: <1649818529.j46672mh2p.astroid@bobo.none>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220411180915.GY4285@paulmck-ThinkPad-P17-Gen-1>
+Message-Id: <1649829917.xni78o33uo.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Apr 11, 2022 at 11:09:15AM -0700, Paul E. McKenney wrote:
-> On Mon, Apr 11, 2022 at 05:19:03PM +0200, Anna-Maria Behnsen wrote:
-> > Dumping a big ftrace buffer could lead to a RCU stall. So there is the
-> > ftrace buffer and the stall information which needs to be printed. When
-> > there is additionaly a WARN_ON() which describes the reason for the ftrace
-> > buffer dump and the WARN_ON() is executed _after_ ftrace buffer dump, the
-> > information get lost in the middle of the RCU stall information.
-> > 
-> > Therefore print WARN_ON() message before dumping the ftrace buffer in
-> > rcu_torture_writer().
-> > 
-> > Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
-> > Reviewed-by: Benedikt Spranger <b.spranger@linutronix.de>
-> 
-> Hello, Anna-Maria!
-> 
-> Good point, but we get caught out either way.  Either we take the chance
-> of losing the WARN() message as you say, or we take the chance of the
-> activity in the WARN() message overwriting needed information in the
-> trace buffer.
-> 
-> Would it work to shut off tracing, do the WARN(), and only then do the
-> rcu_ftrace_dump()?
+Oops, fixed subject...
 
-And presumably you are looking at this because your testing is
-triggering it.  This WARN() assumes that the system running rcutorture
-is otherwise idle.  If you are (say) running kernel builds while also
-running rcutorture, then this WARN() is expected behavior.  So if you need
-this sort of testing, we need do something like adding another rcutorture
-module parameter (background_load?) that suppresses this warning.
-
-							Thanx, Paul
-
-> > ---
-> >  kernel/rcu/rcutorture.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-> > index 55d049c39608..cbbe37d7701e 100644
-> > --- a/kernel/rcu/rcutorture.c
-> > +++ b/kernel/rcu/rcutorture.c
-> > @@ -1287,8 +1287,8 @@ rcu_torture_writer(void *arg)
-> >  				if (list_empty(&rcu_tortures[i].rtort_free) &&
-> >  				    rcu_access_pointer(rcu_torture_current) !=
-> >  				    &rcu_tortures[i]) {
-> > -					rcu_ftrace_dump(DUMP_ALL);
-> >  					WARN(1, "%s: rtort_pipe_count: %d\n", __func__, rcu_tortures[i].rtort_pipe_count);
-> > +					rcu_ftrace_dump(DUMP_ALL);
-> >  				}
-> >  		if (stutter_waited)
-> >  			sched_set_normal(current, oldnice);
-> > -- 
-> > 2.20.1
-> > 
+Excerpts from Nicholas Piggin's message of April 13, 2022 3:11 pm:
+> +Daniel, Thomas, Viresh
+>=20
+> Subject: Re: rcu_sched self-detected stall on CPU
+>=20
+> Excerpts from Michael Ellerman's message of April 9, 2022 12:42 am:
+>> Michael Ellerman <mpe@ellerman.id.au> writes:
+>>> "Paul E. McKenney" <paulmck@kernel.org> writes:
+>>>> On Wed, Apr 06, 2022 at 05:31:10PM +0800, Zhouyi Zhou wrote:
+>>>>> Hi
+>>>>>=20
+>>>>> I can reproduce it in a ppc virtual cloud server provided by Oregon
+>>>>> State University.  Following is what I do:
+>>>>> 1) curl -l https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/l=
+inux.git/snapshot/linux-5.18-rc1.tar.gz
+>>>>> -o linux-5.18-rc1.tar.gz
+>>>>> 2) tar zxf linux-5.18-rc1.tar.gz
+>>>>> 3) cp config linux-5.18-rc1/.config
+>>>>> 4) cd linux-5.18-rc1
+>>>>> 5) make vmlinux -j 8
+>>>>> 6) qemu-system-ppc64 -kernel vmlinux -nographic -vga none -no-reboot
+>>>>> -smp 2 (QEMU 4.2.1)
+>>>>> 7) after 12 rounds, the bug got reproduced:
+>>>>> (http://154.223.142.244/logs/20220406/qemu.log.txt)
+>>>>
+>>>> Just to make sure, are you both seeing the same thing?  Last I knew,
+>>>> Zhouyi was chasing an RCU-tasks issue that appears only in kernels
+>>>> built with CONFIG_PROVE_RCU=3Dy, which Miguel does not have set.  Or d=
+id
+>>>> I miss something?
+>>>>
+>>>> Miguel is instead seeing an RCU CPU stall warning where RCU's grace-pe=
+riod
+>>>> kthread slept for three milliseconds, but did not wake up for more tha=
+n
+>>>> 20 seconds.  This kthread would normally have awakened on CPU 1, but
+>>>> CPU 1 looks to me to be very unhealthy, as can be seen in your console
+>>>> output below (but maybe my idea of what is healthy for powerpc systems
+>>>> is outdated).  Please see also the inline annotations.
+>>>>
+>>>> Thoughts from the PPC guys?
+>>>
+>>> I haven't seen it in my testing. But using Miguel's config I can
+>>> reproduce it seemingly on every boot.
+>>>
+>>> For me it bisects to:
+>>>
+>>>   35de589cb879 ("powerpc/time: improve decrementer clockevent processin=
+g")
+>>>
+>>> Which seems plausible.
+>>>
+>>> Reverting that on mainline makes the bug go away.
+>>>
+>>> I don't see an obvious bug in the diff, but I could be wrong, or the ol=
+d
+>>> code was papering over an existing bug?
+>>>
+>>> I'll try and work out what it is about Miguel's config that exposes
+>>> this vs our defconfig, that might give us a clue.
+>>=20
+>> It's CONFIG_HIGH_RES_TIMERS=3Dn which triggers the stall.
+>>=20
+>> I can reproduce just with:
+>>=20
+>>   $ make ppc64le_guest_defconfig
+>>   $ ./scripts/config -d HIGH_RES_TIMERS
+>>=20
+>> We have no defconfigs that disable HIGH_RES_TIMERS, I didn't even
+>> realise you could disable it TBH :)
+>>=20
+>> The Rust CI has it disabled because I copied that from the x86 defconfig
+>> they were using back when I added the Rust support. I think that was
+>> meant to be a stripped down fast config for CI, but the result is it's
+>> just using a badly tested combination which is not helpful.
+>>=20
+>> So I'll send a patch to turn HIGH_RES_TIMERS on for the Rust CI, and we
+>> can debug this further without blocking them.
+>=20
+> So we traced the problem down to possibly a misunderstanding between=20
+> decrementer clock event device and core code.
+>=20
+> The decrementer is only oneshot*ish*. It actually needs to either be=20
+> reprogrammed or shut down otherwise it just continues to cause=20
+> interrupts.
+>=20
+> Before commit 35de589cb879, it was sort of two-shot. The initial=20
+> interrupt at the programmed time would set its internal next_tb variable=20
+> to ~0 and call the ->event_handler(). If that did not set_next_event or=20
+> stop the timer, the interrupt will fire again immediately, notice=20
+> next_tb is ~0, and only then stop the decrementer interrupt.
+>=20
+> So that was already kind of ugly, this patch just turned it into a hang.
+>=20
+> The problem happens when the tick is stopped with an event still=20
+> pending, then tick_nohz_handler() is called, but it bails out because=20
+> tick_stopped =3D=3D 1 so the device never gets programmed again, and so i=
+t=20
+> keeps firing.
+>=20
+> How to fix it? Before commit a7cba02deced, powerpc's decrementer was=20
+> really oneshot, but we would like to avoid doing that because it requires=
+=20
+> additional programming of the hardware on each timer interrupt. We have=20
+> the ONESHOT_STOPPED state which seems to be just about what we want.
+>=20
+> Did the ONESHOT_STOPPED patch just miss this case, or is there a reason=20
+> we don't stop it here? This patch seems to fix the hang (not heavily
+> tested though).
+> =20
+> Thanks,
+> Nick
+>=20
+> ---
+> diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+> index 2d76c91b85de..7e13a55b6b71 100644
+> --- a/kernel/time/tick-sched.c
+> +++ b/kernel/time/tick-sched.c
+> @@ -1364,9 +1364,11 @@ static void tick_nohz_handler(struct clock_event_d=
+evice *dev)
+>  	tick_sched_do_timer(ts, now);
+>  	tick_sched_handle(ts, regs);
+> =20
+> -	/* No need to reprogram if we are running tickless  */
+> -	if (unlikely(ts->tick_stopped))
+> +	if (unlikely(ts->tick_stopped)) {
+> +		/* If we are tickless, change the clock event to stopped */
+> +		tick_program_event(KTIME_MAX, 1);
+>  		return;
+> +	}
+> =20
+>  	hrtimer_forward(&ts->sched_timer, now, TICK_NSEC);
+>  	tick_program_event(hrtimer_get_expires(&ts->sched_timer), 1);
+>=20
