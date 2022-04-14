@@ -2,40 +2,51 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ADF9EC433EF
-	for <rcu@archiver.kernel.org>; Thu, 14 Apr 2022 21:10:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A2FE5C433F5
+	for <rcu@archiver.kernel.org>; Thu, 14 Apr 2022 21:14:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238210AbiDNVMe (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 14 Apr 2022 17:12:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36290 "EHLO
+        id S239334AbiDNVQf (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 14 Apr 2022 17:16:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346799AbiDNVMd (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 14 Apr 2022 17:12:33 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 171CF62A3A;
-        Thu, 14 Apr 2022 14:10:06 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 92A4261FBC;
-        Thu, 14 Apr 2022 21:10:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEC85C385A5;
-        Thu, 14 Apr 2022 21:10:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649970605;
-        bh=tfMsYagwtq0NhrnrtHFVy+YRVYRjNKvi4tiYz8ThGaE=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=nVJkAqFkX4dbAf73bYDGIeREZF4wDBTmOVAaIR/gAVlFPf29kjAFV4Nptx5wxdeZc
-         /AXheP4y8t7tGcxSgdG6EBQen3zuMrgGKaPwCQoPh3mbBVnLPxcFAp6QuiNDV5Murs
-         HqmgAtHMJjlrJhrflAsm3RkQw1FEqV6DwwgL3WRwukg013RrKxqoHDc1I1ixXtr7FN
-         GbeiIRIVC28g0pS6HmZdf5+JDMwYm+GRsvJRGzBNGy7BiifaTJAhovoPWVBGmP6G/D
-         +oEoSI2cuBzh5tI1J+C3tpsyje7Z2rhpcxgJOr1l3Bn/85X1KjF3THdV5ybPX+KoMl
-         IaL2fQlVViTRg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 998BA5C03A5; Thu, 14 Apr 2022 14:10:04 -0700 (PDT)
-Date:   Thu, 14 Apr 2022 14:10:04 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
+        with ESMTP id S239169AbiDNVQd (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 14 Apr 2022 17:16:33 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F4EDD95C8
+        for <rcu@vger.kernel.org>; Thu, 14 Apr 2022 14:14:07 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id p1so4799864qtq.10
+        for <rcu@vger.kernel.org>; Thu, 14 Apr 2022 14:14:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uKVGoGbrYEyx0k0CgPBfM6msY5l8yZ5p4Lnz2+Cc2cQ=;
+        b=DABf8MAEYkJJzsAYNNXHuzixYW/Fr8D2oycj5oA/SFoVD9byDD6rPX8GszkCthofMf
+         jfeIpswuW6KCZ4D7K06NHctGis3ItS0pW3Q70M4yZVkao52NTuCP561ozdv/uEu2W+PF
+         MweF+VAwWzO6AOoaZnzPieoJs6Q15/llDNcPc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uKVGoGbrYEyx0k0CgPBfM6msY5l8yZ5p4Lnz2+Cc2cQ=;
+        b=aSyHoxUu8o6Lk3PK9KJ6C3LSIwXou4r0lec++A7+Vr6P7ah9U74vPpE4aYto9DvNoZ
+         guJq9BKbue8gnclSSZWVC5Tcbhoe6NxfNomSywV9/Gnfj9yRbfkM8/CoOL3gEaj6A4EC
+         R3yIBpbex5niARLUYigj9xOQ1gjPvkMwlnPgF6uQD6j0AghdQlmbfGkejcOCw/rsa4EJ
+         Rtfu4gXN7nqQA8HfpoUSBwWL5hAZjjbeQTuOZN7I/ESjYtTexdBlAaez2PebQGENPHkc
+         POwYVgBmUcAqN4ygsKVD2zsky+LkaF4qDwB7+LiBz89gZvPv34iakbotp1TKAeAbphV9
+         FOEA==
+X-Gm-Message-State: AOAM5332183Jfhis9CMAPGy1TprlaeJ5EYUHqXGNvY7XGoy7c4kH3sgF
+        oP0Plq9twzn+rDONc20pCFuXPW5m0MIgiw==
+X-Google-Smtp-Source: ABdhPJx1tNCMWhjWY+hhHDbkYJYxh1X6Fc13wV9da89uHjZElQ08EW1QmpdXf6UabPq1F0Ycdc4/rA==
+X-Received: by 2002:a05:622a:3c7:b0:2e1:d537:a15a with SMTP id k7-20020a05622a03c700b002e1d537a15amr3398221qtx.522.1649970846282;
+        Thu, 14 Apr 2022 14:14:06 -0700 (PDT)
+Received: from localhost (228.221.150.34.bc.googleusercontent.com. [34.150.221.228])
+        by smtp.gmail.com with ESMTPSA id b3-20020a05620a270300b0069c5f9304e6sm1432563qkp.48.2022.04.14.14.14.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Apr 2022 14:14:05 -0700 (PDT)
+Date:   Thu, 14 Apr 2022 21:14:05 +0000
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
@@ -44,8 +55,7 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Frederic Weisbecker <frederic@kernel.org>
 Subject: Re: [PATCH RFC] rcu/nocb: Provide default all-CPUs mask for
  RCU_NOCB_CPU=y
-Message-ID: <20220414211004.GX4285@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+Message-ID: <YliOnZC6gva5WZrG@google.com>
 References: <20220408174908.GK4285@paulmck-ThinkPad-P17-Gen-1>
  <CAEXW_YQ+oE3xQ0tLnBMFxRXLqKZkT5UfjF+CULxnhf9F-dEA2g@mail.gmail.com>
  <CAEXW_YRK2t2JO4RyBTd8cR9sTVpgP7Z5Ywhb1g7CRz3HJ_kNQA@mail.gmail.com>
@@ -55,18 +65,17 @@ References: <20220408174908.GK4285@paulmck-ThinkPad-P17-Gen-1>
  <Ylhz1LOIf+JyjH7n@google.com>
  <20220414194204.GU4285@paulmck-ThinkPad-P17-Gen-1>
  <CAEXW_YS5b_51tqmdf27QqQHqsgJKbTys1V3h+Bek3XN4FjBmbw@mail.gmail.com>
- <CAEXW_YQPEoM0vhpjNHtPd6GRkosfzK95yGt4eB=-C2mC32LjmQ@mail.gmail.com>
+ <20220414210933.GW4285@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEXW_YQPEoM0vhpjNHtPd6GRkosfzK95yGt4eB=-C2mC32LjmQ@mail.gmail.com>
+In-Reply-To: <20220414210933.GW4285@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Apr 14, 2022 at 03:51:29PM -0400, Joel Fernandes wrote:
-> On Thu, Apr 14, 2022 at 3:49 PM Joel Fernandes <joel@joelfernandes.org> wrote:
-> >
+On Thu, Apr 14, 2022 at 02:09:33PM -0700, Paul E. McKenney wrote:
+> On Thu, Apr 14, 2022 at 03:49:16PM -0400, Joel Fernandes wrote:
 > > On Thu, Apr 14, 2022 at 3:42 PM Paul E. McKenney <paulmck@kernel.org> wrote:
 > > >
 > > > On Thu, Apr 14, 2022 at 07:19:48PM +0000, Joel Fernandes wrote:
@@ -100,38 +109,48 @@ On Thu, Apr 14, 2022 at 03:51:29PM -0400, Joel Fernandes wrote:
 > > > in my original table to "[2]".
 > > >
 > > > Thoughts?
-> >
+> > 
 > > I thought about that. I feel that since we are defaulting the new
 > > config option to =n , it is a conscious choice by the distro to set it
 > > to =y.  In such a case, they should be Ok with offloading all CPUs. If
 > > they decide to selectively offload some CPUs in the future, then they
 > > could revisit the config option at that time.
-> >
+> > 
 > > I feel the kernel config should override the boot parameter behavior.
 > > It is the same effect as a sysadmin passing kernel parameter X
 > > assuming the kernel does something but the CONFIG option might not
 > > even build code corresponding to X.
-> >
+> > 
 > > I feel to address your concern, we can document in kernel command line
 > > documentation that rcu_nocbs= does not have an effect if
 > > CONFIG_RCU_NOCB_CPU_ALL=y, would that work for you?
 > 
-> Along with documentation, I like your idea of printing a diagnostic in
-> such a situation. I will certainly do that.
-
-Seriously.  Take some time.  Think carefully about it.
-
-							Thanx, Paul
-
-> Thanks,
+> Not me so much, because I would just set CONFIG_RCU_NOCB_CPU_ALL=n so
+> as to not worry about it.
 > 
->  - Joel
+> But I am not at all looking forward to complaints about rcu_nocbs not
+> working the way people expect.  So let's take some time to think more
+> carefully about this.
+
+That's a fair concern. But we are defaulting it to 'n' so I think if it is
+unconsciously enabled without someone reading documentation, then that's a
+slightly different issue.
+
+On the other hand, I can also make it such that if rcu_nocbs= is passed, then
+the CONFIG does not take effect. That's quite a bit weird/quirky IMHO.
+
+thanks,
+
+ - Joel
+
+
+
+> 							Thanx, Paul
 > 
-> >
 > > Thanks,
-> >
+> > 
 > > - Joel
-> >
+> > 
 > > >
 > > > > > > > I believe that Steve Rostedt's review would carry weight for ChromeOS,
 > > > > > > > however, I am suffering a senior moment on the right person for Android.
