@@ -2,154 +2,162 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AB408C433F5
-	for <rcu@archiver.kernel.org>; Thu, 14 Apr 2022 22:37:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C67A1C433EF
+	for <rcu@archiver.kernel.org>; Fri, 15 Apr 2022 16:02:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235739AbiDNWj3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 14 Apr 2022 18:39:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36278 "EHLO
+        id S243365AbiDOQFG (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 15 Apr 2022 12:05:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232386AbiDNWj2 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 14 Apr 2022 18:39:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0BDEC6B54;
-        Thu, 14 Apr 2022 15:37:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3D66B620B1;
-        Thu, 14 Apr 2022 22:37:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87F1DC385A1;
-        Thu, 14 Apr 2022 22:37:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649975821;
-        bh=nZQEIAbV5ImpOLfoFMOS/d41QAE77juoAmcn5Yjj7tA=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=B/Hf6TyRY7JsgqhNQ3nTtIGf3lGpUXrfXJW678cB0qzeQLDuY9H2g2EcImCya6n3R
-         hGHP4XHgAb4/CLP9O1kJDkKunKQlBlsu2Rdh/aRs/zDUwD1ZDrnFkqHHEj9g2q7ls7
-         jFGvG6p106PbNw76zvltWV9HNgCgGg3leAcMof7J7tFGXSLijjmsNPPT/bIXmeWKbU
-         aUoVz+eG27Zel9GOyAdtTi60sxVGkQ9pwgNO5zDPHPSqPmP3eWFQ8MGS8jRfgskDaS
-         X/LJUcDIoJFtG/PcYd5IPFbBQH28crgO+fe0eZVdoBXROd+7ZoS8lC4dsXQYMLSEvT
-         3dHw8s92/hbxQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 158315C013A; Thu, 14 Apr 2022 15:37:01 -0700 (PDT)
-Date:   Thu, 14 Apr 2022 15:37:01 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
+        with ESMTP id S1355690AbiDOQFE (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 15 Apr 2022 12:05:04 -0400
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62C829D0DF
+        for <rcu@vger.kernel.org>; Fri, 15 Apr 2022 09:02:35 -0700 (PDT)
+Received: by mail-qv1-xf35.google.com with SMTP id b17so6701378qvf.12
+        for <rcu@vger.kernel.org>; Fri, 15 Apr 2022 09:02:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+DljWZKXAubVXqG1Ro0omqGdweveuV0cYgdZ65EqJ9s=;
+        b=w/T5XzJUgWoGLquTxc3I8nvLvpbyCUQti/1pvnZJaqrBJghV4AuwUl1UM2MqzhauZm
+         35gJC1bZ0ZbQcrJ4wSvSUoYUt2xjKnv6RQ6CbDkltUmFo36Jg0fArEv07L0Dvz8aT5Gb
+         lPL+2udLzxV+RB6W714RhFqkMqsMLwSSirWD4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+DljWZKXAubVXqG1Ro0omqGdweveuV0cYgdZ65EqJ9s=;
+        b=suUAZb1aF/EWZYBdyLIEEFV+w4bH7EmI/1v5qiNqi9R5MnzCxw0IYGYR0tv1dLfIlb
+         M1/fzl5darfYuoPW8xwghRMSGrNbm5qFlIkfjLeoWU9ctqAvl8yYUCySaMDZglxlDXwo
+         2f0F16ugtgMwnlMjSbtRBDvfLohjJ1/U2fJYhYIezjqqzY0ROCOvHD5xhaMmXF05R2Xm
+         kn7OO9GqsIbdo09aFZyef8963HQvKo6Yg73pIqNI6YvpGilaz5gL4bropYrv13lITMzD
+         SdvyPRlugYgX3TKc58ZnI8XLYmeorp0RhhVCQeClP//oNpO78f37oIjj1RMDgkGlWLu7
+         wH1g==
+X-Gm-Message-State: AOAM531FzQUM/wtmzgEOIVyJ+f5tCVwdXwJC9amnDfr/HLgGll0Wbim0
+        ZPD9bQS3FI3jN07QD3MezZwVkQ==
+X-Google-Smtp-Source: ABdhPJwAzENcYv4aGYA8ZMIaha5k+ZD1mGr5UPM81CPNKLxpqywnC9WqLy4bR8wR5pAcj+CpJgOeLA==
+X-Received: by 2002:a05:6214:d62:b0:446:2e4a:1f30 with SMTP id 2-20020a0562140d6200b004462e4a1f30mr5910873qvs.74.1650038554384;
+        Fri, 15 Apr 2022 09:02:34 -0700 (PDT)
+Received: from joelboxx.c.googlers.com.com (228.221.150.34.bc.googleusercontent.com. [34.150.221.228])
+        by smtp.gmail.com with ESMTPSA id bl22-20020a05620a1a9600b00680da570a5dsm2699890qkb.61.2022.04.15.09.02.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Apr 2022 09:02:33 -0700 (PDT)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        rcu <rcu@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH RFC] rcu/nocb: Provide default all-CPUs mask for
- RCU_NOCB_CPU=y
-Message-ID: <20220414223701.GD4285@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220408205440.GL4285@paulmck-ThinkPad-P17-Gen-1>
- <CAEXW_YTunj5j7cxT3VYGGmJwcQowpDiyqmewiwHjyXP-zJd4FA@mail.gmail.com>
- <20220411154109.GX4285@paulmck-ThinkPad-P17-Gen-1>
- <Ylhz1LOIf+JyjH7n@google.com>
- <20220414194204.GU4285@paulmck-ThinkPad-P17-Gen-1>
- <CAEXW_YS5b_51tqmdf27QqQHqsgJKbTys1V3h+Bek3XN4FjBmbw@mail.gmail.com>
- <20220414210933.GW4285@paulmck-ThinkPad-P17-Gen-1>
- <YliOnZC6gva5WZrG@google.com>
- <20220414213156.GZ4285@paulmck-ThinkPad-P17-Gen-1>
- <CAEXW_YT0CDp7kqKVeqGRT8YfXiCYuL0ZgRwz05MQrmns2Yp+2Q@mail.gmail.com>
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        rushikesh.s.kadam@intel.com, vineethrp@gmail.com, urezki@gmail.com
+Subject: [PATCH v3] rcu/nocb: Add an option to offload all CPUs on boot
+Date:   Fri, 15 Apr 2022 16:02:24 +0000
+Message-Id: <20220415160224.1904505-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.36.0.rc0.470.gd361397f0d-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEXW_YT0CDp7kqKVeqGRT8YfXiCYuL0ZgRwz05MQrmns2Yp+2Q@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Apr 14, 2022 at 05:38:08PM -0400, Joel Fernandes wrote:
-> On Thu, Apr 14, 2022 at 5:31 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Thu, Apr 14, 2022 at 09:14:05PM +0000, Joel Fernandes wrote:
-> > > On Thu, Apr 14, 2022 at 02:09:33PM -0700, Paul E. McKenney wrote:
-> > > > On Thu, Apr 14, 2022 at 03:49:16PM -0400, Joel Fernandes wrote:
-> > > > > On Thu, Apr 14, 2022 at 3:42 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > > > >
-> > > > > > On Thu, Apr 14, 2022 at 07:19:48PM +0000, Joel Fernandes wrote:
-> > > > > > > On Mon, Apr 11, 2022 at 08:41:09AM -0700, Paul E. McKenney wrote:
-> > > > > > > [..]
-> > > > > > > > > > [4]     All CPUs are offloaded at boot, and any CPU can be de-offloaded
-> > > > > > > > > >         and offloaded at runtime.  This is the same behavior that
-> > > > > > > > > >         you would currently get with CONFIG_RCU_NOCB_CPU_ALL=n and
-> > > > > > > > > >         rcu_nocbs=0-N.
-> > > > > > > > >
-> > > > > > > > > Yes, this is the behavior I intend. So then there would not be a need
-> > > > > > > > > to pass a mask (and I suspect for a large number of users, it
-> > > > > > > > > simplifies boot params).
-> > > > > > > >
-> > > > > > > > Very good, and from what I can see, this should work for everyone.
-> > > > > > >
-> > > > > > > Just to clarify, what I am going to do is, if this new option =y, then
-> > > > > > > rcu_nocbs effectively wont do anything. i.e. All CPUs are offloaded at boot.
-> > > > > > > Let me know if we are not on the same page about it though. I do feel that is
-> > > > > > > a sensible choice given =y. If we are on same page, please ignore my comment.
-> > > > > >
-> > > > > > I was assuming that the rcu_nocbs=??? for non-empty "???" would override
-> > > > > > the CONFIG_RCU_NOCB_CPU_ALL=y.  If you choose not to do that, shouldn't
-> > > > > > you at least issue some sort of diagnostic?  After all, the sysadmin
-> > > > > > gave a kernel-boot parameter asking the code to do something and the
-> > > > > > code is choosing not to do that something.
-> > > > > >
-> > > > > > Of course, such a sysadmin might want the CONFIG_RCU_NOCB_CPU_ALL=y
-> > > > > > Kconfig option to affect only the default, that is, when no rcu_nocbs
-> > > > > > kernel boot parameter is specified.  This would change the second "[4]"
-> > > > > > in my original table to "[2]".
-> > > > > >
-> > > > > > Thoughts?
-> > > > >
-> > > > > I thought about that. I feel that since we are defaulting the new
-> > > > > config option to =n , it is a conscious choice by the distro to set it
-> > > > > to =y.  In such a case, they should be Ok with offloading all CPUs. If
-> > > > > they decide to selectively offload some CPUs in the future, then they
-> > > > > could revisit the config option at that time.
-> > > > >
-> > > > > I feel the kernel config should override the boot parameter behavior.
-> > > > > It is the same effect as a sysadmin passing kernel parameter X
-> > > > > assuming the kernel does something but the CONFIG option might not
-> > > > > even build code corresponding to X.
-> > > > >
-> > > > > I feel to address your concern, we can document in kernel command line
-> > > > > documentation that rcu_nocbs= does not have an effect if
-> > > > > CONFIG_RCU_NOCB_CPU_ALL=y, would that work for you?
-> > > >
-> > > > Not me so much, because I would just set CONFIG_RCU_NOCB_CPU_ALL=n so
-> > > > as to not worry about it.
-> > > >
-> > > > But I am not at all looking forward to complaints about rcu_nocbs not
-> > > > working the way people expect.  So let's take some time to think more
-> > > > carefully about this.
-> > >
-> > > That's a fair concern. But we are defaulting it to 'n' so I think if it is
-> > > unconsciously enabled without someone reading documentation, then that's a
-> > > slightly different issue.
-> >
-> > Suppose that one group decides to change to CONFIG_RCU_NOCB_CPU_ALL=y,
-> > and some other group on some other continent happens to be using the
-> > rcu_nocbs boot parameter (having read the documentation).  And suppose
-> > that the level of communication between the two groups is typical,
-> > that is to say, nonexistent.
-> >
-> > Sure, we can argue that groups should communicate, but our making that
-> > argument won't necessarily prevent the group using rcu_nocbs from taking
-> > us to task in the course of their debugging effort.
-> >
-> > > On the other hand, I can also make it such that if rcu_nocbs= is passed, then
-> > > the CONFIG does not take effect. That's quite a bit weird/quirky IMHO.
-> >
-> > Not at all.  We can simply say that CONFIG_RCU_NOCB_CPU_ALL controls
-> > only the default situation, that is, when rcu_nocbs is not specified.
-> 
-> Then it should be called: CONFIG_RCU_NOCB_CPU_DEFAULT_ALL , or
-> something. Otherwise I can tell you that I will be the first one to be
-> confused by menuconfig unless I also read the code :-D
+From: Joel Fernandes <joel@joelfernandes.org>
 
-I am OK with CONFIG_RCU_NOCB_CPU_DEFAULT_ALL.
+On systems with CONFIG_RCU_NOCB_CPU=y, there is no default mask provided
+which ends up not offloading any CPU. This patch removes a dependency
+from the bootloader having to know about RCU, about how many CPUs the
+system has, and about how to provide the mask.
 
-							Thanx, Paul
+With the new option enabled, all CPUs will be offloaded on boot.
+
+Signed-off-by: Joel Fernandes <joel@joelfernandes.org>
+---
+v2 was forcing the option to override no_cbs=
+v3 is back to v1 but with a config option defaulting to 'n'.
+
+ Documentation/admin-guide/kernel-parameters.txt |  3 +++
+ kernel/rcu/Kconfig                              | 13 +++++++++++++
+ kernel/rcu/tree_nocb.h                          | 16 ++++++++++++++--
+ 3 files changed, 30 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index f5a27f067db9..7648a7dd335e 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -4398,6 +4398,9 @@
+ 			no-callback mode from boot but the mode may be
+ 			toggled at runtime via cpusets.
+ 
++			Note that this argument takes precedence over
++			the CONFIG_RCU_NOCB_CPU_DEFAULT_ALL option.
++
+ 	rcu_nocb_poll	[KNL]
+ 			Rather than requiring that offloaded CPUs
+ 			(specified by rcu_nocbs= above) explicitly
+diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+index bf8e341e75b4..2f8bd694ed85 100644
+--- a/kernel/rcu/Kconfig
++++ b/kernel/rcu/Kconfig
+@@ -223,6 +223,19 @@ config RCU_NOCB_CPU
+ 	  Say Y here if you need reduced OS jitter, despite added overhead.
+ 	  Say N here if you are unsure.
+ 
++config RCU_NOCB_CPU_DEFAULT_ALL
++	bool "Offload RCU callback processing from all CPUs by default"
++	depends on RCU_NOCB_CPU
++	default n
++	help
++	  Use this option to offload callback processing from all CPUs
++	  by default, in the absence of the rcu_nocbs boot parameter.
++	  This also avoids the need to use any boot parameters to achieve
++	  the effect of offloading all CPUs on boot.
++
++	  Say Y here if you want offload all CPUs by default on boot.
++	  Say N here if you are unsure.
++
+ config TASKS_TRACE_RCU_READ_MB
+ 	bool "Tasks Trace RCU readers use memory barriers in user and idle"
+ 	depends on RCU_EXPERT
+diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+index eeafb546a7a0..673fa0d1f801 100644
+--- a/kernel/rcu/tree_nocb.h
++++ b/kernel/rcu/tree_nocb.h
+@@ -1165,12 +1165,21 @@ EXPORT_SYMBOL_GPL(rcu_nocb_cpu_offload);
+ void __init rcu_init_nohz(void)
+ {
+ 	int cpu;
+-	bool need_rcu_nocb_mask = false;
++	bool need_rcu_nocb_mask = false, offload_all = false;
+ 	struct rcu_data *rdp;
+ 
++#if defined(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL)
++	if (!rcu_nocb_is_setup) {
++		need_rcu_nocb_mask = true;
++		offload_all = true;
++	}
++#endif
++
+ #if defined(CONFIG_NO_HZ_FULL)
+-	if (tick_nohz_full_running && cpumask_weight(tick_nohz_full_mask))
++	if (tick_nohz_full_running && cpumask_weight(tick_nohz_full_mask)) {
+ 		need_rcu_nocb_mask = true;
++		offload_all = false; /* NO_HZ_FULL has its own mask. */
++	}
+ #endif /* #if defined(CONFIG_NO_HZ_FULL) */
+ 
+ 	if (need_rcu_nocb_mask) {
+@@ -1191,6 +1200,9 @@ void __init rcu_init_nohz(void)
+ 		cpumask_or(rcu_nocb_mask, rcu_nocb_mask, tick_nohz_full_mask);
+ #endif /* #if defined(CONFIG_NO_HZ_FULL) */
+ 
++	if (offload_all)
++		cpumask_setall(rcu_nocb_mask);
++
+ 	if (!cpumask_subset(rcu_nocb_mask, cpu_possible_mask)) {
+ 		pr_info("\tNote: kernel parameter 'rcu_nocbs=', 'nohz_full', or 'isolcpus=' contains nonexistent CPUs.\n");
+ 		cpumask_and(rcu_nocb_mask, cpu_possible_mask,
+-- 
+2.36.0.rc0.470.gd361397f0d-goog
+
