@@ -2,195 +2,129 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E7D5C433EF
-	for <rcu@archiver.kernel.org>; Fri, 15 Apr 2022 17:35:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CADFC433F5
+	for <rcu@archiver.kernel.org>; Sat, 16 Apr 2022 00:20:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240827AbiDORhy (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 15 Apr 2022 13:37:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46852 "EHLO
+        id S231682AbiDPAXA (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 15 Apr 2022 20:23:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241652AbiDORhx (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 15 Apr 2022 13:37:53 -0400
+        with ESMTP id S229657AbiDPAW7 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 15 Apr 2022 20:22:59 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1892E52E59;
-        Fri, 15 Apr 2022 10:35:18 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E545C625B;
+        Fri, 15 Apr 2022 17:20:28 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id A4A23B82E8D;
-        Fri, 15 Apr 2022 17:35:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50095C385A7;
-        Fri, 15 Apr 2022 17:35:16 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id BEDECB831C0;
+        Sat, 16 Apr 2022 00:20:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B04AC385A4;
+        Sat, 16 Apr 2022 00:20:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1650044116;
-        bh=NPrGWJY2+pB2s2+LkmyQ4Z6jS31r4u+B6OdBspv9xGw=;
+        s=k20201202; t=1650068425;
+        bh=MGY5sOKWDHr0IONFBvmLrFAAGBvZRGoXCHHFVj2f5cM=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=KXOdvc2h2TyoULPQhTsialNWWsR/RBbznma5YHiYT4MBRnUTxdS4U9yblSqXLFkAK
-         DSKJMUFTR5vJfcPh7babHlTcQrZ0Ohs2FkCbbxjFB1KsLuH6wyNxsKGXi23mb3r5d4
-         X8wusGaCGCqKuXxhTw1kK4XW0IK/BcfIG9I+rDpYakqy6IDlfL488Ve4t/izlfIvOT
-         9N0A2j0y259EozQ4tK6B7FJx64zc6frNsn1X6adCdpqlN9EmiPc81odPsTL8DziPjE
-         fqUq6FZ0WAb/HA+OOLEA5/gA6nF9j9zEu6jNRsx3ZK4Pezf34AuuzwN9cWCVQb2HEj
-         YWRagMMCiTMcg==
+        b=pXKAZlVv2VqcV6lZKS7kWAq5SwTg6zAWtK8XHhqlW6Bdy8tyJuYalqlXCRzCv9kGS
+         dHtZvaS2eD81u0mLll/ID9c7UkP3ccNhbqmmjuJKcrUwh6vzf61LdfFb05axrpqX0+
+         7TCuYbZAeqZcZLCcIHBnRmqDpafZv7kg4vmy14gxH168ZaSxq91TckLg64sz+iQqDQ
+         /MnYGsDtpT9XfKViCrDiMtAfJs/cedVGpASOWy10jyB4K7qkcy5RptRCtiXwM9P/WG
+         v6JkZQ0CtK4eSppjXuT3PiFgjiuRiiZbnDHLjim4FSg9U66dpdLBEr4eMNcOyaKTTx
+         mGL+ze3FyOPdw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id EA2945C04C8; Fri, 15 Apr 2022 10:35:15 -0700 (PDT)
-Date:   Fri, 15 Apr 2022 10:35:15 -0700
+        id 0F1355C30D2; Fri, 15 Apr 2022 17:20:25 -0700 (PDT)
+Date:   Fri, 15 Apr 2022 17:20:25 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        rushikesh.s.kadam@intel.com, vineethrp@gmail.com, urezki@gmail.com
-Subject: Re: [PATCH v3] rcu/nocb: Add an option to offload all CPUs on boot
-Message-ID: <20220415173515.GL4285@paulmck-ThinkPad-P17-Gen-1>
+To:     Zqiang <qiang1.zhang@intel.com>
+Cc:     frederic@kernel.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu: Dump all rcuc kthreads status for CPUs that not
+ report quiescent state
+Message-ID: <20220416002025.GO4285@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20220415160224.1904505-1-joel@joelfernandes.org>
+References: <20220413074411.2369623-1-qiang1.zhang@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220415160224.1904505-1-joel@joelfernandes.org>
+In-Reply-To: <20220413074411.2369623-1-qiang1.zhang@intel.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Apr 15, 2022 at 04:02:24PM +0000, Joel Fernandes (Google) wrote:
-> From: Joel Fernandes <joel@joelfernandes.org>
-
-Much better, thank you!
-
-> On systems with CONFIG_RCU_NOCB_CPU=y, there is no default mask provided
-> which ends up not offloading any CPU. This patch removes a dependency
-> from the bootloader having to know about RCU, about how many CPUs the
-> system has, and about how to provide the mask.
-
-The "about how many CPUs the system has" does not apply to current
-mainline, in which "rcu_nocbs=0-N" says to offload all CPUs.  It can be
-added back in for a backport to v5.10.  ;-)
-
-> With the new option enabled, all CPUs will be offloaded on boot.
+On Wed, Apr 13, 2022 at 03:44:11PM +0800, Zqiang wrote:
+> If the rcutree.use_softirq is configured, when RCU Stall event
+> happened, dump status of all rcuc kthreads who due to starvation
+> prevented grace period ends on CPUs that not report quiescent
+> state.
 > 
-> Signed-off-by: Joel Fernandes <joel@joelfernandes.org>
+> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 
-I second Joel's call for testing and add to that a call for additional
-review.
+This could be a good improvement!  But a few questions and comments below.
 
-My thought is to queue this after some independent testing.
+							Thanx, Paul
 
 > ---
-> v2 was forcing the option to override no_cbs=
-> v3 is back to v1 but with a config option defaulting to 'n'.
+>  kernel/rcu/tree_stall.h | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
 > 
->  Documentation/admin-guide/kernel-parameters.txt |  3 +++
->  kernel/rcu/Kconfig                              | 13 +++++++++++++
->  kernel/rcu/tree_nocb.h                          | 16 ++++++++++++++--
->  3 files changed, 30 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index f5a27f067db9..7648a7dd335e 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -4398,6 +4398,9 @@
->  			no-callback mode from boot but the mode may be
->  			toggled at runtime via cpusets.
+> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+> index d7956c03edbd..e6ecc32cfe23 100644
+> --- a/kernel/rcu/tree_stall.h
+> +++ b/kernel/rcu/tree_stall.h
+> @@ -348,6 +348,7 @@ static int rcu_print_task_stall(struct rcu_node *rnp, unsigned long flags)
+>  }
+>  #endif /* #else #ifdef CONFIG_PREEMPT_RCU */
 >  
-> +			Note that this argument takes precedence over
-> +			the CONFIG_RCU_NOCB_CPU_DEFAULT_ALL option.
+> +static void rcuc_kthread_dump(struct rcu_data *rdp);
+>  /*
+>   * Dump stacks of all tasks running on stalled CPUs.  First try using
+>   * NMIs, but fall back to manual remote stack tracing on architectures
+> @@ -368,6 +369,7 @@ static void rcu_dump_cpu_stacks(void)
+>  					pr_err("Offline CPU %d blocking current GP.\n", cpu);
+>  				else if (!trigger_single_cpu_backtrace(cpu))
+>  					dump_cpu_task(cpu);
+> +				rcuc_kthread_dump(per_cpu_ptr(&rcu_data, cpu));
 
-Very good, thank you!
+Was this addition inspired by the chasing of a bug?  If so, please let me
+know exactly what information was (or would have been) the most helpful.
 
-Do we want to say the same about nohz_full?  Or am I misreading the
-code below?
+For example, the starvation information might be more compactly
+represented in the information printed by print_cpu_stall_info().
+Unless the stack trace was quite valuable, it might be best to omit it.
+After all, RCU CPU stall warnings are already infamously heavy on the
+text output.
 
-> +
->  	rcu_nocb_poll	[KNL]
->  			Rather than requiring that offloaded CPUs
->  			(specified by rcu_nocbs= above) explicitly
-> diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
-> index bf8e341e75b4..2f8bd694ed85 100644
-> --- a/kernel/rcu/Kconfig
-> +++ b/kernel/rcu/Kconfig
-> @@ -223,6 +223,19 @@ config RCU_NOCB_CPU
->  	  Say Y here if you need reduced OS jitter, despite added overhead.
->  	  Say N here if you are unsure.
+>  			}
+>  		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+>  	}
+> @@ -471,6 +473,9 @@ static void rcuc_kthread_dump(struct rcu_data *rdp)
+>  	unsigned long j;
+>  	struct task_struct *rcuc;
 >  
-> +config RCU_NOCB_CPU_DEFAULT_ALL
-> +	bool "Offload RCU callback processing from all CPUs by default"
-> +	depends on RCU_NOCB_CPU
-
-The needed dependency on RCU_EXPERT is provided transitively via
-RCU_NOCB_CPU, so this should be OK.  (To check, build a .config file,
-queue this patch, and do "make oldconfig".  If any questions are asked,
-a change is needed.)
-
-> +	default n
-> +	help
-> +	  Use this option to offload callback processing from all CPUs
-> +	  by default, in the absence of the rcu_nocbs boot parameter.
-
-And also in the absence of the nohz_full boot parameter, correct?
-
-> +	  This also avoids the need to use any boot parameters to achieve
-> +	  the effect of offloading all CPUs on boot.
+> +	if (use_softirq)
+> +		return;
 > +
-> +	  Say Y here if you want offload all CPUs by default on boot.
-> +	  Say N here if you are unsure.
-> +
->  config TASKS_TRACE_RCU_READ_MB
->  	bool "Tasks Trace RCU readers use memory barriers in user and idle"
->  	depends on RCU_EXPERT
-> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-> index eeafb546a7a0..673fa0d1f801 100644
-> --- a/kernel/rcu/tree_nocb.h
-> +++ b/kernel/rcu/tree_nocb.h
-> @@ -1165,12 +1165,21 @@ EXPORT_SYMBOL_GPL(rcu_nocb_cpu_offload);
->  void __init rcu_init_nohz(void)
->  {
->  	int cpu;
-> -	bool need_rcu_nocb_mask = false;
-> +	bool need_rcu_nocb_mask = false, offload_all = false;
+>  	rcuc = rdp->rcu_cpu_kthread_task;
+>  	if (!rcuc)
 
-Please use the extra line to perserve alphabetical order.  (I do know
-about inverse tree, though I have no idea why it is considered to be a
-good thing.)
+The checks for use_softirq on the one hand and the checks for non-NULL
+rdp->rcu_cpu_kthread_task are a bit "interesting".  Not your fault or
+problem, of course!
 
->  	struct rcu_data *rdp;
+>  		return;
+> @@ -659,9 +664,6 @@ static void print_cpu_stall(unsigned long gps)
+>  	rcu_check_gp_kthread_expired_fqs_timer();
+>  	rcu_check_gp_kthread_starvation();
 >  
-> +#if defined(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL)
-> +	if (!rcu_nocb_is_setup) {
-> +		need_rcu_nocb_mask = true;
-> +		offload_all = true;
-> +	}
-> +#endif
+> -	if (!use_softirq)
 
-It would be nice to be able to use IS_ENABLED() here and below, but that
-is a separate issue.  For one thing, need_rcu_nocb_mask would need to
-be defined unconditionally.  So this is fine as it is for this patch.
+In particular, I am wondering if this "if" is redundant.
 
-> +
->  #if defined(CONFIG_NO_HZ_FULL)
-> -	if (tick_nohz_full_running && cpumask_weight(tick_nohz_full_mask))
-> +	if (tick_nohz_full_running && cpumask_weight(tick_nohz_full_mask)) {
->  		need_rcu_nocb_mask = true;
-> +		offload_all = false; /* NO_HZ_FULL has its own mask. */
-
-This is good, and is also why I am asking for the addition of nohz_full
-above.
-
-> +	}
->  #endif /* #if defined(CONFIG_NO_HZ_FULL) */
+> -		rcuc_kthread_dump(rdp);
+> -
+>  	rcu_dump_cpu_stacks();
 >  
->  	if (need_rcu_nocb_mask) {
-> @@ -1191,6 +1200,9 @@ void __init rcu_init_nohz(void)
->  		cpumask_or(rcu_nocb_mask, rcu_nocb_mask, tick_nohz_full_mask);
->  #endif /* #if defined(CONFIG_NO_HZ_FULL) */
->  
-> +	if (offload_all)
-> +		cpumask_setall(rcu_nocb_mask);
-> +
->  	if (!cpumask_subset(rcu_nocb_mask, cpu_possible_mask)) {
->  		pr_info("\tNote: kernel parameter 'rcu_nocbs=', 'nohz_full', or 'isolcpus=' contains nonexistent CPUs.\n");
->  		cpumask_and(rcu_nocb_mask, cpu_possible_mask,
+>  	raw_spin_lock_irqsave_rcu_node(rnp, flags);
 > -- 
-> 2.36.0.rc0.470.gd361397f0d-goog
+> 2.25.1
 > 
