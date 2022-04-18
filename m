@@ -2,37 +2,37 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F3E1C433FE
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D1F08C433EF
 	for <rcu@archiver.kernel.org>; Mon, 18 Apr 2022 22:56:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233756AbiDRW71 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 18 Apr 2022 18:59:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51486 "EHLO
+        id S233821AbiDRW72 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 18 Apr 2022 18:59:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233774AbiDRW70 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S233856AbiDRW70 (ORCPT <rfc822;rcu@vger.kernel.org>);
         Mon, 18 Apr 2022 18:59:26 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B734928E1D;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B78E12CE2E;
         Mon, 18 Apr 2022 15:56:45 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0AC22611DA;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1A43D60FC5;
         Mon, 18 Apr 2022 22:56:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56062C385A1;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F2D3C385A8;
         Mon, 18 Apr 2022 22:56:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1650322604;
-        bh=ZEBq7zR50zNnytDr1DAj4+RNb5TDVS+djhiUTtjXeg0=;
+        bh=aoxHRcD5CE1ksNMOtptxB5UStULjmR/2Os4/NqSTB9w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f3gmKPNN8cmRwuaGTSsPlS3Ky9iLBO8STYdFi4U5B7+XxGckJyXz8MWOWwza7TGRf
-         fzawoVdYo+JyaHk16mjY8ZmAWlR6zHCOLtRxb50egPZN0I+HESzoFARPOw4yH9Aguw
-         dmW70HkG8+0zkBbcn8W+3746CaVAsJCuzC1meYOztc+9wKfeqHy0JnICcTwxj0SXPL
-         q/4nhJaHKS7gs/bB7/zjbhtUDhxdlt0ay0+hotVMocYpYqPH7zAuaCDnbrmQleuYhy
-         4yjfhLpaHmFGXAwzQ8bHOcA7Mn3l4COYpMZg+rI6baXErcDGgMa+MAVdQZL2+Vziu4
-         gLlMVzAGl9QfA==
+        b=CzeP9fMoz/970D1bk1F5wcGZQvAuQEvERKqPa7U2pjTUKchZ2ZbHs1JP2izKTEH5q
+         wvyQPZY9HaBEApBK9aUYNFN5wd8LgQLUzYo/I2gStVexBxfAYLVkHH9K2/XyPbgb7h
+         Ju/szWCGQuTqtm8zmSPIsUxKzX/R2A01qZIfKZ1N0p+jqTPFdMBKq0hNSdar7EfpQI
+         it+vjLBj/nxajlYVhpeobRMV5CcLzo83ipiQZpojrxMQcPG5xxQRsTWrqei7qJqkcY
+         ez3AftZ8qFXlofV1cIlwRSDL6tfgmc/wRRNv8HnVeZHg1AyP81fhCjDqAS9JeExpZ/
+         Tb061OLev6Gng==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 0F1855C0848; Mon, 18 Apr 2022 15:56:44 -0700 (PDT)
+        id 132DD5C0A23; Mon, 18 Apr 2022 15:56:44 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
@@ -42,9 +42,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
         Joel Fernandes <joel@joelfernandes.org>,
         Boqun Feng <boqun.feng@gmail.com>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 3/5] rcu: Assume rcu_init() is called before smp
-Date:   Mon, 18 Apr 2022 15:56:40 -0700
-Message-Id: <20220418225642.3945539-3-paulmck@kernel.org>
+Subject: [PATCH rcu 5/5] rcu/nocb: Initialize nocb kthreads only for boot CPU prior SMP initialization
+Date:   Mon, 18 Apr 2022 15:56:42 -0700
+Message-Id: <20220418225642.3945539-5-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220418225633.GA3945428@paulmck-ThinkPad-P17-Gen-1>
 References: <20220418225633.GA3945428@paulmck-ThinkPad-P17-Gen-1>
@@ -56,10 +56,9 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: Frederic Weisbecker <frederic@kernel.org>
 
-The rcu_init() function is called way before SMP is initialized and
-therefore only the boot CPU should be online at this stage.
-
-Simplify the boot per-cpu initialization accordingly.
+The rcu_spawn_gp_kthread() function is called as an early initcall, which
+means that SMP initialization hasn't happened yet and only the boot CPU is
+online. Therefore, create only the NOCB kthreads related to the boot CPU.
 
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
@@ -68,38 +67,80 @@ Cc: Joel Fernandes <joel@joelfernandes.org>
 Cc: Boqun Feng <boqun.feng@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ kernel/rcu/tree.c      |  6 +++++-
+ kernel/rcu/tree.h      |  1 -
+ kernel/rcu/tree_nocb.h | 20 --------------------
+ 3 files changed, 5 insertions(+), 22 deletions(-)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index a4b8189455d5..e6a9e5744e45 100644
+index 70b33c55d39a..9f7441a78f90 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -4782,7 +4782,7 @@ static void __init kfree_rcu_batch_init(void)
+@@ -4498,9 +4498,13 @@ static int __init rcu_spawn_gp_kthread(void)
+ 	smp_store_release(&rcu_state.gp_kthread, t);  /* ^^^ */
+ 	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+ 	wake_up_process(t);
+-	rcu_spawn_nocb_kthreads();
+ 	/* This is a pre-SMP initcall, we expect a single CPU */
+ 	WARN_ON(num_online_cpus() > 1);
++	/*
++	 * Those kthreads couldn't be created on rcu_init() -> rcutree_prepare_cpu()
++	 * due to rcu_scheduler_fully_active.
++	 */
++	rcu_spawn_cpu_nocb_kthread(smp_processor_id());
+ 	rcu_spawn_one_boost_kthread(rdp->mynode);
+ 	rcu_spawn_core_kthreads();
+ 	return 0;
+diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+index b2a0f2613ab9..25dc4166f218 100644
+--- a/kernel/rcu/tree.h
++++ b/kernel/rcu/tree.h
+@@ -439,7 +439,6 @@ static int rcu_nocb_need_deferred_wakeup(struct rcu_data *rdp, int level);
+ static bool do_nocb_deferred_wakeup(struct rcu_data *rdp);
+ static void rcu_boot_init_nocb_percpu_data(struct rcu_data *rdp);
+ static void rcu_spawn_cpu_nocb_kthread(int cpu);
+-static void __init rcu_spawn_nocb_kthreads(void);
+ static void show_rcu_nocb_state(struct rcu_data *rdp);
+ static void rcu_nocb_lock(struct rcu_data *rdp);
+ static void rcu_nocb_unlock(struct rcu_data *rdp);
+diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+index 3c00240833d6..46694e13398a 100644
+--- a/kernel/rcu/tree_nocb.h
++++ b/kernel/rcu/tree_nocb.h
+@@ -1266,22 +1266,6 @@ static void rcu_spawn_cpu_nocb_kthread(int cpu)
+ 	WRITE_ONCE(rdp->nocb_gp_kthread, rdp_gp->nocb_gp_kthread);
+ }
  
- void __init rcu_init(void)
- {
+-/*
+- * Once the scheduler is running, spawn rcuo kthreads for all online
+- * no-CBs CPUs.  This assumes that the early_initcall()s happen before
+- * non-boot CPUs come online -- if this changes, we will need to add
+- * some mutual exclusion.
+- */
+-static void __init rcu_spawn_nocb_kthreads(void)
+-{
 -	int cpu;
-+	int cpu = smp_processor_id();
- 
- 	rcu_early_boot_tests();
- 
-@@ -4802,11 +4802,10 @@ void __init rcu_init(void)
- 	 * or the scheduler are operational.
- 	 */
- 	pm_notifier(rcu_pm_notify, 0);
--	for_each_online_cpu(cpu) {
--		rcutree_prepare_cpu(cpu);
--		rcu_cpu_starting(cpu);
--		rcutree_online_cpu(cpu);
+-
+-	if (rcu_state.nocb_is_setup) {
+-		for_each_online_cpu(cpu)
+-			rcu_spawn_cpu_nocb_kthread(cpu);
 -	}
-+	WARN_ON(num_online_cpus() > 1); // Only one CPU this early in boot.
-+	rcutree_prepare_cpu(cpu);
-+	rcu_cpu_starting(cpu);
-+	rcutree_online_cpu(cpu);
+-}
+-
+ /* How many CB CPU IDs per GP kthread?  Default of -1 for sqrt(nr_cpu_ids). */
+ static int rcu_nocb_gp_stride = -1;
+ module_param(rcu_nocb_gp_stride, int, 0444);
+@@ -1538,10 +1522,6 @@ static void rcu_spawn_cpu_nocb_kthread(int cpu)
+ {
+ }
  
- 	/* Create workqueue for Tree SRCU and for expedited GPs. */
- 	rcu_gp_wq = alloc_workqueue("rcu_gp", WQ_MEM_RECLAIM, 0);
+-static void __init rcu_spawn_nocb_kthreads(void)
+-{
+-}
+-
+ static void show_rcu_nocb_state(struct rcu_data *rdp)
+ {
+ }
 -- 
 2.31.1.189.g2e36527f23
 
