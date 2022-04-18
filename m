@@ -2,142 +2,174 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F678C4332F
-	for <rcu@archiver.kernel.org>; Mon, 18 Apr 2022 16:28:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B101C433EF
+	for <rcu@archiver.kernel.org>; Mon, 18 Apr 2022 17:52:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346175AbiDRQbN (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 18 Apr 2022 12:31:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58792 "EHLO
+        id S241314AbiDRRyj (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 18 Apr 2022 13:54:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346156AbiDRQbD (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 18 Apr 2022 12:31:03 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D14430556;
-        Mon, 18 Apr 2022 09:28:19 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id C07F6B80E54;
-        Mon, 18 Apr 2022 16:28:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38723C385A7;
-        Mon, 18 Apr 2022 16:28:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1650299296;
-        bh=kiP03+BsgafxrEW7VA5Zy62JiyMocWFjKdcGO002e+c=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=kQkutgBWkCOmtXOWMLr+3A8JQOPABInlUwisScwd1GGco/W9Q0Rx0TZCO/ksQaNMi
-         T1L+tVIP+naGXzAkNDw+B1oe4fpBEwbLVjfW/xwceNIEAOgI/qljeve0BgzbaeSyLv
-         Xd1iH67jjG2TofhBYWFc+cjjfJeSw1oIKiFtIYF3l0jEp//qMG3QLLRuIWEaH7Ulau
-         PO6AXGm38QXECG1dHuBghbuCfcwJqSx1HsN5PU/yEiMZaOvvPy5CzUGpl1j+5XI8jf
-         qVi+d3KnLlji7BxTRfzmUOzi85QxC6i75RYtZGUNvjRpc3jgbp5lRnEveFHGsNFGZR
-         kc93d0g7p0Y7g==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id D11E65C0970; Mon, 18 Apr 2022 09:28:15 -0700 (PDT)
-Date:   Mon, 18 Apr 2022 09:28:15 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Patrick Wang <patrick.wang.shcn@gmail.com>
-Cc:     rostedt@goodmis.org, frederic@kernel.org, quic_neeraju@quicinc.com,
-        josh@joshtriplett.org, mathieu.desnoyers@efficios.com,
-        jiangshanlai@gmail.com, joel@joelfernandes.org,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        peterz@infradead.org
-Subject: Re: [PATCH] rcu: ftrace: avoid tracing a few functions executed in
- multi_cpu_stop()
-Message-ID: <20220418162815.GV4285@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220418043735.11441-1-patrick.wang.shcn@gmail.com>
+        with ESMTP id S233722AbiDRRyi (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 18 Apr 2022 13:54:38 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F8A534B87
+        for <rcu@vger.kernel.org>; Mon, 18 Apr 2022 10:51:59 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id hf18so10073012qtb.0
+        for <rcu@vger.kernel.org>; Mon, 18 Apr 2022 10:51:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CF4XNFiOWH5Eo3YeFIexRr3vkZzKzTqeWNNAvXODhVk=;
+        b=tFoq+Zh8Xl0j2+4CVgdlgmgRcilf0t0hcLLhN1rgjaGcQhuSUd+u2ziUhAbF9wdG5r
+         i3MtpBNOII/qx4D2StE0W4/SlkHMleEwBIBrXANX+e+OqJA9KYELMjlZTsx6U0WvkJK+
+         v5CgRJgVN9e3tNZhoCCJUsb9mVpmZTPglNUpE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CF4XNFiOWH5Eo3YeFIexRr3vkZzKzTqeWNNAvXODhVk=;
+        b=NrmSNtuBeXhyAQ8WBH3yhvdDxkk0bokfTw9WSQXsO9aUtBUZBH3htZMZ/FCzbokEU+
+         VTfiGS6/Sg8r8SiWaXtsi4QnE1a8tp3hzoLkeD7aiJT7UlussKaDHAvpPY9yabZ7DokS
+         auWENKNxlU1aMtnNmyG4vQDo8E5yNX8IZGfXPiINd/MHF+DyAPjLRdnQ0zwXkT0y0hZO
+         0pK3Toe7nuvOnOjB+DluSudtwdDV/gKKHDp2q876wT7Wph3C6Xl2NjawjCaU+c6C2nV1
+         CexcuaQL7pJ+NpVwmDrpwmtOcA8ussSzztqEhFxZh1JGnHNJ06Iq3B0tYt9lawvQwZGs
+         V9CQ==
+X-Gm-Message-State: AOAM530vvPVn5QOs3mGF1kcZmflKqNHv399ykC6nhUQwyfo4olZhqoCf
+        cubtpQHp4JY5l/siFcyRYX0TXg==
+X-Google-Smtp-Source: ABdhPJw/vtu7u+HS9H+xorA64+qGZQjA+kXLF1an9immjLJxWtC3TBMeSGXdtZud63iSBzfvYxp/Ew==
+X-Received: by 2002:ac8:5708:0:b0:2f1:fb71:4459 with SMTP id 8-20020ac85708000000b002f1fb714459mr4818301qtw.603.1650304318215;
+        Mon, 18 Apr 2022 10:51:58 -0700 (PDT)
+Received: from localhost (29.46.245.35.bc.googleusercontent.com. [35.245.46.29])
+        by smtp.gmail.com with ESMTPSA id b186-20020a3780c3000000b00699fbe4a238sm6717910qkd.69.2022.04.18.10.51.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Apr 2022 10:51:57 -0700 (PDT)
+Date:   Mon, 18 Apr 2022 17:51:57 +0000
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        rushikesh.s.kadam@intel.com, vineethrp@gmail.com, urezki@gmail.com
+Subject: Re: [PATCH v3] rcu/nocb: Add an option to offload all CPUs on boot
+Message-ID: <Yl2lPSKZ8fLOkfyZ@google.com>
+References: <20220415160224.1904505-1-joel@joelfernandes.org>
+ <20220415173515.GL4285@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220418043735.11441-1-patrick.wang.shcn@gmail.com>
+In-Reply-To: <20220415173515.GL4285@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Apr 18, 2022 at 12:37:35PM +0800, Patrick Wang wrote:
-> A few functions are in the call chain of rcu_momentary_dyntick_idle()
-> which is executed in multi_cpu_stop() and marked notrace. They are running
-> in traced when ftrace modify code. This may cause non-ftrace_modify_code
-> CPUs stall:
+On Fri, Apr 15, 2022 at 10:35:15AM -0700, Paul E. McKenney wrote:
+> On Fri, Apr 15, 2022 at 04:02:24PM +0000, Joel Fernandes (Google) wrote:
+> > From: Joel Fernandes <joel@joelfernandes.org>
 > 
-> [   72.686113] rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-> [   72.687344] rcu: 	1-...!: (0 ticks this GP) idle=14f/1/0x4000000000000000 softirq=3397/3397 fqs=0
-> [   72.687800] rcu: 	3-...!: (0 ticks this GP) idle=ee9/1/0x4000000000000000 softirq=5168/5168 fqs=0
-> [   72.688280] 	(detected by 0, t=8137 jiffies, g=5889, q=2 ncpus=4)
-> [   72.688739] Task dump for CPU 1:
-> [   72.688991] task:migration/1     state:R  running task     stack:    0 pid:   19 ppid:     2 flags:0x00000000
-> [   72.689594] Stopper: multi_cpu_stop+0x0/0x18c <- stop_machine_cpuslocked+0x128/0x174
-> [   72.690242] Call Trace:
-> [   72.690603] Task dump for CPU 3:
-> [   72.690761] task:migration/3     state:R  running task     stack:    0 pid:   29 ppid:     2 flags:0x00000000
-> [   72.691135] Stopper: multi_cpu_stop+0x0/0x18c <- stop_machine_cpuslocked+0x128/0x174
-> [   72.691474] Call Trace:
-> [   72.691733] rcu: rcu_preempt kthread timer wakeup didn't happen for 8136 jiffies! g5889 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402
-> [   72.692180] rcu: 	Possible timer handling issue on cpu=2 timer-softirq=594
-> [   72.692485] rcu: rcu_preempt kthread starved for 8137 jiffies! g5889 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402 ->cpu=2
-> [   72.692876] rcu: 	Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
-> [   72.693232] rcu: RCU grace-period kthread stack dump:
-> [   72.693433] task:rcu_preempt     state:I stack:    0 pid:   14 ppid:     2 flags:0x00000000
-> [   72.693788] Call Trace:
-> [   72.694018] [<ffffffff807f3740>] schedule+0x56/0xc2
-> [   72.694306] [<ffffffff807f9cd8>] schedule_timeout+0x82/0x184
-> [   72.694539] [<ffffffff8007c456>] rcu_gp_fqs_loop+0x19a/0x318
-> [   72.694809] [<ffffffff8007e408>] rcu_gp_kthread+0x11a/0x140
-> [   72.695325] [<ffffffff800324d6>] kthread+0xee/0x118
-> [   72.695657] [<ffffffff8000398a>] ret_from_exception+0x0/0x14
-> [   72.696089] rcu: Stack dump where RCU GP kthread last ran:
-> [   72.696383] Task dump for CPU 2:
-> [   72.696562] task:migration/2     state:R  running task     stack:    0 pid:   24 ppid:     2 flags:0x00000000
-> [   72.697059] Stopper: multi_cpu_stop+0x0/0x18c <- stop_machine_cpuslocked+0x128/0x174
-> [   72.697471] Call Trace:
+> Much better, thank you!
 > 
-> Mark rcu_preempt_deferred_qs(), rcu_preempt_need_deferred_qs() and
-> rcu_preempt_deferred_qs_irqrestore() notrace to avoid this.
+> > On systems with CONFIG_RCU_NOCB_CPU=y, there is no default mask provided
+> > which ends up not offloading any CPU. This patch removes a dependency
+> > from the bootloader having to know about RCU, about how many CPUs the
+> > system has, and about how to provide the mask.
 > 
-> Signed-off-by: Patrick Wang <patrick.wang.shcn@gmail.com>
+> The "about how many CPUs the system has" does not apply to current
+> mainline, in which "rcu_nocbs=0-N" says to offload all CPUs.  It can be
+> added back in for a backport to v5.10.  ;-)
 
-Good catch!
+True, will fix.
 
-I have queued this for testing and further review.  I am especially
-interested in the tracing guys' take on this.
-
-							Thanx, Paul
-
-> ---
->  kernel/rcu/tree_plugin.h | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+> My thought is to queue this after some independent testing.
 > 
-> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> index c3d212bc5338..07b3e656aedd 100644
-> --- a/kernel/rcu/tree_plugin.h
-> +++ b/kernel/rcu/tree_plugin.h
-> @@ -460,7 +460,7 @@ static bool rcu_preempt_has_tasks(struct rcu_node *rnp)
->   * be quite short, for example, in the case of the call from
->   * rcu_read_unlock_special().
->   */
-> -static void
-> +notrace static void
->  rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
->  {
->  	bool empty_exp;
-> @@ -581,7 +581,7 @@ rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
->   * is disabled.  This function cannot be expected to understand these
->   * nuances, so the caller must handle them.
->   */
-> -static bool rcu_preempt_need_deferred_qs(struct task_struct *t)
-> +notrace static bool rcu_preempt_need_deferred_qs(struct task_struct *t)
->  {
->  	return (__this_cpu_read(rcu_data.cpu_no_qs.b.exp) ||
->  		READ_ONCE(t->rcu_read_unlock_special.s)) &&
-> @@ -595,7 +595,7 @@ static bool rcu_preempt_need_deferred_qs(struct task_struct *t)
->   * evaluate safety in terms of interrupt, softirq, and preemption
->   * disabling.
->   */
-> -static void rcu_preempt_deferred_qs(struct task_struct *t)
-> +notrace static void rcu_preempt_deferred_qs(struct task_struct *t)
->  {
->  	unsigned long flags;
->  
-> -- 
-> 2.25.1
+> > ---
+> > v2 was forcing the option to override no_cbs=
+> > v3 is back to v1 but with a config option defaulting to 'n'.
+> > 
+> >  Documentation/admin-guide/kernel-parameters.txt |  3 +++
+> >  kernel/rcu/Kconfig                              | 13 +++++++++++++
+> >  kernel/rcu/tree_nocb.h                          | 16 ++++++++++++++--
+> >  3 files changed, 30 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> > index f5a27f067db9..7648a7dd335e 100644
+> > --- a/Documentation/admin-guide/kernel-parameters.txt
+> > +++ b/Documentation/admin-guide/kernel-parameters.txt
+> > @@ -4398,6 +4398,9 @@
+> >  			no-callback mode from boot but the mode may be
+> >  			toggled at runtime via cpusets.
+> >  
+> > +			Note that this argument takes precedence over
+> > +			the CONFIG_RCU_NOCB_CPU_DEFAULT_ALL option.
 > 
+> Very good, thank you!
+> 
+> Do we want to say the same about nohz_full?  Or am I misreading the
+> code below?
+
+You're right, will fix.
+
+> > +
+> >  	rcu_nocb_poll	[KNL]
+> >  			Rather than requiring that offloaded CPUs
+> >  			(specified by rcu_nocbs= above) explicitly
+> > diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+> > index bf8e341e75b4..2f8bd694ed85 100644
+> > --- a/kernel/rcu/Kconfig
+> > +++ b/kernel/rcu/Kconfig
+> > @@ -223,6 +223,19 @@ config RCU_NOCB_CPU
+> >  	  Say Y here if you need reduced OS jitter, despite added overhead.
+> >  	  Say N here if you are unsure.
+> >  
+> > +config RCU_NOCB_CPU_DEFAULT_ALL
+> > +	bool "Offload RCU callback processing from all CPUs by default"
+> > +	depends on RCU_NOCB_CPU
+> 
+> The needed dependency on RCU_EXPERT is provided transitively via
+> RCU_NOCB_CPU, so this should be OK.  (To check, build a .config file,
+> queue this patch, and do "make oldconfig".  If any questions are asked,
+> a change is needed.)
+
+Ok. I did that and no questions were asked.
+
+> > +	default n
+> > +	help
+> > +	  Use this option to offload callback processing from all CPUs
+> > +	  by default, in the absence of the rcu_nocbs boot parameter.
+> 
+> And also in the absence of the nohz_full boot parameter, correct?
+
+Yes, fixed.
+
+> > +	  This also avoids the need to use any boot parameters to achieve
+> > +	  the effect of offloading all CPUs on boot.
+> > +
+> > +	  Say Y here if you want offload all CPUs by default on boot.
+> > +	  Say N here if you are unsure.
+> > +
+> >  config TASKS_TRACE_RCU_READ_MB
+> >  	bool "Tasks Trace RCU readers use memory barriers in user and idle"
+> >  	depends on RCU_EXPERT
+> > diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> > index eeafb546a7a0..673fa0d1f801 100644
+> > --- a/kernel/rcu/tree_nocb.h
+> > +++ b/kernel/rcu/tree_nocb.h
+> > @@ -1165,12 +1165,21 @@ EXPORT_SYMBOL_GPL(rcu_nocb_cpu_offload);
+> >  void __init rcu_init_nohz(void)
+> >  {
+> >  	int cpu;
+> > -	bool need_rcu_nocb_mask = false;
+> > +	bool need_rcu_nocb_mask = false, offload_all = false;
+> 
+> Please use the extra line to perserve alphabetical order.  (I do know
+> about inverse tree, though I have no idea why it is considered to be a
+> good thing.)
+
+Done.
+
+thanks,
+
+ - Joel
+
