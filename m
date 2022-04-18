@@ -2,98 +2,122 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DDEBBC433EF
-	for <rcu@archiver.kernel.org>; Mon, 18 Apr 2022 18:34:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DEF3C433F5
+	for <rcu@archiver.kernel.org>; Mon, 18 Apr 2022 18:50:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347377AbiDRSgv (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 18 Apr 2022 14:36:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56292 "EHLO
+        id S237799AbiDRSxZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 18 Apr 2022 14:53:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbiDRSgu (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 18 Apr 2022 14:36:50 -0400
+        with ESMTP id S235921AbiDRSxZ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 18 Apr 2022 14:53:25 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C4A226113;
-        Mon, 18 Apr 2022 11:34:10 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E62915822;
+        Mon, 18 Apr 2022 11:50:45 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D8448B8104C;
-        Mon, 18 Apr 2022 18:34:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E621C385A7;
-        Mon, 18 Apr 2022 18:34:06 +0000 (UTC)
-Date:   Mon, 18 Apr 2022 14:34:04 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Patrick Wang <patrick.wang.shcn@gmail.com>
-Cc:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
-        josh@joshtriplett.org, mathieu.desnoyers@efficios.com,
-        jiangshanlai@gmail.com, joel@joelfernandes.org,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu: ftrace: avoid tracing a few functions executed in
- multi_cpu_stop()
-Message-ID: <20220418143404.55c8fcab@gandalf.local.home>
-In-Reply-To: <20220418043735.11441-1-patrick.wang.shcn@gmail.com>
-References: <20220418043735.11441-1-patrick.wang.shcn@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 055BCB80EC4;
+        Mon, 18 Apr 2022 18:50:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99CACC385A7;
+        Mon, 18 Apr 2022 18:50:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1650307842;
+        bh=ZUHtGIbbacXJsaEGrlloH94rXXIROUImW5cXopGA94E=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=pVY/ca2QGYXAxfaiNXrOjXrF/Cv+oANtUPQZ9ftGbux1DdwCCzASQDsVqFQWgihQ+
+         Gg3kkjD8Sw4JoM1y5e+J4AtSxYGoBoMv3uWmo+dlx7m8O3znrWGTfMem0UaOwhFSxf
+         C5pscSLCHlBUPGI76XgyJqn/hHHKn7QnpBZq7iKDPiT5S1ZtTok04581G2Gl0qV1ei
+         cxkdxLeNcGpB9D80JTlVMjsIFSyYXaax8QY6KubCb4a4GOJluOCdyJJXzyM73yc2Yf
+         97v+ZjkEduRsypmZQv2DF7U32Yb4j4Snsgn1gQFsoibpDu7Sl9DMzihfq1D2hOSR93
+         nS95oNm2+AFJg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 3CA755C0848; Mon, 18 Apr 2022 11:50:42 -0700 (PDT)
+Date:   Mon, 18 Apr 2022 11:50:42 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Benedikt Spranger <b.spranger@linutronix.de>
+Subject: Re: [PATCH] rcu/torture: Change order of warning and trace dump
+Message-ID: <20220418185042.GA2420391@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20220411151903.28167-1-anna-maria@linutronix.de>
+ <20220411180915.GY4285@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220411180915.GY4285@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, 18 Apr 2022 12:37:35 +0800
-Patrick Wang <patrick.wang.shcn@gmail.com> wrote:
-
-> A few functions are in the call chain of rcu_momentary_dyntick_idle()
-> which is executed in multi_cpu_stop() and marked notrace. They are running
-> in traced when ftrace modify code. This may cause non-ftrace_modify_code
-> CPUs stall:
-
-I'm confused by this. How is traced functions causing this exactly? Is this
-on RISC-V?
-
+On Mon, Apr 11, 2022 at 11:09:15AM -0700, Paul E. McKenney wrote:
+> On Mon, Apr 11, 2022 at 05:19:03PM +0200, Anna-Maria Behnsen wrote:
+> > Dumping a big ftrace buffer could lead to a RCU stall. So there is the
+> > ftrace buffer and the stall information which needs to be printed. When
+> > there is additionaly a WARN_ON() which describes the reason for the ftrace
+> > buffer dump and the WARN_ON() is executed _after_ ftrace buffer dump, the
+> > information get lost in the middle of the RCU stall information.
+> > 
+> > Therefore print WARN_ON() message before dumping the ftrace buffer in
+> > rcu_torture_writer().
+> > 
+> > Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
+> > Reviewed-by: Benedikt Spranger <b.spranger@linutronix.de>
 > 
-> [   72.686113] rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-> [   72.687344] rcu: 	1-...!: (0 ticks this GP) idle=14f/1/0x4000000000000000 softirq=3397/3397 fqs=0
-> [   72.687800] rcu: 	3-...!: (0 ticks this GP) idle=ee9/1/0x4000000000000000 softirq=5168/5168 fqs=0
-> [   72.688280] 	(detected by 0, t=8137 jiffies, g=5889, q=2 ncpus=4)
-> [   72.688739] Task dump for CPU 1:
-> [   72.688991] task:migration/1     state:R  running task     stack:    0 pid:   19 ppid:     2 flags:0x00000000
-> [   72.689594] Stopper: multi_cpu_stop+0x0/0x18c <- stop_machine_cpuslocked+0x128/0x174
-> [   72.690242] Call Trace:
-> [   72.690603] Task dump for CPU 3:
-> [   72.690761] task:migration/3     state:R  running task     stack:    0 pid:   29 ppid:     2 flags:0x00000000
-> [   72.691135] Stopper: multi_cpu_stop+0x0/0x18c <- stop_machine_cpuslocked+0x128/0x174
-> [   72.691474] Call Trace:
-> [   72.691733] rcu: rcu_preempt kthread timer wakeup didn't happen for 8136 jiffies! g5889 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402
-> [   72.692180] rcu: 	Possible timer handling issue on cpu=2 timer-softirq=594
-> [   72.692485] rcu: rcu_preempt kthread starved for 8137 jiffies! g5889 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402 ->cpu=2
-> [   72.692876] rcu: 	Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
-> [   72.693232] rcu: RCU grace-period kthread stack dump:
-> [   72.693433] task:rcu_preempt     state:I stack:    0 pid:   14 ppid:     2 flags:0x00000000
-> [   72.693788] Call Trace:
-> [   72.694018] [<ffffffff807f3740>] schedule+0x56/0xc2
-> [   72.694306] [<ffffffff807f9cd8>] schedule_timeout+0x82/0x184
-> [   72.694539] [<ffffffff8007c456>] rcu_gp_fqs_loop+0x19a/0x318
-> [   72.694809] [<ffffffff8007e408>] rcu_gp_kthread+0x11a/0x140
-> [   72.695325] [<ffffffff800324d6>] kthread+0xee/0x118
-> [   72.695657] [<ffffffff8000398a>] ret_from_exception+0x0/0x14
-> [   72.696089] rcu: Stack dump where RCU GP kthread last ran:
-> [   72.696383] Task dump for CPU 2:
-> [   72.696562] task:migration/2     state:R  running task     stack:    0 pid:   24 ppid:     2 flags:0x00000000
-> [   72.697059] Stopper: multi_cpu_stop+0x0/0x18c <- stop_machine_cpuslocked+0x128/0x174
-> [   72.697471] Call Trace:
+> Hello, Anna-Maria!
 > 
-> Mark rcu_preempt_deferred_qs(), rcu_preempt_need_deferred_qs() and
-> rcu_preempt_deferred_qs_irqrestore() notrace to avoid this.
+> Good point, but we get caught out either way.  Either we take the chance
+> of losing the WARN() message as you say, or we take the chance of the
+> activity in the WARN() message overwriting needed information in the
+> trace buffer.
 > 
+> Would it work to shut off tracing, do the WARN(), and only then do the
+> rcu_ftrace_dump()?
 
-The rcu_momentary_dyntick_idle() was marked notrace because of RISC-V not
-being able to call functions from within stop machine. If that's what is
-being prevented, then I'm fine with this (although I'm thinking we need
-different kinds of "notrace" for different architectures as one arch's
-limitation should not be cause for another's).
+For example, as shown the the updated patch below currently queued on -rcu
+for further review and testing?
 
-But before I ack this patch, I want to understand the real issues here.
+If this is problematic, please let me know!
 
--- Steve
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+commit cdbc93534da1bba3f498783473361b2f26dc65d6
+Author: Anna-Maria Behnsen <anna-maria@linutronix.de>
+Date:   Mon Apr 11 17:19:03 2022 +0200
+
+    rcu/torture: Change order of warning and trace dump
+    
+    Dumping a big ftrace buffer could lead to a RCU stall. So there is the
+    ftrace buffer and the stall information which needs to be printed. When
+    there is additionaly a WARN_ON() which describes the reason for the ftrace
+    buffer dump and the WARN_ON() is executed _after_ ftrace buffer dump, the
+    information get lost in the middle of the RCU stall information.
+    
+    Therefore print WARN_ON() message before dumping the ftrace buffer in
+    rcu_torture_writer().
+    
+    [ paulmck: Add tracing_off() to avoid cruft from WARN(). ]
+    
+    Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
+    Reviewed-by: Benedikt Spranger <b.spranger@linutronix.de>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 2b40a8f6d2a0..0885a66f9d76 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -1369,8 +1369,9 @@ rcu_torture_writer(void *arg)
+ 				if (list_empty(&rcu_tortures[i].rtort_free) &&
+ 				    rcu_access_pointer(rcu_torture_current) !=
+ 				    &rcu_tortures[i]) {
+-					rcu_ftrace_dump(DUMP_ALL);
++					tracing_off();
+ 					WARN(1, "%s: rtort_pipe_count: %d\n", __func__, rcu_tortures[i].rtort_pipe_count);
++					rcu_ftrace_dump(DUMP_ALL);
+ 				}
+ 		if (stutter_waited)
+ 			sched_set_normal(current, oldnice);
