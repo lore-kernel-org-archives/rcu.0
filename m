@@ -2,45 +2,45 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6260FC433FE
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 35DE9C4332F
 	for <rcu@archiver.kernel.org>; Mon, 18 Apr 2022 22:54:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233272AbiDRW4w (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 18 Apr 2022 18:56:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44354 "EHLO
+        id S233329AbiDRW4v (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 18 Apr 2022 18:56:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233256AbiDRW4t (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S233281AbiDRW4t (ORCPT <rfc822;rcu@vger.kernel.org>);
         Mon, 18 Apr 2022 18:56:49 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C88A82CC9D;
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 623EE2CE1E;
         Mon, 18 Apr 2022 15:54:03 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 77511B81135;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A5E41611B5;
         Mon, 18 Apr 2022 22:54:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3588FC385A8;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 990FBC385BA;
         Mon, 18 Apr 2022 22:54:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1650322441;
-        bh=3/4SJxZl7LRSsaEhih4xR7lzgf/M6pQIEs1EAdF+8Xg=;
+        bh=WEGp4fOqBZnoeWztmlY6PE4IqXgAbDfyysxBTX/6wbQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t/MDb//Dx1aVAuwdSFZUrhtpeY5xRFXWDcqAFKG9dd54tI2v/+dDd+iUaG9JUUqLj
-         gpUM8xB2YJpklamaW8j7k0VXsAFV3QePxlcNb9YMlZnWZb1jnuRXS3rVdv8TFL00zO
-         KQaTFfBLM5xOOOtVUXVxSx/uWcgrv82TDyDTZKJ8GGjO7EPBxHIs7HCd3Ss5tw/Lcw
-         KQ3kPD9x+7xMUG5ETaT/FVVVOEyLxJdV9Owk1LmBjyQ00cAmFHa4/N0siDX5fMtVYV
-         yfsqpDZD+m+DJESF1aIRlwpQqQCtxx/rBYK2rNp6vQF5bfHKoxMDgKelyezv2VKCBI
-         045K4+Yqen8fA==
+        b=Fg2xfCuAmR1sRRz+Pj12/Rcv6uPeWFMc5UnRQJHmkOZTcwwJG/nv3YNbQDdr05tJ4
+         G4LJocC9/sACEapywezo9jleoZqAcWWPm1OV+iXeUZwyvVlf09wGsKl1RuTp8JdXZe
+         fovK5sB8Fq23Zd8Akd2IpIdMVnZWCylr0Z3LNyEUjb3PjeXD7CgMzTfhYOJp1bTda+
+         4nxIS+s58ykBRt1HIjS0PSpKk1Jlwpn8iJuuXWMobxT7JpG9QGgvFFEb88lNPQyaj6
+         e4c/6stCPBA5Pz8LG+RXLuhfCy5g57mcSwnlvLmDTFKNI3s7/8gwyC27cy6prfQjI9
+         TnSI9RARm5gmw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id E36075C0848; Mon, 18 Apr 2022 15:54:00 -0700 (PDT)
+        id F04905C1308; Mon, 18 Apr 2022 15:54:00 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        Saravanan D <sarvanand@fb.com>
-Subject: [PATCH rcu 03/11] rcu: Check for jiffies going backwards
-Date:   Mon, 18 Apr 2022 15:53:51 -0700
-Message-Id: <20220418225359.3945217-3-paulmck@kernel.org>
+        rostedt@goodmis.org, David Vernet <void@manifault.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 10/11] rcu_sync: Fix comment to properly reflect rcu_sync_exit() behavior
+Date:   Mon, 18 Apr 2022 15:53:58 -0700
+Message-Id: <20220418225359.3945217-10-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220418225345.GA3945110@paulmck-ThinkPad-P17-Gen-1>
 References: <20220418225345.GA3945110@paulmck-ThinkPad-P17-Gen-1>
@@ -50,66 +50,42 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-A report of a 12-jiffy normal RCU CPU stall warning raises interesting
-questions about the nature of time on the offending system.  This commit
-instruments rcu_sched_clock_irq(), which is RCU's hook into the
-scheduling-clock interrupt, checking for the jiffies counter going
-backwards.
+From: David Vernet <void@manifault.com>
 
-Reported-by: Saravanan D <sarvanand@fb.com>
+The rcu_sync_enter() function is used by updaters to force RCU readers
+(e.g. percpu-rwsem) to use their slow paths during an update.  This is
+accomplished by setting the ->gp_state of the rcu_sync structure to
+GP_ENTER.  In the case of percpu-rwsem, the readers' slow path waits on
+a semaphore instead of just incrementing a reader count.  Each updater
+invokes the rcu_sync_exit() function to signal to readers that they
+may again take their fastpaths.  The rcu_sync_exit() function sets the
+->gp_state of the rcu_sync structure to GP_EXIT, and if all goes well,
+after a grace period the ->gp_state reverts back to GP_IDLE.
+
+Unfortunately, the rcu_sync_enter() function currently has a comment
+incorrectly stating that rcu_sync_exit() (by an updater) will re-enable
+reader "slowpaths".  This patch changes the comment to state that this
+function re-enables reader fastpaths.
+
+Signed-off-by: David Vernet <void@manifault.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c | 10 ++++++++++
- kernel/rcu/tree.h |  1 +
- 2 files changed, 11 insertions(+)
+ kernel/rcu/sync.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index a4b8189455d5..a5ea67454640 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -1679,6 +1679,8 @@ static bool __note_gp_changes(struct rcu_node *rnp, struct rcu_data *rdp)
- 	rdp->gp_seq = rnp->gp_seq;  /* Remember new grace-period state. */
- 	if (ULONG_CMP_LT(rdp->gp_seq_needed, rnp->gp_seq_needed) || rdp->gpwrap)
- 		WRITE_ONCE(rdp->gp_seq_needed, rnp->gp_seq_needed);
-+	if (IS_ENABLED(CONFIG_PROVE_RCU) && READ_ONCE(rdp->gpwrap))
-+		WRITE_ONCE(rdp->last_sched_clock, jiffies);
- 	WRITE_ONCE(rdp->gpwrap, false);
- 	rcu_gpnum_ovf(rnp, rdp);
- 	return ret;
-@@ -2609,6 +2611,13 @@ static void rcu_do_batch(struct rcu_data *rdp)
-  */
- void rcu_sched_clock_irq(int user)
- {
-+	unsigned long j;
-+
-+	if (IS_ENABLED(CONFIG_PROVE_RCU)) {
-+		j = jiffies;
-+		WARN_ON_ONCE(time_before(j, __this_cpu_read(rcu_data.last_sched_clock)));
-+		__this_cpu_write(rcu_data.last_sched_clock, j);
-+	}
- 	trace_rcu_utilization(TPS("Start scheduler-tick"));
- 	lockdep_assert_irqs_disabled();
- 	raw_cpu_inc(rcu_data.ticks_this_gp);
-@@ -4179,6 +4188,7 @@ rcu_boot_init_percpu_data(int cpu)
- 	rdp->rcu_ofl_gp_flags = RCU_GP_CLEANED;
- 	rdp->rcu_onl_gp_seq = rcu_state.gp_seq;
- 	rdp->rcu_onl_gp_flags = RCU_GP_CLEANED;
-+	rdp->last_sched_clock = jiffies;
- 	rdp->cpu = cpu;
- 	rcu_boot_init_nocb_percpu_data(rdp);
- }
-diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index 926673ebe355..94b55f669915 100644
---- a/kernel/rcu/tree.h
-+++ b/kernel/rcu/tree.h
-@@ -254,6 +254,7 @@ struct rcu_data {
- 	unsigned long rcu_onl_gp_seq;	/* ->gp_seq at last online. */
- 	short rcu_onl_gp_flags;		/* ->gp_flags at last online. */
- 	unsigned long last_fqs_resched;	/* Time of last rcu_resched(). */
-+	unsigned long last_sched_clock;	/* Jiffies of last rcu_sched_clock_irq(). */
- 
- 	int cpu;
- };
+diff --git a/kernel/rcu/sync.c b/kernel/rcu/sync.c
+index 33d896d85902..5cefc702158f 100644
+--- a/kernel/rcu/sync.c
++++ b/kernel/rcu/sync.c
+@@ -111,7 +111,7 @@ static void rcu_sync_func(struct rcu_head *rhp)
+  * a slowpath during the update.  After this function returns, all
+  * subsequent calls to rcu_sync_is_idle() will return false, which
+  * tells readers to stay off their fastpaths.  A later call to
+- * rcu_sync_exit() re-enables reader slowpaths.
++ * rcu_sync_exit() re-enables reader fastpaths.
+  *
+  * When called in isolation, rcu_sync_enter() must wait for a grace
+  * period, however, closely spaced calls to rcu_sync_enter() can
 -- 
 2.31.1.189.g2e36527f23
 
