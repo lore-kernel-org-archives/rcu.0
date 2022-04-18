@@ -2,206 +2,143 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B549AC433EF
-	for <rcu@archiver.kernel.org>; Mon, 18 Apr 2022 03:16:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4FB06C433F5
+	for <rcu@archiver.kernel.org>; Mon, 18 Apr 2022 04:37:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235971AbiDRDTI (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 17 Apr 2022 23:19:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45930 "EHLO
+        id S236496AbiDREkT (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 18 Apr 2022 00:40:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235976AbiDRDTH (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 17 Apr 2022 23:19:07 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31A381658A
-        for <rcu@vger.kernel.org>; Sun, 17 Apr 2022 20:16:29 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id r13so24780091ejd.5
-        for <rcu@vger.kernel.org>; Sun, 17 Apr 2022 20:16:29 -0700 (PDT)
+        with ESMTP id S235907AbiDREkS (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 18 Apr 2022 00:40:18 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1F8363BE;
+        Sun, 17 Apr 2022 21:37:40 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id bg9so16748100pgb.9;
+        Sun, 17 Apr 2022 21:37:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=8+qcsfD4ysR4HJWgofYAlCbX2uyBroLibRgFiYJQaEM=;
-        b=EehvbAavnrXM5hw195/e8EheyNfmswcdqa+txan8eiBPRSV0LCddDXW+KFgQNfJKnq
-         OlRkoG4uqlVxK6QLP24CafiwW4MzFZRinqVWm+pC1Dt4OVIgqSvmVpZWQd++5A/WC9Wv
-         GURodb3F9O3k42jzB5M618CYZ8MIahu5oNEPH3SmnVzNc75Fy2hhlGth5oioQ5/M9+jP
-         Na9BUuQeaMOaLdxgEv+4qJhylDTQvWODyGOB/74f01/DYZpu9BN0NzY8AUT8o6yJ7AUK
-         AO2BySrbnjmxMiht0RQXJJr3M0F5qye2PtQPIRXxi6KgitWoRV5aezru4YvF4UllJFZO
-         eLHQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2x14r91CBQD4kQRAmO7qT3fqu0Rss/iUo6NrPr0sqPQ=;
+        b=gm9pLszO+K7B658j6Fx2WYqjVu6vHorUWNGvEz20nbqtS+wVkezBjVfJO6ftLCLKGu
+         /I7LedZH/HVSfgKyU9cK9WyVETN/V4Y1swvvjLDRTeNnmHmxSdkj7hGFT2h0W+yaNNp/
+         ePAHbv9as9Er5tUMuuRiaMYSn9xCa+vUkN20Ppp5qsF9+qCqE7214/e6JMmJguLZNZIT
+         82ENHtlL/skI/Cxij5H7HLTqRBEtuk7tNp+D1IQKc1MJ5N6j3YL03KSof7sxF8C7I2lh
+         uLb8kQVg08ZsgRezUIcSyla1u/HHDzHU2NLPtIfzioyQ7fS4rcUpt0sKQ+h0l6HiTEsd
+         T4Sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=8+qcsfD4ysR4HJWgofYAlCbX2uyBroLibRgFiYJQaEM=;
-        b=aLiS0YZO0B/3bfoAg2/sd23r5FIAQaQAALeRstF+rHqI8Pa/MANoMW+UwDH8+7HFWQ
-         UC10iN1+s/pLR3hnBeA+0Z23h3rZsyzd9di+USrDLQQl6a+k1coCohXrTA0NZbbOOmbF
-         iNjiOoFJDK3e6oTqlq7N+BW5JHVICF8CY6KDT/3U8wPSHFDp5uwitHTLV01n71FUQbzx
-         /L0WrIZeNh5riJEHoe60G4r3iIkeOsO623s4RkgReHUhZyKXZbp4vO6dGWklPL4nj1PT
-         4DOQ8atWClK+4vX9QoL4VlQJadEm/0DL3Onfs10lOGplZJhyp55MvxhhCaBSFIbmk4Yi
-         h+Qw==
-X-Gm-Message-State: AOAM533F1b6B6VwkLGfBN7dT96l5WP5LZqJv64+bF14AqSIThgQnWUpT
-        NVE0sKs+kjeBVePVlQjAHFn5Lt03cSoE4notSLgATFddfdQ=
-X-Google-Smtp-Source: ABdhPJzXwHhjs8rpwT99iTSfbwtOKR/hv6UE8sqZi64QDI2N/QPV87a+pSboyw9WcIuY9GPScApThoHofYqo2VaNfeQ=
-X-Received: by 2002:a17:907:2cc3:b0:6e6:45fb:39fa with SMTP id
- hg3-20020a1709072cc300b006e645fb39famr7266004ejc.545.1650251787586; Sun, 17
- Apr 2022 20:16:27 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2x14r91CBQD4kQRAmO7qT3fqu0Rss/iUo6NrPr0sqPQ=;
+        b=RBtj88Zp9PnMkY/RPpcUggumb1YPlotJT5jZjuVMUjRRLyLFyx5cGNrPB+qMoeX2PW
+         0uztkjUjmkflXSWdBn2DldVam2DoERUsNETuMO9SP8DejXrRBjdogznqr7cI63f5a+/Z
+         9nv97ypmIxF7y8VESHcyKmiYskf0k4I4D1oI/dRb4UpSSFpuESw3o0nAZEG5o774pbxl
+         M4IKL8DkL2mHPUFgFlJ2OrCJ8bYuqOYtQ0Acz6bdzLkIlNT9OM0AEcsVKzYOCATaiGSG
+         gccHGPNvkyvQtaV3y453+eQ3LZ0NyXuLmuP8uDXkgKWi0paY5VW2Dyi/v/J8iQx8qfgw
+         U1jg==
+X-Gm-Message-State: AOAM533ILUUyRCtQmqhJbETNAj3T14twR9ZCDNIOVLf9rc7Q6T7tzdAZ
+        I2YTGW3VqI2XFMYGG4I7K9bmfTr/A+xz2RdX
+X-Google-Smtp-Source: ABdhPJwZ+qF61Md8chEgJf7BMSaSXVN+LN6fY4LgLXr1A7AfLDL31yGFyQpngRugRiP+yYhILZFyOQ==
+X-Received: by 2002:a63:fd05:0:b0:3aa:127d:538a with SMTP id d5-20020a63fd05000000b003aa127d538amr605689pgh.95.1650256660396;
+        Sun, 17 Apr 2022 21:37:40 -0700 (PDT)
+Received: from localhost ([101.86.206.159])
+        by smtp.gmail.com with ESMTPSA id w14-20020a17090a4f4e00b001cb510021ecsm15176253pjl.49.2022.04.17.21.37.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Apr 2022 21:37:39 -0700 (PDT)
+From:   Patrick Wang <patrick.wang.shcn@gmail.com>
+To:     paulmck@kernel.org, rostedt@goodmis.org, frederic@kernel.org,
+        quic_neeraju@quicinc.com, josh@joshtriplett.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        patrick.wang.shcn@gmail.com
+Subject: [PATCH] rcu: ftrace: avoid tracing a few functions executed in multi_cpu_stop()
+Date:   Mon, 18 Apr 2022 12:37:35 +0800
+Message-Id: <20220418043735.11441-1-patrick.wang.shcn@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
-Date:   Mon, 18 Apr 2022 11:16:16 +0800
-Message-ID: <CAABZP2xEtRnbRMGgywc2RSwiOAd1QY5jr0ZxwXd9p_8XwOiqhw@mail.gmail.com>
-Subject: Reproducing call_rcu_tasks self-test bug on a dual sockets Intel Xeon machine
-To:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Paul McKenney <paulmckrcu@fb.com>, rcu <rcu@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Zhouyi Zhou <zhouzhouyi@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-1. Abstract
-Previously, Matthew has reported a call_rcu_tasks bug [1]. But it is
-hard to reproduce on a dual socket Intel machine. This report
-developed a method to reproduce that bug on such a machine.
+A few functions are in the call chain of rcu_momentary_dyntick_idle()
+which is executed in multi_cpu_stop() and marked notrace. They are running
+in traced when ftrace modify code. This may cause non-ftrace_modify_code
+CPUs stall:
 
-2. Introduction
-Matthew has reported a call_rcu_tasks bug [1]. It is easy to reproduce
-it on Thinkpad P1 gen4 (Intel i7-11800H) with following steps:
-a) cp [2] to .config
-b) build the kernel
-c) execute  kvm -smp 4 -net none -serial file:/tmp/console.log -m 512
--kernel vmlinux -append "console=ttyS0"
+[   72.686113] rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+[   72.687344] rcu: 	1-...!: (0 ticks this GP) idle=14f/1/0x4000000000000000 softirq=3397/3397 fqs=0
+[   72.687800] rcu: 	3-...!: (0 ticks this GP) idle=ee9/1/0x4000000000000000 softirq=5168/5168 fqs=0
+[   72.688280] 	(detected by 0, t=8137 jiffies, g=5889, q=2 ncpus=4)
+[   72.688739] Task dump for CPU 1:
+[   72.688991] task:migration/1     state:R  running task     stack:    0 pid:   19 ppid:     2 flags:0x00000000
+[   72.689594] Stopper: multi_cpu_stop+0x0/0x18c <- stop_machine_cpuslocked+0x128/0x174
+[   72.690242] Call Trace:
+[   72.690603] Task dump for CPU 3:
+[   72.690761] task:migration/3     state:R  running task     stack:    0 pid:   29 ppid:     2 flags:0x00000000
+[   72.691135] Stopper: multi_cpu_stop+0x0/0x18c <- stop_machine_cpuslocked+0x128/0x174
+[   72.691474] Call Trace:
+[   72.691733] rcu: rcu_preempt kthread timer wakeup didn't happen for 8136 jiffies! g5889 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402
+[   72.692180] rcu: 	Possible timer handling issue on cpu=2 timer-softirq=594
+[   72.692485] rcu: rcu_preempt kthread starved for 8137 jiffies! g5889 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402 ->cpu=2
+[   72.692876] rcu: 	Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
+[   72.693232] rcu: RCU grace-period kthread stack dump:
+[   72.693433] task:rcu_preempt     state:I stack:    0 pid:   14 ppid:     2 flags:0x00000000
+[   72.693788] Call Trace:
+[   72.694018] [<ffffffff807f3740>] schedule+0x56/0xc2
+[   72.694306] [<ffffffff807f9cd8>] schedule_timeout+0x82/0x184
+[   72.694539] [<ffffffff8007c456>] rcu_gp_fqs_loop+0x19a/0x318
+[   72.694809] [<ffffffff8007e408>] rcu_gp_kthread+0x11a/0x140
+[   72.695325] [<ffffffff800324d6>] kthread+0xee/0x118
+[   72.695657] [<ffffffff8000398a>] ret_from_exception+0x0/0x14
+[   72.696089] rcu: Stack dump where RCU GP kthread last ran:
+[   72.696383] Task dump for CPU 2:
+[   72.696562] task:migration/2     state:R  running task     stack:    0 pid:   24 ppid:     2 flags:0x00000000
+[   72.697059] Stopper: multi_cpu_stop+0x0/0x18c <- stop_machine_cpuslocked+0x128/0x174
+[   72.697471] Call Trace:
 
-The bug can even be reproduced on Thinkpad P1 gen4 (i7-11800H) by
-stress testing the TASKS01 with the script [3].
+Mark rcu_preempt_deferred_qs(), rcu_preempt_need_deferred_qs() and
+rcu_preempt_deferred_qs_irqrestore() notrace to avoid this.
 
-However, the bug can't be reproduced by above methods on a dual socket
-Intel Xeon machine (PowerEdge R720, Intel(R) Xeon(R) CPU E5-2660 0 @
-2.20GHz, 2 CPUs, 16 cores, 32 threads).
+Signed-off-by: Patrick Wang <patrick.wang.shcn@gmail.com>
+---
+ kernel/rcu/tree_plugin.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-3. Discover the reason behind the bug
-On thinkpad P1 gen4, I tried to discover the reason behind the bug.
-After some experimentation, I found that removing CONFIG_NFS_V4 from
-the kernel config file will greatly increase the probabilities of
-triggering the bug.
-
-I guess maybe the init calls lend the grace period to RCU tasks self
-tests, so I add some debug code to a test kernel to see what happens:
-root@e0816662e3db:/mnt/linux# git diff
-diff --git a/init/main.c b/init/main.c
-index 98182c3c2c4b..9731566014cc 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -1356,6 +1356,8 @@ static int __init ignore_unknown_bootoption(char
-*param, char *val,
-        return 0;
- }
-
-+extern bool *notrunp;
-+unsigned int numofcalls = 0;
- static void __init do_initcall_level(int level, char *command_line)
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index c3d212bc5338..07b3e656aedd 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -460,7 +460,7 @@ static bool rcu_preempt_has_tasks(struct rcu_node *rnp)
+  * be quite short, for example, in the case of the call from
+  * rcu_read_unlock_special().
+  */
+-static void
++notrace static void
+ rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
  {
-        initcall_entry_t *fn;
-@@ -1367,8 +1369,19 @@ static void __init do_initcall_level(int level,
-char *command_line)
-                   NULL, ignore_unknown_bootoption);
-
-        trace_initcall_level(initcall_level_names[level]);
--       for (fn = initcall_levels[level]; fn < initcall_levels[level+1]; fn++)
-+       for (fn = initcall_levels[level]; fn < initcall_levels[level+1]; fn++) {
-+               bool before = *notrunp, after;
-+               unsigned long jiffies_save = jiffies;
-+               numofcalls++;
-                do_one_initcall(initcall_from_entry(fn));
-+               after = *notrunp;
-+               if (before != after) {
-+                 char sym[KSYM_SYMBOL_LEN];
-+                 sprint_symbol(sym, (unsigned long )initcall_from_entry(fn));
-+                 printk(KERN_INFO "init call level %d: %s changed the
-rcu task test %lu\n",
-+                        level, sym, jiffies - jiffies_save);
-+               }
-+       }
- }
-
- static void __init do_initcalls(void)
-@@ -1376,15 +1389,17 @@ static void __init do_initcalls(void)
-        int level;
-        size_t len = strlen(saved_command_line) + 1;
-        char *command_line;
--
-+       unsigned long jiffies_save = jiffies;
-        command_line = kzalloc(len, GFP_KERNEL);
-        if (!command_line)
-                panic("%s: Failed to allocate %zu bytes\n", __func__, len);
--
-+
-        for (level = 0; level < ARRAY_SIZE(initcall_levels) - 1; level++) {
-                /* Parser modifies command_line, restore it each time */
-                strcpy(command_line, saved_command_line);
-                do_initcall_level(level, command_line);
-+               if (level == 5)
-+                 printk(KERN_INFO"init call level 5 costs: %lu
-numofcalls %u\n", jiffies - jiffies_save, numofcalls);
-        }
-
-        kfree(command_line);
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 99cf3a13954c..f4e175eeaec3 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -1660,7 +1660,7 @@ static void test_rcu_tasks_callback(struct rcu_head *rhp)
-
-        rttd->notrun = true;
- }
--
-+bool *notrunp = &tests[0].notrun;
- static void rcu_tasks_initiate_self_tests(void)
+ 	bool empty_exp;
+@@ -581,7 +581,7 @@ rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
+  * is disabled.  This function cannot be expected to understand these
+  * nuances, so the caller must handle them.
+  */
+-static bool rcu_preempt_need_deferred_qs(struct task_struct *t)
++notrace static bool rcu_preempt_need_deferred_qs(struct task_struct *t)
  {
-        pr_info("Running RCU-tasks wait API self tests\n");
+ 	return (__this_cpu_read(rcu_data.cpu_no_qs.b.exp) ||
+ 		READ_ONCE(t->rcu_read_unlock_special.s)) &&
+@@ -595,7 +595,7 @@ static bool rcu_preempt_need_deferred_qs(struct task_struct *t)
+  * evaluate safety in terms of interrupt, softirq, and preemption
+  * disabling.
+  */
+-static void rcu_preempt_deferred_qs(struct task_struct *t)
++notrace static void rcu_preempt_deferred_qs(struct task_struct *t)
+ {
+ 	unsigned long flags;
+ 
+-- 
+2.25.1
 
-The tests on Thinkpad P1 gen4 and Dell PowerEdge R720 show that during
-the test, some init call will lend the grace period to the RCU tasks
-self tests.
-
-And of course, I am not using the above modification in Section 5 and
-Section 6' tests. Section 5 and Section 6's tests are performed on
-unmodified mainline!!
-
-4. Reduce the init calls in kernel configuration
-Based on above observation, I tried to reduce the kernel configuration
-starting from [2] meanwhile keep the qemu bootable. Finally I got
-[4].
-And [4] will trigger the bug on Dell PowerEdge R720!
-
-5. Trigger the bug in a more Linux way.
-Why TASKS01 will not trigger the bug? There are two reasons:
-a) there are too many init calls that will lend the grace period
-b) the debug kernel param will lend the grace period
-
-Solution to reason a:
-I write a C++ program [5] to print the difference between the .config
-generated by TASKS01 and [4]. Then I use the difference to create a
-TASKS04.
-
-Solution to reason b:
-I add loglevel=7 to qemu boot parameter.
-
-The result consists of newly created TASKS04 and TASKS04.boot [6].
-
-Now the bug can trigger every time on Dell PowerEdge R720 by invoking:
-./tools/testing/selftests/rcutorture/bin/kvm.sh --configs "TASKS04"
---duration 10 --trust-make
-
-6. Conclusion
-I am able to trigger the bug everytime in mainline without modifying
-the kernel's functional code on a dual socket Intel Xeon machine.
-
-7. Acknowledgement
-Thanks Paul for your constant encouragement! Thanks Zhouyi
-
-References
-[1] https://lore.kernel.org/rcu/20220322142101.GQ4285@paulmck-ThinkPad-P17-Gen-1/T/#mb696465963393bbc3d38e85ffef0e03cf1e4fa54
-[2] http://154.223.142.244/20220321/config-20220321
-[3] http://154.223.142.244/20220418/test.sh.txt
-[4] http://154.223.142.244/20220418/config
-[5] http://154.223.142.244/20220418/processconfig.cpp
-[6] http://154.223.142.244/20220418/0001-RCU.patch
