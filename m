@@ -2,122 +2,182 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DEF3C433F5
-	for <rcu@archiver.kernel.org>; Mon, 18 Apr 2022 18:50:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CD5E3C433F5
+	for <rcu@archiver.kernel.org>; Mon, 18 Apr 2022 19:04:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237799AbiDRSxZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 18 Apr 2022 14:53:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40654 "EHLO
+        id S243795AbiDRTHB (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 18 Apr 2022 15:07:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235921AbiDRSxZ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 18 Apr 2022 14:53:25 -0400
+        with ESMTP id S1347547AbiDRTHA (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 18 Apr 2022 15:07:00 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E62915822;
-        Mon, 18 Apr 2022 11:50:45 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B66E31234;
+        Mon, 18 Apr 2022 12:04:20 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 055BCB80EC4;
-        Mon, 18 Apr 2022 18:50:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99CACC385A7;
-        Mon, 18 Apr 2022 18:50:42 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 2726DB80FD4;
+        Mon, 18 Apr 2022 19:04:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5AB0C385A7;
+        Mon, 18 Apr 2022 19:04:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1650307842;
-        bh=ZUHtGIbbacXJsaEGrlloH94rXXIROUImW5cXopGA94E=;
+        s=k20201202; t=1650308657;
+        bh=xrieQm2qiAizigOBEU4HoE15qUNALVzMc8UsHt1N2bg=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=pVY/ca2QGYXAxfaiNXrOjXrF/Cv+oANtUPQZ9ftGbux1DdwCCzASQDsVqFQWgihQ+
-         Gg3kkjD8Sw4JoM1y5e+J4AtSxYGoBoMv3uWmo+dlx7m8O3znrWGTfMem0UaOwhFSxf
-         C5pscSLCHlBUPGI76XgyJqn/hHHKn7QnpBZq7iKDPiT5S1ZtTok04581G2Gl0qV1ei
-         cxkdxLeNcGpB9D80JTlVMjsIFSyYXaax8QY6KubCb4a4GOJluOCdyJJXzyM73yc2Yf
-         97v+ZjkEduRsypmZQv2DF7U32Yb4j4Snsgn1gQFsoibpDu7Sl9DMzihfq1D2hOSR93
-         nS95oNm2+AFJg==
+        b=FZ1/F098odCN0GT9d1W200dPkxEjmlNVk48ZqtNFmINzUIt87BBFsSkqeKrwx2xCA
+         fDa1T5E1GTsnoCgubF0FzUoT77vUN000UkiUsN6FCKj21Ei0V8TZt1edlN7xKbhJ0d
+         JwIkgmPE13uFAUndv1fkxlTfuM07Yv5RwEBW+Ec/sZ9nXgrbFO6RSRq3bD2W3XpPqr
+         I3UuEvxXf9AE5MvIjdQSWjVFy0skE3Uyjdp/b2W/gh8ybU3PB06twINmIaTXxkZUkq
+         sPuEdyj7FQ8GvTSXjDUl8FAcHetzIXQOoHv//zGHze5ZeLmsK05seWpkHFulnM2hPN
+         4sHDBOxtPgSNA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 3CA755C0848; Mon, 18 Apr 2022 11:50:42 -0700 (PDT)
-Date:   Mon, 18 Apr 2022 11:50:42 -0700
+        id 5E43C5C0848; Mon, 18 Apr 2022 12:04:17 -0700 (PDT)
+Date:   Mon, 18 Apr 2022 12:04:17 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Anna-Maria Behnsen <anna-maria@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Benedikt Spranger <b.spranger@linutronix.de>
-Subject: Re: [PATCH] rcu/torture: Change order of warning and trace dump
-Message-ID: <20220418185042.GA2420391@paulmck-ThinkPad-P17-Gen-1>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        rushikesh.s.kadam@intel.com, vineethrp@gmail.com, urezki@gmail.com
+Subject: Re: [PATCH v4] rcu/nocb: Add an option to offload all CPUs on boot
+Message-ID: <20220418190417.GW4285@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20220411151903.28167-1-anna-maria@linutronix.de>
- <20220411180915.GY4285@paulmck-ThinkPad-P17-Gen-1>
+References: <20220418175403.2553842-1-joel@joelfernandes.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220411180915.GY4285@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20220418175403.2553842-1-joel@joelfernandes.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Apr 11, 2022 at 11:09:15AM -0700, Paul E. McKenney wrote:
-> On Mon, Apr 11, 2022 at 05:19:03PM +0200, Anna-Maria Behnsen wrote:
-> > Dumping a big ftrace buffer could lead to a RCU stall. So there is the
-> > ftrace buffer and the stall information which needs to be printed. When
-> > there is additionaly a WARN_ON() which describes the reason for the ftrace
-> > buffer dump and the WARN_ON() is executed _after_ ftrace buffer dump, the
-> > information get lost in the middle of the RCU stall information.
-> > 
-> > Therefore print WARN_ON() message before dumping the ftrace buffer in
-> > rcu_torture_writer().
-> > 
-> > Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
-> > Reviewed-by: Benedikt Spranger <b.spranger@linutronix.de>
+On Mon, Apr 18, 2022 at 05:54:03PM +0000, Joel Fernandes (Google) wrote:
+> From: Joel Fernandes <joel@joelfernandes.org>
 > 
-> Hello, Anna-Maria!
+> On systems with CONFIG_RCU_NOCB_CPU=y, there is no default mask provided
+> which ends up not offloading any CPU. This patch removes a dependency
+> from the bootloader having to know about RCU and about how to provide
+> the mask.
 > 
-> Good point, but we get caught out either way.  Either we take the chance
-> of losing the WARN() message as you say, or we take the chance of the
-> activity in the WARN() message overwriting needed information in the
-> trace buffer.
+> With the new option enabled, all CPUs will be offloaded on boot unless
+> rcu_nocbs= or rcu_nohz_full= kernel parameters provide a CPU list.
 > 
-> Would it work to shut off tracing, do the WARN(), and only then do the
-> rcu_ftrace_dump()?
+> Signed-off-by: Joel Fernandes <joel@joelfernandes.org>
 
-For example, as shown the the updated patch below currently queued on -rcu
-for further review and testing?
+Much better, queued for review and testing, thank you!
 
-If this is problematic, please let me know!
+I resolved a (trivial) conflict with -rcu's "dev" branch.  Could you
+please check the resolultion below in case my notion of "trivial" and/or
+"resolved" is excessively optimistic?
 
-							Thanx, Paul
+						Thanx, Paul
 
 ------------------------------------------------------------------------
 
-commit cdbc93534da1bba3f498783473361b2f26dc65d6
-Author: Anna-Maria Behnsen <anna-maria@linutronix.de>
-Date:   Mon Apr 11 17:19:03 2022 +0200
+commit 21b595e4233e6885bdea2819c206a470cc207ea5
+Author: Joel Fernandes <joel@joelfernandes.org>
+Date:   Mon Apr 18 17:54:03 2022 +0000
 
-    rcu/torture: Change order of warning and trace dump
+    rcu/nocb: Add an option to offload all CPUs on boot
     
-    Dumping a big ftrace buffer could lead to a RCU stall. So there is the
-    ftrace buffer and the stall information which needs to be printed. When
-    there is additionaly a WARN_ON() which describes the reason for the ftrace
-    buffer dump and the WARN_ON() is executed _after_ ftrace buffer dump, the
-    information get lost in the middle of the RCU stall information.
+    On systems with CONFIG_RCU_NOCB_CPU=y, there is no default mask provided
+    which ends up not offloading any CPU. This patch removes a dependency
+    from the bootloader having to know about RCU and about how to provide
+    the mask.
     
-    Therefore print WARN_ON() message before dumping the ftrace buffer in
-    rcu_torture_writer().
+    With the new option enabled, all CPUs will be offloaded on boot unless
+    rcu_nocbs= or rcu_nohz_full= kernel parameters provide a CPU list.
     
-    [ paulmck: Add tracing_off() to avoid cruft from WARN(). ]
+    [ paulmck: Forward-port to -rcu "dev" branch. ]
     
-    Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
-    Reviewed-by: Benedikt Spranger <b.spranger@linutronix.de>
+    Signed-off-by: Joel Fernandes <joel@joelfernandes.org>
     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 2b40a8f6d2a0..0885a66f9d76 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -1369,8 +1369,9 @@ rcu_torture_writer(void *arg)
- 				if (list_empty(&rcu_tortures[i].rtort_free) &&
- 				    rcu_access_pointer(rcu_torture_current) !=
- 				    &rcu_tortures[i]) {
--					rcu_ftrace_dump(DUMP_ALL);
-+					tracing_off();
- 					WARN(1, "%s: rtort_pipe_count: %d\n", __func__, rcu_tortures[i].rtort_pipe_count);
-+					rcu_ftrace_dump(DUMP_ALL);
- 				}
- 		if (stutter_waited)
- 			sched_set_normal(current, oldnice);
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 789ef586009b..1e82ecb7a649 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -3572,6 +3572,9 @@
+ 			just as if they had also been called out in the
+ 			rcu_nocbs= boot parameter.
+ 
++			Note that this argument takes precedence over
++			the CONFIG_RCU_NOCB_CPU_DEFAULT_ALL option.
++
+ 	noiotrap	[SH] Disables trapped I/O port accesses.
+ 
+ 	noirqdebug	[X86-32] Disables the code which attempts to detect and
+@@ -4475,6 +4478,9 @@
+ 			no-callback mode from boot but the mode may be
+ 			toggled at runtime via cpusets.
+ 
++			Note that this argument takes precedence over
++			the CONFIG_RCU_NOCB_CPU_DEFAULT_ALL option.
++
+ 	rcu_nocb_poll	[KNL]
+ 			Rather than requiring that offloaded CPUs
+ 			(specified by rcu_nocbs= above) explicitly
+diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+index 1c630e573548..27aab870ae4c 100644
+--- a/kernel/rcu/Kconfig
++++ b/kernel/rcu/Kconfig
+@@ -262,6 +262,19 @@ config RCU_NOCB_CPU
+ 	  Say Y here if you need reduced OS jitter, despite added overhead.
+ 	  Say N here if you are unsure.
+ 
++config RCU_NOCB_CPU_DEFAULT_ALL
++	bool "Offload RCU callback processing from all CPUs by default"
++	depends on RCU_NOCB_CPU
++	default n
++	help
++	  Use this option to offload callback processing from all CPUs
++	  by default, in the absence of the rcu_nocbs or nohz_full boot
++	  parameter. This also avoids the need to use any boot parameters
++	  to achieve the effect of offloading all CPUs on boot.
++
++	  Say Y here if you want offload all CPUs by default on boot.
++	  Say N here if you are unsure.
++
+ config TASKS_TRACE_RCU_READ_MB
+ 	bool "Tasks Trace RCU readers use memory barriers in user and idle"
+ 	depends on RCU_EXPERT && TASKS_TRACE_RCU
+diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+index 46694e13398a..ef29220c805f 100644
+--- a/kernel/rcu/tree_nocb.h
++++ b/kernel/rcu/tree_nocb.h
+@@ -1155,11 +1155,21 @@ void __init rcu_init_nohz(void)
+ {
+ 	int cpu;
+ 	bool need_rcu_nocb_mask = false;
++	bool offload_all = false;
+ 	struct rcu_data *rdp;
+ 
++#if defined(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL)
++	if (!rcu_nocb_is_setup) {
++		need_rcu_nocb_mask = true;
++		offload_all = true;
++	}
++#endif
++
+ #if defined(CONFIG_NO_HZ_FULL)
+-	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask))
++	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask)) {
+ 		need_rcu_nocb_mask = true;
++		offload_all = false; /* NO_HZ_FULL has its own mask. */
++	}
+ #endif /* #if defined(CONFIG_NO_HZ_FULL) */
+ 
+ 	if (need_rcu_nocb_mask) {
+@@ -1180,6 +1190,9 @@ void __init rcu_init_nohz(void)
+ 		cpumask_or(rcu_nocb_mask, rcu_nocb_mask, tick_nohz_full_mask);
+ #endif /* #if defined(CONFIG_NO_HZ_FULL) */
+ 
++	if (offload_all)
++		cpumask_setall(rcu_nocb_mask);
++
+ 	if (!cpumask_subset(rcu_nocb_mask, cpu_possible_mask)) {
+ 		pr_info("\tNote: kernel parameter 'rcu_nocbs=', 'nohz_full', or 'isolcpus=' contains nonexistent CPUs.\n");
+ 		cpumask_and(rcu_nocb_mask, cpu_possible_mask,
