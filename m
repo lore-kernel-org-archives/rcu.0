@@ -2,45 +2,44 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B7D9CC433F5
-	for <rcu@archiver.kernel.org>; Mon, 18 Apr 2022 22:54:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CD83C433EF
+	for <rcu@archiver.kernel.org>; Mon, 18 Apr 2022 22:54:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233549AbiDRW44 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S233570AbiDRW44 (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Mon, 18 Apr 2022 18:56:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44392 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233519AbiDRW4t (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S233378AbiDRW4t (ORCPT <rfc822;rcu@vger.kernel.org>);
         Mon, 18 Apr 2022 18:56:49 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D86562D1CA;
-        Mon, 18 Apr 2022 15:54:05 -0700 (PDT)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CB752CE38;
+        Mon, 18 Apr 2022 15:54:04 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id CC07CB81147;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 23995B8114A;
         Mon, 18 Apr 2022 22:54:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1A7AC385B8;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89E87C385B4;
         Mon, 18 Apr 2022 22:54:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1650322441;
-        bh=hgEd3cpLsRyZZOBZzaKl/DvFtkkxfVr47Q/gsMtP94Y=;
+        bh=uhiwOIrk44qfnhD7O0vrwgQ+fBsOSHKHX5yQ0StUtJA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fIwQHmfCQMiJX9gTWhnRiYrGeGRiAjSnmKfKNwTX3T8czHIPfXHr20hQj4H4RIV3Z
-         5+ikJZSPNMdE0p+FEq9BR/D+Dn8IsDp5na/wlQAWlR+R4StiOrff1O+nkjBVxTFqNl
-         M42Ap8B38iWEo2feWC8XVIFDcliBrq/tMK2AuVYPwfTdhboYt0/on7ejp6W6yHg4NW
-         YIzNXuPfYq/16AgqG5nCLTIhI3J+nOCMj7tcLwLLDMc1yVr0XnrEtSlERZlHTsQBhI
-         8EZHd7b0BDx7d6DrGd6HTNBpxtcsHdE2bKDYpFvObzSReN88mfq8excuSUkZ5DzHtc
-         rxLMARwgOE+YQ==
+        b=c0PVY37NJ/CMr5qudl02I2FfmOQw4uF6x8q94rBofcV3x8FmqaityrZORWq1kxu8+
+         jOGtBQMGqNuKeQLPOTY+cUwNKH4UHv5a8P9QOuXiELinf4ZJNyAg3GKrokIa1+gopJ
+         3kmkIFFwyWn2wfod+iV2ODQidTIc1PIUilJLAhFBPUERSGR1rgnLwDlbX4lurfhVMY
+         dnrFI2VFnwHzhmtT4uXMJL7wM/IM7Z1jx59xsgLlcOMWpUM080ZWggf4xcujPlnyZZ
+         imBYuI3fPMeVzxfZ+7Y4fuqZy+6OewxWqzDboxzhy8GvGnGmM/c8U3f2bGtwkQgOvb
+         DknMQAaogHZ+A==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id F20BD5C1355; Mon, 18 Apr 2022 15:54:00 -0700 (PDT)
+        id E8F0A5C0B86; Mon, 18 Apr 2022 15:54:00 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org, Zqiang <qiang1.zhang@intel.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 11/11] rcu: Use IRQ_WORK_INIT_HARD() to avoid rcu_read_unlock() hangs
-Date:   Mon, 18 Apr 2022 15:53:59 -0700
-Message-Id: <20220418225359.3945217-11-paulmck@kernel.org>
+        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 06/11] rcu: Print number of online CPUs in RCU CPU stall-warning messages
+Date:   Mon, 18 Apr 2022 15:53:54 -0700
+Message-Id: <20220418225359.3945217-6-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220418225345.GA3945110@paulmck-ThinkPad-P17-Gen-1>
 References: <20220418225345.GA3945110@paulmck-ThinkPad-P17-Gen-1>
@@ -50,45 +49,45 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Zqiang <qiang1.zhang@intel.com>
+RCU's synchronous grace periods act quite differently when there is
+only one online CPU, especially in the no-op case in kernels built with
+CONFIG_PREEMPTION=n.  This change in behavior can be important debugging
+information, so this commit adds the number of online CPUs to the RCU
+CPU stall warning messages.
 
-When booting kernels built with both CONFIG_RCU_STRICT_GRACE_PERIOD=y
-and CONFIG_PREEMPT_RT=y, the rcu_read_unlock_special() function's
-invocation of irq_work_queue_on() the init_irq_work() causes the
-rcu_preempt_deferred_qs_handler() function to work execute in SCHED_FIFO
-irq_work kthreads.  Because rcu_read_unlock_special() is invoked on each
-rcu_read_unlock() in such kernels, the amount of work just keeps piling
-up, resulting in a boot-time hang.
-
-This commit therefore avoids this hang by using IRQ_WORK_INIT_HARD()
-instead of init_irq_work(), but only in kernels built with both
-CONFIG_PREEMPT_RT=y and CONFIG_RCU_STRICT_GRACE_PERIOD=y.
-
-Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_plugin.h | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ kernel/rcu/tree_stall.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 5c23aceecd62..2a3715419073 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -661,7 +661,13 @@ static void rcu_read_unlock_special(struct task_struct *t)
- 			    expboost && !rdp->defer_qs_iw_pending && cpu_online(rdp->cpu)) {
- 				// Get scheduler to re-evaluate and call hooks.
- 				// If !IRQ_WORK, FQS scan will eventually IPI.
--				init_irq_work(&rdp->defer_qs_iw, rcu_preempt_deferred_qs_handler);
-+				if (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD) &&
-+				    IS_ENABLED(CONFIG_PREEMPT_RT))
-+					rdp->defer_qs_iw = IRQ_WORK_INIT_HARD(
-+								rcu_preempt_deferred_qs_handler);
-+				else
-+					init_irq_work(&rdp->defer_qs_iw,
-+						      rcu_preempt_deferred_qs_handler);
- 				rdp->defer_qs_iw_pending = true;
- 				irq_work_queue_on(&rdp->defer_qs_iw, rdp->cpu);
- 			}
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index 0c5d8516516a..268dd79c58e7 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -565,9 +565,9 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
+ 
+ 	for_each_possible_cpu(cpu)
+ 		totqlen += rcu_get_n_cbs_cpu(cpu);
+-	pr_cont("\t(detected by %d, t=%ld jiffies, g=%ld, q=%lu)\n",
++	pr_cont("\t(detected by %d, t=%ld jiffies, g=%ld, q=%lu ncpus=%d)\n",
+ 	       smp_processor_id(), (long)(jiffies - gps),
+-	       (long)rcu_seq_current(&rcu_state.gp_seq), totqlen);
++	       (long)rcu_seq_current(&rcu_state.gp_seq), totqlen, rcu_state.n_online_cpus);
+ 	if (ndetected) {
+ 		rcu_dump_cpu_stacks();
+ 
+@@ -626,9 +626,9 @@ static void print_cpu_stall(unsigned long gps)
+ 	raw_spin_unlock_irqrestore_rcu_node(rdp->mynode, flags);
+ 	for_each_possible_cpu(cpu)
+ 		totqlen += rcu_get_n_cbs_cpu(cpu);
+-	pr_cont("\t(t=%lu jiffies g=%ld q=%lu)\n",
++	pr_cont("\t(t=%lu jiffies g=%ld q=%lu ncpus=%d)\n",
+ 		jiffies - gps,
+-		(long)rcu_seq_current(&rcu_state.gp_seq), totqlen);
++		(long)rcu_seq_current(&rcu_state.gp_seq), totqlen, rcu_state.n_online_cpus);
+ 
+ 	rcu_check_gp_kthread_expired_fqs_timer();
+ 	rcu_check_gp_kthread_starvation();
 -- 
 2.31.1.189.g2e36527f23
 
