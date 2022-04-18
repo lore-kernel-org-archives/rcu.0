@@ -2,104 +2,96 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 18048C433FE
-	for <rcu@archiver.kernel.org>; Mon, 18 Apr 2022 22:50:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 44ACAC433FE
+	for <rcu@archiver.kernel.org>; Mon, 18 Apr 2022 22:53:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232903AbiDRWxT (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 18 Apr 2022 18:53:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39284 "EHLO
+        id S233105AbiDRW4a (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 18 Apr 2022 18:56:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232839AbiDRWxR (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 18 Apr 2022 18:53:17 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB4931EC4C;
-        Mon, 18 Apr 2022 15:50:36 -0700 (PDT)
+        with ESMTP id S233122AbiDRW42 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 18 Apr 2022 18:56:28 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B8352C65B;
+        Mon, 18 Apr 2022 15:53:48 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7DF7961037;
-        Mon, 18 Apr 2022 22:50:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D42A6C385BC;
-        Mon, 18 Apr 2022 22:50:35 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 0906FB81135;
+        Mon, 18 Apr 2022 22:53:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5DCFC385A1;
+        Mon, 18 Apr 2022 22:53:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1650322235;
-        bh=wmIlJ6/WDhkwaS97Yp3hE9UBlU+pg5c4XkawO23USPg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TUf7hJeKSLN3EUbzA3zrBuE0KCPYD2lpi6Cuee795GBF+pz306tBJ5vWmPMJ7NceF
-         s/TNMIJhjWU2I8Xx1MdfhmunIwwU0yMhq2sujc9qKqdlKIUDtLGpy0Df3XVLvR0X21
-         95/wzCrLbJacXSYx5h9RA5aQ/z8ZFX+Ir5tZfcbGcJfesaKA/1BAvGvdgHj28LrDqp
-         GzFus2OpAg10cz6zJuafMjVZTU5vL5mVNMzzOD9BlSvvFgsiHOHgBY9bgTL4ymui86
-         Ro5nJe2tKwOF1c1v7G5qjYCW5QgpYwSWDv9tCLWu001Q+RydFFaY6ZpHpvEutHAmGv
-         w/YxqLYObX/8A==
+        s=k20201202; t=1650322425;
+        bh=aRxVUvdVuSvQxry8iFf6qzP+10KdC41EHHSuZ+WfK6M=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=i2/TvsLkq+AxsmWVqOcUxvJnNTNvk1k+quY3rfDGD4h6/wBwUoakvkybQ7BFMz8Vy
+         jl98fnX0dN+JUurtYaka2ui4WKGVb6q/zQKX8rfie1a9zDEqBgMBGBWJNSalxHTiE8
+         xZ3t+y25FdKFDPi+Sjq6I1Hyrnrww1jgZNuhdHe609+rbBzpfqwPHlw6Z81KCg8HMX
+         lRB6OMSw6BIBX94TwkmEMaXsPhgx7DUh6trXkkz66ZnXMDV6hzKpiOZEyUmQXLuLYM
+         48AGpzB2v5I7ETqOiNB2DMCHYY3f0Ie/9TU2iI4IzWf3Gm1L8nKwj7i0kQVh9J9w2Q
+         2veBmgO53E0Xg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 85B565C04BD; Mon, 18 Apr 2022 15:50:35 -0700 (PDT)
+        id 6AF825C04BD; Mon, 18 Apr 2022 15:53:45 -0700 (PDT)
+Date:   Mon, 18 Apr 2022 15:53:45 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 1/2] docs: Add documentation for rude and trace RCU flavors
-Date:   Mon, 18 Apr 2022 15:50:32 -0700
-Message-Id: <20220418225033.3944860-1-paulmck@kernel.org>
-X-Mailer: git-send-email 2.31.1.189.g2e36527f23
-In-Reply-To: <20220418225004.GA3944767@paulmck-ThinkPad-P17-Gen-1>
-References: <20220418225004.GA3944767@paulmck-ThinkPad-P17-Gen-1>
+        rostedt@goodmis.org
+Subject: [PATCH rcu 0/11] Miscellaneous fixes for v5.19
+Message-ID: <20220418225345.GA3945110@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This commit belatedly adds documentation of Tasks Rude RCU and Tasks
-Trace RCU to RCU's requirements document.
+Hello!
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- .../RCU/Design/Requirements/Requirements.rst  | 32 +++++++++++++++++++
- 1 file changed, 32 insertions(+)
+This series contains miscellaneous fixes:
 
-diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
-index 45278e2974c0..ff2be1ac54c4 100644
---- a/Documentation/RCU/Design/Requirements/Requirements.rst
-+++ b/Documentation/RCU/Design/Requirements/Requirements.rst
-@@ -2654,6 +2654,38 @@ synchronize_rcu(), and rcu_barrier(), respectively. In
- three APIs are therefore implemented by separate functions that check
- for voluntary context switches.
- 
-+Tasks Rude RCU
-+~~~~~~~~~~~~~~
-+
-+Some forms of tracing need to wait for all preemption-disabled regions
-+of code running on any online CPU, including those executed when RCU is
-+not watching.  This means that synchronize_rcu() is insufficient, and
-+Tasks Rude RCU must be used instead.  This flavor of RCU does its work by
-+forcing a workqueue to be scheduled on each online CPU, hence the "Rude"
-+moniker.  And this operation is considered to be quite rude by real-time
-+workloads that don't want their ``nohz_full`` CPUs receiving IPIs and
-+by battery-powered systems that don't want their idle CPUs to be awakened.
-+
-+The tasks-rude-RCU API is also reader-marking-free and thus quite compact,
-+consisting of call_rcu_tasks_rude(), synchronize_rcu_tasks_rude(),
-+and rcu_barrier_tasks_rude().
-+
-+Tasks Trace RCU
-+~~~~~~~~~~~~~~~
-+
-+Some forms of tracing need to sleep in readers, but cannot tolerate
-+SRCU's read-side overhead, which includes a full memory barrier in both
-+srcu_read_lock() and srcu_read_unlock().  This need is handled by a
-+Tasks Trace RCU that uses scheduler locking and IPIs to synchronize with
-+readers.  Real-time systems that cannot tolerate IPIs may build their
-+kernels with ``CONFIG_TASKS_TRACE_RCU_READ_MB=y``, which avoids the IPIs at
-+the expense of adding full memory barriers to the read-side primitives.
-+
-+The tasks-trace-RCU API is also reasonably compact,
-+consisting of rcu_read_lock_trace(), rcu_read_unlock_trace(),
-+rcu_read_lock_trace_held(), call_rcu_tasks_trace(),
-+synchronize_rcu_tasks_trace(), and rcu_barrier_tasks_trace().
-+
- Possible Future Changes
- -----------------------
- 
--- 
-2.31.1.189.g2e36527f23
+1.	Clarify fill-the-gap comment in rcu_segcblist_advance().
 
+2.	Fix rcu_preempt_deferred_qs_irqrestore() strict QS reporting.
+
+3.	Check for jiffies going backwards.
+
+4.	Provide boot-time timeout for CSD lock diagnostics.
+
+5.	Add comments to final rcu_gp_cleanup() "if" statement.
+
+6.	Print number of online CPUs in RCU CPU stall-warning messages.
+
+7.	Fix preemption mode check on synchronize_rcu[_expedited](),
+	courtesy of Frederic Weisbecker.
+
+8.	Drop needless initialization of sdp in srcu_gp_start(), courtesy
+	of Lukas Bulwahn.
+
+9.	Check for successful spawn of ->boost_kthread_task, courtesy
+	of Zqiang.
+
+10.	rcu_sync: Fix comment to properly reflect rcu_sync_exit()
+	behavior, courtesy of David Vernet.
+
+11.	Use IRQ_WORK_INIT_HARD() to avoid rcu_read_unlock() hangs,
+	courtesy of Zqiang.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ b/Documentation/admin-guide/kernel-parameters.txt |   11 ++++++++
+ b/kernel/rcu/rcu_segcblist.c                      |    8 +++---
+ b/kernel/rcu/srcutree.c                           |    2 -
+ b/kernel/rcu/sync.c                               |    2 -
+ b/kernel/rcu/tree.c                               |   10 +++++++
+ b/kernel/rcu/tree.h                               |    1 
+ b/kernel/rcu/tree_plugin.h                        |    1 
+ b/kernel/rcu/tree_stall.h                         |    8 +++---
+ b/kernel/smp.c                                    |    7 +++--
+ kernel/rcu/tree.c                                 |   29 +++++++++++++++++-----
+ kernel/rcu/tree_plugin.h                          |   11 ++++++--
+ 11 files changed, 70 insertions(+), 20 deletions(-)
