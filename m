@@ -2,50 +2,45 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 85FBDC433FE
-	for <rcu@archiver.kernel.org>; Mon, 18 Apr 2022 22:54:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B7D9CC433F5
+	for <rcu@archiver.kernel.org>; Mon, 18 Apr 2022 22:54:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233530AbiDRW4z (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 18 Apr 2022 18:56:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44382 "EHLO
+        id S233549AbiDRW44 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 18 Apr 2022 18:56:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233305AbiDRW4t (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S233519AbiDRW4t (ORCPT <rfc822;rcu@vger.kernel.org>);
         Mon, 18 Apr 2022 18:56:49 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0C0F2CE2C;
-        Mon, 18 Apr 2022 15:54:03 -0700 (PDT)
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D86562D1CA;
+        Mon, 18 Apr 2022 15:54:05 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 8A5F8B81136;
-        Mon, 18 Apr 2022 22:54:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42828C385A1;
+        by ams.source.kernel.org (Postfix) with ESMTPS id CC07CB81147;
+        Mon, 18 Apr 2022 22:54:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1A7AC385B8;
         Mon, 18 Apr 2022 22:54:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1650322441;
-        bh=tPyCRwdFs1UacCDWo6gPWFP2J8tgNjkdVtTI/kMjO/s=;
+        bh=hgEd3cpLsRyZZOBZzaKl/DvFtkkxfVr47Q/gsMtP94Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TcUbXgjE7VF1cqmzO0nZknf3hCOB6m2pLrkKrPBeLeT9duKCb0DbzbydFSa50sG0k
-         hcRX7uV/VAEGuvQEbnPMYNOHsXJCGFJCmzNXAl+2EWzwzQ54ak8oC8qeQCpinYhuAs
-         CqtBVAiJGo8D2iuyaWcHhM4USdLCm898Bq+B2NFawfme1LKeRZQKO+IQodD93TI4vR
-         v5VbPp/rAodcE/QRsmIGNmkOYd7xequfoHJKHDylT4mOfQBdsqmhh6t3ICVkAlYxJB
-         rjgwNxfhHMDWRwSYlruRV7piO/azxnadspi1KG+660ywzzP9uLiZmM1VuOot1pvtlW
-         ugsjYlo/5TWUg==
+        b=fIwQHmfCQMiJX9gTWhnRiYrGeGRiAjSnmKfKNwTX3T8czHIPfXHr20hQj4H4RIV3Z
+         5+ikJZSPNMdE0p+FEq9BR/D+Dn8IsDp5na/wlQAWlR+R4StiOrff1O+nkjBVxTFqNl
+         M42Ap8B38iWEo2feWC8XVIFDcliBrq/tMK2AuVYPwfTdhboYt0/on7ejp6W6yHg4NW
+         YIzNXuPfYq/16AgqG5nCLTIhI3J+nOCMj7tcLwLLDMc1yVr0XnrEtSlERZlHTsQBhI
+         8EZHd7b0BDx7d6DrGd6HTNBpxtcsHdE2bKDYpFvObzSReN88mfq8excuSUkZ5DzHtc
+         rxLMARwgOE+YQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id E554E5C0A0D; Mon, 18 Apr 2022 15:54:00 -0700 (PDT)
+        id F20BD5C1355; Mon, 18 Apr 2022 15:54:00 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        Rik van Riel <riel@surriel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Juergen Gross <jgross@suse.com>
-Subject: [PATCH rcu 04/11] kernel/smp: Provide boot-time timeout for CSD lock diagnostics
-Date:   Mon, 18 Apr 2022 15:53:52 -0700
-Message-Id: <20220418225359.3945217-4-paulmck@kernel.org>
+        rostedt@goodmis.org, Zqiang <qiang1.zhang@intel.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 11/11] rcu: Use IRQ_WORK_INIT_HARD() to avoid rcu_read_unlock() hangs
+Date:   Mon, 18 Apr 2022 15:53:59 -0700
+Message-Id: <20220418225359.3945217-11-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220418225345.GA3945110@paulmck-ThinkPad-P17-Gen-1>
 References: <20220418225345.GA3945110@paulmck-ThinkPad-P17-Gen-1>
@@ -55,78 +50,45 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Debugging of problems involving insanely long-running SMI handlers
-proceeds better if the CSD-lock timeout can be adjusted.  This commit
-therefore provides a new smp.csd_lock_timeout kernel boot parameter
-that specifies the timeout in milliseconds.  The default remains at the
-previously hard-coded value of five seconds.
+From: Zqiang <qiang1.zhang@intel.com>
 
-Cc: Rik van Riel <riel@surriel.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Juergen Gross <jgross@suse.com>
+When booting kernels built with both CONFIG_RCU_STRICT_GRACE_PERIOD=y
+and CONFIG_PREEMPT_RT=y, the rcu_read_unlock_special() function's
+invocation of irq_work_queue_on() the init_irq_work() causes the
+rcu_preempt_deferred_qs_handler() function to work execute in SCHED_FIFO
+irq_work kthreads.  Because rcu_read_unlock_special() is invoked on each
+rcu_read_unlock() in such kernels, the amount of work just keeps piling
+up, resulting in a boot-time hang.
+
+This commit therefore avoids this hang by using IRQ_WORK_INIT_HARD()
+instead of init_irq_work(), but only in kernels built with both
+CONFIG_PREEMPT_RT=y and CONFIG_RCU_STRICT_GRACE_PERIOD=y.
+
+Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- Documentation/admin-guide/kernel-parameters.txt | 11 +++++++++++
- kernel/smp.c                                    |  7 +++++--
- 2 files changed, 16 insertions(+), 2 deletions(-)
+ kernel/rcu/tree_plugin.h | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 3f1cc5e317ed..645c4c001b16 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -5377,6 +5377,17 @@
- 	smart2=		[HW]
- 			Format: <io1>[,<io2>[,...,<io8>]]
- 
-+	smp.csd_lock_timeout= [KNL]
-+			Specify the period of time in milliseconds
-+			that smp_call_function() and friends will wait
-+			for a CPU to release the CSD lock.  This is
-+			useful when diagnosing bugs involving CPUs
-+			disabling interrupts for extended periods
-+			of time.  Defaults to 5,000 milliseconds, and
-+			setting a value of zero disables this feature.
-+			This feature may be more efficiently disabled
-+			using the csdlock_debug- kernel parameter.
-+
- 	smsc-ircc2.nopnp	[HW] Don't use PNP to discover SMC devices
- 	smsc-ircc2.ircc_cfg=	[HW] Device configuration I/O port
- 	smsc-ircc2.ircc_sir=	[HW] SIR base I/O port
-diff --git a/kernel/smp.c b/kernel/smp.c
-index 01a7c1706a58..d82439bac401 100644
---- a/kernel/smp.c
-+++ b/kernel/smp.c
-@@ -183,7 +183,9 @@ static DEFINE_PER_CPU(smp_call_func_t, cur_csd_func);
- static DEFINE_PER_CPU(void *, cur_csd_info);
- static DEFINE_PER_CPU(struct cfd_seq_local, cfd_seq_local);
- 
--#define CSD_LOCK_TIMEOUT (5ULL * NSEC_PER_SEC)
-+static ulong csd_lock_timeout = 5000;  /* CSD lock timeout in milliseconds. */
-+module_param(csd_lock_timeout, ulong, 0444);
-+
- static atomic_t csd_bug_count = ATOMIC_INIT(0);
- static u64 cfd_seq;
- 
-@@ -329,6 +331,7 @@ static bool csd_lock_wait_toolong(struct __call_single_data *csd, u64 ts0, u64 *
- 	u64 ts2, ts_delta;
- 	call_single_data_t *cpu_cur_csd;
- 	unsigned int flags = READ_ONCE(csd->node.u_flags);
-+	unsigned long long csd_lock_timeout_ns = csd_lock_timeout * NSEC_PER_MSEC;
- 
- 	if (!(flags & CSD_FLAG_LOCK)) {
- 		if (!unlikely(*bug_id))
-@@ -341,7 +344,7 @@ static bool csd_lock_wait_toolong(struct __call_single_data *csd, u64 ts0, u64 *
- 
- 	ts2 = sched_clock();
- 	ts_delta = ts2 - *ts1;
--	if (likely(ts_delta <= CSD_LOCK_TIMEOUT))
-+	if (likely(ts_delta <= csd_lock_timeout_ns || csd_lock_timeout_ns <= 0))
- 		return false;
- 
- 	firsttime = !*bug_id;
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index 5c23aceecd62..2a3715419073 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -661,7 +661,13 @@ static void rcu_read_unlock_special(struct task_struct *t)
+ 			    expboost && !rdp->defer_qs_iw_pending && cpu_online(rdp->cpu)) {
+ 				// Get scheduler to re-evaluate and call hooks.
+ 				// If !IRQ_WORK, FQS scan will eventually IPI.
+-				init_irq_work(&rdp->defer_qs_iw, rcu_preempt_deferred_qs_handler);
++				if (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD) &&
++				    IS_ENABLED(CONFIG_PREEMPT_RT))
++					rdp->defer_qs_iw = IRQ_WORK_INIT_HARD(
++								rcu_preempt_deferred_qs_handler);
++				else
++					init_irq_work(&rdp->defer_qs_iw,
++						      rcu_preempt_deferred_qs_handler);
+ 				rdp->defer_qs_iw_pending = true;
+ 				irq_work_queue_on(&rdp->defer_qs_iw, rdp->cpu);
+ 			}
 -- 
 2.31.1.189.g2e36527f23
 
