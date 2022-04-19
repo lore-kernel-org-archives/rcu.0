@@ -2,45 +2,45 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 664BAC433EF
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AFBB4C4332F
 	for <rcu@archiver.kernel.org>; Tue, 19 Apr 2022 00:03:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237175AbiDSAGU (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 18 Apr 2022 20:06:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52786 "EHLO
+        id S237187AbiDSAGV (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 18 Apr 2022 20:06:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236870AbiDSAGJ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S236959AbiDSAGJ (ORCPT <rfc822;rcu@vger.kernel.org>);
         Mon, 18 Apr 2022 20:06:09 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B176237FA;
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 997C729811;
         Mon, 18 Apr 2022 17:03:28 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A4726612DC;
-        Tue, 19 Apr 2022 00:03:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BEF1C385C7;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 2124AB81147;
+        Tue, 19 Apr 2022 00:03:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10929C385BB;
         Tue, 19 Apr 2022 00:03:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1650326605;
-        bh=YwNURKj9mCIVjxikZL9NORCNyWNTo9uPcdOZhbmsazc=;
+        bh=lyjONtqSbnzzy2uBjKzwL8KfGkjOoSlgn7pyA+mj6/U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RxdI+F6nO1OTvalSor++1mZLjYnYU8Y+aoppUZZ8k3QCqMWlamU/36mJsF+OZGNBT
-         86yeE7C3ZvDHvpaj+g00OR0hgH3ecm1bhH7UsBlPDRubzRgTS3lsq+RxR2/RIfna81
-         YkzC9dnjPQKUPrv6t1R6kGnkf+1qWhayp0KqEv/OvRFxFsbOGQgF53cP7oaXl3mIL3
-         E4R51gi4VREdCVH25xDY76DlJIpllyVqDGH5W8h9+IdyooPU8OP40d0xuiKLIyBLSz
-         4EAdjiGIH7Giw8Q3UaOSG5gMWXzIkKUqDZGUv95f1d9rW6u7kgPYTqHjdHyj6+LSZa
-         8kPVNIsHbcDww==
+        b=Mkgdn4M5oB9OoSqAu55ZEyQz393wg6gC6DZAwCRubHlDFFbt87VBtGr8Vko7bWh4u
+         Iui26/tjpkfUxiXQ+x5dt56JOjUN5+DoBVbxyH7TTp2+rwrmg30EiIDE4d/wqfnkyi
+         ZPnYEwaDXU2QvosmHPtStrD4cp15M/624W+rdifuxnDuV3WgSMy283vrOS4xtiXL06
+         EZy+myupAat6x0JQHbB06wAanOWOUqVj8dnu5xD/za3V0xL/RtLp7vQMWoxIbpwvYb
+         rkuA6hgP+VaGPTqsttKtSrFoXfE/vTxhw93j2+ueym18o18bM0lvpsXY/m1Ub/fZgM
+         his/QY6is5SBw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 6D2B45C30DF; Mon, 18 Apr 2022 17:03:24 -0700 (PDT)
+        id 660AC5C2B13; Mon, 18 Apr 2022 17:03:24 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
         rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>
-Subject: [PATCH rcu 18/21] srcu: Automatically determine size-transition strategy at boot
-Date:   Mon, 18 Apr 2022 17:03:19 -0700
-Message-Id: <20220419000322.3948903-18-paulmck@kernel.org>
+Subject: [PATCH rcu 14/21] srcu: Prevent cleanup_srcu_struct() from freeing non-dynamic ->sda
+Date:   Mon, 18 Apr 2022 17:03:15 -0700
+Message-Id: <20220419000322.3948903-14-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220419000315.GA3948789@paulmck-ThinkPad-P17-Gen-1>
 References: <20220419000315.GA3948789@paulmck-ThinkPad-P17-Gen-1>
@@ -50,105 +50,75 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This commit adds a srcutree.convert_to_big option of zero that causes
-SRCU to decide at boot whether to wait for contention (small systems) or
-immediately expand to large (large systems).  A new srcutree.big_cpu_lim
-(defaulting to 128) defines how many CPUs constitute a large system.
+When an srcu_struct structure is created (but not in a kernel module)
+by DEFINE_SRCU() and friends, the per-CPU srcu_data structure is
+statically allocated.  In all other cases, that structure is obtained
+from alloc_percpu(), in which case cleanup_srcu_struct() must invoke
+free_percpu() on the resulting ->sda pointer in the srcu_struct pointer.
+
+Which it does.
+
+Except that it also invokes free_percpu() on the ->sda pointer
+referencing the statically allocated per-CPU srcu_data structures.
+Which free_percpu() is surprisingly OK with.
+
+This commit nevertheless stops cleanup_srcu_struct() from freeing
+statically allocated per-CPU srcu_data structures.
 
 Co-developed-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
 Signed-off-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- .../admin-guide/kernel-parameters.txt         |  9 ++++++++
- kernel/rcu/srcutree.c                         | 23 ++++++++++++++++---
- 2 files changed, 29 insertions(+), 3 deletions(-)
+ include/linux/srcutree.h | 1 +
+ kernel/rcu/srcutree.c    | 9 ++++++---
+ 2 files changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 177e688768c0..057e30613d00 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -5608,6 +5608,14 @@
- 			off:    Disable mitigation and remove
- 				performance impact to RDRAND and RDSEED
- 
-+	srcutree.big_cpu_lim [KNL]
-+			Specifies the number of CPUs constituting a
-+			large system, such that srcu_struct structures
-+			should immediately allocate an srcu_node array.
-+			This kernel-boot parameter defaults to 128, but
-+			takes effect only when srcutree.convert_to_big
-+			is equal to zero.
-+
- 	srcutree.convert_to_big [KNL]
- 			Specifies under what conditions an SRCU tree
- 			srcu_struct structure will be converted to big
-@@ -5616,6 +5624,7 @@
- 				   0:  Never.
- 				   1:  At init_srcu_struct() time.
- 				   2:  When rcutorture decides to.
-+				   3:  Decide at boot time (default).
- 				0x1X:  Above plus if high contention.
- 
- 			Either way, the srcu_node tree will be sized based
+diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
+index 44e998643f48..44bd204498a1 100644
+--- a/include/linux/srcutree.h
++++ b/include/linux/srcutree.h
+@@ -73,6 +73,7 @@ struct srcu_struct {
+ 	unsigned long srcu_gp_seq_needed_exp;	/* Furthest future exp GP. */
+ 	unsigned long srcu_last_gp_end;		/* Last GP end timestamp (ns) */
+ 	struct srcu_data __percpu *sda;		/* Per-CPU srcu_data array. */
++	bool sda_is_static;			/* May ->sda be passed to free_percpu()? */
+ 	unsigned long srcu_barrier_seq;		/* srcu_barrier seq #. */
+ 	struct mutex srcu_barrier_mutex;	/* Serialize barrier ops. */
+ 	struct completion srcu_barrier_completion;
 diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 0bc6a0a3edee..b9dec26245e0 100644
+index b7138dbe1a2d..7209fd95dde9 100644
 --- a/kernel/rcu/srcutree.c
 +++ b/kernel/rcu/srcutree.c
-@@ -41,10 +41,10 @@ module_param(counter_wrap_check, ulong, 0444);
- 
- /*
-  * Control conversion to SRCU_SIZE_BIG:
-- *    0: Don't convert at all (default).
-+ *    0: Don't convert at all.
-  *    1: Convert at init_srcu_struct() time.
-  *    2: Convert when rcutorture invokes srcu_torture_stats_print().
-- *    3: Decide at boot time based on system shape.
-+ *    3: Decide at boot time based on system shape (default).
-  * 0x1x: Convert when excessive contention encountered.
-  */
- #define SRCU_SIZING_NONE	0
-@@ -57,9 +57,13 @@ module_param(counter_wrap_check, ulong, 0444);
- #define SRCU_SIZING_IS_INIT() (SRCU_SIZING_IS(SRCU_SIZING_INIT))
- #define SRCU_SIZING_IS_TORTURE() (SRCU_SIZING_IS(SRCU_SIZING_TORTURE))
- #define SRCU_SIZING_IS_CONTEND() (convert_to_big & SRCU_SIZING_CONTEND)
--static int convert_to_big = SRCU_SIZING_NONE;
-+static int convert_to_big = SRCU_SIZING_AUTO;
- module_param(convert_to_big, int, 0444);
- 
-+/* Number of CPUs to trigger init_srcu_struct()-time transition to big. */
-+static int big_cpu_lim __read_mostly = 128;
-+module_param(big_cpu_lim, int, 0444);
-+
- /* Contention events per jiffy to initiate transition to big. */
- static int small_contention_lim __read_mostly = 100;
- module_param(small_contention_lim, int, 0444);
-@@ -1619,6 +1623,17 @@ void __init srcu_init(void)
- {
- 	struct srcu_struct *ssp;
- 
-+	/* Decide on srcu_struct-size strategy. */
-+	if (SRCU_SIZING_IS(SRCU_SIZING_AUTO)) {
-+		if (nr_cpu_ids >= big_cpu_lim) {
-+			convert_to_big = SRCU_SIZING_INIT; // Don't bother waiting for contention.
-+			pr_info("%s: Setting srcu_struct sizes to big.\n", __func__);
-+		} else {
-+			convert_to_big = SRCU_SIZING_NONE | SRCU_SIZING_CONTEND;
-+			pr_info("%s: Setting srcu_struct sizes based on contention.\n", __func__);
-+		}
-+	}
-+
- 	/*
- 	 * Once that is set, call_srcu() can follow the normal path and
- 	 * queue delayed work. This must follow RCU workqueues creation
-@@ -1629,6 +1644,8 @@ void __init srcu_init(void)
- 		ssp = list_first_entry(&srcu_boot_list, struct srcu_struct,
- 				      work.work.entry);
- 		list_del_init(&ssp->work.work.entry);
-+		if (SRCU_SIZING_IS(SRCU_SIZING_INIT) && ssp->srcu_size_state == SRCU_SIZE_SMALL)
-+			ssp->srcu_size_state = SRCU_SIZE_ALLOC;
- 		queue_work(rcu_gp_wq, &ssp->work.work);
+@@ -217,6 +217,7 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
+ 	mutex_init(&ssp->srcu_barrier_mutex);
+ 	atomic_set(&ssp->srcu_barrier_cpu_cnt, 0);
+ 	INIT_DELAYED_WORK(&ssp->work, process_srcu);
++	ssp->sda_is_static = is_static;
+ 	if (!is_static)
+ 		ssp->sda = alloc_percpu(struct srcu_data);
+ 	if (!ssp->sda)
+@@ -226,7 +227,7 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
+ 	ssp->srcu_last_gp_end = ktime_get_mono_fast_ns();
+ 	if (READ_ONCE(ssp->srcu_size_state) == SRCU_SIZE_SMALL && convert_to_big == 1) {
+ 		if (!init_srcu_struct_nodes(ssp, GFP_ATOMIC)) {
+-			if (!is_static) {
++			if (!ssp->sda_is_static) {
+ 				free_percpu(ssp->sda);
+ 				ssp->sda = NULL;
+ 				return -ENOMEM;
+@@ -446,8 +447,10 @@ void cleanup_srcu_struct(struct srcu_struct *ssp)
+ 			rcu_seq_current(&ssp->srcu_gp_seq), ssp->srcu_gp_seq_needed);
+ 		return; /* Caller forgot to stop doing call_srcu()? */
  	}
- }
+-	free_percpu(ssp->sda);
+-	ssp->sda = NULL;
++	if (!ssp->sda_is_static) {
++		free_percpu(ssp->sda);
++		ssp->sda = NULL;
++	}
+ 	kfree(ssp->node);
+ 	ssp->node = NULL;
+ 	ssp->srcu_size_state = SRCU_SIZE_SMALL;
 -- 
 2.31.1.189.g2e36527f23
 
