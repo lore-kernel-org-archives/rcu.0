@@ -2,191 +2,91 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 06231C3526F
-	for <rcu@archiver.kernel.org>; Tue, 19 Apr 2022 14:25:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 495DAC352A7
+	for <rcu@archiver.kernel.org>; Tue, 19 Apr 2022 16:47:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349115AbiDSO2i (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 19 Apr 2022 10:28:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43556 "EHLO
+        id S1355442AbiDSQtx (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 19 Apr 2022 12:49:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349510AbiDSO2K (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 19 Apr 2022 10:28:10 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50E506259;
-        Tue, 19 Apr 2022 07:25:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1A46E6128E;
-        Tue, 19 Apr 2022 14:25:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76DECC385A5;
-        Tue, 19 Apr 2022 14:25:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1650378323;
-        bh=385UWGPgJs8E8vVjk7sIvSsiYikdStn+sRLPZRWRDow=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=E/ykLEj2ASgMS2kC3AVCamcUKmdEQ3BGq3ek12FMf7etNH/zW0qSObFZDn/iM9eDi
-         devv0LJZNKPEg4CJXphoPHaze2/29SG7ZBrHamEYMLO2Ppgzm14NBrP0yPEvPihZ2O
-         Lzo0bG1Lpbui4EZpWo0bg3y2zRrkwdxLMdDi/zvieX1ckFeU7LNsRM3D8qSBj78xWr
-         1ZFvy1u87/gD03jp6Q2GoSt3fld14S/Eb1o4DPx1sgxOJ4cFuuacvybqSAjUBTSQ1k
-         Y9SOQncaFAao8ONb51Ynl6cD1KNE4Z6aVr376tvxjEBatKGo+2vK5n0fs8Y+ow3syH
-         r/xZTcLU+YAuQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 29A3B5C031F; Tue, 19 Apr 2022 07:25:23 -0700 (PDT)
-Date:   Tue, 19 Apr 2022 07:25:23 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, rostedt@goodmis.org,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Zhouyi Zhou <zhouzhouyi@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: Re: [PATCH rcu 02/12] rcu: Make the TASKS_RCU Kconfig option be
- selected
-Message-ID: <20220419142523.GJ4285@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220419001123.GA3949851@paulmck-ThinkPad-P17-Gen-1>
- <20220419001233.3950188-2-paulmck@kernel.org>
- <20220419231358.2a0517ee265296a25b4305be@kernel.org>
+        with ESMTP id S235504AbiDSQqW (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 19 Apr 2022 12:46:22 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2B9939692;
+        Tue, 19 Apr 2022 09:43:39 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id x17so30408634lfa.10;
+        Tue, 19 Apr 2022 09:43:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gyw0DllU2NEgcTB/Sa92qGNKU8xdBjvfAuK5cohiajI=;
+        b=asRrscuJnEsdZ1tzYA0fN9xCDH2APZtdudLZmkQnLh6p0uiaAxipNglQMl57a4UMxy
+         78eqnW78ESl336vWjH8XLn8Zd43FNXLdVkToS0MiB6cvvCy2PmJYxYWrvV7lMB4CNhXR
+         6Y4WnxmZ0LRShtGTEkrW7DoErjKohz+R86lgBhFL1gi0q1bO0a/MR3mNtUq6EtaTE/i0
+         6ckG3UJ/dn5qBWqHdT98XxrjALJfahY+7izZrCdcWLEW9h2azZq5+m5LqeZqFzxfzu1/
+         F50tp++qazDDdaa4JJjgBBXRVfCClJcgaU6IZpyHKa6Maw20JmgOSW9AwydqsQ8I6qCz
+         gSNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gyw0DllU2NEgcTB/Sa92qGNKU8xdBjvfAuK5cohiajI=;
+        b=F7pbVJLUWUKzEyXLfODi0AwsRXNm1gtoyCrQIwZqWzsgAY/m/YuF4LXNr+Xij8H0VU
+         1S4AEkDdrzk4paUxBQNXoP+ZHJVvQjZvj5GLaIOAncChDLP2iZRWbO5rc2faEjlpndJF
+         NQmjL+Frg3Fb5cu26x9AaN7E1q4reSluxyqEQgdaIKTX/kxguB5xeuh6iAeaC51c8g4I
+         pfVvsGuUwkh4jvufHRMKghuM9JNFNxxThe0g6jFCNvbbdHIIet2688FkBjLrJijg8uD5
+         J8qcpZfObT/497oHpRXPFi+AkCVOw50yADiSx0m82ioJ1h3sx7SVxNlkJ707MH9LLARk
+         9hyA==
+X-Gm-Message-State: AOAM533VByyqEwIdg+34BYm83sqw2puBSdBkiDnRp5X+c0xUIVcE2LfH
+        sL5dXX4LQ9NzpBZBWVUhY1o=
+X-Google-Smtp-Source: ABdhPJw79nRXKU8UnnOwpeWQ6iU3EAQKrdBBD+fWBtL4nWEsSBKj2o68Cnkizg4e+tkZK6f6yIYWwA==
+X-Received: by 2002:ac2:4c4b:0:b0:471:a8e2:198d with SMTP id o11-20020ac24c4b000000b00471a8e2198dmr2671909lfk.121.1650386617950;
+        Tue, 19 Apr 2022 09:43:37 -0700 (PDT)
+Received: from pc638.lan ([155.137.26.201])
+        by smtp.gmail.com with ESMTPSA id s22-20020a197716000000b0046bc65188d6sm1562325lfc.80.2022.04.19.09.43.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Apr 2022 09:43:37 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Tue, 19 Apr 2022 18:43:35 +0200
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        rushikesh.s.kadam@intel.com, vineethrp@gmail.com, urezki@gmail.com
+Subject: Re: [PATCH v4] rcu/nocb: Add an option to offload all CPUs on boot
+Message-ID: <Yl7mt2XkHo7obhpz@pc638.lan>
+References: <20220418175403.2553842-1-joel@joelfernandes.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220419231358.2a0517ee265296a25b4305be@kernel.org>
+In-Reply-To: <20220418175403.2553842-1-joel@joelfernandes.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Apr 19, 2022 at 11:13:58PM +0900, Masami Hiramatsu wrote:
-> On Mon, 18 Apr 2022 17:12:23 -0700
-> "Paul E. McKenney" <paulmck@kernel.org> wrote:
+On Mon, Apr 18, 2022 at 05:54:03PM +0000, Joel Fernandes (Google) wrote:
+> From: Joel Fernandes <joel@joelfernandes.org>
 > 
-> > Currently, any kernel built with CONFIG_PREEMPTION=y also gets
-> > CONFIG_TASKS_RCU=y, which is not helpful to people trying to build
-> > preemptible kernels of minimal size.
-> > 
-> > Because CONFIG_TASKS_RCU=y is needed only in kernels doing tracing of
-> > one form or another, this commit moves from TASKS_RCU deciding when it
-> > should be enabled to the tracing Kconfig options explicitly selecting it.
-> > This allows building preemptible kernels without TASKS_RCU, if desired.
-> > 
-> > This commit also updates the SRCU-N and TREE09 rcutorture scenarios
-> > in order to avoid Kconfig errors that would otherwise result from
-> > CONFIG_TASKS_RCU being selected without its CONFIG_RCU_EXPERT dependency
-> > being met.
+> On systems with CONFIG_RCU_NOCB_CPU=y, there is no default mask provided
+> which ends up not offloading any CPU. This patch removes a dependency
+> from the bootloader having to know about RCU and about how to provide
+> the mask.
 > 
-> Thanks for fixing this dependency.
+> With the new option enabled, all CPUs will be offloaded on boot unless
+> rcu_nocbs= or rcu_nohz_full= kernel parameters provide a CPU list.
 > 
-> This looks good to me (for kprobe part)
-> 
-> Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+> Signed-off-by: Joel Fernandes <joel@joelfernandes.org>
+> ---
+> v4: mostly style related fixes.
+> v3 is back to v1 but with a config option defaulting to 'n'.
+> v2 was forcing the option to override no_cbs=
+>
+Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 
-Thank you!  I will apply this on my next rebase.
-
-							Thanx, Paul
-
-> Thank you,
-> 
-> > 
-> > [ paulmck: Apply BPF_SYSCALL feedback from Andrii Nakryiko. ]
-> > 
-> > Reported-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
-> > Tested-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
-> > Tested-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> > Cc: Andrii Nakryiko <andrii@kernel.org>
-> > Cc: Alexei Starovoitov <ast@kernel.org>
-> > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > 
-> > --- Update SRCU-N and TREE09 to avoid Kconfig errors.
-> > 
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > ---
-> >  arch/Kconfig                                          | 1 +
-> >  kernel/bpf/Kconfig                                    | 1 +
-> >  kernel/rcu/Kconfig                                    | 3 ++-
-> >  kernel/trace/Kconfig                                  | 1 +
-> >  tools/testing/selftests/rcutorture/configs/rcu/SRCU-N | 2 ++
-> >  tools/testing/selftests/rcutorture/configs/rcu/TREE09 | 2 ++
-> >  6 files changed, 9 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/Kconfig b/arch/Kconfig
-> > index 29b0167c088b..1bf29ce754af 100644
-> > --- a/arch/Kconfig
-> > +++ b/arch/Kconfig
-> > @@ -35,6 +35,7 @@ config KPROBES
-> >  	depends on MODULES
-> >  	depends on HAVE_KPROBES
-> >  	select KALLSYMS
-> > +	select TASKS_RCU if PREEMPTION
-> >  	help
-> >  	  Kprobes allows you to trap at almost any kernel address and
-> >  	  execute a callback function.  register_kprobe() establishes
-> > diff --git a/kernel/bpf/Kconfig b/kernel/bpf/Kconfig
-> > index d56ee177d5f8..2dfe1079f772 100644
-> > --- a/kernel/bpf/Kconfig
-> > +++ b/kernel/bpf/Kconfig
-> > @@ -27,6 +27,7 @@ config BPF_SYSCALL
-> >  	bool "Enable bpf() system call"
-> >  	select BPF
-> >  	select IRQ_WORK
-> > +	select TASKS_RCU if PREEMPTION
-> >  	select TASKS_TRACE_RCU
-> >  	select BINARY_PRINTF
-> >  	select NET_SOCK_MSG if NET
-> > diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
-> > index f559870fbf8b..4f665ae0cf55 100644
-> > --- a/kernel/rcu/Kconfig
-> > +++ b/kernel/rcu/Kconfig
-> > @@ -78,7 +78,8 @@ config TASKS_RCU_GENERIC
-> >  	  task-based RCU implementations.  Not for manual selection.
-> >  
-> >  config TASKS_RCU
-> > -	def_bool PREEMPTION
-> > +	def_bool 0
-> > +	select IRQ_WORK
-> >  	help
-> >  	  This option enables a task-based RCU implementation that uses
-> >  	  only voluntary context switch (not preemption!), idle, and
-> > diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
-> > index 2c43e327a619..bf5da6c4e999 100644
-> > --- a/kernel/trace/Kconfig
-> > +++ b/kernel/trace/Kconfig
-> > @@ -144,6 +144,7 @@ config TRACING
-> >  	select BINARY_PRINTF
-> >  	select EVENT_TRACING
-> >  	select TRACE_CLOCK
-> > +	select TASKS_RCU if PREEMPTION
-> >  
-> >  config GENERIC_TRACER
-> >  	bool
-> > diff --git a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-N b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-N
-> > index 2da8b49589a0..07f5e0a70ae7 100644
-> > --- a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-N
-> > +++ b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-N
-> > @@ -6,3 +6,5 @@ CONFIG_PREEMPT_NONE=y
-> >  CONFIG_PREEMPT_VOLUNTARY=n
-> >  CONFIG_PREEMPT=n
-> >  #CHECK#CONFIG_RCU_EXPERT=n
-> > +CONFIG_KPROBES=n
-> > +CONFIG_FTRACE=n
-> > diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE09 b/tools/testing/selftests/rcutorture/configs/rcu/TREE09
-> > index 8523a7515cbf..fc45645bb5f4 100644
-> > --- a/tools/testing/selftests/rcutorture/configs/rcu/TREE09
-> > +++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE09
-> > @@ -13,3 +13,5 @@ CONFIG_DEBUG_LOCK_ALLOC=n
-> >  CONFIG_RCU_BOOST=n
-> >  CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
-> >  #CHECK#CONFIG_RCU_EXPERT=n
-> > +CONFIG_KPROBES=n
-> > +CONFIG_FTRACE=n
-> > -- 
-> > 2.31.1.189.g2e36527f23
-> > 
-> 
-> 
-> -- 
-> Masami Hiramatsu <mhiramat@kernel.org>
+--
+Uladzislau Rezki
