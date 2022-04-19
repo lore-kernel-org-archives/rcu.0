@@ -2,139 +2,97 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B8B6C433F5
-	for <rcu@archiver.kernel.org>; Tue, 19 Apr 2022 00:12:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C93CFC433F5
+	for <rcu@archiver.kernel.org>; Tue, 19 Apr 2022 00:15:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239088AbiDSAPZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 18 Apr 2022 20:15:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42226 "EHLO
+        id S235031AbiDSASC (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 18 Apr 2022 20:18:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238866AbiDSAPU (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 18 Apr 2022 20:15:20 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78EA56270;
-        Mon, 18 Apr 2022 17:12:39 -0700 (PDT)
+        with ESMTP id S238867AbiDSASB (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 18 Apr 2022 20:18:01 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDDCB1401C;
+        Mon, 18 Apr 2022 17:15:20 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 231B1B81147;
-        Tue, 19 Apr 2022 00:12:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE153C385BA;
-        Tue, 19 Apr 2022 00:12:34 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 524B761338;
+        Tue, 19 Apr 2022 00:15:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B81F8C385A7;
+        Tue, 19 Apr 2022 00:15:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1650327155;
-        bh=pqVBJLArsUCu6jcB2vZXpYu39RA6AAzwyfONBnpqGeM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K+a6FyelgvXm4XSTSvvsKNEAISI/hvpvpf6fqb9Ja1vESpQBTNe57Ka4BBsAWm6zp
-         W7Wc6T30VL04QpyZCI0r2v4INuk75Cuvuj5U61/qWlDG69TWsrO/06UDdFXUKchsPz
-         ttKG07hCGQw4mCfJRvBv/ZDNzER30Hr7ohTNu7BqLAflcITW3+ogiyczXV+cAWZKKR
-         z+N+xONAdN2b5o2BOqREltQMxPmU88b8TqhPuIzKRXKLxf8jCXoeZROUof3W5YE7xE
-         749KjlDzTPB/rxtGJltU7ZlUfJyU39o0OvKW5h2meRvvOQWROQLQN2cLr7BX3lrs2y
-         8Oul2JHF+wEmg==
+        s=k20201202; t=1650327319;
+        bh=S65r7n22pCGVAxcMBUGPgKWLKmOIZM4hiJ5VL9d4GIk=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=r0OvyHlWOSb3cTx/WW89PXCXwvC1HQXCfqqhVQDKW6GA/sJZgedBVTfycWt4U1Uhy
+         gxHm+0UZUo+KL7l+2O6UoFPFKNWNYyiwiinwH7UI7TNcv9YZU6fNVBpyzeelroPdLP
+         Q/1JTBEMto/J+kEMe0bgYcmXfY/cxT8gSbN9jVqwQs2ZXMbUuZA03BAssDqOSJrMJT
+         w7WC+h+myz2WlZsCMubuPFoaFjlrK2DWF8IHyqTOnI5c8nrrcomkmb9H17btKEQ+Ai
+         AgBVJgQrHLvyt27fi9LXUxu95NooZAUzqi+UsFWHO3mDN8Dht2M+GlzLRBs3eEJjxF
+         gGj8Bvu9+t7MA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 508635C1308; Mon, 18 Apr 2022 17:12:34 -0700 (PDT)
+        id 5DF285C04BD; Mon, 18 Apr 2022 17:15:19 -0700 (PDT)
+Date:   Mon, 18 Apr 2022 17:15:19 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 10/12] rcuscale: Allow rcuscale without RCU Tasks
-Date:   Mon, 18 Apr 2022 17:12:31 -0700
-Message-Id: <20220419001233.3950188-10-paulmck@kernel.org>
-X-Mailer: git-send-email 2.31.1.189.g2e36527f23
-In-Reply-To: <20220419001123.GA3949851@paulmck-ThinkPad-P17-Gen-1>
-References: <20220419001123.GA3949851@paulmck-ThinkPad-P17-Gen-1>
+        rostedt@goodmis.org
+Subject: [PATCH rcu 0/12] Torture-test scripting updates for v5.19
+Message-ID: <20220419001519.GA3950405@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Currently, a CONFIG_PREEMPT_NONE=y kernel substitutes normal RCU for
-RCU Tasks.  Unless that kernel builds rcuscale, whether built-in or as
-a module, in which case RCU Tasks is (unnecessarily) built.  This both
-increases kernel size and increases the complexity of certain tracing
-operations.  This commit therefore decouples the presence of rcuscale
-from the presence of RCU Tasks.
+Hello!
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/rcu/Kconfig.debug                             |  1 -
- kernel/rcu/rcuscale.c                                | 12 +++++++++++-
- .../selftests/rcutorture/configs/rcuscale/CFcommon   |  4 ++--
- .../selftests/rcutorture/configs/rcuscale/TREE       |  2 ++
- 4 files changed, 15 insertions(+), 4 deletions(-)
+This series contains torture-test scripting updates:
 
-diff --git a/kernel/rcu/Kconfig.debug b/kernel/rcu/Kconfig.debug
-index dceaa3e754e5..71e73fceff87 100644
---- a/kernel/rcu/Kconfig.debug
-+++ b/kernel/rcu/Kconfig.debug
-@@ -28,7 +28,6 @@ config RCU_SCALE_TEST
- 	depends on DEBUG_KERNEL
- 	select TORTURE_TEST
- 	select SRCU
--	select TASKS_RCU
- 	select TASKS_RUDE_RCU
- 	select TASKS_TRACE_RCU
- 	default n
-diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
-index 5e4f1f83d38e..311dbcb064ed 100644
---- a/kernel/rcu/rcuscale.c
-+++ b/kernel/rcu/rcuscale.c
-@@ -268,6 +268,8 @@ static struct rcu_scale_ops srcud_ops = {
- 	.name		= "srcud"
- };
- 
-+#ifdef CONFIG_TASKS_RCU
-+
- /*
-  * Definitions for RCU-tasks scalability testing.
-  */
-@@ -295,6 +297,14 @@ static struct rcu_scale_ops tasks_ops = {
- 	.name		= "tasks"
- };
- 
-+#define TASKS_OPS &tasks_ops,
-+
-+#else // #ifdef CONFIG_TASKS_RCU
-+
-+#define TASKS_OPS
-+
-+#endif // #else // #ifdef CONFIG_TASKS_RCU
-+
- /*
-  * Definitions for RCU-tasks-trace scalability testing.
-  */
-@@ -797,7 +807,7 @@ rcu_scale_init(void)
- 	long i;
- 	int firsterr = 0;
- 	static struct rcu_scale_ops *scale_ops[] = {
--		&rcu_ops, &srcu_ops, &srcud_ops, &tasks_ops, &tasks_tracing_ops
-+		&rcu_ops, &srcu_ops, &srcud_ops, TASKS_OPS &tasks_tracing_ops
- 	};
- 
- 	if (!torture_init_begin(scale_type, verbose))
-diff --git a/tools/testing/selftests/rcutorture/configs/rcuscale/CFcommon b/tools/testing/selftests/rcutorture/configs/rcuscale/CFcommon
-index 90942bb5bebc..2ed3b46a9c37 100644
---- a/tools/testing/selftests/rcutorture/configs/rcuscale/CFcommon
-+++ b/tools/testing/selftests/rcutorture/configs/rcuscale/CFcommon
-@@ -1,5 +1,5 @@
- CONFIG_RCU_SCALE_TEST=y
- CONFIG_PRINTK_TIME=y
- CONFIG_TASKS_RCU_GENERIC=y
--CONFIG_TASKS_RCU=y
--CONFIG_TASKS_TRACE_RCU=y
-+CONFIG_FORCE_TASKS_RCU=y
-+#CHECK#CONFIG_TASKS_RCU=y
-diff --git a/tools/testing/selftests/rcutorture/configs/rcuscale/TREE b/tools/testing/selftests/rcutorture/configs/rcuscale/TREE
-index f110d9ffbe4c..b10706fd03a4 100644
---- a/tools/testing/selftests/rcutorture/configs/rcuscale/TREE
-+++ b/tools/testing/selftests/rcutorture/configs/rcuscale/TREE
-@@ -16,3 +16,5 @@ CONFIG_RCU_BOOST=n
- CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
- CONFIG_RCU_EXPERT=y
- CONFIG_RCU_TRACE=y
-+CONFIG_KPROBES=n
-+CONFIG_FTRACE=n
--- 
-2.31.1.189.g2e36527f23
+1.	Reposition so that $? collects ssh code in torture.sh.
 
+2.	Use "-o Batchmode=yes" to disable ssh password requests.
+
+3.	Permit running of experimental torture types.
+
+4.	Make thread detection more robust by using lspcu, courtesy of
+	Paul Menzel.
+
+5.	Skip vmlinux check for kvm-again.sh runs.
+
+6.	Enable CSD-lock stall reports for scftorture.
+
+7.	Adjust scenarios' Kconfig options for CONFIG_PREEMPT_DYNAMIC.
+
+8.	Remove extraneous "scf" from per_version_boot_params.
+
+9.	Save "make allmodconfig" .config file.
+
+10.	Make kvm.sh allow more memory for --kasan runs.
+
+11.	Make torture.sh refscale and rcuscale specify Tasks Trace RCU.
+
+12.	Make torture.sh allow for --kasan.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ b/tools/testing/selftests/rcutorture/bin/functions.sh             |    2 -
+ b/tools/testing/selftests/rcutorture/bin/kvm-find-errors.sh       |    2 -
+ b/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh           |    7 +++++
+ b/tools/testing/selftests/rcutorture/bin/kvm-remote.sh            |    2 -
+ b/tools/testing/selftests/rcutorture/bin/kvm.sh                   |    4 +--
+ b/tools/testing/selftests/rcutorture/bin/torture.sh               |    2 -
+ b/tools/testing/selftests/rcutorture/configs/rcu/TRACE01          |    1 
+ b/tools/testing/selftests/rcutorture/configs/rcu/TREE04           |    5 ++--
+ b/tools/testing/selftests/rcutorture/configs/rcu/TREE07           |    1 
+ b/tools/testing/selftests/rcutorture/configs/rcu/TREE10           |    1 
+ b/tools/testing/selftests/rcutorture/configs/scf/ver_functions.sh |    3 --
+ tools/testing/selftests/rcutorture/bin/kvm-remote.sh              |   12 +++++-----
+ tools/testing/selftests/rcutorture/bin/kvm.sh                     |    6 +++++
+ tools/testing/selftests/rcutorture/bin/torture.sh                 |    9 ++++---
+ 14 files changed, 36 insertions(+), 21 deletions(-)
