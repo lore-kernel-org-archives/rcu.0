@@ -2,188 +2,89 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F1593C433EF
-	for <rcu@archiver.kernel.org>; Mon, 18 Apr 2022 23:57:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 03DD2C433EF
+	for <rcu@archiver.kernel.org>; Tue, 19 Apr 2022 00:00:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235917AbiDSAAe (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 18 Apr 2022 20:00:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41828 "EHLO
+        id S236015AbiDSACx (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 18 Apr 2022 20:02:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232111AbiDSAAe (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 18 Apr 2022 20:00:34 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE31C29CA6
-        for <rcu@vger.kernel.org>; Mon, 18 Apr 2022 16:57:53 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id u2so21723453pgq.10
-        for <rcu@vger.kernel.org>; Mon, 18 Apr 2022 16:57:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6DTfyGY4J+aCud1WtrxDpmeZLZK9HwCoRH/ZKq7p0NY=;
-        b=MpJYZqhS/4wevygKpX5CVGmCIl7fpr/siGQ+44MFb9SHbahqi50UNuu5Rol1xchxjN
-         aNky1Oy1UkUOLUOAKwBTb4JXgAuRru33uEuY9kTeCdLaZUZb+MnwrkYEU8FnELc4oqPm
-         kAB/WHOilbj00EbxBKW+LNOdSwg57Zh+qtJ3480IneLi31Upq7YzBEx6d94gCDrUZYKM
-         KuV0Sw/+ZPbympbXikCSy0hv5RuOsnx68DVBFKiPSTurvh/MZ7m5xiOw3GO1QpG7I+7T
-         vbP4VmXtR027F0y7rPZnFWIR+5ixC0BQktvD6wNpz+rFr+oe2hV2Rxr7LEH2iuZLdkva
-         d5EQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6DTfyGY4J+aCud1WtrxDpmeZLZK9HwCoRH/ZKq7p0NY=;
-        b=yFuzQFI9FliVbW9zfdjQSTEkOhiy1hIYiQ38Oknzg8tbnTfV08v8Hf0PlYmUuI2hBR
-         ZKLTQRDN5bPC/ljqs9gGxMSAk7MLC0IAxvOmXWU0lbvNlXK89IXOxriGwWbpn9nhh77U
-         iwcg09sl4mIdn1T4UFgfeIHfXJAyFYZVa05xQjowZ7qHvrRf/TA3LCYOwzEzdjd17Gk0
-         0iCX+j/pVgAqilsi0hehHBCFO2y5Uspsjz0t/oQ4KQ+pfR0315/m13JPGctNTf/q/OHf
-         c5mlVfqgGRbcCDOcHFRAXkp7DPRPYTPn+mOMssPxs+MaLnsIZ6GqCXSJHb0+4rd09kiK
-         /fjA==
-X-Gm-Message-State: AOAM533owWewm6c/wHK3Baoem7/j2DZET6ZoXY+Y0Yy+7p22bR60d2+8
-        /VVA7Q0Fk0EIewottQhY34bZWJw/wppkXQ==
-X-Google-Smtp-Source: ABdhPJwGbAEcmZ3Ri9bRNtcMxJHs0CrJhc9Y8lGnJ3QNwvBq4WwRrkz1+U7Kith1lRipZxV8xB3qEw==
-X-Received: by 2002:a63:6e04:0:b0:398:409:2928 with SMTP id j4-20020a636e04000000b0039804092928mr12229537pgc.250.1650326273031;
-        Mon, 18 Apr 2022 16:57:53 -0700 (PDT)
-Received: from google.com ([2620:15c:211:200:e2b4:e46f:41ee:4499])
-        by smtp.gmail.com with ESMTPSA id bc11-20020a656d8b000000b0039cc4dbb295sm13381698pgb.60.2022.04.18.16.57.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Apr 2022 16:57:52 -0700 (PDT)
-Date:   Mon, 18 Apr 2022 16:57:46 -0700
-From:   Kalesh Singh <kaleshsingh@google.com>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        rushikesh.s.kadam@intel.com, vineethrp@gmail.com, urezki@gmail.com
-Subject: Re: [PATCH v4] rcu/nocb: Add an option to offload all CPUs on boot
-Message-ID: <Yl36+skjQn26Mg43@google.com>
-References: <20220418175403.2553842-1-joel@joelfernandes.org>
+        with ESMTP id S235925AbiDSACw (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 18 Apr 2022 20:02:52 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 168CEBC96;
+        Mon, 18 Apr 2022 17:00:10 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 467DCCE0B26;
+        Tue, 19 Apr 2022 00:00:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CC5DC385A1;
+        Tue, 19 Apr 2022 00:00:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1650326407;
+        bh=ZR6gQYEJdXJ2+sTzbqqBqwaigPZJYaasmoHWa/u3sw4=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=ZjOI+cuo2TRk/T5z2jMpXQjMQ2Y4c7LvM5B3KazFoiEX/gNvEmC+w19G/BUeBzeud
+         hHl96SXqRRdJnATogl69N/ihQL4fEYog2EcgB8A7Uvt801eklNm3pTebEKXcXYR3b1
+         W7cA9VH6f8otZmgjnes/oZRtjaDAt/8PUibPO9ttxCVbz9F2rDYWm1eQKtPBmNCf8T
+         OQZW2Bl3ioeIgDesZbce4LUrHFSTijXlJXnig8PdSIrYlw3NAVW/K752+tWUG+KlSa
+         AaMzk7pNWyY1YWAhpOskOHj/4UgOD4ncLixlzyjreONsk9TmsMQuPYBIkOrAOR1kJ7
+         DlwcXSTMFQt3w==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 1657B5C04BD; Mon, 18 Apr 2022 17:00:07 -0700 (PDT)
+Date:   Mon, 18 Apr 2022 17:00:07 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
+        rostedt@goodmis.org
+Subject: [PATCH rcu 0/9] Tasks-RCU updates for v5.19
+Message-ID: <20220419000007.GA3945818@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220418175403.2553842-1-joel@joelfernandes.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Apr 18, 2022 at 05:54:03PM +0000, Joel Fernandes (Google) wrote:
-> From: Joel Fernandes <joel@joelfernandes.org>
-> 
-> On systems with CONFIG_RCU_NOCB_CPU=y, there is no default mask provided
-> which ends up not offloading any CPU. This patch removes a dependency
-> from the bootloader having to know about RCU and about how to provide
-> the mask.
-> 
-> With the new option enabled, all CPUs will be offloaded on boot unless
-> rcu_nocbs= or rcu_nohz_full= kernel parameters provide a CPU list.
-> 
-> Signed-off-by: Joel Fernandes <joel@joelfernandes.org>
+Hello!
 
-Hi Joel,
+This series contains RCU-Tasks updates, including some -rt fixups,
+handling of systems with sparse CPU numbering, and a fix for a boot-time
+race-condition failure.
 
-You can add Reviewed-by: Kalesh Singh <kaleshsingh@google.com>
+1.	rcu-tasks: Fix race in schedule and flush work, courtesy of
+	Padmanabha Srinivasaiah.
 
-Thanks,
-Kalesh
+2.	rcu-tasks: Print pre-stall-warning informational messages.
 
-> ---
-> v4: mostly style related fixes.
-> v3 is back to v1 but with a config option defaulting to 'n'.
-> v2 was forcing the option to override no_cbs=
-> 
->  Documentation/admin-guide/kernel-parameters.txt |  6 ++++++
->  kernel/rcu/Kconfig                              | 13 +++++++++++++
->  kernel/rcu/tree_nocb.h                          | 15 ++++++++++++++-
->  3 files changed, 33 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index f5a27f067db9..4beb15ccac1a 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -3506,6 +3506,9 @@
->  			just as if they had also been called out in the
->  			rcu_nocbs= boot parameter.
->  
-> +			Note that this argument takes precedence over
-> +			the CONFIG_RCU_NOCB_CPU_DEFAULT_ALL option.
-> +
->  	noiotrap	[SH] Disables trapped I/O port accesses.
->  
->  	noirqdebug	[X86-32] Disables the code which attempts to detect and
-> @@ -4398,6 +4401,9 @@
->  			no-callback mode from boot but the mode may be
->  			toggled at runtime via cpusets.
->  
-> +			Note that this argument takes precedence over
-> +			the CONFIG_RCU_NOCB_CPU_DEFAULT_ALL option.
-> +
->  	rcu_nocb_poll	[KNL]
->  			Rather than requiring that offloaded CPUs
->  			(specified by rcu_nocbs= above) explicitly
-> diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
-> index bf8e341e75b4..746a668bf81d 100644
-> --- a/kernel/rcu/Kconfig
-> +++ b/kernel/rcu/Kconfig
-> @@ -223,6 +223,19 @@ config RCU_NOCB_CPU
->  	  Say Y here if you need reduced OS jitter, despite added overhead.
->  	  Say N here if you are unsure.
->  
-> +config RCU_NOCB_CPU_DEFAULT_ALL
-> +	bool "Offload RCU callback processing from all CPUs by default"
-> +	depends on RCU_NOCB_CPU
-> +	default n
-> +	help
-> +	  Use this option to offload callback processing from all CPUs
-> +	  by default, in the absence of the rcu_nocbs or nohz_full boot
-> +	  parameter. This also avoids the need to use any boot parameters
-> +	  to achieve the effect of offloading all CPUs on boot.
-> +
-> +	  Say Y here if you want offload all CPUs by default on boot.
-> +	  Say N here if you are unsure.
-> +
->  config TASKS_TRACE_RCU_READ_MB
->  	bool "Tasks Trace RCU readers use memory barriers in user and idle"
->  	depends on RCU_EXPERT
-> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-> index eeafb546a7a0..f648f773600a 100644
-> --- a/kernel/rcu/tree_nocb.h
-> +++ b/kernel/rcu/tree_nocb.h
-> @@ -1166,11 +1166,21 @@ void __init rcu_init_nohz(void)
->  {
->  	int cpu;
->  	bool need_rcu_nocb_mask = false;
-> +	bool offload_all = false;
->  	struct rcu_data *rdp;
->  
-> +#if defined(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL)
-> +	if (!rcu_nocb_is_setup) {
-> +		need_rcu_nocb_mask = true;
-> +		offload_all = true;
-> +	}
-> +#endif
-> +
->  #if defined(CONFIG_NO_HZ_FULL)
-> -	if (tick_nohz_full_running && cpumask_weight(tick_nohz_full_mask))
-> +	if (tick_nohz_full_running && cpumask_weight(tick_nohz_full_mask)) {
->  		need_rcu_nocb_mask = true;
-> +		offload_all = false; /* NO_HZ_FULL has its own mask. */
-> +	}
->  #endif /* #if defined(CONFIG_NO_HZ_FULL) */
->  
->  	if (need_rcu_nocb_mask) {
-> @@ -1191,6 +1201,9 @@ void __init rcu_init_nohz(void)
->  		cpumask_or(rcu_nocb_mask, rcu_nocb_mask, tick_nohz_full_mask);
->  #endif /* #if defined(CONFIG_NO_HZ_FULL) */
->  
-> +	if (offload_all)
-> +		cpumask_setall(rcu_nocb_mask);
-> +
->  	if (!cpumask_subset(rcu_nocb_mask, cpu_possible_mask)) {
->  		pr_info("\tNote: kernel parameter 'rcu_nocbs=', 'nohz_full', or 'isolcpus=' contains nonexistent CPUs.\n");
->  		cpumask_and(rcu_nocb_mask, cpu_possible_mask,
-> -- 
-> 2.36.0.rc0.470.gd361397f0d-goog
-> 
-> 
+3.	rcu-tasks: Use rcuwait for the rcu_tasks_kthread(), courtesy of
+	Sebastian Andrzej Siewior.
+
+4.	rcu-tasks: Make Tasks RCU account for userspace execution.
+
+5.	rcu-tasks: Use schedule_hrtimeout_range() to wait for grace
+	periods, courtesy of Sebastian Andrzej Siewior.
+
+6.	rcu-tasks: Restore use of timers for non-RT kernels.
+
+7.	rcu-tasks: Make show_rcu_tasks_generic_gp_kthread() check
+	all CPUs.
+
+8.	rcu-tasks: Handle sparse cpu_possible_mask, courtesy of Eric
+	Dumazet.
+
+9.	rcu-tasks: Handle sparse cpu_possible_mask in
+	rcu_tasks_invoke_cbs().
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ b/Documentation/admin-guide/kernel-parameters.txt |   30 ++++++-
+ b/include/linux/rcupdate.h                        |    1 
+ b/kernel/rcu/tasks.h                              |    3 
+ b/kernel/rcu/tree.c                               |    2 
+ kernel/rcu/tasks.h                                |   92 +++++++++++++++++-----
+ 5 files changed, 105 insertions(+), 23 deletions(-)
