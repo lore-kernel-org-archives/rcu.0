@@ -2,142 +2,134 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F6E8C433EF
-	for <rcu@archiver.kernel.org>; Tue, 19 Apr 2022 04:06:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BA7ADC433EF
+	for <rcu@archiver.kernel.org>; Tue, 19 Apr 2022 05:34:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343815AbiDSEJZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 19 Apr 2022 00:09:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35932 "EHLO
+        id S232166AbiDSFgu (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 19 Apr 2022 01:36:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229923AbiDSEJZ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 19 Apr 2022 00:09:25 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AD1E25C62;
-        Mon, 18 Apr 2022 21:06:43 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id y32so27233793lfa.6;
-        Mon, 18 Apr 2022 21:06:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=epLdV4UvdCZrONMJO0C3C+PGoOiwBBja5yvoXKugUmA=;
-        b=npWZ+mAKk9cVHXApgzctzjGK8EdrADU8OQe5vjj9t35j4A1g0jvTgiJUWTiCxnibcf
-         lWPvK6wihzg0qVSYSff1uJDtMR+uWIiB2GaPBfk8Yn7wGPpH5fPLd5K3x5fwInFur2UM
-         1h/uoC9CV6N7ozgApbXkbphKvGkbbJmjrafhRL2cAIEdCKGsv8XJgf+6nWJuFQPTlrIV
-         rUbz6bJvvWwMHt/NuvbpTJz03yg6rYsbO0rYgd9C5kRCKPw2FomQvjFmqKX0CNl52YKk
-         K0f+uIIB7O+51L+M/z1x++IqOX011m0GCPP4FNhGjHM1MTVE0LEs3Z+UOMq1wXkFScYj
-         VUng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=epLdV4UvdCZrONMJO0C3C+PGoOiwBBja5yvoXKugUmA=;
-        b=XOEOUo6VOMtBhGYHtLnbEvU1WvsnG1Gk7xZbql7mTkAo1fpdF1ZqhYj5j9JhlCdB3h
-         pv2SrroxLYrx0Tj1dEZ4RM8QZimCzL+1cWx4qKoH2p1GoRY1SrCP980nvkBsp9i9c8qR
-         Hp5YmRe2nssLE1Oop+C+GN+WyoN28b83D/p2NaDfGjBKO0FZzaNO3f0OsfwIERdrmg4P
-         ++kiui5NREhXOVozFraVdimq7H603Vp3QKCxZPAF21qugXuvJIegTeeLAEhtuH1K2Kyi
-         W+d8ypXMAq78L7uHOhbOtnhpmoiRmwfLLthM6g1ehx/u2b1PnnKKGvLGKjR8+fmKzOSh
-         kTcQ==
-X-Gm-Message-State: AOAM531IHm4+izEHwomMLW/mphYl0XrEZf3TnxX7z2C79ZiNINNhMti+
-        /1CT6u8qlvYvRI/MHyuDI2sfNKFaaApJQLN2QLY=
-X-Google-Smtp-Source: ABdhPJw7+eMesyIFQ53HzSW2TfwKjSMr2HaZsviv6ymYC5GjFElKa9NGyuGTWDnsqDbJ6xtXb84Sjzcr5Ob/6++NoUc=
-X-Received: by 2002:a05:6512:2207:b0:45d:cd01:d3ca with SMTP id
- h7-20020a056512220700b0045dcd01d3camr10070959lfu.561.1650341201575; Mon, 18
- Apr 2022 21:06:41 -0700 (PDT)
+        with ESMTP id S230301AbiDSFgt (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 19 Apr 2022 01:36:49 -0400
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F4711EC62;
+        Mon, 18 Apr 2022 22:34:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1650346448; x=1681882448;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=+zbUjugiM1tJbmssTWitl6+JjBeRVYQBOIfAGM9/pb8=;
+  b=Hf/N2j70qYPX0Egmh+TxkK+8U1fMsortqJzz+gjrZYSKV+YLDme1F+2P
+   6kAY33GPYS7GmNfW6OtJrBBLT5mUjVKJQvE90Ag8xw43pSzPBNQdYq3qf
+   BnDa43nQ3jvXV/rcXNngy+LK0LCOCfZ8mhTrLAS62IiY0CDjTjnesa3JN
+   GQOBgo+Et2Vib6T2vrSAyUeMBOIhJ5QgHlQapYK5p8ixKOG5d9b+GfFb2
+   Y9ncnqJ7qtJqhubTgSbN4V31/9FaloCMSJWow5xNELc93F776jM7OS29v
+   mRXFaUSUETr8Ps2I0Klq7Dc6dfWVJbw+iABaxpXa2Y5s+ROMoutgkKjNJ
+   g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10321"; a="262539918"
+X-IronPort-AV: E=Sophos;i="5.90,271,1643702400"; 
+   d="scan'208";a="262539918"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2022 22:34:08 -0700
+X-IronPort-AV: E=Sophos;i="5.90,271,1643702400"; 
+   d="scan'208";a="529170199"
+Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.125])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2022 22:34:06 -0700
+From:   Zqiang <qiang1.zhang@intel.com>
+To:     paulmck@kernel.org, frederic@kernel.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] rcu: Dump all rcuc kthreads status for CPUs that not report quiescent state
+Date:   Tue, 19 Apr 2022 13:34:26 +0800
+Message-Id: <20220419053426.2820350-1-qiang1.zhang@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20220418043735.11441-1-patrick.wang.shcn@gmail.com> <20220418143404.55c8fcab@gandalf.local.home>
-In-Reply-To: <20220418143404.55c8fcab@gandalf.local.home>
-From:   patrick wang <patrick.wang.shcn@gmail.com>
-Date:   Tue, 19 Apr 2022 12:06:30 +0800
-Message-ID: <CAGcnep8bH4Nncbt3t+VRLff35ZyD8JyzHcEgkq-u6TEq47jqzQ@mail.gmail.com>
-Subject: Re: [PATCH] rcu: ftrace: avoid tracing a few functions executed in multi_cpu_stop()
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
-        josh@joshtriplett.org, mathieu.desnoyers@efficios.com,
-        jiangshanlai@gmail.com, joel@joelfernandes.org,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Apr 19, 2022 at 2:34 AM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Mon, 18 Apr 2022 12:37:35 +0800
-> Patrick Wang <patrick.wang.shcn@gmail.com> wrote:
->
-> > A few functions are in the call chain of rcu_momentary_dyntick_idle()
-> > which is executed in multi_cpu_stop() and marked notrace. They are running
-> > in traced when ftrace modify code. This may cause non-ftrace_modify_code
-> > CPUs stall:
->
-> I'm confused by this. How is traced functions causing this exactly? Is this
-> on RISC-V?
+If the rcutree.use_softirq is configured, when RCU Stall event
+happened, dump status of all rcuc kthreads who due to starvation
+prevented grace period ends on CPUs that not report quiescent
+state.
 
-During ftrace modify code, these functions are running and their
-instructions will
-be modified by ftrace (I see the nop instructions in these functions
-from the compiler).
-When instructions are being modified, they shouldn't be executed. Or
-the executor
-may behave unpredictably.
+Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+---
+ v1->v2:
+ rework rcuc_kthread_dump function
 
-Yes, it is on RISC-V.
+ kernel/rcu/tree_stall.h | 32 ++++++++++++++++++++++++++------
+ 1 file changed, 26 insertions(+), 6 deletions(-)
 
->
-> >
-> > [   72.686113] rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-> > [   72.687344] rcu:   1-...!: (0 ticks this GP) idle=14f/1/0x4000000000000000 softirq=3397/3397 fqs=0
-> > [   72.687800] rcu:   3-...!: (0 ticks this GP) idle=ee9/1/0x4000000000000000 softirq=5168/5168 fqs=0
-> > [   72.688280]        (detected by 0, t=8137 jiffies, g=5889, q=2 ncpus=4)
-> > [   72.688739] Task dump for CPU 1:
-> > [   72.688991] task:migration/1     state:R  running task     stack:    0 pid:   19 ppid:     2 flags:0x00000000
-> > [   72.689594] Stopper: multi_cpu_stop+0x0/0x18c <- stop_machine_cpuslocked+0x128/0x174
-> > [   72.690242] Call Trace:
-> > [   72.690603] Task dump for CPU 3:
-> > [   72.690761] task:migration/3     state:R  running task     stack:    0 pid:   29 ppid:     2 flags:0x00000000
-> > [   72.691135] Stopper: multi_cpu_stop+0x0/0x18c <- stop_machine_cpuslocked+0x128/0x174
-> > [   72.691474] Call Trace:
-> > [   72.691733] rcu: rcu_preempt kthread timer wakeup didn't happen for 8136 jiffies! g5889 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402
-> > [   72.692180] rcu:   Possible timer handling issue on cpu=2 timer-softirq=594
-> > [   72.692485] rcu: rcu_preempt kthread starved for 8137 jiffies! g5889 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402 ->cpu=2
-> > [   72.692876] rcu:   Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
-> > [   72.693232] rcu: RCU grace-period kthread stack dump:
-> > [   72.693433] task:rcu_preempt     state:I stack:    0 pid:   14 ppid:     2 flags:0x00000000
-> > [   72.693788] Call Trace:
-> > [   72.694018] [<ffffffff807f3740>] schedule+0x56/0xc2
-> > [   72.694306] [<ffffffff807f9cd8>] schedule_timeout+0x82/0x184
-> > [   72.694539] [<ffffffff8007c456>] rcu_gp_fqs_loop+0x19a/0x318
-> > [   72.694809] [<ffffffff8007e408>] rcu_gp_kthread+0x11a/0x140
-> > [   72.695325] [<ffffffff800324d6>] kthread+0xee/0x118
-> > [   72.695657] [<ffffffff8000398a>] ret_from_exception+0x0/0x14
-> > [   72.696089] rcu: Stack dump where RCU GP kthread last ran:
-> > [   72.696383] Task dump for CPU 2:
-> > [   72.696562] task:migration/2     state:R  running task     stack:    0 pid:   24 ppid:     2 flags:0x00000000
-> > [   72.697059] Stopper: multi_cpu_stop+0x0/0x18c <- stop_machine_cpuslocked+0x128/0x174
-> > [   72.697471] Call Trace:
-> >
-> > Mark rcu_preempt_deferred_qs(), rcu_preempt_need_deferred_qs() and
-> > rcu_preempt_deferred_qs_irqrestore() notrace to avoid this.
-> >
->
-> The rcu_momentary_dyntick_idle() was marked notrace because of RISC-V not
-> being able to call functions from within stop machine. If that's what is
-> being prevented,
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index d7956c03edbd..fcf0b2e1a71c 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -465,11 +465,13 @@ static void print_cpu_stall_info(int cpu)
+ 	       falsepositive ? " (false positive?)" : "");
+ }
+ 
+-static void rcuc_kthread_dump(struct rcu_data *rdp)
++static void __rcuc_kthread_dump(int cpu)
+ {
+-	int cpu;
+-	unsigned long j;
++	struct rcu_data *rdp;
+ 	struct task_struct *rcuc;
++	unsigned long j;
++
++	rdp = per_cpu_ptr(&rcu_data, cpu);
+ 
+ 	rcuc = rdp->rcu_cpu_kthread_task;
+ 	if (!rcuc)
+@@ -488,6 +490,21 @@ static void rcuc_kthread_dump(struct rcu_data *rdp)
+ 		dump_cpu_task(cpu);
+ }
+ 
++static void rcuc_kthread_dump(void)
++{
++	int cpu;
++	struct rcu_node *rnp;
++	unsigned long flags;
++
++	rcu_for_each_leaf_node(rnp) {
++		raw_spin_lock_irqsave_rcu_node(rnp, flags);
++		for_each_leaf_node_possible_cpu(rnp, cpu)
++			if (rnp->qsmask & leaf_node_cpu_bit(rnp, cpu))
++				__rcuc_kthread_dump(cpu);
++		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
++	}
++}
++
+ /* Complain about starvation of grace-period kthread.  */
+ static void rcu_check_gp_kthread_starvation(void)
+ {
+@@ -597,6 +614,9 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
+ 	if (ndetected) {
+ 		rcu_dump_cpu_stacks();
+ 
++		if (!use_softirq)
++			rcuc_kthread_dump();
++
+ 		/* Complain about tasks blocking the grace period. */
+ 		rcu_for_each_leaf_node(rnp)
+ 			rcu_print_detail_task_stall_rnp(rnp);
+@@ -659,11 +679,11 @@ static void print_cpu_stall(unsigned long gps)
+ 	rcu_check_gp_kthread_expired_fqs_timer();
+ 	rcu_check_gp_kthread_starvation();
+ 
+-	if (!use_softirq)
+-		rcuc_kthread_dump(rdp);
+-
+ 	rcu_dump_cpu_stacks();
+ 
++	if (!use_softirq)
++		rcuc_kthread_dump();
++
+ 	raw_spin_lock_irqsave_rcu_node(rnp, flags);
+ 	/* Rewrite if needed in case of slow consoles. */
+ 	if (ULONG_CMP_GE(jiffies, READ_ONCE(rcu_state.jiffies_stall)))
+-- 
+2.25.1
 
-Yes, that is.
-
-> then I'm fine with this (although I'm thinking we need
-> different kinds of "notrace" for different architectures as one arch's
-> limitation should not be cause for another's).
->
-
-Totally agree with this. The "notrace" currently is heavy, can effect all archs.
-
-Thanks
-Patrick
-
-
-> But before I ack this patch, I want to understand the real issues here.
->
-> -- Steve
