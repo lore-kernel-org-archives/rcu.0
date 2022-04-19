@@ -2,104 +2,82 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E714C433F5
-	for <rcu@archiver.kernel.org>; Tue, 19 Apr 2022 00:15:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C8B3C433EF
+	for <rcu@archiver.kernel.org>; Tue, 19 Apr 2022 00:20:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239886AbiDSASU (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 18 Apr 2022 20:18:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46818 "EHLO
+        id S236503AbiDSAWv (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 18 Apr 2022 20:22:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239478AbiDSASM (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 18 Apr 2022 20:18:12 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D09AC140C0;
-        Mon, 18 Apr 2022 17:15:29 -0700 (PDT)
+        with ESMTP id S240099AbiDSAWu (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 18 Apr 2022 20:22:50 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF4631E3DF;
+        Mon, 18 Apr 2022 17:20:09 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 7ABC6B81136;
-        Tue, 19 Apr 2022 00:15:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26776C385AE;
-        Tue, 19 Apr 2022 00:15:27 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4281C61338;
+        Tue, 19 Apr 2022 00:20:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97B44C385A7;
+        Tue, 19 Apr 2022 00:20:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1650327327;
-        bh=dOetzT2hWmKf0ZVCajjiu0ZALSsbbVr5tC3LfTOHRL4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Qnjm44LbV0sGS/H8GhrrpoHTpqTUknEOU7L7oODl85SETld2qx6nf8yXtT2TmKTCD
-         xxg8Cnx1MWfCeziTzK/j0jhiuA28FlwUdD/C/Qy7e2qqltpm2Q2z1qnXQj8lsnZ1t9
-         260oifser+uFbnqeCa56vxNtAw0mALjOQTowmPE7qUwjiygW6waSgLmwxBHlhR8vxw
-         978vUdJVwNXJlRNJ6ByuK3ow7w5YllAk9bEKc4Oav8wQ9FJSsYMhoIgr44RWqVRaaM
-         3Z/6G22MH5WYzwfrPCx/dsiClgSv4IUSA58V308Bu8rYs3GWv8J8EUYsbz7MrM7Lco
-         30K5ggQvuaZfA==
+        s=k20201202; t=1650327608;
+        bh=z//3Vy2NpmqTGnANl1UOd6oMhW0y0wQ+i/XCzxBpBBY=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=Pr1VldJoJjNIug9gb63f2FOjQh5vG3cQV/7YhXawq3nCTCWyRfYPu2PWzidJI/UUY
+         NGE5gxuZ4d0F3CkPl2KrcFLr7VVaqtPfEny61ku7qj8A0CtV0qwvnfgFrexTpPMDIn
+         gMvLxGKPk6y7TDSy9Hi7Lxo9gKASc0KE1Mio6zLOApy+voAKioRHQ5CX8jZBVS/2bw
+         mjD7RRSAEwZCdhsv3zpRxpwWd+2YWjX9vZTucVNM8Ug6gSH7SMWPz1armAF9EcJZyV
+         MMac1EnTlcER71TJsTIU1TXKJyD4eIOMwoIjr3+juQKyjtkaHimsIFmYdBMrOPzdQM
+         LyS7j9db834XA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id C8CDB5C0A0D; Mon, 18 Apr 2022 17:15:26 -0700 (PDT)
+        id 3D8095C04BD; Mon, 18 Apr 2022 17:20:08 -0700 (PDT)
+Date:   Mon, 18 Apr 2022 17:20:08 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org, Paul Menzel <pmenzel@molgen.mpg.de>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 04/12] torture: Make thread detection more robust by using lspcu
-Date:   Mon, 18 Apr 2022 17:15:17 -0700
-Message-Id: <20220419001525.3950505-4-paulmck@kernel.org>
-X-Mailer: git-send-email 2.31.1.189.g2e36527f23
-In-Reply-To: <20220419001519.GA3950405@paulmck-ThinkPad-P17-Gen-1>
-References: <20220419001519.GA3950405@paulmck-ThinkPad-P17-Gen-1>
+        rostedt@goodmis.org
+Subject: [PATCH rcu 0/2] Expedited grace-period updates for v5.19
+Message-ID: <20220419002008.GA3950677@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Paul Menzel <pmenzel@molgen.mpg.de>
+Hello!
 
-For consecutive numbers the lscpu command collapses the output and just
-shows the range with start and end. The processors are numbered that
-way on POWER8.
+This series contains updates to RCU expedited grace periods, most
+notably providing milliseconds-scale soft real-time response from
+synchronize_rcu_expedited().  This is also the first time in almost
+30 years of RCU that someone other than me has pushed for a reduction
+in the RCU CPU stall-warning timeout, in this case by more than three
+orders of magnitude from 21 seconds to 20 milliseconds.  This tighter
+timeout applies only to expedited grace periods.
 
-    $ sudo ppc64_cpu --smt=8
-    $ lscpu | grep '^NUMA node'
-    NUMA node(s):                    2
-    NUMA node0 CPU(s):               0-79
-    NUMA node8 CPU(s):               80-159
+1.	Introduce CONFIG_RCU_EXP_CPU_STALL_TIMEOUT, courtesy of Uladzislau
+	Rezki.
 
-This causes the heuristic to detect the number threads per core, looking
-for the number after the first comma, to fail, and QEMU aborts because of
-invalid arguments.
+2.	Move expedited grace period (GP) work to RT kthread_worker,
+	courtesy of Kalesh Singh.
 
-    $ lscpu | grep '^NUMA node0' | sed -e 's/^[^,-]*(,|\-)\([0-9]*\),.*$/\1/'
-    NUMA node0 CPU(s):               0-79
+						Thanx, Paul
 
-But the lscpu command shows the number of threads per core:
+------------------------------------------------------------------------
 
-    $ sudo ppc64_cpu --smt=8
-    $ lscpu | grep 'Thread(s) per core'
-    Thread(s) per core:              8
-    $ sudo ppc64_cpu --smt=off
-    $ lscpu | grep 'Thread(s) per core'
-    Thread(s) per core:              1
-
-This commit therefore directly uses that value and replaces use of grep
-with "sed -n" and its "p" command.
-
-Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- tools/testing/selftests/rcutorture/bin/functions.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/rcutorture/bin/functions.sh b/tools/testing/selftests/rcutorture/bin/functions.sh
-index c35ba24f994c..66d0414d8e4b 100644
---- a/tools/testing/selftests/rcutorture/bin/functions.sh
-+++ b/tools/testing/selftests/rcutorture/bin/functions.sh
-@@ -301,7 +301,7 @@ specify_qemu_cpus () {
- 			echo $2 -smp $3
- 			;;
- 		qemu-system-ppc64)
--			nt="`lscpu | grep '^NUMA node0' | sed -e 's/^[^,]*,\([0-9]*\),.*$/\1/'`"
-+			nt="`lscpu | sed -n 's/^Thread(s) per core:\s*//p'`"
- 			echo $2 -smp cores=`expr \( $3 + $nt - 1 \) / $nt`,threads=$nt
- 			;;
- 		esac
--- 
-2.31.1.189.g2e36527f23
-
+ b/Documentation/RCU/stallwarn.rst                 |   18 ++
+ b/Documentation/admin-guide/kernel-parameters.txt |    9 +
+ b/kernel/rcu/Kconfig                              |   14 ++
+ b/kernel/rcu/Kconfig.debug                        |   13 +
+ b/kernel/rcu/rcu.h                                |    2 
+ b/kernel/rcu/tree.c                               |   51 +++++++
+ b/kernel/rcu/tree.h                               |    5 
+ b/kernel/rcu/tree_exp.h                           |    4 
+ b/kernel/rcu/tree_stall.h                         |   26 +++
+ b/kernel/rcu/update.c                             |    2 
+ kernel/rcu/rcu.h                                  |    5 
+ kernel/rcu/tree_exp.h                             |  147 +++++++++++++++++-----
+ 12 files changed, 260 insertions(+), 36 deletions(-)
