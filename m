@@ -2,134 +2,92 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BA7ADC433EF
-	for <rcu@archiver.kernel.org>; Tue, 19 Apr 2022 05:34:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A5298C433F5
+	for <rcu@archiver.kernel.org>; Tue, 19 Apr 2022 06:28:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232166AbiDSFgu (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 19 Apr 2022 01:36:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51572 "EHLO
+        id S1348769AbiDSGbS (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 19 Apr 2022 02:31:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230301AbiDSFgt (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 19 Apr 2022 01:36:49 -0400
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F4711EC62;
-        Mon, 18 Apr 2022 22:34:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1650346448; x=1681882448;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=+zbUjugiM1tJbmssTWitl6+JjBeRVYQBOIfAGM9/pb8=;
-  b=Hf/N2j70qYPX0Egmh+TxkK+8U1fMsortqJzz+gjrZYSKV+YLDme1F+2P
-   6kAY33GPYS7GmNfW6OtJrBBLT5mUjVKJQvE90Ag8xw43pSzPBNQdYq3qf
-   BnDa43nQ3jvXV/rcXNngy+LK0LCOCfZ8mhTrLAS62IiY0CDjTjnesa3JN
-   GQOBgo+Et2Vib6T2vrSAyUeMBOIhJ5QgHlQapYK5p8ixKOG5d9b+GfFb2
-   Y9ncnqJ7qtJqhubTgSbN4V31/9FaloCMSJWow5xNELc93F776jM7OS29v
-   mRXFaUSUETr8Ps2I0Klq7Dc6dfWVJbw+iABaxpXa2Y5s+ROMoutgkKjNJ
-   g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10321"; a="262539918"
-X-IronPort-AV: E=Sophos;i="5.90,271,1643702400"; 
-   d="scan'208";a="262539918"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2022 22:34:08 -0700
-X-IronPort-AV: E=Sophos;i="5.90,271,1643702400"; 
-   d="scan'208";a="529170199"
-Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.125])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2022 22:34:06 -0700
-From:   Zqiang <qiang1.zhang@intel.com>
-To:     paulmck@kernel.org, frederic@kernel.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] rcu: Dump all rcuc kthreads status for CPUs that not report quiescent state
-Date:   Tue, 19 Apr 2022 13:34:26 +0800
-Message-Id: <20220419053426.2820350-1-qiang1.zhang@intel.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S237262AbiDSGbS (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 19 Apr 2022 02:31:18 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B617A23BFC;
+        Mon, 18 Apr 2022 23:28:36 -0700 (PDT)
+Date:   Tue, 19 Apr 2022 08:28:30 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1650349714;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Cv5jZ7dxFa/VdklP7GQ+1SDL4Zimqvxof2UzYY6p/Wc=;
+        b=mHK1iN4FuDQg3xyFJqGihvPpO4jB0fgLE4VuB3fzQPzFmlAYZu0xZDXxHSWivi1nCNYYRq
+        ESEdOmUPzgRe/ET7oxLrcPEz6w/d9T9SP+clONnapWqMuu+CJVLe6jP+s8cQ5OB/krn1ei
+        x4DWGw/ykTygrtRH/VtUgEJIXD/VXdd8CglAVmgkqM52X4zQzYN9SUYVfPgMXUdQX/Gg0B
+        YGm3vNE5Czv29w1xYhpayoHSpFuZMG1jg4U7SUhIlBhO4h2jds0hwMGpriwCom9qpOC8uS
+        NFtIUVWpXBIiNLryTQCrwxR2ziuk8lMZS2ptQ6uUi7UrXK1Uv/o679gL1X1FOQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1650349714;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Cv5jZ7dxFa/VdklP7GQ+1SDL4Zimqvxof2UzYY6p/Wc=;
+        b=F9mAbriKsor1oJ3Mm1r4bUufvShI/FarerqXwSeFS6c9pEclkwRermJcB1rnpeVnNUBA2E
+        Gi1whjlB7rzyz6Bw==
+From:   Anna-Maria Behnsen <anna-maria@linutronix.de>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Benedikt Spranger <b.spranger@linutronix.de>
+Subject: Re: [PATCH] rcu/torture: Change order of warning and trace dump
+In-Reply-To: <20220418185042.GA2420391@paulmck-ThinkPad-P17-Gen-1>
+Message-ID: <alpine.DEB.2.21.2204190826500.1508@somnus>
+References: <20220411151903.28167-1-anna-maria@linutronix.de> <20220411180915.GY4285@paulmck-ThinkPad-P17-Gen-1> <20220418185042.GA2420391@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-If the rcutree.use_softirq is configured, when RCU Stall event
-happened, dump status of all rcuc kthreads who due to starvation
-prevented grace period ends on CPUs that not report quiescent
-state.
+On Mon, 18 Apr 2022, Paul E. McKenney wrote:
 
-Signed-off-by: Zqiang <qiang1.zhang@intel.com>
----
- v1->v2:
- rework rcuc_kthread_dump function
+> On Mon, Apr 11, 2022 at 11:09:15AM -0700, Paul E. McKenney wrote:
+> > On Mon, Apr 11, 2022 at 05:19:03PM +0200, Anna-Maria Behnsen wrote:
+> > > Dumping a big ftrace buffer could lead to a RCU stall. So there is the
+> > > ftrace buffer and the stall information which needs to be printed. When
+> > > there is additionaly a WARN_ON() which describes the reason for the ftrace
+> > > buffer dump and the WARN_ON() is executed _after_ ftrace buffer dump, the
+> > > information get lost in the middle of the RCU stall information.
+> > > 
+> > > Therefore print WARN_ON() message before dumping the ftrace buffer in
+> > > rcu_torture_writer().
+> > > 
+> > > Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
+> > > Reviewed-by: Benedikt Spranger <b.spranger@linutronix.de>
+> > 
+> > Hello, Anna-Maria!
+> > 
+> > Good point, but we get caught out either way.  Either we take the chance
+> > of losing the WARN() message as you say, or we take the chance of the
+> > activity in the WARN() message overwriting needed information in the
+> > trace buffer.
+> > 
+> > Would it work to shut off tracing, do the WARN(), and only then do the
+> > rcu_ftrace_dump()?
+> 
+> For example, as shown the the updated patch below currently queued on -rcu
+> for further review and testing?
+> 
+> If this is problematic, please let me know!
+> 
 
- kernel/rcu/tree_stall.h | 32 ++++++++++++++++++++++++++------
- 1 file changed, 26 insertions(+), 6 deletions(-)
+Hi Paul,
 
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index d7956c03edbd..fcf0b2e1a71c 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -465,11 +465,13 @@ static void print_cpu_stall_info(int cpu)
- 	       falsepositive ? " (false positive?)" : "");
- }
- 
--static void rcuc_kthread_dump(struct rcu_data *rdp)
-+static void __rcuc_kthread_dump(int cpu)
- {
--	int cpu;
--	unsigned long j;
-+	struct rcu_data *rdp;
- 	struct task_struct *rcuc;
-+	unsigned long j;
-+
-+	rdp = per_cpu_ptr(&rcu_data, cpu);
- 
- 	rcuc = rdp->rcu_cpu_kthread_task;
- 	if (!rcuc)
-@@ -488,6 +490,21 @@ static void rcuc_kthread_dump(struct rcu_data *rdp)
- 		dump_cpu_task(cpu);
- }
- 
-+static void rcuc_kthread_dump(void)
-+{
-+	int cpu;
-+	struct rcu_node *rnp;
-+	unsigned long flags;
-+
-+	rcu_for_each_leaf_node(rnp) {
-+		raw_spin_lock_irqsave_rcu_node(rnp, flags);
-+		for_each_leaf_node_possible_cpu(rnp, cpu)
-+			if (rnp->qsmask & leaf_node_cpu_bit(rnp, cpu))
-+				__rcuc_kthread_dump(cpu);
-+		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-+	}
-+}
-+
- /* Complain about starvation of grace-period kthread.  */
- static void rcu_check_gp_kthread_starvation(void)
- {
-@@ -597,6 +614,9 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
- 	if (ndetected) {
- 		rcu_dump_cpu_stacks();
- 
-+		if (!use_softirq)
-+			rcuc_kthread_dump();
-+
- 		/* Complain about tasks blocking the grace period. */
- 		rcu_for_each_leaf_node(rnp)
- 			rcu_print_detail_task_stall_rnp(rnp);
-@@ -659,11 +679,11 @@ static void print_cpu_stall(unsigned long gps)
- 	rcu_check_gp_kthread_expired_fqs_timer();
- 	rcu_check_gp_kthread_starvation();
- 
--	if (!use_softirq)
--		rcuc_kthread_dump(rdp);
--
- 	rcu_dump_cpu_stacks();
- 
-+	if (!use_softirq)
-+		rcuc_kthread_dump();
-+
- 	raw_spin_lock_irqsave_rcu_node(rnp, flags);
- 	/* Rewrite if needed in case of slow consoles. */
- 	if (ULONG_CMP_GE(jiffies, READ_ONCE(rcu_state.jiffies_stall)))
--- 
-2.25.1
+sorry for the late reply - I was busy with other things last week...
+
+This solution is totally fine for me!
+
+Thanks,
+
+	Anna-Maria
 
