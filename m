@@ -2,208 +2,207 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9BE60C433EF
-	for <rcu@archiver.kernel.org>; Tue, 19 Apr 2022 23:04:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C7CDC433FE
+	for <rcu@archiver.kernel.org>; Tue, 19 Apr 2022 23:46:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234794AbiDSXHB (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 19 Apr 2022 19:07:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55438 "EHLO
+        id S1358130AbiDSXt0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 19 Apr 2022 19:49:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243038AbiDSXG7 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 19 Apr 2022 19:06:59 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2906227B21
-        for <rcu@vger.kernel.org>; Tue, 19 Apr 2022 16:04:15 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D8882B819CB
-        for <rcu@vger.kernel.org>; Tue, 19 Apr 2022 23:04:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76710C385A7;
-        Tue, 19 Apr 2022 23:04:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1650409452;
-        bh=vD0VwVEt/erjiycfUh4G/4mM8vx6Ib8tjQ5pZim3/oE=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=TlSRjE1xSGkKUTDDgHM7AJAp4CKBFEx97WlUehBQqcGWFlLpFlnZ2xVNq9vKFtdHt
-         AMoxaI+nTv0vOoIY0WqN+NxELVTCvJMkejhXieCkni0qWrKAKHqWG1HEuBZG2l2NtZ
-         WA8okib457/cTEk7G6bP8nxCGPF3GrF3sF6COYJfn9nz2NwEccN4joabF4X5Hf8Bz7
-         Jc2Uf4zabDq/7P8uDwtjEEvJihIeLYspTG+Fpi8izo4D8CusarVgxb+z/cIG82tlWj
-         ECj48D/KUSumZHj6jW7OvCseppxrWP2gPqLNX5bfwDey5aNLZFJQ2UkYGWK7N5u3Vu
-         UcAQ7CNu5wNqQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 0E7C85C09FC; Tue, 19 Apr 2022 16:04:12 -0700 (PDT)
-Date:   Tue, 19 Apr 2022 16:04:12 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Zhouyi Zhou <zhouzhouyi@gmail.com>
-Cc:     Paul McKenney <paulmckrcu@fb.com>, rcu <rcu@vger.kernel.org>,
+        with ESMTP id S1357832AbiDSXtZ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 19 Apr 2022 19:49:25 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 671081DA52;
+        Tue, 19 Apr 2022 16:46:41 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1650411999;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=amsD5ngGoHNxzOapZmiX6RWDTlrbhD4eIamwPBjOGnE=;
+        b=Gxo4/9cVoAImG+nETmQGGkVp0vPVglLoi4r/PVws1ExFJw37Se4h2/0GFqov0FNM0qooE2
+        NCIiaEeuCTz5khNCho4M5krVfzU/Or/noUuIApiMYuYVds7cnxtmF64yNnZmFQVYY7V2M2
+        J1JWdrNrFwfMxiiMedhuV7Oy4Rhg3+s45EFOt8Xl0HRqtijQrZDf8bGc4CFxgYhUlyblXZ
+        G7wvs0p5Nq+e1Y7Hkm5lR7UmhfqUbLtJ83Yt+LfvND3rEf6FSd7bcRgc9R+ymf1IZ4SiWi
+        OA5itp3d7oMIw0M5hj5Jiqtsf5fugFbejMZQCuFjNgf778zWGvfQdxiX4VliWg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1650411999;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=amsD5ngGoHNxzOapZmiX6RWDTlrbhD4eIamwPBjOGnE=;
+        b=LX8e26OXpd/EW+sYtboMatcoGX9fng7Ypms4ROp9fqRxCNItFnz4rv043CAFh/JaEE8+G5
+        Rm7UzLTM1xoxjaBg==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
         Frederic Weisbecker <frederic@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: Re: Reproducing call_rcu_tasks self-test bug on a dual sockets Intel
- Xeon machine
-Message-ID: <20220419230412.GU4285@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <CAABZP2xEtRnbRMGgywc2RSwiOAd1QY5jr0ZxwXd9p_8XwOiqhw@mail.gmail.com>
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Helge Deller <deller@gmx.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Xiaoming Ni <nixiaoming@huawei.com>,
+        Marco Elver <elver@google.com>, Wei Liu <wei.liu@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Shawn Guo <shawn.guo@linaro.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Wang Qing <wangqing@vivo.com>, rcu@vger.kernel.org
+Subject: [PATCH printk v3 00/15] printk/for-next
+Date:   Wed, 20 Apr 2022 01:52:22 +0206
+Message-Id: <20220419234637.357112-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAABZP2xEtRnbRMGgywc2RSwiOAd1QY5jr0ZxwXd9p_8XwOiqhw@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Apr 18, 2022 at 11:16:16AM +0800, Zhouyi Zhou wrote:
-> 1. Abstract
-> Previously, Matthew has reported a call_rcu_tasks bug [1]. But it is
-> hard to reproduce on a dual socket Intel machine. This report
-> developed a method to reproduce that bug on such a machine.
-> 
-> 2. Introduction
-> Matthew has reported a call_rcu_tasks bug [1]. It is easy to reproduce
-> it on Thinkpad P1 gen4 (Intel i7-11800H) with following steps:
-> a) cp [2] to .config
-> b) build the kernel
-> c) execute  kvm -smp 4 -net none -serial file:/tmp/console.log -m 512
-> -kernel vmlinux -append "console=ttyS0"
-> 
-> The bug can even be reproduced on Thinkpad P1 gen4 (i7-11800H) by
-> stress testing the TASKS01 with the script [3].
-> 
-> However, the bug can't be reproduced by above methods on a dual socket
-> Intel Xeon machine (PowerEdge R720, Intel(R) Xeon(R) CPU E5-2660 0 @
-> 2.20GHz, 2 CPUs, 16 cores, 32 threads).
-> 
-> 3. Discover the reason behind the bug
-> On thinkpad P1 gen4, I tried to discover the reason behind the bug.
-> After some experimentation, I found that removing CONFIG_NFS_V4 from
-> the kernel config file will greatly increase the probabilities of
-> triggering the bug.
-> 
-> I guess maybe the init calls lend the grace period to RCU tasks self
-> tests, so I add some debug code to a test kernel to see what happens:
-> root@e0816662e3db:/mnt/linux# git diff
-> diff --git a/init/main.c b/init/main.c
-> index 98182c3c2c4b..9731566014cc 100644
-> --- a/init/main.c
-> +++ b/init/main.c
-> @@ -1356,6 +1356,8 @@ static int __init ignore_unknown_bootoption(char
-> *param, char *val,
->         return 0;
->  }
-> 
-> +extern bool *notrunp;
-> +unsigned int numofcalls = 0;
->  static void __init do_initcall_level(int level, char *command_line)
->  {
->         initcall_entry_t *fn;
-> @@ -1367,8 +1369,19 @@ static void __init do_initcall_level(int level,
-> char *command_line)
->                    NULL, ignore_unknown_bootoption);
-> 
->         trace_initcall_level(initcall_level_names[level]);
-> -       for (fn = initcall_levels[level]; fn < initcall_levels[level+1]; fn++)
-> +       for (fn = initcall_levels[level]; fn < initcall_levels[level+1]; fn++) {
-> +               bool before = *notrunp, after;
-> +               unsigned long jiffies_save = jiffies;
-> +               numofcalls++;
->                 do_one_initcall(initcall_from_entry(fn));
-> +               after = *notrunp;
-> +               if (before != after) {
-> +                 char sym[KSYM_SYMBOL_LEN];
-> +                 sprint_symbol(sym, (unsigned long )initcall_from_entry(fn));
-> +                 printk(KERN_INFO "init call level %d: %s changed the
-> rcu task test %lu\n",
-> +                        level, sym, jiffies - jiffies_save);
-> +               }
-> +       }
->  }
-> 
->  static void __init do_initcalls(void)
-> @@ -1376,15 +1389,17 @@ static void __init do_initcalls(void)
->         int level;
->         size_t len = strlen(saved_command_line) + 1;
->         char *command_line;
-> -
-> +       unsigned long jiffies_save = jiffies;
->         command_line = kzalloc(len, GFP_KERNEL);
->         if (!command_line)
->                 panic("%s: Failed to allocate %zu bytes\n", __func__, len);
-> -
-> +
->         for (level = 0; level < ARRAY_SIZE(initcall_levels) - 1; level++) {
->                 /* Parser modifies command_line, restore it each time */
->                 strcpy(command_line, saved_command_line);
->                 do_initcall_level(level, command_line);
-> +               if (level == 5)
-> +                 printk(KERN_INFO"init call level 5 costs: %lu
-> numofcalls %u\n", jiffies - jiffies_save, numofcalls);
->         }
-> 
->         kfree(command_line);
-> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> index 99cf3a13954c..f4e175eeaec3 100644
-> --- a/kernel/rcu/tasks.h
-> +++ b/kernel/rcu/tasks.h
-> @@ -1660,7 +1660,7 @@ static void test_rcu_tasks_callback(struct rcu_head *rhp)
-> 
->         rttd->notrun = true;
->  }
-> -
-> +bool *notrunp = &tests[0].notrun;
->  static void rcu_tasks_initiate_self_tests(void)
->  {
->         pr_info("Running RCU-tasks wait API self tests\n");
-> 
-> The tests on Thinkpad P1 gen4 and Dell PowerEdge R720 show that during
-> the test, some init call will lend the grace period to the RCU tasks
-> self tests.
-> 
-> And of course, I am not using the above modification in Section 5 and
-> Section 6' tests. Section 5 and Section 6's tests are performed on
-> unmodified mainline!!
-> 
-> 4. Reduce the init calls in kernel configuration
-> Based on above observation, I tried to reduce the kernel configuration
-> starting from [2] meanwhile keep the qemu bootable. Finally I got
-> [4].
-> And [4] will trigger the bug on Dell PowerEdge R720!
-> 
-> 5. Trigger the bug in a more Linux way.
-> Why TASKS01 will not trigger the bug? There are two reasons:
-> a) there are too many init calls that will lend the grace period
-> b) the debug kernel param will lend the grace period
-> 
-> Solution to reason a:
-> I write a C++ program [5] to print the difference between the .config
-> generated by TASKS01 and [4]. Then I use the difference to create a
-> TASKS04.
-> 
-> Solution to reason b:
-> I add loglevel=7 to qemu boot parameter.
-> 
-> The result consists of newly created TASKS04 and TASKS04.boot [6].
-> 
-> Now the bug can trigger every time on Dell PowerEdge R720 by invoking:
-> ./tools/testing/selftests/rcutorture/bin/kvm.sh --configs "TASKS04"
-> --duration 10 --trust-make
-> 
-> 6. Conclusion
-> I am able to trigger the bug everytime in mainline without modifying
-> the kernel's functional code on a dual socket Intel Xeon machine.
-> 
-> 7. Acknowledgement
-> Thanks Paul for your constant encouragement! Thanks Zhouyi
+This is v3 of a series to implement a kthread for each registered
+console. v2 is here [0]. The kthreads locklessly retrieve the
+records from the printk ringbuffer and also do not cause any lock
+contention between each other. This allows consoles to run at full
+speed. For example, a netconsole is able to dump records much
+faster than a serial or vt console. Also, during normal operation,
+printk() callers are completely decoupled from console printing.
 
-And thank you for digging into this!
+There are situations where kthread printing is not sufficient. For
+example, during panic situations, where the kthreads may not get a
+chance to schedule. In such cases, the current method of attempting
+to print directly within the printk() caller context is used. New
+functions printk_prefer_direct_enter() and
+printk_prefer_direct_exit() are made available to mark areas of the
+kernel where direct printing is preferred. (These should only be
+areas that do not occur during normal operation.)
 
-Here is a sneak preview of a lightly tested alleged fix, which may be
-found on the -rcu tree's "dev" branch:
+This series also introduces pr_flush(): a might_sleep() function
+that will block until all active printing threads have caught up
+to the latest record at the time of the pr_flush() call. This
+function is useful, for example, to wait until pending records
+are flushed to consoles before suspending.
 
-a3b1f9e07d47 rcu-tasks: Split rcu_tasks_one_gp() from rcu_tasks_kthread()
-130dd60ddd96 rcu-tasks: Move synchronize_rcu_tasks_generic() down
-7e510e661ea5 rcu-tasks: Drive synchronous grace periods from calling task
+Note that this series does *not* increase the reliability of console
+printing. Rather it focuses on the non-interference aspect of
+printk() by decoupling printk() callers from printing (during normal
+operation). Nonetheless, the reliability aspect should not worsen
+due to this series.
 
-Note that these are in the order that they should be applied rather than
-in git-log order.
+John Ogness
 
-							Thanx, Paul
+[0] https://lore.kernel.org/lkml/20220405132535.649171-1-john.ogness@linutronix.de
+
+Changes since v2:
+
+- Threaded printers no longer care about preferred direct printing.
+  As with v1, they will print whenever they are not blocked.
+
+- Provide a separate patch to fix a missing memory barrier in
+  wake_up_klogd() and add memory barrier comments to all
+  appropriate @log_wait usage sites.
+
+- Provide a separate patch to wake all waiters.
+
+- Provide a separate patch to wake waiters for deferred console
+  output and add comments explaining why.
+
+- Introduce console_lock_single_hold() and
+  console_unlock_single_release() to acquire @console_sem and lock a
+  single threaded printer. This allows console start/stop and
+  console unregistration with synchronized con->flags and without
+  disturbing other threaded printers.
+
+- Introduce __console_is_usable() to avoid some redundance between
+  threaded and direct printing code.
+
+- Do not create a printer thread if con->write() is not set. (I do
+  not understand why we even allow registration if con->write() is
+  not set. The checks were added in 2.1.31 for no obvious reason.)
+
+- Only allow handovers between console_trylock() contexts. A
+  console_lock() context cannot handover the console_lock to a
+  console_trylock() context because the blocked kthreads would need
+  to be unblocked via mutex.
+
+- console_flush_all() returns true only if at least one console is
+  usable and all messages to all usable consoles were printed.
+  Otherwise it returns false.
+
+- Remove redundant panic check in console_unlock().
+
+- Rename printk_console_msg() to con_printk() and use syntax similar
+  to dev_printk(). (I did not name it console_printk() because there
+  already exists a symbol with that name.)
+
+- Remove blocked check in register_console() since it is always
+  true.
+
+- In unregister_console(), stop the kthread after the console has
+  been removed from the list. Use the per-console mutex for
+  synchronized kthread stopping.
+
+- Use the console_lock for synchronized activation of the fallback
+  permanent direct printing mode.
+
+- Use the same checks in printer_should_wake() as in
+  printk_kthread_func() to avoid infinite loop danger.
+
+- Rename PRINTK_PENDING_OUTPUT flag to PRINTK_PENDING_DIRECT_OUTPUT.
+
+- Expand commit messages relating to memory barriers, kthreads, and
+  the usage of the per-console mutex.
+
+John Ogness (15):
+  printk: rename cpulock functions
+  printk: cpu sync always disable interrupts
+  printk: add missing memory barrier to wake_up_klogd()
+  printk: wake up all waiters
+  printk: wake waiters for safe and NMI contexts
+  printk: get caller_id/timestamp after migration disable
+  printk: call boot_delay_msec() in printk_delay()
+  printk: add con_printk() macro for console details
+  printk: refactor and rework printing logic
+  printk: move buffer definitions into console_emit_next_record() caller
+  printk: add pr_flush()
+  printk: add functions to prefer direct printing
+  printk: add kthread console printers
+  printk: extend console_lock for proper kthread support
+  printk: remove @console_locked
+
+ drivers/tty/sysrq.c     |    2 +
+ include/linux/console.h |   19 +
+ include/linux/printk.h  |   82 ++-
+ kernel/hung_task.c      |   11 +-
+ kernel/panic.c          |    4 +
+ kernel/printk/printk.c  | 1197 +++++++++++++++++++++++++++++----------
+ kernel/rcu/tree_stall.h |    2 +
+ kernel/reboot.c         |   14 +-
+ kernel/watchdog.c       |    4 +
+ kernel/watchdog_hld.c   |    4 +
+ lib/dump_stack.c        |    4 +-
+ lib/nmi_backtrace.c     |    4 +-
+ 12 files changed, 1021 insertions(+), 326 deletions(-)
+
+
+base-commit: 84d7df104dbab9c3dda8f2c5b46f9a6fc256fe02
+-- 
+2.30.2
+
