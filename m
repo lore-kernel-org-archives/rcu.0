@@ -2,136 +2,171 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C67B7C35294
-	for <rcu@archiver.kernel.org>; Tue, 19 Apr 2022 16:47:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 68BC0C433F5
+	for <rcu@archiver.kernel.org>; Tue, 19 Apr 2022 20:08:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240114AbiDSQtz (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 19 Apr 2022 12:49:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56738 "EHLO
+        id S1355603AbiDSULQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 19 Apr 2022 16:11:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355197AbiDSQrp (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 19 Apr 2022 12:47:45 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B1052654;
-        Tue, 19 Apr 2022 09:45:01 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 34670B81BEA;
-        Tue, 19 Apr 2022 16:45:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC726C385AB;
-        Tue, 19 Apr 2022 16:44:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1650386699;
-        bh=CrODZW/+Lw639iRuyZT4bLGZ80HCvsIfxVxfFqyNxds=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Wnu2dbr0/zNh6kDU6dU215pFN4Lfo/P0vNwnZFXDonb2ZrJ3J66dFY3Uu029Cv5PB
-         xbspGDPXVcnch/ZMoyzygZCXNa3u53G5tov5FfJVaiwVb4BJo4GePMcX035jW47Pzm
-         CTtW1PIrX1+HmTrgfLTu1acbHNErYJ5k0iHcPH0aZD9K6HbBJVJUfBkmYTO/ujI2qV
-         nRxrjOrRlc+z1pU6jqMH4WphofQ54N58GjC9HwtSO0ug2jbnQ14iJ9S6RoGGDm+BZ9
-         eTHjnljjViutH4q8ySAxJ3EUlx/ky3///Zz3dl7GCB2FKybU7swn/UfKfgDedKSpmc
-         n1vabm5drtKhw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 96ABA5C031F; Tue, 19 Apr 2022 09:44:58 -0700 (PDT)
-Date:   Tue, 19 Apr 2022 09:44:58 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Juergen Gross <jgross@suse.com>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, rostedt@goodmis.org,
-        Rik van Riel <riel@surriel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: Re: [PATCH rcu 04/11] kernel/smp: Provide boot-time timeout for CSD
- lock diagnostics
-Message-ID: <20220419164458.GL4285@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220418225345.GA3945110@paulmck-ThinkPad-P17-Gen-1>
- <20220418225359.3945217-4-paulmck@kernel.org>
- <521cad0a-d6ef-77a8-9258-1cf9d3b6d63d@suse.com>
+        with ESMTP id S1356686AbiDSULP (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 19 Apr 2022 16:11:15 -0400
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE9003879C
+        for <rcu@vger.kernel.org>; Tue, 19 Apr 2022 13:08:31 -0700 (PDT)
+Received: by mail-qv1-xf30.google.com with SMTP id dw17so2479186qvb.9
+        for <rcu@vger.kernel.org>; Tue, 19 Apr 2022 13:08:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NWMctJBPqd3Nqrzh+o6oCbddsbwKUvBkj5/KoKf2Cc8=;
+        b=MCDmNQyCVndP9K3EWd38PCnfSdq3E/ILglxBt7hiPjgj+rB+I327MAMgd77OKl0/mx
+         yrSNZQNfrdWkugrUIcuopZXB/VHRZdHOhtcmU5KxpUnuZvS4MAQdv1v9t1AUA4m+/s1P
+         UHOjpZezt3WqWaEEajXQlEyPJTLgWwahXeZzU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NWMctJBPqd3Nqrzh+o6oCbddsbwKUvBkj5/KoKf2Cc8=;
+        b=Pz6CucPka3oY2OX5a3qOrcN+GL5NzKeMnVarEzrN+8etXXDf/6dqEC9MsDtXf9+LbX
+         plSGcBaYfIyiAmfJBDiAsKvAb+LNCU3rhj1dISiOGx+pa7GZ9eZIolBc4NFqqN1IEQDh
+         /XZ8pqBqyMtTc6jnJoySzATYxBswG/hP8vq/fo4DLRee/RUyN1KZz3EthgQajjx7/kII
+         gfMkWmBBsXAMpEtDexqpG+8W2IR1bXKivldMLMSfwkM5zD+mqTgMfwHBWP4hqlmmtCFY
+         f8uDF4eRmvy02OwCdDrNDSk0RL2CJTIrRCZzeXcx7fxgghNi9j11+mP5ABbWhjSZFnTX
+         2/JA==
+X-Gm-Message-State: AOAM533MIZQJkBvvrDluX//vh/Br/zRtJZt0B2SxEiX9zMUwWVJ/NWEX
+        Um4VxNw+Jo29xge956jIuTLwdg==
+X-Google-Smtp-Source: ABdhPJxxnNBZjTwerxeByIyPIGXrWOg0m4+MpAaPBuU55S1MiSh//ZPlCCLW87jFxsKedRmuc7j0MQ==
+X-Received: by 2002:ad4:5986:0:b0:444:503e:eb0d with SMTP id ek6-20020ad45986000000b00444503eeb0dmr12930669qvb.44.1650398910863;
+        Tue, 19 Apr 2022 13:08:30 -0700 (PDT)
+Received: from joelboxx.c.googlers.com.com (228.221.150.34.bc.googleusercontent.com. [34.150.221.228])
+        by smtp.gmail.com with ESMTPSA id y18-20020ac85f52000000b002ed08a7dc8dsm582804qta.13.2022.04.19.13.08.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Apr 2022 13:08:30 -0700 (PDT)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        rushikesh.s.kadam@intel.com, vineethrp@gmail.com, urezki@gmail.com
+Subject: [PATCH v4 rcu/dev] rcu/nocb: Add an option to offload all CPUs on boot
+Date:   Tue, 19 Apr 2022 20:08:23 +0000
+Message-Id: <20220419200823.2790490-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.36.0.rc0.470.gd361397f0d-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <521cad0a-d6ef-77a8-9258-1cf9d3b6d63d@suse.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Apr 19, 2022 at 09:11:46AM +0200, Juergen Gross wrote:
-> On 19.04.22 00:53, Paul E. McKenney wrote:
-> > Debugging of problems involving insanely long-running SMI handlers
-> > proceeds better if the CSD-lock timeout can be adjusted.  This commit
-> > therefore provides a new smp.csd_lock_timeout kernel boot parameter
-> > that specifies the timeout in milliseconds.  The default remains at the
-> > previously hard-coded value of five seconds.
-> > 
-> > Cc: Rik van Riel <riel@surriel.com>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: Ingo Molnar <mingo@kernel.org>
-> > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> > Cc: Juergen Gross <jgross@suse.com>
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > ---
-> >   Documentation/admin-guide/kernel-parameters.txt | 11 +++++++++++
-> >   kernel/smp.c                                    |  7 +++++--
-> >   2 files changed, 16 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> > index 3f1cc5e317ed..645c4c001b16 100644
-> > --- a/Documentation/admin-guide/kernel-parameters.txt
-> > +++ b/Documentation/admin-guide/kernel-parameters.txt
-> > @@ -5377,6 +5377,17 @@
-> >   	smart2=		[HW]
-> >   			Format: <io1>[,<io2>[,...,<io8>]]
-> > +	smp.csd_lock_timeout= [KNL]
-> > +			Specify the period of time in milliseconds
-> > +			that smp_call_function() and friends will wait
-> > +			for a CPU to release the CSD lock.  This is
-> > +			useful when diagnosing bugs involving CPUs
-> > +			disabling interrupts for extended periods
-> > +			of time.  Defaults to 5,000 milliseconds, and
-> > +			setting a value of zero disables this feature.
-> > +			This feature may be more efficiently disabled
-> > +			using the csdlock_debug- kernel parameter.
-> > +
-> >   	smsc-ircc2.nopnp	[HW] Don't use PNP to discover SMC devices
-> >   	smsc-ircc2.ircc_cfg=	[HW] Device configuration I/O port
-> >   	smsc-ircc2.ircc_sir=	[HW] SIR base I/O port
-> > diff --git a/kernel/smp.c b/kernel/smp.c
-> > index 01a7c1706a58..d82439bac401 100644
-> > --- a/kernel/smp.c
-> > +++ b/kernel/smp.c
-> > @@ -183,7 +183,9 @@ static DEFINE_PER_CPU(smp_call_func_t, cur_csd_func);
-> >   static DEFINE_PER_CPU(void *, cur_csd_info);
-> >   static DEFINE_PER_CPU(struct cfd_seq_local, cfd_seq_local);
-> > -#define CSD_LOCK_TIMEOUT (5ULL * NSEC_PER_SEC)
-> > +static ulong csd_lock_timeout = 5000;  /* CSD lock timeout in milliseconds. */
-> > +module_param(csd_lock_timeout, ulong, 0444);
-> > +
-> >   static atomic_t csd_bug_count = ATOMIC_INIT(0);
-> >   static u64 cfd_seq;
-> > @@ -329,6 +331,7 @@ static bool csd_lock_wait_toolong(struct __call_single_data *csd, u64 ts0, u64 *
-> >   	u64 ts2, ts_delta;
-> >   	call_single_data_t *cpu_cur_csd;
-> >   	unsigned int flags = READ_ONCE(csd->node.u_flags);
-> > +	unsigned long long csd_lock_timeout_ns = csd_lock_timeout * NSEC_PER_MSEC;
-> >   	if (!(flags & CSD_FLAG_LOCK)) {
-> >   		if (!unlikely(*bug_id))
-> > @@ -341,7 +344,7 @@ static bool csd_lock_wait_toolong(struct __call_single_data *csd, u64 ts0, u64 *
-> >   	ts2 = sched_clock();
-> >   	ts_delta = ts2 - *ts1;
-> > -	if (likely(ts_delta <= CSD_LOCK_TIMEOUT))
-> > +	if (likely(ts_delta <= csd_lock_timeout_ns || csd_lock_timeout_ns <= 0))
-> 
-> csd_lock_timeout_ns is unsigned, so "csd_lock_timeout_ns <= 0" should be rather
-> "csd_lock_timeout_ns == 0".
-> 
-> With that fixed you can add my
-> 
-> Reviewed-by: Juergen Gross <jgross@suse.com>
+From: Joel Fernandes <joel@joelfernandes.org>
 
-Thank you, and will do on next rebase.
+On systems with CONFIG_RCU_NOCB_CPU=y, there is no default mask provided
+which ends up not offloading any CPU. This patch removes a dependency
+from the bootloader having to know about RCU and about how to provide
+the mask.
 
-							Thanx, Paul
+With the new option enabled, all CPUs will be offloaded on boot unless
+rcu_nocbs= or rcu_nohz_full= kernel parameters provide a CPU list.
+
+Signed-off-by: Joel Fernandes <joel@joelfernandes.org>
+---
+v4: Rebased on rcu/dev, fixed conflict with Frederick's patch changing
+    location of nocb_is_setup variable.
+
+ Documentation/admin-guide/kernel-parameters.txt |  6 ++++++
+ kernel/rcu/Kconfig                              | 13 +++++++++++++
+ kernel/rcu/tree_nocb.h                          | 13 +++++++++++++
+ 3 files changed, 32 insertions(+)
+
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 789ef586009b..1e82ecb7a649 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -3572,6 +3572,9 @@
+ 			just as if they had also been called out in the
+ 			rcu_nocbs= boot parameter.
+ 
++			Note that this argument takes precedence over
++			the CONFIG_RCU_NOCB_CPU_DEFAULT_ALL option.
++
+ 	noiotrap	[SH] Disables trapped I/O port accesses.
+ 
+ 	noirqdebug	[X86-32] Disables the code which attempts to detect and
+@@ -4475,6 +4478,9 @@
+ 			no-callback mode from boot but the mode may be
+ 			toggled at runtime via cpusets.
+ 
++			Note that this argument takes precedence over
++			the CONFIG_RCU_NOCB_CPU_DEFAULT_ALL option.
++
+ 	rcu_nocb_poll	[KNL]
+ 			Rather than requiring that offloaded CPUs
+ 			(specified by rcu_nocbs= above) explicitly
+diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+index 1c630e573548..27aab870ae4c 100644
+--- a/kernel/rcu/Kconfig
++++ b/kernel/rcu/Kconfig
+@@ -262,6 +262,19 @@ config RCU_NOCB_CPU
+ 	  Say Y here if you need reduced OS jitter, despite added overhead.
+ 	  Say N here if you are unsure.
+ 
++config RCU_NOCB_CPU_DEFAULT_ALL
++	bool "Offload RCU callback processing from all CPUs by default"
++	depends on RCU_NOCB_CPU
++	default n
++	help
++	  Use this option to offload callback processing from all CPUs
++	  by default, in the absence of the rcu_nocbs or nohz_full boot
++	  parameter. This also avoids the need to use any boot parameters
++	  to achieve the effect of offloading all CPUs on boot.
++
++	  Say Y here if you want offload all CPUs by default on boot.
++	  Say N here if you are unsure.
++
+ config TASKS_TRACE_RCU_READ_MB
+ 	bool "Tasks Trace RCU readers use memory barriers in user and idle"
+ 	depends on RCU_EXPERT && TASKS_TRACE_RCU
+diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+index 4cf9a29bba79..9f29f25a0cbc 100644
+--- a/kernel/rcu/tree_nocb.h
++++ b/kernel/rcu/tree_nocb.h
+@@ -1197,11 +1197,21 @@ void __init rcu_init_nohz(void)
+ {
+ 	int cpu;
+ 	bool need_rcu_nocb_mask = false;
++	bool offload_all = false;
+ 	struct rcu_data *rdp;
+ 
++#if defined(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL)
++	if (!rcu_state.nocb_is_setup) {
++		need_rcu_nocb_mask = true;
++		offload_all = true;
++	}
++#endif /* #if defined(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL) */
++
+ #if defined(CONFIG_NO_HZ_FULL)
+ 	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask))
+ 		need_rcu_nocb_mask = true;
++		offload_all = false; /* NO_HZ_FULL has its own mask. */
++	}
+ #endif /* #if defined(CONFIG_NO_HZ_FULL) */
+ 
+ 	if (need_rcu_nocb_mask) {
+@@ -1222,6 +1232,9 @@ void __init rcu_init_nohz(void)
+ 		cpumask_or(rcu_nocb_mask, rcu_nocb_mask, tick_nohz_full_mask);
+ #endif /* #if defined(CONFIG_NO_HZ_FULL) */
+ 
++	if (offload_all)
++		cpumask_setall(rcu_nocb_mask);
++
+ 	if (!cpumask_subset(rcu_nocb_mask, cpu_possible_mask)) {
+ 		pr_info("\tNote: kernel parameter 'rcu_nocbs=', 'nohz_full', or 'isolcpus=' contains nonexistent CPUs.\n");
+ 		cpumask_and(rcu_nocb_mask, cpu_possible_mask,
+-- 
+2.36.0.rc0.470.gd361397f0d-goog
+
