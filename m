@@ -2,44 +2,44 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F9F8C433FE
-	for <rcu@archiver.kernel.org>; Tue, 19 Apr 2022 00:12:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 20C45C43217
+	for <rcu@archiver.kernel.org>; Tue, 19 Apr 2022 00:12:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238844AbiDSAPT (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S238864AbiDSAPT (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Mon, 18 Apr 2022 20:15:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42146 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236839AbiDSAPQ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S237263AbiDSAPQ (ORCPT <rfc822;rcu@vger.kernel.org>);
         Mon, 18 Apr 2022 20:15:16 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F4AD62DE;
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8803E62E3;
         Mon, 18 Apr 2022 17:12:36 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DD9C96130F;
-        Tue, 19 Apr 2022 00:12:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3E7EC385B7;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 19D766132D;
+        Tue, 19 Apr 2022 00:12:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB1E4C385B9;
         Tue, 19 Apr 2022 00:12:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1650327154;
-        bh=ktl3d0UVrZ+mKyl/NcSpjBwlrHyMaeCpOwxysFPt6PE=;
+        s=k20201202; t=1650327155;
+        bh=VklMWT+mv88bfnM3UygqdURL8zzoO8a57bNgatVnHuI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j5YMTSKszHkU+WOs2SMIJk4/qrH06EoGWpI3QwuTCKPznJdasSqe9mebOKeEbjbvA
-         ePruW3K8aCBF0A4C+cQRZT/XA0z6dm3KuJxVlTWXnKxqwmFcf3lROzUvWLy7nEUZb2
-         k1CYsnhdoYoNPzMqf14STLkH04d/G1acDMEI8J064jpQUNiz3AZf+eTjLD8pp2kX0a
-         cxPkmSeNkCdT2t/tOrfaBHOBXXrWXXyjIhG2jFsShi5xAprFiXgwHqom/2LeJVK1P7
-         Y2nk3MtpGLR47H+okgZ2xEPHo6PWOkzuWFYrxckurgSA8MJe2AM9dLYaTjJ6RrexnY
-         j+PREThy00N7A==
+        b=NbDzbYh7z1qGvyBcXZNWHiOAO+xw+fL9AUgOH+4UpRRNDrIUs7O95mmpf/H/Ims94
+         xie35a5QAcMv9af1HEyjoMLJXhVcZyB3t5O88fat1+gpEh/Gx2fp3pUuec0rqRY6j1
+         6GntmkL+XNPYJNIkFfS/TbGVbSdloUhdowpFQ3XJibHh+b/CSyx9suaCvJr3cqI/mI
+         ZQBZRAXXrhjj6aJo3rsD0iYlokeq+jY91U4/b/xpR1Ca5Pij+dwabk1TqNa9vFFvSn
+         Z+Aprd+8TLP7xCg7uUNlAhK4+A2uW1+GqWjNKz1Ct/RKQmShYBFHEslO54mevtN+wZ
+         Sg26LnwcWObpg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 493E65C0B86; Mon, 18 Apr 2022 17:12:34 -0700 (PDT)
+        id 4ECFD5C12AB; Mon, 18 Apr 2022 17:12:34 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
         rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 06/12] rcutorture: Add CONFIG_PREEMPT_DYNAMIC=n to TASKS02 scenario
-Date:   Mon, 18 Apr 2022 17:12:27 -0700
-Message-Id: <20220419001233.3950188-6-paulmck@kernel.org>
+Subject: [PATCH rcu 09/12] refscale: Allow refscale without RCU Tasks Rude/Trace
+Date:   Mon, 18 Apr 2022 17:12:30 -0700
+Message-Id: <20220419001233.3950188-9-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220419001123.GA3949851@paulmck-ThinkPad-P17-Gen-1>
 References: <20220419001123.GA3949851@paulmck-ThinkPad-P17-Gen-1>
@@ -49,28 +49,81 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Now that CONFIG_PREEMPT_DYNAMIC=y is the default, TASKS02 no longer
-builds a pure non-preemptible kernel that uses Tiny RCU.  This commit
-therefore fixes this new hole in rcutorture testing by adding
-CONFIG_PREEMPT_DYNAMIC=n to the TASKS02 rcutorture scenario.
+Currently, a CONFIG_PREEMPT_NONE=y kernel substitutes normal RCU for
+RCU Tasks Rude and RCU Tasks Trace.  Unless that kernel builds refscale,
+whether built-in or as a module, in which case these RCU Tasks flavors are
+(unnecessarily) built in.  This both increases kernel size and increases
+the complexity of certain tracing operations.  This commit therefore
+decouples the presence of refscale from the presence of RCU Tasks Rude
+and RCU Tasks Trace.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/configs/rcu/TASKS02 | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/rcu/Kconfig.debug                             |  2 --
+ kernel/rcu/refscale.c                                | 12 +++++++++++-
+ .../selftests/rcutorture/configs/refscale/CFcommon   |  2 ++
+ 3 files changed, 13 insertions(+), 3 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TASKS02 b/tools/testing/selftests/rcutorture/configs/rcu/TASKS02
-index d333b69bc831..2f9fcffff5ae 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/TASKS02
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/TASKS02
-@@ -2,6 +2,7 @@ CONFIG_SMP=n
- CONFIG_PREEMPT_NONE=y
- CONFIG_PREEMPT_VOLUNTARY=n
- CONFIG_PREEMPT=n
-+CONFIG_PREEMPT_DYNAMIC=n
- #CHECK#CONFIG_TASKS_RCU=y
+diff --git a/kernel/rcu/Kconfig.debug b/kernel/rcu/Kconfig.debug
+index 454924e03ef3..dceaa3e754e5 100644
+--- a/kernel/rcu/Kconfig.debug
++++ b/kernel/rcu/Kconfig.debug
+@@ -63,8 +63,6 @@ config RCU_REF_SCALE_TEST
+ 	depends on DEBUG_KERNEL
+ 	select TORTURE_TEST
+ 	select SRCU
+-	select TASKS_RUDE_RCU
+-	select TASKS_TRACE_RCU
+ 	default n
+ 	help
+ 	  This option provides a kernel module that runs performance tests
+diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
+index 5079e47b3d18..909644abee67 100644
+--- a/kernel/rcu/refscale.c
++++ b/kernel/rcu/refscale.c
+@@ -242,6 +242,8 @@ static struct ref_scale_ops rcu_tasks_ops = {
+ 
+ #endif // #else // #ifdef CONFIG_TASKS_RCU
+ 
++#ifdef CONFIG_TASKS_TRACE_RCU
++
+ // Definitions for RCU Tasks Trace ref scale testing.
+ static void rcu_trace_ref_scale_read_section(const int nloops)
+ {
+@@ -271,6 +273,14 @@ static struct ref_scale_ops rcu_trace_ops = {
+ 	.name		= "rcu-trace"
+ };
+ 
++#define RCU_TRACE_OPS &rcu_trace_ops,
++
++#else // #ifdef CONFIG_TASKS_TRACE_RCU
++
++#define RCU_TRACE_OPS
++
++#endif // #else // #ifdef CONFIG_TASKS_TRACE_RCU
++
+ // Definitions for reference count
+ static atomic_t refcnt;
+ 
+@@ -800,7 +810,7 @@ ref_scale_init(void)
+ 	long i;
+ 	int firsterr = 0;
+ 	static struct ref_scale_ops *scale_ops[] = {
+-		&rcu_ops, &srcu_ops, &rcu_trace_ops, RCU_TASKS_OPS &refcnt_ops, &rwlock_ops,
++		&rcu_ops, &srcu_ops, RCU_TRACE_OPS RCU_TASKS_OPS &refcnt_ops, &rwlock_ops,
+ 		&rwsem_ops, &lock_ops, &lock_irq_ops, &acqrel_ops, &clock_ops,
+ 	};
+ 
+diff --git a/tools/testing/selftests/rcutorture/configs/refscale/CFcommon b/tools/testing/selftests/rcutorture/configs/refscale/CFcommon
+index 14fdafc576ce..fbea3b13baba 100644
+--- a/tools/testing/selftests/rcutorture/configs/refscale/CFcommon
++++ b/tools/testing/selftests/rcutorture/configs/refscale/CFcommon
+@@ -2,3 +2,5 @@ CONFIG_RCU_REF_SCALE_TEST=y
+ CONFIG_PRINTK_TIME=y
  CONFIG_FORCE_TASKS_RCU=y
- CONFIG_RCU_EXPERT=y
+ #CHECK#CONFIG_TASKS_RCU=y
++CONFIG_FORCE_TASKS_TRACE_RCU=y
++#CHECK#CONFIG_TASKS_TRACE_RCU=y
 -- 
 2.31.1.189.g2e36527f23
 
