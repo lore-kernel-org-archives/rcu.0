@@ -2,45 +2,45 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 85C2BC43217
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ADF89C433EF
 	for <rcu@archiver.kernel.org>; Tue, 19 Apr 2022 00:03:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237074AbiDSAGY (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 18 Apr 2022 20:06:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52774 "EHLO
+        id S237256AbiDSAG0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 18 Apr 2022 20:06:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229920AbiDSAGK (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 18 Apr 2022 20:06:10 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A06C1FA7E;
-        Mon, 18 Apr 2022 17:03:29 -0700 (PDT)
+        with ESMTP id S236892AbiDSAGI (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 18 Apr 2022 20:06:08 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5590323158;
+        Mon, 18 Apr 2022 17:03:27 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 61FA1B81142;
-        Tue, 19 Apr 2022 00:03:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5655AC385CB;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 18B93612CF;
+        Tue, 19 Apr 2022 00:03:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C379C385B9;
         Tue, 19 Apr 2022 00:03:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1650326605;
-        bh=UYudwu1QrF7TbcsMmA2KTg1pYLeL053zgVc8k9emey8=;
+        bh=g34Kr64bP04pVIhScsqxQ1L3lPX5LIieDgKQrcvhsG0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F0KjUbQ6RmtdKOR9u22u/p1b8WtaU3OW9MgNbw68SjOFVxyrgJ14FEVxnqaJTDdkm
-         IeFMPr7qYL1SN4hcRLnBT0kKRKSVltLRibOhKu9HYwf+HVI1NIl3jk9eKOTV0GpsYO
-         6wZoWy6NeAsN4tYzLXbYhcKyqSYcc63GaANK/+DGz6DuSAgdVIUgs+E5ljAzbuwnQ4
-         9N/2I9aIRJkAxZtRV+vp/1NQqOg3E6jeLSWcSbYvB261tkxR0Uettttmrzzc5nnwl2
-         CFx/iFR1vwiGQ93Nvhcd6ZjPeBHvJnNiIAyvlxEVni1mgYf4QnDRIkbtMKpY4AIICA
-         HxMheCjm7gRDA==
+        b=tQrwVQdTyviGb8h+us4HSkrVKTnEVhx8x/MCZStonKhk23aEBRyAiz1EhRvAw/5Gt
+         6PtwfgJCti971cuCVhl7BP8OLOesQiI50Xw6SvlqKftQFJdNHdskdMc1+P8du12JFy
+         gx6+mWLSmfxEgeGf//T9+8YdHLTRSna3EIvvBcoFB2OCuhsu6ysx+c8ZgNLbaRtf7B
+         /Ha+BwFkudpw1LOeXX26MrDYFAflxe7dMLZwSN06A2+pC6M1LMK1XMLBAysED2qviu
+         qhkwKtEcuRS5DyZNzcYp3vWW2+DyDqALMRKMKHcXqdJrTjBsNAiIEKVWb4BbhNEDL6
+         /UMhGE606Xk0Q==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 72BA55C30EA; Mon, 18 Apr 2022 17:03:24 -0700 (PDT)
+        id 629A65C1369; Mon, 18 Apr 2022 17:03:24 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org, Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        rostedt@goodmis.org, Alexander Aring <aahringo@redhat.com>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 21/21] srcu: Drop needless initialization of sdp in srcu_gp_start()
-Date:   Mon, 18 Apr 2022 17:03:22 -0700
-Message-Id: <20220419000322.3948903-21-paulmck@kernel.org>
+Subject: [PATCH rcu 12/21] srcu: Use export for srcu_struct defined by DEFINE_STATIC_SRCU()
+Date:   Mon, 18 Apr 2022 17:03:13 -0700
+Message-Id: <20220419000322.3948903-12-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220419000315.GA3948789@paulmck-ThinkPad-P17-Gen-1>
 References: <20220419000315.GA3948789@paulmck-ThinkPad-P17-Gen-1>
@@ -50,36 +50,40 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+From: Alexander Aring <aahringo@redhat.com>
 
-Commit 9c7ef4c30f12 ("srcu: Make Tree SRCU able to operate without
-snp_node array") initializes the local variable sdp differently depending
-on the srcu's state in srcu_gp_start().  Either way, this initialization
-overwrites the value used when sdp is defined.
+If an srcu_struct structure defined by tree SRCU's DEFINE_STATIC_SRCU()
+is used by a module, sparse will give the following diagnostic:
 
-This commit therefore drops this pointless definition-time initialization.
-Although there is no functional change, compiler code generation may
-be affected.
+sparse: symbol '__srcu_struct_nodes_srcu' was not declared. Should it be static?
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+The problem is that a within-module DEFINE_STATIC_SRCU() must define
+a non-static srcu_struct because it is exported by referencing it in a
+special '__section("___srcu_struct_ptrs")'.  This reference is needed
+so that module load and unloading can invoke init_srcu_struct() and
+cleanup_srcu_struct(), respectively.  Unfortunately, sparse is unaware of
+'__section("___srcu_struct_ptrs")', resulting in the above false-positive
+diagnostic.  To avoid this false positive, this commit therefore creates
+a prototype of the srcu_struct with an "extern" keyword.
+
+Signed-off-by: Alexander Aring <aahringo@redhat.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/srcutree.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/srcutree.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 6dd44e759f12..50ba70f019de 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -620,7 +620,7 @@ EXPORT_SYMBOL_GPL(__srcu_read_unlock);
-  */
- static void srcu_gp_start(struct srcu_struct *ssp)
- {
--	struct srcu_data *sdp = this_cpu_ptr(ssp->sda);
-+	struct srcu_data *sdp;
- 	int state;
- 
- 	if (smp_load_acquire(&ssp->srcu_size_state) < SRCU_SIZE_WAIT_BARRIER)
+diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
+index 8501b6b45941..44e998643f48 100644
+--- a/include/linux/srcutree.h
++++ b/include/linux/srcutree.h
+@@ -131,6 +131,7 @@ struct srcu_struct {
+ #ifdef MODULE
+ # define __DEFINE_SRCU(name, is_static)					\
+ 	is_static struct srcu_struct name;				\
++	extern struct srcu_struct * const __srcu_struct_##name;		\
+ 	struct srcu_struct * const __srcu_struct_##name			\
+ 		__section("___srcu_struct_ptrs") = &name
+ #else
 -- 
 2.31.1.189.g2e36527f23
 
