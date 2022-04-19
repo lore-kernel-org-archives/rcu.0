@@ -2,46 +2,44 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 803AAC433FE
-	for <rcu@archiver.kernel.org>; Tue, 19 Apr 2022 00:00:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 49682C43219
+	for <rcu@archiver.kernel.org>; Tue, 19 Apr 2022 00:00:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236347AbiDSADC (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 18 Apr 2022 20:03:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44912 "EHLO
+        id S236298AbiDSADA (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 18 Apr 2022 20:03:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236105AbiDSAC7 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 18 Apr 2022 20:02:59 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDCA713D2C;
-        Mon, 18 Apr 2022 17:00:18 -0700 (PDT)
+        with ESMTP id S236098AbiDSAC6 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 18 Apr 2022 20:02:58 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DA6011C38;
+        Mon, 18 Apr 2022 17:00:17 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 71E3FB81135;
-        Tue, 19 Apr 2022 00:00:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30AC7C385A9;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D38D861290;
+        Tue, 19 Apr 2022 00:00:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3083CC385A7;
         Tue, 19 Apr 2022 00:00:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1650326416;
-        bh=5RvY22qrA5+M1MxIQaC3zBsZAloMmunOEBx8nCIFweI=;
+        bh=15WmndtzksixwsdyWx7zI/CoD8NXMZvP4L24gel6g5k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MzqPKgqdxdkO0t+B3BkeVP9Ie/wGz4j1e26YZJQVOnVOKWEqliHkqd/ffgpIbPmfE
-         EXAnNnN8CRzvryxThjfMqy6fInMwUs6ikD8ZC37BUUv56dLRM79CUgplirDakvkON0
-         80boKDfCaJz/pTLjIChEpdTMSR10NElvwslgPPAoPHex+LxGhaNs0hQRNEZTqD/tJR
-         971UOCCs6JxZYHOnpdLr/WCmJSXsNhTr9cvO3aa25qaYUsk4F+OnBR/P2QaAcw2O0E
-         3/T0UPPCGMwh0nlzBa5M3AmVytdnaqiivCxkFxzeHTGWJ5fRPtvbACVNXTk3Z8NSMs
-         82VEroYcpbozw==
+        b=K614iE0sBFKWi1b858MHkARE9dhOxftOh3hBjwl4nM91zm6YjAMJ69fOVJyMfYrwH
+         R9d67UpJZpKN3ywRs7poOMxCNirzr+VF3M02RIH85Qb6mfCOfx6CHNjRVCwJ2ostEw
+         O8C2YX+KF1KHDkwaOeJWtjhYEYkF202re59kEKNcUlpUMUOt5BTIkb9hhQ1ht5FYEz
+         dkwa8bJtrZFcbeFleC2I0xhipUUCiea8dtnyBi7qobiU1DZqxap2/OSBXDJjVVJJ6+
+         QumrKNyKzxu1c35u4R+wnPM5qU0iI4+rF/vOV8/sm/RT1fqWn9aY8oSEoAH07orjPu
+         F52wF73G8vtxw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id DD4E85C0A0D; Mon, 18 Apr 2022 17:00:15 -0700 (PDT)
+        id D970F5C04C6; Mon, 18 Apr 2022 17:00:15 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Neil Spring <ntspring@fb.com>
-Subject: [PATCH rcu 4/9] rcu-tasks: Make Tasks RCU account for userspace execution
-Date:   Mon, 18 Apr 2022 17:00:09 -0700
-Message-Id: <20220419000014.3948512-4-paulmck@kernel.org>
+        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 2/9] rcu-tasks: Print pre-stall-warning informational messages
+Date:   Mon, 18 Apr 2022 17:00:07 -0700
+Message-Id: <20220419000014.3948512-2-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220419000007.GA3945818@paulmck-ThinkPad-P17-Gen-1>
 References: <20220419000007.GA3945818@paulmck-ThinkPad-P17-Gen-1>
@@ -51,51 +49,165 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The main Tasks RCU quiescent state is voluntary context switch.  However,
-userspace execution is also a valid quiescent state, and is a valuable one
-for userspace applications that spin repeatedly executing light-weight
-non-sleeping system calls.  Currently, such an application can delay a
-Tasks RCU grace period for many tens of seconds.
+RCU-tasks stall-warning messages are printed after the grace period is ten
+minutes old.  Unfortunately, most of us will have rebooted the system in
+response to an apparently-hung command long before the ten minutes is up,
+and will thus see what looks to be a silent hang.
 
-This commit therefore enlists the aid of the scheduler-clock interrupt to
-provide a Tasks RCU quiescent state when it interrupted a task executing
-in userspace.
+This commit therefore adds pr_info() messages that are printed earlier.
+These should avoid being classified as errors, but should give impatient
+users a hint.  These are controlled by new rcupdate.rcu_task_stall_info
+and rcupdate.rcu_task_stall_info_mult kernel-boot parameters.  The former
+defines the initial delay in jiffies (defaulting to 10 seconds) and the
+latter defines the multiplier (defaulting to 3).  Thus, by default, the
+first message will appear 10 seconds into the RCU-tasks grace period,
+the second 40 seconds in, and the third 160 seconds in.  There would be
+a fourth at 640 seconds in, but the stall warning message appears 600
+seconds in, and once a stall warning is printed for a given grace period,
+no further informational messages are printed.
 
-[ paulmck: Apply feedback from kernel test robot. ]
-
-Cc: Martin KaFai Lau <kafai@fb.com>
-Cc: Neil Spring <ntspring@fb.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/rcupdate.h | 1 +
- kernel/rcu/tree.c        | 2 ++
- 2 files changed, 3 insertions(+)
+ .../admin-guide/kernel-parameters.txt         | 30 ++++++++++++--
+ kernel/rcu/tasks.h                            | 40 ++++++++++++++++---
+ 2 files changed, 62 insertions(+), 8 deletions(-)
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index e7c39c200e2b..1a32036c918c 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -196,6 +196,7 @@ void synchronize_rcu_tasks_rude(void);
- void exit_tasks_rcu_start(void);
- void exit_tasks_rcu_finish(void);
- #else /* #ifdef CONFIG_TASKS_RCU_GENERIC */
-+#define rcu_tasks_classic_qs(t, preempt) do { } while (0)
- #define rcu_tasks_qs(t, preempt) do { } while (0)
- #define rcu_note_voluntary_context_switch(t) do { } while (0)
- #define call_rcu_tasks call_rcu
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index a4b8189455d5..8dbfb63f0391 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2624,6 +2624,8 @@ void rcu_sched_clock_irq(int user)
- 	rcu_flavor_sched_clock_irq(user);
- 	if (rcu_pending(user))
- 		invoke_rcu_core();
-+	if (user)
-+		rcu_tasks_classic_qs(current, false);
- 	lockdep_assert_irqs_disabled();
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 3f1cc5e317ed..babc701d4864 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -4955,10 +4955,34 @@
+ 			number avoids disturbing real-time workloads,
+ 			but lengthens grace periods.
  
- 	trace_rcu_utilization(TPS("End scheduler-tick"));
++	rcupdate.rcu_task_stall_info= [KNL]
++			Set initial timeout in jiffies for RCU task stall
++			informational messages, which give some indication
++			of the problem for those not patient enough to
++			wait for ten minutes.  Informational messages are
++			only printed prior to the stall-warning message
++			for a given grace period. Disable with a value
++			less than or equal to zero.  Defaults to ten
++			seconds.  A change in value does not take effect
++			until the beginning of the next grace period.
++
++	rcupdate.rcu_task_stall_info_mult= [KNL]
++			Multiplier for time interval between successive
++			RCU task stall informational messages for a given
++			RCU tasks grace period.  This value is clamped
++			to one through ten, inclusive.	It defaults to
++			the value three, so that the first informational
++			message is printed 10 seconds into the grace
++			period, the second at 40 seconds, the third at
++			160 seconds, and then the stall warning at 600
++			seconds would prevent a fourth at 640 seconds.
++
+ 	rcupdate.rcu_task_stall_timeout= [KNL]
+-			Set timeout in jiffies for RCU task stall warning
+-			messages.  Disable with a value less than or equal
+-			to zero.
++			Set timeout in jiffies for RCU task stall
++			warning messages.  Disable with a value less
++			than or equal to zero.	Defaults to ten minutes.
++			A change in value does not take effect until
++			the beginning of the next grace period.
+ 
+ 	rcupdate.rcu_self_test= [KNL]
+ 			Run the RCU early boot self tests
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index b43320b149d2..76799c81d4be 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -143,6 +143,11 @@ module_param(rcu_task_ipi_delay, int, 0644);
+ #define RCU_TASK_STALL_TIMEOUT (HZ * 60 * 10)
+ static int rcu_task_stall_timeout __read_mostly = RCU_TASK_STALL_TIMEOUT;
+ module_param(rcu_task_stall_timeout, int, 0644);
++#define RCU_TASK_STALL_INFO (HZ * 10)
++static int rcu_task_stall_info __read_mostly = RCU_TASK_STALL_INFO;
++module_param(rcu_task_stall_info, int, 0644);
++static int rcu_task_stall_info_mult __read_mostly = 3;
++module_param(rcu_task_stall_info_mult, int, 0444);
+ 
+ static int rcu_task_enqueue_lim __read_mostly = -1;
+ module_param(rcu_task_enqueue_lim, int, 0444);
+@@ -548,8 +553,15 @@ static void __init rcu_spawn_tasks_kthread_generic(struct rcu_tasks *rtp)
+ static void __init rcu_tasks_bootup_oddness(void)
+ {
+ #if defined(CONFIG_TASKS_RCU) || defined(CONFIG_TASKS_TRACE_RCU)
++	int rtsimc;
++
+ 	if (rcu_task_stall_timeout != RCU_TASK_STALL_TIMEOUT)
+ 		pr_info("\tTasks-RCU CPU stall warnings timeout set to %d (rcu_task_stall_timeout).\n", rcu_task_stall_timeout);
++	rtsimc = clamp(rcu_task_stall_info_mult, 1, 10);
++	if (rtsimc != rcu_task_stall_info_mult) {
++		pr_info("\tTasks-RCU CPU stall info multiplier clamped to %d (rcu_task_stall_info_mult).\n", rtsimc);
++		rcu_task_stall_info_mult = rtsimc;
++	}
+ #endif /* #ifdef CONFIG_TASKS_RCU */
+ #ifdef CONFIG_TASKS_RCU
+ 	pr_info("\tTrampoline variant of Tasks RCU enabled.\n");
+@@ -592,10 +604,15 @@ static void exit_tasks_rcu_finish_trace(struct task_struct *t);
+ /* Wait for one RCU-tasks grace period. */
+ static void rcu_tasks_wait_gp(struct rcu_tasks *rtp)
+ {
+-	struct task_struct *g, *t;
+-	unsigned long lastreport;
+-	LIST_HEAD(holdouts);
++	struct task_struct *g;
+ 	int fract;
++	LIST_HEAD(holdouts);
++	unsigned long j;
++	unsigned long lastinfo;
++	unsigned long lastreport;
++	bool reported = false;
++	int rtsi;
++	struct task_struct *t;
+ 
+ 	set_tasks_gp_state(rtp, RTGS_PRE_WAIT_GP);
+ 	rtp->pregp_func();
+@@ -621,6 +638,8 @@ static void rcu_tasks_wait_gp(struct rcu_tasks *rtp)
+ 	 * is empty, we are done.
+ 	 */
+ 	lastreport = jiffies;
++	lastinfo = lastreport;
++	rtsi = READ_ONCE(rcu_task_stall_info);
+ 
+ 	// Start off with initial wait and slowly back off to 1 HZ wait.
+ 	fract = rtp->init_fract;
+@@ -630,7 +649,7 @@ static void rcu_tasks_wait_gp(struct rcu_tasks *rtp)
+ 		bool needreport;
+ 		int rtst;
+ 
+-		/* Slowly back off waiting for holdouts */
++		// Slowly back off waiting for holdouts
+ 		set_tasks_gp_state(rtp, RTGS_WAIT_SCAN_HOLDOUTS);
+ 		schedule_timeout_idle(fract);
+ 
+@@ -639,12 +658,23 @@ static void rcu_tasks_wait_gp(struct rcu_tasks *rtp)
+ 
+ 		rtst = READ_ONCE(rcu_task_stall_timeout);
+ 		needreport = rtst > 0 && time_after(jiffies, lastreport + rtst);
+-		if (needreport)
++		if (needreport) {
+ 			lastreport = jiffies;
++			reported = true;
++		}
+ 		firstreport = true;
+ 		WARN_ON(signal_pending(current));
+ 		set_tasks_gp_state(rtp, RTGS_SCAN_HOLDOUTS);
+ 		rtp->holdouts_func(&holdouts, needreport, &firstreport);
++
++		// Print pre-stall informational messages if needed.
++		j = jiffies;
++		if (rtsi > 0 && !reported && time_after(j, lastinfo + rtsi)) {
++			lastinfo = j;
++			rtsi = rtsi * rcu_task_stall_info_mult;
++			pr_info("%s: %s grace period %lu is %lu jiffies old.\n",
++				__func__, rtp->kname, rtp->tasks_gp_seq, j - rtp->gp_start);
++		}
+ 	}
+ 
+ 	set_tasks_gp_state(rtp, RTGS_POST_GP);
 -- 
 2.31.1.189.g2e36527f23
 
