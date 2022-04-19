@@ -2,45 +2,45 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5FE6FC433FE
-	for <rcu@archiver.kernel.org>; Tue, 19 Apr 2022 00:03:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 52682C43217
+	for <rcu@archiver.kernel.org>; Tue, 19 Apr 2022 00:03:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237126AbiDSAGR (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 18 Apr 2022 20:06:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52778 "EHLO
+        id S237148AbiDSAGU (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 18 Apr 2022 20:06:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236928AbiDSAGJ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S236930AbiDSAGJ (ORCPT <rfc822;rcu@vger.kernel.org>);
         Mon, 18 Apr 2022 20:06:09 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C220252B7;
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 096292316D;
         Mon, 18 Apr 2022 17:03:28 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 83B53612DB;
+        by ams.source.kernel.org (Postfix) with ESMTPS id A8E6AB81144;
         Tue, 19 Apr 2022 00:03:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1EA40C385BF;
-        Tue, 19 Apr 2022 00:03:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0CC9C385B7;
+        Tue, 19 Apr 2022 00:03:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1650326605;
-        bh=dq5EhGRV2Ky6K2MIwwoj/ydAY0Nn8LeiyWw4AjAjknk=;
+        bh=iyJn1yotRTIEBfPDSDKM1gy8KIt7R7cfA59bZDZBO2c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kdPxWn0X8WovhPqBfABGi2JA5idnO5voDpqxlPRx/LYFSXMhr8uJ0igVjL5Olfo3n
-         9YXvZyZp32vewI01Dyz53JtD3GqYT9kHWXSlxh25qmeWSrnPKO8ISqn9wPe7JkziSP
-         RbwRRJGedYWe+k/FNluGQPItvRPOUXnrDFtYhh1K9Nj3rt02h2aSqvmqBlXZ78xsD5
-         CE0iQScP2CqwzR4p6o2wzCkWv/QRY8JZNbeJInDLzSaROdWzf0rgSrecuPGSHmehyE
-         27CtMiAPHe+IUYa7Ssp5mcfCbyaizditBRh/cXDAYoP+odjZgH6Q+pcceD5Tv7EjXm
-         kB5yiNQGl1t+w==
+        b=euaXErJ69GFH6SlFDJuLr/ePnr2+HVSW6yPG5axeuTidfP0r4h446YoAGVF+1aaFK
+         v1TwbP6g2eZEUJ7g3uI8kn6tQ9qDCvifV8SwrwgwblmqimBV8xSvzKADlweP8kn8pE
+         FdjUWroN4Y0ijSlueKAaBvnoekeFZnUn4ZVUywtaDTWKQkoyomaRQVJnkLaO/N7yH3
+         7kVhatnB2aCpLoG5OTtofT6JrRP8513O8lD7+MwEhIVLL0CUSBfFQGvlRGfCEV8JZi
+         TQy5t5a3g3+ODBEbCezLyF+7854E+6Z5fY/8F0geBH7c12WfgZV+uNLgtj0PxOHPLl
+         uJ23XKnhP/1+g==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 67C505C2DEA; Mon, 18 Apr 2022 17:03:24 -0700 (PDT)
+        id 5D4CB5C12AB; Mon, 18 Apr 2022 17:03:24 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
         rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>
-Subject: [PATCH rcu 15/21] srcu: Explain srcu_funnel_gp_start() call to list_add() is safe
-Date:   Mon, 18 Apr 2022 17:03:16 -0700
-Message-Id: <20220419000322.3948903-15-paulmck@kernel.org>
+Subject: [PATCH rcu 09/21] srcu: Use invalid initial value for srcu_node GP sequence numbers
+Date:   Mon, 18 Apr 2022 17:03:10 -0700
+Message-Id: <20220419000322.3948903-9-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220419000315.GA3948789@paulmck-ThinkPad-P17-Gen-1>
 References: <20220419000315.GA3948789@paulmck-ThinkPad-P17-Gen-1>
@@ -50,34 +50,138 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This commit adds a comment explaining why an unprotected call to
-list_add() from srcu_funnel_gp_start() can be safe.  TL;DR: It is only
-called during very early boot when we don't have no steeking concurrency!
+Currently, tree SRCU relies on the srcu_node structures being initialized
+at the same time that the srcu_struct itself is initialized, and thus
+use the initial grace-period sequence number as the initial value for
+the srcu_node structure's ->srcu_have_cbs[] and ->srcu_gp_seq_needed_exp
+fields.  Although this has a high probability of also working when the
+srcu_node array is allocated and initialized at some random later time,
+it would be better to avoid leaving such things to chance.
+
+This commit therefore initializes these fields with 0x2, which is a
+recognizable invalid value.  It then adds the required checks for this
+invalid value in order to avoid confusion on long-running kernels
+(especially those on 32-bit systems) that allocate and initialize
+srcu_node arrays late in life.
 
 Co-developed-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
 Signed-off-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/srcutree.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ kernel/rcu/srcutree.c | 36 +++++++++++++++++++++++++++---------
+ 1 file changed, 27 insertions(+), 9 deletions(-)
 
 diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 7209fd95dde9..64993a172cff 100644
+index fec608f69962..155c430c6a73 100644
 --- a/kernel/rcu/srcutree.c
 +++ b/kernel/rcu/srcutree.c
-@@ -776,6 +776,12 @@ static void srcu_funnel_gp_start(struct srcu_struct *ssp, struct srcu_data *sdp,
- 	    rcu_seq_state(ssp->srcu_gp_seq) == SRCU_STATE_IDLE) {
- 		WARN_ON_ONCE(ULONG_CMP_GE(ssp->srcu_gp_seq, ssp->srcu_gp_seq_needed));
- 		srcu_gp_start(ssp);
+@@ -107,6 +107,18 @@ static void init_srcu_struct_data(struct srcu_struct *ssp)
+ 	}
+ }
+ 
++/* Invalid seq state, used during snp node initialization */
++#define SRCU_SNP_INIT_SEQ		0x2
 +
-+		// And how can that list_add() in the "else" clause
-+		// possibly be safe for concurrent execution?  Well,
-+		// it isn't.  And it does not have to be.  After all, it
-+		// can only be executed during early boot when there is only
-+		// the one boot CPU running with interrupts still disabled.
- 		if (likely(srcu_init_done))
- 			queue_delayed_work(rcu_gp_wq, &ssp->work,
- 					   srcu_get_delay(ssp));
++/*
++ * Check whether sequence number corresponding to snp node,
++ * is invalid.
++ */
++static inline bool srcu_invl_snp_seq(unsigned long s)
++{
++	return rcu_seq_state(s) == SRCU_SNP_INIT_SEQ;
++}
++
+ /*
+  * Allocated and initialize SRCU combining tree.  Returns @true if
+  * allocation succeeded and @false otherwise.
+@@ -139,10 +151,10 @@ static bool init_srcu_struct_nodes(struct srcu_struct *ssp)
+ 		WARN_ON_ONCE(ARRAY_SIZE(snp->srcu_have_cbs) !=
+ 			     ARRAY_SIZE(snp->srcu_data_have_cbs));
+ 		for (i = 0; i < ARRAY_SIZE(snp->srcu_have_cbs); i++) {
+-			snp->srcu_have_cbs[i] = 0;
++			snp->srcu_have_cbs[i] = SRCU_SNP_INIT_SEQ;
+ 			snp->srcu_data_have_cbs[i] = 0;
+ 		}
+-		snp->srcu_gp_seq_needed_exp = 0;
++		snp->srcu_gp_seq_needed_exp = SRCU_SNP_INIT_SEQ;
+ 		snp->grplo = -1;
+ 		snp->grphi = -1;
+ 		if (snp == &ssp->node[0]) {
+@@ -386,8 +398,7 @@ static bool srcu_readers_active(struct srcu_struct *ssp)
+  */
+ static unsigned long srcu_get_delay(struct srcu_struct *ssp)
+ {
+-	if (ULONG_CMP_LT(READ_ONCE(ssp->srcu_gp_seq),
+-			 READ_ONCE(ssp->srcu_gp_seq_needed_exp)))
++	if (ULONG_CMP_LT(READ_ONCE(ssp->srcu_gp_seq), READ_ONCE(ssp->srcu_gp_seq_needed_exp)))
+ 		return 0;
+ 	return SRCU_INTERVAL;
+ }
+@@ -561,6 +572,7 @@ static void srcu_gp_end(struct srcu_struct *ssp)
+ 	int idx;
+ 	unsigned long mask;
+ 	struct srcu_data *sdp;
++	unsigned long sgsne;
+ 	struct srcu_node *snp;
+ 	int ss_state;
+ 
+@@ -594,7 +606,8 @@ static void srcu_gp_end(struct srcu_struct *ssp)
+ 				cbs = snp->srcu_have_cbs[idx] == gpseq;
+ 			snp->srcu_have_cbs[idx] = gpseq;
+ 			rcu_seq_set_state(&snp->srcu_have_cbs[idx], 1);
+-			if (ULONG_CMP_LT(snp->srcu_gp_seq_needed_exp, gpseq))
++			sgsne = snp->srcu_gp_seq_needed_exp;
++			if (srcu_invl_snp_seq(sgsne) || ULONG_CMP_LT(sgsne, gpseq))
+ 				WRITE_ONCE(snp->srcu_gp_seq_needed_exp, gpseq);
+ 			mask = snp->srcu_data_have_cbs[idx];
+ 			snp->srcu_data_have_cbs[idx] = 0;
+@@ -652,14 +665,17 @@ static void srcu_funnel_exp_start(struct srcu_struct *ssp, struct srcu_node *snp
+ 				  unsigned long s)
+ {
+ 	unsigned long flags;
++	unsigned long sgsne;
+ 
+ 	if (snp)
+ 		for (; snp != NULL; snp = snp->srcu_parent) {
++			sgsne = READ_ONCE(snp->srcu_gp_seq_needed_exp);
+ 			if (rcu_seq_done(&ssp->srcu_gp_seq, s) ||
+-			    ULONG_CMP_GE(READ_ONCE(snp->srcu_gp_seq_needed_exp), s))
++			    (!srcu_invl_snp_seq(sgsne) && ULONG_CMP_GE(sgsne, s)))
+ 				return;
+ 			spin_lock_irqsave_rcu_node(snp, flags);
+-			if (ULONG_CMP_GE(snp->srcu_gp_seq_needed_exp, s)) {
++			sgsne = snp->srcu_gp_seq_needed_exp;
++			if (!srcu_invl_snp_seq(sgsne) && ULONG_CMP_GE(sgsne, s)) {
+ 				spin_unlock_irqrestore_rcu_node(snp, flags);
+ 				return;
+ 			}
+@@ -687,6 +703,7 @@ static void srcu_funnel_gp_start(struct srcu_struct *ssp, struct srcu_data *sdp,
+ {
+ 	unsigned long flags;
+ 	int idx = rcu_seq_ctr(s) % ARRAY_SIZE(sdp->mynode->srcu_have_cbs);
++	unsigned long sgsne;
+ 	struct srcu_node *snp;
+ 	struct srcu_node *snp_leaf = smp_load_acquire(&sdp->mynode);
+ 	unsigned long snp_seq;
+@@ -698,7 +715,7 @@ static void srcu_funnel_gp_start(struct srcu_struct *ssp, struct srcu_data *sdp,
+ 				return; /* GP already done and CBs recorded. */
+ 			spin_lock_irqsave_rcu_node(snp, flags);
+ 			snp_seq = snp->srcu_have_cbs[idx];
+-			if (ULONG_CMP_GE(snp_seq, s)) {
++			if (!srcu_invl_snp_seq(snp_seq) && ULONG_CMP_GE(snp_seq, s)) {
+ 				if (snp == snp_leaf && snp_seq == s)
+ 					snp->srcu_data_have_cbs[idx] |= sdp->grpmask;
+ 				spin_unlock_irqrestore_rcu_node(snp, flags);
+@@ -713,7 +730,8 @@ static void srcu_funnel_gp_start(struct srcu_struct *ssp, struct srcu_data *sdp,
+ 			snp->srcu_have_cbs[idx] = s;
+ 			if (snp == snp_leaf)
+ 				snp->srcu_data_have_cbs[idx] |= sdp->grpmask;
+-			if (!do_norm && ULONG_CMP_LT(snp->srcu_gp_seq_needed_exp, s))
++			sgsne = snp->srcu_gp_seq_needed_exp;
++			if (!do_norm && (srcu_invl_snp_seq(sgsne) || ULONG_CMP_LT(sgsne, s)))
+ 				WRITE_ONCE(snp->srcu_gp_seq_needed_exp, s);
+ 			spin_unlock_irqrestore_rcu_node(snp, flags);
+ 		}
 -- 
 2.31.1.189.g2e36527f23
 
