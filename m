@@ -2,116 +2,190 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C890FC433EF
-	for <rcu@archiver.kernel.org>; Tue, 19 Apr 2022 00:11:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A88BC433F5
+	for <rcu@archiver.kernel.org>; Tue, 19 Apr 2022 00:12:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238552AbiDSAOM (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 18 Apr 2022 20:14:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41268 "EHLO
+        id S238669AbiDSAPS (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 18 Apr 2022 20:15:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238737AbiDSAOH (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 18 Apr 2022 20:14:07 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D49462C8;
-        Mon, 18 Apr 2022 17:11:26 -0700 (PDT)
+        with ESMTP id S236448AbiDSAPQ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 18 Apr 2022 20:15:16 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAF9562C8;
+        Mon, 18 Apr 2022 17:12:35 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 10A75B81123;
-        Tue, 19 Apr 2022 00:11:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7FBCC385A1;
-        Tue, 19 Apr 2022 00:11:23 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4A61561324;
+        Tue, 19 Apr 2022 00:12:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90780C385AB;
+        Tue, 19 Apr 2022 00:12:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1650327083;
-        bh=WXnK2gx8qkOLFox4IBN91tTQyMNyq2flQAXHiUplfPo=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=Lcf84TWwSBe1Mdj7xG+ct6q0aFknKeBNUc/Yvp7TED4b2oTmeg5yyLtjTQ1Z8tQJ+
-         UR0MwBgix9URiyTLA2aytwKNl+L1YiYg+vZ2cwgR+6Cae2Le/DYY6HH6D/o+F+Rr3C
-         zqoNCED0p0vfp6ngXB24fsxBw9pZEkTFL+nrR6tkdTFq+7a2rEh6Yw0ewrK2beXddK
-         trbHCMXCNO1AHw+xReG1D2TDrL7iPzViYn1uvYyU7MmRL0jydCnPlCdD1oTTOpTxev
-         EwYZNRaapcz9hh6EFXcK6/kw829n0yYK3vY38B4ku3fcFDyFjxjo07v2aUxoaSZ6F6
-         kY8fNkveQN2jQ==
+        s=k20201202; t=1650327154;
+        bh=zt6bmVLyKYLFyGb7VqvGpBkVhR2fKUoDb3crLDBSYcg=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=fYkUPc5JXAxaIFRHAO7ssBTiQLCZvcYOyjqMt/a+XpNoceZps5boOIqugKQQHGHUe
+         ZLuU3MGquMFXxHjsemSDB5xOju/y4Xek0sKR46hGiVGahJlXnySSJhQVZxm7fa+ggf
+         XxDhQBHRdnWl4eN8w65xtc8khlPILpwiBB9l3BiBV2chbiZGdl3ZkwEsuH7DNQcECb
+         PmO2M/VhLJw6yYDV3dA675g8yW+UBC7pwy8jrtqrIcNNzNumrXt7n2KnzoKheJZaQ+
+         eY5pUk96AXsnuzgDWKnMQi3a4g55dFDHpy6LRYUi2Q+kdXMwxq4LyxCb42Sb3yUraS
+         aFXDFhJSbKufA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 44C535C04BD; Mon, 18 Apr 2022 17:11:23 -0700 (PDT)
-Date:   Mon, 18 Apr 2022 17:11:23 -0700
+        id 455645C0A0D; Mon, 18 Apr 2022 17:12:34 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org
-Subject: [PATCH rcu 0/12] RCU-tasks torture-test updates
-Message-ID: <20220419001123.GA3949851@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 04/12] rcutorture: Allow rcutorture without RCU Tasks
+Date:   Mon, 18 Apr 2022 17:12:25 -0700
+Message-Id: <20220419001233.3950188-4-paulmck@kernel.org>
+X-Mailer: git-send-email 2.31.1.189.g2e36527f23
+In-Reply-To: <20220419001123.GA3949851@paulmck-ThinkPad-P17-Gen-1>
+References: <20220419001123.GA3949851@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello!
+Currently, a CONFIG_PREEMPT_NONE=y kernel substitutes normal RCU for
+RCU Tasks.  Unless that kernel builds rcutorture, whether built-in or as
+a module, in which case RCU Tasks is (unnecessarily) used.  This both
+increases kernel size and increases the complexity of certain tracing
+operations.  This commit therefore decouples the presence of rcutorture
+from the presence of RCU Tasks.
 
-This series contains torture-tests updates for the RCU tasks flavors,
-most notably ensuring that building rcutorture and friends does not
-change the RCU-tasks-related Kconfig options.
+However, there is a need to select CONFIG_TASKS_RCU for testing purposes.
+Except that casual users must not be bothered with questions -- for them,
+this needs to be fully automated.  There is thus a CONFIG_FORCE_TASKS_RCU
+that selects CONFIG_TASKS_RCU, is user-selectable, but which depends
+on CONFIG_RCU_EXPERT.
 
-1.	Make TASKS_RUDE_RCU select IRQ_WORK.
+[ paulmck: Apply kernel test robot feedback. ]
 
-2.	Make the TASKS_RCU Kconfig option be selected.
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ kernel/rcu/Kconfig                             | 18 +++++++++++++-----
+ kernel/rcu/Kconfig.debug                       |  1 -
+ kernel/rcu/rcutorture.c                        | 13 ++++++++++++-
+ .../selftests/rcutorture/configs/rcu/TASKS01   |  1 +
+ .../selftests/rcutorture/configs/rcu/TASKS02   |  3 +++
+ .../selftests/rcutorture/configs/rcu/TASKS03   |  2 ++
+ 6 files changed, 31 insertions(+), 7 deletions(-)
 
-3.	Allow rcutorture without RCU Tasks Trace.
+diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+index 2befd328e6a0..8eac165db09f 100644
+--- a/kernel/rcu/Kconfig
++++ b/kernel/rcu/Kconfig
+@@ -77,13 +77,21 @@ config TASKS_RCU_GENERIC
+ 	  This option enables generic infrastructure code supporting
+ 	  task-based RCU implementations.  Not for manual selection.
+ 
++config FORCE_TASKS_RCU
++	bool "Force selection of TASKS_RCU"
++	depends on RCU_EXPERT
++	select TASKS_RCU
++	default n
++	help
++	  This option force-enables a task-based RCU implementation
++	  that uses only voluntary context switch (not preemption!),
++	  idle, and user-mode execution as quiescent states.  Not for
++	  manual selection in most cases.
++
+ config TASKS_RCU
+-	def_bool 0
++	bool
++	default n
+ 	select IRQ_WORK
+-	help
+-	  This option enables a task-based RCU implementation that uses
+-	  only voluntary context switch (not preemption!), idle, and
+-	  user-mode execution as quiescent states.  Not for manual selection.
+ 
+ config TASKS_RUDE_RCU
+ 	def_bool 0
+diff --git a/kernel/rcu/Kconfig.debug b/kernel/rcu/Kconfig.debug
+index d7f4bb1c4979..c217a5e655a4 100644
+--- a/kernel/rcu/Kconfig.debug
++++ b/kernel/rcu/Kconfig.debug
+@@ -47,7 +47,6 @@ config RCU_TORTURE_TEST
+ 	depends on DEBUG_KERNEL
+ 	select TORTURE_TEST
+ 	select SRCU
+-	select TASKS_RCU
+ 	select TASKS_RUDE_RCU
+ 	default n
+ 	help
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 7dd3e14ec907..65d045ff9766 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -779,6 +779,8 @@ static struct rcu_torture_ops trivial_ops = {
+ 	.name		= "trivial"
+ };
+ 
++#ifdef CONFIG_TASKS_RCU
++
+ /*
+  * Definitions for RCU-tasks torture testing.
+  */
+@@ -822,6 +824,15 @@ static struct rcu_torture_ops tasks_ops = {
+ 	.name		= "tasks"
+ };
+ 
++#define TASKS_OPS &tasks_ops,
++
++#else // #ifdef CONFIG_TASKS_RCU
++
++#define TASKS_OPS
++
++#endif // #else #ifdef CONFIG_TASKS_RCU
++
++
+ /*
+  * Definitions for rude RCU-tasks torture testing.
+  */
+@@ -3108,7 +3119,7 @@ rcu_torture_init(void)
+ 	unsigned long gp_seq = 0;
+ 	static struct rcu_torture_ops *torture_ops[] = {
+ 		&rcu_ops, &rcu_busted_ops, &srcu_ops, &srcud_ops, &busted_srcud_ops,
+-		&tasks_ops, &tasks_rude_ops, TASKS_TRACING_OPS
++		TASKS_OPS &tasks_rude_ops, TASKS_TRACING_OPS
+ 		&trivial_ops,
+ 	};
+ 
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TASKS01 b/tools/testing/selftests/rcutorture/configs/rcu/TASKS01
+index 3ca112444ce7..d84801b9a7ae 100644
+--- a/tools/testing/selftests/rcutorture/configs/rcu/TASKS01
++++ b/tools/testing/selftests/rcutorture/configs/rcu/TASKS01
+@@ -7,4 +7,5 @@ CONFIG_PREEMPT=y
+ CONFIG_DEBUG_LOCK_ALLOC=y
+ CONFIG_PROVE_LOCKING=y
+ #CHECK#CONFIG_PROVE_RCU=y
++CONFIG_TASKS_RCU=y
+ CONFIG_RCU_EXPERT=y
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TASKS02 b/tools/testing/selftests/rcutorture/configs/rcu/TASKS02
+index ad2be91e5ee7..d333b69bc831 100644
+--- a/tools/testing/selftests/rcutorture/configs/rcu/TASKS02
++++ b/tools/testing/selftests/rcutorture/configs/rcu/TASKS02
+@@ -2,3 +2,6 @@ CONFIG_SMP=n
+ CONFIG_PREEMPT_NONE=y
+ CONFIG_PREEMPT_VOLUNTARY=n
+ CONFIG_PREEMPT=n
++#CHECK#CONFIG_TASKS_RCU=y
++CONFIG_FORCE_TASKS_RCU=y
++CONFIG_RCU_EXPERT=y
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TASKS03 b/tools/testing/selftests/rcutorture/configs/rcu/TASKS03
+index dc02083803ce..dea26c568678 100644
+--- a/tools/testing/selftests/rcutorture/configs/rcu/TASKS03
++++ b/tools/testing/selftests/rcutorture/configs/rcu/TASKS03
+@@ -7,3 +7,5 @@ CONFIG_HZ_PERIODIC=n
+ CONFIG_NO_HZ_IDLE=n
+ CONFIG_NO_HZ_FULL=y
+ #CHECK#CONFIG_RCU_EXPERT=n
++CONFIG_TASKS_RCU=y
++CONFIG_RCU_EXPERT=y
+-- 
+2.31.1.189.g2e36527f23
 
-4.	Allow rcutorture without RCU Tasks.
-
-5.	Allow rcutorture without RCU Tasks Rude.
-
-6.	Add CONFIG_PREEMPT_DYNAMIC=n to TASKS02 scenario.
-
-7.	Allow specifying per-scenario stat_interval.
-
-8.	Allow refscale without RCU Tasks.
-
-9.	Allow refscale without RCU Tasks Rude/Trace.
-
-10.	Allow rcuscale without RCU Tasks.
-
-11.	Allow rcuscale without RCU Tasks Rude/Trace.
-
-12.	Adjust for TASKS_RCU Kconfig option being selected.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- b/arch/Kconfig                                                    |    1 
- b/kernel/bpf/Kconfig                                              |    1 
- b/kernel/rcu/Kconfig                                              |    1 
- b/kernel/rcu/Kconfig.debug                                        |    1 
- b/kernel/rcu/rcuscale.c                                           |   12 +
- b/kernel/rcu/rcutorture.c                                         |  101 +++++-----
- b/kernel/rcu/refscale.c                                           |   12 +
- b/kernel/trace/Kconfig                                            |    1 
- b/tools/testing/selftests/rcutorture/configs/rcu/RUDE01           |    2 
- b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-N           |    2 
- b/tools/testing/selftests/rcutorture/configs/rcu/TASKS01          |    1 
- b/tools/testing/selftests/rcutorture/configs/rcu/TASKS02          |    3 
- b/tools/testing/selftests/rcutorture/configs/rcu/TASKS02.boot     |    1 
- b/tools/testing/selftests/rcutorture/configs/rcu/TASKS03          |    2 
- b/tools/testing/selftests/rcutorture/configs/rcu/TRACE01          |    2 
- b/tools/testing/selftests/rcutorture/configs/rcu/TRACE02          |    2 
- b/tools/testing/selftests/rcutorture/configs/rcu/TREE09           |    2 
- b/tools/testing/selftests/rcutorture/configs/rcu/ver_functions.sh |   16 +
- b/tools/testing/selftests/rcutorture/configs/rcuscale/CFcommon    |    4 
- b/tools/testing/selftests/rcutorture/configs/rcuscale/TREE        |    2 
- b/tools/testing/selftests/rcutorture/configs/refscale/CFcommon    |    2 
- b/tools/testing/selftests/rcutorture/configs/refscale/NOPREEMPT   |    2 
- b/tools/testing/selftests/rcutorture/configs/scf/NOPREEMPT        |    2 
- b/tools/testing/selftests/rcutorture/configs/scf/PREEMPT          |    1 
- kernel/rcu/Kconfig                                                |   64 ++++--
- kernel/rcu/Kconfig.debug                                          |    8 
- kernel/rcu/rcuscale.c                                             |   12 +
- kernel/rcu/rcutorture.c                                           |   26 ++
- kernel/rcu/refscale.c                                             |   12 +
- tools/testing/selftests/rcutorture/configs/rcu/TASKS02            |    1 
- tools/testing/selftests/rcutorture/configs/rcuscale/CFcommon      |    3 
- tools/testing/selftests/rcutorture/configs/refscale/CFcommon      |    2 
- 32 files changed, 219 insertions(+), 85 deletions(-)
