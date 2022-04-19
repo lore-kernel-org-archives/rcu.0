@@ -2,44 +2,44 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 478FAC433F5
-	for <rcu@archiver.kernel.org>; Tue, 19 Apr 2022 00:12:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 720DDC433EF
+	for <rcu@archiver.kernel.org>; Tue, 19 Apr 2022 00:12:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239024AbiDSAPX (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S232748AbiDSAPX (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Mon, 18 Apr 2022 20:15:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42192 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238678AbiDSAPS (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S238583AbiDSAPS (ORCPT <rfc822;rcu@vger.kernel.org>);
         Mon, 18 Apr 2022 20:15:18 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C217562C8;
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2857C62FC;
         Mon, 18 Apr 2022 17:12:37 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 833F7B8113A;
-        Tue, 19 Apr 2022 00:12:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E67C1C385B8;
+        by ams.source.kernel.org (Postfix) with ESMTPS id DED64B81135;
+        Tue, 19 Apr 2022 00:12:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92B6FC385A9;
         Tue, 19 Apr 2022 00:12:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1650327155;
-        bh=a/jgEw201k/x9500vftbHutjfS0iPgA2hRuL31Qcr/I=;
+        s=k20201202; t=1650327154;
+        bh=WZmVN7GeHqfeQOk38ep5RPyTvpafwXCMcALoe+PH4zo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AWqxWA7A2WFAhxXQAa2sHNk+3D9Qj2VauHXePaDYXlq9mqQRH8Cq0ESkr0U+MKupM
-         Zy7mBy8Kt3EcSNAqiM1QKR5wrbjCtHlH+Xh8YXvNy+ipe2/f53YtBHf2LXLdhRK+yr
-         5DYkA0wXcq6sT/k+FGHScSuAQWqzSkz6dyS5v0oHbVnXmoRIIDTm0a7OSQswP4DTFN
-         Ygziixwb8e/p3DPos4pKHB3+FsdF9cNypKrMiRFR3LFeTqDPTBom2rvNdjCLYUC5rv
-         OkiEFrnKpPZ3xHz8Zd2JMYMGk/Ihv9R1sQAMhpKJJAWTB1DvQDqCRYtAUiJYzXvy/8
-         goFEQJP6nYONw==
+        b=WH9H+jMVUBE1sq5R7EFXfqt0MN+i0B7aU1rCCnw3zeOaHI9QRSzeV9EQd14S0Owhd
+         Xw9mtumwT18d7e5FKvlQw9w3aGkQE1f4G6FSyv723yCGMb2ELdsIXBglFvUt7jwj/B
+         qdwV1YqaGkeey7wSEkpkJ1EHbYQH9z4pNIiGd0AnroEPYQVN4WKKOZQAGxwhf+sqQe
+         YZuCjKfScrkRpj2hGMDinjSkstfbmTLvJDDpoE5VM0XSG5Pv471HjisFl5xVVMnhE0
+         AFV1MsHxKb8JV1xS8ygbyVODlW3Kf/dCTrQeeToCW+Z69Wl4JykvvCroUQ3AWfr9io
+         I+o/T3zDAoKYA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 4B3C75C0DFD; Mon, 18 Apr 2022 17:12:34 -0700 (PDT)
+        id 477625C0A23; Mon, 18 Apr 2022 17:12:34 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
         rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 07/12] rcutorture: Allow specifying per-scenario stat_interval
-Date:   Mon, 18 Apr 2022 17:12:28 -0700
-Message-Id: <20220419001233.3950188-7-paulmck@kernel.org>
+Subject: [PATCH rcu 05/12] rcutorture: Allow rcutorture without RCU Tasks Rude
+Date:   Mon, 18 Apr 2022 17:12:26 -0700
+Message-Id: <20220419001233.3950188-5-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220419001123.GA3949851@paulmck-ThinkPad-P17-Gen-1>
 References: <20220419001123.GA3949851@paulmck-ThinkPad-P17-Gen-1>
@@ -49,70 +49,122 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The rcutorture test suite makes double use of the rcutorture.stat_interval
-module parameter.  As its name suggests, it controls the frequency
-of statistics printing, but it also controls the rcu_torture_writer()
-stall timeout.  The current setting of 15 seconds works surprisingly well.
-However, given that the RCU tasks stall-warning timeout is ten -minutes-,
-15 seconds is too short for TASKS02, which runs a non-preemptible kernel
-on a single CPU.
+Unless a kernel builds rcutorture, whether built-in or as a module, that
+kernel is also built with CONFIG_TASKS_RUDE_RCU, whether anything else
+needs Tasks Rude RCU or not.  This unnecessarily increases kernel size.
+This commit therefore decouples the presence of rcutorture from the
+presence of RCU Tasks Rude.
 
-This commit therefore adds checks for per-scenario specification of the
-rcutorture.stat_interval module parameter.
+However, there is a need to select CONFIG_TASKS_RUDE_RCU for testing
+purposes.  Except that casual users must not be bothered with
+questions -- for them, this needs to be fully automated.  There is
+thus a CONFIG_FORCE_TASKS_RUDE_RCU that selects CONFIG_TASKS_RUDE_RCU,
+is user-selectable, but which depends on CONFIG_RCU_EXPERT.
+
+[ paulmck: Apply kernel test robot feedback. ]
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- .../rcutorture/configs/rcu/TASKS02.boot          |  1 +
- .../rcutorture/configs/rcu/ver_functions.sh      | 16 ++++++++++++++--
- 2 files changed, 15 insertions(+), 2 deletions(-)
+ kernel/rcu/Kconfig                            | 21 ++++++++++++-------
+ kernel/rcu/Kconfig.debug                      |  1 -
+ kernel/rcu/rcutorture.c                       | 13 +++++++++++-
+ .../selftests/rcutorture/configs/rcu/RUDE01   |  2 ++
+ 4 files changed, 28 insertions(+), 9 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TASKS02.boot b/tools/testing/selftests/rcutorture/configs/rcu/TASKS02.boot
-index cd2a188eeb6d..b9b6d67cbc5f 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/TASKS02.boot
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/TASKS02.boot
-@@ -1 +1,2 @@
- rcutorture.torture_type=tasks
-+rcutorture.stat_interval=60
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/ver_functions.sh b/tools/testing/selftests/rcutorture/configs/rcu/ver_functions.sh
-index effa415f9b92..e2bc99c785e7 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/ver_functions.sh
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/ver_functions.sh
-@@ -9,7 +9,7 @@
+diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+index 8eac165db09f..65d45c00fd1b 100644
+--- a/kernel/rcu/Kconfig
++++ b/kernel/rcu/Kconfig
+@@ -93,15 +93,22 @@ config TASKS_RCU
+ 	default n
+ 	select IRQ_WORK
  
- # rcutorture_param_n_barrier_cbs bootparam-string
- #
--# Adds n_barrier_cbs rcutorture module parameter to kernels having it.
-+# Adds n_barrier_cbs rcutorture module parameter if not already specified.
- rcutorture_param_n_barrier_cbs () {
- 	if echo $1 | grep -q "rcutorture\.n_barrier_cbs"
- 	then
-@@ -30,13 +30,25 @@ rcutorture_param_onoff () {
- 	fi
- }
- 
-+# rcutorture_param_stat_interval bootparam-string
-+#
-+# Adds stat_interval rcutorture module parameter if not already specified.
-+rcutorture_param_stat_interval () {
-+	if echo $1 | grep -q "rcutorture\.stat_interval"
-+	then
-+		:
-+	else
-+		echo rcutorture.stat_interval=15
-+	fi
-+}
++config FORCE_TASKS_RUDE_RCU
++	bool "Force selection of Tasks Rude RCU"
++	depends on RCU_EXPERT
++	select TASKS_RUDE_RCU
++	default n
++	help
++	  This option force-enables a task-based RCU implementation
++	  that uses only context switch (including preemption) and
++	  user-mode execution as quiescent states.  It forces IPIs and
++	  context switches on all online CPUs, including idle ones,
++	  so use with caution.	Not for manual selection in most cases.
 +
- # per_version_boot_params bootparam-string config-file seconds
- #
- # Adds per-version torture-module parameters to kernels supporting them.
- per_version_boot_params () {
- 	echo $1 `rcutorture_param_onoff "$1" "$2"` \
- 		`rcutorture_param_n_barrier_cbs "$1"` \
--		rcutorture.stat_interval=15 \
-+		`rcutorture_param_stat_interval "$1"` \
- 		rcutorture.shutdown_secs=$3 \
- 		rcutorture.test_no_idle_hz=1 \
- 		rcutorture.verbose=1
+ config TASKS_RUDE_RCU
+-	def_bool 0
++	bool
++	default n
+ 	select IRQ_WORK
+-	help
+-	  This option enables a task-based RCU implementation that uses
+-	  only context switch (including preemption) and user-mode
+-	  execution as quiescent states.  It forces IPIs and context
+-	  switches on all online CPUs, including idle ones, so use
+-	  with caution.
+ 
+ config FORCE_TASKS_TRACE_RCU
+ 	bool "Force selection of Tasks Trace RCU"
+diff --git a/kernel/rcu/Kconfig.debug b/kernel/rcu/Kconfig.debug
+index c217a5e655a4..f4a4468cbf03 100644
+--- a/kernel/rcu/Kconfig.debug
++++ b/kernel/rcu/Kconfig.debug
+@@ -47,7 +47,6 @@ config RCU_TORTURE_TEST
+ 	depends on DEBUG_KERNEL
+ 	select TORTURE_TEST
+ 	select SRCU
+-	select TASKS_RUDE_RCU
+ 	default n
+ 	help
+ 	  This option provides a kernel module that runs torture tests
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 65d045ff9766..d528245108c2 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -833,6 +833,8 @@ static struct rcu_torture_ops tasks_ops = {
+ #endif // #else #ifdef CONFIG_TASKS_RCU
+ 
+ 
++#ifdef CONFIG_TASKS_RUDE_RCU
++
+ /*
+  * Definitions for rude RCU-tasks torture testing.
+  */
+@@ -862,6 +864,15 @@ static struct rcu_torture_ops tasks_rude_ops = {
+ 	.name		= "tasks-rude"
+ };
+ 
++#define TASKS_RUDE_OPS &tasks_rude_ops,
++
++#else // #ifdef CONFIG_TASKS_RUDE_RCU
++
++#define TASKS_RUDE_OPS
++
++#endif // #else #ifdef CONFIG_TASKS_RUDE_RCU
++
++
+ #ifdef CONFIG_TASKS_TRACE_RCU
+ 
+ /*
+@@ -3119,7 +3130,7 @@ rcu_torture_init(void)
+ 	unsigned long gp_seq = 0;
+ 	static struct rcu_torture_ops *torture_ops[] = {
+ 		&rcu_ops, &rcu_busted_ops, &srcu_ops, &srcud_ops, &busted_srcud_ops,
+-		TASKS_OPS &tasks_rude_ops, TASKS_TRACING_OPS
++		TASKS_OPS TASKS_RUDE_OPS TASKS_TRACING_OPS
+ 		&trivial_ops,
+ 	};
+ 
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/RUDE01 b/tools/testing/selftests/rcutorture/configs/rcu/RUDE01
+index 7093422050f6..6fd6acb94518 100644
+--- a/tools/testing/selftests/rcutorture/configs/rcu/RUDE01
++++ b/tools/testing/selftests/rcutorture/configs/rcu/RUDE01
+@@ -8,3 +8,5 @@ CONFIG_DEBUG_LOCK_ALLOC=y
+ CONFIG_PROVE_LOCKING=y
+ #CHECK#CONFIG_PROVE_RCU=y
+ CONFIG_RCU_EXPERT=y
++CONFIG_FORCE_TASKS_RUDE_RCU=y
++#CHECK#CONFIG_TASKS_RUDE_RCU=y
 -- 
 2.31.1.189.g2e36527f23
 
