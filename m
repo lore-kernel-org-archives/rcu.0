@@ -2,91 +2,136 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 495DAC352A7
-	for <rcu@archiver.kernel.org>; Tue, 19 Apr 2022 16:47:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C67B7C35294
+	for <rcu@archiver.kernel.org>; Tue, 19 Apr 2022 16:47:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355442AbiDSQtx (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 19 Apr 2022 12:49:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55456 "EHLO
+        id S240114AbiDSQtz (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 19 Apr 2022 12:49:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235504AbiDSQqW (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 19 Apr 2022 12:46:22 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2B9939692;
-        Tue, 19 Apr 2022 09:43:39 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id x17so30408634lfa.10;
-        Tue, 19 Apr 2022 09:43:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gyw0DllU2NEgcTB/Sa92qGNKU8xdBjvfAuK5cohiajI=;
-        b=asRrscuJnEsdZ1tzYA0fN9xCDH2APZtdudLZmkQnLh6p0uiaAxipNglQMl57a4UMxy
-         78eqnW78ESl336vWjH8XLn8Zd43FNXLdVkToS0MiB6cvvCy2PmJYxYWrvV7lMB4CNhXR
-         6Y4WnxmZ0LRShtGTEkrW7DoErjKohz+R86lgBhFL1gi0q1bO0a/MR3mNtUq6EtaTE/i0
-         6ckG3UJ/dn5qBWqHdT98XxrjALJfahY+7izZrCdcWLEW9h2azZq5+m5LqeZqFzxfzu1/
-         F50tp++qazDDdaa4JJjgBBXRVfCClJcgaU6IZpyHKa6Maw20JmgOSW9AwydqsQ8I6qCz
-         gSNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gyw0DllU2NEgcTB/Sa92qGNKU8xdBjvfAuK5cohiajI=;
-        b=F7pbVJLUWUKzEyXLfODi0AwsRXNm1gtoyCrQIwZqWzsgAY/m/YuF4LXNr+Xij8H0VU
-         1S4AEkDdrzk4paUxBQNXoP+ZHJVvQjZvj5GLaIOAncChDLP2iZRWbO5rc2faEjlpndJF
-         NQmjL+Frg3Fb5cu26x9AaN7E1q4reSluxyqEQgdaIKTX/kxguB5xeuh6iAeaC51c8g4I
-         pfVvsGuUwkh4jvufHRMKghuM9JNFNxxThe0g6jFCNvbbdHIIet2688FkBjLrJijg8uD5
-         J8qcpZfObT/497oHpRXPFi+AkCVOw50yADiSx0m82ioJ1h3sx7SVxNlkJ707MH9LLARk
-         9hyA==
-X-Gm-Message-State: AOAM533VByyqEwIdg+34BYm83sqw2puBSdBkiDnRp5X+c0xUIVcE2LfH
-        sL5dXX4LQ9NzpBZBWVUhY1o=
-X-Google-Smtp-Source: ABdhPJw79nRXKU8UnnOwpeWQ6iU3EAQKrdBBD+fWBtL4nWEsSBKj2o68Cnkizg4e+tkZK6f6yIYWwA==
-X-Received: by 2002:ac2:4c4b:0:b0:471:a8e2:198d with SMTP id o11-20020ac24c4b000000b00471a8e2198dmr2671909lfk.121.1650386617950;
-        Tue, 19 Apr 2022 09:43:37 -0700 (PDT)
-Received: from pc638.lan ([155.137.26.201])
-        by smtp.gmail.com with ESMTPSA id s22-20020a197716000000b0046bc65188d6sm1562325lfc.80.2022.04.19.09.43.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Apr 2022 09:43:37 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Tue, 19 Apr 2022 18:43:35 +0200
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        rushikesh.s.kadam@intel.com, vineethrp@gmail.com, urezki@gmail.com
-Subject: Re: [PATCH v4] rcu/nocb: Add an option to offload all CPUs on boot
-Message-ID: <Yl7mt2XkHo7obhpz@pc638.lan>
-References: <20220418175403.2553842-1-joel@joelfernandes.org>
+        with ESMTP id S1355197AbiDSQrp (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 19 Apr 2022 12:47:45 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B1052654;
+        Tue, 19 Apr 2022 09:45:01 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 34670B81BEA;
+        Tue, 19 Apr 2022 16:45:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC726C385AB;
+        Tue, 19 Apr 2022 16:44:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1650386699;
+        bh=CrODZW/+Lw639iRuyZT4bLGZ80HCvsIfxVxfFqyNxds=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Wnu2dbr0/zNh6kDU6dU215pFN4Lfo/P0vNwnZFXDonb2ZrJ3J66dFY3Uu029Cv5PB
+         xbspGDPXVcnch/ZMoyzygZCXNa3u53G5tov5FfJVaiwVb4BJo4GePMcX035jW47Pzm
+         CTtW1PIrX1+HmTrgfLTu1acbHNErYJ5k0iHcPH0aZD9K6HbBJVJUfBkmYTO/ujI2qV
+         nRxrjOrRlc+z1pU6jqMH4WphofQ54N58GjC9HwtSO0ug2jbnQ14iJ9S6RoGGDm+BZ9
+         eTHjnljjViutH4q8ySAxJ3EUlx/ky3///Zz3dl7GCB2FKybU7swn/UfKfgDedKSpmc
+         n1vabm5drtKhw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 96ABA5C031F; Tue, 19 Apr 2022 09:44:58 -0700 (PDT)
+Date:   Tue, 19 Apr 2022 09:44:58 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Juergen Gross <jgross@suse.com>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, rostedt@goodmis.org,
+        Rik van Riel <riel@surriel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: Re: [PATCH rcu 04/11] kernel/smp: Provide boot-time timeout for CSD
+ lock diagnostics
+Message-ID: <20220419164458.GL4285@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20220418225345.GA3945110@paulmck-ThinkPad-P17-Gen-1>
+ <20220418225359.3945217-4-paulmck@kernel.org>
+ <521cad0a-d6ef-77a8-9258-1cf9d3b6d63d@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220418175403.2553842-1-joel@joelfernandes.org>
+In-Reply-To: <521cad0a-d6ef-77a8-9258-1cf9d3b6d63d@suse.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Apr 18, 2022 at 05:54:03PM +0000, Joel Fernandes (Google) wrote:
-> From: Joel Fernandes <joel@joelfernandes.org>
+On Tue, Apr 19, 2022 at 09:11:46AM +0200, Juergen Gross wrote:
+> On 19.04.22 00:53, Paul E. McKenney wrote:
+> > Debugging of problems involving insanely long-running SMI handlers
+> > proceeds better if the CSD-lock timeout can be adjusted.  This commit
+> > therefore provides a new smp.csd_lock_timeout kernel boot parameter
+> > that specifies the timeout in milliseconds.  The default remains at the
+> > previously hard-coded value of five seconds.
+> > 
+> > Cc: Rik van Riel <riel@surriel.com>
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Cc: Ingo Molnar <mingo@kernel.org>
+> > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> > Cc: Juergen Gross <jgross@suse.com>
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > ---
+> >   Documentation/admin-guide/kernel-parameters.txt | 11 +++++++++++
+> >   kernel/smp.c                                    |  7 +++++--
+> >   2 files changed, 16 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> > index 3f1cc5e317ed..645c4c001b16 100644
+> > --- a/Documentation/admin-guide/kernel-parameters.txt
+> > +++ b/Documentation/admin-guide/kernel-parameters.txt
+> > @@ -5377,6 +5377,17 @@
+> >   	smart2=		[HW]
+> >   			Format: <io1>[,<io2>[,...,<io8>]]
+> > +	smp.csd_lock_timeout= [KNL]
+> > +			Specify the period of time in milliseconds
+> > +			that smp_call_function() and friends will wait
+> > +			for a CPU to release the CSD lock.  This is
+> > +			useful when diagnosing bugs involving CPUs
+> > +			disabling interrupts for extended periods
+> > +			of time.  Defaults to 5,000 milliseconds, and
+> > +			setting a value of zero disables this feature.
+> > +			This feature may be more efficiently disabled
+> > +			using the csdlock_debug- kernel parameter.
+> > +
+> >   	smsc-ircc2.nopnp	[HW] Don't use PNP to discover SMC devices
+> >   	smsc-ircc2.ircc_cfg=	[HW] Device configuration I/O port
+> >   	smsc-ircc2.ircc_sir=	[HW] SIR base I/O port
+> > diff --git a/kernel/smp.c b/kernel/smp.c
+> > index 01a7c1706a58..d82439bac401 100644
+> > --- a/kernel/smp.c
+> > +++ b/kernel/smp.c
+> > @@ -183,7 +183,9 @@ static DEFINE_PER_CPU(smp_call_func_t, cur_csd_func);
+> >   static DEFINE_PER_CPU(void *, cur_csd_info);
+> >   static DEFINE_PER_CPU(struct cfd_seq_local, cfd_seq_local);
+> > -#define CSD_LOCK_TIMEOUT (5ULL * NSEC_PER_SEC)
+> > +static ulong csd_lock_timeout = 5000;  /* CSD lock timeout in milliseconds. */
+> > +module_param(csd_lock_timeout, ulong, 0444);
+> > +
+> >   static atomic_t csd_bug_count = ATOMIC_INIT(0);
+> >   static u64 cfd_seq;
+> > @@ -329,6 +331,7 @@ static bool csd_lock_wait_toolong(struct __call_single_data *csd, u64 ts0, u64 *
+> >   	u64 ts2, ts_delta;
+> >   	call_single_data_t *cpu_cur_csd;
+> >   	unsigned int flags = READ_ONCE(csd->node.u_flags);
+> > +	unsigned long long csd_lock_timeout_ns = csd_lock_timeout * NSEC_PER_MSEC;
+> >   	if (!(flags & CSD_FLAG_LOCK)) {
+> >   		if (!unlikely(*bug_id))
+> > @@ -341,7 +344,7 @@ static bool csd_lock_wait_toolong(struct __call_single_data *csd, u64 ts0, u64 *
+> >   	ts2 = sched_clock();
+> >   	ts_delta = ts2 - *ts1;
+> > -	if (likely(ts_delta <= CSD_LOCK_TIMEOUT))
+> > +	if (likely(ts_delta <= csd_lock_timeout_ns || csd_lock_timeout_ns <= 0))
 > 
-> On systems with CONFIG_RCU_NOCB_CPU=y, there is no default mask provided
-> which ends up not offloading any CPU. This patch removes a dependency
-> from the bootloader having to know about RCU and about how to provide
-> the mask.
+> csd_lock_timeout_ns is unsigned, so "csd_lock_timeout_ns <= 0" should be rather
+> "csd_lock_timeout_ns == 0".
 > 
-> With the new option enabled, all CPUs will be offloaded on boot unless
-> rcu_nocbs= or rcu_nohz_full= kernel parameters provide a CPU list.
+> With that fixed you can add my
 > 
-> Signed-off-by: Joel Fernandes <joel@joelfernandes.org>
-> ---
-> v4: mostly style related fixes.
-> v3 is back to v1 but with a config option defaulting to 'n'.
-> v2 was forcing the option to override no_cbs=
->
-Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> Reviewed-by: Juergen Gross <jgross@suse.com>
 
---
-Uladzislau Rezki
+Thank you, and will do on next rebase.
+
+							Thanx, Paul
