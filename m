@@ -2,44 +2,44 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 40A6FC4332F
-	for <rcu@archiver.kernel.org>; Tue, 19 Apr 2022 00:15:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1331EC433FE
+	for <rcu@archiver.kernel.org>; Tue, 19 Apr 2022 00:15:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238867AbiDSASS (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 18 Apr 2022 20:18:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46838 "EHLO
+        id S239824AbiDSAST (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 18 Apr 2022 20:18:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239829AbiDSASM (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S239714AbiDSASM (ORCPT <rfc822;rcu@vger.kernel.org>);
         Mon, 18 Apr 2022 20:18:12 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBB95140D5;
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0A6B140C2;
         Mon, 18 Apr 2022 17:15:29 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 8C0F4B81132;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EBB1C6134F;
         Tue, 19 Apr 2022 00:15:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23D9DC385AB;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 825FAC385CA;
         Tue, 19 Apr 2022 00:15:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1650327327;
-        bh=NA7ncOd3lAQr/67nsxE2rc6SFDgspmnx4HkPc1ydHVI=;
+        bh=9dPljee+XkU+dCj4G8HwoefiT/Vy/6UWKYfyp8TPR/k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RJNfmDRQ+xdsIEX/RQRHZu82iQPxoCaeNB5yDpka85rJnFBFiHr3z5wkkW1saLPr5
-         WrFJirHazIY6Ht0FD222nvhgbpZWQNOdKkB8O/AnKsSwdzx0lOUVKC1fewA0JVF5ds
-         7WoRF3CESxgoMh8m0Jyw7ImU8xOWYC/M6+opzrOC+JGo27lIHyxsGtZMJLwexHzE82
-         SJVyEVDhz30t0Y5bR44WC+NWCirntbtQ4QGFvEWxzQbvEmPQzPLiN4SoGkFoSxE9g3
-         Uzada3wiyKzL6W2FF8UmhurHt5CBYUyS/eulx6VEd3ERx8yEEhUxagtX8CG19o1AW2
-         4UBMayjORJRjQ==
+        b=GLa1QAQKxrZRB3HBBloOH1AFmDiXh/9s5oy1HP+svg/y3ShCrWyFaggU0qr9H1s6z
+         EsC0GmFzTaX5UFOWbjB52ZMp8QfbOZisuDFXLHEG6QGVu6duM16g0RAYIG8aERef69
+         nrn1t45CTRGJbvxYP5Fb8Vfq9C9OESnzabBFRirbmziC7FAnK6BjN/F1LM+MWODoz4
+         fvoqTRCgXhiobvx3YGcvYYPQSnc8l0zjh+x09Z3Dm46bJ/kmxUSzpR0jbwkAFiCcg3
+         rIjOxQOsc1QRoWwbfMjZzT/FruHMbqWWzWhbHd1wt76zNlhCGWZLzTGSEDRxA9jJ2z
+         JQnGKe2O0bYow==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id CAFCC5C0A23; Mon, 18 Apr 2022 17:15:26 -0700 (PDT)
+        id D65F35C1355; Mon, 18 Apr 2022 17:15:26 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
         rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 05/12] torture: Skip vmlinux check for kvm-again.sh runs
-Date:   Mon, 18 Apr 2022 17:15:18 -0700
-Message-Id: <20220419001525.3950505-5-paulmck@kernel.org>
+Subject: [PATCH rcu 11/12] rcutorture: Make torture.sh refscale and rcuscale specify Tasks Trace RCU
+Date:   Mon, 18 Apr 2022 17:15:24 -0700
+Message-Id: <20220419001525.3950505-11-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220419001519.GA3950405@paulmck-ThinkPad-P17-Gen-1>
 References: <20220419001519.GA3950405@paulmck-ThinkPad-P17-Gen-1>
@@ -49,29 +49,40 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The kvm-again.sh script reruns an previously built set of kernels, so
-the vmlinux files are associated with that previous run, not this on.
-This results in kvm-find_errors.sh reporting spurious failed-build errors.
-This commit therefore omits teh vmlinux check for kvm-again.sh runs.
+Now that the Tasks RCU flavors are selected by their users rather than
+by the rcutorture scenarios, torture.sh fails when attempting to run
+NOPREEMPT scenarios for refscale and rcuscale.  This commit therefore
+makes torture.sh specify CONFIG_TASKS_TRACE_RCU=y to avoid such failure.
+
+Why not also CONFIG_TASKS_RCU?  Because tracing selects this one.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/kvm-find-errors.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/testing/selftests/rcutorture/bin/torture.sh | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-find-errors.sh b/tools/testing/selftests/rcutorture/bin/kvm-find-errors.sh
-index 5f682fc892dd..88983cba7956 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-find-errors.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-find-errors.sh
-@@ -36,7 +36,7 @@ do
- 	then
- 		egrep "error:|warning:|^ld: .*undefined reference to" < $i > $i.diags
- 		files="$files $i.diags $i"
--	elif ! test -f ${scenariobasedir}/vmlinux
-+	elif ! test -f ${scenariobasedir}/vmlinux && ! test -f "${rundir}/re-run"
- 	then
- 		echo No ${scenariobasedir}/vmlinux file > $i.diags
- 		files="$files $i.diags $i"
+diff --git a/tools/testing/selftests/rcutorture/bin/torture.sh b/tools/testing/selftests/rcutorture/bin/torture.sh
+index c5b3dedc6dc4..f9c1437b9a19 100755
+--- a/tools/testing/selftests/rcutorture/bin/torture.sh
++++ b/tools/testing/selftests/rcutorture/bin/torture.sh
+@@ -364,7 +364,7 @@ fi
+ for prim in $primlist
+ do
+ 	torture_bootargs="refscale.scale_type="$prim" refscale.nreaders=$HALF_ALLOTED_CPUS refscale.loops=10000 refscale.holdoff=20 torture.disable_onoff_at_boot"
+-	torture_set "refscale-$prim" tools/testing/selftests/rcutorture/bin/kvm.sh --torture refscale --allcpus --duration 5 --kconfig "CONFIG_NR_CPUS=$HALF_ALLOTED_CPUS" --bootargs "verbose_batched=$VERBOSE_BATCH_CPUS torture.verbose_sleep_frequency=8 torture.verbose_sleep_duration=$VERBOSE_BATCH_CPUS" --trust-make
++	torture_set "refscale-$prim" tools/testing/selftests/rcutorture/bin/kvm.sh --torture refscale --allcpus --duration 5 --kconfig "CONFIG_TASKS_TRACE_RCU=y CONFIG_NR_CPUS=$HALF_ALLOTED_CPUS" --bootargs "verbose_batched=$VERBOSE_BATCH_CPUS torture.verbose_sleep_frequency=8 torture.verbose_sleep_duration=$VERBOSE_BATCH_CPUS" --trust-make
+ done
+ 
+ if test "$do_rcuscale" = yes
+@@ -376,7 +376,7 @@ fi
+ for prim in $primlist
+ do
+ 	torture_bootargs="rcuscale.scale_type="$prim" rcuscale.nwriters=$HALF_ALLOTED_CPUS rcuscale.holdoff=20 torture.disable_onoff_at_boot"
+-	torture_set "rcuscale-$prim" tools/testing/selftests/rcutorture/bin/kvm.sh --torture rcuscale --allcpus --duration 5 --kconfig "CONFIG_NR_CPUS=$HALF_ALLOTED_CPUS" --trust-make
++	torture_set "rcuscale-$prim" tools/testing/selftests/rcutorture/bin/kvm.sh --torture rcuscale --allcpus --duration 5 --kconfig "CONFIG_TASKS_TRACE_RCU=y CONFIG_NR_CPUS=$HALF_ALLOTED_CPUS" --trust-make
+ done
+ 
+ if test "$do_kvfree" = "yes"
 -- 
 2.31.1.189.g2e36527f23
 
