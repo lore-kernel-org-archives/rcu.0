@@ -2,110 +2,106 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C11EC433EF
-	for <rcu@archiver.kernel.org>; Tue, 19 Apr 2022 00:03:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DD2DBC433F5
+	for <rcu@archiver.kernel.org>; Tue, 19 Apr 2022 00:03:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232599AbiDSAF6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 18 Apr 2022 20:05:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52554 "EHLO
+        id S236688AbiDSAGH (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 18 Apr 2022 20:06:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236688AbiDSAF5 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 18 Apr 2022 20:05:57 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 342171FA7E;
-        Mon, 18 Apr 2022 17:03:17 -0700 (PDT)
+        with ESMTP id S229920AbiDSAGG (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 18 Apr 2022 20:06:06 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCE2213F97;
+        Mon, 18 Apr 2022 17:03:25 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B9F3B61297;
-        Tue, 19 Apr 2022 00:03:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2AEA6C385A7;
-        Tue, 19 Apr 2022 00:03:16 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 52C5261297;
+        Tue, 19 Apr 2022 00:03:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A39B9C385AB;
+        Tue, 19 Apr 2022 00:03:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1650326596;
-        bh=CnkqtBA7WJbomLfpEDYYQQ8kyFha02flhX/Blp9xB5c=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=uUY5JHD8glEOtS8i3oy1AnkG6882Iw5V3BQ2Ks3VZ5Y1lEzdORhv7l3U8KJoy9SoW
-         p2qFAiysxYYocpp4Q7TcdorK44FiTf9GsbAL7IqAKmF9BfvB0/x3UwJ3xJhv0vyzNV
-         1bJAbpIr43JTE5zs0RLYyAGWqMw5HWm5WlDmTnJAfWcUv949869Erx+Zgrt69gTQJ+
-         /2GPGu88D18NkK4q9gwijiXryjtGyZqQtg3ZKKDB5BrJVWeBt3cT99IC3xYYq1I8Qe
-         u0pXoBE5uGEzbKADUoxmgTXsbgh909qSF6K30oZLH0QUIbABzX7/+tjdLh+vAwbAdS
-         ybfddxdF9B77A==
+        s=k20201202; t=1650326604;
+        bh=ZZ4EmnWyc2TdVDNKqE6NcBxGvAGwflG6QiNpPkNuJC4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ha8RHPGuMI1zI4mVn5mllWh3XNLkKtKmVxZkmbdYEj3racbDox6/QJSbdtbphKH7w
+         J5yRCFmzYQ4cQuerZfTFTZ6p1q6oSCH8ILXrvuVSzRobUd4iJLLBPJfKj2z+wqAIR7
+         OCjjGDYwqjHsjqyzlDQJsk3ahHbXuPVy7jfH2cNGWOkd5cOg2qV9lauDnC3oguxf+/
+         qhdamWDMhyrYRbbT1p5GnNg/mRepxLEJ4o4TIlcx8kCLGQhnf1M1YI011qEr4MoLjr
+         l+iCpEnPPsfPOaIe8CLojQKBVEys3MbM/lHaxeAL02c6JflakzOzcltqQyycCp21rA
+         NghOTjSwwCSDA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id BC7F15C04BD; Mon, 18 Apr 2022 17:03:15 -0700 (PDT)
-Date:   Mon, 18 Apr 2022 17:03:15 -0700
+        id 51EFD5C0848; Mon, 18 Apr 2022 17:03:24 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org
-Subject: [PATCH rcu 0/21] SRCU updates for v5.19
-Message-ID: <20220419000315.GA3948789@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 03/21] srcu: Make srcu_funnel_gp_start() cache ->mynode in snp_leaf
+Date:   Mon, 18 Apr 2022 17:03:04 -0700
+Message-Id: <20220419000322.3948903-3-paulmck@kernel.org>
+X-Mailer: git-send-email 2.31.1.189.g2e36527f23
+In-Reply-To: <20220419000315.GA3948789@paulmck-ThinkPad-P17-Gen-1>
+References: <20220419000315.GA3948789@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello!
+Currently, the srcu_funnel_gp_start() walks its local variable snp up the
+tree and reloads sdp->mynode whenever it is necessary to check whether
+it is still at the leaf srcu_node level.  This works, but is a bit more
+obtuse than absolutely necessary.  In addition, upcoming commits will
+dynamically size srcu_struct structures, in which case sdp->mynode will
+no longer necessarily be a constant, and this commit helps prepare for
+that dynamic sizing.
 
-This series contains SRCU updates, primarily reducing the srcu_struct
-structure's infamous memory footprint.
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ kernel/rcu/srcutree.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-1.	Tighten cleanup_srcu_struct() GP checks.
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index d30e4db04506..7d13e35e5d27 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -632,20 +632,21 @@ static void srcu_funnel_gp_start(struct srcu_struct *ssp, struct srcu_data *sdp,
+ {
+ 	unsigned long flags;
+ 	int idx = rcu_seq_ctr(s) % ARRAY_SIZE(sdp->mynode->srcu_have_cbs);
+-	struct srcu_node *snp = sdp->mynode;
++	struct srcu_node *snp;
++	struct srcu_node *snp_leaf = sdp->mynode;
+ 	unsigned long snp_seq;
+ 
+ 	/* Each pass through the loop does one level of the srcu_node tree. */
+-	for (; snp != NULL; snp = snp->srcu_parent) {
+-		if (rcu_seq_done(&ssp->srcu_gp_seq, s) && snp != sdp->mynode)
++	for (snp = snp_leaf; snp != NULL; snp = snp->srcu_parent) {
++		if (rcu_seq_done(&ssp->srcu_gp_seq, s) && snp != snp_leaf)
+ 			return; /* GP already done and CBs recorded. */
+ 		spin_lock_irqsave_rcu_node(snp, flags);
+ 		if (ULONG_CMP_GE(snp->srcu_have_cbs[idx], s)) {
+ 			snp_seq = snp->srcu_have_cbs[idx];
+-			if (snp == sdp->mynode && snp_seq == s)
++			if (snp == snp_leaf && snp_seq == s)
+ 				snp->srcu_data_have_cbs[idx] |= sdp->grpmask;
+ 			spin_unlock_irqrestore_rcu_node(snp, flags);
+-			if (snp == sdp->mynode && snp_seq != s) {
++			if (snp == snp_leaf && snp_seq != s) {
+ 				srcu_schedule_cbs_sdp(sdp, do_norm
+ 							   ? SRCU_INTERVAL
+ 							   : 0);
+@@ -656,7 +657,7 @@ static void srcu_funnel_gp_start(struct srcu_struct *ssp, struct srcu_data *sdp,
+ 			return;
+ 		}
+ 		snp->srcu_have_cbs[idx] = s;
+-		if (snp == sdp->mynode)
++		if (snp == snp_leaf)
+ 			snp->srcu_data_have_cbs[idx] |= sdp->grpmask;
+ 		if (!do_norm && ULONG_CMP_LT(snp->srcu_gp_seq_needed_exp, s))
+ 			WRITE_ONCE(snp->srcu_gp_seq_needed_exp, s);
+-- 
+2.31.1.189.g2e36527f23
 
-2.	Fix s/is/if/ typo in srcu_node comment.
-
-3.	Make srcu_funnel_gp_start() cache ->mynode in snp_leaf.
-
-4.	Make Tree SRCU able to operate without snp_node array.
-
-5.	Dynamically allocate srcu_node array.
-
-6.	Add size-state transitioning code.
-
-7.	Make rcutorture dump the SRCU size state.
-
-8.	Compute snp_seq earlier in srcu_funnel_gp_start().
-
-9.	Use invalid initial value for srcu_node GP sequence numbers.
-
-10.	Ensure snp nodes tree is fully initialized before traversal,
-	courtesy of Neeraj Upadhyay.
-
-11.	Add boot-time control over srcu_node array allocation.
-
-12.	Use export for srcu_struct defined by DEFINE_STATIC_SRCU(),
-	courtesy of Alexander Aring.
-
-13.	Avoid NULL dereference in srcu_torture_stats_print().
-
-14.	Prevent cleanup_srcu_struct() from freeing non-dynamic ->sda.
-
-15.	Explain srcu_funnel_gp_start() call to list_add() is safe.
-
-16.	Create concurrency-safe helper for initiating size transition.
-
-17.	Add contention-triggered addition of srcu_node tree.
-
-18.	Automatically determine size-transition strategy at boot.
-
-19.	Add contention check to call_srcu() srcu_data ->lock acquisition.
-
-20.	Prevent expedited GPs and blocking readers from consuming CPU.
-
-21.	Drop needless initialization of sdp in srcu_gp_start(), courtesy
-	of Lukas Bulwahn.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- Documentation/admin-guide/kernel-parameters.txt   |   18 
- b/Documentation/admin-guide/kernel-parameters.txt |   13 
- b/include/linux/srcutree.h                        |    8 
- b/kernel/rcu/srcutree.c                           |    6 
- include/linux/srcutree.h                          |   24 
- kernel/rcu/srcutree.c                             |  751 +++++++++++++++-------
- 6 files changed, 587 insertions(+), 233 deletions(-)
