@@ -2,422 +2,186 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0AD5BC433EF
-	for <rcu@archiver.kernel.org>; Tue, 19 Apr 2022 23:46:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A512AC433F5
+	for <rcu@archiver.kernel.org>; Tue, 19 Apr 2022 23:56:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358101AbiDSXth (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 19 Apr 2022 19:49:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39466 "EHLO
+        id S234412AbiDSX7P (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 19 Apr 2022 19:59:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358242AbiDSXta (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 19 Apr 2022 19:49:30 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F5F7E0D3;
-        Tue, 19 Apr 2022 16:46:45 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1650412004;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=J2hQqNgilYu2xBQEcY0w7AYzM9SE4JERJ32P4OJPGHU=;
-        b=tySz0l5oYbeLjm1j8BHXlpEj5mg3x9UM6xuNVetpAkrM3BHYLlC/z155GobBhpi3lw2HR5
-        3SX58zocmaxXJwo7XMJI31vqLVH8MGq4fEVqdZbdAb2Or6l3pLvvjino9jZgH6UTV+gbAD
-        UNcN7kDlrKiptMFb3oqlQv5eKt4GJruMo+GjtEc0wo7ptc9frzBgyrmgu1m/OpgwYtRykZ
-        OCNgGbXa7x6gmglPwFStgt4tfeUXZt1XMXPG6qa+wpaL/fRAAZ8ZRibVIlH0/oPn2o981q
-        gVZPOzqAfmKuQx0PW6hkbCVbFcdgUNY1KXBsvyR4AUxlMK/JYUtH/Bbk93HOOA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1650412004;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=J2hQqNgilYu2xBQEcY0w7AYzM9SE4JERJ32P4OJPGHU=;
-        b=2HDxse555tbNhoq34WqfeppAm/19uBh3lz7ruJD+dCA55OFf8kLLy5p3Wg30b7XBvEklqt
-        gCYLdqvrLvcr1WDA==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        with ESMTP id S230177AbiDSX7M (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 19 Apr 2022 19:59:12 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C86041D338;
+        Tue, 19 Apr 2022 16:56:28 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E0235612C9;
+        Tue, 19 Apr 2022 23:56:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E5F2C385A5;
+        Tue, 19 Apr 2022 23:56:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1650412587;
+        bh=9g7/inwTumUIZwXW1gRuGutp+YxXGAnaNf9dgVpIOmc=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=boFsQlzFH9xlyHfZyVvNVFOGqef8ImZ53V94HwpRC5UE7lMhH56ABug6C98jSeIi0
+         zxRR2O1bzcGNGmUMYW7BYp6flp70sbLb4IuShY2cIweFy8hwjq4fKZ972zjKZi1mOO
+         pr1EUnI8nYnet6eKlv7rlP9KK89lQ0LvN18cwVt0ADtWj1shSbj9y8LmozLaK4wC/B
+         VNNlsHrjfprNXXGPlXIBPZtEB/1iOb99uSFm4fxFBzjgtMReR9tAvOdCiqKof9aVyJ
+         4jrYXFz1i1+z23Ap6tsiXJdXJWOKjwcg/8FV9DbRPEE//hIXO+RRusifgIXHb8PvKR
+         x6KuWYo44SlHA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id D953F5C012F; Tue, 19 Apr 2022 16:56:26 -0700 (PDT)
+Date:   Tue, 19 Apr 2022 16:56:26 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
         Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Helge Deller <deller@gmx.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Xiaoming Ni <nixiaoming@huawei.com>,
-        Marco Elver <elver@google.com>, Wei Liu <wei.liu@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Shawn Guo <shawn.guo@linaro.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Wang Qing <wangqing@vivo.com>, rcu@vger.kernel.org
-Subject: [PATCH printk v3 12/15] printk: add functions to prefer direct printing
-Date:   Wed, 20 Apr 2022 01:52:34 +0206
-Message-Id: <20220419234637.357112-13-john.ogness@linutronix.de>
-In-Reply-To: <20220419234637.357112-1-john.ogness@linutronix.de>
-References: <20220419234637.357112-1-john.ogness@linutronix.de>
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        rcu <rcu@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+        Rushikesh S Kadam <rushikesh.s.kadam@intel.com>,
+        Vineeth Pillai <vineethrp@gmail.com>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Subject: Re: [PATCH v4 rcu/dev] rcu/nocb: Add an option to offload all CPUs
+ on boot
+Message-ID: <20220419235626.GW4285@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20220419200823.2790490-1-joel@joelfernandes.org>
+ <CAEXW_YS7cdrfP58Qvbt_WS2QRNkV=wVrwY6iTWmEH5qBxyStxQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEXW_YS7cdrfP58Qvbt_WS2QRNkV=wVrwY6iTWmEH5qBxyStxQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Once kthread printing is available, console printing will no longer
-occur in the context of the printk caller. However, there are some
-special contexts where it is desirable for the printk caller to
-directly print out kernel messages. Using pr_flush() to wait for
-threaded printers is only possible if the caller is in a sleepable
-context and the kthreads are active. That is not always the case.
+On Tue, Apr 19, 2022 at 04:10:33PM -0400, Joel Fernandes wrote:
+> On Tue, Apr 19, 2022 at 4:08 PM Joel Fernandes (Google)
+> <joel@joelfernandes.org> wrote:
+> >
+> > From: Joel Fernandes <joel@joelfernandes.org>
+> >
+> > On systems with CONFIG_RCU_NOCB_CPU=y, there is no default mask provided
+> > which ends up not offloading any CPU. This patch removes a dependency
+> > from the bootloader having to know about RCU and about how to provide
+> > the mask.
+> >
+> > With the new option enabled, all CPUs will be offloaded on boot unless
+> > rcu_nocbs= or rcu_nohz_full= kernel parameters provide a CPU list.
+> >
+> > Signed-off-by: Joel Fernandes <joel@joelfernandes.org>
+> 
+> Oops, forgot to add Reviewed-by tags:
+> Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> Reviewed-by: Kalesh Singh <kaleshsingh@google.com>
+> 
+> Paul, would you mind doing so, so I don't have to resend? Apologies.
 
-Introduce printk_prefer_direct_enter() and printk_prefer_direct_exit()
-functions to explicitly (and globally) activate/deactivate preferred
-direct console printing. The term "direct console printing" refers to
-printing to all enabled consoles from the context of the printk
-caller. The term "prefer" is used because this type of printing is
-only best effort. If the console is currently locked or other
-printers are already actively printing, the printk caller will need
-to rely on the other contexts to handle the printing.
+OK, but only because it passed an allmodconfig build this time.  ;-)
 
-This preferred direct printing is how all printing has been handled
-until now (unless it was explicitly deferred).
+							Thanx, Paul
 
-When kthread printing is introduced, there may be some unanticipated
-problems due to kthreads being unable to flush important messages.
-In order to minimize such risks, preferred direct printing is
-activated for the primary important messages when the system
-experiences general types of major errors. These are:
-
- - emergency reboot/shutdown
- - cpu and rcu stalls
- - hard and soft lockups
- - hung tasks
- - warn
- - sysrq
-
-Note that since kthread printing does not yet exist, no behavior
-changes result from this commit. This is only implementing the
-counter and marking the various places where preferred direct
-printing is active.
-
-Signed-off-by: John Ogness <john.ogness@linutronix.de>
-Reviewed-by: Petr Mladek <pmladek@suse.com>
-Acked-by: Paul E. McKenney <paulmck@kernel.org> # for RCU
----
- drivers/tty/sysrq.c     |  2 ++
- include/linux/printk.h  | 11 +++++++++++
- kernel/hung_task.c      | 11 ++++++++++-
- kernel/panic.c          |  4 ++++
- kernel/printk/printk.c  | 28 ++++++++++++++++++++++++++++
- kernel/rcu/tree_stall.h |  2 ++
- kernel/reboot.c         | 14 +++++++++++++-
- kernel/watchdog.c       |  4 ++++
- kernel/watchdog_hld.c   |  4 ++++
- 9 files changed, 78 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/tty/sysrq.c b/drivers/tty/sysrq.c
-index bbfd004449b5..2884cd638d64 100644
---- a/drivers/tty/sysrq.c
-+++ b/drivers/tty/sysrq.c
-@@ -578,6 +578,7 @@ void __handle_sysrq(int key, bool check_mask)
- 
- 	rcu_sysrq_start();
- 	rcu_read_lock();
-+	printk_prefer_direct_enter();
- 	/*
- 	 * Raise the apparent loglevel to maximum so that the sysrq header
- 	 * is shown to provide the user with positive feedback.  We do not
-@@ -619,6 +620,7 @@ void __handle_sysrq(int key, bool check_mask)
- 		pr_cont("\n");
- 		console_loglevel = orig_log_level;
- 	}
-+	printk_prefer_direct_exit();
- 	rcu_read_unlock();
- 	rcu_sysrq_end();
- 
-diff --git a/include/linux/printk.h b/include/linux/printk.h
-index 091fba7283e1..cd26aab0ab2a 100644
---- a/include/linux/printk.h
-+++ b/include/linux/printk.h
-@@ -170,6 +170,9 @@ extern void __printk_safe_exit(void);
- #define printk_deferred_enter __printk_safe_enter
- #define printk_deferred_exit __printk_safe_exit
- 
-+extern void printk_prefer_direct_enter(void);
-+extern void printk_prefer_direct_exit(void);
-+
- extern bool pr_flush(int timeout_ms, bool reset_on_progress);
- 
- /*
-@@ -222,6 +225,14 @@ static inline void printk_deferred_exit(void)
- {
- }
- 
-+static inline void printk_prefer_direct_enter(void)
-+{
-+}
-+
-+static inline void printk_prefer_direct_exit(void)
-+{
-+}
-+
- static inline bool pr_flush(int timeout_ms, bool reset_on_progress)
- {
- 	return true;
-diff --git a/kernel/hung_task.c b/kernel/hung_task.c
-index 52501e5f7655..02a65d554340 100644
---- a/kernel/hung_task.c
-+++ b/kernel/hung_task.c
-@@ -127,6 +127,8 @@ static void check_hung_task(struct task_struct *t, unsigned long timeout)
- 	 * complain:
- 	 */
- 	if (sysctl_hung_task_warnings) {
-+		printk_prefer_direct_enter();
-+
- 		if (sysctl_hung_task_warnings > 0)
- 			sysctl_hung_task_warnings--;
- 		pr_err("INFO: task %s:%d blocked for more than %ld seconds.\n",
-@@ -142,6 +144,8 @@ static void check_hung_task(struct task_struct *t, unsigned long timeout)
- 
- 		if (sysctl_hung_task_all_cpu_backtrace)
- 			hung_task_show_all_bt = true;
-+
-+		printk_prefer_direct_exit();
- 	}
- 
- 	touch_nmi_watchdog();
-@@ -204,12 +208,17 @@ static void check_hung_uninterruptible_tasks(unsigned long timeout)
- 	}
-  unlock:
- 	rcu_read_unlock();
--	if (hung_task_show_lock)
-+	if (hung_task_show_lock) {
-+		printk_prefer_direct_enter();
- 		debug_show_all_locks();
-+		printk_prefer_direct_exit();
-+	}
- 
- 	if (hung_task_show_all_bt) {
- 		hung_task_show_all_bt = false;
-+		printk_prefer_direct_enter();
- 		trigger_all_cpu_backtrace();
-+		printk_prefer_direct_exit();
- 	}
- 
- 	if (hung_task_call_panic)
-diff --git a/kernel/panic.c b/kernel/panic.c
-index 55b50e052ec3..7d422597403f 100644
---- a/kernel/panic.c
-+++ b/kernel/panic.c
-@@ -560,6 +560,8 @@ void __warn(const char *file, int line, void *caller, unsigned taint,
- {
- 	disable_trace_on_warning();
- 
-+	printk_prefer_direct_enter();
-+
- 	if (file)
- 		pr_warn("WARNING: CPU: %d PID: %d at %s:%d %pS\n",
- 			raw_smp_processor_id(), current->pid, file, line,
-@@ -597,6 +599,8 @@ void __warn(const char *file, int line, void *caller, unsigned taint,
- 
- 	/* Just a warning, don't kill lockdep. */
- 	add_taint(taint, LOCKDEP_STILL_OK);
-+
-+	printk_prefer_direct_exit();
- }
- 
- #ifndef __WARN_FLAGS
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index a06999d55278..ed7f738261cc 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -362,6 +362,34 @@ static int console_msg_format = MSG_FORMAT_DEFAULT;
- static DEFINE_MUTEX(syslog_lock);
- 
- #ifdef CONFIG_PRINTK
-+static atomic_t printk_prefer_direct = ATOMIC_INIT(0);
-+
-+/**
-+ * printk_prefer_direct_enter - cause printk() calls to attempt direct
-+ *                              printing to all enabled consoles
-+ *
-+ * Since it is not possible to call into the console printing code from any
-+ * context, there is no guarantee that direct printing will occur.
-+ *
-+ * This globally effects all printk() callers.
-+ *
-+ * Context: Any context.
-+ */
-+void printk_prefer_direct_enter(void)
-+{
-+	atomic_inc(&printk_prefer_direct);
-+}
-+
-+/**
-+ * printk_prefer_direct_exit - restore printk() behavior
-+ *
-+ * Context: Any context.
-+ */
-+void printk_prefer_direct_exit(void)
-+{
-+	WARN_ON(atomic_dec_if_positive(&printk_prefer_direct) < 0);
-+}
-+
- DECLARE_WAIT_QUEUE_HEAD(log_wait);
- /* All 3 protected by @syslog_lock. */
- /* the next printk record to read by syslog(READ) or /proc/kmsg */
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index 0c5d8516516a..d612707c2ed0 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -619,6 +619,7 @@ static void print_cpu_stall(unsigned long gps)
- 	 * See Documentation/RCU/stallwarn.rst for info on how to debug
- 	 * RCU CPU stall warnings.
- 	 */
-+	printk_prefer_direct_enter();
- 	trace_rcu_stall_warning(rcu_state.name, TPS("SelfDetected"));
- 	pr_err("INFO: %s self-detected stall on CPU\n", rcu_state.name);
- 	raw_spin_lock_irqsave_rcu_node(rdp->mynode, flags);
-@@ -656,6 +657,7 @@ static void print_cpu_stall(unsigned long gps)
- 	 */
- 	set_tsk_need_resched(current);
- 	set_preempt_need_resched();
-+	printk_prefer_direct_exit();
- }
- 
- static void check_cpu_stall(struct rcu_data *rdp)
-diff --git a/kernel/reboot.c b/kernel/reboot.c
-index 6bcc5d6a6572..4177645e74d6 100644
---- a/kernel/reboot.c
-+++ b/kernel/reboot.c
-@@ -447,9 +447,11 @@ static int __orderly_reboot(void)
- 	ret = run_cmd(reboot_cmd);
- 
- 	if (ret) {
-+		printk_prefer_direct_enter();
- 		pr_warn("Failed to start orderly reboot: forcing the issue\n");
- 		emergency_sync();
- 		kernel_restart(NULL);
-+		printk_prefer_direct_exit();
- 	}
- 
- 	return ret;
-@@ -462,6 +464,7 @@ static int __orderly_poweroff(bool force)
- 	ret = run_cmd(poweroff_cmd);
- 
- 	if (ret && force) {
-+		printk_prefer_direct_enter();
- 		pr_warn("Failed to start orderly shutdown: forcing the issue\n");
- 
- 		/*
-@@ -471,6 +474,7 @@ static int __orderly_poweroff(bool force)
- 		 */
- 		emergency_sync();
- 		kernel_power_off();
-+		printk_prefer_direct_exit();
- 	}
- 
- 	return ret;
-@@ -528,6 +532,8 @@ EXPORT_SYMBOL_GPL(orderly_reboot);
-  */
- static void hw_failure_emergency_poweroff_func(struct work_struct *work)
- {
-+	printk_prefer_direct_enter();
-+
- 	/*
- 	 * We have reached here after the emergency shutdown waiting period has
- 	 * expired. This means orderly_poweroff has not been able to shut off
-@@ -544,6 +550,8 @@ static void hw_failure_emergency_poweroff_func(struct work_struct *work)
- 	 */
- 	pr_emerg("Hardware protection shutdown failed. Trying emergency restart\n");
- 	emergency_restart();
-+
-+	printk_prefer_direct_exit();
- }
- 
- static DECLARE_DELAYED_WORK(hw_failure_emergency_poweroff_work,
-@@ -582,11 +590,13 @@ void hw_protection_shutdown(const char *reason, int ms_until_forced)
- {
- 	static atomic_t allow_proceed = ATOMIC_INIT(1);
- 
-+	printk_prefer_direct_enter();
-+
- 	pr_emerg("HARDWARE PROTECTION shutdown (%s)\n", reason);
- 
- 	/* Shutdown should be initiated only once. */
- 	if (!atomic_dec_and_test(&allow_proceed))
--		return;
-+		goto out;
- 
- 	/*
- 	 * Queue a backup emergency shutdown in the event of
-@@ -594,6 +604,8 @@ void hw_protection_shutdown(const char *reason, int ms_until_forced)
- 	 */
- 	hw_failure_emergency_poweroff(ms_until_forced);
- 	orderly_poweroff(true);
-+out:
-+	printk_prefer_direct_exit();
- }
- EXPORT_SYMBOL_GPL(hw_protection_shutdown);
- 
-diff --git a/kernel/watchdog.c b/kernel/watchdog.c
-index 9166220457bc..40024e03d422 100644
---- a/kernel/watchdog.c
-+++ b/kernel/watchdog.c
-@@ -424,6 +424,8 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
- 		/* Start period for the next softlockup warning. */
- 		update_report_ts();
- 
-+		printk_prefer_direct_enter();
-+
- 		pr_emerg("BUG: soft lockup - CPU#%d stuck for %us! [%s:%d]\n",
- 			smp_processor_id(), duration,
- 			current->comm, task_pid_nr(current));
-@@ -442,6 +444,8 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
- 		add_taint(TAINT_SOFTLOCKUP, LOCKDEP_STILL_OK);
- 		if (softlockup_panic)
- 			panic("softlockup: hung tasks");
-+
-+		printk_prefer_direct_exit();
- 	}
- 
- 	return HRTIMER_RESTART;
-diff --git a/kernel/watchdog_hld.c b/kernel/watchdog_hld.c
-index 247bf0b1582c..701f35f0e2d4 100644
---- a/kernel/watchdog_hld.c
-+++ b/kernel/watchdog_hld.c
-@@ -135,6 +135,8 @@ static void watchdog_overflow_callback(struct perf_event *event,
- 		if (__this_cpu_read(hard_watchdog_warn) == true)
- 			return;
- 
-+		printk_prefer_direct_enter();
-+
- 		pr_emerg("Watchdog detected hard LOCKUP on cpu %d\n",
- 			 this_cpu);
- 		print_modules();
-@@ -155,6 +157,8 @@ static void watchdog_overflow_callback(struct perf_event *event,
- 		if (hardlockup_panic)
- 			nmi_panic(regs, "Hard LOCKUP");
- 
-+		printk_prefer_direct_exit();
-+
- 		__this_cpu_write(hard_watchdog_warn, true);
- 		return;
- 	}
--- 
-2.30.2
-
+> Thanks,
+> 
+> Joel
+> 
+> 
+> > ---
+> > v4: Rebased on rcu/dev, fixed conflict with Frederick's patch changing
+> >     location of nocb_is_setup variable.
+> >
+> >  Documentation/admin-guide/kernel-parameters.txt |  6 ++++++
+> >  kernel/rcu/Kconfig                              | 13 +++++++++++++
+> >  kernel/rcu/tree_nocb.h                          | 13 +++++++++++++
+> >  3 files changed, 32 insertions(+)
+> >
+> > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> > index 789ef586009b..1e82ecb7a649 100644
+> > --- a/Documentation/admin-guide/kernel-parameters.txt
+> > +++ b/Documentation/admin-guide/kernel-parameters.txt
+> > @@ -3572,6 +3572,9 @@
+> >                         just as if they had also been called out in the
+> >                         rcu_nocbs= boot parameter.
+> >
+> > +                       Note that this argument takes precedence over
+> > +                       the CONFIG_RCU_NOCB_CPU_DEFAULT_ALL option.
+> > +
+> >         noiotrap        [SH] Disables trapped I/O port accesses.
+> >
+> >         noirqdebug      [X86-32] Disables the code which attempts to detect and
+> > @@ -4475,6 +4478,9 @@
+> >                         no-callback mode from boot but the mode may be
+> >                         toggled at runtime via cpusets.
+> >
+> > +                       Note that this argument takes precedence over
+> > +                       the CONFIG_RCU_NOCB_CPU_DEFAULT_ALL option.
+> > +
+> >         rcu_nocb_poll   [KNL]
+> >                         Rather than requiring that offloaded CPUs
+> >                         (specified by rcu_nocbs= above) explicitly
+> > diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+> > index 1c630e573548..27aab870ae4c 100644
+> > --- a/kernel/rcu/Kconfig
+> > +++ b/kernel/rcu/Kconfig
+> > @@ -262,6 +262,19 @@ config RCU_NOCB_CPU
+> >           Say Y here if you need reduced OS jitter, despite added overhead.
+> >           Say N here if you are unsure.
+> >
+> > +config RCU_NOCB_CPU_DEFAULT_ALL
+> > +       bool "Offload RCU callback processing from all CPUs by default"
+> > +       depends on RCU_NOCB_CPU
+> > +       default n
+> > +       help
+> > +         Use this option to offload callback processing from all CPUs
+> > +         by default, in the absence of the rcu_nocbs or nohz_full boot
+> > +         parameter. This also avoids the need to use any boot parameters
+> > +         to achieve the effect of offloading all CPUs on boot.
+> > +
+> > +         Say Y here if you want offload all CPUs by default on boot.
+> > +         Say N here if you are unsure.
+> > +
+> >  config TASKS_TRACE_RCU_READ_MB
+> >         bool "Tasks Trace RCU readers use memory barriers in user and idle"
+> >         depends on RCU_EXPERT && TASKS_TRACE_RCU
+> > diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> > index 4cf9a29bba79..9f29f25a0cbc 100644
+> > --- a/kernel/rcu/tree_nocb.h
+> > +++ b/kernel/rcu/tree_nocb.h
+> > @@ -1197,11 +1197,21 @@ void __init rcu_init_nohz(void)
+> >  {
+> >         int cpu;
+> >         bool need_rcu_nocb_mask = false;
+> > +       bool offload_all = false;
+> >         struct rcu_data *rdp;
+> >
+> > +#if defined(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL)
+> > +       if (!rcu_state.nocb_is_setup) {
+> > +               need_rcu_nocb_mask = true;
+> > +               offload_all = true;
+> > +       }
+> > +#endif /* #if defined(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL) */
+> > +
+> >  #if defined(CONFIG_NO_HZ_FULL)
+> >         if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask))
+> >                 need_rcu_nocb_mask = true;
+> > +               offload_all = false; /* NO_HZ_FULL has its own mask. */
+> > +       }
+> >  #endif /* #if defined(CONFIG_NO_HZ_FULL) */
+> >
+> >         if (need_rcu_nocb_mask) {
+> > @@ -1222,6 +1232,9 @@ void __init rcu_init_nohz(void)
+> >                 cpumask_or(rcu_nocb_mask, rcu_nocb_mask, tick_nohz_full_mask);
+> >  #endif /* #if defined(CONFIG_NO_HZ_FULL) */
+> >
+> > +       if (offload_all)
+> > +               cpumask_setall(rcu_nocb_mask);
+> > +
+> >         if (!cpumask_subset(rcu_nocb_mask, cpu_possible_mask)) {
+> >                 pr_info("\tNote: kernel parameter 'rcu_nocbs=', 'nohz_full', or 'isolcpus=' contains nonexistent CPUs.\n");
+> >                 cpumask_and(rcu_nocb_mask, cpu_possible_mask,
+> > --
+> > 2.36.0.rc0.470.gd361397f0d-goog
+> >
