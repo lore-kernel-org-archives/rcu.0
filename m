@@ -2,44 +2,45 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 243C9C433FE
-	for <rcu@archiver.kernel.org>; Tue, 19 Apr 2022 00:03:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BEE95C433FE
+	for <rcu@archiver.kernel.org>; Tue, 19 Apr 2022 00:03:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236875AbiDSAGN (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 18 Apr 2022 20:06:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52794 "EHLO
+        id S237037AbiDSAGO (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 18 Apr 2022 20:06:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236902AbiDSAGI (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 18 Apr 2022 20:06:08 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DAB723159;
-        Mon, 18 Apr 2022 17:03:27 -0700 (PDT)
+        with ESMTP id S236855AbiDSAGJ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 18 Apr 2022 20:06:09 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B0572317E;
+        Mon, 18 Apr 2022 17:03:28 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 01DC4B81141;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 20FB1612D0;
         Tue, 19 Apr 2022 00:03:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9AE32C385A9;
-        Tue, 19 Apr 2022 00:03:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13CF9C385BA;
+        Tue, 19 Apr 2022 00:03:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1650326604;
-        bh=R6yVW5CkBqUs8J0Ergawy2eOvj41C2+kBPhfDbE3hE4=;
+        s=k20201202; t=1650326605;
+        bh=yD8/2f4i74rv4I75fc7QN5JRO3/GVs7/E4TdpFpPISc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hkMpzHDdAA+7YDs/T/Qxc2I6UxKpodNNxSXtwLiIghxU/AIQrR6Ze9HLlBI6ZMGpN
-         7Pi/SGf6aW8KJi9DpDx9eKBTF5RcI10YRi6n3J2kN/POvrGCAoc8wfrmXjyHsim35f
-         arDWx/p8lH5AHDSxInfBRZd2g0JzTNASDDHJpObN7SuWKNAfHrqFn1M/jRuVFVVWhA
-         XoDGYveepKAbeqiP884rkT2mfNmYwIK7fxz/gqft3CDMZMAlsECJucBriFGmv/RBuh
-         /chylE04iSy1qjvXA/4+vCzGARUCsrosKip7Hc0GUAzsUR1ZJD3dF/ypfjRWkH4Kmd
-         M2mvH3AXXSaTQ==
+        b=R8q1Cv0Vkp9q/MSz5wqfJReVoVMUwgvmUz05/uY8RS055LvWx/W+JI1bSz3Is/ZF3
+         IUxNeKNZ+Mhn0pvn4N3ww4zCDyaRswoa5ikzO8JKIMYKKnssJEVK62xfx9Fz8zvuoz
+         9Tdzzv4U7sIanHJZPGP83cSVCq9WSvhhTR0b+s9M9FTWDjwG1drc51ncTX8wh794Ho
+         3HKIUl5pjft6Iltsrdko7douITCeRHpiscJ3Clug/FV35HF0ga/bnFWXx0JbpqlAdq
+         lz4PGDv0xOOXhLNxtxrb6bsJlAHxUGp+C0mHhAP7yyvFYLtnhzYZUnlvn2PWsjxq6o
+         DHcOvA7ZRgF4Q==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 501265C04C6; Mon, 18 Apr 2022 17:03:24 -0700 (PDT)
+        id 644845C23F4; Mon, 18 Apr 2022 17:03:24 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 02/21] srcu: Fix s/is/if/ typo in srcu_node comment
-Date:   Mon, 18 Apr 2022 17:03:03 -0700
-Message-Id: <20220419000322.3948903-2-paulmck@kernel.org>
+        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>
+Subject: [PATCH rcu 13/21] srcu: Avoid NULL dereference in srcu_torture_stats_print()
+Date:   Mon, 18 Apr 2022 17:03:14 -0700
+Message-Id: <20220419000322.3948903-13-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220419000315.GA3948789@paulmck-ThinkPad-P17-Gen-1>
 References: <20220419000315.GA3948789@paulmck-ThinkPad-P17-Gen-1>
@@ -49,34 +50,95 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This commit fixed a typo in the srcu_node structure's ->srcu_have_cbs
-comment.  While in the area, redo a couple of comments to take advantage
-of 100-character line lengths.
+You really shouldn't invoke srcu_torture_stats_print() after invoking
+cleanup_srcu_struct(), but there is really no reason to get a
+compiler-obfuscated per-CPU-variable NULL pointer dereference as the
+diagnostic.  This commit therefore checks for NULL ->sda and makes a
+more polite console-message complaint in that case.
 
+Co-developed-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+Signed-off-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/srcutree.h | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ kernel/rcu/srcutree.c | 62 ++++++++++++++++++++++++-------------------
+ 1 file changed, 34 insertions(+), 28 deletions(-)
 
-diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
-index cb1f4351e8ba..4025840ba9a3 100644
---- a/include/linux/srcutree.h
-+++ b/include/linux/srcutree.h
-@@ -47,11 +47,9 @@ struct srcu_data {
-  */
- struct srcu_node {
- 	spinlock_t __private lock;
--	unsigned long srcu_have_cbs[4];		/* GP seq for children */
--						/*  having CBs, but only */
--						/*  is > ->srcu_gq_seq. */
--	unsigned long srcu_data_have_cbs[4];	/* Which srcu_data structs */
--						/*  have CBs for given GP? */
-+	unsigned long srcu_have_cbs[4];		/* GP seq for children having CBs, but only */
-+						/*  if greater than ->srcu_gq_seq. */
-+	unsigned long srcu_data_have_cbs[4];	/* Which srcu_data structs have CBs for given GP? */
- 	unsigned long srcu_gp_seq_needed_exp;	/* Furthest future exp GP. */
- 	struct srcu_node *srcu_parent;		/* Next up in tree. */
- 	int grplo;				/* Least CPU for node. */
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index 9dd048989027..b7138dbe1a2d 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -1477,37 +1477,43 @@ void srcu_torture_stats_print(struct srcu_struct *ssp, char *tt, char *tf)
+ 	idx = ssp->srcu_idx & 0x1;
+ 	if (ss_state < 0 || ss_state >= ARRAY_SIZE(srcu_size_state_name))
+ 		ss_state_idx = ARRAY_SIZE(srcu_size_state_name) - 1;
+-	pr_alert("%s%s Tree SRCU g%ld state %d (%s) per-CPU(idx=%d):",
++	pr_alert("%s%s Tree SRCU g%ld state %d (%s)",
+ 		 tt, tf, rcu_seq_current(&ssp->srcu_gp_seq), ss_state,
+-		 srcu_size_state_name[ss_state_idx], idx);
+-	for_each_possible_cpu(cpu) {
+-		unsigned long l0, l1;
+-		unsigned long u0, u1;
+-		long c0, c1;
+-		struct srcu_data *sdp;
+-
+-		sdp = per_cpu_ptr(ssp->sda, cpu);
+-		u0 = data_race(sdp->srcu_unlock_count[!idx]);
+-		u1 = data_race(sdp->srcu_unlock_count[idx]);
++		 srcu_size_state_name[ss_state_idx]);
++	if (!ssp->sda) {
++		// Called after cleanup_srcu_struct(), perhaps.
++		pr_cont(" No per-CPU srcu_data structures (->sda == NULL).\n");
++	} else {
++		pr_cont(" per-CPU(idx=%d):", idx);
++		for_each_possible_cpu(cpu) {
++			unsigned long l0, l1;
++			unsigned long u0, u1;
++			long c0, c1;
++			struct srcu_data *sdp;
+ 
+-		/*
+-		 * Make sure that a lock is always counted if the corresponding
+-		 * unlock is counted.
+-		 */
+-		smp_rmb();
+-
+-		l0 = data_race(sdp->srcu_lock_count[!idx]);
+-		l1 = data_race(sdp->srcu_lock_count[idx]);
+-
+-		c0 = l0 - u0;
+-		c1 = l1 - u1;
+-		pr_cont(" %d(%ld,%ld %c)",
+-			cpu, c0, c1,
+-			"C."[rcu_segcblist_empty(&sdp->srcu_cblist)]);
+-		s0 += c0;
+-		s1 += c1;
++			sdp = per_cpu_ptr(ssp->sda, cpu);
++			u0 = data_race(sdp->srcu_unlock_count[!idx]);
++			u1 = data_race(sdp->srcu_unlock_count[idx]);
++
++			/*
++			 * Make sure that a lock is always counted if the corresponding
++			 * unlock is counted.
++			 */
++			smp_rmb();
++
++			l0 = data_race(sdp->srcu_lock_count[!idx]);
++			l1 = data_race(sdp->srcu_lock_count[idx]);
++
++			c0 = l0 - u0;
++			c1 = l1 - u1;
++			pr_cont(" %d(%ld,%ld %c)",
++				cpu, c0, c1,
++				"C."[rcu_segcblist_empty(&sdp->srcu_cblist)]);
++			s0 += c0;
++			s1 += c1;
++		}
++		pr_cont(" T(%ld,%ld)\n", s0, s1);
+ 	}
+-	pr_cont(" T(%ld,%ld)\n", s0, s1);
+ 	if (READ_ONCE(ssp->srcu_size_state) == SRCU_SIZE_SMALL && convert_to_big == 2)
+ 		WRITE_ONCE(ssp->srcu_size_state, SRCU_SIZE_ALLOC);
+ }
 -- 
 2.31.1.189.g2e36527f23
 
