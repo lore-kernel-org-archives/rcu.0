@@ -2,88 +2,76 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 430F3C433F5
-	for <rcu@archiver.kernel.org>; Wed, 20 Apr 2022 19:22:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 05A78C433F5
+	for <rcu@archiver.kernel.org>; Wed, 20 Apr 2022 20:36:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230233AbiDTTZM (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 20 Apr 2022 15:25:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45500 "EHLO
+        id S244724AbiDTUix (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 20 Apr 2022 16:38:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353878AbiDTTZM (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 20 Apr 2022 15:25:12 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C36345AE6;
-        Wed, 20 Apr 2022 12:22:24 -0700 (PDT)
+        with ESMTP id S232987AbiDTUix (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 20 Apr 2022 16:38:53 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB5A42ED68;
+        Wed, 20 Apr 2022 13:36:05 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 78F7E6158D;
-        Wed, 20 Apr 2022 19:22:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8643C385A1;
-        Wed, 20 Apr 2022 19:22:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1650482543;
-        bh=uqSeZHlsX9bO4LKDN0r228trAMb2tfEVJkL22HWK+3s=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=MooMZPkBAOUl/Qu42XHijqjnn8kDmv/yfuzRO7ycT+RQy4wX7sJfiEDPRdksEcRbc
-         BNFFRF8+3yCnZsh6vr6OImEdpKaPpQ4spXjHr7VqURYehMMbV88pXHZeHxcAaXL2Rt
-         ndC4MVHT2DbQ2x1MOMCUH8OUHOxSVrORIMa9EtaN7MQJtoMP/+2sF/a+NH1bZD14fJ
-         tqKY+2DowDGZ2ddkhb9qIRgTKhe7sGGepMpSD7gVhjW3fiUVDb1q7OOewqRwCe+B48
-         7Sibs00uswNMJHtO9nX8yPl4G2AaOu/blwYUmjPTKPflLv2QBpyoBc1UU3GrPXSzuE
-         WRVW2ug1cdsmg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 7BEBD5C0562; Wed, 20 Apr 2022 12:22:23 -0700 (PDT)
-Date:   Wed, 20 Apr 2022 12:22:23 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH rcu 1/2] docs: Add documentation for rude and trace RCU
- flavors
-Message-ID: <20220420192223.GK4285@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220418225004.GA3944767@paulmck-ThinkPad-P17-Gen-1>
- <20220418225033.3944860-1-paulmck@kernel.org>
- <20220420113231.6d3202e4@gandalf.local.home>
- <20220420161319.GD4285@paulmck-ThinkPad-P17-Gen-1>
- <20220420121906.13752d3e@gandalf.local.home>
- <20220420164847.GG4285@paulmck-ThinkPad-P17-Gen-1>
- <20220420140226.32a10ece@gandalf.local.home>
- <20220420183726.GJ4285@paulmck-ThinkPad-P17-Gen-1>
- <20220420144309.69c6b8d1@gandalf.local.home>
+        by ams.source.kernel.org (Postfix) with ESMTPS id 7C054B82192;
+        Wed, 20 Apr 2022 20:36:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3086FC385A1;
+        Wed, 20 Apr 2022 20:36:02 +0000 (UTC)
+Date:   Wed, 20 Apr 2022 16:36:00 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        rcu <rcu@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [PATCH RFC] rcu/nocb: Provide default all-CPUs mask for
+ RCU_NOCB_CPU=y
+Message-ID: <20220420163600.18b9cd15@gandalf.local.home>
+In-Reply-To: <CAEXW_YT0CDp7kqKVeqGRT8YfXiCYuL0ZgRwz05MQrmns2Yp+2Q@mail.gmail.com>
+References: <CAEXW_YQ+oE3xQ0tLnBMFxRXLqKZkT5UfjF+CULxnhf9F-dEA2g@mail.gmail.com>
+        <CAEXW_YRK2t2JO4RyBTd8cR9sTVpgP7Z5Ywhb1g7CRz3HJ_kNQA@mail.gmail.com>
+        <20220408205440.GL4285@paulmck-ThinkPad-P17-Gen-1>
+        <CAEXW_YTunj5j7cxT3VYGGmJwcQowpDiyqmewiwHjyXP-zJd4FA@mail.gmail.com>
+        <20220411154109.GX4285@paulmck-ThinkPad-P17-Gen-1>
+        <Ylhz1LOIf+JyjH7n@google.com>
+        <20220414194204.GU4285@paulmck-ThinkPad-P17-Gen-1>
+        <CAEXW_YS5b_51tqmdf27QqQHqsgJKbTys1V3h+Bek3XN4FjBmbw@mail.gmail.com>
+        <20220414210933.GW4285@paulmck-ThinkPad-P17-Gen-1>
+        <YliOnZC6gva5WZrG@google.com>
+        <20220414213156.GZ4285@paulmck-ThinkPad-P17-Gen-1>
+        <CAEXW_YT0CDp7kqKVeqGRT8YfXiCYuL0ZgRwz05MQrmns2Yp+2Q@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220420144309.69c6b8d1@gandalf.local.home>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Apr 20, 2022 at 02:43:09PM -0400, Steven Rostedt wrote:
-> On Wed, 20 Apr 2022 11:37:26 -0700
-> "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> 
-> > The original purpose of RCU Tasks Rude was to deal with the idle tasks,
-> > given that RCU Tasks dealt only with the non-idle tasks.
-> > 
-> > Or is there a trick that I missed?
-> 
-> It use to be that ftrace trampolines could be called from all sorts of
-> locations until Peter introduced the "noinstr" annotation that causes
-> objtool to fail to build when tracing happens there. If that prevents
-> ftrace from happening in that idle case where RCU tasks can not handle it,
-> then it may be that we can simply switch ftrace to the RCU tasks and get
-> rid of rude. ?
+On Thu, 14 Apr 2022 17:38:08 -0400
+Joel Fernandes <joel@joelfernandes.org> wrote:
 
-The last time that I asked Peter about this, he sounded less confident
-than I would like, but...
+> Then it should be called: CONFIG_RCU_NOCB_CPU_DEFAULT_ALL , or
+> something. Otherwise I can tell you that I will be the first one to be
+> confused by menuconfig unless I also read the code :-D
 
-Once sufficient confidence is present, RCU Tasks could pay attention to
-idle tasks, and declare a quiescent state for that idle task if RCU is
-not currently watching its corresponding CPU.
+Naw, I think calling it CONFIG_RCU_NOCB_CPU_ALL is fine, it's what you
+write in the help message of the Kconfig file that really matters.
 
-This would get rid of all of the RCU Tasks Rude use cases that I know of.
+I would always say that what is on the command line should override the
+configs (when feasible). To add something to the command line takes effort,
+and is always visible (cat /proc/cmdline), whereas configs are hidden and
+not as visible to those using the kernel. Not having the command line work
+would be annoying, and even if it came up with a message of "The config
+says *all* so I'm ignoring what you want to do" would be exceptionally more
+annoying as now the user has to recompile the kernel (and only if they
+could).
 
-The ones that I don't know of?  Who knows?  ;-)
-
-							Thanx, Paul
+-- Steve
