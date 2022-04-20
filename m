@@ -2,36 +2,40 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DCD7C433F5
-	for <rcu@archiver.kernel.org>; Wed, 20 Apr 2022 15:32:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D8C1C433EF
+	for <rcu@archiver.kernel.org>; Wed, 20 Apr 2022 15:45:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380196AbiDTPfW (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 20 Apr 2022 11:35:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36768 "EHLO
+        id S242343AbiDTPr5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 20 Apr 2022 11:47:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1380153AbiDTPfW (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 20 Apr 2022 11:35:22 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 262B63EAB6;
-        Wed, 20 Apr 2022 08:32:36 -0700 (PDT)
+        with ESMTP id S1380366AbiDTPrq (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 20 Apr 2022 11:47:46 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 478662ACF;
+        Wed, 20 Apr 2022 08:44:58 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D06C4B81EB2;
-        Wed, 20 Apr 2022 15:32:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E4C9C385AB;
-        Wed, 20 Apr 2022 15:32:33 +0000 (UTC)
-Date:   Wed, 20 Apr 2022 11:32:31 -0400
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CC3316194F;
+        Wed, 20 Apr 2022 15:44:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1888CC385A1;
+        Wed, 20 Apr 2022 15:44:55 +0000 (UTC)
+Date:   Wed, 20 Apr 2022 11:44:54 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH rcu 1/2] docs: Add documentation for rude and trace RCU
- flavors
-Message-ID: <20220420113231.6d3202e4@gandalf.local.home>
-In-Reply-To: <20220418225033.3944860-1-paulmck@kernel.org>
-References: <20220418225004.GA3944767@paulmck-ThinkPad-P17-Gen-1>
-        <20220418225033.3944860-1-paulmck@kernel.org>
+To:     patrick wang <patrick.wang.shcn@gmail.com>
+Cc:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
+        josh@joshtriplett.org, mathieu.desnoyers@efficios.com,
+        jiangshanlai@gmail.com, joel@joelfernandes.org,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu: ftrace: avoid tracing a few functions executed in
+ multi_cpu_stop()
+Message-ID: <20220420114454.69ab108c@gandalf.local.home>
+In-Reply-To: <CAGcnep_Gx+3KiUvDVronYKn_divU3OM-RQEOPZakv7MRYh4EJw@mail.gmail.com>
+References: <20220418043735.11441-1-patrick.wang.shcn@gmail.com>
+        <20220418143404.55c8fcab@gandalf.local.home>
+        <CAGcnep8bH4Nncbt3t+VRLff35ZyD8JyzHcEgkq-u6TEq47jqzQ@mail.gmail.com>
+        <CAGcnep_Gx+3KiUvDVronYKn_divU3OM-RQEOPZakv7MRYh4EJw@mail.gmail.com>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -40,71 +44,28 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, 18 Apr 2022 15:50:32 -0700
-"Paul E. McKenney" <paulmck@kernel.org> wrote:
+On Wed, 20 Apr 2022 18:34:34 +0800
+patrick wang <patrick.wang.shcn@gmail.com> wrote:
 
-> This commit belatedly adds documentation of Tasks Rude RCU and Tasks
-> Trace RCU to RCU's requirements document.
+[ I had a power outage yesterday, just catching up now ]
+
+> Sorry for the format. Need get used to gmail.
 > 
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> ---
->  .../RCU/Design/Requirements/Requirements.rst  | 32 +++++++++++++++++++
->  1 file changed, 32 insertions(+)
-> 
-> diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
-> index 45278e2974c0..ff2be1ac54c4 100644
-> --- a/Documentation/RCU/Design/Requirements/Requirements.rst
-> +++ b/Documentation/RCU/Design/Requirements/Requirements.rst
-> @@ -2654,6 +2654,38 @@ synchronize_rcu(), and rcu_barrier(), respectively. In
->  three APIs are therefore implemented by separate functions that check
->  for voluntary context switches.
->  
-> +Tasks Rude RCU
-> +~~~~~~~~~~~~~~
-> +
-> +Some forms of tracing need to wait for all preemption-disabled regions
-> +of code running on any online CPU, including those executed when RCU is
-> +not watching.  This means that synchronize_rcu() is insufficient, and
-> +Tasks Rude RCU must be used instead.  This flavor of RCU does its work by
-> +forcing a workqueue to be scheduled on each online CPU, hence the "Rude"
-> +moniker.  And this operation is considered to be quite rude by real-time
-> +workloads that don't want their ``nohz_full`` CPUs receiving IPIs and
-> +by battery-powered systems that don't want their idle CPUs to be awakened.
-> +
-> +The tasks-rude-RCU API is also reader-marking-free and thus quite compact,
-> +consisting of call_rcu_tasks_rude(), synchronize_rcu_tasks_rude(),
-> +and rcu_barrier_tasks_rude().
+> These functions are running within stop machine and ftrace modify
+> code by using stop machine to ensure the safety on some
+> architectures(e.g. RISC-V). These functions' instructions will be
+> modified during ftrace modifying code. When instructions are being
+> modified, they shouldn't be executed typically. Or the executor
+> may behave unpredictably.
 
-Are we going to be able to get rid of the "rude" version once we have all
-tracing in a RCU visible section?
-
-> +
-> +Tasks Trace RCU
-> +~~~~~~~~~~~~~~~
-> +
-> +Some forms of tracing need to sleep in readers, but cannot tolerate
-> +SRCU's read-side overhead, which includes a full memory barrier in both
-> +srcu_read_lock() and srcu_read_unlock().  This need is handled by a
-> +Tasks Trace RCU that uses scheduler locking and IPIs to synchronize with
-> +readers.  Real-time systems that cannot tolerate IPIs may build their
-> +kernels with ``CONFIG_TASKS_TRACE_RCU_READ_MB=y``, which avoids the IPIs at
-> +the expense of adding full memory barriers to the read-side primitives.
-
-If NOHZ_FULL is enabled, is there a way to also be able to have this full
-mb on RT removed as well?
-
-> +
-> +The tasks-trace-RCU API is also reasonably compact,
-> +consisting of rcu_read_lock_trace(), rcu_read_unlock_trace(),
-> +rcu_read_lock_trace_held(), call_rcu_tasks_trace(),
-> +synchronize_rcu_tasks_trace(), and rcu_barrier_tasks_trace().
-> +
->  Possible Future Changes
->  -----------------------
->  
-
-For the documentation:
-
-Reviewed-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+Interesting. On x86 when we used stop machine[*] it was not an issue to
+modify the code that is being executed in stop machine. I'm curious to
+exactly what the issue is if something does get traced in the stop machine
+processing. Why does it crash?
 
 -- Steve
+
+
+[*] You really should come up with a better way than stop machine, because
+the stop machine method is really disruptive, can you not use the break
+point method for updates?
