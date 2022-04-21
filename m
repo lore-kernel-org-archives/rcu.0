@@ -2,87 +2,100 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 24845C433EF
-	for <rcu@archiver.kernel.org>; Thu, 21 Apr 2022 10:07:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D6C41C433F5
+	for <rcu@archiver.kernel.org>; Thu, 21 Apr 2022 11:36:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355400AbiDUKKY (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 21 Apr 2022 06:10:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35566 "EHLO
+        id S1388816AbiDULjN (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 21 Apr 2022 07:39:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354947AbiDUKKY (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 21 Apr 2022 06:10:24 -0400
-X-Greylist: delayed 411 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 21 Apr 2022 03:07:35 PDT
-Received: from mail.mimoja.de (mail.mimoja.de [213.160.72.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1BE5B25E8D;
-        Thu, 21 Apr 2022 03:07:35 -0700 (PDT)
-Received: from [IPV6:2003:cf:571f:200:d4c7:7b5a:7538:c333] (p200300cf571f0200d4c77b5a7538c333.dip0.t-ipconnect.de [IPv6:2003:cf:571f:200:d4c7:7b5a:7538:c333])
-        by mail.mimoja.de (Postfix) with ESMTPSA id 0D2CA2223B;
-        Thu, 21 Apr 2022 12:00:41 +0200 (CEST)
-Message-ID: <e3ef8236-344d-e840-575c-a5fb1450a13b@mimoja.de>
-Date:   Thu, 21 Apr 2022 12:00:40 +0200
+        with ESMTP id S229845AbiDULjM (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 21 Apr 2022 07:39:12 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C98F521274;
+        Thu, 21 Apr 2022 04:36:19 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id h11so5412627ljb.2;
+        Thu, 21 Apr 2022 04:36:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=49W09Hi0ucwvaw7LH7H1/53UY+k/F0pMUfAtsI++SNc=;
+        b=J2i9Nhq/c/OtxShDiuXluRae/uPut13A3FKFPsBpIFlxjxQoJBe2WjD+I55CJSt2cq
+         PW/x/ZpJ+6ZBQmKi5x8izRtoRmmwzEmXz6Bbqf9/qklakN15Df2pcd1jHc8wV1K0FvKB
+         uQmVDKHi5qIZ+kcehvmvtbYuOHuCmU6EN8sxGQxYUivEoaUt5tgm1fwLs7SU5tCYOa7C
+         kVFc7/wM897Aspp2J3Z9FgSiaOCmZsSnzJRux1mHR1vWXHoYG6Tr0a76pbZNUcZZBIw3
+         wGrRxbKzcbsFIuIH2L0eW5tNm1PM+u2qsT+DODkBKDKjlLC5cskbK1y1UqwHsggYYtDx
+         23YQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=49W09Hi0ucwvaw7LH7H1/53UY+k/F0pMUfAtsI++SNc=;
+        b=3Y03O+U1bzvn5mjPXY0DIB3G995f0IPANCrU9BEAUEdO00WQGurTqVmlMAgLUAwt6m
+         mJX3ufykalZfFjK68OtYdJ8y4J4rg9Icr93QEZTzrCYtV9MxtYC3QST6VOAbKOi+Oq2P
+         bpC5Zw1ehr4Hykd6pMPBvADtReYNs49ZxZZ3ZKgvvwp/WqD7XCuq4OaolVcnUBUhm9RN
+         BjhWVy0bNRu3EI+ML7uH+hU19Btm5VGL4BSyNAzEmIczGXJ0LEtb61b54614TOWoIL8l
+         HuASrbCQN4HqabHJw+FXU87CwFw0oAouWtJ7nDIN57rO0Frgu4K+OoKAGN+8gl/JH2jG
+         rQgA==
+X-Gm-Message-State: AOAM531SVL3O1AgKrr52RQ6kmJ62HMoaQ1SrjhHSiKGFIIp055fvcTSC
+        wly8fXHmJuqhILxzVRYZqQhB+E24thTSj5YUFxeDJd0P
+X-Google-Smtp-Source: ABdhPJxtZZmSrVU+QMOhFjZ7npnYbSW9iSMdkFiT6QxY//Qz0oOTsr60Wj4SIFxuyh86dCjwaAKaxIsiufEeSOwB32k=
+X-Received: by 2002:a05:651c:1422:b0:24e:e14e:b817 with SMTP id
+ u34-20020a05651c142200b0024ee14eb817mr3608722lje.98.1650540977969; Thu, 21
+ Apr 2022 04:36:17 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: [PATCH v3 0/9] Parallel CPU bringup for x86_64
-Content-Language: en-US
-To:     Paul Menzel <pmenzel@molgen.mpg.de>,
-        David Woodhouse <dwmw2@infradead.org>, thomas.lendacky@amd.com,
-        mimoja@mimoja.de
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        rcu@vger.kernel.org, hewenliang4@huawei.com, hushiyuan@huawei.com,
-        luolongjun@huawei.com, hejingxian@huawei.com
-References: <20211215145633.5238-1-dwmw2@infradead.org>
- <9a47b5ec-f2d1-94d9-3a48-9b326c88cfcb@molgen.mpg.de>
- <ab28d2ce-4a9c-387d-9eda-558045a0c35b@molgen.mpg.de>
- <3bfacf45d2d0f3dfa3789ff5a2dcb46744aacff7.camel@infradead.org>
- <ea433e41-0038-554d-3348-70aa98aff9e1@molgen.mpg.de>
- <efbe0d3d92e6c279e3a6d7a4191ca7470bc4beec.camel@infradead.org>
- <74d2302f-88fc-c75c-6d2d-4aece1a515bb@molgen.mpg.de>
-From:   Mimoja <mimoja@mimoja.de>
-In-Reply-To: <74d2302f-88fc-c75c-6d2d-4aece1a515bb@molgen.mpg.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20220418043735.11441-1-patrick.wang.shcn@gmail.com>
+ <20220418143404.55c8fcab@gandalf.local.home> <CAGcnep8bH4Nncbt3t+VRLff35ZyD8JyzHcEgkq-u6TEq47jqzQ@mail.gmail.com>
+ <CAGcnep_Gx+3KiUvDVronYKn_divU3OM-RQEOPZakv7MRYh4EJw@mail.gmail.com>
+ <20220420114454.69ab108c@gandalf.local.home> <20220420122633.55d4ff6b@gandalf.local.home>
+In-Reply-To: <20220420122633.55d4ff6b@gandalf.local.home>
+From:   patrick wang <patrick.wang.shcn@gmail.com>
+Date:   Thu, 21 Apr 2022 19:36:06 +0800
+Message-ID: <CAGcnep86pd2trfTovU8_z1msOstx7gKCdndm=pHLDGTy+_K7=g@mail.gmail.com>
+Subject: Re: [PATCH] rcu: ftrace: avoid tracing a few functions executed in multi_cpu_stop()
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
+        josh@joshtriplett.org, mathieu.desnoyers@efficios.com,
+        jiangshanlai@gmail.com, joel@joelfernandes.org,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Dear Paul,
+On Thu, Apr 21, 2022 at 12:26 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> On Wed, 20 Apr 2022 11:44:54 -0400
+> Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+>
+> Interesting. On x86 when we used stop machine[*] it was not an issue to
+> modify the code that is being executed in stop machine. I'm curious to
+> exactly what the issue is if something does get traced in the stop machine
+> processing. Why does it crash?
 
-> Sorry for replying so late. I saw your v4 patches, and tried commit 
-> 5e3524d21d2a () from your branch `parallel-5.17-part1`. Unfortunately, 
-> the boot problem still persists on an AMD Ryzen 3 2200 g system, I 
-> tested with. Please tell, where I should report these results too 
-> (here or posted v4 patches).
+I looked up the commit history. When x86 turned to breakpoints, stop
+machine's state machine loop had no calls during waiting. So there
+was no function being called during modifying code. Which means
+there were no other cpus would load those instructions to be updated
+in this period. While the stop machine currently will call other functions
+and the call chain is fairly deep. So it may not quite be suitable for ftrace
+now because it can not make sure the instructions within its own call
+chain are updated atomically.
 
-We have confirmed the issue on multiple AMD CPUs from multiple 
-generations, leading to the guess that only Zen and Zen+ CPU seem 
-affected with Zen3 and Zen2 (only tested ulv) working fine. Tho we 
-struggled to get any output as the failing machines just go silent.
+> > [*] You really should come up with a better way than stop machine, because
+> > the stop machine method is really disruptive, can you not use the break
+> > point method for updates?
+>
+> Talk about dejavu!
+>
+>   https://lore.kernel.org/all/mhng-62c2ef00-fb64-48c3-a2bb-43b2799161bf@palmer-ri-x1c9/
+>
 
-Not working:
+Right, breakpoint should be better.
 
-Ryzen 5 Pro 2500u and 7 2700U
-Ryzen 3 2300G
+This stall happens on my qemu machine too, maybe it's qemu related.
 
-while e.g.
-
-Ryzen 7 Pro 4750U
-Ryzen 9 5950X
-
-both work fine. We will continue to investigate the issue but are 
-currently a bit pulled into other topics.
-
-Thomas, could please maybe help us identify which CPUs and MC-Versions 
-are worth looking at? David suggested you might have a good overview here.
-
-
-Best regards
-
-Johanna "Mimoja"
-
+Thanks,
+Patrick
