@@ -2,76 +2,87 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 05A78C433F5
-	for <rcu@archiver.kernel.org>; Wed, 20 Apr 2022 20:36:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24845C433EF
+	for <rcu@archiver.kernel.org>; Thu, 21 Apr 2022 10:07:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244724AbiDTUix (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 20 Apr 2022 16:38:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54446 "EHLO
+        id S1355400AbiDUKKY (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 21 Apr 2022 06:10:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232987AbiDTUix (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 20 Apr 2022 16:38:53 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB5A42ED68;
-        Wed, 20 Apr 2022 13:36:05 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 7C054B82192;
-        Wed, 20 Apr 2022 20:36:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3086FC385A1;
-        Wed, 20 Apr 2022 20:36:02 +0000 (UTC)
-Date:   Wed, 20 Apr 2022 16:36:00 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        rcu <rcu@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH RFC] rcu/nocb: Provide default all-CPUs mask for
- RCU_NOCB_CPU=y
-Message-ID: <20220420163600.18b9cd15@gandalf.local.home>
-In-Reply-To: <CAEXW_YT0CDp7kqKVeqGRT8YfXiCYuL0ZgRwz05MQrmns2Yp+2Q@mail.gmail.com>
-References: <CAEXW_YQ+oE3xQ0tLnBMFxRXLqKZkT5UfjF+CULxnhf9F-dEA2g@mail.gmail.com>
-        <CAEXW_YRK2t2JO4RyBTd8cR9sTVpgP7Z5Ywhb1g7CRz3HJ_kNQA@mail.gmail.com>
-        <20220408205440.GL4285@paulmck-ThinkPad-P17-Gen-1>
-        <CAEXW_YTunj5j7cxT3VYGGmJwcQowpDiyqmewiwHjyXP-zJd4FA@mail.gmail.com>
-        <20220411154109.GX4285@paulmck-ThinkPad-P17-Gen-1>
-        <Ylhz1LOIf+JyjH7n@google.com>
-        <20220414194204.GU4285@paulmck-ThinkPad-P17-Gen-1>
-        <CAEXW_YS5b_51tqmdf27QqQHqsgJKbTys1V3h+Bek3XN4FjBmbw@mail.gmail.com>
-        <20220414210933.GW4285@paulmck-ThinkPad-P17-Gen-1>
-        <YliOnZC6gva5WZrG@google.com>
-        <20220414213156.GZ4285@paulmck-ThinkPad-P17-Gen-1>
-        <CAEXW_YT0CDp7kqKVeqGRT8YfXiCYuL0ZgRwz05MQrmns2Yp+2Q@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        with ESMTP id S1354947AbiDUKKY (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 21 Apr 2022 06:10:24 -0400
+X-Greylist: delayed 411 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 21 Apr 2022 03:07:35 PDT
+Received: from mail.mimoja.de (mail.mimoja.de [213.160.72.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1BE5B25E8D;
+        Thu, 21 Apr 2022 03:07:35 -0700 (PDT)
+Received: from [IPV6:2003:cf:571f:200:d4c7:7b5a:7538:c333] (p200300cf571f0200d4c77b5a7538c333.dip0.t-ipconnect.de [IPv6:2003:cf:571f:200:d4c7:7b5a:7538:c333])
+        by mail.mimoja.de (Postfix) with ESMTPSA id 0D2CA2223B;
+        Thu, 21 Apr 2022 12:00:41 +0200 (CEST)
+Message-ID: <e3ef8236-344d-e840-575c-a5fb1450a13b@mimoja.de>
+Date:   Thu, 21 Apr 2022 12:00:40 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
+Subject: Re: [PATCH v3 0/9] Parallel CPU bringup for x86_64
+Content-Language: en-US
+To:     Paul Menzel <pmenzel@molgen.mpg.de>,
+        David Woodhouse <dwmw2@infradead.org>, thomas.lendacky@amd.com,
+        mimoja@mimoja.de
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        rcu@vger.kernel.org, hewenliang4@huawei.com, hushiyuan@huawei.com,
+        luolongjun@huawei.com, hejingxian@huawei.com
+References: <20211215145633.5238-1-dwmw2@infradead.org>
+ <9a47b5ec-f2d1-94d9-3a48-9b326c88cfcb@molgen.mpg.de>
+ <ab28d2ce-4a9c-387d-9eda-558045a0c35b@molgen.mpg.de>
+ <3bfacf45d2d0f3dfa3789ff5a2dcb46744aacff7.camel@infradead.org>
+ <ea433e41-0038-554d-3348-70aa98aff9e1@molgen.mpg.de>
+ <efbe0d3d92e6c279e3a6d7a4191ca7470bc4beec.camel@infradead.org>
+ <74d2302f-88fc-c75c-6d2d-4aece1a515bb@molgen.mpg.de>
+From:   Mimoja <mimoja@mimoja.de>
+In-Reply-To: <74d2302f-88fc-c75c-6d2d-4aece1a515bb@molgen.mpg.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, 14 Apr 2022 17:38:08 -0400
-Joel Fernandes <joel@joelfernandes.org> wrote:
+Dear Paul,
 
-> Then it should be called: CONFIG_RCU_NOCB_CPU_DEFAULT_ALL , or
-> something. Otherwise I can tell you that I will be the first one to be
-> confused by menuconfig unless I also read the code :-D
+> Sorry for replying so late. I saw your v4 patches, and tried commit 
+> 5e3524d21d2a () from your branch `parallel-5.17-part1`. Unfortunately, 
+> the boot problem still persists on an AMD Ryzen 3 2200 g system, I 
+> tested with. Please tell, where I should report these results too 
+> (here or posted v4 patches).
 
-Naw, I think calling it CONFIG_RCU_NOCB_CPU_ALL is fine, it's what you
-write in the help message of the Kconfig file that really matters.
+We have confirmed the issue on multiple AMD CPUs from multiple 
+generations, leading to the guess that only Zen and Zen+ CPU seem 
+affected with Zen3 and Zen2 (only tested ulv) working fine. Tho we 
+struggled to get any output as the failing machines just go silent.
 
-I would always say that what is on the command line should override the
-configs (when feasible). To add something to the command line takes effort,
-and is always visible (cat /proc/cmdline), whereas configs are hidden and
-not as visible to those using the kernel. Not having the command line work
-would be annoying, and even if it came up with a message of "The config
-says *all* so I'm ignoring what you want to do" would be exceptionally more
-annoying as now the user has to recompile the kernel (and only if they
-could).
+Not working:
 
--- Steve
+Ryzen 5 Pro 2500u and 7 2700U
+Ryzen 3 2300G
+
+while e.g.
+
+Ryzen 7 Pro 4750U
+Ryzen 9 5950X
+
+both work fine. We will continue to investigate the issue but are 
+currently a bit pulled into other topics.
+
+Thomas, could please maybe help us identify which CPUs and MC-Versions 
+are worth looking at? David suggested you might have a good overview here.
+
+
+Best regards
+
+Johanna "Mimoja"
+
