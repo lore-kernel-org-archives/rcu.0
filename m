@@ -2,117 +2,117 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DB0E2C433EF
-	for <rcu@archiver.kernel.org>; Fri, 22 Apr 2022 09:40:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 86552C433F5
+	for <rcu@archiver.kernel.org>; Fri, 22 Apr 2022 10:46:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344179AbiDVJnE (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 22 Apr 2022 05:43:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56412 "EHLO
+        id S1446602AbiDVKsx (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 22 Apr 2022 06:48:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1446173AbiDVJmw (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 22 Apr 2022 05:42:52 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A63BF2DF1;
-        Fri, 22 Apr 2022 02:39:59 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 1E7251F37B;
-        Fri, 22 Apr 2022 09:39:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1650620398; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=T5U0TdGZsC4N5aGCqd4f8OyKOGtZqb/61/GfLpU2w0E=;
-        b=pGqT86rX8p1N8RNPp7eaipCbSCdhjd/r7gVJrdTlzXa9Opuc7C3hl64qjmGzQ9IYjU4uPC
-        72DlJPFPFCRY3ptDM5cF3ItDYSWq/gO59pEBIn6pez2eYX+edxBBUBxUJjJv7HrAxRxECF
-        r+z3l2cB0C6NEV7oly40Nrd5J4/S460=
-Received: from suse.cz (unknown [10.163.26.26])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 5B8032C142;
-        Fri, 22 Apr 2022 09:39:57 +0000 (UTC)
-Date:   Fri, 22 Apr 2022 11:39:51 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Marco Elver <elver@google.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Alexander Potapenko <glider@google.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Kees Cook <keescook@chromium.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Xiaoming Ni <nixiaoming@huawei.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Corey Minyard <cminyard@mvista.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Mark Brown <broonie@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Shawn Guo <shawn.guo@linaro.org>,
-        Wang Qing <wangqing@vivo.com>, rcu@vger.kernel.org
-Subject: Re: [PATCH printk v4 00/15] implement threaded console printing
-Message-ID: <YmJ1fnc4trEOooZD@alley>
-References: <20220421212250.565456-1-john.ogness@linutronix.de>
+        with ESMTP id S1446851AbiDVKsx (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 22 Apr 2022 06:48:53 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DD0E3FBFA;
+        Fri, 22 Apr 2022 03:45:59 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id w1so13575928lfa.4;
+        Fri, 22 Apr 2022 03:45:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wGWQsodsPCEvTet53bPj88p4jYhZ/d++dMltkcbaEYI=;
+        b=mAgORrZD4oGwxnomgnH+TjiwLaKb2n8RwwlVy9gojA6VXZvgpCuQHQFkyqo+L5hSg7
+         P/CfljKHsQEkc4wyZRStj3cokDs5YI3oqJNK1uGWh3hbb2s22dB6WydHn15mu8u7mMO1
+         8xBbXHxbRZmFXP5y3CV4pHpt0MPycn8SbcxahMoLHnhpFRQkLqGn5XzYyhFRC8N8m2Wk
+         KItYYPtNrYMxiSoEyFk/4cxmCOQ0eQoqfllAQBynyv5OpDO4/x98HAzYmVKwcgvFIjPS
+         lV6xZfyH+TW+wVOrnPE+U18irxyThdJTg1usk374FlxJQ/bcWJ3is8Gcp91qT4ffBaXY
+         0Iuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wGWQsodsPCEvTet53bPj88p4jYhZ/d++dMltkcbaEYI=;
+        b=Vnhzk3WCyxhFGKTD2kkKcTd1joc6W3il2yVzQaF+pEF2SjHk+wTKGhEIQkGRMMoMnD
+         bQ57VxswqHvqUgk4I3LnMy9QFhxe0tfsYgTPnaQntknMf4Pxy0UEHaLnKLvHOqQoDXAD
+         7vebOzh2FYtYPxNyWTEVeqm+RThvUTaVK2Uo/riFEHkt9PNN0XNMaN75lB53MUFyeauh
+         CBFb4mN77eozMBCg3jOrGJ+bBTbrzXx/GnMurjNzm+rsrmkyhgaJ3b5x4RqLALy8YBCK
+         0BM8accF8OYGUPzy/KdrT8mGPB6tPrAM/q7aXeg29ES/qekxn8jiNql83cWSo8ObhxeI
+         KWFQ==
+X-Gm-Message-State: AOAM5316VYovy/GI6hcjgVIAxIPY0BNaQlmtN1rvJqtiI65PaUQXQpAE
+        ZL44m9m7IxLYFLcZK/Gtuxng1gLW+6Iudf5GMq8=
+X-Google-Smtp-Source: ABdhPJwDhLfB/RddN8AJO1OXvAzh43JVwTYgu7pKH9N74RGPzr1t5+yHvvDMmvwJ0C1Lq06TJ+kPl88b4hRASryM51Q=
+X-Received: by 2002:a05:6512:31cc:b0:471:d125:162c with SMTP id
+ j12-20020a05651231cc00b00471d125162cmr2737873lfe.96.1650624357838; Fri, 22
+ Apr 2022 03:45:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220421212250.565456-1-john.ogness@linutronix.de>
+References: <20220418043735.11441-1-patrick.wang.shcn@gmail.com>
+ <20220418143404.55c8fcab@gandalf.local.home> <CAGcnep8bH4Nncbt3t+VRLff35ZyD8JyzHcEgkq-u6TEq47jqzQ@mail.gmail.com>
+ <CAGcnep_Gx+3KiUvDVronYKn_divU3OM-RQEOPZakv7MRYh4EJw@mail.gmail.com>
+ <20220420114454.69ab108c@gandalf.local.home> <20220420122633.55d4ff6b@gandalf.local.home>
+ <CAGcnep86pd2trfTovU8_z1msOstx7gKCdndm=pHLDGTy+_K7=g@mail.gmail.com> <20220421085047.2cb8edf9@gandalf.local.home>
+In-Reply-To: <20220421085047.2cb8edf9@gandalf.local.home>
+From:   patrick wang <patrick.wang.shcn@gmail.com>
+Date:   Fri, 22 Apr 2022 18:45:46 +0800
+Message-ID: <CAGcnep9Ez-S962vukR_a=otzcSxDRo5HUW2vG_YCBanCfURGXw@mail.gmail.com>
+Subject: Re: [PATCH] rcu: ftrace: avoid tracing a few functions executed in multi_cpu_stop()
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
+        josh@joshtriplett.org, mathieu.desnoyers@efficios.com,
+        jiangshanlai@gmail.com, joel@joelfernandes.org,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu 2022-04-21 23:28:35, John Ogness wrote:
-> This is v4 of a series to implement a kthread for each registered
-> console. v3 is here [0]. The kthreads locklessly retrieve the
-> records from the printk ringbuffer and also do not cause any lock
-> contention between each other. This allows consoles to run at full
-> speed. For example, a netconsole is able to dump records much
-> faster than a serial or vt console. Also, during normal operation,
-> printk() callers are completely decoupled from console printing.
-> 
-> There are situations where kthread printing is not sufficient. For
-> example, during panic situations, where the kthreads may not get a
-> chance to schedule. In such cases, the current method of attempting
-> to print directly within the printk() caller context is used. New
-> functions printk_prefer_direct_enter() and
-> printk_prefer_direct_exit() are made available to mark areas of the
-> kernel where direct printing is preferred. (These should only be
-> areas that do not occur during normal operation.)
-> 
-> This series also introduces pr_flush(): a might_sleep() function
-> that will block until all active printing threads have caught up
-> to the latest record at the time of the pr_flush() call. This
-> function is useful, for example, to wait until pending records
-> are flushed to consoles before suspending.
-> 
-> Note that this series does *not* increase the reliability of console
-> printing. Rather it focuses on the non-interference aspect of
-> printk() by decoupling printk() callers from printing (during normal
-> operation). Nonetheless, the reliability aspect should not worsen
-> due to this series.
+On Thu, Apr 21, 2022 at 8:50 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> On Thu, 21 Apr 2022 19:36:06 +0800
+> patrick wang <patrick.wang.shcn@gmail.com> wrote:
+>
+> > On Thu, Apr 21, 2022 at 12:26 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+> > >
+> > > On Wed, 20 Apr 2022 11:44:54 -0400
+> > > Steven Rostedt <rostedt@goodmis.org> wrote:
+> > >
+> > >
+> > > Interesting. On x86 when we used stop machine[*] it was not an issue to
+> > > modify the code that is being executed in stop machine. I'm curious to
+> > > exactly what the issue is if something does get traced in the stop machine
+> > > processing. Why does it crash?
+> >
+> > I looked up the commit history. When x86 turned to breakpoints, stop
+> > machine's state machine loop had no calls during waiting. So there
+> > was no function being called during modifying code. Which means
+> > there were no other cpus would load those instructions to be updated
+> > in this period. While the stop machine currently will call other functions
+> > and the call chain is fairly deep. So it may not quite be suitable for ftrace
+> > now because it can not make sure the instructions within its own call
+> > chain are updated atomically.
+>
+> Are you saying that the RISC-V stop machine implementation has code being
+> called on the other CPUs while they wait?
+>
 
-This version looks good enough for linux-next. I do not see any
-functional problem and it should work as designed. It is time to
-see how it works in various "real life" work loads.
+Yes, and not just RISC-V. It's arch-independent. It's the internal change of
+stop machine implementation.
 
-I am going to push it later today unless anyone (John) complains ;-)
+----------------------------------------------------------------
+Former stop machine wait loop:
+do {
+    cpu_relax(); => macro
+    ...
+} while (curstate != STOPMACHINE_EXIT);
+-----------------------------------------------------------------
+Current stop machine wait loop:
+do {
+    stop_machine_yield(cpumask); => function (notraced)
+    ...
+    touch_nmi_watchdog(); => function (notraced, inside calls also notraced)
+    ...
+    rcu_momentary_dyntick_idle(); => function (notraced, inside calls traced)
+} while (curstate != MULTI_STOP_EXIT);
+------------------------------------------------------------------
 
-Best Regards,
-Petr
+Thanks,
+Patrick
