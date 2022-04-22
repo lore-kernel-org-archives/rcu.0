@@ -2,61 +2,87 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 378C0C433F5
-	for <rcu@archiver.kernel.org>; Fri, 22 Apr 2022 13:15:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 27B1AC433EF
+	for <rcu@archiver.kernel.org>; Fri, 22 Apr 2022 14:44:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1447807AbiDVNR4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 22 Apr 2022 09:17:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50528 "EHLO
+        id S1448849AbiDVOrR (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 22 Apr 2022 10:47:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1447892AbiDVNRz (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 22 Apr 2022 09:17:55 -0400
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08E321158;
-        Fri, 22 Apr 2022 06:15:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1650633303; x=1682169303;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=Fk1/9xj+k4tMU+1zg07H5ABLMjz7bV0v7SjqRVxbtx0=;
-  b=htpsv9G8/eGfnGPj2vR0vUqOvIF/7iAMj2lQDsBjLxW2ob0inrKOlh80
-   IBxdlEV+RfW5YfucprCxMIPnfPbSDo8ygwtye/KejXiiVRYHyokQpPYTx
-   wfEYAFEAnMNPqUcJnfRieYddk4naXHg44nSt7no/mAb4sRRIgXD1XZC8M
-   k9Hq+lhUvirl/REip6dMv1u7N6RmmHwXwnWQsnXBPqCj9R/VRAKnK9YhV
-   I9GLg5j/wxAcaZ9LbhI12dH5M8WFsuQi7MyzIVo5xCt1KMTbY49rDoBoH
-   d66vm9YjtZs9ozU5LQzblHrY5ddZCKR5vmgCZgbdcAsfZtILr1tvrKVwP
-   w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10324"; a="264447579"
-X-IronPort-AV: E=Sophos;i="5.90,281,1643702400"; 
-   d="scan'208";a="264447579"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2022 06:15:02 -0700
-X-IronPort-AV: E=Sophos;i="5.90,281,1643702400"; 
-   d="scan'208";a="577888236"
-Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.125])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2022 06:15:01 -0700
-From:   Zqiang <qiang1.zhang@intel.com>
-To:     paulmck@kernel.org, frederic@kernel.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] rcu: Put panic_on_rcu_stall() after expedited RCU CPU stall warnings
-Date:   Fri, 22 Apr 2022 21:15:18 +0800
-Message-Id: <20220422131518.3090060-1-qiang1.zhang@intel.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S237708AbiDVOrQ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 22 Apr 2022 10:47:16 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB2DD5C34B;
+        Fri, 22 Apr 2022 07:44:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 642FE60E08;
+        Fri, 22 Apr 2022 14:44:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C535CC385A8;
+        Fri, 22 Apr 2022 14:44:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1650638661;
+        bh=31wPn4L1S1z5C6cWC6u0dIySUFUsq0alWQMCX0bcBA8=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Kv48hkl4EhooNQASdUF4zixEu2xOxKLNFdTTUd4mOIUqwyp4OfF/2ZC1Q8iVbVar6
+         xCx3QwSvjhgRn2UqHmxlChmo0itI8Y9NHHdGkiEUb9Ito//jETQYpNc8Jzfcw2Grz2
+         7Ch54TzqAd4tdKkvwNIjTSO/gn0MGq9vK5HMaLGQ7o2z9qmyNwoDLn1kXJ86iBtC/J
+         ElY6SKygkfgeO91i6d2V20uR/9aunoeb+56BPwLPfHLD3zreb3yJzT0SIM4995rtLy
+         WiIWHDOZuUPQt1QhwT18qqOrWYXpfWaYMWZUM3h6xIiQxzDPaTa+AXOHWaqrRGtW0F
+         lBVrr0P4pnZyQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 6988F5C0460; Fri, 22 Apr 2022 07:44:21 -0700 (PDT)
+Date:   Fri, 22 Apr 2022 07:44:21 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Zqiang <qiang1.zhang@intel.com>
+Cc:     frederic@kernel.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu: Put panic_on_rcu_stall() after expedited RCU CPU
+ stall warnings
+Message-ID: <20220422144421.GX4285@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20220422131518.3090060-1-qiang1.zhang@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220422131518.3090060-1-qiang1.zhang@intel.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-When the expedited RCU CPU stall warning is treated as panic, if
-it's triggered, the stall info should be printed first and tell us
-reason, rather than directly panic.
+On Fri, Apr 22, 2022 at 09:15:18PM +0800, Zqiang wrote:
+> When the expedited RCU CPU stall warning is treated as panic, if
+> it's triggered, the stall info should be printed first and tell us
+> reason, rather than directly panic.
+> 
+> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 
-Signed-off-by: Zqiang <qiang1.zhang@intel.com>
----
- kernel/rcu/tree_exp.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Good eyes, thank you!
+
+Queued for v5.20, with the wordsmithing shown below.  Please let me
+know if I messed anything up.
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+commit e5215598af9bdf5509c7e7c6f896f50df0cdaf4b
+Author: Zqiang <qiang1.zhang@intel.com>
+Date:   Fri Apr 22 21:15:18 2022 +0800
+
+    rcu: Put panic_on_rcu_stall() after expedited RCU CPU stall warnings
+    
+    When a normal RCU CPU stall warning is encountered with the
+    panic_on_rcu_stall sysfs variable is set, the system panics only after
+    the stall warning is printed.  But when an expedited RCU CPU stall
+    warning is encountered with the panic_on_rcu_stall sysfs variable is
+    set, the system panics first, thus never printing the stall warning.
+    This commit therefore brings the expedited stall warning into line with
+    the normal stall warning by printing first and panicking afterwards.
+    
+    Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
 diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
 index 571b0a700cce..f05a15b11fa0 100644
@@ -78,6 +104,3 @@ index 571b0a700cce..f05a15b11fa0 100644
  	}
  }
  
--- 
-2.25.1
-
