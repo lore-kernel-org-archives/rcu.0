@@ -2,423 +2,242 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BBC05C433F5
-	for <rcu@archiver.kernel.org>; Thu, 21 Apr 2022 21:23:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 46D3DC4332F
+	for <rcu@archiver.kernel.org>; Fri, 22 Apr 2022 05:37:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442016AbiDUVZu (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 21 Apr 2022 17:25:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52744 "EHLO
+        id S232019AbiDVFjk (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 22 Apr 2022 01:39:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442008AbiDUVZu (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 21 Apr 2022 17:25:50 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E0B24E39D;
-        Thu, 21 Apr 2022 14:22:59 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1650576177;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=J2hQqNgilYu2xBQEcY0w7AYzM9SE4JERJ32P4OJPGHU=;
-        b=X+RypZEOO0KMP2JjbcDZ1l5FMPF/7ozSr97+zd4NVaPz7fGQuMI+l+Whp+ijW/4BuNZmiY
-        s+vp7TUbvO/kAQ0UtPB5ebddqm5LsjZYKlXxBM9/nKL0C+Oeby0UioPku4ZixkuiNjg7b9
-        z9IzDfkdzyCsyJZPBQhpPLhGQ3LsOGw40MvCB4RXpcD3FyR75TCn9ZMPy1Kxr6jLM9TmIt
-        IoiTzgMLh45YZbryyVCLufTWn1H6pK9RrfhbxynPA2dRCKu3XNp5m6kpCHlwKa+LeZEYbc
-        mQ39SbJXthpgEv4shP5t/zozOFn6CnTGW8ArpXamaDQo8uDXIoAohIMsJqFcrQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1650576177;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=J2hQqNgilYu2xBQEcY0w7AYzM9SE4JERJ32P4OJPGHU=;
-        b=ne22yy0oUq7ZYQe18phe6lHv2TgRYl1MZs4SQFeOJZEq8cm9ICzJqwFQ82fOC7zUTiXYCD
-        +xAdwg89c0lJ4cDw==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Xiaoming Ni <nixiaoming@huawei.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Corey Minyard <cminyard@mvista.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Marco Elver <elver@google.com>,
-        Mark Brown <broonie@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Shawn Guo <shawn.guo@linaro.org>,
-        Wang Qing <wangqing@vivo.com>, rcu@vger.kernel.org
-Subject: [PATCH printk v4 12/15] printk: add functions to prefer direct printing
-Date:   Thu, 21 Apr 2022 23:28:47 +0206
-Message-Id: <20220421212250.565456-13-john.ogness@linutronix.de>
-In-Reply-To: <20220421212250.565456-1-john.ogness@linutronix.de>
-References: <20220421212250.565456-1-john.ogness@linutronix.de>
+        with ESMTP id S232878AbiDVFb5 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 22 Apr 2022 01:31:57 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 158774F445
+        for <rcu@vger.kernel.org>; Thu, 21 Apr 2022 22:29:04 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id bv19so14149341ejb.6
+        for <rcu@vger.kernel.org>; Thu, 21 Apr 2022 22:29:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LJU91aAO6DcnjOhMocYLVvA3BoTLbDI3DX/RSA3MhfM=;
+        b=pkggemth+evpdu1RQAxT1trOBD7Z7zrNwLUM/Nz1bpAAINFOiTKIAnth0VCBgTaa9H
+         0HMzov4W2naH+Y8dVSLhcGEVGSZmp8rEzL+pD1W7zTVdZouS5g1HU1d69hjnZoXIvlTW
+         dM2GwXR9OcLDPM4iWrVJXiLjJ5N3yLYM8vc9iZ7Av1jHAt0BzVJL5w/e7AK+bf1U+1cu
+         TBfQ4X1gXAAlBEC2uTieznSJxELWhrguaAZILI7P8qhEBxNY2oA7NSlNnnKwkJuAR864
+         NLuPSo9FauOqwrMTgvog53Nj4Mk0PmVDMlywsF3bCnlr/T3aIpn2/tQbNxzOXzwKa4GM
+         aziA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LJU91aAO6DcnjOhMocYLVvA3BoTLbDI3DX/RSA3MhfM=;
+        b=RNpZSrzQieUimiwzt5N/LSXDpX6s571CUpTh0hdG/6t8/Pjvl1KYjrGecxLLRptNIh
+         UuTzR6sQdI3oaEwjvzL8vAkKx2cgQVxZSqxLYb30GbuH14LHpq6EtoYaG1Fu7TeHPkJW
+         T5Q/35LxjfYHFp5X6lMXZOEhXgibbOVn4ww1F/CFunJau1LsaSrUIHv5fHUgi757Pn8F
+         m5gdmCFP/pW0iqLO7dyxjOx1zcxzgQrbadEWUpTA4FUmd1KuExS647CHZqkaZQfDtsE3
+         XIlNB+TcnVWBCayNz8r0idAa6GkmQS0vFgbSTzuYtj83JSRUX14oPeU5urxmhCPvEDej
+         9CpA==
+X-Gm-Message-State: AOAM5338GPcHZuzEJ36zgEFUUSIWAdK0LvGhABdB5BL8zXV2z025QAGy
+        arJ7cjepRxxkI3dF3vKiWLxihiv/WunhOHL1vCE=
+X-Google-Smtp-Source: ABdhPJzfbMNvqS9dg/SRNB6bx/VicILOuw9kmEDzDk32+iO3L2grgNGXbDfiazMOOLAeBAdea7NP1EYDydGTfqg2nDw=
+X-Received: by 2002:a17:906:c1c1:b0:6ef:7bd7:a508 with SMTP id
+ bw1-20020a170906c1c100b006ef7bd7a508mr2533770ejb.614.1650605342524; Thu, 21
+ Apr 2022 22:29:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAABZP2xEtRnbRMGgywc2RSwiOAd1QY5jr0ZxwXd9p_8XwOiqhw@mail.gmail.com>
+ <20220419230412.GU4285@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20220419230412.GU4285@paulmck-ThinkPad-P17-Gen-1>
+From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
+Date:   Fri, 22 Apr 2022 13:28:51 +0800
+Message-ID: <CAABZP2zBdDxmiFzwB+rg8fzfYHhteAmkRvaYMAXzQ_B12EF16w@mail.gmail.com>
+Subject: Re: Reproducing call_rcu_tasks self-test bug on a dual sockets Intel
+ Xeon machine
+To:     "Paul E. McKenney" <paulmck@kernel.org>, urezki@gmail.com
+Cc:     Paul McKenney <paulmckrcu@fb.com>, rcu <rcu@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Once kthread printing is available, console printing will no longer
-occur in the context of the printk caller. However, there are some
-special contexts where it is desirable for the printk caller to
-directly print out kernel messages. Using pr_flush() to wait for
-threaded printers is only possible if the caller is in a sleepable
-context and the kthreads are active. That is not always the case.
+Hi Paul
 
-Introduce printk_prefer_direct_enter() and printk_prefer_direct_exit()
-functions to explicitly (and globally) activate/deactivate preferred
-direct console printing. The term "direct console printing" refers to
-printing to all enabled consoles from the context of the printk
-caller. The term "prefer" is used because this type of printing is
-only best effort. If the console is currently locked or other
-printers are already actively printing, the printk caller will need
-to rely on the other contexts to handle the printing.
+On Wed, Apr 20, 2022 at 7:04 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+>
+> On Mon, Apr 18, 2022 at 11:16:16AM +0800, Zhouyi Zhou wrote:
+> > 1. Abstract
+> > Previously, Matthew has reported a call_rcu_tasks bug [1]. But it is
+> > hard to reproduce on a dual socket Intel machine. This report
+> > developed a method to reproduce that bug on such a machine.
+> >
+> > 2. Introduction
+> > Matthew has reported a call_rcu_tasks bug [1]. It is easy to reproduce
+> > it on Thinkpad P1 gen4 (Intel i7-11800H) with following steps:
+> > a) cp [2] to .config
+> > b) build the kernel
+> > c) execute  kvm -smp 4 -net none -serial file:/tmp/console.log -m 512
+> > -kernel vmlinux -append "console=ttyS0"
+> >
+> > The bug can even be reproduced on Thinkpad P1 gen4 (i7-11800H) by
+> > stress testing the TASKS01 with the script [3].
+> >
+> > However, the bug can't be reproduced by above methods on a dual socket
+> > Intel Xeon machine (PowerEdge R720, Intel(R) Xeon(R) CPU E5-2660 0 @
+> > 2.20GHz, 2 CPUs, 16 cores, 32 threads).
+> >
+> > 3. Discover the reason behind the bug
+> > On thinkpad P1 gen4, I tried to discover the reason behind the bug.
+> > After some experimentation, I found that removing CONFIG_NFS_V4 from
+> > the kernel config file will greatly increase the probabilities of
+> > triggering the bug.
+> >
+> > I guess maybe the init calls lend the grace period to RCU tasks self
+> > tests, so I add some debug code to a test kernel to see what happens:
+> > root@e0816662e3db:/mnt/linux# git diff
+> > diff --git a/init/main.c b/init/main.c
+> > index 98182c3c2c4b..9731566014cc 100644
+> > --- a/init/main.c
+> > +++ b/init/main.c
+> > @@ -1356,6 +1356,8 @@ static int __init ignore_unknown_bootoption(char
+> > *param, char *val,
+> >         return 0;
+> >  }
+> >
+> > +extern bool *notrunp;
+> > +unsigned int numofcalls = 0;
+> >  static void __init do_initcall_level(int level, char *command_line)
+> >  {
+> >         initcall_entry_t *fn;
+> > @@ -1367,8 +1369,19 @@ static void __init do_initcall_level(int level,
+> > char *command_line)
+> >                    NULL, ignore_unknown_bootoption);
+> >
+> >         trace_initcall_level(initcall_level_names[level]);
+> > -       for (fn = initcall_levels[level]; fn < initcall_levels[level+1]; fn++)
+> > +       for (fn = initcall_levels[level]; fn < initcall_levels[level+1]; fn++) {
+> > +               bool before = *notrunp, after;
+> > +               unsigned long jiffies_save = jiffies;
+> > +               numofcalls++;
+> >                 do_one_initcall(initcall_from_entry(fn));
+> > +               after = *notrunp;
+> > +               if (before != after) {
+> > +                 char sym[KSYM_SYMBOL_LEN];
+> > +                 sprint_symbol(sym, (unsigned long )initcall_from_entry(fn));
+> > +                 printk(KERN_INFO "init call level %d: %s changed the
+> > rcu task test %lu\n",
+> > +                        level, sym, jiffies - jiffies_save);
+> > +               }
+> > +       }
+> >  }
+> >
+> >  static void __init do_initcalls(void)
+> > @@ -1376,15 +1389,17 @@ static void __init do_initcalls(void)
+> >         int level;
+> >         size_t len = strlen(saved_command_line) + 1;
+> >         char *command_line;
+> > -
+> > +       unsigned long jiffies_save = jiffies;
+> >         command_line = kzalloc(len, GFP_KERNEL);
+> >         if (!command_line)
+> >                 panic("%s: Failed to allocate %zu bytes\n", __func__, len);
+> > -
+> > +
+> >         for (level = 0; level < ARRAY_SIZE(initcall_levels) - 1; level++) {
+> >                 /* Parser modifies command_line, restore it each time */
+> >                 strcpy(command_line, saved_command_line);
+> >                 do_initcall_level(level, command_line);
+> > +               if (level == 5)
+> > +                 printk(KERN_INFO"init call level 5 costs: %lu
+> > numofcalls %u\n", jiffies - jiffies_save, numofcalls);
+> >         }
+> >
+> >         kfree(command_line);
+> > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> > index 99cf3a13954c..f4e175eeaec3 100644
+> > --- a/kernel/rcu/tasks.h
+> > +++ b/kernel/rcu/tasks.h
+> > @@ -1660,7 +1660,7 @@ static void test_rcu_tasks_callback(struct rcu_head *rhp)
+> >
+> >         rttd->notrun = true;
+> >  }
+> > -
+> > +bool *notrunp = &tests[0].notrun;
+> >  static void rcu_tasks_initiate_self_tests(void)
+> >  {
+> >         pr_info("Running RCU-tasks wait API self tests\n");
+> >
+> > The tests on Thinkpad P1 gen4 and Dell PowerEdge R720 show that during
+> > the test, some init call will lend the grace period to the RCU tasks
+> > self tests.
+> >
+> > And of course, I am not using the above modification in Section 5 and
+> > Section 6' tests. Section 5 and Section 6's tests are performed on
+> > unmodified mainline!!
+> >
+> > 4. Reduce the init calls in kernel configuration
+> > Based on above observation, I tried to reduce the kernel configuration
+> > starting from [2] meanwhile keep the qemu bootable. Finally I got
+> > [4].
+> > And [4] will trigger the bug on Dell PowerEdge R720!
+> >
+> > 5. Trigger the bug in a more Linux way.
+> > Why TASKS01 will not trigger the bug? There are two reasons:
+> > a) there are too many init calls that will lend the grace period
+> > b) the debug kernel param will lend the grace period
+> >
+> > Solution to reason a:
+> > I write a C++ program [5] to print the difference between the .config
+> > generated by TASKS01 and [4]. Then I use the difference to create a
+> > TASKS04.
+> >
+> > Solution to reason b:
+> > I add loglevel=7 to qemu boot parameter.
+> >
+> > The result consists of newly created TASKS04 and TASKS04.boot [6].
+> >
+> > Now the bug can trigger every time on Dell PowerEdge R720 by invoking:
+> > ./tools/testing/selftests/rcutorture/bin/kvm.sh --configs "TASKS04"
+> > --duration 10 --trust-make
+> >
+> > 6. Conclusion
+> > I am able to trigger the bug everytime in mainline without modifying
+> > the kernel's functional code on a dual socket Intel Xeon machine.
+> >
+> > 7. Acknowledgement
+> > Thanks Paul for your constant encouragement! Thanks Zhouyi
+>
+> And thank you for digging into this!
+You are very welcome ;-)
+>
+References
+[1] https://lore.kernel.org/rcu/20220322142101.GQ4285@paulmck-ThinkPad-P17-Gen-1/T/#mb696465963393bbc3d38e85ffef0e03cf1e4fa54
+[2] http://154.223.142.244/20220321/config-20220321
+[3] http://154.223.142.244/20220418/test.sh.txt
+[4] http://154.223.142.244/20220418/config
+[5] http://154.223.142.244/20220418/processconfig.cpp
+[6] http://154.223.142.244/20220418/0001-RCU.patch
+> Here is a sneak preview of a lightly tested alleged fix, which may be
+> found on the -rcu tree's "dev" branch:
+>
+> a3b1f9e07d47 rcu-tasks: Split rcu_tasks_one_gp() from rcu_tasks_kthread()
+> 130dd60ddd96 rcu-tasks: Move synchronize_rcu_tasks_generic() down
+> 7e510e661ea5 rcu-tasks: Drive synchronous grace periods from calling task
+>
+> Note that these are in the order that they should be applied rather than
+> in git-log order.
+I have been testing the above patches these days, on my Dell Poweredge
+R720, the bug seems to be gone. But on my Thinkpad P1 gen4, the bug
+seems to be there still.  Sorry to report that bad news.
+I will study your patches carefully and double check my test
+environment in the coming days.
 
-This preferred direct printing is how all printing has been handled
-until now (unless it was explicitly deferred).
+I add Uladzislau, author of bfba7ed084f8a  rcu-tasks: Add RCU-tasks
+self tests to cc list.
 
-When kthread printing is introduced, there may be some unanticipated
-problems due to kthreads being unable to flush important messages.
-In order to minimize such risks, preferred direct printing is
-activated for the primary important messages when the system
-experiences general types of major errors. These are:
-
- - emergency reboot/shutdown
- - cpu and rcu stalls
- - hard and soft lockups
- - hung tasks
- - warn
- - sysrq
-
-Note that since kthread printing does not yet exist, no behavior
-changes result from this commit. This is only implementing the
-counter and marking the various places where preferred direct
-printing is active.
-
-Signed-off-by: John Ogness <john.ogness@linutronix.de>
-Reviewed-by: Petr Mladek <pmladek@suse.com>
-Acked-by: Paul E. McKenney <paulmck@kernel.org> # for RCU
----
- drivers/tty/sysrq.c     |  2 ++
- include/linux/printk.h  | 11 +++++++++++
- kernel/hung_task.c      | 11 ++++++++++-
- kernel/panic.c          |  4 ++++
- kernel/printk/printk.c  | 28 ++++++++++++++++++++++++++++
- kernel/rcu/tree_stall.h |  2 ++
- kernel/reboot.c         | 14 +++++++++++++-
- kernel/watchdog.c       |  4 ++++
- kernel/watchdog_hld.c   |  4 ++++
- 9 files changed, 78 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/tty/sysrq.c b/drivers/tty/sysrq.c
-index bbfd004449b5..2884cd638d64 100644
---- a/drivers/tty/sysrq.c
-+++ b/drivers/tty/sysrq.c
-@@ -578,6 +578,7 @@ void __handle_sysrq(int key, bool check_mask)
- 
- 	rcu_sysrq_start();
- 	rcu_read_lock();
-+	printk_prefer_direct_enter();
- 	/*
- 	 * Raise the apparent loglevel to maximum so that the sysrq header
- 	 * is shown to provide the user with positive feedback.  We do not
-@@ -619,6 +620,7 @@ void __handle_sysrq(int key, bool check_mask)
- 		pr_cont("\n");
- 		console_loglevel = orig_log_level;
- 	}
-+	printk_prefer_direct_exit();
- 	rcu_read_unlock();
- 	rcu_sysrq_end();
- 
-diff --git a/include/linux/printk.h b/include/linux/printk.h
-index 091fba7283e1..cd26aab0ab2a 100644
---- a/include/linux/printk.h
-+++ b/include/linux/printk.h
-@@ -170,6 +170,9 @@ extern void __printk_safe_exit(void);
- #define printk_deferred_enter __printk_safe_enter
- #define printk_deferred_exit __printk_safe_exit
- 
-+extern void printk_prefer_direct_enter(void);
-+extern void printk_prefer_direct_exit(void);
-+
- extern bool pr_flush(int timeout_ms, bool reset_on_progress);
- 
- /*
-@@ -222,6 +225,14 @@ static inline void printk_deferred_exit(void)
- {
- }
- 
-+static inline void printk_prefer_direct_enter(void)
-+{
-+}
-+
-+static inline void printk_prefer_direct_exit(void)
-+{
-+}
-+
- static inline bool pr_flush(int timeout_ms, bool reset_on_progress)
- {
- 	return true;
-diff --git a/kernel/hung_task.c b/kernel/hung_task.c
-index 52501e5f7655..02a65d554340 100644
---- a/kernel/hung_task.c
-+++ b/kernel/hung_task.c
-@@ -127,6 +127,8 @@ static void check_hung_task(struct task_struct *t, unsigned long timeout)
- 	 * complain:
- 	 */
- 	if (sysctl_hung_task_warnings) {
-+		printk_prefer_direct_enter();
-+
- 		if (sysctl_hung_task_warnings > 0)
- 			sysctl_hung_task_warnings--;
- 		pr_err("INFO: task %s:%d blocked for more than %ld seconds.\n",
-@@ -142,6 +144,8 @@ static void check_hung_task(struct task_struct *t, unsigned long timeout)
- 
- 		if (sysctl_hung_task_all_cpu_backtrace)
- 			hung_task_show_all_bt = true;
-+
-+		printk_prefer_direct_exit();
- 	}
- 
- 	touch_nmi_watchdog();
-@@ -204,12 +208,17 @@ static void check_hung_uninterruptible_tasks(unsigned long timeout)
- 	}
-  unlock:
- 	rcu_read_unlock();
--	if (hung_task_show_lock)
-+	if (hung_task_show_lock) {
-+		printk_prefer_direct_enter();
- 		debug_show_all_locks();
-+		printk_prefer_direct_exit();
-+	}
- 
- 	if (hung_task_show_all_bt) {
- 		hung_task_show_all_bt = false;
-+		printk_prefer_direct_enter();
- 		trigger_all_cpu_backtrace();
-+		printk_prefer_direct_exit();
- 	}
- 
- 	if (hung_task_call_panic)
-diff --git a/kernel/panic.c b/kernel/panic.c
-index 55b50e052ec3..7d422597403f 100644
---- a/kernel/panic.c
-+++ b/kernel/panic.c
-@@ -560,6 +560,8 @@ void __warn(const char *file, int line, void *caller, unsigned taint,
- {
- 	disable_trace_on_warning();
- 
-+	printk_prefer_direct_enter();
-+
- 	if (file)
- 		pr_warn("WARNING: CPU: %d PID: %d at %s:%d %pS\n",
- 			raw_smp_processor_id(), current->pid, file, line,
-@@ -597,6 +599,8 @@ void __warn(const char *file, int line, void *caller, unsigned taint,
- 
- 	/* Just a warning, don't kill lockdep. */
- 	add_taint(taint, LOCKDEP_STILL_OK);
-+
-+	printk_prefer_direct_exit();
- }
- 
- #ifndef __WARN_FLAGS
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index a06999d55278..ed7f738261cc 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -362,6 +362,34 @@ static int console_msg_format = MSG_FORMAT_DEFAULT;
- static DEFINE_MUTEX(syslog_lock);
- 
- #ifdef CONFIG_PRINTK
-+static atomic_t printk_prefer_direct = ATOMIC_INIT(0);
-+
-+/**
-+ * printk_prefer_direct_enter - cause printk() calls to attempt direct
-+ *                              printing to all enabled consoles
-+ *
-+ * Since it is not possible to call into the console printing code from any
-+ * context, there is no guarantee that direct printing will occur.
-+ *
-+ * This globally effects all printk() callers.
-+ *
-+ * Context: Any context.
-+ */
-+void printk_prefer_direct_enter(void)
-+{
-+	atomic_inc(&printk_prefer_direct);
-+}
-+
-+/**
-+ * printk_prefer_direct_exit - restore printk() behavior
-+ *
-+ * Context: Any context.
-+ */
-+void printk_prefer_direct_exit(void)
-+{
-+	WARN_ON(atomic_dec_if_positive(&printk_prefer_direct) < 0);
-+}
-+
- DECLARE_WAIT_QUEUE_HEAD(log_wait);
- /* All 3 protected by @syslog_lock. */
- /* the next printk record to read by syslog(READ) or /proc/kmsg */
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index 0c5d8516516a..d612707c2ed0 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -619,6 +619,7 @@ static void print_cpu_stall(unsigned long gps)
- 	 * See Documentation/RCU/stallwarn.rst for info on how to debug
- 	 * RCU CPU stall warnings.
- 	 */
-+	printk_prefer_direct_enter();
- 	trace_rcu_stall_warning(rcu_state.name, TPS("SelfDetected"));
- 	pr_err("INFO: %s self-detected stall on CPU\n", rcu_state.name);
- 	raw_spin_lock_irqsave_rcu_node(rdp->mynode, flags);
-@@ -656,6 +657,7 @@ static void print_cpu_stall(unsigned long gps)
- 	 */
- 	set_tsk_need_resched(current);
- 	set_preempt_need_resched();
-+	printk_prefer_direct_exit();
- }
- 
- static void check_cpu_stall(struct rcu_data *rdp)
-diff --git a/kernel/reboot.c b/kernel/reboot.c
-index 6bcc5d6a6572..4177645e74d6 100644
---- a/kernel/reboot.c
-+++ b/kernel/reboot.c
-@@ -447,9 +447,11 @@ static int __orderly_reboot(void)
- 	ret = run_cmd(reboot_cmd);
- 
- 	if (ret) {
-+		printk_prefer_direct_enter();
- 		pr_warn("Failed to start orderly reboot: forcing the issue\n");
- 		emergency_sync();
- 		kernel_restart(NULL);
-+		printk_prefer_direct_exit();
- 	}
- 
- 	return ret;
-@@ -462,6 +464,7 @@ static int __orderly_poweroff(bool force)
- 	ret = run_cmd(poweroff_cmd);
- 
- 	if (ret && force) {
-+		printk_prefer_direct_enter();
- 		pr_warn("Failed to start orderly shutdown: forcing the issue\n");
- 
- 		/*
-@@ -471,6 +474,7 @@ static int __orderly_poweroff(bool force)
- 		 */
- 		emergency_sync();
- 		kernel_power_off();
-+		printk_prefer_direct_exit();
- 	}
- 
- 	return ret;
-@@ -528,6 +532,8 @@ EXPORT_SYMBOL_GPL(orderly_reboot);
-  */
- static void hw_failure_emergency_poweroff_func(struct work_struct *work)
- {
-+	printk_prefer_direct_enter();
-+
- 	/*
- 	 * We have reached here after the emergency shutdown waiting period has
- 	 * expired. This means orderly_poweroff has not been able to shut off
-@@ -544,6 +550,8 @@ static void hw_failure_emergency_poweroff_func(struct work_struct *work)
- 	 */
- 	pr_emerg("Hardware protection shutdown failed. Trying emergency restart\n");
- 	emergency_restart();
-+
-+	printk_prefer_direct_exit();
- }
- 
- static DECLARE_DELAYED_WORK(hw_failure_emergency_poweroff_work,
-@@ -582,11 +590,13 @@ void hw_protection_shutdown(const char *reason, int ms_until_forced)
- {
- 	static atomic_t allow_proceed = ATOMIC_INIT(1);
- 
-+	printk_prefer_direct_enter();
-+
- 	pr_emerg("HARDWARE PROTECTION shutdown (%s)\n", reason);
- 
- 	/* Shutdown should be initiated only once. */
- 	if (!atomic_dec_and_test(&allow_proceed))
--		return;
-+		goto out;
- 
- 	/*
- 	 * Queue a backup emergency shutdown in the event of
-@@ -594,6 +604,8 @@ void hw_protection_shutdown(const char *reason, int ms_until_forced)
- 	 */
- 	hw_failure_emergency_poweroff(ms_until_forced);
- 	orderly_poweroff(true);
-+out:
-+	printk_prefer_direct_exit();
- }
- EXPORT_SYMBOL_GPL(hw_protection_shutdown);
- 
-diff --git a/kernel/watchdog.c b/kernel/watchdog.c
-index 9166220457bc..40024e03d422 100644
---- a/kernel/watchdog.c
-+++ b/kernel/watchdog.c
-@@ -424,6 +424,8 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
- 		/* Start period for the next softlockup warning. */
- 		update_report_ts();
- 
-+		printk_prefer_direct_enter();
-+
- 		pr_emerg("BUG: soft lockup - CPU#%d stuck for %us! [%s:%d]\n",
- 			smp_processor_id(), duration,
- 			current->comm, task_pid_nr(current));
-@@ -442,6 +444,8 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
- 		add_taint(TAINT_SOFTLOCKUP, LOCKDEP_STILL_OK);
- 		if (softlockup_panic)
- 			panic("softlockup: hung tasks");
-+
-+		printk_prefer_direct_exit();
- 	}
- 
- 	return HRTIMER_RESTART;
-diff --git a/kernel/watchdog_hld.c b/kernel/watchdog_hld.c
-index 247bf0b1582c..701f35f0e2d4 100644
---- a/kernel/watchdog_hld.c
-+++ b/kernel/watchdog_hld.c
-@@ -135,6 +135,8 @@ static void watchdog_overflow_callback(struct perf_event *event,
- 		if (__this_cpu_read(hard_watchdog_warn) == true)
- 			return;
- 
-+		printk_prefer_direct_enter();
-+
- 		pr_emerg("Watchdog detected hard LOCKUP on cpu %d\n",
- 			 this_cpu);
- 		print_modules();
-@@ -155,6 +157,8 @@ static void watchdog_overflow_callback(struct perf_event *event,
- 		if (hardlockup_panic)
- 			nmi_panic(regs, "Hard LOCKUP");
- 
-+		printk_prefer_direct_exit();
-+
- 		__this_cpu_write(hard_watchdog_warn, true);
- 		return;
- 	}
--- 
-2.30.2
-
+Kind Regards
+Sincerely yours
+Zhouyi
+>
+>                                                         Thanx, Paul
