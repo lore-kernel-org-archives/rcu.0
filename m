@@ -2,117 +2,82 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 86552C433F5
-	for <rcu@archiver.kernel.org>; Fri, 22 Apr 2022 10:46:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 378C0C433F5
+	for <rcu@archiver.kernel.org>; Fri, 22 Apr 2022 13:15:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1446602AbiDVKsx (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 22 Apr 2022 06:48:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47774 "EHLO
+        id S1447807AbiDVNR4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 22 Apr 2022 09:17:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1446851AbiDVKsx (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 22 Apr 2022 06:48:53 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DD0E3FBFA;
-        Fri, 22 Apr 2022 03:45:59 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id w1so13575928lfa.4;
-        Fri, 22 Apr 2022 03:45:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wGWQsodsPCEvTet53bPj88p4jYhZ/d++dMltkcbaEYI=;
-        b=mAgORrZD4oGwxnomgnH+TjiwLaKb2n8RwwlVy9gojA6VXZvgpCuQHQFkyqo+L5hSg7
-         P/CfljKHsQEkc4wyZRStj3cokDs5YI3oqJNK1uGWh3hbb2s22dB6WydHn15mu8u7mMO1
-         8xBbXHxbRZmFXP5y3CV4pHpt0MPycn8SbcxahMoLHnhpFRQkLqGn5XzYyhFRC8N8m2Wk
-         KItYYPtNrYMxiSoEyFk/4cxmCOQ0eQoqfllAQBynyv5OpDO4/x98HAzYmVKwcgvFIjPS
-         lV6xZfyH+TW+wVOrnPE+U18irxyThdJTg1usk374FlxJQ/bcWJ3is8Gcp91qT4ffBaXY
-         0Iuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wGWQsodsPCEvTet53bPj88p4jYhZ/d++dMltkcbaEYI=;
-        b=Vnhzk3WCyxhFGKTD2kkKcTd1joc6W3il2yVzQaF+pEF2SjHk+wTKGhEIQkGRMMoMnD
-         bQ57VxswqHvqUgk4I3LnMy9QFhxe0tfsYgTPnaQntknMf4Pxy0UEHaLnKLvHOqQoDXAD
-         7vebOzh2FYtYPxNyWTEVeqm+RThvUTaVK2Uo/riFEHkt9PNN0XNMaN75lB53MUFyeauh
-         CBFb4mN77eozMBCg3jOrGJ+bBTbrzXx/GnMurjNzm+rsrmkyhgaJ3b5x4RqLALy8YBCK
-         0BM8accF8OYGUPzy/KdrT8mGPB6tPrAM/q7aXeg29ES/qekxn8jiNql83cWSo8ObhxeI
-         KWFQ==
-X-Gm-Message-State: AOAM5316VYovy/GI6hcjgVIAxIPY0BNaQlmtN1rvJqtiI65PaUQXQpAE
-        ZL44m9m7IxLYFLcZK/Gtuxng1gLW+6Iudf5GMq8=
-X-Google-Smtp-Source: ABdhPJwDhLfB/RddN8AJO1OXvAzh43JVwTYgu7pKH9N74RGPzr1t5+yHvvDMmvwJ0C1Lq06TJ+kPl88b4hRASryM51Q=
-X-Received: by 2002:a05:6512:31cc:b0:471:d125:162c with SMTP id
- j12-20020a05651231cc00b00471d125162cmr2737873lfe.96.1650624357838; Fri, 22
- Apr 2022 03:45:57 -0700 (PDT)
+        with ESMTP id S1447892AbiDVNRz (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 22 Apr 2022 09:17:55 -0400
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08E321158;
+        Fri, 22 Apr 2022 06:15:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1650633303; x=1682169303;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Fk1/9xj+k4tMU+1zg07H5ABLMjz7bV0v7SjqRVxbtx0=;
+  b=htpsv9G8/eGfnGPj2vR0vUqOvIF/7iAMj2lQDsBjLxW2ob0inrKOlh80
+   IBxdlEV+RfW5YfucprCxMIPnfPbSDo8ygwtye/KejXiiVRYHyokQpPYTx
+   wfEYAFEAnMNPqUcJnfRieYddk4naXHg44nSt7no/mAb4sRRIgXD1XZC8M
+   k9Hq+lhUvirl/REip6dMv1u7N6RmmHwXwnWQsnXBPqCj9R/VRAKnK9YhV
+   I9GLg5j/wxAcaZ9LbhI12dH5M8WFsuQi7MyzIVo5xCt1KMTbY49rDoBoH
+   d66vm9YjtZs9ozU5LQzblHrY5ddZCKR5vmgCZgbdcAsfZtILr1tvrKVwP
+   w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10324"; a="264447579"
+X-IronPort-AV: E=Sophos;i="5.90,281,1643702400"; 
+   d="scan'208";a="264447579"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2022 06:15:02 -0700
+X-IronPort-AV: E=Sophos;i="5.90,281,1643702400"; 
+   d="scan'208";a="577888236"
+Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.125])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2022 06:15:01 -0700
+From:   Zqiang <qiang1.zhang@intel.com>
+To:     paulmck@kernel.org, frederic@kernel.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] rcu: Put panic_on_rcu_stall() after expedited RCU CPU stall warnings
+Date:   Fri, 22 Apr 2022 21:15:18 +0800
+Message-Id: <20220422131518.3090060-1-qiang1.zhang@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20220418043735.11441-1-patrick.wang.shcn@gmail.com>
- <20220418143404.55c8fcab@gandalf.local.home> <CAGcnep8bH4Nncbt3t+VRLff35ZyD8JyzHcEgkq-u6TEq47jqzQ@mail.gmail.com>
- <CAGcnep_Gx+3KiUvDVronYKn_divU3OM-RQEOPZakv7MRYh4EJw@mail.gmail.com>
- <20220420114454.69ab108c@gandalf.local.home> <20220420122633.55d4ff6b@gandalf.local.home>
- <CAGcnep86pd2trfTovU8_z1msOstx7gKCdndm=pHLDGTy+_K7=g@mail.gmail.com> <20220421085047.2cb8edf9@gandalf.local.home>
-In-Reply-To: <20220421085047.2cb8edf9@gandalf.local.home>
-From:   patrick wang <patrick.wang.shcn@gmail.com>
-Date:   Fri, 22 Apr 2022 18:45:46 +0800
-Message-ID: <CAGcnep9Ez-S962vukR_a=otzcSxDRo5HUW2vG_YCBanCfURGXw@mail.gmail.com>
-Subject: Re: [PATCH] rcu: ftrace: avoid tracing a few functions executed in multi_cpu_stop()
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
-        josh@joshtriplett.org, mathieu.desnoyers@efficios.com,
-        jiangshanlai@gmail.com, joel@joelfernandes.org,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Apr 21, 2022 at 8:50 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Thu, 21 Apr 2022 19:36:06 +0800
-> patrick wang <patrick.wang.shcn@gmail.com> wrote:
->
-> > On Thu, Apr 21, 2022 at 12:26 AM Steven Rostedt <rostedt@goodmis.org> wrote:
-> > >
-> > > On Wed, 20 Apr 2022 11:44:54 -0400
-> > > Steven Rostedt <rostedt@goodmis.org> wrote:
-> > >
-> > >
-> > > Interesting. On x86 when we used stop machine[*] it was not an issue to
-> > > modify the code that is being executed in stop machine. I'm curious to
-> > > exactly what the issue is if something does get traced in the stop machine
-> > > processing. Why does it crash?
-> >
-> > I looked up the commit history. When x86 turned to breakpoints, stop
-> > machine's state machine loop had no calls during waiting. So there
-> > was no function being called during modifying code. Which means
-> > there were no other cpus would load those instructions to be updated
-> > in this period. While the stop machine currently will call other functions
-> > and the call chain is fairly deep. So it may not quite be suitable for ftrace
-> > now because it can not make sure the instructions within its own call
-> > chain are updated atomically.
->
-> Are you saying that the RISC-V stop machine implementation has code being
-> called on the other CPUs while they wait?
->
+When the expedited RCU CPU stall warning is treated as panic, if
+it's triggered, the stall info should be printed first and tell us
+reason, rather than directly panic.
 
-Yes, and not just RISC-V. It's arch-independent. It's the internal change of
-stop machine implementation.
+Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+---
+ kernel/rcu/tree_exp.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-----------------------------------------------------------------
-Former stop machine wait loop:
-do {
-    cpu_relax(); => macro
-    ...
-} while (curstate != STOPMACHINE_EXIT);
------------------------------------------------------------------
-Current stop machine wait loop:
-do {
-    stop_machine_yield(cpumask); => function (notraced)
-    ...
-    touch_nmi_watchdog(); => function (notraced, inside calls also notraced)
-    ...
-    rcu_momentary_dyntick_idle(); => function (notraced, inside calls traced)
-} while (curstate != MULTI_STOP_EXIT);
-------------------------------------------------------------------
+diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+index 571b0a700cce..f05a15b11fa0 100644
+--- a/kernel/rcu/tree_exp.h
++++ b/kernel/rcu/tree_exp.h
+@@ -623,7 +623,6 @@ static void synchronize_rcu_expedited_wait(void)
+ 			return;
+ 		if (rcu_stall_is_suppressed())
+ 			continue;
+-		panic_on_rcu_stall();
+ 		trace_rcu_stall_warning(rcu_state.name, TPS("ExpeditedStall"));
+ 		pr_err("INFO: %s detected expedited stalls on CPUs/tasks: {",
+ 		       rcu_state.name);
+@@ -671,6 +670,7 @@ static void synchronize_rcu_expedited_wait(void)
+ 			}
+ 		}
+ 		jiffies_stall = 3 * rcu_exp_jiffies_till_stall_check() + 3;
++		panic_on_rcu_stall();
+ 	}
+ }
+ 
+-- 
+2.25.1
 
-Thanks,
-Patrick
