@@ -2,105 +2,176 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 27B1AC433EF
-	for <rcu@archiver.kernel.org>; Fri, 22 Apr 2022 14:44:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F783C433F5
+	for <rcu@archiver.kernel.org>; Fri, 22 Apr 2022 15:26:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1448849AbiDVOrR (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 22 Apr 2022 10:47:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60390 "EHLO
+        id S1449401AbiDVP3m (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 22 Apr 2022 11:29:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237708AbiDVOrQ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 22 Apr 2022 10:47:16 -0400
+        with ESMTP id S1449433AbiDVP3m (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 22 Apr 2022 11:29:42 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB2DD5C34B;
-        Fri, 22 Apr 2022 07:44:22 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C69E15C85A;
+        Fri, 22 Apr 2022 08:26:48 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 642FE60E08;
-        Fri, 22 Apr 2022 14:44:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C535CC385A8;
-        Fri, 22 Apr 2022 14:44:21 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6199161F35;
+        Fri, 22 Apr 2022 15:26:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4D4CC385AB;
+        Fri, 22 Apr 2022 15:26:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1650638661;
-        bh=31wPn4L1S1z5C6cWC6u0dIySUFUsq0alWQMCX0bcBA8=;
+        s=k20201202; t=1650641207;
+        bh=wpcimkpmyXuZWzMsgzk6WTpHEDwsi0hL31+pEsg3qqc=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Kv48hkl4EhooNQASdUF4zixEu2xOxKLNFdTTUd4mOIUqwyp4OfF/2ZC1Q8iVbVar6
-         xCx3QwSvjhgRn2UqHmxlChmo0itI8Y9NHHdGkiEUb9Ito//jETQYpNc8Jzfcw2Grz2
-         7Ch54TzqAd4tdKkvwNIjTSO/gn0MGq9vK5HMaLGQ7o2z9qmyNwoDLn1kXJ86iBtC/J
-         ElY6SKygkfgeO91i6d2V20uR/9aunoeb+56BPwLPfHLD3zreb3yJzT0SIM4995rtLy
-         WiIWHDOZuUPQt1QhwT18qqOrWYXpfWaYMWZUM3h6xIiQxzDPaTa+AXOHWaqrRGtW0F
-         lBVrr0P4pnZyQ==
+        b=C3zpGu8MjDMmcc54IAy+8QiCCGeFFQ2Xc7XDe8tj7NphlijuDwXdizBP0uTEgJfwK
+         UHL3tLPnbyyaNTiMoKuOB+33EQ0P5IRNFVqztxGzHQ65Q3zi0GsiUswi0sNDmNLWaM
+         wfwZy0iYxlgUXK0xjg/EwCoyFeEbItlhBqRLDgtdbb+yEnSAp6nXwBz0hVvVYzdgMb
+         gi1l1+2SZCPpZNKlyO+Ybzy5M9yb0tw4iSrfabg4e8ewsGZQwrpQ25kHgJXw77S6ko
+         8KfeEhKz1tCIpheg0l1AciYyE/MAsn3mXAZDQoSrYCUiuBVwDZSZVSXP+7L9dPxhpT
+         w5/XJH4b1Syxg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 6988F5C0460; Fri, 22 Apr 2022 07:44:21 -0700 (PDT)
-Date:   Fri, 22 Apr 2022 07:44:21 -0700
+        id 5E9C35C0460; Fri, 22 Apr 2022 08:26:47 -0700 (PDT)
+Date:   Fri, 22 Apr 2022 08:26:47 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     Zqiang <qiang1.zhang@intel.com>
 Cc:     frederic@kernel.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu: Put panic_on_rcu_stall() after expedited RCU CPU
- stall warnings
-Message-ID: <20220422144421.GX4285@paulmck-ThinkPad-P17-Gen-1>
+        linux-kernel@vger.kernel.org, urezki@gmail.com
+Subject: Re: [PATCH v2] rcu: Dump all rcuc kthreads status for CPUs that not
+ report quiescent state
+Message-ID: <20220422152647.GY4285@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20220422131518.3090060-1-qiang1.zhang@intel.com>
+References: <20220419053426.2820350-1-qiang1.zhang@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220422131518.3090060-1-qiang1.zhang@intel.com>
+In-Reply-To: <20220419053426.2820350-1-qiang1.zhang@intel.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Apr 22, 2022 at 09:15:18PM +0800, Zqiang wrote:
-> When the expedited RCU CPU stall warning is treated as panic, if
-> it's triggered, the stall info should be printed first and tell us
-> reason, rather than directly panic.
-> 
-> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+On Tue, Apr 19, 2022 at 01:34:26PM +0800, Zqiang wrote:
+> If the rcutree.use_softirq is configured, when RCU Stall event
+> happened, dump status of all rcuc kthreads who due to starvation
+> prevented grace period ends on CPUs that not report quiescent
+> state.
 
-Good eyes, thank you!
+Please accept my apologies for the delay, and please let me try
+again.  ;-)
 
-Queued for v5.20, with the wordsmithing shown below.  Please let me
-know if I messed anything up.
+Your earlier patch added at most one line and one stack backtrace to
+the RCU CPU stall warning text, which is OK.  Sort of, anyway.  I was
+relying on the fact that the people who have (rightly) complained about
+RCU CPU stall-warning verbosity never run with !use_softirq.  But it is
+only a matter of time.  Yes, we could argue that they should use faster
+console serial lines, faster management-console hardware, faster networks,
+faster mass storage, and so on, but I would expect them to in turn ask
+us if we were volunteering to pay for all that.
+
+In contrast, this patch can add one line per stalled CPU on top of the
+existing output.  Which is better than your earlier patch, which could
+add a line plus a stack trace per stalled CPU.  But that can still be
+a lot of added output, and that added output can cause problems.
+
+So, could you please merge this rcuc-stalled information into the
+existing per-CPU line printed by print_cpu_stall_info()?  Right now,
+each such line looks something like this:
+
+rcu: 0-....: (4 ticks this GP) idle=1e6/1/0x4000000000000002 softirq=12470/12470 fqs=2
+
+One approach would be to add the number of jiffies that the rcuc
+task was stalled to this line, maybe something like this:
+
+rcu: 0-....: (4 ticks this GP) idle=1e6/1/0x4000000000000002 softirq=12470/12470 fqs=2 rcuc=15384
+
+Of course, this "rcuc=" string should only ut only if the stall lasted
+for longer than (say) one eighth of the stall timeout.
+
+Any "(false positive?)" needs to remain at the end of the line:
+
+rcu: 0-....: (4 ticks this GP) idle=1e6/1/0x4000000000000002 softirq=12470/12470 fqs=2 rcuc=15384 (false positive?)
+
+Thoughts?
 
 							Thanx, Paul
 
-------------------------------------------------------------------------
-
-commit e5215598af9bdf5509c7e7c6f896f50df0cdaf4b
-Author: Zqiang <qiang1.zhang@intel.com>
-Date:   Fri Apr 22 21:15:18 2022 +0800
-
-    rcu: Put panic_on_rcu_stall() after expedited RCU CPU stall warnings
-    
-    When a normal RCU CPU stall warning is encountered with the
-    panic_on_rcu_stall sysfs variable is set, the system panics only after
-    the stall warning is printed.  But when an expedited RCU CPU stall
-    warning is encountered with the panic_on_rcu_stall sysfs variable is
-    set, the system panics first, thus never printing the stall warning.
-    This commit therefore brings the expedited stall warning into line with
-    the normal stall warning by printing first and panicking afterwards.
-    
-    Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index 571b0a700cce..f05a15b11fa0 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -623,7 +623,6 @@ static void synchronize_rcu_expedited_wait(void)
- 			return;
- 		if (rcu_stall_is_suppressed())
- 			continue;
--		panic_on_rcu_stall();
- 		trace_rcu_stall_warning(rcu_state.name, TPS("ExpeditedStall"));
- 		pr_err("INFO: %s detected expedited stalls on CPUs/tasks: {",
- 		       rcu_state.name);
-@@ -671,6 +670,7 @@ static void synchronize_rcu_expedited_wait(void)
- 			}
- 		}
- 		jiffies_stall = 3 * rcu_exp_jiffies_till_stall_check() + 3;
-+		panic_on_rcu_stall();
- 	}
- }
- 
+> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+> ---
+>  v1->v2:
+>  rework rcuc_kthread_dump function
+> 
+>  kernel/rcu/tree_stall.h | 32 ++++++++++++++++++++++++++------
+>  1 file changed, 26 insertions(+), 6 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+> index d7956c03edbd..fcf0b2e1a71c 100644
+> --- a/kernel/rcu/tree_stall.h
+> +++ b/kernel/rcu/tree_stall.h
+> @@ -465,11 +465,13 @@ static void print_cpu_stall_info(int cpu)
+>  	       falsepositive ? " (false positive?)" : "");
+>  }
+>  
+> -static void rcuc_kthread_dump(struct rcu_data *rdp)
+> +static void __rcuc_kthread_dump(int cpu)
+>  {
+> -	int cpu;
+> -	unsigned long j;
+> +	struct rcu_data *rdp;
+>  	struct task_struct *rcuc;
+> +	unsigned long j;
+> +
+> +	rdp = per_cpu_ptr(&rcu_data, cpu);
+>  
+>  	rcuc = rdp->rcu_cpu_kthread_task;
+>  	if (!rcuc)
+> @@ -488,6 +490,21 @@ static void rcuc_kthread_dump(struct rcu_data *rdp)
+>  		dump_cpu_task(cpu);
+>  }
+>  
+> +static void rcuc_kthread_dump(void)
+> +{
+> +	int cpu;
+> +	struct rcu_node *rnp;
+> +	unsigned long flags;
+> +
+> +	rcu_for_each_leaf_node(rnp) {
+> +		raw_spin_lock_irqsave_rcu_node(rnp, flags);
+> +		for_each_leaf_node_possible_cpu(rnp, cpu)
+> +			if (rnp->qsmask & leaf_node_cpu_bit(rnp, cpu))
+> +				__rcuc_kthread_dump(cpu);
+> +		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+> +	}
+> +}
+> +
+>  /* Complain about starvation of grace-period kthread.  */
+>  static void rcu_check_gp_kthread_starvation(void)
+>  {
+> @@ -597,6 +614,9 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
+>  	if (ndetected) {
+>  		rcu_dump_cpu_stacks();
+>  
+> +		if (!use_softirq)
+> +			rcuc_kthread_dump();
+> +
+>  		/* Complain about tasks blocking the grace period. */
+>  		rcu_for_each_leaf_node(rnp)
+>  			rcu_print_detail_task_stall_rnp(rnp);
+> @@ -659,11 +679,11 @@ static void print_cpu_stall(unsigned long gps)
+>  	rcu_check_gp_kthread_expired_fqs_timer();
+>  	rcu_check_gp_kthread_starvation();
+>  
+> -	if (!use_softirq)
+> -		rcuc_kthread_dump(rdp);
+> -
+>  	rcu_dump_cpu_stacks();
+>  
+> +	if (!use_softirq)
+> +		rcuc_kthread_dump();
+> +
+>  	raw_spin_lock_irqsave_rcu_node(rnp, flags);
+>  	/* Rewrite if needed in case of slow consoles. */
+>  	if (ULONG_CMP_GE(jiffies, READ_ONCE(rcu_state.jiffies_stall)))
+> -- 
+> 2.25.1
+> 
