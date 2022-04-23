@@ -2,145 +2,106 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CFBBC433EF
-	for <rcu@archiver.kernel.org>; Sat, 23 Apr 2022 02:29:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 465DAC433F5
+	for <rcu@archiver.kernel.org>; Sat, 23 Apr 2022 09:43:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231970AbiDWCck (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 22 Apr 2022 22:32:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49140 "EHLO
+        id S234584AbiDWJqZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 23 Apr 2022 05:46:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231948AbiDWCcc (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 22 Apr 2022 22:32:32 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34EEA22CA98;
-        Fri, 22 Apr 2022 19:29:37 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id x80so9644371pfc.1;
-        Fri, 22 Apr 2022 19:29:37 -0700 (PDT)
+        with ESMTP id S234355AbiDWJqY (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 23 Apr 2022 05:46:24 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59718F99C6;
+        Sat, 23 Apr 2022 02:43:27 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id p12so12658766lfs.5;
+        Sat, 23 Apr 2022 02:43:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=viXXWgWXVo95+o/9NZZA7H7Wid1vy02UHZgXcnwGRG0=;
-        b=gPj64rNyAU5X7R2GnB5ivbb2GkOtZwpkeSL7PXb1I4pG9+VwTbZebtgmrNmy2h9xyZ
-         Do+gaWYFMCm7y1fKMksrcse9C+iAW/8dF7Y3W9cUP0T6MkW4hRZELHDvqfCVk2MiWyYs
-         x7UVyWVSC2kVmWuLTsd22vCDGi+rT0cKczrLmptm3Uf6P1i4i3a9NUoDuF0Qh4xAWkVC
-         hNHnlAwDVqqzW9IdKnpRxa59naX3DoWYZXvOcb3S4WnvS2joavGB4772Y7uwKNyYygtv
-         kyVrUNQ/jG3FdBhNYsgaDmoxcQXYIjeluqBuZsoqaOKR9B29Cmd13gp0t7lpRYPblAqA
-         ROyA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oUBbhwe77dvZymIbzfQlDVdZ71HesftAxXVr2puB39s=;
+        b=JJ0iSM3VYZoIZRIpbt+qdyzSNtOQgywj8kqmG8PHbdUkOo1KGNeb12i8bAo5u70z+g
+         MZlgZxP1EneHa0ustMXWUaJhX43t0t7YNKNQ9vT+dHe+Ou16NacALKuV6sp1Wb/FjBE8
+         x7ygmXnhuQDSBvdntnLZ1cQ0N3lvVaxoKWBTxw8eK68Ld/iywY+MUEsTIwWjUSf7Mb3s
+         PsdP1LXHd3e6QviWp1u0CFm4op8u49bnJxJVttFXIEviXfXNOzAyAdzJjsOLThr5mNOB
+         D6Us1ANF7hGKl1m30NOrVr6oDirV3Ow8BpF98EMpOWI0s8t5L4Jtqamb6mkcg/x+TKl2
+         Nlkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=viXXWgWXVo95+o/9NZZA7H7Wid1vy02UHZgXcnwGRG0=;
-        b=h0FoIZR0G5o7olkluQm834109/qeSDgCzX3DoU4d5hBMQpYWEIFxNVhXkxMnjjM8aH
-         jZh2+8BWzL2bQwL29wgYfMmP5X1cAcmEopp7y0pMmf99e+m8YlzVHG6QQPvXV/Yw4C5U
-         dQIcQkY0mAwpbePEV9Fcmv6/vCSBPAC68ErxcOf+jNmBT5tv7nOq47giG3xElma6UiuR
-         A/Y9F3PbIKzFe6Rk0y/Dgz3/ZlzuHPBTPBX6wwiRJyqVq/enatAbPlRrAm5/AkpBhL4z
-         +AF2bZ7zMLGn9KmvjPcpAmMhOfJqNrswTJhNfZ167amHQsINITnn1YYvvmwPFqHVcrxJ
-         RW+g==
-X-Gm-Message-State: AOAM531gC4vMXyBslc3EPk9PVFh36xDscyl3PuLLJAF4Ke5jsGOXFU8n
-        P73DJeaPjFBtczmsGvjYxuQ=
-X-Google-Smtp-Source: ABdhPJztIe86JJ+KtDnEBTYYIG/4bg02fLjWPTWYqhxTWgo34Soe/HW+co69m4YhCUGpvIxt+6fyEQ==
-X-Received: by 2002:a05:6a00:2444:b0:4fd:db81:cbdd with SMTP id d4-20020a056a00244400b004fddb81cbddmr7857701pfj.32.1650680976716;
-        Fri, 22 Apr 2022 19:29:36 -0700 (PDT)
-Received: from localhost (193-116-116-20.tpgi.com.au. [193.116.116.20])
-        by smtp.gmail.com with ESMTPSA id g9-20020a056a00078900b0050a4bae652fsm3701750pfu.131.2022.04.22.19.29.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Apr 2022 19:29:36 -0700 (PDT)
-Date:   Sat, 23 Apr 2022 12:29:30 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re:
-To:     Michael Ellerman <mpe@ellerman.id.au>, paulmck@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Zhouyi Zhou <zhouzhouyi@gmail.com>
-Cc:     =?iso-8859-1?q?Daniel=0A?= Lezcano <daniel.lezcano@linaro.org>,
-        linux-kernel@vger.kernel.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        rcu <rcu@vger.kernel.org>,
-        =?iso-8859-1?q?Viresh=0A?= Kumar <viresh.kumar@linaro.org>
-References: <CANiq72k+5Rdj7i3Df2dcE6_OPYPXK3z5EWLKnY56sSMz4G3OvA@mail.gmail.com>
-        <CAABZP2z64aYWfVSdXHaQopWc+BAbJJUGqtrju2iWER3DDTDFWg@mail.gmail.com>
-        <20220406170012.GO4285@paulmck-ThinkPad-P17-Gen-1>
-        <87pmls6nt7.fsf@mpe.ellerman.id.au> <87k0bz7i1s.fsf@mpe.ellerman.id.au>
-        <1649818529.j46672mh2p.astroid@bobo.none> <87fsm55d3f.ffs@tglx>
-In-Reply-To: <87fsm55d3f.ffs@tglx>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oUBbhwe77dvZymIbzfQlDVdZ71HesftAxXVr2puB39s=;
+        b=FMfM+GVG7y50x8DQuGV7uGpdA0eYn1vtjER4wnRqpqfIcS7GUD9s03rZg5AMpqRPMo
+         r9/Rs3YwLDJOAsGzvaFF4IJHAUAu3A5sucbUcIT3CjMjqF1P+O1Tr+hFC4mcaf4Uieac
+         F+eYxVTULvYSD+Mm+5W9+QV/L4RAlI/j3+CZIXSXLwyLTsuF6hWa/SmbKGv7XeNB+Gnv
+         OnqFkawTfuKxmI9rpxepXx6tDPfXsKDP91wKLOlkKDGCjBBaMADTQn6qXhm16hEe6CzK
+         ALKIl9CzgzZl7JENQNZhJu3yCeRSThoKp8BDncGwIdJq/0saNzBQxWiSBHFci6VNOUT8
+         nc4Q==
+X-Gm-Message-State: AOAM532L8qnjj+oW8Z+ZHB0r0681Rx6WQBpPY6gYJEBbGZhIR9FbDPNT
+        hSWc/wbD4pmYbUzsCT5IIqa7z4+4b0aiMf5A4cLtmUI0Wpw=
+X-Google-Smtp-Source: ABdhPJx3PiAC4IN3QA9lLfbfNKn0dxG4BswJ6Gg/KxmIdi8iEhBA2vkKHLCN9u7rTYARgcOzD0Rd2Yol9EVH3M2fhm8=
+X-Received: by 2002:a05:6512:400e:b0:450:e09d:c9a6 with SMTP id
+ br14-20020a056512400e00b00450e09dc9a6mr6411283lfb.243.1650707005488; Sat, 23
+ Apr 2022 02:43:25 -0700 (PDT)
 MIME-Version: 1.0
-Message-Id: <1650680264.0sj0tnkzx7.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+References: <20220418043735.11441-1-patrick.wang.shcn@gmail.com>
+ <20220418143404.55c8fcab@gandalf.local.home> <CAGcnep8bH4Nncbt3t+VRLff35ZyD8JyzHcEgkq-u6TEq47jqzQ@mail.gmail.com>
+ <CAGcnep_Gx+3KiUvDVronYKn_divU3OM-RQEOPZakv7MRYh4EJw@mail.gmail.com>
+ <20220420114454.69ab108c@gandalf.local.home> <20220420122633.55d4ff6b@gandalf.local.home>
+ <CAGcnep86pd2trfTovU8_z1msOstx7gKCdndm=pHLDGTy+_K7=g@mail.gmail.com>
+ <20220421085047.2cb8edf9@gandalf.local.home> <CAGcnep9Ez-S962vukR_a=otzcSxDRo5HUW2vG_YCBanCfURGXw@mail.gmail.com>
+ <20220422115234.613436e4@gandalf.local.home>
+In-Reply-To: <20220422115234.613436e4@gandalf.local.home>
+From:   patrick wang <patrick.wang.shcn@gmail.com>
+Date:   Sat, 23 Apr 2022 17:43:14 +0800
+Message-ID: <CAGcnep_PH7FCnhjeON2y2--4pfMqmKuHqkP4puZ45PEzCDDQoA@mail.gmail.com>
+Subject: Re: [PATCH] rcu: ftrace: avoid tracing a few functions executed in multi_cpu_stop()
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
+        josh@joshtriplett.org, mathieu.desnoyers@efficios.com,
+        jiangshanlai@gmail.com, joel@joelfernandes.org,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Excerpts from Thomas Gleixner's message of April 23, 2022 1:53 am:
-> On Wed, Apr 13 2022 at 15:11, Nicholas Piggin wrote:
->> So we traced the problem down to possibly a misunderstanding between=20
->> decrementer clock event device and core code.
->>
->> The decrementer is only oneshot*ish*. It actually needs to either be=20
->> reprogrammed or shut down otherwise it just continues to cause=20
->> interrupts.
->=20
-> I always thought that PPC had sane timers. That's really disillusioning.
+On Fri, Apr 22, 2022 at 11:52 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> On Fri, 22 Apr 2022 18:45:46 +0800
+> patrick wang <patrick.wang.shcn@gmail.com> wrote:
+>
+> > Yes, and not just RISC-V. It's arch-independent. It's the internal change of
+> > stop machine implementation.
+> >
+> > ----------------------------------------------------------------
+> > Former stop machine wait loop:
+> > do {
+> >     cpu_relax(); => macro
+> >     ...
+> > } while (curstate != STOPMACHINE_EXIT);
+> > -----------------------------------------------------------------
+> > Current stop machine wait loop:
+> > do {
+> >     stop_machine_yield(cpumask); => function (notraced)
+> >     ...
+> >     touch_nmi_watchdog(); => function (notraced, inside calls also notraced)
+> >     ...
+> >     rcu_momentary_dyntick_idle(); => function (notraced, inside calls traced)
+> > } while (curstate != MULTI_STOP_EXIT);
+> > ------------------------------------------------------------------
+>
+> That makes much more sense. Can you add that to the change log.
+>
 
-My comment was probably a bit misleading explanation of the whole
-situation. This weirdness is actually in software in the powerpc
-clock event driver due to a recent change I made assuming the clock=20
-event goes to oneshot-stopped.
-
-The hardware is relatively sane I think, global synchronized constant
-rate high frequency clock distributed to the CPUs so reads don't
-go off-core. And per-CPU "decrementer" event interrupt at the same
-frequency as the clock -- program it to a +ve value and it decrements
-until zero then creates basically a level triggered interrupt.
-
-Before my change, the decrementer interrupt would always clear the
-interrupt at entry. The event_handler usually programs another
-timer in so I tried to avoid that first clear counting on the
-oneshot_stopped callback to clear the interrupt if there was no
-other timer.
-
->> Before commit 35de589cb879, it was sort of two-shot. The initial=20
->> interrupt at the programmed time would set its internal next_tb variable=
-=20
->> to ~0 and call the ->event_handler(). If that did not set_next_event or=20
->> stop the timer, the interrupt will fire again immediately, notice=20
->> next_tb is ~0, and only then stop the decrementer interrupt.
->>
->> So that was already kind of ugly, this patch just turned it into a hang.
->>
->> The problem happens when the tick is stopped with an event still=20
->> pending, then tick_nohz_handler() is called, but it bails out because=20
->> tick_stopped =3D=3D 1 so the device never gets programmed again, and so =
-it=20
->> keeps firing.
->>
->> How to fix it? Before commit a7cba02deced, powerpc's decrementer was=20
->> really oneshot, but we would like to avoid doing that because it require=
-s=20
->> additional programming of the hardware on each timer interrupt. We have=20
->> the ONESHOT_STOPPED state which seems to be just about what we want.
->>
->> Did the ONESHOT_STOPPED patch just miss this case, or is there a reason=20
->> we don't stop it here? This patch seems to fix the hang (not heavily
->> tested though).
->=20
-> This was definitely overlooked, but it's arguable it is is not required
-> for real oneshot clockevent devices. This should only handle the case
-> where the interrupt was already pending.
->=20
-> The ONESHOT_STOPPED state was introduced to handle the case where the
-> last timer gets canceled, so the already programmed event does not fire.
->=20
-> It was not necessarily meant to "fix" clockevent devices which are
-> pretending to be ONESHOT, but keep firing over and over.
->=20
-> That, said. I'm fine with the change along with a big fat comment why
-> this is required.
-
-Thanks for taking a look and confirming. I just sent a patch with a
-comment and what looks like another missed case. Hopefully it's okay.
+Sure, I will rewrite the log message. And thank you for the comments
+and advices.
 
 Thanks,
-Nick
+Patrick
+
+
+> Reviewed-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+>
+> -- Steve
