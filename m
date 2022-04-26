@@ -2,61 +2,61 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B66D1C433EF
-	for <rcu@archiver.kernel.org>; Tue, 26 Apr 2022 10:46:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B67ADC433EF
+	for <rcu@archiver.kernel.org>; Tue, 26 Apr 2022 10:55:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237226AbiDZKt6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 26 Apr 2022 06:49:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44570 "EHLO
+        id S1349393AbiDZK6r (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 26 Apr 2022 06:58:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349792AbiDZKtT (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 26 Apr 2022 06:49:19 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C7DD13DC8;
-        Tue, 26 Apr 2022 03:45:08 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id u7so14469620plg.13;
-        Tue, 26 Apr 2022 03:45:08 -0700 (PDT)
+        with ESMTP id S1344991AbiDZK6e (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 26 Apr 2022 06:58:34 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C1D41ADA7;
+        Tue, 26 Apr 2022 03:55:22 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id r83so15784579pgr.2;
+        Tue, 26 Apr 2022 03:55:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
         bh=1is8Iezkr6s4Ex2hsS25ZUz1zJxOesQz7FGVxmLzzqI=;
-        b=p0DuLhC8Wjy65J2kDplTzS8Gmbx06flEyAu02NmnEa6iLAouiE2jEx/xoupC8cq87d
-         u6GcRCz0FyfcTy5F9x9jJErzZVniFujrqWUTIt+zbovvDIfLFcptXSQOEhTlutIaJfvb
-         karYlh4Ccy9ZRuTY/FD+W4wndDYVaS0vtFnPbqgsS1ZOwh5JT1ZVww2TgOs5WMiHTY97
-         +2vJrfQ9JE6zAlFBp6HddwWtnE0WUHvEuyfqRYnjOL7sw6HnqI0KjEGRzm7gboajj2Y9
-         8DRcpcmW+jgOXuI7CBDZO4KLCqF6lRkGblXoEUlBGtkhXqmxBk4kuZuPGwAjiKEtFBGA
-         fNYQ==
+        b=idWnfBDCgrNUeljAqaXrAT4U6MHGcB4AZmSRDKAPosvQg3uh0UipKFopd2yHHL7I8X
+         wQlCTR9svWEM7Hsm8hp36VcRC1aZikJR3va1xrKo8d/Hf1BAo6qB/X1FVDx7vjewWFTh
+         WJdnGcpWMrjBUCXA6uZRlsvn9GDiqsx2aQUBei36QnsomYw5Tkn7eReZKzYRBBqAiMio
+         28nSXw8AAA1ZR4UNK+cIvnl6vyULYEDl+aXH6i5PXWoYQUWVMmPaBihHf1xePa1Oi5d7
+         EEBkFQwP3+5IP1oIPSavUTyIVt9Cw2hc7fEU/oB2pHE/16N0m2gLquja2i9e85OTKg7b
+         LB0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
         bh=1is8Iezkr6s4Ex2hsS25ZUz1zJxOesQz7FGVxmLzzqI=;
-        b=5ifkb1dnwQXc7mLfly+ZW8O4sqFUr547VMgdLY76KVQq5BpYPenF4MVRVISwn0pWIK
-         cD3uZ0QR9UvUu7eBhOAVROQnLPvvpJRA5OCtk/Ke1XQzXonmKfXwTi1RHd9CP6Tb2QZD
-         nIHp9PlyoPPg21G784oOondKqhpK1ys0OLnSG7sFdERf4nBAm/C7Vjr14K5rxYcVprRL
-         7Hokn29LbjBcrw8U2FHs6DycbN2OJ6Li/O6knfOGnkZds1W3NLacTlrHj2Wwe6blqb2E
-         MJ46vZeMhOPnPV/T4tilXPj0yc2ZsVMrqLMSyYde0TbOINvSU5R5NjmVYFtAxvvitpE6
-         p6Og==
-X-Gm-Message-State: AOAM531wIL0kKqsL5UbuJX1nHxtO1W8fuwZrCM3i1F9RTJGaAYOcwFI2
-        raFh6aKiOXGFuh3nd2Yk5Go=
-X-Google-Smtp-Source: ABdhPJywGsD8N8S5nB6bbKsBl/gY28f/6aIIUnZRIYbR5jtlC4ehB0GHOptwChCN5l4sOXbq39ztZw==
-X-Received: by 2002:a17:902:ab96:b0:159:1ff:4ea0 with SMTP id f22-20020a170902ab9600b0015901ff4ea0mr23055359plr.60.1650969908094;
-        Tue, 26 Apr 2022 03:45:08 -0700 (PDT)
+        b=Oxac0xnVPkizu5M5nyxtVaBRAu59zEEhRyWT7+E9GvVdyeO/e1xXjkCJh7hjZ1ayvZ
+         e3EvNq1UWSl9REmqG/NCBfbXH/7no4C9zo8+JyeqnAhrzW6jdWkwHBAmn4uoEcvwvO/n
+         pdF8sxes9iiWvjZqZdgiVK4KsKNe72CNucNo1fVKgI5vEXAqRXgyQy4PywgTernpjabm
+         gbI5fAAnp3/iFuFKZxdUf/tUCylQPLwNQfOFaUc9KqKhxbcBFTK2wWTGJ81s8w/pbqBK
+         4vfh+DSgiHfYqT6GVAyG5PXNqiJmmCYnmSTJaAIiZeRSPaAUikzDqIY6qFg+6WZQzMXZ
+         GD2A==
+X-Gm-Message-State: AOAM533MOOkR9u3Mxvz6F5NI+FDmwC78ZVUoGGwrjnqymZot0iJgwzOc
+        0XKNrTgY8maL2ZcnooOyX1kVsdWE61XPiAK1
+X-Google-Smtp-Source: ABdhPJyns8437Q+5hM8XsgwJ283Nc3GlHAK7jJb/Oacs0upyz9HCdJ1ECJxstL3R70f5gzQstYvbDg==
+X-Received: by 2002:a63:cc53:0:b0:372:7d69:49fb with SMTP id q19-20020a63cc53000000b003727d6949fbmr19162683pgi.21.1650970521870;
+        Tue, 26 Apr 2022 03:55:21 -0700 (PDT)
 Received: from localhost ([101.86.206.159])
-        by smtp.gmail.com with ESMTPSA id c17-20020a056a00249100b00508389d6a7csm15519196pfv.39.2022.04.26.03.45.06
+        by smtp.gmail.com with ESMTPSA id l2-20020a056a0016c200b004f7e3181a41sm15571637pfc.98.2022.04.26.03.55.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Apr 2022 03:45:07 -0700 (PDT)
+        Tue, 26 Apr 2022 03:55:21 -0700 (PDT)
 From:   Patrick Wang <patrick.wang.shcn@gmail.com>
 To:     paulmck@kernel.org, rostedt@goodmis.org, frederic@kernel.org,
         quic_neeraju@quicinc.com, josh@joshtriplett.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org
+        mathieu.desnoyers@efficios.com, joel@joelfernandes.org,
+        jiangshanlai@gmail.com
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         patrick.wang.shcn@gmail.com
 Subject: [PATCH v3] rcu: ftrace: avoid tracing a few functions executed in stop machine
-Date:   Tue, 26 Apr 2022 18:45:02 +0800
-Message-Id: <20220426104502.52663-1-patrick.wang.shcn@gmail.com>
+Date:   Tue, 26 Apr 2022 18:55:11 +0800
+Message-Id: <20220426105511.53010-1-patrick.wang.shcn@gmail.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
