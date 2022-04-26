@@ -2,96 +2,130 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 26662C433EF
-	for <rcu@archiver.kernel.org>; Tue, 26 Apr 2022 07:37:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 01652C433F5
+	for <rcu@archiver.kernel.org>; Tue, 26 Apr 2022 10:40:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344105AbiDZHkE (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 26 Apr 2022 03:40:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50426 "EHLO
+        id S1349227AbiDZKnP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 26 Apr 2022 06:43:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344108AbiDZHjt (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 26 Apr 2022 03:39:49 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60F2BFD04;
-        Tue, 26 Apr 2022 00:36:37 -0700 (PDT)
-Received: from dggpemm500024.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4KnYZk4Xylz1JBn8;
-        Tue, 26 Apr 2022 15:35:42 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggpemm500024.china.huawei.com (7.185.36.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Tue, 26 Apr 2022 15:36:35 +0800
-Received: from thunder-town.china.huawei.com (10.174.178.55) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Tue, 26 Apr 2022 15:36:34 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     "Paul E . McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        "Josh Triplett" <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, <rcu@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH] rcu/nocb: Delete local variable 'need_rcu_nocb_mask' in rcu_init_nohz()
-Date:   Tue, 26 Apr 2022 15:36:26 +0800
-Message-ID: <20220426073626.967-1-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
+        with ESMTP id S1349269AbiDZKmQ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 26 Apr 2022 06:42:16 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D730A46148;
+        Tue, 26 Apr 2022 03:32:17 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id v4so9212388ljd.10;
+        Tue, 26 Apr 2022 03:32:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XP7qNcE96rh3aiNPjgVaxIOFTXHJAqHcEpaQTLvanoI=;
+        b=Y59N8y17Vbl4NhX0BsB33EV/X+rvpk/NNSugoP5njpF5uQjXhsNgWY2harTHY/tMF2
+         P3//Fpb1MgAh50xD3+IMALsfMW+Ky/5LlY8BECBihqaEwCAlaSyflzhjEmX3fkZv8oPj
+         9ske0pePjn1aqsTsT5WoThPOte7PJV5/1e6ZduSFQ082vSJQumCE8Y64Gvf6qh0nyrL1
+         bNLV+7fz1rehudTTXcmoT6SLHkNyumQbmsJAxJPmER8Ssnyhu+nnH8r1QRbjGeoOzhU5
+         wEtBLdeqHLaphKK+CoqKMrBJ56bUhfv9R7GUnFjXPeUhZlkx6ToVusAaGb+RIfB/YKZm
+         fAqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XP7qNcE96rh3aiNPjgVaxIOFTXHJAqHcEpaQTLvanoI=;
+        b=sx1chbvDx/gVV2AQc+0HN1i4itN0DgP1P+qYGvVQeGMEStCtk+oYxb/ZWEj19W/Iqb
+         7DaapZSyXKR54lSmWXVD2eYhGkSWG79ooMX0nvm4+0ZJm3Q/bIDifmgpSkEnmzsucTQj
+         cenuZjJktZjUlMjv+gOvBxAU9llyNJUP5rUc4XIAzBK8Ur+KNtnqmrIFpCvdkWOkPPn9
+         8s+ulbs5j/UNPzQqWLTUjOiNZY+SDRZvQ1NxmMN4/g/prC6Lpb6ZjkKfFLXLYzjDDDVu
+         o+22P9vHQswirX3Kc2Y2gcaGTJAnnCSihVvZcpRYHo+Jw0+ry8O8Wd7QXv0N7Ns2DlH8
+         EPIA==
+X-Gm-Message-State: AOAM5324zp0BWC/4QG+csw3BnMhsUm9dMQvBYs8veqVo+oUWu1nOmk21
+        7kegcp8euNcy5yRwoGp5kB77y0P6QeV9/IigHbcotaoW
+X-Google-Smtp-Source: ABdhPJzc+weA3nqtPRODDnqfI0mQewWDwH5gcmcewkNJO2LGeK46hVKvJ71mJbsWACMlww+puXyaBk2U5lSFDPvyO1U=
+X-Received: by 2002:a05:651c:889:b0:24f:2336:1b95 with SMTP id
+ d9-20020a05651c088900b0024f23361b95mr728186ljq.345.1650969135974; Tue, 26 Apr
+ 2022 03:32:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.178.55]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+References: <20220423102844.1371595-1-patrick.wang.shcn@gmail.com> <20220425105600.722b1345@gandalf.local.home>
+In-Reply-To: <20220425105600.722b1345@gandalf.local.home>
+From:   patrick wang <patrick.wang.shcn@gmail.com>
+Date:   Tue, 26 Apr 2022 18:32:04 +0800
+Message-ID: <CAGcnep_L0EFaRwEXN-wdt5pGDrFK2Vi3j42GCJscUtLcXXFa7Q@mail.gmail.com>
+Subject: Re: [PATCH v2] rcu: ftrace: avoid tracing a few functions executed in
+ stop machine
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
+        josh@joshtriplett.org, mathieu.desnoyers@efficios.com,
+        jiangshanlai@gmail.com, joel@joelfernandes.org,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The local variable 'need_rcu_nocb_mask' is true only if CONFIG_NO_HZ_FULL
-is defined. So branch "if (need_rcu_nocb_mask)" can be moved within the
-scope of "#if defined(CONFIG_NO_HZ_FULL)". At this point, using variable
-'need_rcu_nocb_mask' is not necessary, so delete it.
+On Mon, Apr 25, 2022 at 10:56 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> On Sat, 23 Apr 2022 18:28:44 +0800
+> Patrick Wang <patrick.wang.shcn@gmail.com> wrote:
+>
+> > Signed-off-by: Patrick Wang <patrick.wang.shcn@gmail.com>
+> > ---
+> > v1->v2:
+> >  - Modify log message.
+> >
+> >  kernel/rcu/tree_plugin.h | 6 +++---
+> >  1 file changed, 3 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> > index c8ba0fe17267..971bb6a00ede 100644
+> > --- a/kernel/rcu/tree_plugin.h
+> > +++ b/kernel/rcu/tree_plugin.h
+> > @@ -460,7 +460,7 @@ static bool rcu_preempt_has_tasks(struct rcu_node *rnp)
+> >   * be quite short, for example, in the case of the call from
+> >   * rcu_read_unlock_special().
+> >   */
+> > -static void
+> > +notrace static void
+>
+> I'm fine with the change, but to be consistent with the rest of the kernel,
+> static needs to come before notrace.
+>
+> Either:
+>
+>  static notrace void
+>
+> or even (some places have):
+>
+>   static void notrace
+>
+> but "static" should always be first.
+>
 
-No functional changes, but the code looks a little more concise.
+Thank you for the detailed advice. I will move "notrace" to behind "static".
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- kernel/rcu/tree_nocb.h | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+Thanks,
+Patrick
 
-diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index 636d0546a4e932e..1e334e217f0afb7 100644
---- a/kernel/rcu/tree_nocb.h
-+++ b/kernel/rcu/tree_nocb.h
-@@ -1165,15 +1165,10 @@ EXPORT_SYMBOL_GPL(rcu_nocb_cpu_offload);
- void __init rcu_init_nohz(void)
- {
- 	int cpu;
--	bool need_rcu_nocb_mask = false;
- 	struct rcu_data *rdp;
- 
- #if defined(CONFIG_NO_HZ_FULL)
--	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask))
--		need_rcu_nocb_mask = true;
--#endif /* #if defined(CONFIG_NO_HZ_FULL) */
--
--	if (need_rcu_nocb_mask) {
-+	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask)) {
- 		if (!cpumask_available(rcu_nocb_mask)) {
- 			if (!zalloc_cpumask_var(&rcu_nocb_mask, GFP_KERNEL)) {
- 				pr_info("rcu_nocb_mask allocation failed, callback offloading disabled.\n");
-@@ -1182,6 +1177,7 @@ void __init rcu_init_nohz(void)
- 		}
- 		rcu_nocb_is_setup = true;
- 	}
-+#endif /* #if defined(CONFIG_NO_HZ_FULL) */
- 
- 	if (!rcu_nocb_is_setup)
- 		return;
--- 
-2.26.0.106.g9fadedd
-
+>
+>
+> >  rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
+> >  {
+> >       bool empty_exp;
+> > @@ -581,7 +581,7 @@ rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
+> >   * is disabled.  This function cannot be expected to understand these
+> >   * nuances, so the caller must handle them.
+> >   */
+> > -static bool rcu_preempt_need_deferred_qs(struct task_struct *t)
+> > +notrace static bool rcu_preempt_need_deferred_qs(struct task_struct *t)
+> >  {
+> >       return (__this_cpu_read(rcu_data.cpu_no_qs.b.exp) ||
+> >               READ_ONCE(t->rcu_read_unlock_special.s)) &&
+> > @@ -595,7 +595,7 @@ static bool rcu_preempt_need_deferred_qs(struct task_struct *t)
+> >   * evaluate safety in terms of interrupt, softirq, and preemption
+> >   * disabling.
+> >   */
+> > -static void rcu_preempt_deferred_qs(struct task_struct *t)
+> > +notrace static void rcu_preempt_deferred_qs(struct task_struct *t)
+> >  {
+> >       unsigned long flags;
+> >
+>
