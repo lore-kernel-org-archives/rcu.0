@@ -2,239 +2,118 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 29E2DC4167E
-	for <rcu@archiver.kernel.org>; Thu, 28 Apr 2022 16:58:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A2E80C433EF
+	for <rcu@archiver.kernel.org>; Thu, 28 Apr 2022 18:01:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350406AbiD1RBO (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 28 Apr 2022 13:01:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44938 "EHLO
+        id S1350684AbiD1SE7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 28 Apr 2022 14:04:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235928AbiD1RBL (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 28 Apr 2022 13:01:11 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7208BB6D27;
-        Thu, 28 Apr 2022 09:57:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1651164963;
-        bh=DUb16bHT8ZVVcSBzzE8lnieko2RHZpG2zbwsEWdWo2c=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=TrwFfhoA2P1jqiZSh6qbThQbWQ3kajZ2U+JQrRL/jSZxckwFV1BopRKv6DRaeQSKC
-         DM8QpY2fv9fsoSq055uYb4MCMz8e9HvG+guo2m9xr29cJoYbxYguo2PwZIKFp/JXdB
-         qy9XbYXMKcmj9vbKxczpPpGqEow6LzKi+qj1B+ao=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.20.60] ([92.116.133.159]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MzyuS-1o6TNU3b1S-00x2R3; Thu, 28
- Apr 2022 18:56:03 +0200
-Message-ID: <6a7c924a-54a9-c5ea-8a9d-3ea92987b436@gmx.de>
-Date:   Thu, 28 Apr 2022 18:55:52 +0200
+        with ESMTP id S245205AbiD1SE6 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 28 Apr 2022 14:04:58 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECD7C972A7;
+        Thu, 28 Apr 2022 11:01:42 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 7CD5EB82EF7;
+        Thu, 28 Apr 2022 18:01:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FFB5C385A9;
+        Thu, 28 Apr 2022 18:01:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1651168900;
+        bh=j73iXb7HRmYNvs62beHpaMLechgWJdFxikbQ4RJV4Ew=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=arTulElWhcwZNgmeTTmFxCr7czn03uLlxgEQVPEn9CVlcEMbvRrkd4EJXHmvbSMZ2
+         grajzT44dJmJGlUT/YtAZhPXTpfeZusEKVKFW3/nfS38asp70m0VXe/Z73TEuudCDo
+         nofjhlUGxzjz1ejBATWeP3SkBaj5wKU+xX9MwShHeu9kQPPLq8+h+XNSPEztkpnBln
+         sO70Pg4FknvIyzw48FwKXHlQLXZi7HYEx4BkVzP8bLM3uM/jzJLuwclqY26sstWLDV
+         vGuqfjf1UffYh8B83NMMeGrxHcB8ZaOOxpiIwErDYTq/s4tb3MGaFfi0/xhmlp/LcZ
+         HyIFJ+wpIFAPw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id D38FA5C0387; Thu, 28 Apr 2022 11:01:39 -0700 (PDT)
+Date:   Thu, 28 Apr 2022 11:01:39 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Zqiang <qiang1.zhang@intel.com>
+Cc:     frederic@kernel.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcutorture: Fix kmemleak in rcu_test_debug_objects()
+Message-ID: <20220428180139.GK1790663@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20220427071520.2239030-1-qiang1.zhang@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: [PATCH 12/30] parisc: Replace regular spinlock with spin_trylock
- on panic path
-Content-Language: en-US
-To:     "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-        akpm@linux-foundation.org, bhe@redhat.com, pmladek@suse.com,
-        kexec@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com, coresight@lists.linaro.org,
-        linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net,
-        rcu@vger.kernel.org, sparclinux@vger.kernel.org,
-        xen-devel@lists.xenproject.org, x86@kernel.org,
-        kernel-dev@igalia.com, kernel@gpiccoli.net, halves@canonical.com,
-        fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com,
-        andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de,
-        corbet@lwn.net, d.hatayama@jp.fujitsu.com,
-        dave.hansen@linux.intel.com, dyoung@redhat.com,
-        feng.tang@intel.com, gregkh@linuxfoundation.org,
-        mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com,
-        jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org,
-        luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com,
-        paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org,
-        senozhatsky@chromium.org, stern@rowland.harvard.edu,
-        tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com,
-        will@kernel.org,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
-References: <20220427224924.592546-1-gpiccoli@igalia.com>
- <20220427224924.592546-13-gpiccoli@igalia.com>
-From:   Helge Deller <deller@gmx.de>
-In-Reply-To: <20220427224924.592546-13-gpiccoli@igalia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:5vdTXh07+igNuefls5XBW8Vnc+iEgtAi7WYk6EGDKuqY95FwGMe
- QwcWZKzUaEoh4UB+55vjZve/tYEaItgGsgQfOqHuHHkvtwYyxsf6YShgZsftQKYSmO6WQ+T
- ZC1GiQE33MbntUGomNddrKZxDF5sJxGJRqGlvPVNWYXBnGaRnQV/WvjdEKXY9QfAk5iDfpf
- 2SF7pYcym4psStLDUUMNQ==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:seIPaj7dpZM=:yycTg0fvdDhrITiv3IZXzI
- e4yFHTYHbrGUy0XcNvNSnWURkRH0CwdNhQ3CWNfifJgMcKrsF971kE1ZPU9NMQWdlbTy3YHHQ
- kdbLaclaoLvW+e4KLLE5yocf48/EeAYglXhY84PxWcp1QGdF7y7nXLElZka6kp2R0F8+61JyB
- loph7JvlvHMoA0h4saDhDgOi28CBTeWf2mZxC+/EkMY8v85s5wN3/znVOlOIi2kLzQZEdEUxg
- qZqRAEH0zpZWVc5jenddLnwtNUslbH1ysbnT6Jz+8m3SINHv4Rwqo8qzXPYlIEhtABEOB2CCo
- zGH68oxcPKpqrqbFPSUrvmevYIsFthSN4Qa4ESwcyflnmJb/H2yYOm3idKBPcHZoAc7MXpKFp
- RR3P6Q1355mAy9N9Htg1IQRALV21oxx1PunXwbHOYiOH77jvrab76cf+pliKkaIi4EdHQpQqw
- 9mxPXAGH7PZiMiQ7xVCBiONFGbdiXxNWW9WgP8A6pz6E89Sx90IwrTRc9D73bLfwpGwDmjWxi
- fFfVa4k8dmCqUPhBM1VhxPpxNRnj9QzEWrSQ0xThSfPtnfKEaiZ6CAhESljw6d2UOOHcDSLiC
- pYk2Il0xe7DktL7r83T2I0B8fYcU06QnK7MXlbmtGkMbQFBGucQc+IB7UEgTcN0uT8ZaS6/FI
- jkfGMBIY2eSkyrlErzq+vnajUsa0b9zENmsHS55RE7h43gLxmwE2UNFRUH8bWmdFhfJcUWhCo
- 0TAcvRyne9VEKfs0HrQjTEdgbmSa875UQ1egzran3Xhi4XGH8Atz9id4q//uvXHDPEYGUcpM1
- 1jCttDZecf4rq/B12RMkoMxP6zY3FZKwK7quDBpUSTid+jJEDxaXtx0XaeJ0Hg0rDMgviRyZ9
- HzUcPocKiz/LqCSxQKJ+5LacyVgyzC2Eg/QV5UE+RmBe/a0+mK1ccbKXN/YmWVo5xcoOe11r/
- LQC+womcGp8ubOddU8soGYLdecjhj+rpnt5TdzsPY9fawi7HlwarnA+ConVoG4a/SWDHYon/e
- QtxJhYG5A/NQ3aDfGGrPKFQkR4D9mAqQmSL7oHO9wv65NzEickiapaFqe4ZYqD4oBbohP/rOw
- OHyJm5CjSYyJJQ=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220427071520.2239030-1-qiang1.zhang@intel.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 4/28/22 00:49, Guilherme G. Piccoli wrote:
-> The panic notifiers' callbacks execute in an atomic context, with
-> interrupts/preemption disabled, and all CPUs not running the panic
-> function are off, so it's very dangerous to wait on a regular
-> spinlock, there's a risk of deadlock.
->
-> This patch refactors the panic notifier of parisc/power driver
-> to make use of spin_trylock - for that, we've added a second
-> version of the soft-power function. Also, some comments were
-> reorganized and trailing white spaces, useless header inclusion
-> and blank lines were removed.
->
-> Cc: Helge Deller <deller@gmx.de>
-> Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
-> Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
+On Wed, Apr 27, 2022 at 03:15:20PM +0800, Zqiang wrote:
+> The kmemleak kthread scan to the following:
+> 
+> unreferenced object 0xffff95d941135b50 (size 16):
+>   comm "swapper/0", pid 1, jiffies 4294667610 (age 1367.451s)
+>   hex dump (first 16 bytes):
+>     f0 c6 c2 bd d9 95 ff ff 00 00 00 00 00 00 00 00  ................
+>   backtrace:
+>     [<00000000bc81d9b1>] kmem_cache_alloc_trace+0x2f6/0x500
+>     [<00000000d28be229>] rcu_torture_init+0x1235/0x1354
+>     [<0000000032c3acd9>] do_one_initcall+0x51/0x210
+>     [<000000003c117727>] kernel_init_freeable+0x205/0x259
+>     [<000000003961f965>] kernel_init+0x1a/0x120
+>     [<000000001998f890>] ret_from_fork+0x22/0x30
+> 
+> the rhp object is not released after use, so call kfree() to
+> release it.
+> 
+> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 
-You may add:
-Acked-by: Helge Deller <deller@gmx.de> # parisc
+Good catch, thank you!
 
-Helge
+I queued this for v5.20 with the wordsmithed commit log shown below.
 
+							Thanx, Paul
 
-> ---
->  arch/parisc/include/asm/pdc.h |  1 +
->  arch/parisc/kernel/firmware.c | 27 +++++++++++++++++++++++----
->  drivers/parisc/power.c        | 17 ++++++++++-------
->  3 files changed, 34 insertions(+), 11 deletions(-)
->
-> diff --git a/arch/parisc/include/asm/pdc.h b/arch/parisc/include/asm/pdc=
-.h
-> index b643092d4b98..7a106008e258 100644
-> --- a/arch/parisc/include/asm/pdc.h
-> +++ b/arch/parisc/include/asm/pdc.h
-> @@ -83,6 +83,7 @@ int pdc_do_firm_test_reset(unsigned long ftc_bitmap);
->  int pdc_do_reset(void);
->  int pdc_soft_power_info(unsigned long *power_reg);
->  int pdc_soft_power_button(int sw_control);
-> +int pdc_soft_power_button_panic(int sw_control);
->  void pdc_io_reset(void);
->  void pdc_io_reset_devices(void);
->  int pdc_iodc_getc(void);
-> diff --git a/arch/parisc/kernel/firmware.c b/arch/parisc/kernel/firmware=
-.c
-> index 6a7e315bcc2e..0e2f70b592f4 100644
-> --- a/arch/parisc/kernel/firmware.c
-> +++ b/arch/parisc/kernel/firmware.c
-> @@ -1232,15 +1232,18 @@ int __init pdc_soft_power_info(unsigned long *po=
-wer_reg)
->  }
->
->  /*
-> - * pdc_soft_power_button - Control the soft power button behaviour
-> - * @sw_control: 0 for hardware control, 1 for software control
-> + * pdc_soft_power_button{_panic} - Control the soft power button behavi=
-our
-> + * @sw_control: 0 for hardware control, 1 for software control
->   *
->   *
->   * This PDC function places the soft power button under software or
->   * hardware control.
-> - * Under software control the OS may control to when to allow to shut
-> - * down the system. Under hardware control pressing the power button
-> + * Under software control the OS may control to when to allow to shut
-> + * down the system. Under hardware control pressing the power button
->   * powers off the system immediately.
-> + *
-> + * The _panic version relies in spin_trylock to prevent deadlock
-> + * on panic path.
->   */
->  int pdc_soft_power_button(int sw_control)
->  {
-> @@ -1254,6 +1257,22 @@ int pdc_soft_power_button(int sw_control)
->  	return retval;
->  }
->
-> +int pdc_soft_power_button_panic(int sw_control)
-> +{
-> +	int retval;
-> +	unsigned long flags;
-> +
-> +	if (!spin_trylock_irqsave(&pdc_lock, flags)) {
-> +		pr_emerg("Couldn't enable soft power button\n");
-> +		return -EBUSY; /* ignored by the panic notifier */
-> +	}
-> +
-> +	retval =3D mem_pdc_call(PDC_SOFT_POWER, PDC_SOFT_POWER_ENABLE, __pa(pd=
-c_result), sw_control);
-> +	spin_unlock_irqrestore(&pdc_lock, flags);
-> +
-> +	return retval;
-> +}
-> +
->  /*
->   * pdc_io_reset - Hack to avoid overlapping range registers of Bridges =
-devices.
->   * Primarily a problem on T600 (which parisc-linux doesn't support) but
-> diff --git a/drivers/parisc/power.c b/drivers/parisc/power.c
-> index 456776bd8ee6..8512884de2cf 100644
-> --- a/drivers/parisc/power.c
-> +++ b/drivers/parisc/power.c
-> @@ -37,7 +37,6 @@
->  #include <linux/module.h>
->  #include <linux/init.h>
->  #include <linux/kernel.h>
-> -#include <linux/notifier.h>
->  #include <linux/panic_notifier.h>
->  #include <linux/reboot.h>
->  #include <linux/sched/signal.h>
-> @@ -175,16 +174,21 @@ static void powerfail_interrupt(int code, void *x)
->
->
->
-> -/* parisc_panic_event() is called by the panic handler.
-> - * As soon as a panic occurs, our tasklets above will not be
-> - * executed any longer. This function then re-enables the
-> - * soft-power switch and allows the user to switch off the system
-> +/*
-> + * parisc_panic_event() is called by the panic handler.
-> + *
-> + * As soon as a panic occurs, our tasklets above will not
-> + * be executed any longer. This function then re-enables
-> + * the soft-power switch and allows the user to switch off
-> + * the system. We rely in pdc_soft_power_button_panic()
-> + * since this version spin_trylocks (instead of regular
-> + * spinlock), preventing deadlocks on panic path.
->   */
->  static int parisc_panic_event(struct notifier_block *this,
->  		unsigned long event, void *ptr)
->  {
->  	/* re-enable the soft-power switch */
-> -	pdc_soft_power_button(0);
-> +	pdc_soft_power_button_panic(0);
->  	return NOTIFY_DONE;
->  }
->
-> @@ -193,7 +197,6 @@ static struct notifier_block parisc_panic_block =3D =
-{
->  	.priority	=3D INT_MAX,
->  };
->
-> -
->  static int __init power_init(void)
->  {
->  	unsigned long ret;
+------------------------------------------------------------------------
 
+commit 1a2df31f4026dbc8dc4db17a4c2ed01e67f45c92
+Author: Zqiang <qiang1.zhang@intel.com>
+Date:   Wed Apr 27 15:15:20 2022 +0800
+
+    rcutorture: Fix memory leak in rcu_test_debug_objects()
+    
+    The kernel memory leak detector located the following:
+    
+    unreferenced object 0xffff95d941135b50 (size 16):
+      comm "swapper/0", pid 1, jiffies 4294667610 (age 1367.451s)
+      hex dump (first 16 bytes):
+        f0 c6 c2 bd d9 95 ff ff 00 00 00 00 00 00 00 00  ................
+      backtrace:
+        [<00000000bc81d9b1>] kmem_cache_alloc_trace+0x2f6/0x500
+        [<00000000d28be229>] rcu_torture_init+0x1235/0x1354
+        [<0000000032c3acd9>] do_one_initcall+0x51/0x210
+        [<000000003c117727>] kernel_init_freeable+0x205/0x259
+        [<000000003961f965>] kernel_init+0x1a/0x120
+        [<000000001998f890>] ret_from_fork+0x22/0x30
+    
+    This is caused by the rcu_test_debug_objects() function allocating an
+    rcu_head structure, then failing to free it.  This commit therefore adds
+    the needed kfree() after the last use of this structure.
+    
+    Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index bb2e1610d0add..faf6b4c7a7572 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -3176,6 +3176,7 @@ static void rcu_test_debug_objects(void)
+ 	pr_alert("%s: WARN: Duplicate call_rcu() test complete.\n", KBUILD_MODNAME);
+ 	destroy_rcu_head_on_stack(&rh1);
+ 	destroy_rcu_head_on_stack(&rh2);
++	kfree(rhp);
+ #else /* #ifdef CONFIG_DEBUG_OBJECTS_RCU_HEAD */
+ 	pr_alert("%s: !CONFIG_DEBUG_OBJECTS_RCU_HEAD, not testing duplicate call_rcu()\n", KBUILD_MODNAME);
+ #endif /* #else #ifdef CONFIG_DEBUG_OBJECTS_RCU_HEAD */
