@@ -2,103 +2,189 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 548CFC433EF
-	for <rcu@archiver.kernel.org>; Mon,  2 May 2022 19:28:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EF685C433EF
+	for <rcu@archiver.kernel.org>; Mon,  2 May 2022 23:32:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1387124AbiEBTcQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 2 May 2022 15:32:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54156 "EHLO
+        id S229698AbiEBXgP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 2 May 2022 19:36:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356497AbiEBTcQ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 2 May 2022 15:32:16 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4358F2D;
-        Mon,  2 May 2022 12:28:46 -0700 (PDT)
+        with ESMTP id S233669AbiEBXcV (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 2 May 2022 19:32:21 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D280B31505;
+        Mon,  2 May 2022 16:28:46 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 49653B81914;
-        Mon,  2 May 2022 19:28:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D26CCC385AC;
-        Mon,  2 May 2022 19:28:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1651519724;
-        bh=KV31gzMiQvygiAlTQxri3h5Gq6cV4ZjN/nWqC7g9jxM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=D1Tg7ehJXUyPD+f2lkI/qRjGHkNWnKL+XbHMXmHl0xLZNT7nPX+gDYrExnO2GQrpc
-         zKrUrsdrkmonJPbK3um8XJ5crbVj0nnZzhMvzO0/A2bNsug7j7Gp9xLncFU00NheTN
-         svk8Ra4m9vngq/9sgrYHweTz52+Zma8Yc38injv0=
-Date:   Mon, 2 May 2022 21:28:42 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Cc:     stable@vger.kernel.org, RCU <rcu@vger.kernel.org>
-Subject: Re: [PATCH 0/2] RCU offloading vs scheduler latency
-Message-ID: <YnAw6gb5JNAIBXHf@kroah.com>
-References: <20220502190833.3352-1-urezki@gmail.com>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8888D6134F;
+        Mon,  2 May 2022 23:28:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3EE2C385AC;
+        Mon,  2 May 2022 23:28:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1651534125;
+        bh=mIO7C9zarP3iqHAzC9Leulj2zGN5Bu1p3L46M/Sg7VA=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=a9FvSxrS1R281HlpF2JvH3E92RVOWdLoZauFZx1k9uCSfy1AHoPKRQrXulxS0mGlG
+         DYiBXeb+jUmIiI3Ja00aS19EhNtRuxtZ3CNbyOnN16UHYdkemQZjalYx7WbxaUbOpy
+         W4Lu6JfugMojeoDdS58gBxf96+wfAM8jtjHvd892xHjm5CUv6poOPjUyFb+dAG4FQK
+         uT+nnG8W7BcT6uhQfEQghypxPbTOD9wfz/sXKtJyEXErQf7tKeSkLHbPpAJTjt+hz0
+         PjLa83swIZQJrTuMEkAzU8PPzzGtrNnvjXbhoFHG6XKotWto8KX8Bi//sHI7SFICWQ
+         ptNYXVNtQHpWA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id F2CC05C08DB; Mon,  2 May 2022 16:28:42 -0700 (PDT)
+Date:   Mon, 2 May 2022 16:28:42 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Zqiang <qiang1.zhang@intel.com>
+Cc:     frederic@kernel.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v3] rcu: Add nocb_cb_kthread check to
+ rcu_is_callbacks_kthread()
+Message-ID: <20220502232842.GE1790663@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20220429124222.1288501-1-qiang1.zhang@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220502190833.3352-1-urezki@gmail.com>
+In-Reply-To: <20220429124222.1288501-1-qiang1.zhang@intel.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, May 02, 2022 at 09:08:31PM +0200, Uladzislau Rezki (Sony) wrote:
-> Motivation of backport:
-> -----------------------
->    
-> 1. The cfcdef5e30469 ("rcu: Allow rcu_do_batch() to dynamically adjust batch sizes")
-> broke the default behaviour of "offloading rcu callbacks" setup. In that scenario
-> after each callback the caller context was used to check if it has to be rescheduled
-> giving a CPU time for others. After that change an "offloaded" setup can switch to
-> time-based RCU callbacks processing, what can be long for latency sensitive workloads
-> and SCHED_FIFO processes, i.e. callbacks are invoked for a long time with keeping
-> preemption off and without checking cond_resched().
->     
-> 2. Our devices which run Android and 5.10 kernel have some critical areas which
-> are sensitive to latency. It is a low latency audio, 8k video, UI stack and so on.
-> For example below is a trace that illustrates a delay of "irq/396-5-0072" RT task
-> to complete IRQ processing:
->     
-> <snip>
->   rcuop/6-54  [000] d.h2  183.752989: irq_handler_entry:    irq=85 name=i2c_geni
->   rcuop/6-54  [000] d.h5  183.753007: sched_waking:         comm=irq/396-5-0072 pid=12675 prio=49 target_cpu=000
->   rcuop/6-54  [000] dNh6  183.753014: sched_wakeup:         irq/396-5-0072:12675 [49] success=1 CPU:000
->   rcuop/6-54  [000] dNh2  183.753015: irq_handler_exit:     irq=85 ret=handled
->   rcuop/6-54  [000] .N..  183.753018: rcu_invoke_callback:  rcu_preempt rhp=0xffffff88ffd440b0 func=__d_free.cfi_jt
->   rcuop/6-54  [000] .N..  183.753020: rcu_invoke_callback:  rcu_preempt rhp=0xffffff892ffd8400 func=inode_free_by_rcu.cfi_jt
->   rcuop/6-54  [000] .N..  183.753021: rcu_invoke_callback:  rcu_preempt rhp=0xffffff89327cd708 func=i_callback.cfi_jt
->   ...
->   rcuop/6-54  [000] .N..  183.755941: rcu_invoke_callback:  rcu_preempt rhp=0xffffff8993c5a968 func=i_callback.cfi_jt
->   rcuop/6-54  [000] .N..  183.755942: rcu_invoke_callback:  rcu_preempt rhp=0xffffff8993c4bd20 func=__d_free.cfi_jt
->   rcuop/6-54  [000] dN..  183.755944: rcu_batch_end:        rcu_preempt CBs-invoked=2112 idle=>c<>c<>c<>c<
->   rcuop/6-54  [000] dN..  183.755946: rcu_utilization:      Start context switch
->   rcuop/6-54  [000] dN..  183.755946: rcu_utilization:      End context switch
->   rcuop/6-54  [000] d..2  183.755959: sched_switch:         rcuop/6:54 [120] R ==> migration/0:16 [0]
->   ...
->   migratio-16 [000] d..2  183.756021: sched_switch:         migration/0:16 [0] S ==> irq/396-5-0072:12675 [49]
-> <snip>
->     
-> The "irq/396-5-0072:12675" was delayed for ~3 milliseconds due to introduced side effect.
-> Please note, on our Android devices we get ~70 000 callbacks registered to be invoked by
-> the "rcuop/x" workers. This is during 1 seconds time interval and regular handset usage.
-> Latencies bigger that 3 milliseconds affect our high-resolution audio streaming over the
-> LDAC/Bluetooth stack.
+On Fri, Apr 29, 2022 at 08:42:22PM +0800, Zqiang wrote:
+> At present, there are two situations which the rcu callback function
+> be exectued in the kthreads, one is if the use_softirq is set to zero,
+> the RCU_SOFTIRQ processing is carried out by the per-CPU rcuc kthreads,
+> for non-offload rdp, the rdp's rcu callback function be exectued in rcuc
+> kthreads. another one is if the rdp is set to offloaded, the rdp's rcu
+> callback function be exectued in the rcuop kthreads.
 > 
-> Two patches depend on each other.
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+> ---
+>  v1->v2:
+>  fix compilation error when CONFIG_RCU_NOCB_CPU is no define
+>  v2->v3:
+>  define a function that tests "nocb_cb_kthread == current"
+>  in CONFIG_RCU_NOCB_CPU=y kernels and just returns "false" otherwise
+>  
+>  let rcu_is_callbacks_kthread() not depend on CONFIG_RCU_BOOST
 
-One meta-comment.  We can't apply changes to older kernels and not newer
-ones, as you do not want to upgrade your kernel and suffer a regression.
-This patch series comes from 5.17, but you are backporting to only 5.10.
-What about 5.15?  I can't consider this series unless we have a series
-also for 5.15 for that reason, we have to keep in sync otherwise things
-get unmaintainable.
+Queued for v5.20, thank you!
 
-So, have a 5.15 backport as well?
+I wordsmithed the commit log as shown below, so could you please
+check it?
 
-Also, you forgot to cc: the developers of the patches in this 0/X email,
-that just causes confusion for those that do not receive this message.
+							Thanx, Paul
 
-thanks,
+------------------------------------------------------------------------
 
-greg k-h
+commit a72d27598150936800e6aa313c507c6903f8ed9c
+Author: Zqiang <qiang1.zhang@intel.com>
+Date:   Fri Apr 29 20:42:22 2022 +0800
+
+    rcu: Add nocb_cb_kthread check to rcu_is_callbacks_kthread()
+    
+    Callbacks are invoked in RCU kthreads when calbacks are offloaded
+    (rcu_nocbs boot parameter) or when RCU's softirq handler has been
+    offloaded to rcuc kthreads (use_softirq==0).  The current code allows
+    for the rcu_nocbs case but not the use_softirq case.  This commit adds
+    support for the use_softirq case.
+    
+    Reported-by: kernel test robot <lkp@intel.com>
+    Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 5c587e00811c3..9dc4c4e82db62 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2610,7 +2610,7 @@ static void rcu_do_batch(struct rcu_data *rdp)
+ 		trace_rcu_batch_end(rcu_state.name, 0,
+ 				    !rcu_segcblist_empty(&rdp->cblist),
+ 				    need_resched(), is_idle_task(current),
+-				    rcu_is_callbacks_kthread());
++				    rcu_is_callbacks_kthread(rdp));
+ 		return;
+ 	}
+ 
+@@ -2688,7 +2688,7 @@ static void rcu_do_batch(struct rcu_data *rdp)
+ 	rcu_nocb_lock_irqsave(rdp, flags);
+ 	rdp->n_cbs_invoked += count;
+ 	trace_rcu_batch_end(rcu_state.name, count, !!rcl.head, need_resched(),
+-			    is_idle_task(current), rcu_is_callbacks_kthread());
++			    is_idle_task(current), rcu_is_callbacks_kthread(rdp));
+ 
+ 	/* Update counts and requeue any remaining callbacks. */
+ 	rcu_segcblist_insert_done_cbs(&rdp->cblist, &rcl);
+diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+index 996387962de3a..3cdc18997a381 100644
+--- a/kernel/rcu/tree.h
++++ b/kernel/rcu/tree.h
+@@ -433,7 +433,7 @@ static void rcu_flavor_sched_clock_irq(int user);
+ static void dump_blkd_tasks(struct rcu_node *rnp, int ncheck);
+ static void rcu_initiate_boost(struct rcu_node *rnp, unsigned long flags);
+ static void rcu_preempt_boost_start_gp(struct rcu_node *rnp);
+-static bool rcu_is_callbacks_kthread(void);
++static bool rcu_is_callbacks_kthread(struct rcu_data *rdp);
+ static void rcu_cpu_kthread_setup(unsigned int cpu);
+ static void rcu_spawn_one_boost_kthread(struct rcu_node *rnp);
+ static bool rcu_preempt_has_tasks(struct rcu_node *rnp);
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index 440d9e02a26e0..99cde4c947699 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -1012,6 +1012,25 @@ static void rcu_cpu_kthread_setup(unsigned int cpu)
+ 	WRITE_ONCE(rdp->rcuc_activity, jiffies);
+ }
+ 
++static bool rcu_is_callbacks_nocb_kthread(struct rcu_data *rdp)
++{
++#ifdef CONFIG_RCU_NOCB_CPU
++	return rdp->nocb_cb_kthread == current;
++#else
++	return false;
++#endif
++}
++
++/*
++ * Is the current CPU running the RCU-callbacks kthread?
++ * Caller must have preemption disabled.
++ */
++static bool rcu_is_callbacks_kthread(struct rcu_data *rdp)
++{
++	return rdp->rcu_cpu_kthread_task == current ||
++			rcu_is_callbacks_nocb_kthread(rdp);
++}
++
+ #ifdef CONFIG_RCU_BOOST
+ 
+ /*
+@@ -1151,15 +1170,6 @@ static void rcu_initiate_boost(struct rcu_node *rnp, unsigned long flags)
+ 	}
+ }
+ 
+-/*
+- * Is the current CPU running the RCU-callbacks kthread?
+- * Caller must have preemption disabled.
+- */
+-static bool rcu_is_callbacks_kthread(void)
+-{
+-	return __this_cpu_read(rcu_data.rcu_cpu_kthread_task) == current;
+-}
+-
+ #define RCU_BOOST_DELAY_JIFFIES DIV_ROUND_UP(CONFIG_RCU_BOOST_DELAY * HZ, 1000)
+ 
+ /*
+@@ -1242,11 +1252,6 @@ static void rcu_initiate_boost(struct rcu_node *rnp, unsigned long flags)
+ 	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+ }
+ 
+-static bool rcu_is_callbacks_kthread(void)
+-{
+-	return false;
+-}
+-
+ static void rcu_preempt_boost_start_gp(struct rcu_node *rnp)
+ {
+ }
