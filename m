@@ -2,88 +2,115 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A2860C433FE
-	for <rcu@archiver.kernel.org>; Mon,  2 May 2022 15:51:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C2AB7C433EF
+	for <rcu@archiver.kernel.org>; Mon,  2 May 2022 19:08:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243299AbiEBPym (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 2 May 2022 11:54:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34654 "EHLO
+        id S231458AbiEBTMN (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 2 May 2022 15:12:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240096AbiEBPyj (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 2 May 2022 11:54:39 -0400
-Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCE602AC2;
-        Mon,  2 May 2022 08:51:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-        s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=vs1TxitJVaqXfZt5+JAgzgpJc3Rl9y+sqSF7sQt0958=; b=CYM+I+cStAj6nsmkdvAL01St6e
-        IV8WQNLOxWhy3UHpXhc9ZYxNJzq7ZxpyOwHWort+30gmSz14Tjb7K8kvM2hGR2PPX3dc7GXMEaskm
-        g34Tjq/8qIJgML47/2DCuEUnFB03pqMfnk/uwmQB09CDWgBvh7TL/gFDoH0TI9HOJ3bezLUV1DrKv
-        MwXxD9LKMhdDIB0wdDr6Kr32RysL68LVvKOkDfa5SERbORMzBS0ZyutauBA2Ekqa3472ChMBhe54V
-        1FaXK1lleaqm8beFaaq7IO5wyd2Jb5T5RV+lvaTO/6luDzRXN43duubtlHaOQOQQCOGaRTF8O2nxl
-        BUemy2kw==;
-Received: from [179.113.53.197] (helo=[192.168.1.60])
-        by fanzine2.igalia.com with esmtpsa 
-        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-        id 1nlYKD-0006x9-MY; Mon, 02 May 2022 17:51:01 +0200
-Message-ID: <af03a6ef-6b92-31cd-72d4-47b82bc47f87@igalia.com>
-Date:   Mon, 2 May 2022 12:50:35 -0300
+        with ESMTP id S230423AbiEBTMN (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 2 May 2022 15:12:13 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3276DE9A;
+        Mon,  2 May 2022 12:08:43 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id p10so26840917lfa.12;
+        Mon, 02 May 2022 12:08:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LjoDDvqprdB7JFPNuo+HfAB/XK42wU1VvUB1iuJhQeI=;
+        b=inJYsyn+IefgTHrcvmDfbEd0wce/L60Fi4YDVE/zNEt18Ip2kJsYJQCfRORrV6ZsZ0
+         i9y8jblvWpySAGq9g6fD2H0efVkw9QyBdvx8s7xd+REGJnu2UF+XA37/Bz91hdQ3o4tE
+         OYEdyUr670hNkCDw+aX0qGjW24bwPbjuo4DYi/5+jkHGci4XvuTaDZ3jtFhAyShJGjpZ
+         eOodko+qETLkHzKTmBkKnHktyfkawRb6Bia3S4ljs0aRj0MmCpHee5GpcHCoG2FiO1kb
+         Toc325iz60m4XETtg659R18qIAN1hmkecd46/OEwXDoxUlZMa2jooymaDm9DdInUJWDJ
+         bAaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LjoDDvqprdB7JFPNuo+HfAB/XK42wU1VvUB1iuJhQeI=;
+        b=R2nQEf1IApvP81I66gh4o8m7735mTZ6w4KiprlS6y9dLM+mshQgcS7tGxbtRWq+3sW
+         TVj4oJo8cEO24TO7jJ0POYy5mxC5SGEAacD9AVwPTQTQnNd8r/OS4E1ZItb26mm4i4sr
+         hNUA1uJAbRcB2t6gJ4U0yflpC1/tnk+gelfRo1LN9y67ctDekISeTXDFEDT/BhyvaCGx
+         XrW5I4WVuXyGNuVmaxb2V70c1Ce3H+CFceoqGYfsW4Ja9aoigZQpt5WaQ/HhrgQsHYyl
+         oKRw0C4XsSDt4hFjwQaT4lvqdmGwzsjxMmJdp+nFUkHJsk5TJwsbsxGsY59yGG92qOd4
+         ReVw==
+X-Gm-Message-State: AOAM5311A6n32AxrG5FLTV1jvdPVlBXSxDBZE9ONRfnBy5w/fG2zwakd
+        pE0+9yJtZYKKBxm1RFlhfF0ZaiItmLI=
+X-Google-Smtp-Source: ABdhPJyD+hNhx+Zf/YFei7AJXjpy4ZWes3PKHUptvqobTZAOc8CvWqan8xEN2BCfFy7JHQ+ChrePpA==
+X-Received: by 2002:a19:ca50:0:b0:471:f556:92b with SMTP id h16-20020a19ca50000000b00471f556092bmr9632527lfj.587.1651518521956;
+        Mon, 02 May 2022 12:08:41 -0700 (PDT)
+Received: from pc638.lan ([155.137.26.201])
+        by smtp.gmail.com with ESMTPSA id bj39-20020a2eaaa7000000b0024f3d1daeadsm1131483ljb.53.2022.05.02.12.08.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 May 2022 12:08:41 -0700 (PDT)
+From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+To:     stable@vger.kernel.org
+Cc:     RCU <rcu@vger.kernel.org>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Subject: [PATCH 0/2] RCU offloading vs scheduler latency
+Date:   Mon,  2 May 2022 21:08:31 +0200
+Message-Id: <20220502190833.3352-1-urezki@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: [PATCH 15/30] bus: brcmstb_gisb: Clean-up panic/die notifiers
-Content-Language: en-US
-To:     Florian Fainelli <f.fainelli@gmail.com>, akpm@linux-foundation.org,
-        bhe@redhat.com, pmladek@suse.com, kexec@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org,
-        linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-leds@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-um@lists.infradead.org,
-        linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org,
-        openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org,
-        sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org,
-        x86@kernel.org, kernel-dev@igalia.com, kernel@gpiccoli.net,
-        halves@canonical.com, fabiomirmar@gmail.com,
-        alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com,
-        arnd@arndb.de, bp@alien8.de, corbet@lwn.net,
-        d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com,
-        dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org,
-        mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com,
-        jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org,
-        luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com,
-        paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org,
-        senozhatsky@chromium.org, stern@rowland.harvard.edu,
-        tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com,
-        will@kernel.org, Brian Norris <computersforpeace@gmail.com>
-References: <20220427224924.592546-1-gpiccoli@igalia.com>
- <20220427224924.592546-16-gpiccoli@igalia.com>
- <eaf3a893-00dd-8717-202e-911b395670e1@gmail.com>
-From:   "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-In-Reply-To: <eaf3a893-00dd-8717-202e-911b395670e1@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 02/05/2022 12:38, Florian Fainelli wrote:
-> [...] 
-> 
-> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-> 
-> Not sure if the Fixes tag is warranted however as this is a clean up, 
-> and not really fixing a bug.
+Motivation of backport:
+-----------------------
+   
+1. The cfcdef5e30469 ("rcu: Allow rcu_do_batch() to dynamically adjust batch sizes")
+broke the default behaviour of "offloading rcu callbacks" setup. In that scenario
+after each callback the caller context was used to check if it has to be rescheduled
+giving a CPU time for others. After that change an "offloaded" setup can switch to
+time-based RCU callbacks processing, what can be long for latency sensitive workloads
+and SCHED_FIFO processes, i.e. callbacks are invoked for a long time with keeping
+preemption off and without checking cond_resched().
+    
+2. Our devices which run Android and 5.10 kernel have some critical areas which
+are sensitive to latency. It is a low latency audio, 8k video, UI stack and so on.
+For example below is a trace that illustrates a delay of "irq/396-5-0072" RT task
+to complete IRQ processing:
+    
+<snip>
+  rcuop/6-54  [000] d.h2  183.752989: irq_handler_entry:    irq=85 name=i2c_geni
+  rcuop/6-54  [000] d.h5  183.753007: sched_waking:         comm=irq/396-5-0072 pid=12675 prio=49 target_cpu=000
+  rcuop/6-54  [000] dNh6  183.753014: sched_wakeup:         irq/396-5-0072:12675 [49] success=1 CPU:000
+  rcuop/6-54  [000] dNh2  183.753015: irq_handler_exit:     irq=85 ret=handled
+  rcuop/6-54  [000] .N..  183.753018: rcu_invoke_callback:  rcu_preempt rhp=0xffffff88ffd440b0 func=__d_free.cfi_jt
+  rcuop/6-54  [000] .N..  183.753020: rcu_invoke_callback:  rcu_preempt rhp=0xffffff892ffd8400 func=inode_free_by_rcu.cfi_jt
+  rcuop/6-54  [000] .N..  183.753021: rcu_invoke_callback:  rcu_preempt rhp=0xffffff89327cd708 func=i_callback.cfi_jt
+  ...
+  rcuop/6-54  [000] .N..  183.755941: rcu_invoke_callback:  rcu_preempt rhp=0xffffff8993c5a968 func=i_callback.cfi_jt
+  rcuop/6-54  [000] .N..  183.755942: rcu_invoke_callback:  rcu_preempt rhp=0xffffff8993c4bd20 func=__d_free.cfi_jt
+  rcuop/6-54  [000] dN..  183.755944: rcu_batch_end:        rcu_preempt CBs-invoked=2112 idle=>c<>c<>c<>c<
+  rcuop/6-54  [000] dN..  183.755946: rcu_utilization:      Start context switch
+  rcuop/6-54  [000] dN..  183.755946: rcu_utilization:      End context switch
+  rcuop/6-54  [000] d..2  183.755959: sched_switch:         rcuop/6:54 [120] R ==> migration/0:16 [0]
+  ...
+  migratio-16 [000] d..2  183.756021: sched_switch:         migration/0:16 [0] S ==> irq/396-5-0072:12675 [49]
+<snip>
+    
+The "irq/396-5-0072:12675" was delayed for ~3 milliseconds due to introduced side effect.
+Please note, on our Android devices we get ~70 000 callbacks registered to be invoked by
+the "rcuop/x" workers. This is during 1 seconds time interval and regular handset usage.
+Latencies bigger that 3 milliseconds affect our high-resolution audio streaming over the
+LDAC/Bluetooth stack.
 
-Perfect, thanks Florian. I'll add your ACK and remove the fixes tag in V2.
-Cheers,
+Two patches depend on each other.
 
+Frederic Weisbecker (2):
+  rcu: Fix callbacks processing time limit retaining cond_resched()
+  rcu: Apply callbacks processing time limit only on softirq
 
-Guilherme
+ kernel/rcu/tree.c | 32 ++++++++++++++++++--------------
+ 1 file changed, 18 insertions(+), 14 deletions(-)
+
+-- 
+2.30.2
+
