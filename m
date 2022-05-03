@@ -2,189 +2,367 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EF685C433EF
-	for <rcu@archiver.kernel.org>; Mon,  2 May 2022 23:32:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BED61C433F5
+	for <rcu@archiver.kernel.org>; Tue,  3 May 2022 01:12:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229698AbiEBXgP (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 2 May 2022 19:36:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39916 "EHLO
+        id S229678AbiECBPf (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 2 May 2022 21:15:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233669AbiEBXcV (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 2 May 2022 19:32:21 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D280B31505;
-        Mon,  2 May 2022 16:28:46 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8888D6134F;
-        Mon,  2 May 2022 23:28:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3EE2C385AC;
-        Mon,  2 May 2022 23:28:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1651534125;
-        bh=mIO7C9zarP3iqHAzC9Leulj2zGN5Bu1p3L46M/Sg7VA=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=a9FvSxrS1R281HlpF2JvH3E92RVOWdLoZauFZx1k9uCSfy1AHoPKRQrXulxS0mGlG
-         DYiBXeb+jUmIiI3Ja00aS19EhNtRuxtZ3CNbyOnN16UHYdkemQZjalYx7WbxaUbOpy
-         W4Lu6JfugMojeoDdS58gBxf96+wfAM8jtjHvd892xHjm5CUv6poOPjUyFb+dAG4FQK
-         uT+nnG8W7BcT6uhQfEQghypxPbTOD9wfz/sXKtJyEXErQf7tKeSkLHbPpAJTjt+hz0
-         PjLa83swIZQJrTuMEkAzU8PPzzGtrNnvjXbhoFHG6XKotWto8KX8Bi//sHI7SFICWQ
-         ptNYXVNtQHpWA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id F2CC05C08DB; Mon,  2 May 2022 16:28:42 -0700 (PDT)
-Date:   Mon, 2 May 2022 16:28:42 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Zqiang <qiang1.zhang@intel.com>
-Cc:     frederic@kernel.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v3] rcu: Add nocb_cb_kthread check to
- rcu_is_callbacks_kthread()
-Message-ID: <20220502232842.GE1790663@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220429124222.1288501-1-qiang1.zhang@intel.com>
+        with ESMTP id S229620AbiECBPe (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 2 May 2022 21:15:34 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 693643CFF6
+        for <rcu@vger.kernel.org>; Mon,  2 May 2022 18:12:02 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id t5so7731045edw.11
+        for <rcu@vger.kernel.org>; Mon, 02 May 2022 18:12:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JM6/4KGhbYN6k6Te/6+V5JO67Rd199OneV4bd3qNK5o=;
+        b=elSkIi4wPUu/UBWzLC6z2M4zeg9wMdAGV1FaJMckzXSb3cZRsxwFVaFQHY4oT8SqN/
+         2fiCE3z3mdfPyRey/spax9Zxn9oOVPJnZAOce4c79pvEzx96U3/r5Le94VlBW/OIsved
+         Unbb/BkU1F5foFtxBKeyny7xNZwAZnkP+Hz/pVwpmhcP7zqffGdYph3jvvdRn/niIiSd
+         dQvjeNXQwX2rX3H88waXBxBjTMhTxjB+wnA3qn6vzMEQBoh31KFLcKElntMFFJgILAjE
+         B1783eHjWY01D6CFZiFQCDCohrWr2ZIyybZKlDqcOyPsPAXbe3RnDJxQCd28kDyht3AN
+         hCMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JM6/4KGhbYN6k6Te/6+V5JO67Rd199OneV4bd3qNK5o=;
+        b=Hw1SD4C/SL6K82VowQOPAeyph6CxldFeOcJIx6mTl/Ez1iBZOA0lJ3jfyasNOJvaDs
+         mi70hbWaT9hrJ43R1UUIGB+PCVGt/p3JDxpGXjJjHRb06VPVT0IosGV36MsF5Uj1Pli7
+         9PjMuXiFCcBZW/gtc8J0urpp9UuqY5VeqDBtRTVUEKF/FpVEqITFicYDj+U6UWcEGir6
+         VWiIZOJBKDsOMgAhx0UbyozFqozqp96lemCqx+9jdVvDTQ5ErM5hRkGh9Q1j0kNSvNxg
+         +5U4iPkGRHrFKLXjr4sQzPtTZY5dsjZ1tZPWkP9ZNA3NWTzhB2nSc3Ce1yUvJMqKtGLs
+         bnXQ==
+X-Gm-Message-State: AOAM531JEPuVoRKnyHGyMEuT0A6afmraG2844KJAo0/bzPLGeFsD+hSi
+        9c9gLnqqaceMjY0IpnaQlVwWBCAD7EwF5Sa8wEmW1AUaxaM=
+X-Google-Smtp-Source: ABdhPJwsH/bSMgp+q+7Yxm6x2TzQrDAI3dvJQiCHWio1Yp/6GTC1GZM4JhxGvhsr7IeUOzx1Cjqo13gHGIcQg/bDhV4=
+X-Received: by 2002:a50:bacb:0:b0:427:c41b:dd8 with SMTP id
+ x69-20020a50bacb000000b00427c41b0dd8mr8274719ede.233.1651539238882; Mon, 02
+ May 2022 17:53:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220429124222.1288501-1-qiang1.zhang@intel.com>
+References: <CAABZP2xEtRnbRMGgywc2RSwiOAd1QY5jr0ZxwXd9p_8XwOiqhw@mail.gmail.com>
+ <20220419230412.GU4285@paulmck-ThinkPad-P17-Gen-1> <CAABZP2zBdDxmiFzwB+rg8fzfYHhteAmkRvaYMAXzQ_B12EF16w@mail.gmail.com>
+ <20220422160000.GA4285@paulmck-ThinkPad-P17-Gen-1> <CAABZP2ytjGo5hfEftBQL-kpKvN-bo-mP_L3Wy0H=PWv2YeGYcQ@mail.gmail.com>
+In-Reply-To: <CAABZP2ytjGo5hfEftBQL-kpKvN-bo-mP_L3Wy0H=PWv2YeGYcQ@mail.gmail.com>
+From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
+Date:   Tue, 3 May 2022 08:53:47 +0800
+Message-ID: <CAABZP2xcPH5WAzrFEogH1Xs5=ZYkW3+RT0ocZs16=F+nw9_UAQ@mail.gmail.com>
+Subject: Re: Reproducing call_rcu_tasks self-test bug on a dual sockets Intel
+ Xeon machine
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     urezki@gmail.com, Paul McKenney <paulmckrcu@fb.com>,
+        rcu <rcu@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Apr 29, 2022 at 08:42:22PM +0800, Zqiang wrote:
-> At present, there are two situations which the rcu callback function
-> be exectued in the kthreads, one is if the use_softirq is set to zero,
-> the RCU_SOFTIRQ processing is carried out by the per-CPU rcuc kthreads,
-> for non-offload rdp, the rdp's rcu callback function be exectued in rcuc
-> kthreads. another one is if the rdp is set to offloaded, the rdp's rcu
-> callback function be exectued in the rcuop kthreads.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-> ---
->  v1->v2:
->  fix compilation error when CONFIG_RCU_NOCB_CPU is no define
->  v2->v3:
->  define a function that tests "nocb_cb_kthread == current"
->  in CONFIG_RCU_NOCB_CPU=y kernels and just returns "false" otherwise
->  
->  let rcu_is_callbacks_kthread() not depend on CONFIG_RCU_BOOST
+Hi Paul
+Thanks for your guidance!
 
-Queued for v5.20, thank you!
+On Sat, Apr 23, 2022 at 1:35 AM Zhouyi Zhou <zhouzhouyi@gmail.com> wrote:
+>
+> On Sat, Apr 23, 2022 at 12:00 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > On Fri, Apr 22, 2022 at 01:28:51PM +0800, Zhouyi Zhou wrote:
+> > > Hi Paul
+> > >
+> > > On Wed, Apr 20, 2022 at 7:04 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+> > > >
+> > > > On Mon, Apr 18, 2022 at 11:16:16AM +0800, Zhouyi Zhou wrote:
+> > > > > 1. Abstract
+> > > > > Previously, Matthew has reported a call_rcu_tasks bug [1]. But it is
+> > > > > hard to reproduce on a dual socket Intel machine. This report
+> > > > > developed a method to reproduce that bug on such a machine.
+> > > > >
+> > > > > 2. Introduction
+> > > > > Matthew has reported a call_rcu_tasks bug [1]. It is easy to reproduce
+> > > > > it on Thinkpad P1 gen4 (Intel i7-11800H) with following steps:
+> > > > > a) cp [2] to .config
+> > > > > b) build the kernel
+> > > > > c) execute  kvm -smp 4 -net none -serial file:/tmp/console.log -m 512
+> > > > > -kernel vmlinux -append "console=ttyS0"
+> > > > >
+> > > > > The bug can even be reproduced on Thinkpad P1 gen4 (i7-11800H) by
+> > > > > stress testing the TASKS01 with the script [3].
+> > > > >
+> > > > > However, the bug can't be reproduced by above methods on a dual socket
+> > > > > Intel Xeon machine (PowerEdge R720, Intel(R) Xeon(R) CPU E5-2660 0 @
+> > > > > 2.20GHz, 2 CPUs, 16 cores, 32 threads).
+> > > > >
+> > > > > 3. Discover the reason behind the bug
+> > > > > On thinkpad P1 gen4, I tried to discover the reason behind the bug.
+> > > > > After some experimentation, I found that removing CONFIG_NFS_V4 from
+> > > > > the kernel config file will greatly increase the probabilities of
+> > > > > triggering the bug.
+> > > > >
+> > > > > I guess maybe the init calls lend the grace period to RCU tasks self
+> > > > > tests, so I add some debug code to a test kernel to see what happens:
+> > > > > root@e0816662e3db:/mnt/linux# git diff
+> > > > > diff --git a/init/main.c b/init/main.c
+> > > > > index 98182c3c2c4b..9731566014cc 100644
+> > > > > --- a/init/main.c
+> > > > > +++ b/init/main.c
+> > > > > @@ -1356,6 +1356,8 @@ static int __init ignore_unknown_bootoption(char
+> > > > > *param, char *val,
+> > > > >         return 0;
+> > > > >  }
+> > > > >
+> > > > > +extern bool *notrunp;
+> > > > > +unsigned int numofcalls = 0;
+> > > > >  static void __init do_initcall_level(int level, char *command_line)
+> > > > >  {
+> > > > >         initcall_entry_t *fn;
+> > > > > @@ -1367,8 +1369,19 @@ static void __init do_initcall_level(int level,
+> > > > > char *command_line)
+> > > > >                    NULL, ignore_unknown_bootoption);
+> > > > >
+> > > > >         trace_initcall_level(initcall_level_names[level]);
+> > > > > -       for (fn = initcall_levels[level]; fn < initcall_levels[level+1]; fn++)
+> > > > > +       for (fn = initcall_levels[level]; fn < initcall_levels[level+1]; fn++) {
+> > > > > +               bool before = *notrunp, after;
+> > > > > +               unsigned long jiffies_save = jiffies;
+> > > > > +               numofcalls++;
+> > > > >                 do_one_initcall(initcall_from_entry(fn));
+> > > > > +               after = *notrunp;
+> > > > > +               if (before != after) {
+> > > > > +                 char sym[KSYM_SYMBOL_LEN];
+> > > > > +                 sprint_symbol(sym, (unsigned long )initcall_from_entry(fn));
+> > > > > +                 printk(KERN_INFO "init call level %d: %s changed the
+> > > > > rcu task test %lu\n",
+> > > > > +                        level, sym, jiffies - jiffies_save);
+> > > > > +               }
+> > > > > +       }
+> > > > >  }
+> > > > >
+> > > > >  static void __init do_initcalls(void)
+> > > > > @@ -1376,15 +1389,17 @@ static void __init do_initcalls(void)
+> > > > >         int level;
+> > > > >         size_t len = strlen(saved_command_line) + 1;
+> > > > >         char *command_line;
+> > > > > -
+> > > > > +       unsigned long jiffies_save = jiffies;
+> > > > >         command_line = kzalloc(len, GFP_KERNEL);
+> > > > >         if (!command_line)
+> > > > >                 panic("%s: Failed to allocate %zu bytes\n", __func__, len);
+> > > > > -
+> > > > > +
+> > > > >         for (level = 0; level < ARRAY_SIZE(initcall_levels) - 1; level++) {
+> > > > >                 /* Parser modifies command_line, restore it each time */
+> > > > >                 strcpy(command_line, saved_command_line);
+> > > > >                 do_initcall_level(level, command_line);
+> > > > > +               if (level == 5)
+> > > > > +                 printk(KERN_INFO"init call level 5 costs: %lu
+> > > > > numofcalls %u\n", jiffies - jiffies_save, numofcalls);
+> > > > >         }
+> > > > >
+> > > > >         kfree(command_line);
+> > > > > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> > > > > index 99cf3a13954c..f4e175eeaec3 100644
+> > > > > --- a/kernel/rcu/tasks.h
+> > > > > +++ b/kernel/rcu/tasks.h
+> > > > > @@ -1660,7 +1660,7 @@ static void test_rcu_tasks_callback(struct rcu_head *rhp)
+> > > > >
+> > > > >         rttd->notrun = true;
+> > > > >  }
+> > > > > -
+> > > > > +bool *notrunp = &tests[0].notrun;
+> > > > >  static void rcu_tasks_initiate_self_tests(void)
+> > > > >  {
+> > > > >         pr_info("Running RCU-tasks wait API self tests\n");
+> > > > >
+> > > > > The tests on Thinkpad P1 gen4 and Dell PowerEdge R720 show that during
+> > > > > the test, some init call will lend the grace period to the RCU tasks
+> > > > > self tests.
+> > > > >
+> > > > > And of course, I am not using the above modification in Section 5 and
+> > > > > Section 6' tests. Section 5 and Section 6's tests are performed on
+> > > > > unmodified mainline!!
+> > > > >
+> > > > > 4. Reduce the init calls in kernel configuration
+> > > > > Based on above observation, I tried to reduce the kernel configuration
+> > > > > starting from [2] meanwhile keep the qemu bootable. Finally I got
+> > > > > [4].
+> > > > > And [4] will trigger the bug on Dell PowerEdge R720!
+> > > > >
+> > > > > 5. Trigger the bug in a more Linux way.
+> > > > > Why TASKS01 will not trigger the bug? There are two reasons:
+> > > > > a) there are too many init calls that will lend the grace period
+> > > > > b) the debug kernel param will lend the grace period
+> > > > >
+> > > > > Solution to reason a:
+> > > > > I write a C++ program [5] to print the difference between the .config
+> > > > > generated by TASKS01 and [4]. Then I use the difference to create a
+> > > > > TASKS04.
+> > > > >
+> > > > > Solution to reason b:
+> > > > > I add loglevel=7 to qemu boot parameter.
+> > > > >
+> > > > > The result consists of newly created TASKS04 and TASKS04.boot [6].
+> > > > >
+> > > > > Now the bug can trigger every time on Dell PowerEdge R720 by invoking:
+> > > > > ./tools/testing/selftests/rcutorture/bin/kvm.sh --configs "TASKS04"
+> > > > > --duration 10 --trust-make
+> > > > >
+> > > > > 6. Conclusion
+> > > > > I am able to trigger the bug everytime in mainline without modifying
+> > > > > the kernel's functional code on a dual socket Intel Xeon machine.
+> > > > >
+> > > > > 7. Acknowledgement
+> > > > > Thanks Paul for your constant encouragement! Thanks Zhouyi
+> > > >
+> > > > And thank you for digging into this!
+> > > You are very welcome ;-)
+> > > >
+> > > References
+> > > [1] https://lore.kernel.org/rcu/20220322142101.GQ4285@paulmck-ThinkPad-P17-Gen-1/T/#mb696465963393bbc3d38e85ffef0e03cf1e4fa54
+> > > [2] http://154.223.142.244/20220321/config-20220321
+> > > [3] http://154.223.142.244/20220418/test.sh.txt
+> > > [4] http://154.223.142.244/20220418/config
+> > > [5] http://154.223.142.244/20220418/processconfig.cpp
+> > > [6] http://154.223.142.244/20220418/0001-RCU.patch
+> > > > Here is a sneak preview of a lightly tested alleged fix, which may be
+> > > > found on the -rcu tree's "dev" branch:
+> > > >
+> > > > a3b1f9e07d47 rcu-tasks: Split rcu_tasks_one_gp() from rcu_tasks_kthread()
+> > > > 130dd60ddd96 rcu-tasks: Move synchronize_rcu_tasks_generic() down
+> > > > 7e510e661ea5 rcu-tasks: Drive synchronous grace periods from calling task
+> > > >
+> > > > Note that these are in the order that they should be applied rather than
+> > > > in git-log order.
+> > > I have been testing the above patches these days, on my Dell Poweredge
+> > > R720, the bug seems to be gone. But on my Thinkpad P1 gen4, the bug
+> > > seems to be there still.  Sorry to report that bad news.
+> >
+> > Hey, there is some improvement, so that counts as good news!  Besides,
+> > it is what it is.  So thank you for testing and for letting me know both
+> > the good and the not-quite-so-good news.  ;-)
+> Yes, there is improvement, without your patch, the guest OS in my Dell
+> R720 server will certainly issue the warnings at the first boot, with
+> your patch, the guest OS booted a thousand times without warning ;-) I
+> am very glad to be of some help ;-) You are very welcome, and thank
+> Paul for your encouragement !
+> >
+> > > I will study your patches carefully and double check my test
+> > > environment in the coming days.
+> >
+> > Could you please trace the series of calls to these functions up to
+> > the faiure?
+> >
+> >         synchronize_rcu_tasks()
+> >         call_rcu_tasks()
+> >         synchronize_rcu_tasks_rude()
+> >         call_rcu_tasks_rude()
+> >         synchronize_rcu_tasks_trace()
+> >         call_rcu_tasks_trace()
+> >         synchronize_rcu_tasks_generic()
+> >         rcu_tasks_one_gp()
+I added printk statement at the beginning of these functions, and
+print the holdout tasks in rcu_tasks_verify_self_tests, and print the
+backtrace of rcu task kthread at moment of fail:
+http://154.220.3.115/May022022/hook.diff
 
-I wordsmithed the commit log as shown below, so could you please
-check it?
+Then I run kvm test on my Thinkpad P1 gen 4 (Intel i7-11800H):
+http://154.220.3.115/May022022/console.log
 
-							Thanx, Paul
+From above log, I see
+[    0.439296]  <TASK>
+[    0.439420]  __schedule+0x246/0x7b0
+[    0.439625]  ? mark_held_locks+0x49/0x70
+[    0.439852]  schedule+0x53/0xc0
+[    0.440035]  schedule_timeout+0x1a5/0x310
+[    0.440268]  ? internal_add_timer+0x30/0x30
+[    0.440516]  rcu_tasks_wait_gp+0x22e/0x340
+[    0.440896]  rcu_tasks_one_gp+0x336/0x3b6
+[    0.441209]  ? rcu_tasks_postscan+0x10/0x10
+[    0.441447]  rcu_tasks_kthread.cold+0xa/0x18
+[    0.441699]  kthread+0xe0/0x110
+[    0.441883]  ? kthread_exit+0x30/0x30
+[    0.442098]  ret_from_fork+0x1f/0x30
+[    0.442307]  </TASK>
 
-------------------------------------------------------------------------
+So, it is rcu task kthread's sleeping (schedule_timeout_idle(fract))
+that prevents the holdout tasks being harvested.
 
-commit a72d27598150936800e6aa313c507c6903f8ed9c
-Author: Zqiang <qiang1.zhang@intel.com>
-Date:   Fri Apr 29 20:42:22 2022 +0800
-
-    rcu: Add nocb_cb_kthread check to rcu_is_callbacks_kthread()
-    
-    Callbacks are invoked in RCU kthreads when calbacks are offloaded
-    (rcu_nocbs boot parameter) or when RCU's softirq handler has been
-    offloaded to rcuc kthreads (use_softirq==0).  The current code allows
-    for the rcu_nocbs case but not the use_softirq case.  This commit adds
-    support for the use_softirq case.
-    
-    Reported-by: kernel test robot <lkp@intel.com>
-    Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 5c587e00811c3..9dc4c4e82db62 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2610,7 +2610,7 @@ static void rcu_do_batch(struct rcu_data *rdp)
- 		trace_rcu_batch_end(rcu_state.name, 0,
- 				    !rcu_segcblist_empty(&rdp->cblist),
- 				    need_resched(), is_idle_task(current),
--				    rcu_is_callbacks_kthread());
-+				    rcu_is_callbacks_kthread(rdp));
- 		return;
- 	}
- 
-@@ -2688,7 +2688,7 @@ static void rcu_do_batch(struct rcu_data *rdp)
- 	rcu_nocb_lock_irqsave(rdp, flags);
- 	rdp->n_cbs_invoked += count;
- 	trace_rcu_batch_end(rcu_state.name, count, !!rcl.head, need_resched(),
--			    is_idle_task(current), rcu_is_callbacks_kthread());
-+			    is_idle_task(current), rcu_is_callbacks_kthread(rdp));
- 
- 	/* Update counts and requeue any remaining callbacks. */
- 	rcu_segcblist_insert_done_cbs(&rdp->cblist, &rcl);
-diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index 996387962de3a..3cdc18997a381 100644
---- a/kernel/rcu/tree.h
-+++ b/kernel/rcu/tree.h
-@@ -433,7 +433,7 @@ static void rcu_flavor_sched_clock_irq(int user);
- static void dump_blkd_tasks(struct rcu_node *rnp, int ncheck);
- static void rcu_initiate_boost(struct rcu_node *rnp, unsigned long flags);
- static void rcu_preempt_boost_start_gp(struct rcu_node *rnp);
--static bool rcu_is_callbacks_kthread(void);
-+static bool rcu_is_callbacks_kthread(struct rcu_data *rdp);
- static void rcu_cpu_kthread_setup(unsigned int cpu);
- static void rcu_spawn_one_boost_kthread(struct rcu_node *rnp);
- static bool rcu_preempt_has_tasks(struct rcu_node *rnp);
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 440d9e02a26e0..99cde4c947699 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -1012,6 +1012,25 @@ static void rcu_cpu_kthread_setup(unsigned int cpu)
- 	WRITE_ONCE(rdp->rcuc_activity, jiffies);
- }
- 
-+static bool rcu_is_callbacks_nocb_kthread(struct rcu_data *rdp)
-+{
-+#ifdef CONFIG_RCU_NOCB_CPU
-+	return rdp->nocb_cb_kthread == current;
-+#else
-+	return false;
-+#endif
-+}
-+
-+/*
-+ * Is the current CPU running the RCU-callbacks kthread?
-+ * Caller must have preemption disabled.
-+ */
-+static bool rcu_is_callbacks_kthread(struct rcu_data *rdp)
-+{
-+	return rdp->rcu_cpu_kthread_task == current ||
-+			rcu_is_callbacks_nocb_kthread(rdp);
-+}
-+
- #ifdef CONFIG_RCU_BOOST
- 
- /*
-@@ -1151,15 +1170,6 @@ static void rcu_initiate_boost(struct rcu_node *rnp, unsigned long flags)
- 	}
- }
- 
--/*
-- * Is the current CPU running the RCU-callbacks kthread?
-- * Caller must have preemption disabled.
-- */
--static bool rcu_is_callbacks_kthread(void)
--{
--	return __this_cpu_read(rcu_data.rcu_cpu_kthread_task) == current;
--}
--
- #define RCU_BOOST_DELAY_JIFFIES DIV_ROUND_UP(CONFIG_RCU_BOOST_DELAY * HZ, 1000)
- 
- /*
-@@ -1242,11 +1252,6 @@ static void rcu_initiate_boost(struct rcu_node *rnp, unsigned long flags)
- 	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
- }
- 
--static bool rcu_is_callbacks_kthread(void)
--{
--	return false;
--}
--
- static void rcu_preempt_boost_start_gp(struct rcu_node *rnp)
+Then I tried to reduce value of rtp->init_fract before
+rcu_tasks_verify_self_tests and recover the original value after
+rcu_tasks_verify_self_tests:
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index bd9f2e24f5c7..29c4a4a8fb51 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -963,7 +963,11 @@ static int __init rcu_spawn_tasks_kthread(void)
  {
+        cblist_init_generic(&rcu_tasks);
+        rcu_tasks.gp_sleep = HZ / 10;
++#ifdef CONFIG_PROVE_RCU
++       rcu_tasks.init_fract = HZ / 100;
++#else
+        rcu_tasks.init_fract = HZ / 10;
++#endif
+        rcu_tasks.pregp_func = rcu_tasks_pregp_step;
+        rcu_tasks.pertask_func = rcu_tasks_pertask;
+        rcu_tasks.postscan_func = rcu_tasks_postscan;
+@@ -1777,6 +1781,7 @@ static int rcu_tasks_verify_self_tests(void)
+        if (ret)
+                WARN_ON(1);
+
++       rcu_tasks.init_fract = HZ / 10;
+        return ret;
  }
+ late_initcall(rcu_tasks_verify_self_tests);
+
+After patching above, the warning didn't reappear when booting the
+kernel for 1000 times on my Thinkpad P1 gen4 (without the patch, the
+warning will show at the first boot).
+
+Do my above discovery worth of a formal patch ;-) because I am afraid
+adding above operations may slow the kernel boot process a little bit
+(I have not tested the exact slowdown, just a guess). Also, did my
+modification also apply to rcu_tasks_rude and rcu_tasks_trace? (I am
+going to study rcu_tasks_rude and rcu_tasks_trace in the following
+days ;-))
+
+Thanks a lot
+Cheers
+Zhouyi
+> I will do it! This itself is such a valuable process of learning and
+> self promoting which I can't obtain anywhere else by any means to be
+> honest.
+> >
+> > One possibility is that the RCU tasks GP kthreads are not getting
+> > scheduled during that time on your Thinkpad.  If so, something
+> > like schedule_timeout_uninterruptible(1) at the beginning of
+> > rcu_tasks_verify_self_tests() should avoid the failure.  (Not a proper
+> > fix, of course!  Just for testing.)
+> I will do the tests in the coming days.
+> >
+> > > I add Uladzislau, author of bfba7ed084f8a  rcu-tasks: Add RCU-tasks
+> > > self tests to cc list.
+> >
+> > Thank you!
+> >
+> > Huh.  With my patch, it should be possible to move the
+> > invocation of rcu_tasks_initiate_self_tests() to the beginning of
+> > rcu_init_tasks_generic().
+> I will also try that.
+>
+> Thank you for your patience!
+>
+> Thanks again
+> Zhouyi
+> >
+> >                                                         Thanx, Paul
+> >
+> > > Kind Regards
+> > > Sincerely yours
+> > > Zhouyi
+> > > >
+> > > >                                                         Thanx, Paul
