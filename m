@@ -2,168 +2,105 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 288C2C43217
-	for <rcu@archiver.kernel.org>; Tue,  3 May 2022 19:19:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2BC41C433EF
+	for <rcu@archiver.kernel.org>; Tue,  3 May 2022 21:00:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238223AbiECTWb (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 3 May 2022 15:22:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49964 "EHLO
+        id S237884AbiECVEA (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 3 May 2022 17:04:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238334AbiECTWa (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 3 May 2022 15:22:30 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 090253FBE1;
-        Tue,  3 May 2022 12:18:57 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id q14so23211982ljc.12;
-        Tue, 03 May 2022 12:18:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=XLpkmFyOpK5Of2qpVy8Hm5z5TQyIrTyYMzHRaxdG4ZA=;
-        b=b+Y4sclreDQ22DveYOaWdbKqHMx6qrIYkZQkj+fsbS6nfE7HB1ePp2HavxSBP6gPcS
-         5yuckNVAxjWTN/Ww4HOH8GyvOKk8FA54mJSpHFsGM17A8AkD7kRuAPPkPNJZKeCf/zHc
-         UiFaO979lOuCsNCniDwdH1Bpz8rI0Mpc8O14m/pGRa6lRz2EqIitsr5JqCLUhwXQLhg8
-         Oyky3ej2Ze1EXrPObWcDScT+6J+YO1kaIdu3BVFSScWkXaSPJ9Zu/Xi/P6a0L1dGPUyq
-         L2GZmrUY67YCcCLo2VCU9OYMC7mNyrpv2TMXQARJCiQqyupAV33Az4uwOXVctyV4+5xo
-         9WuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=XLpkmFyOpK5Of2qpVy8Hm5z5TQyIrTyYMzHRaxdG4ZA=;
-        b=4yJkK102a2Ziws2WQiz9UJ/E/1s7jIqMibAV/+HCdEgbTujqm+ohoVKjAmW6W6/Vy+
-         ItX3nkqmjWY7PbaC1A4b5FrXm7aYpAOiiqUAFAHtQ3MFcWoZh0YekpkvuIEkyk6tZ4Ga
-         wuDlkf3i8U/47bLEPgwOFXAJCty2z6oeKpCaEaSgkTLqwOMR3x+3YIFO142OnNJ4W4o9
-         IKNhmqbIBPOVpYtDfAthV/VQyuwOIC4wcUXUzhktNmFB8RuVqUUl6VpTv6R0mBHBaZlV
-         8bruY+NW5A9kJ6JH6f7RXFbuQxFJl32P/GwRZRE0n8mp2V/pDtftnW/aR4SOh7g9Ebbr
-         JLQg==
-X-Gm-Message-State: AOAM5333HKkGcQ2ccKUrRvdpsP+YQH0UWzzpuiyaQsC+9wVDgDk+2q4x
-        8EtyGXvoA2MknCBHSzoaoH32+QtpNhjwGw==
-X-Google-Smtp-Source: ABdhPJyGJGbBYjekouqNrog59Kd+aatzJbQ8k3QUxxEEqOaQrQGTkIWLINxDOFqb4SbT9f71mQCzNQ==
-X-Received: by 2002:a2e:9105:0:b0:24f:2558:8787 with SMTP id m5-20020a2e9105000000b0024f25588787mr10771212ljg.65.1651605535382;
-        Tue, 03 May 2022 12:18:55 -0700 (PDT)
-Received: from pc638.lan ([155.137.26.201])
-        by smtp.gmail.com with ESMTPSA id w10-20020ac254aa000000b0047255d21194sm1013894lfk.195.2022.05.03.12.18.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 May 2022 12:18:54 -0700 (PDT)
-From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-To:     stable@vger.kernel.org
-Cc:     RCU <rcu@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
+        with ESMTP id S235833AbiECVD7 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 3 May 2022 17:03:59 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64F0417061;
+        Tue,  3 May 2022 14:00:25 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 15D59B82111;
+        Tue,  3 May 2022 21:00:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C137C385A4;
+        Tue,  3 May 2022 21:00:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1651611622;
+        bh=jG5NBe0VkysUk7BMP5WD520VsUNwgrPLYkUUmUPeozo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=I1wcxbBYimTMdtoumwVcAZVCdLEKES1lQEQkee+tUvdBk/R+L56BWMgjsy3lVMJvo
+         JagGZV/gP4Aicex8w4Ypc1vASl2EfYt520FJ/6lEurULXU54FFa2/dx+9JNn1UHcdw
+         aTDV+CCRBJwXVhS96RjLTy9pU34JuvTycfY+OBZmGHKAHTqSMkRnmhAvWp9hRxzNgH
+         l9FJDSoVDn0wFjkucJF3tKr7iXImavj99R1yB6zd6ZmwzKEMLuoys97fAyGyeaF6A2
+         7u2qWhGhJ3aA58/79pP6VX2OV0bsUE/Mq1RDNxJdvcQ4uouFl7lZp5vZ3MlUeZJobf
+         fnMOQ3B3fCkiw==
+Date:   Tue, 3 May 2022 23:00:19 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH 2/2] rcu: [for 5.10 stable] Apply callbacks processing time limit only on softirq
-Date:   Tue,  3 May 2022 21:18:43 +0200
-Message-Id: <20220503191843.155363-3-urezki@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220503191843.155363-1-urezki@gmail.com>
-References: <20220503191843.155363-1-urezki@gmail.com>
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu/nocb: Delete local variable 'need_rcu_nocb_mask' in
+ rcu_init_nohz()
+Message-ID: <20220503210019.GB2801234@lothringen>
+References: <20220426073626.967-1-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220426073626.967-1-thunder.leizhen@huawei.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Frederic Weisbecker <frederic@kernel.org>
+On Tue, Apr 26, 2022 at 03:36:26PM +0800, Zhen Lei wrote:
+> The local variable 'need_rcu_nocb_mask' is true only if CONFIG_NO_HZ_FULL
+> is defined. So branch "if (need_rcu_nocb_mask)" can be moved within the
+> scope of "#if defined(CONFIG_NO_HZ_FULL)". At this point, using variable
+> 'need_rcu_nocb_mask' is not necessary, so delete it.
+> 
+> No functional changes, but the code looks a little more concise.
+> 
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> ---
+>  kernel/rcu/tree_nocb.h | 8 ++------
+>  1 file changed, 2 insertions(+), 6 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> index 636d0546a4e932e..1e334e217f0afb7 100644
+> --- a/kernel/rcu/tree_nocb.h
+> +++ b/kernel/rcu/tree_nocb.h
+> @@ -1165,15 +1165,10 @@ EXPORT_SYMBOL_GPL(rcu_nocb_cpu_offload);
+>  void __init rcu_init_nohz(void)
+>  {
+>  	int cpu;
+> -	bool need_rcu_nocb_mask = false;
+>  	struct rcu_data *rdp;
+>  
+>  #if defined(CONFIG_NO_HZ_FULL)
+> -	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask))
+> -		need_rcu_nocb_mask = true;
+> -#endif /* #if defined(CONFIG_NO_HZ_FULL) */
+> -
+> -	if (need_rcu_nocb_mask) {
+> +	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask)) {
 
-commit a554ba288845fd3f6f12311fd76a51694233458a upstream.
+Thanks! I suspect though that the introduction of
+CONFIG_RCU_NOCB_CPU_DEFAULT_ALL has made this patch unecessary.
 
-Time limit only makes sense when callbacks are serviced in softirq mode
-because:
 
-_ In case we need to get back to the scheduler,
-  cond_resched_tasks_rcu_qs() is called after each callback.
-
-_ In case some other softirq vector needs the CPU, the call to
-  local_bh_enable() before cond_resched_tasks_rcu_qs() takes care about
-  them via a call to do_softirq().
-
-Therefore, make sure the time limit only applies to softirq mode.
-
-Fixes: cfcdef5e30469 ("rcu: Allow rcu_do_batch() to dynamically adjust batch sizes")
-Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-Tested-by: Valentin Schneider <valentin.schneider@arm.com>
-Tested-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Cc: Valentin Schneider <valentin.schneider@arm.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Josh Triplett <josh@joshtriplett.org>
-Cc: Joel Fernandes <joel@joelfernandes.org>
-Cc: Boqun Feng <boqun.feng@gmail.com>
-Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
-Cc: Uladzislau Rezki <urezki@gmail.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-[UR: backport to 5.10-stable]
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
----
- kernel/rcu/tree.c | 26 +++++++++++++-------------
- 1 file changed, 13 insertions(+), 13 deletions(-)
-
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index f340df6ebd86..b41009a283ca 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2456,7 +2456,7 @@ static void rcu_do_batch(struct rcu_data *rdp)
- 	div = READ_ONCE(rcu_divisor);
- 	div = div < 0 ? 7 : div > sizeof(long) * 8 - 2 ? sizeof(long) * 8 - 2 : div;
- 	bl = max(rdp->blimit, pending >> div);
--	if (unlikely(bl > 100)) {
-+	if (in_serving_softirq() && unlikely(bl > 100)) {
- 		long rrn = READ_ONCE(rcu_resched_ns);
- 
- 		rrn = rrn < NSEC_PER_MSEC ? NSEC_PER_MSEC : rrn > NSEC_PER_SEC ? NSEC_PER_SEC : rrn;
-@@ -2494,6 +2494,18 @@ static void rcu_do_batch(struct rcu_data *rdp)
- 			if (-rcl.len >= bl && (need_resched() ||
- 					(!is_idle_task(current) && !rcu_is_callbacks_kthread())))
- 				break;
-+
-+			/*
-+			 * Make sure we don't spend too much time here and deprive other
-+			 * softirq vectors of CPU cycles.
-+			 */
-+			if (unlikely(tlimit)) {
-+				/* only call local_clock() every 32 callbacks */
-+				if (likely((-rcl.len & 31) || local_clock() < tlimit))
-+					continue;
-+				/* Exceeded the time limit, so leave. */
-+				break;
-+			}
- 		} else {
- 			local_bh_enable();
- 			lockdep_assert_irqs_enabled();
-@@ -2501,18 +2513,6 @@ static void rcu_do_batch(struct rcu_data *rdp)
- 			lockdep_assert_irqs_enabled();
- 			local_bh_disable();
- 		}
--
--		/*
--		 * Make sure we don't spend too much time here and deprive other
--		 * softirq vectors of CPU cycles.
--		 */
--		if (unlikely(tlimit)) {
--			/* only call local_clock() every 32 callbacks */
--			if (likely((-rcl.len & 31) || local_clock() < tlimit))
--				continue;
--			/* Exceeded the time limit, so leave. */
--			break;
--		}
- 	}
- 
- 	local_irq_save(flags);
--- 
-2.30.2
-
+>  		if (!cpumask_available(rcu_nocb_mask)) {
+>  			if (!zalloc_cpumask_var(&rcu_nocb_mask, GFP_KERNEL)) {
+>  				pr_info("rcu_nocb_mask allocation failed, callback offloading disabled.\n");
+> @@ -1182,6 +1177,7 @@ void __init rcu_init_nohz(void)
+>  		}
+>  		rcu_nocb_is_setup = true;
+>  	}
+> +#endif /* #if defined(CONFIG_NO_HZ_FULL) */
+>  
+>  	if (!rcu_nocb_is_setup)
+>  		return;
+> -- 
+> 2.26.0.106.g9fadedd
+> 
