@@ -2,105 +2,186 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2BC41C433EF
-	for <rcu@archiver.kernel.org>; Tue,  3 May 2022 21:00:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D4D3C433FE
+	for <rcu@archiver.kernel.org>; Tue,  3 May 2022 22:03:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237884AbiECVEA (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 3 May 2022 17:04:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38814 "EHLO
+        id S243463AbiECWHA (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 3 May 2022 18:07:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235833AbiECVD7 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 3 May 2022 17:03:59 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64F0417061;
-        Tue,  3 May 2022 14:00:25 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 15D59B82111;
-        Tue,  3 May 2022 21:00:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C137C385A4;
-        Tue,  3 May 2022 21:00:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1651611622;
-        bh=jG5NBe0VkysUk7BMP5WD520VsUNwgrPLYkUUmUPeozo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=I1wcxbBYimTMdtoumwVcAZVCdLEKES1lQEQkee+tUvdBk/R+L56BWMgjsy3lVMJvo
-         JagGZV/gP4Aicex8w4Ypc1vASl2EfYt520FJ/6lEurULXU54FFa2/dx+9JNn1UHcdw
-         aTDV+CCRBJwXVhS96RjLTy9pU34JuvTycfY+OBZmGHKAHTqSMkRnmhAvWp9hRxzNgH
-         l9FJDSoVDn0wFjkucJF3tKr7iXImavj99R1yB6zd6ZmwzKEMLuoys97fAyGyeaF6A2
-         7u2qWhGhJ3aA58/79pP6VX2OV0bsUE/Mq1RDNxJdvcQ4uouFl7lZp5vZ3MlUeZJobf
-         fnMOQ3B3fCkiw==
-Date:   Tue, 3 May 2022 23:00:19 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu/nocb: Delete local variable 'need_rcu_nocb_mask' in
- rcu_init_nohz()
-Message-ID: <20220503210019.GB2801234@lothringen>
-References: <20220426073626.967-1-thunder.leizhen@huawei.com>
+        with ESMTP id S243418AbiECWG7 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 3 May 2022 18:06:59 -0400
+Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59D58424AA
+        for <rcu@vger.kernel.org>; Tue,  3 May 2022 15:03:25 -0700 (PDT)
+Received: by mail-oo1-xc2d.google.com with SMTP id s11-20020a4ab54b000000b0035f0178dfcfso960948ooo.7
+        for <rcu@vger.kernel.org>; Tue, 03 May 2022 15:03:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=czLZHU7MG6H1spBLHXY5jaZbzV59tXkMuN+Ck8Z7wc4=;
+        b=hhWjsHnmVba6J3iaRJaO09nZL4LxjIq8C9W91LOfNC4XgTIwgTHymewopsSR7xhrbE
+         wJfMPDofFT9Orm5X1Xmnq6csdeG70AmAjQHsJ6oidSvnu+c5NqT0zTpfwvGt6c7imJaY
+         Yx4JIofQGY7s+yKOtcqFuF1p2zpjcELmsl0YE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=czLZHU7MG6H1spBLHXY5jaZbzV59tXkMuN+Ck8Z7wc4=;
+        b=K0Fi52NeDtTBuAAS9J2giNoHISjI09WtOmxJCdE4xPURV5AS+YN6IxJdXuIcxkaGdf
+         zXhhiCGGTlWsmBho5Axr3WuyET9EuW6nMSFMqVoyf7DIim+DrzwoWO03AJWMD36fYEsw
+         XeswLPTPg7+7YdtyiwSehJ+EQerePax7xh4CBDSgwDSkWAIVCOOf68aOri2CfmVtrrVs
+         oLvTl5aZHl9e8ZRpcFpISc01K4RzLpHI1njH6TlxhUV+lm2YPXimD1g44EuujNWig7J/
+         kMG/bB8d9gpCzWD+wtCPNYtZjrhiQMRLgbq33LheUt4l8zQzsK+oWj/FsGrs9R4Gop4A
+         Kv6Q==
+X-Gm-Message-State: AOAM530xHezcX4BNSR59LQX/SIFz4FHAUjFvvwb4R+uoyYYq/I5tE+d/
+        B61YibiTcFKIZXKcE2vFa46inAyOnxra0GUv
+X-Google-Smtp-Source: ABdhPJy80OAkoPVT8MQfouxQPOdD45AIXG0xb0zqVHznrw5ZO1JWSlCGmWBNusi6PSCYT90KkjVzjw==
+X-Received: by 2002:a05:6820:160b:b0:35f:2ac3:1aa6 with SMTP id bb11-20020a056820160b00b0035f2ac31aa6mr64518oob.43.1651615404491;
+        Tue, 03 May 2022 15:03:24 -0700 (PDT)
+Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com. [209.85.167.174])
+        by smtp.gmail.com with ESMTPSA id t9-20020a0568301e2900b006060322126bsm4332414otr.59.2022.05.03.15.03.24
+        for <rcu@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 May 2022 15:03:24 -0700 (PDT)
+Received: by mail-oi1-f174.google.com with SMTP id s131so19617196oie.1
+        for <rcu@vger.kernel.org>; Tue, 03 May 2022 15:03:24 -0700 (PDT)
+X-Received: by 2002:a05:6808:219a:b0:325:93fc:e0fd with SMTP id
+ be26-20020a056808219a00b0032593fce0fdmr2775646oib.241.1651615054192; Tue, 03
+ May 2022 14:57:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220426073626.967-1-thunder.leizhen@huawei.com>
+References: <20220427224924.592546-1-gpiccoli@igalia.com> <20220427224924.592546-5-gpiccoli@igalia.com>
+ <CAE=gft5Pq25L4KFoPWbftkPF-JN1ex2yws77mMJ4GQnn9W0L2g@mail.gmail.com> <adcf6d0e-c37c-6ede-479e-29959d03d8c0@igalia.com>
+In-Reply-To: <adcf6d0e-c37c-6ede-479e-29959d03d8c0@igalia.com>
+From:   Evan Green <evgreen@chromium.org>
+Date:   Tue, 3 May 2022 14:56:58 -0700
+X-Gmail-Original-Message-ID: <CAE=gft623NxqetRssrZnaRmJLSP4BT5=-sVVwtYoHuspO_gULQ@mail.gmail.com>
+Message-ID: <CAE=gft623NxqetRssrZnaRmJLSP4BT5=-sVVwtYoHuspO_gULQ@mail.gmail.com>
+Subject: Re: [PATCH 04/30] firmware: google: Convert regular spinlock into
+ trylock on panic path
+To:     "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, bhe@redhat.com,
+        pmladek@suse.com, kexec@lists.infradead.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org,
+        linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        linux-leds@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, Linux PM <linux-pm@vger.kernel.org>,
+        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-um@lists.infradead.org,
+        linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org,
+        openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org,
+        sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org,
+        x86@kernel.org, kernel-dev@igalia.com, kernel@gpiccoli.net,
+        halves@canonical.com, fabiomirmar@gmail.com,
+        alejandro.j.jimenez@oracle.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Jonathan Corbet <corbet@lwn.net>, d.hatayama@jp.fujitsu.com,
+        dave.hansen@linux.intel.com, dyoung@redhat.com,
+        feng.tang@intel.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com,
+        jgross@suse.com, john.ogness@linutronix.de,
+        Kees Cook <keescook@chromium.org>, luto@kernel.org,
+        mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org,
+        peterz@infradead.org, rostedt@goodmis.org,
+        senozhatsky@chromium.org, Alan Stern <stern@rowland.harvard.edu>,
+        Thomas Gleixner <tglx@linutronix.de>, vgoyal@redhat.com,
+        vkuznets@redhat.com, Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        David Gow <davidgow@google.com>,
+        Julius Werner <jwerner@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Apr 26, 2022 at 03:36:26PM +0800, Zhen Lei wrote:
-> The local variable 'need_rcu_nocb_mask' is true only if CONFIG_NO_HZ_FULL
-> is defined. So branch "if (need_rcu_nocb_mask)" can be moved within the
-> scope of "#if defined(CONFIG_NO_HZ_FULL)". At this point, using variable
-> 'need_rcu_nocb_mask' is not necessary, so delete it.
-> 
-> No functional changes, but the code looks a little more concise.
-> 
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> ---
->  kernel/rcu/tree_nocb.h | 8 ++------
->  1 file changed, 2 insertions(+), 6 deletions(-)
-> 
-> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-> index 636d0546a4e932e..1e334e217f0afb7 100644
-> --- a/kernel/rcu/tree_nocb.h
-> +++ b/kernel/rcu/tree_nocb.h
-> @@ -1165,15 +1165,10 @@ EXPORT_SYMBOL_GPL(rcu_nocb_cpu_offload);
->  void __init rcu_init_nohz(void)
->  {
->  	int cpu;
-> -	bool need_rcu_nocb_mask = false;
->  	struct rcu_data *rdp;
->  
->  #if defined(CONFIG_NO_HZ_FULL)
-> -	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask))
-> -		need_rcu_nocb_mask = true;
-> -#endif /* #if defined(CONFIG_NO_HZ_FULL) */
-> -
-> -	if (need_rcu_nocb_mask) {
-> +	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask)) {
+Hi Guilherme,
 
-Thanks! I suspect though that the introduction of
-CONFIG_RCU_NOCB_CPU_DEFAULT_ALL has made this patch unecessary.
+On Tue, May 3, 2022 at 12:12 PM Guilherme G. Piccoli
+<gpiccoli@igalia.com> wrote:
+>
+> On 03/05/2022 15:03, Evan Green wrote:
+> > [...]
+> > gsmi_shutdown_reason() is a common function called in other scenarios
+> > as well, like reboot and thermal trip, where it may still make sense
+> > to wait to acquire a spinlock. Maybe we should add a parameter to
+> > gsmi_shutdown_reason() so that you can get your change on panic, but
+> > we don't convert other callbacks into try-fail scenarios causing us to
+> > miss logs.
+> >
+>
+> Hi Evan, thanks for your feedback, much appreciated!
+> What I've done in other cases like this was to have a helper checking
+> the spinlock in the panic notifier - if we can acquire that, go ahead
+> but if not, bail out. For a proper example of an implementation, check
+> patch 13 of the series:
+> https://lore.kernel.org/lkml/20220427224924.592546-14-gpiccoli@igalia.com/ .
+>
+> Do you agree with that, or prefer really a parameter in
+> gsmi_shutdown_reason() ? I'll follow your choice =)
 
+I'm fine with either, thanks for the link. Mostly I want to make sure
+other paths to gsmi_shutdown_reason() aren't also converted to a try.
 
->  		if (!cpumask_available(rcu_nocb_mask)) {
->  			if (!zalloc_cpumask_var(&rcu_nocb_mask, GFP_KERNEL)) {
->  				pr_info("rcu_nocb_mask allocation failed, callback offloading disabled.\n");
-> @@ -1182,6 +1177,7 @@ void __init rcu_init_nohz(void)
->  		}
->  		rcu_nocb_is_setup = true;
->  	}
-> +#endif /* #if defined(CONFIG_NO_HZ_FULL) */
->  
->  	if (!rcu_nocb_is_setup)
->  		return;
-> -- 
-> 2.26.0.106.g9fadedd
-> 
+>
+>
+> > Though thinking more about it, is this really a Good Change (TM)? The
+> > spinlock itself already disables interrupts, meaning the only case
+> > where this change makes a difference is if the panic happens from
+> > within the function that grabbed the spinlock (in which case the
+> > callback is also likely to panic), or in an NMI that panics within
+> > that window. The downside of this change is that if one core was
+> > politely working through an event with the lock held, and another core
+> > panics, we now might lose the panic log, even though it probably would
+> > have gone through fine assuming the other core has a chance to
+> > continue.
+>
+> My feeling is that this is a good change, indeed - a lot of places are
+> getting changed like this, in this series.
+>
+> Reasoning: the problem with your example is that, by default, secondary
+> CPUs are disabled in the panic path, through an IPI mechanism. IPIs take
+> precedence and interrupt the work in these CPUs, effectively
+> interrupting the "polite work" with the lock held heh
+
+The IPI can only interrupt a CPU with irqs disabled if the IPI is an
+NMI. I haven't looked before to see if we use NMI IPIs to corral the
+other CPUs on panic. On x86, I grepped my way down to
+native_stop_other_cpus(), which looks like it does a normal IPI, waits
+1 second, then does an NMI IPI. So, if a secondary CPU has the lock
+held, on x86 it has roughly 1s to finish what it's doing and re-enable
+interrupts before smp_send_stop() brings the NMI hammer down. I think
+this should be more than enough time for the secondary CPU to get out
+and release the lock.
+
+So then it makes sense to me that you're fixing cases where we
+panicked with the lock held, or hung with the lock held. Given the 1
+second grace period x86 gives us, I'm on board, as that helps mitigate
+the risk that we bailed out early with the try and should have spun a
+bit longer instead. Thanks.
+
+-Evan
+
+>
+> Then, such CPU is put to sleep and we finally reach the panic notifier
+> hereby discussed, in the main CPU. If the other CPU was shut-off *with
+> the lock held*, it's never finishing such work, so the lock is never to
+> be released. Conclusion: the spinlock can't be acquired, hence we broke
+> the machine (which is already broken, given it's panic) in the path of
+> this notifier.
+> This should be really rare, but..possible. So I think we should protect
+> against this scenario.
+>
+> We can grab others' feedback if you prefer, and of course you have the
+> rights to refuse this change in the gsmi code, but from my
+> point-of-view, I don't see any advantage in just assume the risk,
+> specially since the change is very very simple.
+>
+> Cheers,
+>
+>
+> Guilherme
