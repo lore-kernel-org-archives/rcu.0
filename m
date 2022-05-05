@@ -2,299 +2,177 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 12291C4167B
-	for <rcu@archiver.kernel.org>; Thu,  5 May 2022 18:57:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 22ED4C433EF
+	for <rcu@archiver.kernel.org>; Thu,  5 May 2022 19:09:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384740AbiEETBZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 5 May 2022 15:01:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49334 "EHLO
+        id S244319AbiEETNE (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 5 May 2022 15:13:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343580AbiEETBW (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 5 May 2022 15:01:22 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D7CD3633C;
-        Thu,  5 May 2022 11:57:41 -0700 (PDT)
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 245IsCDC021810;
-        Thu, 5 May 2022 18:56:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=XNUaK5MXNumQ2GC419CM2tT56hGe0D54FACFQZzubag=;
- b=gSD1byPqJD9U14RM7yqXNGjhCvGv5EceJcS49ikn+rpVMYCw5l/cE2/RfhpfxgDrdFXF
- bkw+3uP6vU/C7MIPvjf+1/BQcDGTmd58m1jCKBcC75Xc3IwagCsVfPCOPegq8b4MZ3p/
- mQN9mkPuV1Btua3UKzIpudLBdtJkA5WoYucCFThdzTDSpYwo6Nc6tDpcKD+hvfEHi+OM
- CWja8vfEeVW5JzydzGv1uvP94K0n/yjRgwV8RQXFJagBheg9E5Imh/dRMjKSs9LZirwJ
- /CWejco2WiCA9LRB8XRjw7cjAD2OqALQniaNM+6CBO4ZnFoxNe9gtVMrz4B16UghR6hV VA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3fvm92012c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 05 May 2022 18:56:22 +0000
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 245IuAu6029325;
-        Thu, 5 May 2022 18:56:21 GMT
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3fvm92011f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 05 May 2022 18:56:21 +0000
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 245IbA58012918;
-        Thu, 5 May 2022 18:55:39 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma03ams.nl.ibm.com with ESMTP id 3ftp7fvexe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 05 May 2022 18:55:39 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 245ItaGm14352888
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 5 May 2022 18:55:36 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8B81D11C05B;
-        Thu,  5 May 2022 18:55:36 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6820611C04C;
-        Thu,  5 May 2022 18:55:10 +0000 (GMT)
-Received: from [9.211.36.212] (unknown [9.211.36.212])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu,  5 May 2022 18:55:10 +0000 (GMT)
-Message-ID: <3c34d8e2-6f84-933f-a4ed-338cd300d6b0@linux.ibm.com>
-Date:   Fri, 6 May 2022 00:25:08 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: [PATCH 08/30] powerpc/setup: Refactor/untangle panic notifiers
-Content-Language: en-US
-To:     "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-        akpm@linux-foundation.org, bhe@redhat.com, pmladek@suse.com,
-        kexec@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com, coresight@lists.linaro.org,
-        linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net,
-        rcu@vger.kernel.org, sparclinux@vger.kernel.org,
-        xen-devel@lists.xenproject.org, x86@kernel.org,
-        kernel-dev@igalia.com, kernel@gpiccoli.net, halves@canonical.com,
-        fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com,
-        andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de,
-        corbet@lwn.net, d.hatayama@jp.fujitsu.com,
-        dave.hansen@linux.intel.com, dyoung@redhat.com,
-        feng.tang@intel.com, gregkh@linuxfoundation.org,
-        mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com,
-        jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org,
-        luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com,
-        paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org,
-        senozhatsky@chromium.org, stern@rowland.harvard.edu,
-        tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com,
-        will@kernel.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Paul Mackerras <paulus@samba.org>
-References: <20220427224924.592546-1-gpiccoli@igalia.com>
- <20220427224924.592546-9-gpiccoli@igalia.com>
-From:   Hari Bathini <hbathini@linux.ibm.com>
-In-Reply-To: <20220427224924.592546-9-gpiccoli@igalia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: FmL43udCg7zOaYTyNU5fYcYIiC3L3tsY
-X-Proofpoint-ORIG-GUID: op15TFwB187r4kWWn80Xf8P42QMt9UB1
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        with ESMTP id S236899AbiEETND (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 5 May 2022 15:13:03 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AF2E4A3CC;
+        Thu,  5 May 2022 12:09:23 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B831361DA5;
+        Thu,  5 May 2022 19:09:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02E04C385A4;
+        Thu,  5 May 2022 19:09:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1651777762;
+        bh=Uk2itM+41NwsyGYkqfOsrHQ+MB+xj36KVOfK4Ms5dT8=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=nXdjxiKaiafN/TyUnZz8u3dV9XIk5tohTB/l4VZoAY95taxze15KtFhJGG8JjDVmf
+         oi3NP+9l5Yb/HrKgCGX6jMTXIsg/H5qrvvytdIMSAyXwz5GQ+9gj7O/bWfinpZMLXQ
+         Hctviq2fFMHIhqbf4MdOjQ2MTKvhYac2FFsPkT/TTn4sIMMFxUbAid4bR9AzKMY9r1
+         p8jwxjm1+8JgC3xqBBXg2oc20TXsA9WQAwG3CEgwljjG1A+s2wpQNWVykroOWxrON+
+         xIMWlMOSIYQ0bcyy1Oi4FTIk3krpKYQWw8YLxHC675hAIjYSLFWgCJ8c3dI7LNbiYf
+         g/okAPjVmAuaA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 55AC05C2CB7; Thu,  5 May 2022 12:09:15 -0700 (PDT)
+Date:   Thu, 5 May 2022 12:09:15 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
+        bigeasy@linutronix.de
+Subject: Re: [PATCH] rcu/nocb: Add an option to ON/OFF an offloading from RT
+ context
+Message-ID: <20220505190915.GW1790663@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20220505101641.28472-1-urezki@gmail.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
- definitions=2022-05-05_08,2022-05-05_01,2022-02-23_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 clxscore=1011 lowpriorityscore=0 bulkscore=0 mlxscore=0
- mlxlogscore=999 spamscore=0 phishscore=0 suspectscore=0 impostorscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2202240000 definitions=main-2205050125
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220505101641.28472-1-urezki@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Thu, May 05, 2022 at 12:16:41PM +0200, Uladzislau Rezki (Sony) wrote:
+> Introduce a RCU_NOCB_CPU_CB_BOOST kernel option. So a user can
+> decide if an offloading has to be done in a high-prio context or
+> not. Please note an option depends on RCU_NOCB_CPU and RCU_BOOST
+> parameters and by default it is off.
+> 
+> This patch splits the boosting preempted RCU readers and those
+> kthreads which directly responsible for driving expedited grace
+> periods forward with enabling/disabling the offloading from/to
+> SCHED_FIFO/SCHED_OTHER contexts.
+> 
+> The main reason of such split is, for example on Android there
+> are some workloads which require fast expedited grace period to
+> be done whereas offloading in RT context can lead to starvation
+> and hogging a CPU for a long time what is not acceptable for
+> latency sensitive environment. For instance:
+> 
+> <snip>
+> <...>-60 [006] d..1 2979.028717: rcu_batch_start: rcu_preempt CBs=34619 bl=270
+> <snip>
+> 
+> invoking 34 619 callbacks will take time thus making other CFS
+> tasks waiting in run-queue to be starved due to such behaviour.
+> 
+> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 
+All good points!
 
-On 28/04/22 4:19 am, Guilherme G. Piccoli wrote:
-> The panic notifiers infrastructure is a bit limited in the scope of
-> the callbacks - basically every kind of functionality is dropped
-> in a list that runs in the same point during the kernel panic path.
-> This is not really on par with the complexities and particularities
-> of architecture / hypervisors' needs, and a refactor is ongoing.
-> 
-> As part of this refactor, it was observed that powerpc has 2 notifiers,
-> with mixed goals: one is just a KASLR offset dumper, whereas the other
-> aims to hard-disable IRQs (necessary on panic path), warn firmware of
-> the panic event (fadump) and run low-level platform-specific machinery
-> that might stop kernel execution and never come back.
-> 
-> Clearly, the 2nd notifier has opposed goals: disable IRQs / fadump
-> should run earlier while low-level platform actions should
-> run late since it might not even return. Hence, this patch decouples
-> the notifiers splitting them in three:
-> 
-> - First one is responsible for hard-disable IRQs and fadump,
-> should run early;
-> 
-> - The kernel KASLR offset dumper is really an informative notifier,
-> harmless and may run at any moment in the panic path;
-> 
-> - The last notifier should run last, since it aims to perform
-> low-level actions for specific platforms, and might never return.
-> It is also only registered for 2 platforms, pseries and ps3.
-> 
-> The patch better documents the notifiers and clears the code too,
-> also removing a useless header.
-> 
-> Currently no functionality change should be observed, but after
-> the planned panic refactor we should expect more panic reliability
-> with this patch.
-> 
-> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> Cc: Hari Bathini <hbathini@linux.ibm.com>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Nicholas Piggin <npiggin@gmail.com>
-> Cc: Paul Mackerras <paulus@samba.org>
-> Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
+Some questions and comments below.
 
-The change looks good. I have tested it on an LPAR (ppc64).
+Adding Sebastian on CC for his perspective.
 
-Reviewed-by: Hari Bathini <hbathini@linux.ibm.com>
+						Thanx, Paul
 
 > ---
+>  kernel/rcu/Kconfig     | 14 ++++++++++++++
+>  kernel/rcu/tree.c      |  5 ++++-
+>  kernel/rcu/tree_nocb.h |  3 ++-
+>  3 files changed, 20 insertions(+), 2 deletions(-)
 > 
-> We'd like to thanks specially the MiniCloud infrastructure [0] maintainers,
-> that allow us to test PowerPC code in a very complete, functional and FREE
-> environment (there's no need even for adding a credit card, like many "free"
-> clouds require ¬¬ ).
-> 
-> [0] https://openpower.ic.unicamp.br/minicloud
-> 
->   arch/powerpc/kernel/setup-common.c | 74 ++++++++++++++++++++++--------
->   1 file changed, 54 insertions(+), 20 deletions(-)
-> 
-> diff --git a/arch/powerpc/kernel/setup-common.c b/arch/powerpc/kernel/setup-common.c
-> index 518ae5aa9410..52f96b209a96 100644
-> --- a/arch/powerpc/kernel/setup-common.c
-> +++ b/arch/powerpc/kernel/setup-common.c
-> @@ -23,7 +23,6 @@
->   #include <linux/console.h>
->   #include <linux/screen_info.h>
->   #include <linux/root_dev.h>
-> -#include <linux/notifier.h>
->   #include <linux/cpu.h>
->   #include <linux/unistd.h>
->   #include <linux/serial.h>
-> @@ -680,8 +679,25 @@ int check_legacy_ioport(unsigned long base_port)
->   }
->   EXPORT_SYMBOL(check_legacy_ioport);
->   
-> -static int ppc_panic_event(struct notifier_block *this,
-> -                             unsigned long event, void *ptr)
+> diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+> index 27aab870ae4c..074630b94902 100644
+> --- a/kernel/rcu/Kconfig
+> +++ b/kernel/rcu/Kconfig
+> @@ -275,6 +275,20 @@ config RCU_NOCB_CPU_DEFAULT_ALL
+>  	  Say Y here if you want offload all CPUs by default on boot.
+>  	  Say N here if you are unsure.
+>  
+> +config RCU_NOCB_CPU_CB_BOOST
+> +	bool "Perform offloading from real-time kthread"
+> +	depends on RCU_NOCB_CPU && RCU_BOOST
+> +	default n
+
+I understand that you need this to default to "n" on your systems.
+However, other groups already using callback offloading should not see
+a sudden change.  I don't see an Android-specific defconfig file, but
+perhaps something in drivers/android/Kconfig?
+
+One easy way to make this work would be to invert the sense of this
+Kconfig option ("RCU_NOCB_CB_NO_BOOST"?), continue having it default to
+"n", but then select it somewhere in drivers/android/Kconfig.  But I
+would not be surprised if there is a better way.
+
+> +	help
+> +	  Use this option to offload callbacks from the SCHED_FIFO context
+> +	  to make the process faster. As a side effect of this approach is
+> +	  a latency especially for the SCHED_OTHER tasks which will not be
+> +	  able to preempt an offloading kthread. That latency depends on a
+> +	  number of callbacks to be invoked.
+> +
+> +	  Say Y here if you want to set RT priority for offloading kthreads.
+> +	  Say N here if you are unsure.
+> +
+>  config TASKS_TRACE_RCU_READ_MB
+>  	bool "Tasks Trace RCU readers use memory barriers in user and idle"
+>  	depends on RCU_EXPERT && TASKS_TRACE_RCU
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 9dc4c4e82db6..d769a15bc0e3 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -154,7 +154,10 @@ static void sync_sched_exp_online_cleanup(int cpu);
+>  static void check_cb_ovld_locked(struct rcu_data *rdp, struct rcu_node *rnp);
+>  static bool rcu_rdp_is_offloaded(struct rcu_data *rdp);
+>  
+> -/* rcuc/rcub/rcuop kthread realtime priority */
 > +/*
-> + * Panic notifiers setup
-> + *
-> + * We have 3 notifiers for powerpc, each one from a different "nature":
-> + *
-> + * - ppc_panic_fadump_handler() is a hypervisor notifier, which hard-disables
-> + *   IRQs and deal with the Firmware-Assisted dump, when it is configured;
-> + *   should run early in the panic path.
-> + *
-> + * - dump_kernel_offset() is an informative notifier, just showing the KASLR
-> + *   offset if we have RANDOMIZE_BASE set.
-> + *
-> + * - ppc_panic_platform_handler() is a low-level handler that's registered
-> + *   only if the platform wishes to perform final actions in the panic path,
-> + *   hence it should run late and might not even return. Currently, only
-> + *   pseries and ps3 platforms register callbacks.
+> + * rcuc/rcub/rcuop kthread realtime priority. The former
+> + * depends on if CONFIG_RCU_NOCB_CPU_CB_BOOST is set.
+
+Aren't the rcuo[ps] kthreads controlled by the RCU_NOCB_CPU_CB_BOOST
+Kconfig option?  (As opposed to the "former", which is "rcuc".)
+
 > + */
-> +static int ppc_panic_fadump_handler(struct notifier_block *this,
-> +				    unsigned long event, void *ptr)
->   {
->   	/*
->   	 * panic does a local_irq_disable, but we really
-> @@ -691,45 +707,63 @@ static int ppc_panic_event(struct notifier_block *this,
->   
->   	/*
->   	 * If firmware-assisted dump has been registered then trigger
-> -	 * firmware-assisted dump and let firmware handle everything else.
-> +	 * its callback and let the firmware handles everything else.
->   	 */
->   	crash_fadump(NULL, ptr);
-> -	if (ppc_md.panic)
-> -		ppc_md.panic(ptr);  /* May not return */
+>  static int kthread_prio = IS_ENABLED(CONFIG_RCU_BOOST) ? 1 : 0;
+>  module_param(kthread_prio, int, 0444);
+>  
+> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> index 60cc92cc6655..a2823be9b1d0 100644
+> --- a/kernel/rcu/tree_nocb.h
+> +++ b/kernel/rcu/tree_nocb.h
+> @@ -1315,8 +1315,9 @@ static void rcu_spawn_cpu_nocb_kthread(int cpu)
+>  	if (WARN_ONCE(IS_ERR(t), "%s: Could not start rcuo CB kthread, OOM is now expected behavior\n", __func__))
+>  		goto end;
+>  
+> -	if (kthread_prio)
+> +	if (IS_ENABLED(CONFIG_RCU_NOCB_CPU_CB_BOOST))
+
+Don't we need both non-zero kthread_prio and the proper setting of the
+new Kconfig option before we run it at SCHED_FIFO?
+
+Yes, we could rely on sched_setscheduler_nocheck() erroring out in
+that case, but that sounds like an accident waiting to happen.
+
+>  		sched_setscheduler_nocheck(t, SCHED_FIFO, &sp);
 > +
->   	return NOTIFY_DONE;
->   }
->   
-> -static struct notifier_block ppc_panic_block = {
-> -	.notifier_call = ppc_panic_event,
-> -	.priority = INT_MIN /* may not return; must be done last */
-> -};
-> -
-> -/*
-> - * Dump out kernel offset information on panic.
-> - */
->   static int dump_kernel_offset(struct notifier_block *self, unsigned long v,
->   			      void *p)
->   {
->   	pr_emerg("Kernel Offset: 0x%lx from 0x%lx\n",
->   		 kaslr_offset(), KERNELBASE);
->   
-> -	return 0;
-> +	return NOTIFY_DONE;
->   }
->   
-> +static int ppc_panic_platform_handler(struct notifier_block *this,
-> +				      unsigned long event, void *ptr)
-> +{
-> +	/*
-> +	 * This handler is only registered if we have a panic callback
-> +	 * on ppc_md, hence NULL check is not needed.
-> +	 * Also, it may not return, so it runs really late on panic path.
-> +	 */
-> +	ppc_md.panic(ptr);
-> +
-> +	return NOTIFY_DONE;
-> +}
-> +
-> +static struct notifier_block ppc_fadump_block = {
-> +	.notifier_call = ppc_panic_fadump_handler,
-> +	.priority = INT_MAX, /* run early, to notify the firmware ASAP */
-> +};
-> +
->   static struct notifier_block kernel_offset_notifier = {
-> -	.notifier_call = dump_kernel_offset
-> +	.notifier_call = dump_kernel_offset,
-> +};
-> +
-> +static struct notifier_block ppc_panic_block = {
-> +	.notifier_call = ppc_panic_platform_handler,
-> +	.priority = INT_MIN, /* may not return; must be done last */
->   };
->   
->   void __init setup_panic(void)
->   {
-> +	/* Hard-disables IRQs + deal with FW-assisted dump (fadump) */
-> +	atomic_notifier_chain_register(&panic_notifier_list,
-> +				       &ppc_fadump_block);
-> +
->   	if (IS_ENABLED(CONFIG_RANDOMIZE_BASE) && kaslr_offset() > 0)
->   		atomic_notifier_chain_register(&panic_notifier_list,
->   					       &kernel_offset_notifier);
->   
-> -	/* PPC64 always does a hard irq disable in its panic handler */
-> -	if (!IS_ENABLED(CONFIG_PPC64) && !ppc_md.panic)
-> -		return;
-> -	atomic_notifier_chain_register(&panic_notifier_list, &ppc_panic_block);
-> +	/* Low-level platform-specific routines that should run on panic */
-> +	if (ppc_md.panic)
-> +		atomic_notifier_chain_register(&panic_notifier_list,
-> +					       &ppc_panic_block);
->   }
->   
->   #ifdef CONFIG_CHECK_CACHE_COHERENCY
+>  	WRITE_ONCE(rdp->nocb_cb_kthread, t);
+>  	WRITE_ONCE(rdp->nocb_gp_kthread, rdp_gp->nocb_gp_kthread);
+>  	return;
+> -- 
+> 2.30.2
+> 
