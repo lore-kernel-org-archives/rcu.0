@@ -2,177 +2,102 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 22ED4C433EF
-	for <rcu@archiver.kernel.org>; Thu,  5 May 2022 19:09:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CD3BC433F5
+	for <rcu@archiver.kernel.org>; Thu,  5 May 2022 19:30:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244319AbiEETNE (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 5 May 2022 15:13:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57802 "EHLO
+        id S1352291AbiEETdq (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 5 May 2022 15:33:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236899AbiEETND (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 5 May 2022 15:13:03 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AF2E4A3CC;
-        Thu,  5 May 2022 12:09:23 -0700 (PDT)
+        with ESMTP id S1351650AbiEETdp (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 5 May 2022 15:33:45 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC56B55492;
+        Thu,  5 May 2022 12:30:04 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B831361DA5;
-        Thu,  5 May 2022 19:09:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02E04C385A4;
-        Thu,  5 May 2022 19:09:21 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 50F6ACE3090;
+        Thu,  5 May 2022 19:30:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D1C0C385A8;
+        Thu,  5 May 2022 19:30:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1651777762;
-        bh=Uk2itM+41NwsyGYkqfOsrHQ+MB+xj36KVOfK4Ms5dT8=;
+        s=k20201202; t=1651779001;
+        bh=vA5c3sAZlsEIF9GVy5xkKqdpy6kiCh58XJGgalns9Zk=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=nXdjxiKaiafN/TyUnZz8u3dV9XIk5tohTB/l4VZoAY95taxze15KtFhJGG8JjDVmf
-         oi3NP+9l5Yb/HrKgCGX6jMTXIsg/H5qrvvytdIMSAyXwz5GQ+9gj7O/bWfinpZMLXQ
-         Hctviq2fFMHIhqbf4MdOjQ2MTKvhYac2FFsPkT/TTn4sIMMFxUbAid4bR9AzKMY9r1
-         p8jwxjm1+8JgC3xqBBXg2oc20TXsA9WQAwG3CEgwljjG1A+s2wpQNWVykroOWxrON+
-         xIMWlMOSIYQ0bcyy1Oi4FTIk3krpKYQWw8YLxHC675hAIjYSLFWgCJ8c3dI7LNbiYf
-         g/okAPjVmAuaA==
+        b=Rur4thgH3tGLOLQ3PE4NfuLNRo6KD+P9KN8uPermkSvDV+RSnfCSVeH1+luL/JihO
+         nIaKMx8E+70C9NaPk2/MAZdAwmLF4e3A1hfmi9UlnnnoTKQho8krlzE40Wbg6ZaHul
+         OYtZXG3IuFld81DJDac/OHvgjqNqhrYnuLwwrWteLOCuvdNc9j5niJJLsBHQ8W0/2y
+         z9RZTjaqQRQGFIYZLlW7IPHuyDZpURyxIuE/iYgA47tjeVy6ZJDQCR5NQRf+cScAmZ
+         /RwMgI19giflsDT9cLsCAPRy/57WSVwMN2LGVT8+wgD6eawna6yodohAL9eQfWMj7U
+         U+VdD4wj/hjYw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 55AC05C2CB7; Thu,  5 May 2022 12:09:15 -0700 (PDT)
-Date:   Thu, 5 May 2022 12:09:15 -0700
+        id 43FBA5C2CB7; Thu,  5 May 2022 12:29:56 -0700 (PDT)
+Date:   Thu, 5 May 2022 12:29:56 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-        bigeasy@linutronix.de
-Subject: Re: [PATCH] rcu/nocb: Add an option to ON/OFF an offloading from RT
- context
-Message-ID: <20220505190915.GW1790663@paulmck-ThinkPad-P17-Gen-1>
+To:     Zqiang <qiang1.zhang@intel.com>
+Cc:     frederic@kernel.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu: Add rnp->cbovldmask check in
+ rcutree_migrate_callbacks()
+Message-ID: <20220505192956.GX1790663@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20220505101641.28472-1-urezki@gmail.com>
+References: <20220505155236.1559619-1-qiang1.zhang@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220505101641.28472-1-urezki@gmail.com>
+In-Reply-To: <20220505155236.1559619-1-qiang1.zhang@intel.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, May 05, 2022 at 12:16:41PM +0200, Uladzislau Rezki (Sony) wrote:
-> Introduce a RCU_NOCB_CPU_CB_BOOST kernel option. So a user can
-> decide if an offloading has to be done in a high-prio context or
-> not. Please note an option depends on RCU_NOCB_CPU and RCU_BOOST
-> parameters and by default it is off.
+On Thu, May 05, 2022 at 11:52:36PM +0800, Zqiang wrote:
+> Currently, the rnp's cbovlmask is set in call_rcu(). when CPU going
+> offline, the outgoing CPU's callbacks is migrated to target CPU, the
+> number of callbacks on the my_rdp may be overloaded, if overload and
+> there is no call_rcu() call on target CPU for a long time, the rnp's
+> cbovldmask is not set in time. in order to fix this situation, add
+> check_cb_ovld_locked() in rcutree_migrate_callbacks() to help CPU more
+> quickly reach quiescent states.
 > 
-> This patch splits the boosting preempted RCU readers and those
-> kthreads which directly responsible for driving expedited grace
-> periods forward with enabling/disabling the offloading from/to
-> SCHED_FIFO/SCHED_OTHER contexts.
-> 
-> The main reason of such split is, for example on Android there
-> are some workloads which require fast expedited grace period to
-> be done whereas offloading in RT context can lead to starvation
-> and hogging a CPU for a long time what is not acceptable for
-> latency sensitive environment. For instance:
-> 
-> <snip>
-> <...>-60 [006] d..1 2979.028717: rcu_batch_start: rcu_preempt CBs=34619 bl=270
-> <snip>
-> 
-> invoking 34 619 callbacks will take time thus making other CFS
-> tasks waiting in run-queue to be starved due to such behaviour.
-> 
-> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 
-All good points!
+Doesn't this get set right at the end of the current grace period?
+Given that there is a callback overload, there should be a grace
+period in progress.
 
-Some questions and comments below.
+See this code in rcu_gp_cleanup():
 
-Adding Sebastian on CC for his perspective.
+		if (rcu_is_leaf_node(rnp))
+			for_each_leaf_node_cpu_mask(rnp, cpu, rnp->cbovldmask) {
+				rdp = per_cpu_ptr(&rcu_data, cpu);
+				check_cb_ovld_locked(rdp, rnp);
+			}
 
-						Thanx, Paul
+So what am I missing here?  Or are you planning to remove the above code?
+
+If so, wouldn't you also need to clear the indication for the CPU that
+is going offline, being careful to handle the case where the two CPUs
+have different leaf rcu_node structures?
+
+							Thanx, Paul
 
 > ---
->  kernel/rcu/Kconfig     | 14 ++++++++++++++
->  kernel/rcu/tree.c      |  5 ++++-
->  kernel/rcu/tree_nocb.h |  3 ++-
->  3 files changed, 20 insertions(+), 2 deletions(-)
+>  kernel/rcu/tree.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
-> index 27aab870ae4c..074630b94902 100644
-> --- a/kernel/rcu/Kconfig
-> +++ b/kernel/rcu/Kconfig
-> @@ -275,6 +275,20 @@ config RCU_NOCB_CPU_DEFAULT_ALL
->  	  Say Y here if you want offload all CPUs by default on boot.
->  	  Say N here if you are unsure.
->  
-> +config RCU_NOCB_CPU_CB_BOOST
-> +	bool "Perform offloading from real-time kthread"
-> +	depends on RCU_NOCB_CPU && RCU_BOOST
-> +	default n
-
-I understand that you need this to default to "n" on your systems.
-However, other groups already using callback offloading should not see
-a sudden change.  I don't see an Android-specific defconfig file, but
-perhaps something in drivers/android/Kconfig?
-
-One easy way to make this work would be to invert the sense of this
-Kconfig option ("RCU_NOCB_CB_NO_BOOST"?), continue having it default to
-"n", but then select it somewhere in drivers/android/Kconfig.  But I
-would not be surprised if there is a better way.
-
-> +	help
-> +	  Use this option to offload callbacks from the SCHED_FIFO context
-> +	  to make the process faster. As a side effect of this approach is
-> +	  a latency especially for the SCHED_OTHER tasks which will not be
-> +	  able to preempt an offloading kthread. That latency depends on a
-> +	  number of callbacks to be invoked.
-> +
-> +	  Say Y here if you want to set RT priority for offloading kthreads.
-> +	  Say N here if you are unsure.
-> +
->  config TASKS_TRACE_RCU_READ_MB
->  	bool "Tasks Trace RCU readers use memory barriers in user and idle"
->  	depends on RCU_EXPERT && TASKS_TRACE_RCU
 > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 9dc4c4e82db6..d769a15bc0e3 100644
+> index 9dc4c4e82db6..bcc5876c9753 100644
 > --- a/kernel/rcu/tree.c
 > +++ b/kernel/rcu/tree.c
-> @@ -154,7 +154,10 @@ static void sync_sched_exp_online_cleanup(int cpu);
->  static void check_cb_ovld_locked(struct rcu_data *rdp, struct rcu_node *rnp);
->  static bool rcu_rdp_is_offloaded(struct rcu_data *rdp);
->  
-> -/* rcuc/rcub/rcuop kthread realtime priority */
-> +/*
-> + * rcuc/rcub/rcuop kthread realtime priority. The former
-> + * depends on if CONFIG_RCU_NOCB_CPU_CB_BOOST is set.
-
-Aren't the rcuo[ps] kthreads controlled by the RCU_NOCB_CPU_CB_BOOST
-Kconfig option?  (As opposed to the "former", which is "rcuc".)
-
-> + */
->  static int kthread_prio = IS_ENABLED(CONFIG_RCU_BOOST) ? 1 : 0;
->  module_param(kthread_prio, int, 0444);
->  
-> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-> index 60cc92cc6655..a2823be9b1d0 100644
-> --- a/kernel/rcu/tree_nocb.h
-> +++ b/kernel/rcu/tree_nocb.h
-> @@ -1315,8 +1315,9 @@ static void rcu_spawn_cpu_nocb_kthread(int cpu)
->  	if (WARN_ONCE(IS_ERR(t), "%s: Could not start rcuo CB kthread, OOM is now expected behavior\n", __func__))
->  		goto end;
->  
-> -	if (kthread_prio)
-> +	if (IS_ENABLED(CONFIG_RCU_NOCB_CPU_CB_BOOST))
-
-Don't we need both non-zero kthread_prio and the proper setting of the
-new Kconfig option before we run it at SCHED_FIFO?
-
-Yes, we could rely on sched_setscheduler_nocheck() erroring out in
-that case, but that sounds like an accident waiting to happen.
-
->  		sched_setscheduler_nocheck(t, SCHED_FIFO, &sp);
-> +
->  	WRITE_ONCE(rdp->nocb_cb_kthread, t);
->  	WRITE_ONCE(rdp->nocb_gp_kthread, rdp_gp->nocb_gp_kthread);
->  	return;
+> @@ -4577,6 +4577,7 @@ void rcutree_migrate_callbacks(int cpu)
+>  	needwake = needwake || rcu_advance_cbs(my_rnp, my_rdp);
+>  	rcu_segcblist_disable(&rdp->cblist);
+>  	WARN_ON_ONCE(rcu_segcblist_empty(&my_rdp->cblist) != !rcu_segcblist_n_cbs(&my_rdp->cblist));
+> +	check_cb_ovld_locked(my_rdp, my_rnp);
+>  	if (rcu_rdp_is_offloaded(my_rdp)) {
+>  		raw_spin_unlock_rcu_node(my_rnp); /* irqs remain disabled. */
+>  		__call_rcu_nocb_wake(my_rdp, true, flags);
 > -- 
-> 2.30.2
+> 2.25.1
 > 
