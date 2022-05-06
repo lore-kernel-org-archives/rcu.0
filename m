@@ -2,287 +2,240 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 102E8C433EF
-	for <rcu@archiver.kernel.org>; Fri,  6 May 2022 12:43:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B7006C433EF
+	for <rcu@archiver.kernel.org>; Fri,  6 May 2022 16:22:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1392105AbiEFMrY (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 6 May 2022 08:47:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46964 "EHLO
+        id S1443709AbiEFQ0R (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 6 May 2022 12:26:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349759AbiEFMrX (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 6 May 2022 08:47:23 -0400
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A4255AA4A;
-        Fri,  6 May 2022 05:43:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1651841020; x=1683377020;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=MeimNzs5w0q+s5/vhApe5QhAQNmns1dFzoz+ChwdOUQ=;
-  b=jBbvZuFGhkh0evf9s0SstqgVLvm2nmV0P9hbWuiTmejAVFO0O/t/tPr0
-   01WRLRZyOxf4cjDz4IGzqR+2kUQ6exEF59XUHAQh+x9GWypnQoyWT/DXn
-   EhnhGrT92UB8PhmW1JqtfC5pWyNaX4paaah0M9DNptus3hJDrPWwuCMF3
-   DPTL8Og0ib9nVdu1tdl2tCJMV5ScqCNbrc+ymCe1jLUF1EVLw8j0zYUmf
-   D7vmzUWKs9lop9+UhT0sjSmNfqSL0sQ7CmfBQWUuUDtqhpn54QLkwkDPj
-   sEIjwiATJMpIhbYN8Sa9x89ybQBqAjSAw6gvP0YFTXJsD+0Y5nM86Hp7I
-   g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10338"; a="268061971"
-X-IronPort-AV: E=Sophos;i="5.91,203,1647327600"; 
-   d="scan'208";a="268061971"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2022 05:43:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,203,1647327600"; 
-   d="scan'208";a="537871649"
-Received: from fmsmsx604.amr.corp.intel.com ([10.18.126.84])
-  by orsmga006.jf.intel.com with ESMTP; 06 May 2022 05:43:39 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.27; Fri, 6 May 2022 05:43:39 -0700
-Received: from fmsmsx605.amr.corp.intel.com (10.18.126.85) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.27; Fri, 6 May 2022 05:43:38 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.27 via Frontend Transport; Fri, 6 May 2022 05:43:38 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.175)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2308.27; Fri, 6 May 2022 05:43:38 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=W7l3ZdMmGU7DAL3bHoskqQwXgPcrBelZPRXxFNz0tEC+x2TR3GwPm08Usgah2HNpAFCfpRvrG4DJiI5lan8CM0Mug3AgarkhfcKKsMkiEOlSI+o98h+vlnLJah4v9bI1Y8HY39clouxTavF52l/yNl1pTQVXATZjT3U6NTbVXokHLetQMlLvJoRN4FrUSJ0z2HKbiQz1zHyPOfHT3oZwfOznHiv6TqyfVaiMsrnUzZMxO/qAiHsJ6MsAJEubUQurjT4Bw4PLPh6siiGYi7dKy+UKFyw5V95mtRDDglB01oNUqyNPI9CdWIOHem6U1488tEJGHW1nMuqMIVFMJgpzHQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=uL8ntBEvrpaU33Po5+XT7pL35BBA3jsZ0YsoCc1TVRQ=;
- b=NWHNiIGtsTqb7w/wx36AIUYjxb4MZcPRQAJQk13johumyjR+X9NpGufe3XNDnadd8Q5Pn3ZO+VHGWWZs/gIm4yprsEhcgPtYlg7tNIW5OMgIpfoV7VPoJtyBWce21pgAynYOgxiDykFr7XV6b8JmTx/hKpRGujz3COiCJPuqH1W9tj361SyZ+molYh4NC90/KqSsVjsDR9zVQ61K+qPxT1quryNqTGJwiRZomvvgik3Bx9modMSB2iRM79Va1HrO6AO8rnxnlvXIYcvew1RoFmi3pWlPwtcTTVDBclBzzllEBFAJ2/MVfPFOfbGj5Kn7mQWvbC3CTNiGEzHI1jhq6g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from PH0PR11MB5880.namprd11.prod.outlook.com (2603:10b6:510:143::14)
- by MN2PR11MB4366.namprd11.prod.outlook.com (2603:10b6:208:190::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5227.20; Fri, 6 May
- 2022 12:43:36 +0000
-Received: from PH0PR11MB5880.namprd11.prod.outlook.com
- ([fe80::c579:f1c1:28b3:610f]) by PH0PR11MB5880.namprd11.prod.outlook.com
- ([fe80::c579:f1c1:28b3:610f%9]) with mapi id 15.20.5227.020; Fri, 6 May 2022
- 12:43:36 +0000
-From:   "Zhang, Qiang1" <qiang1.zhang@intel.com>
-To:     "paulmck@kernel.org" <paulmck@kernel.org>
-CC:     "frederic@kernel.org" <frederic@kernel.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] rcu: Add rnp->cbovldmask check in
- rcutree_migrate_callbacks()
-Thread-Topic: [PATCH] rcu: Add rnp->cbovldmask check in
- rcutree_migrate_callbacks()
-Thread-Index: AQHYYJkonORSfrYVw02H56cLgBUTL60Qq84AgABKvvCAAEQ9gIAAQ+DQ
-Date:   Fri, 6 May 2022 12:43:35 +0000
-Message-ID: <PH0PR11MB5880F4D73760DCA42238A29DDAC59@PH0PR11MB5880.namprd11.prod.outlook.com>
-References: <20220505155236.1559619-1-qiang1.zhang@intel.com>
- <20220505192956.GX1790663@paulmck-ThinkPad-P17-Gen-1>
- <PH0PR11MB5880A25078A7D4DBAB1267C2DAC59@PH0PR11MB5880.namprd11.prod.outlook.com>
- <20220506040141.GA1790663@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20220506040141.GA1790663@paulmck-ThinkPad-P17-Gen-1>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-version: 11.6.401.20
-dlp-reaction: no-action
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: f900eb4a-bcfd-4268-7e8a-08da2f5e0994
-x-ms-traffictypediagnostic: MN2PR11MB4366:EE_
-x-microsoft-antispam-prvs: <MN2PR11MB4366C55D04D681F7DAEB8374DAC59@MN2PR11MB4366.namprd11.prod.outlook.com>
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: mYliYjM9DKA8DsZwJ3nut3y6s7MT7pNuUqx7bPqwi3V/bpxbyrexTJudPc0gR2K4bAQDn7S+sG/KfM5J0MYnO5q5ARAsoC6M/8JSHuv07PrQ1oY6gPamAUEQbFeeMdHXxqgAzLxkXpbYiuXkrKNg3aQGIjTUeHwU/bEW7UfeT+mNQk+M+1eAwXvlqzMlWrrQ8O3HuPkUQBEsp/CHR4ea0knRteyg5FyiyxDq430HaCZaEJK76sTwYNfZjhOAkPoRA+oC3VXumnpzPjjcIrNcb5qe88iX+1CUbkkdCB+XmmIrbXLQkM3VQPN+AkU3HdC/H1PgCP0go8pampjh4cRKRmBp+iFSW0Yb42bGZzwb/WGfIbREH14HyE75meLWrKgwY+NDRDdbcLRc6GFMc0sOJUaW0M7uz0c/wU0BThAZ5jKct1LaMsksDQuxRp0Vy/e926L39mOP4axkuPJ0/Bz5EcXNs1vdXAgQBerieOqLnRngFUPosmaYISp5wSWK5BDeFrEnKOEvJ8Zxf6TGmRizT34ZmbjKmcdshH5UCDfZea3ztYeDQ0dsJ5e/TLv89JwaIqgG/yA6mEhIt025lpaMcI3B/UzksrRVpyqAztbWVyI+YHPusfBumgKLRQpxh8gSJBLNFEtHpW8UwPbNWDfqVAEIh+zk7d1L+znsCeL7BSOchwHrqGEsrK9q3xhgivqlpCLcFcUMhgAf03pBftDQEA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5880.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(5660300002)(508600001)(71200400001)(4326008)(33656002)(52536014)(9686003)(86362001)(6506007)(26005)(7696005)(8936002)(2906002)(55016003)(122000001)(82960400001)(66574015)(186003)(38100700002)(38070700005)(83380400001)(66946007)(316002)(64756008)(66556008)(66476007)(66446008)(54906003)(76116006)(8676002)(6916009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?6NfNNSUOq4+gcvEBLCKss7ihazVJ2DfCX4PgSLjLZ2jOq/AObYAmK7Uo+jFm?=
- =?us-ascii?Q?qPzvqFqk6ZAP+W69qS0KqNO/FEyPL1Alq9HtIh77BkoZySj9GeHjgUq3zuoT?=
- =?us-ascii?Q?rfmo6YhC6eAeW3i+2uaEzn0cIcekF512kOSeV8MawNh3NwntcL7qI3OSaNH6?=
- =?us-ascii?Q?Z2QOFOvTRRjOe8hAw/aNi92f0UkFKqwYEKLF6LOJ4ECuKiaoyEQjsfngZQdT?=
- =?us-ascii?Q?p/oyamBsgRwGSJKnm+uveVBpD+BLcqnkjHAwDNY2ACEEjU3BdCTzSCNgOasw?=
- =?us-ascii?Q?e9OwBqR/juX7DLBpppao6eSJ6EbIRn4/L/rn44GH2LdbdKSFF7psZt6WozQW?=
- =?us-ascii?Q?ZvO0hHJGFkCL8YgYmHiiSWTC5zJlUPbXTmvwhyHOY5MsCGzqRFyDG9B8Z8+8?=
- =?us-ascii?Q?UC7R2LqdkY66Lehf2vFxR3QJflekJumPsZnxxdI2xVWxI0gZ9+t5hP77jP09?=
- =?us-ascii?Q?mfVQ9n+wEDFgqU+2Ec7aWSVOhoyMfeYNuHwsx0Y2O0EBt0wZt7r3FihA04Ii?=
- =?us-ascii?Q?pYFjVe7Dig/kVCBymVn4zc1O30YYkzRsVvzK4YBdMORgaNrWyMf6YOoYPBxE?=
- =?us-ascii?Q?xxPIcvZaa3a14NQeXXnXE00pR4Bf6JrwSr7Uti+dRXS5f1W+X3G667sz2H+G?=
- =?us-ascii?Q?2atGjOj4rqsHwLmy5ELs5M3vGaIScUpqBMfCsbGJof9BBcD4g4g7jVU7gSmu?=
- =?us-ascii?Q?15w2Zpu291kwQxj5j2r0n1NCdel3MMpuBixPe+65jTX9a+W1UZReSSmT3Nn8?=
- =?us-ascii?Q?yLu9RihX2SAZnjbkDDG21yiRV6z8U2SUMIcutNpRjK4lcJqSyfnfD+G1A/Cw?=
- =?us-ascii?Q?So8hqmpR3ac089bDeV2fbbkQI/xJJiZHx7Hh+Jfo2xk6viUCut7OjVm5Nu6n?=
- =?us-ascii?Q?sbfFi86ovRYf5iBq6+psbnJoONhfzZRTyARSpNJRuejbofTVkglSSGEpC7tb?=
- =?us-ascii?Q?yCbhc/Nu5lRyqR/wfvCwxksrJeGRMCxXMmfUZP0N78ttk7jMayZxTXvZq88K?=
- =?us-ascii?Q?/7XpZazb4cIFTXA5VhU1hNtNI6CoDGJVGvh+t75BE9lQ7AxHKItFqSmc0aUj?=
- =?us-ascii?Q?xVTv+hCWQvvyZhGYfuBUHCf0f/1MVDK1Jw2lxd0kRkPzHnQQJmq46NQCyf3L?=
- =?us-ascii?Q?3ENw3W+3YAOrVEea7JfnbM6REDkU1Ks7BFszKF2jU7RsZrtBxF5Q9qR5eNSr?=
- =?us-ascii?Q?P2ET8qgRcqAK1VsxyhEwWQ+dfwu/mnhgyjHpES4Edn02XtqLhFHq68J/pUmE?=
- =?us-ascii?Q?rc6Cd/c1NEMMwhRcqcEjA/0aW13m9zVU3PKvW2fzmfvc6X8af8zByd5+k9p1?=
- =?us-ascii?Q?akvIN6ED7+0fC4s3m+D9CdUagHVUbbW+TSg3UCO/VFxgjHS50Da4mn76cJTq?=
- =?us-ascii?Q?u8LIUxod+gMRNPEMOu5HoAXPOlNHE7IufAt5uMRhfZNUNEYj6MeoFJh9n126?=
- =?us-ascii?Q?/a+xQoDa/qTLcuyc01Sv+yUd9V1BMEv8renlO0cp6chsBhdKz7ZEfXLLsKus?=
- =?us-ascii?Q?IPXrh1nOjEgvtPDk53OeNGaZGxjN8+eOZK6f+zqFR9t4xtRrdosmorzVg8gW?=
- =?us-ascii?Q?92PqWDun39ZRZZSLim+OuuhIQQkAB/Y7oocMbR1zS9RZYVxtdje/igY+pCSE?=
- =?us-ascii?Q?pmPp7vLJ9mGwl2q0ml1KR8H6sBl05hMoAwLcDdCQ2R9g8M43x2A/RTpHlpJD?=
- =?us-ascii?Q?5OnZ7SIEJE17f2jcKRKzhTXA8LIwP8X2lv/IPFarxB6wd6dyrHTSk9Aq1Hpc?=
- =?us-ascii?Q?CW+eEYHjkw=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        with ESMTP id S1443750AbiEFQ0P (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 6 May 2022 12:26:15 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39AE95B884;
+        Fri,  6 May 2022 09:22:31 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id w19so13426163lfu.11;
+        Fri, 06 May 2022 09:22:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xbKY8jh/UiGHp9uJjUJ79JKoPgZGdYvp+chJPWVOFS0=;
+        b=WmSkghHnUatfcUKVTsb2PRvHseUt/dU1KG3AD25dc0R4gIAdmkstGaw3AbycsQkXtY
+         ThFPpZ4V/6TSE2oTHgF/Y+l+7bAbZhm6INCc5Ho5hUjWBfGZ09K44Q0L35Up6CUztb/J
+         daF1BoSzqBWmz/Vcc2DV70ZsczseqTXLepyipwNzWsn2hnKLkyaUyuHO8LrxMvMFfqF0
+         vqTPsvlMiFWsgJtrTMabGgl7SHykt5A5UJjk2nLI+SzrJyCmHdLHGVIDuVJd1P5692UF
+         F4a73AMzrSJa3xKosXdH888jLVGAn2OyYoMGX859hqG/a+CjAR9933ppkrRsR8CrsLHH
+         gdVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xbKY8jh/UiGHp9uJjUJ79JKoPgZGdYvp+chJPWVOFS0=;
+        b=1SV/uQl0dAdkCnY94FGpOn203B/6gffQCVS5cfOuRC8m6uzyXgKSKVwIHwpkH7sqXG
+         RUtjfPJDLKMhqYSY+cinsiq0/HR/sj63LqAzZbL8k7tQlmWWj69MdPJQAZvRTAqsakqS
+         00HAg9wh1+/NENTTJbngIOOuLnuj0vktqoCy7ztwVCnbUevsOqCpBka5+iphnuY9EYse
+         ICwTwDrDS6zUQq6NgmwtWQnLc/OytMeQn91JYon9fh9J3kAUnc7EV83KyGwJef7JMh6h
+         aNa/hnNyn+18DHUuwKpy+RAwEVOrLQj8jwddDnt0WfCEuFZVzlSV0FB9WfncKtiUBDT6
+         zJBg==
+X-Gm-Message-State: AOAM530Li2ZFroz+3tqtMLRLBNkzjA1A232VRg3Pmep/eRejS1rWnxh+
+        9vBMk7JDtfTQ5xLhAGadvEY=
+X-Google-Smtp-Source: ABdhPJwfQTyd+s3xRi8xQ20wgoclMCMRNkPIcM2PyUJsa6AAJQQPSfDcvGPaSvnrPivdnouyF2dJ8A==
+X-Received: by 2002:a05:6512:398c:b0:473:ab45:1f7c with SMTP id j12-20020a056512398c00b00473ab451f7cmr2923005lfu.341.1651854149318;
+        Fri, 06 May 2022 09:22:29 -0700 (PDT)
+Received: from pc638.lan ([155.137.26.201])
+        by smtp.gmail.com with ESMTPSA id d26-20020ac2545a000000b0047255d21120sm741872lfn.79.2022.05.06.09.22.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 May 2022 09:22:28 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Fri, 6 May 2022 18:22:26 +0200
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
+        bigeasy@linutronix.de
+Subject: Re: [PATCH] rcu/nocb: Add an option to ON/OFF an offloading from RT
+ context
+Message-ID: <YnVLQozNFvgk3olP@pc638.lan>
+References: <20220505101641.28472-1-urezki@gmail.com>
+ <20220505190915.GW1790663@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5880.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f900eb4a-bcfd-4268-7e8a-08da2f5e0994
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 May 2022 12:43:35.9880
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: LQ2sBVuI8tYw18tpbXQ3DYa0kkhPV6+ErKitWEbYxobOP9fbuUp+EOO9mwuiRwh2zg8EO0/cb166Fwf70z+8pg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB4366
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220505190915.GW1790663@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+> On Thu, May 05, 2022 at 12:16:41PM +0200, Uladzislau Rezki (Sony) wrote:
+> > Introduce a RCU_NOCB_CPU_CB_BOOST kernel option. So a user can
+> > decide if an offloading has to be done in a high-prio context or
+> > not. Please note an option depends on RCU_NOCB_CPU and RCU_BOOST
+> > parameters and by default it is off.
+> > 
+> > This patch splits the boosting preempted RCU readers and those
+> > kthreads which directly responsible for driving expedited grace
+> > periods forward with enabling/disabling the offloading from/to
+> > SCHED_FIFO/SCHED_OTHER contexts.
+> > 
+> > The main reason of such split is, for example on Android there
+> > are some workloads which require fast expedited grace period to
+> > be done whereas offloading in RT context can lead to starvation
+> > and hogging a CPU for a long time what is not acceptable for
+> > latency sensitive environment. For instance:
+> > 
+> > <snip>
+> > <...>-60 [006] d..1 2979.028717: rcu_batch_start: rcu_preempt CBs=34619 bl=270
+> > <snip>
+> > 
+> > invoking 34 619 callbacks will take time thus making other CFS
+> > tasks waiting in run-queue to be starved due to such behaviour.
+> > 
+> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> 
+> All good points!
+> 
+> Some questions and comments below.
+> 
+> Adding Sebastian on CC for his perspective.
+> 
+> 						Thanx, Paul
+> 
+> > ---
+> >  kernel/rcu/Kconfig     | 14 ++++++++++++++
+> >  kernel/rcu/tree.c      |  5 ++++-
+> >  kernel/rcu/tree_nocb.h |  3 ++-
+> >  3 files changed, 20 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+> > index 27aab870ae4c..074630b94902 100644
+> > --- a/kernel/rcu/Kconfig
+> > +++ b/kernel/rcu/Kconfig
+> > @@ -275,6 +275,20 @@ config RCU_NOCB_CPU_DEFAULT_ALL
+> >  	  Say Y here if you want offload all CPUs by default on boot.
+> >  	  Say N here if you are unsure.
+> >  
+> > +config RCU_NOCB_CPU_CB_BOOST
+> > +	bool "Perform offloading from real-time kthread"
+> > +	depends on RCU_NOCB_CPU && RCU_BOOST
+> > +	default n
+> 
+> I understand that you need this to default to "n" on your systems.
+> However, other groups already using callback offloading should not see
+> a sudden change.  I don't see an Android-specific defconfig file, but
+> perhaps something in drivers/android/Kconfig?
+> 
+> One easy way to make this work would be to invert the sense of this
+> Kconfig option ("RCU_NOCB_CB_NO_BOOST"?), continue having it default to
+> "n", but then select it somewhere in drivers/android/Kconfig.  But I
+> would not be surprised if there is a better way.
+> 
+It was done deliberately, i mean off by default. Because the user has to
+think before enabling it for its workloads. It is not a big issue for
+kthreads which drive a grace period forward, because their context runtime
+i find pretty short. Whereas an offloading callback kthread can stuck
+for a long time depending on workloads.
 
-On Fri, May 06, 2022 at 12:40:09AM +0000, Zhang, Qiang1 wrote:
-> On Thu, May 05, 2022 at 11:52:36PM +0800, Zqiang wrote:
-> > Currently, the rnp's cbovlmask is set in call_rcu(). when CPU going=20
-> > offline, the outgoing CPU's callbacks is migrated to target CPU, the=20
-> > number of callbacks on the my_rdp may be overloaded, if overload and=20
-> > there is no call_rcu() call on target CPU for a long time, the rnp's=20
-> > cbovldmask is not set in time. in order to fix this situation, add
-> > check_cb_ovld_locked() in rcutree_migrate_callbacks() to help CPU=20
-> > more quickly reach quiescent states.
-> >=20
-> > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
->=20
-> >Doesn't this get set right at the end of the current grace period?
-> >Given that there is a callback overload, there should be a grace period =
-in progress.
-> >
-> >See this code in rcu_gp_cleanup():
-> >
-> >		if (rcu_is_leaf_node(rnp))
-> >			for_each_leaf_node_cpu_mask(rnp, cpu, rnp->cbovldmask) {
-> >				rdp =3D per_cpu_ptr(&rcu_data, cpu);
-> >				check_cb_ovld_locked(rdp, rnp);
-> >			}
-> >
-> >So what am I missing here?  Or are you planning to remove the above code=
-?
->=20
-> We only checked the overloaded rdp at the end of current grace period,=20
-> for my_rdp overloaded cause by migration callbacks to it,  if the=20
-> my_rdp overloaded, and the my_rdp->mynode 's cbovldmask  is empty, =20
-> the my_rdp overloaded may be not checked at end of the current grace peri=
-od.
->
->Very good!
->
-> I have another question, why don't we call check_cb_ovld_locked() when rd=
-p's n_cbs decreases.
-> for example call check_cb_ovld_locked() in rcu_do_bacth(), not at the end=
- of grace period.
+Also, i put it that way because initially those kthreads were staying
+as SCHED_NORMAL even though the RCU_BOOST was set in kernel config.
 
->The idea (as you noted above) is that it gets cleared at the end of each g=
-race period.  We could also clear it in rcu_do_batch() as you suggest, but =
-to make that change you would need to convince me that the extra overhead a=
-nd complexity would provide a useful benefit.  This will not be easy.  ;-)
+<snip>
+commit c8b16a65267e35ecc5621dbc81cbe7e5b0992fce
+Author: Alison Chaiken <achaiken@aurora.tech>
+Date:   Tue Jan 11 15:32:52 2022 -0800
 
-> >If so, wouldn't you also need to clear the indication for the CPU that i=
-s going offline, being careful to handle the case where the two CPUs have d=
-ifferent leaf rcu_node structures?
->=20
-> Yes the offline CPU need to clear.
->
->But again, the clearing happens at the end of the next grace period.
->Here we lose (almost) nothing by leaving the bit set because the other bit=
- is set as well.
->
->Another question, as long as we brought up rcu_do_batch().
->
->Why have the local variable "empty" given that the local variable "count"
->could be checked against zero?
-
-Thanks for reminding
-I noticed  when RCU_NOCB_CPU and DEBUG_OBJECTS_RCU_HEAD is not enable .=20
-double call call_rcu() will cause the rdp->cblist's len increase, but
-actually, the number of objects in the rdp->cblist has not changed.  the
-WARN_ON_ONCE(!IS_ENABLED(CONFIG_RCU_NOCB_CPU) && count !=3D 0 && empty)
-will be triggered.
-
-When RCU_NOCB_CPU is enabled, even without double call call_rcu().  due to =
-nocb  bypass
-Some objects may be in the rdp->nocb_bypass list, this causes the count to =
-be non-zero=20
-when the rdp->cblist list is empty.
-
->
->In the meantime, I have queued your commit for v5.20, thank you and good e=
-yes!  As always, I could not resist the urge to wordsmith the commit log, s=
-o could you please check it for errors?
-
-Thank you very much.
-
->							Thanx, Paul
-
-------------------------------------------------------------------------
-
-commit 5c36f04bd460246dd28c178ce5dce6fb02f898e1
-Author: Zqiang <qiang1.zhang@intel.com>
-Date:   Thu May 5 23:52:36 2022 +0800
-
-    rcu: Add rnp->cbovldmask check in rcutree_migrate_callbacks()
-   =20
-    Currently, the rcu_node structure's ->cbovlmask field is set in call_rc=
-u()
-    when a given CPU is suffering from callback overload.  But if that CPU
-    goes offline, the outgoing CPU's callbacks is migrated to the running
-    CPU, which is likely to overload the running CPU.  However, that CPU's
-    bit in its leaf rcu_node structure's ->cbovlmask field remains zero.
-   =20
-    Initially, this is OK because the outgoing CPU's bit remains set.
-    However, that bit will be cleared at the next end of a grace period,
-    at which time it is quite possible that the running CPU will still
-    be overloaded.  If the running CPU invokes call_rcu(), then overload
-    will be checked for and the bit will be set.  Except that there is no
-    guarantee that the running CPU will invoke call_rcu(), in which case th=
-e
-    next grace period will fail to take the running CPU's overload conditio=
-n
-    into account.  Plus, because the bit is not set, the end of the grace
-    period won't check for overload on this CPU.
-   =20
-    This commit therefore adds a call to check_cb_ovld_locked() in
-    check_cb_ovld_locked() to set the running CPU's ->cbovlmask bit
-    appropriately.
-   =20
-    Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+    rcu: Elevate priority of offloaded callback threads
+    
+    When CONFIG_PREEMPT_RT=y, the rcutree.kthread_prio command-line
+    parameter signals initialization code to boost the priority of rcuc
+    callbacks to the designated value.  With the additional
+    CONFIG_RCU_NOCB_CPU=y configuration and an additional rcu_nocbs
+    command-line parameter, the callbacks on the listed cores are
+    offloaded to new rcuop kthreads that are not pinned to the cores whose
+    post-grace-period work is performed.  While the rcuop kthreads perform
+    the same function as the rcuc kthreads they offload, the kthread_prio
+    parameter only boosts the priority of the rcuc kthreads.  Fix this
+    inconsistency by elevating rcuop kthreads to the same priority as the rcuc
+    kthreads.
+    
+    Signed-off-by: Alison Chaiken <achaiken@aurora.tech>
     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+<snip>
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c index 9dc4c4e82db62..bcc=
-5876c9753b 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -4577,6 +4577,7 @@ void rcutree_migrate_callbacks(int cpu)
- 	needwake =3D needwake || rcu_advance_cbs(my_rnp, my_rdp);
- 	rcu_segcblist_disable(&rdp->cblist);
- 	WARN_ON_ONCE(rcu_segcblist_empty(&my_rdp->cblist) !=3D !rcu_segcblist_n_c=
-bs(&my_rdp->cblist));
-+	check_cb_ovld_locked(my_rdp, my_rnp);
- 	if (rcu_rdp_is_offloaded(my_rdp)) {
- 		raw_spin_unlock_rcu_node(my_rnp); /* irqs remain disabled. */
- 		__call_rcu_nocb_wake(my_rdp, true, flags);
+I have a doubt that it is needed for CONFIG_PREEMPT_RT=y. The reason i mentioned
+above it is a source of extra latency. That is why i have made it inactive by default.
+
+Any thoughts?
+
+> > +	help
+> > +	  Use this option to offload callbacks from the SCHED_FIFO context
+> > +	  to make the process faster. As a side effect of this approach is
+> > +	  a latency especially for the SCHED_OTHER tasks which will not be
+> > +	  able to preempt an offloading kthread. That latency depends on a
+> > +	  number of callbacks to be invoked.
+> > +
+> > +	  Say Y here if you want to set RT priority for offloading kthreads.
+> > +	  Say N here if you are unsure.
+> > +
+> >  config TASKS_TRACE_RCU_READ_MB
+> >  	bool "Tasks Trace RCU readers use memory barriers in user and idle"
+> >  	depends on RCU_EXPERT && TASKS_TRACE_RCU
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index 9dc4c4e82db6..d769a15bc0e3 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -154,7 +154,10 @@ static void sync_sched_exp_online_cleanup(int cpu);
+> >  static void check_cb_ovld_locked(struct rcu_data *rdp, struct rcu_node *rnp);
+> >  static bool rcu_rdp_is_offloaded(struct rcu_data *rdp);
+> >  
+> > -/* rcuc/rcub/rcuop kthread realtime priority */
+> > +/*
+> > + * rcuc/rcub/rcuop kthread realtime priority. The former
+> > + * depends on if CONFIG_RCU_NOCB_CPU_CB_BOOST is set.
+> 
+> Aren't the rcuo[ps] kthreads controlled by the RCU_NOCB_CPU_CB_BOOST
+> Kconfig option?  (As opposed to the "former", which is "rcuc".)
+> 
+The CONFIG_RCU_NOCB_CPU_CB_BOOST controls only the last what is
+the rcuo CB kthread or "rcuo%c/%d" name. Sorry it is not "former"
+it is the last in the rcuc/rcub/rcuop sequence. It was a typo :)
+
+> > + */
+> >  static int kthread_prio = IS_ENABLED(CONFIG_RCU_BOOST) ? 1 : 0;
+> >  module_param(kthread_prio, int, 0444);
+> >  
+> > diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> > index 60cc92cc6655..a2823be9b1d0 100644
+> > --- a/kernel/rcu/tree_nocb.h
+> > +++ b/kernel/rcu/tree_nocb.h
+> > @@ -1315,8 +1315,9 @@ static void rcu_spawn_cpu_nocb_kthread(int cpu)
+> >  	if (WARN_ONCE(IS_ERR(t), "%s: Could not start rcuo CB kthread, OOM is now expected behavior\n", __func__))
+> >  		goto end;
+> >  
+> > -	if (kthread_prio)
+> > +	if (IS_ENABLED(CONFIG_RCU_NOCB_CPU_CB_BOOST))
+> 
+> Don't we need both non-zero kthread_prio and the proper setting of the
+> new Kconfig option before we run it at SCHED_FIFO?
+> 
+> Yes, we could rely on sched_setscheduler_nocheck() erroring out in
+> that case, but that sounds like an accident waiting to happen.
+> 
+As far as i see it is odd, because the "kthread_prio" is verified so
+there is a sanity check to check if the value is correct for SCHED_FIFO
+case and does some adjustment if not. There is sanitize_kthread_prio()
+that does all trick.
+
+Looking at the kthread_prio variable. If it is set all the code that
+takes into account of it switches to SCHED_FIFO class. Maybe rename it
+to something kthread_rt_prio? It might be a bad idea though because of
+former dependencies of distros and so on :)
+
+
+
+--
+Uladzislau Rezki
