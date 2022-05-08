@@ -2,174 +2,193 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A717C433F5
-	for <rcu@archiver.kernel.org>; Sun,  8 May 2022 06:29:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6CD52C433F5
+	for <rcu@archiver.kernel.org>; Sun,  8 May 2022 21:32:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229613AbiEHGcv (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 8 May 2022 02:32:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59960 "EHLO
+        id S233109AbiEHVgR (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 8 May 2022 17:36:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbiEHGcu (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 8 May 2022 02:32:50 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5928E6453
-        for <rcu@vger.kernel.org>; Sat,  7 May 2022 23:29:00 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id m6so12235019iob.4
-        for <rcu@vger.kernel.org>; Sat, 07 May 2022 23:29:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jQKknHlDx72xx0B4nwvGp8Z3DerHVN3AD3DYjbUsQuI=;
-        b=j4fnFCOWgizp9lpKRsc4ByfnvNzKiCiwnv9cssvueNHOT0hnDIBn0lh82BKcwzGdgC
-         0pD2Vkqu9BTg5mlzfOKO1gmR6bii4v9ezaNyoTK8Ge9MGQclygivpTDgjfgUSPlI+Le+
-         ybpceYmC+SDJEKW6Ntji4i1/t3M/KxXexB/MQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jQKknHlDx72xx0B4nwvGp8Z3DerHVN3AD3DYjbUsQuI=;
-        b=vaoTv9MCaPbiush9wFQD6+6VcictxImDjnRrL+u6W+DZJZpSZsm3y8DBqNwNVgESp5
-         tVa6jyxHsyGjPgIqi8JEsZJjjFQd3rdXWt5Fke17e0WWAGzRh9NFX0dMZPh6GoczBQlF
-         +EUmobhw69lZp7MdUQhuns6QK6/I2UEtcgOIi64jO+DBN2wByLfr64cqzeq1oDYPa7eZ
-         zk/oSDxGwWtybIdRfEHsXk1cTcCSPfMsRrQKczsWicC1TL3GLFAXnn7lGwL8jh0WEW49
-         /spxykD/o9bDIHehV3GrD82HKpTyl0XtldXb08fpQOUYeIU+6GPbS9FzG3KkfUAUhPVg
-         R0Bw==
-X-Gm-Message-State: AOAM531hM5jMpmIP+4I6xd2L00xGPbp6x3yr/FGCE2T9o4+FfdNLWdNb
-        x+nVpijuFbhSpYsQqcY0EV7vE+Q/8xJctShkwB5hMQ==
-X-Google-Smtp-Source: ABdhPJxVXSiop4563gDD1XQWZK0LmMFpMgb9vJ9mZN1fFUXJPh0Ddj0EE324aTVz4nSoMTKr+HcSjIEfhX7MwAwGeoY=
-X-Received: by 2002:a6b:1547:0:b0:64c:8bd4:acba with SMTP id
- 68-20020a6b1547000000b0064c8bd4acbamr4265608iov.204.1651991339672; Sat, 07
- May 2022 23:28:59 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220505101641.28472-1-urezki@gmail.com> <20220505190915.GW1790663@paulmck-ThinkPad-P17-Gen-1>
- <YnVLQozNFvgk3olP@pc638.lan> <20220506182425.GC1790663@paulmck-ThinkPad-P17-Gen-1>
- <YnY33nq5jl6FLFOu@pc638.lan> <20220507223247.GK1790663@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20220507223247.GK1790663@paulmck-ThinkPad-P17-Gen-1>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Sun, 8 May 2022 02:28:49 -0400
-Message-ID: <CAEXW_YSyYRSRQwfMTJU1dowMaxrj6Daa17-BMx4syoPV05bZFg@mail.gmail.com>
-Subject: Re: [PATCH] rcu/nocb: Add an option to ON/OFF an offloading from RT context
-To:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        with ESMTP id S233098AbiEHVgR (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 8 May 2022 17:36:17 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48A97DF29;
+        Sun,  8 May 2022 14:32:24 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D707860DB6;
+        Sun,  8 May 2022 21:32:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25A5DC385AC;
+        Sun,  8 May 2022 21:32:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1652045543;
+        bh=nRA+bETxekMJV4kJ3VQuMngCJKdiJUVudQN0BdqVkzg=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=L5Ew1Xd3Qko8gyXIQNTqb5e1g8OXTzMnzmAbhn6jbvGvZms1SQ85111AKddu/rlcm
+         1ikBKPDJMNfIZ/2VImdcXx+FQv6QqCr65LGrYsUa0npWwav2Y6ze6PUUJm6tN4GJwO
+         G+HxVwyWZacP61UNjhXcGwxylZtITa6KY+V6P6MrSuyLMuyIeSUqScQqMbsqzXTVzf
+         j4G2IpM+tfgEThKmKNsFvScYvoOL3h4/w+P2EuLxsgoMvgibddLi/y7pL4smuijE68
+         Nh3LW5SsDU7WlUeN37HAzZuG7nFFQi7t0ebBEB0kH44l8gElWr/sMi+2oyD5hICGuW
+         sV96NtpKNdO8A==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id BA4B75C0555; Sun,  8 May 2022 14:32:22 -0700 (PDT)
+Date:   Sun, 8 May 2022 14:32:22 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
         Alison Chaiken <achaiken@aurora.tech>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
         Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH] rcu/nocb: Add an option to ON/OFF an offloading from RT
+ context
+Message-ID: <20220508213222.GL1790663@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20220505101641.28472-1-urezki@gmail.com>
+ <20220505190915.GW1790663@paulmck-ThinkPad-P17-Gen-1>
+ <YnVLQozNFvgk3olP@pc638.lan>
+ <20220506182425.GC1790663@paulmck-ThinkPad-P17-Gen-1>
+ <YnY33nq5jl6FLFOu@pc638.lan>
+ <20220507223247.GK1790663@paulmck-ThinkPad-P17-Gen-1>
+ <CAEXW_YSyYRSRQwfMTJU1dowMaxrj6Daa17-BMx4syoPV05bZFg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEXW_YSyYRSRQwfMTJU1dowMaxrj6Daa17-BMx4syoPV05bZFg@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, May 7, 2022 at 6:32 PM Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> On Sat, May 07, 2022 at 11:11:58AM +0200, Uladzislau Rezki wrote:
-> > > On Fri, May 06, 2022 at 06:22:26PM +0200, Uladzislau Rezki wrote:
-> > > > > On Thu, May 05, 2022 at 12:16:41PM +0200, Uladzislau Rezki (Sony) wrote:
-> > > > > > Introduce a RCU_NOCB_CPU_CB_BOOST kernel option. So a user can
-> > > > > > decide if an offloading has to be done in a high-prio context or
-> > > > > > not. Please note an option depends on RCU_NOCB_CPU and RCU_BOOST
-> > > > > > parameters and by default it is off.
-> > > > > >
-> > > > > > This patch splits the boosting preempted RCU readers and those
-> > > > > > kthreads which directly responsible for driving expedited grace
-> > > > > > periods forward with enabling/disabling the offloading from/to
-> > > > > > SCHED_FIFO/SCHED_OTHER contexts.
-> > > > > >
-> > > > > > The main reason of such split is, for example on Android there
-> > > > > > are some workloads which require fast expedited grace period to
-> > > > > > be done whereas offloading in RT context can lead to starvation
-> > > > > > and hogging a CPU for a long time what is not acceptable for
-> > > > > > latency sensitive environment. For instance:
-> > > > > >
-> > > > > > <snip>
-> > > > > > <...>-60 [006] d..1 2979.028717: rcu_batch_start: rcu_preempt CBs=34619 bl=270
-> > > > > > <snip>
-> > > > > >
-> > > > > > invoking 34 619 callbacks will take time thus making other CFS
-> > > > > > tasks waiting in run-queue to be starved due to such behaviour.
-> > > > > >
-> > > > > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > > > >
-> > > > > All good points!
-> > > > >
-> > > > > Some questions and comments below.
-> > > > >
-> > > > > Adding Sebastian on CC for his perspective.
-> > > > >
-> > > > >                                                 Thanx, Paul
-> > > > >
-> > > > > > ---
-> > > > > >  kernel/rcu/Kconfig     | 14 ++++++++++++++
-> > > > > >  kernel/rcu/tree.c      |  5 ++++-
-> > > > > >  kernel/rcu/tree_nocb.h |  3 ++-
-> > > > > >  3 files changed, 20 insertions(+), 2 deletions(-)
-> > > > > >
-> > > > > > diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
-> > > > > > index 27aab870ae4c..074630b94902 100644
-> > > > > > --- a/kernel/rcu/Kconfig
-> > > > > > +++ b/kernel/rcu/Kconfig
-> > > > > > @@ -275,6 +275,20 @@ config RCU_NOCB_CPU_DEFAULT_ALL
-> > > > > >         Say Y here if you want offload all CPUs by default on boot.
-> > > > > >         Say N here if you are unsure.
-> > > > > >
-> > > > > > +config RCU_NOCB_CPU_CB_BOOST
-> > > > > > +     bool "Perform offloading from real-time kthread"
-> > > > > > +     depends on RCU_NOCB_CPU && RCU_BOOST
-> > > > > > +     default n
-> > > > >
-> > > > > I understand that you need this to default to "n" on your systems.
-> > > > > However, other groups already using callback offloading should not see
-> > > > > a sudden change.  I don't see an Android-specific defconfig file, but
-> > > > > perhaps something in drivers/android/Kconfig?
-> > > > >
-> > We saw a sudden change when the priority was lifted up for rcuop kthreads.
-> > I would like to know the reason. As for Android, i would like to avoid
-> > it to be Android specific. It is better just to enable boosting by
-> > default for nocb kthreads.
->
-> No, because that breaks an existing use case, which uses RCU_BOOST
-> to avoid OOM on busy systems.
->
-> > > > > One easy way to make this work would be to invert the sense of this
-> > > > > Kconfig option ("RCU_NOCB_CB_NO_BOOST"?), continue having it default to
-> > > > > "n", but then select it somewhere in drivers/android/Kconfig.  But I
-> > > > > would not be surprised if there is a better way.
+On Sun, May 08, 2022 at 02:28:49AM -0400, Joel Fernandes wrote:
+> On Sat, May 7, 2022 at 6:32 PM Paul E. McKenney <paulmck@kernel.org> wrote:
 > >
-> > In that situation probably we should just enable it by default.
->
-> You are within your rights to cause it to be enabled by default -within-
-> -Android-.  You are -not- within your rights to break other workloads.
->
-> If ChromeOS needs it too, they too can enable it -within- -ChromeOS-.
->
-> It is not -that- hard, guys!  ;-)
+> > On Sat, May 07, 2022 at 11:11:58AM +0200, Uladzislau Rezki wrote:
+> > > > On Fri, May 06, 2022 at 06:22:26PM +0200, Uladzislau Rezki wrote:
+> > > > > > On Thu, May 05, 2022 at 12:16:41PM +0200, Uladzislau Rezki (Sony) wrote:
+> > > > > > > Introduce a RCU_NOCB_CPU_CB_BOOST kernel option. So a user can
+> > > > > > > decide if an offloading has to be done in a high-prio context or
+> > > > > > > not. Please note an option depends on RCU_NOCB_CPU and RCU_BOOST
+> > > > > > > parameters and by default it is off.
+> > > > > > >
+> > > > > > > This patch splits the boosting preempted RCU readers and those
+> > > > > > > kthreads which directly responsible for driving expedited grace
+> > > > > > > periods forward with enabling/disabling the offloading from/to
+> > > > > > > SCHED_FIFO/SCHED_OTHER contexts.
+> > > > > > >
+> > > > > > > The main reason of such split is, for example on Android there
+> > > > > > > are some workloads which require fast expedited grace period to
+> > > > > > > be done whereas offloading in RT context can lead to starvation
+> > > > > > > and hogging a CPU for a long time what is not acceptable for
+> > > > > > > latency sensitive environment. For instance:
+> > > > > > >
+> > > > > > > <snip>
+> > > > > > > <...>-60 [006] d..1 2979.028717: rcu_batch_start: rcu_preempt CBs=34619 bl=270
+> > > > > > > <snip>
+> > > > > > >
+> > > > > > > invoking 34 619 callbacks will take time thus making other CFS
+> > > > > > > tasks waiting in run-queue to be starved due to such behaviour.
+> > > > > > >
+> > > > > > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > > > > >
+> > > > > > All good points!
+> > > > > >
+> > > > > > Some questions and comments below.
+> > > > > >
+> > > > > > Adding Sebastian on CC for his perspective.
+> > > > > >
+> > > > > >                                                 Thanx, Paul
+> > > > > >
+> > > > > > > ---
+> > > > > > >  kernel/rcu/Kconfig     | 14 ++++++++++++++
+> > > > > > >  kernel/rcu/tree.c      |  5 ++++-
+> > > > > > >  kernel/rcu/tree_nocb.h |  3 ++-
+> > > > > > >  3 files changed, 20 insertions(+), 2 deletions(-)
+> > > > > > >
+> > > > > > > diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+> > > > > > > index 27aab870ae4c..074630b94902 100644
+> > > > > > > --- a/kernel/rcu/Kconfig
+> > > > > > > +++ b/kernel/rcu/Kconfig
+> > > > > > > @@ -275,6 +275,20 @@ config RCU_NOCB_CPU_DEFAULT_ALL
+> > > > > > >         Say Y here if you want offload all CPUs by default on boot.
+> > > > > > >         Say N here if you are unsure.
+> > > > > > >
+> > > > > > > +config RCU_NOCB_CPU_CB_BOOST
+> > > > > > > +     bool "Perform offloading from real-time kthread"
+> > > > > > > +     depends on RCU_NOCB_CPU && RCU_BOOST
+> > > > > > > +     default n
+> > > > > >
+> > > > > > I understand that you need this to default to "n" on your systems.
+> > > > > > However, other groups already using callback offloading should not see
+> > > > > > a sudden change.  I don't see an Android-specific defconfig file, but
+> > > > > > perhaps something in drivers/android/Kconfig?
+> > > > > >
+> > > We saw a sudden change when the priority was lifted up for rcuop kthreads.
+> > > I would like to know the reason. As for Android, i would like to avoid
+> > > it to be Android specific. It is better just to enable boosting by
+> > > default for nocb kthreads.
+> >
+> > No, because that breaks an existing use case, which uses RCU_BOOST
+> > to avoid OOM on busy systems.
+> >
+> > > > > > One easy way to make this work would be to invert the sense of this
+> > > > > > Kconfig option ("RCU_NOCB_CB_NO_BOOST"?), continue having it default to
+> > > > > > "n", but then select it somewhere in drivers/android/Kconfig.  But I
+> > > > > > would not be surprised if there is a better way.
+> > >
+> > > In that situation probably we should just enable it by default.
+> >
+> > You are within your rights to cause it to be enabled by default -within-
+> > -Android-.  You are -not- within your rights to break other workloads.
+> >
+> > If ChromeOS needs it too, they too can enable it -within- -ChromeOS-.
+> >
+> > It is not -that- hard, guys!  ;-)
+> 
+> I think on the topic of RT, +Steven Rostedt should chime in as well
+> considering he wrote a good chunk of the RT scheduler ;-). Personally,
+> I feel the issue of "rcu callback offload" threads running as RT or
+> not should not be a matter of CONFIG option or the system in concern.
+> Instead it should be a function of how many callbacks there are to
+> run.  The reason I say this is, RT threads should not be doing a lot
+> of work anyway, lest they cause RT throttling and starvation of other
+> threads.
 
-I think on the topic of RT, +Steven Rostedt should chime in as well
-considering he wrote a good chunk of the RT scheduler ;-). Personally,
-I feel the issue of "rcu callback offload" threads running as RT or
-not should not be a matter of CONFIG option or the system in concern.
-Instead it should be a function of how many callbacks there are to
-run.  The reason I say this is, RT threads should not be doing a lot
-of work anyway, lest they cause RT throttling and starvation of other
-threads.
+This gets complicated surprisingly quickly.  For but one example, you
+would find yourself wanting time-based boosting, most likely before you
+wanted boosting based on numbers of callbacks.  And it is all too easy
+to drive considerably complexity into the mix before proving that it is
+really needed.  Especially given how rare the need for RCU priority
+boosting is to begin with.
 
-Also, I think it is wrong to assume that a certain kind of system will
-always have a certain number of callbacks to process at a time. That
-seems prone to poor design due to assumptions which may not always be
-true.
+> Also, I think it is wrong to assume that a certain kind of system will
+> always have a certain number of callbacks to process at a time. That
+> seems prone to poor design due to assumptions which may not always be
+> true.
 
-Can we not have 2 sets of RCU offload threads, one which operate at RT
-and only process few callbacks at a time, while another which is the
-lower priority CFS offload thread - executes whenever there is a lot
-of CBs pending? Just a thought.
+Who was assuming that?  Uladzislau was measuring rather than assuming,
+if that was what you were getting at.  Or if you are thinking about
+things like qhimark, your point is exactly why there is both a default
+(which has worked quite well for a very long time) and the ability to
+adjust based on the needs of your specific system.
 
-Otherwise, I feel like we might be again proliferating CONFIG options
-and increasing burden on the user to get it the CONFIG right.
+> Can we not have 2 sets of RCU offload threads, one which operate at RT
+> and only process few callbacks at a time, while another which is the
+> lower priority CFS offload thread - executes whenever there is a lot
+> of CBs pending? Just a thought.
 
-thanks,
+How about if we start by solving the problems we know that we have?
 
-- Joel
+> Otherwise, I feel like we might be again proliferating CONFIG options
+> and increasing burden on the user to get it the CONFIG right.
+
+I bet that we will solve this without adding any new Kconfig options.
+And I bet that the burden is at worst on the device designer, not on
+the user.  Plus it is entirely possible that there might be a way to
+automatically configure things to handle what we know about today,
+again without adding Kconfig options.
+
+							Thanx, Paul
