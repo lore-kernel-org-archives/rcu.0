@@ -2,183 +2,136 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1CF79C433F5
-	for <rcu@archiver.kernel.org>; Mon,  9 May 2022 03:49:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C7784C433F5
+	for <rcu@archiver.kernel.org>; Mon,  9 May 2022 12:33:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231474AbiEIDvq (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 8 May 2022 23:51:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41302 "EHLO
+        id S234639AbiEIMhl (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 9 May 2022 08:37:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233495AbiEIDle (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 8 May 2022 23:41:34 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F2F874DD6;
-        Sun,  8 May 2022 20:37:42 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CAE5E61003;
-        Mon,  9 May 2022 03:37:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2247DC385AE;
-        Mon,  9 May 2022 03:37:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1652067461;
-        bh=PXmaQUPKWn6FIRhLSdrppCDTsYvhjxB5E2sIHwZBn6E=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=ojOg4aCEQ07DdQf6iMb7EjlpRO6Lcea+7YD9FfUrIiww1ip1Yjqd5DcrrKbwAcmRn
-         MCAY7rndRdv1CHaqf8pYILfNNrMJih9CzBy+xH4bYKcKkGtoepGjivPMjgf2W2EnzU
-         bFVXaMNu8xFwENfG46sZP4Os4f+x/GHFPI75u7rPJqZP1LJLqB1pmz8XCiUi3dK3Xs
-         F3ep8yKEeljq3K5z2DyyMVqgMitDFPJhRmwcVADA2+5OA4MzPORr6PAyCXpE/ff5Zx
-         Mj3SIkkMeL0QHUpToCTtxxJYiWJYKvlIB+U7rgPQH9jcHNRoOCxSdbrzAZhXZ8/dA9
-         tFnoh4YfTLa2g==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id ADAFA5C0741; Sun,  8 May 2022 20:37:40 -0700 (PDT)
-Date:   Sun, 8 May 2022 20:37:40 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Alison Chaiken <achaiken@aurora.tech>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: Re: [PATCH] rcu/nocb: Add an option to ON/OFF an offloading from RT
- context
-Message-ID: <20220509033740.GM1790663@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220505101641.28472-1-urezki@gmail.com>
- <20220505190915.GW1790663@paulmck-ThinkPad-P17-Gen-1>
- <YnVLQozNFvgk3olP@pc638.lan>
- <20220506182425.GC1790663@paulmck-ThinkPad-P17-Gen-1>
- <YnY33nq5jl6FLFOu@pc638.lan>
- <20220507223247.GK1790663@paulmck-ThinkPad-P17-Gen-1>
- <CAEXW_YSyYRSRQwfMTJU1dowMaxrj6Daa17-BMx4syoPV05bZFg@mail.gmail.com>
- <20220508213222.GL1790663@paulmck-ThinkPad-P17-Gen-1>
- <CAEXW_YQ9t8gxp9cKCpba+e4NZ6ohPr8jHxJYuqRBFRtvSDa0Lw@mail.gmail.com>
+        with ESMTP id S234488AbiEIMhi (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 9 May 2022 08:37:38 -0400
+Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C21BD28BDC9;
+        Mon,  9 May 2022 05:33:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+        s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=L3p0/83L4yDVyZoegOtsQfWmJV/6wtv6TZoOXChWFJg=; b=Gm1PabHNS+/VMjWNpRDgN0q7Gz
+        okgDM+2WHp5z93ZUGeQzJtlj40ch1Djul+F9LKvzWURwbafLBOoP/NgGu9GSmPuuE28KOgN2Dlog/
+        GHXl8dWWFH9IUIBQmU28gspF2npPpEWaJ19eWl8SzxR3mk4Q/F4kmhrZuCV0rVMHSE4nkq5aDi9ss
+        tskoNSlPr3h/0gKp/FmRCE42MZtPYeJf36WeID1+imZk2dUy5vrTX2Nb6oqUW3HqWx20YRVV7+Jqn
+        2U5xO3lqX+ogULZEqtYM74LQ/XjYNOdW70A5rw6LBK7UHwdRlT2URD08Y6BIbm5BwJqTO8MAols4i
+        vbgjN92g==;
+Received: from [177.183.162.244] (helo=[192.168.0.5])
+        by fanzine2.igalia.com with esmtpsa 
+        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+        id 1no2ZO-0002Vw-CD; Mon, 09 May 2022 14:32:58 +0200
+Message-ID: <b5a1370c-1319-24d1-6b2a-629e5c8915ed@igalia.com>
+Date:   Mon, 9 May 2022 09:32:27 -0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEXW_YQ9t8gxp9cKCpba+e4NZ6ohPr8jHxJYuqRBFRtvSDa0Lw@mail.gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.1
+Subject: Re: [PATCH 01/30] x86/crash,reboot: Avoid re-disabling VMX in all
+ CPUs on crash/restart
+Content-Language: en-US
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>, vkuznets@redhat.com
+Cc:     kexec@lists.infradead.org, pmladek@suse.com, bhe@redhat.com,
+        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com, coresight@lists.linaro.org,
+        linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
+        netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net,
+        rcu@vger.kernel.org, sparclinux@vger.kernel.org,
+        xen-devel@lists.xenproject.org, x86@kernel.org,
+        kernel-dev@igalia.com, kernel@gpiccoli.net, halves@canonical.com,
+        fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com,
+        andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de,
+        corbet@lwn.net, d.hatayama@jp.fujitsu.com,
+        dave.hansen@linux.intel.com, dyoung@redhat.com,
+        feng.tang@intel.com, gregkh@linuxfoundation.org,
+        mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com,
+        jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org,
+        luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com,
+        paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org,
+        senozhatsky@chromium.org, stern@rowland.harvard.edu,
+        tglx@linutronix.de, vgoyal@redhat.com, will@kernel.org,
+        "David P . Reed" <dpreed@deepplum.com>
+References: <20220427224924.592546-1-gpiccoli@igalia.com>
+ <20220427224924.592546-2-gpiccoli@igalia.com>
+From:   "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+In-Reply-To: <20220427224924.592546-2-gpiccoli@igalia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sun, May 08, 2022 at 08:17:49PM -0400, Joel Fernandes wrote:
-> On Sun, May 8, 2022 at 5:32 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+On 27/04/2022 19:48, Guilherme G. Piccoli wrote:
+> In the panic path we have a list of functions to be called, the panic
+> notifiers - such callbacks perform various actions in the machine's
+> last breath, and sometimes users want them to run before kdump. We
+> have the parameter "crash_kexec_post_notifiers" for that. When such
+> parameter is used, the function "crash_smp_send_stop()" is executed
+> to poweroff all secondary CPUs through the NMI-shootdown mechanism;
+> part of this process involves disabling virtualization features in
+> all CPUs (except the main one).
+> 
+> Now, in the emergency restart procedure we have also a way of
+> disabling VMX in all CPUs, using the same NMI-shootdown mechanism;
+> what happens though is that in case we already NMI-disabled all CPUs,
+> the emergency restart fails due to a second addition of the same items
+> in the NMI list, as per the following log output:
+> 
+> sysrq: Trigger a crash
+> Kernel panic - not syncing: sysrq triggered crash
 > [...]
-> > > > > > > > One easy way to make this work would be to invert the sense of this
-> > > > > > > > Kconfig option ("RCU_NOCB_CB_NO_BOOST"?), continue having it default to
-> > > > > > > > "n", but then select it somewhere in drivers/android/Kconfig.  But I
-> > > > > > > > would not be surprised if there is a better way.
-> > > > >
-> > > > > In that situation probably we should just enable it by default.
-> > > >
-> > > > You are within your rights to cause it to be enabled by default -within-
-> > > > -Android-.  You are -not- within your rights to break other workloads.
-> > > >
-> > > > If ChromeOS needs it too, they too can enable it -within- -ChromeOS-.
-> > > >
-> > > > It is not -that- hard, guys!  ;-)
-> > >
-> > > I think on the topic of RT, +Steven Rostedt should chime in as well
-> > > considering he wrote a good chunk of the RT scheduler ;-). Personally,
-> > > I feel the issue of "rcu callback offload" threads running as RT or
-> > > not should not be a matter of CONFIG option or the system in concern.
-> > > Instead it should be a function of how many callbacks there are to
-> > > run.  The reason I say this is, RT threads should not be doing a lot
-> > > of work anyway, lest they cause RT throttling and starvation of other
-> > > threads.
-> >
-> > This gets complicated surprisingly quickly.  For but one example, you
-> > would find yourself wanting time-based boosting, most likely before you
-> > wanted boosting based on numbers of callbacks.  And it is all too easy
-> > to drive considerably complexity into the mix before proving that it is
-> > really needed.  Especially given how rare the need for RCU priority
-> > boosting is to begin with.
+> Rebooting in 2 seconds..
+> list_add double add: new=<addr1>, prev=<addr2>, next=<addr1>.
+> ------------[ cut here ]------------
+> kernel BUG at lib/list_debug.c:29!
+> invalid opcode: 0000 [#1] PREEMPT SMP PTI
 > 
-> I think this patch does not deal with or change the behavior of
-> dynamic priority boosting preempted RCU readers, but rather it makes
-> it such that the no-cb offload threads that execute the callbacks. So
-> I am not sure why you are talking about the boosting behavior of
-> preempted RCU readers? I was referring only to the nocb offload
-> kthreads which as I understand, Vlad *does not* want to run at RT
-> priority.
-
-OK.  Exactly what is the problem that you are trying to solve?  ;-)
-
-And yes, I fully understand that Uladzislau does not want to run the rcuo
-kthreads at RT priority, even in kernels built with CONFIG_RCU_BOOST=y.
-Which makes sense, given that he is looking to solve a very different
-problem than CONFIG_RCU_BOOST was designed to solve.  So adjustments must
-be made.  The discussion is the exact form of the next set of adjustments,
-which I expect to be quite straightforward.
-
-> > > Also, I think it is wrong to assume that a certain kind of system will
-> > > always have a certain number of callbacks to process at a time. That
-> > > seems prone to poor design due to assumptions which may not always be
-> > > true.
-> >
-> > Who was assuming that?  Uladzislau was measuring rather than assuming,
-> > if that was what you were getting at.  Or if you are thinking about
-> > things like qhimark, your point is exactly why there is both a default
-> > (which has worked quite well for a very long time) and the ability to
-> > adjust based on the needs of your specific system.
+> In order to reproduce the problem, users just need to set the kernel
+> parameter "crash_kexec_post_notifiers" *without* kdump set in any
+> system with the VMX feature present.
 > 
-> I was merely saying that based on measurements make assumptions, but
-> in the real world the assumption may not be true, then everything
-> falls apart. Instead I feel, callback threads should be RT only if 1.
-> As you mentioned, the time based thing. 2. If the CB list is long and
-> there's lot of processing. But instead, if it is made a CONFIG option,
-> then that forces a fixed behavior which may fall apart in the real
-> world. I think adding more CONFIGs and special cases is more complex
-> but that's my opinion.
-
-Again, exactly what problem are you trying to solve?
-
-From what I can see, Uladzislau's issue can be addressed by statically
-setting the rcuo kthreads to SCHED_OTHER at boot time.  The discussion
-is on exactly how RCU is to be informed of this, at kernel build time.
-
-> > > Can we not have 2 sets of RCU offload threads, one which operate at RT
-> > > and only process few callbacks at a time, while another which is the
-> > > lower priority CFS offload thread - executes whenever there is a lot
-> > > of CBs pending? Just a thought.
-> >
-> > How about if we start by solving the problems we know that we have?
+> Since there is no benefit in re-disabling VMX in all CPUs in case
+> it was already done, this patch prevents that by guarding the restart
+> routine against doubly issuing NMIs unnecessarily. Notice we still
+> need to disable VMX locally in the emergency restart.
 > 
-> I don't know why you would say that, because we are talking about
-> solving the specific problem Vlad's patch addresses, not random
-> problems. Which is that, Android wants to run expedited GPs, but when
-> the callback list is large, the RT nocb thread can starve other
-> things. Did I misunderstand the patch? If so, sorry about that but
-> that's what my email was discussing. i.e. running of CBs in RT
-> threads. I suck at writing well as I clearly miscommunicated.
-
-OK.
-
-Why do you believe that this needs anything other than small adjustments
-the defaults of existing Kconfig options?  Or am I completely missing
-the point of your proposal?
-
-> > > Otherwise, I feel like we might be again proliferating CONFIG options
-> > > and increasing burden on the user to get it the CONFIG right.
-> >
-> > I bet that we will solve this without adding any new Kconfig options.
-> > And I bet that the burden is at worst on the device designer, not on
-> > the user.  Plus it is entirely possible that there might be a way to
-> > automatically configure things to handle what we know about today,
-> > again without adding Kconfig options.
+> Fixes: ed72736183c4 ("x86/reboot: Force all cpus to exit VMX root if VMX is supported)
+> Fixes: 0ee59413c967 ("x86/panic: replace smp_send_stop() with kdump friendly version in panic path")
+> Cc: David P. Reed <dpreed@deepplum.com>
+> Cc: Hidehiro Kawai <hidehiro.kawai.ez@hitachi.com>
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Cc: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
+> ---
+>  arch/x86/include/asm/cpu.h |  1 +
+>  arch/x86/kernel/crash.c    |  8 ++++----
+>  arch/x86/kernel/reboot.c   | 14 ++++++++++++--
+>  3 files changed, 17 insertions(+), 6 deletions(-)
 > 
-> Yes, agreed.
 
-If I change my last sentence to read as follows, are we still in
-agreement?
+Hi Paolo / Sean / Vitaly, sorry for the ping.
+But do you think this fix is OK from the VMX point-of-view?
 
-	Plus it is entirely possible that there might be a way to
-	automatically configure things to handle what we know about today,
-	again without adding Kconfig options and without changing runtime
-	code beyond that covered by Uladzislau's patch.
+I'd like to send a V2 of this set soon, so any review here is highly
+appreciated!
 
-							Thanx, Paul
+Cheers,
+
+
+Guilherme
+
