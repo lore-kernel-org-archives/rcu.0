@@ -2,54 +2,114 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 18425C433FE
-	for <rcu@archiver.kernel.org>; Mon,  9 May 2022 15:58:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 18158C4167B
+	for <rcu@archiver.kernel.org>; Mon,  9 May 2022 16:15:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238724AbiEIQCt (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 9 May 2022 12:02:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42850 "EHLO
+        id S238930AbiEIQTI (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 9 May 2022 12:19:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238713AbiEIQCs (ORCPT <rfc822;rcu@vger>);
-        Mon, 9 May 2022 12:02:48 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A19482D9EE0
-        for <rcu@vger.kernel.org>; Mon,  9 May 2022 08:58:54 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3CEEF612C6
-        for <rcu@vger.kernel.org>; Mon,  9 May 2022 15:58:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98CEFC385AE;
-        Mon,  9 May 2022 15:58:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1652111933;
-        bh=x9jqIZC8Aqtho5Apy6mOXFG0+9Jy0mtp/WTd7h3Ez08=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=hV9CwUphjyGC89R2VyVXyDVFbvPWSYUbLArfVOSrIRpVdmNVEQaw6ofLd/nKLk4Kk
-         uqP2eIc6AdTBeBdzCS65EDHr/eexkHthfCwV7RRJfxlUUhfU3cSI+SiPBn3dx1ZepB
-         scRT2hRMayjhoKnGNl2b47XWnW6dLTZzWasswE2Ht+Ptx2B8WAtNbvLwX/5B4k55Lt
-         jOdQ8TC5CW6hYeToRTtaWpDoxQi1GwmDVzAq9pk8lJ209Q5ZZdH6mU9uXzuzpyT2BL
-         7Ef/R3HmcQAgSlkz8o8uPaX7qGlBVLyrVyY05zms/n4hpNsxFiVhGExfUmj7mIl5TS
-         3NX/8gY4CsFaw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 2ABBF5C00B8; Mon,  9 May 2022 08:58:53 -0700 (PDT)
-Date:   Mon, 9 May 2022 08:58:53 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     joel@joelfernandes.org
-Cc:     rcu@vger.kernel.org, kernel.org@paulmck-ThinkPad-P17-Gen-1
-Subject: tools/rcu
-Message-ID: <20220509155853.GA94897@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        with ESMTP id S238901AbiEIQTF (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 9 May 2022 12:19:05 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5571527A8A0;
+        Mon,  9 May 2022 09:15:09 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DF6E2153B;
+        Mon,  9 May 2022 09:15:08 -0700 (PDT)
+Received: from [10.57.1.248] (unknown [10.57.1.248])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 15C183F73D;
+        Mon,  9 May 2022 09:14:59 -0700 (PDT)
+Message-ID: <d9ec6f31-6125-0723-b7d7-5898abeb3289@arm.com>
+Date:   Mon, 9 May 2022 17:14:58 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.8.1
+Subject: Re: [PATCH 09/30] coresight: cpu-debug: Replace mutex with
+ mutex_trylock on panic notifier
+To:     "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        akpm@linux-foundation.org, bhe@redhat.com, pmladek@suse.com,
+        kexec@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com, coresight@lists.linaro.org,
+        linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
+        netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net,
+        rcu@vger.kernel.org, sparclinux@vger.kernel.org,
+        xen-devel@lists.xenproject.org, x86@kernel.org,
+        kernel-dev@igalia.com, kernel@gpiccoli.net, halves@canonical.com,
+        fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com,
+        andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de,
+        corbet@lwn.net, d.hatayama@jp.fujitsu.com,
+        dave.hansen@linux.intel.com, dyoung@redhat.com,
+        feng.tang@intel.com, gregkh@linuxfoundation.org,
+        mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com,
+        jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org,
+        luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com,
+        paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org,
+        senozhatsky@chromium.org, stern@rowland.harvard.edu,
+        tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com,
+        will@kernel.org, Leo Yan <leo.yan@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mike Leach <mike.leach@linaro.org>
+References: <20220427224924.592546-1-gpiccoli@igalia.com>
+ <20220427224924.592546-10-gpiccoli@igalia.com>
+ <3cafe4fd-8a0b-2633-44a3-2995abd6c38c@arm.com>
+ <65f24bc5-2211-0139-ee12-b2608e81ceb1@igalia.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <65f24bc5-2211-0139-ee12-b2608e81ceb1@igalia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello, Joel!
+Hi
 
-Just following up from your tweet.  There is a tools/rcu that is likely
-to be the best place for scripts and tools that monitory RCU.
+On 09/05/2022 14:09, Guilherme G. Piccoli wrote:
+> On 28/04/2022 05:11, Suzuki K Poulose wrote:
+>> Hi Guilherme,
+>>
+>> On 27/04/2022 23:49, Guilherme G. Piccoli wrote:
+>>> The panic notifier infrastructure executes registered callbacks when
+>>> a panic event happens - such callbacks are executed in atomic context,
+>>> with interrupts and preemption disabled in the running CPU and all other
+>>> CPUs disabled. That said, mutexes in such context are not a good idea.
+>>>
+>>> This patch replaces a regular mutex with a mutex_trylock safer approach;
+>>> given the nature of the mutex used in the driver, it should be pretty
+>>> uncommon being unable to acquire such mutex in the panic path, hence
+>>> no functional change should be observed (and if it is, that would be
+>>> likely a deadlock with the regular mutex).
+>>>
+>>> Fixes: 2227b7c74634 ("coresight: add support for CPU debug module")
+>>> Cc: Leo Yan <leo.yan@linaro.org>
+>>> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+>>> Cc: Mike Leach <mike.leach@linaro.org>
+>>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+>>> Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
+>>
+>> How would you like to proceed with queuing this ? I am happy
+>> either way. In case you plan to push this as part of this
+>> series (I don't see any potential conflicts) :
+>>
+>> Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> 
+> Hi Suzuki, some other maintainers are taking the patches to their next
+> branches for example. I'm working on V2, and I guess in the end would be
+> nice to reduce the size of the series a bit.
+> 
+> So, do you think you could pick this one for your coresight/next branch
+> (or even for rc cycle, your call - this is really a fix)?
+> This way, I won't re-submit this one in V2, since it's gonna be merged
+> already in your branch.
 
-						Thanx, Paul
+I have queued this to coresight/next.
+
+Thanks
+Suzuki
