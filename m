@@ -2,103 +2,121 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 12F3FC433F5
-	for <rcu@archiver.kernel.org>; Tue, 10 May 2022 15:04:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B7FEAC4167B
+	for <rcu@archiver.kernel.org>; Tue, 10 May 2022 15:24:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345389AbiEJPIt (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 10 May 2022 11:08:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36090 "EHLO
+        id S1345721AbiEJP14 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 10 May 2022 11:27:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345388AbiEJPIL (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 10 May 2022 11:08:11 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71421333A0C;
-        Tue, 10 May 2022 07:35:18 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id m23so21087794ljb.8;
-        Tue, 10 May 2022 07:35:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=oUxNnzxeWS42GKKHFrqdYfWBClbSmeNzMOcA2uOdYns=;
-        b=or7L+YkFy0jn81BAj3NsTsqLmC7tBycQnmVbSrU9snb3UD68EQG6NKsxs3vU8FKCqa
-         ywQBLa1pZCqNjbNnO2qKjnc3aNjokGX0c8DLzGLe3HkSiMrX2K/SSd8bgcgQDbJEXajb
-         CtoZXzu+zKVM1j4+ZBzstV0zR1SP49ztnad6T+AP+UMVOFfkG2v8oz7Td1TMqvts2fEt
-         3x9XvXpFL/M89hGECik9dEpKb6LfXEtx1tMz2URZlnruE8TxQZRYmonvrtSj2eAVCFX5
-         cIsLl3oaZoYmqQuDXbhAZBWnZJ8bO0B3TfcC4mO7Oy7eiPgsyUFdlYgvJGMimGkrRMXR
-         B5CQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oUxNnzxeWS42GKKHFrqdYfWBClbSmeNzMOcA2uOdYns=;
-        b=j9z1VFHavAJd3sMJ396n4CpQ6je/CC0JTaL6/7EMzal/8+LZcBRsUXGpCUczVG9V1+
-         b6/TR6rGTkxOUEOzE5ZL3jAzwwxXjj0UAVyxXdmiLAVw9idrALK7E6AV+hY+t5wqqrZs
-         uwYPSsYKCDnTJ99gemswZ6AuiesjiU3hhFvlzw+ilfas0QDubzPXbnWuaoQZvP2IdDBo
-         /MCReLWw1+JZ+pD40zdUdFB3Z1/C6QcPUfvcISl5hKkq74HYII3TESIbv0EkZozdwOj6
-         AEscu3G3QwJS/Cmal9e7Epj6AV5a/fd1b2nV9YKRQJQCF3Y8tUumG7Q+HNHxR+xVGAze
-         UMyw==
-X-Gm-Message-State: AOAM533tZ9Vvd0Oz3lcbNNv0HndLLISVykgAQeBaDt5x+EFsG0dzq4wO
-        44k+GFfCTTa9+wweQZ+4EoI=
-X-Google-Smtp-Source: ABdhPJyahnJbmaPkCTl51TlHaGj8SgPFVhNw5Uppycx3cChCnwy+YzI6FIrEQtDT+vWc+gh3KOKh+A==
-X-Received: by 2002:a2e:9b57:0:b0:24f:12ea:fd26 with SMTP id o23-20020a2e9b57000000b0024f12eafd26mr13705191ljj.352.1652193316653;
-        Tue, 10 May 2022 07:35:16 -0700 (PDT)
-Received: from pc638.lan ([155.137.26.201])
-        by smtp.gmail.com with ESMTPSA id m1-20020a2ea881000000b0024f3d1daef1sm2161360ljq.121.2022.05.10.07.35.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 May 2022 07:35:15 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Tue, 10 May 2022 16:35:13 +0200
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Alison Chaiken <achaiken@aurora.tech>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: Re: [PATCH] rcu/nocb: Add an option to ON/OFF an offloading from RT
- context
-Message-ID: <Ynp4Ifd5q2RLFyxt@pc638.lan>
-References: <20220507223247.GK1790663@paulmck-ThinkPad-P17-Gen-1>
- <CAEXW_YSyYRSRQwfMTJU1dowMaxrj6Daa17-BMx4syoPV05bZFg@mail.gmail.com>
- <20220508213222.GL1790663@paulmck-ThinkPad-P17-Gen-1>
- <CAEXW_YQ9t8gxp9cKCpba+e4NZ6ohPr8jHxJYuqRBFRtvSDa0Lw@mail.gmail.com>
- <20220509033740.GM1790663@paulmck-ThinkPad-P17-Gen-1>
- <CAEXW_YSbWetMt2_-m4G9Nt5S8ybATihB+5FMJMMo3jKDG4pPjg@mail.gmail.com>
- <20220509181417.GO1790663@paulmck-ThinkPad-P17-Gen-1>
- <YnldSkaWu40cVimj@pc638.lan>
- <20220509183934.GQ1790663@paulmck-ThinkPad-P17-Gen-1>
- <20220510100946.5fdff700@gandalf.local.home>
+        with ESMTP id S1345835AbiEJP1P (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 10 May 2022 11:27:15 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA6F05A5AA;
+        Tue, 10 May 2022 08:16:08 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 88F0D21BB9;
+        Tue, 10 May 2022 15:16:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1652195767; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OZqtmv8UjkqRBSiOYZ6ar9KDyJT6hDNxXl9SSULCXTQ=;
+        b=fGhdvJlPt//dq0KQAtVijfj/ESEJ/OC2EKpevE2XN9mzQ9A1L9iCAxeXNQ+pUyb1Mv1UlE
+        HCruB1nKt1ZaJRQk1txzbCvkQt9XnVOQap2jC6oxObMWliWuUvAfiBCulbtCmC4sio8+xa
+        +ZqWsGMsijF1KXpHWJf4ANyjUo2sNOU=
+Received: from suse.cz (unknown [10.100.208.146])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 2901B2C141;
+        Tue, 10 May 2022 15:16:06 +0000 (UTC)
+Date:   Tue, 10 May 2022 17:16:01 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+Cc:     akpm@linux-foundation.org, bhe@redhat.com,
+        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com, coresight@lists.linaro.org,
+        linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
+        netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net,
+        rcu@vger.kernel.org, sparclinux@vger.kernel.org,
+        xen-devel@lists.xenproject.org, x86@kernel.org,
+        kernel-dev@igalia.com, kernel@gpiccoli.net, halves@canonical.com,
+        fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com,
+        andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de,
+        corbet@lwn.net, d.hatayama@jp.fujitsu.com,
+        dave.hansen@linux.intel.com, dyoung@redhat.com,
+        feng.tang@intel.com, gregkh@linuxfoundation.org,
+        mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com,
+        jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org,
+        luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com,
+        paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org,
+        senozhatsky@chromium.org, stern@rowland.harvard.edu,
+        tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com,
+        will@kernel.org
+Subject: Re: [PATCH 14/30] panic: Properly identify the panic event to the
+ notifiers' callbacks
+Message-ID: <YnqBsXBImU64PAOL@alley>
+References: <20220427224924.592546-1-gpiccoli@igalia.com>
+ <20220427224924.592546-15-gpiccoli@igalia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220510100946.5fdff700@gandalf.local.home>
+In-Reply-To: <20220427224924.592546-15-gpiccoli@igalia.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, May 10, 2022 at 10:09:46AM -0400, Steven Rostedt wrote:
-> On Mon, 9 May 2022 11:39:34 -0700
-> "Paul E. McKenney" <paulmck@kernel.org> wrote:
+On Wed 2022-04-27 19:49:08, Guilherme G. Piccoli wrote:
+> The notifiers infrastructure provides a way to pass an "id" to the
+> callbacks to determine what kind of event happened, i.e., what is
+> the reason behind they getting called.
 > 
-> > This allows your current RCU_NOCB_CPU_CB_BOOST with something like
-> > this in place of the "default n":
-> > 
-> > 	default y if PREEMPT_RT
-> > 	default n if !PREEMPT_RT
+> The panic notifier currently pass 0, but this is soon to be
+> used in a multi-targeted notifier, so let's pass a meaningful
+> "id" over there.
+>
+> Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
+> ---
+>  include/linux/panic_notifier.h | 5 +++++
+>  kernel/panic.c                 | 2 +-
+>  2 files changed, 6 insertions(+), 1 deletion(-)
 > 
-> BTW, I don't think you need the !PREEMPT_RT, because all configs are
-> 'n' by  default. That is:
-> 
-> 	default y if PREEMPT_RT
-> 
-> should be good enough.
-> 
-Thank you! This is what i have in the next v2 :)
+> diff --git a/include/linux/panic_notifier.h b/include/linux/panic_notifier.h
+> index 41e32483d7a7..07dced83a783 100644
+> --- a/include/linux/panic_notifier.h
+> +++ b/include/linux/panic_notifier.h
+> @@ -9,4 +9,9 @@ extern struct atomic_notifier_head panic_notifier_list;
+>  
+>  extern bool crash_kexec_post_notifiers;
+>  
+> +enum panic_notifier_val {
+> +	PANIC_UNUSED,
+> +	PANIC_NOTIFIER = 0xDEAD,
+> +};
 
---
-Uladzislau Rezki
+Hmm, this looks like a hack. PANIC_UNUSED will never be used.
+All notifiers will be always called with PANIC_NOTIFIER.
+
+The @val parameter is normally used when the same notifier_list
+is used in different situations.
+
+But you are going to use it when the same notifier is used
+in more lists. This is normally distinguished by the @nh
+(atomic_notifier_head) parameter.
+
+IMHO, it is a bad idea. First, it would confuse people because
+it does not follow the original design of the parameters.
+Second, the related code must be touched anyway when
+the notifier is moved into another list so it does not
+help much.
+
+Or do I miss anything, please?
+
+Best Regards,
+Petr
