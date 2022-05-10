@@ -2,103 +2,90 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BDC8EC4321E
-	for <rcu@archiver.kernel.org>; Tue, 10 May 2022 14:51:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B3CDFC433FE
+	for <rcu@archiver.kernel.org>; Tue, 10 May 2022 14:57:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244059AbiEJOzy (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 10 May 2022 10:55:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45726 "EHLO
+        id S1344835AbiEJPBh (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 10 May 2022 11:01:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344797AbiEJOzl (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 10 May 2022 10:55:41 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C9C71A06C;
-        Tue, 10 May 2022 07:16:12 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 932E91F8C6;
-        Tue, 10 May 2022 14:16:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1652192171; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=A8/NZJeBAhTKLHLb3PoAvlXD/AvbEgaBaR5HXaRNdkM=;
-        b=BeTzacf3mS4VoGHK6i1jVn2p93FIleajbiX/lqLZYQzEPT5BuEThdtby46ST2AJUboj/I/
-        VqEG9r83Q4xijGW9lCE2hweKm6E7raa+vKstZ+w2OtTvG5P31Un3HT5rf7nvpJdK7CHBFy
-        VZPQPYk1mnBdJ3vUcDiFbXkwBcjlkRU=
-Received: from suse.cz (unknown [10.100.208.146])
+        with ESMTP id S1345495AbiEJPBN (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 10 May 2022 11:01:13 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3097A2BE532;
+        Tue, 10 May 2022 07:24:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 01C5F2C141;
-        Tue, 10 May 2022 14:16:09 +0000 (UTC)
-Date:   Tue, 10 May 2022 16:16:06 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-Cc:     Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>, rth@gcc.gnu.org,
-        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org,
-        bhe@redhat.com, kexec@lists.infradead.org,
-        linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-leds@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-um@lists.infradead.org,
-        linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org,
-        openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org,
-        sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org,
-        x86@kernel.org, kernel-dev@igalia.com, kernel@gpiccoli.net,
-        halves@canonical.com, fabiomirmar@gmail.com,
-        alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com,
-        arnd@arndb.de, bp@alien8.de, corbet@lwn.net,
-        d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com,
-        dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org,
-        mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com,
-        jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org,
-        luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com,
-        paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org,
-        senozhatsky@chromium.org, stern@rowland.harvard.edu,
-        tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com,
-        will@kernel.org
-Subject: Re: [PATCH 10/30] alpha: Clean-up the panic notifier code
-Message-ID: <YnpzpkfuwzJYbPYj@alley>
-References: <20220427224924.592546-1-gpiccoli@igalia.com>
- <20220427224924.592546-11-gpiccoli@igalia.com>
- <f6def662-5742-b3a8-544f-bf15c636d83d@igalia.com>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id F170A6178F;
+        Tue, 10 May 2022 14:24:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D559C385A6;
+        Tue, 10 May 2022 14:24:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1652192657;
+        bh=Pc46AuG13t873MQN9JMMXmwCqYFzgX3gktX+Clx2xJ0=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=SgRYJI5+Fy88ZZRFej4EMh0HZBYJwKDdgfnTD7JllCWtmfJG++8Qg6D1kkBXms5Dr
+         HCzm1pcepruOinNgMjLnEkqvH03MHvjRYds9S63IhpB6BopivPO9A9ZCu+j0h4DidW
+         pMohA3xAwQTj9WL+tuvKJp6uaASmRDEF+vOfJ1yla+KV68bzlcbz5LYfLtHrh+b7u+
+         vE35wr2N1sSiYYi3wWerICw5+fmA52qHEJ7YQhSvv2aoqaHbZxclXpLgPd83JytVqf
+         DkHBTNBCPiu1qdWhark0xD/yvhCQFh/gXKmQI0ejvkE4bHb2H1MRvSwIjw40Elrpst
+         i0WCtlJdzdoJQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id E425A5C0602; Tue, 10 May 2022 07:24:16 -0700 (PDT)
+Date:   Tue, 10 May 2022 07:24:16 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Alison Chaiken <achaiken@aurora.tech>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH] rcu/nocb: Add an option to ON/OFF an offloading from RT
+ context
+Message-ID: <20220510142416.GR1790663@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20220507223247.GK1790663@paulmck-ThinkPad-P17-Gen-1>
+ <CAEXW_YSyYRSRQwfMTJU1dowMaxrj6Daa17-BMx4syoPV05bZFg@mail.gmail.com>
+ <20220508213222.GL1790663@paulmck-ThinkPad-P17-Gen-1>
+ <CAEXW_YQ9t8gxp9cKCpba+e4NZ6ohPr8jHxJYuqRBFRtvSDa0Lw@mail.gmail.com>
+ <20220509033740.GM1790663@paulmck-ThinkPad-P17-Gen-1>
+ <CAEXW_YSbWetMt2_-m4G9Nt5S8ybATihB+5FMJMMo3jKDG4pPjg@mail.gmail.com>
+ <20220509181417.GO1790663@paulmck-ThinkPad-P17-Gen-1>
+ <YnldSkaWu40cVimj@pc638.lan>
+ <20220509183934.GQ1790663@paulmck-ThinkPad-P17-Gen-1>
+ <20220510100946.5fdff700@gandalf.local.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f6def662-5742-b3a8-544f-bf15c636d83d@igalia.com>
+In-Reply-To: <20220510100946.5fdff700@gandalf.local.home>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon 2022-05-09 11:13:17, Guilherme G. Piccoli wrote:
-> On 27/04/2022 19:49, Guilherme G. Piccoli wrote:
-> > The alpha panic notifier has some code issues, not following
-> > the conventions of other notifiers. Also, it might halt the
-> > machine but still it is set to run as early as possible, which
-> > doesn't seem to be a good idea.
+On Tue, May 10, 2022 at 10:09:46AM -0400, Steven Rostedt wrote:
+> On Mon, 9 May 2022 11:39:34 -0700
+> "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> 
+> > This allows your current RCU_NOCB_CPU_CB_BOOST with something like
+> > this in place of the "default n":
+> > 
+> > 	default y if PREEMPT_RT
+> > 	default n if !PREEMPT_RT
+> 
+> BTW, I don't think you need the !PREEMPT_RT, because all configs are
+> 'n' by  default. That is:
+> 
+> 	default y if PREEMPT_RT
+> 
+> should be good enough.
 
-Yeah, it is pretty strange behavior.
+Good point, thank you!
 
-I looked into the history. This notifier was added into the alpha code
-in 2.4.0-test2pre2. In this historic code, the default panic() code
-either rebooted after a timeout or ended in a infinite loop. There
-was not crasdump at that times.
+That said, there is a lot of "default n" in a lot of Kconfig files.
+And I am OK making this explicit.  So Uladzislau's choice.  ;-)
 
-The notifier allowed to change the behavior. There were 3 notifiers:
-
-   + mips and mips64 ended with blinking in panic()
-   + alpha did __halt() in this srm case
-
-They both still do this. I guess that it is some historic behavior
-that people using these architectures are used to.
-
-Anyway, it makes sense to do this as the last notifier after
-dumping other information.
-
-Reviewed-by: Petr Mladek <pmladek@suse.com>
-
-Best Regards,
-Petr
+							Thanx, Paul
