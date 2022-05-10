@@ -2,153 +2,121 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A08EDC433EF
-	for <rcu@archiver.kernel.org>; Tue, 10 May 2022 13:04:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 85B8CC433FE
+	for <rcu@archiver.kernel.org>; Tue, 10 May 2022 13:19:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242219AbiEJNIu (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 10 May 2022 09:08:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36458 "EHLO
+        id S242725AbiEJNW2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 10 May 2022 09:22:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233776AbiEJNIr (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 10 May 2022 09:08:47 -0400
-Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21A17281368;
-        Tue, 10 May 2022 06:04:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-        s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=ERCDIneY1Q4o8JFrn6huil0jOKhd5NF1nm9+poeBUGY=; b=C1bwe/Dp28hHJCcth6j9FIvLRX
-        pDXbwTw3GNkAuVoDVZ2t1Ig0Ha8VAgFyN1qfYHmoUYQVyDRHd7IRdBkOHux1OzR9Q7hmNC/ZbkDNy
-        i9N1ZP1KkXJYzqp8Xch5cykWJAl8GjhN23tq785F2kRMcqVY6TftmyHyPJZTtkL8PDJb7GYsR63+v
-        CyHpUemygecHOqy6UnkI5sacYa9DSfBokIBgO1vbgxAO3Lo/ZpYDMcX65a4mJHituF1N7bEMHTqnl
-        wjibh2hSmhpgeMzHripimwe7gT4RuGZfcia5HzNoWvLT/w9CiRN4l1p9e5qQ/+lp5TdT6UNVMzl77
-        9RtLUAvA==;
-Received: from [177.183.162.244] (helo=[192.168.0.5])
-        by fanzine2.igalia.com with esmtpsa 
-        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-        id 1noPXc-0005Ct-K8; Tue, 10 May 2022 15:04:40 +0200
-Message-ID: <c23f408f-d030-b599-19b4-8561d511ef73@igalia.com>
-Date:   Tue, 10 May 2022 10:04:08 -0300
+        with ESMTP id S243390AbiEJNVu (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 10 May 2022 09:21:50 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3047B4B436;
+        Tue, 10 May 2022 06:16:00 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id bv19so32893249ejb.6;
+        Tue, 10 May 2022 06:16:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IAUYLfqUIj6E6rVxVYSr8ar5yxzTVRlspTjstUVMSqg=;
+        b=Kju8Nya5/XzIqQPFDQl+lLN/vdxQvO8nw82I6Cr/P2t0lP1LxewlPMEkZl50gU+NJx
+         EVHiqlLW/afmurs5qFfVPvnIEbSamovPXxVy6QO8HS2lbg+PPVOgVESFRsRZK1cvlsem
+         fLM1e3Se75/O5VRz4JCIjzojI3Ae2HKrotoKEWB9jd58QIh+jz7WPvneEyC1YHwq/u++
+         pLTv93QgcMBO89LBbL6+xHNlmBiCylB6haSMfnPxOhOXPi/QikKvYe4sARppoGu7t2LD
+         4gLlQhCX6KCgyQDYd0zTU0OUtZXPe71q9H2xiWbn7m2ypLQCgtQVyXxFUicUyHPIoIiA
+         L35Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IAUYLfqUIj6E6rVxVYSr8ar5yxzTVRlspTjstUVMSqg=;
+        b=JyU+pRWJmJ+PYaJIw16c7frLyCDsUJCf72qwwqlHyVCBn2E+ieNzpKH3R2kDwXb5zQ
+         WyF6j+XiHfjfvr2pjj9U6afGWzGm720mIhtOX4gtmJOvMugtxPvuWf0xH71mnq8uatVi
+         bmdzD/dT0dcxYXRDL04WVDnDjziCM8a0hyzULI8QHdKR5dytbW7FGyfaQS/kyi8gR6Cj
+         0E4DRVLpwA0UDj4P1jMX5ZLIpxrEfAzboHM/O1jctBxWBY0/pgHl+QEGiSwgFCDvcHGw
+         23hgLfCtVdpHCv91PGX6Ty5OLcVizsRh7x6l8/ST/nwL4GLwSBje2Amxn0UyGh0zxYjA
+         mpXg==
+X-Gm-Message-State: AOAM532JSPqujPEwchNiCSE6OOP80UqeeXl2UWIvCUDcgUgv1y6D8WEK
+        Ps+yq2KqxJvtVuwauVDHGxclZhMreBGPoya8Izw=
+X-Google-Smtp-Source: ABdhPJz5LNJY8GWY1rPBqNXs5mgGPNUJ7IWDbR7vrbqymeXQ+f5NfjaRqg3kCUCDIP5W7agINa98ubQ7lfZODUF1mn0=
+X-Received: by 2002:a17:906:c284:b0:6f4:dcc3:7939 with SMTP id
+ r4-20020a170906c28400b006f4dcc37939mr18980434ejz.444.1652188554545; Tue, 10
+ May 2022 06:15:54 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.1
-Subject: Re: [PATCH 04/30] firmware: google: Convert regular spinlock into
- trylock on panic path
-Content-Language: en-US
-To:     Petr Mladek <pmladek@suse.com>, Evan Green <evgreen@chromium.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, bhe@redhat.com,
-        kexec@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org,
-        linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-leds@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, Linux PM <linux-pm@vger.kernel.org>,
-        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-um@lists.infradead.org,
-        linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org,
-        openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org,
-        sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org,
-        x86@kernel.org, kernel-dev@igalia.com, kernel@gpiccoli.net,
-        halves@canonical.com, fabiomirmar@gmail.com,
-        alejandro.j.jimenez@oracle.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Jonathan Corbet <corbet@lwn.net>, d.hatayama@jp.fujitsu.com,
-        dave.hansen@linux.intel.com, dyoung@redhat.com,
-        feng.tang@intel.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com,
-        jgross@suse.com, john.ogness@linutronix.de,
-        Kees Cook <keescook@chromium.org>, luto@kernel.org,
-        mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org,
-        peterz@infradead.org, rostedt@goodmis.org,
-        senozhatsky@chromium.org, Alan Stern <stern@rowland.harvard.edu>,
-        Thomas Gleixner <tglx@linutronix.de>, vgoyal@redhat.com,
-        vkuznets@redhat.com, Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        David Gow <davidgow@google.com>,
-        Julius Werner <jwerner@chromium.org>
-References: <20220427224924.592546-1-gpiccoli@igalia.com>
- <20220427224924.592546-5-gpiccoli@igalia.com>
- <CAE=gft5Pq25L4KFoPWbftkPF-JN1ex2yws77mMJ4GQnn9W0L2g@mail.gmail.com>
- <adcf6d0e-c37c-6ede-479e-29959d03d8c0@igalia.com> <YnpOv4hAPV4b+6v4@alley>
-From:   "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-In-Reply-To: <YnpOv4hAPV4b+6v4@alley>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20220503191709.155266-1-urezki@gmail.com> <YnpIpYgD7W4q+Nwj@kroah.com>
+In-Reply-To: <YnpIpYgD7W4q+Nwj@kroah.com>
+From:   Uladzislau Rezki <urezki@gmail.com>
+Date:   Tue, 10 May 2022 15:15:43 +0200
+Message-ID: <CA+KHdyXGoWfyXvwqYAqhwks36RUJhBztVov10nA0qi8Lnc1FtA@mail.gmail.com>
+Subject: Re: [PATCH 0/2] RCU offloading vs scheduler latency(for 5.15 stable)
+To:     Greg KH <greg@kroah.com>
+Cc:     stable@vger.kernel.org, RCU <rcu@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 10/05/2022 08:38, Petr Mladek wrote:
-> [...]
-> I see two more alternative solutions:
-> 
-> 1st variant is a trick already used in console write() callbacks.
-> They do trylock() when oops_in_progress is set. They remember
-> the result to prevent double unlock when printing Oops messages and
-> the system will try to continue working. For example:
-> 
-> pl011_console_write(struct console *co, const char *s, unsigned int count)
-> {
-> [...]
-> 	int locked = 1;
-> [...]
-> 	if (uap->port.sysrq)
-> 		locked = 0;
-> 	else if (oops_in_progress)
-> 		locked = spin_trylock(&uap->port.lock);
-> 	else
-> 		spin_lock(&uap->port.lock);
-> 
-> [...]
-> 
-> 	if (locked)
-> 		spin_unlock(&uap->port.lock);
-> }
-> 
-> 
-> 2nd variant is to check panic_cpu variable. It is used in printk.c.
-> We might move the function to panic.h:
-> 
-> static bool panic_in_progress(void)
-> {
-> 	return unlikely(atomic_read(&panic_cpu) != PANIC_CPU_INVALID);
-> }
-> 
-> and then do:
-> 
-> 	if (panic_in_progress()) {
-> 		...
+Thank you!
 
-Thanks for the review Petr! I feel alternative two is way better, it
-checks for panic - the oops_in_progress isn't really enough, since we
-can call panic() directly, not necessarily through an oops path, correct?
-
-For me, we could stick with the lock check, but I'll defer to Evan - I
-didn't work the V2 patch yet, what do you prefer Evan?
-
-
-> [...]
-> As already mentioned in the other reply, panic() sometimes stops
-> the other CPUs using NMI, for example, see kdump_nmi_shootdown_cpus().
-> 
-> Another situation is when the CPU using the lock ends in some
-> infinite loop because something went wrong. The system is in
-> an unpredictable state during panic().
-> 
-> I am not sure if this is possible with the code under gsmi_dev.lock
-> but such things really happen during panic() in other subsystems.
-> Using trylock in the panic() code path is a good practice.
-> 
-> Best Regards,
-> Petr
-
-Makes total sense, thanks for confirming!
-Cheers,
+On Tue, May 10, 2022 at 1:12 PM Greg KH <greg@kroah.com> wrote:
+>
+> On Tue, May 03, 2022 at 09:17:07PM +0200, Uladzislau Rezki (Sony) wrote:
+> > Motivation of backport:
+> > -----------------------
+> >
+> > 1. The cfcdef5e30469 ("rcu: Allow rcu_do_batch() to dynamically adjust batch sizes")
+> > broke the default behaviour of "offloading rcu callbacks" setup. In that scenario
+> > after each callback the caller context was used to check if it has to be rescheduled
+> > giving a CPU time for others. After that change an "offloaded" setup can switch to
+> > time-based RCU callbacks processing, what can be long for latency sensitive workloads
+> > and SCHED_FIFO processes, i.e. callbacks are invoked for a long time with keeping
+> > preemption off and without checking cond_resched().
+> >
+> > 2. Our devices which run Android and 5.10 kernel have some critical areas which
+> > are sensitive to latency. It is a low latency audio, 8k video, UI stack and so on.
+> > For example below is a trace that illustrates a delay of "irq/396-5-0072" RT task
+> > to complete IRQ processing:
+> >
+> > <snip>
+> >   rcuop/6-54  [000] d.h2  183.752989: irq_handler_entry:    irq=85 name=i2c_geni
+> >   rcuop/6-54  [000] d.h5  183.753007: sched_waking:         comm=irq/396-5-0072 pid=12675 prio=49 target_cpu=000
+> >   rcuop/6-54  [000] dNh6  183.753014: sched_wakeup:         irq/396-5-0072:12675 [49] success=1 CPU:000
+> >   rcuop/6-54  [000] dNh2  183.753015: irq_handler_exit:     irq=85 ret=handled
+> >   rcuop/6-54  [000] .N..  183.753018: rcu_invoke_callback:  rcu_preempt rhp=0xffffff88ffd440b0 func=__d_free.cfi_jt
+> >   rcuop/6-54  [000] .N..  183.753020: rcu_invoke_callback:  rcu_preempt rhp=0xffffff892ffd8400 func=inode_free_by_rcu.cfi_jt
+> >   rcuop/6-54  [000] .N..  183.753021: rcu_invoke_callback:  rcu_preempt rhp=0xffffff89327cd708 func=i_callback.cfi_jt
+> >   ...
+> >   rcuop/6-54  [000] .N..  183.755941: rcu_invoke_callback:  rcu_preempt rhp=0xffffff8993c5a968 func=i_callback.cfi_jt
+> >   rcuop/6-54  [000] .N..  183.755942: rcu_invoke_callback:  rcu_preempt rhp=0xffffff8993c4bd20 func=__d_free.cfi_jt
+> >   rcuop/6-54  [000] dN..  183.755944: rcu_batch_end:        rcu_preempt CBs-invoked=2112 idle=>c<>c<>c<>c<
+> >   rcuop/6-54  [000] dN..  183.755946: rcu_utilization:      Start context switch
+> >   rcuop/6-54  [000] dN..  183.755946: rcu_utilization:      End context switch
+> >   rcuop/6-54  [000] d..2  183.755959: sched_switch:         rcuop/6:54 [120] R ==> migration/0:16 [0]
+> >   ...
+> >   migratio-16 [000] d..2  183.756021: sched_switch:         migration/0:16 [0] S ==> irq/396-5-0072:12675 [49]
+> > <snip>
+> >
+> > The "irq/396-5-0072:12675" was delayed for ~3 milliseconds due to introduced side effect.
+> > Please note, on our Android devices we get ~70 000 callbacks registered to be invoked by
+> > the "rcuop/x" workers. This is during 1 seconds time interval and regular handset usage.
+> > Latencies bigger that 3 milliseconds affect our high-resolution audio streaming over the
+> > LDAC/Bluetooth stack.
+> >
+> > Two patches depend on each other.
+>
+> All now queued up, thanks.
+>
+> greg k-h
 
 
-Guilherme
+
+-- 
+Uladzislau Rezki
