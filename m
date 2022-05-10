@@ -2,103 +2,103 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 11F1FC433F5
-	for <rcu@archiver.kernel.org>; Tue, 10 May 2022 14:59:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 12F3FC433F5
+	for <rcu@archiver.kernel.org>; Tue, 10 May 2022 15:04:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345500AbiEJPDr (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 10 May 2022 11:03:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55346 "EHLO
+        id S1345389AbiEJPIt (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 10 May 2022 11:08:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345496AbiEJPDe (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 10 May 2022 11:03:34 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C51731361;
-        Tue, 10 May 2022 07:28:24 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 3A6AE1F896;
-        Tue, 10 May 2022 14:28:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1652192903; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5Vk/8pdLWJKvC1pkcnRQ/HwoU2ABECojPYTjSUx9JWI=;
-        b=qCuBe8399OKc/XhS2YM19THr9x0w+LK3v0+yrYrVMx1O5y8bO2nhr7ld/xwzdNWpoeMnQv
-        KDbf9vzeiGs4Zk4jc5/KyT1Cq3WiPlflRqYiR6m11RKyyC/hq4LcZ09p+y2XB4Mv583rFK
-        /mj4yXQtU5XfZ45MAwfj3oDOrq6/m9Q=
-Received: from suse.cz (unknown [10.100.208.146])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 344FF2C141;
-        Tue, 10 May 2022 14:28:22 +0000 (UTC)
-Date:   Tue, 10 May 2022 16:28:21 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-Cc:     akpm@linux-foundation.org, bhe@redhat.com,
-        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com, coresight@lists.linaro.org,
-        linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net,
-        rcu@vger.kernel.org, sparclinux@vger.kernel.org,
-        xen-devel@lists.xenproject.org, x86@kernel.org,
-        kernel-dev@igalia.com, kernel@gpiccoli.net, halves@canonical.com,
-        fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com,
-        andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de,
-        corbet@lwn.net, d.hatayama@jp.fujitsu.com,
-        dave.hansen@linux.intel.com, dyoung@redhat.com,
-        feng.tang@intel.com, gregkh@linuxfoundation.org,
-        mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com,
-        jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org,
-        luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com,
-        paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org,
-        senozhatsky@chromium.org, stern@rowland.harvard.edu,
-        tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com,
-        will@kernel.org, Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH 11/30] um: Improve panic notifiers consistency and
- ordering
-Message-ID: <Ynp2hRodh04K3pzK@alley>
-References: <20220427224924.592546-1-gpiccoli@igalia.com>
- <20220427224924.592546-12-gpiccoli@igalia.com>
+        with ESMTP id S1345388AbiEJPIL (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 10 May 2022 11:08:11 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71421333A0C;
+        Tue, 10 May 2022 07:35:18 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id m23so21087794ljb.8;
+        Tue, 10 May 2022 07:35:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=oUxNnzxeWS42GKKHFrqdYfWBClbSmeNzMOcA2uOdYns=;
+        b=or7L+YkFy0jn81BAj3NsTsqLmC7tBycQnmVbSrU9snb3UD68EQG6NKsxs3vU8FKCqa
+         ywQBLa1pZCqNjbNnO2qKjnc3aNjokGX0c8DLzGLe3HkSiMrX2K/SSd8bgcgQDbJEXajb
+         CtoZXzu+zKVM1j4+ZBzstV0zR1SP49ztnad6T+AP+UMVOFfkG2v8oz7Td1TMqvts2fEt
+         3x9XvXpFL/M89hGECik9dEpKb6LfXEtx1tMz2URZlnruE8TxQZRYmonvrtSj2eAVCFX5
+         cIsLl3oaZoYmqQuDXbhAZBWnZJ8bO0B3TfcC4mO7Oy7eiPgsyUFdlYgvJGMimGkrRMXR
+         B5CQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oUxNnzxeWS42GKKHFrqdYfWBClbSmeNzMOcA2uOdYns=;
+        b=j9z1VFHavAJd3sMJ396n4CpQ6je/CC0JTaL6/7EMzal/8+LZcBRsUXGpCUczVG9V1+
+         b6/TR6rGTkxOUEOzE5ZL3jAzwwxXjj0UAVyxXdmiLAVw9idrALK7E6AV+hY+t5wqqrZs
+         uwYPSsYKCDnTJ99gemswZ6AuiesjiU3hhFvlzw+ilfas0QDubzPXbnWuaoQZvP2IdDBo
+         /MCReLWw1+JZ+pD40zdUdFB3Z1/C6QcPUfvcISl5hKkq74HYII3TESIbv0EkZozdwOj6
+         AEscu3G3QwJS/Cmal9e7Epj6AV5a/fd1b2nV9YKRQJQCF3Y8tUumG7Q+HNHxR+xVGAze
+         UMyw==
+X-Gm-Message-State: AOAM533tZ9Vvd0Oz3lcbNNv0HndLLISVykgAQeBaDt5x+EFsG0dzq4wO
+        44k+GFfCTTa9+wweQZ+4EoI=
+X-Google-Smtp-Source: ABdhPJyahnJbmaPkCTl51TlHaGj8SgPFVhNw5Uppycx3cChCnwy+YzI6FIrEQtDT+vWc+gh3KOKh+A==
+X-Received: by 2002:a2e:9b57:0:b0:24f:12ea:fd26 with SMTP id o23-20020a2e9b57000000b0024f12eafd26mr13705191ljj.352.1652193316653;
+        Tue, 10 May 2022 07:35:16 -0700 (PDT)
+Received: from pc638.lan ([155.137.26.201])
+        by smtp.gmail.com with ESMTPSA id m1-20020a2ea881000000b0024f3d1daef1sm2161360ljq.121.2022.05.10.07.35.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 May 2022 07:35:15 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Tue, 10 May 2022 16:35:13 +0200
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Alison Chaiken <achaiken@aurora.tech>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH] rcu/nocb: Add an option to ON/OFF an offloading from RT
+ context
+Message-ID: <Ynp4Ifd5q2RLFyxt@pc638.lan>
+References: <20220507223247.GK1790663@paulmck-ThinkPad-P17-Gen-1>
+ <CAEXW_YSyYRSRQwfMTJU1dowMaxrj6Daa17-BMx4syoPV05bZFg@mail.gmail.com>
+ <20220508213222.GL1790663@paulmck-ThinkPad-P17-Gen-1>
+ <CAEXW_YQ9t8gxp9cKCpba+e4NZ6ohPr8jHxJYuqRBFRtvSDa0Lw@mail.gmail.com>
+ <20220509033740.GM1790663@paulmck-ThinkPad-P17-Gen-1>
+ <CAEXW_YSbWetMt2_-m4G9Nt5S8ybATihB+5FMJMMo3jKDG4pPjg@mail.gmail.com>
+ <20220509181417.GO1790663@paulmck-ThinkPad-P17-Gen-1>
+ <YnldSkaWu40cVimj@pc638.lan>
+ <20220509183934.GQ1790663@paulmck-ThinkPad-P17-Gen-1>
+ <20220510100946.5fdff700@gandalf.local.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220427224924.592546-12-gpiccoli@igalia.com>
+In-Reply-To: <20220510100946.5fdff700@gandalf.local.home>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed 2022-04-27 19:49:05, Guilherme G. Piccoli wrote:
-> Currently the panic notifiers from user mode linux don't follow
-> the convention for most of the other notifiers present in the
-> kernel (indentation, priority setting, numeric return).
-> More important, the priorities could be improved, since it's a
-> special case (userspace), hence we could run the notifiers earlier;
-> user mode linux shouldn't care much with other panic notifiers but
-> the ordering among the mconsole and arch notifier is important,
-> given that the arch one effectively triggers a core dump.
+On Tue, May 10, 2022 at 10:09:46AM -0400, Steven Rostedt wrote:
+> On Mon, 9 May 2022 11:39:34 -0700
+> "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> 
+> > This allows your current RCU_NOCB_CPU_CB_BOOST with something like
+> > this in place of the "default n":
+> > 
+> > 	default y if PREEMPT_RT
+> > 	default n if !PREEMPT_RT
+> 
+> BTW, I don't think you need the !PREEMPT_RT, because all configs are
+> 'n' by  default. That is:
+> 
+> 	default y if PREEMPT_RT
+> 
+> should be good enough.
+> 
+Thank you! This is what i have in the next v2 :)
 
-It is not clear to me why user mode linux should not care about
-the other notifiers. It might be because I do not know much
-about the user mode linux.
-
-Is the because they always create core dump or are never running
-in a hypervisor or ...?
-
-AFAIK, the notifiers do many different things. For example, there
-is a notifier that disables RCU watchdog, print some extra
-information. Why none of them make sense here?
-
-> This patch fixes that by running the mconsole notifier as the first
-> panic notifier, followed by the architecture one (that coredumps).
-> Also, we remove a useless header inclusion.
-
-
-Best Regards,
-Petr
+--
+Uladzislau Rezki
