@@ -2,153 +2,98 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 78B3EC433EF
-	for <rcu@archiver.kernel.org>; Mon,  9 May 2022 20:58:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 78981C433EF
+	for <rcu@archiver.kernel.org>; Tue, 10 May 2022 03:07:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229799AbiEIVCM (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 9 May 2022 17:02:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56994 "EHLO
+        id S234844AbiEJDLn (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 9 May 2022 23:11:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229756AbiEIVCM (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 9 May 2022 17:02:12 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B7E32B8268;
-        Mon,  9 May 2022 13:58:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 051B861713;
-        Mon,  9 May 2022 20:58:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5CA88C385BC;
-        Mon,  9 May 2022 20:58:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1652129896;
-        bh=IeKZl1KrNR+/gyLaaVHgSTmZTx8tZ7Ut+UE732PbzY0=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=Z7hyQ9vdA8hcPsJOX0QKUWGEPk73NEEMkZCaMstQuinUwliA5ZJ1DzghKE9H8+iPH
-         hZTdxffQGxTruSgPhdosJaclIIwphu1NHrCIJz9jIVpSC06+1rTiAprrP+M5px2244
-         hWlqMs8/M0EmNHxfkMmm8N0RvDLotZvsibTKKnzddqSNewDGe7J1QT55WXDVjSHdM8
-         +FY26rlCnfGjObyjiiNvUH3YTYRWyvB/VFGkGNhdj5Evgi9I5g12vjshVFw9hxq4cH
-         XeP+d4lsUzFsri6vVmtfvYty3QMyaSxEQAjRqHgoUNcdm8rx99l32vCthdJcSKu4P2
-         t1fTMMm2+tjFQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id E87505C05F9; Mon,  9 May 2022 13:58:15 -0700 (PDT)
-Date:   Mon, 9 May 2022 13:58:15 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     urezki@gmail.com
+        with ESMTP id S235113AbiEJDLk (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 9 May 2022 23:11:40 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6042620D27B;
+        Mon,  9 May 2022 20:07:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1652152063; x=1683688063;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=a8LomB+K+mSpY8RQelZ8YHj1Jqz2+yRpAtEIK/y86CU=;
+  b=DRSGag+NPI8jGvp18JfRGftUWxekMLG5VlmT6zbI+GlTYJGWk8eUsI1V
+   er3iGRu2rlakz59GUtTwxJHOKk9ATTnB6DOCANTz+8cgpytMlWMozH5sw
+   zA8LhFTJ97NesyrRsA0pROqE0uGXsRRyCE8r+0hbiuXmwpySiGASKYKhP
+   tn15gvqQixMhTxTv+HLzqdhm8/0MuBcygvmN9aWTGEhZ/jVq60CeiYcfs
+   N10CdHQ+wn0ARCj8Nvc2aLgB8j1g6gYzLyDryYSbywe3zFIv0ASxTKyWu
+   XRJDpRIBngyQfF2YTIkaWh4HK7RxbC+GiFuuiz6KdCSd+RCdKQ/3ifJwT
+   Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10342"; a="249774000"
+X-IronPort-AV: E=Sophos;i="5.91,213,1647327600"; 
+   d="scan'208";a="249774000"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 May 2022 20:07:43 -0700
+X-IronPort-AV: E=Sophos;i="5.91,213,1647327600"; 
+   d="scan'208";a="565417962"
+Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.125])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 May 2022 20:07:41 -0700
+From:   Zqiang <qiang1.zhang@intel.com>
+To:     paulmck@kernel.org, frederic@kernel.org
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: And speaking of avoiding inconveniencing users...
-Message-ID: <20220509205815.GA1885269@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+Subject: [PATCH] rcu: Remove debug_object_active_state() from debug_rcu_head_queue/unqueue()
+Date:   Tue, 10 May 2022 11:07:48 +0800
+Message-Id: <20220510030748.1814004-1-qiang1.zhang@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello, Uladzislau,
+Currently, the double call_rcu() detected only need call
+debug_object_activate() to check whether the rcu head object is
+activated, the rcu head object usage state check is not necessary
+and when call rcu_test_debug_objects() the debug_object_active_state()
+will output same callstack as debug_object_activate(). so remove
+debug_object_active_state() to reduce the output of repeated callstack.
 
-And I wasn't paying attention when reviewing this patch:
+Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+---
+ kernel/rcu/rcu.h | 13 +------------
+ 1 file changed, 1 insertion(+), 12 deletions(-)
 
-084e1c049a8e ("rcu: Introduce CONFIG_RCU_EXP_CPU_STALL_TIMEOUT")
-
-Distros specifying 60 seconds for the stall timeout get hit with a silent
-change to 21 seconds for the expedited stall timeout.
-
-Unless you tell me otherwise, I will merge the following diff into the
-above commit.  So please let me know if this will cause any problems.
-
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
-diff --git a/Documentation/RCU/stallwarn.rst b/Documentation/RCU/stallwarn.rst
-index 1d863b04727c3..794837eb519b9 100644
---- a/Documentation/RCU/stallwarn.rst
-+++ b/Documentation/RCU/stallwarn.rst
-@@ -166,10 +166,12 @@ CONFIG_RCU_EXP_CPU_STALL_TIMEOUT
- --------------------------------
+diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+index 15b96f990774..0604ecd16627 100644
+--- a/kernel/rcu/rcu.h
++++ b/kernel/rcu/rcu.h
+@@ -179,27 +179,16 @@ static inline unsigned long rcu_seq_diff(unsigned long new, unsigned long old)
+  */
  
- 	Same as the CONFIG_RCU_CPU_STALL_TIMEOUT parameter but only for
--	the expedited grace period. This parameter defines the period of
--	time that RCU will wait from the beginning of an expedited grace
--	period until it issues an RCU CPU stall warning. This time period
--	is normally 20 milliseconds on Android devices.
-+	the expedited grace period. This parameter defines the period
-+	of time that RCU will wait from the beginning of an expedited
-+	grace period until it issues an RCU CPU stall warning. This time
-+	period is normally 20 milliseconds on Android devices.	A zero
-+	value causes the CONFIG_RCU_CPU_STALL_TIMEOUT value to be used,
-+	after conversion to milliseconds.
+ #ifdef CONFIG_DEBUG_OBJECTS_RCU_HEAD
+-# define STATE_RCU_HEAD_READY	0
+-# define STATE_RCU_HEAD_QUEUED	1
  
- 	This configuration parameter may be changed at runtime via the
- 	/sys/module/rcupdate/parameters/rcu_exp_cpu_stall_timeout, however
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 34d44648f3f5d..ca9db809beda3 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -4936,6 +4936,9 @@
- 			and the maximum allowed value is 21000
- 			milliseconds. Please note that this value is
- 			adjusted to an arch timer tick resolution.
-+			Setting this to zero causes the value from
-+			rcupdate.rcu_cpu_stall_timeout to be used (after
-+			conversion from seconds to milliseconds).
+ extern const struct debug_obj_descr rcuhead_debug_descr;
  
- 	rcupdate.rcu_expedited= [KNL]
- 			Use expedited grace-period primitives, for
-diff --git a/kernel/rcu/Kconfig.debug b/kernel/rcu/Kconfig.debug
-index 39dd4b9d647f8..9b64e55d4f615 100644
---- a/kernel/rcu/Kconfig.debug
-+++ b/kernel/rcu/Kconfig.debug
-@@ -85,15 +85,16 @@ config RCU_CPU_STALL_TIMEOUT
- config RCU_EXP_CPU_STALL_TIMEOUT
- 	int "Expedited RCU CPU stall timeout in milliseconds"
- 	depends on RCU_STALL_COMMON
--	range 1 21000
-+	range 0 21000
- 	default 20 if ANDROID
--	default 21000 if !ANDROID
+ static inline int debug_rcu_head_queue(struct rcu_head *head)
+ {
+-	int r1;
 -
-+	default 0 if !ANDROID
- 	help
- 	  If a given expedited RCU grace period extends more than the
- 	  specified number of milliseconds, a CPU stall warning is printed.
- 	  If the RCU grace period persists, additional CPU stall warnings
--	  are printed at more widely spaced intervals.
-+	  are printed at more widely spaced intervals.  A value of zero
-+	  says to use the RCU_CPU_STALL_TIMEOUT value converted from
-+	  seconds to milliseconds.
+-	r1 = debug_object_activate(head, &rcuhead_debug_descr);
+-	debug_object_active_state(head, &rcuhead_debug_descr,
+-				  STATE_RCU_HEAD_READY,
+-				  STATE_RCU_HEAD_QUEUED);
+-	return r1;
++	return debug_object_activate(head, &rcuhead_debug_descr);
+ }
  
- config RCU_TRACE
- 	bool "Enable tracing for RCU"
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index 0a25a4ea6eef8..2464b0eccfd02 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -31,15 +31,17 @@ int rcu_exp_jiffies_till_stall_check(void)
- 	int exp_stall_delay_delta = 0;
- 	int till_stall_check;
- 
--	/*
--	 * Limit check must be consistent with the Kconfig limits for
--	 * CONFIG_RCU_EXP_CPU_STALL_TIMEOUT, so check the allowed range.
--	 * The minimum clamped value is "2UL", because at least one full
--	 * tick has to be guaranteed.
--	 */
-+	// Zero says to use rcu_cpu_stall_timeout, but in milliseconds.
-+	if (!cpu_stall_timeout)
-+		cpu_stall_timeout = jiffies_to_msecs(rcu_jiffies_till_stall_check());
-+
-+	// Limit check must be consistent with the Kconfig limits for
-+	// CONFIG_RCU_EXP_CPU_STALL_TIMEOUT, so check the allowed range.
-+	// The minimum clamped value is "2UL", because at least one full
-+	// tick has to be guaranteed.
- 	till_stall_check = clamp(msecs_to_jiffies(cpu_stall_timeout), 2UL, 21UL * HZ);
- 
--	if (jiffies_to_msecs(till_stall_check) != cpu_stall_timeout)
-+	if (cpu_stall_timeout && jiffies_to_msecs(till_stall_check) != cpu_stall_timeout)
- 		WRITE_ONCE(rcu_exp_cpu_stall_timeout, jiffies_to_msecs(till_stall_check));
- 
- #ifdef CONFIG_PROVE_RCU
+ static inline void debug_rcu_head_unqueue(struct rcu_head *head)
+ {
+-	debug_object_active_state(head, &rcuhead_debug_descr,
+-				  STATE_RCU_HEAD_QUEUED,
+-				  STATE_RCU_HEAD_READY);
+ 	debug_object_deactivate(head, &rcuhead_debug_descr);
+ }
+ #else	/* !CONFIG_DEBUG_OBJECTS_RCU_HEAD */
+-- 
+2.25.1
+
