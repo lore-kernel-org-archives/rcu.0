@@ -2,92 +2,69 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3CCF8C4321E
-	for <rcu@archiver.kernel.org>; Tue, 10 May 2022 14:33:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2521CC433EF
+	for <rcu@archiver.kernel.org>; Tue, 10 May 2022 14:42:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344251AbiEJOhj (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 10 May 2022 10:37:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55016 "EHLO
+        id S234264AbiEJOqW (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 10 May 2022 10:46:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344626AbiEJOfJ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 10 May 2022 10:35:09 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C44F72DD793;
-        Tue, 10 May 2022 06:54:12 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        with ESMTP id S1345108AbiEJOno (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 10 May 2022 10:43:44 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EB7784EC3;
+        Tue, 10 May 2022 07:01:41 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4KyKJp4qqdz4yTd;
-        Tue, 10 May 2022 23:54:02 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1652190848;
-        bh=RKiZUE5HvPhTVnUibJtmltdG/qpHsl+mSP0bgs2lHhQ=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=Z05kSyfn/tRZEkMC+xx0iIJQ7Am+MQO7HLgvv0mZSHOcfpqTom2o/uwqzS0x8Mf2S
-         +MV9rZ+Fzf71f3gh47v8ZN6FuQpE+0hL2e6Ug+4kF9Y6fEpYke0W/joqSUA70Lwp5I
-         4Ppma9tFa9PkRNG20BN4X8MRlMpJ63sRO/S19u9v0FZlEHa4Js3eqk1sS3wGAa85dR
-         +Jh96R1o2OAtJhZFfuVMo1EZ8CMSa8mkEAFP0AyoLzOV+kygqKbLAfKRxs3fKgbcsD
-         1Vaxn4RMiVSaImYmC7RQ1ktIs3LG4P5Jb+tgoFnzybYroBhkWvfkc77elbZWKz1nx/
-         2xhke52QkhhQQ==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-        Hari Bathini <hbathini@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org,
-        linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        pmladek@suse.com, kexec@lists.infradead.org, bhe@redhat.com,
-        linux-leds@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-um@lists.infradead.org,
-        linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org,
-        openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org,
-        sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org,
-        x86@kernel.org, kernel-dev@igalia.com, kernel@gpiccoli.net,
-        halves@canonical.com, fabiomirmar@gmail.com,
-        alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com,
-        arnd@arndb.de, bp@alien8.de, corbet@lwn.net,
-        d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com,
-        dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org,
-        mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com,
-        jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org,
-        luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com,
-        paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org,
-        senozhatsky@chromium.org, stern@rowland.harvard.edu,
-        tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com,
-        will@kernel.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Paul Mackerras <paulus@samba.org>, akpm@linux-foundation.org
-Subject: Re: [PATCH 08/30] powerpc/setup: Refactor/untangle panic notifiers
-In-Reply-To: <f9c3de3c-1709-a1aa-2ece-c9fbfd5e6d6a@igalia.com>
-References: <20220427224924.592546-1-gpiccoli@igalia.com>
- <20220427224924.592546-9-gpiccoli@igalia.com>
- <3c34d8e2-6f84-933f-a4ed-338cd300d6b0@linux.ibm.com>
- <f9c3de3c-1709-a1aa-2ece-c9fbfd5e6d6a@igalia.com>
-Date:   Tue, 10 May 2022 23:53:56 +1000
-Message-ID: <87fslh8pe3.fsf@mpe.ellerman.id.au>
+        by ams.source.kernel.org (Postfix) with ESMTPS id 1A359B81038;
+        Tue, 10 May 2022 14:01:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84B01C385C2;
+        Tue, 10 May 2022 14:01:37 +0000 (UTC)
+Date:   Tue, 10 May 2022 10:01:35 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Alison Chaiken <achaiken@aurora.tech>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH] rcu/nocb: Add an option to ON/OFF an offloading from RT
+ context
+Message-ID: <20220510100135.62a4f7df@gandalf.local.home>
+In-Reply-To: <YnldSkaWu40cVimj@pc638.lan>
+References: <YnVLQozNFvgk3olP@pc638.lan>
+        <20220506182425.GC1790663@paulmck-ThinkPad-P17-Gen-1>
+        <YnY33nq5jl6FLFOu@pc638.lan>
+        <20220507223247.GK1790663@paulmck-ThinkPad-P17-Gen-1>
+        <CAEXW_YSyYRSRQwfMTJU1dowMaxrj6Daa17-BMx4syoPV05bZFg@mail.gmail.com>
+        <20220508213222.GL1790663@paulmck-ThinkPad-P17-Gen-1>
+        <CAEXW_YQ9t8gxp9cKCpba+e4NZ6ohPr8jHxJYuqRBFRtvSDa0Lw@mail.gmail.com>
+        <20220509033740.GM1790663@paulmck-ThinkPad-P17-Gen-1>
+        <CAEXW_YSbWetMt2_-m4G9Nt5S8ybATihB+5FMJMMo3jKDG4pPjg@mail.gmail.com>
+        <20220509181417.GO1790663@paulmck-ThinkPad-P17-Gen-1>
+        <YnldSkaWu40cVimj@pc638.lan>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-"Guilherme G. Piccoli" <gpiccoli@igalia.com> writes:
-> On 05/05/2022 15:55, Hari Bathini wrote:
->> [...] 
->> The change looks good. I have tested it on an LPAR (ppc64).
->> 
->> Reviewed-by: Hari Bathini <hbathini@linux.ibm.com>
->> 
->
-> Hi Michael. do you think it's possible to add this one to powerpc/next
-> (or something like that), or do you prefer a V2 with his tag?
+On Mon, 9 May 2022 20:28:26 +0200
+Uladzislau Rezki <urezki@gmail.com> wrote:
 
-Ah sorry, I assumed it was going in as part of the whole series. I guess
-I misread the cover letter.
+> I see that Paul would like to keep it for CONFIG_PREEMPT_RT, because it
+> was mainly designed for that kind of kernels. So we can align with Alison
+> patch and her decision, so i do not see any issues. So far RT folk seems
+> does not mind in having "callback-kthreads" as SCHED_FIFO :)
 
-So you want me to take this patch on its own via the powerpc tree?
+That's because RT folks set the threads they care about to a higher RT
+priority than the kthreads. ;-)
 
-cheers
+
+-- Steve
