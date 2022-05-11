@@ -2,112 +2,204 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AC06AC433EF
-	for <rcu@archiver.kernel.org>; Wed, 11 May 2022 20:24:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 040F2C433EF
+	for <rcu@archiver.kernel.org>; Wed, 11 May 2022 21:11:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347758AbiEKUYZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 11 May 2022 16:24:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60436 "EHLO
+        id S1348078AbiEKVLP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 11 May 2022 17:11:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238984AbiEKUYR (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 11 May 2022 16:24:17 -0400
-Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0345A72E01;
-        Wed, 11 May 2022 13:24:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-        s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=LCKlEcL/+gLbho7zoJo89g9MDYx2GFkg8N7n1nlW+0g=; b=MQpyMZ3nMM+SlSF0Ic+7AggIHS
-        wWCWxLFJNdpcNC/qKw1wNJR3uSo8xMkfiJlq7d2aikSbZG9yuq1pfGOyawWDcFgWnRsla4fbF455Y
-        3RXCIUoMIO9o6uix81B+J++RZraHoxYIg5AFTEzg2KmNpXSrs7BEjvRicrp5TYhs6s3mYN27kkyAz
-        njPDxaRSeQ75fkZPzqisnL9xIuav4szhmycF8VItK7avDyCoEE8U/Zs7xTZO8x+jizmxi0qGskMhG
-        GsWdK7oyZ7kJDFhpPsgWAmAhF7aiE+T5aNpN2RQ5WYTzC7ql7jtRy3esjCfYNiJNCeB+2D6JHceeB
-        Ayva3vzg==;
-Received: from [177.183.162.244] (helo=[192.168.0.5])
-        by fanzine2.igalia.com with esmtpsa 
-        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-        id 1noss0-000Aod-US; Wed, 11 May 2022 22:23:41 +0200
-Message-ID: <4b003501-f5c3-cd66-d222-88d98c93e141@igalia.com>
-Date:   Wed, 11 May 2022 17:22:22 -0300
+        with ESMTP id S1348047AbiEKVLE (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 11 May 2022 17:11:04 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E29B5FF3A;
+        Wed, 11 May 2022 14:11:01 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C100161BA0;
+        Wed, 11 May 2022 21:11:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17E4AC340EE;
+        Wed, 11 May 2022 21:11:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1652303460;
+        bh=O3d94XNcE8vut9SCbZRM8trovJFtWJ9oUgdeGDAn0gE=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=s2LEzneqAT8nGJymba4QUHnkUfSxEprnr1aYS/9hYKfoq8YIC26gJzw5VeU8n5wGw
+         VbCvX/qKtD02Ifzl4LVMcxWmO1gq4JoGx7omk+sYJ1TpY3uRvD6i23WKkVl+SvsgzD
+         eSIF38Hn6v+GXf1wXqNquUzai/kcb7pDeKcb4hdU1Mwm1OPqsIjjwElnSO3LhheBX6
+         Nbx433opzqOxl3FaEemHCBpMJFA+5MTfuNffeymLk+luzlUBC27YV7s9Qb6WDMjgoR
+         cWC44UAHxmQuVM6hgVHBulaeM7LasZBlX9qQEUl9jsZ4y968ACw8ho8bOEAzq0NSDP
+         Ae9Mo3yccdFuQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id A216E5C05FC; Wed, 11 May 2022 14:10:59 -0700 (PDT)
+Date:   Wed, 11 May 2022 14:10:59 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH v2 1/1] rcu/nocb: Add an option to ON/OFF an offloading
+ from RT context
+Message-ID: <20220511211059.GF1790663@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20220511085703.101596-1-urezki@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.1
-Subject: Re: [PATCH 11/30] um: Improve panic notifiers consistency and
- ordering
-Content-Language: en-US
-To:     Petr Mladek <pmladek@suse.com>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Richard Weinberger <richard@nod.at>
-Cc:     akpm@linux-foundation.org, bhe@redhat.com,
-        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org,
-        linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-leds@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-um@lists.infradead.org,
-        linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org,
-        openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org,
-        sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org,
-        x86@kernel.org, kernel-dev@igalia.com, kernel@gpiccoli.net,
-        halves@canonical.com, fabiomirmar@gmail.com,
-        alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com,
-        arnd@arndb.de, bp@alien8.de, corbet@lwn.net,
-        d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com,
-        dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org,
-        mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com,
-        jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org,
-        luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com,
-        paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org,
-        senozhatsky@chromium.org, stern@rowland.harvard.edu,
-        tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com,
-        will@kernel.org
-References: <20220427224924.592546-1-gpiccoli@igalia.com>
- <20220427224924.592546-12-gpiccoli@igalia.com> <Ynp2hRodh04K3pzK@alley>
-From:   "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-In-Reply-To: <Ynp2hRodh04K3pzK@alley>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220511085703.101596-1-urezki@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 10/05/2022 11:28, Petr Mladek wrote:
-> [...]
-> It is not clear to me why user mode linux should not care about
-> the other notifiers. It might be because I do not know much
-> about the user mode linux.
+On Wed, May 11, 2022 at 10:57:03AM +0200, Uladzislau Rezki (Sony) wrote:
+> Introduce a RCU_NOCB_CPU_CB_BOOST kernel option. So a user can
+> decide if an offloading has to be done in a high-prio context or
+> not. Please note an option depends on RCU_NOCB_CPU and RCU_BOOST
+> parameters. For CONFIG_PREEMPT_RT kernel both RCU_BOOST and the
+> RCU_NOCB_CPU_CB_BOOST are active by default.
 > 
-> Is the because they always create core dump or are never running
-> in a hypervisor or ...?
+> This patch splits the CONFIG_RCU_BOOST config into two peaces:
+> a) boosting preempted RCU readers and the kthreads which are
+>    directly responsible for driving expedited grace periods
+>    forward;
+> b) boosting offloading-kthreads in a way that their scheduling
+>    class are changed from SCHED_NORMAL to SCHED_FIFO.
 > 
-> AFAIK, the notifiers do many different things. For example, there
-> is a notifier that disables RCU watchdog, print some extra
-> information. Why none of them make sense here?
->
+> The main reason of such split is, for example on Android there
+> are some workloads which require fast expedited grace period to
+> be done whereas offloading in RT context can lead to starvation
+> and hogging a CPU for a long time what is not acceptable for
+> latency sensitive environment. For instance:
+> 
+> <snip>
+> <...>-60 [006] d..1 2979.028717: rcu_batch_start: rcu_preempt CBs=34619 bl=270
+> <snip>
+> 
+> invoking 34 619 callbacks will take time thus making other CFS
+> tasks waiting in run-queue to be starved due to such behaviour.
+> 
+> v1 -> v2:
+> - fix the comment about the rcuc/rcub/rcuop;
+> - check the kthread_prio against zero value;
+> - by default the RCU_NOCB_CPU_CB_BOOST is ON for PREEMPT_RT.
+> 
+> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 
-Hi Petr, my understanding is that UML is a form of running Linux as a
-regular userspace process for testing purposes. With that said, as soon
-as we exit in the error path, less "pollution" would happen, so users
-can use GDB to debug the core dump for example.
+Very good, thank you!  I have queued this for further review and testing,
+with the usual wordsmithing (please check!).
 
-In later patches of this series (when we split the panic notifiers in 3
-lists) these UML notifiers run in the pre-reboot list, so they run after
-the informational notifiers for example (in the default level).
-But without the list split we cannot order properly, so my gut feeling
-is that makes sense to run them rather earlier than later in the panic
-process...
+By default, this would go not into the upcoming merge window, but to
+the one after that.  Please let me know if you need it in the upcoming
+merge window.
 
-Maybe Anton / Johannes / Richard could give their opinions - appreciate
-that, I'm not attached to the priority here, it's more about users'
-common usage of UML I can think of...
+							Thanx, Paul
 
-Cheers,
+------------------------------------------------------------------------
 
+commit f50467bdfec9c27ae574b8c7916b51abe3c46eae
+Author: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Date:   Wed May 11 10:57:03 2022 +0200
 
-Guilherme
+    rcu/nocb: Add option to opt rcuo kthreads out of RT priority
+    
+    This commit introduces a RCU_NOCB_CPU_CB_BOOST Kconfig option that
+    prevents rcuo kthreads from running at real-time priority, even in
+    kernels built with RCU_BOOST.  This capability is important to devices
+    needing low-latency (as in a few milliseconds) response from expedited
+    RCU grace periods, but which are not running a classic real-time workload.
+    On such devices, permitting the rcuo kthreads to run at real-time priority
+    results in unacceptable latencies imposed on the application tasks,
+    which run as SCHED_OTHER.
+    
+    See for example the following trace output:
+    
+    <snip>
+    <...>-60 [006] d..1 2979.028717: rcu_batch_start: rcu_preempt CBs=34619 bl=270
+    <snip>
+    
+    If that rcuop kthread were permitted to run at real-time SCHED_FIFO
+    priority, it would monopolize its CPU for hundreds of milliseconds
+    while invoking those 34619 RCU callback functions, which would cause an
+    unacceptably long latency spike for many application stacks on Android
+    platforms.
+    
+    However, some existing real-time workloads require that callback
+    invocation run at SCHED_FIFO priority, for example, those running on
+    systems with heavy SCHED_OTHER background loads.  (It is the real-time
+    system's administrator's responsibility to make sure that important
+    real-time tasks run at a higher priority than do RCU's kthreads.)
+    
+    Therefore, this new RCU_NOCB_CPU_CB_BOOST Kconfig option defaults to
+    "y" on kernels built with PREEMPT_RT and defaults to "n" otherwise.
+    The effect is to preserve current behavior for real-time systems, but for
+    other systems to allow expedited RCU grace periods to run with real-time
+    priority while continuing to invoke RCU callbacks as SCHED_OTHER.
+    
+    As you would expect, this RCU_NOCB_CPU_CB_BOOST Kconfig option has no
+    effect except on CPUs with offloaded RCU callbacks.
+    
+    Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+index 27aab870ae4cf..c05ca52cdf64d 100644
+--- a/kernel/rcu/Kconfig
++++ b/kernel/rcu/Kconfig
+@@ -275,6 +275,22 @@ config RCU_NOCB_CPU_DEFAULT_ALL
+ 	  Say Y here if you want offload all CPUs by default on boot.
+ 	  Say N here if you are unsure.
+ 
++config RCU_NOCB_CPU_CB_BOOST
++	bool "Offload RCU callback from real-time kthread"
++	depends on RCU_NOCB_CPU && RCU_BOOST
++	default y if PREEMPT_RT
++	help
++	  Use this option to invoke offloaded callbacks as SCHED_FIFO
++	  to avoid starvation by heavy SCHED_OTHER background load.
++	  Of course, running as SCHED_FIFO during callback floods will
++	  cause the rcuo[ps] kthreads to monopolize the CPU for hundreds
++	  of milliseconds or more.  Therefore, when enabling this option,
++	  it is your responsibility to ensure that latency-sensitive
++	  tasks either run with higher priority or run on some other CPU.
++
++	  Say Y here if you want to set RT priority for offloading kthreads.
++	  Say N here if you are building a !PREEMPT_RT kernel and are unsure.
++
+ config TASKS_TRACE_RCU_READ_MB
+ 	bool "Tasks Trace RCU readers use memory barriers in user and idle"
+ 	depends on RCU_EXPERT && TASKS_TRACE_RCU
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index bcc5876c9753b..222d59299a2af 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -154,7 +154,11 @@ static void sync_sched_exp_online_cleanup(int cpu);
+ static void check_cb_ovld_locked(struct rcu_data *rdp, struct rcu_node *rnp);
+ static bool rcu_rdp_is_offloaded(struct rcu_data *rdp);
+ 
+-/* rcuc/rcub/rcuop kthread realtime priority */
++/*
++ * rcuc/rcub/rcuop kthread realtime priority. The "rcuop"
++ * real-time priority(enabling/disabling) is controlled by
++ * the extra CONFIG_RCU_NOCB_CPU_CB_BOOST configuration.
++ */
+ static int kthread_prio = IS_ENABLED(CONFIG_RCU_BOOST) ? 1 : 0;
+ module_param(kthread_prio, int, 0444);
+ 
+diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+index 60cc92cc66552..fa8e4f82e60c0 100644
+--- a/kernel/rcu/tree_nocb.h
++++ b/kernel/rcu/tree_nocb.h
+@@ -1315,8 +1315,9 @@ static void rcu_spawn_cpu_nocb_kthread(int cpu)
+ 	if (WARN_ONCE(IS_ERR(t), "%s: Could not start rcuo CB kthread, OOM is now expected behavior\n", __func__))
+ 		goto end;
+ 
+-	if (kthread_prio)
++	if (IS_ENABLED(CONFIG_RCU_NOCB_CPU_CB_BOOST) && kthread_prio)
+ 		sched_setscheduler_nocheck(t, SCHED_FIFO, &sp);
++
+ 	WRITE_ONCE(rdp->nocb_cb_kthread, t);
+ 	WRITE_ONCE(rdp->nocb_gp_kthread, rdp_gp->nocb_gp_kthread);
+ 	return;
