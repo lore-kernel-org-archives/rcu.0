@@ -2,178 +2,71 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ADD66C433FE
-	for <rcu@archiver.kernel.org>; Tue, 10 May 2022 20:46:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EC1C2C433EF
+	for <rcu@archiver.kernel.org>; Wed, 11 May 2022 02:47:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229484AbiEJUqp (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 10 May 2022 16:46:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60114 "EHLO
+        id S241619AbiEKCrp (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 10 May 2022 22:47:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229625AbiEJUql (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 10 May 2022 16:46:41 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17A02985A9;
-        Tue, 10 May 2022 13:46:40 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id i19so147269eja.11;
-        Tue, 10 May 2022 13:46:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KKWBQ2F+cxIhz54zwjRVpvTlbyC6XpVNbax5yXJJLBo=;
-        b=JBftJ5ZMCuQ8xAg+YdJkAjkvM+FeExP3AJf6FXHcwU2uWLR6K0Axnpkkhct8StnC4k
-         MSySaTtFA5TbRUX7BDb5sz1U6nUsyzQWwNkpvacKzgyZprQZv5cxo602YTKiRUNZejrM
-         T2NJlQDJhrDq2XmRa90t91v6VnZFoNyS2Ahzj6q/uWy6tWsu3fqkW2EraMSfv8EztS2/
-         +wPScn5huYl8TeLozSTPIX4AI2rNCBKPQC2vQ+gwAf41sLCkeasbKgcz4mPHSqSUSqQ+
-         qqnF5vIPd2HXtCgo+4HA3TTRCUEQOsBaClvKW8aldWSLUS9oF8IH45FcYA7XVvlTg4aF
-         MOgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KKWBQ2F+cxIhz54zwjRVpvTlbyC6XpVNbax5yXJJLBo=;
-        b=Zkv+4lUhogny19E4txhYYhMQUoyAgsjvQf3T/6Oj7b7PGzXSYplyY9Ix5GTcaQweHw
-         pR5Ueh8QKI+wwRM95zDttmKAqWDWZZFG2m71IIFqlDbboT10B0nSl96T6Ujf3jgE0jjc
-         SGVBZsBswCWW9npj+rSjFD2/ei5ejPS5ndYKlEMjGZnhOsxnCMDDPtXMHgj0nO0DKh1z
-         HAxcyYXM1aYMjdPHItFVofKXYi5HtRDXx+5oW66glwSOk1k/MFHVMlfMSpbqwDmvnd+y
-         4z/OOVw+CNh+3GWOYY6b+ebFwOQscbMArEbsVDhUAzlvU7ai/hSTwBZsgsJmQ6opmYkj
-         zGKQ==
-X-Gm-Message-State: AOAM532VDX1zB4JWajzlJhgLPteS8bxhTEFHAYh0yxvlGtOegoGBeW5W
-        7dWRCWArezywmD1IBte6zJRN8AQdWdb9MtQcuEE=
-X-Google-Smtp-Source: ABdhPJyFeVAtJNETUs8yE74umx1PP8VfPhg1EerOmcjyJsAlhL/X7I/mRXACEHM16D6tEH7cmHUtlFE8/hQ5eSM7xpg=
-X-Received: by 2002:a17:906:a0ce:b0:6d1:cb30:3b3b with SMTP id
- bh14-20020a170906a0ce00b006d1cb303b3bmr21485466ejb.582.1652215598472; Tue, 10
- May 2022 13:46:38 -0700 (PDT)
+        with ESMTP id S245154AbiEKCrL (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 10 May 2022 22:47:11 -0400
+Received: from mail.meizu.com (unknown [14.29.68.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FF0554F91;
+        Tue, 10 May 2022 19:47:07 -0700 (PDT)
+Received: from IT-EXMB-1-125.meizu.com (172.16.1.125) by mz-mail04.meizu.com
+ (172.16.1.16) with Microsoft SMTP Server (TLS) id 14.3.487.0; Wed, 11 May
+ 2022 10:47:07 +0800
+Received: from meizu.meizu.com (172.16.137.70) by IT-EXMB-1-125.meizu.com
+ (172.16.1.125) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.14; Wed, 11 May
+ 2022 10:47:05 +0800
+From:   Haowen Bai <baihaowen@meizu.com>
+To:     Davidlohr Bueso <dave@stgolabs.net>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        "Frederic Weisbecker" <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>
+CC:     Haowen Bai <baihaowen@meizu.com>, <linux-kernel@vger.kernel.org>,
+        <rcu@vger.kernel.org>
+Subject: [PATCH] rcutorture: remove useless INIT_LIST_HEAD()
+Date:   Wed, 11 May 2022 10:47:04 +0800
+Message-ID: <1652237224-11656-1-git-send-email-baihaowen@meizu.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-References: <20220509205815.GA1885269@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20220509205815.GA1885269@paulmck-ThinkPad-P17-Gen-1>
-From:   Uladzislau Rezki <urezki@gmail.com>
-Date:   Tue, 10 May 2022 22:46:27 +0200
-Message-ID: <CA+KHdyUqYM9oGfuUy_NE+jZ+mge7Up9cXn74TtHP=QnMfqTkew@mail.gmail.com>
-Subject: Re: And speaking of avoiding inconveniencing users...
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     RCU <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [172.16.137.70]
+X-ClientProxiedBy: IT-EXMB-1-126.meizu.com (172.16.1.126) To
+ IT-EXMB-1-125.meizu.com (172.16.1.125)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello, Paul.
+list rcu_torture_freelist has been inited staticly through LIST_HEAD,
+so there's no need to call another INIT_LIST_HEAD. Simply remove
+it.
 
-Indeed the changed switched to 21 seconds. What is about just set the
-60 000 for !ANDROID?
+Signed-off-by: Haowen Bai <baihaowen@meizu.com>
+---
+ kernel/rcu/rcutorture.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-default 60000 if !ANDROID
-
-On Mon, May 9, 2022 at 10:58 PM Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> Hello, Uladzislau,
->
-> And I wasn't paying attention when reviewing this patch:
->
-> 084e1c049a8e ("rcu: Introduce CONFIG_RCU_EXP_CPU_STALL_TIMEOUT")
->
-> Distros specifying 60 seconds for the stall timeout get hit with a silent
-> change to 21 seconds for the expedited stall timeout.
->
-> Unless you tell me otherwise, I will merge the following diff into the
-> above commit.  So please let me know if this will cause any problems.
->
->                                                         Thanx, Paul
->
-> ------------------------------------------------------------------------
->
-> diff --git a/Documentation/RCU/stallwarn.rst b/Documentation/RCU/stallwarn.rst
-> index 1d863b04727c3..794837eb519b9 100644
-> --- a/Documentation/RCU/stallwarn.rst
-> +++ b/Documentation/RCU/stallwarn.rst
-> @@ -166,10 +166,12 @@ CONFIG_RCU_EXP_CPU_STALL_TIMEOUT
->  --------------------------------
->
->         Same as the CONFIG_RCU_CPU_STALL_TIMEOUT parameter but only for
-> -       the expedited grace period. This parameter defines the period of
-> -       time that RCU will wait from the beginning of an expedited grace
-> -       period until it issues an RCU CPU stall warning. This time period
-> -       is normally 20 milliseconds on Android devices.
-> +       the expedited grace period. This parameter defines the period
-> +       of time that RCU will wait from the beginning of an expedited
-> +       grace period until it issues an RCU CPU stall warning. This time
-> +       period is normally 20 milliseconds on Android devices.  A zero
-> +       value causes the CONFIG_RCU_CPU_STALL_TIMEOUT value to be used,
-> +       after conversion to milliseconds.
->
->         This configuration parameter may be changed at runtime via the
->         /sys/module/rcupdate/parameters/rcu_exp_cpu_stall_timeout, however
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index 34d44648f3f5d..ca9db809beda3 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -4936,6 +4936,9 @@
->                         and the maximum allowed value is 21000
->                         milliseconds. Please note that this value is
->                         adjusted to an arch timer tick resolution.
-> +                       Setting this to zero causes the value from
-> +                       rcupdate.rcu_cpu_stall_timeout to be used (after
-> +                       conversion from seconds to milliseconds).
->
->         rcupdate.rcu_expedited= [KNL]
->                         Use expedited grace-period primitives, for
-> diff --git a/kernel/rcu/Kconfig.debug b/kernel/rcu/Kconfig.debug
-> index 39dd4b9d647f8..9b64e55d4f615 100644
-> --- a/kernel/rcu/Kconfig.debug
-> +++ b/kernel/rcu/Kconfig.debug
-> @@ -85,15 +85,16 @@ config RCU_CPU_STALL_TIMEOUT
->  config RCU_EXP_CPU_STALL_TIMEOUT
->         int "Expedited RCU CPU stall timeout in milliseconds"
->         depends on RCU_STALL_COMMON
-> -       range 1 21000
-> +       range 0 21000
->         default 20 if ANDROID
-> -       default 21000 if !ANDROID
-> -
-> +       default 0 if !ANDROID
->         help
->           If a given expedited RCU grace period extends more than the
->           specified number of milliseconds, a CPU stall warning is printed.
->           If the RCU grace period persists, additional CPU stall warnings
-> -         are printed at more widely spaced intervals.
-> +         are printed at more widely spaced intervals.  A value of zero
-> +         says to use the RCU_CPU_STALL_TIMEOUT value converted from
-> +         seconds to milliseconds.
->
->  config RCU_TRACE
->         bool "Enable tracing for RCU"
-> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-> index 0a25a4ea6eef8..2464b0eccfd02 100644
-> --- a/kernel/rcu/tree_stall.h
-> +++ b/kernel/rcu/tree_stall.h
-> @@ -31,15 +31,17 @@ int rcu_exp_jiffies_till_stall_check(void)
->         int exp_stall_delay_delta = 0;
->         int till_stall_check;
->
-> -       /*
-> -        * Limit check must be consistent with the Kconfig limits for
-> -        * CONFIG_RCU_EXP_CPU_STALL_TIMEOUT, so check the allowed range.
-> -        * The minimum clamped value is "2UL", because at least one full
-> -        * tick has to be guaranteed.
-> -        */
-> +       // Zero says to use rcu_cpu_stall_timeout, but in milliseconds.
-> +       if (!cpu_stall_timeout)
-> +               cpu_stall_timeout = jiffies_to_msecs(rcu_jiffies_till_stall_check());
-> +
-> +       // Limit check must be consistent with the Kconfig limits for
-> +       // CONFIG_RCU_EXP_CPU_STALL_TIMEOUT, so check the allowed range.
-> +       // The minimum clamped value is "2UL", because at least one full
-> +       // tick has to be guaranteed.
->         till_stall_check = clamp(msecs_to_jiffies(cpu_stall_timeout), 2UL, 21UL * HZ);
->
-> -       if (jiffies_to_msecs(till_stall_check) != cpu_stall_timeout)
-> +       if (cpu_stall_timeout && jiffies_to_msecs(till_stall_check) != cpu_stall_timeout)
->                 WRITE_ONCE(rcu_exp_cpu_stall_timeout, jiffies_to_msecs(till_stall_check));
->
->  #ifdef CONFIG_PROVE_RCU
-
-
-
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index faf6b4c7a757..0005e259c4ce 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -3247,7 +3247,6 @@ rcu_torture_init(void)
+ 
+ 	/* Set up the freelist. */
+ 
+-	INIT_LIST_HEAD(&rcu_torture_freelist);
+ 	for (i = 0; i < ARRAY_SIZE(rcu_tortures); i++) {
+ 		rcu_tortures[i].rtort_mbtest = 0;
+ 		list_add_tail(&rcu_tortures[i].rtort_free,
 -- 
-Uladzislau Rezki
+2.7.4
+
