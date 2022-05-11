@@ -2,135 +2,128 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7033C43219
-	for <rcu@archiver.kernel.org>; Wed, 11 May 2022 11:45:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B041C433EF
+	for <rcu@archiver.kernel.org>; Wed, 11 May 2022 13:40:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237063AbiEKLpr (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 11 May 2022 07:45:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49366 "EHLO
+        id S243971AbiEKNkG (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 11 May 2022 09:40:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229702AbiEKLpq (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 11 May 2022 07:45:46 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AC661D33A;
-        Wed, 11 May 2022 04:45:44 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 3223521B63;
-        Wed, 11 May 2022 11:45:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1652269543; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0Q+AKogAFqrapMhSKhemsZfgkWqWDsARusHusUCyiK4=;
-        b=iY95HDQGs4qC23cq77bOCFTEdU/S8O5CyJ+RlnRZnMkkUzmn+I2Mm5/bPWA2BvWJDPDEv9
-        JwfZEqzAICGf45PeIFuZlFjlIC7fxZJfv9Ryxp3gi9axon0On+MdUW3HdUoK9u0ccTLMhL
-        Yjmk7zW6CuGXpaXXuOUQvYlsrSO1r9M=
-Received: from suse.cz (pathway.suse.cz [10.100.12.24])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 043992C141;
-        Wed, 11 May 2022 11:45:41 +0000 (UTC)
-Date:   Wed, 11 May 2022 13:45:41 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-Cc:     akpm@linux-foundation.org, bhe@redhat.com,
-        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com, coresight@lists.linaro.org,
-        linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net,
-        rcu@vger.kernel.org, sparclinux@vger.kernel.org,
-        xen-devel@lists.xenproject.org, x86@kernel.org,
-        kernel-dev@igalia.com, kernel@gpiccoli.net, halves@canonical.com,
-        fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com,
-        andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de,
-        corbet@lwn.net, d.hatayama@jp.fujitsu.com,
-        dave.hansen@linux.intel.com, dyoung@redhat.com,
-        feng.tang@intel.com, gregkh@linuxfoundation.org,
-        mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com,
-        jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org,
-        luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com,
-        paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org,
-        senozhatsky@chromium.org, stern@rowland.harvard.edu,
-        tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com,
-        will@kernel.org
-Subject: Re: [PATCH 17/30] tracing: Improve panic/die notifiers
-Message-ID: <20220511114541.GC26047@pathway.suse.cz>
-References: <20220427224924.592546-1-gpiccoli@igalia.com>
- <20220427224924.592546-18-gpiccoli@igalia.com>
+        with ESMTP id S243965AbiEKNkE (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 11 May 2022 09:40:04 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D46B1D7341;
+        Wed, 11 May 2022 06:40:02 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id w19so3604258lfu.11;
+        Wed, 11 May 2022 06:40:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NoAC1uKh1fP80FhMwvvGoVXu863+vZrNjnh223XA2iI=;
+        b=Dhr06uf6hoFNALMaa0NX3XVynPQRiNCGPE9Hptj+SvPkGuDz4wFD1d1Ew3hOMmQ00q
+         fSlezFUryYYF11AH714es6awPtulKuRJSls2jAP61dQEMrUIrt4cVYUPqGkVROsznEzF
+         l6+Piz+0yvAKpZCHukvXo+7s/nAqmowIKscHQqHvBae8fcnhPMXilTMl+cMqvOQA9lwr
+         qC+pZ+9gCk1UGz9xz/IWuzLaryZe6XA5zmdUR3DpeOCFyQBWMgIjEXswgjru1yufM7aM
+         STomhR1fdZrfa65fRvF1XoQlRVpqcBaU6Jl2Y0QDctnkLXNm8Qyq1V/KBZTglEIqXjbO
+         yMzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NoAC1uKh1fP80FhMwvvGoVXu863+vZrNjnh223XA2iI=;
+        b=O7N5c5rd3gQzjivif2kIhZVu/LTkDnVz3oqrYSrwsskk71t+2sc8nDHdZO2sW9oi2N
+         TlsNxYD4le8IalQzaLDY/9vYnGOh+iyVngNH3mg5WfR2ATpN59jZsE69xT65fK+O1+gW
+         +W55dsxn263q0VKTym3wMA4RdHEExCeJaDNuJEGL/r7MbUF9FUIKJpDYoFxHTyeaLhii
+         J9T2SnH306JOkBmwJ7P6hxx1WieBkhZvWuBl1NHY6noKmobE6H1UkQKBooSheTTxgJn1
+         uGPmGW0MXfWxly8XPI8z/2Jfm3UVaXfpGWfO0GtzERMDDCrj35I4PqI4b2VdSmxcd4Cy
+         AALQ==
+X-Gm-Message-State: AOAM531cBpn/TE1ipSw/Mk9GldYRUZIRO12p9qQgwjfUHfPfa3EGc8/b
+        +mQavyTU7Y0V1Z3XcCqZv9k=
+X-Google-Smtp-Source: ABdhPJysrEJZW6lwm48T9rb6/b92Xp6zISJVh1wdUO6Zr7dx4R1c+ZhjI13pyvq6A2hLgGsb0yqZbw==
+X-Received: by 2002:a05:6512:1109:b0:473:e582:a60c with SMTP id l9-20020a056512110900b00473e582a60cmr20277756lfg.150.1652276400325;
+        Wed, 11 May 2022 06:40:00 -0700 (PDT)
+Received: from pc638.lan ([155.137.26.201])
+        by smtp.gmail.com with ESMTPSA id s15-20020a19770f000000b0047255d211edsm286330lfc.284.2022.05.11.06.39.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 May 2022 06:39:58 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Wed, 11 May 2022 15:39:56 +0200
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Alison Chaiken <achaiken@aurora.tech>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH] rcu/nocb: Add an option to ON/OFF an offloading from RT
+ context
+Message-ID: <Ynu8rM42aSyGN7li@pc638.lan>
+References: <YnY33nq5jl6FLFOu@pc638.lan>
+ <20220507223247.GK1790663@paulmck-ThinkPad-P17-Gen-1>
+ <CAEXW_YSyYRSRQwfMTJU1dowMaxrj6Daa17-BMx4syoPV05bZFg@mail.gmail.com>
+ <20220508213222.GL1790663@paulmck-ThinkPad-P17-Gen-1>
+ <CAEXW_YQ9t8gxp9cKCpba+e4NZ6ohPr8jHxJYuqRBFRtvSDa0Lw@mail.gmail.com>
+ <20220509033740.GM1790663@paulmck-ThinkPad-P17-Gen-1>
+ <CAEXW_YSbWetMt2_-m4G9Nt5S8ybATihB+5FMJMMo3jKDG4pPjg@mail.gmail.com>
+ <20220509181417.GO1790663@paulmck-ThinkPad-P17-Gen-1>
+ <YnldSkaWu40cVimj@pc638.lan>
+ <20220510100135.62a4f7df@gandalf.local.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220427224924.592546-18-gpiccoli@igalia.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20220510100135.62a4f7df@gandalf.local.home>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed 2022-04-27 19:49:11, Guilherme G. Piccoli wrote:
-> Currently the tracing dump_on_oops feature is implemented
-> through separate notifiers, one for die/oops and the other
-> for panic. With the addition of panic notifier "id", this
-> patch makes use of such "id" to unify both functions.
+> On Mon, 9 May 2022 20:28:26 +0200
+> Uladzislau Rezki <urezki@gmail.com> wrote:
 > 
-> It also comments the function and changes the priority of the
-> notifier blocks, in order they run early compared to other
-> notifiers, to prevent useless trace data (like the callback
-> names for the other notifiers). Finally, we also removed an
-> unnecessary header inclusion.
+> > I see that Paul would like to keep it for CONFIG_PREEMPT_RT, because it
+> > was mainly designed for that kind of kernels. So we can align with Alison
+> > patch and her decision, so i do not see any issues. So far RT folk seems
+> > does not mind in having "callback-kthreads" as SCHED_FIFO :)
 > 
-> --- a/kernel/trace/trace.c
-> +++ b/kernel/trace/trace.c
-> @@ -9767,38 +9766,46 @@ static __init int tracer_init_tracefs(void)
->  
->  fs_initcall(tracer_init_tracefs);
->  
-> -static int trace_panic_handler(struct notifier_block *this,
-> -			       unsigned long event, void *unused)
-> +/*
-> + * The idea is to execute the following die/panic callback early, in order
-> + * to avoid showing irrelevant information in the trace (like other panic
-> + * notifier functions); we are the 2nd to run, after hung_task/rcu_stall
-> + * warnings get disabled (to prevent potential log flooding).
-> + */
-> +static int trace_die_panic_handler(struct notifier_block *self,
-> +				unsigned long ev, void *unused)
->  {
-> -	if (ftrace_dump_on_oops)
-> +	int do_dump;
-> +
-> +	if (!ftrace_dump_on_oops)
-> +		return NOTIFY_DONE;
-> +
-> +	switch (ev) {
-> +	case DIE_OOPS:
-> +		do_dump = 1;
-> +		break;
-> +	case PANIC_NOTIFIER:
-> +		do_dump = 1;
-> +		break;
+> That's because RT folks set the threads they care about to a higher RT
+> priority than the kthreads. ;-)
+> 
+That explains many things :)
 
-DIE_OOPS and PANIC_NOTIFIER are from different enum.
-It feels like comparing apples with oranges here.
+I have one question, it is partly related to the topic that is in question
+and to this thread also. I was tracing a "long" duration of the offloading
+kthreads which actually invoke them one by one. And the picture was like
+below from ftrace point of view:
 
-IMHO, the proper way to unify the two notifiers is
-a check of the @self parameter. Something like:
+<snip>
+ rcuop/6-54  [000] .N..  183.753018: rcu_invoke_callback:  rcu_preempt rhp=0xffffff88ffd440b0 func=__d_free.cfi_jt
+ rcuop/6-54  [000] .N..  183.753020: rcu_invoke_callback:  rcu_preempt rhp=0xffffff892ffd8400 func=inode_free_by_rcu.cfi_jt
+ rcuop/6-54  [000] .N..  183.753021: rcu_invoke_callback:  rcu_preempt rhp=0xffffff89327cd708 func=i_callback.cfi_jt
+ ... 
+ rcuop/6-54  [000] .N..  183.755941: rcu_invoke_callback:  rcu_preempt rhp=0xffffff8993c5a968 func=i_callback.cfi_jt
+ rcuop/6-54  [000] .N..  183.755942: rcu_invoke_callback:  rcu_preempt rhp=0xffffff8993c4bd20 func=__d_free.cfi_jt
+ rcuop/6-54  [000] dN..  183.755944: rcu_batch_end:        rcu_preempt CBs-invoked=2112 idle=>c<>c<>c<>c<
+ rcuop/6-54  [000] dN..  183.755946: rcu_utilization:      Start context switch
+ rcuop/6-54  [000] dN..  183.755946: rcu_utilization:      End context switch
+<snip>
 
-static int trace_die_panic_handler(struct notifier_block *self,
-				unsigned long ev, void *unused)
-{
-	if (self == trace_die_notifier && val != DIE_OOPS)
-		goto out;
+i spent some time in order to understand why the context was not switched,
+even though the "rcuop" kthread was marked as TIF_NEED_RESCHED and an IPI
+was sent to the CPU_0 to reschedule. The last "." in latency field shows
+that a context has not disabled any preemption. So everything should be fine.
 
-	ftrace_dump(ftrace_dump_on_oops);
-out:
-	return NOTIFY_DONE;
-}
+An explanation is that a local_bh_disable() modifies the current_thread_info()->preempt.count
+so a task becomes non preemtable but the ftrace does not provide any signal about
+it. So i was fooled for some time by my tracer logs.
 
-Best Regards,
-Petr
+Do you have any thoughts about it? Should it be solved or signaled
+somehow that a task in fact is not preemtable if a counter > 0?
+
+Thanks!
+
+--
+Uladzislau Rezki
