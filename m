@@ -2,140 +2,147 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B612C433F5
-	for <rcu@archiver.kernel.org>; Wed, 11 May 2022 14:53:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BA32C4332F
+	for <rcu@archiver.kernel.org>; Wed, 11 May 2022 16:48:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245095AbiEKOxY (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 11 May 2022 10:53:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47484 "EHLO
+        id S1345004AbiEKQsF (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 11 May 2022 12:48:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233518AbiEKOxX (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 11 May 2022 10:53:23 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F84A1D5708;
-        Wed, 11 May 2022 07:53:20 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id v4so2918107ljd.10;
-        Wed, 11 May 2022 07:53:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/Ki/GC9ElZLss58ID4n+yEqym+KgHry12TQB+9mrCk0=;
-        b=D2LLyUcQxrzmHNrjPnVOtU+MsaRqhZMDr6FaS/ix/16U6pCiRDXXybIJ0T3DjoXJjh
-         E57n8h/MYMSA1MjI25qK3I8bjWy1VidRcPUydNkUkwVfdSyZNsjkqHvVrPDb0yDWHDE6
-         Eh8gYYOO9E6zYAjAvyWSYAq1YUelYD6iRKnbXJ5GFq7ijeL4lr1zvSIab0Se8hBcduN6
-         4hcy4IgmoiELaQsTvD8LfZ4JnMyXb3rZCp4p/jZYhuV+GNbASTaaKjLDN17B7bggADpB
-         //5lZPmiXhVmKzDYpWHzPGsJYyUXe5vybILyXFhAOLgBYTj1BPtstQVCH9ifyPQXjcop
-         KXzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/Ki/GC9ElZLss58ID4n+yEqym+KgHry12TQB+9mrCk0=;
-        b=oYrcq13mPpyKii5cwunjY0BIRWvENnWh/wjrKeOXhyY2M0xlWjk/T2l+SV9Q0V6GRt
-         xYKM0luuCSubZSu9hKlzK30GIl/lrOKkWKyoUOji8GMdJcB1/SkL287ntmGrsGDmV/5z
-         L9YNuVtV82B6WTpQzULwfBq5PVLegojJId04f47zoTNQjzC7+G0xQugeZbSwCLPXL4WV
-         MZNYqpqafkSpepYuI01G+0Wa+T53sTcw2HJYDEn2gqTv8H4B1yTgBScC8gxG7bDvkpuC
-         rb6J4TKl///QsnD43ajVODA/FMj1cx8+FPFmFlTRoKWt62ir+Lox6HS11F1WSnX2L5y2
-         kcQQ==
-X-Gm-Message-State: AOAM53252xnYj6xK8vXXKdcDmrYhyQQ+E/3omwlLmWgJ74IEQ23592op
-        G0MlOWawDOp3PSRDFbQondU=
-X-Google-Smtp-Source: ABdhPJwnnbzJe+FkzzXPMsfLX6NkArl2fpeYxsAE9EYAgY/bTjjXKhPxgOBfybdFgAb99Ig7PZbSAg==
-X-Received: by 2002:a05:651c:508:b0:24f:4ee8:9fd4 with SMTP id o8-20020a05651c050800b0024f4ee89fd4mr17561120ljp.233.1652280799003;
-        Wed, 11 May 2022 07:53:19 -0700 (PDT)
-Received: from pc638.lan ([155.137.26.201])
-        by smtp.gmail.com with ESMTPSA id j13-20020a2e824d000000b0024f3d1daef4sm384309ljh.124.2022.05.11.07.53.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 May 2022 07:53:18 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Wed, 11 May 2022 16:53:16 +0200
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Alison Chaiken <achaiken@aurora.tech>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: Re: [PATCH] rcu/nocb: Add an option to ON/OFF an offloading from RT
- context
-Message-ID: <YnvN3PPds3BlZ5fi@pc638.lan>
-References: <20220508213222.GL1790663@paulmck-ThinkPad-P17-Gen-1>
- <CAEXW_YQ9t8gxp9cKCpba+e4NZ6ohPr8jHxJYuqRBFRtvSDa0Lw@mail.gmail.com>
- <20220509033740.GM1790663@paulmck-ThinkPad-P17-Gen-1>
- <CAEXW_YSbWetMt2_-m4G9Nt5S8ybATihB+5FMJMMo3jKDG4pPjg@mail.gmail.com>
- <20220509181417.GO1790663@paulmck-ThinkPad-P17-Gen-1>
- <YnldSkaWu40cVimj@pc638.lan>
- <20220510100135.62a4f7df@gandalf.local.home>
- <Ynu8rM42aSyGN7li@pc638.lan>
- <20220511102957.56bd582b@gandalf.local.home>
- <YnvNbRcd3KRfQW3C@pc638.lan>
+        with ESMTP id S233496AbiEKQsA (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 11 May 2022 12:48:00 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DCDE6B7DB;
+        Wed, 11 May 2022 09:47:58 -0700 (PDT)
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24BESoKr028080;
+        Wed, 11 May 2022 16:46:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=tjIW4ViQYza/lnoDnWyOhboEO5kjiPdt7taCyynzKFw=;
+ b=lxUbqAEO3GqUpU+Tuw2IWXF1fzXIGSDn1j9FVHjMmFIPrrH/+bQrVN9PaaYcbEJhBJIr
+ 7d0t++ZFM6UKMdcnwcUF0YasHW2SP51KwmfPJnRgOou9+kRarIXLa3hIMjmu5cX5t3FO
+ 6rItwaIor28IfP+e6c0HY1HIerMLLjGg06tg70umpoMhCUKjDu0piWYCrZz/VisJ+s0b
+ 0DuyX+X+ttOZsVNhvwPdzqfPCbp/RA3MDqZWBEVZBj0PN/wvhGTqQYzQ4imgN+k8TjhU
+ NC3v9IrNMZOoN56TSdKZo20ktYuMVwJV19grssXUZ/JxpGndCu9D0HmYa5fO310s9Ten QA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3g0etx3406-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 May 2022 16:46:00 +0000
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 24BGebih023228;
+        Wed, 11 May 2022 16:45:59 GMT
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3g0etx33y1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 May 2022 16:45:59 +0000
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 24BGgY6p030999;
+        Wed, 11 May 2022 16:45:56 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 3fwgd8wsc9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 May 2022 16:45:55 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 24BGjqsM27197764
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 11 May 2022 16:45:52 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BA0B35204E;
+        Wed, 11 May 2022 16:45:52 +0000 (GMT)
+Received: from osiris (unknown [9.145.80.86])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id B9FCE52050;
+        Wed, 11 May 2022 16:45:50 +0000 (GMT)
+Date:   Wed, 11 May 2022 18:45:49 +0200
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org,
+        linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        linux-leds@vger.kernel.org, pmladek@suse.com, bhe@redhat.com,
+        akpm@linux-foundation.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
+        kexec@lists.infradead.org, linux-tegra@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
+        netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net,
+        rcu@vger.kernel.org, sparclinux@vger.kernel.org,
+        xen-devel@lists.xenproject.org, x86@kernel.org,
+        kernel-dev@igalia.com, kernel@gpiccoli.net, halves@canonical.com,
+        fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com,
+        andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de,
+        corbet@lwn.net, d.hatayama@jp.fujitsu.com,
+        dave.hansen@linux.intel.com, dyoung@redhat.com,
+        feng.tang@intel.com, gregkh@linuxfoundation.org,
+        mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com,
+        jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org,
+        luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com,
+        paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org,
+        senozhatsky@chromium.org, stern@rowland.harvard.edu,
+        tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com,
+        will@kernel.org
+Subject: Re: [PATCH 22/30] panic: Introduce the panic post-reboot notifier
+ list
+Message-ID: <YnvoPe2cTS31qbjb@osiris>
+References: <20220427224924.592546-1-gpiccoli@igalia.com>
+ <20220427224924.592546-23-gpiccoli@igalia.com>
+ <7017c234-7c73-524a-11b6-fefdd5646f59@igalia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YnvNbRcd3KRfQW3C@pc638.lan>
+In-Reply-To: <7017c234-7c73-524a-11b6-fefdd5646f59@igalia.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: P8jYmW-Xe3lS0Lxn9LfjJuLQx8-pWyu5
+X-Proofpoint-ORIG-GUID: 3EoVOe4XNkWaSjwGnBLNECSOqY142ccD
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
+ definitions=2022-05-11_07,2022-05-11_01,2022-02-23_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ clxscore=1015 malwarescore=0 phishscore=0 mlxscore=0 adultscore=0
+ suspectscore=0 mlxlogscore=429 bulkscore=0 impostorscore=0
+ priorityscore=1501 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2202240000 definitions=main-2205110076
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-> On Wed, May 11, 2022 at 10:29:57AM -0400, Steven Rostedt wrote:
-> > On Wed, 11 May 2022 15:39:56 +0200
-> > Uladzislau Rezki <urezki@gmail.com> wrote:
+On Mon, May 09, 2022 at 11:16:10AM -0300, Guilherme G. Piccoli wrote:
+> On 27/04/2022 19:49, Guilherme G. Piccoli wrote:
+> > Currently we have 3 notifier lists in the panic path, which will
+> > be wired in a way to allow the notifier callbacks to run in
+> > different moments at panic time, in a subsequent patch.
 > > 
-> > > <snip>
-> > >  rcuop/6-54  [000] .N..  183.753018: rcu_invoke_callback:  rcu_preempt rhp=0xffffff88ffd440b0 func=__d_free.cfi_jt
-> > >  rcuop/6-54  [000] .N..  183.753020: rcu_invoke_callback:  rcu_preempt rhp=0xffffff892ffd8400 func=inode_free_by_rcu.cfi_jt
-> > >  rcuop/6-54  [000] .N..  183.753021: rcu_invoke_callback:  rcu_preempt rhp=0xffffff89327cd708 func=i_callback.cfi_jt
-> > >  ... 
-> > >  rcuop/6-54  [000] .N..  183.755941: rcu_invoke_callback:  rcu_preempt rhp=0xffffff8993c5a968 func=i_callback.cfi_jt
-> > >  rcuop/6-54  [000] .N..  183.755942: rcu_invoke_callback:  rcu_preempt rhp=0xffffff8993c4bd20 func=__d_free.cfi_jt
-> > >  rcuop/6-54  [000] dN..  183.755944: rcu_batch_end:        rcu_preempt CBs-invoked=2112 idle=>c<>c<>c<>c<
-> > >  rcuop/6-54  [000] dN..  183.755946: rcu_utilization:      Start context switch
-> > >  rcuop/6-54  [000] dN..  183.755946: rcu_utilization:      End context switch
-> > > <snip>
-> > > 
-> > > i spent some time in order to understand why the context was not switched,
-> > > even though the "rcuop" kthread was marked as TIF_NEED_RESCHED and an IPI
-> > > was sent to the CPU_0 to reschedule. The last "." in latency field shows
-> > > that a context has not disabled any preemption. So everything should be fine.
-> > > 
-> > > An explanation is that a local_bh_disable() modifies the current_thread_info()->preempt.count
-> > > so a task becomes non preemtable but the ftrace does not provide any signal about
-> > > it. So i was fooled for some time by my tracer logs.
-> > > 
-> > > Do you have any thoughts about it? Should it be solved or signaled
-> > > somehow that a task in fact is not preemtable if a counter > 0?
+> > But there is also an odd set of architecture calls hardcoded in
+> > the end of panic path, after the restart machinery. They're
+> > responsible for late time tunings / events, like enabling a stop
+> > button (Sparc) or effectively stopping the machine (s390).
 > > 
-> > Hmm, it should show it in the first part (where the 'd' is). Is this a
-> > snapshot from the kernel or from trace-cmd?
+> > This patch introduces yet another notifier list to offer the
+> > architectures a way to add callbacks in such late moment on
+> > panic path without the need of ifdefs / hardcoded approaches.
 > > 
-> I do both and the behavior is the same. But the above one looks like a
-> kernel trace output, the trace-cmd snapshot looks differently. So you
-> mean "s" has to be there then?
+> > Cc: Alexander Gordeev <agordeev@linux.ibm.com>
+> > Cc: Christian Borntraeger <borntraeger@linux.ibm.com>
+> > Cc: "David S. Miller" <davem@davemloft.net>
+> > Cc: Heiko Carstens <hca@linux.ibm.com>
+> > Cc: Sven Schnelle <svens@linux.ibm.com>
+> > Cc: Vasily Gorbik <gor@linux.ibm.com>
+> > Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
 > 
-> <snip>
-> 	entry->preempt_count		= pc & 0xff;
-> 	entry->pid			= (tsk) ? tsk->pid : 0;
-> 	entry->type			= type;
-> 	entry->flags =
-> #ifdef CONFIG_TRACE_IRQFLAGS_SUPPORT
-> 		(irqs_disabled_flags(flags) ? TRACE_FLAG_IRQS_OFF : 0) |
-> #else
-> 		TRACE_FLAG_IRQS_NOSUPPORT |
-> #endif
-> 		((pc & NMI_MASK    ) ? TRACE_FLAG_NMI     : 0) |
-> 		((pc & HARDIRQ_MASK) ? TRACE_FLAG_HARDIRQ : 0) |
-> 		((pc & SOFTIRQ_OFFSET) ? TRACE_FLAG_SOFTIRQ : 0) |
-> 		(tif_need_resched() ? TRACE_FLAG_NEED_RESCHED : 0) |
-> 		(test_preempt_need_resched() ? TRACE_FLAG_PREEMPT_RESCHED : 0);
-> <snip>
+> Hey S390/SPARC folks, sorry for the ping!
 > 
-> BTW, i am not the 5.10 kernel. I have not checked the latest kernel
-> and what ftrace reports under holding local_bh_disable().
->
-Sorry, the was a typo. I am checking 5.10 kernel and the trace was taken
-on that kernel.
+> Any reviews on this V1 would be greatly appreciated, I'm working on V2
+> and seeking feedback in the non-reviewed patches.
 
+Sorry, missed that this is quite s390 specific. So, yes, this looks
+good to me and nice to see that one of the remaining CONFIG_S390 in
+common code will be removed!
+
+For the s390 bits:
+Acked-by: Heiko Carstens <hca@linux.ibm.com>
