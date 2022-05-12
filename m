@@ -2,57 +2,57 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3318AC433F5
-	for <rcu@archiver.kernel.org>; Thu, 12 May 2022 03:05:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4BE14C433EF
+	for <rcu@archiver.kernel.org>; Thu, 12 May 2022 03:05:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244217AbiELDFT (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 11 May 2022 23:05:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37314 "EHLO
+        id S244497AbiELDFU (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 11 May 2022 23:05:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244529AbiELDFM (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 11 May 2022 23:05:12 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 679B01FE3CE
-        for <rcu@vger.kernel.org>; Wed, 11 May 2022 20:05:11 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id hh4so3427927qtb.10
-        for <rcu@vger.kernel.org>; Wed, 11 May 2022 20:05:11 -0700 (PDT)
+        with ESMTP id S244533AbiELDFN (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 11 May 2022 23:05:13 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D4971FC2E2
+        for <rcu@vger.kernel.org>; Wed, 11 May 2022 20:05:12 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id z126so3756942qkb.2
+        for <rcu@vger.kernel.org>; Wed, 11 May 2022 20:05:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=au0WoB+u99j5yQ6lmarkVSHpLzgPDYFuYSvbCBirDpk=;
-        b=TGcnN/8wF1fa16DoEg1TA5IThvSDVSqnwmG2s4kijAaJ71BF54l8I823QaWnXGw02w
-         yU+VEV+Lm6wL3okVAWOXHuRLKGSfFtPo2gMjp5JhFty/oPxfJKYUuL9G3eos66hyIMk5
-         wYNhHYmP0I1M8cO3txWEJD9BAYQhtS+TYe0Ew=
+        bh=oeVCD28BZkKVAoFgJA0eT8P+UE+HQoj/imzw07R+UyA=;
+        b=LA+We+R2/2fOk4tZjx61kMwo3Z96H6NWU9bCb7Ue5UFhME2AuZVFEj8DfSyT/7tvBb
+         RlWBRbrguE/iuCXvBo+l/3x7grMqV3YR8e0o1vt5zdyO6V6AChJH4019LztmyG5V2RhX
+         qc1mOsdDXWx5mHXaNq6Fs7yZGjx1b1yVqJX9Y=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=au0WoB+u99j5yQ6lmarkVSHpLzgPDYFuYSvbCBirDpk=;
-        b=JS5oL/wpa2aqeezs5yclD+gpVUMlP3KQkNCyNsrRVdYPMYHILShmT+d4iorzSXiuc1
-         A6WMNmOSmMABSPpG9GnrVxA7zXrheLnbBgByS1ZTyh0i4KVC5Yqcw3e+CiTOJgA76Mcx
-         Z00tJq/fdyb/+/uXopLzrX24+ibb0uH0WTHPC2n04cbvGncG2FBLo88en9fpaGpSKFPj
-         3FfRmwoJu8nxpbsLv3jLRAI+ree2uNenZPAczjiZQryWOS++AkK21bSNNjsmp4jSUogC
-         E5A23jszLN1EQiNgLaEquxV6IhwDf6dk/XnHf8GpaFEeeV6BdVHKM3Z8YXe8P+WN4rxO
-         IadA==
-X-Gm-Message-State: AOAM5337yJ3SxYFM+sIKuYZl84urFQ00Jkt7bbCon1LrAZgAclC+eEQm
-        s/ANFafPqdPii9O2pQwNHewbwLzkEVBldQ==
-X-Google-Smtp-Source: ABdhPJxOga9EoctgpdwhL7qg/2+dgrYEWWdAgD5wYdcuPXWi6bTyq/3ttWuNgsYJGbcOXFoDhBCnUQ==
-X-Received: by 2002:ac8:5b8e:0:b0:2f3:f12d:bab5 with SMTP id a14-20020ac85b8e000000b002f3f12dbab5mr5520609qta.183.1652324710178;
-        Wed, 11 May 2022 20:05:10 -0700 (PDT)
+        bh=oeVCD28BZkKVAoFgJA0eT8P+UE+HQoj/imzw07R+UyA=;
+        b=16ynmBs8rgn6vv3jifyG9sMn+oaohp3Q3QsUON6UVUzMvImtGRJ8zfD0aOx2c8koW3
+         Di9GNf1ttmqxpwnbRl6WFK3m3E9oE4v17BmW/EXJrD11xSEzLd74vEHhQQHPKbhuoMX0
+         OdmMqdoeFV+jtMZjCKFZKyLe3Z9ODS8J7kbK0t+bZ8nxgFtZkyZYfFVVG26yLJuXluLE
+         015K1Mbq3hu1IQn6KCVbb1asEjm82vPJ6Hz1CIKxm3y//ZzNiZalW+qNwHaVQZtx4BSH
+         6MpNCF3Qig6+kDgjp8ntboAgVR+tF868jJ35g3aiWoPAItMzIeVvQgN10L4tA5WMdiUG
+         qefw==
+X-Gm-Message-State: AOAM531QpaSIKvaF59ChvJPUJO414MywsHYwvxxxpJ44hYOSPvAvR7sV
+        NQCluWhqQ3qCmdeHjeoMX1o8t8OHN7SW3w==
+X-Google-Smtp-Source: ABdhPJyWKNe3rKNuaPfIwj4ZWoycKgk939N7IuqQqUSnRr8uP00q4tO40J3wFiEKe2wbwU4JCPuk9Q==
+X-Received: by 2002:a05:620a:1903:b0:67d:243b:a8ae with SMTP id bj3-20020a05620a190300b0067d243ba8aemr21149211qkb.142.1652324711253;
+        Wed, 11 May 2022 20:05:11 -0700 (PDT)
 Received: from joelboxx.c.googlers.com.com (29.46.245.35.bc.googleusercontent.com. [35.245.46.29])
-        by smtp.gmail.com with ESMTPSA id h124-20020a376c82000000b0069fc13ce203sm2270334qkc.52.2022.05.11.20.05.09
+        by smtp.gmail.com with ESMTPSA id h124-20020a376c82000000b0069fc13ce203sm2270334qkc.52.2022.05.11.20.05.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 May 2022 20:05:09 -0700 (PDT)
+        Wed, 11 May 2022 20:05:10 -0700 (PDT)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     rcu@vger.kernel.org
 Cc:     rushikesh.s.kadam@intel.com, urezki@gmail.com,
         neeraj.iitr10@gmail.com, frederic@kernel.org, paulmck@kernel.org,
         rostedt@goodmis.org,
         "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Subject: [RFC v1 11/14] i915: Move call_rcu() to call_rcu_lazy()
-Date:   Thu, 12 May 2022 03:04:39 +0000
-Message-Id: <20220512030442.2530552-12-joel@joelfernandes.org>
+Subject: [RFC v1 12/14] rcu/kfree: remove useless monitor_todo flag
+Date:   Thu, 12 May 2022 03:04:40 +0000
+Message-Id: <20220512030442.2530552-13-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.36.0.550.gb090851708-goog
 In-Reply-To: <20220512030442.2530552-1-joel@joelfernandes.org>
 References: <20220512030442.2530552-1-joel@joelfernandes.org>
@@ -62,25 +62,76 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This is required to prevent callbacks triggering RCU machinery too
-quickly and too often, which adds more power to the system.
+monitor_todo is not needed as the work struct already tracks if work is
+pending. Just use that to know if work is pending using
+delayed_work_pending() helper.
 
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- drivers/gpu/drm/i915/gem/i915_gem_object.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/rcu/tree.c | 22 +++++++---------------
+ 1 file changed, 7 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/gpu/drm/i915/gem/i915_gem_object.c b/drivers/gpu/drm/i915/gem/i915_gem_object.c
-index d87b508b59b1..b54d1be3ee68 100644
---- a/drivers/gpu/drm/i915/gem/i915_gem_object.c
-+++ b/drivers/gpu/drm/i915/gem/i915_gem_object.c
-@@ -343,7 +343,7 @@ static void __i915_gem_free_objects(struct drm_i915_private *i915,
- 		__i915_gem_free_object(obj);
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 3baf29014f86..3828ac3bf1c4 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3155,7 +3155,6 @@ struct kfree_rcu_cpu_work {
+  * @krw_arr: Array of batches of kfree_rcu() objects waiting for a grace period
+  * @lock: Synchronize access to this structure
+  * @monitor_work: Promote @head to @head_free after KFREE_DRAIN_JIFFIES
+- * @monitor_todo: Tracks whether a @monitor_work delayed work is pending
+  * @initialized: The @rcu_work fields have been initialized
+  * @count: Number of objects for which GP not started
+  * @bkvcache:
+@@ -3180,7 +3179,6 @@ struct kfree_rcu_cpu {
+ 	struct kfree_rcu_cpu_work krw_arr[KFREE_N_BATCHES];
+ 	raw_spinlock_t lock;
+ 	struct delayed_work monitor_work;
+-	bool monitor_todo;
+ 	bool initialized;
+ 	int count;
  
- 		/* But keep the pointer alive for RCU-protected lookups */
--		call_rcu(&obj->rcu, __i915_gem_free_object_rcu);
-+		call_rcu_lazy(&obj->rcu, __i915_gem_free_object_rcu);
- 		cond_resched();
+@@ -3416,9 +3414,7 @@ static void kfree_rcu_monitor(struct work_struct *work)
+ 	// of the channels that is still busy we should rearm the
+ 	// work to repeat an attempt. Because previous batches are
+ 	// still in progress.
+-	if (!krcp->bkvhead[0] && !krcp->bkvhead[1] && !krcp->head)
+-		krcp->monitor_todo = false;
+-	else
++	if (krcp->bkvhead[0] || krcp->bkvhead[1] || krcp->head)
+ 		schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
+ 
+ 	raw_spin_unlock_irqrestore(&krcp->lock, flags);
+@@ -3607,10 +3603,8 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ 
+ 	// Set timer to drain after KFREE_DRAIN_JIFFIES.
+ 	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING &&
+-	    !krcp->monitor_todo) {
+-		krcp->monitor_todo = true;
++	    !delayed_work_pending(&krcp->monitor_work))
+ 		schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
+-	}
+ 
+ unlock_return:
+ 	krc_this_cpu_unlock(krcp, flags);
+@@ -3685,14 +3679,12 @@ void __init kfree_rcu_scheduler_running(void)
+ 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+ 
+ 		raw_spin_lock_irqsave(&krcp->lock, flags);
+-		if ((!krcp->bkvhead[0] && !krcp->bkvhead[1] && !krcp->head) ||
+-				krcp->monitor_todo) {
+-			raw_spin_unlock_irqrestore(&krcp->lock, flags);
+-			continue;
++		if (krcp->bkvhead[0] || krcp->bkvhead[1] || krcp->head) {
++			if (delayed_work_pending(&krcp->monitor_work)) {
++				schedule_delayed_work_on(cpu, &krcp->monitor_work,
++						KFREE_DRAIN_JIFFIES);
++			}
+ 		}
+-		krcp->monitor_todo = true;
+-		schedule_delayed_work_on(cpu, &krcp->monitor_work,
+-					 KFREE_DRAIN_JIFFIES);
+ 		raw_spin_unlock_irqrestore(&krcp->lock, flags);
  	}
  }
 -- 
