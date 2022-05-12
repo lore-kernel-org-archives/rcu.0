@@ -2,166 +2,172 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 55DC1C4332F
-	for <rcu@archiver.kernel.org>; Thu, 12 May 2022 03:05:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 76640C433F5
+	for <rcu@archiver.kernel.org>; Thu, 12 May 2022 03:11:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244529AbiELDFW (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 11 May 2022 23:05:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37344 "EHLO
+        id S245036AbiELDLZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 11 May 2022 23:11:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244586AbiELDFO (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 11 May 2022 23:05:14 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CD4B200F5C
-        for <rcu@vger.kernel.org>; Wed, 11 May 2022 20:05:13 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id u35so3409694qtc.13
-        for <rcu@vger.kernel.org>; Wed, 11 May 2022 20:05:13 -0700 (PDT)
+        with ESMTP id S244864AbiELDLW (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 11 May 2022 23:11:22 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0446643AF8
+        for <rcu@vger.kernel.org>; Wed, 11 May 2022 20:11:21 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id n8so3727320qke.11
+        for <rcu@vger.kernel.org>; Wed, 11 May 2022 20:11:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=krloPx/WxS98VS1vS96cNgmL7YiotWv16x5KX/rZNwk=;
-        b=erC2NorT3UzdBeIUO7Tvs9XfYymqMTGkuZ665aGCZw/PFXnbYwEscWPhhJC/mnxK/s
-         w3JKXgLjq0AgUbIlDC/AUpxW8yVKgCiFP5aTIvogTkVO6KRC1w2mgp6TZGWEHDrrrybG
-         XFc1so/fm/wXMD1/yzvfyYjXGDU07bh8fxLx4=
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=P6ehWJEf13dXCWUNyAtXTt5LMjnwf2ZoDqpLgP+X6e4=;
+        b=Su0kjM/z3pCEIvgPJ1yTDaW81Acmj8ikFdlOhVqLcxTUxbs9CEwA6V+H9ywe8LWP+o
+         BsjEcgf1XAqrT+9AieoVdDEUTFg3SOi5rkcsQ9RCcPwgfPwysmKYRssm5QaxMy6rDssH
+         Gij1oZiCIjjinen3ubNdpDunbwjHgoVr61Geo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=krloPx/WxS98VS1vS96cNgmL7YiotWv16x5KX/rZNwk=;
-        b=eaK3DkXKQQcb82ILMJuXSAxFQSjTvzsW8tQMkq4tSwDJe7E2LBSb3gzGyysRAQZnPo
-         HNy/NXBs0qUeMYF6pusMa7yXCpU0Za6sNEy+bzvb7L1nDSpOcM0tJTFQw6+5CE3LXN/c
-         7VNGuMDRzDdNo5M5tC5UAS9O2R+6HTkt4Vbb4yk04PQdVrYSn3mZHC93B97r2Riie8eQ
-         tgt/qSFKLYKMMRNrGZ1DJidI4Ldy6Bf22Sqnq52f6Vv7nH2ecYFALHRoqzJOic8xuaih
-         9zYRpKbR3o2u3W4v5HtPupT8jIBb0pHb1Icv6sAeYCMjLxoh5arIdtxFAvK0cMJZTum3
-         TSsw==
-X-Gm-Message-State: AOAM533NYnqMXT5fQ2V9z70aJ7YBFMliWTv8iBNTGHM298+REgDqh3aD
-        LwPEExtlRQ27GBT5ML2VMNq2DjaeLugMog==
-X-Google-Smtp-Source: ABdhPJxpFwDKzLMJIvkSUabCAm16C4Iznxq4wawVZ64fhCyJqTNvXd8da+90kv5Zp31aq4CB0h68Aw==
-X-Received: by 2002:ac8:7dcf:0:b0:2f3:d53a:add2 with SMTP id c15-20020ac87dcf000000b002f3d53aadd2mr18976974qte.128.1652324712862;
-        Wed, 11 May 2022 20:05:12 -0700 (PDT)
-Received: from joelboxx.c.googlers.com.com (29.46.245.35.bc.googleusercontent.com. [35.245.46.29])
-        by smtp.gmail.com with ESMTPSA id h124-20020a376c82000000b0069fc13ce203sm2270334qkc.52.2022.05.11.20.05.12
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=P6ehWJEf13dXCWUNyAtXTt5LMjnwf2ZoDqpLgP+X6e4=;
+        b=0edwxmQTAIHAebOmf7c57ceNDQcIzgf1hjV6zCMcnFDgcJ+N44O19NfbiowvTCIaA/
+         LVKv3w9zmQeIn7i/yogisNvCcthnI5nSc+qbqXUB1d85QHL9nfKiQPnPmbSxj6XJ+UNN
+         5IX9vcRp79arnaPM0ZyKgzAftIUrqjwAbk/5jFOVNg0+QOcykzkUPIVVFh3I2yduw7cc
+         fxnGSEpaVEgi2bNNBBldyJFDDfzCn4Wz5clx2qRKZtH66qTWtol4iWoEzlnt1AazkIKM
+         Y+my4s3Cae6v5NNxaXTDDdRUp/mKbPVGBFmY8htY0dnTQSZWui3K19YHjQR6C4i1jRmf
+         BpYg==
+X-Gm-Message-State: AOAM533gGNHcgcufRH3jTDnSMJh2Vuxzl1fqLyDJfOL0Ee0t6FegSbIu
+        M+uaAe5IUhiNjFV0SXuimvB8NA==
+X-Google-Smtp-Source: ABdhPJxmHpG/bjAR0HyxytSmkrshNsBhASem7wvGF1c2opYlwZP1VKB4EDn9W/RpylGyolb4iUW2ow==
+X-Received: by 2002:a05:620a:25d2:b0:699:bd31:aafb with SMTP id y18-20020a05620a25d200b00699bd31aafbmr21418202qko.531.1652325080115;
+        Wed, 11 May 2022 20:11:20 -0700 (PDT)
+Received: from localhost (29.46.245.35.bc.googleusercontent.com. [35.245.46.29])
+        by smtp.gmail.com with ESMTPSA id 10-20020a05620a078a00b0069fc167df92sm2231355qka.82.2022.05.11.20.11.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 May 2022 20:05:12 -0700 (PDT)
-From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
-To:     rcu@vger.kernel.org
-Cc:     rushikesh.s.kadam@intel.com, urezki@gmail.com,
-        neeraj.iitr10@gmail.com, frederic@kernel.org, paulmck@kernel.org,
-        rostedt@goodmis.org,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Subject: [RFC v1 14/14] DEBUG: Toggle rcu_lazy and tune at runtime
-Date:   Thu, 12 May 2022 03:04:42 +0000
-Message-Id: <20220512030442.2530552-15-joel@joelfernandes.org>
-X-Mailer: git-send-email 2.36.0.550.gb090851708-goog
-In-Reply-To: <20220512030442.2530552-1-joel@joelfernandes.org>
-References: <20220512030442.2530552-1-joel@joelfernandes.org>
+        Wed, 11 May 2022 20:11:19 -0700 (PDT)
+Date:   Thu, 12 May 2022 03:11:19 +0000
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH v2 1/1] rcu/nocb: Add an option to ON/OFF an offloading
+ from RT context
+Message-ID: <Ynx61yH8RFkaXG6M@google.com>
+References: <20220511085703.101596-1-urezki@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220511085703.101596-1-urezki@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Add sysctl knobs just for easier debugging/testing, to tune the maximum
-batch size, maximum time to wait before flush, and turning off the
-feature entirely.
+On Wed, May 11, 2022 at 10:57:03AM +0200, Uladzislau Rezki (Sony) wrote:
+> Introduce a RCU_NOCB_CPU_CB_BOOST kernel option. So a user can
+> decide if an offloading has to be done in a high-prio context or
+> not. Please note an option depends on RCU_NOCB_CPU and RCU_BOOST
+> parameters. For CONFIG_PREEMPT_RT kernel both RCU_BOOST and the
+> RCU_NOCB_CPU_CB_BOOST are active by default.
+> 
+> This patch splits the CONFIG_RCU_BOOST config into two peaces:
+> a) boosting preempted RCU readers and the kthreads which are
+>    directly responsible for driving expedited grace periods
+>    forward;
+> b) boosting offloading-kthreads in a way that their scheduling
+>    class are changed from SCHED_NORMAL to SCHED_FIFO.
+> 
+> The main reason of such split is, for example on Android there
+> are some workloads which require fast expedited grace period to
+> be done whereas offloading in RT context can lead to starvation
+> and hogging a CPU for a long time what is not acceptable for
+> latency sensitive environment. For instance:
+> 
+> <snip>
+> <...>-60 [006] d..1 2979.028717: rcu_batch_start: rcu_preempt CBs=34619 bl=270
+> <snip>
+> 
+> invoking 34 619 callbacks will take time thus making other CFS
+> tasks waiting in run-queue to be starved due to such behaviour.
+> 
+> v1 -> v2:
+> - fix the comment about the rcuc/rcub/rcuop;
+> - check the kthread_prio against zero value;
+> - by default the RCU_NOCB_CPU_CB_BOOST is ON for PREEMPT_RT.
+> 
+> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
----
- include/linux/sched/sysctl.h |  4 ++++
- kernel/rcu/lazy.c            | 12 ++++++++++--
- kernel/sysctl.c              | 23 +++++++++++++++++++++++
- 3 files changed, 37 insertions(+), 2 deletions(-)
+Acked-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-diff --git a/include/linux/sched/sysctl.h b/include/linux/sched/sysctl.h
-index c19dd5a2c05c..55ffc61beed1 100644
---- a/include/linux/sched/sysctl.h
-+++ b/include/linux/sched/sysctl.h
-@@ -16,6 +16,10 @@ enum { sysctl_hung_task_timeout_secs = 0 };
- 
- extern unsigned int sysctl_sched_child_runs_first;
- 
-+extern unsigned int sysctl_rcu_lazy;
-+extern unsigned int sysctl_rcu_lazy_batch;
-+extern unsigned int sysctl_rcu_lazy_jiffies;
-+
- enum sched_tunable_scaling {
- 	SCHED_TUNABLESCALING_NONE,
- 	SCHED_TUNABLESCALING_LOG,
-diff --git a/kernel/rcu/lazy.c b/kernel/rcu/lazy.c
-index 55e406cfc528..0af9fb67c92b 100644
---- a/kernel/rcu/lazy.c
-+++ b/kernel/rcu/lazy.c
-@@ -12,6 +12,10 @@
- // How much to wait before flushing?
- #define MAX_LAZY_JIFFIES	10000
- 
-+unsigned int sysctl_rcu_lazy_batch = MAX_LAZY_BATCH;
-+unsigned int sysctl_rcu_lazy_jiffies = MAX_LAZY_JIFFIES;
-+unsigned int sysctl_rcu_lazy = 1;
-+
- // We cast lazy_rcu_head to rcu_head and back. This keeps the API simple while
- // allowing us to use lockless list node in the head. Also, we use BUILD_BUG_ON
- // later to ensure that rcu_head and lazy_rcu_head are of the same size.
-@@ -49,6 +53,10 @@ void call_rcu_lazy(struct rcu_head *head_rcu, rcu_callback_t func)
- 	struct lazy_rcu_head *head = (struct lazy_rcu_head *)head_rcu;
- 	struct rcu_lazy_pcp *rlp;
- 
-+	if (!sysctl_rcu_lazy) {
-+		return call_rcu(head_rcu, func);
-+	}
-+
- 	preempt_disable();
-         rlp = this_cpu_ptr(&rcu_lazy_pcp_ins);
- 	preempt_enable();
-@@ -67,11 +75,11 @@ void call_rcu_lazy(struct rcu_head *head_rcu, rcu_callback_t func)
- 	llist_add(&head->llist_node, &rlp->head);
- 
- 	// Flush queue if too big
--	if (atomic_inc_return(&rlp->count) >= MAX_LAZY_BATCH) {
-+	if (atomic_inc_return(&rlp->count) >= sysctl_rcu_lazy_batch) {
- 		lazy_rcu_flush_cpu(rlp);
- 	} else {
- 		if (!delayed_work_pending(&rlp->work)) {
--			schedule_delayed_work(&rlp->work, MAX_LAZY_JIFFIES);
-+			schedule_delayed_work(&rlp->work, sysctl_rcu_lazy_jiffies);
- 		}
- 	}
- }
-diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index 5ae443b2882e..2ba830ca71ec 100644
---- a/kernel/sysctl.c
-+++ b/kernel/sysctl.c
-@@ -1659,6 +1659,29 @@ static struct ctl_table kern_table[] = {
- 		.mode		= 0644,
- 		.proc_handler	= proc_dointvec,
- 	},
-+#ifdef CONFIG_RCU_LAZY
-+	{
-+		.procname	= "rcu_lazy",
-+		.data		= &sysctl_rcu_lazy,
-+		.maxlen		= sizeof(unsigned int),
-+		.mode		= 0644,
-+		.proc_handler	= proc_dointvec,
-+	},
-+	{
-+		.procname	= "rcu_lazy_batch",
-+		.data		= &sysctl_rcu_lazy_batch,
-+		.maxlen		= sizeof(unsigned int),
-+		.mode		= 0644,
-+		.proc_handler	= proc_dointvec,
-+	},
-+	{
-+		.procname	= "rcu_lazy_jiffies",
-+		.data		= &sysctl_rcu_lazy_jiffies,
-+		.maxlen		= sizeof(unsigned int),
-+		.mode		= 0644,
-+		.proc_handler	= proc_dointvec,
-+	},
-+#endif
- #ifdef CONFIG_SCHEDSTATS
- 	{
- 		.procname	= "sched_schedstats",
--- 
-2.36.0.550.gb090851708-goog
+thanks,
 
+ - Joel
+
+
+> ---
+>  kernel/rcu/Kconfig     | 14 ++++++++++++++
+>  kernel/rcu/tree.c      |  6 +++++-
+>  kernel/rcu/tree_nocb.h |  3 ++-
+>  3 files changed, 21 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+> index 27aab870ae4c..a4ed7b5e2b75 100644
+> --- a/kernel/rcu/Kconfig
+> +++ b/kernel/rcu/Kconfig
+> @@ -275,6 +275,20 @@ config RCU_NOCB_CPU_DEFAULT_ALL
+>  	  Say Y here if you want offload all CPUs by default on boot.
+>  	  Say N here if you are unsure.
+>  
+> +config RCU_NOCB_CPU_CB_BOOST
+> +	bool "Offload RCU callback from real-time kthread"
+> +	depends on RCU_NOCB_CPU && RCU_BOOST
+> +	default y if PREEMPT_RT
+> +	help
+> +	  Use this option to offload callbacks from the SCHED_FIFO context
+> +	  to make the process faster. As a side effect of this approach is
+> +	  a latency especially for the SCHED_OTHER tasks which will not be
+> +	  able to preempt an offloading kthread. That latency depends on a
+> +	  number of callbacks to be invoked.
+> +
+> +	  Say Y here if you want to set RT priority for offloading kthreads.
+> +	  Say N here if you are unsure.
+> +
+>  config TASKS_TRACE_RCU_READ_MB
+>  	bool "Tasks Trace RCU readers use memory barriers in user and idle"
+>  	depends on RCU_EXPERT && TASKS_TRACE_RCU
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 9dc4c4e82db6..1c3852b1e0c8 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -154,7 +154,11 @@ static void sync_sched_exp_online_cleanup(int cpu);
+>  static void check_cb_ovld_locked(struct rcu_data *rdp, struct rcu_node *rnp);
+>  static bool rcu_rdp_is_offloaded(struct rcu_data *rdp);
+>  
+> -/* rcuc/rcub/rcuop kthread realtime priority */
+> +/*
+> + * rcuc/rcub/rcuop kthread realtime priority. The "rcuop"
+> + * real-time priority(enabling/disabling) is controlled by
+> + * the extra CONFIG_RCU_NOCB_CPU_CB_BOOST configuration.
+> + */
+>  static int kthread_prio = IS_ENABLED(CONFIG_RCU_BOOST) ? 1 : 0;
+>  module_param(kthread_prio, int, 0444);
+>  
+> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> index 60cc92cc6655..fa8e4f82e60c 100644
+> --- a/kernel/rcu/tree_nocb.h
+> +++ b/kernel/rcu/tree_nocb.h
+> @@ -1315,8 +1315,9 @@ static void rcu_spawn_cpu_nocb_kthread(int cpu)
+>  	if (WARN_ONCE(IS_ERR(t), "%s: Could not start rcuo CB kthread, OOM is now expected behavior\n", __func__))
+>  		goto end;
+>  
+> -	if (kthread_prio)
+> +	if (IS_ENABLED(CONFIG_RCU_NOCB_CPU_CB_BOOST) && kthread_prio)
+>  		sched_setscheduler_nocheck(t, SCHED_FIFO, &sp);
+> +
+>  	WRITE_ONCE(rdp->nocb_cb_kthread, t);
+>  	WRITE_ONCE(rdp->nocb_gp_kthread, rdp_gp->nocb_gp_kthread);
+>  	return;
+> -- 
+> 2.30.2
+> 
