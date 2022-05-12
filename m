@@ -2,204 +2,164 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 040F2C433EF
-	for <rcu@archiver.kernel.org>; Wed, 11 May 2022 21:11:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 176DDC433EF
+	for <rcu@archiver.kernel.org>; Thu, 12 May 2022 03:05:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348078AbiEKVLP (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 11 May 2022 17:11:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41444 "EHLO
+        id S244379AbiELDFC (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 11 May 2022 23:05:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348047AbiEKVLE (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 11 May 2022 17:11:04 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E29B5FF3A;
-        Wed, 11 May 2022 14:11:01 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C100161BA0;
-        Wed, 11 May 2022 21:11:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17E4AC340EE;
-        Wed, 11 May 2022 21:11:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1652303460;
-        bh=O3d94XNcE8vut9SCbZRM8trovJFtWJ9oUgdeGDAn0gE=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=s2LEzneqAT8nGJymba4QUHnkUfSxEprnr1aYS/9hYKfoq8YIC26gJzw5VeU8n5wGw
-         VbCvX/qKtD02Ifzl4LVMcxWmO1gq4JoGx7omk+sYJ1TpY3uRvD6i23WKkVl+SvsgzD
-         eSIF38Hn6v+GXf1wXqNquUzai/kcb7pDeKcb4hdU1Mwm1OPqsIjjwElnSO3LhheBX6
-         Nbx433opzqOxl3FaEemHCBpMJFA+5MTfuNffeymLk+luzlUBC27YV7s9Qb6WDMjgoR
-         cWC44UAHxmQuVM6hgVHBulaeM7LasZBlX9qQEUl9jsZ4y968ACw8ho8bOEAzq0NSDP
-         Ae9Mo3yccdFuQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id A216E5C05FC; Wed, 11 May 2022 14:10:59 -0700 (PDT)
-Date:   Wed, 11 May 2022 14:10:59 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: Re: [PATCH v2 1/1] rcu/nocb: Add an option to ON/OFF an offloading
- from RT context
-Message-ID: <20220511211059.GF1790663@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220511085703.101596-1-urezki@gmail.com>
+        with ESMTP id S242984AbiELDE7 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 11 May 2022 23:04:59 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B15381FC2E2
+        for <rcu@vger.kernel.org>; Wed, 11 May 2022 20:04:58 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id kk28so3481208qvb.3
+        for <rcu@vger.kernel.org>; Wed, 11 May 2022 20:04:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=S0qQTLcLpjX9FQM3fnQL6R3n5QbSlZYQSJdL5JR87Lc=;
+        b=rbPuvRnRtAVZUYX1id7DqAeSS0QbwaUtWkmJHYoe2GFkklOLj3xJr5tAgbmcTDwZcS
+         qxRWtGSjguiJq8t4OFu/1OFeKPcQ/T228UJtJVRUaUrNhOtxO3dikv3xoAP5KLkj4spt
+         bCRp1t5/HHsP3iRsL54ww9KSgZktWBWQkdZIQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=S0qQTLcLpjX9FQM3fnQL6R3n5QbSlZYQSJdL5JR87Lc=;
+        b=6toexFtVhPlsnGxLUfeGdJAXwK3+i6jDxbrOgdAbIqzSCx43H10DnHSJsZ3ctO64x8
+         E40cHOYPjXYTQvCCkv9SQwvozo7e0P/iNLMETw9mydae7zwl/9zrEnofKzKg7K77fpUu
+         sFcuH2ldiMXwbOcgReuxiibf9m6NRBTalPhmLV9vpIdId6fNSacP1AFODlTC9GbnY4l4
+         avLl2iKuIANARWVToPHq1+o/g6yfeZ/zYfA0TW8nZKMuzSLTcuHYK9zfdqeIXk+Yxmzx
+         UwPmmy5uiMZE3kEvsEmrHIJSF93nEe1ll6n3i0rGzWbEgZ0ehRCzRxveRlSYdIgVBSmo
+         eK6Q==
+X-Gm-Message-State: AOAM530/BqMO0GK+rDrOA6GW5lXPtDLmiAg5W7TUiBsbeV+6LphconKK
+        k20PNO1Iae04RulC+e6hGQ12kZcoPU5ipg==
+X-Google-Smtp-Source: ABdhPJz2cYwnKe5tBuWO2Dr8+hzcnHyXycgh6ChHpDdvN1StPi8i+ZjuDDtJEQpDUWaWkA0rxktY/A==
+X-Received: by 2002:ad4:576c:0:b0:45a:91a4:c109 with SMTP id r12-20020ad4576c000000b0045a91a4c109mr24930924qvx.115.1652324697661;
+        Wed, 11 May 2022 20:04:57 -0700 (PDT)
+Received: from joelboxx.c.googlers.com.com (29.46.245.35.bc.googleusercontent.com. [35.245.46.29])
+        by smtp.gmail.com with ESMTPSA id h124-20020a376c82000000b0069fc13ce203sm2270334qkc.52.2022.05.11.20.04.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 May 2022 20:04:57 -0700 (PDT)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     rcu@vger.kernel.org
+Cc:     rushikesh.s.kadam@intel.com, urezki@gmail.com,
+        neeraj.iitr10@gmail.com, frederic@kernel.org, paulmck@kernel.org,
+        rostedt@goodmis.org,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Subject: [RFC v1 00/14] Implement call_rcu_lazy() and miscellaneous fixes
+Date:   Thu, 12 May 2022 03:04:28 +0000
+Message-Id: <20220512030442.2530552-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.36.0.550.gb090851708-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220511085703.101596-1-urezki@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, May 11, 2022 at 10:57:03AM +0200, Uladzislau Rezki (Sony) wrote:
-> Introduce a RCU_NOCB_CPU_CB_BOOST kernel option. So a user can
-> decide if an offloading has to be done in a high-prio context or
-> not. Please note an option depends on RCU_NOCB_CPU and RCU_BOOST
-> parameters. For CONFIG_PREEMPT_RT kernel both RCU_BOOST and the
-> RCU_NOCB_CPU_CB_BOOST are active by default.
-> 
-> This patch splits the CONFIG_RCU_BOOST config into two peaces:
-> a) boosting preempted RCU readers and the kthreads which are
->    directly responsible for driving expedited grace periods
->    forward;
-> b) boosting offloading-kthreads in a way that their scheduling
->    class are changed from SCHED_NORMAL to SCHED_FIFO.
-> 
-> The main reason of such split is, for example on Android there
-> are some workloads which require fast expedited grace period to
-> be done whereas offloading in RT context can lead to starvation
-> and hogging a CPU for a long time what is not acceptable for
-> latency sensitive environment. For instance:
-> 
-> <snip>
-> <...>-60 [006] d..1 2979.028717: rcu_batch_start: rcu_preempt CBs=34619 bl=270
-> <snip>
-> 
-> invoking 34 619 callbacks will take time thus making other CFS
-> tasks waiting in run-queue to be starved due to such behaviour.
-> 
-> v1 -> v2:
-> - fix the comment about the rcuc/rcub/rcuop;
-> - check the kthread_prio against zero value;
-> - by default the RCU_NOCB_CPU_CB_BOOST is ON for PREEMPT_RT.
-> 
-> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Hello!
+Please find the proof of concept version of call_rcu_lazy() attached. This
+gives a lot of savings when the CPUs are relatively idle. Huge thanks to
+Rushikesh Kadam from Intel for investigating it with me.
 
-Very good, thank you!  I have queued this for further review and testing,
-with the usual wordsmithing (please check!).
+Some numbers below:
 
-By default, this would go not into the upcoming merge window, but to
-the one after that.  Please let me know if you need it in the upcoming
-merge window.
+Following are power savings we see on top of RCU_NOCB_CPU on an Intel platform.
+The observation is that due to a 'trickle down' effect of RCU callbacks, the
+system is very lightly loaded but constantly running few RCU callbacks very
+often. This confuses the power management hardware that the system is active,
+when it is in fact idle.
 
-							Thanx, Paul
+For example, when ChromeOS screen is off and user is not doing anything on the
+system, we can see big power savings.
+Before:
+Pk%pc10 = 72.13
+PkgWatt = 0.58
+CorWatt = 0.04
 
-------------------------------------------------------------------------
+After:
+Pk%pc10 = 81.28
+PkgWatt = 0.41
+CorWatt = 0.03
 
-commit f50467bdfec9c27ae574b8c7916b51abe3c46eae
-Author: Uladzislau Rezki (Sony) <urezki@gmail.com>
-Date:   Wed May 11 10:57:03 2022 +0200
+Further, when ChromeOS screen is ON but system is idle or lightly loaded, we
+can see that the display pipeline is constantly doing RCU callback queuing due
+to open/close of file descriptors associated with graphics buffers. This is
+attributed to the file_free_rcu() path which this patch series also touches.
 
-    rcu/nocb: Add option to opt rcuo kthreads out of RT priority
-    
-    This commit introduces a RCU_NOCB_CPU_CB_BOOST Kconfig option that
-    prevents rcuo kthreads from running at real-time priority, even in
-    kernels built with RCU_BOOST.  This capability is important to devices
-    needing low-latency (as in a few milliseconds) response from expedited
-    RCU grace periods, but which are not running a classic real-time workload.
-    On such devices, permitting the rcuo kthreads to run at real-time priority
-    results in unacceptable latencies imposed on the application tasks,
-    which run as SCHED_OTHER.
-    
-    See for example the following trace output:
-    
-    <snip>
-    <...>-60 [006] d..1 2979.028717: rcu_batch_start: rcu_preempt CBs=34619 bl=270
-    <snip>
-    
-    If that rcuop kthread were permitted to run at real-time SCHED_FIFO
-    priority, it would monopolize its CPU for hundreds of milliseconds
-    while invoking those 34619 RCU callback functions, which would cause an
-    unacceptably long latency spike for many application stacks on Android
-    platforms.
-    
-    However, some existing real-time workloads require that callback
-    invocation run at SCHED_FIFO priority, for example, those running on
-    systems with heavy SCHED_OTHER background loads.  (It is the real-time
-    system's administrator's responsibility to make sure that important
-    real-time tasks run at a higher priority than do RCU's kthreads.)
-    
-    Therefore, this new RCU_NOCB_CPU_CB_BOOST Kconfig option defaults to
-    "y" on kernels built with PREEMPT_RT and defaults to "n" otherwise.
-    The effect is to preserve current behavior for real-time systems, but for
-    other systems to allow expedited RCU grace periods to run with real-time
-    priority while continuing to invoke RCU callbacks as SCHED_OTHER.
-    
-    As you would expect, this RCU_NOCB_CPU_CB_BOOST Kconfig option has no
-    effect except on CPUs with offloaded RCU callbacks.
-    
-    Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+This patch series adds a simple but effective, and lockless implementation of
+RCU callback batching. On memory pressure, timeout or queue growing too big, we
+initiate a flush of one or more per-CPU lists.
 
-diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
-index 27aab870ae4cf..c05ca52cdf64d 100644
---- a/kernel/rcu/Kconfig
-+++ b/kernel/rcu/Kconfig
-@@ -275,6 +275,22 @@ config RCU_NOCB_CPU_DEFAULT_ALL
- 	  Say Y here if you want offload all CPUs by default on boot.
- 	  Say N here if you are unsure.
- 
-+config RCU_NOCB_CPU_CB_BOOST
-+	bool "Offload RCU callback from real-time kthread"
-+	depends on RCU_NOCB_CPU && RCU_BOOST
-+	default y if PREEMPT_RT
-+	help
-+	  Use this option to invoke offloaded callbacks as SCHED_FIFO
-+	  to avoid starvation by heavy SCHED_OTHER background load.
-+	  Of course, running as SCHED_FIFO during callback floods will
-+	  cause the rcuo[ps] kthreads to monopolize the CPU for hundreds
-+	  of milliseconds or more.  Therefore, when enabling this option,
-+	  it is your responsibility to ensure that latency-sensitive
-+	  tasks either run with higher priority or run on some other CPU.
-+
-+	  Say Y here if you want to set RT priority for offloading kthreads.
-+	  Say N here if you are building a !PREEMPT_RT kernel and are unsure.
-+
- config TASKS_TRACE_RCU_READ_MB
- 	bool "Tasks Trace RCU readers use memory barriers in user and idle"
- 	depends on RCU_EXPERT && TASKS_TRACE_RCU
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index bcc5876c9753b..222d59299a2af 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -154,7 +154,11 @@ static void sync_sched_exp_online_cleanup(int cpu);
- static void check_cb_ovld_locked(struct rcu_data *rdp, struct rcu_node *rnp);
- static bool rcu_rdp_is_offloaded(struct rcu_data *rdp);
- 
--/* rcuc/rcub/rcuop kthread realtime priority */
-+/*
-+ * rcuc/rcub/rcuop kthread realtime priority. The "rcuop"
-+ * real-time priority(enabling/disabling) is controlled by
-+ * the extra CONFIG_RCU_NOCB_CPU_CB_BOOST configuration.
-+ */
- static int kthread_prio = IS_ENABLED(CONFIG_RCU_BOOST) ? 1 : 0;
- module_param(kthread_prio, int, 0444);
- 
-diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index 60cc92cc66552..fa8e4f82e60c0 100644
---- a/kernel/rcu/tree_nocb.h
-+++ b/kernel/rcu/tree_nocb.h
-@@ -1315,8 +1315,9 @@ static void rcu_spawn_cpu_nocb_kthread(int cpu)
- 	if (WARN_ONCE(IS_ERR(t), "%s: Could not start rcuo CB kthread, OOM is now expected behavior\n", __func__))
- 		goto end;
- 
--	if (kthread_prio)
-+	if (IS_ENABLED(CONFIG_RCU_NOCB_CPU_CB_BOOST) && kthread_prio)
- 		sched_setscheduler_nocheck(t, SCHED_FIFO, &sp);
-+
- 	WRITE_ONCE(rdp->nocb_cb_kthread, t);
- 	WRITE_ONCE(rdp->nocb_gp_kthread, rdp_gp->nocb_gp_kthread);
- 	return;
+Similar results can be achieved by increasing jiffies_till_first_fqs, however
+that also has the effect of slowing down RCU. Especially I saw huge slow down
+of function graph tracer when increasing that.
+
+One drawback of this series is, if another frequent RCU callback creeps up in
+the future, that's not lazy, then that will again hurt the power. However, I
+believe identifying and fixing those is a more reasonable approach than slowing
+RCU down for the whole system.
+
+NOTE: Add debug patch is added in the series toggle /proc/sys/kernel/rcu_lazy
+at runtime to turn it on or off globally. It is default to on. Further, please
+use the sysctls in lazy.c for further tuning of parameters that effect the
+flushing.
+
+Disclaimer 1: Don't boot your personal system on it yet anticipating power
+savings, as TREE07 still causes RCU stalls and I am looking more into that, but
+I believe this series should be good for general testing.
+
+Disclaimer 2: I have intentionally not CC'd other subsystem maintainers (like
+net, fs) to keep noise low and will CC them in the future after 1 or 2 rounds
+of review and agreements.
+
+Joel Fernandes (Google) (14):
+  rcu: Add a lock-less lazy RCU implementation
+  workqueue: Add a lazy version of queue_rcu_work()
+  block/blk-ioc: Move call_rcu() to call_rcu_lazy()
+  cred: Move call_rcu() to call_rcu_lazy()
+  fs: Move call_rcu() to call_rcu_lazy() in some paths
+  kernel: Move various core kernel usages to call_rcu_lazy()
+  security: Move call_rcu() to call_rcu_lazy()
+  net/core: Move call_rcu() to call_rcu_lazy()
+  lib: Move call_rcu() to call_rcu_lazy()
+  kfree/rcu: Queue RCU work via queue_rcu_work_lazy()
+  i915: Move call_rcu() to call_rcu_lazy()
+  rcu/kfree: remove useless monitor_todo flag
+  rcu/kfree: Fix kfree_rcu_shrink_count() return value
+  DEBUG: Toggle rcu_lazy and tune at runtime
+
+ block/blk-ioc.c                            |   2 +-
+ drivers/gpu/drm/i915/gem/i915_gem_object.c |   2 +-
+ fs/dcache.c                                |   4 +-
+ fs/eventpoll.c                             |   2 +-
+ fs/file_table.c                            |   3 +-
+ fs/inode.c                                 |   2 +-
+ include/linux/rcupdate.h                   |   6 +
+ include/linux/sched/sysctl.h               |   4 +
+ include/linux/workqueue.h                  |   1 +
+ kernel/cred.c                              |   2 +-
+ kernel/exit.c                              |   2 +-
+ kernel/pid.c                               |   2 +-
+ kernel/rcu/Kconfig                         |   8 ++
+ kernel/rcu/Makefile                        |   1 +
+ kernel/rcu/lazy.c                          | 153 +++++++++++++++++++++
+ kernel/rcu/rcu.h                           |   5 +
+ kernel/rcu/tree.c                          |  28 ++--
+ kernel/sysctl.c                            |  23 ++++
+ kernel/time/posix-timers.c                 |   2 +-
+ kernel/workqueue.c                         |  25 ++++
+ lib/radix-tree.c                           |   2 +-
+ lib/xarray.c                               |   2 +-
+ net/core/dst.c                             |   2 +-
+ security/security.c                        |   2 +-
+ security/selinux/avc.c                     |   4 +-
+ 25 files changed, 255 insertions(+), 34 deletions(-)
+ create mode 100644 kernel/rcu/lazy.c
+
+-- 
+2.36.0.550.gb090851708-goog
+
