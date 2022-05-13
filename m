@@ -2,100 +2,82 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DE0B7C433EF
-	for <rcu@archiver.kernel.org>; Fri, 13 May 2022 14:54:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 85585C433EF
+	for <rcu@archiver.kernel.org>; Fri, 13 May 2022 14:55:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380704AbiEMOyK (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 13 May 2022 10:54:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47888 "EHLO
+        id S1353025AbiEMOzl (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 13 May 2022 10:55:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353025AbiEMOyJ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 13 May 2022 10:54:09 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EFFB1ADA7
-        for <rcu@vger.kernel.org>; Fri, 13 May 2022 07:54:08 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id bu29so15055049lfb.0
-        for <rcu@vger.kernel.org>; Fri, 13 May 2022 07:54:08 -0700 (PDT)
+        with ESMTP id S1349568AbiEMOzk (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 13 May 2022 10:55:40 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EF6217054
+        for <rcu@vger.kernel.org>; Fri, 13 May 2022 07:55:39 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id d15so14979451lfk.5
+        for <rcu@vger.kernel.org>; Fri, 13 May 2022 07:55:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:date:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=qga4K74lc3fgOCAZ6qKWiq1+38f04+nsXNsncvmCLA8=;
-        b=eqT29WE6dCys+sUGaE0J6DAhLGmPDz+bGbpxVw2b/jdYZs6/VliyEJj9+n6fNp79UN
-         JBMu0kcrXo+3ano2/oyMvIvKlw9IHewdcflb4ogZF2k5B+hYyen8z8UfxxvpeLvtWDLD
-         Co9+EY7eIFPM9ArMdhhBm8QbAHiclBY+jdOw/+yqLGnu1FD0XiHCzny9Imjx3UbvL3/a
-         h1Irnf0y0DSvIvad926gQ/gKyW2lnCdw7zuJ7LpcuAudYCGrDMFQbSblvSk14NsZKHlQ
-         vAkQZe31N6+bUFJjbuzUXZjfVkcf3mAgvqQa8bRAvoCqzEs+nQ/gI8XEEA8WvuPpubuL
-         tgLA==
+        bh=Cbc1ebLi+bapLdes0n8ulDAJENFljYfU/XpUlsOIVqg=;
+        b=ZBW6QsnfEE+d260arZpbT10hRl/xSF38vJq07xxU7fTjQ57MHwl96J1EWJZnbLjoFq
+         au2leRsNF8i8zdxQNmfmD9Ni+lGTCaWIDHhgob3X8MAJbiwxKlZ+YiS+VF+xXvIHMFRl
+         W8OzwYewG/QPc0xS4cGlVIWG/6dV+3Ajii1BMGj337Ff1gY6EOKkiTfA2jcYPoOJIIiz
+         gUPp2TzZsja2PO4/NVNd3VMXuHcLhW17cs1U5pkAybv1XszC+Rq8VB0czygdVmKcYvcN
+         M+GfXWyU6S8XYtE+eeM0VwkkluBCNwGPva0HRos5oBUzJc5uqUe1WUbycY5LilZbAQE1
+         17VA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:date:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=qga4K74lc3fgOCAZ6qKWiq1+38f04+nsXNsncvmCLA8=;
-        b=5E80CublIQBbaKQIbeFa4MCrKJOrmX5Y6AC6GkAxliMcA9Fs5NV9F98E9+DLtgNCgw
-         JIrsW45b+zvT8cKrXzCoQeKd/GPdBxBPN1Amfa57HroqWfnmPTQpb0zpzat4h5Cx94up
-         dNCBDerc49sG0XnxmunS3qGvrPkk4i+t/6ie9M6P9W/ri1L08X41N0D9N0sGbM20zSfq
-         kV6xn5pb11NrWjw8DGpw1pkV+FDnkB7HjRPTNnfSkbIOyJN9ZSa0YcAaYyWFbksciOyB
-         uLQ1fKHWTYCGsGr7aAwdDzSih+wNdNwZMYEyxhgNfTDAoJrVWV1RxSMrdeYYhXc5wujF
-         tK5A==
-X-Gm-Message-State: AOAM531p4jyr8hEoCtcMgW5mEqLcs2/XhO45KkHBwV6chat5qOOJnxWB
-        YVdtUOG1P7DwQbKT7XbarAs=
-X-Google-Smtp-Source: ABdhPJw7+e/MkR+GoufVHiAkwBt7YhAaxFHcx1PFAcIOZbft1JepbGabHSWQcSI5K4mCmAjOgM2XHw==
-X-Received: by 2002:ac2:5319:0:b0:471:fc6e:674f with SMTP id c25-20020ac25319000000b00471fc6e674fmr3612346lfh.493.1652453645339;
-        Fri, 13 May 2022 07:54:05 -0700 (PDT)
+        bh=Cbc1ebLi+bapLdes0n8ulDAJENFljYfU/XpUlsOIVqg=;
+        b=c1LNNMRBzFRP88m6evjgii4FRyDA1Uy4Ohj/XXRcpVfh6uHpvSgVWPWpOJ3FvlfkP/
+         xdg2Sp3Nakb/szEuz3RiK+cX2mnNjHGM9L2kSzyVM07oqCzv86D6gfTJ3KWzwu5hxuBx
+         fr+nv3XHe58tvjjp5mYJfWB6qcs+W7lvn22LTjZEehYaA29YOo4u2A+cxWXWp0+gBkxV
+         bxG3jTCAbkS3xZkl1OXd+T1QOr/R3cF51KwItfba6jLelixkHLCpvB/OhfaswX1VJFDL
+         0kjrn8jKEvj6D84c7UW2ACad6OMlYahAJ5185N1BPLVHX57tr4zZOmbcJBToy0PIiMEN
+         cWeQ==
+X-Gm-Message-State: AOAM530FAF3HbNrN4r0daGWvWsB5wj3VbgRVjCgNG+pZmfGiO/lM3V4O
+        SYCyKIH0bd+LmawS3Y+XidY=
+X-Google-Smtp-Source: ABdhPJzZTetY7Av8ZaxQujrKkxwf/HIUZ/7C9uFehsyV0Gf+6tT4cJUu3becLZHH5IYuY6sE2bT5vQ==
+X-Received: by 2002:a05:6512:2313:b0:473:a307:b1ee with SMTP id o19-20020a056512231300b00473a307b1eemr3689141lfu.159.1652453737556;
+        Fri, 13 May 2022 07:55:37 -0700 (PDT)
 Received: from pc638.lan ([155.137.26.201])
-        by smtp.gmail.com with ESMTPSA id h2-20020ac25962000000b0047255d21198sm401422lfp.199.2022.05.13.07.54.04
+        by smtp.gmail.com with ESMTPSA id u8-20020ac24c28000000b0047255d211c7sm400620lfq.246.2022.05.13.07.55.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 May 2022 07:54:04 -0700 (PDT)
+        Fri, 13 May 2022 07:55:36 -0700 (PDT)
 From:   Uladzislau Rezki <urezki@gmail.com>
 X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Fri, 13 May 2022 16:54:02 +0200
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     rcu@vger.kernel.org, rushikesh.s.kadam@intel.com, urezki@gmail.com,
-        neeraj.iitr10@gmail.com, frederic@kernel.org, paulmck@kernel.org,
-        rostedt@goodmis.org
-Subject: Re: [RFC v1 13/14] rcu/kfree: Fix kfree_rcu_shrink_count() return
- value
-Message-ID: <Yn5xCm1EfNPsN2Yg@pc638.lan>
+Date:   Fri, 13 May 2022 16:55:34 +0200
+To:     "Paul E. McKenney" <paulmck@kernel.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        rcu@vger.kernel.org, rushikesh.s.kadam@intel.com, urezki@gmail.com,
+        neeraj.iitr10@gmail.com, frederic@kernel.org, rostedt@goodmis.org
+Subject: Re: [RFC v1 10/14] kfree/rcu: Queue RCU work via
+ queue_rcu_work_lazy()
+Message-ID: <Yn5xZkENgmnd7wyq@pc638.lan>
 References: <20220512030442.2530552-1-joel@joelfernandes.org>
- <20220512030442.2530552-14-joel@joelfernandes.org>
+ <20220512030442.2530552-11-joel@joelfernandes.org>
+ <20220513001206.GZ1790663@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220512030442.2530552-14-joel@joelfernandes.org>
+In-Reply-To: <20220513001206.GZ1790663@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, May 12, 2022 at 03:04:41AM +0000, Joel Fernandes (Google) wrote:
-> As per the comments in include/linux/shrinker.h, .count_objects callback
-> should return the number of freeable items, but if there are no objects
-> to free, SHRINK_EMPTY should be returned. The only time 0 is returned
-> should be when we are unable to determine the number of objects, or the
-> cache should be skipped for another reason.
+> On Thu, May 12, 2022 at 03:04:38AM +0000, Joel Fernandes (Google) wrote:
+> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 > 
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> ---
->  kernel/rcu/tree.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Again, given that kfree_rcu() is doing its own laziness, is this really
+> helping?  If so, would it instead make sense to adjust the kfree_rcu()
+> timeouts?
 > 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 3828ac3bf1c4..f191542cdf5e 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -3637,7 +3637,7 @@ kfree_rcu_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
->  		atomic_set(&krcp->backoff_page_cache_fill, 1);
->  	}
->  
-> -	return count;
-> +	return count == 0 ? SHRINK_EMPTY : count;
->  }
->  
->  static unsigned long
-> -- 
-> 2.36.0.550.gb090851708-goog
-> 
-Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+IMHO, this patch does not help much. Like Paul has mentioned we use
+batching anyway.
 
 --
-Uladzisalu Rezki
+Uladzislau Rezki
