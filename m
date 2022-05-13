@@ -2,128 +2,124 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B1E8FC433EF
-	for <rcu@archiver.kernel.org>; Fri, 13 May 2022 14:14:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 312C1C4167B
+	for <rcu@archiver.kernel.org>; Fri, 13 May 2022 14:46:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237900AbiEMOOt (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 13 May 2022 10:14:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42542 "EHLO
+        id S1381536AbiEMOqP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 13 May 2022 10:46:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232762AbiEMOOs (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 13 May 2022 10:14:48 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EAC6E0D4;
-        Fri, 13 May 2022 07:14:47 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BD75462112;
-        Fri, 13 May 2022 14:14:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 159C2C34100;
-        Fri, 13 May 2022 14:14:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1652451286;
-        bh=J0Cl4mXGgT8rgZPubGxu6kkMwNidiS6O+73+RhxIujQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=MugHpPrbZcsmTJOodu+YZohAOEPU44MayaczpjCJS8yged8f23jozV9dbnCI0PEDr
-         bwpIXWsebvpUffFp4Wf8RSbWttwYtRSciZtWsbfCnprslqqfMpuarZ/CQ714SGmok/
-         Tm8aa5oPOwmGPFw6tCBrfEa2RoIbwUzcZ/cjjoGMY9d6gdJzl1HgawxP/wHRG+lI07
-         /dBKzV7eb/WYHE0d2TjISBAW7Ie29voV6EotVbPjidn3CSjIFnTbGVjjTofpqdnCby
-         juZqS1lqlinP1YlO0nTqyxvdQDEE4ymPYGmcqJGfmX25qV4waD6fNvR5A66gMDeS0V
-         HArZXlUaELCHw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id AF8E95C0342; Fri, 13 May 2022 07:14:45 -0700 (PDT)
-Date:   Fri, 13 May 2022 07:14:45 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
-Cc:     "frederic@kernel.org" <frederic@kernel.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] rcu: Direct boosting gp_tasks for strict grace periods
-Message-ID: <20220513141445.GF1790663@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220513004256.465233-1-qiang1.zhang@intel.com>
- <20220513010651.GD1790663@paulmck-ThinkPad-P17-Gen-1>
- <PH0PR11MB588012EC5E5DFD3FFDA49401DACA9@PH0PR11MB5880.namprd11.prod.outlook.com>
+        with ESMTP id S1381450AbiEMOp6 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 13 May 2022 10:45:58 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBB093C4B7;
+        Fri, 13 May 2022 07:45:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+        Resent-Cc:Resent-Message-ID; bh=A7LCydQD5IYNzaoDGyfG1KKM7tCxGhr7TuWULSo03X0=;
+        t=1652453114; x=1653662714; b=LYs2Kri0cw+/UGCEdaklFX6++OP3d6XjJhLcC02jkMM6M13
+        enCTtLPVnFDCrQRFLX819G3cOwVdjYiBSa9JccmqbQblnXISEdyq/7i5O4aMDV5xAFeJh8X61XWYA
+        3hNxcWPO6okKyPbXVAhEt6WHQ/sVkV0gcWR0C3dCeQWocdHTJKZWVZ25I4x63uWgmbhevhAje3sRQ
+        ynAaFSpM6xFAePbWKVwYY4aWUVh0Ju93mi2MceapTMkNIryb6lt7v4/iXwdFQzg89Tz18COaji5Fq
+        iSqUu6mUSMMlAVO2Bcj32MYDMrCOrP4TWkawclAlZw9o6WbW7KIcYMOBD7zR8fsA==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.95)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1npWX2-00AdYm-Tp;
+        Fri, 13 May 2022 16:44:41 +0200
+Message-ID: <1760d499824f9ef053af7a8dac04b48ab7d7fd3d.camel@sipsolutions.net>
+Subject: Re: [PATCH 11/30] um: Improve panic notifiers consistency and
+ ordering
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Richard Weinberger <richard@nod.at>
+Cc:     akpm@linux-foundation.org, bhe@redhat.com,
+        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org,
+        linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        linux-leds@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-um@lists.infradead.org,
+        linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org,
+        openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org,
+        sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org,
+        x86@kernel.org, kernel-dev@igalia.com, kernel@gpiccoli.net,
+        halves@canonical.com, fabiomirmar@gmail.com,
+        alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com,
+        arnd@arndb.de, bp@alien8.de, corbet@lwn.net,
+        d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com,
+        dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org,
+        mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com,
+        jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org,
+        luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com,
+        paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org,
+        senozhatsky@chromium.org, stern@rowland.harvard.edu,
+        tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com,
+        will@kernel.org
+Date:   Fri, 13 May 2022 16:44:36 +0200
+In-Reply-To: <4b003501-f5c3-cd66-d222-88d98c93e141@igalia.com>
+References: <20220427224924.592546-1-gpiccoli@igalia.com>
+         <20220427224924.592546-12-gpiccoli@igalia.com> <Ynp2hRodh04K3pzK@alley>
+         <4b003501-f5c3-cd66-d222-88d98c93e141@igalia.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.4 (3.42.4-2.fc35) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <PH0PR11MB588012EC5E5DFD3FFDA49401DACA9@PH0PR11MB5880.namprd11.prod.outlook.com>
+Content-Transfer-Encoding: 7bit
+X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, May 13, 2022 at 01:17:16PM +0000, Zhang, Qiang1 wrote:
-> 
-> On Fri, May 13, 2022 at 08:42:55AM +0800, Zqiang wrote:
-> > If the CONFIG_RCU_STRICT_GRACE_PERIOD option is enabled, the normal 
-> > grace period will be treated as expedited grace period, the gp_tasks 
-> > that block current grace period needs to be boosted unconditionally, 
-> > therefore this commit adds Kconfig check in rcu_initiate_boost().
+On Wed, 2022-05-11 at 17:22 -0300, Guilherme G. Piccoli wrote:
+> On 10/05/2022 11:28, Petr Mladek wrote:
+> > [...]
+> > It is not clear to me why user mode linux should not care about
+> > the other notifiers. It might be because I do not know much
+> > about the user mode linux.
 > > 
-> > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+> > Is the because they always create core dump or are never running
+> > in a hypervisor or ...?
+> > 
+> > AFAIK, the notifiers do many different things. For example, there
+> > is a notifier that disables RCU watchdog, print some extra
+> > information. Why none of them make sense here?
+> > 
 > 
-> >Good eyes!  I have queued this for further review and testing, thank you!
-> >
-> >What sorts of tests did you run on it?
-> 
-> Hi Paul
-> 
-> I didn't think of  suitable test method,
-> Can you provide me with a test method to test it, I will be happy to test.
+> Hi Petr, my understanding is that UML is a form of running Linux as a
+> regular userspace process for testing purposes.
 
-Here is one possibility:
+Correct.
 
-tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 60 --configs "TREE01 TREE02 TREE03 TREE04 TREE05 TREE07 TREE09 TREE10" --kconfig "CONFIG_NR_CPUS=4 CONFIG_RCU_STRICT_GRACE_PERIOD=y" --trust-make
+> With that said, as soon
+> as we exit in the error path, less "pollution" would happen, so users
+> can use GDB to debug the core dump for example.
+> 
+> In later patches of this series (when we split the panic notifiers in 3
+> lists) these UML notifiers run in the pre-reboot list, so they run after
+> the informational notifiers for example (in the default level).
+> But without the list split we cannot order properly, so my gut feeling
+> is that makes sense to run them rather earlier than later in the panic
+> process...
+> 
+> Maybe Anton / Johannes / Richard could give their opinions - appreciate
+> that, I'm not attached to the priority here, it's more about users'
+> common usage of UML I can think of...
 
-On a 16-CPU system, this will do eight kernel builds and run about two
-hours of testing.
+It's hard to say ... In a sense I'm not sure it matters?
 
-							Thanx, Paul
+OTOH something like the ftrace dump notifier (kernel/trace/trace.c)
+might still be useful to run before the mconsole and coredump ones, even
+if you could probably use gdb to figure out the information.
 
-> Thanks,
-> Zqiang
-> 
-> >
-> >As usual, I could not resist the urge to wordsmith, so could you please check the version shown below?
-> >
-> >							Thanx, Paul
-> 
-> ------------------------------------------------------------------------
-> 
-> commit 079e0f894c5d887c678f94332c1fa7287abfd6bc
-> Author: Zqiang <qiang1.zhang@intel.com>
-> Date:   Fri May 13 08:42:55 2022 +0800
-> 
->     rcu: Immediately boost preempted readers for strict grace periods
->     
->     The intent of the CONFIG_RCU_STRICT_GRACE_PERIOD Konfig option is to
->     cause normal grace periods to complete quickly in order to better catch
->     errors resulting from improperly leaking pointers from RCU read-side
->     critical sections.  However, kernels built with this option enabled still
->     wait for some hundreds of milliseconds before boosting RCU readers that
->     have been preempted within their current critical section.  The value
->     of this delay is set by the CONFIG_RCU_BOOST_DELAY Kconfig option,
->     which defaults to 500 milliseconds.
->     
->     This commit therefore causes kernels build with strict grace periods
->     to ignore CONFIG_RCU_BOOST_DELAY.  This causes rcu_initiate_boost()
->     to start boosting immediately after all CPUs on a given leaf rcu_node
->     structure have passed through their quiescent states.
->     
->     Signed-off-by: Zqiang <qiang1.zhang@intel.com>
->     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> 
-> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h index 99cde4c947699..b4ab952f04ea6 100644
-> --- a/kernel/rcu/tree_plugin.h
-> +++ b/kernel/rcu/tree_plugin.h
-> @@ -1159,7 +1159,8 @@ static void rcu_initiate_boost(struct rcu_node *rnp, unsigned long flags)
->  	    (rnp->gp_tasks != NULL &&
->  	     rnp->boost_tasks == NULL &&
->  	     rnp->qsmask == 0 &&
-> -	     (!time_after(rnp->boost_time, jiffies) || rcu_state.cbovld))) {
-> +	     (!time_after(rnp->boost_time, jiffies) || rcu_state.cbovld ||
-> +	      IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD)))) {
->  		if (rnp->exp_tasks == NULL)
->  			WRITE_ONCE(rnp->boost_tasks, rnp->gp_tasks);
->  		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+Personally, I don't have a scenario where I'd care about the trace
+buffers though, and most of the others I found would seem irrelevant
+(drivers that aren't even compiled, hung tasks won't really happen since
+we exit immediately, and similar.)
+
+johannes
