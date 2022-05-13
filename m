@@ -2,82 +2,116 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 85585C433EF
-	for <rcu@archiver.kernel.org>; Fri, 13 May 2022 14:55:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C457BC433F5
+	for <rcu@archiver.kernel.org>; Fri, 13 May 2022 15:06:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353025AbiEMOzl (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 13 May 2022 10:55:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50102 "EHLO
+        id S1381260AbiEMPGT (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 13 May 2022 11:06:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349568AbiEMOzk (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 13 May 2022 10:55:40 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EF6217054
-        for <rcu@vger.kernel.org>; Fri, 13 May 2022 07:55:39 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id d15so14979451lfk.5
-        for <rcu@vger.kernel.org>; Fri, 13 May 2022 07:55:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Cbc1ebLi+bapLdes0n8ulDAJENFljYfU/XpUlsOIVqg=;
-        b=ZBW6QsnfEE+d260arZpbT10hRl/xSF38vJq07xxU7fTjQ57MHwl96J1EWJZnbLjoFq
-         au2leRsNF8i8zdxQNmfmD9Ni+lGTCaWIDHhgob3X8MAJbiwxKlZ+YiS+VF+xXvIHMFRl
-         W8OzwYewG/QPc0xS4cGlVIWG/6dV+3Ajii1BMGj337Ff1gY6EOKkiTfA2jcYPoOJIIiz
-         gUPp2TzZsja2PO4/NVNd3VMXuHcLhW17cs1U5pkAybv1XszC+Rq8VB0czygdVmKcYvcN
-         M+GfXWyU6S8XYtE+eeM0VwkkluBCNwGPva0HRos5oBUzJc5uqUe1WUbycY5LilZbAQE1
-         17VA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Cbc1ebLi+bapLdes0n8ulDAJENFljYfU/XpUlsOIVqg=;
-        b=c1LNNMRBzFRP88m6evjgii4FRyDA1Uy4Ohj/XXRcpVfh6uHpvSgVWPWpOJ3FvlfkP/
-         xdg2Sp3Nakb/szEuz3RiK+cX2mnNjHGM9L2kSzyVM07oqCzv86D6gfTJ3KWzwu5hxuBx
-         fr+nv3XHe58tvjjp5mYJfWB6qcs+W7lvn22LTjZEehYaA29YOo4u2A+cxWXWp0+gBkxV
-         bxG3jTCAbkS3xZkl1OXd+T1QOr/R3cF51KwItfba6jLelixkHLCpvB/OhfaswX1VJFDL
-         0kjrn8jKEvj6D84c7UW2ACad6OMlYahAJ5185N1BPLVHX57tr4zZOmbcJBToy0PIiMEN
-         cWeQ==
-X-Gm-Message-State: AOAM530FAF3HbNrN4r0daGWvWsB5wj3VbgRVjCgNG+pZmfGiO/lM3V4O
-        SYCyKIH0bd+LmawS3Y+XidY=
-X-Google-Smtp-Source: ABdhPJzZTetY7Av8ZaxQujrKkxwf/HIUZ/7C9uFehsyV0Gf+6tT4cJUu3becLZHH5IYuY6sE2bT5vQ==
-X-Received: by 2002:a05:6512:2313:b0:473:a307:b1ee with SMTP id o19-20020a056512231300b00473a307b1eemr3689141lfu.159.1652453737556;
-        Fri, 13 May 2022 07:55:37 -0700 (PDT)
-Received: from pc638.lan ([155.137.26.201])
-        by smtp.gmail.com with ESMTPSA id u8-20020ac24c28000000b0047255d211c7sm400620lfq.246.2022.05.13.07.55.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 May 2022 07:55:36 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Fri, 13 May 2022 16:55:34 +0200
-To:     "Paul E. McKenney" <paulmck@kernel.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        rcu@vger.kernel.org, rushikesh.s.kadam@intel.com, urezki@gmail.com,
-        neeraj.iitr10@gmail.com, frederic@kernel.org, rostedt@goodmis.org
-Subject: Re: [RFC v1 10/14] kfree/rcu: Queue RCU work via
- queue_rcu_work_lazy()
-Message-ID: <Yn5xZkENgmnd7wyq@pc638.lan>
-References: <20220512030442.2530552-1-joel@joelfernandes.org>
- <20220512030442.2530552-11-joel@joelfernandes.org>
- <20220513001206.GZ1790663@paulmck-ThinkPad-P17-Gen-1>
+        with ESMTP id S1380167AbiEMPF7 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 13 May 2022 11:05:59 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 654A957104;
+        Fri, 13 May 2022 08:05:58 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 022A66227D;
+        Fri, 13 May 2022 15:05:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54CECC34116;
+        Fri, 13 May 2022 15:05:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1652454357;
+        bh=RNc8u9ThJH7emKt6pvxyKswC95AUnEUd1+i+cdRt+pc=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=LXryLq0rlIPlE+j+5fFMCNgWqos+FgCVpvHSaLcuAOHapYooy0Ovdual4ULDHcv1u
+         hJFvCB/ETnvlUtqZJ51+Yr9nogmPiTzAkSOWdLhosbicR+dl/3nB7Ix7Ckaxf7BHIG
+         ACY9LPH6EyAhOviHsa6n2yGqsLY8qTRRIgzcuGeYlLIbdiApYKD/PHZofIe/qUfUOl
+         ChhQoLbRK5xU1gWNFfK7pgOODYEddkGI6iPftKP2vth8WrSysv5t82wqjIz3WCy20F
+         8fCbUSjRduO1b0YQjAlFXvgLgdq7ehIX2zosZSyocaBHyDj4Xl0bGoXgAHTzY3jD12
+         UEoyNYwPWluvw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id D5F315C034D; Fri, 13 May 2022 08:05:56 -0700 (PDT)
+Date:   Fri, 13 May 2022 08:05:56 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu/nocb: Delete local variable 'need_rcu_nocb_mask' in
+ rcu_init_nohz()
+Message-ID: <20220513150556.GH1790663@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20220426073626.967-1-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220513001206.GZ1790663@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20220426073626.967-1-thunder.leizhen@huawei.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-> On Thu, May 12, 2022 at 03:04:38AM +0000, Joel Fernandes (Google) wrote:
-> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+On Tue, Apr 26, 2022 at 03:36:26PM +0800, Zhen Lei wrote:
+> The local variable 'need_rcu_nocb_mask' is true only if CONFIG_NO_HZ_FULL
+> is defined. So branch "if (need_rcu_nocb_mask)" can be moved within the
+> scope of "#if defined(CONFIG_NO_HZ_FULL)". At this point, using variable
+> 'need_rcu_nocb_mask' is not necessary, so delete it.
 > 
-> Again, given that kfree_rcu() is doing its own laziness, is this really
-> helping?  If so, would it instead make sense to adjust the kfree_rcu()
-> timeouts?
+> No functional changes, but the code looks a little more concise.
 > 
-IMHO, this patch does not help much. Like Paul has mentioned we use
-batching anyway.
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 
---
-Uladzislau Rezki
+First, please accept my apologies for the late reply and for the
+overly active spam filters.
+
+One question below.
+
+							Thanx, Paul
+
+> ---
+>  kernel/rcu/tree_nocb.h | 8 ++------
+>  1 file changed, 2 insertions(+), 6 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> index 636d0546a4e932e..1e334e217f0afb7 100644
+> --- a/kernel/rcu/tree_nocb.h
+> +++ b/kernel/rcu/tree_nocb.h
+> @@ -1165,15 +1165,10 @@ EXPORT_SYMBOL_GPL(rcu_nocb_cpu_offload);
+>  void __init rcu_init_nohz(void)
+>  {
+>  	int cpu;
+> -	bool need_rcu_nocb_mask = false;
+>  	struct rcu_data *rdp;
+>  
+>  #if defined(CONFIG_NO_HZ_FULL)
+> -	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask))
+> -		need_rcu_nocb_mask = true;
+> -#endif /* #if defined(CONFIG_NO_HZ_FULL) */
+> -
+> -	if (need_rcu_nocb_mask) {
+
+Could you please test this on a kernel built with CONFIG_NO_HZ_FULL=n
+and CONFIG_RCU_NOCB_CPU=y?  If that works, please add an explanation
+of why it works to the commit log above and repost the patch.
+
+> +	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask)) {
+>  		if (!cpumask_available(rcu_nocb_mask)) {
+>  			if (!zalloc_cpumask_var(&rcu_nocb_mask, GFP_KERNEL)) {
+>  				pr_info("rcu_nocb_mask allocation failed, callback offloading disabled.\n");
+> @@ -1182,6 +1177,7 @@ void __init rcu_init_nohz(void)
+>  		}
+>  		rcu_nocb_is_setup = true;
+>  	}
+> +#endif /* #if defined(CONFIG_NO_HZ_FULL) */
+>  
+>  	if (!rcu_nocb_is_setup)
+>  		return;
+> -- 
+> 2.26.0.106.g9fadedd
+> 
