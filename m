@@ -2,124 +2,153 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 312C1C4167B
-	for <rcu@archiver.kernel.org>; Fri, 13 May 2022 14:46:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C818C433F5
+	for <rcu@archiver.kernel.org>; Fri, 13 May 2022 14:47:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381536AbiEMOqP (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 13 May 2022 10:46:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58940 "EHLO
+        id S1358506AbiEMOrG (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 13 May 2022 10:47:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1381450AbiEMOp6 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 13 May 2022 10:45:58 -0400
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBB093C4B7;
-        Fri, 13 May 2022 07:45:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
-        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-        Resent-Cc:Resent-Message-ID; bh=A7LCydQD5IYNzaoDGyfG1KKM7tCxGhr7TuWULSo03X0=;
-        t=1652453114; x=1653662714; b=LYs2Kri0cw+/UGCEdaklFX6++OP3d6XjJhLcC02jkMM6M13
-        enCTtLPVnFDCrQRFLX819G3cOwVdjYiBSa9JccmqbQblnXISEdyq/7i5O4aMDV5xAFeJh8X61XWYA
-        3hNxcWPO6okKyPbXVAhEt6WHQ/sVkV0gcWR0C3dCeQWocdHTJKZWVZ25I4x63uWgmbhevhAje3sRQ
-        ynAaFSpM6xFAePbWKVwYY4aWUVh0Ju93mi2MceapTMkNIryb6lt7v4/iXwdFQzg89Tz18COaji5Fq
-        iSqUu6mUSMMlAVO2Bcj32MYDMrCOrP4TWkawclAlZw9o6WbW7KIcYMOBD7zR8fsA==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.95)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1npWX2-00AdYm-Tp;
-        Fri, 13 May 2022 16:44:41 +0200
-Message-ID: <1760d499824f9ef053af7a8dac04b48ab7d7fd3d.camel@sipsolutions.net>
-Subject: Re: [PATCH 11/30] um: Improve panic notifiers consistency and
- ordering
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Richard Weinberger <richard@nod.at>
-Cc:     akpm@linux-foundation.org, bhe@redhat.com,
-        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org,
-        linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-leds@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-um@lists.infradead.org,
-        linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org,
-        openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org,
-        sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org,
-        x86@kernel.org, kernel-dev@igalia.com, kernel@gpiccoli.net,
-        halves@canonical.com, fabiomirmar@gmail.com,
-        alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com,
-        arnd@arndb.de, bp@alien8.de, corbet@lwn.net,
-        d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com,
-        dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org,
-        mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com,
-        jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org,
-        luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com,
-        paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org,
-        senozhatsky@chromium.org, stern@rowland.harvard.edu,
-        tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com,
-        will@kernel.org
-Date:   Fri, 13 May 2022 16:44:36 +0200
-In-Reply-To: <4b003501-f5c3-cd66-d222-88d98c93e141@igalia.com>
-References: <20220427224924.592546-1-gpiccoli@igalia.com>
-         <20220427224924.592546-12-gpiccoli@igalia.com> <Ynp2hRodh04K3pzK@alley>
-         <4b003501-f5c3-cd66-d222-88d98c93e141@igalia.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 (3.42.4-2.fc35) 
+        with ESMTP id S1381485AbiEMOqv (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 13 May 2022 10:46:51 -0400
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF018443CC
+        for <rcu@vger.kernel.org>; Fri, 13 May 2022 07:45:57 -0700 (PDT)
+Received: by mail-il1-x133.google.com with SMTP id 3so5862832ily.2
+        for <rcu@vger.kernel.org>; Fri, 13 May 2022 07:45:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kavAqkUG4PJG+4ltdIRsFP4LD0Cs4221gPL+2KRnB/I=;
+        b=ew3495ThhxiDLWZ2lzj+rYkjqFxsINiCxykYvdRZX83rM9mmvXVVYnrnOp4aMtRY8c
+         0VEkmKbwceQ+Fl2GO+drBBrnvKkY5pECU96WH1duOGz1wBHT2HBaz7+JbAjq+Apg9wRB
+         PKMX/+ce09IvuqF+id3Ik7xHBD15nvRmGE6/4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kavAqkUG4PJG+4ltdIRsFP4LD0Cs4221gPL+2KRnB/I=;
+        b=ZL1J1lA+aKSL74yCjrDRuSdWs+vwZ8a8DmFwXjt7WgIcRJICd9kgSFbZRfQAmdaO9x
+         LUoBDJeOUC62jhupnzo+gZZDwryyvRamw4c1G2ogaRScvam7xGE+BSVotIzHRwf4mkYi
+         Ut9UJAn5nlLW3tDStaxM3gDU4Dvj2/B8y0gJD1RhAnKt8nfvv30yGVHX1le5Z/cWFWey
+         x78vvpD7XgXmPGp73VQPmI8+L3Ib5Qea8MzjPeT/8UEUIIclPV3u5fj6KtSocwuJg/pK
+         3JdDMWm9CQGMYn6qFbdy2npAW6AgEUVq3H+SCDyhBDC+qixMY9Un8hVByLRz0qYg5SCm
+         H3+A==
+X-Gm-Message-State: AOAM530jqkSRJCHREfeCoJdZas0UZJ01jq//pzVzWnWrESB76bRqdfho
+        9sdrZCF2ur3QKi/XCv4s+imHH6vvwuy1GznK+nea/w==
+X-Google-Smtp-Source: ABdhPJyKoM38qrjPvRdH731rqKxZZILO4JeKFCCkrT9zgo3QsQdkHc0lmFMIiYCw4sMeSfTktRhkCNDvfBCYNANb38k=
+X-Received: by 2002:a92:ddcb:0:b0:2cd:95b6:bede with SMTP id
+ d11-20020a92ddcb000000b002cd95b6bedemr2718389ilr.280.1652453156722; Fri, 13
+ May 2022 07:45:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-malware-bazaar: not-scanned
+References: <20220512030442.2530552-1-joel@joelfernandes.org>
+ <CAEXW_YQ+9GK+b5_k6ZtDgSPb9S0RQ8FVcJbHoy-T2GGRpq9Zag@mail.gmail.com> <20220513002312.GB1790663@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20220513002312.GB1790663@paulmck-ThinkPad-P17-Gen-1>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Fri, 13 May 2022 10:45:45 -0400
+Message-ID: <CAEXW_YSRJDk322dtFFU_GfmRqFGtCoMBdbuxaO8W-j8_RFJ6fw@mail.gmail.com>
+Subject: Re: [RFC v1 00/14] Implement call_rcu_lazy() and miscellaneous fixes
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     rcu <rcu@vger.kernel.org>,
+        Rushikesh S Kadam <rushikesh.s.kadam@intel.com>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        Neeraj upadhyay <neeraj.iitr10@gmail.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, 2022-05-11 at 17:22 -0300, Guilherme G. Piccoli wrote:
-> On 10/05/2022 11:28, Petr Mladek wrote:
-> > [...]
-> > It is not clear to me why user mode linux should not care about
-> > the other notifiers. It might be because I do not know much
-> > about the user mode linux.
-> > 
-> > Is the because they always create core dump or are never running
-> > in a hypervisor or ...?
-> > 
-> > AFAIK, the notifiers do many different things. For example, there
-> > is a notifier that disables RCU watchdog, print some extra
-> > information. Why none of them make sense here?
-> > 
-> 
-> Hi Petr, my understanding is that UML is a form of running Linux as a
-> regular userspace process for testing purposes.
+On Thu, May 12, 2022 at 8:23 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+>
+> On Wed, May 11, 2022 at 11:17:59PM -0400, Joel Fernandes wrote:
+> > On Wed, May 11, 2022 at 11:04 PM Joel Fernandes (Google)
+> > <joel@joelfernandes.org> wrote:
+> > >
+> > > Hello!
+> > > Please find the proof of concept version of call_rcu_lazy() attached. This
+> > > gives a lot of savings when the CPUs are relatively idle. Huge thanks to
+> > > Rushikesh Kadam from Intel for investigating it with me.
+> > >
+> > > Some numbers below:
+> > >
+> > > Following are power savings we see on top of RCU_NOCB_CPU on an Intel platform.
+> > > The observation is that due to a 'trickle down' effect of RCU callbacks, the
+> > > system is very lightly loaded but constantly running few RCU callbacks very
+> > > often. This confuses the power management hardware that the system is active,
+> > > when it is in fact idle.
+> > >
+> > > For example, when ChromeOS screen is off and user is not doing anything on the
+> > > system, we can see big power savings.
+> > > Before:
+> > > Pk%pc10 = 72.13
+> > > PkgWatt = 0.58
+> > > CorWatt = 0.04
+> > >
+> > > After:
+> > > Pk%pc10 = 81.28
+> > > PkgWatt = 0.41
+> > > CorWatt = 0.03
+> > >
+> > > Further, when ChromeOS screen is ON but system is idle or lightly loaded, we
+> > > can see that the display pipeline is constantly doing RCU callback queuing due
+> > > to open/close of file descriptors associated with graphics buffers. This is
+> > > attributed to the file_free_rcu() path which this patch series also touches.
+> > >
+> > > This patch series adds a simple but effective, and lockless implementation of
+> > > RCU callback batching. On memory pressure, timeout or queue growing too big, we
+> > > initiate a flush of one or more per-CPU lists.
+> > >
+> > > Similar results can be achieved by increasing jiffies_till_first_fqs, however
+> > > that also has the effect of slowing down RCU. Especially I saw huge slow down
+> > > of function graph tracer when increasing that.
+> > >
+> > > One drawback of this series is, if another frequent RCU callback creeps up in
+> > > the future, that's not lazy, then that will again hurt the power. However, I
+> > > believe identifying and fixing those is a more reasonable approach than slowing
+> > > RCU down for the whole system.
+> > >
+> > > NOTE: Add debug patch is added in the series toggle /proc/sys/kernel/rcu_lazy
+> > > at runtime to turn it on or off globally. It is default to on. Further, please
+> > > use the sysctls in lazy.c for further tuning of parameters that effect the
+> > > flushing.
+> > >
+> > > Disclaimer 1: Don't boot your personal system on it yet anticipating power
+> > > savings, as TREE07 still causes RCU stalls and I am looking more into that, but
+> > > I believe this series should be good for general testing.
+>
+> Sometimes OOM conditions result in stalls.
 
-Correct.
+I see.
 
-> With that said, as soon
-> as we exit in the error path, less "pollution" would happen, so users
-> can use GDB to debug the core dump for example.
-> 
-> In later patches of this series (when we split the panic notifiers in 3
-> lists) these UML notifiers run in the pre-reboot list, so they run after
-> the informational notifiers for example (in the default level).
-> But without the list split we cannot order properly, so my gut feeling
-> is that makes sense to run them rather earlier than later in the panic
-> process...
-> 
-> Maybe Anton / Johannes / Richard could give their opinions - appreciate
-> that, I'm not attached to the priority here, it's more about users'
-> common usage of UML I can think of...
+> > I did forget to add Disclaimer 3, that this breaks rcu_barrier() and
+> > support for that definitely needs work.
+>
+> Good to know.  ;-)
+>
+> With this in place, can the system survive a userspace close(open())
+> loop, or does that result in OOM?  (I am not worried about battery
+> lifetime while close(open()) is running, just OOM resistance.)
 
-It's hard to say ... In a sense I'm not sure it matters?
+Yes, in my testing it survived. I even dropped memory to 512MB and did
+the open/close loop test. I believe it survives also because we don't
+let the list to grow too big (other than shrinker flushing).
 
-OTOH something like the ftrace dump notifier (kernel/trace/trace.c)
-might still be useful to run before the mconsole and coredump ones, even
-if you could probably use gdb to figure out the information.
+>
+> Does waiting for the shrinker to kick in suffice, or should the
+> system pressure be taken into account?  As in the "total" numbers
+> from /proc/pressure/memory.
 
-Personally, I don't have a scenario where I'd care about the trace
-buffers though, and most of the others I found would seem irrelevant
-(drivers that aren't even compiled, hung tasks won't really happen since
-we exit immediately, and similar.)
+I did not find that taking system memory pressure into account is necessary.
 
-johannes
+> Again, it is very good to see this series!
+
+Thanks I appreciate that, I am excited about battery life savings in
+millions of battery powered devices ;-) Even on my Grand mom's android
+phone ;-)
+
+Thanks,
+
+ - Joel
