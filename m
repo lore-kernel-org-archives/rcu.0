@@ -2,146 +2,134 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EFE63C433F5
-	for <rcu@archiver.kernel.org>; Sat, 14 May 2022 14:35:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DBC3EC433F5
+	for <rcu@archiver.kernel.org>; Sat, 14 May 2022 14:38:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233361AbiENOf3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 14 May 2022 10:35:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55570 "EHLO
+        id S232951AbiENOi6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 14 May 2022 10:38:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233357AbiENOf1 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 14 May 2022 10:35:27 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17724201A6
-        for <rcu@vger.kernel.org>; Sat, 14 May 2022 07:35:26 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id hh4so9239133qtb.10
-        for <rcu@vger.kernel.org>; Sat, 14 May 2022 07:35:26 -0700 (PDT)
+        with ESMTP id S230337AbiENOi4 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 14 May 2022 10:38:56 -0400
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B8B225C5A
+        for <rcu@vger.kernel.org>; Sat, 14 May 2022 07:38:55 -0700 (PDT)
+Received: by mail-qv1-xf30.google.com with SMTP id p3so8986259qvi.7
+        for <rcu@vger.kernel.org>; Sat, 14 May 2022 07:38:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=kQmO86aj6VfDWI2cccfrc7HKv/pZDaVHtsdXoyk6k2c=;
-        b=CYkDW4+nyP2lUNk/mKUt8bGlMdeAKobp0EyrAcfBlSEfJsK5/g6Ygi6zsXmRwIL+AJ
-         vLuXjwM3+t3G0M3sp8JUj2EWUDBoZ+/BB0OkosnDWD70w7aYuE4vjdlzH5Y82qyHD3EM
-         Wr+XBsehKBukP3AsXdP0Hqi49TjAkXcJoEePM=
+        bh=u3n2lD04vXu2mCaCahPu8doQd6nEgPZ4kcyR+z7mgUg=;
+        b=nGPAvffy+ObVKbkXqX1sFjbjXmADbNGNkVLTKxSJtEXJCOHBODbqRXPf5B7++MEsYQ
+         rj3/lW8LKEqUE3HEyPHn3z6IRKCLnyK7DXBJHbJ0sAgzh+YcjERXLt8VzfQQ9bA0+n7F
+         iEOIF6uURKyS6s0PKZ+d2W6QQC3hbVyIOrYB4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=kQmO86aj6VfDWI2cccfrc7HKv/pZDaVHtsdXoyk6k2c=;
-        b=San9d5a4XXXWeEFDAVF2+I+SHYQ+PswPnnlhbeLFJgPCw5prEjrdHLpixkoGWvhPvv
-         o8fLrNz6Dkx07Xt6YbpAzpjJP45R64ap4dr1l9OFF4XhbKUadKm+18D504pQyISoL8tv
-         EkQWxOS3JICVXp+gAfGWYCL0YTGNsyGF0CQlBqbSOg77T541fEfcym3FBrCkqG6FJWv3
-         oeyO11nJP/uRe5XdUyTvRmhS/mhWTmiLjDH1ogOKEsVCQO14ZOAlRQSQwYmMdxxDur+c
-         E1Ce9Aqqr6tvkGXhy3zxMux5546e/yP5/iwUNkm8ISeI5J1fgQqDBiIEt469Y9txY1P7
-         CTlQ==
-X-Gm-Message-State: AOAM533WMjUKfM7CltEfuBNsHPosJ9cNWWf4nB9BKT8l2Kf8tNZSIFD0
-        8vbH1a3+ubpaxL1ZF5GcLK9FXA==
-X-Google-Smtp-Source: ABdhPJwsJUtHsnapzhw2b++3EfwjMpkkKp2CC7ZVoBnqhZdUiBswGGnDVHkUsIBy397ik5bRHxp8zQ==
-X-Received: by 2002:ac8:5bce:0:b0:2f3:e20a:2fd2 with SMTP id b14-20020ac85bce000000b002f3e20a2fd2mr8846098qtb.455.1652538925220;
-        Sat, 14 May 2022 07:35:25 -0700 (PDT)
+        bh=u3n2lD04vXu2mCaCahPu8doQd6nEgPZ4kcyR+z7mgUg=;
+        b=2c98zm0tLdGFiSYgclhMtICjydYQy9ekESHND2RB2Qh4iCl4ql63l5usIihAYf60WU
+         YR38WVaipO6WY9TissVv+AQXEJDgiBxqVyznF93ZU2aJMPsGpmf/odRhP9ENOwgr57nu
+         4MtjtaljbPWGN3AmFGCAIA8hYkawe9ldAIQwRibE320WRk7KZRsNUJXjuwcLxQUNkQw6
+         W/8GftPS6n9YtkwMSa/nZaAAGA54vNV6UlivTyvVHjmIorgro3/Px+1eEB6NoAwW5nBv
+         vz9IQ6Ns1qeBOXmvJnO7mFuqmP5QPanE/tI6K8OT97SumjfArw6tVmYOKbSG+079UpdT
+         DwRg==
+X-Gm-Message-State: AOAM533CG3vyZeGYMOIDrsc9OTXJVQf+Aa9L5PSc1JV2LealaKX2333h
+        KAAMwtECOORtkNq2PwgyUPhBlA==
+X-Google-Smtp-Source: ABdhPJwm4P+DAQWBNN6iL44RvhHp9kx93fKXiW1jsyMQ/4goW5s3/hALzXmOZCeGFOZYPHLBpb2mdA==
+X-Received: by 2002:ad4:5bc1:0:b0:42d:758c:f694 with SMTP id t1-20020ad45bc1000000b0042d758cf694mr8334267qvt.99.1652539134568;
+        Sat, 14 May 2022 07:38:54 -0700 (PDT)
 Received: from localhost (29.46.245.35.bc.googleusercontent.com. [35.245.46.29])
-        by smtp.gmail.com with ESMTPSA id d81-20020a379b54000000b006a10aa7908dsm2764445qke.38.2022.05.14.07.35.24
+        by smtp.gmail.com with ESMTPSA id l5-20020ac848c5000000b002f3fbf28826sm3271915qtr.23.2022.05.14.07.38.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 May 2022 07:35:24 -0700 (PDT)
-Date:   Sat, 14 May 2022 14:35:24 +0000
+        Sat, 14 May 2022 07:38:54 -0700 (PDT)
+Date:   Sat, 14 May 2022 14:38:53 +0000
 From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     rcu@vger.kernel.org, rushikesh.s.kadam@intel.com,
-        neeraj.iitr10@gmail.com, frederic@kernel.org, paulmck@kernel.org,
-        rostedt@goodmis.org
-Subject: Re: [RFC v1 12/14] rcu/kfree: remove useless monitor_todo flag
-Message-ID: <Yn++LOrXH615Q1DU@google.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     rcu@vger.kernel.org, rushikesh.s.kadam@intel.com, urezki@gmail.com,
+        neeraj.iitr10@gmail.com, frederic@kernel.org, rostedt@goodmis.org
+Subject: Re: [RFC v1 14/14] DEBUG: Toggle rcu_lazy and tune at runtime
+Message-ID: <Yn++/Rx89qZGeuI6@google.com>
 References: <20220512030442.2530552-1-joel@joelfernandes.org>
- <20220512030442.2530552-13-joel@joelfernandes.org>
- <Yn5w0fOga4mEHEAt@pc638.lan>
+ <20220512030442.2530552-15-joel@joelfernandes.org>
+ <20220513001622.GA1790663@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Yn5w0fOga4mEHEAt@pc638.lan>
+In-Reply-To: <20220513001622.GA1790663@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, May 13, 2022 at 04:53:05PM +0200, Uladzislau Rezki wrote:
-> > monitor_todo is not needed as the work struct already tracks if work is
-> > pending. Just use that to know if work is pending using
-> > delayed_work_pending() helper.
+On Thu, May 12, 2022 at 05:16:22PM -0700, Paul E. McKenney wrote:
+> On Thu, May 12, 2022 at 03:04:42AM +0000, Joel Fernandes (Google) wrote:
+> > Add sysctl knobs just for easier debugging/testing, to tune the maximum
+> > batch size, maximum time to wait before flush, and turning off the
+> > feature entirely.
 > > 
 > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> 
+> This is good, and might also be needed longer term.
+> 
+> One thought below.
+> 
+> 							Thanx, Paul
+> 
 > > ---
-> >  kernel/rcu/tree.c | 22 +++++++---------------
-> >  1 file changed, 7 insertions(+), 15 deletions(-)
+> >  include/linux/sched/sysctl.h |  4 ++++
+> >  kernel/rcu/lazy.c            | 12 ++++++++++--
+> >  kernel/sysctl.c              | 23 +++++++++++++++++++++++
+> >  3 files changed, 37 insertions(+), 2 deletions(-)
 > > 
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index 3baf29014f86..3828ac3bf1c4 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -3155,7 +3155,6 @@ struct kfree_rcu_cpu_work {
-> >   * @krw_arr: Array of batches of kfree_rcu() objects waiting for a grace period
-> >   * @lock: Synchronize access to this structure
-> >   * @monitor_work: Promote @head to @head_free after KFREE_DRAIN_JIFFIES
-> > - * @monitor_todo: Tracks whether a @monitor_work delayed work is pending
-> >   * @initialized: The @rcu_work fields have been initialized
-> >   * @count: Number of objects for which GP not started
-> >   * @bkvcache:
-> > @@ -3180,7 +3179,6 @@ struct kfree_rcu_cpu {
-> >  	struct kfree_rcu_cpu_work krw_arr[KFREE_N_BATCHES];
-> >  	raw_spinlock_t lock;
-> >  	struct delayed_work monitor_work;
-> > -	bool monitor_todo;
-> >  	bool initialized;
-> >  	int count;
+> > diff --git a/include/linux/sched/sysctl.h b/include/linux/sched/sysctl.h
+> > index c19dd5a2c05c..55ffc61beed1 100644
+> > --- a/include/linux/sched/sysctl.h
+> > +++ b/include/linux/sched/sysctl.h
+> > @@ -16,6 +16,10 @@ enum { sysctl_hung_task_timeout_secs = 0 };
 > >  
-> > @@ -3416,9 +3414,7 @@ static void kfree_rcu_monitor(struct work_struct *work)
-> >  	// of the channels that is still busy we should rearm the
-> >  	// work to repeat an attempt. Because previous batches are
-> >  	// still in progress.
-> > -	if (!krcp->bkvhead[0] && !krcp->bkvhead[1] && !krcp->head)
-> > -		krcp->monitor_todo = false;
-> > -	else
-> > +	if (krcp->bkvhead[0] || krcp->bkvhead[1] || krcp->head)
-> >  		schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
+> >  extern unsigned int sysctl_sched_child_runs_first;
 > >  
-> >  	raw_spin_unlock_irqrestore(&krcp->lock, flags);
-> > @@ -3607,10 +3603,8 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+> > +extern unsigned int sysctl_rcu_lazy;
+> > +extern unsigned int sysctl_rcu_lazy_batch;
+> > +extern unsigned int sysctl_rcu_lazy_jiffies;
+> > +
+> >  enum sched_tunable_scaling {
+> >  	SCHED_TUNABLESCALING_NONE,
+> >  	SCHED_TUNABLESCALING_LOG,
+> > diff --git a/kernel/rcu/lazy.c b/kernel/rcu/lazy.c
+> > index 55e406cfc528..0af9fb67c92b 100644
+> > --- a/kernel/rcu/lazy.c
+> > +++ b/kernel/rcu/lazy.c
+> > @@ -12,6 +12,10 @@
+> >  // How much to wait before flushing?
+> >  #define MAX_LAZY_JIFFIES	10000
 > >  
-> >  	// Set timer to drain after KFREE_DRAIN_JIFFIES.
-> >  	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING &&
-> > -	    !krcp->monitor_todo) {
-> > -		krcp->monitor_todo = true;
-> > +	    !delayed_work_pending(&krcp->monitor_work))
-> >  		schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
-> > -	}
+> > +unsigned int sysctl_rcu_lazy_batch = MAX_LAZY_BATCH;
+> > +unsigned int sysctl_rcu_lazy_jiffies = MAX_LAZY_JIFFIES;
+> > +unsigned int sysctl_rcu_lazy = 1;
+> > +
+> >  // We cast lazy_rcu_head to rcu_head and back. This keeps the API simple while
+> >  // allowing us to use lockless list node in the head. Also, we use BUILD_BUG_ON
+> >  // later to ensure that rcu_head and lazy_rcu_head are of the same size.
+> > @@ -49,6 +53,10 @@ void call_rcu_lazy(struct rcu_head *head_rcu, rcu_callback_t func)
+> >  	struct lazy_rcu_head *head = (struct lazy_rcu_head *)head_rcu;
+> >  	struct rcu_lazy_pcp *rlp;
 > >  
-> >  unlock_return:
-> >  	krc_this_cpu_unlock(krcp, flags);
-> > @@ -3685,14 +3679,12 @@ void __init kfree_rcu_scheduler_running(void)
-> >  		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
-> >  
-> >  		raw_spin_lock_irqsave(&krcp->lock, flags);
-> > -		if ((!krcp->bkvhead[0] && !krcp->bkvhead[1] && !krcp->head) ||
-> > -				krcp->monitor_todo) {
-> > -			raw_spin_unlock_irqrestore(&krcp->lock, flags);
-> > -			continue;
-> > +		if (krcp->bkvhead[0] || krcp->bkvhead[1] || krcp->head) {
-> > +			if (delayed_work_pending(&krcp->monitor_work)) {
-> > +				schedule_delayed_work_on(cpu, &krcp->monitor_work,
-> > +						KFREE_DRAIN_JIFFIES);
-> > +			}
-> >  		}
-> > -		krcp->monitor_todo = true;
-> > -		schedule_delayed_work_on(cpu, &krcp->monitor_work,
-> > -					 KFREE_DRAIN_JIFFIES);
-> >  		raw_spin_unlock_irqrestore(&krcp->lock, flags);
-> >  	}
-> >  }
-> > -- 
-> >
-> Looks good to me from the first glance, but let me know to have a look
-> at it more closely.
+> > +	if (!sysctl_rcu_lazy) {
+> 
+> This is the place to check for early boot use.  Or, alternatively,
+> initialize sysctl_rcu_lazy to zero and set it to one once boot is far
+> enough along to allow all the pieces to work reasonably.
 
-Thanks, I appreciate it.
+Sure, I was also thinking perhaps to set this to a static branch. That way we
+don't have to pay the cost of the branch after it is setup on boot.
+
+But I think as you mentioned on IRC, if we were to promote this to a
+non-DEBUG patch, we would need to handle conditions similar to Frederick's
+work on toggling offloading.
+
+thanks,
 
  - Joel
 
