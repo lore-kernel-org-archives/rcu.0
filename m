@@ -2,420 +2,618 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8214AC433F5
-	for <rcu@archiver.kernel.org>; Sat, 14 May 2022 02:57:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B3C25C433F5
+	for <rcu@archiver.kernel.org>; Sat, 14 May 2022 14:26:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230402AbiENC5b (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 13 May 2022 22:57:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33004 "EHLO
+        id S233222AbiENO0Y (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 14 May 2022 10:26:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230527AbiENC4r (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 13 May 2022 22:56:47 -0400
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F039B3227BB;
-        Fri, 13 May 2022 18:52:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1652493163; x=1684029163;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=1TX3aV7OgWIzBfqnwLt/7E5cVLJehPW6Q2wBybOPg1s=;
-  b=jwGLJl6wd2r6hki2NdfNSNY7Uq0EL0SGaKvoMk/3BjR9sRwL9HoEHk4Z
-   /M3OESq/Go+Q7EqlZBxa4V5v7rQMJB4K776nu7btkUdi6Mk9HkbKsDPnl
-   Bo2ssb9Q48jJV0nG0R/yDL+sBmXPvJqG2nfYopltjoZGZBD88EZf6Mlk2
-   PiyZ5wzZqLR31WFPQZ5C0kBT6klfonJ/4RLg+IQpcRkuopKS3FW9jmo0r
-   kH/upMbr+54AmfjWmjIPVms/ltzeDO7bptu/FO+pcbkpHw20r1z5+S7oP
-   PYMmCXMJ2sD/55ZES/XLri/wbb33JpinYRMPOftO/fwqzpukB3eof1rrN
-   A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10346"; a="295702627"
-X-IronPort-AV: E=Sophos;i="5.91,223,1647327600"; 
-   d="scan'208";a="295702627"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2022 17:02:45 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,223,1647327600"; 
-   d="scan'208";a="521627058"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by orsmga003.jf.intel.com with ESMTP; 13 May 2022 17:02:45 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.27; Fri, 13 May 2022 17:02:44 -0700
-Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.27; Fri, 13 May 2022 17:02:44 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.27 via Frontend Transport; Fri, 13 May 2022 17:02:44 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.41) by
- edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2308.27; Fri, 13 May 2022 17:02:43 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=N31T7WTy+Onj85lYuaA9gUr39iAZG7iDriYHOakbNv1LieUtdlehs+cST4ePLpP8dH/8xzYIZvzSFzXtqo9O4MAI35D7cO2p5PaVoLVEM/B2g3JqkyWP4av0Md8PN26RUrV6IQ0ImsLCZ9zNj0nvlNO0myMb4BlKwuxA11rdPkcfucu498lpmQSWSkzwnyazOOnUrKcnK4ysmjM7QHcWyi7WRKGx8OcCjn6XuTgB0reoiQp+ZIoFC8bY+WPX20N3remnVh/XHirrrtJFP7UpEls9NFo+tlfMLBU/aiAzS6EcrHPs6czYDA74Lx8IckZgzV92/XQSztu9kF50CnidAg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3w6IPbLaY9SH7x5OcIUS1l90rTgLLdDUtXS1WC2uMX0=;
- b=HgO55s1iH/2dFJXBTGPDqA3+tYTawdQik37Gzxzc7A+v5N5rrnRmiWr5gVNtGOziIARJQ5zui8w7u4eEPozyo2GStTBQFYP+9XbrId6qxiilpLWl4vMovNbOcwZBrWUf4DbeH+YxmsfA5Nvo8eNnmiNRBq1H6xHdduzqT6KKaqza8tARaxW/QGhVIS7ueXNqk9esrSJkbm5teAAO+UELmwrBfY8sI6spTbGPwcTy60cFV63yYTtpFsGQB5Z9J84pvebLLWuK73bu98hegSOnS4PrD1sQxLcUgjr2gYmO2fKyxep9y5ahzhgYNENfHUNHIkhfiR+beoYrEyOyObPMCg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from PH0PR11MB5880.namprd11.prod.outlook.com (2603:10b6:510:143::14)
- by DM8PR11MB5751.namprd11.prod.outlook.com (2603:10b6:8:12::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5250.14; Sat, 14 May
- 2022 00:02:37 +0000
-Received: from PH0PR11MB5880.namprd11.prod.outlook.com
- ([fe80::a4a9:b58f:8246:5f72]) by PH0PR11MB5880.namprd11.prod.outlook.com
- ([fe80::a4a9:b58f:8246:5f72%6]) with mapi id 15.20.5250.013; Sat, 14 May 2022
- 00:02:36 +0000
-From:   "Zhang, Qiang1" <qiang1.zhang@intel.com>
-To:     "paulmck@kernel.org" <paulmck@kernel.org>
-CC:     "frederic@kernel.org" <frederic@kernel.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] rcu: Remove debug_object_active_state() from
- debug_rcu_head_queue/unqueue()
-Thread-Topic: [PATCH] rcu: Remove debug_object_active_state() from
- debug_rcu_head_queue/unqueue()
-Thread-Index: AQHYZBspeMDe3A1Muk2pGu69iofBM60b/oOAgAACsSCAAWeEgIAAFeAw
-Date:   Sat, 14 May 2022 00:02:36 +0000
-Message-ID: <PH0PR11MB588067B25F6F6AE96303055FDACD9@PH0PR11MB5880.namprd11.prod.outlook.com>
-References: <20220510030748.1814004-1-qiang1.zhang@intel.com>
- <20220513004955.GC1790663@paulmck-ThinkPad-P17-Gen-1>
- <PH0PR11MB58804FA659B1FF7F82C37485DACA9@PH0PR11MB5880.namprd11.prod.outlook.com>
- <20220513222619.GP1790663@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20220513222619.GP1790663@paulmck-ThinkPad-P17-Gen-1>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-version: 11.6.401.20
-dlp-reaction: no-action
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 2dac49ff-40a3-40f4-a93d-08da353d0dd0
-x-ms-traffictypediagnostic: DM8PR11MB5751:EE_
-x-microsoft-antispam-prvs: <DM8PR11MB575185D17609C0F0B530DFEADACD9@DM8PR11MB5751.namprd11.prod.outlook.com>
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: WZAotKw+9Egx8da7AleRD6wRy0AtswrS2/n5kQcGoYGOtNfLJ/wgoxp4tfXlq4i1XPajWPbsdN4fU+unWB8YwhDnuSf8g+ekp9fCkXjUD1wsFqfAlDj6X7uWLyNMU25LDmLPbPM7e3B0i6VilHDRuFKfwbqMiv6VqCTyfFwAbawmqgUazX8k5FTDQve4Q2VrCRmhPueB1c+ISuY8jfpOpq+/hJZ540sdDwxwSp8Lwd/0dtXsG+opJcqg6ujksKRYlZ8rceUOqiDOFDM4dTrAhvgr5loIvdSu94rrtgNGxPvBMJk2RRw6dmps73uOgmbbK+/Jwe1eO7kktNHQ2qo3rHKNFSo+r5Nti3NW+DgfjRLBX6bnYY+pzlin2jp7H1MeYcLIXcIFPp7mmCqrkjPI0fWsXXWqn8AL4Z619FQtrdrjGSo7TV6G835XYAppvgrFolv6xOVC3qEutBAz+K5V+4GOdDSgxvg8p1fA90WQdxMuW8FKmiMMafilJepJNX5pK0oDIT3o0Tkxlw8QnazrWgUVsNzgMDCUm2wzR6lipY3iApZ6zKmN3nCF9yW9Cx8W0IYFo53eSP1oxz/6Ghf1Q8P/lhM7IesQRoaW3qBorwMczQJb+TF0AIvYxXt9ameGrffSd2v2o39ajxa9HQ3bJX2bJ2zZqbaPQwrgHshYGwfzUQUm7c7O8i4STfMlJmudUWCrwofYI/Zk0kPBAROrJQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5880.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(52536014)(6506007)(76116006)(38070700005)(508600001)(7696005)(30864003)(45080400002)(55016003)(6916009)(54906003)(66476007)(38100700002)(66556008)(9686003)(66946007)(26005)(66446008)(8676002)(4326008)(316002)(82960400001)(83380400001)(186003)(71200400001)(2906002)(33656002)(8936002)(86362001)(122000001)(64756008)(5660300002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?wyB4UC/6nk8FyApTq7XsqOuATPrHPCc05sPt/GbTmjnirlWoJNWEknRTiWMk?=
- =?us-ascii?Q?eRcqq5GkZ9SvVMjJnEN8CuPMviB0Q3ng2I8+O+xhY2KkL8Rnb7/5/13MuO9P?=
- =?us-ascii?Q?eCIl1BFTATAI2PTg6u/HuI25//kmeC9xPvrnVzu5rjLTDhqjM3OsUXJcy1qy?=
- =?us-ascii?Q?fdx9EyaYlSsi2lTggNcCm+jMY4/EE8/ca+ay9aWtWqBkd9RxPQhUY/BgX6aQ?=
- =?us-ascii?Q?ydhaoEGl9HGU+131QTK3d8kx+wHIw1bdbDRXZrUU3OCasWVP8/hyt/I2dYZR?=
- =?us-ascii?Q?gQQC4/VWGNctw0AXjDrDbzLFjniWqnzX91ke/ugOSBTgAWell1f4LC9RVL/b?=
- =?us-ascii?Q?Nksoj+beO30zoow8pi6VJyp+rzEv1IsBZYXUao+2cldbO6pld7zjaYyM9PPD?=
- =?us-ascii?Q?WW3uKjNZ29AKQpSrpj7xt82eIOXB0lGoUjkKnZJR2csJ5T+ZMNPWmGEoEuFi?=
- =?us-ascii?Q?H+Yc9C3qKj5sHpWouvVRsXdH9XNgLg5gGs8/esULGHWW4PPNxZlywL+gWhBX?=
- =?us-ascii?Q?YZabQuFMw9ZnXQUsI4x4dNjAjBMfuBOgG74vu2go3h2N8WIV5X+y9xVpkXjL?=
- =?us-ascii?Q?kfHoZXbl0C40Aw3XIC/pfYAH/Jn8J2SwTOJCiP85ekuV54jkioY7jJ4jtuww?=
- =?us-ascii?Q?4uQdpN6T26KTOrI7sXlqp67DCQ/FWSEIy7G5o7N52UMG1gmvFWmIeb8vDmGL?=
- =?us-ascii?Q?tnsbOyZA5SPhJvGpfZ7Ly52+zssu10sZObNTvBr8EjeQiJwXSG83uKHAhKeb?=
- =?us-ascii?Q?jaxQdFs+z76xcofD5f8o/+0gWpFAf0jLMWUlvgf3+UBgbJo4f46y5ie0adMh?=
- =?us-ascii?Q?7tb8O68mbMmM0GyPxwy8ldpuaqtY+sw8ykVRgDJ5oWgE7aRaagMblHK+mtJX?=
- =?us-ascii?Q?BWp7OyqZElrFiNu271bxlYeV/v1PxE5egpPj71uw2mGcBnSY0+5JMS4xKwMS?=
- =?us-ascii?Q?5eQK+TUkeYZNhQSyR9CtxbkLyp8HDq0gXW4iJAzWFCgqGJaQBwMk5Z/q1VF8?=
- =?us-ascii?Q?CRi0c1azBbuKOmNtssxeHj4u0fvL5iL6T2WG79z9itPuURP1MTnopfdBpFnE?=
- =?us-ascii?Q?GDWpirmSoBbhVXaDal8FC53asWYPCME0xPfiwVi6e4AhqaPb2Iq+9NKoo1Dp?=
- =?us-ascii?Q?RD4Ke+YvvnQ8qRRuuNDxKgCglEFgXGn00Yx6ZiaKBYChlArcjqsq5lGoA7D2?=
- =?us-ascii?Q?xkDKsG7ZvozqmrhLEtHzHU3Mf57PExiAehq8ukP4DqDUgEvJYjrBOeHYbN6f?=
- =?us-ascii?Q?5IwNB8hlxg3Ou73msyx4E9ktmTYWQVVGktwAUlCyiS1PdLCtFPiJuzVCRJpG?=
- =?us-ascii?Q?ltq4dPyCpaylgU2N3qu2e/LumYXMVPhNerAfk7jDuYd1RWddshdBICzdB2MA?=
- =?us-ascii?Q?TcMjNigkkWP6J4Lgfrj/G5S9+rNzJRcdv+aS/9MJDG0F7exFiwSWobV6qnM+?=
- =?us-ascii?Q?05YrO4FK+SvfV8eth6DzHB2kk/So+PnyzGN8WsVKNvEWnrCpg56ABUDky7vD?=
- =?us-ascii?Q?F2+/JdLifaxm18Gq2LUvQCAl2OiW7qEy6AojMFw6KysBQNNg0g6yUWLl6gTk?=
- =?us-ascii?Q?G0YHIpQ064pry3vps8e9zXASMBIDxtQN/YCnSiHXDUZANYrS8h78clWzPbPP?=
- =?us-ascii?Q?3cEL1cDYNrI3wmFDagJ/4vcul8KVc3J3E0paS3lNyx/wyh1WW0dc66rC9pCK?=
- =?us-ascii?Q?12eSV+yQCS0XqnLR+yhdJQKcbx2PKqWcaJOFhReCCQ0FV7e9iWjtDFYms9QW?=
- =?us-ascii?Q?KTdMnplzgg=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        with ESMTP id S233231AbiENO0C (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 14 May 2022 10:26:02 -0400
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3E9211451
+        for <rcu@vger.kernel.org>; Sat, 14 May 2022 07:25:59 -0700 (PDT)
+Received: by mail-qv1-xf2f.google.com with SMTP id jt15so8968314qvb.8
+        for <rcu@vger.kernel.org>; Sat, 14 May 2022 07:25:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=lnQQ0ak7spVz4xHOdNe+pLim2dzHP9iOqyjPzF6M+7w=;
+        b=x2oNBwLc3VhYBUYOUuvL56lxpgAHTlSMs8TuOYPUNowxrrMdCw/Kci47TQ73uhybDo
+         svU9syPMpaejvXJzaZyyvUpEUjXoB4lDhT6RJJybJTDcE3vxgj28e48lg2GSz7hp6cde
+         yaLIRyp+wrxbamCpvNrjOPfuwGFwD8LzmTY8M=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lnQQ0ak7spVz4xHOdNe+pLim2dzHP9iOqyjPzF6M+7w=;
+        b=n8AXBpmj8ymRjHNiCh7a6YdzjGw11wVMx+Ill/hayuauW5Ybb1FRkft4rB/gbelbMK
+         7qRPPt4IX+cbosDduiq0IeVFHE6QIVjDZkB4iu7VHq4ijJ7zku4Cugdi6enkYjH65gbF
+         2Td4/sAf+vgUjCIgsGwiwgN9b2gUJm+YV4SAtrJXaVYlmryL27cNPEZ7dWSO/1Ir3bB7
+         m2SIc/iRXnyr8Iiih+wSWj5ZP17o7U3dDRrIWuu+3qgZt2TKbVcS5jDn8G2Jyv1NRuVB
+         EgPLbKYE0XFgJvbKtC6ISE1RfAXo07UmAFVrHhuYESsI/NPtfChK200jb9AIjDSJfpx3
+         qx+w==
+X-Gm-Message-State: AOAM532aMkTlwY8waZq69+8NLYotnZjP/BYk0fUlcCRLW0yJysRwtBUb
+        /y+8TyyY8fZq2/fIbyrQNfCIiw==
+X-Google-Smtp-Source: ABdhPJxnjWKCFYCCxN3xg5BupTi97UBd0rTVaFIKwZYGvPJh2fHQ0/nuSsm4xWBF+BO9iUrUlKwHVA==
+X-Received: by 2002:a05:6214:e4a:b0:45a:dfa5:404a with SMTP id o10-20020a0562140e4a00b0045adfa5404amr8508779qvc.126.1652538359007;
+        Sat, 14 May 2022 07:25:59 -0700 (PDT)
+Received: from localhost (29.46.245.35.bc.googleusercontent.com. [35.245.46.29])
+        by smtp.gmail.com with ESMTPSA id p62-20020a374241000000b0069fc13ce224sm2804216qka.85.2022.05.14.07.25.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 14 May 2022 07:25:58 -0700 (PDT)
+Date:   Sat, 14 May 2022 14:25:58 +0000
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>, rcu <rcu@vger.kernel.org>,
+        Rushikesh S Kadam <rushikesh.s.kadam@intel.com>,
+        Neeraj upadhyay <neeraj.iitr10@gmail.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [RFC v1 00/14] Implement call_rcu_lazy() and miscellaneous fixes
+Message-ID: <Yn+79v4q+1c9lXdc@google.com>
+References: <CAEXW_YQ+9GK+b5_k6ZtDgSPb9S0RQ8FVcJbHoy-T2GGRpq9Zag@mail.gmail.com>
+ <CA+KHdyVTwtC274v=Mmbwe3jaRPsme1mENWiOR+m2uDV=3SBTBQ@mail.gmail.com>
+ <CA+KHdyVGCC2-S8waURWL_cwjdv8EyeUwnLFNVYHn+h7TrteP6g@mail.gmail.com>
+ <Yn0TuehXj6VoWG0A@google.com>
+ <Yn0bwhkdfPvbjIwK@pc638.lan>
+ <CAEXW_YQNPDJ8aaxKzG2NN9gVR_QPbarJthiXYRd9Erw7p5V=FA@mail.gmail.com>
+ <Yn02uhvov7CDoKX7@pc638.lan>
+ <Yn5e7w8NWzThUARb@pc638.lan>
+ <CAEXW_YQSLSAOAYDhztreYu=t2v8HPCdjRwJ=5Bx6N3LT8frtkQ@mail.gmail.com>
+ <Yn58t2UWtj9YfJPR@pc638.lan>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5880.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2dac49ff-40a3-40f4-a93d-08da353d0dd0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 May 2022 00:02:36.6933
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: whX1xcKPypn2RhkQbjTcBNaEPMVeWSoD+m7jtAmBoA5coKyEdQsyhrfZeNTjUCSMPLhhrte7Vfyc8IWsmDNrXg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR11MB5751
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Yn58t2UWtj9YfJPR@pc638.lan>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, May 13, 2022 at 01:03:19AM +0000, Zhang, Qiang1 wrote:
-> On Tue, May 10, 2022 at 11:07:48AM +0800, Zqiang wrote:
-> > Currently, the double call_rcu() detected only need call
-> > debug_object_activate() to check whether the rcu head object is=20
-> > activated, the rcu head object usage state check is not necessary=20
-> > and when call rcu_test_debug_objects() the=20
-> > debug_object_active_state() will output same callstack as=20
-> > debug_object_activate(). so remove
-> > debug_object_active_state() to reduce the output of repeated callstack.
-> >=20
-> > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+On Fri, May 13, 2022 at 05:43:51PM +0200, Uladzislau Rezki wrote:
+> > On Fri, May 13, 2022 at 9:36 AM Uladzislau Rezki <urezki@gmail.com> wrote:
+> > >
+> > > > > On Thu, May 12, 2022 at 10:37 AM Uladzislau Rezki <urezki@gmail.com> wrote:
+> > > > > >
+> > > > > > > On Thu, May 12, 2022 at 03:56:37PM +0200, Uladzislau Rezki wrote:
+> > > > > > > > Never mind. I port it into 5.10
+> > > > > > >
+> > > > > > > Oh, this is on mainline. Sorry about that. If you want I have a tree here for
+> > > > > > > 5.10 , although that does not have the kfree changes, everything else is
+> > > > > > > ditto.
+> > > > > > > https://github.com/joelagnel/linux-kernel/tree/rcu-nocb-4
+> > > > > > >
+> > > > > > No problem. kfree_rcu two patches are not so important in this series.
+> > > > > > So i have backported them into my 5.10 kernel because the latest kernel
+> > > > > > is not so easy to up and run on my device :)
+> > > > >
+> > > > > Actually I was going to write here, apparently some tests are showing
+> > > > > kfree_rcu()->call_rcu_lazy() causing possible regression. So it is
+> > > > > good to drop those for your initial testing!
+> > > > >
+> > > > Yep, i dropped both. The one that make use of call_rcu_lazy() seems not
+> > > > so important for kfree_rcu() because we do batch requests there anyway.
+> > > > One thing that i would like to improve in kfree_rcu() is a better utilization
+> > > > of page slots.
+> > > >
+> > > > I will share my results either tomorrow or on Monday. I hope that is fine.
+> > > >
+> > >
+> > > Here we go with some data on our Android handset that runs 5.10 kernel. The test
+> > > case i have checked was a "static image" use case. Condition is: screen ON with
+> > > disabled all connectivity.
+> > >
+> > > 1.
+> > > First data i took is how many wakeups cause an RCU subsystem during this test case
+> > > when everything is pretty idling. Duration is 360 seconds:
+> > >
+> > > <snip>
+> > > serezkiul@seldlx26095:~/data/call_rcu_lazy$ ./psp ./perf_360_sec_rcu_lazy_off.script | sort -nk 6 | grep rcu
+> > 
+> > Nice! Do you mind sharing this script? I was just talking to Rushikesh
+> > that we want something like this during testing. Appreciate it. Also,
+> > if we dump timer wakeup reasons/callbacks that would also be awesome.
+> > 
+> Please find in attachment. I wrote it once upon a time and make use of
+> to parse "perf script" output, i.e. raw data. The file name is: perf_script_parser.c
+> so just compile it.
+> 
+> How to use it:
+> 1. run perf: './perf sched record -a -- sleep "how much in sec you want to collect data"'
+> 2. ./perf script -i ./perf.data > foo.script
+> 3. ./perf_script_parser ./foo.script
+
+Thanks a lot for sharing this. I think it will be quite useful. FWIW, I also
+use "perf sched record" and "perf sched report --sort latency" to get wakeup
+latencies.
+
+> > FWIW, I wrote a BPF tool that periodically dumps callbacks and can
+> > share that with you on request as well. That is probably not in a
+> > shape for mainline though (Makefile missing and such).
+> > 
+> Yep, please share!
+
+Sure, check out my bcc repo from here:
+https://github.com/joelagnel/bcc
+
+Build this project, then cd libbpf-tools and run make. This should produce a
+static binary 'rcutop' which you can push to Android. You have to build for
+ARM which bcc should have instructions for. I have also included the rcuptop
+diff at the end of this file for reference.
+
+> > > 2.
+> > > Please find in attachment two power plots. The same test case. One is related to a
+> > > regular use of call_rcu() and second one is "lazy" usage. There is light a difference
+> > > in power, it is ~2mA. Event though it is rather small but it is detectable and solid
+> > > what is also important, thus it proofs the concept. Please note it might be more power
+> > > efficient for other arches and platforms. Because of different HW design that is related
+> > > to C-states of CPU and energy that is needed to in/out of those deep power states.
+> > 
+> > Nice! I wonder if you still have other frequent callbacks on your
+> > system that are getting queued during the tests. Could you dump the
+> > rcu_callbacks trace event and see if you have any CBs frequently
+> > called that the series did not address?
 > >
-> >Could you please post the output of the dmesg output of a failed check w=
-ith your change?
-> >
->=20
-> Original output:
->=20
-> [    0.818279] ODEBUG: activate active (active state 1) object type: rcu_=
-head hint: 0x0
-> [    0.818296] WARNING: CPU: 1 PID: 1 at lib/debugobjects.c:505 debug_pri=
-nt_object+0xd8/0xf0
-> [    0.818301] Modules linked in:
-> [    0.818304] CPU: 1 PID: 1 Comm: swapper/0 Tainted: G        W         =
-5.18.0-rc6-next-20220511-yoctodev-standard+ #75
-> [    0.818306] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS r=
-el-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
-> [    0.818308] RIP: 0010:debug_print_object+0xd8/0xf0
-> [    0.818311] Code: dd 40 9e 03 9d e8 48 62 a2 ff 4d 89 f9 4d 89 e8 44 8=
-9 e1 48 8b 14 dd 40 9e 03 9d 4c 89 f6 48 c7 c7 c0 93 03 9d e8 f6 1a b1 00 <=
-0f> f
-> [    0.818313] RSP: 0000:ffff88810033fad0 EFLAGS: 00010082
-> [    0.818315] RAX: 0000000000000000 RBX: 0000000000000003 RCX: 000000000=
-0000000
-> [    0.818317] RDX: 0000000000000002 RSI: 0000000000000004 RDI: ffffed102=
-0067f4c
-> [    0.818319] RBP: ffff88810033fb00 R08: ffffffff9b50d898 R09: fffffbfff=
-3bf5c6d
-> [    0.818320] R10: 0000000000000003 R11: fffffbfff3bf5c6c R12: 000000000=
-0000001
-> [    0.818322] R13: ffffffff9ce769a0 R14: ffffffff9d039a80 R15: 000000000=
-0000000
-> [    0.818324] FS:  0000000000000000(0000) GS:ffff888158880000(0000) knlG=
-S:0000000000000000
-> [    0.818327] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [    0.818329] CR2: 0000000000000000 CR3: 000000017600e000 CR4: 000000000=
-01506e0
-> [    0.818330] Call Trace:
-> [    0.818331]  <TASK>
-> [    0.818333]  debug_object_activate+0x2b8/0x300
-> [    0.818336]  ? debug_object_assert_init+0x220/0x220
-> [    0.818340]  ? __kasan_check_write+0x14/0x20
-> [    0.818343]  call_rcu+0x98/0x1110
-> [    0.818347]  ? vprintk+0x4c/0x60
-> [    0.818350]  ? rcu_torture_fwd_cb_hist.cold+0xe9/0xe9
-> [    0.818354]  ? strict_work_handler+0x70/0x70
-> [    0.818357]  rcu_torture_init+0x18be/0x199e
-> [    0.818361]  ? srcu_init+0x133/0x133
-> [    0.818364]  ? __mutex_unlock_slowpath.isra.0+0x270/0x270
-> [    0.818368]  ? rcu_torture_barrier1cb+0x40/0x40
-> [    0.818371]  ? rcu_torture_barrier1cb+0x40/0x40
-> [    0.818374]  ? srcu_init+0x133/0x133
-> [    0.818377]  do_one_initcall+0xb3/0x300
-> [    0.818380]  ? initcall_blacklisted+0x150/0x150
-> [    0.818382]  ? parameq+0x70/0x90
-> [    0.818385]  ? __kasan_check_read+0x11/0x20
-> [    0.818389]  kernel_init_freeable+0x2b2/0x310
-> [    0.818392]  ? rest_init+0xf0/0xf0
-> [    0.818396]  kernel_init+0x1e/0x140
-> [    0.818399]  ret_from_fork+0x22/0x30
-> [    0.818402]  </TASK>
-> [    0.818403] ---[ end trace 0000000000000000 ]---
-> [    0.818405] ------------[ cut here ]------------
-> [    0.818405] ODEBUG: active_state active (active state 1) object type: =
-rcu_head hint: 0x0
-> [    0.818421] WARNING: CPU: 1 PID: 1 at lib/debugobjects.c:505 debug_pri=
-nt_object+0xd8/0xf0
-> [    0.818424] Modules linked in:
-> [    0.818426] CPU: 1 PID: 1 Comm: swapper/0 Tainted: G        W         =
-5.18.0-rc6-next-20220511-yoctodev-standard+ #75
-> [    0.818428] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS r=
-el-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
-> [    0.818430] RIP: 0010:debug_print_object+0xd8/0xf0
-> [    0.818432] Code: dd 40 9e 03 9d e8 48 62 a2 ff 4d 89 f9 4d 89 e8 44 8=
-9 e1 48 8b 14 dd 40 9e 03 9d 4c 89 f6 48 c7 c7 c0 93 03 9d e8 f6 1a b1 00 <=
-0f> f
-> [    0.818435] RSP: 0000:ffff88810033fac0 EFLAGS: 00010086
-> [    0.818437] RAX: 0000000000000000 RBX: 0000000000000003 RCX: 000000000=
-0000000
-> [    0.818438] RDX: 0000000000000002 RSI: 0000000000000004 RDI: ffffed102=
-0067f4a
-> [    0.818440] RBP: ffff88810033faf0 R08: ffffffff9b50d898 R09: fffffbfff=
-3bf5c6d
-> [    0.818441] R10: 0000000000000003 R11: fffffbfff3bf5c6c R12: 000000000=
-0000001
-> [    0.818443] R13: ffffffff9ce769a0 R14: ffffffff9d039820 R15: 000000000=
-0000000
-> [    0.818445] FS:  0000000000000000(0000) GS:ffff888158880000(0000) knlG=
-S:0000000000000000
-> [    0.818448] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [    0.818449] CR2: 0000000000000000 CR3: 000000017600e000 CR4: 000000000=
-01506e0
-> [    0.818451] Call Trace:
-> [    0.818452]  <TASK>
-> [    0.818453]  debug_object_active_state+0x1d6/0x210
-> [    0.818456]  ? debug_object_deactivate+0x210/0x210
-> [    0.818460]  ? __kasan_check_write+0x14/0x20
-> [    0.818464]  call_rcu+0xb7/0x1110
-> [    0.818466]  ? vprintk+0x4c/0x60
-> [    0.818469]  ? rcu_torture_fwd_cb_hist.cold+0xe9/0xe9
-> [    0.818472]  ? strict_work_handler+0x70/0x70
-> [    0.818476]  rcu_torture_init+0x18be/0x199e
-> [    0.818479]  ? srcu_init+0x133/0x133
-> [    0.818482]  ? __mutex_unlock_slowpath.isra.0+0x270/0x270
-> [    0.818486]  ? rcu_torture_barrier1cb+0x40/0x40
-> [    0.818489]  ? rcu_torture_barrier1cb+0x40/0x40
-> [    0.818492]  ? srcu_init+0x133/0x133
-> [    0.818495]  do_one_initcall+0xb3/0x300
-> [    0.818497]  ? initcall_blacklisted+0x150/0x150
-> [    0.818500]  ? parameq+0x70/0x90
-> [    0.818503]  ? __kasan_check_read+0x11/0x20
-> [    0.818507]  kernel_init_freeable+0x2b2/0x310
-> [    0.818510]  ? rest_init+0xf0/0xf0
-> [    0.818513]  kernel_init+0x1e/0x140
-> [    0.818515]  ret_from_fork+0x22/0x30
-> [    0.818519]  </TASK>
-> [    0.818520] ---[ end trace 0000000000000000 ]---
-> [    0.818521] rcu: call_rcu(): Double-freed CB 00000000e2817fcb->rcu_tor=
-ture_leak_cb+0x0/0x10()!!!   non-slab/vmalloc memory
->=20
->=20
-> After apply this patch:
->=20
-> [    0.647048] ODEBUG: activate active (active state 0) object type: rcu_=
-head hint: 0x0
-> [    0.647068] WARNING: CPU: 1 PID: 1 at lib/debugobjects.c:505 debug_pri=
-nt_object+0xd8/0xf0
-> [    0.647073] Modules linked in:
-> [    0.647075] CPU: 1 PID: 1 Comm: swapper/0 Tainted: G        W         =
-5.18.0-rc6-next-20220511-yoctodev-standard+ #77
-> [    0.647078] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS r=
-el-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
-> [    0.647080] RIP: 0010:debug_print_object+0xd8/0xf0
-> [    0.647083] Code: dd 80 9d 43 a2 e8 38 62 a2 ff 4d 89 f9 4d 89 e8 44 8=
-9 e1 48 8b 14 dd 80 9d 43 a2 4c 89 f6 48 c7 c7 00 93 43 a2 e8 f6 1a b1 00 <=
-0f> 0b 83 05 7b 62f
-> [    0.647085] RSP: 0000:ffff88810033fad0 EFLAGS: 00010082
-> [    0.647088] RAX: 0000000000000000 RBX: 0000000000000003 RCX: 000000000=
-0000000
-> [    0.647090] RDX: 0000000000000002 RSI: 0000000000000004 RDI: ffffed102=
-0067f4c
-> [    0.647091] RBP: ffff88810033fb00 R08: ffffffffa090d898 R09: fffffbfff=
-467586d
-> [    0.647093] R10: 0000000000000003 R11: fffffbfff467586c R12: 000000000=
-0000000
-> [    0.647095] R13: ffffffffa22769a0 R14: ffffffffa24399c0 R15: 000000000=
-0000000
-> [    0.647097] FS:  0000000000000000(0000) GS:ffff88815b880000(0000) knlG=
-S:0000000000000000
-> [    0.647100] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [    0.647102] CR2: 0000000000000000 CR3: 000000002f20e000 CR4: 000000000=
-01506e0
-> [    0.647104] Call Trace:
-> [    0.647104]  <TASK>
-> [    0.647106]  debug_object_activate+0x2b8/0x300
-> [    0.647110]  ? debug_object_assert_init+0x220/0x220
-> [    0.647114]  ? __kasan_check_write+0x14/0x20
-> [    0.647118]  call_rcu+0x98/0x1100
-> [    0.647121]  ? vprintk+0x4c/0x60
-> [    0.647125]  ? rcu_torture_fwd_cb_hist.cold+0xe9/0xe9
-> [    0.647129]  ? strict_work_handler+0x50/0x50
-> [    0.647133]  rcu_torture_init+0x18be/0x199e
-> [    0.647136]  ? srcu_init+0x133/0x133
-> [    0.647140]  ? __mutex_unlock_slowpath.isra.0+0x270/0x270
-> [    0.647144]  ? rcu_torture_barrier1cb+0x40/0x40
-> [    0.647148]  ? rcu_torture_barrier1cb+0x40/0x40
-> [    0.647151]  ? srcu_init+0x133/0x133
-> [    0.647155]  do_one_initcall+0xb3/0x300
-> [    0.647157]  ? initcall_blacklisted+0x150/0x150
-> [    0.647160]  ? parameq+0x70/0x90
-> [    0.647164]  ? __kasan_check_read+0x11/0x20
-> [    0.647167]  kernel_init_freeable+0x2b2/0x310
-> [    0.647171]  ? rest_init+0xf0/0xf0
-> [    0.647174]  kernel_init+0x1e/0x140
-> [    0.647177]  ret_from_fork+0x22/0x30
-> [    0.647181]  </TASK>
-> [    0.647182] ---[ end trace 0000000000000000 ]---
-> [    0.647184] rcu: call_rcu(): Double-freed CB 000000009a684b70->rcu_tor=
-ture_leak_cb+0x0/0x10()!!!   non-slab/vmalloc memory
+> I have pretty much like this:
+> <snip>
+>     rcuop/2-33      [002] d..1  6172.420541: rcu_batch_start: rcu_preempt CBs=2048 bl=16
+>     rcuop/1-26      [001] d..1  6173.131965: rcu_batch_start: rcu_preempt CBs=2048 bl=16
+>     rcuop/0-15      [001] d..1  6173.696540: rcu_batch_start: rcu_preempt CBs=2048 bl=16
+>     rcuop/3-40      [003] d..1  6173.703695: rcu_batch_start: rcu_preempt CBs=2048 bl=16
+>     rcuop/0-15      [001] d..1  6173.711607: rcu_batch_start: rcu_preempt CBs=1667 bl=13
+>     rcuop/1-26      [000] d..1  6175.619722: rcu_batch_start: rcu_preempt CBs=2048 bl=16
+>     rcuop/2-33      [001] d..1  6176.135844: rcu_batch_start: rcu_preempt CBs=2048 bl=16
+>     rcuop/3-40      [002] d..1  6176.303723: rcu_batch_start: rcu_preempt CBs=2048 bl=16
+>     rcuop/0-15      [002] d..1  6176.519894: rcu_batch_start: rcu_preempt CBs=2048 bl=16
+>     rcuop/0-15      [003] d..1  6176.527895: rcu_batch_start: rcu_preempt CBs=273 bl=10
+>     rcuop/1-26      [003] d..1  6178.543729: rcu_batch_start: rcu_preempt CBs=2048 bl=16
+>     rcuop/1-26      [003] d..1  6178.551707: rcu_batch_start: rcu_preempt CBs=1317 bl=10
+>     rcuop/0-15      [003] d..1  6178.819698: rcu_batch_start: rcu_preempt CBs=2048 bl=16
+>     rcuop/0-15      [003] d..1  6178.827734: rcu_batch_start: rcu_preempt CBs=949 bl=10
+>     rcuop/3-40      [001] d..1  6179.203645: rcu_batch_start: rcu_preempt CBs=2048 bl=16
+>     rcuop/2-33      [001] d..1  6179.455747: rcu_batch_start: rcu_preempt CBs=2048 bl=16
+>     rcuop/2-33      [002] d..1  6179.471725: rcu_batch_start: rcu_preempt CBs=1983 bl=15
+>     rcuop/1-26      [003] d..1  6181.287646: rcu_batch_start: rcu_preempt CBs=2048 bl=16
+>     rcuop/1-26      [003] d..1  6181.295607: rcu_batch_start: rcu_preempt CBs=55 bl=10
+> <snip>
+> 
+> so almost everything is batched.
 
->Very good, and thank you!
->
->Now suppose that someone passes a pointer to call_rcu(), but then invokes =
-kfree() on that same object before the grace period ends.
->Is the offending kfree() flagged?
+Nice, glad to know this is happening even without the kfree_rcu() changes.
 
-If the CONFIG_DEBUG_OBJECTS_FREE is enabled, the debug_check_no_obj_freed()=
- will check wether the object is activated in kfree()
-If is activated, also output callstack.
+> > Also, one more thing I was curious about is - do you see savings when
+> > you pin the rcu threads to the LITTLE CPUs of the system? The theory
+> > being, not disturbing the BIG CPUs which are more power hungry may let
+> > them go into a deeper idle state and save power (due to leakage
+> > current and so forth).
+> > 
+> I did some experimenting to pin nocbs to a little cluster. For idle use
+> cases i did not see any power gain. For heavy one i see that "big" CPUs
+> are also invoking and busy with it quite often. Probably i should think
+> of some use case where i can detect the power difference. If you have
+> something please let me know.
 
-__debug_check_no_obj_freed()=20
-{........
-	switch (obj->state) {
-	case ODEBUG_STATE_ACTIVE:
-	 	descr =3D obj->descr;
-		state =3D obj->state;
-		_spin_unlock_irqrestore(&db->lock, flags);
-		debug_print_object(obj, "free");
-	}
-.........
-}
+Yeah, probably screen off + audio playback might be a good one, because it
+lightly loads the CPUs.
 
-Thanks,
-Zqiang
+> > > So a front-lazy-batching is something worth to have, IMHO :)
+> > 
+> > Exciting! Being lazy pays off some times ;-) ;-). If you are Ok with
+> > it, we can add your data to the LPC slides as well about your
+> > investigation (with attribution to you).
+> > 
+> No problem, since we will give a talk on LPC, more data we have more
+> convincing we are :)
 
->
->							Thanx, Paul
+I forget, you did mention you are Ok with presenting with us right? It would
+be great if you present your data when we come to Android, if you are OK with
+it. I'll start a common slide deck soon and share so you, Rushikesh and me
+can add slides to it and present together.
 
-> Thanks,
-> Zqiang
->=20
->=20
->=20
-> >							Thanx, Paul
-> >
-> > ---
-> >  kernel/rcu/rcu.h | 13 +------------
-> >  1 file changed, 1 insertion(+), 12 deletions(-)
-> >=20
-> > diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h index
-> > 15b96f990774..0604ecd16627 100644
-> > --- a/kernel/rcu/rcu.h
-> > +++ b/kernel/rcu/rcu.h
-> > @@ -179,27 +179,16 @@ static inline unsigned long rcu_seq_diff(unsigned=
- long new, unsigned long old)
-> >   */
-> > =20
-> >  #ifdef CONFIG_DEBUG_OBJECTS_RCU_HEAD
-> > -# define STATE_RCU_HEAD_READY	0
-> > -# define STATE_RCU_HEAD_QUEUED	1
-> > =20
-> >  extern const struct debug_obj_descr rcuhead_debug_descr;
-> > =20
-> >  static inline int debug_rcu_head_queue(struct rcu_head *head)  {
-> > -	int r1;
-> > -
-> > -	r1 =3D debug_object_activate(head, &rcuhead_debug_descr);
-> > -	debug_object_active_state(head, &rcuhead_debug_descr,
-> > -				  STATE_RCU_HEAD_READY,
-> > -				  STATE_RCU_HEAD_QUEUED);
-> > -	return r1;
-> > +	return debug_object_activate(head, &rcuhead_debug_descr);
-> >  }
-> > =20
-> >  static inline void debug_rcu_head_unqueue(struct rcu_head *head)  {
-> > -	debug_object_active_state(head, &rcuhead_debug_descr,
-> > -				  STATE_RCU_HEAD_QUEUED,
-> > -				  STATE_RCU_HEAD_READY);
-> >  	debug_object_deactivate(head, &rcuhead_debug_descr);  }
-> >  #else	/* !CONFIG_DEBUG_OBJECTS_RCU_HEAD */
-> > --
-> > 2.25.1
-> >=20
+thanks,
+
+ - Joel
+
+---8<-----------------------
+
+From: Joel Fernandes <joelaf@google.com>
+Subject: [PATCH] rcutop
+
+Signed-off-by: Joel Fernandes <joelaf@google.com>
+---
+ libbpf-tools/Makefile     |   1 +
+ libbpf-tools/rcutop.bpf.c |  56 ++++++++
+ libbpf-tools/rcutop.c     | 288 ++++++++++++++++++++++++++++++++++++++
+ libbpf-tools/rcutop.h     |   8 ++
+ 4 files changed, 353 insertions(+)
+ create mode 100644 libbpf-tools/rcutop.bpf.c
+ create mode 100644 libbpf-tools/rcutop.c
+ create mode 100644 libbpf-tools/rcutop.h
+
+diff --git a/libbpf-tools/Makefile b/libbpf-tools/Makefile
+index e60ec409..0d4cdff2 100644
+--- a/libbpf-tools/Makefile
++++ b/libbpf-tools/Makefile
+@@ -42,6 +42,7 @@ APPS = \
+ 	klockstat \
+ 	ksnoop \
+ 	llcstat \
++	rcutop \
+ 	mountsnoop \
+ 	numamove \
+ 	offcputime \
+diff --git a/libbpf-tools/rcutop.bpf.c b/libbpf-tools/rcutop.bpf.c
+new file mode 100644
+index 00000000..8287bbe2
+--- /dev/null
++++ b/libbpf-tools/rcutop.bpf.c
+@@ -0,0 +1,56 @@
++/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
++/* Copyright (c) 2021 Hengqi Chen */
++#include <vmlinux.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_core_read.h>
++#include <bpf/bpf_tracing.h>
++#include "rcutop.h"
++#include "maps.bpf.h"
++
++#define MAX_ENTRIES	10240
++
++struct {
++	__uint(type, BPF_MAP_TYPE_HASH);
++	__uint(max_entries, MAX_ENTRIES);
++	__type(key, void *);
++	__type(value, int);
++} cbs_queued SEC(".maps");
++
++struct {
++	__uint(type, BPF_MAP_TYPE_HASH);
++	__uint(max_entries, MAX_ENTRIES);
++	__type(key, void *);
++	__type(value, int);
++} cbs_executed SEC(".maps");
++
++SEC("tracepoint/rcu/rcu_callback")
++int tracepoint_rcu_callback(struct trace_event_raw_rcu_callback* ctx)
++{
++	void *key = ctx->func;
++	int *val = NULL;
++	static const int zero;
++
++	val = bpf_map_lookup_or_try_init(&cbs_queued, &key, &zero);
++	if (val) {
++		__sync_fetch_and_add(val, 1);
++	}
++
++	return 0;
++}
++
++SEC("tracepoint/rcu/rcu_invoke_callback")
++int tracepoint_rcu_invoke_callback(struct trace_event_raw_rcu_invoke_callback* ctx)
++{
++	void *key = ctx->func;
++	int *val;
++	int zero = 0;
++
++	val = bpf_map_lookup_or_try_init(&cbs_executed, (void *)&key, (void *)&zero);
++	if (val) {
++		__sync_fetch_and_add(val, 1);
++	}
++
++	return 0;
++}
++
++char LICENSE[] SEC("license") = "Dual BSD/GPL";
+diff --git a/libbpf-tools/rcutop.c b/libbpf-tools/rcutop.c
+new file mode 100644
+index 00000000..35795875
+--- /dev/null
++++ b/libbpf-tools/rcutop.c
+@@ -0,0 +1,288 @@
++/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
++
++/*
++ * rcutop
++ * Copyright (c) 2022 Joel Fernandes
++ *
++ * 05-May-2022   Joel Fernandes   Created this.
++ */
++#include <argp.h>
++#include <errno.h>
++#include <signal.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <time.h>
++#include <unistd.h>
++
++#include <bpf/libbpf.h>
++#include <bpf/bpf.h>
++#include "rcutop.h"
++#include "rcutop.skel.h"
++#include "btf_helpers.h"
++#include "trace_helpers.h"
++
++#define warn(...) fprintf(stderr, __VA_ARGS__)
++#define OUTPUT_ROWS_LIMIT 10240
++
++static volatile sig_atomic_t exiting = 0;
++
++static bool clear_screen = true;
++static int output_rows = 20;
++static int interval = 1;
++static int count = 99999999;
++static bool verbose = false;
++
++const char *argp_program_version = "rcutop 0.1";
++const char *argp_program_bug_address =
++"https://github.com/iovisor/bcc/tree/master/libbpf-tools";
++const char argp_program_doc[] =
++"Show RCU callback queuing and execution stats.\n"
++"\n"
++"USAGE: rcutop [-h] [interval] [count]\n"
++"\n"
++"EXAMPLES:\n"
++"    rcutop            # rcu activity top, refresh every 1s\n"
++"    rcutop 5 10       # 5s summaries, 10 times\n";
++
++static const struct argp_option opts[] = {
++	{ "noclear", 'C', NULL, 0, "Don't clear the screen" },
++	{ "rows", 'r', "ROWS", 0, "Maximum rows to print, default 20" },
++	{ "verbose", 'v', NULL, 0, "Verbose debug output" },
++	{ NULL, 'h', NULL, OPTION_HIDDEN, "Show the full help" },
++	{},
++};
++
++static error_t parse_arg(int key, char *arg, struct argp_state *state)
++{
++	long rows;
++	static int pos_args;
++
++	switch (key) {
++		case 'C':
++			clear_screen = false;
++			break;
++		case 'v':
++			verbose = true;
++			break;
++		case 'h':
++			argp_state_help(state, stderr, ARGP_HELP_STD_HELP);
++			break;
++		case 'r':
++			errno = 0;
++			rows = strtol(arg, NULL, 10);
++			if (errno || rows <= 0) {
++				warn("invalid rows: %s\n", arg);
++				argp_usage(state);
++			}
++			output_rows = rows;
++			if (output_rows > OUTPUT_ROWS_LIMIT)
++				output_rows = OUTPUT_ROWS_LIMIT;
++			break;
++		case ARGP_KEY_ARG:
++			errno = 0;
++			if (pos_args == 0) {
++				interval = strtol(arg, NULL, 10);
++				if (errno || interval <= 0) {
++					warn("invalid interval\n");
++					argp_usage(state);
++				}
++			} else if (pos_args == 1) {
++				count = strtol(arg, NULL, 10);
++				if (errno || count <= 0) {
++					warn("invalid count\n");
++					argp_usage(state);
++				}
++			} else {
++				warn("unrecognized positional argument: %s\n", arg);
++				argp_usage(state);
++			}
++			pos_args++;
++			break;
++		default:
++			return ARGP_ERR_UNKNOWN;
++	}
++	return 0;
++}
++
++static int libbpf_print_fn(enum libbpf_print_level level, const char *format, va_list args)
++{
++	if (level == LIBBPF_DEBUG && !verbose)
++		return 0;
++	return vfprintf(stderr, format, args);
++}
++
++static void sig_int(int signo)
++{
++	exiting = 1;
++}
++
++static int print_stat(struct ksyms *ksyms, struct syms_cache *syms_cache,
++		struct rcutop_bpf *obj)
++{
++	void *key, **prev_key = NULL;
++	int n, err = 0;
++	int qfd = bpf_map__fd(obj->maps.cbs_queued);
++	int efd = bpf_map__fd(obj->maps.cbs_executed);
++	const struct ksym *ksym;
++	FILE *f;
++	time_t t;
++	struct tm *tm;
++	char ts[16], buf[256];
++
++	f = fopen("/proc/loadavg", "r");
++	if (f) {
++		time(&t);
++		tm = localtime(&t);
++		strftime(ts, sizeof(ts), "%H:%M:%S", tm);
++		memset(buf, 0, sizeof(buf));
++		n = fread(buf, 1, sizeof(buf), f);
++		if (n)
++			printf("%8s loadavg: %s\n", ts, buf);
++		fclose(f);
++	}
++
++	printf("%-32s %-6s %-6s\n", "Callback", "Queued", "Executed");
++
++	while (1) {
++		int qcount = 0, ecount = 0;
++
++		err = bpf_map_get_next_key(qfd, prev_key, &key);
++		if (err) {
++			if (errno == ENOENT) {
++				err = 0;
++				break;
++			}
++			warn("bpf_map_get_next_key failed: %s\n", strerror(errno));
++			return err;
++		}
++
++		err = bpf_map_lookup_elem(qfd, &key, &qcount);
++		if (err) {
++			warn("bpf_map_lookup_elem failed: %s\n", strerror(errno));
++			return err;
++		}
++		prev_key = &key;
++
++		bpf_map_lookup_elem(efd, &key, &ecount);
++
++		ksym = ksyms__map_addr(ksyms, (unsigned long)key);
++		printf("%-32s %-6d %-6d\n",
++				ksym ? ksym->name : "Unknown",
++				qcount, ecount);
++	}
++	printf("\n");
++	prev_key = NULL;
++	while (1) {
++		err = bpf_map_get_next_key(qfd, prev_key, &key);
++		if (err) {
++			if (errno == ENOENT) {
++				err = 0;
++				break;
++			}
++			warn("bpf_map_get_next_key failed: %s\n", strerror(errno));
++			return err;
++		}
++		err = bpf_map_delete_elem(qfd, &key);
++		if (err) {
++			if (errno == ENOENT) {
++				err = 0;
++				continue;
++			}
++			warn("bpf_map_delete_elem failed: %s\n", strerror(errno));
++			return err;
++		}
++
++		bpf_map_delete_elem(efd, &key);
++		prev_key = &key;
++	}
++
++	return err;
++}
++
++int main(int argc, char **argv)
++{
++	LIBBPF_OPTS(bpf_object_open_opts, open_opts);
++	static const struct argp argp = {
++		.options = opts,
++		.parser = parse_arg,
++		.doc = argp_program_doc,
++	};
++	struct rcutop_bpf *obj;
++	int err;
++	struct syms_cache *syms_cache = NULL;
++	struct ksyms *ksyms = NULL;
++
++	err = argp_parse(&argp, argc, argv, 0, NULL, NULL);
++	if (err)
++		return err;
++
++	libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
++	libbpf_set_print(libbpf_print_fn);
++
++	err = ensure_core_btf(&open_opts);
++	if (err) {
++		fprintf(stderr, "failed to fetch necessary BTF for CO-RE: %s\n", strerror(-err));
++		return 1;
++	}
++
++	obj = rcutop_bpf__open_opts(&open_opts);
++	if (!obj) {
++		warn("failed to open BPF object\n");
++		return 1;
++	}
++
++	err = rcutop_bpf__load(obj);
++	if (err) {
++		warn("failed to load BPF object: %d\n", err);
++		goto cleanup;
++	}
++
++	err = rcutop_bpf__attach(obj);
++	if (err) {
++		warn("failed to attach BPF programs: %d\n", err);
++		goto cleanup;
++	}
++
++	ksyms = ksyms__load();
++	if (!ksyms) {
++		fprintf(stderr, "failed to load kallsyms\n");
++		goto cleanup;
++	}
++
++	syms_cache = syms_cache__new(0);
++	if (!syms_cache) {
++		fprintf(stderr, "failed to create syms_cache\n");
++		goto cleanup;
++	}
++
++	if (signal(SIGINT, sig_int) == SIG_ERR) {
++		warn("can't set signal handler: %s\n", strerror(errno));
++		err = 1;
++		goto cleanup;
++	}
++
++	while (1) {
++		sleep(interval);
++
++		if (clear_screen) {
++			err = system("clear");
++			if (err)
++				goto cleanup;
++		}
++
++		err = print_stat(ksyms, syms_cache, obj);
++		if (err)
++			goto cleanup;
++
++		count--;
++		if (exiting || !count)
++			goto cleanup;
++	}
++
++cleanup:
++	rcutop_bpf__destroy(obj);
++	cleanup_core_btf(&open_opts);
++
++	return err != 0;
++}
+diff --git a/libbpf-tools/rcutop.h b/libbpf-tools/rcutop.h
+new file mode 100644
+index 00000000..cb2a3557
+--- /dev/null
++++ b/libbpf-tools/rcutop.h
+@@ -0,0 +1,8 @@
++/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
++#ifndef __RCUTOP_H
++#define __RCUTOP_H
++
++#define PATH_MAX	4096
++#define TASK_COMM_LEN	16
++
++#endif /* __RCUTOP_H */
+-- 
+2.36.0.550.gb090851708-goog
+
