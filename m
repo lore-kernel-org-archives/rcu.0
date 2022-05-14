@@ -2,414 +2,640 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 04E94C433F5
-	for <rcu@archiver.kernel.org>; Sat, 14 May 2022 16:34:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C4B1FC433F5
+	for <rcu@archiver.kernel.org>; Sat, 14 May 2022 19:01:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234267AbiENQe3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 14 May 2022 12:34:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43310 "EHLO
+        id S234801AbiENTBl (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 14 May 2022 15:01:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234269AbiENQe1 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 14 May 2022 12:34:27 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C3056264
-        for <rcu@vger.kernel.org>; Sat, 14 May 2022 09:34:25 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id B84F0B80AEC
-        for <rcu@vger.kernel.org>; Sat, 14 May 2022 16:34:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4979CC340EE;
-        Sat, 14 May 2022 16:34:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1652546062;
-        bh=KnKZDz3iiAB4KiVwSmraCEZIT1CXiZAjoIJ758gXCXg=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=bi3ZbqnAetGDmWzZ/pgwjfCQ/sW+jW3DkqGBImzIYtuJvaXcBwY25Wb7q6C8RUmnh
-         5VKZz+QafwKnWYOyzh730Mytra+RWMaHRAwy85yCpo4A7p1WXJaVLl4g5ri8WyU3dM
-         kEf9V/xzcaXAVK4c9Spz/abS68EWtcmhPwH0afFd3IP6kiOShpgJ0OQhtuSh00e4HJ
-         jWc3RYAzvG26BRXq1m97WChLL06QwHaDf43s1Dp2UQAsjJZOsELXUNhlHWNKgrmenX
-         T3kADp6p/wT2VMNMLZxwwshzNIQrRS3wAJqiIO+/zkZypcd7fD/OgA3VhcR8MyC8XN
-         y0UwZaJT+jXcw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id DFA535C033A; Sat, 14 May 2022 09:34:21 -0700 (PDT)
-Date:   Sat, 14 May 2022 09:34:21 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
+        with ESMTP id S229436AbiENTBi (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 14 May 2022 15:01:38 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63344286E0
+        for <rcu@vger.kernel.org>; Sat, 14 May 2022 12:01:34 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id j4so19658596lfh.8
+        for <rcu@vger.kernel.org>; Sat, 14 May 2022 12:01:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=rF578RF8mcF1ZOdBqd9PjbRd99ewsVnO01zYnQUHS9w=;
+        b=ZBPNmPmgOwrpKueMN6EXiLhTWovX1qXSlYCauOBUvptBwKyXGLdUKp3AXCuaMn89Ns
+         3TIWnMrc+ALsomqBa+gQ5QQzJhEWoORe1uYs/tjXfFu+1VSzkMC88AsWJIPRhBs6RpqX
+         YNxJHZ8GFIrxuN2fQKkmPV2kLoFs/KuKvCbJQRVxWTqLyL+k0JCsZFy0KtxPRvEe9e3Y
+         SryllaGIMbtggcRTAU5uRiFha3Ft/SAEBAIWIi7ZTrCIxgoAPUcROtmaDobaSXMOp29P
+         CJgD9B7LHski0gdUHLXJIVJPxdMu7uMcg+9marhPNtYpqCj4/CoX8n1SN5Jm0wyCiZ4x
+         wUCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rF578RF8mcF1ZOdBqd9PjbRd99ewsVnO01zYnQUHS9w=;
+        b=3caiNtbFJdh3pX+o+xUvwOUdhNjuM1zeN+tJxui7584ZikigFQPGofpYPTmnJRbym8
+         Cvsl/X9gsBntV40BHEF1jljpLuUxVzShLlRguVZsrwQcgNdGG/PkXNJgHhhAUHyLb6AK
+         KYFExs2gqPA3fmaAk4U8K7QzSpQOnJVRTsEDs0+74RoCQog/u9o8ssHNklkNqI9eXpGH
+         xjnPQexhkpwHE8M7HeQSB3VhMGKLPbVxrkWaptsDSnMPiKUeEZmVCksR+GuO+LjVm5N/
+         maNifi4Q08p7DTWRmFJ188tv5nqM6tM8OgkdnxcpHtEm1IeRjVnUh8wZV3mqw2AmliQ4
+         6Rsg==
+X-Gm-Message-State: AOAM531P4EU/RnuPnEyNlNEDKGcPwp7CdvG/8hM3+7E50RNTNvmv8oqK
+        PODoDbCHca1CKOoWIDIevJPXkabLp7ja3Q==
+X-Google-Smtp-Source: ABdhPJzrjZ/2QFcMZheatuddwC9aFplSUckTh7VBqf7cum9XWlut3c1Zs9cI2cvbA4qk2fIO3Gn+tA==
+X-Received: by 2002:a19:4f02:0:b0:471:fcc4:b403 with SMTP id d2-20020a194f02000000b00471fcc4b403mr7402647lfb.401.1652554892478;
+        Sat, 14 May 2022 12:01:32 -0700 (PDT)
+Received: from pc638.lan ([155.137.26.201])
+        by smtp.gmail.com with ESMTPSA id o6-20020ac24e86000000b00474018dfb76sm785912lfr.157.2022.05.14.12.01.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 14 May 2022 12:01:31 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Sat, 14 May 2022 21:01:29 +0200
 To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     rcu@vger.kernel.org, rushikesh.s.kadam@intel.com, urezki@gmail.com,
-        neeraj.iitr10@gmail.com, frederic@kernel.org, rostedt@goodmis.org
-Subject: Re: [RFC v1 01/14] rcu: Add a lock-less lazy RCU implementation
-Message-ID: <20220514163421.GR1790663@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220512030442.2530552-1-joel@joelfernandes.org>
- <20220512030442.2530552-2-joel@joelfernandes.org>
- <20220512235603.GU1790663@paulmck-ThinkPad-P17-Gen-1>
- <Yn/F8V5kYR8fybPV@google.com>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu <rcu@vger.kernel.org>,
+        Rushikesh S Kadam <rushikesh.s.kadam@intel.com>,
+        Neeraj upadhyay <neeraj.iitr10@gmail.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [RFC v1 00/14] Implement call_rcu_lazy() and miscellaneous fixes
+Message-ID: <Yn/8ieLtPcRnSdPU@pc638.lan>
+References: <CA+KHdyVTwtC274v=Mmbwe3jaRPsme1mENWiOR+m2uDV=3SBTBQ@mail.gmail.com>
+ <CA+KHdyVGCC2-S8waURWL_cwjdv8EyeUwnLFNVYHn+h7TrteP6g@mail.gmail.com>
+ <Yn0TuehXj6VoWG0A@google.com>
+ <Yn0bwhkdfPvbjIwK@pc638.lan>
+ <CAEXW_YQNPDJ8aaxKzG2NN9gVR_QPbarJthiXYRd9Erw7p5V=FA@mail.gmail.com>
+ <Yn02uhvov7CDoKX7@pc638.lan>
+ <Yn5e7w8NWzThUARb@pc638.lan>
+ <CAEXW_YQSLSAOAYDhztreYu=t2v8HPCdjRwJ=5Bx6N3LT8frtkQ@mail.gmail.com>
+ <Yn58t2UWtj9YfJPR@pc638.lan>
+ <Yn+79v4q+1c9lXdc@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Yn/F8V5kYR8fybPV@google.com>
+In-Reply-To: <Yn+79v4q+1c9lXdc@google.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, May 14, 2022 at 03:08:33PM +0000, Joel Fernandes wrote:
-> Hi Paul,
-> 
-> Thanks for bearing with my slightly late reply, I did "time blocking"
-> technique to work on RCU today! ;-)
-> 
-> On Thu, May 12, 2022 at 04:56:03PM -0700, Paul E. McKenney wrote:
-> > On Thu, May 12, 2022 at 03:04:29AM +0000, Joel Fernandes (Google) wrote:
-> > > Implement timer-based RCU callback batching. The batch is flushed
-> > > whenever a certain amount of time has passed, or the batch on a
-> > > particular CPU grows too big. Also memory pressure can flush it.
+> On Fri, May 13, 2022 at 05:43:51PM +0200, Uladzislau Rezki wrote:
+> > > On Fri, May 13, 2022 at 9:36 AM Uladzislau Rezki <urezki@gmail.com> wrote:
+> > > >
+> > > > > > On Thu, May 12, 2022 at 10:37 AM Uladzislau Rezki <urezki@gmail.com> wrote:
+> > > > > > >
+> > > > > > > > On Thu, May 12, 2022 at 03:56:37PM +0200, Uladzislau Rezki wrote:
+> > > > > > > > > Never mind. I port it into 5.10
+> > > > > > > >
+> > > > > > > > Oh, this is on mainline. Sorry about that. If you want I have a tree here for
+> > > > > > > > 5.10 , although that does not have the kfree changes, everything else is
+> > > > > > > > ditto.
+> > > > > > > > https://github.com/joelagnel/linux-kernel/tree/rcu-nocb-4
+> > > > > > > >
+> > > > > > > No problem. kfree_rcu two patches are not so important in this series.
+> > > > > > > So i have backported them into my 5.10 kernel because the latest kernel
+> > > > > > > is not so easy to up and run on my device :)
+> > > > > >
+> > > > > > Actually I was going to write here, apparently some tests are showing
+> > > > > > kfree_rcu()->call_rcu_lazy() causing possible regression. So it is
+> > > > > > good to drop those for your initial testing!
+> > > > > >
+> > > > > Yep, i dropped both. The one that make use of call_rcu_lazy() seems not
+> > > > > so important for kfree_rcu() because we do batch requests there anyway.
+> > > > > One thing that i would like to improve in kfree_rcu() is a better utilization
+> > > > > of page slots.
+> > > > >
+> > > > > I will share my results either tomorrow or on Monday. I hope that is fine.
+> > > > >
+> > > >
+> > > > Here we go with some data on our Android handset that runs 5.10 kernel. The test
+> > > > case i have checked was a "static image" use case. Condition is: screen ON with
+> > > > disabled all connectivity.
+> > > >
+> > > > 1.
+> > > > First data i took is how many wakeups cause an RCU subsystem during this test case
+> > > > when everything is pretty idling. Duration is 360 seconds:
+> > > >
+> > > > <snip>
+> > > > serezkiul@seldlx26095:~/data/call_rcu_lazy$ ./psp ./perf_360_sec_rcu_lazy_off.script | sort -nk 6 | grep rcu
 > > > 
-> > > Locking is avoided to reduce lock contention when queuing and dequeuing
-> > > happens on different CPUs of a per-cpu list, such as when shrinker
-> > > context is running on different CPU. Also not having to use locks keeps
-> > > the per-CPU structure size small.
+> > > Nice! Do you mind sharing this script? I was just talking to Rushikesh
+> > > that we want something like this during testing. Appreciate it. Also,
+> > > if we dump timer wakeup reasons/callbacks that would also be awesome.
 > > > 
-> > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > Please find in attachment. I wrote it once upon a time and make use of
+> > to parse "perf script" output, i.e. raw data. The file name is: perf_script_parser.c
+> > so just compile it.
 > > 
-> > It is very good to see this!  Inevitable comments and questions below.
+> > How to use it:
+> > 1. run perf: './perf sched record -a -- sleep "how much in sec you want to collect data"'
+> > 2. ./perf script -i ./perf.data > foo.script
+> > 3. ./perf_script_parser ./foo.script
 > 
-> Thanks for taking a look!
+> Thanks a lot for sharing this. I think it will be quite useful. FWIW, I also
+> use "perf sched record" and "perf sched report --sort latency" to get wakeup
+> latencies.
 > 
-> > > diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
-> > > index bf8e341e75b4..c09715079829 100644
-> > > --- a/kernel/rcu/Kconfig
-> > > +++ b/kernel/rcu/Kconfig
-> > > @@ -241,4 +241,12 @@ config TASKS_TRACE_RCU_READ_MB
-> > >  	  Say N here if you hate read-side memory barriers.
-> > >  	  Take the default if you are unsure.
-> > >  
-> > > +config RCU_LAZY
-> > > +	bool "RCU callback lazy invocation functionality"
-> > > +	depends on RCU_NOCB_CPU
-> > > +	default y
-> > 
-> > This "default y" is OK for experimentation, but for mainline we should
-> > not be forcing this on unsuspecting people.  ;-)
-> 
-> Agreed. I'll default 'n' :)
-> 
-> > > +	help
-> > > +	  To save power, batch RCU callbacks and flush after delay, memory
-> > > +          pressure or callback list growing too big.
-> > > +
-> > >  endmenu # "RCU Subsystem"
-> > > diff --git a/kernel/rcu/Makefile b/kernel/rcu/Makefile
-> > > index 0cfb009a99b9..8968b330d6e0 100644
-> > > --- a/kernel/rcu/Makefile
-> > > +++ b/kernel/rcu/Makefile
-> > > @@ -16,3 +16,4 @@ obj-$(CONFIG_RCU_REF_SCALE_TEST) += refscale.o
-> > >  obj-$(CONFIG_TREE_RCU) += tree.o
-> > >  obj-$(CONFIG_TINY_RCU) += tiny.o
-> > >  obj-$(CONFIG_RCU_NEED_SEGCBLIST) += rcu_segcblist.o
-> > > +obj-$(CONFIG_RCU_LAZY) += lazy.o
-> > > diff --git a/kernel/rcu/lazy.c b/kernel/rcu/lazy.c
-> > > new file mode 100644
-> > > index 000000000000..55e406cfc528
-> > > --- /dev/null
-> > > +++ b/kernel/rcu/lazy.c
-> > > @@ -0,0 +1,145 @@
-> > > +/*
-> > > + * Lockless lazy-RCU implementation.
-> > > + */
-> > > +#include <linux/rcupdate.h>
-> > > +#include <linux/shrinker.h>
-> > > +#include <linux/workqueue.h>
-> > > +#include "rcu.h"
-> > > +
-> > > +// How much to batch before flushing?
-> > > +#define MAX_LAZY_BATCH		2048
-> > > +
-> > > +// How much to wait before flushing?
-> > > +#define MAX_LAZY_JIFFIES	10000
-> > 
-> > That is more than a minute on a HZ=10 system.  Are you sure that you
-> > did not mean "(10 * HZ)" or some such?
-> 
-> Yes, you are right. I need to change that to be constant regardless of HZ. I
-> will make the change as you suggest.
-> 
-> > > +
-> > > +// We cast lazy_rcu_head to rcu_head and back. This keeps the API simple while
-> > > +// allowing us to use lockless list node in the head. Also, we use BUILD_BUG_ON
-> > > +// later to ensure that rcu_head and lazy_rcu_head are of the same size.
-> > > +struct lazy_rcu_head {
-> > > +	struct llist_node llist_node;
-> > > +	void (*func)(struct callback_head *head);
-> > > +} __attribute__((aligned(sizeof(void *))));
-> > 
-> > This needs a build-time check that rcu_head and lazy_rcu_head are of
-> > the same size.  Maybe something like this in some appropriate context:
-> > 
-> > 	BUILD_BUG_ON(sizeof(struct rcu_head) != sizeof(struct_rcu_head_lazy));
-> > 
-> > Never mind!  I see you have this in rcu_init_lazy().  Plus I now see that
-> > you also mention this in the above comments.  ;-)
-> 
-> Cool, great minds think alike! ;-)
-> 
-> > > +
-> > > +struct rcu_lazy_pcp {
-> > > +	struct llist_head head;
-> > > +	struct delayed_work work;
-> > > +	atomic_t count;
-> > > +};
-> > > +DEFINE_PER_CPU(struct rcu_lazy_pcp, rcu_lazy_pcp_ins);
-> > > +
-> > > +// Lockless flush of CPU, can be called concurrently.
-> > > +static void lazy_rcu_flush_cpu(struct rcu_lazy_pcp *rlp)
-> > > +{
-> > > +	struct llist_node *node = llist_del_all(&rlp->head);
-> > > +	struct lazy_rcu_head *cursor, *temp;
-> > > +
-> > > +	if (!node)
-> > > +		return;
-> > 
-> > At this point, the list is empty but the count is non-zero.  Can
-> > that cause a problem?  (For the existing callback lists, this would
-> > be OK.)
-> > 
-> > > +	llist_for_each_entry_safe(cursor, temp, node, llist_node) {
-> > > +		struct rcu_head *rh = (struct rcu_head *)cursor;
-> > > +		debug_rcu_head_unqueue(rh);
-> > 
-> > Good to see this check!
-> > 
-> > > +		call_rcu(rh, rh->func);
-> > > +		atomic_dec(&rlp->count);
-> > > +	}
-> > > +}
-> > > +
-> > > +void call_rcu_lazy(struct rcu_head *head_rcu, rcu_callback_t func)
-> > > +{
-> > > +	struct lazy_rcu_head *head = (struct lazy_rcu_head *)head_rcu;
-> > > +	struct rcu_lazy_pcp *rlp;
-> > > +
-> > > +	preempt_disable();
-> > > +        rlp = this_cpu_ptr(&rcu_lazy_pcp_ins);
-> > 
-> > Whitespace issue, please fix.
-> 
-> Fixed, thanks.
-> 
-> > > +	preempt_enable();
-> > > +
-> > > +	if (debug_rcu_head_queue((void *)head)) {
-> > > +		// Probable double call_rcu(), just leak.
-> > > +		WARN_ONCE(1, "%s(): Double-freed call. rcu_head %p\n",
-> > > +				__func__, head);
-> > > +
-> > > +		// Mark as success and leave.
-> > > +		return;
-> > > +	}
-> > > +
-> > > +	// Queue to per-cpu llist
-> > > +	head->func = func;
-> > > +	llist_add(&head->llist_node, &rlp->head);
-> > 
-> > Suppose that there are a bunch of preemptions between the preempt_enable()
-> > above and this point, so that the current CPU's list has lots of
-> > callbacks, but zero ->count.  Can that cause a problem?
-> > 
-> > In the past, this sort of thing has been an issue for rcu_barrier()
-> > and friends.
-> 
-> Thanks, I think I dropped the ball on this. You have given me something to
-> think about. I am thinking on first thought that setting the count in advance
-> of populating the list should do the trick. I will look more on it.
+Good. "perf sched report --sort latency" it must be related to wakeup delays?
 
-That can work, but don't forget the need for proper memory ordering.
-
-Another approach would be to what the current bypass list does, namely
-count the callback in the ->cblist structure.
-
-> > > +	// Flush queue if too big
-> > 
-> > You will also need to check for early boot use.
-> > 
-> > I -think- it suffice to simply skip the following "if" statement when
-> > rcu_scheduler_active == RCU_SCHEDULER_INACTIVE suffices.  The reason being
-> > that you can queue timeouts at that point, even though CONFIG_PREEMPT_RT
-> > kernels won't expire them until the softirq kthreads have been spawned.
-> > 
-> > Which is OK, as it just means that call_rcu_lazy() is a bit more
-> > lazy than expected that early.
-> > 
-> > Except that call_rcu() can be invoked even before rcu_init() has been
-> > invoked, which is therefore also before rcu_init_lazy() has been invoked.
+> > > FWIW, I wrote a BPF tool that periodically dumps callbacks and can
+> > > share that with you on request as well. That is probably not in a
+> > > shape for mainline though (Makefile missing and such).
+> > > 
+> > Yep, please share!
 > 
-> In other words, you are concerned that too many lazy callbacks might be
-> pending before rcu_init() is called?
+> Sure, check out my bcc repo from here:
+> https://github.com/joelagnel/bcc
+> 
+> Build this project, then cd libbpf-tools and run make. This should produce a
+> static binary 'rcutop' which you can push to Android. You have to build for
+> ARM which bcc should have instructions for. I have also included the rcuptop
+> diff at the end of this file for reference.
+> 
+Cool. Will try it later :)
 
-In other words, I am concerned that bad things might happen if fields
-in a rcu_lazy_pcp structure are used before they are initialized.
-
-I am not worried about too many lazy callbacks before rcu_init() because
-the non-lazy callbacks (which these currently are) are allowed to pile
-up until RCU's grace-period kthreads have been spawned.  There might
-come a time when RCU callbacks need to be invoked earlier, but that will
-be a separate problem to solve when and if, but with the benefit of the
-additional information derived from seeing the problem actually happen.
-
-> I am going through the kfree_rcu() threads/patches involving
-> RCU_SCHEDULER_RUNNING check, but was the concern that queuing timers before
-> the scheduler is running causes a crash or warnings?
-
-There are a lot of different issues that arise in different phases
-of boot.  In this particular case, my primary concern is the
-use-before-initialized bug.
-
-> > I thefore suggest something like this at the very start of this function:
+> > > > 2.
+> > > > Please find in attachment two power plots. The same test case. One is related to a
+> > > > regular use of call_rcu() and second one is "lazy" usage. There is light a difference
+> > > > in power, it is ~2mA. Event though it is rather small but it is detectable and solid
+> > > > what is also important, thus it proofs the concept. Please note it might be more power
+> > > > efficient for other arches and platforms. Because of different HW design that is related
+> > > > to C-states of CPU and energy that is needed to in/out of those deep power states.
+> > > 
+> > > Nice! I wonder if you still have other frequent callbacks on your
+> > > system that are getting queued during the tests. Could you dump the
+> > > rcu_callbacks trace event and see if you have any CBs frequently
+> > > called that the series did not address?
+> > >
+> > I have pretty much like this:
+> > <snip>
+> >     rcuop/2-33      [002] d..1  6172.420541: rcu_batch_start: rcu_preempt CBs=2048 bl=16
+> >     rcuop/1-26      [001] d..1  6173.131965: rcu_batch_start: rcu_preempt CBs=2048 bl=16
+> >     rcuop/0-15      [001] d..1  6173.696540: rcu_batch_start: rcu_preempt CBs=2048 bl=16
+> >     rcuop/3-40      [003] d..1  6173.703695: rcu_batch_start: rcu_preempt CBs=2048 bl=16
+> >     rcuop/0-15      [001] d..1  6173.711607: rcu_batch_start: rcu_preempt CBs=1667 bl=13
+> >     rcuop/1-26      [000] d..1  6175.619722: rcu_batch_start: rcu_preempt CBs=2048 bl=16
+> >     rcuop/2-33      [001] d..1  6176.135844: rcu_batch_start: rcu_preempt CBs=2048 bl=16
+> >     rcuop/3-40      [002] d..1  6176.303723: rcu_batch_start: rcu_preempt CBs=2048 bl=16
+> >     rcuop/0-15      [002] d..1  6176.519894: rcu_batch_start: rcu_preempt CBs=2048 bl=16
+> >     rcuop/0-15      [003] d..1  6176.527895: rcu_batch_start: rcu_preempt CBs=273 bl=10
+> >     rcuop/1-26      [003] d..1  6178.543729: rcu_batch_start: rcu_preempt CBs=2048 bl=16
+> >     rcuop/1-26      [003] d..1  6178.551707: rcu_batch_start: rcu_preempt CBs=1317 bl=10
+> >     rcuop/0-15      [003] d..1  6178.819698: rcu_batch_start: rcu_preempt CBs=2048 bl=16
+> >     rcuop/0-15      [003] d..1  6178.827734: rcu_batch_start: rcu_preempt CBs=949 bl=10
+> >     rcuop/3-40      [001] d..1  6179.203645: rcu_batch_start: rcu_preempt CBs=2048 bl=16
+> >     rcuop/2-33      [001] d..1  6179.455747: rcu_batch_start: rcu_preempt CBs=2048 bl=16
+> >     rcuop/2-33      [002] d..1  6179.471725: rcu_batch_start: rcu_preempt CBs=1983 bl=15
+> >     rcuop/1-26      [003] d..1  6181.287646: rcu_batch_start: rcu_preempt CBs=2048 bl=16
+> >     rcuop/1-26      [003] d..1  6181.295607: rcu_batch_start: rcu_preempt CBs=55 bl=10
+> > <snip>
 > > 
-> > 	if (rcu_scheduler_active == RCU_SCHEDULER_INACTIVE)
-> > 		call_rcu(head_rcu, func);
-> > 
-> > The goal is that people can replace call_rcu() with call_rcu_lazy()
-> > without having to worry about invocation during early boot.
+> > so almost everything is batched.
 > 
-> Yes, this seems safer. I don't expect much power savings during system boot
-> process anyway ;-). I believe perhaps a static branch would work better to
-> take a branch out from what is likely a fast path.
+> Nice, glad to know this is happening even without the kfree_rcu() changes.
+> 
+kvfree_rcu() does the job quite good, even though as i mentioned i would like
+to send a patch about better page slot utialization. But, yes, since there is 
+batching mechanism the call_rcu_lazy() does not give any effect.
 
-A static branch would be fine.  Maybe encapsulate it in a static inline
-function for all such comparisons, but most such comparisons are far from
-anything resembling a fastpath, so the main potential benefit would be
-added readability.  Which could be a compelling reason in and of itself.
 
-							Thanx, Paul
+> > > Also, one more thing I was curious about is - do you see savings when
+> > > you pin the rcu threads to the LITTLE CPUs of the system? The theory
+> > > being, not disturbing the BIG CPUs which are more power hungry may let
+> > > them go into a deeper idle state and save power (due to leakage
+> > > current and so forth).
+> > > 
+> > I did some experimenting to pin nocbs to a little cluster. For idle use
+> > cases i did not see any power gain. For heavy one i see that "big" CPUs
+> > are also invoking and busy with it quite often. Probably i should think
+> > of some use case where i can detect the power difference. If you have
+> > something please let me know.
+> 
+> Yeah, probably screen off + audio playback might be a good one, because it
+> lightly loads the CPUs.
+> 
+Hm.. Will see and might check, just in case! I have implemented the simple 
+call_rcu() static workload generator in order to examine it in more controlled
+environment. So i would like to see how it behaves under a static workload
+generator.
 
-> > Huh.  "head_rcu"?  Why not "rhp"?  Or follow call_rcu() with "head",
-> > though "rhp" is more consistent with the RCU pointer initials approach.
+> > > > So a front-lazy-batching is something worth to have, IMHO :)
+> > > 
+> > > Exciting! Being lazy pays off some times ;-) ;-). If you are Ok with
+> > > it, we can add your data to the LPC slides as well about your
+> > > investigation (with attribution to you).
+> > > 
+> > No problem, since we will give a talk on LPC, more data we have more
+> > convincing we are :)
 > 
-> Fixed, thanks.
+> I forget, you did mention you are Ok with presenting with us right? It would
+> be great if you present your data when we come to Android, if you are OK with
+> it. I'll start a common slide deck soon and share so you, Rushikesh and me
+> can add slides to it and present together.
 > 
-> > > +	if (atomic_inc_return(&rlp->count) >= MAX_LAZY_BATCH) {
-> > > +		lazy_rcu_flush_cpu(rlp);
-> > > +	} else {
-> > > +		if (!delayed_work_pending(&rlp->work)) {
-> > 
-> > This check is racy because the work might run to completion right at
-> > this point.  Wouldn't it be better to rely on the internal check of
-> > WORK_STRUCT_PENDING_BIT within queue_delayed_work_on()?
-> 
-> Oops, agreed. Will make it as you suggest.
-> 
+I am OK to report with you together. I can do and prepare some data related to
+examination on our Android and big.LITTLE platform that we use for our customers.
+
 > thanks,
 > 
 >  - Joel
 > 
-> > > +			schedule_delayed_work(&rlp->work, MAX_LAZY_JIFFIES);
-> > > +		}
-> > > +	}
-> > > +}
-> > > +
-> > > +static unsigned long
-> > > +lazy_rcu_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
-> > > +{
-> > > +	unsigned long count = 0;
-> > > +	int cpu;
-> > > +
-> > > +	/* Snapshot count of all CPUs */
-> > > +	for_each_possible_cpu(cpu) {
-> > > +		struct rcu_lazy_pcp *rlp = per_cpu_ptr(&rcu_lazy_pcp_ins, cpu);
-> > > +
-> > > +		count += atomic_read(&rlp->count);
-> > > +	}
-> > > +
-> > > +	return count;
-> > > +}
-> > > +
-> > > +static unsigned long
-> > > +lazy_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
-> > > +{
-> > > +	int cpu, freed = 0;
-> > > +
-> > > +	for_each_possible_cpu(cpu) {
-> > > +		struct rcu_lazy_pcp *rlp = per_cpu_ptr(&rcu_lazy_pcp_ins, cpu);
-> > > +		unsigned long count;
-> > > +
-> > > +		count = atomic_read(&rlp->count);
-> > > +		lazy_rcu_flush_cpu(rlp);
-> > > +		sc->nr_to_scan -= count;
-> > > +		freed += count;
-> > > +		if (sc->nr_to_scan <= 0)
-> > > +			break;
-> > > +	}
-> > > +
-> > > +	return freed == 0 ? SHRINK_STOP : freed;
-> > 
-> > This is a bit surprising given the stated aim of SHRINK_STOP to indicate
-> > potential deadlocks.  But this pattern is common, including on the
-> > kvfree_rcu() path, so OK!  ;-)
-> > 
-> > Plus do_shrink_slab() loops if you don't return SHRINK_STOP, so there is
-> > that as well.
-> > 
-> > > +}
-> > > +
-> > > +/*
-> > > + * This function is invoked after MAX_LAZY_JIFFIES timeout.
-> > > + */
-> > > +static void lazy_work(struct work_struct *work)
-> > > +{
-> > > +	struct rcu_lazy_pcp *rlp = container_of(work, struct rcu_lazy_pcp, work.work);
-> > > +
-> > > +	lazy_rcu_flush_cpu(rlp);
-> > > +}
-> > > +
-> > > +static struct shrinker lazy_rcu_shrinker = {
-> > > +	.count_objects = lazy_rcu_shrink_count,
-> > > +	.scan_objects = lazy_rcu_shrink_scan,
-> > > +	.batch = 0,
-> > > +	.seeks = DEFAULT_SEEKS,
-> > > +};
-> > > +
-> > > +void __init rcu_lazy_init(void)
-> > > +{
-> > > +	int cpu;
-> > > +
-> > > +	BUILD_BUG_ON(sizeof(struct lazy_rcu_head) != sizeof(struct rcu_head));
-> > > +
-> > > +	for_each_possible_cpu(cpu) {
-> > > +		struct rcu_lazy_pcp *rlp = per_cpu_ptr(&rcu_lazy_pcp_ins, cpu);
-> > > +		INIT_DELAYED_WORK(&rlp->work, lazy_work);
-> > > +	}
-> > > +
-> > > +	if (register_shrinker(&lazy_rcu_shrinker))
-> > > +		pr_err("Failed to register lazy_rcu shrinker!\n");
-> > > +}
-> > > diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-> > > index 24b5f2c2de87..a5f4b44f395f 100644
-> > > --- a/kernel/rcu/rcu.h
-> > > +++ b/kernel/rcu/rcu.h
-> > > @@ -561,4 +561,9 @@ void show_rcu_tasks_trace_gp_kthread(void);
-> > >  static inline void show_rcu_tasks_trace_gp_kthread(void) {}
-> > >  #endif
-> > >  
-> > > +#ifdef CONFIG_RCU_LAZY
-> > > +void rcu_lazy_init(void);
-> > > +#else
-> > > +static inline void rcu_lazy_init(void) {}
-> > > +#endif
-> > >  #endif /* __LINUX_RCU_H */
-> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > index a4c25a6283b0..ebdf6f7c9023 100644
-> > > --- a/kernel/rcu/tree.c
-> > > +++ b/kernel/rcu/tree.c
-> > > @@ -4775,6 +4775,8 @@ void __init rcu_init(void)
-> > >  		qovld_calc = DEFAULT_RCU_QOVLD_MULT * qhimark;
-> > >  	else
-> > >  		qovld_calc = qovld;
-> > > +
-> > > +	rcu_lazy_init();
-> > >  }
-> > >  
-> > >  #include "tree_stall.h"
-> > > -- 
-> > > 2.36.0.550.gb090851708-goog
-> > > 
+> ---8<-----------------------
+> 
+> From: Joel Fernandes <joelaf@google.com>
+> Subject: [PATCH] rcutop
+> 
+> Signed-off-by: Joel Fernandes <joelaf@google.com>
+> ---
+>  libbpf-tools/Makefile     |   1 +
+>  libbpf-tools/rcutop.bpf.c |  56 ++++++++
+>  libbpf-tools/rcutop.c     | 288 ++++++++++++++++++++++++++++++++++++++
+>  libbpf-tools/rcutop.h     |   8 ++
+>  4 files changed, 353 insertions(+)
+>  create mode 100644 libbpf-tools/rcutop.bpf.c
+>  create mode 100644 libbpf-tools/rcutop.c
+>  create mode 100644 libbpf-tools/rcutop.h
+> 
+> diff --git a/libbpf-tools/Makefile b/libbpf-tools/Makefile
+> index e60ec409..0d4cdff2 100644
+> --- a/libbpf-tools/Makefile
+> +++ b/libbpf-tools/Makefile
+> @@ -42,6 +42,7 @@ APPS = \
+>  	klockstat \
+>  	ksnoop \
+>  	llcstat \
+> +	rcutop \
+>  	mountsnoop \
+>  	numamove \
+>  	offcputime \
+> diff --git a/libbpf-tools/rcutop.bpf.c b/libbpf-tools/rcutop.bpf.c
+> new file mode 100644
+> index 00000000..8287bbe2
+> --- /dev/null
+> +++ b/libbpf-tools/rcutop.bpf.c
+> @@ -0,0 +1,56 @@
+> +/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
+> +/* Copyright (c) 2021 Hengqi Chen */
+> +#include <vmlinux.h>
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_core_read.h>
+> +#include <bpf/bpf_tracing.h>
+> +#include "rcutop.h"
+> +#include "maps.bpf.h"
+> +
+> +#define MAX_ENTRIES	10240
+> +
+> +struct {
+> +	__uint(type, BPF_MAP_TYPE_HASH);
+> +	__uint(max_entries, MAX_ENTRIES);
+> +	__type(key, void *);
+> +	__type(value, int);
+> +} cbs_queued SEC(".maps");
+> +
+> +struct {
+> +	__uint(type, BPF_MAP_TYPE_HASH);
+> +	__uint(max_entries, MAX_ENTRIES);
+> +	__type(key, void *);
+> +	__type(value, int);
+> +} cbs_executed SEC(".maps");
+> +
+> +SEC("tracepoint/rcu/rcu_callback")
+> +int tracepoint_rcu_callback(struct trace_event_raw_rcu_callback* ctx)
+> +{
+> +	void *key = ctx->func;
+> +	int *val = NULL;
+> +	static const int zero;
+> +
+> +	val = bpf_map_lookup_or_try_init(&cbs_queued, &key, &zero);
+> +	if (val) {
+> +		__sync_fetch_and_add(val, 1);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +SEC("tracepoint/rcu/rcu_invoke_callback")
+> +int tracepoint_rcu_invoke_callback(struct trace_event_raw_rcu_invoke_callback* ctx)
+> +{
+> +	void *key = ctx->func;
+> +	int *val;
+> +	int zero = 0;
+> +
+> +	val = bpf_map_lookup_or_try_init(&cbs_executed, (void *)&key, (void *)&zero);
+> +	if (val) {
+> +		__sync_fetch_and_add(val, 1);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +char LICENSE[] SEC("license") = "Dual BSD/GPL";
+> diff --git a/libbpf-tools/rcutop.c b/libbpf-tools/rcutop.c
+> new file mode 100644
+> index 00000000..35795875
+> --- /dev/null
+> +++ b/libbpf-tools/rcutop.c
+> @@ -0,0 +1,288 @@
+> +/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
+> +
+> +/*
+> + * rcutop
+> + * Copyright (c) 2022 Joel Fernandes
+> + *
+> + * 05-May-2022   Joel Fernandes   Created this.
+> + */
+> +#include <argp.h>
+> +#include <errno.h>
+> +#include <signal.h>
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <string.h>
+> +#include <time.h>
+> +#include <unistd.h>
+> +
+> +#include <bpf/libbpf.h>
+> +#include <bpf/bpf.h>
+> +#include "rcutop.h"
+> +#include "rcutop.skel.h"
+> +#include "btf_helpers.h"
+> +#include "trace_helpers.h"
+> +
+> +#define warn(...) fprintf(stderr, __VA_ARGS__)
+> +#define OUTPUT_ROWS_LIMIT 10240
+> +
+> +static volatile sig_atomic_t exiting = 0;
+> +
+> +static bool clear_screen = true;
+> +static int output_rows = 20;
+> +static int interval = 1;
+> +static int count = 99999999;
+> +static bool verbose = false;
+> +
+> +const char *argp_program_version = "rcutop 0.1";
+> +const char *argp_program_bug_address =
+> +"https://github.com/iovisor/bcc/tree/master/libbpf-tools";
+> +const char argp_program_doc[] =
+> +"Show RCU callback queuing and execution stats.\n"
+> +"\n"
+> +"USAGE: rcutop [-h] [interval] [count]\n"
+> +"\n"
+> +"EXAMPLES:\n"
+> +"    rcutop            # rcu activity top, refresh every 1s\n"
+> +"    rcutop 5 10       # 5s summaries, 10 times\n";
+> +
+> +static const struct argp_option opts[] = {
+> +	{ "noclear", 'C', NULL, 0, "Don't clear the screen" },
+> +	{ "rows", 'r', "ROWS", 0, "Maximum rows to print, default 20" },
+> +	{ "verbose", 'v', NULL, 0, "Verbose debug output" },
+> +	{ NULL, 'h', NULL, OPTION_HIDDEN, "Show the full help" },
+> +	{},
+> +};
+> +
+> +static error_t parse_arg(int key, char *arg, struct argp_state *state)
+> +{
+> +	long rows;
+> +	static int pos_args;
+> +
+> +	switch (key) {
+> +		case 'C':
+> +			clear_screen = false;
+> +			break;
+> +		case 'v':
+> +			verbose = true;
+> +			break;
+> +		case 'h':
+> +			argp_state_help(state, stderr, ARGP_HELP_STD_HELP);
+> +			break;
+> +		case 'r':
+> +			errno = 0;
+> +			rows = strtol(arg, NULL, 10);
+> +			if (errno || rows <= 0) {
+> +				warn("invalid rows: %s\n", arg);
+> +				argp_usage(state);
+> +			}
+> +			output_rows = rows;
+> +			if (output_rows > OUTPUT_ROWS_LIMIT)
+> +				output_rows = OUTPUT_ROWS_LIMIT;
+> +			break;
+> +		case ARGP_KEY_ARG:
+> +			errno = 0;
+> +			if (pos_args == 0) {
+> +				interval = strtol(arg, NULL, 10);
+> +				if (errno || interval <= 0) {
+> +					warn("invalid interval\n");
+> +					argp_usage(state);
+> +				}
+> +			} else if (pos_args == 1) {
+> +				count = strtol(arg, NULL, 10);
+> +				if (errno || count <= 0) {
+> +					warn("invalid count\n");
+> +					argp_usage(state);
+> +				}
+> +			} else {
+> +				warn("unrecognized positional argument: %s\n", arg);
+> +				argp_usage(state);
+> +			}
+> +			pos_args++;
+> +			break;
+> +		default:
+> +			return ARGP_ERR_UNKNOWN;
+> +	}
+> +	return 0;
+> +}
+> +
+> +static int libbpf_print_fn(enum libbpf_print_level level, const char *format, va_list args)
+> +{
+> +	if (level == LIBBPF_DEBUG && !verbose)
+> +		return 0;
+> +	return vfprintf(stderr, format, args);
+> +}
+> +
+> +static void sig_int(int signo)
+> +{
+> +	exiting = 1;
+> +}
+> +
+> +static int print_stat(struct ksyms *ksyms, struct syms_cache *syms_cache,
+> +		struct rcutop_bpf *obj)
+> +{
+> +	void *key, **prev_key = NULL;
+> +	int n, err = 0;
+> +	int qfd = bpf_map__fd(obj->maps.cbs_queued);
+> +	int efd = bpf_map__fd(obj->maps.cbs_executed);
+> +	const struct ksym *ksym;
+> +	FILE *f;
+> +	time_t t;
+> +	struct tm *tm;
+> +	char ts[16], buf[256];
+> +
+> +	f = fopen("/proc/loadavg", "r");
+> +	if (f) {
+> +		time(&t);
+> +		tm = localtime(&t);
+> +		strftime(ts, sizeof(ts), "%H:%M:%S", tm);
+> +		memset(buf, 0, sizeof(buf));
+> +		n = fread(buf, 1, sizeof(buf), f);
+> +		if (n)
+> +			printf("%8s loadavg: %s\n", ts, buf);
+> +		fclose(f);
+> +	}
+> +
+> +	printf("%-32s %-6s %-6s\n", "Callback", "Queued", "Executed");
+> +
+> +	while (1) {
+> +		int qcount = 0, ecount = 0;
+> +
+> +		err = bpf_map_get_next_key(qfd, prev_key, &key);
+> +		if (err) {
+> +			if (errno == ENOENT) {
+> +				err = 0;
+> +				break;
+> +			}
+> +			warn("bpf_map_get_next_key failed: %s\n", strerror(errno));
+> +			return err;
+> +		}
+> +
+> +		err = bpf_map_lookup_elem(qfd, &key, &qcount);
+> +		if (err) {
+> +			warn("bpf_map_lookup_elem failed: %s\n", strerror(errno));
+> +			return err;
+> +		}
+> +		prev_key = &key;
+> +
+> +		bpf_map_lookup_elem(efd, &key, &ecount);
+> +
+> +		ksym = ksyms__map_addr(ksyms, (unsigned long)key);
+> +		printf("%-32s %-6d %-6d\n",
+> +				ksym ? ksym->name : "Unknown",
+> +				qcount, ecount);
+> +	}
+> +	printf("\n");
+> +	prev_key = NULL;
+> +	while (1) {
+> +		err = bpf_map_get_next_key(qfd, prev_key, &key);
+> +		if (err) {
+> +			if (errno == ENOENT) {
+> +				err = 0;
+> +				break;
+> +			}
+> +			warn("bpf_map_get_next_key failed: %s\n", strerror(errno));
+> +			return err;
+> +		}
+> +		err = bpf_map_delete_elem(qfd, &key);
+> +		if (err) {
+> +			if (errno == ENOENT) {
+> +				err = 0;
+> +				continue;
+> +			}
+> +			warn("bpf_map_delete_elem failed: %s\n", strerror(errno));
+> +			return err;
+> +		}
+> +
+> +		bpf_map_delete_elem(efd, &key);
+> +		prev_key = &key;
+> +	}
+> +
+> +	return err;
+> +}
+> +
+> +int main(int argc, char **argv)
+> +{
+> +	LIBBPF_OPTS(bpf_object_open_opts, open_opts);
+> +	static const struct argp argp = {
+> +		.options = opts,
+> +		.parser = parse_arg,
+> +		.doc = argp_program_doc,
+> +	};
+> +	struct rcutop_bpf *obj;
+> +	int err;
+> +	struct syms_cache *syms_cache = NULL;
+> +	struct ksyms *ksyms = NULL;
+> +
+> +	err = argp_parse(&argp, argc, argv, 0, NULL, NULL);
+> +	if (err)
+> +		return err;
+> +
+> +	libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
+> +	libbpf_set_print(libbpf_print_fn);
+> +
+> +	err = ensure_core_btf(&open_opts);
+> +	if (err) {
+> +		fprintf(stderr, "failed to fetch necessary BTF for CO-RE: %s\n", strerror(-err));
+> +		return 1;
+> +	}
+> +
+> +	obj = rcutop_bpf__open_opts(&open_opts);
+> +	if (!obj) {
+> +		warn("failed to open BPF object\n");
+> +		return 1;
+> +	}
+> +
+> +	err = rcutop_bpf__load(obj);
+> +	if (err) {
+> +		warn("failed to load BPF object: %d\n", err);
+> +		goto cleanup;
+> +	}
+> +
+> +	err = rcutop_bpf__attach(obj);
+> +	if (err) {
+> +		warn("failed to attach BPF programs: %d\n", err);
+> +		goto cleanup;
+> +	}
+> +
+> +	ksyms = ksyms__load();
+> +	if (!ksyms) {
+> +		fprintf(stderr, "failed to load kallsyms\n");
+> +		goto cleanup;
+> +	}
+> +
+> +	syms_cache = syms_cache__new(0);
+> +	if (!syms_cache) {
+> +		fprintf(stderr, "failed to create syms_cache\n");
+> +		goto cleanup;
+> +	}
+> +
+> +	if (signal(SIGINT, sig_int) == SIG_ERR) {
+> +		warn("can't set signal handler: %s\n", strerror(errno));
+> +		err = 1;
+> +		goto cleanup;
+> +	}
+> +
+> +	while (1) {
+> +		sleep(interval);
+> +
+> +		if (clear_screen) {
+> +			err = system("clear");
+> +			if (err)
+> +				goto cleanup;
+> +		}
+> +
+> +		err = print_stat(ksyms, syms_cache, obj);
+> +		if (err)
+> +			goto cleanup;
+> +
+> +		count--;
+> +		if (exiting || !count)
+> +			goto cleanup;
+> +	}
+> +
+> +cleanup:
+> +	rcutop_bpf__destroy(obj);
+> +	cleanup_core_btf(&open_opts);
+> +
+> +	return err != 0;
+> +}
+> diff --git a/libbpf-tools/rcutop.h b/libbpf-tools/rcutop.h
+> new file mode 100644
+> index 00000000..cb2a3557
+> --- /dev/null
+> +++ b/libbpf-tools/rcutop.h
+> @@ -0,0 +1,8 @@
+> +/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
+> +#ifndef __RCUTOP_H
+> +#define __RCUTOP_H
+> +
+> +#define PATH_MAX	4096
+> +#define TASK_COMM_LEN	16
+> +
+> +#endif /* __RCUTOP_H */
+> -- 
+> 2.36.0.550.gb090851708-goog
+> 
