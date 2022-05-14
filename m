@@ -2,160 +2,102 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AE70BC433F5
-	for <rcu@archiver.kernel.org>; Sat, 14 May 2022 14:40:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FB55C433EF
+	for <rcu@archiver.kernel.org>; Sat, 14 May 2022 14:41:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233410AbiENOk3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 14 May 2022 10:40:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33044 "EHLO
+        id S233416AbiENOlN (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 14 May 2022 10:41:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230337AbiENOk2 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 14 May 2022 10:40:28 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED5152A25F
-        for <rcu@vger.kernel.org>; Sat, 14 May 2022 07:40:26 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id s22so3579086qta.0
-        for <rcu@vger.kernel.org>; Sat, 14 May 2022 07:40:26 -0700 (PDT)
+        with ESMTP id S233500AbiENOlI (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 14 May 2022 10:41:08 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84BEE2C104
+        for <rcu@vger.kernel.org>; Sat, 14 May 2022 07:41:04 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id z126so9398535qkb.2
+        for <rcu@vger.kernel.org>; Sat, 14 May 2022 07:41:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=Za/2h4hrKIh+oqS43I+EgLnZ0tCCCK9W5dB27LPJgAo=;
-        b=pDh6xWmwbX9+DQcV/9+/emHe+kR1QYWgZ5Iz2Y0tTzowErdcOsQLEEf5jtzzIrGiH7
-         0ykhBlNdzAWYBQjoeNVuwdCawlDvZvFNskkXBZa6Vlkz8tRpHcfGwZ6uVl1UOgnuI3MX
-         xeDtzxmqIaJVwszI/ksh4ReAv4CNjw96OTxhE=
+        bh=ZKPPE2WUYvAD5MXZsJrfnXXtSzcnxpDI9pLWFlrKcGc=;
+        b=sE+/gU5mJkAXj5IQ5WrwNcgpKCCGDtukr/oGSTF7ajiFqNa2T+znaDpUHgRnM4RPFW
+         MpxsnUhFUdpO/XWqzGQVCqTpLijFzM83X6JhOuoeF4tiqUZ2HOMMjdQ5meGSc6dpLv1G
+         HKji5jhCLS+I79cBRdBo24kVtggBTlRZ7CQ+U=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Za/2h4hrKIh+oqS43I+EgLnZ0tCCCK9W5dB27LPJgAo=;
-        b=X6mgSIUlu9dJlQHKoklgtLGM+ueBYHkYPI8GOjgqRUyz8Dvc68YE8iSSGo8Da6vIv8
-         Eh7nb0VSJD7WlkYG6dcVRD2FYaPLlHzJ3D7ipOFssG2RuOx6A4/9bN+LssQSZtul2/wj
-         9cNvqGQCS54McLxD7FH2pFm3M/fIYeXKDPHkBz6Vfnfvo5dj3/Tv9arh0rHSiSo+bq7N
-         VbmxxRFTdD/tbNDobJIGelFIFLc8G5GVOYc0FZ19iTeSRI8srqNDMvjMCilaOwJTxhWc
-         AI5y98f39+e9dOQIFqyBTtKpY3UOlI3geIf0bar8NnH9oVxmY8vVWJ+o+mtehPLZ4d3G
-         MidQ==
-X-Gm-Message-State: AOAM5303hbDLHXEjhQlxP6OCUdyVARFvBDczUg2xSjBKVqCbwk1BNd1j
-        9pTvLlWqwbLfKrn7BByCI4LJ+gtV8bIRYg==
-X-Google-Smtp-Source: ABdhPJx1MURB7B6pVgMHBzH7b5otdItm2Od84QUrE734iETE1D+xbMCeTq+a9zmjCBE/JkOkxD3CzA==
-X-Received: by 2002:ac8:5988:0:b0:2f3:decb:6b6b with SMTP id e8-20020ac85988000000b002f3decb6b6bmr8715156qte.289.1652539226088;
-        Sat, 14 May 2022 07:40:26 -0700 (PDT)
+        bh=ZKPPE2WUYvAD5MXZsJrfnXXtSzcnxpDI9pLWFlrKcGc=;
+        b=k8mFJfj58fyfYvmahjWuF7E5YOcdJaP/QtyF5gY2EBX1GNv1OW0NUvkCOvIoZVz7XB
+         dzjTyPHrxzqz9GM39kZp0USlsXziXNYfdoxOd7qwJoAmLW/BzZwTJCdu0ILplSoEZK5c
+         4rzbatr21BVvY9YYl78JRHvKv2Eg+gIBQL7bRBSw1ql3eYsw03UkfjUBT27sUGMgz55X
+         FNoQxONzNEH87YS7KoxOV45HaaJNZ8kSvAZWeA2tcZsPpPablp/laGhXSi20Bvty0Wdf
+         NYEH2Vur2RXO+HYVvIDT1ccl8iQSs2JMq5Hs/albWlspDFFOE3uEf6S1+9LhQSZ4T1Sv
+         3h3w==
+X-Gm-Message-State: AOAM5303nj+q8JZ0cTF5vMNMiyyJac9yiTsfR0vKSZrVfbjgkBlGFRZx
+        Q8hxk4h0Tu3CvljrdpfJDX1JUA==
+X-Google-Smtp-Source: ABdhPJwjIca2U1dMd+fVbw97We0Yzz2BmvdGFZkp/jdIqWODCilWHQi+0cbYHy5a7MeXWzcD6L1jrA==
+X-Received: by 2002:ae9:ef11:0:b0:69f:cac1:bac8 with SMTP id d17-20020ae9ef11000000b0069fcac1bac8mr6787890qkg.755.1652539263657;
+        Sat, 14 May 2022 07:41:03 -0700 (PDT)
 Received: from localhost (29.46.245.35.bc.googleusercontent.com. [35.245.46.29])
-        by smtp.gmail.com with ESMTPSA id d15-20020ac8118f000000b002f39b99f693sm2989554qtj.45.2022.05.14.07.40.25
+        by smtp.gmail.com with ESMTPSA id l124-20020a37bb82000000b006a006c884f0sm2953862qkf.106.2022.05.14.07.41.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 May 2022 07:40:25 -0700 (PDT)
-Date:   Sat, 14 May 2022 14:40:25 +0000
+        Sat, 14 May 2022 07:41:03 -0700 (PDT)
+Date:   Sat, 14 May 2022 14:41:03 +0000
 From:   Joel Fernandes <joel@joelfernandes.org>
 To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     rcu@vger.kernel.org, rushikesh.s.kadam@intel.com, urezki@gmail.com,
         neeraj.iitr10@gmail.com, frederic@kernel.org, rostedt@goodmis.org
-Subject: Re: [RFC v1 05/14] fs: Move call_rcu() to call_rcu_lazy() in some
- paths
-Message-ID: <Yn+/WeuADEExfkwq@google.com>
+Subject: Re: [RFC v1 04/14] cred: Move call_rcu() to call_rcu_lazy()
+Message-ID: <Yn+/f6fPyUUIoc3m@google.com>
 References: <20220512030442.2530552-1-joel@joelfernandes.org>
- <20220512030442.2530552-6-joel@joelfernandes.org>
- <20220513000717.GY1790663@paulmck-ThinkPad-P17-Gen-1>
+ <20220512030442.2530552-5-joel@joelfernandes.org>
+ <20220513000253.GX1790663@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220513000717.GY1790663@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20220513000253.GX1790663@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, May 12, 2022 at 05:07:17PM -0700, Paul E. McKenney wrote:
-> On Thu, May 12, 2022 at 03:04:33AM +0000, Joel Fernandes (Google) wrote:
+On Thu, May 12, 2022 at 05:02:53PM -0700, Paul E. McKenney wrote:
+> On Thu, May 12, 2022 at 03:04:32AM +0000, Joel Fernandes (Google) wrote:
 > > This is required to prevent callbacks triggering RCU machinery too
 > > quickly and too often, which adds more power to the system.
 > > 
-> > When testing, we found that these paths were invoked often when the
-> > system is not doing anything (screen is ON but otherwise idle).
-> > 
 > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 > 
-> Some of these callbacks do additional work.  I don't immediately see a
-> problem, but careful and thorough testing is required.
+> The put_cred_rcu() does some debugging that would be less effective
+> with a 10-second delay.  Which is probably OK assuming that significant
+> testing happens on CONFIG_RCU_LAZY=n kernels.
 
-Full agreed, fwiw I did choose several of them by looking at what the
-callback did but I agree additional review and testing is needed.
+Good point, I'll add that to the commit message, thanks!
 
 thanks,
 
  - Joel
 
-
-> 
 > 							Thanx, Paul
 > 
 > > ---
-> >  fs/dcache.c     | 4 ++--
-> >  fs/eventpoll.c  | 2 +-
-> >  fs/file_table.c | 3 ++-
-> >  fs/inode.c      | 2 +-
-> >  4 files changed, 6 insertions(+), 5 deletions(-)
+> >  kernel/cred.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
 > > 
-> > diff --git a/fs/dcache.c b/fs/dcache.c
-> > index c84269c6e8bf..517e02cde103 100644
-> > --- a/fs/dcache.c
-> > +++ b/fs/dcache.c
-> > @@ -366,7 +366,7 @@ static void dentry_free(struct dentry *dentry)
-> >  	if (unlikely(dname_external(dentry))) {
-> >  		struct external_name *p = external_name(dentry);
-> >  		if (likely(atomic_dec_and_test(&p->u.count))) {
-> > -			call_rcu(&dentry->d_u.d_rcu, __d_free_external);
-> > +			call_rcu_lazy(&dentry->d_u.d_rcu, __d_free_external);
-> >  			return;
-> >  		}
-> >  	}
-> > @@ -374,7 +374,7 @@ static void dentry_free(struct dentry *dentry)
-> >  	if (dentry->d_flags & DCACHE_NORCU)
-> >  		__d_free(&dentry->d_u.d_rcu);
+> > diff --git a/kernel/cred.c b/kernel/cred.c
+> > index 933155c96922..f4d69d7f2763 100644
+> > --- a/kernel/cred.c
+> > +++ b/kernel/cred.c
+> > @@ -150,7 +150,7 @@ void __put_cred(struct cred *cred)
+> >  	if (cred->non_rcu)
+> >  		put_cred_rcu(&cred->rcu);
 > >  	else
-> > -		call_rcu(&dentry->d_u.d_rcu, __d_free);
-> > +		call_rcu_lazy(&dentry->d_u.d_rcu, __d_free);
+> > -		call_rcu(&cred->rcu, put_cred_rcu);
+> > +		call_rcu_lazy(&cred->rcu, put_cred_rcu);
 > >  }
+> >  EXPORT_SYMBOL(__put_cred);
 > >  
-> >  /*
-> > diff --git a/fs/eventpoll.c b/fs/eventpoll.c
-> > index e2daa940ebce..10a24cca2cff 100644
-> > --- a/fs/eventpoll.c
-> > +++ b/fs/eventpoll.c
-> > @@ -728,7 +728,7 @@ static int ep_remove(struct eventpoll *ep, struct epitem *epi)
-> >  	 * ep->mtx. The rcu read side, reverse_path_check_proc(), does not make
-> >  	 * use of the rbn field.
-> >  	 */
-> > -	call_rcu(&epi->rcu, epi_rcu_free);
-> > +	call_rcu_lazy(&epi->rcu, epi_rcu_free);
-> >  
-> >  	percpu_counter_dec(&ep->user->epoll_watches);
-> >  
-> > diff --git a/fs/file_table.c b/fs/file_table.c
-> > index 7d2e692b66a9..415815d3ef80 100644
-> > --- a/fs/file_table.c
-> > +++ b/fs/file_table.c
-> > @@ -56,7 +56,8 @@ static inline void file_free(struct file *f)
-> >  	security_file_free(f);
-> >  	if (!(f->f_mode & FMODE_NOACCOUNT))
-> >  		percpu_counter_dec(&nr_files);
-> > -	call_rcu(&f->f_u.fu_rcuhead, file_free_rcu);
-> > +
-> > +	call_rcu_lazy(&f->f_u.fu_rcuhead, file_free_rcu);
-> >  }
-> >  
-> >  /*
-> > diff --git a/fs/inode.c b/fs/inode.c
-> > index 63324df6fa27..b288a5bef4c7 100644
-> > --- a/fs/inode.c
-> > +++ b/fs/inode.c
-> > @@ -312,7 +312,7 @@ static void destroy_inode(struct inode *inode)
-> >  			return;
-> >  	}
-> >  	inode->free_inode = ops->free_inode;
-> > -	call_rcu(&inode->i_rcu, i_callback);
-> > +	call_rcu_lazy(&inode->i_rcu, i_callback);
-> >  }
-> >  
-> >  /**
 > > -- 
 > > 2.36.0.550.gb090851708-goog
 > > 
