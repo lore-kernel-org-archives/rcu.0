@@ -2,181 +2,87 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D6093C43219
-	for <rcu@archiver.kernel.org>; Mon, 16 May 2022 16:18:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 02AE5C433F5
+	for <rcu@archiver.kernel.org>; Mon, 16 May 2022 16:23:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343532AbiEPQSO (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 16 May 2022 12:18:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32818 "EHLO
+        id S243219AbiEPQXH (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 16 May 2022 12:23:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232773AbiEPQSK (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 16 May 2022 12:18:10 -0400
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A67638184;
-        Mon, 16 May 2022 09:18:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1652717889; x=1684253889;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=+l+W5AAGJYF9POu96DFeN42Yp1wDBbNs2cT6ebzm1Q4=;
-  b=gE3JndFmb3MVc+y8k0MigjEzVzCqGvTnKuZFhE4DjcCYaU4+iqRdm1YK
-   P0DDqVHBLoq7VKipOO0hdvZYV9pVTZG1CN68yC4Fs1ioVILwIZ3Q2SrMn
-   sSdjpODOS6uWQjCqGoSIJu1pba5omJEmL1FQURGDTGfZUlS1TXhoGF22j
-   h0UKzl3D3f9Sw7CU71YSSLPCDk1YAxt17+ONuVJQaBsvQLE0imNdebkVK
-   Q0O82ERRbpa9leBWTCKvYYiIIzee1lVvNZNkYwosdrYyHDA3KJBcn4HGB
-   Wc7wLsviGum79vhrgzLiyhyPVYTFfrQj6/p9kQjA+0ss/R8t28ygKVZCy
-   A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10349"; a="357293807"
-X-IronPort-AV: E=Sophos;i="5.91,230,1647327600"; 
-   d="scan'208";a="357293807"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 May 2022 09:18:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,230,1647327600"; 
-   d="scan'208";a="596591798"
-Received: from fmsmsx605.amr.corp.intel.com ([10.18.126.85])
-  by orsmga008.jf.intel.com with ESMTP; 16 May 2022 09:18:05 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.27; Mon, 16 May 2022 09:18:05 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.27; Mon, 16 May 2022 09:18:04 -0700
-Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
- fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2308.027;
- Mon, 16 May 2022 09:18:04 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Dinh Nguyen <dinguyen@kernel.org>
-CC:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "bhe@redhat.com" <bhe@redhat.com>,
-        "kexec@lists.infradead.org" <kexec@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "bcm-kernel-feedback-list@broadcom.com" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
-        "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>,
-        "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "openipmi-developer@lists.sourceforge.net" 
-        <openipmi-developer@lists.sourceforge.net>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "kernel-dev@igalia.com" <kernel-dev@igalia.com>,
-        "kernel@gpiccoli.net" <kernel@gpiccoli.net>,
-        "halves@canonical.com" <halves@canonical.com>,
-        "fabiomirmar@gmail.com" <fabiomirmar@gmail.com>,
-        "alejandro.j.jimenez@oracle.com" <alejandro.j.jimenez@oracle.com>,
-        "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>,
-        "arnd@arndb.de" <arnd@arndb.de>, "bp@alien8.de" <bp@alien8.de>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "d.hatayama@jp.fujitsu.com" <d.hatayama@jp.fujitsu.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "dyoung@redhat.com" <dyoung@redhat.com>,
-        "Tang, Feng" <feng.tang@intel.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "mikelley@microsoft.com" <mikelley@microsoft.com>,
-        "hidehiro.kawai.ez@hitachi.com" <hidehiro.kawai.ez@hitachi.com>,
-        "jgross@suse.com" <jgross@suse.com>,
-        "john.ogness@linutronix.de" <john.ogness@linutronix.de>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "mhiramat@kernel.org" <mhiramat@kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "paulmck@kernel.org" <paulmck@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "senozhatsky@chromium.org" <senozhatsky@chromium.org>,
-        "stern@rowland.harvard.edu" <stern@rowland.harvard.edu>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "vgoyal@redhat.com" <vgoyal@redhat.com>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "will@kernel.org" <will@kernel.org>, Alex Elder <elder@kernel.org>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Chris Zankel <chris@zankel.net>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        "Corey Minyard" <minyard@acm.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "Heiko Carstens" <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        James Morse <james.morse@arm.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        "Matt Turner" <mattst88@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>, Pavel Machek <pavel@ucw.cz>,
-        "Richard Weinberger" <richard@nod.at>,
-        Robert Richter <rric@kernel.org>,
-        "Stefano Stabellini" <sstabellini@kernel.org>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        "Vasily Gorbik" <gor@linux.ibm.com>, Wei Liu <wei.liu@kernel.org>
-Subject: RE: [PATCH 21/30] panic: Introduce the panic pre-reboot notifier list
-Thread-Topic: [PATCH 21/30] panic: Introduce the panic pre-reboot notifier
- list
-Thread-Index: AQHYWooLnXaT7guJw0OCpuGv/IkEoK0iJCSAgAAZuAD//40QkA==
-Date:   Mon, 16 May 2022 16:18:04 +0000
-Message-ID: <bed66b9467254a5a8bafc1983dad643a@intel.com>
-References: <20220427224924.592546-1-gpiccoli@igalia.com>
- <20220427224924.592546-22-gpiccoli@igalia.com> <YoJgcC8c6LaKADZV@alley>
- <63a74b56-89ef-8d1f-d487-cdb986aab798@igalia.com>
-In-Reply-To: <63a74b56-89ef-8d1f-d487-cdb986aab798@igalia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.6.401.20
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        with ESMTP id S238917AbiEPQXE (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 16 May 2022 12:23:04 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 758FA28E3A;
+        Mon, 16 May 2022 09:23:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 10FE36103A;
+        Mon, 16 May 2022 16:23:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C4B1C34113;
+        Mon, 16 May 2022 16:23:01 +0000 (UTC)
+Date:   Mon, 16 May 2022 12:22:59 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Alison Chaiken <achaiken@aurora.tech>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH] rcu/nocb: Add an option to ON/OFF an offloading from RT
+ context
+Message-ID: <20220516122259.3bc2b3de@gandalf.local.home>
+In-Reply-To: <Ynvvto4xcK1dn8iA@pc638.lan>
+References: <CAEXW_YQ9t8gxp9cKCpba+e4NZ6ohPr8jHxJYuqRBFRtvSDa0Lw@mail.gmail.com>
+        <20220509033740.GM1790663@paulmck-ThinkPad-P17-Gen-1>
+        <CAEXW_YSbWetMt2_-m4G9Nt5S8ybATihB+5FMJMMo3jKDG4pPjg@mail.gmail.com>
+        <20220509181417.GO1790663@paulmck-ThinkPad-P17-Gen-1>
+        <YnldSkaWu40cVimj@pc638.lan>
+        <20220510100135.62a4f7df@gandalf.local.home>
+        <Ynu8rM42aSyGN7li@pc638.lan>
+        <20220511102957.56bd582b@gandalf.local.home>
+        <YnvNbRcd3KRfQW3C@pc638.lan>
+        <YnvN3PPds3BlZ5fi@pc638.lan>
+        <Ynvvto4xcK1dn8iA@pc638.lan>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-PiBTbywgbXkgcmVhc29uaW5nIGhlcmUgaXM6IHRoaXMgbm90aWZpZXIgc2hvdWxkIGZpdCB0aGUg
-aW5mbyBsaXN0LA0KPiBkZWZpbml0ZWx5ISBCdXQuLi5pdCdzIHZlcnkgaGlnaCByaXNrIGZvciBr
-ZHVtcC4gSXQgZGVlcCBkaXZlcyBpbnRvIHRoZQ0KPiByZWdtYXAgQVBJICh0aGVyZSBhcmUgbG9j
-a3MgaW4gc3VjaCBjb2RlKSBwbHVzIHRoZXJlIGlzIGFuIChNTSlJTyB3cml0ZQ0KPiB0byB0aGUg
-ZGV2aWNlIGFuZCBhbiBBUk0gZmlybXdhcmUgY2FsbC4gU28sIGRlc3BpdGUgdGhlIG5hdHVyZSBv
-ZiB0aGlzDQo+IG5vdGlmaWVyIF9maXRzIHRoZSBpbmZvcm1hdGlvbmFsIGxpc3RfLCB0aGUgX2Nv
-ZGUgaXMgcmlza3lfIHNvIHdlIHNob3VsZA0KPiBhdm9pZCBydW5uaW5nIGl0IGJlZm9yZSBhIGtk
-dW1wLg0KPg0KPiBOb3csIHdlIGluZGVlZCBoYXZlIGEgY2hpY2tlbi9lZ2cgcHJvYmxlbTogd2Fu
-dCB0byBhdm9pZCBpdCBiZWZvcmUNCj4ga2R1bXAsIEJVVCBpbiBjYXNlIGtkdW1wIGlzIG5vdCBz
-ZXQsIGttc2dfZHVtcCgpIChhbmQgY29uc29sZSBmbHVzaGluZywNCj4gYWZ0ZXIgeW91ciBzdWdn
-ZXN0aW9uIFBldHIpIHdpbGwgcnVuIGJlZm9yZSBpdCBhbmQgbm90IHNhdmUgY29sbGVjdGVkDQo+
-IGluZm9ybWF0aW9uIGZyb20gRURBQyBQb1YuDQoNCldvdWxkIGl0IGJlIHBvc3NpYmxlIHRvIGhh
-dmUgc29tZSBnbG9iYWwgImtkdW1wIGlzIGNvbmZpZ3VyZWQgKyBlbmFibGVkIiBmbGFnPw0KDQpU
-aGVuIG5vdGlmaWVycyBjb3VsZCBtYWtlIGFuIGluZm9ybWVkIGNob2ljZSBvbiB3aGV0aGVyIHRv
-IGRlZXAgZGl2ZSB0bw0KZ2V0IGFsbCB0aGUgcG9zc2libGUgZGV0YWlscyAod2hlbiB0aGVyZSBp
-cyBubyBrZHVtcCkgb3IganVzdCBza2ltIHRoZSBoaWdoDQpsZXZlbCBzdHVmZiAodG8gbWF4aW1p
-emUgY2hhbmNlIG9mIGdldHRpbmcgYSBzdWNjZXNzZnVsIGtkdW1wKS4NCg0KLVRvbnkNCg==
+On Wed, 11 May 2022 19:17:42 +0200
+Uladzislau Rezki <urezki@gmail.com> wrote:
+
+> OK. It was added on the latest kernel:
+> 
+> root@pc638:/home/urezki# cat /sys/kernel/debug/tracing/trace_pipe
+>   vmalloc_test/0-1296    [062] b....    18.157470: 0xffffffffc044e5dc: -> in the local_bh_disable()
+> 
+> root@pc638:/home/urezki# cat /sys/kernel/debug/tracing/trace
+> # tracer: nop
+> #
+> # entries-in-buffer/entries-written: 0/0   #P:64
+> #
+> #                                _-----=> irqs-off/BH-disabled
+> #                               / _----=> need-resched
+> #                              | / _---=> hardirq/softirq
+> #                              || / _--=> preempt-depth
+> #                              ||| / _-=> migrate-disable
+> #                              |||| /     delay
+> #           TASK-PID     CPU#  |||||  TIMESTAMP  FUNCTION
+> #              | |         |   |||||     |         |
+> root@pc638:/home/urezki# uname -a
+> Linux pc638 5.17.0-rc2-next-20220201 #63 SMP PREEMPT Tue May 10 20:39:08 CEST 2022 x86_64 GNU/Linux
+> root@pc638:/home/urezki#
+> 
+> so it shows *bh* disabled sections.
+
+Ah yes. That was added with commit 289e7b0f7eb47 ("tracing: Account bottom
+half disabled sections."). Maybe I should mark that as stable?
+
+-- Steve
