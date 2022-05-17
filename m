@@ -2,120 +2,130 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A05CDC433F5
-	for <rcu@archiver.kernel.org>; Mon, 16 May 2022 16:43:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 712EDC433EF
+	for <rcu@archiver.kernel.org>; Tue, 17 May 2022 00:45:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237501AbiEPQnI (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 16 May 2022 12:43:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55122 "EHLO
+        id S230472AbiEQApm (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 16 May 2022 20:45:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231359AbiEPQnE (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 16 May 2022 12:43:04 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF2D23C49B;
-        Mon, 16 May 2022 09:43:02 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id bq30so26874496lfb.3;
-        Mon, 16 May 2022 09:43:02 -0700 (PDT)
+        with ESMTP id S230391AbiEQApm (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 16 May 2022 20:45:42 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DEE5113B
+        for <rcu@vger.kernel.org>; Mon, 16 May 2022 17:45:40 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id l20-20020a17090a409400b001dd2a9d555bso919048pjg.0
+        for <rcu@vger.kernel.org>; Mon, 16 May 2022 17:45:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6TEXOrGonqBHDI02WFnDT6MZU0GuS1E5oZr7DwmRQAE=;
-        b=k7f6XYZbJ94FfyJk0wON7y+wwoOp7Vh5HPgELgN8BlLX48kImxK1qow61S2S1F3Dv5
-         s6uSu+tUtaZKll84sSTdrqwZiWxm26zBvM0euEKopvaOYQI81bDM2lil76B5QElY4ocr
-         d4+ysb85T9ZYB/iLJAt15pb1x/r2oklBQVSnIo07B7TAJrDriWsuVGkIHIRLFS3DM8eV
-         e/kZuEZEdIsW+ZbWy1d7uaT0fGvEaL/HODMGlvsXpjGR32JP6go7pRw9i7ESSvSYoZLM
-         sjxMyz0+sZCZ2gA12/nQclnBNddLVsXo14Lhz2ukcjUSgKquzLPCyOIv4fUV+B5c1Xxj
-         8NoQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lZgp6fJSRJ9rQ7hXqVPBGm8okWZ5djYvjGgWxJgQzBw=;
+        b=Ah/eXJUhbBlfOdl4GuH/lGw99JcDkf2s1+LpNYbG15wj4FaD0b0ibt7H7wDFThfcUr
+         07/g8jWhqayxo7ub4lfGVL3FPD0DQ134yeemtC+1tJbKTdYscb9Wi/qALB58Hp8qmRRr
+         yZSwGvGa2cw4VVY42Mc+zKFdVOF5FpamE8pKdyioxKrfi+wXnfJ4UNhkgaEEok5f0lzr
+         ZVeryFAuv7fcyzDO5zG6LELKEyj+iqE7D64rAbARXMtYPFGTckd0f/2nTRnH24x3jrI0
+         q2iDRCSamw5bzQJdClMxmWWQoSRUBZogVnlTzNqWUIPTvbJpUP+b/lDMLpaXDo0y/SfP
+         py9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6TEXOrGonqBHDI02WFnDT6MZU0GuS1E5oZr7DwmRQAE=;
-        b=32WZOjNwk/plIM+dsB5kufcJlP5n0XCvJzMzF88CZ8HCDlc/wWml6ruV8ZrpC3DKLO
-         mWEh3zzVUVosR886+EyNRDpefb4BpUg4Ug2K+csDBUHVzR2+3wH4Iy5GwHCY9aWAyrGy
-         fKOWqgFeh2VU6Ddf8GEjJg1bzVMwdGEWfNbILiOkDyzdy510607L8a2AdcOQS73dk/Wo
-         10Gvkt+zgJJAXuogVNZw/YUIDp5qnG+o2ZZuJRBeCuGbZQFBv2aGEPDivAmz1X+nD1Jv
-         +6yDh9AUsyFr7QHa/czNTxcC9Evz7czk/ZvolarX0vok88CDgAfyO4hNnGUdbakDERCT
-         P0fA==
-X-Gm-Message-State: AOAM532Qga6tzLHZCqrdno/k+EqTEXR6Gj1yHdgCKBItCtqRVYl50x2g
-        l+E0dReBrVbyWOmqUlNbBvY=
-X-Google-Smtp-Source: ABdhPJz0JReZOUil7DxxnqlPA11+PNCL6YSbtUkJsX81BjvMmOSPXOvlo0gAEMW85b/+OVDIaAT53g==
-X-Received: by 2002:ac2:504e:0:b0:471:fa2a:fad with SMTP id a14-20020ac2504e000000b00471fa2a0fadmr13722570lfm.148.1652719381168;
-        Mon, 16 May 2022 09:43:01 -0700 (PDT)
-Received: from pc638.lan ([155.137.26.201])
-        by smtp.gmail.com with ESMTPSA id bg14-20020a05651c0b8e00b0024f3d1daee0sm1563840ljb.104.2022.05.16.09.43.00
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lZgp6fJSRJ9rQ7hXqVPBGm8okWZ5djYvjGgWxJgQzBw=;
+        b=v4A8RRtiKWC7Xu5rA1y3+Gl9ueLEIe7zvVoVRSYAKLWtBnykVl5y4GIwnQP8U+ZKjM
+         ocqhmXSMRaN++kEJWlwBiKPVgCAT2ROgomJ63ejMbzvL9xQ3fPiOZNN8iVINh2jKqJXE
+         zPCZSRXp5+D0YW3IkvjxhFt3rQ/sEDtpT2zlSDK09NOS/aIJX9VbNfMb8RE/kvqrkpqY
+         pQatqP3WacCPQSwNbd9zNC/w5JyK/VuphEVA5yO+E4JL5ie0TgDfRXofneSk7Qch0748
+         bhlaz3oDm64X5l2gX94aKGMjtl+m8Y5oPORrQPe+7pfbEAabHguF0zXZYxgHjny2HN2W
+         ejhg==
+X-Gm-Message-State: AOAM533GOt3NcBGblgiUN1qkjBkxgaGnvD0VeYoT82Az28cqLov91VqX
+        F4jqRwEghxKccTr5Zs3B7eg=
+X-Google-Smtp-Source: ABdhPJyekbe45Hxbeee2p19QH0poRL97aWVUppUPUQ2uzPPXWJRGV0KA4qJ0m+9gyWIWBTs6rTr4+w==
+X-Received: by 2002:a17:90b:1a88:b0:1dc:e4a1:a81e with SMTP id ng8-20020a17090b1a8800b001dce4a1a81emr33729692pjb.96.1652748340077;
+        Mon, 16 May 2022 17:45:40 -0700 (PDT)
+Received: from localhost.localdomain ([85.203.23.238])
+        by smtp.gmail.com with ESMTPSA id d4-20020a170903230400b0015e8d4eb22bsm8011721plh.117.2022.05.16.17.45.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 May 2022 09:43:00 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Mon, 16 May 2022 18:42:58 +0200
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Alison Chaiken <achaiken@aurora.tech>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: Re: [PATCH] rcu/nocb: Add an option to ON/OFF an offloading from RT
- context
-Message-ID: <YoJ/ElNTZpd7cY7L@pc638.lan>
-References: <CAEXW_YSbWetMt2_-m4G9Nt5S8ybATihB+5FMJMMo3jKDG4pPjg@mail.gmail.com>
- <20220509181417.GO1790663@paulmck-ThinkPad-P17-Gen-1>
- <YnldSkaWu40cVimj@pc638.lan>
- <20220510100135.62a4f7df@gandalf.local.home>
- <Ynu8rM42aSyGN7li@pc638.lan>
- <20220511102957.56bd582b@gandalf.local.home>
- <YnvNbRcd3KRfQW3C@pc638.lan>
- <YnvN3PPds3BlZ5fi@pc638.lan>
- <Ynvvto4xcK1dn8iA@pc638.lan>
- <20220516122259.3bc2b3de@gandalf.local.home>
+        Mon, 16 May 2022 17:45:39 -0700 (PDT)
+From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
+To:     paulmck@kernel.org, rcu@vger.kernel.org, frederic@kernel.org,
+        paulmckrcu@fb.com, willy@infradead.org
+Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>
+Subject: [PATCH rcu/dev] wait extra jiffies for rcu_tasks_verify_self_tests
+Date:   Tue, 17 May 2022 08:45:22 +0800
+Message-Id: <20220517004522.25176-1-zhouzhouyi@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220516122259.3bc2b3de@gandalf.local.home>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-> On Wed, 11 May 2022 19:17:42 +0200
-> Uladzislau Rezki <urezki@gmail.com> wrote:
-> 
-> > OK. It was added on the latest kernel:
-> > 
-> > root@pc638:/home/urezki# cat /sys/kernel/debug/tracing/trace_pipe
-> >   vmalloc_test/0-1296    [062] b....    18.157470: 0xffffffffc044e5dc: -> in the local_bh_disable()
-> > 
-> > root@pc638:/home/urezki# cat /sys/kernel/debug/tracing/trace
-> > # tracer: nop
-> > #
-> > # entries-in-buffer/entries-written: 0/0   #P:64
-> > #
-> > #                                _-----=> irqs-off/BH-disabled
-> > #                               / _----=> need-resched
-> > #                              | / _---=> hardirq/softirq
-> > #                              || / _--=> preempt-depth
-> > #                              ||| / _-=> migrate-disable
-> > #                              |||| /     delay
-> > #           TASK-PID     CPU#  |||||  TIMESTAMP  FUNCTION
-> > #              | |         |   |||||     |         |
-> > root@pc638:/home/urezki# uname -a
-> > Linux pc638 5.17.0-rc2-next-20220201 #63 SMP PREEMPT Tue May 10 20:39:08 CEST 2022 x86_64 GNU/Linux
-> > root@pc638:/home/urezki#
-> > 
-> > so it shows *bh* disabled sections.
-> 
-> Ah yes. That was added with commit 289e7b0f7eb47 ("tracing: Account bottom
-> half disabled sections."). Maybe I should mark that as stable?
-> 
-BTW, a commit message of the "289e7b0f7eb47" change exactly describes
-my first thought why it behaves like that. So if it is possible it would
-be great to have it in the 5.10 and 5.15 stable kernels.
+Sometimes, the kernel will boot too fast for rcu_tasks_verify_self_tests
+to have all required grace periods.
 
-Thanks!
+Wait extra jiffies for rcu_tasks_verify_self_tests so as not to punish
+people who make Linux boot faster.
 
---
-Uladzislau Rezki
+Although 'wait extra jiffies' approach may slow down the Linux boot, but
+the CONFIG_PROVE_RCU option is only enabled for experts and for test only.
+
+I also considered temporarily reduce the gp_sleep and init_fract before
+rcu_tasks_verify_self_tests, but we can only guess those values
+from experience.
+
+
+Reported-by: Matthew Wilcox <willy@infradead.org>
+Suggested-by: Paul E. McKenney <paulmck@kernel.org>
+Tested-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+---
+ kernel/rcu/tasks.h | 32 ++++++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
+
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index bd9f2e24f5c7..b1be85da29ec 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -1766,7 +1766,38 @@ static int rcu_tasks_verify_self_tests(void)
+ {
+ 	int ret = 0;
+ 	int i;
++	int delay = 0;
++
++	for (i = 0; i < ARRAY_SIZE(tests); i++) {
++		if (!tests[i].notrun) {		// still hanging.
++			ret = -1;
++		}
++	}
++
++	if (!ret)
++		return ret;
++
++#ifdef CONFIG_TASKS_RCU
++	delay = rcu_tasks.gp_sleep;
++	if (delay < rcu_tasks.init_fract)
++		delay = rcu_tasks.init_fract;
++#endif
++
++#ifdef CONFIG_TASKS_RUDE_RCU
++	if (delay < rcu_tasks_rude.gp_sleep)
++		delay = rcu_tasks_rude.gp_sleep;
++#endif
++
++#ifdef CONFIG_TASKS_TRACE_RCU
++	if (delay < rcu_tasks_trace.gp_sleep)
++		delay = rcu_tasks_trace.gp_sleep;
++	if (delay < rcu_tasks_trace.init_fract)
++		delay = rcu_tasks_trace.init_fract;
++#endif
++	pr_info("wait extra %d jiffies for rcu tasks self tests\n", 2*delay);
++	schedule_timeout_uninterruptible(2*delay);
++
++	ret = 0;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(tests); i++) {
+ 		if (!tests[i].notrun) {		// still hanging.
+-- 
+2.25.1
+
