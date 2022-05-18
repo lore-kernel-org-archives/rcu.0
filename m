@@ -2,63 +2,141 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 68800C433F5
-	for <rcu@archiver.kernel.org>; Wed, 18 May 2022 15:41:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 45124C433EF
+	for <rcu@archiver.kernel.org>; Wed, 18 May 2022 18:14:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239570AbiERPli (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 18 May 2022 11:41:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55532 "EHLO
+        id S233853AbiERSO1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 18 May 2022 14:14:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239506AbiERPlb (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 18 May 2022 11:41:31 -0400
-Received: from mail.neweas.com (mail.neweas.com [162.19.155.127])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77D1BA30A5
-        for <rcu@vger.kernel.org>; Wed, 18 May 2022 08:41:27 -0700 (PDT)
-Received: by mail.neweas.com (Postfix, from userid 1002)
-        id EA30B2303E; Wed, 18 May 2022 15:40:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=neweas.com; s=mail;
-        t=1652888485; bh=qQhd+6rcOH+OhrNQ6A9OWLCE/79cwvyTtb6LUe1aYuU=;
-        h=Date:From:To:Subject:From;
-        b=d0e5TY3Xonjtn3MJ/NpLSc4Rz3ApUd86ACn4Sk3He7ADLz74CFJiKGuHLy0mkXl2n
-         CblGF35SzX6sx5iprFARkl0C1PXdMLNs3NMukWXwjKdiPkJLXGh5ZBFpWu+vgWe02q
-         wlIkLSke4sGcd1qvxz0jq4Zbe/Nu9mtRe27uDfsJXRoLosE1K3e6n+OIa0poEaaRW3
-         rf/Cupkccfkr+TY0NxKy1yzsvDYw6AH2SRd5hmO27wDMpjrmHDHbEz1PznE5qsqR92
-         /yuGuvQkEWmRJ/EFWqwH4Py1xN/n/EeDkLZCJgQziDnxxnvpN/wf3JFlGPMbhqCQ7y
-         +TnR5CfzP6l3g==
-Received: by mail.neweas.com for <rcu@vger.kernel.org>; Wed, 18 May 2022 15:40:38 GMT
-Message-ID: <20220518141500-0.1.g.18ji.0.hlcjatmvb3@neweas.com>
-Date:   Wed, 18 May 2022 15:40:38 GMT
-From:   "Luca Gauthier" <luca.gauthier@neweas.com>
-To:     <rcu@vger.kernel.org>
-Subject: New collaboration
-X-Mailer: mail.neweas.com
+        with ESMTP id S234057AbiERSO1 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 18 May 2022 14:14:27 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7AAB16A277;
+        Wed, 18 May 2022 11:14:25 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 89D1EB82019;
+        Wed, 18 May 2022 18:14:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43327C385A5;
+        Wed, 18 May 2022 18:14:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1652897663;
+        bh=HXcgqQoC2j8uMdZbslQ5dj2wJLQUBcNJqdHvlFwHJ/A=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=QkXS9DmFT0x0MJgHh4vg9bjRKA0Sfa5QT1m+UQTOO2/1gK5AETm0+/zlg2jZYLfYl
+         NVsFvdgKFtQIGvicTy8Sn/gdo4OV0Z9+kRoUmHecC4xLkNGiFBAEIH1CnNjpDTsK1Y
+         FlQDAzrjNFI/mlVILP4bz+fSon6upBDIlLQdmwRscts8CnH8n7L1MAfickowlJqKMl
+         uuv4frt8pK84aJAGfnT5yjfWYvgrzOKJUw88j6WU4tho3MRal5w0MnV02zvOJdq7lQ
+         TPCjT/QBT4/bMh7tuPkavYf91FEBTGFCuwbfmifsS1dvLCrLicchZAgmPB6UQQlqPE
+         R60gBY1XZWt4g==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id D06605C042D; Wed, 18 May 2022 11:14:22 -0700 (PDT)
+Date:   Wed, 18 May 2022 11:14:22 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Zqiang <qiang1.zhang@intel.com>
+Cc:     frederic@kernel.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu: Add cpu-exp indicator to expedited RCU CPU stall
+ warnings
+Message-ID: <20220518181422.GR1790663@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20220518114310.1478091-1-qiang1.zhang@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220518114310.1478091-1-qiang1.zhang@intel.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello,
+On Wed, May 18, 2022 at 07:43:10PM +0800, Zqiang wrote:
+> This commit adds a "D" indicator to expedited RCU CPU stall warnings.
+> when an expedited grace period begins, due to CPU disable interrupt
+> time too long, cause the IPI(rcu_exp_handler()) unable to respond in
+> time, this debugging id will be showed.
+> 
+> runqemu kvm slirp nographic qemuparams="-m 4096 -smp 4"  bootparams=
+> "isolcpus=2,3 nohz_full=2,3 rcu_nocbs=2,3 rcutree.dump_tree=1
+> rcutorture.stall_cpu_holdoff=30 rcutorture.stall_cpu=40
+> rcutorture.stall_cpu_irqsoff=1 rcutorture.stall_cpu_block=0
+> rcutorture.stall_no_softlockup=1" -d
+> 
+> rcu_torture_stall start on CPU 1.
+> ............
+> rcu: INFO: rcu_preempt detected expedited stalls on CPUs/tasks:
+> { 1-...D } 26467 jiffies s: 13317 root: 0x1/.
+> rcu: blocking rcu_node structures (internal RCU debug): l=1:0-1:0x2/.
+> Task dump for CPU 1:
+> task:rcu_torture_sta state:R  running task     stack:    0 pid:   76
+> ppid:     2 flags:0x00004008
+> 
+> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 
-are you looking for more business clients?
+Nice!!!  I have queued this for v5.20 and for further testing and
+review, thank you!
 
-We would like to start working with you as a partner in acquiring or exch=
-anging leads, which directly translates into mutual benefits in the form =
-of an increased client portfolio.
+As usual, I could not resist the temptation to wordsmith the commit log,
+so could you please check it in case I messed something up?
 
-We work in the sector of internet marketing and as one of the first in Eu=
-rope SEO Agencies we=E2=80=99ve introduced the SEO 360 service which allo=
-ws your clients to gain the access to original SEO consultations.
+							Thanx, Paul
 
-By choosing to work with us you receive support in achieving your busines=
-s goals, and help in handling Digital Marketing for your clients.
+------------------------------------------------------------------------
 
-We support over 237 partner companies. We have one of the biggest executi=
-ve departments in Europe at our disposal, we=E2=80=99ve prepared over 200=
-0 campaigns in Europe and 200 in the USA and Canada.
+commit 178b9d47f3049e8122738c3166ee4975b75cba55
+Author: Zqiang <qiang1.zhang@intel.com>
+Date:   Wed May 18 19:43:10 2022 +0800
 
-Are you interested in the details of our partnership programme?
+    rcu: Add irqs-disabled indicator to expedited RCU CPU stall warnings
+    
+    If a CPU has interrupts disabled continuously starting before the
+    beginning of a given expedited RCU grace period, that CPU will not
+    execute that grace period's IPI handler.  This will in turn mean
+    that the ->cpu_no_qs.b.exp field in that CPU's rcu_data structure
+    will continue to contain the boolean value false.
+    
+    Knowing whether or not a CPU has had interrupts disabled can be helpful
+    when debugging an expedited RCU CPU stall warning, so this commit
+    adds a "D" indicator expedited RCU CPU stall warnings that signifies
+    that the corresponding CPU has had interrupts disabled throughout.
+    
+    This capability was tested as follows:
+    
+    runqemu kvm slirp nographic qemuparams="-m 4096 -smp 4"  bootparams=
+    "isolcpus=2,3 nohz_full=2,3 rcu_nocbs=2,3 rcutree.dump_tree=1
+    rcutorture.stall_cpu_holdoff=30 rcutorture.stall_cpu=40
+    rcutorture.stall_cpu_irqsoff=1 rcutorture.stall_cpu_block=0
+    rcutorture.stall_no_softlockup=1" -d
+    
+    The rcu_torture_stall() function ran on CPU 1, which displays the "D"
+    as expected given the rcutorture.stall_cpu_irqsoff=1 module parameter:
+    
+    ............
+    rcu: INFO: rcu_preempt detected expedited stalls on CPUs/tasks:
+    { 1-...D } 26467 jiffies s: 13317 root: 0x1/.
+    rcu: blocking rcu_node structures (internal RCU debug): l=1:0-1:0x2/.
+    Task dump for CPU 1:
+    task:rcu_torture_sta state:R  running task     stack:    0 pid:   76  ppid:     2 flags:0x00004008
+    
+    Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
-Yours sincerely,
-Luca Gauthier
+diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+index 4c7037b507032..f092c7f18a5f3 100644
+--- a/kernel/rcu/tree_exp.h
++++ b/kernel/rcu/tree_exp.h
+@@ -637,10 +637,11 @@ static void synchronize_rcu_expedited_wait(void)
+ 					continue;
+ 				ndetected++;
+ 				rdp = per_cpu_ptr(&rcu_data, cpu);
+-				pr_cont(" %d-%c%c%c", cpu,
++				pr_cont(" %d-%c%c%c%c", cpu,
+ 					"O."[!!cpu_online(cpu)],
+ 					"o."[!!(rdp->grpmask & rnp->expmaskinit)],
+-					"N."[!!(rdp->grpmask & rnp->expmaskinitnext)]);
++					"N."[!!(rdp->grpmask & rnp->expmaskinitnext)],
++					"D."[!!(rdp->cpu_no_qs.b.exp)]);
+ 			}
+ 		}
+ 		pr_cont(" } %lu jiffies s: %lu root: %#lx/%c\n",
