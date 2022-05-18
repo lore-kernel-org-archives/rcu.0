@@ -2,167 +2,63 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D64F8C4332F
-	for <rcu@archiver.kernel.org>; Wed, 18 May 2022 13:26:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 68800C433F5
+	for <rcu@archiver.kernel.org>; Wed, 18 May 2022 15:41:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238000AbiERN0q (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 18 May 2022 09:26:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48656 "EHLO
+        id S239570AbiERPli (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 18 May 2022 11:41:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237801AbiERNZt (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 18 May 2022 09:25:49 -0400
-Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C47086B7D6;
-        Wed, 18 May 2022 06:25:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-        s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=aBHSQ74cshobrBoDeAcAwH8dbmp4ORux6n0j1EJ9zhs=; b=PbQX6jJxrSTFYuY1QkUAm5HHAj
-        4zjhUqw9dZUmp+/h7FpyGsMd9T7KC01Lk8wihlfsVt15sYS07bd4AGqx/olI4ChlgEfTgoKgt6ghF
-        u4Ul+3a/u8AC1yN3var2ePdBq3yJ0QNuCnzFCU2AsJ1yN+Ew0qnuNx0AKJJMSgaFsHSKjAS/RJyRX
-        nQBP35ba/Mxst73B+b2bL1GyLemevCz0TIExKe/iFre2S2JyltNIOuuqHTXgx4xNR3AtqS8MDXev4
-        Htu1aPv+rb/vlxpa70azlfd8R3qZ4EjVERsEcfu9NCpHDF7PwWBcLltMr6Fz/cDtJaPv3zZndTfPs
-        +f+vkTJA==;
-Received: from 200-161-159-120.dsl.telesp.net.br ([200.161.159.120] helo=[192.168.1.60])
-        by fanzine2.igalia.com with esmtpsa 
-        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-        id 1nrJg7-009yTw-Of; Wed, 18 May 2022 15:25:27 +0200
-Message-ID: <5ed2ca7a-5bf3-f101-a1f4-9a320c79f5a0@igalia.com>
-Date:   Wed, 18 May 2022 10:24:39 -0300
+        with ESMTP id S239506AbiERPlb (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 18 May 2022 11:41:31 -0400
+Received: from mail.neweas.com (mail.neweas.com [162.19.155.127])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77D1BA30A5
+        for <rcu@vger.kernel.org>; Wed, 18 May 2022 08:41:27 -0700 (PDT)
+Received: by mail.neweas.com (Postfix, from userid 1002)
+        id EA30B2303E; Wed, 18 May 2022 15:40:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=neweas.com; s=mail;
+        t=1652888485; bh=qQhd+6rcOH+OhrNQ6A9OWLCE/79cwvyTtb6LUe1aYuU=;
+        h=Date:From:To:Subject:From;
+        b=d0e5TY3Xonjtn3MJ/NpLSc4Rz3ApUd86ACn4Sk3He7ADLz74CFJiKGuHLy0mkXl2n
+         CblGF35SzX6sx5iprFARkl0C1PXdMLNs3NMukWXwjKdiPkJLXGh5ZBFpWu+vgWe02q
+         wlIkLSke4sGcd1qvxz0jq4Zbe/Nu9mtRe27uDfsJXRoLosE1K3e6n+OIa0poEaaRW3
+         rf/Cupkccfkr+TY0NxKy1yzsvDYw6AH2SRd5hmO27wDMpjrmHDHbEz1PznE5qsqR92
+         /yuGuvQkEWmRJ/EFWqwH4Py1xN/n/EeDkLZCJgQziDnxxnvpN/wf3JFlGPMbhqCQ7y
+         +TnR5CfzP6l3g==
+Received: by mail.neweas.com for <rcu@vger.kernel.org>; Wed, 18 May 2022 15:40:38 GMT
+Message-ID: <20220518141500-0.1.g.18ji.0.hlcjatmvb3@neweas.com>
+Date:   Wed, 18 May 2022 15:40:38 GMT
+From:   "Luca Gauthier" <luca.gauthier@neweas.com>
+To:     <rcu@vger.kernel.org>
+Subject: New collaboration
+X-Mailer: mail.neweas.com
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH 19/30] panic: Add the panic hypervisor notifier list
-Content-Language: en-US
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Evan Green <evgreen@chromium.org>, David Gow <davidgow@google.com>,
-        Julius Werner <jwerner@chromium.org>,
-        Scott Branden <scott.branden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Sebastian Reichel <sre@kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>, bhe@redhat.com,
-        kexec@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-leds@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net,
-        rcu@vger.kernel.org, sparclinux@vger.kernel.org,
-        xen-devel@lists.xenproject.org, x86@kernel.org,
-        kernel-dev@igalia.com, kernel@gpiccoli.net, halves@canonical.com,
-        fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Jonathan Corbet <corbet@lwn.net>, d.hatayama@jp.fujitsu.com,
-        dave.hansen@linux.intel.com, dyoung@redhat.com,
-        feng.tang@intel.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com,
-        jgross@suse.com, john.ogness@linutronix.de,
-        Kees Cook <keescook@chromium.org>, luto@kernel.org,
-        mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org,
-        peterz@infradead.org, rostedt@goodmis.org,
-        senozhatsky@chromium.org, Alan Stern <stern@rowland.harvard.edu>,
-        Thomas Gleixner <tglx@linutronix.de>, vgoyal@redhat.com,
-        vkuznets@redhat.com, Will Deacon <will@kernel.org>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Brian Norris <computersforpeace@gmail.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dexuan Cui <decui@microsoft.com>,
-        Doug Berger <opendmb@gmail.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Hari Bathini <hbathini@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Justin Chen <justinpopo6@gmail.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Markus Mayer <mmayer@broadcom.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Mihai Carabas <mihai.carabas@oracle.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Paul Mackerras <paulus@samba.org>, Pavel Machek <pavel@ucw.cz>,
-        Shile Zhang <shile.zhang@linux.alibaba.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Wang ShaoBo <bobo.shaobowang@huawei.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        zhenwei pi <pizhenwei@bytedance.com>,
-        Stephen Boyd <swboyd@chromium.org>
-References: <20220427224924.592546-1-gpiccoli@igalia.com>
- <20220427224924.592546-20-gpiccoli@igalia.com> <YoJZVZl/MH0KiE/J@alley>
- <ad082ce7-db50-13bb-3dbb-9b595dfa78be@igalia.com>
- <CAE=gft7ds+dHfEkRz8rnSH1EbTpGTpKbi5Wxj9DW0Jr5mX_j4w@mail.gmail.com>
- <YoOi9PFK/JnNwH+D@alley> <b9ec2fc8-216f-f261-8417-77b6dd95e25c@igalia.com>
- <YoShZVYNAdvvjb7z@alley>
-From:   "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-In-Reply-To: <YoShZVYNAdvvjb7z@alley>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 18/05/2022 04:33, Petr Mladek wrote:
-> [...]
-> Anyway, I would distinguish it the following way.
-> 
->   + If the notifier is preserving kernel log then it should be ideally
->     treated as kmsg_dump().
-> 
->   + It the notifier is saving another debugging data then it better
->     fits into the "hypervisor" notifier list.
-> 
->
+Hello,
 
-Definitely, I agree - it's logical, since we want more info in the logs,
-and happens some notifiers running in the informational list do that,
-like ftrace_on_oops for example.
+are you looking for more business clients?
 
+We would like to start working with you as a partner in acquiring or exch=
+anging leads, which directly translates into mutual benefits in the form =
+of an increased client portfolio.
 
-> Regarding the reliability. From my POV, any panic notifier enabled
-> in a generic kernel should be reliable with more than 99,9%.
-> Otherwise, they should not be in the notifier list at all.
-> 
-> An exception would be a platform-specific notifier that is
-> called only on some specific platform and developers maintaining
-> this platform agree on this.
-> 
-> The value "99,9%" is arbitrary. I am not sure if it is realistic
-> even in the other code, for example, console_flush_on_panic()
-> or emergency_restart(). I just want to point out that the border
-> should be rather high. Otherwise we would back in the situation
-> where people would want to disable particular notifiers.
-> 
+We work in the sector of internet marketing and as one of the first in Eu=
+rope SEO Agencies we=E2=80=99ve introduced the SEO 360 service which allo=
+ws your clients to gain the access to original SEO consultations.
 
-Totally agree, these percentages are just an example, 50% is ridiculous
-low reliability in my example heheh
+By choosing to work with us you receive support in achieving your busines=
+s goals, and help in handling Digital Marketing for your clients.
 
-But some notifiers deep dive in abstraction layers (like regmap or GPIO
-stuff) and it's hard to determine the probability of a lock issue (take
-a spinlock already taken inside regmap code and live-lock forever, for
-example). These are better to run, if possible, later than kdump or even
-info list.
+We support over 237 partner companies. We have one of the biggest executi=
+ve departments in Europe at our disposal, we=E2=80=99ve prepared over 200=
+0 campaigns in Europe and 200 in the USA and Canada.
 
-Thanks again for the good analysis Petr!
-Cheers,
+Are you interested in the details of our partnership programme?
 
-
-Guilherme
-
-
+Yours sincerely,
+Luca Gauthier
