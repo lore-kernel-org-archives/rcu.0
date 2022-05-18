@@ -2,172 +2,175 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A4B62C4332F
-	for <rcu@archiver.kernel.org>; Tue, 17 May 2022 19:08:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CA323C433F5
+	for <rcu@archiver.kernel.org>; Wed, 18 May 2022 01:03:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352543AbiEQTIH (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 17 May 2022 15:08:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51618 "EHLO
+        id S233102AbiERBDS (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 17 May 2022 21:03:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352515AbiEQTIA (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 17 May 2022 15:08:00 -0400
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3020711A03;
-        Tue, 17 May 2022 12:07:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1652814479; x=1684350479;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=dMu3qmaQOzDmPfmmDPn/58HAfnv205GwUCrX1kk3ZHk=;
-  b=krY32QVABR11lSLbV/PPyT1/BIPqjn8qfufw7lnr9KPEnUQQCnx4jTD3
-   dA7yLRnCzk5GgS08qninF7Hm8JTen97pg1XQIHnuLSBoWw2g1RZbmVLUn
-   5izyPKzZ9ZjC4zFnQi76FBMX016cB5qJ3EnNUsOnbt9Ik7W/BxWeYU2E4
-   iUb2W2S8l+XS9Wo8iFdFW80Pdd+csoAKg9QFu5EqqDG/CfScK2zrZ8Pi2
-   oR1pn2jySbsMo6mvqM8WUoDWUuAX15Q7DbgKeQBC32TyqQIp8ZSv+L6gk
-   wVT1GncmYSGc563YJtrzsfhHCOIIh76+zu11JvziWwrEmMC1u0d7yqlJY
-   w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10350"; a="270985083"
-X-IronPort-AV: E=Sophos;i="5.91,233,1647327600"; 
-   d="scan'208";a="270985083"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2022 12:07:58 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,233,1647327600"; 
-   d="scan'208";a="605497608"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by orsmga001.jf.intel.com with ESMTP; 17 May 2022 12:07:56 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.27; Tue, 17 May 2022 12:07:55 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.27; Tue, 17 May 2022 12:07:55 -0700
-Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
- fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2308.027;
- Tue, 17 May 2022 12:07:55 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Dinh Nguyen <dinguyen@kernel.org>
-CC:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "bhe@redhat.com" <bhe@redhat.com>,
-        "kexec@lists.infradead.org" <kexec@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "bcm-kernel-feedback-list@broadcom.com" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
-        "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>,
-        "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "openipmi-developer@lists.sourceforge.net" 
-        <openipmi-developer@lists.sourceforge.net>,
+        with ESMTP id S233101AbiERBDS (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 17 May 2022 21:03:18 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A175A53E23;
+        Tue, 17 May 2022 18:03:17 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3BBAC61500;
+        Wed, 18 May 2022 01:03:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 950EEC385B8;
+        Wed, 18 May 2022 01:03:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1652835796;
+        bh=Aad3FvNG8f1IOJNzdY4J3bfreB6ONcOeWJBpa+/vJqQ=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=LKN3Rrkr+IosL+ZpSPpclcjFsWCeV+z4X1e0dUoi+zOJja3YIRETBXXGcsYWUrmUC
+         z9R4xRpoL6GXd3Fyx4vmEuXpWsFc9MXyLMcI2NzwfP+jpL8J1IiyrytbBpKXQPo/LB
+         CfIRlN5Ql26yrpudu1klxwfYuypX83Qb5d8sV8PTKYGj888JJ4RFUIrRr3LC8DtAHm
+         axOzZfWJFiNlXtXSvSklQ0RHd0ab1h5RVDdTzULASOJXPBW8pXkSptpNC/s3djbtTv
+         AmzZ8TK+SeFryjInLR6B0T43Gu0K9cHud/srxkcNRKm6FNqejpCrfUn1Gj+LaUbRXx
+         MxAn087s/J5wQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 2F7DE5C051B; Tue, 17 May 2022 18:03:16 -0700 (PDT)
+Date:   Tue, 17 May 2022 18:03:16 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
+Cc:     "frederic@kernel.org" <frederic@kernel.org>,
         "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "kernel-dev@igalia.com" <kernel-dev@igalia.com>,
-        "kernel@gpiccoli.net" <kernel@gpiccoli.net>,
-        "halves@canonical.com" <halves@canonical.com>,
-        "fabiomirmar@gmail.com" <fabiomirmar@gmail.com>,
-        "alejandro.j.jimenez@oracle.com" <alejandro.j.jimenez@oracle.com>,
-        "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>,
-        "arnd@arndb.de" <arnd@arndb.de>, "bp@alien8.de" <bp@alien8.de>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "d.hatayama@jp.fujitsu.com" <d.hatayama@jp.fujitsu.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "dyoung@redhat.com" <dyoung@redhat.com>,
-        "Tang, Feng" <feng.tang@intel.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "mikelley@microsoft.com" <mikelley@microsoft.com>,
-        "hidehiro.kawai.ez@hitachi.com" <hidehiro.kawai.ez@hitachi.com>,
-        "jgross@suse.com" <jgross@suse.com>,
-        "john.ogness@linutronix.de" <john.ogness@linutronix.de>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "mhiramat@kernel.org" <mhiramat@kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "paulmck@kernel.org" <paulmck@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "senozhatsky@chromium.org" <senozhatsky@chromium.org>,
-        "stern@rowland.harvard.edu" <stern@rowland.harvard.edu>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "vgoyal@redhat.com" <vgoyal@redhat.com>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "will@kernel.org" <will@kernel.org>, Alex Elder <elder@kernel.org>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Chris Zankel <chris@zankel.net>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        "Corey Minyard" <minyard@acm.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "Heiko Carstens" <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        James Morse <james.morse@arm.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        "Matt Turner" <mattst88@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>, Pavel Machek <pavel@ucw.cz>,
-        "Richard Weinberger" <richard@nod.at>,
-        Robert Richter <rric@kernel.org>,
-        "Stefano Stabellini" <sstabellini@kernel.org>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        "Vasily Gorbik" <gor@linux.ibm.com>, Wei Liu <wei.liu@kernel.org>
-Subject: RE: [PATCH 21/30] panic: Introduce the panic pre-reboot notifier list
-Thread-Topic: [PATCH 21/30] panic: Introduce the panic pre-reboot notifier
- list
-Thread-Index: AQHYWooLnXaT7guJw0OCpuGv/IkEoK0iJCSAgAAZuAD//40QkIAAesuAgAFqbACAACtDgP//jcxAgACKZID//5nyAA==
-Date:   Tue, 17 May 2022 19:07:54 +0000
-Message-ID: <7f9f6feb9f494b0288deab718807172d@intel.com>
-References: <20220427224924.592546-1-gpiccoli@igalia.com>
- <20220427224924.592546-22-gpiccoli@igalia.com> <YoJgcC8c6LaKADZV@alley>
- <63a74b56-89ef-8d1f-d487-cdb986aab798@igalia.com>
- <bed66b9467254a5a8bafc1983dad643a@intel.com>
- <e895ce94-e6b9-caf6-e5d3-06bf0149445c@igalia.com> <YoOs9GJ5Ovq63u5Q@alley>
- <599b72f6-76a4-8e6d-5432-56fb1ffd7e0b@igalia.com>
- <06d85642fef24bc482642d669242654b@intel.com>
- <62a63fc2-346f-f375-043a-fa21385279df@igalia.com>
-In-Reply-To: <62a63fc2-346f-f375-043a-fa21385279df@igalia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.6.401.20
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] rcu: Direct boosting gp_tasks for strict grace periods
+Message-ID: <20220518010316.GJ1790663@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20220513004256.465233-1-qiang1.zhang@intel.com>
+ <20220513010651.GD1790663@paulmck-ThinkPad-P17-Gen-1>
+ <PH0PR11MB588012EC5E5DFD3FFDA49401DACA9@PH0PR11MB5880.namprd11.prod.outlook.com>
+ <20220513141445.GF1790663@paulmck-ThinkPad-P17-Gen-1>
+ <PH0PR11MB58802D034A41626D88F44BEEDACE9@PH0PR11MB5880.namprd11.prod.outlook.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <PH0PR11MB58802D034A41626D88F44BEEDACE9@PH0PR11MB5880.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-PiBXaGF0IEknbSBwbGFubmluZyB0byBkbyBpbiB0aGUgYWx0ZXJhX2VkYWMgbm90aWZpZXIgaXM6
-DQo+DQo+IGlmIChrZHVtcF9pc19zZXQpDQo+ICAgcmV0dXJuOw0KDQpZZXMuIFRoYXQncyB3aGF0
-IEkgdGhpbmsgc2hvdWxkIGhhcHBlbi4NCg0KLVRvbnkNCg==
+On Tue, May 17, 2022 at 12:32:10PM +0000, Zhang, Qiang1 wrote:
+> On Fri, May 13, 2022 at 01:17:16PM +0000, Zhang, Qiang1 wrote:
+> > 
+> > On Fri, May 13, 2022 at 08:42:55AM +0800, Zqiang wrote:
+> > > If the CONFIG_RCU_STRICT_GRACE_PERIOD option is enabled, the normal 
+> > > grace period will be treated as expedited grace period, the gp_tasks 
+> > > that block current grace period needs to be boosted unconditionally, 
+> > > therefore this commit adds Kconfig check in rcu_initiate_boost().
+> > > 
+> > > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+> > 
+> > >Good eyes!  I have queued this for further review and testing, thank you!
+> > >
+> > >What sorts of tests did you run on it?
+> > 
+> > Hi Paul
+> > 
+> > I didn't think of  suitable test method, Can you provide me with a 
+> > test method to test it, I will be happy to test.
+> >
+> >Here is one possibility:
+> >
+> >tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 60 --configs "TREE01 TREE02 TREE03 TREE04 TREE05 TREE07 TREE09 TREE10" --kconfig "CONFIG_NR_CPUS=4 CONFIG_RCU_STRICT_GRACE_PERIOD=y" --trust-make
+> >
+> >On a 16-CPU system, this will do eight kernel builds and run about two hours of testing.
+> 
+> Hi Paul
+> 
+> I tested according to the above command, and the results are as follows:
+> 
+> tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 60 --configs TREE01 TREE02 TREE03 TREE04 TREE05 TREE07 TREE09 TREE10 --kconfig CONFIG_NR_CPUS=4 CONFIG_RCU_STRICT_GRACE_PERIOD=y --trust-make
+> TREE01 ------- 154236 GPs (42.8433/s) [rcu: g1986553 f0x0 total-gps=496930]
+> :CONFIG_NR_CPUS=4: improperly set
+> :CONFIG_RCU_STRICT_GRACE_PERIOD=y: improperly set
+
+This one didn't cooperate because other Kconfig setting force a minimum
+CONFIG_NR_CPUS of 8192, so OK.
+
+> TREE02 ------- 410546 GPs (114.041/s) [rcu: g196373325 f0x2 total-gps=49093612] n_max_cbs: 805081
+> TREE03 ------- 160648 GPs (44.6244/s) [rcu: g128673793 f0x0 total-gps=32168735] n_max_cbs: 646284
+> TREE04 ------- 347059 GPs (96.4053/s) [rcu: g539425233 f0x2 total-gps=134856594] n_max_cbs: 205907
+> TREE05 ------- 360973 GPs (100.27/s) [rcu: g77594645 f0x0 total-gps=19398951] n_max_cbs: 31033
+> :CONFIG_RCU_FANOUT_LEAF=6: improperly set
+
+This is harmless -- CONFIG_RCU_STRICT_GRACE_PERIOD sets an upper limit
+of 3 for CONFIG_RCU_FANOUT_LEAF.
+
+> TREE07 ------- 355903 GPs (98.8619/s) [rcu: g639182469 f0x0 total-gps=159795908] n_max_cbs: 259737
+> TREE09 ------- 305700 GPs (84.9167/s) [rcu: g9668841 f0x0 total-gps=2417506] n_max_cbs: 2498623
+> :CONFIG_NR_CPUS=4: improperly set
+> :CONFIG_RCU_STRICT_GRACE_PERIOD=y: improperly set
+
+This one is because TREE09 does not define CONFIG_RCU_EXPERT, on which
+CONFIG_RCU_STRICT_GRACE_PERIOD depends.
+
+> TREE10 ------- 220566 GPs (61.2683/s) [rcu: g3456465 f0x0 total-gps=864409] n_max_cbs: 507348
+> :CONFIG_RCU_STRICT_GRACE_PERIOD=y: improperly set
+
+This one is because TREE10 also does not define CONFIG_RCU_EXPERT,
+on which CONFIG_RCU_STRICT_GRACE_PERIOD depends.
+
+So very good, and thank you!
+
+							Thanx, Paul
+
+> Thanks
+> Zqiang
+> 
+> >
+> >							Thanx, Paul
+> 
+> > Thanks,
+> > Zqiang
+> > 
+> > >
+> > >As usual, I could not resist the urge to wordsmith, so could you please check the version shown below?
+> > >
+> > >							Thanx, Paul
+> > 
+> > ----------------------------------------------------------------------
+> > --
+> > 
+> > commit 079e0f894c5d887c678f94332c1fa7287abfd6bc
+> > Author: Zqiang <qiang1.zhang@intel.com>
+> > Date:   Fri May 13 08:42:55 2022 +0800
+> > 
+> >     rcu: Immediately boost preempted readers for strict grace periods
+> >     
+> >     The intent of the CONFIG_RCU_STRICT_GRACE_PERIOD Konfig option is to
+> >     cause normal grace periods to complete quickly in order to better catch
+> >     errors resulting from improperly leaking pointers from RCU read-side
+> >     critical sections.  However, kernels built with this option enabled still
+> >     wait for some hundreds of milliseconds before boosting RCU readers that
+> >     have been preempted within their current critical section.  The value
+> >     of this delay is set by the CONFIG_RCU_BOOST_DELAY Kconfig option,
+> >     which defaults to 500 milliseconds.
+> >     
+> >     This commit therefore causes kernels build with strict grace periods
+> >     to ignore CONFIG_RCU_BOOST_DELAY.  This causes rcu_initiate_boost()
+> >     to start boosting immediately after all CPUs on a given leaf rcu_node
+> >     structure have passed through their quiescent states.
+> >     
+> >     Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+> >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > 
+> > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h index 
+> > 99cde4c947699..b4ab952f04ea6 100644
+> > --- a/kernel/rcu/tree_plugin.h
+> > +++ b/kernel/rcu/tree_plugin.h
+> > @@ -1159,7 +1159,8 @@ static void rcu_initiate_boost(struct rcu_node *rnp, unsigned long flags)
+> >  	    (rnp->gp_tasks != NULL &&
+> >  	     rnp->boost_tasks == NULL &&
+> >  	     rnp->qsmask == 0 &&
+> > -	     (!time_after(rnp->boost_time, jiffies) || rcu_state.cbovld))) {
+> > +	     (!time_after(rnp->boost_time, jiffies) || rcu_state.cbovld ||
+> > +	      IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD)))) {
+> >  		if (rnp->exp_tasks == NULL)
+> >  			WRITE_ONCE(rnp->boost_tasks, rnp->gp_tasks);
+> >  		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
