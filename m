@@ -2,96 +2,127 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D44FC433F5
-	for <rcu@archiver.kernel.org>; Wed, 18 May 2022 11:43:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 74BA0C433EF
+	for <rcu@archiver.kernel.org>; Wed, 18 May 2022 13:10:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235698AbiERLnQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 18 May 2022 07:43:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38608 "EHLO
+        id S237611AbiERNKn (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 18 May 2022 09:10:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235762AbiERLnL (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 18 May 2022 07:43:11 -0400
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3FF32B1BC;
-        Wed, 18 May 2022 04:43:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1652874189; x=1684410189;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=tw6Z4f9Bhax1c/2buQLmzsM9gge//sdJmnyXlU32Rlc=;
-  b=eJQ4XPZTsxO31SOu3CgTf0SfECcc/z4uOMlHSfwXEMihacHB2ZRa0Bnt
-   e/Gqt0EqxjbiE472AUwTMDxungnabNqFGMm5VOk78GIm3bIJgPupwL5+9
-   Qb0Xgri5rvLGyynGh0mAJhn4X0QsOQLfSnMc646emdTj/qD3j3J/tiibK
-   NWGm80XKFNfPj1NvaTKI/41nkeptpIGLNS7KcAvodL2ldyXP6OZr+j/PW
-   1wLUr/6IpQ3Ibiv6EvZqSPotK9VvJDThgWaG8Lu/zY4gOQtNOjAbUt48W
-   J9DcERwFF+FhGzj3/0eTzfy2cuy7lNfwhs9Le3RjfKd561i4eJ3f9mYYl
-   g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10350"; a="358038747"
-X-IronPort-AV: E=Sophos;i="5.91,234,1647327600"; 
-   d="scan'208";a="358038747"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2022 04:43:09 -0700
-X-IronPort-AV: E=Sophos;i="5.91,234,1647327600"; 
-   d="scan'208";a="597743292"
-Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.125])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2022 04:43:07 -0700
-From:   Zqiang <qiang1.zhang@intel.com>
-To:     paulmck@kernel.org, frederic@kernel.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] rcu: Add cpu-exp indicator to expedited RCU CPU stall warnings
-Date:   Wed, 18 May 2022 19:43:10 +0800
-Message-Id: <20220518114310.1478091-1-qiang1.zhang@intel.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S237535AbiERNKb (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 18 May 2022 09:10:31 -0400
+Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B4A219FB2A;
+        Wed, 18 May 2022 06:10:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+        s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=Du0yR9uhHpKwWrKsjoqMfifs7bCXApVmJcTLKS159Q8=; b=KR8Ca3qzn6Prru2b2ovD3a5c88
+        3Yl32PXNgwJAzJv1K+GwtALbIi3R7PHWPogPI//mjA46BacEdcFlczlu7VgbqBbi0iRFln4dhAmL3
+        5vAwoEH2Y5npRXnrsBS0Pt1IPEFHpxBOrNJbK+CGAUFY1mpA/Xk/bDS+XL+ITQtGq3i57YSw2ze27
+        6u/aeZyJiDji8Ld6K9lb+iY/t9E1NA5TGk8rCRjPY8WXYQAQH85dDOYmikTTt80JzPDf76BhHmUH/
+        IE+yGx2cI+Y6f449JTeHotkEOnM9AIr+trG8kHtj2MTTykTHXqJtKMQ7SzJhAjeP0O52jetyt0xPW
+        XVvP+JXg==;
+Received: from 200-161-159-120.dsl.telesp.net.br ([200.161.159.120] helo=[192.168.1.60])
+        by fanzine2.igalia.com with esmtpsa 
+        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+        id 1nrJR1-009xZP-0G; Wed, 18 May 2022 15:09:51 +0200
+Message-ID: <8a1159c6-b4c1-87b9-8a09-6d5696f8f3f4@igalia.com>
+Date:   Wed, 18 May 2022 10:09:06 -0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Subject: Re: [PATCH 19/30] panic: Add the panic hypervisor notifier list
+Content-Language: en-US
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Scott Branden <scott.branden@broadcom.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        David Gow <davidgow@google.com>,
+        Evan Green <evgreen@chromium.org>,
+        Julius Werner <jwerner@chromium.org>,
+        bcm-kernel-feedback-list@broadcom.com, linux-pm@vger.kernel.org,
+        akpm@linux-foundation.org, bhe@redhat.com,
+        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-um@lists.infradead.org,
+        linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org,
+        openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org,
+        sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org,
+        x86@kernel.org, kernel-dev@igalia.com, kernel@gpiccoli.net,
+        halves@canonical.com, fabiomirmar@gmail.com,
+        alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com,
+        arnd@arndb.de, bp@alien8.de, corbet@lwn.net,
+        d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com,
+        dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org,
+        mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com,
+        jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org,
+        luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com,
+        paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org,
+        senozhatsky@chromium.org, stern@rowland.harvard.edu,
+        tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com,
+        will@kernel.org, Alexander Gordeev <agordeev@linux.ibm.com>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Brian Norris <computersforpeace@gmail.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dexuan Cui <decui@microsoft.com>,
+        Doug Berger <opendmb@gmail.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Hari Bathini <hbathini@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Justin Chen <justinpopo6@gmail.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Markus Mayer <mmayer@broadcom.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Mihai Carabas <mihai.carabas@oracle.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Paul Mackerras <paulus@samba.org>, Pavel Machek <pavel@ucw.cz>,
+        Shile Zhang <shile.zhang@linux.alibaba.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Wang ShaoBo <bobo.shaobowang@huawei.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        zhenwei pi <pizhenwei@bytedance.com>
+References: <20220427224924.592546-1-gpiccoli@igalia.com>
+ <20220427224924.592546-20-gpiccoli@igalia.com> <YoJZVZl/MH0KiE/J@alley>
+ <ad082ce7-db50-13bb-3dbb-9b595dfa78be@igalia.com> <YoOpyW1+q+Z5as78@alley>
+ <d72b9aab-675c-ac89-b73a-b1de4a0b722d@igalia.com> <YoSijKwuwbY9uHxG@alley>
+From:   "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+In-Reply-To: <YoSijKwuwbY9uHxG@alley>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This commit adds a "D" indicator to expedited RCU CPU stall warnings.
-when an expedited grace period begins, due to CPU disable interrupt
-time too long, cause the IPI(rcu_exp_handler()) unable to respond in
-time, this debugging id will be showed.
+On 18/05/2022 04:38, Petr Mladek wrote:
+> [...]
+> I have answered this in more detail in the other reply, see
+> https://lore.kernel.org/r/YoShZVYNAdvvjb7z@alley
+> 
+> I agree that both notifiers in
+> 
+>     drivers/soc/bcm/brcmstb/pm/pm-arm.c
+>     drivers/firmware/google/gsmi.c
+> 
+> better fit into the hypervisor list after all.
+> 
+> Best Regards,
+> Petr
 
-runqemu kvm slirp nographic qemuparams="-m 4096 -smp 4"  bootparams=
-"isolcpus=2,3 nohz_full=2,3 rcu_nocbs=2,3 rcutree.dump_tree=1
-rcutorture.stall_cpu_holdoff=30 rcutorture.stall_cpu=40
-rcutorture.stall_cpu_irqsoff=1 rcutorture.stall_cpu_block=0
-rcutorture.stall_no_softlockup=1" -d
-
-rcu_torture_stall start on CPU 1.
-............
-rcu: INFO: rcu_preempt detected expedited stalls on CPUs/tasks:
-{ 1-...D } 26467 jiffies s: 13317 root: 0x1/.
-rcu: blocking rcu_node structures (internal RCU debug): l=1:0-1:0x2/.
-Task dump for CPU 1:
-task:rcu_torture_sta state:R  running task     stack:    0 pid:   76
-ppid:     2 flags:0x00004008
-
-Signed-off-by: Zqiang <qiang1.zhang@intel.com>
----
- kernel/rcu/tree_exp.h | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index 4c7037b50703..f092c7f18a5f 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -637,10 +637,11 @@ static void synchronize_rcu_expedited_wait(void)
- 					continue;
- 				ndetected++;
- 				rdp = per_cpu_ptr(&rcu_data, cpu);
--				pr_cont(" %d-%c%c%c", cpu,
-+				pr_cont(" %d-%c%c%c%c", cpu,
- 					"O."[!!cpu_online(cpu)],
- 					"o."[!!(rdp->grpmask & rnp->expmaskinit)],
--					"N."[!!(rdp->grpmask & rnp->expmaskinitnext)]);
-+					"N."[!!(rdp->grpmask & rnp->expmaskinitnext)],
-+					"D."[!!(rdp->cpu_no_qs.b.exp)]);
- 			}
- 		}
- 		pr_cont(" } %lu jiffies s: %lu root: %#lx/%c\n",
--- 
-2.25.1
-
+Perfect, thanks - will keep both in such list for V2.
