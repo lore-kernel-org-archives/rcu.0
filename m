@@ -2,141 +2,316 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 45124C433EF
-	for <rcu@archiver.kernel.org>; Wed, 18 May 2022 18:14:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B9B3C4332F
+	for <rcu@archiver.kernel.org>; Wed, 18 May 2022 22:17:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233853AbiERSO1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 18 May 2022 14:14:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39238 "EHLO
+        id S229783AbiERWR3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 18 May 2022 18:17:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234057AbiERSO1 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 18 May 2022 14:14:27 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7AAB16A277;
-        Wed, 18 May 2022 11:14:25 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 89D1EB82019;
-        Wed, 18 May 2022 18:14:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43327C385A5;
-        Wed, 18 May 2022 18:14:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1652897663;
-        bh=HXcgqQoC2j8uMdZbslQ5dj2wJLQUBcNJqdHvlFwHJ/A=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=QkXS9DmFT0x0MJgHh4vg9bjRKA0Sfa5QT1m+UQTOO2/1gK5AETm0+/zlg2jZYLfYl
-         NVsFvdgKFtQIGvicTy8Sn/gdo4OV0Z9+kRoUmHecC4xLkNGiFBAEIH1CnNjpDTsK1Y
-         FlQDAzrjNFI/mlVILP4bz+fSon6upBDIlLQdmwRscts8CnH8n7L1MAfickowlJqKMl
-         uuv4frt8pK84aJAGfnT5yjfWYvgrzOKJUw88j6WU4tho3MRal5w0MnV02zvOJdq7lQ
-         TPCjT/QBT4/bMh7tuPkavYf91FEBTGFCuwbfmifsS1dvLCrLicchZAgmPB6UQQlqPE
-         R60gBY1XZWt4g==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id D06605C042D; Wed, 18 May 2022 11:14:22 -0700 (PDT)
-Date:   Wed, 18 May 2022 11:14:22 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Zqiang <qiang1.zhang@intel.com>
-Cc:     frederic@kernel.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu: Add cpu-exp indicator to expedited RCU CPU stall
- warnings
-Message-ID: <20220518181422.GR1790663@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220518114310.1478091-1-qiang1.zhang@intel.com>
+        with ESMTP id S229774AbiERWRX (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 18 May 2022 18:17:23 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C61F20AE43
+        for <rcu@vger.kernel.org>; Wed, 18 May 2022 15:17:20 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id pq9-20020a17090b3d8900b001df622bf81dso3420494pjb.3
+        for <rcu@vger.kernel.org>; Wed, 18 May 2022 15:17:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=message-id:date:mime-version:user-agent:subject:to:cc:references
+         :from:in-reply-to;
+        bh=onpPVM6meTtKkiCOYCbq8Vv+qrGhVB/5LA1c5GIr3BE=;
+        b=gsPG5zRv2LVFvYOJuEZ15J8lNrEQRtURn6ENXhtm7YNj8ZVvTzmiPLzrh88paTDdOr
+         Gh5TV5Okw9LXerHGto3PhgBm6r0Cd/IvHcJibB1STaixQRSGyo3fr7iDws30NegRBAAq
+         lLpWsnbpqf22soqmzJ2dFA1nDuF95XnjZ2bWc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :to:cc:references:from:in-reply-to;
+        bh=onpPVM6meTtKkiCOYCbq8Vv+qrGhVB/5LA1c5GIr3BE=;
+        b=kvo7iX7ATLHRExTNIfpiuDcqYCwId8eVVIFH9FG8EYNBOeRrjgbcjIvmmEFSQ1wjMj
+         VUMbw0Sn/z1udOvXfzdhhL3YfllEmw1rzYwbD+mcIamxJBp/4cXRyRShTaM79Uu6S4Y4
+         brzLDNftO1bexfRTxC8IK9ovTVJMZ73ZvY6ecjyPTPmQEd69YCnIB+acTIOX1E96IlFJ
+         wRcV9pGLjLHrB6bWn5cGj5DFfHAg4zWQR6pKBNHdQOsrVZB/0HyCxmVXAoNiPss/CtJW
+         F7RxoFfJLwyLlRlS/Y9zf8jVnJpRYoJd8RaJHEGz7Ecf1VbuEULQLeJRo917WJuDli8C
+         2qXA==
+X-Gm-Message-State: AOAM532IolGOPGwy49JDqRLbvCj2Uw+/OF9ckBf7KHDRdqNGzFtvVFM2
+        T+nWK5q4hOI0k/HodU8I3expLQ==
+X-Google-Smtp-Source: ABdhPJxkLsE36Kq2JcCUoiWV2ClSYG7H68DZOk0Dnd5ufVpjZfzcSk9Zz5AbXiW59SdIpTBHz/LAmw==
+X-Received: by 2002:a17:902:ec92:b0:161:7e29:6f9d with SMTP id x18-20020a170902ec9200b001617e296f9dmr1458536plg.157.1652912238747;
+        Wed, 18 May 2022 15:17:18 -0700 (PDT)
+Received: from [10.136.13.180] ([192.19.161.250])
+        by smtp.gmail.com with ESMTPSA id ji15-20020a170903324f00b001616e13fccdsm2195161plb.221.2022.05.18.15.17.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 May 2022 15:17:17 -0700 (PDT)
+Message-ID: <81878a67-21f1-fee8-1add-f381bc8b05df@broadcom.com>
+Date:   Wed, 18 May 2022 15:17:07 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220518114310.1478091-1-qiang1.zhang@intel.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.1
+Subject: Re: [PATCH 19/30] panic: Add the panic hypervisor notifier list
+To:     "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Desmond yan <desmond.yan@broadcom.com>
+Cc:     David Gow <davidgow@google.com>, Evan Green <evgreen@chromium.org>,
+        Julius Werner <jwerner@chromium.org>,
+        bcm-kernel-feedback-list@broadcom.com, linux-pm@vger.kernel.org,
+        akpm@linux-foundation.org, bhe@redhat.com,
+        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-um@lists.infradead.org,
+        linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org,
+        openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org,
+        sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org,
+        x86@kernel.org, kernel-dev@igalia.com, kernel@gpiccoli.net,
+        halves@canonical.com, fabiomirmar@gmail.com,
+        alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com,
+        arnd@arndb.de, bp@alien8.de, corbet@lwn.net,
+        d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com,
+        dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org,
+        mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com,
+        jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org,
+        luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com,
+        paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org,
+        senozhatsky@chromium.org, stern@rowland.harvard.edu,
+        tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com,
+        will@kernel.org, Alexander Gordeev <agordeev@linux.ibm.com>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Brian Norris <computersforpeace@gmail.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dexuan Cui <decui@microsoft.com>,
+        Doug Berger <opendmb@gmail.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Hari Bathini <hbathini@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Justin Chen <justinpopo6@gmail.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Markus Mayer <mmayer@broadcom.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Mihai Carabas <mihai.carabas@oracle.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Paul Mackerras <paulus@samba.org>, Pavel Machek <pavel@ucw.cz>,
+        Shile Zhang <shile.zhang@linux.alibaba.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Wang ShaoBo <bobo.shaobowang@huawei.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        zhenwei pi <pizhenwei@bytedance.com>
+References: <20220427224924.592546-1-gpiccoli@igalia.com>
+ <20220427224924.592546-20-gpiccoli@igalia.com> <YoJZVZl/MH0KiE/J@alley>
+ <ad082ce7-db50-13bb-3dbb-9b595dfa78be@igalia.com> <YoOpyW1+q+Z5as78@alley>
+ <d72b9aab-675c-ac89-b73a-b1de4a0b722d@igalia.com>
+From:   Scott Branden <scott.branden@broadcom.com>
+In-Reply-To: <d72b9aab-675c-ac89-b73a-b1de4a0b722d@igalia.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000e0d9db05df509eaf"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, May 18, 2022 at 07:43:10PM +0800, Zqiang wrote:
-> This commit adds a "D" indicator to expedited RCU CPU stall warnings.
-> when an expedited grace period begins, due to CPU disable interrupt
-> time too long, cause the IPI(rcu_exp_handler()) unable to respond in
-> time, this debugging id will be showed.
+--000000000000e0d9db05df509eaf
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+
+Hi Guilherme,
+
++Desmond
+
+On 2022-05-17 09:42, Guilherme G. Piccoli wrote:
+> On 17/05/2022 10:57, Petr Mladek wrote:
+>> [...]
+>>>>> --- a/drivers/misc/bcm-vk/bcm_vk_dev.c
+>>>>> +++ b/drivers/misc/bcm-vk/bcm_vk_dev.c
+>>>>> @@ -1446,7 +1446,7 @@ static int bcm_vk_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+>>>> [... snip ...]
+>>>> It seems to reset some hardware or so. IMHO, it should go into the
+>>>> pre-reboot list.
+>>>
+>>> Mixed feelings here, I'm looping Broadcom maintainers to comment.
+>>> (CC Scott and Broadcom list)
+>>>
+>>> I'm afraid it breaks kdump if this device is not reset beforehand - it's
+>>> a doorbell write, so not high risk I think...
+>>>
+>>> But in case the not-reset device can be probed normally in kdump kernel,
+>>> then I'm fine in moving this to the reboot list! I don't have the HW to
+>>> test myself.
+>>
+>> Good question. Well, it if has to be called before kdump then
+>> even "hypervisor" list is a wrong place because is not always
+>> called before kdump.
 > 
-> runqemu kvm slirp nographic qemuparams="-m 4096 -smp 4"  bootparams=
-> "isolcpus=2,3 nohz_full=2,3 rcu_nocbs=2,3 rcutree.dump_tree=1
-> rcutorture.stall_cpu_holdoff=30 rcutorture.stall_cpu=40
-> rcutorture.stall_cpu_irqsoff=1 rcutorture.stall_cpu_block=0
-> rcutorture.stall_no_softlockup=1" -d
+> Agreed! I'll defer that to Scott and Broadcom folks to comment.
+> If it's not strictly necessary, I'll happily move it to the reboot list.
 > 
-> rcu_torture_stall start on CPU 1.
-> ............
-> rcu: INFO: rcu_preempt detected expedited stalls on CPUs/tasks:
-> { 1-...D } 26467 jiffies s: 13317 root: 0x1/.
-> rcu: blocking rcu_node structures (internal RCU debug): l=1:0-1:0x2/.
-> Task dump for CPU 1:
-> task:rcu_torture_sta state:R  running task     stack:    0 pid:   76
-> ppid:     2 flags:0x00004008
+> If necessary, we could use the machine_crash_kexec() approach, but we'll
+> fall into the case arm64 doesn't support it and I'm not sure if this
+> device is available for arm - again a question for the maintainers.
+We register to the panic notifier so that we can kill the VK card ASAP
+to stop DMAing things over to the host side.  If it is not notified then
+memory may not be frozen when kdump is occurring.
+Notifying the card on panic is also needed to allow for any type of 
+reset to occur.
+
+So, the only thing preventing moving the notifier later is the chance
+that memory is modified while kdump is occurring.  Or, if DMA is 
+disabled before kdump already then this wouldn't be an issue and the 
+notification to the card (to allow for clean resets) can be done later.
 > 
-> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+> 
+>>   [...]
+>>>>> --- a/drivers/power/reset/ltc2952-poweroff.c
+>>>>> +++ b/drivers/power/reset/ltc2952-poweroff.c
+>>> [...]
+>>> This is setting a variable only, and once it's set (data->kernel_panic
+>>> is the bool's name), it just bails out the IRQ handler and a timer
+>>> setting - this timer seems kinda tricky, so bailing out ASAP makes sense
+>>> IMHO.
+>>
+>> IMHO, the timer informs the hardware that the system is still alive
+>> in the middle of panic(). If the timer is not working then the
+>> hardware (chip) will think that the system frozen in panic()
+>> and will power off the system. See the comments in
+>> drivers/power/reset/ltc2952-poweroff.c:
+>> [.... snip ...]
+>> IMHO, we really have to keep it alive until we reach the reboot stage.
+>>
+>> Another question is how it actually works when the interrupts are
+>> disabled during panic() and the timer callbacks are not handled.
+> 
+> Agreed here! Guess I can move this one the reboot list, fine by me.
+> Unless PM folks think otherwise.
+> 
+> 
+>> [...]
+>>> Disagree here, I'm CCing Florian for information.
+>>>
+>>> This notifier preserves RAM so it's *very interesting* if we have
+>>> kmsg_dump() for example, but maybe might be also relevant in case kdump
+>>> kernel is configured to store something in a persistent RAM (then,
+>>> without this notifier, after kdump reboots the system data would be lost).
+>>
+>> I see. It is actually similar problem as with
+>> drivers/firmware/google/gsmi.c.
+>>
+>> I does similar things like kmsg_dump() so it should be called in
+>> the same location (after info notifier list and before kdump).
+>>
+>> A solution might be to put it at these notifiers at the very
+>> end of the "info" list or make extra "dump" notifier list.
+> 
+> Here I still disagree. I've commented in the other response thread
+> (about Google gsmi) about the semantics of the hypervisor list, but
+> again: this list should contain callbacks that
+> 
+> (a) Should run early, _by default_ before a kdump;
+> (b) Communicate with the firmware/hypervisor in a "low-risk" way;
+> 
+> Imagine a scenario where users configure kdump kernel to save something
+> in a persistent form in DRAM - it'd be like a late pstore, in the next
+> kernel. This callback enables that, it's meant to inform FW "hey, panic
+> happened, please from now on don't clear the RAM in the next FW-reboot".
+> I don't see a reason to postpone that - let's see if the maintainers
+> have an opinion.
+> 
+> Cheers,
+> 
+> 
+> Guilherme
 
-Nice!!!  I have queued this for v5.20 and for further testing and
-review, thank you!
+--000000000000e0d9db05df509eaf
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-As usual, I could not resist the temptation to wordsmith the commit log,
-so could you please check it in case I messed something up?
-
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
-commit 178b9d47f3049e8122738c3166ee4975b75cba55
-Author: Zqiang <qiang1.zhang@intel.com>
-Date:   Wed May 18 19:43:10 2022 +0800
-
-    rcu: Add irqs-disabled indicator to expedited RCU CPU stall warnings
-    
-    If a CPU has interrupts disabled continuously starting before the
-    beginning of a given expedited RCU grace period, that CPU will not
-    execute that grace period's IPI handler.  This will in turn mean
-    that the ->cpu_no_qs.b.exp field in that CPU's rcu_data structure
-    will continue to contain the boolean value false.
-    
-    Knowing whether or not a CPU has had interrupts disabled can be helpful
-    when debugging an expedited RCU CPU stall warning, so this commit
-    adds a "D" indicator expedited RCU CPU stall warnings that signifies
-    that the corresponding CPU has had interrupts disabled throughout.
-    
-    This capability was tested as follows:
-    
-    runqemu kvm slirp nographic qemuparams="-m 4096 -smp 4"  bootparams=
-    "isolcpus=2,3 nohz_full=2,3 rcu_nocbs=2,3 rcutree.dump_tree=1
-    rcutorture.stall_cpu_holdoff=30 rcutorture.stall_cpu=40
-    rcutorture.stall_cpu_irqsoff=1 rcutorture.stall_cpu_block=0
-    rcutorture.stall_no_softlockup=1" -d
-    
-    The rcu_torture_stall() function ran on CPU 1, which displays the "D"
-    as expected given the rcutorture.stall_cpu_irqsoff=1 module parameter:
-    
-    ............
-    rcu: INFO: rcu_preempt detected expedited stalls on CPUs/tasks:
-    { 1-...D } 26467 jiffies s: 13317 root: 0x1/.
-    rcu: blocking rcu_node structures (internal RCU debug): l=1:0-1:0x2/.
-    Task dump for CPU 1:
-    task:rcu_torture_sta state:R  running task     stack:    0 pid:   76  ppid:     2 flags:0x00004008
-    
-    Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index 4c7037b507032..f092c7f18a5f3 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -637,10 +637,11 @@ static void synchronize_rcu_expedited_wait(void)
- 					continue;
- 				ndetected++;
- 				rdp = per_cpu_ptr(&rcu_data, cpu);
--				pr_cont(" %d-%c%c%c", cpu,
-+				pr_cont(" %d-%c%c%c%c", cpu,
- 					"O."[!!cpu_online(cpu)],
- 					"o."[!!(rdp->grpmask & rnp->expmaskinit)],
--					"N."[!!(rdp->grpmask & rnp->expmaskinitnext)]);
-+					"N."[!!(rdp->grpmask & rnp->expmaskinitnext)],
-+					"D."[!!(rdp->cpu_no_qs.b.exp)]);
- 			}
- 		}
- 		pr_cont(" } %lu jiffies s: %lu root: %#lx/%c\n",
+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
+cRe0CRXA7ypOJSgxO/nOOyQoaJxT7CGg1npOeSpPjEuc3fE4xum3l0nvU85hj6MlKZu43hokdBh0
+D0nLyyhEwlR3AC/msdff/UGbM/JR9vk812RP4m/aNWZFJwIDAQABo4IB2zCCAdcwDgYDVR0PAQH/
+BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9i
+YWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUF
+BzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAy
+MDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xv
+YmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRw
+Oi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAlBgNV
+HREEHjAcgRpzY290dC5icmFuZGVuQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAf
+BgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUOhjEpl04Sz9dh5MI82E1
+V39lM/owDQYJKoZIhvcNAQELBQADggEBAA7Rlypx/esz/iq1yA4+KW7uwV/aBY344BWcXt6I+SNK
+VwFBgFWfLj5vaEud9TVv2fPSiaHJo0umemOJk+43QD+bsoqmgcFXd21PrOt7Jjs+jjVED9VC5kJq
+S4NNKUkS+BqijJwSegtVygrc/atrIlJbjI21q4qpemUo5fgwqCNm++BmBGTI8yA09vtGSNDRN42k
+lLX9hl3iEj5SBgkQqCbbnoE+ZjjKfqt7ED166WhgyQWNrl39yLcvLj+JRUB3RuvXKZjH0NQEEBII
+wZBDSkyneykLt3CBNIhSCTxKM6OWxVp936ALSa5K9FNy00TeWSpokR6NmzaW8VD/EjTgvqAxggJt
+MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
+VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgx9oXSJpKniO4dS
+Gk8wDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIILFBbO32At0jlQYmvDlBzxxKfke
+QfIJzMrdu2nIpFihMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIy
+MDUxODIyMTcxOVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
+AwQCATANBgkqhkiG9w0BAQEFAASCAQBIc7nOZb/W3CkCvD0kf3LJMsgwBiUyTBcOQHeudvIMXgiB
+QQ8+U0c03geY7pr3oC9UDTjRSIF1RwJcP3BwheBLJu7kfHK3jy1JiouqgOLb3cV+n/v8R/+Xc+Q9
+MlWFHGJrAD9gPOMrvJ1KMqx0CFXaz0l8rlyXDGV6s+r8X1jt1rnbjZIGoBbGOP0+bObjxE+1Gdyd
+bQJRFfYVGChsqzAPm+mOmOBOafJhgclqEhJSTDfXRiL12HGLyzWipIAmcAo0FrSMyjIkYTvnPG2n
+n3uZVbKScFO51F6GoCOYWwE5SK0CHfHOWXk8TRl9CTBHlWCZR0XRAfCmijeVCq6/xT0J
+--000000000000e0d9db05df509eaf--
