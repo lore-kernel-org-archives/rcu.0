@@ -2,109 +2,92 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6FD0EC433F5
-	for <rcu@archiver.kernel.org>; Mon, 23 May 2022 19:47:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 63E5DC433F5
+	for <rcu@archiver.kernel.org>; Mon, 23 May 2022 20:41:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229706AbiEWTr4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 23 May 2022 15:47:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56788 "EHLO
+        id S233157AbiEWUlN (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 23 May 2022 16:41:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbiEWTrz (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 23 May 2022 15:47:55 -0400
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCA6F20BC4;
-        Mon, 23 May 2022 12:47:52 -0700 (PDT)
-Received: from [192.168.1.107] ([37.4.249.139]) by mrelayeu.kundenserver.de
- (mreue010 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1Mrh9Y-1nYAQI0bTQ-00neu2; Mon, 23 May 2022 21:47:30 +0200
-Message-ID: <129470ff-7570-4643-2dfc-3a187b3fc39f@i2se.com>
-Date:   Mon, 23 May 2022 21:47:28 +0200
+        with ESMTP id S233175AbiEWUlD (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 23 May 2022 16:41:03 -0400
+Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE309C3F;
+        Mon, 23 May 2022 13:41:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+        s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=LG2HkLvcft3PZ/5y+RaNtcoQpztQykGkc8EQp8pxJfI=; b=fPCMiuZns16FgBzoGF9Je3OLkO
+        LL4L2QHAG/wGtiXgEhS21zRsWqE1LMzGwwDxe6f9KpfZaY9eV7CGD4vwhcqTRNInSSR1HDaLnpPpS
+        miMpU8/+9j0GmfawjCEu88Tqk7uAI9V6UbtlRLQsT2Paj7KpRr9Eexx/1nt9uyC0/PRdqZ6qso//5
+        331flFwFw5rYDxq1lD4s7YGntuImz8x8p2XDCS463SY8sQhksTBKudAp4pKnME8DpTbZ4fGAvbQxT
+        wafY442u8mSqR6x/cwniP7CEUq4fd8W+eVImWzP4xrptC52doj1jXiLwbdsJQSnWbw0nF1P7Xd8f/
+        wPYC4mSw==;
+Received: from 200-161-159-120.dsl.telesp.net.br ([200.161.159.120] helo=[192.168.1.60])
+        by fanzine2.igalia.com with esmtpsa 
+        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+        id 1ntEr0-00Gje9-7b; Mon, 23 May 2022 22:40:38 +0200
+Message-ID: <0dda86c0-3a54-8c70-d1e7-18bbb4d41bab@igalia.com>
+Date:   Mon, 23 May 2022 17:40:07 -0300
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: WARNING: CPU: 2 PID: 3331 at drivers/firmware/raspberrypi.c:63
- rpi_firmware_property_list
+ Thunderbird/91.9.0
+Subject: Re: [PATCH 12/30] parisc: Replace regular spinlock with spin_trylock
+ on panic path
 Content-Language: en-US
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        linux-rpi-kernel@lists.infradead.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        lkft-triage@lists.linaro.org, regressions@lists.linux.dev,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        rcu <rcu@vger.kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Phil Elwell <phil@raspberrypi.com>
-References: <CA+G9fYt4+47GzfEYT1nV3dqbGa1YCwFm9XwC668D4PkK4BHFgQ@mail.gmail.com>
- <55d49dea-1a67-d857-218e-ef2343251361@i2se.com>
- <CA+G9fYvF7HGmJQtk7ktmakwQNjjraK3EoBeiMr+3NuEvsixi6Q@mail.gmail.com>
-From:   Stefan Wahren <stefan.wahren@i2se.com>
-In-Reply-To: <CA+G9fYvF7HGmJQtk7ktmakwQNjjraK3EoBeiMr+3NuEvsixi6Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Helge Deller <deller@gmx.de>
+Cc:     linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
+        pmladek@suse.com, bhe@redhat.com, akpm@linux-foundation.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org,
+        linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        linux-leds@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-um@lists.infradead.org,
+        linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org,
+        openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org,
+        sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org,
+        x86@kernel.org, kernel-dev@igalia.com, kernel@gpiccoli.net,
+        halves@canonical.com, fabiomirmar@gmail.com,
+        alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com,
+        arnd@arndb.de, bp@alien8.de, corbet@lwn.net,
+        d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com,
+        dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org,
+        mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com,
+        jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org,
+        luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com,
+        paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org,
+        senozhatsky@chromium.org, stern@rowland.harvard.edu,
+        tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com,
+        will@kernel.org,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+References: <20220427224924.592546-1-gpiccoli@igalia.com>
+ <20220427224924.592546-13-gpiccoli@igalia.com>
+ <6a7c924a-54a9-c5ea-8a9d-3ea92987b436@gmx.de>
+From:   "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+In-Reply-To: <6a7c924a-54a9-c5ea-8a9d-3ea92987b436@gmx.de>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:m6/4BZrp4B84xb75d/EtlTmi/xvpNb1VeM2r2H289cbnhPS6zJm
- x1qPfrXpQ1sI+cv+xxufaCiZQkc56HTa2kfr/ltVUIwSIsWczi1Liu08nSuDvebaGbS+UcZ
- 3m7aSgUNn+4rMQsi+Q4ELiecsQfniNKEB+qJShNzw4iY05kLyI3spREwlWNlO/JOR65lCHt
- hiFE+MCxa/yAgsto+gGgg==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:88f2pVyoHx4=:dURGxktMBAWL627wqIjt8L
- 7IIu1xFlzAwh8n6CWQAKfdOomlWjNTesH1f6ALujCWIclGt6p6Zz7F56QHQeajSK2tjkHhPrT
- osFQ3ZkObxbpeYj7rkRJ4AObv3gSOaVs1jH2RCCYn8YICoIldU0q+Nb8Vn3C1+jn/E5WovKnx
- EbjwvgonBWF73f3740UYW1B2ZcfO2AQWBriaApJcLaC0Qy4/KxG9OL4lzkklEMcngT5iseXsO
- TYT+8anx4Ypse6IGQy1LUTOoUG/9vIWEd+ZzYm0FA0dBssbfkmwQMJfBkb0MPJkjY0nFEUgDF
- 5bz7lKXKw67cqRue/kXfKtl6H+1twKZp43QB2t1bGsVbl5VMKPzwAQD/v290Y7iU46hJLSUu4
- ECUAFRDqmH0Kd78M7WrBWEivYZw02RA9EZgt+uWaED3xSjO/PPIdUXmBT0Jwv90SPOwnkuqIk
- dSAE8z+y1f2p+ukNM3/LEf5yox5sCaJQGEDX0UCsqbdzuMY9Mx2SvVgpRs8TmFfUWpMirvyjD
- hn+KdKFg4GPnjmYX4A6I65Jk3M1GSTPJNVYebOcLD02vcHGi96bPqaJwvGA9vFfDLOgLL4RWB
- PnyHUEzAECUKh51PA34ghYB+8iIvr6GHniHF+0zYza4FTshsSZd1xYkVPSG0MGe5+OspbMaNm
- 7hvVFu+493N9UhrwD87+7rAtLbyE39A5hM4hOuCBBTEm3j4WiyncxhdHQbRgyopozjVrT0Er/
- LGNgPFV3x+k1Xy0NlwiMCfE2AgC17KTfrPilvg12kGmcBp+uoE6MBXeNFrs=
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Naresh,
+On 28/04/2022 13:55, Helge Deller wrote:
+> [...]
+> You may add:
+> Acked-by: Helge Deller <deller@gmx.de> # parisc
+> 
+> Helge
 
-Am 23.05.22 um 14:35 schrieb Naresh Kamboju:
-> On Mon, 23 May 2022 at 16:43, Stefan Wahren <stefan.wahren@i2se.com> wrote:
->> Hi Naresh,
->>
->> Am 23.05.22 um 11:04 schrieb Naresh Kamboju:
->>> The following kernel warning was noticed on raspberrypi4 device while
->>> running LTP controllers with Linus mainline kernel tree.
->>>
->>> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
->>>
->>> metadata:
->>>     git_ref: master
->>>     git_repo: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->>>     git_sha: 4b0986a3613c92f4ec1bdc7f60ec66fea135991f
->>>     git_describe: v5.18
->>>     kernel_version: 5.18.0
->>>     kernel-config: https://builds.tuxbuild.com/29XDpgnCMxtWJ6lVJ9M0x3hTNWu/config
->>>     artifact-location: https://builds.tuxbuild.com/29XDpgnCMxtWJ6lVJ9M0x3hTNWu
->>>     toolchain: gcc-11
->>>     System.map: https://builds.tuxbuild.com/29XDpgnCMxtWJ6lVJ9M0x3hTNWu/System.map
->>>     vmlinux.xz: https://builds.tuxbuild.com/29XDpgnCMxtWJ6lVJ9M0x3hTNWu/vmlinux.xz
->> thanks for your report.
->>
->> Do you know this worked before (e.g. 5.17)?
-> Yes. it worked before.
->
->> Am I correct that you are using GPU firmware 2021-02-25T12:10:40?
-> Correct.
+Hi Helge, do you think would be possible to still pick this one for
+v5.19 or do you prefer to hold for the next release?
 
-Since i also experienced firmware crashes [1] with 5.18, it possible for 
-you to update to a more recent firmware?
+I'm working on V2, so if it's merged for 5.19 I won't send it again.
+Thanks,
 
-Best regards
 
-[1] - 
-https://lore.kernel.org/all/3dd4e0cb-8ba5-e0c7-cde5-29c56a5caa95@i2se.com/
-
->
-> - Naresh
+Guilherme
