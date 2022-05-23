@@ -2,92 +2,114 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 63E5DC433F5
-	for <rcu@archiver.kernel.org>; Mon, 23 May 2022 20:41:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DF7BCC433EF
+	for <rcu@archiver.kernel.org>; Mon, 23 May 2022 23:09:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233157AbiEWUlN (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 23 May 2022 16:41:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50046 "EHLO
+        id S229537AbiEWXJY (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 23 May 2022 19:09:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233175AbiEWUlD (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 23 May 2022 16:41:03 -0400
-Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE309C3F;
-        Mon, 23 May 2022 13:41:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-        s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=LG2HkLvcft3PZ/5y+RaNtcoQpztQykGkc8EQp8pxJfI=; b=fPCMiuZns16FgBzoGF9Je3OLkO
-        LL4L2QHAG/wGtiXgEhS21zRsWqE1LMzGwwDxe6f9KpfZaY9eV7CGD4vwhcqTRNInSSR1HDaLnpPpS
-        miMpU8/+9j0GmfawjCEu88Tqk7uAI9V6UbtlRLQsT2Paj7KpRr9Eexx/1nt9uyC0/PRdqZ6qso//5
-        331flFwFw5rYDxq1lD4s7YGntuImz8x8p2XDCS463SY8sQhksTBKudAp4pKnME8DpTbZ4fGAvbQxT
-        wafY442u8mSqR6x/cwniP7CEUq4fd8W+eVImWzP4xrptC52doj1jXiLwbdsJQSnWbw0nF1P7Xd8f/
-        wPYC4mSw==;
-Received: from 200-161-159-120.dsl.telesp.net.br ([200.161.159.120] helo=[192.168.1.60])
-        by fanzine2.igalia.com with esmtpsa 
-        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-        id 1ntEr0-00Gje9-7b; Mon, 23 May 2022 22:40:38 +0200
-Message-ID: <0dda86c0-3a54-8c70-d1e7-18bbb4d41bab@igalia.com>
-Date:   Mon, 23 May 2022 17:40:07 -0300
+        with ESMTP id S229441AbiEWXJW (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 23 May 2022 19:09:22 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1428D70369;
+        Mon, 23 May 2022 16:09:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A301E6156C;
+        Mon, 23 May 2022 23:09:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF7B6C385AA;
+        Mon, 23 May 2022 23:09:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1653347361;
+        bh=yOoMYHJ+lZpOBFkfuhqaQQmv3ej6+jMUsBvs1jyRRVo=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=PiBbmGDBY2uySOT3YH++Qq0COpTcPptclkj2+PYOTSoPFjPTVw5tUqu2qrUcT26MJ
+         JD0W4XCinFYng5fKm9UqGUzrXIIM7pekYaXUmHBuVVGzJG4doA3B7R9asg0/xBBCET
+         sUVbec+h+8Ag4pwdNBdIyBu1RX2zsh0JGbXVFO2IChvQl/a3M3WNSoTbH1u5NMH0Eg
+         6QYgtZS7iVcc/23mft9gP4tgKZAK+ZNUmakf6bTFOWvfjJmLQUMFISvwGkhdejFYla
+         wD8pKailN/NZL1uXpZs5f7xSRWkLfZ033xX6QW+XxFWB4dgR4vWraIoSGML5VYqSp+
+         enm7uDh5VKNHg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 8A35A5C032C; Mon, 23 May 2022 16:09:20 -0700 (PDT)
+Date:   Mon, 23 May 2022 16:09:20 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Zqiang <qiang1.zhang@intel.com>
+Cc:     frederic@kernel.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v2] rcu-tasks: Stop RCU Tasks scanning tasks which record
+ on dyntick-idle entry
+Message-ID: <20220523230920.GG1790663@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20220520084155.1745726-1-qiang1.zhang@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH 12/30] parisc: Replace regular spinlock with spin_trylock
- on panic path
-Content-Language: en-US
-To:     Helge Deller <deller@gmx.de>
-Cc:     linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
-        pmladek@suse.com, bhe@redhat.com, akpm@linux-foundation.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org,
-        linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-leds@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-um@lists.infradead.org,
-        linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org,
-        openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org,
-        sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org,
-        x86@kernel.org, kernel-dev@igalia.com, kernel@gpiccoli.net,
-        halves@canonical.com, fabiomirmar@gmail.com,
-        alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com,
-        arnd@arndb.de, bp@alien8.de, corbet@lwn.net,
-        d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com,
-        dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org,
-        mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com,
-        jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org,
-        luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com,
-        paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org,
-        senozhatsky@chromium.org, stern@rowland.harvard.edu,
-        tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com,
-        will@kernel.org,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
-References: <20220427224924.592546-1-gpiccoli@igalia.com>
- <20220427224924.592546-13-gpiccoli@igalia.com>
- <6a7c924a-54a9-c5ea-8a9d-3ea92987b436@gmx.de>
-From:   "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-In-Reply-To: <6a7c924a-54a9-c5ea-8a9d-3ea92987b436@gmx.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220520084155.1745726-1-qiang1.zhang@intel.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 28/04/2022 13:55, Helge Deller wrote:
-> [...]
-> You may add:
-> Acked-by: Helge Deller <deller@gmx.de> # parisc
+On Fri, May 20, 2022 at 04:41:55PM +0800, Zqiang wrote:
+> When the RCU Tasks scanning on-rq tasks, there is no need to scanning
+> tasks which record on dyntick-idle entry, at this time, these tasks are
+> not remain within an RCU Tasks read-side critical section.
 > 
-> Helge
+> This commit skip scanning tasks which record on dyntick-idle entry in
+> rcu_tasks_pertask().
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 
-Hi Helge, do you think would be possible to still pick this one for
-v5.19 or do you prefer to hold for the next release?
+You lost me with this one.  Doesn't the rcu_tasks_pertask() function
+already exclude the idle tasks that might possibly be running in
+dyntick-idle state in non-CONFIG_NO_HZ_FULL systems?
 
-I'm working on V2, so if it's merged for 5.19 I won't send it again.
-Thanks,
+What am I missing here?
 
+							Thanx, Paul
 
-Guilherme
+> ---
+>  v1->v2:
+>  fix build test ERROR due to CONFIG_TASKS_RCU=n
+> 
+>  kernel/rcu/tasks.h | 12 +++++++++---
+>  1 file changed, 9 insertions(+), 3 deletions(-)
+> 
+> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> index f6459343e4b6..7cb0f922478e 100644
+> --- a/kernel/rcu/tasks.h
+> +++ b/kernel/rcu/tasks.h
+> @@ -809,10 +809,17 @@ static void rcu_tasks_pregp_step(struct list_head *hop)
+>  	synchronize_rcu();
+>  }
+>  
+> +static bool task_is_on_dyntick_idle(struct task_struct *t)
+> +{
+> +	return IS_ENABLED(CONFIG_NO_HZ_FULL) && !is_idle_task(t) &&
+> +				t->rcu_tasks_idle_cpu >= 0;
+> +}
+> +
+>  /* Per-task initial processing. */
+>  static void rcu_tasks_pertask(struct task_struct *t, struct list_head *hop)
+>  {
+> -	if (t != current && READ_ONCE(t->on_rq) && !is_idle_task(t)) {
+> +	if (t != current && READ_ONCE(t->on_rq) && !is_idle_task(t) &&
+> +				!task_is_on_dyntick_idle(t)) {
+>  		get_task_struct(t);
+>  		t->rcu_tasks_nvcsw = READ_ONCE(t->nvcsw);
+>  		WRITE_ONCE(t->rcu_tasks_holdout, true);
+> @@ -842,8 +849,7 @@ static void check_holdout_task(struct task_struct *t,
+>  	if (!READ_ONCE(t->rcu_tasks_holdout) ||
+>  	    t->rcu_tasks_nvcsw != READ_ONCE(t->nvcsw) ||
+>  	    !READ_ONCE(t->on_rq) ||
+> -	    (IS_ENABLED(CONFIG_NO_HZ_FULL) &&
+> -	     !is_idle_task(t) && t->rcu_tasks_idle_cpu >= 0)) {
+> +	    task_is_on_dyntick_idle(t)) {
+>  		WRITE_ONCE(t->rcu_tasks_holdout, false);
+>  		list_del_init(&t->rcu_tasks_holdout_list);
+>  		put_task_struct(t);
+> -- 
+> 2.25.1
+> 
