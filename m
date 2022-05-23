@@ -2,97 +2,56 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F242C433F5
-	for <rcu@archiver.kernel.org>; Sat, 21 May 2022 06:56:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C1272C433EF
+	for <rcu@archiver.kernel.org>; Mon, 23 May 2022 08:05:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234525AbiEUG4b (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 21 May 2022 02:56:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39912 "EHLO
+        id S231604AbiEWIFR (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 23 May 2022 04:05:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229939AbiEUG4a (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 21 May 2022 02:56:30 -0400
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7177C5DBFB;
-        Fri, 20 May 2022 23:56:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1653116187; x=1684652187;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=3JboGVIBiDz+7ckicjuLV5se6lRR3eFp6LO8B17IW64=;
-  b=B7LGjbYurUbFTv4raVm9G4nsTk/uDhN3VhRGFnRF5GhnyWuFduItLJBP
-   8q+74cNauOjVEKivAGr0bhwVIuddOLsq0d7S7vjJBHwdQyVtuAyR1czHQ
-   eDoXuYquJAvl09r10zumzU9FAa/XTgqGKOynIpU9vs4C/QgQJrExEWi2j
-   V4g1kmzHpHJHGXCVXVXWLvunORs70C4845S9cAq2iteNdLDP3dmfpLgsm
-   qwTs27yhGDhp8hZ1h9LaD6m0FTT1HQySXu56f0IgCbb3W7RFBBKyix+eY
-   JhLBPkY52Z0RJcZ3RddqTKvPAiPFkrCnN+YREAkwIcSCwAuNs+3yhxrWO
-   g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10353"; a="253332285"
-X-IronPort-AV: E=Sophos;i="5.91,240,1647327600"; 
-   d="scan'208";a="253332285"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2022 23:56:27 -0700
-X-IronPort-AV: E=Sophos;i="5.91,240,1647327600"; 
-   d="scan'208";a="743823241"
-Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.125])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2022 23:56:25 -0700
-From:   Zqiang <qiang1.zhang@intel.com>
-To:     paulmck@kernel.org, frederic@kernel.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] rcu/rcuscale: Fix using smp_processor_id() in preemptible warnings
-Date:   Sat, 21 May 2022 14:56:26 +0800
-Message-Id: <20220521065626.1815175-1-qiang1.zhang@intel.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S231552AbiEWIFN (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 23 May 2022 04:05:13 -0400
+X-Greylist: delayed 598 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 23 May 2022 01:05:10 PDT
+Received: from mail.companydia.pl (mail.companydia.pl [162.19.155.128])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 278F313E06
+        for <rcu@vger.kernel.org>; Mon, 23 May 2022 01:05:09 -0700 (PDT)
+Received: by mail.companydia.pl (Postfix, from userid 1002)
+        id 3E0B22364C; Mon, 23 May 2022 07:52:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=companydia.pl;
+        s=mail; t=1653292379;
+        bh=ChRcLNpIfKnVgp03/tSyWuRw1tWSTk/OEiEnuZMWs58=;
+        h=Date:From:To:Subject:From;
+        b=jYQgrydDsGl0oYw25GAHuWszdS1ryeKLReXdU+sI00zybxdOLOHy8ZuK09vtoRnPg
+         PqdP83ksrFEK4o9Arakt2p5+77TzswcE6PHBuGUHoDF0Ob0v1wL2hGwypfAzDaX+ZC
+         Hs58hZS1zKnDCQ0c/QOYyGjj/6LcIfZ55US6V+UxQp8U5TJsg2TyUE2cBZQjCSr8rf
+         2v0oOK7AndC75mXG0wHNtsLKGuttaWjEaEfjhrtGmAtFHnaN5TviF9NvzWfNqQJ3WV
+         hw2Xcp7j5nDPmLYtdaa6GDiT1dk/vsbdNo1RJOf2I8R7buZP38mhMLPY2VA8USKf2C
+         pFA8wjZ7HGQWQ==
+Received: by mail.companydia.pl for <rcu@vger.kernel.org>; Mon, 23 May 2022 07:51:12 GMT
+Message-ID: <20220523064500-0.1.w.fjom.0.wjhkebepm4@companydia.pl>
+Date:   Mon, 23 May 2022 07:51:12 GMT
+From:   "Norbert Karecki" <norbert.karecki@companydia.pl>
+To:     <rcu@vger.kernel.org>
+Subject: Wycena paneli fotowoltaicznych
+X-Mailer: mail.companydia.pl
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-BUG: using smp_processor_id() in preemptible [00000000] code: rcu_scale_write/69
-CPU: 0 PID: 66 Comm: rcu_scale_write Not tainted 5.18.0-rc7-next-20220517-yoctodev-standard+
-caller is debug_smp_processor_id+0x17/0x20
-Call Trace:
-<TASK>
-dump_stack_lvl+0x49/0x5e
-dump_stack+0x10/0x12
-check_preemption_disabled+0xdf/0xf0
-debug_smp_processor_id+0x17/0x20
-rcu_scale_writer+0x2b5/0x580
-kthread+0x177/0x1b0
-ret_from_fork+0x22/0x30
-</TASK>
+Dzie=C5=84 dobry,
 
-Reproduction method:
-runqemu kvm slirp nographic qemuparams="-m 4096 -smp 8" bootparams="isolcpus=2,3
-nohz_full=2,3 rcu_nocbs=2,3 rcutree.dump_tree=1 rcuscale.shutdown=false
-rcuscale.gp_async=true" -d
+dostrzegam mo=C5=BCliwo=C5=9B=C4=87 wsp=C3=B3=C5=82pracy z Pa=C5=84stwa f=
+irm=C4=85.
 
-when the CONFIG_DEBUG_PREEMPT is enabled, this_cpu_ptr() will call
-debug_smp_processor_id() get current CPU number, this warning is triggered by
-is_percpu_thread() in debug_smp_processor_id(), the is_percpu_thread() need to
-check whether 'current->nr_cpus_allowed  == 1' and 'current->flags & PF_NO_SETAFFINITY',
-invoke set_cpus_allowed_ptr() only set kthreads->nr_cpus_allowed, but the
-PF_NO_SETAFFINITY is not set to kthread->flags, so add PF_NO_SETAFFINITY flags
-setting.
+=C5=9Awiadczymy kompleksow=C4=85 obs=C5=82ug=C4=99 inwestycji w fotowolta=
+ik=C4=99, kt=C3=B3ra obni=C5=BCa koszty energii elektrycznej nawet o 90%.
 
-Signed-off-by: Zqiang <qiang1.zhang@intel.com>
----
- kernel/rcu/rcuscale.c | 1 +
- 1 file changed, 1 insertion(+)
+Czy s=C4=85 Pa=C5=84stwo zainteresowani weryfikacj=C4=85 wst=C4=99pnych p=
+ropozycji?
 
-diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
-index 277a5bfb37d4..3ef02d4a8108 100644
---- a/kernel/rcu/rcuscale.c
-+++ b/kernel/rcu/rcuscale.c
-@@ -419,6 +419,7 @@ rcu_scale_writer(void *arg)
- 	VERBOSE_SCALEOUT_STRING("rcu_scale_writer task started");
- 	WARN_ON(!wdpp);
- 	set_cpus_allowed_ptr(current, cpumask_of(me % nr_cpu_ids));
-+	current->flags |= PF_NO_SETAFFINITY;
- 	sched_set_fifo_low(current);
- 
- 	if (holdoff)
--- 
-2.25.1
 
+Pozdrawiam,
+Norbert Karecki
