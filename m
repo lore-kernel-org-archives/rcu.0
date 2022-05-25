@@ -2,40 +2,42 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4ABF9C433EF
-	for <rcu@archiver.kernel.org>; Wed, 25 May 2022 22:19:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A27B8C433F5
+	for <rcu@archiver.kernel.org>; Wed, 25 May 2022 22:42:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344813AbiEYWTY (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 25 May 2022 18:19:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51826 "EHLO
+        id S235621AbiEYWm5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 25 May 2022 18:42:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343775AbiEYWTV (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 25 May 2022 18:19:21 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2119D674F2;
-        Wed, 25 May 2022 15:19:21 -0700 (PDT)
+        with ESMTP id S234299AbiEYWm4 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 25 May 2022 18:42:56 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEC39A3098;
+        Wed, 25 May 2022 15:42:55 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BAB1D60B2E;
-        Wed, 25 May 2022 22:19:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0C5FC385B8;
-        Wed, 25 May 2022 22:19:19 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6A5876104E;
+        Wed, 25 May 2022 22:42:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2B81C385B8;
+        Wed, 25 May 2022 22:42:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1653517160;
-        bh=dDu5LbOPsRS0RP77g6kjOPiBSKhhet1MBKntZN88yzA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XsdD6BF6uI4o1xvv7lA0zOO7yvS08dWbqSTLCJzhbrw84rLtJp5VFTPfzPT5weGXj
-         83d8YB1AqzugdroVvSOgYVr8pA2eZu5QBrcWIuro9Q24MPmvwOAZjEOhi5rMd6XLDZ
-         MHMFkNqxCFGRYfhIIH+ept62P647AQPbvCkpEsJo58f8hj1dHNQba39swZ8NNEg4Fx
-         H0D5IOSUsoUF6lZ3kBg7dii0pcZVFV80LNk81j5Ck8q4bjFfB8lxVA78M3U5o1xGWv
-         Xr97cIV1PwxDCiwYOS2WxexBi4DGxtA4wsEQkBH6T8mYvYfzINowO8tLjuMEHMKpiY
-         h0+mInifhzO0Q==
-Date:   Thu, 26 May 2022 00:19:17 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Tejun Heo <tj@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
+        s=k20201202; t=1653518574;
+        bh=Y1+kYhrO5yiZyWR2P6v0Eoi5ETZCFyNeNeSvZUzw6OY=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=kz1P+f0ND6n7Lx9X5G/TlWlUke8Rv7aKdqnTEmQeq87RpZobKqTKv3/XMQii6ac5U
+         2SqyqDAU6sPk+FDzkxfnFZtUyCA5FqqGsCRKGNlMvaplL1Mk/zJrz2mUP++NXWSyut
+         toAeWMBLc/tI5eC7QVBkKKx5dkTqwpRMVX56xcmFMdrkdjdaIcoK3zu86A9Ym51oYE
+         ZbadWSqLHSobrGOKFgAiemVxHtBG5AWfAkltt3O6Zz0kKMT+Hg0QNKfOHtTrh771Xy
+         Z4eXaMnV7myCd1ZK+3MkjBM7t7W6vphcUOnpe2Wyfgq+hYQdC7vqYG8TIHT40p+eJB
+         Z4reuuLq3D8DQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 634265C0378; Wed, 25 May 2022 15:42:54 -0700 (PDT)
+Date:   Wed, 25 May 2022 15:42:54 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Tejun Heo <tj@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
         Paul Gortmaker <paul.gortmaker@windriver.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Marcelo Tosatti <mtosatti@redhat.com>,
@@ -47,30 +49,38 @@ Cc:     Tejun Heo <tj@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
         rcu@vger.kernel.org
 Subject: Re: [PATCH 1/4] rcu/nocb: Pass a cpumask instead of a single CPU to
  offload/deoffload
-Message-ID: <20220525221917.GA1151462@lothringen>
+Message-ID: <20220525224254.GF1790663@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 References: <20220525221055.1152307-1-frederic@kernel.org>
  <20220525221055.1152307-2-frederic@kernel.org>
+ <20220525221917.GA1151462@lothringen>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220525221055.1152307-2-frederic@kernel.org>
+In-Reply-To: <20220525221917.GA1151462@lothringen>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, May 26, 2022 at 12:10:52AM +0200, Frederic Weisbecker wrote:
-> @@ -1117,12 +1111,6 @@ static long rcu_nocb_rdp_offload(void *arg)
->  	struct rcu_data *rdp_gp = rdp->nocb_gp_rdp;
->  
->  	WARN_ON_ONCE(rdp->cpu != raw_smp_processor_id());
-> -	/*
-> -	 * For now we only support re-offload, ie: the rdp must have been
-> -	 * offloaded on boot first.
-> -	 */
-> -	if (!rdp->nocb_gp_rdp)
-> -		return -EINVAL;
->  
->  	if (WARN_ON_ONCE(!rdp_gp->nocb_gp_kthread))
->  		return -EINVAL;
+On Thu, May 26, 2022 at 12:19:17AM +0200, Frederic Weisbecker wrote:
+> On Thu, May 26, 2022 at 12:10:52AM +0200, Frederic Weisbecker wrote:
+> > @@ -1117,12 +1111,6 @@ static long rcu_nocb_rdp_offload(void *arg)
+> >  	struct rcu_data *rdp_gp = rdp->nocb_gp_rdp;
+> >  
+> >  	WARN_ON_ONCE(rdp->cpu != raw_smp_processor_id());
+> > -	/*
+> > -	 * For now we only support re-offload, ie: the rdp must have been
+> > -	 * offloaded on boot first.
+> > -	 */
+> > -	if (!rdp->nocb_gp_rdp)
+> > -		return -EINVAL;
+> >  
+> >  	if (WARN_ON_ONCE(!rdp_gp->nocb_gp_kthread))
+> >  		return -EINVAL;
+> 
+> And why did I remove this critical check? I have no answer...
 
-And why did I remove this critical check? I have no answer...
+Me, I was going to ask if rcutorture should (de)offload multiple
+CPUs in one go...  ;-)
+
+							Thanx, Paul
