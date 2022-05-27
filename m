@@ -2,56 +2,45 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B138EC433EF
-	for <rcu@archiver.kernel.org>; Fri, 27 May 2022 08:45:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DDA7DC433F5
+	for <rcu@archiver.kernel.org>; Fri, 27 May 2022 12:58:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231388AbiE0Ipc (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 27 May 2022 04:45:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41212 "EHLO
+        id S1350663AbiE0M6z (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 27 May 2022 08:58:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349898AbiE0IpF (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 27 May 2022 04:45:05 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64BCE59B9D;
-        Fri, 27 May 2022 01:45:03 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id o9-20020a17090a0a0900b001df3fc52ea7so6545389pjo.3;
-        Fri, 27 May 2022 01:45:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZkWjBvBkp3MoBTy8a44pxEDJROJPPMI6sXaDAZ5cZlw=;
-        b=YoCMcidPaedsig1GXzyyoE7gpzcgzvIWctYQ2AnDmiE/BbnD7KO6EYvvtdCBUF/KB7
-         wcltN1/deBwOsbcIN4K2ovPD5/ajIij3z/kXxj3vnquuN1bA/sBjN6Iw9UF6aJZSLewk
-         j40BsK2lJfFpFX4Mt/wUeuJRVYJZwex1Cpv+7RLr4NaC6PfYkUQD2sAbQc3ErcasJrKD
-         mUrpQHcopSBa6t01z75r2oY9yvGD2Q0ZTogGwlHFiICixwdALAS8HxkY+e9R92iYiyWD
-         ni1prJxJUZ2mrw6HpQxMqdWRM+91HXudVnpj9vkGbSoieNiZMaHc9PO5wx8RyOgdRiSV
-         XEew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=ZkWjBvBkp3MoBTy8a44pxEDJROJPPMI6sXaDAZ5cZlw=;
-        b=gsnVbclrNCeOEUrxfFiSIM76Ob92SBGZOriFjJdxw4u4K03QB1byoTjb80JgRVFYsU
-         //wlWaXnyL7BnLuQbZIF3BWQy2rd/rpmzhZsQDOMQNMmpE+S3e/ZkquBwogqqq0cIrcW
-         FooP5MDWsqhWKvZen/1KlyEihWlrLx6L/XDo9Kq4UWvIJsjlBBmIpZ4XU1KZvuxIWGsy
-         1Vat6rV4W91OkHVKFGIXFuHdWYPYgC5t4IB5RrQEiURoPW0a5v9BZKNCaL5ILXJ+x6ec
-         zX7VPd7J9M2MSrN3RddFwxl4asahn6NhLY5rlWsS0c9wpwvm4+pL8/2IAxQ9nHSBM1f7
-         0Blg==
-X-Gm-Message-State: AOAM530JOYQRAF7C23S/c+0x5R357EmHh0bMKYxtKbnrciylba0NQapX
-        QGTWr+5i9CgvtOAWfrqh6ec=
-X-Google-Smtp-Source: ABdhPJxlCIR2YsBdR8OPEoM9FxLLP69+0yBhyaohRPq+NYW/TldFs1Tp3Qiau3Jr4/mxpwRkH5OjhQ==
-X-Received: by 2002:a17:90b:4ace:b0:1df:cb33:5e7e with SMTP id mh14-20020a17090b4ace00b001dfcb335e7emr7083067pjb.5.1653641102713;
-        Fri, 27 May 2022 01:45:02 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::4:ac0e])
-        by smtp.gmail.com with ESMTPSA id n18-20020aa79852000000b0050dc7628195sm2935711pfq.111.2022.05.27.01.45.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 May 2022 01:45:02 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 26 May 2022 22:45:00 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Juri Lelli <juri.lelli@redhat.com>
-Cc:     Waiman Long <longman@redhat.com>,
+        with ESMTP id S1348628AbiE0M6y (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 27 May 2022 08:58:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1A0F335270
+        for <rcu@vger.kernel.org>; Fri, 27 May 2022 05:58:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1653656332;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zdUWMIkaVQo5/ztJhdqUq/oyKx8W5hvof7Mbhxo94Xo=;
+        b=J0r4sKAOGQQkiuIn/EvhbgFnpXw0If+p0G1zAmYaF2yWSqwl6ffLqyb8yCfHnuhwWi5DgY
+        z3su95pwvfWrGXoMNK6TTisOgUYXjE8cxGJVwX8lxqPb0AcIp7uALUqiM8+BpnffDo4Fss
+        VtTmMWv7QAFL8atD9Yz7vRCFi61pPUA=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-328-KF64FyXdNgWzknneb9PXnQ-1; Fri, 27 May 2022 08:58:48 -0400
+X-MC-Unique: KF64FyXdNgWzknneb9PXnQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5CDB880B71A;
+        Fri, 27 May 2022 12:58:48 +0000 (UTC)
+Received: from pauld.bos.csb (dhcp-17-51.bos.redhat.com [10.18.17.51])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 058C340EC002;
+        Fri, 27 May 2022 12:58:46 +0000 (UTC)
+Date:   Fri, 27 May 2022 08:58:45 -0400
+From:   Phil Auld <pauld@redhat.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Juri Lelli <juri.lelli@redhat.com>,
+        Waiman Long <longman@redhat.com>,
         Frederic Weisbecker <frederic@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -59,14 +48,13 @@ Cc:     Waiman Long <longman@redhat.com>,
         Paul Gortmaker <paul.gortmaker@windriver.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Marcelo Tosatti <mtosatti@redhat.com>,
-        Phil Auld <pauld@redhat.com>,
         Zefan Li <lizefan.x@bytedance.com>,
         Daniel Bristot de Oliveira <bristot@kernel.org>,
         Nicolas Saenz Julienne <nsaenz@kernel.org>,
         rcu@vger.kernel.org
 Subject: Re: [RFC PATCH 4/4] cpuset: Support RCU-NOCB toggle on v2 root
  partitions
-Message-ID: <YpCPjP2jJgLzCo1C@slm.duckdns.org>
+Message-ID: <20220527125844.GA26124@pauld.bos.csb>
 References: <20220525221055.1152307-1-frederic@kernel.org>
  <20220525221055.1152307-5-frederic@kernel.org>
  <Yo/FGcG+uiBh88sT@slm.duckdns.org>
@@ -75,37 +63,69 @@ References: <20220525221055.1152307-1-frederic@kernel.org>
  <9e44bb00-955a-dbc6-a863-be649e0c701f@redhat.com>
  <YpAdSW8JXVPOoNJl@slm.duckdns.org>
  <20220527083018.n43nc73vuuzm5ixo@localhost.localdomain>
+ <YpCPjP2jJgLzCo1C@slm.duckdns.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220527083018.n43nc73vuuzm5ixo@localhost.localdomain>
+In-Reply-To: <YpCPjP2jJgLzCo1C@slm.duckdns.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Scanned-By: MIMEDefang 2.84 on 10.11.54.2
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello,
+Hi,
 
-On Fri, May 27, 2022 at 10:30:18AM +0200, Juri Lelli wrote:
-> FWIW, I was under the impression that this would nicely fit along the
-> side of other feaures towards implenting dynamic isolation of CPUs (say
-> https://lore.kernel.org/lkml/20220510153413.400020-1-longman@redhat.com/
-> for example). Wouldn't be awkward to have to poke different places to
-> achieve isolation at runtime?
+On Thu, May 26, 2022 at 10:45:00PM -1000 Tejun Heo wrote:
+> Hello,
+> 
+> On Fri, May 27, 2022 at 10:30:18AM +0200, Juri Lelli wrote:
+> > FWIW, I was under the impression that this would nicely fit along the
+> > side of other feaures towards implenting dynamic isolation of CPUs (say
+> > https://lore.kernel.org/lkml/20220510153413.400020-1-longman@redhat.com/
+> > for example). Wouldn't be awkward to have to poke different places to
+> > achieve isolation at runtime?
+> 
+> So, it were just being part of the isolated domain thing, it would make
+> sense, but as a separate flag which isn't hierarchical, it's weird to put it
+> there.
 
-So, it were just being part of the isolated domain thing, it would make
-sense, but as a separate flag which isn't hierarchical, it's weird to put it
-there.
+The way I see it is more that the "isolated domain thing" is one part of
+this whole dynamic isolation thing and is just one flag among many (most
+still on the drawing board, but planned). It may be that Waiman's "isolated" 
+should be renamed "no_load_balance" or something.
 
-> Also, I wonder if a proc/sys interface might be problematic for certain
-> middleware that is substantially based on using cgroups. I'll try to ask
-> around. :)
+Part of this is making cpu isolation more granular. 
 
-There is a downside to making a feature a part of cpuset in that it makes
-cgroup usage mandatory. This is fine for something which benefits from
-hierarchical organization but it is weird to require building cgroup
-hierarchy for straight-forward system-wide features.
+> 
+> > Also, I wonder if a proc/sys interface might be problematic for certain
+> > middleware that is substantially based on using cgroups. I'll try to ask
+> > around. :)
+> 
+> There is a downside to making a feature a part of cpuset in that it makes
+> cgroup usage mandatory. This is fine for something which benefits from
+> hierarchical organization but it is weird to require building cgroup
+> hierarchy for straight-forward system-wide features.
+> 
 
-Thanks.
+That ship may have sailed when SD_LOAD_BALANCE was removed, which is part
+of what Waiman's feature addresses.  That is, now in order to get control
+over the system-wide feature of which CPUs get scheduler load balanced you 
+need to use cpusets. 
+
+
+My 3 cents anyway  (inflation ;)
+
+
+Cheers,
+Phil
+
+
+> Thanks.
+> 
+> -- 
+> tejun
+> 
 
 -- 
-tejun
+
