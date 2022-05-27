@@ -2,160 +2,72 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 29ABDC433F5
-	for <rcu@archiver.kernel.org>; Fri, 27 May 2022 15:24:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E73B2C43217
+	for <rcu@archiver.kernel.org>; Fri, 27 May 2022 17:10:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345027AbiE0PYH (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 27 May 2022 11:24:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55898 "EHLO
+        id S1354222AbiE0RKE (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 27 May 2022 13:10:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234139AbiE0PYG (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 27 May 2022 11:24:06 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7219958E46
-        for <rcu@vger.kernel.org>; Fri, 27 May 2022 08:24:05 -0700 (PDT)
+        with ESMTP id S1350770AbiE0RKD (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 27 May 2022 13:10:03 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DD6413FD52;
+        Fri, 27 May 2022 10:10:03 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EBCA461D51
-        for <rcu@vger.kernel.org>; Fri, 27 May 2022 15:24:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 568CAC385A9;
-        Fri, 27 May 2022 15:24:04 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 74A9C61E15;
+        Fri, 27 May 2022 17:10:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5CDEC385A9;
+        Fri, 27 May 2022 17:10:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1653665044;
-        bh=4I1NgsWfPnVShFAgnG7KKAutp3r5b+VuYArYsLRa+AY=;
+        s=k20201202; t=1653671401;
+        bh=1hGnT3uuFBFv2HsR/5cfZQxn6XGgLam5DB8waL5477Y=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=c8fjdlvPcbxH1t0Zt/+vi15aCOIt1TRo4dfM9Go5pJ/k96rZ9IBOZ3/BGEZg4mTMH
-         jEU7kuAgMcTbNjD+UxvOt3iIWJ98yj77KMdAAMX4vYf6t/oHT7VDksnZVCh1c438jk
-         mb5K6xMfXR0acnrGwHMVl57nFK06qFL6/XOLaBtcfV9mhR0MpjODy8mSD0hpYQ3g2G
-         n2uS+imJfX4JddhIo0d71F8VFwbRLMMPJ9Zv+IIWIUHiOEu01oE3fCKTYY+Jse/wLG
-         QBLO+JABOjRKir46/WR66RAOiaTz3F3+6SHMCWuEuNsJIcMhas+EaTvENiR8tnAZ82
-         dlyjnQxtf+YRA==
+        b=i2DTwlEML0hGS/pT9FCGGjUt97z18++fp5TlXsGf46lW8lQ3X+thxXAbhAF/lou/v
+         ftHs1Qfi7vCIBZLz1qW1/oy9nKlptGql150ChSd5+vGZoLjy3sID02uqYkaO06raLW
+         fboYbVP7xqft1715EMB5Afl2nin9DnQuO6oowTH+ENvO6PYOu7mKTYZYAPnLDO4aSm
+         rzaPtL5y07NGbYmNmq5GegKxkplFnaGFhVVq6zMlGsAnL36/KQUU7FUCMbKx0dQG/l
+         gXRd+wegW3Iuy3jzkINHlGFfLYv2viT9qtUknWisi03woIynjjej4VBQHqnkNz21r4
+         q8Ja+QjJFvHgg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id E95DD5C017C; Fri, 27 May 2022 08:24:03 -0700 (PDT)
-Date:   Fri, 27 May 2022 08:24:03 -0700
+        id 441715C017C; Fri, 27 May 2022 10:10:01 -0700 (PDT)
+Date:   Fri, 27 May 2022 10:10:01 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Johannes Berg <johannes@sipsolutions.net>, rcu@vger.kernel.org,
-        kasan-dev@googlegroups.com, Johannes Berg <johannes.berg@intel.com>
-Subject: Re: [PATCH] rcu: tiny: record kvfree_call_rcu() call stack for KASAN
-Message-ID: <20220527152403.GS1790663@paulmck-ThinkPad-P17-Gen-1>
+To:     Zqiang <qiang1.zhang@intel.com>
+Cc:     frederic@kernel.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu: Cleanup RCU urgency state for offline CPU
+Message-ID: <20220527171001.GT1790663@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20220527170743.04c21d235467.I1f79da0f90fb9b557ec34932136c656bc64b8fbf@changeid>
- <CACT4Y+bm++gFi8QYNk41g_ihZuvrMO5O2T_3E7r0h+_PRfShuQ@mail.gmail.com>
+References: <20220526015512.2218046-1-qiang1.zhang@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACT4Y+bm++gFi8QYNk41g_ihZuvrMO5O2T_3E7r0h+_PRfShuQ@mail.gmail.com>
+In-Reply-To: <20220526015512.2218046-1-qiang1.zhang@intel.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, May 27, 2022 at 05:13:18PM +0200, Dmitry Vyukov wrote:
-> On Fri, 27 May 2022 at 17:07, Johannes Berg <johannes@sipsolutions.net> wrote:
-> >
-> > From: Johannes Berg <johannes.berg@intel.com>
-> >
-> > When running KASAN with Tiny RCU (e.g. under ARCH=um, where
-> > a working KASAN patch is now available), we don't get any
-> > information on the original kfree_rcu() (or similar) caller
-> > when a problem is reported, as Tiny RCU doesn't record this.
-> >
-> > Add the recording, which required pulling kvfree_call_rcu()
-> > out of line for the KASAN case since the recording function
-> > (kasan_record_aux_stack_noalloc) is neither exported, nor
-> > can we include kasan.h into rcutiny.h.
-> >
-> > without KASAN, the patch has no size impact (ARCH=um kernel):
-> >     text       data         bss         dec        hex    filename
-> >  6151515    4423154    33148520    43723189    29b29b5    linux
-> >  6151515    4423154    33148520    43723189    29b29b5    linux + patch
-> >
-> > with KASAN, the impact on my build was minimal:
-> >     text       data         bss         dec        hex    filename
-> > 13915539    7388050    33282304    54585893    340ea25    linux
-> > 13911266    7392114    33282304    54585684    340e954    linux + patch
-> >    -4273      +4064         +-0        -209
-> >
-> > Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+On Thu, May 26, 2022 at 09:55:12AM +0800, Zqiang wrote:
+> When an RCU grace period starts and at this time the CPU is in
+> the process of going offline, if the RCU gp-fqs occurs during the
+> time period when the CPU has passed the stop-machine but has not
+> yet entered the idle loop, and this CPU have not report quiescent
+> state yet, its urgent flags maybe is set, for example due to cbovld
+> is true, but this CPUs rcu urgent flags is not cleanup in rcu_report_dead()
+> when report qs. however for CPU that have been report qs, its rcu
+> urgent flags should cleanup, so add rcu_disable_urgency_upon_qs()
+> in rcu_report_dead() when CPU report qs.
 > 
-> >From KASAN perspective:
-> 
-> Acked-by: Dmitry Vyukov <dvyukov@google.com>
-> 
-> What tree should it go into? mm? rcu? +Paul
+> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 
-If Johannes is johill on IRC, I already agreed to take it.  If not,
-we might have dueling patches.
+Good catch, thank you!
 
-Ah, "Berg" -> "Hill".  I never would have figured that out without
-this hint.  ;-)
+I have queued this on -rcu, and it will become visible on kernel.org
+on my next rebase.  Assuming good test results and no objections from
+reviews, I will submit this not to the current merge window, but to
+the next merge window (v5.20).
 
 							Thanx, Paul
-
-> > ---
-> >  include/linux/rcutiny.h | 11 ++++++++++-
-> >  kernel/rcu/tiny.c       | 14 ++++++++++++++
-> >  2 files changed, 24 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
-> > index 5fed476f977f..d84e13f2c384 100644
-> > --- a/include/linux/rcutiny.h
-> > +++ b/include/linux/rcutiny.h
-> > @@ -38,7 +38,7 @@ static inline void synchronize_rcu_expedited(void)
-> >   */
-> >  extern void kvfree(const void *addr);
-> >
-> > -static inline void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
-> > +static inline void __kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
-> >  {
-> >         if (head) {
-> >                 call_rcu(head, func);
-> > @@ -51,6 +51,15 @@ static inline void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
-> >         kvfree((void *) func);
-> >  }
-> >
-> > +#ifdef CONFIG_KASAN_GENERIC
-> > +void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func);
-> > +#else
-> > +static inline void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
-> > +{
-> > +       __kvfree_call_rcu(head, func);
-> > +}
-> > +#endif
-> > +
-> >  void rcu_qs(void);
-> >
-> >  static inline void rcu_softirq_qs(void)
-> > diff --git a/kernel/rcu/tiny.c b/kernel/rcu/tiny.c
-> > index 340b3f8b090d..58ff3721d975 100644
-> > --- a/kernel/rcu/tiny.c
-> > +++ b/kernel/rcu/tiny.c
-> > @@ -217,6 +217,20 @@ bool poll_state_synchronize_rcu(unsigned long oldstate)
-> >  }
-> >  EXPORT_SYMBOL_GPL(poll_state_synchronize_rcu);
-> >
-> > +#ifdef CONFIG_KASAN_GENERIC
-> > +void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
-> > +{
-> > +       if (head) {
-> > +               void *ptr = (void *) head - (unsigned long) func;
-> > +
-> > +               kasan_record_aux_stack_noalloc(ptr);
-> > +       }
-> > +
-> > +       __kvfree_call_rcu(head, func);
-> > +}
-> > +EXPORT_SYMBOL_GPL(kvfree_call_rcu);
-> > +#endif
-> > +
-> >  void __init rcu_init(void)
-> >  {
-> >         open_softirq(RCU_SOFTIRQ, rcu_process_callbacks);
-> > --
-> > 2.36.1
-> >
-> > --
-> > You received this message because you are subscribed to the Google Groups "kasan-dev" group.
-> > To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
-> > To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/20220527170743.04c21d235467.I1f79da0f90fb9b557ec34932136c656bc64b8fbf%40changeid.
