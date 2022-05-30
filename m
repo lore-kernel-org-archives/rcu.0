@@ -2,45 +2,45 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B9047C433FE
-	for <rcu@archiver.kernel.org>; Mon, 30 May 2022 13:27:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7000FC433FE
+	for <rcu@archiver.kernel.org>; Mon, 30 May 2022 13:27:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236857AbiE3N1I (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 30 May 2022 09:27:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58348 "EHLO
+        id S236590AbiE3N1N (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 30 May 2022 09:27:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236851AbiE3N0N (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 30 May 2022 09:26:13 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53DF58217F;
-        Mon, 30 May 2022 06:25:36 -0700 (PDT)
+        with ESMTP id S236710AbiE3N0L (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 30 May 2022 09:26:11 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60ED88723C;
+        Mon, 30 May 2022 06:25:32 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id C710DB80DAB;
-        Mon, 30 May 2022 13:25:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8AD6DC36AEC;
-        Mon, 30 May 2022 13:25:29 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 476BDB80D84;
+        Mon, 30 May 2022 13:25:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2565BC3411E;
+        Mon, 30 May 2022 13:25:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1653917130;
-        bh=bTy7eSiSqDvutHsXgMZcx2/dEoVMvfG7QbEGLxajA5Y=;
+        s=k20201202; t=1653917129;
+        bh=SCDCIZmqB3nm/ipXO8beYFU6tiAVwY/0EnmeQDXTIbY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=joUIRrshK4hT5vfKUNob8joJvw4KzJqDH4PD5jyYw9BMPaW/kNg8HUN3+oxHkr4h1
-         nBsmSsnDKGdc7Y+eC5RH+OljU9RvF5y6PXZQoChZyjGRXx12KRkUi50QFNueUuAQws
-         RkrHYfArOO5PUCG06o7mH4DHkAO+KYv96dsHQqE8DscPJSU1Okpo7gDe3b8EV+N4mH
-         Ri46BfzaEQb40oEkQk75giFlyeRkosDPvLOV6C816PTaRBK2/bol98YjBLTsXdEQQU
-         qzA6NebG9yxvpq2bMp0o6cOz7Or/GzB8K8ux/D4WQix9ZWhSO0HroT0AN5ifY4Z/fX
-         rX4GPICJxR9ug==
+        b=AaFFNOdAwxil1BT47JB4/3xHO+fSbGzXsaRLJur9grJ+NFQd50Kn1muSvt8iGyt7O
+         fW+sBQEdXvIZ2A1MyJ+eXrxoc7hFGE2KppwJSL4isU9lDX13rxn0gpayAgWXSZ0axY
+         Y4WgwR5kVdfuxmwzM9h5rwJq6MfibvDqGW9j7yLFvRVya4nXWCD331zPZhrgczkLDo
+         g8ETxg4SnK+Ls9tNHS39BCio/avr2r7BIf1NVuutgDrFQWZAJXlyp+B70Z3s5xCprT
+         bmMy3riKdCn90tGNrTnaIHp1NJmnXrAtnojJWxy/ji3uqcl986T6wPsovk6olKnGRN
+         31caF2Ly0dl7A==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
         Sasha Levin <sashal@kernel.org>, frederic@kernel.org,
         quic_neeraju@quicinc.com, josh@joshtriplett.org,
         rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.18 026/159] rcu: Make TASKS_RUDE_RCU select IRQ_WORK
-Date:   Mon, 30 May 2022 09:22:11 -0400
-Message-Id: <20220530132425.1929512-26-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.18 025/159] rcu-tasks: Handle sparse cpu_possible_mask in rcu_tasks_invoke_cbs()
+Date:   Mon, 30 May 2022 09:22:10 -0400
+Message-Id: <20220530132425.1929512-25-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220530132425.1929512-1-sashal@kernel.org>
 References: <20220530132425.1929512-1-sashal@kernel.org>
@@ -54,31 +54,39 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-[ Upstream commit 46e861be589881e0905b9ade3d8439883858721c ]
+[ Upstream commit ab2756ea6b74987849b44ad0e33c3cfec159033b ]
 
-The TASKS_RUDE_RCU does not select IRQ_WORK, which can result in build
-failures for kernels that do not otherwise select IRQ_WORK.  This commit
-therefore causes the TASKS_RUDE_RCU Kconfig option to select IRQ_WORK.
+If the cpu_possible_mask is sparse (for example, if bits are set only for
+CPUs 0, 4, 8, ...), then rcu_tasks_invoke_cbs() will access per-CPU data
+for a CPU not in cpu_possible_mask.  It makes these accesses while doing
+a workqueue-based binary search for non-empty callback lists.  Although
+this search must pass through CPUs not represented in cpu_possible_mask,
+it has no need to check the callback list for such CPUs.
 
-Reported-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+This commit therefore changes the rcu_tasks_invoke_cbs() function's
+binary search so as to only check callback lists for CPUs present in
+cpu_possible_mask.
+
+Reported-by: Eric Dumazet <edumazet@google.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/rcu/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/rcu/tasks.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
-index bf8e341e75b4..f559870fbf8b 100644
---- a/kernel/rcu/Kconfig
-+++ b/kernel/rcu/Kconfig
-@@ -86,6 +86,7 @@ config TASKS_RCU
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index b43320b149d2..00ff0896fb00 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -460,7 +460,7 @@ static void rcu_tasks_invoke_cbs(struct rcu_tasks *rtp, struct rcu_tasks_percpu
+ 		}
+ 	}
  
- config TASKS_RUDE_RCU
- 	def_bool 0
-+	select IRQ_WORK
- 	help
- 	  This option enables a task-based RCU implementation that uses
- 	  only context switch (including preemption) and user-mode
+-	if (rcu_segcblist_empty(&rtpcp->cblist))
++	if (rcu_segcblist_empty(&rtpcp->cblist) || !cpu_possible(cpu))
+ 		return;
+ 	raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
+ 	rcu_segcblist_advance(&rtpcp->cblist, rcu_seq_current(&rtp->tasks_gp_seq));
 -- 
 2.35.1
 
