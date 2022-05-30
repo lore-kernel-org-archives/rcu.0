@@ -2,62 +2,43 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1292BC433F5
-	for <rcu@archiver.kernel.org>; Mon, 30 May 2022 15:14:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24D30C433F5
+	for <rcu@archiver.kernel.org>; Mon, 30 May 2022 15:27:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238662AbiE3POb (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 30 May 2022 11:14:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40336 "EHLO
+        id S236428AbiE3P1f (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 30 May 2022 11:27:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239018AbiE3POM (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 30 May 2022 11:14:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E5ADA6EC40
-        for <rcu@vger.kernel.org>; Mon, 30 May 2022 07:13:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1653920028;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=rWHGtydye04Pc0qlr5FGyqa1kfhiweLX/99E3DuULf0=;
-        b=DjfZSdNtRAGFg7jpRAZQ9XNCanKrYCFcveMhlosA5p6WyZNPmM+RkNsmlT0Yoow+yi/O2E
-        tNKJm7VX8NC+IPqCqDLYWKzcGcMQqe/ac/I4ilTAtKe00SgjnsV/9Lwvk4DXPNO0qcAmUe
-        FaBz/zxrRXpur3dsHyHD/NA1F0vz41o=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-111-SLjQHTFMN2eBGIDMZk4TLg-1; Mon, 30 May 2022 10:13:47 -0400
-X-MC-Unique: SLjQHTFMN2eBGIDMZk4TLg-1
-Received: by mail-wm1-f70.google.com with SMTP id o23-20020a05600c511700b0039743cd8093so7048070wms.6
-        for <rcu@vger.kernel.org>; Mon, 30 May 2022 07:13:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rWHGtydye04Pc0qlr5FGyqa1kfhiweLX/99E3DuULf0=;
-        b=H9vijUjoC/qTTPMTlZQnGY2YAypAKgosNU8Zja4h/xQHfmCJpsYwgPUCF2uqZSgM17
-         /Yov9vic6Wrq0mfeYXTLwNPd/4k4KTEVAzLjLa5pDyub3Iyd5AxBFesMLbWJK9Eo6q76
-         uc4Q1/Mwzo5ylg7MBjwpxF6ReTTUdYTIwhKwYOCTfPcAswgdZp8sqCC8CP5jURJVgsCP
-         CNMGkv3reAPndx9Gkad8fUJ71ZwJ79BFduuJ4CWtt5N87MjIs1Es7xHaV3t0aW49FA7L
-         SmgFAPKBdy3Qx353t7wgKFHAX7FzYXUsMV9Ql4aEn5jR5Ept2IythgzsVxeVMoaKtGbf
-         qmPQ==
-X-Gm-Message-State: AOAM5303nBZ/v9VHHK1n2FCafMPnt30uJk1uVKcPRqhcijfL5lzGeiTF
-        vNxn1znI+7T3sbUzhE2n7flH9tixGrfPtCMZQ0IzYowUP/847oguy0bo3VYrm0h29tcCC7koxCb
-        /STYWxaY1z/sw
-X-Received: by 2002:a05:600c:1f0e:b0:397:707f:5a60 with SMTP id bd14-20020a05600c1f0e00b00397707f5a60mr18750191wmb.3.1653920026201;
-        Mon, 30 May 2022 07:13:46 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz1e34u+loAw8VqZvb9FL0bHKiEQ+1d9UEpMOs2QB0ub76Kzi7QWkgcn90Ht1UuKmcalYImZg==
-X-Received: by 2002:a05:600c:1f0e:b0:397:707f:5a60 with SMTP id bd14-20020a05600c1f0e00b00397707f5a60mr18750170wmb.3.1653920025881;
-        Mon, 30 May 2022 07:13:45 -0700 (PDT)
-Received: from localhost.localdomain ([151.29.54.194])
-        by smtp.gmail.com with ESMTPSA id j13-20020a05600c1c0d00b00397243d3dbcsm11368749wms.31.2022.05.30.07.13.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 May 2022 07:13:45 -0700 (PDT)
-Date:   Mon, 30 May 2022 16:13:42 +0200
-From:   Juri Lelli <juri.lelli@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        Tejun Heo <tj@kernel.org>, Waiman Long <longman@redhat.com>,
+        with ESMTP id S241402AbiE3P1Z (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 30 May 2022 11:27:25 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54A14113B78;
+        Mon, 30 May 2022 07:30:08 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 3B164B80E23;
+        Mon, 30 May 2022 14:30:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08943C385B8;
+        Mon, 30 May 2022 14:29:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1653921003;
+        bh=OFwDldeLq6VK5vNQssnp+LuPob86xk+/cjvgoNLQoGU=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=Y4GM3MP5RuPDaWkZHgc4qqGl+aTGH7H+4a0dfyVxQuoN5Zw+c94fGBwLgyvfr8YQP
+         v6xQ6qNbMHOvK66DcfQZnvV1wLwHAsVgEZKlTI+3Ys0mS+OIzmAONzkCppysiLn+UH
+         F+982SYqwke8va6Mwq/KjrYa9SDVjywbo4cm3DVHNbE4yzaZb5Rs/sxB0lzhmmuI6o
+         Jby84/PfuO37HR7CpCFsse7R75bPo6eIUC4+alaQHvPMjoHv/IFqH/sPM6h8HbYFvX
+         WkQ+RLnZTh64sbbEhcqOfwAgfySe0zcYXHLn+zYaSUuvwXCiA/7t8/TmO+AWDS4vJl
+         xtmgTFdea+5HQ==
+Message-ID: <e3010471ee43e7e134f882f320fc4643fe4e4810.camel@kernel.org>
+Subject: Re: [RFC PATCH 4/4] cpuset: Support RCU-NOCB toggle on v2 root
+ partitions
+From:   nicolas saenz julienne <nsaenz@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Juri Lelli <juri.lelli@redhat.com>, Tejun Heo <tj@kernel.org>,
+        Waiman Long <longman@redhat.com>,
         LKML <linux-kernel@vger.kernel.org>,
         "Paul E . McKenney" <paulmck@kernel.org>,
         Paul Gortmaker <paul.gortmaker@windriver.com>,
@@ -66,50 +47,98 @@ Cc:     Frederic Weisbecker <frederic@kernel.org>,
         Phil Auld <pauld@redhat.com>,
         Zefan Li <lizefan.x@bytedance.com>,
         Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
         rcu@vger.kernel.org
-Subject: Re: [RFC PATCH 4/4] cpuset: Support RCU-NOCB toggle on v2 root
- partitions
-Message-ID: <YpTRFotSs0UnMEJJ@localhost.localdomain>
-References: <20220526225141.GA1214445@lothringen>
- <YpAHEt0j30vBw9au@slm.duckdns.org>
- <9e44bb00-955a-dbc6-a863-be649e0c701f@redhat.com>
- <YpAdSW8JXVPOoNJl@slm.duckdns.org>
- <20220527083018.n43nc73vuuzm5ixo@localhost.localdomain>
- <YpIwsiaY2IPK96WO@hirez.programming.kicks-ass.net>
- <20220530004049.GA1251147@lothringen>
- <YpR8PUlIraYE2+5L@worktop.programming.kicks-ass.net>
- <20220530105650.GA1257179@lothringen>
- <YpTDq6Z/+hp+CHwf@worktop.programming.kicks-ass.net>
+Date:   Mon, 30 May 2022 16:29:56 +0200
+In-Reply-To: <20220530004049.GA1251147@lothringen>
+References: <20220525221055.1152307-1-frederic@kernel.org>
+         <20220525221055.1152307-5-frederic@kernel.org>
+         <Yo/FGcG+uiBh88sT@slm.duckdns.org> <20220526225141.GA1214445@lothringen>
+         <YpAHEt0j30vBw9au@slm.duckdns.org>
+         <9e44bb00-955a-dbc6-a863-be649e0c701f@redhat.com>
+         <YpAdSW8JXVPOoNJl@slm.duckdns.org>
+         <20220527083018.n43nc73vuuzm5ixo@localhost.localdomain>
+         <YpIwsiaY2IPK96WO@hirez.programming.kicks-ass.net>
+         <20220530004049.GA1251147@lothringen>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.1 (3.44.1-1.fc36) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YpTDq6Z/+hp+CHwf@worktop.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 30/05/22 15:16, Peter Zijlstra wrote:
-> On Mon, May 30, 2022 at 12:56:50PM +0200, Frederic Weisbecker wrote:
-> 
-> > > This is ABI, you can't walk back on it. I would suggest starting with an
-> > > 'all feature' isolation. Only if there's real demand for something more
-> > > fine-grained add that on top. Simple first etc.
-> > 
-> > That's actually my worry. If we start with an all in one ABI, how do we later
-> > mix that up with more finegrained features? Like what will be the behaviour of:
-> > 
-> > cpuset.isolation.rcu_nocb = 0
-> > cpuset.isolation.all = 1
-> 
-> Well clearly that doesn't make sense. I was more thinking along the
-> lines of cgroup.subtree_control, where instead all features are enabled
-> by default.
-> 
-> But only if there's a real usecase, otherwise there's no point in
-> providing such knobs.
+On Mon, 2022-05-30 at 02:40 +0200, Frederic Weisbecker wrote:
+> On Sat, May 28, 2022 at 04:24:50PM +0200, Peter Zijlstra wrote:
+> > On Fri, May 27, 2022 at 10:30:18AM +0200, Juri Lelli wrote:
+> > > Hi,
+> > >=20
+> > > On 26/05/22 14:37, Tejun Heo wrote:
+> > > > On Thu, May 26, 2022 at 08:28:43PM -0400, Waiman Long wrote:
+> > > > > I am thinking along the line that it will not be hierarchical. Ho=
+wever,
+> > > > > cpuset can be useful if we want to have multiple isolated partiti=
+ons
+> > > > > underneath the top cpuset with different isolation attributes, bu=
+t no more
+> > > > > sub-isolated partition with sub-attributes underneath them. IOW, =
+we can only
+> > > > > set them at the first level under top_cpuset. Will that be useful=
+?
+> > > >=20
+> > > > At that point, I'd just prefer to have it under /proc or /sys.
+> > >=20
+> > > FWIW, I was under the impression that this would nicely fit along the
+> > > side of other feaures towards implenting dynamic isolation of CPUs (s=
+ay
+> > > https://lore.kernel.org/lkml/20220510153413.400020-1-longman@redhat.c=
+om/
+> > > for example). Wouldn't be awkward to have to poke different places to
+> > > achieve isolation at runtime?
+> >=20
+> > This, that's what I was thinking.
+> >=20
+> > My main objection to the whole thing is that it's an RCU_NOCB specific
+> > interface. *That* I think is daft.
+> >=20
+> > I was thinking a partition would be able to designate a house-keeping
+> > sub-partition/mask, but who cares about all the various different
+> > housekeeping parties.
+>=20
+> It's time for the isolation users to step up here! I very rarely hear fro=
+m them
+> and I just can't figure out by myself all the variants of uses for each o=
+f the
+> isolation features. May be some people are only interested in nocb for so=
+me
+> specific uses, or may be it never makes sense without nohz full and all t=
+he rest
+> of the isolation features. So for now I take the very cautious path to sp=
+lit the
+> interface.
 
-All features on/off knob + house-keeping sub-partition/mask seem to be
-what isolation users I could reach so far (OCP mostly) would indeed like
-to have in the future.
+OK, my 2 cents. I personally deal with virtualisation setups that involve R=
+T
+and CPU isolation on both host and guests.
 
+The main use-case ATM is running DPDK-like workloads. We want to achieve
+latencies in the order of tens of microseconds, so it's essential to avoid
+entering the kernel at all cost. So, no HW interrupts, sched tick, RCU
+callbacks, clocksource watchdogs, softlockup, intel_pstate, timers, etc...
+Everything is deferred onto housekeeping CPUs or disabled.
+
+Then we have setups that need to deal with HW on the host, exposed to the g=
+uest
+through emulation or VirtIO. The same rules apply really, except for some I=
+RQ
+affinity tweaks and sched priority magic.
+
+I find it hard to see how running RCU callback locally could be useful to a=
+ny
+latency sensitive workload.
+
+Frederic, out of curiosity, do you have a use-case in mind that might benef=
+it
+from nohz_full but not rcu_nocb? Maybe HPC?
+
+Regards,
+Nicolas
