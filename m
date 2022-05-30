@@ -2,94 +2,146 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E0A30C433F5
-	for <rcu@archiver.kernel.org>; Mon, 30 May 2022 21:36:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B45B1C433F5
+	for <rcu@archiver.kernel.org>; Mon, 30 May 2022 22:36:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234541AbiE3VgE (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 30 May 2022 17:36:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53072 "EHLO
+        id S238906AbiE3WgP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 30 May 2022 18:36:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234333AbiE3VgE (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 30 May 2022 17:36:04 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3090999825;
-        Mon, 30 May 2022 14:36:03 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id BCD5BB80EFB;
-        Mon, 30 May 2022 21:36:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFB8EC385B8;
-        Mon, 30 May 2022 21:35:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1653946560;
-        bh=7YNcmkRLolF/kp8AznAQ6pw37uC1DOd0oAfeaiw3X8A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vD8A1irvFLWQWd0Xei8uTuSGLDsSYQpPYzOVw2207sej/d/+q9qG2XUdVZskucLjw
-         OD0DvHktTSm+HoCicUQAlubMVp6uAPtFdcEkI2JknWEnVwggVJ6V45/1SE8NKUhrbv
-         4aQ8NqFzXWptLb3/Q8SgsAUYLO//8NcMycXcO9ZdpFD9KH8Zwtm98VSyYrM/MVMD1d
-         sb4Am06ug9S+OA4GWiPCna/HKjT5M9fFn5WWWhvK4zXkWOGMfhF3mNQBEsZzPeEtzG
-         EcWdEkRs/sRp+OJAGLzTgcP/J2f5J2QA5NRrtdWLjexPBWzr183j6oCGhrFE1HGqa6
-         R6o7JSf0K4TXw==
-Date:   Mon, 30 May 2022 23:35:56 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Juri Lelli <juri.lelli@redhat.com>, Tejun Heo <tj@kernel.org>,
+        with ESMTP id S237559AbiE3WgP (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 30 May 2022 18:36:15 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E85E1980AE
+        for <rcu@vger.kernel.org>; Mon, 30 May 2022 15:36:12 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id p13so9474036ybm.1
+        for <rcu@vger.kernel.org>; Mon, 30 May 2022 15:36:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=aurora.tech; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Jzunswihq7emLJrZKcMyFQww1H3CwuUil00+SfCZ470=;
+        b=MxjhMKPHxKe9mLGtiURZCmcqHs+PbmChzbnPdapWj+nZAARhwolGI2X489aj/Ol/od
+         DU/tsxpThvmrpN+KcX44K2fxSgN2vfqg1P5ROsPegWgYx92LUi7T6yCHcBg6eB9TZDJA
+         HPuIlmrHXvI0NPYbogQg5rbd8phPteFDUM3mQP/P6Tc2K7ADcoJWSiGr+itEcY+XVgsh
+         wXK7VPtNtj4TLSe11qVs28OilAzut0zrja6ULNxeKmm0BIZ+LCATFH6bAYrIE1CqlUcu
+         n6pUh2rEMiIsKtd53c6rx98wiHpaVuemQGrQUv6nWwAWl/DSvImGS1ucRwJsu2Mhvrr7
+         4wQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Jzunswihq7emLJrZKcMyFQww1H3CwuUil00+SfCZ470=;
+        b=3JkQxyuxeJnukHvqaT33hkoXfEYkhqD9sD4qpr/1fv3yP8nzy07/FTxG/bamftAd/l
+         bSgC/OXPDkFDycbRlL21/BMSlrdMIJwYY/cNTLLZwbn+cScoHnD/IdbzkiAqk76V94/1
+         teZdAdBcxUbTpWUr3r3pX9TwOeDHGgpzDtEyUSxh1paceysxCEr9L14VfRhiJQKkIQ+z
+         /aAx9/4a3Qx5CJToQg9iKRrtD9GEwB2SdZilEk7d2qwc/gVAnvT7qAjsIt4vqVx0Wkyn
+         P8Z2wTovIW499fgFmN1mGFtw0/qdjU0wg5BETJn2YdfFhOwHFQx8rRG3OtKwBMrV4RsX
+         CgUQ==
+X-Gm-Message-State: AOAM5303MlrwpPZ2hONOGztjGDVAxqeB5t3xPg5jSeI+p4+2a718UED2
+        /wbhS9XQihGGCw1j0KDWb3T7RJ8e/La7r6RnEVFaDg==
+X-Google-Smtp-Source: ABdhPJzDijRYVPb5lrhvE30t1R3zPS93TTddTSa3lLjvWRew/B5wnApP5hxJmE/yG3aN3K3SD5I3f1yRJkaNXoZdMBg=
+X-Received: by 2002:a25:8691:0:b0:65c:f544:4186 with SMTP id
+ z17-20020a258691000000b0065cf5444186mr5817316ybk.277.1653950172140; Mon, 30
+ May 2022 15:36:12 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220525221055.1152307-5-frederic@kernel.org> <Yo/FGcG+uiBh88sT@slm.duckdns.org>
+ <20220526225141.GA1214445@lothringen> <YpAHEt0j30vBw9au@slm.duckdns.org>
+ <9e44bb00-955a-dbc6-a863-be649e0c701f@redhat.com> <YpAdSW8JXVPOoNJl@slm.duckdns.org>
+ <20220527083018.n43nc73vuuzm5ixo@localhost.localdomain> <YpIwsiaY2IPK96WO@hirez.programming.kicks-ass.net>
+ <20220530004049.GA1251147@lothringen> <e3010471ee43e7e134f882f320fc4643fe4e4810.camel@kernel.org>
+ <20220530144922.GA1790663@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20220530144922.GA1790663@paulmck-ThinkPad-P17-Gen-1>
+From:   Alison Chaiken <achaiken@aurora.tech>
+Date:   Mon, 30 May 2022 15:36:01 -0700
+Message-ID: <CAFzL-7vqTX-y06Kc3HaLqRWAYE0d=ms3TzVtZLn0c6ATrKD+Qw@mail.gmail.com>
+Subject: Re: [RFC PATCH 4/4] cpuset: Support RCU-NOCB toggle on v2 root partitions
+To:     paulmck@kernel.org
+Cc:     nicolas saenz julienne <nsaenz@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>, Tejun Heo <tj@kernel.org>,
         Waiman Long <longman@redhat.com>,
         LKML <linux-kernel@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
         Paul Gortmaker <paul.gortmaker@windriver.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Marcelo Tosatti <mtosatti@redhat.com>,
         Phil Auld <pauld@redhat.com>,
         Zefan Li <lizefan.x@bytedance.com>,
         Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
         rcu@vger.kernel.org
-Subject: Re: [RFC PATCH 4/4] cpuset: Support RCU-NOCB toggle on v2 root
- partitions
-Message-ID: <20220530213556.GD1257179@lothringen>
-References: <20220526225141.GA1214445@lothringen>
- <YpAHEt0j30vBw9au@slm.duckdns.org>
- <9e44bb00-955a-dbc6-a863-be649e0c701f@redhat.com>
- <YpAdSW8JXVPOoNJl@slm.duckdns.org>
- <20220527083018.n43nc73vuuzm5ixo@localhost.localdomain>
- <YpIwsiaY2IPK96WO@hirez.programming.kicks-ass.net>
- <20220530004049.GA1251147@lothringen>
- <YpR8PUlIraYE2+5L@worktop.programming.kicks-ass.net>
- <20220530105650.GA1257179@lothringen>
- <YpTDq6Z/+hp+CHwf@worktop.programming.kicks-ass.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YpTDq6Z/+hp+CHwf@worktop.programming.kicks-ass.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, May 30, 2022 at 03:16:27PM +0200, Peter Zijlstra wrote:
-> On Mon, May 30, 2022 at 12:56:50PM +0200, Frederic Weisbecker wrote:
-> 
-> > > This is ABI, you can't walk back on it. I would suggest starting with an
-> > > 'all feature' isolation. Only if there's real demand for something more
-> > > fine-grained add that on top. Simple first etc.
-> > 
-> > That's actually my worry. If we start with an all in one ABI, how do we later
-> > mix that up with more finegrained features? Like what will be the behaviour of:
-> > 
-> > cpuset.isolation.rcu_nocb = 0
-> > cpuset.isolation.all = 1
-> 
-> Well clearly that doesn't make sense. I was more thinking along the
-> lines of cgroup.subtree_control, where instead all features are enabled
-> by default.
-> 
-> But only if there's a real usecase, otherwise there's no point in
-> providing such knobs.
+> On Mon, May 30, 2022 at 04:29:56PM +0200, nicolas saenz julienne wrote:
+> > On Mon, 2022-05-30 at 02:40 +0200, Frederic Weisbecker wrote:
+> > > On Sat, May 28, 2022 at 04:24:50PM +0200, Peter Zijlstra wrote:
+> > > > On Fri, May 27, 2022 at 10:30:18AM +0200, Juri Lelli wrote:
+> > > > > Hi,
+> > > > >
+> > > > > On 26/05/22 14:37, Tejun Heo wrote:
+> > > > > > On Thu, May 26, 2022 at 08:28:43PM -0400, Waiman Long wrote:
+> > > > > > > I am thinking along the line that it will not be hierarchical. However,
+> > > > > > > cpuset can be useful if we want to have multiple isolated partitions
+> > > > > > > underneath the top cpuset with different isolation attributes, but no more
+> > > > > > > sub-isolated partition with sub-attributes underneath them. IOW, we can only
+> > > > > > > set them at the first level under top_cpuset. Will that be useful?
+> > > > > >
+> > > > > > At that point, I'd just prefer to have it under /proc or /sys.
+> > > > >
+> > > > > FWIW, I was under the impression that this would nicely fit along the
+> > > > > side of other feaures towards implenting dynamic isolation of CPUs (say
+> > > > > https://lore.kernel.org/lkml/20220510153413.400020-1-longman@redhat.com/
+> > > > > for example). Wouldn't be awkward to have to poke different places to
+> > > > > achieve isolation at runtime?
+> > > >
+> > > > This, that's what I was thinking.
+> > > >
+> > > > My main objection to the whole thing is that it's an RCU_NOCB specific
+> > > > interface. *That* I think is daft.
+> > > >
+> > > > I was thinking a partition would be able to designate a house-keeping
+> > > > sub-partition/mask, but who cares about all the various different
+> > > > housekeeping parties.
+> > >
+> > > It's time for the isolation users to step up here! I very rarely hear from them
+> > > and I just can't figure out by myself all the variants of uses for each of the
+> > > isolation features. May be some people are only interested in nocb for some
+> > > specific uses, or may be it never makes sense without nohz full and all the rest
+> > > of the isolation features. So for now I take the very cautious path to split the
+> > > interface.
+> >
+> > OK, my 2 cents. I personally deal with virtualisation setups that involve RT
+> > and CPU isolation on both host and guests.
+> >
+> > The main use-case ATM is running DPDK-like workloads. We want to achieve
+> > latencies in the order of tens of microseconds, so it's essential to avoid
+> > entering the kernel at all cost. So, no HW interrupts, sched tick, RCU
+> > callbacks, clocksource watchdogs, softlockup, intel_pstate, timers, etc...
+> > Everything is deferred onto housekeeping CPUs or disabled.
+> >
+> > Then we have setups that need to deal with HW on the host, exposed to the guest
+> > through emulation or VirtIO. The same rules apply really, except for some IRQ
+> > affinity tweaks and sched priority magic.
+> >
+> > I find it hard to see how running RCU callback locally could be useful to any
+> > latency sensitive workload.
+> >
+> > Frederic, out of curiosity, do you have a use-case in mind that might benefit
+> > from nohz_full but not rcu_nocb? Maybe HPC?
 
-That makes sense. So there would be a simple cpuset.isolation that can
-be either 1 or 0 where 1 has all possible isolation stuff on. Then
-if the need arises we can provide more tuning through a new specific
-cgroup controller, right?
+On Mon, May 30, 2022 at 8:42 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+> Would users looking for millisecond-scale latencies want rcu_nocbs but
+> not nohz_full, that is, the other way around?
 
-If so that sounds good to me.
+On Intel processors running 5.15 with the timersd patches from Siewior
+backported and Weisbecker's bug-fix, choosing CONFIG_HZ_PERIODIC
+prevents cores from entering deeper C-states when hrtimers are
+pending.   With CONFIG_NO_HZ_COMMON, the cores do not service
+non-blocking timer callbacks until another thread wakes them.  Since
+low latency is critical, this is a use case where NO_HZ_FULL will not
+work but rcu_nocbs is needed.
+
+-- Alison Chaiken, Aurora Innovation
