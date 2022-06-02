@@ -2,49 +2,49 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 04217C433EF
-	for <rcu@archiver.kernel.org>; Thu,  2 Jun 2022 23:32:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C4091C433EF
+	for <rcu@archiver.kernel.org>; Thu,  2 Jun 2022 23:43:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239025AbiFBXc2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 2 Jun 2022 19:32:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51684 "EHLO
+        id S236572AbiFBXnn (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 2 Jun 2022 19:43:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230101AbiFBXc1 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 2 Jun 2022 19:32:27 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF9FF9FE3
-        for <rcu@vger.kernel.org>; Thu,  2 Jun 2022 16:32:25 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id br33so3100590qkb.0
-        for <rcu@vger.kernel.org>; Thu, 02 Jun 2022 16:32:25 -0700 (PDT)
+        with ESMTP id S235269AbiFBXnm (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 2 Jun 2022 19:43:42 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 859D037A11
+        for <rcu@vger.kernel.org>; Thu,  2 Jun 2022 16:43:41 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id b200so4836177qkc.7
+        for <rcu@vger.kernel.org>; Thu, 02 Jun 2022 16:43:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=XqGZjQLwKPzhMCld0pLX+NX09gFdRXY1Sy3dgwMApEM=;
-        b=FsEAiQu3EOJQeirdxD1xamPieZqOQS4aWEkoI729jtBwR5DUvtVNFMwxl0S5cHJ3Zb
-         +s+dJMf5fLXPRHBmKoNwWmlTBWfQMPpB2LxT2xGomRBoGO4SS0lEO/yRsxqThv6Bi+YH
-         gLvY0w6m2rriGN4DU73EHqeWoj0aX3eDwwBFE=
+        bh=z4Jq0139k9/g7p5Rp38NcBMTSv8eGbiFcR6280ziDuo=;
+        b=ykdi+kzAxY6b/IVz0LFcak5rc5cZXGfw8YyiUfUer0qcSF1TGlykBqQRzcWrHdXFvJ
+         XwCIs5EsMe0/QPtrr4qvdsiSIHpIK1bEjSGWNBw/vlCXxEtfEA+WQuw8C+d88gf/I6jb
+         vHSEW7B/vz4/Rb96TJisSPaTFYNXxMEN55mAk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=XqGZjQLwKPzhMCld0pLX+NX09gFdRXY1Sy3dgwMApEM=;
-        b=LyLaoRNQ8/t9rEony1tSaZur0JwrMuwmShKytkXKcs12U05lbR8+wzCQDKWszqkMOj
-         fM611lcA2qzIdVNMGHA+KrImoaadYvSEQGcMdwt+CLVf9Mdn+nxsH/JVatyrskWK3hj0
-         MIOF5CmMc4/riN53YWgEscPp376089sqnfwHJ4qooMDn+z55LebMc7CjwsJ2+Li8Ydfw
-         zsf/Our0xCBjxe7HwbuhHr+nL86sWS+DfDi8lv2Q96poZ2JXfyoaunUtkiYIadD3Kotl
-         77sESBzfqInMY18hNt4FtTSm6nAKZrdrb29StA+cbpUPax+cJTwyycVDQLvr1Q99lRgk
-         BRJQ==
-X-Gm-Message-State: AOAM533Zrtkb7S5I0H/jYJcuHHWbHPOHsiYCyXT1QMgV5g0XMWM54Hs/
-        8kry8TBXOXVoybp8EMDZ6UJLvQ==
-X-Google-Smtp-Source: ABdhPJxSbirZ/FXgCneU/bGF6+9U39VRXx4lOmuzx/bPLpPrcGFKWIRYKV2MkfIWeSjO/FBVxnpLQQ==
-X-Received: by 2002:a05:620a:1510:b0:6a3:9b95:196 with SMTP id i16-20020a05620a151000b006a39b950196mr5159796qkk.152.1654212744944;
-        Thu, 02 Jun 2022 16:32:24 -0700 (PDT)
+        bh=z4Jq0139k9/g7p5Rp38NcBMTSv8eGbiFcR6280ziDuo=;
+        b=QvYWVPn/r0xE8B1k9LUt+zfUGBcPau4BC4C2FQZ6nchjSpECvU76Cv8twNV8jfXyt3
+         PEyhUYP7zPB+PZW6jNVNlDYFe+nfQr5dgzBgTiRkdqKOjD8EMnfK92XWy2lmsr1LV0yK
+         COgEiMYYGzTfc4jzy2j2BxxxMtRb9Mj3HzNJ1HcGgxtIBSNjmmUAsCcw6QqTUun4dh6f
+         RQ4X/DyNswc1VS3hhjeuBPsi9X5u8ppHJX4vZIhRuVsNtUyqORXdy4Z3TbXo6u5hVuab
+         Z7f9ll1/NaonKzUnFAxy4bdpFXzaG45qSPfGKKv9SkTFds3mJ5wfl5zT+/OjgBBhZaAO
+         aL1A==
+X-Gm-Message-State: AOAM532vEPo5LlTVjz2N1ZroZVnFZmbs2GXZ92Q8ByXmFi1oqKkGTu0g
+        sA1mbo1GQJLxRCy4DTb3jTQVig==
+X-Google-Smtp-Source: ABdhPJwhzhJcP8Se89omJ8GC8+/+1J7uAwTvUgsv/iQLTTZs8KPybXDcfYTdOWpROS9ENgDpXQiclg==
+X-Received: by 2002:a37:a944:0:b0:6a6:9bea:ed96 with SMTP id s65-20020a37a944000000b006a69beaed96mr354636qke.329.1654213420368;
+        Thu, 02 Jun 2022 16:43:40 -0700 (PDT)
 Received: from localhost (228.221.150.34.bc.googleusercontent.com. [34.150.221.228])
-        by smtp.gmail.com with ESMTPSA id i12-20020a37c20c000000b0069fc13ce20asm3901545qkm.59.2022.06.02.16.32.23
+        by smtp.gmail.com with ESMTPSA id m9-20020a05622a118900b00304b65bac49sm3849651qtk.68.2022.06.02.16.43.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jun 2022 16:32:24 -0700 (PDT)
-Date:   Thu, 2 Jun 2022 23:32:23 +0000
+        Thu, 02 Jun 2022 16:43:39 -0700 (PDT)
+Date:   Thu, 2 Jun 2022 23:43:39 +0000
 From:   Joel Fernandes <joel@joelfernandes.org>
 To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
@@ -52,53 +52,70 @@ Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
         Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: Re: [PATCH 2/2] rcu/kvfree: Introduce KFREE_DRAIN_JIFFIES_[MAX/MIN]
- interval
-Message-ID: <YplIh8BoYXc8X77q@google.com>
+Subject: Re: [PATCH 1/2] rcu/kvfree: Remove useless monitor_todo flag
+Message-ID: <YplLK2BcTn2oM0hr@google.com>
 References: <20220602080644.432156-1-urezki@gmail.com>
- <20220602080644.432156-2-urezki@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220602080644.432156-2-urezki@gmail.com>
+In-Reply-To: <20220602080644.432156-1-urezki@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jun 02, 2022 at 10:06:44AM +0200, Uladzislau Rezki (Sony) wrote:
-> Currently the monitor work is scheduled with a fixed interval that
-> is HZ/20 or each 50 milliseconds. The drawback of such approach is
-> a low utilization of page slot in some scenarios. The page can store
-> up to 512 records. For example on Android system it can look like:
+On Thu, Jun 02, 2022 at 10:06:43AM +0200, Uladzislau Rezki (Sony) wrote:
+> From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
 > 
-> <snip>
->   kworker/3:0-13872   [003] .... 11286.007048: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000026522604 nr_records=1
->   kworker/3:0-13872   [003] .... 11286.015638: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000095ed6fca nr_records=2
->   kworker/1:2-20434   [001] .... 11286.051230: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000044872ffd nr_records=1
->   kworker/1:2-20434   [001] .... 11286.059322: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000026522604 nr_records=2
->   kworker/0:1-20052   [000] .... 11286.095295: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000044872ffd nr_records=2
->   kworker/0:1-20052   [000] .... 11286.103418: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000cbcf05db nr_records=1
->   kworker/2:3-14372   [002] .... 11286.135155: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000095ed6fca nr_records=2
->   kworker/2:3-14372   [002] .... 11286.135198: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000044872ffd nr_records=1
->   kworker/1:2-20434   [001] .... 11286.155377: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000cbcf05db nr_records=5
->   kworker/2:3-14372   [002] .... 11286.167181: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000026522604 nr_records=5
->   kworker/1:2-20434   [001] .... 11286.179202: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000008ef95e14 nr_records=1
->   kworker/2:3-14372   [002] .... 11286.187398: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000c597d297 nr_records=6
->   kworker/3:0-13872   [003] .... 11286.187445: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000050bf92e2 nr_records=3
->   kworker/1:2-20434   [001] .... 11286.198975: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000cbcf05db nr_records=4
->   kworker/1:2-20434   [001] .... 11286.207203: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000095ed6fca nr_records=4
-> <snip>
-> 
-> where a page only carries few records to reclaim a memory. In order to
-> improve batching and make utilization more efficient the patch introduces
-> a drain interval that can be set either to KFREE_DRAIN_JIFFIES_MAX or
-> KFREE_DRAIN_JIFFIES_MIN. It is adjusted if a flood is detected, in this
-> case a memory reclaim occurs more often whereas in mostly idle cases the
-> interval is set to its maximum timeout that improves the utilization of
-> page slots.
+> monitor_todo is not needed as the work struct already tracks
+> if work is pending. Just use that to know if work is pending
+> using schedule_delayed_work() helper.
 > 
 > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> ---
+>  kernel/rcu/tree.c | 33 ++++++++++++++++-----------------
+>  1 file changed, 16 insertions(+), 17 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 222d59299a2a..fd16c0b46d9e 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -3295,7 +3295,6 @@ struct kfree_rcu_cpu_work {
+>   * @krw_arr: Array of batches of kfree_rcu() objects waiting for a grace period
+>   * @lock: Synchronize access to this structure
+>   * @monitor_work: Promote @head to @head_free after KFREE_DRAIN_JIFFIES
+> - * @monitor_todo: Tracks whether a @monitor_work delayed work is pending
+>   * @initialized: The @rcu_work fields have been initialized
+>   * @count: Number of objects for which GP not started
+>   * @bkvcache:
+> @@ -3320,7 +3319,6 @@ struct kfree_rcu_cpu {
+>  	struct kfree_rcu_cpu_work krw_arr[KFREE_N_BATCHES];
+>  	raw_spinlock_t lock;
+>  	struct delayed_work monitor_work;
+> -	bool monitor_todo;
+>  	bool initialized;
+>  	int count;
+>  
+> @@ -3500,6 +3498,18 @@ static void kfree_rcu_work(struct work_struct *work)
+>  	}
+>  }
+>  
+> +static bool
+> +need_offload_krc(struct kfree_rcu_cpu *krcp)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < FREE_N_CHANNELS; i++)
+> +		if (krcp->bkvhead[i])
+> +			return true;
+> +
+> +	return !!krcp->head;
+> +}
 
+Thanks for modifying my original patch to do this, and thanks for giving me
+the attribution for the patch. This function is a nice addition.
+
+For the patch in its entirety:
 Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
 thanks,
@@ -107,75 +124,48 @@ thanks,
 
 
 
-> ---
->  kernel/rcu/tree.c | 29 +++++++++++++++++++++++++----
->  1 file changed, 25 insertions(+), 4 deletions(-)
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index fd16c0b46d9e..c02a64995b85 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -3249,7 +3249,8 @@ EXPORT_SYMBOL_GPL(call_rcu);
->  
->  
->  /* Maximum number of jiffies to wait before draining a batch. */
-> -#define KFREE_DRAIN_JIFFIES (HZ / 50)
-> +#define KFREE_DRAIN_JIFFIES_MAX (HZ)
-> +#define KFREE_DRAIN_JIFFIES_MIN (HZ / 50)
->  #define KFREE_N_BATCHES 2
->  #define FREE_N_CHANNELS 2
->  
-> @@ -3510,6 +3511,26 @@ need_offload_krc(struct kfree_rcu_cpu *krcp)
->  	return !!krcp->head;
->  }
->  
-> +static void
-> +schedule_delayed_monitor_work(struct kfree_rcu_cpu *krcp)
-> +{
-> +	long delay, delay_left;
-> +
-> +	delay = READ_ONCE(krcp->count) >= KVFREE_BULK_MAX_ENTR ?
-> +		KFREE_DRAIN_JIFFIES_MIN:KFREE_DRAIN_JIFFIES_MAX;
-> +
-> +	if (delayed_work_pending(&krcp->monitor_work)) {
-> +		delay_left = krcp->monitor_work.timer.expires - jiffies;
-> +
-> +		if (delay < delay_left)
-> +			mod_delayed_work(system_wq, &krcp->monitor_work, delay);
-> +
-> +		return;
-> +	}
-> +
-> +	queue_delayed_work(system_wq, &krcp->monitor_work, delay);
-> +}
 > +
 >  /*
 >   * This function is invoked after the KFREE_DRAIN_JIFFIES timeout.
 >   */
-> @@ -3567,7 +3588,7 @@ static void kfree_rcu_monitor(struct work_struct *work)
+> @@ -3556,9 +3566,7 @@ static void kfree_rcu_monitor(struct work_struct *work)
+>  	// of the channels that is still busy we should rearm the
 >  	// work to repeat an attempt. Because previous batches are
 >  	// still in progress.
->  	if (need_offload_krc(krcp))
-> -		schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
-> +		schedule_delayed_monitor_work(krcp);
+> -	if (!krcp->bkvhead[0] && !krcp->bkvhead[1] && !krcp->head)
+> -		krcp->monitor_todo = false;
+> -	else
+> +	if (need_offload_krc(krcp))
+>  		schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
 >  
 >  	raw_spin_unlock_irqrestore(&krcp->lock, flags);
->  }
-> @@ -3755,7 +3776,7 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+> @@ -3746,11 +3754,8 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+>  	WRITE_ONCE(krcp->count, krcp->count + 1);
 >  
 >  	// Set timer to drain after KFREE_DRAIN_JIFFIES.
->  	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING)
-> -		schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
-> +		schedule_delayed_monitor_work(krcp);
+> -	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING &&
+> -	    !krcp->monitor_todo) {
+> -		krcp->monitor_todo = true;
+> +	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING)
+>  		schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
+> -	}
 >  
 >  unlock_return:
 >  	krc_this_cpu_unlock(krcp, flags);
-> @@ -3831,7 +3852,7 @@ void __init kfree_rcu_scheduler_running(void)
+> @@ -3825,14 +3830,8 @@ void __init kfree_rcu_scheduler_running(void)
+>  		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
 >  
 >  		raw_spin_lock_irqsave(&krcp->lock, flags);
->  		if (need_offload_krc(krcp))
-> -			schedule_delayed_work_on(cpu, &krcp->monitor_work, KFREE_DRAIN_JIFFIES);
-> +			schedule_delayed_monitor_work(krcp);
+> -		if ((!krcp->bkvhead[0] && !krcp->bkvhead[1] && !krcp->head) ||
+> -				krcp->monitor_todo) {
+> -			raw_spin_unlock_irqrestore(&krcp->lock, flags);
+> -			continue;
+> -		}
+> -		krcp->monitor_todo = true;
+> -		schedule_delayed_work_on(cpu, &krcp->monitor_work,
+> -					 KFREE_DRAIN_JIFFIES);
+> +		if (need_offload_krc(krcp))
+> +			schedule_delayed_work_on(cpu, &krcp->monitor_work, KFREE_DRAIN_JIFFIES);
 >  		raw_spin_unlock_irqrestore(&krcp->lock, flags);
 >  	}
 >  }
