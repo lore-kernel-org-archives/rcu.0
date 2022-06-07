@@ -2,114 +2,129 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BD2B9C43334
-	for <rcu@archiver.kernel.org>; Tue,  7 Jun 2022 03:41:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D667C433EF
+	for <rcu@archiver.kernel.org>; Tue,  7 Jun 2022 03:47:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236186AbiFGDlg (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 6 Jun 2022 23:41:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47402 "EHLO
+        id S236018AbiFGDrS (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 6 Jun 2022 23:47:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235332AbiFGDlf (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 6 Jun 2022 23:41:35 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C16BA1EC70;
-        Mon,  6 Jun 2022 20:41:34 -0700 (PDT)
+        with ESMTP id S233222AbiFGDrR (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 6 Jun 2022 23:47:17 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DD2EB45;
+        Mon,  6 Jun 2022 20:47:13 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 563616145D;
-        Tue,  7 Jun 2022 03:41:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B10B7C385A5;
-        Tue,  7 Jun 2022 03:41:33 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id CF431B81C9C;
+        Tue,  7 Jun 2022 03:47:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94D1EC385A5;
+        Tue,  7 Jun 2022 03:47:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1654573293;
-        bh=zCMYLn1BsuiUSRHpxFYCTwy18i6bAaXXDCJJ56euczE=;
+        s=k20201202; t=1654573630;
+        bh=MVpr40KTbILxZwA1w6h0iiwkJlj3LKyq0Znk4sfngig=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=SP7rwgdlMRSmLb2HeJYrMlv6dM8NRvMirjw1Xntas8BOQYY6xdK9tkorm2czTZ99O
-         oo42Q2Mrt7FhoFLB1VLYg5yINTTsiW6uUzjIs3n/OAOVhIpAS29JHzyVU6Op1/mjbD
-         KbocavbrqaL066HawGhwpsJKtND1r0SQycm4Fp7lqWyQb5MrvwnlyVWSH2alzMWHoX
-         eXjn2idDajkrWpIJRmVt5bREa2E8pYPnVuS0I6pqiyolPEd04nZKG6nMAdr+pVXd8J
-         UKHBSPqy5N5zCvHdcjLhFxUFurE6yChMpIKnH/fmcsoHtanAr3fWvr72nmMI+hIzYs
-         F5q9sHPlPzutw==
+        b=LrRM8vysDihuh8gOBCTHPWQrGlN6AFMqU3tcFP7/45J42nW8gs+SKqUOlxvq5xTd7
+         KM95af5i9tZAb2UvqgUlJ8TZLvLF3PIBeTrTsoBZDpWjWa8Hc8UGttNU/qnp5G+mSr
+         sVab3KCD+k/mT4BgIiBFuPTVFfs/64ugqGeGv7ANQiDj+bJK4teH8VT09/8bKSH967
+         0SKW0UqA5DSVX8ZovxAWQogOSeTzMEnjWbOIv3B7biXrjSRAgIaC2QKffswU4lbOeJ
+         +aLwD60qZg0sPGiwF4w0Z3z7Aby20SU3d6/g7asbD8I18N1NU0qF3fk3EX9R39+uug
+         cKhIHY1PR3MHQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 4AA4D5C05C5; Mon,  6 Jun 2022 20:41:33 -0700 (PDT)
-Date:   Mon, 6 Jun 2022 20:41:33 -0700
+        id 3B8E55C05C5; Mon,  6 Jun 2022 20:47:10 -0700 (PDT)
+Date:   Mon, 6 Jun 2022 20:47:10 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Zqiang <qiang1.zhang@intel.com>
-Cc:     frederic@kernel.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu/nocb: Avoid polling when myrdp->nocb_head_rdp list
- is empty
-Message-ID: <20220607034133.GC1790663@paulmck-ThinkPad-P17-Gen-1>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH 2/2] rcu/kvfree: Introduce KFREE_DRAIN_JIFFIES_[MAX/MIN]
+ interval
+Message-ID: <20220607034710.GE1790663@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20220606065143.3159643-1-qiang1.zhang@intel.com>
+References: <20220602080644.432156-1-urezki@gmail.com>
+ <20220602080644.432156-2-urezki@gmail.com>
+ <20220604155108.GU1790663@paulmck-ThinkPad-P17-Gen-1>
+ <YpxzB3/HRN/EEHa8@pc638.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220606065143.3159643-1-qiang1.zhang@intel.com>
+In-Reply-To: <YpxzB3/HRN/EEHa8@pc638.lan>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Jun 06, 2022 at 02:51:43PM +0800, Zqiang wrote:
-> Currently, If the 'rcu_nocb_poll' bootargs is enable, all rcuog kthreads
-> enter polling mode. however, due to only insert CPU's rdp which belong to
-> rcu_nocb_mask to 'nocb_head_rdp' list or all CPU's rdp served by rcuog
-> kthread have been de-offloaded, these cause the 'nocb_head_rdp' list
-> served by rcuog kthread is empty, when the 'nocb_head_rdp' is empty,
-> the rcuog kthread in polling mode not actually do anything. fix it by
-> exiting polling mode when the 'nocb_head_rdp'list is empty, otherwise
-> entering polling mode.
+On Sun, Jun 05, 2022 at 11:10:31AM +0200, Uladzislau Rezki wrote:
+> > On Thu, Jun 02, 2022 at 10:06:44AM +0200, Uladzislau Rezki (Sony) wrote:
+> > > Currently the monitor work is scheduled with a fixed interval that
+> > > is HZ/20 or each 50 milliseconds. The drawback of such approach is
+> > > a low utilization of page slot in some scenarios. The page can store
+> > > up to 512 records. For example on Android system it can look like:
+> > > 
+> > > <snip>
+> > >   kworker/3:0-13872   [003] .... 11286.007048: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000026522604 nr_records=1
+> > >   kworker/3:0-13872   [003] .... 11286.015638: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000095ed6fca nr_records=2
+> > >   kworker/1:2-20434   [001] .... 11286.051230: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000044872ffd nr_records=1
+> > >   kworker/1:2-20434   [001] .... 11286.059322: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000026522604 nr_records=2
+> > >   kworker/0:1-20052   [000] .... 11286.095295: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000044872ffd nr_records=2
+> > >   kworker/0:1-20052   [000] .... 11286.103418: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000cbcf05db nr_records=1
+> > >   kworker/2:3-14372   [002] .... 11286.135155: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000095ed6fca nr_records=2
+> > >   kworker/2:3-14372   [002] .... 11286.135198: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000044872ffd nr_records=1
+> > >   kworker/1:2-20434   [001] .... 11286.155377: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000cbcf05db nr_records=5
+> > >   kworker/2:3-14372   [002] .... 11286.167181: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000026522604 nr_records=5
+> > >   kworker/1:2-20434   [001] .... 11286.179202: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000008ef95e14 nr_records=1
+> > >   kworker/2:3-14372   [002] .... 11286.187398: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000c597d297 nr_records=6
+> > >   kworker/3:0-13872   [003] .... 11286.187445: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000050bf92e2 nr_records=3
+> > >   kworker/1:2-20434   [001] .... 11286.198975: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000cbcf05db nr_records=4
+> > >   kworker/1:2-20434   [001] .... 11286.207203: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000095ed6fca nr_records=4
+> > > <snip>
+> > > 
+> > > where a page only carries few records to reclaim a memory. In order to
+> > > improve batching and make utilization more efficient the patch introduces
+> > > a drain interval that can be set either to KFREE_DRAIN_JIFFIES_MAX or
+> > > KFREE_DRAIN_JIFFIES_MIN. It is adjusted if a flood is detected, in this
+> > > case a memory reclaim occurs more often whereas in mostly idle cases the
+> > > interval is set to its maximum timeout that improves the utilization of
+> > > page slots.
+> > > 
+> > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > 
+> > That does look like a problem well worth solving!
+> >
+> Agree, better ideas make better final solution :)
 > 
-> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+> > 
+> > But I am missing one thing. If we are having a callback flood, why do we
+> > need a shorter timeout?
+> >
+> To offload faster, because otherwise we run into classical issue, it is a low
+> memory condition state resulting in OOM.
 
-Looks promising!  A couple of questions below.
+But doesn't each callback queued during the flood give us an opportunity
+to react to the flood?  That will be way more fine-grained than any
+reasonable timer, right?  Or am I missing something?
 
-> ---
->  kernel/rcu/tree_nocb.h | 14 +++++++++-----
->  1 file changed, 9 insertions(+), 5 deletions(-)
+I do agree that the action would often need to be indirect to avoid the
+memory-allocation-state hassles, but we already can do that, either via
+an extremely short-term hrtimer or something like irq-work.
+
+> > Wouldn't a check on the number of blocks queued be simpler, more direct,
+> > and provide faster response to the start of a callback flood?
+> >
+> I rely on krcp->count because not always we can store the pointer in the page
+> slots. We can not allocate a page in the caller context thus we use page-cache
+> worker that fills the cache in normal context. While it populates the cache, 
+> pointers temporary are queued to the linked-list.
 > 
-> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-> index fa8e4f82e60c..c25c3e3dd22d 100644
-> --- a/kernel/rcu/tree_nocb.h
-> +++ b/kernel/rcu/tree_nocb.h
-> @@ -698,10 +698,14 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
->  				   TPS("WakeBypassIsDeferred"));
->  	}
->  	if (rcu_nocb_poll) {
-> -		/* Polling, so trace if first poll in the series. */
-> -		if (gotcbs)
-> -			trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("Poll"));
-> -		schedule_timeout_idle(1);
-> +		if (list_empty(&my_rdp->nocb_head_rdp)) {
+> Any thoughts?
 
-Do we need to set rdp_gp->nocb_gp_sleep to true in here somewhere?
+There are a great many ways to approach this.  One of them is to maintain
+a per-CPU free-running counter of kvfree_rcu() calls, and to reset this
+counter each jiffy.
 
-> +			rcu_wait(READ_ONCE(my_rdp->nocb_toggling_rdp));
-> +		} else {
-> +			/* Polling, so trace if first poll in the series. */
-> +			if (gotcbs)
-> +				trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("Poll"));
-> +			schedule_timeout_idle(1);
-> +		}
->  	} else if (!needwait_gp) {
->  		/* Wait for callbacks to appear. */
->  		trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("Sleep"));
-> @@ -980,7 +984,7 @@ static int rdp_offload_toggle(struct rcu_data *rdp,
->  	raw_spin_lock_irqsave(&rdp_gp->nocb_gp_lock, flags);
->  	// Queue this rdp for add/del to/from the list to iterate on rcuog
->  	WRITE_ONCE(rdp_gp->nocb_toggling_rdp, rdp);
-> -	if (rdp_gp->nocb_gp_sleep) {
-> +	if (rcu_nocb_poll || rdp_gp->nocb_gp_sleep) {
+Or am I missing a trick here?
 
-Is it the case that other than when (de-)offloading, the rcuog kthread
-is never awakened when rcu_nocb_poll is set?  If this is not the case,
-we would have spurious wakeups.  (I believe that rcu_nocb_poll suppresses
-those wakeups, but it would be good to check.)
-
->  		rdp_gp->nocb_gp_sleep = false;
->  		wake_gp = true;
->  	}
-> -- 
-> 2.25.1
-> 
+							Thanx, Paul
