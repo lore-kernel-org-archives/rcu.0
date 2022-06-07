@@ -2,129 +2,111 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D667C433EF
-	for <rcu@archiver.kernel.org>; Tue,  7 Jun 2022 03:47:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 144A5C43334
+	for <rcu@archiver.kernel.org>; Tue,  7 Jun 2022 03:53:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236018AbiFGDrS (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 6 Jun 2022 23:47:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33058 "EHLO
+        id S234862AbiFGDx1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 6 Jun 2022 23:53:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233222AbiFGDrR (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 6 Jun 2022 23:47:17 -0400
+        with ESMTP id S229459AbiFGDxY (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 6 Jun 2022 23:53:24 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DD2EB45;
-        Mon,  6 Jun 2022 20:47:13 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35FDA36680
+        for <rcu@vger.kernel.org>; Mon,  6 Jun 2022 20:53:22 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id CF431B81C9C;
-        Tue,  7 Jun 2022 03:47:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94D1EC385A5;
-        Tue,  7 Jun 2022 03:47:10 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id DBB86B81C9F
+        for <rcu@vger.kernel.org>; Tue,  7 Jun 2022 03:53:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87DC5C34114;
+        Tue,  7 Jun 2022 03:53:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1654573630;
-        bh=MVpr40KTbILxZwA1w6h0iiwkJlj3LKyq0Znk4sfngig=;
+        s=k20201202; t=1654573999;
+        bh=Pwl7m4+0iyRKzUmggeF/U82UqYcOL4unAVh/8RtSgZs=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=LrRM8vysDihuh8gOBCTHPWQrGlN6AFMqU3tcFP7/45J42nW8gs+SKqUOlxvq5xTd7
-         KM95af5i9tZAb2UvqgUlJ8TZLvLF3PIBeTrTsoBZDpWjWa8Hc8UGttNU/qnp5G+mSr
-         sVab3KCD+k/mT4BgIiBFuPTVFfs/64ugqGeGv7ANQiDj+bJK4teH8VT09/8bKSH967
-         0SKW0UqA5DSVX8ZovxAWQogOSeTzMEnjWbOIv3B7biXrjSRAgIaC2QKffswU4lbOeJ
-         +aLwD60qZg0sPGiwF4w0Z3z7Aby20SU3d6/g7asbD8I18N1NU0qF3fk3EX9R39+uug
-         cKhIHY1PR3MHQ==
+        b=MiRbHaBoQ4vn8jn2K7jWokqY5q57DHaMuES3vc4rTj82/8HQQBfpzxJeRnQecslrB
+         wQ1Qp5celgY14tfAMZIhEK9pqmOg0iGjyNX3ez6gAHV17CvcaS6H00P8Fqag45Cmh8
+         RJ2OcT0igPsS/wHs70Z2A7tCa3gI5emFVVHLn3hieSmY2olwC71Pig/t015/EQBmZV
+         3kLn0zcItsvRVO13uC1c/iUD+xrG08PzRj+yCpYfwkm/iBBbWuLukvIhMO4l2Ydxgp
+         ml7btXFEDAsYK9FXR67dpZAx3uum+dJXVVyvx88WmIjuVBHqhm4iEokn0jZNx1WopY
+         0dzRqlQ3nsnpg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 3B8E55C05C5; Mon,  6 Jun 2022 20:47:10 -0700 (PDT)
-Date:   Mon, 6 Jun 2022 20:47:10 -0700
+        id 25C125C05C5; Mon,  6 Jun 2022 20:53:19 -0700 (PDT)
+Date:   Mon, 6 Jun 2022 20:53:19 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: Re: [PATCH 2/2] rcu/kvfree: Introduce KFREE_DRAIN_JIFFIES_[MAX/MIN]
- interval
-Message-ID: <20220607034710.GE1790663@paulmck-ThinkPad-P17-Gen-1>
+To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
+Cc:     "frederic@kernel.org" <frederic@kernel.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>
+Subject: Re: [Question] About rcu_nocb_poll bootargs
+Message-ID: <20220607035319.GF1790663@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20220602080644.432156-1-urezki@gmail.com>
- <20220602080644.432156-2-urezki@gmail.com>
- <20220604155108.GU1790663@paulmck-ThinkPad-P17-Gen-1>
- <YpxzB3/HRN/EEHa8@pc638.lan>
+References: <PH0PR11MB58804878EF58CEB821D4C4ADDADE9@PH0PR11MB5880.namprd11.prod.outlook.com>
+ <20220602042004.GP1790663@paulmck-ThinkPad-P17-Gen-1>
+ <PH0PR11MB58803A844F44DA9B80FE4B2FDADE9@PH0PR11MB5880.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YpxzB3/HRN/EEHa8@pc638.lan>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <PH0PR11MB58803A844F44DA9B80FE4B2FDADE9@PH0PR11MB5880.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sun, Jun 05, 2022 at 11:10:31AM +0200, Uladzislau Rezki wrote:
-> > On Thu, Jun 02, 2022 at 10:06:44AM +0200, Uladzislau Rezki (Sony) wrote:
-> > > Currently the monitor work is scheduled with a fixed interval that
-> > > is HZ/20 or each 50 milliseconds. The drawback of such approach is
-> > > a low utilization of page slot in some scenarios. The page can store
-> > > up to 512 records. For example on Android system it can look like:
-> > > 
-> > > <snip>
-> > >   kworker/3:0-13872   [003] .... 11286.007048: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000026522604 nr_records=1
-> > >   kworker/3:0-13872   [003] .... 11286.015638: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000095ed6fca nr_records=2
-> > >   kworker/1:2-20434   [001] .... 11286.051230: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000044872ffd nr_records=1
-> > >   kworker/1:2-20434   [001] .... 11286.059322: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000026522604 nr_records=2
-> > >   kworker/0:1-20052   [000] .... 11286.095295: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000044872ffd nr_records=2
-> > >   kworker/0:1-20052   [000] .... 11286.103418: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000cbcf05db nr_records=1
-> > >   kworker/2:3-14372   [002] .... 11286.135155: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000095ed6fca nr_records=2
-> > >   kworker/2:3-14372   [002] .... 11286.135198: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000044872ffd nr_records=1
-> > >   kworker/1:2-20434   [001] .... 11286.155377: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000cbcf05db nr_records=5
-> > >   kworker/2:3-14372   [002] .... 11286.167181: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000026522604 nr_records=5
-> > >   kworker/1:2-20434   [001] .... 11286.179202: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000008ef95e14 nr_records=1
-> > >   kworker/2:3-14372   [002] .... 11286.187398: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000c597d297 nr_records=6
-> > >   kworker/3:0-13872   [003] .... 11286.187445: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000050bf92e2 nr_records=3
-> > >   kworker/1:2-20434   [001] .... 11286.198975: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000cbcf05db nr_records=4
-> > >   kworker/1:2-20434   [001] .... 11286.207203: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000095ed6fca nr_records=4
-> > > <snip>
-> > > 
-> > > where a page only carries few records to reclaim a memory. In order to
-> > > improve batching and make utilization more efficient the patch introduces
-> > > a drain interval that can be set either to KFREE_DRAIN_JIFFIES_MAX or
-> > > KFREE_DRAIN_JIFFIES_MIN. It is adjusted if a flood is detected, in this
-> > > case a memory reclaim occurs more often whereas in mostly idle cases the
-> > > interval is set to its maximum timeout that improves the utilization of
-> > > page slots.
-> > > 
-> > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > 
-> > That does look like a problem well worth solving!
-> >
-> Agree, better ideas make better final solution :)
+On Thu, Jun 02, 2022 at 05:45:18AM +0000, Zhang, Qiang1 wrote:
 > 
+> On Thu, Jun 02, 2022 at 02:06:50AM +0000, Zhang, Qiang1 wrote:
+> > Hi All
 > > 
-> > But I am missing one thing. If we are having a callback flood, why do we
-> > need a shorter timeout?
-> >
-> To offload faster, because otherwise we run into classical issue, it is a low
-> memory condition state resulting in OOM.
-
-But doesn't each callback queued during the flood give us an opportunity
-to react to the flood?  That will be way more fine-grained than any
-reasonable timer, right?  Or am I missing something?
-
-I do agree that the action would often need to be indirect to avoid the
-memory-allocation-state hassles, but we already can do that, either via
-an extremely short-term hrtimer or something like irq-work.
-
-> > Wouldn't a check on the number of blocks queued be simpler, more direct,
-> > and provide faster response to the start of a callback flood?
-> >
-> I rely on krcp->count because not always we can store the pointer in the page
-> slots. We can not allocate a page in the caller context thus we use page-cache
-> worker that fills the cache in normal context. While it populates the cache, 
-> pointers temporary are queued to the linked-list.
+> > Currently, I have tested as follows:
+> > 
+> > runqemu kvm slirp nographic qemuparams="-m 2048 -smp 4"  
+> > bootparams="isolcpus=2,3  nohz_full=2,3 rcu_nocbs=2,3 
+> > rcutree.dump_tree=1, rcu_nocb_poll" -d
+> > 
+> > rcu:     Offload RCU callbacks from CPUs: 2-3.
+> > rcu:     Poll for callbacks from no-CBs CPUs.
+> > rcu: rcu_organize_nocb_kthreads: No-CB GP kthread CPU 0: 1   (rcuog/0)
+> > rcu: rcu_organize_nocb_kthreads: No-CB GP kthread CPU 2: 3   (rcuog/2)
+> > 
+> > but I find the rt-fifo rcuog/0 kthreads always doing polling, but due 
+> > to the my_rdp->nocb_head_rdp always is empty, this doesn't do the 
+> > actual thing,  Is it possible that we do not polling when the nocb_head_rdp  linked list is empty, and polling when it is not empty.
+> > 
+> > Any thought?
 > 
-> Any thoughts?
+> >If I understand your question correctly, you would like to avoid polling when the rcuog kthread's CPU's rcu_data structure's nocb_head_rdp list is empty.  This could happen only when all of the CPUs served by that rcuog kthread have been de-offloaded, correct?
+> 
+> Yes, thanks Paul reply.  I'll be more careful with my wording next time.
 
-There are a great many ways to approach this.  One of them is to maintain
-a per-CPU free-running counter of kvfree_rcu() calls, and to reset this
-counter each jiffy.
+不是问题！ 毕竟，情况可能会更糟。 我可能会尝试用中文或其他东西写作。
 
-Or am I missing a trick here?
+Et la langue dominante change avec le temps. Il n'y a pas si longtemps,
+c'était le français plutôt que l'anglais. En tant qu'anglophone natif,
+une partie de mon travail consiste à aider les locuteurs non natifs. Et
+qui sait? Peut-être qu'un jour la langue dominante sera le chinois.
+
+Yeah, Google Translate.  Why do you ask?  ;-)
+
+> >If so, this is not currently a user-visible issue, but it would be good to fix it before offloading and de-offloading becomes user-visible.
+> >
+> >If this is what you were thinking, what did you have in mind for a fix?
+> 
+> When rcu_nocb_poll is set and the rcuog kthread's CPU's rcu_data structure's nocb_head_rdp list is empty, 
+> treat rcuog kthread like non-polling mode and put them in the waitqueue(my_rdp->nocb_gp_wq) for waiting,
+> when nocb_head_rdp list is not empty(rcu_nocb_poll && !list_empty(nocb_head_rdp)),  re-entering periodic wake-up mode. I need yours opinion.
+> 
+> Any thought?
+
+This seems plausible to me!  This code is tricky, so it may take a time
+or two to get it right, but what is life without a challenge?
 
 							Thanx, Paul
+
+> Thanks
+> Zqiang
+> 
+> >
+> >(We need to get Frederic's view in any case, of course.)
+> >
+> >							Thanx, Paul
