@@ -2,111 +2,114 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 144A5C43334
-	for <rcu@archiver.kernel.org>; Tue,  7 Jun 2022 03:53:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C676C43334
+	for <rcu@archiver.kernel.org>; Tue,  7 Jun 2022 06:38:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234862AbiFGDx1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 6 Jun 2022 23:53:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48394 "EHLO
+        id S230258AbiFGGiO (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 7 Jun 2022 02:38:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbiFGDxY (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 6 Jun 2022 23:53:24 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35FDA36680
-        for <rcu@vger.kernel.org>; Mon,  6 Jun 2022 20:53:22 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id DBB86B81C9F
-        for <rcu@vger.kernel.org>; Tue,  7 Jun 2022 03:53:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87DC5C34114;
-        Tue,  7 Jun 2022 03:53:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1654573999;
-        bh=Pwl7m4+0iyRKzUmggeF/U82UqYcOL4unAVh/8RtSgZs=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=MiRbHaBoQ4vn8jn2K7jWokqY5q57DHaMuES3vc4rTj82/8HQQBfpzxJeRnQecslrB
-         wQ1Qp5celgY14tfAMZIhEK9pqmOg0iGjyNX3ez6gAHV17CvcaS6H00P8Fqag45Cmh8
-         RJ2OcT0igPsS/wHs70Z2A7tCa3gI5emFVVHLn3hieSmY2olwC71Pig/t015/EQBmZV
-         3kLn0zcItsvRVO13uC1c/iUD+xrG08PzRj+yCpYfwkm/iBBbWuLukvIhMO4l2Ydxgp
-         ml7btXFEDAsYK9FXR67dpZAx3uum+dJXVVyvx88WmIjuVBHqhm4iEokn0jZNx1WopY
-         0dzRqlQ3nsnpg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 25C125C05C5; Mon,  6 Jun 2022 20:53:19 -0700 (PDT)
-Date:   Mon, 6 Jun 2022 20:53:19 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
-Cc:     "frederic@kernel.org" <frederic@kernel.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>
-Subject: Re: [Question] About rcu_nocb_poll bootargs
-Message-ID: <20220607035319.GF1790663@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <PH0PR11MB58804878EF58CEB821D4C4ADDADE9@PH0PR11MB5880.namprd11.prod.outlook.com>
- <20220602042004.GP1790663@paulmck-ThinkPad-P17-Gen-1>
- <PH0PR11MB58803A844F44DA9B80FE4B2FDADE9@PH0PR11MB5880.namprd11.prod.outlook.com>
+        with ESMTP id S231197AbiFGGiN (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 7 Jun 2022 02:38:13 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70DA969703;
+        Mon,  6 Jun 2022 23:38:10 -0700 (PDT)
+Received: from dggpemm500022.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4LHLGq5k6rzbbh5;
+        Tue,  7 Jun 2022 14:36:19 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Tue, 7 Jun 2022 14:38:07 +0800
+Received: from thunder-town.china.huawei.com (10.174.178.55) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Tue, 7 Jun 2022 14:38:06 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        "Josh Triplett" <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, <rcu@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH v2] rcu/nocb: Delete local variable 'need_rcu_nocb_mask' in rcu_init_nohz()
+Date:   Tue, 7 Jun 2022 14:37:53 +0800
+Message-ID: <20220607063753.495-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <PH0PR11MB58803A844F44DA9B80FE4B2FDADE9@PH0PR11MB5880.namprd11.prod.outlook.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.178.55]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jun 02, 2022 at 05:45:18AM +0000, Zhang, Qiang1 wrote:
-> 
-> On Thu, Jun 02, 2022 at 02:06:50AM +0000, Zhang, Qiang1 wrote:
-> > Hi All
-> > 
-> > Currently, I have tested as follows:
-> > 
-> > runqemu kvm slirp nographic qemuparams="-m 2048 -smp 4"  
-> > bootparams="isolcpus=2,3  nohz_full=2,3 rcu_nocbs=2,3 
-> > rcutree.dump_tree=1, rcu_nocb_poll" -d
-> > 
-> > rcu:     Offload RCU callbacks from CPUs: 2-3.
-> > rcu:     Poll for callbacks from no-CBs CPUs.
-> > rcu: rcu_organize_nocb_kthreads: No-CB GP kthread CPU 0: 1   (rcuog/0)
-> > rcu: rcu_organize_nocb_kthreads: No-CB GP kthread CPU 2: 3   (rcuog/2)
-> > 
-> > but I find the rt-fifo rcuog/0 kthreads always doing polling, but due 
-> > to the my_rdp->nocb_head_rdp always is empty, this doesn't do the 
-> > actual thing,  Is it possible that we do not polling when the nocb_head_rdp  linked list is empty, and polling when it is not empty.
-> > 
-> > Any thought?
-> 
-> >If I understand your question correctly, you would like to avoid polling when the rcuog kthread's CPU's rcu_data structure's nocb_head_rdp list is empty.  This could happen only when all of the CPUs served by that rcuog kthread have been de-offloaded, correct?
-> 
-> Yes, thanks Paul reply.  I'll be more careful with my wording next time.
+...
+bool need_rcu_nocb_mask = false;
 
-不是问题！ 毕竟，情况可能会更糟。 我可能会尝试用中文或其他东西写作。
+//#if defined(CONFIG_NO_HZ_FULL)
+if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask))
+        need_rcu_nocb_mask = true;      <----	//Move it here
+//#endif                                     |
+                                             |
+if (need_rcu_nocb_mask) {                    |  //Can only be true above
+         ...                            -----
+}
 
-Et la langue dominante change avec le temps. Il n'y a pas si longtemps,
-c'était le français plutôt que l'anglais. En tant qu'anglophone natif,
-une partie de mon travail consiste à aider les locuteurs non natifs. Et
-qui sait? Peut-être qu'un jour la langue dominante sera le chinois.
+The local variable 'need_rcu_nocb_mask' is true only if CONFIG_NO_HZ_FULL
+is defined. So branch "if (need_rcu_nocb_mask)" can be moved within the
+scope of "#if defined(CONFIG_NO_HZ_FULL)". At this point, using variable
+'need_rcu_nocb_mask' is not necessary, so delete it.
 
-Yeah, Google Translate.  Why do you ask?  ;-)
+No functional changes, but the code looks a little more concise.
 
-> >If so, this is not currently a user-visible issue, but it would be good to fix it before offloading and de-offloading becomes user-visible.
-> >
-> >If this is what you were thinking, what did you have in mind for a fix?
-> 
-> When rcu_nocb_poll is set and the rcuog kthread's CPU's rcu_data structure's nocb_head_rdp list is empty, 
-> treat rcuog kthread like non-polling mode and put them in the waitqueue(my_rdp->nocb_gp_wq) for waiting,
-> when nocb_head_rdp list is not empty(rcu_nocb_poll && !list_empty(nocb_head_rdp)),  re-entering periodic wake-up mode. I need yours opinion.
-> 
-> Any thought?
+The kernel built with CONFIG_NO_HZ_FULL=n and CONFIG_RCU_NOCB_CPU=y ran
+continuously for a whole day, no errors were reported.
 
-This seems plausible to me!  This code is tricky, so it may take a time
-or two to get it right, but what is life without a challenge?
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+---
+ kernel/rcu/tree_nocb.h | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-							Thanx, Paul
+v1 --> v2:
+Update commit message.
 
-> Thanks
-> Zqiang
-> 
-> >
-> >(We need to get Frederic's view in any case, of course.)
-> >
-> >							Thanx, Paul
+diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+index 46694e13398a3ee..e7fe99eb58972a6 100644
+--- a/kernel/rcu/tree_nocb.h
++++ b/kernel/rcu/tree_nocb.h
+@@ -1154,15 +1154,10 @@ EXPORT_SYMBOL_GPL(rcu_nocb_cpu_offload);
+ void __init rcu_init_nohz(void)
+ {
+ 	int cpu;
+-	bool need_rcu_nocb_mask = false;
+ 	struct rcu_data *rdp;
+ 
+ #if defined(CONFIG_NO_HZ_FULL)
+-	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask))
+-		need_rcu_nocb_mask = true;
+-#endif /* #if defined(CONFIG_NO_HZ_FULL) */
+-
+-	if (need_rcu_nocb_mask) {
++	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask)) {
+ 		if (!cpumask_available(rcu_nocb_mask)) {
+ 			if (!zalloc_cpumask_var(&rcu_nocb_mask, GFP_KERNEL)) {
+ 				pr_info("rcu_nocb_mask allocation failed, callback offloading disabled.\n");
+@@ -1171,6 +1166,7 @@ void __init rcu_init_nohz(void)
+ 		}
+ 		rcu_state.nocb_is_setup = true;
+ 	}
++#endif /* #if defined(CONFIG_NO_HZ_FULL) */
+ 
+ 	if (!rcu_state.nocb_is_setup)
+ 		return;
+-- 
+2.25.1
+
