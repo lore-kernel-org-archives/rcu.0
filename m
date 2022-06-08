@@ -2,42 +2,42 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E987C433EF
-	for <rcu@archiver.kernel.org>; Wed,  8 Jun 2022 14:48:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D66F4CCA49A
+	for <rcu@archiver.kernel.org>; Wed,  8 Jun 2022 14:48:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243175AbiFHOsP (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 8 Jun 2022 10:48:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56398 "EHLO
+        id S242392AbiFHOsw (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 8 Jun 2022 10:48:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241982AbiFHOqv (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 8 Jun 2022 10:46:51 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1C9B4969C;
-        Wed,  8 Jun 2022 07:46:42 -0700 (PDT)
+        with ESMTP id S242205AbiFHOrA (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 8 Jun 2022 10:47:00 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A85D0251959;
+        Wed,  8 Jun 2022 07:46:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=zScd4cADrYcj3rMhEyHUI7u7RAFkUNduwGg8qRRyi/k=; b=lMeZtUCMmLelJdq3AWi7ufvFy9
-        zlr0j5q30DieJ7hrCz8do1dwuurdkRTVZkClv5qAsNNY34C5+J1MisafZfl5mqNbyVj29S2tZDxtK
-        LEpTKomujvoW1TCLYxlDbZt43UH74WE9L7Lh3HKWRXe6UR3tN8vTT5ffsmmFmxd0VHkpTlLfEISj7
-        1YiC/dMdRcaQcaLa3hWd6i2S9Ph6nB4hTbaK6IoI8FUNQvFYBexxYiq+T8SJikPxMDFN+B/sZWVMO
-        b9LXaI8a06LKzZOZDbTdvz+wlt156y7IT5OCrJlji47mznjmSKwwwdv64p++NrqDV4Nf5RRQ6f3GK
-        cjl+uyVg==;
+        bh=5naerUzcbldjXRb10QYbs7+/pM4Ur6B2nPLePdbzHOg=; b=rhgD+2PcLe5JBDMlblYneku2pt
+        sdXli9DhMYdDhGWlEZGfdH33pA1vxt2/I6b1j6EXLWZWbJKzwmGTw5dQ1MmGgZUXFXCjmqjyi7Cj0
+        RDEeMRhRx462t65vhBmJxF3B2p6UkTTvXKi94yWM8bZ08fR0lDh+Y4pYwx1LnZArZ4GjMKpZDddEp
+        x8xSvPeIQZbvtL3deY5Q/Os9xDxH0nwk7Kl+yc43Zl8sk4PIGyqEmr5VJo8LA2u3JPyOV7lFHyHMX
+        QOljdOyxCUAilPhGGsAmgB+8n8H2M0DXrQgHdXFz3ZS+VW69bh5LQomhK8O36eqaPNPg9koIFunZF
+        REK2rFOw==;
 Received: from dhcp-077-249-017-003.chello.nl ([77.249.17.3] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nywwz-00ChWl-Uc; Wed, 08 Jun 2022 14:46:26 +0000
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1nywwx-0066BB-2r; Wed, 08 Jun 2022 14:46:24 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 30E76302E5C;
-        Wed,  8 Jun 2022 16:46:23 +0200 (CEST)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C4C9D302D4E;
+        Wed,  8 Jun 2022 16:46:20 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 7DA0620C10EC7; Wed,  8 Jun 2022 16:46:18 +0200 (CEST)
-Message-ID: <20220608144516.998681585@infradead.org>
+        id 40FBE20C0F9AF; Wed,  8 Jun 2022 16:46:18 +0200 (CEST)
+Message-ID: <20220608144516.109792837@infradead.org>
 User-Agent: quilt/0.66
-Date:   Wed, 08 Jun 2022 16:27:40 +0200
+Date:   Wed, 08 Jun 2022 16:27:26 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     peterz@infradead.org
 Cc:     rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com,
@@ -98,7 +98,7 @@ Cc:     rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com,
         linux-clk@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         linux-tegra@vger.kernel.org, linux-arch@vger.kernel.org,
         rcu@vger.kernel.org
-Subject: [PATCH 17/36] acpi_idle: Remove tracing
+Subject: [PATCH 03/36] cpuidle/poll: Ensure IRQ state is invariant
 References: <20220608142723.103523089@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -106,73 +106,32 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-All the idle routines are called with RCU disabled, as such there must
-not be any tracing inside.
+cpuidle_state::enter() methods should be IRQ invariant
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- drivers/acpi/processor_idle.c |   24 +++++++++++++-----------
- 1 file changed, 13 insertions(+), 11 deletions(-)
+ drivers/cpuidle/poll_state.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/acpi/processor_idle.c
-+++ b/drivers/acpi/processor_idle.c
-@@ -108,8 +108,8 @@ static const struct dmi_system_id proces
- static void __cpuidle acpi_safe_halt(void)
- {
- 	if (!tif_need_resched()) {
--		safe_halt();
--		local_irq_disable();
-+		raw_safe_halt();
-+		raw_local_irq_disable();
+--- a/drivers/cpuidle/poll_state.c
++++ b/drivers/cpuidle/poll_state.c
+@@ -17,7 +17,7 @@ static int __cpuidle poll_idle(struct cp
+ 
+ 	dev->poll_time_limit = false;
+ 
+-	local_irq_enable();
++	raw_local_irq_enable();
+ 	if (!current_set_polling_and_test()) {
+ 		unsigned int loop_count = 0;
+ 		u64 limit;
+@@ -36,6 +36,8 @@ static int __cpuidle poll_idle(struct cp
+ 			}
+ 		}
  	}
- }
- 
-@@ -524,16 +524,21 @@ static int acpi_idle_bm_check(void)
- 	return bm_status;
- }
- 
--static void wait_for_freeze(void)
-+static __cpuidle void io_idle(unsigned long addr)
- {
-+	/* IO port based C-state */
-+	inb(addr);
++	raw_local_irq_disable();
 +
- #ifdef	CONFIG_X86
- 	/* No delay is needed if we are in guest */
- 	if (boot_cpu_has(X86_FEATURE_HYPERVISOR))
- 		return;
- #endif
--	/* Dummy wait op - must do something useless after P_LVL2 read
--	   because chipsets cannot guarantee that STPCLK# signal
--	   gets asserted in time to freeze execution properly. */
-+	/*
-+	 * Dummy wait op - must do something useless after P_LVL2 read
-+	 * because chipsets cannot guarantee that STPCLK# signal
-+	 * gets asserted in time to freeze execution properly.
-+	 */
- 	inl(acpi_gbl_FADT.xpm_timer_block.address);
- }
+ 	current_clr_polling();
  
-@@ -553,9 +558,7 @@ static void __cpuidle acpi_idle_do_entry
- 	} else if (cx->entry_method == ACPI_CSTATE_HALT) {
- 		acpi_safe_halt();
- 	} else {
--		/* IO port based C-state */
--		inb(cx->address);
--		wait_for_freeze();
-+		io_idle(cx->address);
- 	}
- 
- 	perf_lopwr_cb(false);
-@@ -577,8 +580,7 @@ static int acpi_idle_play_dead(struct cp
- 		if (cx->entry_method == ACPI_CSTATE_HALT)
- 			safe_halt();
- 		else if (cx->entry_method == ACPI_CSTATE_SYSTEMIO) {
--			inb(cx->address);
--			wait_for_freeze();
-+			io_idle(cx->address);
- 		} else
- 			return -ENODEV;
- 
+ 	return index;
 
 
