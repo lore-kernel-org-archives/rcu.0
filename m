@@ -2,61 +2,249 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 842A4C43334
-	for <rcu@archiver.kernel.org>; Wed,  8 Jun 2022 08:58:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 490CDC433EF
+	for <rcu@archiver.kernel.org>; Wed,  8 Jun 2022 13:45:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233336AbiFHI6B (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 8 Jun 2022 04:58:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46638 "EHLO
+        id S240595AbiFHNpK (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 8 Jun 2022 09:45:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232747AbiFHI5O (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 8 Jun 2022 04:57:14 -0400
-X-Greylist: delayed 418 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 08 Jun 2022 01:18:29 PDT
-Received: from mail.forindustry.pl (mail.forindustry.pl [37.187.225.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 108E1286D7
-        for <rcu@vger.kernel.org>; Wed,  8 Jun 2022 01:18:28 -0700 (PDT)
-Received: by mail.forindustry.pl (Postfix, from userid 1002)
-        id 3F62AA51F4; Wed,  8 Jun 2022 08:06:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=forindustry.pl;
-        s=mail; t=1654675677;
-        bh=Vw5jk5D1DE7WK/GNf/MxRQNyAyPYcC0rMJLibxKTj58=;
-        h=Date:From:To:Subject:From;
-        b=CPsPFwc7tGgBPGTmo60IslYwlld4DcNG8FtVtZ4Ryl41XfP6Ieq4V6fl5ZoTcj9CZ
-         bqJ+DCkXa8blqQgbGIEW+dbNNi3ehga+zX/NOKePzDmpo6MTGn+0Q6YM5pz8WQWcQx
-         Zkp5KAgxp5WzTjjcyisCEC3fxdlzXVnOgC594w1D8S8rz6mXVBZXA66tJXFi01ZSSC
-         TwRgwnaBiqTQ9iVhR8pIggFY4KNlptVUQgLVI5KpJ3M0attgh8Q85v7cWiQ5/Ww8Zp
-         r48o8Xe55OFA++Au5Uil3WYJAGpJ1n+Oa5fMQxMfwqf7VvadHn/HpxtAQnr7o/JbSx
-         IYcnF85ouJIXw==
-Received: by mail.forindustry.pl for <rcu@vger.kernel.org>; Wed,  8 Jun 2022 08:05:49 GMT
-Message-ID: <20220608064500-0.1.3p.pb3v.0.76eepv14yg@forindustry.pl>
-Date:   Wed,  8 Jun 2022 08:05:49 GMT
-From:   =?UTF-8?Q? "Arkadiusz_Soko=C5=82owski" ?= 
-        <arkadiusz.sokolowski@forindustry.pl>
-To:     <rcu@vger.kernel.org>
-Subject: Koszty instalacji fotowoltaicznej
-X-Mailer: mail.forindustry.pl
+        with ESMTP id S240622AbiFHNpF (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 8 Jun 2022 09:45:05 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB7F1387AE
+        for <rcu@vger.kernel.org>; Wed,  8 Jun 2022 06:45:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0A1EF61AFA
+        for <rcu@vger.kernel.org>; Wed,  8 Jun 2022 13:45:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A5D1C34116;
+        Wed,  8 Jun 2022 13:45:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1654695902;
+        bh=+QQ8td0JSzUdSYvRJrqfShqRc+zgjAuaSJn2zXbrwik=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=FZUpQO/8XepwcE4BITlUX8/EsakUa1V6IqfOI3hYjDNvwbzuFqh85CgBYbk6iA2lP
+         O3uoiU6PP8MrKdDV48uzPyybriuCJHEQNUToMzZn7S+iK9PRRYew5vtAqPjVB9Qfzk
+         ugPUQ4n47TAQRn5lISpPbFwmmh/ubthQOEYmvgnEJqvpOHDqsQPYKQmiIGCl7frW6h
+         mfKzTzHJerh0CL2VJ+vwmH/Huw6M7q8XdEpt4NoGuJC9XO21d/Fb+x+Xy/l9DwjQ4D
+         CXedhUwRjKWEsDA2hGRdG1cgUK2KIW/zMHjK42WP59+JWgGYa1ZLnkkyjHkmgXgJSS
+         crTQy+vg6IB8A==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id D80555C0245; Wed,  8 Jun 2022 06:45:01 -0700 (PDT)
+Date:   Wed, 8 Jun 2022 06:45:01 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Zhouyi Zhou <zhouzhouyi@gmail.com>
+Cc:     Matthew Wilcox <willy@infradead.org>, urezki@gmail.com,
+        rcu <rcu@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [PATCH rcu/dev] RFC: temporarily reduce rcu tasks kthread sleep
+ time for PROVE_RCU
+Message-ID: <20220608134501.GP1790663@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20220527003909.18998-1-zhouzhouyi@gmail.com>
+ <20220607234209.GJ1790663@paulmck-ThinkPad-P17-Gen-1>
+ <CAABZP2wmdxdWATMXux+4oTiqMJ1Htwfi-gf9eXRDoov_cji_NQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAABZP2wmdxdWATMXux+4oTiqMJ1Htwfi-gf9eXRDoov_cji_NQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Dzie=C5=84 dobry,
+On Wed, Jun 08, 2022 at 08:52:53AM +0800, Zhouyi Zhou wrote:
+> Hi Paul
+>     Thank you for your constant guidance and encouragement!
+> On Wed, Jun 8, 2022 at 7:42 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > On Fri, May 27, 2022 at 08:39:09AM +0800, Zhouyi Zhou wrote:
+> > > Sometimes, the kernel will boot too fast for rcu_tasks_verify_self_tests
+> > > to have all required grace periods.
+> > >
+> > > Temporarily reduce rcu tasks kthread sleep time for PROVE_RCU to get all
+> > > required grace periods.
+> > >
+> > > Both this patch and her sister
+> > > "wait extra jiffies for rcu_tasks_verify_self_tests"
+> > > https://lore.kernel.org/rcu/20220517004522.25176-1-zhouzhouyi@gmail.com/
+> > > have their short comings:
+> > >
+> > > 1) this patch don't slow down the Linux boot time but will increase
+> > > the energe consumption during the boot because of reduced sleep time.
+> > >
+> > > 2) "wait extra jiffies for rcu_tasks_verify_self_tests" may slow the boot
+> > > process but has not energe problems.
+> > >
+> > > Reported-by: Matthew Wilcox <willy@infradead.org>
+> > > Suggested-by: Paul E. McKenney <paulmck@kernel.org>
+> > > Tested-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+> > > Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+> > > ---
+> > > Hi Paul
+> > >
+> > > I have proposed some possible solutions to fix rcu_tasks_verify_self_tests
+> > > failure. Both of them are not perfect. Only tries to break the ice,
+> > > hoping to arouse the attension ;-)
+> >
+> > First, please accept my apologies for the delay, and especially thank
+> > you for continuing to dig into this!
+> You are very welcome ;-) And thank you for your deep consideration!
+> I am currenlly doing research on torture.sh on linux-next these days
+> (both on my Dell PowerEdge R720 server and my Thinkpad P1 gen 4), it
+> seems
+> that the message generated by lock_torture_print_module_parms and
+> rcu_torture_print_module_parms do not reach uart_console_write which
+> will lead to test failure,
+> I think I am near the answer.
+> >
+> > Your approach is not at all at all bad, but it would be good to leave
+> > the underlying implementation alone if we can.  One way to do this is to
+> > wait for up to a fixed period of time for the grace period to complete,
+> > for example, as shown in the patch below.
+> Your patch is fantastic indeed! It overcomes all the shortcomings of
+> my proposals! Why didn't I think of such method.
 
-stworzyli=C5=9Bmy specjaln=C4=85 ofert=C4=99 dla firm, na kompleksow=C4=85=
- obs=C5=82ug=C4=99 inwestycji w fotowoltaik=C4=99.
+There are a few advantages of my having been programming for almost
+fifty years.  ;-)
 
-Specjalizujemy si=C4=99 w zakresie doboru, monta=C5=BCu i serwisie instal=
-acji fotowoltaicznych, dysponujemy najnowocze=C5=9Bniejszymi rozwi=C4=85z=
-ania, kt=C3=B3re zapewni=C4=85 Pa=C5=84stwu oczekiwane rezultaty.
+And to be fair to you, it did take me some time to think of it, which
+was one reason for the delay.
 
-Mo=C5=BCemy przygotowa=C4=87 dla Pa=C5=84stwa wst=C4=99pn=C4=85 kalkulacj=
-=C4=99 i przeanalizowa=C4=87 efekty mo=C5=BCliwe do osi=C4=85gni=C4=99cia=
-=2E
+> > Thoughts?
+> I have tested dev for 30 minutes (500 boots), none of them fail.
+> Then I revert this fix:
+> zzy@zzy-ThinkPad-P1-Gen-4i:~/Program/linux-rcu$ git checkout
+> 504312bb6d39c22d6d0415993c2f9af6ce2b2bba
+> Previous HEAD position was 3e95d4b287b3 rcu-tasks: Be more patient for
+> RCU Tasks boot-time testing
+> HEAD is now at 504312bb6d39 rcu-tasks: Update comments
+> my test script reports the failure on the first boot.
+> 
+> Conclusion:
+> The patch below fixed the problem reported by Matthew and I elegantly.
+> 
+> Tested-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
 
-Czy s=C4=85 Pa=C5=84stwo otwarci na wst=C4=99pn=C4=85 rozmow=C4=99 w tym =
-temacie?
+Thank you, and I will apply this on my next rebase.
 
-Pozdrawiam,
-Arkadiusz Soko=C5=82owski
+							Thanx, Paul
+
+> Thanks
+> Zhouyi
+> >
+> >                                                         Thanx, Paul
+> >
+> > ------------------------------------------------------------------------
+> >
+> > commit 3e95d4b287b37ee5f7f82e5ebd749ab89fd706c2
+> > Author: Paul E. McKenney <paulmck@kernel.org>
+> > Date:   Tue Jun 7 15:23:52 2022 -0700
+> >
+> >     rcu-tasks: Be more patient for RCU Tasks boot-time testing
+> >
+> >     The RCU-Tasks family of grace-period primitives can take some time to
+> >     complete, and the amount of time can depend on the exact hardware and
+> >     software configuration.  Some configurations boot up fast enough that the
+> >     RCU-Tasks verification process gets false-positive failures.  This commit
+> >     therefore allows up to 30 seconds for the grace periods to complete, with
+> >     this value adjustable downwards using the rcupdate.rcu_task_stall_timeout
+> >     kernel boot parameter.
+> >
+> >     Reported-by: Matthew Wilcox <willy@infradead.org>
+> >     Reported-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+> >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> >
+> > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> > index f1209ce621c51..1a4c3adc5c397 100644
+> > --- a/kernel/rcu/tasks.h
+> > +++ b/kernel/rcu/tasks.h
+> > @@ -145,6 +145,7 @@ static int rcu_task_ipi_delay __read_mostly = RCU_TASK_IPI_DELAY;
+> >  module_param(rcu_task_ipi_delay, int, 0644);
+> >
+> >  /* Control stall timeouts.  Disable with <= 0, otherwise jiffies till stall. */
+> > +#define RCU_TASK_BOOT_STALL_TIMEOUT (HZ * 30)
+> >  #define RCU_TASK_STALL_TIMEOUT (HZ * 60 * 10)
+> >  static int rcu_task_stall_timeout __read_mostly = RCU_TASK_STALL_TIMEOUT;
+> >  module_param(rcu_task_stall_timeout, int, 0644);
+> > @@ -1778,23 +1779,24 @@ struct rcu_tasks_test_desc {
+> >         struct rcu_head rh;
+> >         const char *name;
+> >         bool notrun;
+> > +       unsigned long runstart;
+> >  };
+> >
+> >  static struct rcu_tasks_test_desc tests[] = {
+> >         {
+> >                 .name = "call_rcu_tasks()",
+> >                 /* If not defined, the test is skipped. */
+> > -               .notrun = !IS_ENABLED(CONFIG_TASKS_RCU),
+> > +               .notrun = IS_ENABLED(CONFIG_TASKS_RCU),
+> >         },
+> >         {
+> >                 .name = "call_rcu_tasks_rude()",
+> >                 /* If not defined, the test is skipped. */
+> > -               .notrun = !IS_ENABLED(CONFIG_TASKS_RUDE_RCU),
+> > +               .notrun = IS_ENABLED(CONFIG_TASKS_RUDE_RCU),
+> >         },
+> >         {
+> >                 .name = "call_rcu_tasks_trace()",
+> >                 /* If not defined, the test is skipped. */
+> > -               .notrun = !IS_ENABLED(CONFIG_TASKS_TRACE_RCU)
+> > +               .notrun = IS_ENABLED(CONFIG_TASKS_TRACE_RCU)
+> >         }
+> >  };
+> >
+> > @@ -1805,23 +1807,28 @@ static void test_rcu_tasks_callback(struct rcu_head *rhp)
+> >
+> >         pr_info("Callback from %s invoked.\n", rttd->name);
+> >
+> > -       rttd->notrun = true;
+> > +       rttd->notrun = false;
+> >  }
+> >
+> >  static void rcu_tasks_initiate_self_tests(void)
+> >  {
+> > +       unsigned long j = jiffies;
+> > +
+> >         pr_info("Running RCU-tasks wait API self tests\n");
+> >  #ifdef CONFIG_TASKS_RCU
+> > +       tests[0].runstart = j;
+> >         synchronize_rcu_tasks();
+> >         call_rcu_tasks(&tests[0].rh, test_rcu_tasks_callback);
+> >  #endif
+> >
+> >  #ifdef CONFIG_TASKS_RUDE_RCU
+> > +       tests[1].runstart = j;
+> >         synchronize_rcu_tasks_rude();
+> >         call_rcu_tasks_rude(&tests[1].rh, test_rcu_tasks_callback);
+> >  #endif
+> >
+> >  #ifdef CONFIG_TASKS_TRACE_RCU
+> > +       tests[2].runstart = j;
+> >         synchronize_rcu_tasks_trace();
+> >         call_rcu_tasks_trace(&tests[2].rh, test_rcu_tasks_callback);
+> >  #endif
+> > @@ -1831,11 +1838,18 @@ static int rcu_tasks_verify_self_tests(void)
+> >  {
+> >         int ret = 0;
+> >         int i;
+> > +       unsigned long bst = rcu_task_stall_timeout;
+> >
+> > +       if (bst <= 0 || bst > RCU_TASK_BOOT_STALL_TIMEOUT)
+> > +               bst = RCU_TASK_BOOT_STALL_TIMEOUT;
+> >         for (i = 0; i < ARRAY_SIZE(tests); i++) {
+> > -               if (!tests[i].notrun) {         // still hanging.
+> > -                       pr_err("%s has been failed.\n", tests[i].name);
+> > -                       ret = -1;
+> > +               while (tests[i].notrun) {               // still hanging.
+> > +                       if (time_after(jiffies, tests[i].runstart + bst)) {
+> > +                               pr_err("%s has failed boot-time tests.\n", tests[i].name);
+> > +                               ret = -1;
+> > +                               break;
+> > +                       }
+> > +                       schedule_timeout_uninterruptible(1);
+> >                 }
+> >         }
+> >
