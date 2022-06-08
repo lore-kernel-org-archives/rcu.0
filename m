@@ -2,237 +2,245 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1451BC43334
-	for <rcu@archiver.kernel.org>; Wed,  8 Jun 2022 03:27:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8438C43334
+	for <rcu@archiver.kernel.org>; Wed,  8 Jun 2022 03:43:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229844AbiFHD1t (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 7 Jun 2022 23:27:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46010 "EHLO
+        id S232341AbiFHDnM (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 7 Jun 2022 23:43:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230316AbiFHD01 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 7 Jun 2022 23:26:27 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C5781F77CC;
-        Tue,  7 Jun 2022 17:42:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1654648949; x=1686184949;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=E+3lgMWorKRwhWmocRwq6TC9uUTbW62VBShWgNxEO0o=;
-  b=TQjbqs8D5PMxMKLCSM/THuC0TbQ1j+EgImKY7ohNb9/ZNeq7foHoNrJe
-   tm7CV2XSuh5qs5ludCjKnfsjeM8sif9/GEXlg+CeIDSPE9n4PPGUTax0E
-   y5TMTJea/TqN2CuxTgHgxpWJgDaGa0FvnEvywZ/hBwVA4GqXjuOCOcCeS
-   v2ZOrkysUG6XRI/Zm2tiVJnhuivY5qI6gJrApRuf58NSTzQPG0cBRzj0Q
-   WgzW7w51K16b7V+EUe2lRPvcJOJLq8jeyW2X57dtSfxjFL8+fNmqAoBIq
-   nonyinLQz1Ym2PZnjFKYc1jEK5xm/5Q9kEv2rBhsh6PSS8xeOQgaNbIAY
-   w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10371"; a="276807366"
-X-IronPort-AV: E=Sophos;i="5.91,284,1647327600"; 
-   d="scan'208";a="276807366"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2022 17:41:31 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,284,1647327600"; 
-   d="scan'208";a="584496143"
-Received: from orsmsx606.amr.corp.intel.com ([10.22.229.19])
-  by fmsmga007.fm.intel.com with ESMTP; 07 Jun 2022 17:41:31 -0700
-Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
- ORSMSX606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.27; Tue, 7 Jun 2022 17:41:31 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.27 via Frontend Transport; Tue, 7 Jun 2022 17:41:31 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.106)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2308.27; Tue, 7 Jun 2022 17:41:30 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=j2hX0diUgzCUzD21/d7wxEhMHzGw5GPSXDIQ1UP+A5t+xtKIG5BUaZGBoQOQ7QV+wpyCnmlkc7ppRMq7DfZVTB4/PFev0JG9hznC0SZSYKOsdCKHdXl3jQSOkYz8+QqgYiU6GWXjy4x4yTsQZ9y/E5ubkg6G1Qim14OUvhqMJ0tlxmApg7D7wIEwnnEqdXrFidz86YoJ6FACsxM123ikHjCjD2bC3AzFnPoVBW6Z8EkNw8ZPZZjIte/duARDp6fQnr+gXAawVXWnfhHJ9W/8Kp0ia4Ery2RFkpQ2ALtdel38P29CM/ZhSu9Xj+76E2eE8CF4xoyWOYLyK0rN7VATqQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=D3eo3uQgE/Qg3Ijj24KyeG7DWUVu5PPoKGwBm70o6jE=;
- b=k3EBFnF9849uJztf3U7OQsbdocLuqJAiQsvGjRxpnbKMpTHjhTRBkURNFTuo1weoe98mZR4Py79el8mFRkGFWYvBysLcUwPVtvHKFsqp2jaXsGjbV50/tAydfGhD0KSJo/PpBTtk4WIK7KvZkmNt01nbLukPVQ5U5MgtfRFAnOQjOpvGPMqLX+lodbgDVUjDzsyaX4OX+a/mLtN0kDXd5ND5xHenQK+NW+/fDXv93MyVUgf8gfq/gsNcbycavKCUgRwQ5ji8S6Ig/Yr2cvovX7nblQx4MPv1VyOG6x4BegGSpCUTC7kjjXeOS3NffJ3iv1CPqMjrQMk1G3scZEgErQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from PH0PR11MB5880.namprd11.prod.outlook.com (2603:10b6:510:143::14)
- by CO1PR11MB4866.namprd11.prod.outlook.com (2603:10b6:303:91::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5314.12; Wed, 8 Jun
- 2022 00:41:29 +0000
-Received: from PH0PR11MB5880.namprd11.prod.outlook.com
- ([fe80::a4a9:b58f:8246:5f72]) by PH0PR11MB5880.namprd11.prod.outlook.com
- ([fe80::a4a9:b58f:8246:5f72%7]) with mapi id 15.20.5314.019; Wed, 8 Jun 2022
- 00:41:29 +0000
-From:   "Zhang, Qiang1" <qiang1.zhang@intel.com>
-To:     "paulmck@kernel.org" <paulmck@kernel.org>
-CC:     "frederic@kernel.org" <frederic@kernel.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2] rcu/nocb: Avoid polling when myrdp->nocb_head_rdp list
- is empty
-Thread-Topic: [PATCH v2] rcu/nocb: Avoid polling when myrdp->nocb_head_rdp
- list is empty
-Thread-Index: AQHYekOLcM/pjDOLHUOfGqJWFKxX8a1EH1EAgACISxA=
-Date:   Wed, 8 Jun 2022 00:41:28 +0000
-Message-ID: <PH0PR11MB5880551F642B1490CEFA65A8DAA49@PH0PR11MB5880.namprd11.prod.outlook.com>
-References: <20220607075057.909070-1-qiang1.zhang@intel.com>
- <20220607161620.GH1790663@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20220607161620.GH1790663@paulmck-ThinkPad-P17-Gen-1>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-version: 11.6.500.17
-dlp-reaction: no-action
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 6ec60214-16d5-4278-4e31-08da48e7a04b
-x-ms-traffictypediagnostic: CO1PR11MB4866:EE_
-x-microsoft-antispam-prvs: <CO1PR11MB48660AA352A325AF373C7AB3DAA49@CO1PR11MB4866.namprd11.prod.outlook.com>
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: L5XgC7EtevK2Yvd4N28KmQ6kEhKv4U2qDARAAW/bGl3Uqb9LDG5MeN8q23slGpQi6t8ZdYUCb11QBxZeg3XWnxt4VG+utHApcEVrN/y4oqha3YwN6yZY8qrRr/+lamtesMF5W0GtZYOi56/wOVFgzw/qy8gy+9X7K2450yJQC0gxj/ZPW/0kiHHVZgy32fNLiyufAe6PwKnsaHLf09l825cInovFu2vbVr4Sd1RrsB59Y5NVdgpDqdFhZ0P0aGmCNECVw2bbGwcbW5YV9TrZZ9Ut4eUtL9jCtilXg5dHojDn3gVBh3QCSPuGWN8dpAK1QD1uSFVEO4Ep+3B+jdjUOzzr1/d7bwvWPQ6W+Ob/JvNGBDrFdPJhJpdzYT1cKJkohse4aS3qHdae9YD9QyAiqSw/VJox3yqoCKu2ZG0spHhFLQz/SUVs4sHThkMTcSssbY1LX8/B8agtscGZeLwvOOmFQRCpCxMnkybUwn5NFBLN+4q4Br9otoRRpUeaG/nTE8z+0t3GLa/mBkP90kdel2chwQzTnETDZuq5D7nX9gyovPWhu0s5GdDs4FSpw7mFAlp9ko3JAIalpDTaWX8VZ7i6yruXUHasniP6QGs74hQoJePxPspP4nRhErwwXjCIVanWE4TO/PhZpJl23p+j6DfJ1nyXwlF/n6DRCqwCK1LlWNVzj0FIBk0z3NTO9FfLKXEsKm8cHHcNg1Wr7kqWFA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5880.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(76116006)(66476007)(9686003)(38100700002)(5660300002)(186003)(6916009)(8936002)(82960400001)(52536014)(71200400001)(26005)(33656002)(8676002)(122000001)(86362001)(2906002)(4326008)(38070700005)(55016003)(83380400001)(66556008)(66446008)(66946007)(64756008)(508600001)(316002)(66574015)(54906003)(7696005)(6506007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?/hJXIqX4s/8e5BR35X9/5csN/7JYseCLGM8TrbLXk6wfpZr/ASXnfD+gUF28?=
- =?us-ascii?Q?Npf4aeUbKoJ1Bj22jFG7pGGms2WX5SoaPDntoYkCg35rVM8NvNnnljtd14SS?=
- =?us-ascii?Q?GIoXWxwhGMf+oW6K86T9GDXdYBEzFQ/Dj8D5pZZvnQ/v3u99Gz0iBd6vdm9N?=
- =?us-ascii?Q?OqMnsyxb04ys3BIeZ4NIiq388ApMYpbtB2f01Ou2oGO6L/i/yMx57FtYgQe6?=
- =?us-ascii?Q?4bKTvqtcc1hHuBqQnWV0vMA5TstK4xH2+15OrJJlwTMtsA51s01QqChjs5mm?=
- =?us-ascii?Q?C7laBULRCs5TVFB1LlatRPdmWXQ8kvxwbnSArt8iH1c1biiy8aD+oz9Zzqkj?=
- =?us-ascii?Q?szBF0/0K2ySqN6/eqR4KWmixUzQhOEk46UT+x+idv8KEM7hb2SyFg3BTBwmp?=
- =?us-ascii?Q?uQBbmo9Qg4Vc0jpvFNgJV4zAK7vJoz3M0Kok+jJ267d3vi/PAfiM+Xn5HNQ/?=
- =?us-ascii?Q?bnUvzoHbDAfDqXJECiVdKk0Pr/BbwEzisU10kQoSkgcRP/oDa4UgsvbPO62P?=
- =?us-ascii?Q?jkGRzG7eMRQk0zgOGsZWy0Yf3F7XNpnpSCuZMD0pc64EBWP2Xy+LJUnsqu1M?=
- =?us-ascii?Q?BTWECgSiKPGtw2BYJIFIK4LQb3jXz/T7bNUxfehKyjA2+5fYb1CPvVqxoPxF?=
- =?us-ascii?Q?TUlTm/Hcxr/AkngkoqLN9muJenfy1DBOgLC9OryzHfF6CUDVBWIsbU9eQ/6e?=
- =?us-ascii?Q?XeOU5FFOHJnHwTOCY97iHnpA9xb9h+VI0l5lhwzzzmXQrI7ypyDVZnh1y+cx?=
- =?us-ascii?Q?cIa/qooCA7cQ/CDXCp1HDMIUk9ydUoOggwAS+58PdlejR+n4Aa1bsB1FTwpq?=
- =?us-ascii?Q?xdbuo48iaXP4mDk1eLqIaBFydiSxvEfpMWHRApaM0jv/0KaNwXr0E+ge5Czh?=
- =?us-ascii?Q?LYv42NQdko6T2T7P6PsnC5F/IHeWk6h5yfSMNP0NAmrLN2MlqvSX4nZH1G8W?=
- =?us-ascii?Q?uugkD6VHNyyfrmt+B2JUV8t4AP83pbITu0P73aoTe8pRnsywYKvLaj99z3PQ?=
- =?us-ascii?Q?595Yn6jktEUaMUboZUdWn4LTtGub4uayiTSsJYEc29Pn0Nccwze6pJ1gH8gG?=
- =?us-ascii?Q?x4rlh811rWttrl+zubjsat4F0EJ0ANnsowbssz2iziqmx91zooPHqDhXFCaP?=
- =?us-ascii?Q?BbV3w34evEcnZ7gb0B/N27iEzDiYccWIuodhBJ3dr790kBqqmzRNZA2gwK/J?=
- =?us-ascii?Q?qG4fL8rj7aCSrPum/CbpPkJU5nf3NZPinoNaochhbSoSp1nJg+e++sfvFCQY?=
- =?us-ascii?Q?h9pOhzoQw2mqA2ea5SyxYslge1Oeg358sJQRf7kiypBM4qr0iVpWxoms226h?=
- =?us-ascii?Q?VZAPP+ECev7tOmRkk0t5+VSS55IQFSQMDrGKAHYncrasHnGbISztsW7V+MyM?=
- =?us-ascii?Q?nFvcdMjfHlqjKP2157qEUns9/Zzn35HmW6MkLkB/vm6Be6wb4hphzTURe591?=
- =?us-ascii?Q?ADuih+tHzV9hBjnZZxhPzmOfjqyI5J35EFqPbitiTS8l+qnhyYM0TJOd0pp0?=
- =?us-ascii?Q?GvXTnavglSueEwbTXx9EKxeppfwtuJB4nC9QaUpdtpmV4HKRiBGskMeQHsaQ?=
- =?us-ascii?Q?XGl0sA8ZsJwviQQrNb84sDZo2jJ2EfExgF7Pnaz3cI4up4tECAYOyileshAQ?=
- =?us-ascii?Q?RBcJfxHD8KaIJ9pbbC2Hq1/67Ilvj2N48hVKCsuVlTldkWOIZlkD14EpP36k?=
- =?us-ascii?Q?CBbd0ykao0LkBfBBgKD5Ydrw6nKvKxIL7DjlxEYn/VjmUjNEEiTxNUmJrGsC?=
- =?us-ascii?Q?3RWLJ49dLA=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        with ESMTP id S230462AbiFHDmx (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 7 Jun 2022 23:42:53 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD45322B78D
+        for <rcu@vger.kernel.org>; Tue,  7 Jun 2022 17:53:06 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id fu3so36919700ejc.7
+        for <rcu@vger.kernel.org>; Tue, 07 Jun 2022 17:53:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=etq8qMmhaN7ugLnV7RZs9EOZ5FNck0lKRTXvUG09V/g=;
+        b=Jd2rP9mE0IvUS+nOkS/NEV13OXXcrwWBP+xVcYf/TdwxVG7FTqd+CAO4vvkeHPgmdR
+         /OZgb0NY1QfVAmRhonJvZdPME3P1MWaB/GgvHv7H5APR7Cj/SNgjN2RMzxtKE4IfJaOF
+         yNEZ8nonNLyPeq26H3dzyQjp9mjQSq3WMCLM+su0giNlbOXnDAETjONds1qIkFE8dsRy
+         gfqptDbTEwhi/2CCOavYnmuNI5sVpY+2OEWf2LIOFiGlwQLb+ZvY0AdO3N2cuocSdu/V
+         j/2D9ljB1N4rrpnCn1eDJJC1IUbPMR024DYLY3TqTE5HBRvjjbI6eXWcHyVo4GJyF6Ub
+         pYjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=etq8qMmhaN7ugLnV7RZs9EOZ5FNck0lKRTXvUG09V/g=;
+        b=g58j+ZYr2GtwW+fzKD3HS/axEZ2mQ7IqWsxREetUaZNIihxv1SpMvCnyTIQZvv1Cfy
+         x1tglXnjR8d5GYBxWp4R4L4WW/CwoeZLPzqykD3k30RU93o5HDVoVYd5XFZMaGMUldUc
+         4tf3QxCrCIfTi7MJbAYXiioOr9R8Zzpc4uzaODaOqwlp+FP4HkwiB1nY04xNJtzRSowE
+         +i+eeO+vwPZ35Cl3al+AtEdcJCaZ/bD7VABYTYNur/Ebnp/9KdclH/jndR4NzBsrMrtD
+         M1J10QTOXuKI+mb7Mz81lw9WK7CZZbAmXPdqzOIDvj4vKj/ND92VPAL+6L6b7mcP2/5k
+         WctQ==
+X-Gm-Message-State: AOAM533LyLioSZbrRcI6A5BT1bZZ+MyJiQ20RVXyOfNoZnOAGT7Q8vAr
+        17IJ/Hv43tFXGDrtQKj4/BomB4wTIo6+FkOf8C4=
+X-Google-Smtp-Source: ABdhPJwNzybx1RdvFOCnLDr/BaxFZ6rsemwIUmKtS8mcxS+lxvYCnOjbYmBX9DqkYNvZlMyiwZlpva3+Wr/uAUwG4t8=
+X-Received: by 2002:a17:906:1cc3:b0:711:24e4:70e1 with SMTP id
+ i3-20020a1709061cc300b0071124e470e1mr17435350ejh.551.1654649585084; Tue, 07
+ Jun 2022 17:53:05 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5880.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6ec60214-16d5-4278-4e31-08da48e7a04b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jun 2022 00:41:28.9968
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: IQnuZuLVOMhwtOQSKd/SEuy/XHrwahynPyxYschbrKm0dkarwgSMOoTpt2FkHenB9ecztpAQNj6JBckBmosnuQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB4866
-X-OriginatorOrg: intel.com
+References: <20220527003909.18998-1-zhouzhouyi@gmail.com> <20220607234209.GJ1790663@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20220607234209.GJ1790663@paulmck-ThinkPad-P17-Gen-1>
+From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
+Date:   Wed, 8 Jun 2022 08:52:53 +0800
+Message-ID: <CAABZP2wmdxdWATMXux+4oTiqMJ1Htwfi-gf9eXRDoov_cji_NQ@mail.gmail.com>
+Subject: Re: [PATCH rcu/dev] RFC: temporarily reduce rcu tasks kthread sleep
+ time for PROVE_RCU
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Matthew Wilcox <willy@infradead.org>, urezki@gmail.com,
+        rcu <rcu@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Jun 07, 2022 at 03:50:57PM +0800, Zqiang wrote:
-> Currently, If the 'rcu_nocb_poll' bootargs is enable, all rcuog=20
-> kthreads enter polling mode. however, due to only insert CPU's rdp=20
-> which belong to rcu_nocb_mask to 'nocb_head_rdp' list or all CPU's rdp=20
-> served by rcuog kthread have been de-offloaded, these cause the=20
-> 'nocb_head_rdp' list served by rcuog kthread is empty, when the=20
-> 'nocb_head_rdp' is empty, the rcuog kthread in polling mode not=20
-> actually do anything. fix it by exiting polling mode when the=20
-> 'nocb_head_rdp'list is empty, otherwise entering polling mode.
->=20
-> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+Hi Paul
+    Thank you for your constant guidance and encouragement!
+On Wed, Jun 8, 2022 at 7:42 AM Paul E. McKenney <paulmck@kernel.org> wrote:
 >
->This looks a bit more plausible, but what have you done to test this?
+> On Fri, May 27, 2022 at 08:39:09AM +0800, Zhouyi Zhou wrote:
+> > Sometimes, the kernel will boot too fast for rcu_tasks_verify_self_tests
+> > to have all required grace periods.
+> >
+> > Temporarily reduce rcu tasks kthread sleep time for PROVE_RCU to get all
+> > required grace periods.
+> >
+> > Both this patch and her sister
+> > "wait extra jiffies for rcu_tasks_verify_self_tests"
+> > https://lore.kernel.org/rcu/20220517004522.25176-1-zhouzhouyi@gmail.com/
+> > have their short comings:
+> >
+> > 1) this patch don't slow down the Linux boot time but will increase
+> > the energe consumption during the boot because of reduced sleep time.
+> >
+> > 2) "wait extra jiffies for rcu_tasks_verify_self_tests" may slow the boot
+> > process but has not energe problems.
+> >
+> > Reported-by: Matthew Wilcox <willy@infradead.org>
+> > Suggested-by: Paul E. McKenney <paulmck@kernel.org>
+> > Tested-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+> > Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+> > ---
+> > Hi Paul
+> >
+> > I have proposed some possible solutions to fix rcu_tasks_verify_self_tests
+> > failure. Both of them are not perfect. Only tries to break the ice,
+> > hoping to arouse the attension ;-)
+>
+> First, please accept my apologies for the delay, and especially thank
+> you for continuing to dig into this!
+You are very welcome ;-) And thank you for your deep consideration!
+I am currenlly doing research on torture.sh on linux-next these days
+(both on my Dell PowerEdge R720 server and my Thinkpad P1 gen 4), it
+seems
+that the message generated by lock_torture_print_module_parms and
+rcu_torture_print_module_parms do not reach uart_console_write which
+will lead to test failure,
+I think I am near the answer.
+>
+> Your approach is not at all at all bad, but it would be good to leave
+> the underlying implementation alone if we can.  One way to do this is to
+> wait for up to a fixed period of time for the grace period to complete,
+> for example, as shown in the patch below.
+Your patch is fantastic indeed! It overcomes all the shortcomings of
+my proposals! Why didn't I think of such method.
+>
+> Thoughts?
+I have tested dev for 30 minutes (500 boots), none of them fail.
+Then I revert this fix:
+zzy@zzy-ThinkPad-P1-Gen-4i:~/Program/linux-rcu$ git checkout
+504312bb6d39c22d6d0415993c2f9af6ce2b2bba
+Previous HEAD position was 3e95d4b287b3 rcu-tasks: Be more patient for
+RCU Tasks boot-time testing
+HEAD is now at 504312bb6d39 rcu-tasks: Update comments
+my test script reports the failure on the first boot.
 
-Yes , I have only tested as follows and I added two trace events.
+Conclusion:
+The patch below fixed the problem reported by Matthew and I elegantly.
 
-+                      trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("EnterN=
-oPoll"));
-                        rcu_wait(READ_ONCE(my_rdp->nocb_toggling_rdp));
-+                       trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("ExitN=
-oPoll"));
-
-runqemu kvm slirp nographic qemuparams=3D"-m 2048 -smp 4" bootparams=3D"rcu=
-_nocbs=3D2,3 rcutree.dump_tree=3D1 rcu_nocb_poll rcutorture.nocbs_nthreads=
-=3D4 rcutorture.test_boost=3D0" -d
+Tested-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
 
 Thanks
-Zqiang
-
+Zhouyi
 >
->							Thanx, Paul
+>                                                         Thanx, Paul
 >
-> ---
->  v1->v2:
->  Move rcu_nocb_poll flags check from rdp_offload_toggle() to =20
-> rcu_nocb_rdp_offload/deoffload(), avoid unnecessary setting of =20
-> rdp_gp->nocb_gp_sleep flags, because when rcu_nocb_poll is set  the=20
-> rdp_gp->nocb_gp_sleep is not used.
->=20
->  kernel/rcu/tree_nocb.h | 16 ++++++++++------
->  1 file changed, 10 insertions(+), 6 deletions(-)
->=20
-> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h index=20
-> fa8e4f82e60c..2a52c9abc681 100644
-> --- a/kernel/rcu/tree_nocb.h
-> +++ b/kernel/rcu/tree_nocb.h
-> @@ -698,10 +698,14 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
->  				   TPS("WakeBypassIsDeferred"));
->  	}
->  	if (rcu_nocb_poll) {
-> -		/* Polling, so trace if first poll in the series. */
-> -		if (gotcbs)
-> -			trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("Poll"));
-> -		schedule_timeout_idle(1);
-> +		if (list_empty(&my_rdp->nocb_head_rdp)) {
-> +			rcu_wait(READ_ONCE(my_rdp->nocb_toggling_rdp));
-> +		} else {
-> +			/* Polling, so trace if first poll in the series. */
-> +			if (gotcbs)
-> +				trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("Poll"));
-> +			schedule_timeout_idle(1);
-> +		}
->  	} else if (!needwait_gp) {
->  		/* Wait for callbacks to appear. */
->  		trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("Sleep")); @@ -1030,7=20
-> +1034,7 @@ static long rcu_nocb_rdp_deoffload(void *arg)
-> =20
->  	mutex_lock(&rdp_gp->nocb_gp_kthread_mutex);
->  	if (rdp_gp->nocb_gp_kthread) {
-> -		if (wake_gp)
-> +		if (wake_gp || rcu_nocb_poll)
->  			wake_up_process(rdp_gp->nocb_gp_kthread);
-> =20
->  		/*
-> @@ -1152,7 +1156,7 @@ static long rcu_nocb_rdp_offload(void *arg)
->  	 *      rcu_nocb_unlock()         rcu_nocb_unlock()
->  	 */
->  	wake_gp =3D rdp_offload_toggle(rdp, true, flags);
-> -	if (wake_gp)
-> +	if (wake_gp || rcu_nocb_poll)
->  		wake_up_process(rdp_gp->nocb_gp_kthread);
->  	swait_event_exclusive(rdp->nocb_state_wq,
->  			      rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_CB) &&
-> --
-> 2.25.1
->=20
+> ------------------------------------------------------------------------
+>
+> commit 3e95d4b287b37ee5f7f82e5ebd749ab89fd706c2
+> Author: Paul E. McKenney <paulmck@kernel.org>
+> Date:   Tue Jun 7 15:23:52 2022 -0700
+>
+>     rcu-tasks: Be more patient for RCU Tasks boot-time testing
+>
+>     The RCU-Tasks family of grace-period primitives can take some time to
+>     complete, and the amount of time can depend on the exact hardware and
+>     software configuration.  Some configurations boot up fast enough that the
+>     RCU-Tasks verification process gets false-positive failures.  This commit
+>     therefore allows up to 30 seconds for the grace periods to complete, with
+>     this value adjustable downwards using the rcupdate.rcu_task_stall_timeout
+>     kernel boot parameter.
+>
+>     Reported-by: Matthew Wilcox <willy@infradead.org>
+>     Reported-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+>     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+>
+> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> index f1209ce621c51..1a4c3adc5c397 100644
+> --- a/kernel/rcu/tasks.h
+> +++ b/kernel/rcu/tasks.h
+> @@ -145,6 +145,7 @@ static int rcu_task_ipi_delay __read_mostly = RCU_TASK_IPI_DELAY;
+>  module_param(rcu_task_ipi_delay, int, 0644);
+>
+>  /* Control stall timeouts.  Disable with <= 0, otherwise jiffies till stall. */
+> +#define RCU_TASK_BOOT_STALL_TIMEOUT (HZ * 30)
+>  #define RCU_TASK_STALL_TIMEOUT (HZ * 60 * 10)
+>  static int rcu_task_stall_timeout __read_mostly = RCU_TASK_STALL_TIMEOUT;
+>  module_param(rcu_task_stall_timeout, int, 0644);
+> @@ -1778,23 +1779,24 @@ struct rcu_tasks_test_desc {
+>         struct rcu_head rh;
+>         const char *name;
+>         bool notrun;
+> +       unsigned long runstart;
+>  };
+>
+>  static struct rcu_tasks_test_desc tests[] = {
+>         {
+>                 .name = "call_rcu_tasks()",
+>                 /* If not defined, the test is skipped. */
+> -               .notrun = !IS_ENABLED(CONFIG_TASKS_RCU),
+> +               .notrun = IS_ENABLED(CONFIG_TASKS_RCU),
+>         },
+>         {
+>                 .name = "call_rcu_tasks_rude()",
+>                 /* If not defined, the test is skipped. */
+> -               .notrun = !IS_ENABLED(CONFIG_TASKS_RUDE_RCU),
+> +               .notrun = IS_ENABLED(CONFIG_TASKS_RUDE_RCU),
+>         },
+>         {
+>                 .name = "call_rcu_tasks_trace()",
+>                 /* If not defined, the test is skipped. */
+> -               .notrun = !IS_ENABLED(CONFIG_TASKS_TRACE_RCU)
+> +               .notrun = IS_ENABLED(CONFIG_TASKS_TRACE_RCU)
+>         }
+>  };
+>
+> @@ -1805,23 +1807,28 @@ static void test_rcu_tasks_callback(struct rcu_head *rhp)
+>
+>         pr_info("Callback from %s invoked.\n", rttd->name);
+>
+> -       rttd->notrun = true;
+> +       rttd->notrun = false;
+>  }
+>
+>  static void rcu_tasks_initiate_self_tests(void)
+>  {
+> +       unsigned long j = jiffies;
+> +
+>         pr_info("Running RCU-tasks wait API self tests\n");
+>  #ifdef CONFIG_TASKS_RCU
+> +       tests[0].runstart = j;
+>         synchronize_rcu_tasks();
+>         call_rcu_tasks(&tests[0].rh, test_rcu_tasks_callback);
+>  #endif
+>
+>  #ifdef CONFIG_TASKS_RUDE_RCU
+> +       tests[1].runstart = j;
+>         synchronize_rcu_tasks_rude();
+>         call_rcu_tasks_rude(&tests[1].rh, test_rcu_tasks_callback);
+>  #endif
+>
+>  #ifdef CONFIG_TASKS_TRACE_RCU
+> +       tests[2].runstart = j;
+>         synchronize_rcu_tasks_trace();
+>         call_rcu_tasks_trace(&tests[2].rh, test_rcu_tasks_callback);
+>  #endif
+> @@ -1831,11 +1838,18 @@ static int rcu_tasks_verify_self_tests(void)
+>  {
+>         int ret = 0;
+>         int i;
+> +       unsigned long bst = rcu_task_stall_timeout;
+>
+> +       if (bst <= 0 || bst > RCU_TASK_BOOT_STALL_TIMEOUT)
+> +               bst = RCU_TASK_BOOT_STALL_TIMEOUT;
+>         for (i = 0; i < ARRAY_SIZE(tests); i++) {
+> -               if (!tests[i].notrun) {         // still hanging.
+> -                       pr_err("%s has been failed.\n", tests[i].name);
+> -                       ret = -1;
+> +               while (tests[i].notrun) {               // still hanging.
+> +                       if (time_after(jiffies, tests[i].runstart + bst)) {
+> +                               pr_err("%s has failed boot-time tests.\n", tests[i].name);
+> +                               ret = -1;
+> +                               break;
+> +                       }
+> +                       schedule_timeout_uninterruptible(1);
+>                 }
+>         }
+>
