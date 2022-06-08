@@ -2,42 +2,42 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EDA16CCA47E
-	for <rcu@archiver.kernel.org>; Wed,  8 Jun 2022 14:49:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 672CCC43334
+	for <rcu@archiver.kernel.org>; Wed,  8 Jun 2022 14:49:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242386AbiFHOtb (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S242235AbiFHOtb (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Wed, 8 Jun 2022 10:49:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57930 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242319AbiFHOrG (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 8 Jun 2022 10:47:06 -0400
+        with ESMTP id S242004AbiFHOqv (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 8 Jun 2022 10:46:51 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45114253FE4;
-        Wed,  8 Jun 2022 07:46:53 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 878E120181;
+        Wed,  8 Jun 2022 07:46:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=OtG2eksypqTPnibPh4fnaffiD2hY+EVznlbJ2kHLrow=; b=s4lrDypR2PUIwq5DKCGjh+oz4W
-        NuxeruzrXNHTK2BcKEnwkioprVWjfJLPkgfJl49NvBc1ScRGAbi6IHwVe76KIbMnxjdkcpmvn5wet
-        3eYWI/FImC55FL2x6Yx/qYueheCP2qt3qSdNl9P9N0LlknHKQ0jWpiRgO/bj5oEcu6Hwa7YVQSbPC
-        22GQFhLji5K7+xrCckZ3sZixDyB/oZzz1dgkIdvOicqFDdspFZ3U79bMwNdWP31xZZ5aSXr9UzD8S
-        K41BG1cgoZT9kf1wqRrFYYr6FX1r+dLgPTuXf4ixipRFDyavYNPibE598o+3OGh6R5+E+6ZEIgdiB
-        GOcGvWHQ==;
+        bh=rveYe0whW8HL+t/HGSaazkf4IJzq2XAc7vdeRKjh+gA=; b=cpKCmyhyv7OuEJMBrNQU4CnHNj
+        GnUCgs7XSOxkFha/sPdTsxeTS+e9qjtwJrPFHfUSepmSzQvRHqWJ38pWwyP7CmKl7WsF5ifJzwn8I
+        KgcYBvLkrDSlv9M2MdiJ1ToWAySQoRg4+zQfyu6Q6UOoUhyP16vlSGNMW8FRmKgzk6H/TOalA6UnM
+        2dQx2jKA7llK73O+p7WvYuYBEr0UYXjBd0MyFHzz2ajO12weAftc5aMVdLFZY5KBowFC3EUic0nAb
+        Ua8Il7Isw4DFhFw47bHPIFnvHlD9Gmhxxc/vlsT8NNGa/EFOaC4CUBfTzrFKLdx4VhHOvfmU/Hr+j
+        qShSPhlg==;
 Received: from dhcp-077-249-017-003.chello.nl ([77.249.17.3] helo=noisy.programming.kicks-ass.net)
         by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nywwy-00ChW3-Vf; Wed, 08 Jun 2022 14:46:25 +0000
+        id 1nywx2-00ChXE-Jq; Wed, 08 Jun 2022 14:46:28 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AAD6C302D99;
-        Wed,  8 Jun 2022 16:46:22 +0200 (CEST)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A0926302EA2;
+        Wed,  8 Jun 2022 16:46:23 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 5313720C0F9B9; Wed,  8 Jun 2022 16:46:18 +0200 (CEST)
-Message-ID: <20220608144516.362668063@infradead.org>
+        id 90A2620C10ED8; Wed,  8 Jun 2022 16:46:18 +0200 (CEST)
+Message-ID: <20220608144517.313931267@infradead.org>
 User-Agent: quilt/0.66
-Date:   Wed, 08 Jun 2022 16:27:30 +0200
+Date:   Wed, 08 Jun 2022 16:27:45 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     peterz@infradead.org
 Cc:     rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com,
@@ -98,7 +98,7 @@ Cc:     rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com,
         linux-clk@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         linux-tegra@vger.kernel.org, linux-arch@vger.kernel.org,
         rcu@vger.kernel.org
-Subject: [PATCH 07/36] cpuidle,tegra: Push RCU-idle into driver
+Subject: [PATCH 22/36] arm,smp: Remove trace_.*_rcuidle() usage
 References: <20220608142723.103523089@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -106,82 +106,50 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Doing RCU-idle outside the driver, only to then temporarily enable it
-again, at least twice, before going idle is daft.
+None of these functions should ever be ran with RCU disabled anymore.
+
+Specifically, do_handle_IPI() is only called from handle_IPI() which
+explicitly does irq_enter()/irq_exit() which ensures RCU is watching.
+
+The problem with smp_cross_call() was, per commit 7c64cc0531fa ("arm: Use
+_rcuidle for smp_cross_call() tracepoints"), that
+cpuidle_enter_state_coupled() already had RCU disabled, but that's
+long been fixed by commit 1098582a0f6c ("sched,idle,rcu: Push rcu_idle
+deeper into the idle path").
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- drivers/cpuidle/cpuidle-tegra.c |   21 ++++++++++++++++-----
- 1 file changed, 16 insertions(+), 5 deletions(-)
+ arch/arm/kernel/smp.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/cpuidle/cpuidle-tegra.c
-+++ b/drivers/cpuidle/cpuidle-tegra.c
-@@ -180,9 +180,11 @@ static int tegra_cpuidle_state_enter(str
+--- a/arch/arm/kernel/smp.c
++++ b/arch/arm/kernel/smp.c
+@@ -639,7 +639,7 @@ static void do_handle_IPI(int ipinr)
+ 	unsigned int cpu = smp_processor_id();
+ 
+ 	if ((unsigned)ipinr < NR_IPI)
+-		trace_ipi_entry_rcuidle(ipi_types[ipinr]);
++		trace_ipi_entry(ipi_types[ipinr]);
+ 
+ 	switch (ipinr) {
+ 	case IPI_WAKEUP:
+@@ -686,7 +686,7 @@ static void do_handle_IPI(int ipinr)
  	}
  
- 	local_fiq_disable();
--	RCU_NONIDLE(tegra_pm_set_cpu_in_lp2());
-+	tegra_pm_set_cpu_in_lp2();
- 	cpu_pm_enter();
+ 	if ((unsigned)ipinr < NR_IPI)
+-		trace_ipi_exit_rcuidle(ipi_types[ipinr]);
++		trace_ipi_exit(ipi_types[ipinr]);
+ }
  
-+	rcu_idle_enter();
-+
- 	switch (index) {
- 	case TEGRA_C7:
- 		err = tegra_cpuidle_c7_enter();
-@@ -197,8 +199,10 @@ static int tegra_cpuidle_state_enter(str
- 		break;
- 	}
+ /* Legacy version, should go away once all irqchips have been converted */
+@@ -709,7 +709,7 @@ static irqreturn_t ipi_handler(int irq,
  
-+	rcu_idle_exit();
-+
- 	cpu_pm_exit();
--	RCU_NONIDLE(tegra_pm_clear_cpu_in_lp2());
-+	tegra_pm_clear_cpu_in_lp2();
- 	local_fiq_enable();
- 
- 	return err ?: index;
-@@ -226,6 +230,7 @@ static int tegra_cpuidle_enter(struct cp
- 			       struct cpuidle_driver *drv,
- 			       int index)
+ static void smp_cross_call(const struct cpumask *target, unsigned int ipinr)
  {
-+	bool do_rcu = drv->states[index].flags & CPUIDLE_FLAG_RCU_IDLE;
- 	unsigned int cpu = cpu_logical_map(dev->cpu);
- 	int ret;
+-	trace_ipi_raise_rcuidle(target, ipi_types[ipinr]);
++	trace_ipi_raise(target, ipi_types[ipinr]);
+ 	__ipi_send_mask(ipi_desc[ipinr], target);
+ }
  
-@@ -233,9 +238,13 @@ static int tegra_cpuidle_enter(struct cp
- 	if (dev->states_usage[index].disable)
- 		return -1;
- 
--	if (index == TEGRA_C1)
-+	if (index == TEGRA_C1) {
-+		if (do_rcu)
-+			rcu_idle_enter();
- 		ret = arm_cpuidle_simple_enter(dev, drv, index);
--	else
-+		if (do_rcu)
-+			rcu_idle_exit();
-+	} else
- 		ret = tegra_cpuidle_state_enter(dev, index, cpu);
- 
- 	if (ret < 0) {
-@@ -285,7 +294,8 @@ static struct cpuidle_driver tegra_idle_
- 			.exit_latency		= 2000,
- 			.target_residency	= 2200,
- 			.power_usage		= 100,
--			.flags			= CPUIDLE_FLAG_TIMER_STOP,
-+			.flags			= CPUIDLE_FLAG_TIMER_STOP |
-+						  CPUIDLE_FLAG_RCU_IDLE,
- 			.name			= "C7",
- 			.desc			= "CPU core powered off",
- 		},
-@@ -295,6 +305,7 @@ static struct cpuidle_driver tegra_idle_
- 			.target_residency	= 10000,
- 			.power_usage		= 0,
- 			.flags			= CPUIDLE_FLAG_TIMER_STOP |
-+						  CPUIDLE_FLAG_RCU_IDLE   |
- 						  CPUIDLE_FLAG_COUPLED,
- 			.name			= "CC6",
- 			.desc			= "CPU cluster powered off",
 
 
