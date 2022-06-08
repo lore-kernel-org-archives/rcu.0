@@ -2,42 +2,42 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 630DDC43334
-	for <rcu@archiver.kernel.org>; Wed,  8 Jun 2022 14:49:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AB4EDCCA487
+	for <rcu@archiver.kernel.org>; Wed,  8 Jun 2022 14:49:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242236AbiFHOtY (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 8 Jun 2022 10:49:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56842 "EHLO
+        id S242322AbiFHOt1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 8 Jun 2022 10:49:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242143AbiFHOq5 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 8 Jun 2022 10:46:57 -0400
+        with ESMTP id S242292AbiFHOrF (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 8 Jun 2022 10:47:05 -0400
 Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEDE942A1E;
-        Wed,  8 Jun 2022 07:46:47 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 152B725383F;
+        Wed,  8 Jun 2022 07:46:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=O62myI6pQAS8t81lbED6UulH15u+VxDiccCxL8l46b0=; b=gT8EMkBd6bMPLcSrcn+tIlmqrQ
-        gTlIn15eBCUJQJ7odUKeDR2ZWGk6cr6CL+IgYOg0zC0XwW4KvSjAi4QIaQShcZztyyB5uW4tjGOZ+
-        Xx0k619Zyq8PzUIepWyk++0mEYVwQwRDrMoV5OMsBFqmPNytGFdVmw1KNESQJd2/bvekElwzIcwfq
-        h9dM8RgSuGh8dAJ/hoh8FLTtUTAzinFeiF1y1HPLwogXCp0Uo4fTbKBO+SfwljZRT7cvOxCuC5v2c
-        rVPi+OaAn7J4nbIx17Sn50Rh+9lBzO0j0yDzRiHN+flr/WJFb/Do9/yGDSiiRsQ1W4fIUFcfmvAbk
-        rGLVyLLg==;
+        bh=pxqjaMyXYMAIciLaWxKe0qnmRXZim+cyW3iOuZrk594=; b=ViqRPs1VYf9fGaMwnUeukkQR8N
+        4opAWUOASRD0k91h5KRfUzfNbwG02AJ5Xy4ihvtgf4z4TOkhwOaDRlGMoAIRUP1SNcvvyYZ2Mwcv7
+        4Ltpok9uBduW3gGExmHzi6EjO9GzvTNTOKtgESzadI4fkPrUhC/WcKqOtw9nTOxeTTVythZifYw33
+        J4z2qhSxWyq1sMYyvtUWAYI+3X7ANKjgCZA7XdkM5jjmcfyZzRbN4fef2tgKyJebOICY7Gy8HEqc/
+        8T/1JwzpYcJa1IHMGfOFIy6BvvrLy608z/jtZq34wyDltGhqbi/mMUUcaZ65tA4CjugxA9Q6l2jLe
+        pA7tgBww==;
 Received: from dhcp-077-249-017-003.chello.nl ([77.249.17.3] helo=noisy.programming.kicks-ass.net)
         by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nywww-0066BA-Sa; Wed, 08 Jun 2022 14:46:23 +0000
+        id 1nywx3-0066Cn-NI; Wed, 08 Jun 2022 14:46:30 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7CEEA30220F;
-        Wed,  8 Jun 2022 16:46:20 +0200 (CEST)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CD0AB302F28;
+        Wed,  8 Jun 2022 16:46:23 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 3CA0E20C0F9A5; Wed,  8 Jun 2022 16:46:18 +0200 (CEST)
-Message-ID: <20220608144516.047149313@infradead.org>
+        id A74D220C119A3; Wed,  8 Jun 2022 16:46:18 +0200 (CEST)
+Message-ID: <20220608144517.633293983@infradead.org>
 User-Agent: quilt/0.66
-Date:   Wed, 08 Jun 2022 16:27:25 +0200
+Date:   Wed, 08 Jun 2022 16:27:50 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     peterz@infradead.org
 Cc:     rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com,
@@ -98,7 +98,7 @@ Cc:     rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com,
         linux-clk@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         linux-tegra@vger.kernel.org, linux-arch@vger.kernel.org,
         rcu@vger.kernel.org
-Subject: [PATCH 02/36] x86/idle: Replace x86_idle with a static_call
+Subject: [PATCH 27/36] cpuidle,mwait: Make noinstr clean
 References: <20220608142723.103523089@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -106,116 +106,77 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Typical boot time setup; no need to suffer an indirect call for that.
+vmlinux.o: warning: objtool: intel_idle_s2idle+0x6e: call to __monitor.constprop.0() leaves .noinstr.text section
+vmlinux.o: warning: objtool: intel_idle_irq+0x8c: call to __monitor.constprop.0() leaves .noinstr.text section
+vmlinux.o: warning: objtool: intel_idle+0x73: call to __monitor.constprop.0() leaves .noinstr.text section
+
+vmlinux.o: warning: objtool: mwait_idle+0x88: call to clflush() leaves .noinstr.text section
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- arch/x86/kernel/process.c |   50 +++++++++++++++++++++++++---------------------
- 1 file changed, 28 insertions(+), 22 deletions(-)
+ arch/x86/include/asm/mwait.h         |   12 ++++++------
+ arch/x86/include/asm/special_insns.h |    2 +-
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
---- a/arch/x86/kernel/process.c
-+++ b/arch/x86/kernel/process.c
-@@ -24,6 +24,7 @@
- #include <linux/cpuidle.h>
- #include <linux/acpi.h>
- #include <linux/elf-randomize.h>
-+#include <linux/static_call.h>
- #include <trace/events/power.h>
- #include <linux/hw_breakpoint.h>
- #include <asm/cpu.h>
-@@ -692,7 +693,23 @@ void __switch_to_xtra(struct task_struct
- unsigned long boot_option_idle_override = IDLE_NO_OVERRIDE;
- EXPORT_SYMBOL(boot_option_idle_override);
+--- a/arch/x86/include/asm/mwait.h
++++ b/arch/x86/include/asm/mwait.h
+@@ -25,7 +25,7 @@
+ #define TPAUSE_C01_STATE		1
+ #define TPAUSE_C02_STATE		0
  
--static void (*x86_idle)(void);
-+/*
-+ * We use this if we don't have any better idle routine..
-+ */
-+void __cpuidle default_idle(void)
-+{
-+	raw_safe_halt();
-+}
-+#if defined(CONFIG_APM_MODULE) || defined(CONFIG_HALTPOLL_CPUIDLE_MODULE)
-+EXPORT_SYMBOL(default_idle);
-+#endif
-+
-+DEFINE_STATIC_CALL_NULL(x86_idle, default_idle);
-+
-+static bool x86_idle_set(void)
-+{
-+	return !!static_call_query(x86_idle);
-+}
+-static inline void __monitor(const void *eax, unsigned long ecx,
++static __always_inline void __monitor(const void *eax, unsigned long ecx,
+ 			     unsigned long edx)
+ {
+ 	/* "monitor %eax, %ecx, %edx;" */
+@@ -33,7 +33,7 @@ static inline void __monitor(const void
+ 		     :: "a" (eax), "c" (ecx), "d"(edx));
+ }
  
- #ifndef CONFIG_SMP
- static inline void play_dead(void)
-@@ -715,28 +732,17 @@ void arch_cpu_idle_dead(void)
- /*
-  * Called from the generic idle code.
+-static inline void __monitorx(const void *eax, unsigned long ecx,
++static __always_inline void __monitorx(const void *eax, unsigned long ecx,
+ 			      unsigned long edx)
+ {
+ 	/* "monitorx %eax, %ecx, %edx;" */
+@@ -41,7 +41,7 @@ static inline void __monitorx(const void
+ 		     :: "a" (eax), "c" (ecx), "d"(edx));
+ }
+ 
+-static inline void __mwait(unsigned long eax, unsigned long ecx)
++static __always_inline void __mwait(unsigned long eax, unsigned long ecx)
+ {
+ 	mds_idle_clear_cpu_buffers();
+ 
+@@ -76,8 +76,8 @@ static inline void __mwait(unsigned long
+  * EAX                     (logical) address to monitor
+  * ECX                     #GP if not zero
   */
--void arch_cpu_idle(void)
--{
--	x86_idle();
--}
--
--/*
-- * We use this if we don't have any better idle routine..
-- */
--void __cpuidle default_idle(void)
-+void __cpuidle arch_cpu_idle(void)
+-static inline void __mwaitx(unsigned long eax, unsigned long ebx,
+-			    unsigned long ecx)
++static __always_inline void __mwaitx(unsigned long eax, unsigned long ebx,
++				     unsigned long ecx)
  {
--	raw_safe_halt();
-+	static_call(x86_idle)();
- }
--#if defined(CONFIG_APM_MODULE) || defined(CONFIG_HALTPOLL_CPUIDLE_MODULE)
--EXPORT_SYMBOL(default_idle);
--#endif
+ 	/* No MDS buffer clear as this is AMD/HYGON only */
  
- #ifdef CONFIG_XEN
- bool xen_set_default_idle(void)
+@@ -86,7 +86,7 @@ static inline void __mwaitx(unsigned lon
+ 		     :: "a" (eax), "b" (ebx), "c" (ecx));
+ }
+ 
+-static inline void __sti_mwait(unsigned long eax, unsigned long ecx)
++static __always_inline void __sti_mwait(unsigned long eax, unsigned long ecx)
  {
--	bool ret = !!x86_idle;
-+	bool ret = x86_idle_set();
+ 	mds_idle_clear_cpu_buffers();
+ 	/* "mwait %eax, %ecx;" */
+--- a/arch/x86/include/asm/special_insns.h
++++ b/arch/x86/include/asm/special_insns.h
+@@ -196,7 +196,7 @@ static inline void load_gs_index(unsigne
  
--	x86_idle = default_idle;
-+	static_call_update(x86_idle, default_idle);
+ #endif /* CONFIG_PARAVIRT_XXL */
  
- 	return ret;
+-static inline void clflush(volatile void *__p)
++static __always_inline void clflush(volatile void *__p)
+ {
+ 	asm volatile("clflush %0" : "+m" (*(volatile char __force *)__p));
  }
-@@ -859,20 +865,20 @@ void select_idle_routine(const struct cp
- 	if (boot_option_idle_override == IDLE_POLL && smp_num_siblings > 1)
- 		pr_warn_once("WARNING: polling idle and HT enabled, performance may degrade\n");
- #endif
--	if (x86_idle || boot_option_idle_override == IDLE_POLL)
-+	if (x86_idle_set() || boot_option_idle_override == IDLE_POLL)
- 		return;
- 
- 	if (boot_cpu_has_bug(X86_BUG_AMD_E400)) {
- 		pr_info("using AMD E400 aware idle routine\n");
--		x86_idle = amd_e400_idle;
-+		static_call_update(x86_idle, amd_e400_idle);
- 	} else if (prefer_mwait_c1_over_halt(c)) {
- 		pr_info("using mwait in idle threads\n");
--		x86_idle = mwait_idle;
-+		static_call_update(x86_idle, mwait_idle);
- 	} else if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST)) {
- 		pr_info("using TDX aware idle routine\n");
--		x86_idle = tdx_safe_halt;
-+		static_call_update(x86_idle, tdx_safe_halt);
- 	} else
--		x86_idle = default_idle;
-+		static_call_update(x86_idle, default_idle);
- }
- 
- void amd_e400_c1e_apic_setup(void)
-@@ -925,7 +931,7 @@ static int __init idle_setup(char *str)
- 		 * To continue to load the CPU idle driver, don't touch
- 		 * the boot_option_idle_override.
- 		 */
--		x86_idle = default_idle;
-+		static_call_update(x86_idle, default_idle);
- 		boot_option_idle_override = IDLE_HALT;
- 	} else if (!strcmp(str, "nomwait")) {
- 		/*
 
 
