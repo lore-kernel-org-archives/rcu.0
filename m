@@ -2,145 +2,152 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C11CBCCA486
-	for <rcu@archiver.kernel.org>; Thu,  9 Jun 2022 13:06:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A447C43334
+	for <rcu@archiver.kernel.org>; Thu,  9 Jun 2022 13:11:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343710AbiFINGj (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 9 Jun 2022 09:06:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54586 "EHLO
+        id S243948AbiFINLM (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 9 Jun 2022 09:11:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236268AbiFINGc (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 9 Jun 2022 09:06:32 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 724408215A;
-        Thu,  9 Jun 2022 06:06:30 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id EE7B921F31;
-        Thu,  9 Jun 2022 13:06:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1654779989; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fQ7/fX+AXX7RSe4KqEkRum0uc4vC19BTUP6nq2wTOec=;
-        b=o28ZaXYpRsbDNeH7DdY3dJH3Fnc3dlxZT8L+x/2aFmo5tE4BAEDzQGW4+i3DDhNGrDHekt
-        G23+f/oOyTepRO03yIh1gixSASehX2C07pg1fm0i3R3KDgn22PhYw8V9jvCq8nE2YIN+/O
-        p3FQSqV1HR0kVCZZzDry3RvUltYRjYI=
-Received: from suse.cz (unknown [10.100.208.146])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id CEE382C141;
-        Thu,  9 Jun 2022 13:06:27 +0000 (UTC)
-Date:   Thu, 9 Jun 2022 15:06:00 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     ink@jurassic.park.msu.ru, mattst88@gmail.com, vgupta@kernel.org,
-        linux@armlinux.org.uk, ulli.kroll@googlemail.com,
-        linus.walleij@linaro.org, shawnguo@kernel.org,
-        Sascha Hauer <s.hauer@pengutronix.de>, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, tony@atomide.com,
-        khilman@kernel.org, catalin.marinas@arm.com, will@kernel.org,
-        guoren@kernel.org, bcain@quicinc.com, chenhuacai@kernel.org,
-        kernel@xen0n.name, geert@linux-m68k.org, sammy@sammy.net,
-        monstr@monstr.eu, tsbogend@alpha.franken.de, dinguyen@kernel.org,
-        jonas@southpole.se, stefan.kristiansson@saunalahti.fi,
-        shorne@gmail.com, James.Bottomley@hansenpartnership.com,
-        deller@gmx.de, mpe@ellerman.id.au, benh@kernel.crashing.org,
-        paulus@samba.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, hca@linux.ibm.com, gor@linux.ibm.com,
-        agordeev@linux.ibm.com, borntraeger@linux.ibm.com,
-        svens@linux.ibm.com, ysato@users.sourceforge.jp, dalias@libc.org,
-        davem@davemloft.net, richard@nod.at,
-        anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        namhyung@kernel.org, jgross@suse.com, srivatsa@csail.mit.edu,
-        amakhalov@vmware.com, pv-drivers@vmware.com,
-        boris.ostrovsky@oracle.com, chris@zankel.net, jcmvbkbc@gmail.com,
-        rafael@kernel.org, lenb@kernel.org, pavel@ucw.cz,
-        gregkh@linuxfoundation.org, mturquette@baylibre.com,
-        sboyd@kernel.org, daniel.lezcano@linaro.org, lpieralisi@kernel.org,
-        sudeep.holla@arm.com, agross@kernel.org,
-        bjorn.andersson@linaro.org, anup@brainfault.org,
-        thierry.reding@gmail.com, jonathanh@nvidia.com,
-        jacob.jun.pan@linux.intel.com, Arnd Bergmann <arnd@arndb.de>,
-        yury.norov@gmail.com, andriy.shevchenko@linux.intel.com,
-        linux@rasmusvillemoes.dk, rostedt@goodmis.org,
-        senozhatsky@chromium.org, john.ogness@linutronix.de,
-        paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
-        josh@joshtriplett.org, mathieu.desnoyers@efficios.com,
-        jiangshanlai@gmail.com, joel@joelfernandes.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, jpoimboe@kernel.org,
-        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
-        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-perf-users@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        xen-devel@lists.xenproject.org, linux-xtensa@linux-xtensa.org,
-        linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-arch@vger.kernel.org,
-        rcu@vger.kernel.org
-Subject: Re: [PATCH 24/36] printk: Remove trace_.*_rcuidle() usage
-Message-ID: <YqHwOFg/WlMqe8/Z@alley>
-References: <20220608142723.103523089@infradead.org>
- <20220608144517.444659212@infradead.org>
- <YqG6URbihTNCk9YR@alley>
- <YqHFHB6qqv5wiR8t@worktop.programming.kicks-ass.net>
+        with ESMTP id S244104AbiFINLL (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 9 Jun 2022 09:11:11 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3383113392C;
+        Thu,  9 Jun 2022 06:11:10 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id o7so14094048eja.1;
+        Thu, 09 Jun 2022 06:11:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/wAwQz6C+ZpVqaDsOvtWkiMwlkZyhViIBwL5COqW1+Y=;
+        b=DfxxG8+SFT1aRPK8Tf6WWRloDCFsXBHC4HaWPyvJeqzEtPjs+G8TMtrYGSkwP4k2AG
+         X2ggQhZIyK0peDiA8p9DnEwZGEJGSzjulxAvJR1Y8++Fb/C7l9w5hOxyiSvJmjYCeZRa
+         E2ea+jdtqu87sZFGo5tGQRi/zVGBCFI2057zo5pV8liUF646b2WmsAY0n9DA0pnwi1LC
+         E2gw71/oo29WuxTysApvrnh2i5m329H2te/xzjQv1Pb7u1HDdyGau5xWr6Mmeui9W3pL
+         lX+NgaBZGCuolnCz4xG82wnO7H9uarEEPUjXdT251CBXIGq1DR0SwoMf85ISFqZ47rLV
+         VaDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/wAwQz6C+ZpVqaDsOvtWkiMwlkZyhViIBwL5COqW1+Y=;
+        b=hNaTu2QMnRKAyQl8T81WgoDRjCd9J+0t8xBv+2xYywpCXFq9M1/8KbX4lzV+Jn+7iZ
+         5bqRgHaPF1nPcgeAuiPv7Q1u/DUIR7ytjL9TftUYNAr2KmENGZNKQj/csnC6pgb8JL74
+         0trpon0eBy86nu3KzYS6pBKOhXXs84VYLeJqGCnu2klO60jy0Ti/cnTfDbxcHITzB6zc
+         KRElfg34vaDBRReJo0QZqRGBjIsx/2uwbaMU/L1Hw3oP3sf7lx7Ci52aS8+D24bNbtjM
+         mYEsjxof9l8hUcShGWRzcIoxcKpxWCSygOB0EjHkNs59Z1qqoWkMwli6COR53JnPCsCF
+         r8sA==
+X-Gm-Message-State: AOAM533pzMRMUe+vheDGjNhXjBgmaFjKqpH/PZlX/xM8JnXYg11vC8tu
+        qBVnHaJi1tb+qYJKsEM90XGegNpPe/p7giY4ZBsPyvZo3H8=
+X-Google-Smtp-Source: ABdhPJw8MLZ71B+p+qbmLV3tlwFIf9HSGvoui9iRj+sWl6mfjkGmIkFa83qvzO2sUT8F9LhUjx+p57vLlPmJk/4k2dM=
+X-Received: by 2002:a17:906:c302:b0:6fe:a216:20a4 with SMTP id
+ s2-20020a170906c30200b006fea21620a4mr36999962ejz.556.1654780268695; Thu, 09
+ Jun 2022 06:11:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YqHFHB6qqv5wiR8t@worktop.programming.kicks-ass.net>
+References: <20220602080644.432156-1-urezki@gmail.com> <20220602080644.432156-2-urezki@gmail.com>
+ <20220604155108.GU1790663@paulmck-ThinkPad-P17-Gen-1> <YpxzB3/HRN/EEHa8@pc638.lan>
+ <20220607034710.GE1790663@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20220607034710.GE1790663@paulmck-ThinkPad-P17-Gen-1>
+From:   Uladzislau Rezki <urezki@gmail.com>
+Date:   Thu, 9 Jun 2022 15:10:57 +0200
+Message-ID: <CA+KHdyXU1apQQbVVZ_zX7o86Qp-AQnif2u8aJFULqHNtfCGcSA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] rcu/kvfree: Introduce KFREE_DRAIN_JIFFIES_[MAX/MIN] interval
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu 2022-06-09 12:02:04, Peter Zijlstra wrote:
-> On Thu, Jun 09, 2022 at 11:16:46AM +0200, Petr Mladek wrote:
-> > On Wed 2022-06-08 16:27:47, Peter Zijlstra wrote:
-> > > The problem, per commit fc98c3c8c9dc ("printk: use rcuidle console
-> > > tracepoint"), was printk usage from the cpuidle path where RCU was
-> > > already disabled.
-> > > 
-> > Does this "prevent" calling printk() a safe way in code with
-> > RCU disabled?
-> 
-> On x86_64, yes. Other architectures, less so.
-> 
-> Specifically, the objtool noinstr validation pass will warn at build
-> time (DEBUG_ENTRY=y) if any noinstr/cpuidle code does a call to
-> non-vetted code like printk().
-> 
-> At the same time; there's a few hacks that allow WARN to work, but
-> mostly if you hit WARN in entry/noinstr you get to keep the pieces in
-> any case.
-> 
-> On other architecture we'll need to rely on runtime coverage with
-> PROVE_RCU. That is, if a splat like in the above mentioned commit
-> happens again, we'll need to fix it by adjusting the callchain, not by
-> mucking about with RCU state.
+On Tue, Jun 7, 2022 at 5:47 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+>
+> On Sun, Jun 05, 2022 at 11:10:31AM +0200, Uladzislau Rezki wrote:
+> > > On Thu, Jun 02, 2022 at 10:06:44AM +0200, Uladzislau Rezki (Sony) wrote:
+> > > > Currently the monitor work is scheduled with a fixed interval that
+> > > > is HZ/20 or each 50 milliseconds. The drawback of such approach is
+> > > > a low utilization of page slot in some scenarios. The page can store
+> > > > up to 512 records. For example on Android system it can look like:
+> > > >
+> > > > <snip>
+> > > >   kworker/3:0-13872   [003] .... 11286.007048: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000026522604 nr_records=1
+> > > >   kworker/3:0-13872   [003] .... 11286.015638: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000095ed6fca nr_records=2
+> > > >   kworker/1:2-20434   [001] .... 11286.051230: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000044872ffd nr_records=1
+> > > >   kworker/1:2-20434   [001] .... 11286.059322: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000026522604 nr_records=2
+> > > >   kworker/0:1-20052   [000] .... 11286.095295: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000044872ffd nr_records=2
+> > > >   kworker/0:1-20052   [000] .... 11286.103418: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000cbcf05db nr_records=1
+> > > >   kworker/2:3-14372   [002] .... 11286.135155: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000095ed6fca nr_records=2
+> > > >   kworker/2:3-14372   [002] .... 11286.135198: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000044872ffd nr_records=1
+> > > >   kworker/1:2-20434   [001] .... 11286.155377: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000cbcf05db nr_records=5
+> > > >   kworker/2:3-14372   [002] .... 11286.167181: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000026522604 nr_records=5
+> > > >   kworker/1:2-20434   [001] .... 11286.179202: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000008ef95e14 nr_records=1
+> > > >   kworker/2:3-14372   [002] .... 11286.187398: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000c597d297 nr_records=6
+> > > >   kworker/3:0-13872   [003] .... 11286.187445: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000050bf92e2 nr_records=3
+> > > >   kworker/1:2-20434   [001] .... 11286.198975: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000cbcf05db nr_records=4
+> > > >   kworker/1:2-20434   [001] .... 11286.207203: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000095ed6fca nr_records=4
+> > > > <snip>
+> > > >
+> > > > where a page only carries few records to reclaim a memory. In order to
+> > > > improve batching and make utilization more efficient the patch introduces
+> > > > a drain interval that can be set either to KFREE_DRAIN_JIFFIES_MAX or
+> > > > KFREE_DRAIN_JIFFIES_MIN. It is adjusted if a flood is detected, in this
+> > > > case a memory reclaim occurs more often whereas in mostly idle cases the
+> > > > interval is set to its maximum timeout that improves the utilization of
+> > > > page slots.
+> > > >
+> > > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > >
+> > > That does look like a problem well worth solving!
+> > >
+> > Agree, better ideas make better final solution :)
+> >
+> > >
+> > > But I am missing one thing. If we are having a callback flood, why do we
+> > > need a shorter timeout?
+> > >
+> > To offload faster, because otherwise we run into classical issue, it is a low
+> > memory condition state resulting in OOM.
+>
+> But doesn't each callback queued during the flood give us an opportunity
+> to react to the flood?  That will be way more fine-grained than any
+> reasonable timer, right?  Or am I missing something?
+>
+We can set the timer to zero or to current "jiffies" to initiate the
+offloading if the
+page is full. In that sense probably it make sense to propagate those two attr.
+to user space, so the user can configure min/max drain interval.
 
-Makes sense. Feel free to use for this patch:
+Or we can only deal with fixed interval exposed via sysfs to control it by user.
+In that case we can get rid of MIN one and just trigger a timer if the page is
+full. I think this approach is better.
 
-Acked-by: Petr Mladek <pmladek@suse.com>
+>
+> I do agree that the action would often need to be indirect to avoid the
+> memory-allocation-state hassles, but we already can do that, either via
+> an extremely short-term hrtimer or something like irq-work.
+>
+> > > Wouldn't a check on the number of blocks queued be simpler, more direct,
+> > > and provide faster response to the start of a callback flood?
+> > >
+> > I rely on krcp->count because not always we can store the pointer in the page
+> > slots. We can not allocate a page in the caller context thus we use page-cache
+> > worker that fills the cache in normal context. While it populates the cache,
+> > pointers temporary are queued to the linked-list.
+> >
+> > Any thoughts?
+>
+> There are a great many ways to approach this.  One of them is to maintain
+> a per-CPU free-running counter of kvfree_rcu() calls, and to reset this
+> counter each jiffy.
+>
+> Or am I missing a trick here?
+>
+Do you mean to have a per-cpu timer that checks the per-cpu-freed counter
+and schedule the work when if it is needed? Or i have missed your point?
 
-> > Therefore if this patch allows to remove some tricky tracing
-> > code then it might be worth it. But if trace_console_rcuidle()
-> > variant is still going to be available then I would keep using it.
-> 
-> My ultimate goal is to delete trace_.*_rcuidle() and RCU_NONIDLE()
-> entirely. We're close, but not quite there yet.
-
-I keep my fingers crossed.
-
-Best Regards,
-Petr
+-- 
+Uladzislau Rezki
