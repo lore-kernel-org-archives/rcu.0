@@ -2,81 +2,141 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AC710C433EF
-	for <rcu@archiver.kernel.org>; Fri, 10 Jun 2022 06:23:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CAF8CC433EF
+	for <rcu@archiver.kernel.org>; Fri, 10 Jun 2022 12:05:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244158AbiFJGXI (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 10 Jun 2022 02:23:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58208 "EHLO
+        id S245262AbiFJMFv (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 10 Jun 2022 08:05:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238058AbiFJGXH (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 10 Jun 2022 02:23:07 -0400
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B4C638B;
-        Thu,  9 Jun 2022 23:23:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1654842186; x=1686378186;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=PnXBQqxy9yzsBXKrhBQsOZS87hCxSeJlHsctj92hs2s=;
-  b=Np9ybPLGs1bGYvukTzkKaLQsagQESiGpi7iRF+Kbnwm4aGYePvA0Jhiz
-   hU5SCxAy9jxgv/a4Mmlu7AN8xJYoSHVwvwTR4yFpPzbDxY+mxmyohjijX
-   2BZbj68k7rBb+4Vo4V60W/T++gE5/yeh0+mf5I8XLomQUy+5/Uo49q7u0
-   RXPZl9Yw8bLsZH7bHPHERU4N7E9pEGKjgjqsjBgYvEsHvsO2CG0PJwP3L
-   yR3Zkdcd9fnGvFg+W/hu+vFT3dSgFA/VvC1g+IDMHkxtB8afuu7uRHwhe
-   px6gtiqkQA60i+v0stsTA6ZkXNQoNPrHGnhpTmO/tMXKCOkmzwKVHr8p1
-   w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10373"; a="339285050"
-X-IronPort-AV: E=Sophos;i="5.91,288,1647327600"; 
-   d="scan'208";a="339285050"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2022 23:22:43 -0700
-X-IronPort-AV: E=Sophos;i="5.91,288,1647327600"; 
-   d="scan'208";a="828069426"
-Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.125])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2022 23:22:41 -0700
-From:   Zqiang <qiang1.zhang@intel.com>
-To:     paulmck@kernel.org, frederic@kernel.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] rcu-tasks: Remove unused trc_wait and holdouts
-Date:   Fri, 10 Jun 2022 14:22:28 +0800
-Message-Id: <20220610062228.2185104-1-qiang1.zhang@intel.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S245550AbiFJMFu (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 10 Jun 2022 08:05:50 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 339CF3F322;
+        Fri, 10 Jun 2022 05:05:48 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 9C179B834DC;
+        Fri, 10 Jun 2022 12:05:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2574C3411E;
+        Fri, 10 Jun 2022 12:05:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1654862745;
+        bh=f9tCZ3dUGujHwZtgBBhgrGaWaeeMtU5w+k7egcKNfkU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jR8trHrWTHYG7Z9ccS+GVbKyAVHH9oRp5ckreKkEj0zGsQL+sdaLJz/xs+JTOXidt
+         +oEYLXGUcHLwrC8KnvQ8Ua2sMCxlC3qTniMSMxVVgVjRTH0AsnjchsRcXwmbvjNMLz
+         6k5SvVcwPRHnbw4bOV+Cyi3FNXjJzno+2ilZJU82Mi6tLJZ7CJcdxpM9WSTTdsvJF/
+         atC1RjwAyHrMA0l6ivT7fsoo9rVhuSvkHzKZJezQmPZOerlkPNxgfzcBehEnHmg7oA
+         KDOe0t1Q1hhwJIJsWdeJpD8YbiA4r/r7fPAj63FCX/fbs14+yBZi3RIWXjTSHo7JeG
+         hBYCeFocezpLQ==
+Date:   Fri, 10 Jun 2022 14:05:42 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Zqiang <qiang1.zhang@intel.com>
+Cc:     paulmck@kernel.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] rcu/nocb: Avoid polling when myrdp->nocb_head_rdp
+ list is empty
+Message-ID: <20220610120542.GA1811980@lothringen>
+References: <20220607075057.909070-1-qiang1.zhang@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220607075057.909070-1-qiang1.zhang@intel.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Remove unused trc_wait waitqueue and local holdouts list.
+On Tue, Jun 07, 2022 at 03:50:57PM +0800, Zqiang wrote:
+> Currently, If the 'rcu_nocb_poll' bootargs is enable, all rcuog kthreads
+> enter polling mode. however, due to only insert CPU's rdp which belong to
+> rcu_nocb_mask to 'nocb_head_rdp' list or all CPU's rdp served by rcuog
+> kthread have been de-offloaded, these cause the 'nocb_head_rdp' list
+> served by rcuog kthread is empty, when the 'nocb_head_rdp' is empty,
+> the rcuog kthread in polling mode not actually do anything. fix it by
+> exiting polling mode when the 'nocb_head_rdp'list is empty, otherwise
+> entering polling mode.
+> 
+> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+> ---
+>  v1->v2:
+>  Move rcu_nocb_poll flags check from rdp_offload_toggle() to
+>  rcu_nocb_rdp_offload/deoffload(), avoid unnecessary setting of
+>  rdp_gp->nocb_gp_sleep flags, because when rcu_nocb_poll is set
+>  the rdp_gp->nocb_gp_sleep is not used.
+> 
+>  kernel/rcu/tree_nocb.h | 16 ++++++++++------
+>  1 file changed, 10 insertions(+), 6 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> index fa8e4f82e60c..2a52c9abc681 100644
+> --- a/kernel/rcu/tree_nocb.h
+> +++ b/kernel/rcu/tree_nocb.h
+> @@ -698,10 +698,14 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
+>  				   TPS("WakeBypassIsDeferred"));
+>  	}
+>  	if (rcu_nocb_poll) {
+> -		/* Polling, so trace if first poll in the series. */
+> -		if (gotcbs)
+> -			trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("Poll"));
+> -		schedule_timeout_idle(1);
+> +		if (list_empty(&my_rdp->nocb_head_rdp)) {
+> +			rcu_wait(READ_ONCE(my_rdp->nocb_toggling_rdp));
 
-Signed-off-by: Zqiang <qiang1.zhang@intel.com>
----
- kernel/rcu/tasks.h | 3 ---
- 1 file changed, 3 deletions(-)
+I suspect you have based your patch on upstream tree which doesn't seem
+to have this one yet:
 
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 55e76db8b0d3..fcbd0ec33c86 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -1190,8 +1190,6 @@ EXPORT_SYMBOL_GPL(rcu_trace_lock_map);
- 
- #ifdef CONFIG_TASKS_TRACE_RCU
- 
--static DECLARE_WAIT_QUEUE_HEAD(trc_wait);	// List of holdout tasks.
--
- // Record outstanding IPIs to each CPU.  No point in sending two...
- static DEFINE_PER_CPU(bool, trc_ipi_to_cpu);
- 
-@@ -1641,7 +1639,6 @@ static void rcu_tasks_trace_empty_fn(void *unused)
- static void rcu_tasks_trace_postgp(struct rcu_tasks *rtp)
- {
- 	int cpu;
--	LIST_HEAD(holdouts);
- 
- 	// Wait for any lingering IPI handlers to complete.  Note that
- 	// if a CPU has gone offline or transitioned to userspace in the
--- 
-2.25.1
+   "rcu/nocb: Add/del rdp to iterate from rcuog itself"
 
+With this patch you can't wait on changes to my_rdp->nocb_toggling_rdp because
+nocb_gp_wait() now performs the list_add/list_del itself.
+
+Please rebase your patch on top of latest rcu:dev from Paul's tree. Then
+all you need to do is to change the wait side, something like this (untested):
+
+diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+index fa8e4f82e60c..f36d6be4f372 100644
+--- a/kernel/rcu/tree_nocb.h
++++ b/kernel/rcu/tree_nocb.h
+@@ -584,6 +584,15 @@ static int nocb_gp_toggle_rdp(struct rcu_data *rdp,
+ 	return ret;
+ }
+ 
++static void nocb_gp_sleep(struct rdp *my_rdp, int cpu)
++{
++	trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("Sleep"));
++	swait_event_interruptible_exclusive(my_rdp->nocb_gp_wq,
++					    !READ_ONCE(my_rdp->nocb_gp_sleep));
++	trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("EndSleep"));
++}
++
++
+ /*
+  * No-CBs GP kthreads come here to wait for additional callbacks to show up
+  * or for grace periods to end.
+@@ -701,13 +710,19 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
+ 		/* Polling, so trace if first poll in the series. */
+ 		if (gotcbs)
+ 			trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("Poll"));
+-		schedule_timeout_idle(1);
++		if (list_empty(&my_rdp->nocb_head_rdp)) {
++			raw_spin_lock_irqsave(&my_rdp->nocb_gp_lock, flags);
++			if (!my_rdp->nocb_toggling_rdp)
++				WRITE_ONCE(my_rdp->nocb_gp_sleep, true);
++			raw_spin_unlock_irqrestore(&my_rdp->nocb_gp_lock, flags);
++			/* Wait for any offloading rdp */
++			rdp_gp_sleep(my_rdp, cpu);
++		} else {
++			schedule_timeout_idle(1);
++		}
+ 	} else if (!needwait_gp) {
+ 		/* Wait for callbacks to appear. */
+-		trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("Sleep"));
+-		swait_event_interruptible_exclusive(my_rdp->nocb_gp_wq,
+-				!READ_ONCE(my_rdp->nocb_gp_sleep));
+-		trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("EndSleep"));
++		rdp_gp_sleep(my_rdp, cpu);
+ 	} else {
+ 		rnp = my_rdp->mynode;
+ 		trace_rcu_this_gp(rnp, my_rdp, wait_gp_seq, TPS("StartWait"));
