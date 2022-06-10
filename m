@@ -2,141 +2,151 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CAF8CC433EF
-	for <rcu@archiver.kernel.org>; Fri, 10 Jun 2022 12:05:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6FBD4C43334
+	for <rcu@archiver.kernel.org>; Fri, 10 Jun 2022 13:04:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245262AbiFJMFv (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 10 Jun 2022 08:05:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35250 "EHLO
+        id S236631AbiFJNEH (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 10 Jun 2022 09:04:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245550AbiFJMFu (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 10 Jun 2022 08:05:50 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 339CF3F322;
-        Fri, 10 Jun 2022 05:05:48 -0700 (PDT)
+        with ESMTP id S230211AbiFJNEG (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 10 Jun 2022 09:04:06 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AFC93EEE0A;
+        Fri, 10 Jun 2022 06:04:05 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 9C179B834DC;
-        Fri, 10 Jun 2022 12:05:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2574C3411E;
-        Fri, 10 Jun 2022 12:05:44 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id E23BAB8348D;
+        Fri, 10 Jun 2022 13:04:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A54FC34114;
+        Fri, 10 Jun 2022 13:04:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1654862745;
-        bh=f9tCZ3dUGujHwZtgBBhgrGaWaeeMtU5w+k7egcKNfkU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jR8trHrWTHYG7Z9ccS+GVbKyAVHH9oRp5ckreKkEj0zGsQL+sdaLJz/xs+JTOXidt
-         +oEYLXGUcHLwrC8KnvQ8Ua2sMCxlC3qTniMSMxVVgVjRTH0AsnjchsRcXwmbvjNMLz
-         6k5SvVcwPRHnbw4bOV+Cyi3FNXjJzno+2ilZJU82Mi6tLJZ7CJcdxpM9WSTTdsvJF/
-         atC1RjwAyHrMA0l6ivT7fsoo9rVhuSvkHzKZJezQmPZOerlkPNxgfzcBehEnHmg7oA
-         KDOe0t1Q1hhwJIJsWdeJpD8YbiA4r/r7fPAj63FCX/fbs14+yBZi3RIWXjTSHo7JeG
-         hBYCeFocezpLQ==
-Date:   Fri, 10 Jun 2022 14:05:42 +0200
+        s=k20201202; t=1654866242;
+        bh=lsX//HNb7PsfIhxAcqmvRnp5U2zFxkpBt0m/xzaL/Qk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=i3t/OIQOBJi/bSn4JcxECSymuE0Y2j/qYhDPU7uIl3idfPabV7+qgvVPoHeYTRRyH
+         hni933ZB6Xfei/+aArPqWyiznUGG5oRszqxPTQgNuimLCRksMjZKC+pgQnyrVrmgcG
+         Nv0xQeY2k8S9rHW10UqsPMJ8Vn0i/HG3pBgdta+AKrlVOA8ghyqG4KdUb3WmVVa/U9
+         TOX2Ypw7/sYDriVqCmAQfKF1a/gLh2kc2fEdURkALCuDrzIuXIH5m6UV6/FlXU16zy
+         cHvyww0skSrK6CreggdkVreQI+lFcT5fLXVX9gfALdvCU26nGFSkSWhJ/ED0XynhOd
+         5o6WAwnmwGtmw==
 From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Zqiang <qiang1.zhang@intel.com>
-Cc:     paulmck@kernel.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] rcu/nocb: Avoid polling when myrdp->nocb_head_rdp
- list is empty
-Message-ID: <20220610120542.GA1811980@lothringen>
-References: <20220607075057.909070-1-qiang1.zhang@intel.com>
+To:     "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>, rcu@vger.kernel.org
+Subject: [PATCH] rcutorture: Fix ksoftirqd boosting timing and iteration
+Date:   Fri, 10 Jun 2022 15:03:57 +0200
+Message-Id: <20220610130357.1813926-1-frederic@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220607075057.909070-1-qiang1.zhang@intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Jun 07, 2022 at 03:50:57PM +0800, Zqiang wrote:
-> Currently, If the 'rcu_nocb_poll' bootargs is enable, all rcuog kthreads
-> enter polling mode. however, due to only insert CPU's rdp which belong to
-> rcu_nocb_mask to 'nocb_head_rdp' list or all CPU's rdp served by rcuog
-> kthread have been de-offloaded, these cause the 'nocb_head_rdp' list
-> served by rcuog kthread is empty, when the 'nocb_head_rdp' is empty,
-> the rcuog kthread in polling mode not actually do anything. fix it by
-> exiting polling mode when the 'nocb_head_rdp'list is empty, otherwise
-> entering polling mode.
-> 
-> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-> ---
->  v1->v2:
->  Move rcu_nocb_poll flags check from rdp_offload_toggle() to
->  rcu_nocb_rdp_offload/deoffload(), avoid unnecessary setting of
->  rdp_gp->nocb_gp_sleep flags, because when rcu_nocb_poll is set
->  the rdp_gp->nocb_gp_sleep is not used.
-> 
->  kernel/rcu/tree_nocb.h | 16 ++++++++++------
->  1 file changed, 10 insertions(+), 6 deletions(-)
-> 
-> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-> index fa8e4f82e60c..2a52c9abc681 100644
-> --- a/kernel/rcu/tree_nocb.h
-> +++ b/kernel/rcu/tree_nocb.h
-> @@ -698,10 +698,14 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
->  				   TPS("WakeBypassIsDeferred"));
->  	}
->  	if (rcu_nocb_poll) {
-> -		/* Polling, so trace if first poll in the series. */
-> -		if (gotcbs)
-> -			trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("Poll"));
-> -		schedule_timeout_idle(1);
-> +		if (list_empty(&my_rdp->nocb_head_rdp)) {
-> +			rcu_wait(READ_ONCE(my_rdp->nocb_toggling_rdp));
+The RCU priority boosting can fail on two situations:
 
-I suspect you have based your patch on upstream tree which doesn't seem
-to have this one yet:
+1) If (nr_cpus= > maxcpus=), which means if the total number of CPUs
+if higher than those brought online on boot, then torture_onoff() may
+later bring up CPUs that weren't online on boot. Now since rcutorture
+initialization only boosts the ksoftirqds of the CPUs that have been
+set online on boot, the CPUs later set online by torture_onoff won't
+benefit from the boost, making RCU priority boosting fail.
 
-   "rcu/nocb: Add/del rdp to iterate from rcuog itself"
+2) Ksoftirqds kthreads are boosted after the creation of
+rcu_torture_boost() kthreads, which opens a window large enough for them
+to stutter in low FIFO mode while waiting for ksoftirqds that are still
+in SCHED_NORMAL mode.
 
-With this patch you can't wait on changes to my_rdp->nocb_toggling_rdp because
-nocb_gp_wait() now performs the list_add/list_del itself.
+The issues can trigger for example with:
 
-Please rebase your patch on top of latest rcu:dev from Paul's tree. Then
-all you need to do is to change the wait side, something like this (untested):
+	./kvm.sh --configs TREE01 --kconfig "CONFIG_RCU_BOOST=y"
 
-diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index fa8e4f82e60c..f36d6be4f372 100644
---- a/kernel/rcu/tree_nocb.h
-+++ b/kernel/rcu/tree_nocb.h
-@@ -584,6 +584,15 @@ static int nocb_gp_toggle_rdp(struct rcu_data *rdp,
- 	return ret;
- }
+	[   34.968561] rcu-torture: !!!
+	[   34.968627] ------------[ cut here ]------------
+	[   35.014054] WARNING: CPU: 4 PID: 114 at kernel/rcu/rcutorture.c:1979 rcu_torture_stats_print+0x5ad/0x610
+	[   35.052043] Modules linked in:
+	[   35.069138] CPU: 4 PID: 114 Comm: rcu_torture_sta Not tainted 5.18.0-rc1 #1
+	[   35.096424] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.14.0-0-g155821a-rebuilt.opensuse.org 04/01/2014
+	[   35.154570] RIP: 0010:rcu_torture_stats_print+0x5ad/0x610
+	[   35.198527] Code: 63 1b 02 00 74 02 0f 0b 48 83 3d 35 63 1b 02 00 74 02 0f 0b 48 83 3d 21 63 1b 02 00 74 02 0f 0b 48 83 3d 0d 63 1b 02 00 74 02 <0f> 0b 83 eb 01 0f 8e ba fc ff ff 0f 0b e9 b3 fc ff f82
+	[   37.251049] RSP: 0000:ffffa92a0050bdf8 EFLAGS: 00010202
+	[   37.277320] rcu: De-offloading 8
+	[   37.290367] RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000001
+	[   37.290387] RDX: 0000000000000000 RSI: 00000000ffffbfff RDI: 00000000ffffffff
+	[   37.290398] RBP: 000000000000007b R08: 0000000000000000 R09: c0000000ffffbfff
+	[   37.290407] R10: 000000000000002a R11: ffffa92a0050bc18 R12: ffffa92a0050be20
+	[   37.290417] R13: ffffa92a0050be78 R14: 0000000000000000 R15: 000000000001bea0
+	[   37.290427] FS:  0000000000000000(0000) GS:ffff96045eb00000(0000) knlGS:0000000000000000
+	[   37.290448] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+	[   37.290460] CR2: 0000000000000000 CR3: 000000001dc0c000 CR4: 00000000000006e0
+	[   37.290470] Call Trace:
+	[   37.295049]  <TASK>
+	[   37.295065]  ? preempt_count_add+0x63/0x90
+	[   37.295095]  ? _raw_spin_lock_irqsave+0x12/0x40
+	[   37.295125]  ? rcu_torture_stats_print+0x610/0x610
+	[   37.295143]  rcu_torture_stats+0x29/0x70
+	[   37.295160]  kthread+0xe3/0x110
+	[   37.295176]  ? kthread_complete_and_exit+0x20/0x20
+	[   37.295193]  ret_from_fork+0x22/0x30
+	[   37.295218]  </TASK>
+
+Fix this with boosting the ksoftirqds kthreads from the boosting
+hotplug callback itself and before the boosting kthreads are created.
+
+Fixes: ea6d962e80b6 ("rcutorture: Judge RCU priority boosting on grace periods, not callbacks")
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+---
+ kernel/rcu/rcutorture.c | 28 +++++++++++++---------------
+ 1 file changed, 13 insertions(+), 15 deletions(-)
+
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index abb3f6d720f1..21470ebb15eb 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -2136,6 +2136,19 @@ static int rcutorture_booster_init(unsigned int cpu)
+ 	if (boost_tasks[cpu] != NULL)
+ 		return 0;  /* Already created, nothing more to do. */
  
-+static void nocb_gp_sleep(struct rdp *my_rdp, int cpu)
-+{
-+	trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("Sleep"));
-+	swait_event_interruptible_exclusive(my_rdp->nocb_gp_wq,
-+					    !READ_ONCE(my_rdp->nocb_gp_sleep));
-+	trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("EndSleep"));
-+}
++	// Testing RCU priority boosting requires rcutorture do
++	// some serious abuse.  Counter this by running ksoftirqd
++	// at higher priority.
++	if (IS_BUILTIN(CONFIG_RCU_TORTURE_TEST)) {
++		struct sched_param sp;
++		struct task_struct *t;
 +
++		t = per_cpu(ksoftirqd, cpu);
++		WARN_ON_ONCE(!t);
++		sp.sched_priority = 2;
++		sched_setscheduler_nocheck(t, SCHED_FIFO, &sp);
++	}
 +
- /*
-  * No-CBs GP kthreads come here to wait for additional callbacks to show up
-  * or for grace periods to end.
-@@ -701,13 +710,19 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
- 		/* Polling, so trace if first poll in the series. */
- 		if (gotcbs)
- 			trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("Poll"));
--		schedule_timeout_idle(1);
-+		if (list_empty(&my_rdp->nocb_head_rdp)) {
-+			raw_spin_lock_irqsave(&my_rdp->nocb_gp_lock, flags);
-+			if (!my_rdp->nocb_toggling_rdp)
-+				WRITE_ONCE(my_rdp->nocb_gp_sleep, true);
-+			raw_spin_unlock_irqrestore(&my_rdp->nocb_gp_lock, flags);
-+			/* Wait for any offloading rdp */
-+			rdp_gp_sleep(my_rdp, cpu);
-+		} else {
-+			schedule_timeout_idle(1);
-+		}
- 	} else if (!needwait_gp) {
- 		/* Wait for callbacks to appear. */
--		trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("Sleep"));
--		swait_event_interruptible_exclusive(my_rdp->nocb_gp_wq,
--				!READ_ONCE(my_rdp->nocb_gp_sleep));
--		trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("EndSleep"));
-+		rdp_gp_sleep(my_rdp, cpu);
- 	} else {
- 		rnp = my_rdp->mynode;
- 		trace_rcu_this_gp(rnp, my_rdp, wait_gp_seq, TPS("StartWait"));
+ 	/* Don't allow time recalculation while creating a new task. */
+ 	mutex_lock(&boost_mutex);
+ 	rcu_torture_disable_rt_throttle();
+@@ -3384,21 +3397,6 @@ rcu_torture_init(void)
+ 		rcutor_hp = firsterr;
+ 		if (torture_init_error(firsterr))
+ 			goto unwind;
+-
+-		// Testing RCU priority boosting requires rcutorture do
+-		// some serious abuse.  Counter this by running ksoftirqd
+-		// at higher priority.
+-		if (IS_BUILTIN(CONFIG_RCU_TORTURE_TEST)) {
+-			for_each_online_cpu(cpu) {
+-				struct sched_param sp;
+-				struct task_struct *t;
+-
+-				t = per_cpu(ksoftirqd, cpu);
+-				WARN_ON_ONCE(!t);
+-				sp.sched_priority = 2;
+-				sched_setscheduler_nocheck(t, SCHED_FIFO, &sp);
+-			}
+-		}
+ 	}
+ 	shutdown_jiffies = jiffies + shutdown_secs * HZ;
+ 	firsterr = torture_shutdown_init(shutdown_secs, rcu_torture_cleanup);
+-- 
+2.25.1
+
