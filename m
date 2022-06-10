@@ -2,191 +2,161 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B5CEC433EF
-	for <rcu@archiver.kernel.org>; Fri, 10 Jun 2022 16:45:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C4FABC43334
+	for <rcu@archiver.kernel.org>; Fri, 10 Jun 2022 17:33:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244315AbiFJQp5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 10 Jun 2022 12:45:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56564 "EHLO
+        id S244429AbiFJRd7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 10 Jun 2022 13:33:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236058AbiFJQp5 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 10 Jun 2022 12:45:57 -0400
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2B133C782E
-        for <rcu@vger.kernel.org>; Fri, 10 Jun 2022 09:45:55 -0700 (PDT)
-Received: by mail-qv1-xf30.google.com with SMTP id h18so18967245qvj.11
-        for <rcu@vger.kernel.org>; Fri, 10 Jun 2022 09:45:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=smRKq849MMEHP1mVTcI2nyuMXjCH70MLQXxMNUYUaqc=;
-        b=bN386ziC7e4CvAmi+Mk8s659bfOMKMsXDTY5HMDjpPYbyR5xCnboJK39A3uA6tFeGQ
-         yT3GbPO7Xq9mPEtZ6wYiqIB5D65zeT72fGQ8DtkM9WUDyCMUUyd1zsusvIQ0eDoElYak
-         ew5V4oX0ky/yXtaAmTti8E+4SPYhaeYTa2SCs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=smRKq849MMEHP1mVTcI2nyuMXjCH70MLQXxMNUYUaqc=;
-        b=u8fHD1Rdv0TQnX+vlV/J8IoYYuftGOa2urOSS16fKPF9NlQ1ctU+klbZX5EfHWARYG
-         mNvoYR7LQw0kJThUCr2UymI1FgZ7AHBAl8kilXvKVC55fsG503Tjk2fpeSYMUmbpl4xl
-         eM7gpN2q/Z4lppbtGIpI0GYljmkRWTWKIRuiGVGwXUs/5dFbGBKRp+xfZdn/Z5FEoBz3
-         t51Zx59WqXuzmf27CRTnd6idCzj5wUkzrmScpCA9gI/A4OSFUM/GTRI0a8JtLU+heyyY
-         JH82iDhP9YBJf3Go713vo+pdbYEOkZE9jke4ifCxOupGp0tVoyh2579iEpojRtn1Abwd
-         84pw==
-X-Gm-Message-State: AOAM5313KFY0FHjJs7lBd6y6dnNC5wG8lrM96rBzYlHoAz75I7Of0Ogu
-        bE1D8hRbRHNFRkqaEK9oFI7XzQ==
-X-Google-Smtp-Source: ABdhPJweXoeSHl6eMayWCDtc93MuHa9vFGd1PuGq29AAM/IBWrXOAB/7pT5F0ijeFsnAM594AKDVLA==
-X-Received: by 2002:a05:6214:29c6:b0:466:fda7:8279 with SMTP id gh6-20020a05621429c600b00466fda78279mr34516480qvb.32.1654879554966;
-        Fri, 10 Jun 2022 09:45:54 -0700 (PDT)
-Received: from localhost (228.221.150.34.bc.googleusercontent.com. [34.150.221.228])
-        by smtp.gmail.com with ESMTPSA id hh8-20020a05622a618800b00304f3e320f2sm8582639qtb.4.2022.06.10.09.45.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jun 2022 09:45:54 -0700 (PDT)
-Date:   Fri, 10 Jun 2022 16:45:54 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: Re: [PATCH 2/2] rcu/kvfree: Introduce KFREE_DRAIN_JIFFIES_[MAX/MIN]
- interval
-Message-ID: <YqN1QqRmPpchDm/k@google.com>
-References: <20220602080644.432156-1-urezki@gmail.com>
- <20220602080644.432156-2-urezki@gmail.com>
- <20220604155108.GU1790663@paulmck-ThinkPad-P17-Gen-1>
- <YpxzB3/HRN/EEHa8@pc638.lan>
- <20220607034710.GE1790663@paulmck-ThinkPad-P17-Gen-1>
- <CA+KHdyXU1apQQbVVZ_zX7o86Qp-AQnif2u8aJFULqHNtfCGcSA@mail.gmail.com>
+        with ESMTP id S244325AbiFJRd6 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 10 Jun 2022 13:33:58 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED55F382361;
+        Fri, 10 Jun 2022 10:33:54 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 85D8861F72;
+        Fri, 10 Jun 2022 17:33:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8C25C34114;
+        Fri, 10 Jun 2022 17:33:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1654882433;
+        bh=fogOehLSgwGzLrjb684lhw/HagvOmGCddUPmSp9tEq8=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=MdzUPjf2IAe0ieDjYkDVV5d1oZm6mX4ov9mFSxE7IT8kLFquOvsYEzdgdNJLhXByD
+         s7eG1hAh/CY00zos2eyHm3MK6Iu2TZaBUZp2XEylLbLNjxEFYrew0TyQySvnTGWdg3
+         wFxSPCZy2KWJyyH25BB6gaQeW3dN3nhiYReZIVfWYCFRa0OTZqFUkeVHbr5RAFnh9C
+         CSgstyy255/xMT88ep8z9yTc3xcvMTEmq5TN4tx2HQtFrMnhkoS6cZIJ+vd4na3+Js
+         3hiN+uXcUQ3uV4HG4QAbZ1g7hUj/UAYRJC5vVjgeedW8A8YTr1dUkU6osffzKobXba
+         ru2QYxJ0l3oaQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 7F0395C05ED; Fri, 10 Jun 2022 10:33:53 -0700 (PDT)
+Date:   Fri, 10 Jun 2022 10:33:53 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org
+Subject: Re: [PATCH] rcutorture: Fix ksoftirqd boosting timing and iteration
+Message-ID: <20220610173353.GI1790663@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20220610130357.1813926-1-frederic@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CA+KHdyXU1apQQbVVZ_zX7o86Qp-AQnif2u8aJFULqHNtfCGcSA@mail.gmail.com>
+In-Reply-To: <20220610130357.1813926-1-frederic@kernel.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Vlad, Paul,
-
-On Thu, Jun 09, 2022 at 03:10:57PM +0200, Uladzislau Rezki wrote:
-> On Tue, Jun 7, 2022 at 5:47 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Sun, Jun 05, 2022 at 11:10:31AM +0200, Uladzislau Rezki wrote:
-> > > > On Thu, Jun 02, 2022 at 10:06:44AM +0200, Uladzislau Rezki (Sony) wrote:
-> > > > > Currently the monitor work is scheduled with a fixed interval that
-> > > > > is HZ/20 or each 50 milliseconds. The drawback of such approach is
-> > > > > a low utilization of page slot in some scenarios. The page can store
-> > > > > up to 512 records. For example on Android system it can look like:
-> > > > >
-> > > > > <snip>
-> > > > >   kworker/3:0-13872   [003] .... 11286.007048: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000026522604 nr_records=1
-> > > > >   kworker/3:0-13872   [003] .... 11286.015638: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000095ed6fca nr_records=2
-> > > > >   kworker/1:2-20434   [001] .... 11286.051230: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000044872ffd nr_records=1
-> > > > >   kworker/1:2-20434   [001] .... 11286.059322: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000026522604 nr_records=2
-> > > > >   kworker/0:1-20052   [000] .... 11286.095295: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000044872ffd nr_records=2
-> > > > >   kworker/0:1-20052   [000] .... 11286.103418: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000cbcf05db nr_records=1
-> > > > >   kworker/2:3-14372   [002] .... 11286.135155: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000095ed6fca nr_records=2
-> > > > >   kworker/2:3-14372   [002] .... 11286.135198: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000044872ffd nr_records=1
-> > > > >   kworker/1:2-20434   [001] .... 11286.155377: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000cbcf05db nr_records=5
-> > > > >   kworker/2:3-14372   [002] .... 11286.167181: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000026522604 nr_records=5
-> > > > >   kworker/1:2-20434   [001] .... 11286.179202: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000008ef95e14 nr_records=1
-> > > > >   kworker/2:3-14372   [002] .... 11286.187398: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000c597d297 nr_records=6
-> > > > >   kworker/3:0-13872   [003] .... 11286.187445: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000050bf92e2 nr_records=3
-> > > > >   kworker/1:2-20434   [001] .... 11286.198975: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000cbcf05db nr_records=4
-> > > > >   kworker/1:2-20434   [001] .... 11286.207203: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000095ed6fca nr_records=4
-> > > > > <snip>
-> > > > >
-> > > > > where a page only carries few records to reclaim a memory. In order to
-> > > > > improve batching and make utilization more efficient the patch introduces
-> > > > > a drain interval that can be set either to KFREE_DRAIN_JIFFIES_MAX or
-> > > > > KFREE_DRAIN_JIFFIES_MIN. It is adjusted if a flood is detected, in this
-> > > > > case a memory reclaim occurs more often whereas in mostly idle cases the
-> > > > > interval is set to its maximum timeout that improves the utilization of
-> > > > > page slots.
-> > > > >
-> > > > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > > >
-> > > > That does look like a problem well worth solving!
-> > > >
-> > > Agree, better ideas make better final solution :)
-> > >
-> > > >
-> > > > But I am missing one thing. If we are having a callback flood, why do we
-> > > > need a shorter timeout?
-> > > >
-> > > To offload faster, because otherwise we run into classical issue, it is a low
-> > > memory condition state resulting in OOM.
-> >
-> > But doesn't each callback queued during the flood give us an opportunity
-> > to react to the flood?  That will be way more fine-grained than any
-> > reasonable timer, right?  Or am I missing something?
-> >
-> We can set the timer to zero or to current "jiffies" to initiate the
-> offloading if the
-> page is full. In that sense probably it make sense to propagate those two attr.
-> to user space, so the user can configure min/max drain interval.
+On Fri, Jun 10, 2022 at 03:03:57PM +0200, Frederic Weisbecker wrote:
+> The RCU priority boosting can fail on two situations:
 > 
-> Or we can only deal with fixed interval exposed via sysfs to control it by user.
-> In that case we can get rid of MIN one and just trigger a timer if the page is
-> full. I think this approach is better.
+> 1) If (nr_cpus= > maxcpus=), which means if the total number of CPUs
+> if higher than those brought online on boot, then torture_onoff() may
+> later bring up CPUs that weren't online on boot. Now since rcutorture
+> initialization only boosts the ksoftirqds of the CPUs that have been
+> set online on boot, the CPUs later set online by torture_onoff won't
+> benefit from the boost, making RCU priority boosting fail.
+> 
+> 2) Ksoftirqds kthreads are boosted after the creation of
+> rcu_torture_boost() kthreads, which opens a window large enough for them
+> to stutter in low FIFO mode while waiting for ksoftirqds that are still
+> in SCHED_NORMAL mode.
+> 
+> The issues can trigger for example with:
+> 
+> 	./kvm.sh --configs TREE01 --kconfig "CONFIG_RCU_BOOST=y"
+> 
+> 	[   34.968561] rcu-torture: !!!
+> 	[   34.968627] ------------[ cut here ]------------
+> 	[   35.014054] WARNING: CPU: 4 PID: 114 at kernel/rcu/rcutorture.c:1979 rcu_torture_stats_print+0x5ad/0x610
+> 	[   35.052043] Modules linked in:
+> 	[   35.069138] CPU: 4 PID: 114 Comm: rcu_torture_sta Not tainted 5.18.0-rc1 #1
+> 	[   35.096424] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.14.0-0-g155821a-rebuilt.opensuse.org 04/01/2014
+> 	[   35.154570] RIP: 0010:rcu_torture_stats_print+0x5ad/0x610
+> 	[   35.198527] Code: 63 1b 02 00 74 02 0f 0b 48 83 3d 35 63 1b 02 00 74 02 0f 0b 48 83 3d 21 63 1b 02 00 74 02 0f 0b 48 83 3d 0d 63 1b 02 00 74 02 <0f> 0b 83 eb 01 0f 8e ba fc ff ff 0f 0b e9 b3 fc ff f82
+> 	[   37.251049] RSP: 0000:ffffa92a0050bdf8 EFLAGS: 00010202
+> 	[   37.277320] rcu: De-offloading 8
+> 	[   37.290367] RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000001
+> 	[   37.290387] RDX: 0000000000000000 RSI: 00000000ffffbfff RDI: 00000000ffffffff
+> 	[   37.290398] RBP: 000000000000007b R08: 0000000000000000 R09: c0000000ffffbfff
+> 	[   37.290407] R10: 000000000000002a R11: ffffa92a0050bc18 R12: ffffa92a0050be20
+> 	[   37.290417] R13: ffffa92a0050be78 R14: 0000000000000000 R15: 000000000001bea0
+> 	[   37.290427] FS:  0000000000000000(0000) GS:ffff96045eb00000(0000) knlGS:0000000000000000
+> 	[   37.290448] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> 	[   37.290460] CR2: 0000000000000000 CR3: 000000001dc0c000 CR4: 00000000000006e0
+> 	[   37.290470] Call Trace:
+> 	[   37.295049]  <TASK>
+> 	[   37.295065]  ? preempt_count_add+0x63/0x90
+> 	[   37.295095]  ? _raw_spin_lock_irqsave+0x12/0x40
+> 	[   37.295125]  ? rcu_torture_stats_print+0x610/0x610
+> 	[   37.295143]  rcu_torture_stats+0x29/0x70
+> 	[   37.295160]  kthread+0xe3/0x110
+> 	[   37.295176]  ? kthread_complete_and_exit+0x20/0x20
+> 	[   37.295193]  ret_from_fork+0x22/0x30
+> 	[   37.295218]  </TASK>
+> 
+> Fix this with boosting the ksoftirqds kthreads from the boosting
+> hotplug callback itself and before the boosting kthreads are created.
+> 
+> Fixes: ea6d962e80b6 ("rcutorture: Judge RCU priority boosting on grace periods, not callbacks")
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 
-Yes I also think triggering timer with zero-timeout is better. Can you (Vlad)
-accomplish that by just calling the timer callback inline, instead of queuing
-a timer? I imagine you would just do queue_work() instead of
-queue_delayed_work() in this scenario.
+Good catch!  Queued for testing and review, thank you!
 
-> > I do agree that the action would often need to be indirect to avoid the
-> > memory-allocation-state hassles, but we already can do that, either via
-> > an extremely short-term hrtimer or something like irq-work.
-> >
-> > > > Wouldn't a check on the number of blocks queued be simpler, more direct,
-> > > > and provide faster response to the start of a callback flood?
-> > > >
-> > > I rely on krcp->count because not always we can store the pointer in the page
-> > > slots. We can not allocate a page in the caller context thus we use page-cache
-> > > worker that fills the cache in normal context. While it populates the cache,
-> > > pointers temporary are queued to the linked-list.
-> > >
-> > > Any thoughts?
-> >
-> > There are a great many ways to approach this.  One of them is to maintain
-> > a per-CPU free-running counter of kvfree_rcu() calls, and to reset this
-> > counter each jiffy.
-> >
-> > Or am I missing a trick here?
-> >
-> Do you mean to have a per-cpu timer that checks the per-cpu-freed counter
-> and schedule the work when if it is needed? Or i have missed your point?
+							Thanx, Paul
 
-I think he (Paul) is describing the way 'flood detection' can work similar to how the
-bypass list code is implemented. There he maintains a count which only if
-exceeds a limit, will queue on to the bypass list.
-
-This code:
-
-        // If we have advanced to a new jiffy, reset counts to allow
-        // moving back from ->nocb_bypass to ->cblist.
-        if (j == rdp->nocb_nobypass_last) {
-                c = rdp->nocb_nobypass_count + 1;
-        } else {
-                WRITE_ONCE(rdp->nocb_nobypass_last, j);
-                c = rdp->nocb_nobypass_count - nocb_nobypass_lim_per_jiffy;
-                if (ULONG_CMP_LT(rdp->nocb_nobypass_count,
-                                 nocb_nobypass_lim_per_jiffy))
-                        c = 0;
-                else if (c > nocb_nobypass_lim_per_jiffy)
-                        c = nocb_nobypass_lim_per_jiffy;
-        }
-        WRITE_ONCE(rdp->nocb_nobypass_count, c);
-
-
-Your (Vlad's) approach OTOH is also fine to me, you check if page is full and
-make that as a 'flood is happening' detector.
-
-thanks,
-
- - Joel
-
+> ---
+>  kernel/rcu/rcutorture.c | 28 +++++++++++++---------------
+>  1 file changed, 13 insertions(+), 15 deletions(-)
+> 
+> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+> index abb3f6d720f1..21470ebb15eb 100644
+> --- a/kernel/rcu/rcutorture.c
+> +++ b/kernel/rcu/rcutorture.c
+> @@ -2136,6 +2136,19 @@ static int rcutorture_booster_init(unsigned int cpu)
+>  	if (boost_tasks[cpu] != NULL)
+>  		return 0;  /* Already created, nothing more to do. */
+>  
+> +	// Testing RCU priority boosting requires rcutorture do
+> +	// some serious abuse.  Counter this by running ksoftirqd
+> +	// at higher priority.
+> +	if (IS_BUILTIN(CONFIG_RCU_TORTURE_TEST)) {
+> +		struct sched_param sp;
+> +		struct task_struct *t;
+> +
+> +		t = per_cpu(ksoftirqd, cpu);
+> +		WARN_ON_ONCE(!t);
+> +		sp.sched_priority = 2;
+> +		sched_setscheduler_nocheck(t, SCHED_FIFO, &sp);
+> +	}
+> +
+>  	/* Don't allow time recalculation while creating a new task. */
+>  	mutex_lock(&boost_mutex);
+>  	rcu_torture_disable_rt_throttle();
+> @@ -3384,21 +3397,6 @@ rcu_torture_init(void)
+>  		rcutor_hp = firsterr;
+>  		if (torture_init_error(firsterr))
+>  			goto unwind;
+> -
+> -		// Testing RCU priority boosting requires rcutorture do
+> -		// some serious abuse.  Counter this by running ksoftirqd
+> -		// at higher priority.
+> -		if (IS_BUILTIN(CONFIG_RCU_TORTURE_TEST)) {
+> -			for_each_online_cpu(cpu) {
+> -				struct sched_param sp;
+> -				struct task_struct *t;
+> -
+> -				t = per_cpu(ksoftirqd, cpu);
+> -				WARN_ON_ONCE(!t);
+> -				sp.sched_priority = 2;
+> -				sched_setscheduler_nocheck(t, SCHED_FIFO, &sp);
+> -			}
+> -		}
+>  	}
+>  	shutdown_jiffies = jiffies + shutdown_secs * HZ;
+>  	firsterr = torture_shutdown_init(shutdown_secs, rcu_torture_cleanup);
+> -- 
+> 2.25.1
+> 
