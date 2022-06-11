@@ -2,122 +2,126 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EBD08C433EF
-	for <rcu@archiver.kernel.org>; Sat, 11 Jun 2022 11:01:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2EBD3C433EF
+	for <rcu@archiver.kernel.org>; Sat, 11 Jun 2022 16:33:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231801AbiFKLBA (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 11 Jun 2022 07:01:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48654 "EHLO
+        id S234904AbiFKQdL (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 11 Jun 2022 12:33:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230491AbiFKLBA (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 11 Jun 2022 07:01:00 -0400
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6245D13EB2;
-        Sat, 11 Jun 2022 04:00:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1654945259; x=1686481259;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=4leKXDQUXZ64qSpn4lsd80iVr7ZStmm6WSA/DgDjVYE=;
-  b=nTT04OQvu7SZd0AxGxVXDknnrH11IrH7FfQwkXp4TEnaSIvU04uUGDVO
-   nJzOmEUgx6N4MU7l2c4oJZkS+8WJGI4cIUHf2XQoGaGGMOc+jzFAfDMyz
-   yBUiqIwdtl5WXYGsyYSP4JcZ3SnUJF91dKh893AiYT+nEhPrta/WvO/pN
-   oHgx2aga/iM4mWDPumsd8thrJjfpQuiIlCAVImvr+JBlnM2Gf6GYq+yNs
-   bOAnDF1Us2Uwo3LyZ0GNIUbyPBhzvpYxfCoM1XGNQTjVA13YtR1eCELQ9
-   +tBH72hCgUr8kTt2OGHqONUYYzseqFyopxothMdf4UAlEDV2IUzQFUUEd
-   w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10374"; a="364197859"
-X-IronPort-AV: E=Sophos;i="5.91,293,1647327600"; 
-   d="scan'208";a="364197859"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2022 04:00:59 -0700
-X-IronPort-AV: E=Sophos;i="5.91,293,1647327600"; 
-   d="scan'208";a="638653264"
-Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.125])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2022 04:00:57 -0700
-From:   Zqiang <qiang1.zhang@intel.com>
-To:     paulmck@kernel.org, frederic@kernel.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3] rcu/nocb: Avoid polling when myrdp->nocb_head_rdp list is empty
-Date:   Sat, 11 Jun 2022 19:00:44 +0800
-Message-Id: <20220611110044.2999157-1-qiang1.zhang@intel.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S233120AbiFKQdK (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 11 Jun 2022 12:33:10 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A980E205
+        for <rcu@vger.kernel.org>; Sat, 11 Jun 2022 09:33:07 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id bo5so2078958pfb.4
+        for <rcu@vger.kernel.org>; Sat, 11 Jun 2022 09:33:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:subject:message-id:date:user-agent:mime-version
+         :content-transfer-encoding:content-language;
+        bh=eYTjSteehS/9bqxvK9gzpphfN0yym4BeUslPCWcTEyc=;
+        b=GZge180IIjp5LVPkgQj1ZvNfa+ch6obVOQjTApf8noS2ZgqToU6InjNszSiqK0+Sb/
+         547r2lrNGxgCyTNq3OugF5oo40xQtOHp/MrhttRNuLXlMJsU2SDuY9saPKvKBc3njSoc
+         H6UjisfS15gRCK1TL7lhhfmRNSGPf5NWLfGx7mOW6hzf+0sVKry4vq8je2cQmuA8f49R
+         z9k0p5NWFjLFuF8Nydm7bcLuO5jSrAZjYvv8cSNsCcMET8n/TdaTolSNSZMgPbPyqOhk
+         +++6jdeGH63BejWmbirWD/xy0L/IitJqOEy7tZToY30elS8pDsAcddWjgMM6SJjWqS0R
+         sCNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:subject:message-id:date:user-agent
+         :mime-version:content-transfer-encoding:content-language;
+        bh=eYTjSteehS/9bqxvK9gzpphfN0yym4BeUslPCWcTEyc=;
+        b=jbGggLcUHm+ev+9wEpRGU9EGxKkxGuerVCovgLNlpsbfF71nOxnarKTlLo7yQXHLCl
+         nrpTU75QvIi8c4Y28oki+DYUnQY3U912TqG/E00M3b9oCbU8XT8jVCQHQI5B2NA152C7
+         f3MqEf7zMTNWzsK2SFmmj7Y2phkNUOH1EK5v44gxQs55jQuTkRdC6PeeZBt7HgiFJfjU
+         mEJ/68McYYYIGpunyM3YhTKDKuZKtaNIlTSff1vf/2QkJQmMeJN2BaebikuufRjrl//z
+         n7sl1B2ir72RWPiStcBAsazp9y63D+1uhUR22ujhrdJo3Um3+jzzzOrWpPdc6Sc4IGn+
+         7SXw==
+X-Gm-Message-State: AOAM532u4y539VY3yK3hKuQP53Ovuq8JwgddyVjq5JfSKk9AzOsiNaUT
+        //8Ywr5Zs787FU5kCfRcbT/RCg==
+X-Google-Smtp-Source: ABdhPJy6IsiXDs53CaktI4Y51WPqyuGiKumgCwnb/o9IQbPpF+nN1quss8lRak3R9FSPsqVprlaDaA==
+X-Received: by 2002:a63:df03:0:b0:405:f5f:345f with SMTP id u3-20020a63df03000000b004050f5f345fmr4285293pgg.195.1654965187257;
+        Sat, 11 Jun 2022 09:33:07 -0700 (PDT)
+Received: from [10.115.0.6] ([199.101.192.37])
+        by smtp.gmail.com with ESMTPSA id x13-20020a63aa4d000000b003f66a518e48sm1850810pgo.86.2022.06.11.09.33.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 11 Jun 2022 09:33:06 -0700 (PDT)
+From:   Zhangfei Gao <zhangfei.gao@linaro.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        rcu@vger.kernel.org, Lai Jiangshan <jiangshanlai@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Shameerali Kolothum Thodi 
+        <shameerali.kolothum.thodi@huawei.com>
+Subject: Commit 282d8998e997 (srcu: Prevent expedited GPs and blocking readers
+ from consuming CPU) cause qemu boot slow
+Message-ID: <20615615-0013-5adc-584f-2b1d5c03ebfc@linaro.org>
+Date:   Sun, 12 Jun 2022 00:32:59 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Currently, If the 'rcu_nocb_poll' bootargs is enable, all rcuog kthreads
-enter polling mode. however, due to only insert CPU's rdp which belong to
-rcu_nocb_mask to 'nocb_head_rdp' list or all CPU's rdp served by rcuog
-kthread have been de-offloaded, these cause the 'nocb_head_rdp' list
-served by rcuog kthread is empty, when the 'nocb_head_rdp' is empty,
-the rcuog kthread in polling mode not actually do anything. fix it by
-exiting polling mode when the 'nocb_head_rdp'list is empty, otherwise
-entering polling mode.
+Hi, Paul
 
-Co-developed-by: Frederic Weisbecker <frederic@kernel.org>
-Signed-off-by: Zqiang <qiang1.zhang@intel.com>
----
- v1->v2:
- Move rcu_nocb_poll flags check from rdp_offload_toggle() to 
- rcu_nocb_rdp_offload/deoffload(), avoid unnecessary setting of 
- rdp_gp->nocb_gp_sleep flags, because when rcu_nocb_poll is set  the 
- rdp_gp->nocb_gp_sleep is not used.
- 
- v2->v3:
- When nocb_head_rdp list is empty. put rcuog kthreads in nocb_gp_wq
- waitqueue to wait offloading.
+When verifying qemu with acpi rmr feature on v5.19-rc1, the guest kernel 
+stuck for several minutes.
+And on 5.18, there is no such problem.
 
- kernel/rcu/tree_nocb.h | 24 +++++++++++++++++++-----
- 1 file changed, 19 insertions(+), 5 deletions(-)
+After revert this patch, the issue solved.
+Commit 282d8998e997 (srcu: Prevent expedited GPs and blocking readers 
+from  consuming CPU)
 
-diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index fa8e4f82e60c..a8f574d8850d 100644
---- a/kernel/rcu/tree_nocb.h
-+++ b/kernel/rcu/tree_nocb.h
-@@ -584,6 +584,14 @@ static int nocb_gp_toggle_rdp(struct rcu_data *rdp,
- 	return ret;
- }
- 
-+static void nocb_gp_sleep(struct rcu_data *my_rdp, int cpu)
-+{
-+	trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("Sleep"));
-+	swait_event_interruptible_exclusive(my_rdp->nocb_gp_wq,
-+					!READ_ONCE(my_rdp->nocb_gp_sleep));
-+	trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("EndSleep"));
-+}
-+
- /*
-  * No-CBs GP kthreads come here to wait for additional callbacks to show up
-  * or for grace periods to end.
-@@ -701,13 +709,19 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
- 		/* Polling, so trace if first poll in the series. */
- 		if (gotcbs)
- 			trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("Poll"));
--		schedule_timeout_idle(1);
-+		if (list_empty(&my_rdp->nocb_head_rdp)) {
-+			raw_spin_lock_irqsave(&my_rdp->nocb_gp_lock, flags);
-+			if (!my_rdp->nocb_toggling_rdp)
-+				WRITE_ONCE(my_rdp->nocb_gp_sleep, true);
-+			raw_spin_unlock_irqrestore(&my_rdp->nocb_gp_lock, flags);
-+			/* Wait for any offloading rdp */
-+			nocb_gp_sleep(my_rdp, cpu);
-+		} else {
-+			schedule_timeout_idle(1);
-+		}
- 	} else if (!needwait_gp) {
- 		/* Wait for callbacks to appear. */
--		trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("Sleep"));
--		swait_event_interruptible_exclusive(my_rdp->nocb_gp_wq,
--				!READ_ONCE(my_rdp->nocb_gp_sleep));
--		trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("EndSleep"));
-+		nocb_gp_sleep(my_rdp, cpu);
- 	} else {
- 		rnp = my_rdp->mynode;
- 		trace_rcu_this_gp(rnp, my_rdp, wait_gp_seq, TPS("StartWait"));
--- 
-2.25.1
+
+qemu cmd:
+build/aarch64-softmmu/qemu-system-aarch64 -machine 
+virt,gic-version=3,iommu=smmuv3 \
+-enable-kvm -cpu host -m 1024 \
+-kernel Image -initrd mini-rootfs.cpio.gz -nographic -append \
+"rdinit=init console=ttyAMA0 earlycon=pl011,0x9000000 kpti=off acpi=force" \
+-bios QEMU_EFI.fd
+
+log:
+InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7AA4D040
+add-symbol-file 
+/home/linaro/work/edk2/Build/ArmVirtQemu-AARCH64/DEBUG_GCC48/AARCH64/NetworkPkg/IScsiDxe/IScsiDxe/DEBUG/IScsiDxe.dll 
+0x75459000
+Loading driver at 0x00075458000 EntryPoint=0x00075459058 IScsiDxe.efi
+InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7AA4DE98
+ProtectUefiImageCommon - 0x7AA4D040
+   - 0x0000000075458000 - 0x000000000003F000
+SetUefiImageMemoryAttributes - 0x0000000075458000 - 0x0000000000001000 
+(0x0000000000004008)
+SetUefiImageMemoryAttributes - 0x0000000075459000 - 0x000000000003B000 
+(0x0000000000020008)
+SetUefiImageMemoryAttributes - 0x0000000075494000 - 0x0000000000003000 
+(0x0000000000004008)
+InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 754952C8
+InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 75495358
+InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 75495370
+InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 754952F8
+InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 75495358
+InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 75495370
+InstallProtocolInterface: 59324945-EC44-4C0D-B1CD-9DB139DF070C 75495348
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 754953E8
+InstallProtocolInterface: 330D4706-F2A0-4E4F-A369-B66FA8D54385 7AA4D728
+
+
+Not sure it is either reported or solved.
+
+Thanks
+
+
+
+
+
+
 
