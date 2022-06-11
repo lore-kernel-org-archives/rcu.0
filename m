@@ -2,113 +2,137 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B054C433EF
-	for <rcu@archiver.kernel.org>; Sat, 11 Jun 2022 16:34:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F44DC433EF
+	for <rcu@archiver.kernel.org>; Sat, 11 Jun 2022 16:49:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233483AbiFKQeh (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 11 Jun 2022 12:34:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46990 "EHLO
+        id S233764AbiFKQtY (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 11 Jun 2022 12:49:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233420AbiFKQeg (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 11 Jun 2022 12:34:36 -0400
+        with ESMTP id S233571AbiFKQtW (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 11 Jun 2022 12:49:22 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED65A62EA;
-        Sat, 11 Jun 2022 09:34:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE80760DA1;
+        Sat, 11 Jun 2022 09:49:21 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id A0630B8015B;
-        Sat, 11 Jun 2022 16:34:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38E53C34116;
-        Sat, 11 Jun 2022 16:34:33 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 488EEB8094D;
+        Sat, 11 Jun 2022 16:49:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07FC5C34116;
+        Sat, 11 Jun 2022 16:49:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1654965273;
-        bh=z3Hrpl1h+fHXQDyv5o6S5RIYzi9IdPIpektKcK8JcZ8=;
+        s=k20201202; t=1654966159;
+        bh=6ffMB9Bvq8D1Sqnq0KH792Mg/MsPCZth/MfFPkvZa7Y=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=pI7cbzpY3UPcatQh+7eXbG+t0QS8KNgat5cO2hv6ErY3Gcbh7VYueQaS6m5Dj1oxp
-         HcLqRn65CBidJQ+fypDcyusE+UCKAVDz47UzQtxd8xIW3NwLFkp4+6bXvm6m98uWyO
-         dapDHuvvotUpUiHBl8Adx3oo2yL30UXxQsBUhBxpDEbIyLtd34D1XzNYNK3LygGGi4
-         hdmJK51fa06k8TGZUfxgH5l1pADr+RqQOS1COwcrousn9dLEcAeTM1/EMGq2ch2Tn6
-         +UfxogM4QUjXpGo7qgZs4FNegoDQj4pghBvRBc/zVw6XT1eglg0IW561JMFt8TTF1P
-         FPkPvy9xxoD7Q==
+        b=DdXMLSYLDecPoaIZuP87BjoOgeMVu0i4Aa2QtWpPGRIX5NHXykSIrRNIDNpnXMZM6
+         EvhxKAcv8c7QZym6g0N6GgXr4qY5gtjpNPNwzJ91XX23GPBYHNgVFrEbkRgW7PBJpX
+         NkI0GJPrQPMAKRz6a+SZ4zWQJs8mRR/lz8gB5XkvtJLpfUMq8FaCq4iovp8wwdcbsU
+         RMO/MrV3oab/sN5bQe6r7gK7k5jGh6UgrzsbeeBVY5RI4HMnEXkMRIYuZv2SD2Llui
+         5HcfJQHP/KAvIxaTRO1Db1d5lGbF+tejsVwdW/4kzGUSd1GIcNC8fjHMQbHBCBHYfz
+         OBJSwuerxJYVQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id C42CD5C0612; Sat, 11 Jun 2022 09:34:32 -0700 (PDT)
-Date:   Sat, 11 Jun 2022 09:34:32 -0700
+        id 9A2EE5C0612; Sat, 11 Jun 2022 09:49:18 -0700 (PDT)
+Date:   Sat, 11 Jun 2022 09:49:18 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Li Qiong <liqiong@nfschina.com>
-Cc:     Davidlohr Bueso <dave@stgolabs.net>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        hukun@nfschina.com, qixu@nfschina.com, yuzhe@nfschina.com,
-        renyu@nfschina.com
-Subject: Re: [PATCH] rcu: Handle failure of memory allocation functions
-Message-ID: <20220611163432.GM1790663@paulmck-ThinkPad-P17-Gen-1>
+To:     Zqiang <qiang1.zhang@intel.com>
+Cc:     frederic@kernel.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] rcu/nocb: Avoid polling when myrdp->nocb_head_rdp
+ list is empty
+Message-ID: <20220611164918.GN1790663@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20220611093055.1473-1-liqiong@nfschina.com>
+References: <20220611110044.2999157-1-qiang1.zhang@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220611093055.1473-1-liqiong@nfschina.com>
+In-Reply-To: <20220611110044.2999157-1-qiang1.zhang@intel.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, Jun 11, 2022 at 05:30:55PM +0800, Li Qiong wrote:
-> Add warning when these functions (eg:kmalloc,vmalloc) fail, handle the
-> failure.
+On Sat, Jun 11, 2022 at 07:00:44PM +0800, Zqiang wrote:
+> Currently, If the 'rcu_nocb_poll' bootargs is enable, all rcuog kthreads
+> enter polling mode. however, due to only insert CPU's rdp which belong to
+> rcu_nocb_mask to 'nocb_head_rdp' list or all CPU's rdp served by rcuog
+> kthread have been de-offloaded, these cause the 'nocb_head_rdp' list
+> served by rcuog kthread is empty, when the 'nocb_head_rdp' is empty,
+> the rcuog kthread in polling mode not actually do anything. fix it by
+> exiting polling mode when the 'nocb_head_rdp'list is empty, otherwise
+> entering polling mode.
 > 
-> Signed-off-by: Li Qiong <liqiong@nfschina.com>
+> Co-developed-by: Frederic Weisbecker <frederic@kernel.org>
+> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 
-Good catch, thank you!  However...
+Much better, thank you!  One additional question below.
 
-> ---
->  kernel/rcu/rcutorture.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-> index 7120165a9342..97f90e304ae3 100644
-> --- a/kernel/rcu/rcutorture.c
-> +++ b/kernel/rcu/rcutorture.c
-> @@ -1991,6 +1991,10 @@ static void rcu_torture_mem_dump_obj(void)
->  
->  	kcp = kmem_cache_create("rcuscale", 136, 8, SLAB_STORE_USER, NULL);
-
-As long as we are checking, why not also check this one?
+(And we of course need Frederic's "D'accord" before I send this sort of
+thing to mainline.)
 
 							Thanx, Paul
 
->  	rhp = kmem_cache_alloc(kcp, GFP_KERNEL);
-> +	if (WARN_ON_ONCE(!rhp)) {
-> +		kmem_cache_destroy(kcp);
-> +		return;
-> +	}
->  	pr_alert("mem_dump_obj() slab test: rcu_torture_stats = %px, &rhp = %px, rhp = %px, &z = %px\n", stats_task, &rhp, rhp, &z);
->  	pr_alert("mem_dump_obj(ZERO_SIZE_PTR):");
->  	mem_dump_obj(ZERO_SIZE_PTR);
-> @@ -2007,6 +2011,8 @@ static void rcu_torture_mem_dump_obj(void)
->  	kmem_cache_free(kcp, rhp);
->  	kmem_cache_destroy(kcp);
->  	rhp = kmalloc(sizeof(*rhp), GFP_KERNEL);
-> +	if (WARN_ON_ONCE(!rhp))
-> +		return;
->  	pr_alert("mem_dump_obj() kmalloc test: rcu_torture_stats = %px, &rhp = %px, rhp = %px\n", stats_task, &rhp, rhp);
->  	pr_alert("mem_dump_obj(kmalloc %px):", rhp);
->  	mem_dump_obj(rhp);
-> @@ -2014,6 +2020,8 @@ static void rcu_torture_mem_dump_obj(void)
->  	mem_dump_obj(&rhp->func);
->  	kfree(rhp);
->  	rhp = vmalloc(4096);
-> +	if (WARN_ON_ONCE(!rhp))
-> +		return;
->  	pr_alert("mem_dump_obj() vmalloc test: rcu_torture_stats = %px, &rhp = %px, rhp = %px\n", stats_task, &rhp, rhp);
->  	pr_alert("mem_dump_obj(vmalloc %px):", rhp);
->  	mem_dump_obj(rhp);
+> ---
+>  v1->v2:
+>  Move rcu_nocb_poll flags check from rdp_offload_toggle() to 
+>  rcu_nocb_rdp_offload/deoffload(), avoid unnecessary setting of 
+>  rdp_gp->nocb_gp_sleep flags, because when rcu_nocb_poll is set  the 
+>  rdp_gp->nocb_gp_sleep is not used.
+>  
+>  v2->v3:
+>  When nocb_head_rdp list is empty. put rcuog kthreads in nocb_gp_wq
+>  waitqueue to wait offloading.
+> 
+>  kernel/rcu/tree_nocb.h | 24 +++++++++++++++++++-----
+>  1 file changed, 19 insertions(+), 5 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> index fa8e4f82e60c..a8f574d8850d 100644
+> --- a/kernel/rcu/tree_nocb.h
+> +++ b/kernel/rcu/tree_nocb.h
+> @@ -584,6 +584,14 @@ static int nocb_gp_toggle_rdp(struct rcu_data *rdp,
+>  	return ret;
+>  }
+>  
+> +static void nocb_gp_sleep(struct rcu_data *my_rdp, int cpu)
+> +{
+> +	trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("Sleep"));
+> +	swait_event_interruptible_exclusive(my_rdp->nocb_gp_wq,
+> +					!READ_ONCE(my_rdp->nocb_gp_sleep));
+> +	trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("EndSleep"));
+> +}
+> +
+>  /*
+>   * No-CBs GP kthreads come here to wait for additional callbacks to show up
+>   * or for grace periods to end.
+> @@ -701,13 +709,19 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
+>  		/* Polling, so trace if first poll in the series. */
+>  		if (gotcbs)
+>  			trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("Poll"));
+> -		schedule_timeout_idle(1);
+> +		if (list_empty(&my_rdp->nocb_head_rdp)) {
+> +			raw_spin_lock_irqsave(&my_rdp->nocb_gp_lock, flags);
+> +			if (!my_rdp->nocb_toggling_rdp)
+
+If this "if" condition is false, what prevents this kthread from being
+in a CPU-bound loop?
+
+> +				WRITE_ONCE(my_rdp->nocb_gp_sleep, true);
+> +			raw_spin_unlock_irqrestore(&my_rdp->nocb_gp_lock, flags);
+> +			/* Wait for any offloading rdp */
+> +			nocb_gp_sleep(my_rdp, cpu);
+> +		} else {
+> +			schedule_timeout_idle(1);
+> +		}
+>  	} else if (!needwait_gp) {
+>  		/* Wait for callbacks to appear. */
+> -		trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("Sleep"));
+> -		swait_event_interruptible_exclusive(my_rdp->nocb_gp_wq,
+> -				!READ_ONCE(my_rdp->nocb_gp_sleep));
+> -		trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("EndSleep"));
+> +		nocb_gp_sleep(my_rdp, cpu);
+>  	} else {
+>  		rnp = my_rdp->mynode;
+>  		trace_rcu_this_gp(rnp, my_rdp, wait_gp_seq, TPS("StartWait"));
 > -- 
-> 2.11.0
+> 2.25.1
 > 
