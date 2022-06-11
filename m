@@ -2,85 +2,87 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EE3BCC433EF
-	for <rcu@archiver.kernel.org>; Sat, 11 Jun 2022 05:13:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F1E90C43334
+	for <rcu@archiver.kernel.org>; Sat, 11 Jun 2022 05:29:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346996AbiFKFNG (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 11 Jun 2022 01:13:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58252 "EHLO
+        id S229631AbiFKF33 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 11 Jun 2022 01:29:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347980AbiFKFND (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 11 Jun 2022 01:13:03 -0400
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9943F271C;
-        Fri, 10 Jun 2022 22:13:02 -0700 (PDT)
+        with ESMTP id S229562AbiFKF3Z (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 11 Jun 2022 01:29:25 -0400
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 509291F9;
+        Fri, 10 Jun 2022 22:29:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1654924382; x=1686460382;
+  t=1654925362; x=1686461362;
   h=from:to:cc:subject:date:message-id:references:
    in-reply-to:content-transfer-encoding:mime-version;
-  bh=ZKQHeQXLsCHd8winCjGb42Dzh/QXLG/BSJgTkUKeo3k=;
-  b=a6uwhQxmBLyqrZF+BW3CzeLdmFEMYoQQ9IFGPxXfimiDA5D3gxIrtN3u
-   Ydcub00I9FOyRnQ6Hi8xgzFObAndzY+7NuYr19nTWbaSqWmQg+nB0ubzY
-   Ol6+Fc6dnSL/ejgBs+wzCCQZhunt9Bawk64W36nI2uRN2A8v7Df/3GS/Q
-   JRBfYCL6BFznDSbyJD/wuf80XvEKv9HJsNqv/Bs+ys+DIFj9qXKKDU3Ym
-   4M5sN0dD3FCe5UUyipWk1G8TdggnpZpOL3GC7AH3fos3QpeM/CxsYKfrL
-   eRuBc15fmWShPToI7cwf2WmYoklN3nHZz4MtTgRhHnAz1zn0mT19xXz1g
+  bh=D4bzH4WC9Jgmmzql5+6e3GnQCxDai6nUAyYWb7FuwFY=;
+  b=DFKjB9Zr0OU4oxsW/LAvFiLUbCBjZSAUsTPcFo+HfN4z0xlJCm+vVz3I
+   fHR5gjhJ2yEHUTYba519ILsgLr6WhHD/Jea62cMn7GLqxW1YCKfnbYHYa
+   MiCv9KDhZ5/13EZ7DMU8h3rVOCcH+gkvCOr7ZZhx+O/Ln0CFAVIfdUNNO
+   5qhNQkiYIMjxPhB+DqgZ6buhFV7IVQNxLmzQjyvcv3k5iBf4ZGYSyMgQH
+   LtutLCMt8NCXIdz5KpI0Nzu9wIejSJcLm7uss8eJ4judbObRgwHKwULBO
+   JCGtlNT1SojG56Bmf86eVOWUIT+jeckRuGfMPZSWAmvGCzzUXYEzulw7r
    A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10374"; a="278953838"
+X-IronPort-AV: E=McAfee;i="6400,9594,10374"; a="277869319"
 X-IronPort-AV: E=Sophos;i="5.91,292,1647327600"; 
-   d="scan'208";a="278953838"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2022 22:13:02 -0700
+   d="scan'208";a="277869319"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2022 22:29:21 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.91,292,1647327600"; 
-   d="scan'208";a="616791701"
-Received: from orsmsx604.amr.corp.intel.com ([10.22.229.17])
-  by orsmga001.jf.intel.com with ESMTP; 10 Jun 2022 22:13:01 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX604.amr.corp.intel.com (10.22.229.17) with Microsoft SMTP Server
+   d="scan'208";a="556710223"
+Received: from orsmsx605.amr.corp.intel.com ([10.22.229.18])
+  by orsmga006.jf.intel.com with ESMTP; 10 Jun 2022 22:29:21 -0700
+Received: from orsmsx605.amr.corp.intel.com (10.22.229.18) by
+ ORSMSX605.amr.corp.intel.com (10.22.229.18) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.27; Fri, 10 Jun 2022 22:13:01 -0700
+ 15.1.2308.27; Fri, 10 Jun 2022 22:29:20 -0700
 Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ orsmsx605.amr.corp.intel.com (10.22.229.18) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.27 via Frontend Transport; Fri, 10 Jun 2022 22:13:01 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.107)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ 15.1.2308.27 via Frontend Transport; Fri, 10 Jun 2022 22:29:20 -0700
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.57.41) by
+ edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2308.27; Fri, 10 Jun 2022 22:13:01 -0700
+ 15.1.2308.27; Fri, 10 Jun 2022 22:29:20 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MCmtDjOgvx0Pc1ZfyHDioEXTAtlj+v77aXOH4wYaMMqEq4TH47NinX3AqkUxmdK5G1R+TVosNFfzDrjrKv8Yc/czIN8PwPs9pfupbJI+rUjx5/EFkuo6oDm9EMXCyQ9bZ3qpdlRvSiEOjwCSNZRM1um5+t8GIRzBOQiWpdNhAbTylk8SxL53npQ8SEE7uI3T87RLtIYNkVZK/zJrxe0noJzPfT6wpcUHDaLR8AAigpSh1F624CDVlD6or5lWtRBnq+qnqTKY0rZcs7rhjkdwNtXEyPN4vynCiXcZAgi4pXyqrQsnjRGABWKW/gebjCZP0aNO99WzmGL8N1M2L9oUTA==
+ b=n6r5iHEZ92lvpNo6iaw/MnhPoB5M9pfN4fk/+3f4l35LJ/fjCDq5mid5mFxQ5M27bT85pP5O9i0s8DNaaSSNPHWhKFjoMhlKoEEwvlof++nxGV2+v9R+d5y3Jmg4/65RyRN+RZh2TRe0iD1gyNUhFmDoR27W+ndualhCvelp/By7vA/33kAlvsIJKHTPXWMqR1W3ZTRq38BFCce1KO62/ZpDulM7G6A43LHtYC6fmfpvfyEiJH4r6d169bptLOE9u/z9ddD5eB+kijS2VgBMrzNZWfpU5MmB8M+/WM+65YFuOBmaBLL/bQB654WQ/Ors9VJlclhL7+Xj11c287OhBQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6rYO+0stlDjnuSxZI37XcJmrI4Znaxxk7bvG+corRn0=;
- b=S7v70EVywizFDlBwQrI7a0MyWg/QJ25IGMr2RnS+uU87X0K2fwCaf2apGUhX1tolJyACWzu6r7gJOrmBmMpdEPE0RXrplsBQ8LRgq32+zgQ6VyGYZRQBGabuOxsRaGv31au0ZnT2h8FgW8JxyqYYdoQwovaZgo916Ws1Cs9bfl3u02DVP8bunYjLW3/4qaMT7Pb4OijWoJRxhg3j2xsLNEJ6lm2cgIoiCItpU7IdvCH9kOkPsed7VK6Qx3W05UXknSFbEPySx3a+8LXQDYxXVzlUjXUddrsIzidvCWhTyS9TLNaEyFxfFpitb9ndtyhJPXA4Uh44RkaKu+TPgJ4jgw==
+ bh=nEIwMCoQBetVGEFfbJrb02wpiTmNBfp8RCfu+BHBsI8=;
+ b=J2yHuu/ZuwGFw10Z9TA/q2JsZYVJa9YQ6LQWh29Ob3y/sGsl8fJ9Nx8WRn9Ryy9pAD44q38Cqcor8zWaFdE4UrTfzKT2SsfUVowSteoJ/VOL1/37Nzjd+6XlGDSoaLnKY5hcjdL5cwzNQDkoZBWrAm0oE3MZnLc8l4SlbDDisYqp/MQxEKQLBQpkiN/4dlpS/xHIssL7a1SGPNDBg9aZ7tk0tg77loUvz2u5MfFmkErY9wMXSFGOnq81UuMuasoM+Hj5l0wpHkhFyx7OwUkamLUZ+0Y/8vHVDLr6fABcMP9XpXRuiKSLXy+tU0CEReMJbOG+Xd/kMuvcf3FIyR2qyA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
  dkim=pass header.d=intel.com; arc=none
 Received: from PH0PR11MB5880.namprd11.prod.outlook.com (2603:10b6:510:143::14)
- by BN6PR1101MB2114.namprd11.prod.outlook.com (2603:10b6:405:57::10) with
+ by MN2PR11MB3886.namprd11.prod.outlook.com (2603:10b6:208:137::15) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5332.12; Sat, 11 Jun
- 2022 05:12:54 +0000
+ 2022 05:29:18 +0000
 Received: from PH0PR11MB5880.namprd11.prod.outlook.com
  ([fe80::a4a9:b58f:8246:5f72]) by PH0PR11MB5880.namprd11.prod.outlook.com
  ([fe80::a4a9:b58f:8246:5f72%7]) with mapi id 15.20.5332.013; Sat, 11 Jun 2022
- 05:12:54 +0000
+ 05:29:18 +0000
 From:   "Zhang, Qiang1" <qiang1.zhang@intel.com>
-To:     "paulmck@kernel.org" <paulmck@kernel.org>
-CC:     "frederic@kernel.org" <frederic@kernel.org>,
+To:     Frederic Weisbecker <frederic@kernel.org>
+CC:     "paulmck@kernel.org" <paulmck@kernel.org>,
         "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] rcu-tasks: Remove unused trc_wait and holdouts
-Thread-Topic: [PATCH] rcu-tasks: Remove unused trc_wait and holdouts
-Thread-Index: AQHYfJUcbqLgXc0Mqkih46ww8iTtta1I+J6AgACx4cA=
-Date:   Sat, 11 Jun 2022 05:12:54 +0000
-Message-ID: <PH0PR11MB5880271642F637C44F06BA8DDAA99@PH0PR11MB5880.namprd11.prod.outlook.com>
-References: <20220610062228.2185104-1-qiang1.zhang@intel.com>
- <20220610183543.GJ1790663@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20220610183543.GJ1790663@paulmck-ThinkPad-P17-Gen-1>
+Subject: RE: [PATCH v2] rcu/nocb: Avoid polling when myrdp->nocb_head_rdp list
+ is empty
+Thread-Topic: [PATCH v2] rcu/nocb: Avoid polling when myrdp->nocb_head_rdp
+ list is empty
+Thread-Index: AQHYekOLcM/pjDOLHUOfGqJWFKxX8a1IkEkAgAEfBTA=
+Date:   Sat, 11 Jun 2022 05:29:18 +0000
+Message-ID: <PH0PR11MB5880DBE1D62DD56DB45BDE88DAA99@PH0PR11MB5880.namprd11.prod.outlook.com>
+References: <20220607075057.909070-1-qiang1.zhang@intel.com>
+ <20220610120542.GA1811980@lothringen>
+In-Reply-To: <20220610120542.GA1811980@lothringen>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -91,101 +93,163 @@ dlp-reaction: no-action
 authentication-results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=intel.com;
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1b001b46-24ba-41dd-f49f-08da4b690a34
-x-ms-traffictypediagnostic: BN6PR1101MB2114:EE_
-x-microsoft-antispam-prvs: <BN6PR1101MB2114A026C7436D93C794FFA5DAA99@BN6PR1101MB2114.namprd11.prod.outlook.com>
+x-ms-office365-filtering-correlation-id: 7134ddcd-3ffd-4406-fca3-08da4b6b551f
+x-ms-traffictypediagnostic: MN2PR11MB3886:EE_
+x-microsoft-antispam-prvs: <MN2PR11MB3886015ED0A9AB47DA675B25DAA99@MN2PR11MB3886.namprd11.prod.outlook.com>
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: hKAL7JbLFzymTVgqtUT8NdQ+S3zJ1iGvvK0Rzd0G8Ik9ODO3PpPin8t1cwMva2KCr1KETL0W3TtfWBE8J6RaisrbKUKZIxf7zfEMr1BhEXiuYPdNozC2XNzCw1N1uXFmi7J1Dyr1g8MajScsTJeDmpSO6OZDVs1+6pf3YC63jY/b6ROAq469BdWBJI6ydeKoIGDnVINKWuQIgkF+0ga+/8PxrDi0zv1YrQAsP+UkQOOGr+muwsCFHIDqxZ9x3XjNNmI4dxO54WxW9x1Et7++mZzGpgMkTYMpy1ZV9hvkvZlrGdLso6858vHDW5MCfLiuzZ6HpqDUs4zaxMQ+QIsK8SrCqHpyRH3s1GZCO+Unuf//c2IkEWF2gfz+9WMohA4jTFysou7poOWuDiyFJGeg3FzvX/5uvWbMVd7fKj+TYVS/7qmm0ukdWCWwWeODt9D1QzSeI3thujilf4QrT2yhhNIsNZTr/qhDNIVvdsLOR1w+kjutdFaS8a19XkhMbKrKhlhzDRA3mN4MtoC/lSeJhooZLfmmLLzz5Ylg2P0NOWgy2LgFlSbm6mkpaoEspGNEM7C91nLjFOCXNaOAY0iMpYBtd7c3eSMs0vdjY6XMBtDtBmFsbKTTTSZ0dyFt1sZTbuAlkMoQ09DXWXXySTiP0KjitFWl5og0LrMCgaJ+IbpdpmoBF9Yo4wS+LGbAjR5cdQpMj7Tcw3DIIDhjGAz2zw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5880.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(366004)(54906003)(38100700002)(186003)(9686003)(26005)(4326008)(66446008)(66476007)(66946007)(66556008)(8676002)(64756008)(76116006)(316002)(6916009)(71200400001)(52536014)(2906002)(86362001)(38070700005)(6506007)(122000001)(5660300002)(33656002)(508600001)(83380400001)(7696005)(8936002)(55016003)(82960400001);DIR:OUT;SFP:1102;
+x-microsoft-antispam-message-info: p7G2awVOJEkHQpGV4OsD5M+UFFsa8dVCaqs8/vHoyougz6cIwcvrtLlFFISb/RCOTL0K9u7O9MFsMoKaaQPlE96dtRXSOHK9F1qC93JLtpyOs/MeQPWQgZHh89bYcetoOjZfC/3VYtfLsO51FTUKCQRlFOLCLOCgq46fKfS3Apt2CboYPecYxOQC1sXj0u2DujahcOgxThARZcQdzPdIgxCBT4Z3OlHk8/t+dL3VQXJRTIlxZ9mlUVCqLaVAyvwRH8shKWir/u8x9AHiVeiz616zb+khrLGX0KDV0G3OnxPK2azAEkeHPnTTZmIpJ4y+LO+JovuB2j0W8fH8ic1nAmpIFaatGwF2O2qJKSRJHY1Do+yQuKmOU/6lDZB8zzB5EdQhxR2skfr8wdc1YGyCb6ZxVZAZD7hFoD2ar3u87spNI5cWFXQo9Y1JqG+3mEpg0tELePLFd9/Mxz0OV9prys6vUEfeqGF13MHwMp6t1V0Q0Y9qS3A4vG/aIG552LxHvx+Mq3o4nK67KN0yAqAL8DYh6B3j9x2wNk8v+66M9DKAEl52L7Bdf96s4SBzQMiqZGZBu4JGk1Jdvo0dyDvrCgf7ew6B6Au1IUlhtJsU5g64Y8w7EPMaU+8bWNDLFHiu05dn0J1j47ha4yF46t2ABIW+FZW4yYpS1iCWjEeA61Jt0nKaIpy/vtSjL4Z8QAWy
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5880.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(366004)(316002)(2906002)(4326008)(9686003)(26005)(71200400001)(186003)(6916009)(76116006)(66556008)(66476007)(8676002)(64756008)(66446008)(66946007)(54906003)(86362001)(7696005)(38070700005)(33656002)(8936002)(5660300002)(38100700002)(82960400001)(66574015)(55016003)(52536014)(83380400001)(122000001)(6506007)(508600001);DIR:OUT;SFP:1102;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Xo7JdckR8JrDh5RGccvvf6IAuodc+Ik3d9Ao12X7lmz4Td0LPITDVT37jEuu?=
- =?us-ascii?Q?WvCU6rXZiGoDt7/eXlwDtoHuQ81Q58SdDOQyoRe5TqyouIppDa7TxApgHmFN?=
- =?us-ascii?Q?/5zpnVKsi8qjYAjdoVnriAjEj0FvIaqTflFuf1DhOXXFS6uQlX0KZKV/+bxJ?=
- =?us-ascii?Q?6E4+DXuKmgxEDnC5l1f1XZhXglk3XMoxHhgvCGVVbmKpuyuebVn4HOoYefD1?=
- =?us-ascii?Q?EZXpvtGUSAQLmJMdFXWENVZelRyNkQRVwWbNm2vkDyIX3Twp9fc9uv6bPRnl?=
- =?us-ascii?Q?/iwrOJFSoh+yqIvp2zYLlkcFoVh7m0cfllWzFTDKRZEUV/VGGq4/KfRl/Vo8?=
- =?us-ascii?Q?x+WUQYP+/ub0vVhM9+bHbsxd6n9+d+uWvoQthMzN/gIDACwTiJpKIsDYefV3?=
- =?us-ascii?Q?LsbyofT657STxWJU2ATdX4Xp7tOalfMV2xj5cgmwhT9vpssy9Y1Ui8mKQMh0?=
- =?us-ascii?Q?53adhthaB2PVHxPMxD1yuvzuHN8pl/8IzLlHjjPh0gPvppKs2a5iRUfPSSkJ?=
- =?us-ascii?Q?AOrTNLT897uxt0tWQW/FFC2/+AbJcjCoiMdu8WgrVaQbEvPsEhdNpYYgL3Of?=
- =?us-ascii?Q?po6hw+WTZQKpQvztXjtqt7wuD3dyIhZJCI4rOKL95NAzB/ENWvqLCmB5utte?=
- =?us-ascii?Q?tqptpMf5LeSUboiN+rfrnyfCYYy4+K2LyUcILFFEq69QAIOjVa6ZVRjp0gXc?=
- =?us-ascii?Q?0GLZrzbPIu43mCvquPB3FnoKWDPd3GSnJVC8MY8w1Pk+zHXUU3Dt8OHSwiq4?=
- =?us-ascii?Q?QS/XfZgKFlaGiC86gRkno2r91PwX47vGIH0GrYw07kE5m+G2+XtpF4iKWaVx?=
- =?us-ascii?Q?0y/6NZPE+AISAPgx0S6AC2BZXEcd6cG8wigm9rDSzrqG+ODrMFwn0losLLbT?=
- =?us-ascii?Q?ft5P8geKoOMgWzjBBSXq5fhQfP2vPm7Jp3qrrtFdYWMq5LArci7rPq2QVOjz?=
- =?us-ascii?Q?t/E1VPVkKNCTnvPgdffmVt67GIsA0TCEgtttvBlrMfMWPyN+K7q3ZDnvCMzK?=
- =?us-ascii?Q?fy/4qLSmfwFJuYZT7ewFwyr1d+NoE4NHvewiVJy+3XJ8tJbRydT2XoPj6qmI?=
- =?us-ascii?Q?iTIZsHtXCA25hh1vtoogoNdCkNq9haWLvxPnuLdh7hFzmFavcthWx2zW+PRi?=
- =?us-ascii?Q?bnhTvG1GpvdwOiwYcywow05u52HnOdMdB5GReJ4UydgNZhNkr6FrWodA5nGt?=
- =?us-ascii?Q?E5uXgLn+FQyXFfXkZgFn0hRUxm91xgJDMrc2yi4C/5j/K/q28hUE1hxRos1y?=
- =?us-ascii?Q?IkHtUHL7MxT775LnZ8l14Hyrc67MAM6oV9ukgf7pkPvsLq9JwaR/ZA59cX+C?=
- =?us-ascii?Q?GsbF8oGKlq8NGo8nbXL6QrGiSMSMmNbjAEIhlwUCDl9cwT/nTeerO5KBR2mi?=
- =?us-ascii?Q?EdJLpl09alD+MbFXlLO/nIzHdfQgKfp/sbmr15BaS0gMEhchAnH1xXnClfZX?=
- =?us-ascii?Q?LnCW0DpEApLwFhRF7YYNi6e9hd0VHhJ9bYuHXM/LMhaxZyOsLvTJ3RHrdIPO?=
- =?us-ascii?Q?Mk95xvYdWLyvbU/6OFSYVZAHGfI1Wwk99RsG+h5RvCfmPTOG0nWiuVJzKytm?=
- =?us-ascii?Q?4J/k/CTHjGd2+dx+DYylGbh5I3IYxC+bz3EYyRqgO7LFfyQJgLUBdUFTrMtm?=
- =?us-ascii?Q?DkJh39sx4g1k03YaJ5U9Ij/hXtOnswrYJsjUwXbbbwtZY3XXyf08uLoP3JhJ?=
- =?us-ascii?Q?46VOpDH8L/WESkyvptk0cZehTUjRjAmdkHMLGJW5YYtJys63uoBL7npE+i8Z?=
- =?us-ascii?Q?Hmmg3sSIRA=3D=3D?=
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?zH4kiiPj7+s7rmgF5eo7ys1kltOBqJvGfcXL4BQgZkGk5wizlniny2SP9PzE?=
+ =?us-ascii?Q?A6dTxA3GRQsAM27uV1qW3fQ8L4AfEO/yXqzzOSXHd5SCZhP43HljcXuPkq3N?=
+ =?us-ascii?Q?Rk6LD/VYcd0XbDtVr8hWijicnxUYeO87r5TAbrJXzc8v0dTSbJC9ftpQcpsp?=
+ =?us-ascii?Q?ZGmZBb/NUSoqUVyBzDe/O0kqkGhejPkonK+FOXF8fy2Hs8jm7vnxR5+fFW+x?=
+ =?us-ascii?Q?a0LoQOkDV3eWBYLT2mxwYIh1pJ5uOGhIY2pMOjQ6TXNkEGYPIpQb2drHDDBl?=
+ =?us-ascii?Q?iYYPFYJs7OtXzXntGVT7zsDflSsqmaVq2FFa+eNhelrCUZnMYFsSsQJDSdpE?=
+ =?us-ascii?Q?p6mO5+rWFYRDzSy1m9ggjLw0nLpOCZVGMjU0y/Z+NBpt0qyya22KoXDXaQdu?=
+ =?us-ascii?Q?gNQWs+Pi+OhFkLbCkYQVy/sLZ9Vf62acBXBnNH4ErUlFB3dn5gHBC86I6nKh?=
+ =?us-ascii?Q?o+a9TZh8HXtMfQiVjzY/uhg/Q6b+Papi8dtnT9PgHb+HNiRokXsRbeblVV8T?=
+ =?us-ascii?Q?KasxyQgOCskI/cN18OnPzjILWE3eqzwQULaW0Rh1KJ6c0cK+rMZPsOAb3393?=
+ =?us-ascii?Q?vs3vqNmpzgXgTDuxS3w3x8LNMkLY3HT8mdablAhB5ND5h8YEUJ+9N/DcUMD9?=
+ =?us-ascii?Q?8pVEmG1VPuRM6gnNdQdJATDJcGkyIZiBCoAgXS7/TnmQzkDytrqLeFEE0bQP?=
+ =?us-ascii?Q?DaU17OnEoxoJ/+N/s+VqMpJfFwXJZik6Ja4SeIw7LqWsM9o+HyYCykncPvRW?=
+ =?us-ascii?Q?/7HZTDgXFBJgrqLR+ABksuLLNnI1kXyUawAgn9FtMWNMb+UZy6veCkLu8d6z?=
+ =?us-ascii?Q?BskZyNJed6J9k4fXZx1HWM0xe1oB91URebw8pvw6/ezWv79P3uzA6zzB3UzT?=
+ =?us-ascii?Q?DVOXjyu96pejQbDxFKjnGJyX1DElofteJKkxvJ70swdPEw40et5iYbejH/pV?=
+ =?us-ascii?Q?y0ef0EJPC/asBD/wMnbuKxpIAWbYxw/XAXp7kZ3IhX7k54u5fbwnrcJziANm?=
+ =?us-ascii?Q?5OG9O5+FCYziEDSWYkbvWE88NxxyuB7lctMJmi/E68hqzyIdBhlyVUzLZP4z?=
+ =?us-ascii?Q?WQqtk+COzgR8acirqcBU+tCZ+xVZxo5iVgJZsY239AbpFrNqnwkBaPTTAIeL?=
+ =?us-ascii?Q?SizA3nLKMVBC+kPnbQTd+l51whuBEs7/UAPqt2PJCOQvhRFj/K+5BM9iE2Rv?=
+ =?us-ascii?Q?AiHdXJwrlNwwpwORKHaE1SZmn9PKWYyqEpoIANjibN57/XHUf0dAl14WLbbD?=
+ =?us-ascii?Q?99hjzJ0uU7CKkoxcNWqbY6eXRMt121EQZdcSd8YO+vDVGfcmHKMSOtzPBpYN?=
+ =?us-ascii?Q?ZkCze46tfw6CJl6sfPvMAONc1H2LuKi/JjhjBsg/nTxXtEAWH+ojGV9fjTp+?=
+ =?us-ascii?Q?hOMq1t0NaMoc6aE1lDm1q+RL5P0NnqjAFQmoxNhpFhblx77eBbjokla4B1hh?=
+ =?us-ascii?Q?P+3ClR5Snq+BkulVjxjj/mf+SsNrrLFkyc+EroX5HJDu2Sl6PAAGigbAI5B2?=
+ =?us-ascii?Q?WE1X8Kt64fUEcQSCySVhvqbBJC7C33WtbRzoCsqD3pWjMRxnYjpAvdcT8Wlp?=
+ =?us-ascii?Q?8q38WmFAb2pCEVnnfl/oXH5FtR4q6kIiC9e6ufY2HxDAGMZ6ycOXEknZOct6?=
+ =?us-ascii?Q?+Gv06EE39RiF81inCU5uYvsLRtfboOrdu0j4ETOPHAcydlk4DCJp41cwty4w?=
+ =?us-ascii?Q?7kfVlEWobM5BxOzIpIcwfIucEzmzrOVjPrtYYeK7rOyqlndzmY1zzSwp9Ucr?=
+ =?us-ascii?Q?rzUySEMsHg=3D=3D?=
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5880.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1b001b46-24ba-41dd-f49f-08da4b690a34
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Jun 2022 05:12:54.1082
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7134ddcd-3ffd-4406-fca3-08da4b6b551f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Jun 2022 05:29:18.7933
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Ulbe+/q6QcAVCQozlwWzyQzCWsPKt3WPy7qR2o3UptLk3LSJrvoonRKBSAMTD5yEJyqJ8lfpsJXpdM03O3g+ug==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR1101MB2114
+X-MS-Exchange-CrossTenant-userprincipalname: 9xISWVg0AzUEPwv2rKjMNno29An5c22N0j+bSSsUCruxI5lCNG1dv29+1RzLA378typHMDDQNalE0S+MPjHCYA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB3886
 X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Jun 10, 2022 at 02:22:28PM +0800, Zqiang wrote:
-> Remove unused trc_wait waitqueue and local holdouts list.
+On Tue, Jun 07, 2022 at 03:50:57PM +0800, Zqiang wrote:
+> Currently, If the 'rcu_nocb_poll' bootargs is enable, all rcuog=20
+> kthreads enter polling mode. however, due to only insert CPU's rdp=20
+> which belong to rcu_nocb_mask to 'nocb_head_rdp' list or all CPU's rdp=20
+> served by rcuog kthread have been de-offloaded, these cause the=20
+> 'nocb_head_rdp' list served by rcuog kthread is empty, when the=20
+> 'nocb_head_rdp' is empty, the rcuog kthread in polling mode not=20
+> actually do anything. fix it by exiting polling mode when the=20
+> 'nocb_head_rdp'list is empty, otherwise entering polling mode.
 >=20
 > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+> ---
+>  v1->v2:
+>  Move rcu_nocb_poll flags check from rdp_offload_toggle() to =20
+> rcu_nocb_rdp_offload/deoffload(), avoid unnecessary setting of =20
+> rdp_gp->nocb_gp_sleep flags, because when rcu_nocb_poll is set  the=20
+> rdp_gp->nocb_gp_sleep is not used.
+>=20
+>  kernel/rcu/tree_nocb.h | 16 ++++++++++------
+>  1 file changed, 10 insertions(+), 6 deletions(-)
+>=20
+> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h index=20
+> fa8e4f82e60c..2a52c9abc681 100644
+> --- a/kernel/rcu/tree_nocb.h
+> +++ b/kernel/rcu/tree_nocb.h
+> @@ -698,10 +698,14 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
+>  				   TPS("WakeBypassIsDeferred"));
+>  	}
+>  	if (rcu_nocb_poll) {
+> -		/* Polling, so trace if first poll in the series. */
+> -		if (gotcbs)
+> -			trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("Poll"));
+> -		schedule_timeout_idle(1);
+> +		if (list_empty(&my_rdp->nocb_head_rdp)) {
+> +			rcu_wait(READ_ONCE(my_rdp->nocb_toggling_rdp));
+
+>I suspect you have based your patch on upstream tree which doesn't seem to=
+ have this one yet:
 >
->Good eyes, thank you!  I will fold this into the original commit with attr=
-ibution.
+>   "rcu/nocb: Add/del rdp to iterate from rcuog itself"
+>
+>With this patch you can't wait on changes to my_rdp->nocb_toggling_rdp bec=
+ause
+>nocb_gp_wait() now performs the list_add/list_del itself.
+>
+>Please rebase your patch on top of latest rcu:dev from Paul's tree. Then a=
+ll you need to do is to change the wait side, something like this (untested=
+):
+
+Hi Frederic  thanks for your advice.
+This is similar to what I said in my previous email, this change is better,=
+ I will test it.
 
 Thanks
 Zqiang
 
->
->							Thanx, Paul
 
-> ---
->  kernel/rcu/tasks.h | 3 ---
->  1 file changed, 3 deletions(-)
+>
+>diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h index fa8e4f8=
+2e60c..f36d6be4f372 100644
+>--- a/kernel/rcu/tree_nocb.h
+>+++ b/kernel/rcu/tree_nocb.h
+>@@ -584,6 +584,15 @@ static int nocb_gp_toggle_rdp(struct rcu_data *rdp,
+> 	return ret;
+> }
 >=20
-> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h index=20
-> 55e76db8b0d3..fcbd0ec33c86 100644
-> --- a/kernel/rcu/tasks.h
-> +++ b/kernel/rcu/tasks.h
-> @@ -1190,8 +1190,6 @@ EXPORT_SYMBOL_GPL(rcu_trace_lock_map);
-> =20
->  #ifdef CONFIG_TASKS_TRACE_RCU
-> =20
-> -static DECLARE_WAIT_QUEUE_HEAD(trc_wait);	// List of holdout tasks.
-> -
->  // Record outstanding IPIs to each CPU.  No point in sending two...
->  static DEFINE_PER_CPU(bool, trc_ipi_to_cpu);
-> =20
-> @@ -1641,7 +1639,6 @@ static void rcu_tasks_trace_empty_fn(void=20
-> *unused)  static void rcu_tasks_trace_postgp(struct rcu_tasks *rtp)  {
->  	int cpu;
-> -	LIST_HEAD(holdouts);
-> =20
->  	// Wait for any lingering IPI handlers to complete.  Note that
->  	// if a CPU has gone offline or transitioned to userspace in the
-> --
-> 2.25.1
->=20
+>+static void nocb_gp_sleep(struct rdp *my_rdp, int cpu) {
+>+	trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("Sleep"));
+>+	swait_event_interruptible_exclusive(my_rdp->nocb_gp_wq,
+>+					    !READ_ONCE(my_rdp->nocb_gp_sleep));
+>+	trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("EndSleep")); }
+>+
+>+
+> /*
+>  * No-CBs GP kthreads come here to wait for additional callbacks to show =
+up
+>  * or for grace periods to end.
+>@@ -701,13 +710,19 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
+> 		/* Polling, so trace if first poll in the series. */
+> 		if (gotcbs)
+> 			trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("Poll"));
+>-		schedule_timeout_idle(1);
+>+		if (list_empty(&my_rdp->nocb_head_rdp)) {
+>+			raw_spin_lock_irqsave(&my_rdp->nocb_gp_lock, flags);
+>+			if (!my_rdp->nocb_toggling_rdp)
+>+				WRITE_ONCE(my_rdp->nocb_gp_sleep, true);
+>+			raw_spin_unlock_irqrestore(&my_rdp->nocb_gp_lock, flags);
+>+			/* Wait for any offloading rdp */
+>+			rdp_gp_sleep(my_rdp, cpu);
+>+		} else {
+>+			schedule_timeout_idle(1);
+>+		}
+> 	} else if (!needwait_gp) {
+> 		/* Wait for callbacks to appear. */
+>-		trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("Sleep"));
+>-		swait_event_interruptible_exclusive(my_rdp->nocb_gp_wq,
+>-				!READ_ONCE(my_rdp->nocb_gp_sleep));
+>-		trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("EndSleep"));
+>+		rdp_gp_sleep(my_rdp, cpu);
+> 	} else {
+> 		rnp =3D my_rdp->mynode;
+>
+> 		trace_rcu_this_gp(rnp, my_rdp, wait_gp_seq, TPS("StartWait"));
