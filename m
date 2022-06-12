@@ -2,65 +2,68 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A6F9C43334
-	for <rcu@archiver.kernel.org>; Sun, 12 Jun 2022 17:31:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3009DC43334
+	for <rcu@archiver.kernel.org>; Sun, 12 Jun 2022 17:47:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229600AbiFLRb0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 12 Jun 2022 13:31:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39166 "EHLO
+        id S232238AbiFLRrc (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 12 Jun 2022 13:47:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232475AbiFLR3k (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 12 Jun 2022 13:29:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 992355BE73
-        for <rcu@vger.kernel.org>; Sun, 12 Jun 2022 10:29:37 -0700 (PDT)
+        with ESMTP id S232084AbiFLRrW (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 12 Jun 2022 13:47:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 129B4B54
+        for <rcu@vger.kernel.org>; Sun, 12 Jun 2022 10:47:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1655054975;
+        s=mimecast20190719; t=1655056040;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=HSVELf33cGPsODeQrLYR4SnYy4MBpnDz+MPXMGIWt70=;
-        b=TP6fXxJ4Ha2c6R7vKU8LUySG46tu2ccMlTdwV9qnKGR5a+bJ81fl4Db+JxhOlw7s4MtaFS
-        XalEx3kIxJgPj7F71QRf7jAKVYGFe8HgA5DEnnqX/3aaJkmDsMIjGxDm5D54CDXFR8J56M
-        PcG4KDUBLtWc9sjIIbsd9A74VDEzPaE=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=3VXRX8SXAPpnvu3WCemr/dQD09XERxTPt12qAqIhnI8=;
+        b=hGGN/SOZ8382QV0D7XcM7IFx6v+3KTFs91b+vaOTkA+Ts1U/otL4W53cqI1Vfj4gzFnJKF
+        OoF8jCF+AmIZ1mFPJ6mONLD9JLlhHuUC56mCWnMcJDY6chsLe9Pp229nsNwqjuWyElwGFV
+        6W5CaO84QoZMO7WAZweowfPE7ew33ng=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-671-1OH55B8WPkKRDvqHuyVu7Q-1; Sun, 12 Jun 2022 13:29:34 -0400
-X-MC-Unique: 1OH55B8WPkKRDvqHuyVu7Q-1
-Received: by mail-ed1-f69.google.com with SMTP id v8-20020a056402348800b004315c52b92cso2668227edc.19
-        for <rcu@vger.kernel.org>; Sun, 12 Jun 2022 10:29:34 -0700 (PDT)
+ us-mta-128-ORcY-0NzNXCo4tzr6eA9bw-1; Sun, 12 Jun 2022 13:47:18 -0400
+X-MC-Unique: ORcY-0NzNXCo4tzr6eA9bw-1
+Received: by mail-ed1-f71.google.com with SMTP id y4-20020aa7ccc4000000b0042df06d83bcso2697384edt.22
+        for <rcu@vger.kernel.org>; Sun, 12 Jun 2022 10:47:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent
-         :content-language:to:cc:references:from:subject:in-reply-to
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:from:to:cc:references:in-reply-to
          :content-transfer-encoding;
-        bh=HSVELf33cGPsODeQrLYR4SnYy4MBpnDz+MPXMGIWt70=;
-        b=v6AsO+veUcP+xfP0XGWTwoy+MDdyRiCaZoc551GvubTTHzEIOrdSqFiXDMpfrkVAkT
-         k01FjFyZ3iz+NBgOKB/oOrZn9BOlVv3Y+U9f6ag/8bnLvST8R79ovMcOojxDHGtQFY6Z
-         T64i29ki/GgXTRL++l3ut8ZJVcevZc3B44tBlNdNZCBG97Z9Jd/dWBipzwdkeR9Jy7Jj
-         UIx9p7DHFE5UMOpiOn51c6sfRP8uT6xXlbynBF3Md141vYsR2ksA+hJN2kCvT6TN0sGg
-         i4evLSP/YjMn6csicQ5zd1APC9uvzG9/dC9fAul/tdrCti1n3ZzKQJOqWip/d0rV+ow0
-         mZEg==
-X-Gm-Message-State: AOAM530ZrxreHvubjX3oP/UQRYerz928fh4sNMQX+Nh+2iYU9P214sDf
-        khvrzmry1YgOFC7e7Vedw7lPh80JGdhS3+dszT5j2YNeohqu9IEpnSeidDi2InbEY3POlrtAolQ
-        k/gnpQLflABA9
-X-Received: by 2002:a05:6402:1e8b:b0:41c:59f6:2c26 with SMTP id f11-20020a0564021e8b00b0041c59f62c26mr61549022edf.156.1655054973613;
-        Sun, 12 Jun 2022 10:29:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJya7ZRmmifJ8K2AxuWZhmPuC7IEuO1mcbLPJZtxqJfg5i707FaCm9lzgNPKLwvyBEBoozyzDA==
-X-Received: by 2002:a05:6402:1e8b:b0:41c:59f6:2c26 with SMTP id f11-20020a0564021e8b00b0041c59f62c26mr61549008edf.156.1655054973380;
-        Sun, 12 Jun 2022 10:29:33 -0700 (PDT)
+        bh=3VXRX8SXAPpnvu3WCemr/dQD09XERxTPt12qAqIhnI8=;
+        b=Xp+lWhBks+J/1I4YIvayXf5jzcM73dd7+8UDBblF3xQYtmgfOnUyneO1UJl/5qU/fv
+         QrNhKI8NorNbnutqAt/DL5F5/wf+UA9ySe9XKw6vuf5JJDijFRVuwulssqByOXZ/y8Yh
+         005XZLDzTXX+NWYTuzWasqXQZgN1LiY4PXQdd4ffgJNNHPKmESX149Z7qt4zFhddv7Ro
+         qoZB2eGEWQ9ZeuSmLK2LsBhADNePKrM6i64fSD8ZGpjS7uKq9S2XSrE5XZrNqbTDFa/N
+         Gzubr6h+tvJJONhhkCHqsET+cm+9EXecsgqnRWs/l189U47DKyTTV8vvkeRy/Tu73uFO
+         /Daw==
+X-Gm-Message-State: AOAM533hc9pwGXES30O1/q3ftVpXZlzcceJ+HKXCsB8ilksZL9a4gwKX
+        lrzvN4/H/cpNo7Szq5mU3alYzoCqgamnbe+xcF0L0migA6/+qf1FHqmoWgNMcjwcqTpxbrmk8Br
+        TwYX27nJkihZl
+X-Received: by 2002:a17:906:7d83:b0:6ce:fee:9256 with SMTP id v3-20020a1709067d8300b006ce0fee9256mr5796868ejo.647.1655056037402;
+        Sun, 12 Jun 2022 10:47:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzbJh21En2BaQQDcC0nMLTz3WkrvC9AwBmQgbS3MF9CQguuvJY2mYJ1KKXwtKdCty9275vmkA==
+X-Received: by 2002:a17:906:7d83:b0:6ce:fee:9256 with SMTP id v3-20020a1709067d8300b006ce0fee9256mr5796848ejo.647.1655056037160;
+        Sun, 12 Jun 2022 10:47:17 -0700 (PDT)
 Received: from ?IPV6:2001:b07:6468:f312:9af8:e5f5:7516:fa89? ([2001:b07:6468:f312:9af8:e5f5:7516:fa89])
-        by smtp.googlemail.com with ESMTPSA id y18-20020aa7ce92000000b0042dc882c823sm3476955edv.70.2022.06.12.10.29.31
+        by smtp.googlemail.com with ESMTPSA id o18-20020aa7c7d2000000b004335e08d6c9sm3513595eds.33.2022.06.12.10.47.12
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 12 Jun 2022 10:29:32 -0700 (PDT)
-Message-ID: <560f7d27-fe38-0db9-834a-50dda5fa6157@redhat.com>
-Date:   Sun, 12 Jun 2022 19:29:30 +0200
+        Sun, 12 Jun 2022 10:47:16 -0700 (PDT)
+Message-ID: <a3de4cf5-d760-1666-6b9c-f620c238453b@redhat.com>
+Date:   Sun, 12 Jun 2022 19:47:10 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.9.0
+Subject: Re: Commit 282d8998e997 (srcu: Prevent expedited GPs and blocking
+ readers from consuming CPU) cause qemu boot slow
 Content-Language: en-US
+From:   Paolo Bonzini <pbonzini@redhat.com>
 To:     paulmck@kernel.org,
         "zhangfei.gao@foxmail.com" <zhangfei.gao@foxmail.com>
 Cc:     Zhangfei Gao <zhangfei.gao@linaro.org>,
@@ -79,78 +82,44 @@ References: <20615615-0013-5adc-584f-2b1d5c03ebfc@linaro.org>
  <tencent_2B7B5B8DBE69330DA041AEE36C1029826905@qq.com>
  <20220612162029.GR1790663@paulmck-ThinkPad-P17-Gen-1>
  <20220612164002.GA1242564@paulmck-ThinkPad-P17-Gen-1>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: Commit 282d8998e997 (srcu: Prevent expedited GPs and blocking
- readers from consuming CPU) cause qemu boot slow
-In-Reply-To: <20220612164002.GA1242564@paulmck-ThinkPad-P17-Gen-1>
+ <560f7d27-fe38-0db9-834a-50dda5fa6157@redhat.com>
+In-Reply-To: <560f7d27-fe38-0db9-834a-50dda5fa6157@redhat.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 6/12/22 18:40, Paul E. McKenney wrote:
->> Do these reserved memory regions really need to be allocated separately?
->> (For example, are they really all non-contiguous?  If not, that is, if
->> there are a lot of contiguous memory regions, could you sort the IORT
->> by address and do one ioctl() for each set of contiguous memory regions?)
+On 6/12/22 19:29, Paolo Bonzini wrote:
+> On 6/12/22 18:40, Paul E. McKenney wrote:
+>>> Do these reserved memory regions really need to be allocated separately?
+>>> (For example, are they really all non-contiguous?  If not, that is, if
+>>> there are a lot of contiguous memory regions, could you sort the IORT
+>>> by address and do one ioctl() for each set of contiguous memory 
+>>> regions?)
+>>>
+>>> Are all of these reserved memory regions set up before init is spawned?
+>>>
+>>> Are all of these reserved memory regions set up while there is only a
+>>> single vCPU up and running?
+>>>
+>>> Is the SRCU grace period really needed in this case?  (I freely confess
+>>> to not being all that familiar with KVM.)
 >>
->> Are all of these reserved memory regions set up before init is spawned?
+>> Oh, and there was a similar many-requests problem with networking many
+>> years ago.  This was solved by adding a new syscall/ioctl()/whatever
+>> that permitted many requests to be presented to the kernel with a single
+>> system call.
 >>
->> Are all of these reserved memory regions set up while there is only a
->> single vCPU up and running?
->>
->> Is the SRCU grace period really needed in this case?  (I freely confess
->> to not being all that familiar with KVM.)
-> 
-> Oh, and there was a similar many-requests problem with networking many
-> years ago.  This was solved by adding a new syscall/ioctl()/whatever
-> that permitted many requests to be presented to the kernel with a single
-> system call.
-> 
-> Could a new ioctl() be introduced that requested a large number
-> of these memory regions in one go so as to make each call to
-> synchronize_rcu_expedited() cover a useful fraction of your 9000+
-> requests?  Adding a few of the KVM guys on CC for their thoughts.
+>> Could a new ioctl() be introduced that requested a large number
+>> of these memory regions in one go so as to make each call to
+>> synchronize_rcu_expedited() cover a useful fraction of your 9000+
+>> requests?  Adding a few of the KVM guys on CC for their thoughts.
 
-Unfortunately not.  Apart from this specific case, in general the calls 
-to KVM_SET_USER_MEMORY_REGION are triggered by writes to I/O registers 
-in the guest, and those writes then map to a ioctl.  Typically the guest 
-sets up a device at a time, and each setup step causes a 
-synchronize_srcu()---and expedited at that.
-
-KVM has two SRCUs:
-
-1) kvm->irq_srcu is hardly relying on the "sleepable" part; it has 
-readers that are very very small, but it needs extremely fast detection 
-of grace periods; see commit 719d93cd5f5c ("kvm/irqchip: Speed up 
-KVM_SET_GSI_ROUTING", 2014-05-05) which split it off kvm->srcu.  Readers 
-are not so frequent.
-
-2) kvm->srcu is nastier because there are readers all the time.  The 
-read-side critical section are still short-ish, but they need the 
-sleepable part because they access user memory.
-
-Writers are not frequent per se; the problem is they come in very large 
-bursts when a guest boots.  And while the whole boot path overall can be 
-quadratic, O(n) expensive calls to synchronize_srcu() can have a larger 
-impact on runtime than the O(n^2) parts, as demonstrated here.
-
-Therefore, we operated on the assumption that the callers of 
-synchronized_srcu_expedited were _anyway_ busy running CPU-bound guest 
-code and the desire was to get past the booting phase as fast as 
-possible.  If the guest wants to eat host CPU it can "for(;;)" as much 
-as it wants; therefore, as long as expedited GPs didn't eat CPU 
-*throughout the whole system*, a preemptable busy wait in 
-synchronize_srcu_expedited() were not problematic.
-
-This assumptions did match the SRCU code when kvm->srcu and 
-kvm->irq_srcu were was introduced (respectively in 2009 and 2014).  But 
-perhaps they do not hold anymore now that each SRCU is not as 
-independent as it used to be in those years, and instead they use 
-workqueues instead?
-
-Thanks,
+Another question: how much can call_srcu() callbacks pile up these days? 
+  I've always been a bit wary of letting userspace do an arbitrary 
+number of allocations that can only be freed after a grace period, but 
+perhaps there's a way to query SRCU and apply some backpressure?
 
 Paolo
 
