@@ -2,158 +2,205 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D6DF7C433EF
-	for <rcu@archiver.kernel.org>; Sun, 12 Jun 2022 07:56:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BCB4C433EF
+	for <rcu@archiver.kernel.org>; Sun, 12 Jun 2022 13:36:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234744AbiFLH4h (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 12 Jun 2022 03:56:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50924 "EHLO
+        id S231433AbiFLNgf (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 12 Jun 2022 09:36:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234689AbiFLH4g (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 12 Jun 2022 03:56:36 -0400
-X-Greylist: delayed 738 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 12 Jun 2022 00:56:34 PDT
-Received: from out203-205-221-192.mail.qq.com (out203-205-221-192.mail.qq.com [203.205.221.192])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08FCE5253C;
-        Sun, 12 Jun 2022 00:56:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1655020591;
-        bh=QMhylbueyCo/7BPY8vCWZuNj9P15lJcnsMLwPrTxgIo=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=UZd2FHE1F+IinUYlsYdKm92mXcMCl5bn+9p9eHr98waT1agvQeg/66A32yDFXDJtN
-         6VsMXqCi67ELsLFgMe3zMb1u2/dAQTW4kGi4vjRQS3/zccqAKLC8ZynJnwFZfFu3hi
-         4QbRRH/KFYaDTFS8uqyGcTnGEp+gBiXjw1xW7XLE=
-Received: from [192.168.0.110] ([36.57.146.189])
-        by newxmesmtplogicsvrsza5.qq.com (NewEsmtp) with SMTP
-        id A1EA6858; Sun, 12 Jun 2022 15:40:30 +0800
-X-QQ-mid: xmsmtpt1655019630tq8cebg5n
-Message-ID: <tencent_80D2801BC03B7006BB2230B6A1D5C69B9209@qq.com>
-X-QQ-XMAILINFO: M/NR0wiIuy706VL0L+2q/xRHRjEt+LTLGSrq12X/X6I6GuvNVXzfGrhtrmt2m3
-         NXBHBI+clMBVKXf9ug2O8EyuEztg5R5mYXpiPtjjB0fdk7CGLyl6uDfOgtRdiIWW7uDSjmUQ2GR1
-         +1Z+GSeHzveSIHt03d429k/Ca+6wK/1Z1oCCNCba0D9z0p++MMH8NZL2GYrIJjDbmt+fafsysRij
-         ZKb1WKAFf45VnVDcLbWTP/D2nCoXum0sy17e9jAnkX3HuQQm/KFdWFE0X7Dey3QTeVK4Py6sWUeF
-         MvGKMmgETJ4VEXId+cVT+lYuck1kTkOt2M9lnK1sMMtNY3skgf91IVRhB1aochvVBXTNQk8N9RHL
-         petbVIIAJ7FApQjxXhPI9XHotUbxs1ASzBkl/+7BXQO+7CnNkTV7BIwn/rqpBkXczNnIVb9cbpqd
-         6X6gaa3JBL+MVo94f3CcwM6TXDd+VFc+bCMbY7UUEdra0pyFXEQjQUb69bl8kAiEQqFrIMMwTe1y
-         ZfADUDs5eDBkMZeEfPnaEg6XW+ykdMiEFrrgkKkns9UY1MI0DkW/FGg5mc52jJ2sfF/ft06JsPTP
-         oUu7goW/+kalTQLowr00kUFEM8J/3o3X/ZigV2K7KLD5mm3iVSNHp/EIrSTWBEJTp3iDTdv1+l7Y
-         I5XIyR8vbM7XHoQQNYHOdmhotZwx9msgkR64NoEGRvxBCXQLximHslX5b0xmRojvlp/szii5Yj1i
-         LPUvTs/j9ZJbNOwhK9hYP5tliD5SRmqRq3rpPMXJZd8qbKo9CVYsADhROoMXX0RiNoaNEAQ27kWP
-         tvKlL4RreK/gKHHchVV1IaiB+7Yu99RsNWSDXi0wsN0gB0BCcP1ZO1BXRfrgdeXQy74rREUqva53
-         t8bm8UoyJSQu8UVsD4oOhdcRxxLCTNv852MYj+Q32FJMsh9H5VS+wLneJCu2+tWYxmaKbU8MGjEe
-         D1Pe2aLuQeCBlh92xYqw==
-Subject: Re: Commit 282d8998e997 (srcu: Prevent expedited GPs and blocking
- readers from consuming CPU) cause qemu boot slow
-To:     paulmck@kernel.org, Zhangfei Gao <zhangfei.gao@linaro.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        with ESMTP id S229912AbiFLNge (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 12 Jun 2022 09:36:34 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C5F84A93C;
+        Sun, 12 Jun 2022 06:36:33 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D6C4060EE7;
+        Sun, 12 Jun 2022 13:36:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3AAA1C34115;
+        Sun, 12 Jun 2022 13:36:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1655040992;
+        bh=pWDwNcvIidrGgS4/pNO+FanuGaNPZuY1PMIGuVsnnuI=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=mBaqaTy+6bZ/qIqt08BuELqII8vPRHwyHUSf15JwTVIBZsoKT9hj9SQIpAaXuUO+b
+         ylim/3pWOunTvONVlhhnTqpuRDe1sP+coV171k0/iaR8tmr7PNKKUeAyRzo9jyu9FJ
+         ZsIL98lerhiU0y8aWD7mFtnZ2eCQM4iTDrpqYt3noBLHwdvE7a+rXS/rhHYGrr5a++
+         ANGmA330da6bmiZpXN8eyWYyHkoRLV3o4rmIRhR7i9lIX+AUJ1r4eKSym2qOaf14df
+         lmaFBiLPkSL/4oXD/F3mfFOYdYylXtv4t8QDPoL9W+Si1NOfMt1ccNXTi+AEfMpbSR
+         09Qza2sMU8hoQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id D26265C02F9; Sun, 12 Jun 2022 06:36:31 -0700 (PDT)
+Date:   Sun, 12 Jun 2022 06:36:31 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "zhangfei.gao@foxmail.com" <zhangfei.gao@foxmail.com>
+Cc:     Zhangfei Gao <zhangfei.gao@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         rcu@vger.kernel.org, Lai Jiangshan <jiangshanlai@gmail.com>,
         Josh Triplett <josh@joshtriplett.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Matthew Wilcox <willy@infradead.org>,
         Shameerali Kolothum Thodi 
         <shameerali.kolothum.thodi@huawei.com>
+Subject: Re: Commit 282d8998e997 (srcu: Prevent expedited GPs and blocking
+ readers from consuming CPU) cause qemu boot slow
+Message-ID: <20220612133631.GQ1790663@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 References: <20615615-0013-5adc-584f-2b1d5c03ebfc@linaro.org>
  <20220611165956.GO1790663@paulmck-ThinkPad-P17-Gen-1>
-From:   "zhangfei.gao@foxmail.com" <zhangfei.gao@foxmail.com>
-X-OQ-MSGID: <c7b12b7c-43fc-2d3c-f563-bdc182eca756@foxmail.com>
-Date:   Sun, 12 Jun 2022 15:40:30 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ <tencent_80D2801BC03B7006BB2230B6A1D5C69B9209@qq.com>
 MIME-Version: 1.0
-In-Reply-To: <20220611165956.GO1790663@paulmck-ThinkPad-P17-Gen-1>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+In-Reply-To: <tencent_80D2801BC03B7006BB2230B6A1D5C69B9209@qq.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi, Paul
+On Sun, Jun 12, 2022 at 03:40:30PM +0800, zhangfei.gao@foxmail.com wrote:
+> Hi, Paul
+> 
+> On 2022/6/12 上午12:59, Paul E. McKenney wrote:
+> > On Sun, Jun 12, 2022 at 12:32:59AM +0800, Zhangfei Gao wrote:
+> > > Hi, Paul
+> > > 
+> > > When verifying qemu with acpi rmr feature on v5.19-rc1, the guest kernel
+> > > stuck for several minutes.
+> > Stuck for several minutes but then continues normally?  Or stuck for
+> > several minutes before you kill qemu?
+> 
+> qemu boot stuck for several minutes, then guest can bootup normally, just
+> slower.
+> > 
+> > And I have to ask...  What happened without the ACPI RMR feature?
+> If no ACPI, qemu boot quickly without stuck.
+> build/aarch64-softmmu/qemu-system-aarch64 -machine
+> virt,gic-version=3,iommu=smmuv3 \
+> -enable-kvm -cpu host -m 1024 \
+> -kernel Image -initrd mini-rootfs.cpio.gz -nographic -append \
+> "rdinit=init console=ttyAMA0 earlycon=pl011,0x9000000 kpti=off"
+> 
+> Adding acpi=force & -bios QEMU_EFI.fd, qemu boot stuck for several minutes.
+> 
+> By the way, my hardware platform is aarch64.
 
-On 2022/6/12 上午12:59, Paul E. McKenney wrote:
-> On Sun, Jun 12, 2022 at 12:32:59AM +0800, Zhangfei Gao wrote:
->> Hi, Paul
->>
->> When verifying qemu with acpi rmr feature on v5.19-rc1, the guest kernel
->> stuck for several minutes.
-> Stuck for several minutes but then continues normally?  Or stuck for
-> several minutes before you kill qemu?
-qemu boot stuck for several minutes, then guest can bootup normally, 
-just slower.
->
-> And I have to ask...  What happened without the ACPI RMR feature?
-If no ACPI, qemu boot quickly without stuck.
-build/aarch64-softmmu/qemu-system-aarch64 -machine 
-virt,gic-version=3,iommu=smmuv3 \
--enable-kvm -cpu host -m 1024 \
--kernel Image -initrd mini-rootfs.cpio.gz -nographic -append \
-"rdinit=init console=ttyAMA0 earlycon=pl011,0x9000000 kpti=off"
+Thank you for the information!  The problem is excessive delay rather
+than a hang, and it is configuration-dependent.  Good to know!
 
-Adding acpi=force & -bios QEMU_EFI.fd, qemu boot stuck for several minutes.
+> Only change this can solve the stuck issue.
+> 
+> --- a/kernel/rcu/srcutree.c
+> +++ b/kernel/rcu/srcutree.c
+> @@ -524,6 +524,10 @@ static unsigned long srcu_get_delay(struct srcu_struct
+> *ssp)
+>  {
+>         unsigned long jbase = SRCU_INTERVAL;
+> 
+> +       if (ULONG_CMP_LT(READ_ONCE(ssp->srcu_gp_seq),
+> READ_ONCE(ssp->srcu_gp_seq_needed_exp)))
+> +               return 0;
+> +       return SRCU_INTERVAL;
 
+I am glad that you have a workaround for this problem, but this change
+would re-introduce the problem that commit 282d8998e997 ("srcu: Prevent
+expedited GPs and blocking readers from consuming CPU") was intended
+to fix.  For one example, your change can prevent kernel live patching
+from applying a patch.  So something else is needed.
 
-By the way, my hardware platform is aarch64.
+Does changing the value of SRCU_MAX_INTERVAL to (say) 3 decrease the delay
+significantly?  (This is not a fix, either, but instead a debug check.)
 
-Only change this can solve the stuck issue.
+Your change always returns zero if another SRCU grace period is needed.
+Let's look at the callers of srcu_get_delay():
 
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -524,6 +524,10 @@ static unsigned long srcu_get_delay(struct 
-srcu_struct *ssp)
-  {
-         unsigned long jbase = SRCU_INTERVAL;
+o	cleanup_srcu_struct() uses it to check whether there is an
+	expedited grace period pending, leaking the srcu_struct if so.
+	This should not affect boot delay.  (Unless you are invoking
+	init_srcu_struct() and cleanup_srcu_struct() really really
+	often.)
 
-+       if (ULONG_CMP_LT(READ_ONCE(ssp->srcu_gp_seq), 
-READ_ONCE(ssp->srcu_gp_seq_needed_exp)))
-+               return 0;
-+       return SRCU_INTERVAL;
-+
+o	srcu_gp_end() uses it to determine whether or not to allow
+	a one-jiffy delay before invoking callbacks at the end of
+	a grace period.
 
->
->> And on 5.18, there is no such problem.
->>
->> After revert this patch, the issue solved.
->> Commit 282d8998e997 (srcu: Prevent expedited GPs and blocking readers from
->> consuming CPU)
->>
->>
->> qemu cmd:
->> build/aarch64-softmmu/qemu-system-aarch64 -machine
->> virt,gic-version=3,iommu=smmuv3 \
->> -enable-kvm -cpu host -m 1024 \
->> -kernel Image -initrd mini-rootfs.cpio.gz -nographic -append \
->> "rdinit=init console=ttyAMA0 earlycon=pl011,0x9000000 kpti=off acpi=force" \
->> -bios QEMU_EFI.fd
->>
->> log:
->> InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7AA4D040
->> add-symbol-file /home/linaro/work/edk2/Build/ArmVirtQemu-AARCH64/DEBUG_GCC48/AARCH64/NetworkPkg/IScsiDxe/IScsiDxe/DEBUG/IScsiDxe.dll
->> 0x75459000
->> Loading driver at 0x00075458000 EntryPoint=0x00075459058 IScsiDxe.efi
->> InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7AA4DE98
->> ProtectUefiImageCommon - 0x7AA4D040
->>    - 0x0000000075458000 - 0x000000000003F000
->> SetUefiImageMemoryAttributes - 0x0000000075458000 - 0x0000000000001000
->> (0x0000000000004008)
->> SetUefiImageMemoryAttributes - 0x0000000075459000 - 0x000000000003B000
->> (0x0000000000020008)
->> SetUefiImageMemoryAttributes - 0x0000000075494000 - 0x0000000000003000
->> (0x0000000000004008)
->> InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 754952C8
->> InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 75495358
->> InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 75495370
->> InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 754952F8
->> InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 75495358
->> InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 75495370
->> InstallProtocolInterface: 59324945-EC44-4C0D-B1CD-9DB139DF070C 75495348
->> InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 754953E8
->> InstallProtocolInterface: 330D4706-F2A0-4E4F-A369-B66FA8D54385 7AA4D728
->>
->>
->> Not sure it is either reported or solved.
-> This is the first I have heard of it, so thank you for reporting it.
->
-> Do you have a way of collecting something sysrq-t output?
-Do you mean "echo t > /proc/sysrq-trigger",
-There are too much output and kernel dump can not stop.
+o	srcu_funnel_gp_start() uses it to determine whether or not to
+	allow a one-jiffy delay before starting the process of checking
+	for the end of an SRCU grace period.
 
-Thanks
+o	try_check_zero() uses it to add an additional short delay
+	(instead of a long delay) between checks of reader state.
+
+o	process_srcu() uses it to calculate the long delay between
+	checks of reader state.
+
+These add one-jiffy delays, except for process_srcu(), which adds a delay
+of up to 10 jiffies.  Even given HZ=100 (as opposed to the HZ=1000 that
+I normally use), this requires thousands of such delays to add up to the
+several minutes that you are seeing.  (In theory, the delays could also
+be due to SRCU readers, except that in that case adjusting timeouts in
+the grace-period processing would not make things go faster.)
+
+So, does acpi=force & -bios QEMU_EFI.fd add SRCU grace periods?  If so,
+it would be very good make sure that this code is using SRCU efficiently.
+One way to check would be to put a printk() into synchronize_srcu(),
+though maintaining a counter and printing (say) every 1000th invocation
+might be easier on the console output.
+
+> > > And on 5.18, there is no such problem.
+> > > 
+> > > After revert this patch, the issue solved.
+> > > Commit 282d8998e997 (srcu: Prevent expedited GPs and blocking readers from
+> > > consuming CPU)
+> > > 
+> > > 
+> > > qemu cmd:
+> > > build/aarch64-softmmu/qemu-system-aarch64 -machine
+> > > virt,gic-version=3,iommu=smmuv3 \
+> > > -enable-kvm -cpu host -m 1024 \
+> > > -kernel Image -initrd mini-rootfs.cpio.gz -nographic -append \
+> > > "rdinit=init console=ttyAMA0 earlycon=pl011,0x9000000 kpti=off acpi=force" \
+> > > -bios QEMU_EFI.fd
+> > > 
+> > > log:
+> > > InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7AA4D040
+> > > add-symbol-file /home/linaro/work/edk2/Build/ArmVirtQemu-AARCH64/DEBUG_GCC48/AARCH64/NetworkPkg/IScsiDxe/IScsiDxe/DEBUG/IScsiDxe.dll
+> > > 0x75459000
+> > > Loading driver at 0x00075458000 EntryPoint=0x00075459058 IScsiDxe.efi
+> > > InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7AA4DE98
+> > > ProtectUefiImageCommon - 0x7AA4D040
+> > >    - 0x0000000075458000 - 0x000000000003F000
+> > > SetUefiImageMemoryAttributes - 0x0000000075458000 - 0x0000000000001000
+> > > (0x0000000000004008)
+> > > SetUefiImageMemoryAttributes - 0x0000000075459000 - 0x000000000003B000
+> > > (0x0000000000020008)
+> > > SetUefiImageMemoryAttributes - 0x0000000075494000 - 0x0000000000003000
+> > > (0x0000000000004008)
+> > > InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 754952C8
+> > > InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 75495358
+> > > InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 75495370
+> > > InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 754952F8
+> > > InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 75495358
+> > > InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 75495370
+> > > InstallProtocolInterface: 59324945-EC44-4C0D-B1CD-9DB139DF070C 75495348
+> > > InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 754953E8
+> > > InstallProtocolInterface: 330D4706-F2A0-4E4F-A369-B66FA8D54385 7AA4D728
+> > > 
+> > > 
+> > > Not sure it is either reported or solved.
+> > This is the first I have heard of it, so thank you for reporting it.
+> > 
+> > Do you have a way of collecting something sysrq-t output?
+> Do you mean "echo t > /proc/sysrq-trigger",
+> There are too much output and kernel dump can not stop.
+
+OK.  What other tools do you have to work out what is happening during
+temporary hangs such as this one?
+
+The question to be answered: "Is there usually at least one task waiting
+in synchronize_srcu() during these hangs, and if so, which srcu_struct
+is passed to those synchronize_srcu() calls?"
+
+							Thanx, Paul
