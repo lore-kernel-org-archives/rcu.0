@@ -2,40 +2,67 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DCC9C43334
-	for <rcu@archiver.kernel.org>; Sun, 12 Jun 2022 16:40:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A6F9C43334
+	for <rcu@archiver.kernel.org>; Sun, 12 Jun 2022 17:31:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231515AbiFLQkG (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 12 Jun 2022 12:40:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37788 "EHLO
+        id S229600AbiFLRb0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 12 Jun 2022 13:31:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbiFLQkF (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 12 Jun 2022 12:40:05 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E393E1839E;
-        Sun, 12 Jun 2022 09:40:03 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6D36660FBA;
-        Sun, 12 Jun 2022 16:40:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B96DDC34115;
-        Sun, 12 Jun 2022 16:40:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655052002;
-        bh=Xn/ixlJG6/c6tH5N7rI3NzTGuLWavqpfoz8W2lZkvdI=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=sYAsqi/3j5Z4GCn3cArS9fH8B+f8lr6B0O1z2newgr5qdXxBE+zV+P/iQYPms+4I1
-         RVSWeCWmclZzQIKrNgdHyTMl1uFelPmE/sL2RItTCas5dPsUiSm8youldX2sXnBFlu
-         OV54dgR555KBs/Nd7N+L0lmAfa8rQj3GVo8YMLnd5HwdH37pwQ1hHR9lI/F/B+fF8S
-         9kAdoLYL26OU/l32qfFkZqLA+VvsfeeHwyXDrfo7i6Gg8/Fu8TRRw+0gpNlEqgm+lX
-         S4WPo4fjJ9OLgKhW0K9K/bwmkf4XSSc2GIhohhsqY6O1U5I/afRAU0ICFcYmvP168J
-         sT++Uu6oeqwSQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 526575C02F9; Sun, 12 Jun 2022 09:40:02 -0700 (PDT)
-Date:   Sun, 12 Jun 2022 09:40:02 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "zhangfei.gao@foxmail.com" <zhangfei.gao@foxmail.com>
+        with ESMTP id S232475AbiFLR3k (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 12 Jun 2022 13:29:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 992355BE73
+        for <rcu@vger.kernel.org>; Sun, 12 Jun 2022 10:29:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1655054975;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HSVELf33cGPsODeQrLYR4SnYy4MBpnDz+MPXMGIWt70=;
+        b=TP6fXxJ4Ha2c6R7vKU8LUySG46tu2ccMlTdwV9qnKGR5a+bJ81fl4Db+JxhOlw7s4MtaFS
+        XalEx3kIxJgPj7F71QRf7jAKVYGFe8HgA5DEnnqX/3aaJkmDsMIjGxDm5D54CDXFR8J56M
+        PcG4KDUBLtWc9sjIIbsd9A74VDEzPaE=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-671-1OH55B8WPkKRDvqHuyVu7Q-1; Sun, 12 Jun 2022 13:29:34 -0400
+X-MC-Unique: 1OH55B8WPkKRDvqHuyVu7Q-1
+Received: by mail-ed1-f69.google.com with SMTP id v8-20020a056402348800b004315c52b92cso2668227edc.19
+        for <rcu@vger.kernel.org>; Sun, 12 Jun 2022 10:29:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent
+         :content-language:to:cc:references:from:subject:in-reply-to
+         :content-transfer-encoding;
+        bh=HSVELf33cGPsODeQrLYR4SnYy4MBpnDz+MPXMGIWt70=;
+        b=v6AsO+veUcP+xfP0XGWTwoy+MDdyRiCaZoc551GvubTTHzEIOrdSqFiXDMpfrkVAkT
+         k01FjFyZ3iz+NBgOKB/oOrZn9BOlVv3Y+U9f6ag/8bnLvST8R79ovMcOojxDHGtQFY6Z
+         T64i29ki/GgXTRL++l3ut8ZJVcevZc3B44tBlNdNZCBG97Z9Jd/dWBipzwdkeR9Jy7Jj
+         UIx9p7DHFE5UMOpiOn51c6sfRP8uT6xXlbynBF3Md141vYsR2ksA+hJN2kCvT6TN0sGg
+         i4evLSP/YjMn6csicQ5zd1APC9uvzG9/dC9fAul/tdrCti1n3ZzKQJOqWip/d0rV+ow0
+         mZEg==
+X-Gm-Message-State: AOAM530ZrxreHvubjX3oP/UQRYerz928fh4sNMQX+Nh+2iYU9P214sDf
+        khvrzmry1YgOFC7e7Vedw7lPh80JGdhS3+dszT5j2YNeohqu9IEpnSeidDi2InbEY3POlrtAolQ
+        k/gnpQLflABA9
+X-Received: by 2002:a05:6402:1e8b:b0:41c:59f6:2c26 with SMTP id f11-20020a0564021e8b00b0041c59f62c26mr61549022edf.156.1655054973613;
+        Sun, 12 Jun 2022 10:29:33 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJya7ZRmmifJ8K2AxuWZhmPuC7IEuO1mcbLPJZtxqJfg5i707FaCm9lzgNPKLwvyBEBoozyzDA==
+X-Received: by 2002:a05:6402:1e8b:b0:41c:59f6:2c26 with SMTP id f11-20020a0564021e8b00b0041c59f62c26mr61549008edf.156.1655054973380;
+        Sun, 12 Jun 2022 10:29:33 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:9af8:e5f5:7516:fa89? ([2001:b07:6468:f312:9af8:e5f5:7516:fa89])
+        by smtp.googlemail.com with ESMTPSA id y18-20020aa7ce92000000b0042dc882c823sm3476955edv.70.2022.06.12.10.29.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 12 Jun 2022 10:29:32 -0700 (PDT)
+Message-ID: <560f7d27-fe38-0db9-834a-50dda5fa6157@redhat.com>
+Date:   Sun, 12 Jun 2022 19:29:30 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Content-Language: en-US
+To:     paulmck@kernel.org,
+        "zhangfei.gao@foxmail.com" <zhangfei.gao@foxmail.com>
 Cc:     Zhangfei Gao <zhangfei.gao@linaro.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         rcu@vger.kernel.org, Lai Jiangshan <jiangshanlai@gmail.com>,
@@ -44,256 +71,86 @@ Cc:     Zhangfei Gao <zhangfei.gao@linaro.org>,
         Matthew Wilcox <willy@infradead.org>,
         Shameerali Kolothum Thodi 
         <shameerali.kolothum.thodi@huawei.com>, mtosatti@redhat.com,
-        pbonzini@redhat.com, sheng.yang@intel.com
-Subject: Re: Commit 282d8998e997 (srcu: Prevent expedited GPs and blocking
- readers from consuming CPU) cause qemu boot slow
-Message-ID: <20220612164002.GA1242564@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        sheng.yang@intel.com
 References: <20615615-0013-5adc-584f-2b1d5c03ebfc@linaro.org>
  <20220611165956.GO1790663@paulmck-ThinkPad-P17-Gen-1>
  <tencent_80D2801BC03B7006BB2230B6A1D5C69B9209@qq.com>
  <20220612133631.GQ1790663@paulmck-ThinkPad-P17-Gen-1>
  <tencent_2B7B5B8DBE69330DA041AEE36C1029826905@qq.com>
  <20220612162029.GR1790663@paulmck-ThinkPad-P17-Gen-1>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220612162029.GR1790663@paulmck-ThinkPad-P17-Gen-1>
+ <20220612164002.GA1242564@paulmck-ThinkPad-P17-Gen-1>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: Commit 282d8998e997 (srcu: Prevent expedited GPs and blocking
+ readers from consuming CPU) cause qemu boot slow
+In-Reply-To: <20220612164002.GA1242564@paulmck-ThinkPad-P17-Gen-1>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sun, Jun 12, 2022 at 09:20:29AM -0700, Paul E. McKenney wrote:
-> On Sun, Jun 12, 2022 at 10:59:30PM +0800, zhangfei.gao@foxmail.com wrote:
-> > Hi, Paul
-> > 
-> > On 2022/6/12 下午9:36, Paul E. McKenney wrote:
-> > > On Sun, Jun 12, 2022 at 03:40:30PM +0800, zhangfei.gao@foxmail.com wrote:
-> > > > Hi, Paul
-> > > > 
-> > > > On 2022/6/12 上午12:59, Paul E. McKenney wrote:
-> > > > > On Sun, Jun 12, 2022 at 12:32:59AM +0800, Zhangfei Gao wrote:
-> > > > > > Hi, Paul
-> > > > > > 
-> > > > > > When verifying qemu with acpi rmr feature on v5.19-rc1, the guest kernel
-> > > > > > stuck for several minutes.
-> > > > > Stuck for several minutes but then continues normally?  Or stuck for
-> > > > > several minutes before you kill qemu?
-> > > > qemu boot stuck for several minutes, then guest can bootup normally, just
-> > > > slower.
-> > > > > And I have to ask...  What happened without the ACPI RMR feature?
-> > > > If no ACPI, qemu boot quickly without stuck.
-> > > > build/aarch64-softmmu/qemu-system-aarch64 -machine
-> > > > virt,gic-version=3,iommu=smmuv3 \
-> > > > -enable-kvm -cpu host -m 1024 \
-> > > > -kernel Image -initrd mini-rootfs.cpio.gz -nographic -append \
-> > > > "rdinit=init console=ttyAMA0 earlycon=pl011,0x9000000 kpti=off"
-> > > > 
-> > > > Adding acpi=force & -bios QEMU_EFI.fd, qemu boot stuck for several minutes.
-> > > > 
-> > > > By the way, my hardware platform is aarch64.
-> > > Thank you for the information!  The problem is excessive delay rather
-> > > than a hang, and it is configuration-dependent.  Good to know!
-> > > 
-> > > > Only change this can solve the stuck issue.
-> > > > 
-> > > > --- a/kernel/rcu/srcutree.c
-> > > > +++ b/kernel/rcu/srcutree.c
-> > > > @@ -524,6 +524,10 @@ static unsigned long srcu_get_delay(struct srcu_struct
-> > > > *ssp)
-> > > >   {
-> > > >          unsigned long jbase = SRCU_INTERVAL;
-> > > > 
-> > > > +       if (ULONG_CMP_LT(READ_ONCE(ssp->srcu_gp_seq),
-> > > > READ_ONCE(ssp->srcu_gp_seq_needed_exp)))
-> > > > +               return 0;
-> > > > +       return SRCU_INTERVAL;
-> > > I am glad that you have a workaround for this problem, but this change
-> > > would re-introduce the problem that commit 282d8998e997 ("srcu: Prevent
-> > > expedited GPs and blocking readers from consuming CPU") was intended
-> > > to fix.  For one example, your change can prevent kernel live patching
-> > > from applying a patch.  So something else is needed.
-> > Understand, it is just debug where has issue.
-> > > 
-> > > Does changing the value of SRCU_MAX_INTERVAL to (say) 3 decrease the delay
-> > > significantly?  (This is not a fix, either, but instead a debug check.)
-> > No use.
+On 6/12/22 18:40, Paul E. McKenney wrote:
+>> Do these reserved memory regions really need to be allocated separately?
+>> (For example, are they really all non-contiguous?  If not, that is, if
+>> there are a lot of contiguous memory regions, could you sort the IORT
+>> by address and do one ioctl() for each set of contiguous memory regions?)
+>>
+>> Are all of these reserved memory regions set up before init is spawned?
+>>
+>> Are all of these reserved memory regions set up while there is only a
+>> single vCPU up and running?
+>>
+>> Is the SRCU grace period really needed in this case?  (I freely confess
+>> to not being all that familiar with KVM.)
 > 
-> OK, that indicates that you have a very large number of invocations
-> of synchronize_srcu() or synchronize_srcu_expedited() instead of only
-> a few that take a very long time each.
+> Oh, and there was a similar many-requests problem with networking many
+> years ago.  This was solved by adding a new syscall/ioctl()/whatever
+> that permitted many requests to be presented to the kernel with a single
+> system call.
 > 
-> > > Your change always returns zero if another SRCU grace period is needed.
-> > > Let's look at the callers of srcu_get_delay():
-> > > 
-> > > o	cleanup_srcu_struct() uses it to check whether there is an
-> > > 	expedited grace period pending, leaking the srcu_struct if so.
-> > > 	This should not affect boot delay.  (Unless you are invoking
-> > > 	init_srcu_struct() and cleanup_srcu_struct() really really
-> > > 	often.)
-> > > 
-> > > o	srcu_gp_end() uses it to determine whether or not to allow
-> > > 	a one-jiffy delay before invoking callbacks at the end of
-> > > 	a grace period.
-> > > 
-> > > o	srcu_funnel_gp_start() uses it to determine whether or not to
-> > > 	allow a one-jiffy delay before starting the process of checking
-> > > 	for the end of an SRCU grace period.
-> > > 
-> > > o	try_check_zero() uses it to add an additional short delay
-> > > 	(instead of a long delay) between checks of reader state.
-> > > 
-> > > o	process_srcu() uses it to calculate the long delay between
-> > > 	checks of reader state.
-> > > 
-> > > These add one-jiffy delays, except for process_srcu(), which adds a delay
-> > > of up to 10 jiffies.  Even given HZ=100 (as opposed to the HZ=1000 that
-> > > I normally use), this requires thousands of such delays to add up to the
-> > > several minutes that you are seeing.  (In theory, the delays could also
-> > > be due to SRCU readers, except that in that case adjusting timeouts in
-> > > the grace-period processing would not make things go faster.)
-> > > 
-> > > So, does acpi=force & -bios QEMU_EFI.fd add SRCU grace periods?  If so,
-> > > it would be very good make sure that this code is using SRCU efficiently.
-> > > One way to check would be to put a printk() into synchronize_srcu(),
-> > > though maintaining a counter and printing (say) every 1000th invocation
-> > > might be easier on the console output.
-> > 
-> > good idea.
-> 
-> Glad you like it.  ;-)
-> 
-> > > > > > And on 5.18, there is no such problem.
-> > > > > > 
-> > > > > > After revert this patch, the issue solved.
-> > > > > > Commit 282d8998e997 (srcu: Prevent expedited GPs and blocking readers from
-> > > > > > consuming CPU)
-> > > > > > 
-> > > > > > 
-> > > > > > qemu cmd:
-> > > > > > build/aarch64-softmmu/qemu-system-aarch64 -machine
-> > > > > > virt,gic-version=3,iommu=smmuv3 \
-> > > > > > -enable-kvm -cpu host -m 1024 \
-> > > > > > -kernel Image -initrd mini-rootfs.cpio.gz -nographic -append \
-> > > > > > "rdinit=init console=ttyAMA0 earlycon=pl011,0x9000000 kpti=off acpi=force" \
-> > > > > > -bios QEMU_EFI.fd
-> > > > > > 
-> > > > > > log:
-> > > > > > InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7AA4D040
-> > > > > > add-symbol-file /home/linaro/work/edk2/Build/ArmVirtQemu-AARCH64/DEBUG_GCC48/AARCH64/NetworkPkg/IScsiDxe/IScsiDxe/DEBUG/IScsiDxe.dll
-> > > > > > 0x75459000
-> > > > > > Loading driver at 0x00075458000 EntryPoint=0x00075459058 IScsiDxe.efi
-> > > > > > InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7AA4DE98
-> > > > > > ProtectUefiImageCommon - 0x7AA4D040
-> > > > > >     - 0x0000000075458000 - 0x000000000003F000
-> > > > > > SetUefiImageMemoryAttributes - 0x0000000075458000 - 0x0000000000001000
-> > > > > > (0x0000000000004008)
-> > > > > > SetUefiImageMemoryAttributes - 0x0000000075459000 - 0x000000000003B000
-> > > > > > (0x0000000000020008)
-> > > > > > SetUefiImageMemoryAttributes - 0x0000000075494000 - 0x0000000000003000
-> > > > > > (0x0000000000004008)
-> > > > > > InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 754952C8
-> > > > > > InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 75495358
-> > > > > > InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 75495370
-> > > > > > InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 754952F8
-> > > > > > InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 75495358
-> > > > > > InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 75495370
-> > > > > > InstallProtocolInterface: 59324945-EC44-4C0D-B1CD-9DB139DF070C 75495348
-> > > > > > InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 754953E8
-> > > > > > InstallProtocolInterface: 330D4706-F2A0-4E4F-A369-B66FA8D54385 7AA4D728
-> > > > > > 
-> > > > > > 
-> > > > > > Not sure it is either reported or solved.
-> > > > > This is the first I have heard of it, so thank you for reporting it.
-> > > > > 
-> > > > > Do you have a way of collecting something sysrq-t output?
-> > > > Do you mean "echo t > /proc/sysrq-trigger",
-> > > > There are too much output and kernel dump can not stop.
-> > > OK.  What other tools do you have to work out what is happening during
-> > > temporary hangs such as this one?
-> > > 
-> > > The question to be answered: "Is there usually at least one task waiting
-> > > in synchronize_srcu() during these hangs, and if so, which srcu_struct
-> > > is passed to those synchronize_srcu() calls?"
-> > 
-> > As you suggested, add print in __synchronize_srcu, 1000 times print once.
-> > 
-> > With acpi=force & -bios QEMU_EFI.fd
-> > 
-> > When qemu stuck in
-> > InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7AA4D040
-> > add-symbol-file /home/linaro/work/edk2/Build/ArmVirtQemu-AARCH64/DEBUG_GCC48/AARCH64/NetworkPkg/IScsiDxe/IScsiDxe/DEBUG/IScsiDxe.dll
-> > 0x75459000
-> > 
-> > The print in  __synchronize_srcu is print from 0 t0 9001.
-> 
-> Now that is what I call a large number of calls!
-> 
-> > [   94.271350] gzf __synchronize_srcu loop=1001
-> > ....
-> > 
-> > [  222.621659]  __synchronize_srcu loop=9001
-> > [  222.621664] CPU: 96 PID: 2294 Comm: qemu-system-aar Not tainted
-> > 5.19.0-rc1-15071-g697f40b5235f-dirty #615
-> > [  222.621666] Hardware name: Huawei TaiShan 200 (Model 2280)/BC82AMDD, BIOS
-> > 2280-V2 CS V5.B133.01 03/25/2021
-> > [  222.621667] Call trace:
-> > [  222.621668]  dump_backtrace+0xe4/0xf0
-> > [  222.621670] show_stack+0x20/0x70
-> > [  222.621672] dump_stack_lvl+0x8c/0xb8
-> > [  222.621674]  dump_stack+0x18/0x34
-> > [  222.621676] __synchronize_srcu+0x120/0x128
-> > [  222.621678] synchronize_srcu_expedited+0x2c/0x40
-> > [  222.621680] kvm_swap_active_memslots+0x130/0x198
-> > [  222.621683] kvm_activate_memslot+0x40/0x68
-> > [  222.621684]  kvm_set_memslot+0x184/0x3b0
-> > [  222.621686]  __kvm_set_memory_region+0x288/0x438
-> > [  222.621688] kvm_set_memory_region+0x3c/0x60
-> 
-> This is KVM setting up one mapping in your IORT RMR memory, correct?
-> (As in I/O remapping table reserved memory regions.)
-> 
-> > [  222.621689]  kvm_vm_ioctl+0x5a0/0x13e0
-> 
-> And this ioctl() is qemu telling KVM to do so, correct?
-> 
-> > [  222.621691]  __arm64_sys_ioctl+0xb0/0xf8
-> > [  222.621693]  invoke_syscall+0x4c/0x110
-> > [  222.621696] el0_svc_common.constprop.0+0x68/0x128
-> > [  222.621698]  do_el0_svc+0x34/0xc0
-> > [  222.621701]  el0_svc+0x30/0x98
-> > [  222.621704]  el0t_64_sync_handler+0xb8/0xc0
-> > [  222.621706]  el0t_64_sync+0x18c/0x190
-> > 
-> > 
-> > If no acpi=force, no print at all, 1000 times one print.
-> 
-> OK, this certainly explains the slowdown, both from adding the IORT RMR
-> and from the commit that you bisected to.  The answers to a few questions
-> might help illuminate a path towards a fix:
-> 
-> Do these reserved memory regions really need to be allocated separately?
-> (For example, are they really all non-contiguous?  If not, that is, if
-> there are a lot of contiguous memory regions, could you sort the IORT
-> by address and do one ioctl() for each set of contiguous memory regions?)
-> 
-> Are all of these reserved memory regions set up before init is spawned?
-> 
-> Are all of these reserved memory regions set up while there is only a
-> single vCPU up and running?
-> 
-> Is the SRCU grace period really needed in this case?  (I freely confess
-> to not being all that familiar with KVM.)
+> Could a new ioctl() be introduced that requested a large number
+> of these memory regions in one go so as to make each call to
+> synchronize_rcu_expedited() cover a useful fraction of your 9000+
+> requests?  Adding a few of the KVM guys on CC for their thoughts.
 
-Oh, and there was a similar many-requests problem with networking many
-years ago.  This was solved by adding a new syscall/ioctl()/whatever
-that permitted many requests to be presented to the kernel with a single
-system call.
+Unfortunately not.  Apart from this specific case, in general the calls 
+to KVM_SET_USER_MEMORY_REGION are triggered by writes to I/O registers 
+in the guest, and those writes then map to a ioctl.  Typically the guest 
+sets up a device at a time, and each setup step causes a 
+synchronize_srcu()---and expedited at that.
 
-Could a new ioctl() be introduced that requested a large number
-of these memory regions in one go so as to make each call to
-synchronize_rcu_expedited() cover a useful fraction of your 9000+
-requests?  Adding a few of the KVM guys on CC for their thoughts.
+KVM has two SRCUs:
 
-							Thanx, Paul
+1) kvm->irq_srcu is hardly relying on the "sleepable" part; it has 
+readers that are very very small, but it needs extremely fast detection 
+of grace periods; see commit 719d93cd5f5c ("kvm/irqchip: Speed up 
+KVM_SET_GSI_ROUTING", 2014-05-05) which split it off kvm->srcu.  Readers 
+are not so frequent.
+
+2) kvm->srcu is nastier because there are readers all the time.  The 
+read-side critical section are still short-ish, but they need the 
+sleepable part because they access user memory.
+
+Writers are not frequent per se; the problem is they come in very large 
+bursts when a guest boots.  And while the whole boot path overall can be 
+quadratic, O(n) expensive calls to synchronize_srcu() can have a larger 
+impact on runtime than the O(n^2) parts, as demonstrated here.
+
+Therefore, we operated on the assumption that the callers of 
+synchronized_srcu_expedited were _anyway_ busy running CPU-bound guest 
+code and the desire was to get past the booting phase as fast as 
+possible.  If the guest wants to eat host CPU it can "for(;;)" as much 
+as it wants; therefore, as long as expedited GPs didn't eat CPU 
+*throughout the whole system*, a preemptable busy wait in 
+synchronize_srcu_expedited() were not problematic.
+
+This assumptions did match the SRCU code when kvm->srcu and 
+kvm->irq_srcu were was introduced (respectively in 2009 and 2014).  But 
+perhaps they do not hold anymore now that each SRCU is not as 
+independent as it used to be in those years, and instead they use 
+workqueues instead?
+
+Thanks,
+
+Paolo
+
