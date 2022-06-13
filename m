@@ -2,128 +2,278 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F1318CCA47D
-	for <rcu@archiver.kernel.org>; Mon, 13 Jun 2022 18:44:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D55B9C433EF
+	for <rcu@archiver.kernel.org>; Mon, 13 Jun 2022 18:56:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245721AbiFMSoV (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 13 Jun 2022 14:44:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45254 "EHLO
+        id S1345322AbiFMS4x (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 13 Jun 2022 14:56:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345600AbiFMSnf (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 13 Jun 2022 14:43:35 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5743EE15;
-        Mon, 13 Jun 2022 08:02:36 -0700 (PDT)
-Received: from kwepemi100017.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4LMF9x2m5Qz1K9S3;
-        Mon, 13 Jun 2022 23:00:37 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- kwepemi100017.china.huawei.com (7.221.188.163) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Mon, 13 Jun 2022 23:02:32 +0800
-Received: from lhreml710-chm.china.huawei.com ([169.254.81.184]) by
- lhreml710-chm.china.huawei.com ([169.254.81.184]) with mapi id
- 15.01.2375.024; Mon, 13 Jun 2022 16:02:30 +0100
-From:   Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-To:     "zhangfei.gao@foxmail.com" <zhangfei.gao@foxmail.com>,
-        "paulmck@kernel.org" <paulmck@kernel.org>
-CC:     Paolo Bonzini <pbonzini@redhat.com>,
-        Zhangfei Gao <zhangfei.gao@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "mtosatti@redhat.com" <mtosatti@redhat.com>,
-        Auger Eric <eric.auger@redhat.com>,
-        "chenxiang (M)" <chenxiang66@hisilicon.com>
-Subject: RE: Commit 282d8998e997 (srcu: Prevent expedited GPs and blocking
- readers from consuming CPU) cause qemu boot slow
-Thread-Topic: Commit 282d8998e997 (srcu: Prevent expedited GPs and blocking
- readers from consuming CPU) cause qemu boot slow
-Thread-Index: AQHYfbD23+8d70keY0OaZ8DRkMZOaa1KXTQAgAD2BwCAAGN5gIAAFy8AgAAWoICAAAV3AIAADdIAgAAWawCAAIpHgIAADq2AgAAFgACAACxngIAAk8XA
-Date:   Mon, 13 Jun 2022 15:02:30 +0000
-Message-ID: <110bbec5cee74efba0aad64360069a12@huawei.com>
-References: <20220611165956.GO1790663@paulmck-ThinkPad-P17-Gen-1>
- <tencent_80D2801BC03B7006BB2230B6A1D5C69B9209@qq.com>
- <20220612133631.GQ1790663@paulmck-ThinkPad-P17-Gen-1>
- <tencent_2B7B5B8DBE69330DA041AEE36C1029826905@qq.com>
- <20220612162029.GR1790663@paulmck-ThinkPad-P17-Gen-1>
- <20220612164002.GA1242564@paulmck-ThinkPad-P17-Gen-1>
- <560f7d27-fe38-0db9-834a-50dda5fa6157@redhat.com>
- <20220612184944.GU1790663@paulmck-ThinkPad-P17-Gen-1>
- <tencent_E306F58EAEC1D188ED6D5F358A269F34C707@qq.com>
- <20220613035711.GY1790663@paulmck-ThinkPad-P17-Gen-1>
- <20220613041652.GA3976000@paulmck-ThinkPad-P17-Gen-1>
- <tencent_F82250B6E3D51A9AC0D2BE1AE43A4E060909@qq.com>
-In-Reply-To: <tencent_F82250B6E3D51A9AC0D2BE1AE43A4E060909@qq.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.195.245.77]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        with ESMTP id S1345488AbiFMSzo (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 13 Jun 2022 14:55:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AF3DB7936E
+        for <rcu@vger.kernel.org>; Mon, 13 Jun 2022 09:01:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1655136090;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Mst+XIUPiZy/+7AqlJFILYkc8pwFunN3qQzNo3sARX8=;
+        b=aZwkH5iPUg9jHHWlPTl7WHvRbv+pT5d3tVQQXOZcBlp8TnhjGPDj0GE0MiQhEhbtUDvwdP
+        cBiawjRxZ9ayiR0aJzpcTAvd/zciBTSSQ/00VRPkzPudq7ooMh2IqqBOwS+u417LlvxK6K
+        H/8yOOCAY78uC+ebuLo44B9GpsHXH74=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-578-uu7oK4JhMvyVf4K2uPgLvg-1; Mon, 13 Jun 2022 12:01:26 -0400
+X-MC-Unique: uu7oK4JhMvyVf4K2uPgLvg-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8C77B185A7A4;
+        Mon, 13 Jun 2022 16:01:25 +0000 (UTC)
+Received: from [10.18.17.215] (dhcp-17-215.bos.redhat.com [10.18.17.215])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1FB39492CA2;
+        Mon, 13 Jun 2022 16:01:25 +0000 (UTC)
+Message-ID: <5aae210e-2553-57ca-e4d5-0b0f20ec92cd@redhat.com>
+Date:   Mon, 13 Jun 2022 12:01:24 -0400
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Subject: Re: [PATCH] rcu-tasks: Delay rcu_tasks_verify_self_tests() to avoid
+ missed callbacks
+Content-Language: en-US
+To:     paulmck@kernel.org
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+References: <20220610184212.822113-1-longman@redhat.com>
+ <20220610205814.GK1790663@paulmck-ThinkPad-P17-Gen-1>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <20220610205814.GK1790663@paulmck-ThinkPad-P17-Gen-1>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.85 on 10.11.54.9
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogemhhbmdmZWkuZ2FvQGZv
-eG1haWwuY29tIFttYWlsdG86emhhbmdmZWkuZ2FvQGZveG1haWwuY29tXQ0KPiBTZW50OiAxMyBK
-dW5lIDIwMjIgMDc6NTYNCj4gVG86IHBhdWxtY2tAa2VybmVsLm9yZw0KPiBDYzogUGFvbG8gQm9u
-emluaSA8cGJvbnppbmlAcmVkaGF0LmNvbT47IFpoYW5nZmVpIEdhbw0KPiA8emhhbmdmZWkuZ2Fv
-QGxpbmFyby5vcmc+OyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOw0KPiByY3VAdmdlci5r
-ZXJuZWwub3JnOyBMYWkgSmlhbmdzaGFuIDxqaWFuZ3NoYW5sYWlAZ21haWwuY29tPjsgSm9zaCBU
-cmlwbGV0dA0KPiA8am9zaEBqb3NodHJpcGxldHQub3JnPjsgTWF0aGlldSBEZXNub3llcnMNCj4g
-PG1hdGhpZXUuZGVzbm95ZXJzQGVmZmljaW9zLmNvbT47IE1hdHRoZXcgV2lsY294IDx3aWxseUBp
-bmZyYWRlYWQub3JnPjsNCj4gU2hhbWVlcmFsaSBLb2xvdGh1bSBUaG9kaSA8c2hhbWVlcmFsaS5r
-b2xvdGh1bS50aG9kaUBodWF3ZWkuY29tPjsNCj4gbXRvc2F0dGlAcmVkaGF0LmNvbTsgQXVnZXIg
-RXJpYyA8ZXJpYy5hdWdlckByZWRoYXQuY29tPg0KPiBTdWJqZWN0OiBSZTogQ29tbWl0IDI4MmQ4
-OTk4ZTk5NyAoc3JjdTogUHJldmVudCBleHBlZGl0ZWQgR1BzIGFuZA0KPiBibG9ja2luZyByZWFk
-ZXJzIGZyb20gY29uc3VtaW5nIENQVSkgY2F1c2UgcWVtdSBib290IHNsb3cNCj4gDQogDQo+IEJ5
-IHRoZSB3YXksIHRoZSBpc3N1ZSBzaG91bGQgYmUgb25seSByZWxhdGVkIHdpdGggcWVtdSBhcGNp
-LiBub3QgcmVsYXRlZA0KPiB3aXRoIHJtciBmZWF0dXJlDQo+IFRlc3Qgd2l0aDogaHR0cHM6Ly9n
-aXRodWIuY29tL3FlbXUvcWVtdS90cmVlL3N0YWJsZS02LjENCj4gDQo+IExvb2tzIGl0IGNhdXNl
-ZCBieSB0b28gbWFueSBrdm1fcmVnaW9uX2FkZCAmIGt2bV9yZWdpb25fZGVsIGlmDQo+IGFjcGk9
-Zm9yY2UsDQoNCkJhc2VkIG9uIHRoZSBzZXR1cCBJIGhhdmUsIEkgdGhpbmsgaXQgaGFzIG5vdGhp
-bmcgdG8gZG8gd2l0aCBHdWVzdCBrZXJuZWwgYm9vdGluZyB3aXRoDQpBQ1BJIHBlciBzZShpZSwg
-YWNwaT1mb3JjZSBpbiBRZW11IGtlcm5lbCBjbWQgbGluZSkuDQpJdCBpcyBtb3JlIHRvIGRvIHdp
-dGggUWVtdSBoYXZpbmcgdGhlICItYmlvcyBRRU1VX0VGSS5mZCIgd2hpY2ggc2V0cyB1cA0KcGZs
-YXNoIGRldmljZXMgcmVzdWx0aW5nIGluIGxhcmdlIG51bWJlciBvZiBwZmxhc2ggcmVhZC93cml0
-ZSBjYWxscyhiZWZvcmUgR3Vlc3Qga2VybmVsDQpldmVuIGJvb3RzKSB3aGljaCBpbiB0dXJuIHNl
-ZW1zIHRvIGJlIHRyaWdnZXJpbmcgdGhlIGJlbG93IGt2bV9yZWdpb25fYWRkL2RlbCBjYWxscy4N
-CiANClRoYW5rcywNClNoYW1lZXINCg0KPiBJZiBubyBhY3BpLCBubyBwcmludCBrdm1fcmVnaW9u
-X2FkZC9kZWwgKDEwMDAgdGltZXMgcHJpbnQgb25jZSkNCj4gDQo+IElmIHdpdGggYWNwaT1mb3Jj
-ZSwNCj4gRHVyaW5nIHFlbXUgYm9vdA0KPiBrdm1fcmVnaW9uX2FkZCByZWdpb25fYWRkID0gMTAw
-MA0KPiBrdm1fcmVnaW9uX2RlbCByZWdpb25fZGVsID0gMTAwMA0KPiBrdm1fcmVnaW9uX2FkZCBy
-ZWdpb25fYWRkID0gMjAwMA0KPiBrdm1fcmVnaW9uX2RlbCByZWdpb25fZGVsID0gMjAwMA0KPiBr
-dm1fcmVnaW9uX2FkZCByZWdpb25fYWRkID0gMzAwMA0KPiBrdm1fcmVnaW9uX2RlbCByZWdpb25f
-ZGVsID0gMzAwMA0KPiBrdm1fcmVnaW9uX2FkZCByZWdpb25fYWRkID0gNDAwMA0KPiBrdm1fcmVn
-aW9uX2RlbCByZWdpb25fZGVsID0gNDAwMA0KPiBrdm1fcmVnaW9uX2FkZCByZWdpb25fYWRkID0g
-NTAwMA0KPiBrdm1fcmVnaW9uX2RlbCByZWdpb25fZGVsID0gNTAwMA0KPiBrdm1fcmVnaW9uX2Fk
-ZCByZWdpb25fYWRkID0gNjAwMA0KPiBrdm1fcmVnaW9uX2RlbCByZWdpb25fZGVsID0gNjAwMA0K
-PiANCj4ga3ZtX3JlZ2lvbl9hZGQva3ZtX3JlZ2lvbl9kZWwgLT4NCj4ga3ZtX3NldF9waHlzX21l
-bS0+DQo+IGt2bV9zZXRfdXNlcl9tZW1vcnlfcmVnaW9uLT4NCj4ga3ZtX3ZtX2lvY3RsKHMsIEtW
-TV9TRVRfVVNFUl9NRU1PUllfUkVHSU9OLCAmbWVtKQ0KPiANCj4gW8KgIDM2MS4wOTQ0OTNdwqAg
-X19zeW5jaHJvbml6ZV9zcmN1IGxvb3A9OTAwMA0KPiBbwqAgMzYxLjA5NDUwMV0gQ2FsbCB0cmFj
-ZToNCj4gW8KgIDM2MS4wOTQ1MDJdwqAgZHVtcF9iYWNrdHJhY2UrMHhlNC8weGYwDQo+IFvCoCAz
-NjEuMDk0NTA1XcKgIHNob3dfc3RhY2srMHgyMC8weDcwDQo+IFvCoCAzNjEuMDk0NTA3XcKgIGR1
-bXBfc3RhY2tfbHZsKzB4OGMvMHhiOA0KPiBbwqAgMzYxLjA5NDUwOV3CoCBkdW1wX3N0YWNrKzB4
-MTgvMHgzNA0KPiBbwqAgMzYxLjA5NDUxMV3CoCBfX3N5bmNocm9uaXplX3NyY3UrMHgxMjAvMHgx
-MjgNCj4gW8KgIDM2MS4wOTQ1MTRdwqAgc3luY2hyb25pemVfc3JjdV9leHBlZGl0ZWQrMHgyYy8w
-eDQwDQo+IFvCoCAzNjEuMDk0NTE1XcKgIGt2bV9zd2FwX2FjdGl2ZV9tZW1zbG90cysweDEzMC8w
-eDE5OA0KPiBbwqAgMzYxLjA5NDUxOV3CoCBrdm1fYWN0aXZhdGVfbWVtc2xvdCsweDQwLzB4NjgN
-Cj4gW8KgIDM2MS4wOTQ1MjBdwqAga3ZtX3NldF9tZW1zbG90KzB4MmY4LzB4M2IwDQo+IFvCoCAz
-NjEuMDk0NTIzXcKgIF9fa3ZtX3NldF9tZW1vcnlfcmVnaW9uKzB4MmU0LzB4NDM4DQo+IFvCoCAz
-NjEuMDk0NTI0XcKgIGt2bV9zZXRfbWVtb3J5X3JlZ2lvbisweDc4LzB4YjgNCj4gW8KgIDM2MS4w
-OTQ1MjZdwqAga3ZtX3ZtX2lvY3RsKzB4NWEwLzB4MTNlMA0KPiBbwqAgMzYxLjA5NDUyOF3CoCBf
-X2FybTY0X3N5c19pb2N0bCsweGIwLzB4ZjgNCj4gW8KgIDM2MS4wOTQ1MzBdwqAgaW52b2tlX3N5
-c2NhbGwrMHg0Yy8weDExMA0KPiBbwqAgMzYxLjA5NDUzM13CoCBlbDBfc3ZjX2NvbW1vbi5jb25z
-dHByb3AuMCsweDY4LzB4MTI4DQo+IFvCoCAzNjEuMDk0NTM2XcKgIGRvX2VsMF9zdmMrMHgzNC8w
-eGMwDQo+IFvCoCAzNjEuMDk0NTM4XcKgIGVsMF9zdmMrMHgzMC8weDk4DQo+IFvCoCAzNjEuMDk0
-NTQxXcKgIGVsMHRfNjRfc3luY19oYW5kbGVyKzB4YjgvMHhjMA0KPiBbwqAgMzYxLjA5NDU0NF3C
-oCBlbDB0XzY0X3N5bmMrMHgxOGMvMHgxOTANCj4gW8KgIDM2My45NDI4MTddwqAga3ZtX3NldF9t
-ZW1vcnlfcmVnaW9uIGxvb3A9NjAwMA0KPiANCj4gDQoNCg==
+On 6/10/22 16:58, Paul E. McKenney wrote:
+> On Fri, Jun 10, 2022 at 02:42:12PM -0400, Waiman Long wrote:
+>> Even though rcu_tasks selftest is initiated early in the boot process,
+>> the verification done at late initcall time may not be late enough to
+>> catch all the callbacks especially on systems with just a few cpus and
+>> small memory.
+>>
+>> After 12 bootup's On a s390x system, 1 of them had failed rcu_tasks
+>> verification test.
+>>
+>> [    8.183013] call_rcu_tasks() has been failed.
+>> [    8.183041] WARNING: CPU: 0 PID: 1 at kernel/rcu/tasks.h:1696 rcu_tasks_verify_self_tests+0x64/0xd0
+>> [    8.203246] Callback from call_rcu_tasks() invoked.
+>>
+>> In this particular case, the callback missed the check by about
+>> 20ms. Similar rcu_tasks selftest failures are also seen in ppc64le
+>> systems.
+>>
+>> [    0.313391] call_rcu_tasks() has been failed.
+>> [    0.313407] WARNING: CPU: 0 PID: 1 at kernel/rcu/tasks.h:1696 rcu_tasks_verify_self_tests+0x5c/0xa0
+>> [    0.335569] Callback from call_rcu_tasks() invoked.
+>>
+>> Avoid this missed callback by delaying the verification using
+>> delayed_work. The delay is set to be about 0.1s which hopefully will
+>> be long enough to catch all the callbacks on systems with few cpus and
+>> small memory.
+>>
+>> Fixes: bfba7ed084f8 ("rcu-tasks: Add RCU-tasks self tests")
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+> Good catch, thank you!
+>
+> A few days ago, I queued this:
+>
+> 2585014188d5 ("rcu-tasks: Be more patient for RCU Tasks boot-time testing")
+>
+> This is shown in full at the end of this email.  Does this fix this
+> problem for you?
+
+I think your patch should fix the false positive warning and it give 
+plenty of time for this to happen.
+
+I do have one question though. rcu_tasks_verify_selft_tests() is called 
+from do_initcalls(). Since it may not be the last late initcall, does 
+that mean other late initcalls queued after that may be delayed by a 
+second or more?
+
+Thanks,
+Longman
+
+> 							Thanx, Paul
+>
+>> ---
+>>   kernel/rcu/tasks.h | 19 ++++++++++++++++---
+>>   1 file changed, 16 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+>> index 3925e32159b5..25f964a671ba 100644s
+>> --- a/kernel/rcu/tasks.h
+>> +++ b/kernel/rcu/tasks.h
+>> @@ -1735,7 +1735,7 @@ static void rcu_tasks_initiate_self_tests(void)
+>>   #endif
+>>   }
+>>   
+>> -static int rcu_tasks_verify_self_tests(void)
+>> +static void rcu_tasks_verify_self_tests(struct work_struct *work __maybe_unused)
+>>   {
+>>   	int ret = 0;
+>>   	int i;
+>> @@ -1749,10 +1749,23 @@ static int rcu_tasks_verify_self_tests(void)
+>>   
+>>   	if (ret)
+>>   		WARN_ON(1);
+>> +}
+>> +
+>> +static struct delayed_work rcu_tasks_verify_work;
+>>   
+>> -	return ret;
+>> +/*
+>> + * The rcu_tasks verification is done indirectly via the work queue to
+>> + * introduce an additional 0.1s delay to catch all the callbacks before
+>> + * the verification is done as late_initcall time may not be late enough
+>> + * to have all the callbacks fired.
+>> + */
+>> +static int rcu_tasks_verify_schedule_work(void)
+>> +{
+>> +	INIT_DELAYED_WORK(&rcu_tasks_verify_work, rcu_tasks_verify_self_tests);
+>> +	schedule_delayed_work(&rcu_tasks_verify_work, HZ/10);
+>> +	return 0;
+>>   }
+>> -late_initcall(rcu_tasks_verify_self_tests);
+>> +late_initcall(rcu_tasks_verify_schedule_work);
+>>   #else /* #ifdef CONFIG_PROVE_RCU */
+>>   static void rcu_tasks_initiate_self_tests(void) { }
+>>   #endif /* #else #ifdef CONFIG_PROVE_RCU */
+>> -- 
+>> 2.31.1
+> ------------------------------------------------------------------------
+>
+> commit 2585014188d5e66052b4226b42602b6f3d921389
+> Author: Paul E. McKenney <paulmck@kernel.org>
+> Date:   Tue Jun 7 15:23:52 2022 -0700
+>
+>      rcu-tasks: Be more patient for RCU Tasks boot-time testing
+>      
+>      The RCU-Tasks family of grace-period primitives can take some time to
+>      complete, and the amount of time can depend on the exact hardware and
+>      software configuration.  Some configurations boot up fast enough that the
+>      RCU-Tasks verification process gets false-positive failures.  This commit
+>      therefore allows up to 30 seconds for the grace periods to complete, with
+>      this value adjustable downwards using the rcupdate.rcu_task_stall_timeout
+>      kernel boot parameter.
+>      
+>      Reported-by: Matthew Wilcox <willy@infradead.org>
+>      Reported-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+>      Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+>      Tested-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+>
+> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> index df6b2cb2f205d..fcbd0ec33c866 100644
+> --- a/kernel/rcu/tasks.h
+> +++ b/kernel/rcu/tasks.h
+> @@ -145,6 +145,7 @@ static int rcu_task_ipi_delay __read_mostly = RCU_TASK_IPI_DELAY;
+>   module_param(rcu_task_ipi_delay, int, 0644);
+>   
+>   /* Control stall timeouts.  Disable with <= 0, otherwise jiffies till stall. */
+> +#define RCU_TASK_BOOT_STALL_TIMEOUT (HZ * 30)
+>   #define RCU_TASK_STALL_TIMEOUT (HZ * 60 * 10)
+>   static int rcu_task_stall_timeout __read_mostly = RCU_TASK_STALL_TIMEOUT;
+>   module_param(rcu_task_stall_timeout, int, 0644);
+> @@ -1776,23 +1777,24 @@ struct rcu_tasks_test_desc {
+>   	struct rcu_head rh;
+>   	const char *name;
+>   	bool notrun;
+> +	unsigned long runstart;
+>   };
+>   
+>   static struct rcu_tasks_test_desc tests[] = {
+>   	{
+>   		.name = "call_rcu_tasks()",
+>   		/* If not defined, the test is skipped. */
+> -		.notrun = !IS_ENABLED(CONFIG_TASKS_RCU),
+> +		.notrun = IS_ENABLED(CONFIG_TASKS_RCU),
+>   	},
+>   	{
+>   		.name = "call_rcu_tasks_rude()",
+>   		/* If not defined, the test is skipped. */
+> -		.notrun = !IS_ENABLED(CONFIG_TASKS_RUDE_RCU),
+> +		.notrun = IS_ENABLED(CONFIG_TASKS_RUDE_RCU),
+>   	},
+>   	{
+>   		.name = "call_rcu_tasks_trace()",
+>   		/* If not defined, the test is skipped. */
+> -		.notrun = !IS_ENABLED(CONFIG_TASKS_TRACE_RCU)
+> +		.notrun = IS_ENABLED(CONFIG_TASKS_TRACE_RCU)
+>   	}
+>   };
+>   
+> @@ -1803,23 +1805,28 @@ static void test_rcu_tasks_callback(struct rcu_head *rhp)
+>   
+>   	pr_info("Callback from %s invoked.\n", rttd->name);
+>   
+> -	rttd->notrun = true;
+> +	rttd->notrun = false;
+>   }
+>   
+>   static void rcu_tasks_initiate_self_tests(void)
+>   {
+> +	unsigned long j = jiffies;
+> +
+>   	pr_info("Running RCU-tasks wait API self tests\n");
+>   #ifdef CONFIG_TASKS_RCU
+> +	tests[0].runstart = j;
+>   	synchronize_rcu_tasks();
+>   	call_rcu_tasks(&tests[0].rh, test_rcu_tasks_callback);
+>   #endif
+>   
+>   #ifdef CONFIG_TASKS_RUDE_RCU
+> +	tests[1].runstart = j;
+>   	synchronize_rcu_tasks_rude();
+>   	call_rcu_tasks_rude(&tests[1].rh, test_rcu_tasks_callback);
+>   #endif
+>   
+>   #ifdef CONFIG_TASKS_TRACE_RCU
+> +	tests[2].runstart = j;
+>   	synchronize_rcu_tasks_trace();
+>   	call_rcu_tasks_trace(&tests[2].rh, test_rcu_tasks_callback);
+>   #endif
+> @@ -1829,11 +1836,18 @@ static int rcu_tasks_verify_self_tests(void)
+>   {
+>   	int ret = 0;
+>   	int i;
+> +	unsigned long bst = rcu_task_stall_timeout;
+>   
+> +	if (bst <= 0 || bst > RCU_TASK_BOOT_STALL_TIMEOUT)
+> +		bst = RCU_TASK_BOOT_STALL_TIMEOUT;
+>   	for (i = 0; i < ARRAY_SIZE(tests); i++) {
+> -		if (!tests[i].notrun) {		// still hanging.
+> -			pr_err("%s has been failed.\n", tests[i].name);
+> -			ret = -1;
+> +		while (tests[i].notrun) {		// still hanging.
+> +			if (time_after(jiffies, tests[i].runstart + bst)) {
+> +				pr_err("%s has failed boot-time tests.\n", tests[i].name);
+> +				ret = -1;
+> +				break;
+> +			}
+> +			schedule_timeout_uninterruptible(1);
+>   		}
+>   	}
+>   
+>
+
