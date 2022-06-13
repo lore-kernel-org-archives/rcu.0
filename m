@@ -2,257 +2,181 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CFA1BC433EF
-	for <rcu@archiver.kernel.org>; Mon, 13 Jun 2022 19:31:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B720CCA47B
+	for <rcu@archiver.kernel.org>; Mon, 13 Jun 2022 20:16:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240990AbiFMTb0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 13 Jun 2022 15:31:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33396 "EHLO
+        id S1347572AbiFMUQ5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 13 Jun 2022 16:16:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348653AbiFMTaz (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 13 Jun 2022 15:30:55 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58179544D9;
-        Mon, 13 Jun 2022 10:56:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B8AFC60F64;
-        Mon, 13 Jun 2022 17:56:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14E7EC34114;
-        Mon, 13 Jun 2022 17:56:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655142961;
-        bh=AVWCuJVYHA5oCbeZjk3SDRgDnVqRCyQjJmFyFxBfLpo=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=A2QNILqgYE/bty/x4wKU6pbVgb/uqOtincNhO9XKRqNA7Aqhzlji6xQkvIlJI6q72
-         PLCECeYbkBx/XMWr9Lzvb3nUKdPPucOx71v2LNtT5cNU5SO6IGWqT1RRyb1My8AfpX
-         We7FQnT2ywiCrpAhwS214D/7bxvjV2WAQmSlqdoFmZoKkYf/I8ZGYkMMaJaU29cYzQ
-         IqoTWhF39WeHXomEYaSrnkkDxSxO9r5w8HzbSMMmwPb8Dbhz22p+60aa04Iosc73D5
-         rCHiy+1Id3FfTuFwhri60grOjueVolzE7rB2wHl2qm5eR775+3ptNghVDKQm1jgeq8
-         nKYRqrOxeWhwA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id AC6765C0510; Mon, 13 Jun 2022 10:56:00 -0700 (PDT)
-Date:   Mon, 13 Jun 2022 10:56:00 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Subject: Re: [PATCH] rcu-tasks: Delay rcu_tasks_verify_self_tests() to avoid
- missed callbacks
-Message-ID: <20220613175600.GG1790663@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220610184212.822113-1-longman@redhat.com>
- <20220610205814.GK1790663@paulmck-ThinkPad-P17-Gen-1>
- <5aae210e-2553-57ca-e4d5-0b0f20ec92cd@redhat.com>
+        with ESMTP id S1350850AbiFMUQm (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 13 Jun 2022 16:16:42 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBCB92AE38
+        for <rcu@vger.kernel.org>; Mon, 13 Jun 2022 11:53:29 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id d128so4727636qkg.8
+        for <rcu@vger.kernel.org>; Mon, 13 Jun 2022 11:53:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=pL6Jigvp2l0jeBnwg+GrKKXW2isHg56IIoArd45A5i8=;
+        b=L5CY/MDukSs9q5Lt8aInkSIT5VTrECS5e2Dj+dH/vyXib5iKrEY0e0o/97qKuQIVRX
+         M12HQbrI4Sjd8n0Mul2gJ6oRTtN2KrcPkmEHSKS6t0ybxl+Og0zTX/Quf83Ny90WVUOj
+         HES104aMVg4j6IxdABQ0hV/JH8EJuY3Z2KoS8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pL6Jigvp2l0jeBnwg+GrKKXW2isHg56IIoArd45A5i8=;
+        b=tsfTeJ1EuB0pQF2WSVabxmIlDerqY/eR2TrIp5pKPs70PsZ1U/LvELV4mUa5I7cGCg
+         sbqnGAW141RuaToAHM4PIZc8iCUrHU2TUho2VI85zY/ZTrCmUQmJpqJ3IVGv2qthYEPL
+         CFiVLVwYtm4JCqFp7CeFTo87vMVocqzperkoukq+h1HfbEjAb0dMBwdoKOQYMAih/nDA
+         ozkct8WfKPSxPyL3Ms5VKTyiM+jzftxMZosk1U8Ulwd3b2ritRxoq3zkQEWmaz31s0xL
+         FQ9M7AseG4Vrk52aAmXzXXnXWOU3AvDKoEYEqoZVg/GlcpVkrkIegJ6RIYdUWfyCpmjq
+         XhEw==
+X-Gm-Message-State: AOAM532UjrW7a/jTtmrzh4W90knRNLRwvTPS4vqFkk5jXeuVSdmgnGy7
+        O16YLX9ZuQ58etAnkrBCGl8uqshA1CsmvQ==
+X-Google-Smtp-Source: ABdhPJyN9dgVCx9V6hpoAGlOEKZd02G0aEQq3/JD1bQG3TCDZMGY6NoLJH1MsqgRXxtfmBC9wI8MbQ==
+X-Received: by 2002:a05:620a:462a:b0:6a6:effd:de6a with SMTP id br42-20020a05620a462a00b006a6effdde6amr1099543qkb.369.1655146408758;
+        Mon, 13 Jun 2022 11:53:28 -0700 (PDT)
+Received: from localhost (228.221.150.34.bc.googleusercontent.com. [34.150.221.228])
+        by smtp.gmail.com with ESMTPSA id r13-20020a05620a298d00b006a6d60a39d0sm8075062qkp.5.2022.06.13.11.53.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jun 2022 11:53:27 -0700 (PDT)
+Date:   Mon, 13 Jun 2022 18:53:27 +0000
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     rcu@vger.kernel.org
+Cc:     rushikesh.s.kadam@intel.com, urezki@gmail.com,
+        neeraj.iitr10@gmail.com, frederic@kernel.org, paulmck@kernel.org,
+        rostedt@goodmis.org
+Subject: Re: [RFC v1 00/14] Implement call_rcu_lazy() and miscellaneous fixes
+Message-ID: <YqeHp0Zmm512x5nx@google.com>
+References: <20220512030442.2530552-1-joel@joelfernandes.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5aae210e-2553-57ca-e4d5-0b0f20ec92cd@redhat.com>
+In-Reply-To: <20220512030442.2530552-1-joel@joelfernandes.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Jun 13, 2022 at 12:01:24PM -0400, Waiman Long wrote:
-> On 6/10/22 16:58, Paul E. McKenney wrote:
-> > On Fri, Jun 10, 2022 at 02:42:12PM -0400, Waiman Long wrote:
-> > > Even though rcu_tasks selftest is initiated early in the boot process,
-> > > the verification done at late initcall time may not be late enough to
-> > > catch all the callbacks especially on systems with just a few cpus and
-> > > small memory.
-> > > 
-> > > After 12 bootup's On a s390x system, 1 of them had failed rcu_tasks
-> > > verification test.
-> > > 
-> > > [    8.183013] call_rcu_tasks() has been failed.
-> > > [    8.183041] WARNING: CPU: 0 PID: 1 at kernel/rcu/tasks.h:1696 rcu_tasks_verify_self_tests+0x64/0xd0
-> > > [    8.203246] Callback from call_rcu_tasks() invoked.
-> > > 
-> > > In this particular case, the callback missed the check by about
-> > > 20ms. Similar rcu_tasks selftest failures are also seen in ppc64le
-> > > systems.
-> > > 
-> > > [    0.313391] call_rcu_tasks() has been failed.
-> > > [    0.313407] WARNING: CPU: 0 PID: 1 at kernel/rcu/tasks.h:1696 rcu_tasks_verify_self_tests+0x5c/0xa0
-> > > [    0.335569] Callback from call_rcu_tasks() invoked.
-> > > 
-> > > Avoid this missed callback by delaying the verification using
-> > > delayed_work. The delay is set to be about 0.1s which hopefully will
-> > > be long enough to catch all the callbacks on systems with few cpus and
-> > > small memory.
-> > > 
-> > > Fixes: bfba7ed084f8 ("rcu-tasks: Add RCU-tasks self tests")
-> > > Signed-off-by: Waiman Long <longman@redhat.com>
-> > Good catch, thank you!
-> > 
-> > A few days ago, I queued this:
-> > 
-> > 2585014188d5 ("rcu-tasks: Be more patient for RCU Tasks boot-time testing")
-> > 
-> > This is shown in full at the end of this email.  Does this fix this
-> > problem for you?
+On Thu, May 12, 2022 at 03:04:28AM +0000, Joel Fernandes (Google) wrote:
+> Hello!
+> Please find the proof of concept version of call_rcu_lazy() attached. This
+> gives a lot of savings when the CPUs are relatively idle. Huge thanks to
+> Rushikesh Kadam from Intel for investigating it with me.
+
+Just a status update, we're reworking this code to use the bypass lists which
+takes care of a lot of corner cases. I've had to make changes the the rcuog
+thread code to handle wakes up a bit differently and such. Initial testing is
+looking good. Currently working on the early-flushing of the lazy CBs based
+on memory pressure.
+
+Should be hopefully sending v2 soon!
+
+thanks,
+
+ - Joel
+
+
+
 > 
-> I think your patch should fix the false positive warning and it give plenty
-> of time for this to happen.
+> Some numbers below:
 > 
-> I do have one question though. rcu_tasks_verify_selft_tests() is called from
-> do_initcalls(). Since it may not be the last late initcall, does that mean
-> other late initcalls queued after that may be delayed by a second or more?
-
-Indeed.  Which is why I would welcome the workqueues portion of your
-patch on top of the above patch in -rcu.  ;-)
-
-							Thanx, Paul
-
-> > > ---
-> > >   kernel/rcu/tasks.h | 19 ++++++++++++++++---
-> > >   1 file changed, 16 insertions(+), 3 deletions(-)
-> > > 
-> > > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> > > index 3925e32159b5..25f964a671ba 100644s
-> > > --- a/kernel/rcu/tasks.h
-> > > +++ b/kernel/rcu/tasks.h
-> > > @@ -1735,7 +1735,7 @@ static void rcu_tasks_initiate_self_tests(void)
-> > >   #endif
-> > >   }
-> > > -static int rcu_tasks_verify_self_tests(void)
-> > > +static void rcu_tasks_verify_self_tests(struct work_struct *work __maybe_unused)
-> > >   {
-> > >   	int ret = 0;
-> > >   	int i;
-> > > @@ -1749,10 +1749,23 @@ static int rcu_tasks_verify_self_tests(void)
-> > >   	if (ret)
-> > >   		WARN_ON(1);
-> > > +}
-> > > +
-> > > +static struct delayed_work rcu_tasks_verify_work;
-> > > -	return ret;
-> > > +/*
-> > > + * The rcu_tasks verification is done indirectly via the work queue to
-> > > + * introduce an additional 0.1s delay to catch all the callbacks before
-> > > + * the verification is done as late_initcall time may not be late enough
-> > > + * to have all the callbacks fired.
-> > > + */
-> > > +static int rcu_tasks_verify_schedule_work(void)
-> > > +{
-> > > +	INIT_DELAYED_WORK(&rcu_tasks_verify_work, rcu_tasks_verify_self_tests);
-> > > +	schedule_delayed_work(&rcu_tasks_verify_work, HZ/10);
-> > > +	return 0;
-> > >   }
-> > > -late_initcall(rcu_tasks_verify_self_tests);
-> > > +late_initcall(rcu_tasks_verify_schedule_work);
-> > >   #else /* #ifdef CONFIG_PROVE_RCU */
-> > >   static void rcu_tasks_initiate_self_tests(void) { }
-> > >   #endif /* #else #ifdef CONFIG_PROVE_RCU */
-> > > -- 
-> > > 2.31.1
-> > ------------------------------------------------------------------------
-> > 
-> > commit 2585014188d5e66052b4226b42602b6f3d921389
-> > Author: Paul E. McKenney <paulmck@kernel.org>
-> > Date:   Tue Jun 7 15:23:52 2022 -0700
-> > 
-> >      rcu-tasks: Be more patient for RCU Tasks boot-time testing
-> >      The RCU-Tasks family of grace-period primitives can take some time to
-> >      complete, and the amount of time can depend on the exact hardware and
-> >      software configuration.  Some configurations boot up fast enough that the
-> >      RCU-Tasks verification process gets false-positive failures.  This commit
-> >      therefore allows up to 30 seconds for the grace periods to complete, with
-> >      this value adjustable downwards using the rcupdate.rcu_task_stall_timeout
-> >      kernel boot parameter.
-> >      Reported-by: Matthew Wilcox <willy@infradead.org>
-> >      Reported-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> >      Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> >      Tested-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> > 
-> > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> > index df6b2cb2f205d..fcbd0ec33c866 100644
-> > --- a/kernel/rcu/tasks.h
-> > +++ b/kernel/rcu/tasks.h
-> > @@ -145,6 +145,7 @@ static int rcu_task_ipi_delay __read_mostly = RCU_TASK_IPI_DELAY;
-> >   module_param(rcu_task_ipi_delay, int, 0644);
-> >   /* Control stall timeouts.  Disable with <= 0, otherwise jiffies till stall. */
-> > +#define RCU_TASK_BOOT_STALL_TIMEOUT (HZ * 30)
-> >   #define RCU_TASK_STALL_TIMEOUT (HZ * 60 * 10)
-> >   static int rcu_task_stall_timeout __read_mostly = RCU_TASK_STALL_TIMEOUT;
-> >   module_param(rcu_task_stall_timeout, int, 0644);
-> > @@ -1776,23 +1777,24 @@ struct rcu_tasks_test_desc {
-> >   	struct rcu_head rh;
-> >   	const char *name;
-> >   	bool notrun;
-> > +	unsigned long runstart;
-> >   };
-> >   static struct rcu_tasks_test_desc tests[] = {
-> >   	{
-> >   		.name = "call_rcu_tasks()",
-> >   		/* If not defined, the test is skipped. */
-> > -		.notrun = !IS_ENABLED(CONFIG_TASKS_RCU),
-> > +		.notrun = IS_ENABLED(CONFIG_TASKS_RCU),
-> >   	},
-> >   	{
-> >   		.name = "call_rcu_tasks_rude()",
-> >   		/* If not defined, the test is skipped. */
-> > -		.notrun = !IS_ENABLED(CONFIG_TASKS_RUDE_RCU),
-> > +		.notrun = IS_ENABLED(CONFIG_TASKS_RUDE_RCU),
-> >   	},
-> >   	{
-> >   		.name = "call_rcu_tasks_trace()",
-> >   		/* If not defined, the test is skipped. */
-> > -		.notrun = !IS_ENABLED(CONFIG_TASKS_TRACE_RCU)
-> > +		.notrun = IS_ENABLED(CONFIG_TASKS_TRACE_RCU)
-> >   	}
-> >   };
-> > @@ -1803,23 +1805,28 @@ static void test_rcu_tasks_callback(struct rcu_head *rhp)
-> >   	pr_info("Callback from %s invoked.\n", rttd->name);
-> > -	rttd->notrun = true;
-> > +	rttd->notrun = false;
-> >   }
-> >   static void rcu_tasks_initiate_self_tests(void)
-> >   {
-> > +	unsigned long j = jiffies;
-> > +
-> >   	pr_info("Running RCU-tasks wait API self tests\n");
-> >   #ifdef CONFIG_TASKS_RCU
-> > +	tests[0].runstart = j;
-> >   	synchronize_rcu_tasks();
-> >   	call_rcu_tasks(&tests[0].rh, test_rcu_tasks_callback);
-> >   #endif
-> >   #ifdef CONFIG_TASKS_RUDE_RCU
-> > +	tests[1].runstart = j;
-> >   	synchronize_rcu_tasks_rude();
-> >   	call_rcu_tasks_rude(&tests[1].rh, test_rcu_tasks_callback);
-> >   #endif
-> >   #ifdef CONFIG_TASKS_TRACE_RCU
-> > +	tests[2].runstart = j;
-> >   	synchronize_rcu_tasks_trace();
-> >   	call_rcu_tasks_trace(&tests[2].rh, test_rcu_tasks_callback);
-> >   #endif
-> > @@ -1829,11 +1836,18 @@ static int rcu_tasks_verify_self_tests(void)
-> >   {
-> >   	int ret = 0;
-> >   	int i;
-> > +	unsigned long bst = rcu_task_stall_timeout;
-> > +	if (bst <= 0 || bst > RCU_TASK_BOOT_STALL_TIMEOUT)
-> > +		bst = RCU_TASK_BOOT_STALL_TIMEOUT;
-> >   	for (i = 0; i < ARRAY_SIZE(tests); i++) {
-> > -		if (!tests[i].notrun) {		// still hanging.
-> > -			pr_err("%s has been failed.\n", tests[i].name);
-> > -			ret = -1;
-> > +		while (tests[i].notrun) {		// still hanging.
-> > +			if (time_after(jiffies, tests[i].runstart + bst)) {
-> > +				pr_err("%s has failed boot-time tests.\n", tests[i].name);
-> > +				ret = -1;
-> > +				break;
-> > +			}
-> > +			schedule_timeout_uninterruptible(1);
-> >   		}
-> >   	}
-> > 
+> Following are power savings we see on top of RCU_NOCB_CPU on an Intel platform.
+> The observation is that due to a 'trickle down' effect of RCU callbacks, the
+> system is very lightly loaded but constantly running few RCU callbacks very
+> often. This confuses the power management hardware that the system is active,
+> when it is in fact idle.
+> 
+> For example, when ChromeOS screen is off and user is not doing anything on the
+> system, we can see big power savings.
+> Before:
+> Pk%pc10 = 72.13
+> PkgWatt = 0.58
+> CorWatt = 0.04
+> 
+> After:
+> Pk%pc10 = 81.28
+> PkgWatt = 0.41
+> CorWatt = 0.03
+> 
+> Further, when ChromeOS screen is ON but system is idle or lightly loaded, we
+> can see that the display pipeline is constantly doing RCU callback queuing due
+> to open/close of file descriptors associated with graphics buffers. This is
+> attributed to the file_free_rcu() path which this patch series also touches.
+> 
+> This patch series adds a simple but effective, and lockless implementation of
+> RCU callback batching. On memory pressure, timeout or queue growing too big, we
+> initiate a flush of one or more per-CPU lists.
+> 
+> Similar results can be achieved by increasing jiffies_till_first_fqs, however
+> that also has the effect of slowing down RCU. Especially I saw huge slow down
+> of function graph tracer when increasing that.
+> 
+> One drawback of this series is, if another frequent RCU callback creeps up in
+> the future, that's not lazy, then that will again hurt the power. However, I
+> believe identifying and fixing those is a more reasonable approach than slowing
+> RCU down for the whole system.
+> 
+> NOTE: Add debug patch is added in the series toggle /proc/sys/kernel/rcu_lazy
+> at runtime to turn it on or off globally. It is default to on. Further, please
+> use the sysctls in lazy.c for further tuning of parameters that effect the
+> flushing.
+> 
+> Disclaimer 1: Don't boot your personal system on it yet anticipating power
+> savings, as TREE07 still causes RCU stalls and I am looking more into that, but
+> I believe this series should be good for general testing.
+> 
+> Disclaimer 2: I have intentionally not CC'd other subsystem maintainers (like
+> net, fs) to keep noise low and will CC them in the future after 1 or 2 rounds
+> of review and agreements.
+> 
+> Joel Fernandes (Google) (14):
+>   rcu: Add a lock-less lazy RCU implementation
+>   workqueue: Add a lazy version of queue_rcu_work()
+>   block/blk-ioc: Move call_rcu() to call_rcu_lazy()
+>   cred: Move call_rcu() to call_rcu_lazy()
+>   fs: Move call_rcu() to call_rcu_lazy() in some paths
+>   kernel: Move various core kernel usages to call_rcu_lazy()
+>   security: Move call_rcu() to call_rcu_lazy()
+>   net/core: Move call_rcu() to call_rcu_lazy()
+>   lib: Move call_rcu() to call_rcu_lazy()
+>   kfree/rcu: Queue RCU work via queue_rcu_work_lazy()
+>   i915: Move call_rcu() to call_rcu_lazy()
+>   rcu/kfree: remove useless monitor_todo flag
+>   rcu/kfree: Fix kfree_rcu_shrink_count() return value
+>   DEBUG: Toggle rcu_lazy and tune at runtime
+> 
+>  block/blk-ioc.c                            |   2 +-
+>  drivers/gpu/drm/i915/gem/i915_gem_object.c |   2 +-
+>  fs/dcache.c                                |   4 +-
+>  fs/eventpoll.c                             |   2 +-
+>  fs/file_table.c                            |   3 +-
+>  fs/inode.c                                 |   2 +-
+>  include/linux/rcupdate.h                   |   6 +
+>  include/linux/sched/sysctl.h               |   4 +
+>  include/linux/workqueue.h                  |   1 +
+>  kernel/cred.c                              |   2 +-
+>  kernel/exit.c                              |   2 +-
+>  kernel/pid.c                               |   2 +-
+>  kernel/rcu/Kconfig                         |   8 ++
+>  kernel/rcu/Makefile                        |   1 +
+>  kernel/rcu/lazy.c                          | 153 +++++++++++++++++++++
+>  kernel/rcu/rcu.h                           |   5 +
+>  kernel/rcu/tree.c                          |  28 ++--
+>  kernel/sysctl.c                            |  23 ++++
+>  kernel/time/posix-timers.c                 |   2 +-
+>  kernel/workqueue.c                         |  25 ++++
+>  lib/radix-tree.c                           |   2 +-
+>  lib/xarray.c                               |   2 +-
+>  net/core/dst.c                             |   2 +-
+>  security/security.c                        |   2 +-
+>  security/selinux/avc.c                     |   4 +-
+>  25 files changed, 255 insertions(+), 34 deletions(-)
+>  create mode 100644 kernel/rcu/lazy.c
+> 
+> -- 
+> 2.36.0.550.gb090851708-goog
 > 
