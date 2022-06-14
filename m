@@ -2,117 +2,208 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A27BC43334
-	for <rcu@archiver.kernel.org>; Tue, 14 Jun 2022 01:53:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 59C69C43334
+	for <rcu@archiver.kernel.org>; Tue, 14 Jun 2022 06:42:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237950AbiFNBxd (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 13 Jun 2022 21:53:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34298 "EHLO
+        id S237883AbiFNGmI (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 14 Jun 2022 02:42:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349445AbiFNBxU (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 13 Jun 2022 21:53:20 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 282602F035;
-        Mon, 13 Jun 2022 18:53:19 -0700 (PDT)
-Received: from kwepemi500016.china.huawei.com (unknown [172.30.72.56])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4LMWfX57tpzDrDH;
-        Tue, 14 Jun 2022 09:52:52 +0800 (CST)
-Received: from [10.40.193.166] (10.40.193.166) by
- kwepemi500016.china.huawei.com (7.221.188.220) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Tue, 14 Jun 2022 09:53:16 +0800
-Subject: Re: Commit 282d8998e997 (srcu: Prevent expedited GPs and blocking
- readers from consuming CPU) cause qemu boot slow
-To:     Zhangfei Gao <zhangfei.gao@linaro.org>,
+        with ESMTP id S231724AbiFNGmG (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 14 Jun 2022 02:42:06 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B445338BC5;
+        Mon, 13 Jun 2022 23:42:04 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id d19so8599473lji.10;
+        Mon, 13 Jun 2022 23:42:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=N2nQITAXHPyr9/sd4X843kKOq+7gC+Dakac3yk/gowA=;
+        b=by8DQFBrBvIRqwUjmznJZPVWMazwlZoWA0kIolZ3oIes+d7Ms4S3q4V8gJDUkQcyqo
+         7vGJK0tQtDdU3eXalM0H+e6zajpiRKAfXQGEh7ODdBp469yHKoAmZWOUmfsVw9UBbkpi
+         aCFunK24lhNl1otwnuuITvurVfQB/Q1kl1rIzNWr8mZ+ACjU12Z3ir9QCFGLxjemOi4v
+         HuXrPod6nfTs0Hc9MxJhtqQ+h/BxMmk0By3JBjgKwwENy9RBkrcsheGwNi1KDrexcGmP
+         43TjKkF1wQeczJTB3RkXvJDr8E4aZx5JTCtDLArcR1pcFne1IKZ8J3fKrv77BOO+Ptz4
+         CWjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=N2nQITAXHPyr9/sd4X843kKOq+7gC+Dakac3yk/gowA=;
+        b=mXMKSENyWC6i0gq9vYqww7u8D4wFPAbgKgdvXBh8KOAbonjX8L+c0Y3lm3d6Cga6gl
+         S9hJSdDdxcW5+TtvCXtc5/WbSIgH1VSr5j1Rur1N/FExJST4cytZYv+5oHTYMJfLo06P
+         h/cM3y4gAjTYJ9g481SOL4OwZubwCipunEFhEfy99c7zralS2a4EYE1xZcTu+FlBQ0W0
+         Hg/NEPCEdD5LsLucYVx9EOdwFGpuiblhYhaeHKhORtsJoctlEFcZMDKmQNlNAiMyi3Dl
+         5mr+dQLNK5cZOeIrgAh2xdXxmhW3iIx6ETVhiwnRa0LDdsTiUfLfb/TRXDtwdCml7H0U
+         Wrdg==
+X-Gm-Message-State: AJIora+sMd2C81ZXLsHycH2VweI/rtb7P/7PhmTlDIls9TuWhY2Y9Imx
+        pAb6fngGqnyeiot2PeWZ+40=
+X-Google-Smtp-Source: AGRyM1sxPXRGyUnfV1+qFTHjuNEsz+I0cdsrtA3XnshWscNQWdQ/kG+MYF+If5shILHaIO/+7RXi4A==
+X-Received: by 2002:a2e:9191:0:b0:255:7517:e73c with SMTP id f17-20020a2e9191000000b002557517e73cmr1558422ljg.393.1655188922795;
+        Mon, 13 Jun 2022 23:42:02 -0700 (PDT)
+Received: from pc638.lan ([155.137.26.201])
+        by smtp.gmail.com with ESMTPSA id b23-20020a196717000000b0047255d21142sm1272029lfc.113.2022.06.13.23.42.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jun 2022 23:42:02 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Tue, 14 Jun 2022 08:42:00 +0200
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
         "Paul E. McKenney" <paulmck@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        <rcu@vger.kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Shameerali Kolothum Thodi 
-        <shameerali.kolothum.thodi@huawei.com>
-References: <20615615-0013-5adc-584f-2b1d5c03ebfc@linaro.org>
-From:   "chenxiang (M)" <chenxiang66@hisilicon.com>
-Message-ID: <14b775d2-7b7e-02e2-51ee-f7408dd98a62@hisilicon.com>
-Date:   Tue, 14 Jun 2022 09:53:16 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.2.0
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH 2/2] rcu/kvfree: Introduce KFREE_DRAIN_JIFFIES_[MAX/MIN]
+ interval
+Message-ID: <YqgtuBXW5pW4ivD/@pc638.lan>
+References: <20220602080644.432156-1-urezki@gmail.com>
+ <20220602080644.432156-2-urezki@gmail.com>
+ <20220604155108.GU1790663@paulmck-ThinkPad-P17-Gen-1>
+ <YpxzB3/HRN/EEHa8@pc638.lan>
+ <20220607034710.GE1790663@paulmck-ThinkPad-P17-Gen-1>
+ <CA+KHdyXU1apQQbVVZ_zX7o86Qp-AQnif2u8aJFULqHNtfCGcSA@mail.gmail.com>
+ <YqN1QqRmPpchDm/k@google.com>
+ <YqcHrIMefthWe0t4@pc638.lan>
 MIME-Version: 1.0
-In-Reply-To: <20615615-0013-5adc-584f-2b1d5c03ebfc@linaro.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.40.193.166]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemi500016.china.huawei.com (7.221.188.220)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YqcHrIMefthWe0t4@pc638.lan>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi, I also encounter a similar issue , and i reported it 
-here(https://www.spinics.net/lists/kernel/msg4396974.html).
+> Hello, Joel, Paul.
+> 
+> > Hi Vlad, Paul,
+> > 
+> > On Thu, Jun 09, 2022 at 03:10:57PM +0200, Uladzislau Rezki wrote:
+> > > On Tue, Jun 7, 2022 at 5:47 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+> > > >
+> > > > On Sun, Jun 05, 2022 at 11:10:31AM +0200, Uladzislau Rezki wrote:
+> > > > > > On Thu, Jun 02, 2022 at 10:06:44AM +0200, Uladzislau Rezki (Sony) wrote:
+> > > > > > > Currently the monitor work is scheduled with a fixed interval that
+> > > > > > > is HZ/20 or each 50 milliseconds. The drawback of such approach is
+> > > > > > > a low utilization of page slot in some scenarios. The page can store
+> > > > > > > up to 512 records. For example on Android system it can look like:
+> > > > > > >
+> > > > > > > <snip>
+> > > > > > >   kworker/3:0-13872   [003] .... 11286.007048: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000026522604 nr_records=1
+> > > > > > >   kworker/3:0-13872   [003] .... 11286.015638: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000095ed6fca nr_records=2
+> > > > > > >   kworker/1:2-20434   [001] .... 11286.051230: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000044872ffd nr_records=1
+> > > > > > >   kworker/1:2-20434   [001] .... 11286.059322: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000026522604 nr_records=2
+> > > > > > >   kworker/0:1-20052   [000] .... 11286.095295: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000044872ffd nr_records=2
+> > > > > > >   kworker/0:1-20052   [000] .... 11286.103418: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000cbcf05db nr_records=1
+> > > > > > >   kworker/2:3-14372   [002] .... 11286.135155: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000095ed6fca nr_records=2
+> > > > > > >   kworker/2:3-14372   [002] .... 11286.135198: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000044872ffd nr_records=1
+> > > > > > >   kworker/1:2-20434   [001] .... 11286.155377: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000cbcf05db nr_records=5
+> > > > > > >   kworker/2:3-14372   [002] .... 11286.167181: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000026522604 nr_records=5
+> > > > > > >   kworker/1:2-20434   [001] .... 11286.179202: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000008ef95e14 nr_records=1
+> > > > > > >   kworker/2:3-14372   [002] .... 11286.187398: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000c597d297 nr_records=6
+> > > > > > >   kworker/3:0-13872   [003] .... 11286.187445: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000050bf92e2 nr_records=3
+> > > > > > >   kworker/1:2-20434   [001] .... 11286.198975: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000cbcf05db nr_records=4
+> > > > > > >   kworker/1:2-20434   [001] .... 11286.207203: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000095ed6fca nr_records=4
+> > > > > > > <snip>
+> > > > > > >
+> > > > > > > where a page only carries few records to reclaim a memory. In order to
+> > > > > > > improve batching and make utilization more efficient the patch introduces
+> > > > > > > a drain interval that can be set either to KFREE_DRAIN_JIFFIES_MAX or
+> > > > > > > KFREE_DRAIN_JIFFIES_MIN. It is adjusted if a flood is detected, in this
+> > > > > > > case a memory reclaim occurs more often whereas in mostly idle cases the
+> > > > > > > interval is set to its maximum timeout that improves the utilization of
+> > > > > > > page slots.
+> > > > > > >
+> > > > > > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > > > > >
+> > > > > > That does look like a problem well worth solving!
+> > > > > >
+> > > > > Agree, better ideas make better final solution :)
+> > > > >
+> > > > > >
+> > > > > > But I am missing one thing. If we are having a callback flood, why do we
+> > > > > > need a shorter timeout?
+> > > > > >
+> > > > > To offload faster, because otherwise we run into classical issue, it is a low
+> > > > > memory condition state resulting in OOM.
+> > > >
+> > > > But doesn't each callback queued during the flood give us an opportunity
+> > > > to react to the flood?  That will be way more fine-grained than any
+> > > > reasonable timer, right?  Or am I missing something?
+> > > >
+> > > We can set the timer to zero or to current "jiffies" to initiate the
+> > > offloading if the
+> > > page is full. In that sense probably it make sense to propagate those two attr.
+> > > to user space, so the user can configure min/max drain interval.
+> > > 
+> > > Or we can only deal with fixed interval exposed via sysfs to control it by user.
+> > > In that case we can get rid of MIN one and just trigger a timer if the page is
+> > > full. I think this approach is better.
+> > 
+> > Yes I also think triggering timer with zero-timeout is better. Can you (Vlad)
+> > accomplish that by just calling the timer callback inline, instead of queuing
+> > a timer? I imagine you would just do queue_work() instead of
+> > queue_delayed_work() in this scenario.
+> > 
+> > > > I do agree that the action would often need to be indirect to avoid the
+> > > > memory-allocation-state hassles, but we already can do that, either via
+> > > > an extremely short-term hrtimer or something like irq-work.
+> > > >
+> > > > > > Wouldn't a check on the number of blocks queued be simpler, more direct,
+> > > > > > and provide faster response to the start of a callback flood?
+> > > > > >
+> > > > > I rely on krcp->count because not always we can store the pointer in the page
+> > > > > slots. We can not allocate a page in the caller context thus we use page-cache
+> > > > > worker that fills the cache in normal context. While it populates the cache,
+> > > > > pointers temporary are queued to the linked-list.
+> > > > >
+> > > > > Any thoughts?
+> > > >
+> > > > There are a great many ways to approach this.  One of them is to maintain
+> > > > a per-CPU free-running counter of kvfree_rcu() calls, and to reset this
+> > > > counter each jiffy.
+> > > >
+> > > > Or am I missing a trick here?
+> > > >
+> > > Do you mean to have a per-cpu timer that checks the per-cpu-freed counter
+> > > and schedule the work when if it is needed? Or i have missed your point?
+> > 
+> > I think he (Paul) is describing the way 'flood detection' can work similar to how the
+> > bypass list code is implemented. There he maintains a count which only if
+> > exceeds a limit, will queue on to the bypass list.
+> > 
+> OK, i see that. We also do similar thing. We say it is a flood - when a
+> page becomes full, so it is kind of threshold that we pass.
+> 
+> > This code:
+> > 
+> >         // If we have advanced to a new jiffy, reset counts to allow
+> >         // moving back from ->nocb_bypass to ->cblist.
+> >         if (j == rdp->nocb_nobypass_last) {
+> >                 c = rdp->nocb_nobypass_count + 1;
+> >         } else {
+> >                 WRITE_ONCE(rdp->nocb_nobypass_last, j);
+> >                 c = rdp->nocb_nobypass_count - nocb_nobypass_lim_per_jiffy;
+> >                 if (ULONG_CMP_LT(rdp->nocb_nobypass_count,
+> >                                  nocb_nobypass_lim_per_jiffy))
+> >                         c = 0;
+> >                 else if (c > nocb_nobypass_lim_per_jiffy)
+> >                         c = nocb_nobypass_lim_per_jiffy;
+> >         }
+> >         WRITE_ONCE(rdp->nocb_nobypass_count, c);
+> > 
+> > 
+> > Your (Vlad's) approach OTOH is also fine to me, you check if page is full and
+> > make that as a 'flood is happening' detector.
+> > 
+> OK, thank you Joel. I also think, that way we improve batching and utilization
+> of the page what is actually an intention of the patch in question.
+> 
+Paul, will you pick this patch?
 
-I tried the change Paul provides on the thread, but the issue is still.
+Thanks!
 
-
-在 2022/6/12 0:32, Zhangfei Gao 写道:
-> Hi, Paul
->
-> When verifying qemu with acpi rmr feature on v5.19-rc1, the guest 
-> kernel stuck for several minutes.
-> And on 5.18, there is no such problem.
->
-> After revert this patch, the issue solved.
-> Commit 282d8998e997 (srcu: Prevent expedited GPs and blocking readers 
-> from  consuming CPU)
->
->
-> qemu cmd:
-> build/aarch64-softmmu/qemu-system-aarch64 -machine 
-> virt,gic-version=3,iommu=smmuv3 \
-> -enable-kvm -cpu host -m 1024 \
-> -kernel Image -initrd mini-rootfs.cpio.gz -nographic -append \
-> "rdinit=init console=ttyAMA0 earlycon=pl011,0x9000000 kpti=off 
-> acpi=force" \
-> -bios QEMU_EFI.fd
->
-> log:
-> InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7AA4D040
-> add-symbol-file 
-> /home/linaro/work/edk2/Build/ArmVirtQemu-AARCH64/DEBUG_GCC48/AARCH64/NetworkPkg/IScsiDxe/IScsiDxe/DEBUG/IScsiDxe.dll 
-> 0x75459000
-> Loading driver at 0x00075458000 EntryPoint=0x00075459058 IScsiDxe.efi
-> InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7AA4DE98
-> ProtectUefiImageCommon - 0x7AA4D040
->   - 0x0000000075458000 - 0x000000000003F000
-> SetUefiImageMemoryAttributes - 0x0000000075458000 - 0x0000000000001000 
-> (0x0000000000004008)
-> SetUefiImageMemoryAttributes - 0x0000000075459000 - 0x000000000003B000 
-> (0x0000000000020008)
-> SetUefiImageMemoryAttributes - 0x0000000075494000 - 0x0000000000003000 
-> (0x0000000000004008)
-> InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 754952C8
-> InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 75495358
-> InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 75495370
-> InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 754952F8
-> InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 75495358
-> InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 75495370
-> InstallProtocolInterface: 59324945-EC44-4C0D-B1CD-9DB139DF070C 75495348
-> InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 754953E8
-> InstallProtocolInterface: 330D4706-F2A0-4E4F-A369-B66FA8D54385 7AA4D728
->
->
-> Not sure it is either reported or solved.
->
-> Thanks
->
->
->
->
->
->
->
-> .
->
-
+--
+Uladzislau Rezki
