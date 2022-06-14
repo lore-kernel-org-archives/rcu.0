@@ -2,118 +2,169 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 94A97C433EF
-	for <rcu@archiver.kernel.org>; Tue, 14 Jun 2022 12:43:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C77AC43334
+	for <rcu@archiver.kernel.org>; Tue, 14 Jun 2022 14:03:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243335AbiFNMnA (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 14 Jun 2022 08:43:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51850 "EHLO
+        id S234960AbiFNODv (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 14 Jun 2022 10:03:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243456AbiFNMmq (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 14 Jun 2022 08:42:46 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EF0572B243;
-        Tue, 14 Jun 2022 05:41:35 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7CCFF1655;
-        Tue, 14 Jun 2022 05:41:35 -0700 (PDT)
-Received: from FVFF77S0Q05N (unknown [10.57.41.154])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9CDCF3F73B;
-        Tue, 14 Jun 2022 05:41:17 -0700 (PDT)
-Date:   Tue, 14 Jun 2022 13:41:13 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com,
-        vgupta@kernel.org, linux@armlinux.org.uk,
-        ulli.kroll@googlemail.com, linus.walleij@linaro.org,
-        shawnguo@kernel.org, Sascha Hauer <s.hauer@pengutronix.de>,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        tony@atomide.com, khilman@kernel.org, catalin.marinas@arm.com,
-        will@kernel.org, guoren@kernel.org, bcain@quicinc.com,
-        chenhuacai@kernel.org, kernel@xen0n.name, geert@linux-m68k.org,
-        sammy@sammy.net, monstr@monstr.eu, tsbogend@alpha.franken.de,
-        dinguyen@kernel.org, jonas@southpole.se,
-        stefan.kristiansson@saunalahti.fi, shorne@gmail.com,
-        James.Bottomley@HansenPartnership.com, deller@gmx.de,
-        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, hca@linux.ibm.com, gor@linux.ibm.com,
-        agordeev@linux.ibm.com, borntraeger@linux.ibm.com,
-        svens@linux.ibm.com, ysato@users.sourceforge.jp, dalias@libc.org,
-        davem@davemloft.net, richard@nod.at,
-        anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        acme@kernel.org, alexander.shishkin@linux.intel.com,
-        jolsa@kernel.org, namhyung@kernel.org, jgross@suse.com,
-        srivatsa@csail.mit.edu, amakhalov@vmware.com,
-        pv-drivers@vmware.com, boris.ostrovsky@oracle.com,
-        chris@zankel.net, jcmvbkbc@gmail.com, rafael@kernel.org,
-        lenb@kernel.org, pavel@ucw.cz, gregkh@linuxfoundation.org,
-        mturquette@baylibre.com, sboyd@kernel.org,
-        daniel.lezcano@linaro.org, lpieralisi@kernel.org,
-        sudeep.holla@arm.com, agross@kernel.org,
-        bjorn.andersson@linaro.org, anup@brainfault.org,
-        thierry.reding@gmail.com, jonathanh@nvidia.com,
-        jacob.jun.pan@linux.intel.com, Arnd Bergmann <arnd@arndb.de>,
-        yury.norov@gmail.com, andriy.shevchenko@linux.intel.com,
-        linux@rasmusvillemoes.dk, rostedt@goodmis.org, pmladek@suse.com,
-        senozhatsky@chromium.org, john.ogness@linutronix.de,
-        paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
-        josh@joshtriplett.org, mathieu.desnoyers@efficios.com,
-        jiangshanlai@gmail.com, joel@joelfernandes.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, jpoimboe@kernel.org,
-        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
-        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-perf-users@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        xen-devel@lists.xenproject.org, linux-xtensa@linux-xtensa.org,
-        linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-arch@vger.kernel.org,
-        rcu@vger.kernel.org
-Subject: Re: [PATCH 14/36] cpuidle: Fix rcu_idle_*() usage
-Message-ID: <YqiB6YpVqq4wuDtO@FVFF77S0Q05N>
-References: <20220608142723.103523089@infradead.org>
- <20220608144516.808451191@infradead.org>
+        with ESMTP id S231223AbiFNODu (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 14 Jun 2022 10:03:50 -0400
+Received: from out203-205-221-164.mail.qq.com (out203-205-221-164.mail.qq.com [203.205.221.164])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 803E73883;
+        Tue, 14 Jun 2022 07:03:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+        s=s201512; t=1655215425;
+        bh=b+j3hfI52SuPbVR8+0Rma0F6k2hM1BhO8T4wYrdBWG4=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=lYLuGiA/IGGLaucMp/fFwuc+HQhZKA4CDzpmNbwW1U+IQXVOrY4fc9W0YGzqq89hX
+         6AXqJWSUHK2qdP6fI34EKr65dlNG7NV5IqNuhpWN7ptNw/d4a+bzRn2Itie6Dm7Pjo
+         qeaTxWl3HWprgxBWh9aOhVWCCsfFgNnDiFcy948U=
+Received: from [IPv6:240e:45a:409:26e3:89c6:2747:8c5d:8528] ([240e:45a:409:26e3:89c6:2747:8c5d:8528])
+        by newxmesmtplogicsvrszc9.qq.com (NewEsmtp) with SMTP
+        id E88A091; Tue, 14 Jun 2022 22:03:40 +0800
+X-QQ-mid: xmsmtpt1655215420t2ny1izu9
+Message-ID: <tencent_8FD344DA7FC376C7D1204604DA7689DA4906@qq.com>
+X-QQ-XMAILINFO: M/NR0wiIuy702s701Wg5VwT1mROVrNO7zSBbQM60JMaejeyA4EMHVrtEyQiEhp
+         hZ3rBlbgVlHcdZhKhw0sUoAKKkJ24It+CGPJjV+RHFSdXwJbMRAD53jS2y/loZGOpaqD+kmO9YZB
+         0Fz9pjlFGKg94ojqZnH0fcQGPLnyRpCUsH/4unfLDT/G7tC4fkw29JR39vx6Jyo6/rxQlYyGcm6K
+         evyn/epSRAKDLd+0DPX6U31MTSblE3iffi8VetpwqZArZn0/POGUlQX56re3R7gejBVLOIPrrYhI
+         FLi6ShBJQ6vCNllZKrP1XVNjGkcxcUz4hBAXfc389qOKnYryYgSw4ZjWFhmjjyQGr9bIEIW/FBIU
+         ydn/mDSVT5Fw8y18rCWfGcYzERSVuGPrkOxMPYLVjlJMLpvvwFH1OWppJZ1wMx1gKtDjh0sXIz+i
+         +XKRdNEItsfqs6FskkkZxYTKDxATaUoRE/S0hkFPeHctFFYfmhVsrK7AKZJJ6+CxpyEpEV+6ZwWu
+         imObWSGnjIjulVj8drQc6gE/8DU4KJ2W69RIe0PGG5HflYKwV3jtzwEmlqivN5Gf1YXU1XhORBA+
+         3MyJcWqeN8IiCdwrLU7kHCQMjezSPlTAOfJamiIZ4xfs4EcQS0egayXS4ANyPofDcrM1P0E8Ehnw
+         5xFeIM8PfDl7DIKKCr0Mt/smMt99EppSrVPriF8tcd6/+wOcpbBGlGMoTF9zG1obxNeFq71xfGxD
+         vCGfKxgIIvaEp+3E496PkhwoBdNHzUSMKtOQqrFwYl9nsZvAkZ+sTuMiFP5m67pozNvlekhbslFo
+         jn2ezjuUWKbQtwg9wpRxjJub2pSjxNUBOYmmWigYastaeoa/vGzeZTqxpgXU7R7uIG9j3GRny+hW
+         shfHZwnCjDPoJ1lqeuDlAu7ojShPQ6MDEN3E5em3oRH71o5kVEHWoGSZ/2dSwtPQybK+smJz6LJi
+         XvL3E8r8oONCL3Rp/FhKJXC8uBOGUq1WcAaSPwn1o=
+Subject: Re: Commit 282d8998e997 (srcu: Prevent expedited GPs and blocking
+ readers from consuming CPU) cause qemu boot slow
+To:     Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Shameerali Kolothum Thodi 
+        <shameerali.kolothum.thodi@huawei.com>,
+        "paulmck@kernel.org" <paulmck@kernel.org>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Zhangfei Gao <zhangfei.gao@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "mtosatti@redhat.com" <mtosatti@redhat.com>,
+        Auger Eric <eric.auger@redhat.com>,
+        "chenxiang (M)" <chenxiang66@hisilicon.com>
+References: <20220612162029.GR1790663@paulmck-ThinkPad-P17-Gen-1>
+ <20220612164002.GA1242564@paulmck-ThinkPad-P17-Gen-1>
+ <560f7d27-fe38-0db9-834a-50dda5fa6157@redhat.com>
+ <20220612184944.GU1790663@paulmck-ThinkPad-P17-Gen-1>
+ <tencent_E306F58EAEC1D188ED6D5F358A269F34C707@qq.com>
+ <20220613035711.GY1790663@paulmck-ThinkPad-P17-Gen-1>
+ <20220613041652.GA3976000@paulmck-ThinkPad-P17-Gen-1>
+ <tencent_F82250B6E3D51A9AC0D2BE1AE43A4E060909@qq.com>
+ <20220613121831.GA1790663@paulmck-ThinkPad-P17-Gen-1>
+ <tencent_65C7D0A04984EDB6A79A5E5379DA7E835206@qq.com>
+ <20220613145900.GC1790663@paulmck-ThinkPad-P17-Gen-1>
+ <7b6c983b21d44119b61716a66de397ed@huawei.com>
+ <f9684a69-5467-a440-abd1-7cf5ad3a81f7@quicinc.com>
+From:   "zhangfei.gao@foxmail.com" <zhangfei.gao@foxmail.com>
+X-OQ-MSGID: <f3b9a33f-fcf0-676b-e526-a885a945c414@foxmail.com>
+Date:   Tue, 14 Jun 2022 22:03:35 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220608144516.808451191@infradead.org>
+In-Reply-To: <f9684a69-5467-a440-abd1-7cf5ad3a81f7@quicinc.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Jun 08, 2022 at 04:27:37PM +0200, Peter Zijlstra wrote:
-> --- a/kernel/time/tick-broadcast.c
-> +++ b/kernel/time/tick-broadcast.c
-> @@ -622,9 +622,13 @@ struct cpumask *tick_get_broadcast_onesh
->   * to avoid a deep idle transition as we are about to get the
->   * broadcast IPI right away.
->   */
-> -int tick_check_broadcast_expired(void)
-> +noinstr int tick_check_broadcast_expired(void)
->  {
-> +#ifdef _ASM_GENERIC_BITOPS_INSTRUMENTED_NON_ATOMIC_H
-> +	return arch_test_bit(smp_processor_id(), cpumask_bits(tick_broadcast_force_mask));
-> +#else
->  	return cpumask_test_cpu(smp_processor_id(), tick_broadcast_force_mask);
-> +#endif
->  }
 
-This is somewhat not-ideal. :/
 
-Could we unconditionally do the arch_test_bit() variant, with a comment, or
-does that not exist in some cases?
+On 2022/6/14 下午8:19, Neeraj Upadhyay wrote:
+>
+>>
+>> 5.18-rc4 based               ~8sec
+>>
+>> 5.19-rc1                     ~2m43sec
+>>
+>> 5.19-rc1+fix1                 ~19sec
+>>
+>> 5.19-rc1-fix2                 ~19sec
+>>
+>
+> If you try below diff on top of either 5.19-rc1+fix1 or 5.19-rc1-fix2 
+> ; does it show any difference in boot time?
+>
+> --- a/kernel/rcu/srcutree.c
+> +++ b/kernel/rcu/srcutree.c
+> @@ -706,7 +706,7 @@ static void srcu_schedule_cbs_snp(struct 
+> srcu_struct *ssp, struct srcu_node *snp
+>   */
+>  static void srcu_gp_end(struct srcu_struct *ssp)
+>  {
+> -       unsigned long cbdelay;
+> +       unsigned long cbdelay = 1;
+>         bool cbs;
+>         bool last_lvl;
+>         int cpu;
+> @@ -726,7 +726,9 @@ static void srcu_gp_end(struct srcu_struct *ssp)
+>         spin_lock_irq_rcu_node(ssp);
+>         idx = rcu_seq_state(ssp->srcu_gp_seq);
+>         WARN_ON_ONCE(idx != SRCU_STATE_SCAN2);
+> -       cbdelay = !!srcu_get_delay(ssp);
+> +       if (ULONG_CMP_LT(READ_ONCE(ssp->srcu_gp_seq), 
+> READ_ONCE(ssp->srcu_gp_seq_needed_exp)))
+> +               cbdelay = 0;
+> +
+>         WRITE_ONCE(ssp->srcu_last_gp_end, ktime_get_mono_fast_ns());
+>
+Test here:
+qemu: https://github.com/qemu/qemu/tree/stable-6.1
+kernel: 
+https://github.com/Linaro/linux-kernel-uadk/tree/uacce-devel-5.19-srcu-test
+(in case test patch not clear, push in git tree)
 
-Thanks,
-Mark.
+Hardware: aarch64
+
+1. 5.18-rc6
+real    0m8.402s
+user    0m3.015s
+sys     0m1.102s
+
+2. 5.19-rc1
+real    2m41.433s
+user    0m3.097s
+sys     0m1.177s
+
+3. 5.19-rc1 + fix1 from Paul
+real    2m43.404s
+user    0m2.880s
+sys     0m1.214s
+
+4. 5.19-rc1 + fix2: fix1 + Remove "if (!jbase)" block
+real    0m15.262s
+user    0m3.003s
+sys     0m1.033s
+
+When build kernel in the meantime, load time become longer.
+
+5. 5.19-rc1 + fix3: fix1 + SRCU_MAX_NODELAY_PHASE 1000000
+real    0m15.215s
+user    0m2.942s
+sys    0m1.172s
+
+6. 5.19-rc1 + fix4: fix1 + Neeraj's change of srcu_gp_end　
+real    1m23.936s
+user    0m2.969s
+sys    0m1.181s
+
+More test details: https://docs.qq.com/doc/DRXdKalFPTVlUbFN5
+
+Thanks
+
