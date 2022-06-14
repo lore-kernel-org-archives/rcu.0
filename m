@@ -2,122 +2,117 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B6692C43334
-	for <rcu@archiver.kernel.org>; Mon, 13 Jun 2022 23:47:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A27BC43334
+	for <rcu@archiver.kernel.org>; Tue, 14 Jun 2022 01:53:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233790AbiFMXr4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 13 Jun 2022 19:47:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47632 "EHLO
+        id S237950AbiFNBxd (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 13 Jun 2022 21:53:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229848AbiFMXrz (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 13 Jun 2022 19:47:55 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58F85326EE;
-        Mon, 13 Jun 2022 16:47:54 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EF37B614C2;
-        Mon, 13 Jun 2022 23:47:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58B92C34114;
-        Mon, 13 Jun 2022 23:47:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655164073;
-        bh=5yF9QhQ4vupDYJDrsb4LKrVEEhEOsB8IRWAY1UxEZWA=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=ILbgpOy13nDDak7Lrna/R70a3H6ippqe2kRaGvA+m5KL0+jDHo99ikreSmx0POhv0
-         UONVHG2mxkMxs1XkWckhtVhKg+H71NcHCpXR5ENL7TwTwlWTN5j+JNsQ4Q7Ts86P8l
-         IooymKlhbo3VDW5YJNiuRrEpndIn6Cfc00f6jRjfa8P0QSSUhcTeS+23Qpph0/T0uo
-         Ko/C2/ULjscjW+buqIrv6O/87kmL2fN9lw1jYv+cuqfUIwZ10gdn6Yt33k4w1wJdaK
-         P1U7YkCUVmT7yPlxqRsVQnTJr6Cwq7iujZIjCxF5b6AvDxaiVWUMKm39halM5BlZmL
-         +YV97oW7vsmzw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id F3CE65C02F9; Mon, 13 Jun 2022 16:47:52 -0700 (PDT)
-Date:   Mon, 13 Jun 2022 16:47:52 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Li Qiong <liqiong@nfschina.com>
-Cc:     Davidlohr Bueso <dave@stgolabs.net>,
+        with ESMTP id S1349445AbiFNBxU (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 13 Jun 2022 21:53:20 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 282602F035;
+        Mon, 13 Jun 2022 18:53:19 -0700 (PDT)
+Received: from kwepemi500016.china.huawei.com (unknown [172.30.72.56])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4LMWfX57tpzDrDH;
+        Tue, 14 Jun 2022 09:52:52 +0800 (CST)
+Received: from [10.40.193.166] (10.40.193.166) by
+ kwepemi500016.china.huawei.com (7.221.188.220) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Tue, 14 Jun 2022 09:53:16 +0800
+Subject: Re: Commit 282d8998e997 (srcu: Prevent expedited GPs and blocking
+ readers from consuming CPU) cause qemu boot slow
+To:     Zhangfei Gao <zhangfei.gao@linaro.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        <rcu@vger.kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
         Josh Triplett <josh@joshtriplett.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        hukun@nfschina.com, qixu@nfschina.com, yuzhe@nfschina.com,
-        renyu@nfschina.com
-Subject: Re: [PATCH v2] rcu: Handle failure of memory allocation functions
-Message-ID: <20220613234752.GL1790663@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220611093055.1473-1-liqiong@nfschina.com>
- <20220612064825.32273-1-liqiong@nfschina.com>
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Shameerali Kolothum Thodi 
+        <shameerali.kolothum.thodi@huawei.com>
+References: <20615615-0013-5adc-584f-2b1d5c03ebfc@linaro.org>
+From:   "chenxiang (M)" <chenxiang66@hisilicon.com>
+Message-ID: <14b775d2-7b7e-02e2-51ee-f7408dd98a62@hisilicon.com>
+Date:   Tue, 14 Jun 2022 09:53:16 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220612064825.32273-1-liqiong@nfschina.com>
+In-Reply-To: <20615615-0013-5adc-584f-2b1d5c03ebfc@linaro.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.40.193.166]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemi500016.china.huawei.com (7.221.188.220)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sun, Jun 12, 2022 at 02:48:25PM +0800, Li Qiong wrote:
-> Add warning when these functions (eg:kmalloc,vmalloc) fail, handle the
-> failure.
-> 
-> Signed-off-by: Li Qiong <liqiong@nfschina.com>
+Hi, I also encounter a similar issue , and i reported it 
+here(https://www.spinics.net/lists/kernel/msg4396974.html).
 
-Queued for review and testing with a bit of wordsmithing, thank you!
+I tried the change Paul provides on the thread, but the issue is still.
 
-Please see below to check whether I messed something up.
 
-							Thanx, Paul
+在 2022/6/12 0:32, Zhangfei Gao 写道:
+> Hi, Paul
+>
+> When verifying qemu with acpi rmr feature on v5.19-rc1, the guest 
+> kernel stuck for several minutes.
+> And on 5.18, there is no such problem.
+>
+> After revert this patch, the issue solved.
+> Commit 282d8998e997 (srcu: Prevent expedited GPs and blocking readers 
+> from  consuming CPU)
+>
+>
+> qemu cmd:
+> build/aarch64-softmmu/qemu-system-aarch64 -machine 
+> virt,gic-version=3,iommu=smmuv3 \
+> -enable-kvm -cpu host -m 1024 \
+> -kernel Image -initrd mini-rootfs.cpio.gz -nographic -append \
+> "rdinit=init console=ttyAMA0 earlycon=pl011,0x9000000 kpti=off 
+> acpi=force" \
+> -bios QEMU_EFI.fd
+>
+> log:
+> InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7AA4D040
+> add-symbol-file 
+> /home/linaro/work/edk2/Build/ArmVirtQemu-AARCH64/DEBUG_GCC48/AARCH64/NetworkPkg/IScsiDxe/IScsiDxe/DEBUG/IScsiDxe.dll 
+> 0x75459000
+> Loading driver at 0x00075458000 EntryPoint=0x00075459058 IScsiDxe.efi
+> InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7AA4DE98
+> ProtectUefiImageCommon - 0x7AA4D040
+>   - 0x0000000075458000 - 0x000000000003F000
+> SetUefiImageMemoryAttributes - 0x0000000075458000 - 0x0000000000001000 
+> (0x0000000000004008)
+> SetUefiImageMemoryAttributes - 0x0000000075459000 - 0x000000000003B000 
+> (0x0000000000020008)
+> SetUefiImageMemoryAttributes - 0x0000000075494000 - 0x0000000000003000 
+> (0x0000000000004008)
+> InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 754952C8
+> InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 75495358
+> InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 75495370
+> InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 754952F8
+> InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 75495358
+> InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 75495370
+> InstallProtocolInterface: 59324945-EC44-4C0D-B1CD-9DB139DF070C 75495348
+> InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 754953E8
+> InstallProtocolInterface: 330D4706-F2A0-4E4F-A369-B66FA8D54385 7AA4D728
+>
+>
+> Not sure it is either reported or solved.
+>
+> Thanks
+>
+>
+>
+>
+>
+>
+>
+> .
+>
 
-------------------------------------------------------------------------
-
-commit 19deffcffe66991c9a9e435ae90b16b97b83e4c1
-Author: Li Qiong <liqiong@nfschina.com>
-Date:   Sun Jun 12 14:48:25 2022 +0800
-
-    rcu: Handle failure of memory allocation functions
-    
-    This commit adds warnings and ends the mem_dump_obj() test when allocation
-    functions (kmalloc(), vmalloc(), ...) fail.
-    
-    Signed-off-by: Li Qiong <liqiong@nfschina.com>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 21470ebb15eb4..ccc1af23dc1f2 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -2051,7 +2051,13 @@ static void rcu_torture_mem_dump_obj(void)
- 	static int z;
- 
- 	kcp = kmem_cache_create("rcuscale", 136, 8, SLAB_STORE_USER, NULL);
-+	if (WARN_ON_ONCE(!kcp))
-+		return;
- 	rhp = kmem_cache_alloc(kcp, GFP_KERNEL);
-+	if (WARN_ON_ONCE(!rhp)) {
-+		kmem_cache_destroy(kcp);
-+		return;
-+	}
- 	pr_alert("mem_dump_obj() slab test: rcu_torture_stats = %px, &rhp = %px, rhp = %px, &z = %px\n", stats_task, &rhp, rhp, &z);
- 	pr_alert("mem_dump_obj(ZERO_SIZE_PTR):");
- 	mem_dump_obj(ZERO_SIZE_PTR);
-@@ -2068,6 +2074,8 @@ static void rcu_torture_mem_dump_obj(void)
- 	kmem_cache_free(kcp, rhp);
- 	kmem_cache_destroy(kcp);
- 	rhp = kmalloc(sizeof(*rhp), GFP_KERNEL);
-+	if (WARN_ON_ONCE(!rhp))
-+		return;
- 	pr_alert("mem_dump_obj() kmalloc test: rcu_torture_stats = %px, &rhp = %px, rhp = %px\n", stats_task, &rhp, rhp);
- 	pr_alert("mem_dump_obj(kmalloc %px):", rhp);
- 	mem_dump_obj(rhp);
-@@ -2075,6 +2083,8 @@ static void rcu_torture_mem_dump_obj(void)
- 	mem_dump_obj(&rhp->func);
- 	kfree(rhp);
- 	rhp = vmalloc(4096);
-+	if (WARN_ON_ONCE(!rhp))
-+		return;
- 	pr_alert("mem_dump_obj() vmalloc test: rcu_torture_stats = %px, &rhp = %px, rhp = %px\n", stats_task, &rhp, rhp);
- 	pr_alert("mem_dump_obj(vmalloc %px):", rhp);
- 	mem_dump_obj(rhp);
