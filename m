@@ -2,148 +2,186 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DE123C43334
-	for <rcu@archiver.kernel.org>; Tue, 14 Jun 2022 20:15:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D7F6ACCA487
+	for <rcu@archiver.kernel.org>; Tue, 14 Jun 2022 22:12:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358051AbiFNUP4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 14 Jun 2022 16:15:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55596 "EHLO
+        id S1357845AbiFNWMn (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 14 Jun 2022 18:12:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359112AbiFNUPl (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 14 Jun 2022 16:15:41 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7564E20BC7;
-        Tue, 14 Jun 2022 13:12:51 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 38836B81B3D;
-        Tue, 14 Jun 2022 20:11:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD0BDC3411B;
-        Tue, 14 Jun 2022 20:11:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655237516;
-        bh=eqag6uuSHc8NZizUmIJ0eO9wLfheHHjsA7++w7jzMgQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=SY4qRctUBfITLHd4kc65jOj2XIujNztHSm3L9C547knPmAH9acA0zHM0AxWR7gd7O
-         Ml49R/brz3iSMYvksxsjBOqCWPnyaIRpgwTIx+EKLIh47bhh8O1gYbOMzDfBysX69H
-         V/cS4mdk4taOCPcgbPfX3KUNjwHe8ypTC+vJBgcRw+4flgDB0xWBUrkYaWzd27xTjx
-         z6AsHKzcdhMyEwTbTevRPM/gE5SWTB+AJRAiU8D/yGAT0jj3/XCckXUeCO42JtNq/e
-         jdd6u0IxNIS8Nbg7wUB+9EnxRUQlFWXLJnDUaq0qkgz2KJbygVletMd5BC4WVwm9CS
-         BfOK8FOHHd7PA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 5A9B55C0BCC; Tue, 14 Jun 2022 13:11:56 -0700 (PDT)
-Date:   Tue, 14 Jun 2022 13:11:56 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     Zqiang <qiang1.zhang@intel.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] rcu/nocb: Avoid polling when myrdp->nocb_head_rdp
- list is empty
-Message-ID: <20220614201156.GX1790663@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220611110044.2999157-1-qiang1.zhang@intel.com>
- <20220614114219.GB1892551@lothringen>
+        with ESMTP id S1356516AbiFNWMj (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 14 Jun 2022 18:12:39 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9C4327B0E;
+        Tue, 14 Jun 2022 15:12:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ieYeEcrodnP9d8uMI6KazQ9YDccjAyjy/+PGF5Ov/Sc=; b=OliYmJSibamFQ0oRl2XkG2+oLG
+        eUVxb3PF2WQS3d9O+63gY5P/Th5g3W0k/p07zjSFtfSstgpe5sY3UKPuYKK8U3d61xav16z47xA5h
+        tkNVX1vBm9t+GM0XpJtkUArdAr+6C0D6QPwa3LyJL5W3wePUH4pa4u9UPo+aiZ0VxHDbCXoe4qfJ4
+        E8Y2M6s9A8SopwISJUuliIWAcL2CXospZ4jCBSi0ba1Zs/HL4wyLHhGRHBuILPFIW3paG1eAzYhHw
+        AXd8m8CPomKQfchnKb7uAGftq4wK1SsdTGzKQsjqacjeCk0RsPVRrEJUUy3okfnQk1gM5l81agP/h
+        arzWLEHQ==;
+Received: from dhcp-077-249-017-003.chello.nl ([77.249.17.3] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1o1Elc-000Y9e-Ny; Tue, 14 Jun 2022 22:12:08 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id ED8F2981518; Wed, 15 Jun 2022 00:12:06 +0200 (CEST)
+Date:   Wed, 15 Jun 2022 00:12:06 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com,
+        vgupta@kernel.org, linux@armlinux.org.uk,
+        ulli.kroll@googlemail.com, linus.walleij@linaro.org,
+        shawnguo@kernel.org, Sascha Hauer <s.hauer@pengutronix.de>,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        khilman@kernel.org, catalin.marinas@arm.com, will@kernel.org,
+        guoren@kernel.org, bcain@quicinc.com, chenhuacai@kernel.org,
+        kernel@xen0n.name, geert@linux-m68k.org, sammy@sammy.net,
+        monstr@monstr.eu, tsbogend@alpha.franken.de, dinguyen@kernel.org,
+        jonas@southpole.se, stefan.kristiansson@saunalahti.fi,
+        shorne@gmail.com, James.Bottomley@hansenpartnership.com,
+        deller@gmx.de, mpe@ellerman.id.au, benh@kernel.crashing.org,
+        paulus@samba.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, hca@linux.ibm.com, gor@linux.ibm.com,
+        agordeev@linux.ibm.com, borntraeger@linux.ibm.com,
+        svens@linux.ibm.com, ysato@users.sourceforge.jp, dalias@libc.org,
+        davem@davemloft.net, richard@nod.at,
+        anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        acme@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+        namhyung@kernel.org, jgross@suse.com, srivatsa@csail.mit.edu,
+        amakhalov@vmware.com, pv-drivers@vmware.com,
+        boris.ostrovsky@oracle.com, chris@zankel.net, jcmvbkbc@gmail.com,
+        rafael@kernel.org, lenb@kernel.org, pavel@ucw.cz,
+        gregkh@linuxfoundation.org, mturquette@baylibre.com,
+        sboyd@kernel.org, daniel.lezcano@linaro.org, lpieralisi@kernel.org,
+        sudeep.holla@arm.com, agross@kernel.org,
+        bjorn.andersson@linaro.org, anup@brainfault.org,
+        thierry.reding@gmail.com, jonathanh@nvidia.com,
+        jacob.jun.pan@linux.intel.com, Arnd Bergmann <arnd@arndb.de>,
+        yury.norov@gmail.com, andriy.shevchenko@linux.intel.com,
+        linux@rasmusvillemoes.dk, rostedt@goodmis.org, pmladek@suse.com,
+        senozhatsky@chromium.org, john.ogness@linutronix.de,
+        paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
+        josh@joshtriplett.org, mathieu.desnoyers@efficios.com,
+        jiangshanlai@gmail.com, joel@joelfernandes.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, jpoimboe@kernel.org,
+        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-perf-users@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        xen-devel@lists.xenproject.org, linux-xtensa@linux-xtensa.org,
+        linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-arch@vger.kernel.org,
+        rcu@vger.kernel.org
+Subject: Re: [PATCH 34.5/36] cpuidle,omap4: Push RCU-idle into
+ omap4_enter_lowpower()
+Message-ID: <YqkHto+zgAPs4kQI@worktop.programming.kicks-ass.net>
+References: <20220608142723.103523089@infradead.org>
+ <20220608144518.073801916@infradead.org>
+ <Yqcv6crSNKuSWoTu@atomide.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220614114219.GB1892551@lothringen>
+In-Reply-To: <Yqcv6crSNKuSWoTu@atomide.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Jun 14, 2022 at 01:42:19PM +0200, Frederic Weisbecker wrote:
-> On Sat, Jun 11, 2022 at 07:00:44PM +0800, Zqiang wrote:
-> > Currently, If the 'rcu_nocb_poll' bootargs is enable, all rcuog kthreads
-> > enter polling mode. however, due to only insert CPU's rdp which belong to
-> > rcu_nocb_mask to 'nocb_head_rdp' list or all CPU's rdp served by rcuog
-> > kthread have been de-offloaded, these cause the 'nocb_head_rdp' list
-> > served by rcuog kthread is empty, when the 'nocb_head_rdp' is empty,
-> > the rcuog kthread in polling mode not actually do anything. fix it by
-> > exiting polling mode when the 'nocb_head_rdp'list is empty, otherwise
-> > entering polling mode.
-> > 
-> > Co-developed-by: Frederic Weisbecker <frederic@kernel.org>
+On Mon, Jun 13, 2022 at 03:39:05PM +0300, Tony Lindgren wrote:
+> OMAP4 uses full SoC suspend modes as idle states, as such it needs the
+> whole power-domain and clock-domain code from the idle path.
 > 
-> Acked-by: Frederic Weisbecker <frederic@kernel.org>
+> All that code is not suitable to run with RCU disabled, as such push
+> RCU-idle deeper still.
 > 
-> Thanks!
+> Signed-off-by: Tony Lindgren <tony@atomide.com>
+> ---
 > 
-> (might be worth testing with TREE01 and --bootargs "rcu_gp_poll" )
+> Peter here's one more for your series, looks like this is needed to avoid
+> warnings similar to what you did for omap3.
 
-A short run passes, so I am queuing this for further review and
-testing, thank you both!
+Thanks Tony!
 
-With the usual wordsmithing, so please check.
+I've had a brief look at omap2_pm_idle() and do I understand it right
+that something like the below patch would reduce it to a simple 'WFI'?
 
-							Thanx, Paul
+What do I do with the rest of that code, because I don't think this
+thing has a cpuidle driver to take over, effectively turning it into
+dead code.
 
-------------------------------------------------------------------------
-
-commit 5d3a7cbf3bc24dd5540ecf5be7a3e0e94b9a15d8
-Author: Zqiang <qiang1.zhang@intel.com>
-Date:   Sat Jun 11 19:00:44 2022 +0800
-
-    rcu/nocb: Avoid polling when myrdp->nocb_head_rdp list is empty
-    
-    Currently, If the 'rcu_nocb_poll' kernel boot parameter is enabled, all
-    rcuog kthreads enter polling mode.  However, if all of a given group
-    of rcuo kthreads correspond to CPUs that have been de-offloaded, the
-    corresponding rcuog kthread will nonetheless still wake up periodically,
-    unnecessarily consuming power and perturbing workloads.  Fortunately,
-    this situation is easily detected by the fact that the rcuog kthread's
-    CPU's rcu_data structure's ->nocb_head_rdp list is empty.
-    
-    This commit saves power and avoids unnecessarily perturbing workloads
-    by putting an rcuog kthread to sleep during any time period when all of
-    its rcuo kthreads' CPUs are de-offloaded.
-    
-    Co-developed-by: Frederic Weisbecker <frederic@kernel.org>
-    Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-    Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index fa8e4f82e60c0..a8f574d8850d2 100644
---- a/kernel/rcu/tree_nocb.h
-+++ b/kernel/rcu/tree_nocb.h
-@@ -584,6 +584,14 @@ static int nocb_gp_toggle_rdp(struct rcu_data *rdp,
- 	return ret;
+--- a/arch/arm/mach-omap2/pm24xx.c
++++ b/arch/arm/mach-omap2/pm24xx.c
+@@ -126,10 +126,20 @@ static int omap2_allow_mpu_retention(voi
+ 	return 1;
  }
  
-+static void nocb_gp_sleep(struct rcu_data *my_rdp, int cpu)
-+{
-+	trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("Sleep"));
-+	swait_event_interruptible_exclusive(my_rdp->nocb_gp_wq,
-+					!READ_ONCE(my_rdp->nocb_gp_sleep));
-+	trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("EndSleep"));
+-static void omap2_enter_mpu_retention(void)
++static void omap2_do_wfi(void)
+ {
+ 	const int zero = 0;
+ 
++	/* WFI */
++	asm("mcr p15, 0, %0, c7, c0, 4" : : "r" (zero) : "memory", "cc");
 +}
 +
- /*
-  * No-CBs GP kthreads come here to wait for additional callbacks to show up
-  * or for grace periods to end.
-@@ -701,13 +709,19 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
- 		/* Polling, so trace if first poll in the series. */
- 		if (gotcbs)
- 			trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("Poll"));
--		schedule_timeout_idle(1);
-+		if (list_empty(&my_rdp->nocb_head_rdp)) {
-+			raw_spin_lock_irqsave(&my_rdp->nocb_gp_lock, flags);
-+			if (!my_rdp->nocb_toggling_rdp)
-+				WRITE_ONCE(my_rdp->nocb_gp_sleep, true);
-+			raw_spin_unlock_irqrestore(&my_rdp->nocb_gp_lock, flags);
-+			/* Wait for any offloading rdp */
-+			nocb_gp_sleep(my_rdp, cpu);
-+		} else {
-+			schedule_timeout_idle(1);
-+		}
- 	} else if (!needwait_gp) {
- 		/* Wait for callbacks to appear. */
--		trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("Sleep"));
--		swait_event_interruptible_exclusive(my_rdp->nocb_gp_wq,
--				!READ_ONCE(my_rdp->nocb_gp_sleep));
--		trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("EndSleep"));
-+		nocb_gp_sleep(my_rdp, cpu);
- 	} else {
- 		rnp = my_rdp->mynode;
- 		trace_rcu_this_gp(rnp, my_rdp, wait_gp_seq, TPS("StartWait"));
++#if 0
++/*
++ * possible cpuidle implementation between WFI and full_retention above
++ */
++static void omap2_enter_mpu_retention(void)
++{
+ 	/* The peripherals seem not to be able to wake up the MPU when
+ 	 * it is in retention mode. */
+ 	if (omap2_allow_mpu_retention()) {
+@@ -146,8 +157,7 @@ static void omap2_enter_mpu_retention(vo
+ 		pwrdm_set_next_pwrst(mpu_pwrdm, PWRDM_POWER_ON);
+ 	}
+ 
+-	/* WFI */
+-	asm("mcr p15, 0, %0, c7, c0, 4" : : "r" (zero) : "memory", "cc");
++	omap2_do_wfi();
+ 
+ 	pwrdm_set_next_pwrst(mpu_pwrdm, PWRDM_POWER_ON);
+ }
+@@ -161,6 +171,7 @@ static int omap2_can_sleep(void)
+ 
+ 	return 1;
+ }
++#endif
+ 
+ static void omap2_pm_idle(void)
+ {
+@@ -169,6 +180,7 @@ static void omap2_pm_idle(void)
+ 	if (omap_irq_pending())
+ 		return;
+ 
++#if 0
+ 	error = cpu_cluster_pm_enter();
+ 	if (error || !omap2_can_sleep()) {
+ 		omap2_enter_mpu_retention();
+@@ -179,6 +191,9 @@ static void omap2_pm_idle(void)
+ 
+ out_cpu_cluster_pm:
+ 	cpu_cluster_pm_exit();
++#else
++	omap2_do_wfi();
++#endif
+ }
+ 
+ static void __init prcm_setup_regs(void)
