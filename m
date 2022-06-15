@@ -2,112 +2,186 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D2F0C433EF
-	for <rcu@archiver.kernel.org>; Wed, 15 Jun 2022 17:47:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CD6D9C43334
+	for <rcu@archiver.kernel.org>; Wed, 15 Jun 2022 19:09:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245041AbiFORrn (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 15 Jun 2022 13:47:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60326 "EHLO
+        id S1351546AbiFOTJl (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 15 Jun 2022 15:09:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357747AbiFORrh (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 15 Jun 2022 13:47:37 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49C7C186E6
-        for <rcu@vger.kernel.org>; Wed, 15 Jun 2022 10:47:35 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id v19so17286434edd.4
-        for <rcu@vger.kernel.org>; Wed, 15 Jun 2022 10:47:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7N8FxBu6DA6O7mEvFYXStFEfAYN9n61bDy3OwBXjJ0o=;
-        b=JHdk1N03ADEWzySRt7KcxOBPuZaGFXA/8Xyn6d2SSlY9ihVTM6DTBbu1drTtrmQ+M1
-         8RPbl/vwMUwgaM0Na3DeW4R1DvZyVGTsvcipdrdnr6LbuwHnx+DPjFA6rx07XSw0xDHv
-         KK/3LfmRBtp3+hX2z93IpwI50ZnSgl482NCGQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7N8FxBu6DA6O7mEvFYXStFEfAYN9n61bDy3OwBXjJ0o=;
-        b=KeZa7hYMiyTiBP/bj2D4i8CAe7kTOzo28KVbiCxi7ZwhldUr7VGWN79SZnzAkdKCvO
-         GJMdsNhvOW8rYFxLoPkOWb8TWfIqxWZm0v9NQ2JMRA13cglU988Mn0KbpAmMBLVdePMp
-         x74R9cMpHDoTQL3bvLM4UvUPTzJdUc6aMW15L1hBtu6G9G0MwvV+JnV7Z7lodRiKB/5o
-         ElxVCkfiNtkMZYnokfVnQdkx9MuXi+Y5LY1d6YFRqesprOMdU1GVurvzIoi7oMrasqhU
-         23y2OmK9LmDLMiV4dPwdjSvzQEtTDxRtbNEI7Ldj9a23j3hbqgROVhegcWYC/GHjuP7L
-         O/Ww==
-X-Gm-Message-State: AJIora+gMdy7hZNjz4EhOl/O/0EXGLyZ2H3zTka9wjYicwP0IFq+zK2J
-        v+RleKdZUjCYZ5RZGd4GTTjC3lnqJWlXO0ULv7g=
-X-Google-Smtp-Source: AGRyM1vfbs1Xfrig6BavS/Arst6eUogQVkks/5ecJglzgLZhEwlt91uDzZ4STQew+iY+jE+2Ap2hOw==
-X-Received: by 2002:aa7:d456:0:b0:42d:d7d9:34c1 with SMTP id q22-20020aa7d456000000b0042dd7d934c1mr1141391edr.21.1655315253692;
-        Wed, 15 Jun 2022 10:47:33 -0700 (PDT)
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com. [209.85.221.42])
-        by smtp.gmail.com with ESMTPSA id r21-20020a1709067fd500b006fec5cef701sm6502910ejs.197.2022.06.15.10.47.31
-        for <rcu@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Jun 2022 10:47:32 -0700 (PDT)
-Received: by mail-wr1-f42.google.com with SMTP id s1so16336934wra.9
-        for <rcu@vger.kernel.org>; Wed, 15 Jun 2022 10:47:31 -0700 (PDT)
-X-Received: by 2002:a5d:414d:0:b0:213:be00:a35 with SMTP id
- c13-20020a5d414d000000b00213be000a35mr875787wrq.97.1655315251112; Wed, 15 Jun
- 2022 10:47:31 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220615162805.27962-1-pmladek@suse.com> <20220615162805.27962-2-pmladek@suse.com>
-In-Reply-To: <20220615162805.27962-2-pmladek@suse.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 15 Jun 2022 10:47:14 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgs38ZrfPvy=nOwVkVzjpM3VFU1zobP37Fwd_h9iAD5JQ@mail.gmail.com>
-Message-ID: <CAHk-=wgs38ZrfPvy=nOwVkVzjpM3VFU1zobP37Fwd_h9iAD5JQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] printk: Block console kthreads when direct printing
- will be required
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     John Ogness <john.ogness@linutronix.de>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>, zhouzhouyi@gmail.com,
-        Davidlohr Bueso <dave@stgolabs.net>,
+        with ESMTP id S243975AbiFOTJk (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 15 Jun 2022 15:09:40 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E869393DC;
+        Wed, 15 Jun 2022 12:09:39 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 2E1CDB82168;
+        Wed, 15 Jun 2022 19:09:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6662C34115;
+        Wed, 15 Jun 2022 19:09:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1655320176;
+        bh=8J1oUy3Hn+J2l+W/L3+RREE0V/VeAu707W0U1jX7HOs=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=f9BrWPSgmtrFmoinhMd25QuAigfiIZxK9mMMGkFp+TCzbtGrp/BKppf2hpfnyaMdx
+         s11K4I2KNOnx6pywjqEA9SR/P6wfR6AuJyEmSnkrXMDC6nZLwmZdxwLFTCnh4HCzEe
+         sSWgM+cQi1BVv2slbBU32My9L+k6DCWGMFlPr6qZbkFpS4VKOyillaNjVibTrbd7mJ
+         MEY/AV6iNHQVs4Bt/xfIM+85YoidDa7Q3Rtt1Ajfofuuu2Bg/e5ndL4MlC15/z27GE
+         zd2A9wHS3uJnUZBTL0IFBdqh4qHiAqCGYsDR0xUmaXAyyzhEzN2GjAw/f8NQnyREpa
+         Vf+i0Zxkvv9+A==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 251865C014C; Wed, 15 Jun 2022 12:09:36 -0700 (PDT)
+Date:   Wed, 15 Jun 2022 12:09:36 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Zhouyi Zhou <zhouzhouyi@gmail.com>
+Cc:     john.ogness@linutronix.de, pmladek@suse.com, dave@stgolabs.net,
         Josh Triplett <josh@joshtriplett.org>,
-        rcu <rcu@vger.kernel.org>, linux-rockchip@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        rcu <rcu@vger.kernel.org>
+Subject: Re: [PATCH linux-next] RFC: torture: add pr_flush to flush the
+ results to console
+Message-ID: <20220615190936.GA713726@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20220615003733.16447-1-zhouzhouyi@gmail.com>
+ <20220615051521.GH1790663@paulmck-ThinkPad-P17-Gen-1>
+ <CAABZP2wCos5xupRQ2LbJtaLVN1a7i0D5kwaVTq9DEov8C46Gkw@mail.gmail.com>
+ <20220615135220.GI1790663@paulmck-ThinkPad-P17-Gen-1>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220615135220.GI1790663@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Jun 15, 2022 at 9:28 AM Petr Mladek <pmladek@suse.com> wrote:
->
-> BugLink: https://lore.kernel.org/r/20220610205038.GA3050413@paulmck-ThinkPad-P17-Gen-1
-> BugLink: https://lore.kernel.org/r/CAMdYzYpF4FNTBPZsEFeWRuEwSies36QM_As8osPWZSr2q-viEA@mail.gmail.com
+On Wed, Jun 15, 2022 at 06:52:20AM -0700, Paul E. McKenney wrote:
+> On Wed, Jun 15, 2022 at 08:36:54PM +0800, Zhouyi Zhou wrote:
+> > On Wed, Jun 15, 2022 at 1:15 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> > >
+> > > On Wed, Jun 15, 2022 at 08:37:33AM +0800, zhouzhouyi@gmail.com wrote:
+> > > > From: Zhouyi Zhou <zhouzhouyi@gmail.com>
+> > > >
+> > > > currently tools/testing/selftests/rcutorture/bin/torture.sh reports
+> > > > false positve because of kthread printing.
+> > > >
+> > > > Commit "printk: add functions to prefer direct printing" (2bb2b7b57f812)
+> > > > have added functions to prefer direct printing activated for the primary
+> > > > import messages.
+> > > >
+> > > > Meanwhile adding printk_prefer_direct_enter/exit to
+> > > > torture_cleanup_begin/end still can't eliminate the false positives
+> > > > for a hundred percent.
+> > > >
+> > > > This patch add pr_flush to torture_cleanup_end because the latter
+> > > > is sleepable.
+> > > >
+> > > > Reported-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+> > > > Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+> > > > Tested-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+> > >
+> > > Just the one Signed-off-by suffices.  ;-)
+> > Thank Paul for your guidance ;-)
+> > >
+> > > > ---
+> > > >  kernel/torture.c | 1 +
+> > > >  1 file changed, 1 insertion(+)
+> > > >
+> > > > diff --git a/kernel/torture.c b/kernel/torture.c
+> > > > index 789aeb0e1159..b51e42463a67 100644
+> > > > --- a/kernel/torture.c
+> > > > +++ b/kernel/torture.c
+> > > > @@ -878,6 +878,7 @@ void torture_cleanup_end(void)
+> > > >       mutex_lock(&fullstop_mutex);
+> > > >       torture_type = NULL;
+> > > >       mutex_unlock(&fullstop_mutex);
+> > > > +     pr_flush(1000, true);
+> > >
+> > > But in this case, the kernel keeps on running, correct?  So won't the
+> > > output appear over time?  All of printk()'s kthreads are still running
+> > > after all.
+> > I am doing research on linux-next following your guidance on my Dell
+> > PowerEdge R720 server:
+> > #git clone https://kernel.source.codeaurora.cn/pub/scm/linux/kernel/git/next/linux-next.git/
+> > #cd linux-next
+> > #./tools/testing/selftests/rcutorture/bin/torture.sh
+> > after about 14 hours, the test result show that there have been about
+> > 17 failures, I examine the corresponding console.log, and find the
+> > failures are caused by following reason:
+> > before the message output by
+> > rcu/lock/scf_torture_print_module_parms(cur_ops, "End of test:
+> > SUCCESS") has reached serial console, torture_shutdown invoked
+> > kernel_power_off(),
+> 
+> Ah, got it!  And good show tracking this down, by the way.
+> 
+> Does this workaround commit on -rcu do the trick for you?
+> 
+> 704ae8dcda84 ("torture: Flush printk() buffers before powering off")
+> 
+> The printk() guys are looking at fixes within the printk() system
+> as well:
+> 
+> https://lore.kernel.org/all/87tu8pgcj0.fsf@jogness.linutronix.de/
+> https://lore.kernel.org/all/YqdSw%2FfJvnkRbjvc@alley/
 
-Other thread discussion about this exact thing:
+And Petr has posted a more official fix, which I have queued on -rcu
+for testing at branch pmladek.2022.06.15a.
 
-   https://lore.kernel.org/all/CAHk-=wgzRUT1fBpuz3xcN+YdsX0SxqOzHWRtj0ReHpUBb5TKbA@mail.gmail.com/
+							Thanx, Paul
 
-please stop making up random tags that make no sense.
-
-Just use "Link:"
-
-Look at that first one (I didn't even bother following the second
-one). The "bug" part is not even the most important part.
-
-The reason to follow that link is all the discussion, the test-patch,
-and the confirmation from Paul that "yup, that patch solves the
-problem for me".
-
-It's extra context to the commit, in case somebody wants to know the
-history. The "bug" part is (and always should be) already explained in
-the commit message, there's absolutely no point in adding soem extra
-noise to the "Link:" tag.
-
-And if the only reason for "BugLink:" to exist is to show "look, this
-tag actually contains relevant and interesting information", then the
-solution to THAT problem is to not have the links that are useless and
-pointless in the first place.
-
-Put another way: if you want to distinguish useless links from useful
-ones, just do it by not including the useless ones.
-
-Ok?
-
-                   Linus
+> > so the message "End of test: SUCCESS" has not chance of reaching
+> > console.log of host machine.
+> > 
+> > Then I add printk_prefer_direct_enter/exit to
+> > torture_cleanup_begin/end, again I invoke
+> > #./tools/testing/selftests/rcutorture/bin/torture.sh
+> > after about 14 hours, the test result show that there have been about
+> > 5 failures,
+> > 
+> > Then I add a debug statement after
+> > rcu/lock/scf_torture_print_module_parms(cur_ops, "End of test:
+> > SUCCESS") which sends the debug string ("hello world") to
+> > uart_console_write directly, again I invoke
+> > #./tools/testing/selftests/rcutorture/bin/torture.sh
+> > There is "hello world" in console.log but no "End of test" strings.
+> > 
+> > So I guess even with printk_prefer_direct_enter/exit to
+> > torture_cleanup_begin/end,  our main shutdown thread has failed in
+> > competition for console lock (printk.c):
+> > 2401 if (console_trylock_spinning())
+> > 2402     console_unlock();
+> > 
+> > Then I add pr_flush to torture_cleanup_end
+> > #./tools/testing/selftests/rcutorture/bin/torture.sh
+> > after 14 hours
+> > all 49 tests are success
+> > >
+> > > Or do you have a use case that requires that the output appear sooner
+> > > than it does?  If so, please let me know what that is.
+> > Thank Paul for your patience,
+> > ./tools/testing/selftests/rcutorture/bin/torture.sh is the only tool
+> > that I use.
+> > 
+> > I am very interested in this topic, and very glad to do further
+> > experiments under your guidance ;-)
+> 
+> Or are you already running with that commit or one of those patches?
+> They are working reliably for me (so far, anyway), but maybe more is
+> needed in some cases.
+> 
+> 							Thanx, Paul
+> 
+> > Sincerely yours
+> > Thanks
+> > Zhouyi
+> > >
+> > >                                                         Thanx, Paul
+> > >
+> > > >  }
+> > > >  EXPORT_SYMBOL_GPL(torture_cleanup_end);
+> > > >
+> > > > --
+> > > > 2.25.1
+> > > >
