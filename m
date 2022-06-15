@@ -2,113 +2,112 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D9764C433EF
-	for <rcu@archiver.kernel.org>; Wed, 15 Jun 2022 17:10:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D2F0C433EF
+	for <rcu@archiver.kernel.org>; Wed, 15 Jun 2022 17:47:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229866AbiFORKr (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 15 Jun 2022 13:10:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46592 "EHLO
+        id S245041AbiFORrn (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 15 Jun 2022 13:47:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349750AbiFORKq (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 15 Jun 2022 13:10:46 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B941633A33;
-        Wed, 15 Jun 2022 10:10:45 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 6BC6AB820C4;
-        Wed, 15 Jun 2022 17:10:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2297C34115;
-        Wed, 15 Jun 2022 17:10:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655313043;
-        bh=H3WInZezFiR4P8CKRnqvCzRSHF5GZxIMRPSwGD7BlYQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=I/Aze6kNbOmBPbYboiQcuW+LTeP/twbG/pvhe8xAUAZH6okfscE2CyHsBliygVNDO
-         KLLXDGJx/qMKbRxKL2iwZxY49eSI7gsGR1NSmEbj1TIsa3v4x6BUHbG+j7ZMEtYzfr
-         G2fL8ay6mLQQ4spywfLSgO3AkKqNZ+q+cammGu5LUM+XE9V/QTM0YN6/5psRqQnC0X
-         YK/Ba46GTwzCd92RThON46g34nGmV1DgD8CJoPdSSBq3q+zBi6dONCuyYS5b4OxT4+
-         TxdJ1o3TBrzqUWw54KLAu/rnRvIGgVe4ap55zFoBVd9hwzA1rinz8u7xbraMpWdGSe
-         vnxaxu/MmUllA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 6EC965C05B9; Wed, 15 Jun 2022 10:10:42 -0700 (PDT)
-Date:   Wed, 15 Jun 2022 10:10:42 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
+        with ESMTP id S1357747AbiFORrh (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 15 Jun 2022 13:47:37 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49C7C186E6
+        for <rcu@vger.kernel.org>; Wed, 15 Jun 2022 10:47:35 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id v19so17286434edd.4
+        for <rcu@vger.kernel.org>; Wed, 15 Jun 2022 10:47:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7N8FxBu6DA6O7mEvFYXStFEfAYN9n61bDy3OwBXjJ0o=;
+        b=JHdk1N03ADEWzySRt7KcxOBPuZaGFXA/8Xyn6d2SSlY9ihVTM6DTBbu1drTtrmQ+M1
+         8RPbl/vwMUwgaM0Na3DeW4R1DvZyVGTsvcipdrdnr6LbuwHnx+DPjFA6rx07XSw0xDHv
+         KK/3LfmRBtp3+hX2z93IpwI50ZnSgl482NCGQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7N8FxBu6DA6O7mEvFYXStFEfAYN9n61bDy3OwBXjJ0o=;
+        b=KeZa7hYMiyTiBP/bj2D4i8CAe7kTOzo28KVbiCxi7ZwhldUr7VGWN79SZnzAkdKCvO
+         GJMdsNhvOW8rYFxLoPkOWb8TWfIqxWZm0v9NQ2JMRA13cglU988Mn0KbpAmMBLVdePMp
+         x74R9cMpHDoTQL3bvLM4UvUPTzJdUc6aMW15L1hBtu6G9G0MwvV+JnV7Z7lodRiKB/5o
+         ElxVCkfiNtkMZYnokfVnQdkx9MuXi+Y5LY1d6YFRqesprOMdU1GVurvzIoi7oMrasqhU
+         23y2OmK9LmDLMiV4dPwdjSvzQEtTDxRtbNEI7Ldj9a23j3hbqgROVhegcWYC/GHjuP7L
+         O/Ww==
+X-Gm-Message-State: AJIora+gMdy7hZNjz4EhOl/O/0EXGLyZ2H3zTka9wjYicwP0IFq+zK2J
+        v+RleKdZUjCYZ5RZGd4GTTjC3lnqJWlXO0ULv7g=
+X-Google-Smtp-Source: AGRyM1vfbs1Xfrig6BavS/Arst6eUogQVkks/5ecJglzgLZhEwlt91uDzZ4STQew+iY+jE+2Ap2hOw==
+X-Received: by 2002:aa7:d456:0:b0:42d:d7d9:34c1 with SMTP id q22-20020aa7d456000000b0042dd7d934c1mr1141391edr.21.1655315253692;
+        Wed, 15 Jun 2022 10:47:33 -0700 (PDT)
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com. [209.85.221.42])
+        by smtp.gmail.com with ESMTPSA id r21-20020a1709067fd500b006fec5cef701sm6502910ejs.197.2022.06.15.10.47.31
+        for <rcu@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Jun 2022 10:47:32 -0700 (PDT)
+Received: by mail-wr1-f42.google.com with SMTP id s1so16336934wra.9
+        for <rcu@vger.kernel.org>; Wed, 15 Jun 2022 10:47:31 -0700 (PDT)
+X-Received: by 2002:a5d:414d:0:b0:213:be00:a35 with SMTP id
+ c13-20020a5d414d000000b00213be000a35mr875787wrq.97.1655315251112; Wed, 15 Jun
+ 2022 10:47:31 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220615162805.27962-1-pmladek@suse.com> <20220615162805.27962-2-pmladek@suse.com>
+In-Reply-To: <20220615162805.27962-2-pmladek@suse.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 15 Jun 2022 10:47:14 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgs38ZrfPvy=nOwVkVzjpM3VFU1zobP37Fwd_h9iAD5JQ@mail.gmail.com>
+Message-ID: <CAHk-=wgs38ZrfPvy=nOwVkVzjpM3VFU1zobP37Fwd_h9iAD5JQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] printk: Block console kthreads when direct printing
+ will be required
 To:     Petr Mladek <pmladek@suse.com>
 Cc:     John Ogness <john.ogness@linutronix.de>,
         Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>, frederic@kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
         Peter Geis <pgwipeout@gmail.com>, zhouzhouyi@gmail.com,
-        dave@stgolabs.net, josh@joshtriplett.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        rcu@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] printk: Prevent printk kthreads from blocking direct
- console handling
-Message-ID: <20220615171042.GT1790663@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220615162805.27962-1-pmladek@suse.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220615162805.27962-1-pmladek@suse.com>
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Josh Triplett <josh@joshtriplett.org>,
+        rcu <rcu@vger.kernel.org>, linux-rockchip@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Jun 15, 2022 at 06:28:03PM +0200, Petr Mladek wrote:
-> There are reports that console kthreads prevented printing
-> messages during panic() or shutdown(), see
+On Wed, Jun 15, 2022 at 9:28 AM Petr Mladek <pmladek@suse.com> wrote:
+>
 > BugLink: https://lore.kernel.org/r/20220610205038.GA3050413@paulmck-ThinkPad-P17-Gen-1
 > BugLink: https://lore.kernel.org/r/CAMdYzYpF4FNTBPZsEFeWRuEwSies36QM_As8osPWZSr2q-viEA@mail.gmail.com
-> 
-> In both situations, printk() correctly tries to flush the consoles
-> directly but it fails to get the global console_lock(). Both
-> problems went away with these patches:
-> 
-> 1st patch blocks console kthreads so that they do not start
-> handling new messages when the direct printing is preferred
-> by the system state. It is probably enough on its own. It
-> solves the problem when the kthreads actively did
-> the wrong thing.
-> 
-> 2nd patch allows to wait for the console kthreads to release
-> the lock in any context. It should make it more reliable.
-> It would have been useful even for the legacy code.
 
-Thank you!
+Other thread discussion about this exact thing:
 
-For the series:
+   https://lore.kernel.org/all/CAHk-=wgzRUT1fBpuz3xcN+YdsX0SxqOzHWRtj0ReHpUBb5TKbA@mail.gmail.com/
 
-Tested-by: Paul E. McKenney <paulmck@kernel.org>
+please stop making up random tags that make no sense.
 
-> More possible improvements:
-> 
->   +  the waiting might be necessary also in the suspend code paths
-> 
->   + convert con->mutex to con->spinlock to avoid blocking
->     the global console_lock() when sleeping with con->lock
-> 
->   + at least disable preemption around console_emit_next_record()
->     in console kthread to avoid sleeping in the console driver
->     code
-> 
->   + somehow change the priority of the kthread so that it gets
->     scheduled immediately when the scheduler works
-> 
-> Petr Mladek (2):
->   printk: Block console kthreads when direct printing will be required
->   printk: Wait for the global console lock when the system is going down
-> 
->  include/linux/printk.h      |  5 +++++
->  kernel/panic.c              |  2 ++
->  kernel/printk/internal.h    |  2 ++
->  kernel/printk/printk.c      |  8 +++++++-
->  kernel/printk/printk_safe.c | 32 ++++++++++++++++++++++++++++++++
->  kernel/reboot.c             |  2 ++
->  6 files changed, 50 insertions(+), 1 deletion(-)
-> 
-> -- 
-> 2.35.3
-> 
+Just use "Link:"
+
+Look at that first one (I didn't even bother following the second
+one). The "bug" part is not even the most important part.
+
+The reason to follow that link is all the discussion, the test-patch,
+and the confirmation from Paul that "yup, that patch solves the
+problem for me".
+
+It's extra context to the commit, in case somebody wants to know the
+history. The "bug" part is (and always should be) already explained in
+the commit message, there's absolutely no point in adding soem extra
+noise to the "Link:" tag.
+
+And if the only reason for "BugLink:" to exist is to show "look, this
+tag actually contains relevant and interesting information", then the
+solution to THAT problem is to not have the links that are useless and
+pointless in the first place.
+
+Put another way: if you want to distinguish useless links from useful
+ones, just do it by not including the useless ones.
+
+Ok?
+
+                   Linus
