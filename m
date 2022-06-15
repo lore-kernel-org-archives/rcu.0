@@ -2,179 +2,221 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 243C8C433EF
-	for <rcu@archiver.kernel.org>; Wed, 15 Jun 2022 13:52:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8318FC43334
+	for <rcu@archiver.kernel.org>; Wed, 15 Jun 2022 14:03:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346890AbiFONwh (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 15 Jun 2022 09:52:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33916 "EHLO
+        id S1356144AbiFOODI (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 15 Jun 2022 10:03:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239803AbiFONwZ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 15 Jun 2022 09:52:25 -0400
+        with ESMTP id S1356291AbiFOOCx (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 15 Jun 2022 10:02:53 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C7A74132C;
-        Wed, 15 Jun 2022 06:52:22 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D5DA2DE6;
+        Wed, 15 Jun 2022 07:02:41 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D5C3761B08;
-        Wed, 15 Jun 2022 13:52:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36874C34115;
-        Wed, 15 Jun 2022 13:52:21 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BA25161B7F;
+        Wed, 15 Jun 2022 14:02:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1849EC34115;
+        Wed, 15 Jun 2022 14:02:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655301141;
-        bh=rPKSvmd7L+p6nMIzF7HyUQGUoJkVaku6/eVXg484K3U=;
+        s=k20201202; t=1655301740;
+        bh=4D0SVD6o9DZcpnaifdB+Joi2a7Df3F/4wIsCUGJrE10=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=CSRwLbLuPxbPQ6KNsHxBA0AhbDXzyisNd3eD+KDyjyGnkHdrNi9qXmGFdyJx+GQqM
-         7MI9REOZDNCw2Lrbej0/RlwgseMlhzA/qiJpmclw2VTO0bEnUt/4B9NGYgo9yOYY0K
-         3M0DXT+U9yuE2aVr+4aXc4clfgt+4HcazqVXI+d3ZYJVbv/1dyhy6tOEePral6lSJ+
-         DgaURglSWsX30Z2isX54tOtNFb6jBl7TWkakUBt9aU8ScpT2YEyHiOp250mhNScEZK
-         yrrJ1dFdV5Vbo2787IrWPi9ULtd/LkQS8FREXk8uNtefI1nWKVcAmSRGxijKf6KKIT
-         tts8Lxs+W5C/g==
+        b=hVuD5MPRuhChpPh7lk5G0SdbWiLGcFoRNYvmnQgMT7ENk3tvNDyEgkclsUMMGneCd
+         clT2YCjKwE6XPSJPdFWmOszhlvPPGX5+WatXZicOUF+nuwOzsQExEu95IeVzPU/AqE
+         BbnKySGMYzlrOzuTRkYBCu5bzlyyoJxSVlzafQAT6vIA+VNB/+S2eaOdsPrFqwjW1l
+         JJ6DxjHN9Z8mdId10gqXT6ZabWXlVDoJ1LDUBW/rU2If34q4bwOHj50rtkPwGLRfmK
+         IHxNG6yQCLtyOcKtEuxLg396K8deAtrRm07PkXUFbLQ2Ph3N6cV9L2qfQmUaUNsxpw
+         hAaW/A8NCBJ4Q==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id BFFD95C0460; Wed, 15 Jun 2022 06:52:20 -0700 (PDT)
-Date:   Wed, 15 Jun 2022 06:52:20 -0700
+        id B958D5C013F; Wed, 15 Jun 2022 07:02:19 -0700 (PDT)
+Date:   Wed, 15 Jun 2022 07:02:19 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Zhouyi Zhou <zhouzhouyi@gmail.com>
-Cc:     john.ogness@linutronix.de, pmladek@suse.com, dave@stgolabs.net,
-        Josh Triplett <josh@joshtriplett.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        rcu <rcu@vger.kernel.org>
-Subject: Re: [PATCH linux-next] RFC: torture: add pr_flush to flush the
- results to console
-Message-ID: <20220615135220.GI1790663@paulmck-ThinkPad-P17-Gen-1>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH 2/2] rcu/kvfree: Introduce KFREE_DRAIN_JIFFIES_[MAX/MIN]
+ interval
+Message-ID: <20220615140219.GL1790663@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20220615003733.16447-1-zhouzhouyi@gmail.com>
- <20220615051521.GH1790663@paulmck-ThinkPad-P17-Gen-1>
- <CAABZP2wCos5xupRQ2LbJtaLVN1a7i0D5kwaVTq9DEov8C46Gkw@mail.gmail.com>
+References: <20220602080644.432156-2-urezki@gmail.com>
+ <20220604155108.GU1790663@paulmck-ThinkPad-P17-Gen-1>
+ <YpxzB3/HRN/EEHa8@pc638.lan>
+ <20220607034710.GE1790663@paulmck-ThinkPad-P17-Gen-1>
+ <CA+KHdyXU1apQQbVVZ_zX7o86Qp-AQnif2u8aJFULqHNtfCGcSA@mail.gmail.com>
+ <YqN1QqRmPpchDm/k@google.com>
+ <YqcHrIMefthWe0t4@pc638.lan>
+ <YqgtuBXW5pW4ivD/@pc638.lan>
+ <20220615051205.GG1790663@paulmck-ThinkPad-P17-Gen-1>
+ <YqmLEPD2XVB3LPeA@pc638.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAABZP2wCos5xupRQ2LbJtaLVN1a7i0D5kwaVTq9DEov8C46Gkw@mail.gmail.com>
+In-Reply-To: <YqmLEPD2XVB3LPeA@pc638.lan>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Jun 15, 2022 at 08:36:54PM +0800, Zhouyi Zhou wrote:
-> On Wed, Jun 15, 2022 at 1:15 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Wed, Jun 15, 2022 at 08:37:33AM +0800, zhouzhouyi@gmail.com wrote:
-> > > From: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> > >
-> > > currently tools/testing/selftests/rcutorture/bin/torture.sh reports
-> > > false positve because of kthread printing.
-> > >
-> > > Commit "printk: add functions to prefer direct printing" (2bb2b7b57f812)
-> > > have added functions to prefer direct printing activated for the primary
-> > > import messages.
-> > >
-> > > Meanwhile adding printk_prefer_direct_enter/exit to
-> > > torture_cleanup_begin/end still can't eliminate the false positives
-> > > for a hundred percent.
-> > >
-> > > This patch add pr_flush to torture_cleanup_end because the latter
-> > > is sleepable.
-> > >
-> > > Reported-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> > > Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> > > Tested-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> >
-> > Just the one Signed-off-by suffices.  ;-)
-> Thank Paul for your guidance ;-)
-> >
-> > > ---
-> > >  kernel/torture.c | 1 +
-> > >  1 file changed, 1 insertion(+)
-> > >
-> > > diff --git a/kernel/torture.c b/kernel/torture.c
-> > > index 789aeb0e1159..b51e42463a67 100644
-> > > --- a/kernel/torture.c
-> > > +++ b/kernel/torture.c
-> > > @@ -878,6 +878,7 @@ void torture_cleanup_end(void)
-> > >       mutex_lock(&fullstop_mutex);
-> > >       torture_type = NULL;
-> > >       mutex_unlock(&fullstop_mutex);
-> > > +     pr_flush(1000, true);
-> >
-> > But in this case, the kernel keeps on running, correct?  So won't the
-> > output appear over time?  All of printk()'s kthreads are still running
-> > after all.
-> I am doing research on linux-next following your guidance on my Dell
-> PowerEdge R720 server:
-> #git clone https://kernel.source.codeaurora.cn/pub/scm/linux/kernel/git/next/linux-next.git/
-> #cd linux-next
-> #./tools/testing/selftests/rcutorture/bin/torture.sh
-> after about 14 hours, the test result show that there have been about
-> 17 failures, I examine the corresponding console.log, and find the
-> failures are caused by following reason:
-> before the message output by
-> rcu/lock/scf_torture_print_module_parms(cur_ops, "End of test:
-> SUCCESS") has reached serial console, torture_shutdown invoked
-> kernel_power_off(),
+On Wed, Jun 15, 2022 at 09:32:32AM +0200, Uladzislau Rezki wrote:
+> > On Tue, Jun 14, 2022 at 08:42:00AM +0200, Uladzislau Rezki wrote:
+> > > > Hello, Joel, Paul.
+> > > > 
+> > > > > Hi Vlad, Paul,
+> > > > > 
+> > > > > On Thu, Jun 09, 2022 at 03:10:57PM +0200, Uladzislau Rezki wrote:
+> > > > > > On Tue, Jun 7, 2022 at 5:47 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+> > > > > > >
+> > > > > > > On Sun, Jun 05, 2022 at 11:10:31AM +0200, Uladzislau Rezki wrote:
+> > > > > > > > > On Thu, Jun 02, 2022 at 10:06:44AM +0200, Uladzislau Rezki (Sony) wrote:
+> > > > > > > > > > Currently the monitor work is scheduled with a fixed interval that
+> > > > > > > > > > is HZ/20 or each 50 milliseconds. The drawback of such approach is
+> > > > > > > > > > a low utilization of page slot in some scenarios. The page can store
+> > > > > > > > > > up to 512 records. For example on Android system it can look like:
+> > > > > > > > > >
+> > > > > > > > > > <snip>
+> > > > > > > > > >   kworker/3:0-13872   [003] .... 11286.007048: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000026522604 nr_records=1
+> > > > > > > > > >   kworker/3:0-13872   [003] .... 11286.015638: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000095ed6fca nr_records=2
+> > > > > > > > > >   kworker/1:2-20434   [001] .... 11286.051230: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000044872ffd nr_records=1
+> > > > > > > > > >   kworker/1:2-20434   [001] .... 11286.059322: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000026522604 nr_records=2
+> > > > > > > > > >   kworker/0:1-20052   [000] .... 11286.095295: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000044872ffd nr_records=2
+> > > > > > > > > >   kworker/0:1-20052   [000] .... 11286.103418: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000cbcf05db nr_records=1
+> > > > > > > > > >   kworker/2:3-14372   [002] .... 11286.135155: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000095ed6fca nr_records=2
+> > > > > > > > > >   kworker/2:3-14372   [002] .... 11286.135198: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000044872ffd nr_records=1
+> > > > > > > > > >   kworker/1:2-20434   [001] .... 11286.155377: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000cbcf05db nr_records=5
+> > > > > > > > > >   kworker/2:3-14372   [002] .... 11286.167181: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000026522604 nr_records=5
+> > > > > > > > > >   kworker/1:2-20434   [001] .... 11286.179202: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000008ef95e14 nr_records=1
+> > > > > > > > > >   kworker/2:3-14372   [002] .... 11286.187398: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000c597d297 nr_records=6
+> > > > > > > > > >   kworker/3:0-13872   [003] .... 11286.187445: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000050bf92e2 nr_records=3
+> > > > > > > > > >   kworker/1:2-20434   [001] .... 11286.198975: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000cbcf05db nr_records=4
+> > > > > > > > > >   kworker/1:2-20434   [001] .... 11286.207203: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000095ed6fca nr_records=4
+> > > > > > > > > > <snip>
+> > > > > > > > > >
+> > > > > > > > > > where a page only carries few records to reclaim a memory. In order to
+> > > > > > > > > > improve batching and make utilization more efficient the patch introduces
+> > > > > > > > > > a drain interval that can be set either to KFREE_DRAIN_JIFFIES_MAX or
+> > > > > > > > > > KFREE_DRAIN_JIFFIES_MIN. It is adjusted if a flood is detected, in this
+> > > > > > > > > > case a memory reclaim occurs more often whereas in mostly idle cases the
+> > > > > > > > > > interval is set to its maximum timeout that improves the utilization of
+> > > > > > > > > > page slots.
+> > > > > > > > > >
+> > > > > > > > > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > > > > > > > >
+> > > > > > > > > That does look like a problem well worth solving!
+> > > > > > > > >
+> > > > > > > > Agree, better ideas make better final solution :)
+> > > > > > > >
+> > > > > > > > >
+> > > > > > > > > But I am missing one thing. If we are having a callback flood, why do we
+> > > > > > > > > need a shorter timeout?
+> > > > > > > > >
+> > > > > > > > To offload faster, because otherwise we run into classical issue, it is a low
+> > > > > > > > memory condition state resulting in OOM.
+> > > > > > >
+> > > > > > > But doesn't each callback queued during the flood give us an opportunity
+> > > > > > > to react to the flood?  That will be way more fine-grained than any
+> > > > > > > reasonable timer, right?  Or am I missing something?
+> > > > > > >
+> > > > > > We can set the timer to zero or to current "jiffies" to initiate the
+> > > > > > offloading if the
+> > > > > > page is full. In that sense probably it make sense to propagate those two attr.
+> > > > > > to user space, so the user can configure min/max drain interval.
+> > > > > > 
+> > > > > > Or we can only deal with fixed interval exposed via sysfs to control it by user.
+> > > > > > In that case we can get rid of MIN one and just trigger a timer if the page is
+> > > > > > full. I think this approach is better.
+> > > > > 
+> > > > > Yes I also think triggering timer with zero-timeout is better. Can you (Vlad)
+> > > > > accomplish that by just calling the timer callback inline, instead of queuing
+> > > > > a timer? I imagine you would just do queue_work() instead of
+> > > > > queue_delayed_work() in this scenario.
+> > > > > 
+> > > > > > > I do agree that the action would often need to be indirect to avoid the
+> > > > > > > memory-allocation-state hassles, but we already can do that, either via
+> > > > > > > an extremely short-term hrtimer or something like irq-work.
+> > > > > > >
+> > > > > > > > > Wouldn't a check on the number of blocks queued be simpler, more direct,
+> > > > > > > > > and provide faster response to the start of a callback flood?
+> > > > > > > > >
+> > > > > > > > I rely on krcp->count because not always we can store the pointer in the page
+> > > > > > > > slots. We can not allocate a page in the caller context thus we use page-cache
+> > > > > > > > worker that fills the cache in normal context. While it populates the cache,
+> > > > > > > > pointers temporary are queued to the linked-list.
+> > > > > > > >
+> > > > > > > > Any thoughts?
+> > > > > > >
+> > > > > > > There are a great many ways to approach this.  One of them is to maintain
+> > > > > > > a per-CPU free-running counter of kvfree_rcu() calls, and to reset this
+> > > > > > > counter each jiffy.
+> > > > > > >
+> > > > > > > Or am I missing a trick here?
+> > > > > > >
+> > > > > > Do you mean to have a per-cpu timer that checks the per-cpu-freed counter
+> > > > > > and schedule the work when if it is needed? Or i have missed your point?
+> > > > > 
+> > > > > I think he (Paul) is describing the way 'flood detection' can work similar to how the
+> > > > > bypass list code is implemented. There he maintains a count which only if
+> > > > > exceeds a limit, will queue on to the bypass list.
+> > > > > 
+> > > > OK, i see that. We also do similar thing. We say it is a flood - when a
+> > > > page becomes full, so it is kind of threshold that we pass.
+> > > > 
+> > > > > This code:
+> > > > > 
+> > > > >         // If we have advanced to a new jiffy, reset counts to allow
+> > > > >         // moving back from ->nocb_bypass to ->cblist.
+> > > > >         if (j == rdp->nocb_nobypass_last) {
+> > > > >                 c = rdp->nocb_nobypass_count + 1;
+> > > > >         } else {
+> > > > >                 WRITE_ONCE(rdp->nocb_nobypass_last, j);
+> > > > >                 c = rdp->nocb_nobypass_count - nocb_nobypass_lim_per_jiffy;
+> > > > >                 if (ULONG_CMP_LT(rdp->nocb_nobypass_count,
+> > > > >                                  nocb_nobypass_lim_per_jiffy))
+> > > > >                         c = 0;
+> > > > >                 else if (c > nocb_nobypass_lim_per_jiffy)
+> > > > >                         c = nocb_nobypass_lim_per_jiffy;
+> > > > >         }
+> > > > >         WRITE_ONCE(rdp->nocb_nobypass_count, c);
+> > > > > 
+> > > > > 
+> > > > > Your (Vlad's) approach OTOH is also fine to me, you check if page is full and
+> > > > > make that as a 'flood is happening' detector.
+> > > > > 
+> > > > OK, thank you Joel. I also think, that way we improve batching and utilization
+> > > > of the page what is actually an intention of the patch in question.
+> > > > 
+> > > Paul, will you pick this patch?
+> > 
+> > I did pick up the first one:
+> > 
+> > 16224f4cdf03 ("rcu/kvfree: Remove useless monitor_todo flag")
+> > 
+> > On the second one, if you use page-fill as your flood detector, can't
+> > you simplify things by just using the one longer timeout, as discussed
+> > in this thread?
+> > 
+> > Or did I miss a turn somewhere?
+> > 
+> No, you did not :) Agreed i will simplify it with a one interval that
+> corresponding to 1 HZ. The flood is detected when a page is full. When
+> it occurs the work will be rearmed to be run asap. Will resend it.
 
-Ah, got it!  And good show tracking this down, by the way.
+Very good, and looking forward to it!
 
-Does this workaround commit on -rcu do the trick for you?
-
-704ae8dcda84 ("torture: Flush printk() buffers before powering off")
-
-The printk() guys are looking at fixes within the printk() system
-as well:
-
-https://lore.kernel.org/all/87tu8pgcj0.fsf@jogness.linutronix.de/
-https://lore.kernel.org/all/YqdSw%2FfJvnkRbjvc@alley/
-
-> so the message "End of test: SUCCESS" has not chance of reaching
-> console.log of host machine.
+> One thing that we have discussed, in case of flood we can minimize a
+> memory footprint by releasing the page directly from the our monitor
+> work if the grace period is passed for the all page slots. In that case
+> we do not need to move the page forward toward the RCU-core for later
+> reclaim.
 > 
-> Then I add printk_prefer_direct_enter/exit to
-> torture_cleanup_begin/end, again I invoke
-> #./tools/testing/selftests/rcutorture/bin/torture.sh
-> after about 14 hours, the test result show that there have been about
-> 5 failures,
-> 
-> Then I add a debug statement after
-> rcu/lock/scf_torture_print_module_parms(cur_ops, "End of test:
-> SUCCESS") which sends the debug string ("hello world") to
-> uart_console_write directly, again I invoke
-> #./tools/testing/selftests/rcutorture/bin/torture.sh
-> There is "hello world" in console.log but no "End of test" strings.
-> 
-> So I guess even with printk_prefer_direct_enter/exit to
-> torture_cleanup_begin/end,  our main shutdown thread has failed in
-> competition for console lock (printk.c):
-> 2401 if (console_trylock_spinning())
-> 2402     console_unlock();
-> 
-> Then I add pr_flush to torture_cleanup_end
-> #./tools/testing/selftests/rcutorture/bin/torture.sh
-> after 14 hours
-> all 49 tests are success
-> >
-> > Or do you have a use case that requires that the output appear sooner
-> > than it does?  If so, please let me know what that is.
-> Thank Paul for your patience,
-> ./tools/testing/selftests/rcutorture/bin/torture.sh is the only tool
-> that I use.
-> 
-> I am very interested in this topic, and very glad to do further
-> experiments under your guidance ;-)
+> But that is another patches. I will examine it when i return back from 
+> Norway.
 
-Or are you already running with that commit or one of those patches?
-They are working reliably for me (so far, anyway), but maybe more is
-needed in some cases.
+Agreed, those should be separate patches.
 
 							Thanx, Paul
-
-> Sincerely yours
-> Thanks
-> Zhouyi
-> >
-> >                                                         Thanx, Paul
-> >
-> > >  }
-> > >  EXPORT_SYMBOL_GPL(torture_cleanup_end);
-> > >
-> > > --
-> > > 2.25.1
-> > >
