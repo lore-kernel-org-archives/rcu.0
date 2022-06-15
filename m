@@ -2,95 +2,116 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DD5B5C433EF
-	for <rcu@archiver.kernel.org>; Wed, 15 Jun 2022 14:37:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 00309C433EF
+	for <rcu@archiver.kernel.org>; Wed, 15 Jun 2022 16:28:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345417AbiFOOh5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 15 Jun 2022 10:37:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52594 "EHLO
+        id S1349404AbiFOQ2l (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 15 Jun 2022 12:28:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230160AbiFOOhz (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 15 Jun 2022 10:37:55 -0400
-Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4708D13CE1;
-        Wed, 15 Jun 2022 07:37:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-        s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=75kgVCcqOPOLeu4JBiLLFab/dM4uNZ1dcLuvpDx9ZCg=; b=kAIWl67VuUe8cBDkmFOZTh4b+J
-        Uy6PgE2+CwIEzhFEfsXCTAadcMkk5TefuTIBHvgzxNrjmUz+/r/f3fMBR5i8mMC7UweLMh9MkeJoD
-        97gkOJRUGibA77qDy9s4vL7NkQkS1Sv+TX4WpruLFHmbGvImVgE9LeYadgdIraA8AGxMlB+PxaWy/
-        1adKvJuvvpCbTsZosCqi5SMDlMupfKEgEY7JpKMS8HhvbF7gyowCTheRqW0YX0S9D05qpW9G1fKLt
-        DJUWQ6k8Tz/HxaHb6kuJRSWnDBXrsJA/DQco3hh/lFSm8XLWvSeNFNfH2bKr+ugXM0hH/Gw2zl2s+
-        laFslj7w==;
-Received: from 179.red-81-39-194.dynamicip.rima-tde.net ([81.39.194.179] helo=[192.168.15.167])
-        by fanzine2.igalia.com with esmtpsa 
-        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-        id 1o1U8m-002LYs-SW; Wed, 15 Jun 2022 16:37:04 +0200
-Message-ID: <362f6520-8209-1721-823c-11928338f57d@igalia.com>
-Date:   Wed, 15 Jun 2022 11:36:39 +0200
+        with ESMTP id S1355472AbiFOQ2i (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 15 Jun 2022 12:28:38 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 886CA2937D;
+        Wed, 15 Jun 2022 09:28:37 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id DCE5D1F974;
+        Wed, 15 Jun 2022 16:28:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1655310515; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qF2II44HGvEm6Nwb6+bY89tJcKcCfhBYiXA23CUhE9A=;
+        b=Mc9FS+6ZM/YmeCGoMDktOoyjyZOxslB0f+1cgRXGiepN3pj9tDATJtodgPVpHepDNmb4Wf
+        HH66JpL6qhv/nDT26/pRSN9iiV79Vp7NFq2IzwEIKbkNWBHFQWYTqBnoOt/J/MgPj9AMBt
+        iyXW+4o5QAvdwWmurgClqgGpBVbTBAI=
+Received: from alley.suse.cz (unknown [10.100.201.202])
+        by relay2.suse.de (Postfix) with ESMTP id 747E22C141;
+        Wed, 15 Jun 2022 16:28:35 +0000 (UTC)
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>, frederic@kernel.org,
+        Peter Geis <pgwipeout@gmail.com>, zhouzhouyi@gmail.com,
+        dave@stgolabs.net, josh@joshtriplett.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        rcu@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>
+Subject: [PATCH 1/2] printk: Block console kthreads when direct printing will be required
+Date:   Wed, 15 Jun 2022 18:28:04 +0200
+Message-Id: <20220615162805.27962-2-pmladek@suse.com>
+X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20220615162805.27962-1-pmladek@suse.com>
+References: <20220615162805.27962-1-pmladek@suse.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH 24/30] panic: Refactor the panic path
-Content-Language: en-US
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     bhe@redhat.com, d.hatayama@jp.fujitsu.com,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Mark Rutland <mark.rutland@arm.com>, mikelley@microsoft.com,
-        vkuznets@redhat.com, akpm@linux-foundation.org,
-        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net,
-        rcu@vger.kernel.org, sparclinux@vger.kernel.org,
-        xen-devel@lists.xenproject.org, x86@kernel.org,
-        kernel-dev@igalia.com, kernel@gpiccoli.net, halves@canonical.com,
-        fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com,
-        andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de,
-        corbet@lwn.net, dave.hansen@linux.intel.com, dyoung@redhat.com,
-        feng.tang@intel.com, gregkh@linuxfoundation.org,
-        hidehiro.kawai.ez@hitachi.com, jgross@suse.com,
-        john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org,
-        mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org,
-        peterz@infradead.org, rostedt@goodmis.org,
-        senozhatsky@chromium.org, stern@rowland.harvard.edu,
-        tglx@linutronix.de, vgoyal@redhat.com, will@kernel.org
-References: <20220427224924.592546-1-gpiccoli@igalia.com>
- <20220427224924.592546-25-gpiccoli@igalia.com>
- <87fskzuh11.fsf@email.froward.int.ebiederm.org>
- <0d084eed-4781-c815-29c7-ac62c498e216@igalia.com> <Yqic0R8/UFqTbbMD@alley>
-From:   "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-In-Reply-To: <Yqic0R8/UFqTbbMD@alley>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Perfect Petr, thanks for your feedback!
+There are known situations when the console kthreads are not
+reliable or does not work in principle, for example, early boot,
+panic, shutdown.
 
-I'll be out for some weeks, but after that what I'm doing is to split
-the series in 2 parts:
+For these situations there is the direct (legacy) mode when printk() tries
+to get console_lock() and flush the messages directly. It works very well
+during the early boot when the console kthreads are not available at all.
+It gets more complicated in the other situations when console kthreads
+might be actively printing and block console_trylock() in printk().
 
-(a) The general fixes, which should be reviewed by subsystem maintainers
-and even merged individually by them.
+The same problem is in the legacy code as well. Any console_lock()
+owner could block console_trylock() in printk(). It is solved by
+a trick that the current console_lock() owner is responsible for
+printing all pending messages. It is actually the reason why there
+is the risk of softlockups and why the console kthreads were
+introduced.
 
-(b) The proper panic refactor, which includes the notifiers list split,
-etc. I'll think about what I consider the best solution for the
-crash_dump required ones, and will try to split in very simple patches
-to make it easier to review.
+The console kthreads use the same approach. They are responsible
+for printing the messages by definition. So that they handle
+the messages anytime when they are awake and see new ones.
+The global console_lock is available when there is nothing
+to do.
 
-Cheers,
+It should work well when the problematic context is correctly
+detected and printk() switches to the direct mode. But it seems
+that it is not enough in practice. There are reports that
+the messages are not printed during panic() or shutdown()
+even though printk() tries to use the direct mode here.
 
+The problem seems to be that console kthreads become active in these
+situation as well. They steel the job before other CPUs are stopped.
+Then they are stopped in the middle of the job and block the global
+console_lock.
 
-Guilherme
+First part of the solution is to block console kthreads when
+the system is in a problematic state and requires the direct
+printk() mode.
+
+BugLink: https://lore.kernel.org/r/20220610205038.GA3050413@paulmck-ThinkPad-P17-Gen-1
+BugLink: https://lore.kernel.org/r/CAMdYzYpF4FNTBPZsEFeWRuEwSies36QM_As8osPWZSr2q-viEA@mail.gmail.com
+Suggested-by: John Ogness <john.ogness@linutronix.de>
+Signed-off-by: Petr Mladek <pmladek@suse.com>
+---
+ kernel/printk/printk.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index ea3dd55709e7..45c6c2b0b104 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -3729,7 +3729,9 @@ static bool printer_should_wake(struct console *con, u64 seq)
+ 		return true;
+ 
+ 	if (con->blocked ||
+-	    console_kthreads_atomically_blocked()) {
++	    console_kthreads_atomically_blocked() ||
++	    system_state > SYSTEM_RUNNING ||
++	    oops_in_progress) {
+ 		return false;
+ 	}
+ 
+-- 
+2.35.3
+
