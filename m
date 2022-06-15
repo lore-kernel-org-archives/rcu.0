@@ -2,213 +2,233 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 04636C433EF
-	for <rcu@archiver.kernel.org>; Wed, 15 Jun 2022 08:51:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B7FBC433EF
+	for <rcu@archiver.kernel.org>; Wed, 15 Jun 2022 09:03:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346817AbiFOIvd (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 15 Jun 2022 04:51:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56576 "EHLO
+        id S1346962AbiFOJDs (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 15 Jun 2022 05:03:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232170AbiFOIvc (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 15 Jun 2022 04:51:32 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3691449CA5
-        for <rcu@vger.kernel.org>; Wed, 15 Jun 2022 01:51:31 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 08F24152B;
-        Wed, 15 Jun 2022 01:51:31 -0700 (PDT)
-Received: from FVFF77S0Q05N (unknown [10.57.38.208])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C94033F66F;
-        Wed, 15 Jun 2022 01:51:29 -0700 (PDT)
-Date:   Wed, 15 Jun 2022 09:51:18 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>, willy@infradead.org,
-        urezki@gmail.com, rcu@vger.kernel.org, frederic@kernel.org
-Subject: Re: [PATCH rcu/dev] RFC: temporarily reduce rcu tasks kthread sleep
- time for PROVE_RCU
-Message-ID: <YqmdhhnPFcoHKC81@FVFF77S0Q05N>
-References: <20220527003909.18998-1-zhouzhouyi@gmail.com>
- <20220607234209.GJ1790663@paulmck-ThinkPad-P17-Gen-1>
+        with ESMTP id S1346973AbiFOJDp (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 15 Jun 2022 05:03:45 -0400
+Received: from out203-205-221-202.mail.qq.com (out203-205-221-202.mail.qq.com [203.205.221.202])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 888EF377DD;
+        Wed, 15 Jun 2022 02:03:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+        s=s201512; t=1655283819;
+        bh=yGIqFbDVhQfi98uNwz2qN9S7Yz1LlnTD2FVmVtOJuoc=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=xOxEubHg2PIyspkaCjgtnDtkQEp1jiPp+bjp+4cpdpkBjCMkLhAJjl/fyj/uKOtR4
+         61nRMwNpwROhep+rbDT9X89rkt2eZTwAGqYhf88tZ3J3GIhmAe1qzzWFH82oXsAMCI
+         FFGMqZ3VDyB6+sRdb1K1WDjLbANiOspSYkjbSDLk=
+Received: from [IPv6:240e:45a:40b:32d5:40d9:41b7:4f55:3d8c] ([240e:45a:40b:32d5:40d9:41b7:4f55:3d8c])
+        by newxmesmtplogicsvrsza9.qq.com (NewEsmtp) with SMTP
+        id E23AAD9; Wed, 15 Jun 2022 17:03:34 +0800
+X-QQ-mid: xmsmtpt1655283814t564lhbpz
+Message-ID: <tencent_DFF5A6C9352C76C00C7E46E06F2BA945350A@qq.com>
+X-QQ-XMAILINFO: NRN3UPsLzYKVaynmbzMu4xCIrguRMpEbttgHReiCH60WykTo9hEpBjRwxhmIbj
+         T8pZ24gNhkEKV57Zuw8HWDrADwR8sZBaDfpcf8+jOe0P25Mapb2wSBPHBt9HzYUw+AA/+k0DHtFF
+         xOFyHKPqwkve/1mAmYM3Uk25STpggNGuiBIhgtL2TzwFwwaxEAxw++OyH71DuWneAXkZ9P+OsgC1
+         +QVKEWsC3heif3Oa4ZagQtsQVKvCxxqtdajg4uyNTSSpBAtb87qSC4grg2Gu72jVY68HXMuOwJbn
+         e7Nqd98FRvrnTyvxqjGiRI0YMzF3FBrN2PiMGo/0lSIBxEMpVN47pSMYQfpJzD26wes3Ya+AEMoq
+         SZR0Su4gMZf5L0ZXw1OtCRuA4XO5mJVJYY6husaGS1I2hLTEw1iV1UGs6u9YtRDvdEYmMPBR+zI+
+         uimGIHlNecjHrnc9yoldrSj0iqSjKMWLswj/U+C4fpwEhzCqYbr590FHyqnj7OJp+ClVFWMMOXS9
+         Ng9abCvxKkgZRw/+2I3AsJrdXcKUL6uoZXzeGULJLdT4/3eyDsatGStHH0VQkNxhWFJHjhJ+rWc8
+         tL1K4J0krxxNgXKIHfFkLIdVIVZjT5CAvBkC0JTzTk5n58xXoTnhB4wNXzY5iHozUY4WXXcM3aEV
+         0iqj3SF3l4JDAMkKv3oXfXpuudJNrc5m3PojbwjcBHHjVsUK3tVUJP+haqkIhAl0/5sga2Y3tX3T
+         Zrrbt1P+W5BQZIgcFJYT2ZSDWibMyg2x8N+nBTfw65ns71AmehiNpSjEf7/+rJJBYGR3l7noSCkP
+         7SHii7tg+Eyx38/m/+mcOfzVg/OhL+ceEw0Dzo6YV/Lzew9qR0EjvshuWlzfOBJZmlvameNRgVVp
+         K3BKxwhfLmMoCmpXc9Psy2bTkdPzIsm+p5brTct57eg/qwLDT+U1FYxlCJR0eJ6k/MXqAGs4HvsO
+         TvcPfIjXTXFp+cruBO62nr28RUXpVmpukTKQq3gcQ=
+Subject: Re: Commit 282d8998e997 (srcu: Prevent expedited GPs and blocking
+ readers from consuming CPU) cause qemu boot slow
+To:     paulmck@kernel.org, zhangfei <zhangfei.gao@linaro.org>
+Cc:     Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Shameerali Kolothum Thodi 
+        <shameerali.kolothum.thodi@huawei.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "mtosatti@redhat.com" <mtosatti@redhat.com>,
+        Auger Eric <eric.auger@redhat.com>,
+        "chenxiang (M)" <chenxiang66@hisilicon.com>
+References: <tencent_E306F58EAEC1D188ED6D5F358A269F34C707@qq.com>
+ <20220613035711.GY1790663@paulmck-ThinkPad-P17-Gen-1>
+ <20220613041652.GA3976000@paulmck-ThinkPad-P17-Gen-1>
+ <tencent_F82250B6E3D51A9AC0D2BE1AE43A4E060909@qq.com>
+ <20220613121831.GA1790663@paulmck-ThinkPad-P17-Gen-1>
+ <tencent_65C7D0A04984EDB6A79A5E5379DA7E835206@qq.com>
+ <20220613145900.GC1790663@paulmck-ThinkPad-P17-Gen-1>
+ <7b6c983b21d44119b61716a66de397ed@huawei.com>
+ <f9684a69-5467-a440-abd1-7cf5ad3a81f7@quicinc.com>
+ <tencent_8FD344DA7FC376C7D1204604DA7689DA4906@qq.com>
+ <20220614141712.GR1790663@paulmck-ThinkPad-P17-Gen-1>
+From:   "zhangfei.gao@foxmail.com" <zhangfei.gao@foxmail.com>
+X-OQ-MSGID: <bc281849-bc1e-54f2-2526-1df294cde6e0@foxmail.com>
+Date:   Wed, 15 Jun 2022 17:03:33 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220607234209.GJ1790663@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20220614141712.GR1790663@paulmck-ThinkPad-P17-Gen-1>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Paul,
 
-On Tue, Jun 07, 2022 at 04:42:09PM -0700, Paul E. McKenney wrote:
-> On Fri, May 27, 2022 at 08:39:09AM +0800, Zhouyi Zhou wrote:
-> > Sometimes, the kernel will boot too fast for rcu_tasks_verify_self_tests
-> > to have all required grace periods.
 
-As mentioned on IRC, with v5.19-rc2 I consistently see this on arm64 at boot
-time, e.g.
+On 2022/6/14 下午10:17, Paul E. McKenney wrote:
+> On Tue, Jun 14, 2022 at 10:03:35PM +0800, zhangfei.gao@foxmail.com wrote:
+>>
+>> On 2022/6/14 下午8:19, Neeraj Upadhyay wrote:
+>>>> 5.18-rc4 based               ~8sec
+>>>>
+>>>> 5.19-rc1                     ~2m43sec
+>>>>
+>>>> 5.19-rc1+fix1                 ~19sec
+>>>>
+>>>> 5.19-rc1-fix2                 ~19sec
+>>>>
+>>> If you try below diff on top of either 5.19-rc1+fix1 or 5.19-rc1-fix2 ;
+>>> does it show any difference in boot time?
+>>>
+>>> --- a/kernel/rcu/srcutree.c
+>>> +++ b/kernel/rcu/srcutree.c
+>>> @@ -706,7 +706,7 @@ static void srcu_schedule_cbs_snp(struct srcu_struct
+>>> *ssp, struct srcu_node *snp
+>>>    */
+>>>   static void srcu_gp_end(struct srcu_struct *ssp)
+>>>   {
+>>> -       unsigned long cbdelay;
+>>> +       unsigned long cbdelay = 1;
+>>>          bool cbs;
+>>>          bool last_lvl;
+>>>          int cpu;
+>>> @@ -726,7 +726,9 @@ static void srcu_gp_end(struct srcu_struct *ssp)
+>>>          spin_lock_irq_rcu_node(ssp);
+>>>          idx = rcu_seq_state(ssp->srcu_gp_seq);
+>>>          WARN_ON_ONCE(idx != SRCU_STATE_SCAN2);
+>>> -       cbdelay = !!srcu_get_delay(ssp);
+>>> +       if (ULONG_CMP_LT(READ_ONCE(ssp->srcu_gp_seq),
+>>> READ_ONCE(ssp->srcu_gp_seq_needed_exp)))
+>>> +               cbdelay = 0;
+>>> +
+>>>          WRITE_ONCE(ssp->srcu_last_gp_end, ktime_get_mono_fast_ns());
+> Thank you both for the testing and the proposed fix!
+>
+>> Test here:
+>> qemu: https://github.com/qemu/qemu/tree/stable-6.1
+>> kernel:
+>> https://github.com/Linaro/linux-kernel-uadk/tree/uacce-devel-5.19-srcu-test
+>> (in case test patch not clear, push in git tree)
+>>
+>> Hardware: aarch64
+>>
+>> 1. 5.18-rc6
+>> real    0m8.402s
+>> user    0m3.015s
+>> sys     0m1.102s
+>>
+>> 2. 5.19-rc1
+>> real    2m41.433s
+>> user    0m3.097s
+>> sys     0m1.177s
+>>
+>> 3. 5.19-rc1 + fix1 from Paul
+>> real    2m43.404s
+>> user    0m2.880s
+>> sys     0m1.214s
+>>
+>> 4. 5.19-rc1 + fix2: fix1 + Remove "if (!jbase)" block
+>> real    0m15.262s
+>> user    0m3.003s
+>> sys     0m1.033s
+>>
+>> When build kernel in the meantime, load time become longer.
+>>
+>> 5. 5.19-rc1 + fix3: fix1 + SRCU_MAX_NODELAY_PHASE 1000000
+>> real    0m15.215s
+>> user    0m2.942s
+>> sys    0m1.172s
+>>
+>> 6. 5.19-rc1 + fix4: fix1 + Neeraj's change of srcu_gp_end　
+>> real    1m23.936s
+>> user    0m2.969s
+>> sys    0m1.181s
+> And thank you for the testing!
+>
+> Could you please try fix3 + Neeraj's change of srcu_gp_end?
+>
+> That is, fix1 + SRCU_MAX_NODELAY_PHASE 1000000 + Neeraj's change of
+> srcu_gp_end.
+>
+> Also, at what value of SRCU_MAX_NODELAY_PHASE do the boot
+> times start rising?  This is probably best done by starting with
+> SRCU_MAX_NODELAY_PHASE=100000 and dividing by (say) ten on each run
+> until boot time becomes slow, followed by a binary search between the
+> last two values.  (The idea is to bias the search so that fast boot
+> times are the common case.)
 
-| call_rcu_tasks() has been failed.
-| ------------[ cut here ]------------
-| WARNING: CPU: 0 PID: 1 at kernel/rcu/tasks.h:1751 rcu_tasks_verify_self_tests+0x48/0x74
-| Modules linked in:
-| CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.19.0-rc2 #2
-| Hardware name: linux,dummy-virt (DT)
-| pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-| pc : rcu_tasks_verify_self_tests+0x48/0x74
-| lr : rcu_tasks_verify_self_tests+0x6c/0x74
-| sp : ffff80000800bd70
-| x29: ffff80000800bd70 x28: 0000000000000000 x27: ffffbd05c97904c8
-| x26: ffffbd05c98610a0 x25: 0000000000000007 x24: 0000000000000000
-| x23: ffffbd05c9fa0b38 x22: ffffbd05ca42f000 x21: ffffbd05c9514ac0
-| x20: ffffbd05ca038808 x19: ffffbd05ca038808 x18: 0000000000000030
-| x17: 00000000808cf272 x16: 00000000b4c3fe3b x15: fffffffffffe4328
-| x14: 0000000000000001 x13: 2e64656c69616620 x12: 6e65656220736168
-| x11: 202928736b736174 x10: 5f7563725f6c6c61 x9 : 64656c696166206e
-| x8 : 6565622073616820 x7 : 2928736b7361745f x6 : 7563725f6c6c6163
-| x5 : ffff3f48ffbc0c80 x4 : 0000000000000000 x3 : 0000000000000000
-| x2 : 0000000000000000 x1 : 0000000000000001 x0 : 00000000ffffffff
-| Call trace:
-|  rcu_tasks_verify_self_tests+0x48/0x74
-|  do_one_initcall+0x74/0x400
-|  kernel_init_freeable+0x2fc/0x384
-|  kernel_init+0x28/0x130
-|  ret_from_fork+0x10/0x20
-| irq event stamp: 188396
-| hardirqs last  enabled at (188395): [<ffffbd05c7d2b4f4>] vprintk_store+0x3e4/0x4b0
-| hardirqs last disabled at (188396): [<ffffbd05c8d9a494>] el1_dbg+0x24/0x90
-| softirqs last  enabled at (188302): [<ffffbd05c8b95910>] release_sock+0xac/0xd0
-| softirqs last disabled at (188300): [<ffffbd05c8b9588c>] release_sock+0x28/0xd0
-| ---[ end trace 0000000000000000 ]---
-| registered taskstats version 1
+SRCU_MAX_NODELAY_PHASE 100 becomes slower.
 
-I gave the below diff a go with:
 
-* 100 UP boots
-* 100 64-CPU SMP boots
+8. 5.19-rc1 + fix6: fix4 + SRCU_MAX_NODELAY_PHASE 1000000
 
-... in a KVM VM on a ThunderX2 host, and out of those 200 boots I never saw the
-warning.
+real 0m11.154s ~12s
 
-So FWIW:
+user 0m2.919s
 
-  Tested-by: Mark Rutland <mark.rutland@arm.com>
+sys 0m1.064s
 
-Thanks for this!
 
-Just as an aside, I had to grab this thread from lore as I'm not subscribed to
-the RCU list, so there might be others who haven't seen this thread.
 
-Mark.
+9. 5.19-rc1 + fix7: fix4 + SRCU_MAX_NODELAY_PHASE 10000
 
-> commit 3e95d4b287b37ee5f7f82e5ebd749ab89fd706c2
-> Author: Paul E. McKenney <paulmck@kernel.org>
-> Date:   Tue Jun 7 15:23:52 2022 -0700
-> 
->     rcu-tasks: Be more patient for RCU Tasks boot-time testing
->     
->     The RCU-Tasks family of grace-period primitives can take some time to
->     complete, and the amount of time can depend on the exact hardware and
->     software configuration.  Some configurations boot up fast enough that the
->     RCU-Tasks verification process gets false-positive failures.  This commit
->     therefore allows up to 30 seconds for the grace periods to complete, with
->     this value adjustable downwards using the rcupdate.rcu_task_stall_timeout
->     kernel boot parameter.
->     
->     Reported-by: Matthew Wilcox <willy@infradead.org>
->     Reported-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
->     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> 
-> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> index f1209ce621c51..1a4c3adc5c397 100644
-> --- a/kernel/rcu/tasks.h
-> +++ b/kernel/rcu/tasks.h
-> @@ -145,6 +145,7 @@ static int rcu_task_ipi_delay __read_mostly = RCU_TASK_IPI_DELAY;
->  module_param(rcu_task_ipi_delay, int, 0644);
->  
->  /* Control stall timeouts.  Disable with <= 0, otherwise jiffies till stall. */
-> +#define RCU_TASK_BOOT_STALL_TIMEOUT (HZ * 30)
->  #define RCU_TASK_STALL_TIMEOUT (HZ * 60 * 10)
->  static int rcu_task_stall_timeout __read_mostly = RCU_TASK_STALL_TIMEOUT;
->  module_param(rcu_task_stall_timeout, int, 0644);
-> @@ -1778,23 +1779,24 @@ struct rcu_tasks_test_desc {
->  	struct rcu_head rh;
->  	const char *name;
->  	bool notrun;
-> +	unsigned long runstart;
->  };
->  
->  static struct rcu_tasks_test_desc tests[] = {
->  	{
->  		.name = "call_rcu_tasks()",
->  		/* If not defined, the test is skipped. */
-> -		.notrun = !IS_ENABLED(CONFIG_TASKS_RCU),
-> +		.notrun = IS_ENABLED(CONFIG_TASKS_RCU),
->  	},
->  	{
->  		.name = "call_rcu_tasks_rude()",
->  		/* If not defined, the test is skipped. */
-> -		.notrun = !IS_ENABLED(CONFIG_TASKS_RUDE_RCU),
-> +		.notrun = IS_ENABLED(CONFIG_TASKS_RUDE_RCU),
->  	},
->  	{
->  		.name = "call_rcu_tasks_trace()",
->  		/* If not defined, the test is skipped. */
-> -		.notrun = !IS_ENABLED(CONFIG_TASKS_TRACE_RCU)
-> +		.notrun = IS_ENABLED(CONFIG_TASKS_TRACE_RCU)
->  	}
->  };
->  
-> @@ -1805,23 +1807,28 @@ static void test_rcu_tasks_callback(struct rcu_head *rhp)
->  
->  	pr_info("Callback from %s invoked.\n", rttd->name);
->  
-> -	rttd->notrun = true;
-> +	rttd->notrun = false;
->  }
->  
->  static void rcu_tasks_initiate_self_tests(void)
->  {
-> +	unsigned long j = jiffies;
-> +
->  	pr_info("Running RCU-tasks wait API self tests\n");
->  #ifdef CONFIG_TASKS_RCU
-> +	tests[0].runstart = j;
->  	synchronize_rcu_tasks();
->  	call_rcu_tasks(&tests[0].rh, test_rcu_tasks_callback);
->  #endif
->  
->  #ifdef CONFIG_TASKS_RUDE_RCU
-> +	tests[1].runstart = j;
->  	synchronize_rcu_tasks_rude();
->  	call_rcu_tasks_rude(&tests[1].rh, test_rcu_tasks_callback);
->  #endif
->  
->  #ifdef CONFIG_TASKS_TRACE_RCU
-> +	tests[2].runstart = j;
->  	synchronize_rcu_tasks_trace();
->  	call_rcu_tasks_trace(&tests[2].rh, test_rcu_tasks_callback);
->  #endif
-> @@ -1831,11 +1838,18 @@ static int rcu_tasks_verify_self_tests(void)
->  {
->  	int ret = 0;
->  	int i;
-> +	unsigned long bst = rcu_task_stall_timeout;
->  
-> +	if (bst <= 0 || bst > RCU_TASK_BOOT_STALL_TIMEOUT)
-> +		bst = RCU_TASK_BOOT_STALL_TIMEOUT;
->  	for (i = 0; i < ARRAY_SIZE(tests); i++) {
-> -		if (!tests[i].notrun) {		// still hanging.
-> -			pr_err("%s has been failed.\n", tests[i].name);
-> -			ret = -1;
-> +		while (tests[i].notrun) {		// still hanging.
-> +			if (time_after(jiffies, tests[i].runstart + bst)) {
-> +				pr_err("%s has failed boot-time tests.\n", tests[i].name);
-> +				ret = -1;
-> +				break;
-> +			}
-> +			schedule_timeout_uninterruptible(1);
->  		}
->  	}
->  
-> 
+real 0m11.258s
+
+user 0m3.113s
+
+sys 0m1.073s
+
+
+
+10. 5.19-rc1 + fix8: fix4 + SRCU_MAX_NODELAY_PHASE 100
+
+real 0m30.053s ~ 32s
+
+user 0m2.827s
+
+sys 0m1.161s
+
+
+
+By the way, if build kernel on the board in the meantime (using memory), 
+time become much longer.
+
+real 1m2.763s
+
+
+
+11. 5.19-rc1 + fix9: fix4 + SRCU_MAX_NODELAY_PHASE 1000
+
+real 0m11.443s
+
+user 0m3.022s
+
+sys 0m1.052s
+
+
+Thanks
+
+>
+>> More test details: https://docs.qq.com/doc/DRXdKalFPTVlUbFN5
+> And thank you for these details.
+>
+> 							Thanx, Paul
+
