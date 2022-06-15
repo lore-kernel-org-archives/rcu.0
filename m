@@ -2,232 +2,419 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B68ACC43334
-	for <rcu@archiver.kernel.org>; Wed, 15 Jun 2022 07:32:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3CCC7C43334
+	for <rcu@archiver.kernel.org>; Wed, 15 Jun 2022 08:29:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242874AbiFOHcl (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 15 Jun 2022 03:32:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39922 "EHLO
+        id S1344444AbiFOI33 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 15 Jun 2022 04:29:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239275AbiFOHcj (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 15 Jun 2022 03:32:39 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63B4C64E5;
-        Wed, 15 Jun 2022 00:32:37 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id c2so17614864lfk.0;
-        Wed, 15 Jun 2022 00:32:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DOfJwrreP+JB1KoyIW7r53ALsXjISpS5SknD1LAtuQI=;
-        b=CtiLAuytFLgt6+Bb4YU+UX43rHYzoxv4MF2ukRqkbvDE1UNBqxdP+n+KDyU7chVvfa
-         xVHHDBHahSHh3vZcyX2TYK6sk3RzB+1vXlN8N1jrjT1+Netc0HZ8M5062b+lg2//jLKE
-         ZjZuZ60LTbc1A6UfOkkbrBXiyveLIl+tP9/8foifMpBhJHb1lIiyTukrFukMxTA+XKFM
-         DvxRQOi6ri3Cmj5jm90wEMC9fZCP9n/029PdYSvB4N/fcFQQjMS09u4ZpxDAxVlf03C0
-         PL5q71xHwvVym9lNxcvNKbdLOjEy++MJtCnrvg0nCNl2v3zLGChUz4klBy1pDK6ITpPa
-         jKLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DOfJwrreP+JB1KoyIW7r53ALsXjISpS5SknD1LAtuQI=;
-        b=CUTpWqFumFf9F6GhfZewWVe1UiTIGHXhjlqrZRfpwvZfPACqxt6ZX/TjecIwt1kEhA
-         +NxnUWwKfH12nKNZ9hLjq9ZWbIGjbcxSPEoMPmmPorfOti6sxPhHgfdIyYOmzGKdZoXY
-         ovShNR642QfKG01CJi/d2qlvnHSJmvz1R/fx4ZQbq3h+CAbw8JnB7YzYJdaFHFWl4R2d
-         mX2i/wX2F7zF+dM4eqdKQNyBolwl/WMBQ6s3xjf0I3WRiAJS3EJ9wO0NZ0l/LxtpOOeR
-         Aqk/tUlkuF93mSXJtqaG4NXrj+XxKu5dTIXHMh5nzaVxcRsmZO3cVbU7yKGaNpv7zslb
-         unlg==
-X-Gm-Message-State: AJIora+Dk2Au9S8lD4ZGbCSN0LiMhtxCy8AXdweI+QPHJPcYtZDzaMoP
-        e4zcHZANgZcjvMp+oE2bhVXO3uOkCafUH8Sr5AM=
-X-Google-Smtp-Source: AGRyM1u7n9sSCTQ/GOm8/3p4jy1g/j6Uuvo829xr5XECqu7stiDpyiRbGzuN8tLxGmRQ+enEEJxirA==
-X-Received: by 2002:a05:6512:e9f:b0:479:5a2f:bc4d with SMTP id bi31-20020a0565120e9f00b004795a2fbc4dmr5343719lfb.619.1655278355391;
-        Wed, 15 Jun 2022 00:32:35 -0700 (PDT)
-Received: from pc638.lan ([155.137.26.201])
-        by smtp.gmail.com with ESMTPSA id d13-20020a2eb04d000000b0025a21ff1a53sm139013ljl.7.2022.06.15.00.32.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jun 2022 00:32:34 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Wed, 15 Jun 2022 09:32:32 +0200
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: Re: [PATCH 2/2] rcu/kvfree: Introduce KFREE_DRAIN_JIFFIES_[MAX/MIN]
- interval
-Message-ID: <YqmLEPD2XVB3LPeA@pc638.lan>
-References: <20220602080644.432156-1-urezki@gmail.com>
- <20220602080644.432156-2-urezki@gmail.com>
- <20220604155108.GU1790663@paulmck-ThinkPad-P17-Gen-1>
- <YpxzB3/HRN/EEHa8@pc638.lan>
- <20220607034710.GE1790663@paulmck-ThinkPad-P17-Gen-1>
- <CA+KHdyXU1apQQbVVZ_zX7o86Qp-AQnif2u8aJFULqHNtfCGcSA@mail.gmail.com>
- <YqN1QqRmPpchDm/k@google.com>
- <YqcHrIMefthWe0t4@pc638.lan>
- <YqgtuBXW5pW4ivD/@pc638.lan>
- <20220615051205.GG1790663@paulmck-ThinkPad-P17-Gen-1>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220615051205.GG1790663@paulmck-ThinkPad-P17-Gen-1>
+        with ESMTP id S1345045AbiFOI3T (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 15 Jun 2022 04:29:19 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0950433890;
+        Wed, 15 Jun 2022 01:29:17 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id A14E1B81C77;
+        Wed, 15 Jun 2022 08:29:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A2A8C34115;
+        Wed, 15 Jun 2022 08:29:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1655281754;
+        bh=SIjk+9QLqP1zmMoa2vUTvhx/gxU5zCEUB3KcWNjvHnQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=A3sPts4aHKxMqB/bxT+pWKfaEXUGZIGa6NkS6cBaVjplFHQdHlO3G4Tugqnx/ETQZ
+         4LYSJ0s26JyntUw5D/aE36uMyQNgjaGfEJuBBrrYuwT0WF2U+dsi8k/9zZPjJgVES7
+         NT1WAG05Mn2DO+YFahbXnPfRTTjB3j+iJID8YuQT3nui9eSS+0una76h+0ahYPcDUm
+         h3T5HX21YG7btIqqrEWzO+tCz9eBegxtXEOHTp2/fc7NFlXe2+SmG8jyLd4zCkwFek
+         7Ky7mQUL9WUiJyeUohMHzsEYgQyQrsH9AIs6m19ztIQ0Mu1Gm4+9/exKC5J4KG0BAy
+         DYcFaNwmsYFvQ==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1o1OOl-000j94-NS;
+        Wed, 15 Jun 2022 09:29:11 +0100
+Date:   Wed, 15 Jun 2022 09:29:11 +0100
+Message-ID: <8735g649ew.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     "zhangfei.gao@foxmail.com" <zhangfei.gao@foxmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Zhangfei Gao <zhangfei.gao@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        rcu@vger.kernel.org, Lai Jiangshan <jiangshanlai@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Shameerali Kolothum Thodi 
+        <shameerali.kolothum.thodi@huawei.com>, mtosatti@redhat.com,
+        Auger Eric <eric.auger@redhat.com>
+Subject: Re: Commit 282d8998e997 (srcu: Prevent expedited GPs and blocking readers from consuming CPU) cause qemu boot slow
+In-Reply-To: <tencent_F82250B6E3D51A9AC0D2BE1AE43A4E060909@qq.com>
+References: <20220611165956.GO1790663@paulmck-ThinkPad-P17-Gen-1>
+        <tencent_80D2801BC03B7006BB2230B6A1D5C69B9209@qq.com>
+        <20220612133631.GQ1790663@paulmck-ThinkPad-P17-Gen-1>
+        <tencent_2B7B5B8DBE69330DA041AEE36C1029826905@qq.com>
+        <20220612162029.GR1790663@paulmck-ThinkPad-P17-Gen-1>
+        <20220612164002.GA1242564@paulmck-ThinkPad-P17-Gen-1>
+        <560f7d27-fe38-0db9-834a-50dda5fa6157@redhat.com>
+        <20220612184944.GU1790663@paulmck-ThinkPad-P17-Gen-1>
+        <tencent_E306F58EAEC1D188ED6D5F358A269F34C707@qq.com>
+        <20220613035711.GY1790663@paulmck-ThinkPad-P17-Gen-1>
+        <20220613041652.GA3976000@paulmck-ThinkPad-P17-Gen-1>
+        <tencent_F82250B6E3D51A9AC0D2BE1AE43A4E060909@qq.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: zhangfei.gao@foxmail.com, paulmck@kernel.org, pbonzini@redhat.com, zhangfei.gao@linaro.org, linux-kernel@vger.kernel.org, rcu@vger.kernel.org, jiangshanlai@gmail.com, josh@joshtriplett.org, mathieu.desnoyers@efficios.com, willy@infradead.org, shameerali.kolothum.thodi@huawei.com, mtosatti@redhat.com, eric.auger@redhat.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-> On Tue, Jun 14, 2022 at 08:42:00AM +0200, Uladzislau Rezki wrote:
-> > > Hello, Joel, Paul.
-> > > 
-> > > > Hi Vlad, Paul,
-> > > > 
-> > > > On Thu, Jun 09, 2022 at 03:10:57PM +0200, Uladzislau Rezki wrote:
-> > > > > On Tue, Jun 7, 2022 at 5:47 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > > > >
-> > > > > > On Sun, Jun 05, 2022 at 11:10:31AM +0200, Uladzislau Rezki wrote:
-> > > > > > > > On Thu, Jun 02, 2022 at 10:06:44AM +0200, Uladzislau Rezki (Sony) wrote:
-> > > > > > > > > Currently the monitor work is scheduled with a fixed interval that
-> > > > > > > > > is HZ/20 or each 50 milliseconds. The drawback of such approach is
-> > > > > > > > > a low utilization of page slot in some scenarios. The page can store
-> > > > > > > > > up to 512 records. For example on Android system it can look like:
-> > > > > > > > >
-> > > > > > > > > <snip>
-> > > > > > > > >   kworker/3:0-13872   [003] .... 11286.007048: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000026522604 nr_records=1
-> > > > > > > > >   kworker/3:0-13872   [003] .... 11286.015638: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000095ed6fca nr_records=2
-> > > > > > > > >   kworker/1:2-20434   [001] .... 11286.051230: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000044872ffd nr_records=1
-> > > > > > > > >   kworker/1:2-20434   [001] .... 11286.059322: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000026522604 nr_records=2
-> > > > > > > > >   kworker/0:1-20052   [000] .... 11286.095295: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000044872ffd nr_records=2
-> > > > > > > > >   kworker/0:1-20052   [000] .... 11286.103418: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000cbcf05db nr_records=1
-> > > > > > > > >   kworker/2:3-14372   [002] .... 11286.135155: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000095ed6fca nr_records=2
-> > > > > > > > >   kworker/2:3-14372   [002] .... 11286.135198: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000044872ffd nr_records=1
-> > > > > > > > >   kworker/1:2-20434   [001] .... 11286.155377: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000cbcf05db nr_records=5
-> > > > > > > > >   kworker/2:3-14372   [002] .... 11286.167181: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000026522604 nr_records=5
-> > > > > > > > >   kworker/1:2-20434   [001] .... 11286.179202: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000008ef95e14 nr_records=1
-> > > > > > > > >   kworker/2:3-14372   [002] .... 11286.187398: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000c597d297 nr_records=6
-> > > > > > > > >   kworker/3:0-13872   [003] .... 11286.187445: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000050bf92e2 nr_records=3
-> > > > > > > > >   kworker/1:2-20434   [001] .... 11286.198975: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000cbcf05db nr_records=4
-> > > > > > > > >   kworker/1:2-20434   [001] .... 11286.207203: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000095ed6fca nr_records=4
-> > > > > > > > > <snip>
-> > > > > > > > >
-> > > > > > > > > where a page only carries few records to reclaim a memory. In order to
-> > > > > > > > > improve batching and make utilization more efficient the patch introduces
-> > > > > > > > > a drain interval that can be set either to KFREE_DRAIN_JIFFIES_MAX or
-> > > > > > > > > KFREE_DRAIN_JIFFIES_MIN. It is adjusted if a flood is detected, in this
-> > > > > > > > > case a memory reclaim occurs more often whereas in mostly idle cases the
-> > > > > > > > > interval is set to its maximum timeout that improves the utilization of
-> > > > > > > > > page slots.
-> > > > > > > > >
-> > > > > > > > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > > > > > > >
-> > > > > > > > That does look like a problem well worth solving!
-> > > > > > > >
-> > > > > > > Agree, better ideas make better final solution :)
-> > > > > > >
-> > > > > > > >
-> > > > > > > > But I am missing one thing. If we are having a callback flood, why do we
-> > > > > > > > need a shorter timeout?
-> > > > > > > >
-> > > > > > > To offload faster, because otherwise we run into classical issue, it is a low
-> > > > > > > memory condition state resulting in OOM.
-> > > > > >
-> > > > > > But doesn't each callback queued during the flood give us an opportunity
-> > > > > > to react to the flood?  That will be way more fine-grained than any
-> > > > > > reasonable timer, right?  Or am I missing something?
-> > > > > >
-> > > > > We can set the timer to zero or to current "jiffies" to initiate the
-> > > > > offloading if the
-> > > > > page is full. In that sense probably it make sense to propagate those two attr.
-> > > > > to user space, so the user can configure min/max drain interval.
-> > > > > 
-> > > > > Or we can only deal with fixed interval exposed via sysfs to control it by user.
-> > > > > In that case we can get rid of MIN one and just trigger a timer if the page is
-> > > > > full. I think this approach is better.
-> > > > 
-> > > > Yes I also think triggering timer with zero-timeout is better. Can you (Vlad)
-> > > > accomplish that by just calling the timer callback inline, instead of queuing
-> > > > a timer? I imagine you would just do queue_work() instead of
-> > > > queue_delayed_work() in this scenario.
-> > > > 
-> > > > > > I do agree that the action would often need to be indirect to avoid the
-> > > > > > memory-allocation-state hassles, but we already can do that, either via
-> > > > > > an extremely short-term hrtimer or something like irq-work.
-> > > > > >
-> > > > > > > > Wouldn't a check on the number of blocks queued be simpler, more direct,
-> > > > > > > > and provide faster response to the start of a callback flood?
-> > > > > > > >
-> > > > > > > I rely on krcp->count because not always we can store the pointer in the page
-> > > > > > > slots. We can not allocate a page in the caller context thus we use page-cache
-> > > > > > > worker that fills the cache in normal context. While it populates the cache,
-> > > > > > > pointers temporary are queued to the linked-list.
-> > > > > > >
-> > > > > > > Any thoughts?
-> > > > > >
-> > > > > > There are a great many ways to approach this.  One of them is to maintain
-> > > > > > a per-CPU free-running counter of kvfree_rcu() calls, and to reset this
-> > > > > > counter each jiffy.
-> > > > > >
-> > > > > > Or am I missing a trick here?
-> > > > > >
-> > > > > Do you mean to have a per-cpu timer that checks the per-cpu-freed counter
-> > > > > and schedule the work when if it is needed? Or i have missed your point?
-> > > > 
-> > > > I think he (Paul) is describing the way 'flood detection' can work similar to how the
-> > > > bypass list code is implemented. There he maintains a count which only if
-> > > > exceeds a limit, will queue on to the bypass list.
-> > > > 
-> > > OK, i see that. We also do similar thing. We say it is a flood - when a
-> > > page becomes full, so it is kind of threshold that we pass.
-> > > 
-> > > > This code:
-> > > > 
-> > > >         // If we have advanced to a new jiffy, reset counts to allow
-> > > >         // moving back from ->nocb_bypass to ->cblist.
-> > > >         if (j == rdp->nocb_nobypass_last) {
-> > > >                 c = rdp->nocb_nobypass_count + 1;
-> > > >         } else {
-> > > >                 WRITE_ONCE(rdp->nocb_nobypass_last, j);
-> > > >                 c = rdp->nocb_nobypass_count - nocb_nobypass_lim_per_jiffy;
-> > > >                 if (ULONG_CMP_LT(rdp->nocb_nobypass_count,
-> > > >                                  nocb_nobypass_lim_per_jiffy))
-> > > >                         c = 0;
-> > > >                 else if (c > nocb_nobypass_lim_per_jiffy)
-> > > >                         c = nocb_nobypass_lim_per_jiffy;
-> > > >         }
-> > > >         WRITE_ONCE(rdp->nocb_nobypass_count, c);
-> > > > 
-> > > > 
-> > > > Your (Vlad's) approach OTOH is also fine to me, you check if page is full and
-> > > > make that as a 'flood is happening' detector.
-> > > > 
-> > > OK, thank you Joel. I also think, that way we improve batching and utilization
-> > > of the page what is actually an intention of the patch in question.
-> > > 
-> > Paul, will you pick this patch?
-> 
-> I did pick up the first one:
-> 
-> 16224f4cdf03 ("rcu/kvfree: Remove useless monitor_todo flag")
-> 
-> On the second one, if you use page-fill as your flood detector, can't
-> you simplify things by just using the one longer timeout, as discussed
-> in this thread?
-> 
-> Or did I miss a turn somewhere?
-> 
-No, you did not :) Agreed i will simplify it with a one interval that
-corresponding to 1 HZ. The flood is detected when a page is full. When
-it occurs the work will be rearmed to be run asap. Will resend it.
+On Mon, 13 Jun 2022 07:55:47 +0100,
+"zhangfei.gao@foxmail.com" <zhangfei.gao@foxmail.com> wrote:
+>=20
+> Hi, Paul
+>=20
+> On 2022/6/13 =E4=B8=8B=E5=8D=8812:16, Paul E. McKenney wrote:
+> > On Sun, Jun 12, 2022 at 08:57:11PM -0700, Paul E. McKenney wrote:
+> >> On Mon, Jun 13, 2022 at 11:04:39AM +0800, zhangfei.gao@foxmail.com wro=
+te:
+> >>> Hi, Paul
+> >>>=20
+> >>> On 2022/6/13 =E4=B8=8A=E5=8D=882:49, Paul E. McKenney wrote:
+> >>>> On Sun, Jun 12, 2022 at 07:29:30PM +0200, Paolo Bonzini wrote:
+> >>>>> On 6/12/22 18:40, Paul E. McKenney wrote:
+> >>>>>>> Do these reserved memory regions really need to be allocated sepa=
+rately?
+> >>>>>>> (For example, are they really all non-contiguous?  If not, that i=
+s, if
+> >>>>>>> there are a lot of contiguous memory regions, could you sort the =
+IORT
+> >>>>>>> by address and do one ioctl() for each set of contiguous memory r=
+egions?)
+> >>>>>>>=20
+> >>>>>>> Are all of these reserved memory regions set up before init is sp=
+awned?
+> >>>>>>>=20
+> >>>>>>> Are all of these reserved memory regions set up while there is on=
+ly a
+> >>>>>>> single vCPU up and running?
+> >>>>>>>=20
+> >>>>>>> Is the SRCU grace period really needed in this case?  (I freely c=
+onfess
+> >>>>>>> to not being all that familiar with KVM.)
+> >>>>>> Oh, and there was a similar many-requests problem with networking =
+many
+> >>>>>> years ago.  This was solved by adding a new syscall/ioctl()/whatev=
+er
+> >>>>>> that permitted many requests to be presented to the kernel with a =
+single
+> >>>>>> system call.
+> >>>>>>=20
+> >>>>>> Could a new ioctl() be introduced that requested a large number
+> >>>>>> of these memory regions in one go so as to make each call to
+> >>>>>> synchronize_rcu_expedited() cover a useful fraction of your 9000+
+> >>>>>> requests?  Adding a few of the KVM guys on CC for their thoughts.
+> >>>>> Unfortunately not.  Apart from this specific case, in general the c=
+alls to
+> >>>>> KVM_SET_USER_MEMORY_REGION are triggered by writes to I/O registers=
+ in the
+> >>>>> guest, and those writes then map to a ioctl.  Typically the guest s=
+ets up a
+> >>>>> device at a time, and each setup step causes a synchronize_srcu()--=
+-and
+> >>>>> expedited at that.
+> >>>> I was afraid of something like that...
+> >>>>=20
+> >>>>> KVM has two SRCUs:
+> >>>>>=20
+> >>>>> 1) kvm->irq_srcu is hardly relying on the "sleepable" part; it has =
+readers
+> >>>>> that are very very small, but it needs extremely fast detection of =
+grace
+> >>>>> periods; see commit 719d93cd5f5c ("kvm/irqchip: Speed up
+> >>>>> KVM_SET_GSI_ROUTING", 2014-05-05) which split it off kvm->srcu.  Re=
+aders are
+> >>>>> not so frequent.
+> >>>>>=20
+> >>>>> 2) kvm->srcu is nastier because there are readers all the time.  The
+> >>>>> read-side critical section are still short-ish, but they need the s=
+leepable
+> >>>>> part because they access user memory.
+> >>>> Which one of these two is in play in this case?
+> >>>>=20
+> >>>>> Writers are not frequent per se; the problem is they come in very l=
+arge
+> >>>>> bursts when a guest boots.  And while the whole boot path overall c=
+an be
+> >>>>> quadratic, O(n) expensive calls to synchronize_srcu() can have a la=
+rger
+> >>>>> impact on runtime than the O(n^2) parts, as demonstrated here.
+> >>>>>=20
+> >>>>> Therefore, we operated on the assumption that the callers of
+> >>>>> synchronized_srcu_expedited were _anyway_ busy running CPU-bound gu=
+est code
+> >>>>> and the desire was to get past the booting phase as fast as possibl=
+e.  If
+> >>>>> the guest wants to eat host CPU it can "for(;;)" as much as it want=
+s;
+> >>>>> therefore, as long as expedited GPs didn't eat CPU *throughout the =
+whole
+> >>>>> system*, a preemptable busy wait in synchronize_srcu_expedited() we=
+re not
+> >>>>> problematic.
+> >>>>>=20
+> >>>>> This assumptions did match the SRCU code when kvm->srcu and kvm->ir=
+q_srcu
+> >>>>> were was introduced (respectively in 2009 and 2014).  But perhaps t=
+hey do
+> >>>>> not hold anymore now that each SRCU is not as independent as it use=
+d to be
+> >>>>> in those years, and instead they use workqueues instead?
+> >>>> The problem was not internal to SRCU, but rather due to the fact
+> >>>> that kernel live patching (KLP) had problems with the CPU-bound tasks
+> >>>> resulting from repeated synchronize_rcu_expedited() invocations.  So=
+ I
+> >>>> added heuristics to get the occasional sleep in there for KLP's bene=
+fit.
+> >>>> Perhaps these heuristics need to be less aggressive about adding sle=
+ep.
+> >>>>=20
+> >>>> These heuristics have these aspects:
+> >>>>=20
+> >>>> 1.	The longer readers persist in an expedited SRCU grace period,
+> >>>> 	the longer the wait between successive checks of the reader
+> >>>> 	state.  Roughly speaking, we wait as long as the grace period
+> >>>> 	has currently been in effect, capped at ten jiffies.
+> >>>>=20
+> >>>> 2.	SRCU grace periods have several phases.  We reset so that each
+> >>>> 	phase starts by not waiting (new phase, new set of readers,
+> >>>> 	so don't penalize this set for the sins of the previous set).
+> >>>> 	But once we get to the point of adding delay, we add the
+> >>>> 	delay based on the beginning of the full grace period.
+> >>>>=20
+> >>>> Right now, the checking for grace-period length does not allow for t=
+he
+> >>>> possibility that a grace period might start just before the jiffies
+> >>>> counter gets incremented (because I didn't realize that anyone cared=
+),
+> >>>> so that is one possible thing to change.  I can also allow more no-d=
+elay
+> >>>> checks per SRCU grace-period phase.
+> >>>>=20
+> >>>> Zhangfei, does something like the patch shown below help?
+> >>>>=20
+> >>>> Additional adjustments are likely needed to avoid re-breaking KLP,
+> >>>> but we have to start somewhere...
+> >>>>=20
+> >>>> 							Thanx, Paul
+> >>>>=20
+> >>>> --------------------------------------------------------------------=
+----
+> >>>>=20
+> >>>> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> >>>> index 50ba70f019dea..6a354368ac1d1 100644
+> >>>> --- a/kernel/rcu/srcutree.c
+> >>>> +++ b/kernel/rcu/srcutree.c
+> >>>> @@ -513,7 +513,7 @@ static bool srcu_readers_active(struct srcu_stru=
+ct *ssp)
+> >>>>    #define SRCU_INTERVAL		1	// Base delay if no expedited GPs pendin=
+g.
+> >>>>    #define SRCU_MAX_INTERVAL	10	// Maximum incremental delay from sl=
+ow readers.
+> >>>> -#define SRCU_MAX_NODELAY_PHASE	1	// Maximum per-GP-phase consecutiv=
+e no-delay instances.
+> >>>> +#define SRCU_MAX_NODELAY_PHASE	3	// Maximum per-GP-phase consecutiv=
+e no-delay instances.
+> >>>>    #define SRCU_MAX_NODELAY	100	// Maximum consecutive no-delay inst=
+ances.
+> >>>>    /*
+> >>>> @@ -522,12 +522,18 @@ static bool srcu_readers_active(struct srcu_st=
+ruct *ssp)
+> >>>>     */
+> >>>>    static unsigned long srcu_get_delay(struct srcu_struct *ssp)
+> >>>>    {
+> >>>> +	unsigned long gpstart;
+> >>>> +	unsigned long j;
+> >>>>    	unsigned long jbase =3D SRCU_INTERVAL;
+> >>>>    	if (ULONG_CMP_LT(READ_ONCE(ssp->srcu_gp_seq), READ_ONCE(ssp->src=
+u_gp_seq_needed_exp)))
+> >>>>    		jbase =3D 0;
+> >>>> -	if (rcu_seq_state(READ_ONCE(ssp->srcu_gp_seq)))
+> >>>> -		jbase +=3D jiffies - READ_ONCE(ssp->srcu_gp_start);
+> >>>> +	if (rcu_seq_state(READ_ONCE(ssp->srcu_gp_seq))) {
+> >>>> +		j =3D jiffies - 1;
+> >>>> +		gpstart =3D READ_ONCE(ssp->srcu_gp_start);
+> >>>> +		if (time_after(j, gpstart))
+> >>>> +			jbase +=3D j - gpstart;
+> >>>> +	}
+> >>>>    	if (!jbase) {
+> >>>>    		WRITE_ONCE(ssp->srcu_n_exp_nodelay, READ_ONCE(ssp->srcu_n_exp_n=
+odelay) + 1);
+> >>>>    		if (READ_ONCE(ssp->srcu_n_exp_nodelay) > SRCU_MAX_NODELAY_PHASE)
+> >>> Unfortunately, this patch does not helpful.
+> >>>=20
+> >>> Then re-add the debug info.
+> >>>=20
+> >>> During the qemu boot
+> >>> [=C2=A0 232.997667]=C2=A0 __synchronize_srcu loop=3D1000
+> >>>=20
+> >>> [=C2=A0 361.094493]=C2=A0 __synchronize_srcu loop=3D9000
+> >>> [=C2=A0 361.094501] Call trace:
+> >>> [=C2=A0 361.094502]=C2=A0 dump_backtrace+0xe4/0xf0
+> >>> [=C2=A0 361.094505]=C2=A0 show_stack+0x20/0x70
+> >>> [=C2=A0 361.094507]=C2=A0 dump_stack_lvl+0x8c/0xb8
+> >>> [=C2=A0 361.094509]=C2=A0 dump_stack+0x18/0x34
+> >>> [=C2=A0 361.094511]=C2=A0 __synchronize_srcu+0x120/0x128
+> >>> [=C2=A0 361.094514]=C2=A0 synchronize_srcu_expedited+0x2c/0x40
+> >>> [=C2=A0 361.094515]=C2=A0 kvm_swap_active_memslots+0x130/0x198
+> >>> [=C2=A0 361.094519]=C2=A0 kvm_activate_memslot+0x40/0x68
+> >>> [=C2=A0 361.094520]=C2=A0 kvm_set_memslot+0x2f8/0x3b0
+> >>> [=C2=A0 361.094523]=C2=A0 __kvm_set_memory_region+0x2e4/0x438
+> >>> [=C2=A0 361.094524]=C2=A0 kvm_set_memory_region+0x78/0xb8
+> >>> [=C2=A0 361.094526]=C2=A0 kvm_vm_ioctl+0x5a0/0x13e0
+> >>> [=C2=A0 361.094528]=C2=A0 __arm64_sys_ioctl+0xb0/0xf8
+> >>> [=C2=A0 361.094530]=C2=A0 invoke_syscall+0x4c/0x110
+> >>> [=C2=A0 361.094533]=C2=A0 el0_svc_common.constprop.0+0x68/0x128
+> >>> [=C2=A0 361.094536]=C2=A0 do_el0_svc+0x34/0xc0
+> >>> [=C2=A0 361.094538]=C2=A0 el0_svc+0x30/0x98
+> >>> [=C2=A0 361.094541]=C2=A0 el0t_64_sync_handler+0xb8/0xc0
+> >>> [=C2=A0 361.094544]=C2=A0 el0t_64_sync+0x18c/0x190
+> >>> [=C2=A0 363.942817]=C2=A0 kvm_set_memory_region loop=3D6000
+> >> Huh.
+> >>=20
+> >> One possibility is that the "if (!jbase)" block needs to be nested
+> >> within the "if (rcu_seq_state(READ_ONCE(ssp->srcu_gp_seq))) {" block.
+>=20
+> I test this diff and NO helpful
+>=20
+> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> index 50ba70f019de..36286a4b74e6 100644
+> --- a/kernel/rcu/srcutree.c
+> +++ b/kernel/rcu/srcutree.c
+> @@ -513,7 +513,7 @@ static bool srcu_readers_active(struct srcu_struct *s=
+sp)
+>=20
+> =C2=A0#define SRCU_INTERVAL=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 1=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 // Base delay if no expedit=
+ed
+> GPs pending.
+> =C2=A0#define SRCU_MAX_INTERVAL=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 10=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 // Maximum incremental delay
+> from slow readers.
+> -#define SRCU_MAX_NODELAY_PHASE 1=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 // =
+Maximum per-GP-phase
+> consecutive no-delay instances.
+> +#define SRCU_MAX_NODELAY_PHASE 3=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 // =
+Maximum per-GP-phase
+> consecutive no-delay instances.
+> =C2=A0#define SRCU_MAX_NODELAY=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 100=C2=
+=A0=C2=A0=C2=A0=C2=A0 // Maximum consecutive
+> no-delay instances.
+>=20
+> =C2=A0/*
+> @@ -522,16 +522,23 @@ static bool srcu_readers_active(struct
+> srcu_struct *ssp)
+> =C2=A0 */
+> =C2=A0static unsigned long srcu_get_delay(struct srcu_struct *ssp)
+> =C2=A0{
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned long gpstart;
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned long j;
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned long jbase =3D SRCU_I=
+NTERVAL;
+>=20
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ULONG_CMP_LT(READ_ONCE(ssp=
+->srcu_gp_seq),
+> READ_ONCE(ssp->srcu_gp_seq_needed_exp)))
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 jbase =3D 0;
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (rcu_seq_state(READ_ONCE(ssp->sr=
+cu_gp_seq)))
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 jbase +=3D jiffies - READ_ONCE(ssp->srcu_gp_start);
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!jbase) {
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 WRITE_ONCE(ssp->srcu_n_exp_nodelay,
+> READ_ONCE(ssp->srcu_n_exp_nodelay) + 1);
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 if (READ_ONCE(ssp->srcu_n_exp_nodelay) >
+> SRCU_MAX_NODELAY_PHASE)
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 jbase =3D 1;
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (rcu_seq_state(READ_ONCE(ssp->sr=
+cu_gp_seq))) {
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 j =3D jiffies - 1;
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 gpstart =3D READ_ONCE(ssp->srcu_gp_start);
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 if (time_after(j, gpstart))
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 jbase +=3D j -=
+ gpstart;
+> +
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 if (!jbase) {
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 WRITE_ONCE(ssp=
+->srcu_n_exp_nodelay,
+> READ_ONCE(ssp->srcu_n_exp_nodelay) + 1);
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (READ_ONCE(=
+ssp->srcu_n_exp_nodelay) >
+> SRCU_MAX_NODELAY_PHASE)
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 jbase =3D 1;
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 }
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>=20
+> > And when I run 10,000 consecutive synchronize_rcu_expedited() calls, the
+> > above change reduces the overhead by more than an order of magnitude.
+> > Except that the overhead of the series is far less than one second,
+> > not the several minutes that you are seeing.  So the per-call overhead
+> > decreases from about 17 microseconds to a bit more than one microsecond.
+> >=20
+> > I could imagine an extra order of magnitude if you are running HZ=3D100
+> > instead of the HZ=3D1000 that I am running.  But that only gets up to a
+> > few seconds.
+> >=20
+> >> One additional debug is to apply the patch below on top of the one you
+> apply the patch below?
+> >> just now kindly tested, then use whatever debug technique you wish to
+> >> work out what fraction of the time during that critical interval that
+> >> srcu_get_delay() returns non-zero.
+> Sorry, I am confused, no patch right?
+> Just measure srcu_get_delay return to non-zero?
+>=20
+>=20
+> By the way, the issue should be only related with qemu apci. not
+> related with rmr feature
 
-One thing that we have discussed, in case of flood we can minimize a
-memory footprint by releasing the page directly from the our monitor
-work if the grace period is passed for the all page slots. In that case
-we do not need to move the page forward toward the RCU-core for later
-reclaim.
+No, this also occurs if you supply the guest's EFI with an empty set
+of persistent variables. EFI goes and zeroes it, which results in a
+read-only memslot write access being taken to userspace, the memslot
+being unmapped from the guest, QEMU doing a little dance, and
+eventually restoring the memslot back to the guest. Rince, repeat.
 
-But that is another patches. I will examine it when i return back from 
-Norway.
+Do that one byte at a time over 64MB, and your boot time for EFI only
+goes from 39s to 3m50s (that's on a speed-challenged Synquacer box),
+which completely kills the "deploy a new VM" use case.
 
---
-Uladzislau Rezki
+Thanks,
+
+	M.
+
+--=20
+Without deviation from the norm, progress is not possible.
