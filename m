@@ -2,221 +2,95 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8318FC43334
-	for <rcu@archiver.kernel.org>; Wed, 15 Jun 2022 14:03:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DD5B5C433EF
+	for <rcu@archiver.kernel.org>; Wed, 15 Jun 2022 14:37:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356144AbiFOODI (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 15 Jun 2022 10:03:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46552 "EHLO
+        id S1345417AbiFOOh5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 15 Jun 2022 10:37:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356291AbiFOOCx (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 15 Jun 2022 10:02:53 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D5DA2DE6;
-        Wed, 15 Jun 2022 07:02:41 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BA25161B7F;
-        Wed, 15 Jun 2022 14:02:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1849EC34115;
-        Wed, 15 Jun 2022 14:02:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655301740;
-        bh=4D0SVD6o9DZcpnaifdB+Joi2a7Df3F/4wIsCUGJrE10=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=hVuD5MPRuhChpPh7lk5G0SdbWiLGcFoRNYvmnQgMT7ENk3tvNDyEgkclsUMMGneCd
-         clT2YCjKwE6XPSJPdFWmOszhlvPPGX5+WatXZicOUF+nuwOzsQExEu95IeVzPU/AqE
-         BbnKySGMYzlrOzuTRkYBCu5bzlyyoJxSVlzafQAT6vIA+VNB/+S2eaOdsPrFqwjW1l
-         JJ6DxjHN9Z8mdId10gqXT6ZabWXlVDoJ1LDUBW/rU2If34q4bwOHj50rtkPwGLRfmK
-         IHxNG6yQCLtyOcKtEuxLg396K8deAtrRm07PkXUFbLQ2Ph3N6cV9L2qfQmUaUNsxpw
-         hAaW/A8NCBJ4Q==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id B958D5C013F; Wed, 15 Jun 2022 07:02:19 -0700 (PDT)
-Date:   Wed, 15 Jun 2022 07:02:19 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: Re: [PATCH 2/2] rcu/kvfree: Introduce KFREE_DRAIN_JIFFIES_[MAX/MIN]
- interval
-Message-ID: <20220615140219.GL1790663@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220602080644.432156-2-urezki@gmail.com>
- <20220604155108.GU1790663@paulmck-ThinkPad-P17-Gen-1>
- <YpxzB3/HRN/EEHa8@pc638.lan>
- <20220607034710.GE1790663@paulmck-ThinkPad-P17-Gen-1>
- <CA+KHdyXU1apQQbVVZ_zX7o86Qp-AQnif2u8aJFULqHNtfCGcSA@mail.gmail.com>
- <YqN1QqRmPpchDm/k@google.com>
- <YqcHrIMefthWe0t4@pc638.lan>
- <YqgtuBXW5pW4ivD/@pc638.lan>
- <20220615051205.GG1790663@paulmck-ThinkPad-P17-Gen-1>
- <YqmLEPD2XVB3LPeA@pc638.lan>
+        with ESMTP id S230160AbiFOOhz (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 15 Jun 2022 10:37:55 -0400
+Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4708D13CE1;
+        Wed, 15 Jun 2022 07:37:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+        s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=75kgVCcqOPOLeu4JBiLLFab/dM4uNZ1dcLuvpDx9ZCg=; b=kAIWl67VuUe8cBDkmFOZTh4b+J
+        Uy6PgE2+CwIEzhFEfsXCTAadcMkk5TefuTIBHvgzxNrjmUz+/r/f3fMBR5i8mMC7UweLMh9MkeJoD
+        97gkOJRUGibA77qDy9s4vL7NkQkS1Sv+TX4WpruLFHmbGvImVgE9LeYadgdIraA8AGxMlB+PxaWy/
+        1adKvJuvvpCbTsZosCqi5SMDlMupfKEgEY7JpKMS8HhvbF7gyowCTheRqW0YX0S9D05qpW9G1fKLt
+        DJUWQ6k8Tz/HxaHb6kuJRSWnDBXrsJA/DQco3hh/lFSm8XLWvSeNFNfH2bKr+ugXM0hH/Gw2zl2s+
+        laFslj7w==;
+Received: from 179.red-81-39-194.dynamicip.rima-tde.net ([81.39.194.179] helo=[192.168.15.167])
+        by fanzine2.igalia.com with esmtpsa 
+        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+        id 1o1U8m-002LYs-SW; Wed, 15 Jun 2022 16:37:04 +0200
+Message-ID: <362f6520-8209-1721-823c-11928338f57d@igalia.com>
+Date:   Wed, 15 Jun 2022 11:36:39 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YqmLEPD2XVB3LPeA@pc638.lan>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Subject: Re: [PATCH 24/30] panic: Refactor the panic path
+Content-Language: en-US
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     bhe@redhat.com, d.hatayama@jp.fujitsu.com,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Mark Rutland <mark.rutland@arm.com>, mikelley@microsoft.com,
+        vkuznets@redhat.com, akpm@linux-foundation.org,
+        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
+        netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net,
+        rcu@vger.kernel.org, sparclinux@vger.kernel.org,
+        xen-devel@lists.xenproject.org, x86@kernel.org,
+        kernel-dev@igalia.com, kernel@gpiccoli.net, halves@canonical.com,
+        fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com,
+        andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de,
+        corbet@lwn.net, dave.hansen@linux.intel.com, dyoung@redhat.com,
+        feng.tang@intel.com, gregkh@linuxfoundation.org,
+        hidehiro.kawai.ez@hitachi.com, jgross@suse.com,
+        john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org,
+        mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org,
+        peterz@infradead.org, rostedt@goodmis.org,
+        senozhatsky@chromium.org, stern@rowland.harvard.edu,
+        tglx@linutronix.de, vgoyal@redhat.com, will@kernel.org
+References: <20220427224924.592546-1-gpiccoli@igalia.com>
+ <20220427224924.592546-25-gpiccoli@igalia.com>
+ <87fskzuh11.fsf@email.froward.int.ebiederm.org>
+ <0d084eed-4781-c815-29c7-ac62c498e216@igalia.com> <Yqic0R8/UFqTbbMD@alley>
+From:   "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+In-Reply-To: <Yqic0R8/UFqTbbMD@alley>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Jun 15, 2022 at 09:32:32AM +0200, Uladzislau Rezki wrote:
-> > On Tue, Jun 14, 2022 at 08:42:00AM +0200, Uladzislau Rezki wrote:
-> > > > Hello, Joel, Paul.
-> > > > 
-> > > > > Hi Vlad, Paul,
-> > > > > 
-> > > > > On Thu, Jun 09, 2022 at 03:10:57PM +0200, Uladzislau Rezki wrote:
-> > > > > > On Tue, Jun 7, 2022 at 5:47 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > > > > >
-> > > > > > > On Sun, Jun 05, 2022 at 11:10:31AM +0200, Uladzislau Rezki wrote:
-> > > > > > > > > On Thu, Jun 02, 2022 at 10:06:44AM +0200, Uladzislau Rezki (Sony) wrote:
-> > > > > > > > > > Currently the monitor work is scheduled with a fixed interval that
-> > > > > > > > > > is HZ/20 or each 50 milliseconds. The drawback of such approach is
-> > > > > > > > > > a low utilization of page slot in some scenarios. The page can store
-> > > > > > > > > > up to 512 records. For example on Android system it can look like:
-> > > > > > > > > >
-> > > > > > > > > > <snip>
-> > > > > > > > > >   kworker/3:0-13872   [003] .... 11286.007048: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000026522604 nr_records=1
-> > > > > > > > > >   kworker/3:0-13872   [003] .... 11286.015638: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000095ed6fca nr_records=2
-> > > > > > > > > >   kworker/1:2-20434   [001] .... 11286.051230: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000044872ffd nr_records=1
-> > > > > > > > > >   kworker/1:2-20434   [001] .... 11286.059322: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000026522604 nr_records=2
-> > > > > > > > > >   kworker/0:1-20052   [000] .... 11286.095295: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000044872ffd nr_records=2
-> > > > > > > > > >   kworker/0:1-20052   [000] .... 11286.103418: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000cbcf05db nr_records=1
-> > > > > > > > > >   kworker/2:3-14372   [002] .... 11286.135155: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000095ed6fca nr_records=2
-> > > > > > > > > >   kworker/2:3-14372   [002] .... 11286.135198: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000044872ffd nr_records=1
-> > > > > > > > > >   kworker/1:2-20434   [001] .... 11286.155377: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000cbcf05db nr_records=5
-> > > > > > > > > >   kworker/2:3-14372   [002] .... 11286.167181: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000026522604 nr_records=5
-> > > > > > > > > >   kworker/1:2-20434   [001] .... 11286.179202: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000008ef95e14 nr_records=1
-> > > > > > > > > >   kworker/2:3-14372   [002] .... 11286.187398: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000c597d297 nr_records=6
-> > > > > > > > > >   kworker/3:0-13872   [003] .... 11286.187445: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000050bf92e2 nr_records=3
-> > > > > > > > > >   kworker/1:2-20434   [001] .... 11286.198975: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000cbcf05db nr_records=4
-> > > > > > > > > >   kworker/1:2-20434   [001] .... 11286.207203: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000095ed6fca nr_records=4
-> > > > > > > > > > <snip>
-> > > > > > > > > >
-> > > > > > > > > > where a page only carries few records to reclaim a memory. In order to
-> > > > > > > > > > improve batching and make utilization more efficient the patch introduces
-> > > > > > > > > > a drain interval that can be set either to KFREE_DRAIN_JIFFIES_MAX or
-> > > > > > > > > > KFREE_DRAIN_JIFFIES_MIN. It is adjusted if a flood is detected, in this
-> > > > > > > > > > case a memory reclaim occurs more often whereas in mostly idle cases the
-> > > > > > > > > > interval is set to its maximum timeout that improves the utilization of
-> > > > > > > > > > page slots.
-> > > > > > > > > >
-> > > > > > > > > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > > > > > > > >
-> > > > > > > > > That does look like a problem well worth solving!
-> > > > > > > > >
-> > > > > > > > Agree, better ideas make better final solution :)
-> > > > > > > >
-> > > > > > > > >
-> > > > > > > > > But I am missing one thing. If we are having a callback flood, why do we
-> > > > > > > > > need a shorter timeout?
-> > > > > > > > >
-> > > > > > > > To offload faster, because otherwise we run into classical issue, it is a low
-> > > > > > > > memory condition state resulting in OOM.
-> > > > > > >
-> > > > > > > But doesn't each callback queued during the flood give us an opportunity
-> > > > > > > to react to the flood?  That will be way more fine-grained than any
-> > > > > > > reasonable timer, right?  Or am I missing something?
-> > > > > > >
-> > > > > > We can set the timer to zero or to current "jiffies" to initiate the
-> > > > > > offloading if the
-> > > > > > page is full. In that sense probably it make sense to propagate those two attr.
-> > > > > > to user space, so the user can configure min/max drain interval.
-> > > > > > 
-> > > > > > Or we can only deal with fixed interval exposed via sysfs to control it by user.
-> > > > > > In that case we can get rid of MIN one and just trigger a timer if the page is
-> > > > > > full. I think this approach is better.
-> > > > > 
-> > > > > Yes I also think triggering timer with zero-timeout is better. Can you (Vlad)
-> > > > > accomplish that by just calling the timer callback inline, instead of queuing
-> > > > > a timer? I imagine you would just do queue_work() instead of
-> > > > > queue_delayed_work() in this scenario.
-> > > > > 
-> > > > > > > I do agree that the action would often need to be indirect to avoid the
-> > > > > > > memory-allocation-state hassles, but we already can do that, either via
-> > > > > > > an extremely short-term hrtimer or something like irq-work.
-> > > > > > >
-> > > > > > > > > Wouldn't a check on the number of blocks queued be simpler, more direct,
-> > > > > > > > > and provide faster response to the start of a callback flood?
-> > > > > > > > >
-> > > > > > > > I rely on krcp->count because not always we can store the pointer in the page
-> > > > > > > > slots. We can not allocate a page in the caller context thus we use page-cache
-> > > > > > > > worker that fills the cache in normal context. While it populates the cache,
-> > > > > > > > pointers temporary are queued to the linked-list.
-> > > > > > > >
-> > > > > > > > Any thoughts?
-> > > > > > >
-> > > > > > > There are a great many ways to approach this.  One of them is to maintain
-> > > > > > > a per-CPU free-running counter of kvfree_rcu() calls, and to reset this
-> > > > > > > counter each jiffy.
-> > > > > > >
-> > > > > > > Or am I missing a trick here?
-> > > > > > >
-> > > > > > Do you mean to have a per-cpu timer that checks the per-cpu-freed counter
-> > > > > > and schedule the work when if it is needed? Or i have missed your point?
-> > > > > 
-> > > > > I think he (Paul) is describing the way 'flood detection' can work similar to how the
-> > > > > bypass list code is implemented. There he maintains a count which only if
-> > > > > exceeds a limit, will queue on to the bypass list.
-> > > > > 
-> > > > OK, i see that. We also do similar thing. We say it is a flood - when a
-> > > > page becomes full, so it is kind of threshold that we pass.
-> > > > 
-> > > > > This code:
-> > > > > 
-> > > > >         // If we have advanced to a new jiffy, reset counts to allow
-> > > > >         // moving back from ->nocb_bypass to ->cblist.
-> > > > >         if (j == rdp->nocb_nobypass_last) {
-> > > > >                 c = rdp->nocb_nobypass_count + 1;
-> > > > >         } else {
-> > > > >                 WRITE_ONCE(rdp->nocb_nobypass_last, j);
-> > > > >                 c = rdp->nocb_nobypass_count - nocb_nobypass_lim_per_jiffy;
-> > > > >                 if (ULONG_CMP_LT(rdp->nocb_nobypass_count,
-> > > > >                                  nocb_nobypass_lim_per_jiffy))
-> > > > >                         c = 0;
-> > > > >                 else if (c > nocb_nobypass_lim_per_jiffy)
-> > > > >                         c = nocb_nobypass_lim_per_jiffy;
-> > > > >         }
-> > > > >         WRITE_ONCE(rdp->nocb_nobypass_count, c);
-> > > > > 
-> > > > > 
-> > > > > Your (Vlad's) approach OTOH is also fine to me, you check if page is full and
-> > > > > make that as a 'flood is happening' detector.
-> > > > > 
-> > > > OK, thank you Joel. I also think, that way we improve batching and utilization
-> > > > of the page what is actually an intention of the patch in question.
-> > > > 
-> > > Paul, will you pick this patch?
-> > 
-> > I did pick up the first one:
-> > 
-> > 16224f4cdf03 ("rcu/kvfree: Remove useless monitor_todo flag")
-> > 
-> > On the second one, if you use page-fill as your flood detector, can't
-> > you simplify things by just using the one longer timeout, as discussed
-> > in this thread?
-> > 
-> > Or did I miss a turn somewhere?
-> > 
-> No, you did not :) Agreed i will simplify it with a one interval that
-> corresponding to 1 HZ. The flood is detected when a page is full. When
-> it occurs the work will be rearmed to be run asap. Will resend it.
+Perfect Petr, thanks for your feedback!
 
-Very good, and looking forward to it!
+I'll be out for some weeks, but after that what I'm doing is to split
+the series in 2 parts:
 
-> One thing that we have discussed, in case of flood we can minimize a
-> memory footprint by releasing the page directly from the our monitor
-> work if the grace period is passed for the all page slots. In that case
-> we do not need to move the page forward toward the RCU-core for later
-> reclaim.
-> 
-> But that is another patches. I will examine it when i return back from 
-> Norway.
+(a) The general fixes, which should be reviewed by subsystem maintainers
+and even merged individually by them.
 
-Agreed, those should be separate patches.
+(b) The proper panic refactor, which includes the notifiers list split,
+etc. I'll think about what I consider the best solution for the
+crash_dump required ones, and will try to split in very simple patches
+to make it easier to review.
 
-							Thanx, Paul
+Cheers,
+
+
+Guilherme
