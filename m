@@ -2,186 +2,107 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CD6D9C43334
-	for <rcu@archiver.kernel.org>; Wed, 15 Jun 2022 19:09:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D54CC43334
+	for <rcu@archiver.kernel.org>; Wed, 15 Jun 2022 19:20:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351546AbiFOTJl (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 15 Jun 2022 15:09:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44238 "EHLO
+        id S243721AbiFOTUl (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 15 Jun 2022 15:20:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243975AbiFOTJk (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 15 Jun 2022 15:09:40 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E869393DC;
-        Wed, 15 Jun 2022 12:09:39 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        with ESMTP id S236585AbiFOTUl (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 15 Jun 2022 15:20:41 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABDA43ED16;
+        Wed, 15 Jun 2022 12:20:39 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id DDCAE21AB8;
+        Wed, 15 Jun 2022 19:20:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1655320837; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5XqRKdwqzkoEs3gZYQHX7eS05tMGf3VU2LSgLCmE/jM=;
+        b=F1AJkr9skRupqowd/XDIH5I4YmXy8U7D6FufHjWhAoLbDgWLr/RXc4WLwFqwd7PKg71aua
+        I7bHl+3jIatG0SzBdlSop+fvcFrjvPKm9ZHyBHsIAWPSwA5Ho78OKA2F85KGwYtd2u4WQk
+        VL8RQqHzgKfy+3crzWXzVTKSiVE1daQ=
+Received: from suse.cz (unknown [10.100.201.202])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 2E1CDB82168;
-        Wed, 15 Jun 2022 19:09:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6662C34115;
-        Wed, 15 Jun 2022 19:09:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655320176;
-        bh=8J1oUy3Hn+J2l+W/L3+RREE0V/VeAu707W0U1jX7HOs=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=f9BrWPSgmtrFmoinhMd25QuAigfiIZxK9mMMGkFp+TCzbtGrp/BKppf2hpfnyaMdx
-         s11K4I2KNOnx6pywjqEA9SR/P6wfR6AuJyEmSnkrXMDC6nZLwmZdxwLFTCnh4HCzEe
-         sSWgM+cQi1BVv2slbBU32My9L+k6DCWGMFlPr6qZbkFpS4VKOyillaNjVibTrbd7mJ
-         MEY/AV6iNHQVs4Bt/xfIM+85YoidDa7Q3Rtt1Ajfofuuu2Bg/e5ndL4MlC15/z27GE
-         zd2A9wHS3uJnUZBTL0IFBdqh4qHiAqCGYsDR0xUmaXAyyzhEzN2GjAw/f8NQnyREpa
-         Vf+i0Zxkvv9+A==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 251865C014C; Wed, 15 Jun 2022 12:09:36 -0700 (PDT)
-Date:   Wed, 15 Jun 2022 12:09:36 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Zhouyi Zhou <zhouzhouyi@gmail.com>
-Cc:     john.ogness@linutronix.de, pmladek@suse.com, dave@stgolabs.net,
+        by relay2.suse.de (Postfix) with ESMTPS id 511AA2C141;
+        Wed, 15 Jun 2022 19:20:36 +0000 (UTC)
+Date:   Wed, 15 Jun 2022 21:20:33 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     John Ogness <john.ogness@linutronix.de>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>, zhouzhouyi@gmail.com,
+        Davidlohr Bueso <dave@stgolabs.net>,
         Josh Triplett <josh@joshtriplett.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        rcu <rcu@vger.kernel.org>
-Subject: Re: [PATCH linux-next] RFC: torture: add pr_flush to flush the
- results to console
-Message-ID: <20220615190936.GA713726@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220615003733.16447-1-zhouzhouyi@gmail.com>
- <20220615051521.GH1790663@paulmck-ThinkPad-P17-Gen-1>
- <CAABZP2wCos5xupRQ2LbJtaLVN1a7i0D5kwaVTq9DEov8C46Gkw@mail.gmail.com>
- <20220615135220.GI1790663@paulmck-ThinkPad-P17-Gen-1>
+        rcu <rcu@vger.kernel.org>, linux-rockchip@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] printk: Block console kthreads when direct printing
+ will be required
+Message-ID: <YqoxAUwGx0AtxDXd@alley>
+References: <20220615162805.27962-1-pmladek@suse.com>
+ <20220615162805.27962-2-pmladek@suse.com>
+ <CAHk-=wgs38ZrfPvy=nOwVkVzjpM3VFU1zobP37Fwd_h9iAD5JQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220615135220.GI1790663@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <CAHk-=wgs38ZrfPvy=nOwVkVzjpM3VFU1zobP37Fwd_h9iAD5JQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Jun 15, 2022 at 06:52:20AM -0700, Paul E. McKenney wrote:
-> On Wed, Jun 15, 2022 at 08:36:54PM +0800, Zhouyi Zhou wrote:
-> > On Wed, Jun 15, 2022 at 1:15 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > >
-> > > On Wed, Jun 15, 2022 at 08:37:33AM +0800, zhouzhouyi@gmail.com wrote:
-> > > > From: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> > > >
-> > > > currently tools/testing/selftests/rcutorture/bin/torture.sh reports
-> > > > false positve because of kthread printing.
-> > > >
-> > > > Commit "printk: add functions to prefer direct printing" (2bb2b7b57f812)
-> > > > have added functions to prefer direct printing activated for the primary
-> > > > import messages.
-> > > >
-> > > > Meanwhile adding printk_prefer_direct_enter/exit to
-> > > > torture_cleanup_begin/end still can't eliminate the false positives
-> > > > for a hundred percent.
-> > > >
-> > > > This patch add pr_flush to torture_cleanup_end because the latter
-> > > > is sleepable.
-> > > >
-> > > > Reported-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> > > > Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> > > > Tested-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> > >
-> > > Just the one Signed-off-by suffices.  ;-)
-> > Thank Paul for your guidance ;-)
-> > >
-> > > > ---
-> > > >  kernel/torture.c | 1 +
-> > > >  1 file changed, 1 insertion(+)
-> > > >
-> > > > diff --git a/kernel/torture.c b/kernel/torture.c
-> > > > index 789aeb0e1159..b51e42463a67 100644
-> > > > --- a/kernel/torture.c
-> > > > +++ b/kernel/torture.c
-> > > > @@ -878,6 +878,7 @@ void torture_cleanup_end(void)
-> > > >       mutex_lock(&fullstop_mutex);
-> > > >       torture_type = NULL;
-> > > >       mutex_unlock(&fullstop_mutex);
-> > > > +     pr_flush(1000, true);
-> > >
-> > > But in this case, the kernel keeps on running, correct?  So won't the
-> > > output appear over time?  All of printk()'s kthreads are still running
-> > > after all.
-> > I am doing research on linux-next following your guidance on my Dell
-> > PowerEdge R720 server:
-> > #git clone https://kernel.source.codeaurora.cn/pub/scm/linux/kernel/git/next/linux-next.git/
-> > #cd linux-next
-> > #./tools/testing/selftests/rcutorture/bin/torture.sh
-> > after about 14 hours, the test result show that there have been about
-> > 17 failures, I examine the corresponding console.log, and find the
-> > failures are caused by following reason:
-> > before the message output by
-> > rcu/lock/scf_torture_print_module_parms(cur_ops, "End of test:
-> > SUCCESS") has reached serial console, torture_shutdown invoked
-> > kernel_power_off(),
+On Wed 2022-06-15 10:47:14, Linus Torvalds wrote:
+> On Wed, Jun 15, 2022 at 9:28 AM Petr Mladek <pmladek@suse.com> wrote:
+> >
+> > BugLink: https://lore.kernel.org/r/20220610205038.GA3050413@paulmck-ThinkPad-P17-Gen-1
+> > BugLink: https://lore.kernel.org/r/CAMdYzYpF4FNTBPZsEFeWRuEwSies36QM_As8osPWZSr2q-viEA@mail.gmail.com
 > 
-> Ah, got it!  And good show tracking this down, by the way.
+> Other thread discussion about this exact thing:
 > 
-> Does this workaround commit on -rcu do the trick for you?
+>    https://lore.kernel.org/all/CAHk-=wgzRUT1fBpuz3xcN+YdsX0SxqOzHWRtj0ReHpUBb5TKbA@mail.gmail.com/
 > 
-> 704ae8dcda84 ("torture: Flush printk() buffers before powering off")
+> please stop making up random tags that make no sense.
 > 
-> The printk() guys are looking at fixes within the printk() system
-> as well:
+> Just use "Link:"
 > 
-> https://lore.kernel.org/all/87tu8pgcj0.fsf@jogness.linutronix.de/
-> https://lore.kernel.org/all/YqdSw%2FfJvnkRbjvc@alley/
+> Look at that first one (I didn't even bother following the second
+> one). The "bug" part is not even the most important part.
+> 
+> The reason to follow that link is all the discussion, the test-patch,
+> and the confirmation from Paul that "yup, that patch solves the
+> problem for me".
+> 
+> It's extra context to the commit, in case somebody wants to know the
+> history. The "bug" part is (and always should be) already explained in
+> the commit message, there's absolutely no point in adding soem extra
+> noise to the "Link:" tag.
+> 
+> And if the only reason for "BugLink:" to exist is to show "look, this
+> tag actually contains relevant and interesting information", then the
+> solution to THAT problem is to not have the links that are useless and
+> pointless in the first place.
+> 
+> Put another way: if you want to distinguish useless links from useful
+> ones, just do it by not including the useless ones.
+> 
+> Ok?
 
-And Petr has posted a more official fix, which I have queued on -rcu
-for testing at branch pmladek.2022.06.15a.
+Got it! I am going to use "Link:" instead.
 
-							Thanx, Paul
+I just see how the discussion evolved at
+https://lore.kernel.org/all/CAHk-=wgzRUT1fBpuz3xcN+YdsX0SxqOzHWRtj0ReHpUBb5TKbA@mail.gmail.com/
 
-> > so the message "End of test: SUCCESS" has not chance of reaching
-> > console.log of host machine.
-> > 
-> > Then I add printk_prefer_direct_enter/exit to
-> > torture_cleanup_begin/end, again I invoke
-> > #./tools/testing/selftests/rcutorture/bin/torture.sh
-> > after about 14 hours, the test result show that there have been about
-> > 5 failures,
-> > 
-> > Then I add a debug statement after
-> > rcu/lock/scf_torture_print_module_parms(cur_ops, "End of test:
-> > SUCCESS") which sends the debug string ("hello world") to
-> > uart_console_write directly, again I invoke
-> > #./tools/testing/selftests/rcutorture/bin/torture.sh
-> > There is "hello world" in console.log but no "End of test" strings.
-> > 
-> > So I guess even with printk_prefer_direct_enter/exit to
-> > torture_cleanup_begin/end,  our main shutdown thread has failed in
-> > competition for console lock (printk.c):
-> > 2401 if (console_trylock_spinning())
-> > 2402     console_unlock();
-> > 
-> > Then I add pr_flush to torture_cleanup_end
-> > #./tools/testing/selftests/rcutorture/bin/torture.sh
-> > after 14 hours
-> > all 49 tests are success
-> > >
-> > > Or do you have a use case that requires that the output appear sooner
-> > > than it does?  If so, please let me know what that is.
-> > Thank Paul for your patience,
-> > ./tools/testing/selftests/rcutorture/bin/torture.sh is the only tool
-> > that I use.
-> > 
-> > I am very interested in this topic, and very glad to do further
-> > experiments under your guidance ;-)
-> 
-> Or are you already running with that commit or one of those patches?
-> They are working reliably for me (so far, anyway), but maybe more is
-> needed in some cases.
-> 
-> 							Thanx, Paul
-> 
-> > Sincerely yours
-> > Thanks
-> > Zhouyi
-> > >
-> > >                                                         Thanx, Paul
-> > >
-> > > >  }
-> > > >  EXPORT_SYMBOL_GPL(torture_cleanup_end);
-> > > >
-> > > > --
-> > > > 2.25.1
-> > > >
+It is actually this exact discussion that confused me. I got the
+impression that BugLink was a commonly used tag. I see that
+I was too fast.
+
+Thanks for stopping me.
+
+Best Regards,
+Petr
