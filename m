@@ -2,122 +2,166 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 794B2C43334
-	for <rcu@archiver.kernel.org>; Wed, 15 Jun 2022 11:04:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CD2E0C433EF
+	for <rcu@archiver.kernel.org>; Wed, 15 Jun 2022 12:37:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243955AbiFOLEw (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 15 Jun 2022 07:04:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55548 "EHLO
+        id S1348157AbiFOMhL (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 15 Jun 2022 08:37:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345158AbiFOLEn (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 15 Jun 2022 07:04:43 -0400
-Received: from alexa-out-sd-02.qualcomm.com (alexa-out-sd-02.qualcomm.com [199.106.114.39])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD6EF5401D;
-        Wed, 15 Jun 2022 04:04:16 -0700 (PDT)
+        with ESMTP id S244779AbiFOMhK (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 15 Jun 2022 08:37:10 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87ABB31383;
+        Wed, 15 Jun 2022 05:37:09 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id m20so22907933ejj.10;
+        Wed, 15 Jun 2022 05:37:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1655291056; x=1686827056;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=BikRfTtyNSP6EN+fSel6ObjJyNkgPpPQ+YreNW/Ar5k=;
-  b=BGR4ssMjZlScEOQC36jMEl3MC4jQkj+BHadR3L7CIgIhWbMRGRIKBmLw
-   XYFtSdGKBRyc4O8giZn15cA/Jkp2irWwepU9usYfgqVBv1l1N/DLkyjNh
-   t7MJrhn3VLr39Jy6zUZJfhYRLc4dQaDgLPi6L7x3iT/AfVrtsyTPDsl+d
-   g=;
-Received: from unknown (HELO ironmsg01-sd.qualcomm.com) ([10.53.140.141])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 15 Jun 2022 04:04:16 -0700
-X-QCInternal: smtphost
-Received: from nasanex01b.na.qualcomm.com ([10.46.141.250])
-  by ironmsg01-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2022 04:04:16 -0700
-Received: from [10.50.37.107] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.22; Wed, 15 Jun
- 2022 04:04:12 -0700
-Message-ID: <39a16f7b-ef12-4cb2-b8fd-d79b8fdf9ebe@quicinc.com>
-Date:   Wed, 15 Jun 2022 16:34:08 +0530
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=U/WQo9UxHiAIQSpHuTEJOdPrvxBtqOsfkDuOHXT4fi8=;
+        b=mynfaxJn8Yi4N5AnFgJURBMSq6edLrV6kfdVtE/cTBvkdGR+1pymZMt5tGuslErUc2
+         fRWug5XbN8UZArtXaKxYC3oA4rAwvVN2XAfs/LE1iG9Rz3rIxQGoamNeSjojOF4IJnMR
+         6gktE1M0kPpQlCQDrshBcfIUd1PwGbANqs7GxEgEPq2m4lA9LdIQ65vRI4ZSsY3SUVIA
+         2NxU16tB//7HH+axMHn1ncxoepAmd6+Z4qnqqHgtn11LjRzJS9SRA95u28jWQCH2mJwk
+         bo+dhvfMOTVGOfxr8jFs4NUIkWSsTVuKFjK4UNBkcI7RYBw3TDIZdzDNRxtc4HDzNY+g
+         RK1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=U/WQo9UxHiAIQSpHuTEJOdPrvxBtqOsfkDuOHXT4fi8=;
+        b=RfQ3ZhwdmaDJS0fxFZWUxmr88hweV5VW9qbhgjrYnV6rb2Lk7gq1bfB8WcJ0Xt8abb
+         z+obPJc1KPr4wBtj9gYTa3NveKrb4dxzoOzCFk6nhRQ/13arazg8L4Eipc71YGf2UUsm
+         8TZdF//1C1cP9Z/Zt8R4Mp4XTGDi/Fwb8Psdz97XBxCsZvZVGh3HIXjEARfdIn0M9ilD
+         h202RYnBUTn/Yid+Ra1vnJ6/h36kCrBRg6JnapbIGLN6Y8pQi+/oISpJZF4bVPNGL7ts
+         7nm+DIv4aouU+v4vvHswn+XzAX0RM2HBm5j8R3lWXGZfJAIr7j3v2i6xavy2fBY/3FfJ
+         knTA==
+X-Gm-Message-State: AJIora+0uIXTzBXEmSfb5vc4BV962AkmV+MjaHKlPxmTvHs3Yqval6BN
+        lSLhOdkA9OzhWXEwsNXEnomSls1CAznQoiByC1k=
+X-Google-Smtp-Source: ABdhPJylDinb4fCzaItR8dWPh3GXyvMp29GxcUN2YDleOJDJHdNjuEmPigJmt+Ifl8rLUqLlWoaEZioBql0P4yFAOg0=
+X-Received: by 2002:a17:906:73d2:b0:716:14a4:43d with SMTP id
+ n18-20020a17090673d200b0071614a4043dmr8559822ejl.434.1655296627996; Wed, 15
+ Jun 2022 05:37:07 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: Commit 282d8998e997 (srcu: Prevent expedited GPs and blocking
- readers from consuming CPU) cause qemu boot slow
-Content-Language: en-US
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        "zhangfei.gao@foxmail.com" <zhangfei.gao@foxmail.com>,
-        <paulmck@kernel.org>, zhangfei <zhangfei.gao@linaro.org>
-CC:     Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
+References: <20220615003733.16447-1-zhouzhouyi@gmail.com> <20220615051521.GH1790663@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20220615051521.GH1790663@paulmck-ThinkPad-P17-Gen-1>
+From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
+Date:   Wed, 15 Jun 2022 20:36:54 +0800
+Message-ID: <CAABZP2wCos5xupRQ2LbJtaLVN1a7i0D5kwaVTq9DEov8C46Gkw@mail.gmail.com>
+Subject: Re: [PATCH linux-next] RFC: torture: add pr_flush to flush the
+ results to console
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     john.ogness@linutronix.de, pmladek@suse.com, dave@stgolabs.net,
         Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "mtosatti@redhat.com" <mtosatti@redhat.com>,
-        Auger Eric <eric.auger@redhat.com>,
-        "chenxiang (M)" <chenxiang66@hisilicon.com>
-References: <tencent_E306F58EAEC1D188ED6D5F358A269F34C707@qq.com>
- <20220613035711.GY1790663@paulmck-ThinkPad-P17-Gen-1>
- <20220613041652.GA3976000@paulmck-ThinkPad-P17-Gen-1>
- <tencent_F82250B6E3D51A9AC0D2BE1AE43A4E060909@qq.com>
- <20220613121831.GA1790663@paulmck-ThinkPad-P17-Gen-1>
- <tencent_65C7D0A04984EDB6A79A5E5379DA7E835206@qq.com>
- <20220613145900.GC1790663@paulmck-ThinkPad-P17-Gen-1>
- <7b6c983b21d44119b61716a66de397ed@huawei.com>
- <f9684a69-5467-a440-abd1-7cf5ad3a81f7@quicinc.com>
- <tencent_8FD344DA7FC376C7D1204604DA7689DA4906@qq.com>
- <20220614141712.GR1790663@paulmck-ThinkPad-P17-Gen-1>
- <tencent_DFF5A6C9352C76C00C7E46E06F2BA945350A@qq.com>
- <042142db-aab2-fc4a-c1a5-371223c80440@quicinc.com>
- <7f6d9360-9254-88d6-fb34-13f248d2e542@redhat.com>
-From:   Neeraj Upadhyay <quic_neeraju@quicinc.com>
-In-Reply-To: <7f6d9360-9254-88d6-fb34-13f248d2e542@redhat.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        rcu <rcu@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Wed, Jun 15, 2022 at 1:15 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+>
+> On Wed, Jun 15, 2022 at 08:37:33AM +0800, zhouzhouyi@gmail.com wrote:
+> > From: Zhouyi Zhou <zhouzhouyi@gmail.com>
+> >
+> > currently tools/testing/selftests/rcutorture/bin/torture.sh reports
+> > false positve because of kthread printing.
+> >
+> > Commit "printk: add functions to prefer direct printing" (2bb2b7b57f812)
+> > have added functions to prefer direct printing activated for the primary
+> > import messages.
+> >
+> > Meanwhile adding printk_prefer_direct_enter/exit to
+> > torture_cleanup_begin/end still can't eliminate the false positives
+> > for a hundred percent.
+> >
+> > This patch add pr_flush to torture_cleanup_end because the latter
+> > is sleepable.
+> >
+> > Reported-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+> > Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+> > Tested-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+>
+> Just the one Signed-off-by suffices.  ;-)
+Thank Paul for your guidance ;-)
+>
+> > ---
+> >  kernel/torture.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/kernel/torture.c b/kernel/torture.c
+> > index 789aeb0e1159..b51e42463a67 100644
+> > --- a/kernel/torture.c
+> > +++ b/kernel/torture.c
+> > @@ -878,6 +878,7 @@ void torture_cleanup_end(void)
+> >       mutex_lock(&fullstop_mutex);
+> >       torture_type = NULL;
+> >       mutex_unlock(&fullstop_mutex);
+> > +     pr_flush(1000, true);
+>
+> But in this case, the kernel keeps on running, correct?  So won't the
+> output appear over time?  All of printk()'s kthreads are still running
+> after all.
+I am doing research on linux-next following your guidance on my Dell
+PowerEdge R720 server:
+#git clone https://kernel.source.codeaurora.cn/pub/scm/linux/kernel/git/next/linux-next.git/
+#cd linux-next
+#./tools/testing/selftests/rcutorture/bin/torture.sh
+after about 14 hours, the test result show that there have been about
+17 failures, I examine the corresponding console.log, and find the
+failures are caused by following reason:
+before the message output by
+rcu/lock/scf_torture_print_module_parms(cur_ops, "End of test:
+SUCCESS") has reached serial console, torture_shutdown invoked
+kernel_power_off(),
+so the message "End of test: SUCCESS" has not chance of reaching
+console.log of host machine.
 
+Then I add printk_prefer_direct_enter/exit to
+torture_cleanup_begin/end, again I invoke
+#./tools/testing/selftests/rcutorture/bin/torture.sh
+after about 14 hours, the test result show that there have been about
+5 failures,
 
-On 6/15/2022 4:20 PM, Paolo Bonzini wrote:
-> On 6/15/22 12:40, Neeraj Upadhyay wrote:
->>
->> This is useful data, thanks! Did you get chance to check between 100 
->> and 1000, to narrow down further, from which point (does need to be 
->> exact value) between 100 and 1000,  you start seeing degradation at, 
->> for ex. 250, 500 , ...?
->>
->> Is it also possible to try experiment 10 and 11 with below diff.
->> What I have done in below diff is, call srcu_get_delay() only once
->> in try_check_zero() (and not for every loop iteration); also
->> retry with a different delay for the extra iteration which is done
->> when srcu_get_delay(ssp) returns 0.
->>
->> Once we have this data, can you also try by changing 
->> SRCU_RETRY_CHECK_LONG_DELAY   to 100, on top of below diff.
->>
->> #define SRCU_RETRY_CHECK_LONG_DELAY  100
-> 
-> Is there any data that you would like me to gather from the KVM side, 
-> for example with respect to how much it takes to do synchronize_srcu() 
-> on an unpatched kernel, or the duration of the read-sides?
-> 
+Then I add a debug statement after
+rcu/lock/scf_torture_print_module_parms(cur_ops, "End of test:
+SUCCESS") which sends the debug string ("hello world") to
+uart_console_write directly, again I invoke
+#./tools/testing/selftests/rcutorture/bin/torture.sh
+There is "hello world" in console.log but no "End of test" strings.
 
-Hi Paolo,
+So I guess even with printk_prefer_direct_enter/exit to
+torture_cleanup_begin/end,  our main shutdown thread has failed in
+competition for console lock (printk.c):
+2401 if (console_trylock_spinning())
+2402     console_unlock();
 
-Thanks! I think synchronize_srcu() time and read side duration will 
-help. Given that changing SRCU_MAX_NODELAY_PHASE value has impact
-on the boot time (and SRCU_MAX_NODELAY_PHASE impact is dependent on 
-duration of SRCU read side duration), this information will be helpful 
-to get more understanding of the scenario.
+Then I add pr_flush to torture_cleanup_end
+#./tools/testing/selftests/rcutorture/bin/torture.sh
+after 14 hours
+all 49 tests are success
+>
+> Or do you have a use case that requires that the output appear sooner
+> than it does?  If so, please let me know what that is.
+Thank Paul for your patience,
+./tools/testing/selftests/rcutorture/bin/torture.sh is the only tool
+that I use.
 
+I am very interested in this topic, and very glad to do further
+experiments under your guidance ;-)
 
+Sincerely yours
 Thanks
-Neeraj
-
-> Thanks,
-> 
-> Paolo
-> 
+Zhouyi
+>
+>                                                         Thanx, Paul
+>
+> >  }
+> >  EXPORT_SYMBOL_GPL(torture_cleanup_end);
+> >
+> > --
+> > 2.25.1
+> >
