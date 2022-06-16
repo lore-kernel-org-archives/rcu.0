@@ -2,88 +2,160 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B9D7C43334
-	for <rcu@archiver.kernel.org>; Thu, 16 Jun 2022 16:26:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 82E0ECCA487
+	for <rcu@archiver.kernel.org>; Thu, 16 Jun 2022 21:22:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230319AbiFPQ0s (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 16 Jun 2022 12:26:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60262 "EHLO
+        id S1378925AbiFPVW5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 16 Jun 2022 17:22:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232527AbiFPQ0r (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 16 Jun 2022 12:26:47 -0400
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DF092ED4F
-        for <rcu@vger.kernel.org>; Thu, 16 Jun 2022 09:26:47 -0700 (PDT)
-Received: by mail-il1-x132.google.com with SMTP id h7so1269572ila.10
-        for <rcu@vger.kernel.org>; Thu, 16 Jun 2022 09:26:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jjbj3z9ler90/7DuSJLAGsPx/mKMIDw4fDilnDC5Spk=;
-        b=isXgpX78RqnhADqvB1+slYRlPjEecG/XX+kHV5g/jGPRA2b5cIOS/dfjgn5r4/SyJF
-         QztB5g/nR7WxN9+pV89Mt76Z9KNAWCgb/BSGWD7g6RJIsdpDqmUHGc+GWd/Udw0bU4TP
-         MPLMDojU9Cg6Cz6zlPe9Mb+iE0Dq5UnvPhuRk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jjbj3z9ler90/7DuSJLAGsPx/mKMIDw4fDilnDC5Spk=;
-        b=cez8ptWFuoKJxGhNj93+zI10uvO8QczNwMPfuILkHYbWfBpVFxdJh/dS9gPr8i6dLO
-         a5Fr90JI1khx69GshdhtkH7jgtPkTHmhbVY6Cj2NdP2i4mn2ySDlhxqzljHgieY7K0a2
-         MHOZOk0NQLUWY6PhVsuaffInPv3QkeQlfpGAYCClf1qG3FF/Cwkz5e2V7KVa2HJe++ZE
-         7D+uSgr1EXtuXrD/ukZ8Z4jcCZSdNe4z8VhEmIlawTiTKYvdmmkmopi3QyYlhHUbLzUc
-         9gd8KWkg5twxdBCIAXXk0fmyCuDeqVcv1p/RQY8HGSvQTq95PE3GnzDdk/4QoF71GiGl
-         biLQ==
-X-Gm-Message-State: AJIora91MYKL3sT0cOJmtpZ2BE1aSRHKVOk13a6dNQGBwv4yYIOCiKCS
-        l6sPu08JtSNQG+U6AYXmh7SmjgKpWO8dA2LacmWKog==
-X-Google-Smtp-Source: AGRyM1uFo6bqBWuexzNO/GXyEle8b3eb0MW2CVyNOxmL3KbEjwRH/KThWbcE6coxLdGeLwUG1OEfUK99jGSd5kZxh0Y=
-X-Received: by 2002:a92:603:0:b0:2d8:d6e0:1363 with SMTP id
- x3-20020a920603000000b002d8d6e01363mr1151783ilg.307.1655396806744; Thu, 16
- Jun 2022 09:26:46 -0700 (PDT)
+        with ESMTP id S1378999AbiFPVWx (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 16 Jun 2022 17:22:53 -0400
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 783DC1EC6A;
+        Thu, 16 Jun 2022 14:22:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1655414572; x=1686950572;
+  h=date:from:to:cc:subject:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=eIVB2Wcg0d4KNkOlM5BOJs0iOIDhUm5jxxQVobMAAIM=;
+  b=RP2YCFWJTKa74eNpADc52RfwyjDAvZ8LbqtQ+29QXXL8TwRbvjSWS7Ba
+   pq99M69aIQ9JNjTvJTyVDW//G+jY7TSkumi1VWip/2CpHCCXM6c6TDOdt
+   ovkJ3Yi3iryHnvVyD2y26qw2tMuSleKA/emETgYWmPoT1kmV2lQAziBjw
+   O3q86x2LyuYnnhk+Vs+DKTvFCxrgF97TC4OmRtb6/SSLEM/JP4XfqNzIy
+   uBWpPFsIMbGc2UKu+E2AO9bfY2POAwfylNkeUEpgS6fQsCe6X4buSH60h
+   /gpL6lhB831yaHj1bisym9RyaHXfKLRndrfm290x2hFX1FL/TzwTh4/0s
+   A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10380"; a="259207705"
+X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; 
+   d="scan'208";a="259207705"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2022 14:22:51 -0700
+X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; 
+   d="scan'208";a="560027674"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.198.157])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2022 14:22:51 -0700
+Date:   Thu, 16 Jun 2022 14:26:56 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com,
+        vgupta@kernel.org, linux@armlinux.org.uk,
+        ulli.kroll@googlemail.com, linus.walleij@linaro.org,
+        shawnguo@kernel.org, Sascha Hauer <s.hauer@pengutronix.de>,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        tony@atomide.com, khilman@kernel.org, catalin.marinas@arm.com,
+        will@kernel.org, guoren@kernel.org, bcain@quicinc.com,
+        chenhuacai@kernel.org, kernel@xen0n.name, geert@linux-m68k.org,
+        sammy@sammy.net, monstr@monstr.eu, tsbogend@alpha.franken.de,
+        dinguyen@kernel.org, jonas@southpole.se,
+        stefan.kristiansson@saunalahti.fi, shorne@gmail.com,
+        James.Bottomley@hansenpartnership.com, deller@gmx.de,
+        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, hca@linux.ibm.com, gor@linux.ibm.com,
+        agordeev@linux.ibm.com, borntraeger@linux.ibm.com,
+        svens@linux.ibm.com, ysato@users.sourceforge.jp, dalias@libc.org,
+        davem@davemloft.net, richard@nod.at,
+        anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        acme@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+        namhyung@kernel.org, jgross@suse.com, srivatsa@csail.mit.edu,
+        amakhalov@vmware.com, pv-drivers@vmware.com,
+        boris.ostrovsky@oracle.com, chris@zankel.net, jcmvbkbc@gmail.com,
+        rafael@kernel.org, lenb@kernel.org, pavel@ucw.cz,
+        gregkh@linuxfoundation.org, mturquette@baylibre.com,
+        sboyd@kernel.org, daniel.lezcano@linaro.org, lpieralisi@kernel.org,
+        sudeep.holla@arm.com, agross@kernel.org,
+        bjorn.andersson@linaro.org, anup@brainfault.org,
+        thierry.reding@gmail.com, jonathanh@nvidia.com,
+        Arnd Bergmann <arnd@arndb.de>, yury.norov@gmail.com,
+        andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk,
+        rostedt@goodmis.org, pmladek@suse.com, senozhatsky@chromium.org,
+        john.ogness@linutronix.de, paulmck@kernel.org, frederic@kernel.org,
+        quic_neeraju@quicinc.com, josh@joshtriplett.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
+        vschneid@redhat.com, jpoimboe@kernel.org,
+        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-perf-users@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        xen-devel@lists.xenproject.org, linux-xtensa@linux-xtensa.org,
+        linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-arch@vger.kernel.org,
+        rcu@vger.kernel.org, jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH 04/36] cpuidle,intel_idle: Fix CPUIDLE_FLAG_IRQ_ENABLE
+Message-ID: <20220616142656.4b1acc4a@jacob-builder>
+In-Reply-To: <Yqb45vclY2KVL0wZ@hirez.programming.kicks-ass.net>
+References: <20220608142723.103523089@infradead.org>
+        <20220608144516.172460444@infradead.org>
+        <20220609164921.5e61711d@jacob-builder>
+        <Yqb45vclY2KVL0wZ@hirez.programming.kicks-ass.net>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20220512030442.2530552-1-joel@joelfernandes.org>
- <YqeHp0Zmm512x5nx@google.com> <20220613224843.GJ1790663@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20220613224843.GJ1790663@paulmck-ThinkPad-P17-Gen-1>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Thu, 16 Jun 2022 12:26:35 -0400
-Message-ID: <CAEXW_YQWeDLNSw9MhPum+ABB2tzDVoLvg1KSxhnaKdhS7EsZNA@mail.gmail.com>
-Subject: Re: [RFC v1 00/14] Implement call_rcu_lazy() and miscellaneous fixes
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     rcu <rcu@vger.kernel.org>,
-        Rushikesh S Kadam <rushikesh.s.kadam@intel.com>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        Neeraj upadhyay <neeraj.iitr10@gmail.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Jun 13, 2022 at 6:48 PM Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> On Mon, Jun 13, 2022 at 06:53:27PM +0000, Joel Fernandes wrote:
-> > On Thu, May 12, 2022 at 03:04:28AM +0000, Joel Fernandes (Google) wrote:
-> > > Hello!
-> > > Please find the proof of concept version of call_rcu_lazy() attached. This
-> > > gives a lot of savings when the CPUs are relatively idle. Huge thanks to
-> > > Rushikesh Kadam from Intel for investigating it with me.
-> >
-> > Just a status update, we're reworking this code to use the bypass lists which
-> > takes care of a lot of corner cases. I've had to make changes the the rcuog
-> > thread code to handle wakes up a bit differently and such. Initial testing is
-> > looking good. Currently working on the early-flushing of the lazy CBs based
-> > on memory pressure.
-> >
-> > Should be hopefully sending v2 soon!
->
-> Looking forward to seeing it!
+Hi Peter,
 
-Looks like rebasing on paul's dev is needed for me to even apply test
-on our downstream kernels.  Why you ask? Because our downstream folks
-are indeed using upstream 5.19-rc3. =) Finally rebase succeeded and
-now I can test lazy bypass downstream before sending out the next
-RFC...
+On Mon, 13 Jun 2022 10:44:22 +0200, Peter Zijlstra <peterz@infradead.org>
+wrote:
 
- - Joel
+> On Thu, Jun 09, 2022 at 04:49:21PM -0700, Jacob Pan wrote:
+> > Hi Peter,
+> > 
+> > On Wed, 08 Jun 2022 16:27:27 +0200, Peter Zijlstra
+> > <peterz@infradead.org> wrote:
+> >   
+> > > Commit c227233ad64c ("intel_idle: enable interrupts before C1 on
+> > > Xeons") wrecked intel_idle in two ways:
+> > > 
+> > >  - must not have tracing in idle functions
+> > >  - must return with IRQs disabled
+> > > 
+> > > Additionally, it added a branch for no good reason.
+> > > 
+> > > Fixes: c227233ad64c ("intel_idle: enable interrupts before C1 on
+> > > Xeons") Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > > ---
+> > >  drivers/idle/intel_idle.c |   48
+> > > +++++++++++++++++++++++++++++++++++----------- 1 file changed, 37
+> > > insertions(+), 11 deletions(-)
+> > > 
+> > > --- a/drivers/idle/intel_idle.c
+> > > +++ b/drivers/idle/intel_idle.c
+> > > @@ -129,21 +137,37 @@ static unsigned int mwait_substates __in
+> > >   *
+> > >   * Must be called under local_irq_disable().
+> > >   */  
+> > nit: this comment is no long true, right?  
+> 
+> It still is, all the idle routines are called with interrupts disabled,
+> but must also exit with interrupts disabled.
+> 
+> If the idle method requires interrupts to be enabled, it must be sure to
+> disable them again before returning. Given all the RCU/tracing concerns
+> it must use raw_local_irq_*() for this though.
+Makes sense, it is just little confusing when the immediate caller does
+raw_local_irq_enable() which does not cancel out local_irq_disable().
+
+Thanks,
+
+Jacob
