@@ -2,37 +2,37 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A9DFFCCA482
-	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 22:54:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 47681C43334
+	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 22:54:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345320AbiFTWyv (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 20 Jun 2022 18:54:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59308 "EHLO
+        id S1344890AbiFTWyw (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 20 Jun 2022 18:54:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344917AbiFTWy0 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S1344834AbiFTWy0 (ORCPT <rfc822;rcu@vger.kernel.org>);
         Mon, 20 Jun 2022 18:54:26 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 631951F2C8;
-        Mon, 20 Jun 2022 15:54:19 -0700 (PDT)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18F451EC67;
+        Mon, 20 Jun 2022 15:54:18 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 0DD9AB81657;
-        Mon, 20 Jun 2022 22:54:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F6C7C341F2;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 850EE61483;
+        Mon, 20 Jun 2022 22:54:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27199C341F0;
         Mon, 20 Jun 2022 22:54:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1655765654;
-        bh=iwrkhxaTrr4pY/p9WpMDJQWs1AuJORTLB16HzOpGip4=;
+        bh=ZQcJWLIdgwx6oT8P5GOxsn5kfGEH3xvA4D6Bf+j2JpA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HAbpC7j4bJLHm+LUR9yc5XOCJjsqRCnq6VCtADUW+kDUOu4h3Efqgw2wS669EBqW7
-         VOyiUTObpDLlIFwQ1uecT5S9w637t/zBg00MB+2ktga0nKb1655o/uxwt6ldfmn4Nj
-         LlufiOhDAovAx7+GZNzE2aDk1iX8e5BKd8FRT651TqyLXvoLKM5Bs8FXO3Biwnu1Yr
-         8zpjoYkirndZ2Z3O0csXaw0btm2OHioVpjFoSG9VNDlGcjqB/KqVekkqiGOiQeLMvS
-         +xDO/B6NH8h96Wd3dAB7l3WfGGMY0bSAEGKV84oI0Az1XHu8uHVSTiPrgUcrPnNA9V
-         Rv076S+/Dpj+A==
+        b=kTduJzSPgUneTqdbkCUu9devVOMSUUnx81AKOpx1qh9MRZ+9jVZBiFNB/EFB8/3A0
+         nAYwZf6PLP16zT7tPfGEWcP6Pw2+q6sD37itjHECjWbi7+gvioGJWY4dSyYte6zy20
+         jHCSi1eOr7zR3m6XLWGWhR9hdf2ScJZSxezwc+9Uxxx7wPoGsqwI5UtNAJnoPnaz0M
+         1vMXwBxWpKcRbf50KpdD2JvEu0rcdDrHvl/7qrLFdguZH1sOrKbycReu89RjKftuW6
+         se+x5kJuOD+Jmn5bPaQppidQFXffaLbnVppuPVpDgk+QQ/0D76GpOh+3F33tiPEjHJ
+         5XHXoOd4JgjtA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 503C55C12AC; Mon, 20 Jun 2022 15:54:13 -0700 (PDT)
+        id 561C05C147C; Mon, 20 Jun 2022 15:54:13 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
@@ -43,9 +43,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         KP Singh <kpsingh@kernel.org>
-Subject: [PATCH rcu 21/32] rcu-tasks: Move rcu_tasks_trace_pertask() before rcu_tasks_trace_pregp_step()
-Date:   Mon, 20 Jun 2022 15:54:00 -0700
-Message-Id: <20220620225411.3842519-21-paulmck@kernel.org>
+Subject: [PATCH rcu 24/32] rcu-tasks: Pull in tasks blocked within RCU Tasks Trace readers
+Date:   Mon, 20 Jun 2022 15:54:03 -0700
+Message-Id: <20220620225411.3842519-24-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220620225402.GA3842369@paulmck-ThinkPad-P17-Gen-1>
 References: <20220620225402.GA3842369@paulmck-ThinkPad-P17-Gen-1>
@@ -55,9 +55,11 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This is a code-motion-only commit that moves rcu_tasks_trace_pertask()
-to precede rcu_tasks_trace_pregp_step(), so that the latter will be
-able to invoke the other without forward references.
+This commit scans each CPU's ->rtp_blkd_tasks list, adding them to
+the list of holdout tasks.  This will cause the current RCU Tasks Trace
+grace period to wait until these tasks exit their RCU Tasks Trace
+read-side critical sections.  This commit will enable later work
+omitting the scan of the full task list.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
@@ -67,55 +69,52 @@ Cc: Andrii Nakryiko <andrii@kernel.org>
 Cc: Martin KaFai Lau <kafai@fb.com>
 Cc: KP Singh <kpsingh@kernel.org>
 ---
- kernel/rcu/tasks.h | 28 ++++++++++++++--------------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+ kernel/rcu/tasks.h | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
 diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 6f4b89f9517ef..66d8473f1bda1 100644
+index a8f95864c921a..d318cdfd2309c 100644
 --- a/kernel/rcu/tasks.h
 +++ b/kernel/rcu/tasks.h
-@@ -1449,20 +1449,6 @@ static void trc_wait_for_one_reader(struct task_struct *t,
- 	}
+@@ -1492,7 +1492,11 @@ static void rcu_tasks_trace_pertask_handler(void *hop_in)
+ /* Initialize for a new RCU-tasks-trace grace period. */
+ static void rcu_tasks_trace_pregp_step(struct list_head *hop)
+ {
++	LIST_HEAD(blkd_tasks);
+ 	int cpu;
++	unsigned long flags;
++	struct rcu_tasks_percpu *rtpcp;
++	struct task_struct *t;
+ 
+ 	// There shouldn't be any old IPIs, but...
+ 	for_each_possible_cpu(cpu)
+@@ -1506,6 +1510,26 @@ static void rcu_tasks_trace_pregp_step(struct list_head *hop)
+ 	// allow safe access to the hop list.
+ 	for_each_online_cpu(cpu)
+ 		smp_call_function_single(cpu, rcu_tasks_trace_pertask_handler, hop, 1);
++
++	// Only after all running tasks have been accounted for is it
++	// safe to take care of the tasks that have blocked within their
++	// current RCU tasks trace read-side critical section.
++	for_each_possible_cpu(cpu) {
++		rtpcp = per_cpu_ptr(rcu_tasks_trace.rtpcpu, cpu);
++		raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
++		list_splice_init(&rtpcp->rtp_blkd_tasks, &blkd_tasks);
++		while (!list_empty(&blkd_tasks)) {
++			rcu_read_lock();
++			t = list_first_entry(&blkd_tasks, struct task_struct, trc_blkd_node);
++			list_del_init(&t->trc_blkd_node);
++			list_add(&t->trc_blkd_node, &rtpcp->rtp_blkd_tasks);
++			raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
++			rcu_tasks_trace_pertask(t, hop);
++			rcu_read_unlock();
++			raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
++		}
++		raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
++	}
  }
  
--/* Initialize for a new RCU-tasks-trace grace period. */
--static void rcu_tasks_trace_pregp_step(void)
--{
--	int cpu;
--
--	// There shouldn't be any old IPIs, but...
--	for_each_possible_cpu(cpu)
--		WARN_ON_ONCE(per_cpu(trc_ipi_to_cpu, cpu));
--
--	// Disable CPU hotplug across the tasklist scan.
--	// This also waits for all readers in CPU-hotplug code paths.
--	cpus_read_lock();
--}
--
- /* Do first-round processing for the specified task. */
- static void rcu_tasks_trace_pertask(struct task_struct *t,
- 				    struct list_head *hop)
-@@ -1478,6 +1464,20 @@ static void rcu_tasks_trace_pertask(struct task_struct *t,
- 	trc_wait_for_one_reader(t, hop);
- }
- 
-+/* Initialize for a new RCU-tasks-trace grace period. */
-+static void rcu_tasks_trace_pregp_step(void)
-+{
-+	int cpu;
-+
-+	// There shouldn't be any old IPIs, but...
-+	for_each_possible_cpu(cpu)
-+		WARN_ON_ONCE(per_cpu(trc_ipi_to_cpu, cpu));
-+
-+	// Disable CPU hotplug across the tasklist scan.
-+	// This also waits for all readers in CPU-hotplug code paths.
-+	cpus_read_lock();
-+}
-+
  /*
-  * Do intermediate processing between task and holdout scans and
-  * pick up the idle tasks.
 -- 
 2.31.1.189.g2e36527f23
 
