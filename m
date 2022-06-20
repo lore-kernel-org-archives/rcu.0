@@ -2,45 +2,45 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 03B07C433EF
-	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 23:00:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CA8DCCA47C
+	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 23:00:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345964AbiFTXAJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 20 Jun 2022 19:00:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60468 "EHLO
+        id S1345769AbiFTXAO (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 20 Jun 2022 19:00:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346024AbiFTW7s (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 20 Jun 2022 18:59:48 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36EA9193FE;
-        Mon, 20 Jun 2022 15:58:23 -0700 (PDT)
+        with ESMTP id S1345994AbiFTW7r (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 20 Jun 2022 18:59:47 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E625C193F7;
+        Mon, 20 Jun 2022 15:58:22 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id C76A7B8164D;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 407FBB81649;
         Mon, 20 Jun 2022 22:58:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C16BC341D3;
-        Mon, 20 Jun 2022 22:58:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9DF1C341C4;
+        Mon, 20 Jun 2022 22:58:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655765900;
-        bh=ndfRpTTKTYzN9518AyVhDGVdAAXc4cxYGW6C8IJNndY=;
+        s=k20201202; t=1655765899;
+        bh=W6kG3hpmkYco8VzH89bxd88TU98qz+QQY538iEjM9F4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kyWnO3nIrl1fziSzbt+PKFDLAugvUKcC3qn3ZIYJ5eQApUnWy1xqzbdvjH/Z0iN4b
-         txqKxtoWnnyfCTG6TdecfWzDqdsfOxbra7E1ylzh+opqkMLQElyJvq06bN1GgDnknh
-         b4/00CjPZmSUWh1yLDsTWJ+jnuSLVF+Iri2yRXns96Kj4l/IIa72BumFvy2BTLm5t4
-         AwM+FhScecn5w30eXeGqSRiFtFQ685k9kqQWutGfe76NgPfBTQ2nODqKHLL4Syk7wn
-         k2LVXAbMjKIUyQoU2bkjmT7yYiZkT2qs80PqdHCnGV+92a4qS0ue4UyroS626P8vAa
-         fyWusP1fxImFw==
+        b=AzwE355p7egz1mBjAAA04X4sCrzdl8xW2Sm/0hFWPYXzSyltLiqhwwgU1/2XeI327
+         NQ0xmmGmLPC5C/5acAeK1YGhTK8NUCtw4a1HLkXN98jRtEsydb60mTQrWplkDX0xCz
+         jvd0aw3aRfiErxTeR9ECLJbt6802pk9dJbccNI4aFIZl+qmRMBoAjbKLMFjdZa2dXb
+         Rt5jvWydWvsYmDG4nFXt/bzmpJ4U/+39IssL+sQd6XqubjbxNVDYK/k/PL7Rcz+NGt
+         dcp90ceuHn/T9rz9UAnuCple4tZLLjMfjPkX4V8ltkvBHtAZdFzv0bCPJC0e6oRu6j
+         ts9lund7bmmLg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id A569B5C0D1B; Mon, 20 Jun 2022 15:58:19 -0700 (PDT)
+        id 9B87C5C0A33; Mon, 20 Jun 2022 15:58:19 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org, Frederic Weisbecker <frederic@kernel.org>,
+        rostedt@goodmis.org, Zqiang <qiang1.zhang@intel.com>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 09/12] rcutorture: Fix ksoftirqd boosting timing and iteration
-Date:   Mon, 20 Jun 2022 15:58:14 -0700
-Message-Id: <20220620225817.3843106-9-paulmck@kernel.org>
+Subject: [PATCH rcu 04/12] rcutorture: Fix memory leak in rcu_test_debug_objects()
+Date:   Mon, 20 Jun 2022 15:58:09 -0700
+Message-Id: <20220620225817.3843106-4-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220620225814.GA3842995@paulmck-ThinkPad-P17-Gen-1>
 References: <20220620225814.GA3842995@paulmck-ThinkPad-P17-Gen-1>
@@ -50,111 +50,44 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Frederic Weisbecker <frederic@kernel.org>
+From: Zqiang <qiang1.zhang@intel.com>
 
-The RCU priority boosting can fail in two situations:
+The kernel memory leak detector located the following:
 
-1) If (nr_cpus= > maxcpus=), which means if the total number of CPUs
-is higher than those brought online at boot, then torture_onoff() may
-later bring up CPUs that weren't online on boot. Now since rcutorture
-initialization only boosts the ksoftirqds of the CPUs that have been
-set online on boot, the CPUs later set online by torture_onoff won't
-benefit from the boost, making RCU priority boosting fail.
+unreferenced object 0xffff95d941135b50 (size 16):
+  comm "swapper/0", pid 1, jiffies 4294667610 (age 1367.451s)
+  hex dump (first 16 bytes):
+    f0 c6 c2 bd d9 95 ff ff 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<00000000bc81d9b1>] kmem_cache_alloc_trace+0x2f6/0x500
+    [<00000000d28be229>] rcu_torture_init+0x1235/0x1354
+    [<0000000032c3acd9>] do_one_initcall+0x51/0x210
+    [<000000003c117727>] kernel_init_freeable+0x205/0x259
+    [<000000003961f965>] kernel_init+0x1a/0x120
+    [<000000001998f890>] ret_from_fork+0x22/0x30
 
-2) The ksoftirqd kthreads are boosted after the creation of
-rcu_torture_boost() kthreads, which opens a window large enough for these
-rcu_torture_boost() kthreads to wait (despite running at FIFO priority)
-for ksoftirqds that are still running at SCHED_NORMAL priority.
+This is caused by the rcu_test_debug_objects() function allocating an
+rcu_head structure, then failing to free it.  This commit therefore adds
+the needed kfree() after the last use of this structure.
 
-The issues can trigger for example with:
-
-	./kvm.sh --configs TREE01 --kconfig "CONFIG_RCU_BOOST=y"
-
-	[   34.968561] rcu-torture: !!!
-	[   34.968627] ------------[ cut here ]------------
-	[   35.014054] WARNING: CPU: 4 PID: 114 at kernel/rcu/rcutorture.c:1979 rcu_torture_stats_print+0x5ad/0x610
-	[   35.052043] Modules linked in:
-	[   35.069138] CPU: 4 PID: 114 Comm: rcu_torture_sta Not tainted 5.18.0-rc1 #1
-	[   35.096424] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.14.0-0-g155821a-rebuilt.opensuse.org 04/01/2014
-	[   35.154570] RIP: 0010:rcu_torture_stats_print+0x5ad/0x610
-	[   35.198527] Code: 63 1b 02 00 74 02 0f 0b 48 83 3d 35 63 1b 02 00 74 02 0f 0b 48 83 3d 21 63 1b 02 00 74 02 0f 0b 48 83 3d 0d 63 1b 02 00 74 02 <0f> 0b 83 eb 01 0f 8e ba fc ff ff 0f 0b e9 b3 fc ff f82
-	[   37.251049] RSP: 0000:ffffa92a0050bdf8 EFLAGS: 00010202
-	[   37.277320] rcu: De-offloading 8
-	[   37.290367] RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000001
-	[   37.290387] RDX: 0000000000000000 RSI: 00000000ffffbfff RDI: 00000000ffffffff
-	[   37.290398] RBP: 000000000000007b R08: 0000000000000000 R09: c0000000ffffbfff
-	[   37.290407] R10: 000000000000002a R11: ffffa92a0050bc18 R12: ffffa92a0050be20
-	[   37.290417] R13: ffffa92a0050be78 R14: 0000000000000000 R15: 000000000001bea0
-	[   37.290427] FS:  0000000000000000(0000) GS:ffff96045eb00000(0000) knlGS:0000000000000000
-	[   37.290448] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-	[   37.290460] CR2: 0000000000000000 CR3: 000000001dc0c000 CR4: 00000000000006e0
-	[   37.290470] Call Trace:
-	[   37.295049]  <TASK>
-	[   37.295065]  ? preempt_count_add+0x63/0x90
-	[   37.295095]  ? _raw_spin_lock_irqsave+0x12/0x40
-	[   37.295125]  ? rcu_torture_stats_print+0x610/0x610
-	[   37.295143]  rcu_torture_stats+0x29/0x70
-	[   37.295160]  kthread+0xe3/0x110
-	[   37.295176]  ? kthread_complete_and_exit+0x20/0x20
-	[   37.295193]  ret_from_fork+0x22/0x30
-	[   37.295218]  </TASK>
-
-Fix this with boosting the ksoftirqds kthreads from the boosting
-hotplug callback itself and before the boosting kthreads are created.
-
-Fixes: ea6d962e80b6 ("rcutorture: Judge RCU priority boosting on grace periods, not callbacks")
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/rcutorture.c | 28 +++++++++++++---------------
- 1 file changed, 13 insertions(+), 15 deletions(-)
+ kernel/rcu/rcutorture.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 64ad5305829b6..b896987c21122 100644
+index 9273264772b88..613711b8242b9 100644
 --- a/kernel/rcu/rcutorture.c
 +++ b/kernel/rcu/rcutorture.c
-@@ -2076,6 +2076,19 @@ static int rcutorture_booster_init(unsigned int cpu)
- 	if (boost_tasks[cpu] != NULL)
- 		return 0;  /* Already created, nothing more to do. */
- 
-+	// Testing RCU priority boosting requires rcutorture do
-+	// some serious abuse.  Counter this by running ksoftirqd
-+	// at higher priority.
-+	if (IS_BUILTIN(CONFIG_RCU_TORTURE_TEST)) {
-+		struct sched_param sp;
-+		struct task_struct *t;
-+
-+		t = per_cpu(ksoftirqd, cpu);
-+		WARN_ON_ONCE(!t);
-+		sp.sched_priority = 2;
-+		sched_setscheduler_nocheck(t, SCHED_FIFO, &sp);
-+	}
-+
- 	/* Don't allow time recalculation while creating a new task. */
- 	mutex_lock(&boost_mutex);
- 	rcu_torture_disable_rt_throttle();
-@@ -3324,21 +3337,6 @@ rcu_torture_init(void)
- 		rcutor_hp = firsterr;
- 		if (torture_init_error(firsterr))
- 			goto unwind;
--
--		// Testing RCU priority boosting requires rcutorture do
--		// some serious abuse.  Counter this by running ksoftirqd
--		// at higher priority.
--		if (IS_BUILTIN(CONFIG_RCU_TORTURE_TEST)) {
--			for_each_online_cpu(cpu) {
--				struct sched_param sp;
--				struct task_struct *t;
--
--				t = per_cpu(ksoftirqd, cpu);
--				WARN_ON_ONCE(!t);
--				sp.sched_priority = 2;
--				sched_setscheduler_nocheck(t, SCHED_FIFO, &sp);
--			}
--		}
- 	}
- 	shutdown_jiffies = jiffies + shutdown_secs * HZ;
- 	firsterr = torture_shutdown_init(shutdown_secs, rcu_torture_cleanup);
+@@ -3116,6 +3116,7 @@ static void rcu_test_debug_objects(void)
+ 	pr_alert("%s: WARN: Duplicate call_rcu() test complete.\n", KBUILD_MODNAME);
+ 	destroy_rcu_head_on_stack(&rh1);
+ 	destroy_rcu_head_on_stack(&rh2);
++	kfree(rhp);
+ #else /* #ifdef CONFIG_DEBUG_OBJECTS_RCU_HEAD */
+ 	pr_alert("%s: !CONFIG_DEBUG_OBJECTS_RCU_HEAD, not testing duplicate call_rcu()\n", KBUILD_MODNAME);
+ #endif /* #else #ifdef CONFIG_DEBUG_OBJECTS_RCU_HEAD */
 -- 
 2.31.1.189.g2e36527f23
 
