@@ -2,37 +2,37 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 76399C43334
-	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 22:54:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 579DBC433EF
+	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 22:54:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345204AbiFTWyi (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 20 Jun 2022 18:54:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59120 "EHLO
+        id S1345221AbiFTWyj (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 20 Jun 2022 18:54:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344821AbiFTWyY (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 20 Jun 2022 18:54:24 -0400
+        with ESMTP id S1344146AbiFTWy0 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 20 Jun 2022 18:54:26 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87EA3186F3;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFB1C1EACA;
         Mon, 20 Jun 2022 15:54:17 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2C38F61469;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9B60C61494;
         Mon, 20 Jun 2022 22:54:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CAEDCC341D4;
-        Mon, 20 Jun 2022 22:54:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FD4AC341F4;
+        Mon, 20 Jun 2022 22:54:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655765653;
-        bh=t0SucPs4EUqfSebYgoCs5grB36mb5mMbrqax8MQNnoc=;
+        s=k20201202; t=1655765654;
+        bh=Ae1XGWlJ44DVd8D3WNGeqcDVwLoT9rBUL+cKFL6UA5w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ca7LvN1MBrSMaZ8XpHOVMmko5Jyh4qSJkcm/iJxTi5AuVijio/srtzn+1yvDRt+wa
-         TQx1Oaq19c86wpj9wJiAsqUlD+wgeFt7qAv4zKMaOVQy2MCrdi8EWH/XjE8g1TM7Et
-         hM7Zs2/Pofow0L3NMzgbPlPPn1rVC3aGIa4iihVKzLis5yW7pf3cOLFEnMrILKKcJG
-         HRxwzrYgRn1lKACd3cjF3pIuU7y7+uh/XymucqObH3r5etN2euiWcyVWdTPrMDD4M9
-         0SfdJFYj4dLhSmVNS17pT9B3UmmKk1hcTv086/Ia6CRx4yb+93sZ5uMrjMdR1CUwNE
-         ynXBgkx2euVEQ==
+        b=eONaNce/xa9r4tl9WQa4xebw4o7y7PweEJtupd8KZyO7lmM3mqQlo/v8iJTkWP2q5
+         3lTDvY5vkyzodGbjRT/DFMi+VXW5vBLt8HMJ5WEM+GfqmptUPl5rJjgnY1XSi3whVg
+         3i5VrB8fXBkzMy96J7ViLdezkwEn5Qdo8kVWhMt+YzEB/htEaGe1elu0duJkg1iqR2
+         bamRN6B8pDlp22OfUCH3bn20HnJ434XvGsc0SiWHQW0vl4sw3NSrPxi+HchBIgpI4g
+         etkO2+TT4amPdcoqWnMkAgnsQkc1yuWrQAyI01QHWBCj/cs0OL70MxKINlpN+bI1J+
+         SnW24vwDWY46w==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 3F1725C0E3F; Mon, 20 Jun 2022 15:54:13 -0700 (PDT)
+        id 5A29A5C1642; Mon, 20 Jun 2022 15:54:13 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
@@ -43,9 +43,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         KP Singh <kpsingh@kernel.org>
-Subject: [PATCH rcu 12/32] rcu-tasks: Simplify trc_inspect_reader() QS logic
-Date:   Mon, 20 Jun 2022 15:53:51 -0700
-Message-Id: <20220620225411.3842519-12-paulmck@kernel.org>
+Subject: [PATCH rcu 26/32] rcu-tasks: Stop RCU Tasks Trace from scanning full tasks list
+Date:   Mon, 20 Jun 2022 15:54:05 -0700
+Message-Id: <20220620225411.3842519-26-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220620225402.GA3842369@paulmck-ThinkPad-P17-Gen-1>
 References: <20220620225402.GA3842369@paulmck-ThinkPad-P17-Gen-1>
@@ -55,12 +55,20 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Currently, trc_inspect_reader() does one check for nesting less than
-or equal to zero, then sorts out the distinctions within this single
-"if" statement.  This commit simplifies the logic by providing one
-"if" statement for quiescent states (nesting of zero) and another "if"
-statement for transitioning from one nesting level to another or the
-outermost rcu_read_unlock_trace() (negative nesting).
+This commit takes off the training wheels and relies only on scanning
+currently running tasks and tasks that have blocked or been preempted
+within their current RCU Tasks Trace read-side critical section.
+
+Before this commit, the time complexity of an RCU Tasks Trace grace
+period is O(T), where T is the number of tasks.  After this commit,
+this time complexity is O(C+B), where C is the number of CPUs and B
+is the number of tasks that have blocked (or been preempted) at least
+once during their current RCU Tasks Trace read-side critical sections.
+Of course, if all tasks have blocked (or been preempted) at least once
+during their current RCU Tasks Trace read-side critical sections, this is
+still O(T), but current expectations are that RCU Tasks Trace read-side
+critical section will be short and that there will normally not be large
+numbers of tasks blocked within such a critical section.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
@@ -70,36 +78,38 @@ Cc: Andrii Nakryiko <andrii@kernel.org>
 Cc: Martin KaFai Lau <kafai@fb.com>
 Cc: KP Singh <kpsingh@kernel.org>
 ---
- kernel/rcu/tasks.h | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ kernel/rcu/tasks.h | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
 diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 554b2e59a1d5a..6b44c69eeca88 100644
+index 272c905995e56..fe0552086ccfc 100644
 --- a/kernel/rcu/tasks.h
 +++ b/kernel/rcu/tasks.h
-@@ -1343,15 +1343,16 @@ static int trc_inspect_reader(struct task_struct *t, void *bhp_in)
- 	// If not exiting a read-side critical section, mark as checked
- 	// so that the grace-period kthread will remove it from the
- 	// holdout list.
--	if (nesting <= 0) {
--		if (!nesting)
--			rcu_trc_cmpxchg_need_qs(t, 0, TRC_NEED_QS_CHECKED);
--		return nesting ? -EINVAL : 0;  // If in QS, done, otherwise try again later.
-+	if (!nesting) {
-+		rcu_trc_cmpxchg_need_qs(t, 0, TRC_NEED_QS_CHECKED);
-+		return 0;  // In QS, so done.
- 	}
-+	if (nesting < 0)
-+		return -EINVAL; //  QS transitioning, try again later.
+@@ -670,10 +670,12 @@ static void rcu_tasks_wait_gp(struct rcu_tasks *rtp)
+ 	 * and make a list of them in holdouts.
+ 	 */
+ 	set_tasks_gp_state(rtp, RTGS_SCAN_TASKLIST);
+-	rcu_read_lock();
+-	for_each_process_thread(g, t)
+-		rtp->pertask_func(t, &holdouts);
+-	rcu_read_unlock();
++	if (rtp->pertask_func) {
++		rcu_read_lock();
++		for_each_process_thread(g, t)
++			rtp->pertask_func(t, &holdouts);
++		rcu_read_unlock();
++	}
  
- 	// The task is in a read-side critical section, so set up its
--	// state so that it will awaken the grace-period kthread upon exit
--	// from that critical section.
-+	// state so that it will update state upon exit from that critical
-+	// section.
- 	if (!rcu_trc_cmpxchg_need_qs(t, 0, TRC_NEED_QS | TRC_NEED_QS_CHECKED))
- 		trc_add_holdout(t, bhp);
- 	return 0;
+ 	set_tasks_gp_state(rtp, RTGS_POST_SCAN_TASKLIST);
+ 	rtp->postscan_func(&holdouts);
+@@ -1746,7 +1748,6 @@ static int __init rcu_spawn_tasks_trace_kthread(void)
+ 			rcu_tasks_trace.init_fract = 1;
+ 	}
+ 	rcu_tasks_trace.pregp_func = rcu_tasks_trace_pregp_step;
+-	rcu_tasks_trace.pertask_func = rcu_tasks_trace_pertask;
+ 	rcu_tasks_trace.postscan_func = rcu_tasks_trace_postscan;
+ 	rcu_tasks_trace.holdouts_func = check_all_holdout_tasks_trace;
+ 	rcu_tasks_trace.postgp_func = rcu_tasks_trace_postgp;
 -- 
 2.31.1.189.g2e36527f23
 
