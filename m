@@ -2,50 +2,46 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F241C433EF
-	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 22:45:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 52F9CC43334
+	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 22:45:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244645AbiFTWpK (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 20 Jun 2022 18:45:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49666 "EHLO
+        id S244259AbiFTWpL (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 20 Jun 2022 18:45:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244520AbiFTWpJ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 20 Jun 2022 18:45:09 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAFC21400A;
-        Mon, 20 Jun 2022 15:45:07 -0700 (PDT)
+        with ESMTP id S244646AbiFTWpK (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 20 Jun 2022 18:45:10 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E19514022;
+        Mon, 20 Jun 2022 15:45:09 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 74AFBB8162B;
-        Mon, 20 Jun 2022 22:45:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35569C3411B;
+        by sin.source.kernel.org (Postfix) with ESMTPS id 97E21CE179E;
+        Mon, 20 Jun 2022 22:45:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9097AC341CA;
         Mon, 20 Jun 2022 22:45:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1655765105;
-        bh=cQbg2ryuG/N2qvkfvmVUmcUhzkg7BvIShVSh77S0juM=;
+        bh=l+tebky4TEgEPH7xlL3vd3F/iKwURUSr+8Dhto1NkeI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LXFQQDRiDagN0Wc8W5BP8V9XoBDfE81irw0r8Vpo7b9nNzN3wj4iBGdPBzWy1E/d7
-         HqsAOX+eYc3SPS9K3J7G3YVxzLCrSXE7nt8zdYSIxSQ02SP8SbmbV1jAHeBAAhBdyP
-         b4tlkbLXOh/5xxhjq61hLFF4kEnMkvf/6jSfiHmySsEzWcgQxyPdMDdxxk/4WlfRfy
-         IS58DLtbQ9j5Ccup8gd3jAzakNqUWngTTvegs3TqBLpPUYX6SYtLbpulkt1KK4CbDT
-         imIudZOrQjlV8DYCh4OsRc4J2sIp3x0vyxy0z4vLFFxwcWjsUKaEdGH0kMX4+cj2lx
-         UiCeBVZ3VHUag==
+        b=kn+fY/za3b/dCuWSJA3LIonsb2y/u0EDBpD5zGeNjIl3lsqa3Dxpo7WJgKFOgEpWh
+         3ajx7V4PhKrfBK4X7FEMgGHeD5jeZGh5QiI0xgE+XZMMLlpvcldjaAWacRoxEq2k++
+         KNCGrkFCHmKV0JAfSc00YFisAexYV19m4fafpkaADdlN8QVPD0F6UEgW1Ufo2IjI5L
+         aUB+6vN47jNHPgCQejWZMGfQ37GFFeAQ04dzs6LBlxA1IeTxlDpvcyJSweoIFK1xmY
+         YvXgPcmz3VZ4BlGDir2o7ei86JEl0qQE6CG8RX8fzQNjriyY9ULZTVSkwqhb45TNNu
+         +vsJrPnfVrKCw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id EB7E25C0A15; Mon, 20 Jun 2022 15:45:04 -0700 (PDT)
+        id F3A375C0BCC; Mon, 20 Jun 2022 15:45:04 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
         rostedt@goodmis.org, Zqiang <qiang1.zhang@intel.com>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Uladzislau Rezki <uladzislau.rezki@sony.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
         Frederic Weisbecker <frederic@kernel.org>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 3/7] rcu/nocb: Fix NOCB kthreads spawn failure with rcu_nocb_rdp_deoffload() direct call
-Date:   Mon, 20 Jun 2022 15:44:59 -0700
-Message-Id: <20220620224503.3841196-3-paulmck@kernel.org>
+Subject: [PATCH rcu 7/7] rcu/nocb: Avoid polling when my_rdp->nocb_head_rdp list is empty
+Date:   Mon, 20 Jun 2022 15:45:03 -0700
+Message-Id: <20220620224503.3841196-7-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220620224455.GA3840881@paulmck-ThinkPad-P17-Gen-1>
 References: <20220620224455.GA3840881@paulmck-ThinkPad-P17-Gen-1>
@@ -57,181 +53,70 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: Zqiang <qiang1.zhang@intel.com>
 
-If the rcuog/o[p] kthreads spawn failed, the offloaded rdp needs to
-be explicitly deoffloaded, otherwise the target rdp is still considered
-offloaded even though nothing actually handles the callbacks.
+Currently, if the 'rcu_nocb_poll' kernel boot parameter is enabled, all
+rcuog kthreads enter polling mode.  However, if all of a given group
+of rcuo kthreads correspond to CPUs that have been de-offloaded, the
+corresponding rcuog kthread will nonetheless still wake up periodically,
+unnecessarily consuming power and perturbing workloads.  Fortunately,
+this situation is easily detected by the fact that the rcuog kthread's
+CPU's rcu_data structure's ->nocb_head_rdp list is empty.
 
-Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
-Cc: Boqun Feng <boqun.feng@gmail.com>
-Cc: Uladzislau Rezki <uladzislau.rezki@sony.com>
-Cc: Joel Fernandes <joel@joelfernandes.org>
+This commit saves power and avoids unnecessarily perturbing workloads
+by putting an rcuog kthread to sleep during any time period when all of
+its rcuo kthreads' CPUs are de-offloaded.
+
+Co-developed-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_nocb.h | 80 +++++++++++++++++++++++++++++++++---------
- 1 file changed, 64 insertions(+), 16 deletions(-)
+ kernel/rcu/tree_nocb.h | 24 +++++++++++++++++++-----
+ 1 file changed, 19 insertions(+), 5 deletions(-)
 
 diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index f2f2cab6285a1..4cf9a29bba79d 100644
+index fa8e4f82e60c0..a8f574d8850d2 100644
 --- a/kernel/rcu/tree_nocb.h
 +++ b/kernel/rcu/tree_nocb.h
-@@ -986,10 +986,7 @@ static int rdp_offload_toggle(struct rcu_data *rdp,
- 	}
- 	raw_spin_unlock_irqrestore(&rdp_gp->nocb_gp_lock, flags);
- 
--	if (wake_gp)
--		wake_up_process(rdp_gp->nocb_gp_kthread);
--
--	return 0;
-+	return wake_gp;
+@@ -584,6 +584,14 @@ static int nocb_gp_toggle_rdp(struct rcu_data *rdp,
+ 	return ret;
  }
  
- static long rcu_nocb_rdp_deoffload(void *arg)
-@@ -997,9 +994,15 @@ static long rcu_nocb_rdp_deoffload(void *arg)
- 	struct rcu_data *rdp = arg;
- 	struct rcu_segcblist *cblist = &rdp->cblist;
- 	unsigned long flags;
--	int ret;
-+	int wake_gp;
-+	struct rcu_data *rdp_gp = rdp->nocb_gp_rdp;
- 
--	WARN_ON_ONCE(rdp->cpu != raw_smp_processor_id());
-+	/*
-+	 * rcu_nocb_rdp_deoffload() may be called directly if
-+	 * rcuog/o[p] spawn failed, because at this time the rdp->cpu
-+	 * is not online yet.
-+	 */
-+	WARN_ON_ONCE((rdp->cpu != raw_smp_processor_id()) && cpu_online(rdp->cpu));
- 
- 	pr_info("De-offloading %d\n", rdp->cpu);
- 
-@@ -1023,10 +1026,41 @@ static long rcu_nocb_rdp_deoffload(void *arg)
- 	 */
- 	rcu_segcblist_set_flags(cblist, SEGCBLIST_RCU_CORE);
- 	invoke_rcu_core();
--	ret = rdp_offload_toggle(rdp, false, flags);
--	swait_event_exclusive(rdp->nocb_state_wq,
--			      !rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_CB |
--							SEGCBLIST_KTHREAD_GP));
-+	wake_gp = rdp_offload_toggle(rdp, false, flags);
++static void nocb_gp_sleep(struct rcu_data *my_rdp, int cpu)
++{
++	trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("Sleep"));
++	swait_event_interruptible_exclusive(my_rdp->nocb_gp_wq,
++					!READ_ONCE(my_rdp->nocb_gp_sleep));
++	trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("EndSleep"));
++}
 +
-+	mutex_lock(&rdp_gp->nocb_gp_kthread_mutex);
-+	if (rdp_gp->nocb_gp_kthread) {
-+		if (wake_gp)
-+			wake_up_process(rdp_gp->nocb_gp_kthread);
-+
-+		/*
-+		 * If rcuo[p] kthread spawn failed, directly remove SEGCBLIST_KTHREAD_CB.
-+		 * Just wait SEGCBLIST_KTHREAD_GP to be cleared by rcuog.
-+		 */
-+		if (!rdp->nocb_cb_kthread) {
-+			rcu_nocb_lock_irqsave(rdp, flags);
-+			rcu_segcblist_clear_flags(&rdp->cblist, SEGCBLIST_KTHREAD_CB);
-+			rcu_nocb_unlock_irqrestore(rdp, flags);
+ /*
+  * No-CBs GP kthreads come here to wait for additional callbacks to show up
+  * or for grace periods to end.
+@@ -701,13 +709,19 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
+ 		/* Polling, so trace if first poll in the series. */
+ 		if (gotcbs)
+ 			trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("Poll"));
+-		schedule_timeout_idle(1);
++		if (list_empty(&my_rdp->nocb_head_rdp)) {
++			raw_spin_lock_irqsave(&my_rdp->nocb_gp_lock, flags);
++			if (!my_rdp->nocb_toggling_rdp)
++				WRITE_ONCE(my_rdp->nocb_gp_sleep, true);
++			raw_spin_unlock_irqrestore(&my_rdp->nocb_gp_lock, flags);
++			/* Wait for any offloading rdp */
++			nocb_gp_sleep(my_rdp, cpu);
++		} else {
++			schedule_timeout_idle(1);
 +		}
-+
-+		swait_event_exclusive(rdp->nocb_state_wq,
-+					!rcu_segcblist_test_flags(cblist,
-+					  SEGCBLIST_KTHREAD_CB | SEGCBLIST_KTHREAD_GP));
-+	} else {
-+		/*
-+		 * No kthread to clear the flags for us or remove the rdp from the nocb list
-+		 * to iterate. Do it here instead. Locking doesn't look stricly necessary
-+		 * but we stick to paranoia in this rare path.
-+		 */
-+		rcu_nocb_lock_irqsave(rdp, flags);
-+		rcu_segcblist_clear_flags(&rdp->cblist,
-+				SEGCBLIST_KTHREAD_CB | SEGCBLIST_KTHREAD_GP);
-+		rcu_nocb_unlock_irqrestore(rdp, flags);
-+
-+		list_del(&rdp->nocb_entry_rdp);
-+	}
-+	mutex_unlock(&rdp_gp->nocb_gp_kthread_mutex);
-+
- 	/*
- 	 * Lock one last time to acquire latest callback updates from kthreads
- 	 * so we can later handle callbacks locally without locking.
-@@ -1047,7 +1081,7 @@ static long rcu_nocb_rdp_deoffload(void *arg)
- 	WARN_ON_ONCE(rcu_cblist_n_cbs(&rdp->nocb_bypass));
- 
- 
--	return ret;
-+	return 0;
- }
- 
- int rcu_nocb_cpu_deoffload(int cpu)
-@@ -1079,7 +1113,8 @@ static long rcu_nocb_rdp_offload(void *arg)
- 	struct rcu_data *rdp = arg;
- 	struct rcu_segcblist *cblist = &rdp->cblist;
- 	unsigned long flags;
--	int ret;
-+	int wake_gp;
-+	struct rcu_data *rdp_gp = rdp->nocb_gp_rdp;
- 
- 	WARN_ON_ONCE(rdp->cpu != raw_smp_processor_id());
- 	/*
-@@ -1089,6 +1124,9 @@ static long rcu_nocb_rdp_offload(void *arg)
- 	if (!rdp->nocb_gp_rdp)
- 		return -EINVAL;
- 
-+	if (WARN_ON_ONCE(!rdp_gp->nocb_gp_kthread))
-+		return -EINVAL;
-+
- 	pr_info("Offloading %d\n", rdp->cpu);
- 
- 	/*
-@@ -1113,7 +1151,9 @@ static long rcu_nocb_rdp_offload(void *arg)
- 	 *      WRITE flags               READ callbacks
- 	 *      rcu_nocb_unlock()         rcu_nocb_unlock()
- 	 */
--	ret = rdp_offload_toggle(rdp, true, flags);
-+	wake_gp = rdp_offload_toggle(rdp, true, flags);
-+	if (wake_gp)
-+		wake_up_process(rdp_gp->nocb_gp_kthread);
- 	swait_event_exclusive(rdp->nocb_state_wq,
- 			      rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_CB) &&
- 			      rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_GP));
-@@ -1126,7 +1166,7 @@ static long rcu_nocb_rdp_offload(void *arg)
- 	rcu_segcblist_clear_flags(cblist, SEGCBLIST_RCU_CORE);
- 	rcu_nocb_unlock_irqrestore(rdp, flags);
- 
--	return ret;
-+	return 0;
- }
- 
- int rcu_nocb_cpu_offload(int cpu)
-@@ -1248,7 +1288,7 @@ static void rcu_spawn_cpu_nocb_kthread(int cpu)
- 				"rcuog/%d", rdp_gp->cpu);
- 		if (WARN_ONCE(IS_ERR(t), "%s: Could not start rcuo GP kthread, OOM is now expected behavior\n", __func__)) {
- 			mutex_unlock(&rdp_gp->nocb_gp_kthread_mutex);
--			return;
-+			goto end;
- 		}
- 		WRITE_ONCE(rdp_gp->nocb_gp_kthread, t);
- 		if (kthread_prio)
-@@ -1260,12 +1300,20 @@ static void rcu_spawn_cpu_nocb_kthread(int cpu)
- 	t = kthread_run(rcu_nocb_cb_kthread, rdp,
- 			"rcuo%c/%d", rcu_state.abbr, cpu);
- 	if (WARN_ONCE(IS_ERR(t), "%s: Could not start rcuo CB kthread, OOM is now expected behavior\n", __func__))
--		return;
-+		goto end;
- 
- 	if (kthread_prio)
- 		sched_setscheduler_nocheck(t, SCHED_FIFO, &sp);
- 	WRITE_ONCE(rdp->nocb_cb_kthread, t);
- 	WRITE_ONCE(rdp->nocb_gp_kthread, rdp_gp->nocb_gp_kthread);
-+	return;
-+end:
-+	mutex_lock(&rcu_state.barrier_mutex);
-+	if (rcu_rdp_is_offloaded(rdp)) {
-+		rcu_nocb_rdp_deoffload(rdp);
-+		cpumask_clear_cpu(cpu, rcu_nocb_mask);
-+	}
-+	mutex_unlock(&rcu_state.barrier_mutex);
- }
- 
- /* How many CB CPU IDs per GP kthread?  Default of -1 for sqrt(nr_cpu_ids). */
+ 	} else if (!needwait_gp) {
+ 		/* Wait for callbacks to appear. */
+-		trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("Sleep"));
+-		swait_event_interruptible_exclusive(my_rdp->nocb_gp_wq,
+-				!READ_ONCE(my_rdp->nocb_gp_sleep));
+-		trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("EndSleep"));
++		nocb_gp_sleep(my_rdp, cpu);
+ 	} else {
+ 		rnp = my_rdp->mynode;
+ 		trace_rcu_this_gp(rnp, my_rdp, wait_gp_seq, TPS("StartWait"));
 -- 
 2.31.1.189.g2e36527f23
 
