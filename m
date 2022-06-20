@@ -2,44 +2,45 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 42B51C433EF
-	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 22:20:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 69A4CC43334
+	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 22:20:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245376AbiFTWUn (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 20 Jun 2022 18:20:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36376 "EHLO
+        id S242159AbiFTWUo (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 20 Jun 2022 18:20:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243870AbiFTWUj (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 20 Jun 2022 18:20:39 -0400
+        with ESMTP id S230160AbiFTWUm (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 20 Jun 2022 18:20:42 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFD371B796;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 028991B7AA;
         Mon, 20 Jun 2022 15:20:35 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D2C93611D9;
-        Mon, 20 Jun 2022 22:20:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 415DAC3411B;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7CAE5612FA;
+        Mon, 20 Jun 2022 22:20:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F9FBC341D1;
         Mon, 20 Jun 2022 22:20:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1655763634;
-        bh=jG3hNc3HY7o8s2RFDc2C+XAxckGdI/PbpjhwaH1AXKY=;
+        bh=i4CawKOFPTigQL0XBLAWhdlDe14tFZDYfSCVAPb/eQE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fXh1cizEODZ4SMedxiPCazh6QGP5XJe+ddgxpEMuYmJ7YyDrh8UglNT2xW5j7mB19
-         DY8TvVoI9SwRXzF354hU/qLIUlY1JEk0CYtiaFHsB33lZUdS6xWlDUPEd2hTq+leNJ
-         TGvtgjGHXU42yI41xTbYXRtkiHNWaOVK/MMG6XqYQF1HvnXU1C9C+XVUmSzf5UMtd2
-         c1uKiHRF1NHTl50JRyXFZC8HiqWj69y+TleFGWEAtEfLS3L6f1in3Vv5MZFozPT4/3
-         yIJ7C5ycqtulJ3+J+ex53zm8FmPehhnd2q+ml/i7kTvl1DC2SAMGZ+oNARhWvvC73B
-         YeKVhUjonEthg==
+        b=Hxy2vAPtAq1FfTBIh69lbVsfRHcnWpJEDM616wTrMIKYvbD/Krf/t2vibZC8Xms3x
+         mUnqpdnPx6MS5H7LfSJH2haQKGxXMK2FGZEEep5svDSyI1Fu7Ziu9Y84b1d9DHc0a4
+         SD243xJCmbm+U8Cf2gUuU59JaWEaUDpDrE3Ai6URyLAoQUZD5ALw9SP8DJ50tAPyde
+         RJxmJvt3mLO8wdm7RP1QbEJSLISO4Mrj/ddUio5MTfpTVvYbQrUKM2Q0+XA2pCf5sf
+         fEqGGMbJ58krhF7e7KmAUED2OltfR3FFig68Yh4mxAtKfnELzne4AJEAOLoI9gHgO5
+         eQCNP43mfoCAQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id F13D25C05B9; Mon, 20 Jun 2022 15:20:33 -0700 (PDT)
+        id 0AF785C0CCE; Mon, 20 Jun 2022 15:20:34 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 01/12] rcu: Decrease FQS scan wait time in case of callback overloading
-Date:   Mon, 20 Jun 2022 15:20:21 -0700
-Message-Id: <20220620222032.3839547-1-paulmck@kernel.org>
+        rostedt@goodmis.org, Zqiang <qiang1.zhang@intel.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 08/12] rcu: Cleanup RCU urgency state for offline CPU
+Date:   Mon, 20 Jun 2022 15:20:28 -0700
+Message-Id: <20220620222032.3839547-8-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220620222022.GA3839466@paulmck-ThinkPad-P17-Gen-1>
 References: <20220620222022.GA3839466@paulmck-ThinkPad-P17-Gen-1>
@@ -49,41 +50,49 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The force-quiesce-state loop function rcu_gp_fqs_loop() checks for
-callback overloading and does an immediate initial scan for idle CPUs
-if so.  However, subsequent rescans will be carried out at as leisurely a
-rate as they always are, as specified by the rcutree.jiffies_till_next_fqs
-module parameter.  It might be tempting to just continue immediately
-rescanning, but this turns the RCU grace-period kthread into a CPU hog.
-It might also be tempting to reduce the time between rescans to a single
-jiffy, but this can be problematic on larger systems.
+From: Zqiang <qiang1.zhang@intel.com>
 
-This commit therefore divides the normal time between rescans by three,
-rounding up.  Thus a small system running at HZ=1000 that is suffering
-from callback overload will wait only one jiffy instead of the normal
-three between rescans.
+When a CPU is slow to provide a quiescent state for a given grace
+period, RCU takes steps to encourage that CPU to get with the
+quiescent-state program in a more timely fashion.  These steps
+include these flags in the rcu_data structure:
 
+1.	->rcu_urgent_qs, which causes the scheduling-clock interrupt to
+	request an otherwise pointless context switch from the scheduler.
+
+2.	->rcu_need_heavy_qs, which causes both cond_resched() and RCU's
+	context-switch hook to do an immediate momentary quiscent state.
+
+3.	->rcu_need_heavy_qs, which causes the scheduler-clock tick to
+	be enabled even on nohz_full CPUs with only one runnable task.
+
+These flags are of course cleared once the corresponding CPU has passed
+through a quiescent state.  Unless that quiescent state is the CPU
+going offline, which means that when the CPU comes back online, it will
+needlessly consume additional CPU time and incur additional latency,
+which constitutes a minor but very real performance bug.
+
+This commit therefore adds the call to rcu_disable_urgency_upon_qs()
+that clears these flags to the CPU-hotplug offlining code path.
+
+Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ kernel/rcu/tree.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index c25ba442044a6..c19d5926886fb 100644
+index f4a37f2032664..5445b19b48408 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -1993,6 +1993,11 @@ static noinline_for_stack void rcu_gp_fqs_loop(void)
- 			WRITE_ONCE(rcu_state.jiffies_kick_kthreads,
- 				   jiffies + (j ? 3 * j : 2));
- 		}
-+		if (rcu_state.cbovld) {
-+			j = (j + 2) / 3;
-+			if (j <= 0)
-+				j = 1;
-+		}
- 		trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq,
- 				       TPS("fqswait"));
- 		WRITE_ONCE(rcu_state.gp_state, RCU_GP_WAIT_FQS);
+@@ -4446,6 +4446,7 @@ void rcu_report_dead(unsigned int cpu)
+ 	rdp->rcu_ofl_gp_flags = READ_ONCE(rcu_state.gp_flags);
+ 	if (rnp->qsmask & mask) { /* RCU waiting on outgoing CPU? */
+ 		/* Report quiescent state -before- changing ->qsmaskinitnext! */
++		rcu_disable_urgency_upon_qs(rdp);
+ 		rcu_report_qs_rnp(mask, rnp, rnp->gp_seq, flags);
+ 		raw_spin_lock_irqsave_rcu_node(rnp, flags);
+ 	}
 -- 
 2.31.1.189.g2e36527f23
 
