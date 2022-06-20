@@ -2,106 +2,85 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C01AFC433EF
-	for <rcu@archiver.kernel.org>; Sat, 18 Jun 2022 14:57:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9ACB5CCA47E
+	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 06:43:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232320AbiFRO5C (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 18 Jun 2022 10:57:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52056 "EHLO
+        id S238769AbiFTGnJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 20 Jun 2022 02:43:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230133AbiFRO5B (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 18 Jun 2022 10:57:01 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCB8C1A06A;
-        Sat, 18 Jun 2022 07:57:00 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4BB76608D4;
-        Sat, 18 Jun 2022 14:57:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 987BFC3411A;
-        Sat, 18 Jun 2022 14:56:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655564219;
-        bh=NMcZ+TIlHzsocox4f4AZvLmGtBRqPwvJ9m5NXVjAR0s=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=gRQ0zsfkthzj94J+z8Lb+rmVHFs6nifCsJhsPsvsHk6wNNcku+5RS5y0NAuFMvDf+
-         fDFXUvLgkMyBuWunhndbM+3Pe/LBV0cW8zDlDDR/HupXU2z8dhzQa7joUyRZWhSVMl
-         0B84j2BWXPrVUw8IRla5NvA6CVd/+B5mgu/wRyKsNG4pGoXeIGD+dBY5FSLFZnTm0B
-         oW8RlGVJWnAioFtDs1cwyaPuyBB0GJR2a0EZ2IYBrYwGg5ONNn5+tVWnkUIkMim9lZ
-         pKiWjC7ivMKJBL64hQCqARltde+q/Et4MGmg77QHsiFeWdhyPzvKC6wghfKeDJrGxF
-         1/9YV8/87ofYg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 3E0275C03A7; Sat, 18 Jun 2022 07:56:59 -0700 (PDT)
-Date:   Sat, 18 Jun 2022 07:56:59 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] rcu: Avoid strict QS reporting in NMI context
-Message-ID: <20220618145659.GM1790663@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220618022255.1697816-1-qiang1.zhang@intel.com>
- <CAFTL4hybOuURQD6LdxNiSShkvVT=qJ3_5qA59dOJ_47o9WEWYA@mail.gmail.com>
- <PH0PR11MB5880465364ADD3E4637D8077DAAE9@PH0PR11MB5880.namprd11.prod.outlook.com>
+        with ESMTP id S238918AbiFTGmx (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 20 Jun 2022 02:42:53 -0400
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEF12E086;
+        Sun, 19 Jun 2022 23:42:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1655707365; x=1687243365;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=iGc2PxBwPlRkLk2QIWhr+rQbT0gr6aPIOezMrSngiUQ=;
+  b=hWjHPYjmLlLGJCth9p+IkBaMoUqzV/bRhCvZSSgC0catCOdAqVk2i9a3
+   PlR13NUouHQIMZAxkL6qqH7VG5H4eLcFbO0K/GHbfFwOO0gKxL6jiAcZ3
+   W7mRCW0hAqKyUY0SiDpEdLL9ZAGZyaKie8PngtBv3kTn2jiJfoBCeteoK
+   PczPq0ugumvc6foODXGPTbXVYhvzlmOp0ipKwmu4bVR0RNTmEIIWm1OXt
+   cFz8lQgWmZsxQ6HoW/Szcy7aWodjQ0Dmr8yZi7lbxiZH0xxCMCdw+n3ke
+   c0eB3MKyPqT8UJh1fSdSQfVTb9z7zgHeS45sH1wV4fyuoh41J+9RCgodE
+   A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10380"; a="280874190"
+X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; 
+   d="scan'208";a="280874190"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jun 2022 23:42:45 -0700
+X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; 
+   d="scan'208";a="832971352"
+Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.125])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jun 2022 23:42:43 -0700
+From:   Zqiang <qiang1.zhang@intel.com>
+To:     paulmck@kernel.org, frederic@kernel.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] rcu: Update rcu_preempt_deferred_qs() comments for no preemptible RCU
+Date:   Mon, 20 Jun 2022 14:42:24 +0800
+Message-Id: <20220620064224.2630382-1-qiang1.zhang@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <PH0PR11MB5880465364ADD3E4637D8077DAAE9@PH0PR11MB5880.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, Jun 18, 2022 at 12:15:23PM +0000, Zhang, Qiang1 wrote:
-> Le sam. 18 juin 2022, 04:23, Zqiang <qiang1.zhang@intel.com<mailto:qiang1.zhang@intel.com>> a écrit :
-> Avoid invoke rcu_report_qs_rdp() in NMI handlers, in NMI handlers,
-> acquiring raw_spinlocks should be avoided, prevent NMI handlers
-> from blocking(spin) unnecessarily.
-> 
-> This commit make rcu_read_unlock_strict() early return when in
-> NMI context.
-> 
-> Signed-off-by: Zqiang <qiang1.zhang@intel.com<mailto:qiang1.zhang@intel.com>>
-> ---
->  kernel/rcu/tree_plugin.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> index dc78726b993f..e7a36e248a8a 100644
-> --- a/kernel/rcu/tree_plugin.h
-> +++ b/kernel/rcu/tree_plugin.h
-> @@ -821,7 +821,7 @@ void rcu_read_unlock_strict(void)
->  {
->         struct rcu_data *rdp;
-> 
-> -       if (irqs_disabled() || preempt_count() || !rcu_state.gp_kthread)
-> +       if (in_nmi() || irqs_disabled() || preempt_count() || !rcu_state.gp_kthread)
-> 
-> >Doesn't preempt_count() imply in_nmi()?
-> >
-> 
-> 
-> 
-> It looks like this, thanks Frederic
-> 
-> #define nmi_count()     (preempt_count() & NMI_MASK)
-> #define in_nmi()                (nmi_count())
-> 
-> Hi Paul, sorry it’s my mistake.
+For no preemptible RCU, the rcu_preempt_deferred_qs() only report
+expedited QS state of current CPU, since preemption does not occur
+in RCU critical sections, there are no tasks insert to leaf rnp
+blocked-tasks list, that is to say the tasks structure's ->rcu_blocked_node
+and the leaf rnp structure's  ->blkd_tasks are always empty.
 
-Thank you both for catching this!
+Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+---
+ kernel/rcu/tree_plugin.h | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-I clearly should not be reviewing incoming patches late on Friday
-evening!
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index dc78726b993f..99424c2da5db 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -932,10 +932,12 @@ static bool rcu_preempt_need_deferred_qs(struct task_struct *t)
+ 	return false;
+ }
+ 
+-// Except that we do need to respond to a request by an expedited grace
+-// period for a quiescent state from this CPU.  Note that requests from
+-// tasks are handled when removing the task from the blocked-tasks list
+-// below.
++/*
++ * Except that we do need to respond to a request by an expedited grace
++ * period for a quiescent state from this CPU.  Note that for no preemptible
++ * RCU, since preemption does not occur in RCU critical sections, so the
++ * leaf rnp's blocked-tasks list is always empty.
++ */
+ void rcu_preempt_deferred_qs(struct task_struct *t)
+ {
+ 	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
+-- 
+2.25.1
 
-							Thanx, Paul
-
-> >Thanks.
-> 
->                 return;
->         rdp = this_cpu_ptr(&rcu_data);
->         rdp->cpu_no_qs.b.norm = false;
-> --
-> 2.25.1
