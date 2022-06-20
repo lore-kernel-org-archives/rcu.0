@@ -2,57 +2,45 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2CBECC43334
-	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 23:12:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AA702CCA47C
+	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 23:12:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346649AbiFTXMK (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S1346798AbiFTXMK (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Mon, 20 Jun 2022 19:12:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54796 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346024AbiFTXLt (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S1346652AbiFTXLt (ORCPT <rfc822;rcu@vger.kernel.org>);
         Mon, 20 Jun 2022 19:11:49 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C4F62611C;
-        Mon, 20 Jun 2022 16:10:32 -0700 (PDT)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7435225C4F;
+        Mon, 20 Jun 2022 16:10:34 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3121B614FC;
+        by ams.source.kernel.org (Postfix) with ESMTPS id D236BB81649;
         Mon, 20 Jun 2022 23:10:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EBDBC3411B;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96333C3411C;
         Mon, 20 Jun 2022 23:10:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1655766631;
-        bh=exndd9a3xBM686KDgEhraoh1YVxjbXSDdpSHqgGxhoQ=;
+        bh=+rj4ghNkEiHAQaun3eCwWQ1DE2elLmXJU5WBjGsDFrU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l7BeZAP4o1DL1v4+o1rtHvllFGM9RNht/gJ/P3dIICurJOIRYqIDxfITdkibDkv3S
-         NuV9qSwE1MI/2L1uUQSxP4LoSbe5N4vcALefAKjYpptgAykvYNnNgBgdwjK8pk/VgR
-         l1L8rGLhrF+9XsqM+xnbAjV87Didsqi3X1MAT3c6PqG1RuRe1voHb3yBF4MmZ1qyPZ
-         4Z2f/RYxytKwJBKly7kEwpJ9PtLYLj2PKfasRa3fx5gvrj5JpLZEYwu4StS2qenuyV
-         rdNQN4JoM46k6hnz5N2x4w8VchDAztXbuuCG86WSz772ncLIrJXJ+NzkfDsCS+1DgG
-         pgpqQhFvSB6+g==
+        b=M9T7iLlFPceRrLUeoRerQgmellUJ615wD6Y059ynTFRpM4zBT7pji5XDZzly2dliM
+         bsd1CNoj6dr/hktKEZyZcfAGG6sTgeEzzDeKDgUKS02bIcp0jQUqFykkR2gR7rDWhC
+         vmqrCeUtpCMV4p2cB8kY9tL4IPrEiJ1aJ6MMd43eTeAdF86m/t2DOHjaxs8/kgcNv9
+         PnBKfYfqBOdZ/qiXvScNg5Z7Aam3BtQCm+aJhODYeGTa9IdlD6Vn/l9Gr0uAuQaaCA
+         SyH0ARU1INitEo7OKnXGhQ68r31gfXlB6vLTqIaE0567hVhAIxKP6tTJdFlQtkXfTo
+         ndCDGPmiMqPbA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 4FBF25C0A15; Mon, 20 Jun 2022 16:10:31 -0700 (PDT)
+        id 499B75C05B9; Mon, 20 Jun 2022 16:10:31 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org, Frederic Weisbecker <frederic@kernel.org>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Uladzislau Rezki <uladzislau.rezki@sony.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Xiongfeng Wang <wangxiongfeng2@huawei.com>,
-        Yu Liao <liaoyu15@huawei.com>, Phil Auld <pauld@redhat.com>,
-        Paul Gortmaker <paul.gortmaker@windriver.com>,
-        Alex Belits <abelits@marvell.com>,
+        rostedt@goodmis.org, Zqiang <qiang1.zhang@intel.com>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 03/23] context_tracking: Remove unused context_tracking_in_user()
-Date:   Mon, 20 Jun 2022 16:10:09 -0700
-Message-Id: <20220620231029.3844583-3-paulmck@kernel.org>
+Subject: [PATCH rcu 01/23] rcu: Dump rcuc kthread status for CPUs not reporting quiescent state
+Date:   Mon, 20 Jun 2022 16:10:07 -0700
+Message-Id: <20220620231029.3844583-1-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220620231027.GA3844372@paulmck-ThinkPad-P17-Gen-1>
 References: <20220620231027.GA3844372@paulmck-ThinkPad-P17-Gen-1>
@@ -62,48 +50,114 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Frederic Weisbecker <frederic@kernel.org>
+From: Zqiang <qiang1.zhang@intel.com>
 
-This function is not used and CT_WARN_ON() coupled with ct_state() is
-the preferred way to assert context tracking state values.
+If the rcutree.use_softirq kernel boot parameter is disabled, then it is
+possible that a RCU CPU stall is due to the rcuc kthreads being starved of
+CPU time.  There is currently no easy way to infer this from the RCU CPU
+stall warning output.  This commit therefore adds a string of the form "
+rcuc=%ld jiffies(starved)" to a given CPU's output if the corresponding
+rcuc kthread has been starved for more than two seconds.
 
-Reported-by: Nicolas Saenz Julienne <nsaenz@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
-Cc: Uladzislau Rezki <uladzislau.rezki@sony.com>
-Cc: Joel Fernandes <joel@joelfernandes.org>
-Cc: Boqun Feng <boqun.feng@gmail.com>
-Cc: Nicolas Saenz Julienne <nsaenz@kernel.org>
-Cc: Marcelo Tosatti <mtosatti@redhat.com>
-Cc: Xiongfeng Wang <wangxiongfeng2@huawei.com>
-Cc: Yu Liao <liaoyu15@huawei.com>
-Cc: Phil Auld <pauld@redhat.com>
-Cc: Paul Gortmaker<paul.gortmaker@windriver.com>
-Cc: Alex Belits <abelits@marvell.com>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+[ paulmck: Eliminate extraneous space characters. ]
+
+Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/context_tracking_state.h | 5 -----
- 1 file changed, 5 deletions(-)
+ kernel/rcu/tree_stall.h | 49 ++++++++++++++++++-----------------------
+ 1 file changed, 21 insertions(+), 28 deletions(-)
 
-diff --git a/include/linux/context_tracking_state.h b/include/linux/context_tracking_state.h
-index ae1e63e269474..edc7b46376a6b 100644
---- a/include/linux/context_tracking_state.h
-+++ b/include/linux/context_tracking_state.h
-@@ -41,12 +41,7 @@ static inline bool context_tracking_enabled_this_cpu(void)
- 	return context_tracking_enabled() && __this_cpu_read(context_tracking.active);
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index 4995c078cff98..3556637768fd5 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -409,7 +409,19 @@ static bool rcu_is_gp_kthread_starving(unsigned long *jp)
+ 
+ static bool rcu_is_rcuc_kthread_starving(struct rcu_data *rdp, unsigned long *jp)
+ {
+-	unsigned long j = jiffies - READ_ONCE(rdp->rcuc_activity);
++	int cpu;
++	struct task_struct *rcuc;
++	unsigned long j;
++
++	rcuc = rdp->rcu_cpu_kthread_task;
++	if (!rcuc)
++		return false;
++
++	cpu = task_cpu(rcuc);
++	if (cpu_is_offline(cpu) || idle_cpu(cpu))
++		return false;
++
++	j = jiffies - READ_ONCE(rdp->rcuc_activity);
+ 
+ 	if (jp)
+ 		*jp = j;
+@@ -434,6 +446,9 @@ static void print_cpu_stall_info(int cpu)
+ 	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
+ 	char *ticks_title;
+ 	unsigned long ticks_value;
++	bool rcuc_starved;
++	unsigned long j;
++	char buf[32];
+ 
+ 	/*
+ 	 * We could be printing a lot while holding a spinlock.  Avoid
+@@ -451,7 +466,10 @@ static void print_cpu_stall_info(int cpu)
+ 	delta = rcu_seq_ctr(rdp->mynode->gp_seq - rdp->rcu_iw_gp_seq);
+ 	falsepositive = rcu_is_gp_kthread_starving(NULL) &&
+ 			rcu_dynticks_in_eqs(rcu_dynticks_snap(rdp));
+-	pr_err("\t%d-%c%c%c%c: (%lu %s) idle=%03x/%ld/%#lx softirq=%u/%u fqs=%ld %s\n",
++	rcuc_starved = rcu_is_rcuc_kthread_starving(rdp, &j);
++	if (rcuc_starved)
++		sprintf(buf, " rcuc=%ld jiffies(starved)", j);
++	pr_err("\t%d-%c%c%c%c: (%lu %s) idle=%03x/%ld/%#lx softirq=%u/%u fqs=%ld%s%s\n",
+ 	       cpu,
+ 	       "O."[!!cpu_online(cpu)],
+ 	       "o."[!!(rdp->grpmask & rdp->mynode->qsmaskinit)],
+@@ -464,32 +482,10 @@ static void print_cpu_stall_info(int cpu)
+ 	       rdp->dynticks_nesting, rdp->dynticks_nmi_nesting,
+ 	       rdp->softirq_snap, kstat_softirqs_cpu(RCU_SOFTIRQ, cpu),
+ 	       data_race(rcu_state.n_force_qs) - rcu_state.n_force_qs_gpstart,
++	       rcuc_starved ? buf : "",
+ 	       falsepositive ? " (false positive?)" : "");
  }
  
--static __always_inline bool context_tracking_in_user(void)
+-static void rcuc_kthread_dump(struct rcu_data *rdp)
 -{
--	return __this_cpu_read(context_tracking.state) == CONTEXT_USER;
+-	int cpu;
+-	unsigned long j;
+-	struct task_struct *rcuc;
+-
+-	rcuc = rdp->rcu_cpu_kthread_task;
+-	if (!rcuc)
+-		return;
+-
+-	cpu = task_cpu(rcuc);
+-	if (cpu_is_offline(cpu) || idle_cpu(cpu))
+-		return;
+-
+-	if (!rcu_is_rcuc_kthread_starving(rdp, &j))
+-		return;
+-
+-	pr_err("%s kthread starved for %ld jiffies\n", rcuc->comm, j);
+-	sched_show_task(rcuc);
+-	if (!trigger_single_cpu_backtrace(cpu))
+-		dump_cpu_task(cpu);
 -}
- #else
--static __always_inline bool context_tracking_in_user(void) { return false; }
- static __always_inline bool context_tracking_enabled(void) { return false; }
- static __always_inline bool context_tracking_enabled_cpu(int cpu) { return false; }
- static __always_inline bool context_tracking_enabled_this_cpu(void) { return false; }
+-
+ /* Complain about starvation of grace-period kthread.  */
+ static void rcu_check_gp_kthread_starvation(void)
+ {
+@@ -662,9 +658,6 @@ static void print_cpu_stall(unsigned long gps)
+ 	rcu_check_gp_kthread_expired_fqs_timer();
+ 	rcu_check_gp_kthread_starvation();
+ 
+-	if (!use_softirq)
+-		rcuc_kthread_dump(rdp);
+-
+ 	rcu_dump_cpu_stacks();
+ 
+ 	raw_spin_lock_irqsave_rcu_node(rnp, flags);
 -- 
 2.31.1.189.g2e36527f23
 
