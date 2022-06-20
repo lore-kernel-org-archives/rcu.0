@@ -2,67 +2,90 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C7BC7C43334
-	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 22:17:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 676E2C433EF
+	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 22:18:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239979AbiFTWRg (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 20 Jun 2022 18:17:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33908 "EHLO
+        id S241736AbiFTWSD (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 20 Jun 2022 18:18:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230366AbiFTWRf (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 20 Jun 2022 18:17:35 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AE821A3AC;
-        Mon, 20 Jun 2022 15:17:34 -0700 (PDT)
+        with ESMTP id S230366AbiFTWSC (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 20 Jun 2022 18:18:02 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11470DF33;
+        Mon, 20 Jun 2022 15:18:01 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 21580611FA;
-        Mon, 20 Jun 2022 22:17:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 810AEC3411B;
-        Mon, 20 Jun 2022 22:17:33 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 863A7B81649;
+        Mon, 20 Jun 2022 22:18:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DF85C3411B;
+        Mon, 20 Jun 2022 22:17:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655763453;
-        bh=ic9VILZnmW7oJbQF1duKHcHgpncSY6t6Lh5W2GkGEHA=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=JSk4960JOw0kasFf86k5U26evc9fo/MPQmhhoeA1eDojv4JQplkXXzeSd1rCTYD2o
-         F0Fdw0lJAjvPTNIKYSAe4Qhk2GmMJ6odaTJ06Ld3FKMd0LfxIiL0yis7DNoqNTtEpf
-         uo02SwIqJWhfx4tq6s2AbvaBztbzJB/Drxmngv7BlomPb9MsPMyRXMfn1g9zq9Ysg9
-         aTvm6aoykTVEFYRR1CU1KymDc4OUV7KW4mkB87LoeUR2RfcIq068RH/FYwccgpT6Qf
-         T9GVzApcbNoteuY/Xi/6wUa+8DxyZVykbAOYlxTLtDOgoEXGbxEOk45KUsyF6Ws9EW
-         1ot1EccqbqRTw==
+        s=k20201202; t=1655763479;
+        bh=04DJ1/1K8PMW4hsTpIKiSFs2fsEYB7ypcGETpqL6l6Q=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Yh6XneSOsTIuYKGdQ++TLQCmIn/BYK6nrobeOl1jgzTzwLrNcoUTpNZyzzbqap/kk
+         O6o9WifBkPji0iir0MewLIADsuAvXjU8dJHxSg4xRx7h35cTfb7hMvYFVuBQV/ApYm
+         9dplx2KQdUgDdlUWMRxMtURVmL5pIa+Bz8/901zV7eyzfkfuGAeZdeZPeRjRMMHIQ7
+         17NvNC7wmIfgcKE6le7c2Vs8ZVEqLkv/2+FKpujPGaFlg79vlvA5VTciC+2/Dfo+TN
+         9WrXTtrEUiGETQC+ENn6p/ta0FCdqiR9ZYYdsiPd3WFhwFp7VIw3VonQB+m+e7OIOh
+         qNtg3SAs6bO9A==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 2C0EA5C05B9; Mon, 20 Jun 2022 15:17:33 -0700 (PDT)
-Date:   Mon, 20 Jun 2022 15:17:33 -0700
+        id D834A5C05C8; Mon, 20 Jun 2022 15:17:58 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org
-Subject: [PATCH rcu 0/3] Documentation updates for v5.20
-Message-ID: <20220620221733.GA3839136@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Eric Dumazet <edumazet@google.com>
+Subject: [PATCH rcu 2/3] doc: Document the rcutree.rcu_divisor kernel boot parameter
+Date:   Mon, 20 Jun 2022 15:17:56 -0700
+Message-Id: <20220620221757.3839212-2-paulmck@kernel.org>
+X-Mailer: git-send-email 2.31.1.189.g2e36527f23
+In-Reply-To: <20220620221733.GA3839136@paulmck-ThinkPad-P17-Gen-1>
+References: <20220620221733.GA3839136@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello!
+This commit adds kernel-parameters.txt documentation for the
+rcutree.rcu_divisor kernel boot parameter, which controls the softirq
+callback-invocation batch limit.
 
-This series contains a few documentation updates:
+Cc: Eric Dumazet <edumazet@google.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ Documentation/admin-guide/kernel-parameters.txt | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-1.	Update rcutorture.fwd_progress help text.
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 2522b11e593f2..bdf431bdbfdc4 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -4666,6 +4666,21 @@
+ 			When RCU_NOCB_CPU is set, also adjust the
+ 			priority of NOCB callback kthreads.
+ 
++	rcutree.rcu_divisor= [KNL]
++			Set the shift-right count to use to compute
++			the callback-invocation batch limit bl from
++			the number of callbacks queued on this CPU.
++			The result will be bounded below by the value of
++			the rcutree.blimit kernel parameter.  Every bl
++			callbacks, the softirq handler will exit in
++			order to allow the CPU to do other work.
++
++			Please note that this callback-invocation batch
++			limit applies only to non-offloaded callback
++			invocation.  Offloaded callbacks are instead
++			invoked in the context of an rcuoc kthread, which
++			scheduler will preempt as it does any other task.
++
+ 	rcutree.rcu_nocb_gp_stride= [KNL]
+ 			Set the number of NOCB callback kthreads in
+ 			each group, which defaults to the square root
+-- 
+2.31.1.189.g2e36527f23
 
-2.	Document the rcutree.rcu_divisor kernel boot parameter.
-
-3.	Document rcutree.nocb_nobypass_lim_per_jiffy kernel parameter.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- Documentation/admin-guide/kernel-parameters.txt   |   13 +++++
- b/Documentation/admin-guide/kernel-parameters.txt |   15 ++++++
- b/kernel/rcu/rcutorture.c                         |   53 +++++++---------------
- 3 files changed, 46 insertions(+), 35 deletions(-)
