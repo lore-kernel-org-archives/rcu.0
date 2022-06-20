@@ -2,42 +2,41 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D131CCA480
-	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 23:12:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6494FC433EF
+	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 23:12:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244103AbiFTXMO (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 20 Jun 2022 19:12:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55204 "EHLO
+        id S1343666AbiFTXMQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 20 Jun 2022 19:12:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346811AbiFTXLu (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S1346822AbiFTXLu (ORCPT <rfc822;rcu@vger.kernel.org>);
         Mon, 20 Jun 2022 19:11:50 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7218026134;
-        Mon, 20 Jun 2022 16:10:34 -0700 (PDT)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38EDF2613E;
+        Mon, 20 Jun 2022 16:10:36 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 0D9B1B8164C;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 98B0EB81213;
         Mon, 20 Jun 2022 23:10:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5C4AC341C8;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC8A6C341D4;
         Mon, 20 Jun 2022 23:10:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655766631;
-        bh=sxrAJS/7NlhVkYTsvI/ZDDsFLvW3fu6p2vu9WPNdzew=;
+        s=k20201202; t=1655766632;
+        bh=23nB7ajTFW78bIbwshi6o8yum8ua3pcV5XlbBQQNSC4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LxyDGn7ChqCWdqGwj0pTcK3XAWKGNNujtev3jSsoW0PRsFw3qSGI7lVfJKwe0mLc5
-         Xq6R1u4tsMwQZPASEL7Ll4xh0PIJJbNJknI1OEYUTmA7NgizbmP5iZfAFi49VtMXmT
-         +tlYkYuex6g4iSuse5lQEdFZhqis2zVR7O1+8DRBI5Lq3Rbb7IyV9O6APptCIFQbKq
-         tZxWp5VTyNDng2F7b8nE3Ylx+iJx/fYh2lWwJz6oFocHF4fvFE8Vk0nQg2YZo2FwLK
-         RZZdiFDdRwmQJQD+Qe6zyY416j0x+jPrj9559Lz5REQK6G5Y81zke5ceVB/YvO7exy
-         htcrh4IBhGOgg==
+        b=qaUlGOjzgIO5d1ozOafOsuWFdNy+cb+mdKnd72PXWcAI2nc9Mwldtf+O2SaqTzk2R
+         MkyhS4AbCe1bISJgR0DUvPIjdPyl0fpS731dd9XTddxJqUadpQ+R+n1CLa6bPmnj66
+         iiZ8K4duTD150J1ywxxEEBNSTt1w25GQe76Wi/L/AfFSPhyRyi0SxYBtjSJsPL6qSS
+         PBNiZI0QOc95vJCXGrIUfzj+3nIt+HuqE0Q4s1wmHaiBmr7bwc0TplomoBQ3z8E6PC
+         ySw57rLlr06kvpX8RwynNSJ4btunZTRDLisM573R41K4IquWtsS756R+lpoed/gakr
+         EAPldSEl6JFCg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 541685C0ADC; Mon, 20 Jun 2022 16:10:31 -0700 (PDT)
+        id 588FD5C0BCC; Mon, 20 Jun 2022 16:10:31 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
         rostedt@goodmis.org, Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
@@ -49,10 +48,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
         Xiongfeng Wang <wangxiongfeng2@huawei.com>,
         Yu Liao <liaoyu15@huawei.com>, Phil Auld <pauld@redhat.com>,
         Paul Gortmaker <paul.gortmaker@windriver.com>,
-        Alex Belits <abelits@marvell.com>
-Subject: [PATCH rcu 05/23] context_tracking: Rename __context_tracking_enter/exit() to __ct_user_enter/exit()
-Date:   Mon, 20 Jun 2022 16:10:11 -0700
-Message-Id: <20220620231029.3844583-5-paulmck@kernel.org>
+        Alex Belits <abelits@marvell.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 07/23] context_tracking: Rename context_tracking_enter/exit() to ct_user_enter/exit()
+Date:   Mon, 20 Jun 2022 16:10:13 -0700
+Message-Id: <20220620231029.3844583-7-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220620231027.GA3844372@paulmck-ThinkPad-P17-Gen-1>
 References: <20220620231027.GA3844372@paulmck-ThinkPad-P17-Gen-1>
@@ -64,12 +64,12 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: Frederic Weisbecker <frederic@kernel.org>
 
-The context tracking namespace is going to expand and some new functions
-will require even longer names. Start shrinking the context_tracking
-prefix to "ct" as is already the case for some existing macros, this
-will make the introduction of new functions easier.
+context_tracking_enter() and context_tracking_exit() have confusing
+names that don't explain the fact they are referring to user/guest state.
 
-Acked-by: Paul E. McKenney <paulmck@kernel.org>
+Use more self-explanatory names and shrink to the new context tracking
+prefix instead.
+
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Thomas Gleixner <tglx@linutronix.de>
@@ -86,138 +86,103 @@ Cc: Paul Gortmaker<paul.gortmaker@windriver.com>
 Cc: Alex Belits <abelits@marvell.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/context_tracking.h | 12 ++++++------
- kernel/context_tracking.c        | 20 ++++++++++----------
- 2 files changed, 16 insertions(+), 16 deletions(-)
+ include/linux/context_tracking.h | 13 +++++++------
+ kernel/context_tracking.c        | 12 ++++++------
+ 2 files changed, 13 insertions(+), 12 deletions(-)
 
 diff --git a/include/linux/context_tracking.h b/include/linux/context_tracking.h
-index 7a14807c9d1a6..773035124badb 100644
+index 69532cd18f72c..7a5f04ae1758f 100644
 --- a/include/linux/context_tracking.h
 +++ b/include/linux/context_tracking.h
-@@ -14,8 +14,8 @@
- extern void context_tracking_cpu_set(int cpu);
+@@ -17,21 +17,22 @@ extern void context_tracking_cpu_set(int cpu);
+ extern void __ct_user_enter(enum ctx_state state);
+ extern void __ct_user_exit(enum ctx_state state);
+ 
+-extern void context_tracking_enter(enum ctx_state state);
+-extern void context_tracking_exit(enum ctx_state state);
++extern void ct_user_enter(enum ctx_state state);
++extern void ct_user_exit(enum ctx_state state);
++
+ extern void user_enter_callable(void);
+ extern void user_exit_callable(void);
+ 
+ static inline void user_enter(void)
+ {
+ 	if (context_tracking_enabled())
+-		context_tracking_enter(CONTEXT_USER);
++		ct_user_enter(CONTEXT_USER);
+ 
+ }
+ static inline void user_exit(void)
+ {
+ 	if (context_tracking_enabled())
+-		context_tracking_exit(CONTEXT_USER);
++		ct_user_exit(CONTEXT_USER);
+ }
  
  /* Called with interrupts disabled.  */
--extern void __context_tracking_enter(enum ctx_state state);
--extern void __context_tracking_exit(enum ctx_state state);
-+extern void __ct_user_enter(enum ctx_state state);
-+extern void __ct_user_exit(enum ctx_state state);
+@@ -57,7 +58,7 @@ static inline enum ctx_state exception_enter(void)
  
- extern void context_tracking_enter(enum ctx_state state);
- extern void context_tracking_exit(enum ctx_state state);
-@@ -38,13 +38,13 @@ static inline void user_exit(void)
- static __always_inline void user_enter_irqoff(void)
- {
- 	if (context_tracking_enabled())
--		__context_tracking_enter(CONTEXT_USER);
-+		__ct_user_enter(CONTEXT_USER);
+ 	prev_ctx = this_cpu_read(context_tracking.state);
+ 	if (prev_ctx != CONTEXT_KERNEL)
+-		context_tracking_exit(prev_ctx);
++		ct_user_exit(prev_ctx);
  
+ 	return prev_ctx;
  }
- static __always_inline void user_exit_irqoff(void)
- {
- 	if (context_tracking_enabled())
--		__context_tracking_exit(CONTEXT_USER);
-+		__ct_user_exit(CONTEXT_USER);
+@@ -67,7 +68,7 @@ static inline void exception_exit(enum ctx_state prev_ctx)
+ 	if (!IS_ENABLED(CONFIG_HAVE_CONTEXT_TRACKING_OFFSTACK) &&
+ 	    context_tracking_enabled()) {
+ 		if (prev_ctx != CONTEXT_KERNEL)
+-			context_tracking_enter(prev_ctx);
++			ct_user_enter(prev_ctx);
+ 	}
  }
  
- static inline enum ctx_state exception_enter(void)
-@@ -74,7 +74,7 @@ static inline void exception_exit(enum ctx_state prev_ctx)
- static __always_inline bool context_tracking_guest_enter(void)
- {
- 	if (context_tracking_enabled())
--		__context_tracking_enter(CONTEXT_GUEST);
-+		__ct_user_enter(CONTEXT_GUEST);
- 
- 	return context_tracking_enabled_this_cpu();
- }
-@@ -82,7 +82,7 @@ static __always_inline bool context_tracking_guest_enter(void)
- static __always_inline void context_tracking_guest_exit(void)
- {
- 	if (context_tracking_enabled())
--		__context_tracking_exit(CONTEXT_GUEST);
-+		__ct_user_exit(CONTEXT_GUEST);
- }
- 
- /**
 diff --git a/kernel/context_tracking.c b/kernel/context_tracking.c
-index 3082332f64765..e36395598095e 100644
+index 9d4a872ca92c4..87454e3515546 100644
 --- a/kernel/context_tracking.c
 +++ b/kernel/context_tracking.c
-@@ -51,15 +51,15 @@ static __always_inline void context_tracking_recursion_exit(void)
- }
- 
- /**
-- * context_tracking_enter - Inform the context tracking that the CPU is going
-- *                          enter user or guest space mode.
-+ * __ct_user_enter - Inform the context tracking that the CPU is going
-+ *		     to enter user or guest space mode.
-  *
-  * This function must be called right before we switch from the kernel
-  * to user or guest space, when it's guaranteed the remaining kernel
-  * instructions to execute won't use any RCU read side critical section
-  * because this function sets RCU in extended quiescent state.
+@@ -112,7 +112,7 @@ EXPORT_SYMBOL_GPL(__ct_user_enter);
+  * or context_tracking_guest_enter(). It should be the arch entry code
+  * responsibility to call into context tracking with IRQs disabled.
   */
--void noinstr __context_tracking_enter(enum ctx_state state)
-+void noinstr __ct_user_enter(enum ctx_state state)
+-void context_tracking_enter(enum ctx_state state)
++void ct_user_enter(enum ctx_state state)
  {
- 	/* Kernel threads aren't supposed to go to userspace */
- 	WARN_ON_ONCE(!current->mm);
-@@ -101,7 +101,7 @@ void noinstr __context_tracking_enter(enum ctx_state state)
- 	}
- 	context_tracking_recursion_exit();
- }
--EXPORT_SYMBOL_GPL(__context_tracking_enter);
-+EXPORT_SYMBOL_GPL(__ct_user_enter);
+ 	unsigned long flags;
  
- /*
-  * OBSOLETE:
-@@ -128,7 +128,7 @@ void context_tracking_enter(enum ctx_state state)
- 		return;
- 
- 	local_irq_save(flags);
--	__context_tracking_enter(state);
-+	__ct_user_enter(state);
+@@ -131,8 +131,8 @@ void context_tracking_enter(enum ctx_state state)
+ 	__ct_user_enter(state);
  	local_irq_restore(flags);
  }
- NOKPROBE_SYMBOL(context_tracking_enter);
-@@ -149,8 +149,8 @@ void context_tracking_user_enter(void)
- NOKPROBE_SYMBOL(context_tracking_user_enter);
+-NOKPROBE_SYMBOL(context_tracking_enter);
+-EXPORT_SYMBOL_GPL(context_tracking_enter);
++NOKPROBE_SYMBOL(ct_user_enter);
++EXPORT_SYMBOL_GPL(ct_user_enter);
  
  /**
-- * context_tracking_exit - Inform the context tracking that the CPU is
-- *                         exiting user or guest mode and entering the kernel.
-+ * __ct_user_exit - Inform the context tracking that the CPU is
-+ * 		    exiting user or guest mode and entering the kernel.
-  *
-  * This function must be called after we entered the kernel from user or
-  * guest space before any use of RCU read side critical section. This
-@@ -160,7 +160,7 @@ NOKPROBE_SYMBOL(context_tracking_user_enter);
-  * This call supports re-entrancy. This way it can be called from any exception
-  * handler without needing to know if we came from userspace or not.
+  * user_enter_callable() - Unfortunate ASM callable version of user_enter() for
+@@ -197,7 +197,7 @@ EXPORT_SYMBOL_GPL(__ct_user_exit);
+  * or context_tracking_guest_exit(). It should be the arch entry code
+  * responsibility to call into context tracking with IRQs disabled.
   */
--void noinstr __context_tracking_exit(enum ctx_state state)
-+void noinstr __ct_user_exit(enum ctx_state state)
+-void context_tracking_exit(enum ctx_state state)
++void ct_user_exit(enum ctx_state state)
  {
- 	if (!context_tracking_recursion_enter())
- 		return;
-@@ -183,7 +183,7 @@ void noinstr __context_tracking_exit(enum ctx_state state)
- 	}
- 	context_tracking_recursion_exit();
- }
--EXPORT_SYMBOL_GPL(__context_tracking_exit);
-+EXPORT_SYMBOL_GPL(__ct_user_exit);
+ 	unsigned long flags;
  
- /*
-  * OBSOLETE:
-@@ -202,7 +202,7 @@ void context_tracking_exit(enum ctx_state state)
- 		return;
- 
- 	local_irq_save(flags);
--	__context_tracking_exit(state);
-+	__ct_user_exit(state);
+@@ -208,8 +208,8 @@ void context_tracking_exit(enum ctx_state state)
+ 	__ct_user_exit(state);
  	local_irq_restore(flags);
  }
- NOKPROBE_SYMBOL(context_tracking_exit);
+-NOKPROBE_SYMBOL(context_tracking_exit);
+-EXPORT_SYMBOL_GPL(context_tracking_exit);
++NOKPROBE_SYMBOL(ct_user_exit);
++EXPORT_SYMBOL_GPL(ct_user_exit);
+ 
+ /**
+  * user_exit_callable() - Unfortunate ASM callable version of user_exit() for
 -- 
 2.31.1.189.g2e36527f23
 
