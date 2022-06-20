@@ -2,98 +2,88 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E8A2BC43334
-	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 22:20:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 42B51C433EF
+	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 22:20:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236625AbiFTWUZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 20 Jun 2022 18:20:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36108 "EHLO
+        id S245376AbiFTWUn (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 20 Jun 2022 18:20:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230160AbiFTWUY (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 20 Jun 2022 18:20:24 -0400
+        with ESMTP id S243870AbiFTWUj (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 20 Jun 2022 18:20:39 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46C1EDF33;
-        Mon, 20 Jun 2022 15:20:24 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFD371B796;
+        Mon, 20 Jun 2022 15:20:35 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D4329612CB;
-        Mon, 20 Jun 2022 22:20:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F7D8C3411B;
-        Mon, 20 Jun 2022 22:20:23 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D2C93611D9;
+        Mon, 20 Jun 2022 22:20:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 415DAC3411B;
+        Mon, 20 Jun 2022 22:20:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655763623;
-        bh=dOn7IFVHepIOKt7W0XFTmdchLSxER8uJ6Yxc9qWJKY4=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=j/SGtcxArewsx/zCH0B5/u4IuUpeKqPku/xwG/BSAc9ct5COBsNDWTHw7Gu1N8HVP
-         GfbJC+wxX3hR+yw9SBPMRYtCw9Qi3j1cSRoI00PVuQBlw2CoB7W9XcpB5+XqeUCOWp
-         Swi3Inb+ZwQJoKo+8LVc3VaChALqeYMEiimHgxaPU0mYdUqPjcSIC+YMWVRxE8/770
-         o2Lz+1MFcGnQX+v6P7+NX9VTqfey5it4dAwkPbReoPUww22vkHRmFYyAXFElJImcES
-         lKnhT2D+SdIvk1FhB0PxL1RHb7i+C8huOLQ+PktnxKMMhweO99dSQpy7lhxc81F76Y
-         edyatkZxNx5sg==
+        s=k20201202; t=1655763634;
+        bh=jG3hNc3HY7o8s2RFDc2C+XAxckGdI/PbpjhwaH1AXKY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=fXh1cizEODZ4SMedxiPCazh6QGP5XJe+ddgxpEMuYmJ7YyDrh8UglNT2xW5j7mB19
+         DY8TvVoI9SwRXzF354hU/qLIUlY1JEk0CYtiaFHsB33lZUdS6xWlDUPEd2hTq+leNJ
+         TGvtgjGHXU42yI41xTbYXRtkiHNWaOVK/MMG6XqYQF1HvnXU1C9C+XVUmSzf5UMtd2
+         c1uKiHRF1NHTl50JRyXFZC8HiqWj69y+TleFGWEAtEfLS3L6f1in3Vv5MZFozPT4/3
+         yIJ7C5ycqtulJ3+J+ex53zm8FmPehhnd2q+ml/i7kTvl1DC2SAMGZ+oNARhWvvC73B
+         YeKVhUjonEthg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id CCEA45C05B9; Mon, 20 Jun 2022 15:20:22 -0700 (PDT)
-Date:   Mon, 20 Jun 2022 15:20:22 -0700
+        id F13D25C05B9; Mon, 20 Jun 2022 15:20:33 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org
-Subject: [PATCH rcu 0/12] Miscellaneous fixes for v5.20
-Message-ID: <20220620222022.GA3839466@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 01/12] rcu: Decrease FQS scan wait time in case of callback overloading
+Date:   Mon, 20 Jun 2022 15:20:21 -0700
+Message-Id: <20220620222032.3839547-1-paulmck@kernel.org>
+X-Mailer: git-send-email 2.31.1.189.g2e36527f23
+In-Reply-To: <20220620222022.GA3839466@paulmck-ThinkPad-P17-Gen-1>
+References: <20220620222022.GA3839466@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello!
+The force-quiesce-state loop function rcu_gp_fqs_loop() checks for
+callback overloading and does an immediate initial scan for idle CPUs
+if so.  However, subsequent rescans will be carried out at as leisurely a
+rate as they always are, as specified by the rcutree.jiffies_till_next_fqs
+module parameter.  It might be tempting to just continue immediately
+rescanning, but this turns the RCU grace-period kthread into a CPU hog.
+It might also be tempting to reduce the time between rescans to a single
+jiffy, but this can be problematic on larger systems.
 
-This series contains miscellaneous fixes:
+This commit therefore divides the normal time between rescans by three,
+rounding up.  Thus a small system running at HZ=1000 that is suffering
+from callback overload will wait only one jiffy instead of the normal
+three between rescans.
 
-1.	Decrease FQS scan wait time in case of callback overloading.
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ kernel/rcu/tree.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-2.	Avoid tracing a few functions executed in stop machine, courtesy
-	of Patrick Wang.
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index c25ba442044a6..c19d5926886fb 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -1993,6 +1993,11 @@ static noinline_for_stack void rcu_gp_fqs_loop(void)
+ 			WRITE_ONCE(rcu_state.jiffies_kick_kthreads,
+ 				   jiffies + (j ? 3 * j : 2));
+ 		}
++		if (rcu_state.cbovld) {
++			j = (j + 2) / 3;
++			if (j <= 0)
++				j = 1;
++		}
+ 		trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq,
+ 				       TPS("fqswait"));
+ 		WRITE_ONCE(rcu_state.gp_state, RCU_GP_WAIT_FQS);
+-- 
+2.31.1.189.g2e36527f23
 
-3.	Add rnp->cbovldmask check in rcutree_migrate_callbacks(),
-	courtesy of Zqiang.
-
-4.	Immediately boost preempted readers for strict grace periods,
-	courtesy of Zqiang.
-
-5.	Forbid RCU_STRICT_GRACE_PERIOD in TINY_RCU kernels.
-
-6.	locking/csd_lock: Change csdlock_debug from early_param to
-	__setup, courtesy of Chen Zhongjin.
-
-7.	tiny: Record kvfree_call_rcu() call stack for KASAN, courtesy
-	of Johannes Berg.
-
-8.	Cleanup RCU urgency state for offline CPU, courtesy of Zqiang.
-
-9.	Remove useless monitor_todo flag, courtesy of "Joel Fernandes
-	(Google)".
-
-10.	Initialize first_gp_fqs at declaration in rcu_gp_fqs().
-
-11.	Add comment to describe GP-done condition in fqs loop, courtesy
-	of Neeraj Upadhyay.
-
-12.	Block less aggressively for expedited grace periods.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- b/include/linux/rcutiny.h  |   11 +++++++++-
- b/kernel/rcu/Kconfig.debug |    2 -
- b/kernel/rcu/srcutree.c    |   20 ++++++++++++------
- b/kernel/rcu/tiny.c        |   14 +++++++++++++
- b/kernel/rcu/tree.c        |    5 ++++
- b/kernel/rcu/tree_plugin.h |    6 ++---
- b/kernel/smp.c             |    4 +--
- kernel/rcu/tree.c          |   48 ++++++++++++++++++++++++++-------------------
- kernel/rcu/tree_plugin.h   |    3 +-
- 9 files changed, 78 insertions(+), 35 deletions(-)
