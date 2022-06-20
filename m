@@ -2,44 +2,45 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 90F8FCCA483
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BAB21C43334
 	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 23:00:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345395AbiFTXAE (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 20 Jun 2022 19:00:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60304 "EHLO
+        id S1345908AbiFTXAF (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 20 Jun 2022 19:00:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345973AbiFTW7q (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S1345977AbiFTW7q (ORCPT <rfc822;rcu@vger.kernel.org>);
         Mon, 20 Jun 2022 18:59:46 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BFB3193D3;
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FFF2193E6;
         Mon, 20 Jun 2022 15:58:21 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 07564614A1;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1AD77614AE;
         Mon, 20 Jun 2022 22:58:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39148C341CE;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42E72C341D1;
         Mon, 20 Jun 2022 22:58:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1655765900;
-        bh=mZiTOBDcqD704lMtn9ef+smf6JxOTN0xNvMG6GVm+gQ=;
+        bh=74byXg/X07uQ4DU6Q0CIxAcWhcyYDKfeDLVVCySMpak=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pdyRVY6Gx7syR9u3gBHnFgnVLZX4lTnhJvR/8/DhawivveNWjnPPHLjM/3UcsCJFl
-         n8+uaVwbsqPe4xS93AeCIM73DJ4E/Mj06QKGSOpl+SLAXKQCUNJ65Q51W+gQEeV1UG
-         M8zAIUpYqEhuPkJo4OV1eMckhR5rXK+4J1C/wwqqFnsr+AE0EEVNs6IJP+9ZLO+sLI
-         gMthiBSYBMrq04o/HL94POibots/38XEWhdIjVh6CcJxh3jSsOplYWrmZmSn1NOIqP
-         4ScpI2saB+Iwd5pIUMlVuBe4rpyQ25piljzxS7nmZKtFMyG9McVVmYBUm4hBiUMxB5
-         jubzQEPWH0qzw==
+        b=usjOv8K9QZ8juaI5Onfy9js5W/9zJUYLO2N7VAqn1kJVZRyOgScsJIgx2b/tZA/ON
+         8jXNg0Jemfb+r/oPncPA2IZmCov3rbVVDGp9qsnUJxVMXytEo5hXEiLmTBGYEZbtHx
+         2YhEE1G9yV25Uk50dlozXwSH0+GLjXvGUiRTids1XbZN3JSzUEAdpM/hpyn8NOWrSE
+         LUpcCuGNl3yxUo736ZVXrSy/vPa1esBs84YBcmw5nxFUzcKrg21G70J8mEEFzrnoYQ
+         bHc+ifUn+jLO3zqRW/mr11/yABFwaFQv6s2XG5kdSprPrUG0RoCOF0sifgh+WZjuH6
+         6lR1zHqcfhp3A==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id A36725C0CCE; Mon, 20 Jun 2022 15:58:19 -0700 (PDT)
+        id A73D05C0DAC; Mon, 20 Jun 2022 15:58:19 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 08/12] torture: Create kvm-check-branches.sh output in proper location
-Date:   Mon, 20 Jun 2022 15:58:13 -0700
-Message-Id: <20220620225817.3843106-8-paulmck@kernel.org>
+        rostedt@goodmis.org, Li Qiong <liqiong@nfschina.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 10/12] rcutorture: Handle failure of memory allocation functions
+Date:   Mon, 20 Jun 2022 15:58:15 -0700
+Message-Id: <20220620225817.3843106-10-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220620225814.GA3842995@paulmck-ThinkPad-P17-Gen-1>
 References: <20220620225814.GA3842995@paulmck-ThinkPad-P17-Gen-1>
@@ -49,50 +50,53 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Currently, kvm-check-branches.sh causes each kvm.sh invocation create a
-separate date-stamped directory, then after that invocation completes,
-moves it into the *-group/NNNN directory.  This works, but makes it more
-difficult to monitor an ongoing run.  This commit therefore uses the
-kvm.sh --datestamp argument to make kvm.sh put the output in the right
-place to start with, and also dispenses with the additional level of
-datestamping.  (Those wanting datestamps can find them in the log files.)
+From: Li Qiong <liqiong@nfschina.com>
 
+This commit adds warnings for allocation failure during the mem_dump_obj()
+tests.  It also terminates these tests upon such failure.
+
+Signed-off-by: Li Qiong <liqiong@nfschina.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- .../selftests/rcutorture/bin/kvm-check-branches.sh    | 11 +++--------
- 1 file changed, 3 insertions(+), 8 deletions(-)
+ kernel/rcu/rcutorture.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-check-branches.sh b/tools/testing/selftests/rcutorture/bin/kvm-check-branches.sh
-index f17000a2ccf1f..ed0ec7f0927e7 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-check-branches.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-check-branches.sh
-@@ -35,7 +35,7 @@ then
- 	exit 1
- fi
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index b896987c21122..e2db5d6beabaa 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -1991,7 +1991,13 @@ static void rcu_torture_mem_dump_obj(void)
+ 	static int z;
  
--# Remember where we started so that we can get back and the end.
-+# Remember where we started so that we can get back at the end.
- curcommit="`git status | head -1 | awk '{ print $NF }'`"
- 
- nfail=0
-@@ -73,15 +73,10 @@ do
- 		# Test the specified commit.
- 		git checkout $i > $resdir/$ds/$idir/git-checkout.out 2>&1
- 		echo git checkout return code: $? "(Commit $ntry: $i)"
--		kvm.sh --allcpus --duration 3 --trust-make > $resdir/$ds/$idir/kvm.sh.out 2>&1
-+		kvm.sh --allcpus --duration 3 --trust-make --datestamp "$ds/$idir" > $resdir/$ds/$idir/kvm.sh.out 2>&1
- 		ret=$?
- 		echo kvm.sh return code $ret for commit $i from branch $gitbr
--
--		# Move the build products to their resting place.
--		runresdir="`grep -m 1 '^Results directory:' < $resdir/$ds/$idir/kvm.sh.out | sed -e 's/^Results directory://'`"
--		mv $runresdir $resdir/$ds/$idir
--		rrd="`echo $runresdir | sed -e 's,^.*/,,'`"
--		echo Run results: $resdir/$ds/$idir/$rrd
-+		echo Run results: $resdir/$ds/$idir
- 		if test "$ret" -ne 0
- 		then
- 			# Failure, so leave all evidence intact.
+ 	kcp = kmem_cache_create("rcuscale", 136, 8, SLAB_STORE_USER, NULL);
++	if (WARN_ON_ONCE(!kcp))
++		return;
+ 	rhp = kmem_cache_alloc(kcp, GFP_KERNEL);
++	if (WARN_ON_ONCE(!rhp)) {
++		kmem_cache_destroy(kcp);
++		return;
++	}
+ 	pr_alert("mem_dump_obj() slab test: rcu_torture_stats = %px, &rhp = %px, rhp = %px, &z = %px\n", stats_task, &rhp, rhp, &z);
+ 	pr_alert("mem_dump_obj(ZERO_SIZE_PTR):");
+ 	mem_dump_obj(ZERO_SIZE_PTR);
+@@ -2008,6 +2014,8 @@ static void rcu_torture_mem_dump_obj(void)
+ 	kmem_cache_free(kcp, rhp);
+ 	kmem_cache_destroy(kcp);
+ 	rhp = kmalloc(sizeof(*rhp), GFP_KERNEL);
++	if (WARN_ON_ONCE(!rhp))
++		return;
+ 	pr_alert("mem_dump_obj() kmalloc test: rcu_torture_stats = %px, &rhp = %px, rhp = %px\n", stats_task, &rhp, rhp);
+ 	pr_alert("mem_dump_obj(kmalloc %px):", rhp);
+ 	mem_dump_obj(rhp);
+@@ -2015,6 +2023,8 @@ static void rcu_torture_mem_dump_obj(void)
+ 	mem_dump_obj(&rhp->func);
+ 	kfree(rhp);
+ 	rhp = vmalloc(4096);
++	if (WARN_ON_ONCE(!rhp))
++		return;
+ 	pr_alert("mem_dump_obj() vmalloc test: rcu_torture_stats = %px, &rhp = %px, rhp = %px\n", stats_task, &rhp, rhp);
+ 	pr_alert("mem_dump_obj(vmalloc %px):", rhp);
+ 	mem_dump_obj(rhp);
 -- 
 2.31.1.189.g2e36527f23
 
