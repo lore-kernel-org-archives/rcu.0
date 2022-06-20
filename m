@@ -2,90 +2,98 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 118D2C433EF
-	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 22:18:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E8A2BC43334
+	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 22:20:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244018AbiFTWSF (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 20 Jun 2022 18:18:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34616 "EHLO
+        id S236625AbiFTWUZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 20 Jun 2022 18:20:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241907AbiFTWSD (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 20 Jun 2022 18:18:03 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22DAB10FCE;
-        Mon, 20 Jun 2022 15:18:02 -0700 (PDT)
+        with ESMTP id S230160AbiFTWUY (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 20 Jun 2022 18:20:24 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46C1EDF33;
+        Mon, 20 Jun 2022 15:20:24 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 83111B81648;
-        Mon, 20 Jun 2022 22:18:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35772C341C5;
-        Mon, 20 Jun 2022 22:17:59 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D4329612CB;
+        Mon, 20 Jun 2022 22:20:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F7D8C3411B;
+        Mon, 20 Jun 2022 22:20:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655763479;
-        bh=TnT5Hnafq9jyhnw4TzUBgKnKEH4dMuHcHnyemvZrAqg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VgAc8BTGyhyMrzWYbRRbvhA0BsOU9zKLGqtyj5mnZPSwwp/U/uN8FprNP33TUYZev
-         eiASH0aIC/XbcztAmk1qFBv+OsiK8x6DAnzZPKt5NFPoohP1sv46j6+PqC4F4pv4yi
-         Ixir82ZRgruDOHRiiNmbPa29g5LupNaV4HaeOVmzFkpWHWZeoTefJKb7kQRcUapNMo
-         fYBw0cqiB9/UBkCMHUkk2O3ewheCsly5Til+PMstjYJC+TIQ2KQ9n7wE23xBhdg34i
-         KLHxONwIAO1iCQ8paSNobtAhg7DBkHmhRDGfBEBTpfshVP6BZoeunNsPpm3749LA6y
-         vJhiuVa89AZLw==
+        s=k20201202; t=1655763623;
+        bh=dOn7IFVHepIOKt7W0XFTmdchLSxER8uJ6Yxc9qWJKY4=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=j/SGtcxArewsx/zCH0B5/u4IuUpeKqPku/xwG/BSAc9ct5COBsNDWTHw7Gu1N8HVP
+         GfbJC+wxX3hR+yw9SBPMRYtCw9Qi3j1cSRoI00PVuQBlw2CoB7W9XcpB5+XqeUCOWp
+         Swi3Inb+ZwQJoKo+8LVc3VaChALqeYMEiimHgxaPU0mYdUqPjcSIC+YMWVRxE8/770
+         o2Lz+1MFcGnQX+v6P7+NX9VTqfey5it4dAwkPbReoPUww22vkHRmFYyAXFElJImcES
+         lKnhT2D+SdIvk1FhB0PxL1RHb7i+C8huOLQ+PktnxKMMhweO99dSQpy7lhxc81F76Y
+         edyatkZxNx5sg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id DA37B5C0A15; Mon, 20 Jun 2022 15:17:58 -0700 (PDT)
+        id CCEA45C05B9; Mon, 20 Jun 2022 15:20:22 -0700 (PDT)
+Date:   Mon, 20 Jun 2022 15:20:22 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Uladzislau Rezki <urezki@gmail.com>
-Subject: [PATCH rcu 3/3] doc: Document rcutree.nocb_nobypass_lim_per_jiffy kernel parameter
-Date:   Mon, 20 Jun 2022 15:17:57 -0700
-Message-Id: <20220620221757.3839212-3-paulmck@kernel.org>
-X-Mailer: git-send-email 2.31.1.189.g2e36527f23
-In-Reply-To: <20220620221733.GA3839136@paulmck-ThinkPad-P17-Gen-1>
-References: <20220620221733.GA3839136@paulmck-ThinkPad-P17-Gen-1>
+        rostedt@goodmis.org
+Subject: [PATCH rcu 0/12] Miscellaneous fixes for v5.20
+Message-ID: <20220620222022.GA3839466@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This commit provides documentation for the kernel parameter controlling
-RCU's handling of callback floods on offloaded (rcu_nocbs) CPUs.
-This parameter might be obscure, but it is always there when you need it.
+Hello!
 
-Reported-by: Frederic Weisbecker <frederic@kernel.org>
-Reported-by: Uladzislau Rezki <urezki@gmail.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- Documentation/admin-guide/kernel-parameters.txt | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+This series contains miscellaneous fixes:
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index bdf431bdbfdc4..a30890141b1a5 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -4681,6 +4681,19 @@
- 			invoked in the context of an rcuoc kthread, which
- 			scheduler will preempt as it does any other task.
- 
-+	rcutree.nocb_nobypass_lim_per_jiffy= [KNL]
-+			On callback-offloaded (rcu_nocbs) CPUs,
-+			RCU reduces the lock contention that would
-+			otherwise be caused callback floods through
-+			use of the ->nocb_bypass list.	However, in the
-+			common non-flooded case, RCU queues directly to
-+			the main ->cblist in order to avoid the extra
-+			overhead of the ->nocb_bypass list and its lock.
-+			But if there are too many callbacks queued during
-+			a single jiffy, RCU pre-queues the callbacks into
-+			the ->nocb_bypass queue.  The definition of "too
-+			many" is supplied by this kernel boot parameter.
-+
- 	rcutree.rcu_nocb_gp_stride= [KNL]
- 			Set the number of NOCB callback kthreads in
- 			each group, which defaults to the square root
--- 
-2.31.1.189.g2e36527f23
+1.	Decrease FQS scan wait time in case of callback overloading.
 
+2.	Avoid tracing a few functions executed in stop machine, courtesy
+	of Patrick Wang.
+
+3.	Add rnp->cbovldmask check in rcutree_migrate_callbacks(),
+	courtesy of Zqiang.
+
+4.	Immediately boost preempted readers for strict grace periods,
+	courtesy of Zqiang.
+
+5.	Forbid RCU_STRICT_GRACE_PERIOD in TINY_RCU kernels.
+
+6.	locking/csd_lock: Change csdlock_debug from early_param to
+	__setup, courtesy of Chen Zhongjin.
+
+7.	tiny: Record kvfree_call_rcu() call stack for KASAN, courtesy
+	of Johannes Berg.
+
+8.	Cleanup RCU urgency state for offline CPU, courtesy of Zqiang.
+
+9.	Remove useless monitor_todo flag, courtesy of "Joel Fernandes
+	(Google)".
+
+10.	Initialize first_gp_fqs at declaration in rcu_gp_fqs().
+
+11.	Add comment to describe GP-done condition in fqs loop, courtesy
+	of Neeraj Upadhyay.
+
+12.	Block less aggressively for expedited grace periods.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ b/include/linux/rcutiny.h  |   11 +++++++++-
+ b/kernel/rcu/Kconfig.debug |    2 -
+ b/kernel/rcu/srcutree.c    |   20 ++++++++++++------
+ b/kernel/rcu/tiny.c        |   14 +++++++++++++
+ b/kernel/rcu/tree.c        |    5 ++++
+ b/kernel/rcu/tree_plugin.h |    6 ++---
+ b/kernel/smp.c             |    4 +--
+ kernel/rcu/tree.c          |   48 ++++++++++++++++++++++++++-------------------
+ kernel/rcu/tree_plugin.h   |    3 +-
+ 9 files changed, 78 insertions(+), 35 deletions(-)
