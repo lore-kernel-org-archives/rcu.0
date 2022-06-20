@@ -2,45 +2,46 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E49D3CCA486
-	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 23:00:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A013C43334
+	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 23:00:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345925AbiFTXAG (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 20 Jun 2022 19:00:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60284 "EHLO
+        id S1345745AbiFTXAH (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 20 Jun 2022 19:00:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345982AbiFTW7q (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 20 Jun 2022 18:59:46 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E676F193F8;
+        with ESMTP id S1345985AbiFTW7r (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 20 Jun 2022 18:59:47 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E61C2193ED;
         Mon, 20 Jun 2022 15:58:22 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 34BFF614AF;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 3C20FB81648;
         Mon, 20 Jun 2022 22:58:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54D57C341D4;
-        Mon, 20 Jun 2022 22:58:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC4A6C3411C;
+        Mon, 20 Jun 2022 22:58:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655765900;
-        bh=9Zhp5Ec7GPy63cX8G5KMm0YQJgk1oYOjZcoCMh4LQv4=;
+        s=k20201202; t=1655765899;
+        bh=QB+6LQTkN+uqZYbqwmaKGD7m8QpRVVwgyBZwUwDHoxw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nqYy2wKMAB205/QF/lJ3JXYUejq1GfnIAN3GKxG8IW14qMjnllWXDBoH8NZTM9PFp
-         c9lyiz2pq6FudWbzIOYtKA3rW6wvON8NiSoY+kbO/Z0TrtSyyp2K8THai1FSPcSfTe
-         9uRd+ebBsJ18B4qQryjEFxKtHrIytc/466F9bJYecJsyXxYbYjfaWQGhjQQEy70UEq
-         uoSKmiaqlUEOXJjmf8tq27acBymOY/KcLOk2Okpa/PO6/qwE3wk0p2/PYTyIagyAzL
-         +gomfM+Vs5UumLOFouHBCcdqVq1r7gE1blCmYGrb/n86r8OM8uESiiLg4lrla7pXnr
-         3utqLi+42B9bA==
+        b=OO54a6KIBy4pG/XzhjsMPffHPMlq5+fx7rjTjbeglGcTg02CKD0LKom2MH7EwFE2L
+         50/WgmVWiPOqlELWWdoSDVkOM2rQPyQBzbrWm0WrrN5tCfr/UgBQvwVuwi+fR3sxxv
+         8IdRGGgf2TXx2fn8H14yeWf8S2bd8Ir56HaqxlewHmn0DCdsnWtLJm98O19/wlKs3l
+         VSJVRbHjn6B3Mt5TmZojKji26KioaMBlYE1QAV2r6iNdJttTRnblhQfOFvCZG3S5IB
+         2eBIA9zeWUiNM3NINHQMUzV/A968dflvFdXqIGfZiNF8HwJedGSd6Qekr0ynPG2JPE
+         KIFRuW3whfM0g==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id AB12C5C0E3F; Mon, 20 Jun 2022 15:58:19 -0700 (PDT)
+        id 979055C05C8; Mon, 20 Jun 2022 15:58:19 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org, Zqiang <qiang1.zhang@intel.com>,
+        rostedt@goodmis.org, Anna-Maria Behnsen <anna-maria@linutronix.de>,
+        Benedikt Spranger <b.spranger@linutronix.de>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 12/12] refscale: Convert test_lock spinlock to raw_spinlock
-Date:   Mon, 20 Jun 2022 15:58:17 -0700
-Message-Id: <20220620225817.3843106-12-paulmck@kernel.org>
+Subject: [PATCH rcu 02/12] rcu/torture: Change order of warning and trace dump
+Date:   Mon, 20 Jun 2022 15:58:07 -0700
+Message-Id: <20220620225817.3843106-2-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220620225814.GA3842995@paulmck-ThinkPad-P17-Gen-1>
 References: <20220620225814.GA3842995@paulmck-ThinkPad-P17-Gen-1>
@@ -50,99 +51,41 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Zqiang <qiang1.zhang@intel.com>
+From: Anna-Maria Behnsen <anna-maria@linutronix.de>
 
-In kernels built with CONFIG_PREEMPT_RT=y, spinlocks are replaced by
-rt_mutex, which can sleep.  This means that acquiring a non-raw spinlock
-in a critical section where preemption is disabled can trigger the
-following BUG:
+Dumping a big ftrace buffer could lead to a RCU stall. So there is the
+ftrace buffer and the stall information which needs to be printed. When
+there is additionaly a WARN_ON() which describes the reason for the ftrace
+buffer dump and the WARN_ON() is executed _after_ ftrace buffer dump, the
+information get lost in the middle of the RCU stall information.
 
-BUG: scheduling while atomic: ref_scale_reade/76/0x00000002
-Preemption disabled at:
-ref_lock_section+0x16/0x80
-Call Trace:
-<TASK>
-dump_stack_lvl+0x5b/0x82
-dump_stack+0x10/0x12
-__schedule_bug.cold+0x9c/0xad
-__schedule+0x839/0xc00
-schedule_rtlock+0x22/0x40
-rtlock_slowlock_locked+0x460/0x1350
-rt_spin_lock+0x61/0xe0
-ref_lock_section+0x29/0x80
-rcu_scale_one_reader+0x52/0x60
-ref_scale_reader+0x28d/0x490
-kthread+0x128/0x150
-ret_from_fork+0x22/0x30
-</TASK>
+Therefore print WARN_ON() message before dumping the ftrace buffer in
+rcu_torture_writer().
 
-This commit therefore converts spinlock to raw_spinlock.
+[ paulmck: Add tracing_off() to avoid cruft from WARN(). ]
 
-Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
+Reviewed-by: Benedikt Spranger <b.spranger@linutronix.de>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/refscale.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ kernel/rcu/rcutorture.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
-index 909644abee67f..435c884c02b5c 100644
---- a/kernel/rcu/refscale.c
-+++ b/kernel/rcu/refscale.c
-@@ -385,7 +385,7 @@ static struct ref_scale_ops rwsem_ops = {
- };
- 
- // Definitions for global spinlock
--static DEFINE_SPINLOCK(test_lock);
-+static DEFINE_RAW_SPINLOCK(test_lock);
- 
- static void ref_lock_section(const int nloops)
- {
-@@ -393,8 +393,8 @@ static void ref_lock_section(const int nloops)
- 
- 	preempt_disable();
- 	for (i = nloops; i >= 0; i--) {
--		spin_lock(&test_lock);
--		spin_unlock(&test_lock);
-+		raw_spin_lock(&test_lock);
-+		raw_spin_unlock(&test_lock);
- 	}
- 	preempt_enable();
- }
-@@ -405,9 +405,9 @@ static void ref_lock_delay_section(const int nloops, const int udl, const int nd
- 
- 	preempt_disable();
- 	for (i = nloops; i >= 0; i--) {
--		spin_lock(&test_lock);
-+		raw_spin_lock(&test_lock);
- 		un_delay(udl, ndl);
--		spin_unlock(&test_lock);
-+		raw_spin_unlock(&test_lock);
- 	}
- 	preempt_enable();
- }
-@@ -427,8 +427,8 @@ static void ref_lock_irq_section(const int nloops)
- 
- 	preempt_disable();
- 	for (i = nloops; i >= 0; i--) {
--		spin_lock_irqsave(&test_lock, flags);
--		spin_unlock_irqrestore(&test_lock, flags);
-+		raw_spin_lock_irqsave(&test_lock, flags);
-+		raw_spin_unlock_irqrestore(&test_lock, flags);
- 	}
- 	preempt_enable();
- }
-@@ -440,9 +440,9 @@ static void ref_lock_irq_delay_section(const int nloops, const int udl, const in
- 
- 	preempt_disable();
- 	for (i = nloops; i >= 0; i--) {
--		spin_lock_irqsave(&test_lock, flags);
-+		raw_spin_lock_irqsave(&test_lock, flags);
- 		un_delay(udl, ndl);
--		spin_unlock_irqrestore(&test_lock, flags);
-+		raw_spin_unlock_irqrestore(&test_lock, flags);
- 	}
- 	preempt_enable();
- }
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 7120165a93426..3032dd7c7ad35 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -1321,8 +1321,9 @@ rcu_torture_writer(void *arg)
+ 				if (list_empty(&rcu_tortures[i].rtort_free) &&
+ 				    rcu_access_pointer(rcu_torture_current) !=
+ 				    &rcu_tortures[i]) {
+-					rcu_ftrace_dump(DUMP_ALL);
++					tracing_off();
+ 					WARN(1, "%s: rtort_pipe_count: %d\n", __func__, rcu_tortures[i].rtort_pipe_count);
++					rcu_ftrace_dump(DUMP_ALL);
+ 				}
+ 		if (stutter_waited)
+ 			sched_set_normal(current, oldnice);
 -- 
 2.31.1.189.g2e36527f23
 
