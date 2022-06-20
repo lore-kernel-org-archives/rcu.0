@@ -2,47 +2,44 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 83CE9CCA482
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EBEEAC433EF
 	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 22:20:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243558AbiFTWUq (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 20 Jun 2022 18:20:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36392 "EHLO
+        id S243870AbiFTWUr (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 20 Jun 2022 18:20:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235922AbiFTWUl (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S238367AbiFTWUl (ORCPT <rfc822;rcu@vger.kernel.org>);
         Mon, 20 Jun 2022 18:20:41 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0EE11B79D;
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D12331B7A2;
         Mon, 20 Jun 2022 15:20:35 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6EE96612F5;
-        Mon, 20 Jun 2022 22:20:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FD07C385A2;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E9658612EE;
+        Mon, 20 Jun 2022 22:20:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C923C341C7;
         Mon, 20 Jun 2022 22:20:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1655763634;
-        bh=41amnyMn1rIKChCQFUfwJMh9tfKMg6S8/hCqGWL9D8M=;
+        bh=n7HI6sinDisynSHP103tNG9aSbp5KKiDzOeA9d+Lwk4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hFGzayjGIscFAUjdwfZ2osfwf3BlM1a3uXsow9v3z/VoGNIUrz3J83Tb1R1wTjfYs
-         6xnK9lc7k3Q7tiFZ34avH+fskYxhjU5zqiv7KxPQaDKlWg6mKy3uA/9M694ye49ofd
-         9XiED9jwQ0aB1GwQuz3LAd4444j/z3zBqwlbXe310EN5aEhPPISDlzJGMtt6wGh7xf
-         EFGA50lOBj/vie5Bl6ZSdnoh1rifsYcA8r30noIF/UELEHUIDwlOCg18fI9AJ40ASP
-         hMgFmrwZuN79ZzE4KXE031VYlk7/acOfpZ76kwupsk7aOkxYdZuWWwDwZBGDN5QEeT
-         zd5XoB7FpACMQ==
+        b=X+EiZMQ2CeLc0OCOiNDByl4SFY431IAMQJzhF/GJ2gNmNv/wfnStYi7UnI+G7tOU6
+         1tFl6lUMNtgwg68VXBg30JR7ivyYSmyPvoTaF1YLS8p5amUaomjhUNbMNZgYxxl2IL
+         W11PuCcOE3+rE8ULVCXAtX3RQslQr9Zl+CFt/Frfuc6aA2TQ3e4uzS15y4f7MfoU9R
+         zH3ROWCcidwKZDNkEX+3HTpQT71CDWTa9FME4T1/QLlJ8lwjKiljfyMWMnFWvP0DRz
+         tckubD8SOGb3UQSFmOnN1AbOEruX9LLhXJ9gV8Q+onlz93n+2TSxAF7FvUC74OSlAu
+         VzL6Ay5T9J7uw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 0CCEC5C0D1B; Mon, 20 Jun 2022 15:20:34 -0700 (PDT)
+        id 05AF35C0ADC; Mon, 20 Jun 2022 15:20:34 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 09/12] rcu/kvfree: Remove useless monitor_todo flag
-Date:   Mon, 20 Jun 2022 15:20:29 -0700
-Message-Id: <20220620222032.3839547-9-paulmck@kernel.org>
+        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 05/12] rcu: Forbid RCU_STRICT_GRACE_PERIOD in TINY_RCU kernels
+Date:   Mon, 20 Jun 2022 15:20:25 -0700
+Message-Id: <20220620222032.3839547-5-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220620222022.GA3839466@paulmck-ThinkPad-P17-Gen-1>
 References: <20220620222022.GA3839466@paulmck-ThinkPad-P17-Gen-1>
@@ -52,99 +49,28 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+The RCU_STRICT_GRACE_PERIOD Kconfig option does nothing in kernels
+built with CONFIG_TINY_RCU=y, so this commit adjusts the dependencies
+to disallow this combination.
 
-monitor_todo is not needed as the work struct already tracks
-if work is pending. Just use that to know if work is pending
-using schedule_delayed_work() helper.
-
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c | 33 ++++++++++++++++-----------------
- 1 file changed, 16 insertions(+), 17 deletions(-)
+ kernel/rcu/Kconfig.debug | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 5445b19b48408..7919d7b48fa6a 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3216,7 +3216,6 @@ struct kfree_rcu_cpu_work {
-  * @krw_arr: Array of batches of kfree_rcu() objects waiting for a grace period
-  * @lock: Synchronize access to this structure
-  * @monitor_work: Promote @head to @head_free after KFREE_DRAIN_JIFFIES
-- * @monitor_todo: Tracks whether a @monitor_work delayed work is pending
-  * @initialized: The @rcu_work fields have been initialized
-  * @count: Number of objects for which GP not started
-  * @bkvcache:
-@@ -3241,7 +3240,6 @@ struct kfree_rcu_cpu {
- 	struct kfree_rcu_cpu_work krw_arr[KFREE_N_BATCHES];
- 	raw_spinlock_t lock;
- 	struct delayed_work monitor_work;
--	bool monitor_todo;
- 	bool initialized;
- 	int count;
+diff --git a/kernel/rcu/Kconfig.debug b/kernel/rcu/Kconfig.debug
+index 9b64e55d4f615..4da05beb13d79 100644
+--- a/kernel/rcu/Kconfig.debug
++++ b/kernel/rcu/Kconfig.debug
+@@ -121,7 +121,7 @@ config RCU_EQS_DEBUG
  
-@@ -3421,6 +3419,18 @@ static void kfree_rcu_work(struct work_struct *work)
- 	}
- }
- 
-+static bool
-+need_offload_krc(struct kfree_rcu_cpu *krcp)
-+{
-+	int i;
-+
-+	for (i = 0; i < FREE_N_CHANNELS; i++)
-+		if (krcp->bkvhead[i])
-+			return true;
-+
-+	return !!krcp->head;
-+}
-+
- /*
-  * This function is invoked after the KFREE_DRAIN_JIFFIES timeout.
-  */
-@@ -3477,9 +3487,7 @@ static void kfree_rcu_monitor(struct work_struct *work)
- 	// of the channels that is still busy we should rearm the
- 	// work to repeat an attempt. Because previous batches are
- 	// still in progress.
--	if (!krcp->bkvhead[0] && !krcp->bkvhead[1] && !krcp->head)
--		krcp->monitor_todo = false;
--	else
-+	if (need_offload_krc(krcp))
- 		schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
- 
- 	raw_spin_unlock_irqrestore(&krcp->lock, flags);
-@@ -3667,11 +3675,8 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
- 	WRITE_ONCE(krcp->count, krcp->count + 1);
- 
- 	// Set timer to drain after KFREE_DRAIN_JIFFIES.
--	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING &&
--	    !krcp->monitor_todo) {
--		krcp->monitor_todo = true;
-+	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING)
- 		schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
--	}
- 
- unlock_return:
- 	krc_this_cpu_unlock(krcp, flags);
-@@ -3746,14 +3751,8 @@ void __init kfree_rcu_scheduler_running(void)
- 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
- 
- 		raw_spin_lock_irqsave(&krcp->lock, flags);
--		if ((!krcp->bkvhead[0] && !krcp->bkvhead[1] && !krcp->head) ||
--				krcp->monitor_todo) {
--			raw_spin_unlock_irqrestore(&krcp->lock, flags);
--			continue;
--		}
--		krcp->monitor_todo = true;
--		schedule_delayed_work_on(cpu, &krcp->monitor_work,
--					 KFREE_DRAIN_JIFFIES);
-+		if (need_offload_krc(krcp))
-+			schedule_delayed_work_on(cpu, &krcp->monitor_work, KFREE_DRAIN_JIFFIES);
- 		raw_spin_unlock_irqrestore(&krcp->lock, flags);
- 	}
- }
+ config RCU_STRICT_GRACE_PERIOD
+ 	bool "Provide debug RCU implementation with short grace periods"
+-	depends on DEBUG_KERNEL && RCU_EXPERT && NR_CPUS <= 4
++	depends on DEBUG_KERNEL && RCU_EXPERT && NR_CPUS <= 4 && !TINY_RCU
+ 	default n
+ 	select PREEMPT_COUNT if PREEMPT=n
+ 	help
 -- 
 2.31.1.189.g2e36527f23
 
