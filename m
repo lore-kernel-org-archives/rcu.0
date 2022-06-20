@@ -2,48 +2,46 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FA66CCA47C
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 56AD0CCA482
 	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 22:45:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244537AbiFTWpJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S244303AbiFTWpJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Mon, 20 Jun 2022 18:45:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49646 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244164AbiFTWpH (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S244004AbiFTWpH (ORCPT <rfc822;rcu@vger.kernel.org>);
         Mon, 20 Jun 2022 18:45:07 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48C9A15719;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB70B1400F;
         Mon, 20 Jun 2022 15:45:06 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D89DD61380;
-        Mon, 20 Jun 2022 22:45:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D79DC341C7;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6B4556135A;
+        Mon, 20 Jun 2022 22:45:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90953C341C8;
         Mon, 20 Jun 2022 22:45:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1655765105;
-        bh=MMOx/Mf+yKKYBlxJNUzhxx2Qq1PONGZHWw4SbSZ2Fg0=;
+        bh=YeBHehtFq6AdT6OCOL99JKnvZVJzXnbqY95m1WmhH7E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=De2IbPfUhj6EBIINGusqFVBFmyqaHC2Q4V/WSdOprQoKjbnXGSOGNvojCrZb/yfM8
-         a6OsC+yxw2LdULBw3Kc8ZzflHVoZMX+G5pMUYr1Ds7e/+gX0LmK/HmdS6a23FY2DPM
-         BoBv4g4TZH+lzMexrpNjCli8DPnPwNzxHumebBMKGGuJI+XOjl2cqxfzcv5OC1SFAH
-         K9jCJmmGg7AGAggM9NhfEh7kKNXEtYgLOUR9GQ/HstpsTXlcjM7PGPahlYCBzUiNcS
-         j8sIBw+WLrpPM7OWChmjQnamGW213G/bWXi9uwcsIoy+OFYdWL4CCl8kEYSrS9Qxtd
-         pydIILwYsLO7w==
+        b=QwwfJdbr1zUhilxZV10pPyd3wRCsuY28CIvT80dRwy/rjvRlzEEAcSAZyhhzQ77zr
+         XwMXMgp9GWIcj8e7EalIHffLystOsPfi4xqJ1KDb1Uckr8RQwutPo0iPEKJ67G/3BF
+         kw7oS+VGEYtDSxAiQk4vdCHdsR1pQS94J8Ljxaq0TWQD+PvoCWCnXhwg4PGfpoXmX5
+         BMqoZdmMBb7AOFRt7qA5qmabQ/ESzBgW7BMJLcuxzZidRDKewrhVfmmdvnaUzgdUNN
+         mXanotKBen1cPJBJEpfUYm2dxN7YI82/3BdI3tmTM2dR3OcX7I3N+c4ZIUnqP3H31+
+         D+Nl+PAP8UflA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id ED9825C0A33; Mon, 20 Jun 2022 15:45:04 -0700 (PDT)
+        id F1E055C0B06; Mon, 20 Jun 2022 15:45:04 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org, Joel Fernandes <joel@joelfernandes.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        kernel test robot <lkp@intel.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 4/7] rcu/nocb: Add an option to offload all CPUs on boot
-Date:   Mon, 20 Jun 2022 15:45:00 -0700
-Message-Id: <20220620224503.3841196-4-paulmck@kernel.org>
+        rostedt@goodmis.org, "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: [PATCH rcu 6/7] rcu/nocb: Add option to opt rcuo kthreads out of RT priority
+Date:   Mon, 20 Jun 2022 15:45:02 -0700
+Message-Id: <20220620224503.3841196-6-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220620224455.GA3840881@paulmck-ThinkPad-P17-Gen-1>
 References: <20220620224455.GA3840881@paulmck-ThinkPad-P17-Gen-1>
@@ -53,118 +51,112 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Joel Fernandes <joel@joelfernandes.org>
+From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 
-Systems built with CONFIG_RCU_NOCB_CPU=y but booted without either
-the rcu_nocbs= or rcu_nohz_full= kernel-boot parameters will not have
-callback offloading on any of the CPUs, nor can any of the CPUs be
-switched to enable callback offloading at runtime.  Although this is
-intentional, it would be nice to have a way to offload all the CPUs
-without having to make random bootloaders specify either the rcu_nocbs=
-or the rcu_nohz_full= kernel-boot parameters.
+This commit introduces a RCU_NOCB_CPU_CB_BOOST Kconfig option that
+prevents rcuo kthreads from running at real-time priority, even in
+kernels built with RCU_BOOST.  This capability is important to devices
+needing low-latency (as in a few milliseconds) response from expedited
+RCU grace periods, but which are not running a classic real-time workload.
+On such devices, permitting the rcuo kthreads to run at real-time priority
+results in unacceptable latencies imposed on the application tasks,
+which run as SCHED_OTHER.
 
-This commit therefore provides a new CONFIG_RCU_NOCB_CPU_DEFAULT_ALL
-Kconfig option that switches the default so as to offload callback
-processing on all of the CPUs.  This default can still be overridden
-using the rcu_nocbs= and rcu_nohz_full= kernel-boot parameters.
+See for example the following trace output:
 
-Reviewed-by: Kalesh Singh <kaleshsingh@google.com>
-Reviewed-by: Uladzislau Rezki <urezki@gmail.com>
-(In v4.1, fixed issues with CONFIG maze reported by kernel test robot).
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Joel Fernandes <joel@joelfernandes.org>
+<snip>
+<...>-60 [006] d..1 2979.028717: rcu_batch_start: rcu_preempt CBs=34619 bl=270
+<snip>
+
+If that rcuop kthread were permitted to run at real-time SCHED_FIFO
+priority, it would monopolize its CPU for hundreds of milliseconds
+while invoking those 34619 RCU callback functions, which would cause an
+unacceptably long latency spike for many application stacks on Android
+platforms.
+
+However, some existing real-time workloads require that callback
+invocation run at SCHED_FIFO priority, for example, those running on
+systems with heavy SCHED_OTHER background loads.  (It is the real-time
+system's administrator's responsibility to make sure that important
+real-time tasks run at a higher priority than do RCU's kthreads.)
+
+Therefore, this new RCU_NOCB_CPU_CB_BOOST Kconfig option defaults to
+"y" on kernels built with PREEMPT_RT and defaults to "n" otherwise.
+The effect is to preserve current behavior for real-time systems, but for
+other systems to allow expedited RCU grace periods to run with real-time
+priority while continuing to invoke RCU callbacks as SCHED_OTHER.
+
+As you would expect, this RCU_NOCB_CPU_CB_BOOST Kconfig option has no
+effect except on CPUs with offloaded RCU callbacks.
+
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Acked-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- Documentation/admin-guide/kernel-parameters.txt |  6 ++++++
- kernel/rcu/Kconfig                              | 13 +++++++++++++
- kernel/rcu/tree_nocb.h                          | 15 ++++++++++++++-
- 3 files changed, 33 insertions(+), 1 deletion(-)
+ kernel/rcu/Kconfig     | 16 ++++++++++++++++
+ kernel/rcu/tree.c      |  6 +++++-
+ kernel/rcu/tree_nocb.h |  3 ++-
+ 3 files changed, 23 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 2522b11e593f2..34605c275294c 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -3659,6 +3659,9 @@
- 			just as if they had also been called out in the
- 			rcu_nocbs= boot parameter.
- 
-+			Note that this argument takes precedence over
-+			the CONFIG_RCU_NOCB_CPU_DEFAULT_ALL option.
-+
- 	noiotrap	[SH] Disables trapped I/O port accesses.
- 
- 	noirqdebug	[X86-32] Disables the code which attempts to detect and
-@@ -4557,6 +4560,9 @@
- 			no-callback mode from boot but the mode may be
- 			toggled at runtime via cpusets.
- 
-+			Note that this argument takes precedence over
-+			the CONFIG_RCU_NOCB_CPU_DEFAULT_ALL option.
-+
- 	rcu_nocb_poll	[KNL]
- 			Rather than requiring that offloaded CPUs
- 			(specified by rcu_nocbs= above) explicitly
 diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
-index 1c630e573548d..27aab870ae4cf 100644
+index 27aab870ae4cf..c05ca52cdf64d 100644
 --- a/kernel/rcu/Kconfig
 +++ b/kernel/rcu/Kconfig
-@@ -262,6 +262,19 @@ config RCU_NOCB_CPU
- 	  Say Y here if you need reduced OS jitter, despite added overhead.
+@@ -275,6 +275,22 @@ config RCU_NOCB_CPU_DEFAULT_ALL
+ 	  Say Y here if you want offload all CPUs by default on boot.
  	  Say N here if you are unsure.
  
-+config RCU_NOCB_CPU_DEFAULT_ALL
-+	bool "Offload RCU callback processing from all CPUs by default"
-+	depends on RCU_NOCB_CPU
-+	default n
++config RCU_NOCB_CPU_CB_BOOST
++	bool "Offload RCU callback from real-time kthread"
++	depends on RCU_NOCB_CPU && RCU_BOOST
++	default y if PREEMPT_RT
 +	help
-+	  Use this option to offload callback processing from all CPUs
-+	  by default, in the absence of the rcu_nocbs or nohz_full boot
-+	  parameter. This also avoids the need to use any boot parameters
-+	  to achieve the effect of offloading all CPUs on boot.
++	  Use this option to invoke offloaded callbacks as SCHED_FIFO
++	  to avoid starvation by heavy SCHED_OTHER background load.
++	  Of course, running as SCHED_FIFO during callback floods will
++	  cause the rcuo[ps] kthreads to monopolize the CPU for hundreds
++	  of milliseconds or more.  Therefore, when enabling this option,
++	  it is your responsibility to ensure that latency-sensitive
++	  tasks either run with higher priority or run on some other CPU.
 +
-+	  Say Y here if you want offload all CPUs by default on boot.
-+	  Say N here if you are unsure.
++	  Say Y here if you want to set RT priority for offloading kthreads.
++	  Say N here if you are building a !PREEMPT_RT kernel and are unsure.
 +
  config TASKS_TRACE_RCU_READ_MB
  	bool "Tasks Trace RCU readers use memory barriers in user and idle"
  	depends on RCU_EXPERT && TASKS_TRACE_RCU
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 74455671e6cf2..3b9f45ebb4999 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -154,7 +154,11 @@ static void sync_sched_exp_online_cleanup(int cpu);
+ static void check_cb_ovld_locked(struct rcu_data *rdp, struct rcu_node *rnp);
+ static bool rcu_rdp_is_offloaded(struct rcu_data *rdp);
+ 
+-/* rcuc/rcub/rcuop kthread realtime priority */
++/*
++ * rcuc/rcub/rcuop kthread realtime priority. The "rcuop"
++ * real-time priority(enabling/disabling) is controlled by
++ * the extra CONFIG_RCU_NOCB_CPU_CB_BOOST configuration.
++ */
+ static int kthread_prio = IS_ENABLED(CONFIG_RCU_BOOST) ? 1 : 0;
+ module_param(kthread_prio, int, 0444);
+ 
 diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index 4cf9a29bba79d..60cc92cc66552 100644
+index 60cc92cc66552..fa8e4f82e60c0 100644
 --- a/kernel/rcu/tree_nocb.h
 +++ b/kernel/rcu/tree_nocb.h
-@@ -1197,11 +1197,21 @@ void __init rcu_init_nohz(void)
- {
- 	int cpu;
- 	bool need_rcu_nocb_mask = false;
-+	bool offload_all = false;
- 	struct rcu_data *rdp;
+@@ -1315,8 +1315,9 @@ static void rcu_spawn_cpu_nocb_kthread(int cpu)
+ 	if (WARN_ONCE(IS_ERR(t), "%s: Could not start rcuo CB kthread, OOM is now expected behavior\n", __func__))
+ 		goto end;
  
-+#if defined(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL)
-+	if (!rcu_state.nocb_is_setup) {
-+		need_rcu_nocb_mask = true;
-+		offload_all = true;
-+	}
-+#endif /* #if defined(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL) */
+-	if (kthread_prio)
++	if (IS_ENABLED(CONFIG_RCU_NOCB_CPU_CB_BOOST) && kthread_prio)
+ 		sched_setscheduler_nocheck(t, SCHED_FIFO, &sp);
 +
- #if defined(CONFIG_NO_HZ_FULL)
--	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask))
-+	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask)) {
- 		need_rcu_nocb_mask = true;
-+		offload_all = false; /* NO_HZ_FULL has its own mask. */
-+	}
- #endif /* #if defined(CONFIG_NO_HZ_FULL) */
- 
- 	if (need_rcu_nocb_mask) {
-@@ -1222,6 +1232,9 @@ void __init rcu_init_nohz(void)
- 		cpumask_or(rcu_nocb_mask, rcu_nocb_mask, tick_nohz_full_mask);
- #endif /* #if defined(CONFIG_NO_HZ_FULL) */
- 
-+	if (offload_all)
-+		cpumask_setall(rcu_nocb_mask);
-+
- 	if (!cpumask_subset(rcu_nocb_mask, cpu_possible_mask)) {
- 		pr_info("\tNote: kernel parameter 'rcu_nocbs=', 'nohz_full', or 'isolcpus=' contains nonexistent CPUs.\n");
- 		cpumask_and(rcu_nocb_mask, cpu_possible_mask,
+ 	WRITE_ONCE(rdp->nocb_cb_kthread, t);
+ 	WRITE_ONCE(rdp->nocb_gp_kthread, rdp_gp->nocb_gp_kthread);
+ 	return;
 -- 
 2.31.1.189.g2e36527f23
 
