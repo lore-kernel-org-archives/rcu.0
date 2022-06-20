@@ -2,37 +2,37 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D824CC43334
-	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 22:51:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E1DEDC433EF
+	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 22:51:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344634AbiFTWvo (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 20 Jun 2022 18:51:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54768 "EHLO
+        id S1344689AbiFTWvp (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 20 Jun 2022 18:51:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344322AbiFTWve (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S1344329AbiFTWve (ORCPT <rfc822;rcu@vger.kernel.org>);
         Mon, 20 Jun 2022 18:51:34 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 420A21D0C7;
-        Mon, 20 Jun 2022 15:51:33 -0700 (PDT)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A10A01A80D;
+        Mon, 20 Jun 2022 15:51:32 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D5EA5B8164A;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 44AE6B811EC;
         Mon, 20 Jun 2022 22:51:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46A46C341D0;
-        Mon, 20 Jun 2022 22:51:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED933C341C7;
+        Mon, 20 Jun 2022 22:51:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1655765490;
-        bh=BewmV1Of2+80WZJs41h1/PSorrSzk6m6v4xd9AT62Oo=;
+        bh=uwVUEbn1BjyEoK1jDk5Unz9mOIc6Tdakf4qOEcADLk4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jqGfTKqYzFq22PjaGdv7SKkEE8e/Fd6NiHadEYaBnZaPiH2ANMpniwY9KatJUKUAL
-         90IcTusLegeRZFBrIRiAuj63/iF816HE1xXdXfDne/piGyyglHQ6xl8ZLdbpYAyYhI
-         6MDQwu78WIOl7px9meqER1D3TlIwJl/xLk+dRA5bdib2Xt/ERXV9UNIexRaYz0anmG
-         G70fiUe3Z8YiqEqEhTZju+BKTS89YG9s2lrHYnZAYu+GZqUJUyXRH8NS0Q0Puj7y//
-         wzcqoPOaoVrVIyDj6WRs6EjCLx1SQR6tRaMUk1mCgLVoxE3DBbndoHizHyJazPhlym
-         RB6Dw0NmcCpgw==
+        b=mONd/Seg/uHV2XAfrneucCGVpsJAWG3Fw0a0/TRF8eDZSB0O7MpJ6GJn+rbaopVEA
+         yuMPH07Wdyhcfr/I+5Z8eJs8F2Dt60auYwI4jds+A8HvWBXXeQEjg9KGCePv1mNU/1
+         MVcij0DFgk9b/9w3WDnRURKT5nEKSSHyGMPHe1qtpSO4aVD/SyXlIuqA+18/0Wy7r2
+         pnGcVQEEtkJwjfaAfMj0ZFLzpvNJJIFu61QYUG6M91bSLJuu9BAerfF+TRd9hfy/JY
+         fuwb0Z0zDYW0b/MtSYxWAYi/iXT0cE8KpxX5QK/WfbVoGn68t0zT+1ac+VkBlp5NQS
+         xS8Ml37Oj40AA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 9F0EB5C0BCC; Mon, 20 Jun 2022 15:51:29 -0700 (PDT)
+        id 9B29E5C0ADC; Mon, 20 Jun 2022 15:51:29 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
@@ -40,9 +40,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
         Brian Foster <bfoster@redhat.com>,
         Dave Chinner <david@fromorbit.com>,
         Al Viro <viro@zeniv.linux.org.uk>, Ian Kent <raven@themaw.net>
-Subject: [PATCH rcu 07/12] rcutorture: Verify that polled GP API sees synchronous grace periods
-Date:   Mon, 20 Jun 2022 15:51:23 -0700
-Message-Id: <20220620225128.3842050-7-paulmck@kernel.org>
+Subject: [PATCH rcu 05/12] rcu: Make polled grace-period API account for expedited grace periods
+Date:   Mon, 20 Jun 2022 15:51:21 -0700
+Message-Id: <20220620225128.3842050-5-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220620224943.GA3841634@paulmck-ThinkPad-P17-Gen-1>
 References: <20220620224943.GA3841634@paulmck-ThinkPad-P17-Gen-1>
@@ -52,23 +52,31 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This commit causes rcu_torture_writer() to use WARN_ON_ONCE() to check
-that the cookie returned by the current RCU flavor's ->get_gp_state()
-function (get_state_synchronize_rcu() for vanilla RCU) causes that
-flavor's ->poll_gp_state function (poll_state_synchronize_rcu() for
-vanilla RCU) to unconditionally return true.
+Currently, this code could splat:
 
-Note that a pair calls to synchronous grace-period-wait functions are
-used.  This is necessary to account for partially overlapping normal and
-expedited grace periods aligning in just the wrong way with polled API
-invocations, which can cause those polled API invocations to ignore one or
-the other of those partially overlapping grace periods.  It is unlikely
-that this sort of ignored grace period will be a problem in production,
-but rcutorture can make it happen quite within a few tens of seconds.
+	oldstate = get_state_synchronize_rcu();
+	synchronize_rcu_expedited();
+	WARN_ON_ONCE(!poll_state_synchronize_rcu(oldstate));
+
+This situation is counter-intuitive and user-unfriendly.  After all, there
+really was a perfectly valid full grace period right after the call to
+get_state_synchronize_rcu(), so why shouldn't poll_state_synchronize_rcu()
+know about it?
+
+This commit therefore makes the polled grace-period API aware of expedited
+grace periods in addition to the normal grace periods that it is already
+aware of.  With this change, the above code is guaranteed not to splat.
+
+Please note that the above code can still splat due to counter wrap on the
+one hand and situations involving partially overlapping normal/expedited
+grace periods on the other.  On 64-bit systems, the second is of course
+much more likely than the first.  It is possible to modify this approach
+to prevent overlapping grace periods from causing splats, but only at
+the expense of greatly increasing the probability of counter wrap, as
+in within milliseconds on 32-bit systems and within minutes on 64-bit
+systems.
 
 This commit is in preparation for polled expedited grace periods.
-
-[ paulmck: Apply feedback from Frederic Weisbecker. ]
 
 Link: https://lore.kernel.org/all/20220121142454.1994916-1-bfoster@redhat.com/
 Link: https://docs.google.com/document/d/1RNKWW9jQyfjxw2E8dsXVTdvZYh0HnYeSHDKog9jhdN8/edit?usp=sharing
@@ -77,41 +85,92 @@ Cc: Dave Chinner <david@fromorbit.com>
 Cc: Al Viro <viro@zeniv.linux.org.uk>
 Cc: Ian Kent <raven@themaw.net>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
 ---
- kernel/rcu/rcutorture.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ kernel/rcu/tree.c     |  9 +++++----
+ kernel/rcu/tree.h     |  1 +
+ kernel/rcu/tree_exp.h | 16 ++++++++++++++--
+ 3 files changed, 20 insertions(+), 6 deletions(-)
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 4ceec9f4169c7..d2edc763bb92a 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -1269,7 +1269,12 @@ rcu_torture_writer(void *arg)
- 				break;
- 			case RTWS_EXP_SYNC:
- 				rcu_torture_writer_state = RTWS_EXP_SYNC;
-+				if (cur_ops->get_gp_state && cur_ops->poll_gp_state)
-+					cookie = cur_ops->get_gp_state();
- 				cur_ops->exp_sync();
-+				cur_ops->exp_sync();
-+				if (cur_ops->get_gp_state && cur_ops->poll_gp_state)
-+					WARN_ON_ONCE(!cur_ops->poll_gp_state(cookie));
- 				rcu_torture_pipe_update(old_rp);
- 				break;
- 			case RTWS_COND_GET:
-@@ -1291,7 +1296,12 @@ rcu_torture_writer(void *arg)
- 				break;
- 			case RTWS_SYNC:
- 				rcu_torture_writer_state = RTWS_SYNC;
-+				if (cur_ops->get_gp_state && cur_ops->poll_gp_state)
-+					cookie = cur_ops->get_gp_state();
- 				cur_ops->sync();
-+				cur_ops->sync();
-+				if (cur_ops->get_gp_state && cur_ops->poll_gp_state)
-+					WARN_ON_ONCE(!cur_ops->poll_gp_state(cookie));
- 				rcu_torture_pipe_update(old_rp);
- 				break;
- 			default:
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 637e8f9454573..251eb9a8cd925 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -1812,6 +1812,7 @@ static void rcu_poll_gp_seq_end(unsigned long *snap)
+ 	if (*snap && *snap == rcu_state.gp_seq_polled) {
+ 		rcu_seq_end(&rcu_state.gp_seq_polled);
+ 		rcu_state.gp_seq_polled_snap = 0;
++		rcu_state.gp_seq_polled_exp_snap = 0;
+ 	} else {
+ 		*snap = 0;
+ 	}
+@@ -3913,10 +3914,10 @@ void synchronize_rcu(void)
+ 			 "Illegal synchronize_rcu() in RCU read-side critical section");
+ 	if (rcu_blocking_is_gp()) {
+ 		// Note well that this code runs with !PREEMPT && !SMP.
+-		// In addition, all code that advances grace periods runs
+-		// at process level.  Therefore, this GP overlaps with other
+-		// GPs only by being fully nested within them, which allows
+-		// reuse of ->gp_seq_polled_snap.
++		// In addition, all code that advances grace periods runs at
++		// process level.  Therefore, this normal GP overlaps with
++		// other normal GPs only by being fully nested within them,
++		// which allows reuse of ->gp_seq_polled_snap.
+ 		rcu_poll_gp_seq_start_unlocked(&rcu_state.gp_seq_polled_snap);
+ 		rcu_poll_gp_seq_end_unlocked(&rcu_state.gp_seq_polled_snap);
+ 		if (rcu_init_invoked())
+diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+index 9c853033f159d..5634e76106c48 100644
+--- a/kernel/rcu/tree.h
++++ b/kernel/rcu/tree.h
+@@ -325,6 +325,7 @@ struct rcu_state {
+ 	unsigned long gp_wake_seq;		/* ->gp_seq at ^^^. */
+ 	unsigned long gp_seq_polled;		/* GP seq for polled API. */
+ 	unsigned long gp_seq_polled_snap;	/* ->gp_seq_polled at normal GP start. */
++	unsigned long gp_seq_polled_exp_snap;	/* ->gp_seq_polled at expedited GP start. */
+ 
+ 	/* End of fields guarded by root rcu_node's lock. */
+ 
+diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+index 0f70f62039a90..e0258066b881e 100644
+--- a/kernel/rcu/tree_exp.h
++++ b/kernel/rcu/tree_exp.h
+@@ -18,6 +18,7 @@ static int rcu_print_task_exp_stall(struct rcu_node *rnp);
+ static void rcu_exp_gp_seq_start(void)
+ {
+ 	rcu_seq_start(&rcu_state.expedited_sequence);
++	rcu_poll_gp_seq_start_unlocked(&rcu_state.gp_seq_polled_exp_snap);
+ }
+ 
+ /*
+@@ -34,6 +35,7 @@ static __maybe_unused unsigned long rcu_exp_gp_seq_endval(void)
+  */
+ static void rcu_exp_gp_seq_end(void)
+ {
++	rcu_poll_gp_seq_end_unlocked(&rcu_state.gp_seq_polled_exp_snap);
+ 	rcu_seq_end(&rcu_state.expedited_sequence);
+ 	smp_mb(); /* Ensure that consecutive grace periods serialize. */
+ }
+@@ -913,8 +915,18 @@ void synchronize_rcu_expedited(void)
+ 			 "Illegal synchronize_rcu_expedited() in RCU read-side critical section");
+ 
+ 	/* Is the state is such that the call is a grace period? */
+-	if (rcu_blocking_is_gp())
+-		return;
++	if (rcu_blocking_is_gp()) {
++		// Note well that this code runs with !PREEMPT && !SMP.
++		// In addition, all code that advances grace periods runs
++		// at process level.  Therefore, this expedited GP overlaps
++		// with other expedited GPs only by being fully nested within
++		// them, which allows reuse of ->gp_seq_polled_exp_snap.
++		rcu_poll_gp_seq_start_unlocked(&rcu_state.gp_seq_polled_exp_snap);
++		rcu_poll_gp_seq_end_unlocked(&rcu_state.gp_seq_polled_exp_snap);
++		if (rcu_init_invoked())
++			cond_resched();
++		return;  // Context allows vacuous grace periods.
++	}
+ 
+ 	/* If expedited grace periods are prohibited, fall back to normal. */
+ 	if (rcu_gp_is_normal()) {
 -- 
 2.31.1.189.g2e36527f23
 
