@@ -2,45 +2,46 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BB7BCCA485
-	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 22:20:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B07CFCCA481
+	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 22:20:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245715AbiFTWUr (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 20 Jun 2022 18:20:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36366 "EHLO
+        id S1343758AbiFTWUt (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 20 Jun 2022 18:20:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244457AbiFTWUm (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 20 Jun 2022 18:20:42 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 934801B7BA;
-        Mon, 20 Jun 2022 15:20:37 -0700 (PDT)
+        with ESMTP id S243528AbiFTWUn (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 20 Jun 2022 18:20:43 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56C501BE84;
+        Mon, 20 Jun 2022 15:20:38 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id B4421B8164A;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7FF04612CB;
         Mon, 20 Jun 2022 22:20:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F3CEC341C4;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3F37C341D2;
         Mon, 20 Jun 2022 22:20:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1655763634;
-        bh=BzfEqP9ZYAPt1rGlIDWKlmdtdWPBu8au1LUFkZLPWlc=;
+        bh=RTEIPBwPDlTk/wfRVgO+sMnshOl2v68/BsPmAdRqgA8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oHVBE8KNv/cZfZZ+GP0GVSaJkI0CWNmwoGVW4IkSqhdIU1gj3ueXFrCicOqFBcpy6
-         z1RtdbYlRukO8rO81rMfaZiLjkluSmlKJf2Y0ZlXgc97fIv+hbW6LsPbJA3bA/UPIV
-         ESpCpICh1e4FCA7uf8XuwzxC7lNhoD2J5Yct/uUP3XU+PtndgEkZfl+PTQheYREKjS
-         E/uIBMHEcFzHjxvhBYm9bB8cgG9onuwpFH2/MLpx6FVMKLso+AvL7PsuBoVlnAK8po
-         KNyDv6CCW1iu93u9FeMo7V8mfjHG/vA3Gv57P8HBTYIoD+htSRsSc0LC4pfG/2rF3g
-         1RfDROIS/WBcQ==
+        b=jVTv4oRPty53ozzQCLwdvLNHv0onjmR7Ti37QakgvcZgNLzAKpyV9yGWnXJ9lMHnF
+         KZ0HU2EvWxYqd9G3hIYjlYLYsij4Lfw4/FbqdGiTE5t/juLsbjhdWIoqGqF8odxxuy
+         p4VYuVMXhC4P8HVFyunc33iVUdjAL2dXvSqhO9OGLioMBGKhADFtMSetHsnKT0ISJG
+         bTdgC+kk2W0zRWDRjvDJEwkLiGc2IeH8OU8QEi/PAcgM/JPgz1XnLsR49k5C6FPQPq
+         HDYo0lHibPVxDwQ0fgM0VOZ4LJ0x3h/yvZcMQ4JYMLpNjHzIZiFoVJfOB7bQddd+C0
+         aQgZDRftBMTVA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 03B8C5C0A33; Mon, 20 Jun 2022 15:20:34 -0700 (PDT)
+        id 105BE5C0DEB; Mon, 20 Jun 2022 15:20:34 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org, Zqiang <qiang1.zhang@intel.com>,
+        rostedt@goodmis.org, Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 04/12] rcu: Immediately boost preempted readers for strict grace periods
-Date:   Mon, 20 Jun 2022 15:20:24 -0700
-Message-Id: <20220620222032.3839547-4-paulmck@kernel.org>
+Subject: [PATCH rcu 11/12] rcu/tree: Add comment to describe GP-done condition in fqs loop
+Date:   Mon, 20 Jun 2022 15:20:31 -0700
+Message-Id: <20220620222032.3839547-11-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220620222022.GA3839466@paulmck-ThinkPad-P17-Gen-1>
 References: <20220620222022.GA3839466@paulmck-ThinkPad-P17-Gen-1>
@@ -50,42 +51,39 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Zqiang <qiang1.zhang@intel.com>
+From: Neeraj Upadhyay <quic_neeraju@quicinc.com>
 
-The intent of the CONFIG_RCU_STRICT_GRACE_PERIOD Konfig option is to
-cause normal grace periods to complete quickly in order to better catch
-errors resulting from improperly leaking pointers from RCU read-side
-critical sections.  However, kernels built with this option enabled still
-wait for some hundreds of milliseconds before boosting RCU readers that
-have been preempted within their current critical section.  The value
-of this delay is set by the CONFIG_RCU_BOOST_DELAY Kconfig option,
-which defaults to 500 milliseconds.
+Add a comment to explain why !rcu_preempt_blocked_readers_cgp() condition
+is required on root rnp node, for GP completion check in rcu_gp_fqs_loop().
 
-This commit therefore causes kernels build with strict grace periods
-to ignore CONFIG_RCU_BOOST_DELAY.  This causes rcu_initiate_boost()
-to start boosting immediately after all CPUs on a given leaf rcu_node
-structure have passed through their quiescent states.
-
-Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Signed-off-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_plugin.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ kernel/rcu/tree.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 440d9e02a26e0..53d05eb804121 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -1140,7 +1140,8 @@ static void rcu_initiate_boost(struct rcu_node *rnp, unsigned long flags)
- 	    (rnp->gp_tasks != NULL &&
- 	     rnp->boost_tasks == NULL &&
- 	     rnp->qsmask == 0 &&
--	     (!time_after(rnp->boost_time, jiffies) || rcu_state.cbovld))) {
-+	     (!time_after(rnp->boost_time, jiffies) || rcu_state.cbovld ||
-+	      IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD)))) {
- 		if (rnp->exp_tasks == NULL)
- 			WRITE_ONCE(rnp->boost_tasks, rnp->gp_tasks);
- 		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 7d8e9cb852786..cdffb3b60ee02 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2005,7 +2005,15 @@ static noinline_for_stack void rcu_gp_fqs_loop(void)
+ 		rcu_gp_torture_wait();
+ 		WRITE_ONCE(rcu_state.gp_state, RCU_GP_DOING_FQS);
+ 		/* Locking provides needed memory barriers. */
+-		/* If grace period done, leave loop. */
++		/*
++		 * Exit the loop if the root rcu_node structure indicates that the grace period
++		 * has ended, leave the loop.  The rcu_preempt_blocked_readers_cgp(rnp) check
++		 * is required only for single-node rcu_node trees because readers blocking
++		 * the current grace period are queued only on leaf rcu_node structures.
++		 * For multi-node trees, checking the root node's ->qsmask suffices, because a
++		 * given root node's ->qsmask bit is cleared only when all CPUs and tasks from
++		 * the corresponding leaf nodes have passed through their quiescent state.
++		 */
+ 		if (!READ_ONCE(rnp->qsmask) &&
+ 		    !rcu_preempt_blocked_readers_cgp(rnp))
+ 			break;
 -- 
 2.31.1.189.g2e36527f23
 
