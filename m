@@ -2,89 +2,128 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 21D3EC43334
-	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 22:44:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E135C43334
+	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 22:45:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243182AbiFTWo5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 20 Jun 2022 18:44:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49426 "EHLO
+        id S244260AbiFTWpH (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 20 Jun 2022 18:45:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231244AbiFTWo5 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 20 Jun 2022 18:44:57 -0400
+        with ESMTP id S244303AbiFTWpH (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 20 Jun 2022 18:45:07 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A957713F95;
-        Mon, 20 Jun 2022 15:44:56 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4674014022;
+        Mon, 20 Jun 2022 15:45:06 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3F57661361;
-        Mon, 20 Jun 2022 22:44:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DFA9C3411C;
-        Mon, 20 Jun 2022 22:44:55 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D4C866137C;
+        Mon, 20 Jun 2022 22:45:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3ADD3C341C5;
+        Mon, 20 Jun 2022 22:45:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655765095;
-        bh=ZzEW3HE/befBeO1gRL9xk9tWJ4Oo+dEA974frfnP8kA=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=XvGsuXPYBtXC0xBAKozXOPvYdbWTdQLJPvfKJSAYaaa+ylnHrZuyw/8+A7KEH05hw
-         8cKNVaiQR7nP/RSpnc3yo1h0ZjeH3t+et3a5CNIsgiZ6g+qDqv8RLJFjN78uj90idz
-         L+nSoO1n6So6j16yhBQjgVhbxzOgWjDEvPN67+D3hfRCe9VlbLyNx6jPpqtcjn63HS
-         DQaQWnTaw72X8LxoiI2Dx2sfs6CgD/ZicFAvpmnhtTu6C3bQK/eGpGi3OhBxx6MQNy
-         fjyXl0UeZe3hyi6Xu3Ndi18KzC36DR/I7z5Bxin/WHoFgxUnCECwMpfclaAVz0ZcIE
-         aQsRTFkxHgPeQ==
+        s=k20201202; t=1655765105;
+        bh=J/mJiAf5BiNxtLCxXf+imq/vEjNCEVMz8bfuRKWJtpg=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=pVgRaCDO9Jrh+30vuXL5TFNTmAzz0mYEbk0girSTVzUOWTuuhvAnw08sAkbtxUFkt
+         bwLW5H7tG2b2NQF8jHls7oLlq+Nf1x6a00skS3xRGeHn7vqAOIiNtrGVzdbcHYWFEt
+         ra0SYmO4z+9cL4RVX9Oi9YFk4uzxKz0UwrtstPiF2jv9Ep4omLSAC/P/o3tuG6l+P2
+         0UZ0nIwBrJB+kI441fxtpMTJ0TXq9HVrw7ERgcUjdatdWgrdgOeNpnPNy4Lr9Ml0aV
+         kE/HqfTIrrOnvm3kaeL74/8X/iTD7fOQ/GFqWAb08hWlQOu6Q0jybxst4NnOGm2IL7
+         ikMJv1z/mnUYg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 43E715C05B9; Mon, 20 Jun 2022 15:44:55 -0700 (PDT)
-Date:   Mon, 20 Jun 2022 15:44:55 -0700
+        id E97AA5C05C8; Mon, 20 Jun 2022 15:45:04 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org
-Subject: [PATCH rcu 0/7] Callback-offload (nocb) updates for v5.20
-Message-ID: <20220620224455.GA3840881@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        rostedt@goodmis.org, Zqiang <qiang1.zhang@intel.com>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Uladzislau Rezki <uladzislau.rezki@sony.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 2/7] rcu/nocb: Invert rcu_state.barrier_mutex VS hotplug lock locking order
+Date:   Mon, 20 Jun 2022 15:44:58 -0700
+Message-Id: <20220620224503.3841196-2-paulmck@kernel.org>
+X-Mailer: git-send-email 2.31.1.189.g2e36527f23
+In-Reply-To: <20220620224455.GA3840881@paulmck-ThinkPad-P17-Gen-1>
+References: <20220620224455.GA3840881@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello!
+From: Zqiang <qiang1.zhang@intel.com>
 
-This series provides NOCB-CPU updates:
+In case of failure to spawn either rcuog or rcuo[p] kthreads for a given
+rdp, rcu_nocb_rdp_deoffload() needs to be called with the hotplug
+lock and the barrier_mutex held. However cpus write lock is already held
+while calling rcutree_prepare_cpu(). It's not possible to call
+rcu_nocb_rdp_deoffload() from there with just locking the barrier_mutex
+or this would result in a locking inversion against
+rcu_nocb_cpu_deoffload() which holds both locks in the reverse order.
 
-1.	Add/del rdp to iterate from rcuog itself, courtesy of Frederic
-	Weisbecker.
+Simply solve this with inverting the locking order inside
+rcu_nocb_cpu_[de]offload(). This will be a pre-requisite to toggle NOCB
+states toward cpusets anyway.
 
-2.	Invert rcu_state.barrier_mutex VS hotplug lock locking order,
-	courtesy of Zqiang.
+Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+Cc: Boqun Feng <boqun.feng@gmail.com>
+Cc: Uladzislau Rezki <uladzislau.rezki@sony.com>
+Cc: Joel Fernandes <joel@joelfernandes.org>
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ kernel/rcu/tree_nocb.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-3.	Fix NOCB kthreads spawn failure with rcu_nocb_rdp_deoffload()
-	direct call, courtesy of Zqiang.
+diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+index dac74952e1d1b..f2f2cab6285a1 100644
+--- a/kernel/rcu/tree_nocb.h
++++ b/kernel/rcu/tree_nocb.h
+@@ -1055,8 +1055,8 @@ int rcu_nocb_cpu_deoffload(int cpu)
+ 	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
+ 	int ret = 0;
+ 
+-	mutex_lock(&rcu_state.barrier_mutex);
+ 	cpus_read_lock();
++	mutex_lock(&rcu_state.barrier_mutex);
+ 	if (rcu_rdp_is_offloaded(rdp)) {
+ 		if (cpu_online(cpu)) {
+ 			ret = work_on_cpu(cpu, rcu_nocb_rdp_deoffload, rdp);
+@@ -1067,8 +1067,8 @@ int rcu_nocb_cpu_deoffload(int cpu)
+ 			ret = -EINVAL;
+ 		}
+ 	}
+-	cpus_read_unlock();
+ 	mutex_unlock(&rcu_state.barrier_mutex);
++	cpus_read_unlock();
+ 
+ 	return ret;
+ }
+@@ -1134,8 +1134,8 @@ int rcu_nocb_cpu_offload(int cpu)
+ 	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
+ 	int ret = 0;
+ 
+-	mutex_lock(&rcu_state.barrier_mutex);
+ 	cpus_read_lock();
++	mutex_lock(&rcu_state.barrier_mutex);
+ 	if (!rcu_rdp_is_offloaded(rdp)) {
+ 		if (cpu_online(cpu)) {
+ 			ret = work_on_cpu(cpu, rcu_nocb_rdp_offload, rdp);
+@@ -1146,8 +1146,8 @@ int rcu_nocb_cpu_offload(int cpu)
+ 			ret = -EINVAL;
+ 		}
+ 	}
+-	cpus_read_unlock();
+ 	mutex_unlock(&rcu_state.barrier_mutex);
++	cpus_read_unlock();
+ 
+ 	return ret;
+ }
+-- 
+2.31.1.189.g2e36527f23
 
-4.	Add an option to offload all CPUs on boot, courtesy of Joel
-	Fernandes.
-
-5.	Add nocb_cb_kthread check to rcu_is_callbacks_kthread(), courtesy
-	of Zqiang.
-
-6.	Add option to opt rcuo kthreads out of RT priority, courtesy of
-	"Uladzislau Rezki (Sony)".
-
-7.	Avoid polling when my_rdp->nocb_head_rdp list is empty, courtesy
-	of Zqiang.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- b/Documentation/admin-guide/kernel-parameters.txt |    6 
- b/kernel/rcu/Kconfig                              |   13 ++
- b/kernel/rcu/tree.c                               |    4 
- b/kernel/rcu/tree.h                               |    1 
- b/kernel/rcu/tree_nocb.h                          |  138 +++++++++++-----------
- b/kernel/rcu/tree_plugin.h                        |   33 +++--
- kernel/rcu/Kconfig                                |   16 ++
- kernel/rcu/tree.c                                 |    6 
- kernel/rcu/tree.h                                 |    2 
- kernel/rcu/tree_nocb.h                            |  130 ++++++++++++++++----
- 10 files changed, 236 insertions(+), 113 deletions(-)
