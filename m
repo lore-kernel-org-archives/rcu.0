@@ -2,97 +2,65 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BC982CCA482
-	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 23:17:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4BD50C43334
+	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 23:25:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347211AbiFTXRs (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 20 Jun 2022 19:17:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38132 "EHLO
+        id S244585AbiFTXZ4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 20 Jun 2022 19:25:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347158AbiFTXRR (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 20 Jun 2022 19:17:17 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9E8B20F69;
-        Mon, 20 Jun 2022 16:13:32 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 84BFEB8125A;
-        Mon, 20 Jun 2022 23:13:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E875C341C8;
-        Mon, 20 Jun 2022 23:13:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655766810;
-        bh=hQDDfCX6FrCbbHOOBzzqdZX9si4toBVrX232zBu3hPE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pKbFH2f6v1EhhycIA1bhHU6Mr6VnY3KlF2ITwaZml3znskuB5lk/aHqTev5gUFcRL
-         5veMbV4mBKK2WpFjWmLHyLCQ+EjFKGq75NegtlJNOVz6KJTaG/WbSaADNndRK+w3hr
-         g02s4enD3GZmugFmiVwG7jxDab1hRF8U2En+3HyU2zgzJGMpHdudZcmrNumHFE61Fs
-         GIGQ8L/5m8+0ajcBvjICcadLc1JPciMt/qLkLaSIDFYibHwifQlefrHdo86h963kGu
-         SkzdY6TJp89D8e9vYPbErYueu8Ms/0jZ/gtjnTUL3j4TtMYHJhhuvKFUW6do9OjMR2
-         v2L8NAHXGsbdg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id E37125C0ADC; Mon, 20 Jun 2022 16:13:29 -0700 (PDT)
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     rcu@vger.kernel.org
+        with ESMTP id S1347700AbiFTXZl (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 20 Jun 2022 19:25:41 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81B4D13D41;
+        Mon, 20 Jun 2022 16:23:07 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1655767384;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bW3D6fQYGfq+LIKDb9Z3o0JUaxdED14t0XLDrOY7eGE=;
+        b=0MFlDp+fgTDE8bBCTtUT18/CkQO+E7Xwyft0XBiN29o7FLIk/WE2N81Vv5OmlIfdDN0/KE
+        AhVpxfDMW/n0tHyDElhcv0sTEaafym4f7eZBW8238jZRPHyf9g3KtWT7LOfRz3ugAVtJdc
+        KAuoXrQJofP3eQXu6c3OFotAv3puGRtEI1UPGMCfgdeGjmhP7q8DCfGNsFgj0qwBj9wmmn
+        EcjPoxZ4f7mkGdJqmfJ9S6Pr+yhyfujwRf81jSoN+bG/gxWRVyx4O8tWKl0N5EZkhCBX4Y
+        ypC/4IlZWkJdLc7ftq5yuBV7ZyqM19ZjhgUurm40WOe5VeIRSEusjE+TWOLqTw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1655767384;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bW3D6fQYGfq+LIKDb9Z3o0JUaxdED14t0XLDrOY7eGE=;
+        b=Sxeyk7CewSWdRmO93S3lfQ2EPCEZdxQPQkZ1Yz73CbaU8YQEAeKXP7qFpFEWxEymEakMlV
+        CSuJ4OL1MbbmppBw==
+To:     "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org, Willy Tarreau <w@1wt.eu>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 5/5] tools/nolibc: add a help target to list supported targets
-Date:   Mon, 20 Jun 2022 16:13:28 -0700
-Message-Id: <20220620231328.3845126-5-paulmck@kernel.org>
-X-Mailer: git-send-email 2.31.1.189.g2e36527f23
-In-Reply-To: <20220620231325.GA3845036@paulmck-ThinkPad-P17-Gen-1>
-References: <20220620231325.GA3845036@paulmck-ThinkPad-P17-Gen-1>
+        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
+Subject: Re: [PATCH rcu 11/12] torture: Flush printk() buffers before
+ powering off
+In-Reply-To: <20220620225817.3843106-11-paulmck@kernel.org>
+References: <20220620225814.GA3842995@paulmck-ThinkPad-P17-Gen-1>
+ <20220620225817.3843106-11-paulmck@kernel.org>
+Date:   Tue, 21 Jun 2022 01:29:04 +0206
+Message-ID: <8735fyc42v.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Willy Tarreau <w@1wt.eu>
+On 2022-06-20, "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> The rcutorture test suite produces quite a bit of console output
+> at the end of a test.  This means that the new printk() kthreads
+> are likely to be in the process of flushing output at the time of
+> the torture_shutdown() function's call to kernel_power_off().
+>
+> This commit therefore invokes pr_flush(1000, true) to flush this
+> pending console output before invoking kernel_power_off().
+>
+> Fixes: 8e274732115f ("printk: extend console_lock for per-console locking")
+> Cc: John Ogness <john.ogness@linutronix.de>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
-The "help" target simply presents the list of supported targets
-and the current set of variables being used to build the sysroot.
-
-Since the help in tools/ suggests to use "install", which is
-supported by most tools while such a target is not really relevant
-here, an "install" target was also added, redirecting to "help".
-
-Signed-off-by: Willy Tarreau <w@1wt.eu>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- tools/include/nolibc/Makefile | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
-
-diff --git a/tools/include/nolibc/Makefile b/tools/include/nolibc/Makefile
-index 9768819abd55d..cfd06764b5aee 100644
---- a/tools/include/nolibc/Makefile
-+++ b/tools/include/nolibc/Makefile
-@@ -31,6 +31,23 @@ all_files := ctype.h errno.h nolibc.h signal.h std.h stdio.h stdlib.h string.h \
- # install all headers needed to support a bare-metal compiler
- all: headers
- 
-+install: help
-+
-+help:
-+	@echo "Supported targets under nolibc:"
-+	@echo "  all                 call \"headers\""
-+	@echo "  clean               clean the sysroot"
-+	@echo "  headers             prepare a sysroot in tools/include/nolibc/sysroot"
-+	@echo "  headers_standalone  like \"headers\", and also install kernel headers"
-+	@echo "  help                this help"
-+	@echo ""
-+	@echo "These targets may also be called from tools as \"make nolibc_<target>\"."
-+	@echo ""
-+	@echo "Currently using the following variables:"
-+	@echo "  ARCH    = $(ARCH)"
-+	@echo "  OUTPUT  = $(OUTPUT)"
-+	@echo ""
-+
- # Note: when ARCH is "x86" we concatenate both x86_64 and i386
- headers:
- 	$(Q)mkdir -p $(OUTPUT)sysroot
--- 
-2.31.1.189.g2e36527f23
-
+Reviewed-by: John Ogness <john.ogness@linutronix.de>
