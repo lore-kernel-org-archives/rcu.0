@@ -2,46 +2,46 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8490EC43334
-	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 22:20:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 453DBCCA480
+	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 22:20:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343912AbiFTWUv (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 20 Jun 2022 18:20:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36362 "EHLO
+        id S1343796AbiFTWUx (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 20 Jun 2022 18:20:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244546AbiFTWUm (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S244552AbiFTWUm (ORCPT <rfc822;rcu@vger.kernel.org>);
         Mon, 20 Jun 2022 18:20:42 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C30D1B7BC;
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF86F1BE83;
         Mon, 20 Jun 2022 15:20:37 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 15BCEB8164C;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 3414EB8164F;
         Mon, 20 Jun 2022 22:20:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C325C341CE;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A044BC385A5;
         Mon, 20 Jun 2022 22:20:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1655763634;
-        bh=dvayfTMczyv3C6g8GjwtjDg8jUO9BjwWnCpcNP6JWoQ=;
+        bh=omFpL6AjD/2c4cDtQPge8eB3hsr4UIqIh5fcwI+Snkw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KXwIw1hoF6M8JmrZhNW6N32tDGxEXEY7fyaa5fmnMwUGYflOYI+KdJE791fCCyVJs
-         9WNtr2SwLSDmce5jZhN7Fq3bsO7LK3KpsXsC4UXWJgvOg3w7UCiTQttRp3jDB7S/K9
-         WClbicMt+afMnOpGsrfOHuxBvGr9lofxt+R6mTUkOLCdEg2AwEBJ3BXo1agH6wFRj+
-         5bTmuGRmoIgCloVv9meIHcbAho6yh6M7adTNhAA+Hg/Hvp3xmCq0IzEdUW7Mj7b7hf
-         lCf8lDX4FmGSWQiewxv3KHP+TJB36fJdUakciOPOZPaPvLILH9UDWkkdTSACT5v2YV
-         1Vsm1DW32i0oQ==
+        b=L2aeUhfRA6yU94xu33SIBxrDD57PJ6/AHIPrCffkBFV5gVousgGB1b846unb/VpRy
+         cMQP65ZV6scdrQ6TLcRXTdFEpb0GDzoUiMiwtP0n4FOTFknI0+spFUYlZ2gjbEB2Af
+         TlPELayCfcl8at4ZRGrAN/4BGwnFhI/75T7Zuz5auaP/eWZTdIFnG+grDhBMwKOLqU
+         kL3eHj6slDghDWmoJ+eCVddp9c/3E+Yj+KWjM7OGXBN6ZVprlz0IRHl8/D/XGyBFz6
+         gl4AtLRBC6uFPyDovbpFpr43bVu6b39hiOaU517jCenTcgiLJPiHwtRGRV/MiTo0M1
+         MROJ5LXCvK+zQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 094375C0BCC; Mon, 20 Jun 2022 15:20:34 -0700 (PDT)
+        id 0E8F25C0DAC; Mon, 20 Jun 2022 15:20:34 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org, Johannes Berg <johannes.berg@intel.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 07/12] rcu: tiny: Record kvfree_call_rcu() call stack for KASAN
-Date:   Mon, 20 Jun 2022 15:20:27 -0700
-Message-Id: <20220620222032.3839547-7-paulmck@kernel.org>
+        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>
+Subject: [PATCH rcu 10/12] rcu: Initialize first_gp_fqs at declaration in rcu_gp_fqs()
+Date:   Mon, 20 Jun 2022 15:20:30 -0700
+Message-Id: <20220620222032.3839547-10-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220620222022.GA3839466@paulmck-ThinkPad-P17-Gen-1>
 References: <20220620222022.GA3839466@paulmck-ThinkPad-P17-Gen-1>
@@ -51,91 +51,35 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+This commit saves a line of code by initializing the rcu_gp_fqs()
+function's first_gp_fqs local variable in its declaration.
 
-When running KASAN with Tiny RCU (e.g. under ARCH=um, where
-a working KASAN patch is now available), we don't get any
-information on the original kfree_rcu() (or similar) caller
-when a problem is reported, as Tiny RCU doesn't record this.
-
-Add the recording, which required pulling kvfree_call_rcu()
-out of line for the KASAN case since the recording function
-(kasan_record_aux_stack_noalloc) is neither exported, nor
-can we include kasan.h into rcutiny.h.
-
-without KASAN, the patch has no size impact (ARCH=um kernel):
-    text       data         bss         dec        hex    filename
- 6151515    4423154    33148520    43723189    29b29b5    linux
- 6151515    4423154    33148520    43723189    29b29b5    linux + patch
-
-with KASAN, the impact on my build was minimal:
-    text       data         bss         dec        hex    filename
-13915539    7388050    33282304    54585893    340ea25    linux
-13911266    7392114    33282304    54585684    340e954    linux + patch
-   -4273      +4064         +-0        -209
-
-Acked-by: Dmitry Vyukov <dvyukov@google.com>
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Reported-by: Frederic Weisbecker <frederic@kernel.org>
+Reported-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/rcutiny.h | 11 ++++++++++-
- kernel/rcu/tiny.c       | 14 ++++++++++++++
- 2 files changed, 24 insertions(+), 1 deletion(-)
+ kernel/rcu/tree.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
-index 5fed476f977f6..d84e13f2c3848 100644
---- a/include/linux/rcutiny.h
-+++ b/include/linux/rcutiny.h
-@@ -38,7 +38,7 @@ static inline void synchronize_rcu_expedited(void)
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 7919d7b48fa6a..7d8e9cb852786 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -1971,13 +1971,12 @@ static void rcu_gp_fqs(bool first_time)
   */
- extern void kvfree(const void *addr);
- 
--static inline void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
-+static inline void __kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ static noinline_for_stack void rcu_gp_fqs_loop(void)
  {
- 	if (head) {
- 		call_rcu(head, func);
-@@ -51,6 +51,15 @@ static inline void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
- 	kvfree((void *) func);
- }
+-	bool first_gp_fqs;
++	bool first_gp_fqs = true;
+ 	int gf = 0;
+ 	unsigned long j;
+ 	int ret;
+ 	struct rcu_node *rnp = rcu_get_root();
  
-+#ifdef CONFIG_KASAN_GENERIC
-+void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func);
-+#else
-+static inline void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
-+{
-+	__kvfree_call_rcu(head, func);
-+}
-+#endif
-+
- void rcu_qs(void);
- 
- static inline void rcu_softirq_qs(void)
-diff --git a/kernel/rcu/tiny.c b/kernel/rcu/tiny.c
-index 340b3f8b090d4..58ff3721d975c 100644
---- a/kernel/rcu/tiny.c
-+++ b/kernel/rcu/tiny.c
-@@ -217,6 +217,20 @@ bool poll_state_synchronize_rcu(unsigned long oldstate)
- }
- EXPORT_SYMBOL_GPL(poll_state_synchronize_rcu);
- 
-+#ifdef CONFIG_KASAN_GENERIC
-+void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
-+{
-+	if (head) {
-+		void *ptr = (void *) head - (unsigned long) func;
-+
-+		kasan_record_aux_stack_noalloc(ptr);
-+	}
-+
-+	__kvfree_call_rcu(head, func);
-+}
-+EXPORT_SYMBOL_GPL(kvfree_call_rcu);
-+#endif
-+
- void __init rcu_init(void)
- {
- 	open_softirq(RCU_SOFTIRQ, rcu_process_callbacks);
+-	first_gp_fqs = true;
+ 	j = READ_ONCE(jiffies_till_first_fqs);
+ 	if (rcu_state.cbovld)
+ 		gf = RCU_GP_FLAG_OVLD;
 -- 
 2.31.1.189.g2e36527f23
 
