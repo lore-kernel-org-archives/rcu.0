@@ -2,50 +2,45 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 22C8ACCA47C
-	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 22:54:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ACC59C43334
+	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 22:54:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345230AbiFTWyl (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 20 Jun 2022 18:54:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59148 "EHLO
+        id S1345252AbiFTWym (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 20 Jun 2022 18:54:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344873AbiFTWy0 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S1344882AbiFTWy0 (ORCPT <rfc822;rcu@vger.kernel.org>);
         Mon, 20 Jun 2022 18:54:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18FD61EECB;
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D6B11EAFB;
         Mon, 20 Jun 2022 15:54:18 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B15C8614A1;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 63D5B61480;
         Mon, 20 Jun 2022 22:54:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38D84C36AFF;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4EB44C53FCE;
         Mon, 20 Jun 2022 22:54:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1655765654;
-        bh=oeqjPlwjXE63AEix275I757EvtUPI3KuTQHjdeOt3rc=;
+        bh=mIK+J5JIyXuTrHJlB2cC4OPP12UXoLuTsKc8W1n+1SY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QuY9SbaL8NzO3lPK63bQn0eFr9sIRkeWHEA1QPThf964NXExo2VU/8eb0z9Eo9KdT
-         KxqeLO7npg+6A7HQU/eMUcG9z7JccQoJrgqNzWtB/zgQvGqrFbM37Tgr6tO8vRrLho
-         XHC7vRUUFQYRrBNvHu/kgH942BK4y2767T2kOIDN1Nki0OP7868lDQbUaGKUWdnyY9
-         xvnURwlQqyOptaDdK+xFwSSog/L7pNcQbkzHYUnUOB6xcrVbmmcnrCunX1BcmJzmfC
-         Ibc5brAzk3iMR/MA4JZFx+31izJ8UQdpGN8NVgpuw9xXzz6klip/SL/6LGpZ+2EwZJ
-         dIgoIBYT1lsbw==
+        b=lXKuEUnSNN9+aFsN0kWF85D0tPMZD3HjgYaheg/1WcIqabsdaMxg6vWBFI3GchKAw
+         PgTbPlTT+yPSTpUKrCjVSLoKGGRZ4If6KiXF1KOgs7kCvCgDH/a+5wFq3rH2+8kOa7
+         ElVwqROzRUaPV0GfWGTNTAZ6g5Zz/OkCbev8RBPhuDv5mhLlx8HE7uWm38+8xBgqfd
+         pbaN99z8gWdlnUchzTzFZN9uyMZa+PGrGfOiARpbs0b/kdCLf7nRhTds4/p6d5q+p3
+         cogNysO2hDVJ7HycED+nx+Go7UeP73egE6AiLiWhWIStjEwdKQBQQ6H91GpPDKGZk6
+         AHLP72JEp6fbA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 5BFFE5C164C; Mon, 20 Jun 2022 15:54:13 -0700 (PDT)
+        id 656245C2B25; Mon, 20 Jun 2022 15:54:13 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        KP Singh <kpsingh@kernel.org>
-Subject: [PATCH rcu 27/32] rcu-tasks: Maintain a count of tasks blocking RCU Tasks Trace grace period
-Date:   Mon, 20 Jun 2022 15:54:06 -0700
-Message-Id: <20220620225411.3842519-27-paulmck@kernel.org>
+        rostedt@goodmis.org, Waiman Long <longman@redhat.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 32/32] rcu-tasks: Use delayed_work to delay rcu_tasks_verify_self_tests()
+Date:   Mon, 20 Jun 2022 15:54:11 -0700
+Message-Id: <20220620225411.3842519-32-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220620225402.GA3842369@paulmck-ThinkPad-P17-Gen-1>
 References: <20220620225402.GA3842369@paulmck-ThinkPad-P17-Gen-1>
@@ -55,59 +50,85 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This commit maintains a new n_trc_holdouts counter that tracks the number
-of tasks blocking the RCU Tasks grace period.  This counter is useful
-for debugging, and its value has been added to a diagostic message.
+From: Waiman Long <longman@redhat.com>
 
+Commit 2585014188d5 ("rcu-tasks: Be more patient for RCU Tasks
+boot-time testing") fixes false positive rcu_tasks verification check
+failure by repeating the test once every second until timeout using
+schedule_timeout_uninterruptible().
+
+Since rcu_tasks_verify_selft_tests() is called from do_initcalls()
+as a late_initcall, this has the undesirable side effect of delaying
+other late_initcall's queued after it by a second or more.  Fix this by
+instead using delayed_work to repeat the verification check.
+
+Fixes: 2585014188d5 ("rcu-tasks: Be more patient for RCU Tasks boot-time testing")
+Signed-off-by: Waiman Long <longman@redhat.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Martin KaFai Lau <kafai@fb.com>
-Cc: KP Singh <kpsingh@kernel.org>
 ---
- kernel/rcu/tasks.h | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ kernel/rcu/tasks.h | 37 ++++++++++++++++++++++++++++++++-----
+ 1 file changed, 32 insertions(+), 5 deletions(-)
 
 diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index fe0552086ccfc..9d7d6fd4b8a79 100644
+index fcbd0ec33c866..83c7e6620d403 100644
 --- a/kernel/rcu/tasks.h
 +++ b/kernel/rcu/tasks.h
-@@ -1206,6 +1206,7 @@ static DEFINE_PER_CPU(bool, trc_ipi_to_cpu);
- static unsigned long n_heavy_reader_attempts;
- static unsigned long n_heavy_reader_updates;
- static unsigned long n_heavy_reader_ofl_updates;
-+static unsigned long n_trc_holdouts;
- 
- void call_rcu_tasks_trace(struct rcu_head *rhp, rcu_callback_t func);
- DEFINE_RCU_TASKS(rcu_tasks_trace, rcu_tasks_wait_gp, call_rcu_tasks_trace,
-@@ -1299,6 +1300,7 @@ static void trc_add_holdout(struct task_struct *t, struct list_head *bhp)
- 	if (list_empty(&t->trc_holdout_list)) {
- 		get_task_struct(t);
- 		list_add(&t->trc_holdout_list, bhp);
-+		n_trc_holdouts++;
- 	}
+@@ -1832,6 +1832,11 @@ static void rcu_tasks_initiate_self_tests(void)
+ #endif
  }
  
-@@ -1308,6 +1310,7 @@ static void trc_del_holdout(struct task_struct *t)
- 	if (!list_empty(&t->trc_holdout_list)) {
- 		list_del_init(&t->trc_holdout_list);
- 		put_task_struct(t);
-+		n_trc_holdouts--;
- 	}
- }
- 
-@@ -1760,7 +1763,8 @@ void show_rcu_tasks_trace_gp_kthread(void)
++/*
++ * Return:  0 - test passed
++ *	    1 - test failed, but have not timed out yet
++ *	   -1 - test failed and timed out
++ */
+ static int rcu_tasks_verify_self_tests(void)
  {
- 	char buf[64];
+ 	int ret = 0;
+@@ -1847,16 +1852,38 @@ static int rcu_tasks_verify_self_tests(void)
+ 				ret = -1;
+ 				break;
+ 			}
+-			schedule_timeout_uninterruptible(1);
++			ret = 1;
++			break;
+ 		}
+ 	}
+-
+-	if (ret)
+-		WARN_ON(1);
++	WARN_ON(ret < 0);
  
--	sprintf(buf, "h:%lu/%lu/%lu",
-+	sprintf(buf, "N%lu h:%lu/%lu/%lu",
-+		data_race(n_trc_holdouts),
- 		data_race(n_heavy_reader_ofl_updates),
- 		data_race(n_heavy_reader_updates),
- 		data_race(n_heavy_reader_attempts));
+ 	return ret;
+ }
+-late_initcall(rcu_tasks_verify_self_tests);
++
++/*
++ * Repeat the rcu_tasks_verify_self_tests() call once every second until the
++ * test passes or has timed out.
++ */
++static struct delayed_work rcu_tasks_verify_work;
++static void rcu_tasks_verify_work_fn(struct work_struct *work __maybe_unused)
++{
++	int ret = rcu_tasks_verify_self_tests();
++
++	if (ret <= 0)
++		return;
++
++	/* Test fails but not timed out yet, reschedule another check */
++	schedule_delayed_work(&rcu_tasks_verify_work, HZ);
++}
++
++static int rcu_tasks_verify_schedule_work(void)
++{
++	INIT_DELAYED_WORK(&rcu_tasks_verify_work, rcu_tasks_verify_work_fn);
++	rcu_tasks_verify_work_fn(NULL);
++	return 0;
++}
++late_initcall(rcu_tasks_verify_schedule_work);
+ #else /* #ifdef CONFIG_PROVE_RCU */
+ static void rcu_tasks_initiate_self_tests(void) { }
+ #endif /* #else #ifdef CONFIG_PROVE_RCU */
 -- 
 2.31.1.189.g2e36527f23
 
