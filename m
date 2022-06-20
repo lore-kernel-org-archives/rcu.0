@@ -2,44 +2,50 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02EA5CCA480
-	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 22:54:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 71627C43334
+	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 22:54:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344976AbiFTWyf (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 20 Jun 2022 18:54:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59144 "EHLO
+        id S1345148AbiFTWyg (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 20 Jun 2022 18:54:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344370AbiFTWyR (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 20 Jun 2022 18:54:17 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E406B1D0C7;
-        Mon, 20 Jun 2022 15:54:14 -0700 (PDT)
+        with ESMTP id S1344753AbiFTWyY (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 20 Jun 2022 18:54:24 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E0E2BCB5;
+        Mon, 20 Jun 2022 15:54:16 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 086F161419;
-        Mon, 20 Jun 2022 22:54:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66B1CC3411B;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 3AD10B8164C;
+        Mon, 20 Jun 2022 22:54:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA456C341CF;
         Mon, 20 Jun 2022 22:54:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1655765653;
-        bh=nq74XM5qmGdjh3JWiMU9VuScVmOfgvRYRWhx5zG5Cgw=;
+        bh=MmSAflpPPlTEqinw5rOI6w8ljGycvc7qO4CjP+NI4Z8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u4diseL4f7wtGTHQBT5oIZfE/zehbrhk/ZrOIs0eoiVhVOMOoTp2uZbDuvJbIRZz6
-         TRoVIUUwp9LCFG8XCEoChIOIFH5KEBXEEgoz39/qp6raBcfkwbUArOQpIa+pislsZ4
-         Yl0+lW8s6VTsmBrCJvPq9LrV+r4lkoYafdcXk35iXkp9t3mHAIFxzQIzHEydXQ2JTc
-         L1l1YdX6vUgh0aBxfWmPDJpHD6UofJwud+a1tOKx+I2yEY/rh2ys66+zDMt2wZ+C8U
-         u3+6IJNMD2d1zlcOMcNeZ4OzAS7nmROCEi6trqrFec6YElgwgUNBJPkoKSZRb7ecHO
-         XJBXqMdTk+8sw==
+        b=ImEwlwmhNG52NCe/4einZ27mDFBOXTQMIS4nnlhcJtTKFahQEe7RMQmmI9Fw4XmxQ
+         v6c8G2LytaxA4hP/F1BvpCydZ3/xtBDyB3XK4gknK7U9rgc7oYVbW6ZzwjfotRiQZz
+         53ebt/MeFS3CTUoB//AHorKiSOmYoAP1FJg22/spxQWeCLkJdlIixt74jsBECO+SDs
+         RWatNePVaRk2NnVCsHuPF9WzZwdrHzJabjxwWYy9MJQvSUt4X83FX7TcVWtHxVCcWe
+         DMGOMAjgct1kn7PwkQZfe9VY7hCqbf6VZ9mDwQbztmwWRrB32e43tXgt32v63Q8TZ8
+         qUhY33DHAjmEQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 29B995C05C8; Mon, 20 Jun 2022 15:54:13 -0700 (PDT)
+        id 3273F5C0B06; Mon, 20 Jun 2022 15:54:13 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 02/32] rcu-tasks: Split rcu_tasks_one_gp() from rcu_tasks_kthread()
-Date:   Mon, 20 Jun 2022 15:53:41 -0700
-Message-Id: <20220620225411.3842519-2-paulmck@kernel.org>
+        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        KP Singh <kpsingh@kernel.org>
+Subject: [PATCH rcu 06/32] rcu-tasks: Remove rcu_tasks_trace_postgp() wait for counter
+Date:   Mon, 20 Jun 2022 15:53:45 -0700
+Message-Id: <20220620225411.3842519-6-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220620225402.GA3842369@paulmck-ThinkPad-P17-Gen-1>
 References: <20220620225402.GA3842369@paulmck-ThinkPad-P17-Gen-1>
@@ -49,118 +55,160 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This commit abstracts most of the rcu_tasks_kthread() function's loop
-body into a new rcu_tasks_one_gp() function.  It also introduces
-a new ->tasks_gp_mutex to synchronize concurrent calls to this new
-rcu_tasks_one_gp() function.  This commit is preparation for allowing
-RCU tasks grace periods to be driven by the calling task during the
-mid-boot dead zone.
+Now that tasks are not removed from the list until they have responded to
+any needed request for a quiescent state, it is no longer necessary to
+wait for the trc_n_readers_need_end counter to go to zero.  This commit
+therefore removes that waiting code.
+
+It is therefore also no longer necessary for rcu_tasks_trace_postgp() to
+do the final decrement of this counter, so that code is also removed.
+This in turn means that trc_n_readers_need_end counter itself can
+be removed, as can the rcu_tasks_trace_iw irq_work structure and the
+rcu_read_unlock_iw() function.
+
+[ paulmck: Apply feedback from Zqiang. ]
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: Martin KaFai Lau <kafai@fb.com>
+Cc: KP Singh <kpsingh@kernel.org>
 ---
- kernel/rcu/tasks.h | 58 ++++++++++++++++++++++++++++------------------
- 1 file changed, 36 insertions(+), 22 deletions(-)
+ kernel/rcu/tasks.h | 62 +++-------------------------------------------
+ 1 file changed, 3 insertions(+), 59 deletions(-)
 
 diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index b8690a412c5bf..d7b12f524e81c 100644
+index 7bdc62606816b..561d24f7f73cc 100644
 --- a/kernel/rcu/tasks.h
 +++ b/kernel/rcu/tasks.h
-@@ -48,6 +48,7 @@ struct rcu_tasks_percpu {
-  * struct rcu_tasks - Definition for a Tasks-RCU-like mechanism.
-  * @cbs_wait: RCU wait allowing a new callback to get kthread's attention.
-  * @cbs_gbl_lock: Lock protecting callback list.
-+ * @tasks_gp_mutex: Mutex protecting grace period, needed during mid-boot dead zone.
-  * @kthread_ptr: This flavor's grace-period/callback-invocation kthread.
-  * @gp_func: This flavor's grace-period-wait function.
-  * @gp_state: Grace period's most recent state transition (debugging).
-@@ -79,6 +80,7 @@ struct rcu_tasks_percpu {
- struct rcu_tasks {
- 	struct rcuwait cbs_wait;
- 	raw_spinlock_t cbs_gbl_lock;
-+	struct mutex tasks_gp_mutex;
- 	int gp_state;
- 	int gp_sleep;
- 	int init_fract;
-@@ -119,6 +121,7 @@ static struct rcu_tasks rt_name =							\
- {											\
- 	.cbs_wait = __RCUWAIT_INITIALIZER(rt_name.wait),				\
- 	.cbs_gbl_lock = __RAW_SPIN_LOCK_UNLOCKED(rt_name.cbs_gbl_lock),			\
-+	.tasks_gp_mutex = __MUTEX_INITIALIZER(rt_name.tasks_gp_mutex),			\
- 	.gp_func = gp,									\
- 	.call_func = call,								\
- 	.rtpcpu = &rt_name ## __percpu,							\
-@@ -502,10 +505,37 @@ static void rcu_tasks_invoke_cbs_wq(struct work_struct *wp)
- 	rcu_tasks_invoke_cbs(rtp, rtpcp);
- }
+@@ -1192,9 +1192,6 @@ EXPORT_SYMBOL_GPL(rcu_trace_lock_map);
  
--/* RCU-tasks kthread that detects grace periods and invokes callbacks. */
--static int __noreturn rcu_tasks_kthread(void *arg)
-+// Wait for one grace period.
-+static void rcu_tasks_one_gp(struct rcu_tasks *rtp)
+ #ifdef CONFIG_TASKS_TRACE_RCU
+ 
+-static atomic_t trc_n_readers_need_end;		// Number of waited-for readers.
+-static DECLARE_WAIT_QUEUE_HEAD(trc_wait);	// List of holdout tasks.
+-
+ // Record outstanding IPIs to each CPU.  No point in sending two...
+ static DEFINE_PER_CPU(bool, trc_ipi_to_cpu);
+ 
+@@ -1241,16 +1238,6 @@ u8 rcu_trc_cmpxchg_need_qs(struct task_struct *t, u8 old, u8 new)
+ }
+ EXPORT_SYMBOL_GPL(rcu_trc_cmpxchg_need_qs);
+ 
+-/*
+- * This irq_work handler allows rcu_read_unlock_trace() to be invoked
+- * while the scheduler locks are held.
+- */
+-static void rcu_read_unlock_iw(struct irq_work *iwp)
+-{
+-	wake_up(&trc_wait);
+-}
+-static DEFINE_IRQ_WORK(rcu_tasks_trace_iw, rcu_read_unlock_iw);
+-
+ /* If we are the last reader, wake up the grace-period kthread. */
+ void rcu_read_unlock_trace_special(struct task_struct *t)
  {
- 	int needgpcb;
-+
-+	mutex_lock(&rtp->tasks_gp_mutex);
-+	set_tasks_gp_state(rtp, RTGS_WAIT_CBS);
-+
-+	// If there were none, wait a bit and start over.
-+	rcuwait_wait_event(&rtp->cbs_wait,
-+			   (needgpcb = rcu_tasks_need_gpcb(rtp)),
-+			   TASK_IDLE);
-+
-+	if (needgpcb & 0x2) {
-+		// Wait for one grace period.
-+		set_tasks_gp_state(rtp, RTGS_WAIT_GP);
-+		rtp->gp_start = jiffies;
-+		rcu_seq_start(&rtp->tasks_gp_seq);
-+		rtp->gp_func(rtp);
-+		rcu_seq_end(&rtp->tasks_gp_seq);
-+	}
-+
-+	// Invoke callbacks.
-+	set_tasks_gp_state(rtp, RTGS_INVOKE_CBS);
-+	rcu_tasks_invoke_cbs(rtp, per_cpu_ptr(rtp->rtpcpu, 0));
-+	mutex_unlock(&rtp->tasks_gp_mutex);
-+}
-+
-+// RCU-tasks kthread that detects grace periods and invokes callbacks.
-+static int __noreturn rcu_tasks_kthread(void *arg)
-+{
- 	struct rcu_tasks *rtp = arg;
- 
- 	/* Run on housekeeping CPUs by default.  Sysadm can move if desired. */
-@@ -519,27 +549,11 @@ static int __noreturn rcu_tasks_kthread(void *arg)
- 	 * This loop is terminated by the system going down.  ;-)
- 	 */
- 	for (;;) {
--		set_tasks_gp_state(rtp, RTGS_WAIT_CBS);
--
--		/* If there were none, wait a bit and start over. */
--		rcuwait_wait_event(&rtp->cbs_wait,
--				   (needgpcb = rcu_tasks_need_gpcb(rtp)),
--				   TASK_IDLE);
--
--		if (needgpcb & 0x2) {
--			// Wait for one grace period.
--			set_tasks_gp_state(rtp, RTGS_WAIT_GP);
--			rtp->gp_start = jiffies;
--			rcu_seq_start(&rtp->tasks_gp_seq);
--			rtp->gp_func(rtp);
--			rcu_seq_end(&rtp->tasks_gp_seq);
--		}
--
--		/* Invoke callbacks. */
--		set_tasks_gp_state(rtp, RTGS_INVOKE_CBS);
--		rcu_tasks_invoke_cbs(rtp, per_cpu_ptr(rtp->rtpcpu, 0));
-+		// Wait for one grace period and invoke any callbacks
-+		// that are ready.
-+		rcu_tasks_one_gp(rtp);
- 
--		/* Paranoid sleep to keep this from entering a tight loop */
-+		// Paranoid sleep to keep this from entering a tight loop.
- 		schedule_timeout_idle(rtp->gp_sleep);
+@@ -1267,8 +1254,6 @@ void rcu_read_unlock_trace_special(struct task_struct *t)
+ 			  "%s: result = %d", __func__, result);
  	}
+ 	WRITE_ONCE(t->trc_reader_nesting, 0);
+-	if (nqs && atomic_dec_and_test(&trc_n_readers_need_end))
+-		irq_work_queue(&rcu_tasks_trace_iw);
  }
+ EXPORT_SYMBOL_GPL(rcu_read_unlock_trace_special);
+ 
+@@ -1313,8 +1298,7 @@ static void trc_read_check_handler(void *t_in)
+ 	// Get here if the task is in a read-side critical section.  Set
+ 	// its state so that it will awaken the grace-period kthread upon
+ 	// exit from that critical section.
+-	if (!rcu_trc_cmpxchg_need_qs(t, 0, TRC_NEED_QS | TRC_NEED_QS_CHECKED))
+-		atomic_inc(&trc_n_readers_need_end); // One more to wait on.
++	rcu_trc_cmpxchg_need_qs(t, 0, TRC_NEED_QS | TRC_NEED_QS_CHECKED);
+ 
+ reset_ipi:
+ 	// Allow future IPIs to be sent on CPU and for task.
+@@ -1367,10 +1351,8 @@ static int trc_inspect_reader(struct task_struct *t, void *bhp_in)
+ 	// The task is in a read-side critical section, so set up its
+ 	// state so that it will awaken the grace-period kthread upon exit
+ 	// from that critical section.
+-	if (!rcu_trc_cmpxchg_need_qs(t, 0, TRC_NEED_QS | TRC_NEED_QS_CHECKED)) {
+-		atomic_inc(&trc_n_readers_need_end); // One more to wait on.
++	if (!rcu_trc_cmpxchg_need_qs(t, 0, TRC_NEED_QS | TRC_NEED_QS_CHECKED))
+ 		trc_add_holdout(t, bhp);
+-	}
+ 	return 0;
+ }
+ 
+@@ -1436,9 +1418,6 @@ static void rcu_tasks_trace_pregp_step(void)
+ {
+ 	int cpu;
+ 
+-	// Allow for fast-acting IPIs.
+-	atomic_set(&trc_n_readers_need_end, 1);
+-
+ 	// There shouldn't be any old IPIs, but...
+ 	for_each_possible_cpu(cpu)
+ 		WARN_ON_ONCE(per_cpu(trc_ipi_to_cpu, cpu));
+@@ -1581,10 +1560,6 @@ static void rcu_tasks_trace_empty_fn(void *unused)
+ static void rcu_tasks_trace_postgp(struct rcu_tasks *rtp)
+ {
+ 	int cpu;
+-	bool firstreport;
+-	struct task_struct *g, *t;
+-	LIST_HEAD(holdouts);
+-	long ret;
+ 
+ 	// Wait for any lingering IPI handlers to complete.  Note that
+ 	// if a CPU has gone offline or transitioned to userspace in the
+@@ -1595,37 +1570,6 @@ static void rcu_tasks_trace_postgp(struct rcu_tasks *rtp)
+ 		if (WARN_ON_ONCE(smp_load_acquire(per_cpu_ptr(&trc_ipi_to_cpu, cpu))))
+ 			smp_call_function_single(cpu, rcu_tasks_trace_empty_fn, NULL, 1);
+ 
+-	// Remove the safety count.
+-	smp_mb__before_atomic();  // Order vs. earlier atomics
+-	atomic_dec(&trc_n_readers_need_end);
+-	smp_mb__after_atomic();  // Order vs. later atomics
+-
+-	// Wait for readers.
+-	set_tasks_gp_state(rtp, RTGS_WAIT_READERS);
+-	for (;;) {
+-		ret = wait_event_idle_exclusive_timeout(
+-				trc_wait,
+-				atomic_read(&trc_n_readers_need_end) == 0,
+-				READ_ONCE(rcu_task_stall_timeout));
+-		if (ret)
+-			break;  // Count reached zero.
+-		// Stall warning time, so make a list of the offenders.
+-		rcu_read_lock();
+-		for_each_process_thread(g, t)
+-			if (rcu_ld_need_qs(t) & TRC_NEED_QS)
+-				trc_add_holdout(t, &holdouts);
+-		rcu_read_unlock();
+-		firstreport = true;
+-		list_for_each_entry_safe(t, g, &holdouts, trc_holdout_list) {
+-			if (rcu_ld_need_qs(t) & TRC_NEED_QS)
+-				show_stalled_task_trace(t, &firstreport);
+-			trc_del_holdout(t); // Release task_struct reference.
+-		}
+-		if (firstreport)
+-			pr_err("INFO: rcu_tasks_trace detected stalls? (Counter/taskslist mismatch?)\n");
+-		show_stalled_ipi_trace();
+-		pr_err("\t%d holdouts\n", atomic_read(&trc_n_readers_need_end));
+-	}
+ 	smp_mb(); // Caller's code must be ordered after wakeup.
+ 		  // Pairs with pretty much every ordering primitive.
+ }
+@@ -1725,7 +1669,7 @@ void show_rcu_tasks_trace_gp_kthread(void)
+ {
+ 	char buf[64];
+ 
+-	sprintf(buf, "N%d h:%lu/%lu/%lu", atomic_read(&trc_n_readers_need_end),
++	sprintf(buf, "h:%lu/%lu/%lu",
+ 		data_race(n_heavy_reader_ofl_updates),
+ 		data_race(n_heavy_reader_updates),
+ 		data_race(n_heavy_reader_attempts));
 -- 
 2.31.1.189.g2e36527f23
 
