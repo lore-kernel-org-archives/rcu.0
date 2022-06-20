@@ -2,37 +2,37 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0233ACCA47C
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D21A8CCA480
 	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 22:54:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344633AbiFTWy3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 20 Jun 2022 18:54:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59086 "EHLO
+        id S1344967AbiFTWy2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 20 Jun 2022 18:54:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344250AbiFTWyT (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S1344689AbiFTWyT (ORCPT <rfc822;rcu@vger.kernel.org>);
         Mon, 20 Jun 2022 18:54:19 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8F0C1758D;
-        Mon, 20 Jun 2022 15:54:16 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 343F817E1D;
+        Mon, 20 Jun 2022 15:54:17 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0AD086145B;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 21D2861460;
         Mon, 20 Jun 2022 22:54:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F69BC3411B;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22814C341F3;
         Mon, 20 Jun 2022 22:54:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1655765654;
-        bh=iKfNUfpjpEOpHuhFW9AXk+ufdaEjcx76eM4XIzz407c=;
+        bh=EXjV39XsS2T6HGSSXjJAkW6sJJUdEPaHR9h9fr0f9w0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mGvrRQuxOa3S6YpCPEIbowVDWDEVY3VgKP/yjtbfXY6XSlwXxPkZC1vnPO2vZekE0
-         RnDYu59vuMTjUTMq3KvUyuIfnaKmOsCi5DPIrFLXBuGbuOE2In+SrWHVtDTO/EZtcV
-         TTHs3TC3ay7e3GjffeMOVKBX3ukyALolNPDCKNRROpuL+9SqSphPpEVGg7XiiNIZdr
-         raZxLjYTxRsD+JrvfzIinVZql0MIAWvhcH3ZixcWsU+ARWp4sBExQPkr9DwD39JlYK
-         X+J2PtQKpdnZT8a1AsbbLKFW/XfZdDeO4gorWxpyfgf5FcED12Cf4J3vAKlZerMJ6M
-         Wf/YwFJb263yw==
+        b=mE1Amf4UtY6YKr22g+rFpZa4m267LU0k8ekcniWUjMnR7mwE96DUaq/R6EpP4WZZH
+         SiTHBo952huDrVf6bG3Z+8frtkqX3y5UyEt/BtMgSGSfMf5LHPuuKXm8M2bGTplW0w
+         7zLDsB6JlGFVveXkKx8dGQK9Z4uLV9nCWhTXQSUU3E4OWqeKfi43ipRedm3Hzql99+
+         BdNleQ+5EyAjEcp8O+NMZC3p70b/xndv+g4ibzWGVmlOI7767Sh7kt/12X5bB36ZGa
+         jOotTzfiei8Y/zDsotlUM46FnTiNjjQdtPS5LbU0j92xuqrQ8c29xXCwYVbs8Q+THL
+         cJUjuKh95d2Ow==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 4E7EC5C11DC; Mon, 20 Jun 2022 15:54:13 -0700 (PDT)
+        id 5244E5C1363; Mon, 20 Jun 2022 15:54:13 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
@@ -43,9 +43,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         KP Singh <kpsingh@kernel.org>
-Subject: [PATCH rcu 20/32] rcu-tasks: Add blocked-task indicator to RCU Tasks Trace stall warnings
-Date:   Mon, 20 Jun 2022 15:53:59 -0700
-Message-Id: <20220620225411.3842519-20-paulmck@kernel.org>
+Subject: [PATCH rcu 22/32] rcu-tasks: Avoid rcu_tasks_trace_pertask() duplicate list additions
+Date:   Mon, 20 Jun 2022 15:54:01 -0700
+Message-Id: <20220620225411.3842519-22-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220620225402.GA3842369@paulmck-ThinkPad-P17-Gen-1>
 References: <20220620225402.GA3842369@paulmck-ThinkPad-P17-Gen-1>
@@ -55,9 +55,11 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This commit adds a "B" indicator to the RCU Tasks Trace CPU stall warning
-when the task has blocked within its current read-side critical section.
-This serves as a debugging aid.
+This commit adds checks within rcu_tasks_trace_pertask() to avoid
+duplicate (and destructive) additions to the holdouts list.  These checks
+will be required later due to the possibility of a given task having
+blocked while in an RCU Tasks Trace read-side critical section, but now
+running on a CPU.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
@@ -67,27 +69,27 @@ Cc: Andrii Nakryiko <andrii@kernel.org>
 Cc: Martin KaFai Lau <kafai@fb.com>
 Cc: KP Singh <kpsingh@kernel.org>
 ---
- kernel/rcu/tasks.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ kernel/rcu/tasks.h | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index eb87a759ef0b0..6f4b89f9517ef 100644
+index 66d8473f1bda1..1aa6a24a9bc2b 100644
 --- a/kernel/rcu/tasks.h
 +++ b/kernel/rcu/tasks.h
-@@ -1536,11 +1536,12 @@ static void show_stalled_task_trace(struct task_struct *t, bool *firstreport)
- 			 ".I"[t->trc_ipi_to_cpu >= 0],
- 			 ".i"[is_idle_tsk]);
- 	else
--		pr_alert("P%d: %c%c%c nesting: %d%c%c cpu: %d%s\n",
-+		pr_alert("P%d: %c%c%c%c nesting: %d%c%c cpu: %d%s\n",
- 			 t->pid,
- 			 ".I"[trc_rdr.ipi_to_cpu >= 0],
- 			 ".i"[is_idle_tsk],
- 			 ".N"[cpu >= 0 && tick_nohz_full_cpu(cpu)],
-+			 ".B"[!!data_race(t->trc_reader_special.b.blocked)],
- 			 trc_rdr.nesting,
- 			 " !CN"[trc_rdr.needqs & 0x3],
- 			 " ?"[trc_rdr.needqs > 0x3],
+@@ -1454,9 +1454,10 @@ static void rcu_tasks_trace_pertask(struct task_struct *t,
+ 				    struct list_head *hop)
+ {
+ 	// During early boot when there is only the one boot CPU, there
+-	// is no idle task for the other CPUs.  Also, the grace-period
+-	// kthread is always in a quiescent state.  Either way, just return.
+-	if (unlikely(t == NULL) || t == current)
++	// is no idle task for the other CPUs.	Also, the grace-period
++	// kthread is always in a quiescent state.  In addition, just return
++	// if this task is already on the list.
++	if (unlikely(t == NULL) || t == current || !list_empty(&t->trc_holdout_list))
+ 		return;
+ 
+ 	rcu_st_need_qs(t, 0);
 -- 
 2.31.1.189.g2e36527f23
 
