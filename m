@@ -2,175 +2,144 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E1DEDC433EF
-	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 22:51:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 93CFAC43334
+	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 22:54:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344689AbiFTWvp (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 20 Jun 2022 18:51:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54764 "EHLO
+        id S243642AbiFTWyF (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 20 Jun 2022 18:54:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344329AbiFTWve (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 20 Jun 2022 18:51:34 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A10A01A80D;
-        Mon, 20 Jun 2022 15:51:32 -0700 (PDT)
+        with ESMTP id S242451AbiFTWyE (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 20 Jun 2022 18:54:04 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 772B01B7;
+        Mon, 20 Jun 2022 15:54:03 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 44AE6B811EC;
-        Mon, 20 Jun 2022 22:51:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED933C341C7;
-        Mon, 20 Jun 2022 22:51:29 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0DD356135C;
+        Mon, 20 Jun 2022 22:54:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76421C3411B;
+        Mon, 20 Jun 2022 22:54:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655765490;
-        bh=uwVUEbn1BjyEoK1jDk5Unz9mOIc6Tdakf4qOEcADLk4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mONd/Seg/uHV2XAfrneucCGVpsJAWG3Fw0a0/TRF8eDZSB0O7MpJ6GJn+rbaopVEA
-         yuMPH07Wdyhcfr/I+5Z8eJs8F2Dt60auYwI4jds+A8HvWBXXeQEjg9KGCePv1mNU/1
-         MVcij0DFgk9b/9w3WDnRURKT5nEKSSHyGMPHe1qtpSO4aVD/SyXlIuqA+18/0Wy7r2
-         pnGcVQEEtkJwjfaAfMj0ZFLzpvNJJIFu61QYUG6M91bSLJuu9BAerfF+TRd9hfy/JY
-         fuwb0Z0zDYW0b/MtSYxWAYi/iXT0cE8KpxX5QK/WfbVoGn68t0zT+1ac+VkBlp5NQS
-         xS8Ml37Oj40AA==
+        s=k20201202; t=1655765642;
+        bh=Esp2Vgy8DC2GHE0UbGvNRAdoymRYr2PZy4zq3mBgCqs=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=Y1lr9xJIoQ53tussxIAcDbPsA81cYwzQu9j94xFTbXRqZy9xkQqYqZKUsQqjimT1J
+         bBkDCq7P8m2eirwypZlqSygfQUUaqnAcyKd39/SDL8NVzd3WB/tG6H/P6AeAM0wT7j
+         2qyu9cV7Ie4V3Q78fHHeE/msB6jVQouf1yDiwEYcn4GWxxaZf5cFTA51e1KpIjL+Ax
+         Fy89QbNCrf6DQffkmJZvLykRANF+2Yx7N/kKkTdaOX9Md2CCyAsFVqw0zQj50FgJSj
+         B4t2EHlHVJxkqaZVp3evPlKzXQ/GPgHcNdoC+IEQ01xSQUO3asBl+AyzQmpkdS7AS0
+         QvoIVbtCUqYZA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 9B29E5C0ADC; Mon, 20 Jun 2022 15:51:29 -0700 (PDT)
+        id 220D65C05B9; Mon, 20 Jun 2022 15:54:02 -0700 (PDT)
+Date:   Mon, 20 Jun 2022 15:54:02 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        Brian Foster <bfoster@redhat.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Al Viro <viro@zeniv.linux.org.uk>, Ian Kent <raven@themaw.net>
-Subject: [PATCH rcu 05/12] rcu: Make polled grace-period API account for expedited grace periods
-Date:   Mon, 20 Jun 2022 15:51:21 -0700
-Message-Id: <20220620225128.3842050-5-paulmck@kernel.org>
-X-Mailer: git-send-email 2.31.1.189.g2e36527f23
-In-Reply-To: <20220620224943.GA3841634@paulmck-ThinkPad-P17-Gen-1>
-References: <20220620224943.GA3841634@paulmck-ThinkPad-P17-Gen-1>
+        rostedt@goodmis.org
+Subject: [PATCH rcu 0/32] RCU Tasks updates for v5.20
+Message-ID: <20220620225402.GA3842369@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Currently, this code could splat:
+Hello!
 
-	oldstate = get_state_synchronize_rcu();
-	synchronize_rcu_expedited();
-	WARN_ON_ONCE(!poll_state_synchronize_rcu(oldstate));
+This series provides updates for the RCU Tasks family, perhaps most
+notably reducing the CPU overhead of RCU Tasks Trace grace periods:
 
-This situation is counter-intuitive and user-unfriendly.  After all, there
-really was a perfectly valid full grace period right after the call to
-get_state_synchronize_rcu(), so why shouldn't poll_state_synchronize_rcu()
-know about it?
+1.	rcu-tasks: Check for abandoned callbacks.
 
-This commit therefore makes the polled grace-period API aware of expedited
-grace periods in addition to the normal grace periods that it is already
-aware of.  With this change, the above code is guaranteed not to splat.
+2.	rcu-tasks: Split rcu_tasks_one_gp() from rcu_tasks_kthread().
 
-Please note that the above code can still splat due to counter wrap on the
-one hand and situations involving partially overlapping normal/expedited
-grace periods on the other.  On 64-bit systems, the second is of course
-much more likely than the first.  It is possible to modify this approach
-to prevent overlapping grace periods from causing splats, but only at
-the expense of greatly increasing the probability of counter wrap, as
-in within milliseconds on 32-bit systems and within minutes on 64-bit
-systems.
+3.	rcu-tasks: Move synchronize_rcu_tasks_generic() down.
 
-This commit is in preparation for polled expedited grace periods.
+4.	rcu-tasks: Drive synchronous grace periods from calling task.
 
-Link: https://lore.kernel.org/all/20220121142454.1994916-1-bfoster@redhat.com/
-Link: https://docs.google.com/document/d/1RNKWW9jQyfjxw2E8dsXVTdvZYh0HnYeSHDKog9jhdN8/edit?usp=sharing
-Cc: Brian Foster <bfoster@redhat.com>
-Cc: Dave Chinner <david@fromorbit.com>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Ian Kent <raven@themaw.net>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/rcu/tree.c     |  9 +++++----
- kernel/rcu/tree.h     |  1 +
- kernel/rcu/tree_exp.h | 16 ++++++++++++++--
- 3 files changed, 20 insertions(+), 6 deletions(-)
+5.	rcu-tasks: Merge state into .b.need_qs and atomically update.
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 637e8f9454573..251eb9a8cd925 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -1812,6 +1812,7 @@ static void rcu_poll_gp_seq_end(unsigned long *snap)
- 	if (*snap && *snap == rcu_state.gp_seq_polled) {
- 		rcu_seq_end(&rcu_state.gp_seq_polled);
- 		rcu_state.gp_seq_polled_snap = 0;
-+		rcu_state.gp_seq_polled_exp_snap = 0;
- 	} else {
- 		*snap = 0;
- 	}
-@@ -3913,10 +3914,10 @@ void synchronize_rcu(void)
- 			 "Illegal synchronize_rcu() in RCU read-side critical section");
- 	if (rcu_blocking_is_gp()) {
- 		// Note well that this code runs with !PREEMPT && !SMP.
--		// In addition, all code that advances grace periods runs
--		// at process level.  Therefore, this GP overlaps with other
--		// GPs only by being fully nested within them, which allows
--		// reuse of ->gp_seq_polled_snap.
-+		// In addition, all code that advances grace periods runs at
-+		// process level.  Therefore, this normal GP overlaps with
-+		// other normal GPs only by being fully nested within them,
-+		// which allows reuse of ->gp_seq_polled_snap.
- 		rcu_poll_gp_seq_start_unlocked(&rcu_state.gp_seq_polled_snap);
- 		rcu_poll_gp_seq_end_unlocked(&rcu_state.gp_seq_polled_snap);
- 		if (rcu_init_invoked())
-diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index 9c853033f159d..5634e76106c48 100644
---- a/kernel/rcu/tree.h
-+++ b/kernel/rcu/tree.h
-@@ -325,6 +325,7 @@ struct rcu_state {
- 	unsigned long gp_wake_seq;		/* ->gp_seq at ^^^. */
- 	unsigned long gp_seq_polled;		/* GP seq for polled API. */
- 	unsigned long gp_seq_polled_snap;	/* ->gp_seq_polled at normal GP start. */
-+	unsigned long gp_seq_polled_exp_snap;	/* ->gp_seq_polled at expedited GP start. */
- 
- 	/* End of fields guarded by root rcu_node's lock. */
- 
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index 0f70f62039a90..e0258066b881e 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -18,6 +18,7 @@ static int rcu_print_task_exp_stall(struct rcu_node *rnp);
- static void rcu_exp_gp_seq_start(void)
- {
- 	rcu_seq_start(&rcu_state.expedited_sequence);
-+	rcu_poll_gp_seq_start_unlocked(&rcu_state.gp_seq_polled_exp_snap);
- }
- 
- /*
-@@ -34,6 +35,7 @@ static __maybe_unused unsigned long rcu_exp_gp_seq_endval(void)
-  */
- static void rcu_exp_gp_seq_end(void)
- {
-+	rcu_poll_gp_seq_end_unlocked(&rcu_state.gp_seq_polled_exp_snap);
- 	rcu_seq_end(&rcu_state.expedited_sequence);
- 	smp_mb(); /* Ensure that consecutive grace periods serialize. */
- }
-@@ -913,8 +915,18 @@ void synchronize_rcu_expedited(void)
- 			 "Illegal synchronize_rcu_expedited() in RCU read-side critical section");
- 
- 	/* Is the state is such that the call is a grace period? */
--	if (rcu_blocking_is_gp())
--		return;
-+	if (rcu_blocking_is_gp()) {
-+		// Note well that this code runs with !PREEMPT && !SMP.
-+		// In addition, all code that advances grace periods runs
-+		// at process level.  Therefore, this expedited GP overlaps
-+		// with other expedited GPs only by being fully nested within
-+		// them, which allows reuse of ->gp_seq_polled_exp_snap.
-+		rcu_poll_gp_seq_start_unlocked(&rcu_state.gp_seq_polled_exp_snap);
-+		rcu_poll_gp_seq_end_unlocked(&rcu_state.gp_seq_polled_exp_snap);
-+		if (rcu_init_invoked())
-+			cond_resched();
-+		return;  // Context allows vacuous grace periods.
-+	}
- 
- 	/* If expedited grace periods are prohibited, fall back to normal. */
- 	if (rcu_gp_is_normal()) {
--- 
-2.31.1.189.g2e36527f23
+6.	rcu-tasks: Remove rcu_tasks_trace_postgp() wait for counter.
 
+7.	rcu-tasks: Make trc_read_check_handler() fetch
+	->trc_reader_nesting only once.
+
+8.	rcu-tasks: Idle tasks on offline CPUs are in quiescent states.
+
+9.	rcu-tasks: Handle idle tasks for recently offlined CPUs.
+
+10.	rcu-tasks: RCU Tasks Trace grace-period kthread has implicit QS.
+
+11.	rcu-tasks: Make rcu_note_context_switch() unconditionally call
+	rcu_tasks_qs().
+
+12.	rcu-tasks: Simplify trc_inspect_reader() QS logic.
+
+13.	rcu-tasks: Add slow-IPI indicator to RCU Tasks Trace stall
+	warnings.
+
+14.	rcu-tasks: Flag offline CPUs in RCU Tasks Trace stall warnings.
+
+15.	rcu-tasks: Make RCU Tasks Trace stall warnings print full
+	.b.need_qs field.
+
+16.	rcu-tasks: Make RCU Tasks Trace stall warning handle idle
+	offline tasks.
+
+17.	rcu-tasks: Add data structures for lightweight grace periods.
+
+18.	rcu-tasks: Track blocked RCU Tasks Trace readers.
+
+19.	rcu-tasks: Untrack blocked RCU Tasks Trace at reader end.
+
+20.	rcu-tasks: Add blocked-task indicator to RCU Tasks Trace stall
+	warnings.
+
+21.	rcu-tasks: Move rcu_tasks_trace_pertask() before
+	rcu_tasks_trace_pregp_step().
+
+22.	rcu-tasks: Avoid rcu_tasks_trace_pertask() duplicate list
+	additions.
+
+23.	rcu-tasks: Scan running tasks for RCU Tasks Trace readers.
+
+24.	rcu-tasks: Pull in tasks blocked within RCU Tasks Trace readers.
+
+25.	rcu-tasks: Stop RCU Tasks Trace from scanning idle tasks.
+
+26.	rcu-tasks: Stop RCU Tasks Trace from scanning full tasks list.
+
+27.	rcu-tasks: Maintain a count of tasks blocking RCU Tasks Trace
+	grace period.
+
+28.	rcu-tasks: Eliminate RCU Tasks Trace IPIs to online CPUs.
+
+29.	rcu-tasks: Disable and enable CPU hotplug in same function.
+
+30.	rcu-tasks: Update comments.
+
+31.	rcu-tasks: Be more patient for RCU Tasks boot-time testing.
+
+32.	rcu-tasks: Use delayed_work to delay
+	rcu_tasks_verify_self_tests(), courtesy of Waiman Long.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ b/include/linux/rcupdate.h       |   18 -
+ b/include/linux/rcupdate_trace.h |    2 
+ b/include/linux/sched.h          |    1 
+ b/init/init_task.c               |    1 
+ b/kernel/fork.c                  |    1 
+ b/kernel/rcu/tasks.h             |    5 
+ b/kernel/rcu/tree_plugin.h       |    2 
+ b/kernel/sched/core.c            |   32 +
+ include/linux/rcupdate.h         |   11 
+ include/linux/sched.h            |    3 
+ kernel/rcu/tasks.h               |  678 +++++++++++++++++++++++----------------
+ 11 files changed, 466 insertions(+), 288 deletions(-)
