@@ -2,44 +2,50 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A424C43334
-	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 22:54:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 553E8C433EF
+	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 22:54:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345073AbiFTWyb (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 20 Jun 2022 18:54:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58930 "EHLO
+        id S1344890AbiFTWyc (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 20 Jun 2022 18:54:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242451AbiFTWyR (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 20 Jun 2022 18:54:17 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1824318B15;
+        with ESMTP id S1344664AbiFTWyT (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 20 Jun 2022 18:54:19 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCABC17E25;
         Mon, 20 Jun 2022 15:54:16 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id A9AE0B8164A;
-        Mon, 20 Jun 2022 22:54:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 672EEC385A5;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 663FEB81655;
+        Mon, 20 Jun 2022 22:54:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C02ADC341D3;
         Mon, 20 Jun 2022 22:54:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1655765653;
-        bh=ToJk+sLLqOfG4GHDaC0eRSDzktQ3ZFTWzONjt6nK0KI=;
+        bh=WT3ydZLwrS9QKcxWSaQdcdKseUshLVdNTcHoU+FZnqE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=peYZksBc9a5So6vThQhMB4lXHtu16RjlJRyPDmlXeLLBNIR/0aPHig03gBbYIAJoA
-         0YPphguW5AzIonll26e2p+XA0WqoVulrnvsWRAjcdjecrOgJHqSQLyf8v6iYqCEy4Y
-         XB1AEep9vrN12O+5psk+1ibh00Cohi3V1hIDaFKDmhzQoOsQsFFKrnTNfvDM0zsBb8
-         TsYwsrf8RxA+V+7dCSB+icU+4ZCtcuathHLNF1U2BR9RSV3/k/r5el4cORUce4XGF8
-         A4XSxsR17BnkH09gznjGjGac1qoeSBZb4sb8XKjH6WbYjyZdL/tbug/B+w9vYOF9cx
-         Q9RdfzhQSgHWg==
+        b=jRLkpVerHHxGabnp8uvut53d/DYzijWMyY+08wMHjtsCWyX4Gj3qpFEWCh6VnWjH7
+         4Oa41nd2pphpJxUKcAlovIYK8obK3wT6NDruWtdeJfJn4/b20Kw2XEaPc0xLDSOAjJ
+         o81qOTKoSLdPaXtZsEd8HYHipdhs+m1e5AHZX18WBlRwDBG4cEGyP1L6DjrK11n2FQ
+         3OABBoi7URyO+tSm7wXPkdmJ4Pn7u4+T+4TzLtNoCUbCrjZqvao8NqioQAYu4qsLcj
+         vflsquIGdy0D7MFmcYI4f4EOWc7bn5CKn9D0OwN6qlWGhVwJl0SWWKRvO4SbtkTu00
+         J0s6A1LKq6qEg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 272265C05B9; Mon, 20 Jun 2022 15:54:13 -0700 (PDT)
+        id 3A8045C0DAC; Mon, 20 Jun 2022 15:54:13 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 01/32] rcu-tasks: Check for abandoned callbacks
-Date:   Mon, 20 Jun 2022 15:53:40 -0700
-Message-Id: <20220620225411.3842519-1-paulmck@kernel.org>
+        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        KP Singh <kpsingh@kernel.org>
+Subject: [PATCH rcu 10/32] rcu-tasks: RCU Tasks Trace grace-period kthread has implicit QS
+Date:   Mon, 20 Jun 2022 15:53:49 -0700
+Message-Id: <20220620225411.3842519-10-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220620225402.GA3842369@paulmck-ThinkPad-P17-Gen-1>
 References: <20220620225402.GA3842369@paulmck-ThinkPad-P17-Gen-1>
@@ -49,30 +55,40 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This commit adds a debugging scan for callbacks that got lost during a
-callback-queueing transition.
+Because the task driving the grace-period kthread is in quiescent state
+throughout, this commit excludes it from the list of tasks from which
+a quiescent state is needed.
+
+This does mean that attaching a sleepable BPF program to function in
+kernel/rcu/tasks.h is a bad idea, by the way.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: Martin KaFai Lau <kafai@fb.com>
+Cc: KP Singh <kpsingh@kernel.org>
 ---
- kernel/rcu/tasks.h | 5 +++++
- 1 file changed, 5 insertions(+)
+ kernel/rcu/tasks.h | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 3925e32159b5a..b8690a412c5bf 100644
+index 414861d651964..554b2e59a1d5a 100644
 --- a/kernel/rcu/tasks.h
 +++ b/kernel/rcu/tasks.h
-@@ -439,6 +439,11 @@ static int rcu_tasks_need_gpcb(struct rcu_tasks *rtp)
- 			WRITE_ONCE(rtp->percpu_dequeue_lim, 1);
- 			pr_info("Completing switch %s to CPU-0 callback queuing.\n", rtp->name);
- 		}
-+		for (cpu = rtp->percpu_dequeue_lim; cpu < nr_cpu_ids; cpu++) {
-+			struct rcu_tasks_percpu *rtpcp = per_cpu_ptr(rtp->rtpcpu, cpu);
-+
-+			WARN_ON_ONCE(rcu_segcblist_n_cbs(&rtpcp->cblist));
-+		}
- 		raw_spin_unlock_irqrestore(&rtp->cbs_gbl_lock, flags);
- 	}
+@@ -1433,8 +1433,9 @@ static void rcu_tasks_trace_pertask(struct task_struct *t,
+ 				    struct list_head *hop)
+ {
+ 	// During early boot when there is only the one boot CPU, there
+-	// is no idle task for the other CPUs. Just return.
+-	if (unlikely(t == NULL))
++	// is no idle task for the other CPUs.  Also, the grace-period
++	// kthread is always in a quiescent state.  Either way, just return.
++	if (unlikely(t == NULL) || t == current)
+ 		return;
  
+ 	rcu_st_need_qs(t, 0);
 -- 
 2.31.1.189.g2e36527f23
 
