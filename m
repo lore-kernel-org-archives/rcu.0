@@ -2,144 +2,123 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93CFAC43334
-	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 22:54:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 38E19C433EF
+	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 22:54:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243642AbiFTWyF (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 20 Jun 2022 18:54:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58778 "EHLO
+        id S1344649AbiFTWyT (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 20 Jun 2022 18:54:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242451AbiFTWyE (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 20 Jun 2022 18:54:04 -0400
+        with ESMTP id S1344311AbiFTWyQ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 20 Jun 2022 18:54:16 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 772B01B7;
-        Mon, 20 Jun 2022 15:54:03 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC7E1186F3;
+        Mon, 20 Jun 2022 15:54:14 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0DD356135C;
-        Mon, 20 Jun 2022 22:54:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76421C3411B;
-        Mon, 20 Jun 2022 22:54:02 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 16B5A6135C;
+        Mon, 20 Jun 2022 22:54:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70502C341C4;
+        Mon, 20 Jun 2022 22:54:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655765642;
-        bh=Esp2Vgy8DC2GHE0UbGvNRAdoymRYr2PZy4zq3mBgCqs=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=Y1lr9xJIoQ53tussxIAcDbPsA81cYwzQu9j94xFTbXRqZy9xkQqYqZKUsQqjimT1J
-         bBkDCq7P8m2eirwypZlqSygfQUUaqnAcyKd39/SDL8NVzd3WB/tG6H/P6AeAM0wT7j
-         2qyu9cV7Ie4V3Q78fHHeE/msB6jVQouf1yDiwEYcn4GWxxaZf5cFTA51e1KpIjL+Ax
-         Fy89QbNCrf6DQffkmJZvLykRANF+2Yx7N/kKkTdaOX9Md2CCyAsFVqw0zQj50FgJSj
-         B4t2EHlHVJxkqaZVp3evPlKzXQ/GPgHcNdoC+IEQ01xSQUO3asBl+AyzQmpkdS7AS0
-         QvoIVbtCUqYZA==
+        s=k20201202; t=1655765653;
+        bh=/TaKYGM1aHXlwsLVMwzJDjkSwops8NdezYFQd3XKrQY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=bLdINv71jmfFO1F2VOnvflvp4VlXQUqQLHzn9aEvgzWoKW0PttSiNeNxPdUXKakc0
+         k8b7Xc8AKLDP3jNhUJCWnmmyHX7wjnndrg4jrnkcQ5tbYb/QJbcUn97znfhHCUyaqt
+         DRH8FVdrSNZQs4Zj1XovIYluB4RFtc821IeDG9ZySiQw0gJDN3gHAvkYpbuTuseB/I
+         sj1MmebocoK377Ny6w3wVNlwDfXIYylM3Nupkw6XcZsiL2lRF7MeSlm73bwHsfUl0K
+         lc8S1eGu3acGuxgTDz275nMOK2GBXEkUP+hbAqJ2D9OAC1KlMJT4D7xPzQHA3E36qx
+         PNJjn2Q7y0bxg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 220D65C05B9; Mon, 20 Jun 2022 15:54:02 -0700 (PDT)
-Date:   Mon, 20 Jun 2022 15:54:02 -0700
+        id 2E8215C0A33; Mon, 20 Jun 2022 15:54:13 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org
-Subject: [PATCH rcu 0/32] RCU Tasks updates for v5.20
-Message-ID: <20220620225402.GA3842369@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Zhouyi Zhou <zhouzhouyi@gmail.com>
+Subject: [PATCH rcu 04/32] rcu-tasks: Drive synchronous grace periods from calling task
+Date:   Mon, 20 Jun 2022 15:53:43 -0700
+Message-Id: <20220620225411.3842519-4-paulmck@kernel.org>
+X-Mailer: git-send-email 2.31.1.189.g2e36527f23
+In-Reply-To: <20220620225402.GA3842369@paulmck-ThinkPad-P17-Gen-1>
+References: <20220620225402.GA3842369@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello!
+This commit causes synchronous grace periods to be driven from the task
+invoking synchronize_rcu_*(), allowing these functions to be invoked from
+the mid-boot dead zone extending from when the scheduler was initialized
+to to point that the various RCU tasks grace-period kthreads are spawned.
+This change will allow the self-tests to run in a consistent manner.
 
-This series provides updates for the RCU Tasks family, perhaps most
-notably reducing the CPU overhead of RCU Tasks Trace grace periods:
+Reported-by: Matthew Wilcox <willy@infradead.org>
+Reported-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ kernel/rcu/tasks.h | 24 ++++++++++++++++--------
+ 1 file changed, 16 insertions(+), 8 deletions(-)
 
-1.	rcu-tasks: Check for abandoned callbacks.
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index ad993c4ed924f..bd9f2e24f5c73 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -495,17 +495,21 @@ static void rcu_tasks_invoke_cbs_wq(struct work_struct *wp)
+ }
+ 
+ // Wait for one grace period.
+-static void rcu_tasks_one_gp(struct rcu_tasks *rtp)
++static void rcu_tasks_one_gp(struct rcu_tasks *rtp, bool midboot)
+ {
+ 	int needgpcb;
+ 
+ 	mutex_lock(&rtp->tasks_gp_mutex);
+-	set_tasks_gp_state(rtp, RTGS_WAIT_CBS);
+ 
+ 	// If there were none, wait a bit and start over.
+-	rcuwait_wait_event(&rtp->cbs_wait,
+-			   (needgpcb = rcu_tasks_need_gpcb(rtp)),
+-			   TASK_IDLE);
++	if (unlikely(midboot)) {
++		needgpcb = 0x2;
++	} else {
++		set_tasks_gp_state(rtp, RTGS_WAIT_CBS);
++		rcuwait_wait_event(&rtp->cbs_wait,
++				   (needgpcb = rcu_tasks_need_gpcb(rtp)),
++				   TASK_IDLE);
++	}
+ 
+ 	if (needgpcb & 0x2) {
+ 		// Wait for one grace period.
+@@ -540,7 +544,7 @@ static int __noreturn rcu_tasks_kthread(void *arg)
+ 	for (;;) {
+ 		// Wait for one grace period and invoke any callbacks
+ 		// that are ready.
+-		rcu_tasks_one_gp(rtp);
++		rcu_tasks_one_gp(rtp, false);
+ 
+ 		// Paranoid sleep to keep this from entering a tight loop.
+ 		schedule_timeout_idle(rtp->gp_sleep);
+@@ -554,8 +558,12 @@ static void synchronize_rcu_tasks_generic(struct rcu_tasks *rtp)
+ 	RCU_LOCKDEP_WARN(rcu_scheduler_active == RCU_SCHEDULER_INACTIVE,
+ 			 "synchronize_rcu_tasks called too soon");
+ 
+-	/* Wait for the grace period. */
+-	wait_rcu_gp(rtp->call_func);
++	// If the grace-period kthread is running, use it.
++	if (READ_ONCE(rtp->kthread_ptr)) {
++		wait_rcu_gp(rtp->call_func);
++		return;
++	}
++	rcu_tasks_one_gp(rtp, true);
+ }
+ 
+ /* Spawn RCU-tasks grace-period kthread. */
+-- 
+2.31.1.189.g2e36527f23
 
-2.	rcu-tasks: Split rcu_tasks_one_gp() from rcu_tasks_kthread().
-
-3.	rcu-tasks: Move synchronize_rcu_tasks_generic() down.
-
-4.	rcu-tasks: Drive synchronous grace periods from calling task.
-
-5.	rcu-tasks: Merge state into .b.need_qs and atomically update.
-
-6.	rcu-tasks: Remove rcu_tasks_trace_postgp() wait for counter.
-
-7.	rcu-tasks: Make trc_read_check_handler() fetch
-	->trc_reader_nesting only once.
-
-8.	rcu-tasks: Idle tasks on offline CPUs are in quiescent states.
-
-9.	rcu-tasks: Handle idle tasks for recently offlined CPUs.
-
-10.	rcu-tasks: RCU Tasks Trace grace-period kthread has implicit QS.
-
-11.	rcu-tasks: Make rcu_note_context_switch() unconditionally call
-	rcu_tasks_qs().
-
-12.	rcu-tasks: Simplify trc_inspect_reader() QS logic.
-
-13.	rcu-tasks: Add slow-IPI indicator to RCU Tasks Trace stall
-	warnings.
-
-14.	rcu-tasks: Flag offline CPUs in RCU Tasks Trace stall warnings.
-
-15.	rcu-tasks: Make RCU Tasks Trace stall warnings print full
-	.b.need_qs field.
-
-16.	rcu-tasks: Make RCU Tasks Trace stall warning handle idle
-	offline tasks.
-
-17.	rcu-tasks: Add data structures for lightweight grace periods.
-
-18.	rcu-tasks: Track blocked RCU Tasks Trace readers.
-
-19.	rcu-tasks: Untrack blocked RCU Tasks Trace at reader end.
-
-20.	rcu-tasks: Add blocked-task indicator to RCU Tasks Trace stall
-	warnings.
-
-21.	rcu-tasks: Move rcu_tasks_trace_pertask() before
-	rcu_tasks_trace_pregp_step().
-
-22.	rcu-tasks: Avoid rcu_tasks_trace_pertask() duplicate list
-	additions.
-
-23.	rcu-tasks: Scan running tasks for RCU Tasks Trace readers.
-
-24.	rcu-tasks: Pull in tasks blocked within RCU Tasks Trace readers.
-
-25.	rcu-tasks: Stop RCU Tasks Trace from scanning idle tasks.
-
-26.	rcu-tasks: Stop RCU Tasks Trace from scanning full tasks list.
-
-27.	rcu-tasks: Maintain a count of tasks blocking RCU Tasks Trace
-	grace period.
-
-28.	rcu-tasks: Eliminate RCU Tasks Trace IPIs to online CPUs.
-
-29.	rcu-tasks: Disable and enable CPU hotplug in same function.
-
-30.	rcu-tasks: Update comments.
-
-31.	rcu-tasks: Be more patient for RCU Tasks boot-time testing.
-
-32.	rcu-tasks: Use delayed_work to delay
-	rcu_tasks_verify_self_tests(), courtesy of Waiman Long.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- b/include/linux/rcupdate.h       |   18 -
- b/include/linux/rcupdate_trace.h |    2 
- b/include/linux/sched.h          |    1 
- b/init/init_task.c               |    1 
- b/kernel/fork.c                  |    1 
- b/kernel/rcu/tasks.h             |    5 
- b/kernel/rcu/tree_plugin.h       |    2 
- b/kernel/sched/core.c            |   32 +
- include/linux/rcupdate.h         |   11 
- include/linux/sched.h            |    3 
- kernel/rcu/tasks.h               |  678 +++++++++++++++++++++++----------------
- 11 files changed, 466 insertions(+), 288 deletions(-)
