@@ -2,37 +2,37 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E16F7C433EF
-	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 23:12:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F673CCA47C
+	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 23:12:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346313AbiFTXMI (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 20 Jun 2022 19:12:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54358 "EHLO
+        id S1346582AbiFTXMJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 20 Jun 2022 19:12:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346326AbiFTXLs (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 20 Jun 2022 19:11:48 -0400
+        with ESMTP id S245682AbiFTXLt (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 20 Jun 2022 19:11:49 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E00B26123;
-        Mon, 20 Jun 2022 16:10:33 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C5BE2611E;
+        Mon, 20 Jun 2022 16:10:32 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C5E0E61501;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4CF40614DF;
         Mon, 20 Jun 2022 23:10:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC696C341D2;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2732C341C5;
         Mon, 20 Jun 2022 23:10:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655766632;
-        bh=CBtjLr8hEiHJztrqXuMM/t8/2akXKqG1GWOYWGjDjto=;
+        s=k20201202; t=1655766631;
+        bh=jyKzInLCGfGE6kjpqCH9px1pTWGwep4tsb1DYTRrcV4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FpYnt8NGPzUjDTeXDjdORCcJSvLTA57hO76FKnvZZMPaIGDKQI0kYx/9PHNRAy3la
-         QOfpfXJcF70V2K1x2qqTlJr8i2V/GS+nodXeCTJMNDr4qRtei6vQhTysuIjQfgv4BW
-         C2clgWrMt9ei9sazSGh+GL9HjYQhAKlkD6eGZQoevoXJXvt2i8dIQErS4wO4fGE9h5
-         eClv//+5c6dgFYJbLUeyYExD+Ek0kePmdpwctThmw308s6n/2kYzrDtWcrc475emof
-         OCFQQlepKfsIsBkk74pgdo9yf44MTS2JgJmKyvzRHcNrtflijMU47u29t6JmNr1xQe
-         k1uPN+czdcD+g==
+        b=K4GMK53BeskJ2T2AJmQqaLY15iKZk3aH+9z0mrrBe+r/JQD9wyF/C1c7bx5oBrAEv
+         nzLTkAn762PP/OTdbXyEs+MMrxCBMil2aZXBWtt6VCGiSXrJWxwa2YmzYuZ1+KldLK
+         g2Q4Qsa+SCCd39aoIC9HS1+BmflQFe/GfzXKCks93EaQG8a8XhJWildU9HiTmJYbFR
+         EE8uZM11Df9W/IE+ZTpW9Yd0TN+NQHBOekQNkabnTHIJuOQarQaWutsobZUvfXKP2Y
+         Fxta4A+PfQ3J9fHMGmKMgHT72UJHucPoKcpH14w4yB7eMzJOnwjprqwHHP3mwNrRwf
+         H3uLBVl94Bp2Q==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 5A7E45C0CCE; Mon, 20 Jun 2022 16:10:31 -0700 (PDT)
+        id 51E8B5C0A33; Mon, 20 Jun 2022 16:10:31 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
@@ -50,9 +50,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
         Paul Gortmaker <paul.gortmaker@windriver.com>,
         Alex Belits <abelits@marvell.com>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 08/23] context_tracking: Rename context_tracking_cpu_set() to ct_cpu_track_user()
-Date:   Mon, 20 Jun 2022 16:10:14 -0700
-Message-Id: <20220620231029.3844583-8-paulmck@kernel.org>
+Subject: [PATCH rcu 04/23] context_tracking: Add a note about noinstr VS unsafe context tracking functions
+Date:   Mon, 20 Jun 2022 16:10:10 -0700
+Message-Id: <20220620231029.3844583-4-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220620231027.GA3844372@paulmck-ThinkPad-P17-Gen-1>
 References: <20220620231027.GA3844372@paulmck-ThinkPad-P17-Gen-1>
@@ -64,13 +64,14 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: Frederic Weisbecker <frederic@kernel.org>
 
-context_tracking_cpu_set() is called in order to tell a CPU to track
-user/kernel transitions. Since context tracking is going to expand in
-to also track transitions from/to idle/IRQ/NMIs, the scope
-of this function name becomes too broad and needs to be made more
-specific. Also shorten the prefix to align with the new namespace.
+Some context tracking functions enter or exit into/from RCU idle mode
+while using trace-able and lockdep-aware IRQs (un-)masking. As a result
+those functions can't get tagged as noinstr. This is unlikely to be
+fixed since these are obsolete APIs. Drop a note about this matter.
 
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+[ paulmck: Apply Peter Zijlstra feedback. ]
+
+Reported-by: Peter Zijlstra <peterz@infradead.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
@@ -84,60 +85,78 @@ Cc: Yu Liao <liaoyu15@huawei.com>
 Cc: Phil Auld <pauld@redhat.com>
 Cc: Paul Gortmaker<paul.gortmaker@windriver.com>
 Cc: Alex Belits <abelits@marvell.com>
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/context_tracking.h | 2 +-
- kernel/context_tracking.c        | 4 ++--
- kernel/time/tick-sched.c         | 2 +-
- 3 files changed, 4 insertions(+), 4 deletions(-)
+ kernel/context_tracking.c | 34 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
 
-diff --git a/include/linux/context_tracking.h b/include/linux/context_tracking.h
-index 7a5f04ae1758f..63259fece7c76 100644
---- a/include/linux/context_tracking.h
-+++ b/include/linux/context_tracking.h
-@@ -11,7 +11,7 @@
- 
- 
- #ifdef CONFIG_CONTEXT_TRACKING
--extern void context_tracking_cpu_set(int cpu);
-+extern void ct_cpu_track_user(int cpu);
- 
- /* Called with interrupts disabled.  */
- extern void __ct_user_enter(enum ctx_state state);
 diff --git a/kernel/context_tracking.c b/kernel/context_tracking.c
-index 87454e3515546..7f457a1a1b551 100644
+index 36a98c48aedc7..3082332f64765 100644
 --- a/kernel/context_tracking.c
 +++ b/kernel/context_tracking.c
-@@ -228,7 +228,7 @@ void user_exit_callable(void)
+@@ -103,6 +103,15 @@ void noinstr __context_tracking_enter(enum ctx_state state)
  }
- NOKPROBE_SYMBOL(user_exit_callable);
+ EXPORT_SYMBOL_GPL(__context_tracking_enter);
  
--void __init context_tracking_cpu_set(int cpu)
-+void __init ct_cpu_track_user(int cpu)
++/*
++ * OBSOLETE:
++ * This function should be noinstr but the below local_irq_restore() is
++ * unsafe because it involves illegal RCU uses through tracing and lockdep.
++ * This is unlikely to be fixed as this function is obsolete. The preferred
++ * way is to call __context_tracking_enter() through user_enter_irqoff()
++ * or context_tracking_guest_enter(). It should be the arch entry code
++ * responsibility to call into context tracking with IRQs disabled.
++ */
+ void context_tracking_enter(enum ctx_state state)
  {
- 	static __initdata bool initialized = false;
+ 	unsigned long flags;
+@@ -125,6 +134,14 @@ void context_tracking_enter(enum ctx_state state)
+ NOKPROBE_SYMBOL(context_tracking_enter);
+ EXPORT_SYMBOL_GPL(context_tracking_enter);
  
-@@ -258,6 +258,6 @@ void __init context_tracking_init(void)
- 	int cpu;
- 
- 	for_each_possible_cpu(cpu)
--		context_tracking_cpu_set(cpu);
-+		ct_cpu_track_user(cpu);
++/*
++ * OBSOLETE:
++ * This function should be noinstr but it unsafely calls local_irq_restore(),
++ * involving illegal RCU uses through tracing and lockdep.
++ * This is unlikely to be fixed as this function is obsolete. The preferred
++ * way is to call user_enter_irqoff(). It should be the arch entry code
++ * responsibility to call into context tracking with IRQs disabled.
++ */
+ void context_tracking_user_enter(void)
+ {
+ 	user_enter();
+@@ -168,6 +185,15 @@ void noinstr __context_tracking_exit(enum ctx_state state)
  }
- #endif
-diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-index 58a11f859ac79..de192dcff8282 100644
---- a/kernel/time/tick-sched.c
-+++ b/kernel/time/tick-sched.c
-@@ -571,7 +571,7 @@ void __init tick_nohz_init(void)
- 	}
+ EXPORT_SYMBOL_GPL(__context_tracking_exit);
  
- 	for_each_cpu(cpu, tick_nohz_full_mask)
--		context_tracking_cpu_set(cpu);
-+		ct_cpu_track_user(cpu);
++/*
++ * OBSOLETE:
++ * This function should be noinstr but the below local_irq_save() is
++ * unsafe because it involves illegal RCU uses through tracing and lockdep.
++ * This is unlikely to be fixed as this function is obsolete. The preferred
++ * way is to call __context_tracking_exit() through user_exit_irqoff()
++ * or context_tracking_guest_exit(). It should be the arch entry code
++ * responsibility to call into context tracking with IRQs disabled.
++ */
+ void context_tracking_exit(enum ctx_state state)
+ {
+ 	unsigned long flags;
+@@ -182,6 +208,14 @@ void context_tracking_exit(enum ctx_state state)
+ NOKPROBE_SYMBOL(context_tracking_exit);
+ EXPORT_SYMBOL_GPL(context_tracking_exit);
  
- 	ret = cpuhp_setup_state_nocalls(CPUHP_AP_ONLINE_DYN,
- 					"kernel/nohz:predown", NULL,
++/*
++ * OBSOLETE:
++ * This function should be noinstr but it unsafely calls local_irq_save(),
++ * involving illegal RCU uses through tracing and lockdep. This is unlikely
++ * to be fixed as this function is obsolete. The preferred way is to call
++ * user_exit_irqoff(). It should be the arch entry code responsibility to
++ * call into context tracking with IRQs disabled.
++ */
+ void context_tracking_user_exit(void)
+ {
+ 	user_exit();
 -- 
 2.31.1.189.g2e36527f23
 
