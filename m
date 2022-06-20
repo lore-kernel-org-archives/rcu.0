@@ -2,42 +2,41 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 17640CCA482
-	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 23:14:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E6D3C433EF
+	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 23:14:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244977AbiFTXOs (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 20 Jun 2022 19:14:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53254 "EHLO
+        id S1346635AbiFTXOt (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 20 Jun 2022 19:14:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245644AbiFTXMJ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 20 Jun 2022 19:12:09 -0400
+        with ESMTP id S1344038AbiFTXMK (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 20 Jun 2022 19:12:10 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 500E622534;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F29E618B23;
         Mon, 20 Jun 2022 16:10:47 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 374DDB8165A;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 608CBB8164F;
         Mon, 20 Jun 2022 23:10:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56421C341F0;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A1CAC341F2;
         Mon, 20 Jun 2022 23:10:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1655766632;
-        bh=YeTYcSn/q+/bSqE1a+j6Cm44dt+QJ9lusb/hk0TUc6A=;
+        bh=2uR0wKzeI7K5nSnunNYR+dCNwwXl5D/cOVQ0kTXkN/U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X/aX2nMMnHZ2uPJpGGS4p+BYEWFZ55dlyZbfjThNtSXYRvDdZqru5zZ9wtHQC6GKu
-         ErXo3W3rPbGIxgPgpQuQ85jYxtSecAdILBQmCnmgDLS2jKvqUab7RcHq+ux3IbVojO
-         pz5HG8Lya+YGUZyzfTlXTvwKz5mUlQ8aOat//dUGc/ogjFDoDqOsO89Kkcs8UmJc8J
-         8bp8AenW6mV7qclzlb7HGsZb9kKoiL36gcckDu/1WmkgaS9es/Mzqlf1SCSpI5/Fqp
-         WT4bp+Y666Dsw7kjGEiFxPlbEF/UEXoCBBL37sH8beJwdVGyWlNJuRO+flRkx0Aom0
-         tGnWr25IpT59g==
+        b=AYiCfNjhr5w9/QKb5cbIZTK0qDdDBwmnEAs59LyLQpyaEh1Nv3Lx86UBI5+3GfOxU
+         j7mnCoDx4C5W7sfFAMKdlxESldCERzbJXPHxDkWvDqiuEIRzsloj5ILY8qlszFpsgg
+         GCZhLpDTgu74+HFfsyIeFKTDyU1a/JAYcSHlAxKBPtDBvLXVSjGillw1exWfyNuzVp
+         dVcMXknGfEcwkWo1aGJH809Oi+Iz10HL4N8LV/meuLB/iQj6prb6p78Np/GWiKw1h/
+         XX8gA/ZvW5NMrbHwqcaGzXY1eu5SDz7fvC1WrI1G72wNX3oncsE5kzwZWcU7oKsBWX
+         jxaO9jiGW/kMw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 6FEF95C11D7; Mon, 20 Jun 2022 16:10:31 -0700 (PDT)
+        id 760825C12AC; Mon, 20 Jun 2022 16:10:31 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
         rostedt@goodmis.org, Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
@@ -49,10 +48,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
         Xiongfeng Wang <wangxiongfeng2@huawei.com>,
         Yu Liao <liaoyu15@huawei.com>, Phil Auld <pauld@redhat.com>,
         Paul Gortmaker <paul.gortmaker@windriver.com>,
-        Alex Belits <abelits@marvell.com>
-Subject: [PATCH rcu 18/23] rcu/context-tracking: Move RCU-dynticks internal functions to context_tracking
-Date:   Mon, 20 Jun 2022 16:10:24 -0700
-Message-Id: <20220620231029.3844583-18-paulmck@kernel.org>
+        Alex Belits <abelits@marvell.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 21/23] rcu/context_tracking: Merge dynticks counter and context tracking states
+Date:   Mon, 20 Jun 2022 16:10:27 -0700
+Message-Id: <20220620231029.3844583-21-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220620231027.GA3844372@paulmck-ThinkPad-P17-Gen-1>
 References: <20220620231027.GA3844372@paulmck-ThinkPad-P17-Gen-1>
@@ -64,10 +64,36 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: Frederic Weisbecker <frederic@kernel.org>
 
-Move the core RCU eqs/dynticks functions to context tracking so that
-we can later merge all that code within context tracking.
+Updating the context tracking state and the RCU dynticks counter
+atomically in a single operation is a first step towards improving CPU
+isolation. This makes the context tracking state updates fully ordered
+and therefore allow for later enhancements such as postponing some work
+while a task is running isolated in userspace until it ever comes back
+to the kernel.
 
-Acked-by: Paul E. McKenney <paulmck@kernel.org>
+The state field becomes divided in two parts:
+
+1) Two Lower bits for context tracking state:
+
+	CONTEXT_KERNEL = 0
+   	CONTEXT_IDLE = 1,
+	CONTEXT_USER = 2,
+	CONTEXT_GUEST = 3,
+
+2) Higher bits for RCU eqs dynticks counting:
+
+    RCU_DYNTICKS_IDX = 4
+
+   The dynticks counting is always incremented by this value.
+   (state & RCU_DYNTICKS_IDX) means we are NOT in an extended quiescent
+   state. This makes the chance for a collision more likely between two
+   RCU dynticks snapshots but wrapping up 28 bits of eqs dynticks
+   increments still takes some bad luck (also rdp.dynticks_snap could be
+   converted from int to long?)
+
+Some RCU eqs functions have been renamed to better reflect their broader
+scope that now include context tracking state.
+
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Thomas Gleixner <tglx@linutronix.de>
@@ -84,881 +110,488 @@ Cc: Paul Gortmaker<paul.gortmaker@windriver.com>
 Cc: Alex Belits <abelits@marvell.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/context_tracking.h |  20 ++
- include/linux/rcutree.h          |   3 +
- kernel/context_tracking.c        | 336 +++++++++++++++++++++++++++++++
- kernel/rcu/tree.c                | 324 +----------------------------
- kernel/rcu/tree.h                |   5 -
- kernel/rcu/tree_plugin.h         |  38 +---
- 6 files changed, 364 insertions(+), 362 deletions(-)
+ include/linux/context_tracking.h       |   8 +-
+ include/linux/context_tracking_state.h |  35 ++++---
+ kernel/context_tracking.c              | 132 ++++++++++++++++---------
+ kernel/rcu/tree.c                      |  13 ++-
+ kernel/rcu/tree_stall.h                |   4 +-
+ 5 files changed, 121 insertions(+), 71 deletions(-)
 
 diff --git a/include/linux/context_tracking.h b/include/linux/context_tracking.h
-index 01abadb2f9930..1f568676bc1d2 100644
+index a8c1db0a3f65a..fd354eaea510a 100644
 --- a/include/linux/context_tracking.h
 +++ b/include/linux/context_tracking.h
-@@ -122,6 +122,26 @@ static inline void context_tracking_init(void) { }
- #ifdef CONFIG_CONTEXT_TRACKING_IDLE
- extern void ct_idle_enter(void);
- extern void ct_idle_exit(void);
-+
-+/*
-+ * Is the current CPU in an extended quiescent state?
-+ *
-+ * No ordering, as we are sampling CPU-local information.
-+ */
-+static __always_inline bool rcu_dynticks_curr_cpu_in_eqs(void)
-+{
-+	return !(arch_atomic_read(this_cpu_ptr(&context_tracking.dynticks)) & 0x1);
-+}
-+
-+/*
-+ * Increment the current CPU's context_tracking structure's ->dynticks field
-+ * with ordering.  Return the new value.
-+ */
-+static __always_inline unsigned long rcu_dynticks_inc(int incby)
-+{
-+	return arch_atomic_add_return(incby, this_cpu_ptr(&context_tracking.dynticks));
-+}
-+
+@@ -118,16 +118,16 @@ extern void ct_idle_exit(void);
+  */
+ static __always_inline bool rcu_dynticks_curr_cpu_in_eqs(void)
+ {
+-	return !(arch_atomic_read(this_cpu_ptr(&context_tracking.dynticks)) & 0x1);
++	return !(arch_atomic_read(this_cpu_ptr(&context_tracking.state)) & RCU_DYNTICKS_IDX);
+ }
+ 
+ /*
+- * Increment the current CPU's context_tracking structure's ->dynticks field
++ * Increment the current CPU's context_tracking structure's ->state field
+  * with ordering.  Return the new value.
+  */
+-static __always_inline unsigned long rcu_dynticks_inc(int incby)
++static __always_inline unsigned long ct_state_inc(int incby)
+ {
+-	return arch_atomic_add_return(incby, this_cpu_ptr(&context_tracking.dynticks));
++	return arch_atomic_add_return(incby, this_cpu_ptr(&context_tracking.state));
+ }
+ 
  #else
- static inline void ct_idle_enter(void) { }
- static inline void ct_idle_exit(void) { }
-diff --git a/include/linux/rcutree.h b/include/linux/rcutree.h
-index 4522b6a7cc42f..24db1e41695c8 100644
---- a/include/linux/rcutree.h
-+++ b/include/linux/rcutree.h
-@@ -55,6 +55,9 @@ void rcu_irq_exit_check_preempt(void);
- static inline void rcu_irq_exit_check_preempt(void) { }
+diff --git a/include/linux/context_tracking_state.h b/include/linux/context_tracking_state.h
+index 7d2dddf0da690..0aecc07fb4f50 100644
+--- a/include/linux/context_tracking_state.h
++++ b/include/linux/context_tracking_state.h
+@@ -10,12 +10,20 @@
+ #define DYNTICK_IRQ_NONIDLE	((LONG_MAX / 2) + 1)
+ 
+ enum ctx_state {
+-	CONTEXT_DISABLED = -1,	/* returned by ct_state() if unknown */
+-	CONTEXT_KERNEL = 0,
+-	CONTEXT_USER,
+-	CONTEXT_GUEST,
++	CONTEXT_DISABLED	= -1,	/* returned by ct_state() if unknown */
++	CONTEXT_KERNEL		= 0,
++	CONTEXT_IDLE		= 1,
++	CONTEXT_USER		= 2,
++	CONTEXT_GUEST		= 3,
++	CONTEXT_MAX		= 4,
+ };
+ 
++/* Even value for idle, else odd. */
++#define RCU_DYNTICKS_IDX CONTEXT_MAX
++
++#define CT_STATE_MASK (CONTEXT_MAX - 1)
++#define CT_DYNTICKS_MASK (~CT_STATE_MASK)
++
+ struct context_tracking {
+ #ifdef CONFIG_CONTEXT_TRACKING_USER
+ 	/*
+@@ -26,10 +34,11 @@ struct context_tracking {
+ 	 */
+ 	bool active;
+ 	int recursion;
++#endif
++#ifdef CONFIG_CONTEXT_TRACKING
+ 	atomic_t state;
+ #endif
+ #ifdef CONFIG_CONTEXT_TRACKING_IDLE
+-	atomic_t dynticks;		/* Even value for idle, else odd. */
+ 	long dynticks_nesting;		/* Track process nesting level. */
+ 	long dynticks_nmi_nesting;	/* Track irq/NMI nesting level. */
+ #endif
+@@ -37,24 +46,29 @@ struct context_tracking {
+ 
+ #ifdef CONFIG_CONTEXT_TRACKING
+ DECLARE_PER_CPU(struct context_tracking, context_tracking);
++
++static __always_inline int __ct_state(void)
++{
++	return atomic_read(this_cpu_ptr(&context_tracking.state)) & CT_STATE_MASK;
++}
  #endif
  
-+struct task_struct;
-+void rcu_preempt_deferred_qs(struct task_struct *t);
-+
- void exit_rcu(void);
+ #ifdef CONFIG_CONTEXT_TRACKING_IDLE
+ static __always_inline int ct_dynticks(void)
+ {
+-	return atomic_read(this_cpu_ptr(&context_tracking.dynticks));
++	return atomic_read(this_cpu_ptr(&context_tracking.state)) & CT_DYNTICKS_MASK;
+ }
  
- void rcu_scheduler_starting(void);
+ static __always_inline int ct_dynticks_cpu(int cpu)
+ {
+ 	struct context_tracking *ct = per_cpu_ptr(&context_tracking, cpu);
+-	return atomic_read(&ct->dynticks);
++	return atomic_read(&ct->state) & CT_DYNTICKS_MASK;
+ }
+ 
+ static __always_inline int ct_dynticks_cpu_acquire(int cpu)
+ {
+ 	struct context_tracking *ct = per_cpu_ptr(&context_tracking, cpu);
+-	return atomic_read_acquire(&ct->dynticks);
++	return atomic_read_acquire(&ct->state) & CT_DYNTICKS_MASK;
+ }
+ 
+ static __always_inline long ct_dynticks_nesting(void)
+@@ -98,11 +112,6 @@ static inline bool context_tracking_enabled_this_cpu(void)
+ 	return context_tracking_enabled() && __this_cpu_read(context_tracking.active);
+ }
+ 
+-static __always_inline int __ct_state(void)
+-{
+-	return atomic_read(this_cpu_ptr(&context_tracking.state));
+-}
+-
+ /**
+  * ct_state() - return the current context tracking state if known
+  *
 diff --git a/kernel/context_tracking.c b/kernel/context_tracking.c
-index 8affa0092fab5..f3e92705e0a89 100644
+index c477c7d696e0f..d373fad7c0cba 100644
 --- a/kernel/context_tracking.c
 +++ b/kernel/context_tracking.c
-@@ -21,6 +21,7 @@
- #include <linux/hardirq.h>
- #include <linux/export.h>
- #include <linux/kprobes.h>
-+#include <trace/events/rcu.h>
- 
- 
- DEFINE_PER_CPU(struct context_tracking, context_tracking) = {
-@@ -33,6 +34,309 @@ DEFINE_PER_CPU(struct context_tracking, context_tracking) = {
+@@ -28,8 +28,8 @@ DEFINE_PER_CPU(struct context_tracking, context_tracking) = {
+ #ifdef CONFIG_CONTEXT_TRACKING_IDLE
+ 	.dynticks_nesting = 1,
+ 	.dynticks_nmi_nesting = DYNTICK_IRQ_NONIDLE,
+-	.dynticks = ATOMIC_INIT(1),
+ #endif
++	.state = ATOMIC_INIT(RCU_DYNTICKS_IDX),
+ };
  EXPORT_SYMBOL_GPL(context_tracking);
  
- #ifdef CONFIG_CONTEXT_TRACKING_IDLE
-+#define TPS(x)  tracepoint_string(x)
-+
-+/* Record the current task on dyntick-idle entry. */
-+static __always_inline void rcu_dynticks_task_enter(void)
-+{
-+#if defined(CONFIG_TASKS_RCU) && defined(CONFIG_NO_HZ_FULL)
-+	WRITE_ONCE(current->rcu_tasks_idle_cpu, smp_processor_id());
-+#endif /* #if defined(CONFIG_TASKS_RCU) && defined(CONFIG_NO_HZ_FULL) */
-+}
-+
-+/* Record no current task on dyntick-idle exit. */
-+static __always_inline void rcu_dynticks_task_exit(void)
-+{
-+#if defined(CONFIG_TASKS_RCU) && defined(CONFIG_NO_HZ_FULL)
-+	WRITE_ONCE(current->rcu_tasks_idle_cpu, -1);
-+#endif /* #if defined(CONFIG_TASKS_RCU) && defined(CONFIG_NO_HZ_FULL) */
-+}
-+
-+/* Turn on heavyweight RCU tasks trace readers on idle/user entry. */
-+static __always_inline void rcu_dynticks_task_trace_enter(void)
-+{
-+#ifdef CONFIG_TASKS_TRACE_RCU
-+	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB))
-+		current->trc_reader_special.b.need_mb = true;
-+#endif /* #ifdef CONFIG_TASKS_TRACE_RCU */
-+}
-+
-+/* Turn off heavyweight RCU tasks trace readers on idle/user exit. */
-+static __always_inline void rcu_dynticks_task_trace_exit(void)
-+{
-+#ifdef CONFIG_TASKS_TRACE_RCU
-+	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB))
-+		current->trc_reader_special.b.need_mb = false;
-+#endif /* #ifdef CONFIG_TASKS_TRACE_RCU */
-+}
-+
-+/*
-+ * Record entry into an extended quiescent state.  This is only to be
-+ * called when not already in an extended quiescent state, that is,
-+ * RCU is watching prior to the call to this function and is no longer
-+ * watching upon return.
-+ */
-+static noinstr void rcu_dynticks_eqs_enter(void)
-+{
-+	int seq;
-+
-+	/*
-+	 * CPUs seeing atomic_add_return() must see prior RCU read-side
-+	 * critical sections, and we also must force ordering with the
-+	 * next idle sojourn.
-+	 */
-+	rcu_dynticks_task_trace_enter();  // Before ->dynticks update!
-+	seq = rcu_dynticks_inc(1);
-+	// RCU is no longer watching.  Better be in extended quiescent state!
-+	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && (seq & 0x1));
-+}
-+
-+/*
-+ * Record exit from an extended quiescent state.  This is only to be
-+ * called from an extended quiescent state, that is, RCU is not watching
-+ * prior to the call to this function and is watching upon return.
-+ */
-+static noinstr void rcu_dynticks_eqs_exit(void)
-+{
-+	int seq;
-+
-+	/*
-+	 * CPUs seeing atomic_add_return() must see prior idle sojourns,
-+	 * and we also must force ordering with the next RCU read-side
-+	 * critical section.
-+	 */
-+	seq = rcu_dynticks_inc(1);
-+	// RCU is now watching.  Better not be in an extended quiescent state!
-+	rcu_dynticks_task_trace_exit();  // After ->dynticks update!
-+	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !(seq & 0x1));
-+}
-+
-+/*
-+ * Enter an RCU extended quiescent state, which can be either the
-+ * idle loop or adaptive-tickless usermode execution.
-+ *
-+ * We crowbar the ->dynticks_nmi_nesting field to zero to allow for
-+ * the possibility of usermode upcalls having messed up our count
-+ * of interrupt nesting level during the prior busy period.
-+ */
-+static void noinstr rcu_eqs_enter(bool user)
-+{
-+	struct context_tracking *ct = this_cpu_ptr(&context_tracking);
-+
-+	WARN_ON_ONCE(ct_dynticks_nmi_nesting() != DYNTICK_IRQ_NONIDLE);
-+	WRITE_ONCE(ct->dynticks_nmi_nesting, 0);
-+	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) &&
-+		     ct_dynticks_nesting() == 0);
-+	if (ct_dynticks_nesting() != 1) {
-+		// RCU will still be watching, so just do accounting and leave.
-+		ct->dynticks_nesting--;
-+		return;
-+	}
-+
-+	instrumentation_begin();
-+	lockdep_assert_irqs_disabled();
-+	trace_rcu_dyntick(TPS("Start"), ct_dynticks_nesting(), 0, ct_dynticks());
-+	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !user && !is_idle_task(current));
-+	rcu_preempt_deferred_qs(current);
-+
-+	// instrumentation for the noinstr rcu_dynticks_eqs_enter()
-+	instrument_atomic_write(&ct->dynticks, sizeof(ct->dynticks));
-+
-+	instrumentation_end();
-+	WRITE_ONCE(ct->dynticks_nesting, 0); /* Avoid irq-access tearing. */
-+	// RCU is watching here ...
-+	rcu_dynticks_eqs_enter();
-+	// ... but is no longer watching here.
-+	rcu_dynticks_task_enter();
-+}
-+
-+/*
-+ * Exit an RCU extended quiescent state, which can be either the
-+ * idle loop or adaptive-tickless usermode execution.
-+ *
-+ * We crowbar the ->dynticks_nmi_nesting field to DYNTICK_IRQ_NONIDLE to
-+ * allow for the possibility of usermode upcalls messing up our count of
-+ * interrupt nesting level during the busy period that is just now starting.
-+ */
-+static void noinstr rcu_eqs_exit(bool user)
-+{
-+	struct context_tracking *ct = this_cpu_ptr(&context_tracking);
-+	long oldval;
-+
-+	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !raw_irqs_disabled());
-+	oldval = ct_dynticks_nesting();
-+	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && oldval < 0);
-+	if (oldval) {
-+		// RCU was already watching, so just do accounting and leave.
-+		ct->dynticks_nesting++;
-+		return;
-+	}
-+	rcu_dynticks_task_exit();
-+	// RCU is not watching here ...
-+	rcu_dynticks_eqs_exit();
-+	// ... but is watching here.
-+	instrumentation_begin();
-+
-+	// instrumentation for the noinstr rcu_dynticks_eqs_exit()
-+	instrument_atomic_write(&ct->dynticks, sizeof(ct->dynticks));
-+
-+	trace_rcu_dyntick(TPS("End"), ct_dynticks_nesting(), 1, ct_dynticks());
-+	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !user && !is_idle_task(current));
-+	WRITE_ONCE(ct->dynticks_nesting, 1);
-+	WARN_ON_ONCE(ct_dynticks_nmi_nesting());
-+	WRITE_ONCE(ct->dynticks_nmi_nesting, DYNTICK_IRQ_NONIDLE);
-+	instrumentation_end();
-+}
-+
-+/**
-+ * rcu_nmi_exit - inform RCU of exit from NMI context
-+ *
-+ * If we are returning from the outermost NMI handler that interrupted an
-+ * RCU-idle period, update ct->dynticks and ct->dynticks_nmi_nesting
-+ * to let the RCU grace-period handling know that the CPU is back to
-+ * being RCU-idle.
-+ *
-+ * If you add or remove a call to rcu_nmi_exit(), be sure to test
-+ * with CONFIG_RCU_EQS_DEBUG=y.
-+ */
-+void noinstr rcu_nmi_exit(void)
-+{
-+	struct context_tracking *ct = this_cpu_ptr(&context_tracking);
-+
-+	instrumentation_begin();
-+	/*
-+	 * Check for ->dynticks_nmi_nesting underflow and bad ->dynticks.
-+	 * (We are exiting an NMI handler, so RCU better be paying attention
-+	 * to us!)
-+	 */
-+	WARN_ON_ONCE(ct_dynticks_nmi_nesting() <= 0);
-+	WARN_ON_ONCE(rcu_dynticks_curr_cpu_in_eqs());
-+
-+	/*
-+	 * If the nesting level is not 1, the CPU wasn't RCU-idle, so
-+	 * leave it in non-RCU-idle state.
-+	 */
-+	if (ct_dynticks_nmi_nesting() != 1) {
-+		trace_rcu_dyntick(TPS("--="), ct_dynticks_nmi_nesting(), ct_dynticks_nmi_nesting() - 2,
-+				  ct_dynticks());
-+		WRITE_ONCE(ct->dynticks_nmi_nesting, /* No store tearing. */
-+			   ct_dynticks_nmi_nesting() - 2);
-+		instrumentation_end();
-+		return;
-+	}
-+
-+	/* This NMI interrupted an RCU-idle CPU, restore RCU-idleness. */
-+	trace_rcu_dyntick(TPS("Startirq"), ct_dynticks_nmi_nesting(), 0, ct_dynticks());
-+	WRITE_ONCE(ct->dynticks_nmi_nesting, 0); /* Avoid store tearing. */
-+
-+	// instrumentation for the noinstr rcu_dynticks_eqs_enter()
-+	instrument_atomic_write(&ct->dynticks, sizeof(ct->dynticks));
-+	instrumentation_end();
-+
-+	// RCU is watching here ...
-+	rcu_dynticks_eqs_enter();
-+	// ... but is no longer watching here.
-+
-+	if (!in_nmi())
-+		rcu_dynticks_task_enter();
-+}
-+
-+/**
-+ * rcu_nmi_enter - inform RCU of entry to NMI context
-+ *
-+ * If the CPU was idle from RCU's viewpoint, update ct->dynticks and
-+ * ct->dynticks_nmi_nesting to let the RCU grace-period handling know
-+ * that the CPU is active.  This implementation permits nested NMIs, as
-+ * long as the nesting level does not overflow an int.  (You will probably
-+ * run out of stack space first.)
-+ *
-+ * If you add or remove a call to rcu_nmi_enter(), be sure to test
-+ * with CONFIG_RCU_EQS_DEBUG=y.
-+ */
-+void noinstr rcu_nmi_enter(void)
-+{
-+	long incby = 2;
-+	struct context_tracking *ct = this_cpu_ptr(&context_tracking);
-+
-+	/* Complain about underflow. */
-+	WARN_ON_ONCE(ct_dynticks_nmi_nesting() < 0);
-+
-+	/*
-+	 * If idle from RCU viewpoint, atomically increment ->dynticks
-+	 * to mark non-idle and increment ->dynticks_nmi_nesting by one.
-+	 * Otherwise, increment ->dynticks_nmi_nesting by two.  This means
-+	 * if ->dynticks_nmi_nesting is equal to one, we are guaranteed
-+	 * to be in the outermost NMI handler that interrupted an RCU-idle
-+	 * period (observation due to Andy Lutomirski).
-+	 */
-+	if (rcu_dynticks_curr_cpu_in_eqs()) {
-+
-+		if (!in_nmi())
-+			rcu_dynticks_task_exit();
-+
-+		// RCU is not watching here ...
-+		rcu_dynticks_eqs_exit();
-+		// ... but is watching here.
-+
-+		instrumentation_begin();
-+		// instrumentation for the noinstr rcu_dynticks_curr_cpu_in_eqs()
-+		instrument_atomic_read(&ct->dynticks, sizeof(ct->dynticks));
-+		// instrumentation for the noinstr rcu_dynticks_eqs_exit()
-+		instrument_atomic_write(&ct->dynticks, sizeof(ct->dynticks));
-+
-+		incby = 1;
-+	} else if (!in_nmi()) {
-+		instrumentation_begin();
-+		rcu_irq_enter_check_tick();
-+	} else  {
-+		instrumentation_begin();
-+	}
-+
-+	trace_rcu_dyntick(incby == 1 ? TPS("Endirq") : TPS("++="),
-+			  ct_dynticks_nmi_nesting(),
-+			  ct_dynticks_nmi_nesting() + incby, ct_dynticks());
-+	instrumentation_end();
-+	WRITE_ONCE(ct->dynticks_nmi_nesting, /* Prevent store tearing. */
-+		   ct_dynticks_nmi_nesting() + incby);
-+	barrier();
-+}
-+
-+/**
-+ * rcu_idle_enter - inform RCU that current CPU is entering idle
-+ *
-+ * Enter idle mode, in other words, -leave- the mode in which RCU
-+ * read-side critical sections can occur.  (Though RCU read-side
-+ * critical sections can occur in irq handlers in idle, a possibility
-+ * handled by irq_enter() and irq_exit().)
-+ *
-+ * If you add or remove a call to rcu_idle_enter(), be sure to test with
-+ * CONFIG_RCU_EQS_DEBUG=y.
-+ */
-+void noinstr rcu_idle_enter(void)
-+{
-+	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !raw_irqs_disabled());
-+	rcu_eqs_enter(false);
-+}
-+
-+/**
-+ * rcu_idle_exit - inform RCU that current CPU is leaving idle
-+ *
-+ * Exit idle mode, in other words, -enter- the mode in which RCU
-+ * read-side critical sections can occur.
-+ *
-+ * If you add or remove a call to rcu_idle_exit(), be sure to test with
-+ * CONFIG_RCU_EQS_DEBUG=y.
-+ */
-+void noinstr rcu_idle_exit(void)
-+{
-+	unsigned long flags;
-+
-+	raw_local_irq_save(flags);
-+	rcu_eqs_exit(false);
-+	raw_local_irq_restore(flags);
-+}
-+EXPORT_SYMBOL_GPL(rcu_idle_exit);
-+
- noinstr void ct_idle_enter(void)
- {
- 	rcu_idle_enter();
-@@ -139,6 +443,38 @@ noinstr void ct_nmi_exit(void)
- }
- #endif /* #ifdef CONFIG_CONTEXT_TRACKING_IDLE */
- 
-+#ifdef CONFIG_NO_HZ_FULL
-+/**
-+ * rcu_user_enter - inform RCU that we are resuming userspace.
-+ *
-+ * Enter RCU idle mode right before resuming userspace.  No use of RCU
-+ * is permitted between this call and rcu_user_exit(). This way the
-+ * CPU doesn't need to maintain the tick for RCU maintenance purposes
-+ * when the CPU runs in userspace.
-+ *
-+ * If you add or remove a call to rcu_user_enter(), be sure to test with
-+ * CONFIG_RCU_EQS_DEBUG=y.
-+ */
-+noinstr void rcu_user_enter(void)
-+{
-+	rcu_eqs_enter(true);
-+}
-+
-+/**
-+ * rcu_user_exit - inform RCU that we are exiting userspace.
-+ *
-+ * Exit RCU idle mode while entering the kernel because it can
-+ * run a RCU read side critical section anytime.
-+ *
-+ * If you add or remove a call to rcu_user_exit(), be sure to test with
-+ * CONFIG_RCU_EQS_DEBUG=y.
-+ */
-+void noinstr rcu_user_exit(void)
-+{
-+	rcu_eqs_exit(true);
-+}
-+#endif /* #ifdef CONFIG_NO_HZ_FULL */
-+
- #ifdef CONFIG_CONTEXT_TRACKING_USER
- 
- #define CREATE_TRACE_POINTS
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 8c0c3490532e3..e2a2083079a2c 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -62,6 +62,7 @@
- #include <linux/vmalloc.h>
- #include <linux/mm.h>
- #include <linux/kasan.h>
-+#include <linux/context_tracking.h>
- #include "../time/tick-internal.h"
- 
- #include "tree.h"
-@@ -259,56 +260,6 @@ void rcu_softirq_qs(void)
- 	rcu_tasks_qs(current, false);
- }
- 
--/*
-- * Increment the current CPU's rcu_data structure's ->dynticks field
-- * with ordering.  Return the new value.
-- */
--static noinline noinstr unsigned long rcu_dynticks_inc(int incby)
--{
--	return arch_atomic_add_return(incby, this_cpu_ptr(&context_tracking.dynticks));
--}
--
--/*
-- * Record entry into an extended quiescent state.  This is only to be
-- * called when not already in an extended quiescent state, that is,
-- * RCU is watching prior to the call to this function and is no longer
-- * watching upon return.
-- */
+@@ -76,7 +76,7 @@ static __always_inline void rcu_dynticks_task_trace_exit(void)
+  * RCU is watching prior to the call to this function and is no longer
+  * watching upon return.
+  */
 -static noinstr void rcu_dynticks_eqs_enter(void)
--{
--	int seq;
--
--	/*
--	 * CPUs seeing atomic_add_return() must see prior RCU read-side
--	 * critical sections, and we also must force ordering with the
--	 * next idle sojourn.
--	 */
--	rcu_dynticks_task_trace_enter();  // Before ->dynticks update!
++static noinstr void ct_kernel_exit_state(int offset)
+ {
+ 	int seq;
+ 
+@@ -86,9 +86,9 @@ static noinstr void rcu_dynticks_eqs_enter(void)
+ 	 * next idle sojourn.
+ 	 */
+ 	rcu_dynticks_task_trace_enter();  // Before ->dynticks update!
 -	seq = rcu_dynticks_inc(1);
--	// RCU is no longer watching.  Better be in extended quiescent state!
++	seq = ct_state_inc(offset);
+ 	// RCU is no longer watching.  Better be in extended quiescent state!
 -	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && (seq & 0x1));
--}
--
--/*
-- * Record exit from an extended quiescent state.  This is only to be
-- * called from an extended quiescent state, that is, RCU is not watching
-- * prior to the call to this function and is watching upon return.
-- */
++	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && (seq & RCU_DYNTICKS_IDX));
+ }
+ 
+ /*
+@@ -96,7 +96,7 @@ static noinstr void rcu_dynticks_eqs_enter(void)
+  * called from an extended quiescent state, that is, RCU is not watching
+  * prior to the call to this function and is watching upon return.
+  */
 -static noinstr void rcu_dynticks_eqs_exit(void)
--{
--	int seq;
--
--	/*
--	 * CPUs seeing atomic_add_return() must see prior idle sojourns,
--	 * and we also must force ordering with the next RCU read-side
--	 * critical section.
--	 */
++static noinstr void ct_kernel_enter_state(int offset)
+ {
+ 	int seq;
+ 
+@@ -105,10 +105,10 @@ static noinstr void rcu_dynticks_eqs_exit(void)
+ 	 * and we also must force ordering with the next RCU read-side
+ 	 * critical section.
+ 	 */
 -	seq = rcu_dynticks_inc(1);
--	// RCU is now watching.  Better not be in an extended quiescent state!
--	rcu_dynticks_task_trace_exit();  // After ->dynticks update!
++	seq = ct_state_inc(offset);
+ 	// RCU is now watching.  Better not be in an extended quiescent state!
+ 	rcu_dynticks_task_trace_exit();  // After ->dynticks update!
 -	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !(seq & 0x1));
--}
--
- /*
-  * Reset the current CPU's ->dynticks counter to indicate that the
-  * newly onlined CPU is no longer in an extended quiescent state.
-@@ -326,16 +277,6 @@ static void rcu_dynticks_eqs_online(void)
- 	rcu_dynticks_inc(1);
++	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !(seq & RCU_DYNTICKS_IDX));
  }
  
--/*
-- * Is the current CPU in an extended quiescent state?
-- *
-- * No ordering, as we are sampling CPU-local information.
-- */
--static __always_inline bool rcu_dynticks_curr_cpu_in_eqs(void)
--{
--	return !(arch_atomic_read(this_cpu_ptr(&context_tracking.dynticks)) & 0x1);
--}
--
  /*
-  * Snapshot the ->dynticks counter with full ordering so as to allow
-  * stable comparison of this counter with past and future snapshots.
-@@ -601,65 +542,7 @@ void rcutorture_get_gp_data(enum rcutorture_type test_type, int *flags,
- }
- EXPORT_SYMBOL_GPL(rcutorture_get_gp_data);
+@@ -119,7 +119,7 @@ static noinstr void rcu_dynticks_eqs_exit(void)
+  * the possibility of usermode upcalls having messed up our count
+  * of interrupt nesting level during the prior busy period.
+  */
+-static void noinstr rcu_eqs_enter(bool user)
++static void noinstr ct_kernel_exit(bool user, int offset)
+ {
+ 	struct context_tracking *ct = this_cpu_ptr(&context_tracking);
  
--/*
-- * Enter an RCU extended quiescent state, which can be either the
-- * idle loop or adaptive-tickless usermode execution.
-- *
-- * We crowbar the ->dynticks_nmi_nesting field to zero to allow for
-- * the possibility of usermode upcalls having messed up our count
-- * of interrupt nesting level during the prior busy period.
-- */
--static noinstr void rcu_eqs_enter(bool user)
--{
--	struct context_tracking *ct = this_cpu_ptr(&context_tracking);
--
--	WARN_ON_ONCE(ct_dynticks_nmi_nesting() != DYNTICK_IRQ_NONIDLE);
--	WRITE_ONCE(ct->dynticks_nmi_nesting, 0);
--	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) &&
--		     ct_dynticks_nesting() == 0);
--	if (ct_dynticks_nesting() != 1) {
--		// RCU will still be watching, so just do accounting and leave.
--		ct->dynticks_nesting--;
--		return;
--	}
--
--	instrumentation_begin();
--	lockdep_assert_irqs_disabled();
--	trace_rcu_dyntick(TPS("Start"), ct_dynticks_nesting(), 0, ct_dynticks());
--	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !user && !is_idle_task(current));
--	rcu_preempt_deferred_qs(current);
--
+@@ -139,13 +139,13 @@ static void noinstr rcu_eqs_enter(bool user)
+ 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !user && !is_idle_task(current));
+ 	rcu_preempt_deferred_qs(current);
+ 
 -	// instrumentation for the noinstr rcu_dynticks_eqs_enter()
 -	instrument_atomic_write(&ct->dynticks, sizeof(ct->dynticks));
--
--	instrumentation_end();
--	WRITE_ONCE(ct->dynticks_nesting, 0); /* Avoid irq-access tearing. */
--	// RCU is watching here ...
--	rcu_dynticks_eqs_enter();
--	// ... but is no longer watching here.
--	rcu_dynticks_task_enter();
--}
--
--/**
-- * rcu_idle_enter - inform RCU that current CPU is entering idle
-- *
-- * Enter idle mode, in other words, -leave- the mode in which RCU
-- * read-side critical sections can occur.  (Though RCU read-side
-- * critical sections can occur in irq handlers in idle, a possibility
-- * handled by irq_enter() and irq_exit().)
-- *
-- * If you add or remove a call to rcu_idle_enter(), be sure to test with
-- * CONFIG_RCU_EQS_DEBUG=y.
-- */
--void noinstr rcu_idle_enter(void)
--{
--	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !raw_irqs_disabled());
--	rcu_eqs_enter(false);
--}
--
--#ifdef CONFIG_NO_HZ_FULL
--
--#if !defined(CONFIG_GENERIC_ENTRY) || !defined(CONFIG_KVM_XFER_TO_GUEST_WORK)
-+#if defined(CONFIG_NO_HZ_FULL) && (!defined(CONFIG_GENERIC_ENTRY) || !defined(CONFIG_KVM_XFER_TO_GUEST_WORK))
- /*
-  * An empty function that will trigger a reschedule on
-  * IRQ tail once IRQs get re-enabled on userspace/guest resume.
-@@ -697,78 +580,7 @@ noinstr void rcu_irq_work_resched(void)
- 	}
++	// instrumentation for the noinstr ct_kernel_exit_state()
++	instrument_atomic_write(&ct->state, sizeof(ct->state));
+ 
  	instrumentation_end();
- }
--#endif /* #if !defined(CONFIG_GENERIC_ENTRY) || !defined(CONFIG_KVM_XFER_TO_GUEST_WORK) */
--
--/**
-- * rcu_user_enter - inform RCU that we are resuming userspace.
-- *
-- * Enter RCU idle mode right before resuming userspace.  No use of RCU
-- * is permitted between this call and rcu_user_exit(). This way the
-- * CPU doesn't need to maintain the tick for RCU maintenance purposes
-- * when the CPU runs in userspace.
-- *
-- * If you add or remove a call to rcu_user_enter(), be sure to test with
-- * CONFIG_RCU_EQS_DEBUG=y.
-- */
--noinstr void rcu_user_enter(void)
--{
--	rcu_eqs_enter(true);
--}
--
--#endif /* CONFIG_NO_HZ_FULL */
--
--/**
-- * rcu_nmi_exit - inform RCU of exit from NMI context
-- *
-- * If we are returning from the outermost NMI handler that interrupted an
-- * RCU-idle period, update ct->dynticks and ct->dynticks_nmi_nesting
-- * to let the RCU grace-period handling know that the CPU is back to
-- * being RCU-idle.
-- *
-- * If you add or remove a call to rcu_nmi_exit(), be sure to test
-- * with CONFIG_RCU_EQS_DEBUG=y.
-- */
--noinstr void rcu_nmi_exit(void)
--{
--	struct context_tracking *ct = this_cpu_ptr(&context_tracking);
--
--	instrumentation_begin();
--	/*
--	 * Check for ->dynticks_nmi_nesting underflow and bad ->dynticks.
--	 * (We are exiting an NMI handler, so RCU better be paying attention
--	 * to us!)
--	 */
--	WARN_ON_ONCE(ct_dynticks_nmi_nesting() <= 0);
--	WARN_ON_ONCE(rcu_dynticks_curr_cpu_in_eqs());
--
--	/*
--	 * If the nesting level is not 1, the CPU wasn't RCU-idle, so
--	 * leave it in non-RCU-idle state.
--	 */
--	if (ct_dynticks_nmi_nesting() != 1) {
--		trace_rcu_dyntick(TPS("--="), ct_dynticks_nmi_nesting(), ct_dynticks_nmi_nesting() - 2,
--				  ct_dynticks());
--		WRITE_ONCE(ct->dynticks_nmi_nesting, /* No store tearing. */
--			   ct_dynticks_nmi_nesting() - 2);
--		instrumentation_end();
--		return;
--	}
--
--	/* This NMI interrupted an RCU-idle CPU, restore RCU-idleness. */
--	trace_rcu_dyntick(TPS("Startirq"), ct_dynticks_nmi_nesting(), 0, ct_dynticks());
--	WRITE_ONCE(ct->dynticks_nmi_nesting, 0); /* Avoid store tearing. */
--
--	// instrumentation for the noinstr rcu_dynticks_eqs_enter()
--	instrument_atomic_write(&ct->dynticks, sizeof(ct->dynticks));
--	instrumentation_end();
--
--	// RCU is watching here ...
+ 	WRITE_ONCE(ct->dynticks_nesting, 0); /* Avoid irq-access tearing. */
+ 	// RCU is watching here ...
 -	rcu_dynticks_eqs_enter();
--	// ... but is no longer watching here.
--
--	if (!in_nmi())
--		rcu_dynticks_task_enter();
--}
-+#endif /* #if defined(CONFIG_NO_HZ_FULL) && (!defined(CONFIG_GENERIC_ENTRY) || !defined(CONFIG_KVM_XFER_TO_GUEST_WORK)) */
- 
- #ifdef CONFIG_PROVE_RCU
- /**
-@@ -788,77 +600,7 @@ void rcu_irq_exit_check_preempt(void)
++	ct_kernel_exit_state(offset);
+ 	// ... but is no longer watching here.
+ 	rcu_dynticks_task_enter();
  }
- #endif /* #ifdef CONFIG_PROVE_RCU */
- 
--/*
-- * Exit an RCU extended quiescent state, which can be either the
-- * idle loop or adaptive-tickless usermode execution.
-- *
-- * We crowbar the ->dynticks_nmi_nesting field to DYNTICK_IRQ_NONIDLE to
-- * allow for the possibility of usermode upcalls messing up our count of
-- * interrupt nesting level during the busy period that is just now starting.
-- */
+@@ -158,7 +158,7 @@ static void noinstr rcu_eqs_enter(bool user)
+  * allow for the possibility of usermode upcalls messing up our count of
+  * interrupt nesting level during the busy period that is just now starting.
+  */
 -static void noinstr rcu_eqs_exit(bool user)
--{
--	struct context_tracking *ct = this_cpu_ptr(&context_tracking);
--	long oldval;
--
--	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !raw_irqs_disabled());
--	oldval = ct_dynticks_nesting();
--	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && oldval < 0);
--	if (oldval) {
--		// RCU was already watching, so just do accounting and leave.
--		ct->dynticks_nesting++;
--		return;
--	}
--	rcu_dynticks_task_exit();
--	// RCU is not watching here ...
++static void noinstr ct_kernel_enter(bool user, int offset)
+ {
+ 	struct context_tracking *ct = this_cpu_ptr(&context_tracking);
+ 	long oldval;
+@@ -173,12 +173,12 @@ static void noinstr rcu_eqs_exit(bool user)
+ 	}
+ 	rcu_dynticks_task_exit();
+ 	// RCU is not watching here ...
 -	rcu_dynticks_eqs_exit();
--	// ... but is watching here.
--	instrumentation_begin();
--
++	ct_kernel_enter_state(offset);
+ 	// ... but is watching here.
+ 	instrumentation_begin();
+ 
 -	// instrumentation for the noinstr rcu_dynticks_eqs_exit()
 -	instrument_atomic_write(&ct->dynticks, sizeof(ct->dynticks));
--
--	trace_rcu_dyntick(TPS("End"), ct_dynticks_nesting(), 1, ct_dynticks());
--	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !user && !is_idle_task(current));
--	WRITE_ONCE(ct->dynticks_nesting, 1);
--	WARN_ON_ONCE(ct_dynticks_nmi_nesting());
--	WRITE_ONCE(ct->dynticks_nmi_nesting, DYNTICK_IRQ_NONIDLE);
--	instrumentation_end();
--}
--
--/**
-- * rcu_idle_exit - inform RCU that current CPU is leaving idle
-- *
-- * Exit idle mode, in other words, -enter- the mode in which RCU
-- * read-side critical sections can occur.
-- *
-- * If you add or remove a call to rcu_idle_exit(), be sure to test with
-- * CONFIG_RCU_EQS_DEBUG=y.
-- */
--void noinstr rcu_idle_exit(void)
--{
--	unsigned long flags;
--
--	raw_local_irq_save(flags);
--	rcu_eqs_exit(false);
--	raw_local_irq_restore(flags);
--}
--
- #ifdef CONFIG_NO_HZ_FULL
--/**
-- * rcu_user_exit - inform RCU that we are exiting userspace.
-- *
-- * Exit RCU idle mode while entering the kernel because it can
-- * run a RCU read side critical section anytime.
-- *
-- * If you add or remove a call to rcu_user_exit(), be sure to test with
-- * CONFIG_RCU_EQS_DEBUG=y.
-- */
--void noinstr rcu_user_exit(void)
--{
--	rcu_eqs_exit(true);
--}
--
- /**
-  * __rcu_irq_enter_check_tick - Enable scheduler tick on CPU if RCU needs it.
-  *
-@@ -921,66 +663,6 @@ void __rcu_irq_enter_check_tick(void)
- }
- #endif /* CONFIG_NO_HZ_FULL */
++	// instrumentation for the noinstr ct_kernel_enter_state()
++	instrument_atomic_write(&ct->state, sizeof(ct->state));
  
--/**
-- * rcu_nmi_enter - inform RCU of entry to NMI context
-- *
+ 	trace_rcu_dyntick(TPS("End"), ct_dynticks_nesting(), 1, ct_dynticks());
+ 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !user && !is_idle_task(current));
+@@ -192,7 +192,7 @@ static void noinstr rcu_eqs_exit(bool user)
+  * ct_nmi_exit - inform RCU of exit from NMI context
+  *
+  * If we are returning from the outermost NMI handler that interrupted an
+- * RCU-idle period, update ct->dynticks and ct->dynticks_nmi_nesting
++ * RCU-idle period, update ct->state and ct->dynticks_nmi_nesting
+  * to let the RCU grace-period handling know that the CPU is back to
+  * being RCU-idle.
+  *
+@@ -229,12 +229,12 @@ void noinstr ct_nmi_exit(void)
+ 	trace_rcu_dyntick(TPS("Startirq"), ct_dynticks_nmi_nesting(), 0, ct_dynticks());
+ 	WRITE_ONCE(ct->dynticks_nmi_nesting, 0); /* Avoid store tearing. */
+ 
+-	// instrumentation for the noinstr rcu_dynticks_eqs_enter()
+-	instrument_atomic_write(&ct->dynticks, sizeof(ct->dynticks));
++	// instrumentation for the noinstr ct_kernel_exit_state()
++	instrument_atomic_write(&ct->state, sizeof(ct->state));
+ 	instrumentation_end();
+ 
+ 	// RCU is watching here ...
+-	rcu_dynticks_eqs_enter();
++	ct_kernel_exit_state(RCU_DYNTICKS_IDX);
+ 	// ... but is no longer watching here.
+ 
+ 	if (!in_nmi())
+@@ -244,7 +244,7 @@ void noinstr ct_nmi_exit(void)
+ /**
+  * ct_nmi_enter - inform RCU of entry to NMI context
+  *
 - * If the CPU was idle from RCU's viewpoint, update ct->dynticks and
-- * ct->dynticks_nmi_nesting to let the RCU grace-period handling know
-- * that the CPU is active.  This implementation permits nested NMIs, as
-- * long as the nesting level does not overflow an int.  (You will probably
-- * run out of stack space first.)
-- *
-- * If you add or remove a call to rcu_nmi_enter(), be sure to test
-- * with CONFIG_RCU_EQS_DEBUG=y.
-- */
--noinstr void rcu_nmi_enter(void)
--{
--	long incby = 2;
--	struct context_tracking *ct = this_cpu_ptr(&context_tracking);
--
--	/* Complain about underflow. */
--	WARN_ON_ONCE(ct_dynticks_nmi_nesting() < 0);
--
--	/*
--	 * If idle from RCU viewpoint, atomically increment ->dynticks
--	 * to mark non-idle and increment ->dynticks_nmi_nesting by one.
--	 * Otherwise, increment ->dynticks_nmi_nesting by two.  This means
--	 * if ->dynticks_nmi_nesting is equal to one, we are guaranteed
--	 * to be in the outermost NMI handler that interrupted an RCU-idle
--	 * period (observation due to Andy Lutomirski).
--	 */
--	if (rcu_dynticks_curr_cpu_in_eqs()) {
--
--		if (!in_nmi())
--			rcu_dynticks_task_exit();
--
--		// RCU is not watching here ...
++ * If the CPU was idle from RCU's viewpoint, update ct->state and
+  * ct->dynticks_nmi_nesting to let the RCU grace-period handling know
+  * that the CPU is active.  This implementation permits nested NMIs, as
+  * long as the nesting level does not overflow an int.  (You will probably
+@@ -275,14 +275,14 @@ void noinstr ct_nmi_enter(void)
+ 			rcu_dynticks_task_exit();
+ 
+ 		// RCU is not watching here ...
 -		rcu_dynticks_eqs_exit();
--		// ... but is watching here.
--
--		instrumentation_begin();
--		// instrumentation for the noinstr rcu_dynticks_curr_cpu_in_eqs()
++		ct_kernel_enter_state(RCU_DYNTICKS_IDX);
+ 		// ... but is watching here.
+ 
+ 		instrumentation_begin();
+ 		// instrumentation for the noinstr rcu_dynticks_curr_cpu_in_eqs()
 -		instrument_atomic_read(&ct->dynticks, sizeof(ct->dynticks));
 -		// instrumentation for the noinstr rcu_dynticks_eqs_exit()
 -		instrument_atomic_write(&ct->dynticks, sizeof(ct->dynticks));
--
--		incby = 1;
--	} else if (!in_nmi()) {
--		instrumentation_begin();
--		rcu_irq_enter_check_tick();
--	} else  {
--		instrumentation_begin();
--	}
--
--	trace_rcu_dyntick(incby == 1 ? TPS("Endirq") : TPS("++="),
--			  ct_dynticks_nmi_nesting(),
--			  ct_dynticks_nmi_nesting() + incby, ct_dynticks());
--	instrumentation_end();
--	WRITE_ONCE(ct->dynticks_nmi_nesting, /* Prevent store tearing. */
--		   ct_dynticks_nmi_nesting() + incby);
--	barrier();
--}
--
- /*
-  * Check to see if any future non-offloaded RCU-related work will need
-  * to be done by the current CPU, even if none need be done immediately,
-diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index 72dbf8512ce78..0d5d1de327e41 100644
---- a/kernel/rcu/tree.h
-+++ b/kernel/rcu/tree.h
-@@ -427,7 +427,6 @@ static void rcu_cpu_kthread_setup(unsigned int cpu);
- static void rcu_spawn_one_boost_kthread(struct rcu_node *rnp);
- static bool rcu_preempt_has_tasks(struct rcu_node *rnp);
- static bool rcu_preempt_need_deferred_qs(struct task_struct *t);
--static void rcu_preempt_deferred_qs(struct task_struct *t);
- static void zero_cpu_stall_ticks(struct rcu_data *rdp);
- static struct swait_queue_head *rcu_nocb_gp_get(struct rcu_node *rnp);
- static void rcu_nocb_gp_cleanup(struct swait_queue_head *sq);
-@@ -467,10 +466,6 @@ do {								\
++		instrument_atomic_read(&ct->state, sizeof(ct->state));
++		// instrumentation for the noinstr ct_kernel_enter_state()
++		instrument_atomic_write(&ct->state, sizeof(ct->state));
  
- static void rcu_bind_gp_kthread(void);
- static bool rcu_nohz_full_cpu(void);
--static void rcu_dynticks_task_enter(void);
--static void rcu_dynticks_task_exit(void);
--static void rcu_dynticks_task_trace_enter(void);
--static void rcu_dynticks_task_trace_exit(void);
- 
- /* Forward declarations for tree_stall.h */
- static void record_gp_stall_check_time(void);
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index c8ba0fe17267c..c8c57e1a5dfd3 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -595,7 +595,7 @@ static bool rcu_preempt_need_deferred_qs(struct task_struct *t)
-  * evaluate safety in terms of interrupt, softirq, and preemption
-  * disabling.
-  */
--static void rcu_preempt_deferred_qs(struct task_struct *t)
-+notrace void rcu_preempt_deferred_qs(struct task_struct *t)
+ 		incby = 1;
+ 	} else if (!in_nmi()) {
+@@ -315,7 +315,7 @@ void noinstr ct_nmi_enter(void)
+ void noinstr ct_idle_enter(void)
  {
+ 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !raw_irqs_disabled());
+-	rcu_eqs_enter(false);
++	ct_kernel_exit(false, RCU_DYNTICKS_IDX + CONTEXT_IDLE);
+ }
+ EXPORT_SYMBOL_GPL(ct_idle_enter);
+ 
+@@ -333,7 +333,7 @@ void noinstr ct_idle_exit(void)
  	unsigned long flags;
  
-@@ -935,7 +935,7 @@ static bool rcu_preempt_need_deferred_qs(struct task_struct *t)
- // period for a quiescent state from this CPU.  Note that requests from
- // tasks are handled when removing the task from the blocked-tasks list
- // below.
--static void rcu_preempt_deferred_qs(struct task_struct *t)
-+void rcu_preempt_deferred_qs(struct task_struct *t)
- {
- 	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
- 
-@@ -1290,37 +1290,3 @@ static void rcu_bind_gp_kthread(void)
- 		return;
- 	housekeeping_affine(current, HK_TYPE_RCU);
+ 	raw_local_irq_save(flags);
+-	rcu_eqs_exit(false);
++	ct_kernel_enter(false, RCU_DYNTICKS_IDX - CONTEXT_IDLE);
+ 	raw_local_irq_restore(flags);
  }
+ EXPORT_SYMBOL_GPL(ct_idle_exit);
+@@ -421,8 +421,8 @@ void ct_irq_exit_irqson(void)
+ 	local_irq_restore(flags);
+ }
+ #else
+-static __always_inline void rcu_eqs_enter(bool user) { }
+-static __always_inline void rcu_eqs_exit(bool user) { }
++static __always_inline void ct_kernel_exit(bool user, int offset) { }
++static __always_inline void ct_kernel_enter(bool user, int offset) { }
+ #endif /* #ifdef CONFIG_CONTEXT_TRACKING_IDLE */
+ 
+ #ifdef CONFIG_CONTEXT_TRACKING_USER
+@@ -493,28 +493,49 @@ void noinstr __ct_user_enter(enum ctx_state state)
+ 			 * that will fire and reschedule once we resume in user/guest mode.
+ 			 */
+ 			rcu_irq_work_resched();
++
+ 			/*
+ 			 * Enter RCU idle mode right before resuming userspace.  No use of RCU
+ 			 * is permitted between this call and rcu_eqs_exit(). This way the
+ 			 * CPU doesn't need to maintain the tick for RCU maintenance purposes
+ 			 * when the CPU runs in userspace.
+ 			 */
+-			rcu_eqs_enter(true);
++			ct_kernel_exit(true, RCU_DYNTICKS_IDX + state);
++
++			/*
++			 * Special case if we only track user <-> kernel transitions for tickless
++			 * cputime accounting but we don't support RCU extended quiescent state.
++			 * In this we case we don't care about any concurrency/ordering.
++			 */
++			if (!IS_ENABLED(CONFIG_CONTEXT_TRACKING_IDLE))
++				atomic_set(&ct->state, state);
++		} else {
++			/*
++			 * Even if context tracking is disabled on this CPU, because it's outside
++			 * the full dynticks mask for example, we still have to keep track of the
++			 * context transitions and states to prevent inconsistency on those of
++			 * other CPUs.
++			 * If a task triggers an exception in userspace, sleep on the exception
++			 * handler and then migrate to another CPU, that new CPU must know where
++			 * the exception returns by the time we call exception_exit().
++			 * This information can only be provided by the previous CPU when it called
++			 * exception_enter().
++			 * OTOH we can spare the calls to vtime and RCU when context_tracking.active
++			 * is false because we know that CPU is not tickless.
++			 */
++			if (!IS_ENABLED(CONFIG_CONTEXT_TRACKING_IDLE)) {
++				/* Tracking for vtime only, no concurrent RCU EQS accounting */
++				atomic_set(&ct->state, state);
++			} else {
++				/*
++				 * Tracking for vtime and RCU EQS. Make sure we don't race
++				 * with NMIs. OTOH we don't care about ordering here since
++				 * RCU only requires RCU_DYNTICKS_IDX increments to be fully
++				 * ordered.
++				 */
++				atomic_add(state, &ct->state);
++			}
+ 		}
+-		/*
+-		 * Even if context tracking is disabled on this CPU, because it's outside
+-		 * the full dynticks mask for example, we still have to keep track of the
+-		 * context transitions and states to prevent inconsistency on those of
+-		 * other CPUs.
+-		 * If a task triggers an exception in userspace, sleep on the exception
+-		 * handler and then migrate to another CPU, that new CPU must know where
+-		 * the exception returns by the time we call exception_exit().
+-		 * This information can only be provided by the previous CPU when it called
+-		 * exception_enter().
+-		 * OTOH we can spare the calls to vtime and RCU when context_tracking.active
+-		 * is false because we know that CPU is not tickless.
+-		 */
+-		atomic_set(&ct->state, state);
+ 	}
+ 	context_tracking_recursion_exit();
+ }
+@@ -593,15 +614,36 @@ void noinstr __ct_user_exit(enum ctx_state state)
+ 			 * Exit RCU idle mode while entering the kernel because it can
+ 			 * run a RCU read side critical section anytime.
+ 			 */
+-			rcu_eqs_exit(true);
++			ct_kernel_enter(true, RCU_DYNTICKS_IDX - state);
+ 			if (state == CONTEXT_USER) {
+ 				instrumentation_begin();
+ 				vtime_user_exit(current);
+ 				trace_user_exit(0);
+ 				instrumentation_end();
+ 			}
++
++			/*
++			 * Special case if we only track user <-> kernel transitions for tickless
++			 * cputime accounting but we don't support RCU extended quiescent state.
++			 * In this we case we don't care about any concurrency/ordering.
++			 */
++			if (!IS_ENABLED(CONFIG_CONTEXT_TRACKING_IDLE))
++				atomic_set(&ct->state, CONTEXT_KERNEL);
++
++		} else {
++			if (!IS_ENABLED(CONFIG_CONTEXT_TRACKING_IDLE)) {
++				/* Tracking for vtime only, no concurrent RCU EQS accounting */
++				atomic_set(&ct->state, CONTEXT_KERNEL);
++			} else {
++				/*
++				 * Tracking for vtime and RCU EQS. Make sure we don't race
++				 * with NMIs. OTOH we don't care about ordering here since
++				 * RCU only requires RCU_DYNTICKS_IDX increments to be fully
++				 * ordered.
++				 */
++				atomic_sub(state, &ct->state);
++			}
+ 		}
+-		atomic_set(&ct->state, CONTEXT_KERNEL);
+ 	}
+ 	context_tracking_recursion_exit();
+ }
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index e2a2083079a2c..f9d20b40071f3 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -272,9 +272,9 @@ void rcu_softirq_qs(void)
+  */
+ static void rcu_dynticks_eqs_online(void)
+ {
+-	if (ct_dynticks() & 0x1)
++	if (ct_dynticks() & RCU_DYNTICKS_IDX)
+ 		return;
+-	rcu_dynticks_inc(1);
++	ct_state_inc(RCU_DYNTICKS_IDX);
+ }
+ 
+ /*
+@@ -293,7 +293,7 @@ static int rcu_dynticks_snap(int cpu)
+  */
+ static bool rcu_dynticks_in_eqs(int snap)
+ {
+-	return !(snap & 0x1);
++	return !(snap & RCU_DYNTICKS_IDX);
+ }
+ 
+ /* Return true if the specified CPU is currently idle from an RCU viewpoint.  */
+@@ -321,8 +321,7 @@ bool rcu_dynticks_zero_in_eqs(int cpu, int *vp)
+ 	int snap;
+ 
+ 	// If not quiescent, force back to earlier extended quiescent state.
+-	snap = ct_dynticks_cpu(cpu) & ~0x1;
 -
--/* Record the current task on dyntick-idle entry. */
--static __always_inline void rcu_dynticks_task_enter(void)
--{
--#if defined(CONFIG_TASKS_RCU) && defined(CONFIG_NO_HZ_FULL)
--	WRITE_ONCE(current->rcu_tasks_idle_cpu, smp_processor_id());
--#endif /* #if defined(CONFIG_TASKS_RCU) && defined(CONFIG_NO_HZ_FULL) */
--}
--
--/* Record no current task on dyntick-idle exit. */
--static __always_inline void rcu_dynticks_task_exit(void)
--{
--#if defined(CONFIG_TASKS_RCU) && defined(CONFIG_NO_HZ_FULL)
--	WRITE_ONCE(current->rcu_tasks_idle_cpu, -1);
--#endif /* #if defined(CONFIG_TASKS_RCU) && defined(CONFIG_NO_HZ_FULL) */
--}
--
--/* Turn on heavyweight RCU tasks trace readers on idle/user entry. */
--static __always_inline void rcu_dynticks_task_trace_enter(void)
--{
--#ifdef CONFIG_TASKS_TRACE_RCU
--	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB))
--		current->trc_reader_special.b.need_mb = true;
--#endif /* #ifdef CONFIG_TASKS_TRACE_RCU */
--}
--
--/* Turn off heavyweight RCU tasks trace readers on idle/user exit. */
--static __always_inline void rcu_dynticks_task_trace_exit(void)
--{
--#ifdef CONFIG_TASKS_TRACE_RCU
--	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB))
--		current->trc_reader_special.b.need_mb = false;
--#endif /* #ifdef CONFIG_TASKS_TRACE_RCU */
--}
++	snap = ct_dynticks_cpu(cpu) & ~RCU_DYNTICKS_IDX;
+ 	smp_rmb(); // Order ->dynticks and *vp reads.
+ 	if (READ_ONCE(*vp))
+ 		return false;  // Non-zero, so report failure;
+@@ -348,9 +347,9 @@ notrace void rcu_momentary_dyntick_idle(void)
+ 	int seq;
+ 
+ 	raw_cpu_write(rcu_data.rcu_need_heavy_qs, false);
+-	seq = rcu_dynticks_inc(2);
++	seq = ct_state_inc(2 * RCU_DYNTICKS_IDX);
+ 	/* It is illegal to call this from idle state. */
+-	WARN_ON_ONCE(!(seq & 0x1));
++	WARN_ON_ONCE(!(seq & RCU_DYNTICKS_IDX));
+ 	rcu_preempt_deferred_qs(current);
+ }
+ EXPORT_SYMBOL_GPL(rcu_momentary_dyntick_idle);
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index 2683ce0a7c724..195cad14742dd 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -469,7 +469,7 @@ static void print_cpu_stall_info(int cpu)
+ 	rcuc_starved = rcu_is_rcuc_kthread_starving(rdp, &j);
+ 	if (rcuc_starved)
+ 		sprintf(buf, " rcuc=%ld jiffies(starved)", j);
+-	pr_err("\t%d-%c%c%c%c: (%lu %s) idle=%03x/%ld/%#lx softirq=%u/%u fqs=%ld%s%s\n",
++	pr_err("\t%d-%c%c%c%c: (%lu %s) idle=%04x/%ld/%#lx softirq=%u/%u fqs=%ld%s%s\n",
+ 	       cpu,
+ 	       "O."[!!cpu_online(cpu)],
+ 	       "o."[!!(rdp->grpmask & rdp->mynode->qsmaskinit)],
+@@ -478,7 +478,7 @@ static void print_cpu_stall_info(int cpu)
+ 			rdp->rcu_iw_pending ? (int)min(delta, 9UL) + '0' :
+ 				"!."[!delta],
+ 	       ticks_value, ticks_title,
+-	       rcu_dynticks_snap(cpu) & 0xfff,
++	       rcu_dynticks_snap(cpu) & 0xffff,
+ 	       ct_dynticks_nesting_cpu(cpu), ct_dynticks_nmi_nesting_cpu(cpu),
+ 	       rdp->softirq_snap, kstat_softirqs_cpu(RCU_SOFTIRQ, cpu),
+ 	       data_race(rcu_state.n_force_qs) - rcu_state.n_force_qs_gpstart,
 -- 
 2.31.1.189.g2e36527f23
 
