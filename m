@@ -2,44 +2,44 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CD38FC433EF
-	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 23:00:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D0705C43334
+	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 23:00:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345850AbiFTXAB (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 20 Jun 2022 19:00:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39588 "EHLO
+        id S1345877AbiFTXAC (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 20 Jun 2022 19:00:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345964AbiFTW7p (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S1345967AbiFTW7p (ORCPT <rfc822;rcu@vger.kernel.org>);
         Mon, 20 Jun 2022 18:59:45 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6434193C2;
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF84E193C3;
         Mon, 20 Jun 2022 15:58:20 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 710AC6148E;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8348A614A0;
         Mon, 20 Jun 2022 22:58:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6AD3C3411B;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE329C341C7;
         Mon, 20 Jun 2022 22:58:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1655765899;
-        bh=3kRnOesp5eHqSXcFmfKltAxDRwYQZS7t9KnwZqz15l0=;
+        bh=7T945rjfPE1roz9rM5sVM/SGODfonE0cS+rIR4bWmLY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EZ4fyvKQLKYSFqTRA/JFqzIyiYNlNFuCi/2iEnBE89OxhaPxKUr8/T20fLTpW8tXK
-         edfvPeiaNXAtZ/+NkH3Gk+Z/zkEWGfYK9451AMiM094tpDz5ve0ca9hPZ52NptbNPK
-         PJ+rO0UST/0X9Sxp2UtU5tCYerbJ+0G1EFkW5hgI926N0KB8jZAeECd7XbVUAAn2PB
-         bhmutORkSUIkEeXo1N6bhg0BrO6UnEajArIj0oa4CyHGj92ZXdzeBNsIeiCLqnFkPM
-         BbNwR8XPt8a1xLPtklUSwNmapigdqXtooVUx50s6GyFVldusflkt7S/som9GhMNPQM
-         vIPRsovc1Bmdg==
+        b=mWJoZX9jcu5Z+1c1WVJcgazXQpf+FgL9oxi1k/411+NYjDCIcDvA+CEP922vPjHOI
+         hqSwfWV4pzPVne9VEdpLWhs3U09Pl315fq7BLBHwLJzLp4Ste4oXq8EyILYN/UTvc4
+         qTCn/1g+TPuHQ+gYw0ZhCEtqnfU+SyLvhmntUX1OPSJ6fnK0uChWM3lu+JDFQ73C58
+         cNMNVSuB4UfMbEAp7hgzam1Xb4GI34l3j5ogOfXactyKIpGmNzibCH8PtQPWcfICE1
+         7rONs9CG/pY1Rl1eNHS+JZtiWLENehGA5a2Eff2yruQZ/DBekE1zaC6Ezp9eOp5eBu
+         JdQZ4nTCiMpgQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 93A505C05B9; Mon, 20 Jun 2022 15:58:19 -0700 (PDT)
+        id 9991F5C0A15; Mon, 20 Jun 2022 15:58:19 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
         rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 01/12] torture: Make kvm-remote.sh announce which system is being waited on
-Date:   Mon, 20 Jun 2022 15:58:06 -0700
-Message-Id: <20220620225817.3843106-1-paulmck@kernel.org>
+Subject: [PATCH rcu 03/12] rcutorture: Simplify rcu_torture_read_exit_child() loop
+Date:   Mon, 20 Jun 2022 15:58:08 -0700
+Message-Id: <20220620225817.3843106-3-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220620225814.GA3842995@paulmck-ThinkPad-P17-Gen-1>
 References: <20220620225814.GA3842995@paulmck-ThinkPad-P17-Gen-1>
@@ -49,44 +49,82 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-If a remote system fails in certain ways, for example, if it is rebooted
-without removing the contents of the /tmp directory, its remote.run file
-never will be removed and the kvm-remote.sh script will loop waiting
-forever.  The manual workaround for this (hopefully!) rare event is to
-manually remove the file, which will cause the results up to the reboot
-to be collected and evaluated.
-
-Unfortunately, to work out which system is holding things up, the user
-must refer to the name of the last system whose results were collected,
-then look up the name of the next system in sequence, then manually
-remove the remote.run file.  Even more unfortunately, this procedure can
-be fooled in runs where each system handles more than one batch should
-a given system take longer than expected, causing the systems to be
-handled out of order.
-
-This commit therefore causes kvm-remote.sh to print out the name of
-the system it will wait on next, allowing the user to refer directly
-to that name.  Making the kvm-remote.sh script automatically handle
-unscheduled termination of the qemu processes is left as future work.
-Quite possibly deep future work.
+The existing loop has an implicit manual loop that obscures the flow
+and requires an extra control variable.  This commit makes this implicit
+loop explicit, thus saving several lines of code.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/kvm-remote.sh | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/rcu/rcutorture.c | 47 ++++++++++++++++++-----------------------
+ 1 file changed, 20 insertions(+), 27 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-remote.sh b/tools/testing/selftests/rcutorture/bin/kvm-remote.sh
-index 0ff59bd8b640d..9f0a5d5ff2ddc 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-remote.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-remote.sh
-@@ -262,6 +262,7 @@ echo All batches started. `date` | tee -a "$oldrun/remote-log"
- # Wait for all remaining scenarios to complete and collect results.
- for i in $systems
- do
-+	echo " ---" Waiting for $i `date` | tee -a "$oldrun/remote-log"
- 	while checkremotefile "$i" "$resdir/$ds/remote.run"
- 	do
- 		sleep 30
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 3032dd7c7ad35..9273264772b88 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -2874,7 +2874,6 @@ static int rcu_torture_read_exit_child(void *trsp_in)
+ // Parent kthread which creates and destroys read-exit child kthreads.
+ static int rcu_torture_read_exit(void *unused)
+ {
+-	int count = 0;
+ 	bool errexit = false;
+ 	int i;
+ 	struct task_struct *tsp;
+@@ -2886,34 +2885,28 @@ static int rcu_torture_read_exit(void *unused)
+ 
+ 	// Each pass through this loop does one read-exit episode.
+ 	do {
+-		if (++count > read_exit_burst) {
+-			VERBOSE_TOROUT_STRING("rcu_torture_read_exit: End of episode");
+-			rcu_barrier(); // Wait for task_struct free, avoid OOM.
+-			for (i = 0; i < read_exit_delay; i++) {
+-				schedule_timeout_uninterruptible(HZ);
+-				if (READ_ONCE(read_exit_child_stop))
+-					break;
++		VERBOSE_TOROUT_STRING("rcu_torture_read_exit: Start of episode");
++		for (i = 0; i < read_exit_burst; i++) {
++			if (READ_ONCE(read_exit_child_stop))
++				break;
++			stutter_wait("rcu_torture_read_exit");
++			// Spawn child.
++			tsp = kthread_run(rcu_torture_read_exit_child,
++					  &trs, "%s", "rcu_torture_read_exit_child");
++			if (IS_ERR(tsp)) {
++				TOROUT_ERRSTRING("out of memory");
++				errexit = true;
++				break;
+ 			}
+-			if (!READ_ONCE(read_exit_child_stop))
+-				VERBOSE_TOROUT_STRING("rcu_torture_read_exit: Start of episode");
+-			count = 0;
+-		}
+-		if (READ_ONCE(read_exit_child_stop))
+-			break;
+-		// Spawn child.
+-		tsp = kthread_run(rcu_torture_read_exit_child,
+-				     &trs, "%s",
+-				     "rcu_torture_read_exit_child");
+-		if (IS_ERR(tsp)) {
+-			TOROUT_ERRSTRING("out of memory");
+-			errexit = true;
+-			tsp = NULL;
+-			break;
++			cond_resched();
++			kthread_stop(tsp);
++			n_read_exits ++;
+ 		}
+-		cond_resched();
+-		kthread_stop(tsp);
+-		n_read_exits ++;
+-		stutter_wait("rcu_torture_read_exit");
++		VERBOSE_TOROUT_STRING("rcu_torture_read_exit: End of episode");
++		rcu_barrier(); // Wait for task_struct free, avoid OOM.
++		i = 0;
++		for (; !errexit && !READ_ONCE(read_exit_child_stop) && i < read_exit_delay; i++)
++			schedule_timeout_uninterruptible(HZ);
+ 	} while (!errexit && !READ_ONCE(read_exit_child_stop));
+ 
+ 	// Clean up and exit.
 -- 
 2.31.1.189.g2e36527f23
 
