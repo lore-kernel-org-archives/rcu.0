@@ -2,37 +2,37 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 648ABC43334
-	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 22:51:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CE811CCA47C
+	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 22:51:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344250AbiFTWvd (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 20 Jun 2022 18:51:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54702 "EHLO
+        id S1344307AbiFTWve (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 20 Jun 2022 18:51:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244954AbiFTWvc (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S1343884AbiFTWvc (ORCPT <rfc822;rcu@vger.kernel.org>);
         Mon, 20 Jun 2022 18:51:32 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3CAB1A80D;
-        Mon, 20 Jun 2022 15:51:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B9161AF21;
+        Mon, 20 Jun 2022 15:51:31 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8FA5A61378;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1DD7D6109E;
+        Mon, 20 Jun 2022 22:51:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45045C341CE;
         Mon, 20 Jun 2022 22:51:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6BE0C341C5;
-        Mon, 20 Jun 2022 22:51:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1655765490;
-        bh=4G4xhoKc12qiOwxNZEkiwils26Lw6k3UWPCNhm+OVaA=;
+        bh=eUpgO1c60yqx1sVHsEK3tqCXl4W3K3gevZDtGvq7AMo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PgCF2a3LZwzaoZLX1CZ2JJZ4zXx9lPMSosji41ZfahtZOlYcEad+5rFm6lDUyAdyE
-         keskLfxkaAg0re3wE/qku8tn0+8rTxZZRNMm0EzUwlqfPsIWJl69P38ZiSaYpJwAP2
-         k3GSf1jKv1zSr4L64/Y3Y484ky1M9FqATPOTdv54RN7SVK3aqna3I+SqyMgyWkB+YL
-         02iLT1U79RB/EVYo6hefNb5Dd0qqO8q2e2LMx237bz9p2kY63b5XRltsAx9SGhqUTM
-         hwlOtM4h9NJtbZ6wEjQV3vY9gWv7SXEAnW/rZ7Jibqt+CUmioiapd1rCBWyYSuCpbo
-         W1f00ZgPK35jA==
+        b=aA5fegcbErOrphRxjB+QI5k/fSuYeUu3LsUQ1jGk2pokTrmPjIkQyGOL4o5TFWPAb
+         hZFIXoehwcbJgL7gk38Rvlch30dr1i9WYJo+9OUKXl7VMLCnl7PBdsA4dFFkgF6Typ
+         HpEnyFmoVnWHdNl9MRYw0kVXvn/X+JZCjifOCm7UTFkn3JemwmKpH3uOvmOcho9zX3
+         awCJ9GFJgac+UpysUf3zPqltxy9nk2sEAJqzwFZq5OyesQpm3hw/CyaIDwHSFFGhpd
+         CUd4lq6QN6fw9px+3m3+bHsitgoJqzcbuvt/wJph7+enkCXIJcrakldw1A1zflFLXD
+         D0vfzDzAKuhTg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 96EAF5C0A15; Mon, 20 Jun 2022 15:51:29 -0700 (PDT)
+        id 9D1CC5C0B06; Mon, 20 Jun 2022 15:51:29 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
@@ -40,9 +40,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
         Brian Foster <bfoster@redhat.com>,
         Dave Chinner <david@fromorbit.com>,
         Al Viro <viro@zeniv.linux.org.uk>, Ian Kent <raven@themaw.net>
-Subject: [PATCH rcu 03/12] rcutorture: Validate get_completed_synchronize_rcu()
-Date:   Mon, 20 Jun 2022 15:51:19 -0700
-Message-Id: <20220620225128.3842050-3-paulmck@kernel.org>
+Subject: [PATCH rcu 06/12] rcu: Make Tiny RCU grace periods visible to polled APIs
+Date:   Mon, 20 Jun 2022 15:51:22 -0700
+Message-Id: <20220620225128.3842050-6-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220620224943.GA3841634@paulmck-ThinkPad-P17-Gen-1>
 References: <20220620224943.GA3841634@paulmck-ThinkPad-P17-Gen-1>
@@ -52,11 +52,10 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This commit verifies that the RCU grace-period state cookie returned
-from get_completed_synchronize_rcu() causes poll_state_synchronize_rcu()
-to return true, as required.
-
-This commit is in preparation for polled expedited grace periods.
+This commit makes the Tiny RCU implementation of synchronize_rcu()
+increment the rcu_ctrlblk.gp_seq counter, thus making both
+synchronize_rcu() and synchronize_rcu_expedited() visible to
+get_state_synchronize_rcu() and friends.
 
 Link: https://lore.kernel.org/all/20220121142454.1994916-1-bfoster@redhat.com/
 Link: https://docs.google.com/document/d/1RNKWW9jQyfjxw2E8dsXVTdvZYh0HnYeSHDKog9jhdN8/edit?usp=sharing
@@ -66,40 +65,34 @@ Cc: Al Viro <viro@zeniv.linux.org.uk>
 Cc: Ian Kent <raven@themaw.net>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/rcutorture.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ kernel/rcu/tiny.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 7120165a93426..4ceec9f4169c7 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -338,6 +338,7 @@ struct rcu_torture_ops {
- 	void (*sync)(void);
- 	void (*exp_sync)(void);
- 	unsigned long (*get_gp_state)(void);
-+	unsigned long (*get_gp_completed)(void);
- 	unsigned long (*start_gp_poll)(void);
- 	bool (*poll_gp_state)(unsigned long oldstate);
- 	void (*cond_sync)(unsigned long oldstate);
-@@ -504,6 +505,7 @@ static struct rcu_torture_ops rcu_ops = {
- 	.sync			= synchronize_rcu,
- 	.exp_sync		= synchronize_rcu_expedited,
- 	.get_gp_state		= get_state_synchronize_rcu,
-+	.get_gp_completed	= get_completed_synchronize_rcu,
- 	.start_gp_poll		= start_poll_synchronize_rcu,
- 	.poll_gp_state		= poll_state_synchronize_rcu,
- 	.cond_sync		= cond_synchronize_rcu,
-@@ -1254,6 +1256,10 @@ rcu_torture_writer(void *arg)
- 					  rcu_torture_writer_state_getname(),
- 					  rcu_torture_writer_state,
- 					  cookie, cur_ops->get_gp_state());
-+				if (cur_ops->get_gp_completed) {
-+					cookie = cur_ops->get_gp_completed();
-+					WARN_ON_ONCE(!cur_ops->poll_gp_state(cookie));
-+				}
- 				cur_ops->readunlock(idx);
- 			}
- 			switch (synctype[torture_random(&rand) % nsynctypes]) {
+diff --git a/kernel/rcu/tiny.c b/kernel/rcu/tiny.c
+index dbee6bea67269..60071817d9399 100644
+--- a/kernel/rcu/tiny.c
++++ b/kernel/rcu/tiny.c
+@@ -139,8 +139,10 @@ static __latent_entropy void rcu_process_callbacks(struct softirq_action *unused
+ /*
+  * Wait for a grace period to elapse.  But it is illegal to invoke
+  * synchronize_rcu() from within an RCU read-side critical section.
+- * Therefore, any legal call to synchronize_rcu() is a quiescent
+- * state, and so on a UP system, synchronize_rcu() need do nothing.
++ * Therefore, any legal call to synchronize_rcu() is a quiescent state,
++ * and so on a UP system, synchronize_rcu() need do nothing, other than
++ * let the polled APIs know that another grace period elapsed.
++ *
+  * (But Lai Jiangshan points out the benefits of doing might_sleep()
+  * to reduce latency.)
+  *
+@@ -152,6 +154,7 @@ void synchronize_rcu(void)
+ 			 lock_is_held(&rcu_lock_map) ||
+ 			 lock_is_held(&rcu_sched_lock_map),
+ 			 "Illegal synchronize_rcu() in RCU read-side critical section");
++	WRITE_ONCE(rcu_ctrlblk.gp_seq, rcu_ctrlblk.gp_seq + 2);
+ }
+ EXPORT_SYMBOL_GPL(synchronize_rcu);
+ 
 -- 
 2.31.1.189.g2e36527f23
 
