@@ -2,37 +2,37 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 286E3CCA47C
-	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 23:14:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E88FAC43334
+	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 23:14:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344199AbiFTXOk (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 20 Jun 2022 19:14:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55176 "EHLO
+        id S1345623AbiFTXOl (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 20 Jun 2022 19:14:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346414AbiFTXMI (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S1346466AbiFTXMI (ORCPT <rfc822;rcu@vger.kernel.org>);
         Mon, 20 Jun 2022 19:12:08 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 405D82252D;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4219B22530;
         Mon, 20 Jun 2022 16:10:47 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 2C59AB81655;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 2E7C4B81657;
         Mon, 20 Jun 2022 23:10:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 121C1C341D6;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 537A2C341EC;
         Mon, 20 Jun 2022 23:10:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1655766632;
-        bh=pF2fVyXIL84Hfc1fiUZJvF5wgV1c6NIcI7di45T13uA=;
+        bh=1Hw+Z13zCUSvb97yNzRE+bRuAmwtfwyZkgGq4kgP9Sk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UtTZIZ55lRC1tDgWCcx66XwKTwdvYfLf8pCr518bS0ARR9ERvd/uF6eUSy7srf8D5
-         qA0SVT16EYEh4xJUns9AYQKYx3OB7XZxZS60HUHo+jCZmPvwAsDczyCZauwCEP/eX2
-         PcsRca3iXARF+CktIn4ex0xjGOTLLOS6SNnF3ZpONY2szr2T+LbOzf8eBL0BUTOE8p
-         /vLddAdQw74DZbEG6wq+hMutEpgpUSvhDoP6TTiFC6t1dA4nNYtOx1ntNBw4BPYTEd
-         tSKvGBdkU/klA/o3jllnOifP8d/J8dzpNNaYmCU11dFjFZJZXhWp6qNQKDyJmAQugd
-         ga36Wi8YcHMDA==
+        b=fwLipl4HvqrT9GqLyYFdB0MV4eACdbKDFaBBAKGwn95u9IMhUnKTLkyYZw6Kpp6FE
+         BQE7uuVyg4Bi8XXq3+IRfnocivg80zTtIjdDZMuLEDKhTvuXtaG0IG12BI75gZLC+C
+         i+mR5jXDgze1N5IlBlcXUlDT/ZCGKhgtKGbDpc4+VB8nL7zsFfOjR/VZ0YkKZ+FCL/
+         F4GOAYgpuW9/FQdIegCuL3PM7m30iJsNzbfmmtKTbCh7WSXyOI1fadyLD2iwjWrw4n
+         5ISWY5J4HlDBZLtw//dzePR3H1fMtXSG2VAzH26De9j0Tha3+x7kQPpKqGpezd13JU
+         QD7hrayiv3dDw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 6321A5C0E3F; Mon, 20 Jun 2022 16:10:31 -0700 (PDT)
+        id 6D8CE5C118A; Mon, 20 Jun 2022 16:10:31 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
@@ -50,9 +50,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
         Yu Liao <liaoyu15@huawei.com>, Phil Auld <pauld@redhat.com>,
         Paul Gortmaker <paul.gortmaker@windriver.com>,
         Alex Belits <abelits@marvell.com>
-Subject: [PATCH rcu 12/23] context_tracking: Take NMI eqs entrypoints over RCU
-Date:   Mon, 20 Jun 2022 16:10:18 -0700
-Message-Id: <20220620231029.3844583-12-paulmck@kernel.org>
+Subject: [PATCH rcu 17/23] rcu/context-tracking: Move deferred nocb resched to context tracking
+Date:   Mon, 20 Jun 2022 16:10:23 -0700
+Message-Id: <20220620231029.3844583-17-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220620231027.GA3844372@paulmck-ThinkPad-P17-Gen-1>
 References: <20220620231027.GA3844372@paulmck-ThinkPad-P17-Gen-1>
@@ -64,10 +64,9 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: Frederic Weisbecker <frederic@kernel.org>
 
-The RCU dynticks counter is going to be merged into the context tracking
-subsystem. Prepare with moving the NMI extended quiescent states
-entrypoints to context tracking. For now those are dumb redirection to
-existing RCU calls.
+To prepare for migrating the RCU eqs accounting code to context tracking,
+split the last-resort deferred nocb resched from rcu_user_enter() and
+move it into a separate call from context tracking.
 
 Acked-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
@@ -86,203 +85,94 @@ Cc: Paul Gortmaker<paul.gortmaker@windriver.com>
 Cc: Alex Belits <abelits@marvell.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- Documentation/RCU/Design/Requirements/Requirements.rst |  2 +-
- arch/Kconfig                                           |  2 +-
- arch/arm64/kernel/entry-common.c                       |  8 ++++----
- include/linux/context_tracking_irq.h                   |  4 ++++
- include/linux/hardirq.h                                |  4 ++--
- kernel/context_tracking.c                              | 10 ++++++++++
- kernel/entry/common.c                                  |  4 ++--
- kernel/extable.c                                       |  4 ++--
- kernel/trace/trace.c                                   |  2 +-
- 9 files changed, 27 insertions(+), 13 deletions(-)
+ include/linux/rcupdate.h  |  6 ++++++
+ kernel/context_tracking.c |  8 ++++++++
+ kernel/rcu/tree.c         | 15 ++-------------
+ 3 files changed, 16 insertions(+), 13 deletions(-)
 
-diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
-index 074810c739367..a0f8164c85135 100644
---- a/Documentation/RCU/Design/Requirements/Requirements.rst
-+++ b/Documentation/RCU/Design/Requirements/Requirements.rst
-@@ -1847,7 +1847,7 @@ normal interrupts. One way that this can happen is for code that
- directly invokes ct_irq_enter() and ct_irq_exit() to be called
- from an NMI handler. This astonishing fact of life prompted the current
- code structure, which has ct_irq_enter() invoking
--rcu_nmi_enter() and ct_irq_exit() invoking rcu_nmi_exit().
-+ct_nmi_enter() and ct_irq_exit() invoking ct_nmi_exit().
- And yes, I also learned of this requirement the hard way.
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index f1562d91c67d2..3717cad983a67 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -112,6 +112,12 @@ static inline void rcu_user_enter(void) { }
+ static inline void rcu_user_exit(void) { }
+ #endif /* CONFIG_NO_HZ_FULL */
  
- Loadable Modules
-diff --git a/arch/Kconfig b/arch/Kconfig
-index 342642be105fc..f56f7c0e924d8 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -797,7 +797,7 @@ config HAVE_CONTEXT_TRACKING_USER_OFFSTACK
- 
- 	  - Critical entry code isn't preemptible (or better yet:
- 	    not interruptible).
--	  - No use of RCU read side critical sections, unless rcu_nmi_enter()
-+	  - No use of RCU read side critical sections, unless ct_nmi_enter()
- 	    got called.
- 	  - No use of instrumentation, unless instrumentation_begin() got
- 	    called.
-diff --git a/arch/arm64/kernel/entry-common.c b/arch/arm64/kernel/entry-common.c
-index 8dabe9ec10f16..c75ca36b4a491 100644
---- a/arch/arm64/kernel/entry-common.c
-+++ b/arch/arm64/kernel/entry-common.c
-@@ -161,7 +161,7 @@ static void noinstr arm64_enter_nmi(struct pt_regs *regs)
- 	__nmi_enter();
- 	lockdep_hardirqs_off(CALLER_ADDR0);
- 	lockdep_hardirq_enter();
--	rcu_nmi_enter();
-+	ct_nmi_enter();
- 
- 	trace_hardirqs_off_finish();
- 	ftrace_nmi_enter();
-@@ -182,7 +182,7 @@ static void noinstr arm64_exit_nmi(struct pt_regs *regs)
- 		lockdep_hardirqs_on_prepare();
- 	}
- 
--	rcu_nmi_exit();
-+	ct_nmi_exit();
- 	lockdep_hardirq_exit();
- 	if (restore)
- 		lockdep_hardirqs_on(CALLER_ADDR0);
-@@ -199,7 +199,7 @@ static void noinstr arm64_enter_el1_dbg(struct pt_regs *regs)
- 	regs->lockdep_hardirqs = lockdep_hardirqs_enabled();
- 
- 	lockdep_hardirqs_off(CALLER_ADDR0);
--	rcu_nmi_enter();
-+	ct_nmi_enter();
- 
- 	trace_hardirqs_off_finish();
- }
-@@ -218,7 +218,7 @@ static void noinstr arm64_exit_el1_dbg(struct pt_regs *regs)
- 		lockdep_hardirqs_on_prepare();
- 	}
- 
--	rcu_nmi_exit();
-+	ct_nmi_exit();
- 	if (restore)
- 		lockdep_hardirqs_on(CALLER_ADDR0);
- }
-diff --git a/include/linux/context_tracking_irq.h b/include/linux/context_tracking_irq.h
-index 62f62bbd1a50d..c50b5670c4a52 100644
---- a/include/linux/context_tracking_irq.h
-+++ b/include/linux/context_tracking_irq.h
-@@ -7,11 +7,15 @@ void ct_irq_enter(void);
- void ct_irq_exit(void);
- void ct_irq_enter_irqson(void);
- void ct_irq_exit_irqson(void);
-+void ct_nmi_enter(void);
-+void ct_nmi_exit(void);
- #else
- static inline void ct_irq_enter(void) { }
- static inline void ct_irq_exit(void) { }
- static inline void ct_irq_enter_irqson(void) { }
- static inline void ct_irq_exit_irqson(void) { }
-+static inline void ct_nmi_enter(void) { }
-+static inline void ct_nmi_exit(void) { }
- #endif
- 
- #endif
-diff --git a/include/linux/hardirq.h b/include/linux/hardirq.h
-index 76878b357ffa9..345cdbe9c1b70 100644
---- a/include/linux/hardirq.h
-+++ b/include/linux/hardirq.h
-@@ -124,7 +124,7 @@ extern void rcu_nmi_exit(void);
- 	do {							\
- 		__nmi_enter();					\
- 		lockdep_hardirq_enter();			\
--		rcu_nmi_enter();				\
-+		ct_nmi_enter();				\
- 		instrumentation_begin();			\
- 		ftrace_nmi_enter();				\
- 		instrumentation_end();				\
-@@ -143,7 +143,7 @@ extern void rcu_nmi_exit(void);
- 		instrumentation_begin();			\
- 		ftrace_nmi_exit();				\
- 		instrumentation_end();				\
--		rcu_nmi_exit();					\
-+		ct_nmi_exit();					\
- 		lockdep_hardirq_exit();				\
- 		__nmi_exit();					\
- 	} while (0)
++#if defined(CONFIG_NO_HZ_FULL) && (!defined(CONFIG_GENERIC_ENTRY) || !defined(CONFIG_KVM_XFER_TO_GUEST_WORK))
++void rcu_irq_work_resched(void);
++#else
++static inline void rcu_irq_work_resched(void) { }
++#endif
++
+ #ifdef CONFIG_RCU_NOCB_CPU
+ void rcu_init_nohz(void);
+ int rcu_nocb_cpu_offload(int cpu);
 diff --git a/kernel/context_tracking.c b/kernel/context_tracking.c
-index 891464f7aa5a4..afb4451c26a25 100644
+index bf5f498b21d39..8affa0092fab5 100644
 --- a/kernel/context_tracking.c
 +++ b/kernel/context_tracking.c
-@@ -55,6 +55,16 @@ void ct_irq_exit_irqson(void)
+@@ -177,6 +177,8 @@ static __always_inline void context_tracking_recursion_exit(void)
+  */
+ void noinstr __ct_user_enter(enum ctx_state state)
  {
- 	rcu_irq_exit_irqson();
- }
++	lockdep_assert_irqs_disabled();
 +
-+noinstr void ct_nmi_enter(void)
-+{
-+	rcu_nmi_enter();
-+}
-+
-+noinstr void ct_nmi_exit(void)
-+{
-+	rcu_nmi_exit();
-+}
- #endif /* #ifdef CONFIG_CONTEXT_TRACKING_IDLE */
+ 	/* Kernel threads aren't supposed to go to userspace */
+ 	WARN_ON_ONCE(!current->mm);
  
- #ifdef CONFIG_CONTEXT_TRACKING_USER
-diff --git a/kernel/entry/common.c b/kernel/entry/common.c
-index 667ba5d581ff7..063068a9ea9b3 100644
---- a/kernel/entry/common.c
-+++ b/kernel/entry/common.c
-@@ -449,7 +449,7 @@ irqentry_state_t noinstr irqentry_nmi_enter(struct pt_regs *regs)
- 	__nmi_enter();
- 	lockdep_hardirqs_off(CALLER_ADDR0);
- 	lockdep_hardirq_enter();
--	rcu_nmi_enter();
-+	ct_nmi_enter();
+@@ -198,6 +200,12 @@ void noinstr __ct_user_enter(enum ctx_state state)
+ 				vtime_user_enter(current);
+ 				instrumentation_end();
+ 			}
++			/*
++			 * Other than generic entry implementation, we may be past the last
++			 * rescheduling opportunity in the entry code. Trigger a self IPI
++			 * that will fire and reschedule once we resume in user/guest mode.
++			 */
++			rcu_irq_work_resched();
+ 			rcu_user_enter();
+ 		}
+ 		/*
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 006939b29e823..8c0c3490532e3 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -681,7 +681,7 @@ static DEFINE_PER_CPU(struct irq_work, late_wakeup_work) =
+  * last resort is to fire a local irq_work that will trigger a reschedule once IRQs
+  * get re-enabled again.
+  */
+-noinstr static void rcu_irq_work_resched(void)
++noinstr void rcu_irq_work_resched(void)
+ {
+ 	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
  
- 	instrumentation_begin();
- 	trace_hardirqs_off_finish();
-@@ -469,7 +469,7 @@ void noinstr irqentry_nmi_exit(struct pt_regs *regs, irqentry_state_t irq_state)
+@@ -697,10 +697,7 @@ noinstr static void rcu_irq_work_resched(void)
  	}
  	instrumentation_end();
- 
--	rcu_nmi_exit();
-+	ct_nmi_exit();
- 	lockdep_hardirq_exit();
- 	if (irq_state.lockdep)
- 		lockdep_hardirqs_on(CALLER_ADDR0);
-diff --git a/kernel/extable.c b/kernel/extable.c
-index bda5e97615418..71f482581cab4 100644
---- a/kernel/extable.c
-+++ b/kernel/extable.c
-@@ -114,7 +114,7 @@ int kernel_text_address(unsigned long addr)
- 
- 	/* Treat this like an NMI as it can happen anywhere */
- 	if (no_rcu)
--		rcu_nmi_enter();
-+		ct_nmi_enter();
- 
- 	if (is_module_text_address(addr))
- 		goto out;
-@@ -127,7 +127,7 @@ int kernel_text_address(unsigned long addr)
- 	ret = 0;
- out:
- 	if (no_rcu)
--		rcu_nmi_exit();
-+		ct_nmi_exit();
- 
- 	return ret;
  }
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index fe78a68181263..5fc7f17f5ec7b 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -3105,7 +3105,7 @@ void __trace_stack(struct trace_array *tr, unsigned int trace_ctx,
- 	}
+-
+-#else
+-static inline void rcu_irq_work_resched(void) { }
+-#endif
++#endif /* #if !defined(CONFIG_GENERIC_ENTRY) || !defined(CONFIG_KVM_XFER_TO_GUEST_WORK) */
  
- 	/*
--	 * When an NMI triggers, RCU is enabled via rcu_nmi_enter(),
-+	 * When an NMI triggers, RCU is enabled via ct_nmi_enter(),
- 	 * but if the above rcu_is_watching() failed, then the NMI
- 	 * triggered someplace critical, and ct_irq_enter() should
- 	 * not be called from NMI.
+ /**
+  * rcu_user_enter - inform RCU that we are resuming userspace.
+@@ -715,14 +712,6 @@ static inline void rcu_irq_work_resched(void) { }
+  */
+ noinstr void rcu_user_enter(void)
+ {
+-	lockdep_assert_irqs_disabled();
+-
+-	/*
+-	 * Other than generic entry implementation, we may be past the last
+-	 * rescheduling opportunity in the entry code. Trigger a self IPI
+-	 * that will fire and reschedule once we resume in user/guest mode.
+-	 */
+-	rcu_irq_work_resched();
+ 	rcu_eqs_enter(true);
+ }
+ 
 -- 
 2.31.1.189.g2e36527f23
 
