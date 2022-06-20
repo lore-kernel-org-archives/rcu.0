@@ -2,121 +2,100 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 52F9CC43334
-	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 22:45:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D9359C433EF
+	for <rcu@archiver.kernel.org>; Mon, 20 Jun 2022 22:49:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244259AbiFTWpL (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 20 Jun 2022 18:45:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49710 "EHLO
+        id S240882AbiFTWtq (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 20 Jun 2022 18:49:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244646AbiFTWpK (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 20 Jun 2022 18:45:10 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E19514022;
-        Mon, 20 Jun 2022 15:45:09 -0700 (PDT)
+        with ESMTP id S239945AbiFTWtp (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 20 Jun 2022 18:49:45 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3248117580;
+        Mon, 20 Jun 2022 15:49:45 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 97E21CE179E;
-        Mon, 20 Jun 2022 22:45:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9097AC341CA;
-        Mon, 20 Jun 2022 22:45:05 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C3C2861355;
+        Mon, 20 Jun 2022 22:49:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38CB0C3411B;
+        Mon, 20 Jun 2022 22:49:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655765105;
-        bh=l+tebky4TEgEPH7xlL3vd3F/iKwURUSr+8Dhto1NkeI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kn+fY/za3b/dCuWSJA3LIonsb2y/u0EDBpD5zGeNjIl3lsqa3Dxpo7WJgKFOgEpWh
-         3ajx7V4PhKrfBK4X7FEMgGHeD5jeZGh5QiI0xgE+XZMMLlpvcldjaAWacRoxEq2k++
-         KNCGrkFCHmKV0JAfSc00YFisAexYV19m4fafpkaADdlN8QVPD0F6UEgW1Ufo2IjI5L
-         aUB+6vN47jNHPgCQejWZMGfQ37GFFeAQ04dzs6LBlxA1IeTxlDpvcyJSweoIFK1xmY
-         YvXgPcmz3VZ4BlGDir2o7ei86JEl0qQE6CG8RX8fzQNjriyY9ULZTVSkwqhb45TNNu
-         +vsJrPnfVrKCw==
+        s=k20201202; t=1655765384;
+        bh=V7mEZ0lfU/n05qqEPI93xDFptYz7yr8cukWTkMIKyeg=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=UpRe6/3jcN76WeOgJqCFcIrHjb7YTvHuAy2/0iN5orVHEXZ3ZMWoQLTaWuXr3C6+1
+         DWJLYJ8xK+i4mLND91udy1kQ3NYNDZG/eGgUTE+AEfMlS8CApkbfBmTnFCdMSnjHFb
+         Ct0NjLTTbK4cq8OWH/soyY1A95+7FShmbw6DTujJtxoM4CfQOZfFyusbiFyh+PIVUM
+         HL3HQHicNU5O8eMGMeHMYSdmT+IypH6Usa2PLsPao+FJi8MhBDFlv02YIY8xnHbREH
+         yiov7DJBBBmYqd8DSzWPgGx9BxxCs0Ksmsk1W61VYfB51Uhtv6cIELrFVchbHnjRT4
+         IcMuHwVWF4qTA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id F3A375C0BCC; Mon, 20 Jun 2022 15:45:04 -0700 (PDT)
+        id D6A475C05B9; Mon, 20 Jun 2022 15:49:43 -0700 (PDT)
+Date:   Mon, 20 Jun 2022 15:49:43 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org, Zqiang <qiang1.zhang@intel.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 7/7] rcu/nocb: Avoid polling when my_rdp->nocb_head_rdp list is empty
-Date:   Mon, 20 Jun 2022 15:45:03 -0700
-Message-Id: <20220620224503.3841196-7-paulmck@kernel.org>
-X-Mailer: git-send-email 2.31.1.189.g2e36527f23
-In-Reply-To: <20220620224455.GA3840881@paulmck-ThinkPad-P17-Gen-1>
-References: <20220620224455.GA3840881@paulmck-ThinkPad-P17-Gen-1>
+        rostedt@goodmis.org
+Subject: [PATCH rcu 0/12] Polled grace-period updates for v5.20
+Message-ID: <20220620224943.GA3841634@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Zqiang <qiang1.zhang@intel.com>
+Hello!
 
-Currently, if the 'rcu_nocb_poll' kernel boot parameter is enabled, all
-rcuog kthreads enter polling mode.  However, if all of a given group
-of rcuo kthreads correspond to CPUs that have been de-offloaded, the
-corresponding rcuog kthread will nonetheless still wake up periodically,
-unnecessarily consuming power and perturbing workloads.  Fortunately,
-this situation is easily detected by the fact that the rcuog kthread's
-CPU's rcu_data structure's ->nocb_head_rdp list is empty.
+This series adds support for polled expedited RCU grace periods:
 
-This commit saves power and avoids unnecessarily perturbing workloads
-by putting an rcuog kthread to sleep during any time period when all of
-its rcuo kthreads' CPUs are de-offloaded.
+1.	Make normal polling GP be more precise about sequence numbers.
 
-Co-developed-by: Frederic Weisbecker <frederic@kernel.org>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/rcu/tree_nocb.h | 24 +++++++++++++++++++-----
- 1 file changed, 19 insertions(+), 5 deletions(-)
+2.	Provide a get_completed_synchronize_rcu() function.
 
-diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index fa8e4f82e60c0..a8f574d8850d2 100644
---- a/kernel/rcu/tree_nocb.h
-+++ b/kernel/rcu/tree_nocb.h
-@@ -584,6 +584,14 @@ static int nocb_gp_toggle_rdp(struct rcu_data *rdp,
- 	return ret;
- }
- 
-+static void nocb_gp_sleep(struct rcu_data *my_rdp, int cpu)
-+{
-+	trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("Sleep"));
-+	swait_event_interruptible_exclusive(my_rdp->nocb_gp_wq,
-+					!READ_ONCE(my_rdp->nocb_gp_sleep));
-+	trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("EndSleep"));
-+}
-+
- /*
-  * No-CBs GP kthreads come here to wait for additional callbacks to show up
-  * or for grace periods to end.
-@@ -701,13 +709,19 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
- 		/* Polling, so trace if first poll in the series. */
- 		if (gotcbs)
- 			trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("Poll"));
--		schedule_timeout_idle(1);
-+		if (list_empty(&my_rdp->nocb_head_rdp)) {
-+			raw_spin_lock_irqsave(&my_rdp->nocb_gp_lock, flags);
-+			if (!my_rdp->nocb_toggling_rdp)
-+				WRITE_ONCE(my_rdp->nocb_gp_sleep, true);
-+			raw_spin_unlock_irqrestore(&my_rdp->nocb_gp_lock, flags);
-+			/* Wait for any offloading rdp */
-+			nocb_gp_sleep(my_rdp, cpu);
-+		} else {
-+			schedule_timeout_idle(1);
-+		}
- 	} else if (!needwait_gp) {
- 		/* Wait for callbacks to appear. */
--		trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("Sleep"));
--		swait_event_interruptible_exclusive(my_rdp->nocb_gp_wq,
--				!READ_ONCE(my_rdp->nocb_gp_sleep));
--		trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("EndSleep"));
-+		nocb_gp_sleep(my_rdp, cpu);
- 	} else {
- 		rnp = my_rdp->mynode;
- 		trace_rcu_this_gp(rnp, my_rdp, wait_gp_seq, TPS("StartWait"));
--- 
-2.31.1.189.g2e36527f23
+3.	Validate get_completed_synchronize_rcu().
 
+4.	Switch polled grace-period APIs to ->gp_seq_polled.
+
+5.	Make polled grace-period API account for expedited grace periods.
+
+6.	Make Tiny RCU grace periods visible to polled APIs.
+
+7.	Verify that polled GP API sees synchronous grace periods.
+
+8.	Add polled expedited grace-period primitives.
+
+9.	Test polled expedited grace-period primitives.
+
+10.	Put panic_on_rcu_stall() after expedited RCU CPU stall warnings,
+	courtesy of Zqiang.
+
+11.	Diagnose extended sync_rcu_do_polled_gp() loops.
+
+12.	Add irqs-disabled indicator to expedited RCU CPU stall warnings,
+	courtesy of Zqiang.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ b/include/linux/rcupdate.h |    1 
+ b/include/linux/rcutiny.h  |   10 +++
+ b/include/linux/rcutree.h  |    2 
+ b/kernel/rcu/rcu.h         |   12 ++++
+ b/kernel/rcu/rcutorture.c  |    6 ++
+ b/kernel/rcu/tiny.c        |    4 -
+ b/kernel/rcu/tree.c        |    4 -
+ b/kernel/rcu/tree.h        |    2 
+ b/kernel/rcu/tree_exp.h    |   16 +++++-
+ b/kernel/rcu/update.c      |   13 ++++
+ kernel/rcu/rcu.h           |    3 +
+ kernel/rcu/rcutorture.c    |   97 +++++++++++++++++++++++++++++++-----
+ kernel/rcu/tiny.c          |    7 +-
+ kernel/rcu/tree.c          |  119 ++++++++++++++++++++++++++++++++++++++++-----
+ kernel/rcu/tree.h          |    8 +++
+ kernel/rcu/tree_exp.h      |   99 +++++++++++++++++++++++++++++++++++--
+ 16 files changed, 365 insertions(+), 38 deletions(-)
