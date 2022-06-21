@@ -2,110 +2,156 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E25AC43334
-	for <rcu@archiver.kernel.org>; Tue, 21 Jun 2022 19:03:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B650C433EF
+	for <rcu@archiver.kernel.org>; Tue, 21 Jun 2022 19:31:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353098AbiFUTDh (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 21 Jun 2022 15:03:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57800 "EHLO
+        id S1351199AbiFUTbl (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 21 Jun 2022 15:31:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352836AbiFUTDX (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 21 Jun 2022 15:03:23 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F07C619F9E;
-        Tue, 21 Jun 2022 12:03:21 -0700 (PDT)
+        with ESMTP id S233517AbiFUTbj (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 21 Jun 2022 15:31:39 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F412025C52;
+        Tue, 21 Jun 2022 12:31:38 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8FF0461705;
-        Tue, 21 Jun 2022 19:03:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E22B6C3411C;
-        Tue, 21 Jun 2022 19:03:20 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 821EEB81B08;
+        Tue, 21 Jun 2022 19:31:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A5DBC341C4;
+        Tue, 21 Jun 2022 19:31:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655838201;
-        bh=DYS6SmF1cWO7uZWqH5rXy0cddt6Ll9bCEa6QEeOeldc=;
+        s=k20201202; t=1655839896;
+        bh=XOK/ai0FHGuQIlrk56DODIykPUAQiocU9ghRFS6qaB8=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=tXP5fJcPS71401So7CDEAaKEl9RDMnBpHBMYMOYGzZfmuoscyeROjEVTlJebW0b4f
-         Igh6cjr0WORRyHc54ik1XrdMWx8j3dpS2C3hbJZk2ggmNMr71oAcWy7Yp1gPIRbm2y
-         ZQ/jko6PBtHnYn0W4k77PWoMP49C3ZVFtaVvH25Ww4M98sSOB+6R1bNtMPTBDYHlCG
-         CrHc23ALbK7FGiN07UU38/XNz8gdqUytcQN+o4yOrrU7Q7f6a1dIVsp9P/27KtM+rz
-         Xxt1lUF5nEW8nxnPSZlDWU9Z5GXOzk6CkaqkIVIn/5k0qG9TbpU4RfXYCcigyGZopP
-         GX1U7lEZRkw0g==
+        b=GKjTthMHeEabqxU4T764aK2hDWxLM9BTCWG6ObuHO1ujXQwxJ0Z+bnZtLgD3tZs//
+         yP4ChJ1fuLz9nyNfSz9nELB8AfotVBVkxzeasLsP9GKUs7L4OK0B2RHT7o1aMtdANu
+         y70ViNEkOYksfIfdnK6GhCInolTYpZ1AUR5ddniurrw0BGr7Lz7RxXgiufvmphvhOB
+         aEOXNsPmQHuYkzsI4W/1onqefUzYhUYEuWbr4ZsB1/HKw/+BtFDSIZPJSckwj+jfqr
+         AITjKQc2EyBrbKn1T/R4AD4SxRMifEhRTHpJncLJkGF1Fh148cca8Dj0iq8dYvjOqf
+         pF4hHchlqB/Vw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 82BED5C09AF; Tue, 21 Jun 2022 12:03:20 -0700 (PDT)
-Date:   Tue, 21 Jun 2022 12:03:20 -0700
+        id C63F05C09AF; Tue, 21 Jun 2022 12:31:35 -0700 (PDT)
+Date:   Tue, 21 Jun 2022 12:31:35 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     Neeraj Upadhyay <quic_neeraju@quicinc.com>
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel-team@fb.com, rostedt@goodmis.org,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Uladzislau Rezki <urezki@gmail.com>
-Subject: Re: [PATCH rcu 3/3] doc: Document
- rcutree.nocb_nobypass_lim_per_jiffy kernel parameter
-Message-ID: <20220621190320.GL1790663@paulmck-ThinkPad-P17-Gen-1>
+        Johannes Berg <johannes.berg@intel.com>,
+        Dmitry Vyukov <dvyukov@google.com>, elver@google.com
+Subject: Re: [PATCH rcu 07/12] rcu: tiny: Record kvfree_call_rcu() call stack
+ for KASAN
+Message-ID: <20220621193135.GM1790663@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20220620221733.GA3839136@paulmck-ThinkPad-P17-Gen-1>
- <20220620221757.3839212-3-paulmck@kernel.org>
- <3988b203-0a65-526e-b445-c2ee9ea0f4e8@quicinc.com>
+References: <20220620222022.GA3839466@paulmck-ThinkPad-P17-Gen-1>
+ <20220620222032.3839547-7-paulmck@kernel.org>
+ <00f3eb47-2529-a493-ee67-c0c0219937a3@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3988b203-0a65-526e-b445-c2ee9ea0f4e8@quicinc.com>
+In-Reply-To: <00f3eb47-2529-a493-ee67-c0c0219937a3@quicinc.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Jun 21, 2022 at 10:41:54AM +0530, Neeraj Upadhyay wrote:
+On Tue, Jun 21, 2022 at 12:01:29PM +0530, Neeraj Upadhyay wrote:
 > 
 > 
-> On 6/21/2022 3:47 AM, Paul E. McKenney wrote:
-> > This commit provides documentation for the kernel parameter controlling
-> > RCU's handling of callback floods on offloaded (rcu_nocbs) CPUs.
-> > This parameter might be obscure, but it is always there when you need it.
+> On 6/21/2022 3:50 AM, Paul E. McKenney wrote:
+> > From: Johannes Berg <johannes.berg@intel.com>
 > > 
-> > Reported-by: Frederic Weisbecker <frederic@kernel.org>
-> > Reported-by: Uladzislau Rezki <urezki@gmail.com>
+> > When running KASAN with Tiny RCU (e.g. under ARCH=um, where
+> > a working KASAN patch is now available), we don't get any
+> > information on the original kfree_rcu() (or similar) caller
+> > when a problem is reported, as Tiny RCU doesn't record this.
+> > 
+> > Add the recording, which required pulling kvfree_call_rcu()
+> > out of line for the KASAN case since the recording function
+> > (kasan_record_aux_stack_noalloc) is neither exported, nor
+> > can we include kasan.h into rcutiny.h.
+> > 
+> > without KASAN, the patch has no size impact (ARCH=um kernel):
+> >      text       data         bss         dec        hex    filename
+> >   6151515    4423154    33148520    43723189    29b29b5    linux
+> >   6151515    4423154    33148520    43723189    29b29b5    linux + patch
+> > 
+> > with KASAN, the impact on my build was minimal:
+> >      text       data         bss         dec        hex    filename
+> > 13915539    7388050    33282304    54585893    340ea25    linux
+> > 13911266    7392114    33282304    54585684    340e954    linux + patch
+> >     -4273      +4064         +-0        -209
+> > 
+> > Acked-by: Dmitry Vyukov <dvyukov@google.com>
+> > Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 > > ---
-> 
-> Reviewed-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
-> 
-> >   Documentation/admin-guide/kernel-parameters.txt | 13 +++++++++++++
-> >   1 file changed, 13 insertions(+)
+> >   include/linux/rcutiny.h | 11 ++++++++++-
+> >   kernel/rcu/tiny.c       | 14 ++++++++++++++
+> >   2 files changed, 24 insertions(+), 1 deletion(-)
 > > 
-> > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> > index bdf431bdbfdc4..a30890141b1a5 100644
-> > --- a/Documentation/admin-guide/kernel-parameters.txt
-> > +++ b/Documentation/admin-guide/kernel-parameters.txt
-> > @@ -4681,6 +4681,19 @@
-> >   			invoked in the context of an rcuoc kthread, which
-> >   			scheduler will preempt as it does any other task.
-> > +	rcutree.nocb_nobypass_lim_per_jiffy= [KNL]
-> > +			On callback-offloaded (rcu_nocbs) CPUs,
-> > +			RCU reduces the lock contention that would
-> > +			otherwise be caused callback floods through
+> > diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
+> > index 5fed476f977f6..d84e13f2c3848 100644
+> > --- a/include/linux/rcutiny.h
+> > +++ b/include/linux/rcutiny.h
+> > @@ -38,7 +38,7 @@ static inline void synchronize_rcu_expedited(void)
+> >    */
+> >   extern void kvfree(const void *addr);
+> > -static inline void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+> > +static inline void __kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+> >   {
+> >   	if (head) {
+> >   		call_rcu(head, func);
+> > @@ -51,6 +51,15 @@ static inline void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+> >   	kvfree((void *) func);
+> >   }
+> > +#ifdef CONFIG_KASAN_GENERIC
+> > +void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func);
+> > +#else
+> > +static inline void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+> > +{
+> > +	__kvfree_call_rcu(head, func);
+> > +}
+> > +#endif
+> > +
+> >   void rcu_qs(void);
+> >   static inline void rcu_softirq_qs(void)
+> > diff --git a/kernel/rcu/tiny.c b/kernel/rcu/tiny.c
+> > index 340b3f8b090d4..58ff3721d975c 100644
+> > --- a/kernel/rcu/tiny.c
+> > +++ b/kernel/rcu/tiny.c
+> > @@ -217,6 +217,20 @@ bool poll_state_synchronize_rcu(unsigned long oldstate)
+> >   }
+> >   EXPORT_SYMBOL_GPL(poll_state_synchronize_rcu);
+> > +#ifdef CONFIG_KASAN_GENERIC
+> > +void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+> > +{
+> > +	if (head) {
+> > +		void *ptr = (void *) head - (unsigned long) func;
+> > +
+> > +		kasan_record_aux_stack_noalloc(ptr);
+> > +	}
 > 
-> Minor : "caused by" ?
+> For the !head case; similar to Tree RCU's kvfree_call_rcu() implementation,
+> we do not need to record 'ptr' (which will be 'func')?
 
-Good catch, fixed, thank you!
+My understanding is that we do not need to record in that case
+because __kvfree_call_rcu() will simply invoke the almost-zero-cost
+synchronize_rcu() and then invoke kfree().
 
-I applied your Reviewed-by to this series as well, and thank you for
-that as well.
+Johannes, Dmitry, Marco, anything that I am missing?
 
 							Thanx, Paul
 
 > Thanks
 > Neeraj
 > 
-> > +			use of the ->nocb_bypass list.	However, in the
-> > +			common non-flooded case, RCU queues directly to
-> > +			the main ->cblist in order to avoid the extra
-> > +			overhead of the ->nocb_bypass list and its lock.
-> > +			But if there are too many callbacks queued during
-> > +			a single jiffy, RCU pre-queues the callbacks into
-> > +			the ->nocb_bypass queue.  The definition of "too
-> > +			many" is supplied by this kernel boot parameter.
 > > +
-> >   	rcutree.rcu_nocb_gp_stride= [KNL]
-> >   			Set the number of NOCB callback kthreads in
-> >   			each group, which defaults to the square root
+> > +	__kvfree_call_rcu(head, func);
+> > +}
+> > +EXPORT_SYMBOL_GPL(kvfree_call_rcu);
+> > +#endif
+> > +
+> >   void __init rcu_init(void)
+> >   {
+> >   	open_softirq(RCU_SOFTIRQ, rcu_process_callbacks);
