@@ -2,158 +2,173 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02233C43334
-	for <rcu@archiver.kernel.org>; Tue, 21 Jun 2022 22:17:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 014AEC43334
+	for <rcu@archiver.kernel.org>; Tue, 21 Jun 2022 22:19:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230194AbiFUWRE (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 21 Jun 2022 18:17:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51506 "EHLO
+        id S233525AbiFUWT3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 21 Jun 2022 18:19:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbiFUWRD (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 21 Jun 2022 18:17:03 -0400
+        with ESMTP id S232194AbiFUWT2 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 21 Jun 2022 18:19:28 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B6CE30F7C;
-        Tue, 21 Jun 2022 15:17:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F22923134B;
+        Tue, 21 Jun 2022 15:19:26 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CB1346171B;
-        Tue, 21 Jun 2022 22:17:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 352DFC3411D;
-        Tue, 21 Jun 2022 22:17:01 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8E4AF61720;
+        Tue, 21 Jun 2022 22:19:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E87E5C3411C;
+        Tue, 21 Jun 2022 22:19:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655849821;
-        bh=eAPR7iWjyiUmY6H0O4buVVeyi0I34ruyb5/gJDTQtF4=;
+        s=k20201202; t=1655849965;
+        bh=6Cm/7JRGe200BYXUXwRpZmG6i8afEFGvPBoIJ4styLk=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=QzywVmsIkAfi9LCySImCB4DJuCT3LX1op3hFQ1G1ZIIPtEmg711bI8Js7ZtUbkXIa
-         2KqxT5A8db3Ba2DNZVj7zsTURpM/1vdVkIWAsd/JwHLoDcU41ON0zubG3qkC5Nxm2s
-         o79aj8Yd5d+XXKkQ1qx4AHWAe/RbCHqdkN4cpclkkT9LQO6aNf2MK5uaJs869ctcQi
-         Yq5SqgBYfukVR2sRRT9xOzED1oUi1Hnv7QOOyiCwLLGLWQsfbx7p3slup12GhuHb+Z
-         F/YXtVPgyNhcjSK72GqLt6cJllg5T78dIZvv0UqxRCY7CmqR8B4/yPLIlDZ74Dl1g6
-         /XEVWA5AFyC5A==
+        b=Q/xsmXUdpBq57JgmPgQxW8yTXBQR78qcwuAsQ3c0eOyyqmYv6iI9xI8Lva360to9+
+         P4C0tW9LS1m1vrp/LozlieZ2F+X/hue3IRRZ1n1j5OkTyjTexn+p6QvuTWrhBx2f4G
+         Klg9Lm+lp8RTjlx8SyBcnEoPTinKDCTmevyfQR1zj/nj7zwhilPRYGjsPw1Kct3UB5
+         D1Qmej/HJ4trSO2vHpH8nydCp89MQABcVj6/6QsWzUMaC902hCaFSJ8PKq+RmkH/NN
+         d8/rHzQdIB8USJMz4NAtIu0J5q4fz/eaZyQmCmdo1WssB/xf174VNLCU2kGg6jgvPK
+         AXb8uP4vMZw/A==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id D849E5C0AE0; Tue, 21 Jun 2022 15:17:00 -0700 (PDT)
-Date:   Tue, 21 Jun 2022 15:17:00 -0700
+        id 8A1E35C0AE0; Tue, 21 Jun 2022 15:19:25 -0700 (PDT)
+Date:   Tue, 21 Jun 2022 15:19:25 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Marco Elver <elver@google.com>
-Cc:     Neeraj Upadhyay <quic_neeraju@quicinc.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org, Johannes Berg <johannes.berg@intel.com>,
-        Dmitry Vyukov <dvyukov@google.com>
-Subject: Re: [PATCH rcu 07/12] rcu: tiny: Record kvfree_call_rcu() call stack
- for KASAN
-Message-ID: <20220621221700.GP1790663@paulmck-ThinkPad-P17-Gen-1>
+To:     Neeraj Upadhyay <quic_neeraju@quicinc.com>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, rostedt@goodmis.org
+Subject: Re: [PATCH rcu 01/12] rcu: Decrease FQS scan wait time in case of
+ callback overloading
+Message-ID: <20220621221925.GQ1790663@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
 References: <20220620222022.GA3839466@paulmck-ThinkPad-P17-Gen-1>
- <20220620222032.3839547-7-paulmck@kernel.org>
- <00f3eb47-2529-a493-ee67-c0c0219937a3@quicinc.com>
- <20220621193135.GM1790663@paulmck-ThinkPad-P17-Gen-1>
- <CANpmjNOBD6B_hY-rGCtdk2+fFox6DhsLE_bp9Q8sU=AQZs9ySQ@mail.gmail.com>
+ <20220620222032.3839547-1-paulmck@kernel.org>
+ <87c17e9a-565a-d717-3534-83a4c506b984@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CANpmjNOBD6B_hY-rGCtdk2+fFox6DhsLE_bp9Q8sU=AQZs9ySQ@mail.gmail.com>
+In-Reply-To: <87c17e9a-565a-d717-3534-83a4c506b984@quicinc.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Jun 21, 2022 at 11:14:04PM +0200, Marco Elver wrote:
-> On Tue, 21 Jun 2022 at 21:31, Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Tue, Jun 21, 2022 at 12:01:29PM +0530, Neeraj Upadhyay wrote:
-> > >
-> > >
-> > > On 6/21/2022 3:50 AM, Paul E. McKenney wrote:
-> > > > From: Johannes Berg <johannes.berg@intel.com>
-> > > >
-> > > > When running KASAN with Tiny RCU (e.g. under ARCH=um, where
-> > > > a working KASAN patch is now available), we don't get any
-> > > > information on the original kfree_rcu() (or similar) caller
-> > > > when a problem is reported, as Tiny RCU doesn't record this.
-> > > >
-> > > > Add the recording, which required pulling kvfree_call_rcu()
-> > > > out of line for the KASAN case since the recording function
-> > > > (kasan_record_aux_stack_noalloc) is neither exported, nor
-> > > > can we include kasan.h into rcutiny.h.
-> > > >
-> > > > without KASAN, the patch has no size impact (ARCH=um kernel):
-> > > >      text       data         bss         dec        hex    filename
-> > > >   6151515    4423154    33148520    43723189    29b29b5    linux
-> > > >   6151515    4423154    33148520    43723189    29b29b5    linux + patch
-> > > >
-> > > > with KASAN, the impact on my build was minimal:
-> > > >      text       data         bss         dec        hex    filename
-> > > > 13915539    7388050    33282304    54585893    340ea25    linux
-> > > > 13911266    7392114    33282304    54585684    340e954    linux + patch
-> > > >     -4273      +4064         +-0        -209
-> > > >
-> > > > Acked-by: Dmitry Vyukov <dvyukov@google.com>
-> > > > Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-> > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > > ---
-> > > >   include/linux/rcutiny.h | 11 ++++++++++-
-> > > >   kernel/rcu/tiny.c       | 14 ++++++++++++++
-> > > >   2 files changed, 24 insertions(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
-> > > > index 5fed476f977f6..d84e13f2c3848 100644
-> > > > --- a/include/linux/rcutiny.h
-> > > > +++ b/include/linux/rcutiny.h
-> > > > @@ -38,7 +38,7 @@ static inline void synchronize_rcu_expedited(void)
-> > > >    */
-> > > >   extern void kvfree(const void *addr);
-> > > > -static inline void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
-> > > > +static inline void __kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
-> > > >   {
-> > > >     if (head) {
-> > > >             call_rcu(head, func);
-> > > > @@ -51,6 +51,15 @@ static inline void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
-> > > >     kvfree((void *) func);
-> > > >   }
-> > > > +#ifdef CONFIG_KASAN_GENERIC
-> > > > +void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func);
-> > > > +#else
-> > > > +static inline void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
-> > > > +{
-> > > > +   __kvfree_call_rcu(head, func);
-> > > > +}
-> > > > +#endif
-> > > > +
-> > > >   void rcu_qs(void);
-> > > >   static inline void rcu_softirq_qs(void)
-> > > > diff --git a/kernel/rcu/tiny.c b/kernel/rcu/tiny.c
-> > > > index 340b3f8b090d4..58ff3721d975c 100644
-> > > > --- a/kernel/rcu/tiny.c
-> > > > +++ b/kernel/rcu/tiny.c
-> > > > @@ -217,6 +217,20 @@ bool poll_state_synchronize_rcu(unsigned long oldstate)
-> > > >   }
-> > > >   EXPORT_SYMBOL_GPL(poll_state_synchronize_rcu);
-> > > > +#ifdef CONFIG_KASAN_GENERIC
-> > > > +void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
-> > > > +{
-> > > > +   if (head) {
-> > > > +           void *ptr = (void *) head - (unsigned long) func;
-> > > > +
-> > > > +           kasan_record_aux_stack_noalloc(ptr);
-> > > > +   }
-> > >
-> > > For the !head case; similar to Tree RCU's kvfree_call_rcu() implementation,
-> > > we do not need to record 'ptr' (which will be 'func')?
-> >
-> > My understanding is that we do not need to record in that case
-> > because __kvfree_call_rcu() will simply invoke the almost-zero-cost
-> > synchronize_rcu() and then invoke kfree().
-> >
-> > Johannes, Dmitry, Marco, anything that I am missing?
+On Tue, Jun 21, 2022 at 10:59:58AM +0530, Neeraj Upadhyay wrote:
 > 
-> As-is looks sensible - doing kasan_record_aux_stack_noalloc() only
-> makes sense if the actual kfree() is not done with a callstack that
-> will point at the kvfree_call_rcu() caller. Otherwise we're doing
-> redundant work and just polluting the aux stack storage slots. So in
-> the case where kvfree_call_rcu() does synchronize_rcu() and kfree()
-> the kvfree_call_rcu() caller is in the callstack, and would be shown
-> on use-after-free bugs.
+> 
+> On 6/21/2022 3:50 AM, Paul E. McKenney wrote:
+> > The force-quiesce-state loop function rcu_gp_fqs_loop() checks for
+> > callback overloading and does an immediate initial scan for idle CPUs
+> > if so.  However, subsequent rescans will be carried out at as leisurely a
+> > rate as they always are, as specified by the rcutree.jiffies_till_next_fqs
+> > module parameter.  It might be tempting to just continue immediately
+> > rescanning, but this turns the RCU grace-period kthread into a CPU hog.
+> > It might also be tempting to reduce the time between rescans to a single
+> > jiffy, but this can be problematic on larger systems.
+> > 
+> > This commit therefore divides the normal time between rescans by three,
+> > rounding up.  Thus a small system running at HZ=1000 that is suffering
+> > from callback overload will wait only one jiffy instead of the normal
+> > three between rescans.
+> > 
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > ---
+> >   kernel/rcu/tree.c | 5 +++++
+> >   1 file changed, 5 insertions(+)
+> > 
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index c25ba442044a6..c19d5926886fb 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -1993,6 +1993,11 @@ static noinline_for_stack void rcu_gp_fqs_loop(void)
+> >   			WRITE_ONCE(rcu_state.jiffies_kick_kthreads,
+> >   				   jiffies + (j ? 3 * j : 2));
+> >   		}
+> > +		if (rcu_state.cbovld) {
+> > +			j = (j + 2) / 3;
+> > +			if (j <= 0)
+> > +				j = 1;
+> > +		}
+> 
+> We update 'j' here, after setting rcu_state.jiffies_force_qs
+> 
+>     WRITE_ONCE(rcu_state.jiffies_force_qs, jiffies + j)
+> 
+> So, we return from swait_event_idle_timeout_exclusive after 1/3 time
+> duration.
+> 
+>     swait_event_idle_timeout_exclusive(rcu_state.gp_wq,
+> 				 rcu_gp_fqs_check_wake(&gf), j);
+> 
+> This can result in !timer_after check to return false and we will
+> enter the 'else' (stray signal block) code?
+> 
+> This might not matter for first 2 fqs loop iterations, where
+> RCU_GP_FLAG_OVLD is set in 'gf', but subsequent iterations won't benefit
+> from this patch?
+> 
+> 
+> if (!time_after(rcu_state.jiffies_force_qs, jiffies) ||
+> 	(gf & (RCU_GP_FLAG_FQS | RCU_GP_FLAG_OVLD))) {
+> 			...
+> } else {
+> 	/* Deal with stray signal. */
+> }
+> 
+> 
+> So, do we need to move this calculation above the 'if' block which sets
+> rcu_state.jiffies_force_qs?
+> 		if (!ret) {
+> 
+> 			WRITE_ONCE(rcu_state.jiffies_force_qs, jiffies +
+> 						j);...
+> 		}
 
-Thank you for checking and for confirmation!
+Good catch, thank you!  How about the updated patch shown below?
 
 							Thanx, Paul
+
+------------------------------------------------------------------------
+
+commit 77de092c78f549b5c28075bfee9998a525d21f84
+Author: Paul E. McKenney <paulmck@kernel.org>
+Date:   Tue Apr 12 15:08:14 2022 -0700
+
+    rcu: Decrease FQS scan wait time in case of callback overloading
+    
+    The force-quiesce-state loop function rcu_gp_fqs_loop() checks for
+    callback overloading and does an immediate initial scan for idle CPUs
+    if so.  However, subsequent rescans will be carried out at as leisurely a
+    rate as they always are, as specified by the rcutree.jiffies_till_next_fqs
+    module parameter.  It might be tempting to just continue immediately
+    rescanning, but this turns the RCU grace-period kthread into a CPU hog.
+    It might also be tempting to reduce the time between rescans to a single
+    jiffy, but this can be problematic on larger systems.
+    
+    This commit therefore divides the normal time between rescans by three,
+    rounding up.  Thus a small system running at HZ=1000 that is suffering
+    from callback overload will wait only one jiffy instead of the normal
+    three between rescans.
+    
+    [ paulmck: Apply Neeraj Upadhyay feedback. ]
+    
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index c25ba442044a6..52094e72866e5 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -1983,7 +1983,12 @@ static noinline_for_stack void rcu_gp_fqs_loop(void)
+ 		gf = RCU_GP_FLAG_OVLD;
+ 	ret = 0;
+ 	for (;;) {
+-		if (!ret) {
++		if (rcu_state.cbovld) {
++			j = (j + 2) / 3;
++			if (j <= 0)
++				j = 1;
++		}
++		if (!ret || time_before(jiffies + j, rcu_state.jiffies_force_qs)) {
+ 			WRITE_ONCE(rcu_state.jiffies_force_qs, jiffies + j);
+ 			/*
+ 			 * jiffies_force_qs before RCU_GP_WAIT_FQS state
