@@ -2,340 +2,107 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 694A7C433EF
-	for <rcu@archiver.kernel.org>; Tue, 21 Jun 2022 04:39:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C965C433EF
+	for <rcu@archiver.kernel.org>; Tue, 21 Jun 2022 05:14:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244636AbiFUEjP (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 21 Jun 2022 00:39:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54212 "EHLO
+        id S1344919AbiFUFOH (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 21 Jun 2022 01:14:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233633AbiFUEjP (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 21 Jun 2022 00:39:15 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA16B1D0E1;
-        Mon, 20 Jun 2022 21:39:13 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 0CD55B81693;
-        Tue, 21 Jun 2022 04:39:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC7E7C3411D;
-        Tue, 21 Jun 2022 04:39:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655786350;
-        bh=NuxTjux50WYLm0GIH3H0DVcSPUrCq+P1Nm9REg9kwaw=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=lG5g0TV45jdk96AuA+uzEwkik4/65B/50DQ3I53nt5o3v+TzWfc8ASiylqX4+xKrd
-         IYC3iZbgCkBwwKgjjobC4ka+A9Eum557TXw2PXjHXlJ/Mn3hrMPeDyL30Nt+sDQ5ZO
-         /2CtUhotqXI3wbLngkiplz+pRGBJrS+QRwzYA7LpynqwadOHbddw278YEooCqGLGli
-         zC4M9Zz6S3BxDrgoIVs0bPePOiXi48EH/smCPQE6lEB7/pR2EhiO94sG1hjOeYT5yy
-         p7RmZq/ZOdk/wnC8sO4U7i6n/HtT4+HbGt8iuWycNq1m/h+YFG15vXwiZ624jSQ0jv
-         57FcgCIKKg4sQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 4FAFB5C0399; Mon, 20 Jun 2022 21:39:10 -0700 (PDT)
-Date:   Mon, 20 Jun 2022 21:39:10 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Zhouyi Zhou <zhouzhouyi@gmail.com>
-Cc:     john.ogness@linutronix.de, pmladek@suse.com, dave@stgolabs.net,
-        Josh Triplett <josh@joshtriplett.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        rcu <rcu@vger.kernel.org>
-Subject: Re: [PATCH linux-next] RFC: torture: add pr_flush to flush the
- results to console
-Message-ID: <20220621043910.GD1790663@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220615003733.16447-1-zhouzhouyi@gmail.com>
- <20220615051521.GH1790663@paulmck-ThinkPad-P17-Gen-1>
- <CAABZP2wCos5xupRQ2LbJtaLVN1a7i0D5kwaVTq9DEov8C46Gkw@mail.gmail.com>
- <20220615135220.GI1790663@paulmck-ThinkPad-P17-Gen-1>
- <20220615190936.GA713726@paulmck-ThinkPad-P17-Gen-1>
- <CAABZP2wstbe+Exa3NWWygOAF5S4BtHfgJcb_r78uz-jq2KtU9Q@mail.gmail.com>
- <CAABZP2yLfpoaX82Nwg_QPWmF+ATMhetykN+k1fo624PWSKaHtg@mail.gmail.com>
+        with ESMTP id S232935AbiFUFOC (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 21 Jun 2022 01:14:02 -0400
+Received: from alexa-out.qualcomm.com (alexa-out.qualcomm.com [129.46.98.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C99015808;
+        Mon, 20 Jun 2022 22:14:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1655788440; x=1687324440;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=zD3t7P3beJnqprKw6pK4SaA1mOaXHFNana/obLJCFKc=;
+  b=uLtzbaLCcmxgKNUJ6vUmdk0MhnsXSmrH4BVg+5zp9LL/z0Q21TtmZ4hH
+   DhHzZcJ+HCVuasQqbbzPubc69rTXMlglOTf0ZUiOjBt92t3fWv9BAcgQ2
+   yxntmRN4foc64h8rNXajiXu+ED2hIuRx1fdrSe7VXjyxZ+RjD8CKoVXPx
+   s=;
+Received: from ironmsg02-sd.qualcomm.com ([10.53.140.142])
+  by alexa-out.qualcomm.com with ESMTP; 20 Jun 2022 22:14:00 -0700
+X-QCInternal: smtphost
+Received: from nasanex01b.na.qualcomm.com ([10.46.141.250])
+  by ironmsg02-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jun 2022 22:11:59 -0700
+Received: from [10.50.44.13] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.22; Mon, 20 Jun
+ 2022 22:11:57 -0700
+Message-ID: <3988b203-0a65-526e-b445-c2ee9ea0f4e8@quicinc.com>
+Date:   Tue, 21 Jun 2022 10:41:54 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAABZP2yLfpoaX82Nwg_QPWmF+ATMhetykN+k1fo624PWSKaHtg@mail.gmail.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH rcu 3/3] doc: Document rcutree.nocb_nobypass_lim_per_jiffy
+ kernel parameter
+Content-Language: en-US
+To:     "Paul E. McKenney" <paulmck@kernel.org>, <rcu@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <kernel-team@fb.com>,
+        <rostedt@goodmis.org>, Frederic Weisbecker <frederic@kernel.org>,
+        Uladzislau Rezki <urezki@gmail.com>
+References: <20220620221733.GA3839136@paulmck-ThinkPad-P17-Gen-1>
+ <20220620221757.3839212-3-paulmck@kernel.org>
+From:   Neeraj Upadhyay <quic_neeraju@quicinc.com>
+In-Reply-To: <20220620221757.3839212-3-paulmck@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Jun 21, 2022 at 08:22:15AM +0800, Zhouyi Zhou wrote:
-> [add Masahiro to CC list]
-> 
-> 1. Abstract:
-> During the test of  0ba7324b44282870af740a5a121add62c7f5f730 ("printk:
-> Wait for the global console lock when the system is going down"), I
-> found
-> 0ba7324b44282870af740a5a121add62c7f5f730 itself is OK. But I guess
-> 31cb50b5590fe911077b8463ad01144fac8fa4f3 ("kbuild: check static
-> EXPORT_SYMBOL* by script instead of modpost")
-> lead to build systems failing in a random way.
-> 
-> 2. Introduction:
-> To test 0ba7324b44282870af740a5a121add62c7f5f730 ("printk: Wait for
-> the global console lock when the system is going down"), I do
-> following both on
-> my Dell PowerEdge R720 server (128G memory, 16 core Intel(R) Xeon(R)
-> CPU E5-2660) and my Thinkpad T14 amd laptop (40G memory, 8 core AMD
-> Ryzen 7 PRO 4750U)
-> #git clone https://kernel.source.codeaurora.cn/pub/scm/linux/kernel/git/paulmck/linux-rcu.git
-> #cd linux-rcu
-> #git checkout remotes/origin/pmladek.2022.06.15a
-> #./tools/testing/selftests/rcutorture/bin/torture.sh
-> 
-> 3. The Testing
-> 3.1
-> On Dell PowerEdge R720 server, I performed torture.sh for 6 rounds
-> (each cost 12 hours to finish)
-> five of them report build failure, for example:
-> root@42d29c5cef4b:/mnt/linux-rcu/tools/testing/selftests/rcutorture/res#
-> find . -name Make.out|xargs grep Error
-> ./2022.06.19-09.29.42-torture/results-rcutorture/TREE07/Make.out:make[2]:
-> *** [scripts/Makefile.build:249: security/selinux/ss/services.o] Error
-> 255
-> ./2022.06.19-09.29.42-torture/results-rcutorture/TREE07/Make.out:make[1]:
-> *** [scripts/Makefile.build:466: security/selinux] Error 2
-> ./2022.06.19-09.29.42-torture/results-rcutorture/TREE07/Make.out:make:
-> *** [Makefile:1839: security] Error 2
-> one of them passed all the tests:
-> Started at Mon Jun 20 06:09:33 CST 2022, ended at Mon Jun 20 18:34:30
-> CST 2022, duration 12:24:57.
-> Summary: Successes: 49 Failures: 0.
-> Size before compressing 60 files: 66G Mon Jun 20 18:34:30 CST 2022
-> Waiting for batch 1 of 32 compressions Mon Jun 20 18:34:30 CST 2022
-> Waiting for final batch 2 of 28 compressions Mon Jun 20 19:12:03 CST 2022
-> Size after compressing 60 files: 15G Mon Jun 20 19:46:42 CST 2022
-> 3.2
-> On Thinkpad T14 amd laptop, I performed torture.sh for 2 rounds (each
-> cost 13 hours to finish)
-> one of them report build failure:
-> zzy@zzy-ThinkPad-T14-Gen-1:~/Program/linux-rcu/tools/testing/selftests/rcutorture/res$
-> find . -name Make.out|xargs grep Error
-> ./2022.06.17-22.45.37-torture/results-refscale-refcnt-kasan/NOPREEMPT/Make.out:make[1]:
-> *** [scripts/Makefile.build:249: arch/x86/boot/pm.o] Error 255
-> ./2022.06.17-22.45.37-torture/results-refscale-refcnt-kasan/NOPREEMPT/Make.out:make:
-> *** [arch/x86/Makefile:265: bzImage] Error 2
-> another passed all the tests:
-> 
-> 4. Guess what caused the build error
-> On Dell PowerEdge R720:
-> root@42d29c5cef4b:/mnt/linux-rcu/tools/testing/selftests/rcutorture/res#
-> find . -name Make.out|xargs grep Error
-> ./2022.06.19-09.29.42-torture/results-rcutorture/TREE07/Make.out:make[2]:
-> *** [scripts/Makefile.build:249: security/selinux/ss/services.o] Error
-> 255
-> root@42d29c5cef4b:/mnt/linux-rcu/tools/testing/selftests/rcutorture/res#
-> emacs ./2022.06.19-09.29.42-torture/results-rcutorture/TREE07/Make.out
-> I search services.o in my emacs editor, the only clue is:
-> ./scripts/check-local-export security/selinux/ss/services.o
-> make[2]: *** [scripts/Makefile.build:249:
-> security/selinux/ss/services.o] Error 255
-> make[2]: *** Deleting file 'security/selinux/ss/services.o'
-> make[2]: *** Waiting for unfinished jobs....
-> 
-> 5. Try to trace
-> I have tried to trace the root cause of the problem, by modifying
-> scripts/check-local-export:
-> diff --git a/scripts/check-local-export b/scripts/check-local-export
-> index da745e2743b7..a66ff333f22b 100755
-> --- a/scripts/check-local-export
-> +++ b/scripts/check-local-export
-> @@ -12,7 +12,7 @@ declare -A symbol_types
->  declare -a export_symbols
-> 
->  exit_code=0
-> -
-> +cp ${1} /mnt/tmp/
->  while read value type name
->  do
->         # Skip the line if the number of fields is less than 3.
-> @@ -48,7 +48,7 @@ do
->         #
->         # Then, the following line will be really simple:
->         #   done < <(${NM} --quiet ${1})
-> -done < <(${NM} ${1} 2>/dev/null || { echo "${0}: ${NM} failed" >&2; false; } )
-> +done < <(${NM} ${1}  || { echo "${0}: ${NM} failed"
-> >>/mnt/tmp/log-check ; false; } )
-> 
->  # Catch error in the process substitution
->  wait $!
-> @@ -57,7 +57,7 @@ for name in "${export_symbols[@]}"
->  do
->         # nm(3) says "If lowercase, the symbol is usually local"
->         if [[ ${symbol_types[$name]} =~ [a-z] ]]; then
-> -               echo "$@: error: local symbol '${name}' was exported" >&2
-> +               echo "$@: error: local symbol '${name}' was exported"
-> >> /mnt/tmp/log-check
->                 exit_code=1
->         fi
->  done
-> 
-> Then I invoke torture.sh again, but after two rounds of test, the bug
-> did not appear, so I can't trace anything.
-> 
-> 6. Conclusion
-> Sorry to bring you so much trouble, I am very interested in this.
-> Could you please tell me what to do next?
 
-I recently had a strange build error that was caused by a different
-extraneous file.  I deleted the file and no problem since.  I suspect
-that the file was lying around because I had interrupted a previous
-build.  Though such files are -supposed- to be deleted when the build
-is interrupted.
 
-Next time you get an similar strange build error, try "git status"
-to see if it maybe doesn't belong.
-
-Beyond that point, I don't count myself as an expert on the Linux
-kernel's build system.
-
-							Thanx, Paul
-
-> Thanks
-> Zhouyi
+On 6/21/2022 3:47 AM, Paul E. McKenney wrote:
+> This commit provides documentation for the kernel parameter controlling
+> RCU's handling of callback floods on offloaded (rcu_nocbs) CPUs.
+> This parameter might be obscure, but it is always there when you need it.
 > 
-> On Thu, Jun 16, 2022 at 4:28 AM Zhouyi Zhou <zhouzhouyi@gmail.com> wrote:
-> >
-> > Thank Paul and Petr for your efforts!
-> >
-> > On Thu, Jun 16, 2022 at 3:09 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > >
-> > > On Wed, Jun 15, 2022 at 06:52:20AM -0700, Paul E. McKenney wrote:
-> > > > On Wed, Jun 15, 2022 at 08:36:54PM +0800, Zhouyi Zhou wrote:
-> > > > > On Wed, Jun 15, 2022 at 1:15 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > > > >
-> > > > > > On Wed, Jun 15, 2022 at 08:37:33AM +0800, zhouzhouyi@gmail.com wrote:
-> > > > > > > From: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> > > > > > >
-> > > > > > > currently tools/testing/selftests/rcutorture/bin/torture.sh reports
-> > > > > > > false positve because of kthread printing.
-> > > > > > >
-> > > > > > > Commit "printk: add functions to prefer direct printing" (2bb2b7b57f812)
-> > > > > > > have added functions to prefer direct printing activated for the primary
-> > > > > > > import messages.
-> > > > > > >
-> > > > > > > Meanwhile adding printk_prefer_direct_enter/exit to
-> > > > > > > torture_cleanup_begin/end still can't eliminate the false positives
-> > > > > > > for a hundred percent.
-> > > > > > >
-> > > > > > > This patch add pr_flush to torture_cleanup_end because the latter
-> > > > > > > is sleepable.
-> > > > > > >
-> > > > > > > Reported-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> > > > > > > Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> > > > > > > Tested-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> > > > > >
-> > > > > > Just the one Signed-off-by suffices.  ;-)
-> > > > > Thank Paul for your guidance ;-)
-> > > > > >
-> > > > > > > ---
-> > > > > > >  kernel/torture.c | 1 +
-> > > > > > >  1 file changed, 1 insertion(+)
-> > > > > > >
-> > > > > > > diff --git a/kernel/torture.c b/kernel/torture.c
-> > > > > > > index 789aeb0e1159..b51e42463a67 100644
-> > > > > > > --- a/kernel/torture.c
-> > > > > > > +++ b/kernel/torture.c
-> > > > > > > @@ -878,6 +878,7 @@ void torture_cleanup_end(void)
-> > > > > > >       mutex_lock(&fullstop_mutex);
-> > > > > > >       torture_type = NULL;
-> > > > > > >       mutex_unlock(&fullstop_mutex);
-> > > > > > > +     pr_flush(1000, true);
-> > > > > >
-> > > > > > But in this case, the kernel keeps on running, correct?  So won't the
-> > > > > > output appear over time?  All of printk()'s kthreads are still running
-> > > > > > after all.
-> > > > > I am doing research on linux-next following your guidance on my Dell
-> > > > > PowerEdge R720 server:
-> > > > > #git clone https://kernel.source.codeaurora.cn/pub/scm/linux/kernel/git/next/linux-next.git/
-> > > > > #cd linux-next
-> > > > > #./tools/testing/selftests/rcutorture/bin/torture.sh
-> > > > > after about 14 hours, the test result show that there have been about
-> > > > > 17 failures, I examine the corresponding console.log, and find the
-> > > > > failures are caused by following reason:
-> > > > > before the message output by
-> > > > > rcu/lock/scf_torture_print_module_parms(cur_ops, "End of test:
-> > > > > SUCCESS") has reached serial console, torture_shutdown invoked
-> > > > > kernel_power_off(),
-> > > >
-> > > > Ah, got it!  And good show tracking this down, by the way.
-> > > >
-> > > > Does this workaround commit on -rcu do the trick for you?
-> > > >
-> > > > 704ae8dcda84 ("torture: Flush printk() buffers before powering off")
-> > > >
-> > > > The printk() guys are looking at fixes within the printk() system
-> > > > as well:
-> > > >
-> > > > https://lore.kernel.org/all/87tu8pgcj0.fsf@jogness.linutronix.de/
-> > > > https://lore.kernel.org/all/YqdSw%2FfJvnkRbjvc@alley/
-> > >
-> > > And Petr has posted a more official fix, which I have queued on -rcu
-> > > for testing at branch pmladek.2022.06.15a.
-> > I am very happy to see the official fix, and start test it on my Dell
-> > server by invoking
-> > ./tools/testing/selftests/rcutorture/bin/torture.sh
-> >
-> > It will take 12 hours for the above script to finish if the other guy
-> > who shares the server with me doesn't use it heavily ;-)
-> >
-> > Thanks
-> > Sincerely yours
-> > Zhouyi
-> > >
-> > >                                                         Thanx, Paul
-> > >
-> > > > > so the message "End of test: SUCCESS" has not chance of reaching
-> > > > > console.log of host machine.
-> > > > >
-> > > > > Then I add printk_prefer_direct_enter/exit to
-> > > > > torture_cleanup_begin/end, again I invoke
-> > > > > #./tools/testing/selftests/rcutorture/bin/torture.sh
-> > > > > after about 14 hours, the test result show that there have been about
-> > > > > 5 failures,
-> > > > >
-> > > > > Then I add a debug statement after
-> > > > > rcu/lock/scf_torture_print_module_parms(cur_ops, "End of test:
-> > > > > SUCCESS") which sends the debug string ("hello world") to
-> > > > > uart_console_write directly, again I invoke
-> > > > > #./tools/testing/selftests/rcutorture/bin/torture.sh
-> > > > > There is "hello world" in console.log but no "End of test" strings.
-> > > > >
-> > > > > So I guess even with printk_prefer_direct_enter/exit to
-> > > > > torture_cleanup_begin/end,  our main shutdown thread has failed in
-> > > > > competition for console lock (printk.c):
-> > > > > 2401 if (console_trylock_spinning())
-> > > > > 2402     console_unlock();
-> > > > >
-> > > > > Then I add pr_flush to torture_cleanup_end
-> > > > > #./tools/testing/selftests/rcutorture/bin/torture.sh
-> > > > > after 14 hours
-> > > > > all 49 tests are success
-> > > > > >
-> > > > > > Or do you have a use case that requires that the output appear sooner
-> > > > > > than it does?  If so, please let me know what that is.
-> > > > > Thank Paul for your patience,
-> > > > > ./tools/testing/selftests/rcutorture/bin/torture.sh is the only tool
-> > > > > that I use.
-> > > > >
-> > > > > I am very interested in this topic, and very glad to do further
-> > > > > experiments under your guidance ;-)
-> > > >
-> > > > Or are you already running with that commit or one of those patches?
-> > > > They are working reliably for me (so far, anyway), but maybe more is
-> > > > needed in some cases.
-> > > >
-> > > >                                                       Thanx, Paul
-> > > >
-> > > > > Sincerely yours
-> > > > > Thanks
-> > > > > Zhouyi
-> > > > > >
-> > > > > >                                                         Thanx, Paul
-> > > > > >
-> > > > > > >  }
-> > > > > > >  EXPORT_SYMBOL_GPL(torture_cleanup_end);
-> > > > > > >
-> > > > > > > --
-> > > > > > > 2.25.1
-> > > > > > >
+> Reported-by: Frederic Weisbecker <frederic@kernel.org>
+> Reported-by: Uladzislau Rezki <urezki@gmail.com>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> ---
+
+Reviewed-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+
+>   Documentation/admin-guide/kernel-parameters.txt | 13 +++++++++++++
+>   1 file changed, 13 insertions(+)
+> 
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index bdf431bdbfdc4..a30890141b1a5 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -4681,6 +4681,19 @@
+>   			invoked in the context of an rcuoc kthread, which
+>   			scheduler will preempt as it does any other task.
+>   
+> +	rcutree.nocb_nobypass_lim_per_jiffy= [KNL]
+> +			On callback-offloaded (rcu_nocbs) CPUs,
+> +			RCU reduces the lock contention that would
+> +			otherwise be caused callback floods through
+
+Minor : "caused by" ?
+
+
+Thanks
+Neeraj
+
+> +			use of the ->nocb_bypass list.	However, in the
+> +			common non-flooded case, RCU queues directly to
+> +			the main ->cblist in order to avoid the extra
+> +			overhead of the ->nocb_bypass list and its lock.
+> +			But if there are too many callbacks queued during
+> +			a single jiffy, RCU pre-queues the callbacks into
+> +			the ->nocb_bypass queue.  The definition of "too
+> +			many" is supplied by this kernel boot parameter.
+> +
+>   	rcutree.rcu_nocb_gp_stride= [KNL]
+>   			Set the number of NOCB callback kthreads in
+>   			each group, which defaults to the square root
