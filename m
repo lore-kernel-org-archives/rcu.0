@@ -2,155 +2,340 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 33981C433EF
-	for <rcu@archiver.kernel.org>; Tue, 21 Jun 2022 03:15:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 694A7C433EF
+	for <rcu@archiver.kernel.org>; Tue, 21 Jun 2022 04:39:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245506AbiFUDPw (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 20 Jun 2022 23:15:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43628 "EHLO
+        id S244636AbiFUEjP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 21 Jun 2022 00:39:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242106AbiFUDPv (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 20 Jun 2022 23:15:51 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE5751FCC9;
-        Mon, 20 Jun 2022 20:15:50 -0700 (PDT)
+        with ESMTP id S233633AbiFUEjP (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 21 Jun 2022 00:39:15 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA16B1D0E1;
+        Mon, 20 Jun 2022 21:39:13 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 707146102F;
-        Tue, 21 Jun 2022 03:15:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA802C3411B;
-        Tue, 21 Jun 2022 03:15:49 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 0CD55B81693;
+        Tue, 21 Jun 2022 04:39:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC7E7C3411D;
+        Tue, 21 Jun 2022 04:39:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655781349;
-        bh=DWJ7U3bJ5onh5qejtXviF2uTYPEnnM4yUBhRX9yiw0k=;
+        s=k20201202; t=1655786350;
+        bh=NuxTjux50WYLm0GIH3H0DVcSPUrCq+P1Nm9REg9kwaw=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=m6Gn6VMkawK3Qd/gva8YurTcNnh44llHBPWLPqR7XY90KhXnLuJTVnJZcTOM1dkMf
-         dcQvWtLUtFsW0JTxAF9nzgDIq9Fk5YJ92oKnScJ8InGo9QkPw61QJHPqnf+s8Z5+nY
-         SuZywUIx5Eysr1K+7gpsR7O48SR62JUwyFOXPx4BzZvw3hGOKnHiM9uiCv9vCxFZHt
-         3A6O492NTIIOyeA2VzpHl8hnpUtE1Ee86KrzdVmuDTrwJmEPVNc39tODYgKcjx6GcD
-         4X8HEps/Oe1aYAqzHwGyYuVvWNhjqWc/hmqWRfd7Tq16rYdIpR7Pl2fMfAe7FSjZGl
-         nY6LMFJs6/guQ==
+        b=lG5g0TV45jdk96AuA+uzEwkik4/65B/50DQ3I53nt5o3v+TzWfc8ASiylqX4+xKrd
+         IYC3iZbgCkBwwKgjjobC4ka+A9Eum557TXw2PXjHXlJ/Mn3hrMPeDyL30Nt+sDQ5ZO
+         /2CtUhotqXI3wbLngkiplz+pRGBJrS+QRwzYA7LpynqwadOHbddw278YEooCqGLGli
+         zC4M9Zz6S3BxDrgoIVs0bPePOiXi48EH/smCPQE6lEB7/pR2EhiO94sG1hjOeYT5yy
+         p7RmZq/ZOdk/wnC8sO4U7i6n/HtT4+HbGt8iuWycNq1m/h+YFG15vXwiZ624jSQ0jv
+         57FcgCIKKg4sQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 63DA75C0531; Mon, 20 Jun 2022 20:15:49 -0700 (PDT)
-Date:   Mon, 20 Jun 2022 20:15:49 -0700
+        id 4FAFB5C0399; Mon, 20 Jun 2022 21:39:10 -0700 (PDT)
+Date:   Mon, 20 Jun 2022 21:39:10 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Zhangfei Gao <zhangfei.gao@linaro.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, rostedt@goodmis.org,
-        Shameerali Kolothum Thodi 
-        <shameerali.kolothum.thodi@huawei.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH rcu 12/12] srcu: Block less aggressively for expedited
- grace periods
-Message-ID: <20220621031549.GC1790663@paulmck-ThinkPad-P17-Gen-1>
+To:     Zhouyi Zhou <zhouzhouyi@gmail.com>
+Cc:     john.ogness@linutronix.de, pmladek@suse.com, dave@stgolabs.net,
+        Josh Triplett <josh@joshtriplett.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        rcu <rcu@vger.kernel.org>
+Subject: Re: [PATCH linux-next] RFC: torture: add pr_flush to flush the
+ results to console
+Message-ID: <20220621043910.GD1790663@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20220620222022.GA3839466@paulmck-ThinkPad-P17-Gen-1>
- <20220620222032.3839547-12-paulmck@kernel.org>
- <6b89e108-69e1-5fe2-67ba-3dac9ec60f83@linaro.org>
+References: <20220615003733.16447-1-zhouzhouyi@gmail.com>
+ <20220615051521.GH1790663@paulmck-ThinkPad-P17-Gen-1>
+ <CAABZP2wCos5xupRQ2LbJtaLVN1a7i0D5kwaVTq9DEov8C46Gkw@mail.gmail.com>
+ <20220615135220.GI1790663@paulmck-ThinkPad-P17-Gen-1>
+ <20220615190936.GA713726@paulmck-ThinkPad-P17-Gen-1>
+ <CAABZP2wstbe+Exa3NWWygOAF5S4BtHfgJcb_r78uz-jq2KtU9Q@mail.gmail.com>
+ <CAABZP2yLfpoaX82Nwg_QPWmF+ATMhetykN+k1fo624PWSKaHtg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6b89e108-69e1-5fe2-67ba-3dac9ec60f83@linaro.org>
+In-Reply-To: <CAABZP2yLfpoaX82Nwg_QPWmF+ATMhetykN+k1fo624PWSKaHtg@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Jun 21, 2022 at 10:00:07AM +0800, Zhangfei Gao wrote:
+On Tue, Jun 21, 2022 at 08:22:15AM +0800, Zhouyi Zhou wrote:
+> [add Masahiro to CC list]
 > 
+> 1. Abstract:
+> During the test of  0ba7324b44282870af740a5a121add62c7f5f730 ("printk:
+> Wait for the global console lock when the system is going down"), I
+> found
+> 0ba7324b44282870af740a5a121add62c7f5f730 itself is OK. But I guess
+> 31cb50b5590fe911077b8463ad01144fac8fa4f3 ("kbuild: check static
+> EXPORT_SYMBOL* by script instead of modpost")
+> lead to build systems failing in a random way.
 > 
-> On 2022/6/21 上午6:20, Paul E. McKenney wrote:
-> > Commit 282d8998e997 ("srcu: Prevent expedited GPs and blocking readers
-> > from consuming CPU") fixed a problem where a long-running expedited SRCU
-> > grace period could block kernel live patching.  It did so by giving up
-> > on expediting once a given SRCU expedited grace period grew too old.
-> > 
-> > Unfortunately, this added excessive delays to boots of embedded systems
-> > running on qemu that use the ARM IORT RMR feature.  This commit therefore
-> > makes the transition away from expediting less aggressive, increasing
-> > the per-grace-period phase number of non-sleeping polls of readers from
-> > one to three and increasing the required grace-period age from one jiffy
-> > (actually from zero to one jiffies) to two jiffies (actually from one
-> > to two jiffies).
-> > 
-> > Fixes: 282d8998e997 ("srcu: Prevent expedited GPs and blocking readers from consuming CPU")
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > Reported-by: Zhangfei Gao <zhangfei.gao@linaro.org>
-> > Reported-by: chenxiang (M)" <chenxiang66@hisilicon.com>
-> > Cc: Shameerali Kolothum Thodi  <shameerali.kolothum.thodi@huawei.com>
-> > Cc: Paolo Bonzini <pbonzini@redhat.com>
-> > Link: https://lore.kernel.org/all/20615615-0013-5adc-584f-2b1d5c03ebfc@linaro.org/
+> 2. Introduction:
+> To test 0ba7324b44282870af740a5a121add62c7f5f730 ("printk: Wait for
+> the global console lock when the system is going down"), I do
+> following both on
+> my Dell PowerEdge R720 server (128G memory, 16 core Intel(R) Xeon(R)
+> CPU E5-2660) and my Thinkpad T14 amd laptop (40G memory, 8 core AMD
+> Ryzen 7 PRO 4750U)
+> #git clone https://kernel.source.codeaurora.cn/pub/scm/linux/kernel/git/paulmck/linux-rcu.git
+> #cd linux-rcu
+> #git checkout remotes/origin/pmladek.2022.06.15a
+> #./tools/testing/selftests/rcutorture/bin/torture.sh
 > 
-> Test on 5.19-rc1 with this patch with qemu boot with -bios QEMU_EFI-2022.fd,
-> seems not work, same as rc1.
+> 3. The Testing
+> 3.1
+> On Dell PowerEdge R720 server, I performed torture.sh for 6 rounds
+> (each cost 12 hours to finish)
+> five of them report build failure, for example:
+> root@42d29c5cef4b:/mnt/linux-rcu/tools/testing/selftests/rcutorture/res#
+> find . -name Make.out|xargs grep Error
+> ./2022.06.19-09.29.42-torture/results-rcutorture/TREE07/Make.out:make[2]:
+> *** [scripts/Makefile.build:249: security/selinux/ss/services.o] Error
+> 255
+> ./2022.06.19-09.29.42-torture/results-rcutorture/TREE07/Make.out:make[1]:
+> *** [scripts/Makefile.build:466: security/selinux] Error 2
+> ./2022.06.19-09.29.42-torture/results-rcutorture/TREE07/Make.out:make:
+> *** [Makefile:1839: security] Error 2
+> one of them passed all the tests:
+> Started at Mon Jun 20 06:09:33 CST 2022, ended at Mon Jun 20 18:34:30
+> CST 2022, duration 12:24:57.
+> Summary: Successes: 49 Failures: 0.
+> Size before compressing 60 files: 66G Mon Jun 20 18:34:30 CST 2022
+> Waiting for batch 1 of 32 compressions Mon Jun 20 18:34:30 CST 2022
+> Waiting for final batch 2 of 28 compressions Mon Jun 20 19:12:03 CST 2022
+> Size after compressing 60 files: 15G Mon Jun 20 19:46:42 CST 2022
+> 3.2
+> On Thinkpad T14 amd laptop, I performed torture.sh for 2 rounds (each
+> cost 13 hours to finish)
+> one of them report build failure:
+> zzy@zzy-ThinkPad-T14-Gen-1:~/Program/linux-rcu/tools/testing/selftests/rcutorture/res$
+> find . -name Make.out|xargs grep Error
+> ./2022.06.17-22.45.37-torture/results-refscale-refcnt-kasan/NOPREEMPT/Make.out:make[1]:
+> *** [scripts/Makefile.build:249: arch/x86/boot/pm.o] Error 255
+> ./2022.06.17-22.45.37-torture/results-refscale-refcnt-kasan/NOPREEMPT/Make.out:make:
+> *** [arch/x86/Makefile:265: bzImage] Error 2
+> another passed all the tests:
 > 
-> real    2m42.948s
-> user    0m2.843s
-> sys     0m1.170s
+> 4. Guess what caused the build error
+> On Dell PowerEdge R720:
+> root@42d29c5cef4b:/mnt/linux-rcu/tools/testing/selftests/rcutorture/res#
+> find . -name Make.out|xargs grep Error
+> ./2022.06.19-09.29.42-torture/results-rcutorture/TREE07/Make.out:make[2]:
+> *** [scripts/Makefile.build:249: security/selinux/ss/services.o] Error
+> 255
+> root@42d29c5cef4b:/mnt/linux-rcu/tools/testing/selftests/rcutorture/res#
+> emacs ./2022.06.19-09.29.42-torture/results-rcutorture/TREE07/Make.out
+> I search services.o in my emacs editor, the only clue is:
+> ./scripts/check-local-export security/selinux/ss/services.o
+> make[2]: *** [scripts/Makefile.build:249:
+> security/selinux/ss/services.o] Error 255
+> make[2]: *** Deleting file 'security/selinux/ss/services.o'
+> make[2]: *** Waiting for unfinished jobs....
 > 
-> qemu: stable-6.1
+> 5. Try to trace
+> I have tried to trace the root cause of the problem, by modifying
+> scripts/check-local-export:
+> diff --git a/scripts/check-local-export b/scripts/check-local-export
+> index da745e2743b7..a66ff333f22b 100755
+> --- a/scripts/check-local-export
+> +++ b/scripts/check-local-export
+> @@ -12,7 +12,7 @@ declare -A symbol_types
+>  declare -a export_symbols
 > 
-> build/aarch64-softmmu/qemu-system-aarch64 -machine
-> virt,gic-version=3,iommu=smmuv3 \
-> -enable-kvm -cpu host -m 1024 \
-> -kernel /home/linaro/Image -initrd /home/linaro/tmp/ramdisk-new.img
-> -nographic -append \
-> "rdinit=init console=ttyAMA0 earlycon=pl011,0x9000000 kpti=off acpi=force" \
-> -bios QEMU_EFI-2022.fd
+>  exit_code=0
+> -
+> +cp ${1} /mnt/tmp/
+>  while read value type name
+>  do
+>         # Skip the line if the number of fields is less than 3.
+> @@ -48,7 +48,7 @@ do
+>         #
+>         # Then, the following line will be really simple:
+>         #   done < <(${NM} --quiet ${1})
+> -done < <(${NM} ${1} 2>/dev/null || { echo "${0}: ${NM} failed" >&2; false; } )
+> +done < <(${NM} ${1}  || { echo "${0}: ${NM} failed"
+> >>/mnt/tmp/log-check ; false; } )
+> 
+>  # Catch error in the process substitution
+>  wait $!
+> @@ -57,7 +57,7 @@ for name in "${export_symbols[@]}"
+>  do
+>         # nm(3) says "If lowercase, the symbol is usually local"
+>         if [[ ${symbol_types[$name]} =~ [a-z] ]]; then
+> -               echo "$@: error: local symbol '${name}' was exported" >&2
+> +               echo "$@: error: local symbol '${name}' was exported"
+> >> /mnt/tmp/log-check
+>                 exit_code=1
+>         fi
+>  done
+> 
+> Then I invoke torture.sh again, but after two rounds of test, the bug
+> did not appear, so I can't trace anything.
+> 
+> 6. Conclusion
+> Sorry to bring you so much trouble, I am very interested in this.
+> Could you please tell me what to do next?
 
-Understood.  This patch fixes some cases, but not your case.  Which is
-why you guys are experimenting with additional changes.  In the meantime,
-this patch helps at least some people.  I look forward to you guys have
-an appropriate solution that I can pull in on top of this one.
+I recently had a strange build error that was caused by a different
+extraneous file.  I deleted the file and no problem since.  I suspect
+that the file was lying around because I had interrupted a previous
+build.  Though such files are -supposed- to be deleted when the build
+is interrupted.
 
-Or, if the solution shows up quickly enough, I can replace this patch
-with your guys' solution.
+Next time you get an similar strange build error, try "git status"
+to see if it maybe doesn't belong.
+
+Beyond that point, I don't count myself as an expert on the Linux
+kernel's build system.
 
 							Thanx, Paul
 
 > Thanks
-> > ---
-> >   kernel/rcu/srcutree.c | 20 +++++++++++++-------
-> >   1 file changed, 13 insertions(+), 7 deletions(-)
-> > 
-> > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> > index 50ba70f019dea..0db7873f4e95b 100644
-> > --- a/kernel/rcu/srcutree.c
-> > +++ b/kernel/rcu/srcutree.c
-> > @@ -513,7 +513,7 @@ static bool srcu_readers_active(struct srcu_struct *ssp)
-> >   #define SRCU_INTERVAL		1	// Base delay if no expedited GPs pending.
-> >   #define SRCU_MAX_INTERVAL	10	// Maximum incremental delay from slow readers.
-> > -#define SRCU_MAX_NODELAY_PHASE	1	// Maximum per-GP-phase consecutive no-delay instances.
-> > +#define SRCU_MAX_NODELAY_PHASE	3	// Maximum per-GP-phase consecutive no-delay instances.
-> >   #define SRCU_MAX_NODELAY	100	// Maximum consecutive no-delay instances.
-> >   /*
-> > @@ -522,16 +522,22 @@ static bool srcu_readers_active(struct srcu_struct *ssp)
-> >    */
-> >   static unsigned long srcu_get_delay(struct srcu_struct *ssp)
-> >   {
-> > +	unsigned long gpstart;
-> > +	unsigned long j;
-> >   	unsigned long jbase = SRCU_INTERVAL;
-> >   	if (ULONG_CMP_LT(READ_ONCE(ssp->srcu_gp_seq), READ_ONCE(ssp->srcu_gp_seq_needed_exp)))
-> >   		jbase = 0;
-> > -	if (rcu_seq_state(READ_ONCE(ssp->srcu_gp_seq)))
-> > -		jbase += jiffies - READ_ONCE(ssp->srcu_gp_start);
-> > -	if (!jbase) {
-> > -		WRITE_ONCE(ssp->srcu_n_exp_nodelay, READ_ONCE(ssp->srcu_n_exp_nodelay) + 1);
-> > -		if (READ_ONCE(ssp->srcu_n_exp_nodelay) > SRCU_MAX_NODELAY_PHASE)
-> > -			jbase = 1;
-> > +	if (rcu_seq_state(READ_ONCE(ssp->srcu_gp_seq))) {
-> > +		j = jiffies - 1;
-> > +		gpstart = READ_ONCE(ssp->srcu_gp_start);
-> > +		if (time_after(j, gpstart))
-> > +			jbase += j - gpstart;
-> > +		if (!jbase) {
-> > +			WRITE_ONCE(ssp->srcu_n_exp_nodelay, READ_ONCE(ssp->srcu_n_exp_nodelay) + 1);
-> > +			if (READ_ONCE(ssp->srcu_n_exp_nodelay) > SRCU_MAX_NODELAY_PHASE)
-> > +				jbase = 1;
-> > +		}
-> >   	}
-> >   	return jbase > SRCU_MAX_INTERVAL ? SRCU_MAX_INTERVAL : jbase;
-> >   }
+> Zhouyi
 > 
+> On Thu, Jun 16, 2022 at 4:28 AM Zhouyi Zhou <zhouzhouyi@gmail.com> wrote:
+> >
+> > Thank Paul and Petr for your efforts!
+> >
+> > On Thu, Jun 16, 2022 at 3:09 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+> > >
+> > > On Wed, Jun 15, 2022 at 06:52:20AM -0700, Paul E. McKenney wrote:
+> > > > On Wed, Jun 15, 2022 at 08:36:54PM +0800, Zhouyi Zhou wrote:
+> > > > > On Wed, Jun 15, 2022 at 1:15 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> > > > > >
+> > > > > > On Wed, Jun 15, 2022 at 08:37:33AM +0800, zhouzhouyi@gmail.com wrote:
+> > > > > > > From: Zhouyi Zhou <zhouzhouyi@gmail.com>
+> > > > > > >
+> > > > > > > currently tools/testing/selftests/rcutorture/bin/torture.sh reports
+> > > > > > > false positve because of kthread printing.
+> > > > > > >
+> > > > > > > Commit "printk: add functions to prefer direct printing" (2bb2b7b57f812)
+> > > > > > > have added functions to prefer direct printing activated for the primary
+> > > > > > > import messages.
+> > > > > > >
+> > > > > > > Meanwhile adding printk_prefer_direct_enter/exit to
+> > > > > > > torture_cleanup_begin/end still can't eliminate the false positives
+> > > > > > > for a hundred percent.
+> > > > > > >
+> > > > > > > This patch add pr_flush to torture_cleanup_end because the latter
+> > > > > > > is sleepable.
+> > > > > > >
+> > > > > > > Reported-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+> > > > > > > Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+> > > > > > > Tested-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+> > > > > >
+> > > > > > Just the one Signed-off-by suffices.  ;-)
+> > > > > Thank Paul for your guidance ;-)
+> > > > > >
+> > > > > > > ---
+> > > > > > >  kernel/torture.c | 1 +
+> > > > > > >  1 file changed, 1 insertion(+)
+> > > > > > >
+> > > > > > > diff --git a/kernel/torture.c b/kernel/torture.c
+> > > > > > > index 789aeb0e1159..b51e42463a67 100644
+> > > > > > > --- a/kernel/torture.c
+> > > > > > > +++ b/kernel/torture.c
+> > > > > > > @@ -878,6 +878,7 @@ void torture_cleanup_end(void)
+> > > > > > >       mutex_lock(&fullstop_mutex);
+> > > > > > >       torture_type = NULL;
+> > > > > > >       mutex_unlock(&fullstop_mutex);
+> > > > > > > +     pr_flush(1000, true);
+> > > > > >
+> > > > > > But in this case, the kernel keeps on running, correct?  So won't the
+> > > > > > output appear over time?  All of printk()'s kthreads are still running
+> > > > > > after all.
+> > > > > I am doing research on linux-next following your guidance on my Dell
+> > > > > PowerEdge R720 server:
+> > > > > #git clone https://kernel.source.codeaurora.cn/pub/scm/linux/kernel/git/next/linux-next.git/
+> > > > > #cd linux-next
+> > > > > #./tools/testing/selftests/rcutorture/bin/torture.sh
+> > > > > after about 14 hours, the test result show that there have been about
+> > > > > 17 failures, I examine the corresponding console.log, and find the
+> > > > > failures are caused by following reason:
+> > > > > before the message output by
+> > > > > rcu/lock/scf_torture_print_module_parms(cur_ops, "End of test:
+> > > > > SUCCESS") has reached serial console, torture_shutdown invoked
+> > > > > kernel_power_off(),
+> > > >
+> > > > Ah, got it!  And good show tracking this down, by the way.
+> > > >
+> > > > Does this workaround commit on -rcu do the trick for you?
+> > > >
+> > > > 704ae8dcda84 ("torture: Flush printk() buffers before powering off")
+> > > >
+> > > > The printk() guys are looking at fixes within the printk() system
+> > > > as well:
+> > > >
+> > > > https://lore.kernel.org/all/87tu8pgcj0.fsf@jogness.linutronix.de/
+> > > > https://lore.kernel.org/all/YqdSw%2FfJvnkRbjvc@alley/
+> > >
+> > > And Petr has posted a more official fix, which I have queued on -rcu
+> > > for testing at branch pmladek.2022.06.15a.
+> > I am very happy to see the official fix, and start test it on my Dell
+> > server by invoking
+> > ./tools/testing/selftests/rcutorture/bin/torture.sh
+> >
+> > It will take 12 hours for the above script to finish if the other guy
+> > who shares the server with me doesn't use it heavily ;-)
+> >
+> > Thanks
+> > Sincerely yours
+> > Zhouyi
+> > >
+> > >                                                         Thanx, Paul
+> > >
+> > > > > so the message "End of test: SUCCESS" has not chance of reaching
+> > > > > console.log of host machine.
+> > > > >
+> > > > > Then I add printk_prefer_direct_enter/exit to
+> > > > > torture_cleanup_begin/end, again I invoke
+> > > > > #./tools/testing/selftests/rcutorture/bin/torture.sh
+> > > > > after about 14 hours, the test result show that there have been about
+> > > > > 5 failures,
+> > > > >
+> > > > > Then I add a debug statement after
+> > > > > rcu/lock/scf_torture_print_module_parms(cur_ops, "End of test:
+> > > > > SUCCESS") which sends the debug string ("hello world") to
+> > > > > uart_console_write directly, again I invoke
+> > > > > #./tools/testing/selftests/rcutorture/bin/torture.sh
+> > > > > There is "hello world" in console.log but no "End of test" strings.
+> > > > >
+> > > > > So I guess even with printk_prefer_direct_enter/exit to
+> > > > > torture_cleanup_begin/end,  our main shutdown thread has failed in
+> > > > > competition for console lock (printk.c):
+> > > > > 2401 if (console_trylock_spinning())
+> > > > > 2402     console_unlock();
+> > > > >
+> > > > > Then I add pr_flush to torture_cleanup_end
+> > > > > #./tools/testing/selftests/rcutorture/bin/torture.sh
+> > > > > after 14 hours
+> > > > > all 49 tests are success
+> > > > > >
+> > > > > > Or do you have a use case that requires that the output appear sooner
+> > > > > > than it does?  If so, please let me know what that is.
+> > > > > Thank Paul for your patience,
+> > > > > ./tools/testing/selftests/rcutorture/bin/torture.sh is the only tool
+> > > > > that I use.
+> > > > >
+> > > > > I am very interested in this topic, and very glad to do further
+> > > > > experiments under your guidance ;-)
+> > > >
+> > > > Or are you already running with that commit or one of those patches?
+> > > > They are working reliably for me (so far, anyway), but maybe more is
+> > > > needed in some cases.
+> > > >
+> > > >                                                       Thanx, Paul
+> > > >
+> > > > > Sincerely yours
+> > > > > Thanks
+> > > > > Zhouyi
+> > > > > >
+> > > > > >                                                         Thanx, Paul
+> > > > > >
+> > > > > > >  }
+> > > > > > >  EXPORT_SYMBOL_GPL(torture_cleanup_end);
+> > > > > > >
+> > > > > > > --
+> > > > > > > 2.25.1
+> > > > > > >
