@@ -2,120 +2,163 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DF68C433EF
-	for <rcu@archiver.kernel.org>; Tue, 21 Jun 2022 21:15:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C415CCA483
+	for <rcu@archiver.kernel.org>; Tue, 21 Jun 2022 21:23:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354572AbiFUVPZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 21 Jun 2022 17:15:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33882 "EHLO
+        id S1355626AbiFUVXu (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 21 Jun 2022 17:23:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356700AbiFUVOL (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 21 Jun 2022 17:14:11 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20FA3344D7;
-        Tue, 21 Jun 2022 14:01:05 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1EB9660E17;
-        Tue, 21 Jun 2022 21:01:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80709C3411C;
-        Tue, 21 Jun 2022 21:01:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655845263;
-        bh=WT4SOxCLaIR0gYHkVAL25jmyZOnuo2xSnBmePJjtpcw=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=l5PqjmlAOTto2xaG15RwrnEcOogpugolWBH0n4c3mOytGz46EH8i/lhp5y4BVI8IE
-         qbQnOSFqxn2oB3xSWSVE0KgOtWEoifbD4+i/GcnZkXgKn7FAHoR+AcZ+VyK8+Jy40B
-         l4g+duaq4NnY4yknd9ia9kuLwynS5qO2SstmrlYre5i9KlQa0jviCAgRIvnhZTv6jZ
-         kdWLDB+VA7kGaZVNp+xBcEl1J88HdAXIiEm5uK6qOep9DjbBW/TqzvW1z5/RRPixEl
-         6OZAc1LmnG/vd7bIFF1snYLc7xgMMMlnOvXgz4B5/aLCdqVvC116Nnofj+Q5A51Awf
-         9CNWe+Us1XcaQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 184435C0AE0; Tue, 21 Jun 2022 14:01:03 -0700 (PDT)
-Date:   Tue, 21 Jun 2022 14:01:03 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, rostedt@goodmis.org
-Subject: Re: [PATCH rcu 11/12] torture: Flush printk() buffers before
- powering off
-Message-ID: <20220621210103.GO1790663@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220620225814.GA3842995@paulmck-ThinkPad-P17-Gen-1>
- <20220620225817.3843106-11-paulmck@kernel.org>
- <8735fyc42v.fsf@jogness.linutronix.de>
- <20220620232838.GZ1790663@paulmck-ThinkPad-P17-Gen-1>
- <87v8suphdy.fsf@jogness.linutronix.de>
- <20220621181335.GJ1790663@paulmck-ThinkPad-P17-Gen-1>
- <87ilotagdw.fsf@jogness.linutronix.de>
+        with ESMTP id S1355882AbiFUVXV (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 21 Jun 2022 17:23:21 -0400
+Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0641D31DEC
+        for <rcu@vger.kernel.org>; Tue, 21 Jun 2022 14:14:41 -0700 (PDT)
+Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-3176d94c236so143935847b3.3
+        for <rcu@vger.kernel.org>; Tue, 21 Jun 2022 14:14:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8yIAX+lvUymbsHNaxAK41tFZmVKTSKJvlAJCa+4ex74=;
+        b=q5+E1Sv9MjbRWtturKPoAKfEX/02xyKHHxLlMI16QCcjbn/vbTaM+jSpXdcPMl7Zh4
+         f06Em9zkIGDmH4vsFpnMjLiLXpraHO1baQqUIflQaz838HNFKS4rJ7QvSoXoo5/3sHf3
+         KotpIVA0JKxrurXUIIG/hPsVWtLaFTn6I4s52cGQ+mkeRSZfcVIYI/nV6V2dDGyfDL1f
+         a88GmtuYXclahZxvb37ko3fSr90W6AodE4XB/SCVAW0qGN43PDZkZE0pixeSblHSWt65
+         TU26DwjL5KFq8M1XH1mHGr+hnkv9sEo2F6Pr6D3pNEhhTAmovWtaSzNI57K+6sGdk+ap
+         lung==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8yIAX+lvUymbsHNaxAK41tFZmVKTSKJvlAJCa+4ex74=;
+        b=JqjyYWHbPK3gvbL3LOEd+urL1LcoVPOA6N2pLKYlDYnCrGCX1Eb3cnoQqwqidprki0
+         FxlnOmrgd6Ri3G1QtGI/0uu02jRms7PaKhbB25uePWC3xO+v999wSjBO1OboEbB8aM0t
+         TUq9eVApRhRsNGWbfEmlqbsUKFU2/f/aHcOSiYURIS8jTiEIO53UFz4EyS3bASmCBd3S
+         n5rMX7M6i3ABLa6NNRXXXHqFytsJ6/JCOOFacCe8zw6RuGGhnEupW0d2YESXqFBMFYMx
+         J9ULbU1VypzbLTVE6X80GsuRbLAn81QioWkqni7Ks4hFeoMPSRrNQjgEwKl37VbiRc08
+         Ukfw==
+X-Gm-Message-State: AJIora9JsBWOhQUK1FfxHidVw26E17urKTtNybCtyrQ70Z/2IQkqdZEP
+        oD2MgyxJd2KY+qdMBz43BoXFSsNvcI9EMhY6Q2wOZg==
+X-Google-Smtp-Source: AGRyM1vJwyNgsXsZrcOlfsc2unXvK/3Pu1Iq0DNUgKATO0iF5eMLh5HQK7cALY8mwHq9w1ZZG1g5ZXfzwoVP8ZsuA+I=
+X-Received: by 2002:a81:488f:0:b0:317:7514:ecd0 with SMTP id
+ v137-20020a81488f000000b003177514ecd0mr166210ywa.412.1655846080010; Tue, 21
+ Jun 2022 14:14:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87ilotagdw.fsf@jogness.linutronix.de>
+References: <20220620222022.GA3839466@paulmck-ThinkPad-P17-Gen-1>
+ <20220620222032.3839547-7-paulmck@kernel.org> <00f3eb47-2529-a493-ee67-c0c0219937a3@quicinc.com>
+ <20220621193135.GM1790663@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20220621193135.GM1790663@paulmck-ThinkPad-P17-Gen-1>
+From:   Marco Elver <elver@google.com>
+Date:   Tue, 21 Jun 2022 23:14:04 +0200
+Message-ID: <CANpmjNOBD6B_hY-rGCtdk2+fFox6DhsLE_bp9Q8sU=AQZs9ySQ@mail.gmail.com>
+Subject: Re: [PATCH rcu 07/12] rcu: tiny: Record kvfree_call_rcu() call stack
+ for KASAN
+To:     paulmck@kernel.org
+Cc:     Neeraj Upadhyay <quic_neeraju@quicinc.com>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com,
+        rostedt@goodmis.org, Johannes Berg <johannes.berg@intel.com>,
+        Dmitry Vyukov <dvyukov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Jun 21, 2022 at 10:58:27PM +0206, John Ogness wrote:
-> On 2022-06-21, "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> > The patch below will cause rcutorture to implicitly test this
-> > functionality, unless told otherwise, for example, by using the
-> > --bootargs "torture.printk_shutdown_bug_workaround" kvm.sh
-> > argument.
+On Tue, 21 Jun 2022 at 21:31, Paul E. McKenney <paulmck@kernel.org> wrote:
+>
+> On Tue, Jun 21, 2022 at 12:01:29PM +0530, Neeraj Upadhyay wrote:
 > >
-> > Thoughts?
-> 
-> I feel like this is dirtying the torture.* bootarg namespace a
-> bit. Also, I am not sure how useful it is as a dynamic option. I assume
-> that users would generally avoid using it, so its very existence might
-> just be more noise in the documentation and code. It is an unusual
-> feature:
-> 
-> "In case some bug shows up, here is a flag to avoid it."
-> 
-> I personally would just drop the patch and rely on a correctly
-> functional kernel. But I am also not an rcutorture user. If _you_ think
-> that such a flag is useful, feel free to include the patch.
-
-Fair points!
-
-The main value to me is to avoid me having to pile through code to relearn
-the incantation pr_flush(1000, true).  Which, now that you mention it,
-could be dealt with by adding a comment:
-
-	// pr_flush(1000, true); // If needed to flush printk() buffers.
-
-This definitely will not go into the upcoming merge window, so there is
-plenty of time to give it some thought.
-
-> > commit 204bf1e2a5a2fb68c15b4b64793ad0896db6f705
-> > Author: Paul E. McKenney <paulmck@kernel.org>
-> > Date:   Tue Jun 21 11:02:25 2022 -0700
 > >
-> >     torture: Optionally flush printk() buffers before powering off
-> >     
-> >     The rcutorture test suite produces quite a bit of console output at
-> >     the end of a test.  This means that the new-in-2022 printk() kthreads
-> >     are likely to be in the process of flushing output at the time of the
-> >     torture_shutdown() function's call to kernel_power_off().  Normally,
-> >     rcutorture relies on printk() to flush any pending output upon shutdown,
-> >     the better to detect bugs in this area, for example, the one introduced
-> >     by 8e274732115f ("printk: extend console_lock for per-console locking").
-> >     However, once such a bug is detected and reported, it is necessary to
-> >     test the rest of the system, without noise from the already-reported bug.
-> >     
-> >     This commit therefore adds a torture.printk_shutdown_bug_workaround
-> >     kernel parameter, which causes torture_shutdown() to invoke pr_flush(),
-> >     and print an informative message on the console, immediately before
-> >     invoking kernel_power_off().  When this kernel parameter is not specified,
-> >     it is up to printk() to flush its own buffers.
-> >     
-> >     Suggested-by: John Ogness <john.ogness@linutronix.de>
-> >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> 
-> Reviewed-by: John Ogness <john.ogness@linutronix.de>
+> > On 6/21/2022 3:50 AM, Paul E. McKenney wrote:
+> > > From: Johannes Berg <johannes.berg@intel.com>
+> > >
+> > > When running KASAN with Tiny RCU (e.g. under ARCH=um, where
+> > > a working KASAN patch is now available), we don't get any
+> > > information on the original kfree_rcu() (or similar) caller
+> > > when a problem is reported, as Tiny RCU doesn't record this.
+> > >
+> > > Add the recording, which required pulling kvfree_call_rcu()
+> > > out of line for the KASAN case since the recording function
+> > > (kasan_record_aux_stack_noalloc) is neither exported, nor
+> > > can we include kasan.h into rcutiny.h.
+> > >
+> > > without KASAN, the patch has no size impact (ARCH=um kernel):
+> > >      text       data         bss         dec        hex    filename
+> > >   6151515    4423154    33148520    43723189    29b29b5    linux
+> > >   6151515    4423154    33148520    43723189    29b29b5    linux + patch
+> > >
+> > > with KASAN, the impact on my build was minimal:
+> > >      text       data         bss         dec        hex    filename
+> > > 13915539    7388050    33282304    54585893    340ea25    linux
+> > > 13911266    7392114    33282304    54585684    340e954    linux + patch
+> > >     -4273      +4064         +-0        -209
+> > >
+> > > Acked-by: Dmitry Vyukov <dvyukov@google.com>
+> > > Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+> > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > ---
+> > >   include/linux/rcutiny.h | 11 ++++++++++-
+> > >   kernel/rcu/tiny.c       | 14 ++++++++++++++
+> > >   2 files changed, 24 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
+> > > index 5fed476f977f6..d84e13f2c3848 100644
+> > > --- a/include/linux/rcutiny.h
+> > > +++ b/include/linux/rcutiny.h
+> > > @@ -38,7 +38,7 @@ static inline void synchronize_rcu_expedited(void)
+> > >    */
+> > >   extern void kvfree(const void *addr);
+> > > -static inline void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+> > > +static inline void __kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+> > >   {
+> > >     if (head) {
+> > >             call_rcu(head, func);
+> > > @@ -51,6 +51,15 @@ static inline void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+> > >     kvfree((void *) func);
+> > >   }
+> > > +#ifdef CONFIG_KASAN_GENERIC
+> > > +void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func);
+> > > +#else
+> > > +static inline void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+> > > +{
+> > > +   __kvfree_call_rcu(head, func);
+> > > +}
+> > > +#endif
+> > > +
+> > >   void rcu_qs(void);
+> > >   static inline void rcu_softirq_qs(void)
+> > > diff --git a/kernel/rcu/tiny.c b/kernel/rcu/tiny.c
+> > > index 340b3f8b090d4..58ff3721d975c 100644
+> > > --- a/kernel/rcu/tiny.c
+> > > +++ b/kernel/rcu/tiny.c
+> > > @@ -217,6 +217,20 @@ bool poll_state_synchronize_rcu(unsigned long oldstate)
+> > >   }
+> > >   EXPORT_SYMBOL_GPL(poll_state_synchronize_rcu);
+> > > +#ifdef CONFIG_KASAN_GENERIC
+> > > +void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+> > > +{
+> > > +   if (head) {
+> > > +           void *ptr = (void *) head - (unsigned long) func;
+> > > +
+> > > +           kasan_record_aux_stack_noalloc(ptr);
+> > > +   }
+> >
+> > For the !head case; similar to Tree RCU's kvfree_call_rcu() implementation,
+> > we do not need to record 'ptr' (which will be 'func')?
+>
+> My understanding is that we do not need to record in that case
+> because __kvfree_call_rcu() will simply invoke the almost-zero-cost
+> synchronize_rcu() and then invoke kfree().
+>
+> Johannes, Dmitry, Marco, anything that I am missing?
 
-Thank you!
+As-is looks sensible - doing kasan_record_aux_stack_noalloc() only
+makes sense if the actual kfree() is not done with a callstack that
+will point at the kvfree_call_rcu() caller. Otherwise we're doing
+redundant work and just polluting the aux stack storage slots. So in
+the case where kvfree_call_rcu() does synchronize_rcu() and kfree()
+the kvfree_call_rcu() caller is in the callstack, and would be shown
+on use-after-free bugs.
 
-							Thanx, Paul
+Thanks,
+-- Marco
