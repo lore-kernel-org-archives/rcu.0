@@ -2,53 +2,55 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F9FBC43334
-	for <rcu@archiver.kernel.org>; Tue, 21 Jun 2022 10:02:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 28380C433EF
+	for <rcu@archiver.kernel.org>; Tue, 21 Jun 2022 10:13:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232036AbiFUKCn (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 21 Jun 2022 06:02:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42476 "EHLO
+        id S1346612AbiFUKNt (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 21 Jun 2022 06:13:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231847AbiFUKCm (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 21 Jun 2022 06:02:42 -0400
+        with ESMTP id S1349264AbiFUKNg (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 21 Jun 2022 06:13:36 -0400
 Received: from alexa-out-sd-01.qualcomm.com (alexa-out-sd-01.qualcomm.com [199.106.114.38])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF3CD27FE6;
-        Tue, 21 Jun 2022 03:02:41 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28CF1286D6;
+        Tue, 21 Jun 2022 03:13:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1655805761; x=1687341761;
+  t=1655806416; x=1687342416;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=QVzdBNyMcQCp/AEcPlHdcIajijCDUBwKc+Y/v0orBkM=;
-  b=eqnyOnIjL/YKQUBORWQy/F+HIltdSWTHTpqzj57zBW+s6AG7Mv5mHdQJ
-   N/VQrsW+WcAOtjmldSSDLC+IIfQCBgABxsEaGcbdSEe+IFwOXLPZkQXgx
-   V5XjpUfqbpnvzB+sAJ/4SUpKj8PuuaaiNm6iQR61TRsOZ/r0+zUOzjbX0
-   w=;
-Received: from unknown (HELO ironmsg-SD-alpha.qualcomm.com) ([10.53.140.30])
-  by alexa-out-sd-01.qualcomm.com with ESMTP; 21 Jun 2022 03:02:41 -0700
+  bh=GuUZYGJCCDafvKSE0MKW/woRSLQp5QhRHAaV0w9BCYk=;
+  b=pOAyqK8FRo4NFzBJupF5QkMivX9vGkRVg4ymXLWsZoylc87CmogGoJ/h
+   LO/IX1GRFwnjASWKMW7XZXpcrisCgRnTTPI7BHKQJgo5STr8+7IBZpgZE
+   sW22/VxOsmIO7tqNq9qn3qb2qbuRMZKy+y1jB30dqU5ilSs38/93hlmPY
+   I=;
+Received: from unknown (HELO ironmsg03-sd.qualcomm.com) ([10.53.140.143])
+  by alexa-out-sd-01.qualcomm.com with ESMTP; 21 Jun 2022 03:13:35 -0700
 X-QCInternal: smtphost
 Received: from nasanex01b.na.qualcomm.com ([10.46.141.250])
-  by ironmsg-SD-alpha.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2022 03:02:41 -0700
+  by ironmsg03-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2022 03:13:35 -0700
 Received: from [10.50.44.13] (10.80.80.8) by nasanex01b.na.qualcomm.com
  (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.22; Tue, 21 Jun
- 2022 03:02:39 -0700
-Message-ID: <e70c457c-0ac6-174d-fa0f-807d8e563f40@quicinc.com>
-Date:   Tue, 21 Jun 2022 15:32:36 +0530
+ 2022 03:13:32 -0700
+Message-ID: <248317a0-2ef4-c619-15b5-84e2b62aab5e@quicinc.com>
+Date:   Tue, 21 Jun 2022 15:43:30 +0530
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
  Thunderbird/91.9.1
-Subject: Re: [PATCH rcu 09/12] rcu/kvfree: Remove useless monitor_todo flag
+Subject: Re: [PATCH rcu 12/12] srcu: Block less aggressively for expedited
+ grace periods
 Content-Language: en-US
 To:     "Paul E. McKenney" <paulmck@kernel.org>, <rcu@vger.kernel.org>
 CC:     <linux-kernel@vger.kernel.org>, <kernel-team@fb.com>,
-        <rostedt@goodmis.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Uladzislau Rezki <urezki@gmail.com>
+        <rostedt@goodmis.org>, Zhangfei Gao <zhangfei.gao@linaro.org>,
+        Shameerali Kolothum Thodi 
+        <shameerali.kolothum.thodi@huawei.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
 References: <20220620222022.GA3839466@paulmck-ThinkPad-P17-Gen-1>
- <20220620222032.3839547-9-paulmck@kernel.org>
+ <20220620222032.3839547-12-paulmck@kernel.org>
 From:   Neeraj Upadhyay <quic_neeraju@quicinc.com>
-In-Reply-To: <20220620222032.3839547-9-paulmck@kernel.org>
+In-Reply-To: <20220620222032.3839547-12-paulmck@kernel.org>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Originating-IP: [10.80.80.8]
@@ -61,16 +63,28 @@ X-Mailing-List: rcu@vger.kernel.org
 
 
 On 6/21/2022 3:50 AM, Paul E. McKenney wrote:
-> From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+> Commit 282d8998e997 ("srcu: Prevent expedited GPs and blocking readers
+> from consuming CPU") fixed a problem where a long-running expedited SRCU
+> grace period could block kernel live patching.  It did so by giving up
+> on expediting once a given SRCU expedited grace period grew too old.
 > 
-> monitor_todo is not needed as the work struct already tracks
-> if work is pending. Just use that to know if work is pending
-> using schedule_delayed_work() helper.
+> Unfortunately, this added excessive delays to boots of embedded systems
+> running on qemu that use the ARM IORT RMR feature.  This commit therefore
+> makes the transition away from expediting less aggressive, increasing
+> the per-grace-period phase number of non-sleeping polls of readers from
+> one to three and increasing the required grace-period age from one jiffy
+> (actually from zero to one jiffies) to two jiffies (actually from one
+> to two jiffies).
 > 
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> Fixes: 282d8998e997 ("srcu: Prevent expedited GPs and blocking readers from consuming CPU")
 > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> Reported-by: Zhangfei Gao <zhangfei.gao@linaro.org>
+> Reported-by: chenxiang (M)" <chenxiang66@hisilicon.com>
+> Cc: Shameerali Kolothum Thodi  <shameerali.kolothum.thodi@huawei.com>
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Link: https://lore.kernel.org/all/20615615-0013-5adc-584f-2b1d5c03ebfc@linaro.org/
 > ---
+
 
 Reviewed-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
 
@@ -78,86 +92,48 @@ Reviewed-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
 Thanks
 Neeraj
 
->   kernel/rcu/tree.c | 33 ++++++++++++++++-----------------
->   1 file changed, 16 insertions(+), 17 deletions(-)
+>   kernel/rcu/srcutree.c | 20 +++++++++++++-------
+>   1 file changed, 13 insertions(+), 7 deletions(-)
 > 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 5445b19b48408..7919d7b48fa6a 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -3216,7 +3216,6 @@ struct kfree_rcu_cpu_work {
->    * @krw_arr: Array of batches of kfree_rcu() objects waiting for a grace period
->    * @lock: Synchronize access to this structure
->    * @monitor_work: Promote @head to @head_free after KFREE_DRAIN_JIFFIES
-> - * @monitor_todo: Tracks whether a @monitor_work delayed work is pending
->    * @initialized: The @rcu_work fields have been initialized
->    * @count: Number of objects for which GP not started
->    * @bkvcache:
-> @@ -3241,7 +3240,6 @@ struct kfree_rcu_cpu {
->   	struct kfree_rcu_cpu_work krw_arr[KFREE_N_BATCHES];
->   	raw_spinlock_t lock;
->   	struct delayed_work monitor_work;
-> -	bool monitor_todo;
->   	bool initialized;
->   	int count;
+> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> index 50ba70f019dea..0db7873f4e95b 100644
+> --- a/kernel/rcu/srcutree.c
+> +++ b/kernel/rcu/srcutree.c
+> @@ -513,7 +513,7 @@ static bool srcu_readers_active(struct srcu_struct *ssp)
 >   
-> @@ -3421,6 +3419,18 @@ static void kfree_rcu_work(struct work_struct *work)
->   	}
->   }
+>   #define SRCU_INTERVAL		1	// Base delay if no expedited GPs pending.
+>   #define SRCU_MAX_INTERVAL	10	// Maximum incremental delay from slow readers.
+> -#define SRCU_MAX_NODELAY_PHASE	1	// Maximum per-GP-phase consecutive no-delay instances.
+> +#define SRCU_MAX_NODELAY_PHASE	3	// Maximum per-GP-phase consecutive no-delay instances.
+>   #define SRCU_MAX_NODELAY	100	// Maximum consecutive no-delay instances.
 >   
-> +static bool
-> +need_offload_krc(struct kfree_rcu_cpu *krcp)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < FREE_N_CHANNELS; i++)
-> +		if (krcp->bkvhead[i])
-> +			return true;
-> +
-> +	return !!krcp->head;
-> +}
-> +
 >   /*
->    * This function is invoked after the KFREE_DRAIN_JIFFIES timeout.
+> @@ -522,16 +522,22 @@ static bool srcu_readers_active(struct srcu_struct *ssp)
 >    */
-> @@ -3477,9 +3487,7 @@ static void kfree_rcu_monitor(struct work_struct *work)
->   	// of the channels that is still busy we should rearm the
->   	// work to repeat an attempt. Because previous batches are
->   	// still in progress.
-> -	if (!krcp->bkvhead[0] && !krcp->bkvhead[1] && !krcp->head)
-> -		krcp->monitor_todo = false;
-> -	else
-> +	if (need_offload_krc(krcp))
->   		schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
+>   static unsigned long srcu_get_delay(struct srcu_struct *ssp)
+>   {
+> +	unsigned long gpstart;
+> +	unsigned long j;
+>   	unsigned long jbase = SRCU_INTERVAL;
 >   
->   	raw_spin_unlock_irqrestore(&krcp->lock, flags);
-> @@ -3667,11 +3675,8 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
->   	WRITE_ONCE(krcp->count, krcp->count + 1);
->   
->   	// Set timer to drain after KFREE_DRAIN_JIFFIES.
-> -	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING &&
-> -	    !krcp->monitor_todo) {
-> -		krcp->monitor_todo = true;
-> +	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING)
->   		schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
-> -	}
->   
->   unlock_return:
->   	krc_this_cpu_unlock(krcp, flags);
-> @@ -3746,14 +3751,8 @@ void __init kfree_rcu_scheduler_running(void)
->   		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
->   
->   		raw_spin_lock_irqsave(&krcp->lock, flags);
-> -		if ((!krcp->bkvhead[0] && !krcp->bkvhead[1] && !krcp->head) ||
-> -				krcp->monitor_todo) {
-> -			raw_spin_unlock_irqrestore(&krcp->lock, flags);
-> -			continue;
-> -		}
-> -		krcp->monitor_todo = true;
-> -		schedule_delayed_work_on(cpu, &krcp->monitor_work,
-> -					 KFREE_DRAIN_JIFFIES);
-> +		if (need_offload_krc(krcp))
-> +			schedule_delayed_work_on(cpu, &krcp->monitor_work, KFREE_DRAIN_JIFFIES);
->   		raw_spin_unlock_irqrestore(&krcp->lock, flags);
+>   	if (ULONG_CMP_LT(READ_ONCE(ssp->srcu_gp_seq), READ_ONCE(ssp->srcu_gp_seq_needed_exp)))
+>   		jbase = 0;
+> -	if (rcu_seq_state(READ_ONCE(ssp->srcu_gp_seq)))
+> -		jbase += jiffies - READ_ONCE(ssp->srcu_gp_start);
+> -	if (!jbase) {
+> -		WRITE_ONCE(ssp->srcu_n_exp_nodelay, READ_ONCE(ssp->srcu_n_exp_nodelay) + 1);
+> -		if (READ_ONCE(ssp->srcu_n_exp_nodelay) > SRCU_MAX_NODELAY_PHASE)
+> -			jbase = 1;
+> +	if (rcu_seq_state(READ_ONCE(ssp->srcu_gp_seq))) {
+> +		j = jiffies - 1;
+> +		gpstart = READ_ONCE(ssp->srcu_gp_start);
+> +		if (time_after(j, gpstart))
+> +			jbase += j - gpstart;
+> +		if (!jbase) {
+> +			WRITE_ONCE(ssp->srcu_n_exp_nodelay, READ_ONCE(ssp->srcu_n_exp_nodelay) + 1);
+> +			if (READ_ONCE(ssp->srcu_n_exp_nodelay) > SRCU_MAX_NODELAY_PHASE)
+> +				jbase = 1;
+> +		}
 >   	}
+>   	return jbase > SRCU_MAX_INTERVAL ? SRCU_MAX_INTERVAL : jbase;
 >   }
