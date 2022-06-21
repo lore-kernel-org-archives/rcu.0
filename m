@@ -2,78 +2,162 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A5F57C43334
-	for <rcu@archiver.kernel.org>; Tue, 21 Jun 2022 01:24:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 74081C433EF
+	for <rcu@archiver.kernel.org>; Tue, 21 Jun 2022 02:00:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241758AbiFUBYf (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 20 Jun 2022 21:24:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44952 "EHLO
+        id S245433AbiFUCAU (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 20 Jun 2022 22:00:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240589AbiFUBYe (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 20 Jun 2022 21:24:34 -0400
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EE0818393;
-        Mon, 20 Jun 2022 18:24:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1655774674; x=1687310674;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=P1rVaIhS5r5JKXcqA4qDq5VHV9+1YzZmetl5LjjbGvk=;
-  b=fetST3UJnTH8ePIrxc1bdi49jvP1zt68/xPc97r78r5ZCnUEttgKYRst
-   EheJOpNLLQIydQWwkMjQk3wIu4enhDPHdswz2CztZbRNpySO1W5uC2meZ
-   o6r8AsgF/kdrqrFQL1rbcOK2CO78mEKRE3I02nnjtGv3Lm5As2F0Tq7T2
-   jIVNCq32C7HJd1glbaigo1wLdjBkbeoxIuK9RM5XqPY8fZZzCKEvp3h0c
-   U50K7obj1Kch8etS0eCN7PR5MWc7YAa3XOGdquU87HOhs8hBTUK+s8oj2
-   buse6pxVKLP5ll+0NXNIyznLwSn2Ngp16T+/NRt6LIRoohmxYwnXl9U8e
-   A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10384"; a="278771181"
-X-IronPort-AV: E=Sophos;i="5.92,207,1650956400"; 
-   d="scan'208";a="278771181"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jun 2022 18:24:33 -0700
-X-IronPort-AV: E=Sophos;i="5.92,207,1650956400"; 
-   d="scan'208";a="643366799"
-Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.125])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jun 2022 18:24:32 -0700
-From:   Zqiang <qiang1.zhang@intel.com>
-To:     paulmck@kernel.org, frederic@kernel.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] rcu: Add a warnings in sync_sched_exp_online_cleanup()
-Date:   Tue, 21 Jun 2022 09:24:12 +0800
-Message-Id: <20220621012412.2724457-1-qiang1.zhang@intel.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S245555AbiFUCAQ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 20 Jun 2022 22:00:16 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 498FE1EEFF
+        for <rcu@vger.kernel.org>; Mon, 20 Jun 2022 19:00:13 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id h34-20020a17090a29a500b001eb01527d9eso11043462pjd.3
+        for <rcu@vger.kernel.org>; Mon, 20 Jun 2022 19:00:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=vXSRs4VvP3x0Znga9Of9H/HEzlYBRuGGU2+TOqlk4gg=;
+        b=g9PmUnxw3mihAqmTXmyIN/UZ1RQhh7a95nNsKWh4vR9sf0qCjDHE/o6ZIeAnOjdEVL
+         agay+Mj93QrNaxiqBOGbhBSAbwu2Gz8zLcZnMzvxcU8PwDYYf4Lyt8gtqqBU+ABaXSq1
+         qTXGbLOKoz+jPOkhjT2IXAEfGs4eO62jiF79WwH+T5BHX2NOSPS2EXGxImu1Igeti9iu
+         scKpEJW5VSa0f9vxqXFCOxf3uMIH8wYy54aCV0KV7L5aHL+ZtZPpl3yIkjgsEprSEg2M
+         4dUaIkyJ9d4SSQIARy2au1uZj+7e7/FZZGEBqSwIszZUp5Kv5sK9JUgKRCgNobso345H
+         8ncQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=vXSRs4VvP3x0Znga9Of9H/HEzlYBRuGGU2+TOqlk4gg=;
+        b=osHfgIIKJ1Yl8UaA8dsAxjSyJrebQvTlP8XVn31n4US9jhQaQU7Y47+IbWeDBhLb/g
+         GjozL1RSHIlmQFlN76sUmjIMVr63SG2Oj0rjGJYHwXLbt13r1fQLeDhb/s4QqUD9TR2M
+         Az9hgipKXWW4F6cCRai1FMqwumAqz51NBMPhYqLbnMxUk90Ym1/fpIjuHpa6njM0LZfZ
+         yANHueqyxKxvbge7uKcbzkoiZ1P02PIz8bm1pWEN5qOq2dsqxfO7tSmdwv/2ISx0iuPX
+         jwocZjhVriOpn4xYPqI6WKwVLRsRvMXM6cQqfCWZcDZJkfXuUhhY57IkgrAZ2C6EOJeC
+         PX/Q==
+X-Gm-Message-State: AJIora8fJ1JmVY2IzPQjZ0K1VB+584hnWapbM+ARq0dSwhdGlT5wOPLA
+        D9te14GmFEEbq1V1rTJwG9ROwQ==
+X-Google-Smtp-Source: AGRyM1vEZPAaJ7NbnEz+jr+kqJkEpfJgdGyqHaJ+LUomJ1EoKV0o7a87fK8jVcHC0RMfwZzV/7GZug==
+X-Received: by 2002:a17:90b:1e47:b0:1e6:7d04:2f4 with SMTP id pi7-20020a17090b1e4700b001e67d0402f4mr30015391pjb.93.1655776812748;
+        Mon, 20 Jun 2022 19:00:12 -0700 (PDT)
+Received: from [10.10.0.18] ([199.101.192.101])
+        by smtp.gmail.com with ESMTPSA id mp15-20020a17090b190f00b001ec92c52285sm4246172pjb.21.2022.06.20.19.00.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Jun 2022 19:00:12 -0700 (PDT)
+Subject: Re: [PATCH rcu 12/12] srcu: Block less aggressively for expedited
+ grace periods
+To:     "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
+        rostedt@goodmis.org, Zhangfei Gao <zhangfei.gao@linaro.org>,
+        Shameerali Kolothum Thodi 
+        <shameerali.kolothum.thodi@huawei.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+References: <20220620222022.GA3839466@paulmck-ThinkPad-P17-Gen-1>
+ <20220620222032.3839547-12-paulmck@kernel.org>
+From:   Zhangfei Gao <zhangfei.gao@linaro.org>
+Message-ID: <6b89e108-69e1-5fe2-67ba-3dac9ec60f83@linaro.org>
+Date:   Tue, 21 Jun 2022 10:00:07 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20220620222032.3839547-12-paulmck@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Currently, the sync_sched_exp_online_cleanup() is invoked in
-cpuhp per-cpu kthreads when CPU is going online, so the CPU id
-obtained by get_cpu() should always be equal to the CPU id of
-the passed parameter, that is to say, the smp_call_function_single()
-never be invoked, if be invoked, there may be problem with cpu-hotplug,
-this commit add WARN_ON_ONCE() to remind everyone.
 
-Signed-off-by: Zqiang <qiang1.zhang@intel.com>
----
- kernel/rcu/tree_exp.h | 2 ++
- 1 file changed, 2 insertions(+)
 
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index be667583a554..ae8dcfd4486c 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -865,6 +865,8 @@ static void sync_sched_exp_online_cleanup(int cpu)
- 		put_cpu();
- 		return;
- 	}
-+
-+	WARN_ON_ONCE(my_cpu != cpu);
- 	/* Quiescent state needed on some other CPU, send IPI. */
- 	ret = smp_call_function_single(cpu, rcu_exp_handler, NULL, 0);
- 	put_cpu();
--- 
-2.25.1
+On 2022/6/21 上午6:20, Paul E. McKenney wrote:
+> Commit 282d8998e997 ("srcu: Prevent expedited GPs and blocking readers
+> from consuming CPU") fixed a problem where a long-running expedited SRCU
+> grace period could block kernel live patching.  It did so by giving up
+> on expediting once a given SRCU expedited grace period grew too old.
+>
+> Unfortunately, this added excessive delays to boots of embedded systems
+> running on qemu that use the ARM IORT RMR feature.  This commit therefore
+> makes the transition away from expediting less aggressive, increasing
+> the per-grace-period phase number of non-sleeping polls of readers from
+> one to three and increasing the required grace-period age from one jiffy
+> (actually from zero to one jiffies) to two jiffies (actually from one
+> to two jiffies).
+>
+> Fixes: 282d8998e997 ("srcu: Prevent expedited GPs and blocking readers from consuming CPU")
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> Reported-by: Zhangfei Gao <zhangfei.gao@linaro.org>
+> Reported-by: chenxiang (M)" <chenxiang66@hisilicon.com>
+> Cc: Shameerali Kolothum Thodi  <shameerali.kolothum.thodi@huawei.com>
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Link: https://lore.kernel.org/all/20615615-0013-5adc-584f-2b1d5c03ebfc@linaro.org/
+
+Test on 5.19-rc1 with this patch with qemu boot with -bios 
+QEMU_EFI-2022.fd, seems not work, same as rc1.
+
+real    2m42.948s
+user    0m2.843s
+sys     0m1.170s
+
+qemu: stable-6.1
+
+build/aarch64-softmmu/qemu-system-aarch64 -machine 
+virt,gic-version=3,iommu=smmuv3 \
+-enable-kvm -cpu host -m 1024 \
+-kernel /home/linaro/Image -initrd /home/linaro/tmp/ramdisk-new.img 
+-nographic -append \
+"rdinit=init console=ttyAMA0 earlycon=pl011,0x9000000 kpti=off acpi=force" \
+-bios QEMU_EFI-2022.fd
+
+Thanks
+> ---
+>   kernel/rcu/srcutree.c | 20 +++++++++++++-------
+>   1 file changed, 13 insertions(+), 7 deletions(-)
+>
+> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> index 50ba70f019dea..0db7873f4e95b 100644
+> --- a/kernel/rcu/srcutree.c
+> +++ b/kernel/rcu/srcutree.c
+> @@ -513,7 +513,7 @@ static bool srcu_readers_active(struct srcu_struct *ssp)
+>   
+>   #define SRCU_INTERVAL		1	// Base delay if no expedited GPs pending.
+>   #define SRCU_MAX_INTERVAL	10	// Maximum incremental delay from slow readers.
+> -#define SRCU_MAX_NODELAY_PHASE	1	// Maximum per-GP-phase consecutive no-delay instances.
+> +#define SRCU_MAX_NODELAY_PHASE	3	// Maximum per-GP-phase consecutive no-delay instances.
+>   #define SRCU_MAX_NODELAY	100	// Maximum consecutive no-delay instances.
+>   
+>   /*
+> @@ -522,16 +522,22 @@ static bool srcu_readers_active(struct srcu_struct *ssp)
+>    */
+>   static unsigned long srcu_get_delay(struct srcu_struct *ssp)
+>   {
+> +	unsigned long gpstart;
+> +	unsigned long j;
+>   	unsigned long jbase = SRCU_INTERVAL;
+>   
+>   	if (ULONG_CMP_LT(READ_ONCE(ssp->srcu_gp_seq), READ_ONCE(ssp->srcu_gp_seq_needed_exp)))
+>   		jbase = 0;
+> -	if (rcu_seq_state(READ_ONCE(ssp->srcu_gp_seq)))
+> -		jbase += jiffies - READ_ONCE(ssp->srcu_gp_start);
+> -	if (!jbase) {
+> -		WRITE_ONCE(ssp->srcu_n_exp_nodelay, READ_ONCE(ssp->srcu_n_exp_nodelay) + 1);
+> -		if (READ_ONCE(ssp->srcu_n_exp_nodelay) > SRCU_MAX_NODELAY_PHASE)
+> -			jbase = 1;
+> +	if (rcu_seq_state(READ_ONCE(ssp->srcu_gp_seq))) {
+> +		j = jiffies - 1;
+> +		gpstart = READ_ONCE(ssp->srcu_gp_start);
+> +		if (time_after(j, gpstart))
+> +			jbase += j - gpstart;
+> +		if (!jbase) {
+> +			WRITE_ONCE(ssp->srcu_n_exp_nodelay, READ_ONCE(ssp->srcu_n_exp_nodelay) + 1);
+> +			if (READ_ONCE(ssp->srcu_n_exp_nodelay) > SRCU_MAX_NODELAY_PHASE)
+> +				jbase = 1;
+> +		}
+>   	}
+>   	return jbase > SRCU_MAX_INTERVAL ? SRCU_MAX_INTERVAL : jbase;
+>   }
 
