@@ -2,116 +2,173 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 41F8FC433EF
-	for <rcu@archiver.kernel.org>; Tue, 21 Jun 2022 07:03:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 67253C43334
+	for <rcu@archiver.kernel.org>; Tue, 21 Jun 2022 07:44:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346452AbiFUHDT (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 21 Jun 2022 03:03:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39842 "EHLO
+        id S1345332AbiFUHnu convert rfc822-to-8bit (ORCPT
+        <rfc822;rcu@archiver.kernel.org>); Tue, 21 Jun 2022 03:43:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346490AbiFUHDT (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 21 Jun 2022 03:03:19 -0400
-Received: from alexa-out-sd-01.qualcomm.com (alexa-out-sd-01.qualcomm.com [199.106.114.38])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A156C64DC;
-        Tue, 21 Jun 2022 00:03:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1655794998; x=1687330998;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=Jukm3d+VxnW0QHCLY6N8dPRZFsIaWVH93a5NTyWgsdg=;
-  b=GqFYnr/beDz1kWNMYZmmLb+QSSHivMsqh8QrBWSHRbnnmR66aRXOYYy9
-   RU6ZJGb3xU9RA129AFmiuk08m9HGtq9YVqyGdwzuTv+u09W341gXeoXsW
-   IXlC0myjdFXG3Lpd3PTi8kp3PzlOFd43/fUtMgHQbU1reohFphRxGjw6L
-   c=;
-Received: from unknown (HELO ironmsg02-sd.qualcomm.com) ([10.53.140.142])
-  by alexa-out-sd-01.qualcomm.com with ESMTP; 21 Jun 2022 00:03:18 -0700
-X-QCInternal: smtphost
-Received: from nasanex01b.na.qualcomm.com ([10.46.141.250])
-  by ironmsg02-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2022 00:03:18 -0700
-Received: from [10.50.44.13] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.22; Tue, 21 Jun
- 2022 00:03:15 -0700
-Message-ID: <5fa27044-9515-f8fa-511c-64014479e875@quicinc.com>
-Date:   Tue, 21 Jun 2022 12:33:12 +0530
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH rcu 08/12] rcu: Cleanup RCU urgency state for offline CPU
-Content-Language: en-US
-To:     "Paul E. McKenney" <paulmck@kernel.org>, <rcu@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <kernel-team@fb.com>,
-        <rostedt@goodmis.org>, Zqiang <qiang1.zhang@intel.com>
+        with ESMTP id S1347249AbiFUHnM (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 21 Jun 2022 03:43:12 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 371F3237D1;
+        Tue, 21 Jun 2022 00:43:11 -0700 (PDT)
+Received: from fraeml703-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4LRz3G1mFdz67kTG;
+        Tue, 21 Jun 2022 15:41:14 +0800 (CST)
+Received: from lhreml715-chm.china.huawei.com (10.201.108.66) by
+ fraeml703-chm.china.huawei.com (10.206.15.52) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2375.24; Tue, 21 Jun 2022 09:43:08 +0200
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ lhreml715-chm.china.huawei.com (10.201.108.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Tue, 21 Jun 2022 08:43:08 +0100
+Received: from lhreml710-chm.china.huawei.com ([169.254.81.184]) by
+ lhreml710-chm.china.huawei.com ([169.254.81.184]) with mapi id
+ 15.01.2375.024; Tue, 21 Jun 2022 08:43:08 +0100
+From:   Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernel-team@fb.com" <kernel-team@fb.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        Zhangfei Gao <zhangfei.gao@linaro.org>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: RE: [PATCH rcu 12/12] srcu: Block less aggressively for expedited
+ grace periods
+Thread-Topic: [PATCH rcu 12/12] srcu: Block less aggressively for expedited
+ grace periods
+Thread-Index: AQHYhPP8VjWNJPtPxUuR+oHDE6Rcoq1ZeCVw
+Date:   Tue, 21 Jun 2022 07:43:08 +0000
+Message-ID: <fef4fbd55b88481490d52cbd65e1b1f8@huawei.com>
 References: <20220620222022.GA3839466@paulmck-ThinkPad-P17-Gen-1>
- <20220620222032.3839547-8-paulmck@kernel.org>
-From:   Neeraj Upadhyay <quic_neeraju@quicinc.com>
-In-Reply-To: <20220620222032.3839547-8-paulmck@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
+ <20220620222032.3839547-12-paulmck@kernel.org>
+In-Reply-To: <20220620222032.3839547-12-paulmck@kernel.org>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.202.227.178]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
 
 
-On 6/21/2022 3:50 AM, Paul E. McKenney wrote:
-> From: Zqiang <qiang1.zhang@intel.com>
+> -----Original Message-----
+> From: Paul E. McKenney [mailto:paulmck@kernel.org]
+> Sent: 20 June 2022 23:21
+> To: rcu@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org; kernel-team@fb.com;
+> rostedt@goodmis.org; Paul E. McKenney <paulmck@kernel.org>; Zhangfei
+> Gao <zhangfei.gao@linaro.org>; Shameerali Kolothum Thodi
+> <shameerali.kolothum.thodi@huawei.com>; Paolo Bonzini
+> <pbonzini@redhat.com>
+> Subject: [PATCH rcu 12/12] srcu: Block less aggressively for expedited grace
+> periods
 > 
-> When a CPU is slow to provide a quiescent state for a given grace
-> period, RCU takes steps to encourage that CPU to get with the
-> quiescent-state program in a more timely fashion.  These steps
-> include these flags in the rcu_data structure:
+> Commit 282d8998e997 ("srcu: Prevent expedited GPs and blocking readers
+> from consuming CPU") fixed a problem where a long-running expedited
+> SRCU
+> grace period could block kernel live patching.  It did so by giving up
+> on expediting once a given SRCU expedited grace period grew too old.
 > 
-> 1.	->rcu_urgent_qs, which causes the scheduling-clock interrupt to
-> 	request an otherwise pointless context switch from the scheduler.
-> 
-> 2.	->rcu_need_heavy_qs, which causes both cond_resched() and RCU's
-> 	context-switch hook to do an immediate momentary quiscent state.
-> 
-> 3.	->rcu_need_heavy_qs, which causes the scheduler-clock tick to
+> Unfortunately, this added excessive delays to boots of embedded systems
+> running on qemu that use the ARM IORT RMR feature. 
 
-nit: s/->rcu_need_heavy_qs/->rcu_forced_tick/ ?
+As pointed out here[0]/[1], this delay has nothing to do with ARM IORT RMR
+feature. The delay is due to the "-bios QEMU_EFI.fd" line which emulates flash
+devices and requires excessive memslot ops during boot.
 
-> 	be enabled even on nohz_full CPUs with only one runnable task.
+Thanks,
+Shameer
+
+[0] https://lore.kernel.org/all/110bbec5cee74efba0aad64360069a12@huawei.com/
+[1] https://lore.kernel.org/all/8735g649ew.wl-maz@kernel.org/
+
+
+ This commit
+> therefore
+> makes the transition away from expediting less aggressive, increasing
+> the per-grace-period phase number of non-sleeping polls of readers from
+> one to three and increasing the required grace-period age from one jiffy
+> (actually from zero to one jiffies) to two jiffies (actually from one
+> to two jiffies).
 > 
-> These flags are of course cleared once the corresponding CPU has passed
-> through a quiescent state.  Unless that quiescent state is the CPU
-> going offline, which means that when the CPU comes back online, it will
-> needlessly consume additional CPU time and incur additional latency,
-> which constitutes a minor but very real performance bug.
-> 
-> This commit therefore adds the call to rcu_disable_urgency_upon_qs()
-> that clears these flags to the CPU-hotplug offlining code path.
-> 
-> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+> Fixes: 282d8998e997 ("srcu: Prevent expedited GPs and blocking readers
+> from consuming CPU")
 > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> Reported-by: Zhangfei Gao <zhangfei.gao@linaro.org>
+> Reported-by: chenxiang (M)" <chenxiang66@hisilicon.com>
+> Cc: Shameerali Kolothum Thodi  <shameerali.kolothum.thodi@huawei.com>
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Link:
+> https://lore.kernel.org/all/20615615-0013-5adc-584f-2b1d5c03ebfc@linaro
+> .org/
 > ---
-
-
-Reviewed-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
-
-
-
-
-Thanks
-Neeraj
-
->   kernel/rcu/tree.c | 1 +
->   1 file changed, 1 insertion(+)
+>  kernel/rcu/srcutree.c | 20 +++++++++++++-------
+>  1 file changed, 13 insertions(+), 7 deletions(-)
 > 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index f4a37f2032664..5445b19b48408 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -4446,6 +4446,7 @@ void rcu_report_dead(unsigned int cpu)
->   	rdp->rcu_ofl_gp_flags = READ_ONCE(rcu_state.gp_flags);
->   	if (rnp->qsmask & mask) { /* RCU waiting on outgoing CPU? */
->   		/* Report quiescent state -before- changing ->qsmaskinitnext! */
-> +		rcu_disable_urgency_upon_qs(rdp);
->   		rcu_report_qs_rnp(mask, rnp, rnp->gp_seq, flags);
->   		raw_spin_lock_irqsave_rcu_node(rnp, flags);
->   	}
+> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> index 50ba70f019dea..0db7873f4e95b 100644
+> --- a/kernel/rcu/srcutree.c
+> +++ b/kernel/rcu/srcutree.c
+> @@ -513,7 +513,7 @@ static bool srcu_readers_active(struct srcu_struct
+> *ssp)
+> 
+>  #define SRCU_INTERVAL		1	// Base delay if no expedited GPs
+> pending.
+>  #define SRCU_MAX_INTERVAL	10	// Maximum incremental delay from
+> slow readers.
+> -#define SRCU_MAX_NODELAY_PHASE	1	// Maximum per-GP-phase
+> consecutive no-delay instances.
+> +#define SRCU_MAX_NODELAY_PHASE	3	// Maximum per-GP-phase
+> consecutive no-delay instances.
+>  #define SRCU_MAX_NODELAY	100	// Maximum consecutive no-delay
+> instances.
+> 
+>  /*
+> @@ -522,16 +522,22 @@ static bool srcu_readers_active(struct srcu_struct
+> *ssp)
+>   */
+>  static unsigned long srcu_get_delay(struct srcu_struct *ssp)
+>  {
+> +	unsigned long gpstart;
+> +	unsigned long j;
+>  	unsigned long jbase = SRCU_INTERVAL;
+> 
+>  	if (ULONG_CMP_LT(READ_ONCE(ssp->srcu_gp_seq),
+> READ_ONCE(ssp->srcu_gp_seq_needed_exp)))
+>  		jbase = 0;
+> -	if (rcu_seq_state(READ_ONCE(ssp->srcu_gp_seq)))
+> -		jbase += jiffies - READ_ONCE(ssp->srcu_gp_start);
+> -	if (!jbase) {
+> -		WRITE_ONCE(ssp->srcu_n_exp_nodelay,
+> READ_ONCE(ssp->srcu_n_exp_nodelay) + 1);
+> -		if (READ_ONCE(ssp->srcu_n_exp_nodelay) >
+> SRCU_MAX_NODELAY_PHASE)
+> -			jbase = 1;
+> +	if (rcu_seq_state(READ_ONCE(ssp->srcu_gp_seq))) {
+> +		j = jiffies - 1;
+> +		gpstart = READ_ONCE(ssp->srcu_gp_start);
+> +		if (time_after(j, gpstart))
+> +			jbase += j - gpstart;
+> +		if (!jbase) {
+> +			WRITE_ONCE(ssp->srcu_n_exp_nodelay,
+> READ_ONCE(ssp->srcu_n_exp_nodelay) + 1);
+> +			if (READ_ONCE(ssp->srcu_n_exp_nodelay) >
+> SRCU_MAX_NODELAY_PHASE)
+> +				jbase = 1;
+> +		}
+>  	}
+>  	return jbase > SRCU_MAX_INTERVAL ? SRCU_MAX_INTERVAL : jbase;
+>  }
+> --
+> 2.31.1.189.g2e36527f23
+
