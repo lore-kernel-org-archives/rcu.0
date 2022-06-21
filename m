@@ -2,183 +2,101 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88FB0C43334
-	for <rcu@archiver.kernel.org>; Tue, 21 Jun 2022 19:36:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE07CC433EF
+	for <rcu@archiver.kernel.org>; Tue, 21 Jun 2022 21:05:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354039AbiFUTgq (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 21 Jun 2022 15:36:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55502 "EHLO
+        id S1355171AbiFUVFJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 21 Jun 2022 17:05:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348473AbiFUTgp (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 21 Jun 2022 15:36:45 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CE292D1D0;
-        Tue, 21 Jun 2022 12:36:44 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id E0BE0CE1C1F;
-        Tue, 21 Jun 2022 19:36:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0076AC341C4;
-        Tue, 21 Jun 2022 19:36:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655840201;
-        bh=/fhO8DKOPNqPlZBEyqMbHF7H/mKy0R9KV9oyQ1GuVeM=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=he2Za5EBD/5TYylCuV5tsn3rzYx4ZTNI9Vw3J556c18n/dhFyh2bGZZ0/rFMNQCQC
-         0oUWBhtdFJAmRsiOz4aInOhQ0t/RybZ/YA1R1+Ap0V5/mkRsxvGTXzzb1EqeoJgmw1
-         eCL2WiVJdMp+YvrnQPHTcOUE2ABoJscI9GeCh53IdT9luyTWu+k+nqKFTmb/uvC/uy
-         mM3MCJ3aumWB1UljHJmgcmlHELtHVm9CtzJ0giiwKnDr5V2pl1Z3wdpDTBfKzr1DDD
-         kW9IQmru1yithHauxeBYf/p7Wb1/TOfGRlSsg3pJAJ+yRkNQ8Ehxwq6qhvVQn1sZ4Q
-         g54LuYWML2jbA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 936E45C0500; Tue, 21 Jun 2022 12:36:40 -0700 (PDT)
-Date:   Tue, 21 Jun 2022 12:36:40 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-Cc:     "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernel-team@fb.com" <kernel-team@fb.com>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        Zhangfei Gao <zhangfei.gao@linaro.org>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH rcu 12/12] srcu: Block less aggressively for expedited
- grace periods
-Message-ID: <20220621193640.GN1790663@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220620222022.GA3839466@paulmck-ThinkPad-P17-Gen-1>
- <20220620222032.3839547-12-paulmck@kernel.org>
- <fef4fbd55b88481490d52cbd65e1b1f8@huawei.com>
+        with ESMTP id S1355982AbiFUVDH (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 21 Jun 2022 17:03:07 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A28FA3527E;
+        Tue, 21 Jun 2022 13:53:18 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1655844748;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Nb5dLcX7krWQuD6zSqBNNfRwXIDlKoAFhGKnYz0pyus=;
+        b=poyjZf3m9GJDdbHcAdbqc30s9c+rDUxQp7mpaG31RnP3wDDL+wcPVuo+TFKb5FWS6qKdCZ
+        GTC4htJ9T9aYZ69nkdK3uQecEjzyvxl2iyfVlKjQv56zdLGgwz73e2PKvuCG5w9Ehle+D4
+        u6lkclTEH/ZQs8D19VRcyMhHfF9rVynMtAwEgMwZ3CjtOZ0/nwmaO1GjcyWR2T7M+Z5SMx
+        7yaICC2yWZeJeVydVlb5L0wxNgYn2S42rdJPeRzsPiwD8n3h5P2g5qNymuu4oV6rvWfazE
+        Uy+OJt8b0nVlsVDmk3juHlZu1LxIu5tJZABrfCY4lSLXn1sE5m7X7KvNA2KKGw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1655844748;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Nb5dLcX7krWQuD6zSqBNNfRwXIDlKoAFhGKnYz0pyus=;
+        b=cV8ms7gdEr44A8gH7coFpKz1whmzqybo6L1e7KaFOk/Oltr3Ii5uGgHeVFUvBwYMD+UleV
+        N6AH5qV01G3xYcDw==
+To:     paulmck@kernel.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, rostedt@goodmis.org
+Subject: Re: [PATCH rcu 11/12] torture: Flush printk() buffers before
+ powering off
+In-Reply-To: <20220621181335.GJ1790663@paulmck-ThinkPad-P17-Gen-1>
+References: <20220620225814.GA3842995@paulmck-ThinkPad-P17-Gen-1>
+ <20220620225817.3843106-11-paulmck@kernel.org>
+ <8735fyc42v.fsf@jogness.linutronix.de>
+ <20220620232838.GZ1790663@paulmck-ThinkPad-P17-Gen-1>
+ <87v8suphdy.fsf@jogness.linutronix.de>
+ <20220621181335.GJ1790663@paulmck-ThinkPad-P17-Gen-1>
+Date:   Tue, 21 Jun 2022 22:58:27 +0206
+Message-ID: <87ilotagdw.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fef4fbd55b88481490d52cbd65e1b1f8@huawei.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Jun 21, 2022 at 07:43:08AM +0000, Shameerali Kolothum Thodi wrote:
-> 
-> 
-> > -----Original Message-----
-> > From: Paul E. McKenney [mailto:paulmck@kernel.org]
-> > Sent: 20 June 2022 23:21
-> > To: rcu@vger.kernel.org
-> > Cc: linux-kernel@vger.kernel.org; kernel-team@fb.com;
-> > rostedt@goodmis.org; Paul E. McKenney <paulmck@kernel.org>; Zhangfei
-> > Gao <zhangfei.gao@linaro.org>; Shameerali Kolothum Thodi
-> > <shameerali.kolothum.thodi@huawei.com>; Paolo Bonzini
-> > <pbonzini@redhat.com>
-> > Subject: [PATCH rcu 12/12] srcu: Block less aggressively for expedited grace
-> > periods
-> > 
-> > Commit 282d8998e997 ("srcu: Prevent expedited GPs and blocking readers
-> > from consuming CPU") fixed a problem where a long-running expedited
-> > SRCU
-> > grace period could block kernel live patching.  It did so by giving up
-> > on expediting once a given SRCU expedited grace period grew too old.
-> > 
-> > Unfortunately, this added excessive delays to boots of embedded systems
-> > running on qemu that use the ARM IORT RMR feature. 
-> 
-> As pointed out here[0]/[1], this delay has nothing to do with ARM IORT RMR
-> feature. The delay is due to the "-bios QEMU_EFI.fd" line which emulates flash
-> devices and requires excessive memslot ops during boot.
+On 2022-06-21, "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> The patch below will cause rcutorture to implicitly test this
+> functionality, unless told otherwise, for example, by using the
+> --bootargs "torture.printk_shutdown_bug_workaround" kvm.sh
+> argument.
+>
+> Thoughts?
 
-Good eyes, and I will update.
+I feel like this is dirtying the torture.* bootarg namespace a
+bit. Also, I am not sure how useful it is as a dynamic option. I assume
+that users would generally avoid using it, so its very existence might
+just be more noise in the documentation and code. It is an unusual
+feature:
 
-Are we stuck with the excessive memslot ops?  If not, great.
+"In case some bug shows up, here is a flag to avoid it."
 
-If we are stuck with them, there probably needs to be a way of adjusting
-the SRCU delay parameters.  Making "-bios QEMU_EFI.fd" go quickly seems
-to require quite a bit of spinning, more than is likely to be helpful
-in general.
+I personally would just drop the patch and rely on a correctly
+functional kernel. But I am also not an rcutorture user. If _you_ think
+that such a flag is useful, feel free to include the patch.
 
-							Thanx, Paul
+> commit 204bf1e2a5a2fb68c15b4b64793ad0896db6f705
+> Author: Paul E. McKenney <paulmck@kernel.org>
+> Date:   Tue Jun 21 11:02:25 2022 -0700
+>
+>     torture: Optionally flush printk() buffers before powering off
+>     
+>     The rcutorture test suite produces quite a bit of console output at
+>     the end of a test.  This means that the new-in-2022 printk() kthreads
+>     are likely to be in the process of flushing output at the time of the
+>     torture_shutdown() function's call to kernel_power_off().  Normally,
+>     rcutorture relies on printk() to flush any pending output upon shutdown,
+>     the better to detect bugs in this area, for example, the one introduced
+>     by 8e274732115f ("printk: extend console_lock for per-console locking").
+>     However, once such a bug is detected and reported, it is necessary to
+>     test the rest of the system, without noise from the already-reported bug.
+>     
+>     This commit therefore adds a torture.printk_shutdown_bug_workaround
+>     kernel parameter, which causes torture_shutdown() to invoke pr_flush(),
+>     and print an informative message on the console, immediately before
+>     invoking kernel_power_off().  When this kernel parameter is not specified,
+>     it is up to printk() to flush its own buffers.
+>     
+>     Suggested-by: John Ogness <john.ogness@linutronix.de>
+>     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
-> Thanks,
-> Shameer
-> 
-> [0] https://lore.kernel.org/all/110bbec5cee74efba0aad64360069a12@huawei.com/
-> [1] https://lore.kernel.org/all/8735g649ew.wl-maz@kernel.org/
-> 
-> 
->  This commit
-> > therefore
-> > makes the transition away from expediting less aggressive, increasing
-> > the per-grace-period phase number of non-sleeping polls of readers from
-> > one to three and increasing the required grace-period age from one jiffy
-> > (actually from zero to one jiffies) to two jiffies (actually from one
-> > to two jiffies).
-> > 
-> > Fixes: 282d8998e997 ("srcu: Prevent expedited GPs and blocking readers
-> > from consuming CPU")
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > Reported-by: Zhangfei Gao <zhangfei.gao@linaro.org>
-> > Reported-by: chenxiang (M)" <chenxiang66@hisilicon.com>
-> > Cc: Shameerali Kolothum Thodi  <shameerali.kolothum.thodi@huawei.com>
-> > Cc: Paolo Bonzini <pbonzini@redhat.com>
-> > Link:
-> > https://lore.kernel.org/all/20615615-0013-5adc-584f-2b1d5c03ebfc@linaro
-> > .org/
-> > ---
-> >  kernel/rcu/srcutree.c | 20 +++++++++++++-------
-> >  1 file changed, 13 insertions(+), 7 deletions(-)
-> > 
-> > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> > index 50ba70f019dea..0db7873f4e95b 100644
-> > --- a/kernel/rcu/srcutree.c
-> > +++ b/kernel/rcu/srcutree.c
-> > @@ -513,7 +513,7 @@ static bool srcu_readers_active(struct srcu_struct
-> > *ssp)
-> > 
-> >  #define SRCU_INTERVAL		1	// Base delay if no expedited GPs
-> > pending.
-> >  #define SRCU_MAX_INTERVAL	10	// Maximum incremental delay from
-> > slow readers.
-> > -#define SRCU_MAX_NODELAY_PHASE	1	// Maximum per-GP-phase
-> > consecutive no-delay instances.
-> > +#define SRCU_MAX_NODELAY_PHASE	3	// Maximum per-GP-phase
-> > consecutive no-delay instances.
-> >  #define SRCU_MAX_NODELAY	100	// Maximum consecutive no-delay
-> > instances.
-> > 
-> >  /*
-> > @@ -522,16 +522,22 @@ static bool srcu_readers_active(struct srcu_struct
-> > *ssp)
-> >   */
-> >  static unsigned long srcu_get_delay(struct srcu_struct *ssp)
-> >  {
-> > +	unsigned long gpstart;
-> > +	unsigned long j;
-> >  	unsigned long jbase = SRCU_INTERVAL;
-> > 
-> >  	if (ULONG_CMP_LT(READ_ONCE(ssp->srcu_gp_seq),
-> > READ_ONCE(ssp->srcu_gp_seq_needed_exp)))
-> >  		jbase = 0;
-> > -	if (rcu_seq_state(READ_ONCE(ssp->srcu_gp_seq)))
-> > -		jbase += jiffies - READ_ONCE(ssp->srcu_gp_start);
-> > -	if (!jbase) {
-> > -		WRITE_ONCE(ssp->srcu_n_exp_nodelay,
-> > READ_ONCE(ssp->srcu_n_exp_nodelay) + 1);
-> > -		if (READ_ONCE(ssp->srcu_n_exp_nodelay) >
-> > SRCU_MAX_NODELAY_PHASE)
-> > -			jbase = 1;
-> > +	if (rcu_seq_state(READ_ONCE(ssp->srcu_gp_seq))) {
-> > +		j = jiffies - 1;
-> > +		gpstart = READ_ONCE(ssp->srcu_gp_start);
-> > +		if (time_after(j, gpstart))
-> > +			jbase += j - gpstart;
-> > +		if (!jbase) {
-> > +			WRITE_ONCE(ssp->srcu_n_exp_nodelay,
-> > READ_ONCE(ssp->srcu_n_exp_nodelay) + 1);
-> > +			if (READ_ONCE(ssp->srcu_n_exp_nodelay) >
-> > SRCU_MAX_NODELAY_PHASE)
-> > +				jbase = 1;
-> > +		}
-> >  	}
-> >  	return jbase > SRCU_MAX_INTERVAL ? SRCU_MAX_INTERVAL : jbase;
-> >  }
-> > --
-> > 2.31.1.189.g2e36527f23
-> 
+Reviewed-by: John Ogness <john.ogness@linutronix.de>
