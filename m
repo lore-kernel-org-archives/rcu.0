@@ -2,56 +2,56 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DB540C43334
-	for <rcu@archiver.kernel.org>; Tue, 21 Jun 2022 05:35:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 80C8EC433EF
+	for <rcu@archiver.kernel.org>; Tue, 21 Jun 2022 05:47:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235191AbiFUFfU (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 21 Jun 2022 01:35:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47994 "EHLO
+        id S229480AbiFUFrV (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 21 Jun 2022 01:47:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229761AbiFUFfU (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 21 Jun 2022 01:35:20 -0400
-Received: from alexa-out-sd-01.qualcomm.com (alexa-out-sd-01.qualcomm.com [199.106.114.38])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2C4B2181B;
-        Mon, 20 Jun 2022 22:35:18 -0700 (PDT)
+        with ESMTP id S1344023AbiFUFrR (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 21 Jun 2022 01:47:17 -0400
+Received: from alexa-out-sd-02.qualcomm.com (alexa-out-sd-02.qualcomm.com [199.106.114.39])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3284C21E37;
+        Mon, 20 Jun 2022 22:47:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1655789718; x=1687325718;
+  t=1655790436; x=1687326436;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=jxYs77w82kG4F9iMmzULoGawmt1nSz58YBjgnbMIT9o=;
-  b=FsiYOFEAWMw2C0jCs/IpIFR8e7BRcHC10zylajEVyiaNgGItXtRuV/cV
-   r3uT8BvbM5i6S7HhpmSirUUa/Y+Aa4PKsQXVNyDBcl6wEYgOHzZ4MJNCU
-   YLzcIRWRqtLrrlqHEQRuBu97zJJVKJPCE3JPh27ueH8zGEv2FXDXB/8ME
-   M=;
-Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
-  by alexa-out-sd-01.qualcomm.com with ESMTP; 20 Jun 2022 22:35:18 -0700
+  bh=H6eOoeZPnAT6VYygHS8cwp1zCgFsow4wpSTibez9E74=;
+  b=zXvb1MwNahSoLl7ms4WUg6GUYTFRyJUUgbNBHNbfxs8c7QwFaFy8+QkO
+   IhRDIO32l3QU91kDBA/WcPnQNLSQW3WhgBwUdSEJuDPOhqay1TV5vhv8U
+   abSLTe7WKCsGqWq3QBLACzHr9tWCw6Igyb49GZOL9A845cYpMfqPY2oXi
+   4=;
+Received: from unknown (HELO ironmsg05-sd.qualcomm.com) ([10.53.140.145])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 20 Jun 2022 22:47:15 -0700
 X-QCInternal: smtphost
 Received: from nasanex01b.na.qualcomm.com ([10.46.141.250])
-  by ironmsg04-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jun 2022 22:30:04 -0700
+  by ironmsg05-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jun 2022 22:47:15 -0700
 Received: from [10.50.44.13] (10.80.80.8) by nasanex01b.na.qualcomm.com
  (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.22; Mon, 20 Jun
- 2022 22:30:01 -0700
-Message-ID: <87c17e9a-565a-d717-3534-83a4c506b984@quicinc.com>
-Date:   Tue, 21 Jun 2022 10:59:58 +0530
+ 2022 22:47:13 -0700
+Message-ID: <9de7f497-a4cd-ebdb-e912-d4cd73b4a982@quicinc.com>
+Date:   Tue, 21 Jun 2022 11:17:10 +0530
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
  Thunderbird/91.9.1
-Subject: Re: [PATCH rcu 01/12] rcu: Decrease FQS scan wait time in case of
- callback overloading
+Subject: Re: [PATCH rcu 02/12] rcu: Avoid tracing a few functions executed in
+ stop machine
 Content-Language: en-US
 To:     "Paul E. McKenney" <paulmck@kernel.org>, <rcu@vger.kernel.org>
 CC:     <linux-kernel@vger.kernel.org>, <kernel-team@fb.com>,
-        <rostedt@goodmis.org>
+        <rostedt@goodmis.org>, Patrick Wang <patrick.wang.shcn@gmail.com>
 References: <20220620222022.GA3839466@paulmck-ThinkPad-P17-Gen-1>
- <20220620222032.3839547-1-paulmck@kernel.org>
+ <20220620222032.3839547-2-paulmck@kernel.org>
 From:   Neeraj Upadhyay <quic_neeraju@quicinc.com>
-In-Reply-To: <20220620222032.3839547-1-paulmck@kernel.org>
+In-Reply-To: <20220620222032.3839547-2-paulmck@kernel.org>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
  nasanex01b.na.qualcomm.com (10.46.141.250)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
@@ -60,76 +60,110 @@ X-Mailing-List: rcu@vger.kernel.org
 
 
 On 6/21/2022 3:50 AM, Paul E. McKenney wrote:
-> The force-quiesce-state loop function rcu_gp_fqs_loop() checks for
-> callback overloading and does an immediate initial scan for idle CPUs
-> if so.  However, subsequent rescans will be carried out at as leisurely a
-> rate as they always are, as specified by the rcutree.jiffies_till_next_fqs
-> module parameter.  It might be tempting to just continue immediately
-> rescanning, but this turns the RCU grace-period kthread into a CPU hog.
-> It might also be tempting to reduce the time between rescans to a single
-> jiffy, but this can be problematic on larger systems.
+> From: Patrick Wang <patrick.wang.shcn@gmail.com>
 > 
-> This commit therefore divides the normal time between rescans by three,
-> rounding up.  Thus a small system running at HZ=1000 that is suffering
-> from callback overload will wait only one jiffy instead of the normal
-> three between rescans.
+> Stop-machine recently started calling additional functions while waiting:
 > 
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> ---
->   kernel/rcu/tree.c | 5 +++++
->   1 file changed, 5 insertions(+)
+> ----------------------------------------------------------------
+> Former stop machine wait loop:
+> do {
+>      cpu_relax(); => macro
+>      ...
+> } while (curstate != STOPMACHINE_EXIT);
+> -----------------------------------------------------------------
+> Current stop machine wait loop:
+> do {
+>      stop_machine_yield(cpumask); => function (notraced)
+>      ...
+>      touch_nmi_watchdog(); => function (notraced, inside calls also notraced)
+>      ...
+>      rcu_momentary_dyntick_idle(); => function (notraced, inside calls traced)
+> } while (curstate != MULTI_STOP_EXIT);
+> ------------------------------------------------------------------
 > 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index c25ba442044a6..c19d5926886fb 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -1993,6 +1993,11 @@ static noinline_for_stack void rcu_gp_fqs_loop(void)
->   			WRITE_ONCE(rcu_state.jiffies_kick_kthreads,
->   				   jiffies + (j ? 3 * j : 2));
->   		}
-> +		if (rcu_state.cbovld) {
-> +			j = (j + 2) / 3;
-> +			if (j <= 0)
-> +				j = 1;
-> +		}
+> These functions (and the functions that they call) must be marked
+> notrace to prevent them from being updated while they are executing.
+> The consequences of failing to mark these functions can be severe:
+> 
+>    rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+>    rcu: 	1-...!: (0 ticks this GP) idle=14f/1/0x4000000000000000 softirq=3397/3397 fqs=0
+>    rcu: 	3-...!: (0 ticks this GP) idle=ee9/1/0x4000000000000000 softirq=5168/5168 fqs=0
+>    	(detected by 0, t=8137 jiffies, g=5889, q=2 ncpus=4)
+>    Task dump for CPU 1:
+>    task:migration/1     state:R  running task     stack:    0 pid:   19 ppid:     2 flags:0x00000000
+>    Stopper: multi_cpu_stop+0x0/0x18c <- stop_machine_cpuslocked+0x128/0x174
+>    Call Trace:
+>    Task dump for CPU 3:
+>    task:migration/3     state:R  running task     stack:    0 pid:   29 ppid:     2 flags:0x00000000
+>    Stopper: multi_cpu_stop+0x0/0x18c <- stop_machine_cpuslocked+0x128/0x174
+>    Call Trace:
+>    rcu: rcu_preempt kthread timer wakeup didn't happen for 8136 jiffies! g5889 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402
+>    rcu: 	Possible timer handling issue on cpu=2 timer-softirq=594
+>    rcu: rcu_preempt kthread starved for 8137 jiffies! g5889 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402 ->cpu=2
+>    rcu: 	Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
+>    rcu: RCU grace-period kthread stack dump:
+>    task:rcu_preempt     state:I stack:    0 pid:   14 ppid:     2 flags:0x00000000
+>    Call Trace:
+>      schedule+0x56/0xc2
+>      schedule_timeout+0x82/0x184
+>      rcu_gp_fqs_loop+0x19a/0x318
+>      rcu_gp_kthread+0x11a/0x140
+>      kthread+0xee/0x118
+>      ret_from_exception+0x0/0x14
+>    rcu: Stack dump where RCU GP kthread last ran:
+>    Task dump for CPU 2:
+>    task:migration/2     state:R  running task     stack:    0 pid:   24 ppid:     2 flags:0x00000000
+>    Stopper: multi_cpu_stop+0x0/0x18c <- stop_machine_cpuslocked+0x128/0x174
+>    Call Trace:
+> 
+> This commit therefore marks these functions notrace:
+>   rcu_preempt_deferred_qs()
+>   rcu_preempt_need_deferred_qs()
+>   rcu_preempt_deferred_qs_irqrestore()
+> 
 
-We update 'j' here, after setting rcu_state.jiffies_force_qs
+Only the preemptible RCU definitions are updated; so, this change is not 
+required for non-preemptible RCU case?
 
-     WRITE_ONCE(rcu_state.jiffies_force_qs, jiffies + j)
-
-So, we return from swait_event_idle_timeout_exclusive after 1/3 time 
-duration.
-
-     swait_event_idle_timeout_exclusive(rcu_state.gp_wq,
-				 rcu_gp_fqs_check_wake(&gf), j);
-
-This can result in !timer_after check to return false and we will
-enter the 'else' (stray signal block) code?
-
-This might not matter for first 2 fqs loop iterations, where 
-RCU_GP_FLAG_OVLD is set in 'gf', but subsequent iterations won't benefit
-from this patch?
-
-
-if (!time_after(rcu_state.jiffies_force_qs, jiffies) ||
-	(gf & (RCU_GP_FLAG_FQS | RCU_GP_FLAG_OVLD))) {
-			...
-} else {
-	/* Deal with stray signal. */
-}
-
-
-So, do we need to move this calculation above the 'if' block which sets 
-rcu_state.jiffies_force_qs?
-		if (!ret) {
-
-			WRITE_ONCE(rcu_state.jiffies_force_qs, jiffies +
-						j);...
-		}
 
 Thanks
 Neeraj
 
->   		trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq,
->   				       TPS("fqswait"));
->   		WRITE_ONCE(rcu_state.gp_state, RCU_GP_WAIT_FQS);
+> Signed-off-by: Patrick Wang <patrick.wang.shcn@gmail.com>
+> Acked-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> ---
+>   kernel/rcu/tree_plugin.h | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> index c8ba0fe17267c..440d9e02a26e0 100644
+> --- a/kernel/rcu/tree_plugin.h
+> +++ b/kernel/rcu/tree_plugin.h
+> @@ -460,7 +460,7 @@ static bool rcu_preempt_has_tasks(struct rcu_node *rnp)
+>    * be quite short, for example, in the case of the call from
+>    * rcu_read_unlock_special().
+>    */
+> -static void
+> +static notrace void
+>   rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
+>   {
+>   	bool empty_exp;
+> @@ -581,7 +581,7 @@ rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
+>    * is disabled.  This function cannot be expected to understand these
+>    * nuances, so the caller must handle them.
+>    */
+> -static bool rcu_preempt_need_deferred_qs(struct task_struct *t)
+> +static notrace bool rcu_preempt_need_deferred_qs(struct task_struct *t)
+>   {
+>   	return (__this_cpu_read(rcu_data.cpu_no_qs.b.exp) ||
+>   		READ_ONCE(t->rcu_read_unlock_special.s)) &&
+> @@ -595,7 +595,7 @@ static bool rcu_preempt_need_deferred_qs(struct task_struct *t)
+>    * evaluate safety in terms of interrupt, softirq, and preemption
+>    * disabling.
+>    */
+> -static void rcu_preempt_deferred_qs(struct task_struct *t)
+> +static notrace void rcu_preempt_deferred_qs(struct task_struct *t)
+>   {
+>   	unsigned long flags;
+>   
