@@ -2,88 +2,189 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B089C43334
-	for <rcu@archiver.kernel.org>; Wed, 22 Jun 2022 10:36:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7086AC433EF
+	for <rcu@archiver.kernel.org>; Wed, 22 Jun 2022 11:46:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354482AbiFVKgO (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 22 Jun 2022 06:36:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54324 "EHLO
+        id S1357576AbiFVLqr (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 22 Jun 2022 07:46:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346319AbiFVKgN (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 22 Jun 2022 06:36:13 -0400
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6A1B3B571;
-        Wed, 22 Jun 2022 03:36:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1655894172; x=1687430172;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=Ab1KhP6RlfLDUpqQx5KxRjWRdxnAQ1ojvkbHJLNruCA=;
-  b=GcM9hHVzjAthPztuxRujmN3z1Eqp2ZNzz2qZeUy3QsharapGACJV9cQT
-   KgHs0F2EuW4JvIhDxmDod9WhWiH+AQ5KJRYS9J2ZHAEDgDCBrzdXGCrCu
-   98iEYj9gwqCh5xfeiloak5UaIqcvBiDFJi7cUJVKyAZLM9LwE3WeTLNVA
-   LSJWSdXlYQrUw0lwwIZKa6Kb63AcVaSCpfVql0bz3hxCVF21/TCRgpMfk
-   yZZ/I1xvh6N2zMDZGFsA5o7gWEpZ5/n82UqlMJceMVB9wryD1WdS4pJdT
-   hgxMpkAe4AjCHklUWH5uk1V786ebMmTEpuLNwuYnJVtnlgORboK0H1/wW
-   A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10385"; a="281456222"
-X-IronPort-AV: E=Sophos;i="5.92,212,1650956400"; 
-   d="scan'208";a="281456222"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2022 03:36:12 -0700
-X-IronPort-AV: E=Sophos;i="5.92,212,1650956400"; 
-   d="scan'208";a="644131142"
-Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.125])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2022 03:36:10 -0700
-From:   Zqiang <qiang1.zhang@intel.com>
-To:     paulmck@kernel.org, frederic@kernel.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] rcu: Add exp QS check in rcu_exp_handler() for no-preemptible expedited RCU
-Date:   Wed, 22 Jun 2022 18:35:49 +0800
-Message-Id: <20220622103549.2840087-1-qiang1.zhang@intel.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S1355742AbiFVLqr (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 22 Jun 2022 07:46:47 -0400
+Received: from alexa-out-sd-01.qualcomm.com (alexa-out-sd-01.qualcomm.com [199.106.114.38])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06B1E33A23;
+        Wed, 22 Jun 2022 04:46:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1655898406; x=1687434406;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=PLePtGK/nNadtMrdup55F1Wn755t1dKBv+FuXP1GQkU=;
+  b=GWizppB8KtezXisVGMan2u3AF3nfi6qc8eW4/6Nblq5Dur8u7c/DcF6C
+   Oc6uwviUvHiLJNtJISaLWEvc2PevYt7vJVM/g86Bxql55R9ZsaiSeoeah
+   pCYgwzLVO+5tsZsuZTMN1ZoG/AAxuf8R81Z28yYulfKSDO2NxLXsiLc+p
+   Y=;
+Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
+  by alexa-out-sd-01.qualcomm.com with ESMTP; 22 Jun 2022 04:46:45 -0700
+X-QCInternal: smtphost
+Received: from nasanex01b.na.qualcomm.com ([10.46.141.250])
+  by ironmsg04-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2022 04:46:45 -0700
+Received: from [10.50.44.13] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.22; Wed, 22 Jun
+ 2022 04:46:43 -0700
+Message-ID: <65e9c3bf-af54-3726-dff5-208a70473f65@quicinc.com>
+Date:   Wed, 22 Jun 2022 17:16:39 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH rcu 01/12] rcu: Decrease FQS scan wait time in case of
+ callback overloading
+Content-Language: en-US
+To:     <paulmck@kernel.org>
+CC:     <rcu@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel-team@fb.com>, <rostedt@goodmis.org>
+References: <20220620222022.GA3839466@paulmck-ThinkPad-P17-Gen-1>
+ <20220620222032.3839547-1-paulmck@kernel.org>
+ <87c17e9a-565a-d717-3534-83a4c506b984@quicinc.com>
+ <20220621221925.GQ1790663@paulmck-ThinkPad-P17-Gen-1>
+From:   Neeraj Upadhyay <quic_neeraju@quicinc.com>
+In-Reply-To: <20220621221925.GQ1790663@paulmck-ThinkPad-P17-Gen-1>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-In CONFIG_PREEMPT=n and CONFIG_PREEMPT_COUNT=y kernel, after a exp
-grace period begins, if detected current CPU enters idle in
-rcu_exp_handler() IPI handler, will immediately report the exp QS of the
-current cpu, at this time, maybe not being in an RCU read-side critical
-section, but need wait until rcu-softirq or sched-clock irq or sched-switch
-occurs on current CPU to check and report exp QS.
 
-This commit add a exp QS check in rcu_exp_handler(), when not being
-in an RCU read-side critical section, report exp QS earlier.
 
-Signed-off-by: Zqiang <qiang1.zhang@intel.com>
----
- kernel/rcu/tree_exp.h | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+On 6/22/2022 3:49 AM, Paul E. McKenney wrote:
+> On Tue, Jun 21, 2022 at 10:59:58AM +0530, Neeraj Upadhyay wrote:
+>>
+>>
+>> On 6/21/2022 3:50 AM, Paul E. McKenney wrote:
+>>> The force-quiesce-state loop function rcu_gp_fqs_loop() checks for
+>>> callback overloading and does an immediate initial scan for idle CPUs
+>>> if so.  However, subsequent rescans will be carried out at as leisurely a
+>>> rate as they always are, as specified by the rcutree.jiffies_till_next_fqs
+>>> module parameter.  It might be tempting to just continue immediately
+>>> rescanning, but this turns the RCU grace-period kthread into a CPU hog.
+>>> It might also be tempting to reduce the time between rescans to a single
+>>> jiffy, but this can be problematic on larger systems.
+>>>
+>>> This commit therefore divides the normal time between rescans by three,
+>>> rounding up.  Thus a small system running at HZ=1000 that is suffering
+>>> from callback overload will wait only one jiffy instead of the normal
+>>> three between rescans.
+>>>
+>>> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+>>> ---
+>>>    kernel/rcu/tree.c | 5 +++++
+>>>    1 file changed, 5 insertions(+)
+>>>
+>>> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+>>> index c25ba442044a6..c19d5926886fb 100644
+>>> --- a/kernel/rcu/tree.c
+>>> +++ b/kernel/rcu/tree.c
+>>> @@ -1993,6 +1993,11 @@ static noinline_for_stack void rcu_gp_fqs_loop(void)
+>>>    			WRITE_ONCE(rcu_state.jiffies_kick_kthreads,
+>>>    				   jiffies + (j ? 3 * j : 2));
+>>>    		}
+>>> +		if (rcu_state.cbovld) {
+>>> +			j = (j + 2) / 3;
+>>> +			if (j <= 0)
+>>> +				j = 1;
+>>> +		}
+>>
+>> We update 'j' here, after setting rcu_state.jiffies_force_qs
+>>
+>>      WRITE_ONCE(rcu_state.jiffies_force_qs, jiffies + j)
+>>
+>> So, we return from swait_event_idle_timeout_exclusive after 1/3 time
+>> duration.
+>>
+>>      swait_event_idle_timeout_exclusive(rcu_state.gp_wq,
+>> 				 rcu_gp_fqs_check_wake(&gf), j);
+>>
+>> This can result in !timer_after check to return false and we will
+>> enter the 'else' (stray signal block) code?
+>>
+>> This might not matter for first 2 fqs loop iterations, where
+>> RCU_GP_FLAG_OVLD is set in 'gf', but subsequent iterations won't benefit
+>> from this patch?
+>>
+>>
+>> if (!time_after(rcu_state.jiffies_force_qs, jiffies) ||
+>> 	(gf & (RCU_GP_FLAG_FQS | RCU_GP_FLAG_OVLD))) {
+>> 			...
+>> } else {
+>> 	/* Deal with stray signal. */
+>> }
+>>
+>>
+>> So, do we need to move this calculation above the 'if' block which sets
+>> rcu_state.jiffies_force_qs?
+>> 		if (!ret) {
+>>
+>> 			WRITE_ONCE(rcu_state.jiffies_force_qs, jiffies +
+>> 						j);...
+>> 		}
+> 
+> Good catch, thank you!  How about the updated patch shown below?
+> 
 
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index be667583a554..34f08267410f 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -828,11 +828,14 @@ static void rcu_exp_handler(void *unused)
- {
- 	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
- 	struct rcu_node *rnp = rdp->mynode;
-+	bool preempt_bh_disabled =
-+				!!(preempt_count() & (PREEMPT_MASK | SOFTIRQ_MASK));
- 
- 	if (!(READ_ONCE(rnp->expmask) & rdp->grpmask) ||
- 	    __this_cpu_read(rcu_data.cpu_no_qs.b.exp))
- 		return;
--	if (rcu_is_cpu_rrupt_from_idle()) {
-+	if (rcu_is_cpu_rrupt_from_idle() ||
-+			(IS_ENABLED(CONFIG_PREEMPT_COUNT) && !preempt_bh_disabled)) {
- 		rcu_report_exp_rdp(this_cpu_ptr(&rcu_data));
- 		return;
- 	}
--- 
-2.25.1
+Looks good to me.
 
+
+Thanks
+Neeraj
+
+> 							Thanx, Paul
+> 
+> ------------------------------------------------------------------------
+> 
+> commit 77de092c78f549b5c28075bfee9998a525d21f84
+> Author: Paul E. McKenney <paulmck@kernel.org>
+> Date:   Tue Apr 12 15:08:14 2022 -0700
+> 
+>      rcu: Decrease FQS scan wait time in case of callback overloading
+>      
+>      The force-quiesce-state loop function rcu_gp_fqs_loop() checks for
+>      callback overloading and does an immediate initial scan for idle CPUs
+>      if so.  However, subsequent rescans will be carried out at as leisurely a
+>      rate as they always are, as specified by the rcutree.jiffies_till_next_fqs
+>      module parameter.  It might be tempting to just continue immediately
+>      rescanning, but this turns the RCU grace-period kthread into a CPU hog.
+>      It might also be tempting to reduce the time between rescans to a single
+>      jiffy, but this can be problematic on larger systems.
+>      
+>      This commit therefore divides the normal time between rescans by three,
+>      rounding up.  Thus a small system running at HZ=1000 that is suffering
+>      from callback overload will wait only one jiffy instead of the normal
+>      three between rescans.
+>      
+>      [ paulmck: Apply Neeraj Upadhyay feedback. ]
+>      
+>      Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index c25ba442044a6..52094e72866e5 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -1983,7 +1983,12 @@ static noinline_for_stack void rcu_gp_fqs_loop(void)
+>   		gf = RCU_GP_FLAG_OVLD;
+>   	ret = 0;
+>   	for (;;) {
+> -		if (!ret) {
+> +		if (rcu_state.cbovld) {
+> +			j = (j + 2) / 3;
+> +			if (j <= 0)
+> +				j = 1;
+> +		}
+> +		if (!ret || time_before(jiffies + j, rcu_state.jiffies_force_qs)) {
+>   			WRITE_ONCE(rcu_state.jiffies_force_qs, jiffies + j);
+>   			/*
+>   			 * jiffies_force_qs before RCU_GP_WAIT_FQS state
