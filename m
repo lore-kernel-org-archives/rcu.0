@@ -2,189 +2,153 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7086AC433EF
-	for <rcu@archiver.kernel.org>; Wed, 22 Jun 2022 11:46:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CC678C433EF
+	for <rcu@archiver.kernel.org>; Wed, 22 Jun 2022 11:47:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357576AbiFVLqr (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 22 Jun 2022 07:46:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57056 "EHLO
+        id S1357760AbiFVLrz (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 22 Jun 2022 07:47:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355742AbiFVLqr (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 22 Jun 2022 07:46:47 -0400
-Received: from alexa-out-sd-01.qualcomm.com (alexa-out-sd-01.qualcomm.com [199.106.114.38])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06B1E33A23;
-        Wed, 22 Jun 2022 04:46:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1655898406; x=1687434406;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=PLePtGK/nNadtMrdup55F1Wn755t1dKBv+FuXP1GQkU=;
-  b=GWizppB8KtezXisVGMan2u3AF3nfi6qc8eW4/6Nblq5Dur8u7c/DcF6C
-   Oc6uwviUvHiLJNtJISaLWEvc2PevYt7vJVM/g86Bxql55R9ZsaiSeoeah
-   pCYgwzLVO+5tsZsuZTMN1ZoG/AAxuf8R81Z28yYulfKSDO2NxLXsiLc+p
-   Y=;
-Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
-  by alexa-out-sd-01.qualcomm.com with ESMTP; 22 Jun 2022 04:46:45 -0700
-X-QCInternal: smtphost
-Received: from nasanex01b.na.qualcomm.com ([10.46.141.250])
-  by ironmsg04-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2022 04:46:45 -0700
-Received: from [10.50.44.13] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.22; Wed, 22 Jun
- 2022 04:46:43 -0700
-Message-ID: <65e9c3bf-af54-3726-dff5-208a70473f65@quicinc.com>
-Date:   Wed, 22 Jun 2022 17:16:39 +0530
+        with ESMTP id S1357785AbiFVLry (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 22 Jun 2022 07:47:54 -0400
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21F4239807;
+        Wed, 22 Jun 2022 04:47:51 -0700 (PDT)
+Received: by mail-ed1-f54.google.com with SMTP id eo8so23565311edb.0;
+        Wed, 22 Jun 2022 04:47:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=unEr3IBeLbRfuTie0KZCBAqiK12CoDgMmUuwQlpyhLg=;
+        b=NG3QUuIDMvohVjJMZ1+2zT989w91r4Nb1HsldcN7QoQrmhVyTjbbBjvY+eO04GmEtQ
+         CCXbgVtfW4CxkA8x2TxJszCLX5/6ZYmjbRASkyv07pHVf6NCHgZBWUClzzvjVSrpQZYP
+         V1o+YKRjRI3BSVOt7CBsTqAzX2BIFh4umBHipqXWp2W+frg5fZAycX2AWIheoMMN1m2R
+         4pfEqesKmZdmTbpYwcpNfh4gh10i5i9GzHQId1W7YxBt7QDnUOD4brikit+tQi5dI9My
+         d6rm/F3B4vjDsW49FCTlFqA9bzyDviCm+l9/IFDv8YArwYvSbOLhPCNk7C7O5zrFRaSp
+         BAnQ==
+X-Gm-Message-State: AJIora+vHuwxHd7dnNjo047W+Tg2pqASvzouiObeQznFgcAmMI4rztgA
+        PnR8oHc1wBMXdKtk7MudYwSgD3xn35E=
+X-Google-Smtp-Source: AGRyM1tlyIgcyBf9g1gy9o30p1plgkRK8+Mj0aIrQot47xRCx5A9uW0I8RnVpGN8HNYDxN4pIIhuxQ==
+X-Received: by 2002:a05:6402:1854:b0:435:7f6e:e553 with SMTP id v20-20020a056402185400b004357f6ee553mr3677495edy.282.1655898469421;
+        Wed, 22 Jun 2022 04:47:49 -0700 (PDT)
+Received: from tiehlicka.suse.cz ([193.86.92.180])
+        by smtp.gmail.com with ESMTPSA id dz21-20020a0564021d5500b0043592bf496fsm4414866edb.38.2022.06.22.04.47.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Jun 2022 04:47:48 -0700 (PDT)
+From:   Michal Hocko <mhocko@kernel.org>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: [RFC PATCH] rcu: back off on allocation failure in fill_page_cache_func
+Date:   Wed, 22 Jun 2022 13:47:11 +0200
+Message-Id: <20220622114711.28154-1-mhocko@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH rcu 01/12] rcu: Decrease FQS scan wait time in case of
- callback overloading
-Content-Language: en-US
-To:     <paulmck@kernel.org>
-CC:     <rcu@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel-team@fb.com>, <rostedt@goodmis.org>
-References: <20220620222022.GA3839466@paulmck-ThinkPad-P17-Gen-1>
- <20220620222032.3839547-1-paulmck@kernel.org>
- <87c17e9a-565a-d717-3534-83a4c506b984@quicinc.com>
- <20220621221925.GQ1790663@paulmck-ThinkPad-P17-Gen-1>
-From:   Neeraj Upadhyay <quic_neeraju@quicinc.com>
-In-Reply-To: <20220621221925.GQ1790663@paulmck-ThinkPad-P17-Gen-1>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+From: Michal Hocko <mhocko@suse.com>
 
+fill_page_cache_func allocates couple of pages to store
+kvfree_rcu_bulk_data. This is a lightweight (GFP_NORETRY) allocation
+which can fail under memory pressure. The function will, however keep
+retrying even when the previous attempt has failed.
 
-On 6/22/2022 3:49 AM, Paul E. McKenney wrote:
-> On Tue, Jun 21, 2022 at 10:59:58AM +0530, Neeraj Upadhyay wrote:
->>
->>
->> On 6/21/2022 3:50 AM, Paul E. McKenney wrote:
->>> The force-quiesce-state loop function rcu_gp_fqs_loop() checks for
->>> callback overloading and does an immediate initial scan for idle CPUs
->>> if so.  However, subsequent rescans will be carried out at as leisurely a
->>> rate as they always are, as specified by the rcutree.jiffies_till_next_fqs
->>> module parameter.  It might be tempting to just continue immediately
->>> rescanning, but this turns the RCU grace-period kthread into a CPU hog.
->>> It might also be tempting to reduce the time between rescans to a single
->>> jiffy, but this can be problematic on larger systems.
->>>
->>> This commit therefore divides the normal time between rescans by three,
->>> rounding up.  Thus a small system running at HZ=1000 that is suffering
->>> from callback overload will wait only one jiffy instead of the normal
->>> three between rescans.
->>>
->>> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
->>> ---
->>>    kernel/rcu/tree.c | 5 +++++
->>>    1 file changed, 5 insertions(+)
->>>
->>> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
->>> index c25ba442044a6..c19d5926886fb 100644
->>> --- a/kernel/rcu/tree.c
->>> +++ b/kernel/rcu/tree.c
->>> @@ -1993,6 +1993,11 @@ static noinline_for_stack void rcu_gp_fqs_loop(void)
->>>    			WRITE_ONCE(rcu_state.jiffies_kick_kthreads,
->>>    				   jiffies + (j ? 3 * j : 2));
->>>    		}
->>> +		if (rcu_state.cbovld) {
->>> +			j = (j + 2) / 3;
->>> +			if (j <= 0)
->>> +				j = 1;
->>> +		}
->>
->> We update 'j' here, after setting rcu_state.jiffies_force_qs
->>
->>      WRITE_ONCE(rcu_state.jiffies_force_qs, jiffies + j)
->>
->> So, we return from swait_event_idle_timeout_exclusive after 1/3 time
->> duration.
->>
->>      swait_event_idle_timeout_exclusive(rcu_state.gp_wq,
->> 				 rcu_gp_fqs_check_wake(&gf), j);
->>
->> This can result in !timer_after check to return false and we will
->> enter the 'else' (stray signal block) code?
->>
->> This might not matter for first 2 fqs loop iterations, where
->> RCU_GP_FLAG_OVLD is set in 'gf', but subsequent iterations won't benefit
->> from this patch?
->>
->>
->> if (!time_after(rcu_state.jiffies_force_qs, jiffies) ||
->> 	(gf & (RCU_GP_FLAG_FQS | RCU_GP_FLAG_OVLD))) {
->> 			...
->> } else {
->> 	/* Deal with stray signal. */
->> }
->>
->>
->> So, do we need to move this calculation above the 'if' block which sets
->> rcu_state.jiffies_force_qs?
->> 		if (!ret) {
->>
->> 			WRITE_ONCE(rcu_state.jiffies_force_qs, jiffies +
->> 						j);...
->> 		}
-> 
-> Good catch, thank you!  How about the updated patch shown below?
-> 
+While this is not really incorrect there is one thing to consider. This
+allocation is invoked from the WQ context and that means that if the
+memory reclaim gets stuck it can hog the worker for quite some time.
+WQ concurrency is only triggered when the worker context sleeps and that
+is not guaranteed for __GFP_NORETRY allocation attempts (see
+should_reclaim_retry).
 
-Looks good to me.
+We have seen WQ lockups
+kernel: BUG: workqueue lockup - pool cpus=93 node=1 flags=0x1 nice=0 stuck for 32s!
+[...]
+kernel: pool 74: cpus=37 node=0 flags=0x1 nice=0 hung=32s workers=2 manager: 2146
+kernel:   pwq 498: cpus=249 node=1 flags=0x1 nice=0 active=4/256 refcnt=5
+kernel:     in-flight: 1917:fill_page_cache_func
+kernel:     pending: dbs_work_handler, free_work, kfree_rcu_monitor
 
+Originaly, we thought that several retries with direct reclaim being
+stuck is the underlying reason but we couldn't have confirmed that and
+have seen a similar lockups detected even without any heavy memory
+pressure so there is likely something else/more going on. On the other
+hand failing the allocation shouldn't have a big impact and from the
+code it is not really obvious why retrying is desirable so back off
+after the allocation failure.
+
+Cc: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Frederic Weisbecker <frederic@kernel.org>
+Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+Cc: Josh Triplett <josh@joshtriplett.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+Cc: Joel Fernandes <joel@joelfernandes.org>
+Signed-off-by: Michal Hocko <mhocko@suse.com>
+---
+
+Hi,
+I am sending this as an RFC because I couldn't prove that the WQ
+concurency issue as a result from the allocation retry is really a
+problem. On the other hand I couldn't see a good reason to retry after a
+previous failure. While the kswapd running in the background could have
+released some memory this is a not really guaranteed and mostly a
+wishful thinking.
+
+I do not understand the code well enough so I could be easily missing
+something. If the patch is a wrong thing to do then it would be really
+nice to add a comment why the retry is desirable and a good thing to do.
+
+The retry loop should be bound to rcu_min_cached_objs which is quite
+small but configurable so this can get large in some setups.
 
 Thanks
-Neeraj
 
-> 							Thanx, Paul
-> 
-> ------------------------------------------------------------------------
-> 
-> commit 77de092c78f549b5c28075bfee9998a525d21f84
-> Author: Paul E. McKenney <paulmck@kernel.org>
-> Date:   Tue Apr 12 15:08:14 2022 -0700
-> 
->      rcu: Decrease FQS scan wait time in case of callback overloading
->      
->      The force-quiesce-state loop function rcu_gp_fqs_loop() checks for
->      callback overloading and does an immediate initial scan for idle CPUs
->      if so.  However, subsequent rescans will be carried out at as leisurely a
->      rate as they always are, as specified by the rcutree.jiffies_till_next_fqs
->      module parameter.  It might be tempting to just continue immediately
->      rescanning, but this turns the RCU grace-period kthread into a CPU hog.
->      It might also be tempting to reduce the time between rescans to a single
->      jiffy, but this can be problematic on larger systems.
->      
->      This commit therefore divides the normal time between rescans by three,
->      rounding up.  Thus a small system running at HZ=1000 that is suffering
->      from callback overload will wait only one jiffy instead of the normal
->      three between rescans.
->      
->      [ paulmck: Apply Neeraj Upadhyay feedback. ]
->      
->      Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index c25ba442044a6..52094e72866e5 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -1983,7 +1983,12 @@ static noinline_for_stack void rcu_gp_fqs_loop(void)
->   		gf = RCU_GP_FLAG_OVLD;
->   	ret = 0;
->   	for (;;) {
-> -		if (!ret) {
-> +		if (rcu_state.cbovld) {
-> +			j = (j + 2) / 3;
-> +			if (j <= 0)
-> +				j = 1;
-> +		}
-> +		if (!ret || time_before(jiffies + j, rcu_state.jiffies_force_qs)) {
->   			WRITE_ONCE(rcu_state.jiffies_force_qs, jiffies + j);
->   			/*
->   			 * jiffies_force_qs before RCU_GP_WAIT_FQS state
+ kernel/rcu/tree.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index c25ba442044a..54a3a19c4c0b 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3508,15 +3508,16 @@ static void fill_page_cache_func(struct work_struct *work)
+ 		bnode = (struct kvfree_rcu_bulk_data *)
+ 			__get_free_page(GFP_KERNEL | __GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN);
+ 
+-		if (bnode) {
+-			raw_spin_lock_irqsave(&krcp->lock, flags);
+-			pushed = put_cached_bnode(krcp, bnode);
+-			raw_spin_unlock_irqrestore(&krcp->lock, flags);
++		if (!bnode)
++			break;
+ 
+-			if (!pushed) {
+-				free_page((unsigned long) bnode);
+-				break;
+-			}
++		raw_spin_lock_irqsave(&krcp->lock, flags);
++		pushed = put_cached_bnode(krcp, bnode);
++		raw_spin_unlock_irqrestore(&krcp->lock, flags);
++
++		if (!pushed) {
++			free_page((unsigned long) bnode);
++			break;
+ 		}
+ 	}
+ 
+-- 
+2.30.2
+
