@@ -2,138 +2,88 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 24446C43334
-	for <rcu@archiver.kernel.org>; Tue, 21 Jun 2022 22:26:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B089C43334
+	for <rcu@archiver.kernel.org>; Wed, 22 Jun 2022 10:36:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240598AbiFUW0A (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 21 Jun 2022 18:26:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57762 "EHLO
+        id S1354482AbiFVKgO (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 22 Jun 2022 06:36:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231383AbiFUW0A (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 21 Jun 2022 18:26:00 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BC23313A5;
-        Tue, 21 Jun 2022 15:25:59 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 1018CB80F63;
-        Tue, 21 Jun 2022 22:25:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8913C3411C;
-        Tue, 21 Jun 2022 22:25:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655850356;
-        bh=6O0+TGIwhmpdb4aH1hAuYD76++tmQ0QMm74jwV5F4KQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=JiWXTRyFAsQh0irt2QPi+JG32rA4bNgQLIMD4oiX3uiB6IiT79pjmW1+JaT4LeQqj
-         0nE6MgKGTWSW9c4LsEisfEglZLXouRr2GrTxx4B8Mm7v4tQcBTYghCRCZ37yH1Sx7C
-         27In1BK1hiQ1TWqHCS43BRJaZI8nexEQXiPT02mZbsYU00BMbe/JrIeEPHF1eeRvdT
-         V0ayNXjZeTy09sjKbYQWsPn7WoIqMcXymVIM8W5LNy07+IV82qUvgC2Gc/tBkOvBc3
-         5wURTl+fzF5L16sMU5lXsrml/z2rKHHAfnkWJsPkEari0/oAyguf+MT8Bgj/0eZQ0q
-         Ahuj4+5tYw79A==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 5980C5C0AE0; Tue, 21 Jun 2022 15:25:56 -0700 (PDT)
-Date:   Tue, 21 Jun 2022 15:25:56 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Neeraj Upadhyay <quic_neeraju@quicinc.com>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, rostedt@goodmis.org,
-        Zhangfei Gao <zhangfei.gao@linaro.org>,
-        Shameerali Kolothum Thodi 
-        <shameerali.kolothum.thodi@huawei.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH rcu 12/12] srcu: Block less aggressively for expedited
- grace periods
-Message-ID: <20220621222556.GU1790663@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220620222022.GA3839466@paulmck-ThinkPad-P17-Gen-1>
- <20220620222032.3839547-12-paulmck@kernel.org>
- <248317a0-2ef4-c619-15b5-84e2b62aab5e@quicinc.com>
+        with ESMTP id S1346319AbiFVKgN (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 22 Jun 2022 06:36:13 -0400
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6A1B3B571;
+        Wed, 22 Jun 2022 03:36:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1655894172; x=1687430172;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Ab1KhP6RlfLDUpqQx5KxRjWRdxnAQ1ojvkbHJLNruCA=;
+  b=GcM9hHVzjAthPztuxRujmN3z1Eqp2ZNzz2qZeUy3QsharapGACJV9cQT
+   KgHs0F2EuW4JvIhDxmDod9WhWiH+AQ5KJRYS9J2ZHAEDgDCBrzdXGCrCu
+   98iEYj9gwqCh5xfeiloak5UaIqcvBiDFJi7cUJVKyAZLM9LwE3WeTLNVA
+   LSJWSdXlYQrUw0lwwIZKa6Kb63AcVaSCpfVql0bz3hxCVF21/TCRgpMfk
+   yZZ/I1xvh6N2zMDZGFsA5o7gWEpZ5/n82UqlMJceMVB9wryD1WdS4pJdT
+   hgxMpkAe4AjCHklUWH5uk1V786ebMmTEpuLNwuYnJVtnlgORboK0H1/wW
+   A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10385"; a="281456222"
+X-IronPort-AV: E=Sophos;i="5.92,212,1650956400"; 
+   d="scan'208";a="281456222"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2022 03:36:12 -0700
+X-IronPort-AV: E=Sophos;i="5.92,212,1650956400"; 
+   d="scan'208";a="644131142"
+Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.125])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2022 03:36:10 -0700
+From:   Zqiang <qiang1.zhang@intel.com>
+To:     paulmck@kernel.org, frederic@kernel.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] rcu: Add exp QS check in rcu_exp_handler() for no-preemptible expedited RCU
+Date:   Wed, 22 Jun 2022 18:35:49 +0800
+Message-Id: <20220622103549.2840087-1-qiang1.zhang@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <248317a0-2ef4-c619-15b5-84e2b62aab5e@quicinc.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Jun 21, 2022 at 03:43:30PM +0530, Neeraj Upadhyay wrote:
-> 
-> 
-> On 6/21/2022 3:50 AM, Paul E. McKenney wrote:
-> > Commit 282d8998e997 ("srcu: Prevent expedited GPs and blocking readers
-> > from consuming CPU") fixed a problem where a long-running expedited SRCU
-> > grace period could block kernel live patching.  It did so by giving up
-> > on expediting once a given SRCU expedited grace period grew too old.
-> > 
-> > Unfortunately, this added excessive delays to boots of embedded systems
-> > running on qemu that use the ARM IORT RMR feature.  This commit therefore
-> > makes the transition away from expediting less aggressive, increasing
-> > the per-grace-period phase number of non-sleeping polls of readers from
-> > one to three and increasing the required grace-period age from one jiffy
-> > (actually from zero to one jiffies) to two jiffies (actually from one
-> > to two jiffies).
-> > 
-> > Fixes: 282d8998e997 ("srcu: Prevent expedited GPs and blocking readers from consuming CPU")
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > Reported-by: Zhangfei Gao <zhangfei.gao@linaro.org>
-> > Reported-by: chenxiang (M)" <chenxiang66@hisilicon.com>
-> > Cc: Shameerali Kolothum Thodi  <shameerali.kolothum.thodi@huawei.com>
-> > Cc: Paolo Bonzini <pbonzini@redhat.com>
-> > Link: https://lore.kernel.org/all/20615615-0013-5adc-584f-2b1d5c03ebfc@linaro.org/
-> > ---
-> 
-> 
-> Reviewed-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+In CONFIG_PREEMPT=n and CONFIG_PREEMPT_COUNT=y kernel, after a exp
+grace period begins, if detected current CPU enters idle in
+rcu_exp_handler() IPI handler, will immediately report the exp QS of the
+current cpu, at this time, maybe not being in an RCU read-side critical
+section, but need wait until rcu-softirq or sched-clock irq or sched-switch
+occurs on current CPU to check and report exp QS.
 
-And I applied your Reviewed-by to the other commits you gave it for,
-and thank you very much!  Much nicer to fix the bugs now than to have
-to do separate patches for them later.  ;-)
+This commit add a exp QS check in rcu_exp_handler(), when not being
+in an RCU read-side critical section, report exp QS earlier.
 
-							Thanx, Paul
+Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+---
+ kernel/rcu/tree_exp.h | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-> Thanks
-> Neeraj
-> 
-> >   kernel/rcu/srcutree.c | 20 +++++++++++++-------
-> >   1 file changed, 13 insertions(+), 7 deletions(-)
-> > 
-> > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> > index 50ba70f019dea..0db7873f4e95b 100644
-> > --- a/kernel/rcu/srcutree.c
-> > +++ b/kernel/rcu/srcutree.c
-> > @@ -513,7 +513,7 @@ static bool srcu_readers_active(struct srcu_struct *ssp)
-> >   #define SRCU_INTERVAL		1	// Base delay if no expedited GPs pending.
-> >   #define SRCU_MAX_INTERVAL	10	// Maximum incremental delay from slow readers.
-> > -#define SRCU_MAX_NODELAY_PHASE	1	// Maximum per-GP-phase consecutive no-delay instances.
-> > +#define SRCU_MAX_NODELAY_PHASE	3	// Maximum per-GP-phase consecutive no-delay instances.
-> >   #define SRCU_MAX_NODELAY	100	// Maximum consecutive no-delay instances.
-> >   /*
-> > @@ -522,16 +522,22 @@ static bool srcu_readers_active(struct srcu_struct *ssp)
-> >    */
-> >   static unsigned long srcu_get_delay(struct srcu_struct *ssp)
-> >   {
-> > +	unsigned long gpstart;
-> > +	unsigned long j;
-> >   	unsigned long jbase = SRCU_INTERVAL;
-> >   	if (ULONG_CMP_LT(READ_ONCE(ssp->srcu_gp_seq), READ_ONCE(ssp->srcu_gp_seq_needed_exp)))
-> >   		jbase = 0;
-> > -	if (rcu_seq_state(READ_ONCE(ssp->srcu_gp_seq)))
-> > -		jbase += jiffies - READ_ONCE(ssp->srcu_gp_start);
-> > -	if (!jbase) {
-> > -		WRITE_ONCE(ssp->srcu_n_exp_nodelay, READ_ONCE(ssp->srcu_n_exp_nodelay) + 1);
-> > -		if (READ_ONCE(ssp->srcu_n_exp_nodelay) > SRCU_MAX_NODELAY_PHASE)
-> > -			jbase = 1;
-> > +	if (rcu_seq_state(READ_ONCE(ssp->srcu_gp_seq))) {
-> > +		j = jiffies - 1;
-> > +		gpstart = READ_ONCE(ssp->srcu_gp_start);
-> > +		if (time_after(j, gpstart))
-> > +			jbase += j - gpstart;
-> > +		if (!jbase) {
-> > +			WRITE_ONCE(ssp->srcu_n_exp_nodelay, READ_ONCE(ssp->srcu_n_exp_nodelay) + 1);
-> > +			if (READ_ONCE(ssp->srcu_n_exp_nodelay) > SRCU_MAX_NODELAY_PHASE)
-> > +				jbase = 1;
-> > +		}
-> >   	}
-> >   	return jbase > SRCU_MAX_INTERVAL ? SRCU_MAX_INTERVAL : jbase;
-> >   }
+diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+index be667583a554..34f08267410f 100644
+--- a/kernel/rcu/tree_exp.h
++++ b/kernel/rcu/tree_exp.h
+@@ -828,11 +828,14 @@ static void rcu_exp_handler(void *unused)
+ {
+ 	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
+ 	struct rcu_node *rnp = rdp->mynode;
++	bool preempt_bh_disabled =
++				!!(preempt_count() & (PREEMPT_MASK | SOFTIRQ_MASK));
+ 
+ 	if (!(READ_ONCE(rnp->expmask) & rdp->grpmask) ||
+ 	    __this_cpu_read(rcu_data.cpu_no_qs.b.exp))
+ 		return;
+-	if (rcu_is_cpu_rrupt_from_idle()) {
++	if (rcu_is_cpu_rrupt_from_idle() ||
++			(IS_ENABLED(CONFIG_PREEMPT_COUNT) && !preempt_bh_disabled)) {
+ 		rcu_report_exp_rdp(this_cpu_ptr(&rcu_data));
+ 		return;
+ 	}
+-- 
+2.25.1
+
