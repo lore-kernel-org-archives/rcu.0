@@ -2,90 +2,107 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B7217CCA479
-	for <rcu@archiver.kernel.org>; Wed, 22 Jun 2022 22:51:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8528C433EF
+	for <rcu@archiver.kernel.org>; Wed, 22 Jun 2022 22:58:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359870AbiFVWvy (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 22 Jun 2022 18:51:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45656 "EHLO
+        id S1376739AbiFVW6j (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 22 Jun 2022 18:58:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359812AbiFVWvt (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 22 Jun 2022 18:51:49 -0400
-Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FC1940A3E
-        for <rcu@vger.kernel.org>; Wed, 22 Jun 2022 15:51:49 -0700 (PDT)
-Received: by mail-qv1-xf35.google.com with SMTP id c1so27038065qvi.11
-        for <rcu@vger.kernel.org>; Wed, 22 Jun 2022 15:51:49 -0700 (PDT)
+        with ESMTP id S1376760AbiFVW6i (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 22 Jun 2022 18:58:38 -0400
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79D963EF08
+        for <rcu@vger.kernel.org>; Wed, 22 Jun 2022 15:58:37 -0700 (PDT)
+Received: by mail-il1-x134.google.com with SMTP id h20so6492923ilj.13
+        for <rcu@vger.kernel.org>; Wed, 22 Jun 2022 15:58:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=FIRVjLUngtzvaOGGJhPX9zs36OvO+dWcUJ0YzPStXJo=;
-        b=RP4Xw5PjLXl1/ttonHyWA6UJqEVlPBaI/VbWuKT2GdpriQ5RbqwHgHOBGOdfOTxTyq
-         TDGa++K8gS/R+55d58vj0W+rk6ukDyJmrWWx/adgrlWS5p6iXgZaCXklmrAQ3/o06bKv
-         sjXJp95JkuuCiMNbBqArpXD5cBjAQs44IfTfg=
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=E2W8cT9+eQP/K3OUSNqcjrwuCQBrEUD6L/kph3gY7Hc=;
+        b=O6fnv4Cy/i2qtk+aGdD62UymIG285EMWD2hCwVrCefUiTfvUsRYlcMEjKreYwTu3lZ
+         +iq1QI+GIo2tKBd2guBzCADuALCeRGVy2rpDkfOdjeJC7D677/MibJXcZVX+28Lt02WF
+         80Z8jfTk5AyIgUL6JFFK67L6Es9LFlcmAeFEc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=FIRVjLUngtzvaOGGJhPX9zs36OvO+dWcUJ0YzPStXJo=;
-        b=A35dENIHBhvC6cxevBhU3WdSDPc2HbSNOIxIVipzwycP44zu0NQLBO799LQnw6fqG2
-         lGMIGf3RfmAU9vlYGKeyr4mUYFWSNS8VGEP/sF5p+tpqM3gL8jIB/lIe1cdsAY2WCWVG
-         e868pOwRiljzD83YoF4BWwV3XetqDfWT3fphfwH/ZCQWIHyY9ARvDH63YfjpsEDXFcvA
-         /Q0PiSRJXpQlBTuKpcPXu4ZHELptIajG6FKMFBRhh4IaOWpXBoZOxXczhCkS3/wt9QgK
-         uH6bLwLc2933xCsl5m5I3pflgffYeNoqh0owXKirDDiJI3j/p1iUrVYQ6WtskBsyvzRA
-         EBiw==
-X-Gm-Message-State: AJIora/G2ZOoAdxAsojWrrwwSwUIubBfnNda/YLrYXnrka6dxoE32nN8
-        mGD5P3uLJxtj7ctwSSC2U/NFMjDjNrlnoQ==
-X-Google-Smtp-Source: AGRyM1vaA5Ao94/E0rX5gloX6owI1QnEQU1eoreWEcsbtCYin0ct2kXn34bL0xAor+gWulrg/0CnCA==
-X-Received: by 2002:a05:6214:76b:b0:46e:2704:7c42 with SMTP id f11-20020a056214076b00b0046e27047c42mr30212669qvz.90.1655938308765;
-        Wed, 22 Jun 2022 15:51:48 -0700 (PDT)
-Received: from joelboxx.c.googlers.com.com (228.221.150.34.bc.googleusercontent.com. [34.150.221.228])
-        by smtp.gmail.com with ESMTPSA id k66-20020a37a145000000b006ab91fd03fasm1794022qke.19.2022.06.22.15.51.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jun 2022 15:51:48 -0700 (PDT)
-From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, rushikesh.s.kadam@intel.com,
-        urezki@gmail.com, neeraj.iitr10@gmail.com, frederic@kernel.org,
-        paulmck@kernel.org, rostedt@goodmis.org, vineeth@bitbyteword.org,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Subject: [PATCH v2 8/8] rcu/kfree: Fix kfree_rcu_shrink_count() return value
-Date:   Wed, 22 Jun 2022 22:51:02 +0000
-Message-Id: <20220622225102.2112026-10-joel@joelfernandes.org>
-X-Mailer: git-send-email 2.37.0.rc0.104.g0611611a94-goog
-In-Reply-To: <20220622225102.2112026-1-joel@joelfernandes.org>
-References: <20220622225102.2112026-1-joel@joelfernandes.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=E2W8cT9+eQP/K3OUSNqcjrwuCQBrEUD6L/kph3gY7Hc=;
+        b=6ngr+E5i67SKcTf55LX6xg1uyKIv8F58BazFLjCN+Zj5fYDnqOgZjr+zpH0YdI63YX
+         jc05Nk5gkUJmZbVwvvaVYq859eEQv9fx1aKemOlH4dNLADEiQuehoDLnkDsMjxZ9gqi8
+         0uE7aypUpdYUHTWWRUs8GBTo8EVbvRSA32rH2n7gWppLEDKgChrDuBx3qimPTIaH7hvE
+         TMrsNBMGeZImNthPNZcNXg1Ppio60L9Y/+xlAJLHcoUjmHwyF65dsPcVZgnh46muoRUa
+         dW3OKv8cWspg5e+yIoJrMkb8bYghPnpWjQWZFJ7F9uNcJpmMSyCN/YzXg0qIe0eNQzDY
+         bfxQ==
+X-Gm-Message-State: AJIora942AwXKWUbtC0dZglQS+epDWZsH/E2+lkCdcEMHz/SgwdqxA1h
+        keoBlDaSKoeRfggB/vWErJufE42I7/23cYHHcV/FUWEhYfRdzA==
+X-Google-Smtp-Source: AGRyM1uTjEDV3Av4QdjU0tC4xCKF/aqqmjNl9hypJfT8/qlCycU0mufZSPFw49wVHjACPx9kjglUutCG8FIRJIoKGMw=
+X-Received: by 2002:a05:6e02:1986:b0:2d4:dfae:edef with SMTP id
+ g6-20020a056e02198600b002d4dfaeedefmr3326335ilf.280.1655938716831; Wed, 22
+ Jun 2022 15:58:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20220622225102.2112026-1-joel@joelfernandes.org> <20220622225102.2112026-2-joel@joelfernandes.org>
+In-Reply-To: <20220622225102.2112026-2-joel@joelfernandes.org>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Wed, 22 Jun 2022 18:58:26 -0400
+Message-ID: <CAEXW_YQaXGmwmFbfSPAEG9SpfuSy3muhWhTFeuxSY4OwUWeHdA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] context_tracking: Use arch_atomic_read() in
+ __ct_state for KASAN
+To:     rcu <rcu@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Rushikesh S Kadam <rushikesh.s.kadam@intel.com>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        Neeraj upadhyay <neeraj.iitr10@gmail.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>, vineeth@bitbyteword.org,
+        Marco Elver <elver@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-As per the comments in include/linux/shrinker.h, .count_objects callback
-should return the number of freeable items, but if there are no objects
-to free, SHRINK_EMPTY should be returned. The only time 0 is returned
-should be when we are unable to determine the number of objects, or the
-cache should be skipped for another reason.
+Apologies, I accidentally picked this specific commit up in my recent
+git format-patch which ended up sending it out. Totally unintended.
 
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
----
- kernel/rcu/tree.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 711679d10cbb..935788e8d2d7 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3722,7 +3722,7 @@ kfree_rcu_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
- 		atomic_set(&krcp->backoff_page_cache_fill, 1);
- 	}
- 
--	return count;
-+	return count == 0 ? SHRINK_EMPTY : count;
- }
- 
- static unsigned long
--- 
-2.37.0.rc0.104.g0611611a94-goog
-
+On Wed, Jun 22, 2022 at 6:51 PM Joel Fernandes (Google)
+<joel@joelfernandes.org> wrote:
+>
+> From: "Paul E. McKenney" <paulmck@kernel.org>
+>
+> Context tracking's __ct_state() function can be invoked from noinstr state
+> where RCU is not watching.  This means that its use of atomic_read()
+> causes KASAN to invoke the non-noinstr __kasan_check_read() function
+> from the noinstr function __ct_state().  This is problematic because
+> someone tracing the __kasan_check_read() function could get a nasty
+> surprise because of RCU not watching.
+>
+> This commit therefore replaces the __ct_state() function's use of
+> atomic_read() with arch_atomic_read(), which KASAN does not attempt to
+> add instrumention to.
+>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> Cc: Frederic Weisbecker <frederic@kernel.org>
+> Cc: Marco Elver <elver@google.com>
+> Reviewed-by: Marco Elver <elver@google.com>
+> ---
+>  include/linux/context_tracking_state.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/include/linux/context_tracking_state.h b/include/linux/context_tracking_state.h
+> index 0aecc07fb4f5..81c51e5f0314 100644
+> --- a/include/linux/context_tracking_state.h
+> +++ b/include/linux/context_tracking_state.h
+> @@ -49,7 +49,7 @@ DECLARE_PER_CPU(struct context_tracking, context_tracking);
+>
+>  static __always_inline int __ct_state(void)
+>  {
+> -       return atomic_read(this_cpu_ptr(&context_tracking.state)) & CT_STATE_MASK;
+> +       return arch_atomic_read(this_cpu_ptr(&context_tracking.state)) & CT_STATE_MASK;
+>  }
+>  #endif
+>
+> --
+> 2.37.0.rc0.104.g0611611a94-goog
+>
