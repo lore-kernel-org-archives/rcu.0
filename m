@@ -2,46 +2,46 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5808DC433EF
-	for <rcu@archiver.kernel.org>; Wed, 22 Jun 2022 22:51:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24718C43334
+	for <rcu@archiver.kernel.org>; Wed, 22 Jun 2022 22:51:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238725AbiFVWvn (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 22 Jun 2022 18:51:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45590 "EHLO
+        id S232538AbiFVWvp (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 22 Jun 2022 18:51:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232538AbiFVWvm (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S237106AbiFVWvm (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 22 Jun 2022 18:51:42 -0400
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0A6D4091D
-        for <rcu@vger.kernel.org>; Wed, 22 Jun 2022 15:51:40 -0700 (PDT)
-Received: by mail-qv1-xf34.google.com with SMTP id i17so20760325qvo.13
-        for <rcu@vger.kernel.org>; Wed, 22 Jun 2022 15:51:40 -0700 (PDT)
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD9FD40E72
+        for <rcu@vger.kernel.org>; Wed, 22 Jun 2022 15:51:41 -0700 (PDT)
+Received: by mail-qv1-xf35.google.com with SMTP id c1so27038065qvi.11
+        for <rcu@vger.kernel.org>; Wed, 22 Jun 2022 15:51:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vxTNAYJ4O+qH9++5m/81/N4BghOLqFhDV+f14pSf7+0=;
-        b=cESB4b31Kv+EzfxJELRh90ImU3KvmUq/cHHZRwYtGhfw5oPGDM7Jn9rs4/RtwQcab/
-         3C9Ev4eFsxpQHXkND3xNw7Guz/ZuH5Q4ksOe//RdzMm+Sn4ENfTjFnowSct8xO5b9oim
-         jSgovOiHDgfFEy1/GAIlE09QbbfzQ6Gi6Anpo=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=K8zLqAuQGGInMEO/tC5oFW9jqhiZEM0UzbeIkjAgT/E=;
+        b=u6ATeb3gtaca1zArGlTV20bvGnJYCnyGi0lrVTh4JYP4rTbIjKfKdeM9RDdwdI9RAi
+         ujrJtVDrjaCtmGg5lfrv26gOYUGzGdvprVDIpOwUgQm35vlAlgg6z/uQvruLfpgAqFnf
+         LBh4FHH8YPXW9tWhspYhEKaA5r2GbBI4MSxtM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vxTNAYJ4O+qH9++5m/81/N4BghOLqFhDV+f14pSf7+0=;
-        b=l//dMcsPSEnZnNM0tF4QuPBsw46IZEjK2ET56zC1ykSmr3mXY3m3d6d3wZZDmsjasN
-         QfmK3rbjxrLPmvPBjvrGHtvZfTH8c75qmQ6gBuk1criWz9khykbPbsIzXRDVRwV97OB/
-         9mlf9GZ80CEVoE/s0BA/bCHpogmn5KUA4rJl/mgBHcxZzlL/6PtP5ZN3csjPl/wgXDd2
-         D9Tg4HvKPbuAGv1NbaFKCHEiPzYERbIyaqHfE6ZXsmuOiBnFXI/4E12NQHl5utn86pSX
-         Kf06pSZL8JvTIX5E3prYgED6Aq8kE6ojgS9xQocRhbzC2XfDXoBX9yGHg9JRpP+KKcyd
-         2TIA==
-X-Gm-Message-State: AJIora9gU9kCxDEKnauQ5w/ZiwBeXBdzK9nREwUDcy6HK0z+cHna8uhJ
-        F4bdtcOjIczFnyg75jXV1TefqMMZi0Lbfg==
-X-Google-Smtp-Source: AGRyM1uAPOSu5jqUSslgE/tt4h5Q26efYhgpCw52HSo0cwuaxiNRJfCX3bWUI+b7nF14n0xMW0sylg==
-X-Received: by 2002:a05:6214:21ea:b0:464:5c51:7afe with SMTP id p10-20020a05621421ea00b004645c517afemr29629720qvj.21.1655938299764;
-        Wed, 22 Jun 2022 15:51:39 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=K8zLqAuQGGInMEO/tC5oFW9jqhiZEM0UzbeIkjAgT/E=;
+        b=ZKLZ3zlsw3JePG8KjL54IN2+mDNCFkV/BdCsEVjYQxlarExWLdxwEji6k329RdrO6/
+         39ifMwCsmxoonqT5/qxdshl21x5JjKpSl+bFyHyKpJMI6C1+qdVSEuqsFNXo/uuCFed8
+         qXXGqh/PpZ87TKgaZNAjOXkrHDAngAz7BujCy7r+LGkbnv6UGlZLwgpBks78JvA1z0ys
+         QHBf7rT9CQxVeOhyY+ljmEYqRneFduRriFBTTocT5czKNMS+0M8omhDG4WRUdL5oYQV/
+         Ywln4zUefwLC+iPzZBJKbb9VsH6AcuM5WKo/baYZSWpZXIXEqEeYV3WcMc0NNLoziNsK
+         sg+A==
+X-Gm-Message-State: AJIora81EDd01kRALJRkamaPi71bcY2qV49gcIDRvt67NLDQkBNoAqlr
+        gxvLe0R2kbD2LtE3CA3CZ8WtGL1+Rs95yg==
+X-Google-Smtp-Source: AGRyM1vNLmCVtta0shMDBQ0BoHzenJeOoo6ATvfQjsRBrP8Iu05+Inum8C5HKWzZ9QzXs2v3TExN7g==
+X-Received: by 2002:a05:6214:2501:b0:470:3f6d:c075 with SMTP id gf1-20020a056214250100b004703f6dc075mr16486903qvb.95.1655938300584;
+        Wed, 22 Jun 2022 15:51:40 -0700 (PDT)
 Received: from joelboxx.c.googlers.com.com (228.221.150.34.bc.googleusercontent.com. [34.150.221.228])
-        by smtp.gmail.com with ESMTPSA id k66-20020a37a145000000b006ab91fd03fasm1794022qke.19.2022.06.22.15.51.38
+        by smtp.gmail.com with ESMTPSA id k66-20020a37a145000000b006ab91fd03fasm1794022qke.19.2022.06.22.15.51.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Wed, 22 Jun 2022 15:51:39 -0700 (PDT)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
@@ -49,99 +49,53 @@ To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, rushikesh.s.kadam@intel.com,
         urezki@gmail.com, neeraj.iitr10@gmail.com, frederic@kernel.org,
         paulmck@kernel.org, rostedt@goodmis.org, vineeth@bitbyteword.org,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Subject: [PATCH v2 0/8] Implement call_rcu_lazy() and miscellaneous fixes
-Date:   Wed, 22 Jun 2022 22:50:53 +0000
-Message-Id: <20220622225102.2112026-1-joel@joelfernandes.org>
+        Marco Elver <elver@google.com>
+Subject: [PATCH v2 1/1] context_tracking: Use arch_atomic_read() in __ct_state for KASAN
+Date:   Wed, 22 Jun 2022 22:50:54 +0000
+Message-Id: <20220622225102.2112026-2-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.37.0.rc0.104.g0611611a94-goog
+In-Reply-To: <20220622225102.2112026-1-joel@joelfernandes.org>
+References: <20220622225102.2112026-1-joel@joelfernandes.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-Hello!
-Please find the next improved version of call_rcu_lazy() attached.  The main
-difference between the previous version is that it is now using bypass lists,
-and thus handling rcu_barrier() and hotplug situations, with some small changes
-to those parts.
+Context tracking's __ct_state() function can be invoked from noinstr state
+where RCU is not watching.  This means that its use of atomic_read()
+causes KASAN to invoke the non-noinstr __kasan_check_read() function
+from the noinstr function __ct_state().  This is problematic because
+someone tracing the __kasan_check_read() function could get a nasty
+surprise because of RCU not watching.
 
-I also don't see the TREE07 RCU stall from v1 anymore.
+This commit therefore replaces the __ct_state() function's use of
+atomic_read() with arch_atomic_read(), which KASAN does not attempt to
+add instrumention to.
 
-In the v1, we some numbers below (testing on v2 is in progress). Rushikesh,
-feel free to pull these patches into your tree. Just to note, you will also
-need to pull the call_rcu_lazy() user patches from v1. I have dropped in this
-series, just to make the series focus on the feature code first.
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Cc: Frederic Weisbecker <frederic@kernel.org>
+Cc: Marco Elver <elver@google.com>
+Reviewed-by: Marco Elver <elver@google.com>
+---
+ include/linux/context_tracking_state.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Following are power savings we see on top of RCU_NOCB_CPU on an Intel platform.
-The observation is that due to a 'trickle down' effect of RCU callbacks, the
-system is very lightly loaded but constantly running few RCU callbacks very
-often. This confuses the power management hardware that the system is active,
-when it is in fact idle.
-
-For example, when ChromeOS screen is off and user is not doing anything on the
-system, we can see big power savings.
-Before:
-Pk%pc10 = 72.13
-PkgWatt = 0.58
-CorWatt = 0.04
-
-After:
-Pk%pc10 = 81.28
-PkgWatt = 0.41
-CorWatt = 0.03
-
-Further, when ChromeOS screen is ON but system is idle or lightly loaded, we
-can see that the display pipeline is constantly doing RCU callback queuing due
-to open/close of file descriptors associated with graphics buffers. This is
-attributed to the file_free_rcu() path which this patch series also touches.
-
-This patch series adds a simple but effective, and lockless implementation of
-RCU callback batching. On memory pressure, timeout or queue growing too big, we
-initiate a flush of one or more per-CPU lists.
-
-Similar results can be achieved by increasing jiffies_till_first_fqs, however
-that also has the effect of slowing down RCU. Especially I saw huge slow down
-of function graph tracer when increasing that.
-
-One drawback of this series is, if another frequent RCU callback creeps up in
-the future, that's not lazy, then that will again hurt the power. However, I
-believe identifying and fixing those is a more reasonable approach than slowing
-RCU down for the whole system.
-
-Disclaimer: I have intentionally not CC'd other subsystem maintainers (like
-net, fs) to keep noise low and will CC them in the future after 1 or 2 rounds
-of review and agreements.
-
-Joel Fernandes (Google) (7):
-  rcu: Introduce call_rcu_lazy() API implementation
-  fs: Move call_rcu() to call_rcu_lazy() in some paths
-  rcu/nocb: Add option to force all call_rcu() to lazy
-  rcu/nocb: Wake up gp thread when flushing
-  rcuscale: Add test for using call_rcu_lazy() to emulate kfree_rcu()
-  rcu/nocb: Rewrite deferred wake up logic to be more clean
-  rcu/kfree: Fix kfree_rcu_shrink_count() return value
-
-Vineeth Pillai (1):
-  rcu: shrinker for lazy rcu
-
- fs/dcache.c                   |   4 +-
- fs/eventpoll.c                |   2 +-
- fs/file_table.c               |   2 +-
- fs/inode.c                    |   2 +-
- include/linux/rcu_segcblist.h |   1 +
- include/linux/rcupdate.h      |   6 +
- kernel/rcu/Kconfig            |   8 ++
- kernel/rcu/rcu.h              |   8 ++
- kernel/rcu/rcu_segcblist.c    |  19 +++
- kernel/rcu/rcu_segcblist.h    |  24 ++++
- kernel/rcu/rcuscale.c         |  64 +++++++++-
- kernel/rcu/tree.c             |  35 +++++-
- kernel/rcu/tree.h             |  10 +-
- kernel/rcu/tree_nocb.h        | 217 +++++++++++++++++++++++++++-------
- 14 files changed, 345 insertions(+), 57 deletions(-)
-
+diff --git a/include/linux/context_tracking_state.h b/include/linux/context_tracking_state.h
+index 0aecc07fb4f5..81c51e5f0314 100644
+--- a/include/linux/context_tracking_state.h
++++ b/include/linux/context_tracking_state.h
+@@ -49,7 +49,7 @@ DECLARE_PER_CPU(struct context_tracking, context_tracking);
+ 
+ static __always_inline int __ct_state(void)
+ {
+-	return atomic_read(this_cpu_ptr(&context_tracking.state)) & CT_STATE_MASK;
++	return arch_atomic_read(this_cpu_ptr(&context_tracking.state)) & CT_STATE_MASK;
+ }
+ #endif
+ 
 -- 
 2.37.0.rc0.104.g0611611a94-goog
 
