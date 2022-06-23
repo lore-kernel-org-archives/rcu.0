@@ -2,186 +2,276 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 773E5C43334
-	for <rcu@archiver.kernel.org>; Wed, 22 Jun 2022 23:43:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CCE8C43334
+	for <rcu@archiver.kernel.org>; Thu, 23 Jun 2022 00:29:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233713AbiFVXnr (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 22 Jun 2022 19:43:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52420 "EHLO
+        id S1358570AbiFWA3j (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 22 Jun 2022 20:29:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233587AbiFVXnh (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 22 Jun 2022 19:43:37 -0400
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDE44427DD;
-        Wed, 22 Jun 2022 16:43:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1655941414; x=1687477414;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=R5Vju22Wdk/E8hrBH7Gl+wuVRUcwhb9vJdYv+s7puaU=;
-  b=cOQzjeuDnEZuaNzG9FsLhTDTVWdl0HXZ4Vfy6T8otkPO2yprB14a3juk
-   E8C6OtCHIh3J9bfYoJFqICSYzJOsOy24h3aydJVZXzs72pCbRHDZVmPUd
-   On1S4s8SEObNtfkh2k/awmrMJTAsnRwqN9kaF0Whm/b3Xcve7MeCM9/0v
-   crrLN2XKGVMV4M1JJvWLhALzTMweaDSNyTQRmV4nsa/Jc0zlE+Gaz98YG
-   cpyYabLiG91+xlnEDbKazk0PkL+ftfxwkV+4NrodDBfIwmMXrZxoNlfOh
-   v1SheB1IjqPswPCLhnS3JZzZFYt8YRAI+EDGI1/p6rw8uvhcN54M5hj5b
-   w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10386"; a="281303491"
-X-IronPort-AV: E=Sophos;i="5.92,215,1650956400"; 
-   d="scan'208";a="281303491"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2022 16:43:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.92,215,1650956400"; 
-   d="scan'208";a="615364351"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orsmga008.jf.intel.com with ESMTP; 22 Jun 2022 16:43:34 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.27; Wed, 22 Jun 2022 16:43:33 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.27; Wed, 22 Jun 2022 16:43:33 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.27 via Frontend Transport; Wed, 22 Jun 2022 16:43:33 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.176)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2308.27; Wed, 22 Jun 2022 16:43:33 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=B7q8t6f4YwhJi1ZwMcP7TT21MLWUeraAZMP1/z2NrHTiTZ7uyhsqFJhGlDT0JdbcnX+R83XO9Zh1isu6BRg8mwE3cE/hgPhY7X/nSLs/i4GugSa6gRRJF0VTr13aUlLcBBsqib+1aGOB1ett5hpWvgsXGv7mclbVb14gowOx0HYSAJMkG8p48dFtgaTj6z6+y1r/1pveADppA624eKmPzugre00CafEttd6od1iTwYEovrFL2NSBGnYqAIUYRn9RD74NZPiJoRLNf/x5mTF4FI6JCFTxk3mziitqEI/JemC1ugktImOFgTLPGq+XqomXhlLsKhaLn4NSUvBnCLjdlQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=XOM0Dm7PDlw8nSZek7hAEg/vujniYrq67NmwIvGCYxU=;
- b=fw1Rgoyzf65Tr3v/Aw7cxbx8yLBorC74beBLfRKdqWXcOayER0gZ/zD3Im3mK4bKr0ZpwyJzkhfaNqASc2xLaG7LxjaC4ZLxw3xtWahiIl04mJHapteZ0pCBWZrC66sXYEAKEcxBXi4mnXxpcIBtAuUFPr1oxZ02a3KB6suDfGw9VYw+vZMt2pQh2OsYyAW06Dv0iFxw7rHQV2iLD1hZXV5KTMNyMCoSyoCmT7dLSqPMNu+l9tnF6F/dVgnJnCnaezPkEejMHH4wW0sUzJXuHJbL/3OOBx2bZzsIKQeFphcLDtwwSJ54aoo1Ef9STxsYE8rfyryoKMAThJLorNQPxQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from PH0PR11MB5880.namprd11.prod.outlook.com (2603:10b6:510:143::14)
- by BN8PR11MB3618.namprd11.prod.outlook.com (2603:10b6:408:90::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5373.15; Wed, 22 Jun
- 2022 23:43:26 +0000
-Received: from PH0PR11MB5880.namprd11.prod.outlook.com
- ([fe80::5195:b3ce:d70:a7c]) by PH0PR11MB5880.namprd11.prod.outlook.com
- ([fe80::5195:b3ce:d70:a7c%5]) with mapi id 15.20.5353.015; Wed, 22 Jun 2022
- 23:43:26 +0000
-From:   "Zhang, Qiang1" <qiang1.zhang@intel.com>
-To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>,
-        "paulmck@kernel.org" <paulmck@kernel.org>,
-        "frederic@kernel.org" <frederic@kernel.org>,
-        "joel@joelfernandes.org" <joel@joelfernandes.org>,
-        "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>
-CC:     "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] rcu: Add a warnings in sync_sched_exp_online_cleanup()
-Thread-Topic: [PATCH] rcu: Add a warnings in sync_sched_exp_online_cleanup()
-Thread-Index: AQHYhQ20/x4TmjWtSEepVJie126Nl61cGSeg
-Date:   Wed, 22 Jun 2022 23:43:26 +0000
-Message-ID: <PH0PR11MB588005D38E08891423310EBBDAB29@PH0PR11MB5880.namprd11.prod.outlook.com>
-References: <20220621012412.2724457-1-qiang1.zhang@intel.com>
-In-Reply-To: <20220621012412.2724457-1-qiang1.zhang@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-version: 11.6.500.17
-dlp-reaction: no-action
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 97200115-804c-439e-933f-08da54a900c1
-x-ms-traffictypediagnostic: BN8PR11MB3618:EE_
-x-microsoft-antispam-prvs: <BN8PR11MB36183B0B526C75D068DF7372DAB29@BN8PR11MB3618.namprd11.prod.outlook.com>
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: q0izm4gR6RpW8zDWlKYOxoGA+M0p7WyzlNaEqsokJHCFRjC5vISnPqzk3Lt7ds0O1PYEGuU7MyasavPFLtQROef5XOEG2UUlkP5GNkZpXamOX64eolU8G0wI+7uNTJNmxQvbk4+cNsULoeHGLQVxftFyvHjAYF4K9PMKeBgjSbE+aqoGddvPceBdB87kcdxmljbKlgEOFqrqb1TdyBSrJoZbUavA+GQ81/Wq5iaE1WWMnJNkBEUVIfpON9HlSXa8bEcuh/bH5ZwGZj983PHQrshPXVAlbPmlqQujmiXHFhAso6YmnKtpmPNfI3doOpX/SpSB/V4S3rePvNEtShPn69GCDAG1UxavPkFYlHznzXXJ/WtU5g+xbGb/PpPEAOEzl+LyZvgoGHw3fq06dQY0MpaCFdKsMwnoCgH8y5EKMsj01EtDcW2LFD3SfYM18hhGYeA8NbDuTrc2D0BzzVcQhY3aokheOw4hoom+Zxz3NBBhGI0AjylDaQWahDyD3iJkbpilj8RsGSaYqHyynSr2GVjuMIuDsYtDrkbFzRLzsBil/qdRdQrunOT8r5Sw38nNo5CMn5Gr1JrlDsNlo9Ac7EEUJ9hE3pHYQfb7w0cJlOoEJwdirzhCzlprzE8ypxP0/MvkqAgV0p532Uxuo5Wwd2H4cV411I53nCr7GODaF0MaeI1sO4UYBQY5FJABP82E5tcOoIMqz0WirjzNgEtNlVDBfOwiNJh4tsdMDONJrQuofJLvuY/PTRQj0FQ91GYspCZxLW7mEsA/DKdX3t5EAQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5880.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(376002)(396003)(366004)(136003)(346002)(39860400002)(66946007)(478600001)(64756008)(41300700001)(52536014)(4326008)(66556008)(2906002)(55016003)(66476007)(110136005)(86362001)(33656002)(8676002)(71200400001)(66446008)(6506007)(7696005)(26005)(9686003)(76116006)(316002)(54906003)(38100700002)(83380400001)(186003)(5660300002)(8936002)(38070700005)(4744005)(82960400001)(122000001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Mfyvnh0opeDxqdzSS8/F+7J1LPWPM+MdmTZPaG6FLsDfodz35JwYrqz3WtPY?=
- =?us-ascii?Q?u5HVUGPch9NqwC2I6Zk7vYUIxiR5Vf1khq/o1jEImXpGuLRlnYqLqP0uHKjv?=
- =?us-ascii?Q?sbZfL+3v3T2CJrnExruP5EFlvCV0DKAcXLM7tzXNkiOMOCHZDIBDoouEIubb?=
- =?us-ascii?Q?6wY5N08aC1wIkgWpzHRo98kGB7wkjoxnKMQzF5e2x/u0wUMB0KUZb7JFG3A1?=
- =?us-ascii?Q?ZP3ZvxmRbOkQhJ7udYtpvB12547ba05icpYzl9/msSLkWNiqOT0MQ7GB7mOl?=
- =?us-ascii?Q?LSt+pD9K5TGvU4xLNx58GsgbuPN8ucPq72eKQu2L/KKl3sEuWD5HnRB4Kq9p?=
- =?us-ascii?Q?ll07QGjP8wTAc3V3MRiJz9iCXDcLEZO/SAm/5GdPq3VZh2faVJjeGvW3kAa2?=
- =?us-ascii?Q?aiHBwK3/hUxXDgaDhyrgE5P4XXx7zcB08kDq/mm+oB1Nlf21K9+YK5XdtKFp?=
- =?us-ascii?Q?EyFBEVvkPsCrmu4QPy0fLofs502Y/q7nZLBJxrfT7/vrZ5uG10qcwkraYUdI?=
- =?us-ascii?Q?bQiV1i7uiUACoR2jJD1RAQ/y+OW5+3/RmbLI1c1V40AqQ8q0SK1WZyEJXFkv?=
- =?us-ascii?Q?jvKXNWVylQuX/tfMkC788EX4d+DMAKsb6ckBCt3JtIPiwe5PqU0OT0kWIhQF?=
- =?us-ascii?Q?WyL+9MCk9f0r3OCpbAMiVfXsUW79hBzNcC5XJjnOUKVfQjtarStZlOhcC5D3?=
- =?us-ascii?Q?6kvOlQ8DFBlI8X3h2zviWeBsNeunKcb4V5j9NHOKGpyocNEpLyMSLbJNUWJN?=
- =?us-ascii?Q?FuJJhrTOl52ROpTXtbqNpaDP1DYaa+71oOvlAebFfYBuF+HD/rhDuOTdG32c?=
- =?us-ascii?Q?nalCBXjT9hfYCYMRK6QP9JMCPG3bZSgub+uta23BJKlNdI6BrIuyKr3awIFs?=
- =?us-ascii?Q?Uco7SkwEiGVPE2V6KZ7XbeJPgA9a803WqDgZHXdRuIiDP69Gq+8XCSPKN+Qi?=
- =?us-ascii?Q?reezwrdvXegvDhSHYwAztWfFHNcnkt3s+MCFfWYr0lXN1yMzn4l37JnspqOQ?=
- =?us-ascii?Q?4E2MuX1E1zFdCZBiCbc8kONWPYkM5ugt1KqccFvMdgnxYqvH+0yEk60CgapN?=
- =?us-ascii?Q?xoF4bxgOtz2J2ihzj348sJ+I7Cj8k/ZvtqeuatpwQTixcwRa4GGuytAG8GP6?=
- =?us-ascii?Q?PAC7W4AqwpWGyI6ia2ObKJ98defIroBtCDI7qh/vRlVto+9FuBWbCf8bFNxH?=
- =?us-ascii?Q?lOIUaef0d8ps+BnSWUPHGESi9i6ME2W/vJMhX1d+A9LyKuNo3nZ0h4EHvA4M?=
- =?us-ascii?Q?vHky8gQbmVA/VKBvrxYIZNawgJFHnsJViHyOhWh0dllC/fHHvq9mDUUPJOVr?=
- =?us-ascii?Q?rv/YAEFfUqLZPBw9lHC3AsLXYsXzQ4r2hlzmAbuoZ2qLoYu1pQzGrLc9SB0x?=
- =?us-ascii?Q?rzz5GBTPuH/n3/J7bT4trpPwLUrfgEHof4Z43Z3mMNbf2LaCm7BiGyObZsK8?=
- =?us-ascii?Q?GkcES4alcFXiyW1x1xb1zLUkt7t2jaM73f953uh3nL5YM5UIfqVuSMfvZ9sn?=
- =?us-ascii?Q?EU77TahWPRASd9BX1vxQPsjwBea/1/7YwmGhGGgXY9pPZD0wWTFN8zDEBbLS?=
- =?us-ascii?Q?0ZeS2sDUzu57n8CwKLQPEDwBiqh6grFdE+KhvQKLSFOKeIT+yi9YvImG5XmN?=
- =?us-ascii?Q?3NWwXUshy+i8JrpskO24oiy5DRENy0KWpE2PDm3OtDPrgAuhWezhoiKclpjl?=
- =?us-ascii?Q?bnPS1x0uSYOrKZdaRM2neKLEyfTiuizcKM7cJugX/hJbYZl7GaPzXCkyah6j?=
- =?us-ascii?Q?eteXcYMJBg=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        with ESMTP id S233608AbiFWA3i (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 22 Jun 2022 20:29:38 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03BEB41621;
+        Wed, 22 Jun 2022 17:29:36 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 884CB61BBB;
+        Thu, 23 Jun 2022 00:29:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED6B7C34114;
+        Thu, 23 Jun 2022 00:29:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1655944176;
+        bh=IfNG+FnQWitllXTI0gqrSvFwFg/ARpTX8UrFn+BmmaI=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=lcLp/hWJZeU+i68WFooXGWW4YNzZNCCTtjv4i+2YlJaqtRgvvbO9y5xOsTz/9VbRn
+         A532CNBLM5BD0h/DvLIibEV4a8hKaNmojR/f/pwyqqmAUVDi7AKEgtVvkg4o8yxSO4
+         QQmm8yLFAH5+CVMWXq8Mtf+FZwz6LKbzCeG33HDq3OJTPHXYAs/QPitwnR+2Yk9H8l
+         bKmEHBy7f6mxm+BDhUccbU+Pug7R9bv8C+z8+tYgTEREYYHqTj/Asr3Ybpl2aJNNjT
+         Udx3AaSDpRPeJNgBO/oFJeqmDqodBvNmkzixa/+tEYyP79KFMDdAYDEpNWPGvLjzEG
+         pep4oqialIBpA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 851765C0399; Wed, 22 Jun 2022 17:29:35 -0700 (PDT)
+Date:   Wed, 22 Jun 2022 17:29:35 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Neeraj Upadhyay <quic_neeraju@quicinc.com>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, rostedt@goodmis.org,
+        Patrick Wang <patrick.wang.shcn@gmail.com>
+Subject: Re: [PATCH rcu 02/12] rcu: Avoid tracing a few functions executed in
+ stop machine
+Message-ID: <20220623002935.GC1790663@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20220620222022.GA3839466@paulmck-ThinkPad-P17-Gen-1>
+ <20220620222032.3839547-2-paulmck@kernel.org>
+ <9de7f497-a4cd-ebdb-e912-d4cd73b4a982@quicinc.com>
+ <20220621222147.GR1790663@paulmck-ThinkPad-P17-Gen-1>
+ <95e12a75-72c6-76c7-26cc-a24af1e8cce0@quicinc.com>
+ <20220622153506.GY1790663@paulmck-ThinkPad-P17-Gen-1>
+ <70238b0a-de88-c4b6-ba46-22754d8e7b48@quicinc.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5880.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 97200115-804c-439e-933f-08da54a900c1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Jun 2022 23:43:26.4614
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Qz4pzaZUC6KFK045HDvOL+4pGg8Zbfd0QyErb3je9j8g0b4NC35tN3zNTM2HOTiPas4dxrIs07iI40J4pivcjA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR11MB3618
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <70238b0a-de88-c4b6-ba46-22754d8e7b48@quicinc.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Wed, Jun 22, 2022 at 09:19:25PM +0530, Neeraj Upadhyay wrote:
+> 
+> 
+> On 6/22/2022 9:05 PM, Paul E. McKenney wrote:
+> > On Wed, Jun 22, 2022 at 05:20:35PM +0530, Neeraj Upadhyay wrote:
+> > > 
+> > > 
+> > > On 6/22/2022 3:51 AM, Paul E. McKenney wrote:
+> > > > On Tue, Jun 21, 2022 at 11:17:10AM +0530, Neeraj Upadhyay wrote:
+> > > > > 
+> > > > > 
+> > > > > On 6/21/2022 3:50 AM, Paul E. McKenney wrote:
+> > > > > > From: Patrick Wang <patrick.wang.shcn@gmail.com>
+> > > > > > 
+> > > > > > Stop-machine recently started calling additional functions while waiting:
+> > > > > > 
+> > > > > > ----------------------------------------------------------------
+> > > > > > Former stop machine wait loop:
+> > > > > > do {
+> > > > > >        cpu_relax(); => macro
+> > > > > >        ...
+> > > > > > } while (curstate != STOPMACHINE_EXIT);
+> > > > > > -----------------------------------------------------------------
+> > > > > > Current stop machine wait loop:
+> > > > > > do {
+> > > > > >        stop_machine_yield(cpumask); => function (notraced)
+> > > > > >        ...
+> > > > > >        touch_nmi_watchdog(); => function (notraced, inside calls also notraced)
+> > > > > >        ...
+> > > > > >        rcu_momentary_dyntick_idle(); => function (notraced, inside calls traced)
+> > > > > > } while (curstate != MULTI_STOP_EXIT);
+> > > > > > ------------------------------------------------------------------
+> > > > > > 
+> > > > > > These functions (and the functions that they call) must be marked
+> > > > > > notrace to prevent them from being updated while they are executing.
+> > > > > > The consequences of failing to mark these functions can be severe:
+> > > > > > 
+> > > > > >      rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+> > > > > >      rcu: 	1-...!: (0 ticks this GP) idle=14f/1/0x4000000000000000 softirq=3397/3397 fqs=0
+> > > > > >      rcu: 	3-...!: (0 ticks this GP) idle=ee9/1/0x4000000000000000 softirq=5168/5168 fqs=0
+> > > > > >      	(detected by 0, t=8137 jiffies, g=5889, q=2 ncpus=4)
+> > > > > >      Task dump for CPU 1:
+> > > > > >      task:migration/1     state:R  running task     stack:    0 pid:   19 ppid:     2 flags:0x00000000
+> > > > > >      Stopper: multi_cpu_stop+0x0/0x18c <- stop_machine_cpuslocked+0x128/0x174
+> > > > > >      Call Trace:
+> > > > > >      Task dump for CPU 3:
+> > > > > >      task:migration/3     state:R  running task     stack:    0 pid:   29 ppid:     2 flags:0x00000000
+> > > > > >      Stopper: multi_cpu_stop+0x0/0x18c <- stop_machine_cpuslocked+0x128/0x174
+> > > > > >      Call Trace:
+> > > > > >      rcu: rcu_preempt kthread timer wakeup didn't happen for 8136 jiffies! g5889 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402
+> > > > > >      rcu: 	Possible timer handling issue on cpu=2 timer-softirq=594
+> > > > > >      rcu: rcu_preempt kthread starved for 8137 jiffies! g5889 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402 ->cpu=2
+> > > > > >      rcu: 	Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
+> > > > > >      rcu: RCU grace-period kthread stack dump:
+> > > > > >      task:rcu_preempt     state:I stack:    0 pid:   14 ppid:     2 flags:0x00000000
+> > > > > >      Call Trace:
+> > > > > >        schedule+0x56/0xc2
+> > > > > >        schedule_timeout+0x82/0x184
+> > > > > >        rcu_gp_fqs_loop+0x19a/0x318
+> > > > > >        rcu_gp_kthread+0x11a/0x140
+> > > > > >        kthread+0xee/0x118
+> > > > > >        ret_from_exception+0x0/0x14
+> > > > > >      rcu: Stack dump where RCU GP kthread last ran:
+> > > > > >      Task dump for CPU 2:
+> > > > > >      task:migration/2     state:R  running task     stack:    0 pid:   24 ppid:     2 flags:0x00000000
+> > > > > >      Stopper: multi_cpu_stop+0x0/0x18c <- stop_machine_cpuslocked+0x128/0x174
+> > > > > >      Call Trace:
+> > > > > > 
+> > > > > > This commit therefore marks these functions notrace:
+> > > > > >     rcu_preempt_deferred_qs()
+> > > > > >     rcu_preempt_need_deferred_qs()
+> > > > > >     rcu_preempt_deferred_qs_irqrestore()
+> > > > > > 
+> > > > > 
+> > > > > Only the preemptible RCU definitions are updated; so, this change is not
+> > > > > required for non-preemptible RCU case?
+> > > > 
+> > > > It appears to me to be required.  How about as shown below?
+> > > > 
+> > > 
+> > > Looks good to me.
+> > 
+> > Thank you!  May I apply your Reviewed-by to both of these?  (1/12 and
+> > 2/12.)
+> > 
+> 
+> Yes, sure.
+> 
+> Reviewed-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
 
-Add Cc=20
+Very good, thank you!  I will apply these on my next rebase.
 
-Currently, the sync_sched_exp_online_cleanup() is invoked in
-cpuhp per-cpu kthreads when CPU is going online, so the CPU id
-obtained by get_cpu() should always be equal to the CPU id of
-the passed parameter, that is to say, the smp_call_function_single()
-never be invoked, if be invoked, there may be problem with cpu-hotplug,
-this commit add WARN_ON_ONCE() to remind everyone.
+							Thanx, Paul
 
-Signed-off-by: Zqiang <qiang1.zhang@intel.com>
----
- kernel/rcu/tree_exp.h | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index be667583a554..ae8dcfd4486c 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -865,6 +865,8 @@ static void sync_sched_exp_online_cleanup(int cpu)
- 		put_cpu();
- 		return;
- 	}
-+
-+	WARN_ON_ONCE(my_cpu !=3D cpu);
- 	/* Quiescent state needed on some other CPU, send IPI. */
- 	ret =3D smp_call_function_single(cpu, rcu_exp_handler, NULL, 0);
- 	put_cpu();
---=20
-2.25.1
-
+> Thanks
+> Neeraj
+> 
+> > 							Thanx, Paul
+> > 
+> > > Thanks
+> > > Neeraj
+> > > 
+> > > > 							Thanx, Paul
+> > > > 
+> > > > ------------------------------------------------------------------------
+> > > > 
+> > > > commit 06cfe0c675c93884c3ffc75ec24ece7d0acd7a32
+> > > > Author: Patrick Wang <patrick.wang.shcn@gmail.com>
+> > > > Date:   Tue Apr 26 18:45:02 2022 +0800
+> > > > 
+> > > >       rcu: Avoid tracing a few functions executed in stop machine
+> > > >       Stop-machine recently started calling additional functions while waiting:
+> > > >       ----------------------------------------------------------------
+> > > >       Former stop machine wait loop:
+> > > >       do {
+> > > >           cpu_relax(); => macro
+> > > >           ...
+> > > >       } while (curstate != STOPMACHINE_EXIT);
+> > > >       -----------------------------------------------------------------
+> > > >       Current stop machine wait loop:
+> > > >       do {
+> > > >           stop_machine_yield(cpumask); => function (notraced)
+> > > >           ...
+> > > >           touch_nmi_watchdog(); => function (notraced, inside calls also notraced)
+> > > >           ...
+> > > >           rcu_momentary_dyntick_idle(); => function (notraced, inside calls traced)
+> > > >       } while (curstate != MULTI_STOP_EXIT);
+> > > >       ------------------------------------------------------------------
+> > > >       These functions (and the functions that they call) must be marked
+> > > >       notrace to prevent them from being updated while they are executing.
+> > > >       The consequences of failing to mark these functions can be severe:
+> > > >         rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+> > > >         rcu:  1-...!: (0 ticks this GP) idle=14f/1/0x4000000000000000 softirq=3397/3397 fqs=0
+> > > >         rcu:  3-...!: (0 ticks this GP) idle=ee9/1/0x4000000000000000 softirq=5168/5168 fqs=0
+> > > >               (detected by 0, t=8137 jiffies, g=5889, q=2 ncpus=4)
+> > > >         Task dump for CPU 1:
+> > > >         task:migration/1     state:R  running task     stack:    0 pid:   19 ppid:     2 flags:0x00000000
+> > > >         Stopper: multi_cpu_stop+0x0/0x18c <- stop_machine_cpuslocked+0x128/0x174
+> > > >         Call Trace:
+> > > >         Task dump for CPU 3:
+> > > >         task:migration/3     state:R  running task     stack:    0 pid:   29 ppid:     2 flags:0x00000000
+> > > >         Stopper: multi_cpu_stop+0x0/0x18c <- stop_machine_cpuslocked+0x128/0x174
+> > > >         Call Trace:
+> > > >         rcu: rcu_preempt kthread timer wakeup didn't happen for 8136 jiffies! g5889 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402
+> > > >         rcu:  Possible timer handling issue on cpu=2 timer-softirq=594
+> > > >         rcu: rcu_preempt kthread starved for 8137 jiffies! g5889 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402 ->cpu=2
+> > > >         rcu:  Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
+> > > >         rcu: RCU grace-period kthread stack dump:
+> > > >         task:rcu_preempt     state:I stack:    0 pid:   14 ppid:     2 flags:0x00000000
+> > > >         Call Trace:
+> > > >           schedule+0x56/0xc2
+> > > >           schedule_timeout+0x82/0x184
+> > > >           rcu_gp_fqs_loop+0x19a/0x318
+> > > >           rcu_gp_kthread+0x11a/0x140
+> > > >           kthread+0xee/0x118
+> > > >           ret_from_exception+0x0/0x14
+> > > >         rcu: Stack dump where RCU GP kthread last ran:
+> > > >         Task dump for CPU 2:
+> > > >         task:migration/2     state:R  running task     stack:    0 pid:   24 ppid:     2 flags:0x00000000
+> > > >         Stopper: multi_cpu_stop+0x0/0x18c <- stop_machine_cpuslocked+0x128/0x174
+> > > >         Call Trace:
+> > > >       This commit therefore marks these functions notrace:
+> > > >        rcu_preempt_deferred_qs()
+> > > >        rcu_preempt_need_deferred_qs()
+> > > >        rcu_preempt_deferred_qs_irqrestore()
+> > > >       [ paulmck: Apply feedback from Neeraj Upadhyay. ]
+> > > >       Signed-off-by: Patrick Wang <patrick.wang.shcn@gmail.com>
+> > > >       Acked-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> > > >       Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > > 
+> > > > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> > > > index c8ba0fe17267c..7a07f2ca153e2 100644
+> > > > --- a/kernel/rcu/tree_plugin.h
+> > > > +++ b/kernel/rcu/tree_plugin.h
+> > > > @@ -460,7 +460,7 @@ static bool rcu_preempt_has_tasks(struct rcu_node *rnp)
+> > > >     * be quite short, for example, in the case of the call from
+> > > >     * rcu_read_unlock_special().
+> > > >     */
+> > > > -static void
+> > > > +static notrace void
+> > > >    rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
+> > > >    {
+> > > >    	bool empty_exp;
+> > > > @@ -581,7 +581,7 @@ rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
+> > > >     * is disabled.  This function cannot be expected to understand these
+> > > >     * nuances, so the caller must handle them.
+> > > >     */
+> > > > -static bool rcu_preempt_need_deferred_qs(struct task_struct *t)
+> > > > +static notrace bool rcu_preempt_need_deferred_qs(struct task_struct *t)
+> > > >    {
+> > > >    	return (__this_cpu_read(rcu_data.cpu_no_qs.b.exp) ||
+> > > >    		READ_ONCE(t->rcu_read_unlock_special.s)) &&
+> > > > @@ -595,7 +595,7 @@ static bool rcu_preempt_need_deferred_qs(struct task_struct *t)
+> > > >     * evaluate safety in terms of interrupt, softirq, and preemption
+> > > >     * disabling.
+> > > >     */
+> > > > -static void rcu_preempt_deferred_qs(struct task_struct *t)
+> > > > +static notrace void rcu_preempt_deferred_qs(struct task_struct *t)
+> > > >    {
+> > > >    	unsigned long flags;
+> > > > @@ -926,7 +926,7 @@ static bool rcu_preempt_has_tasks(struct rcu_node *rnp)
+> > > >     * Because there is no preemptible RCU, there can be no deferred quiescent
+> > > >     * states.
+> > > >     */
+> > > > -static bool rcu_preempt_need_deferred_qs(struct task_struct *t)
+> > > > +static notrace bool rcu_preempt_need_deferred_qs(struct task_struct *t)
+> > > >    {
+> > > >    	return false;
+> > > >    }
+> > > > @@ -935,7 +935,7 @@ static bool rcu_preempt_need_deferred_qs(struct task_struct *t)
+> > > >    // period for a quiescent state from this CPU.  Note that requests from
+> > > >    // tasks are handled when removing the task from the blocked-tasks list
+> > > >    // below.
+> > > > -static void rcu_preempt_deferred_qs(struct task_struct *t)
+> > > > +static notrace void rcu_preempt_deferred_qs(struct task_struct *t)
+> > > >    {
+> > > >    	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
