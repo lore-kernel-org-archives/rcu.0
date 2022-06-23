@@ -2,276 +2,173 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CCE8C43334
-	for <rcu@archiver.kernel.org>; Thu, 23 Jun 2022 00:29:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E19FDC433EF
+	for <rcu@archiver.kernel.org>; Thu, 23 Jun 2022 00:34:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358570AbiFWA3j (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 22 Jun 2022 20:29:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47230 "EHLO
+        id S1359365AbiFWAeP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 22 Jun 2022 20:34:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233608AbiFWA3i (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 22 Jun 2022 20:29:38 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03BEB41621;
-        Wed, 22 Jun 2022 17:29:36 -0700 (PDT)
+        with ESMTP id S1359258AbiFWAeO (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 22 Jun 2022 20:34:14 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 561F92ED62;
+        Wed, 22 Jun 2022 17:34:13 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 884CB61BBB;
-        Thu, 23 Jun 2022 00:29:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED6B7C34114;
-        Thu, 23 Jun 2022 00:29:35 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 83AFACE1941;
+        Thu, 23 Jun 2022 00:34:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB3DFC34114;
+        Thu, 23 Jun 2022 00:34:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655944176;
-        bh=IfNG+FnQWitllXTI0gqrSvFwFg/ARpTX8UrFn+BmmaI=;
+        s=k20201202; t=1655944449;
+        bh=8pRjVt8kJKIexpKI7T4TAXNtH3iXAd8u4Sqbp4lZIAA=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=lcLp/hWJZeU+i68WFooXGWW4YNzZNCCTtjv4i+2YlJaqtRgvvbO9y5xOsTz/9VbRn
-         A532CNBLM5BD0h/DvLIibEV4a8hKaNmojR/f/pwyqqmAUVDi7AKEgtVvkg4o8yxSO4
-         QQmm8yLFAH5+CVMWXq8Mtf+FZwz6LKbzCeG33HDq3OJTPHXYAs/QPitwnR+2Yk9H8l
-         bKmEHBy7f6mxm+BDhUccbU+Pug7R9bv8C+z8+tYgTEREYYHqTj/Asr3Ybpl2aJNNjT
-         Udx3AaSDpRPeJNgBO/oFJeqmDqodBvNmkzixa/+tEYyP79KFMDdAYDEpNWPGvLjzEG
-         pep4oqialIBpA==
+        b=kNaY+V/V3h5wlwDnsgT5dI115TmEepqk2emU6ZGYHCDJXFXYJAXkGjrsdoehxvf7Y
+         +SAyeAYi0ODG/R8aycvtr3ulLex3oUQQyoj3y/VZgWvLEkcVolGll+iuv9mEm9RQi/
+         7Ln1SDlqqp/IdQrfJCafG4VGYq7rxcuKqx81QoI8pN1R2ksg33BjEMCi4b5dxmAlru
+         MPKaOBZ5LlfUTDRHS72jgJpnRamx80diC5B1SWSwi8Hb6rRNHH103aEnuWXE7vaLdV
+         QLurGYkX19JpivLnvreR0taIOLcHXqGznnMsox6HmnRlWrfx7X9cE6+oQMjQy6f9yz
+         us41CkJKpccYg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 851765C0399; Wed, 22 Jun 2022 17:29:35 -0700 (PDT)
-Date:   Wed, 22 Jun 2022 17:29:35 -0700
+        id 6ED245C0399; Wed, 22 Jun 2022 17:34:09 -0700 (PDT)
+Date:   Wed, 22 Jun 2022 17:34:09 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Neeraj Upadhyay <quic_neeraju@quicinc.com>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, rostedt@goodmis.org,
-        Patrick Wang <patrick.wang.shcn@gmail.com>
-Subject: Re: [PATCH rcu 02/12] rcu: Avoid tracing a few functions executed in
- stop machine
-Message-ID: <20220623002935.GC1790663@paulmck-ThinkPad-P17-Gen-1>
+To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
+Cc:     Boqun Feng <boqun.feng@gmail.com>,
+        "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>,
+        "frederic@kernel.org" <frederic@kernel.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] rcu: Add exp QS check in rcu_exp_handler() for
+ no-preemptible expedited RCU
+Message-ID: <20220623003409.GD1790663@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20220620222022.GA3839466@paulmck-ThinkPad-P17-Gen-1>
- <20220620222032.3839547-2-paulmck@kernel.org>
- <9de7f497-a4cd-ebdb-e912-d4cd73b4a982@quicinc.com>
- <20220621222147.GR1790663@paulmck-ThinkPad-P17-Gen-1>
- <95e12a75-72c6-76c7-26cc-a24af1e8cce0@quicinc.com>
- <20220622153506.GY1790663@paulmck-ThinkPad-P17-Gen-1>
- <70238b0a-de88-c4b6-ba46-22754d8e7b48@quicinc.com>
+References: <20220622103549.2840087-1-qiang1.zhang@intel.com>
+ <YrNQpxjIiNpxwyQh@boqun-archlinux>
+ <PH0PR11MB58809E7A0BF02907DAA826AADAB29@PH0PR11MB5880.namprd11.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <70238b0a-de88-c4b6-ba46-22754d8e7b48@quicinc.com>
+In-Reply-To: <PH0PR11MB58809E7A0BF02907DAA826AADAB29@PH0PR11MB5880.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Jun 22, 2022 at 09:19:25PM +0530, Neeraj Upadhyay wrote:
+On Wed, Jun 22, 2022 at 11:34:15PM +0000, Zhang, Qiang1 wrote:
 > 
-> 
-> On 6/22/2022 9:05 PM, Paul E. McKenney wrote:
-> > On Wed, Jun 22, 2022 at 05:20:35PM +0530, Neeraj Upadhyay wrote:
-> > > 
-> > > 
-> > > On 6/22/2022 3:51 AM, Paul E. McKenney wrote:
-> > > > On Tue, Jun 21, 2022 at 11:17:10AM +0530, Neeraj Upadhyay wrote:
-> > > > > 
-> > > > > 
-> > > > > On 6/21/2022 3:50 AM, Paul E. McKenney wrote:
-> > > > > > From: Patrick Wang <patrick.wang.shcn@gmail.com>
-> > > > > > 
-> > > > > > Stop-machine recently started calling additional functions while waiting:
-> > > > > > 
-> > > > > > ----------------------------------------------------------------
-> > > > > > Former stop machine wait loop:
-> > > > > > do {
-> > > > > >        cpu_relax(); => macro
-> > > > > >        ...
-> > > > > > } while (curstate != STOPMACHINE_EXIT);
-> > > > > > -----------------------------------------------------------------
-> > > > > > Current stop machine wait loop:
-> > > > > > do {
-> > > > > >        stop_machine_yield(cpumask); => function (notraced)
-> > > > > >        ...
-> > > > > >        touch_nmi_watchdog(); => function (notraced, inside calls also notraced)
-> > > > > >        ...
-> > > > > >        rcu_momentary_dyntick_idle(); => function (notraced, inside calls traced)
-> > > > > > } while (curstate != MULTI_STOP_EXIT);
-> > > > > > ------------------------------------------------------------------
-> > > > > > 
-> > > > > > These functions (and the functions that they call) must be marked
-> > > > > > notrace to prevent them from being updated while they are executing.
-> > > > > > The consequences of failing to mark these functions can be severe:
-> > > > > > 
-> > > > > >      rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-> > > > > >      rcu: 	1-...!: (0 ticks this GP) idle=14f/1/0x4000000000000000 softirq=3397/3397 fqs=0
-> > > > > >      rcu: 	3-...!: (0 ticks this GP) idle=ee9/1/0x4000000000000000 softirq=5168/5168 fqs=0
-> > > > > >      	(detected by 0, t=8137 jiffies, g=5889, q=2 ncpus=4)
-> > > > > >      Task dump for CPU 1:
-> > > > > >      task:migration/1     state:R  running task     stack:    0 pid:   19 ppid:     2 flags:0x00000000
-> > > > > >      Stopper: multi_cpu_stop+0x0/0x18c <- stop_machine_cpuslocked+0x128/0x174
-> > > > > >      Call Trace:
-> > > > > >      Task dump for CPU 3:
-> > > > > >      task:migration/3     state:R  running task     stack:    0 pid:   29 ppid:     2 flags:0x00000000
-> > > > > >      Stopper: multi_cpu_stop+0x0/0x18c <- stop_machine_cpuslocked+0x128/0x174
-> > > > > >      Call Trace:
-> > > > > >      rcu: rcu_preempt kthread timer wakeup didn't happen for 8136 jiffies! g5889 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402
-> > > > > >      rcu: 	Possible timer handling issue on cpu=2 timer-softirq=594
-> > > > > >      rcu: rcu_preempt kthread starved for 8137 jiffies! g5889 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402 ->cpu=2
-> > > > > >      rcu: 	Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
-> > > > > >      rcu: RCU grace-period kthread stack dump:
-> > > > > >      task:rcu_preempt     state:I stack:    0 pid:   14 ppid:     2 flags:0x00000000
-> > > > > >      Call Trace:
-> > > > > >        schedule+0x56/0xc2
-> > > > > >        schedule_timeout+0x82/0x184
-> > > > > >        rcu_gp_fqs_loop+0x19a/0x318
-> > > > > >        rcu_gp_kthread+0x11a/0x140
-> > > > > >        kthread+0xee/0x118
-> > > > > >        ret_from_exception+0x0/0x14
-> > > > > >      rcu: Stack dump where RCU GP kthread last ran:
-> > > > > >      Task dump for CPU 2:
-> > > > > >      task:migration/2     state:R  running task     stack:    0 pid:   24 ppid:     2 flags:0x00000000
-> > > > > >      Stopper: multi_cpu_stop+0x0/0x18c <- stop_machine_cpuslocked+0x128/0x174
-> > > > > >      Call Trace:
-> > > > > > 
-> > > > > > This commit therefore marks these functions notrace:
-> > > > > >     rcu_preempt_deferred_qs()
-> > > > > >     rcu_preempt_need_deferred_qs()
-> > > > > >     rcu_preempt_deferred_qs_irqrestore()
-> > > > > > 
-> > > > > 
-> > > > > Only the preemptible RCU definitions are updated; so, this change is not
-> > > > > required for non-preemptible RCU case?
-> > > > 
-> > > > It appears to me to be required.  How about as shown below?
-> > > > 
-> > > 
-> > > Looks good to me.
-> > 
-> > Thank you!  May I apply your Reviewed-by to both of these?  (1/12 and
-> > 2/12.)
+> On Wed, Jun 22, 2022 at 06:35:49PM +0800, Zqiang wrote:
+> > In CONFIG_PREEMPT=n and CONFIG_PREEMPT_COUNT=y kernel, after a exp
+> > grace period begins, if detected current CPU enters idle in
+> > rcu_exp_handler() IPI handler, will immediately report the exp QS of the
+> > current cpu, at this time, maybe not being in an RCU read-side critical
+> > section, but need wait until rcu-softirq or sched-clock irq or sched-switch
+> > occurs on current CPU to check and report exp QS.
 > > 
 > 
-> Yes, sure.
+> >I think the idea is OK, however, this "optimization" is based on the
+> >implementation detail that rcu_read_lock() counts preempt_count when
+> >CONFIG_PREEMPT_COUNT=y, right? It's a little bit dangerous because the
+> >preempt_count when CONFIG_PREEMPT_COUNT=y and CONFIG_PREEMPT=n is mostly
+> >for debugging purposes IIUC, and in other words, _it could be gone_.
+> >
 > 
-> Reviewed-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
-
-Very good, thank you!  I will apply these on my next rebase.
-
-							Thanx, Paul
-
-> Thanks
-> Neeraj
+> Yes, for CONFIG_PREEMPT_COUNT=y and CONFIG_PREEMPT=n kernel
+> The rcu_read_lock/unlock are replaced by preempt_disbale/enable, and the 
+> preempt-count is exists,  so can report exp QS when not being an  RCU 
+> read-side critical(preempt_count & (PREEMPT_MASK | SOFTIRQ_MASK )return zero).
+> in IPI handler. 
 > 
-> > 							Thanx, Paul
+> For CONFIG_PREEMPT_COUNT=n and CONFIG_PREEMPT=n kernel, 
+> The rcu_read_lock/unlock is just barrier(). 
+> 
+> 
+> So I add IS_ENABLED(CONFIG_PREEMPT_COUNT) check in code.
+> 
+> Of course, for CONFIG_PREEMPT_COUNT=n  kernel, in RCU softirq, the 
+> preempt-count is also checked
+> 
+> /* Report any deferred quiescent states if preemption enabled. */
+>  if (IS_ENABLED(CONFIG_PREEMPT_COUNT) && (!(preempt_count() & PREEMPT_MASK))) {
+>                  rcu_preempt_deferred_qs(current);
+> 
+> but the RCU softirq may not be triggered in time and reported exp QS, for
+> example a kernel loop exist on NO_HZ_FULL CPU
+> 
+> this change, It is to capture the exp QS state earlier and report it.
+> 
+> 
+> >Also I'm not aware of any but there could be someone assuming that RCU
+> >read-side critical sections can be formed without
+> >rcu_read_{lock,unlock}() in CONFIG_PREEMPT=n kernel. For example, there
+> >might be "creative" code like the following:
+> >
+> >	void do_something_only_in_nonpreempt(void)
+> >	{
+> >		int *p;
+> >
+> >		// This function only gets called in PREEMPT=n kernel,
+> >		// which means everywhere is a RCU read-side critical
+> >		// section, let's save some lines of code.
+> >
+> 		rcu_read_lock();
+> >		p = rcu_dereference_check(gp, !IS_ENABLED(PREEMPT));
+> >		... // of course no schedule() here.
+> >		<access p>
+>                              rcu_read_unlock();
+> >	}
+> >
+> 
+> Usually access to pointers of type rcu needs to be protected.
+
+Indeed, lockdep would normally complain about this sort of thing.
+But in kernels built with (say) CONFIG_PREEMPT_NONE=y but without
+CONFIG_PREEMPT_COUNT=N, can lockdep really tell the difference?
+
+> Any thoughts?
+
+It would be good to have some performance data on this change to expedited
+grace periods.  It is adding code, so it needs some real motivation.
+So, does this change make a system-level difference in (say) expedited
+RCU grace-period latency, and if so, under what conditions?
+
+						Thanx, Paul
+
+> >Again, I'm not aware of any existing code that does this but we need to
+> >be sure.
+> >
+> >Regards,
+> >Boqun
+> >
+> > This commit add a exp QS check in rcu_exp_handler(), when not being
+> > in an RCU read-side critical section, report exp QS earlier.
 > > 
-> > > Thanks
-> > > Neeraj
-> > > 
-> > > > 							Thanx, Paul
-> > > > 
-> > > > ------------------------------------------------------------------------
-> > > > 
-> > > > commit 06cfe0c675c93884c3ffc75ec24ece7d0acd7a32
-> > > > Author: Patrick Wang <patrick.wang.shcn@gmail.com>
-> > > > Date:   Tue Apr 26 18:45:02 2022 +0800
-> > > > 
-> > > >       rcu: Avoid tracing a few functions executed in stop machine
-> > > >       Stop-machine recently started calling additional functions while waiting:
-> > > >       ----------------------------------------------------------------
-> > > >       Former stop machine wait loop:
-> > > >       do {
-> > > >           cpu_relax(); => macro
-> > > >           ...
-> > > >       } while (curstate != STOPMACHINE_EXIT);
-> > > >       -----------------------------------------------------------------
-> > > >       Current stop machine wait loop:
-> > > >       do {
-> > > >           stop_machine_yield(cpumask); => function (notraced)
-> > > >           ...
-> > > >           touch_nmi_watchdog(); => function (notraced, inside calls also notraced)
-> > > >           ...
-> > > >           rcu_momentary_dyntick_idle(); => function (notraced, inside calls traced)
-> > > >       } while (curstate != MULTI_STOP_EXIT);
-> > > >       ------------------------------------------------------------------
-> > > >       These functions (and the functions that they call) must be marked
-> > > >       notrace to prevent them from being updated while they are executing.
-> > > >       The consequences of failing to mark these functions can be severe:
-> > > >         rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-> > > >         rcu:  1-...!: (0 ticks this GP) idle=14f/1/0x4000000000000000 softirq=3397/3397 fqs=0
-> > > >         rcu:  3-...!: (0 ticks this GP) idle=ee9/1/0x4000000000000000 softirq=5168/5168 fqs=0
-> > > >               (detected by 0, t=8137 jiffies, g=5889, q=2 ncpus=4)
-> > > >         Task dump for CPU 1:
-> > > >         task:migration/1     state:R  running task     stack:    0 pid:   19 ppid:     2 flags:0x00000000
-> > > >         Stopper: multi_cpu_stop+0x0/0x18c <- stop_machine_cpuslocked+0x128/0x174
-> > > >         Call Trace:
-> > > >         Task dump for CPU 3:
-> > > >         task:migration/3     state:R  running task     stack:    0 pid:   29 ppid:     2 flags:0x00000000
-> > > >         Stopper: multi_cpu_stop+0x0/0x18c <- stop_machine_cpuslocked+0x128/0x174
-> > > >         Call Trace:
-> > > >         rcu: rcu_preempt kthread timer wakeup didn't happen for 8136 jiffies! g5889 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402
-> > > >         rcu:  Possible timer handling issue on cpu=2 timer-softirq=594
-> > > >         rcu: rcu_preempt kthread starved for 8137 jiffies! g5889 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402 ->cpu=2
-> > > >         rcu:  Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
-> > > >         rcu: RCU grace-period kthread stack dump:
-> > > >         task:rcu_preempt     state:I stack:    0 pid:   14 ppid:     2 flags:0x00000000
-> > > >         Call Trace:
-> > > >           schedule+0x56/0xc2
-> > > >           schedule_timeout+0x82/0x184
-> > > >           rcu_gp_fqs_loop+0x19a/0x318
-> > > >           rcu_gp_kthread+0x11a/0x140
-> > > >           kthread+0xee/0x118
-> > > >           ret_from_exception+0x0/0x14
-> > > >         rcu: Stack dump where RCU GP kthread last ran:
-> > > >         Task dump for CPU 2:
-> > > >         task:migration/2     state:R  running task     stack:    0 pid:   24 ppid:     2 flags:0x00000000
-> > > >         Stopper: multi_cpu_stop+0x0/0x18c <- stop_machine_cpuslocked+0x128/0x174
-> > > >         Call Trace:
-> > > >       This commit therefore marks these functions notrace:
-> > > >        rcu_preempt_deferred_qs()
-> > > >        rcu_preempt_need_deferred_qs()
-> > > >        rcu_preempt_deferred_qs_irqrestore()
-> > > >       [ paulmck: Apply feedback from Neeraj Upadhyay. ]
-> > > >       Signed-off-by: Patrick Wang <patrick.wang.shcn@gmail.com>
-> > > >       Acked-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> > > >       Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > > 
-> > > > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> > > > index c8ba0fe17267c..7a07f2ca153e2 100644
-> > > > --- a/kernel/rcu/tree_plugin.h
-> > > > +++ b/kernel/rcu/tree_plugin.h
-> > > > @@ -460,7 +460,7 @@ static bool rcu_preempt_has_tasks(struct rcu_node *rnp)
-> > > >     * be quite short, for example, in the case of the call from
-> > > >     * rcu_read_unlock_special().
-> > > >     */
-> > > > -static void
-> > > > +static notrace void
-> > > >    rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
-> > > >    {
-> > > >    	bool empty_exp;
-> > > > @@ -581,7 +581,7 @@ rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
-> > > >     * is disabled.  This function cannot be expected to understand these
-> > > >     * nuances, so the caller must handle them.
-> > > >     */
-> > > > -static bool rcu_preempt_need_deferred_qs(struct task_struct *t)
-> > > > +static notrace bool rcu_preempt_need_deferred_qs(struct task_struct *t)
-> > > >    {
-> > > >    	return (__this_cpu_read(rcu_data.cpu_no_qs.b.exp) ||
-> > > >    		READ_ONCE(t->rcu_read_unlock_special.s)) &&
-> > > > @@ -595,7 +595,7 @@ static bool rcu_preempt_need_deferred_qs(struct task_struct *t)
-> > > >     * evaluate safety in terms of interrupt, softirq, and preemption
-> > > >     * disabling.
-> > > >     */
-> > > > -static void rcu_preempt_deferred_qs(struct task_struct *t)
-> > > > +static notrace void rcu_preempt_deferred_qs(struct task_struct *t)
-> > > >    {
-> > > >    	unsigned long flags;
-> > > > @@ -926,7 +926,7 @@ static bool rcu_preempt_has_tasks(struct rcu_node *rnp)
-> > > >     * Because there is no preemptible RCU, there can be no deferred quiescent
-> > > >     * states.
-> > > >     */
-> > > > -static bool rcu_preempt_need_deferred_qs(struct task_struct *t)
-> > > > +static notrace bool rcu_preempt_need_deferred_qs(struct task_struct *t)
-> > > >    {
-> > > >    	return false;
-> > > >    }
-> > > > @@ -935,7 +935,7 @@ static bool rcu_preempt_need_deferred_qs(struct task_struct *t)
-> > > >    // period for a quiescent state from this CPU.  Note that requests from
-> > > >    // tasks are handled when removing the task from the blocked-tasks list
-> > > >    // below.
-> > > > -static void rcu_preempt_deferred_qs(struct task_struct *t)
-> > > > +static notrace void rcu_preempt_deferred_qs(struct task_struct *t)
-> > > >    {
-> > > >    	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
+> > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+> > ---
+> >  kernel/rcu/tree_exp.h | 5 ++++-
+> >  1 file changed, 4 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+> > index be667583a554..34f08267410f 100644
+> > --- a/kernel/rcu/tree_exp.h
+> > +++ b/kernel/rcu/tree_exp.h
+> > @@ -828,11 +828,14 @@ static void rcu_exp_handler(void *unused)
+> >  {
+> >  	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
+> >  	struct rcu_node *rnp = rdp->mynode;
+> > +	bool preempt_bh_disabled =
+> > +				!!(preempt_count() & (PREEMPT_MASK | SOFTIRQ_MASK));
+> >  
+> >  	if (!(READ_ONCE(rnp->expmask) & rdp->grpmask) ||
+> >  	    __this_cpu_read(rcu_data.cpu_no_qs.b.exp))
+> >  		return;
+> > -	if (rcu_is_cpu_rrupt_from_idle()) {
+> > +	if (rcu_is_cpu_rrupt_from_idle() ||
+> > +			(IS_ENABLED(CONFIG_PREEMPT_COUNT) && !preempt_bh_disabled)) {
+> >  		rcu_report_exp_rdp(this_cpu_ptr(&rcu_data));
+> >  		return;
+> >  	}
+> > -- 
+> > 2.25.1
+> > 
