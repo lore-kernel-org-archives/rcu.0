@@ -2,157 +2,655 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CF219CCA47F
-	for <rcu@archiver.kernel.org>; Thu, 23 Jun 2022 14:52:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A2939C43334
+	for <rcu@archiver.kernel.org>; Thu, 23 Jun 2022 23:46:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232216AbiFWOw2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 23 Jun 2022 10:52:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46936 "EHLO
+        id S229914AbiFWXq0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 23 Jun 2022 19:46:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232142AbiFWOwI (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 23 Jun 2022 10:52:08 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4869146B32;
-        Thu, 23 Jun 2022 07:52:05 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id D677621AE1;
-        Thu, 23 Jun 2022 14:52:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1655995923; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RXW26y9F/2k8qOFy2KwGAmlvmLMXqdLDBAX5Dm10fvI=;
-        b=fcBjB79M1/qA5j6jUveHP2HDT3wne+KX7T3Xzm9/++Wb54mhvkQPOJEmZCCi2dgIiSa8+S
-        QhJfpa7J/wbaY7/abH5j15AbcIdwLM4T7I+qVnQXClx3bEry6jHQpeyfVq0UjNZknKc+9S
-        voL2uMKkd36jd9FxyMrAN0++utkl2kg=
-Received: from alley.suse.cz (unknown [10.100.208.146])
-        by relay2.suse.de (Postfix) with ESMTP id B2E6F2C142;
-        Thu, 23 Jun 2022 14:52:02 +0000 (UTC)
-From:   Petr Mladek <pmladek@suse.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Jason A . Donenfeld" <Jason@zx2c4.com>,
-        Marco Elver <elver@google.com>,
-        David Laight <David.Laight@ACULAB.COM>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        with ESMTP id S229514AbiFWXqZ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 23 Jun 2022 19:46:25 -0400
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 175FE506CE
+        for <rcu@vger.kernel.org>; Thu, 23 Jun 2022 16:46:23 -0700 (PDT)
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25NK2x6F019039
+        for <rcu@vger.kernel.org>; Thu, 23 Jun 2022 16:46:23 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=UAfrhUV5yctdmilotG4bK9nqijbewFn7BnKoA6DPcM4=;
+ b=Db4wBuE5CRSWBNzYq/uc1da9pmWfyNfLc6A9Z9fAPB/dpC5+LND88NeuJ4u8UBD/PW5w
+ 3zm7j1Mdu6XkStF69DfZ9osTGpxsee2pA3zeRlojwL/ebdtQajsQkEVKaXW0hFOhhYZW
+ IfiY7cAg06aeYp2j7pPcqf2Xnw8SpDDFzU8= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3gvqxxv9e6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <rcu@vger.kernel.org>; Thu, 23 Jun 2022 16:46:23 -0700
+Received: from snc-exhub201.TheFacebook.com (2620:10d:c085:21d::7) by
+ snc-exhub204.TheFacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.28; Thu, 23 Jun 2022 16:46:22 -0700
+Received: from twshared34609.14.frc2.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.28; Thu, 23 Jun 2022 16:46:21 -0700
+Received: by devbig077.ldc1.facebook.com (Postfix, from userid 158236)
+        id 391F995EE915; Thu, 23 Jun 2022 16:46:11 -0700 (PDT)
+From:   Dave Marchevsky <davemarchevsky@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     <rcu@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
         "Paul E . McKenney" <paulmck@kernel.org>,
-        Zhouyi Zhou <zhouzhouyi@gmail.com>, dave@stgolabs.net,
-        Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org,
-        frederic@kernel.org,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 3/6] Revert "printk: remove @console_locked"
-Date:   Thu, 23 Jun 2022 16:51:54 +0200
-Message-Id: <20220623145157.21938-4-pmladek@suse.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20220623145157.21938-1-pmladek@suse.com>
-References: <20220623145157.21938-1-pmladek@suse.com>
+        Martin KaFai Lau <kafai@fb.com>,
+        "Eric Dumazet" <edumazet@google.com>,
+        Kernel Team <kernel-team@fb.com>,
+        "Dave Marchevsky" <davemarchevsky@fb.com>
+Subject: [PATCH bpf-next] selftests/bpf: Add benchmark for local_storage RCU Tasks Trace usage
+Date:   Thu, 23 Jun 2022 16:46:09 -0700
+Message-ID: <20220623234609.543263-1-davemarchevsky@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: MQKe5xih3Jqr1TCGRXaXFCyO0SuiNc62
+X-Proofpoint-GUID: MQKe5xih3Jqr1TCGRXaXFCyO0SuiNc62
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-06-23_11,2022-06-23_01,2022-06-22_01
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This reverts commit ab406816fca009349b89cbde885daf68a8c77e33.
+This benchmark measures grace period latency and kthread cpu usage of
+RCU Tasks Trace when many processes are creating/deleting BPF
+local_storage. Intent here is to quantify improvement on these metrics
+after Paul's recent RCU Tasks patches [0].
 
-The testing of 5.19 release candidates revealed missing synchronization
-between early and regular console functionality.
+Specifically, fork 15k tasks which call a bpf prog that creates/destroys
+task local_storage and sleep in a loop, resulting in many
+call_rcu_tasks_trace calls.
 
-It would be possible to start the console kthreads later as a workaround.
-But it is clear that console lock serialized console drivers between
-each other. It opens a big area of possible problems that were not
-considered by people involved in the development and review.
+To determine grace period latency, trace time elapsed between
+rcu_tasks_trace_pregp_step and rcu_tasks_trace_postgp; for cpu usage
+look at rcu_task_trace_kthread's stime in /proc/PID/stat.
 
-printk() is crucial for debugging kernel issues and console output is
-very important part of it. The number of consoles is huge and a proper
-review would take some time. As a result it need to be reverted for 5.19.
+On my virtualized test environment (Skylake, 8 cpus) benchmark results
+demonstrate significant improvement:
 
-Link: https://lore.kernel.org/r/YrBdjVwBOVgLfHyb@alley
-Signed-off-by: Petr Mladek <pmladek@suse.com>
+BEFORE Paul's patches:
+
+  SUMMARY tasks_trace grace period latency        avg 22298.551 us stddev 1=
+302.165 us
+  SUMMARY ticks per tasks_trace grace period      avg 2.291 stddev 0.324
+
+AFTER Paul's patches:
+
+  SUMMARY tasks_trace grace period latency        avg 16969.197 us  stddev =
+2525.053 us
+  SUMMARY ticks per tasks_trace grace period      avg 1.146 stddev 0.178
+
+Note that since these patches are not in bpf-next benchmarking was done
+by cherry-picking this patch onto rcu tree.
+
+  [0]: https://lore.kernel.org/rcu/20220620225402.GA3842369@paulmck-ThinkPa=
+d-P17-Gen-1/
+
+Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
 ---
- kernel/printk/printk.c | 29 +++++++++++++++--------------
- 1 file changed, 15 insertions(+), 14 deletions(-)
+ tools/testing/selftests/bpf/Makefile          |   4 +-
+ tools/testing/selftests/bpf/bench.c           |  42 +++
+ tools/testing/selftests/bpf/bench.h           |  12 +
+ .../bench_local_storage_rcu_tasks_trace.c     | 272 ++++++++++++++++++
+ ...run_bench_local_storage_rcu_tasks_trace.sh |  11 +
+ .../local_storage_rcu_tasks_trace_bench.c     |  65 +++++
+ 6 files changed, 405 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/bpf/benchs/bench_local_storage_=
+rcu_tasks_trace.c
+ create mode 100755 tools/testing/selftests/bpf/benchs/run_bench_local_stor=
+age_rcu_tasks_trace.sh
+ create mode 100644 tools/testing/selftests/bpf/progs/local_storage_rcu_tas=
+ks_trace_bench.c
 
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index ea3dd55709e7..dfd1a19b95d6 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -340,7 +340,15 @@ static void console_kthreads_unblock(void)
- 	console_kthreads_blocked = false;
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests=
+/bpf/Makefile
+index 4fbd88a8ed9e..9350f0e33727 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -572,6 +572,7 @@ $(OUTPUT)/bench_bpf_loop.o: $(OUTPUT)/bpf_loop_bench.sk=
+el.h
+ $(OUTPUT)/bench_strncmp.o: $(OUTPUT)/strncmp_bench.skel.h
+ $(OUTPUT)/bench_bpf_hashmap_full_update.o: $(OUTPUT)/bpf_hashmap_full_upda=
+te_bench.skel.h
+ $(OUTPUT)/bench_local_storage.o: $(OUTPUT)/local_storage_bench.skel.h
++$(OUTPUT)/bench_local_storage_rcu_tasks_trace.o: $(OUTPUT)/local_storage_r=
+cu_tasks_trace_bench.skel.h
+ $(OUTPUT)/bench.o: bench.h testing_helpers.h $(BPFOBJ)
+ $(OUTPUT)/bench: LDLIBS +=3D -lm
+ $(OUTPUT)/bench: $(OUTPUT)/bench.o \
+@@ -585,7 +586,8 @@ $(OUTPUT)/bench: $(OUTPUT)/bench.o \
+ 		 $(OUTPUT)/bench_bpf_loop.o \
+ 		 $(OUTPUT)/bench_strncmp.o \
+ 		 $(OUTPUT)/bench_bpf_hashmap_full_update.o \
+-		 $(OUTPUT)/bench_local_storage.o
++		 $(OUTPUT)/bench_local_storage.o \
++		 $(OUTPUT)/bench_local_storage_rcu_tasks_trace.o
+ 	$(call msg,BINARY,,$@)
+ 	$(Q)$(CC) $(CFLAGS) $(LDFLAGS) $(filter %.a %.o,$^) $(LDLIBS) -o $@
+=20
+diff --git a/tools/testing/selftests/bpf/bench.c b/tools/testing/selftests/=
+bpf/bench.c
+index 1e7b5d4b1f11..c1f20a147462 100644
+--- a/tools/testing/selftests/bpf/bench.c
++++ b/tools/testing/selftests/bpf/bench.c
+@@ -79,6 +79,43 @@ void hits_drops_report_progress(int iter, struct bench_r=
+es *res, long delta_ns)
+ 	       hits_per_sec, hits_per_prod, drops_per_sec, hits_per_sec + drops_p=
+er_sec);
  }
- 
--static int console_suspended;
-+/*
-+ * This is used for debugging the mess that is the VT code by
-+ * keeping track if we have the console semaphore held. It's
-+ * definitely not the perfect debug tool (we don't know if _WE_
-+ * hold it and are racing, but it helps tracking those weird code
-+ * paths in the console code where we end up in places I want
-+ * locked without the console semaphore held).
-+ */
-+static int console_locked, console_suspended;
- 
- /*
-  *	Array of consoles built from command line options (console=)
-@@ -2711,6 +2719,7 @@ void console_lock(void)
- 	if (console_suspended)
- 		return;
- 	console_kthreads_block();
-+	console_locked = 1;
- 	console_may_schedule = 1;
- }
- EXPORT_SYMBOL(console_lock);
-@@ -2735,26 +2744,15 @@ int console_trylock(void)
- 		up_console_sem();
- 		return 0;
- 	}
-+	console_locked = 1;
- 	console_may_schedule = 0;
- 	return 1;
- }
- EXPORT_SYMBOL(console_trylock);
- 
--/*
-- * This is used to help to make sure that certain paths within the VT code are
-- * running with the console lock held. It is definitely not the perfect debug
-- * tool (it is not known if the VT code is the task holding the console lock),
-- * but it helps tracking those weird code paths in the console code such as
-- * when the console is suspended: where the console is not locked but no
-- * console printing may occur.
-- *
-- * Note: This returns true when the console is suspended but is not locked.
-- *       This is intentional because the VT code must consider that situation
-- *       the same as if the console was locked.
-- */
- int is_console_locked(void)
- {
--	return (console_kthreads_blocked || atomic_read(&console_kthreads_active));
-+	return (console_locked || atomic_read(&console_kthreads_active));
- }
- EXPORT_SYMBOL(is_console_locked);
- 
-@@ -2810,6 +2808,8 @@ static inline bool console_is_usable(struct console *con)
- 
- static void __console_unlock(void)
- {
-+	console_locked = 0;
+=20
++void
++grace_period_latency_basic_stats(struct bench_res res[], int res_cnt, stru=
+ct basic_stats *gp_stat)
++{
++	int i;
 +
- 	/*
- 	 * Depending on whether console_lock() or console_trylock() was used,
- 	 * appropriately allow the kthread printers to continue.
-@@ -3127,6 +3127,7 @@ void console_unblank(void)
- 	} else
- 		console_lock();
- 
-+	console_locked = 1;
- 	console_may_schedule = 0;
- 	for_each_console(c)
- 		if ((c->flags & CON_ENABLED) && c->unblank)
--- 
-2.35.3
++	memset(gp_stat, 0, sizeof(struct basic_stats));
++
++	for (i =3D 0; i < res_cnt; i++)
++		gp_stat->mean +=3D res[i].gp_ns / 1000.0 / (double)res[i].gp_ct / (0.0 +=
+ res_cnt);
++
++#define IT_MEAN_DIFF (res[i].gp_ns / 1000.0 / (double)res[i].gp_ct - gp_st=
+at->mean)
++	if (res_cnt > 1) {
++		for (i =3D 0; i < res_cnt; i++)
++			gp_stat->stddev +=3D (IT_MEAN_DIFF * IT_MEAN_DIFF) / (res_cnt - 1.0);
++	}
++	gp_stat->stddev =3D sqrt(gp_stat->stddev);
++#undef IT_MEAN_DIFF
++}
++
++void
++grace_period_ticks_basic_stats(struct bench_res res[], int res_cnt, struct=
+ basic_stats *gp_stat)
++{
++	int i;
++
++	memset(gp_stat, 0, sizeof(struct basic_stats));
++	for (i =3D 0; i < res_cnt; i++)
++		gp_stat->mean +=3D res[i].stime / (double)res[i].gp_ct / (0.0 + res_cnt);
++
++#define IT_MEAN_DIFF (res[i].stime / (double)res[i].gp_ct - gp_stat->mean)
++	if (res_cnt > 1) {
++		for (i =3D 0; i < res_cnt; i++)
++			gp_stat->stddev +=3D (IT_MEAN_DIFF * IT_MEAN_DIFF) / (res_cnt - 1.0);
++	}
++	gp_stat->stddev =3D sqrt(gp_stat->stddev);
++#undef IT_MEAN_DIFF
++}
++
+ void hits_drops_report_final(struct bench_res res[], int res_cnt)
+ {
+ 	int i;
+@@ -236,6 +273,7 @@ extern struct argp bench_ringbufs_argp;
+ extern struct argp bench_bloom_map_argp;
+ extern struct argp bench_bpf_loop_argp;
+ extern struct argp bench_local_storage_argp;
++extern struct argp bench_local_storage_rcu_tasks_trace_argp;
+ extern struct argp bench_strncmp_argp;
+=20
+ static const struct argp_child bench_parsers[] =3D {
+@@ -244,6 +282,8 @@ static const struct argp_child bench_parsers[] =3D {
+ 	{ &bench_bpf_loop_argp, 0, "bpf_loop helper benchmark", 0 },
+ 	{ &bench_local_storage_argp, 0, "local_storage benchmark", 0 },
+ 	{ &bench_strncmp_argp, 0, "bpf_strncmp helper benchmark", 0 },
++	{ &bench_local_storage_rcu_tasks_trace_argp, 0,
++		"local_storage RCU Tasks Trace slowdown benchmark", 0 },
+ 	{},
+ };
+=20
+@@ -449,6 +489,7 @@ extern const struct bench bench_bpf_hashmap_full_update;
+ extern const struct bench bench_local_storage_cache_seq_get;
+ extern const struct bench bench_local_storage_cache_interleaved_get;
+ extern const struct bench bench_local_storage_cache_hashmap_control;
++extern const struct bench bench_local_storage_tasks_trace;
+=20
+ static const struct bench *benchs[] =3D {
+ 	&bench_count_global,
+@@ -487,6 +528,7 @@ static const struct bench *benchs[] =3D {
+ 	&bench_local_storage_cache_seq_get,
+ 	&bench_local_storage_cache_interleaved_get,
+ 	&bench_local_storage_cache_hashmap_control,
++	&bench_local_storage_tasks_trace,
+ };
+=20
+ static void setup_benchmark()
+diff --git a/tools/testing/selftests/bpf/bench.h b/tools/testing/selftests/=
+bpf/bench.h
+index 4b15286753ba..d748255877e2 100644
+--- a/tools/testing/selftests/bpf/bench.h
++++ b/tools/testing/selftests/bpf/bench.h
+@@ -30,11 +30,19 @@ struct env {
+ 	struct cpu_set cons_cpus;
+ };
+=20
++struct basic_stats {
++	double mean;
++	double stddev;
++};
++
+ struct bench_res {
+ 	long hits;
+ 	long drops;
+ 	long false_hits;
+ 	long important_hits;
++	unsigned long gp_ns;
++	unsigned long gp_ct;
++	unsigned int stime;
+ };
+=20
+ struct bench {
+@@ -65,6 +73,10 @@ void ops_report_final(struct bench_res res[], int res_cn=
+t);
+ void local_storage_report_progress(int iter, struct bench_res *res,
+ 				   long delta_ns);
+ void local_storage_report_final(struct bench_res res[], int res_cnt);
++void grace_period_latency_basic_stats(struct bench_res res[], int res_cnt,
++				      struct basic_stats *gp_stat);
++void grace_period_ticks_basic_stats(struct bench_res res[], int res_cnt,
++				    struct basic_stats *gp_stat);
+=20
+ static inline __u64 get_time_ns(void)
+ {
+diff --git a/tools/testing/selftests/bpf/benchs/bench_local_storage_rcu_tas=
+ks_trace.c b/tools/testing/selftests/bpf/benchs/bench_local_storage_rcu_tas=
+ks_trace.c
+new file mode 100644
+index 000000000000..43026430b25a
+--- /dev/null
++++ b/tools/testing/selftests/bpf/benchs/bench_local_storage_rcu_tasks_trac=
+e.c
+@@ -0,0 +1,272 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
++
++#include <argp.h>
++
++#include <sys/prctl.h>
++#include "local_storage_rcu_tasks_trace_bench.skel.h"
++#include "bench.h"
++
++#include <signal.h>
++
++static struct {
++	__u32 nr_procs;
++	__u32 kthread_pid;
++	bool quiet;
++} args =3D {
++	.nr_procs =3D 1000,
++	.kthread_pid =3D 0,
++	.quiet =3D false,
++};
++
++enum {
++	ARG_NR_PROCS =3D 7000,
++	ARG_KTHREAD_PID =3D 7001,
++	ARG_QUIET =3D 7002,
++};
++
++static const struct argp_option opts[] =3D {
++	{ "nr_procs", ARG_NR_PROCS, "NR_PROCS", 0,
++		"Set number of user processes to spin up"},
++	{ "kthread_pid", ARG_KTHREAD_PID, "PID", 0,
++		"Pid of rcu_tasks_trace kthread for ticks tracking"},
++	{ "quiet", ARG_QUIET, "{0,1}", 0,
++		"If true, don't report progress"},
++	{},
++};
++
++static error_t parse_arg(int key, char *arg, struct argp_state *state)
++{
++	long ret;
++
++	switch (key) {
++	case ARG_NR_PROCS:
++		ret =3D strtol(arg, NULL, 10);
++		if (ret < 1 || ret > UINT_MAX) {
++			fprintf(stderr, "invalid nr_procs\n");
++			argp_usage(state);
++		}
++		args.nr_procs =3D ret;
++		break;
++	case ARG_KTHREAD_PID:
++		ret =3D strtol(arg, NULL, 10);
++		if (ret < 1) {
++			fprintf(stderr, "invalid kthread_pid\n");
++			argp_usage(state);
++		}
++		args.kthread_pid =3D ret;
++		break;
++	case ARG_QUIET:
++		ret =3D strtol(arg, NULL, 10);
++		if (ret < 0 || ret > 1) {
++			fprintf(stderr, "invalid quiet %ld\n", ret);
++			argp_usage(state);
++		}
++		args.quiet =3D ret;
++		break;
++break;
++	default:
++		return ARGP_ERR_UNKNOWN;
++	}
++
++	return 0;
++}
++
++const struct argp bench_local_storage_rcu_tasks_trace_argp =3D {
++	.options =3D opts,
++	.parser =3D parse_arg,
++};
++
++#define MAX_SLEEP_PROCS 150000
++
++static void validate(void)
++{
++	if (env.producer_cnt !=3D 1) {
++		fprintf(stderr, "benchmark doesn't support multi-producer!\n");
++		exit(1);
++	}
++	if (env.consumer_cnt !=3D 1) {
++		fprintf(stderr, "benchmark doesn't support multi-consumer!\n");
++		exit(1);
++	}
++
++	if (args.nr_procs > MAX_SLEEP_PROCS) {
++		fprintf(stderr, "benchmark supports up to %u sleeper procs!\n",
++			MAX_SLEEP_PROCS);
++		exit(1);
++	}
++}
++
++static long kthread_pid_ticks(void)
++{
++	char procfs_path[100];
++	long stime;
++	FILE *f;
++
++	if (!args.kthread_pid)
++		return -1;
++
++	sprintf(procfs_path, "/proc/%u/stat", args.kthread_pid);
++	f =3D fopen(procfs_path, "r");
++	if (f < 0) {
++		fprintf(stderr, "couldn't open %s, exiting\n", procfs_path);
++		exit(1);
++	}
++	fscanf(f, "%*s %*s %*s %*s %*s %*s %*s %*s %*s %*s %*s %*s %*s %*s %ld", =
+&stime);
++	fclose(f);
++	return stime;
++}
++
++static struct {
++	struct local_storage_rcu_tasks_trace_bench *skel;
++	long prev_kthread_stime;
++} ctx;
++
++static void sleep_and_loop(void)
++{
++	while (true) {
++		sleep(rand() % 4);
++		syscall(__NR_getpgid);
++	}
++}
++
++static void local_storage_tasks_trace_setup(void)
++{
++	int i, err, forkret, runner_pid;
++
++	runner_pid =3D getpid();
++
++	for (i =3D 0; i < args.nr_procs; i++) {
++		forkret =3D fork();
++		if (forkret < 0) {
++			fprintf(stderr, "Error forking sleeper proc %u of %u, exiting\n", i,
++				args.nr_procs);
++			goto err_out;
++		}
++
++		if (!forkret) {
++			err =3D prctl(PR_SET_PDEATHSIG, SIGKILL);
++			if (err < 0) {
++				fprintf(stderr, "prctl failed with err %d, exiting\n", err);
++				goto err_out;
++			}
++
++			if (getppid() !=3D runner_pid) {
++				fprintf(stderr, "Runner died while spinning up procs, exiting\n");
++				goto err_out;
++			}
++			sleep_and_loop();
++		}
++	}
++	fprintf(stderr, "Spun up %u procs (our pid %d)\n", args.nr_procs, runner_=
+pid);
++
++	setup_libbpf();
++
++	ctx.skel =3D local_storage_rcu_tasks_trace_bench__open_and_load();
++	if (!ctx.skel) {
++		fprintf(stderr, "Error doing open_and_load, exiting\n");
++		goto err_out;
++	}
++
++	ctx.prev_kthread_stime =3D kthread_pid_ticks();
++
++	if (!bpf_program__attach(ctx.skel->progs.get_local)) {
++		fprintf(stderr, "Error attaching bpf program\n");
++		goto err_out;
++	}
++
++	if (!bpf_program__attach(ctx.skel->progs.pregp_step)) {
++		fprintf(stderr, "Error attaching bpf program\n");
++		goto err_out;
++	}
++
++	if (!bpf_program__attach(ctx.skel->progs.postgp)) {
++		fprintf(stderr, "Error attaching bpf program\n");
++		goto err_out;
++	}
++
++	return;
++err_out:
++	exit(1);
++}
++
++static void measure(struct bench_res *res)
++{
++	long ticks;
++
++	res->gp_ct =3D atomic_swap(&ctx.skel->bss->gp_hits, 0);
++	res->gp_ns =3D atomic_swap(&ctx.skel->bss->gp_times, 0);
++	ticks =3D kthread_pid_ticks();
++	res->stime =3D ticks - ctx.prev_kthread_stime;
++	ctx.prev_kthread_stime =3D ticks;
++}
++
++static void *consumer(void *input)
++{
++	return NULL;
++}
++
++static void *producer(void *input)
++{
++	while (true)
++		syscall(__NR_getpgid);
++	return NULL;
++}
++
++static void report_progress(int iter, struct bench_res *res, long delta_ns)
++{
++	if (ctx.skel->bss->unexpected) {
++		fprintf(stderr, "Error: Unexpected order of bpf prog calls (postgp after=
+ pregp).");
++		fprintf(stderr, "Data can't be trusted, exiting\n");
++		exit(1);
++	}
++
++	if (args.quiet)
++		return;
++
++	printf("Iter %d\t avg tasks_trace grace period latency\t%lf ns\n",
++	       iter, res->gp_ns / (double)res->gp_ct);
++	printf("Iter %d\t avg ticks per tasks_trace grace period\t%lf\n",
++	       iter, res->stime / (double)res->gp_ct);
++}
++
++static void report_final(struct bench_res res[], int res_cnt)
++{
++	struct basic_stats gp_stat;
++
++	grace_period_latency_basic_stats(res, res_cnt, &gp_stat);
++	printf("SUMMARY tasks_trace grace period latency");
++	printf("\tavg %.3lf us\tstddev %.3lf us\n", gp_stat.mean, gp_stat.stddev);
++	grace_period_ticks_basic_stats(res, res_cnt, &gp_stat);
++	printf("SUMMARY ticks per tasks_trace grace period");
++	printf("\tavg %.3lf\tstddev %.3lf\n", gp_stat.mean, gp_stat.stddev);
++}
++
++/* local-storage-tasks-trace: Benchmark performance of BPF local_storage's=
+ use
++ * of RCU Tasks-Trace.
++ *
++ * Stress RCU Tasks Trace by forking many tasks, all of which do no work a=
+side
++ * from sleep() loop, and creating/destroying BPF task-local storage on wa=
+keup.
++ * The number of forked tasks is configurable.
++ *
++ * exercising code paths which call call_rcu_tasks_trace while there are m=
+any
++ * thousands of tasks on the system should result in RCU Tasks-Trace havin=
+g to
++ * do a noticeable amount of work.
++ *
++ * This should be observable by measuring rcu_tasks_trace_kthread CPU usage
++ * after the grace period has ended, or by measuring grace period latency.
++ *
++ * This benchmark uses both approaches, attaching to rcu_tasks_trace_pregp=
+_step
++ * and rcu_tasks_trace_postgp functions to measure grace period latency and
++ * using /proc/PID/stat to measure rcu_tasks_trace_kthread kernel ticks
++ */
++const struct bench bench_local_storage_tasks_trace =3D {
++	.name =3D "local-storage-tasks-trace",
++	.validate =3D validate,
++	.setup =3D local_storage_tasks_trace_setup,
++	.producer_thread =3D producer,
++	.consumer_thread =3D consumer,
++	.measure =3D measure,
++	.report_progress =3D report_progress,
++	.report_final =3D report_final,
++};
+diff --git a/tools/testing/selftests/bpf/benchs/run_bench_local_storage_rcu=
+_tasks_trace.sh b/tools/testing/selftests/bpf/benchs/run_bench_local_storag=
+e_rcu_tasks_trace.sh
+new file mode 100755
+index 000000000000..5dac1f02892c
+--- /dev/null
++++ b/tools/testing/selftests/bpf/benchs/run_bench_local_storage_rcu_tasks_=
+trace.sh
+@@ -0,0 +1,11 @@
++#!/bin/bash
++# SPDX-License-Identifier: GPL-2.0
++
++kthread_pid=3D`pgrep rcu_tasks_trace_kthread`
++
++if [ -z $kthread_pid ]; then
++	echo "error: Couldn't find rcu_tasks_trace_kthread"
++	exit 1
++fi
++
++./bench --nr_procs 15000 --kthread_pid $kthread_pid -d 600 --quiet 1 local=
+-storage-tasks-trace
+diff --git a/tools/testing/selftests/bpf/progs/local_storage_rcu_tasks_trac=
+e_bench.c b/tools/testing/selftests/bpf/progs/local_storage_rcu_tasks_trace=
+_bench.c
+new file mode 100644
+index 000000000000..9b11342b19a0
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/local_storage_rcu_tasks_trace_bench=
+.c
+@@ -0,0 +1,65 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
++
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include "bpf_misc.h"
++
++struct {
++	__uint(type, BPF_MAP_TYPE_TASK_STORAGE);
++	__uint(map_flags, BPF_F_NO_PREALLOC);
++	__type(key, int);
++	__type(value, int);
++} task_storage SEC(".maps");
++
++long hits;
++long gp_hits;
++long gp_times;
++long current_gp_start;
++long unexpected;
++
++SEC("fentry/" SYS_PREFIX "sys_getpgid")
++int get_local(void *ctx)
++{
++	struct task_struct *task;
++	int idx;
++	int *s;
++
++	idx =3D 0;
++	task =3D bpf_get_current_task_btf();
++	s =3D bpf_task_storage_get(&task_storage, task, &idx,
++				 BPF_LOCAL_STORAGE_GET_F_CREATE);
++	if (!s)
++		return 0;
++
++	*s =3D 3;
++	bpf_task_storage_delete(&task_storage, task);
++	__sync_add_and_fetch(&hits, 1);
++	return 0;
++}
++
++SEC("kprobe/rcu_tasks_trace_pregp_step")
++int pregp_step(struct pt_regs *ctx)
++{
++	current_gp_start =3D bpf_ktime_get_ns();
++	return 0;
++}
++
++SEC("kprobe/rcu_tasks_trace_postgp")
++int postgp(struct pt_regs *ctx)
++{
++	if (!current_gp_start) {
++		/* Will only happen if prog tracing rcu_tasks_trace_pregp_step doesn't
++		 * execute before this prog
++		 */
++		__sync_add_and_fetch(&unexpected, 1);
++		return 0;
++	}
++
++	__sync_add_and_fetch(&gp_times, bpf_ktime_get_ns() - current_gp_start);
++	__sync_add_and_fetch(&gp_hits, 1);
++	current_gp_start =3D 0;
++	return 0;
++}
++
++char _license[] SEC("license") =3D "GPL";
+--=20
+2.30.2
 
