@@ -2,31 +2,33 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DE5A4C43334
-	for <rcu@archiver.kernel.org>; Thu, 23 Jun 2022 14:52:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 70FDAC43334
+	for <rcu@archiver.kernel.org>; Thu, 23 Jun 2022 14:52:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232117AbiFWOwM (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 23 Jun 2022 10:52:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46798 "EHLO
+        id S232131AbiFWOwO (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 23 Jun 2022 10:52:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232122AbiFWOwD (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 23 Jun 2022 10:52:03 -0400
+        with ESMTP id S232137AbiFWOwE (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 23 Jun 2022 10:52:04 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3B4247AC5;
-        Thu, 23 Jun 2022 07:52:01 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D24194832C;
+        Thu, 23 Jun 2022 07:52:03 -0700 (PDT)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 5B68621905;
-        Thu, 23 Jun 2022 14:52:00 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id 8E6DF21AC0;
+        Thu, 23 Jun 2022 14:52:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1655995920; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=uxU0hPXq49CJxI7UlQfc46Bp4k9dn5hDN7DK97QCwZ0=;
-        b=mrQ7L/eHh0puHP36lIAwkc678zgDiclhM7sLpfn+Wb6a9F4rT+euTkMglAYJQYQfj/V4PO
-        NbmkU00fMZNF/KLibynhvasRzYZ93gHRDjvjAk9sfsYyFFE06vuB6LjgtQpZhXfD5hPoKg
-        19MPqnneyJtJQV8Ups3IelngGBILaCE=
+        t=1655995922; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2gzzB9tWoC3eNj6y+QzCcTzE3FCX4WAk6WctZpnJe/s=;
+        b=XBVbUbvwWJuO7d6ybQ35HQmWh1FQdfL77bd+28PNsOZP9dfHTOqyo01V+mEcOgwSb7MRln
+        KT2r2h+fMjXQ2REI/XMCNG83/TNk2MjmRZGWZvAzbbcSsYJFKl0i6sWbIIehckHq4v4fQN
+        XeR1kgTGWt7AnBQGSy8irTFHKgZnlU8=
 Received: from alley.suse.cz (unknown [10.100.208.146])
-        by relay2.suse.de (Postfix) with ESMTP id 0CE9E2C142;
-        Thu, 23 Jun 2022 14:51:58 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 93D7C2C142;
+        Thu, 23 Jun 2022 14:52:01 +0000 (UTC)
 From:   Petr Mladek <pmladek@suse.com>
 To:     Linus Torvalds <torvalds@linux-foundation.org>,
         John Ogness <john.ogness@linutronix.de>,
@@ -44,64 +46,53 @@ Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
         frederic@kernel.org,
         =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 0/6] printk: Revert console kthreads for 5.19
-Date:   Thu, 23 Jun 2022 16:51:51 +0200
-Message-Id: <20220623145157.21938-1-pmladek@suse.com>
+Subject: [PATCH 2/6] Revert "printk: Block console kthreads when direct printing will be required"
+Date:   Thu, 23 Jun 2022 16:51:53 +0200
+Message-Id: <20220623145157.21938-3-pmladek@suse.com>
 X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20220623145157.21938-1-pmladek@suse.com>
+References: <20220623145157.21938-1-pmladek@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-We have had several discussions with the other printk developers and
-together decided that we would like more time to investigate
-the implicit expectations [1] of each and every console driver
-because now we are concerned that there may be more hidden implicit
-expectations. 
+This reverts commit c3230283e2819a69dad2cf7a63143fde8bab8b5c.
 
-We much appreciate the chance to have this in 5.19 release candidates
-because the wider user base helped us to get feedback from user cases
-and architectures that we were not able to cover. And we see that
-the patchset needs some more love.
+The testing of 5.19 release candidates revealed missing synchronization
+between early and regular console functionality.
 
-We are sorry for the inconvenience and thanks a lot for the feedback
-and help with debugging and testing.
+It would be possible to start the console kthreads later as a workaround.
+But it is clear that console lock serialized console drivers between
+each other. It opens a big area of possible problems that were not
+considered by people involved in the development and review.
 
-This patchset reverts only the final patches adding the kthreads and
-per-console. It keeps the refactoring of the console_unlock() code
-that makes sense on its own.
+printk() is crucial for debugging kernel issues and console output is
+very important part of it. The number of consoles is huge and a proper
+review would take some time. As a result it need to be reverted for 5.19.
 
-[1] https://lore.kernel.org/all/YrBdjVwBOVgLfHyb@alley/
+Link: https://lore.kernel.org/r/YrBdjVwBOVgLfHyb@alley
+Signed-off-by: Petr Mladek <pmladek@suse.com>
+---
+ kernel/printk/printk.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-PS: I am going to prepare a proper pull request. I just wanted
-    to send this in advance just in case anyone wants to comment
-    on it.
-
-Petr Mladek (6):
-  Revert "printk: Wait for the global console lock when the system is
-    going down"
-  Revert "printk: Block console kthreads when direct printing will be
-    required"
-  Revert "printk: remove @console_locked"
-  Revert "printk: extend console_lock for per-console locking"
-  Revert "printk: add kthread console printers"
-  Revert "printk: add functions to prefer direct printing"
-
- drivers/tty/sysrq.c         |   2 -
- include/linux/console.h     |  17 --
- include/linux/printk.h      |  16 -
- kernel/hung_task.c          |  11 +-
- kernel/panic.c              |   6 -
- kernel/printk/internal.h    |   2 -
- kernel/printk/printk.c      | 593 ++++--------------------------------
- kernel/printk/printk_safe.c |  32 --
- kernel/rcu/tree_stall.h     |   2 -
- kernel/reboot.c             |  16 +-
- kernel/watchdog.c           |   4 -
- kernel/watchdog_hld.c       |   4 -
- 12 files changed, 65 insertions(+), 640 deletions(-)
-
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index 45c6c2b0b104..ea3dd55709e7 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -3729,9 +3729,7 @@ static bool printer_should_wake(struct console *con, u64 seq)
+ 		return true;
+ 
+ 	if (con->blocked ||
+-	    console_kthreads_atomically_blocked() ||
+-	    system_state > SYSTEM_RUNNING ||
+-	    oops_in_progress) {
++	    console_kthreads_atomically_blocked()) {
+ 		return false;
+ 	}
+ 
 -- 
 2.35.3
 
