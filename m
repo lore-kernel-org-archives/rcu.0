@@ -2,103 +2,106 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F33ACC43334
-	for <rcu@archiver.kernel.org>; Thu, 23 Jun 2022 08:10:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DE5A4C43334
+	for <rcu@archiver.kernel.org>; Thu, 23 Jun 2022 14:52:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229625AbiFWIKa (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 23 Jun 2022 04:10:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54618 "EHLO
+        id S232117AbiFWOwM (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 23 Jun 2022 10:52:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbiFWIK2 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 23 Jun 2022 04:10:28 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 282AB47566;
-        Thu, 23 Jun 2022 01:10:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1655971827; x=1687507827;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=QcYh2jZjsF9QfkU41AW34wJJx148DZOcArwuObfigGo=;
-  b=b8fPrHXWC73WaTZHhKjS9EIlbsxvgIk+uMySQwFMlkpAIK0bsbm8+EWV
-   KlN9Xqi7v7d+OCMcPRy4kkjE/nzQeNSgqZ1LbvqKKNQB1UUAdFaH82tPG
-   c9mh4hwuAV5Sfea/fjSt/gyg/vSat4n8ohfXOlsrQJ+djduAOpXgiOT6d
-   LV+OzhsrEAAfPSp5Q28OXLmKPP3s2nIhuk6lR6qVqE/RbPf6+vMXVnKnb
-   tktqj1xBsnPSZbOrTYyoKF2C5B9TO6j68omGFbgNE/AR/qimMMkG9ygzw
-   sENwu1rC4pFFOSp2re5I+lmJZquKBF/4dVBDUR1wyaj88CNSEBBfkJTRK
-   A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10386"; a="280704808"
-X-IronPort-AV: E=Sophos;i="5.92,215,1650956400"; 
-   d="scan'208";a="280704808"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jun 2022 01:10:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.92,215,1650956400"; 
-   d="scan'208";a="586071816"
-Received: from lkp-server01.sh.intel.com (HELO 68b931ab7ac1) ([10.239.97.150])
-  by orsmga007.jf.intel.com with ESMTP; 23 Jun 2022 01:10:24 -0700
-Received: from kbuild by 68b931ab7ac1 with local (Exim 4.95)
-        (envelope-from <lkp@intel.com>)
-        id 1o4Hux-0000vd-HU;
-        Thu, 23 Jun 2022 08:10:23 +0000
-Date:   Thu, 23 Jun 2022 16:10:18 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        rcu@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        rushikesh.s.kadam@intel.com, urezki@gmail.com,
-        neeraj.iitr10@gmail.com, frederic@kernel.org, paulmck@kernel.org,
-        rostedt@goodmis.org, vineeth@bitbyteword.org,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Subject: Re: [PATCH v2 6/8] rcuscale: Add test for using call_rcu_lazy() to
- emulate kfree_rcu()
-Message-ID: <202206231529.kLjzriV0-lkp@intel.com>
-References: <20220622225102.2112026-8-joel@joelfernandes.org>
+        with ESMTP id S232122AbiFWOwD (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 23 Jun 2022 10:52:03 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3B4247AC5;
+        Thu, 23 Jun 2022 07:52:01 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 5B68621905;
+        Thu, 23 Jun 2022 14:52:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1655995920; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=uxU0hPXq49CJxI7UlQfc46Bp4k9dn5hDN7DK97QCwZ0=;
+        b=mrQ7L/eHh0puHP36lIAwkc678zgDiclhM7sLpfn+Wb6a9F4rT+euTkMglAYJQYQfj/V4PO
+        NbmkU00fMZNF/KLibynhvasRzYZ93gHRDjvjAk9sfsYyFFE06vuB6LjgtQpZhXfD5hPoKg
+        19MPqnneyJtJQV8Ups3IelngGBILaCE=
+Received: from alley.suse.cz (unknown [10.100.208.146])
+        by relay2.suse.de (Postfix) with ESMTP id 0CE9E2C142;
+        Thu, 23 Jun 2022 14:51:58 +0000 (UTC)
+From:   Petr Mladek <pmladek@suse.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Jason A . Donenfeld" <Jason@zx2c4.com>,
+        Marco Elver <elver@google.com>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Zhouyi Zhou <zhouzhouyi@gmail.com>, dave@stgolabs.net,
+        Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org,
+        frederic@kernel.org,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/6] printk: Revert console kthreads for 5.19
+Date:   Thu, 23 Jun 2022 16:51:51 +0200
+Message-Id: <20220623145157.21938-1-pmladek@suse.com>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220622225102.2112026-8-joel@joelfernandes.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi "Joel,
+We have had several discussions with the other printk developers and
+together decided that we would like more time to investigate
+the implicit expectations [1] of each and every console driver
+because now we are concerned that there may be more hidden implicit
+expectations. 
 
-Thank you for the patch! Perhaps something to improve:
+We much appreciate the chance to have this in 5.19 release candidates
+because the wider user base helped us to get feedback from user cases
+and architectures that we were not able to cover. And we see that
+the patchset needs some more love.
 
-[auto build test WARNING on linus/master]
-[also build test WARNING on v5.19-rc3 next-20220622]
-[cannot apply to paulmck-rcu/dev]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
+We are sorry for the inconvenience and thanks a lot for the feedback
+and help with debugging and testing.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Joel-Fernandes-Google/Implement-call_rcu_lazy-and-miscellaneous-fixes/20220623-065447
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git de5c208d533a46a074eb46ea17f672cc005a7269
-config: x86_64-randconfig-s022 (https://download.01.org/0day-ci/archive/20220623/202206231529.kLjzriV0-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-3) 11.3.0
-reproduce:
-        # apt-get install sparse
-        # sparse version: v0.6.4-31-g4880bd19-dirty
-        # https://github.com/intel-lab-lkp/linux/commit/6c59cb940f39b882c20e6858c41df7c1470b930a
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Joel-Fernandes-Google/Implement-call_rcu_lazy-and-miscellaneous-fixes/20220623-065447
-        git checkout 6c59cb940f39b882c20e6858c41df7c1470b930a
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        make W=1 C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=x86_64 SHELL=/bin/bash kernel/rcu/
+This patchset reverts only the final patches adding the kthreads and
+per-console. It keeps the refactoring of the console_unlock() code
+that makes sense on its own.
 
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp@intel.com>
+[1] https://lore.kernel.org/all/YrBdjVwBOVgLfHyb@alley/
 
+PS: I am going to prepare a proper pull request. I just wanted
+    to send this in advance just in case anyone wants to comment
+    on it.
 
-sparse warnings: (new ones prefixed by >>)
->> kernel/rcu/rcuscale.c:663:6: sparse: sparse: symbol 'kfree_rcu_lazy' was not declared. Should it be static?
->> kernel/rcu/rcuscale.c:786:15: sparse: sparse: symbol 'jiffies_at_lazy_cb' was not declared. Should it be static?
->> kernel/rcu/rcuscale.c:787:17: sparse: sparse: symbol 'lazy_test1_rh' was not declared. Should it be static?
->> kernel/rcu/rcuscale.c:788:5: sparse: sparse: symbol 'rcu_lazy_test1_cb_called' was not declared. Should it be static?
->> kernel/rcu/rcuscale.c:789:6: sparse: sparse: symbol 'call_rcu_lazy_test1' was not declared. Should it be static?
+Petr Mladek (6):
+  Revert "printk: Wait for the global console lock when the system is
+    going down"
+  Revert "printk: Block console kthreads when direct printing will be
+    required"
+  Revert "printk: remove @console_locked"
+  Revert "printk: extend console_lock for per-console locking"
+  Revert "printk: add kthread console printers"
+  Revert "printk: add functions to prefer direct printing"
+
+ drivers/tty/sysrq.c         |   2 -
+ include/linux/console.h     |  17 --
+ include/linux/printk.h      |  16 -
+ kernel/hung_task.c          |  11 +-
+ kernel/panic.c              |   6 -
+ kernel/printk/internal.h    |   2 -
+ kernel/printk/printk.c      | 593 ++++--------------------------------
+ kernel/printk/printk_safe.c |  32 --
+ kernel/rcu/tree_stall.h     |   2 -
+ kernel/reboot.c             |  16 +-
+ kernel/watchdog.c           |   4 -
+ kernel/watchdog_hld.c       |   4 -
+ 12 files changed, 65 insertions(+), 640 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+2.35.3
+
