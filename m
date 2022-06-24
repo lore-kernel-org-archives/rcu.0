@@ -2,389 +2,265 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1119BC43334
-	for <rcu@archiver.kernel.org>; Fri, 24 Jun 2022 12:55:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EC2C0C433EF
+	for <rcu@archiver.kernel.org>; Fri, 24 Jun 2022 13:02:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231954AbiFXMzR (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 24 Jun 2022 08:55:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34072 "EHLO
+        id S232106AbiFXNCw (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 24 Jun 2022 09:02:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230053AbiFXMzR (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 24 Jun 2022 08:55:17 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6038625A
-        for <rcu@vger.kernel.org>; Fri, 24 Jun 2022 05:55:15 -0700 (PDT)
+        with ESMTP id S232110AbiFXNCS (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 24 Jun 2022 09:02:18 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C3F7532DB;
+        Fri, 24 Jun 2022 06:02:16 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 60896B82805
-        for <rcu@vger.kernel.org>; Fri, 24 Jun 2022 12:55:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F9DCC34114;
-        Fri, 24 Jun 2022 12:55:13 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id E03C0B828B7;
+        Fri, 24 Jun 2022 13:02:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EA83C34114;
+        Fri, 24 Jun 2022 13:02:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1656075313;
-        bh=Y3iMlJuxWiCXSsLFV8QBrj+jyiVqv25vDCHGVVDQDeg=;
+        s=k20201202; t=1656075733;
+        bh=qOkoAj3Cs3l+78kYs69ixIJ+E+RhjTYf6phoLBKg1Vs=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Hk0BH6sRgGKCD/ojJQyhtfLJNEAGFd/BORNeP3KpkAIoaZSWlMmTporziwwoO1dci
-         p4rLJ7JdG7RjYRxl2pzSGVKOLxX5HOM92RXDqkPQcbUdxlfxgVK5t87wSrQ5msfdjx
-         d8Bf5MadsgvtzSDOE+L/YKeYuN9k6SlX6VkuMCx1vmwIH2vEgg4YXj/VkbjJO34Mqp
-         lQcHVzjEy2f9joqtNjTNUsI49H2+YlqwIll3yqNCBFXxuLLzr2JX1xQWJSLoc3lV6i
-         K+mvJcT3aNc3HmESyFeoOzpd8iOnJjtqV/tfAioBwiuXRTs/M6qTWCSy5AFERqrEKE
-         8E/3PNTr/psRw==
+        b=ZeqwkSFYQPkWyQgLUwUbdHNDJxaJg1223a2m8TiSo6A9mjaalCoxhXYwRcT1Mn9DA
+         EXqw05IjZAU+d/6bitVvkSvQ+pzZjynxfOoByg8yYEgk6NOBwheWERCDXnhdxk2Z3C
+         w/wQakaxpUKOOZhHlg+f0JzlWsh5GvPxcsjMERTjyTZbc1PzAIlGaLoM8EbrFymLah
+         9R0xGiwqmxBB2brp0e/j+O5vPF4BsjfOXZLl8CCKH/IaoQNv3yKRbHJr/4y6G0SdH9
+         1c0vUzPRRlZh8M0jqO01E/hwwCTKSNpE6vWW1HftopMQDctHYMa/kgL1B/oG+DznhT
+         gHRTmL+8QN7eQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id CAEF45C04B3; Fri, 24 Jun 2022 05:55:12 -0700 (PDT)
-Date:   Fri, 24 Jun 2022 05:55:12 -0700
+        id 371FD5C00A1; Fri, 24 Jun 2022 06:02:13 -0700 (PDT)
+Date:   Fri, 24 Jun 2022 06:02:13 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     yueluck <yueluck@163.com>
-Cc:     "Zhang, Qiang1" <qiang1.zhang@intel.com>,
-        "josh@joshtriplett.org" <josh@joshtriplett.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>
-Subject: Re: RE: Re:RE: Re:Re: question about rcu and many hung processes
- lead to reboot
-Message-ID: <20220624125512.GA1824229@paulmck-ThinkPad-P17-Gen-1>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Uladzislau Rezki <urezki@gmail.com>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [RFC PATCH] rcu: back off on allocation failure in
+ fill_page_cache_func
+Message-ID: <20220624130213.GT1790663@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <9441c66.1e15.1816591cf9d.Coremail.yueluck@163.com>
- <f1de832.1e37.1816593718c.Coremail.yueluck@163.com>
- <20220615050755.GF1790663@paulmck-ThinkPad-P17-Gen-1>
- <6f9fa802.41a5.1816718d276.Coremail.yueluck@163.com>
- <PH0PR11MB5880184DCC0F0EC6798AC5AEDAAD9@PH0PR11MB5880.namprd11.prod.outlook.com>
- <PH0PR11MB5880370046830F85F3E8DF95DAAD9@PH0PR11MB5880.namprd11.prod.outlook.com>
- <342ba374.42bd.181719c68f5.Coremail.yueluck@163.com>
- <PH0PR11MB5880D00D5BF2D2C40A2734BBDAAF9@PH0PR11MB5880.namprd11.prod.outlook.com>
- <5f8e371e.3e3b.181900adafc.Coremail.yueluck@163.com>
- <20220624034515.GQ1790663@paulmck-ThinkPad-P17-Gen-1>
+References: <20220622114711.28154-1-mhocko@kernel.org>
+ <YrNlXkLfDpd+Ulxf@pc638.lan>
+ <20220624033950.GP1790663@paulmck-ThinkPad-P17-Gen-1>
+ <YrVlG2XmKHcUSkTS@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220624034515.GQ1790663@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <YrVlG2XmKHcUSkTS@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jun 23, 2022 at 08:45:15PM -0700, Paul E. McKenney wrote:
-> On Thu, Jun 23, 2022 at 06:10:39PM +0800, yueluck wrote:
-> > 
-> > 
-> > 
-> > 1. check “rcu_preempt” kthreads state(R or I ?), though “cat /proc/(rcu_preempt kthread pid)/status”
-> > 
-> > 
-> >     It seems preempt kthread is always in "I" state,  but as long as there is hung process, preempt thread has no context switch (voluntary_ctxt_switches and nonvoluntary_ctxt_switches do not change),  is it dead?  if so  kernel would crash.
-> > 
-> > 
-> >     I have screen-snapshot attached.  
-> >     
-> > 2. I have not seen any RCU Stall warning messages. 
-> > 
-> > 
-> > 3. I have been testing patched kernel for 3 days, so far so good.
+On Fri, Jun 24, 2022 at 09:17:47AM +0200, Michal Hocko wrote:
+> On Thu 23-06-22 20:39:50, Paul E. McKenney wrote:
+> > On Wed, Jun 22, 2022 at 08:54:22PM +0200, Uladzislau Rezki wrote:
+> > > On Wed, Jun 22, 2022 at 01:47:11PM +0200, Michal Hocko wrote:
+> > > > From: Michal Hocko <mhocko@suse.com>
+> > > > 
+> > > > fill_page_cache_func allocates couple of pages to store
+> > > > kvfree_rcu_bulk_data. This is a lightweight (GFP_NORETRY) allocation
+> > > > which can fail under memory pressure. The function will, however keep
+> > > > retrying even when the previous attempt has failed.
+> > > > 
+> > > > While this is not really incorrect there is one thing to consider. This
+> > > > allocation is invoked from the WQ context and that means that if the
+> > > > memory reclaim gets stuck it can hog the worker for quite some time.
+> > > > WQ concurrency is only triggered when the worker context sleeps and that
+> > > > is not guaranteed for __GFP_NORETRY allocation attempts (see
+> > > > should_reclaim_retry).
+> > > > 
+> > > > We have seen WQ lockups
+> > > > kernel: BUG: workqueue lockup - pool cpus=93 node=1 flags=0x1 nice=0 stuck for 32s!
+> > > > [...]
+> > > > kernel: pool 74: cpus=37 node=0 flags=0x1 nice=0 hung=32s workers=2 manager: 2146
+> > > > kernel:   pwq 498: cpus=249 node=1 flags=0x1 nice=0 active=4/256 refcnt=5
+> > > > kernel:     in-flight: 1917:fill_page_cache_func
+> > > > kernel:     pending: dbs_work_handler, free_work, kfree_rcu_monitor
+> > > > 
+> > > > Originaly, we thought that several retries with direct reclaim being
+> > > > stuck is the underlying reason but we couldn't have confirmed that and
+> > > > have seen a similar lockups detected even without any heavy memory
+> > > > pressure so there is likely something else/more going on. On the other
+> > > > hand failing the allocation shouldn't have a big impact and from the
+> > > > code it is not really obvious why retrying is desirable so back off
+> > > > after the allocation failure.
+> > > > 
+> > > > Cc: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > > > Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> > > > Cc: Frederic Weisbecker <frederic@kernel.org>
+> > > > Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+> > > > Cc: Josh Triplett <josh@joshtriplett.org>
+> > > > Cc: Steven Rostedt <rostedt@goodmis.org>
+> > > > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > > > Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> > > > Cc: Joel Fernandes <joel@joelfernandes.org>
+> > > > Signed-off-by: Michal Hocko <mhocko@suse.com>
+> > > > ---
+> > > > 
+> > > > Hi,
+> > > > I am sending this as an RFC because I couldn't prove that the WQ
+> > > > concurency issue as a result from the allocation retry is really a
+> > > > problem. On the other hand I couldn't see a good reason to retry after a
+> > > > previous failure. While the kswapd running in the background could have
+> > > > released some memory this is a not really guaranteed and mostly a
+> > > > wishful thinking.
+> > > > 
+> > > > I do not understand the code well enough so I could be easily missing
+> > > > something. If the patch is a wrong thing to do then it would be really
+> > > > nice to add a comment why the retry is desirable and a good thing to do.
+> > > > 
+> > > > The retry loop should be bound to rcu_min_cached_objs which is quite
+> > > > small but configurable so this can get large in some setups.
+> > > > 
+> > > > Thanks
+> > > > 
+> > > >  kernel/rcu/tree.c | 17 +++++++++--------
+> > > >  1 file changed, 9 insertions(+), 8 deletions(-)
+> > > > 
+> > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > > index c25ba442044a..54a3a19c4c0b 100644
+> > > > --- a/kernel/rcu/tree.c
+> > > > +++ b/kernel/rcu/tree.c
+> > > > @@ -3508,15 +3508,16 @@ static void fill_page_cache_func(struct work_struct *work)
+> > > >  		bnode = (struct kvfree_rcu_bulk_data *)
+> > > >  			__get_free_page(GFP_KERNEL | __GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN);
+> > > >  
+> > > > -		if (bnode) {
+> > > > -			raw_spin_lock_irqsave(&krcp->lock, flags);
+> > > > -			pushed = put_cached_bnode(krcp, bnode);
+> > > > -			raw_spin_unlock_irqrestore(&krcp->lock, flags);
+> > > > +		if (!bnode)
+> > > > +			break;
+> > > >  
+> > > > -			if (!pushed) {
+> > > > -				free_page((unsigned long) bnode);
+> > > > -				break;
+> > > > -			}
+> > > > +		raw_spin_lock_irqsave(&krcp->lock, flags);
+> > > > +		pushed = put_cached_bnode(krcp, bnode);
+> > > > +		raw_spin_unlock_irqrestore(&krcp->lock, flags);
+> > > > +
+> > > > +		if (!pushed) {
+> > > > +			free_page((unsigned long) bnode);
+> > > > +			break;
+> > > >  		}
+> > > >  	}
+> > > >  
+> > > > -- 
+> > > > 2.30.2
+> > > >
+> > > OK. You would like to break the loop once an allocation does not succeed.
+> > > To me it also makes sense, i mean there is no reason to repeat it several
+> > > times that can lead to worqueue hogging.
+> > > 
+> > > Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 > 
-> If I understand correctly, this is very encouranging!  I expect that
-> Neeraj would be happy to add your Tested-by.
+> Thanks for the review!
 > 
-> And somewhere I recall expressing doubts about the large numbers of spins.
-> But further thought led me to recall that it was not all that long ago
-> that expedited SRCU grace periods did nothing but spin.  So this might
-> be OK despite my initial misgivings.
+> > Queued for testing and further review, thank you both!
+> > 
+> > My normal process would send this not into the upcoming merge window
+> > (v5.20?) but instead into the next one (v6.0?).  Please let me know if
+> > this is more urgent then that, and I will see what I can do.
 > 
-> Neeraj, your choice!
+> No, it is not really urgent. As I've said, it turned out that there are
+> other contributors to the WQ stalls so this is mostly a cosmetic change.
 
-Apologies, I was confusing this thread about backports of RCU patches
-with another thread involving SRCU.
+The merge window after this coming one, then!
 
-I will let you guys handle the needed backports and sending of patches
-to -stable.
+Ah, and I forgot to send the wordsmithed patch, please see below.  Just
+in case I messed something up.
 
 							Thanx, Paul
 
-> > thanks
-> > 
-> > 
-> > 
-> > 
-> > 
-> > 
-> > 
-> > 
-> > 
-> > 
-> > At 2022-06-18 00:44:40, "Zhang, Qiang1" <qiang1.zhang@intel.com> wrote:
-> > 
-> > >Hi, i saw  some source codes, but for rcu i am still a layman.
-> > 
-> > > 
-> > 
-> > >1. we are gonna get core dump.  In my test environment, i can grep "D" processes with the same callstack, but those processes can recover after a while(1-2 seconds).
-> > 
-> >   synchronize_rcu->__wait_rcu_gp->wait_for_completion->schedule_timeout, at this  point , process goes to sleep.
-> > 
-> >   could you explain:
-> > 
-> >    1) how/where is  this process waken up normally.
-> > 
-> >    2) how to know GP is end. 
-> > 
-> >    3) what is your ideals to solve so touch issue, i will follow your instruction.
-> > 
-> >  
-> > 
-> > First, I find the 4.18 kernel is not support output “rcu_preempt” kthreads info though ‘echo y > /proc/sysrq-trigger’.
-> > 
-> > So when hang appear, you can check “rcu_preempt” kthreads state(R or I ?), though “cat /proc/(rcu_preempt kthread pid)/status”
-> > 
-> > and “cat /proc/(rcu_preempt kthread pid)/stack”, you also can “echo t > /proc/sysrq-trigger”.
-> > 
-> >  
-> > 
-> > You need use crash tools load coredump to check it, and enable rcu trace event,
-> > 
-> > “cd /sys/kernel/debug/tracing/events/rcu” to enable trace.
-> > 
-> >  
-> > 
-> > Please try this patch first to test:
-> > 
-> >  
-> > 
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=1d1f898df6586c5ea9aeaf349f13089c6fa37903
-> > 
-> >  
-> > 
-> > >2. It is PREEMPTION kernel .   grub boot params  have rcu-related configuration.
-> > 
-> >   crashkernel=auto iommu=pt nmi_watchdog=panic,1 softlockup_panic=1 intel_iommu=on user_namespace.enable=1 hugepagesz=2M hugepages=0 default_hugepagesz=2M irqaffinity=0,36 rcu_nocbs=1-35,37-71 kthread_cpus=0,36 nopti nospectre_v2
-> > 
-> >  
-> > 
-> > >3. "rcu_cpu_stall_suppress=0    rcu_cpu_stall_timeout=60    rcu_task_stall_timeout=600000" are fetched via 'cat /sys/module/rcupdate/parameters/rcu_*'
-> > 
-> >  
-> > 
-> > Did you find RCU Stall warning messages?
-> > 
-> >  
-> > 
-> > Thanks
-> > 
-> > Zqiang
-> > 
-> >  
-> > 
-> > > 
-> > 
-> > > 
-> > 
-> > >Thanks for all your help.
-> > 
-> >  
-> > 
-> >  
-> > 
-> >  
-> > 
-> >  
-> > 
-> >  
-> > 
-> >  
-> > 
-> >  
-> > 
-> >  
-> > 
-> > At 2022-06-15 21:31:59, "Zhang, Qiang1" <qiang1.zhang@intel.com> wrote:
-> > 
-> >  
-> > 
-> > > 
-> > 
-> > >1. I attach the webpage https://access.redhat.com/solutions/5224631
-> > 
-> > > 
-> > 
-> >  
-> > 
-> > I read the analysis in the attachment
-> > 
-> >  
-> > 
-> >                         swait_event_idle(rcu_state.gp_wq,
-> > 
-> >                                          READ_ONCE(rcu_state.gp_flags) &
-> > 
-> >                                          RCU_GP_FLAG_INIT);
-> > 
-> >  
-> > 
-> > Hang here on CPU0 ,the RCU_GP_FLAG_INIT have been set,  under normal circumstances,
-> > 
-> > rcu_sched kthreads  should be awakened to continue execution, actually not so.
-> > 
-> > yours analysis concluded that the missed awakening.
-> > 
-> >  
-> > 
-> > I find the analysis does not give the status of  rcu_sched  kthreads at this time,  
-> > 
-> > Is it possible to see the status of the rcu_state kthread when this event occurred?
-> > 
-> > maybe it has been woken up and the state is runnable.
-> > 
-> > There may be a higher priority operation is  preventing it from running on CPU0
-> > 
-> >  
-> > 
-> > >2. refer to stallwarn.txt, The default value are "rcu_cpu_stall_suppress=0    rcu_cpu_stall_timeout=60    rcu_task_stall_timeout=600000"
-> > 
-> >   There are  no stall warnings infomations before.
-> > 
-> >  
-> > 
-> > I think you should first clarify the configuration of these parameters in your actual system,
-> > 
-> > instead of the default configuration that the documentation says.
-> > 
-> >  
-> > 
-> > You can “cat /sys/module/rcupdate/parameters/rcu_cpu_stall_suppress”
-> > 
-> >  
-> > 
-> >  
-> > 
-> > Thanks
-> > 
-> > Zqiang
-> > 
-> >  
-> > 
-> > >   
-> > 
-> > >  Does it need to enable other config like  rcu_kick_kthreads, CONFIG_TASKS_RCU_GENERIC CONFIG_TASKS_TRACE_RCU CONFIG_RCU_TRACE? 
-> > 
-> > > 
-> > 
-> > >3. I have not test that patch, that is production-environment.   firstly we try to reproduce this week.
-> > 
-> > >If reproduce fails, we have to test in that cluster.
-> > 
-> >  
-> > 
-> > May be you can also take a look at the analysis of this.
-> > 
-> >  
-> > 
-> > https://lore.kernel.org/all/CD6925E8781EFD4D8E11882D20FC406D52A11F61@SHSMSX104.ccr.corp.intel.com/T/#u
-> > 
-> >  
-> > 
-> > > 
-> > 
-> > >thanks
-> > 
-> >  
-> > 
-> >  
-> > 
-> >  
-> > 
-> >  
-> > 
-> >  
-> > 
-> > 
-> > 在 2022-06-15 13:07:55，"Paul E. McKenney" <paulmck@kernel.org> 写道：
-> > >On Wed, Jun 15, 2022 at 12:16:10PM +0800, yueluck wrote:
-> > >> add a detailed attachment
-> > >> 
-> > >> 
-> > >> 
-> > >> 
-> > >> 
-> > >> 
-> > >> 
-> > >> 
-> > >> 
-> > >> At 2022-06-15 12:14:23, "yueluck" <yueluck@163.com> wrote:
-> > >> 
-> > >> Hi, both of you：
-> > >>    Sorry to trouble you, because rcu is too complicated.  
-> > >>    I encounter many hung processes which are normal container-runc, the number of which  increases continuely and system load becomes higher and os reboots.
-> > >>    There is a related link  https://access.redhat.com/solutions/5224631，
-> > > 
-> > >I do not have access to this document, so I cannot say anything about
-> > >their offered solution.  They do claim to have a solution, though, so I
-> > >strongly suggest you follow their suggestions.  Me, I work with mainline,
-> > >and the 4.18 kernel that you are running was almost four years ago.
-> > > 
-> > >> the call stack and scene are similar.  patch https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=1d1f898df6586c5ea9aeaf349f13089c6fa37903
-> > > 
-> > >What happens when you apply this patch?
-> > > 
-> > >>    process is never waken up after synchronize_rcu. 
-> > > 
-> > > 
-> > >> Could you pleae have a look at the call stack(attachment) and give me some idea?     
-> > >> source code :  https://github.com/bigclouds/linux-4.18.0-147.3.1.el8
-> > > 
-> > >Do you see RCU CPU stall warnings?  Please see the Linux-kernel file
-> > >named Documentation/RCU/stallwarn.* for more information.  (The "*" might
-> > >be "txt" or "rst" depending on how old your kernel source tree is.)
-> > >In particular, this file describes various things that can prevent
-> > >synchronize_rcu() from returning, ranging from CPUs spinning with
-> > >interrupts disabled to malfunctioning timer hardware.
-> > > 
-> > >If you do not see stall warnings, have they been disabled?  The values
-> > >of the RCU_CPU_STALL_TIMEOUT Kconfig option and the kernel boot
-> > >parameter rcupdate.rcu_cpu_stall_suppress control this, as does the
-> > >rcupdate.rcu_cpu_stall_suppress_at_boot kernel parameter.
-> > > 
-> > >So if the RCU CPU stall warnings have been disabled, please re-enable
-> > >them.  They give much more information on these sorts of problems.
-> > > 
-> > >Plus there is the usual debugging advice, for example, if this is a new
-> > >problem, look at what has changed at about the time that the problem
-> > >appeared.  For example, things like this can happen when backporting
-> > >fixes or when bringing up new hardware.
-> > > 
-> > >Also, please apply whatever debugging tools you have to check the health
-> > >of the CPUs, for example, to see if any are spinning with preeemption or
-> > >interrupts disabled.  Or even if any are in a tight loop in the kernel.
-> > >(No, this will not be visible from the stack trace of the task blocked
-> > >in synchronize_rcu().)
-> > > 
-> > >And again, please read Documentation/RCU/stallwarn.* carefully, preferably
-> > >getting the version from a recent kernel such as v5.18.  This document
-> > >contains lots of information on causes of this sort of problem.
-> > > 
-> > >                                                    Thanx, Paul
-> > > 
-> > >> Thanks,
-> > >> 
-> > >> 
-> > >> 
-> > >> 
-> > >> 
-> > >> 
-> > >> ------env-----------------------
-> > >> centos 4.18.0-147.3.1.el8_1.3
-> > >> -------ps------------------------
-> > >> $ ps -aux| grep 156623
-> > >> root      156623  0.0  0.0  24012  9044 ?        D    May31   0:00 runc init
-> > >> ------stack----------------------
-> > >> sudo cat /proc/156623/stack
-> > >> Password: 
-> > >> [<0>] __wait_rcu_gp+0x117/0x140
-> > >> [<0>] synchronize_rcu+0x6f/0x80
-> > >> [<0>] namespace_unlock+0x67/0x80
-> > >> [<0>] ksys_umount+0x231/0x450
-> > >> [<0>] __x64_sys_umount+0x12/0x20
-> > >> [<0>] do_syscall_64+0x5b/0x1c0
-> > >> [<0>] entry_SYSCALL_64_after_hwframe+0x65/0xca
-> > >> [<0>] 0xffffffffffffffff
-> > >> test:/var/log$ sudo cat /proc/156623/stat
-> > >> ----------------------------------
-> > > 
-> 
-> 
+------------------------------------------------------------------------
+
+commit 29dc4a37468641e2a9fca7f8c41c4d30f3c659a9
+Author: Michal Hocko <mhocko@suse.com>
+Date:   Wed Jun 22 13:47:11 2022 +0200
+
+    rcu: Back off upon fill_page_cache_func() allocation failure
+    
+    The fill_page_cache_func() function allocates couple of pages to store
+    kvfree_rcu_bulk_data structures. This is a lightweight (GFP_NORETRY)
+    allocation which can fail under memory pressure. The function will,
+    however keep retrying even when the previous attempt has failed.
+    
+    This retrying is in theory correct, but in practice the allocation is
+    invoked from workqueue context, which means that if the memory reclaim
+    gets stuck, these retries can hog the worker for quite some time.
+    Although the workqueues subsystem automatically adjusts concurrency, such
+    adjustment is not guaranteed to happen until the worker context sleeps.
+    And the fill_page_cache_func() function's retry loop is not guaranteed
+    to sleep (see the should_reclaim_retry() function).
+    
+    And we have seen this function cause workqueue lockups:
+    
+    kernel: BUG: workqueue lockup - pool cpus=93 node=1 flags=0x1 nice=0 stuck for 32s!
+    [...]
+    kernel: pool 74: cpus=37 node=0 flags=0x1 nice=0 hung=32s workers=2 manager: 2146
+    kernel:   pwq 498: cpus=249 node=1 flags=0x1 nice=0 active=4/256 refcnt=5
+    kernel:     in-flight: 1917:fill_page_cache_func
+    kernel:     pending: dbs_work_handler, free_work, kfree_rcu_monitor
+    
+    Originally, we thought that the root cause of this lockup was several
+    retries with direct reclaim, but this is not yet confirmed.  Furthermore,
+    we have seen similar lockups without any heavy memory pressure.  This
+    suggests that there are other factors contributing to these lockups.
+    However, it is not really clear that endless retries are desireable.
+    
+    So let's make the fill_page_cache_func() function back off after
+    allocation failure.
+    
+    Cc: Uladzislau Rezki (Sony) <urezki@gmail.com>
+    Cc: "Paul E. McKenney" <paulmck@kernel.org>
+    Cc: Frederic Weisbecker <frederic@kernel.org>
+    Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+    Cc: Josh Triplett <josh@joshtriplett.org>
+    Cc: Steven Rostedt <rostedt@goodmis.org>
+    Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+    Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+    Cc: Joel Fernandes <joel@joelfernandes.org>
+    Signed-off-by: Michal Hocko <mhocko@suse.com>
+    Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 8240c4d631eef..89cb173a1a952 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3183,15 +3183,16 @@ static void fill_page_cache_func(struct work_struct *work)
+ 		bnode = (struct kvfree_rcu_bulk_data *)
+ 			__get_free_page(GFP_KERNEL | __GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN);
+ 
+-		if (bnode) {
+-			raw_spin_lock_irqsave(&krcp->lock, flags);
+-			pushed = put_cached_bnode(krcp, bnode);
+-			raw_spin_unlock_irqrestore(&krcp->lock, flags);
++		if (!bnode)
++			break;
+ 
+-			if (!pushed) {
+-				free_page((unsigned long) bnode);
+-				break;
+-			}
++		raw_spin_lock_irqsave(&krcp->lock, flags);
++		pushed = put_cached_bnode(krcp, bnode);
++		raw_spin_unlock_irqrestore(&krcp->lock, flags);
++
++		if (!pushed) {
++			free_page((unsigned long) bnode);
++			break;
+ 		}
+ 	}
+ 
