@@ -2,265 +2,414 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EC2C0C433EF
-	for <rcu@archiver.kernel.org>; Fri, 24 Jun 2022 13:02:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B2B6C433EF
+	for <rcu@archiver.kernel.org>; Fri, 24 Jun 2022 15:32:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232106AbiFXNCw (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 24 Jun 2022 09:02:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41724 "EHLO
+        id S232438AbiFXPcR (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 24 Jun 2022 11:32:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232110AbiFXNCS (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 24 Jun 2022 09:02:18 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C3F7532DB;
-        Fri, 24 Jun 2022 06:02:16 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id E03C0B828B7;
-        Fri, 24 Jun 2022 13:02:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EA83C34114;
-        Fri, 24 Jun 2022 13:02:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1656075733;
-        bh=qOkoAj3Cs3l+78kYs69ixIJ+E+RhjTYf6phoLBKg1Vs=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=ZeqwkSFYQPkWyQgLUwUbdHNDJxaJg1223a2m8TiSo6A9mjaalCoxhXYwRcT1Mn9DA
-         EXqw05IjZAU+d/6bitVvkSvQ+pzZjynxfOoByg8yYEgk6NOBwheWERCDXnhdxk2Z3C
-         w/wQakaxpUKOOZhHlg+f0JzlWsh5GvPxcsjMERTjyTZbc1PzAIlGaLoM8EbrFymLah
-         9R0xGiwqmxBB2brp0e/j+O5vPF4BsjfOXZLl8CCKH/IaoQNv3yKRbHJr/4y6G0SdH9
-         1c0vUzPRRlZh8M0jqO01E/hwwCTKSNpE6vWW1HftopMQDctHYMa/kgL1B/oG+DznhT
-         gHRTmL+8QN7eQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 371FD5C00A1; Fri, 24 Jun 2022 06:02:13 -0700 (PDT)
-Date:   Fri, 24 Jun 2022 06:02:13 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Uladzislau Rezki <urezki@gmail.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        with ESMTP id S232067AbiFXPcQ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 24 Jun 2022 11:32:16 -0400
+Received: from out203-205-221-231.mail.qq.com (out203-205-221-231.mail.qq.com [203.205.221.231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 539ED49CBA;
+        Fri, 24 Jun 2022 08:32:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+        s=s201512; t=1656084730;
+        bh=ZP5BL4Jng6xuWoIRMawtSdlyPdyFXwUVPHgJ41CpfMY=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=n7iKAs2xTENfQQUA2ayJsyZdYvdT8b5wVAIvwjhKliojMqorMmuCrkDD12Z0D2lEl
+         9XdlMXdZsao+3f1J52VAMa7mmzKqOwilQDiUbeIyeBLddy4/gFN44piP7IZZSy1B3t
+         fKeE90b63jN1wNroDARimZc9vcjNAPtApaWIxgRs=
+Received: from [IPv6:240e:459:408:85f0:fd4f:c5b8:254f:b27d] ([240e:459:408:85f0:fd4f:c5b8:254f:b27d])
+        by newxmesmtplogicsvrszc8.qq.com (NewEsmtp) with SMTP
+        id 7AB168EB; Fri, 24 Jun 2022 23:30:43 +0800
+X-QQ-mid: xmsmtpt1656084643thc8mxkyc
+Message-ID: <tencent_5C6A354D8C69190DB41D0E83D51195DBC108@qq.com>
+X-QQ-XMAILINFO: M7uElAZZZMmFwRZuvAepI9jVCwitNz2QZLfHk0dZVu0gS7kMugdpERHeOGKvVC
+         C3C9dRLh3tpOH4R7bjvLSG/3jcNsxYrXElD7rGTDFr9KHKWpSVCWjAqNHmspwerkB5ppIS7L3S6Q
+         /LJRLWlweRFhyqPrdaC+LFsL55Pde1OLwdAmb6uPAJNxFvp3Ot48XHxzhoepCz3OJRATmQPDtofT
+         ktlvx+tmSPWEkcP4G1k7lLzDqEcAej9xo/pcOBVXEyFtxLkpmlhsZONMv+uSM0cKvBfECGXiRqeS
+         MFy68mUWALCoXMTM74qvla/ZEugsu0D4Kq2TxS7WBji+MoNRsX66sPMS0cBy2Nh1YAoDNm7TkoM3
+         UXBBPC6rGL13hE2985p5Evc6sxIiNFdwEIywq7hrQMzriGYJTGP85EJPnELnDeu4WDqLmQzC3fB6
+         nQ0gRcuMb9uMEsjzgt+Pu4lrn/EMyGDK0Sg+FzZZfU+Ry2ly0hOg6IDCUWEiMATxE1EALe+rdoEz
+         QSmHrTQ6GiME9X+oCa6jLXGok1UFV0A+Cjh0SeBzTn/QBWW6dykvHitiBIPdP1zaenBYSSeVYY76
+         VXPR2KEB0NDVdx//TR6DlK9QgJ6Dqj/su+5/6ZEfmkHNZ1NlIOZbSOeJG/htLUy7u/wAKHT4qmQw
+         ySnu8DPoyGNfXaMOKPttvf+STcKHHOY6xFLIk5uoDJo5hkYcS+8EFAc3Z+3cIR72HTmxgFFdYKxV
+         1AYl/QreOun2poxfp7C0p1HTdXdFssJAwz4VcuWzEgBr9dPdmFlu5l2lLeXUmE7egN7qYKuMyHUl
+         1J8IKsR+k26+7VuFgU+ZeW2tP2l19nuCvMzz2SUEmyhc9LfY9qMEdua42j/EkGeN7H4AXvD3eLXB
+         hvGN1nH9RfVLMAv7R9oXGGT5lhQIyTHiCZiRxgcNUkqMdjYXWlD6dkFxtbIZuS2Sp/MJ+n3ktOYJ
+         paDz25XQ4+X+JQFr/Tog==
+Subject: Re: Commit 282d8998e997 (srcu: Prevent expedited GPs and blocking
+ readers from consuming CPU) cause qemu boot slow
+To:     Neeraj Upadhyay <quic_neeraju@quicinc.com>, paulmck@kernel.org
+Cc:     Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [RFC PATCH] rcu: back off on allocation failure in
- fill_page_cache_func
-Message-ID: <20220624130213.GT1790663@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220622114711.28154-1-mhocko@kernel.org>
- <YrNlXkLfDpd+Ulxf@pc638.lan>
- <20220624033950.GP1790663@paulmck-ThinkPad-P17-Gen-1>
- <YrVlG2XmKHcUSkTS@dhcp22.suse.cz>
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "mtosatti@redhat.com" <mtosatti@redhat.com>,
+        Auger Eric <eric.auger@redhat.com>,
+        "chenxiang (M)" <chenxiang66@hisilicon.com>
+References: <tencent_E306F58EAEC1D188ED6D5F358A269F34C707@qq.com>
+ <20220613035711.GY1790663@paulmck-ThinkPad-P17-Gen-1>
+ <20220613041652.GA3976000@paulmck-ThinkPad-P17-Gen-1>
+ <tencent_F82250B6E3D51A9AC0D2BE1AE43A4E060909@qq.com>
+ <20220613121831.GA1790663@paulmck-ThinkPad-P17-Gen-1>
+ <tencent_65C7D0A04984EDB6A79A5E5379DA7E835206@qq.com>
+ <20220613145900.GC1790663@paulmck-ThinkPad-P17-Gen-1>
+ <7b6c983b21d44119b61716a66de397ed@huawei.com>
+ <f9684a69-5467-a440-abd1-7cf5ad3a81f7@quicinc.com>
+ <tencent_8FD344DA7FC376C7D1204604DA7689DA4906@qq.com>
+ <20220614141712.GR1790663@paulmck-ThinkPad-P17-Gen-1>
+ <tencent_DFF5A6C9352C76C00C7E46E06F2BA945350A@qq.com>
+ <042142db-aab2-fc4a-c1a5-371223c80440@quicinc.com>
+ <tencent_B1290D581DF1837711F4DB176ACB4D4F6908@qq.com>
+ <3cf9b2de-39f6-34f1-b9de-19e5da8ddf8d@quicinc.com>
+From:   "zhangfei.gao@foxmail.com" <zhangfei.gao@foxmail.com>
+X-OQ-MSGID: <2a77273e-1cf9-b67f-a898-a14612829abe@foxmail.com>
+Date:   Fri, 24 Jun 2022 23:30:37 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YrVlG2XmKHcUSkTS@dhcp22.suse.cz>
+In-Reply-To: <3cf9b2de-39f6-34f1-b9de-19e5da8ddf8d@quicinc.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Jun 24, 2022 at 09:17:47AM +0200, Michal Hocko wrote:
-> On Thu 23-06-22 20:39:50, Paul E. McKenney wrote:
-> > On Wed, Jun 22, 2022 at 08:54:22PM +0200, Uladzislau Rezki wrote:
-> > > On Wed, Jun 22, 2022 at 01:47:11PM +0200, Michal Hocko wrote:
-> > > > From: Michal Hocko <mhocko@suse.com>
-> > > > 
-> > > > fill_page_cache_func allocates couple of pages to store
-> > > > kvfree_rcu_bulk_data. This is a lightweight (GFP_NORETRY) allocation
-> > > > which can fail under memory pressure. The function will, however keep
-> > > > retrying even when the previous attempt has failed.
-> > > > 
-> > > > While this is not really incorrect there is one thing to consider. This
-> > > > allocation is invoked from the WQ context and that means that if the
-> > > > memory reclaim gets stuck it can hog the worker for quite some time.
-> > > > WQ concurrency is only triggered when the worker context sleeps and that
-> > > > is not guaranteed for __GFP_NORETRY allocation attempts (see
-> > > > should_reclaim_retry).
-> > > > 
-> > > > We have seen WQ lockups
-> > > > kernel: BUG: workqueue lockup - pool cpus=93 node=1 flags=0x1 nice=0 stuck for 32s!
-> > > > [...]
-> > > > kernel: pool 74: cpus=37 node=0 flags=0x1 nice=0 hung=32s workers=2 manager: 2146
-> > > > kernel:   pwq 498: cpus=249 node=1 flags=0x1 nice=0 active=4/256 refcnt=5
-> > > > kernel:     in-flight: 1917:fill_page_cache_func
-> > > > kernel:     pending: dbs_work_handler, free_work, kfree_rcu_monitor
-> > > > 
-> > > > Originaly, we thought that several retries with direct reclaim being
-> > > > stuck is the underlying reason but we couldn't have confirmed that and
-> > > > have seen a similar lockups detected even without any heavy memory
-> > > > pressure so there is likely something else/more going on. On the other
-> > > > hand failing the allocation shouldn't have a big impact and from the
-> > > > code it is not really obvious why retrying is desirable so back off
-> > > > after the allocation failure.
-> > > > 
-> > > > Cc: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > > > Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> > > > Cc: Frederic Weisbecker <frederic@kernel.org>
-> > > > Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
-> > > > Cc: Josh Triplett <josh@joshtriplett.org>
-> > > > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > > > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > > > Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-> > > > Cc: Joel Fernandes <joel@joelfernandes.org>
-> > > > Signed-off-by: Michal Hocko <mhocko@suse.com>
-> > > > ---
-> > > > 
-> > > > Hi,
-> > > > I am sending this as an RFC because I couldn't prove that the WQ
-> > > > concurency issue as a result from the allocation retry is really a
-> > > > problem. On the other hand I couldn't see a good reason to retry after a
-> > > > previous failure. While the kswapd running in the background could have
-> > > > released some memory this is a not really guaranteed and mostly a
-> > > > wishful thinking.
-> > > > 
-> > > > I do not understand the code well enough so I could be easily missing
-> > > > something. If the patch is a wrong thing to do then it would be really
-> > > > nice to add a comment why the retry is desirable and a good thing to do.
-> > > > 
-> > > > The retry loop should be bound to rcu_min_cached_objs which is quite
-> > > > small but configurable so this can get large in some setups.
-> > > > 
-> > > > Thanks
-> > > > 
-> > > >  kernel/rcu/tree.c | 17 +++++++++--------
-> > > >  1 file changed, 9 insertions(+), 8 deletions(-)
-> > > > 
-> > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > > index c25ba442044a..54a3a19c4c0b 100644
-> > > > --- a/kernel/rcu/tree.c
-> > > > +++ b/kernel/rcu/tree.c
-> > > > @@ -3508,15 +3508,16 @@ static void fill_page_cache_func(struct work_struct *work)
-> > > >  		bnode = (struct kvfree_rcu_bulk_data *)
-> > > >  			__get_free_page(GFP_KERNEL | __GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN);
-> > > >  
-> > > > -		if (bnode) {
-> > > > -			raw_spin_lock_irqsave(&krcp->lock, flags);
-> > > > -			pushed = put_cached_bnode(krcp, bnode);
-> > > > -			raw_spin_unlock_irqrestore(&krcp->lock, flags);
-> > > > +		if (!bnode)
-> > > > +			break;
-> > > >  
-> > > > -			if (!pushed) {
-> > > > -				free_page((unsigned long) bnode);
-> > > > -				break;
-> > > > -			}
-> > > > +		raw_spin_lock_irqsave(&krcp->lock, flags);
-> > > > +		pushed = put_cached_bnode(krcp, bnode);
-> > > > +		raw_spin_unlock_irqrestore(&krcp->lock, flags);
-> > > > +
-> > > > +		if (!pushed) {
-> > > > +			free_page((unsigned long) bnode);
-> > > > +			break;
-> > > >  		}
-> > > >  	}
-> > > >  
-> > > > -- 
-> > > > 2.30.2
-> > > >
-> > > OK. You would like to break the loop once an allocation does not succeed.
-> > > To me it also makes sense, i mean there is no reason to repeat it several
-> > > times that can lead to worqueue hogging.
-> > > 
-> > > Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> 
-> Thanks for the review!
-> 
-> > Queued for testing and further review, thank you both!
-> > 
-> > My normal process would send this not into the upcoming merge window
-> > (v5.20?) but instead into the next one (v6.0?).  Please let me know if
-> > this is more urgent then that, and I will see what I can do.
-> 
-> No, it is not really urgent. As I've said, it turned out that there are
-> other contributors to the WQ stalls so this is mostly a cosmetic change.
 
-The merge window after this coming one, then!
 
-Ah, and I forgot to send the wordsmithed patch, please see below.  Just
-in case I messed something up.
+On 2022/6/20 下午3:50, Neeraj Upadhyay wrote:
+> Hi,
+>
+>
+> On 6/18/2022 8:37 AM, zhangfei.gao@foxmail.com wrote:
+>>
+>>
+>> On 2022/6/15 下午6:40, Neeraj Upadhyay wrote:
+>>> Hi,
+>>>
+>>> On 6/15/2022 2:33 PM, zhangfei.gao@foxmail.com wrote:
+>>>>
+>>>>
+>>>> On 2022/6/14 下午10:17, Paul E. McKenney wrote:
+>>>>> On Tue, Jun 14, 2022 at 10:03:35PM +0800, zhangfei.gao@foxmail.com 
+>>>>> wrote:
+>>>>>>
+>>>>>> On 2022/6/14 下午8:19, Neeraj Upadhyay wrote:
+>>>>>>>> 5.18-rc4 based ~8sec
+>>>>>>>>
+>>>>>>>> 5.19-rc1                     ~2m43sec
+>>>>>>>>
+>>>>>>>> 5.19-rc1+fix1                 ~19sec
+>>>>>>>>
+>>>>>>>> 5.19-rc1-fix2                 ~19sec
+>>>>>>>>
+>>>>>>> If you try below diff on top of either 5.19-rc1+fix1 or 
+>>>>>>> 5.19-rc1-fix2 ;
+>>>>>>> does it show any difference in boot time?
+>>>>>>>
+>>>>>>> --- a/kernel/rcu/srcutree.c
+>>>>>>> +++ b/kernel/rcu/srcutree.c
+>>>>>>> @@ -706,7 +706,7 @@ static void srcu_schedule_cbs_snp(struct 
+>>>>>>> srcu_struct
+>>>>>>> *ssp, struct srcu_node *snp
+>>>>>>>    */
+>>>>>>>   static void srcu_gp_end(struct srcu_struct *ssp)
+>>>>>>>   {
+>>>>>>> -       unsigned long cbdelay;
+>>>>>>> +       unsigned long cbdelay = 1;
+>>>>>>>          bool cbs;
+>>>>>>>          bool last_lvl;
+>>>>>>>          int cpu;
+>>>>>>> @@ -726,7 +726,9 @@ static void srcu_gp_end(struct srcu_struct 
+>>>>>>> *ssp)
+>>>>>>>          spin_lock_irq_rcu_node(ssp);
+>>>>>>>          idx = rcu_seq_state(ssp->srcu_gp_seq);
+>>>>>>>          WARN_ON_ONCE(idx != SRCU_STATE_SCAN2);
+>>>>>>> -       cbdelay = !!srcu_get_delay(ssp);
+>>>>>>> +       if (ULONG_CMP_LT(READ_ONCE(ssp->srcu_gp_seq),
+>>>>>>> READ_ONCE(ssp->srcu_gp_seq_needed_exp)))
+>>>>>>> +               cbdelay = 0;
+>>>>>>> +
+>>>>>>>          WRITE_ONCE(ssp->srcu_last_gp_end, 
+>>>>>>> ktime_get_mono_fast_ns());
+>>>>> Thank you both for the testing and the proposed fix!
+>>>>>
+>>>>>> Test here:
+>>>>>> qemu: https://github.com/qemu/qemu/tree/stable-6.1
+>>>>>> kernel:
+>>>>>> https://github.com/Linaro/linux-kernel-uadk/tree/uacce-devel-5.19-srcu-test 
+>>>>>>
+>>>>>> (in case test patch not clear, push in git tree)
+>>>>>>
+>>>>>> Hardware: aarch64
+>>>>>>
+>>>>>> 1. 5.18-rc6
+>>>>>> real    0m8.402s
+>>>>>> user    0m3.015s
+>>>>>> sys     0m1.102s
+>>>>>>
+>>>>>> 2. 5.19-rc1
+>>>>>> real    2m41.433s
+>>>>>> user    0m3.097s
+>>>>>> sys     0m1.177s
+>>>>>>
+>>>>>> 3. 5.19-rc1 + fix1 from Paul
+>>>>>> real    2m43.404s
+>>>>>> user    0m2.880s
+>>>>>> sys     0m1.214s
+>>>>>>
+>>>>>> 4. 5.19-rc1 + fix2: fix1 + Remove "if (!jbase)" block
+>>>>>> real    0m15.262s
+>>>>>> user    0m3.003s
+>>>>>> sys     0m1.033s
+>>>>>>
+>>>>>> When build kernel in the meantime, load time become longer.
+>>>>>>
+>>>>>> 5. 5.19-rc1 + fix3: fix1 + SRCU_MAX_NODELAY_PHASE 1000000
+>>>>>> real    0m15.215s
+>>>>>> user    0m2.942s
+>>>>>> sys    0m1.172s
+>>>>>>
+>>>>>> 6. 5.19-rc1 + fix4: fix1 + Neeraj's change of srcu_gp_end　
+>>>>>> real    1m23.936s
+>>>>>> user    0m2.969s
+>>>>>> sys    0m1.181s
+>>>>> And thank you for the testing!
+>>>>>
+>>>>> Could you please try fix3 + Neeraj's change of srcu_gp_end?
+>>>>>
+>>>>> That is, fix1 + SRCU_MAX_NODELAY_PHASE 1000000 + Neeraj's change of
+>>>>> srcu_gp_end.
+>>>>>
+>>>>> Also, at what value of SRCU_MAX_NODELAY_PHASE do the boot
+>>>>> times start rising?  This is probably best done by starting with
+>>>>> SRCU_MAX_NODELAY_PHASE=100000 and dividing by (say) ten on each run
+>>>>> until boot time becomes slow, followed by a binary search between the
+>>>>> last two values.  (The idea is to bias the search so that fast boot
+>>>>> times are the common case.)
+>>>>
+>>>> SRCU_MAX_NODELAY_PHASE 100 becomes slower.
+>>>>
+>>>>
+>>>> 8. 5.19-rc1 + fix6: fix4 + SRCU_MAX_NODELAY_PHASE 1000000
+>>>>
+>>>> real 0m11.154s ~12s
+>>>>
+>>>> user 0m2.919s
+>>>>
+>>>> sys 0m1.064s
+>>>>
+>>>>
+>>>>
+>>>> 9. 5.19-rc1 + fix7: fix4 + SRCU_MAX_NODELAY_PHASE 10000
+>>>>
+>>>> real 0m11.258s
+>>>>
+>>>> user 0m3.113s
+>>>>
+>>>> sys 0m1.073s
+>>>>
+>>>>
+>>>>
+>>>> 10. 5.19-rc1 + fix8: fix4 + SRCU_MAX_NODELAY_PHASE 100
+>>>>
+>>>> real 0m30.053s ~ 32s
+>>>>
+>>>> user 0m2.827s
+>>>>
+>>>> sys 0m1.161s
+>>>>
+>>>>
+>>>>
+>>>> By the way, if build kernel on the board in the meantime (using 
+>>>> memory), time become much longer.
+>>>>
+>>>> real 1m2.763s
+>>>>
+>>>>
+>>>>
+>>>> 11. 5.19-rc1 + fix9: fix4 + SRCU_MAX_NODELAY_PHASE 1000
+>>>>
+>>>> real 0m11.443s
+>>>>
+>>>> user 0m3.022s
+>>>>
+>>>> sys 0m1.052s
+>>>>
+>>>>
+>>>
+>>> This is useful data, thanks! Did you get chance to check between 100 
+>>> and 1000, to narrow down further, from which point (does need to be 
+>>> exact value) between 100 and 1000,  you start seeing degradation at, 
+>>> for ex. 250, 500 , ...?
+>>>
+>>> Is it also possible to try experiment 10 and 11 with below diff.
+>>> What I have done in below diff is, call srcu_get_delay() only once
+>>> in try_check_zero() (and not for every loop iteration); also
+>>> retry with a different delay for the extra iteration which is done
+>>> when srcu_get_delay(ssp) returns 0.
+>>>
+>>> Once we have this data, can you also try by changing 
+>>> SRCU_RETRY_CHECK_LONG_DELAY   to 100, on top of below diff.
+>>>
+>>> #define SRCU_RETRY_CHECK_LONG_DELAY  100
+>>>
+>>> ------------------------------------------------------------------------- 
+>>>
+>>> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+>>> index 6a354368ac1d..3aff2f3e99ab 100644
+>>> --- a/kernel/rcu/srcutree.c
+>>> +++ b/kernel/rcu/srcutree.c
+>>> @@ -620,6 +620,7 @@ EXPORT_SYMBOL_GPL(__srcu_read_unlock);
+>>>   * we repeatedly block for 1-millisecond time periods.
+>>>   */
+>>>  #define SRCU_RETRY_CHECK_DELAY         5
+>>> +#define SRCU_RETRY_CHECK_LONG_DELAY            5
+>>>
+>>>  /*
+>>>   * Start an SRCU grace period.
+>>> @@ -927,12 +928,17 @@ static void srcu_funnel_gp_start(struct 
+>>> srcu_struct *ssp, struct srcu_data *sdp,
+>>>   */
+>>>  static bool try_check_zero(struct srcu_struct *ssp, int idx, int 
+>>> trycount)
+>>>  {
+>>> +       unsigned long curdelay;
+>>> +       curdelay = !srcu_get_delay(ssp);
+>>>         for (;;) {
+>>>                 if (srcu_readers_active_idx_check(ssp, idx))
+>>>                         return true;
+>>> -               if (--trycount + !srcu_get_delay(ssp) <= 0)
+>>> +               if (--trycount + curdelay <= 0)
+>>>                         return false;
+>>> -               udelay(SRCU_RETRY_CHECK_DELAY);
+>>> +               if (trycount)
+>>> +                       udelay(SRCU_RETRY_CHECK_DELAY);
+>>> +               else
+>>> +                       udelay(SRCU_RETRY_CHECK_LONG_DELAY);
+>>>         }
+>>>  }
+>>>
+>>
+>> 11. 5.19-rc1 + fix9: fix4 + SRCU_MAX_NODELAY_PHASE 1000
+>>   real    0m11.443
+>> s user    0m3.022
+>> s sys    0m1.052s
+>>
+>> fix10: fix4 + SRCU_MAX_NODELAY_PHASE 500
+>>
+>> real    0m11.401s
+>> user    0m2.798s
+>> sys     0m1.328s
+>>
+>>
+>> fix11: fix4 + SRCU_MAX_NODELAY_PHASE 250
+>>
+>>      real    0m15.748s
+>>      user    0m2.781s
+>>      sys     0m1.294s
+>>
+>>
+>> fix12: fix4 + SRCU_MAX_NODELAY_PHASE 200
+>>
+>>      real    0m20.704s  21
+>>      user    0m2.954s
+>>      sys     0m1.226s
+>>
+>> fix13: fix4 + SRCU_MAX_NODELAY_PHASE 150
+>>
+>>      real    0m25.151s
+>>      user    0m2.980s
+>>      sys     0m1.256s
+>>
+>>
+>> fix8: fix4 + SRCU_MAX_NODELAY_PHASE 100
+>> real    0m30.053s ~ 32s
+>>   user    0m2.827s
+>>   sys    0m1.161s
+>>
+>>
+>> fix14: fix4 + SRCU_MAX_NODELAY_PHASE 100 + SRCU_RETRY_CHECK_LONG_DELAY 5
+>>
+>>      real    0m19.263s
+>>      user    0m3.018s
+>>      sys     0m1.211s
+>>
+>>
+>>
+>>      fix15: fix4 + SRCU_MAX_NODELAY_PHASE 100 + 
+>> SRCU_RETRY_CHECK_LONG_DELAY 100
+>>
+>>      real    0m9.347s
+>>      user    0m3.132s
+>>      sys     0m1.041s
+>>
+>>
+>
+> Thanks. From the data and experiments done, looks to me that we get
+> comparable (to 5.18-rc4 ) timings, when we retry without sleep for 
+> time duration close to 4-5 ms, which could be closer to the configured 
+> HZ (as it is 250)? Is it possible to try below configuration on top 
+> of  fix15?
+> If possible can you try with both HZ_1000 and HZ_250?
+> As multiple fixes are getting combined in experiments, for clarity, 
+> please also share the diff of srcutree.c (on top of baseline) for all 
+> experiments.
+>
+> 16. fix15 + SRCU_MAX_NODELAY_PHASE 20 (10 try_check_zero() calls) + 
+> (long delay scaled to 1 jiffy)
+>
+>
+> #define SRCU_MAX_NODELAY_TRY_CHECK_PHASE       10
+> #define SRCU_MAX_NODELAY_PHASE (SRCU_MAX_NODELAY_TRY_CHECK_PHASE * 2)
+> #define SRCU_RETRY_CHECK_LONG_DELAY           \
+>   (USEC_PER_SEC / HZ / SRCU_MAX_NODELAY_TRY_CHECK_PHASE)
+>
+>
+> 17. fix15 + SRCU_MAX_NODELAY_PHASE 20 (10 try_check_zero() calls) + 
+> (long delay scaled to 2 jiffy)
+>
+> #define SRCU_RETRY_CHECK_LONG_DELAY        \
+>      (2 * USEC_PER_SEC / HZ / SRCU_MAX_NODELAY_TRY_CHECK_PHASE)
+>
+> 18. fix15 + SRCU_MAX_NODELAY_PHASE 20 (10 try_check_zero() calls) + 
+> (long delay scaled to 1/2 jiffy)
+>
+> #define SRCU_RETRY_CHECK_LONG_DELAY      \
+>        (USEC_PER_SEC / HZ / SRCU_MAX_NODELAY_TRY_CHECK_PHASE / 2)
 
-							Thanx, Paul
+     fix16: fix15 + SRCU_MAX_NODELAY_PHASE 20 (10 try_check_zero() 
+calls) + (long delay scaled to 1 jiffy)
 
-------------------------------------------------------------------------
+     real    0m10.120s
+     user    0m3.885s
+     sys     0m1.040s
 
-commit 29dc4a37468641e2a9fca7f8c41c4d30f3c659a9
-Author: Michal Hocko <mhocko@suse.com>
-Date:   Wed Jun 22 13:47:11 2022 +0200
 
-    rcu: Back off upon fill_page_cache_func() allocation failure
-    
-    The fill_page_cache_func() function allocates couple of pages to store
-    kvfree_rcu_bulk_data structures. This is a lightweight (GFP_NORETRY)
-    allocation which can fail under memory pressure. The function will,
-    however keep retrying even when the previous attempt has failed.
-    
-    This retrying is in theory correct, but in practice the allocation is
-    invoked from workqueue context, which means that if the memory reclaim
-    gets stuck, these retries can hog the worker for quite some time.
-    Although the workqueues subsystem automatically adjusts concurrency, such
-    adjustment is not guaranteed to happen until the worker context sleeps.
-    And the fill_page_cache_func() function's retry loop is not guaranteed
-    to sleep (see the should_reclaim_retry() function).
-    
-    And we have seen this function cause workqueue lockups:
-    
-    kernel: BUG: workqueue lockup - pool cpus=93 node=1 flags=0x1 nice=0 stuck for 32s!
-    [...]
-    kernel: pool 74: cpus=37 node=0 flags=0x1 nice=0 hung=32s workers=2 manager: 2146
-    kernel:   pwq 498: cpus=249 node=1 flags=0x1 nice=0 active=4/256 refcnt=5
-    kernel:     in-flight: 1917:fill_page_cache_func
-    kernel:     pending: dbs_work_handler, free_work, kfree_rcu_monitor
-    
-    Originally, we thought that the root cause of this lockup was several
-    retries with direct reclaim, but this is not yet confirmed.  Furthermore,
-    we have seen similar lockups without any heavy memory pressure.  This
-    suggests that there are other factors contributing to these lockups.
-    However, it is not really clear that endless retries are desireable.
-    
-    So let's make the fill_page_cache_func() function back off after
-    allocation failure.
-    
-    Cc: Uladzislau Rezki (Sony) <urezki@gmail.com>
-    Cc: "Paul E. McKenney" <paulmck@kernel.org>
-    Cc: Frederic Weisbecker <frederic@kernel.org>
-    Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
-    Cc: Josh Triplett <josh@joshtriplett.org>
-    Cc: Steven Rostedt <rostedt@goodmis.org>
-    Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-    Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-    Cc: Joel Fernandes <joel@joelfernandes.org>
-    Signed-off-by: Michal Hocko <mhocko@suse.com>
-    Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+     fix17: fix15 + SRCU_MAX_NODELAY_PHASE 20 (10 try_check_zero() 
+calls) + (long delay scaled to 2 jiffy)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 8240c4d631eef..89cb173a1a952 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3183,15 +3183,16 @@ static void fill_page_cache_func(struct work_struct *work)
- 		bnode = (struct kvfree_rcu_bulk_data *)
- 			__get_free_page(GFP_KERNEL | __GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN);
- 
--		if (bnode) {
--			raw_spin_lock_irqsave(&krcp->lock, flags);
--			pushed = put_cached_bnode(krcp, bnode);
--			raw_spin_unlock_irqrestore(&krcp->lock, flags);
-+		if (!bnode)
-+			break;
- 
--			if (!pushed) {
--				free_page((unsigned long) bnode);
--				break;
--			}
-+		raw_spin_lock_irqsave(&krcp->lock, flags);
-+		pushed = put_cached_bnode(krcp, bnode);
-+		raw_spin_unlock_irqrestore(&krcp->lock, flags);
-+
-+		if (!pushed) {
-+			free_page((unsigned long) bnode);
-+			break;
- 		}
- 	}
- 
+     real    0m9.851s
+     user    0m3.886s
+     sys     0m1.011s
+
+
+     fix18: fix15 + SRCU_MAX_NODELAY_PHASE 20 (10 try_check_zero() 
+calls) + (long delay scaled to 1/2 jiffy)
+
+     real    0m9.741s
+     user    0m3.837s
+     sys     0m1.060s
+
+code push to
+https://github.com/Linaro/linux-kernel-uadk/tree/uacce-devel-5.19-srcu-test
+
+
