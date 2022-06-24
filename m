@@ -2,414 +2,239 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B2B6C433EF
-	for <rcu@archiver.kernel.org>; Fri, 24 Jun 2022 15:32:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0EB1FC43334
+	for <rcu@archiver.kernel.org>; Fri, 24 Jun 2022 17:25:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232438AbiFXPcR (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 24 Jun 2022 11:32:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40676 "EHLO
+        id S229923AbiFXRZK (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 24 Jun 2022 13:25:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232067AbiFXPcQ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 24 Jun 2022 11:32:16 -0400
-Received: from out203-205-221-231.mail.qq.com (out203-205-221-231.mail.qq.com [203.205.221.231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 539ED49CBA;
-        Fri, 24 Jun 2022 08:32:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1656084730;
-        bh=ZP5BL4Jng6xuWoIRMawtSdlyPdyFXwUVPHgJ41CpfMY=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=n7iKAs2xTENfQQUA2ayJsyZdYvdT8b5wVAIvwjhKliojMqorMmuCrkDD12Z0D2lEl
-         9XdlMXdZsao+3f1J52VAMa7mmzKqOwilQDiUbeIyeBLddy4/gFN44piP7IZZSy1B3t
-         fKeE90b63jN1wNroDARimZc9vcjNAPtApaWIxgRs=
-Received: from [IPv6:240e:459:408:85f0:fd4f:c5b8:254f:b27d] ([240e:459:408:85f0:fd4f:c5b8:254f:b27d])
-        by newxmesmtplogicsvrszc8.qq.com (NewEsmtp) with SMTP
-        id 7AB168EB; Fri, 24 Jun 2022 23:30:43 +0800
-X-QQ-mid: xmsmtpt1656084643thc8mxkyc
-Message-ID: <tencent_5C6A354D8C69190DB41D0E83D51195DBC108@qq.com>
-X-QQ-XMAILINFO: M7uElAZZZMmFwRZuvAepI9jVCwitNz2QZLfHk0dZVu0gS7kMugdpERHeOGKvVC
-         C3C9dRLh3tpOH4R7bjvLSG/3jcNsxYrXElD7rGTDFr9KHKWpSVCWjAqNHmspwerkB5ppIS7L3S6Q
-         /LJRLWlweRFhyqPrdaC+LFsL55Pde1OLwdAmb6uPAJNxFvp3Ot48XHxzhoepCz3OJRATmQPDtofT
-         ktlvx+tmSPWEkcP4G1k7lLzDqEcAej9xo/pcOBVXEyFtxLkpmlhsZONMv+uSM0cKvBfECGXiRqeS
-         MFy68mUWALCoXMTM74qvla/ZEugsu0D4Kq2TxS7WBji+MoNRsX66sPMS0cBy2Nh1YAoDNm7TkoM3
-         UXBBPC6rGL13hE2985p5Evc6sxIiNFdwEIywq7hrQMzriGYJTGP85EJPnELnDeu4WDqLmQzC3fB6
-         nQ0gRcuMb9uMEsjzgt+Pu4lrn/EMyGDK0Sg+FzZZfU+Ry2ly0hOg6IDCUWEiMATxE1EALe+rdoEz
-         QSmHrTQ6GiME9X+oCa6jLXGok1UFV0A+Cjh0SeBzTn/QBWW6dykvHitiBIPdP1zaenBYSSeVYY76
-         VXPR2KEB0NDVdx//TR6DlK9QgJ6Dqj/su+5/6ZEfmkHNZ1NlIOZbSOeJG/htLUy7u/wAKHT4qmQw
-         ySnu8DPoyGNfXaMOKPttvf+STcKHHOY6xFLIk5uoDJo5hkYcS+8EFAc3Z+3cIR72HTmxgFFdYKxV
-         1AYl/QreOun2poxfp7C0p1HTdXdFssJAwz4VcuWzEgBr9dPdmFlu5l2lLeXUmE7egN7qYKuMyHUl
-         1J8IKsR+k26+7VuFgU+ZeW2tP2l19nuCvMzz2SUEmyhc9LfY9qMEdua42j/EkGeN7H4AXvD3eLXB
-         hvGN1nH9RfVLMAv7R9oXGGT5lhQIyTHiCZiRxgcNUkqMdjYXWlD6dkFxtbIZuS2Sp/MJ+n3ktOYJ
-         paDz25XQ4+X+JQFr/Tog==
-Subject: Re: Commit 282d8998e997 (srcu: Prevent expedited GPs and blocking
- readers from consuming CPU) cause qemu boot slow
-To:     Neeraj Upadhyay <quic_neeraju@quicinc.com>, paulmck@kernel.org
-Cc:     Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "mtosatti@redhat.com" <mtosatti@redhat.com>,
-        Auger Eric <eric.auger@redhat.com>,
-        "chenxiang (M)" <chenxiang66@hisilicon.com>
-References: <tencent_E306F58EAEC1D188ED6D5F358A269F34C707@qq.com>
- <20220613035711.GY1790663@paulmck-ThinkPad-P17-Gen-1>
- <20220613041652.GA3976000@paulmck-ThinkPad-P17-Gen-1>
- <tencent_F82250B6E3D51A9AC0D2BE1AE43A4E060909@qq.com>
- <20220613121831.GA1790663@paulmck-ThinkPad-P17-Gen-1>
- <tencent_65C7D0A04984EDB6A79A5E5379DA7E835206@qq.com>
- <20220613145900.GC1790663@paulmck-ThinkPad-P17-Gen-1>
- <7b6c983b21d44119b61716a66de397ed@huawei.com>
- <f9684a69-5467-a440-abd1-7cf5ad3a81f7@quicinc.com>
- <tencent_8FD344DA7FC376C7D1204604DA7689DA4906@qq.com>
- <20220614141712.GR1790663@paulmck-ThinkPad-P17-Gen-1>
- <tencent_DFF5A6C9352C76C00C7E46E06F2BA945350A@qq.com>
- <042142db-aab2-fc4a-c1a5-371223c80440@quicinc.com>
- <tencent_B1290D581DF1837711F4DB176ACB4D4F6908@qq.com>
- <3cf9b2de-39f6-34f1-b9de-19e5da8ddf8d@quicinc.com>
-From:   "zhangfei.gao@foxmail.com" <zhangfei.gao@foxmail.com>
-X-OQ-MSGID: <2a77273e-1cf9-b67f-a898-a14612829abe@foxmail.com>
-Date:   Fri, 24 Jun 2022 23:30:37 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        with ESMTP id S230008AbiFXRYy (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 24 Jun 2022 13:24:54 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53EF4792B2;
+        Fri, 24 Jun 2022 10:23:16 -0700 (PDT)
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25OButmm008732;
+        Fri, 24 Jun 2022 10:22:43 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=nVpm3oNC4GlWZ6RWtz+76JkXC7PyT/bitDj1zCKFsf8=;
+ b=rEIEnacaSLaKo3TVGECG5fBI34cDTLekNcVvJdVn5ib2mEO8+/kP6SvK3V6RcpO6Zqj1
+ t4v9DbC6fuLi9YcDLs1mOwocuIsbuSjd3IfJx5QNeJZd3KA6JqD0ZLIhBrIBi/QXw9dF
+ gDI8wKpUmtrFnkRmpoPqpDbcsv5gxbc6oyw= 
+Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam02lp2049.outbound.protection.outlook.com [104.47.56.49])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3gwcu729kb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 24 Jun 2022 10:22:42 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FD+5OxbydnKiXigc0Am/TFL8Z8/TAliddt+wgrjCnJCKOhmHBwaDv5o7hE1IX5BYidzOLzJCkUSvZ2FtCesLtgf+MzU/Rk3cXHqrDQkX1YP4Wbj4SIM4f0295eGRlxUjbuCgO+qSyq4koWrV7cgEYu8sa6Du0wpBJB+2QrApQ+wfsDwrslpEiRhUTCm4fi3XMRfHuD2S2O5pfW4AwXIFw0DtTTfm7kzxGVYvqafW+qkGhsj6xlbFFaephq3aCVKnbQGyrAudeBPUija/6c4xIw8hZ3lSR3kPwwK21AwsCzi2aN242fxBAkKaUxJuO6HyJmdoliNCIpl2KiA1IHFbHA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=nVpm3oNC4GlWZ6RWtz+76JkXC7PyT/bitDj1zCKFsf8=;
+ b=b5bxjx+X1Evoq21NxhP3BtaRTX2sOOZ5Rr6M3QeG/K6dOoAVxm8+ZmjEIuoHnWjCKg5psQ6MI0EVWP7714Mc1/Px7NziA2SLn5ns6wBfnelZbLt6YhKbWCLcN0oQYpXCpjqDkqbRGIQAcuH473fpnVhNoklkay5FBmFsMJ8582cGTZPcwFjBUCck++qB4AjID+IHj5NyARrbnYr6YiCC7o+hAufMnCE+Wr/tn47XwdZ9gQTZinqlkfMcSjfEMCHAnrR7eni+zlRC3qNwFwkkWe3MDp7MlUqgH6fN0r7iF1cNJ5Jzh8h7Dz43Dwtbrzakb+V2KgrFwlloInh0bERGVQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from MW4PR15MB4475.namprd15.prod.outlook.com (2603:10b6:303:104::16)
+ by SA1PR15MB4321.namprd15.prod.outlook.com (2603:10b6:806:1ac::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5373.15; Fri, 24 Jun
+ 2022 17:22:41 +0000
+Received: from MW4PR15MB4475.namprd15.prod.outlook.com
+ ([fe80::3941:25c6:c1cd:5762]) by MW4PR15MB4475.namprd15.prod.outlook.com
+ ([fe80::3941:25c6:c1cd:5762%7]) with mapi id 15.20.5353.022; Fri, 24 Jun 2022
+ 17:22:40 +0000
+Date:   Fri, 24 Jun 2022 10:22:38 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Dave Marchevsky <davemarchevsky@fb.com>
+Cc:     bpf@vger.kernel.org, rcu@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Add benchmark for local_storage
+ RCU Tasks Trace usage
+Message-ID: <20220624172238.wpioajigxywd4hxv@kafai-mbp>
+References: <20220623234609.543263-1-davemarchevsky@fb.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220623234609.543263-1-davemarchevsky@fb.com>
+X-ClientProxiedBy: MWHPR03CA0013.namprd03.prod.outlook.com
+ (2603:10b6:300:117::23) To MW4PR15MB4475.namprd15.prod.outlook.com
+ (2603:10b6:303:104::16)
 MIME-Version: 1.0
-In-Reply-To: <3cf9b2de-39f6-34f1-b9de-19e5da8ddf8d@quicinc.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 208a4136-0ab2-4332-aa13-08da5606246b
+X-MS-TrafficTypeDiagnostic: SA1PR15MB4321:EE_
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: jxMzBllj8av5dN8p0HrH3VLN4mfY49lREASH6A5zmxN2yH2hSQsqQYVkA7llSBrnLsqCUCUhMP9RRfRT2T7+xM3eYfxpI+1uP8nOZo16ltwjqrYBvMtDgBgN8bBtSwPhhMdrrskNED3rgGObifefBMDEEzDCTRfmhTmjgln+N26aor0x7jQuNwDb7w1lDpflVtukEldv86qTtcC+T4KCV103uL86qabDYKlqJzSAzUx0DX7ST1ujboEv3J/tBDHC6MNqewb2I60Lu8BwhjZ2bxU+kH6Ekto0YPdtu494b1YG9uSk24NL/PKHmv9VaQ5zf9jIjizfgACPtbdXJ8bc8JKvnN1tuvFLXKWBnFAkeBWtoDeV6iPSnRcV3RmPpfN8YPPROYdb4kLatN9lSme+055TFmSGhOE19t8r7ADRp7GEFD53+czIGu0syQa7W6KO+nQ573pLv6GJ1D4pP84Ko1CrZTVG8nAI8XUI8smwt1UXdp+R8pRGXHw5Mn1oVPn6RBnOYxWkBVIaYSxk97HOxbSfUF0dns00VTcJDczAvkcyxB5Trbgh/5T+FCcPjlJ1teZ2XcL7YyVTG+ZF2OJnHnw6fb9t+qYyxdhp1z/QocMjKL/25AFjqvhuQaQ0QS83v9nbl6XFTzZBcxZNUhVuuAedq8TlikTon48AUMxKSKr5E2A4P7+vPeFnHzv8Abx/n24BHu6KQVcMkdTh0lNKNJ2XUwh9ay63H6kvkADPj8o=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR15MB4475.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(7916004)(4636009)(366004)(376002)(39860400002)(346002)(396003)(136003)(316002)(66556008)(8676002)(83380400001)(66476007)(66946007)(41300700001)(38100700002)(4326008)(2906002)(1076003)(6486002)(54906003)(478600001)(6862004)(33716001)(86362001)(52116002)(5660300002)(6512007)(6636002)(9686003)(8936002)(6506007)(186003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?9EuQmhLkEthPVV43wZYh70leTk9CmB/DhyuDVcKYQQBf64JaEDAqNqDFdDKc?=
+ =?us-ascii?Q?aFowpZCdNYFhbFI5bcbF1r7dz/mwtd48jkKy1el49f9IVULi51vnB3RJbDZk?=
+ =?us-ascii?Q?rGilG1gZMmUvoOLaCfQ+sYqKcm/YvbKMC+egWrDcerHZVznNS9krDZapt3cA?=
+ =?us-ascii?Q?TQc/rSxcRcW6vVQ1vbbt06GRrLUFh9VMrI0HMjiWjlsU6n66yxHkcsX68hD4?=
+ =?us-ascii?Q?Dv5aAHxfA/VApBr/2KeWDFsQAOJcV/BKhW+aOhGOFIGwVRwLg4j6k8zf9VPx?=
+ =?us-ascii?Q?vbMS5bvtpC7693kdZnK6lfhd5Dc/77JVXsSLdixTIjLFeFF7w+0KRomrhU4z?=
+ =?us-ascii?Q?GYwfgTkhdp/QOGOd2ZXoxs8O6C7ruOz7woRfNMFyUZk6K2CWPj2pkHTy4qrK?=
+ =?us-ascii?Q?N/aIxykO7/LViHrSr8Q2fNYk9X2Lc0YXpQnFmrpmThuqI6uuy635XnUAUa/z?=
+ =?us-ascii?Q?/Z0894GeswesiBIxdCoM+M0mlqIPlD8DViMZqUF0EBpXHWLXVd0LJdMiq2tG?=
+ =?us-ascii?Q?pQTnHrhyqZVnqKlt1VihdbgeSKvBScq+ERH5IG/XADpHc9d2PFmbM/JoNMDN?=
+ =?us-ascii?Q?j6Ba8XWPrFYydz/0Wf3D4jhy3jOsg+cMZd4dZq6ja5NkIrGgMgh2mRe31M69?=
+ =?us-ascii?Q?kSLgDJ97dDExnUyRgXnyRV0TIY499H/diWNdJKu6qdwcMSVusZRowqmMm88Z?=
+ =?us-ascii?Q?0b1nr8fTZcTDBZT0eRXrWyZrO4v+9Z7hBr9DLsLxc/qCzULPxTapvrSKP8c1?=
+ =?us-ascii?Q?NMcl9Q2SQqSXajRf0QCKhPxw+O9K/r523mJUz0QmM+UFSfxo8WOox3b3JHz8?=
+ =?us-ascii?Q?bJMOsp0D8IADcSueW0wUDNTsxXnvuiFAUkne9NGVE87khTmAH1BcPhJIuUlI?=
+ =?us-ascii?Q?niem9qYPQhSTgiP6Ehj1554SL9X2Jx5+iFq4LjhYowBqT3AQ1+rO2AvC+Eg/?=
+ =?us-ascii?Q?X9fBYuGUyOSFXCs18n87StL9EbkNTejiVQwjdkm1jsLZwOawK4QeYIcmx/QY?=
+ =?us-ascii?Q?gN6j2CD4FtEjTlU65QqwxlJskwT2qM8II6expVzdB0oDfZIA+aCS3QgSSyYN?=
+ =?us-ascii?Q?25FUE2a5pTrM8LMam1vZGKgC0lbTo+isx9SVD8y8F/Rqb2IzLLDM8eppYbw5?=
+ =?us-ascii?Q?opaQ1vY3ifFxh7oTvDeuk47k3dDgUqLzPXIMJr7bHg/i6Wd7cmhin/IebZ+1?=
+ =?us-ascii?Q?Crr7Z94yPLwSaqpmHqR0F/FYSC3fuTWY0LqUQ3+nQ0c0YI5yN/npor223sjN?=
+ =?us-ascii?Q?sB0v3QI84tK87Kfxxm/EYn17AkaY0M0nE7Zj6eR5X3yNtuoXJ+fpMOkOTgVP?=
+ =?us-ascii?Q?H2LuraLJdU8zwdRGcWmRs5tzuPsuLMqM4zTM1myn45ytbTku9j+DUQU4H4C1?=
+ =?us-ascii?Q?cxvsHJcN0OsHNmEYRa1XjIJ9mMsBvDO7dSni6aa51Xt9Hy94unr08tJafohD?=
+ =?us-ascii?Q?b6eH07CLMqhaEYT6AUGgwhq/e5lZLcWN1xzwCBCPVR+SMXHIzd18MAVuLCsS?=
+ =?us-ascii?Q?NDZemy0MGSieEg+Fd5x5/BkbJGhgW4YtRArosrcGd3fEDkdzss1vQxdqK1J7?=
+ =?us-ascii?Q?oNStoB2Qgkao3ieXdqmhGdRAAPjZkdAx7USrC8t0jWYVVmgP7WaVUhP7ttpw?=
+ =?us-ascii?Q?hA=3D=3D?=
+X-OriginatorOrg: fb.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 208a4136-0ab2-4332-aa13-08da5606246b
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR15MB4475.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jun 2022 17:22:40.9205
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: c+3xD3UhoPhPGzmkyObi/CoLvr6b1xH6Raq7bo5TaJ0IEfRKgw3GaQ5SChK0WCRR
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4321
+X-Proofpoint-ORIG-GUID: YzgqwdV9oeSSshpnFWMg5aLRaJhEGuWn
+X-Proofpoint-GUID: YzgqwdV9oeSSshpnFWMg5aLRaJhEGuWn
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-06-24_08,2022-06-23_01,2022-06-22_01
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Thu, Jun 23, 2022 at 04:46:09PM -0700, Dave Marchevsky wrote:
+> +static void report_progress(int iter, struct bench_res *res, long delta_ns)
+> +{
+> +	if (ctx.skel->bss->unexpected) {
+> +		fprintf(stderr, "Error: Unexpected order of bpf prog calls (postgp after pregp).");
+> +		fprintf(stderr, "Data can't be trusted, exiting\n");
+> +		exit(1);
+> +	}
+> +
+> +	if (args.quiet)
+> +		return;
+> +
+> +	printf("Iter %d\t avg tasks_trace grace period latency\t%lf ns\n",
+> +	       iter, res->gp_ns / (double)res->gp_ct);
+> +	printf("Iter %d\t avg ticks per tasks_trace grace period\t%lf\n",
+> +	       iter, res->stime / (double)res->gp_ct);
+> +}
+> +
 
+[ ... ]
 
-On 2022/6/20 下午3:50, Neeraj Upadhyay wrote:
-> Hi,
->
->
-> On 6/18/2022 8:37 AM, zhangfei.gao@foxmail.com wrote:
->>
->>
->> On 2022/6/15 下午6:40, Neeraj Upadhyay wrote:
->>> Hi,
->>>
->>> On 6/15/2022 2:33 PM, zhangfei.gao@foxmail.com wrote:
->>>>
->>>>
->>>> On 2022/6/14 下午10:17, Paul E. McKenney wrote:
->>>>> On Tue, Jun 14, 2022 at 10:03:35PM +0800, zhangfei.gao@foxmail.com 
->>>>> wrote:
->>>>>>
->>>>>> On 2022/6/14 下午8:19, Neeraj Upadhyay wrote:
->>>>>>>> 5.18-rc4 based ~8sec
->>>>>>>>
->>>>>>>> 5.19-rc1                     ~2m43sec
->>>>>>>>
->>>>>>>> 5.19-rc1+fix1                 ~19sec
->>>>>>>>
->>>>>>>> 5.19-rc1-fix2                 ~19sec
->>>>>>>>
->>>>>>> If you try below diff on top of either 5.19-rc1+fix1 or 
->>>>>>> 5.19-rc1-fix2 ;
->>>>>>> does it show any difference in boot time?
->>>>>>>
->>>>>>> --- a/kernel/rcu/srcutree.c
->>>>>>> +++ b/kernel/rcu/srcutree.c
->>>>>>> @@ -706,7 +706,7 @@ static void srcu_schedule_cbs_snp(struct 
->>>>>>> srcu_struct
->>>>>>> *ssp, struct srcu_node *snp
->>>>>>>    */
->>>>>>>   static void srcu_gp_end(struct srcu_struct *ssp)
->>>>>>>   {
->>>>>>> -       unsigned long cbdelay;
->>>>>>> +       unsigned long cbdelay = 1;
->>>>>>>          bool cbs;
->>>>>>>          bool last_lvl;
->>>>>>>          int cpu;
->>>>>>> @@ -726,7 +726,9 @@ static void srcu_gp_end(struct srcu_struct 
->>>>>>> *ssp)
->>>>>>>          spin_lock_irq_rcu_node(ssp);
->>>>>>>          idx = rcu_seq_state(ssp->srcu_gp_seq);
->>>>>>>          WARN_ON_ONCE(idx != SRCU_STATE_SCAN2);
->>>>>>> -       cbdelay = !!srcu_get_delay(ssp);
->>>>>>> +       if (ULONG_CMP_LT(READ_ONCE(ssp->srcu_gp_seq),
->>>>>>> READ_ONCE(ssp->srcu_gp_seq_needed_exp)))
->>>>>>> +               cbdelay = 0;
->>>>>>> +
->>>>>>>          WRITE_ONCE(ssp->srcu_last_gp_end, 
->>>>>>> ktime_get_mono_fast_ns());
->>>>> Thank you both for the testing and the proposed fix!
->>>>>
->>>>>> Test here:
->>>>>> qemu: https://github.com/qemu/qemu/tree/stable-6.1
->>>>>> kernel:
->>>>>> https://github.com/Linaro/linux-kernel-uadk/tree/uacce-devel-5.19-srcu-test 
->>>>>>
->>>>>> (in case test patch not clear, push in git tree)
->>>>>>
->>>>>> Hardware: aarch64
->>>>>>
->>>>>> 1. 5.18-rc6
->>>>>> real    0m8.402s
->>>>>> user    0m3.015s
->>>>>> sys     0m1.102s
->>>>>>
->>>>>> 2. 5.19-rc1
->>>>>> real    2m41.433s
->>>>>> user    0m3.097s
->>>>>> sys     0m1.177s
->>>>>>
->>>>>> 3. 5.19-rc1 + fix1 from Paul
->>>>>> real    2m43.404s
->>>>>> user    0m2.880s
->>>>>> sys     0m1.214s
->>>>>>
->>>>>> 4. 5.19-rc1 + fix2: fix1 + Remove "if (!jbase)" block
->>>>>> real    0m15.262s
->>>>>> user    0m3.003s
->>>>>> sys     0m1.033s
->>>>>>
->>>>>> When build kernel in the meantime, load time become longer.
->>>>>>
->>>>>> 5. 5.19-rc1 + fix3: fix1 + SRCU_MAX_NODELAY_PHASE 1000000
->>>>>> real    0m15.215s
->>>>>> user    0m2.942s
->>>>>> sys    0m1.172s
->>>>>>
->>>>>> 6. 5.19-rc1 + fix4: fix1 + Neeraj's change of srcu_gp_end　
->>>>>> real    1m23.936s
->>>>>> user    0m2.969s
->>>>>> sys    0m1.181s
->>>>> And thank you for the testing!
->>>>>
->>>>> Could you please try fix3 + Neeraj's change of srcu_gp_end?
->>>>>
->>>>> That is, fix1 + SRCU_MAX_NODELAY_PHASE 1000000 + Neeraj's change of
->>>>> srcu_gp_end.
->>>>>
->>>>> Also, at what value of SRCU_MAX_NODELAY_PHASE do the boot
->>>>> times start rising?  This is probably best done by starting with
->>>>> SRCU_MAX_NODELAY_PHASE=100000 and dividing by (say) ten on each run
->>>>> until boot time becomes slow, followed by a binary search between the
->>>>> last two values.  (The idea is to bias the search so that fast boot
->>>>> times are the common case.)
->>>>
->>>> SRCU_MAX_NODELAY_PHASE 100 becomes slower.
->>>>
->>>>
->>>> 8. 5.19-rc1 + fix6: fix4 + SRCU_MAX_NODELAY_PHASE 1000000
->>>>
->>>> real 0m11.154s ~12s
->>>>
->>>> user 0m2.919s
->>>>
->>>> sys 0m1.064s
->>>>
->>>>
->>>>
->>>> 9. 5.19-rc1 + fix7: fix4 + SRCU_MAX_NODELAY_PHASE 10000
->>>>
->>>> real 0m11.258s
->>>>
->>>> user 0m3.113s
->>>>
->>>> sys 0m1.073s
->>>>
->>>>
->>>>
->>>> 10. 5.19-rc1 + fix8: fix4 + SRCU_MAX_NODELAY_PHASE 100
->>>>
->>>> real 0m30.053s ~ 32s
->>>>
->>>> user 0m2.827s
->>>>
->>>> sys 0m1.161s
->>>>
->>>>
->>>>
->>>> By the way, if build kernel on the board in the meantime (using 
->>>> memory), time become much longer.
->>>>
->>>> real 1m2.763s
->>>>
->>>>
->>>>
->>>> 11. 5.19-rc1 + fix9: fix4 + SRCU_MAX_NODELAY_PHASE 1000
->>>>
->>>> real 0m11.443s
->>>>
->>>> user 0m3.022s
->>>>
->>>> sys 0m1.052s
->>>>
->>>>
->>>
->>> This is useful data, thanks! Did you get chance to check between 100 
->>> and 1000, to narrow down further, from which point (does need to be 
->>> exact value) between 100 and 1000,  you start seeing degradation at, 
->>> for ex. 250, 500 , ...?
->>>
->>> Is it also possible to try experiment 10 and 11 with below diff.
->>> What I have done in below diff is, call srcu_get_delay() only once
->>> in try_check_zero() (and not for every loop iteration); also
->>> retry with a different delay for the extra iteration which is done
->>> when srcu_get_delay(ssp) returns 0.
->>>
->>> Once we have this data, can you also try by changing 
->>> SRCU_RETRY_CHECK_LONG_DELAY   to 100, on top of below diff.
->>>
->>> #define SRCU_RETRY_CHECK_LONG_DELAY  100
->>>
->>> ------------------------------------------------------------------------- 
->>>
->>> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
->>> index 6a354368ac1d..3aff2f3e99ab 100644
->>> --- a/kernel/rcu/srcutree.c
->>> +++ b/kernel/rcu/srcutree.c
->>> @@ -620,6 +620,7 @@ EXPORT_SYMBOL_GPL(__srcu_read_unlock);
->>>   * we repeatedly block for 1-millisecond time periods.
->>>   */
->>>  #define SRCU_RETRY_CHECK_DELAY         5
->>> +#define SRCU_RETRY_CHECK_LONG_DELAY            5
->>>
->>>  /*
->>>   * Start an SRCU grace period.
->>> @@ -927,12 +928,17 @@ static void srcu_funnel_gp_start(struct 
->>> srcu_struct *ssp, struct srcu_data *sdp,
->>>   */
->>>  static bool try_check_zero(struct srcu_struct *ssp, int idx, int 
->>> trycount)
->>>  {
->>> +       unsigned long curdelay;
->>> +       curdelay = !srcu_get_delay(ssp);
->>>         for (;;) {
->>>                 if (srcu_readers_active_idx_check(ssp, idx))
->>>                         return true;
->>> -               if (--trycount + !srcu_get_delay(ssp) <= 0)
->>> +               if (--trycount + curdelay <= 0)
->>>                         return false;
->>> -               udelay(SRCU_RETRY_CHECK_DELAY);
->>> +               if (trycount)
->>> +                       udelay(SRCU_RETRY_CHECK_DELAY);
->>> +               else
->>> +                       udelay(SRCU_RETRY_CHECK_LONG_DELAY);
->>>         }
->>>  }
->>>
->>
->> 11. 5.19-rc1 + fix9: fix4 + SRCU_MAX_NODELAY_PHASE 1000
->>   real    0m11.443
->> s user    0m3.022
->> s sys    0m1.052s
->>
->> fix10: fix4 + SRCU_MAX_NODELAY_PHASE 500
->>
->> real    0m11.401s
->> user    0m2.798s
->> sys     0m1.328s
->>
->>
->> fix11: fix4 + SRCU_MAX_NODELAY_PHASE 250
->>
->>      real    0m15.748s
->>      user    0m2.781s
->>      sys     0m1.294s
->>
->>
->> fix12: fix4 + SRCU_MAX_NODELAY_PHASE 200
->>
->>      real    0m20.704s  21
->>      user    0m2.954s
->>      sys     0m1.226s
->>
->> fix13: fix4 + SRCU_MAX_NODELAY_PHASE 150
->>
->>      real    0m25.151s
->>      user    0m2.980s
->>      sys     0m1.256s
->>
->>
->> fix8: fix4 + SRCU_MAX_NODELAY_PHASE 100
->> real    0m30.053s ~ 32s
->>   user    0m2.827s
->>   sys    0m1.161s
->>
->>
->> fix14: fix4 + SRCU_MAX_NODELAY_PHASE 100 + SRCU_RETRY_CHECK_LONG_DELAY 5
->>
->>      real    0m19.263s
->>      user    0m3.018s
->>      sys     0m1.211s
->>
->>
->>
->>      fix15: fix4 + SRCU_MAX_NODELAY_PHASE 100 + 
->> SRCU_RETRY_CHECK_LONG_DELAY 100
->>
->>      real    0m9.347s
->>      user    0m3.132s
->>      sys     0m1.041s
->>
->>
->
-> Thanks. From the data and experiments done, looks to me that we get
-> comparable (to 5.18-rc4 ) timings, when we retry without sleep for 
-> time duration close to 4-5 ms, which could be closer to the configured 
-> HZ (as it is 250)? Is it possible to try below configuration on top 
-> of  fix15?
-> If possible can you try with both HZ_1000 and HZ_250?
-> As multiple fixes are getting combined in experiments, for clarity, 
-> please also share the diff of srcutree.c (on top of baseline) for all 
-> experiments.
->
-> 16. fix15 + SRCU_MAX_NODELAY_PHASE 20 (10 try_check_zero() calls) + 
-> (long delay scaled to 1 jiffy)
->
->
-> #define SRCU_MAX_NODELAY_TRY_CHECK_PHASE       10
-> #define SRCU_MAX_NODELAY_PHASE (SRCU_MAX_NODELAY_TRY_CHECK_PHASE * 2)
-> #define SRCU_RETRY_CHECK_LONG_DELAY           \
->   (USEC_PER_SEC / HZ / SRCU_MAX_NODELAY_TRY_CHECK_PHASE)
->
->
-> 17. fix15 + SRCU_MAX_NODELAY_PHASE 20 (10 try_check_zero() calls) + 
-> (long delay scaled to 2 jiffy)
->
-> #define SRCU_RETRY_CHECK_LONG_DELAY        \
->      (2 * USEC_PER_SEC / HZ / SRCU_MAX_NODELAY_TRY_CHECK_PHASE)
->
-> 18. fix15 + SRCU_MAX_NODELAY_PHASE 20 (10 try_check_zero() calls) + 
-> (long delay scaled to 1/2 jiffy)
->
-> #define SRCU_RETRY_CHECK_LONG_DELAY      \
->        (USEC_PER_SEC / HZ / SRCU_MAX_NODELAY_TRY_CHECK_PHASE / 2)
+> diff --git a/tools/testing/selftests/bpf/benchs/run_bench_local_storage_rcu_tasks_trace.sh b/tools/testing/selftests/bpf/benchs/run_bench_local_storage_rcu_tasks_trace.sh
+> new file mode 100755
+> index 000000000000..5dac1f02892c
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/benchs/run_bench_local_storage_rcu_tasks_trace.sh
+> @@ -0,0 +1,11 @@
+> +#!/bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +
+> +kthread_pid=`pgrep rcu_tasks_trace_kthread`
+> +
+> +if [ -z $kthread_pid ]; then
+> +	echo "error: Couldn't find rcu_tasks_trace_kthread"
+> +	exit 1
+> +fi
+> +
+> +./bench --nr_procs 15000 --kthread_pid $kthread_pid -d 600 --quiet 1 local-storage-tasks-trace
+> diff --git a/tools/testing/selftests/bpf/progs/local_storage_rcu_tasks_trace_bench.c b/tools/testing/selftests/bpf/progs/local_storage_rcu_tasks_trace_bench.c
+> new file mode 100644
+> index 000000000000..9b11342b19a0
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/local_storage_rcu_tasks_trace_bench.c
+> @@ -0,0 +1,65 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
+> +
+> +#include "vmlinux.h"
+> +#include <bpf/bpf_helpers.h>
+> +#include "bpf_misc.h"
+> +
+> +struct {
+> +	__uint(type, BPF_MAP_TYPE_TASK_STORAGE);
+> +	__uint(map_flags, BPF_F_NO_PREALLOC);
+> +	__type(key, int);
+> +	__type(value, int);
+> +} task_storage SEC(".maps");
+> +
+> +long hits;
+> +long gp_hits;
+> +long gp_times;
+> +long current_gp_start;
+> +long unexpected;
+> +
+> +SEC("fentry/" SYS_PREFIX "sys_getpgid")
+> +int get_local(void *ctx)
+> +{
+> +	struct task_struct *task;
+> +	int idx;
+> +	int *s;
+> +
+> +	idx = 0;
+> +	task = bpf_get_current_task_btf();
+> +	s = bpf_task_storage_get(&task_storage, task, &idx,
+> +				 BPF_LOCAL_STORAGE_GET_F_CREATE);
+> +	if (!s)
+> +		return 0;
+> +
+> +	*s = 3;
+> +	bpf_task_storage_delete(&task_storage, task);
+> +	__sync_add_and_fetch(&hits, 1);
+> +	return 0;
+> +}
+> +
+> +SEC("kprobe/rcu_tasks_trace_pregp_step")
+nit.  Similar to the fentry sys_getpgid above.
+may as well use fentry for everything.
 
-     fix16: fix15 + SRCU_MAX_NODELAY_PHASE 20 (10 try_check_zero() 
-calls) + (long delay scaled to 1 jiffy)
+> +int pregp_step(struct pt_regs *ctx)
+> +{
+> +	current_gp_start = bpf_ktime_get_ns();
+> +	return 0;
+> +}
+> +
+> +SEC("kprobe/rcu_tasks_trace_postgp")
+> +int postgp(struct pt_regs *ctx)
+> +{
+> +	if (!current_gp_start) {
+> +		/* Will only happen if prog tracing rcu_tasks_trace_pregp_step doesn't
+> +		 * execute before this prog
+> +		 */
+> +		__sync_add_and_fetch(&unexpected, 1);
+I consistently hit this:
+./bench --nr_procs 1500 --kthread_pid ... -d 60 --quiet 1 local-storage-tasks-trace
+Setting up benchmark 'local-storage-tasks-trace'...
+Spun up 1500 procs (our pid 28351)
+Benchmark 'local-storage-tasks-trace' started.
+Error: Unexpected order of bpf prog calls (postgp after pregp).Data can't be trusted, exiting
 
-     real    0m10.120s
-     user    0m3.885s
-     sys     0m1.040s
+May be there is a chance for the very first postgp being called
+before the pregp_step?
 
-
-     fix17: fix15 + SRCU_MAX_NODELAY_PHASE 20 (10 try_check_zero() 
-calls) + (long delay scaled to 2 jiffy)
-
-     real    0m9.851s
-     user    0m3.886s
-     sys     0m1.011s
-
-
-     fix18: fix15 + SRCU_MAX_NODELAY_PHASE 20 (10 try_check_zero() 
-calls) + (long delay scaled to 1/2 jiffy)
-
-     real    0m9.741s
-     user    0m3.837s
-     sys     0m1.060s
-
-code push to
-https://github.com/Linaro/linux-kernel-uadk/tree/uacce-devel-5.19-srcu-test
-
-
+Thanks for working on this!
