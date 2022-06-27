@@ -2,194 +2,155 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 99A32CCA483
-	for <rcu@archiver.kernel.org>; Mon, 27 Jun 2022 19:54:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 920A9C433EF
+	for <rcu@archiver.kernel.org>; Mon, 27 Jun 2022 20:41:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241270AbiF0TyN (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 27 Jun 2022 15:54:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36148 "EHLO
+        id S235320AbiF0Ulq (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 27 Jun 2022 16:41:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241292AbiF0Tx7 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 27 Jun 2022 15:53:59 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D1D419C06;
-        Mon, 27 Jun 2022 12:53:57 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id a39so11116876ljq.11;
-        Mon, 27 Jun 2022 12:53:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GISRLXmQNkrShCICwknhBotRpu2A+UkG2L0nlRZ0p3k=;
-        b=ZbgC3ouD3LER2MyBctJ/9W1rSV7+oocIp6E1BzOFABaBkKbCh/TYu0F7hG4/VIMc3B
-         dBcf09h/liqs+S9wje6t5C8u+RnFG1nfL+7pJAnLK9nsgHxbl6x2prhLDi7NQ7i/0PvN
-         gN7ySWJ7METUVb9Go66mIwobURNEl6UH4+0tGLvWOW6HOMbQrxdUMGME79u2QSVbUyEN
-         oVMDtA+ntTAEs/wXkZOzL6kdRbEojQEl6qGpsoZUL7x30VzXSJAZCnf0DdNiyWsrCjbF
-         85XAbHHOb6+MgrnKMS01Ueyy7+UarMcWpdJ2BNS4UIlcRaH8p7NisVCgmii+Yc4hrAMb
-         rLCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GISRLXmQNkrShCICwknhBotRpu2A+UkG2L0nlRZ0p3k=;
-        b=3qYrHVg6K0f9HFHy3wklnUkj3pLjZRwlQNTtbjB6UIkmCw9mzv+tszUN1ju/McfhpC
-         YHUwqwYrQdKAIUKLH2iRY2psuSbyfN6w42TGsf3aPcCPdpV14tKXtrnuVOu+RshOI0cD
-         FSFlmQqLzXgTs6m4BAglvYTccasVXMp+94cgvjiLedm7rwYB3fPyHSOoOETtX0pDZ7aR
-         H27pdkE0kp1KtA/Qlwl6vfGiy9lmzdXwJCR3xLaFc9fcyixh4tk2i7tFK7YOIFyh0tLx
-         aicI5diPt2pFcoMfaSJOa0XA+o//bA4RyNkFnxgTHBQ0vbgT0rY5wKxmyPCV2Uq3VVbk
-         RAZA==
-X-Gm-Message-State: AJIora+xaODwvDN6fQAqK/0aj3RTGtf9Q5aMu0Iqpp6/6RvtypfwFMCg
-        06Vajtgho8ehozwBxqpOXmjdu+nqEl5HRmzn
-X-Google-Smtp-Source: AGRyM1uUQ1j3RjQw0sU4O/h72O63rqBfOz6UOvkx+nJOcTO3jwgcJdDjMBhBtxQlBnj4DRAmiQCQQA==
-X-Received: by 2002:a2e:22c6:0:b0:25a:8c16:baf with SMTP id i189-20020a2e22c6000000b0025a8c160bafmr7858179lji.132.1656359635887;
-        Mon, 27 Jun 2022 12:53:55 -0700 (PDT)
-Received: from pc638.lan ([155.137.26.201])
-        by smtp.gmail.com with ESMTPSA id a9-20020a19ca09000000b00477a6c86f17sm1920038lfg.8.2022.06.27.12.53.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jun 2022 12:53:55 -0700 (PDT)
-From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: [PATCH v2 1/1] rcu/kvfree: Update KFREE_DRAIN_JIFFIES interval
-Date:   Mon, 27 Jun 2022 21:53:53 +0200
-Message-Id: <20220627195353.1575285-1-urezki@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        with ESMTP id S231700AbiF0Ulp (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 27 Jun 2022 16:41:45 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5661F1E3F0
+        for <rcu@vger.kernel.org>; Mon, 27 Jun 2022 13:41:44 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 9E018CE1D9A
+        for <rcu@vger.kernel.org>; Mon, 27 Jun 2022 20:41:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9CEDC34115;
+        Mon, 27 Jun 2022 20:41:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1656362500;
+        bh=E53LiL0iSr2PDmsoKzByJcHV8uG3g3Z356y7lPVCNcQ=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=mPD5ksVeazKgfEnV9oT3VBM8GSGckbkWbshhAkzJPflYWuFVUOhsJ97ALDiD+bZTZ
+         hSm/bY3hzGdY1n4p83GGD+1NXMHnreHy6YSZU9FBmV6rSDyy6GqlB79/RTpA/BzQp5
+         9M8vwvexgtLgByr7ay6XzXSo+Lf4Fxql0B+YDgXjL3QpeQVhNF5Fcwe3SlQkMTG9FT
+         keWMlAkbEb3/LQB44QHp6C4BjOeyXxRu0sCuBDKMpmb2+Frh9yiWYDX6GYiawQRa+T
+         H3anyXvd3qxzNu8cwy8mM8ya9MBMIFL9cMrVKbMr5dYFHI4YjcO91eqjD1OKN794nM
+         di8AZEmfEPXgQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id A98BA5C04B1; Mon, 27 Jun 2022 13:41:39 -0700 (PDT)
+Date:   Mon, 27 Jun 2022 13:41:39 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>, amd-gfx@lists.freedesktop.org,
+        rcu@vger.kernel.org, urezki@gmail.com, uladzislau.rezki@sony.com
+Subject: Re: rcu_sched detected expedited stalls in amdgpu after suspend
+Message-ID: <20220627204139.GL1790663@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <1656357116.rhe0mufk6a.none.ref@localhost>
+ <1656357116.rhe0mufk6a.none@localhost>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1656357116.rhe0mufk6a.none@localhost>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Currently the monitor work is scheduled with a fixed interval that
-is HZ/20 or each 50 milliseconds. The drawback of such approach is
-a low utilization of page slot in some scenarios. The page can store
-up to 512 records. For example on Android system it can look like:
+On Mon, Jun 27, 2022 at 03:22:24PM -0400, Alex Xu (Hello71) wrote:
+> Hi,
+> 
+> Since Linux 5.19-ish, I consistently get these types of errors when 
+> resuming from S3:
+> 
+> [15652.909157] rcu: INFO: rcu_sched detected expedited stalls on CPUs/tasks: { 11-... } 7 jiffies s: 9981 root: 0x800/.
+> [15652.909162] rcu: blocking rcu_node structures (internal RCU debug):
+> [15652.909163] Task dump for CPU 11:
+> [15652.909164] task:kworker/u24:65  state:R  running task     stack:    0 pid:210218 ppid:     2 flags:0x00004008
+> [15652.909167] Workqueue: events_unbound async_run_entry_fn
+> [15652.909172] Call Trace:
+> [15652.909173]  <TASK>
+> [15652.909174]  ? atom_get_src_int+0x38e/0x680
+> [15652.909179]  ? atom_op_test+0x67/0x190
+> [15652.909181]  ? amdgpu_atom_execute_table_locked+0x19a/0x300
+> [15652.909184]  ? atom_op_calltable+0xb1/0x110
+> [15652.909186]  ? amdgpu_atom_execute_table_locked+0x19a/0x300
+> [15652.909189]  ? atom_op_calltable+0xb1/0x110
+> [15652.909191]  ? amdgpu_atom_execute_table_locked+0x19a/0x300
+> [15652.909193]  ? __switch_to+0x137/0x440
+> [15652.909195]  ? amdgpu_atom_asic_init+0xe0/0x100
+> [15652.909198]  ? pci_bus_read_config_dword+0x36/0x50
+> [15652.909201]  ? amdgpu_device_resume+0x10b/0x3e0
+> [15652.909203]  ? amdgpu_pmops_resume+0x32/0x60
+> [15652.909204]  ? pci_pm_suspend+0x2b0/0x2b0
+> [15652.909206]  ? dpm_run_callback+0x35/0x1f0
+> [15652.909209]  ? device_resume+0x1ca/0x220
+> [15652.909211]  ? async_resume+0x19/0xe0
+> [15652.909213]  ? async_run_entry_fn+0x33/0x120
+> [15652.909215]  ? process_one_work+0x1d6/0x350
+> [15652.909218]  ? worker_thread+0x24d/0x480
+> [15652.909220]  ? kthread+0x137/0x150
+> [15652.909221]  ? worker_clr_flags+0x40/0x40
+> [15652.909224]  ? kthread_blkcg+0x30/0x30
+> [15652.909226]  ? ret_from_fork+0x22/0x30
+> [15652.909227]  </TASK>
+> [15653.015808] rcu: INFO: rcu_sched detected expedited stalls on CPUs/tasks: { 11-... } 7 jiffies s: 9985 root: 0x800/.
+> [15653.015812] rcu: blocking rcu_node structures (internal RCU debug):
+> [15653.015813] Task dump for CPU 11:
+> [15653.015813] task:kworker/u24:65  state:R  running task     stack:    0 pid:210218 ppid:     2 flags:0x00004008
+> [15653.015816] Workqueue: events_unbound async_run_entry_fn
+> [15653.015820] Call Trace:
+> [15653.015820]  <TASK>
+> [15653.015821]  ? amdgpu_cgs_read_register+0x10/0x10
+> [15653.015825]  ? smu7_copy_bytes_to_smc+0xd4/0x200
+> [15653.015828]  ? polaris10_program_memory_timing_parameters+0x195/0x1b0
+> [15653.015831]  ? sysvec_apic_timer_interrupt+0xa/0x80
+> [15653.015834]  ? asm_sysvec_apic_timer_interrupt+0x1b/0x20
+> [15653.015836]  ? amdgpu_cgs_destroy_device+0x10/0x10
+> [15653.015839]  ? sysvec_apic_timer_interrupt+0xa/0x80
+> [15653.015841]  ? asm_sysvec_apic_timer_interrupt+0x1b/0x20
+> [15653.015843]  ? amdgpu_cgs_destroy_device+0x10/0x10
+> [15653.015846]  ? amdgpu_device_rreg+0x8f/0xd0
+> [15653.015847]  ? phm_wait_for_register_unequal+0x99/0xd0
+> [15653.015850]  ? smu7_send_msg_to_smc+0x95/0x130
+> [15653.015853]  ? smum_send_msg_to_smc+0x5d/0xa0
+> [15653.015854]  ? amdgpu_cgs_read_ind_register+0xa0/0xa0
+> [15653.015857]  ? smu7_enable_dpm_tasks+0x241f/0x28c0
+> [15653.015859]  ? hwmgr_resume+0x31/0x70
+> [15653.015861]  ? amdgpu_device_resume+0x1fa/0x3e0
+> [15653.015863]  ? amdgpu_pmops_resume+0x32/0x60
+> [15653.015864]  ? pci_pm_suspend+0x2b0/0x2b0
+> [15653.015866]  ? dpm_run_callback+0x35/0x1f0
+> [15653.015868]  ? device_resume+0x1ca/0x220
+> [15653.015870]  ? async_resume+0x19/0xe0
+> [15653.015872]  ? async_run_entry_fn+0x33/0x120
+> [15653.015874]  ? process_one_work+0x1d6/0x350
+> [15653.015877]  ? worker_thread+0x24d/0x480
+> [15653.015878]  ? kthread+0x137/0x150
+> [15653.015880]  ? worker_clr_flags+0x40/0x40
+> [15653.015882]  ? kthread_blkcg+0x30/0x30
+> [15653.015884]  ? ret_from_fork+0x22/0x30
+> [15653.015886]  </TASK>
+> 
+> I have not noticed any resulting problems. I am reporting this in the 
+> hope that it is easy to fix the issue and remove the error messages 
+> which may obscure some future problem.
 
-<snip>
-  kworker/3:0-13872   [003] .... 11286.007048: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000026522604 nr_records=1
-  kworker/3:0-13872   [003] .... 11286.015638: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000095ed6fca nr_records=2
-  kworker/1:2-20434   [001] .... 11286.051230: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000044872ffd nr_records=1
-  kworker/1:2-20434   [001] .... 11286.059322: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000026522604 nr_records=2
-  kworker/0:1-20052   [000] .... 11286.095295: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000044872ffd nr_records=2
-  kworker/0:1-20052   [000] .... 11286.103418: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000cbcf05db nr_records=1
-  kworker/2:3-14372   [002] .... 11286.135155: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000095ed6fca nr_records=2
-  kworker/2:3-14372   [002] .... 11286.135198: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000044872ffd nr_records=1
-  kworker/1:2-20434   [001] .... 11286.155377: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000cbcf05db nr_records=5
-  kworker/2:3-14372   [002] .... 11286.167181: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000026522604 nr_records=5
-  kworker/1:2-20434   [001] .... 11286.179202: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000008ef95e14 nr_records=1
-  kworker/2:3-14372   [002] .... 11286.187398: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000c597d297 nr_records=6
-  kworker/3:0-13872   [003] .... 11286.187445: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000050bf92e2 nr_records=3
-  kworker/1:2-20434   [001] .... 11286.198975: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000cbcf05db nr_records=4
-  kworker/1:2-20434   [001] .... 11286.207203: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000095ed6fca nr_records=4
-<snip>
+The usual way this happens is for a task to be spinning.  In this case,
+that might be due to excessive lock contention on async_lock within the
+async_run_entry_fn() function.  Or perhaps the problem is in one of the
+functions preceded by "?" above.
 
-where a page only carries few records to reclaim a memory. In order
-to improve batching and make utilization more efficient the patch sets
-a drain interval to 1 second as default one. When a flood is detected
-an interval is adjusted in a way that a reclaim work is re-scheduled
-on a next timer jiffy.
+One way to debug this is to place trace_printk()s or similar in the
+functions called out above to track it down.
 
-- default -
-Total time taken by all kfree'ers: 11510245312 ns, loops: 10000, batches: 1553, memory footprint: 70MB
-Total time taken by all kfree'ers: 9813329636  ns, loops: 10000, batches: 1544, memory footprint: 67MB
-Total time taken by all kfree'ers: 10085206318 ns, loops: 10000, batches: 1499, memory footprint: 156MB
-Total time taken by all kfree'ers: 9582207782  ns, loops: 10000, batches: 1456, memory footprint: 103MB
-Total time taken by all kfree'ers: 9872195750  ns, loops: 10000, batches: 1519, memory footprint: 105MB
-Total time taken by all kfree'ers: 9574438300  ns, loops: 10000, batches: 1480, memory footprint: 101MB
-Total time taken by all kfree'ers: 9990015265  ns, loops: 10000, batches: 1489, memory footprint: 127MB
-Total time taken by all kfree'ers: 9978971689  ns, loops: 10000, batches: 1455, memory footprint: 94MB
-Total time taken by all kfree'ers: 10357628090 ns, loops: 10000, batches: 1456, memory footprint: 64MB
-Total time taken by all kfree'ers: 9838469975  ns, loops: 10000, batches: 1448, memory footprint: 131MB
+I bet that the reason this showed up in v5.19 is this guy:
 
-- patch -
-Total time taken by all kfree'ers: 8488575321  ns, loops: 10000, batches: 1735, memory footprint: 82MB
-Total time taken by all kfree'ers: 9256401034  ns, loops: 10000, batches: 1762, memory footprint: 76MB
-Total time taken by all kfree'ers: 9198011994  ns, loops: 10000, batches: 1751, memory footprint: 82MB
-Total time taken by all kfree'ers: 10590540622 ns, loops: 10000, batches: 1540, memory footprint: 94MB
-Total time taken by all kfree'ers: 9953902918  ns, loops: 10000, batches: 1638, memory footprint: 89MB
-Total time taken by all kfree'ers: 10176669464 ns, loops: 10000, batches: 1613, memory footprint: 84MB
-Total time taken by all kfree'ers: 9387490978  ns, loops: 10000, batches: 1762, memory footprint: 85MB
-Total time taken by all kfree'ers: 9530535341  ns, loops: 10000, batches: 1781, memory footprint: 66MB
-Total time taken by all kfree'ers: 9945442340  ns, loops: 10000, batches: 1758, memory footprint: 68MB
-Total time taken by all kfree'ers: 9188848287  ns, loops: 10000, batches: 1781, memory footprint: 67MB
+28b3ae426598 ("rcu: Introduce CONFIG_RCU_EXP_CPU_STALL_TIMEOUT")
 
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
----
- kernel/rcu/tree.c | 28 ++++++++++++++++++++++++----
- 1 file changed, 24 insertions(+), 4 deletions(-)
+So do you have CONFIG_RCU_EXP_CPU_STALL_TIMEOUT set to some small
+number of milliseconds?  If so, you can override this by adjusting the
+CONFIG_RCU_EXP_CPU_STALL_TIMEOUT Kconfig option or by booting with a
+longer timeout via the rcupdate.rcu_exp_cpu_stall_timeout= kernel boot
+parameter.
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index fd16c0b46d9e..c11670ba008e 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3249,7 +3249,7 @@ EXPORT_SYMBOL_GPL(call_rcu);
- 
- 
- /* Maximum number of jiffies to wait before draining a batch. */
--#define KFREE_DRAIN_JIFFIES (HZ / 50)
-+#define KFREE_DRAIN_JIFFIES (HZ)
- #define KFREE_N_BATCHES 2
- #define FREE_N_CHANNELS 2
- 
-@@ -3510,6 +3510,26 @@ need_offload_krc(struct kfree_rcu_cpu *krcp)
- 	return !!krcp->head;
- }
- 
-+static void
-+schedule_delayed_monitor_work(struct kfree_rcu_cpu *krcp)
-+{
-+	long delay, delay_left;
-+
-+	delay = READ_ONCE(krcp->count) >= KVFREE_BULK_MAX_ENTR ?
-+		1:KFREE_DRAIN_JIFFIES;
-+
-+	if (delayed_work_pending(&krcp->monitor_work)) {
-+		delay_left = krcp->monitor_work.timer.expires - jiffies;
-+
-+		if (delay < delay_left)
-+			mod_delayed_work(system_wq, &krcp->monitor_work, delay);
-+
-+		return;
-+	}
-+
-+	queue_delayed_work(system_wq, &krcp->monitor_work, delay);
-+}
-+
- /*
-  * This function is invoked after the KFREE_DRAIN_JIFFIES timeout.
-  */
-@@ -3567,7 +3587,7 @@ static void kfree_rcu_monitor(struct work_struct *work)
- 	// work to repeat an attempt. Because previous batches are
- 	// still in progress.
- 	if (need_offload_krc(krcp))
--		schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
-+		schedule_delayed_monitor_work(krcp);
- 
- 	raw_spin_unlock_irqrestore(&krcp->lock, flags);
- }
-@@ -3755,7 +3775,7 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
- 
- 	// Set timer to drain after KFREE_DRAIN_JIFFIES.
- 	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING)
--		schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
-+		schedule_delayed_monitor_work(krcp);
- 
- unlock_return:
- 	krc_this_cpu_unlock(krcp, flags);
-@@ -3831,7 +3851,7 @@ void __init kfree_rcu_scheduler_running(void)
- 
- 		raw_spin_lock_irqsave(&krcp->lock, flags);
- 		if (need_offload_krc(krcp))
--			schedule_delayed_work_on(cpu, &krcp->monitor_work, KFREE_DRAIN_JIFFIES);
-+			schedule_delayed_monitor_work(krcp);
- 		raw_spin_unlock_irqrestore(&krcp->lock, flags);
- 	}
- }
--- 
-2.30.2
+But if you are running on an Android platform, Uladzislau will be
+interested in addressing the underlying issue, so I have added him on CC.
 
+							Thanx, Paul
