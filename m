@@ -2,176 +2,114 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D943EC433EF
-	for <rcu@archiver.kernel.org>; Tue, 28 Jun 2022 18:54:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 67465C433EF
+	for <rcu@archiver.kernel.org>; Tue, 28 Jun 2022 19:35:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232776AbiF1Syn (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 28 Jun 2022 14:54:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53514 "EHLO
+        id S230398AbiF1Tfx (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 28 Jun 2022 15:35:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231961AbiF1Sym (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 28 Jun 2022 14:54:42 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E74622BD3;
-        Tue, 28 Jun 2022 11:54:41 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 348BEB81F21;
-        Tue, 28 Jun 2022 18:54:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1812C3411D;
-        Tue, 28 Jun 2022 18:54:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1656442478;
-        bh=u8hEW7vux9iWZsA17pwpC0Xoyc2INnxaQpwJS9+5oLU=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=aut/A4GTMw3jzzC61HvV4Pxub63Yl3zq1QD/P6hCp9Odn+bJBnqwbhJc1wO812UBG
-         9GN86SmtgztNokhvz+GV7j4zHrYA97eQVl+zEa7MuNNK9DQNv3x8ztCFnW7laCPHY0
-         Mj0gx40mMyh/ymF9hpdAoINHsMpzBsBNiEAHQHvlsxiEZViaFDrAhN8Ec58WZ8wnQh
-         b9qEVAXZhD3+zLdQU5zMmtZs9AyAQRwCiononG+SwYvjpwQZwRT3SN7vBE/tEcGStS
-         JSG4tuHyhF/MOJSS+ItO9iWfSLBJlPTM6G3R/LaKMcEmx+d+6B0BTxDmuW/LD4DBMu
-         RZyiNpwXXEmYQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id BC78C5C0458; Tue, 28 Jun 2022 11:54:37 -0700 (PDT)
-Date:   Tue, 28 Jun 2022 11:54:37 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>
-Cc:     rcu@vger.kernel.org, urezki@gmail.com, uladzislau.rezki@sony.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Christian Brauner <christian@brauner.io>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        linux-kernel@vger.kernel.org,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>, wireguard@lists.zx2c4.com,
-        Theodore Ts'o <tytso@mit.edu>, alexander.deucher@amd.com,
-        christian.koenig@amd.com, Xinhui.Pan@amd.com,
-        amd-gfx@lists.freedesktop.org
+        with ESMTP id S231438AbiF1TfV (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 28 Jun 2022 15:35:21 -0400
+Received: from sonic317-20.consmr.mail.gq1.yahoo.com (sonic317-20.consmr.mail.gq1.yahoo.com [98.137.66.146])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C938A3BBFF
+        for <rcu@vger.kernel.org>; Tue, 28 Jun 2022 12:29:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.ca; s=s2048; t=1656444511; bh=lp6JELsahhZcDxMKcb8gtHLevhfULw04cbHTcBHgid0=; h=Date:From:Subject:To:Cc:References:In-Reply-To:From:Subject:Reply-To; b=jjDFzI/yTyGPTE04F5h3wA5bSgKOvp64wtETAjXTs+4HqJ2FLNbr5TUf70XYIsJYoYxJc6JpCo2lfpkyZt39JDg7xZv2zk8F2M+lCty2if+BCt8naUF15x+Yx10scAZ0xXqnGZvjdnXav2bDKNTs7zM0i2hGypN52AZh0Uy0Qlq7WAHIJ0iTDjD1xQ6pW8m6TGvOA2Th7RJeZX5i7qU24jhXG8WUVC0wcjvPfXeRPPuMIBlDZNetbd8959qNtVAGzgDgwuivC5cnTXc18Kw482wloSoNa3WbM/m75NcTCoUtWuz8vTWgc0iYq8hki1X94VSM851nJnnUqwwh7r+6ug==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1656444511; bh=0UZukaZ+ibNkIFwKKSDOXttoIsXq4gsEK9nnOmqJcdB=; h=X-Sonic-MF:Date:From:Subject:To:From:Subject; b=h8Ez4OgVk5inmzZ5NFmmuTb/QYRhrfo8lfXyLRPTHteLSTPPkYAq89FUN7H4wNoog6fsQwazR10YfOWm7rIFHNsNIKSXrpuL5LI4RgaQqAElgNOTkyr+4CA2yBPQCmJ7FmLHWmj3QEgGIKQV8euF1ELR6MkRISA/t2YCfnIZ89vzdi4PpFu4v335Cif1bXcLdeBJtPXnUPGht7+f2A3eOD+DW34P7rUuR3i7msEruZjIhjKZSKA4vlxzFONfbmbYus2GdybSVa2svtGpl92ya4rZtUdTRsrDFtJjbGk8Vbr6chjXIWWAjNhOiZD770o4kaG0vKumCs0afkKpyPMHlQ==
+X-YMail-OSG: zW4xm4kVM1mKC80wsYqU0Hr_NbggFiHuTmO.JnZU6z7OftV5itErH2QpzQMtg1G
+ _EVW.99By_8Z7kJBwpO4jud.jhhWd75BFhilHxr1CIlcZiSxZUiRKaUIuiC8Ed.7QCAlXTxxYB6q
+ 2kzJAMLZH512xS11CkjpSrySfrCfzuWocsYMlNN.9xPLWQ7GwSYCxVkY1Fjwx0MroSpMX7Blj0_p
+ hDhhiYYnCKcM62IOXgWbsNuvR1huzBhVUQJGreMnJ592T0NmzFiJmsewsxKgq0QtCebg6IepT.jx
+ l_7lyUMYBSPL.o7FNj9Rr4s5jURRigFMSb9IsylwkrunxB0RMJzXuhohv3T7MJMYrm7P_PmO4xoW
+ 2ASe6x_8rve4.vFexl3nzmwRcyASJa1jiSY_vMpJgTaxGG5l6T4363Gmg3FfYf_0I.lSFpeLI7X4
+ KpHV1GS5UDlQfz94GS8lmBL1Hha4w6B8Y3uFFaF_IN51r1Und6SwCg6wkWqHRJjZVx1mQynDmFa6
+ C2fj8y4NTUDP1i5fhQGqhTFxDmsMYzNciiEaVGHq_fF6TB.mp9HGuBSAugnCjJ6HnRtxHd3z5WSo
+ EXxEHRsqrOKabFy7vQvw1wLuvqSmKZSKAYCxV4lEIwgYoP7vHlvBKv0e4hlTWxJ5CL5WnBIDxf4W
+ ViOVjY74j3mQ1NNTRLLcCumtaecx2zvdgPfQeNFhZFP0c_2Kak9_lMUkfuNXesjCoGIKY025rk.o
+ DAj5vfcw8TCTCNptpWdw960fepFNlCti8kyVRywXDnl.3udzWJMjVlz1Y9RaQORnIDN1LUtNjP1R
+ H2oQtWqVk98Xq3TnvRaNEBuAAKb3HW8HoEl.ESaQoQmblbgmbIv5QV1T9eHO__kg3rpZXyv1gJmz
+ gbOezi0P4WN0Y_ahA8ltWZuLRXggSsjC3pyxDPR3x6OV4nO2Ruj_jacC6Ja9TOmhD59KPbP.6DVW
+ jqG8GPIXFOfWoUV75Ab6X5hoVvrKl1DPL4RPI5gckWfOAZ7VV7lyDLmsCS7cG503x4DtRAY8G10D
+ 7Jy173FDRBLBWSDj0X855_7SqvukmYEqLQD9eQpBCNEuQWV7zHo7UPckwGFAfRdfQ6mzt1btyE9_
+ GLS7tm2w.n6HpZydN.Ign7aJROAJeWuhYEKwlFj78YzL.c6qNLy7rjfUF.t93RNRs72ZrVsFADp1
+ KsfKzKeEmloP1X6zi.0ynJpqqMXkpNwPuXWtaQlV0wUL57c2C_PoW.WqJHT.3H7cLn.XRIMJZLXH
+ MR2eZXcnpRahgpiRoMRIxaiRj0.qhgpsZhaoa3Mto1inFSxA640derzNRqN0_FR5zTIUQezXMv1I
+ GONJOCaj14_GLSOfrnGttbNnjFz5nnqwVl8ipMKzaSiOWR0nWh2C.6uqNB5KgOdMYdw.GAhho7RW
+ yHxeKRGU_hI4G1Xv6XOOmIWoLYQsMi.lUvsaAqtFBf19Pzb0ZnVRSREg.R7pNlYP9G35gTKgnWcV
+ .GL5pyzpjh9fF3bP91tJdH8k3yYdHuHZWOA2BDZv7esvO1po5wgMF4lHP2UotQcFLdeHLvQ7kn7M
+ qJUP5R7rDREZEjWNVYYrYZfUz4Fi9iLEdYI0gYvqSNsf1r7E8FaMNdngmNcu.cF7Z5wNz_XkY9dN
+ s5KekZuI_syol5t2XpPa3Gt_bNxxfsED09.1A1_BxXPlgvqgSkLI5Cj7ZBx4KPU9Ruiu_urP8qRX
+ 9V9_FzbOgScgdZ3IRJNNc3cJ.pB5cPD6ZqoRtr9eSzcit1sXgROzgEsaoJ4xCzf6ys9NWfkpPnSY
+ DybPi_jEWc8XdABn.ROXfwXGX8VVnoq13czgBMrDdlU0KgkKQN81zHKJJn25liLG87WpJXMBoygC
+ lb7bwKuD1OcU9FmVbpzcyAB1wO6LyhcidGg1xlEuT1uE8rJZ4IfsA7t9ptKGfdedqK.QcHZBRAdq
+ hK3WrfN7vfqkUCMdN8QnCVzwLPy1JdljXrn8Yo_D2ijMqaxpd4T4FbcF6hBh1dGs0z0M8Nl8Up1M
+ tIwBUdxALAV2PU1dizE0i2cyO32LbzxIcn2ehbVhaWnRkHOSgQK8kYGjY4QUByPON3Ih1T57xFry
+ BEzSnXnHBCuLCUDOlivQcynkvXgArC5T.SHH2rhbzI_0tv1pVs_4fxg2XL98Y7MWJPhhaAX8rOx4
+ SkM.1v6QVCDiF_Wchv4ynYtDVFspvJ.rVpw48eZNLTnwMlfFRH0ypjbccMCO9G8WszG0NISaaQDn
+ 8INTZxamallVo0nWjF98_xc_fCJBjKD3EyDbqhJcbZP8BD3bI
+X-Sonic-MF: <alex_y_xu@yahoo.ca>
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic317.consmr.mail.gq1.yahoo.com with HTTP; Tue, 28 Jun 2022 19:28:31 +0000
+Received: by hermes--production-ne1-7864dcfd54-clfh9 (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 0ba9c517f807bbba5b63c956b00d8dd2;
+          Tue, 28 Jun 2022 19:28:30 +0000 (UTC)
+Date:   Tue, 28 Jun 2022 15:28:26 -0400
+From:   "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>
 Subject: Re: CONFIG_ANDROID (was: rcu_sched detected expedited stalls in
  amdgpu after suspend)
-Message-ID: <20220628185437.GA1790663@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+To:     paulmck@kernel.org
+Cc:     alexander.deucher@amd.com, amd-gfx@lists.freedesktop.org,
+        Arve =?iso-8859-1?b?SGr4bm5lduVn?= <arve@android.com>,
+        Christian Brauner <christian@brauner.io>,
+        christian.koenig@amd.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hridya Valsaraju <hridya@google.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        linux-kernel@vger.kernel.org, Martijn Coenen <maco@android.com>,
+        rcu@vger.kernel.org, Suren Baghdasaryan <surenb@google.com>,
+        Todd Kjos <tkjos@android.com>, Theodore Ts'o <tytso@mit.edu>,
+        uladzislau.rezki@sony.com, urezki@gmail.com,
+        wireguard@lists.zx2c4.com, Xinhui.Pan@amd.com
 References: <1656357116.rhe0mufk6a.none.ref@localhost>
- <1656357116.rhe0mufk6a.none@localhost>
- <20220627204139.GL1790663@paulmck-ThinkPad-P17-Gen-1>
- <1656379893.q9yb069erk.none@localhost>
- <20220628041252.GV1790663@paulmck-ThinkPad-P17-Gen-1>
- <1656421946.ic03168yc3.none@localhost>
+        <1656357116.rhe0mufk6a.none@localhost>
+        <20220627204139.GL1790663@paulmck-ThinkPad-P17-Gen-1>
+        <1656379893.q9yb069erk.none@localhost>
+        <20220628041252.GV1790663@paulmck-ThinkPad-P17-Gen-1>
+        <1656421946.ic03168yc3.none@localhost>
+        <20220628185437.GA1790663@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20220628185437.GA1790663@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1656421946.ic03168yc3.none@localhost>
+Message-Id: <1656443915.mdjoauhqe0.none@localhost>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: WebService/1.1.20381 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Jun 28, 2022 at 11:02:40AM -0400, Alex Xu (Hello71) wrote:
-> Excerpts from Paul E. McKenney's message of June 28, 2022 12:12 am:
-> > On Mon, Jun 27, 2022 at 09:50:53PM -0400, Alex Xu (Hello71) wrote:
-> >> Ah, I see. I have selected the default value for 
-> >> CONFIG_RCU_EXP_CPU_STALL_TIMEOUT, but that is 20 if ANDROID. I am not 
-> >> using Android; I'm not sure there exist Android devices with AMD GPUs. 
-> >> However, I have set CONFIG_ANDROID=y in order to use 
-> >> ANDROID_BINDER_IPC=m for emulation.
-> >> 
-> >> In general, I think CONFIG_ANDROID is not a reliable method for 
-> >> detecting if the kernel is for an Android device; for example, Fedora 
-> >> sets CONFIG_ANDROID, but (AFAIK) its kernel is not intended for use with 
-> >> Android userspace.
-> >> 
-> >> On the other hand, it's not clear to me why the value 20 should be for 
-> >> Android only anyways. If, as you say in 
-> >> https://lore.kernel.org/lkml/20220216195508.GM4285@paulmck-ThinkPad-P17-Gen-1/,
-> >> it is related to the size of the system, perhaps some other heuristic 
-> >> would be more appropriate.
-> > 
-> > It is related to the fact that quite a few Android guys want these
-> > 20-millisecond short-timeout expedited RCU CPU stall warnings, but no one
-> > else does.  Not yet anyway.
-> > 
-> > And let's face it, the intent and purpose of CONFIG_ANDROID=y is extremely
-> > straightforward and unmistakeable.  So perhaps people not running Android
-> > devices but wanting a little bit of the Android functionality should do
-> > something other than setting CONFIG_ANDROID=y in their .config files.  Me,
-> > I am surprised that it took this long for something like this to bite you.
-> > 
-> > But just out of curiosity, what would you suggest instead?
-> 
-> Both Debian and Fedora set CONFIG_ANDROID, specifically for binder. If 
-> major distro vendors are consistently making this "mistake", then 
-> perhaps the problem is elsewhere.
-> 
-> In my own opinion, assuming that binderfs means Android vendor is not a 
-> good assumption. The ANDROID help says:
-> 
-> > Enable support for various drivers needed on the Android platform
-> 
-> It doesn't say "Enable only if building an Android device", or "Enable 
-> only if you are Google". Isn't the traditional Linux philosophy a 
-> collection of pieces to be assembled, without gratuitous hidden 
-> dependencies? For example, [0] removes the unnecessary Android 
-> dependency, it doesn't block the whole thing with "depends on ANDROID".
-> 
-> It seems to me that the proper way to set some configuration for Android 
-> kernels is or should be to ask the Android kernel config maintainers, 
-> not to set it based on an upstream kernel option. There is, after all, 
-> no CONFIG_FEDORA or CONFIG_UBUNTU or CONFIG_HANNAH_MONTANA.
-> 
-> WireGuard and random also use CONFIG_ANDROID in a similar "proxy" way as 
-> rcu, there to see if suspends are "frequent". This seems dubious for the 
-> same reasons.
-> 
-> I wonder if it might be time to retire CONFIG_ANDROID: the only 
-> remaining driver covered is binder, which originates from Android but 
-> is no longer used exclusively on Android systems. Like ufs-qcom, binder 
-> is no longer used exclusively on Android devices; it is also used for 
-> Android device emulators, which might be used on Android-like mobile 
-> devices, or might not.
-> 
-> My understanding is that both Android and upstream kernel developers 
-> intend to add no more Android-specific drivers, so binder should be the 
-> only one covered for the foreseeable future.
+Excerpts from Paul E. McKenney's message of June 28, 2022 2:54 pm:
+> All you need to do to get the previous behavior is to add something like
+> this to your defconfig file:
+>=20
+> CONFIG_RCU_EXP_CPU_STALL_TIMEOUT=3D21000
+>=20
+> Any reason why this will not work for you?
 
-Thank you for the perspective, but you never did suggest an alternative.
+As far as I know, I do not require any particular RCU debugging features=20
+intended for developers; as an individual user and distro maintainer, I=20
+would like to select the option corresponding to "emit errors for=20
+unexpected conditions which should be reported upstream", not "emit=20
+debugging information for development purposes".
 
-So here is is what I suggest given the current setup:
+Therefore, I think 0 is a suitable setting for me and most ordinary=20
+(not tightly controlled) distributions. My concern is that other users=20
+and distro maintainers will also have confusion about what value to set=20
+and whether the warnings are important, since the help text does not say=20
+anything about Android, and "make oldconfig" does not indicate that the=20
+default value is different for Android.
 
-config RCU_EXP_CPU_STALL_TIMEOUT
-	int "Expedited RCU CPU stall timeout in milliseconds"
-	depends on RCU_STALL_COMMON
-	range 0 21000
-	default 20 if ANDROID
-	default 0 if !ANDROID
-	help
-	  If a given expedited RCU grace period extends more than the
-	  specified number of milliseconds, a CPU stall warning is printed.
-	  If the RCU grace period persists, additional CPU stall warnings
-	  are printed at more widely spaced intervals.  A value of zero
-	  says to use the RCU_CPU_STALL_TIMEOUT value converted from
-	  seconds to milliseconds.
+My suggestion is that the default be set to 0, and if a non-zero value=20
+is appropriate for Android, that should be communicated to the Android=20
+developers, not made conditional on CONFIG_ANDROID.
 
-The default, and only the default, is controlled by ANDROID.
-
-All you need to do to get the previous behavior is to add something like
-this to your defconfig file:
-
-CONFIG_RCU_EXP_CPU_STALL_TIMEOUT=21000
-
-Any reason why this will not work for you?
-
-> > For that matter, why the private reply?
-> 
-> Mail client issues, not intentional. Lists re-added, plus Android, 
-> WireGuard, and random.
-
-Thank you!
-
-							Thanx, Paul
-
-> Thanks,
-> Alex.
-> 
-> [0] https://lore.kernel.org/all/20220321151853.24138-1-krzk@kernel.org/
+Thanks,
+Alex.
