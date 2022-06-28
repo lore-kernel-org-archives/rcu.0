@@ -2,128 +2,164 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B96AC43334
-	for <rcu@archiver.kernel.org>; Tue, 28 Jun 2022 16:57:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 956D6C43334
+	for <rcu@archiver.kernel.org>; Tue, 28 Jun 2022 17:08:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233746AbiF1Q5C (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 28 Jun 2022 12:57:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39918 "EHLO
+        id S232396AbiF1RIL (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 28 Jun 2022 13:08:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233872AbiF1Q4k (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 28 Jun 2022 12:56:40 -0400
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AB1921E1E
-        for <rcu@vger.kernel.org>; Tue, 28 Jun 2022 09:56:16 -0700 (PDT)
-Received: by mail-qv1-xf32.google.com with SMTP id p31so20920244qvp.5
-        for <rcu@vger.kernel.org>; Tue, 28 Jun 2022 09:56:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jqNLofw/D/PgB2PwZMkDfeM2ZVnMx72QWP1RSRdpmQo=;
-        b=pHh6mjp31yvbo8A34LLzMDENTfRddWdvKsjXFp578aFN88WyGnMogyiV3dp3/v5EVH
-         4jOMmiR2Qxitr1TmYkZbQU3o55SLX2qqGtZZUkY1NboZ5K9YVba9XWXMJ2HrBeI5rC9P
-         mahSZs2mD1JH4sHb3p/1ImusiiICFxQzG4LXA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jqNLofw/D/PgB2PwZMkDfeM2ZVnMx72QWP1RSRdpmQo=;
-        b=YT6FdTs0CLlcBJ6QGUkABfRRVHsCLi8jy3bloHZ3Y9lhBb/WV7oI6O8sx6vUWl+io9
-         oFYvRR64gBFPjBlm+7KyIG3tq/QTqDehb0AdMGhzNbJBtZAHDSjiWSaWIQ+zN3KVFinm
-         oZ5P93bJeugAefT9MO/qUsaC/lgeaCEK9jy9xlidK84N4Hn0X2kT7mQGwtBd0j9CWfe1
-         n7J+yh/KW7+I6/1d6UXegmlLCnLOcCOWvmiXdjiyga4P49vyY5Jsref6LrnZPrNYZjyl
-         CZXTjKWtktmLFKGHYNwGHXsGWUsr56h6Ww5d2y5U+3dew4vwcvs2hvzj8VKGxG1iLfWD
-         2iYg==
-X-Gm-Message-State: AJIora+bk58JflIupR7TIdr7vGaKofhIe78gh6HYnnBIwNlUHcW90FEc
-        5MhOtJ82NxJ8u6pE0/ZoAWHyCQ==
-X-Google-Smtp-Source: AGRyM1sudwCjEYgzNWIA35xMKylvU+kWeJ9NFoOzHVRhkAOGNX3RF7lsg0poVrifS0ZVdWOcv3Jl1Q==
-X-Received: by 2002:a05:6214:1c0f:b0:470:9d07:2f5d with SMTP id u15-20020a0562141c0f00b004709d072f5dmr3204675qvc.12.1656435375174;
-        Tue, 28 Jun 2022 09:56:15 -0700 (PDT)
-Received: from localhost (228.221.150.34.bc.googleusercontent.com. [34.150.221.228])
-        by smtp.gmail.com with ESMTPSA id c190-20020ae9edc7000000b006a743b360bcsm10710238qkg.136.2022.06.28.09.56.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Jun 2022 09:56:14 -0700 (PDT)
-Date:   Tue, 28 Jun 2022 16:56:14 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rushikesh.s.kadam@intel.com,
-        neeraj.iitr10@gmail.com, frederic@kernel.org, rostedt@goodmis.org,
-        vineeth@bitbyteword.org
-Subject: Re: [PATCH v2 8/8] rcu/kfree: Fix kfree_rcu_shrink_count() return
- value
-Message-ID: <YrsyrmDbfnkpfDEP@google.com>
-References: <20220622225102.2112026-1-joel@joelfernandes.org>
- <20220622225102.2112026-10-joel@joelfernandes.org>
- <Yrn9a5pOvhvL/eZj@pc638.lan>
- <20220627205907.GM1790663@paulmck-ThinkPad-P17-Gen-1>
- <YroelcGVNhQj91ab@google.com>
- <20220627214359.GQ1790663@paulmck-ThinkPad-P17-Gen-1>
-MIME-Version: 1.0
+        with ESMTP id S231252AbiF1RIK (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 28 Jun 2022 13:08:10 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 328A41C113;
+        Tue, 28 Jun 2022 10:08:10 -0700 (PDT)
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25SABvGv014887;
+        Tue, 28 Jun 2022 10:07:55 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=r+AWJ7syQBMHqEZDwdQYRn4OCcarm0P/IZyFR1W1G5A=;
+ b=ZsVeK2ha0S4ZYR5GBHABBO7Db3lGTHA1DZjsj/YxTJ0ZQQ1/KrePea7cQYZx5ZfpdYHP
+ uHRv14ZJSPkYyhKf7uItPFQfB4VaIK7SJBf8S+yVesHS7LJTKY2ixyfePLy2zkLL/wpo
+ 8NljzjJJAJb2IbEoy55X1Vl2sp3+GrT/Gag= 
+Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam04lp2048.outbound.protection.outlook.com [104.47.73.48])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3gyp235f1m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Jun 2022 10:07:54 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EdRr6UT7SI8PmckZoelAfaHMjguzF7O7TGdP+twXcIo+qiOS6jjVwZQn22YTvSa1uKnm/XLIbWi91wv+EIggy0JwQ26/+DbF6FM3g7qgWVpRrZbtCjyXO6ECV7pt60NTWyhLKGvT7clQjJJaJhYyQEH9Z7SwqZrjXfKqUYcNrAtuXHm4R1byZQfJutwiC4a33kG0T0OXpUwAz4IMuMAWBdkcA/cY2N9HJnFjR2JvPjL6CuD6HOSYRyuxibosdBSTUernjbhrBlF0wN1MDXJz04EQOF6Hky4QIjmx3d/41VjjBo2TBy2lJSAmSHr3fIHbiNs2+rScZYLUlg1wzDmSSQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=r+AWJ7syQBMHqEZDwdQYRn4OCcarm0P/IZyFR1W1G5A=;
+ b=npr6gyMiHuUsJVou9WfSkX5H5Eb0ToTMQuVkDc548+rvkuGiWivL5PhYWRoqd6dMI45aYWMiG0BXZ1Ti3C6hjDcVg9u5+jMir4PnWQjMY7+POj+bz7Zy8NcdqfMg2RnsS5w7qJunUHD7tkfPBsgkO+9YTHsQL3n++7TRxsDNOxSmBaGjm9vnQXWTwRxXzeN5Sq09zUR8jAWCwFKz4tdXjAX8OyOZ0RrqvzcCiV456P8I99PsGswE3GlCS3NLVQEYk0SoTWf7OjP2JNsbc6EEdxrEeSKy2IaUi31fhzb/Q+CTBQk6z7CUz23vI7lH9qc6WZzWRa80aCLoFeRlk79XFQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from MW4PR15MB4475.namprd15.prod.outlook.com (2603:10b6:303:104::16)
+ by MW4PR15MB4562.namprd15.prod.outlook.com (2603:10b6:303:107::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5373.18; Tue, 28 Jun
+ 2022 17:07:53 +0000
+Received: from MW4PR15MB4475.namprd15.prod.outlook.com
+ ([fe80::3941:25c6:c1cd:5762]) by MW4PR15MB4475.namprd15.prod.outlook.com
+ ([fe80::3941:25c6:c1cd:5762%8]) with mapi id 15.20.5373.018; Tue, 28 Jun 2022
+ 17:07:53 +0000
+Date:   Tue, 28 Jun 2022 10:07:50 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Dave Marchevsky <davemarchevsky@fb.com>
+Cc:     bpf@vger.kernel.org, rcu@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH v2 bpf-next] selftests/bpf: Add benchmark for
+ local_storage RCU Tasks Trace usage
+Message-ID: <20220628170750.fmxzmyhr3f6iseby@kafai-mbp.dhcp.thefacebook.com>
+References: <20220628141200.8417-1-davemarchevsky@fb.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220627214359.GQ1790663@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20220628141200.8417-1-davemarchevsky@fb.com>
+X-ClientProxiedBy: BY5PR17CA0065.namprd17.prod.outlook.com
+ (2603:10b6:a03:167::42) To MW4PR15MB4475.namprd15.prod.outlook.com
+ (2603:10b6:303:104::16)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a95c4ac8-75ef-40b7-889d-08da5928bcc8
+X-MS-TrafficTypeDiagnostic: MW4PR15MB4562:EE_
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 46Qikqtu6K3z6r5fe+GVYK5z+G+2wN10VOxjIDB+/OQEixgXY+O9MHfLhgACkPuHlQWZRyQGC56o6acSXeEVpk4cOERX8QOhj/tvi8rZnpwqg2+4QkuSX9V57MyV9keo/YxZrpGaA4tKezpGDo2DcN8daHwIjUIQgDtzXQBJgwCmdrjfgz00Jp5s1vXrcnoh7gOX3f5EAoujqaqiEFGaWMAHjCLo0rx1t9YKRoK/lvl6N56k3z0mkkmje5HfazJjFKpooPRIIi1++oXqnfu2VgtUbAwMReeEMxeCSikrVOKOoWFNq+6vDwBz8ONTMUQ9dEkFGOo/29RAHvbwRre4bqM+U+3k5vlhk12Zy3p+sXjic66QlJ4klv5W6RyXwqmoWNQxeIeLFBWIfS1r0NzMNqI0HRfSXhRE5LvUAfSeil/LLWwTEBKmcnDoqFVoCa86xjU9hjde5+KA93I+EiR/Kl6D1mjj8U/n36OpHbSi76Cr8Cn01J+RbGsmTa5hJJOyFqcs7bj33rCcqLZwp0SHULuy3ZO5W4wl+PbOjMrBW4qzwUjs/840rpcNOiifQfCufQzxkdFrZ08x97kiicSwg6LX0RNqpVLPaC9J/r1rYNWuOLTkl3JumA3H0JoH7XAbr/Z5nJDn3lP4M/zcXVKn7Pe7oDkRGQ0qHTI9UhhA6UhWrOcgPQC96iAtU0QV12ITZoHd9fVu+7nR22VkEx5r2AnyZ6TIANKZoEE4TITO/Ps=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR15MB4475.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(366004)(136003)(396003)(39860400002)(376002)(346002)(6506007)(186003)(4744005)(6512007)(86362001)(478600001)(9686003)(1076003)(41300700001)(5660300002)(52116002)(8676002)(316002)(54906003)(66556008)(2906002)(6636002)(66946007)(38100700002)(6862004)(4326008)(8936002)(66476007)(6486002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?+iqVfJOO23GVEeq/67T75jsQcxHvva/VSbYh+ZQeyw8AzhOXBKxcntg59Sn1?=
+ =?us-ascii?Q?IVIm7nYTguKwxqoo6YDbUev9BczPLPwmDWTeGG8lssXc7AZ5QfHgaVZ8NEf3?=
+ =?us-ascii?Q?g+RiI536EpYGtk2FHQS1pp1h4zX/hNaN9K6KOixWLkXISIlQ1JubmuoRS0RQ?=
+ =?us-ascii?Q?eMMqgjWy/bcYv9ZXUxkwJwmW2KFrNb5IF1U63VnpLuZOxciVMmn4ediR0bHR?=
+ =?us-ascii?Q?V2dT9641E5wtYzZDPOJgWLS5emFF7lVjZcV23lkTfAayHG+o8ouS6r8yDaBt?=
+ =?us-ascii?Q?SwlnCVdXjzn3Jwg/KKsl5wQy9qkIrlaSuLGQEAxaipc2eJFWJgtIoA5pNBfC?=
+ =?us-ascii?Q?sXoFCTN481LBiM09gXbBkhINGF4/Ds9X0gOfQgRwP2qbubS8Q4A2cx1N8mXL?=
+ =?us-ascii?Q?8zKEjwUcV0YxFNG14fgob9Gr/RzyGVOW8J3f7VwcLCh8LpJPXpzbZb49PH4e?=
+ =?us-ascii?Q?raWsTqsDaXURxHyzBBk0ZfXNB88kDrKuECkY0ns8hAUpP1PGoakLdVhrzG3A?=
+ =?us-ascii?Q?fagc2cSM9u2NJNL4WyUAvDVlNgpP7HZL+Bq+/c6logeHQcDwLe9xqqDVYUOr?=
+ =?us-ascii?Q?1BlA7ODv0BX7l+aru5QMgc270lIcsQnWwpST54OJHcFGRmiL9c8kPFfI3oat?=
+ =?us-ascii?Q?VWGN7FUIRaaCaR7I1NaTKk/EBz8vdN+j8sSYWpcaq5A6MM/cfRL4TPaoyNIh?=
+ =?us-ascii?Q?yUHCl6BQ3vZqyuhJuvPNsl9ypQ0/LdomM/vu/x2xf8gPK0RT5nnVJuJRtzwC?=
+ =?us-ascii?Q?oWyDM9LdWWHKhqmOi3jWzy6uFGDUBl3DXnflgjlEEM+76lP9lZJANpuURDut?=
+ =?us-ascii?Q?0bIBx6cOo/Oh+PQny3W55VBocnQf0qx9UdGtwtY8noKlRkM9Cz+B9rF8LGpu?=
+ =?us-ascii?Q?qDPDYmkvGqxGE1CaTQrVbArxPfnLWLAkqM8oB7E2YLlgSdxFbVAGAsyO+DTK?=
+ =?us-ascii?Q?hr8FHsHmqb02clcHLhZ2B70aepIacJ1Q+sgI9dBxpNer0L23B3OEpeXrZN8s?=
+ =?us-ascii?Q?cIJwsstr3gfzB4iRFD6sFdkVKm94srAD/pAMpQFSw/zE3Vj9esIYDyYxqMw6?=
+ =?us-ascii?Q?+VnTqKc68Ue/DimbV4TZma+mqF6etw1ld6Wrde/Ud58Zc7yZUhgyerZXOGE4?=
+ =?us-ascii?Q?mXUz2nUMvoFGM3JU77ayCRiUgCNs00eGRm9bd5aLvEmnDzJCtb6qSH9tKS7I?=
+ =?us-ascii?Q?7ZNdcjTEUfu4fJXdnyN3CbcSU3CFYhBqUGklVrug2iHlOrpxS8hpRMK+/cNp?=
+ =?us-ascii?Q?oPxWztGXdJE+Z1IqZB/F3wNpFaMYjqT+hKH97T3wU5C+8USWTAtMkxDQWCu1?=
+ =?us-ascii?Q?fcausGD7bCCHodQKiApNxF4kGdn/FG+QunwXkY5m/jofFRkwCF8or0/mUU9C?=
+ =?us-ascii?Q?j1qa9KUBUs/dvc6DeSmnc8Vr6zdGR4hR5n6AuYp3n6dnTvVzzG4zkvopuaiq?=
+ =?us-ascii?Q?rQXXy5jvG7pmspZMq4ISDqUdSCtNLQVSf22W8cNjuOlPQFS68GglATTJAfAI?=
+ =?us-ascii?Q?pQcll+iJ2A07EoQxkRoiT/DE0bUsaraaN5hkaoou21nmrdRmfCsmEDCQrIo6?=
+ =?us-ascii?Q?S5zowyUbZ92OqDK59c+Z0gCOEmM7S13/sCgV+2DXjLtJMd8xdt7dTPp4BIL7?=
+ =?us-ascii?Q?cg=3D=3D?=
+X-OriginatorOrg: fb.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a95c4ac8-75ef-40b7-889d-08da5928bcc8
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR15MB4475.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jun 2022 17:07:53.0137
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: z5YCFexqWfSgTIJYPvZoxy4Zd+aKkuNDu7BP+D0L9SDRfBuUxKp4GgBbMF8Y3mpI
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR15MB4562
+X-Proofpoint-ORIG-GUID: 7dsUXsx2P-dXATthGdbO_jCPdc26zaUi
+X-Proofpoint-GUID: 7dsUXsx2P-dXATthGdbO_jCPdc26zaUi
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-06-28_10,2022-06-28_01,2022-06-22_01
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Jun 27, 2022 at 02:43:59PM -0700, Paul E. McKenney wrote:
-> On Mon, Jun 27, 2022 at 09:18:13PM +0000, Joel Fernandes wrote:
-> > On Mon, Jun 27, 2022 at 01:59:07PM -0700, Paul E. McKenney wrote:
-> > > On Mon, Jun 27, 2022 at 08:56:43PM +0200, Uladzislau Rezki wrote:
-> > > > > As per the comments in include/linux/shrinker.h, .count_objects callback
-> > > > > should return the number of freeable items, but if there are no objects
-> > > > > to free, SHRINK_EMPTY should be returned. The only time 0 is returned
-> > > > > should be when we are unable to determine the number of objects, or the
-> > > > > cache should be skipped for another reason.
-> > > > > 
-> > > > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > > > > ---
-> > > > >  kernel/rcu/tree.c | 2 +-
-> > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > > 
-> > > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > > > index 711679d10cbb..935788e8d2d7 100644
-> > > > > --- a/kernel/rcu/tree.c
-> > > > > +++ b/kernel/rcu/tree.c
-> > > > > @@ -3722,7 +3722,7 @@ kfree_rcu_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
-> > > > >  		atomic_set(&krcp->backoff_page_cache_fill, 1);
-> > > > >  	}
-> > > > >  
-> > > > > -	return count;
-> > > > > +	return count == 0 ? SHRINK_EMPTY : count;
-> > > > >  }
-> > > > >  
-> > > > >  static unsigned long
-> > > > > -- 
-> > > > > 2.37.0.rc0.104.g0611611a94-goog
-> > > > > 
-> > > > Looks good to me!
-> > > > 
-> > > > Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > > 
-> > > Now that you mention it, this does look independent of the rest of
-> > > the series.  I have pulled it in with Uladzislau's Reviewed-by.
-> > 
-> > Thanks Paul and Vlad!
-> > 
-> > Paul, apologies for being quiet. I have been working on the series and the
-> > review comments carefully. I appreciate your help with this work.
-> 
-> Not a problem.  After all, this stuff is changing some of the trickier
-> parts of RCU.  We must therefore assume that some significant time and
-> effort will be required to get it right.
+On Tue, Jun 28, 2022 at 07:12:00AM -0700, Dave Marchevsky wrote:
+[ ... ]
+> +static void local_storage_tasks_trace_setup(void)
+> +{
+> +	int i, err, forkret, runner_pid;
+> +
+> +	runner_pid = getpid();
+> +
+> +	for (i = 0; i < args.nr_procs; i++) {
+> +		forkret = fork();
+> +		if (forkret < 0) {
+> +			fprintf(stderr, "Error forking sleeper proc %u of %u, exiting\n", i,
+> +				args.nr_procs);
+> +			goto err_out;
+> +		}
+> +
+> +		if (!forkret) {
+> +			err = prctl(PR_SET_PDEATHSIG, SIGKILL);
+neat.
 
-To your point about trickier parts of RCU, the v2 series though I tested it
-before submitting is now giving me strange results with rcuscale. Sometimes
-laziness does not seem to be in effect (as pointed out by rcuscale), other
-times I am seeing stalls.
+> +			if (err < 0) {
+> +				fprintf(stderr, "prctl failed with err %d, exiting\n", err);
+s/err/errno/
 
-So I have to carefully look through all of this again. I am not sure why I
-was not seeing these issues with the exact same code before (frustrated).
+> +				goto err_out;
+> +			}
+> +
+> +			if (getppid() != runner_pid) {
+> +				fprintf(stderr, "Runner died while spinning up procs, exiting\n");
+> +				goto err_out;
+> +			}
+> +			sleep_and_loop();
+> +		}
+> +	}
+> +	fprintf(stderr, "Spun up %u procs (our pid %d)\n", args.nr_procs, runner_pid);
+nit. shouldn't print to stderr.
 
-thanks,
-
- - Joel
-
+Acked-by: Martin KaFai Lau <kafai@fb.com>
