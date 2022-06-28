@@ -2,255 +2,660 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 56A54C433EF
-	for <rcu@archiver.kernel.org>; Tue, 28 Jun 2022 12:02:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 77899C43334
+	for <rcu@archiver.kernel.org>; Tue, 28 Jun 2022 14:12:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345288AbiF1MCj (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 28 Jun 2022 08:02:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59040 "EHLO
+        id S1345939AbiF1OMO (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 28 Jun 2022 10:12:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344905AbiF1MCY (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 28 Jun 2022 08:02:24 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 804802EA24;
-        Tue, 28 Jun 2022 05:02:23 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id w20so21849030lfa.11;
-        Tue, 28 Jun 2022 05:02:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=TMuGk1es9aDtElr4R65C4neMVsgnLo+5NBlfgPrnIbU=;
-        b=mRFPQMwpL5ltqSoXjj/bje2ZgWWJTo0Kgqg890BQ6sFF7zp5C4Niy0Terkl6CE+v+S
-         AZfwCWK+O8Tgntg8/2HxlXdSQjt4LE8LE9kFo22Y/oi5whgvt0nu7L5xS5C6M+NcAehF
-         KNcpy2K1swo3OpdOOmwXs4vGJQkJQmC15q377KaD9Mz73kJtrk20q5uBua+NcSQzZAgC
-         01D6qcPyi6ulMkpTQ7/mNR+ORx1nB5kj8YWD8EIes3tYva3quuEV2i8X8lO4gs3joRMK
-         uqdtbiqcA5awYxIOJp/b4ZcMx+wbOKk4Jxr4XzdaxIOUG34cOZCXQriwM/G8C2gwhpbM
-         AsfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TMuGk1es9aDtElr4R65C4neMVsgnLo+5NBlfgPrnIbU=;
-        b=m0AN5PJ4U+vQ9enDfFvgbgBqNLGY9+bSyHG5Emi78xMrhiKFT/6ZFiErQUlueW0+HO
-         R4BmTYYU1vwR2ahaCcMlK57cPxZehfQuwfPe6pCdmjVmeiWXBAadJkYpJl4pig/VI03n
-         yZo61Pjl+haqccEPXahVPM6KvOSr/eGlxsfMg+G20MiRaU+wyXGftjTFl0qPJVeBaYx9
-         mQxJ1pi9MqCnBZ71jpbXOMzyp1HfsSm03n5XGl+YKpiYyAZj5D/Foq6f6raE1j+1lsDJ
-         V3IQFr069lRBAZl1W3dQNotapyrm5PV4hES3UerHJoahhC8cjeJMPFu7iSR1YnkE4a7i
-         HDNg==
-X-Gm-Message-State: AJIora/XC8P0JKIDJMxsUaxEhrff+nXue7F5QF8Ys84p2DzWDHeuuhzC
-        hrS34P83X6EvYJF6NRMmsL8=
-X-Google-Smtp-Source: AGRyM1sYrJ2HnkSUvlNpkAzyPptV/sKxqezcLv03QpWtvnOBK2w0n8IESL7CKdPq67FB0OYLx2lwWg==
-X-Received: by 2002:a05:6512:3e0e:b0:47f:6a95:9b98 with SMTP id i14-20020a0565123e0e00b0047f6a959b98mr11622598lfv.177.1656417741662;
-        Tue, 28 Jun 2022 05:02:21 -0700 (PDT)
-Received: from pc638.lan ([155.137.26.201])
-        by smtp.gmail.com with ESMTPSA id c7-20020a19e347000000b004791fc12f6asm2186681lfk.46.2022.06.28.05.02.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Jun 2022 05:02:20 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Tue, 28 Jun 2022 14:02:18 +0200
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: Re: [PATCH v2 1/1] rcu/kvfree: Update KFREE_DRAIN_JIFFIES interval
-Message-ID: <YrrtyuMQX/ormVyO@pc638.lan>
-References: <20220627195353.1575285-1-urezki@gmail.com>
- <20220627213126.GO1790663@paulmck-ThinkPad-P17-Gen-1>
- <Yrrp2044RY6amuLo@pc638.lan>
+        with ESMTP id S1345830AbiF1OMN (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 28 Jun 2022 10:12:13 -0400
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E97A2B243
+        for <rcu@vger.kernel.org>; Tue, 28 Jun 2022 07:12:11 -0700 (PDT)
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 25SAAPEh003957
+        for <rcu@vger.kernel.org>; Tue, 28 Jun 2022 07:12:10 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=Ok3MNJwoHofjWjctYkrz4kc1t5GyN4CcLjJm/vzzxAI=;
+ b=DvGoK9LuDfXndoql1q1muPaAJHMACHcIUal91z5VmGYT4MBcfdcWlpUTLl+S6zmouOFX
+ GPwAxpCqT60czSDsyZq1r7bOR7G7YQSnvz9bpEAc47pP8XxGvGaDSolL7ljT+J79SEWo
+ Pv86ZMygQQQC+lBfWTp89dDXyjMDMzCe2hU= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0089730.ppops.net (PPS) with ESMTPS id 3gywp2a0uc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <rcu@vger.kernel.org>; Tue, 28 Jun 2022 07:12:10 -0700
+Received: from twshared25478.08.ash9.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.28; Tue, 28 Jun 2022 07:12:09 -0700
+Received: by devbig077.ldc1.facebook.com (Postfix, from userid 158236)
+        id ED3F998DD58A; Tue, 28 Jun 2022 07:12:02 -0700 (PDT)
+From:   Dave Marchevsky <davemarchevsky@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     <rcu@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Kernel Team <kernel-team@fb.com>,
+        Dave Marchevsky <davemarchevsky@fb.com>
+Subject: [PATCH v2 bpf-next] selftests/bpf: Add benchmark for local_storage RCU Tasks Trace usage
+Date:   Tue, 28 Jun 2022 07:12:00 -0700
+Message-ID: <20220628141200.8417-1-davemarchevsky@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: wuoim-V-XQg_6zqoT8McBigUZ729KXko
+X-Proofpoint-GUID: wuoim-V-XQg_6zqoT8McBigUZ729KXko
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Yrrp2044RY6amuLo@pc638.lan>
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-06-28_07,2022-06-28_01,2022-06-22_01
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Jun 28, 2022 at 01:45:31PM +0200, Uladzislau Rezki wrote:
-> > On Mon, Jun 27, 2022 at 09:53:53PM +0200, Uladzislau Rezki (Sony) wrote:
-> > > Currently the monitor work is scheduled with a fixed interval that
-> > > is HZ/20 or each 50 milliseconds. The drawback of such approach is
-> > > a low utilization of page slot in some scenarios. The page can store
-> > > up to 512 records. For example on Android system it can look like:
-> > 
-> > I was looking at queuing this one, but we need a bit more data.  In
-> > the meantime, here is my wordsmithing of the above paragraph:
-> > 
-> > Currently the monitor work is scheduled with a fixed interval of HZ/20,
-> > which is roughly 50 milliseconds. The drawback of this approach is
-> > low utilization of the 512 page slots in scenarios with infrequence
-> > kvfree_rcu() calls.  For example on an Android system:
-> > 
-> Good i will update with your changes :)
-> 
-> > > <snip>
-> > >   kworker/3:0-13872   [003] .... 11286.007048: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000026522604 nr_records=1
-> > >   kworker/3:0-13872   [003] .... 11286.015638: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000095ed6fca nr_records=2
-> > >   kworker/1:2-20434   [001] .... 11286.051230: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000044872ffd nr_records=1
-> > >   kworker/1:2-20434   [001] .... 11286.059322: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000026522604 nr_records=2
-> > >   kworker/0:1-20052   [000] .... 11286.095295: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000044872ffd nr_records=2
-> > >   kworker/0:1-20052   [000] .... 11286.103418: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000cbcf05db nr_records=1
-> > >   kworker/2:3-14372   [002] .... 11286.135155: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000095ed6fca nr_records=2
-> > >   kworker/2:3-14372   [002] .... 11286.135198: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000044872ffd nr_records=1
-> > >   kworker/1:2-20434   [001] .... 11286.155377: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000cbcf05db nr_records=5
-> > >   kworker/2:3-14372   [002] .... 11286.167181: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000026522604 nr_records=5
-> > >   kworker/1:2-20434   [001] .... 11286.179202: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000008ef95e14 nr_records=1
-> > >   kworker/2:3-14372   [002] .... 11286.187398: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000c597d297 nr_records=6
-> > >   kworker/3:0-13872   [003] .... 11286.187445: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000050bf92e2 nr_records=3
-> > >   kworker/1:2-20434   [001] .... 11286.198975: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000cbcf05db nr_records=4
-> > >   kworker/1:2-20434   [001] .... 11286.207203: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000095ed6fca nr_records=4
-> > > <snip>
-> > > 
-> > > where a page only carries few records to reclaim a memory. In order
-> > > to improve batching and make utilization more efficient the patch sets
-> > > a drain interval to 1 second as default one. When a flood is detected
-> > > an interval is adjusted in a way that a reclaim work is re-scheduled
-> > > on a next timer jiffy.
-> > 
-> > And of the above paragraph:
-> > 
-> > Out of 512 slots, in all cases, fewer than 10 were actually used.
-> > In order to improve batching and make utilization more efficient this
-> > commit sets a drain interval to a fixed 1-second interval. Floods are
-> > detected when a page fills quickly, and in that case, the reclaim work
-> > is re-scheduled for the next scheduling-clock tick (jiffy).
-> > 
-> Same here, will apply this.
-> 
-> > ---
-> > 
-> > But what we need now is a trace like the one above showing higher utilization
-> > of the pages.  Could you please supply this?
-> > 
-> Yep, i will add traces to show that utilization becomes better what is
-> actually expectable.
-> 
-> --
-> Uladzislau Rezki
-Paul, see below the v3:
+This benchmark measures grace period latency and kthread cpu usage of
+RCU Tasks Trace when many processes are creating/deleting BPF
+local_storage. Intent here is to quantify improvement on these metrics
+after Paul's recent RCU Tasks patches [0].
 
-From ff2a402a59442ba575f13f660ee1b140d44483b4 Mon Sep 17 00:00:00 2001
-From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Date: Wed, 1 Jun 2022 11:28:53 +0200
-Subject: [PATCH v3 1/1] rcu/kvfree: Update KFREE_DRAIN_JIFFIES interval
+Specifically, fork 15k tasks which call a bpf prog that creates/destroys
+task local_storage and sleep in a loop, resulting in many
+call_rcu_tasks_trace calls.
 
-Currently the monitor work is scheduled with a fixed interval of HZ/20,
-which is roughly 50 milliseconds. The drawback of this approach is
-low utilization of the 512 page slots in scenarios with infrequence
-kvfree_rcu() calls.  For example on an Android system:
+To determine grace period latency, trace time elapsed between
+rcu_tasks_trace_pregp_step and rcu_tasks_trace_postgp; for cpu usage
+look at rcu_task_trace_kthread's stime in /proc/PID/stat.
 
-<snip>
-  kworker/3:3-507     [003] ....   470.286305: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000d0f0dde5 nr_records=6
-  kworker/6:1-76      [006] ....   470.416613: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000ea0d6556 nr_records=1
-  kworker/6:1-76      [006] ....   470.416625: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000003e025849 nr_records=9
-  kworker/1:1-73      [001] ....   470.438895: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000091a38dc1 nr_records=1
-  kworker/3:3-507     [003] ....   471.390000: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000815a8713 nr_records=48
-  kworker/1:1-73      [001] ....   471.725785: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000fda9bf20 nr_records=3
-  kworker/1:1-73      [001] ....   471.725833: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000a425b67b nr_records=76
-  kworker/3:3-507     [003] ....   471.958960: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000dce5bdbd nr_records=78
-  kworker/0:4-1411    [000] ....   472.085673: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000007996be9d nr_records=1
-  kworker/0:4-1411    [000] ....   472.085728: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000d0f0dde5 nr_records=5
-  kworker/6:1-76      [006] ....   472.260340: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000065630ee4 nr_records=102
-  kworker/2:1-78      [002] ....   472.527362: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000815a8713 nr_records=1
-<snip>
+On my virtualized test environment (Skylake, 8 cpus) benchmark results
+demonstrate significant improvement:
 
-Out of 512 slots, in all cases, fewer than 10 were actually used.
-In order to improve batching and make utilization more efficient this
-commit sets a drain interval to a fixed 1-second interval. Floods are
-detected when a page fills quickly, and in that case, the reclaim work
-is re-scheduled for the next scheduling-clock tick (jiffy).
+BEFORE Paul's patches:
 
-After this change:
+  SUMMARY tasks_trace grace period latency        avg 22298.551 us stddev 1=
+302.165 us
+  SUMMARY ticks per tasks_trace grace period      avg 2.291 stddev 0.324
 
-<snip>
-  kworker/0:5-1415    [000] ....   239.852727: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000005d2561ea nr_records=178
-  kworker/3:0-38      [003] ....   239.855113: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000039c44d27 nr_records=93
-  kworker/1:4-1747    [001] ....   239.872647: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000004abb2f7e nr_records=109
-  kworker/4:59-288    [004] ....   239.884829: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000049e7a308 nr_records=182
-  kworker/0:5-1415    [000] ....   240.028762: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000037eae6d6 nr_records=86
-  kworker/3:0-38      [003] ....   240.040769: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000003be0ae55 nr_records=244
-  kworker/3:0-38      [003] ....   240.068639: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000021905efe nr_records=45
-        <...>-1415    [000] ....   240.868830: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000007c97e065 nr_records=461
-        <...>-1415    [000] ....   241.068646: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000000725886e nr_records=25
-  kworker/0:5-1415    [000] ....   241.100931: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000021905efe nr_records=300
-  worker/4:59-2880    [004] ....   241.801181: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000004abb2f7e nr_records=180
-  worker/6:60-2554    [006] ....   242.000565: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000006d3084af nr_records=40
-<snip>
+AFTER Paul's patches:
 
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+  SUMMARY tasks_trace grace period latency        avg 16969.197 us  stddev =
+2525.053 us
+  SUMMARY ticks per tasks_trace grace period      avg 1.146 stddev 0.178
+
+Note that since these patches are not in bpf-next benchmarking was done
+by cherry-picking this patch onto rcu tree.
+
+  [0]: https://lore.kernel.org/rcu/20220620225402.GA3842369@paulmck-ThinkPa=
+d-P17-Gen-1/
+
+Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
+Acked-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c | 27 +++++++++++++++++++++++----
- 1 file changed, 23 insertions(+), 4 deletions(-)
+v1 -> v2: lore.kernel.org/bpf/20220623234609.543263-1-davemarchevsky@fb.com
+  * kprobe -> fentry for pregp/postgp probes (Martin)
+	* Make 'Unexpected order of bpf prog calls' detection less brittle by
+	  only looking for unexpected prog call order after a postgp has been
+		seen (Martin, Paul)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index fd16c0b46d9e..37f89bedf45e 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3249,7 +3249,7 @@ EXPORT_SYMBOL_GPL(call_rcu);
- 
- 
- /* Maximum number of jiffies to wait before draining a batch. */
--#define KFREE_DRAIN_JIFFIES (HZ / 50)
-+#define KFREE_DRAIN_JIFFIES (HZ)
- #define KFREE_N_BATCHES 2
- #define FREE_N_CHANNELS 2
- 
-@@ -3510,6 +3510,25 @@ need_offload_krc(struct kfree_rcu_cpu *krcp)
- 	return !!krcp->head;
+ tools/testing/selftests/bpf/Makefile          |   4 +-
+ tools/testing/selftests/bpf/bench.c           |  42 +++
+ tools/testing/selftests/bpf/bench.h           |  12 +
+ .../bench_local_storage_rcu_tasks_trace.c     | 272 ++++++++++++++++++
+ ...run_bench_local_storage_rcu_tasks_trace.sh |  11 +
+ .../local_storage_rcu_tasks_trace_bench.c     |  67 +++++
+ 6 files changed, 407 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/bpf/benchs/bench_local_storage_=
+rcu_tasks_trace.c
+ create mode 100755 tools/testing/selftests/bpf/benchs/run_bench_local_stor=
+age_rcu_tasks_trace.sh
+ create mode 100644 tools/testing/selftests/bpf/progs/local_storage_rcu_tas=
+ks_trace_bench.c
+
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests=
+/bpf/Makefile
+index 4fbd88a8ed9e..9350f0e33727 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -572,6 +572,7 @@ $(OUTPUT)/bench_bpf_loop.o: $(OUTPUT)/bpf_loop_bench.sk=
+el.h
+ $(OUTPUT)/bench_strncmp.o: $(OUTPUT)/strncmp_bench.skel.h
+ $(OUTPUT)/bench_bpf_hashmap_full_update.o: $(OUTPUT)/bpf_hashmap_full_upda=
+te_bench.skel.h
+ $(OUTPUT)/bench_local_storage.o: $(OUTPUT)/local_storage_bench.skel.h
++$(OUTPUT)/bench_local_storage_rcu_tasks_trace.o: $(OUTPUT)/local_storage_r=
+cu_tasks_trace_bench.skel.h
+ $(OUTPUT)/bench.o: bench.h testing_helpers.h $(BPFOBJ)
+ $(OUTPUT)/bench: LDLIBS +=3D -lm
+ $(OUTPUT)/bench: $(OUTPUT)/bench.o \
+@@ -585,7 +586,8 @@ $(OUTPUT)/bench: $(OUTPUT)/bench.o \
+ 		 $(OUTPUT)/bench_bpf_loop.o \
+ 		 $(OUTPUT)/bench_strncmp.o \
+ 		 $(OUTPUT)/bench_bpf_hashmap_full_update.o \
+-		 $(OUTPUT)/bench_local_storage.o
++		 $(OUTPUT)/bench_local_storage.o \
++		 $(OUTPUT)/bench_local_storage_rcu_tasks_trace.o
+ 	$(call msg,BINARY,,$@)
+ 	$(Q)$(CC) $(CFLAGS) $(LDFLAGS) $(filter %.a %.o,$^) $(LDLIBS) -o $@
+=20
+diff --git a/tools/testing/selftests/bpf/bench.c b/tools/testing/selftests/=
+bpf/bench.c
+index 1e7b5d4b1f11..c1f20a147462 100644
+--- a/tools/testing/selftests/bpf/bench.c
++++ b/tools/testing/selftests/bpf/bench.c
+@@ -79,6 +79,43 @@ void hits_drops_report_progress(int iter, struct bench_r=
+es *res, long delta_ns)
+ 	       hits_per_sec, hits_per_prod, drops_per_sec, hits_per_sec + drops_p=
+er_sec);
  }
- 
-+static void
-+schedule_delayed_monitor_work(struct kfree_rcu_cpu *krcp)
+=20
++void
++grace_period_latency_basic_stats(struct bench_res res[], int res_cnt, stru=
+ct basic_stats *gp_stat)
 +{
-+	long delay, delay_left;
++	int i;
 +
-+	delay = READ_ONCE(krcp->count) >= KVFREE_BULK_MAX_ENTR ? 1:KFREE_DRAIN_JIFFIES;
++	memset(gp_stat, 0, sizeof(struct basic_stats));
 +
-+	if (delayed_work_pending(&krcp->monitor_work)) {
-+		delay_left = krcp->monitor_work.timer.expires - jiffies;
++	for (i =3D 0; i < res_cnt; i++)
++		gp_stat->mean +=3D res[i].gp_ns / 1000.0 / (double)res[i].gp_ct / (0.0 +=
+ res_cnt);
 +
-+		if (delay < delay_left)
-+			mod_delayed_work(system_wq, &krcp->monitor_work, delay);
-+
-+		return;
++#define IT_MEAN_DIFF (res[i].gp_ns / 1000.0 / (double)res[i].gp_ct - gp_st=
+at->mean)
++	if (res_cnt > 1) {
++		for (i =3D 0; i < res_cnt; i++)
++			gp_stat->stddev +=3D (IT_MEAN_DIFF * IT_MEAN_DIFF) / (res_cnt - 1.0);
 +	}
-+
-+	queue_delayed_work(system_wq, &krcp->monitor_work, delay);
++	gp_stat->stddev =3D sqrt(gp_stat->stddev);
++#undef IT_MEAN_DIFF
 +}
 +
- /*
-  * This function is invoked after the KFREE_DRAIN_JIFFIES timeout.
-  */
-@@ -3567,7 +3586,7 @@ static void kfree_rcu_monitor(struct work_struct *work)
- 	// work to repeat an attempt. Because previous batches are
- 	// still in progress.
- 	if (need_offload_krc(krcp))
--		schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
-+		schedule_delayed_monitor_work(krcp);
- 
- 	raw_spin_unlock_irqrestore(&krcp->lock, flags);
- }
-@@ -3755,7 +3774,7 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
- 
- 	// Set timer to drain after KFREE_DRAIN_JIFFIES.
- 	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING)
--		schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
-+		schedule_delayed_monitor_work(krcp);
- 
- unlock_return:
- 	krc_this_cpu_unlock(krcp, flags);
-@@ -3831,7 +3850,7 @@ void __init kfree_rcu_scheduler_running(void)
- 
- 		raw_spin_lock_irqsave(&krcp->lock, flags);
- 		if (need_offload_krc(krcp))
--			schedule_delayed_work_on(cpu, &krcp->monitor_work, KFREE_DRAIN_JIFFIES);
-+			schedule_delayed_monitor_work(krcp);
- 		raw_spin_unlock_irqrestore(&krcp->lock, flags);
- 	}
- }
--- 
++void
++grace_period_ticks_basic_stats(struct bench_res res[], int res_cnt, struct=
+ basic_stats *gp_stat)
++{
++	int i;
++
++	memset(gp_stat, 0, sizeof(struct basic_stats));
++	for (i =3D 0; i < res_cnt; i++)
++		gp_stat->mean +=3D res[i].stime / (double)res[i].gp_ct / (0.0 + res_cnt);
++
++#define IT_MEAN_DIFF (res[i].stime / (double)res[i].gp_ct - gp_stat->mean)
++	if (res_cnt > 1) {
++		for (i =3D 0; i < res_cnt; i++)
++			gp_stat->stddev +=3D (IT_MEAN_DIFF * IT_MEAN_DIFF) / (res_cnt - 1.0);
++	}
++	gp_stat->stddev =3D sqrt(gp_stat->stddev);
++#undef IT_MEAN_DIFF
++}
++
+ void hits_drops_report_final(struct bench_res res[], int res_cnt)
+ {
+ 	int i;
+@@ -236,6 +273,7 @@ extern struct argp bench_ringbufs_argp;
+ extern struct argp bench_bloom_map_argp;
+ extern struct argp bench_bpf_loop_argp;
+ extern struct argp bench_local_storage_argp;
++extern struct argp bench_local_storage_rcu_tasks_trace_argp;
+ extern struct argp bench_strncmp_argp;
+=20
+ static const struct argp_child bench_parsers[] =3D {
+@@ -244,6 +282,8 @@ static const struct argp_child bench_parsers[] =3D {
+ 	{ &bench_bpf_loop_argp, 0, "bpf_loop helper benchmark", 0 },
+ 	{ &bench_local_storage_argp, 0, "local_storage benchmark", 0 },
+ 	{ &bench_strncmp_argp, 0, "bpf_strncmp helper benchmark", 0 },
++	{ &bench_local_storage_rcu_tasks_trace_argp, 0,
++		"local_storage RCU Tasks Trace slowdown benchmark", 0 },
+ 	{},
+ };
+=20
+@@ -449,6 +489,7 @@ extern const struct bench bench_bpf_hashmap_full_update;
+ extern const struct bench bench_local_storage_cache_seq_get;
+ extern const struct bench bench_local_storage_cache_interleaved_get;
+ extern const struct bench bench_local_storage_cache_hashmap_control;
++extern const struct bench bench_local_storage_tasks_trace;
+=20
+ static const struct bench *benchs[] =3D {
+ 	&bench_count_global,
+@@ -487,6 +528,7 @@ static const struct bench *benchs[] =3D {
+ 	&bench_local_storage_cache_seq_get,
+ 	&bench_local_storage_cache_interleaved_get,
+ 	&bench_local_storage_cache_hashmap_control,
++	&bench_local_storage_tasks_trace,
+ };
+=20
+ static void setup_benchmark()
+diff --git a/tools/testing/selftests/bpf/bench.h b/tools/testing/selftests/=
+bpf/bench.h
+index 4b15286753ba..d748255877e2 100644
+--- a/tools/testing/selftests/bpf/bench.h
++++ b/tools/testing/selftests/bpf/bench.h
+@@ -30,11 +30,19 @@ struct env {
+ 	struct cpu_set cons_cpus;
+ };
+=20
++struct basic_stats {
++	double mean;
++	double stddev;
++};
++
+ struct bench_res {
+ 	long hits;
+ 	long drops;
+ 	long false_hits;
+ 	long important_hits;
++	unsigned long gp_ns;
++	unsigned long gp_ct;
++	unsigned int stime;
+ };
+=20
+ struct bench {
+@@ -65,6 +73,10 @@ void ops_report_final(struct bench_res res[], int res_cn=
+t);
+ void local_storage_report_progress(int iter, struct bench_res *res,
+ 				   long delta_ns);
+ void local_storage_report_final(struct bench_res res[], int res_cnt);
++void grace_period_latency_basic_stats(struct bench_res res[], int res_cnt,
++				      struct basic_stats *gp_stat);
++void grace_period_ticks_basic_stats(struct bench_res res[], int res_cnt,
++				    struct basic_stats *gp_stat);
+=20
+ static inline __u64 get_time_ns(void)
+ {
+diff --git a/tools/testing/selftests/bpf/benchs/bench_local_storage_rcu_tas=
+ks_trace.c b/tools/testing/selftests/bpf/benchs/bench_local_storage_rcu_tas=
+ks_trace.c
+new file mode 100644
+index 000000000000..43026430b25a
+--- /dev/null
++++ b/tools/testing/selftests/bpf/benchs/bench_local_storage_rcu_tasks_trac=
+e.c
+@@ -0,0 +1,272 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
++
++#include <argp.h>
++
++#include <sys/prctl.h>
++#include "local_storage_rcu_tasks_trace_bench.skel.h"
++#include "bench.h"
++
++#include <signal.h>
++
++static struct {
++	__u32 nr_procs;
++	__u32 kthread_pid;
++	bool quiet;
++} args =3D {
++	.nr_procs =3D 1000,
++	.kthread_pid =3D 0,
++	.quiet =3D false,
++};
++
++enum {
++	ARG_NR_PROCS =3D 7000,
++	ARG_KTHREAD_PID =3D 7001,
++	ARG_QUIET =3D 7002,
++};
++
++static const struct argp_option opts[] =3D {
++	{ "nr_procs", ARG_NR_PROCS, "NR_PROCS", 0,
++		"Set number of user processes to spin up"},
++	{ "kthread_pid", ARG_KTHREAD_PID, "PID", 0,
++		"Pid of rcu_tasks_trace kthread for ticks tracking"},
++	{ "quiet", ARG_QUIET, "{0,1}", 0,
++		"If true, don't report progress"},
++	{},
++};
++
++static error_t parse_arg(int key, char *arg, struct argp_state *state)
++{
++	long ret;
++
++	switch (key) {
++	case ARG_NR_PROCS:
++		ret =3D strtol(arg, NULL, 10);
++		if (ret < 1 || ret > UINT_MAX) {
++			fprintf(stderr, "invalid nr_procs\n");
++			argp_usage(state);
++		}
++		args.nr_procs =3D ret;
++		break;
++	case ARG_KTHREAD_PID:
++		ret =3D strtol(arg, NULL, 10);
++		if (ret < 1) {
++			fprintf(stderr, "invalid kthread_pid\n");
++			argp_usage(state);
++		}
++		args.kthread_pid =3D ret;
++		break;
++	case ARG_QUIET:
++		ret =3D strtol(arg, NULL, 10);
++		if (ret < 0 || ret > 1) {
++			fprintf(stderr, "invalid quiet %ld\n", ret);
++			argp_usage(state);
++		}
++		args.quiet =3D ret;
++		break;
++break;
++	default:
++		return ARGP_ERR_UNKNOWN;
++	}
++
++	return 0;
++}
++
++const struct argp bench_local_storage_rcu_tasks_trace_argp =3D {
++	.options =3D opts,
++	.parser =3D parse_arg,
++};
++
++#define MAX_SLEEP_PROCS 150000
++
++static void validate(void)
++{
++	if (env.producer_cnt !=3D 1) {
++		fprintf(stderr, "benchmark doesn't support multi-producer!\n");
++		exit(1);
++	}
++	if (env.consumer_cnt !=3D 1) {
++		fprintf(stderr, "benchmark doesn't support multi-consumer!\n");
++		exit(1);
++	}
++
++	if (args.nr_procs > MAX_SLEEP_PROCS) {
++		fprintf(stderr, "benchmark supports up to %u sleeper procs!\n",
++			MAX_SLEEP_PROCS);
++		exit(1);
++	}
++}
++
++static long kthread_pid_ticks(void)
++{
++	char procfs_path[100];
++	long stime;
++	FILE *f;
++
++	if (!args.kthread_pid)
++		return -1;
++
++	sprintf(procfs_path, "/proc/%u/stat", args.kthread_pid);
++	f =3D fopen(procfs_path, "r");
++	if (f < 0) {
++		fprintf(stderr, "couldn't open %s, exiting\n", procfs_path);
++		exit(1);
++	}
++	fscanf(f, "%*s %*s %*s %*s %*s %*s %*s %*s %*s %*s %*s %*s %*s %*s %ld", =
+&stime);
++	fclose(f);
++	return stime;
++}
++
++static struct {
++	struct local_storage_rcu_tasks_trace_bench *skel;
++	long prev_kthread_stime;
++} ctx;
++
++static void sleep_and_loop(void)
++{
++	while (true) {
++		sleep(rand() % 4);
++		syscall(__NR_getpgid);
++	}
++}
++
++static void local_storage_tasks_trace_setup(void)
++{
++	int i, err, forkret, runner_pid;
++
++	runner_pid =3D getpid();
++
++	for (i =3D 0; i < args.nr_procs; i++) {
++		forkret =3D fork();
++		if (forkret < 0) {
++			fprintf(stderr, "Error forking sleeper proc %u of %u, exiting\n", i,
++				args.nr_procs);
++			goto err_out;
++		}
++
++		if (!forkret) {
++			err =3D prctl(PR_SET_PDEATHSIG, SIGKILL);
++			if (err < 0) {
++				fprintf(stderr, "prctl failed with err %d, exiting\n", err);
++				goto err_out;
++			}
++
++			if (getppid() !=3D runner_pid) {
++				fprintf(stderr, "Runner died while spinning up procs, exiting\n");
++				goto err_out;
++			}
++			sleep_and_loop();
++		}
++	}
++	fprintf(stderr, "Spun up %u procs (our pid %d)\n", args.nr_procs, runner_=
+pid);
++
++	setup_libbpf();
++
++	ctx.skel =3D local_storage_rcu_tasks_trace_bench__open_and_load();
++	if (!ctx.skel) {
++		fprintf(stderr, "Error doing open_and_load, exiting\n");
++		goto err_out;
++	}
++
++	ctx.prev_kthread_stime =3D kthread_pid_ticks();
++
++	if (!bpf_program__attach(ctx.skel->progs.get_local)) {
++		fprintf(stderr, "Error attaching bpf program\n");
++		goto err_out;
++	}
++
++	if (!bpf_program__attach(ctx.skel->progs.pregp_step)) {
++		fprintf(stderr, "Error attaching bpf program\n");
++		goto err_out;
++	}
++
++	if (!bpf_program__attach(ctx.skel->progs.postgp)) {
++		fprintf(stderr, "Error attaching bpf program\n");
++		goto err_out;
++	}
++
++	return;
++err_out:
++	exit(1);
++}
++
++static void measure(struct bench_res *res)
++{
++	long ticks;
++
++	res->gp_ct =3D atomic_swap(&ctx.skel->bss->gp_hits, 0);
++	res->gp_ns =3D atomic_swap(&ctx.skel->bss->gp_times, 0);
++	ticks =3D kthread_pid_ticks();
++	res->stime =3D ticks - ctx.prev_kthread_stime;
++	ctx.prev_kthread_stime =3D ticks;
++}
++
++static void *consumer(void *input)
++{
++	return NULL;
++}
++
++static void *producer(void *input)
++{
++	while (true)
++		syscall(__NR_getpgid);
++	return NULL;
++}
++
++static void report_progress(int iter, struct bench_res *res, long delta_ns)
++{
++	if (ctx.skel->bss->unexpected) {
++		fprintf(stderr, "Error: Unexpected order of bpf prog calls (postgp after=
+ pregp).");
++		fprintf(stderr, "Data can't be trusted, exiting\n");
++		exit(1);
++	}
++
++	if (args.quiet)
++		return;
++
++	printf("Iter %d\t avg tasks_trace grace period latency\t%lf ns\n",
++	       iter, res->gp_ns / (double)res->gp_ct);
++	printf("Iter %d\t avg ticks per tasks_trace grace period\t%lf\n",
++	       iter, res->stime / (double)res->gp_ct);
++}
++
++static void report_final(struct bench_res res[], int res_cnt)
++{
++	struct basic_stats gp_stat;
++
++	grace_period_latency_basic_stats(res, res_cnt, &gp_stat);
++	printf("SUMMARY tasks_trace grace period latency");
++	printf("\tavg %.3lf us\tstddev %.3lf us\n", gp_stat.mean, gp_stat.stddev);
++	grace_period_ticks_basic_stats(res, res_cnt, &gp_stat);
++	printf("SUMMARY ticks per tasks_trace grace period");
++	printf("\tavg %.3lf\tstddev %.3lf\n", gp_stat.mean, gp_stat.stddev);
++}
++
++/* local-storage-tasks-trace: Benchmark performance of BPF local_storage's=
+ use
++ * of RCU Tasks-Trace.
++ *
++ * Stress RCU Tasks Trace by forking many tasks, all of which do no work a=
+side
++ * from sleep() loop, and creating/destroying BPF task-local storage on wa=
+keup.
++ * The number of forked tasks is configurable.
++ *
++ * exercising code paths which call call_rcu_tasks_trace while there are m=
+any
++ * thousands of tasks on the system should result in RCU Tasks-Trace havin=
+g to
++ * do a noticeable amount of work.
++ *
++ * This should be observable by measuring rcu_tasks_trace_kthread CPU usage
++ * after the grace period has ended, or by measuring grace period latency.
++ *
++ * This benchmark uses both approaches, attaching to rcu_tasks_trace_pregp=
+_step
++ * and rcu_tasks_trace_postgp functions to measure grace period latency and
++ * using /proc/PID/stat to measure rcu_tasks_trace_kthread kernel ticks
++ */
++const struct bench bench_local_storage_tasks_trace =3D {
++	.name =3D "local-storage-tasks-trace",
++	.validate =3D validate,
++	.setup =3D local_storage_tasks_trace_setup,
++	.producer_thread =3D producer,
++	.consumer_thread =3D consumer,
++	.measure =3D measure,
++	.report_progress =3D report_progress,
++	.report_final =3D report_final,
++};
+diff --git a/tools/testing/selftests/bpf/benchs/run_bench_local_storage_rcu=
+_tasks_trace.sh b/tools/testing/selftests/bpf/benchs/run_bench_local_storag=
+e_rcu_tasks_trace.sh
+new file mode 100755
+index 000000000000..5dac1f02892c
+--- /dev/null
++++ b/tools/testing/selftests/bpf/benchs/run_bench_local_storage_rcu_tasks_=
+trace.sh
+@@ -0,0 +1,11 @@
++#!/bin/bash
++# SPDX-License-Identifier: GPL-2.0
++
++kthread_pid=3D`pgrep rcu_tasks_trace_kthread`
++
++if [ -z $kthread_pid ]; then
++	echo "error: Couldn't find rcu_tasks_trace_kthread"
++	exit 1
++fi
++
++./bench --nr_procs 15000 --kthread_pid $kthread_pid -d 600 --quiet 1 local=
+-storage-tasks-trace
+diff --git a/tools/testing/selftests/bpf/progs/local_storage_rcu_tasks_trac=
+e_bench.c b/tools/testing/selftests/bpf/progs/local_storage_rcu_tasks_trace=
+_bench.c
+new file mode 100644
+index 000000000000..03bf69f49075
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/local_storage_rcu_tasks_trace_bench=
+.c
+@@ -0,0 +1,67 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
++
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include "bpf_misc.h"
++
++struct {
++	__uint(type, BPF_MAP_TYPE_TASK_STORAGE);
++	__uint(map_flags, BPF_F_NO_PREALLOC);
++	__type(key, int);
++	__type(value, int);
++} task_storage SEC(".maps");
++
++long hits;
++long gp_hits;
++long gp_times;
++long current_gp_start;
++long unexpected;
++bool postgp_seen;
++
++SEC("fentry/" SYS_PREFIX "sys_getpgid")
++int get_local(void *ctx)
++{
++	struct task_struct *task;
++	int idx;
++	int *s;
++
++	idx =3D 0;
++	task =3D bpf_get_current_task_btf();
++	s =3D bpf_task_storage_get(&task_storage, task, &idx,
++				 BPF_LOCAL_STORAGE_GET_F_CREATE);
++	if (!s)
++		return 0;
++
++	*s =3D 3;
++	bpf_task_storage_delete(&task_storage, task);
++	__sync_add_and_fetch(&hits, 1);
++	return 0;
++}
++
++SEC("fentry/rcu_tasks_trace_pregp_step")
++int pregp_step(struct pt_regs *ctx)
++{
++	current_gp_start =3D bpf_ktime_get_ns();
++	return 0;
++}
++
++SEC("fentry/rcu_tasks_trace_postgp")
++int postgp(struct pt_regs *ctx)
++{
++	if (!current_gp_start && postgp_seen) {
++		/* Will only happen if prog tracing rcu_tasks_trace_pregp_step doesn't
++		 * execute before this prog
++		 */
++		__sync_add_and_fetch(&unexpected, 1);
++		return 0;
++	}
++
++	__sync_add_and_fetch(&gp_times, bpf_ktime_get_ns() - current_gp_start);
++	__sync_add_and_fetch(&gp_hits, 1);
++	current_gp_start =3D 0;
++	postgp_seen =3D true;
++	return 0;
++}
++
++char _license[] SEC("license") =3D "GPL";
+--=20
 2.30.2
+
