@@ -2,209 +2,130 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CAF97C43334
-	for <rcu@archiver.kernel.org>; Tue, 28 Jun 2022 07:30:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BCA82C433EF
+	for <rcu@archiver.kernel.org>; Tue, 28 Jun 2022 11:47:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240744AbiF1HaK (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 28 Jun 2022 03:30:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60176 "EHLO
+        id S241975AbiF1Lrs (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 28 Jun 2022 07:47:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236732AbiF1HaJ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 28 Jun 2022 03:30:09 -0400
-X-Greylist: delayed 136 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 28 Jun 2022 00:30:08 PDT
-Received: from condef-01.nifty.com (condef-01.nifty.com [202.248.20.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A73A11EEF8
-        for <rcu@vger.kernel.org>; Tue, 28 Jun 2022 00:30:08 -0700 (PDT)
-Received: from conssluserg-04.nifty.com ([10.126.8.83])by condef-01.nifty.com with ESMTP id 25S7Pcb1021427
-        for <rcu@vger.kernel.org>; Tue, 28 Jun 2022 16:25:38 +0900
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 25S7PDr0009602;
-        Tue, 28 Jun 2022 16:25:14 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 25S7PDr0009602
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1656401115;
-        bh=eLjAiVxuGvO6AzWFnOFJI+C+QcXzQ40aD2WDoOMylOo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=fVTQn4EnvDBVZS0FLVGRzFY+R2/L/OWZz6Fe/S9B6zhRK8n6MQmJoBsIV9TwpONeB
-         HvDz+HuxaeDU1+IUDE5INxS90LD5NJt6icxiFhpvIRhRANtlIWORuXbp/pE/LTMfZU
-         5AGBCuJrZYxPoFl9Xhwl57lj/SAlTOwQgbszYOdjjIlOcWMwrtoHNubeCOmYLjuCAc
-         qmP536XTz+5bomt598YJqcDNmQFiYzcR/+/mW4DE8b+HcvaoS8IKjhtOlFAD6gfI9K
-         qXUgnzDhhAi7SFvfe2FD/2vdVVrOtgKkECrP9vnov+Yt5CFoz8vN0LTAQv3pxLSgJ7
-         7+9sCRPilbpFg==
-X-Nifty-SrcIP: [209.85.221.53]
-Received: by mail-wr1-f53.google.com with SMTP id s1so16266703wra.9;
-        Tue, 28 Jun 2022 00:25:14 -0700 (PDT)
-X-Gm-Message-State: AJIora+PCCmiwMBfCMQnsCtQpZk1lawz2MrJ5TOjsVQCS00zLhKPF8EN
-        t4LAnOm1J5z/K3kBywvmqKaJURn0IEQjwG9/A+Y=
-X-Google-Smtp-Source: AGRyM1uZt0JBBIngefTOq5ciOXsKG9KrTWDDKK7vu9jmcRu4wRqqpeYUcz2ffXtsi6U5Y2sLFFuZqSTom9sFhummQ8w=
-X-Received: by 2002:adf:d1ea:0:b0:21b:a6cb:fcf6 with SMTP id
- g10-20020adfd1ea000000b0021ba6cbfcf6mr15985029wrd.477.1656401112927; Tue, 28
- Jun 2022 00:25:12 -0700 (PDT)
+        with ESMTP id S1345170AbiF1LrU (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 28 Jun 2022 07:47:20 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACFBD2F671;
+        Tue, 28 Jun 2022 04:45:35 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id j21so21839488lfe.1;
+        Tue, 28 Jun 2022 04:45:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=X0xzQqH5KpRMLY9+PVHhyVujx5g/6WCMMJw5Qqi65jI=;
+        b=jnUdvSPOBJDAxP48Ljv06+Y4FUAIZkOkrCXTaSImmvJPsVoCitqk5nFbdXtgIq3M3R
+         VjFQU6sZcciMIQQVEAu10glcOPPmsj5/wyMjNeH2EBqrWKf/A7znwAzQ6eYUOpFFegAP
+         ++U/w9iDQu/vkSWCjwLQglsCuLfZpRheX9NIRY6JbrhBemsoEJe4bOPSrff4GH6ZHJEg
+         AoGVaDnufkKYVoPwmGbZfQ91c4eVW1ITqXJxjF1pjqB28TQKFZBXNSEJNkC5IA5BPIWX
+         2S9GJ7toPEKNRC5fiBJni5fJXoo6cdor3quwS62vP6tuZzH9FrApvwljwOQJ0q05LZ/r
+         hgFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=X0xzQqH5KpRMLY9+PVHhyVujx5g/6WCMMJw5Qqi65jI=;
+        b=lGIbvuzpp49hFTHn8Tc2e+9YpIWoxDFVOKlE421EA9+RQL8YBn0PJsi/v13qq5uQ2t
+         tKVyn71cnKwEYLoh29V1Vaj/8TAoNuphMsopz4mpDAaTt3CiOS8G5tf+s1wcCPkbZ1wD
+         yVhtXEBDukI/sSK7x9avQ0LJIvIEbYlFoyZ/j8CXhj0ix+dFU2rzpEnir8+faM15SNxV
+         3JovM7HKlgb+x76zh19EKeqJiKjqln9+k6sLKPCh7YwtEp/Tpt6pv3ToX7SAm0tmKegJ
+         RFVt6obWXL6X9DjF8SaBVe/EzESF47sLOYbI5yNie2gM7Bgr5Fb+FAR+MmeV14W3KwnC
+         27wg==
+X-Gm-Message-State: AJIora+46X9uTTD5jKAGyV7KGIEYK8lPWQMgw0dQih2yMZydIXFQLX34
+        niVWGY0/lXQ7T01geMnbAlY=
+X-Google-Smtp-Source: AGRyM1spQ+83X4VvzEzhO/24k4ObYmu1Fz0thJaux2DJZYh2Ch0uRYrTaVTArCzlAn0D6n+92ksugQ==
+X-Received: by 2002:a05:6512:3b2c:b0:47f:6fc2:a9de with SMTP id f44-20020a0565123b2c00b0047f6fc2a9demr12523314lfv.352.1656416733846;
+        Tue, 28 Jun 2022 04:45:33 -0700 (PDT)
+Received: from pc638.lan ([155.137.26.201])
+        by smtp.gmail.com with ESMTPSA id k20-20020a2ea274000000b0025a8c1b5fe2sm1787142ljm.17.2022.06.28.04.45.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Jun 2022 04:45:33 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Tue, 28 Jun 2022 13:45:31 +0200
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH v2 1/1] rcu/kvfree: Update KFREE_DRAIN_JIFFIES interval
+Message-ID: <Yrrp2044RY6amuLo@pc638.lan>
+References: <20220627195353.1575285-1-urezki@gmail.com>
+ <20220627213126.GO1790663@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-References: <CAABZP2wCsXG=qaZ68OwDDPA=uG-4Wb-e6WxMNuHNbJTZ1ruenA@mail.gmail.com>
-In-Reply-To: <CAABZP2wCsXG=qaZ68OwDDPA=uG-4Wb-e6WxMNuHNbJTZ1ruenA@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Tue, 28 Jun 2022 16:24:28 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATNo74bcp6F08iiYjbMrnNeQWsOSys5vYfG88jjpU-kZQ@mail.gmail.com>
-Message-ID: <CAK7LNATNo74bcp6F08iiYjbMrnNeQWsOSys5vYfG88jjpU-kZQ@mail.gmail.com>
-Subject: Re: Possible problem in check-local-export during the kernel build
- process (RCU torture)
-To:     Zhouyi Zhou <zhouzhouyi@gmail.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        rcu <rcu@vger.kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        linux-modules <linux-modules@vger.kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220627213126.GO1790663@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Jun 28, 2022 at 9:55 AM Zhouyi Zhou <zhouzhouyi@gmail.com> wrote:
->
-> Dear Masahiro:
->
-> 1. The cause of the problem
-> When I am doing RCU torture test:
->
-> #git clone https://kernel.source.codeaurora.cn/pub/scm/linux/kernel/git/paulmck/linux-rcu.git
-> #cd linux-rcu
-> #git checkout remotes/origin/pmladek.2022.06.15a
-> #./tools/testing/selftests/rcutorture/bin/torture.sh
->
-> The kernel building report error something in both Dell PowerEdge R720
-> and Thinkpad T14 (Amd).
->
-> For example:
-> /mnt/rcu/linux-rcu/tools/testing/selftests/rcutorture/res/2022.06.27-10.42.37-torture#
-> find . -name Make.out|xargs grep Error
-> ./results-rcutorture-kasan/RUDE01/Make.out:make[2]: ***
-> [scripts/Makefile.build:257: kernel/trace/power-traces.o] Error 255
+> On Mon, Jun 27, 2022 at 09:53:53PM +0200, Uladzislau Rezki (Sony) wrote:
+> > Currently the monitor work is scheduled with a fixed interval that
+> > is HZ/20 or each 50 milliseconds. The drawback of such approach is
+> > a low utilization of page slot in some scenarios. The page can store
+> > up to 512 records. For example on Android system it can look like:
+> 
+> I was looking at queuing this one, but we need a bit more data.  In
+> the meantime, here is my wordsmithing of the above paragraph:
+> 
+> Currently the monitor work is scheduled with a fixed interval of HZ/20,
+> which is roughly 50 milliseconds. The drawback of this approach is
+> low utilization of the 512 page slots in scenarios with infrequence
+> kvfree_rcu() calls.  For example on an Android system:
+> 
+Good i will update with your changes :)
 
+> > <snip>
+> >   kworker/3:0-13872   [003] .... 11286.007048: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000026522604 nr_records=1
+> >   kworker/3:0-13872   [003] .... 11286.015638: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000095ed6fca nr_records=2
+> >   kworker/1:2-20434   [001] .... 11286.051230: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000044872ffd nr_records=1
+> >   kworker/1:2-20434   [001] .... 11286.059322: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000026522604 nr_records=2
+> >   kworker/0:1-20052   [000] .... 11286.095295: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000044872ffd nr_records=2
+> >   kworker/0:1-20052   [000] .... 11286.103418: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000cbcf05db nr_records=1
+> >   kworker/2:3-14372   [002] .... 11286.135155: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000095ed6fca nr_records=2
+> >   kworker/2:3-14372   [002] .... 11286.135198: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000044872ffd nr_records=1
+> >   kworker/1:2-20434   [001] .... 11286.155377: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000cbcf05db nr_records=5
+> >   kworker/2:3-14372   [002] .... 11286.167181: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000026522604 nr_records=5
+> >   kworker/1:2-20434   [001] .... 11286.179202: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000008ef95e14 nr_records=1
+> >   kworker/2:3-14372   [002] .... 11286.187398: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000c597d297 nr_records=6
+> >   kworker/3:0-13872   [003] .... 11286.187445: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000050bf92e2 nr_records=3
+> >   kworker/1:2-20434   [001] .... 11286.198975: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000cbcf05db nr_records=4
+> >   kworker/1:2-20434   [001] .... 11286.207203: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000095ed6fca nr_records=4
+> > <snip>
+> > 
+> > where a page only carries few records to reclaim a memory. In order
+> > to improve batching and make utilization more efficient the patch sets
+> > a drain interval to 1 second as default one. When a flood is detected
+> > an interval is adjusted in a way that a reclaim work is re-scheduled
+> > on a next timer jiffy.
+> 
+> And of the above paragraph:
+> 
+> Out of 512 slots, in all cases, fewer than 10 were actually used.
+> In order to improve batching and make utilization more efficient this
+> commit sets a drain interval to a fixed 1-second interval. Floods are
+> detected when a page fills quickly, and in that case, the reclaim work
+> is re-scheduled for the next scheduling-clock tick (jiffy).
+> 
+Same here, will apply this.
 
-check-local-export stopped using the process substitution.
-Seet this commit:
+> ---
+> 
+> But what we need now is a trace like the one above showing higher utilization
+> of the pages.  Could you please supply this?
+> 
+Yep, i will add traces to show that utilization becomes better what is
+actually expectable.
 
-
-commit da4288b95baa1c7c9aa8a476f58b37eb238745b0
-Author: Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed Jun 8 10:11:00 2022 +0900
-
-    scripts/check-local-export: avoid 'wait $!' for process substitution
-
-
-
-
-You are debugging the stale Kbuild code.
-
-If your main interest is RCU torture,
-please narrow it down to a standalone script,
-not the entire Kbuild.
-
-
-
-
-
-
-
-
-
->
-> 2. I trace the problem to check-local-export
-> I add some echo statement in Makefile.build
-> diff --git a/scripts/Makefile.build b/scripts/Makefile.build
-> index 1f01ac65c0cd..0d48a2d3efff 100644
-> --- a/scripts/Makefile.build
-> +++ b/scripts/Makefile.build
-> @@ -227,13 +227,21 @@ cmd_check_local_export =
-> $(srctree)/scripts/check-local-export $@
->
->  define rule_cc_o_c
->         $(call cmd_and_fixdep,cc_o_c)
-> +       echo "after fixdep $$? $<"
->         $(call cmd,gen_ksymdeps)
-> +       echo "after gen_ksymdeps $$? $<"
->         $(call cmd,check_local_export)
-> +       echo "after check_local_export $$? $<"
->         $(call cmd,checksrc)
-> +       echo "after checksrc $$? $<"
->         $(call cmd,checkdoc)
-> +       echo "after checkdoc $$? $<"
->         $(call cmd,gen_objtooldep)
-> +       echo "after gen_objtooldep $$? $<"
->         $(call cmd,gen_symversions_c)
-> +       echo "after gen_symversions $$? $<"
->         $(call cmd,record_mcount)
-> +       echo "after record_mcount $$? $<"
->  endef
->
-> Then I rerun the torture.sh
->
-> The result show it is check_local_export did not continue in all failed builds.
->
-> 3. I trace into wait statement in check-local-export
-> diff --git a/scripts/check-local-export b/scripts/check-local-export
-> index da745e2743b7..d35477d95bdc 100755
-> --- a/scripts/check-local-export
-> +++ b/scripts/check-local-export
-> @@ -12,7 +12,7 @@ declare -A symbol_types
->  declare -a export_symbols
->
->  exit_code=0
-> -
-> +echo "check-local-export L15 ${0} ${1}"
->  while read value type name
->  do
->         # Skip the line if the number of fields is less than 3.
-> @@ -50,9 +50,10 @@ do
->         #   done < <(${NM} --quiet ${1})
->  done < <(${NM} ${1} 2>/dev/null || { echo "${0}: ${NM} failed" >&2; false; } )
->
-> +echo "check-local-export L53 ${0} ${1}"
->  # Catch error in the process substitution
->  wait $!
-> -
-> +echo "check-local-export L56 ${0} ${1} $! $?"
->  for name in "${export_symbols[@]}"
->  do
->         # nm(3) says "If lowercase, the symbol is usually local"
-> @@ -61,5 +62,9 @@ do
->                 exit_code=1
->         fi
->  done
-> -
-> +if [ ${exit_code} -ne 0 ] ; then
-> +    echo "Zhouyi Zhou"
-> +    echo ${exit_code}
-> +fi
-> +echo "check-local-export L69 $? ${exit_code}"
->  exit ${exit_code}
->
-> Then I rerun the torture.sh
->
-> The result show it is wait $! in all failed builds because in all failed cases,
-> there is L53, but no L56
->
-> 4. I look into source code of wait command
-> #wget http://ftp.gnu.org/gnu/bash/bash-5.0.tar.gz
-> #tar zxf tar zxf bash-5.0.tar.gz
-> I found that there are QUIT statements in realization of function wait_for
->
-> 5. My Guess
-> wait statement in check-local-export may cause bash to quit
-> I am very interested in this problem, but I am a rookie, I am very
-> glad to proceed the investigation with your further directions.
->
-> Sorry to have brought you so much trouble.
->
->
-> Kind Regard
-> Thank you very much
-> Zhouyi
-
-
-
--- 
-Best Regards
-Masahiro Yamada
+--
+Uladzislau Rezki
