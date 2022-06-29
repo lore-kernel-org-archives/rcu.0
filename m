@@ -2,41 +2,43 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7669CCA47E
-	for <rcu@archiver.kernel.org>; Wed, 29 Jun 2022 15:01:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 97E67CCA47E
+	for <rcu@archiver.kernel.org>; Wed, 29 Jun 2022 15:27:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233652AbiF2PBc (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 29 Jun 2022 11:01:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35286 "EHLO
+        id S233538AbiF2P1c (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 29 Jun 2022 11:27:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231649AbiF2PBa (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 29 Jun 2022 11:01:30 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F30324967;
-        Wed, 29 Jun 2022 08:01:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=u75BnaIZv65/D4EtnoVCQK9Jy3Yfc8PqQDHXzj1JaKg=; b=yApMYDtp8LWyJtG39X2au+AsJo
-        /cKHe+qyb1wDCP3Apqwuy5zoX3WnUz6vNM7x+YAmmSSaU0wJtCsc288u6ZgUFe4bx5qxHlQpPH2JE
-        H+wyMsM6DeIYkdNnYCH33MF+4/mgmbNCxVUVoxRnLinaCo/2E36hEF5IuXtPDkmgNkCSUCr9VatQx
-        UCeEH/o+5yzT3m6My/YdO4zmx1mTrjU0Ggg92m5VJkwWVWEM+sXjRKFjGROqbDqR+/oPeoK8IHfFW
-        9ttqronmDisFehvosbJWnXpCwekNmlIBjpNolrIPQUses1kHAV5gbWRPGsWYAMNImCo+TjYafpP9Y
-        yJYGt/BQ==;
-Received: from [2001:4bb8:199:3788:eb09:6317:6452:5395] (helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1o6ZBh-00Ccg4-M7; Wed, 29 Jun 2022 15:01:06 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     =?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
+        with ESMTP id S234199AbiF2P12 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 29 Jun 2022 11:27:28 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9B062E9FB;
+        Wed, 29 Jun 2022 08:27:27 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8318360B27;
+        Wed, 29 Jun 2022 15:27:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C40D8C34114;
+        Wed, 29 Jun 2022 15:27:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1656516446;
+        bh=C7+n2xJegL9gjAWfn0gYV9ETANtGcmZOAauecDXXpMw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aVw2/8ykosIBTI15WhKjsfTHLa4ELBMBAvMHusrYnbWqsGUNPq8/vue9Obr7k+OM8
+         Z03VBpUkdJ7I1gr3zda5pP9qLy1TMznbkAdEhlbV6odBTWoBQwdYxktyo7b5PaqqiM
+         rura0NjwXFAj8QrHwXNjNOllKwxPlM5m6o4pk3R8=
+Date:   Wed, 29 Jun 2022 17:27:21 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
         Todd Kjos <tkjos@android.com>,
         Martijn Coenen <maco@android.com>,
         Joel Fernandes <joel@joelfernandes.org>,
         Christian Brauner <brauner@kernel.org>,
         Hridya Valsaraju <hridya@google.com>,
         Suren Baghdasaryan <surenb@google.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
+        Theodore Ts'o <tytso@mit.edu>,
         "Jason A. Donenfeld" <Jason@zx2c4.com>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
@@ -53,21 +55,35 @@ Cc:     =?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
         Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
         wireguard@lists.zx2c4.com, netdev@vger.kernel.org,
         rcu@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: remove CONFIG_ANDROID
-Date:   Wed, 29 Jun 2022 17:01:01 +0200
-Message-Id: <20220629150102.1582425-1-hch@lst.de>
-X-Mailer: git-send-email 2.30.2
+Subject: Re: [PATCH] remove CONFIG_ANDROID
+Message-ID: <YrxvWT/aeQnwEv52@kroah.com>
+References: <20220629150102.1582425-1-hch@lst.de>
+ <20220629150102.1582425-2-hch@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220629150102.1582425-2-hch@lst.de>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Greg,
+On Wed, Jun 29, 2022 at 05:01:02PM +0200, Christoph Hellwig wrote:
+> The ANDROID config symbol is only used to guard the binder config
+> symbol and to inject completely random config changes.  Remove it
+> as it is obviously a bad idea.
 
-this series removes the CONFIG_ANDROID.  It just guards the Kconfig
-option for binder and then changes a bunch of random defaults and
-settings, which makes no sense whatsoever and none of those changes
-had any good justifcation in their commit logs either.
+Ick, rcu and random driver changes?  That's not ok, I'll go queue this
+up, if Android devices need to make these core changes, they can do that
+in their kernel or submit a patch that makes sense for everyone.
 
+Also, one meta-comment:
+
+>  kernel/configs/android-base.config                  | 1 -
+
+This whole file can be deleted now, with the way Android kernels are now
+being managed it makes no sense anymore.  I'll write up a patch to do
+that later tonight.
+
+thanks,
+
+greg k-h
