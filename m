@@ -2,123 +2,119 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DCB8C43334
-	for <rcu@archiver.kernel.org>; Wed, 29 Jun 2022 20:29:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BC08C433EF
+	for <rcu@archiver.kernel.org>; Wed, 29 Jun 2022 20:47:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230241AbiF2U3v (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 29 Jun 2022 16:29:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55224 "EHLO
+        id S231363AbiF2Urm (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 29 Jun 2022 16:47:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230012AbiF2U3v (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 29 Jun 2022 16:29:51 -0400
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51BBF22506
-        for <rcu@vger.kernel.org>; Wed, 29 Jun 2022 13:29:50 -0700 (PDT)
-Received: by mail-qv1-xf34.google.com with SMTP id u14so23973292qvv.2
-        for <rcu@vger.kernel.org>; Wed, 29 Jun 2022 13:29:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6IGv+IKgPKHnzxqZVkEhxDyqtc80x0hxt+COdkVzvjY=;
-        b=HEdHyB8UCGW/VSkGbhcXX/1am3z8nAEQ5HcLi+z5p093UvVc6kR8V1HaChPvjSYNtb
-         oGLq9qKnfk/8RUnbOVbKFTUVXZh3xOYFeTq9JXjE0dyFyDgCI4NCHTXc68g/nLG3DJjh
-         DuCAHcrNCmyhmJeJoJ61ZaXsG7OWksfKmvsS0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6IGv+IKgPKHnzxqZVkEhxDyqtc80x0hxt+COdkVzvjY=;
-        b=EGHhcViV/XxbrjCvmts/z6t7Yuwa55EWzXt63Bt/OcyQrYFwGzJRvVjz6aQFi/U8Na
-         c+qgANR25glibMkoD8kr3auZR7oOrPj2JsTDMwfSWUc5v6rmVn0BKMrSrLsoBufBRRbl
-         lGq/mka6zhQ71pthZgA8eIsYit4JOOXG6Wjg8oLCmSRSwbkKOY0XvM9JXrb04HLvG/4v
-         dfkOugT8jfSvq9b8yZ/f79Tq0XwtTEZ6jBGp7kPEtlvanIiAt2xdZRecjOQPpK+v9F3v
-         t2mVXSQpm+vRIeRrOrRwzMX2cSqfKDMiB3xvMu3ziEY2IwEwWEHVqj39u3t6MfmdoBsJ
-         Mhfw==
-X-Gm-Message-State: AJIora9OvgcygHr9vhj+cF7pzjjCs+82t6PdnBtdRY5WSmRtrh0xWqMc
-        xD0E65gnrrxDiC8KN9Am9tElgw==
-X-Google-Smtp-Source: AGRyM1sKaoVksRNhOJ6kwqWjLs6cABIFpgcgyZkPIXc/LHINSBcROYQqLKg28b35N8k81ZNERMNNMA==
-X-Received: by 2002:a05:622a:1391:b0:304:eb9f:aee6 with SMTP id o17-20020a05622a139100b00304eb9faee6mr4322836qtk.365.1656534589375;
-        Wed, 29 Jun 2022 13:29:49 -0700 (PDT)
-Received: from localhost (228.221.150.34.bc.googleusercontent.com. [34.150.221.228])
-        by smtp.gmail.com with ESMTPSA id u3-20020a37ab03000000b006b1a343c2absm714861qke.131.2022.06.29.13.29.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Jun 2022 13:29:49 -0700 (PDT)
-Date:   Wed, 29 Jun 2022 20:29:48 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rushikesh.s.kadam@intel.com, urezki@gmail.com,
-        neeraj.iitr10@gmail.com, paulmck@kernel.org, rostedt@goodmis.org,
-        vineeth@bitbyteword.org
-Subject: Re: [PATCH v2 1/8] rcu: Introduce call_rcu_lazy() API implementation
-Message-ID: <Yry2PAc0KtkYW24A@google.com>
-References: <20220622225102.2112026-1-joel@joelfernandes.org>
- <20220622225102.2112026-3-joel@joelfernandes.org>
- <20220629115349.GA2119930@lothringen>
+        with ESMTP id S231349AbiF2Urm (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 29 Jun 2022 16:47:42 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC38E22535;
+        Wed, 29 Jun 2022 13:47:37 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3AD9960C2C;
+        Wed, 29 Jun 2022 20:47:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 997C4C34114;
+        Wed, 29 Jun 2022 20:47:33 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="PIocfaGZ"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1656535651;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nvJ3fw5U4MW8nxM8aCE1R+6sT2AFWOEF89xbodNQ+Ms=;
+        b=PIocfaGZVNfSYsleBvWLhO5VJ+LmKrkUG0h5bDnae9hr+edK+R47EppxiopYDLw5kbSCAX
+        eQK5Gw+P8AHe6C3tjz8QTOM+/lZgOrILQvf6fogiJXsrsiozuZkMVdJxFrZ5pMok7P2rLE
+        r74GkuVYo0ZepToWUldrCEjQsXH8o8Q=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 019e7d6b (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
+        Wed, 29 Jun 2022 20:47:31 +0000 (UTC)
+Date:   Wed, 29 Jun 2022 22:47:26 +0200
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+To:     Kalesh Singh <kaleshsingh@google.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arve =?utf-8?B?SGrDuG5uZXbDpWc=?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>,
+        Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+        wireguard@lists.zx2c4.com, netdev@vger.kernel.org,
+        rcu@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        sultan@kerneltoast.com
+Subject: Re: [PATCH] remove CONFIG_ANDROID
+Message-ID: <Yry6XvOGge2xKx/n@zx2c4.com>
+References: <20220629150102.1582425-2-hch@lst.de>
+ <Yrx5Lt7jrk5BiHXx@zx2c4.com>
+ <20220629161020.GA24891@lst.de>
+ <Yrx6EVHtroXeEZGp@zx2c4.com>
+ <20220629161527.GA24978@lst.de>
+ <Yrx8/Fyx15CTi2zq@zx2c4.com>
+ <20220629163007.GA25279@lst.de>
+ <Yrx/8UOY+J8Ao3Bd@zx2c4.com>
+ <YryNQvWGVwCjJYmB@zx2c4.com>
+ <Yryic4YG9X2/DJiX@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20220629115349.GA2119930@lothringen>
+In-Reply-To: <Yryic4YG9X2/DJiX@google.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Jun 29, 2022 at 01:53:49PM +0200, Frederic Weisbecker wrote:
-> On Wed, Jun 22, 2022 at 10:50:55PM +0000, Joel Fernandes (Google) wrote:
-> > @@ -414,30 +427,37 @@ static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
-> >  	}
-> >  	WRITE_ONCE(rdp->nocb_nobypass_count, c);
-> >  
-> > -	// If there hasn't yet been all that many ->cblist enqueues
-> > -	// this jiffy, tell the caller to enqueue onto ->cblist.  But flush
-> > -	// ->nocb_bypass first.
-> > -	if (rdp->nocb_nobypass_count < nocb_nobypass_lim_per_jiffy) {
-> > +	// If caller passed a non-lazy CB and there hasn't yet been all that
-> > +	// many ->cblist enqueues this jiffy, tell the caller to enqueue it
-> > +	// onto ->cblist.  But flush ->nocb_bypass first. Also do so, if total
-> > +	// number of CBs (lazy + non-lazy) grows too much.
-> > +	//
-> > +	// Note that if the bypass list has lazy CBs, and the main list is
-> > +	// empty, and rhp happens to be non-lazy, then we end up flushing all
-> > +	// the lazy CBs to the main list as well. That's the right thing to do,
-> > +	// since we are kick-starting RCU GP processing anyway for the non-lazy
-> > +	// one, we can just reuse that GP for the already queued-up lazy ones.
-> > +	if ((rdp->nocb_nobypass_count < nocb_nobypass_lim_per_jiffy && !lazy) ||
-> > +	    (lazy && n_lazy_cbs >= qhimark)) {
-> >  		rcu_nocb_lock(rdp);
-> >  		*was_alldone = !rcu_segcblist_pend_cbs(&rdp->cblist);
-> >  		if (*was_alldone)
-> >  			trace_rcu_nocb_wake(rcu_state.name, rdp->cpu,
-> > -					    TPS("FirstQ"));
-> > -		WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, j));
-> > +					    lazy ? TPS("FirstLazyQ") : TPS("FirstQ"));
-> > +		WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, j, false));
+Hi Kalesh,
+
+On Wed, Jun 29, 2022 at 12:05:23PM -0700, Kalesh Singh wrote:
+> Thanks for raising this.
 > 
-> That's outside the scope of this patchset but this makes me realize we
-> unconditionally try to flush the bypass from call_rcu() fastpath, and
-> therefore we unconditionally lock the bypass lock from call_rcu() fastpath.
+> Android no longer uses PM_AUTOSLEEP, is correct. libsuspend is
+> also now deprecated. Android autosuspend is initiatiated from the
+> userspace system suspend service [1].
 > 
-> It shouldn't be contended at this stage since we are holding the nocb_lock
-> already, and only the local CPU can hold the nocb_bypass_lock without holding
-> the nocb_lock. But still...
+> A runtime config sounds more reasonable since in the !PM_AUTOSLEEP
+> case, it is userspace which decides the suspend policy.
 > 
-> It looks safe to locklessly early check if (rcu_cblist_n_cbs(&rdp->nocb_bypass))
-> before doing anything. Only the local CPU can enqueue to the bypass list.
-> 
-> Adding that to my TODO list...
-> 
+> [1] https://cs.android.com/android/platform/superproject/+/bf3906ecb33c98ff8edd96c852b884dbccb73295:system/hardware/interfaces/suspend/1.0/default/SystemSuspend.cpp;l=265
 
-I am afraid I did not understand your comment. The bypass list lock is held
-once we have decided to use the bypass list to queue something on to it.
+Bingo, thanks for the pointer. So looking at this, I'm trying to tease
+out some heuristic that wouldn't require any changes, but I don't really
+see anything _too_ perfect. One fragment of an idea would be that the
+kernel treats things in autosuspending mode if anybody is holding open a
+fd to /sys/power/state. But I worry this would interact with
+non-autosuspending userspaces that also hold open the file. So barring
+that, I'm not quite sure.
 
-The bypass flushing is also conditional on either the bypass cblist growing
-too big or a jiffie elapsing since the first bypass queue.
+If you also can't think of something, maybe we should talk about adding
+something that requires code changes. In that line of thinking, how
+would you feel about opening /sys/power/userspace_autosuspender and
+keeping that fd open. Then the kernel API would have
+`bool pm_has_userspace_autosuspender(void)` that code could check.
+Alternatively, if you don't want refcounting fd semantics for that, just
+writing a "1" into a similar file seems fine?
 
-So in both cases, acquiring the lock is conditional. What do you mean it is
-unconditionally acquiring the bypass lock? Where?
+Any strong opinions about it? Personally it doesn't make much of a
+difference to me. The important thing is just that it'd be something
+you're willing to implement in that SystemSuspend.cpp file.
 
-Thanks!
-
- - Joel
-
+Jason
