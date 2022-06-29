@@ -2,48 +2,48 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CB342C43334
-	for <rcu@archiver.kernel.org>; Wed, 29 Jun 2022 23:20:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6EB66CCA47C
+	for <rcu@archiver.kernel.org>; Wed, 29 Jun 2022 23:52:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231296AbiF2XUJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 29 Jun 2022 19:20:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57690 "EHLO
+        id S231268AbiF2XwW (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 29 Jun 2022 19:52:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229966AbiF2XUI (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 29 Jun 2022 19:20:08 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B200F22BD9
-        for <rcu@vger.kernel.org>; Wed, 29 Jun 2022 16:20:05 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id t17-20020a1c7711000000b003a0434b0af7so569107wmi.0
-        for <rcu@vger.kernel.org>; Wed, 29 Jun 2022 16:20:05 -0700 (PDT)
+        with ESMTP id S231357AbiF2XwS (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 29 Jun 2022 19:52:18 -0400
+Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 958A722BF5
+        for <rcu@vger.kernel.org>; Wed, 29 Jun 2022 16:52:16 -0700 (PDT)
+Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-31bf327d4b5so74364317b3.13
+        for <rcu@vger.kernel.org>; Wed, 29 Jun 2022 16:52:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=+sgKiiXbPvFwyYU8o7PbhLKBAM5khScy7fiUEj1PWbo=;
-        b=ZS8pZ8AkCzaaVPMBMBlNMb7xmEcWyThMpKD4H9SxTn4aRlFL+W90lgmPz6YW6AqbTK
-         az6lnnWR+9t97ButIT3JuiD5TuQ7VjYn19RAuDFGSrHNamK8if1SUysJ+ITjgK4tSHJi
-         1GSlaNpR1IgPbvhoKBLigo1nSTHF/oMFj+7QVBiS93FHum9BPPx/cfy13jaj0mmZeBSe
-         zOm9tqbWAwZ4ITlZMiIu/xcywPZWzBgma5twMf0dYBrIKBpvzJZOBsCw5XLqURKl6bVk
-         JotXGD0fZz41OwPVNs1Q4qsbZYKIXdP64yXX0zAAeM5jRRvpwsRCJIO3yodRkRyxWVwV
-         Ta6Q==
+        bh=jj2bErexLgV1A9YIdvzx3PGjusAMI02AE7tzIDJ1M5A=;
+        b=Y2Tu2OdDzMgyWgz7uI6wnDGVdXiBPwT0tk13f7mVdOKDysVRR/kbruRKXKz2I5+Mni
+         GQx6RMKlgx3jTU8tqKusqnJzX0RL/HtsP7Km6NeANpCcKuitYurgmkGIZxyd81D0b7c4
+         M6hgkp/CS/Lan4c8MCYn+6RBduyK3MXC1Q5hpln09l+yFeWTrPqOilPtanfcysyDmduD
+         1QqYZFTcDH7Rj6fKdLgMxiOspYiBUK9DkBCSjd2QsNvE7OGJUY1fr6YAUMEzUMi16PcV
+         Pr19C5xIMVz6otGKDdAXazhClNibtSR2AR9TjfOL7WIpf1a3vQmUpvWxoW405WHuZuXJ
+         zzZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=+sgKiiXbPvFwyYU8o7PbhLKBAM5khScy7fiUEj1PWbo=;
-        b=Zu9g5OikVYm1BjbAv5dDKTd9pQqPs9UP95qUcXoWykNtLjn8MehsWaflp/1EJDbIzZ
-         TtL3HGY1K5/PiuzI8W0PwCaWr3KkX/DrAjfNUEpA43E8Y4neSkcw7ixI4lRcimx70WAd
-         wu2U2GJCEjw+2sgxspZywNf8gnbAOJ24hjezYWcfVhfJdYRLTsrHvh3KRG5BTjs9Avd/
-         FPZ5gZHU5ZLuI8zudEFF/7y0mksenZehRj8HtJrItOONmeTeI4TffVjfDr6rnQ7JS2C6
-         RiQmduzrzsL8IVuU9M7Y5hgVfJBHm8+C5sNLHu2MiGjVZqGWtmnyCdHLR+AUiRSQs4iF
-         vLPQ==
-X-Gm-Message-State: AJIora9e6dt/khYym4WI2uD30VzTUucIf2D5VdTXttmefMMqwpGWdQqf
-        0NvVvFfkaixt6lo4ZtK5DfqkzvK/yWact5YMLD69Xg==
-X-Google-Smtp-Source: AGRyM1sfkNAdLMD1HYwGLNTvaIF0Dst/TgdO4rRRnXhlJE6YhvrqSGBP68be1nutxJacar9qONmUp2Galr2SkNF40y4=
-X-Received: by 2002:a05:600c:4081:b0:3a0:47c4:8dd0 with SMTP id
- k1-20020a05600c408100b003a047c48dd0mr6134358wmh.178.1656544804063; Wed, 29
- Jun 2022 16:20:04 -0700 (PDT)
+        bh=jj2bErexLgV1A9YIdvzx3PGjusAMI02AE7tzIDJ1M5A=;
+        b=EEb9UR76tu8RGadgD8sWEeP830JPHFwZ++R1ZddenDlAQBvFGJCCb6HT+SvPpDdIOs
+         LXGrUbkZjNAL9BowwWyXbcmYEyM6AwppTfhfEdkHpsDDeEgi9pERbH65/BAqdef1+393
+         Jh/+VJnhqyF9fOnaKLxH5CDYANWbK2Qxr7ized//pinoqLCW92VanUnNnqAxUUQktQTb
+         o9j/09nAKWuM9FhrpQjDk6SkzWpfblN4OBpG4QtTZ2R24mW6SomXYNESYdAvIHC+om3p
+         +Y6JeG5iq+DhrziNbGmLirtjeJ7ctW1pV7ovib4ivuah69WcqpLyi4j50gC+d9bHGTm/
+         Q3qw==
+X-Gm-Message-State: AJIora+zanU52wj/Zv0X3bM9Ux3DFx9xWhykFNO5uvtha8pqP1Mz0TB4
+        iLUz2P5ywcr4ecJZWvBUTZ0jrBIV3Ld/h5q4aI3D
+X-Google-Smtp-Source: AGRyM1v1n7EWs3fcbJobS/0qoUyUpaOGXwj1JxcVbNWxYIvJDEF/meItbXW0LeimAccioancoaiWdGtPrhVNyLhYnGY=
+X-Received: by 2002:a81:8d08:0:b0:317:a4cd:d65d with SMTP id
+ d8-20020a818d08000000b00317a4cdd65dmr6750642ywg.329.1656546735690; Wed, 29
+ Jun 2022 16:52:15 -0700 (PDT)
 MIME-Version: 1.0
 References: <20220629161020.GA24891@lst.de> <Yrx6EVHtroXeEZGp@zx2c4.com>
  <20220629161527.GA24978@lst.de> <Yrx8/Fyx15CTi2zq@zx2c4.com>
@@ -52,12 +52,13 @@ References: <20220629161020.GA24891@lst.de> <Yrx6EVHtroXeEZGp@zx2c4.com>
  <Yry6XvOGge2xKx/n@zx2c4.com> <CAC_TJve_Jk0+XD7VeSJVvJq4D9ZofnH69B4QZv2LPT4X3KNfeg@mail.gmail.com>
  <YrzaCRl9rwy9DgOC@zx2c4.com>
 In-Reply-To: <YrzaCRl9rwy9DgOC@zx2c4.com>
-From:   Kalesh Singh <kaleshsingh@google.com>
-Date:   Wed, 29 Jun 2022 16:19:52 -0700
-Message-ID: <CAC_TJvcEzp+zQp50wtj4=7b6vEObpJCQYLaTLhHJCxFdk3TgPg@mail.gmail.com>
+From:   John Stultz <jstultz@google.com>
+Date:   Wed, 29 Jun 2022 16:52:05 -0700
+Message-ID: <CANDhNCpRzzULaGmEGCbbJgVinA0pJJB-gOP9AY0Hy488n9ZStA@mail.gmail.com>
 Subject: Re: [PATCH] remove CONFIG_ANDROID
 To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
+Cc:     Kalesh Singh <kaleshsingh@google.com>,
+        Christoph Hellwig <hch@lst.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
         Todd Kjos <tkjos@android.com>,
@@ -85,8 +86,8 @@ Cc:     Christoph Hellwig <hch@lst.de>,
         "open list:KERNEL SELFTEST FRAMEWORK" 
         <linux-kselftest@vger.kernel.org>, sultan@kerneltoast.com,
         android-kernel-team <android-kernel-team@google.com>,
-        John Stultz <jstultz@google.com>,
-        Saravana Kannan <saravanak@google.com>, rafael@kernel.org
+        Saravana Kannan <saravanak@google.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
@@ -123,12 +124,6 @@ On Wed, Jun 29, 2022 at 4:02 PM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
 >    CONFIG_ANDROID removal.
 >
 > Does that seem like a reasonable way forward?
-
-Sounds like a plan. I'll clean up and repost your patch once the
-Gerrit change is ready.
-
-Thanks,
-Kalesh
 >
 > Jason
 >
@@ -204,15 +199,27 @@ Kalesh
 > +
 > +power_attr(pm_userspace_autosleeper);
 > +
->  #ifdef CONFIG_SUSPEND
->  static ssize_t mem_sleep_show(struct kobject *kobj, struct kobj_attribute *attr,
->                               char *buf)
-> @@ -869,6 +886,7 @@ static struct attribute * g[] = {
->  #ifdef CONFIG_PM_SLEEP
->         &pm_async_attr.attr,
->         &wakeup_count_attr.attr,
-> +       &pm_userspace_autosleeper.attr,
->  #ifdef CONFIG_SUSPEND
->         &mem_sleep_attr.attr,
->         &sync_on_suspend_attr.attr,
->
+
+Jason: Thanks for raising this issue and sharing this patch to avoid
+breakage! I really appreciate it.
+
+My only concern with this change introducting a userspace knob set at
+runtime, vs a (hopefully more specific than _ANDROID) kernel config is
+that it's not exactly clear what the flag really means (which is the
+same issue CONFIG_ANDROID has). And more problematic, with this it
+would be an ABI.
+
+So for this we probably need to have a very clear description of what
+userland is telling the kernel. Because I'm sure userlands behavior
+will drift and shift and we'll end up litigating what kind of behavior
+is really userspace_autosleeping vs userspace_sortof_autosleeping. :)
+
+Alternatively, maybe we should switch it to describe what behavior
+change we are wanting the kernel take (instead of it hinting to the
+kernel what to expect from userland's behavior)? That way it might be
+more specific.
+
+Again, really appreciate your efforts here!
+
+thanks
+-john
