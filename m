@@ -2,119 +2,210 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BC08C433EF
-	for <rcu@archiver.kernel.org>; Wed, 29 Jun 2022 20:47:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DFEE3C433EF
+	for <rcu@archiver.kernel.org>; Wed, 29 Jun 2022 21:07:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231363AbiF2Urm (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 29 Jun 2022 16:47:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39244 "EHLO
+        id S230286AbiF2VHZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 29 Jun 2022 17:07:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231349AbiF2Urm (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 29 Jun 2022 16:47:42 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC38E22535;
-        Wed, 29 Jun 2022 13:47:37 -0700 (PDT)
+        with ESMTP id S230267AbiF2VHZ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 29 Jun 2022 17:07:25 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 246553FBF6;
+        Wed, 29 Jun 2022 14:07:24 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3AD9960C2C;
-        Wed, 29 Jun 2022 20:47:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 997C4C34114;
-        Wed, 29 Jun 2022 20:47:33 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="PIocfaGZ"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1656535651;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nvJ3fw5U4MW8nxM8aCE1R+6sT2AFWOEF89xbodNQ+Ms=;
-        b=PIocfaGZVNfSYsleBvWLhO5VJ+LmKrkUG0h5bDnae9hr+edK+R47EppxiopYDLw5kbSCAX
-        eQK5Gw+P8AHe6C3tjz8QTOM+/lZgOrILQvf6fogiJXsrsiozuZkMVdJxFrZ5pMok7P2rLE
-        r74GkuVYo0ZepToWUldrCEjQsXH8o8Q=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 019e7d6b (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
-        Wed, 29 Jun 2022 20:47:31 +0000 (UTC)
-Date:   Wed, 29 Jun 2022 22:47:26 +0200
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-To:     Kalesh Singh <kaleshsingh@google.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arve =?utf-8?B?SGrDuG5uZXbDpWc=?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>,
-        Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
+        by ams.source.kernel.org (Postfix) with ESMTPS id ADE4AB82739;
+        Wed, 29 Jun 2022 21:07:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 502CBC34114;
+        Wed, 29 Jun 2022 21:07:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1656536841;
+        bh=y79DeHyZr4VVCR4Ra2O/fykhYEKWsU0vQWQ2Dig3C+s=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=JBbRhDBctQyouV2LLQ+p1iyD44QBE+kNxfCdizi27F5nFxqQ8i/WvmW6eMeVNEuZG
+         rLUfEgTys8e0OEu5JjQoBdjannYm7pFVEstaxJgkC8UEdNh7J0H/6TvAmvxNbSre8r
+         kov04iI1MFgmu4U7dyC0qMJgZkKhUxDK1a+4TUpVaSDwwqqS71X2k4ba30BQp17NpK
+         ngOgySxlMWU+xGM2c9qVWuAzCpwSrkpZ8PqzFs6C+mY/MqKLG9wOvTkKwqP7d3H89S
+         AchfU/F2q7MwAW1Xp8vrQq9cvTDXaVGAP/gzkKRgE0BlPyp8zxg6t+uKleuiiRfk21
+         hC2Sa7QzN1OYg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id DC2795C0E5F; Wed, 29 Jun 2022 14:07:20 -0700 (PDT)
+Date:   Wed, 29 Jun 2022 14:07:20 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Rushikesh S Kadam <rushikesh.s.kadam@intel.com>,
+        Neeraj upadhyay <neeraj.iitr10@gmail.com>,
         Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        wireguard@lists.zx2c4.com, netdev@vger.kernel.org,
-        rcu@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        sultan@kerneltoast.com
-Subject: Re: [PATCH] remove CONFIG_ANDROID
-Message-ID: <Yry6XvOGge2xKx/n@zx2c4.com>
-References: <20220629150102.1582425-2-hch@lst.de>
- <Yrx5Lt7jrk5BiHXx@zx2c4.com>
- <20220629161020.GA24891@lst.de>
- <Yrx6EVHtroXeEZGp@zx2c4.com>
- <20220629161527.GA24978@lst.de>
- <Yrx8/Fyx15CTi2zq@zx2c4.com>
- <20220629163007.GA25279@lst.de>
- <Yrx/8UOY+J8Ao3Bd@zx2c4.com>
- <YryNQvWGVwCjJYmB@zx2c4.com>
- <Yryic4YG9X2/DJiX@google.com>
+        Steven Rostedt <rostedt@goodmis.org>, vineeth@bitbyteword.org
+Subject: Re: [PATCH v2 8/8] rcu/kfree: Fix kfree_rcu_shrink_count() return
+ value
+Message-ID: <20220629210720.GO1790663@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20220622225102.2112026-1-joel@joelfernandes.org>
+ <20220622225102.2112026-10-joel@joelfernandes.org>
+ <Yrn9a5pOvhvL/eZj@pc638.lan>
+ <20220627205907.GM1790663@paulmck-ThinkPad-P17-Gen-1>
+ <YroelcGVNhQj91ab@google.com>
+ <20220627214359.GQ1790663@paulmck-ThinkPad-P17-Gen-1>
+ <YrsyrmDbfnkpfDEP@google.com>
+ <CAEXW_YRQiuvsy1FsMNWG7wd9ah_gfgcOUAeNzA-QbmDcACa+Uw@mail.gmail.com>
+ <20220629165627.GI1790663@paulmck-ThinkPad-P17-Gen-1>
+ <YrysWAx/rMbBF5iY@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Yryic4YG9X2/DJiX@google.com>
+In-Reply-To: <YrysWAx/rMbBF5iY@google.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Kalesh,
-
-On Wed, Jun 29, 2022 at 12:05:23PM -0700, Kalesh Singh wrote:
-> Thanks for raising this.
+On Wed, Jun 29, 2022 at 07:47:36PM +0000, Joel Fernandes wrote:
+> On Wed, Jun 29, 2022 at 09:56:27AM -0700, Paul E. McKenney wrote:
+> > On Tue, Jun 28, 2022 at 05:13:21PM -0400, Joel Fernandes wrote:
+> > > On Tue, Jun 28, 2022 at 12:56 PM Joel Fernandes <joel@joelfernandes.org> wrote:
+> > > >
+> > > > On Mon, Jun 27, 2022 at 02:43:59PM -0700, Paul E. McKenney wrote:
+> > > > > On Mon, Jun 27, 2022 at 09:18:13PM +0000, Joel Fernandes wrote:
+> > > > > > On Mon, Jun 27, 2022 at 01:59:07PM -0700, Paul E. McKenney wrote:
+> > > > > > > On Mon, Jun 27, 2022 at 08:56:43PM +0200, Uladzislau Rezki wrote:
+> > > > > > > > > As per the comments in include/linux/shrinker.h, .count_objects callback
+> > > > > > > > > should return the number of freeable items, but if there are no objects
+> > > > > > > > > to free, SHRINK_EMPTY should be returned. The only time 0 is returned
+> > > > > > > > > should be when we are unable to determine the number of objects, or the
+> > > > > > > > > cache should be skipped for another reason.
+> > > > > > > > >
+> > > > > > > > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > > > > > > > > ---
+> > > > > > > > >  kernel/rcu/tree.c | 2 +-
+> > > > > > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > > > > > >
+> > > > > > > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > > > > > > > index 711679d10cbb..935788e8d2d7 100644
+> > > > > > > > > --- a/kernel/rcu/tree.c
+> > > > > > > > > +++ b/kernel/rcu/tree.c
+> > > > > > > > > @@ -3722,7 +3722,7 @@ kfree_rcu_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
+> > > > > > > > >               atomic_set(&krcp->backoff_page_cache_fill, 1);
+> > > > > > > > >       }
+> > > > > > > > >
+> > > > > > > > > -     return count;
+> > > > > > > > > +     return count == 0 ? SHRINK_EMPTY : count;
+> > > > > > > > >  }
+> > > > > > > > >
+> > > > > > > > >  static unsigned long
+> > > > > > > > > --
+> > > > > > > > > 2.37.0.rc0.104.g0611611a94-goog
+> > > > > > > > >
+> > > > > > > > Looks good to me!
+> > > > > > > >
+> > > > > > > > Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > > > > > >
+> > > > > > > Now that you mention it, this does look independent of the rest of
+> > > > > > > the series.  I have pulled it in with Uladzislau's Reviewed-by.
+> > > > > >
+> > > > > > Thanks Paul and Vlad!
+> > > > > >
+> > > > > > Paul, apologies for being quiet. I have been working on the series and the
+> > > > > > review comments carefully. I appreciate your help with this work.
+> > > > >
+> > > > > Not a problem.  After all, this stuff is changing some of the trickier
+> > > > > parts of RCU.  We must therefore assume that some significant time and
+> > > > > effort will be required to get it right.
+> > > >
+> > > > To your point about trickier parts of RCU, the v2 series though I tested it
+> > > > before submitting is now giving me strange results with rcuscale. Sometimes
+> > > > laziness does not seem to be in effect (as pointed out by rcuscale), other
+> > > > times I am seeing stalls.
+> > > >
+> > > > So I have to carefully look through all of this again. I am not sure why I
+> > > > was not seeing these issues with the exact same code before (frustrated).
+> > > 
+> > > Looks like I found at least 3 bugs in my v2 series which testing
+> > > picked up now. RCU-lazy was being too lazy or not too lazy. Now tests
+> > > pass, so its progress but does beg for more testing:
+> > 
+> > It is entirely possible that call_rcu_lazy() needs its own special
+> > purpose tests.  This might be a separate test parallel to the test for
+> > kfree_rcu() in kernel/rcu/rcuscale.c, for example.
 > 
-> Android no longer uses PM_AUTOSLEEP, is correct. libsuspend is
-> also now deprecated. Android autosuspend is initiatiated from the
-> userspace system suspend service [1].
+> I see, perhaps I can add a 'lazy' flag to rcutorture as well, so it uses
+> call_rcu_lazy() for its async RCU invocations?
+
+That will be tricky because of rcutorture's timeliness expectations.
+
+Maybe a self-invoking lazy callback initiated by rcu_torture_fakewriter()
+that prints a line about its statistics at shutdown time?  At a minimum,
+the number of times that it was invoked.  Better would be to print one
+line summarizing stats for all of them.
+
+The main thing that could be detected from this is a callback being
+stranded.  Given that rcutorture enqueues non-lazy callbacks like a
+drunken sailor, they won't end up being all that lazy.
+
+> > For but one example, you might need to do bunch of call_rcu_lazy()
+> > invocations, then keep the kernel completely quiet for long enough to
+> > let the timer fire, and without anything else happening.
 > 
-> A runtime config sounds more reasonable since in the !PM_AUTOSLEEP
-> case, it is userspace which decides the suspend policy.
+> Yes, I sort of do that in rcuscale. There is a flood of call_rcu_lazy() due
+> to the FS code doing it. And, the timer does fire at the right time. I then
+> measure the time to make sure the timing matches, that's how I found the bugs
+> I earlier mentioned.
 > 
-> [1] https://cs.android.com/android/platform/superproject/+/bf3906ecb33c98ff8edd96c852b884dbccb73295:system/hardware/interfaces/suspend/1.0/default/SystemSuspend.cpp;l=265
+> You had mentioned something like for testing earlier, I thought of trying it
+> out:
+> 
+> 	It also helps to make rcutorture help you out if you have not
+> 	already done so.  For example, providing some facility to allow
+> 	rcu_torture_fwd_prog_cr() to flood with call_rcu_lazy() instead of and
+> 	in addition to call_rcu().
 
-Bingo, thanks for the pointer. So looking at this, I'm trying to tease
-out some heuristic that wouldn't require any changes, but I don't really
-see anything _too_ perfect. One fragment of an idea would be that the
-kernel treats things in autosuspending mode if anybody is holding open a
-fd to /sys/power/state. But I worry this would interact with
-non-autosuspending userspaces that also hold open the file. So barring
-that, I'm not quite sure.
+Sounds good!
 
-If you also can't think of something, maybe we should talk about adding
-something that requires code changes. In that line of thinking, how
-would you feel about opening /sys/power/userspace_autosuspender and
-keeping that fd open. Then the kernel API would have
-`bool pm_has_userspace_autosuspender(void)` that code could check.
-Alternatively, if you don't want refcounting fd semantics for that, just
-writing a "1" into a similar file seems fine?
+							Thanx, Paul
 
-Any strong opinions about it? Personally it doesn't make much of a
-difference to me. The important thing is just that it'd be something
-you're willing to implement in that SystemSuspend.cpp file.
-
-Jason
+> thanks,
+> 
+>  - Joel
+> 
+> 
+> > 
+> > 							Thanx, Paul
+> > 
+> > > On top of v2 series:
+> > > diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> > > index c06a96b6a18a..7021ee05155d 100644
+> > > --- a/kernel/rcu/tree_nocb.h
+> > > +++ b/kernel/rcu/tree_nocb.h
+> > > @@ -292,7 +292,8 @@ static void wake_nocb_gp_defer(struct rcu_data
+> > > *rdp, int waketype,
+> > >          */
+> > >         switch (waketype) {
+> > >                 case RCU_NOCB_WAKE_LAZY:
+> > > -                       mod_jif = jiffies_till_flush;
+> > > +                       if (rdp->nocb_defer_wakeup != RCU_NOCB_WAKE_LAZY)
+> > > +                               mod_jif = jiffies_till_flush;
+> > >                         break;
+> > > 
+> > >                 case RCU_NOCB_WAKE_BYPASS:
+> > > @@ -714,13 +715,13 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
+> > >                 bypass_ncbs = rcu_cblist_n_cbs(&rdp->nocb_bypass);
+> > >                 lazy_ncbs = rcu_cblist_n_lazy_cbs(&rdp->nocb_bypass);
+> > >                 if (lazy_ncbs &&
+> > > -                   (time_after(j, READ_ONCE(rdp->nocb_bypass_first) +
+> > > LAZY_FLUSH_JIFFIES) ||
+> > > +                   (time_after(j, READ_ONCE(rdp->nocb_bypass_first) +
+> > > jiffies_till_flush) ||
+> > >                      bypass_ncbs > qhimark)) {
+> > >                         // Bypass full or old, so flush it.
+> > >                         (void)rcu_nocb_try_flush_bypass(rdp, j);
+> > >                         bypass_ncbs = rcu_cblist_n_cbs(&rdp->nocb_bypass);
+> > >                         lazy_ncbs = rcu_cblist_n_lazy_cbs(&rdp->nocb_bypass);
+> > > -               } else if (bypass_ncbs &&
+> > > +               } else if (bypass_ncbs && (lazy_ncbs != bypass_ncbs) &&
+> > >                     (time_after(j, READ_ONCE(rdp->nocb_bypass_first) + 1) ||
+> > >                      bypass_ncbs > 2 * qhimark)) {
+> > >                         // Bypass full or old, so flush it.
