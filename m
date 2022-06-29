@@ -2,94 +2,193 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 39F77C433EF
-	for <rcu@archiver.kernel.org>; Wed, 29 Jun 2022 11:53:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 83558C43334
+	for <rcu@archiver.kernel.org>; Wed, 29 Jun 2022 15:01:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230017AbiF2Lxy (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 29 Jun 2022 07:53:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58062 "EHLO
+        id S232772AbiF2PBb (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 29 Jun 2022 11:01:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229845AbiF2Lxy (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 29 Jun 2022 07:53:54 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E99637ABC;
-        Wed, 29 Jun 2022 04:53:53 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 197B461B2F;
-        Wed, 29 Jun 2022 11:53:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00C3CC34114;
-        Wed, 29 Jun 2022 11:53:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1656503632;
-        bh=XGEvwoztRJLvPhLVPeZ5ptFzPtTgQZgUKEEXGctgUgY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=J2Dwmg85FXWGa74zSj1F1asR7BgnUQ82FPwOnlgqxTHDhWkRzhqiut5fcOWK7DlXC
-         sWffcUn4AcmevmB7HyJkslYg57uXRTtee95+C9Af75Fo0e+tyZtzPULCe0/KmRnxW/
-         Fjo3zfkYATGwGvVe9vNba5jufWAtvaunb2Gz+2dNuLXOSwN0bIpDd0paatZoOzLr2E
-         b3sbKQd2P4JdEmqO3/eNiMbHuBCM9yE9rfT4Y84uyfZ2jXRF/4o+e6SiKyYlySwJYE
-         Q2r4iQ/GyV0Aw4WOWp93+IBH8BOr8S11u5TLzlCG6PRlGJZtuFUi7tTiWKODpTEXwa
-         jub1wDiW2gU6w==
-Date:   Wed, 29 Jun 2022 13:53:49 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rushikesh.s.kadam@intel.com, urezki@gmail.com,
-        neeraj.iitr10@gmail.com, paulmck@kernel.org, rostedt@goodmis.org,
-        vineeth@bitbyteword.org
-Subject: Re: [PATCH v2 1/8] rcu: Introduce call_rcu_lazy() API implementation
-Message-ID: <20220629115349.GA2119930@lothringen>
-References: <20220622225102.2112026-1-joel@joelfernandes.org>
- <20220622225102.2112026-3-joel@joelfernandes.org>
+        with ESMTP id S232012AbiF2PBa (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 29 Jun 2022 11:01:30 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2372A22B0A;
+        Wed, 29 Jun 2022 08:01:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
+        :Reply-To:Content-Type:Content-ID:Content-Description;
+        bh=Q2BfGExYn9U8rc83KVNyv5vSdkzYMQ0Jg4fv+0NUVZA=; b=k1aAftu1e5qJZGp5/rD6jUOdy1
+        2UKY1XQrv+O1S9wqYrvGaYjIu7bYi1b5W7yfPwAw1xvKnICMv4iHchcpYaTWSDZCzlU1D/Xa3RcPt
+        T85IPso5YuHFVnAoGyzyZ/nrmu52lHlCzYtHp6b2VsLrMf0Tmx43svgYfc6MZuf2rz1BUadEeMQNp
+        6X9uT5FCKr5OL9VtmYeGImuEmDBJauas0susmshk1SywkiFo0Co542trG8zi5slYZHlxTfF2RgC5l
+        FGQiv46GQ/jgUHfF6fxpkxjGleTaKETXgtqMCY59OnQIpRTX2Ep2hYPpxG2hDXQu7L+epiJ4shk9e
+        LZboSPxA==;
+Received: from [2001:4bb8:199:3788:eb09:6317:6452:5395] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1o6ZBk-00CcgS-BX; Wed, 29 Jun 2022 15:01:08 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     =?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>,
+        Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+        wireguard@lists.zx2c4.com, netdev@vger.kernel.org,
+        rcu@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: [PATCH] remove CONFIG_ANDROID
+Date:   Wed, 29 Jun 2022 17:01:02 +0200
+Message-Id: <20220629150102.1582425-2-hch@lst.de>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220629150102.1582425-1-hch@lst.de>
+References: <20220629150102.1582425-1-hch@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220622225102.2112026-3-joel@joelfernandes.org>
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Jun 22, 2022 at 10:50:55PM +0000, Joel Fernandes (Google) wrote:
-> @@ -414,30 +427,37 @@ static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
->  	}
->  	WRITE_ONCE(rdp->nocb_nobypass_count, c);
->  
-> -	// If there hasn't yet been all that many ->cblist enqueues
-> -	// this jiffy, tell the caller to enqueue onto ->cblist.  But flush
-> -	// ->nocb_bypass first.
-> -	if (rdp->nocb_nobypass_count < nocb_nobypass_lim_per_jiffy) {
-> +	// If caller passed a non-lazy CB and there hasn't yet been all that
-> +	// many ->cblist enqueues this jiffy, tell the caller to enqueue it
-> +	// onto ->cblist.  But flush ->nocb_bypass first. Also do so, if total
-> +	// number of CBs (lazy + non-lazy) grows too much.
-> +	//
-> +	// Note that if the bypass list has lazy CBs, and the main list is
-> +	// empty, and rhp happens to be non-lazy, then we end up flushing all
-> +	// the lazy CBs to the main list as well. That's the right thing to do,
-> +	// since we are kick-starting RCU GP processing anyway for the non-lazy
-> +	// one, we can just reuse that GP for the already queued-up lazy ones.
-> +	if ((rdp->nocb_nobypass_count < nocb_nobypass_lim_per_jiffy && !lazy) ||
-> +	    (lazy && n_lazy_cbs >= qhimark)) {
->  		rcu_nocb_lock(rdp);
->  		*was_alldone = !rcu_segcblist_pend_cbs(&rdp->cblist);
->  		if (*was_alldone)
->  			trace_rcu_nocb_wake(rcu_state.name, rdp->cpu,
-> -					    TPS("FirstQ"));
-> -		WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, j));
-> +					    lazy ? TPS("FirstLazyQ") : TPS("FirstQ"));
-> +		WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, j, false));
+The ANDROID config symbol is only used to guard the binder config
+symbol and to inject completely random config changes.  Remove it
+as it is obviously a bad idea.
 
-That's outside the scope of this patchset but this makes me realize we
-unconditionally try to flush the bypass from call_rcu() fastpath, and
-therefore we unconditionally lock the bypass lock from call_rcu() fastpath.
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ drivers/Makefile                                    | 2 +-
+ drivers/android/Kconfig                             | 9 ---------
+ drivers/char/random.c                               | 3 +--
+ drivers/net/wireguard/device.c                      | 2 +-
+ kernel/configs/android-base.config                  | 1 -
+ kernel/rcu/Kconfig.debug                            | 3 +--
+ tools/testing/selftests/filesystems/binderfs/config | 1 -
+ tools/testing/selftests/sync/config                 | 1 -
+ 8 files changed, 4 insertions(+), 18 deletions(-)
 
-It shouldn't be contended at this stage since we are holding the nocb_lock
-already, and only the local CPU can hold the nocb_bypass_lock without holding
-the nocb_lock. But still...
-
-It looks safe to locklessly early check if (rcu_cblist_n_cbs(&rdp->nocb_bypass))
-before doing anything. Only the local CPU can enqueue to the bypass list.
-
-Adding that to my TODO list...
+diff --git a/drivers/Makefile b/drivers/Makefile
+index 9a30842b22c54..123dce2867583 100644
+--- a/drivers/Makefile
++++ b/drivers/Makefile
+@@ -176,7 +176,7 @@ obj-$(CONFIG_USB4)		+= thunderbolt/
+ obj-$(CONFIG_CORESIGHT)		+= hwtracing/coresight/
+ obj-y				+= hwtracing/intel_th/
+ obj-$(CONFIG_STM)		+= hwtracing/stm/
+-obj-$(CONFIG_ANDROID)		+= android/
++obj-y				+= android/
+ obj-$(CONFIG_NVMEM)		+= nvmem/
+ obj-$(CONFIG_FPGA)		+= fpga/
+ obj-$(CONFIG_FSI)		+= fsi/
+diff --git a/drivers/android/Kconfig b/drivers/android/Kconfig
+index 53b22e26266c3..07aa8ae0a058c 100644
+--- a/drivers/android/Kconfig
++++ b/drivers/android/Kconfig
+@@ -1,13 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0
+ menu "Android"
+ 
+-config ANDROID
+-	bool "Android Drivers"
+-	help
+-	  Enable support for various drivers needed on the Android platform
+-
+-if ANDROID
+-
+ config ANDROID_BINDER_IPC
+ 	bool "Android Binder IPC Driver"
+ 	depends on MMU
+@@ -54,6 +47,4 @@ config ANDROID_BINDER_IPC_SELFTEST
+ 	  exhaustively with combinations of various buffer sizes and
+ 	  alignments.
+ 
+-endif # if ANDROID
+-
+ endmenu
+diff --git a/drivers/char/random.c b/drivers/char/random.c
+index e3dd1dd3dd226..f35ad1a9dff3e 100644
+--- a/drivers/char/random.c
++++ b/drivers/char/random.c
+@@ -755,8 +755,7 @@ static int random_pm_notification(struct notifier_block *nb, unsigned long actio
+ 	spin_unlock_irqrestore(&input_pool.lock, flags);
+ 
+ 	if (crng_ready() && (action == PM_RESTORE_PREPARE ||
+-	    (action == PM_POST_SUSPEND &&
+-	     !IS_ENABLED(CONFIG_PM_AUTOSLEEP) && !IS_ENABLED(CONFIG_ANDROID)))) {
++	    (action == PM_POST_SUSPEND && !IS_ENABLED(CONFIG_PM_AUTOSLEEP)))) {
+ 		crng_reseed();
+ 		pr_notice("crng reseeded on system resumption\n");
+ 	}
+diff --git a/drivers/net/wireguard/device.c b/drivers/net/wireguard/device.c
+index aa9a7a5970fda..de1cc03f7ee86 100644
+--- a/drivers/net/wireguard/device.c
++++ b/drivers/net/wireguard/device.c
+@@ -69,7 +69,7 @@ static int wg_pm_notification(struct notifier_block *nb, unsigned long action, v
+ 	 * its normal operation rather than as a somewhat rare event, then we
+ 	 * don't actually want to clear keys.
+ 	 */
+-	if (IS_ENABLED(CONFIG_PM_AUTOSLEEP) || IS_ENABLED(CONFIG_ANDROID))
++	if (IS_ENABLED(CONFIG_PM_AUTOSLEEP))
+ 		return 0;
+ 
+ 	if (action != PM_HIBERNATION_PREPARE && action != PM_SUSPEND_PREPARE)
+diff --git a/kernel/configs/android-base.config b/kernel/configs/android-base.config
+index eb701b2ac72ff..44b0f0146a3fc 100644
+--- a/kernel/configs/android-base.config
++++ b/kernel/configs/android-base.config
+@@ -7,7 +7,6 @@
+ # CONFIG_OABI_COMPAT is not set
+ # CONFIG_SYSVIPC is not set
+ # CONFIG_USELIB is not set
+-CONFIG_ANDROID=y
+ CONFIG_ANDROID_BINDER_IPC=y
+ CONFIG_ANDROID_BINDER_DEVICES=binder,hwbinder,vndbinder
+ CONFIG_ANDROID_LOW_MEMORY_KILLER=y
+diff --git a/kernel/rcu/Kconfig.debug b/kernel/rcu/Kconfig.debug
+index 9b64e55d4f615..e875f4f889656 100644
+--- a/kernel/rcu/Kconfig.debug
++++ b/kernel/rcu/Kconfig.debug
+@@ -86,8 +86,7 @@ config RCU_EXP_CPU_STALL_TIMEOUT
+ 	int "Expedited RCU CPU stall timeout in milliseconds"
+ 	depends on RCU_STALL_COMMON
+ 	range 0 21000
+-	default 20 if ANDROID
+-	default 0 if !ANDROID
++	default 0
+ 	help
+ 	  If a given expedited RCU grace period extends more than the
+ 	  specified number of milliseconds, a CPU stall warning is printed.
+diff --git a/tools/testing/selftests/filesystems/binderfs/config b/tools/testing/selftests/filesystems/binderfs/config
+index 02dd6cc9cf992..7b4fc6ee62057 100644
+--- a/tools/testing/selftests/filesystems/binderfs/config
++++ b/tools/testing/selftests/filesystems/binderfs/config
+@@ -1,3 +1,2 @@
+-CONFIG_ANDROID=y
+ CONFIG_ANDROID_BINDERFS=y
+ CONFIG_ANDROID_BINDER_IPC=y
+diff --git a/tools/testing/selftests/sync/config b/tools/testing/selftests/sync/config
+index 47ff5afc37271..64c60f38b4464 100644
+--- a/tools/testing/selftests/sync/config
++++ b/tools/testing/selftests/sync/config
+@@ -1,3 +1,2 @@
+ CONFIG_STAGING=y
+-CONFIG_ANDROID=y
+ CONFIG_SW_SYNC=y
+-- 
+2.30.2
 
