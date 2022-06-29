@@ -2,104 +2,119 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F092C43334
-	for <rcu@archiver.kernel.org>; Wed, 29 Jun 2022 17:06:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D1A9EC433EF
+	for <rcu@archiver.kernel.org>; Wed, 29 Jun 2022 17:10:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229781AbiF2RF6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 29 Jun 2022 13:05:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50706 "EHLO
+        id S230505AbiF2RK7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 29 Jun 2022 13:10:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229774AbiF2RF6 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 29 Jun 2022 13:05:58 -0400
+        with ESMTP id S230120AbiF2RK6 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 29 Jun 2022 13:10:58 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60FAD3B296;
-        Wed, 29 Jun 2022 10:05:57 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5CFB1A806;
+        Wed, 29 Jun 2022 10:10:57 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F234761E42;
-        Wed, 29 Jun 2022 17:05:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4EE7FC341C8;
-        Wed, 29 Jun 2022 17:05:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1656522356;
-        bh=KIFRM8nwOuVLd+9MyiDnuk3iBXdJb5KJ3YZk9O/MIaA=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=DY0Qe//FUSGFB1cD3BQp9Tj4JNh5MlXern4Mxa/sB1jd4Y2Yr8B4h4LuQy2aUDurX
-         w61bbRHwB6P2dL7Fmpw43yja9XHCKwsxUfBjLGT8hQC0Z5jamyLPPXdgwWlUZmpF34
-         +0dzHIdSiiFo++q+cLmy7V3GYpsg0PrBUC+0VffAVma/xK1axP3+15p3AD77hgqwUc
-         WU3ED7FDTASm1WGuVaBKdQjg0jDFQzqCpA0kvEHL38LbcZWdYEoWwFjzBfEuym4LUr
-         Tl0NJg6zKXBPGM+BX+7FPKDoDXN3G5C7OI1Hg+zckH+s6+nWBIwVZMBw2z5n7jPPMV
-         p+LEIjcwWjrlg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id E529C5C0E5F; Wed, 29 Jun 2022 10:05:55 -0700 (PDT)
-Date:   Wed, 29 Jun 2022 10:05:55 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rushikesh.s.kadam@intel.com, urezki@gmail.com,
-        neeraj.iitr10@gmail.com, rostedt@goodmis.org,
-        vineeth@bitbyteword.org
-Subject: Re: [PATCH v2 1/8] rcu: Introduce call_rcu_lazy() API implementation
-Message-ID: <20220629170555.GK1790663@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220622225102.2112026-1-joel@joelfernandes.org>
- <20220622225102.2112026-3-joel@joelfernandes.org>
- <20220629115349.GA2119930@lothringen>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3EAC961E56;
+        Wed, 29 Jun 2022 17:10:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C467FC34114;
+        Wed, 29 Jun 2022 17:10:53 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="aExlGSSP"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1656522652;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Bl3uaY3cRegdu8Xedo5QKvYZcFg8ZQEQBfUE65BNrGc=;
+        b=aExlGSSP2ZDh66T/coO6aB/IVwm5xDpZVXleX8D0ABt5ix/QwGSlKWvj27VgZh7mEsafsq
+        yZa6kbd4W7mfe09g2TNhf4MXmE0JxAeYHChRIFWwVB6J4tg9DdmsTmn1Jgelf/kWdlHTHc
+        7PBZvkYyrEcXv0OPVt5sacdT5F/y4wc=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 9da54ae8 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
+        Wed, 29 Jun 2022 17:10:51 +0000 (UTC)
+Date:   Wed, 29 Jun 2022 19:10:43 +0200
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Arve =?utf-8?B?SGrDuG5uZXbDpWc=?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>,
+        Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        WireGuard mailing list <wireguard@lists.zx2c4.com>,
+        Netdev <netdev@vger.kernel.org>, rcu@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH] remove CONFIG_ANDROID
+Message-ID: <YryHk06Ye/12dMEN@zx2c4.com>
+References: <Yrx5Lt7jrk5BiHXx@zx2c4.com>
+ <20220629161020.GA24891@lst.de>
+ <Yrx6EVHtroXeEZGp@zx2c4.com>
+ <20220629161527.GA24978@lst.de>
+ <Yrx8/Fyx15CTi2zq@zx2c4.com>
+ <20220629163007.GA25279@lst.de>
+ <Yrx/8UOY+J8Ao3Bd@zx2c4.com>
+ <20220629164543.GA25672@lst.de>
+ <CAHmME9rwKmEQcn84GfTrCPzaK3g6vh6rpQ=YcgyTo_PWpJ5VcA@mail.gmail.com>
+ <YryFKXsx/Bgv/oBE@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20220629115349.GA2119930@lothringen>
+In-Reply-To: <YryFKXsx/Bgv/oBE@kroah.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Jun 29, 2022 at 01:53:49PM +0200, Frederic Weisbecker wrote:
-> On Wed, Jun 22, 2022 at 10:50:55PM +0000, Joel Fernandes (Google) wrote:
-> > @@ -414,30 +427,37 @@ static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
-> >  	}
-> >  	WRITE_ONCE(rdp->nocb_nobypass_count, c);
-> >  
-> > -	// If there hasn't yet been all that many ->cblist enqueues
-> > -	// this jiffy, tell the caller to enqueue onto ->cblist.  But flush
-> > -	// ->nocb_bypass first.
-> > -	if (rdp->nocb_nobypass_count < nocb_nobypass_lim_per_jiffy) {
-> > +	// If caller passed a non-lazy CB and there hasn't yet been all that
-> > +	// many ->cblist enqueues this jiffy, tell the caller to enqueue it
-> > +	// onto ->cblist.  But flush ->nocb_bypass first. Also do so, if total
-> > +	// number of CBs (lazy + non-lazy) grows too much.
-> > +	//
-> > +	// Note that if the bypass list has lazy CBs, and the main list is
-> > +	// empty, and rhp happens to be non-lazy, then we end up flushing all
-> > +	// the lazy CBs to the main list as well. That's the right thing to do,
-> > +	// since we are kick-starting RCU GP processing anyway for the non-lazy
-> > +	// one, we can just reuse that GP for the already queued-up lazy ones.
-> > +	if ((rdp->nocb_nobypass_count < nocb_nobypass_lim_per_jiffy && !lazy) ||
-> > +	    (lazy && n_lazy_cbs >= qhimark)) {
-> >  		rcu_nocb_lock(rdp);
-> >  		*was_alldone = !rcu_segcblist_pend_cbs(&rdp->cblist);
-> >  		if (*was_alldone)
-> >  			trace_rcu_nocb_wake(rcu_state.name, rdp->cpu,
-> > -					    TPS("FirstQ"));
-> > -		WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, j));
-> > +					    lazy ? TPS("FirstLazyQ") : TPS("FirstQ"));
-> > +		WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, j, false));
-> 
-> That's outside the scope of this patchset but this makes me realize we
-> unconditionally try to flush the bypass from call_rcu() fastpath, and
-> therefore we unconditionally lock the bypass lock from call_rcu() fastpath.
-> 
-> It shouldn't be contended at this stage since we are holding the nocb_lock
-> already, and only the local CPU can hold the nocb_bypass_lock without holding
-> the nocb_lock. But still...
-> 
-> It looks safe to locklessly early check if (rcu_cblist_n_cbs(&rdp->nocb_bypass))
-> before doing anything. Only the local CPU can enqueue to the bypass list.
-> 
-> Adding that to my TODO list...
+On Wed, Jun 29, 2022 at 07:00:25PM +0200, Greg Kroah-Hartman wrote:
+> I think that by the time the next kernel release comes out, and
+> percolates to a real Android device, the years gone by will have caused
+> those who care about this to fix it.
 
-That does sound like a potentially very helpful approach!  As always,
-please analyze and test carefully!
+You assume that there aren't Android devices using kernels outside of
+the ones you're referring to. That's a rather Google-centric
+perspective. It's still breakage, even if Google has the ability to fix
+it locally after "years gone by". If you want Android things to be
+upstream, this is the way you must think about it; otherwise, what's the
+point? By your logic, upstream should probably remove the Android code
+everywhere and let Google handle it downstream. Except nobody wants
+that; we want Android upstream. So let's keep it working upstream, not
+intentionally break it.
 
-							Thanx, Paul
+> In the meantime, this might actually fix issues in desktop distros that
+> were enabling this option, thinking it only affected the building of a
+> driver
+
+That sounds like a false dichotomy. It's not about "fix Android" vs "fix
+distros". What I'm suggesting is fixing Android AND fixing distros, by
+looking at the problem holistically. Trading a bad problem on Android
+(wg connections are broken) for a manageable problem on distros (something
+something theoretical warm boot attack something) doesn't sound like a
+nice trade off. Let's instead get this all fixed at the same time.
+
+> So it's nothing to worry about now, I agree with Christoph, this config
+> option should not be used for power management policy decisions like
+> this.  This should be controlled by userspace properly in the Android
+> userspace framework, like all other Linux distros/systems do this.
+
+Except right now it is. So if it's going to be removed, the code that
+was depending on it will need to be updated coherently.
+
+Jason
