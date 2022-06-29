@@ -2,91 +2,204 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AF87C433EF
-	for <rcu@archiver.kernel.org>; Wed, 29 Jun 2022 19:41:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4880ACCA481
+	for <rcu@archiver.kernel.org>; Wed, 29 Jun 2022 19:47:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230072AbiF2Tlf (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 29 Jun 2022 15:41:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47616 "EHLO
+        id S230507AbiF2Trk (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 29 Jun 2022 15:47:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229601AbiF2Tle (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 29 Jun 2022 15:41:34 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56BCC3527C;
-        Wed, 29 Jun 2022 12:41:33 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-173-48-118-63.bstnma.fios.verizon.net [173.48.118.63])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 25TJf03p002141
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Jun 2022 15:41:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1656531666; bh=A00A5iArp8Jb47JVnyjlorO4xEv+4O+Vse4QFx1ESSA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=MNq41MOiCURJszuFzvQeIrOjYX8okABoDH44ubCBFGtMXodARRk59s2L/Djbx5tKM
-         nruf2t0eHRzVoETd9KxT6h5v0eEdiqq3qZrQvcHNMGGkfpgLcRFmb3cVpZom8OiXzU
-         9+N5fVHuIOBjc05RUOfj/NDO93/uSrB9cZvAfyFCAbu8rKZ3wVA9u76g1pEh1TMyFm
-         RiLn+kwf3cw48aXaAI4BmdOhzqZ7kiIJJX1WIQts172MbD4vy/yJ+Ql9nUzZk9cibZ
-         nVea6p02UHt4hJq2BBqCSwb5xZmm3qHXd5JTJvnHBJGWcdtFno9r6/BgPu33uARDuT
-         cEh37HIcEdZWA==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id C409315C3E94; Wed, 29 Jun 2022 15:41:00 -0400 (EDT)
-Date:   Wed, 29 Jun 2022 15:41:00 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Kalesh Singh <kaleshsingh@google.com>
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>,
-        Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
+        with ESMTP id S230004AbiF2Trj (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 29 Jun 2022 15:47:39 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DC9A3D1F3
+        for <rcu@vger.kernel.org>; Wed, 29 Jun 2022 12:47:38 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id v6so12899291qkh.2
+        for <rcu@vger.kernel.org>; Wed, 29 Jun 2022 12:47:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zvL6K4ApubN7CXJXMHMI39STdbXUc+m2xA0jmMG/9F0=;
+        b=UUNLLc317PpAN5hJCv1pP4lv9hlV84Pj1PJHCy41a5D2iqT6lke4aCL3Q27vbE7gG2
+         qaHd5uZJ26Uysi2JBEmsoBTol2GbrzQLfUL/wePlXwWSruJEvM1/0ZvQHCL96jqBtcqK
+         33Y6dsPdrxgfZTiAJbwMSFFxhYnssSigOvQGU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zvL6K4ApubN7CXJXMHMI39STdbXUc+m2xA0jmMG/9F0=;
+        b=GYeruwts9oFtqDvmJbx9h5TSP7SqlxPd9YNR8gfD833r9MtIa1s7jjPEEfZA11WcwR
+         loJ/7qjm83R2ubv3sWZ0vekNxAnplrcUvMfdVqB+51LSqKQvnXhddmAoml2JE1fKnWqh
+         qi7PGZfOc/KZcwnxVOpiYLY/zji02Y81yOuNjLwlyWmksOPwAU6eHF2k/H/4Ef/AMLX3
+         2JEeXNjN0l0fZKiDf+Wcqwfcy0mLhu39dHETrpp6ZuyO+FhR8qgdMXFO2qbfQabcbCAV
+         3axkwGFtJyOEA/P3/wGZOLYXIqtQLhEg+mNF/AOBp6MnZPaiGCXxkuFJiHfAaUEiGOAT
+         Navg==
+X-Gm-Message-State: AJIora+OS8y5ml3qU4jX3KtCi4RraCcfU8qBQbimangqW8o9onbgYU1Z
+        rD7yUMArzkalbB5GaUNQhzGSCA==
+X-Google-Smtp-Source: AGRyM1vZHzCEiCphgOajMwlX+lbKTAIWT9TNdifdzuhH8f922mX0lD6uU/U/m4bzCFlOc0vakN1jaQ==
+X-Received: by 2002:a05:620a:2807:b0:6a6:6ef1:fb9d with SMTP id f7-20020a05620a280700b006a66ef1fb9dmr3575735qkp.146.1656532057649;
+        Wed, 29 Jun 2022 12:47:37 -0700 (PDT)
+Received: from localhost (228.221.150.34.bc.googleusercontent.com. [34.150.221.228])
+        by smtp.gmail.com with ESMTPSA id bt5-20020ac86905000000b0031bf68f502esm2488452qtb.59.2022.06.29.12.47.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Jun 2022 12:47:37 -0700 (PDT)
+Date:   Wed, 29 Jun 2022 19:47:36 +0000
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Rushikesh S Kadam <rushikesh.s.kadam@intel.com>,
+        Neeraj upadhyay <neeraj.iitr10@gmail.com>,
         Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        wireguard@lists.zx2c4.com, netdev@vger.kernel.org,
-        rcu@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        sultan@kerneltoast.com
-Subject: Re: [PATCH] remove CONFIG_ANDROID
-Message-ID: <YryqzCNqVcMtKROJ@mit.edu>
-References: <20220629150102.1582425-2-hch@lst.de>
- <Yrx5Lt7jrk5BiHXx@zx2c4.com>
- <20220629161020.GA24891@lst.de>
- <Yrx6EVHtroXeEZGp@zx2c4.com>
- <20220629161527.GA24978@lst.de>
- <Yrx8/Fyx15CTi2zq@zx2c4.com>
- <20220629163007.GA25279@lst.de>
- <Yrx/8UOY+J8Ao3Bd@zx2c4.com>
- <YryNQvWGVwCjJYmB@zx2c4.com>
- <Yryic4YG9X2/DJiX@google.com>
+        Steven Rostedt <rostedt@goodmis.org>, vineeth@bitbyteword.org
+Subject: Re: [PATCH v2 8/8] rcu/kfree: Fix kfree_rcu_shrink_count() return
+ value
+Message-ID: <YrysWAx/rMbBF5iY@google.com>
+References: <20220622225102.2112026-1-joel@joelfernandes.org>
+ <20220622225102.2112026-10-joel@joelfernandes.org>
+ <Yrn9a5pOvhvL/eZj@pc638.lan>
+ <20220627205907.GM1790663@paulmck-ThinkPad-P17-Gen-1>
+ <YroelcGVNhQj91ab@google.com>
+ <20220627214359.GQ1790663@paulmck-ThinkPad-P17-Gen-1>
+ <YrsyrmDbfnkpfDEP@google.com>
+ <CAEXW_YRQiuvsy1FsMNWG7wd9ah_gfgcOUAeNzA-QbmDcACa+Uw@mail.gmail.com>
+ <20220629165627.GI1790663@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Yryic4YG9X2/DJiX@google.com>
+In-Reply-To: <20220629165627.GI1790663@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Jun 29, 2022 at 12:05:23PM -0700, Kalesh Singh wrote:
+On Wed, Jun 29, 2022 at 09:56:27AM -0700, Paul E. McKenney wrote:
+> On Tue, Jun 28, 2022 at 05:13:21PM -0400, Joel Fernandes wrote:
+> > On Tue, Jun 28, 2022 at 12:56 PM Joel Fernandes <joel@joelfernandes.org> wrote:
+> > >
+> > > On Mon, Jun 27, 2022 at 02:43:59PM -0700, Paul E. McKenney wrote:
+> > > > On Mon, Jun 27, 2022 at 09:18:13PM +0000, Joel Fernandes wrote:
+> > > > > On Mon, Jun 27, 2022 at 01:59:07PM -0700, Paul E. McKenney wrote:
+> > > > > > On Mon, Jun 27, 2022 at 08:56:43PM +0200, Uladzislau Rezki wrote:
+> > > > > > > > As per the comments in include/linux/shrinker.h, .count_objects callback
+> > > > > > > > should return the number of freeable items, but if there are no objects
+> > > > > > > > to free, SHRINK_EMPTY should be returned. The only time 0 is returned
+> > > > > > > > should be when we are unable to determine the number of objects, or the
+> > > > > > > > cache should be skipped for another reason.
+> > > > > > > >
+> > > > > > > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > > > > > > > ---
+> > > > > > > >  kernel/rcu/tree.c | 2 +-
+> > > > > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > > > > >
+> > > > > > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > > > > > > index 711679d10cbb..935788e8d2d7 100644
+> > > > > > > > --- a/kernel/rcu/tree.c
+> > > > > > > > +++ b/kernel/rcu/tree.c
+> > > > > > > > @@ -3722,7 +3722,7 @@ kfree_rcu_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
+> > > > > > > >               atomic_set(&krcp->backoff_page_cache_fill, 1);
+> > > > > > > >       }
+> > > > > > > >
+> > > > > > > > -     return count;
+> > > > > > > > +     return count == 0 ? SHRINK_EMPTY : count;
+> > > > > > > >  }
+> > > > > > > >
+> > > > > > > >  static unsigned long
+> > > > > > > > --
+> > > > > > > > 2.37.0.rc0.104.g0611611a94-goog
+> > > > > > > >
+> > > > > > > Looks good to me!
+> > > > > > >
+> > > > > > > Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > > > > >
+> > > > > > Now that you mention it, this does look independent of the rest of
+> > > > > > the series.  I have pulled it in with Uladzislau's Reviewed-by.
+> > > > >
+> > > > > Thanks Paul and Vlad!
+> > > > >
+> > > > > Paul, apologies for being quiet. I have been working on the series and the
+> > > > > review comments carefully. I appreciate your help with this work.
+> > > >
+> > > > Not a problem.  After all, this stuff is changing some of the trickier
+> > > > parts of RCU.  We must therefore assume that some significant time and
+> > > > effort will be required to get it right.
+> > >
+> > > To your point about trickier parts of RCU, the v2 series though I tested it
+> > > before submitting is now giving me strange results with rcuscale. Sometimes
+> > > laziness does not seem to be in effect (as pointed out by rcuscale), other
+> > > times I am seeing stalls.
+> > >
+> > > So I have to carefully look through all of this again. I am not sure why I
+> > > was not seeing these issues with the exact same code before (frustrated).
+> > 
+> > Looks like I found at least 3 bugs in my v2 series which testing
+> > picked up now. RCU-lazy was being too lazy or not too lazy. Now tests
+> > pass, so its progress but does beg for more testing:
 > 
-> Android no longer uses PM_AUTOSLEEP, is correct. libsuspend is
-> also now deprecated. Android autosuspend is initiatiated from the
-> userspace system suspend service [1].
+> It is entirely possible that call_rcu_lazy() needs its own special
+> purpose tests.  This might be a separate test parallel to the test for
+> kfree_rcu() in kernel/rcu/rcuscale.c, for example.
 
-Is anything still using CONFIG_PM_AUTOSLEEP?  Is it perhaps time to
-consider deprecating it?
+I see, perhaps I can add a 'lazy' flag to rcutorture as well, so it uses
+call_rcu_lazy() for its async RCU invocations?
 
-						- Ted
+> For but one example, you might need to do bunch of call_rcu_lazy()
+> invocations, then keep the kernel completely quiet for long enough to
+> let the timer fire, and without anything else happening.
+
+Yes, I sort of do that in rcuscale. There is a flood of call_rcu_lazy() due
+to the FS code doing it. And, the timer does fire at the right time. I then
+measure the time to make sure the timing matches, that's how I found the bugs
+I earlier mentioned.
+
+You had mentioned something like for testing earlier, I thought of trying it
+out:
+
+	It also helps to make rcutorture help you out if you have not
+	already done so.  For example, providing some facility to allow
+	rcu_torture_fwd_prog_cr() to flood with call_rcu_lazy() instead of and
+	in addition to call_rcu().
+
+
+thanks,
+
+ - Joel
+
+
+> 
+> 							Thanx, Paul
+> 
+> > On top of v2 series:
+> > diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> > index c06a96b6a18a..7021ee05155d 100644
+> > --- a/kernel/rcu/tree_nocb.h
+> > +++ b/kernel/rcu/tree_nocb.h
+> > @@ -292,7 +292,8 @@ static void wake_nocb_gp_defer(struct rcu_data
+> > *rdp, int waketype,
+> >          */
+> >         switch (waketype) {
+> >                 case RCU_NOCB_WAKE_LAZY:
+> > -                       mod_jif = jiffies_till_flush;
+> > +                       if (rdp->nocb_defer_wakeup != RCU_NOCB_WAKE_LAZY)
+> > +                               mod_jif = jiffies_till_flush;
+> >                         break;
+> > 
+> >                 case RCU_NOCB_WAKE_BYPASS:
+> > @@ -714,13 +715,13 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
+> >                 bypass_ncbs = rcu_cblist_n_cbs(&rdp->nocb_bypass);
+> >                 lazy_ncbs = rcu_cblist_n_lazy_cbs(&rdp->nocb_bypass);
+> >                 if (lazy_ncbs &&
+> > -                   (time_after(j, READ_ONCE(rdp->nocb_bypass_first) +
+> > LAZY_FLUSH_JIFFIES) ||
+> > +                   (time_after(j, READ_ONCE(rdp->nocb_bypass_first) +
+> > jiffies_till_flush) ||
+> >                      bypass_ncbs > qhimark)) {
+> >                         // Bypass full or old, so flush it.
+> >                         (void)rcu_nocb_try_flush_bypass(rdp, j);
+> >                         bypass_ncbs = rcu_cblist_n_cbs(&rdp->nocb_bypass);
+> >                         lazy_ncbs = rcu_cblist_n_lazy_cbs(&rdp->nocb_bypass);
+> > -               } else if (bypass_ncbs &&
+> > +               } else if (bypass_ncbs && (lazy_ncbs != bypass_ncbs) &&
+> >                     (time_after(j, READ_ONCE(rdp->nocb_bypass_first) + 1) ||
+> >                      bypass_ncbs > 2 * qhimark)) {
+> >                         // Bypass full or old, so flush it.
