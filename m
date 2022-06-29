@@ -2,26 +2,44 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FD3DC433EF
-	for <rcu@archiver.kernel.org>; Wed, 29 Jun 2022 16:15:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 718C0C43334
+	for <rcu@archiver.kernel.org>; Wed, 29 Jun 2022 16:25:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231582AbiF2QPf (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 29 Jun 2022 12:15:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58764 "EHLO
+        id S230500AbiF2QZt (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 29 Jun 2022 12:25:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230414AbiF2QPe (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 29 Jun 2022 12:15:34 -0400
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 679ED22BEE;
-        Wed, 29 Jun 2022 09:15:33 -0700 (PDT)
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 0127968B05; Wed, 29 Jun 2022 18:15:27 +0200 (CEST)
-Date:   Wed, 29 Jun 2022 18:15:27 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
+        with ESMTP id S229760AbiF2QZs (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 29 Jun 2022 12:25:48 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F03E313BA;
+        Wed, 29 Jun 2022 09:25:47 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id F3794CE2819;
+        Wed, 29 Jun 2022 16:25:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C294C34114;
+        Wed, 29 Jun 2022 16:25:41 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="pcAWGf38"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1656519940;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=68juHfv4ygcIaahoO6PbfPTLidvNwti4IiRxQ+0kt6w=;
+        b=pcAWGf38OzIMgyPi4OUE3lxDPN67fDsAwjtmVY65jBcFJHVgSvrOJLrXxTDJgzjglyzQ1u
+        2CSO9+yCjfBazL0tv1CtSmUtDTr4aCsE3ZzVZ02CULsAB0CdMri+FLuqwPNnCRQgJS+/oB
+        YOKOC2ccbkhGrCi051exLIABSKZ8eyM=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 1fb02a60 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
+        Wed, 29 Jun 2022 16:25:40 +0000 (UTC)
+Date:   Wed, 29 Jun 2022 18:25:32 +0200
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arve =?utf-8?B?SGrDuG5uZXbDpWc=?= <arve@android.com>,
         Todd Kjos <tkjos@android.com>,
         Martijn Coenen <maco@android.com>,
         Joel Fernandes <joel@joelfernandes.org>,
@@ -45,20 +63,56 @@ Cc:     Christoph Hellwig <hch@lst.de>,
         wireguard@lists.zx2c4.com, netdev@vger.kernel.org,
         rcu@vger.kernel.org, linux-kselftest@vger.kernel.org
 Subject: Re: [PATCH] remove CONFIG_ANDROID
-Message-ID: <20220629161527.GA24978@lst.de>
-References: <20220629150102.1582425-1-hch@lst.de> <20220629150102.1582425-2-hch@lst.de> <Yrx5Lt7jrk5BiHXx@zx2c4.com> <20220629161020.GA24891@lst.de> <Yrx6EVHtroXeEZGp@zx2c4.com>
+Message-ID: <Yrx8/Fyx15CTi2zq@zx2c4.com>
+References: <20220629150102.1582425-1-hch@lst.de>
+ <20220629150102.1582425-2-hch@lst.de>
+ <Yrx5Lt7jrk5BiHXx@zx2c4.com>
+ <20220629161020.GA24891@lst.de>
+ <Yrx6EVHtroXeEZGp@zx2c4.com>
+ <20220629161527.GA24978@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <Yrx6EVHtroXeEZGp@zx2c4.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20220629161527.GA24978@lst.de>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Jun 29, 2022 at 06:13:05PM +0200, Jason A. Donenfeld wrote:
-> Good! It sounds like you're starting to develop opinions on the matter.
+On Wed, Jun 29, 2022 at 06:15:27PM +0200, Christoph Hellwig wrote:
+> On Wed, Jun 29, 2022 at 06:13:05PM +0200, Jason A. Donenfeld wrote:
+> > Good! It sounds like you're starting to develop opinions on the matter.
+> 
+> No, I provide facts.
 
-No, I provide facts.  Look at both the definition of the symbol, and
-various distribution kernel that enabled it and think hard if they run
-on "Android" hardware.  Not just primarily, but at all.
+Lol.
+
+> Look at both the definition of the symbol, and
+> various distribution kernel that enabled it and think hard if they run
+> on "Android" hardware.  Not just primarily, but at all.
+
+There are two failure modes:
+
+1) Key clearing code is skipped when it shouldn't be.
+2) Key clearing code is run when it shouldn't be.
+
+You've identified (well, Alex in the other thread I think?) a case of
+(1). I was sort of thinking the fix to that would be that distros
+shouldn't enable that option, but it doesn't really matter to me.
+
+However, what I'm pointing out is the potential for (2). A (2)-style
+regression means that WireGuard basically doesn't work, because, for
+example, qcacld's packet-triggered wakeups tend to be too short to
+renegotiate a handshake.
+
+Anyway, instead of the slow drip of "facts" and ≤three sentence emails,
+can you just write up a paragraph that indicates this is safe to do (for
+both (1) and (2)) in your v+1?
+
+I don't really want to argue about it, because I don't have anything to
+argue about. Your change is probably fine. I'd just like it to be
+spelled out why this is safe to do from somebody who has looked into it.
+I have not looked into it, but it sounds like you have or are in the
+process of doing so. Just write down what you find, please.
+
+Jason
