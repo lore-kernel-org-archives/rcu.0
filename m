@@ -2,55 +2,40 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7839BC433EF
-	for <rcu@archiver.kernel.org>; Wed, 29 Jun 2022 19:05:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AF87C433EF
+	for <rcu@archiver.kernel.org>; Wed, 29 Jun 2022 19:41:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229833AbiF2TFc (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 29 Jun 2022 15:05:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48852 "EHLO
+        id S230072AbiF2Tlf (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 29 Jun 2022 15:41:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229681AbiF2TFb (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 29 Jun 2022 15:05:31 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92D911F2CB
-        for <rcu@vger.kernel.org>; Wed, 29 Jun 2022 12:05:30 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id cv13so16517700pjb.4
-        for <rcu@vger.kernel.org>; Wed, 29 Jun 2022 12:05:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0GeTuZBlfQ/Y+eNOOfDxK3ZM+hvemUe7AZCxhx5HzJ8=;
-        b=JJYOmj+afcpj4I6DhLvv1DJGSO9RU/r60gm7oBHP/z1whsgUGzshmjyS+68ykpAOrB
-         PZMVASKhx3vYZgCdJaQmdVJhBWuZNtboZlCiQyj6WAMRN4Kvh07DF4VTpK0Sj27Lsl6/
-         B+YuMmqeZEeQs4/Hm/ALEzJa6KWlGaRQbzl9tn855YrjL5qXif4aSzoOgvxnIP9DSA9A
-         AjCVE/CVQkZEpunegRnMqN99nSMRJRGN9GrvEGnWTqbNczB5UFxLzgL4Q0ol3VBjFalf
-         WfkCL65+80IbqNSPjmY0C880X/KyGHWw3qCM01dlaIuQdT6x35pnOEkDo3rr7x3tH16d
-         1ARw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0GeTuZBlfQ/Y+eNOOfDxK3ZM+hvemUe7AZCxhx5HzJ8=;
-        b=N20MRtn9WuqNobwcxDseu7HeZgDzTPKgMsc2dEQhSE3ncN0ir/ZNChB834YYXAzeuX
-         WV8b9H7s+6q0waSCxAdcWzKx65i9gqzxu/RXDXRbQabHR490H2E6hBJIhOFVrk53YwKb
-         JnRPaxmIVJyGZcofLLukpZOYpqxvYy2oSj3CTYytqVGGI4u3u/jJQLggwX4qbIXdnAtj
-         jbXb+wpfeSe85IuE+Lo6RBKGe2Fr48oskVGI4l5ky07DVTJV7iWFIwQe9l+7DHLj++6g
-         1xsbTrzruWXMoYeoxJ5BcKo0wZADYVWQq9ezI39IadKhEDwNm3Y+oc50faybLbr4AW+F
-         JN2Q==
-X-Gm-Message-State: AJIora/XugEWNHrm8IGt38iz55f7fJxVqhVVmjw6KjGTfLXAVJIO/sYe
-        IdaYSlZr1Zu6YMX6N88uO+SzQw==
-X-Google-Smtp-Source: AGRyM1vezWQnhsis70N2EBTExcFOKozEQIEPyaWoe+3MDeqfKtNE7YXyrWd0EDrKpPcD6CkEYj+x7A==
-X-Received: by 2002:a17:902:f552:b0:16a:a17:a9bd with SMTP id h18-20020a170902f55200b0016a0a17a9bdmr10672461plf.97.1656529529720;
-        Wed, 29 Jun 2022 12:05:29 -0700 (PDT)
-Received: from google.com ([2620:15c:211:200:1fe6:e5f3:8461:101c])
-        by smtp.gmail.com with ESMTPSA id e17-20020a63ee11000000b004119deff40dsm79889pgi.23.2022.06.29.12.05.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Jun 2022 12:05:28 -0700 (PDT)
-Date:   Wed, 29 Jun 2022 12:05:23 -0700
-From:   Kalesh Singh <kaleshsingh@google.com>
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
+        with ESMTP id S229601AbiF2Tle (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 29 Jun 2022 15:41:34 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56BCC3527C;
+        Wed, 29 Jun 2022 12:41:33 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-118-63.bstnma.fios.verizon.net [173.48.118.63])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 25TJf03p002141
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Jun 2022 15:41:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1656531666; bh=A00A5iArp8Jb47JVnyjlorO4xEv+4O+Vse4QFx1ESSA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=MNq41MOiCURJszuFzvQeIrOjYX8okABoDH44ubCBFGtMXodARRk59s2L/Djbx5tKM
+         nruf2t0eHRzVoETd9KxT6h5v0eEdiqq3qZrQvcHNMGGkfpgLcRFmb3cVpZom8OiXzU
+         9+N5fVHuIOBjc05RUOfj/NDO93/uSrB9cZvAfyFCAbu8rKZ3wVA9u76g1pEh1TMyFm
+         RiLn+kwf3cw48aXaAI4BmdOhzqZ7kiIJJX1WIQts172MbD4vy/yJ+Ql9nUzZk9cibZ
+         nVea6p02UHt4hJq2BBqCSwb5xZmm3qHXd5JTJvnHBJGWcdtFno9r6/BgPu33uARDuT
+         cEh37HIcEdZWA==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id C409315C3E94; Wed, 29 Jun 2022 15:41:00 -0400 (EDT)
+Date:   Wed, 29 Jun 2022 15:41:00 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Kalesh Singh <kaleshsingh@google.com>
+Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Christoph Hellwig <hch@lst.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
         Todd Kjos <tkjos@android.com>,
@@ -59,7 +44,6 @@ Cc:     Christoph Hellwig <hch@lst.de>,
         Christian Brauner <brauner@kernel.org>,
         Hridya Valsaraju <hridya@google.com>,
         Suren Baghdasaryan <surenb@google.com>,
-        Theodore Ts'o <tytso@mit.edu>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
@@ -77,9 +61,8 @@ Cc:     Christoph Hellwig <hch@lst.de>,
         rcu@vger.kernel.org, linux-kselftest@vger.kernel.org,
         sultan@kerneltoast.com
 Subject: Re: [PATCH] remove CONFIG_ANDROID
-Message-ID: <Yryic4YG9X2/DJiX@google.com>
-References: <20220629150102.1582425-1-hch@lst.de>
- <20220629150102.1582425-2-hch@lst.de>
+Message-ID: <YryqzCNqVcMtKROJ@mit.edu>
+References: <20220629150102.1582425-2-hch@lst.de>
  <Yrx5Lt7jrk5BiHXx@zx2c4.com>
  <20220629161020.GA24891@lst.de>
  <Yrx6EVHtroXeEZGp@zx2c4.com>
@@ -88,46 +71,22 @@ References: <20220629150102.1582425-1-hch@lst.de>
  <20220629163007.GA25279@lst.de>
  <Yrx/8UOY+J8Ao3Bd@zx2c4.com>
  <YryNQvWGVwCjJYmB@zx2c4.com>
+ <Yryic4YG9X2/DJiX@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YryNQvWGVwCjJYmB@zx2c4.com>
+In-Reply-To: <Yryic4YG9X2/DJiX@google.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Jun 29, 2022 at 07:34:58PM +0200, Jason A. Donenfeld wrote:
-> On Wed, Jun 29, 2022 at 06:38:09PM +0200, Jason A. Donenfeld wrote:
-> > On the technical topic, an Android developer friend following this
-> > thread just pointed out to me that Android doesn't use PM_AUTOSLEEP and
-> > just has userspace causing suspend frequently. So by his rough
-> > estimation your patch actually *will* break Android devices. Zoinks.
-> > Maybe he's right, maybe he's not -- I don't know -- but you should
-> > probably look into this if you want this patch to land without breakage.
+On Wed, Jun 29, 2022 at 12:05:23PM -0700, Kalesh Singh wrote:
 > 
-> More details: https://cs.android.com/android/platform/superproject/+/master:system/core/libsuspend/autosuspend_wakeup_count.cpp;bpv=1;bpt=1;l=52?q=%22%2Fsys%2Fpower%2Fstate%22&start=51&gsn=sys_power_state&gs=kythe%3A%2F%2Fandroid.googlesource.com%2Fplatform%2Fsuperproject%3Flang%3Dc%252B%252B%3Fpath%3Dsystem%2Fcore%2Flibsuspend%2Fautosuspend_wakeup_count.cpp%23ftWlDJuOhS_2fn3Ri7rClxA30blj_idGgT12aoUHd1o
-> 
-> So indeed it looks like it's userspace controlled. If you want this to
-> be a runtime, rather than a compiletime, switch, maybe
-> autosuspend_init() of that file could write to a sysctl.
-> 
-> Who at Google "owns" that code? Can somebody CC them in?
+> Android no longer uses PM_AUTOSLEEP, is correct. libsuspend is
+> also now deprecated. Android autosuspend is initiatiated from the
+> userspace system suspend service [1].
 
-Hi Jason,
+Is anything still using CONFIG_PM_AUTOSLEEP?  Is it perhaps time to
+consider deprecating it?
 
-Thanks for raising this.
-
-Android no longer uses PM_AUTOSLEEP, is correct. libsuspend is
-also now deprecated. Android autosuspend is initiatiated from the
-userspace system suspend service [1].
-
-A runtime config sounds more reasonable since in the !PM_AUTOSLEEP
-case, it is userspace which decides the suspend policy.
-
-[1] https://cs.android.com/android/platform/superproject/+/bf3906ecb33c98ff8edd96c852b884dbccb73295:system/hardware/interfaces/suspend/1.0/default/SystemSuspend.cpp;l=265
-
---Kalesh
-
-> 
-> Jason
-> 
+						- Ted
