@@ -2,97 +2,119 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 13547C433EF
-	for <rcu@archiver.kernel.org>; Thu, 30 Jun 2022 01:59:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 51169C43334
+	for <rcu@archiver.kernel.org>; Thu, 30 Jun 2022 03:02:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230208AbiF3B7n (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 29 Jun 2022 21:59:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56650 "EHLO
+        id S231826AbiF3DCe (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 29 Jun 2022 23:02:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229489AbiF3B7n (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 29 Jun 2022 21:59:43 -0400
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2847437AB8;
-        Wed, 29 Jun 2022 18:59:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1656554382; x=1688090382;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=zWWEIZVtQ+BCKbZLvrh8c4Jxk/iLItsP+t8Dcx8I6uY=;
-  b=Kpvtfits6miRLq0L/h2Kt5QUpLnBGYL82dGe08xRcYP/zXj34i4MIUXr
-   mR4C8lpzmeZLGAamB/U+2nB3CkfoNJ4oArRa8T1zRWt7RwaOW34mv49HA
-   ihvUkuDAXxwZ6u2s825zVWHN5qL8n+XDeVNzyHtTFdUKpqGuoQyrdgtD5
-   fSjoTdEz9xiVJrhl7jNHSI/7C2rFqm2hpg4FdJqIT/aBFuGOQPWMgS/jd
-   0C/4QpkTKy4MxOrbfW6ZD/1phYHn6qoODAckuhv/rn9SMUEAnUCyRodr2
-   aSAuHSRflH+fiYUVOXYcoNwWr3ASxMwH3QgSBA5zmQHXLvkGqZHDtKlWF
-   g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10393"; a="282949776"
-X-IronPort-AV: E=Sophos;i="5.92,232,1650956400"; 
-   d="scan'208";a="282949776"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2022 18:59:41 -0700
-X-IronPort-AV: E=Sophos;i="5.92,232,1650956400"; 
-   d="scan'208";a="647668394"
-Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.125])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2022 18:59:39 -0700
-From:   Zqiang <qiang1.zhang@intel.com>
-To:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] rcu: Make tiny RCU support leak callbacks for debug-object errors
-Date:   Thu, 30 Jun 2022 09:59:13 +0800
-Message-Id: <20220630015913.1828916-1-qiang1.zhang@intel.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S229455AbiF3DCd (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 29 Jun 2022 23:02:33 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28C62286DF;
+        Wed, 29 Jun 2022 20:02:32 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B3E806202D;
+        Thu, 30 Jun 2022 03:02:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9ADC3C3411E;
+        Thu, 30 Jun 2022 03:02:27 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="cEfq2bbY"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1656558145;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lAxoLbADZAhu/fbtT19sYsfwjIQHx+7cL3zp8zm5ylc=;
+        b=cEfq2bbYg+E0cJPmGbfqowUlZyBsEFMB+Tx0GAvzVTKBOF7AJsVTfIV6F3UeLWUpu2xbSL
+        REcWxgdTxNMimTFAsv2fXTf8VAIjeKWpDKecdvNtTMkrU9267h6JnxgCkrxxlSMx660w+6
+        xigc6asOchBZ4Fie7h+gI+in3P0RKaw=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 44cb7fda (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
+        Thu, 30 Jun 2022 03:02:25 +0000 (UTC)
+Date:   Thu, 30 Jun 2022 05:02:19 +0200
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+To:     Joe Perches <joe@perches.com>
+Cc:     Kalesh Singh <kaleshsingh@google.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arve =?utf-8?B?SGrDuG5uZXbDpWc=?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>,
+        Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, wireguard@lists.zx2c4.com,
+        netdev@vger.kernel.org, rcu <rcu@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, sultan@kerneltoast.com,
+        android-kernel-team <android-kernel-team@google.com>,
+        John Stultz <jstultz@google.com>,
+        Saravana Kannan <saravanak@google.com>, rafael@kernel.org
+Subject: Re: [PATCH] remove CONFIG_ANDROID
+Message-ID: <Yr0SO0Ubi3Js7ciP@zx2c4.com>
+References: <Yrx/8UOY+J8Ao3Bd@zx2c4.com>
+ <YryNQvWGVwCjJYmB@zx2c4.com>
+ <Yryic4YG9X2/DJiX@google.com>
+ <Yry6XvOGge2xKx/n@zx2c4.com>
+ <CAC_TJve_Jk0+XD7VeSJVvJq4D9ZofnH69B4QZv2LPT4X3KNfeg@mail.gmail.com>
+ <YrzaCRl9rwy9DgOC@zx2c4.com>
+ <CAC_TJvcEzp+zQp50wtj4=7b6vEObpJCQYLaTLhHJCxFdk3TgPg@mail.gmail.com>
+ <306dacfb29c2e38312943fa70d419f0a8d5ffe82.camel@perches.com>
+ <YrzzWmQ9+uDRlO5K@zx2c4.com>
+ <1a1f24707a03c2363e29ef91905e9f206fb6a0b5.camel@perches.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1a1f24707a03c2363e29ef91905e9f206fb6a0b5.camel@perches.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Currently, only tree RCU support leak callbacks setting when do
-duplicate call_rcu(). this commit add leak callbacks setting when
-fo duplicate call_rcu() for tiny RCU.
+On Wed, Jun 29, 2022 at 06:44:14PM -0700, Joe Perches wrote:
+> On Thu, 2022-06-30 at 02:50 +0200, Jason A. Donenfeld wrote:
+> > On Wed, Jun 29, 2022 at 05:36:57PM -0700, Joe Perches wrote:
+> > > > > +static ssize_t pm_userspace_autosleeper_show(struct kobject *kobj,
+> > > > > +                               struct kobj_attribute *attr, char *buf)
+> > > > > +{
+> > > > > +       return sprintf(buf, "%d\n", pm_userspace_autosleeper_enabled);
+> > > 
+> > > This should use sysfs_emit no?
+> > 
+> > Probably, yea. Note that I just copy and pasted a nearby function,
+> > pm_async_show, `:%s/`d the variable name, and then promptly `git diff |
+> > clip`d it and plonked it into my email. Looking at the file, it uses
+> > sprintf all over the place in this fashion. So you may want to submit a
+> > cleanup to Rafael on this if you're right about sysfs_emit() being
+> > universally preferred.
+> 
+> Perhaps:
+> 
+> (trivial refactored and added a missing newline in autosleep_show)
+> 
+> ---
+>  kernel/power/main.c | 102 ++++++++++++++++++++++++++--------------------------
+>  1 file changed, 52 insertions(+), 50 deletions(-)
 
-Signed-off-by: Zqiang <qiang1.zhang@intel.com>
----
- kernel/rcu/tiny.c | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
+You should probably post a proper patch to the PM people. At least I'm
+not going to look at that here, as it's not really relevant at all to
+this discussion.
 
-diff --git a/kernel/rcu/tiny.c b/kernel/rcu/tiny.c
-index f0561ee16b9c..b3c64cee0313 100644
---- a/kernel/rcu/tiny.c
-+++ b/kernel/rcu/tiny.c
-@@ -158,6 +158,10 @@ void synchronize_rcu(void)
- }
- EXPORT_SYMBOL_GPL(synchronize_rcu);
- 
-+static void tiny_rcu_leak_callback(struct rcu_head *rhp)
-+{
-+}
-+
- /*
-  * Post an RCU callback to be invoked after the end of an RCU grace
-  * period.  But since we have but one CPU, that would be after any
-@@ -165,9 +169,18 @@ EXPORT_SYMBOL_GPL(synchronize_rcu);
-  */
- void call_rcu(struct rcu_head *head, rcu_callback_t func)
- {
-+	static atomic_t doublefrees;
- 	unsigned long flags;
- 
--	debug_rcu_head_queue(head);
-+	if (debug_rcu_head_queue(head)) {
-+		if (atomic_inc_return(&doublefrees) < 4) {
-+			pr_err("%s(): Double-freed CB %p->%pS()!!!  ", __func__, head, head->func);
-+			mem_dump_obj(head);
-+		}
-+		WRITE_ONCE(head->func, tiny_rcu_leak_callback);
-+		return;
-+	}
-+
- 	head->func = func;
- 	head->next = NULL;
- 
--- 
-2.25.1
-
+Jason
