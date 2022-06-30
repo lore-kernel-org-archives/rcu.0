@@ -2,177 +2,141 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 670CBC43334
-	for <rcu@archiver.kernel.org>; Thu, 30 Jun 2022 16:33:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7142CC43334
+	for <rcu@archiver.kernel.org>; Thu, 30 Jun 2022 17:12:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233773AbiF3Qdm (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 30 Jun 2022 12:33:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40874 "EHLO
+        id S235694AbiF3RMs (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 30 Jun 2022 13:12:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235150AbiF3Qdl (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 30 Jun 2022 12:33:41 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 250753AA55;
-        Thu, 30 Jun 2022 09:33:40 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id j21so34726942lfe.1;
-        Thu, 30 Jun 2022 09:33:40 -0700 (PDT)
+        with ESMTP id S235456AbiF3RMp (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 30 Jun 2022 13:12:45 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46B103EF3D
+        for <rcu@vger.kernel.org>; Thu, 30 Jun 2022 10:12:42 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id v14so28239202wra.5
+        for <rcu@vger.kernel.org>; Thu, 30 Jun 2022 10:12:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mYu3wnU4VMLFIgoHCbBAkP3VZMsuvdsMzpnLVjK/d0s=;
-        b=GTBdcnWdOb3tbjwANa5tSyYVmT05/n+yOxJ86cMBR398q6W3YidHbxHKNr0A9AxI43
-         FgeyjwwYqfeTce01bE0JHt6g69xzudhbqu2rwYdkufJa+DgWvFnJcCgkvurOFSXTHjCf
-         F8/3mHrXIAjJDW6F9gBJCk3kgDIIKqAzYn0gL0PL8pfeedgtwu7veqM9IFVwDEJM6D7C
-         PcQjUdICCOMfLrf17GkzH03uKKUe1LCN9hAlzzbskk0iHnxVaoPWp4UdBDito166UTAC
-         TsTunBHKoTFcK9EEwwCOqAYOQ8jFJi7jG5DxglgOhqhZj/3Rnq8SS/jTi3Dv4DdHeqC+
-         dsoQ==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uH3u1IFiXRo5yGbXIVqL1yqXLG2H1E4UXns/GZ0BaVE=;
+        b=FZwPzlvJMTMo74Fom19t74AoePXhXeGrkxqDczxBrgAmUE15h7mMgCvqS1RXp6H6dx
+         AJN1eEqiyXCQcVtOdWLHOlGOIYCzX0NYupog/3JnG9A7ikhyIHZBFXZVFGEfKGdZCXeY
+         zU1hnN1Wdqw7oADY6ZGrKHxwlMGT7A4lHt31aRjqd1iiC/ofThahR164aASaZMojTBSJ
+         5NpYz9PQrcA4PgL8kxOVJoX6B1W4Pk4wJyUC923AhZMJ3cMtqn4TGSDOwf2374Xfwolm
+         zoFBaFGsi3fEWFmXn2NQWslIpMLfYDFs4g+nzRAXD26K3skmpYuoFUlpgEIDvbWxpRWF
+         dGPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mYu3wnU4VMLFIgoHCbBAkP3VZMsuvdsMzpnLVjK/d0s=;
-        b=KAaZK+15IJDXdAbMsj67jkMYppDEg9Y2ajQJcX9e9x6l2ofQ8URjilk1s+un+zYs4s
-         Dtpl47W7ZS+7d/1OX3jAO6BM2WbPY3XGH43rGQteLqqKfXFFB488Yc+HnlqJPJiUK21/
-         yoZLP4NtVSN2abLcAYNkLFgrEAPFXSb3UvoiyTdYXDOq4EuC6VW91V+6FlINBgB45aZ0
-         Gt8COmZm32qNPW0N2AeNF7VrgPRLf05wk6wcsbc8ZxMX3rqj5XglYsLnSNViag3FGcgP
-         r/M4/t5DZAYwLwHeYD2F8ufRhm0rrdMTO9dqefRQLNp6+tS80mHS72KSKHv9ziRlhNlf
-         3i0w==
-X-Gm-Message-State: AJIora+pR2DB4h2jsmFq+Ak70M80eWX7mIx51zg0gBT19TarKVjwOM/K
-        Q3qJBLvU2Wfy6fn3KN8GlmqfCcrI5AD9BA==
-X-Google-Smtp-Source: AGRyM1stLGr0cokXrCdM57VzEU/jSYUbbqPGUEnZSUYNuTODANVs6ZyJdRbwj43qs7K0Ec/1t7ewfw==
-X-Received: by 2002:a05:6512:33ca:b0:47f:acc5:6c8b with SMTP id d10-20020a05651233ca00b0047facc56c8bmr6755919lfg.612.1656606818283;
-        Thu, 30 Jun 2022 09:33:38 -0700 (PDT)
-Received: from pc638.lan ([155.137.26.201])
-        by smtp.gmail.com with ESMTPSA id j14-20020a2e850e000000b0025a6e20abe9sm2728720lji.130.2022.06.30.09.33.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Jun 2022 09:33:37 -0700 (PDT)
-From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: [PATCH v4 1/1] rcu/kvfree: Update KFREE_DRAIN_JIFFIES interval
-Date:   Thu, 30 Jun 2022 18:33:35 +0200
-Message-Id: <20220630163335.3670-1-urezki@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uH3u1IFiXRo5yGbXIVqL1yqXLG2H1E4UXns/GZ0BaVE=;
+        b=6TkqWhZnq/j0tiRXr6LNUirIzgo6C6ukSouY2cFN0Pysr1HWKFimNWNv6e9vRwZseD
+         uXXleebTE2t+2fcHKrS9ba7Z0u6JWjG1yUCPd+crCvWfZ5jZIIpYD7uYO4Wua3L4k+V0
+         SAJtf/rnEhW/1Stel2v5MNn4T2jLBbYBU/tDZopEsZz+7FENwjnRVjQ1n1bl4+lTS9/O
+         IYy9iuzyEjWlMxVYQhSz2qubcgOsaAt+KaKseU8f9EqolS65zTcX48eoOx8SUBq2ZGWf
+         Bci5VkF2XxvA8+OSMh2nehZIl4OsPGi+8/EtlOhTv40KePFK4/sbQRReDWu7+bLnwh75
+         2faQ==
+X-Gm-Message-State: AJIora/5NKIf7LxWVN9kT6lxT8xW7y3+1Dx3xEEz0TzEcSNK2FnWrOlW
+        uk03dQEyoCX+6RRhS3SLgijggNA5TR2LDV9mYFBw
+X-Google-Smtp-Source: AGRyM1szn9LwRU3Nw9ZfHq8EWST1CWq46Cj3fhZE2wtVrKEw7gClyoWnhjeSGDOpCcCwvmQvyhbN8nUX3DDA/n+VcV0=
+X-Received: by 2002:adf:ef10:0:b0:21b:8740:7085 with SMTP id
+ e16-20020adfef10000000b0021b87407085mr9148009wro.9.1656609160637; Thu, 30 Jun
+ 2022 10:12:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <Yrx/8UOY+J8Ao3Bd@zx2c4.com> <YryNQvWGVwCjJYmB@zx2c4.com>
+ <Yryic4YG9X2/DJiX@google.com> <Yry6XvOGge2xKx/n@zx2c4.com>
+ <CAC_TJve_Jk0+XD7VeSJVvJq4D9ZofnH69B4QZv2LPT4X3KNfeg@mail.gmail.com>
+ <YrzaCRl9rwy9DgOC@zx2c4.com> <CANDhNCpRzzULaGmEGCbbJgVinA0pJJB-gOP9AY0Hy488n9ZStA@mail.gmail.com>
+ <YrztOqBBll66C2/n@zx2c4.com> <YrzujZuJyfymC0LP@zx2c4.com> <CAC_TJvcNOx1C5csdkMCAPVmX4gLcRWkxKO8Vm=isgjgM-MowwA@mail.gmail.com>
+ <Yr11fp13yMRiEphS@zx2c4.com>
+In-Reply-To: <Yr11fp13yMRiEphS@zx2c4.com>
+From:   John Stultz <jstultz@google.com>
+Date:   Thu, 30 Jun 2022 10:12:30 -0700
+Message-ID: <CANDhNCrcEBUUNevNyZp2qttqWssWBEcXMZ5nPO0Ntk7Vszd3bQ@mail.gmail.com>
+Subject: Re: [PATCH] remove CONFIG_ANDROID
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc:     Kalesh Singh <kaleshsingh@google.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>,
+        Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, wireguard@lists.zx2c4.com,
+        netdev@vger.kernel.org, rcu <rcu@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, sultan@kerneltoast.com,
+        android-kernel-team <android-kernel-team@google.com>,
+        Saravana Kannan <saravanak@google.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Currently the monitor work is scheduled with a fixed interval of HZ/20,
-which is roughly 50 milliseconds. The drawback of this approach is
-low utilization of the 512 page slots in scenarios with infrequence
-kvfree_rcu() calls.  For example on an Android system:
+On Thu, Jun 30, 2022 at 3:06 AM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
+> On Wed, Jun 29, 2022 at 09:25:32PM -0700, Kalesh Singh wrote:
+> > Two concerns John raised:
+> >   1) Adding new ABI we need to maintain
+> >   2) Having unclear config options
+> >
+> > Another idea, I think, is to add the Kconfig option as
+> > CONFIG_SUSPEND_SKIP_RNG_RESEED? Similar to existing
+> > CONFIG_SUSPEND_SKIP_SYNC and I think it would address those concerns.
+>
+> I mentioned in my reply to him that this doesn't really work for me:
+>
+> | As a general rule, I don't expose knobs like that in wireguard /itself/,
+> | but wireguard has no problem with adapting to whatever machine properties
+> | it finds itself on. And besides, this *is* a very definite device
+> | property, something really particular and peculiar about the machine
+> | the kernel is running on. It's a concrete thing that the kernel should
+> | know about. So let's go with your "very clear description idea", above,
+> | instead.
+>
+> IOW, we're not going to add a tunable on every possible place this is
+> used.
 
-<snip>
-  kworker/3:3-507     [003] ....   470.286305: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000d0f0dde5 nr_records=6
-  kworker/6:1-76      [006] ....   470.416613: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000ea0d6556 nr_records=1
-  kworker/6:1-76      [006] ....   470.416625: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000003e025849 nr_records=9
-  kworker/3:3-507     [003] ....   471.390000: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000815a8713 nr_records=48
-  kworker/1:1-73      [001] ....   471.725785: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000fda9bf20 nr_records=3
-  kworker/1:1-73      [001] ....   471.725833: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000a425b67b nr_records=76
-  kworker/0:4-1411    [000] ....   472.085673: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000007996be9d nr_records=1
-  kworker/0:4-1411    [000] ....   472.085728: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000d0f0dde5 nr_records=5
-  kworker/6:1-76      [006] ....   472.260340: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000065630ee4 nr_records=102
-<snip>
+Hrm. Can you explain a bit more on why you're particularly adamant
+against scoping the config to describe the behavior we want from the
+kernel rather than describing a "machine property"?  As personally, I
+greatly prefer Kalesh's suggestion (as it avoids the same critique one
+could make of the CONFIG_ANDROID "flag"), but admittedly this is
+bikeshed territory.
 
-in many cases, out of 512 slots, fewer than 10 were actually used.
-In order to improve batching and make utilization more efficient this
-commit sets a drain interval to a fixed 5-seconds interval. Floods are
-detected when a page fills quickly, and in that case, the reclaim work
-is re-scheduled for the next scheduling-clock tick (jiffy).
+Does this preference come out of the too-many-options-in-gpg
+antipattern? Or is there something else?
 
-After this change:
 
-<snip>
-  kworker/7:1-371     [007] ....  5630.725708: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000005ab0ffb3 nr_records=121
-  kworker/7:1-371     [007] ....  5630.989702: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000060c84761 nr_records=47
-  kworker/7:1-371     [007] ....  5630.989714: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000000babf308 nr_records=510
-  kworker/7:1-371     [007] ....  5631.553790: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000bb7bd0ef nr_records=169
-  kworker/7:1-371     [007] ....  5631.553808: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000044c78753 nr_records=510
-  kworker/5:6-9428    [005] ....  5631.746102: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000d98519aa nr_records=123
-  kworker/4:7-9434    [004] ....  5632.001758: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000526c9d44 nr_records=322
-  kworker/4:7-9434    [004] ....  5632.002073: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000002c6a8afa nr_records=185
-  kworker/7:1-371     [007] ....  5632.277515: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000007f4a962f nr_records=510
-<snip>
+> Anyway if you don't want a runtime switch, make a compiletime switch
+> called CONFIG_PM_CONTINUOUS_RAPID_AUTOSLEEPING or whatever, write some
+> very discouraging help text, and call it a day. And this way you don't
+> have to worry about ABI and we can change this later on and do the whole
+> thing as a no-big-deal change that somebody can tweak later without
+> issue.
 
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
----
- kernel/rcu/tree.c | 27 +++++++++++++++++++++++----
- 1 file changed, 23 insertions(+), 4 deletions(-)
+Yeah, this is ok with me, as I don't see much benefit to creating a
+userland ABI, as I don't think at this point we expect the behavior to
+shift or oscillate at runtime.
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index fd16c0b46d9e..a1b0a5736916 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3249,7 +3249,7 @@ EXPORT_SYMBOL_GPL(call_rcu);
- 
- 
- /* Maximum number of jiffies to wait before draining a batch. */
--#define KFREE_DRAIN_JIFFIES (HZ / 50)
-+#define KFREE_DRAIN_JIFFIES (5 * HZ)
- #define KFREE_N_BATCHES 2
- #define FREE_N_CHANNELS 2
- 
-@@ -3510,6 +3510,25 @@ need_offload_krc(struct kfree_rcu_cpu *krcp)
- 	return !!krcp->head;
- }
- 
-+static void
-+schedule_delayed_monitor_work(struct kfree_rcu_cpu *krcp)
-+{
-+	long delay, delay_left;
-+
-+	delay = READ_ONCE(krcp->count) >= KVFREE_BULK_MAX_ENTR ? 1:KFREE_DRAIN_JIFFIES;
-+
-+	if (delayed_work_pending(&krcp->monitor_work)) {
-+		delay_left = krcp->monitor_work.timer.expires - jiffies;
-+
-+		if (delay < delay_left)
-+			mod_delayed_work(system_wq, &krcp->monitor_work, delay);
-+
-+		return;
-+	}
-+
-+	queue_delayed_work(system_wq, &krcp->monitor_work, delay);
-+}
-+
- /*
-  * This function is invoked after the KFREE_DRAIN_JIFFIES timeout.
-  */
-@@ -3567,7 +3586,7 @@ static void kfree_rcu_monitor(struct work_struct *work)
- 	// work to repeat an attempt. Because previous batches are
- 	// still in progress.
- 	if (need_offload_krc(krcp))
--		schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
-+		schedule_delayed_monitor_work(krcp);
- 
- 	raw_spin_unlock_irqrestore(&krcp->lock, flags);
- }
-@@ -3755,7 +3774,7 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
- 
- 	// Set timer to drain after KFREE_DRAIN_JIFFIES.
- 	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING)
--		schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
-+		schedule_delayed_monitor_work(krcp);
- 
- unlock_return:
- 	krc_this_cpu_unlock(krcp, flags);
-@@ -3831,7 +3850,7 @@ void __init kfree_rcu_scheduler_running(void)
- 
- 		raw_spin_lock_irqsave(&krcp->lock, flags);
- 		if (need_offload_krc(krcp))
--			schedule_delayed_work_on(cpu, &krcp->monitor_work, KFREE_DRAIN_JIFFIES);
-+			schedule_delayed_monitor_work(krcp);
- 		raw_spin_unlock_irqrestore(&krcp->lock, flags);
- 	}
- }
--- 
-2.30.2
-
+thanks
+-john
