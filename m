@@ -2,166 +2,177 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C7A18C43334
-	for <rcu@archiver.kernel.org>; Thu, 30 Jun 2022 15:29:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 670CBC43334
+	for <rcu@archiver.kernel.org>; Thu, 30 Jun 2022 16:33:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235251AbiF3P3G (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 30 Jun 2022 11:29:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39056 "EHLO
+        id S233773AbiF3Qdm (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 30 Jun 2022 12:33:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232771AbiF3P3F (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 30 Jun 2022 11:29:05 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3450639815;
-        Thu, 30 Jun 2022 08:29:04 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C51066185C;
-        Thu, 30 Jun 2022 15:29:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 231E6C34115;
-        Thu, 30 Jun 2022 15:29:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1656602943;
-        bh=weSR96C6jicYY1bKEc0+mVZ0AKoBWEwHCgVFYGUk8q8=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=gcASQYFGPqQ7neoXh5ciehnk56P1oC9QTpMxwDelaxZk1ds8PHaYyv0xiUw6V7sAB
-         0uxyeBZFs1hNhazxtxMbEWqAD2i8CQSl7k5wYBDvHmEKwKC5CL/U4PSI1CGwuiHjfh
-         QK1j8OPuxwvDr0xS5RNXhAD15KtlFl8+cJUrvWoEVTOqEezj9Y6nwGIyJKXDTgVywb
-         ph0QD0Ropv35T4XbOEBZ8MPd9eVxD/z47RzazzQjoNPmG3tb6XjmALQwStRjdFpHCU
-         wg1SU4LvZ14hP3126Qucu9z4nAd2te/PgFtnjcK5hc+RdnXKvP8xEVedJbExihC/QG
-         gmNmSYKSNJxUA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id A9B135C04B3; Thu, 30 Jun 2022 08:29:02 -0700 (PDT)
-Date:   Thu, 30 Jun 2022 08:29:02 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Rushikesh S Kadam <rushikesh.s.kadam@intel.com>,
-        Neeraj upadhyay <neeraj.iitr10@gmail.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>, vineeth@bitbyteword.org
-Subject: Re: [PATCH v2 8/8] rcu/kfree: Fix kfree_rcu_shrink_count() return
- value
-Message-ID: <20220630152902.GW1790663@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <Yrn9a5pOvhvL/eZj@pc638.lan>
- <20220627205907.GM1790663@paulmck-ThinkPad-P17-Gen-1>
- <YroelcGVNhQj91ab@google.com>
- <20220627214359.GQ1790663@paulmck-ThinkPad-P17-Gen-1>
- <YrsyrmDbfnkpfDEP@google.com>
- <CAEXW_YRQiuvsy1FsMNWG7wd9ah_gfgcOUAeNzA-QbmDcACa+Uw@mail.gmail.com>
- <20220629165627.GI1790663@paulmck-ThinkPad-P17-Gen-1>
- <YrysWAx/rMbBF5iY@google.com>
- <20220629210720.GO1790663@paulmck-ThinkPad-P17-Gen-1>
- <Yr2yTKZe7JmNrimV@google.com>
+        with ESMTP id S235150AbiF3Qdl (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 30 Jun 2022 12:33:41 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 250753AA55;
+        Thu, 30 Jun 2022 09:33:40 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id j21so34726942lfe.1;
+        Thu, 30 Jun 2022 09:33:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mYu3wnU4VMLFIgoHCbBAkP3VZMsuvdsMzpnLVjK/d0s=;
+        b=GTBdcnWdOb3tbjwANa5tSyYVmT05/n+yOxJ86cMBR398q6W3YidHbxHKNr0A9AxI43
+         FgeyjwwYqfeTce01bE0JHt6g69xzudhbqu2rwYdkufJa+DgWvFnJcCgkvurOFSXTHjCf
+         F8/3mHrXIAjJDW6F9gBJCk3kgDIIKqAzYn0gL0PL8pfeedgtwu7veqM9IFVwDEJM6D7C
+         PcQjUdICCOMfLrf17GkzH03uKKUe1LCN9hAlzzbskk0iHnxVaoPWp4UdBDito166UTAC
+         TsTunBHKoTFcK9EEwwCOqAYOQ8jFJi7jG5DxglgOhqhZj/3Rnq8SS/jTi3Dv4DdHeqC+
+         dsoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mYu3wnU4VMLFIgoHCbBAkP3VZMsuvdsMzpnLVjK/d0s=;
+        b=KAaZK+15IJDXdAbMsj67jkMYppDEg9Y2ajQJcX9e9x6l2ofQ8URjilk1s+un+zYs4s
+         Dtpl47W7ZS+7d/1OX3jAO6BM2WbPY3XGH43rGQteLqqKfXFFB488Yc+HnlqJPJiUK21/
+         yoZLP4NtVSN2abLcAYNkLFgrEAPFXSb3UvoiyTdYXDOq4EuC6VW91V+6FlINBgB45aZ0
+         Gt8COmZm32qNPW0N2AeNF7VrgPRLf05wk6wcsbc8ZxMX3rqj5XglYsLnSNViag3FGcgP
+         r/M4/t5DZAYwLwHeYD2F8ufRhm0rrdMTO9dqefRQLNp6+tS80mHS72KSKHv9ziRlhNlf
+         3i0w==
+X-Gm-Message-State: AJIora+pR2DB4h2jsmFq+Ak70M80eWX7mIx51zg0gBT19TarKVjwOM/K
+        Q3qJBLvU2Wfy6fn3KN8GlmqfCcrI5AD9BA==
+X-Google-Smtp-Source: AGRyM1stLGr0cokXrCdM57VzEU/jSYUbbqPGUEnZSUYNuTODANVs6ZyJdRbwj43qs7K0Ec/1t7ewfw==
+X-Received: by 2002:a05:6512:33ca:b0:47f:acc5:6c8b with SMTP id d10-20020a05651233ca00b0047facc56c8bmr6755919lfg.612.1656606818283;
+        Thu, 30 Jun 2022 09:33:38 -0700 (PDT)
+Received: from pc638.lan ([155.137.26.201])
+        by smtp.gmail.com with ESMTPSA id j14-20020a2e850e000000b0025a6e20abe9sm2728720lji.130.2022.06.30.09.33.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Jun 2022 09:33:37 -0700 (PDT)
+From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: [PATCH v4 1/1] rcu/kvfree: Update KFREE_DRAIN_JIFFIES interval
+Date:   Thu, 30 Jun 2022 18:33:35 +0200
+Message-Id: <20220630163335.3670-1-urezki@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Yr2yTKZe7JmNrimV@google.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jun 30, 2022 at 02:25:16PM +0000, Joel Fernandes wrote:
-> On Wed, Jun 29, 2022 at 02:07:20PM -0700, Paul E. McKenney wrote:
-> > On Wed, Jun 29, 2022 at 07:47:36PM +0000, Joel Fernandes wrote:
-> > > On Wed, Jun 29, 2022 at 09:56:27AM -0700, Paul E. McKenney wrote:
-> > > > On Tue, Jun 28, 2022 at 05:13:21PM -0400, Joel Fernandes wrote:
-> > > > > On Tue, Jun 28, 2022 at 12:56 PM Joel Fernandes <joel@joelfernandes.org> wrote:
-> > > > > >
-> > > > > > On Mon, Jun 27, 2022 at 02:43:59PM -0700, Paul E. McKenney wrote:
-> > > > > > > On Mon, Jun 27, 2022 at 09:18:13PM +0000, Joel Fernandes wrote:
-> > > > > > > > On Mon, Jun 27, 2022 at 01:59:07PM -0700, Paul E. McKenney wrote:
-> > > > > > > > > On Mon, Jun 27, 2022 at 08:56:43PM +0200, Uladzislau Rezki wrote:
-> > > > > > > > > > > As per the comments in include/linux/shrinker.h, .count_objects callback
-> > > > > > > > > > > should return the number of freeable items, but if there are no objects
-> > > > > > > > > > > to free, SHRINK_EMPTY should be returned. The only time 0 is returned
-> > > > > > > > > > > should be when we are unable to determine the number of objects, or the
-> > > > > > > > > > > cache should be skipped for another reason.
-> > > > > > > > > > >
-> > > > > > > > > > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > > > > > > > > > > ---
-> > > > > > > > > > >  kernel/rcu/tree.c | 2 +-
-> > > > > > > > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > > > > > > > >
-> > > > > > > > > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > > > > > > > > > index 711679d10cbb..935788e8d2d7 100644
-> > > > > > > > > > > --- a/kernel/rcu/tree.c
-> > > > > > > > > > > +++ b/kernel/rcu/tree.c
-> > > > > > > > > > > @@ -3722,7 +3722,7 @@ kfree_rcu_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
-> > > > > > > > > > >               atomic_set(&krcp->backoff_page_cache_fill, 1);
-> > > > > > > > > > >       }
-> > > > > > > > > > >
-> > > > > > > > > > > -     return count;
-> > > > > > > > > > > +     return count == 0 ? SHRINK_EMPTY : count;
-> > > > > > > > > > >  }
-> > > > > > > > > > >
-> > > > > > > > > > >  static unsigned long
-> > > > > > > > > > > --
-> > > > > > > > > > > 2.37.0.rc0.104.g0611611a94-goog
-> > > > > > > > > > >
-> > > > > > > > > > Looks good to me!
-> > > > > > > > > >
-> > > > > > > > > > Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > > > > > > > >
-> > > > > > > > > Now that you mention it, this does look independent of the rest of
-> > > > > > > > > the series.  I have pulled it in with Uladzislau's Reviewed-by.
-> > > > > > > >
-> > > > > > > > Thanks Paul and Vlad!
-> > > > > > > >
-> > > > > > > > Paul, apologies for being quiet. I have been working on the series and the
-> > > > > > > > review comments carefully. I appreciate your help with this work.
-> > > > > > >
-> > > > > > > Not a problem.  After all, this stuff is changing some of the trickier
-> > > > > > > parts of RCU.  We must therefore assume that some significant time and
-> > > > > > > effort will be required to get it right.
-> > > > > >
-> > > > > > To your point about trickier parts of RCU, the v2 series though I tested it
-> > > > > > before submitting is now giving me strange results with rcuscale. Sometimes
-> > > > > > laziness does not seem to be in effect (as pointed out by rcuscale), other
-> > > > > > times I am seeing stalls.
-> > > > > >
-> > > > > > So I have to carefully look through all of this again. I am not sure why I
-> > > > > > was not seeing these issues with the exact same code before (frustrated).
-> > > > > 
-> > > > > Looks like I found at least 3 bugs in my v2 series which testing
-> > > > > picked up now. RCU-lazy was being too lazy or not too lazy. Now tests
-> > > > > pass, so its progress but does beg for more testing:
-> > > > 
-> > > > It is entirely possible that call_rcu_lazy() needs its own special
-> > > > purpose tests.  This might be a separate test parallel to the test for
-> > > > kfree_rcu() in kernel/rcu/rcuscale.c, for example.
-> > > 
-> > > I see, perhaps I can add a 'lazy' flag to rcutorture as well, so it uses
-> > > call_rcu_lazy() for its async RCU invocations?
-> > 
-> > That will be tricky because of rcutorture's timeliness expectations.
-> 
-> I have facility now to set the lazy timeout from test kernel modules. I was
-> thinking I could set the same from rcu torture. Maybe something like a 100
-> jiffies? Then it can run through all the regular rcutorture tests and
-> still exercise the new code paths.
+Currently the monitor work is scheduled with a fixed interval of HZ/20,
+which is roughly 50 milliseconds. The drawback of this approach is
+low utilization of the 512 page slots in scenarios with infrequence
+kvfree_rcu() calls.  For example on an Android system:
 
-That might work, and of course feel free to try it.  Except that there
-are a lot of forward-progress checks in rcutorture that will like as not
-spew huge steaming piles of false positives if it is only lazy callbacks
-that are driving the grace period forward.  You have been warned.  ;-)
+<snip>
+  kworker/3:3-507     [003] ....   470.286305: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000d0f0dde5 nr_records=6
+  kworker/6:1-76      [006] ....   470.416613: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000ea0d6556 nr_records=1
+  kworker/6:1-76      [006] ....   470.416625: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000003e025849 nr_records=9
+  kworker/3:3-507     [003] ....   471.390000: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000815a8713 nr_records=48
+  kworker/1:1-73      [001] ....   471.725785: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000fda9bf20 nr_records=3
+  kworker/1:1-73      [001] ....   471.725833: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000a425b67b nr_records=76
+  kworker/0:4-1411    [000] ....   472.085673: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000007996be9d nr_records=1
+  kworker/0:4-1411    [000] ....   472.085728: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000d0f0dde5 nr_records=5
+  kworker/6:1-76      [006] ....   472.260340: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000065630ee4 nr_records=102
+<snip>
 
-> > Maybe a self-invoking lazy callback initiated by rcu_torture_fakewriter()
-> > that prints a line about its statistics at shutdown time?  At a minimum,
-> > the number of times that it was invoked.  Better would be to print one
-> > line summarizing stats for all of them.
-> > 
-> > The main thing that could be detected from this is a callback being
-> > stranded.  Given that rcutorture enqueues non-lazy callbacks like a
-> > drunken sailor, they won't end up being all that lazy.
-> 
-> Thanks for this idea as well. I'll think more about it. thanks,
+in many cases, out of 512 slots, fewer than 10 were actually used.
+In order to improve batching and make utilization more efficient this
+commit sets a drain interval to a fixed 5-seconds interval. Floods are
+detected when a page fills quickly, and in that case, the reclaim work
+is re-scheduled for the next scheduling-clock tick (jiffy).
 
-We probably need a special-purpose test (for example, in rcuscale), but
-the self-enqueuing lazy callback should at least avoid false positives
-from rcutorture's forward-progress checks.
+After this change:
 
-							Thanx, Paul
+<snip>
+  kworker/7:1-371     [007] ....  5630.725708: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000005ab0ffb3 nr_records=121
+  kworker/7:1-371     [007] ....  5630.989702: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000060c84761 nr_records=47
+  kworker/7:1-371     [007] ....  5630.989714: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000000babf308 nr_records=510
+  kworker/7:1-371     [007] ....  5631.553790: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000bb7bd0ef nr_records=169
+  kworker/7:1-371     [007] ....  5631.553808: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000044c78753 nr_records=510
+  kworker/5:6-9428    [005] ....  5631.746102: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000d98519aa nr_records=123
+  kworker/4:7-9434    [004] ....  5632.001758: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000526c9d44 nr_records=322
+  kworker/4:7-9434    [004] ....  5632.002073: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000002c6a8afa nr_records=185
+  kworker/7:1-371     [007] ....  5632.277515: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000007f4a962f nr_records=510
+<snip>
+
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+---
+ kernel/rcu/tree.c | 27 +++++++++++++++++++++++----
+ 1 file changed, 23 insertions(+), 4 deletions(-)
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index fd16c0b46d9e..a1b0a5736916 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3249,7 +3249,7 @@ EXPORT_SYMBOL_GPL(call_rcu);
+ 
+ 
+ /* Maximum number of jiffies to wait before draining a batch. */
+-#define KFREE_DRAIN_JIFFIES (HZ / 50)
++#define KFREE_DRAIN_JIFFIES (5 * HZ)
+ #define KFREE_N_BATCHES 2
+ #define FREE_N_CHANNELS 2
+ 
+@@ -3510,6 +3510,25 @@ need_offload_krc(struct kfree_rcu_cpu *krcp)
+ 	return !!krcp->head;
+ }
+ 
++static void
++schedule_delayed_monitor_work(struct kfree_rcu_cpu *krcp)
++{
++	long delay, delay_left;
++
++	delay = READ_ONCE(krcp->count) >= KVFREE_BULK_MAX_ENTR ? 1:KFREE_DRAIN_JIFFIES;
++
++	if (delayed_work_pending(&krcp->monitor_work)) {
++		delay_left = krcp->monitor_work.timer.expires - jiffies;
++
++		if (delay < delay_left)
++			mod_delayed_work(system_wq, &krcp->monitor_work, delay);
++
++		return;
++	}
++
++	queue_delayed_work(system_wq, &krcp->monitor_work, delay);
++}
++
+ /*
+  * This function is invoked after the KFREE_DRAIN_JIFFIES timeout.
+  */
+@@ -3567,7 +3586,7 @@ static void kfree_rcu_monitor(struct work_struct *work)
+ 	// work to repeat an attempt. Because previous batches are
+ 	// still in progress.
+ 	if (need_offload_krc(krcp))
+-		schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
++		schedule_delayed_monitor_work(krcp);
+ 
+ 	raw_spin_unlock_irqrestore(&krcp->lock, flags);
+ }
+@@ -3755,7 +3774,7 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ 
+ 	// Set timer to drain after KFREE_DRAIN_JIFFIES.
+ 	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING)
+-		schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
++		schedule_delayed_monitor_work(krcp);
+ 
+ unlock_return:
+ 	krc_this_cpu_unlock(krcp, flags);
+@@ -3831,7 +3850,7 @@ void __init kfree_rcu_scheduler_running(void)
+ 
+ 		raw_spin_lock_irqsave(&krcp->lock, flags);
+ 		if (need_offload_krc(krcp))
+-			schedule_delayed_work_on(cpu, &krcp->monitor_work, KFREE_DRAIN_JIFFIES);
++			schedule_delayed_monitor_work(krcp);
+ 		raw_spin_unlock_irqrestore(&krcp->lock, flags);
+ 	}
+ }
+-- 
+2.30.2
+
