@@ -2,159 +2,167 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A00E5C433EF
-	for <rcu@archiver.kernel.org>; Thu, 30 Jun 2022 14:25:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 64956C433EF
+	for <rcu@archiver.kernel.org>; Thu, 30 Jun 2022 14:36:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232029AbiF3OZV (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 30 Jun 2022 10:25:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60282 "EHLO
+        id S235485AbiF3OgB (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 30 Jun 2022 10:36:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237047AbiF3OZD (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 30 Jun 2022 10:25:03 -0400
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D605B2C66E
-        for <rcu@vger.kernel.org>; Thu, 30 Jun 2022 07:08:26 -0700 (PDT)
-Received: by mail-qv1-xf32.google.com with SMTP id i17so29753577qvo.13
-        for <rcu@vger.kernel.org>; Thu, 30 Jun 2022 07:08:26 -0700 (PDT)
+        with ESMTP id S237124AbiF3Ofq (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 30 Jun 2022 10:35:46 -0400
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18F61FDD
+        for <rcu@vger.kernel.org>; Thu, 30 Jun 2022 07:25:18 -0700 (PDT)
+Received: by mail-qv1-xf29.google.com with SMTP id cu16so29940932qvb.7
+        for <rcu@vger.kernel.org>; Thu, 30 Jun 2022 07:25:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=0Z0pUtjQC8KE7tpDzNEFE6y+ZheqehZtaD3kD+I+qEk=;
-        b=VBOggfUaOYccYerTO8qKWWDuYKlmCxY2qozdSGHq3aLRWttCAd/nM2JIkKCl1Bbga9
-         H5XeHrkpxew8kxMPoH/hrQuCCBeAyJrUoIr1Uh1qRTJhPl4oH6gScxHjusLuX1dOORcC
-         5+CgSFhNxiob7XU136a3nUFg4HQJ4jsFQ0Whc=
+        bh=cP6nxi4Od/FipmKssZv/t/7VDNGeJsL7rLZQtr/bnfg=;
+        b=e2thX87Xi6JBWAdzrOzzt2b49dJhtcdhmvYlkWLFmPiYBpA7hUb536FwSeJzvbCQZA
+         Y9ym8sbl0y1mMP6HXvf8EbtMeDkrGCXkX6ruuTS4KPD7kMRsJKhZEX7kO4cvNh7/Qw1m
+         8QC32c7ZrpE9AnoSnetTNNX4hdFDFoJLZA+Do=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=0Z0pUtjQC8KE7tpDzNEFE6y+ZheqehZtaD3kD+I+qEk=;
-        b=nCydCwDrd/+H4HHeRHteFeKIFmUjuTNuNHWSC7kI7tpTEmibqVEYTlufiMI5JhXr5R
-         x5ZaFuDIuc0rXOSrCVpczeZDiEFOFOb0wHvlMcvOL4fVylXqnyJNPzOiDFzB4K9d8kmj
-         dvHhpnQxLgtsoCK7KLXlfYFs/yNbzRvZJdlG4jF+7boq13iRk6lbL1h+rVgd/MUZV8du
-         yuIcHfQg6jjGnXKisNezUQO+MU9oNYGIqHhsN8doj6QMdhYBpEm18f0xqo1/g1IlbLUH
-         onbakPq2jyCnzJV7eBG8Y7r/YQ7OADYQLCGlnCGNLt2GgPhmKBLpT21/3xluYjMeFAWl
-         0iTg==
-X-Gm-Message-State: AJIora+ll3XOeWF7PS9osOx5kEwdxxPcx9LcEhFa02EScHpX4RfesNwF
-        utr669iellEsNpqv9Ls5PjNmGg==
-X-Google-Smtp-Source: AGRyM1vDWJrx51Khe7LAj2MDb+5P1xJLQrjp6jmOv5yYq9zLDYFn1vbLY58SoNi8nkQKKwBznkqc6w==
-X-Received: by 2002:a05:622a:1816:b0:31d:31de:db34 with SMTP id t22-20020a05622a181600b0031d31dedb34mr1892452qtc.588.1656598105714;
-        Thu, 30 Jun 2022 07:08:25 -0700 (PDT)
+        bh=cP6nxi4Od/FipmKssZv/t/7VDNGeJsL7rLZQtr/bnfg=;
+        b=KwyBh8dWcCPlKhHO5ZgUKW1AOu7A9CV0T/f8Gr+wGYfo4Yncc5aoG1LT8i3PU28nha
+         /+HpaBqqfEEWnzSuHVFJburoIWs22cc6v5cA2LFCrRk/DDSszenbOKbwCBoTuJKDKn/K
+         GhCfOxa75cTp/Xec1IUCQt0m0NrGWOrzv8tF9LpW6dSZyYu2vx9U2S601l0pzzXu5B4y
+         PwZqKUqHLrzgS/T5fCzYFHa2sHNSA6RXOex3Ofu6LMEDSitUaihXmeG45RvCefd/ZGIp
+         VBmbnOZPnPBJdMKzn5+sxEB2UpgZa1SJDIzenH0K8Cye52lP5qbo+sFYlVLjSCvHRoCt
+         on2g==
+X-Gm-Message-State: AJIora/hSxpjuh3TrXHaYthaEnJNhhxhqnrhstwecfxE3UISroQ2Co63
+        pSuckvb4NkL1sLcG5CkVyCVHCoKkxLFcfg==
+X-Google-Smtp-Source: AGRyM1tnh5nMQ/K4LPr1B4lD+/f7XrZ/UcsUbnVKa82BaswzWbBpuvXX7qazXG2HSxlGK7MaocB4wA==
+X-Received: by 2002:a05:6214:260b:b0:470:52b2:2521 with SMTP id gu11-20020a056214260b00b0047052b22521mr11508499qvb.31.1656599117176;
+        Thu, 30 Jun 2022 07:25:17 -0700 (PDT)
 Received: from localhost (228.221.150.34.bc.googleusercontent.com. [34.150.221.228])
-        by smtp.gmail.com with ESMTPSA id bs36-20020a05620a472400b006a6ab8f761csm16321399qkb.62.2022.06.30.07.08.25
+        by smtp.gmail.com with ESMTPSA id q8-20020a37f708000000b006b1fe4a103dsm1702333qkj.51.2022.06.30.07.25.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Jun 2022 07:08:25 -0700 (PDT)
-Date:   Thu, 30 Jun 2022 14:08:24 +0000
+        Thu, 30 Jun 2022 07:25:16 -0700 (PDT)
+Date:   Thu, 30 Jun 2022 14:25:16 +0000
 From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rushikesh.s.kadam@intel.com, urezki@gmail.com,
-        neeraj.iitr10@gmail.com, paulmck@kernel.org, rostedt@goodmis.org,
-        vineeth@bitbyteword.org
-Subject: Re: [PATCH v2 1/8] rcu: Introduce call_rcu_lazy() API implementation
-Message-ID: <Yr2uWCGQpYo6As9c@google.com>
-References: <20220622225102.2112026-1-joel@joelfernandes.org>
- <20220622225102.2112026-3-joel@joelfernandes.org>
- <20220629115349.GA2119930@lothringen>
- <Yry2PAc0KtkYW24A@google.com>
- <20220629220114.GA2127569@lothringen>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Rushikesh S Kadam <rushikesh.s.kadam@intel.com>,
+        Neeraj upadhyay <neeraj.iitr10@gmail.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>, vineeth@bitbyteword.org
+Subject: Re: [PATCH v2 8/8] rcu/kfree: Fix kfree_rcu_shrink_count() return
+ value
+Message-ID: <Yr2yTKZe7JmNrimV@google.com>
+References: <20220622225102.2112026-10-joel@joelfernandes.org>
+ <Yrn9a5pOvhvL/eZj@pc638.lan>
+ <20220627205907.GM1790663@paulmck-ThinkPad-P17-Gen-1>
+ <YroelcGVNhQj91ab@google.com>
+ <20220627214359.GQ1790663@paulmck-ThinkPad-P17-Gen-1>
+ <YrsyrmDbfnkpfDEP@google.com>
+ <CAEXW_YRQiuvsy1FsMNWG7wd9ah_gfgcOUAeNzA-QbmDcACa+Uw@mail.gmail.com>
+ <20220629165627.GI1790663@paulmck-ThinkPad-P17-Gen-1>
+ <YrysWAx/rMbBF5iY@google.com>
+ <20220629210720.GO1790663@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220629220114.GA2127569@lothringen>
+In-Reply-To: <20220629210720.GO1790663@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jun 30, 2022 at 12:01:14AM +0200, Frederic Weisbecker wrote:
-> On Wed, Jun 29, 2022 at 08:29:48PM +0000, Joel Fernandes wrote:
-> > On Wed, Jun 29, 2022 at 01:53:49PM +0200, Frederic Weisbecker wrote:
-> > > On Wed, Jun 22, 2022 at 10:50:55PM +0000, Joel Fernandes (Google) wrote:
-> > > > @@ -414,30 +427,37 @@ static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
-> > > >  	}
-> > > >  	WRITE_ONCE(rdp->nocb_nobypass_count, c);
-> > > >  
-> > > > -	// If there hasn't yet been all that many ->cblist enqueues
-> > > > -	// this jiffy, tell the caller to enqueue onto ->cblist.  But flush
-> > > > -	// ->nocb_bypass first.
-> > > > -	if (rdp->nocb_nobypass_count < nocb_nobypass_lim_per_jiffy) {
-> > > > +	// If caller passed a non-lazy CB and there hasn't yet been all that
-> > > > +	// many ->cblist enqueues this jiffy, tell the caller to enqueue it
-> > > > +	// onto ->cblist.  But flush ->nocb_bypass first. Also do so, if total
-> > > > +	// number of CBs (lazy + non-lazy) grows too much.
-> > > > +	//
-> > > > +	// Note that if the bypass list has lazy CBs, and the main list is
-> > > > +	// empty, and rhp happens to be non-lazy, then we end up flushing all
-> > > > +	// the lazy CBs to the main list as well. That's the right thing to do,
-> > > > +	// since we are kick-starting RCU GP processing anyway for the non-lazy
-> > > > +	// one, we can just reuse that GP for the already queued-up lazy ones.
-> > > > +	if ((rdp->nocb_nobypass_count < nocb_nobypass_lim_per_jiffy && !lazy) ||
-> > > > +	    (lazy && n_lazy_cbs >= qhimark)) {
-> > > >  		rcu_nocb_lock(rdp);
-> > > >  		*was_alldone = !rcu_segcblist_pend_cbs(&rdp->cblist);
-> > > >  		if (*was_alldone)
-> > > >  			trace_rcu_nocb_wake(rcu_state.name, rdp->cpu,
-> > > > -					    TPS("FirstQ"));
-> > > > -		WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, j));
-> > > > +					    lazy ? TPS("FirstLazyQ") : TPS("FirstQ"));
-> > > > +		WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, j, false));
+On Wed, Jun 29, 2022 at 02:07:20PM -0700, Paul E. McKenney wrote:
+> On Wed, Jun 29, 2022 at 07:47:36PM +0000, Joel Fernandes wrote:
+> > On Wed, Jun 29, 2022 at 09:56:27AM -0700, Paul E. McKenney wrote:
+> > > On Tue, Jun 28, 2022 at 05:13:21PM -0400, Joel Fernandes wrote:
+> > > > On Tue, Jun 28, 2022 at 12:56 PM Joel Fernandes <joel@joelfernandes.org> wrote:
+> > > > >
+> > > > > On Mon, Jun 27, 2022 at 02:43:59PM -0700, Paul E. McKenney wrote:
+> > > > > > On Mon, Jun 27, 2022 at 09:18:13PM +0000, Joel Fernandes wrote:
+> > > > > > > On Mon, Jun 27, 2022 at 01:59:07PM -0700, Paul E. McKenney wrote:
+> > > > > > > > On Mon, Jun 27, 2022 at 08:56:43PM +0200, Uladzislau Rezki wrote:
+> > > > > > > > > > As per the comments in include/linux/shrinker.h, .count_objects callback
+> > > > > > > > > > should return the number of freeable items, but if there are no objects
+> > > > > > > > > > to free, SHRINK_EMPTY should be returned. The only time 0 is returned
+> > > > > > > > > > should be when we are unable to determine the number of objects, or the
+> > > > > > > > > > cache should be skipped for another reason.
+> > > > > > > > > >
+> > > > > > > > > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > > > > > > > > > ---
+> > > > > > > > > >  kernel/rcu/tree.c | 2 +-
+> > > > > > > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > > > > > > >
+> > > > > > > > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > > > > > > > > index 711679d10cbb..935788e8d2d7 100644
+> > > > > > > > > > --- a/kernel/rcu/tree.c
+> > > > > > > > > > +++ b/kernel/rcu/tree.c
+> > > > > > > > > > @@ -3722,7 +3722,7 @@ kfree_rcu_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
+> > > > > > > > > >               atomic_set(&krcp->backoff_page_cache_fill, 1);
+> > > > > > > > > >       }
+> > > > > > > > > >
+> > > > > > > > > > -     return count;
+> > > > > > > > > > +     return count == 0 ? SHRINK_EMPTY : count;
+> > > > > > > > > >  }
+> > > > > > > > > >
+> > > > > > > > > >  static unsigned long
+> > > > > > > > > > --
+> > > > > > > > > > 2.37.0.rc0.104.g0611611a94-goog
+> > > > > > > > > >
+> > > > > > > > > Looks good to me!
+> > > > > > > > >
+> > > > > > > > > Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > > > > > > >
+> > > > > > > > Now that you mention it, this does look independent of the rest of
+> > > > > > > > the series.  I have pulled it in with Uladzislau's Reviewed-by.
+> > > > > > >
+> > > > > > > Thanks Paul and Vlad!
+> > > > > > >
+> > > > > > > Paul, apologies for being quiet. I have been working on the series and the
+> > > > > > > review comments carefully. I appreciate your help with this work.
+> > > > > >
+> > > > > > Not a problem.  After all, this stuff is changing some of the trickier
+> > > > > > parts of RCU.  We must therefore assume that some significant time and
+> > > > > > effort will be required to get it right.
+> > > > >
+> > > > > To your point about trickier parts of RCU, the v2 series though I tested it
+> > > > > before submitting is now giving me strange results with rcuscale. Sometimes
+> > > > > laziness does not seem to be in effect (as pointed out by rcuscale), other
+> > > > > times I am seeing stalls.
+> > > > >
+> > > > > So I have to carefully look through all of this again. I am not sure why I
+> > > > > was not seeing these issues with the exact same code before (frustrated).
+> > > > 
+> > > > Looks like I found at least 3 bugs in my v2 series which testing
+> > > > picked up now. RCU-lazy was being too lazy or not too lazy. Now tests
+> > > > pass, so its progress but does beg for more testing:
 > > > 
-> > > That's outside the scope of this patchset but this makes me realize we
-> > > unconditionally try to flush the bypass from call_rcu() fastpath, and
-> > > therefore we unconditionally lock the bypass lock from call_rcu() fastpath.
-> > > 
-> > > It shouldn't be contended at this stage since we are holding the nocb_lock
-> > > already, and only the local CPU can hold the nocb_bypass_lock without holding
-> > > the nocb_lock. But still...
-> > > 
-> > > It looks safe to locklessly early check if (rcu_cblist_n_cbs(&rdp->nocb_bypass))
-> > > before doing anything. Only the local CPU can enqueue to the bypass list.
-> > > 
-> > > Adding that to my TODO list...
-> > > 
+> > > It is entirely possible that call_rcu_lazy() needs its own special
+> > > purpose tests.  This might be a separate test parallel to the test for
+> > > kfree_rcu() in kernel/rcu/rcuscale.c, for example.
 > > 
-> > I am afraid I did not understand your comment. The bypass list lock is held
-> > once we have decided to use the bypass list to queue something on to it.
-> > 
-> > The bypass flushing is also conditional on either the bypass cblist growing
-> > too big or a jiffie elapsing since the first bypass queue.
-> > 
-> > So in both cases, acquiring the lock is conditional. What do you mean it is
-> > unconditionally acquiring the bypass lock? Where?
+> > I see, perhaps I can add a 'lazy' flag to rcutorture as well, so it uses
+> > call_rcu_lazy() for its async RCU invocations?
 > 
-> Just to make sure we are talking about the same thing, I'm referring to this
-> path:
-> 
-> 	// If there hasn't yet been all that many ->cblist enqueues
-> 	// this jiffy, tell the caller to enqueue onto ->cblist.  But flush
-> 	// ->nocb_bypass first.
-> 	if (rdp->nocb_nobypass_count < nocb_nobypass_lim_per_jiffy) {
-> 		rcu_nocb_lock(rdp);
-> 		*was_alldone = !rcu_segcblist_pend_cbs(&rdp->cblist);
-> 		if (*was_alldone)
-> 			trace_rcu_nocb_wake(rcu_state.name, rdp->cpu,
-> 					    TPS("FirstQ"));
-> 		WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, j));
-> 		WARN_ON_ONCE(rcu_cblist_n_cbs(&rdp->nocb_bypass));
-> 		return false; // Caller must enqueue the callback.
-> 	}
-> 
-> This is called whenever we decide not to queue to the bypass list because
-> there is no flooding detected (rdp->nocb_nobypass_count hasn't reached
-> nocb_nobypass_lim_per_jiffy for the current jiffy). I call this the fast path
-> because this is what I would except in a normal load, as opposed to callbacks
-> flooding.
-> 
-> And in this fastpath, the above rcu_nocb_flush_bypass() is unconditional.
+> That will be tricky because of rcutorture's timeliness expectations.
 
-Sorry you are right, I see that now.
+I have facility now to set the lazy timeout from test kernel modules. I was
+thinking I could set the same from rcu torture. Maybe something like a 100
+jiffies? Then it can run through all the regular rcutorture tests and
+still exercise the new code paths.
 
-Another reason for why the contention is probably not a big deal (other than
-the nocb lock being held), is that all other callers of the flush appear to
-be in slow paths except for this one. Unless someone is offloading/deoffloading
-rapidly or something :)
+> Maybe a self-invoking lazy callback initiated by rcu_torture_fakewriter()
+> that prints a line about its statistics at shutdown time?  At a minimum,
+> the number of times that it was invoked.  Better would be to print one
+> line summarizing stats for all of them.
+> 
+> The main thing that could be detected from this is a callback being
+> stranded.  Given that rcutorture enqueues non-lazy callbacks like a
+> drunken sailor, they won't end up being all that lazy.
 
-thanks,
+Thanks for this idea as well. I'll think more about it. thanks,
 
  - Joel
 
