@@ -2,212 +2,99 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 18E11C433EF
-	for <rcu@archiver.kernel.org>; Fri,  1 Jul 2022 00:00:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E98C5C43334
+	for <rcu@archiver.kernel.org>; Fri,  1 Jul 2022 02:23:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232029AbiGAAAe (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 30 Jun 2022 20:00:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46882 "EHLO
+        id S232840AbiGACXz (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 30 Jun 2022 22:23:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231903AbiGAAAd (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 30 Jun 2022 20:00:33 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D19F65A44C;
-        Thu, 30 Jun 2022 17:00:30 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 6C05CB82CF4;
-        Fri,  1 Jul 2022 00:00:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 330A0C34115;
-        Fri,  1 Jul 2022 00:00:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1656633628;
-        bh=Q2VHf7zWve/a5VDjxJCgfQ6aoS1R1ecy+y7cD7B68MA=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=XJbMEnw6hBpc5jFrXmaOcVYIqSNtk1kkj+q+bndIhB7JC+R8K7Pcc3eYpOvSIUATU
-         A+05PTWaC+pYrHZB4EfuUrm8tJ4UwPWDoc0i5YCffzy0S640cXkB9oI5c914v4iyWh
-         UeHXdE8ztOZfo1jVmaqBYIqPlmsHNNSRafynRXsFUlnDSz/VCE9D/u9ApDnrMlqpZW
-         EWnaRgB+98HD9SxsAavPCAOgaA/9ZG9qyBqu7l3NatUvmrnFJuM9VfUCh8WvswqXBx
-         VGGU5AfqhXWqzj01P20TIo5Jg/Ufcw0nu84XrA7m+dgD+aLwHIgsCrxSzYIbzQm8xz
-         u4DxYa2XtRVdw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id C0D5B5C03AE; Thu, 30 Jun 2022 17:00:27 -0700 (PDT)
-Date:   Thu, 30 Jun 2022 17:00:27 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: Re: [PATCH v4 1/1] rcu/kvfree: Update KFREE_DRAIN_JIFFIES interval
-Message-ID: <20220701000027.GG1790663@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220630163335.3670-1-urezki@gmail.com>
+        with ESMTP id S229531AbiGACXy (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 30 Jun 2022 22:23:54 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F16255724A;
+        Thu, 30 Jun 2022 19:23:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1656642233; x=1688178233;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=dm2Kp7rTBGRDnHsVsTlv/r6TP0GI5km2NCGCtxEZEXU=;
+  b=Ek9m7I49vUsXf37af07JoyjE/JOpf+Wx+5wrieLw/NnNkyG45kDpU2VT
+   CoV0/rkTN1yYs/ZyTswgbmab7fdaLT0PSu5UETSQeZaKHuo8y0L0aMIpV
+   3V8TYSksPDRm01gaAMzzADCstbI3S5vzLXscEDhVbC8S/ci3SpXI+XsNe
+   tZxFYNcmnjzpPH1/Q2aDPrslhE0vyH2HnlzxzeUof+5DoaMzjWOlomLZ2
+   G+4t/S0u3yH9Y+rVSobodZ9JlHPLdWUs0PxZta9rOgBevjiu43S48rgQt
+   6XRSKJ3W33+wOLGj/ide+aVpItGCNY4iz1kudVFSVX5uyFWrHXhLM5g8+
+   g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10394"; a="262932430"
+X-IronPort-AV: E=Sophos;i="5.92,236,1650956400"; 
+   d="scan'208";a="262932430"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2022 19:23:53 -0700
+X-IronPort-AV: E=Sophos;i="5.92,236,1650956400"; 
+   d="scan'208";a="596063726"
+Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.125])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2022 19:23:52 -0700
+From:   Zqiang <qiang1.zhang@intel.com>
+To:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] rcu: Make tiny RCU support leak callbacks for debug-object errors
+Date:   Fri,  1 Jul 2022 10:23:25 +0800
+Message-Id: <20220701022325.2228233-1-qiang1.zhang@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220630163335.3670-1-urezki@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jun 30, 2022 at 06:33:35PM +0200, Uladzislau Rezki (Sony) wrote:
-> Currently the monitor work is scheduled with a fixed interval of HZ/20,
-> which is roughly 50 milliseconds. The drawback of this approach is
-> low utilization of the 512 page slots in scenarios with infrequence
-> kvfree_rcu() calls.  For example on an Android system:
-> 
-> <snip>
->   kworker/3:3-507     [003] ....   470.286305: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000d0f0dde5 nr_records=6
->   kworker/6:1-76      [006] ....   470.416613: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000ea0d6556 nr_records=1
->   kworker/6:1-76      [006] ....   470.416625: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000003e025849 nr_records=9
->   kworker/3:3-507     [003] ....   471.390000: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000815a8713 nr_records=48
->   kworker/1:1-73      [001] ....   471.725785: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000fda9bf20 nr_records=3
->   kworker/1:1-73      [001] ....   471.725833: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000a425b67b nr_records=76
->   kworker/0:4-1411    [000] ....   472.085673: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000007996be9d nr_records=1
->   kworker/0:4-1411    [000] ....   472.085728: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000d0f0dde5 nr_records=5
->   kworker/6:1-76      [006] ....   472.260340: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000065630ee4 nr_records=102
-> <snip>
-> 
-> in many cases, out of 512 slots, fewer than 10 were actually used.
-> In order to improve batching and make utilization more efficient this
-> commit sets a drain interval to a fixed 5-seconds interval. Floods are
-> detected when a page fills quickly, and in that case, the reclaim work
-> is re-scheduled for the next scheduling-clock tick (jiffy).
-> 
-> After this change:
-> 
-> <snip>
->   kworker/7:1-371     [007] ....  5630.725708: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000005ab0ffb3 nr_records=121
->   kworker/7:1-371     [007] ....  5630.989702: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000060c84761 nr_records=47
->   kworker/7:1-371     [007] ....  5630.989714: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000000babf308 nr_records=510
->   kworker/7:1-371     [007] ....  5631.553790: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000bb7bd0ef nr_records=169
->   kworker/7:1-371     [007] ....  5631.553808: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000044c78753 nr_records=510
->   kworker/5:6-9428    [005] ....  5631.746102: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000d98519aa nr_records=123
->   kworker/4:7-9434    [004] ....  5632.001758: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000526c9d44 nr_records=322
->   kworker/4:7-9434    [004] ....  5632.002073: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000002c6a8afa nr_records=185
->   kworker/7:1-371     [007] ....  5632.277515: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000007f4a962f nr_records=510
-> <snip>
-> 
-> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Currently, only tree RCU support leak callbacks setting when do
+duplicate call_rcu(). this commit add leak callbacks setting when
+fo duplicate call_rcu() for tiny RCU.
 
-Very good!  As usual, I did a bit of wordsmithing, so please let
-me know if I messed anything up.
+Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+---
+ kernel/rcu/tiny.c | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
-commit 57720248bb6152ea37348bc04a7f73940e4b5efe
-Author: Uladzislau Rezki (Sony) <urezki@gmail.com>
-Date:   Thu Jun 30 18:33:35 2022 +0200
-
-    rcu/kvfree: Update KFREE_DRAIN_JIFFIES interval
-    
-    Currently the monitor work is scheduled with a fixed interval of HZ/20,
-    which is roughly 50 milliseconds. The drawback of this approach is
-    low utilization of the 512 page slots in scenarios with infrequence
-    kvfree_rcu() calls.  For example on an Android system:
-    
-    <snip>
-      kworker/3:3-507     [003] ....   470.286305: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000d0f0dde5 nr_records=6
-      kworker/6:1-76      [006] ....   470.416613: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000ea0d6556 nr_records=1
-      kworker/6:1-76      [006] ....   470.416625: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000003e025849 nr_records=9
-      kworker/3:3-507     [003] ....   471.390000: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000815a8713 nr_records=48
-      kworker/1:1-73      [001] ....   471.725785: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000fda9bf20 nr_records=3
-      kworker/1:1-73      [001] ....   471.725833: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000a425b67b nr_records=76
-      kworker/0:4-1411    [000] ....   472.085673: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000007996be9d nr_records=1
-      kworker/0:4-1411    [000] ....   472.085728: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000d0f0dde5 nr_records=5
-      kworker/6:1-76      [006] ....   472.260340: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000065630ee4 nr_records=102
-    <snip>
-    
-    In many cases, out of 512 slots, fewer than 10 were actually used.
-    In order to improve batching and make utilization more efficient this
-    commit sets a drain interval to a fixed 5-seconds interval. Floods are
-    detected when a page fills quickly, and in that case, the reclaim work
-    is re-scheduled for the next scheduling-clock tick (jiffy).
-    
-    After this change:
-    
-    <snip>
-      kworker/7:1-371     [007] ....  5630.725708: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000005ab0ffb3 nr_records=121
-      kworker/7:1-371     [007] ....  5630.989702: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000060c84761 nr_records=47
-      kworker/7:1-371     [007] ....  5630.989714: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000000babf308 nr_records=510
-      kworker/7:1-371     [007] ....  5631.553790: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000bb7bd0ef nr_records=169
-      kworker/7:1-371     [007] ....  5631.553808: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000044c78753 nr_records=510
-      kworker/5:6-9428    [005] ....  5631.746102: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000d98519aa nr_records=123
-      kworker/4:7-9434    [004] ....  5632.001758: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000526c9d44 nr_records=322
-      kworker/4:7-9434    [004] ....  5632.002073: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000002c6a8afa nr_records=185
-      kworker/7:1-371     [007] ....  5632.277515: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000007f4a962f nr_records=510
-    <snip>
-    
-    Here, all but one of the cases, more than one hundreds slots were used,
-    representing an order-of-magnitude improvement.
-    
-    Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index b2c499f89e9ff..84d2817766888 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2832,7 +2832,7 @@ EXPORT_SYMBOL_GPL(call_rcu);
- 
- 
- /* Maximum number of jiffies to wait before draining a batch. */
--#define KFREE_DRAIN_JIFFIES (HZ / 50)
-+#define KFREE_DRAIN_JIFFIES (5 * HZ)
- #define KFREE_N_BATCHES 2
- #define FREE_N_CHANNELS 2
- 
-@@ -3093,6 +3093,21 @@ need_offload_krc(struct kfree_rcu_cpu *krcp)
- 	return !!krcp->head;
+diff --git a/kernel/rcu/tiny.c b/kernel/rcu/tiny.c
+index f0561ee16b9c..943d431b908f 100644
+--- a/kernel/rcu/tiny.c
++++ b/kernel/rcu/tiny.c
+@@ -158,6 +158,10 @@ void synchronize_rcu(void)
  }
+ EXPORT_SYMBOL_GPL(synchronize_rcu);
  
-+static void
-+schedule_delayed_monitor_work(struct kfree_rcu_cpu *krcp)
++static void tiny_rcu_leak_callback(struct rcu_head *rhp)
 +{
-+	long delay, delay_left;
-+
-+	delay = READ_ONCE(krcp->count) >= KVFREE_BULK_MAX_ENTR ? 1:KFREE_DRAIN_JIFFIES;
-+	if (delayed_work_pending(&krcp->monitor_work)) {
-+		delay_left = krcp->monitor_work.timer.expires - jiffies;
-+		if (delay < delay_left)
-+			mod_delayed_work(system_wq, &krcp->monitor_work, delay);
-+		return;
-+	}
-+	queue_delayed_work(system_wq, &krcp->monitor_work, delay);
 +}
 +
  /*
-  * This function is invoked after the KFREE_DRAIN_JIFFIES timeout.
+  * Post an RCU callback to be invoked after the end of an RCU grace
+  * period.  But since we have but one CPU, that would be after any
+@@ -165,9 +169,20 @@ EXPORT_SYMBOL_GPL(synchronize_rcu);
   */
-@@ -3150,7 +3165,7 @@ static void kfree_rcu_monitor(struct work_struct *work)
- 	// work to repeat an attempt. Because previous batches are
- 	// still in progress.
- 	if (need_offload_krc(krcp))
--		schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
-+		schedule_delayed_monitor_work(krcp);
+ void call_rcu(struct rcu_head *head, rcu_callback_t func)
+ {
++	static atomic_t doublefrees;
+ 	unsigned long flags;
  
- 	raw_spin_unlock_irqrestore(&krcp->lock, flags);
- }
-@@ -3339,7 +3354,7 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+-	debug_rcu_head_queue(head);
++	if (debug_rcu_head_queue(head)) {
++		if (atomic_inc_return(&doublefrees) < 4) {
++			pr_err("%s(): Double-freed CB %p->%pS()!!!  ", __func__, head, head->func);
++			mem_dump_obj(head);
++		}
++
++		if (!__is_kvfree_rcu_offset((unsigned long)head->func))
++			WRITE_ONCE(head->func, tiny_rcu_leak_callback);
++		return;
++	}
++
+ 	head->func = func;
+ 	head->next = NULL;
  
- 	// Set timer to drain after KFREE_DRAIN_JIFFIES.
- 	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING)
--		schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
-+		schedule_delayed_monitor_work(krcp);
- 
- unlock_return:
- 	krc_this_cpu_unlock(krcp, flags);
-@@ -3415,7 +3430,7 @@ void __init kfree_rcu_scheduler_running(void)
- 
- 		raw_spin_lock_irqsave(&krcp->lock, flags);
- 		if (need_offload_krc(krcp))
--			schedule_delayed_work_on(cpu, &krcp->monitor_work, KFREE_DRAIN_JIFFIES);
-+			schedule_delayed_monitor_work(krcp);
- 		raw_spin_unlock_irqrestore(&krcp->lock, flags);
- 	}
- }
+-- 
+2.25.1
+
