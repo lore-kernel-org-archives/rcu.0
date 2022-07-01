@@ -2,128 +2,197 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7030ECCA480
-	for <rcu@archiver.kernel.org>; Fri,  1 Jul 2022 03:16:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E8B7C43334
+	for <rcu@archiver.kernel.org>; Fri,  1 Jul 2022 04:50:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233834AbiGADQB (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 30 Jun 2022 23:16:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35302 "EHLO
+        id S230500AbiGAEuB (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 1 Jul 2022 00:50:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233771AbiGADP7 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 30 Jun 2022 23:15:59 -0400
-Received: from alexa-out-sd-01.qualcomm.com (alexa-out-sd-01.qualcomm.com [199.106.114.38])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C674427F8;
-        Thu, 30 Jun 2022 20:15:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1656645358; x=1688181358;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=gXgxnH28f2sumhfJZ70+R9CEnuQ+lOJ245QZpaE+bcY=;
-  b=R5UGyT/g10IRZ+8vmpwfHW+bVgX8yF9JFXLmpj4t897nbs4w8ed15vPA
-   rIPdLWBQVw0I1ljZFeTiLLkKD+y1MKMT9bFLVgkTtUW2BHm9uU1DHlejv
-   GZG12croatqthS16CvN6OhpV5/c7ne6x/G/1W1XnYotE39e01CXhCLTih
-   o=;
-Received: from unknown (HELO ironmsg02-sd.qualcomm.com) ([10.53.140.142])
-  by alexa-out-sd-01.qualcomm.com with ESMTP; 30 Jun 2022 20:15:57 -0700
-X-QCInternal: smtphost
-Received: from nasanex01b.na.qualcomm.com ([10.46.141.250])
-  by ironmsg02-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2022 20:15:56 -0700
-Received: from localhost (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.22; Thu, 30 Jun
- 2022 20:15:55 -0700
-From:   Neeraj Upadhyay <quic_neeraju@quicinc.com>
-To:     <paulmck@kernel.org>, <frederic@kernel.org>,
-        <josh@joshtriplett.org>, <rostedt@goodmis.org>,
-        <mathieu.desnoyers@efficios.com>, <jiangshanlai@gmail.com>,
-        <joel@joelfernandes.org>
-CC:     <linux-kernel@vger.kernel.org>, <zhangfei.gao@foxmail.com>,
-        <boqun.feng@gmail.com>, <urezki@gmail.com>,
-        <shameerali.kolothum.thodi@huawei.com>, <pbonzini@redhat.com>,
-        <mtosatti@redhat.com>, <eric.auger@redhat.com>,
-        <chenxiang66@hisilicon.com>, <maz@kernel.org>,
-        <zhangfei.gao@linaro.org>, <rcu@vger.kernel.org>,
-        "Neeraj Upadhyay" <quic_neeraju@quicinc.com>
-Subject: [PATCH v3] srcu: Reduce blocking agressiveness of expedited grace periods further
-Date:   Fri, 1 Jul 2022 08:45:45 +0530
-Message-ID: <20220701031545.9868-1-quic_neeraju@quicinc.com>
-X-Mailer: git-send-email 2.17.1
+        with ESMTP id S230008AbiGAEuA (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 1 Jul 2022 00:50:00 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3AE760512;
+        Thu, 30 Jun 2022 21:49:58 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 54B85B82D76;
+        Fri,  1 Jul 2022 04:49:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E81DDC341C6;
+        Fri,  1 Jul 2022 04:49:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1656650996;
+        bh=Qbzka3pxFrritqB0RPhaTX99RFLcCJSnZfbOSEZpwS8=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=FaK/FHsvQnZuOqcIl/V3IGtl9Ikcmkaqk/p/dVLZCYKTIl8ihImo6H/0F+RMZWKVr
+         3dk4W+z+KRg2H7lQvK/4euAhuSnyhIXlSHhBq5coK54quj9fIncfxKMW6YQxnowWgW
+         K7r6LeQKmNF6zp4vpodzbQnH5+i/Ko19Yi3RGuX+hXJzLe+B0D7Ehq98OYquPUWKk0
+         h6cuw0VJzTYL3w8OMtQTIxycIBstSnt9eQExv6IT+duFK3WTw0WLjoqE5ezz7Jya40
+         Mj3whSpQy5Oq4nUJolcsVdl1aWIvud+GbNZjZ9mpzICRLMMeFTFFWCtjhg2u92xjH5
+         zh+uoJfZSevxA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 7B5885C03AE; Thu, 30 Jun 2022 21:49:55 -0700 (PDT)
+Date:   Thu, 30 Jun 2022 21:49:55 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Neeraj Upadhyay <quic_neeraju@quicinc.com>
+Cc:     frederic@kernel.org, josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, linux-kernel@vger.kernel.org,
+        zhangfei.gao@foxmail.com, boqun.feng@gmail.com, urezki@gmail.com,
+        shameerali.kolothum.thodi@huawei.com, pbonzini@redhat.com,
+        mtosatti@redhat.com, eric.auger@redhat.com,
+        chenxiang66@hisilicon.com, maz@kernel.org, zhangfei.gao@linaro.org,
+        rcu@vger.kernel.org
+Subject: Re: [PATCH v3] srcu: Reduce blocking agressiveness of expedited
+ grace periods further
+Message-ID: <20220701044955.GJ1790663@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20220701031545.9868-1-quic_neeraju@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
+In-Reply-To: <20220701031545.9868-1-quic_neeraju@quicinc.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Commit 640a7d37c3f4 ("srcu: Block less aggressively for expedited
-grace periods") highlights a problem where aggressively blocking
-SRCU expedited grace periods, as was introduced in commit
-282d8998e997 ("srcu: Prevent expedited GPs and blocking readers
-from consuming CPU"), introduces ~2 minutes delay to the overall
-~3.5 minutes boot time, when starting VMs with "-bios QEMU_EFI.fd"
-cmdline on qemu, which results in very high rate of memslots
-add/remove, which causes > ~6000 synchronize_srcu() calls for
-kvm->srcu SRCU instance.
+On Fri, Jul 01, 2022 at 08:45:45AM +0530, Neeraj Upadhyay wrote:
+> Commit 640a7d37c3f4 ("srcu: Block less aggressively for expedited
+> grace periods") highlights a problem where aggressively blocking
+> SRCU expedited grace periods, as was introduced in commit
+> 282d8998e997 ("srcu: Prevent expedited GPs and blocking readers
+> from consuming CPU"), introduces ~2 minutes delay to the overall
+> ~3.5 minutes boot time, when starting VMs with "-bios QEMU_EFI.fd"
+> cmdline on qemu, which results in very high rate of memslots
+> add/remove, which causes > ~6000 synchronize_srcu() calls for
+> kvm->srcu SRCU instance.
+> 
+> Below table captures the experiments done by Zhangfei Gao and Shameer
+> to measure the boottime impact with various values of non-sleeping
+> per phase counts, with HZ_250 and preemption enabled:
+> 
+> +──────────────────────────+────────────────+
+> | SRCU_MAX_NODELAY_PHASE   | Boot time (s)  |
+> +──────────────────────────+────────────────+
+> | 100                      | 30.053         |
+> | 150                      | 25.151         |
+> | 200                      | 20.704         |
+> | 250                      | 15.748         |
+> | 500                      | 11.401         |
+> | 1000                     | 11.443         |
+> | 10000                    | 11.258         |
+> | 1000000                  | 11.154         |
+> +──────────────────────────+────────────────+
+> 
+> Analysis on the experiment results showed improved boot time
+> with non blocking delays close to one jiffy duration. This
+> was also seen when number of per-phase iterations were scaled
+> to one jiffy.
+> 
+> So, this change scales per-grace-period phase number of non-sleeping
+> polls, such that, non-sleeping polls are done for one jiffy. In addition
+> to this, srcu_get_delay() call in srcu_gp_end(), which is used to calculate
+> the delay used for scheduling callbacks, is replaced with the check for
+> expedited grace period. This is done, to schedule cbs for completed expedited
+> grace periods immediately, which results in improved boot time seen in
+> experiments. Testing done by Marc and Zhangfei confirms that this change recovers
+> most of the performance degradation in boottime; for CONFIG_HZ_250 configuration,
+> boottime improves from 3m50s to 41s on Marc's setup; and from 2m40s to ~9.7s
+> on Zhangfei's setup.
+> 
+> In addition to the changes to default per phase delays, this change
+> adds 3 new kernel parameters - srcutree.srcu_max_nodelay,
+> srcutree.srcu_max_nodelay_phase, srcutree.srcu_retry_check_delay.
+> This allows users to configure the srcu grace period scanning delays,
+> depending on their system configuration requirements.
+> 
+> Signed-off-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+> Tested-by: Marc Zyngier <maz@kernel.org>
+> Tested-by: Zhangfei Gao <zhangfei.gao@linaro.org>
 
-Below table captures the experiments done by Zhangfei Gao and Shameer
-to measure the boottime impact with various values of non-sleeping
-per phase counts, with HZ_250 and preemption enabled:
+OK, I am going to try pulling this one into the -rcu "dev" branch,
+and thank you all!!!
 
-+──────────────────────────+────────────────+
-| SRCU_MAX_NODELAY_PHASE   | Boot time (s)  |
-+──────────────────────────+────────────────+
-| 100                      | 30.053         |
-| 150                      | 25.151         |
-| 200                      | 20.704         |
-| 250                      | 15.748         |
-| 500                      | 11.401         |
-| 1000                     | 11.443         |
-| 10000                    | 11.258         |
-| 1000000                  | 11.154         |
-+──────────────────────────+────────────────+
+Please see below for a wordsmithed/tagged version of this commit, and
+please let me know if I messed something up.
 
-Analysis on the experiment results showed improved boot time
-with non blocking delays close to one jiffy duration. This
-was also seen when number of per-phase iterations were scaled
-to one jiffy.
+							Thanx, Paul
 
-So, this change scales per-grace-period phase number of non-sleeping
-polls, such that, non-sleeping polls are done for one jiffy. In addition
-to this, srcu_get_delay() call in srcu_gp_end(), which is used to calculate
-the delay used for scheduling callbacks, is replaced with the check for
-expedited grace period. This is done, to schedule cbs for completed expedited
-grace periods immediately, which results in improved boot time seen in
-experiments. Testing done by Marc and Zhangfei confirms that this change recovers
-most of the performance degradation in boottime; for CONFIG_HZ_250 configuration,
-boottime improves from 3m50s to 41s on Marc's setup; and from 2m40s to ~9.7s
-on Zhangfei's setup.
+------------------------------------------------------------------------
 
-In addition to the changes to default per phase delays, this change
-adds 3 new kernel parameters - srcutree.srcu_max_nodelay,
-srcutree.srcu_max_nodelay_phase, srcutree.srcu_retry_check_delay.
-This allows users to configure the srcu grace period scanning delays,
-depending on their system configuration requirements.
+commit 22f57fad06c5fd35cf4b80c652ebbb4dc626fdaa
+Author: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+Date:   Fri Jul 1 08:45:45 2022 +0530
 
-Signed-off-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
-Tested-by: Marc Zyngier <maz@kernel.org>
-Tested-by: Zhangfei Gao <zhangfei.gao@linaro.org>
----
-
-Changes in v3:
-    - Add Zhangfei's Tested-by tag
-    - Add test results data shared by Marc and Zhangfei in commit
-      message
-
- .../admin-guide/kernel-parameters.txt         | 18 ++++
- kernel/rcu/srcutree.c                         | 82 ++++++++++++++-----
- 2 files changed, 81 insertions(+), 19 deletions(-)
+    srcu: Make expedited RCU grace periods block even less frequently
+    
+    The purpose of commit 282d8998e997 ("srcu: Prevent expedited GPs
+    and blocking readers from consuming CPU") was to prevent a long
+    series of never-blocking expedited SRCU grace periods from blocking
+    kernel-live-patching (KLP) progress.  Although it was successful, it also
+    resulted in excessive boot times on certain embedded workloads running
+    under qemu with the "-bios QEMU_EFI.fd" command line.  Here "excessive"
+    means increasing the boot time up into the three-to-four minute range.
+    This increase in boot time was due to the more than 6000 back-to-back
+    invocations of synchronize_rcu_expedited() within the KVM host OS, which
+    in turn resulted from qemu's emulation of a long series of MMIO accesses.
+    
+    Commit 640a7d37c3f4 ("srcu: Block less aggressively for expedited grace
+    periods") did not significantly help this particular use case.
+    
+    Zhangfei Gao and Shameerali Kolothum Thodi did experiments varying the
+    value of SRCU_MAX_NODELAY_PHASE with HZ=250 and with various values
+    of non-sleeping per phase counts on a system with preemption enabled,
+    and observed the following boot times:
+    
+    +──────────────────────────+────────────────+
+    | SRCU_MAX_NODELAY_PHASE   | Boot time (s)  |
+    +──────────────────────────+────────────────+
+    | 100                      | 30.053         |
+    | 150                      | 25.151         |
+    | 200                      | 20.704         |
+    | 250                      | 15.748         |
+    | 500                      | 11.401         |
+    | 1000                     | 11.443         |
+    | 10000                    | 11.258         |
+    | 1000000                  | 11.154         |
+    +──────────────────────────+────────────────+
+    
+    Analysis on the experiment results additional improvements with non
+    blocking delays approaching one jiffy in duration. This improvement was
+    also seen when number of per-phase iterations were scaled to one jiffy.
+    
+    This commit therefore scales per-grace-period phase number of non-sleeping
+    polls so that non-sleeping polls extend for about one jiffy. In addition,
+    the delay-calculation call to srcu_get_delay() in srcu_gp_end() is
+    replaced with a simple check for an expedited grace period.  This change
+    schedules callback invocation immediately after expedited grace periods
+    complete, which results in greatly improved boot times.  Testing done
+    by Marc and Zhangfei confirms that this change recovers most of the
+    performance degradation in boottime; for CONFIG_HZ_250 configuration,
+    specifically, boot times improve from 3m50s to 41s on Marc's setup;
+    and from 2m40s to ~9.7s on Zhangfei's setup.
+    
+    In addition to the changes to default per phase delays, this
+    change adds 3 new kernel parameters - srcutree.srcu_max_nodelay,
+    srcutree.srcu_max_nodelay_phase, and srcutree.srcu_retry_check_delay.
+    This allows users to configure the srcu grace period scanning delays in
+    order to more quickly react to additional use cases.
+    
+    Fixes: 640a7d37c3f4 ("srcu: Block less aggressively for expedited grace periods")
+    Fixes: 282d8998e997 ("srcu: Prevent expedited GPs and blocking readers from consuming CPU")
+    Reported-by: Zhangfei Gao <zhangfei.gao@linaro.org>
+    Reported-by: yueluck <yueluck@163.com>
+    Signed-off-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+    Tested-by: Marc Zyngier <maz@kernel.org>
+    Tested-by: Zhangfei Gao <zhangfei.gao@linaro.org>
+    Link: https://lore.kernel.org/all/20615615-0013-5adc-584f-2b1d5c03ebfc@linaro.org/
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
 diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index af647714c113..7e34086c64f5 100644
+index af647714c113d..7e34086c64f5b 100644
 --- a/Documentation/admin-guide/kernel-parameters.txt
 +++ b/Documentation/admin-guide/kernel-parameters.txt
 @@ -5805,6 +5805,24 @@
@@ -152,7 +221,7 @@ index af647714c113..7e34086c64f5 100644
  			Specifies the number of update-side contention
  			events per jiffy will be tolerated before
 diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 0db7873f4e95..1c304fec89c0 100644
+index 0db7873f4e95b..1c304fec89c02 100644
 --- a/kernel/rcu/srcutree.c
 +++ b/kernel/rcu/srcutree.c
 @@ -511,10 +511,52 @@ static bool srcu_readers_active(struct srcu_struct *ssp)
@@ -297,6 +366,3 @@ index 0db7873f4e95..1c304fec89c0 100644
  	return 0;
  }
  early_initcall(srcu_bootup_announce);
--- 
-2.17.1
-
