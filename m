@@ -2,46 +2,46 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E98C5C43334
-	for <rcu@archiver.kernel.org>; Fri,  1 Jul 2022 02:23:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE83FC433EF
+	for <rcu@archiver.kernel.org>; Fri,  1 Jul 2022 02:44:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232840AbiGACXz (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 30 Jun 2022 22:23:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51186 "EHLO
+        id S232813AbiGACof (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 30 Jun 2022 22:44:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbiGACXy (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 30 Jun 2022 22:23:54 -0400
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F16255724A;
-        Thu, 30 Jun 2022 19:23:53 -0700 (PDT)
+        with ESMTP id S232303AbiGACoe (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 30 Jun 2022 22:44:34 -0400
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54D9961D6A;
+        Thu, 30 Jun 2022 19:44:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1656642233; x=1688178233;
+  t=1656643473; x=1688179473;
   h=from:to:cc:subject:date:message-id:mime-version:
    content-transfer-encoding;
-  bh=dm2Kp7rTBGRDnHsVsTlv/r6TP0GI5km2NCGCtxEZEXU=;
-  b=Ek9m7I49vUsXf37af07JoyjE/JOpf+Wx+5wrieLw/NnNkyG45kDpU2VT
-   CoV0/rkTN1yYs/ZyTswgbmab7fdaLT0PSu5UETSQeZaKHuo8y0L0aMIpV
-   3V8TYSksPDRm01gaAMzzADCstbI3S5vzLXscEDhVbC8S/ci3SpXI+XsNe
-   tZxFYNcmnjzpPH1/Q2aDPrslhE0vyH2HnlzxzeUof+5DoaMzjWOlomLZ2
-   G+4t/S0u3yH9Y+rVSobodZ9JlHPLdWUs0PxZta9rOgBevjiu43S48rgQt
-   6XRSKJ3W33+wOLGj/ide+aVpItGCNY4iz1kudVFSVX5uyFWrHXhLM5g8+
-   g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10394"; a="262932430"
+  bh=BjgkEyb8DVDy7CizbBh3O5uttPdIgmm+44rcF2fwhuM=;
+  b=E/v0rQhSjdx6FLYVkBOP/UV6d9fkdFEZfeSKhFfPCo0ok0egc5vISdyU
+   mbrqg1Mrm0CuaqNAWJqFmDXrp8FK0yBVMVu2AIxXm/BpknkpdL17SFBzH
+   6owtTN++izIGSiKnZYQcBLAnJdo3eQjRU4a/26fYIs1dOHzx86su5dypM
+   EOMZKtFIzyfucwonHyW/36+hBBriXjvNSJ9mxyag94W7R27YIBa8da9kb
+   WDRxYaMxn6eVcn4nve7QuhrNu7sxZleXiKnYmH1uwD+rKYrRjNF/bOLPt
+   xBFBokilUZun6TB9mGfuSOgUhI8MpIfV82eYA0oYaLw6KMDi3JyoRbU7T
+   A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10394"; a="283633709"
 X-IronPort-AV: E=Sophos;i="5.92,236,1650956400"; 
-   d="scan'208";a="262932430"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2022 19:23:53 -0700
+   d="scan'208";a="283633709"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2022 19:44:32 -0700
 X-IronPort-AV: E=Sophos;i="5.92,236,1650956400"; 
-   d="scan'208";a="596063726"
+   d="scan'208";a="648156130"
 Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.125])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2022 19:23:52 -0700
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2022 19:44:30 -0700
 From:   Zqiang <qiang1.zhang@intel.com>
 To:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] rcu: Make tiny RCU support leak callbacks for debug-object errors
-Date:   Fri,  1 Jul 2022 10:23:25 +0800
-Message-Id: <20220701022325.2228233-1-qiang1.zhang@intel.com>
+Subject: [PATCH v2] rcu: Make tiny RCU support leak callbacks for debug-object errors
+Date:   Fri,  1 Jul 2022 10:44:04 +0800
+Message-Id: <20220701024404.2228367-1-qiang1.zhang@intel.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -55,6 +55,9 @@ fo duplicate call_rcu() for tiny RCU.
 
 Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 ---
+ v1->v2:
+ for do duplicate kvfree_call_rcu(), not set leak callbacks. 
+
  kernel/rcu/tiny.c | 17 ++++++++++++++++-
  1 file changed, 16 insertions(+), 1 deletion(-)
 
