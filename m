@@ -2,137 +2,162 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BC3AACCA479
-	for <rcu@archiver.kernel.org>; Fri,  1 Jul 2022 20:53:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CDF7C433EF
+	for <rcu@archiver.kernel.org>; Mon,  4 Jul 2022 11:31:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230506AbiGAUx4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 1 Jul 2022 16:53:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53306 "EHLO
+        id S233350AbiGDLbC (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 4 Jul 2022 07:31:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbiGAUxz (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 1 Jul 2022 16:53:55 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9139D31914;
-        Fri,  1 Jul 2022 13:53:53 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 383F2B83202;
-        Fri,  1 Jul 2022 20:53:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E896C3411E;
-        Fri,  1 Jul 2022 20:53:47 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="WVCDR+HX"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1656708825;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JJUgAvEg59n4qTslnzMARg0Z7Fq1XNYlppr5mzNAEqY=;
-        b=WVCDR+HXhx1XepQGWMhNtkhfpF4VuKMPP6hDrrkRVJxJJgKwabfBDrQXToI77SR9UXBm3F
-        kLVpx3RB9+LYbBp2zHoJ97qA3TEMKLwsAvbGJdF3Zt4r0pmUB7vdHkgPGYFRu+T6oyyoSK
-        VAYIk/Cx+c27Cg+gExj3m+nb5RQIEeQ=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id b51dea0b (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
-        Fri, 1 Jul 2022 20:53:44 +0000 (UTC)
-Date:   Fri, 1 Jul 2022 22:53:36 +0200
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     John Stultz <jstultz@google.com>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Christoph Hellwig <hch@lst.de>,
+        with ESMTP id S229848AbiGDLbB (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 4 Jul 2022 07:31:01 -0400
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam07on2057.outbound.protection.outlook.com [40.107.212.57])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FF23E087;
+        Mon,  4 Jul 2022 04:31:00 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EVohpFmaImWeUKhoxI7RTHf2WVUiA3uRqLtZVLzFWwB2CNnolDruOQ+gaLPhg/LRSu2h1Ael1T29ZPNqgo/heyWg/Xu++4cjmHI8UWMJWAvwZ5sT7ugjJsrvUncwF7j68WKDDiT2PYp+0W3l2zjFHB+bkcF2wu0qNtli/NZ5QK2ORAC2oFNluDCV+F4GobwcWB2YlWbaxuRugnCNwQk+9cdVMlvxAUkzrEGsPTeeu71LT7hkrTw10kgB0SEISRLSESGi0Hfd3Dd5zu4tWmRsv3atih4EYtWqJkIifRpzizxffo+TRiD7DnrsE3cn2vw6D0Y9bj2jpJJuQ7jKKIPySQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Dmta8Fps6qlLCNJpA7zVfs9Qzn8UA7uE3/ocsEZZvBk=;
+ b=iGZ5cQrbolTRz3525svkN3pm7dv+9mB3hrBX73rk506pPJHG0nL2DsfnTaiLqiOm0sBR8jbfYf0hR67tb865gsfkeZdbTqojmun4KTrdGTVLTsxV5EqyYFfRZAXwYoCC56zXrwtH7kHHts7BrTzQJ/gaeLixwvazYgGD83WhXphGIlkit2hoiavU4DH0sV7+sNzG+nA9ryqdOYj/ZHUoLEBSxrQT0tnIYgdUncVHt2EgG/kEe4DBeBNQzdW09zzq/nB2b9tY4k7c5La1vMeWI5kdBi6KUGjGDqCDhhfpnq9VQNSfwTManNZMEo2CoMN/u1McmIrDeuDqzH8V1lRuCQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Dmta8Fps6qlLCNJpA7zVfs9Qzn8UA7uE3/ocsEZZvBk=;
+ b=Pb/hAtX6XyBSXlKKP5Ei/9pA2eoxeTvJ6G/xSfbAzjTIfGCXqGQICY/a5ku3ByWAUVNBWA6CKek/nQWQAek6xVxpVP/OzOURK58b8MPwjM+N8ySQs7SkpcCdUNr3VTLbwd4t/UugaSXfphdvFUUrqFe+qQEJsatQTAb+ro++ktY=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com (2603:10b6:408:43::13)
+ by DM4PR12MB6544.namprd12.prod.outlook.com (2603:10b6:8:8d::6) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.5395.15; Mon, 4 Jul 2022 11:30:58 +0000
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::905:1701:3b51:7e39]) by BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::905:1701:3b51:7e39%2]) with mapi id 15.20.5395.020; Mon, 4 Jul 2022
+ 11:30:57 +0000
+Message-ID: <79c6ad70-47d9-47fe-4bb4-33fcf356dd37@amd.com>
+Date:   Mon, 4 Jul 2022 13:30:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: CONFIG_ANDROID (was: rcu_sched detected expedited stalls in
+ amdgpu after suspend)
+Content-Language: en-US
+To:     Uladzislau Rezki <urezki@gmail.com>,
+        "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>
+Cc:     wireguard@lists.zx2c4.com, "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Joel Fernandes <joel@joelfernandes.org>, paulmck@kernel.org,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arve =?utf-8?B?SGrDuG5uZXbDpWc=?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Christian Brauner <brauner@kernel.org>,
+        Xinhui.Pan@amd.com, linux-kernel@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org,
+        Suren Baghdasaryan <surenb@google.com>, rcu@vger.kernel.org,
         Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>,
-        Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, wireguard@lists.zx2c4.com,
-        netdev@vger.kernel.org, rcu <rcu@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, sultan@kerneltoast.com,
-        android-kernel-team <android-kernel-team@google.com>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: [PATCH] remove CONFIG_ANDROID
-Message-ID: <Yr9e0JnUbu93Qq1p@zx2c4.com>
-References: <20220629163007.GA25279@lst.de>
- <Yrx/8UOY+J8Ao3Bd@zx2c4.com>
- <YryNQvWGVwCjJYmB@zx2c4.com>
- <Yryic4YG9X2/DJiX@google.com>
- <Yry6XvOGge2xKx/n@zx2c4.com>
- <CAC_TJve_Jk0+XD7VeSJVvJq4D9ZofnH69B4QZv2LPT4X3KNfeg@mail.gmail.com>
- <YrzaCRl9rwy9DgOC@zx2c4.com>
- <CANDhNCpRzzULaGmEGCbbJgVinA0pJJB-gOP9AY0Hy488n9ZStA@mail.gmail.com>
- <YrztOqBBll66C2/n@zx2c4.com>
- <87a69slh0x.fsf@meer.lwn.net>
+        =?UTF-8?Q?Arve_Hj=c3=b8nnev=c3=a5g?= <arve@android.com>,
+        Theodore Ts'o <tytso@mit.edu>, alexander.deucher@amd.com,
+        Todd Kjos <tkjos@android.com>, uladzislau.rezki@sony.com,
+        Martijn Coenen <maco@android.com>, christian.koenig@amd.com,
+        Christian Brauner <christian@brauner.io>
+References: <1656357116.rhe0mufk6a.none.ref@localhost>
+ <1656357116.rhe0mufk6a.none@localhost>
+ <20220627204139.GL1790663@paulmck-ThinkPad-P17-Gen-1>
+ <1656379893.q9yb069erk.none@localhost>
+ <20220628041252.GV1790663@paulmck-ThinkPad-P17-Gen-1>
+ <1656421946.ic03168yc3.none@localhost>
+ <20220628185437.GA1790663@paulmck-ThinkPad-P17-Gen-1>
+ <1656443915.mdjoauhqe0.none@localhost> <YrtgeSmwLmpzN/zw@pc638>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+In-Reply-To: <YrtgeSmwLmpzN/zw@pc638>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: AM5PR0601CA0039.eurprd06.prod.outlook.com
+ (2603:10a6:203:68::25) To BN8PR12MB3587.namprd12.prod.outlook.com
+ (2603:10b6:408:43::13)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <87a69slh0x.fsf@meer.lwn.net>
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 0183b8bc-9e06-44e1-a2b6-08da5db0aa28
+X-MS-TrafficTypeDiagnostic: DM4PR12MB6544:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 0ItJ6D9r60YaSSdyCrZ4wdx0PxaROt/jFeHQt6h/TDeT/XmKgKXjiw3EzpNOcYDCA7lLSyXlIXtj3ly4Wv0F5VVD4gFYuMdxbHrtXj0m9gXuH6+kOgqPC5qnimXgJE0UVpQheMD74x8cNsnWLhemCaFGYCT0jxAkm2foug+G3N8mmV8nxte0yVBRncMaBmB6y/8LwCJyAO9d3LG+lfLUaiDrUWG4R9EjXobAPGGz0vu9WJ4dW4oW78Oak4fzY0iUFKTxfTE+8HpFFdOq/HslxkSgYPVhN+cfjDj3vjKbvZgGiVLbXTdAvC4RKXT9HlkaQSHf3oei4XzsBwjAfnuVgCcPRVT9e8ivovIlkJy+Necpk67fH3eDMoHVQtU9z+8y950UNuX+ZNE/3C/gnAIc27qmPEplh81hXI86RqkEUqRBvPKwRUR12Z3htpF+BrAotQvRaKzo6+4DmRpZ0c8yA+X1/yel1+XVL7eWfrI6pupErLfDYvg2H79Nv4xDgWg7x/riannE6bBeWbimnaIbGGeYnNcw2cxLGbVmPh30Xgg7INhD7D2kzM7B7vwNieGhvvnwHNfLTfyMEketeZyEApcJQVA3uetn11zErHkHlDJ7uGhMwaFpivwEJ2uSBRYykPGwHHiZUWmSkvIQNA6rwvOmcWO3BN9xUUS2HlSKOBYIAYMOWsjTpuHLDJI4KQXnIOt9ZbaUqRFLrJF2HKaYJJldp6uqDcI1Fvf7oUypkPrUwowfofYv5pyatWZWkb7Joq5/h9UPEXxu7tGm2gl6o3Z0sjeBGvP2Fq6JxwULHZsmrHCQwk9Jm6KkoaGhkt/b4sAWkfe4ZTnnMpIZJuO1xnMfpKzyW25qn9cEbYwoh5A=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3587.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(396003)(366004)(136003)(376002)(346002)(39860400002)(110136005)(86362001)(478600001)(6486002)(31696002)(6666004)(6506007)(4326008)(31686004)(36756003)(38100700002)(316002)(8676002)(54906003)(6512007)(66946007)(66476007)(66556008)(41300700001)(186003)(2616005)(7416002)(2906002)(15650500001)(4744005)(5660300002)(8936002)(83380400001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NW01QXVERUJmaTJZK0JBME9velZxZjNJNFR3akdhZU95TlczbjF2c1R1cktr?=
+ =?utf-8?B?RkJFTHRxN2cyNlhQdnE3SmQ3U2ZxUk0vWkhVZ1JmS0o1Zk5NalIwbFFJRy9o?=
+ =?utf-8?B?STdJNi84NlA3dTFBN21YTHBSMERsQmptY2JXZGRWMGMxVHkxSzNlMHRDWTRz?=
+ =?utf-8?B?RWhRSHRicTFlV3o0c0RGT0xsT0dWYXp2Sk8yOWthMndGMWhybjUwdFYxYWhM?=
+ =?utf-8?B?aDFRN04rRDRZMEU1eHdxei9sU3Rhd3RQVEZ0K1Fjb3BWQ3NGeEJqTUxlZmxt?=
+ =?utf-8?B?TVNXMzczVjVDVTJBczNVczREQXEzQ0NNN3VkcU01bkhHaXk5ZFB3L0N0ZEdu?=
+ =?utf-8?B?eDFRcnBDek1ITXZxNmtzNkl0cTh4MUU0MlFHWVp6a1IvempPU2hQakRXeFR5?=
+ =?utf-8?B?RzNld3ZsQkpzWndjemF1R1V3ZFJpSHR5T0tLMSs5aHBFdFFFdGxVa004bHo0?=
+ =?utf-8?B?ZE8zVkRycmc3TkxpT25LT1RlSnBEeisxWDhqY1hmTjFwU04vMUQrZ2kvZ0JC?=
+ =?utf-8?B?RklzV3ZhSjlyK3MwaksvZEZpb0ZOa0M3SzBzNndCQUxZYlhwRDg0Ny85aGdk?=
+ =?utf-8?B?NnYrWmVnZ1FCK2tKdVBuYVpTRnA2RTFxbXAva2lza01BaU5DYWVXMjdKS1Mz?=
+ =?utf-8?B?dnpraW1yY2toVVJJc2VGM29abmh2ZU1MTVZtMmhGdnc5U3QvbFdMNzZJRURu?=
+ =?utf-8?B?LzNHV0pmSndiMFQzTDJjZ092dHdWb0FMc1hkbEZqSGhTZ01oZ2tIbm9HWVh5?=
+ =?utf-8?B?Y0dERUFOVDROazE2VjVaOGpUenVSZjRrWDlxcWlZL0RZUm85dkkzOWdoV3p4?=
+ =?utf-8?B?dmhYSGYrQ0FGK1hpSVNrNEEyckRweHFtMW9CZkpnVHhYM1RKTGxhdG1lTVJI?=
+ =?utf-8?B?S1Z3a0tkRG9EMXhxNGk1WlFROVYvMkEzUkJITnA5TkVzSEI5WmhVbXJNVS8w?=
+ =?utf-8?B?UlFmL0VzMVorL1Z4aVBKbFY1V2hGbk1kT1hFVFl6QUdRVmtET0hsRkRrUVRl?=
+ =?utf-8?B?bXYzNWpDM2FmZGU1Sitpb09OTy9UeTVHOWJBYkpua242Y0RnVFg1M3FwNUtZ?=
+ =?utf-8?B?MVZhbUVWNmUxMlk2SEpIMXZoSUhPT0VsZ29YUkVqSGl4QzlDQjRQd2pvdXU4?=
+ =?utf-8?B?SkxOWWhmR1FxTDc4a21nYW1zY014cngyQUpoOHBlV3dPTkxCa2JNcVdjR2ZT?=
+ =?utf-8?B?VDlnb2g5RWpUTFFwelk1QXE1OEplZ2pSalIxOXlqVzFaajJSZHA5cCtWblB2?=
+ =?utf-8?B?bnBLeWFleThBK1Z5dWlvUi8wZ1k0ekVmblNMd2dORnBTRjl5SFVZVVZIc3Ix?=
+ =?utf-8?B?TGhlMk1SMHRtWVNyb3d3S2dkM0R0Y2pYbG1sNDlwdkxlVFJoSkV6MXhLSGx4?=
+ =?utf-8?B?OXZiOXY5Y0FwMng1SlpoNWhGSlVoNEloZWFTbjA3a0pldTVyZjVxdFZXSG1i?=
+ =?utf-8?B?dVhlSlhlNVAwS0RqMTBubUhaajVHMXo2cFpMbm9zaVVNV3FhQ1g3YlpFRFRz?=
+ =?utf-8?B?aDh5Y0ViWlZVLzUzNm5jbmZCajAxanpCOVJuTXJwZ3I5L1NwamhMSEhmbFNy?=
+ =?utf-8?B?YWRKWGZLYWxqc2E5THhnSjJDVjMvdkZNL21DY280Q3pUVEdnZ0l5eGpGNXk0?=
+ =?utf-8?B?OFlzMEp4YVY4dGpJc1ltZnphdUJ3aXVQWU5CdXlzK0RNcktlQWpkWDF2c0la?=
+ =?utf-8?B?R0VCVFJiYXgxWTBqMnZUNXhvZHNReE9XeTBCZFlRdFBBbEYwRmFmU0I0ei9k?=
+ =?utf-8?B?a3hXQStBOHZZRUl2SzFuOXNCc1BpNU1vRFMrSE5sNzhyZ00rQUcvRnJkRG5u?=
+ =?utf-8?B?cXlCT28rQTIxekZRZmNqdk8zRC81U21WLyt1KzErbWkxRWRYaHJxWmpTU3FR?=
+ =?utf-8?B?UGc1b1FXaVlOeVRlcG02T09yUTJoR1RFdW51OTRTM2hVQ2ZPVnp6ZFVGS1V4?=
+ =?utf-8?B?ZjZ5TzRUd0hwbWt6ZXJ1b1J6enYzRS9pd0lKZmxOWmltdWpLdGd6TTZVMGRY?=
+ =?utf-8?B?ei82RXhQNHk2ZmZJYzBYWEdXaktielV2ZkZLV1BHV2l1VG55eWh1c1JkaHpr?=
+ =?utf-8?B?K1dTN2Vid0ZiSzRhb0FHM0Z2QXMzOUF3NHBQS2h6RkEwUkxqUnUwNXgzaXND?=
+ =?utf-8?B?am9uWTA0aGdFV3duaTgraktkcGpGL1dsZEpoMUthZUhkNE9QeHVrME94SC9T?=
+ =?utf-8?Q?mVTMTA7pZLMUW2xBdomQwXM7ktzBcdVfTWLM2GSRYTn0?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0183b8bc-9e06-44e1-a2b6-08da5db0aa28
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3587.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jul 2022 11:30:57.8638
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: moc/EOWONzGhR+QG23eHV2HDwLWjvLBc22TuVQyZW5HgANNdx6Z4nuXV5TGU/c9y
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6544
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Jon,
+Hi guys,
 
-On Fri, Jul 01, 2022 at 02:22:38PM -0600, Jonathan Corbet wrote:
-> So please forgive the noise from the peanut gallery
+Am 28.06.22 um 22:11 schrieb Uladzislau Rezki:
+>> Excerpts from Paul E. McKenney's message of June 28, 2022 2:54 pm:
+>>> All you need to do to get the previous behavior is to add something like
+>>> this to your defconfig file:
+>>>
+>>> CONFIG_RCU_EXP_CPU_STALL_TIMEOUT=21000
+>>>
+>>> Any reason why this will not work for you?
 
-Yuh oh, I sure hope this isn't newsworthy for LWN. This has already
-consumed me for two days...
+sorry for jumping in so later, I was on vacation for a week.
 
-> myself wondering...do you really need a knob for this?  The kernel
-> itself can observe how often (and for how long) the system is suspended,
-> and might well be able to do the right thing without explicit input from
-> user space.  If it works it would eliminate a potential configuration
-> problem and also perhaps respond correctly to changing workloads.
-> 
-> For example, rather than testing a knob, avoid resetting keys on resume
-> if the suspend time is less than (say) 30s?
-> 
-> Educate me on what I'm missing here, please :)
+Well when any RCU period is longer than 20ms and amdgpu in the backtrace 
+my educated guess is that we messed up some timeout waiting for the hw.
 
-What you're missing is that wireguard needs to do this before going to
-sleep, not when waking up, because one of the objectives is forward
-secrecy. See
-https://git.zx2c4.com/wireguard-linux/tree/drivers/net/wireguard/device.c#n63
+We usually do wait a few us, but it can be that somebody is waiting for 
+ms instead.
 
-	if (IS_ENABLED(CONFIG_PM_AUTOSLEEP) || IS_ENABLED(CONFIG_ANDROID))
-		return 0;
-	if (action != PM_HIBERNATION_PREPARE && action != PM_SUSPEND_PREPARE)
-		return 0;
-	[...]
-	wg_noise_handshake_clear(&peer->handshake);
-	wg_noise_keypairs_clear(&peer->keypairs);
+So there are some todos here as far as I can see and It would be helpful 
+to get a cleaner backtrace if possible.
 
-Somebody asked the same question on wgml here -
-https://lore.kernel.org/wireguard/CAHmME9p2OYSTX2C5M0faKtw2N8jiyohvRqnAPKa=e7BWynF7fQ@mail.gmail.com/T/
-- and then eventually suggested that I should wake up computers from
-sleep to clear that memory. No way jose.
+Regards,
+Christian.
 
-Anyway, this matter has been resolved in this thread here:
-https://lore.kernel.org/lkml/20220630191230.235306-1-kaleshsingh@google.com/T/
-And this Android change:
-https://android-review.googlesource.com/c/kernel/common/+/2142693/1
-Resulting in these two commits landing in Greg's tree:
-https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git/commit/?id=261e224d6a5c43e2bb8a07b7662f9b4ec425cfec
-https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git/commit/?id=1045a06724f322ed61f1ffb994427c7bdbe64647
-So hopefully this thread can come to an end and I can get back to work.
-
-Jason
