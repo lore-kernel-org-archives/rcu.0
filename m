@@ -2,162 +2,663 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CDF7C433EF
-	for <rcu@archiver.kernel.org>; Mon,  4 Jul 2022 11:31:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BAC15CCA479
+	for <rcu@archiver.kernel.org>; Tue,  5 Jul 2022 02:46:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233350AbiGDLbC (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 4 Jul 2022 07:31:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42910 "EHLO
+        id S234546AbiGECqQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 4 Jul 2022 22:46:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229848AbiGDLbB (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 4 Jul 2022 07:31:01 -0400
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam07on2057.outbound.protection.outlook.com [40.107.212.57])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FF23E087;
-        Mon,  4 Jul 2022 04:31:00 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EVohpFmaImWeUKhoxI7RTHf2WVUiA3uRqLtZVLzFWwB2CNnolDruOQ+gaLPhg/LRSu2h1Ael1T29ZPNqgo/heyWg/Xu++4cjmHI8UWMJWAvwZ5sT7ugjJsrvUncwF7j68WKDDiT2PYp+0W3l2zjFHB+bkcF2wu0qNtli/NZ5QK2ORAC2oFNluDCV+F4GobwcWB2YlWbaxuRugnCNwQk+9cdVMlvxAUkzrEGsPTeeu71LT7hkrTw10kgB0SEISRLSESGi0Hfd3Dd5zu4tWmRsv3atih4EYtWqJkIifRpzizxffo+TRiD7DnrsE3cn2vw6D0Y9bj2jpJJuQ7jKKIPySQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Dmta8Fps6qlLCNJpA7zVfs9Qzn8UA7uE3/ocsEZZvBk=;
- b=iGZ5cQrbolTRz3525svkN3pm7dv+9mB3hrBX73rk506pPJHG0nL2DsfnTaiLqiOm0sBR8jbfYf0hR67tb865gsfkeZdbTqojmun4KTrdGTVLTsxV5EqyYFfRZAXwYoCC56zXrwtH7kHHts7BrTzQJ/gaeLixwvazYgGD83WhXphGIlkit2hoiavU4DH0sV7+sNzG+nA9ryqdOYj/ZHUoLEBSxrQT0tnIYgdUncVHt2EgG/kEe4DBeBNQzdW09zzq/nB2b9tY4k7c5La1vMeWI5kdBi6KUGjGDqCDhhfpnq9VQNSfwTManNZMEo2CoMN/u1McmIrDeuDqzH8V1lRuCQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Dmta8Fps6qlLCNJpA7zVfs9Qzn8UA7uE3/ocsEZZvBk=;
- b=Pb/hAtX6XyBSXlKKP5Ei/9pA2eoxeTvJ6G/xSfbAzjTIfGCXqGQICY/a5ku3ByWAUVNBWA6CKek/nQWQAek6xVxpVP/OzOURK58b8MPwjM+N8ySQs7SkpcCdUNr3VTLbwd4t/UugaSXfphdvFUUrqFe+qQEJsatQTAb+ro++ktY=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BN8PR12MB3587.namprd12.prod.outlook.com (2603:10b6:408:43::13)
- by DM4PR12MB6544.namprd12.prod.outlook.com (2603:10b6:8:8d::6) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.5395.15; Mon, 4 Jul 2022 11:30:58 +0000
-Received: from BN8PR12MB3587.namprd12.prod.outlook.com
- ([fe80::905:1701:3b51:7e39]) by BN8PR12MB3587.namprd12.prod.outlook.com
- ([fe80::905:1701:3b51:7e39%2]) with mapi id 15.20.5395.020; Mon, 4 Jul 2022
- 11:30:57 +0000
-Message-ID: <79c6ad70-47d9-47fe-4bb4-33fcf356dd37@amd.com>
-Date:   Mon, 4 Jul 2022 13:30:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: CONFIG_ANDROID (was: rcu_sched detected expedited stalls in
- amdgpu after suspend)
-Content-Language: en-US
-To:     Uladzislau Rezki <urezki@gmail.com>,
-        "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>
-Cc:     wireguard@lists.zx2c4.com, "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Joel Fernandes <joel@joelfernandes.org>, paulmck@kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Xinhui.Pan@amd.com, linux-kernel@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org,
-        Suren Baghdasaryan <surenb@google.com>, rcu@vger.kernel.org,
-        Hridya Valsaraju <hridya@google.com>,
-        =?UTF-8?Q?Arve_Hj=c3=b8nnev=c3=a5g?= <arve@android.com>,
-        Theodore Ts'o <tytso@mit.edu>, alexander.deucher@amd.com,
-        Todd Kjos <tkjos@android.com>, uladzislau.rezki@sony.com,
-        Martijn Coenen <maco@android.com>, christian.koenig@amd.com,
-        Christian Brauner <christian@brauner.io>
-References: <1656357116.rhe0mufk6a.none.ref@localhost>
- <1656357116.rhe0mufk6a.none@localhost>
- <20220627204139.GL1790663@paulmck-ThinkPad-P17-Gen-1>
- <1656379893.q9yb069erk.none@localhost>
- <20220628041252.GV1790663@paulmck-ThinkPad-P17-Gen-1>
- <1656421946.ic03168yc3.none@localhost>
- <20220628185437.GA1790663@paulmck-ThinkPad-P17-Gen-1>
- <1656443915.mdjoauhqe0.none@localhost> <YrtgeSmwLmpzN/zw@pc638>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-In-Reply-To: <YrtgeSmwLmpzN/zw@pc638>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AM5PR0601CA0039.eurprd06.prod.outlook.com
- (2603:10a6:203:68::25) To BN8PR12MB3587.namprd12.prod.outlook.com
- (2603:10b6:408:43::13)
+        with ESMTP id S234430AbiGECqP (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 4 Jul 2022 22:46:15 -0400
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6963812A87
+        for <rcu@vger.kernel.org>; Mon,  4 Jul 2022 19:46:13 -0700 (PDT)
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 264H2u7v002811
+        for <rcu@vger.kernel.org>; Mon, 4 Jul 2022 19:46:12 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=E/HuWKqMopSgJTcY7Ay3LzGnrqsbYkS42FWkXynzLFM=;
+ b=oXOIjmfQQtDo0PnwhJ8Lr6gLgzHgR6PtchjLHXiGoT7hQDV38Z4gO25Njb3ZdzeqNgy2
+ PHyA8q9jf9B/W6b4MjZwBoIz5/bOIvIuCmLAKqhsCckLLZXybtfuyevKgMzlfrsvu80P
+ 3WfEvvTEM2KiW5uOpgEQDU6uysBkz29ppio= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0089730.ppops.net (PPS) with ESMTPS id 3h2hh9ck0k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <rcu@vger.kernel.org>; Mon, 04 Jul 2022 19:46:12 -0700
+Received: from twshared14818.18.frc3.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.28; Mon, 4 Jul 2022 19:46:11 -0700
+Received: by devbig077.ldc1.facebook.com (Postfix, from userid 158236)
+        id DF6E89D7C57E; Mon,  4 Jul 2022 19:45:56 -0700 (PDT)
+From:   Dave Marchevsky <davemarchevsky@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     <rcu@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Kernel Team <kernel-team@fb.com>,
+        Dave Marchevsky <davemarchevsky@fb.com>
+Subject: [PATCH v3 bpf-next] selftests/bpf: Add benchmark for local_storage RCU Tasks Trace usage
+Date:   Mon, 4 Jul 2022 19:45:55 -0700
+Message-ID: <20220705024555.2729240-1-davemarchevsky@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: T88zAM0vbUL2BwG-AeWH0AcUVA8hB8xm
+X-Proofpoint-ORIG-GUID: T88zAM0vbUL2BwG-AeWH0AcUVA8hB8xm
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0183b8bc-9e06-44e1-a2b6-08da5db0aa28
-X-MS-TrafficTypeDiagnostic: DM4PR12MB6544:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0ItJ6D9r60YaSSdyCrZ4wdx0PxaROt/jFeHQt6h/TDeT/XmKgKXjiw3EzpNOcYDCA7lLSyXlIXtj3ly4Wv0F5VVD4gFYuMdxbHrtXj0m9gXuH6+kOgqPC5qnimXgJE0UVpQheMD74x8cNsnWLhemCaFGYCT0jxAkm2foug+G3N8mmV8nxte0yVBRncMaBmB6y/8LwCJyAO9d3LG+lfLUaiDrUWG4R9EjXobAPGGz0vu9WJ4dW4oW78Oak4fzY0iUFKTxfTE+8HpFFdOq/HslxkSgYPVhN+cfjDj3vjKbvZgGiVLbXTdAvC4RKXT9HlkaQSHf3oei4XzsBwjAfnuVgCcPRVT9e8ivovIlkJy+Necpk67fH3eDMoHVQtU9z+8y950UNuX+ZNE/3C/gnAIc27qmPEplh81hXI86RqkEUqRBvPKwRUR12Z3htpF+BrAotQvRaKzo6+4DmRpZ0c8yA+X1/yel1+XVL7eWfrI6pupErLfDYvg2H79Nv4xDgWg7x/riannE6bBeWbimnaIbGGeYnNcw2cxLGbVmPh30Xgg7INhD7D2kzM7B7vwNieGhvvnwHNfLTfyMEketeZyEApcJQVA3uetn11zErHkHlDJ7uGhMwaFpivwEJ2uSBRYykPGwHHiZUWmSkvIQNA6rwvOmcWO3BN9xUUS2HlSKOBYIAYMOWsjTpuHLDJI4KQXnIOt9ZbaUqRFLrJF2HKaYJJldp6uqDcI1Fvf7oUypkPrUwowfofYv5pyatWZWkb7Joq5/h9UPEXxu7tGm2gl6o3Z0sjeBGvP2Fq6JxwULHZsmrHCQwk9Jm6KkoaGhkt/b4sAWkfe4ZTnnMpIZJuO1xnMfpKzyW25qn9cEbYwoh5A=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3587.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(396003)(366004)(136003)(376002)(346002)(39860400002)(110136005)(86362001)(478600001)(6486002)(31696002)(6666004)(6506007)(4326008)(31686004)(36756003)(38100700002)(316002)(8676002)(54906003)(6512007)(66946007)(66476007)(66556008)(41300700001)(186003)(2616005)(7416002)(2906002)(15650500001)(4744005)(5660300002)(8936002)(83380400001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NW01QXVERUJmaTJZK0JBME9velZxZjNJNFR3akdhZU95TlczbjF2c1R1cktr?=
- =?utf-8?B?RkJFTHRxN2cyNlhQdnE3SmQ3U2ZxUk0vWkhVZ1JmS0o1Zk5NalIwbFFJRy9o?=
- =?utf-8?B?STdJNi84NlA3dTFBN21YTHBSMERsQmptY2JXZGRWMGMxVHkxSzNlMHRDWTRz?=
- =?utf-8?B?RWhRSHRicTFlV3o0c0RGT0xsT0dWYXp2Sk8yOWthMndGMWhybjUwdFYxYWhM?=
- =?utf-8?B?aDFRN04rRDRZMEU1eHdxei9sU3Rhd3RQVEZ0K1Fjb3BWQ3NGeEJqTUxlZmxt?=
- =?utf-8?B?TVNXMzczVjVDVTJBczNVczREQXEzQ0NNN3VkcU01bkhHaXk5ZFB3L0N0ZEdu?=
- =?utf-8?B?eDFRcnBDek1ITXZxNmtzNkl0cTh4MUU0MlFHWVp6a1IvempPU2hQakRXeFR5?=
- =?utf-8?B?RzNld3ZsQkpzWndjemF1R1V3ZFJpSHR5T0tLMSs5aHBFdFFFdGxVa004bHo0?=
- =?utf-8?B?ZE8zVkRycmc3TkxpT25LT1RlSnBEeisxWDhqY1hmTjFwU04vMUQrZ2kvZ0JC?=
- =?utf-8?B?RklzV3ZhSjlyK3MwaksvZEZpb0ZOa0M3SzBzNndCQUxZYlhwRDg0Ny85aGdk?=
- =?utf-8?B?NnYrWmVnZ1FCK2tKdVBuYVpTRnA2RTFxbXAva2lza01BaU5DYWVXMjdKS1Mz?=
- =?utf-8?B?dnpraW1yY2toVVJJc2VGM29abmh2ZU1MTVZtMmhGdnc5U3QvbFdMNzZJRURu?=
- =?utf-8?B?LzNHV0pmSndiMFQzTDJjZ092dHdWb0FMc1hkbEZqSGhTZ01oZ2tIbm9HWVh5?=
- =?utf-8?B?Y0dERUFOVDROazE2VjVaOGpUenVSZjRrWDlxcWlZL0RZUm85dkkzOWdoV3p4?=
- =?utf-8?B?dmhYSGYrQ0FGK1hpSVNrNEEyckRweHFtMW9CZkpnVHhYM1RKTGxhdG1lTVJI?=
- =?utf-8?B?S1Z3a0tkRG9EMXhxNGk1WlFROVYvMkEzUkJITnA5TkVzSEI5WmhVbXJNVS8w?=
- =?utf-8?B?UlFmL0VzMVorL1Z4aVBKbFY1V2hGbk1kT1hFVFl6QUdRVmtET0hsRkRrUVRl?=
- =?utf-8?B?bXYzNWpDM2FmZGU1Sitpb09OTy9UeTVHOWJBYkpua242Y0RnVFg1M3FwNUtZ?=
- =?utf-8?B?MVZhbUVWNmUxMlk2SEpIMXZoSUhPT0VsZ29YUkVqSGl4QzlDQjRQd2pvdXU4?=
- =?utf-8?B?SkxOWWhmR1FxTDc4a21nYW1zY014cngyQUpoOHBlV3dPTkxCa2JNcVdjR2ZT?=
- =?utf-8?B?VDlnb2g5RWpUTFFwelk1QXE1OEplZ2pSalIxOXlqVzFaajJSZHA5cCtWblB2?=
- =?utf-8?B?bnBLeWFleThBK1Z5dWlvUi8wZ1k0ekVmblNMd2dORnBTRjl5SFVZVVZIc3Ix?=
- =?utf-8?B?TGhlMk1SMHRtWVNyb3d3S2dkM0R0Y2pYbG1sNDlwdkxlVFJoSkV6MXhLSGx4?=
- =?utf-8?B?OXZiOXY5Y0FwMng1SlpoNWhGSlVoNEloZWFTbjA3a0pldTVyZjVxdFZXSG1i?=
- =?utf-8?B?dVhlSlhlNVAwS0RqMTBubUhaajVHMXo2cFpMbm9zaVVNV3FhQ1g3YlpFRFRz?=
- =?utf-8?B?aDh5Y0ViWlZVLzUzNm5jbmZCajAxanpCOVJuTXJwZ3I5L1NwamhMSEhmbFNy?=
- =?utf-8?B?YWRKWGZLYWxqc2E5THhnSjJDVjMvdkZNL21DY280Q3pUVEdnZ0l5eGpGNXk0?=
- =?utf-8?B?OFlzMEp4YVY4dGpJc1ltZnphdUJ3aXVQWU5CdXlzK0RNcktlQWpkWDF2c0la?=
- =?utf-8?B?R0VCVFJiYXgxWTBqMnZUNXhvZHNReE9XeTBCZFlRdFBBbEYwRmFmU0I0ei9k?=
- =?utf-8?B?a3hXQStBOHZZRUl2SzFuOXNCc1BpNU1vRFMrSE5sNzhyZ00rQUcvRnJkRG5u?=
- =?utf-8?B?cXlCT28rQTIxekZRZmNqdk8zRC81U21WLyt1KzErbWkxRWRYaHJxWmpTU3FR?=
- =?utf-8?B?UGc1b1FXaVlOeVRlcG02T09yUTJoR1RFdW51OTRTM2hVQ2ZPVnp6ZFVGS1V4?=
- =?utf-8?B?ZjZ5TzRUd0hwbWt6ZXJ1b1J6enYzRS9pd0lKZmxOWmltdWpLdGd6TTZVMGRY?=
- =?utf-8?B?ei82RXhQNHk2ZmZJYzBYWEdXaktielV2ZkZLV1BHV2l1VG55eWh1c1JkaHpr?=
- =?utf-8?B?K1dTN2Vid0ZiSzRhb0FHM0Z2QXMzOUF3NHBQS2h6RkEwUkxqUnUwNXgzaXND?=
- =?utf-8?B?am9uWTA0aGdFV3duaTgraktkcGpGL1dsZEpoMUthZUhkNE9QeHVrME94SC9T?=
- =?utf-8?Q?mVTMTA7pZLMUW2xBdomQwXM7ktzBcdVfTWLM2GSRYTn0?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0183b8bc-9e06-44e1-a2b6-08da5db0aa28
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3587.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jul 2022 11:30:57.8638
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: moc/EOWONzGhR+QG23eHV2HDwLWjvLBc22TuVQyZW5HgANNdx6Z4nuXV5TGU/c9y
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6544
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-07-05_01,2022-06-28_01,2022-06-22_01
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi guys,
+This benchmark measures grace period latency and kthread cpu usage of
+RCU Tasks Trace when many processes are creating/deleting BPF
+local_storage. Intent here is to quantify improvement on these metrics
+after Paul's recent RCU Tasks patches [0].
 
-Am 28.06.22 um 22:11 schrieb Uladzislau Rezki:
->> Excerpts from Paul E. McKenney's message of June 28, 2022 2:54 pm:
->>> All you need to do to get the previous behavior is to add something like
->>> this to your defconfig file:
->>>
->>> CONFIG_RCU_EXP_CPU_STALL_TIMEOUT=21000
->>>
->>> Any reason why this will not work for you?
+Specifically, fork 15k tasks which call a bpf prog that creates/destroys
+task local_storage and sleep in a loop, resulting in many
+call_rcu_tasks_trace calls.
 
-sorry for jumping in so later, I was on vacation for a week.
+To determine grace period latency, trace time elapsed between
+rcu_tasks_trace_pregp_step and rcu_tasks_trace_postgp; for cpu usage
+look at rcu_task_trace_kthread's stime in /proc/PID/stat.
 
-Well when any RCU period is longer than 20ms and amdgpu in the backtrace 
-my educated guess is that we messed up some timeout waiting for the hw.
+On my virtualized test environment (Skylake, 8 cpus) benchmark results
+demonstrate significant improvement:
 
-We usually do wait a few us, but it can be that somebody is waiting for 
-ms instead.
+BEFORE Paul's patches:
 
-So there are some todos here as far as I can see and It would be helpful 
-to get a cleaner backtrace if possible.
+  SUMMARY tasks_trace grace period latency        avg 22298.551 us stddev 1=
+302.165 us
+  SUMMARY ticks per tasks_trace grace period      avg 2.291 stddev 0.324
 
-Regards,
-Christian.
+AFTER Paul's patches:
+
+  SUMMARY tasks_trace grace period latency        avg 16969.197 us  stddev =
+2525.053 us
+  SUMMARY ticks per tasks_trace grace period      avg 1.146 stddev 0.178
+
+Note that since these patches are not in bpf-next benchmarking was done
+by cherry-picking this patch onto rcu tree.
+
+  [0]: https://lore.kernel.org/rcu/20220620225402.GA3842369@paulmck-ThinkPa=
+d-P17-Gen-1/
+
+Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
+Acked-by: Paul E. McKenney <paulmck@kernel.org>
+Acked-by: Martin KaFai Lau <kafai@fb.com>
+---
+v2 -> v3: lore.kernel.org/bpf/20220628141200.8417-1-davemarchevsky@fb.com
+  * print errno when prctl fails, fprintf -> printf nit (Martin)
+
+v1 -> v2: lore.kernel.org/bpf/20220623234609.543263-1-davemarchevsky@fb.com
+  * kprobe -> fentry for pregp/postgp probes (Martin)
+  * Make 'Unexpected order of bpf prog calls' detection less brittle by
+    only looking for unexpected prog call order after a postgp has been
+    seen (Martin, Paul)
+
+ tools/testing/selftests/bpf/Makefile          |   4 +-
+ tools/testing/selftests/bpf/bench.c           |  42 +++
+ tools/testing/selftests/bpf/bench.h           |  12 +
+ .../bench_local_storage_rcu_tasks_trace.c     | 272 ++++++++++++++++++
+ ...run_bench_local_storage_rcu_tasks_trace.sh |  11 +
+ .../local_storage_rcu_tasks_trace_bench.c     |  67 +++++
+ 6 files changed, 407 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/bpf/benchs/bench_local_storage_=
+rcu_tasks_trace.c
+ create mode 100755 tools/testing/selftests/bpf/benchs/run_bench_local_stor=
+age_rcu_tasks_trace.sh
+ create mode 100644 tools/testing/selftests/bpf/progs/local_storage_rcu_tas=
+ks_trace_bench.c
+
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests=
+/bpf/Makefile
+index e32a28fe8bc1..dfaac97222af 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -574,6 +574,7 @@ $(OUTPUT)/bench_bpf_loop.o: $(OUTPUT)/bpf_loop_bench.sk=
+el.h
+ $(OUTPUT)/bench_strncmp.o: $(OUTPUT)/strncmp_bench.skel.h
+ $(OUTPUT)/bench_bpf_hashmap_full_update.o: $(OUTPUT)/bpf_hashmap_full_upda=
+te_bench.skel.h
+ $(OUTPUT)/bench_local_storage.o: $(OUTPUT)/local_storage_bench.skel.h
++$(OUTPUT)/bench_local_storage_rcu_tasks_trace.o: $(OUTPUT)/local_storage_r=
+cu_tasks_trace_bench.skel.h
+ $(OUTPUT)/bench.o: bench.h testing_helpers.h $(BPFOBJ)
+ $(OUTPUT)/bench: LDLIBS +=3D -lm
+ $(OUTPUT)/bench: $(OUTPUT)/bench.o \
+@@ -587,7 +588,8 @@ $(OUTPUT)/bench: $(OUTPUT)/bench.o \
+ 		 $(OUTPUT)/bench_bpf_loop.o \
+ 		 $(OUTPUT)/bench_strncmp.o \
+ 		 $(OUTPUT)/bench_bpf_hashmap_full_update.o \
+-		 $(OUTPUT)/bench_local_storage.o
++		 $(OUTPUT)/bench_local_storage.o \
++		 $(OUTPUT)/bench_local_storage_rcu_tasks_trace.o
+ 	$(call msg,BINARY,,$@)
+ 	$(Q)$(CC) $(CFLAGS) $(LDFLAGS) $(filter %.a %.o,$^) $(LDLIBS) -o $@
+=20
+diff --git a/tools/testing/selftests/bpf/bench.c b/tools/testing/selftests/=
+bpf/bench.c
+index 1e7b5d4b1f11..c1f20a147462 100644
+--- a/tools/testing/selftests/bpf/bench.c
++++ b/tools/testing/selftests/bpf/bench.c
+@@ -79,6 +79,43 @@ void hits_drops_report_progress(int iter, struct bench_r=
+es *res, long delta_ns)
+ 	       hits_per_sec, hits_per_prod, drops_per_sec, hits_per_sec + drops_p=
+er_sec);
+ }
+=20
++void
++grace_period_latency_basic_stats(struct bench_res res[], int res_cnt, stru=
+ct basic_stats *gp_stat)
++{
++	int i;
++
++	memset(gp_stat, 0, sizeof(struct basic_stats));
++
++	for (i =3D 0; i < res_cnt; i++)
++		gp_stat->mean +=3D res[i].gp_ns / 1000.0 / (double)res[i].gp_ct / (0.0 +=
+ res_cnt);
++
++#define IT_MEAN_DIFF (res[i].gp_ns / 1000.0 / (double)res[i].gp_ct - gp_st=
+at->mean)
++	if (res_cnt > 1) {
++		for (i =3D 0; i < res_cnt; i++)
++			gp_stat->stddev +=3D (IT_MEAN_DIFF * IT_MEAN_DIFF) / (res_cnt - 1.0);
++	}
++	gp_stat->stddev =3D sqrt(gp_stat->stddev);
++#undef IT_MEAN_DIFF
++}
++
++void
++grace_period_ticks_basic_stats(struct bench_res res[], int res_cnt, struct=
+ basic_stats *gp_stat)
++{
++	int i;
++
++	memset(gp_stat, 0, sizeof(struct basic_stats));
++	for (i =3D 0; i < res_cnt; i++)
++		gp_stat->mean +=3D res[i].stime / (double)res[i].gp_ct / (0.0 + res_cnt);
++
++#define IT_MEAN_DIFF (res[i].stime / (double)res[i].gp_ct - gp_stat->mean)
++	if (res_cnt > 1) {
++		for (i =3D 0; i < res_cnt; i++)
++			gp_stat->stddev +=3D (IT_MEAN_DIFF * IT_MEAN_DIFF) / (res_cnt - 1.0);
++	}
++	gp_stat->stddev =3D sqrt(gp_stat->stddev);
++#undef IT_MEAN_DIFF
++}
++
+ void hits_drops_report_final(struct bench_res res[], int res_cnt)
+ {
+ 	int i;
+@@ -236,6 +273,7 @@ extern struct argp bench_ringbufs_argp;
+ extern struct argp bench_bloom_map_argp;
+ extern struct argp bench_bpf_loop_argp;
+ extern struct argp bench_local_storage_argp;
++extern struct argp bench_local_storage_rcu_tasks_trace_argp;
+ extern struct argp bench_strncmp_argp;
+=20
+ static const struct argp_child bench_parsers[] =3D {
+@@ -244,6 +282,8 @@ static const struct argp_child bench_parsers[] =3D {
+ 	{ &bench_bpf_loop_argp, 0, "bpf_loop helper benchmark", 0 },
+ 	{ &bench_local_storage_argp, 0, "local_storage benchmark", 0 },
+ 	{ &bench_strncmp_argp, 0, "bpf_strncmp helper benchmark", 0 },
++	{ &bench_local_storage_rcu_tasks_trace_argp, 0,
++		"local_storage RCU Tasks Trace slowdown benchmark", 0 },
+ 	{},
+ };
+=20
+@@ -449,6 +489,7 @@ extern const struct bench bench_bpf_hashmap_full_update;
+ extern const struct bench bench_local_storage_cache_seq_get;
+ extern const struct bench bench_local_storage_cache_interleaved_get;
+ extern const struct bench bench_local_storage_cache_hashmap_control;
++extern const struct bench bench_local_storage_tasks_trace;
+=20
+ static const struct bench *benchs[] =3D {
+ 	&bench_count_global,
+@@ -487,6 +528,7 @@ static const struct bench *benchs[] =3D {
+ 	&bench_local_storage_cache_seq_get,
+ 	&bench_local_storage_cache_interleaved_get,
+ 	&bench_local_storage_cache_hashmap_control,
++	&bench_local_storage_tasks_trace,
+ };
+=20
+ static void setup_benchmark()
+diff --git a/tools/testing/selftests/bpf/bench.h b/tools/testing/selftests/=
+bpf/bench.h
+index 4b15286753ba..d748255877e2 100644
+--- a/tools/testing/selftests/bpf/bench.h
++++ b/tools/testing/selftests/bpf/bench.h
+@@ -30,11 +30,19 @@ struct env {
+ 	struct cpu_set cons_cpus;
+ };
+=20
++struct basic_stats {
++	double mean;
++	double stddev;
++};
++
+ struct bench_res {
+ 	long hits;
+ 	long drops;
+ 	long false_hits;
+ 	long important_hits;
++	unsigned long gp_ns;
++	unsigned long gp_ct;
++	unsigned int stime;
+ };
+=20
+ struct bench {
+@@ -65,6 +73,10 @@ void ops_report_final(struct bench_res res[], int res_cn=
+t);
+ void local_storage_report_progress(int iter, struct bench_res *res,
+ 				   long delta_ns);
+ void local_storage_report_final(struct bench_res res[], int res_cnt);
++void grace_period_latency_basic_stats(struct bench_res res[], int res_cnt,
++				      struct basic_stats *gp_stat);
++void grace_period_ticks_basic_stats(struct bench_res res[], int res_cnt,
++				    struct basic_stats *gp_stat);
+=20
+ static inline __u64 get_time_ns(void)
+ {
+diff --git a/tools/testing/selftests/bpf/benchs/bench_local_storage_rcu_tas=
+ks_trace.c b/tools/testing/selftests/bpf/benchs/bench_local_storage_rcu_tas=
+ks_trace.c
+new file mode 100644
+index 000000000000..2ec51269e470
+--- /dev/null
++++ b/tools/testing/selftests/bpf/benchs/bench_local_storage_rcu_tasks_trac=
+e.c
+@@ -0,0 +1,272 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
++
++#include <argp.h>
++
++#include <sys/prctl.h>
++#include "local_storage_rcu_tasks_trace_bench.skel.h"
++#include "bench.h"
++
++#include <signal.h>
++
++static struct {
++	__u32 nr_procs;
++	__u32 kthread_pid;
++	bool quiet;
++} args =3D {
++	.nr_procs =3D 1000,
++	.kthread_pid =3D 0,
++	.quiet =3D false,
++};
++
++enum {
++	ARG_NR_PROCS =3D 7000,
++	ARG_KTHREAD_PID =3D 7001,
++	ARG_QUIET =3D 7002,
++};
++
++static const struct argp_option opts[] =3D {
++	{ "nr_procs", ARG_NR_PROCS, "NR_PROCS", 0,
++		"Set number of user processes to spin up"},
++	{ "kthread_pid", ARG_KTHREAD_PID, "PID", 0,
++		"Pid of rcu_tasks_trace kthread for ticks tracking"},
++	{ "quiet", ARG_QUIET, "{0,1}", 0,
++		"If true, don't report progress"},
++	{},
++};
++
++static error_t parse_arg(int key, char *arg, struct argp_state *state)
++{
++	long ret;
++
++	switch (key) {
++	case ARG_NR_PROCS:
++		ret =3D strtol(arg, NULL, 10);
++		if (ret < 1 || ret > UINT_MAX) {
++			fprintf(stderr, "invalid nr_procs\n");
++			argp_usage(state);
++		}
++		args.nr_procs =3D ret;
++		break;
++	case ARG_KTHREAD_PID:
++		ret =3D strtol(arg, NULL, 10);
++		if (ret < 1) {
++			fprintf(stderr, "invalid kthread_pid\n");
++			argp_usage(state);
++		}
++		args.kthread_pid =3D ret;
++		break;
++	case ARG_QUIET:
++		ret =3D strtol(arg, NULL, 10);
++		if (ret < 0 || ret > 1) {
++			fprintf(stderr, "invalid quiet %ld\n", ret);
++			argp_usage(state);
++		}
++		args.quiet =3D ret;
++		break;
++break;
++	default:
++		return ARGP_ERR_UNKNOWN;
++	}
++
++	return 0;
++}
++
++const struct argp bench_local_storage_rcu_tasks_trace_argp =3D {
++	.options =3D opts,
++	.parser =3D parse_arg,
++};
++
++#define MAX_SLEEP_PROCS 150000
++
++static void validate(void)
++{
++	if (env.producer_cnt !=3D 1) {
++		fprintf(stderr, "benchmark doesn't support multi-producer!\n");
++		exit(1);
++	}
++	if (env.consumer_cnt !=3D 1) {
++		fprintf(stderr, "benchmark doesn't support multi-consumer!\n");
++		exit(1);
++	}
++
++	if (args.nr_procs > MAX_SLEEP_PROCS) {
++		fprintf(stderr, "benchmark supports up to %u sleeper procs!\n",
++			MAX_SLEEP_PROCS);
++		exit(1);
++	}
++}
++
++static long kthread_pid_ticks(void)
++{
++	char procfs_path[100];
++	long stime;
++	FILE *f;
++
++	if (!args.kthread_pid)
++		return -1;
++
++	sprintf(procfs_path, "/proc/%u/stat", args.kthread_pid);
++	f =3D fopen(procfs_path, "r");
++	if (f < 0) {
++		fprintf(stderr, "couldn't open %s, exiting\n", procfs_path);
++		exit(1);
++	}
++	fscanf(f, "%*s %*s %*s %*s %*s %*s %*s %*s %*s %*s %*s %*s %*s %*s %ld", =
+&stime);
++	fclose(f);
++	return stime;
++}
++
++static struct {
++	struct local_storage_rcu_tasks_trace_bench *skel;
++	long prev_kthread_stime;
++} ctx;
++
++static void sleep_and_loop(void)
++{
++	while (true) {
++		sleep(rand() % 4);
++		syscall(__NR_getpgid);
++	}
++}
++
++static void local_storage_tasks_trace_setup(void)
++{
++	int i, err, forkret, runner_pid;
++
++	runner_pid =3D getpid();
++
++	for (i =3D 0; i < args.nr_procs; i++) {
++		forkret =3D fork();
++		if (forkret < 0) {
++			fprintf(stderr, "Error forking sleeper proc %u of %u, exiting\n", i,
++				args.nr_procs);
++			goto err_out;
++		}
++
++		if (!forkret) {
++			err =3D prctl(PR_SET_PDEATHSIG, SIGKILL);
++			if (err < 0) {
++				fprintf(stderr, "prctl failed with err %d, exiting\n", errno);
++				goto err_out;
++			}
++
++			if (getppid() !=3D runner_pid) {
++				fprintf(stderr, "Runner died while spinning up procs, exiting\n");
++				goto err_out;
++			}
++			sleep_and_loop();
++		}
++	}
++	printf("Spun up %u procs (our pid %d)\n", args.nr_procs, runner_pid);
++
++	setup_libbpf();
++
++	ctx.skel =3D local_storage_rcu_tasks_trace_bench__open_and_load();
++	if (!ctx.skel) {
++		fprintf(stderr, "Error doing open_and_load, exiting\n");
++		goto err_out;
++	}
++
++	ctx.prev_kthread_stime =3D kthread_pid_ticks();
++
++	if (!bpf_program__attach(ctx.skel->progs.get_local)) {
++		fprintf(stderr, "Error attaching bpf program\n");
++		goto err_out;
++	}
++
++	if (!bpf_program__attach(ctx.skel->progs.pregp_step)) {
++		fprintf(stderr, "Error attaching bpf program\n");
++		goto err_out;
++	}
++
++	if (!bpf_program__attach(ctx.skel->progs.postgp)) {
++		fprintf(stderr, "Error attaching bpf program\n");
++		goto err_out;
++	}
++
++	return;
++err_out:
++	exit(1);
++}
++
++static void measure(struct bench_res *res)
++{
++	long ticks;
++
++	res->gp_ct =3D atomic_swap(&ctx.skel->bss->gp_hits, 0);
++	res->gp_ns =3D atomic_swap(&ctx.skel->bss->gp_times, 0);
++	ticks =3D kthread_pid_ticks();
++	res->stime =3D ticks - ctx.prev_kthread_stime;
++	ctx.prev_kthread_stime =3D ticks;
++}
++
++static void *consumer(void *input)
++{
++	return NULL;
++}
++
++static void *producer(void *input)
++{
++	while (true)
++		syscall(__NR_getpgid);
++	return NULL;
++}
++
++static void report_progress(int iter, struct bench_res *res, long delta_ns)
++{
++	if (ctx.skel->bss->unexpected) {
++		fprintf(stderr, "Error: Unexpected order of bpf prog calls (postgp after=
+ pregp).");
++		fprintf(stderr, "Data can't be trusted, exiting\n");
++		exit(1);
++	}
++
++	if (args.quiet)
++		return;
++
++	printf("Iter %d\t avg tasks_trace grace period latency\t%lf ns\n",
++	       iter, res->gp_ns / (double)res->gp_ct);
++	printf("Iter %d\t avg ticks per tasks_trace grace period\t%lf\n",
++	       iter, res->stime / (double)res->gp_ct);
++}
++
++static void report_final(struct bench_res res[], int res_cnt)
++{
++	struct basic_stats gp_stat;
++
++	grace_period_latency_basic_stats(res, res_cnt, &gp_stat);
++	printf("SUMMARY tasks_trace grace period latency");
++	printf("\tavg %.3lf us\tstddev %.3lf us\n", gp_stat.mean, gp_stat.stddev);
++	grace_period_ticks_basic_stats(res, res_cnt, &gp_stat);
++	printf("SUMMARY ticks per tasks_trace grace period");
++	printf("\tavg %.3lf\tstddev %.3lf\n", gp_stat.mean, gp_stat.stddev);
++}
++
++/* local-storage-tasks-trace: Benchmark performance of BPF local_storage's=
+ use
++ * of RCU Tasks-Trace.
++ *
++ * Stress RCU Tasks Trace by forking many tasks, all of which do no work a=
+side
++ * from sleep() loop, and creating/destroying BPF task-local storage on wa=
+keup.
++ * The number of forked tasks is configurable.
++ *
++ * exercising code paths which call call_rcu_tasks_trace while there are m=
+any
++ * thousands of tasks on the system should result in RCU Tasks-Trace havin=
+g to
++ * do a noticeable amount of work.
++ *
++ * This should be observable by measuring rcu_tasks_trace_kthread CPU usage
++ * after the grace period has ended, or by measuring grace period latency.
++ *
++ * This benchmark uses both approaches, attaching to rcu_tasks_trace_pregp=
+_step
++ * and rcu_tasks_trace_postgp functions to measure grace period latency and
++ * using /proc/PID/stat to measure rcu_tasks_trace_kthread kernel ticks
++ */
++const struct bench bench_local_storage_tasks_trace =3D {
++	.name =3D "local-storage-tasks-trace",
++	.validate =3D validate,
++	.setup =3D local_storage_tasks_trace_setup,
++	.producer_thread =3D producer,
++	.consumer_thread =3D consumer,
++	.measure =3D measure,
++	.report_progress =3D report_progress,
++	.report_final =3D report_final,
++};
+diff --git a/tools/testing/selftests/bpf/benchs/run_bench_local_storage_rcu=
+_tasks_trace.sh b/tools/testing/selftests/bpf/benchs/run_bench_local_storag=
+e_rcu_tasks_trace.sh
+new file mode 100755
+index 000000000000..5dac1f02892c
+--- /dev/null
++++ b/tools/testing/selftests/bpf/benchs/run_bench_local_storage_rcu_tasks_=
+trace.sh
+@@ -0,0 +1,11 @@
++#!/bin/bash
++# SPDX-License-Identifier: GPL-2.0
++
++kthread_pid=3D`pgrep rcu_tasks_trace_kthread`
++
++if [ -z $kthread_pid ]; then
++	echo "error: Couldn't find rcu_tasks_trace_kthread"
++	exit 1
++fi
++
++./bench --nr_procs 15000 --kthread_pid $kthread_pid -d 600 --quiet 1 local=
+-storage-tasks-trace
+diff --git a/tools/testing/selftests/bpf/progs/local_storage_rcu_tasks_trac=
+e_bench.c b/tools/testing/selftests/bpf/progs/local_storage_rcu_tasks_trace=
+_bench.c
+new file mode 100644
+index 000000000000..03bf69f49075
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/local_storage_rcu_tasks_trace_bench=
+.c
+@@ -0,0 +1,67 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
++
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include "bpf_misc.h"
++
++struct {
++	__uint(type, BPF_MAP_TYPE_TASK_STORAGE);
++	__uint(map_flags, BPF_F_NO_PREALLOC);
++	__type(key, int);
++	__type(value, int);
++} task_storage SEC(".maps");
++
++long hits;
++long gp_hits;
++long gp_times;
++long current_gp_start;
++long unexpected;
++bool postgp_seen;
++
++SEC("fentry/" SYS_PREFIX "sys_getpgid")
++int get_local(void *ctx)
++{
++	struct task_struct *task;
++	int idx;
++	int *s;
++
++	idx =3D 0;
++	task =3D bpf_get_current_task_btf();
++	s =3D bpf_task_storage_get(&task_storage, task, &idx,
++				 BPF_LOCAL_STORAGE_GET_F_CREATE);
++	if (!s)
++		return 0;
++
++	*s =3D 3;
++	bpf_task_storage_delete(&task_storage, task);
++	__sync_add_and_fetch(&hits, 1);
++	return 0;
++}
++
++SEC("fentry/rcu_tasks_trace_pregp_step")
++int pregp_step(struct pt_regs *ctx)
++{
++	current_gp_start =3D bpf_ktime_get_ns();
++	return 0;
++}
++
++SEC("fentry/rcu_tasks_trace_postgp")
++int postgp(struct pt_regs *ctx)
++{
++	if (!current_gp_start && postgp_seen) {
++		/* Will only happen if prog tracing rcu_tasks_trace_pregp_step doesn't
++		 * execute before this prog
++		 */
++		__sync_add_and_fetch(&unexpected, 1);
++		return 0;
++	}
++
++	__sync_add_and_fetch(&gp_times, bpf_ktime_get_ns() - current_gp_start);
++	__sync_add_and_fetch(&gp_hits, 1);
++	current_gp_start =3D 0;
++	postgp_seen =3D true;
++	return 0;
++}
++
++char _license[] SEC("license") =3D "GPL";
+--=20
+2.30.2
 
