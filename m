@@ -2,58 +2,41 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 291ACC43334
-	for <rcu@archiver.kernel.org>; Wed,  6 Jul 2022 18:09:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1451FC43334
+	for <rcu@archiver.kernel.org>; Wed,  6 Jul 2022 20:42:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229895AbiGFSJ4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 6 Jul 2022 14:09:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53096 "EHLO
+        id S234094AbiGFUmF (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 6 Jul 2022 16:42:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230073AbiGFSJz (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 6 Jul 2022 14:09:55 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39B2428E16;
-        Wed,  6 Jul 2022 11:09:54 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id w2so3095608ljj.7;
-        Wed, 06 Jul 2022 11:09:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=0A598iVSKLysRfv2sRXRDO6tMHET5VOceIuNiuD58/Y=;
-        b=RCq4RtcmZ8gfFAM/viGpnHBX7b6YJzB9+TxM8v7brC+iSNmhLCX/k75uH2OP1T7/a8
-         bS8oBg/Viter1LXQ7eHV8v2nY5lEBb4Rv3iw0GJ1bZSN0TQm1ffZiqD4NXwPV4veIWVe
-         XB1ZUQDinD2dOVWeGYnETXE+m19508Y6Ozq/PcicZqcTgtPcNoKDObAq4iyCDwVYYrq8
-         RIkiNu3SHadjcqE0XTgclmFT9xK2C1KbizaIxzPjJEENCITLg1FV+XIOB6MZfdvVcnWl
-         4SmvktWXdPoqTf+km4bX9tnC7oUfSZzFD/c6028NywVvCMaAdd7bZ50ArulnCB4I/0vw
-         Oqrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=0A598iVSKLysRfv2sRXRDO6tMHET5VOceIuNiuD58/Y=;
-        b=KMWHR6n94SUKnvXfF1Uhq5dfKTnVRc25846iBaq+Kk3XHUmezBXgKmXu/R8ns4pbd/
-         xG/omqZBLOX7jmRJHHLu5JXRijT+Q0x7oaj+4TyX2MFDyimisRAdqkiJxPwib6zXxtGe
-         LJMHp1kFFxq9uy+AUOfTqd8fBbTe+LrGwkArNgH4KrPskylfOkulzCA8L40bdEpLvQpm
-         IjrAAos5HixRp3Z1UeQF5XrGC89cPmKAyvYSZIjKXUf9zeGqT0EbUmBiYSCsMXXD/rV3
-         87+DhWLWbZqnxR0sAimfYZpU3xWRY43X5RczgsfeLn5poinnniKcF2b60b42bO5mZo0y
-         3OhA==
-X-Gm-Message-State: AJIora+46Wsmq+LxfmTQbpWVmPwr09PkV2YdLBXiM6dwwoSurzXv7ve/
-        MlQGdRwR6/gH4qTm09LRye9luzcpKAi9LwmPh3A=
-X-Google-Smtp-Source: AGRyM1tVGz9tZcQBzGZVPndJH1FRtpjeuQp7KHQvu/ovYzoH3JzfCWBp9GXAxjZSPbrMCtpzNemUuA==
-X-Received: by 2002:a2e:b209:0:b0:25a:705d:c4ba with SMTP id l9-20020a2eb209000000b0025a705dc4bamr22643914ljm.468.1657130992430;
-        Wed, 06 Jul 2022 11:09:52 -0700 (PDT)
-Received: from pc638.lan ([155.137.26.201])
-        by smtp.gmail.com with ESMTPSA id n24-20020a05651203f800b0047863e5649esm6413063lfq.86.2022.07.06.11.09.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Jul 2022 11:09:51 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Wed, 6 Jul 2022 20:09:49 +0200
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        with ESMTP id S233735AbiGFUmE (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 6 Jul 2022 16:42:04 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6C7424BCF;
+        Wed,  6 Jul 2022 13:42:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 49422620F0;
+        Wed,  6 Jul 2022 20:42:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DEDFC3411C;
+        Wed,  6 Jul 2022 20:42:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1657140122;
+        bh=pe7a6K472B35Fk1ZLJZNNAu/QA2Cq/X9L9IX5KemqnU=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=qurE6YFdbVvNvVoeXgoZcqxGE70mjJwBH7VgzxFINrciQcq8BLjc+FeG4xNN93Pe2
+         H/LtYDggW0IcPgC2CZC0Lc8R17IIgPuXjBNeRVG1v5QQ+PYuYc/qyJ8Xbi4v8j/IjM
+         iIc+nz4KDPB5AH9D+w8VV4qFYg7gJiQlww9o22b8B6QBTV897KH+gsuhmtqqG4xKfs
+         cKe08VA1ykzmn54D2oNKC9IUT5tmylPHbG5InZ/V0KYLGOq0XW+ZLu+0x8apQs0mcg
+         GFtEAkNGxEAszeaPzpBKxdcsmP1BgcwFmD1WHvMe1LUuzxgayYXPekA71qM6uFZn40
+         sY92334nGM1yQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 369B35C0F78; Wed,  6 Jul 2022 13:42:02 -0700 (PDT)
+Date:   Wed, 6 Jul 2022 13:42:02 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
         "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>,
         wireguard@lists.zx2c4.com, "Jason A. Donenfeld" <Jason@zx2c4.com>,
         Joel Fernandes <joel@joelfernandes.org>,
@@ -62,16 +45,16 @@ Cc:     Uladzislau Rezki <urezki@gmail.com>,
         amd-gfx@lists.freedesktop.org,
         Suren Baghdasaryan <surenb@google.com>, rcu@vger.kernel.org,
         Hridya Valsaraju <hridya@google.com>,
-        Arve =?utf-8?B?SGrDuG5uZXbDpWc=?= <arve@android.com>,
+        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
         Theodore Ts'o <tytso@mit.edu>, alexander.deucher@amd.com,
         Todd Kjos <tkjos@android.com>, uladzislau.rezki@sony.com,
         Martijn Coenen <maco@android.com>,
         Christian Brauner <christian@brauner.io>
 Subject: Re: CONFIG_ANDROID (was: rcu_sched detected expedited stalls in
  amdgpu after suspend)
-Message-ID: <YsXP7ZwHh/GvWM82@pc638.lan>
-References: <20220627204139.GL1790663@paulmck-ThinkPad-P17-Gen-1>
- <1656379893.q9yb069erk.none@localhost>
+Message-ID: <20220706204202.GJ1790663@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <1656379893.q9yb069erk.none@localhost>
  <20220628041252.GV1790663@paulmck-ThinkPad-P17-Gen-1>
  <1656421946.ic03168yc3.none@localhost>
  <20220628185437.GA1790663@paulmck-ThinkPad-P17-Gen-1>
@@ -80,52 +63,56 @@ References: <20220627204139.GL1790663@paulmck-ThinkPad-P17-Gen-1>
  <79c6ad70-47d9-47fe-4bb4-33fcf356dd37@amd.com>
  <YsXK5A0MiVgHd8Je@pc638.lan>
  <20220706175836.GI1790663@paulmck-ThinkPad-P17-Gen-1>
+ <YsXP7ZwHh/GvWM82@pc638.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220706175836.GI1790663@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <YsXP7ZwHh/GvWM82@pc638.lan>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Jul 06, 2022 at 10:58:36AM -0700, Paul E. McKenney wrote:
-> On Wed, Jul 06, 2022 at 07:48:20PM +0200, Uladzislau Rezki wrote:
-> > Hello.
+On Wed, Jul 06, 2022 at 08:09:49PM +0200, Uladzislau Rezki wrote:
+> On Wed, Jul 06, 2022 at 10:58:36AM -0700, Paul E. McKenney wrote:
+> > On Wed, Jul 06, 2022 at 07:48:20PM +0200, Uladzislau Rezki wrote:
+> > > Hello.
+> > > 
+> > > On Mon, Jul 04, 2022 at 01:30:50PM +0200, Christian König wrote:
+> > > > Hi guys,
+> > > > 
+> > > > Am 28.06.22 um 22:11 schrieb Uladzislau Rezki:
+> > > > > > Excerpts from Paul E. McKenney's message of June 28, 2022 2:54 pm:
+> > > > > > > All you need to do to get the previous behavior is to add something like
+> > > > > > > this to your defconfig file:
+> > > > > > > 
+> > > > > > > CONFIG_RCU_EXP_CPU_STALL_TIMEOUT=21000
+> > > > > > > 
+> > > > > > > Any reason why this will not work for you?
+> > > > 
+> > > > sorry for jumping in so later, I was on vacation for a week.
+> > > > 
+> > > > Well when any RCU period is longer than 20ms and amdgpu in the backtrace my
+> > > > educated guess is that we messed up some timeout waiting for the hw.
+> > > > 
+> > > > We usually do wait a few us, but it can be that somebody is waiting for ms
+> > > > instead.
+> > > > 
+> > > > So there are some todos here as far as I can see and It would be helpful to
+> > > > get a cleaner backtrace if possible.
+> > > > 
+> > > Actually CONFIG_ANDROID looks like is going to be removed, so the CONFIG_RCU_EXP_CPU_STALL_TIMEOUT
+> > > will not have any dependencies on the CONFIG_ANDROID anymore:
+> > > 
+> > > https://lkml.org/lkml/2022/6/29/756
 > > 
-> > On Mon, Jul 04, 2022 at 01:30:50PM +0200, Christian KÃ¶nig wrote:
-> > > Hi guys,
-> > > 
-> > > Am 28.06.22 um 22:11 schrieb Uladzislau Rezki:
-> > > > > Excerpts from Paul E. McKenney's message of June 28, 2022 2:54 pm:
-> > > > > > All you need to do to get the previous behavior is to add something like
-> > > > > > this to your defconfig file:
-> > > > > > 
-> > > > > > CONFIG_RCU_EXP_CPU_STALL_TIMEOUT=21000
-> > > > > > 
-> > > > > > Any reason why this will not work for you?
-> > > 
-> > > sorry for jumping in so later, I was on vacation for a week.
-> > > 
-> > > Well when any RCU period is longer than 20ms and amdgpu in the backtrace my
-> > > educated guess is that we messed up some timeout waiting for the hw.
-> > > 
-> > > We usually do wait a few us, but it can be that somebody is waiting for ms
-> > > instead.
-> > > 
-> > > So there are some todos here as far as I can see and It would be helpful to
-> > > get a cleaner backtrace if possible.
-> > > 
-> > Actually CONFIG_ANDROID looks like is going to be removed, so the CONFIG_RCU_EXP_CPU_STALL_TIMEOUT
-> > will not have any dependencies on the CONFIG_ANDROID anymore:
+> > But you can set the RCU_EXP_CPU_STALL_TIMEOUT Kconfig option, if you
+> > wish.  Setting this option to 20 will get you the behavior previously
+> > obtained by setting the now-defunct ANDROID Kconfig option.
 > > 
-> > https://lkml.org/lkml/2022/6/29/756
-> 
-> But you can set the RCU_EXP_CPU_STALL_TIMEOUT Kconfig option, if you
-> wish.  Setting this option to 20 will get you the behavior previously
-> obtained by setting the now-defunct ANDROID Kconfig option.
-> 
-Right. Or over boot parameter. So for us it is not a big issue :)
+> Right. Or over boot parameter. So for us it is not a big issue :)
 
---
-Uladzislau Rezki
+Specifically rcupdate.rcu_exp_cpu_stall_timeout, for those just now
+tuning in.  ;-)
+
+							Thanx, Paul
