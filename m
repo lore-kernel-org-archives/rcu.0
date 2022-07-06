@@ -2,87 +2,96 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 286A5C43334
-	for <rcu@archiver.kernel.org>; Wed,  6 Jul 2022 02:01:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DC29C433EF
+	for <rcu@archiver.kernel.org>; Wed,  6 Jul 2022 02:06:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229592AbiGFCBR (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 5 Jul 2022 22:01:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50516 "EHLO
+        id S229893AbiGFCGP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 5 Jul 2022 22:06:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbiGFCBQ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 5 Jul 2022 22:01:16 -0400
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2418F19286;
-        Tue,  5 Jul 2022 19:01:15 -0700 (PDT)
+        with ESMTP id S230283AbiGFCGO (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 5 Jul 2022 22:06:14 -0400
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11154193D3;
+        Tue,  5 Jul 2022 19:06:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1657072875; x=1688608875;
+  t=1657073172; x=1688609172;
   h=from:to:cc:subject:date:message-id:references:
    in-reply-to:content-transfer-encoding:mime-version;
-  bh=nvRDbrKJpcoRHAnCt28RJ/wF+joZwZL3f0DxrsFsJyU=;
-  b=Re+kaVCX7ty1WZshV+IJxCvsu8VNV19AB7k+SASJ0hAMffrIju4OHA6R
-   a5GVXoCzIZmt6Zx7FI9H+mF5frWTSAVfmOkgVK03e//WyfBmENVB1PaZi
-   3heQNdOyX6kjFz9NA6A8kTZP4Eac+bLS7i/PrbLYA2nhA9ZYesEUJOdFn
-   If2cjs5lExUSddAhuJTh1//mjYGBExOKqOyA6IHrhngQjIxU50OOn58gZ
-   a7m1HBHvkbG092Ncy2eBFPF7/kWG/KhpyTRX+H2PzRkpTXzkvR2446XJC
-   XSZTzRixQ0rZ8wutEMbmAkcMVUVKt7HLgpLdd3IbRAOIKIPACP8JGX7UA
+  bh=yW1nbVnYIsRV3vlwxVLOZpUbPld+cE94MFV29C6K7CU=;
+  b=BFQL4E/n8IMORXysGJaEtXKI2ZI+k+ccNNUJ66ZM49IlR0/aB+HmxqQI
+   rJYWqkscprnx8nogEjVBmVbiJOC2audpKIfXSiLCFQQF9nxwVTamJTgbx
+   Y/WV4qi5rXUdo4BMeuYLBifoYK1aFjCy38mEv/TchBkENPxRSUWaDgOuV
+   pM1KYSchOh6XnUOK7K+oWmcliB3+tpVASbFjbZ4qAloUgviHT7PtoMEo5
+   awY/B434mxfI7DBdkznXzaxIk0ueZiueLeGjee9QqF0yHIKcZ6UAd9AKs
+   7P+EwDz+9ju6LwrIu7I09y9SYqtR7VXhl4D5kiIfbyJ2ZNulDGzdtS86+
    Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10399"; a="369934820"
+X-IronPort-AV: E=McAfee;i="6400,9594,10399"; a="266644965"
 X-IronPort-AV: E=Sophos;i="5.92,248,1650956400"; 
-   d="scan'208";a="369934820"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jul 2022 19:01:14 -0700
+   d="scan'208";a="266644965"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jul 2022 19:06:11 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.92,248,1650956400"; 
-   d="scan'208";a="769861615"
-Received: from orsmsx606.amr.corp.intel.com ([10.22.229.19])
-  by orsmga005.jf.intel.com with ESMTP; 05 Jul 2022 19:00:54 -0700
-Received: from orsmsx609.amr.corp.intel.com (10.22.229.22) by
- ORSMSX606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
+   d="scan'208";a="919952854"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmsmga005.fm.intel.com with ESMTP; 05 Jul 2022 19:06:10 -0700
+Received: from fmsmsx608.amr.corp.intel.com (10.18.126.88) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.27; Tue, 5 Jul 2022 19:00:53 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx609.amr.corp.intel.com (10.22.229.22) with Microsoft SMTP Server
+ 15.1.2308.27; Tue, 5 Jul 2022 19:06:09 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx608.amr.corp.intel.com (10.18.126.88) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.27 via Frontend Transport; Tue, 5 Jul 2022 19:00:53 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.175)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ 15.1.2308.27 via Frontend Transport; Tue, 5 Jul 2022 19:06:09 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.174)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2308.27; Tue, 5 Jul 2022 19:00:53 -0700
+ 15.1.2308.27; Tue, 5 Jul 2022 19:06:09 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XkthxXMk5PXgZOWAH8Yr5KJpPtFDskyN+px/PjAEbMZdzRlcxSxiEdBc7S1W/ycXu4KkCbZmoTfVWhI/qJzie1akqx8+HcbYUAeT2xiUdrJ/gH+AG098gZOTTum6f75j5ian9Lo19JqYMrww+FkjsPSEeOxhW2mLGzLl1RYl9uUIbRd3j6qxUcYtJgHRm3c9L4LFp3HvZxo8Xt6lxuvxa0UPiUVnhmFVOlnEvKXEpG1Ss99/J0CG4uN17/Qxnw9M39xtAKVBEYFp8GQEWPIDanp8Kylobci9yTHdLWDGPMSTANUflrPZrGy+otBJe2J3bgZmY+SVOxxzGOCLHLbWqw==
+ b=eYcWVJG2lZbnldv16eRwRxHdae/omMGsVZSGLwaal0hZETpNeMfwSx6PqwARM/3D3YD1tN+kUbyLH6etbsFmlKoHcvyHsgwpSGxP72pjn67OXCDDh3OHZsRxiluVock34wQqvz4wKYmVAUwlvYN/BspRBzBloZLVePX4GX6mlpcUg0iI8VFVGTuxi0o4GmHXkyemnsM3tF6bH3AvQucrlmdBO/kzxBvSjzQ3kXHSOWV0p/+cV0yzNxl37kjWcDnYtvw0mTjrTVrZlfK3E/4eL9q0+W96Rc34GiLb2JaPlPEBZmeDTvlWe6QWWO/4Yfu6gxV84eyYCNV5i6Ykxvh1ag==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vDXEaFijw8vllluN/DKL3Rbxd8KTXebZsShuxHJ5RoI=;
- b=KneCJ255hKOm9Zs7KxEL7MPR9wHG9Pa8YTk3qMYwi2WPcut4wwTQ1J11NWEUWMynw8lTwavx+w8Fk2h0dGFNMF72hwQP0c93qeOXlsOxJn2CsWafyOPxMOnmwQmAWhlz3U8qTTK8Zu+0C+5IyHeKmv2ioMeCiJXZVJUA9db9wuCNanrAX5QuBXALWezoY6xttZN5k6++wS7AhUSS5YRrGDnkN3s9t3t1/Tfl2h6JAubZe82sOo4UJSn53vqUO4m0CxEshlivl2c7r4HbU4RioiKw1OnPxqyn5KGDQVzFSxNXKVBBxSTVpRSmvwU9PkJGqNZgsIUNR6nSaSKkzHBBxg==
+ bh=by6BSEPcsuWthouicCwCtkeYWh8gqJyJMLtZRzq5HyA=;
+ b=WOmF8uZTZmA3By0CS6hHiuj4CIb7hLGgI5XkpjPMUAOOiOnLKmPNutINblqLcfZuKwZc+lH+rxm4yInXFm2j/RA6NPzil3zjoilhpPqrsJLaz18yX/6QX5fDohK3v8b2Ozpfmd5vbc9KDf+BFv6dX+I62S15M9PhAOqZLKXEhm/zLiQiazftA8hcBobw+G+x8Hi1zPSv2j7d8/e89vIVj4zT/x3J3+7aJLhzirDevEwR/Lx2BcDIUBCqLAVjoQPPiaWHdwXrgsDfzqDMbJ8DcEWPjAPpdmu1xH+uNTGNEMSV2WqL3pP6ehjlGNJwHfHDubOPEVsZFxe5490ixzouqQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
  dkim=pass header.d=intel.com; arc=none
 Received: from PH0PR11MB5880.namprd11.prod.outlook.com (2603:10b6:510:143::14)
- by DM5PR11MB1434.namprd11.prod.outlook.com (2603:10b6:4:9::18) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.5395.18; Wed, 6 Jul 2022 02:00:51 +0000
+ by PH7PR11MB6545.namprd11.prod.outlook.com (2603:10b6:510:213::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5395.21; Wed, 6 Jul
+ 2022 02:06:08 +0000
 Received: from PH0PR11MB5880.namprd11.prod.outlook.com
  ([fe80::b14d:4da1:a40f:b14]) by PH0PR11MB5880.namprd11.prod.outlook.com
  ([fe80::b14d:4da1:a40f:b14%4]) with mapi id 15.20.5395.019; Wed, 6 Jul 2022
- 02:00:51 +0000
+ 02:06:08 +0000
 From:   "Zhang, Qiang1" <qiang1.zhang@intel.com>
 To:     "paulmck@kernel.org" <paulmck@kernel.org>
-CC:     "frederic@kernel.org" <frederic@kernel.org>,
+CC:     Boqun Feng <boqun.feng@gmail.com>,
         "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>,
+        "frederic@kernel.org" <frederic@kernel.org>,
         "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2] rcu: Make tiny RCU support leak callbacks for
- debug-object errors
-Thread-Topic: [PATCH v2] rcu: Make tiny RCU support leak callbacks for
- debug-object errors
-Thread-Index: AQHYjPSNkw8Leg1ATEaQzvaLUuKjoa1wEumAgACIyGA=
-Date:   Wed, 6 Jul 2022 02:00:51 +0000
-Message-ID: <PH0PR11MB5880370195C11E8E943069CBDA809@PH0PR11MB5880.namprd11.prod.outlook.com>
-References: <20220701024404.2228367-1-qiang1.zhang@intel.com>
- <20220705174109.GD1790663@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20220705174109.GD1790663@paulmck-ThinkPad-P17-Gen-1>
+Subject: RE: [PATCH] rcu: Add exp QS check in rcu_exp_handler() for
+ no-preemptible expedited RCU
+Thread-Topic: [PATCH] rcu: Add exp QS check in rcu_exp_handler() for
+ no-preemptible expedited RCU
+Thread-Index: AQHYhiPvaZaZmWFjQEu0NBJYl75Ct61brf6AgABcGPCAABuJgIAAHHMAgAAOiNCAB4CAgIAAaaRQgAv/3YCAAHHlIA==
+Date:   Wed, 6 Jul 2022 02:06:08 +0000
+Message-ID: <PH0PR11MB58802CD4DFF62E426A5B36D9DA809@PH0PR11MB5880.namprd11.prod.outlook.com>
+References: <20220622103549.2840087-1-qiang1.zhang@intel.com>
+ <YrNQpxjIiNpxwyQh@boqun-archlinux>
+ <PH0PR11MB58809E7A0BF02907DAA826AADAB29@PH0PR11MB5880.namprd11.prod.outlook.com>
+ <20220623003409.GD1790663@paulmck-ThinkPad-P17-Gen-1>
+ <YrPM3ub+BGukLi+l@boqun-archlinux>
+ <PH0PR11MB58800BA38E0691E2FB3AF552DAB59@PH0PR11MB5880.namprd11.prod.outlook.com>
+ <20220627214143.GP1790663@paulmck-ThinkPad-P17-Gen-1>
+ <PH0PR11MB5880C49AE26E587A029B43E3DAB89@PH0PR11MB5880.namprd11.prod.outlook.com>
+ <20220705191427.GE1790663@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20220705191427.GE1790663@paulmck-ThinkPad-P17-Gen-1>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -93,422 +102,276 @@ dlp-reaction: no-action
 authentication-results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=intel.com;
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 3f870afd-9721-49c7-7c51-08da5ef35a8b
-x-ms-traffictypediagnostic: DM5PR11MB1434:EE_
+x-ms-office365-filtering-correlation-id: 3e7272d6-6feb-424a-6de2-08da5ef4175e
+x-ms-traffictypediagnostic: PH7PR11MB6545:EE_
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: k/SHac8MxnVnj32f4fCLIcjx7gMzBdKpY+ZuUdxZSBfRQi86TYMhXdLCPVTjrj4RjtnTg9jtSjz5wPOZFSK+hbYF/bKj0TxyW4YVoJLJ/D46iEUDbq1o0oC/tVuRlCVvUbf7Tz3zjqHx7gnH7vS/f9o0XJYapNtqYgBoH2NOyvMCTFOcLaNpHSfyDEGBkI6ZD+S99Ue0naDpZTmiAileSWI78I9zMNlRiPdn9d0NQ4SrlwnNnJByo8U1pdVhCtukiEi+USMafuEoP30voNr+DCo2xedeXWhCII3fukxinOwqXxDB3vfKPiKiFBuaRgK/5o+jnaxspM169pPAFpSCiHoOv53RxCO9ClqIHh9/yviVv6rKfC69YCvIdJo8QYJOsJNXBJzMsDKbTOLS0yU+6pZApnGGRF+AGjWQqgaTaTHAZElrU6IsfPubhAsvpWSQXG87HCXL9fwC7sk77kBe/OlG04ePITxal8xiPp+EP5oEuSR6wUOD0dCBNHo5/ZRCOUYYd86PYk4f7lM8l/N+TAyEoH6KIW3xuGkt2HPlcjT6jDOijFnjUaxrGJCSYbSZggZOnNfXePHB7tOnSs/S8cVR+JA565VlmBctw8Yj5FyNAtkxyCOCgXd9nBA/O3ItHGuEIz169r8SHvQZFzZuysT/oju8y61dfiNespf1NguuJqucnhXec6V7gKmdeCFjlmmRjGntdmhdxc7NDHhlYUj9C6yVLySMOCxmWAm2ilQJkhVYTpHTXQc86NGLS25/Aoc1v4ur0zLQgkHyfzXLqCjs+P/dtCSVib6IvdgcG1EYcjWSvyqcZYlCYfkApM/+
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5880.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(376002)(366004)(396003)(136003)(39860400002)(346002)(8936002)(52536014)(38100700002)(86362001)(478600001)(33656002)(76116006)(122000001)(66946007)(4326008)(8676002)(9686003)(64756008)(66446008)(66476007)(66556008)(82960400001)(30864003)(5660300002)(71200400001)(26005)(55016003)(186003)(45080400002)(316002)(6916009)(7696005)(54906003)(2906002)(41300700001)(6506007)(83380400001)(38070700005);DIR:OUT;SFP:1102;
+x-microsoft-antispam-message-info: 5ZXILfiYlPdCLM5NLsd3jWEHsw/TCctlslc6zVgqantBCa7ZWP2p6EztX6XKM/Esut45tgNl3waQ+zzRIFbUXd2jVYhZuPSNUyAUW2pxu4JgDAi6RpPQAxsRS95Lu2YiSD1dJh52RC89RMAIDgon2PRE50w7VULXCjx6Ka/D6FU84j2Ax0BMFlRlLfUf7xJcm5z5fOe16esFGAlwSKQseR4XQYfsPgB7DpoYiEGblseBud84ZLelTIAnDGrAu2LoRKsEekknG6/XLpxg9hDThH4G538g8tpr/9iMA69JeVRL/+fCUPnyec/UHzgRx5TZkvwJt04LGEDYA9PDK4PjVUhnPSK4erl+JJqLv3YqKRQ1FeQf3XAGcXweR9WybNnl3WW5jwoILCu2DeLauKGJaQd9l0opPMUvmh2/CfBOakfXliuGu5rh1AhN6Ls84U3wdxjGO3e5/TDgAS5UEB7nrGesQ4nJfCdTSkOp2pU+MmdnK+wlsDFsil4r52o+8P8cjX0l8es81Gdmxmu2TqkjNcXSrYZhxXxNfgJnDf57w7jXr5fqo9l+6af+TRIbuIw1X8i/gpYmGj2zHA61lOd5IcsVLrs2OTF+X2aMqsYIXNvv84mbgBNH/uZz5a38+xcpngYhq/JWzJBsfLOhTioi9eQo58L9GnHPjf754neHUTSCym0CSg535IAaVhvYcb0Ve60ZZIIgRmOglfaKDSuuuTqQUsjxxL5PQ45/jCZfsfOWcUfHEZYf609u7UGhLGUkP6oDhWpsj1AN2rgdCPWkGwtPTI0f12kpPImLxR+exlvcIqG0+wBOKwtPtXM4e2VAjNhgtMs4QCPJuSQojIfj7g==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5880.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(136003)(366004)(39860400002)(376002)(346002)(396003)(52536014)(8936002)(5660300002)(66574015)(54906003)(4326008)(8676002)(64756008)(66446008)(66476007)(66556008)(66946007)(76116006)(86362001)(41300700001)(6916009)(316002)(71200400001)(186003)(38070700005)(26005)(9686003)(7696005)(6506007)(82960400001)(2906002)(122000001)(38100700002)(55016003)(966005)(33656002)(83380400001)(478600001);DIR:OUT;SFP:1102;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?FzPIbicLTlkOhO6C9+jjq15LgcG6nbYRNP+URBvyNcz4VWOmDXDIDuzBcSXN?=
- =?us-ascii?Q?9lNAc4LD9i81AGBUdRRggsNAnmRri5nOpD+Y5XrqGGf0kwlJR0zZKWCVNoh2?=
- =?us-ascii?Q?s3I0ohf0HG9KfOGjmvrZoZs5zHPRCattW6hJ63Z82dRTkMbsRM5C+Oa2tXZM?=
- =?us-ascii?Q?FWnHFb2l0QCYIbBVBWkswtrrJ/6j+o7UrN+zizMs2OnQ7208QF+f5yPigXYv?=
- =?us-ascii?Q?CvhJTEfLMyZrIGeAT4Rncqeo0JFUpYkoZDNLHQ3pYEIm1uamqF1Z9dBfD+uO?=
- =?us-ascii?Q?1/Xg5gi46jddN3hQx0+/dzGpUAnAQAwjN82QLsiiwkf9RSIOWyIYlGeOgXa/?=
- =?us-ascii?Q?BjKu3JnrTD0pwKec7bWMMCyFqVfPXofqtCQVM/TtpxzEViov4HhjvGA8ArIL?=
- =?us-ascii?Q?URCRRCJ0g88qJwsf2+VkyStJ7O1BO2Iff1Dkod0L+RLh66DgPPV638xi6DYA?=
- =?us-ascii?Q?HZ/3TmMfLAgkSM6SMElnqdHqsMieUc5mWCCJY6WlVZjeyOuXllv14kOLki9k?=
- =?us-ascii?Q?4ca+LqOZp6HZj96ziHZmPaFZ2YWfxOjT9H5py1eQq7w4Z6dNEvEeUOJ2ADuO?=
- =?us-ascii?Q?56Xp1rm5jTLNGYvNMLUVfwAkhGfrdKGe4MZksPmMxG8hzcQqZOSaZHYMnYv+?=
- =?us-ascii?Q?jYUK70bJZ4+rG0SvMoSdt5koYZNFrSnZpHGoPDLptW9bSvxsZzjzs6oOksQh?=
- =?us-ascii?Q?/49J25UBTd5eiyiJJKFyaKfz54/Bz3FR2Ev+H2Eixc0L8As91PGI6HNsDIUM?=
- =?us-ascii?Q?CJPJBcql/BFU9M3KLlIrVs6p1eeWJC3VKcMl5THmD1Z8H5XB1fFb2odctSPP?=
- =?us-ascii?Q?LZuh12Zm3BLIHhyaS4ompHA3e8tSM8iDw+WZr2bIdtZnaBTjjvPRM4E3lKG2?=
- =?us-ascii?Q?VpRXRNebQb/KdN921nogBI5osF/vT0UXRB8PtUKqzFSkMQ/S3BT0pHU2BFyd?=
- =?us-ascii?Q?2WvqTt8efNH8bO7wCC89lzstW7Pv15Zhi0x7tvUWGluYze9ziY68L6jnaXOJ?=
- =?us-ascii?Q?J45qG8ptTsStnQjGmfxQiyFUPC2RQj2KCthsgbkON4/nsG1/9B6jiz6vL5zw?=
- =?us-ascii?Q?j0ceyRayWBTDYa7wsa5lhyLKRX/Vjxctj/xuOk3db+wWRIAafLfP8y/U4tMX?=
- =?us-ascii?Q?0KKdCdMJiCv/176IsEi9QkYb6U85KVPLD3y7+spHypVUczOx+MIx3lhX6lOu?=
- =?us-ascii?Q?aq/NpErPTQcnU0T3D+wFi9Z9VPjMQdUmr6Q9VwReT+ST5OzxtJHQZARyrLn0?=
- =?us-ascii?Q?GiVj8rW9z2kiHmDFV25JKXFJzIsqmmyK3igirA0D/FIuQjcbEK+w6Lu5YI1o?=
- =?us-ascii?Q?xtFB2GeatwxrB+5TAQkU0aE0UqwVUzwo8FI35Znq5nWkjOHlMlSJUGUfj+Rv?=
- =?us-ascii?Q?t2k9MYHb3vbN+Y1g/N8zngJsLb1dv8KFKnQB8GxhDxw4UKUxEgqQ9zodYJcI?=
- =?us-ascii?Q?VLe05s1XRuwPXqn/V0Xxx18exKIU+PSs6RicT6ttC2y7IGXtmT3gOemLZRJb?=
- =?us-ascii?Q?4EANpJzGFb4HQHrNmgMO7wshMAfC1ntGk5uQgmXhf4CKjUL9dck0vGSIkaIL?=
- =?us-ascii?Q?IRpw1WYweASrOINkjlM/UV+tSOU+UP7LY12qg6gC?=
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?UBVJ66kC3hg6nW+G5byVpM8u8fXkHgFLP20AE+HHK/U4GJ4tOgKbZa9Wuo0+?=
+ =?us-ascii?Q?teQwkYJs4q1vT/xJa5FQUZoJ98DVpn14sC6U4qAOLE6Dt8f1trQsr8YzHbdI?=
+ =?us-ascii?Q?uLbtnzAXnd1trELgrn3Gz7U/1lLr8VhmhoorUo4sc09OpjI3xL5M9dZ8Kexq?=
+ =?us-ascii?Q?5tzc4Ee3dK2iAm6JEVjdrhGFryXjOl3xv+tt32sUdadD5wGEQeZ1cGxgmqDN?=
+ =?us-ascii?Q?Wj+C5L9AzNW9sVfOqHJZx6in77IIC50rwX3LVlFUAOSQil2bowTSnui8LL/b?=
+ =?us-ascii?Q?5e78fSewma4GuQ7JEv9cMR8etRd3zsSLaE+gliLsmIIqsy9bMYfKYqpgYm00?=
+ =?us-ascii?Q?UmdsB4CIGLMXwMxy8Emh2OZyAchYT5P1xIcs4D1tLVpwr1ZL6I152W8zWRgf?=
+ =?us-ascii?Q?w4K7If6Irr41y8h7tPHR65LvS5ogvSUIPdsBwyU9dWmzCQs3SwTqeHsNrzRB?=
+ =?us-ascii?Q?Ytvze981XgN/aMG7ZgJ3DAlxmNFwXl5yRHpNRTo/9A3FGM80kTd0Q7cXU3uv?=
+ =?us-ascii?Q?LvWwexTnPd6O+s24jfDDRV3GSY5SMhuIRi0AoN2CQV1jNiENCIw88aw78f4x?=
+ =?us-ascii?Q?UIUXDVz6VnxWQN7gDHVNhBlJEWjiHKrK8AC67AaFnEz8aa+4opPPtohYcLqG?=
+ =?us-ascii?Q?ID8DiYe/UKQUOgB/OBRDqlqY3OzxTWKyO5wx44HvYXnNsGYz4rPkxQKIb2Fv?=
+ =?us-ascii?Q?Cem8J2dReIXa32ARo6HX1qNNh6PocoWB6/vgGYhhAWu9eARcBRkMucQpbGmK?=
+ =?us-ascii?Q?UfNSEFXO+3HEfvlEP7SEKnwmSL4aOikjg9tMsvRKa6NcLrQODRZURyWA3MS/?=
+ =?us-ascii?Q?bB9flGzJ7zO2Lz6bG4gj3Ds++rwt8GvrMMmIoeOJd/aRyHd0uneWugDpRSbB?=
+ =?us-ascii?Q?C9/SY88HeC15gFOdUegKZ9AEgF6lu+IEtLf+tWD4pDkrIs/zZ2Nk8wyxYmno?=
+ =?us-ascii?Q?wnPSOPR1od40e3pb/Hv+BsnXL19hyMbdlUKIU3Bw6EpMHk7ZBXwSHSBkVcTS?=
+ =?us-ascii?Q?t4SOM291O8KkKkQ/oypzWcAfZFV+ceruNiNZZxvRqsSqQoDnWkG+WPm9jz0y?=
+ =?us-ascii?Q?MOzqzpn/3Ew0eW1k2vo7ClHpKcX/zc0G6HzXpRDo9O1FNGi7ruUyQixG7fAL?=
+ =?us-ascii?Q?Ky7CGv+c35hKL6x+P+LyJgrsRLOV3qzeAE2kzaqrGgzUlOG5A7HU2CY4l0Ju?=
+ =?us-ascii?Q?uqEXm3DQHK9iotzKyv0bPE2LiYnzM82l6MNkDmE3k5LN2fRL9jXSy9/yd8mC?=
+ =?us-ascii?Q?tqUAgBeHII3RAZtJdM0T55bevKZjONlUV2sNv0qGAXeskZ1TqE4ek5D1rW9x?=
+ =?us-ascii?Q?eJQefJ+Xgped7GQcqwUQ8XAsHtbjxDpiVaz4iT2SOxrhbxq4IbfxNiML6+Qk?=
+ =?us-ascii?Q?gftoNMrePXYvLhLuRcMGMVPaRRaWs0CbRtVIQy1KxWEi2yWM2ZztsnTGTQb6?=
+ =?us-ascii?Q?T4N2refRSqOzlieSTEkjbyVtlCb7bndu/hIxzZvXrVzLt5H/Esjf+fBwjzWU?=
+ =?us-ascii?Q?+Czs54F3BQPEKwY/BhwcB1MiWMvrTIMBc7lzMNgpYaIUcaDaqX/b5oeE7p0d?=
+ =?us-ascii?Q?/8y8BI5wGhlwmHvLFxfnaJksc33Fv95uRIGqoTni?=
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5880.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3f870afd-9721-49c7-7c51-08da5ef35a8b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Jul 2022 02:00:51.4876
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3e7272d6-6feb-424a-6de2-08da5ef4175e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Jul 2022 02:06:08.3129
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: N4wGZ0vOaUdtNPeVKWUqBqZtdsxWpDDG2ZLRrPtIviMo+i8UCv4v1WNIHqC3Vhor+y/jIA0637UX78woGYKAgQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR11MB1434
+X-MS-Exchange-CrossTenant-userprincipalname: 3ofYZBDlfDWGI4JYxwMpVA9rmaMiVNVlOhDAwHa5aDa8Wvgn4GzvY0eLUgEbpVnbIKyt4vaPKPcHCb2L9pg5jA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB6545
 X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Jul 01, 2022 at 10:44:04AM +0800, Zqiang wrote:
-> Currently, only tree RCU support leak callbacks setting when do
-> duplicate call_rcu(). this commit add leak callbacks setting when
-> fo duplicate call_rcu() for tiny RCU.
+On Tue, Jun 28, 2022 at 04:32:58AM +0000, Zhang, Qiang1 wrote:
+> On Thu, Jun 23, 2022 at 03:23:19AM +0000, Zhang, Qiang1 wrote:
+> > On Wed, Jun 22, 2022 at 05:34:09PM -0700, Paul E. McKenney wrote:
+> > > On Wed, Jun 22, 2022 at 11:34:15PM +0000, Zhang, Qiang1 wrote:
+> > > >=20
+> > > > On Wed, Jun 22, 2022 at 06:35:49PM +0800, Zqiang wrote:
+> > > > > In CONFIG_PREEMPT=3Dn and CONFIG_PREEMPT_COUNT=3Dy kernel, after =
+a exp
+> > > > > grace period begins, if detected current CPU enters idle in
+> > > > > rcu_exp_handler() IPI handler, will immediately report the exp QS=
+ of the
+> > > > > current cpu, at this time, maybe not being in an RCU read-side cr=
+itical
+> > > > > section, but need wait until rcu-softirq or sched-clock irq or sc=
+hed-switch
+> > > > > occurs on current CPU to check and report exp QS.
+> > > > >=20
+> > > >=20
+> > > > >I think the idea is OK, however, this "optimization" is based on t=
+he
+> > > > >implementation detail that rcu_read_lock() counts preempt_count wh=
+en
+> > > > >CONFIG_PREEMPT_COUNT=3Dy, right? It's a little bit dangerous becau=
+se the
+> > > > >preempt_count when CONFIG_PREEMPT_COUNT=3Dy and CONFIG_PREEMPT=3Dn=
+ is mostly
+> > > > >for debugging purposes IIUC, and in other words, _it could be gone=
+_.
+> > > > >
+> > > >=20
+> > > > Yes, for CONFIG_PREEMPT_COUNT=3Dy and CONFIG_PREEMPT=3Dn kernel
+> > > > The rcu_read_lock/unlock are replaced by preempt_disbale/enable, an=
+d the=20
+> > > > preempt-count is exists,  so can report exp QS when not being an  R=
+CU=20
+> > > > read-side critical(preempt_count & (PREEMPT_MASK | SOFTIRQ_MASK )re=
+turn zero).
+> > > > in IPI handler.=20
+> > > >=20
+> > > > For CONFIG_PREEMPT_COUNT=3Dn and CONFIG_PREEMPT=3Dn kernel,=20
+> > > > The rcu_read_lock/unlock is just barrier().=20
+> > > >=20
+> > > >=20
+> > > > So I add IS_ENABLED(CONFIG_PREEMPT_COUNT) check in code.
+> > > >=20
+> > > > Of course, for CONFIG_PREEMPT_COUNT=3Dn  kernel, in RCU softirq, th=
+e=20
+> > > > preempt-count is also checked
+> > > >=20
+> > > > /* Report any deferred quiescent states if preemption enabled. */
+> > > >  if (IS_ENABLED(CONFIG_PREEMPT_COUNT) && (!(preempt_count() & PREEM=
+PT_MASK))) {
+> > > >                  rcu_preempt_deferred_qs(current);
+> > > >=20
+> > > > but the RCU softirq may not be triggered in time and reported exp Q=
+S, for
+> > > > example a kernel loop exist on NO_HZ_FULL CPU
+> > > >=20
+> > > > this change, It is to capture the exp QS state earlier and report i=
+t.
+> > > >=20
+> > > >=20
+> > > > >Also I'm not aware of any but there could be someone assuming that=
+ RCU
+> > > > >read-side critical sections can be formed without
+> > > > >rcu_read_{lock,unlock}() in CONFIG_PREEMPT=3Dn kernel. For example=
+, there
+> > > > >might be "creative" code like the following:
+> > > > >
+> > > > >	void do_something_only_in_nonpreempt(void)
+> > > > >	{
+> > > > >		int *p;
+> > > > >
+> > > > >		// This function only gets called in PREEMPT=3Dn kernel,
+> > > > >		// which means everywhere is a RCU read-side critical
+> > > > >		// section, let's save some lines of code.
+> > > > >
+> > > > 		rcu_read_lock();
+> > > > >		p =3D rcu_dereference_check(gp, !IS_ENABLED(PREEMPT));
+> > > > >		... // of course no schedule() here.
+> > > > >		<access p>
+> > > >                              rcu_read_unlock();
+> > > > >	}
+> > > > >
+> > > >=20
+> > > > Usually access to pointers of type rcu needs to be protected.
+> >=20
+> > Yes, _ususally_ they are, but what about the special cases? Because
+> > in PREEMPT=3Dn kernel, almost everywhere is a RCU read-side critical
+> > section, some one might have been "creative" enough to omit these
+> > rcu_read_lock() and rcu_read_unlock().
+> >=20
+> > >=20
+> > > Indeed, lockdep would normally complain about this sort of thing.
+> > > But in kernels built with (say) CONFIG_PREEMPT_NONE=3Dy but without
+> > > CONFIG_PREEMPT_COUNT=3DN, can lockdep really tell the difference?
+> > >=20
+> >=20
+> > >Actually with the rcu_dereference_check() above, lockdep cannot detect
+> > >even CONFIG_PREEMPT_COUNT=3Dy, that rcu_dereference_check() basically =
+says
+> > >"I know I'm in a read-side critical section if it's a non-preempt
+> > >kernel, so don't bother to check". ;-)
+> >=20
+> > > > Any thoughts?
+> > >=20
+> > > It would be good to have some performance data on this change to expe=
+dited
+> > > grace periods.  It is adding code, so it needs some real motivation.
+> >=20
+> > I used rcuscale to test it, and  count the average time of writer-durat=
+ion
+> >=20
+> > no applied patch(org.txt)
+> > writer avg  time  29690.39     29670.78     29770.65       29423.25
+> >=20
+> > applied patch(new.txt)
+> > writer avg time 28989.99       29003.54      29281.39       28986.58
+> >=20
+> > or Is there a better way to test?
 >=20
-> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-
->This does look plausible, thank you!
+> >If I understand your measurments correctly, you are getting about a 2%
+> >improvement in expedited grace-period latency in !PREEMPT kernels.
+> >Do we have a situation for which that 2% improvement is important?
+>=20
+> To be honest, it will also be affected by the work scheduling delay. Inde=
+ed,=20
+> my current test results are not very good, but it is beneficial to detect=
+ the
+> QS state in advance and report it in time. of course, I will do more test=
+s in
+> the future
+>=20
+> >We would be taking some risk due to the issues Boqun points out or we
+> >would be adding some complexity to avoid those issues.  So this
+>=20
+> As for the code similar to the above scenario proposed by Boqun,=20
+> it is true that lockdep will not complain, I do not deny that someone
+> will write this way.
+>=20
+> If there really is such a situation as Boqun mentioned, There is also=20
+> a risk in the following code segment in PREEMPT=3Dn and PREEMPT_COUNT=3Dy
+>=20
+>         /* Report any deferred quiescent states if preemption enabled. */
+>         if (IS_ENABLED(CONFIG_PREEMPT_COUNT) && (!(preempt_count() & PREE=
+MPT_MASK)))
+>                 rcu_preempt_deferred_qs(current);
 >
->What testing have you done?
+>Fair point.
 >
->One important test for Tiny RCU is that the size of the kernel not
->grow without a very good reason.  In this case, the added code should
->be dead code in a production build (CONFIG_DEBUG_OBJECTS_RCU_HEAD=3Dn),
->but it is good to check.
->
->It is of course also good to check that the messages print as expected,
->which is what rcutorture.object_debug is there to help with.
+>I have applied the commit shown below.  Does that look correct?
 
-In the condition that the CONFIG_DEBUG_OBJECTS_RCU_HEAD=3Dn, the function d=
-irectly returns zero.
-
-#else   /* !CONFIG_DEBUG_OBJECTS_RCU_HEAD */
-static inline int debug_rcu_head_queue(struct rcu_head *head)
-{
-        return 0;
-}
-
-My test results are as follows:
-
-runqemu kvm slirp nographic qemuparams=3D"-m 2048 -smp 1" bootparams=3D"rcu=
-torture.object_debug=3D1" -d
-
-log:
-root@qemux86-64:/# zcat /proc/config.gz | grep RCU
-# RCU Subsystem
-CONFIG_TINY_RCU=3Dy
-CONFIG_DEBUG_OBJECTS_RCU_HEAD=3Dy
-
-[    1.015657] rcutorture: WARN: Duplicate call_rcu() test starting.
-[    1.015659] ------------[ cut here ]------------
-[    1.015659] ODEBUG: activate active (active state 1) object type: rcu_he=
-ad hint: 0x0
-[    1.015680] WARNING: CPU: 0 PID: 1 at lib/debugobjects.c:502 debug_print=
-_object+0xda/0x100
-[    1.016329] Modules linked in:
-[    1.016329] CPU: 0 PID: 1 Comm: swapper Not tainted 5.19.0-rc3-yoctodev-=
-standard+ #214
-[    1.016329] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel=
--1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
-[    1.016329] RIP: 0010:debug_print_object+0xda/0x100
-[    1.016329] Code: 60 ec 45 92 e8 a7 7b a0 ff 4d 89 f9 4d 89 e8 44 89 e1 =
-48 8b 14 dd 60 ec 45 92 4c 89 f6 48 c7 c7 e0 e1 45 92 e8 f9 d1 b3 00 90 <0f=
-> e
-[    1.016329] RSP: 0000:ffff888001337be0 EFLAGS: 00010086
-[    1.016329] RAX: 0000000000000000 RBX: 0000000000000003 RCX: 00000000000=
-00000
-[    1.016329] RDX: 00000000ffffffd8 RSI: 0000000000000004 RDI: ffffed10002=
-66f6e
-[    1.016329] RBP: ffff888001337c10 R08: ffffffff90a56ee6 R09: fffffbfff25=
-df5c2
-[    1.016329] R10: ffffffff92efae0b R11: fffffbfff25df5c1 R12: 00000000000=
-00001
-[    1.016329] R13: ffffffff9227f520 R14: ffffffff9245e8a0 R15: 00000000000=
-00000
-[    1.016329] FS:  0000000000000000(0000) GS:ffffffff92cbb000(0000) knlGS:=
-0000000000000000
-[    1.016329] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    1.016329] CR2: ffff888017401000 CR3: 0000000015a3c000 CR4: 00000000001=
-506f0
-[    1.016329] Call Trace:
-[    1.016329]  <TASK>
-[    1.016329]  debug_object_activate+0x2b9/0x300
-[    1.016329]  ? debug_object_assert_init+0x220/0x220
-[    1.016329]  ? lockdep_hardirqs_on_prepare+0x13/0x210
-[    1.016329]  ? call_rcu+0xde/0x150
-[    1.016329]  ? trace_hardirqs_on+0x54/0x120
-[    1.016329]  ? rcu_torture_fwd_cb_hist.cold+0xe9/0xe9
-[    1.016329]  call_rcu+0x20/0x150
-[    1.016329]  rcu_torture_init+0x1687/0x1759
-[    1.016329]  ? srcu_init+0xaa/0xaa
-[    1.016329]  ? irq_debugfs_copy_devname+0x70/0x70
-[    1.016329]  ? rcu_torture_barrier1cb+0x40/0x40
-[    1.016329]  ? rcu_torture_barrier1cb+0x40/0x40
-[    1.016329]  ? irq_pm_init_ops+0x19/0x19
-[    1.016329]  ? mutex_unlock+0x12/0x20
-[    1.016329]  ? srcu_init+0xaa/0xaa
-[    1.016329]  do_one_initcall+0xc1/0x310
-[    1.016329]  ? initcall_blacklisted+0x140/0x140
-[    1.016329]  ? parameq+0x20/0x90
-[    1.016329]  ? __kmalloc+0x238/0x5d0
-[    1.016329]  ? rcu_read_lock_sched_held+0xe/0x50
-[    1.016329]  kernel_init_freeable+0x20a/0x268
-[    1.016329]  ? rest_init+0x160/0x160
-[    1.016329]  kernel_init+0x1e/0x140
-[    1.016329]  ret_from_fork+0x22/0x30
-[    1.016329]  </TASK>
-[    1.016329] irq event stamp: 152
-[    1.016329] hardirqs last  enabled at (151): [<ffffffff91da7a4c>] _raw_s=
-pin_unlock_irqrestore+0x4c/0x60
-[    1.016329] hardirqs last disabled at (152): [<ffffffff91da7811>] _raw_s=
-pin_lock_irqsave+0x71/0x90
-[    1.016329] softirqs last  enabled at (0): [<ffffffff908a230c>] copy_pro=
-cess+0xc8c/0x31b0
-[    1.016329] softirqs last disabled at (0): [<0000000000000000>] 0x0
-[    1.016329] ---[ end trace 0000000000000000 ]---
-[    1.016329] ------------[ cut here ]------------
-[    1.016329] ODEBUG: active_state active (active state 1) object type: rc=
-u_head hint: 0x0
-[    1.016329] WARNING: CPU: 0 PID: 1 at lib/debugobjects.c:502 debug_print=
-_object+0xda/0x100
-[    1.016329] Modules linked in:
-[    1.016329] CPU: 0 PID: 1 Comm: swapper Tainted: G        W         5.19=
-.0-rc3-yoctodev-standard+ #214
-[    1.016329] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel=
--1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
-[    1.016329] RIP: 0010:debug_print_object+0xda/0x100
-[    1.016329] Code: 60 ec 45 92 e8 a7 7b a0 ff 4d 89 f9 4d 89 e8 44 89 e1 =
-48 8b 14 dd 60 ec 45 92 4c 89 f6 48 c7 c7 e0 e1 45 92 e8 f9 d1 b3 00 90 <0f=
-> e
-[    1.016329] RSP: 0000:ffff888001337bd0 EFLAGS: 00010082
-[    1.016329] RAX: 0000000000000000 RBX: 0000000000000003 RCX: 00000000000=
-00000
-[    1.016329] RDX: 00000000ffffffd8 RSI: 0000000000000004 RDI: ffffed10002=
-66f6c
-[    1.016329] RBP: ffff888001337c00 R08: ffffffff90a56ee6 R09: fffffbfff25=
-df5c2
-[    1.016329] R10: ffffffff92efae0b R11: fffffbfff25df5c1 R12: 00000000000=
-00001
-[    1.016329] R13: ffffffff9227f520 R14: ffffffff9245e640 R15: 00000000000=
-00000
-[    1.016329] FS:  0000000000000000(0000) GS:ffffffff92cbb000(0000) knlGS:=
-0000000000000000
-[    1.016329] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    1.016329] CR2: ffff888017401000 CR3: 0000000015a3c000 CR4: 00000000001=
-506f0
-[    1.016329] Call Trace:
-[    1.016329]  <TASK>
-[    1.016329]  debug_object_active_state+0x1d7/0x210
-[    1.016329]  ? debug_object_deactivate+0x210/0x210
-[    1.016329]  ? lockdep_hardirqs_on_prepare+0x13/0x210
-[    1.016329]  ? call_rcu+0xde/0x150
-[    1.016329]  ? trace_hardirqs_on+0x54/0x120
-[    1.016329]  ? rcu_torture_fwd_cb_hist.cold+0xe9/0xe9
-[    1.016329]  call_rcu+0x39/0x150
-[    1.016329]  rcu_torture_init+0x1687/0x1759
-[    1.016329]  ? srcu_init+0xaa/0xaa
-[    1.016329]  ? irq_debugfs_copy_devname+0x70/0x70
-[    1.016329]  ? rcu_torture_barrier1cb+0x40/0x40
-[    1.016329]  ? rcu_torture_barrier1cb+0x40/0x40
-[    1.016329]  ? irq_pm_init_ops+0x19/0x19
-[    1.016329]  ? mutex_unlock+0x12/0x20
-[    1.016329]  ? srcu_init+0xaa/0xaa
-[    1.016329]  do_one_initcall+0xc1/0x310
-[    1.016329]  ? initcall_blacklisted+0x140/0x140
-[    1.016329]  ? parameq+0x20/0x90
-[    1.016329]  ? __kmalloc+0x238/0x5d0
-[    1.016329]  ? rcu_read_lock_sched_held+0xe/0x50
-[    1.016329]  kernel_init_freeable+0x20a/0x268
-[    1.016329]  ? rest_init+0x160/0x160
-[    1.016329]  kernel_init+0x1e/0x140
-[    1.016329]  ret_from_fork+0x22/0x30
-[    1.016329]  </TASK>
-[    1.016329] irq event stamp: 152
-[    1.016329] hardirqs last  enabled at (151): [<ffffffff91da7a4c>] _raw_s=
-pin_unlock_irqrestore+0x4c/0x60
-[    1.016329] hardirqs last disabled at (152): [<ffffffff91da7811>] _raw_s=
-pin_lock_irqsave+0x71/0x90
-[    1.016329] softirqs last  enabled at (0): [<ffffffff908a230c>] copy_pro=
-cess+0xc8c/0x31b0
-[    1.016329] softirqs last disabled at (0): [<0000000000000000>] 0x0
-[    1.016329] ---[ end trace 0000000000000000 ]---
-[    1.016329] call_rcu(): Double-freed CB (____ptrval____)->rcu_torture_le=
-ak_cb+0x0/0x10()!!!   non-slab/vmalloc memory
-[    1.016329] ------------[ cut here ]------------
-[    1.016329] ODEBUG: activate active (active state 1) object type: rcu_he=
-ad hint: 0x0
-[    1.016329] WARNING: CPU: 0 PID: 1 at lib/debugobjects.c:502 debug_print=
-_object+0xda/0x100
-[    1.016329] Modules linked in:
-[    1.016329] CPU: 0 PID: 1 Comm: swapper Tainted: G        W         5.19=
-.0-rc3-yoctodev-standard+ #214
-[    1.016329] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel=
--1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
-[    1.016329] RIP: 0010:debug_print_object+0xda/0x100
-[    1.016329] Code: 60 ec 45 92 e8 a7 7b a0 ff 4d 89 f9 4d 89 e8 44 89 e1 =
-48 8b 14 dd 60 ec 45 92 4c 89 f6 48 c7 c7 e0 e1 45 92 e8 f9 d1 b3 00 90 <0f=
-> e
-[    1.016329] RSP: 0000:ffff888001337be0 EFLAGS: 00010086
-[    1.016329] RAX: 0000000000000000 RBX: 0000000000000003 RCX: 00000000000=
-00000
-[    1.016329] RDX: 00000000ffffffd8 RSI: 0000000000000004 RDI: ffffed10002=
-66f6e
-[    1.016329] RBP: ffff888001337c10 R08: ffffffff90a56ee6 R09: fffffbfff25=
-df5c2
-[    1.016329] R10: ffffffff92efae0b R11: fffffbfff25df5c1 R12: 00000000000=
-00001
-[    1.016329] R13: ffffffff9227f520 R14: ffffffff9245e8a0 R15: 00000000000=
-00000
-[    1.016329] FS:  0000000000000000(0000) GS:ffffffff92cbb000(0000) knlGS:=
-0000000000000000
-[    1.016329] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    1.016329] CR2: ffff888017401000 CR3: 0000000015a3c000 CR4: 00000000001=
-506f0
-[    1.016329] Call Trace:
-[    1.016329]  <TASK>
-[    1.016329]  debug_object_activate+0x2b9/0x300
-[    1.016329]  ? debug_object_assert_init+0x220/0x220
-[    1.016329]  ? _raw_spin_unlock+0x23/0x30
-[    1.016329]  ? find_vmap_area+0x5c/0x90
-[    1.016329]  ? do_raw_spin_unlock+0x85/0xe0
-[    1.016329]  ? rcu_torture_fwd_cb_hist.cold+0xe9/0xe9
-[    1.016329]  call_rcu+0x20/0x150
-[    1.016329]  rcu_torture_init+0x16aa/0x1759
-[    1.016329]  ? srcu_init+0xaa/0xaa
-[    1.016329]  ? irq_debugfs_copy_devname+0x70/0x70
-[    1.016329]  ? rcu_torture_barrier1cb+0x40/0x40
-[    1.016329]  ? srcu_torture_completed+0x10/0x10
-[    1.016329]  ? irq_pm_init_ops+0x19/0x19
-[    1.016329]  ? mutex_unlock+0x12/0x20
-[    1.016329]  ? srcu_init+0xaa/0xaa
-[    1.016329]  do_one_initcall+0xc1/0x310
-[    1.016329]  ? initcall_blacklisted+0x140/0x140
-[    1.016329]  ? parameq+0x20/0x90
-[    1.016329]  ? __kmalloc+0x238/0x5d0
-[    1.016329]  ? rcu_read_lock_sched_held+0xe/0x50
-[    1.016329]  kernel_init_freeable+0x20a/0x268
-[    1.016329]  ? rest_init+0x160/0x160
-[    1.016329]  kernel_init+0x1e/0x140
-[    1.016329]  ret_from_fork+0x22/0x30
-[    1.016329]  </TASK>
-[    1.016329] irq event stamp: 152
-[    1.016329] hardirqs last  enabled at (151): [<ffffffff91da7a4c>] _raw_s=
-pin_unlock_irqrestore+0x4c/0x60
-[    1.016329] hardirqs last disabled at (152): [<ffffffff91da7811>] _raw_s=
-pin_lock_irqsave+0x71/0x90
-[    1.016329] softirqs last  enabled at (0): [<ffffffff908a230c>] copy_pro=
-cess+0xc8c/0x31b0
-[    1.016329] softirqs last disabled at (0): [<0000000000000000>] 0x0
-[    1.016329] ---[ end trace 0000000000000000 ]---
-[    1.016329] ------------[ cut here ]------------
-[    1.016329] ODEBUG: active_state active (active state 1) object type: rc=
-u_head hint: 0x0
-[    1.016329] WARNING: CPU: 0 PID: 1 at lib/debugobjects.c:502 debug_print=
-_object+0xda/0x100
-[    1.016329] Modules linked in:
-[    1.016329] CPU: 0 PID: 1 Comm: swapper Tainted: G        W         5.19=
-.0-rc3-yoctodev-standard+ #214
-[    1.016329] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel=
--1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
-[    1.016329] RIP: 0010:debug_print_object+0xda/0x100
-[    1.016329] Code: 60 ec 45 92 e8 a7 7b a0 ff 4d 89 f9 4d 89 e8 44 89 e1 =
-48 8b 14 dd 60 ec 45 92 4c 89 f6 48 c7 c7 e0 e1 45 92 e8 f9 d1 b3 00 90 <0f=
-> e
-[    1.016329] RSP: 0000:ffff888001337bd0 EFLAGS: 00010082
-[    1.016329] RAX: 0000000000000000 RBX: 0000000000000003 RCX: 00000000000=
-00000
-[    1.016329] RDX: 00000000ffffffd8 RSI: 0000000000000004 RDI: ffffed10002=
-66f6c
-[    1.016329] RBP: ffff888001337c00 R08: ffffffff90a56ee6 R09: fffffbfff25=
-df5c2
-[    1.016329] R10: ffffffff92efae0b R11: fffffbfff25df5c1 R12: 00000000000=
-00001
-[    1.016329] R13: ffffffff9227f520 R14: ffffffff9245e640 R15: 00000000000=
-00000
-[    1.016329] FS:  0000000000000000(0000) GS:ffffffff92cbb000(0000) knlGS:=
-0000000000000000
-[    1.016329] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    1.016329] CR2: ffff888017401000 CR3: 0000000015a3c000 CR4: 00000000001=
-506f0
-[    1.016329] Call Trace:
-[    1.016329]  <TASK>
-[    1.016329]  debug_object_active_state+0x1d7/0x210
-[    1.016329]  ? debug_object_deactivate+0x210/0x210
-[    1.016329]  ? _raw_spin_unlock+0x23/0x30
-[    1.016329]  ? find_vmap_area+0x5c/0x90
-[    1.016329]  ? do_raw_spin_unlock+0x85/0xe0
-[    1.016329]  ? rcu_torture_fwd_cb_hist.cold+0xe9/0xe9
-[    1.016329]  call_rcu+0x39/0x150
-[    1.016329]  rcu_torture_init+0x16aa/0x1759
-[    1.016329]  ? srcu_init+0xaa/0xaa
-[    1.016329]  ? irq_debugfs_copy_devname+0x70/0x70
-[    1.016329]  ? rcu_torture_barrier1cb+0x40/0x40
-[    1.016329]  ? srcu_torture_completed+0x10/0x10
-[    1.016329]  ? irq_pm_init_ops+0x19/0x19
-[    1.016329]  ? mutex_unlock+0x12/0x20
-[    1.016329]  ? srcu_init+0xaa/0xaa
-[    1.016329]  do_one_initcall+0xc1/0x310
-[    1.016329]  ? initcall_blacklisted+0x140/0x140
-[    1.016329]  ? parameq+0x20/0x90
-[    1.016329]  ? __kmalloc+0x238/0x5d0
-[    1.016329]  ? rcu_read_lock_sched_held+0xe/0x50
-[    1.016329]  kernel_init_freeable+0x20a/0x268
-[    1.016329]  ? rest_init+0x160/0x160
-[    1.016329]  kernel_init+0x1e/0x140
-[    1.016329]  ret_from_fork+0x22/0x30
-[    1.016329]  </TASK>
-[    1.016329] irq event stamp: 152
-[    1.016329] hardirqs last  enabled at (151): [<ffffffff91da7a4c>] _raw_s=
-pin_unlock_irqrestore+0x4c/0x60
-[    1.016329] hardirqs last disabled at (152): [<ffffffff91da7811>] _raw_s=
-pin_lock_irqsave+0x71/0x90
-[    1.016329] softirqs last  enabled at (0): [<ffffffff908a230c>] copy_pro=
-cess+0xc8c/0x31b0
-[    1.016329] softirqs last disabled at (0): [<0000000000000000>] 0x0
-[    1.016329] ---[ end trace 0000000000000000 ]---
-[    1.016329] call_rcu(): Double-freed CB (____ptrval____)->rcu_torture_le=
-ak_cb+0x0/0x10()!!!   slab kmalloc-16 start ffff888003f49240 pointer offset=
- 06
-[    1.101401] rcu-torture: rcu_torture_read_exit: Start of test
-
-Thanks
-Zqiang
-
+Thanks, This description is sufficient.
 
 >
 >							Thanx, Paul
-
-> ---
->  v1->v2:
->  for do duplicate kvfree_call_rcu(), not set leak callbacks.=20
+>
+>------------------------------------------------------------------------
+>
+>commit 9db96a8acda6837e5d4cd6a1cd7323709810e418
+>Author: Zqiang <qiang1.zhang@intel.com>
+>Date:   Tue Jul 5 12:09:51 2022 -0700
+>
+>    rcu: Add QS check in rcu_exp_handler() for non-preemptible kernels
+>   =20
+>    Kernels built with CONFIG_PREEMPTION=3Dn and CONFIG_PREEMPT_COUNT=3Dy =
+maintain
+>    preempt_count() state.  Because such kernels map __rcu_read_lock()
+>    and __rcu_read_unlock() to preempt_disable() and preempt_enable(),
+>    respectively, this allows the expedited grace period's !CONFIG_PREEMPT=
+_RCU
+>    version of the rcu_exp_handler() IPI handler function to use
+>    preempt_count() to detect quiescent states.
+>   =20
+>    This preempt_count() usage might seem to risk failures due to
+>    use of implicit RCU readers in portions of the kernel under #ifndef
+>    CONFIG_PREEMPTION, except that rcu_core() already disallows such impli=
+cit
+>    RCU readers.  The moral of this story is that you must use explicit
+>    read-side markings such as rcu_read_lock() or preempt_disable() even i=
+f
+>    the code knows that this kernel does not support preemption.
+>   =20
+>    This commit therefore adds a preempt_count()-based check for a quiesce=
+nt
+>    state in the !CONFIG_PREEMPT_RCU version of the rcu_exp_handler()
+>    function for kernels built with CONFIG_PREEMPT_COUNT=3Dy, reporting an
+>    immediate quiescent state when the interrupted code had both preemptio=
+n
+>    and softirqs enabled.
+>   =20
+>    This change results in about a 2% reduction in expedited grace-period
+>    latency in kernels built with both CONFIG_PREEMPT_RCU=3Dn and
+>    CONFIG_PREEMPT_COUNT=3Dy.
+>   =20
+>    Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+>    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+>    Link: https://lore.kernel.org/all/20220622103549.2840087-1-qiang1.zhan=
+g@intel.com/
+>
+>diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+>index be667583a5547..b07998159d1fa 100644
+>--- a/kernel/rcu/tree_exp.h
+>+++ b/kernel/rcu/tree_exp.h
+>@@ -828,11 +828,13 @@ static void rcu_exp_handler(void *unused)
+> {
+> 	struct rcu_data *rdp =3D this_cpu_ptr(&rcu_data);
+> 	struct rcu_node *rnp =3D rdp->mynode;
+>+	bool preempt_bh_enabled =3D !(preempt_count() & (PREEMPT_MASK | SOFTIRQ_=
+MASK));
 >=20
->  kernel/rcu/tiny.c | 17 ++++++++++++++++-
->  1 file changed, 16 insertions(+), 1 deletion(-)
->=20
-> diff --git a/kernel/rcu/tiny.c b/kernel/rcu/tiny.c
-> index f0561ee16b9c..943d431b908f 100644
-> --- a/kernel/rcu/tiny.c
-> +++ b/kernel/rcu/tiny.c
-> @@ -158,6 +158,10 @@ void synchronize_rcu(void)
->  }
->  EXPORT_SYMBOL_GPL(synchronize_rcu);
-> =20
-> +static void tiny_rcu_leak_callback(struct rcu_head *rhp)
-> +{
-> +}
-> +
->  /*
->   * Post an RCU callback to be invoked after the end of an RCU grace
->   * period.  But since we have but one CPU, that would be after any
-> @@ -165,9 +169,20 @@ EXPORT_SYMBOL_GPL(synchronize_rcu);
->   */
->  void call_rcu(struct rcu_head *head, rcu_callback_t func)
->  {
-> +	static atomic_t doublefrees;
->  	unsigned long flags;
-> =20
-> -	debug_rcu_head_queue(head);
-> +	if (debug_rcu_head_queue(head)) {
-> +		if (atomic_inc_return(&doublefrees) < 4) {
-> +			pr_err("%s(): Double-freed CB %p->%pS()!!!  ", __func__, head, head->=
-func);
-> +			mem_dump_obj(head);
-> +		}
-> +
-> +		if (!__is_kvfree_rcu_offset((unsigned long)head->func))
-> +			WRITE_ONCE(head->func, tiny_rcu_leak_callback);
-> +		return;
-> +	}
-> +
->  	head->func =3D func;
->  	head->next =3D NULL;
-> =20
-> --=20
-> 2.25.1
->=20
+> 	if (!(READ_ONCE(rnp->expmask) & rdp->grpmask) ||
+> 	    __this_cpu_read(rcu_data.cpu_no_qs.b.exp))
+> 		return;
+>-	if (rcu_is_cpu_rrupt_from_idle()) {
+>+	if (rcu_is_cpu_rrupt_from_idle() ||
+>+	    (IS_ENABLED(CONFIG_PREEMPT_COUNT) && preempt_bh_enabled)) {
+> 		rcu_report_exp_rdp(this_cpu_ptr(&rcu_data));
+> 		return;
+> 	}
