@@ -2,138 +2,218 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C3F2C43334
-	for <rcu@archiver.kernel.org>; Fri,  8 Jul 2022 04:17:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F1706C433EF
+	for <rcu@archiver.kernel.org>; Fri,  8 Jul 2022 04:25:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237001AbiGHERd (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 8 Jul 2022 00:17:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55508 "EHLO
+        id S236950AbiGHEZN (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 8 Jul 2022 00:25:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236513AbiGHERd (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 8 Jul 2022 00:17:33 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 789652655C
-        for <rcu@vger.kernel.org>; Thu,  7 Jul 2022 21:17:32 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id bs20so25769016qtb.11
-        for <rcu@vger.kernel.org>; Thu, 07 Jul 2022 21:17:32 -0700 (PDT)
+        with ESMTP id S236924AbiGHEZM (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 8 Jul 2022 00:25:12 -0400
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 673261054E
+        for <rcu@vger.kernel.org>; Thu,  7 Jul 2022 21:25:11 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id e7so250180qts.1
+        for <rcu@vger.kernel.org>; Thu, 07 Jul 2022 21:25:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=uGoy5SHC3OQwhZlm2IT5uM+W5kXJSSMgEQTx8s2qElc=;
-        b=v7C/SD2n/xR97dosIcWJVUeECNHIjuG1oHxTMiH3BiPHtH5O2vCHfnxT4nJ7BaCfjC
-         1GzcHFMTNlW4KnRttTVVskdHvFl+iyo2rkGjCy7VbEegG0Il9go17UqqaevcvjZULSfD
-         Cw24NvgzegAnGIM/s67DnOdFzTXO+wF5XPD/w=
+        bh=YiRIQ6EPldvCAHBc1vkFltTFtFZvbbQuV3XjMnACSEk=;
+        b=NYg2Enet/cCdMjqU2+zIl2w2yOoLVLg20hXZUY/snkVK9j+WCy1MK4DUh4vggQ2W11
+         LHqX9Hw53quV+9/HR9Btw+5zueHn9KtKFXRkFynXa615UoQcdaMr+/4UQwqsq3v5UhMg
+         C/IzFHyyJkMnnzmjArg1yY5KLMu3xD1V9zeVI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=uGoy5SHC3OQwhZlm2IT5uM+W5kXJSSMgEQTx8s2qElc=;
-        b=OS/3AKqD+/Z49NEQ2dml38Chytf3G+cIoJo9Tbk+UtkY5+7ATxqYL5gMARd1i1utV7
-         5QFoQ9MsTxBir5ERtzt2oID14zAJporCE41eDG86pYvyVHR4yk/sepRc5DaR5HbR2Cac
-         bvafgIDkGzbEDU+6tQXsA4xo6UHjZ1WZoU6SoX5nJ8yw+RTRzOKettONcXXl1IOvRjW8
-         3Gzy0mFBMMyLRE9pVaxzsXkk8Tmbitc3v5nuKu3OFZNEBdlcTj4FYZWLv3hH6d0o8dSK
-         99BIgBIG5H99QZbMWYQHKrsuBcOjwGqZd9rt4Kw5UVK6ACXgdUwf5IbHoPcFBRAKqBXw
-         9bQA==
-X-Gm-Message-State: AJIora/iYVJV8ry//HfwVk1NQwGYBqSsLgeZxY0NFGzUCDn6krkTePSf
-        345kooAMS1B8VNfX766czpu7qQ==
-X-Google-Smtp-Source: AGRyM1ujMKRohqwU3MDLZwVDRoNOfBtY4Z79IawBLrj08rRTfhFWnS9F4aRCa/Of+pGM1gE3GR1Cpg==
-X-Received: by 2002:ac8:5713:0:b0:31a:c706:50ef with SMTP id 19-20020ac85713000000b0031ac70650efmr1299549qtw.267.1657253851629;
-        Thu, 07 Jul 2022 21:17:31 -0700 (PDT)
+        bh=YiRIQ6EPldvCAHBc1vkFltTFtFZvbbQuV3XjMnACSEk=;
+        b=Bfy0nHdr09/8Xb3WcHlL8AD501QnzWcRxA1vFMbJLZUvND4C8BEGr9yW28dVjoOsgP
+         rCggQVRhA9DnpDshm/yjtBf9J9cmi4NL6WxuCjXlP8YL/Gxg6AtBrGUt8cSrKWB3Syua
+         pnveYy1XVx6zG+lH5iKw86JxJ9w6smAybZVkHO+vS5DeHZbIdGsrwQb86crVNBQgMSWN
+         hwwrosM+31JYz3RKoQkBcV5Xo3HBMJSvWasAZdq7ScsD/+vsQf5sdWoFKm0NWNMyL5iQ
+         825Cgz5D+SoPjWNRTuvmmuCDiXYBxlA7K1NIMizKXUHYAKXh1TWMQlu4WXe0IC9ynA1C
+         fNCw==
+X-Gm-Message-State: AJIora8lKuVLlpLnHmdeB0wjDNZinZzj0AENCJFtnsxVxtNBQ+60O/EQ
+        1Ge3QgeaLGZU2QLioEpIYabZ0g==
+X-Google-Smtp-Source: AGRyM1ssQj2JdzzT4Tsaqj33dtrnhGQjDMwLgzAtQgLZpFL2OO+fD9YINggJS2PRhhleidHfdUeeMA==
+X-Received: by 2002:a05:6214:d66:b0:470:4528:bbd5 with SMTP id 6-20020a0562140d6600b004704528bbd5mr1186921qvs.73.1657254310548;
+        Thu, 07 Jul 2022 21:25:10 -0700 (PDT)
 Received: from localhost (228.221.150.34.bc.googleusercontent.com. [34.150.221.228])
-        by smtp.gmail.com with ESMTPSA id n8-20020a05620a222800b006ab935c1563sm31103220qkh.8.2022.07.07.21.17.30
+        by smtp.gmail.com with ESMTPSA id ay4-20020a05622a228400b002f39b99f69csm26560294qtb.54.2022.07.07.21.25.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jul 2022 21:17:31 -0700 (PDT)
-Date:   Fri, 8 Jul 2022 04:17:30 +0000
+        Thu, 07 Jul 2022 21:25:09 -0700 (PDT)
+Date:   Fri, 8 Jul 2022 04:25:09 +0000
 From:   Joel Fernandes <joel@joelfernandes.org>
 To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         rushikesh.s.kadam@intel.com, urezki@gmail.com,
         neeraj.iitr10@gmail.com, frederic@kernel.org, rostedt@goodmis.org,
         vineeth@bitbyteword.org
-Subject: Re: [PATCH v2 0/8] Implement call_rcu_lazy() and miscellaneous fixes
-Message-ID: <Ysev2jbxFGNkLvjG@google.com>
+Subject: Re: [PATCH v2 6/8] rcuscale: Add test for using call_rcu_lazy() to
+ emulate kfree_rcu()
+Message-ID: <YsexpcG2iaplKPIs@google.com>
 References: <20220622225102.2112026-1-joel@joelfernandes.org>
- <20220626031206.GJ1790663@paulmck-ThinkPad-P17-Gen-1>
+ <20220622225102.2112026-8-joel@joelfernandes.org>
+ <20220626041327.GN1790663@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220626031206.GJ1790663@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20220626041327.GN1790663@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, Jun 25, 2022 at 08:12:06PM -0700, Paul E. McKenney wrote:
-> On Wed, Jun 22, 2022 at 10:50:53PM +0000, Joel Fernandes (Google) wrote:
+On Sat, Jun 25, 2022 at 09:13:27PM -0700, Paul E. McKenney wrote:
+> On Wed, Jun 22, 2022 at 10:51:00PM +0000, Joel Fernandes (Google) wrote:
+> > Reuse the kfree_rcu() test in order to be able to compare the memory reclaiming
+> > properties of call_rcu_lazy() with kfree_rcu().
 > > 
-> > Hello!
-> > Please find the next improved version of call_rcu_lazy() attached.  The main
-> > difference between the previous version is that it is now using bypass lists,
-> > and thus handling rcu_barrier() and hotplug situations, with some small changes
-> > to those parts.
+> > With this test, we find similar memory footprint and time call_rcu_lazy()
+> > free'ing takes compared to kfree_rcu(). Also we confirm that call_rcu_lazy()
+> > can survive OOM during extremely frequent calls.
 > > 
-> > I also don't see the TREE07 RCU stall from v1 anymore.
-> > 
-> > In the v1, we some numbers below (testing on v2 is in progress). Rushikesh,
-> > feel free to pull these patches into your tree. Just to note, you will also
-> > need to pull the call_rcu_lazy() user patches from v1. I have dropped in this
-> > series, just to make the series focus on the feature code first.
-> > 
-> > Following are power savings we see on top of RCU_NOCB_CPU on an Intel platform.
-> > The observation is that due to a 'trickle down' effect of RCU callbacks, the
-> > system is very lightly loaded but constantly running few RCU callbacks very
-> > often. This confuses the power management hardware that the system is active,
-> > when it is in fact idle.
-> > 
-> > For example, when ChromeOS screen is off and user is not doing anything on the
-> > system, we can see big power savings.
-> > Before:
-> > Pk%pc10 = 72.13
-> > PkgWatt = 0.58
-> > CorWatt = 0.04
-> > 
-> > After:
-> > Pk%pc10 = 81.28
-> > PkgWatt = 0.41
-> > CorWatt = 0.03
+> > If we really push it, i.e. boot system with low memory and compare
+> > kfree_rcu() with call_rcu_lazy(), I find that call_rcu_lazy() is more
+> > resilient and is much harder to produce OOM as compared to kfree_rcu().
 > 
-> So not quite 30% savings in power at the package level?  Not bad at all!
-
-Yes this is the package residency amount, not the amount of power. This % is
-not power.
-
-> > Further, when ChromeOS screen is ON but system is idle or lightly loaded, we
-> > can see that the display pipeline is constantly doing RCU callback queuing due
-> > to open/close of file descriptors associated with graphics buffers. This is
-> > attributed to the file_free_rcu() path which this patch series also touches.
-> > 
-> > This patch series adds a simple but effective, and lockless implementation of
-> > RCU callback batching. On memory pressure, timeout or queue growing too big, we
-> > initiate a flush of one or more per-CPU lists.
+> Another approach would be to make rcutorture's forward-progress testing
+> able to use call_rcu_lazy().  This would test lazy callback flooding.
 > 
-> It is no longer lockless, correct?  Or am I missing something subtle?
+> Yet another approach would be to keep one CPU idle other than a
+> kthread doing call_rcu_lazy().  Of course "idle" includes redirecting
+> those pesky interrupts.
 > 
-> Full disclosure: I don't see a whole lot of benefit to its being lockless.
-> But truth in advertising!  ;-)
+> It is almost certainly necessary for rcutorture to exercise the
+> call_rcu_lazy() path regularly.
 
-Yes, you are right. Maybe a better way I could put it is it is "lock
-contention less" :D
+Currently I added a test like the following which adds a new torture type, my
+thought was to stress the new code to make sure nothing crashed or hung the
+kernel. That is working well except I don't exactly understand the total-gps
+print showing 0, which the other print shows 1188 GPs. I'll go dig into that
+tomorrow.. thanks!
 
-> > Similar results can be achieved by increasing jiffies_till_first_fqs, however
-> > that also has the effect of slowing down RCU. Especially I saw huge slow down
-> > of function graph tracer when increasing that.
-> > 
-> > One drawback of this series is, if another frequent RCU callback creeps up in
-> > the future, that's not lazy, then that will again hurt the power. However, I
-> > believe identifying and fixing those is a more reasonable approach than slowing
-> > RCU down for the whole system.
-> 
-> Very good!  I have you down as the official call_rcu_lazy() whack-a-mole
-> developer.  ;-)
+The print shows
+TREE11 ------- 1474 GPs (12.2833/s) [rcu_lazy: g0 f0x0 total-gps=0]
+TREE11 no success message, 7 successful version messages
 
-:-D
-
-thanks,
-
- - Joel
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 7120165a9342..cc6b7392d801 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -872,6 +872,64 @@ static struct rcu_torture_ops tasks_rude_ops = {
+ 
+ #endif // #else #ifdef CONFIG_TASKS_RUDE_RCU
+ 
++#ifdef CONFIG_RCU_LAZY
++
++/*
++ * Definitions for lazy RCU torture testing.
++ */
++unsigned long orig_jiffies_till_flush;
++
++static void rcu_sync_torture_init_lazy(void)
++{
++	rcu_sync_torture_init();
++
++	orig_jiffies_till_flush = rcu_lazy_get_jiffies_till_flush();
++	rcu_lazy_set_jiffies_till_flush(50);
++}
++
++static void rcu_lazy_cleanup(void)
++{
++	rcu_lazy_set_jiffies_till_flush(orig_jiffies_till_flush);
++}
++
++static struct rcu_torture_ops rcu_lazy_ops = {
++	.ttype			= RCU_LAZY_FLAVOR,
++	.init			= rcu_sync_torture_init_lazy,
++	.cleanup		= rcu_lazy_cleanup,
++	.readlock		= rcu_torture_read_lock,
++	.read_delay		= rcu_read_delay,
++	.readunlock		= rcu_torture_read_unlock,
++	.readlock_held		= torture_readlock_not_held,
++	.get_gp_seq		= rcu_get_gp_seq,
++	.gp_diff		= rcu_seq_diff,
++	.deferred_free		= rcu_torture_deferred_free,
++	.sync			= synchronize_rcu,
++	.exp_sync		= synchronize_rcu_expedited,
++	.get_gp_state		= get_state_synchronize_rcu,
++	.start_gp_poll		= start_poll_synchronize_rcu,
++	.poll_gp_state		= poll_state_synchronize_rcu,
++	.cond_sync		= cond_synchronize_rcu,
++	.call			= call_rcu_lazy,
++	.cb_barrier		= rcu_barrier,
++	.fqs			= rcu_force_quiescent_state,
++	.stats			= NULL,
++	.gp_kthread_dbg		= show_rcu_gp_kthreads,
++	.check_boost_failed	= rcu_check_boost_fail,
++	.stall_dur		= rcu_jiffies_till_stall_check,
++	.irq_capable		= 1,
++	.can_boost		= IS_ENABLED(CONFIG_RCU_BOOST),
++	.extendables		= RCUTORTURE_MAX_EXTEND,
++	.name			= "rcu_lazy"
++};
++
++#define LAZY_OPS &rcu_lazy_ops,
++
++#else // #ifdef CONFIG_RCU_LAZY
++
++#define LAZY_OPS
++
++#endif // #else #ifdef CONFIG_RCU_LAZY
++
+ 
+ #ifdef CONFIG_TASKS_TRACE_RCU
+ 
+@@ -3145,7 +3203,7 @@ rcu_torture_init(void)
+ 	unsigned long gp_seq = 0;
+ 	static struct rcu_torture_ops *torture_ops[] = {
+ 		&rcu_ops, &rcu_busted_ops, &srcu_ops, &srcud_ops, &busted_srcud_ops,
+-		TASKS_OPS TASKS_RUDE_OPS TASKS_TRACING_OPS
++		TASKS_OPS TASKS_RUDE_OPS TASKS_TRACING_OPS LAZY_OPS
+ 		&trivial_ops,
+ 	};
+ 
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE11 b/tools/testing/selftests/rcutorture/configs/rcu/TREE11
+new file mode 100644
+index 000000000000..436013f3e015
+--- /dev/null
++++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE11
+@@ -0,0 +1,18 @@
++CONFIG_SMP=y
++CONFIG_PREEMPT_NONE=n
++CONFIG_PREEMPT_VOLUNTARY=n
++CONFIG_PREEMPT=y
++#CHECK#CONFIG_PREEMPT_RCU=y
++CONFIG_HZ_PERIODIC=n
++CONFIG_NO_HZ_IDLE=y
++CONFIG_NO_HZ_FULL=n
++CONFIG_RCU_TRACE=y
++CONFIG_HOTPLUG_CPU=y
++CONFIG_MAXSMP=y
++CONFIG_CPUMASK_OFFSTACK=y
++CONFIG_RCU_NOCB_CPU=y
++CONFIG_DEBUG_LOCK_ALLOC=n
++CONFIG_RCU_BOOST=n
++CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
++CONFIG_RCU_EXPERT=y
++CONFIG_RCU_LAZY=y
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE11.boot b/tools/testing/selftests/rcutorture/configs/rcu/TREE11.boot
+new file mode 100644
+index 000000000000..9b6f720d4ccd
+--- /dev/null
++++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE11.boot
+@@ -0,0 +1,8 @@
++maxcpus=8 nr_cpus=43
++rcutree.gp_preinit_delay=3
++rcutree.gp_init_delay=3
++rcutree.gp_cleanup_delay=3
++rcu_nocbs=0-7
++rcutorture.torture_type=rcu_lazy
++rcutorture.nocbs_nthreads=8
++rcutorture.fwd_progress=0
+-- 
+2.37.0.rc0.161.g10f37bed90-goog
 
