@@ -2,190 +2,206 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CB566C43334
-	for <rcu@archiver.kernel.org>; Fri,  8 Jul 2022 18:43:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BA4DDC433EF
+	for <rcu@archiver.kernel.org>; Fri,  8 Jul 2022 22:13:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239379AbiGHSnY (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 8 Jul 2022 14:43:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34954 "EHLO
+        id S239962AbiGHWNg (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 8 Jul 2022 18:13:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238519AbiGHSnX (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 8 Jul 2022 14:43:23 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D10B12315C
-        for <rcu@vger.kernel.org>; Fri,  8 Jul 2022 11:43:22 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id he28so28615400qtb.13
-        for <rcu@vger.kernel.org>; Fri, 08 Jul 2022 11:43:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NyAfEdgyfDS13KGoTvFen8Sgl/zG5Xi7yUQsRBHwTWo=;
-        b=MaaN+lTYvmKjLSSpCMSxVPaNVgb+DAVCPpCsf0PlCSiXpizh3ljoF0Sme8F8Bbh7/i
-         7QNUevJw2NDRGOdwo3qzn6eON28BdfksTvvbdmxNruecoSUTUCJnqlcFBNA85ld4onDi
-         aWqVW59ZWBPCICx5dt1ilSYpx3qJCS2CS0kfg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NyAfEdgyfDS13KGoTvFen8Sgl/zG5Xi7yUQsRBHwTWo=;
-        b=BjaQ7OLcaw2P6XKv4R6yBy13LJrAH3yrsUIURTOY2uPwH83IriNBuVMWAueQ7BZ7Wj
-         xnNNR9JINcEY9F16hqFBNjzQcOv2s5X1ZMC1rHcNVvK60NMOCtCMuok0WeE09FFKYhr6
-         ry+xGhi0DXhO5SePcZKi7j02ZvXHYHKCkyhhVwwIwmGW5maeLTPALft/jbgJVwkRZa+z
-         o25HiG/ErC3GWDoXxIZuSCNgSBBfWgyVNbYHWpJgi8gyMv2soQhgCrI9VtAEBxzjZihy
-         mVdOrR1c74kuYZAqdV5kv0tIeGNmjptDYqXebAy9kp0H15P869xVA5pKv15H6qD/98qu
-         PWfw==
-X-Gm-Message-State: AJIora+kPi7YQ0YIgm3ZaIsUZ0Mg6pDN4sYlZlFW0VWWd3BDbm1WQc0S
-        bd41ui8sNkWvdh+nScBcmByORg==
-X-Google-Smtp-Source: AGRyM1sKnJi7pzK+L/1EnLnFFCgOngj3otmL4YHPOlRz8DTB3WHuCA9K3yt5hfzvk/YwARkg0kjzYg==
-X-Received: by 2002:a0c:a9d2:0:b0:472:f1c5:f309 with SMTP id c18-20020a0ca9d2000000b00472f1c5f309mr4033604qvb.35.1657305801941;
-        Fri, 08 Jul 2022 11:43:21 -0700 (PDT)
-Received: from localhost (228.221.150.34.bc.googleusercontent.com. [34.150.221.228])
-        by smtp.gmail.com with ESMTPSA id u6-20020a05620a0c4600b006b559189660sm4012425qki.32.2022.07.08.11.43.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Jul 2022 11:43:21 -0700 (PDT)
-Date:   Fri, 8 Jul 2022 18:43:21 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rushikesh.s.kadam@intel.com, urezki@gmail.com,
-        neeraj.iitr10@gmail.com, frederic@kernel.org, rostedt@goodmis.org,
-        vineeth@bitbyteword.org
-Subject: Re: [PATCH v2 1/8] rcu: Introduce call_rcu_lazy() API implementation
-Message-ID: <Ysh6yWThHu6GAfJM@google.com>
-References: <20220622225102.2112026-1-joel@joelfernandes.org>
- <20220622225102.2112026-3-joel@joelfernandes.org>
- <20220626040019.GK1790663@paulmck-ThinkPad-P17-Gen-1>
+        with ESMTP id S239536AbiGHWNe (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 8 Jul 2022 18:13:34 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26E23A469;
+        Fri,  8 Jul 2022 15:13:33 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id C621CB8299F;
+        Fri,  8 Jul 2022 22:13:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DAA0C341C0;
+        Fri,  8 Jul 2022 22:13:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1657318410;
+        bh=qr9hXyMtBnv4Vq7MoL7+czDkG7MtG1o0tmvCrXRDC6g=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=DqL5PeTbNUlDvoTSwNfxSjrege045KYRB2xgaMAbQ7vDkGwkLhNsVabxY54rmiy5u
+         6tR7sbpvQwdtfPWzy8N9FPz6+e3+KMTVc6iwhG8RPEq8TIFV7GG5KEvC6dJqsy9kyE
+         TsqVCdtD3DQss1WTIwIsrKbDpPdmeQZKPlt60/DfjIXSYiiCehqjxUaPSvfFaWtZYm
+         3qTVgIpLduSNcYNu+fYFcUtKcBACdHB5kw18ike4msyfVMMcCseJn3o5YQKq6bNURO
+         WysBBevhWAjcNNNrgHCh7FqllYjrcmynLhWvCdeNrIpIdP+FOKcywSJCFf0BqmiH6y
+         Hn/Lky+5iQVDQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 01A965C0835; Fri,  8 Jul 2022 15:13:29 -0700 (PDT)
+Date:   Fri, 8 Jul 2022 15:13:29 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
+Cc:     "frederic@kernel.org" <frederic@kernel.org>,
+        "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] rcu: Make tiny RCU support leak callbacks for
+ debug-object errors
+Message-ID: <20220708221329.GZ1790663@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20220701024404.2228367-1-qiang1.zhang@intel.com>
+ <20220705174109.GD1790663@paulmck-ThinkPad-P17-Gen-1>
+ <PH0PR11MB5880370195C11E8E943069CBDA809@PH0PR11MB5880.namprd11.prod.outlook.com>
+ <20220706035040.GG1790663@paulmck-ThinkPad-P17-Gen-1>
+ <PH0PR11MB5880E86FD8C97088EC65B0A1DA809@PH0PR11MB5880.namprd11.prod.outlook.com>
+ <PH0PR11MB5880176B380D4177EC6E8C61DA809@PH0PR11MB5880.namprd11.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220626040019.GK1790663@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <PH0PR11MB5880176B380D4177EC6E8C61DA809@PH0PR11MB5880.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, Jun 25, 2022 at 09:00:19PM -0700, Paul E. McKenney wrote:
-> On Wed, Jun 22, 2022 at 10:50:55PM +0000, Joel Fernandes (Google) wrote:
-> > Implement timer-based RCU lazy callback batching. The batch is flushed
-> > whenever a certain amount of time has passed, or the batch on a
-> > particular CPU grows too big. Also memory pressure will flush it in a
-> > future patch.
+On Wed, Jul 06, 2022 at 04:24:03AM +0000, Zhang, Qiang1 wrote:
+> 
+> On Wed, Jul 06, 2022 at 02:00:51AM +0000, Zhang, Qiang1 wrote:
+> > On Fri, Jul 01, 2022 at 10:44:04AM +0800, Zqiang wrote:
+> > > Currently, only tree RCU support leak callbacks setting when do
+> > > duplicate call_rcu(). this commit add leak callbacks setting when
+> > > fo duplicate call_rcu() for tiny RCU.
+> > > 
+> > > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 > > 
-> > To handle several corner cases automagically (such as rcu_barrier() and
-> > hotplug), we re-use bypass lists to handle lazy CBs. The bypass list
-> > length has the lazy CB length included in it. A separate lazy CB length
-> > counter is also introduced to keep track of the number of lazy CBs.
+> > >This does look plausible, thank you!
+> > >
+> > >What testing have you done?
+> > >
+> > >One important test for Tiny RCU is that the size of the kernel not
+> > >grow without a very good reason.  In this case, the added code should
+> > >be dead code in a production build (CONFIG_DEBUG_OBJECTS_RCU_HEAD=n),
+> > >but it is good to check.
+> > >
+> > >It is of course also good to check that the messages print as expected,
+> > >which is what rcutorture.object_debug is there to help with.
 > > 
-> > Suggested-by: Paul McKenney <paulmck@kernel.org>
-> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > In the condition that the CONFIG_DEBUG_OBJECTS_RCU_HEAD=n, the function directly returns zero.
+> > 
+> > #else   /* !CONFIG_DEBUG_OBJECTS_RCU_HEAD */
+> > static inline int debug_rcu_head_queue(struct rcu_head *head)
+> > {
+> >         return 0;
+> > }
+> >
+> >Yes, like I said, the added code -should- be dead code.  But there is
+> >often a gap between "should" and "is", for example, compilers don't
+> >always do what we would like them to.  So please use the "size vmlinux"
+> >command with and without your patch for a kernel built (both times)
+> >with CONFIG_TINY_RCU=y and CONFIG_DEBUG_OBJECTS_RCU_HEAD==n.
+> >
+> >The rest of the test results look good, thank you!
 > 
-> Not bad, but some questions and comments below.
-
-Thanks a lot for these, real helpful and I replied below:
-
-> > diff --git a/include/linux/rcu_segcblist.h b/include/linux/rcu_segcblist.h
-> > index 659d13a7ddaa..9a992707917b 100644
-> > --- a/include/linux/rcu_segcblist.h
-> > +++ b/include/linux/rcu_segcblist.h
-> > @@ -22,6 +22,7 @@ struct rcu_cblist {
-> >  	struct rcu_head *head;
-> >  	struct rcu_head **tail;
-> >  	long len;
-> > +	long lazy_len;
-> >  };
-> >  
-> >  #define RCU_CBLIST_INITIALIZER(n) { .head = NULL, .tail = &n.head }
-> > diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-> > index 1a32036c918c..9191a3d88087 100644
-> > --- a/include/linux/rcupdate.h
-> > +++ b/include/linux/rcupdate.h
-> > @@ -82,6 +82,12 @@ static inline int rcu_preempt_depth(void)
-> >  
-> >  #endif /* #else #ifdef CONFIG_PREEMPT_RCU */
-> >  
-> > +#ifdef CONFIG_RCU_LAZY
-> > +void call_rcu_lazy(struct rcu_head *head, rcu_callback_t func);
-> > +#else
-> > +#define call_rcu_lazy(head, func) call_rcu(head, func)
-> > +#endif
-> > +
-> >  /* Internal to kernel */
-> >  void rcu_init(void);
-> >  extern int rcu_scheduler_active;
-> > diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
-> > index 27aab870ae4c..0bffa992fdc4 100644
-> > --- a/kernel/rcu/Kconfig
-> > +++ b/kernel/rcu/Kconfig
-> > @@ -293,4 +293,12 @@ config TASKS_TRACE_RCU_READ_MB
-> >  	  Say N here if you hate read-side memory barriers.
-> >  	  Take the default if you are unsure.
-> >  
-> > +config RCU_LAZY
-> > +	bool "RCU callback lazy invocation functionality"
-> > +	depends on RCU_NOCB_CPU
-> > +	default n
-> > +	help
-> > +	  To save power, batch RCU callbacks and flush after delay, memory
-> > +          pressure or callback list growing too big.
+> Hi Paul
 > 
-> Spaces vs. tabs.
-
-Fixed, thanks.
-
-> The checkpatch warning is unhelpful ("please write a help paragraph that
-> fully describes the config symbol")
-
-Good old checkpatch :D
-
-> >  endmenu # "RCU Subsystem"
-> > diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
-> > index c54ea2b6a36b..627a3218a372 100644
-> > --- a/kernel/rcu/rcu_segcblist.c
-> > +++ b/kernel/rcu/rcu_segcblist.c
-> > @@ -20,6 +20,7 @@ void rcu_cblist_init(struct rcu_cblist *rclp)
-> >  	rclp->head = NULL;
-> >  	rclp->tail = &rclp->head;
-> >  	rclp->len = 0;
-> > +	rclp->lazy_len = 0;
-> >  }
-> >  
-> >  /*
-> > @@ -32,6 +33,15 @@ void rcu_cblist_enqueue(struct rcu_cblist *rclp, struct rcu_head *rhp)
-> >  	WRITE_ONCE(rclp->len, rclp->len + 1);
-> >  }
-> >  
-> > +/*
-> > + * Enqueue an rcu_head structure onto the specified callback list.
+> 1. CONFIG_TINY_RCU=y and CONFIG_DEBUG_OBJECTS_RCU_HEAD=y
 > 
-> Please also note the fact that it is enqueuing lazily.
-
-Sorry, done.
-
-> > + */
-> > +void rcu_cblist_enqueue_lazy(struct rcu_cblist *rclp, struct rcu_head *rhp)
-> > +{
-> > +	rcu_cblist_enqueue(rclp, rhp);
-> > +	WRITE_ONCE(rclp->lazy_len, rclp->lazy_len + 1);
+> Original:
+> text                      data                   bss                   dec                     hex       filename
+> 26291319        20160143        15212544        61664006        3aceb06    vmlinux
 > 
-> Except...  Why not just add a "lazy" parameter to rcu_cblist_enqueue()?
-> IS_ENABLED() can make it fast.
+> Applay patch:
+> text                       data                  bss                     dec                 hex    filename
+> 26291319        20160431        15212544        61664294        3acec26 vmlinux
+> 
+> 2. CONFIG_TINY_RCU=y and CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
+> 
+> Original:
+> text                    data                   bss                          dec     hex filename
+> 26290663        20159823        15212544        61663030        3ace736 vmlinux
+> 
+> Applay patch:
+> text                     data                     bss                    dec     hex filename
+> 26290663        20159823        15212544        61663030        3ace736 vmlinux
 
-Yeah good idea, it simplifies the code too. Thank you!
+Much better, thank you!
 
-So you mean I should add in this function so that the branch gets optimized:
-if (lazy && IS_ENABLE(CONFIG_RCU_LAZY)) {
-  ...
-}
+Please see below for the commit updated with this information and
+wordsmithed a bit.  As always, please let me know if I messed something
+up.
 
-That makes total sense considering the compiler may otherwise not be able to
-optimize the function viewing just the individual translation unit. I fixed
-it.
+							Thanx, Paul
 
-The 6 month old baby and wife are calling my attention now. I will continue
-to reply to the other parts of this and other emails this evening and thanks
-for your help!
+------------------------------------------------------------------------
 
-thanks,
+commit 88cea4e18ed430aa1187063450236fc00408eaac
+Author: Zqiang <qiang1.zhang@intel.com>
+Date:   Fri Jul 1 10:44:04 2022 +0800
 
- - Joel
+    rcu: Make tiny RCU support leak callbacks for debug-object errors
+    
+    Currently, only Tree RCU leaks callbacks setting when it detects a
+    duplicate call_rcu().  This commit causes Tiny RCU to also leak
+    callbacks in this situation.
+    
+    Because this is Tiny RCU, kernel size is important:
+    
+    1. CONFIG_TINY_RCU=y and CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
+       (Production kernel)
+    
+        Original:
+        text      data      bss       dec       hex     filename
+        26290663  20159823  15212544  61663030  3ace736 vmlinux
+    
+        With this commit:
+        text      data      bss       dec       hex     filename
+        26290663  20159823  15212544  61663030  3ace736 vmlinux
+    
+    2. CONFIG_TINY_RCU=y and CONFIG_DEBUG_OBJECTS_RCU_HEAD=y
+       (Debugging kernel)
+    
+        Original:
+        text      data      bss       dec       hex     filename
+        26291319  20160143  15212544  61664006  3aceb06 vmlinux
+    
+        With this commit:
+        text      data      bss       dec       hex     filename
+        26291319  20160431  15212544  61664294  3acec26 vmlinux
+    
+    These results show that the kernel size is unchanged for production
+    kernels, as desired.
+    
+    Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
+diff --git a/kernel/rcu/tiny.c b/kernel/rcu/tiny.c
+index f0561ee16b9c2..943d431b908f6 100644
+--- a/kernel/rcu/tiny.c
++++ b/kernel/rcu/tiny.c
+@@ -158,6 +158,10 @@ void synchronize_rcu(void)
+ }
+ EXPORT_SYMBOL_GPL(synchronize_rcu);
+ 
++static void tiny_rcu_leak_callback(struct rcu_head *rhp)
++{
++}
++
+ /*
+  * Post an RCU callback to be invoked after the end of an RCU grace
+  * period.  But since we have but one CPU, that would be after any
+@@ -165,9 +169,20 @@ EXPORT_SYMBOL_GPL(synchronize_rcu);
+  */
+ void call_rcu(struct rcu_head *head, rcu_callback_t func)
+ {
++	static atomic_t doublefrees;
+ 	unsigned long flags;
+ 
+-	debug_rcu_head_queue(head);
++	if (debug_rcu_head_queue(head)) {
++		if (atomic_inc_return(&doublefrees) < 4) {
++			pr_err("%s(): Double-freed CB %p->%pS()!!!  ", __func__, head, head->func);
++			mem_dump_obj(head);
++		}
++
++		if (!__is_kvfree_rcu_offset((unsigned long)head->func))
++			WRITE_ONCE(head->func, tiny_rcu_leak_callback);
++		return;
++	}
++
+ 	head->func = func;
+ 	head->next = NULL;
+ 
