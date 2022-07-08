@@ -2,54 +2,44 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D38F3C433EF
-	for <rcu@archiver.kernel.org>; Fri,  8 Jul 2022 18:16:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D6D7EC433EF
+	for <rcu@archiver.kernel.org>; Fri,  8 Jul 2022 18:29:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238696AbiGHSQV (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 8 Jul 2022 14:16:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37130 "EHLO
+        id S239539AbiGHS3l (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 8 Jul 2022 14:29:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238630AbiGHSQV (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 8 Jul 2022 14:16:21 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 213C933E09
-        for <rcu@vger.kernel.org>; Fri,  8 Jul 2022 11:16:20 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id c20so6282171qtw.8
-        for <rcu@vger.kernel.org>; Fri, 08 Jul 2022 11:16:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wnKK7CshnFfIvJk8YaQeXocTj7op6NCtaSsltr31Yq8=;
-        b=QGBu3N33pniLaKliww348mnJmQwrt0hjHNxMZkkNiWlpjhB4VJhrHuHpcdthWWYwGm
-         WDAYML4PaTsdTez88aEEWvOqXwY3LIcYdk5gjePfPMINlUZe89PZ21UxzAW0vAKkvXN9
-         k3/4l0nnPhc9CZgJNy+Vh1C8lkngvLRmsdXuc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wnKK7CshnFfIvJk8YaQeXocTj7op6NCtaSsltr31Yq8=;
-        b=VBzA2m6w7NY5hn4gUgYu7iJP5njMmboy53QDeNY+DUzv32ML4rT/CRRr3sBQWJuAHn
-         MCLscOPcBJDrwhSxW7RjtL2I6xtMLMkNy6gf6+Vp7r75+lvonh3fqTwxOvXfPbJSSPLZ
-         4mXlBX6nhr1T3410PssHHYoKUk4OjeSvKDc4/btYcPmC1XCvVCszCWW0OeukBWUVXK3h
-         MK9Jw644x3RzLKf8EUeparaCKUdqimevimyzHVsfF+WM29zpp1GCaxNacCGfdJ0de/ix
-         UeFN/GsvH+z56goH4T955B50Hoj6ZcRlLbnPDAZy9akq6S0HcyZDHbmc4IT/F/f3IVYQ
-         zWXQ==
-X-Gm-Message-State: AJIora9B+v2dvbwKJQWtTaeY2faW6Jz9W/LsZmIEFoSNDCf7zB+wUmIj
-        XeiDOp4nkeBnhI4tzGBab2VTUgfu5PvC9w==
-X-Google-Smtp-Source: AGRyM1tgspen/c7gbMKYxvlbeEHhLrTmU0M0uwj9CXaowtA8RMl5arvM8HWUZxBLLsQic5InZdGsHA==
-X-Received: by 2002:a05:622a:1009:b0:31a:aed5:7bc3 with SMTP id d9-20020a05622a100900b0031aaed57bc3mr4142363qte.452.1657304179222;
-        Fri, 08 Jul 2022 11:16:19 -0700 (PDT)
-Received: from localhost (228.221.150.34.bc.googleusercontent.com. [34.150.221.228])
-        by smtp.gmail.com with ESMTPSA id i16-20020ac84f50000000b0031ea1ad6c5asm2725185qtw.75.2022.07.08.11.16.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Jul 2022 11:16:18 -0700 (PDT)
-Date:   Fri, 8 Jul 2022 18:16:18 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
+        with ESMTP id S239619AbiGHS3Z (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 8 Jul 2022 14:29:25 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D4F82BC6
+        for <rcu@vger.kernel.org>; Fri,  8 Jul 2022 11:29:20 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 980A76246A
+        for <rcu@vger.kernel.org>; Fri,  8 Jul 2022 18:29:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03C93C341C6;
+        Fri,  8 Jul 2022 18:29:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1657304959;
+        bh=DxEEalOYhCfvShobFyQBW2rpqI+gJWr7dYJq19ZbYnc=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Z4fpPH3mdNH6N2i9KNErOslU9iEOnJRVM882Pq6JeobzfyWubpD/6EEwsarHhBTZU
+         6CBTn0ZIzFSjkugpT0C8WFxkITC0zxLonnVQy4FPg6KNcDJY6M16wj1oMlM8VnMVpH
+         fdFFjiFzE1y8UxLwvmcC2T6kVYhxGPyubPkkvlCqZzlcXWIHsyhMsXpxjnWsCnFoBY
+         oY7vQ10UepTUstGUVZmRhNr8EctaLDn/CYcw8x+mab7Liv5x2nyEmlqu9v1EodgGpn
+         DtJfpcuKW5/mI408xnQ15iV9l7aRQUrg7XwVCwULlndM2INtrEbS2rQMcbuHJe5rW+
+         u291pUAcmclGg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id A6F0A5C0328; Fri,  8 Jul 2022 11:29:18 -0700 (PDT)
+Date:   Fri, 8 Jul 2022 11:29:18 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     Alison Chaiken <achaiken@aurora.tech>
 Cc:     rcu@vger.kernel.org
 Subject: Re: About dynamic switch to offload/nocb on non-server Intel machines
-Message-ID: <Ysh0cof8YKtyt8cO@google.com>
+Message-ID: <20220708182918.GU1790663@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 References: <YshnJLAmLtw90y2E@google.com>
  <CAFzL-7uaWeS6_UR_OYzfkBb34pbLVOeyr3mwWozonqd_ViyV0Q@mail.gmail.com>
  <CAFzL-7t5pUZwS2NO0gYnkJ8tgjP5-KaJCs_sdbXfZRF06LzgjQ@mail.gmail.com>
@@ -61,8 +51,13 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Alison, Nice to hear from you!
-
+On Fri, Jul 08, 2022 at 10:40:52AM -0700, Alison Chaiken wrote:
+> Resending to mailng list due to HTML formatting . . . sorry.
+> 
+> -- Alison
+> 
+> ---
+> 
 > On Fri, Jul 8, 2022 at 10:19 AM Joel Fernandes <joel@joelfernandes.org> wrote:
 > >
 > > Dear Paul and Frederic,
@@ -70,13 +65,10 @@ Alison, Nice to hear from you!
 > > Len Brown on CC provided a good idea in a meeting on using intel_pstate to
 > > detect if device is a server or a consumer device.
 > 
-> 
 > Robots are neither a server nor a consumer device.   Please let's not
 > force industrial users of RT to choose between two inapt sets of
 > configuration options.
-
-I see your point.
-
+> 
 > > Can we perhaps use this to trigger the offload/nocb mechanisms on consumer
 > > devices / distros? I was thinking the dynamic offload and the "one kernel"
 > > work that Frederic did can be trigger from such detection.
@@ -119,16 +111,18 @@ I see your point.
 > robotics are quite different use cases, so setting configuration that
 > would be useful for servers whenever the CPU_FREQ_GOV_PERFORMANCE is
 > selected would create a headache for many users.
-
-Fair enough, I had to ask...
-
-thanks,
-
- - Joel
-
+> 
+> I know, how about a new CONFIG_ANDROID?*
+> 
 > Best wishes,
 > Alison Chaiken
 > Aurora Innovation
 > 
 > 
 > *That was a joke.
+
+I want a CONFIG_DO_THE_RIGHT_THING!
+
+No, I am not volunteering to implement it.  Why do you ask?  ;-)
+
+							Thanx, Paul
