@@ -2,206 +2,142 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BA4DDC433EF
-	for <rcu@archiver.kernel.org>; Fri,  8 Jul 2022 22:13:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 51B4CC433EF
+	for <rcu@archiver.kernel.org>; Fri,  8 Jul 2022 22:45:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239962AbiGHWNg (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 8 Jul 2022 18:13:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40168 "EHLO
+        id S240466AbiGHWpy (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 8 Jul 2022 18:45:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239536AbiGHWNe (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 8 Jul 2022 18:13:34 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26E23A469;
-        Fri,  8 Jul 2022 15:13:33 -0700 (PDT)
+        with ESMTP id S240223AbiGHWph (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 8 Jul 2022 18:45:37 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6A3B3F301;
+        Fri,  8 Jul 2022 15:45:15 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id C621CB8299F;
-        Fri,  8 Jul 2022 22:13:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DAA0C341C0;
-        Fri,  8 Jul 2022 22:13:30 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5D949621B4;
+        Fri,  8 Jul 2022 22:45:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3987C341C0;
+        Fri,  8 Jul 2022 22:45:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1657318410;
-        bh=qr9hXyMtBnv4Vq7MoL7+czDkG7MtG1o0tmvCrXRDC6g=;
+        s=k20201202; t=1657320314;
+        bh=h8ppUN6nD9FPD3uXhWbPgG+hzPAApfWBYDuuqxzZCbY=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=DqL5PeTbNUlDvoTSwNfxSjrege045KYRB2xgaMAbQ7vDkGwkLhNsVabxY54rmiy5u
-         6tR7sbpvQwdtfPWzy8N9FPz6+e3+KMTVc6iwhG8RPEq8TIFV7GG5KEvC6dJqsy9kyE
-         TsqVCdtD3DQss1WTIwIsrKbDpPdmeQZKPlt60/DfjIXSYiiCehqjxUaPSvfFaWtZYm
-         3qTVgIpLduSNcYNu+fYFcUtKcBACdHB5kw18ike4msyfVMMcCseJn3o5YQKq6bNURO
-         WysBBevhWAjcNNNrgHCh7FqllYjrcmynLhWvCdeNrIpIdP+FOKcywSJCFf0BqmiH6y
-         Hn/Lky+5iQVDQ==
+        b=uEs2LCE7+ea24T5vt5WsR6kc+M4InIcY8i+6LOJgKdF1wtv87TV8yhOw2OEAXjNW5
+         YDo30dajgnwVMXH4U97IRPt1+Yp7CHeDQWqHRjqb7Sb98M3HTpA8I1IcniArTzMsGa
+         2IK650eY86QvjdhSL74KtkgNNVojfIGEu50V86PHEBjd/Qo5cUwQG9QmS4G3Yhm/FB
+         6Vo14hC004kxXzl1M794cUbQekPgZZPriqDLwoiOyYHiQrvoBk1T/S7ydQVD4b0P7S
+         0mzXhYpNl0xgOb4k+GHzm1mCJJEhdqpY3zhHh8r1+uiPiQ2cguJ9sNz0KngQdQHH9g
+         YDSXGFDys3P+Q==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 01A965C0835; Fri,  8 Jul 2022 15:13:29 -0700 (PDT)
-Date:   Fri, 8 Jul 2022 15:13:29 -0700
+        id 578C95C0835; Fri,  8 Jul 2022 15:45:14 -0700 (PDT)
+Date:   Fri, 8 Jul 2022 15:45:14 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
-Cc:     "frederic@kernel.org" <frederic@kernel.org>,
-        "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] rcu: Make tiny RCU support leak callbacks for
- debug-object errors
-Message-ID: <20220708221329.GZ1790663@paulmck-ThinkPad-P17-Gen-1>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rushikesh.s.kadam@intel.com, urezki@gmail.com,
+        neeraj.iitr10@gmail.com, frederic@kernel.org, rostedt@goodmis.org,
+        vineeth@bitbyteword.org
+Subject: Re: [PATCH v2 0/8] Implement call_rcu_lazy() and miscellaneous fixes
+Message-ID: <20220708224514.GB1790663@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20220701024404.2228367-1-qiang1.zhang@intel.com>
- <20220705174109.GD1790663@paulmck-ThinkPad-P17-Gen-1>
- <PH0PR11MB5880370195C11E8E943069CBDA809@PH0PR11MB5880.namprd11.prod.outlook.com>
- <20220706035040.GG1790663@paulmck-ThinkPad-P17-Gen-1>
- <PH0PR11MB5880E86FD8C97088EC65B0A1DA809@PH0PR11MB5880.namprd11.prod.outlook.com>
- <PH0PR11MB5880176B380D4177EC6E8C61DA809@PH0PR11MB5880.namprd11.prod.outlook.com>
+References: <20220622225102.2112026-1-joel@joelfernandes.org>
+ <20220626031206.GJ1790663@paulmck-ThinkPad-P17-Gen-1>
+ <Ysev2jbxFGNkLvjG@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <PH0PR11MB5880176B380D4177EC6E8C61DA809@PH0PR11MB5880.namprd11.prod.outlook.com>
+In-Reply-To: <Ysev2jbxFGNkLvjG@google.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Jul 06, 2022 at 04:24:03AM +0000, Zhang, Qiang1 wrote:
-> 
-> On Wed, Jul 06, 2022 at 02:00:51AM +0000, Zhang, Qiang1 wrote:
-> > On Fri, Jul 01, 2022 at 10:44:04AM +0800, Zqiang wrote:
-> > > Currently, only tree RCU support leak callbacks setting when do
-> > > duplicate call_rcu(). this commit add leak callbacks setting when
-> > > fo duplicate call_rcu() for tiny RCU.
+On Fri, Jul 08, 2022 at 04:17:30AM +0000, Joel Fernandes wrote:
+> On Sat, Jun 25, 2022 at 08:12:06PM -0700, Paul E. McKenney wrote:
+> > On Wed, Jun 22, 2022 at 10:50:53PM +0000, Joel Fernandes (Google) wrote:
 > > > 
-> > > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+> > > Hello!
+> > > Please find the next improved version of call_rcu_lazy() attached.  The main
+> > > difference between the previous version is that it is now using bypass lists,
+> > > and thus handling rcu_barrier() and hotplug situations, with some small changes
+> > > to those parts.
+> > > 
+> > > I also don't see the TREE07 RCU stall from v1 anymore.
+> > > 
+> > > In the v1, we some numbers below (testing on v2 is in progress). Rushikesh,
+> > > feel free to pull these patches into your tree. Just to note, you will also
+> > > need to pull the call_rcu_lazy() user patches from v1. I have dropped in this
+> > > series, just to make the series focus on the feature code first.
+> > > 
+> > > Following are power savings we see on top of RCU_NOCB_CPU on an Intel platform.
+> > > The observation is that due to a 'trickle down' effect of RCU callbacks, the
+> > > system is very lightly loaded but constantly running few RCU callbacks very
+> > > often. This confuses the power management hardware that the system is active,
+> > > when it is in fact idle.
+> > > 
+> > > For example, when ChromeOS screen is off and user is not doing anything on the
+> > > system, we can see big power savings.
+> > > Before:
+> > > Pk%pc10 = 72.13
+> > > PkgWatt = 0.58
+> > > CorWatt = 0.04
+> > > 
+> > > After:
+> > > Pk%pc10 = 81.28
+> > > PkgWatt = 0.41
+> > > CorWatt = 0.03
 > > 
-> > >This does look plausible, thank you!
-> > >
-> > >What testing have you done?
-> > >
-> > >One important test for Tiny RCU is that the size of the kernel not
-> > >grow without a very good reason.  In this case, the added code should
-> > >be dead code in a production build (CONFIG_DEBUG_OBJECTS_RCU_HEAD=n),
-> > >but it is good to check.
-> > >
-> > >It is of course also good to check that the messages print as expected,
-> > >which is what rcutorture.object_debug is there to help with.
-> > 
-> > In the condition that the CONFIG_DEBUG_OBJECTS_RCU_HEAD=n, the function directly returns zero.
-> > 
-> > #else   /* !CONFIG_DEBUG_OBJECTS_RCU_HEAD */
-> > static inline int debug_rcu_head_queue(struct rcu_head *head)
-> > {
-> >         return 0;
-> > }
-> >
-> >Yes, like I said, the added code -should- be dead code.  But there is
-> >often a gap between "should" and "is", for example, compilers don't
-> >always do what we would like them to.  So please use the "size vmlinux"
-> >command with and without your patch for a kernel built (both times)
-> >with CONFIG_TINY_RCU=y and CONFIG_DEBUG_OBJECTS_RCU_HEAD==n.
-> >
-> >The rest of the test results look good, thank you!
+> > So not quite 30% savings in power at the package level?  Not bad at all!
 > 
-> Hi Paul
-> 
-> 1. CONFIG_TINY_RCU=y and CONFIG_DEBUG_OBJECTS_RCU_HEAD=y
-> 
-> Original:
-> text                      data                   bss                   dec                     hex       filename
-> 26291319        20160143        15212544        61664006        3aceb06    vmlinux
-> 
-> Applay patch:
-> text                       data                  bss                     dec                 hex    filename
-> 26291319        20160431        15212544        61664294        3acec26 vmlinux
-> 
-> 2. CONFIG_TINY_RCU=y and CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
-> 
-> Original:
-> text                    data                   bss                          dec     hex filename
-> 26290663        20159823        15212544        61663030        3ace736 vmlinux
-> 
-> Applay patch:
-> text                     data                     bss                    dec     hex filename
-> 26290663        20159823        15212544        61663030        3ace736 vmlinux
+> Yes this is the package residency amount, not the amount of power. This % is
+> not power.
 
-Much better, thank you!
+So what exactly is PkgWatt, then?  If you can say.  That is where I was
+getting the 30% from.
 
-Please see below for the commit updated with this information and
-wordsmithed a bit.  As always, please let me know if I messed something
-up.
+> > > Further, when ChromeOS screen is ON but system is idle or lightly loaded, we
+> > > can see that the display pipeline is constantly doing RCU callback queuing due
+> > > to open/close of file descriptors associated with graphics buffers. This is
+> > > attributed to the file_free_rcu() path which this patch series also touches.
+> > > 
+> > > This patch series adds a simple but effective, and lockless implementation of
+> > > RCU callback batching. On memory pressure, timeout or queue growing too big, we
+> > > initiate a flush of one or more per-CPU lists.
+> > 
+> > It is no longer lockless, correct?  Or am I missing something subtle?
+> > 
+> > Full disclosure: I don't see a whole lot of benefit to its being lockless.
+> > But truth in advertising!  ;-)
+> 
+> Yes, you are right. Maybe a better way I could put it is it is "lock
+> contention less" :D
+
+Yes, "reduced lock contention" would be a good phrase.  As long as you
+carefully indicate exactly what scenario with greater lock contention
+you are comparing to.
+
+But aren't you acquiring the bypass lock at about the same rate as it
+would be aquired without laziness?  What am I missing here?
 
 							Thanx, Paul
 
-------------------------------------------------------------------------
-
-commit 88cea4e18ed430aa1187063450236fc00408eaac
-Author: Zqiang <qiang1.zhang@intel.com>
-Date:   Fri Jul 1 10:44:04 2022 +0800
-
-    rcu: Make tiny RCU support leak callbacks for debug-object errors
-    
-    Currently, only Tree RCU leaks callbacks setting when it detects a
-    duplicate call_rcu().  This commit causes Tiny RCU to also leak
-    callbacks in this situation.
-    
-    Because this is Tiny RCU, kernel size is important:
-    
-    1. CONFIG_TINY_RCU=y and CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
-       (Production kernel)
-    
-        Original:
-        text      data      bss       dec       hex     filename
-        26290663  20159823  15212544  61663030  3ace736 vmlinux
-    
-        With this commit:
-        text      data      bss       dec       hex     filename
-        26290663  20159823  15212544  61663030  3ace736 vmlinux
-    
-    2. CONFIG_TINY_RCU=y and CONFIG_DEBUG_OBJECTS_RCU_HEAD=y
-       (Debugging kernel)
-    
-        Original:
-        text      data      bss       dec       hex     filename
-        26291319  20160143  15212544  61664006  3aceb06 vmlinux
-    
-        With this commit:
-        text      data      bss       dec       hex     filename
-        26291319  20160431  15212544  61664294  3acec26 vmlinux
-    
-    These results show that the kernel size is unchanged for production
-    kernels, as desired.
-    
-    Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/kernel/rcu/tiny.c b/kernel/rcu/tiny.c
-index f0561ee16b9c2..943d431b908f6 100644
---- a/kernel/rcu/tiny.c
-+++ b/kernel/rcu/tiny.c
-@@ -158,6 +158,10 @@ void synchronize_rcu(void)
- }
- EXPORT_SYMBOL_GPL(synchronize_rcu);
- 
-+static void tiny_rcu_leak_callback(struct rcu_head *rhp)
-+{
-+}
-+
- /*
-  * Post an RCU callback to be invoked after the end of an RCU grace
-  * period.  But since we have but one CPU, that would be after any
-@@ -165,9 +169,20 @@ EXPORT_SYMBOL_GPL(synchronize_rcu);
-  */
- void call_rcu(struct rcu_head *head, rcu_callback_t func)
- {
-+	static atomic_t doublefrees;
- 	unsigned long flags;
- 
--	debug_rcu_head_queue(head);
-+	if (debug_rcu_head_queue(head)) {
-+		if (atomic_inc_return(&doublefrees) < 4) {
-+			pr_err("%s(): Double-freed CB %p->%pS()!!!  ", __func__, head, head->func);
-+			mem_dump_obj(head);
-+		}
-+
-+		if (!__is_kvfree_rcu_offset((unsigned long)head->func))
-+			WRITE_ONCE(head->func, tiny_rcu_leak_callback);
-+		return;
-+	}
-+
- 	head->func = func;
- 	head->next = NULL;
- 
+> > > Similar results can be achieved by increasing jiffies_till_first_fqs, however
+> > > that also has the effect of slowing down RCU. Especially I saw huge slow down
+> > > of function graph tracer when increasing that.
+> > > 
+> > > One drawback of this series is, if another frequent RCU callback creeps up in
+> > > the future, that's not lazy, then that will again hurt the power. However, I
+> > > believe identifying and fixing those is a more reasonable approach than slowing
+> > > RCU down for the whole system.
+> > 
+> > Very good!  I have you down as the official call_rcu_lazy() whack-a-mole
+> > developer.  ;-)
+> 
+> :-D
+> 
+> thanks,
+> 
+>  - Joel
+> 
