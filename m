@@ -2,190 +2,171 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E49A6C433EF
-	for <rcu@archiver.kernel.org>; Fri,  8 Jul 2022 23:10:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 927D9C43334
+	for <rcu@archiver.kernel.org>; Sun, 10 Jul 2022 01:38:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237958AbiGHXKT (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 8 Jul 2022 19:10:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48640 "EHLO
+        id S229508AbiGJBiF (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 9 Jul 2022 21:38:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229850AbiGHXKR (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 8 Jul 2022 19:10:17 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF2D93F33D;
-        Fri,  8 Jul 2022 16:10:16 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 7B207B82A18;
-        Fri,  8 Jul 2022 23:10:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35AF5C341D0;
-        Fri,  8 Jul 2022 23:10:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1657321814;
-        bh=djzIzVFpeo7WTuaeZTv/ckums1eZ/Ec9nzlvV4baO6A=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=OiXQaqF6ZvxXW9bprOSn/sI8RkPPeZN7orfdEkqcY9qo1uuB3EcqdUQLT0IVQDVP+
-         SQAeeoEVJBy9LX+nHT65uE+rLY2EVbC69W2KzCPrsmCdAqlGKuhjGr/hRpLviHAIVD
-         ZzRfWLowNSjCwi9P2djnYpYLEH5D/vM03sdm2gUZI13SeiDrDa0rw4gaNVKQZteTRw
-         g8VczXdw577Jbu/8KU5No7ab/mdozwPKZjZlvbCBr7+4dg+Y+8j6tD3LthuOXrG3Vn
-         7MsonCtz8ILLtggr9jvgUsLtCeusKDADjp6R4e/5eMtDYzJQguM4E1qWjBw9o9bxKG
-         DXqSyWx3gruxA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id C8E285C0835; Fri,  8 Jul 2022 16:10:13 -0700 (PDT)
-Date:   Fri, 8 Jul 2022 16:10:13 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
+        with ESMTP id S229454AbiGJBiD (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 9 Jul 2022 21:38:03 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 008121BEBA
+        for <rcu@vger.kernel.org>; Sat,  9 Jul 2022 18:38:02 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id f14so1692764qkm.0
+        for <rcu@vger.kernel.org>; Sat, 09 Jul 2022 18:38:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Zg8kU8L72tPIvWCiVTIJw7BwgVkbotl+8MU4rFDgnnU=;
+        b=UAaQT1JtDJ1xuvBsX5S5V6w+9jyRdy2+ltqupEmsuQP/30BEtpMrY01IdKQDBoD0NL
+         4HOlmKpek4e9rVX4nyhJb+4GNkneEJDRKld+yLRLEgw6SZGcVaAHQL25DgYFXZd+Asqe
+         E/ns/MDptEsjBvCopunZNQ3YM+t3SGrp5gSYQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Zg8kU8L72tPIvWCiVTIJw7BwgVkbotl+8MU4rFDgnnU=;
+        b=rEdxlGbscFnBXwEvixvHzQbXmU4XErLGgXjcxxZtyC1eJrhkGWJdZdIT5hFArNzu7E
+         QsiysF5flet7Ayyv+5TM3LgI4fKzxNXWUdzsMmf7GdtyTyIpD7FMH4xrN9s9JLpsoHrp
+         xmGCrixN6y3k2e5A0XzR6V40gnQ7M6+s9rUNL0+uGjuQKwJz8ih4Kp4bUrseCovl9Vuz
+         djKv03JFKMKPO5nYAOEqCjSw4WE8oqczjFOwR9w/gB3zFkRJhh24hoKpeQSYQkXC3PiY
+         QFNsWSCcogcwMppzNiWLcH4PqPkbXwzlktn9y882Tu2de9XK1IjPJFp8/g2X7T7aiuVP
+         KJGw==
+X-Gm-Message-State: AJIora+Z8FmwI78Cq7EBNnEi2F6tcsKhCmUvim/cDD7DAYONkDt9iz8A
+        ov8YNTVNaJ0K142zWMdsi9Wtog==
+X-Google-Smtp-Source: AGRyM1u1wLfeOuQd+BLT9o7UuMOH1Jb/yp3QUKowdVefD30sHot9hR3rTHgVPcL7Yol1J4fsYAAnyg==
+X-Received: by 2002:a05:620a:27cc:b0:6b5:4dd4:d177 with SMTP id i12-20020a05620a27cc00b006b54dd4d177mr7508946qkp.70.1657417082083;
+        Sat, 09 Jul 2022 18:38:02 -0700 (PDT)
+Received: from localhost (228.221.150.34.bc.googleusercontent.com. [34.150.221.228])
+        by smtp.gmail.com with ESMTPSA id ci17-20020a05622a261100b00304f55e56e4sm2503726qtb.40.2022.07.09.18.38.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 09 Jul 2022 18:38:01 -0700 (PDT)
+Date:   Sun, 10 Jul 2022 01:38:01 +0000
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         rushikesh.s.kadam@intel.com, urezki@gmail.com,
         neeraj.iitr10@gmail.com, frederic@kernel.org, rostedt@goodmis.org,
         vineeth@bitbyteword.org
-Subject: Re: [PATCH v2 1/8] rcu: Introduce call_rcu_lazy() API implementation
-Message-ID: <20220708231013.GD1790663@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+Subject: Re: [PATCH v2 0/8] Implement call_rcu_lazy() and miscellaneous fixes
+Message-ID: <YsoteYyJoOSzMGsr@google.com>
 References: <20220622225102.2112026-1-joel@joelfernandes.org>
- <20220622225102.2112026-3-joel@joelfernandes.org>
- <20220626040019.GK1790663@paulmck-ThinkPad-P17-Gen-1>
- <Ysh6yWThHu6GAfJM@google.com>
+ <20220626031206.GJ1790663@paulmck-ThinkPad-P17-Gen-1>
+ <Ysev2jbxFGNkLvjG@google.com>
+ <20220708224514.GB1790663@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Ysh6yWThHu6GAfJM@google.com>
+In-Reply-To: <20220708224514.GB1790663@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Jul 08, 2022 at 06:43:21PM +0000, Joel Fernandes wrote:
-> On Sat, Jun 25, 2022 at 09:00:19PM -0700, Paul E. McKenney wrote:
-> > On Wed, Jun 22, 2022 at 10:50:55PM +0000, Joel Fernandes (Google) wrote:
-> > > Implement timer-based RCU lazy callback batching. The batch is flushed
-> > > whenever a certain amount of time has passed, or the batch on a
-> > > particular CPU grows too big. Also memory pressure will flush it in a
-> > > future patch.
+On Fri, Jul 08, 2022 at 03:45:14PM -0700, Paul E. McKenney wrote:
+> On Fri, Jul 08, 2022 at 04:17:30AM +0000, Joel Fernandes wrote:
+> > On Sat, Jun 25, 2022 at 08:12:06PM -0700, Paul E. McKenney wrote:
+> > > On Wed, Jun 22, 2022 at 10:50:53PM +0000, Joel Fernandes (Google) wrote:
+> > > > 
+> > > > Hello!
+> > > > Please find the next improved version of call_rcu_lazy() attached.  The main
+> > > > difference between the previous version is that it is now using bypass lists,
+> > > > and thus handling rcu_barrier() and hotplug situations, with some small changes
+> > > > to those parts.
+> > > > 
+> > > > I also don't see the TREE07 RCU stall from v1 anymore.
+> > > > 
+> > > > In the v1, we some numbers below (testing on v2 is in progress). Rushikesh,
+> > > > feel free to pull these patches into your tree. Just to note, you will also
+> > > > need to pull the call_rcu_lazy() user patches from v1. I have dropped in this
+> > > > series, just to make the series focus on the feature code first.
+> > > > 
+> > > > Following are power savings we see on top of RCU_NOCB_CPU on an Intel platform.
+> > > > The observation is that due to a 'trickle down' effect of RCU callbacks, the
+> > > > system is very lightly loaded but constantly running few RCU callbacks very
+> > > > often. This confuses the power management hardware that the system is active,
+> > > > when it is in fact idle.
+> > > > 
+> > > > For example, when ChromeOS screen is off and user is not doing anything on the
+> > > > system, we can see big power savings.
+> > > > Before:
+> > > > Pk%pc10 = 72.13
+> > > > PkgWatt = 0.58
+> > > > CorWatt = 0.04
+> > > > 
+> > > > After:
+> > > > Pk%pc10 = 81.28
+> > > > PkgWatt = 0.41
+> > > > CorWatt = 0.03
 > > > 
-> > > To handle several corner cases automagically (such as rcu_barrier() and
-> > > hotplug), we re-use bypass lists to handle lazy CBs. The bypass list
-> > > length has the lazy CB length included in it. A separate lazy CB length
-> > > counter is also introduced to keep track of the number of lazy CBs.
+> > > So not quite 30% savings in power at the package level?  Not bad at all!
+> > 
+> > Yes this is the package residency amount, not the amount of power. This % is
+> > not power.
+> 
+> So what exactly is PkgWatt, then?  If you can say.  That is where I was
+> getting the 30% from.
+
+Its the total package power (SoC power) - so like not just the CPU but also
+the interconnect, other controllers and other blocks in there.
+
+This output is from the turbostat program and the number is mentioned in the
+manpage:
+"PkgWatt Watts consumed by the whole package."
+https://manpages.debian.org/testing/linux-cpupower/turbostat.8.en.html
+
+
+> > > > Further, when ChromeOS screen is ON but system is idle or lightly loaded, we
+> > > > can see that the display pipeline is constantly doing RCU callback queuing due
+> > > > to open/close of file descriptors associated with graphics buffers. This is
+> > > > attributed to the file_free_rcu() path which this patch series also touches.
+> > > > 
+> > > > This patch series adds a simple but effective, and lockless implementation of
+> > > > RCU callback batching. On memory pressure, timeout or queue growing too big, we
+> > > > initiate a flush of one or more per-CPU lists.
 > > > 
-> > > Suggested-by: Paul McKenney <paulmck@kernel.org>
-> > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > > It is no longer lockless, correct?  Or am I missing something subtle?
+> > > 
+> > > Full disclosure: I don't see a whole lot of benefit to its being lockless.
+> > > But truth in advertising!  ;-)
 > > 
-> > Not bad, but some questions and comments below.
+> > Yes, you are right. Maybe a better way I could put it is it is "lock
+> > contention less" :D
 > 
-> Thanks a lot for these, real helpful and I replied below:
+> Yes, "reduced lock contention" would be a good phrase.  As long as you
+> carefully indicate exactly what scenario with greater lock contention
+> you are comparing to.
 > 
-> > > diff --git a/include/linux/rcu_segcblist.h b/include/linux/rcu_segcblist.h
-> > > index 659d13a7ddaa..9a992707917b 100644
-> > > --- a/include/linux/rcu_segcblist.h
-> > > +++ b/include/linux/rcu_segcblist.h
-> > > @@ -22,6 +22,7 @@ struct rcu_cblist {
-> > >  	struct rcu_head *head;
-> > >  	struct rcu_head **tail;
-> > >  	long len;
-> > > +	long lazy_len;
-> > >  };
-> > >  
-> > >  #define RCU_CBLIST_INITIALIZER(n) { .head = NULL, .tail = &n.head }
-> > > diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-> > > index 1a32036c918c..9191a3d88087 100644
-> > > --- a/include/linux/rcupdate.h
-> > > +++ b/include/linux/rcupdate.h
-> > > @@ -82,6 +82,12 @@ static inline int rcu_preempt_depth(void)
-> > >  
-> > >  #endif /* #else #ifdef CONFIG_PREEMPT_RCU */
-> > >  
-> > > +#ifdef CONFIG_RCU_LAZY
-> > > +void call_rcu_lazy(struct rcu_head *head, rcu_callback_t func);
-> > > +#else
-> > > +#define call_rcu_lazy(head, func) call_rcu(head, func)
-> > > +#endif
-> > > +
-> > >  /* Internal to kernel */
-> > >  void rcu_init(void);
-> > >  extern int rcu_scheduler_active;
-> > > diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
-> > > index 27aab870ae4c..0bffa992fdc4 100644
-> > > --- a/kernel/rcu/Kconfig
-> > > +++ b/kernel/rcu/Kconfig
-> > > @@ -293,4 +293,12 @@ config TASKS_TRACE_RCU_READ_MB
-> > >  	  Say N here if you hate read-side memory barriers.
-> > >  	  Take the default if you are unsure.
-> > >  
-> > > +config RCU_LAZY
-> > > +	bool "RCU callback lazy invocation functionality"
-> > > +	depends on RCU_NOCB_CPU
-> > > +	default n
-> > > +	help
-> > > +	  To save power, batch RCU callbacks and flush after delay, memory
-> > > +          pressure or callback list growing too big.
+> But aren't you acquiring the bypass lock at about the same rate as it
+> would be aquired without laziness?  What am I missing here?
+
+You are right, why not I just drop the locking phrases from the summary.
+Anyway the main win from this work is not related to locking.
+
+thanks,
+
+ - Joel
+
+> 
+> 							Thanx, Paul
+> 
+> > > > Similar results can be achieved by increasing jiffies_till_first_fqs, however
+> > > > that also has the effect of slowing down RCU. Especially I saw huge slow down
+> > > > of function graph tracer when increasing that.
+> > > > 
+> > > > One drawback of this series is, if another frequent RCU callback creeps up in
+> > > > the future, that's not lazy, then that will again hurt the power. However, I
+> > > > believe identifying and fixing those is a more reasonable approach than slowing
+> > > > RCU down for the whole system.
+> > > 
+> > > Very good!  I have you down as the official call_rcu_lazy() whack-a-mole
+> > > developer.  ;-)
 > > 
-> > Spaces vs. tabs.
-> 
-> Fixed, thanks.
-> 
-> > The checkpatch warning is unhelpful ("please write a help paragraph that
-> > fully describes the config symbol")
-> 
-> Good old checkpatch :D
-
-;-) ;-) ;-)
-
-> > >  endmenu # "RCU Subsystem"
-> > > diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
-> > > index c54ea2b6a36b..627a3218a372 100644
-> > > --- a/kernel/rcu/rcu_segcblist.c
-> > > +++ b/kernel/rcu/rcu_segcblist.c
-> > > @@ -20,6 +20,7 @@ void rcu_cblist_init(struct rcu_cblist *rclp)
-> > >  	rclp->head = NULL;
-> > >  	rclp->tail = &rclp->head;
-> > >  	rclp->len = 0;
-> > > +	rclp->lazy_len = 0;
-> > >  }
-> > >  
-> > >  /*
-> > > @@ -32,6 +33,15 @@ void rcu_cblist_enqueue(struct rcu_cblist *rclp, struct rcu_head *rhp)
-> > >  	WRITE_ONCE(rclp->len, rclp->len + 1);
-> > >  }
-> > >  
-> > > +/*
-> > > + * Enqueue an rcu_head structure onto the specified callback list.
+> > :-D
 > > 
-> > Please also note the fact that it is enqueuing lazily.
-> 
-> Sorry, done.
-> 
-> > > + */
-> > > +void rcu_cblist_enqueue_lazy(struct rcu_cblist *rclp, struct rcu_head *rhp)
-> > > +{
-> > > +	rcu_cblist_enqueue(rclp, rhp);
-> > > +	WRITE_ONCE(rclp->lazy_len, rclp->lazy_len + 1);
+> > thanks,
 > > 
-> > Except...  Why not just add a "lazy" parameter to rcu_cblist_enqueue()?
-> > IS_ENABLED() can make it fast.
-> 
-> Yeah good idea, it simplifies the code too. Thank you!
-> 
-> So you mean I should add in this function so that the branch gets optimized:
-> if (lazy && IS_ENABLE(CONFIG_RCU_LAZY)) {
->   ...
-> }
-> 
-> That makes total sense considering the compiler may otherwise not be able to
-> optimize the function viewing just the individual translation unit. I fixed
-> it.
-
-Or the other way around:
-
-	if (IS_ENABLE(CONFIG_RCU_LAZY) && lazy) {
-
-Just in case the compiler is stumbling over its boolean logic.  Or in
-case the human reader is.  ;-)
-
-> The 6 month old baby and wife are calling my attention now. I will continue
-> to reply to the other parts of this and other emails this evening and thanks
-> for your help!
-
-Ah, for those who believe that SIGCHLD can be ignored in real life!  ;-)
-
-							Thanx, Paul
+> >  - Joel
+> > 
