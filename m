@@ -2,234 +2,162 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C39B4C43334
-	for <rcu@archiver.kernel.org>; Tue, 12 Jul 2022 20:27:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A7DAAC433EF
+	for <rcu@archiver.kernel.org>; Tue, 12 Jul 2022 20:57:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230515AbiGLU1T (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 12 Jul 2022 16:27:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34938 "EHLO
+        id S233276AbiGLU5J (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 12 Jul 2022 16:57:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229711AbiGLU1S (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 12 Jul 2022 16:27:18 -0400
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92B48C921F
-        for <rcu@vger.kernel.org>; Tue, 12 Jul 2022 13:27:17 -0700 (PDT)
-Received: by mail-il1-x12d.google.com with SMTP id a20so5547866ilk.9
-        for <rcu@vger.kernel.org>; Tue, 12 Jul 2022 13:27:17 -0700 (PDT)
+        with ESMTP id S234081AbiGLUzn (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 12 Jul 2022 16:55:43 -0400
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48991D0863
+        for <rcu@vger.kernel.org>; Tue, 12 Jul 2022 13:53:52 -0700 (PDT)
+Received: by mail-qv1-xf2f.google.com with SMTP id kh20so3462624qvb.5
+        for <rcu@vger.kernel.org>; Tue, 12 Jul 2022 13:53:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zjw9e2+BSrR9+K/ZWOZ6b/ucoDYMrW7ATyZiGWZTTLQ=;
-        b=WyxoXOcNASfPXCpxu80aIe67MG2WfPDdSzchvtcVMZLEL6I19PW95L2sD3z5qU5tzi
-         0wnHOysEsX3RZC9Qf5/gLbyzB/OItpHMnDAbLNCzjfiXc4d/ER0kX2tBJNoMAECDLo7v
-         vhXZeREMTfY3YsxFxwMpctGCUTxhyNW0C7t6s=
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=63Rqkci8efDQK/XrqXZEbkqW7bm87nTCnyVteDzNOV8=;
+        b=jQBo1lbmNVuSSwPy2BFySA96dRli1/csLDrvldYgiZ7EgcEurztDpLm2LdTghaxmOD
+         4375O0MLeoGuLsIOH0MGRuYP5l7/2kGFleE/FrL5pwMHR0WPr4jfChcD7cN4N5vhCEsx
+         VwHr+VUoPnTf0sqVqZDx5GV2nJo/N3ML00mZ8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zjw9e2+BSrR9+K/ZWOZ6b/ucoDYMrW7ATyZiGWZTTLQ=;
-        b=nsB8rg+/X5zpCxBWGG1hVvbmYXVQ7Hpu8ynNHr1YyTjyA0qp5VTPm04mp9GlThX9r1
-         XSxVMni27Nsn7+GMcPO+bf/+7SVvwEoYYUcgUN9hTcu4qWKUjFKjXFW9BE8qSNew2eH1
-         LRiU86YYNVW52O+iMje5DlQvWEfFsGmfJg1zArOBcAzHrI8zYQSoFGaUDNbmkGRzJy9V
-         KFd07i8pll3x9A2oMP8PwYAdkg0Q9zTduPxlAMII2/NWMXliBmO/9akjAvDldOEzFZnS
-         q3UB+JoptVig0pFPFATeuPJzDOzYHXYJG6Y9s9VCiRFmbiltlmty7OQQ2IjXOhFWfUbp
-         Anyw==
-X-Gm-Message-State: AJIora8eGAVswMnbekSutIJCdrpAg9UZVkSuYGv594HRZ6q8Iqa8nGoY
-        PS/hyEdQbJBRKea+0zFoDWSDIeJrS6vhMLkvYtaJ/w==
-X-Google-Smtp-Source: AGRyM1tom2lOE519sJVOZZgRNGq6HZvJ1iE6r4NPRrm6eWJhPbwKI8D1VoG2Y2FP1ECrlpz+WO/pwhN7SJqg7ua+ZEE=
-X-Received: by 2002:a05:6e02:219d:b0:2dc:41c2:a1f3 with SMTP id
- j29-20020a056e02219d00b002dc41c2a1f3mr14267281ila.79.1657657636956; Tue, 12
- Jul 2022 13:27:16 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=63Rqkci8efDQK/XrqXZEbkqW7bm87nTCnyVteDzNOV8=;
+        b=7Rt+jEGBl+xuUM8w77FlD5FqW/BRbv2iGqLEfHKuejxcNJ52xTWZRpgxF8LWkYlMwS
+         GQhsVohEUX/zwRec8zCPVtPFoTtoEdG3zm9+NdE6ue8R42AnpFbf0UhtNEzganyweDOw
+         bDJNWO3aZas63/1CENUZdIWytzh3ctllBHoGvbp6hSl5Ibk9RtGwuLv8PutkQQcMiwwD
+         GmW/vbhyWTYLFrxWkFgyIWsVEWdnLQF7br1c77NIBbGY6gwym76G+1pURcdWrrrVcj/z
+         4Yuc0a6eJG7ajEwhYxSiJ5WoEfA1xMPafoxqKLG5oNKy6P75Z7BE4+sKISiQ7PAnFTl8
+         JBbA==
+X-Gm-Message-State: AJIora/1+muc00S45+hdy28p3JX/uoHZeGNOJA00lS3lzigVuZFRvXub
+        GUG88b5i5Uyr950ISTRVcR0q2YHH6J7r8n6i
+X-Google-Smtp-Source: AGRyM1u33vMmFolX24m3QiAJ/ZX3+PbcxlksKB0OyFeeL0hx6xU8LSvtGhR6kyzPgWBpeW6h2XuPHA==
+X-Received: by 2002:a05:6214:544a:b0:473:5ada:7360 with SMTP id kz10-20020a056214544a00b004735ada7360mr23002qvb.103.1657659230924;
+        Tue, 12 Jul 2022 13:53:50 -0700 (PDT)
+Received: from [10.0.0.40] (c-73-148-104-166.hsd1.va.comcast.net. [73.148.104.166])
+        by smtp.gmail.com with ESMTPSA id s2-20020ac85282000000b0031ec2a48050sm1479106qtn.34.2022.07.12.13.53.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Jul 2022 13:53:50 -0700 (PDT)
+Message-ID: <aef0f8a6-cde6-18f3-16ab-7e07a4413f31@joelfernandes.org>
+Date:   Tue, 12 Jul 2022 16:53:48 -0400
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.0.1
+Subject: Re: [PATCH v2 1/8] rcu: Introduce call_rcu_lazy() API implementation
+Content-Language: en-US
+To:     paulmck@kernel.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rushikesh.s.kadam@intel.com, urezki@gmail.com,
+        neeraj.iitr10@gmail.com, frederic@kernel.org, rostedt@goodmis.org,
+        vineeth@bitbyteword.org
 References: <20220622225102.2112026-1-joel@joelfernandes.org>
- <20220622225102.2112026-8-joel@joelfernandes.org> <20220626041327.GN1790663@paulmck-ThinkPad-P17-Gen-1>
- <YsexpcG2iaplKPIs@google.com> <20220708230600.GC1790663@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20220708230600.GC1790663@paulmck-ThinkPad-P17-Gen-1>
+ <20220622225102.2112026-3-joel@joelfernandes.org>
+ <20220626040019.GK1790663@paulmck-ThinkPad-P17-Gen-1>
+ <Yso4690g+lI/8eJS@google.com>
+ <20220710160330.GI1790663@paulmck-ThinkPad-P17-Gen-1>
 From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Tue, 12 Jul 2022 16:27:05 -0400
-Message-ID: <CAEXW_YS8hrT78JG_2uQX38oaF5TEGz-M3EgJ2PWjx8g+cfmhBw@mail.gmail.com>
-Subject: Re: [PATCH v2 6/8] rcuscale: Add test for using call_rcu_lazy() to
- emulate kfree_rcu()
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     rcu <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Rushikesh S Kadam <rushikesh.s.kadam@intel.com>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        Neeraj upadhyay <neeraj.iitr10@gmail.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>, vineeth@bitbyteword.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20220710160330.GI1790663@paulmck-ThinkPad-P17-Gen-1>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Ah, with all the threads, I missed this one :(. Sorry about that.
 
-On Fri, Jul 8, 2022 at 7:06 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+On 7/10/2022 12:03 PM, Paul E. McKenney wrote:
+[..]
+>>>> +	// Note that if the bypass list has lazy CBs, and the main list is
+>>>> +	// empty, and rhp happens to be non-lazy, then we end up flushing all
+>>>> +	// the lazy CBs to the main list as well. That's the right thing to do,
+>>>> +	// since we are kick-starting RCU GP processing anyway for the non-lazy
+>>>> +	// one, we can just reuse that GP for the already queued-up lazy ones.
+>>>> +	if ((rdp->nocb_nobypass_count < nocb_nobypass_lim_per_jiffy && !lazy) ||
+>>>> +	    (lazy && n_lazy_cbs >= qhimark)) {
+>>>>  		rcu_nocb_lock(rdp);
+>>>>  		*was_alldone = !rcu_segcblist_pend_cbs(&rdp->cblist);
+>>>>  		if (*was_alldone)
+>>>>  			trace_rcu_nocb_wake(rcu_state.name, rdp->cpu,
+>>>> -					    TPS("FirstQ"));
+>>>> -		WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, j));
+>>>> +					    lazy ? TPS("FirstLazyQ") : TPS("FirstQ"));
+>>>> +		WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, j, false));
+>>>
+>>> The "false" here instead of "lazy" is because the caller is to do the
+>>> enqueuing, correct?
+>>
+>> There is no difference between using false or lazy here, because the bypass
+>> flush is not also enqueuing the lazy callback, right?
+>>
+>> We can also pass lazy instead of false if that's less confusing.
+>>
+>> Or maybe I missed the issue you're raising?
+> 
+> I am mostly checking up on your intended meaning of "lazy" in various
+> contexts.  It could mean only that the caller requested laziness, or in
+> some cases it could mean that the callback actually will be lazy.
+> 
+> I can rationalize the "false" above as a "don't care" in this case
+> because (as you say) there is not callback.  In which case this code
+> is OK as is, as long as the header comment for rcu_nocb_flush_bypass()
+> clearly states that this parameter has meaning only when there really
+> is a callback being queued.
 
-> > Currently I added a test like the following which adds a new torture type, my
-> > thought was to stress the new code to make sure nothing crashed or hung the
-> > kernel. That is working well except I don't exactly understand the total-gps
-> > print showing 0, which the other print shows 1188 GPs. I'll go dig into that
-> > tomorrow.. thanks!
-> >
-> > The print shows
-> > TREE11 ------- 1474 GPs (12.2833/s) [rcu_lazy: g0 f0x0 total-gps=0]
-> > TREE11 no success message, 7 successful version messages
->
-> Nice!!!  It is very good to see you correctly using the rcu_torture_ops
-> facility correctly!
->
-> And this could be good for your own testing, and I am happy to pull it
-> in for that purpose (given it being fixed, having a good commit log,
-> and so on).  After all, TREE10 is quite similar -- not part of CFLIST,
-> but useful for certain types of focused testing.
->
-> However, it would be very good to get call_rcu_lazy() testing going
-> more generally, and in particular in TREE01 where offloading changes
-> dynamically.  A good way to do this is to add a .call_lazy() component
-> to the rcu_torture_ops structure, and check for it in a manner similar
-> to that done for the .deferred_free() component.  Including adding a
-> gp_normal_lazy module parameter.  This would allow habitual testing
-> on a few scenarios and focused lazy testing on all of them via the
-> --bootargs parameter.
+I decided to change this and the below to "lazy" variable instead of
+true/false, as the code is cleaner and less confusing IMO. It makes
+sense to me and in my testing it works fine. Hope that's Ok with you.
 
-Ok, if you don't mind I will make this particular enhancement to the
-torture test in a future patchset, since I kind of decided on doing v3
-with just fixes to what I have and more testing. Certainly happy to
-enhance these tests in a future version.
+About changing the lazy length count to a flag, one drawback of doing
+that is, say if there are some non-lazy CBs in the bypass list, then the
+lazy shrinker will end up reporting an inaccurate count. Also
+considering that it might be harder to add the count back later say if
+we need it for tracing, I would say lets leave it as is. I will keep the
+counter for v3 and we can discuss. Does that sound good to you?
 
-> On the total-gps=0, the usual suspicion would be that the lazy callbacks
-> never got invoked.  It looks like you were doing about a two-minute run,
-> so maybe a longer run?  Though weren't they supposed to kick in at 15
-> seconds or so?  Or did this value of zero come about because this run
-> used exactly 300 grace periods?
-
-It was zero because it required the RCU_FLAVOR torture type, where as
-my torture type was lazy. Adding RCU_LAZY_FLAVOR to the list fixed it
-:)
+I think some more testing, checkpatch running etc and I should be good
+to send v3 :)
 
 Thanks!
 
  - Joel
 
 
-> > diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-> > index 7120165a9342..cc6b7392d801 100644
-> > --- a/kernel/rcu/rcutorture.c
-> > +++ b/kernel/rcu/rcutorture.c
-> > @@ -872,6 +872,64 @@ static struct rcu_torture_ops tasks_rude_ops = {
-> >
-> >  #endif // #else #ifdef CONFIG_TASKS_RUDE_RCU
-> >
-> > +#ifdef CONFIG_RCU_LAZY
-> > +
-> > +/*
-> > + * Definitions for lazy RCU torture testing.
-> > + */
-> > +unsigned long orig_jiffies_till_flush;
-> > +
-> > +static void rcu_sync_torture_init_lazy(void)
-> > +{
-> > +     rcu_sync_torture_init();
-> > +
-> > +     orig_jiffies_till_flush = rcu_lazy_get_jiffies_till_flush();
-> > +     rcu_lazy_set_jiffies_till_flush(50);
-> > +}
-> > +
-> > +static void rcu_lazy_cleanup(void)
-> > +{
-> > +     rcu_lazy_set_jiffies_till_flush(orig_jiffies_till_flush);
-> > +}
-> > +
-> > +static struct rcu_torture_ops rcu_lazy_ops = {
-> > +     .ttype                  = RCU_LAZY_FLAVOR,
-> > +     .init                   = rcu_sync_torture_init_lazy,
-> > +     .cleanup                = rcu_lazy_cleanup,
-> > +     .readlock               = rcu_torture_read_lock,
-> > +     .read_delay             = rcu_read_delay,
-> > +     .readunlock             = rcu_torture_read_unlock,
-> > +     .readlock_held          = torture_readlock_not_held,
-> > +     .get_gp_seq             = rcu_get_gp_seq,
-> > +     .gp_diff                = rcu_seq_diff,
-> > +     .deferred_free          = rcu_torture_deferred_free,
-> > +     .sync                   = synchronize_rcu,
-> > +     .exp_sync               = synchronize_rcu_expedited,
-> > +     .get_gp_state           = get_state_synchronize_rcu,
-> > +     .start_gp_poll          = start_poll_synchronize_rcu,
-> > +     .poll_gp_state          = poll_state_synchronize_rcu,
-> > +     .cond_sync              = cond_synchronize_rcu,
-> > +     .call                   = call_rcu_lazy,
-> > +     .cb_barrier             = rcu_barrier,
-> > +     .fqs                    = rcu_force_quiescent_state,
-> > +     .stats                  = NULL,
-> > +     .gp_kthread_dbg         = show_rcu_gp_kthreads,
-> > +     .check_boost_failed     = rcu_check_boost_fail,
-> > +     .stall_dur              = rcu_jiffies_till_stall_check,
-> > +     .irq_capable            = 1,
-> > +     .can_boost              = IS_ENABLED(CONFIG_RCU_BOOST),
-> > +     .extendables            = RCUTORTURE_MAX_EXTEND,
-> > +     .name                   = "rcu_lazy"
-> > +};
-> > +
-> > +#define LAZY_OPS &rcu_lazy_ops,
-> > +
-> > +#else // #ifdef CONFIG_RCU_LAZY
-> > +
-> > +#define LAZY_OPS
-> > +
-> > +#endif // #else #ifdef CONFIG_RCU_LAZY
-> > +
-> >
-> >  #ifdef CONFIG_TASKS_TRACE_RCU
-> >
-> > @@ -3145,7 +3203,7 @@ rcu_torture_init(void)
-> >       unsigned long gp_seq = 0;
-> >       static struct rcu_torture_ops *torture_ops[] = {
-> >               &rcu_ops, &rcu_busted_ops, &srcu_ops, &srcud_ops, &busted_srcud_ops,
-> > -             TASKS_OPS TASKS_RUDE_OPS TASKS_TRACING_OPS
-> > +             TASKS_OPS TASKS_RUDE_OPS TASKS_TRACING_OPS LAZY_OPS
-> >               &trivial_ops,
-> >       };
-> >
-> > diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE11 b/tools/testing/selftests/rcutorture/configs/rcu/TREE11
-> > new file mode 100644
-> > index 000000000000..436013f3e015
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE11
-> > @@ -0,0 +1,18 @@
-> > +CONFIG_SMP=y
-> > +CONFIG_PREEMPT_NONE=n
-> > +CONFIG_PREEMPT_VOLUNTARY=n
-> > +CONFIG_PREEMPT=y
-> > +#CHECK#CONFIG_PREEMPT_RCU=y
-> > +CONFIG_HZ_PERIODIC=n
-> > +CONFIG_NO_HZ_IDLE=y
-> > +CONFIG_NO_HZ_FULL=n
-> > +CONFIG_RCU_TRACE=y
-> > +CONFIG_HOTPLUG_CPU=y
-> > +CONFIG_MAXSMP=y
-> > +CONFIG_CPUMASK_OFFSTACK=y
-> > +CONFIG_RCU_NOCB_CPU=y
-> > +CONFIG_DEBUG_LOCK_ALLOC=n
-> > +CONFIG_RCU_BOOST=n
-> > +CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
-> > +CONFIG_RCU_EXPERT=y
-> > +CONFIG_RCU_LAZY=y
-> > diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE11.boot b/tools/testing/selftests/rcutorture/configs/rcu/TREE11.boot
-> > new file mode 100644
-> > index 000000000000..9b6f720d4ccd
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE11.boot
-> > @@ -0,0 +1,8 @@
-> > +maxcpus=8 nr_cpus=43
-> > +rcutree.gp_preinit_delay=3
-> > +rcutree.gp_init_delay=3
-> > +rcutree.gp_cleanup_delay=3
-> > +rcu_nocbs=0-7
-> > +rcutorture.torture_type=rcu_lazy
-> > +rcutorture.nocbs_nthreads=8
-> > +rcutorture.fwd_progress=0
-> > --
-> > 2.37.0.rc0.161.g10f37bed90-goog
-> >
+> 
+>>>>  		WARN_ON_ONCE(rcu_cblist_n_cbs(&rdp->nocb_bypass));
+>>>>  		return false; // Caller must enqueue the callback.
+>>>>  	}
+>>>>  
+>>>>  	// If ->nocb_bypass has been used too long or is too full,
+>>>>  	// flush ->nocb_bypass to ->cblist.
+>>>> -	if ((ncbs && j != READ_ONCE(rdp->nocb_bypass_first)) ||
+>>>> -	    ncbs >= qhimark) {
+>>>> +	if ((ncbs && j != READ_ONCE(rdp->nocb_bypass_first)) || ncbs >= qhimark) {
+>>>>  		rcu_nocb_lock(rdp);
+>>>> -		if (!rcu_nocb_flush_bypass(rdp, rhp, j)) {
+>>>> +		if (!rcu_nocb_flush_bypass(rdp, rhp, j, true)) {
+>>>
+>>> But shouldn't this "true" be "lazy"?  I don't see how we are guaranteed
+>>> that the callback is in fact lazy at this point in the code.  Also,
+>>> there is not yet a guarantee that the caller will do the enqueuing.
+>>> So what am I missing?
+>>
+>> Sorry I screwed this part up. I think I meant 'false' here, if the list grew
+>> too big- then I think I would prefer if the new lazy CB instead is treated as
+>> non-lazy. But if that's too confusing, I will just pass 'lazy' instead. What
+>> do you think?
+> 
+> Good point, if we are choosing to override the laziness requested by the
+> caller, then it should say "true".  It would be good to have a comment
+> saying that is what we are doing, correct?
+> 
+>> Will reply more to the rest of the comments soon, thanks!
+> 
+> Sounds good!  (Hey, wouldn't want you to be bored!)
+> 
+> 							Thanx, Paul
