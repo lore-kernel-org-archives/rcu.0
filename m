@@ -2,108 +2,106 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7387FC43334
-	for <rcu@archiver.kernel.org>; Tue, 12 Jul 2022 17:28:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7EA42C43334
+	for <rcu@archiver.kernel.org>; Tue, 12 Jul 2022 17:37:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229534AbiGLR2s (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 12 Jul 2022 13:28:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37776 "EHLO
+        id S229497AbiGLRhN (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 12 Jul 2022 13:37:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230047AbiGLR2r (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 12 Jul 2022 13:28:47 -0400
+        with ESMTP id S231157AbiGLRhN (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 12 Jul 2022 13:37:13 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3EA12CCB4;
-        Tue, 12 Jul 2022 10:28:45 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B5FEC4440;
+        Tue, 12 Jul 2022 10:37:12 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 157B9B817DD;
-        Tue, 12 Jul 2022 17:28:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1E6FC3411C;
-        Tue, 12 Jul 2022 17:28:42 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 55F2DB81B07;
+        Tue, 12 Jul 2022 17:37:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF30AC3411C;
+        Tue, 12 Jul 2022 17:37:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1657646922;
-        bh=6V3py4JdRtZVLT0SVQG+SwX7LLWJGayQeurQftr33Uc=;
+        s=k20201202; t=1657647430;
+        bh=LRWZAR5Uvb+52sz0yd/em2VWKtd15SMVCf9+V7pHL5M=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=DYuXySmuxySZlJ4GZf7gGCP1drKvmk7uJU71uGJTCppt3TttxXQ5toHVZ3SX0A5Nq
-         VgPY+9wbtLiMqPuelS/SdL+B4VUIiEmlJ1OkPjd82aha4KwSNuLnPRdyMy2i946lGa
-         5V2Kh9k7KkVdCpfQ92EIOsCon1TMFgKHHJ1Wc4vV38jMW7IEtiPev0z6Uu8nY3VzHv
-         /HPnni2/j0uUiv/+C0Gj1lFR/s+CCSB36lUEk6snJvgrLgE4U5h8yKcZXp4BRt5ByX
-         8Psle8Q1ulWF2qrduABAidSyODiKv0wkJIhxt2t+CdHuGPNKLJuAzX2gPaRiTK9n9s
-         0rlCbpqEDKbyQ==
+        b=C5YGwce5ABrT3ad2CNSpd624+4/8x968FVqGA/KG4Z9XvmWTqJxyNHN8Fn4qhS4Gt
+         I4AcgOlXB+LNIZMFNe9ewJAC0k6pPgeqJmCjVtRn+GY7EdflJSFPR3yQ37xUnZz+Az
+         wHXhQ4Xhxsywq3Q8ANYCeEwaGZqSYTQy4BHB2MAZHXaxrAEjOOSTiDctnlFbYULDV9
+         t+r6/7fwW/N+Ep4nnFoqDcq3MpptXpfSe+SSAp39BMmXcM52fobnP3IqcDfV6WD0FI
+         zCSMBGPin26MLPOy82S0Zc9Zv6CljFT5HxCjvuY+wPp7iim0k+feJjD7bmdXME4Eiw
+         uzBrTUONH+r7w==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 679D35C08C7; Tue, 12 Jul 2022 10:28:42 -0700 (PDT)
-Date:   Tue, 12 Jul 2022 10:28:42 -0700
+        id 847DE5C08C7; Tue, 12 Jul 2022 10:37:09 -0700 (PDT)
+Date:   Tue, 12 Jul 2022 10:37:09 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     Zqiang <qiang1.zhang@intel.com>
 Cc:     frederic@kernel.org, quic_neeraju@quicinc.com,
         joel@joelfernandes.org, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] rcu-tasks: Convert RCU_LOCKDEP_WARN() to WARN_ONCE()
-Message-ID: <20220712172842.GW1790663@paulmck-ThinkPad-P17-Gen-1>
+Subject: Re: [PATCH 2/2] rcu-tasks: Make synchronize_rcu_tasks_generic()
+ no-ops on early booting
+Message-ID: <20220712173709.GX1790663@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
 References: <20220712082606.3662616-1-qiang1.zhang@intel.com>
- <20220712082606.3662616-2-qiang1.zhang@intel.com>
+ <20220712082606.3662616-3-qiang1.zhang@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220712082606.3662616-2-qiang1.zhang@intel.com>
+In-Reply-To: <20220712082606.3662616-3-qiang1.zhang@intel.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Jul 12, 2022 at 04:26:05PM +0800, Zqiang wrote:
-> For kernel build with CONFIG_PROVE_RCU=y and CONFIG_DEBUG_LOCK_ALLOC=y,
-> when the synchronize_rcu_tasks_generic() called occurs during the
-> rcu_scheduler_active variable is RCU_SCHEDULER_INACTIVE, the warnings
-> will be trigger, however the warnings is not actually triggered because
-> the debug_lockdep_rcu_enabled() return false(the rcu_scheduler_active !=
-> RCU_SCHEDULER_INACTIVE condition is false).
-> 
-> This commit replace RCU_LOCKDEP_WARN() with WARN_ONCE() to trigger
-> warnings.
+On Tue, Jul 12, 2022 at 04:26:06PM +0800, Zqiang wrote:
+> When the rcu_scheduler_active variable is RCU_SCHEDULER_INACTIVE and not
+> yet converted to RCU_SCHEDULER_INIT, there is only idle task, any legal
+> call synchronize_rcu_tasks_generic() is a quiescent state. this commit
+> make synchronize_rcu_tasks_generic() no-ops when the rcu_scheduler_active
+> variable is RCU_SCHEDULER_INACTIVE.
 > 
 > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+> ---
 
-Good catch, thank you!
+It looks like this would be a good way to provide early boot access
+to synchronize_rcu_tasks(), synchronize_rcu_tasks_rude(), and
+synchronize_rcu_tasks_trace().
 
-Queued with wordsmithing as follows.  As always, please check to see
-if I wordsmithed something out of existence.
+But do we really need early boot access to these functions?  As in has
+the below WARN_ON() actually triggered?
 
-						Thanx, Paul
+And if it has triggered, and in a context that means that these functions
+really are needed during early boot, how should the testing strategy
+change to test these at the relevant portions of the boot sequence?
 
-------------------------------------------------------------------------
+From what I know, hitting these during early boot would indicate that
+something was removing a trace during early boot, and I know of no way
+to make that happen.  Hence my skepticism.  ;-)
 
-commit 4dbfea53caf3e226e3273fc5947e9041e2ad34ab
-Author: Zqiang <qiang1.zhang@intel.com>
-Date:   Tue Jul 12 16:26:05 2022 +0800
+But *if* this was really needed, this looks to be a reasonable way to
+implement it.
 
-    rcu-tasks: Convert RCU_LOCKDEP_WARN() to WARN_ONCE()
-    
-    Kernels built with CONFIG_PROVE_RCU=y and CONFIG_DEBUG_LOCK_ALLOC=y
-    attempt to emit a warning when the synchronize_rcu_tasks_generic()
-    function is called during early boot while the rcu_scheduler_active
-    variable is RCU_SCHEDULER_INACTIVE.  However the warnings is not
-    actually be printed because the debug_lockdep_rcu_enabled() returns
-    false, exactly because the rcu_scheduler_active variable is still equal
-    to RCU_SCHEDULER_INACTIVE.
-    
-    This commit therefore replaces RCU_LOCKDEP_WARN() with WARN_ONCE()
-    to force these warnings to actually be printed.
-    
-    Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+							Thanx, Paul
 
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 83c7e6620d403..469bf2a3b505e 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -560,7 +560,7 @@ static int __noreturn rcu_tasks_kthread(void *arg)
- static void synchronize_rcu_tasks_generic(struct rcu_tasks *rtp)
- {
- 	/* Complain if the scheduler has not started.  */
--	RCU_LOCKDEP_WARN(rcu_scheduler_active == RCU_SCHEDULER_INACTIVE,
-+	WARN_ONCE(rcu_scheduler_active == RCU_SCHEDULER_INACTIVE,
- 			 "synchronize_rcu_tasks called too soon");
- 
- 	// If the grace-period kthread is running, use it.
+>  kernel/rcu/tasks.h | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> index 469bf2a3b505..0237e765c28e 100644
+> --- a/kernel/rcu/tasks.h
+> +++ b/kernel/rcu/tasks.h
+> @@ -560,8 +560,9 @@ static int __noreturn rcu_tasks_kthread(void *arg)
+>  static void synchronize_rcu_tasks_generic(struct rcu_tasks *rtp)
+>  {
+>  	/* Complain if the scheduler has not started.  */
+> -	WARN_ONCE(rcu_scheduler_active == RCU_SCHEDULER_INACTIVE,
+> -			 "synchronize_rcu_tasks called too soon");
+> +	if (WARN_ONCE(rcu_scheduler_active == RCU_SCHEDULER_INACTIVE,
+> +			 "synchronize_rcu_tasks called too soon"))
+> +		return;
+>  
+>  	// If the grace-period kthread is running, use it.
+>  	if (READ_ONCE(rtp->kthread_ptr)) {
+> -- 
+> 2.25.1
+> 
