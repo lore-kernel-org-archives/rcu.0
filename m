@@ -2,152 +2,148 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EA802C43334
-	for <rcu@archiver.kernel.org>; Wed, 13 Jul 2022 21:33:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2075ECCA479
+	for <rcu@archiver.kernel.org>; Wed, 13 Jul 2022 21:33:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232101AbiGMVdD (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 13 Jul 2022 17:33:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53614 "EHLO
+        id S230479AbiGMVdE (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 13 Jul 2022 17:33:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237535AbiGMVdB (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 13 Jul 2022 17:33:01 -0400
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32E8D33A0B
-        for <rcu@vger.kernel.org>; Wed, 13 Jul 2022 14:32:59 -0700 (PDT)
-Received: by mail-qv1-xf2c.google.com with SMTP id d17so147444qvs.0
-        for <rcu@vger.kernel.org>; Wed, 13 Jul 2022 14:32:59 -0700 (PDT)
+        with ESMTP id S237539AbiGMVdC (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 13 Jul 2022 17:33:02 -0400
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD9A1357CE
+        for <rcu@vger.kernel.org>; Wed, 13 Jul 2022 14:33:00 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id l2so9454694qtp.11
+        for <rcu@vger.kernel.org>; Wed, 13 Jul 2022 14:33:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BvqepsLMsuS6DoLYx67U9RDfmCI01IK2NC8IO5NzD3A=;
-        b=W21G0lZm0YqU2BhzBwK6+oNHLtfUiOLByiCp4hmU2HfUxs8732h+5XFg148Rw+N95I
-         j71GwAHH0GJ+0z5aSmrrOtoejmgSEC4bxvYIDvkwq7rpAwDj7Jjb5r+v1TP2y4uoA7dd
-         hp995v1ZDTTay/dgRm/nFc57Le7E//TozRpyw=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=gnuh9DRpicbbN00vi9y+Nvgl395m8SvJRn+/VVTeXdo=;
+        b=b3Tf51aLPLE0rnLyeQiWMDZ/Z5z17EjXZe+zkaIYnBzfWOeVI8vtSewi2SE4aTPF+1
+         Ha9/dFYpXzObV6yccy17Vmjp8ysdiXNd/PMSQtEk/39Gszalm2VqMqwyNrEHZ6LxIxQM
+         jUVJzO1R/GQ4kXUoLz8poK/uVvOkGve33fQ8w=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BvqepsLMsuS6DoLYx67U9RDfmCI01IK2NC8IO5NzD3A=;
-        b=hqeEXmHXERhIkVye5sH3dt4T5nu0nFgIrdrrgo3/zEk/K+lMn6Ar1ZirPvuT6PWvT9
-         hlbZLDYcH3id51xFlQqqdyQJ0rQexAth7jGBCftDK5sdChobawdI0asBa01WCFYM0UEA
-         /d3iyMD9jMSADRLlnU9alZblm51nKASHh9XU6z2Q4nC1MGnm8TXWnkaf8EdX8ZMbgFb1
-         WDDzaD8wacYWRe/S6w0GJWfnDDB+Ii27ykSpPiR8Mt0gL4sx88U41gWDwznB9qWcobYS
-         uwwkTTZQVEV9+FNbeTOfirst14ApZrmVxX0g/IVvyQCnGp0NgMPHL4B4PjJbhZsYwU41
-         2/hA==
-X-Gm-Message-State: AJIora9JTTE8gcGlZBhJO20DK/g6atJ/d3iOXAcYhcRP+46/p5RO6p4L
-        4Gsdp6RCyN65NdRUqnbEdbZYsF2k/1qh+w==
-X-Google-Smtp-Source: AGRyM1sPujnYwtKBJT+7FOgKH6If0HyX+opeRVzC2OBfdBxKJoaow5bVqJqV/z04iBI5sqSS98dkyA==
-X-Received: by 2002:a05:6214:29e3:b0:473:7170:dafd with SMTP id jv3-20020a05621429e300b004737170dafdmr4857430qvb.38.1657747977944;
-        Wed, 13 Jul 2022 14:32:57 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=gnuh9DRpicbbN00vi9y+Nvgl395m8SvJRn+/VVTeXdo=;
+        b=aNyK+TiTjUPzX62uABENLg5QRj+hT7K8KOQnaKIoqP1OnOoxWRy9boNUDxb/jgcRrp
+         WoleWbfarDk+rajZnAUJtutv0yrJH48FdxRarLSVkrZd9SgnbNVpGB+crJKn6w1+pkjv
+         RQ2eXVdFzjcNAwfvSj6wQGlLezrCHapplFJjdDq4shB/RjUkNMyoPoW943CzFDitN6x/
+         PkiGB/2keuyL1b/Bm9VhD5KUPMMLSVFHv08s2y1AiSxNrFGIZXF07VysVgbxFqcEByXw
+         j5GrPljGMjTXbOlllDM1FmcODPSZqarcW+HmYByK3wRLxWeWUg9zhKcwVMN6vYT/58QC
+         O8eQ==
+X-Gm-Message-State: AJIora+91QOa3re1zpHrYZuSKRJrpppKSdtVqDFJoK1mQjUKtso/bL1u
+        E/IMWPufqlK101+rqJ4bypWLsVTRZmZtgQ==
+X-Google-Smtp-Source: AGRyM1s4Ru6/TRP5ftaqXfLBEZP8U0srddLBAWqYA/af6DTuWkwVFmEfiHtwmzD3l9E/C+divNxGLA==
+X-Received: by 2002:ac8:5b90:0:b0:31d:42af:e107 with SMTP id a16-20020ac85b90000000b0031d42afe107mr5090471qta.457.1657747979421;
+        Wed, 13 Jul 2022 14:32:59 -0700 (PDT)
 Received: from joelboxx.c.googlers.com.com (228.221.150.34.bc.googleusercontent.com. [34.150.221.228])
-        by smtp.gmail.com with ESMTPSA id d19-20020a05620a241300b006b5988b2ca8sm6791163qkn.40.2022.07.13.14.32.57
+        by smtp.gmail.com with ESMTPSA id d19-20020a05620a241300b006b5988b2ca8sm6791163qkn.40.2022.07.13.14.32.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jul 2022 14:32:57 -0700 (PDT)
+        Wed, 13 Jul 2022 14:32:59 -0700 (PDT)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     rcu@vger.kernel.org
 Cc:     rushikesh.s.kadam@intel.com, urezki@gmail.com,
         neeraj.iitr10@gmail.com, frederic@kernel.org, paulmck@kernel.org,
-        rostedt@goodmis.org,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Subject: [PATCH v3 0/5] Implement call_rcu_lazy() and miscellaneous fixes
-Date:   Wed, 13 Jul 2022 21:32:32 +0000
-Message-Id: <20220713213237.1596225-1-joel@joelfernandes.org>
+        rostedt@goodmis.org, Vineeth Pillai <vineeth@bitbyteword.org>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: [PATCH 2/5] rcu: shrinker for lazy rcu
+Date:   Wed, 13 Jul 2022 21:32:34 +0000
+Message-Id: <20220713213237.1596225-3-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.37.0.144.g8ac04bfd2-goog
+In-Reply-To: <20220713213237.1596225-1-joel@joelfernandes.org>
+References: <20220713213237.1596225-1-joel@joelfernandes.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello!
+From: Vineeth Pillai <vineeth@bitbyteword.org>
 
-Please find the next improved version of call_rcu_lazy() attached.  The main
-difference between the previous versions is that:
-- In v2 rcu_barrier is fixed to not hang (I found this to be due to a missing
-  GP thread wakeup), now I am limiting this wake up only to rcu_barrier() as
-  requested by Paul.
-- Fixed checkpatch and build robot issues.
-- Some more changes to 'lazy' parameter passing and consolidation of segcblist
-  functions.
-- more testing via rcutorture and rcuscale.
+The shrinker is used to speed up the free'ing of memory potentially held
+by RCU lazy callbacks. RCU kernel module test cases show this to be
+effective. Test is introduced in a later patch.
 
-Note that these tests were run on v2 patches, I am expecting similar power
-improvements however I've not yet tested power.
+Signed-off-by: Vineeth Pillai <vineeth@bitbyteword.org>
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+---
+ kernel/rcu/tree_nocb.h | 52 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 52 insertions(+)
 
-Following are power savings we saw on top of RCU_NOCB_CPU on an Intel platform
-in v2.  The observation is that due to a 'trickle down' effect of RCU
-callbacks, the system is very lightly loaded but constantly running few RCU
-callbacks very often. This confuses the power management hardware that the
-system is active, when it is in fact idle.
-
-For example, when ChromeOS screen is off and user is not doing anything on the
-system, we can see big power savings.
-Before:
-Pk%pc10 = 72.13
-PkgWatt = 0.58
-CorWatt = 0.04
-
-After:
-Pk%pc10 = 81.28
-PkgWatt = 0.41
-CorWatt = 0.03
-
-Further, when ChromeOS screen is ON but system is idle or lightly loaded, we
-can see that the display pipeline is constantly doing RCU callback queuing due
-to open/close of file descriptors associated with graphics buffers. This is
-attributed to the file_free_rcu() path which this patch series also touches.
-
-On memory pressure, timeout or queue growing too big, we initiate a flush of of
-the bypass lists holding the lazy CBs.
-
-Similar results can be achieved by increasing jiffies_till_first_fqs, however
-that also has the effect of slowing down RCU. Especially I saw huge slow down
-of function graph tracer when increasing that. That may be possible to fix via
-rcu_expedited=1 boot parameter, however call_rcu_lazy() provides another option
-over slowing down ALL call_rcu() globally. Further using jiffies_till_first_fqs
-approach will still cause a wake up of the main RCU GP kthread, with this work
-we delay even those wakeups.
-
-One drawback of this series is, if another frequent RCU callback creeps up in
-the future, that's not lazy, then that will again hurt the power. However, I
-believe identifying and fixing those is a more reasonable approach than slowing
-RCU down for the whole system.
-
-Disclaimer: I have intentionally not CC'd other subsystem maintainers (like
-net, fs) to keep noise low and will CC them in the future after 1 or 2 rounds
-of review and agreements.
-
-Joel Fernandes (Google) (4):
-  rcu: Introduce call_rcu_lazy() API implementation
-  rcuscale: Add laziness and kfree tests
-  fs: Move call_rcu() to call_rcu_lazy() in some paths
-  rcutorture: Add test code for call_rcu_lazy()
-
-Vineeth Pillai (1):
-  rcu: shrinker for lazy rcu
-
- fs/dcache.c                                   |   4 +-
- fs/eventpoll.c                                |   2 +-
- fs/file_table.c                               |   2 +-
- fs/inode.c                                    |   2 +-
- include/linux/rcu_segcblist.h                 |   1 +
- include/linux/rcupdate.h                      |   6 +
- kernel/rcu/Kconfig                            |   8 +
- kernel/rcu/rcu.h                              |  12 +
- kernel/rcu/rcu_segcblist.c                    |  15 +-
- kernel/rcu/rcu_segcblist.h                    |  20 +-
- kernel/rcu/rcuscale.c                         |  74 +++++-
- kernel/rcu/rcutorture.c                       |  60 ++++-
- kernel/rcu/tree.c                             | 132 ++++++----
- kernel/rcu/tree.h                             |  10 +-
- kernel/rcu/tree_nocb.h                        | 239 ++++++++++++++----
- .../selftests/rcutorture/configs/rcu/TREE11   |  18 ++
- .../rcutorture/configs/rcu/TREE11.boot        |   8 +
- 17 files changed, 508 insertions(+), 105 deletions(-)
- create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/TREE11
- create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/TREE11.boot
-
+diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+index 61b1409bd4d6..f8d7255f4f0a 100644
+--- a/kernel/rcu/tree_nocb.h
++++ b/kernel/rcu/tree_nocb.h
+@@ -1249,6 +1249,55 @@ int rcu_nocb_cpu_offload(int cpu)
+ }
+ EXPORT_SYMBOL_GPL(rcu_nocb_cpu_offload);
+ 
++static unsigned long
++lazy_rcu_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
++{
++	int cpu;
++	unsigned long count = 0;
++
++	/* Snapshot count of all CPUs */
++	for_each_possible_cpu(cpu) {
++		struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
++
++		count += rcu_cblist_n_lazy_cbs(&rdp->nocb_bypass);
++	}
++
++	return count ? count : SHRINK_EMPTY;
++}
++
++static unsigned long
++lazy_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
++{
++	int cpu;
++	unsigned long flags;
++	unsigned long count = 0;
++
++	/* Snapshot count of all CPUs */
++	for_each_possible_cpu(cpu) {
++		struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
++		int _count = rcu_cblist_n_lazy_cbs(&rdp->nocb_bypass);
++
++		if (_count == 0)
++			continue;
++		rcu_nocb_lock_irqsave(rdp, flags);
++		rcu_cblist_reset_lazy_len(&rdp->nocb_bypass);
++		rcu_nocb_unlock_irqrestore(rdp, flags);
++		wake_nocb_gp(rdp, false);
++		sc->nr_to_scan -= _count;
++		count += _count;
++		if (sc->nr_to_scan <= 0)
++			break;
++	}
++	return count ? count : SHRINK_STOP;
++}
++
++static struct shrinker lazy_rcu_shrinker = {
++	.count_objects = lazy_rcu_shrink_count,
++	.scan_objects = lazy_rcu_shrink_scan,
++	.batch = 0,
++	.seeks = DEFAULT_SEEKS,
++};
++
+ void __init rcu_init_nohz(void)
+ {
+ 	int cpu;
+@@ -1286,6 +1335,9 @@ void __init rcu_init_nohz(void)
+ 	if (!rcu_state.nocb_is_setup)
+ 		return;
+ 
++	if (register_shrinker(&lazy_rcu_shrinker))
++		pr_err("Failed to register lazy_rcu shrinker!\n");
++
+ #if defined(CONFIG_NO_HZ_FULL)
+ 	if (tick_nohz_full_running)
+ 		cpumask_or(rcu_nocb_mask, rcu_nocb_mask, tick_nohz_full_mask);
 -- 
 2.37.0.144.g8ac04bfd2-goog
 
