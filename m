@@ -2,133 +2,91 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 20165C433EF
-	for <rcu@archiver.kernel.org>; Thu, 14 Jul 2022 03:37:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 10051C43334
+	for <rcu@archiver.kernel.org>; Thu, 14 Jul 2022 09:26:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232089AbiGNDhY (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 13 Jul 2022 23:37:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53864 "EHLO
+        id S236345AbiGNJ0f (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 14 Jul 2022 05:26:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231260AbiGNDhX (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 13 Jul 2022 23:37:23 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 937B6113;
-        Wed, 13 Jul 2022 20:37:22 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 4FE6EB82284;
-        Thu, 14 Jul 2022 03:37:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56C6AC34114;
-        Thu, 14 Jul 2022 03:37:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1657769839;
-        bh=3YBXEGIoFqhOrxSmmYzSrJlGdc7ekAfO4Uiq2ymx4R8=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=cTxaATepM/+YZrLKhGS8yKyYzbzEnaOQ18gJ6rW8GpyVHqA1/spYgy0dUXHRgDlMl
-         GJIH5vqNpnQERcNDfv4CbaApPNxn/2wylVJ3aM/rJFWW3N5NUxk8b3yYezveAou8oS
-         tDD/w79uicGI5bb9JC+VWvm9tr/LxXmX7XYFtqDAFjWYLaz0Oiq1oBSNducPQVf/+t
-         TuYN4R8BedJ1NJeggEkY3XB/3JtUiCtdsuMcaoP49SJhCEsjEfPxJ2ZAGGZ8/6RTve
-         EtEIMZ0s0h5DRUw7JQip93p73aN58/zIW06jeEUaK2voW4Lb6Mwz169t1xUSVzdwrx
-         NRjTk9+z8Bt6g==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id ECF7A5C03B9; Wed, 13 Jul 2022 20:37:18 -0700 (PDT)
-Date:   Wed, 13 Jul 2022 20:37:18 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
-Cc:     "frederic@kernel.org" <frederic@kernel.org>,
-        "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>,
-        "joel@joelfernandes.org" <joel@joelfernandes.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] rcu-tasks: Make synchronize_rcu_tasks_generic()
- no-ops on early booting
-Message-ID: <20220714033718.GT1790663@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220712082606.3662616-1-qiang1.zhang@intel.com>
- <20220712082606.3662616-3-qiang1.zhang@intel.com>
- <20220712173709.GX1790663@paulmck-ThinkPad-P17-Gen-1>
- <PH0PR11MB588067B6DC5195CBE1DDA7BFDA889@PH0PR11MB5880.namprd11.prod.outlook.com>
+        with ESMTP id S237548AbiGNJ0V (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 14 Jul 2022 05:26:21 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D32228710;
+        Thu, 14 Jul 2022 02:25:04 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1657790701;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0sevqOoO0yR+Fu0jMJ1cbzLRwE84EUc3tWuJ6vmCvvM=;
+        b=Eoari3iuC1jFcIVGijSMqtUlKrF1361LD/j8a7LCccDCfrYEc78nQ68QBaQ837f5olhy4t
+        rWarVSn2BhomTEUGolZ13yWJJ7ekR1WufOKQzNuw801Y7qB8BKLSulOSDG70kCoyjDcrMY
+        0oxmw93g5ibXGmrM2mN6XWtWMqS63cGMR2OMMjvIBo/2QFbkCdS7JBf5YkXeS93MoQ4mjv
+        ZHHLpUSTvZbv3Uoj2fugqxP5k9HcDdBdvU7ERsD32FGHiIq7cUz6XwbC3ioh6uAKhlzMuK
+        JMZkMQbutAG6mdinYrYWqJIAHPlrVQlJzKrZ3CvwIv992a2a4BjhJQAwb1nwKg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1657790701;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0sevqOoO0yR+Fu0jMJ1cbzLRwE84EUc3tWuJ6vmCvvM=;
+        b=GdIk5VPtOS9TickkMdzGS8uKNwVQLg0vhPJd4QTmzIOZuNRqSAsB0ErgeTVJnaAH82LdTW
+        334lYHgzLKE2JxCg==
+To:     Zhouyi Zhou <zhouzhouyi@gmail.com>, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org, npiggin@gmail.com,
+        ldufour@linux.ibm.com, pmladek@suse.com, Julia.Lawall@inria.fr,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        lance@osuosl.org, paulmck@kernel.org, rcu@vger.kernel.org
+Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>
+Subject: Re: [PATCH linux-next] powerpc: use raw_smp_processor_id in
+ arch_touch_nmi_watchdog
+In-Reply-To: <20220714013131.12648-1-zhouzhouyi@gmail.com>
+References: <20220714013131.12648-1-zhouzhouyi@gmail.com>
+Date:   Thu, 14 Jul 2022 11:31:00 +0206
+Message-ID: <87tu7k6o7n.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <PH0PR11MB588067B6DC5195CBE1DDA7BFDA889@PH0PR11MB5880.namprd11.prod.outlook.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jul 14, 2022 at 01:53:20AM +0000, Zhang, Qiang1 wrote:
-> 
-> On Tue, Jul 12, 2022 at 04:26:06PM +0800, Zqiang wrote:
-> > When the rcu_scheduler_active variable is RCU_SCHEDULER_INACTIVE and not
-> > yet converted to RCU_SCHEDULER_INIT, there is only idle task, any legal
-> > call synchronize_rcu_tasks_generic() is a quiescent state. this commit
-> > make synchronize_rcu_tasks_generic() no-ops when the rcu_scheduler_active
-> > variable is RCU_SCHEDULER_INACTIVE.
-> > 
-> > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-> > ---
-> 
-> >It looks like this would be a good way to provide early boot access
-> >to synchronize_rcu_tasks(), synchronize_rcu_tasks_rude(), and
-> >synchronize_rcu_tasks_trace().
-> >
-> >But do we really need early boot access to these functions?  As in has
-> >the below WARN_ON() actually triggered?
-> 
-> when the rcu_scheduler_active variable is RCU_SCHEDULER_INACTIVE,
-> invoke synchronize_rcu_tasks_generic(), in addition to triggering a warning, 
-> also need to make it return directly, if not, the rcu_tasks_one_gp() will be
-> called directly, but due to the rtp structure's -> pregp_func is not initialized,
-> A null pointer bug will appear.
-> 
-> But like said, I don't see the need to call synchronize_rcu_tasks_generic() on 
-> early booting.  maybe this change is  not necessary.
+On 2022-07-14, Zhouyi Zhou <zhouzhouyi@gmail.com> wrote:
+> use raw_smp_processor_id() in arch_touch_nmi_watchdog
+> because when called from watchdog, the cpu is preemptible.
 
-Not yet, anyway.  And adding this would require more testing.
+I would expect the correct solution is to make it a non-migration
+section. Something like the below (untested) patch.
 
-However, if the current warning does trigger, and the caller has a
-legitimate reason for invoking this function so early, please remember
-this patch.  ;-)
+John Ogness
 
-							Thanx, Paul
-
-> Thanks
-> Zqiang
-> 
-> >
-> >And if it has triggered, and in a context that means that these functions
-> >really are needed during early boot, how should the testing strategy
-> >change to test these at the relevant portions of the boot sequence?
-> >
-> >>From what I know, hitting these during early boot would indicate that
-> >something was removing a trace during early boot, and I know of no way
-> >to make that happen.  Hence my skepticism.  ;-)
-> >
-> >But *if* this was really needed, this looks to be a reasonable way to
-> >implement it.
-> >
-> >							Thanx, Paul
-> 
-> >  kernel/rcu/tasks.h | 5 +++--
-> >  1 file changed, 3 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> > index 469bf2a3b505..0237e765c28e 100644
-> > --- a/kernel/rcu/tasks.h
-> > +++ b/kernel/rcu/tasks.h
-> > @@ -560,8 +560,9 @@ static int __noreturn rcu_tasks_kthread(void *arg)
-> >  static void synchronize_rcu_tasks_generic(struct rcu_tasks *rtp)
-> >  {
-> >  	/* Complain if the scheduler has not started.  */
-> > -	WARN_ONCE(rcu_scheduler_active == RCU_SCHEDULER_INACTIVE,
-> > -			 "synchronize_rcu_tasks called too soon");
-> > +	if (WARN_ONCE(rcu_scheduler_active == RCU_SCHEDULER_INACTIVE,
-> > +			 "synchronize_rcu_tasks called too soon"))
-> > +		return;
-> >  
-> >  	// If the grace-period kthread is running, use it.
-> >  	if (READ_ONCE(rtp->kthread_ptr)) {
-> > -- 
-> > 2.25.1
-> > 
+diff --git a/arch/powerpc/kernel/watchdog.c b/arch/powerpc/kernel/watchdog.c
+index bfc27496fe7e..9d34aa809241 100644
+--- a/arch/powerpc/kernel/watchdog.c
++++ b/arch/powerpc/kernel/watchdog.c
+@@ -450,17 +450,23 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
+ void arch_touch_nmi_watchdog(void)
+ {
+ 	unsigned long ticks = tb_ticks_per_usec * wd_timer_period_ms * 1000;
+-	int cpu = smp_processor_id();
++	int cpu;
+ 	u64 tb;
+ 
+-	if (!cpumask_test_cpu(cpu, &watchdog_cpumask))
++	cpu = get_cpu();
++
++	if (!cpumask_test_cpu(cpu, &watchdog_cpumask)) {
++		goto out;
+ 		return;
++	}
+ 
+ 	tb = get_tb();
+ 	if (tb - per_cpu(wd_timer_tb, cpu) >= ticks) {
+ 		per_cpu(wd_timer_tb, cpu) = tb;
+ 		wd_smp_clear_cpu_pending(cpu);
+ 	}
++out:
++	put_cpu();
+ }
+ EXPORT_SYMBOL(arch_touch_nmi_watchdog);
