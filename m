@@ -2,89 +2,117 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 25A45C43334
-	for <rcu@archiver.kernel.org>; Wed, 13 Jul 2022 21:39:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EB2CBC43334
+	for <rcu@archiver.kernel.org>; Thu, 14 Jul 2022 01:31:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231769AbiGMVjg (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 13 Jul 2022 17:39:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58224 "EHLO
+        id S231218AbiGNBbt (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 13 Jul 2022 21:31:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231194AbiGMVjc (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 13 Jul 2022 17:39:32 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C911B7DC
-        for <rcu@vger.kernel.org>; Wed, 13 Jul 2022 14:39:32 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id i21so3790qtw.12
-        for <rcu@vger.kernel.org>; Wed, 13 Jul 2022 14:39:32 -0700 (PDT)
+        with ESMTP id S229990AbiGNBbr (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 13 Jul 2022 21:31:47 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FF9F14D30;
+        Wed, 13 Jul 2022 18:31:47 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id o15so978798pjh.1;
+        Wed, 13 Jul 2022 18:31:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nuxfK0q2wf4Rn7CeoW2/Kq/kuz+vEBF33gCfxjJbFD4=;
-        b=kQbrFtHvDKJgH7vuf7sh3I7tgMJXNiSwgrZzmmWaYLTljOhU7O8IlGwRAH1NZLOP5m
-         eTXsGIGkZl4Uo0ATajfHHUytsD+Dm3tOR2xyG8lfZ/+0JOm9qm2QOTs//kHlLZ+QSB8M
-         5rfFeK/fcVRHCaIQ4cTgxASOFx7R+2QzqQST8=
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ilqttwPjepFmD0kTfN75XWGy4SipmcKZuxYQ1eii/xY=;
+        b=GKRliKCwtnaD66A0Ae+OyYbPImmQaG2tNrTZKV1gZ52F3r1bLvcAc3Hr4mw3TrnmLD
+         9gQViN1fPPKUqykFkbr5g84/3mclhW118fP8W9N3SDEakHX8XD0ccUOjfFzMPCcJ2e/Q
+         CD8wWNELZvy37nwwMaUw7ShL16oSQARG6pHoWktW9MtbDvy6XHPHzqXxFmurZ3Slqz5G
+         4IZn3OoVCmF9me5jujxBy6bzz41aA/BFGIkmwEatV76QLX1dbWWHpSOippyHaisKom0U
+         xBezwhqpglnHNTor5kRqsZMg7q18+Qpq1wNmnQZ7rkZICTNRp48kliBXk6OWtxYpKFvz
+         41pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nuxfK0q2wf4Rn7CeoW2/Kq/kuz+vEBF33gCfxjJbFD4=;
-        b=sEC0j0Z73lKIcrKxEPmEmkuz2uGpcOhHFYUmbv2K9URvNDsYxjplyOQ7pQs+xI01BG
-         W0H+syjQvGKJ3rNj+mlrk14ixB3GR3W+NxkDpBh3jZ4SdUTqHEIL8lVkg+tfLIspfdJp
-         A1FUmeIrU/2inYJyJepN81PHE1lUUL9oEARWFtpTZUllmu+TV0NUueUTVp/xWqnjeLZM
-         85PBsJZ5xWBxmwwgSrorz6Kfcx46FZDnQd0wnBaxOj1bjJqNuVU32Yr96oVfGIaxrNKg
-         PIJz+0VSUn5O08BJt5UxpXLxqYL8ttfFe0Xw1968+J5ycx+bm8Q9XELaOFBVBaU/WZGf
-         ZMMw==
-X-Gm-Message-State: AJIora+OY1xpjylRpCl3p77Yd6pHn9BKBTcXIhS6Rdre+p3yFL6aAS9u
-        yi2abk3Uca+YZwrML0xIsjNMPPjeErnQCQ==
-X-Google-Smtp-Source: AGRyM1vPtKnS+ya20dlvO6jDoeU4guIzfxTJmt9q4vuJATJuUb66VfV2gi2rgbmyZn5JD3fSxbZbTw==
-X-Received: by 2002:ac8:5c15:0:b0:31b:f0a5:fab0 with SMTP id i21-20020ac85c15000000b0031bf0a5fab0mr5241459qti.77.1657748371142;
-        Wed, 13 Jul 2022 14:39:31 -0700 (PDT)
-Received: from localhost (228.221.150.34.bc.googleusercontent.com. [34.150.221.228])
-        by smtp.gmail.com with ESMTPSA id j15-20020a05620a288f00b006a3325fd985sm12972034qkp.13.2022.07.13.14.39.30
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ilqttwPjepFmD0kTfN75XWGy4SipmcKZuxYQ1eii/xY=;
+        b=NKd7/wPWeHKibpmN1j7nO0seENEAPGcmoTYCGLMkb27eREURBKpsInf2PJjOjjTy81
+         AzWm5/bBBmlHRxh4vr5L2u78TIyBR4DTcZzt9uFuYxrThZNz18XV/nR2bfoRZ7KHCVUg
+         tXRcalQXgPCUBuuqPlgNmmYy9yRqVfSJZ9Lb/lad4XWIWF7wCcdjFTbMG+/3cu3WcgZA
+         N6AVUXm7H5z9vMJjoLqt281xIwesTLVxAbASmHnF2RaR4g6EXR8xZ6aAGAGWJyYcAZZk
+         hs/3VayELe1paDsXD5Cqn7WcSjRuNWT/NTtVIzpyIcSnfaRhVJ+aWK4/uBHpBMD4HlQN
+         fWxQ==
+X-Gm-Message-State: AJIora+8Ct30as3E03JYIEO0jGIoqAcpR/V6jDsgZPM0P3Onivay4/jY
+        yWQU5GBSGr90tzd2ZTaLp0I=
+X-Google-Smtp-Source: AGRyM1veZQifNlI6HlJ1G5RFvwADsMIqAt4I7Ix+cZ73sqMaCWOau4H+HR4whROaPJKbCpwYRJGREw==
+X-Received: by 2002:a17:90a:2c0d:b0:1ef:c839:c34b with SMTP id m13-20020a17090a2c0d00b001efc839c34bmr13481892pjd.39.1657762306790;
+        Wed, 13 Jul 2022 18:31:46 -0700 (PDT)
+Received: from localhost.localdomain ([85.203.23.27])
+        by smtp.gmail.com with ESMTPSA id r14-20020a63ec4e000000b004150a28a56fsm21912pgj.53.2022.07.13.18.31.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jul 2022 14:39:30 -0700 (PDT)
-Date:   Wed, 13 Jul 2022 21:39:30 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     rcu@vger.kernel.org
-Cc:     rushikesh.s.kadam@intel.com, urezki@gmail.com,
-        neeraj.iitr10@gmail.com, frederic@kernel.org, paulmck@kernel.org,
-        rostedt@goodmis.org
-Subject: Re: [PATCH 1/5] rcu: Introduce call_rcu_lazy() API implementation
-Message-ID: <Ys87ks05PD17dFz1@google.com>
-References: <20220713213237.1596225-1-joel@joelfernandes.org>
- <20220713213237.1596225-2-joel@joelfernandes.org>
+        Wed, 13 Jul 2022 18:31:46 -0700 (PDT)
+From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
+To:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        npiggin@gmail.com, ldufour@linux.ibm.com, pmladek@suse.com,
+        john.ogness@linutronix.de, Julia.Lawall@inria.fr,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        lance@osuosl.org, paulmck@kernel.org, rcu@vger.kernel.org
+Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>
+Subject: [PATCH linux-next] powerpc: use raw_smp_processor_id in arch_touch_nmi_watchdog
+Date:   Thu, 14 Jul 2022 09:31:31 +0800
+Message-Id: <20220714013131.12648-1-zhouzhouyi@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220713213237.1596225-2-joel@joelfernandes.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Jul 13, 2022 at 09:32:33PM +0000, Joel Fernandes (Google) wrote:
+use raw_smp_processor_id() in arch_touch_nmi_watchdog
+because when called from watchdog, the cpu is preemptible.
 
-> + * Furthermore, if CPU A invoked call_rcu() and CPU B invoked the
-> + * resulting RCU callback function "func()", then both CPU A and CPU B are
-> + * guaranteed to execute a full memory barrier during the time interval
-> + * between the call to call_rcu() and the invocation of "func()" -- even
-> + * if CPU A and CPU B are the same CPU (but again only if the system has
-> + * more than one CPU).
-> + *
-> + * Implementation of these memory-ordering guarantees is described here:
-> + * Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst.
-> + */
-> +void call_rcu(struct rcu_head *head, rcu_callback_t func)
-> +{
-> +	return __call_rcu_common(head, func, force_call_rcu_to_lazy);
-> +
-> +}
+Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+---
+Dear PPC developers
 
-I will kill that extra new line. LOL something always has to go wrong no
-matter how many hours you spend making sure eveyrthing is good :) Luckily
-cosmetic here.
+I found this bug when trying to do rcutorture tests in ppc VM of
+Open Source Lab of Oregon State University.
 
-thanks,
+qemu-system-ppc64  -nographic -smp cores=4,threads=1 -net none  -M pseries -nodefaults -device spapr-vscsi -serial file:/tmp/console.log -m 2G -kernel /home/ubuntu/linux-next/tools/testing/selftests/rcutorture/res/2022.07.08-22.36.11-torture/results-rcuscale-kvfree/TREE/vmlinux -append "debug_boot_weak_hash panic=-1 console=ttyS0 rcuscale.kfree_rcu_test=1 rcuscale.kfree_nthreads=16 rcuscale.holdoff=20 rcuscale.kfree_loops=10000 torture.disable_onoff_at_boot rcuscale.shutdown=1 rcuscale.verbose=0"
 
- - Joel
+tail /tmp/console.log
+[ 1232.433552][   T41] BUG: using smp_processor_id() in preemptible [00000000] code: khungtaskd/41
+[ 1232.439751][   T41] caller is arch_touch_nmi_watchdog+0x34/0xd0
+[ 1232.440934][   T41] CPU: 3 PID: 41 Comm: khungtaskd Not tainted 5.19.0-rc5-next-20220708-dirty #106
+[ 1232.442684][   T41] Call Trace:
+[ 1232.443343][   T41] [c0000000029cbbb0] [c0000000006df360] dump_stack_lvl+0x74/0xa8 (unreliable)
+[ 1232.445237][   T41] [c0000000029cbbf0] [c000000000d04f30] check_preemption_disabled+0x150/0x160
+[ 1232.446926][   T41] [c0000000029cbc80] [c000000000035584] arch_touch_nmi_watchdog+0x34/0xd0
+[ 1232.448532][   T41] [c0000000029cbcb0] [c0000000002068ac] watchdog+0x40c/0x5b0
+[ 1232.451449][   T41] [c0000000029cbdc0] [c000000000139df4] kthread+0x144/0x170
+[ 1232.452896][   T41] [c0000000029cbe10] [c00000000000cd54] ret_from_kernel_thread+0x5c/0x64
+
+After this fix, "BUG: using smp_processor_id() in preemptible [00000000] code: khungtaskd/41" does not
+appear again.
+
+I also examined other places in watchdog.c where smp_processor_id() are used, but they are well protected by preempt
+disable.
+
+Kind Regards
+Zhouyi
+--
+ arch/powerpc/kernel/watchdog.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/powerpc/kernel/watchdog.c b/arch/powerpc/kernel/watchdog.c
+index 7d28b9553654..ab6b84e00311 100644
+--- a/arch/powerpc/kernel/watchdog.c
++++ b/arch/powerpc/kernel/watchdog.c
+@@ -450,7 +450,7 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
+ void arch_touch_nmi_watchdog(void)
+ {
+ 	unsigned long ticks = tb_ticks_per_usec * wd_timer_period_ms * 1000;
+-	int cpu = smp_processor_id();
++	int cpu = raw_smp_processor_id();
+ 	u64 tb;
+ 
+ 	if (!cpumask_test_cpu(cpu, &watchdog_cpumask))
+-- 
+2.25.1
 
