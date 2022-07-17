@@ -2,81 +2,129 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 85192C43334
-	for <rcu@archiver.kernel.org>; Sun, 17 Jul 2022 14:33:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D34F3C43334
+	for <rcu@archiver.kernel.org>; Sun, 17 Jul 2022 18:26:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229654AbiGQOdL (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 17 Jul 2022 10:33:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51254 "EHLO
+        id S231781AbiGQS0E (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 17 Jul 2022 14:26:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229601AbiGQOdK (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 17 Jul 2022 10:33:10 -0400
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40A0D15814;
-        Sun, 17 Jul 2022 07:33:09 -0700 (PDT)
+        with ESMTP id S229544AbiGQS0E (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 17 Jul 2022 14:26:04 -0400
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A04912613;
+        Sun, 17 Jul 2022 11:26:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1658068389; x=1689604389;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=x3vifSfYKYciuNC9kpnllNYzaEXNsYZUcjc3GTcyvHU=;
-  b=eXtUthGx0dAPEO4NxB7aiOWKXAOsfhUh14o/jlQn6QSlv+S5GRRVQDsX
-   TYA9y7Q7LOFFl+3qx9FYE9RySsw4SlTZ6CsWfztnU5qa6xKzFnMnq23Tx
-   677Vs8m7KaPkuy8SuVw7tES2Jga8oAO5EkCWsAAJ2PY92JhGoiasaiA6s
-   QGP8yjicF/4PlGFFoof2nzTYkVcQu6rw/YSpc3Z9rSlSXEviTNV7bH6Re
-   1x1iuuS5fUcF4Ug/lHpZYfvrGkI+IcgjSjyBcZGsZ9fmQJKqk36zagB1M
-   WZnXzGlYp8THiMz4jXFiiUa+7JoaNBYIgCCMFJgVankAgEhpaW+KziuYz
-   g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10411"; a="265851423"
+  t=1658082362; x=1689618362;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Lev7I62R+ZkqbUI7VHug5zWd6VrLgETsZS6J/rKaTh4=;
+  b=fd4mhEviOKTZdNKWjWz1adon0TUAyVZ2rxS7mx8hgFyz8wB3rkAURtJc
+   4fiyw/uxVwqVi5BTteV26NzWeB8aXuxRC2/61ei022S/qm3jCoEDLje7Q
+   bZbQJlkwi3BC1s60Hlmd5PCKL7BgEB0CDYUWfg8Sd3foC9BCE0xkJ5xWw
+   oUTMpom5BL5h+eswURHSuoAG1fe52BuH0sY9Rp5ZNy75tdTH82sK9Np9W
+   wAZQnTdWEF6e7sLnqLk3DJBrFo3FLJKveCZxNIxVDheyqgerE8cssI+10
+   Z6yP0AdeqAKB+KeuQDcdOzqqUGGuscmyWCJts1quov4UfMCf4zO6v2a1W
+   w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10411"; a="347770619"
 X-IronPort-AV: E=Sophos;i="5.92,279,1650956400"; 
-   d="scan'208";a="265851423"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2022 07:33:08 -0700
+   d="scan'208";a="347770619"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2022 11:26:01 -0700
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.92,279,1650956400"; 
-   d="scan'208";a="654951133"
-Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.125])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2022 07:33:07 -0700
-From:   Zqiang <qiang1.zhang@intel.com>
-To:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
+   d="scan'208";a="624455965"
+Received: from lkp-server02.sh.intel.com (HELO ff137eb26ff1) ([10.239.97.151])
+  by orsmga008.jf.intel.com with ESMTP; 17 Jul 2022 11:25:59 -0700
+Received: from kbuild by ff137eb26ff1 with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1oD8xq-0003ZM-NH;
+        Sun, 17 Jul 2022 18:25:58 +0000
+Date:   Mon, 18 Jul 2022 02:25:39 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Zqiang <qiang1.zhang@intel.com>, paulmck@kernel.org,
+        frederic@kernel.org, quic_neeraju@quicinc.com,
         joel@joelfernandes.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] rcu-tasks: Make RCU Tasks Trace checking for userspace execution
-Date:   Sun, 17 Jul 2022 22:38:01 +0800
-Message-Id: <20220717143801.189865-1-qiang1.zhang@intel.com>
-X-Mailer: git-send-email 2.25.1
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu-tasks: Make RCU Tasks Trace checking for userspace
+ execution
+Message-ID: <202207180246.5cKJdGrg-lkp@intel.com>
+References: <20220717143801.189865-1-qiang1.zhang@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220717143801.189865-1-qiang1.zhang@intel.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-For RCU tasks trace, the userspace execution is also a valid quiescent
-state, if the task is in userspace, the ->trc_reader_nesting should be
-zero and if the ->trc_reader_special.b.need_qs is not set, set the
-tasks ->trc_reader_special.b.need_qs is TRC_NEED_QS_CHECKED, this cause
-grace-period kthread remove it from holdout list if it remains here.
+Hi Zqiang,
 
-This commit add rcu_tasks_trace_qs() to rcu_flavor_sched_clock_irq()
-when the kernel built with no PREEMPT_RCU.
+Thank you for the patch! Yet something to improve:
 
-Signed-off-by: Zqiang <qiang1.zhang@intel.com>
----
- kernel/rcu/tree_plugin.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+[auto build test ERROR on paulmck-rcu/dev]
+[also build test ERROR on linus/master v5.19-rc6 next-20220715]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 4152816dd29f..764cc4db4134 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -976,7 +976,7 @@ static void rcu_flavor_sched_clock_irq(int user)
- 		 * neither access nor modify, at least not while the
- 		 * corresponding CPU is online.
- 		 */
--
-+		rcu_tasks_trace_qs(current);
- 		rcu_qs();
- 	}
- }
+url:    https://github.com/intel-lab-lkp/linux/commits/Zqiang/rcu-tasks-Make-RCU-Tasks-Trace-checking-for-userspace-execution/20220717-223556
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev
+config: hexagon-randconfig-r041-20220717 (https://download.01.org/0day-ci/archive/20220718/202207180246.5cKJdGrg-lkp@intel.com/config)
+compiler: clang version 15.0.0 (https://github.com/llvm/llvm-project 45067f8fbf61284839c739807c2da2e2505661eb)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/d078656cad783fefa6506b05e7dfd1ce43f23eb0
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Zqiang/rcu-tasks-Make-RCU-Tasks-Trace-checking-for-userspace-execution/20220717-223556
+        git checkout d078656cad783fefa6506b05e7dfd1ce43f23eb0
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=hexagon SHELL=/bin/bash
+
+If you fix the issue, kindly add following tag where applicable
+Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+   In file included from kernel/rcu/tree.c:4638:
+>> kernel/rcu/tree_plugin.h:979:3: error: call to undeclared function 'rcu_tasks_trace_qs'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+                   rcu_tasks_trace_qs(current);
+                   ^
+   1 error generated.
+
+
+vim +/rcu_tasks_trace_qs +979 kernel/rcu/tree_plugin.h
+
+   959	
+   960	/*
+   961	 * Check to see if this CPU is in a non-context-switch quiescent state,
+   962	 * namely user mode and idle loop.
+   963	 */
+   964	static void rcu_flavor_sched_clock_irq(int user)
+   965	{
+   966		if (user || rcu_is_cpu_rrupt_from_idle()) {
+   967	
+   968			/*
+   969			 * Get here if this CPU took its interrupt from user
+   970			 * mode or from the idle loop, and if this is not a
+   971			 * nested interrupt.  In this case, the CPU is in
+   972			 * a quiescent state, so note it.
+   973			 *
+   974			 * No memory barrier is required here because rcu_qs()
+   975			 * references only CPU-local variables that other CPUs
+   976			 * neither access nor modify, at least not while the
+   977			 * corresponding CPU is online.
+   978			 */
+ > 979			rcu_tasks_trace_qs(current);
+   980			rcu_qs();
+   981		}
+   982	}
+   983	
+
 -- 
-2.25.1
-
+0-DAY CI Kernel Test Service
+https://01.org/lkp
