@@ -2,107 +2,81 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F0E89C433EF
-	for <rcu@archiver.kernel.org>; Fri, 15 Jul 2022 17:17:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 85192C43334
+	for <rcu@archiver.kernel.org>; Sun, 17 Jul 2022 14:33:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231213AbiGORR5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 15 Jul 2022 13:17:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54352 "EHLO
+        id S229654AbiGQOdL (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 17 Jul 2022 10:33:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229560AbiGORR4 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 15 Jul 2022 13:17:56 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B0DE45980
-        for <rcu@vger.kernel.org>; Fri, 15 Jul 2022 10:17:55 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 257FBB82D22
-        for <rcu@vger.kernel.org>; Fri, 15 Jul 2022 17:17:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2999C34115;
-        Fri, 15 Jul 2022 17:17:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1657905472;
-        bh=FD3x+OfmOGn5Pw8Y/ennRpprEYYEvOXZw6ccx6Nc2h4=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=hsGZOxlJB7o8eUvKn36Fm1h85aZcz9st5jZrzpVIQXSX+LO9KO6BIlMbOgKBhzcvU
-         Ci0KObassFT9r101Z8zB2LK7Lme7hFvSgCljnTP1G4Fw7z0iqHfjdFd2NN2PhvXkIg
-         bji/uCHzd29tGBrntvWmYwtuPL983nJTtbJwaaZvW3KjlrNonalHcxbjFydP0jonyq
-         ovIsmpYK8ir2pnYUaUt3+3L0ckuqoy24aQDjAMhxw2J1Z/wutWd9Dmj0lIsICTqHM5
-         eL6brL+cAFyV5FZ7iRakB/WCzXqtb/EILejubuVPwMYRQXj1zcgIViiM+i+I9M/Ws+
-         F90amwECF7eWw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 57BBE5C03A3; Fri, 15 Jul 2022 10:17:52 -0700 (PDT)
-Date:   Fri, 15 Jul 2022 10:17:52 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     rcu@vger.kernel.org, rushikesh.s.kadam@intel.com, urezki@gmail.com,
-        neeraj.iitr10@gmail.com, frederic@kernel.org, rostedt@goodmis.org
-Subject: Re: [PATCH v3 0/5] Implement call_rcu_lazy() and miscellaneous fixes
-Message-ID: <20220715171752.GB1790663@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220713213237.1596225-1-joel@joelfernandes.org>
- <20220714205154.GU1790663@paulmck-ThinkPad-P17-Gen-1>
- <20220714222131.GA3321557@paulmck-ThinkPad-P17-Gen-1>
- <YtGFLFbzuZncfDeN@google.com>
- <20220715152937.GA1790663@paulmck-ThinkPad-P17-Gen-1>
- <YtGKcScgTh3t4SYS@google.com>
- <YtGMucOzKDy5A1UK@google.com>
+        with ESMTP id S229601AbiGQOdK (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 17 Jul 2022 10:33:10 -0400
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40A0D15814;
+        Sun, 17 Jul 2022 07:33:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1658068389; x=1689604389;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=x3vifSfYKYciuNC9kpnllNYzaEXNsYZUcjc3GTcyvHU=;
+  b=eXtUthGx0dAPEO4NxB7aiOWKXAOsfhUh14o/jlQn6QSlv+S5GRRVQDsX
+   TYA9y7Q7LOFFl+3qx9FYE9RySsw4SlTZ6CsWfztnU5qa6xKzFnMnq23Tx
+   677Vs8m7KaPkuy8SuVw7tES2Jga8oAO5EkCWsAAJ2PY92JhGoiasaiA6s
+   QGP8yjicF/4PlGFFoof2nzTYkVcQu6rw/YSpc3Z9rSlSXEviTNV7bH6Re
+   1x1iuuS5fUcF4Ug/lHpZYfvrGkI+IcgjSjyBcZGsZ9fmQJKqk36zagB1M
+   WZnXzGlYp8THiMz4jXFiiUa+7JoaNBYIgCCMFJgVankAgEhpaW+KziuYz
+   g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10411"; a="265851423"
+X-IronPort-AV: E=Sophos;i="5.92,279,1650956400"; 
+   d="scan'208";a="265851423"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2022 07:33:08 -0700
+X-IronPort-AV: E=Sophos;i="5.92,279,1650956400"; 
+   d="scan'208";a="654951133"
+Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.125])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2022 07:33:07 -0700
+From:   Zqiang <qiang1.zhang@intel.com>
+To:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
+        joel@joelfernandes.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] rcu-tasks: Make RCU Tasks Trace checking for userspace execution
+Date:   Sun, 17 Jul 2022 22:38:01 +0800
+Message-Id: <20220717143801.189865-1-qiang1.zhang@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YtGMucOzKDy5A1UK@google.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Jul 15, 2022 at 03:50:17PM +0000, Joel Fernandes wrote:
-> On Fri, Jul 15, 2022 at 03:40:33PM +0000, Joel Fernandes wrote:
-> > On Fri, Jul 15, 2022 at 08:29:37AM -0700, Paul E. McKenney wrote:
-> > > On Fri, Jul 15, 2022 at 03:18:04PM +0000, Joel Fernandes wrote:
-> > > > On Thu, Jul 14, 2022 at 03:21:31PM -0700, Paul E. McKenney wrote:
-> > > > > On Thu, Jul 14, 2022 at 01:51:54PM -0700, Paul E. McKenney wrote:
-> > > > > > On Wed, Jul 13, 2022 at 09:32:32PM +0000, Joel Fernandes (Google) wrote:
-> > > > > > > Hello!
-> > > > > > > 
-> > > > > > > Please find the next improved version of call_rcu_lazy() attached.  The main
-> > > > > > > difference between the previous versions is that:
-> > > > > > > - In v2 rcu_barrier is fixed to not hang (I found this to be due to a missing
-> > > > > > >   GP thread wakeup), now I am limiting this wake up only to rcu_barrier() as
-> > > > > > >   requested by Paul.
-> > > > > > > - Fixed checkpatch and build robot issues.
-> > > > > > > - Some more changes to 'lazy' parameter passing and consolidation of segcblist
-> > > > > > >   functions.
-> > > > > > > - more testing via rcutorture and rcuscale.
-> > > > > > 
-> > > > > > Thank you!  What I am going to do is to pull these into an experimental
-> > > > > > not-for-mainline branch and run the usual set of rcutorture tests.
-> > > > > > I will then take a look at the patches.
-> > > > > 
-> > > > > And there were a few conflicts with the nocb patch series in -rcu.
-> > > > > The allegedly conflict-resolved series is here: joel.2022.07.14a
-> > > > > Please let me know if I messed something up.
-> > > > 
-> > > > Thanks, it looks Ok. There is one robot fix for hexagon's arch where I think
-> > > > TREE_RCU is disabled, could you apply the diff below to patch 1/5 ?
-> > > > 
-> > > > Or, I can also just keep it in my version of 1/5 to go out with the next rev.
-> > > 
-> > > Given that I am not testing on hexagon, I will let you fix this one on
-> > > the next rev.  If someone out there is testing this branch on hexagon,
-> > > they should feel free to apply your patch locally.  ;-)
-> > 
-> > I am pretty sure this is the feature that was going to make Hexagon widely
-> > adopted, but your call ;-)
+For RCU tasks trace, the userspace execution is also a valid quiescent
+state, if the task is in userspace, the ->trc_reader_nesting should be
+zero and if the ->trc_reader_special.b.need_qs is not set, set the
+tasks ->trc_reader_special.b.need_qs is TRC_NEED_QS_CHECKED, this cause
+grace-period kthread remove it from holdout list if it remains here.
 
-Then they should be highly motivated to apply your patch.  ;-)
+This commit add rcu_tasks_trace_qs() to rcu_flavor_sched_clock_irq()
+when the kernel built with no PREEMPT_RCU.
 
-> Jokes apart, I am sure this feature will be useful to a lot of folks and
-> architectures but lets keep this diff for the next revision as you said.
-> 
-> Actually never heard of Hexagon till today... 32-bit and 4x VLIW, Cool! :
-> https://en.wikipedia.org/wiki/Qualcomm_Hexagon
+Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+---
+ kernel/rcu/tree_plugin.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Indeed, there are still about 20 different types of processors running Linux.
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index 4152816dd29f..764cc4db4134 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -976,7 +976,7 @@ static void rcu_flavor_sched_clock_irq(int user)
+ 		 * neither access nor modify, at least not while the
+ 		 * corresponding CPU is online.
+ 		 */
+-
++		rcu_tasks_trace_qs(current);
+ 		rcu_qs();
+ 	}
+ }
+-- 
+2.25.1
 
-							Thanx, Paul
