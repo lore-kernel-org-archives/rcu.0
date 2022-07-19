@@ -2,161 +2,137 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CCFE0C43334
-	for <rcu@archiver.kernel.org>; Tue, 19 Jul 2022 14:41:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 425BDC433EF
+	for <rcu@archiver.kernel.org>; Tue, 19 Jul 2022 17:15:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239472AbiGSOl6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 19 Jul 2022 10:41:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58886 "EHLO
+        id S235321AbiGSRPw (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 19 Jul 2022 13:15:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239645AbiGSOlo (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 19 Jul 2022 10:41:44 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA08A40BF6;
-        Tue, 19 Jul 2022 07:38:32 -0700 (PDT)
+        with ESMTP id S229869AbiGSRPw (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 19 Jul 2022 13:15:52 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05D9145F5A;
+        Tue, 19 Jul 2022 10:15:51 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3701B617DA;
-        Tue, 19 Jul 2022 14:38:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D190C341CB;
-        Tue, 19 Jul 2022 14:38:31 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id A6D85B81C36;
+        Tue, 19 Jul 2022 17:15:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50B5FC341C6;
+        Tue, 19 Jul 2022 17:15:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1658241511;
-        bh=pGf1YmN+o/VpKXgM03koQq4c5xvoYJDJMg48G91Fs5A=;
+        s=k20201202; t=1658250948;
+        bh=4X43Kx/zJCp1qP21ZCzYs7NFsjvKx83ugGlRc/nNIgA=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=mauTgrih6Ao+I8qPQF/CnqucCGeA9rOuIh7GuSnMETgQ7UqsGeI921C1ASGNR6K3W
-         nMQuQvS+07b+gyeVTVbiqVoUwnKBeLi0iJsslde8RQSEI3GXLtmUgNU8lqQBoJduM4
-         cvulXe7PXF/kcfqk6jZ65IWz+ODz5BolKky64zY2nPWtuzSTRgDxyROF0Y00BSB8XP
-         OdeZZqRpfKYJ06sW0ZhzOktJlKzH9fBNYV0pvQXa1CLgZSpu1vmKKT1UaqypmefqUw
-         7ONoJona0VYF/igaLoHNCOT9Z13QasZTLtwsmMSg1wRMgqHlmrPMTgp+IM6GO2FSYP
-         /lGCr3cJX9nYA==
+        b=dgE4eHo76T5+G0UtZ8RrMi4BqBQbu0zZFDdSVMjefQha6m9wi20xahiTg6wmIX7k9
+         UoStcv7mbSc8yPGN8lqh44+c4QsQR11YzW7BIo+VxhOL5MX4UYK4eaRg58VvkmT09X
+         Tfhm7hRgKLIHdNvhqshWiakjBBslowGufrtiNsGueUAQOlQ77q8YSLVxdj6jLYbtEI
+         Nna8Hcd0fdcMBaylOBabuit4x69uBUfhXeKz2R/WI9/lZ9N+lULIp4cBYjljZFX7ai
+         IYkRr5sSHg9L6UZK5ohslOs2z/dsI6YJRT4+CB4fkCNcVMrgQcfBwZrZ8x+iIq7s0e
+         KdmroxaHGKbGw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id DFC8C5C0813; Tue, 19 Jul 2022 07:38:30 -0700 (PDT)
-Date:   Tue, 19 Jul 2022 07:38:30 -0700
+        id D43205C0813; Tue, 19 Jul 2022 10:15:47 -0700 (PDT)
+Date:   Tue, 19 Jul 2022 10:15:47 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
-Cc:     "frederic@kernel.org" <frederic@kernel.org>,
-        "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>,
-        "joel@joelfernandes.org" <joel@joelfernandes.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] rcu-tasks: Make RCU Tasks Trace checking for
- userspace execution
-Message-ID: <20220719143830.GM1790663@paulmck-ThinkPad-P17-Gen-1>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Neeraj Upadhyay <quic_neeraju@quicinc.com>, frederic@kernel.org,
+        josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, linux-kernel@vger.kernel.org,
+        zhangfei.gao@foxmail.com, boqun.feng@gmail.com, urezki@gmail.com,
+        shameerali.kolothum.thodi@huawei.com, pbonzini@redhat.com,
+        mtosatti@redhat.com, eric.auger@redhat.com,
+        chenxiang66@hisilicon.com, zhangfei.gao@linaro.org,
+        rcu@vger.kernel.org
+Subject: Re: [PATCH v3] srcu: Reduce blocking agressiveness of expedited
+ grace periods further
+Message-ID: <20220719171547.GQ1790663@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20220718001610.263700-1-qiang1.zhang@intel.com>
- <20220718152132.GE1790663@paulmck-ThinkPad-P17-Gen-1>
- <PH0PR11MB58805ADED62CE2AF94647967DA8C9@PH0PR11MB5880.namprd11.prod.outlook.com>
- <20220719002604.GK1790663@paulmck-ThinkPad-P17-Gen-1>
- <PH0PR11MB5880375F53618C19D944EB06DA8F9@PH0PR11MB5880.namprd11.prod.outlook.com>
+References: <20220701031545.9868-1-quic_neeraju@quicinc.com>
+ <87o7xlzey3.wl-maz@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <PH0PR11MB5880375F53618C19D944EB06DA8F9@PH0PR11MB5880.namprd11.prod.outlook.com>
+In-Reply-To: <87o7xlzey3.wl-maz@kernel.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Jul 19, 2022 at 04:34:58AM +0000, Zhang, Qiang1 wrote:
-> On Mon, Jul 18, 2022 at 11:54:53PM +0000, Zhang, Qiang1 wrote:
-> > On Mon, Jul 18, 2022 at 08:16:10AM +0800, Zqiang wrote:
-> > > For RCU tasks trace, the userspace execution is also a valid 
-> > > quiescent state, if the task is in userspace, the 
-> > > ->trc_reader_nesting should be zero and if the 
-> > > ->trc_reader_special.b.need_qs is not set, set the tasks 
-> > > ->trc_reader_special.b.need_qs is TRC_NEED_QS_CHECKED, this cause grace-period kthread remove it from holdout list if it remains here.
-> > > 
-> > > This commit add rcu_tasks_trace_qs() to rcu_flavor_sched_clock_irq() 
-> > > when the kernel built with no PREEMPT_RCU.
-> > > 
-> > > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-> > >
-> > >The looks plausible to me, but can you tell me how this avoids the 
-> > >following sequence of events?
-> > >
-> > >o	CPU 0 takes a scheduling-clock interrupt.  Just before this
-> > >	point CPU 0 was running in user context, thus as you say
-> > >	should not be in an RCU Tasks quiescent state.
-> > >
-> > >o	CPU 0 enters an RCU Tasks Trace read-side critical section.
-> >                
-> >  if I understand correctly, you mean that CPU0 enters an RCU Tasks 
-> > Trace  read-side critical section in scheduling-clock interrupt context.
-> >
-> >Exactly, as might happen if one of the functions in the scheduling-clock interrupt hander were traced/instrumented.
-> >
-> > >o	CPU 1 starts a new RCU Tasks Trace grace period.
-> > 
-> > The grace period kthread will scan running tasks on each CPU, The 
-> > tasks currently running on CPU0 will be recorded in the holdout list.
-> >
-> >Yes, very good.
-> >
-> > >o	CPU 0 reaches the newly added rcu_note_voluntary_context_switch().
-> > 
-> > In this time, if CPU0 still in RCU Tasks Trace read-side critical 
-> > section, the tasks which running on CPU0 will insert CPU0 blocked 
-> > list. when this tasks exit RCU Tasks Trace read-side critical section, this task will remove from CPU0 block list.
-> > 
-> > Did I understand the scenario described above correctly?
-> >
-> >Looks like it to me.
-> >
-> >Could you please resend the patch with this explained in the commit log?  Possibly for the benefit of your future self.  ;-)
-> >
+On Tue, Jul 19, 2022 at 09:25:56AM +0100, Marc Zyngier wrote:
+> Hi folks,
 > 
-> Hi Paul, 
+> On Fri, 01 Jul 2022 04:15:45 +0100,
+> Neeraj Upadhyay <quic_neeraju@quicinc.com> wrote:
+> > 
+> > Commit 640a7d37c3f4 ("srcu: Block less aggressively for expedited
+> > grace periods") highlights a problem where aggressively blocking
+> > SRCU expedited grace periods, as was introduced in commit
+> > 282d8998e997 ("srcu: Prevent expedited GPs and blocking readers
+> > from consuming CPU"), introduces ~2 minutes delay to the overall
+> > ~3.5 minutes boot time, when starting VMs with "-bios QEMU_EFI.fd"
+> > cmdline on qemu, which results in very high rate of memslots
+> > add/remove, which causes > ~6000 synchronize_srcu() calls for
+> > kvm->srcu SRCU instance.
+> > 
+> > Below table captures the experiments done by Zhangfei Gao and Shameer
+> > to measure the boottime impact with various values of non-sleeping
+> > per phase counts, with HZ_250 and preemption enabled:
+> > 
+> > +──────────────────────────+────────────────+
+> > | SRCU_MAX_NODELAY_PHASE   | Boot time (s)  |
+> > +──────────────────────────+────────────────+
+> > | 100                      | 30.053         |
+> > | 150                      | 25.151         |
+> > | 200                      | 20.704         |
+> > | 250                      | 15.748         |
+> > | 500                      | 11.401         |
+> > | 1000                     | 11.443         |
+> > | 10000                    | 11.258         |
+> > | 1000000                  | 11.154         |
+> > +──────────────────────────+────────────────+
+> > 
+> > Analysis on the experiment results showed improved boot time
+> > with non blocking delays close to one jiffy duration. This
+> > was also seen when number of per-phase iterations were scaled
+> > to one jiffy.
+> > 
+> > So, this change scales per-grace-period phase number of non-sleeping
+> > polls, such that, non-sleeping polls are done for one jiffy. In addition
+> > to this, srcu_get_delay() call in srcu_gp_end(), which is used to calculate
+> > the delay used for scheduling callbacks, is replaced with the check for
+> > expedited grace period. This is done, to schedule cbs for completed expedited
+> > grace periods immediately, which results in improved boot time seen in
+> > experiments. Testing done by Marc and Zhangfei confirms that this change recovers
+> > most of the performance degradation in boottime; for CONFIG_HZ_250 configuration,
+> > boottime improves from 3m50s to 41s on Marc's setup; and from 2m40s to ~9.7s
+> > on Zhangfei's setup.
+> > 
+> > In addition to the changes to default per phase delays, this change
+> > adds 3 new kernel parameters - srcutree.srcu_max_nodelay,
+> > srcutree.srcu_max_nodelay_phase, srcutree.srcu_retry_check_delay.
+> > This allows users to configure the srcu grace period scanning delays,
+> > depending on their system configuration requirements.
+> > 
+> > Signed-off-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+> > Tested-by: Marc Zyngier <maz@kernel.org>
+> > Tested-by: Zhangfei Gao <zhangfei.gao@linaro.org>
 > 
-> I have resent v3 again, but maybe still need your wording 😊.
+> Is there any chance for this fix to make it into 5.19? The regression
+> is significant enough on low-end systems, and I'd rather see it
+> addressed.
 
-I do see both copies, thank you.  And yes, I am deferring the wordsmithing
-to  a time when I am awake.  ;-)
+I wasn't planning on it, based on my (possibly quite flawed) assumption
+that it affected only embedded systems running in a virtual environment.
+My plan was to send it in my pull request for the next merge window
+next week.  My pull request is next week, yes, the merge window opens
+the following Sunday.  ;-)
+
+It has a Fixes tag, so it will be backported.
+
+But if it is important to get it into v5.19 rather than v5.19.x for small
+"x", please let me know and I will see what Linus does with the resulting
+v5.19-rc7 pull request.
 
 							Thanx, Paul
-
-> Thanks
-> Zqiang
-> 
-> >							Thanx, Paul
-> >
-> > Thanks
-> > Zqiang
-> > 
-> > >
-> > >	Except that the quiescent state implied by userspace execution
-> > >	was before the new grace period, and thus does not apply to it.
-> > >
-> > >(Yes, I know, if this is a bug in this patch, the bug already exists 
-> > >due to the call in rcu_flavor_sched_clock_irq() for !PREEMPT kernels, 
-> > >but if this change is safe, it should be possible to explain why.)
-> > >
-> > >							Thanx, Paul
-> > >
-> > > ---
-> > >  v1->v2:
-> > >  Fix build error due to undeclared rcu_tasks_trace_qs(), note in 
-> > > no-PREEMPT_RCU  kernel, the RCU Tasks is replaced by RCU, so 
-> > > rcu_note_voluntary_context_switch()
-> > >  only include rcu_tasks_trace_qs().
-> > > 
-> > >  kernel/rcu/tree_plugin.h | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h 
-> > > index 4152816dd29f..5fb0b2dd24fd 100644
-> > > --- a/kernel/rcu/tree_plugin.h
-> > > +++ b/kernel/rcu/tree_plugin.h
-> > > @@ -976,7 +976,7 @@ static void rcu_flavor_sched_clock_irq(int user)
-> > >  		 * neither access nor modify, at least not while the
-> > >  		 * corresponding CPU is online.
-> > >  		 */
-> > > -
-> > > +		rcu_note_voluntary_context_switch(current);
-> > >  		rcu_qs();
-> > >  	}
-> > >  }
-> > > --
-> > > 2.25.1
-> > > 
