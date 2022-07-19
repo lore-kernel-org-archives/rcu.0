@@ -2,47 +2,47 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 03663C43334
-	for <rcu@archiver.kernel.org>; Tue, 19 Jul 2022 02:10:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C1005C43334
+	for <rcu@archiver.kernel.org>; Tue, 19 Jul 2022 04:34:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236738AbiGSCKY (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 18 Jul 2022 22:10:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46570 "EHLO
+        id S234366AbiGSEeM (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 19 Jul 2022 00:34:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236622AbiGSCKX (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 18 Jul 2022 22:10:23 -0400
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF3CF2A97F;
-        Mon, 18 Jul 2022 19:10:22 -0700 (PDT)
+        with ESMTP id S234905AbiGSEeL (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 19 Jul 2022 00:34:11 -0400
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A58F5DFE3;
+        Mon, 18 Jul 2022 21:34:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1658196622; x=1689732622;
+  t=1658205250; x=1689741250;
   h=from:to:cc:subject:date:message-id:mime-version:
    content-transfer-encoding;
-  bh=HuWT1Qbmsp6FL1I6szP12YNCNY1tyhftj3GbBMYoxiE=;
-  b=Lm/wMDLEXuYrBVUYPNIcTpk0SxRKKzKCOSTEJpnLhRctHlyd+n8/dzyI
-   D4cNH0XM6aiQ6cyoKGApqoRXHu5Pffqlhw71MjwABs9BIjf8dmCFRH9uO
-   0J5zY6zf5RGIxD5L713tDqLo4oCtPJ322+PlPNQFYFibxF54Mb6OS6fMW
-   QEjplEfwFu2iv/8Ii5MN95e+v2TeKzF08g1nNaiS3EEzuGbpmVZmKKkj3
-   qTZNVudKpljaNADXcqwIPBiNZp1OyAnLKAPOgKwSGNdA7bqLYvc2kiGT5
-   0dDQpZ+Bw0N7QNEET36lJ2Tk9Kza0sC1uiDHMDZt8jXd68/Ublls6J0FD
-   w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10412"; a="266143902"
+  bh=Oo5mFvEdxcmvFkZNTfVI0PHChwTIjii9rMQrX+JWyx4=;
+  b=aGhQs1Q+4LJnezZhVG9gtXebjgZ2Hd96UBWu5VIyTQihu71K0yoGLEgv
+   WA433JCMOVcsl3yYGjWH7+8X/H7PQ+C/MUF1gcZR6hEkx7iRFf7SPluFz
+   iHJEXVzZcgEGAhz5Umy9SAlMgs6YEBRXh7NKzaVfxIPj6hoRzVtyHLSD6
+   a1+OL9/Q+RBgZZHpS7YYS1+q1l52hHb/tOYA8EyX2ZEPZjyHCaxyyMIvq
+   Uu2JOkJY/Rv/gLnIrIBPfrIzmlZJhSOKcs6O/RUy1ApdDV/sal98cspae
+   xRFg+iJyG05Ny8i/nkQ0u6gefcJAnjQ6iqHE/CG0xhE+kBJbuT04MdMC4
+   A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10412"; a="312073438"
 X-IronPort-AV: E=Sophos;i="5.92,282,1650956400"; 
-   d="scan'208";a="266143902"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2022 19:10:22 -0700
+   d="scan'208";a="312073438"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2022 21:34:10 -0700
 X-IronPort-AV: E=Sophos;i="5.92,282,1650956400"; 
-   d="scan'208";a="655536034"
+   d="scan'208";a="625010656"
 Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.125])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2022 19:10:20 -0700
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2022 21:34:08 -0700
 From:   Zqiang <qiang1.zhang@intel.com>
 To:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
         joel@joelfernandes.org
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
 Subject: [PATCH v3] rcu-tasks: Make RCU Tasks Trace checking for userspace execution
-Date:   Tue, 19 Jul 2022 10:15:13 +0800
-Message-Id: <20220719021513.432306-1-qiang1.zhang@intel.com>
+Date:   Tue, 19 Jul 2022 12:39:00 +0800
+Message-Id: <20220719043900.437443-1-qiang1.zhang@intel.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -50,22 +50,24 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-For RCU tasks trace, the userspace execution is also a valid quiescent
-state, when scheduling-clock interrupt handler interrupts the task is
-in userspace. 
+For RCU tasks trace, the userspace execution is also a valid quiescent.
+when the scheduling clock interrupt handler interrupts current task and
+check current tasks running in userspace, then invoke rcu_tasks_trace_qs()
+to check quiescent state, usually, the current tasks ->trc_reader_nesting
+should be zero, if the current tasks ->trc_reader_special.b.need_qs is not
+set, set TRC_NEED_QS_CHECKED to ->trc_reader_special.b.need_qs. this cause
+grace period kthread remove task from holdout list if current tasks is in
+holdout list.
 
-if the ->trc_reader_nesting is zero, and the ->trc_reader_special.b.need_qs
-is not set, set the tasks ->trc_reader_special.b.need_qs is
-TRC_NEED_QS_CHECKED, this cause grace-period kthread remove it from holdout
-list if it remains here.
-
-If the ->trc_reader_nesting is not zero(if one of the functions in the
-scheduling-clock interrupt handler were traced/instrumented), and starts a
-new RCU tasks trace grace period, when grace period kthread scan running
-tasks on each CPU, this running uasks will be inserted into hold list.
-
-This commit add rcu_tasks_trace_qs() to rcu_flavor_sched_clock_irq()
-when the kernel built with no PREEMPT_RCU.
+But sometimes, although the scheduling clock interrupt handler check
+current tasks running in userspace, but the current tasks
+->trc_reader_nesting maybe not zero (if one of the functions in the
+scheduling-clock interrupt handler were traced/instrumented), and then
+invoke rcu_tasks_trace_qs(), if the current tasks ->trc_reader_nesting
+is still not zero, the current tasks will be insert local CPU blocked list.
+if starts a new RCU tasks trace grace period and the grace period kthread
+scan running tasks on each CPU, find that current tasks is running, will
+also insert it to hold out list.
 
 Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 ---
