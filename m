@@ -2,137 +2,193 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 425BDC433EF
-	for <rcu@archiver.kernel.org>; Tue, 19 Jul 2022 17:15:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7673AC43334
+	for <rcu@archiver.kernel.org>; Tue, 19 Jul 2022 18:13:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235321AbiGSRPw (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 19 Jul 2022 13:15:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41432 "EHLO
+        id S239944AbiGSSND (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 19 Jul 2022 14:13:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229869AbiGSRPw (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 19 Jul 2022 13:15:52 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05D9145F5A;
-        Tue, 19 Jul 2022 10:15:51 -0700 (PDT)
+        with ESMTP id S237451AbiGSSNC (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 19 Jul 2022 14:13:02 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 826C5545C7;
+        Tue, 19 Jul 2022 11:13:01 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id A6D85B81C36;
-        Tue, 19 Jul 2022 17:15:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50B5FC341C6;
-        Tue, 19 Jul 2022 17:15:48 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id B56C0CE1D68;
+        Tue, 19 Jul 2022 18:12:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D125EC341CA;
+        Tue, 19 Jul 2022 18:12:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1658250948;
-        bh=4X43Kx/zJCp1qP21ZCzYs7NFsjvKx83ugGlRc/nNIgA=;
+        s=k20201202; t=1658254377;
+        bh=7IDEQsSu7XGqQii5Hc55YDEBs2XOffvwiVZc7i3vViY=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=dgE4eHo76T5+G0UtZ8RrMi4BqBQbu0zZFDdSVMjefQha6m9wi20xahiTg6wmIX7k9
-         UoStcv7mbSc8yPGN8lqh44+c4QsQR11YzW7BIo+VxhOL5MX4UYK4eaRg58VvkmT09X
-         Tfhm7hRgKLIHdNvhqshWiakjBBslowGufrtiNsGueUAQOlQ77q8YSLVxdj6jLYbtEI
-         Nna8Hcd0fdcMBaylOBabuit4x69uBUfhXeKz2R/WI9/lZ9N+lULIp4cBYjljZFX7ai
-         IYkRr5sSHg9L6UZK5ohslOs2z/dsI6YJRT4+CB4fkCNcVMrgQcfBwZrZ8x+iIq7s0e
-         KdmroxaHGKbGw==
+        b=BZLbvDWJPiufqo5dGCS1gcr5T+Rf2GCsVy84i8mp60q0oy+Yg3GzltJegWE7JaLK6
+         m8e2wtyKNE66YKOJ7/5z+WAjW6paWNSd3dPZpcsLCaasT+CNv7/xaqrzqgtADBUup4
+         Ti3gPi5PBCjC46LZZws8AZceUXi5P3RoJj8hpsBNGaVLkc1bmZ88/f9uQmFclx4rN3
+         Uyd4szTQD/uUqyfVzaT6O+uEYsr620plkpVZrFQbvbhxdqjpHb0guBOPz2n7uxffnY
+         Jp3BB6cSk3GzmJwtlgqWBmx1RFTlYaCPDSL/GZ148RRmGVl/qh7jOwvt49uYkH7DAm
+         ZWerw5Uc8M+og==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id D43205C0813; Tue, 19 Jul 2022 10:15:47 -0700 (PDT)
-Date:   Tue, 19 Jul 2022 10:15:47 -0700
+        id 76FC25C0813; Tue, 19 Jul 2022 11:12:57 -0700 (PDT)
+Date:   Tue, 19 Jul 2022 11:12:57 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Neeraj Upadhyay <quic_neeraju@quicinc.com>, frederic@kernel.org,
-        josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, linux-kernel@vger.kernel.org,
-        zhangfei.gao@foxmail.com, boqun.feng@gmail.com, urezki@gmail.com,
-        shameerali.kolothum.thodi@huawei.com, pbonzini@redhat.com,
-        mtosatti@redhat.com, eric.auger@redhat.com,
-        chenxiang66@hisilicon.com, zhangfei.gao@linaro.org,
-        rcu@vger.kernel.org
-Subject: Re: [PATCH v3] srcu: Reduce blocking agressiveness of expedited
- grace periods further
-Message-ID: <20220719171547.GQ1790663@paulmck-ThinkPad-P17-Gen-1>
+To:     Neeraj Upadhyay <quic_neeraju@quicinc.com>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, rostedt@goodmis.org,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH rcu 4/7] rcu/nocb: Add an option to offload all CPUs on
+ boot
+Message-ID: <20220719181257.GR1790663@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20220701031545.9868-1-quic_neeraju@quicinc.com>
- <87o7xlzey3.wl-maz@kernel.org>
+References: <20220620224455.GA3840881@paulmck-ThinkPad-P17-Gen-1>
+ <20220620224503.3841196-4-paulmck@kernel.org>
+ <7a09896b-88dd-040b-86c0-863f8279a04e@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87o7xlzey3.wl-maz@kernel.org>
+In-Reply-To: <7a09896b-88dd-040b-86c0-863f8279a04e@quicinc.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Jul 19, 2022 at 09:25:56AM +0100, Marc Zyngier wrote:
-> Hi folks,
+On Tue, Jul 19, 2022 at 03:04:07PM +0530, Neeraj Upadhyay wrote:
 > 
-> On Fri, 01 Jul 2022 04:15:45 +0100,
-> Neeraj Upadhyay <quic_neeraju@quicinc.com> wrote:
-> > 
-> > Commit 640a7d37c3f4 ("srcu: Block less aggressively for expedited
-> > grace periods") highlights a problem where aggressively blocking
-> > SRCU expedited grace periods, as was introduced in commit
-> > 282d8998e997 ("srcu: Prevent expedited GPs and blocking readers
-> > from consuming CPU"), introduces ~2 minutes delay to the overall
-> > ~3.5 minutes boot time, when starting VMs with "-bios QEMU_EFI.fd"
-> > cmdline on qemu, which results in very high rate of memslots
-> > add/remove, which causes > ~6000 synchronize_srcu() calls for
-> > kvm->srcu SRCU instance.
-> > 
-> > Below table captures the experiments done by Zhangfei Gao and Shameer
-> > to measure the boottime impact with various values of non-sleeping
-> > per phase counts, with HZ_250 and preemption enabled:
-> > 
-> > +──────────────────────────+────────────────+
-> > | SRCU_MAX_NODELAY_PHASE   | Boot time (s)  |
-> > +──────────────────────────+────────────────+
-> > | 100                      | 30.053         |
-> > | 150                      | 25.151         |
-> > | 200                      | 20.704         |
-> > | 250                      | 15.748         |
-> > | 500                      | 11.401         |
-> > | 1000                     | 11.443         |
-> > | 10000                    | 11.258         |
-> > | 1000000                  | 11.154         |
-> > +──────────────────────────+────────────────+
-> > 
-> > Analysis on the experiment results showed improved boot time
-> > with non blocking delays close to one jiffy duration. This
-> > was also seen when number of per-phase iterations were scaled
-> > to one jiffy.
-> > 
-> > So, this change scales per-grace-period phase number of non-sleeping
-> > polls, such that, non-sleeping polls are done for one jiffy. In addition
-> > to this, srcu_get_delay() call in srcu_gp_end(), which is used to calculate
-> > the delay used for scheduling callbacks, is replaced with the check for
-> > expedited grace period. This is done, to schedule cbs for completed expedited
-> > grace periods immediately, which results in improved boot time seen in
-> > experiments. Testing done by Marc and Zhangfei confirms that this change recovers
-> > most of the performance degradation in boottime; for CONFIG_HZ_250 configuration,
-> > boottime improves from 3m50s to 41s on Marc's setup; and from 2m40s to ~9.7s
-> > on Zhangfei's setup.
-> > 
-> > In addition to the changes to default per phase delays, this change
-> > adds 3 new kernel parameters - srcutree.srcu_max_nodelay,
-> > srcutree.srcu_max_nodelay_phase, srcutree.srcu_retry_check_delay.
-> > This allows users to configure the srcu grace period scanning delays,
-> > depending on their system configuration requirements.
-> > 
-> > Signed-off-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
-> > Tested-by: Marc Zyngier <maz@kernel.org>
-> > Tested-by: Zhangfei Gao <zhangfei.gao@linaro.org>
 > 
-> Is there any chance for this fix to make it into 5.19? The regression
-> is significant enough on low-end systems, and I'd rather see it
-> addressed.
+> On 6/21/2022 4:15 AM, Paul E. McKenney wrote:
+> > From: Joel Fernandes <joel@joelfernandes.org>
+> > 
+> > Systems built with CONFIG_RCU_NOCB_CPU=y but booted without either
+> > the rcu_nocbs= or rcu_nohz_full= kernel-boot parameters will not have
+> > callback offloading on any of the CPUs, nor can any of the CPUs be
+> > switched to enable callback offloading at runtime.  Although this is
+> > intentional, it would be nice to have a way to offload all the CPUs
+> > without having to make random bootloaders specify either the rcu_nocbs=
+> > or the rcu_nohz_full= kernel-boot parameters.
+> > 
+> > This commit therefore provides a new CONFIG_RCU_NOCB_CPU_DEFAULT_ALL
+> > Kconfig option that switches the default so as to offload callback
+> > processing on all of the CPUs.  This default can still be overridden
+> > using the rcu_nocbs= and rcu_nohz_full= kernel-boot parameters.
+> > 
+> > Reviewed-by: Kalesh Singh <kaleshsingh@google.com>
+> > Reviewed-by: Uladzislau Rezki <urezki@gmail.com>
+> > (In v4.1, fixed issues with CONFIG maze reported by kernel test robot).
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Signed-off-by: Joel Fernandes <joel@joelfernandes.org>
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > ---
+> 
+> 
+> Reviewed-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+> 
+> One query on cpumask_setall() below
+> 
+> >   Documentation/admin-guide/kernel-parameters.txt |  6 ++++++
+> >   kernel/rcu/Kconfig                              | 13 +++++++++++++
+> >   kernel/rcu/tree_nocb.h                          | 15 ++++++++++++++-
+> >   3 files changed, 33 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> > index 2522b11e593f2..34605c275294c 100644
+> > --- a/Documentation/admin-guide/kernel-parameters.txt
+> > +++ b/Documentation/admin-guide/kernel-parameters.txt
+> > @@ -3659,6 +3659,9 @@
+> >   			just as if they had also been called out in the
+> >   			rcu_nocbs= boot parameter.
+> > +			Note that this argument takes precedence over
+> > +			the CONFIG_RCU_NOCB_CPU_DEFAULT_ALL option.
+> > +
+> >   	noiotrap	[SH] Disables trapped I/O port accesses.
+> >   	noirqdebug	[X86-32] Disables the code which attempts to detect and
+> > @@ -4557,6 +4560,9 @@
+> >   			no-callback mode from boot but the mode may be
+> >   			toggled at runtime via cpusets.
+> > +			Note that this argument takes precedence over
+> > +			the CONFIG_RCU_NOCB_CPU_DEFAULT_ALL option.
+> > +
+> >   	rcu_nocb_poll	[KNL]
+> >   			Rather than requiring that offloaded CPUs
+> >   			(specified by rcu_nocbs= above) explicitly
+> > diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+> > index 1c630e573548d..27aab870ae4cf 100644
+> > --- a/kernel/rcu/Kconfig
+> > +++ b/kernel/rcu/Kconfig
+> > @@ -262,6 +262,19 @@ config RCU_NOCB_CPU
+> >   	  Say Y here if you need reduced OS jitter, despite added overhead.
+> >   	  Say N here if you are unsure.
+> > +config RCU_NOCB_CPU_DEFAULT_ALL
+> > +	bool "Offload RCU callback processing from all CPUs by default"
+> > +	depends on RCU_NOCB_CPU
+> > +	default n
+> > +	help
+> > +	  Use this option to offload callback processing from all CPUs
+> > +	  by default, in the absence of the rcu_nocbs or nohz_full boot
+> > +	  parameter. This also avoids the need to use any boot parameters
+> > +	  to achieve the effect of offloading all CPUs on boot.
+> > +
+> > +	  Say Y here if you want offload all CPUs by default on boot.
+> > +	  Say N here if you are unsure.
+> > +
+> >   config TASKS_TRACE_RCU_READ_MB
+> >   	bool "Tasks Trace RCU readers use memory barriers in user and idle"
+> >   	depends on RCU_EXPERT && TASKS_TRACE_RCU
+> > diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> > index 4cf9a29bba79d..60cc92cc66552 100644
+> > --- a/kernel/rcu/tree_nocb.h
+> > +++ b/kernel/rcu/tree_nocb.h
+> > @@ -1197,11 +1197,21 @@ void __init rcu_init_nohz(void)
+> >   {
+> >   	int cpu;
+> >   	bool need_rcu_nocb_mask = false;
+> > +	bool offload_all = false;
+> >   	struct rcu_data *rdp;
+> > +#if defined(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL)
+> > +	if (!rcu_state.nocb_is_setup) {
+> > +		need_rcu_nocb_mask = true;
+> > +		offload_all = true;
+> > +	}
+> > +#endif /* #if defined(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL) */
+> > +
+> >   #if defined(CONFIG_NO_HZ_FULL)
+> > -	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask))
+> > +	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask)) {
+> >   		need_rcu_nocb_mask = true;
+> > +		offload_all = false; /* NO_HZ_FULL has its own mask. */
+> > +	}
+> >   #endif /* #if defined(CONFIG_NO_HZ_FULL) */
+> >   	if (need_rcu_nocb_mask) {
+> > @@ -1222,6 +1232,9 @@ void __init rcu_init_nohz(void)
+> >   		cpumask_or(rcu_nocb_mask, rcu_nocb_mask, tick_nohz_full_mask);
+> >   #endif /* #if defined(CONFIG_NO_HZ_FULL) */
+> > +	if (offload_all)
+> > +		cpumask_setall(rcu_nocb_mask);
+> 
+> Do we need to do a cpumask_and(rcu_nocb_mask, cpu_possible_mask,
+> rcu_nocb_mask) after setting all cpus in rcu_nocb_mask (cpumask_subset()
+> check below takes care of it though)?
 
-I wasn't planning on it, based on my (possibly quite flawed) assumption
-that it affected only embedded systems running in a virtual environment.
-My plan was to send it in my pull request for the next merge window
-next week.  My pull request is next week, yes, the merge window opens
-the following Sunday.  ;-)
+Without that cpumask_and(), systems with sparse CPU numbering schemes
+(for example, 0, 4, 8, 12, ...) will get a pr_info(), and as you noted,
+the needed cpumask_and().
 
-It has a Fixes tag, so it will be backported.
+I am inclined to see a complaint before we change this.  And perhaps if
+this is to change, the change should be in cpumask_setall() rather than
+in rcu_init_nohz().  But that is an argument for later, if at all.  ;-)
 
-But if it is important to get it into v5.19 rather than v5.19.x for small
-"x", please let me know and I will see what Linus does with the resulting
-v5.19-rc7 pull request.
+And thank you for reviewing this series!
 
 							Thanx, Paul
+
+> Thanks
+> Neeraj
+> 
+> > +
+> >   	if (!cpumask_subset(rcu_nocb_mask, cpu_possible_mask)) {
+> >   		pr_info("\tNote: kernel parameter 'rcu_nocbs=', 'nohz_full', or 'isolcpus=' contains nonexistent CPUs.\n");
+> >   		cpumask_and(rcu_nocb_mask, cpu_possible_mask,
