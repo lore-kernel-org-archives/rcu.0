@@ -2,145 +2,97 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 034FAC43334
-	for <rcu@archiver.kernel.org>; Tue, 19 Jul 2022 00:26:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 03663C43334
+	for <rcu@archiver.kernel.org>; Tue, 19 Jul 2022 02:10:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234306AbiGSA0H (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 18 Jul 2022 20:26:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34186 "EHLO
+        id S236738AbiGSCKY (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 18 Jul 2022 22:10:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231673AbiGSA0G (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 18 Jul 2022 20:26:06 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8D2A33E3E;
-        Mon, 18 Jul 2022 17:26:05 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7C4B7615F2;
-        Tue, 19 Jul 2022 00:26:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A84B8C341CA;
-        Tue, 19 Jul 2022 00:26:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1658190364;
-        bh=g57rRM5qayf+HbUqWmyaj2hyK8CHEC1BKZBGNCwrYm0=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=LNgst9mKG0W6gwKI76XymhMD0t4/CU49VAObkFntA1YNJte/qxVcH/CVBa4aIEcj/
-         KKJCjhTupwm55FURGPv4X4QEIft3mJEH4qNvaD2el+yavD9n79xBeY1jDKx8lqIU+J
-         WdLoCXXQku5Ky3VDK8sdi0yTwt8+JNqOqtzijbGnRUO2vCSl07d6UPNgEiL0VOm7dl
-         5slPEasg1WzlhB7lfWcTbCzYJlM+nHETh6rgrP47W0Ihd1IN7S/L08xfRoJqwRG6jK
-         vCpGe2/LktEqSFng5nor91Vg4YG+imJAVQbuz2w2kUthrTVEy8B1tCapX9j8lwRuaT
-         A8ToTQbf1Wczw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 437BF5C04D0; Mon, 18 Jul 2022 17:26:04 -0700 (PDT)
-Date:   Mon, 18 Jul 2022 17:26:04 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
-Cc:     "frederic@kernel.org" <frederic@kernel.org>,
-        "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>,
-        "joel@joelfernandes.org" <joel@joelfernandes.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] rcu-tasks: Make RCU Tasks Trace checking for
- userspace execution
-Message-ID: <20220719002604.GK1790663@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220718001610.263700-1-qiang1.zhang@intel.com>
- <20220718152132.GE1790663@paulmck-ThinkPad-P17-Gen-1>
- <PH0PR11MB58805ADED62CE2AF94647967DA8C9@PH0PR11MB5880.namprd11.prod.outlook.com>
+        with ESMTP id S236622AbiGSCKX (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 18 Jul 2022 22:10:23 -0400
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF3CF2A97F;
+        Mon, 18 Jul 2022 19:10:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1658196622; x=1689732622;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=HuWT1Qbmsp6FL1I6szP12YNCNY1tyhftj3GbBMYoxiE=;
+  b=Lm/wMDLEXuYrBVUYPNIcTpk0SxRKKzKCOSTEJpnLhRctHlyd+n8/dzyI
+   D4cNH0XM6aiQ6cyoKGApqoRXHu5Pffqlhw71MjwABs9BIjf8dmCFRH9uO
+   0J5zY6zf5RGIxD5L713tDqLo4oCtPJ322+PlPNQFYFibxF54Mb6OS6fMW
+   QEjplEfwFu2iv/8Ii5MN95e+v2TeKzF08g1nNaiS3EEzuGbpmVZmKKkj3
+   qTZNVudKpljaNADXcqwIPBiNZp1OyAnLKAPOgKwSGNdA7bqLYvc2kiGT5
+   0dDQpZ+Bw0N7QNEET36lJ2Tk9Kza0sC1uiDHMDZt8jXd68/Ublls6J0FD
+   w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10412"; a="266143902"
+X-IronPort-AV: E=Sophos;i="5.92,282,1650956400"; 
+   d="scan'208";a="266143902"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2022 19:10:22 -0700
+X-IronPort-AV: E=Sophos;i="5.92,282,1650956400"; 
+   d="scan'208";a="655536034"
+Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.125])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2022 19:10:20 -0700
+From:   Zqiang <qiang1.zhang@intel.com>
+To:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
+        joel@joelfernandes.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3] rcu-tasks: Make RCU Tasks Trace checking for userspace execution
+Date:   Tue, 19 Jul 2022 10:15:13 +0800
+Message-Id: <20220719021513.432306-1-qiang1.zhang@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <PH0PR11MB58805ADED62CE2AF94647967DA8C9@PH0PR11MB5880.namprd11.prod.outlook.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Jul 18, 2022 at 11:54:53PM +0000, Zhang, Qiang1 wrote:
-> On Mon, Jul 18, 2022 at 08:16:10AM +0800, Zqiang wrote:
-> > For RCU tasks trace, the userspace execution is also a valid quiescent
-> > state, if the task is in userspace, the ->trc_reader_nesting should be
-> > zero and if the ->trc_reader_special.b.need_qs is not set, set the
-> > tasks ->trc_reader_special.b.need_qs is TRC_NEED_QS_CHECKED, this cause
-> > grace-period kthread remove it from holdout list if it remains here.
-> > 
-> > This commit add rcu_tasks_trace_qs() to rcu_flavor_sched_clock_irq()
-> > when the kernel built with no PREEMPT_RCU.
-> > 
-> > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-> >
-> >The looks plausible to me, but can you tell me how this avoids the
-> >following sequence of events?
-> >
-> >o	CPU 0 takes a scheduling-clock interrupt.  Just before this
-> >	point CPU 0 was running in user context, thus as you say
-> >	should not be in an RCU Tasks quiescent state.
-> >
-> >o	CPU 0 enters an RCU Tasks Trace read-side critical section.
->                
->  if I understand correctly, you mean that CPU0 enters an RCU Tasks Trace
->  read-side critical section in scheduling-clock interrupt context.
+For RCU tasks trace, the userspace execution is also a valid quiescent
+state, when scheduling-clock interrupt handler interrupts the task is
+in userspace. 
 
-Exactly, as might happen if one of the functions in the scheduling-clock
-interrupt hander were traced/instrumented.
+if the ->trc_reader_nesting is zero, and the ->trc_reader_special.b.need_qs
+is not set, set the tasks ->trc_reader_special.b.need_qs is
+TRC_NEED_QS_CHECKED, this cause grace-period kthread remove it from holdout
+list if it remains here.
 
-> >o	CPU 1 starts a new RCU Tasks Trace grace period.
-> 
-> The grace period kthread will scan running tasks on each CPU, 
-> The tasks currently running on CPU0 will be recorded in the holdout list.
+If the ->trc_reader_nesting is not zero(if one of the functions in the
+scheduling-clock interrupt handler were traced/instrumented), and starts a
+new RCU tasks trace grace period, when grace period kthread scan running
+tasks on each CPU, this running uasks will be inserted into hold list.
 
-Yes, very good.
+This commit add rcu_tasks_trace_qs() to rcu_flavor_sched_clock_irq()
+when the kernel built with no PREEMPT_RCU.
 
-> >o	CPU 0 reaches the newly added rcu_note_voluntary_context_switch().
-> 
-> In this time, if CPU0 still in RCU Tasks Trace read-side critical section, the tasks
-> which running on CPU0 will insert CPU0 blocked list. when this tasks exit 
-> RCU Tasks Trace read-side critical section, this task will remove from CPU0 block list.
-> 
-> Did I understand the scenario described above correctly?
+Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+---
+ v1->v2:
+ Fix build error due to undeclared rcu_tasks_trace_qs(), note in no-PREEMPT_RCU
+ kernel, the RCU Tasks is replaced by RCU, so rcu_note_voluntary_context_switch()
+ only include rcu_tasks_trace_qs().
+ 
+ v2->v3:
+ Modify commit information.
 
-Looks like it to me.
+ kernel/rcu/tree_plugin.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Could you please resend the patch with this explained in the commit
-log?  Possibly for the benefit of your future self.  ;-)
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index 4152816dd29f..5fb0b2dd24fd 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -976,7 +976,7 @@ static void rcu_flavor_sched_clock_irq(int user)
+ 		 * neither access nor modify, at least not while the
+ 		 * corresponding CPU is online.
+ 		 */
+-
++		rcu_note_voluntary_context_switch(current);
+ 		rcu_qs();
+ 	}
+ }
+-- 
+2.25.1
 
-							Thanx, Paul
-
-> Thanks
-> Zqiang
-> 
-> >
-> >	Except that the quiescent state implied by userspace execution
-> >	was before the new grace period, and thus does not apply to it.
-> >
-> >(Yes, I know, if this is a bug in this patch, the bug already exists
-> >due to the call in rcu_flavor_sched_clock_irq() for !PREEMPT kernels,
-> >but if this change is safe, it should be possible to explain why.)
-> >
-> >							Thanx, Paul
-> >
-> > ---
-> >  v1->v2:
-> >  Fix build error due to undeclared rcu_tasks_trace_qs(), note in no-PREEMPT_RCU
-> >  kernel, the RCU Tasks is replaced by RCU, so rcu_note_voluntary_context_switch()
-> >  only include rcu_tasks_trace_qs().
-> > 
-> >  kernel/rcu/tree_plugin.h | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> > index 4152816dd29f..5fb0b2dd24fd 100644
-> > --- a/kernel/rcu/tree_plugin.h
-> > +++ b/kernel/rcu/tree_plugin.h
-> > @@ -976,7 +976,7 @@ static void rcu_flavor_sched_clock_irq(int user)
-> >  		 * neither access nor modify, at least not while the
-> >  		 * corresponding CPU is online.
-> >  		 */
-> > -
-> > +		rcu_note_voluntary_context_switch(current);
-> >  		rcu_qs();
-> >  	}
-> >  }
-> > -- 
-> > 2.25.1
-> > 
