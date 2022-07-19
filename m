@@ -2,193 +2,164 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7673AC43334
-	for <rcu@archiver.kernel.org>; Tue, 19 Jul 2022 18:13:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C40FC433EF
+	for <rcu@archiver.kernel.org>; Tue, 19 Jul 2022 21:57:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239944AbiGSSND (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 19 Jul 2022 14:13:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43654 "EHLO
+        id S233843AbiGSV5b (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 19 Jul 2022 17:57:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237451AbiGSSNC (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 19 Jul 2022 14:13:02 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 826C5545C7;
-        Tue, 19 Jul 2022 11:13:01 -0700 (PDT)
+        with ESMTP id S231312AbiGSV5b (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 19 Jul 2022 17:57:31 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25B152656A;
+        Tue, 19 Jul 2022 14:57:30 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id B56C0CE1D68;
-        Tue, 19 Jul 2022 18:12:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D125EC341CA;
-        Tue, 19 Jul 2022 18:12:57 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id D3B86B81D5C;
+        Tue, 19 Jul 2022 21:57:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E804C341C6;
+        Tue, 19 Jul 2022 21:57:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1658254377;
-        bh=7IDEQsSu7XGqQii5Hc55YDEBs2XOffvwiVZc7i3vViY=;
+        s=k20201202; t=1658267847;
+        bh=wc23qX/JXD3Tc+arLspoae5QHhkRyoi9mBGVrUQeleQ=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=BZLbvDWJPiufqo5dGCS1gcr5T+Rf2GCsVy84i8mp60q0oy+Yg3GzltJegWE7JaLK6
-         m8e2wtyKNE66YKOJ7/5z+WAjW6paWNSd3dPZpcsLCaasT+CNv7/xaqrzqgtADBUup4
-         Ti3gPi5PBCjC46LZZws8AZceUXi5P3RoJj8hpsBNGaVLkc1bmZ88/f9uQmFclx4rN3
-         Uyd4szTQD/uUqyfVzaT6O+uEYsr620plkpVZrFQbvbhxdqjpHb0guBOPz2n7uxffnY
-         Jp3BB6cSk3GzmJwtlgqWBmx1RFTlYaCPDSL/GZ148RRmGVl/qh7jOwvt49uYkH7DAm
-         ZWerw5Uc8M+og==
+        b=nzLHW0dWwLZY/3G+l7JAxKAjnH9af+j9ZCSp7iHKWIaCNhrqKjqpTzNz8u0mfjBpj
+         5X7aMY4hID/T9Uz7xxnHMzSpCtPqXfTYWclzv2kclWZugffrub5ON1riSDLzsnUI0d
+         MkHvy4PALnMNzhIg29C3eTHj0aYHSwT2zEemb4NFUEXKqKGMl+goCXMf6qwz0X/nqz
+         Vw5OYP6F1IJ39JOHtDmP5AH1oVrR9m6+DN4+wZ5j1HiTkA8VX/ZZrmW+NhBurFL1LT
+         /RM22L1qrfhvy5+ahur2rN1Mjr9Dp9LdYoLyl3sEsOqMhQC66FsxcZbEStNVG+/kEN
+         6Zp2O8B1NolRw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 76FC25C0813; Tue, 19 Jul 2022 11:12:57 -0700 (PDT)
-Date:   Tue, 19 Jul 2022 11:12:57 -0700
+        id 118825C038F; Tue, 19 Jul 2022 14:57:27 -0700 (PDT)
+Date:   Tue, 19 Jul 2022 14:57:27 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Neeraj Upadhyay <quic_neeraju@quicinc.com>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, rostedt@goodmis.org,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH rcu 4/7] rcu/nocb: Add an option to offload all CPUs on
- boot
-Message-ID: <20220719181257.GR1790663@paulmck-ThinkPad-P17-Gen-1>
+To:     Zqiang <qiang1.zhang@intel.com>
+Cc:     frederic@kernel.org, quic_neeraju@quicinc.com,
+        joel@joelfernandes.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] rcu-tasks: Make RCU Tasks Trace checking for
+ userspace execution
+Message-ID: <20220719215727.GV1790663@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20220620224455.GA3840881@paulmck-ThinkPad-P17-Gen-1>
- <20220620224503.3841196-4-paulmck@kernel.org>
- <7a09896b-88dd-040b-86c0-863f8279a04e@quicinc.com>
+References: <20220719043900.437443-1-qiang1.zhang@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7a09896b-88dd-040b-86c0-863f8279a04e@quicinc.com>
+In-Reply-To: <20220719043900.437443-1-qiang1.zhang@intel.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Jul 19, 2022 at 03:04:07PM +0530, Neeraj Upadhyay wrote:
+On Tue, Jul 19, 2022 at 12:39:00PM +0800, Zqiang wrote:
+> For RCU tasks trace, the userspace execution is also a valid quiescent.
+> when the scheduling clock interrupt handler interrupts current task and
+> check current tasks running in userspace, then invoke rcu_tasks_trace_qs()
+> to check quiescent state, usually, the current tasks ->trc_reader_nesting
+> should be zero, if the current tasks ->trc_reader_special.b.need_qs is not
+> set, set TRC_NEED_QS_CHECKED to ->trc_reader_special.b.need_qs. this cause
+> grace period kthread remove task from holdout list if current tasks is in
+> holdout list.
 > 
+> But sometimes, although the scheduling clock interrupt handler check
+> current tasks running in userspace, but the current tasks
+> ->trc_reader_nesting maybe not zero (if one of the functions in the
+> scheduling-clock interrupt handler were traced/instrumented), and then
+> invoke rcu_tasks_trace_qs(), if the current tasks ->trc_reader_nesting
+> is still not zero, the current tasks will be insert local CPU blocked list.
+> if starts a new RCU tasks trace grace period and the grace period kthread
+> scan running tasks on each CPU, find that current tasks is running, will
+> also insert it to hold out list.
 > 
-> On 6/21/2022 4:15 AM, Paul E. McKenney wrote:
-> > From: Joel Fernandes <joel@joelfernandes.org>
-> > 
-> > Systems built with CONFIG_RCU_NOCB_CPU=y but booted without either
-> > the rcu_nocbs= or rcu_nohz_full= kernel-boot parameters will not have
-> > callback offloading on any of the CPUs, nor can any of the CPUs be
-> > switched to enable callback offloading at runtime.  Although this is
-> > intentional, it would be nice to have a way to offload all the CPUs
-> > without having to make random bootloaders specify either the rcu_nocbs=
-> > or the rcu_nohz_full= kernel-boot parameters.
-> > 
-> > This commit therefore provides a new CONFIG_RCU_NOCB_CPU_DEFAULT_ALL
-> > Kconfig option that switches the default so as to offload callback
-> > processing on all of the CPUs.  This default can still be overridden
-> > using the rcu_nocbs= and rcu_nohz_full= kernel-boot parameters.
-> > 
-> > Reviewed-by: Kalesh Singh <kaleshsingh@google.com>
-> > Reviewed-by: Uladzislau Rezki <urezki@gmail.com>
-> > (In v4.1, fixed issues with CONFIG maze reported by kernel test robot).
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Signed-off-by: Joel Fernandes <joel@joelfernandes.org>
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > ---
-> 
-> 
-> Reviewed-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
-> 
-> One query on cpumask_setall() below
-> 
-> >   Documentation/admin-guide/kernel-parameters.txt |  6 ++++++
-> >   kernel/rcu/Kconfig                              | 13 +++++++++++++
-> >   kernel/rcu/tree_nocb.h                          | 15 ++++++++++++++-
-> >   3 files changed, 33 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> > index 2522b11e593f2..34605c275294c 100644
-> > --- a/Documentation/admin-guide/kernel-parameters.txt
-> > +++ b/Documentation/admin-guide/kernel-parameters.txt
-> > @@ -3659,6 +3659,9 @@
-> >   			just as if they had also been called out in the
-> >   			rcu_nocbs= boot parameter.
-> > +			Note that this argument takes precedence over
-> > +			the CONFIG_RCU_NOCB_CPU_DEFAULT_ALL option.
-> > +
-> >   	noiotrap	[SH] Disables trapped I/O port accesses.
-> >   	noirqdebug	[X86-32] Disables the code which attempts to detect and
-> > @@ -4557,6 +4560,9 @@
-> >   			no-callback mode from boot but the mode may be
-> >   			toggled at runtime via cpusets.
-> > +			Note that this argument takes precedence over
-> > +			the CONFIG_RCU_NOCB_CPU_DEFAULT_ALL option.
-> > +
-> >   	rcu_nocb_poll	[KNL]
-> >   			Rather than requiring that offloaded CPUs
-> >   			(specified by rcu_nocbs= above) explicitly
-> > diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
-> > index 1c630e573548d..27aab870ae4cf 100644
-> > --- a/kernel/rcu/Kconfig
-> > +++ b/kernel/rcu/Kconfig
-> > @@ -262,6 +262,19 @@ config RCU_NOCB_CPU
-> >   	  Say Y here if you need reduced OS jitter, despite added overhead.
-> >   	  Say N here if you are unsure.
-> > +config RCU_NOCB_CPU_DEFAULT_ALL
-> > +	bool "Offload RCU callback processing from all CPUs by default"
-> > +	depends on RCU_NOCB_CPU
-> > +	default n
-> > +	help
-> > +	  Use this option to offload callback processing from all CPUs
-> > +	  by default, in the absence of the rcu_nocbs or nohz_full boot
-> > +	  parameter. This also avoids the need to use any boot parameters
-> > +	  to achieve the effect of offloading all CPUs on boot.
-> > +
-> > +	  Say Y here if you want offload all CPUs by default on boot.
-> > +	  Say N here if you are unsure.
-> > +
-> >   config TASKS_TRACE_RCU_READ_MB
-> >   	bool "Tasks Trace RCU readers use memory barriers in user and idle"
-> >   	depends on RCU_EXPERT && TASKS_TRACE_RCU
-> > diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-> > index 4cf9a29bba79d..60cc92cc66552 100644
-> > --- a/kernel/rcu/tree_nocb.h
-> > +++ b/kernel/rcu/tree_nocb.h
-> > @@ -1197,11 +1197,21 @@ void __init rcu_init_nohz(void)
-> >   {
-> >   	int cpu;
-> >   	bool need_rcu_nocb_mask = false;
-> > +	bool offload_all = false;
-> >   	struct rcu_data *rdp;
-> > +#if defined(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL)
-> > +	if (!rcu_state.nocb_is_setup) {
-> > +		need_rcu_nocb_mask = true;
-> > +		offload_all = true;
-> > +	}
-> > +#endif /* #if defined(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL) */
-> > +
-> >   #if defined(CONFIG_NO_HZ_FULL)
-> > -	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask))
-> > +	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask)) {
-> >   		need_rcu_nocb_mask = true;
-> > +		offload_all = false; /* NO_HZ_FULL has its own mask. */
-> > +	}
-> >   #endif /* #if defined(CONFIG_NO_HZ_FULL) */
-> >   	if (need_rcu_nocb_mask) {
-> > @@ -1222,6 +1232,9 @@ void __init rcu_init_nohz(void)
-> >   		cpumask_or(rcu_nocb_mask, rcu_nocb_mask, tick_nohz_full_mask);
-> >   #endif /* #if defined(CONFIG_NO_HZ_FULL) */
-> > +	if (offload_all)
-> > +		cpumask_setall(rcu_nocb_mask);
-> 
-> Do we need to do a cpumask_and(rcu_nocb_mask, cpu_possible_mask,
-> rcu_nocb_mask) after setting all cpus in rcu_nocb_mask (cpumask_subset()
-> check below takes care of it though)?
+> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 
-Without that cpumask_and(), systems with sparse CPU numbering schemes
-(for example, 0, 4, 8, 12, ...) will get a pr_info(), and as you noted,
-the needed cpumask_and().
+Thank you!  I queued this with wordsmithing and also with a bit of code
+consolidation.  With this consolidation, instead of adding a line of code,
+we are removing three of them.
 
-I am inclined to see a complaint before we change this.  And perhaps if
-this is to change, the change should be in cpumask_setall() rather than
-in rcu_init_nohz().  But that is an argument for later, if at all.  ;-)
-
-And thank you for reviewing this series!
+But please check to see whether I messed anything up along the way.
 
 							Thanx, Paul
 
-> Thanks
-> Neeraj
-> 
-> > +
-> >   	if (!cpumask_subset(rcu_nocb_mask, cpu_possible_mask)) {
-> >   		pr_info("\tNote: kernel parameter 'rcu_nocbs=', 'nohz_full', or 'isolcpus=' contains nonexistent CPUs.\n");
-> >   		cpumask_and(rcu_nocb_mask, cpu_possible_mask,
+------------------------------------------------------------------------
+
+commit c3e7fd0449642df8c427b442751fbe593e4673df
+Author: Zqiang <qiang1.zhang@intel.com>
+Date:   Tue Jul 19 12:39:00 2022 +0800
+
+    rcu-tasks: Make RCU Tasks Trace check for userspace execution
+    
+    Userspace execution is a valid quiescent state for RCU Tasks Trace,
+    but the scheduling-clock interrupt does not currently report such
+    quiescent states.
+    
+    Of course, the scheduling-clock interrupt is not strictly speaking
+    userspace execution.  However, the only way that this code is not
+    in a quiescent state is if something invoked rcu_read_lock_trace(),
+    and that would be reflected in the ->trc_reader_nesting field in
+    the task_struct structure.  Furthermore, this field is checked by
+    rcu_tasks_trace_qs(), which is invoked by rcu_tasks_qs() which is in
+    turn invoked by rcu_note_voluntary_context_switch() in kernels building
+    at least one of the RCU Tasks flavors.  It is therefore safe to invoke
+    rcu_tasks_trace_qs() from the rcu_sched_clock_irq().
+    
+    But rcu_tasks_qs() also invokes rcu_tasks_classic_qs() for RCU
+    Tasks, which lacks the read-side markers provided by RCU Tasks Trace.
+    This raises the possibility that an RCU Tasks grace period could start
+    after the interrupt from userspace execution, but before the call to
+    rcu_sched_clock_irq().  However, it turns out that this is safe because
+    the RCU Tasks grace period waits for an RCU grace period, which will
+    wait for the entire scheduling-clock interrupt handler, including any
+    RCU Tasks read-side critical section that this handler might contain.
+    
+    This commit therefore updates the rcu_sched_clock_irq() function's
+    check for usermode execution and its call to rcu_tasks_classic_qs()
+    to instead check for both usermode execution and interrupt from idle,
+    and to instead call rcu_note_voluntary_context_switch().  This
+    consolidates code and provides more faster RCU Tasks Trace
+    reporting of quiescent states in kernels that do scheduling-clock
+    interrupts for userspace execution.
+    
+    [ paulmck: Consolidate checks into rcu_sched_clock_irq(). ]
+    
+    Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 84d2817766888..2122359f0c862 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2341,8 +2341,8 @@ void rcu_sched_clock_irq(int user)
+ 	rcu_flavor_sched_clock_irq(user);
+ 	if (rcu_pending(user))
+ 		invoke_rcu_core();
+-	if (user)
+-		rcu_tasks_classic_qs(current, false);
++	if (user || rcu_is_cpu_rrupt_from_idle())
++		rcu_note_voluntary_context_switch(current);
+ 	lockdep_assert_irqs_disabled();
+ 
+ 	trace_rcu_utilization(TPS("End scheduler-tick"));
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index 4152816dd29f6..b2219577fbe2d 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -718,9 +718,6 @@ static void rcu_flavor_sched_clock_irq(int user)
+ 	struct task_struct *t = current;
+ 
+ 	lockdep_assert_irqs_disabled();
+-	if (user || rcu_is_cpu_rrupt_from_idle()) {
+-		rcu_note_voluntary_context_switch(current);
+-	}
+ 	if (rcu_preempt_depth() > 0 ||
+ 	    (preempt_count() & (PREEMPT_MASK | SOFTIRQ_MASK))) {
+ 		/* No QS, force context switch if deferred. */
+@@ -976,7 +973,6 @@ static void rcu_flavor_sched_clock_irq(int user)
+ 		 * neither access nor modify, at least not while the
+ 		 * corresponding CPU is online.
+ 		 */
+-
+ 		rcu_qs();
+ 	}
+ }
