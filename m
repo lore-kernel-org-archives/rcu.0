@@ -2,60 +2,59 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 762A1C43334
-	for <rcu@archiver.kernel.org>; Tue, 19 Jul 2022 09:29:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 89335C43334
+	for <rcu@archiver.kernel.org>; Tue, 19 Jul 2022 09:34:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229647AbiGSJ3L (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 19 Jul 2022 05:29:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58766 "EHLO
+        id S237116AbiGSJe2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 19 Jul 2022 05:34:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237368AbiGSJ3B (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 19 Jul 2022 05:29:01 -0400
+        with ESMTP id S233851AbiGSJe1 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 19 Jul 2022 05:34:27 -0400
 Received: from alexa-out-sd-01.qualcomm.com (alexa-out-sd-01.qualcomm.com [199.106.114.38])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56D061BE8D;
-        Tue, 19 Jul 2022 02:29:00 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03F1827CFE;
+        Tue, 19 Jul 2022 02:34:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1658222940; x=1689758940;
+  t=1658223254; x=1689759254;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=sF4kvTiDQg5suexIpAJFDFIgzvrKHcboc+NRtAftRjI=;
-  b=YCNn1mIfJGYehPpTVQNKfqWdCAmLTM2LfJ2qMY0kxKgktnCWmCxNQXFB
-   7ylWlLrX3WuoRB+IR3oDoGcwDSqQ0n/+x8j/wC4jCo+ySS97kVTjZjwrr
-   tnUsTDaESJKd67008qg5dvFGwCrcCllXqOxDp5okQOU5gahcJCLuRzV0F
-   I=;
-Received: from unknown (HELO ironmsg02-sd.qualcomm.com) ([10.53.140.142])
-  by alexa-out-sd-01.qualcomm.com with ESMTP; 19 Jul 2022 02:29:00 -0700
+  bh=8YGwUp/01ziOb0OPGFS5C0JXJLHF9LxwkKqW2fKLtaM=;
+  b=NaRFmlGypg176MUAR7K4uyAhS1hMt6QPC4SzkJdAXIPILm8bbKY2ZC8h
+   Bs7GXkNRdb/FWlEq3M0d75b/7hIMU9gRsNCHyjq6V7JYyxUeykaTs6wen
+   MVGWNE/5PpISUocAjF0zkVGVk+7I9k4Yicfbz72oYVmsQqdJveVphjQcK
+   Y=;
+Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
+  by alexa-out-sd-01.qualcomm.com with ESMTP; 19 Jul 2022 02:34:13 -0700
 X-QCInternal: smtphost
 Received: from nasanex01b.na.qualcomm.com ([10.46.141.250])
-  by ironmsg02-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2022 02:29:00 -0700
+  by ironmsg04-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2022 02:34:13 -0700
 Received: from [10.50.41.193] (10.80.80.8) by nasanex01b.na.qualcomm.com
  (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.22; Tue, 19 Jul
- 2022 02:28:43 -0700
-Message-ID: <6058fc59-928f-6dad-126c-221e07714f42@quicinc.com>
-Date:   Tue, 19 Jul 2022 14:58:39 +0530
+ 2022 02:34:10 -0700
+Message-ID: <7a09896b-88dd-040b-86c0-863f8279a04e@quicinc.com>
+Date:   Tue, 19 Jul 2022 15:04:07 +0530
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
  Thunderbird/91.9.1
-Subject: Re: [PATCH rcu 3/7] rcu/nocb: Fix NOCB kthreads spawn failure with
- rcu_nocb_rdp_deoffload() direct call
+Subject: Re: [PATCH rcu 4/7] rcu/nocb: Add an option to offload all CPUs on
+ boot
 Content-Language: en-US
 To:     "Paul E. McKenney" <paulmck@kernel.org>, <rcu@vger.kernel.org>
 CC:     <linux-kernel@vger.kernel.org>, <kernel-team@fb.com>,
-        <rostedt@goodmis.org>, Zqiang <qiang1.zhang@intel.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Uladzislau Rezki <uladzislau.rezki@sony.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Frederic Weisbecker <frederic@kernel.org>
+        <rostedt@goodmis.org>, Joel Fernandes <joel@joelfernandes.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        kernel test robot <lkp@intel.com>
 References: <20220620224455.GA3840881@paulmck-ThinkPad-P17-Gen-1>
- <20220620224503.3841196-3-paulmck@kernel.org>
+ <20220620224503.3841196-4-paulmck@kernel.org>
 From:   Neeraj Upadhyay <quic_neeraju@quicinc.com>
-In-Reply-To: <20220620224503.3841196-3-paulmck@kernel.org>
+In-Reply-To: <20220620224503.3841196-4-paulmck@kernel.org>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
  nasanex01b.na.qualcomm.com (10.46.141.250)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
@@ -63,188 +62,131 @@ X-Mailing-List: rcu@vger.kernel.org
 
 
 
-On 6/21/2022 4:14 AM, Paul E. McKenney wrote:
-> From: Zqiang <qiang1.zhang@intel.com>
+On 6/21/2022 4:15 AM, Paul E. McKenney wrote:
+> From: Joel Fernandes <joel@joelfernandes.org>
 > 
-> If the rcuog/o[p] kthreads spawn failed, the offloaded rdp needs to
-> be explicitly deoffloaded, otherwise the target rdp is still considered
-> offloaded even though nothing actually handles the callbacks.
+> Systems built with CONFIG_RCU_NOCB_CPU=y but booted without either
+> the rcu_nocbs= or rcu_nohz_full= kernel-boot parameters will not have
+> callback offloading on any of the CPUs, nor can any of the CPUs be
+> switched to enable callback offloading at runtime.  Although this is
+> intentional, it would be nice to have a way to offload all the CPUs
+> without having to make random bootloaders specify either the rcu_nocbs=
+> or the rcu_nohz_full= kernel-boot parameters.
 > 
-> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-> Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
-> Cc: Boqun Feng <boqun.feng@gmail.com>
-> Cc: Uladzislau Rezki <uladzislau.rezki@sony.com>
-> Cc: Joel Fernandes <joel@joelfernandes.org>
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> This commit therefore provides a new CONFIG_RCU_NOCB_CPU_DEFAULT_ALL
+> Kconfig option that switches the default so as to offload callback
+> processing on all of the CPUs.  This default can still be overridden
+> using the rcu_nocbs= and rcu_nohz_full= kernel-boot parameters.
+> 
+> Reviewed-by: Kalesh Singh <kaleshsingh@google.com>
+> Reviewed-by: Uladzislau Rezki <urezki@gmail.com>
+> (In v4.1, fixed issues with CONFIG maze reported by kernel test robot).
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Joel Fernandes <joel@joelfernandes.org>
 > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 > ---
 
+
 Reviewed-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+
+One query on cpumask_setall() below
+
+>   Documentation/admin-guide/kernel-parameters.txt |  6 ++++++
+>   kernel/rcu/Kconfig                              | 13 +++++++++++++
+>   kernel/rcu/tree_nocb.h                          | 15 ++++++++++++++-
+>   3 files changed, 33 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 2522b11e593f2..34605c275294c 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -3659,6 +3659,9 @@
+>   			just as if they had also been called out in the
+>   			rcu_nocbs= boot parameter.
+>   
+> +			Note that this argument takes precedence over
+> +			the CONFIG_RCU_NOCB_CPU_DEFAULT_ALL option.
+> +
+>   	noiotrap	[SH] Disables trapped I/O port accesses.
+>   
+>   	noirqdebug	[X86-32] Disables the code which attempts to detect and
+> @@ -4557,6 +4560,9 @@
+>   			no-callback mode from boot but the mode may be
+>   			toggled at runtime via cpusets.
+>   
+> +			Note that this argument takes precedence over
+> +			the CONFIG_RCU_NOCB_CPU_DEFAULT_ALL option.
+> +
+>   	rcu_nocb_poll	[KNL]
+>   			Rather than requiring that offloaded CPUs
+>   			(specified by rcu_nocbs= above) explicitly
+> diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+> index 1c630e573548d..27aab870ae4cf 100644
+> --- a/kernel/rcu/Kconfig
+> +++ b/kernel/rcu/Kconfig
+> @@ -262,6 +262,19 @@ config RCU_NOCB_CPU
+>   	  Say Y here if you need reduced OS jitter, despite added overhead.
+>   	  Say N here if you are unsure.
+>   
+> +config RCU_NOCB_CPU_DEFAULT_ALL
+> +	bool "Offload RCU callback processing from all CPUs by default"
+> +	depends on RCU_NOCB_CPU
+> +	default n
+> +	help
+> +	  Use this option to offload callback processing from all CPUs
+> +	  by default, in the absence of the rcu_nocbs or nohz_full boot
+> +	  parameter. This also avoids the need to use any boot parameters
+> +	  to achieve the effect of offloading all CPUs on boot.
+> +
+> +	  Say Y here if you want offload all CPUs by default on boot.
+> +	  Say N here if you are unsure.
+> +
+>   config TASKS_TRACE_RCU_READ_MB
+>   	bool "Tasks Trace RCU readers use memory barriers in user and idle"
+>   	depends on RCU_EXPERT && TASKS_TRACE_RCU
+> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> index 4cf9a29bba79d..60cc92cc66552 100644
+> --- a/kernel/rcu/tree_nocb.h
+> +++ b/kernel/rcu/tree_nocb.h
+> @@ -1197,11 +1197,21 @@ void __init rcu_init_nohz(void)
+>   {
+>   	int cpu;
+>   	bool need_rcu_nocb_mask = false;
+> +	bool offload_all = false;
+>   	struct rcu_data *rdp;
+>   
+> +#if defined(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL)
+> +	if (!rcu_state.nocb_is_setup) {
+> +		need_rcu_nocb_mask = true;
+> +		offload_all = true;
+> +	}
+> +#endif /* #if defined(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL) */
+> +
+>   #if defined(CONFIG_NO_HZ_FULL)
+> -	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask))
+> +	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask)) {
+>   		need_rcu_nocb_mask = true;
+> +		offload_all = false; /* NO_HZ_FULL has its own mask. */
+> +	}
+>   #endif /* #if defined(CONFIG_NO_HZ_FULL) */
+>   
+>   	if (need_rcu_nocb_mask) {
+> @@ -1222,6 +1232,9 @@ void __init rcu_init_nohz(void)
+>   		cpumask_or(rcu_nocb_mask, rcu_nocb_mask, tick_nohz_full_mask);
+>   #endif /* #if defined(CONFIG_NO_HZ_FULL) */
+>   
+> +	if (offload_all)
+> +		cpumask_setall(rcu_nocb_mask);
+
+Do we need to do a cpumask_and(rcu_nocb_mask, cpu_possible_mask, 
+rcu_nocb_mask) after setting all cpus in rcu_nocb_mask (cpumask_subset() 
+check below takes care of it though)?
 
 
 Thanks
 Neeraj
 
->   kernel/rcu/tree_nocb.h | 80 +++++++++++++++++++++++++++++++++---------
->   1 file changed, 64 insertions(+), 16 deletions(-)
-> 
-> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-> index f2f2cab6285a1..4cf9a29bba79d 100644
-> --- a/kernel/rcu/tree_nocb.h
-> +++ b/kernel/rcu/tree_nocb.h
-> @@ -986,10 +986,7 @@ static int rdp_offload_toggle(struct rcu_data *rdp,
->   	}
->   	raw_spin_unlock_irqrestore(&rdp_gp->nocb_gp_lock, flags);
->   
-> -	if (wake_gp)
-> -		wake_up_process(rdp_gp->nocb_gp_kthread);
-> -
-> -	return 0;
-> +	return wake_gp;
->   }
->   
->   static long rcu_nocb_rdp_deoffload(void *arg)
-> @@ -997,9 +994,15 @@ static long rcu_nocb_rdp_deoffload(void *arg)
->   	struct rcu_data *rdp = arg;
->   	struct rcu_segcblist *cblist = &rdp->cblist;
->   	unsigned long flags;
-> -	int ret;
-> +	int wake_gp;
-> +	struct rcu_data *rdp_gp = rdp->nocb_gp_rdp;
->   
-> -	WARN_ON_ONCE(rdp->cpu != raw_smp_processor_id());
-> +	/*
-> +	 * rcu_nocb_rdp_deoffload() may be called directly if
-> +	 * rcuog/o[p] spawn failed, because at this time the rdp->cpu
-> +	 * is not online yet.
-> +	 */
-> +	WARN_ON_ONCE((rdp->cpu != raw_smp_processor_id()) && cpu_online(rdp->cpu));
->   
->   	pr_info("De-offloading %d\n", rdp->cpu);
->   
-> @@ -1023,10 +1026,41 @@ static long rcu_nocb_rdp_deoffload(void *arg)
->   	 */
->   	rcu_segcblist_set_flags(cblist, SEGCBLIST_RCU_CORE);
->   	invoke_rcu_core();
-> -	ret = rdp_offload_toggle(rdp, false, flags);
-> -	swait_event_exclusive(rdp->nocb_state_wq,
-> -			      !rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_CB |
-> -							SEGCBLIST_KTHREAD_GP));
-> +	wake_gp = rdp_offload_toggle(rdp, false, flags);
 > +
-> +	mutex_lock(&rdp_gp->nocb_gp_kthread_mutex);
-> +	if (rdp_gp->nocb_gp_kthread) {
-> +		if (wake_gp)
-> +			wake_up_process(rdp_gp->nocb_gp_kthread);
-> +
-> +		/*
-> +		 * If rcuo[p] kthread spawn failed, directly remove SEGCBLIST_KTHREAD_CB.
-> +		 * Just wait SEGCBLIST_KTHREAD_GP to be cleared by rcuog.
-> +		 */
-> +		if (!rdp->nocb_cb_kthread) {
-> +			rcu_nocb_lock_irqsave(rdp, flags);
-> +			rcu_segcblist_clear_flags(&rdp->cblist, SEGCBLIST_KTHREAD_CB);
-> +			rcu_nocb_unlock_irqrestore(rdp, flags);
-> +		}
-> +
-> +		swait_event_exclusive(rdp->nocb_state_wq,
-> +					!rcu_segcblist_test_flags(cblist,
-> +					  SEGCBLIST_KTHREAD_CB | SEGCBLIST_KTHREAD_GP));
-> +	} else {
-> +		/*
-> +		 * No kthread to clear the flags for us or remove the rdp from the nocb list
-> +		 * to iterate. Do it here instead. Locking doesn't look stricly necessary
-> +		 * but we stick to paranoia in this rare path.
-> +		 */
-> +		rcu_nocb_lock_irqsave(rdp, flags);
-> +		rcu_segcblist_clear_flags(&rdp->cblist,
-> +				SEGCBLIST_KTHREAD_CB | SEGCBLIST_KTHREAD_GP);
-> +		rcu_nocb_unlock_irqrestore(rdp, flags);
-> +
-> +		list_del(&rdp->nocb_entry_rdp);
-> +	}
-> +	mutex_unlock(&rdp_gp->nocb_gp_kthread_mutex);
-> +
->   	/*
->   	 * Lock one last time to acquire latest callback updates from kthreads
->   	 * so we can later handle callbacks locally without locking.
-> @@ -1047,7 +1081,7 @@ static long rcu_nocb_rdp_deoffload(void *arg)
->   	WARN_ON_ONCE(rcu_cblist_n_cbs(&rdp->nocb_bypass));
->   
->   
-> -	return ret;
-> +	return 0;
->   }
->   
->   int rcu_nocb_cpu_deoffload(int cpu)
-> @@ -1079,7 +1113,8 @@ static long rcu_nocb_rdp_offload(void *arg)
->   	struct rcu_data *rdp = arg;
->   	struct rcu_segcblist *cblist = &rdp->cblist;
->   	unsigned long flags;
-> -	int ret;
-> +	int wake_gp;
-> +	struct rcu_data *rdp_gp = rdp->nocb_gp_rdp;
->   
->   	WARN_ON_ONCE(rdp->cpu != raw_smp_processor_id());
->   	/*
-> @@ -1089,6 +1124,9 @@ static long rcu_nocb_rdp_offload(void *arg)
->   	if (!rdp->nocb_gp_rdp)
->   		return -EINVAL;
->   
-> +	if (WARN_ON_ONCE(!rdp_gp->nocb_gp_kthread))
-> +		return -EINVAL;
-> +
->   	pr_info("Offloading %d\n", rdp->cpu);
->   
->   	/*
-> @@ -1113,7 +1151,9 @@ static long rcu_nocb_rdp_offload(void *arg)
->   	 *      WRITE flags               READ callbacks
->   	 *      rcu_nocb_unlock()         rcu_nocb_unlock()
->   	 */
-> -	ret = rdp_offload_toggle(rdp, true, flags);
-> +	wake_gp = rdp_offload_toggle(rdp, true, flags);
-> +	if (wake_gp)
-> +		wake_up_process(rdp_gp->nocb_gp_kthread);
->   	swait_event_exclusive(rdp->nocb_state_wq,
->   			      rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_CB) &&
->   			      rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_GP));
-> @@ -1126,7 +1166,7 @@ static long rcu_nocb_rdp_offload(void *arg)
->   	rcu_segcblist_clear_flags(cblist, SEGCBLIST_RCU_CORE);
->   	rcu_nocb_unlock_irqrestore(rdp, flags);
->   
-> -	return ret;
-> +	return 0;
->   }
->   
->   int rcu_nocb_cpu_offload(int cpu)
-> @@ -1248,7 +1288,7 @@ static void rcu_spawn_cpu_nocb_kthread(int cpu)
->   				"rcuog/%d", rdp_gp->cpu);
->   		if (WARN_ONCE(IS_ERR(t), "%s: Could not start rcuo GP kthread, OOM is now expected behavior\n", __func__)) {
->   			mutex_unlock(&rdp_gp->nocb_gp_kthread_mutex);
-> -			return;
-> +			goto end;
->   		}
->   		WRITE_ONCE(rdp_gp->nocb_gp_kthread, t);
->   		if (kthread_prio)
-> @@ -1260,12 +1300,20 @@ static void rcu_spawn_cpu_nocb_kthread(int cpu)
->   	t = kthread_run(rcu_nocb_cb_kthread, rdp,
->   			"rcuo%c/%d", rcu_state.abbr, cpu);
->   	if (WARN_ONCE(IS_ERR(t), "%s: Could not start rcuo CB kthread, OOM is now expected behavior\n", __func__))
-> -		return;
-> +		goto end;
->   
->   	if (kthread_prio)
->   		sched_setscheduler_nocheck(t, SCHED_FIFO, &sp);
->   	WRITE_ONCE(rdp->nocb_cb_kthread, t);
->   	WRITE_ONCE(rdp->nocb_gp_kthread, rdp_gp->nocb_gp_kthread);
-> +	return;
-> +end:
-> +	mutex_lock(&rcu_state.barrier_mutex);
-> +	if (rcu_rdp_is_offloaded(rdp)) {
-> +		rcu_nocb_rdp_deoffload(rdp);
-> +		cpumask_clear_cpu(cpu, rcu_nocb_mask);
-> +	}
-> +	mutex_unlock(&rcu_state.barrier_mutex);
->   }
->   
->   /* How many CB CPU IDs per GP kthread?  Default of -1 for sqrt(nr_cpu_ids). */
+>   	if (!cpumask_subset(rcu_nocb_mask, cpu_possible_mask)) {
+>   		pr_info("\tNote: kernel parameter 'rcu_nocbs=', 'nohz_full', or 'isolcpus=' contains nonexistent CPUs.\n");
+>   		cpumask_and(rcu_nocb_mask, cpu_possible_mask,
