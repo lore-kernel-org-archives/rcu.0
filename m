@@ -2,38 +2,38 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DDA71C43334
-	for <rcu@archiver.kernel.org>; Thu, 21 Jul 2022 01:56:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 49203C433EF
+	for <rcu@archiver.kernel.org>; Thu, 21 Jul 2022 04:47:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229975AbiGUB4t (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 20 Jul 2022 21:56:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51702 "EHLO
+        id S230175AbiGUErL (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 21 Jul 2022 00:47:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229934AbiGUB4s (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 20 Jul 2022 21:56:48 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4060E6BC0F;
-        Wed, 20 Jul 2022 18:56:47 -0700 (PDT)
+        with ESMTP id S229692AbiGUErK (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 21 Jul 2022 00:47:10 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C517F78DE2;
+        Wed, 20 Jul 2022 21:47:09 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 9BACBB8221D;
-        Thu, 21 Jul 2022 01:56:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28F52C3411E;
-        Thu, 21 Jul 2022 01:56:44 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5CD8761805;
+        Thu, 21 Jul 2022 04:47:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE697C3411E;
+        Thu, 21 Jul 2022 04:47:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1658368604;
-        bh=4dfoLYB2sR8FbSHG0+ns4sMaFsbfc1Xyk5sBv/G3vCc=;
+        s=k20201202; t=1658378828;
+        bh=1b6KFnzt/XRO3H9QzuEte6FrE/uR0jOfEb/7nMgJjuw=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=U1KxqsB6tbDiGNbqBUQwLt+9x8rAYDMgIogglh6oI80Q/5AgW2FSe6lRqqKesHWuj
-         bmaokrTmNv5y5e5J8j1fjCY9zThn1pnrPMK9DFMreHi4tKHp5iTSLtC0tMYROZgnR5
-         xqLCNfI2Xxxscgco7P/i6gkHQmidgCR3cm7WCKebWe5/NCjtTyRb5yVluENd2vOvkd
-         64XgbhGOFaGOLbAD42BVyDvdcq+SNyObcOrsPZzLjDojVCFpEtCEaZjBLZ8TRwYWN8
-         YzK5jk0x56N0O8DQDENMjp4vK3zY4dLxdNQZ8dNWo1Xoi0ygfDF8N+6/6OxbQVkXrP
-         19VclThTppKLg==
+        b=dn+B/nOHUX/baSwA/l4KE/nRknv1cMibO62yJHy47tfTCkzHdv+mqcMy1Dk0Pt4Ap
+         5CLSYbKJv1AXH92XWRlSutGgRlnpWCtKR2zfWeueNIHURsUKL5OngFUJpjmACgf40N
+         PMwxP7nB0XJtzmij3R1MaG6QqVDE1FYMyMwCue8hP3BkibqDCj+uoPB+vmdFNbz9Ds
+         9x35Ugk0CAYYw9GYtgip/bX4ZBCTl8GRFCWwkwREISNyJHV6YFEYHWoozdcmPHIu91
+         d8nE/zzaaf2SCF4i6aFysiY7D4Rkt7A1isCY50SNUjz8TtDyWQ8OObp5gv/ywbLscU
+         zYr0iLWOnOyaQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id B78745C054C; Wed, 20 Jul 2022 18:56:43 -0700 (PDT)
-Date:   Wed, 20 Jul 2022 18:56:43 -0700
+        id 5F3585C054C; Wed, 20 Jul 2022 21:47:08 -0700 (PDT)
+Date:   Wed, 20 Jul 2022 21:47:08 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     Boqun Feng <boqun.feng@gmail.com>
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -43,209 +43,124 @@ Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         Al Viro <viro@zeniv.linux.org.uk>, Ian Kent <raven@themaw.net>
 Subject: Re: [PATCH rcu 04/12] rcu: Switch polled grace-period APIs to
  ->gp_seq_polled
-Message-ID: <20220721015643.GA3791281@paulmck-ThinkPad-P17-Gen-1>
+Message-ID: <20220721044708.GU1790663@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
 References: <20220620224943.GA3841634@paulmck-ThinkPad-P17-Gen-1>
  <20220620225128.3842050-4-paulmck@kernel.org>
  <Ytijki0fkkyKaD9u@boqun-archlinux>
  <20220721010455.GR1790663@paulmck-ThinkPad-P17-Gen-1>
+ <YtixMeMCcqAyeTiH@boqun-archlinux>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220721010455.GR1790663@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <YtixMeMCcqAyeTiH@boqun-archlinux>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Jul 20, 2022 at 06:04:55PM -0700, Paul E. McKenney wrote:
-> On Wed, Jul 20, 2022 at 05:53:38PM -0700, Boqun Feng wrote:
-> > Hi Paul,
-> > 
-> > On Mon, Jun 20, 2022 at 03:51:20PM -0700, Paul E. McKenney wrote:
-> > > This commit switches the existing polled grace-period APIs to use a
-> > > new ->gp_seq_polled counter in the rcu_state structure.  An additional
-> > > ->gp_seq_polled_snap counter in that same structure allows the normal
-> > > grace period kthread to interact properly with the !SMP !PREEMPT fastpath
-> > > through synchronize_rcu().  The first of the two to note the end of a
-> > > given grace period will make knowledge of this transition available to
-> > > the polled API.
+On Wed, Jul 20, 2022 at 06:51:45PM -0700, Boqun Feng wrote:
+> On Wed, Jul 20, 2022 at 06:04:55PM -0700, Paul E. McKenney wrote:
+> [...]
+> > > > @@ -3860,7 +3944,7 @@ unsigned long get_state_synchronize_rcu(void)
+> > > >  	 * before the load from ->gp_seq.
+> > > >  	 */
+> > > >  	smp_mb();  /* ^^^ */
+> > > > -	return rcu_seq_snap(&rcu_state.gp_seq);
+> > > > +	return rcu_seq_snap(&rcu_state.gp_seq_polled);
 > > > 
-> > > This commit is in preparation for polled expedited grace periods.
+> > > I happened to run into this. There is one usage of
+> > > get_state_synchronize_rcu() in start_poll_synchronize_rcu(), in which
+> > > the return value of get_state_synchronize_rcu() ("gp_seq") will be used
+> > > for rcu_start_this_gp(). I don't think this is quite right, because
+> > > after this change, rcu_state.gp_seq and rcu_state.gp_seq_polled are
+> > > different values, in fact ->gp_seq_polled is greater than ->gp_seq
+> > > by how many synchronize_rcu() is called in early boot.
 > > > 
-> > > Link: https://lore.kernel.org/all/20220121142454.1994916-1-bfoster@redhat.com/
-> > > Link: https://docs.google.com/document/d/1RNKWW9jQyfjxw2E8dsXVTdvZYh0HnYeSHDKog9jhdN8/edit?usp=sharing
-> > > Cc: Brian Foster <bfoster@redhat.com>
-> > > Cc: Dave Chinner <david@fromorbit.com>
-> > > Cc: Al Viro <viro@zeniv.linux.org.uk>
-> > > Cc: Ian Kent <raven@themaw.net>
-> > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > ---
-> > >  kernel/rcu/tree.c | 90 +++++++++++++++++++++++++++++++++++++++++++++--
-> > >  kernel/rcu/tree.h |  2 ++
-> > >  2 files changed, 89 insertions(+), 3 deletions(-)
-> > > 
-> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > index 46cfceea87847..637e8f9454573 100644
-> > > --- a/kernel/rcu/tree.c
-> > > +++ b/kernel/rcu/tree.c
-> > > @@ -1775,6 +1775,78 @@ static void rcu_strict_gp_boundary(void *unused)
-> > >  	invoke_rcu_core();
-> > >  }
-> > >  
-> > > +// Has rcu_init() been invoked?  This is used (for example) to determine
-> > > +// whether spinlocks may be acquired safely.
-> > > +static bool rcu_init_invoked(void)
-> > > +{
-> > > +	return !!rcu_state.n_online_cpus;
-> > > +}
-> > > +
-> > > +// Make the polled API aware of the beginning of a grace period.
-> > > +static void rcu_poll_gp_seq_start(unsigned long *snap)
-> > > +{
-> > > +	struct rcu_node *rnp = rcu_get_root();
-> > > +
-> > > +	if (rcu_init_invoked())
-> > > +		raw_lockdep_assert_held_rcu_node(rnp);
-> > > +
-> > > +	// If RCU was idle, note beginning of GP.
-> > > +	if (!rcu_seq_state(rcu_state.gp_seq_polled))
-> > > +		rcu_seq_start(&rcu_state.gp_seq_polled);
-> > > +
-> > > +	// Either way, record current state.
-> > > +	*snap = rcu_state.gp_seq_polled;
-> > > +}
-> > > +
-> > > +// Make the polled API aware of the end of a grace period.
-> > > +static void rcu_poll_gp_seq_end(unsigned long *snap)
-> > > +{
-> > > +	struct rcu_node *rnp = rcu_get_root();
-> > > +
-> > > +	if (rcu_init_invoked())
-> > > +		raw_lockdep_assert_held_rcu_node(rnp);
-> > > +
-> > > +	// If the the previously noted GP is still in effect, record the
-> > > +	// end of that GP.  Either way, zero counter to avoid counter-wrap
-> > > +	// problems.
-> > > +	if (*snap && *snap == rcu_state.gp_seq_polled) {
-> > > +		rcu_seq_end(&rcu_state.gp_seq_polled);
-> > > +		rcu_state.gp_seq_polled_snap = 0;
-> > > +	} else {
-> > > +		*snap = 0;
-> > > +	}
-> > > +}
-> > > +
-> > > +// Make the polled API aware of the beginning of a grace period, but
-> > > +// where caller does not hold the root rcu_node structure's lock.
-> > > +static void rcu_poll_gp_seq_start_unlocked(unsigned long *snap)
-> > > +{
-> > > +	struct rcu_node *rnp = rcu_get_root();
-> > > +
-> > > +	if (rcu_init_invoked()) {
-> > > +		lockdep_assert_irqs_enabled();
-> > > +		raw_spin_lock_irq_rcu_node(rnp);
-> > > +	}
-> > > +	rcu_poll_gp_seq_start(snap);
-> > > +	if (rcu_init_invoked())
-> > > +		raw_spin_unlock_irq_rcu_node(rnp);
-> > > +}
-> > > +
-> > > +// Make the polled API aware of the end of a grace period, but where
-> > > +// caller does not hold the root rcu_node structure's lock.
-> > > +static void rcu_poll_gp_seq_end_unlocked(unsigned long *snap)
-> > > +{
-> > > +	struct rcu_node *rnp = rcu_get_root();
-> > > +
-> > > +	if (rcu_init_invoked()) {
-> > > +		lockdep_assert_irqs_enabled();
-> > > +		raw_spin_lock_irq_rcu_node(rnp);
-> > > +	}
-> > > +	rcu_poll_gp_seq_end(snap);
-> > > +	if (rcu_init_invoked())
-> > > +		raw_spin_unlock_irq_rcu_node(rnp);
-> > > +}
-> > > +
-> > >  /*
-> > >   * Initialize a new grace period.  Return false if no grace period required.
-> > >   */
-> > > @@ -1810,6 +1882,7 @@ static noinline_for_stack bool rcu_gp_init(void)
-> > >  	rcu_seq_start(&rcu_state.gp_seq);
-> > >  	ASSERT_EXCLUSIVE_WRITER(rcu_state.gp_seq);
-> > >  	trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq, TPS("start"));
-> > > +	rcu_poll_gp_seq_start(&rcu_state.gp_seq_polled_snap);
-> > >  	raw_spin_unlock_irq_rcu_node(rnp);
-> > >  
-> > >  	/*
-> > > @@ -2069,6 +2142,7 @@ static noinline void rcu_gp_cleanup(void)
-> > >  	 * safe for us to drop the lock in order to mark the grace
-> > >  	 * period as completed in all of the rcu_node structures.
-> > >  	 */
-> > > +	rcu_poll_gp_seq_end(&rcu_state.gp_seq_polled_snap);
-> > >  	raw_spin_unlock_irq_rcu_node(rnp);
-> > >  
-> > >  	/*
-> > > @@ -3837,8 +3911,18 @@ void synchronize_rcu(void)
-> > >  			 lock_is_held(&rcu_lock_map) ||
-> > >  			 lock_is_held(&rcu_sched_lock_map),
-> > >  			 "Illegal synchronize_rcu() in RCU read-side critical section");
-> > > -	if (rcu_blocking_is_gp())
-> > > +	if (rcu_blocking_is_gp()) {
-> > > +		// Note well that this code runs with !PREEMPT && !SMP.
-> > > +		// In addition, all code that advances grace periods runs
-> > > +		// at process level.  Therefore, this GP overlaps with other
-> > > +		// GPs only by being fully nested within them, which allows
-> > > +		// reuse of ->gp_seq_polled_snap.
-> > > +		rcu_poll_gp_seq_start_unlocked(&rcu_state.gp_seq_polled_snap);
-> > > +		rcu_poll_gp_seq_end_unlocked(&rcu_state.gp_seq_polled_snap);
-> > > +		if (rcu_init_invoked())
-> > > +			cond_resched_tasks_rcu_qs();
-> > >  		return;  // Context allows vacuous grace periods.
-> > > +	}
-> > >  	if (rcu_gp_is_expedited())
-> > >  		synchronize_rcu_expedited();
-> > >  	else
-> > > @@ -3860,7 +3944,7 @@ unsigned long get_state_synchronize_rcu(void)
-> > >  	 * before the load from ->gp_seq.
-> > >  	 */
-> > >  	smp_mb();  /* ^^^ */
-> > > -	return rcu_seq_snap(&rcu_state.gp_seq);
-> > > +	return rcu_seq_snap(&rcu_state.gp_seq_polled);
+> > > Am I missing something here?
 > > 
-> > I happened to run into this. There is one usage of
-> > get_state_synchronize_rcu() in start_poll_synchronize_rcu(), in which
-> > the return value of get_state_synchronize_rcu() ("gp_seq") will be used
-> > for rcu_start_this_gp(). I don't think this is quite right, because
-> > after this change, rcu_state.gp_seq and rcu_state.gp_seq_polled are
-> > different values, in fact ->gp_seq_polled is greater than ->gp_seq
-> > by how many synchronize_rcu() is called in early boot.
+> > It does not appear that your are missing anything, sad to say!
 > > 
-> > Am I missing something here?
+> > Does the following make it work better?
+> > 
+> > 							Thanx, Paul
+> > 
+> > ------------------------------------------------------------------------
+> > 
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index 2122359f0c862..cf2fd58a93a41 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -3571,7 +3571,7 @@ EXPORT_SYMBOL_GPL(get_state_synchronize_rcu);
+> >  unsigned long start_poll_synchronize_rcu(void)
+> >  {
+> >  	unsigned long flags;
+> > -	unsigned long gp_seq = get_state_synchronize_rcu();
+> > +	unsigned long gp_seq = rcu_seq_snap(&rcu_state.gp_seq);
 > 
-> It does not appear that your are missing anything, sad to say!
-> 
-> Does the following make it work better?
+> get_state_synchronize_rcu() is still needed, because we need to return
+> a cookie for polling for this function. Something like below maybe? Hope
+> I didn't mess up the ordering ;-)
 
-Well, rcutorture doesn't like this change much.  ;-)
-
-No surprise, given that it is only the value feeding into
-rcu_start_this_gp() that needs to change, not the value returned from
-start_poll_synchronize_rcu().
-
-Take 2, still untested.
+My thought is to combine your comment with my functionally equivalent
+code that avoids the extra variable.  If that works for you (and if it
+works, for that matter), does Co-developed-by work for you?
 
 							Thanx, Paul
 
-------------------------------------------------------------------------
-
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 2122359f0c862..061c1f6737ddc 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3581,7 +3581,7 @@ unsigned long start_poll_synchronize_rcu(void)
- 	rdp = this_cpu_ptr(&rcu_data);
- 	rnp = rdp->mynode;
- 	raw_spin_lock_rcu_node(rnp); // irqs already disabled.
--	needwake = rcu_start_this_gp(rnp, rdp, gp_seq);
-+	needwake = rcu_start_this_gp(rnp, rdp, rcu_seq_snap(&rcu_state.gp_seq));
- 	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
- 	if (needwake)
- 		rcu_gp_kthread_wake();
+> Regards,
+> Boqun
+> 
+> ---------------
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 84d281776688..0f9134871289 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -3571,11 +3583,39 @@ EXPORT_SYMBOL_GPL(get_state_synchronize_rcu);
+>  unsigned long start_poll_synchronize_rcu(void)
+>  {
+>         unsigned long flags;
+> -       unsigned long gp_seq = get_state_synchronize_rcu();
+> +       unsigned long gp_seq_poll = get_state_synchronize_rcu();
+> +       unsigned long gp_seq;
+>         bool needwake;
+>         struct rcu_data *rdp;
+>         struct rcu_node *rnp;
+> 
+> +       /*
+> +        * Need to start a gp if no gp has been started yet.
+> +        *
+> +        * Note that we need to snapshot gp_seq after gp_seq_poll, otherwise
+> +        * consider the follow case:
+> +        *
+> +        *      <no gp in progress>     // gp# is 0
+> +        *      snapshot gp_seq         // gp #2 will be set as needed
+> +        *      <a gp passed>
+> +        *                              // gp# is 1
+> +        *      snapshot gp_seq_poll    // polling gets ready until gp #3
+> +        *
+> +        * then the following rcu_start_this_gp() won't mark gp #3 as needed,
+> +        * and polling won't become ready if others don't start a gp.
+> +        *
+> +        * And the following case is fine:
+> +        *
+> +        *      <no gp in progress>     // gp# is 0
+> +        *      snapshot gp_seq_poll    // polling gets ready until gp #2
+> +        *      <a gp passed>
+> +        *                              // gp# is 1
+> +        *      snapshot gp_seq         // gp #3 will be set as needed
+> +        *
+> +        * Also note, we rely on the smp_mb() in get_state_synchronize_rcu()
+> +        * to order the two snapshots.
+> +        */
+> +       gp_seq = rcu_seq_snap(&rcu_state.gp_seq);
+>         lockdep_assert_irqs_enabled();
+>         local_irq_save(flags);
+>         rdp = this_cpu_ptr(&rcu_data);
+> @@ -3585,7 +3625,7 @@ unsigned long start_poll_synchronize_rcu(void)
+>         raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+>         if (needwake)
+>                 rcu_gp_kthread_wake();
+> -       return gp_seq;
+> +       return gp_seq_poll;
+>  }
+>  EXPORT_SYMBOL_GPL(start_poll_synchronize_rcu);
