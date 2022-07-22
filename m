@@ -2,104 +2,97 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FE44C433EF
-	for <rcu@archiver.kernel.org>; Fri, 22 Jul 2022 00:28:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E01D2C433EF
+	for <rcu@archiver.kernel.org>; Fri, 22 Jul 2022 00:47:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229696AbiGVA2e (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 21 Jul 2022 20:28:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54652 "EHLO
+        id S229819AbiGVArf (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 21 Jul 2022 20:47:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233884AbiGVA2d (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 21 Jul 2022 20:28:33 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FBC295C17;
-        Thu, 21 Jul 2022 17:28:31 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id AF4DEB826E2;
-        Fri, 22 Jul 2022 00:28:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 567B9C3411E;
-        Fri, 22 Jul 2022 00:28:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1658449708;
-        bh=zlL75xRrx57HJY0xsOBH0q+zchdcxrbFdFBjnUn01MI=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=sXXcIH5zf10BAPYH8Tc7pj4YOP9WJSsWDbgCEqBFQFluNxbudnj+2mEOBvUK24+jh
-         zfoZZv3nGIKa9QGyPNmGM7OOf5UeHnzs9XXdgtHKTAeXYDs/U7YLros1/gsgQ3qYfs
-         kYmv0dECLJ4wOR26mvDVH5QSIs8j5WSdzo2dP76cm1vbKzWpVfGvxP0/mURc5e3XpZ
-         XzT8XXVNCmclx1UAIN3gJwAFIWem1rPQXSOKPO7oXOlsAiR86bPYxPm2L7RRhTGj7S
-         u2d1BkBAMVAsA4Dyj/8LhaCprZa1xqy+KsKgQtFTG2paAM2g5R3cJAIOsLyEoFEnUt
-         uQKjcuyZqhT8w==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id CCA595C03A4; Thu, 21 Jul 2022 17:28:25 -0700 (PDT)
-Date:   Thu, 21 Jul 2022 17:28:25 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        zhangfei.gao@linaro.org, chenxiang66@hisilicon.com,
-        shameerali.kolothum.thodi@huawei.com, pbonzini@redhat.com,
-        quic_neeraju@quicinc.com, maz@kernel.org, yueluck@163.com
-Subject: [GIT PULL] Urgent fix for expedited SRCU v5.19 boot-speed regression
-Message-ID: <20220722002825.GA2848736@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        with ESMTP id S229671AbiGVAre (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 21 Jul 2022 20:47:34 -0400
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F223695C34;
+        Thu, 21 Jul 2022 17:47:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1658450854; x=1689986854;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=HBJqZGyWi9totiLB0aQgThUb1NiiNeVNF5WEw5qkAzU=;
+  b=Fc217rCG75hflZYUUaf+SXGKcNg8UGhS7SKodAsiEJ050oep+mrlLQCw
+   0jbmB4i9TbG8QHgUdi8FeAidwGq1nUz48hESpFWY06X9n8mYau+aHAYRv
+   rgKfqsr2UOvzyAXnD4plCA4WqSEJUqP2lO33BbiO5K1as2y1SLs6zEkzJ
+   IthysamgPQNXGpJtQT6827K/9xyXdsZHqyk5H2dDLUhZ1oASGqP0YMGj/
+   nqSM8chCsDvOL0BW0T7yYkXrPQ7e9CZaKgHxUY5YrV8qE7nUyrMhwzz6v
+   bbmB9ghdftDn3iw6HUWaXGkV9rNco9iyEP5TTUDoy6A+rwQbrYz2kEODI
+   g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10415"; a="288377322"
+X-IronPort-AV: E=Sophos;i="5.93,184,1654585200"; 
+   d="scan'208";a="288377322"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2022 17:47:24 -0700
+X-IronPort-AV: E=Sophos;i="5.93,184,1654585200"; 
+   d="scan'208";a="656997021"
+Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.125])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2022 17:47:23 -0700
+From:   Zqiang <qiang1.zhang@intel.com>
+To:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] rcu: Only check tasks blocked on leaf rcu_nodes for PREEMPT_RCU
+Date:   Fri, 22 Jul 2022 08:52:13 +0800
+Message-Id: <20220722005213.3511188-1-qiang1.zhang@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello, Linus,
+In PREEMPT_RCU kernel, for multi-node rcu tree, if the RCU read
+critical section is preempted, the current task are only queued
+leaf rcu_node blkd list, for single-node rcu tree, the root node
+is also leaf node.
 
-This pull request fixes a severe boot-speed regression for embedded
-systems running in virtual environments, which are commonly
-used for development and debugging.  This regression bloats the
-edit/compile/boot/debug cycle, causing considerable pain.  Hence the
-urgent pull request into v5.19 rather than waiting for the upcoming
-merge window.
+This commit add rcu_is_leaf_node() to filter out checks for non-leaf
+rcu_node.
 
-The following changes since commit a111daf0c53ae91e71fd2bfe7497862d14132e3e:
+Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+---
+ kernel/rcu/tree_plugin.h | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-  Linux 5.19-rc3 (2022-06-19 15:06:47 -0500)
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index b2219577fbe2..a9df11ec65af 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -693,6 +693,8 @@ static void rcu_preempt_check_blocked_tasks(struct rcu_node *rnp)
+ 
+ 	RCU_LOCKDEP_WARN(preemptible(), "rcu_preempt_check_blocked_tasks() invoked with preemption enabled!!!\n");
+ 	raw_lockdep_assert_held_rcu_node(rnp);
++	if (!rcu_is_leaf_node(rnp))
++		goto end;
+ 	if (WARN_ON_ONCE(rcu_preempt_blocked_readers_cgp(rnp)))
+ 		dump_blkd_tasks(rnp, 10);
+ 	if (rcu_preempt_has_tasks(rnp) &&
+@@ -703,6 +705,7 @@ static void rcu_preempt_check_blocked_tasks(struct rcu_node *rnp)
+ 		trace_rcu_unlock_preempted_task(TPS("rcu_preempt-GPS"),
+ 						rnp->gp_seq, t->pid);
+ 	}
++end:
+ 	WARN_ON_ONCE(rnp->qsmask);
+ }
+ 
+@@ -1178,7 +1181,8 @@ static void rcu_initiate_boost(struct rcu_node *rnp, unsigned long flags)
+  */
+ static void rcu_preempt_boost_start_gp(struct rcu_node *rnp)
+ {
+-	rnp->boost_time = jiffies + RCU_BOOST_DELAY_JIFFIES;
++	if (rcu_is_leaf_node(rnp))
++		rnp->boost_time = jiffies + RCU_BOOST_DELAY_JIFFIES;
+ }
+ 
+ /*
+-- 
+2.25.1
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git tags/rcu-urgent.2022.07.21a
-
-for you to fetch changes up to 4f2bfd9494a072d58203600de6bedd72680e612a:
-
-  srcu: Make expedited RCU grace periods block even less frequently (2022-07-19 11:39:59 -0700)
-
-----------------------------------------------------------------
-Urgent RCU pull request for v5.19
-
-This pull request contains a pair of commits that fix 282d8998e997 ("srcu:
-Prevent expedited GPs and blocking readers from consuming CPU"), which
-was itself a fix to an SRCU expedited grace-period problem that could
-prevent kernel live patching (KLP) from completing.  That SRCU fix for
-KLP introduced large (as in minutes) boot-time delays to embedded Linux
-kernels running on qemu/KVM.  These delays were due to the emulation of
-certain MMIO operations controlling memory layout, which were emulated
-with one expedited grace period per access.  Common configurations
-required thousands of boot-time MMIO accesses, and thus thousands of
-boot-time expedited SRCU grace periods.
-
-In these configurations, the occasional sleeps that allowed KLP to proceed
-caused excessive boot delays.  These commits preserve enough sleeps to
-permit KLP to proceed, but few enough that the virtual embedded kernels
-still boot reasonably quickly.
-
-This represents a regression introduced in the v5.19 merge window,
-and the bug is causing significant inconvenience, hence this pull request.
-
-----------------------------------------------------------------
-Neeraj Upadhyay (1):
-      srcu: Make expedited RCU grace periods block even less frequently
-
-Paul E. McKenney (1):
-      srcu: Block less aggressively for expedited grace periods
-
- Documentation/admin-guide/kernel-parameters.txt | 18 +++++
- kernel/rcu/srcutree.c                           | 98 +++++++++++++++++++------
- 2 files changed, 92 insertions(+), 24 deletions(-)
