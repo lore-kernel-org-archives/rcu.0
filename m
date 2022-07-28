@@ -2,128 +2,177 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2ADABC04A68
-	for <rcu@archiver.kernel.org>; Thu, 28 Jul 2022 02:35:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E775AC04A68
+	for <rcu@archiver.kernel.org>; Thu, 28 Jul 2022 02:43:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232034AbiG1CfK (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 27 Jul 2022 22:35:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33382 "EHLO
+        id S232034AbiG1Cnq (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 27 Jul 2022 22:43:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbiG1CfJ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 27 Jul 2022 22:35:09 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 942CB192;
-        Wed, 27 Jul 2022 19:35:06 -0700 (PDT)
-Received: from dggpemm500020.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4LtZTY5LT8z9syc;
-        Thu, 28 Jul 2022 10:33:53 +0800 (CST)
+        with ESMTP id S232002AbiG1Cnp (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 27 Jul 2022 22:43:45 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF47242AEA;
+        Wed, 27 Jul 2022 19:43:43 -0700 (PDT)
+Received: from dggpemm500024.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4LtZcL5b36zWflC;
+        Thu, 28 Jul 2022 10:39:46 +0800 (CST)
 Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggpemm500020.china.huawei.com (7.185.36.49) with Microsoft SMTP Server
+ dggpemm500024.china.huawei.com (7.185.36.203) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Thu, 28 Jul 2022 10:35:04 +0800
-Received: from [10.174.178.55] (10.174.178.55) by
+ 15.1.2375.24; Thu, 28 Jul 2022 10:43:41 +0800
+Received: from thunder-town.china.huawei.com (10.174.178.55) by
  dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Thu, 28 Jul 2022 10:35:04 +0800
-Subject: Re: [PATCH] rcu: Display registers of self-detected stall as far as
- possible
-To:     kernel test robot <lkp@intel.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
+ 15.1.2375.24; Thu, 28 Jul 2022 10:43:40 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     "Paul E . McKenney" <paulmck@kernel.org>,
         Frederic Weisbecker <frederic@kernel.org>,
-        "Neeraj Upadhyay" <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        "Josh Triplett" <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>, <rcu@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
-CC:     <llvm@lists.linux.dev>, <kbuild-all@lists.01.org>
-References: <20220727060929.1149-1-thunder.leizhen@huawei.com>
- <202207280520.yvgjXjJx-lkp@intel.com>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <fad2fcf8-9dd9-e2dc-dc04-203311ade6c9@huawei.com>
-Date:   Thu, 28 Jul 2022 10:35:02 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH v2] rcu: Display registers of self-detected stall as far as possible
+Date:   Thu, 28 Jul 2022 10:43:27 +0800
+Message-ID: <20220728024327.1202-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-In-Reply-To: <202207280520.yvgjXjJx-lkp@intel.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
 X-Originating-IP: [10.174.178.55]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
  dggpemm500006.china.huawei.com (7.185.36.236)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+For architectures that do not support NMI interrupts, registers is not
+printed when rcu stall is self-detected. However, this information is
+useful for analyzing the root cause of the fault. Fortunately, the rcu
+stall is always detected in the tick interrupt handler. So we can take
+it through get_irq_regs() and display it through show_regs(). Further,
+show_regs() unwind the call trace based on 'regs', the worthless call
+trace associated with tick handling will be omitted, this helps us to
+focus more on the problem.
 
+This is an example on arm64:
+[   27.501721] rcu: INFO: rcu_preempt self-detected stall on CPU
+[   27.502238] rcu:     0-....: (1250 ticks this GP) idle=4f7/1/0x4000000000000000 softirq=2594/2594 fqs=619
+[   27.502632]  (t=1251 jiffies g=2989 q=29 ncpus=4)
+[   27.503845] CPU: 0 PID: 306 Comm: test0 Not tainted 5.19.0-rc7-00009-g1c1a6c29ff99-dirty #46
+[   27.504732] Hardware name: linux,dummy-virt (DT)
+[   27.504947] pstate: 20000005 (nzCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+[   27.504998] pc : arch_counter_read+0x18/0x24
+[   27.505301] lr : arch_counter_read+0x18/0x24
+[   27.505328] sp : ffff80000b29bdf0
+[   27.505345] x29: ffff80000b29bdf0 x28: 0000000000000000 x27: 0000000000000000
+[   27.505475] x26: 0000000000000000 x25: 0000000000000000 x24: 0000000000000000
+[   27.505553] x23: 0000000000001f40 x22: ffff800009849c48 x21: 000000065f871ae0
+[   27.505627] x20: 00000000000025ec x19: ffff80000a6eb300 x18: ffffffffffffffff
+[   27.505654] x17: 0000000000000001 x16: 0000000000000000 x15: ffff80000a6d0296
+[   27.505681] x14: ffffffffffffffff x13: ffff80000a29bc18 x12: 0000000000000426
+[   27.505709] x11: 0000000000000162 x10: ffff80000a2f3c18 x9 : ffff80000a29bc18
+[   27.505736] x8 : 00000000ffffefff x7 : ffff80000a2f3c18 x6 : 00000000759bd013
+[   27.505761] x5 : 01ffffffffffffff x4 : 0002dc6c00000000 x3 : 0000000000000017
+[   27.505787] x2 : 00000000000025ec x1 : ffff80000b29bdf0 x0 : 0000000075a30653
+[   27.505937] Call trace:
+[   27.506002]  arch_counter_read+0x18/0x24
+[   27.506171]  ktime_get+0x48/0xa0
+[   27.506207]  test_task+0x70/0xf0
+[   27.506227]  kthread+0x10c/0x110
+[   27.506243]  ret_from_fork+0x10/0x20
 
-On 2022/7/28 5:12, kernel test robot wrote:
-> Hi Zhen,
-> 
-> Thank you for the patch! Yet something to improve:
-> 
-> [auto build test ERROR on paulmck-rcu/dev]
-> [also build test ERROR on linus/master v5.19-rc8 next-20220727]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
-> 
-> url:    https://github.com/intel-lab-lkp/linux/commits/Zhen-Lei/rcu-Display-registers-of-self-detected-stall-as-far-as-possible/20220727-141107
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev
-> config: x86_64-randconfig-a005 (https://download.01.org/0day-ci/archive/20220728/202207280520.yvgjXjJx-lkp@intel.com/config)
-> compiler: clang version 15.0.0 (https://github.com/llvm/llvm-project 8dfaecc4c24494337933aff9d9166486ca0949f1)
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://github.com/intel-lab-lkp/linux/commit/9f3fe5a0e46546db5bcfd1f33f12d87339e5de98
->         git remote add linux-review https://github.com/intel-lab-lkp/linux
->         git fetch --no-tags linux-review Zhen-Lei/rcu-Display-registers-of-self-detected-stall-as-far-as-possible/20220727-141107
->         git checkout 9f3fe5a0e46546db5bcfd1f33f12d87339e5de98
->         # save the config file
->         mkdir build_dir && cp config build_dir/.config
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash
-> 
-> If you fix the issue, kindly add following tag where applicable
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>):
-> 
->    In file included from kernel/rcu/tree.c:4641:
->>> kernel/rcu/tree_stall.h:358:10: error: call to undeclared function 'get_irq_regs'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
->                    regs = get_irq_regs();
+The old output is as follows:
+[   27.944550] rcu: INFO: rcu_preempt self-detected stall on CPU
+[   27.944980] rcu:     0-....: (1249 ticks this GP) idle=cbb/1/0x4000000000000000 softirq=2610/2610 fqs=614
+[   27.945407]  (t=1251 jiffies g=2681 q=28 ncpus=4)
+[   27.945731] Task dump for CPU 0:
+[   27.945844] task:test0           state:R  running task     stack:    0 pid:  306 ppid:     2 flags:0x0000000a
+[   27.946073] Call trace:
+[   27.946151]  dump_backtrace.part.0+0xc8/0xd4
+[   27.946378]  show_stack+0x18/0x70
+[   27.946405]  sched_show_task+0x150/0x180
+[   27.946427]  dump_cpu_task+0x44/0x54
+[   27.947193]  rcu_dump_cpu_stacks+0xec/0x130
+[   27.947212]  rcu_sched_clock_irq+0xb18/0xef0
+[   27.947231]  update_process_times+0x68/0xac
+[   27.947248]  tick_sched_handle+0x34/0x60
+[   27.947266]  tick_sched_timer+0x4c/0xa4
+[   27.947281]  __hrtimer_run_queues+0x178/0x360
+[   27.947295]  hrtimer_interrupt+0xe8/0x244
+[   27.947309]  arch_timer_handler_virt+0x38/0x4c
+[   27.947326]  handle_percpu_devid_irq+0x88/0x230
+[   27.947342]  generic_handle_domain_irq+0x2c/0x44
+[   27.947357]  gic_handle_irq+0x44/0xc4
+[   27.947376]  call_on_irq_stack+0x2c/0x54
+[   27.947415]  do_interrupt_handler+0x80/0x94
+[   27.947431]  el1_interrupt+0x34/0x70
+[   27.947447]  el1h_64_irq_handler+0x18/0x24
+[   27.947462]  el1h_64_irq+0x64/0x68                       <--- the above backtrace is worthless
+[   27.947474]  arch_counter_read+0x18/0x24
+[   27.947487]  ktime_get+0x48/0xa0
+[   27.947501]  test_task+0x70/0xf0
+[   27.947520]  kthread+0x10c/0x110
+[   27.947538]  ret_from_fork+0x10/0x20
 
-OK, I will fix it in v2, thanks.
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+---
+ kernel/rcu/tree_stall.h | 18 +++++++++++++++++-
+ 1 file changed, 17 insertions(+), 1 deletion(-)
 
->                           ^
->>> kernel/rcu/tree_stall.h:358:8: error: incompatible integer to pointer conversion assigning to 'struct pt_regs *' from 'int' [-Wint-conversion]
->                    regs = get_irq_regs();
->                         ^ ~~~~~~~~~~~~~~
->    2 errors generated.
-> 
-> 
-> vim +/get_irq_regs +358 kernel/rcu/tree_stall.h
-> 
->    352	
->    353	static void rcu_dump_cpu_task(int cpu)
->    354	{
->    355		if (cpu == smp_processor_id() && in_irq()) {
->    356			struct pt_regs *regs;
->    357	
->  > 358			regs = get_irq_regs();
->    359			if (regs) {
->    360				show_regs(regs);
->    361				return;
->    362			}
->    363		}
->    364	
->    365		dump_cpu_task(cpu);
->    366	}
->    367	
-> 
+v1 --> v2:
+Fix C99 build warning:
+kernel/rcu/tree_stall.h:358:10: error: call to undeclared function 'get_irq_regs';
+ISO C99 and later do not support implicit function declarations
 
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index a001e1e7a99269c..23bfd755c3f6e5b 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -8,6 +8,7 @@
+  */
+ 
+ #include <linux/kvm_para.h>
++#include <asm/irq_regs.h>
+ 
+ //////////////////////////////////////////////////////////////////////////////
+ //
+@@ -350,6 +351,21 @@ static int rcu_print_task_stall(struct rcu_node *rnp, unsigned long flags)
+ }
+ #endif /* #else #ifdef CONFIG_PREEMPT_RCU */
+ 
++static void rcu_dump_cpu_task(int cpu)
++{
++	if (cpu == smp_processor_id() && in_irq()) {
++		struct pt_regs *regs;
++
++		regs = get_irq_regs();
++		if (regs) {
++			show_regs(regs);
++			return;
++		}
++	}
++
++	dump_cpu_task(cpu);
++}
++
+ /*
+  * Dump stacks of all tasks running on stalled CPUs.  First try using
+  * NMIs, but fall back to manual remote stack tracing on architectures
+@@ -369,7 +385,7 @@ static void rcu_dump_cpu_stacks(void)
+ 				if (cpu_is_offline(cpu))
+ 					pr_err("Offline CPU %d blocking current GP.\n", cpu);
+ 				else if (!trigger_single_cpu_backtrace(cpu))
+-					dump_cpu_task(cpu);
++					rcu_dump_cpu_task(cpu);
+ 			}
+ 		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+ 	}
 -- 
-Regards,
-  Zhen Lei
+2.25.1
+
