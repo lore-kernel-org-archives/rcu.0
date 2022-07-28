@@ -2,130 +2,128 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 62BDBC04A68
-	for <rcu@archiver.kernel.org>; Wed, 27 Jul 2022 21:13:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2ADABC04A68
+	for <rcu@archiver.kernel.org>; Thu, 28 Jul 2022 02:35:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232024AbiG0VNE (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 27 Jul 2022 17:13:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41242 "EHLO
+        id S232034AbiG1CfK (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 27 Jul 2022 22:35:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232051AbiG0VNE (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 27 Jul 2022 17:13:04 -0400
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 670F74B4AA;
-        Wed, 27 Jul 2022 14:13:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1658956383; x=1690492383;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=HJc/rY+H6mWEpjZOCYuB/wZU/zZ6wQtxR/IUmxdYdw8=;
-  b=LC/BeAxBV3A2f8TV+BNPautRlnSwXY3i2nMSxPW2Vnh65+FXhvhJyGdv
-   0NzTDCwUYZWsF5hlcpwDj9e6RVetOunUU/yTlA32lefLx2fk+JjnXkEt5
-   BZq95LKX7Rfw4abb1/1JjqwbTsHBUnlwS2HK5mRlRVhnW4DtAr0pX91RE
-   3jz+d1WBBFaqhbNeyUpNTkGe3XsTu5EaUg4OV+PD3SYt9yb/b9rgKoy7W
-   AwL1OFzkqmgHucVzEbmKokUSB6BOlMqA92WHpBGVeiNuVY9596srOx37q
-   PxIPg9wPdLimyfmaV2bptkCTrw4/wEl7i5pFDzXyInUz5vzJno2cP13RG
-   w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10421"; a="285896266"
-X-IronPort-AV: E=Sophos;i="5.93,196,1654585200"; 
-   d="scan'208";a="285896266"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2022 14:12:58 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,196,1654585200"; 
-   d="scan'208";a="742804666"
-Received: from lkp-server01.sh.intel.com (HELO e0eace57cfef) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 27 Jul 2022 14:12:55 -0700
-Received: from kbuild by e0eace57cfef with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1oGoKt-00097K-0F;
-        Wed, 27 Jul 2022 21:12:55 +0000
-Date:   Thu, 28 Jul 2022 05:12:34 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Zhen Lei <thunder.leizhen@huawei.com>,
+        with ESMTP id S229618AbiG1CfJ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 27 Jul 2022 22:35:09 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 942CB192;
+        Wed, 27 Jul 2022 19:35:06 -0700 (PDT)
+Received: from dggpemm500020.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4LtZTY5LT8z9syc;
+        Thu, 28 Jul 2022 10:33:53 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggpemm500020.china.huawei.com (7.185.36.49) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Thu, 28 Jul 2022 10:35:04 +0800
+Received: from [10.174.178.55] (10.174.178.55) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Thu, 28 Jul 2022 10:35:04 +0800
+Subject: Re: [PATCH] rcu: Display registers of self-detected stall as far as
+ possible
+To:     kernel test robot <lkp@intel.com>,
         "Paul E . McKenney" <paulmck@kernel.org>,
         Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        "Neeraj Upadhyay" <quic_neeraju@quicinc.com>,
         Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        Zhen Lei <thunder.leizhen@huawei.com>
-Subject: Re: [PATCH] rcu: Display registers of self-detected stall as far as
- possible
-Message-ID: <202207280520.yvgjXjJx-lkp@intel.com>
+        Joel Fernandes <joel@joelfernandes.org>, <rcu@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <llvm@lists.linux.dev>, <kbuild-all@lists.01.org>
 References: <20220727060929.1149-1-thunder.leizhen@huawei.com>
+ <202207280520.yvgjXjJx-lkp@intel.com>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <fad2fcf8-9dd9-e2dc-dc04-203311ade6c9@huawei.com>
+Date:   Thu, 28 Jul 2022 10:35:02 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220727060929.1149-1-thunder.leizhen@huawei.com>
+In-Reply-To: <202207280520.yvgjXjJx-lkp@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.55]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Zhen,
-
-Thank you for the patch! Yet something to improve:
-
-[auto build test ERROR on paulmck-rcu/dev]
-[also build test ERROR on linus/master v5.19-rc8 next-20220727]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Zhen-Lei/rcu-Display-registers-of-self-detected-stall-as-far-as-possible/20220727-141107
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev
-config: x86_64-randconfig-a005 (https://download.01.org/0day-ci/archive/20220728/202207280520.yvgjXjJx-lkp@intel.com/config)
-compiler: clang version 15.0.0 (https://github.com/llvm/llvm-project 8dfaecc4c24494337933aff9d9166486ca0949f1)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/9f3fe5a0e46546db5bcfd1f33f12d87339e5de98
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Zhen-Lei/rcu-Display-registers-of-self-detected-stall-as-far-as-possible/20220727-141107
-        git checkout 9f3fe5a0e46546db5bcfd1f33f12d87339e5de98
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash
-
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp@intel.com>
-
-All errors (new ones prefixed by >>):
-
-   In file included from kernel/rcu/tree.c:4641:
->> kernel/rcu/tree_stall.h:358:10: error: call to undeclared function 'get_irq_regs'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-                   regs = get_irq_regs();
-                          ^
->> kernel/rcu/tree_stall.h:358:8: error: incompatible integer to pointer conversion assigning to 'struct pt_regs *' from 'int' [-Wint-conversion]
-                   regs = get_irq_regs();
-                        ^ ~~~~~~~~~~~~~~
-   2 errors generated.
 
 
-vim +/get_irq_regs +358 kernel/rcu/tree_stall.h
+On 2022/7/28 5:12, kernel test robot wrote:
+> Hi Zhen,
+> 
+> Thank you for the patch! Yet something to improve:
+> 
+> [auto build test ERROR on paulmck-rcu/dev]
+> [also build test ERROR on linus/master v5.19-rc8 next-20220727]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> 
+> url:    https://github.com/intel-lab-lkp/linux/commits/Zhen-Lei/rcu-Display-registers-of-self-detected-stall-as-far-as-possible/20220727-141107
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev
+> config: x86_64-randconfig-a005 (https://download.01.org/0day-ci/archive/20220728/202207280520.yvgjXjJx-lkp@intel.com/config)
+> compiler: clang version 15.0.0 (https://github.com/llvm/llvm-project 8dfaecc4c24494337933aff9d9166486ca0949f1)
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://github.com/intel-lab-lkp/linux/commit/9f3fe5a0e46546db5bcfd1f33f12d87339e5de98
+>         git remote add linux-review https://github.com/intel-lab-lkp/linux
+>         git fetch --no-tags linux-review Zhen-Lei/rcu-Display-registers-of-self-detected-stall-as-far-as-possible/20220727-141107
+>         git checkout 9f3fe5a0e46546db5bcfd1f33f12d87339e5de98
+>         # save the config file
+>         mkdir build_dir && cp config build_dir/.config
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash
+> 
+> If you fix the issue, kindly add following tag where applicable
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>):
+> 
+>    In file included from kernel/rcu/tree.c:4641:
+>>> kernel/rcu/tree_stall.h:358:10: error: call to undeclared function 'get_irq_regs'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+>                    regs = get_irq_regs();
 
-   352	
-   353	static void rcu_dump_cpu_task(int cpu)
-   354	{
-   355		if (cpu == smp_processor_id() && in_irq()) {
-   356			struct pt_regs *regs;
-   357	
- > 358			regs = get_irq_regs();
-   359			if (regs) {
-   360				show_regs(regs);
-   361				return;
-   362			}
-   363		}
-   364	
-   365		dump_cpu_task(cpu);
-   366	}
-   367	
+OK, I will fix it in v2, thanks.
+
+>                           ^
+>>> kernel/rcu/tree_stall.h:358:8: error: incompatible integer to pointer conversion assigning to 'struct pt_regs *' from 'int' [-Wint-conversion]
+>                    regs = get_irq_regs();
+>                         ^ ~~~~~~~~~~~~~~
+>    2 errors generated.
+> 
+> 
+> vim +/get_irq_regs +358 kernel/rcu/tree_stall.h
+> 
+>    352	
+>    353	static void rcu_dump_cpu_task(int cpu)
+>    354	{
+>    355		if (cpu == smp_processor_id() && in_irq()) {
+>    356			struct pt_regs *regs;
+>    357	
+>  > 358			regs = get_irq_regs();
+>    359			if (regs) {
+>    360				show_regs(regs);
+>    361				return;
+>    362			}
+>    363		}
+>    364	
+>    365		dump_cpu_task(cpu);
+>    366	}
+>    367	
+> 
 
 -- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+Regards,
+  Zhen Lei
