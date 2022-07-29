@@ -2,203 +2,196 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02DCDC00140
-	for <rcu@archiver.kernel.org>; Fri, 29 Jul 2022 03:13:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C0F99C25B0F
+	for <rcu@archiver.kernel.org>; Fri, 29 Jul 2022 10:25:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233405AbiG2DNY (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 28 Jul 2022 23:13:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52618 "EHLO
+        id S235998AbiG2KZ6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 29 Jul 2022 06:25:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230081AbiG2DNX (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 28 Jul 2022 23:13:23 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E31B7C18B;
-        Thu, 28 Jul 2022 20:13:21 -0700 (PDT)
-Received: from dggpemm500023.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4LvCFD0rpVzjXVw;
-        Fri, 29 Jul 2022 11:10:24 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Fri, 29 Jul 2022 11:13:19 +0800
-Received: from [10.174.178.55] (10.174.178.55) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Fri, 29 Jul 2022 11:13:19 +0800
-Subject: Re: [PATCH v2] rcu: Display registers of self-detected stall as far
- as possible
-To:     <paulmck@kernel.org>
-CC:     Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        "Steven Rostedt" <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, <rcu@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20220728024327.1202-1-thunder.leizhen@huawei.com>
- <20220728161520.GE2860372@paulmck-ThinkPad-P17-Gen-1>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <5dfe8c4e-9e88-d0f0-0882-d438affa436d@huawei.com>
-Date:   Fri, 29 Jul 2022 11:13:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        with ESMTP id S235867AbiG2KZh (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 29 Jul 2022 06:25:37 -0400
+Received: from server.lespinasse.org (server.lespinasse.org [63.205.204.226])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A9645592;
+        Fri, 29 Jul 2022 03:25:14 -0700 (PDT)
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
+ d=lespinasse.org; i=@lespinasse.org; q=dns/txt; s=srv-79-ed;
+ t=1659090298; h=date : from : to : cc : subject : message-id :
+ references : mime-version : content-type : in-reply-to : from;
+ bh=a/XS8F6DJ0UncG2aNUIYHtQzj6v+HgUrBJ1uNti4iPo=;
+ b=z07fAc3s82E8eDjOmWqCiQ8bXbav83TEx3/Re97NlSxxiCQo28PSqhP5HNIn+14JJNint
+ RyzSM6g4CHMlWDtCg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lespinasse.org;
+ i=@lespinasse.org; q=dns/txt; s=srv-79-rsa; t=1659090298; h=date :
+ from : to : cc : subject : message-id : references : mime-version :
+ content-type : in-reply-to : from;
+ bh=a/XS8F6DJ0UncG2aNUIYHtQzj6v+HgUrBJ1uNti4iPo=;
+ b=I1XE4PG3J6WdBxHBHPO8gz729jU9NwxFGePQBg2SGh03K5MaVR21Or0F1Ed2fJkedXwqn
+ 73ZEg9HBg/VtqO2lKkpr4whjhup8i+ouV+MRlyl12YqkOIbBlxYxGShIJKbmEieaOBGjn22
+ ZXDWImDNaRHLW7cNGx8eSPR5smKlm5X/Vadfwpk61igIRp4T13wJ8QuAfpZsGCdgjSHCAt3
+ xICHC0gdRmgeZ4VsHAxcqkS8UkYtj/62Fy/MANXsihH037ZiFlqRtJ1IH4+gKYbMZ+SX1Jj
+ 7eSPi+obGVy9GT10OfxqZ1++H06soXF8UFwZNT5FhqZM4eGuNqJqYx1H9gbg==
+Received: by server.lespinasse.org (Postfix, from userid 1000)
+        id 43C591608FB; Fri, 29 Jul 2022 03:24:58 -0700 (PDT)
+Date:   Fri, 29 Jul 2022 03:24:58 -0700
+From:   Michel Lespinasse <michel@lespinasse.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Michel Lespinasse <michel@lespinasse.org>,
+        Peter Zijlstra <peterz@infradead.org>, rth@twiddle.net,
+        ink@jurassic.park.msu.ru, mattst88@gmail.com, vgupta@kernel.org,
+        linux@armlinux.org.uk, ulli.kroll@googlemail.com,
+        linus.walleij@linaro.org, shawnguo@kernel.org,
+        Sascha Hauer <s.hauer@pengutronix.de>, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, tony@atomide.com,
+        khilman@kernel.org, catalin.marinas@arm.com, will@kernel.org,
+        guoren@kernel.org, bcain@quicinc.com, chenhuacai@kernel.org,
+        kernel@xen0n.name, geert@linux-m68k.org, sammy@sammy.net,
+        monstr@monstr.eu, tsbogend@alpha.franken.de, dinguyen@kernel.org,
+        jonas@southpole.se, stefan.kristiansson@saunalahti.fi,
+        shorne@gmail.com, James.Bottomley@HansenPartnership.com,
+        deller@gmx.de, mpe@ellerman.id.au, benh@kernel.crashing.org,
+        paulus@samba.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, hca@linux.ibm.com, gor@linux.ibm.com,
+        agordeev@linux.ibm.com, borntraeger@linux.ibm.com,
+        svens@linux.ibm.com, ysato@users.sourceforge.jp, dalias@libc.org,
+        davem@davemloft.net, richard@nod.at,
+        anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        acme@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+        namhyung@kernel.org, jgross@suse.com, srivatsa@csail.mit.edu,
+        amakhalov@vmware.com, pv-drivers@vmware.com,
+        boris.ostrovsky@oracle.com, chris@zankel.net, jcmvbkbc@gmail.com,
+        rafael@kernel.org, lenb@kernel.org, pavel@ucw.cz,
+        gregkh@linuxfoundation.org, mturquette@baylibre.com,
+        sboyd@kernel.org, daniel.lezcano@linaro.org, lpieralisi@kernel.org,
+        sudeep.holla@arm.com, agross@kernel.org,
+        bjorn.andersson@linaro.org, anup@brainfault.org,
+        thierry.reding@gmail.com, jonathanh@nvidia.com,
+        jacob.jun.pan@linux.intel.com, Arnd Bergmann <arnd@arndb.de>,
+        yury.norov@gmail.com, andriy.shevchenko@linux.intel.com,
+        linux@rasmusvillemoes.dk, rostedt@goodmis.org, pmladek@suse.com,
+        senozhatsky@chromium.org, john.ogness@linutronix.de,
+        frederic@kernel.org, quic_neeraju@quicinc.com,
+        josh@joshtriplett.org, mathieu.desnoyers@efficios.com,
+        jiangshanlai@gmail.com, joel@joelfernandes.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, jpoimboe@kernel.org,
+        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-perf-users@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        xen-devel@lists.xenproject.org, linux-xtensa@linux-xtensa.org,
+        linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-arch@vger.kernel.org,
+        rcu@vger.kernel.org, rh0@fb.com
+Subject: Re: [PATCH 04/36] cpuidle,intel_idle: Fix CPUIDLE_FLAG_IRQ_ENABLE
+Message-ID: <20220729102458.GA1695@lespinasse.org>
+References: <20220608142723.103523089@infradead.org>
+ <20220608144516.172460444@infradead.org>
+ <20220725194306.GA14746@lespinasse.org>
+ <20220728172053.GA3607379@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-In-Reply-To: <20220728161520.GE2860372@paulmck-ThinkPad-P17-Gen-1>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.55]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220728172053.GA3607379@paulmck-ThinkPad-P17-Gen-1>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-
-
-On 2022/7/29 0:15, Paul E. McKenney wrote:
-> On Thu, Jul 28, 2022 at 10:43:27AM +0800, Zhen Lei wrote:
->> For architectures that do not support NMI interrupts, registers is not
->> printed when rcu stall is self-detected. However, this information is
->> useful for analyzing the root cause of the fault. Fortunately, the rcu
->> stall is always detected in the tick interrupt handler. So we can take
->> it through get_irq_regs() and display it through show_regs(). Further,
->> show_regs() unwind the call trace based on 'regs', the worthless call
->> trace associated with tick handling will be omitted, this helps us to
->> focus more on the problem.
->>
->> This is an example on arm64:
->> [   27.501721] rcu: INFO: rcu_preempt self-detected stall on CPU
->> [   27.502238] rcu:     0-....: (1250 ticks this GP) idle=4f7/1/0x4000000000000000 softirq=2594/2594 fqs=619
->> [   27.502632]  (t=1251 jiffies g=2989 q=29 ncpus=4)
->> [   27.503845] CPU: 0 PID: 306 Comm: test0 Not tainted 5.19.0-rc7-00009-g1c1a6c29ff99-dirty #46
->> [   27.504732] Hardware name: linux,dummy-virt (DT)
->> [   27.504947] pstate: 20000005 (nzCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
->> [   27.504998] pc : arch_counter_read+0x18/0x24
->> [   27.505301] lr : arch_counter_read+0x18/0x24
->> [   27.505328] sp : ffff80000b29bdf0
->> [   27.505345] x29: ffff80000b29bdf0 x28: 0000000000000000 x27: 0000000000000000
->> [   27.505475] x26: 0000000000000000 x25: 0000000000000000 x24: 0000000000000000
->> [   27.505553] x23: 0000000000001f40 x22: ffff800009849c48 x21: 000000065f871ae0
->> [   27.505627] x20: 00000000000025ec x19: ffff80000a6eb300 x18: ffffffffffffffff
->> [   27.505654] x17: 0000000000000001 x16: 0000000000000000 x15: ffff80000a6d0296
->> [   27.505681] x14: ffffffffffffffff x13: ffff80000a29bc18 x12: 0000000000000426
->> [   27.505709] x11: 0000000000000162 x10: ffff80000a2f3c18 x9 : ffff80000a29bc18
->> [   27.505736] x8 : 00000000ffffefff x7 : ffff80000a2f3c18 x6 : 00000000759bd013
->> [   27.505761] x5 : 01ffffffffffffff x4 : 0002dc6c00000000 x3 : 0000000000000017
->> [   27.505787] x2 : 00000000000025ec x1 : ffff80000b29bdf0 x0 : 0000000075a30653
->> [   27.505937] Call trace:
->> [   27.506002]  arch_counter_read+0x18/0x24
->> [   27.506171]  ktime_get+0x48/0xa0
->> [   27.506207]  test_task+0x70/0xf0
->> [   27.506227]  kthread+0x10c/0x110
->> [   27.506243]  ret_from_fork+0x10/0x20
->>
->> The old output is as follows:
->> [   27.944550] rcu: INFO: rcu_preempt self-detected stall on CPU
->> [   27.944980] rcu:     0-....: (1249 ticks this GP) idle=cbb/1/0x4000000000000000 softirq=2610/2610 fqs=614
->> [   27.945407]  (t=1251 jiffies g=2681 q=28 ncpus=4)
->> [   27.945731] Task dump for CPU 0:
->> [   27.945844] task:test0           state:R  running task     stack:    0 pid:  306 ppid:     2 flags:0x0000000a
->> [   27.946073] Call trace:
->> [   27.946151]  dump_backtrace.part.0+0xc8/0xd4
->> [   27.946378]  show_stack+0x18/0x70
->> [   27.946405]  sched_show_task+0x150/0x180
->> [   27.946427]  dump_cpu_task+0x44/0x54
->> [   27.947193]  rcu_dump_cpu_stacks+0xec/0x130
->> [   27.947212]  rcu_sched_clock_irq+0xb18/0xef0
->> [   27.947231]  update_process_times+0x68/0xac
->> [   27.947248]  tick_sched_handle+0x34/0x60
->> [   27.947266]  tick_sched_timer+0x4c/0xa4
->> [   27.947281]  __hrtimer_run_queues+0x178/0x360
->> [   27.947295]  hrtimer_interrupt+0xe8/0x244
->> [   27.947309]  arch_timer_handler_virt+0x38/0x4c
->> [   27.947326]  handle_percpu_devid_irq+0x88/0x230
->> [   27.947342]  generic_handle_domain_irq+0x2c/0x44
->> [   27.947357]  gic_handle_irq+0x44/0xc4
->> [   27.947376]  call_on_irq_stack+0x2c/0x54
->> [   27.947415]  do_interrupt_handler+0x80/0x94
->> [   27.947431]  el1_interrupt+0x34/0x70
->> [   27.947447]  el1h_64_irq_handler+0x18/0x24
->> [   27.947462]  el1h_64_irq+0x64/0x68                       <--- the above backtrace is worthless
->> [   27.947474]  arch_counter_read+0x18/0x24
->> [   27.947487]  ktime_get+0x48/0xa0
->> [   27.947501]  test_task+0x70/0xf0
->> [   27.947520]  kthread+0x10c/0x110
->> [   27.947538]  ret_from_fork+0x10/0x20
->>
->> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+On Thu, Jul 28, 2022 at 10:20:53AM -0700, Paul E. McKenney wrote:
+> On Mon, Jul 25, 2022 at 12:43:06PM -0700, Michel Lespinasse wrote:
+> > On Wed, Jun 08, 2022 at 04:27:27PM +0200, Peter Zijlstra wrote:
+> > > Commit c227233ad64c ("intel_idle: enable interrupts before C1 on
+> > > Xeons") wrecked intel_idle in two ways:
+> > > 
+> > >  - must not have tracing in idle functions
+> > >  - must return with IRQs disabled
+> > > 
+> > > Additionally, it added a branch for no good reason.
+> > > 
+> > > Fixes: c227233ad64c ("intel_idle: enable interrupts before C1 on Xeons")
+> > > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > 
+> > After this change was introduced, I am seeing "WARNING: suspicious RCU
+> > usage" when booting a kernel with debug options compiled in. Please
+> > see the attached dmesg output. The issue starts with commit 32d4fd5751ea
+> > and is still present in v5.19-rc8.
+> > 
+> > I'm not sure, is this too late to fix or revert in v5.19 final ?
 > 
-> A nice improvement!
+> I finally got a chance to take a quick look at this.
 > 
-> But wouldn't it be better to push this code down into dump_cpu_task()
-> itself, so that all callers could gain this benefit?
+> The rcu_eqs_exit() function is making a lockdep complaint about
+> being invoked with interrupts enabled.  This function is called from
+> rcu_idle_exit(), which is an expected code path from cpuidle_enter_state()
+> via its call to rcu_idle_exit().  Except that rcu_idle_exit() disables
+> interrupts before invoking rcu_eqs_exit().
+> 
+> The only other call to rcu_idle_exit() does not disable interrupts,
+> but it is via rcu_user_exit(), which would be a very odd choice for
+> cpuidle_enter_state().
+> 
+> It seems unlikely, but it might be that it is the use of local_irq_save()
+> instead of raw_local_irq_save() within rcu_idle_exit() that is causing
+> the trouble.  If this is the case, then the commit shown below would
+> help.  Note that this commit removes the warning from lockdep, so it
+> is necessary to build the kernel with CONFIG_RCU_EQS_DEBUG=y to enable
+> equivalent debugging.
+> 
+> Could you please try your test with the -rce commit shown below applied?
 
-Oh, right. I will move it into dump_cpu_task().
+Thanks for looking into it.
 
-> 
-> 							Thanx, Paul
-> 
->> ---
->>  kernel/rcu/tree_stall.h | 18 +++++++++++++++++-
->>  1 file changed, 17 insertions(+), 1 deletion(-)
->>
->> v1 --> v2:
->> Fix C99 build warning:
->> kernel/rcu/tree_stall.h:358:10: error: call to undeclared function 'get_irq_regs';
->> ISO C99 and later do not support implicit function declarations
->>
->> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
->> index a001e1e7a99269c..23bfd755c3f6e5b 100644
->> --- a/kernel/rcu/tree_stall.h
->> +++ b/kernel/rcu/tree_stall.h
->> @@ -8,6 +8,7 @@
->>   */
->>  
->>  #include <linux/kvm_para.h>
->> +#include <asm/irq_regs.h>
->>  
->>  //////////////////////////////////////////////////////////////////////////////
->>  //
->> @@ -350,6 +351,21 @@ static int rcu_print_task_stall(struct rcu_node *rnp, unsigned long flags)
->>  }
->>  #endif /* #else #ifdef CONFIG_PREEMPT_RCU */
->>  
->> +static void rcu_dump_cpu_task(int cpu)
->> +{
->> +	if (cpu == smp_processor_id() && in_irq()) {
->> +		struct pt_regs *regs;
->> +
->> +		regs = get_irq_regs();
->> +		if (regs) {
->> +			show_regs(regs);
->> +			return;
->> +		}
->> +	}
->> +
->> +	dump_cpu_task(cpu);
->> +}
->> +
->>  /*
->>   * Dump stacks of all tasks running on stalled CPUs.  First try using
->>   * NMIs, but fall back to manual remote stack tracing on architectures
->> @@ -369,7 +385,7 @@ static void rcu_dump_cpu_stacks(void)
->>  				if (cpu_is_offline(cpu))
->>  					pr_err("Offline CPU %d blocking current GP.\n", cpu);
->>  				else if (!trigger_single_cpu_backtrace(cpu))
->> -					dump_cpu_task(cpu);
->> +					rcu_dump_cpu_task(cpu);
->>  			}
->>  		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
->>  	}
->> -- 
->> 2.25.1
->>
-> .
-> 
+After checking out Peter's commit 32d4fd5751ea,
+cherry picking your commit ed4ae5eff4b3,
+and setting CONFIG_RCU_EQS_DEBUG=y in addition of my usual debug config,
+I am now seeing this a few seconds into the boot:
 
--- 
-Regards,
-  Zhen Lei
+[    3.010650] ------------[ cut here ]------------
+[    3.010651] WARNING: CPU: 0 PID: 0 at kernel/sched/clock.c:397 sched_clock_tick+0x27/0x60
+[    3.010657] Modules linked in:
+[    3.010660] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.19.0-rc1-test-00005-g1be22fea0611 #1
+[    3.010662] Hardware name: LENOVO 30BFS44D00/1036, BIOS S03KT51A 01/17/2022
+[    3.010663] RIP: 0010:sched_clock_tick+0x27/0x60
+[    3.010665] Code: 1f 40 00 53 eb 02 5b c3 66 90 8b 05 2f c3 40 01 85 c0 74 18 65 8b 05 60 88 8f 4e 85 c0 75 0d 65 8b 05 a9 85 8f 4e 85 c0 74 02 <0f> 0b e8 e2 6c 89 00 48 c7 c3 40 d5 02 00
+ 89 c0 48 03 1c c5 c0 98
+[    3.010667] RSP: 0000:ffffffffb2803e28 EFLAGS: 00010002
+[    3.010670] RAX: 0000000000000001 RBX: ffffc8ce7fa07060 RCX: 0000000000000001
+[    3.010671] RDX: 0000000000000000 RSI: ffffffffb268dd21 RDI: ffffffffb269ab13
+[    3.010673] RBP: 0000000000000001 R08: ffffffffffc300d5 R09: 000000000002be80
+[    3.010674] R10: 000003625b53183a R11: ffffa012b802b7a4 R12: ffffffffb2aa9e80
+[    3.010675] R13: ffffffffb2aa9e00 R14: 0000000000000001 R15: 0000000000000000
+[    3.010677] FS:  0000000000000000(0000) GS:ffffa012b8000000(0000) knlGS:0000000000000000
+[    3.010678] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[    3.010680] CR2: ffffa012f81ff000 CR3: 0000000c99612001 CR4: 00000000003706f0
+[    3.010681] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[    3.010682] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[    3.010683] Call Trace:
+[    3.010685]  <TASK>
+[    3.010688]  cpuidle_enter_state+0xb7/0x4b0
+[    3.010694]  cpuidle_enter+0x29/0x40
+[    3.010697]  do_idle+0x1d4/0x210
+[    3.010702]  cpu_startup_entry+0x19/0x20
+[    3.010704]  rest_init+0x117/0x1a0
+[    3.010708]  arch_call_rest_init+0xa/0x10
+[    3.010711]  start_kernel+0x6d8/0x6ff
+[    3.010716]  secondary_startup_64_no_verify+0xce/0xdb
+[    3.010728]  </TASK>
+[    3.010729] irq event stamp: 44179
+[    3.010730] hardirqs last  enabled at (44179): [<ffffffffb2000ccb>] asm_sysvec_apic_timer_interrupt+0x1b/0x20
+[    3.010734] hardirqs last disabled at (44177): [<ffffffffb22003f0>] __do_softirq+0x3f0/0x498
+[    3.010736] softirqs last  enabled at (44178): [<ffffffffb2200332>] __do_softirq+0x332/0x498
+[    3.010738] softirqs last disabled at (44171): [<ffffffffb16c760b>] irq_exit_rcu+0xab/0xf0
+[    3.010741] ---[ end trace 0000000000000000 ]---
