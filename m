@@ -2,112 +2,105 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 04E84C00144
-	for <rcu@archiver.kernel.org>; Mon,  1 Aug 2022 23:10:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DEBEDC00144
+	for <rcu@archiver.kernel.org>; Mon,  1 Aug 2022 23:14:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234368AbiHAXKe (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 1 Aug 2022 19:10:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36622 "EHLO
+        id S233286AbiHAXOS (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 1 Aug 2022 19:14:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231215AbiHAXKd (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 1 Aug 2022 19:10:33 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E014E19029;
-        Mon,  1 Aug 2022 16:10:31 -0700 (PDT)
+        with ESMTP id S232024AbiHAXOS (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 1 Aug 2022 19:14:18 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56C5119029;
+        Mon,  1 Aug 2022 16:14:17 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AE00760DE0;
-        Mon,  1 Aug 2022 23:10:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B5A9C433C1;
-        Mon,  1 Aug 2022 23:10:30 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E697860ECC;
+        Mon,  1 Aug 2022 23:14:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A437C433D6;
+        Mon,  1 Aug 2022 23:14:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1659395430;
-        bh=c68rvvKS7OQgl7DSiVXP6nOIRR0u1tOQMrT4+jA51fE=;
+        s=k20201202; t=1659395656;
+        bh=msSXp5V27pNk50E/Kq/KnIJFDJAirrWbgafjytNaEEQ=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Y+i7h8rHt7TGpHAWfVjqvgbK+2WMmD82Hc7mAxOb0aI49VvxXJ/OHEqKkz5251s9d
-         Qks06Ig1tubt+kmUzInNt9UInoy9zGAM+fDDRZ5dFgn3lhFXQ90VsKf96o8MjuaFXr
-         SuLWtOh1NoJRw+S9jZYLDGyBTnL5JYZC2q3CkC8j0psP63MYikDjgXumwt7XA7VXNN
-         YF618/qertaCAdhOtxSVbba7X7TcEjG7xN2/Gpz1aZNoZRJ6aIh0GFvVnJ1+T26udB
-         A+uxXIu7tba7WAPZd7gCzSxgq6vFUuENDVsv7GmBoXTfALO4/fwvAMuRvXEPUIz3+n
-         qgUgIcPqLSwbA==
+        b=RyeV7ydZRJ/cuCBTk5T9QRA/OBFQWkdvl7MI+6tndxfmy0nz+HaDcPFpabXjEAyhV
+         YBROw+S6LdnOwW3HfytOcmpWj+dR/Ri4HPFkFnwDKR8Wwon3wrtZCh8QvgBpEE4BiW
+         wz+zKnkVAvH4ADCarY/eg39+Pvauism0oGpuT8aXfCF8g3Nsogo8pbTsSMYCIdJiQJ
+         WKJUfoIbAE8yMK059NpdpknnOQoKRH2BdD+2KodQz5JDJyJu7Lyk364TkdYaKmO1ka
+         O4IPrTrWLRT/JCxAOGM4zWF7ZaJds5TlcsCtRQdyVZF544YVPE153jzfHhOwBbUXMW
+         GAI6vlJM2Pacw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id A403B5C0D2B; Mon,  1 Aug 2022 16:10:29 -0700 (PDT)
-Date:   Mon, 1 Aug 2022 16:10:29 -0700
+        id E1F7F5C0D2B; Mon,  1 Aug 2022 16:14:15 -0700 (PDT)
+Date:   Mon, 1 Aug 2022 16:14:15 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Zqiang <qiang1.zhang@intel.com>
-Cc:     frederic@kernel.org, quic_neeraju@quicinc.com, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcutorture: Use the barrier operation corresponding to
- rcutorture.torture_type
-Message-ID: <20220801231029.GB2860372@paulmck-ThinkPad-P17-Gen-1>
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] rcu/exp: Use NMI to get the backtrace of
+ cpu_curr(other_cpu) first
+Message-ID: <20220801231415.GC2860372@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20220731105356.1741086-1-qiang1.zhang@intel.com>
+References: <20220730102330.1255-1-thunder.leizhen@huawei.com>
+ <20220730102330.1255-2-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220731105356.1741086-1-qiang1.zhang@intel.com>
+In-Reply-To: <20220730102330.1255-2-thunder.leizhen@huawei.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sun, Jul 31, 2022 at 06:53:56PM +0800, Zqiang wrote:
-> when the rcutorture.torture_type value is 'rcu', this is correct for
-> invoke rcu_barrier() to wait all in-flight call_rcu() callbacks
-> (rcu_torture_fwd_cb_cr()) complete in rcutorture_oom_notify(). but when
-> the rcutorture.torture_type value is 'tasks-tracing', invoke rcu_barrier()
-> won't wait all in-flight call_rcu_tasks_trace() callbacks complete, the
-> rcu_barrier_tasks_trace() should be invoked.
+On Sat, Jul 30, 2022 at 06:23:28PM +0800, Zhen Lei wrote:
+> The backtrace of cpu_curr(other_cpu) is unwinded based on the 'fp' saved
+> during its last switch-out. For the most part, it's out of date. So try
+> to use NMI to get the backtrace first, just like those functions in
+> "tree_stall.h" did. Such as rcu_dump_cpu_stacks().
 > 
-> This commit fix it by using barrier operation corresponding to
-> rcutorture.torture_type to wait all in-flight rcu_torture_fwd_cb_cr()
-> complete.
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+
+Much better, thank you!
+
+> ---
+>  kernel/rcu/tree_exp.h | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+> diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+> index 0f70f62039a9090..21381697de23f0b 100644
+> --- a/kernel/rcu/tree_exp.h
+> +++ b/kernel/rcu/tree_exp.h
+> @@ -665,7 +665,8 @@ static void synchronize_rcu_expedited_wait(void)
+>  				mask = leaf_node_cpu_bit(rnp, cpu);
+>  				if (!(READ_ONCE(rnp->expmask) & mask))
+>  					continue;
+> -				dump_cpu_task(cpu);
+> +				if (!trigger_single_cpu_backtrace(cpu))
+> +					dump_cpu_task(cpu);
 
-Good catch, thank you!
-
-I have done my usual wordsmithing as shown below.  Could you please
-double-check it?
+But why not just leave this unchanged, rather than adding the call to
+trigger_single_cpu_backtrace() in this patch and then removing it in
+the next patch?
 
 							Thanx, Paul
 
-------------------------------------------------------------------------
-
-commit f8c9027f9c81be92344996a51babaa5a23bd88db
-Author: Zqiang <qiang1.zhang@intel.com>
-Date:   Sun Jul 31 18:53:56 2022 +0800
-
-    rcutorture: Use the barrier operation specified by cur_ops
-    
-    The rcutorture_oom_notify() function unconditionally invokes
-    rcu_barrier(), which is OK when the rcutorture.torture_type value is
-    "rcu", but unhelpful otherwise.  The purpose of these barrier calls is to
-    wait for all outstanding callback-flooding callbacks to be invoked before
-    cleaning up their data.  Using the wrong barrier function therefore
-    risks arbitrary memory corruption.  Thus, this commit changes these
-    rcu_barrier() calls into cur_ops->cb_barrier() to make things work when
-    torturing non-vanilla flavors of RCU.
-    
-    Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 7f13f2e5ed62f..7e7d54841613c 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -2638,12 +2638,12 @@ static int rcutorture_oom_notify(struct notifier_block *self,
- 	for (i = 0; i < fwd_progress; i++)
- 		ncbs += rcu_torture_fwd_prog_cbfree(&rfp[i]);
- 	pr_info("%s: Freed %lu RCU callbacks.\n", __func__, ncbs);
--	rcu_barrier();
-+	cur_ops->cb_barrier();
- 	ncbs = 0;
- 	for (i = 0; i < fwd_progress; i++)
- 		ncbs += rcu_torture_fwd_prog_cbfree(&rfp[i]);
- 	pr_info("%s: Freed %lu RCU callbacks.\n", __func__, ncbs);
--	rcu_barrier();
-+	cur_ops->cb_barrier();
- 	ncbs = 0;
- 	for (i = 0; i < fwd_progress; i++)
- 		ncbs += rcu_torture_fwd_prog_cbfree(&rfp[i]);
+>  			}
+>  		}
+>  		jiffies_stall = 3 * rcu_exp_jiffies_till_stall_check() + 3;
+> -- 
+> 2.25.1
+> 
