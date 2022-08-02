@@ -2,105 +2,126 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DEBEDC00144
-	for <rcu@archiver.kernel.org>; Mon,  1 Aug 2022 23:14:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 33FF9C00144
+	for <rcu@archiver.kernel.org>; Tue,  2 Aug 2022 02:06:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233286AbiHAXOS (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 1 Aug 2022 19:14:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38170 "EHLO
+        id S232439AbiHBCGN (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 1 Aug 2022 22:06:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232024AbiHAXOS (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 1 Aug 2022 19:14:18 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56C5119029;
-        Mon,  1 Aug 2022 16:14:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E697860ECC;
-        Mon,  1 Aug 2022 23:14:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A437C433D6;
-        Mon,  1 Aug 2022 23:14:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1659395656;
-        bh=msSXp5V27pNk50E/Kq/KnIJFDJAirrWbgafjytNaEEQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=RyeV7ydZRJ/cuCBTk5T9QRA/OBFQWkdvl7MI+6tndxfmy0nz+HaDcPFpabXjEAyhV
-         YBROw+S6LdnOwW3HfytOcmpWj+dR/Ri4HPFkFnwDKR8Wwon3wrtZCh8QvgBpEE4BiW
-         wz+zKnkVAvH4ADCarY/eg39+Pvauism0oGpuT8aXfCF8g3Nsogo8pbTsSMYCIdJiQJ
-         WKJUfoIbAE8yMK059NpdpknnOQoKRH2BdD+2KodQz5JDJyJu7Lyk364TkdYaKmO1ka
-         O4IPrTrWLRT/JCxAOGM4zWF7ZaJds5TlcsCtRQdyVZF544YVPE153jzfHhOwBbUXMW
-         GAI6vlJM2Pacw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id E1F7F5C0D2B; Mon,  1 Aug 2022 16:14:15 -0700 (PDT)
-Date:   Mon, 1 Aug 2022 16:14:15 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
+        with ESMTP id S232419AbiHBCGM (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 1 Aug 2022 22:06:12 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C763D18E32;
+        Mon,  1 Aug 2022 19:06:09 -0700 (PDT)
+Received: from dggpemm500023.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4LxdZ10bhGzlW8N;
+        Tue,  2 Aug 2022 10:03:21 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Tue, 2 Aug 2022 10:06:02 +0800
+Received: from [10.174.178.55] (10.174.178.55) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Tue, 2 Aug 2022 10:06:01 +0800
+Subject: Re: [PATCH v3 1/3] rcu/exp: Use NMI to get the backtrace of
+ cpu_curr(other_cpu) first
+To:     <paulmck@kernel.org>
+CC:     Ingo Molnar <mingo@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Juri Lelli <juri.lelli@redhat.com>,
         Vincent Guittot <vincent.guittot@linaro.org>,
         Dietmar Eggemann <dietmar.eggemann@arm.com>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Ben Segall <bsegall@google.com>,
+        "Mel Gorman" <mgorman@suse.de>,
         Daniel Bristot de Oliveira <bristot@redhat.com>,
         Valentin Schneider <vschneid@redhat.com>,
-        linux-kernel@vger.kernel.org,
+        <linux-kernel@vger.kernel.org>,
         Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Mathieu Desnoyers" <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: Re: [PATCH v3 1/3] rcu/exp: Use NMI to get the backtrace of
- cpu_curr(other_cpu) first
-Message-ID: <20220801231415.GC2860372@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        Joel Fernandes <joel@joelfernandes.org>, <rcu@vger.kernel.org>
 References: <20220730102330.1255-1-thunder.leizhen@huawei.com>
  <20220730102330.1255-2-thunder.leizhen@huawei.com>
+ <20220801231415.GC2860372@paulmck-ThinkPad-P17-Gen-1>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <1fd08a9a-fd2b-2608-da55-5bc526515131@huawei.com>
+Date:   Tue, 2 Aug 2022 10:06:00 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220730102330.1255-2-thunder.leizhen@huawei.com>
+In-Reply-To: <20220801231415.GC2860372@paulmck-ThinkPad-P17-Gen-1>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.55]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, Jul 30, 2022 at 06:23:28PM +0800, Zhen Lei wrote:
-> The backtrace of cpu_curr(other_cpu) is unwinded based on the 'fp' saved
-> during its last switch-out. For the most part, it's out of date. So try
-> to use NMI to get the backtrace first, just like those functions in
-> "tree_stall.h" did. Such as rcu_dump_cpu_stacks().
+
+
+On 2022/8/2 7:14, Paul E. McKenney wrote:
+> On Sat, Jul 30, 2022 at 06:23:28PM +0800, Zhen Lei wrote:
+>> The backtrace of cpu_curr(other_cpu) is unwinded based on the 'fp' saved
+>> during its last switch-out. For the most part, it's out of date. So try
+>> to use NMI to get the backtrace first, just like those functions in
+>> "tree_stall.h" did. Such as rcu_dump_cpu_stacks().
+>>
+>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 > 
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-
-Much better, thank you!
-
-> ---
->  kernel/rcu/tree_exp.h | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> Much better, thank you!
 > 
-> diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-> index 0f70f62039a9090..21381697de23f0b 100644
-> --- a/kernel/rcu/tree_exp.h
-> +++ b/kernel/rcu/tree_exp.h
-> @@ -665,7 +665,8 @@ static void synchronize_rcu_expedited_wait(void)
->  				mask = leaf_node_cpu_bit(rnp, cpu);
->  				if (!(READ_ONCE(rnp->expmask) & mask))
->  					continue;
-> -				dump_cpu_task(cpu);
-> +				if (!trigger_single_cpu_backtrace(cpu))
-> +					dump_cpu_task(cpu);
-
-But why not just leave this unchanged, rather than adding the call to
-trigger_single_cpu_backtrace() in this patch and then removing it in
-the next patch?
-
-							Thanx, Paul
-
->  			}
->  		}
->  		jiffies_stall = 3 * rcu_exp_jiffies_till_stall_check() + 3;
-> -- 
-> 2.25.1
+>> ---
+>>  kernel/rcu/tree_exp.h | 3 ++-
+>>  1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+>> index 0f70f62039a9090..21381697de23f0b 100644
+>> --- a/kernel/rcu/tree_exp.h
+>> +++ b/kernel/rcu/tree_exp.h
+>> @@ -665,7 +665,8 @@ static void synchronize_rcu_expedited_wait(void)
+>>  				mask = leaf_node_cpu_bit(rnp, cpu);
+>>  				if (!(READ_ONCE(rnp->expmask) & mask))
+>>  					continue;
+>> -				dump_cpu_task(cpu);
+>> +				if (!trigger_single_cpu_backtrace(cpu))
+>> +					dump_cpu_task(cpu);
 > 
+> But why not just leave this unchanged, rather than adding the call to
+> trigger_single_cpu_backtrace() in this patch and then removing it in
+> the next patch?
+
+To make the patch clear and easy to describe. Otherwise, I need to
+give an additional description of it in the next patch, because I
+searched all dump_cpu_task(). This seems to make the next patch
+less simple.
+
+Some of the patch sets I've seen have been done step by step like
+this. But I can't find it now.
+
+On the other hand, this patch is a small fix. Earlier versions may
+only backport it, not the next cleanup patch.
+
+> 
+> 							Thanx, Paul
+> 
+>>  			}
+>>  		}
+>>  		jiffies_stall = 3 * rcu_exp_jiffies_till_stall_check() + 3;
+>> -- 
+>> 2.25.1
+>>
+> .
+> 
+
+-- 
+Regards,
+  Zhen Lei
