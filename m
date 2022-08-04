@@ -2,33 +2,31 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FF00C19F29
-	for <rcu@archiver.kernel.org>; Thu,  4 Aug 2022 01:34:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 988C3C19F29
+	for <rcu@archiver.kernel.org>; Thu,  4 Aug 2022 02:34:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238871AbiHDBe4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 3 Aug 2022 21:34:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50952 "EHLO
+        id S234903AbiHDCes (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 3 Aug 2022 22:34:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229728AbiHDBez (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 3 Aug 2022 21:34:55 -0400
+        with ESMTP id S229758AbiHDCes (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 3 Aug 2022 22:34:48 -0400
 Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC2695B7AB;
-        Wed,  3 Aug 2022 18:34:53 -0700 (PDT)
-Received: from dggpemm500021.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Lyrmh1qjmzjXSw;
-        Thu,  4 Aug 2022 09:31:48 +0800 (CST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B0DA5FAE7;
+        Wed,  3 Aug 2022 19:34:47 -0700 (PDT)
+Received: from dggpemm500023.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Lyt5p0pvTzjXfp;
+        Thu,  4 Aug 2022 10:31:42 +0800 (CST)
 Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggpemm500021.china.huawei.com (7.185.36.109) with Microsoft SMTP Server
+ dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Thu, 4 Aug 2022 09:34:51 +0800
-Received: from [10.174.178.55] (10.174.178.55) by
+ 15.1.2375.24; Thu, 4 Aug 2022 10:34:45 +0800
+Received: from thunder-town.china.huawei.com (10.174.178.55) by
  dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Thu, 4 Aug 2022 09:34:50 +0800
-Subject: Re: [PATCH v3 1/3] rcu/exp: Use NMI to get the backtrace of
- cpu_curr(other_cpu) first
-To:     <paulmck@kernel.org>
-CC:     Ingo Molnar <mingo@redhat.com>,
+ 15.1.2375.24; Thu, 4 Aug 2022 10:34:44 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Ingo Molnar <mingo@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Juri Lelli <juri.lelli@redhat.com>,
         Vincent Guittot <vincent.guittot@linaro.org>,
@@ -39,113 +37,59 @@ CC:     Ingo Molnar <mingo@redhat.com>,
         Daniel Bristot de Oliveira <bristot@redhat.com>,
         Valentin Schneider <vschneid@redhat.com>,
         <linux-kernel@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
         Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        "Mathieu Desnoyers" <mathieu.desnoyers@efficios.com>,
+        "Josh Triplett" <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>, <rcu@vger.kernel.org>
-References: <20220730102330.1255-1-thunder.leizhen@huawei.com>
- <20220730102330.1255-2-thunder.leizhen@huawei.com>
- <20220801231415.GC2860372@paulmck-ThinkPad-P17-Gen-1>
- <1fd08a9a-fd2b-2608-da55-5bc526515131@huawei.com>
- <20220804000700.GM2125313@paulmck-ThinkPad-P17-Gen-1>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <c8d7a8e1-6372-f81c-e2a8-936692fb44d8@huawei.com>
-Date:   Thu, 4 Aug 2022 09:34:50 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH v4 0/2] rcu: Display registers of self-detected stall as far as possible
+Date:   Thu, 4 Aug 2022 10:34:18 +0800
+Message-ID: <20220804023420.1663-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-In-Reply-To: <20220804000700.GM2125313@paulmck-ThinkPad-P17-Gen-1>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
 X-Originating-IP: [10.174.178.55]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
  dggpemm500006.china.huawei.com (7.185.36.236)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+v3 --> v4:
+1. To avoid undo/redo, merge patch 1-2 in v3 into one.
+
+v2 --> v3:
+1. Patch 1 Add trigger_single_cpu_backtrace(cpu) in synchronize_rcu_expedited_wait()
+   Subsequently, we can see that all callers of dump_cpu_task() try
+   trigger_single_cpu_backtrace() first. Then I do the cleanup in Patch 2.
+2. Patch 3, as Paul E. McKenney's suggestion, push the code into dump_cpu_task().
+
+For newcomers:
+Currently, dump_cpu_task() is mainly used by RCU, in order to dump the
+stack traces of the current task of the specified CPU when a rcu stall
+is detected.
+
+For architectures that do not support NMI interrupts, registers is not
+printed when rcu stall is self-detected. This patch series improve it.
 
 
-On 2022/8/4 8:07, Paul E. McKenney wrote:
-> On Tue, Aug 02, 2022 at 10:06:00AM +0800, Leizhen (ThunderTown) wrote:
->>
->>
->> On 2022/8/2 7:14, Paul E. McKenney wrote:
->>> On Sat, Jul 30, 2022 at 06:23:28PM +0800, Zhen Lei wrote:
->>>> The backtrace of cpu_curr(other_cpu) is unwinded based on the 'fp' saved
->>>> during its last switch-out. For the most part, it's out of date. So try
->>>> to use NMI to get the backtrace first, just like those functions in
->>>> "tree_stall.h" did. Such as rcu_dump_cpu_stacks().
->>>>
->>>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
->>>
->>> Much better, thank you!
->>>
->>>> ---
->>>>  kernel/rcu/tree_exp.h | 3 ++-
->>>>  1 file changed, 2 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
->>>> index 0f70f62039a9090..21381697de23f0b 100644
->>>> --- a/kernel/rcu/tree_exp.h
->>>> +++ b/kernel/rcu/tree_exp.h
->>>> @@ -665,7 +665,8 @@ static void synchronize_rcu_expedited_wait(void)
->>>>  				mask = leaf_node_cpu_bit(rnp, cpu);
->>>>  				if (!(READ_ONCE(rnp->expmask) & mask))
->>>>  					continue;
->>>> -				dump_cpu_task(cpu);
->>>> +				if (!trigger_single_cpu_backtrace(cpu))
->>>> +					dump_cpu_task(cpu);
->>>
->>> But why not just leave this unchanged, rather than adding the call to
->>> trigger_single_cpu_backtrace() in this patch and then removing it in
->>> the next patch?
->>
->> To make the patch clear and easy to describe. Otherwise, I need to
->> give an additional description of it in the next patch, because I
->> searched all dump_cpu_task(). This seems to make the next patch
->> less simple.
->>
->> Some of the patch sets I've seen have been done step by step like
->> this. But I can't find it now.
->>
->> On the other hand, this patch is a small fix. Earlier versions may
->> only backport it, not the next cleanup patch.
-> 
-> You do have the option of doing a Cc to stable to control the backporting,
-> if that is a potential issue for you.
-> 
-> On the commit log, just say that the one use case already avoided doing
-> the trigger_single_cpu_backtrace(), and thus did not need to be updated.
-> 
-> So please resend the series, but without the undo/redo.  There would
-> thus be two patches rather than three, but there are plenty of other
-> things that need fixing anyway.
+v2:
+https://lkml.org/lkml/2022/7/27/1800
 
-OK, thanks.
+Zhen Lei (2):
+  sched/debug: Try trigger_single_cpu_backtrace(cpu) in dump_cpu_task()
+  sched/debug: Show the registers of 'current' in dump_cpu_task()
 
-> 
-> 							Thanx, Paul
-> 
->>>>  			}
->>>>  		}
->>>>  		jiffies_stall = 3 * rcu_exp_jiffies_till_stall_check() + 3;
->>>> -- 
->>>> 2.25.1
->>>>
->>> .
->>>
->>
->> -- 
->> Regards,
->>   Zhen Lei
-> .
-> 
+ kernel/rcu/tree_stall.h |  8 +++-----
+ kernel/sched/core.c     | 14 ++++++++++++++
+ kernel/smp.c            |  3 +--
+ 3 files changed, 18 insertions(+), 7 deletions(-)
 
 -- 
-Regards,
-  Zhen Lei
+2.25.1
+
