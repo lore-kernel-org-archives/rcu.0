@@ -2,110 +2,126 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CB5BC19F2A
-	for <rcu@archiver.kernel.org>; Thu,  4 Aug 2022 18:10:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2ADA9C25B08
+	for <rcu@archiver.kernel.org>; Fri,  5 Aug 2022 08:10:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239626AbiHDSKD (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 4 Aug 2022 14:10:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47120 "EHLO
+        id S234956AbiHEIKB (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 5 Aug 2022 04:10:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233114AbiHDSKC (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 4 Aug 2022 14:10:02 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFE006BD7A;
-        Thu,  4 Aug 2022 11:10:01 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 8A06DB82659;
-        Thu,  4 Aug 2022 18:10:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4AB90C433D7;
-        Thu,  4 Aug 2022 18:09:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1659636599;
-        bh=ubVdlOu1JerXLBxOqdY7Uq80Ing8CaFR2I2AKThWle4=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=gsI2Aab9sqVEyxiYj3RZjAnABNT5WtnjDIoMPh+n8jspfK8k/UPH2SYJtOLb102Q2
-         mceuA3jnu28YHItQ8eGCKketiKrDvwKxBExLGvtgDsf9NDKJlBtm9A1xoswsgQm7fI
-         lPJYIv/X5Yk+BQD7lO4/Z7gHZdI9HyAvuKqoht1lgWUnj5VYYCgt9EAHg3NN2tlLk0
-         Yitabe6OAaHGvluoA/GngI6qMLlAqEDkHFH7qqkI0+ckVjVvArUu/HQlfEr8hnBdzl
-         gfnjPeReNWYP34CN2svXURpimX/YfOuK3yXnKO/14mbz0P2AKJqCwswjNh27DsR2Ut
-         OYB2aSmepFKJQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id E0CA75C04D0; Thu,  4 Aug 2022 11:09:58 -0700 (PDT)
-Date:   Thu, 4 Aug 2022 11:09:58 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
+        with ESMTP id S234312AbiHEIKA (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 5 Aug 2022 04:10:00 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E57C174E28;
+        Fri,  5 Aug 2022 01:09:54 -0700 (PDT)
+Received: from dggpemm500024.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4LzdSs1ktGzWfKZ;
+        Fri,  5 Aug 2022 16:05:49 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggpemm500024.china.huawei.com (7.185.36.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Fri, 5 Aug 2022 16:09:25 +0800
+Received: from [10.174.178.55] (10.174.178.55) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Fri, 5 Aug 2022 16:09:24 +0800
+Subject: Re: [PATCH v4 0/2] rcu: Display registers of self-detected stall as
+ far as possible
+To:     <paulmck@kernel.org>
+CC:     Ingo Molnar <mingo@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Juri Lelli <juri.lelli@redhat.com>,
         Vincent Guittot <vincent.guittot@linaro.org>,
         Dietmar Eggemann <dietmar.eggemann@arm.com>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Ben Segall <bsegall@google.com>,
+        "Mel Gorman" <mgorman@suse.de>,
         Daniel Bristot de Oliveira <bristot@redhat.com>,
         Valentin Schneider <vschneid@redhat.com>,
-        linux-kernel@vger.kernel.org,
+        <linux-kernel@vger.kernel.org>,
         Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Mathieu Desnoyers" <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: Re: [PATCH v4 0/2] rcu: Display registers of self-detected stall as
- far as possible
-Message-ID: <20220804180958.GQ2125313@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        Joel Fernandes <joel@joelfernandes.org>, <rcu@vger.kernel.org>
 References: <20220804023420.1663-1-thunder.leizhen@huawei.com>
+ <20220804180958.GQ2125313@paulmck-ThinkPad-P17-Gen-1>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <5da6eaf0-6570-caff-4eec-79d73b4f5062@huawei.com>
+Date:   Fri, 5 Aug 2022 16:09:23 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220804023420.1663-1-thunder.leizhen@huawei.com>
+In-Reply-To: <20220804180958.GQ2125313@paulmck-ThinkPad-P17-Gen-1>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.55]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Aug 04, 2022 at 10:34:18AM +0800, Zhen Lei wrote:
-> v3 --> v4:
-> 1. To avoid undo/redo, merge patch 1-2 in v3 into one.
-> 
-> v2 --> v3:
-> 1. Patch 1 Add trigger_single_cpu_backtrace(cpu) in synchronize_rcu_expedited_wait()
->    Subsequently, we can see that all callers of dump_cpu_task() try
->    trigger_single_cpu_backtrace() first. Then I do the cleanup in Patch 2.
-> 2. Patch 3, as Paul E. McKenney's suggestion, push the code into dump_cpu_task().
-> 
-> For newcomers:
-> Currently, dump_cpu_task() is mainly used by RCU, in order to dump the
-> stack traces of the current task of the specified CPU when a rcu stall
-> is detected.
-> 
-> For architectures that do not support NMI interrupts, registers is not
-> printed when rcu stall is self-detected. This patch series improve it.
 
-Thank you!  I have queued both for further testing and review.  I had
-to rebase them to the -rcu tree's "dev" branch.  There was one trivial
-conflict, but could you please check the resulting commits, both for
-my wordsmithing and to make sure that your changes still work in your
-environment?  (I do not have access to that sort of hardware.)
 
-In the future, could you please send your patches against the -rcu
-tree's "dev" branch?
+On 2022/8/5 2:09, Paul E. McKenney wrote:
+> On Thu, Aug 04, 2022 at 10:34:18AM +0800, Zhen Lei wrote:
+>> v3 --> v4:
+>> 1. To avoid undo/redo, merge patch 1-2 in v3 into one.
+>>
+>> v2 --> v3:
+>> 1. Patch 1 Add trigger_single_cpu_backtrace(cpu) in synchronize_rcu_expedited_wait()
+>>    Subsequently, we can see that all callers of dump_cpu_task() try
+>>    trigger_single_cpu_backtrace() first. Then I do the cleanup in Patch 2.
+>> 2. Patch 3, as Paul E. McKenney's suggestion, push the code into dump_cpu_task().
+>>
+>> For newcomers:
+>> Currently, dump_cpu_task() is mainly used by RCU, in order to dump the
+>> stack traces of the current task of the specified CPU when a rcu stall
+>> is detected.
+>>
+>> For architectures that do not support NMI interrupts, registers is not
+>> printed when rcu stall is self-detected. This patch series improve it.
+> 
+> Thank you!  I have queued both for further testing and review.  I had
+> to rebase them to the -rcu tree's "dev" branch.  There was one trivial
+> conflict, but could you please check the resulting commits, both for
+> my wordsmithing and to make sure that your changes still work in your
+> environment?  (I do not have access to that sort of hardware.)
 
-							Thanx, Paul
+Your description is much clearer than mine, thanks. I will test it
+tomorrow, the international network speed is too slow during the day.
 
-> v2:
-> https://lkml.org/lkml/2022/7/27/1800
 > 
-> Zhen Lei (2):
->   sched/debug: Try trigger_single_cpu_backtrace(cpu) in dump_cpu_task()
->   sched/debug: Show the registers of 'current' in dump_cpu_task()
+> In the future, could you please send your patches against the -rcu
+> tree's "dev" branch?
+
+Okay, no problem. I'll do it next time.
+
 > 
->  kernel/rcu/tree_stall.h |  8 +++-----
->  kernel/sched/core.c     | 14 ++++++++++++++
->  kernel/smp.c            |  3 +--
->  3 files changed, 18 insertions(+), 7 deletions(-)
+> 							Thanx, Paul
 > 
-> -- 
-> 2.25.1
+>> v2:
+>> https://lkml.org/lkml/2022/7/27/1800
+>>
+>> Zhen Lei (2):
+>>   sched/debug: Try trigger_single_cpu_backtrace(cpu) in dump_cpu_task()
+>>   sched/debug: Show the registers of 'current' in dump_cpu_task()
+>>
+>>  kernel/rcu/tree_stall.h |  8 +++-----
+>>  kernel/sched/core.c     | 14 ++++++++++++++
+>>  kernel/smp.c            |  3 +--
+>>  3 files changed, 18 insertions(+), 7 deletions(-)
+>>
+>> -- 
+>> 2.25.1
+>>
+> .
 > 
+
+-- 
+Regards,
+  Zhen Lei
