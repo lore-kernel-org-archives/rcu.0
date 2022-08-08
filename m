@@ -2,139 +2,86 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B09D9C19F2A
-	for <rcu@archiver.kernel.org>; Mon,  8 Aug 2022 02:28:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B6D0C00140
+	for <rcu@archiver.kernel.org>; Mon,  8 Aug 2022 13:44:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242651AbiHHC2G (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 7 Aug 2022 22:28:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53774 "EHLO
+        id S237945AbiHHNoC (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 8 Aug 2022 09:44:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231852AbiHHC1q (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 7 Aug 2022 22:27:46 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F362C113C;
-        Sun,  7 Aug 2022 19:20:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1659925256; x=1691461256;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=DSFtjCvyVuLCouGH3nrkWmxv8xftzPQ8caPWxrxOie0=;
-  b=XsXC9nkmNYSfvEPNhcai2gJv+CWIZKLC8geiHxfdoIDg2lv4Ky4R8jfd
-   C92PxE4/NI17cgovv6euP4jdGKwND6aeqxuvOguwOrwQuNSCgKGJmV6bO
-   TCgliKyb2K3aQmMyL28il7v7IGCCaK9uQemqK/WYFxHVKsOkN4Z9aEIxT
-   6MemXxykAyEVPg4PzAuCFqhcv+CtZs3wn4cm41uRi/pZX/A6MTRXYoTRi
-   A7Z5sh9wp/Q4UP3pbRidPlf8/ThfsRkaW0GraC2hja+V8dYC7cGvwGFhw
-   sJDRXTjHQmUppS0gdmUZf3+9v4sCXsJNVfCakdrVvA+CLxqTuPr588DQM
-   w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10432"; a="290493847"
-X-IronPort-AV: E=Sophos;i="5.93,221,1654585200"; 
-   d="scan'208";a="290493847"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2022 19:20:56 -0700
-X-IronPort-AV: E=Sophos;i="5.93,221,1654585200"; 
-   d="scan'208";a="931854925"
-Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.125])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2022 19:20:54 -0700
-From:   Zqiang <qiang1.zhang@intel.com>
-To:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] rcu: Reduce the frequency of triggering irq-work for strict grace period
-Date:   Mon,  8 Aug 2022 10:26:26 +0800
-Message-Id: <20220808022626.12825-1-qiang1.zhang@intel.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S234710AbiHHNoB (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 8 Aug 2022 09:44:01 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1A611121
+        for <rcu@vger.kernel.org>; Mon,  8 Aug 2022 06:44:00 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id B2D34B80E9C
+        for <rcu@vger.kernel.org>; Mon,  8 Aug 2022 13:43:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77A30C433D6;
+        Mon,  8 Aug 2022 13:43:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1659966238;
+        bh=VJBsDYmvb0tQ2OO7CTTXe/4HN6XlJAgfCTKTxzfO45k=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=bKVsJXpwhz5YKZShTyPDpOZfq1/YJo3qH4l5ItdNeEE6KIoMb9fvlu0xfxz3fPLaR
+         eGOhpWK2R02su2KLM/kkD5cWmnjaUjw5HFLOWgasW3bMf/9xWmUZPeJTvnBJrC+aAH
+         fwSZ6D4YkwkIcMi3AXBw17iIVAdIvjWr0JuRbTP3j+H06SvxpJCv3RRzkNFdSO0q4J
+         Xm+Lsr5M85VQ6YZZEtik8hLvnB68ARRCn0udOauFizYf3RBV+PW4F6SNbQwqnMfaaF
+         IQ3zBZS+RwlCSTJrq1IoePdThCSEMQlvTw73niK0x3MQ7GZtdxsAPLAC1CIEx3pqD0
+         8MOsuuP6mDx+g==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 252FB5C0A55; Mon,  8 Aug 2022 06:43:58 -0700 (PDT)
+Date:   Mon, 8 Aug 2022 06:43:58 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Sedat Dilek <sedat.dilek@gmail.com>,
+        Al Viro <viro@zeniv.linux.org.uk>, rcu@vger.kernel.org,
+        hch@lst.de
+Subject: Re: [vfs-next] RCU call-traces (task: modprobe)
+Message-ID: <20220808134358.GC2125313@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <CA+icZUWUi_BJtjmewptMZWPUOT07FWBxu3A3yQTc-vM_F2XgTA@mail.gmail.com>
+ <20220806163247.GZ2125313@paulmck-ThinkPad-P17-Gen-1>
+ <Yu9iGUv/jl7qpzPE@kroah.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Yu9iGUv/jl7qpzPE@kroah.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-For kernel built with PREEMPT_RCU=y and RCU_STRICT_GRACE_PERIOD=y,
-currently, the irq-work will be triggered by high frequency to make
-the scheduler re-evaluate and call hooks to check whether there are
-qs need to report when exit RCU read critical section in irq-disbaled
-context. however if there is no gp in progress, the irq-work trigger
-is meaningless.
+On Sun, Aug 07, 2022 at 08:56:25AM +0200, Greg KH wrote:
+> On Sat, Aug 06, 2022 at 09:32:47AM -0700, Paul E. McKenney wrote:
+> > On Sat, Aug 06, 2022 at 08:31:26AM +0200, Sedat Dilek wrote:
+> > > Hi Al and Paul,
+> > > 
+> > > I pulled latest vfs-next on top of Linux v5.19 and see this in dmesg-logs:
+> > > 
+> > > root# LC_ALL=C dmesg -T | egrep -B5 -A15 'Call Trace:'
+> > > [Sat Aug  6 06:51:15 2022] Bluetooth: SCO socket layer initialized
+> > > [Sat Aug  6 06:51:15 2022] rcu: INFO: rcu_preempt detected expedited
+> > > stalls on CPUs/tasks: { 0-... } 6 jiffies s: 101 root: 0x1/.
+> > 
+> > This is because of the CONFIG_RCU_EXP_CPU_STALL_TIMEOUT=20 in your
+> > .config file.  This is selected in kernels built with CONFIG_ANDROID=y,
+> > and results in an ultra-short 20-millisecond RCU CPU stall timeout for
+> > expedited grace periods.  Yes, the Android guys want and are getting
+> > milliseconds-scale response times from synchronize_rcu_expedited().
+> > 
+> > The last time someone ran into this, the upshot was that CONFIG_ANDROID
+> > was to be removed: https://lwn.net/Articles/899743/
+> > 
+> > My guess is that the CONFIG_ANDROID-removal patches are still on their way
+> > into mainline (they are in -next), but I added Greg KH and Christoph on CC
+> > just in case some other issue arose.
+> 
+> Not that I know of, those changes are all now in Linus's tree.
 
-This commit reduced irq-work trigger frequency by check whether the
-current CPU is not experiencing qs or there is task that blocks
-the current grace period for RCU_STRICT_GRACE_PERIOD=y kernel.
+And now that I do another pull, I do see them, thank you!
 
-The test results are as follows:
+So Sedat and Ben can just merge current mainline and be fine.
 
-echo rcu_preempt_deferred_qs_handler > /sys/kernel/debug/tracing/set_ftrace_filter
-echo 1 > /sys/kernel/debug/tracing/function_profile_enabled
-insmod rcutorture.ko
-sleep 20
-rmmod rcutorture.ko
-echo 0 > /sys/kernel/debug/tracing/function_profile_enabled
-echo > /sys/kernel/debug/tracing/set_ftrace_filter
-
-head /sys/kernel/debug/tracing/trace_stat/function*
-
-original:
-
-==> /sys/kernel/debug/tracing/trace_stat/function0 <==
-  Function                               Hit    Time            Avg             s^2
-  --------                               ---    ----            ---             ---
-  rcu_preempt_deferred_qs_handle      838746    182650.3 us     0.217 us        0.004 us
-
-==> /sys/kernel/debug/tracing/trace_stat/function1 <==
-  Function                               Hit    Time            Avg             s^2
-  --------                               ---    ----            ---             ---
-  rcu_preempt_deferred_qs_handle      841768    191138.6 us     0.227 us        0.024 us
-
-==> /sys/kernel/debug/tracing/trace_stat/function2 <==
-  Function                               Hit    Time            Avg             s^2
-  --------                               ---    ----            ---             ---
-  rcu_preempt_deferred_qs_handle      828243    180455.6 us     0.217 us        0.004 us
-
-==> /sys/kernel/debug/tracing/trace_stat/function3 <==
-  Function                               Hit    Time            Avg             s^2
-  --------                               ---    ----            ---             ---
-  rcu_preempt_deferred_qs_handle      810258    189158.1 us     0.233 us        0.023 us
-
-apply patch:
-
-==> /sys/kernel/debug/tracing/trace_stat/function0 <==
-  Function                               Hit    Time            Avg             s^2
-  --------                               ---    ----            ---             ---
-  rcu_preempt_deferred_qs_handle      302373    67434.95 us     0.223 us        0.001 us
-
-==> /sys/kernel/debug/tracing/trace_stat/function1 <==
-  Function                               Hit    Time            Avg             s^2
-  --------                               ---    ----            ---             ---
-  rcu_preempt_deferred_qs_handle      307174    68398.34 us     0.222 us        0.002 us
-
-==> /sys/kernel/debug/tracing/trace_stat/function2 <==
-  Function                               Hit    Time            Avg             s^2
-  --------                               ---    ----            ---             ---
-  rcu_preempt_deferred_qs_handle      250910    56157.42 us     0.223 us        0.002 us
-
-==> /sys/kernel/debug/tracing/trace_stat/function3 <==
-  Function                               Hit    Time            Avg             s^2
-  --------                               ---    ----            ---             ---
-  rcu_preempt_deferred_qs_handle      279902    62644.64 us     0.223 us        0.003 us
-
-Signed-off-by: Zqiang <qiang1.zhang@intel.com>
----
- kernel/rcu/tree_plugin.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index b76076014e12..1514909cf905 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -641,7 +641,8 @@ static void rcu_read_unlock_special(struct task_struct *t)
- 
- 		expboost = (t->rcu_blocked_node && READ_ONCE(t->rcu_blocked_node->exp_tasks)) ||
- 			   (rdp->grpmask & READ_ONCE(rnp->expmask)) ||
--			   IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD) ||
-+			   (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD) &&
-+			   ((rdp->grpmask & READ_ONCE(rnp->qsmask)) || t->rcu_blocked_node)) ||
- 			   (IS_ENABLED(CONFIG_RCU_BOOST) && irqs_were_disabled &&
- 			    t->rcu_blocked_node);
- 		// Need to defer quiescent state until everything is enabled.
--- 
-2.25.1
-
+							Thanx, Paul
