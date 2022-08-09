@@ -2,108 +2,202 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CC8E0C19F2D
-	for <rcu@archiver.kernel.org>; Tue,  9 Aug 2022 03:45:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 43A6CC19F2D
+	for <rcu@archiver.kernel.org>; Tue,  9 Aug 2022 03:45:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231355AbiHIDp2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 8 Aug 2022 23:45:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46108 "EHLO
+        id S232383AbiHIDpc (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 8 Aug 2022 23:45:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229600AbiHIDp0 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 8 Aug 2022 23:45:26 -0400
+        with ESMTP id S232200AbiHIDpa (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 8 Aug 2022 23:45:30 -0400
 Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1E6ED74
-        for <rcu@vger.kernel.org>; Mon,  8 Aug 2022 20:45:23 -0700 (PDT)
-Received: by mail-qv1-xf2a.google.com with SMTP id u8so7759896qvv.1
-        for <rcu@vger.kernel.org>; Mon, 08 Aug 2022 20:45:23 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F6A4E0A
+        for <rcu@vger.kernel.org>; Mon,  8 Aug 2022 20:45:26 -0700 (PDT)
+Received: by mail-qv1-xf2a.google.com with SMTP id l8so3046139qvr.5
+        for <rcu@vger.kernel.org>; Mon, 08 Aug 2022 20:45:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KMFSm9fzlCqsL9Wl8knZNV1YuIRXh8vZL0+Qm4vwsdw=;
-        b=gaoDGtT7P0PU1txGGwS6nqQwoWr78izFFV6nTSD+0uArCjjTELeFzv4pJTMgIi4CUg
-         dJF1ysNQ6QnohyA+3U3h/jN1J71OFQYnx7/71j67phYLsv/ZLJHN67fkMPWHMJH0gjRP
-         rc/i/d6KbRdYsO25gle/h6TDQQ7XrXuwf/z+Q=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=5MABIRG6nEm+OGiGPNxYVuccSF7gvfiyC3wg2ETXvDw=;
+        b=wZvnPLKS6/ywdXbZJhDoSvzkqPjlw1D3n0vkx0NvRZ4XY5R3+/f5vbNZt2sqa7SXnp
+         g3f0l0lIxwILo85Cth+STI+mCu7p5k6NRKh1X1NxVwEBOMPfQRG+3yNl6TqQm3GtLDMW
+         LbzAD8u9gU+mSq9YNbZp2kNrzclNMfdo8foyw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KMFSm9fzlCqsL9Wl8knZNV1YuIRXh8vZL0+Qm4vwsdw=;
-        b=HjbCKCkHPnPRsSx7iDszM+DollcBrh0GfA83fLcB0WqSlCtrzbB39kRG2iagS7QYle
-         s2vbyfuJA87l4wP3olT/pmkzZglGLd2YuKMAzGsfgb7oHqD8GE8l84Io/dES7cVMm1P0
-         f9wqRQNkdW+EM8OXDzEnb44S3Yjvr5wZ1rICkjkXoPSxRPwGJw1zzqXozQi+kEFJEr3t
-         BQd3Xg30excAjv3cznVZndjPdyBhLF43Pk28XwEsfPffo4uZ31wFxnO+tXFo3vD5Nnaz
-         ARdMuBq7zMSOgKijQy+XOhNXBAH8AaOibzhwho0lntjVPc+b0e/NYWh3YT68zjsqgRtW
-         HI1Q==
-X-Gm-Message-State: ACgBeo0SbOe5exb+/YLUkeYbmOoU07C0IV/JILigsmHMQ1n+6Cdoz4Tx
-        SVGnTtO4UQ2YDU9TKomBjWQgbAZH1DEPvA==
-X-Google-Smtp-Source: AA6agR42ATZ3/Jp8DA3RUD+VOOvGOfBuGXIMPL7I8s6nqNQ/UchL90HMU28gDJB8NvjnTAuNxW2KPw==
-X-Received: by 2002:a05:6214:19e8:b0:478:89de:9d4f with SMTP id q8-20020a05621419e800b0047889de9d4fmr17590523qvc.126.1660016722922;
-        Mon, 08 Aug 2022 20:45:22 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=5MABIRG6nEm+OGiGPNxYVuccSF7gvfiyC3wg2ETXvDw=;
+        b=ZpmE7z2zyEcqkDfzEEWfdoqdtb0IqEtk3PL3iF8wyYnDCWzSo0+qQynLe+tt6bBoQf
+         13Ufbkm10AJEh+EaCnW8bYQhrSg90WE0iPwgIcWrH5xwOQwJUfyG4qHkCSZW8ObRmNAy
+         g0lB1dyyHdgJ6NxSMHvoPGQBqQFUFL1YKA7b4Yl1gOQJ77YsUnT3qUFO/+tN3qOjQ/8q
+         IGSkK5fF3bleJKx81IWoJ0N+CHKPRMockbuMfuZk6+1ZjQJ+xuOhXHasbe0bqfLhqhyD
+         AvBRHEsxBarMVZ1BLuRZ9pxQzIlkzRBptKu/TiKX5C2EFJxy+CnozwNmoLcjl0cjWeye
+         u+fg==
+X-Gm-Message-State: ACgBeo307XbDAjqh2RmEyrPrgDhiHDibGxoKp4vLHpdpcUExNToYNeVT
+        WTW7/brw2GMayye0yIg40fF7Bw==
+X-Google-Smtp-Source: AA6agR7Cy9WbXMYdrEpzIPcjUfm7pClgb6Yqm9vNW9tmJ4nCKz7Zx9Nf8+93x7UVE1IZ93zZ/z7nNg==
+X-Received: by 2002:a05:6214:20a2:b0:476:9071:2e60 with SMTP id 2-20020a05621420a200b0047690712e60mr17928197qvd.110.1660016725089;
+        Mon, 08 Aug 2022 20:45:25 -0700 (PDT)
 Received: from joelboxx.c.googlers.com.com (228.221.150.34.bc.googleusercontent.com. [34.150.221.228])
-        by smtp.gmail.com with ESMTPSA id ca8-20020a05622a1f0800b0031f0b43629dsm9170979qtb.23.2022.08.08.20.45.22
+        by smtp.gmail.com with ESMTPSA id ca8-20020a05622a1f0800b0031f0b43629dsm9170979qtb.23.2022.08.08.20.45.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Aug 2022 20:45:22 -0700 (PDT)
+        Mon, 08 Aug 2022 20:45:24 -0700 (PDT)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
         rushikesh.s.kadam@intel.com, urezki@gmail.com,
         neeraj.iitr10@gmail.com, frederic@kernel.org, paulmck@kernel.org,
         rostedt@goodmis.org, rcu@vger.kernel.org
-Subject: [PATCH v3 resend 0/6] Implement call_rcu_lazy() and miscellaneous fixes
-Date:   Tue,  9 Aug 2022 03:45:11 +0000
-Message-Id: <20220809034517.3867176-1-joel@joelfernandes.org>
+Subject: [PATCH v3 resend 3/6] rcuscale: Add laziness and kfree tests
+Date:   Tue,  9 Aug 2022 03:45:14 +0000
+Message-Id: <20220809034517.3867176-4-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.37.1.559.g78731f0fdb-goog
+In-Reply-To: <20220809034517.3867176-1-joel@joelfernandes.org>
+References: <20220809034517.3867176-1-joel@joelfernandes.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Just a refresh of v3 with one additional debug patch. v3's cover letter is here:
- https://lore.kernel.org/all/20220713213237.1596225-1-joel@joelfernandes.org/
+We had 2 tests to rcuscale, one is a startup test to check whether we
+are not too lazy or too hard working. Two, emulate kfree_rcu() itself to
+use call_rcu_lazy() and check memory pressure. In my testing,
+call_rcu_lazy() does well to keep memory pressure under control, similar
+to kfree_rcu().
 
-I just started working on this again while I have some time during paternity
-leave ;-) So I thought I'll just send it out again. No other changes other
-than that 1 debug patch I added on the top.
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+---
+ kernel/rcu/rcuscale.c | 74 ++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 73 insertions(+), 1 deletion(-)
 
-Next I am going to go refine the power results as mentioned in Paul's comments
-on the last cover letter.
-
-Joel Fernandes (Google) (5):
-rcu: Introduce call_rcu_lazy() API implementation
-rcuscale: Add laziness and kfree tests
-fs: Move call_rcu() to call_rcu_lazy() in some paths
-rcutorture: Add test code for call_rcu_lazy()
-debug: Toggle lazy at runtime and change flush jiffies
-
-Vineeth Pillai (1):
-rcu: shrinker for lazy rcu
-
-fs/dcache.c                                   |   4 +-
-fs/eventpoll.c                                |   2 +-
-fs/file_table.c                               |   2 +-
-fs/inode.c                                    |   2 +-
-include/linux/rcu_segcblist.h                 |   1 +
-include/linux/rcupdate.h                      |   6 +
-include/linux/sched/sysctl.h                  |   3 +
-kernel/rcu/Kconfig                            |   8 +
-kernel/rcu/rcu.h                              |  12 +
-kernel/rcu/rcu_segcblist.c                    |  15 +-
-kernel/rcu/rcu_segcblist.h                    |  20 +-
-kernel/rcu/rcuscale.c                         |  74 +++++-
-kernel/rcu/rcutorture.c                       |  60 ++++-
-kernel/rcu/tree.c                             | 131 ++++++----
-kernel/rcu/tree.h                             |  10 +-
-kernel/rcu/tree_nocb.h                        | 246 +++++++++++++++---
-kernel/sysctl.c                               |  17 ++
-.../selftests/rcutorture/configs/rcu/CFLIST   |   1 +
-.../selftests/rcutorture/configs/rcu/TREE11   |  18 ++
-.../rcutorture/configs/rcu/TREE11.boot        |   8 +
-20 files changed, 536 insertions(+), 104 deletions(-)
-create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/TREE11
-create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/TREE11.boot
-
---
+diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
+index 277a5bfb37d4..ed5544227f4d 100644
+--- a/kernel/rcu/rcuscale.c
++++ b/kernel/rcu/rcuscale.c
+@@ -95,6 +95,7 @@ torture_param(int, verbose, 1, "Enable verbose debugging printk()s");
+ torture_param(int, writer_holdoff, 0, "Holdoff (us) between GPs, zero to disable");
+ torture_param(int, kfree_rcu_test, 0, "Do we run a kfree_rcu() scale test?");
+ torture_param(int, kfree_mult, 1, "Multiple of kfree_obj size to allocate.");
++torture_param(int, kfree_rcu_by_lazy, 0, "Use call_rcu_lazy() to emulate kfree_rcu()?");
+ 
+ static char *scale_type = "rcu";
+ module_param(scale_type, charp, 0444);
+@@ -658,6 +659,14 @@ struct kfree_obj {
+ 	struct rcu_head rh;
+ };
+ 
++/* Used if doing RCU-kfree'ing via call_rcu_lazy(). */
++static void kfree_rcu_lazy(struct rcu_head *rh)
++{
++	struct kfree_obj *obj = container_of(rh, struct kfree_obj, rh);
++
++	kfree(obj);
++}
++
+ static int
+ kfree_scale_thread(void *arg)
+ {
+@@ -695,6 +704,11 @@ kfree_scale_thread(void *arg)
+ 			if (!alloc_ptr)
+ 				return -ENOMEM;
+ 
++			if (kfree_rcu_by_lazy) {
++				call_rcu_lazy(&(alloc_ptr->rh), kfree_rcu_lazy);
++				continue;
++			}
++
+ 			// By default kfree_rcu_test_single and kfree_rcu_test_double are
+ 			// initialized to false. If both have the same value (false or true)
+ 			// both are randomly tested, otherwise only the one with value true
+@@ -737,6 +751,9 @@ kfree_scale_cleanup(void)
+ {
+ 	int i;
+ 
++	if (kfree_rcu_by_lazy)
++		rcu_force_call_rcu_to_lazy(false);
++
+ 	if (torture_cleanup_begin())
+ 		return;
+ 
+@@ -766,11 +783,64 @@ kfree_scale_shutdown(void *arg)
+ 	return -EINVAL;
+ }
+ 
++// Used if doing RCU-kfree'ing via call_rcu_lazy().
++static unsigned long jiffies_at_lazy_cb;
++static struct rcu_head lazy_test1_rh;
++static int rcu_lazy_test1_cb_called;
++static void call_rcu_lazy_test1(struct rcu_head *rh)
++{
++	jiffies_at_lazy_cb = jiffies;
++	WRITE_ONCE(rcu_lazy_test1_cb_called, 1);
++}
++
+ static int __init
+ kfree_scale_init(void)
+ {
+ 	long i;
+ 	int firsterr = 0;
++	unsigned long orig_jif, jif_start;
++
++	// If lazy-rcu based kfree'ing is requested, then for kernels that
++	// support it, force all call_rcu() to call_rcu_lazy() so that non-lazy
++	// CBs do not remove laziness of the lazy ones (since the test tries to
++	// stress call_rcu_lazy() for OOM).
++	//
++	// Also, do a quick self-test to ensure laziness is as much as
++	// expected.
++	if (kfree_rcu_by_lazy && !IS_ENABLED(CONFIG_RCU_LAZY)) {
++		pr_alert("CONFIG_RCU_LAZY is disabled, falling back to kfree_rcu() "
++			 "for delayed RCU kfree'ing\n");
++		kfree_rcu_by_lazy = 0;
++	}
++
++	if (kfree_rcu_by_lazy) {
++		/* do a test to check the timeout. */
++		orig_jif = rcu_lazy_get_jiffies_till_flush();
++
++		rcu_force_call_rcu_to_lazy(true);
++		rcu_lazy_set_jiffies_till_flush(2 * HZ);
++		rcu_barrier();
++
++		jif_start = jiffies;
++		jiffies_at_lazy_cb = 0;
++		call_rcu_lazy(&lazy_test1_rh, call_rcu_lazy_test1);
++
++		smp_cond_load_relaxed(&rcu_lazy_test1_cb_called, VAL == 1);
++
++		rcu_lazy_set_jiffies_till_flush(orig_jif);
++
++		if (WARN_ON_ONCE(jiffies_at_lazy_cb - jif_start < 2 * HZ)) {
++			pr_alert("ERROR: Lazy CBs are not being lazy as expected!\n");
++			WARN_ON_ONCE(1);
++			return -1;
++		}
++
++		if (WARN_ON_ONCE(jiffies_at_lazy_cb - jif_start > 3 * HZ)) {
++			pr_alert("ERROR: Lazy CBs are being too lazy!\n");
++			WARN_ON_ONCE(1);
++			return -1;
++		}
++	}
+ 
+ 	kfree_nrealthreads = compute_real(kfree_nthreads);
+ 	/* Start up the kthreads. */
+@@ -783,7 +853,9 @@ kfree_scale_init(void)
+ 		schedule_timeout_uninterruptible(1);
+ 	}
+ 
+-	pr_alert("kfree object size=%zu\n", kfree_mult * sizeof(struct kfree_obj));
++	pr_alert("kfree object size=%zu, kfree_rcu_by_lazy=%d\n",
++			kfree_mult * sizeof(struct kfree_obj),
++			kfree_rcu_by_lazy);
+ 
+ 	kfree_reader_tasks = kcalloc(kfree_nrealthreads, sizeof(kfree_reader_tasks[0]),
+ 			       GFP_KERNEL);
+-- 
 2.37.1.559.g78731f0fdb-goog
 
