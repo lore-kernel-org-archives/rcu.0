@@ -2,47 +2,45 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E460C25B0C
-	for <rcu@archiver.kernel.org>; Thu, 11 Aug 2022 15:36:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D11BC25B06
+	for <rcu@archiver.kernel.org>; Thu, 11 Aug 2022 15:36:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235795AbiHKPgC (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 11 Aug 2022 11:36:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57846 "EHLO
+        id S236052AbiHKPgN (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 11 Aug 2022 11:36:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236088AbiHKPf3 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 11 Aug 2022 11:35:29 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E2409925A;
-        Thu, 11 Aug 2022 08:32:56 -0700 (PDT)
+        with ESMTP id S236179AbiHKPfv (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 11 Aug 2022 11:35:51 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B34A66CF7D;
+        Thu, 11 Aug 2022 08:33:06 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id C7406B82168;
-        Thu, 11 Aug 2022 15:32:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15744C433D6;
-        Thu, 11 Aug 2022 15:32:51 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B3688615FD;
+        Thu, 11 Aug 2022 15:33:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBE0BC433C1;
+        Thu, 11 Aug 2022 15:33:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660231973;
-        bh=owvKDXizFCEdAgXs7T2Sko6/6Jb9ujIiikjKrAcPITk=;
+        s=k20201202; t=1660231985;
+        bh=tm/Prmah0nOJGZ3kNxRNFbDU1c+16FYGIhcmEUyeWDQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UTDIJ9fqU2pnDfVJZQFB4/+NPee1+rG36m4S6LXEstKtnaIhxrY7M2nKQbZhsyIxS
-         2Tn2gZqCRwHIu0ViWhEEAI3dqdmB9fNFHlIUHWvxMoqSs1QF+zxai+bjaR61W6vI/8
-         72YMxzDsemJVA2njIOl/M0mNgK8nvw86SsuIupQc29WdyAcQUS3RjtLuhqQQyfh9Uh
-         1a63NZ81xB3OHxO1j/mOn6f4TsR3TpKVoj8kkYnKVPslsxtlYM9AQmmO3lEkidMmZt
-         OIq/Tt4ZTl2ulVRZWs+lAeubV09XgWSJ93S99frA2G7ANY7zOyprTl5wmRdGb6DROo
-         P2kUiTjLgi4Mg==
+        b=alquqHEpxYIUBoK6byNLlPnh/7jz47Zo7ctq3i7Q4dFMUVW1CCKwom8BhddlnndJU
+         uogvV1K0bQeOLqo4KgRRSocDUBu2ODol6xcFVLwzweIsyQp3RppXcQghwCpHYG9dZJ
+         cReAMcJxncOPUh1j4usA6unMBxBdQCiVvzRjHTNS0pq+627T10P4vXvh1DHu6O6OY2
+         SedsdVu72Wvoyz/60zJQv5gwn/QvH/c0PMQGRkON6ni6MwvDFyOOP5SJMwxkumOR4P
+         EMgWoHJhUArABiaaEHQ2OrRF22OeJIDp1Jnx6LQW1tVieqvKjiIlVUpbkTOK+CFeNV
+         VR6pleFCeGRwQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, Sasha Levin <sashal@kernel.org>,
-        frederic@kernel.org, quic_neeraju@quicinc.com,
-        josh@joshtriplett.org, rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.19 035/105] rcu: Apply noinstr to rcu_idle_enter() and rcu_idle_exit()
-Date:   Thu, 11 Aug 2022 11:27:19 -0400
-Message-Id: <20220811152851.1520029-35-sashal@kernel.org>
+Cc:     Zqiang <qiang1.zhang@intel.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, dave@stgolabs.net,
+        josh@joshtriplett.org, frederic@kernel.org,
+        quic_neeraju@quicinc.com, rcu@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.19 040/105] rcutorture: Fix memory leak in rcu_test_debug_objects()
+Date:   Thu, 11 Aug 2022 11:27:24 -0400
+Message-Id: <20220811152851.1520029-40-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220811152851.1520029-1-sashal@kernel.org>
 References: <20220811152851.1520029-1-sashal@kernel.org>
@@ -54,86 +52,47 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+From: Zqiang <qiang1.zhang@intel.com>
 
-[ Upstream commit ed4ae5eff4b38797607cbdd80da394149110fb37 ]
+[ Upstream commit 98ea20328786372cbbc90c601be168f5fe1f8845 ]
 
-This commit applies the "noinstr" tag to the rcu_idle_enter() and
-rcu_idle_exit() functions, which are invoked from portions of the idle
-loop that cannot be instrumented.  These tags require reworking the
-rcu_eqs_enter() and rcu_eqs_exit() functions that these two functions
-invoke in order to cause them to use normal assertions rather than
-lockdep.  In addition, within rcu_idle_exit(), the raw versions of
-local_irq_save() and local_irq_restore() are used, again to avoid issues
-with lockdep in uninstrumented code.
+The kernel memory leak detector located the following:
 
-This patch is based in part on an earlier patch by Jiri Olsa, discussions
-with Peter Zijlstra and Frederic Weisbecker, earlier changes by Thomas
-Gleixner, and off-list discussions with Yonghong Song.
+unreferenced object 0xffff95d941135b50 (size 16):
+  comm "swapper/0", pid 1, jiffies 4294667610 (age 1367.451s)
+  hex dump (first 16 bytes):
+    f0 c6 c2 bd d9 95 ff ff 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<00000000bc81d9b1>] kmem_cache_alloc_trace+0x2f6/0x500
+    [<00000000d28be229>] rcu_torture_init+0x1235/0x1354
+    [<0000000032c3acd9>] do_one_initcall+0x51/0x210
+    [<000000003c117727>] kernel_init_freeable+0x205/0x259
+    [<000000003961f965>] kernel_init+0x1a/0x120
+    [<000000001998f890>] ret_from_fork+0x22/0x30
 
-Link: https://lore.kernel.org/lkml/20220515203653.4039075-1-jolsa@kernel.org/
-Reported-by: Jiri Olsa <jolsa@kernel.org>
-Reported-by: Alexei Starovoitov <ast@kernel.org>
-Reported-by: Andrii Nakryiko <andrii@kernel.org>
+This is caused by the rcu_test_debug_objects() function allocating an
+rcu_head structure, then failing to free it.  This commit therefore adds
+the needed kfree() after the last use of this structure.
+
+Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Reviewed-by: Yonghong Song <yhs@fb.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/rcu/tree.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ kernel/rcu/rcutorture.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index c25ba442044a..9a5edab5558c 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -631,8 +631,8 @@ static noinstr void rcu_eqs_enter(bool user)
- 		return;
- 	}
- 
--	lockdep_assert_irqs_disabled();
- 	instrumentation_begin();
-+	lockdep_assert_irqs_disabled();
- 	trace_rcu_dyntick(TPS("Start"), rdp->dynticks_nesting, 0, atomic_read(&rdp->dynticks));
- 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !user && !is_idle_task(current));
- 	rcu_preempt_deferred_qs(current);
-@@ -659,9 +659,9 @@ static noinstr void rcu_eqs_enter(bool user)
-  * If you add or remove a call to rcu_idle_enter(), be sure to test with
-  * CONFIG_RCU_EQS_DEBUG=y.
-  */
--void rcu_idle_enter(void)
-+void noinstr rcu_idle_enter(void)
- {
--	lockdep_assert_irqs_disabled();
-+	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !raw_irqs_disabled());
- 	rcu_eqs_enter(false);
- }
- EXPORT_SYMBOL_GPL(rcu_idle_enter);
-@@ -861,7 +861,7 @@ static void noinstr rcu_eqs_exit(bool user)
- 	struct rcu_data *rdp;
- 	long oldval;
- 
--	lockdep_assert_irqs_disabled();
-+	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !raw_irqs_disabled());
- 	rdp = this_cpu_ptr(&rcu_data);
- 	oldval = rdp->dynticks_nesting;
- 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && oldval < 0);
-@@ -896,13 +896,13 @@ static void noinstr rcu_eqs_exit(bool user)
-  * If you add or remove a call to rcu_idle_exit(), be sure to test with
-  * CONFIG_RCU_EQS_DEBUG=y.
-  */
--void rcu_idle_exit(void)
-+void noinstr rcu_idle_exit(void)
- {
- 	unsigned long flags;
- 
--	local_irq_save(flags);
-+	raw_local_irq_save(flags);
- 	rcu_eqs_exit(false);
--	local_irq_restore(flags);
-+	raw_local_irq_restore(flags);
- }
- EXPORT_SYMBOL_GPL(rcu_idle_exit);
- 
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 7120165a9342..ca7b028f424b 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -3122,6 +3122,7 @@ static void rcu_test_debug_objects(void)
+ 	pr_alert("%s: WARN: Duplicate call_rcu() test complete.\n", KBUILD_MODNAME);
+ 	destroy_rcu_head_on_stack(&rh1);
+ 	destroy_rcu_head_on_stack(&rh2);
++	kfree(rhp);
+ #else /* #ifdef CONFIG_DEBUG_OBJECTS_RCU_HEAD */
+ 	pr_alert("%s: !CONFIG_DEBUG_OBJECTS_RCU_HEAD, not testing duplicate call_rcu()\n", KBUILD_MODNAME);
+ #endif /* #else #ifdef CONFIG_DEBUG_OBJECTS_RCU_HEAD */
 -- 
 2.35.1
 
