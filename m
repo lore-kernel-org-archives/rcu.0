@@ -2,101 +2,131 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C9BD0C19F2D
-	for <rcu@archiver.kernel.org>; Thu, 11 Aug 2022 03:46:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 656CEC19F2D
+	for <rcu@archiver.kernel.org>; Thu, 11 Aug 2022 07:54:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233517AbiHKDq3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 10 Aug 2022 23:46:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57092 "EHLO
+        id S234010AbiHKHyj (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 11 Aug 2022 03:54:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230463AbiHKDq3 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 10 Aug 2022 23:46:29 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47C328277E;
-        Wed, 10 Aug 2022 20:46:28 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id E9F4DB81EFF;
-        Thu, 11 Aug 2022 03:46:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8347CC433C1;
-        Thu, 11 Aug 2022 03:46:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660189585;
-        bh=Xxh06Q4Yhsx+3pyvHZwT7mx+roo9eT6HXDouomooxbY=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=M5OWs5FVH2u5LHi69HxnvmDrLH/qE8Oqox2gVylYWe8DkmluDRIQFromGKuBxPYWc
-         MJKREDlnSfFuOULgt+lXcsBWY2/IpC56h4egROTTFLFHR5EOf6uPlfH0GP0Pk+zR8a
-         6AzGJFqwewVmGdreUemI/skHZK1332XoKMiC21fYy4LWg2siqoJbPw+X5U0WJlr38p
-         Yi5+yfKLs79fz5PFkHW0F5Hc9PFvj9xNuBTnI6dn/lG31CAnxJuov6dn31hypDZ0YZ
-         U8OzBBCIE81PSgZaOsgDXAL/UYeD7SdqzwJ8q9yOZNBKFKE4tVcbXW/NB8AkLUyrLj
-         ANJzdGirn/npg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 1FD205C128A; Wed, 10 Aug 2022 20:46:25 -0700 (PDT)
-Date:   Wed, 10 Aug 2022 20:46:25 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, rushikesh.s.kadam@intel.com,
-        urezki@gmail.com, neeraj.iitr10@gmail.com, frederic@kernel.org,
-        rostedt@goodmis.org, rcu@vger.kernel.org
-Subject: Re: [PATCH v3 resend 0/6] Implement call_rcu_lazy() and
- miscellaneous fixes
-Message-ID: <20220811034625.GX2125313@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220809034517.3867176-1-joel@joelfernandes.org>
- <308db02b-b56d-2df1-ee33-7f66e6a85f63@joelfernandes.org>
- <87663566-ed67-fee8-4598-13591f2f072b@joelfernandes.org>
- <20220811025152.GW2125313@paulmck-ThinkPad-P17-Gen-1>
- <07976e09-214d-0d1b-6803-23754a9f3d8a@joelfernandes.org>
+        with ESMTP id S233884AbiHKHyi (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 11 Aug 2022 03:54:38 -0400
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F200513E2E;
+        Thu, 11 Aug 2022 00:54:36 -0700 (PDT)
+X-UUID: c537b5c587bb409a98dcb065de503d5c-20220811
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:Date:CC:To:From:Subject:Message-ID; bh=Pl+MDAa1cNSlme5ohVZ4QGF7+/nE1dHPujEfDH6bqDU=;
+        b=JLRMdhdZ20fugIkHP1XpgLOxkA7POauHg5M/uAFqidO+2BZGke2xLp4VGEYAxgd1HlHmPaT4GsBihbZp3y3nDRC1+w3v0+fIq3yzEmL5jZuS5ux5q/ERqoxBwwpXEmytfSW9sag2IT7Fw8juTDD1LBkzFTxBWoy9nbDZLbt2/A8=;
+X-CID-UNFAMILIAR: 1
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.9,REQID:253d8c81-3ec1-4b2a-9e4c-5e265f4190c3,OB:0,LO
+        B:10,IP:0,URL:0,TC:0,Content:-5,EDM:0,RT:0,SF:100,FILE:0,BULK:0,RULE:Relea
+        se_Ham,ACTION:release,TS:95
+X-CID-INFO: VERSION:1.1.9,REQID:253d8c81-3ec1-4b2a-9e4c-5e265f4190c3,OB:0,LOB:
+        10,IP:0,URL:0,TC:0,Content:-5,EDM:0,RT:0,SF:100,FILE:0,BULK:0,RULE:Spam_GS
+        981B3D,ACTION:quarantine,TS:95
+X-CID-META: VersionHash:3d8acc9,CLOUDID:2d0384ae-9535-44a6-aa9b-7f62b79b6ff6,C
+        OID:f096d32b22bb,Recheck:0,SF:28|16|19|48,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:1,File:nil,Bulk:40,QS:nil,BEC:nil,COL:0
+X-UUID: c537b5c587bb409a98dcb065de503d5c-20220811
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <kuyo.chang@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 809153656; Thu, 11 Aug 2022 15:54:30 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
+ Thu, 11 Aug 2022 15:54:28 +0800
+Received: from mtksdccf07 (172.21.84.99) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 11 Aug 2022 15:54:28 +0800
+Message-ID: <3bcf5d974b98acccde89e8d5567d3ddcdfb44800.camel@mediatek.com>
+Subject: [Race condition] Race condition at cpuidle_enter_s2idle &
+ __cfi_slowpath_diag
+From:   Kuyo Chang <kuyo.chang@mediatek.com>
+To:     Sami Tolvanen <samitolvanen@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        "Nick Desaulniers" <ndesaulniers@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Peter Zijlstra" <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        "Vincent Guittot" <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Ben Segall" <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        "Daniel Bristot de Oliveira" <bristot@redhat.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, <rcu@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        "Daniel Lezcano" <daniel.lezcano@linaro.org>
+CC:     <kuyo.chang@mediatek.com>, <linux-pm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <rcu@vger.kernel.org>,
+        <llvm@lists.linux.dev>
+Date:   Thu, 11 Aug 2022 15:54:28 +0800
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <07976e09-214d-0d1b-6803-23754a9f3d8a@joelfernandes.org>
+Content-Transfer-Encoding: 7bit
+X-MTK:  N
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Aug 10, 2022 at 11:22:13PM -0400, Joel Fernandes wrote:
-> 
-> 
-> On 8/10/2022 10:51 PM, Paul E. McKenney wrote:
-> > On Wed, Aug 10, 2022 at 10:31:56PM -0400, Joel Fernandes wrote:
-> >>
-> >>
-> >> On 8/10/2022 10:23 PM, Joel Fernandes wrote:
-> >>>
-> >>>
-> >>> On 8/8/2022 11:45 PM, Joel Fernandes (Google) wrote:
-> >>>> Just a refresh of v3 with one additional debug patch. v3's cover letter is here:
-> >>>>  https://lore.kernel.org/all/20220713213237.1596225-1-joel@joelfernandes.org/
-> >>>>
-> >>>> I just started working on this again while I have some time during paternity
-> >>>> leave ;-) So I thought I'll just send it out again. No other changes other
-> >>>> than that 1 debug patch I added on the top.
-> >>>>
-> >>>> Next I am going to go refine the power results as mentioned in Paul's comments
-> >>>> on the last cover letter.
-> >>>
-> >>> Side note: Here is another big selling point for call_rcu_lazy().
-> >>> Instead of _lazy(), if you just increased jiffies_till_first_fqs, and
-> >>> slowed *all* call_rcu() down to achieve the same effect, that would
-> >>> affect percpu refcounters switching to atomic-mode, for example.
-> >>>
-> >>> They switch to atomic mode by calling __percpu_ref_switch_mode() which
-> >>> is called by percpu_ref_switch_to_atomic_sync().>
-> >>> This will slow this call down for the full lazy duration which will slow
-> >>> down suspend in blk_pre_runtime_suspend().
-> >>
-> >> Correction while I am going on the record (got to be careful these
-> >> days). It *might* slow down RCU for the full lazy duration, unless of
-> >> course a fly-by rescue call_rcu() comes in.
-> > 
-> > Just unload a module, which if I remember correctly invokes rcu_barrier().
-> > Lots of rescue callbacks.  ;-)
-> 
-> Haha. Yes I suppose the per-cpu atomic switch paths can also invoke
-> rcu_barrier() but I suspect somebody might complain about IPIs :-P
+Hi Sami,
 
-There is always a critic!  ;-)
+During doing s2idle(Suspend-To-Idle) flow, I found a task will put into
+runqueue by __cfi_slowpath_diag.
+The code trace about fail case as below:
 
-							Thanx, Paul
+call_cpuidle_s2idle
+->if (current_clr_polling_and_test()) //check resched flag
+	return -EBUSY;
+->cpuidle_enter_s2idle
+->enter_s2idle_proper
+->target_state->enter_s2idle(dev, drv, index);
+
+Meanwhile the log shows the __cfi_slowpath_diag function will wake up a
+task to CPU, below is the backtrace
+__cfi_slowpath_diag
+find_check_fn
+rcu_irq_enter
+rcu_nmi_enter
+rcu_cleanup_after_idle
+invoke_rcu_core
+raise_softirq(RCU_SOFTIRQ)
+raise_softirq_irqoff
+    if (!in_interrupt() && should_wake_ksoftirqd())
+        wakeup_softirqd();
+//wake up flow
+wake_up_process
+try_to_wake_up
+ttwu_queue
+ttwu_do_activate
+ttwu_do_wakeup
+check_preempt_curr
+resched_curr
+set_tsk_need_resched(curr);
+ 
+
+So It will violate the initial check at call_cpuidle_s2idle(Now it
+exists a task at rq  and need reched, so it should not enter
+cpuidle_enter_s2idle )
+if (current_clr_polling_and_test())
+	return -EBUSY;
+
+I look the racing may be related to the following patch
+
+57cd6d1 cfi: Fix __cfi_slowpath_diag RCU usage with cpuidle
+https://android.googlesource.com/kernel/common/+/57cd6d1
+
+Do you have any suggestion for this issue?
+Thank you.
+
