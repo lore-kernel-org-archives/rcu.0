@@ -2,65 +2,131 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 17640C19F2D
-	for <rcu@archiver.kernel.org>; Sun, 14 Aug 2022 03:34:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BD7C4C3F6B0
+	for <rcu@archiver.kernel.org>; Tue, 16 Aug 2022 12:49:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229593AbiHNDey (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 13 Aug 2022 23:34:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37746 "EHLO
+        id S231810AbiHPMtw (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 16 Aug 2022 08:49:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbiHNDex (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 13 Aug 2022 23:34:53 -0400
-X-Greylist: delayed 947 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 13 Aug 2022 20:34:50 PDT
-Received: from mail6.uk.cloudlogin.co (mail6.uk.cloudlogin.co [46.249.205.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C1F0A1B2
-        for <rcu@vger.kernel.org>; Sat, 13 Aug 2022 20:34:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=web3.uk.cloudlogin.co; s=default; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Message-ID:Reply-To:From:Date:Subject:To:Sender:Cc:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=5lhltYQfzu790QO/0N9ZH5J1hqL0t3D6Kxruwx0nPN0=; b=j6k/HxA86iFW5cZr4z5vRovSQz
-        +Ny7o8wWKzekXRDtjKNeLviw0zndtL0PeZVkAdRg7HYfw0LwF0bPNGLS7XsZ3SvuKXosvASadVf3D
-        CwD79Put/dOp2ULrx22iAegJ3+saUOSl6O9jJSvoufBt7w1caJSkAuhb5NytqmiA5/Tc=;
-Received: from [10.123.0.33] (helo=web3.uk.cloudlogin.co)
-        by mail6.uk.cloudlogin.co with esmtp (Exim 4.95 (FreeBSD))
-        (envelope-from <ssvedic@web3.uk.cloudlogin.co>)
-        id 1oN49T-00039I-Lj
-        for rcu@vger.kernel.org;
-        Sun, 14 Aug 2022 03:19:00 +0000
-Received: from ssvedic by web3.uk.cloudlogin.co with local (Exim 4.95)
-        (envelope-from <ssvedic@web3.uk.cloudlogin.co>)
-        id 1oN49T-0005Z2-Ky
-        for rcu@vger.kernel.org;
-        Sun, 14 Aug 2022 03:18:59 +0000
-To:     rcu@vger.kernel.org
-Subject: Blockchain: $72,000 per day on investments
-X-PHP-Originating-Script: 95278:PHPMailer.php
-Date:   Sun, 14 Aug 2022 03:18:59 +0000
-From:   =?UTF-8?B?0J7QqCDQk9C+0YDRmtCwINCS0LDRgNC+0Yg=?= 
-        <skola@gornjavaros.edu.rs>
-Reply-To: rcu@vger.kernel.org
-Message-ID: <a2JNppFhNyjCVy24FJ8XnVoOTtlpQOyyWNqzOnWIkI@www.gornjavaros.edu.rs>
-X-Mailer: PHPMailer 6.6.0 (https://github.com/PHPMailer/PHPMailer)
+        with ESMTP id S233925AbiHPMti (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 16 Aug 2022 08:49:38 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FF6290C61;
+        Tue, 16 Aug 2022 05:49:10 -0700 (PDT)
+Received: from dggpemm500021.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4M6W8s1Vd2zkWJp;
+        Tue, 16 Aug 2022 20:45:49 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggpemm500021.china.huawei.com (7.185.36.109) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Tue, 16 Aug 2022 20:49:09 +0800
+Received: from thunder-town.china.huawei.com (10.174.178.55) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Tue, 16 Aug 2022 20:49:08 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        "Josh Triplett" <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, <rcu@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH v3 0/2] rcu/nocb: Delete local variable 'need_rcu_nocb_mask' in rcu_init_nohz()
+Date:   Tue, 16 Aug 2022 20:48:37 +0800
+Message-ID: <20220816124839.1911-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Report-Abuse-To: This header is automaticly added by mail6.uk.cloudlogin.co. If you consider this mail as a spam, please send report to spamreport@propersupport.com, including this message with all of its headers!
-X-User-ID: 95278
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.178.55]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Поштовани,
+v2 --> v3:
+1. Eliminate rcu_state.nocb_is_setup
+2. Update the code based on the above patch and commit b37a667c6242
+   ("rcu/nocb: Add an option to offload all CPUs on boot").
 
-Овај емаил вам је стигао са контакт форме сајта ОШ "Горња Варош", Земун.
-У даљем тексту вам се налазе подаци унешени у контакт формулар.
+Test cases and test results as below:
 
-Име пошиљаоца: Stevengug
-е-маил адреса пошиљаоца: rcu@vger.kernel.org
+ ----------------------------------------------------------------------
+| CONFIG_NO_HZ_FULL  | CONFIG_RCU_NOCB_CPU_DEFAULT_ALL |    cmdline    |
+ ----------------------------------------------------------------------
+1)         N         |                 N               |     none      |
+2)         N         |                 N               | rcu_nocbs=1-2 |
+3)         Y         |                 N               | nohz_full=1-2 |
+4)         Y         |                 Y               |     none      |
+ ----------------------------------------------------------------------
 
-Текст поруке: 
-Apple: $250 for 5 minutes on cryptocurrency >>>>>>>>>>>>>>>>>>>>>>>>>>> http://76ers-news.muufy.com/DW-6335 <<<<<<<<<<<<<<<<<<<<<<<<
+1)
+[ 1085.691770] rcu-torture:--- End of test: SUCCESS: (default)
+root@genericarmv8:~# dmesg | grep "Offload RCU callbacks"
+[    0.000000] rcu:     Offload RCU callbacks from CPUs: (none).
+root@genericarmv8:~# zcat /proc/config.gz | grep NOCB
+CONFIG_RCU_NOCB_CPU=y
+# CONFIG_RCU_NOCB_CPU_DEFAULT_ALL is not set
+root@genericarmv8:~# zcat /proc/config.gz | grep NO_HZ_FULL
+# CONFIG_NO_HZ_FULL is not set
+root@genericarmv8:~# cat /proc/cmdline
+console=ttyAMA0 root=/dev/vda2 crashkernel=256M@ee000000
+
+2)
+[ 1022.532198] rcu-torture:--- End of test: SUCCESS: (default)
+root@genericarmv8:~# dmesg | grep "Offload RCU callbacks"
+[    0.000000] rcu:     Offload RCU callbacks from CPUs: 1-2.
+root@genericarmv8:~# zcat /proc/config.gz | grep NOCB
+CONFIG_RCU_NOCB_CPU=y
+# CONFIG_RCU_NOCB_CPU_DEFAULT_ALL is not set
+root@genericarmv8:~# zcat /proc/config.gz | grep NO_HZ_FULL
+# CONFIG_NO_HZ_FULL is not set
+root@genericarmv8:~# cat /proc/cmdline
+console=ttyAMA0 root=/dev/vda2 crashkernel=256M@ee000000 rcu_nocbs=1-2
+
+3)
+[ 1011.714712] rcu-torture:--- End of test: SUCCESS: (default)
+root@genericarmv8:~# dmesg | grep "Offload RCU callbacks"
+[    0.000000] rcu:     Offload RCU callbacks from CPUs: 1-2.
+root@genericarmv8:~# zcat /proc/config.gz | grep NOCB
+CONFIG_RCU_NOCB_CPU=y
+# CONFIG_RCU_NOCB_CPU_DEFAULT_ALL is not set
+root@genericarmv8:~# zcat /proc/config.gz | grep NO_HZ_FULL
+CONFIG_NO_HZ_FULL=y
+root@genericarmv8:~# cat /proc/cmdline
+console=ttyAMA0 root=/dev/vda2 crashkernel=256M@ee000000 nohz_full=1-2
+
+4)
+[ 1031.047094] rcu-torture:--- End of test: SUCCESS: (default)
+root@genericarmv8:~# dmesg | grep "Offload RCU callbacks"
+[    0.000000] rcu:     Offload RCU callbacks from CPUs: 0-3.
+root@genericarmv8:~# zcat /proc/config.gz | grep NOCB
+CONFIG_RCU_NOCB_CPU=y
+CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y
+root@genericarmv8:~# zcat /proc/config.gz | grep NO_HZ_FULL
+CONFIG_NO_HZ_FULL=y
+root@genericarmv8:~# cat /proc/cmdline
+console=ttyAMA0 root=/dev/vda2 crashkernel=256M@ee000000
+
+
+v1 --> v2:
+Update commit message.
+
+Zhen Lei (2):
+  rcu: Eliminate rcu_state.nocb_is_setup
+  rcu: Simplify the code logic of rcu_init_nohz()
+
+ kernel/rcu/tree.h      |  1 -
+ kernel/rcu/tree_nocb.h | 38 +++++++++++---------------------------
+ 2 files changed, 11 insertions(+), 28 deletions(-)
+
+-- 
+2.25.1
 
