@@ -2,296 +2,135 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FD7EC32773
-	for <rcu@archiver.kernel.org>; Fri, 19 Aug 2022 20:13:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DD4ECC32771
+	for <rcu@archiver.kernel.org>; Fri, 19 Aug 2022 20:49:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351270AbiHSUNn (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 19 Aug 2022 16:13:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57930 "EHLO
+        id S1350604AbiHSUtJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 19 Aug 2022 16:49:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351773AbiHSUNm (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 19 Aug 2022 16:13:42 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D697931ED8
-        for <rcu@vger.kernel.org>; Fri, 19 Aug 2022 13:13:40 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id f14so4069490qkm.0
-        for <rcu@vger.kernel.org>; Fri, 19 Aug 2022 13:13:40 -0700 (PDT)
+        with ESMTP id S1350392AbiHSUtH (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 19 Aug 2022 16:49:07 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D6639E2F7
+        for <rcu@vger.kernel.org>; Fri, 19 Aug 2022 13:49:05 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id c20so4212986qtw.8
+        for <rcu@vger.kernel.org>; Fri, 19 Aug 2022 13:49:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc;
-        bh=0ZI+/vTZJMCwatRjH6CTCQ+NS/gGmzoMhjFZfSHC9Xg=;
-        b=erAuLwcXBKFXI/7hzPqKjgVv59NA4vdNL/GJYeOKFNy/ryFiNqRXyGIoZ10QYEwSic
-         IUUhQMdcED+u78Y15aKm8e0oVleRwlTiZtf/E5sWNNhgmrHQFvSKg7CbJiKseQhjmkpY
-         LPUPPscDOrzIDeQfOUdJN/N4H+zxXGC5Q2iqs=
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc;
+        bh=luihRe+gsvUtCEJ5Y2NjEykt2CiKxLiHMuB5CkZuwHk=;
+        b=xhdFQwkiQbFrCgAxvqW7TD0WD+MSILMz4rwjCreTkiMSs9phNWLFBSeTamnod2QSsi
+         ekC5K+YE9aYk2ch0TA/n4eoPfnDfwpL4zef2Iwj06SCwABly482pexK0vu7n7iBuL+E4
+         2oPDQYUb1htZU7KGAJd2lSHuPNpy7V8ES727g=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc;
-        bh=0ZI+/vTZJMCwatRjH6CTCQ+NS/gGmzoMhjFZfSHC9Xg=;
-        b=haKk1kwTtBHz/fd0rpN4poZmAbsZD5Y0lesQcHZbWDGZzxI+YR3ctcaxGeKD1IJ507
-         IAXszdoHh6F/7zj/pUKciZv6e+mpOadAv9EcL9j85X63u4yfHrKZdYLGKX2E8j3jhplQ
-         UkAC3tMaNlGGESqxW6tfmGXylgZBURlJW3GyVQRpodPp1Ndq6LLIgYpnrkkQa1sHM02e
-         C7MrXmV1VT7MUKJmTxXiLAfnFdwRlSetq9wuyNNjT/3jZybEwRxdyIGI9nP0+vBrqCZi
-         vlsudpW9Bgc/eHod7V5SnrvRAl30568g09Vl3mpzHjGywrkgtPzf9fRbxRmVtBHGftL/
-         XETg==
-X-Gm-Message-State: ACgBeo3fDLHU4MaqA5rcIm87CKFeF7AnMaPbfAF4rhC8Wldvla/Ma3FE
-        Wk6qVzC2lJ4OIA2StMCgRgTP3w==
-X-Google-Smtp-Source: AA6agR6EiRuMbdtZBYpNiL8/LOCCRd4jFW8jwghKrJ7WVyoE9tGAGqmO3KaRE2xsCWguAXWSoY2BXQ==
-X-Received: by 2002:a37:5481:0:b0:6b9:573e:a813 with SMTP id i123-20020a375481000000b006b9573ea813mr6221323qkb.197.1660940019812;
-        Fri, 19 Aug 2022 13:13:39 -0700 (PDT)
-Received: from [10.0.0.40] (c-73-148-104-166.hsd1.va.comcast.net. [73.148.104.166])
-        by smtp.gmail.com with ESMTPSA id fb24-20020a05622a481800b003434d1a7a14sm3653902qtb.62.2022.08.19.13.13.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Aug 2022 13:13:39 -0700 (PDT)
-Message-ID: <7d9a6d45-db57-b9a5-63a5-c2b90342ee0a@joelfernandes.org>
-Date:   Fri, 19 Aug 2022 16:13:37 -0400
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [PATCH v3 resend 4/6] fs: Move call_rcu() to call_rcu_lazy() in
- some paths
-Content-Language: en-US
-To:     paulmck@kernel.org
-Cc:     LKML <linux-kernel@vger.kernel.org>,
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc;
+        bh=luihRe+gsvUtCEJ5Y2NjEykt2CiKxLiHMuB5CkZuwHk=;
+        b=4bdqZsu7zvkAfFP94ndJstjMjkHQgWckG0sMZH2eMEgPXpkyotjmVBCA9K6uyZYcc3
+         lJDaW9NhSL4DnbQ/a8T55j/UrAor+ANq6J21im7dN5f8SUqz5YKNOL4Uar+7ANzVDKYp
+         6HdTB5J8Ot9ZCHb4XRsxhUfu4I0h6dd4h8aS77K+kmhl78FWqsrOhWU/VMSG+ElqXzV8
+         eJgLN/2JGNK4l4lgxg/Ngv01dUkMZIq9+kZQEgPwZk4SKpM3r8OqfcpwbROdiYjqGeuJ
+         6AYok791m9YqPbzwKecwAMd9wKkLvkVDKULAf72pqrPsANVoE+wIWsn15imwyl9+Ikc4
+         vtqA==
+X-Gm-Message-State: ACgBeo0Xq0/PRR2/mOLqVchQj2LCjVm06zdkXauD1ap+WX/S2SwQ+mmc
+        pffpJdyFrFcAZde7sMcqOgbzEQ==
+X-Google-Smtp-Source: AA6agR6l+rnEfgnLqgA2qIEDfeujjCjPgh/k3MpxqN39LFfjVE63d2QaD1or3nq+dVig1ppfD6ulAw==
+X-Received: by 2002:a05:622a:15cf:b0:344:6a92:d8d6 with SMTP id d15-20020a05622a15cf00b003446a92d8d6mr7924817qty.104.1660942144512;
+        Fri, 19 Aug 2022 13:49:04 -0700 (PDT)
+Received: from joelboxx.c.googlers.com.com (228.221.150.34.bc.googleusercontent.com. [34.150.221.228])
+        by smtp.gmail.com with ESMTPSA id x8-20020a05620a258800b006b9a89d408csm4377123qko.100.2022.08.19.13.49.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Aug 2022 13:49:04 -0700 (PDT)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        paulmck@kernel.org,
         Rushikesh S Kadam <rushikesh.s.kadam@intel.com>,
         "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
         Neeraj upadhyay <neeraj.iitr10@gmail.com>,
         Frederic Weisbecker <frederic@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>, rcu <rcu@vger.kernel.org>
-References: <20220809034517.3867176-5-joel@joelfernandes.org>
- <CAEXW_YQuGga9Eivq4G6o1XjvPn-nMMDiM8FOY6HXJTMzwv1Emg@mail.gmail.com>
- <CAEXW_YQOXBRwCLZXjspXttGkNhbJK3HGVDuYj5TcYD=Xj1cK0A@mail.gmail.com>
- <CAEXW_YT3VnK5KJTbyXdCzs8j4jw9XFTSCF4Dt9QwLPtkPSb1tA@mail.gmail.com>
- <20220819023550.GN2125313@paulmck-ThinkPad-P17-Gen-1>
- <4deb7354-bac7-b530-47ba-54cf50cfce58@joelfernandes.org>
- <2d56e4ad-7d6e-2abb-461f-15f20128d42b@joelfernandes.org>
- <20220819171249.GP2125313@paulmck-ThinkPad-P17-Gen-1>
- <fa8b7857-b9fd-72ad-36a7-8b09e4472816@joelfernandes.org>
- <b2a2742c-8e4e-152d-812f-987c8a941ddf@joelfernandes.org>
- <20220819195831.GR2125313@paulmck-ThinkPad-P17-Gen-1>
-From:   Joel Fernandes <joel@joelfernandes.org>
-In-Reply-To: <20220819195831.GR2125313@paulmck-ThinkPad-P17-Gen-1>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+        Steven Rostedt <rostedt@goodmis.org>,
+        rcu <rcu@vger.kernel.org>, vineeth@bitbyteword.org
+Subject: [PATCH v4 00/14] Implement call_rcu_lazy() and miscellaneous fixes
+Date:   Fri, 19 Aug 2022 20:48:43 +0000
+Message-Id: <20220819204857.3066329-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.37.2.609.g9ff673ca1a-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+Refresh tested on real ChromeOS userspace and hardware, passes boot time tests
+and rcuscale tests.
 
+Fixes on top of v3:
+- Fix boot issues due to a race in the lazy RCU logic which caused a missed
+  wakeup of the RCU GP thread, causing synchronize_rcu() to stall.
+- Fixed trace_rcu_callback tracepoint
 
-On 8/19/2022 3:58 PM, Paul E. McKenney wrote:
-> On Fri, Aug 19, 2022 at 03:40:00PM -0400, Joel Fernandes wrote:
->> On 8/19/2022 2:14 PM, Joel Fernandes wrote:
->>> On 8/19/2022 1:12 PM, Paul E. McKenney wrote:
->>>> On Fri, Aug 19, 2022 at 12:30:49PM -0400, Joel Fernandes wrote:
->>>>> On 8/18/2022 10:45 PM, Joel Fernandes wrote:
->>>>>> On 8/18/2022 10:35 PM, Paul E. McKenney wrote:
->>>>>>> On Thu, Aug 18, 2022 at 09:21:56PM -0400, Joel Fernandes wrote:
->>>>>>>> On Thu, Aug 18, 2022 at 7:05 PM Joel Fernandes <joel@joelfernandes.org> wrote:
->>>>>>>>>
->>>>>>>>> On Thu, Aug 18, 2022 at 1:23 PM Joel Fernandes <joel@joelfernandes.org> wrote:
->>>>>>>>>>
->>>>>>>>>> [Sorry, adding back the CC list]
->>>>>>>>>>
->>>>>>>>>> On Mon, Aug 8, 2022 at 11:45 PM Joel Fernandes (Google)
->>>>>>>>>> <joel@joelfernandes.org> wrote:
->>>>>>>>>>>
->>>>>>>>>>> This is required to prevent callbacks triggering RCU machinery too
->>>>>>>>>>> quickly and too often, which adds more power to the system.
->>>>>>>>>>>
->>>>>>>>>>> When testing, we found that these paths were invoked often when the
->>>>>>>>>>> system is not doing anything (screen is ON but otherwise idle).
->>>>>>>>>>
->>>>>>>>>> Unfortunately, I am seeing a slow down in ChromeOS boot performance
->>>>>>>>>> after applying this particular patch. It is the first time I could
->>>>>>>>>> test ChromeOS boot times with the series since it was hard to find a
->>>>>>>>>> ChromeOS device that runs the upstream kernel.
->>>>>>>>>>
->>>>>>>>>> Anyway, Vlad, Neeraj, do you guys also see slower boot times with this
->>>>>>>>>> patch? I wonder if the issue is with wake up interaction with the nocb
->>>>>>>>>> GP threads.
->>>>>>>>>>
->>>>>>>>>> We ought to disable lazy RCU during boot since it would have little
->>>>>>>>>> benefit anyway. But I am also concerned about some deeper problem I
->>>>>>>>>> did not catch before.
->>>>>>>>>>
->>>>>>>>>> I'll look into tracing the fs paths to see if I can narrow down what's
->>>>>>>>>> causing it. Will also try a newer kernel, I am currently testing on
->>>>>>>>>> 5.19-rc4.
->>>>>>>>>
->>>>>>>>> I got somewhere with this. It looks like queuing CBs as lazy CBs
->>>>>>>>> instead of normal CBs, are triggering expedited stalls during the boot
->>>>>>>>> process:
->>>>>>>>>
->>>>>>>>>   39.949198] rcu: INFO: rcu_preempt detected expedited stalls on
->>>>>>>>> CPUs/tasks: { } 28 jiffies s: 69 root: 0x0/.
->>>>>>>>>
->>>>>>>>> No idea how/why lazy RCU CBs would be related to expedited GP issues,
->>>>>>>>> but maybe something hangs and causes that side-effect.
->>>>>>>>>
->>>>>>>>> initcall_debug did not help, as it seems initcalls all work fine, and
->>>>>>>>> then 8 seconds after the boot, it starts slowing down a lot, followed
->>>>>>>>> by the RCU stall messages. As a next step I'll enable ftrace during
->>>>>>>>> the boot to see if I can get more insight. But I believe, its not the
->>>>>>>>> FS layer, the FS layer just triggers lazy CBs, but there is something
->>>>>>>>> wrong with the core lazy-RCU work itself.
->>>>>>>>>
->>>>>>>>> This kernel is 5.19-rc4. I'll also try to rebase ChromeOS on more
->>>>>>>>> recent kernels and debug.
->>>>>>>>
->>>>>>>> More digging, thanks to trace_event= boot option , I find that the
->>>>>>>> boot process does have some synchronous waits, and though these are
->>>>>>>> "non-lazy", for some reason the lazy CBs that were previously queued
->>>>>>>> are making them wait for the *full* lazy duration. Which points to a
->>>>>>>> likely bug in the lazy RCU logic. These synchronous CBs should never
->>>>>>>> be waiting like the lazy ones:
->>>>>>>>
->>>>>>>> [   17.715904]  => trace_dump_stack
->>>>>>>> [   17.715904]  => __wait_rcu_gp
->>>>>>>> [   17.715904]  => synchronize_rcu
->>>>>>>> [   17.715904]  => selinux_netcache_avc_callback
->>>>>>>> [   17.715904]  => avc_ss_reset
->>>>>>>> [   17.715904]  => sel_write_enforce
->>>>>>>> [   17.715904]  => vfs_write
->>>>>>>> [   17.715904]  => ksys_write
->>>>>>>> [   17.715904]  => do_syscall_64
->>>>>>>> [   17.715904]  => entry_SYSCALL_64_after_hwframe
->>>>>>>>
->>>>>>>> I'm tired so I'll resume the debug later.
->>>>>>>
->>>>>>> At times like this, I often pull the suspect code into userspace and
->>>>>>> run it through its paces.  In this case, a bunch of call_rcu_lazy()
->>>>>>> invocations into an empty bypass list, followed by a call_rcu()
->>>>>>> invocation, then a check to make sure that the bypass list is no longer
->>>>>>> lazy.
->>>>>>
->>>>>> Thanks a lot for this great debug idea, I will look into it.
->>>>>
->>>>> It seems to be a subtle issue when a large number of callbacks are
->>>>> queued trigging the lock-contention code, which happens at boot. It
->>>>> appears the non-lazy ones and lazy ones collide, so you have the lazy
->>>>> timer which wins, and then the regular bypass lock-contention timer is
->>>>> not allowed to do its thing. Due to this, the rcuog thread wakes up much
->>>>> later than a jiffie.
->>>>
->>>> Good show, and glad you found it!
->>>
->>> Thanks!
->>>
->>>>> Things are much better with the following change. However, this brings
->>>>> me to a question about lock-contention based or any deferring and boot time.
->>>>>
->>>>> If you have a path like selinux doing a synchronize_rcu(), shouldn't we
->>>>> skip the jiffie waiting for the bypass timer? Otherwise things
->>>>> synchronously waiting will slow down more than usual. Maybe bypassing
->>>>> should not be done for any case until boot up is done. I'm curious to
->>>>> see if that improves boot time.
->>>>
->>>> Why not simply disable laziness at boot time and enable it only after
->>>> booting is complete?  The exiting rcupdate.rcu_normal_after_boot kernel
->>>> boot parameter uses a similar scheme.
->>>
->>> That sounds like the right thing to good, but unfortunately it wont help
->>> this problem. The boot time issue happens after init has started. So the
->>> OS is still "booting" even though the kernel has.
->>>
->>> Also the problem can happen after boot as well, like if RCU
->>> lazy/non-lazy callbacks come back to back quickly, or so.
->>>
->>> But yes nonetheless, I can see the value of disabling it till the
->>> in-kernel boot completets.
->>>
->>>>> @@ -580,7 +585,11 @@ static void __call_rcu_nocb_wake(struct rcu_data
->>>>> *rdp, bool was_alldone,
->>>>>         len = rcu_segcblist_n_cbs(&rdp->cblist);
->>>>>         bypass_len = rcu_cblist_n_cbs(&rdp->nocb_bypass);
->>>>>         lazy_len = rcu_cblist_n_lazy_cbs(&rdp->nocb_bypass);
->>>>> -       if (was_alldone) {
->>>>> +
->>>>> +       // If we are in lazy-mode, we still need to do a wake up even if
->>>>> +       // all CBs were previously done. Otherwise the GP thread will
->>>>> +       // wait for the full lazy duration.
->>>>> +       if (was_alldone || (READ_ONCE(rdp->nocb_defer_wakeup) ==
->>>>> RCU_NOCB_WAKE_LAZY)) {
->>>>>                 rdp->qlen_last_fqs_check = len;
->>>>>                 // Only lazy CBs in bypass list
->>>>>                 if (lazy_len && bypass_len == lazy_len) {
->>>>
->>>> And this change looks plausible, though as always, the system's opinion
->>>> carries much more weight than does mine.
->>>
->>> Sounds good, thanks, I am testing it more. Will update it for v4.
->>
->> We could also do the following, I tested it and it fixes it. It seems more maintainable
->> and less fragile, but it comes at a slightly higher (but likely negligible) cost. If there
->> are lazy CBs queued, and any non-lazy one comes, then the first non-lazy one is not
->> considered to be added to the bypass list but hopefully that's Ok with you. Later non-lazy
->> ones will be added to the bypass.
-> 
-> At first I was concerned that you intended to reorder the callbacks,
-> but fortunately that is not what the patch below does.  ;-)
-> 
-> But don't you also need to clear the "lazy" flag at some point in this
-> execution path?  After all, once a non-lazy callback arrives, all the
-> callbacks are treated as if they are non-lazy, correct?
+I tested power previously [1], I am in the process of testing power again but I
+wanted share my latest code as others who are testing power as well could use
+the above fixes.
 
-Oh, I did not see a need to clear this flag, I did not want to modify the flag because it
-is set by the caller and is more to signal what the caller intended than what its treated as.
+[1] https://lore.kernel.org/all/20220713213237.1596225-1-joel@joelfernandes.org/
 
-IMO it should not effect the treatment of the lazy CB as a non-lazy one, because the
-effect is the same as if something was queued into the bypass list. The bypass list is
-flushed first before the "non-bypass" (which could be non-lazy) CB is requested to be
-queued by the caller, so we're doing the same thing as the existing bypass logic.
+Joel Fernandes (Google) (13):
+rcu: Introduce call_rcu_lazy() API implementation
+rcuscale: Add laziness and kfree tests
+fs: Move call_rcu() to call_rcu_lazy() in some paths
+rcutorture: Add test code for call_rcu_lazy()
+debug: Toggle lazy at runtime and change flush jiffies
+cred: Move call_rcu() to call_rcu_lazy()
+security: Move call_rcu() to call_rcu_lazy()
+net/core: Move call_rcu() to call_rcu_lazy()
+kernel: Move various core kernel usages to call_rcu_lazy()
+lib: Move call_rcu() to call_rcu_lazy()
+i915: Move call_rcu() to call_rcu_lazy()
+fork: Move thread_stack_free_rcu to call_rcu_lazy
+rcu/tree: Move trace_rcu_callback() before bypassing
 
-Basically these comments:
-        // If there hasn't yet been all that many ->cblist enqueues
-        // this jiffy, tell the caller to enqueue onto ->cblist.  But flush
-        // ->nocb_bypass first.
+Vineeth Pillai (1):
+rcu: shrinker for lazy rcu
 
-    WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, j, lazy, false));
+drivers/gpu/drm/i915/gem/i915_gem_object.c    |   2 +-
+fs/dcache.c                                   |   4 +-
+fs/eventpoll.c                                |   2 +-
+fs/file_table.c                               |   2 +-
+fs/inode.c                                    |   2 +-
+include/linux/rcu_segcblist.h                 |   1 +
+include/linux/rcupdate.h                      |   6 +
+include/linux/sched/sysctl.h                  |   3 +
+kernel/cred.c                                 |   2 +-
+kernel/exit.c                                 |   2 +-
+kernel/fork.c                                 |   6 +-
+kernel/pid.c                                  |   2 +-
+kernel/rcu/Kconfig                            |   8 +
+kernel/rcu/rcu.h                              |  12 +
+kernel/rcu/rcu_segcblist.c                    |  15 +-
+kernel/rcu/rcu_segcblist.h                    |  20 +-
+kernel/rcu/rcuscale.c                         |  74 ++++-
+kernel/rcu/rcutorture.c                       |  60 +++-
+kernel/rcu/tree.c                             | 139 ++++++----
+kernel/rcu/tree.h                             |  10 +-
+kernel/rcu/tree_nocb.h                        | 260 +++++++++++++++---
+kernel/sysctl.c                               |  17 ++
+kernel/time/posix-timers.c                    |   2 +-
+lib/radix-tree.c                              |   2 +-
+lib/xarray.c                                  |   2 +-
+net/core/dst.c                                |   2 +-
+security/security.c                           |   2 +-
+security/selinux/avc.c                        |   4 +-
+.../selftests/rcutorture/configs/rcu/CFLIST   |   1 +
+.../selftests/rcutorture/configs/rcu/TREE11   |  18 ++
+.../rcutorture/configs/rcu/TREE11.boot        |   8 +
+31 files changed, 567 insertions(+), 123 deletions(-)
+create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/TREE11
+create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/TREE11.boot
 
-Also the issue that the below diff fixed is more about the non-lazy one being treated as a
-lazy one than the other way.
+--
+2.37.2.609.g9ff673ca1a-goog
 
-Let me know if I missed something. Thanks,
-
-- Joel
-
-
-> 							Thanx, Paul
-> 
->> @@ -484,9 +490,17 @@ static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head
->> *rhp,
->>         // since we are kick-starting RCU GP processing anyway for the non-lazy
->>         // one, we can just reuse that GP for the already queued-up lazy ones.
->>         if ((rdp->nocb_nobypass_count < nocb_nobypass_lim_per_jiffy && !lazy) ||
->> -           (lazy && n_lazy_cbs >= qhimark)) {
->> +           (!lazy && n_lazy_cbs) ||
->> +           (lazy  && n_lazy_cbs >= qhimark)) {
->>                 rcu_nocb_lock(rdp);
->> -               *was_alldone = !rcu_segcblist_pend_cbs(&rdp->cblist);
->> +
->> +               // This variable helps decide if a wakeup of the rcuog thread
->> +               // is needed. It is passed to __call_rcu_nocb_wake() by the
->> +               // caller.  If only lazy CBs were previously queued and this one
->> +               // is non-lazy, make sure the caller does a wake up.
->> +               *was_alldone = !rcu_segcblist_pend_cbs(&rdp->cblist) ||
->> +                               (!lazy && n_lazy_cbs);
->> +
->>                 if (*was_alldone)
->>                         trace_rcu_nocb_wake(rcu_state.name, rdp->cpu,
->>                                             lazy ? TPS("FirstLazyQ") : TPS("FirstQ"));
->> @@ -500,7 +514,8 @@ static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head
->> *rhp,
->>         if ((ncbs && j != READ_ONCE(rdp->nocb_bypass_first)) || ncbs >= qhimark) {
->>                 rcu_nocb_lock(rdp);
->>                 if (!rcu_nocb_flush_bypass(rdp, rhp, j, lazy, false)) {
->> -                       *was_alldone = !rcu_segcblist_pend_cbs(&rdp->cblist);
->> +                       *was_alldone = !rcu_segcblist_pend_cbs(&rdp->cblist) ||
->> +                               (!lazy && n_lazy_cbs);
->>                         if (*was_alldone)
->>                                 trace_rcu_nocb_wake(rcu_state.name, rdp->cpu,
->>                                                     lazy ? TPS("FirstLazyQ") : TPS("FirstQ"));
