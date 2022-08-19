@@ -2,116 +2,131 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6199AC00140
-	for <rcu@archiver.kernel.org>; Thu, 18 Aug 2022 23:05:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FA91C00140
+	for <rcu@archiver.kernel.org>; Fri, 19 Aug 2022 00:11:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244096AbiHRXFd (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 18 Aug 2022 19:05:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37904 "EHLO
+        id S236260AbiHSALC (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 18 Aug 2022 20:11:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243936AbiHRXFc (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 18 Aug 2022 19:05:32 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 098E8CD79A
-        for <rcu@vger.kernel.org>; Thu, 18 Aug 2022 16:05:32 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id o2so2189931iof.8
-        for <rcu@vger.kernel.org>; Thu, 18 Aug 2022 16:05:32 -0700 (PDT)
+        with ESMTP id S233314AbiHSALB (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 18 Aug 2022 20:11:01 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D93A0C9924;
+        Thu, 18 Aug 2022 17:11:00 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id e13so3772973edj.12;
+        Thu, 18 Aug 2022 17:11:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=DEs4QdwBZh24q/YXet07H+yoRoWFt6AeBiWh1qampiM=;
-        b=NRf5fd3sxugF1Zngi0c9/hpqIoc552QiPB12KJSFJTFTF7UVI1QeOqUmF5KWIMxnJq
-         mBtUqIYHGYxr8OHnH1Yk6aMKEu2+McD7STFeYtAEYlov8ONetZcZAiuRZqUGheH2klwu
-         VUNzsd7J7RM218D46GArrQ6WKM+ejqFCQlcpo=
+        d=gmail.com; s=20210112;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc;
+        bh=um1PvOysNX8tcJMPy/29j9o1fvcMRvnPg0HmnyNEt08=;
+        b=d/sduwEWJVEdgVClVtAbd5LLwHkHRKPn4YfCY39Y7iwygwa8OdU6SJmZtUVjwYvn2k
+         X+wHJ88/oOQIXPJnwov2yxENi3kV89xHff7yYCMiAGFHrBQ994RmOXG2p1b5vW3WJCL2
+         XG63h4396vGtSG7o8QWB4/MJLhsQwtCnueDwB4hqX3ZyOyDp1BlHRPMCJfwx4s3CnjL+
+         HjgJrNyUoXnLPPHjE3L/E5BLKqeEjFK56brRlieU949e6clXNrHZVeMl2iOyxnsb6PNA
+         6GW17cgGDXvvSDT7zgSoxLiLPOiMTvdrA6Zj08WvwV5oR0PwN854qJgWPdVvnOzvf71/
+         D5OQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=DEs4QdwBZh24q/YXet07H+yoRoWFt6AeBiWh1qampiM=;
-        b=BSgFtrW/hJwku32g2XWtZmP1UH6AL2DRg29a6C4b2NYdo11JT1scbx1Aabh/LS7qFn
-         mIw48KOFgr/JrUh763Oul1Z/Yj+YwU3eCE7QTANzgpJsx9K6tTHfAV1N24LZyJovOLMW
-         R3fJdeD3ZJb1/cniWrEX9bIseDNel2SvKg0hw2+2qO5olGiSQ4QwacEc06GlvlDCjqa2
-         SqFpgcgx1GVJde455ggezhdUgqv3ILuykTe8/gW5XwCTEaTY+tk5SUzvrmxlHFuEZ2EK
-         Zo9vxKLwVCGQTsWAtHGoqtlL/q7CuT19o9wVR+cyLB++Qd+76ex0bmGPB4MPH6T8TRwi
-         XJQQ==
-X-Gm-Message-State: ACgBeo03q0NOvUxho+ZGh8mrcQ3BbCzD7+MvTA14B55NyMiQxOD4Jnou
-        pv7lCDwumV1RAs/2kpGH2lbScSvJ66uWJjGc1iXbTA==
-X-Google-Smtp-Source: AA6agR4gzrzYri2e4hcP+IvTvBPJ90eC8Z8V93sG2S9RPq9wXt+Goc522k09OwM5cnsLYyh5/EuPN7AcGD9grMoP/PQ=
-X-Received: by 2002:a05:6638:378c:b0:343:447e:e6e2 with SMTP id
- w12-20020a056638378c00b00343447ee6e2mr1451606jal.118.1660863931374; Thu, 18
- Aug 2022 16:05:31 -0700 (PDT)
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc;
+        bh=um1PvOysNX8tcJMPy/29j9o1fvcMRvnPg0HmnyNEt08=;
+        b=vZ5m5wwQVP8dcjtJJ/7N521m0gQ9JlMXeG4KZwfS12XN2Cbflp8KJ8hSuCASvIgxIc
+         iEn2vD0HxjRaXh3kABEiRWBuJCqTIVMaFba5L2CzNCQW8fGorfrNpq56QiqCs1P09/jU
+         tOeVt6KyJpmqpWPCmFk5tI07nUnJZTRBrU8AH6wpNiFGPpsfHjnQkv0Al3jlWyK8B9YT
+         1TCJY1r2t7Y1FGrfIXyXacWloBx54r80YmvKVmAG1Fpz6E7bPnMwPN8+i5avHQqZZxYA
+         PXkGakbil1kYB/RUx3l+0xdFQnbKTBtXTLtLdvZhdR5hQeuy4bLjamhbHTQHpVMHSAcq
+         ltMQ==
+X-Gm-Message-State: ACgBeo2OxGKhnDQ1Ok6vB+PyQafjuer8ktyzwyM+FRjF45wyGaoji9Ii
+        aKquo2JWJDCgA/HjCEEnzBMcTU2nKPIARFAmyiwCkH1m4Ns=
+X-Google-Smtp-Source: AA6agR4nYBvozo08BTzceXgiePHekxcjKDCBh6hnceNsUMrhf7EySMj++rLUb0UJdtu0yuvb2cn7XViB3kTAEQMnU1o=
+X-Received: by 2002:a05:6402:27ca:b0:43e:ce64:ca07 with SMTP id
+ c10-20020a05640227ca00b0043ece64ca07mr4120556ede.66.1660867859182; Thu, 18
+ Aug 2022 17:10:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220809034517.3867176-1-joel@joelfernandes.org>
- <20220809034517.3867176-5-joel@joelfernandes.org> <CAEXW_YQuGga9Eivq4G6o1XjvPn-nMMDiM8FOY6HXJTMzwv1Emg@mail.gmail.com>
-In-Reply-To: <CAEXW_YQuGga9Eivq4G6o1XjvPn-nMMDiM8FOY6HXJTMzwv1Emg@mail.gmail.com>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Thu, 18 Aug 2022 19:05:19 -0400
-Message-ID: <CAEXW_YQOXBRwCLZXjspXttGkNhbJK3HGVDuYj5TcYD=Xj1cK0A@mail.gmail.com>
-Subject: Re: [PATCH v3 resend 4/6] fs: Move call_rcu() to call_rcu_lazy() in
- some paths
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Rushikesh S Kadam <rushikesh.s.kadam@intel.com>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        Neeraj upadhyay <neeraj.iitr10@gmail.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 18 Aug 2022 17:10:47 -0700
+Message-ID: <CAADnVQKdqYM-Kyy9vez04n1HQkiDs7Y-9rx2V7qNtwkDjrJ=SA@mail.gmail.com>
+Subject: kernel splat during boot
+To:     bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
         "Paul E. McKenney" <paulmck@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>, rcu <rcu@vger.kernel.org>
+        Kernel Team <Kernel-team@fb.com>, rcu@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Aug 18, 2022 at 1:23 PM Joel Fernandes <joel@joelfernandes.org> wrote:
->
-> [Sorry, adding back the CC list]
->
-> On Mon, Aug 8, 2022 at 11:45 PM Joel Fernandes (Google)
-> <joel@joelfernandes.org> wrote:
-> >
-> > This is required to prevent callbacks triggering RCU machinery too
-> > quickly and too often, which adds more power to the system.
-> >
-> > When testing, we found that these paths were invoked often when the
-> > system is not doing anything (screen is ON but otherwise idle).
->
-> Unfortunately, I am seeing a slow down in ChromeOS boot performance
-> after applying this particular patch. It is the first time I could
-> test ChromeOS boot times with the series since it was hard to find a
-> ChromeOS device that runs the upstream kernel.
->
-> Anyway, Vlad, Neeraj, do you guys also see slower boot times with this
-> patch? I wonder if the issue is with wake up interaction with the nocb
-> GP threads.
->
-> We ought to disable lazy RCU during boot since it would have little
-> benefit anyway. But I am also concerned about some deeper problem I
-> did not catch before.
->
-> I'll look into tracing the fs paths to see if I can narrow down what's
-> causing it. Will also try a newer kernel, I am currently testing on
-> 5.19-rc4.
+Hi Paul,
 
-I got somewhere with this. It looks like queuing CBs as lazy CBs
-instead of normal CBs, are triggering expedited stalls during the boot
-process:
+I see the following splat just booting net-next or bpf-next trees.
+I have lockdep and kasan on (if that matters).
+Is this a known issue?
 
-  39.949198] rcu: INFO: rcu_preempt detected expedited stalls on
-CPUs/tasks: { } 28 jiffies s: 69 root: 0x0/.
-
-No idea how/why lazy RCU CBs would be related to expedited GP issues,
-but maybe something hangs and causes that side-effect.
-
-initcall_debug did not help, as it seems initcalls all work fine, and
-then 8 seconds after the boot, it starts slowing down a lot, followed
-by the RCU stall messages. As a next step I'll enable ftrace during
-the boot to see if I can get more insight. But I believe, its not the
-FS layer, the FS layer just triggers lazy CBs, but there is something
-wrong with the core lazy-RCU work itself.
-
-This kernel is 5.19-rc4. I'll also try to rebase ChromeOS on more
-recent kernels and debug.
-
-Thanks,
-
- - Joel
+[    3.011826] cblist_init_generic: Setting adjustable number of
+callback queues.
+[    3.011880]
+[    3.011883] =============================
+[    3.011885] [ BUG: Invalid wait context ]
+[    3.011889] 5.19.0-14019-g75179e2b7f9a #4201 Not tainted
+[    3.011893] -----------------------------
+[    3.011896] swapper/0/1 is trying to lock:
+[    3.011899] ffffffff85be94b8 (&port_lock_key){....}-{3:3}, at:
+serial8250_console_write+0x5fc/0x640
+[    3.011929] other info that might help us debug this:
+[    3.011931] context-{5:5}
+[    3.011934] 3 locks held by swapper/0/1:
+[    3.011938]  #0: ffffffff8404dae0
+(rcu_tasks_rude.cbs_gbl_lock){....}-{2:2}, at:
+cblist_init_generic+0x27/0x340
+[    3.011964]  #1: ffffffff84041d80 (console_lock){+.+.}-{0:0}, at:
+vprintk_emit+0xda/0x2e0
+[    3.011984]  #2: ffffffff839416e0 (console_owner){....}-{0:0}, at:
+console_emit_next_record.constprop.37+0x1c9/0x4d0
+[    3.012004] stack backtrace:
+[    3.012007] CPU: 0 PID: 1 Comm: swapper/0 Not tainted
+5.19.0-14019-g75179e2b7f9a #4201
+[    3.012011] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+[    3.012011] Call Trace:
+[    3.012011]  <TASK>
+[    3.012011]  dump_stack_lvl+0x44/0x57
+[    3.012011]  __lock_acquire.cold.73+0xc7/0x31b
+[    3.012011]  ? lockdep_hardirqs_on_prepare+0x1f0/0x1f0
+[    3.012011]  ? rcu_read_lock_sched_held+0x91/0xc0
+[    3.012011]  ? rcu_read_lock_bh_held+0xa0/0xa0
+[    3.012011]  lock_acquire+0x133/0x380
+[    3.012011]  ? serial8250_console_write+0x5fc/0x640
+[    3.012011]  ? lock_release+0x3b0/0x3b0
+[    3.012011]  _raw_spin_lock_irqsave+0x35/0x50
+[    3.012011]  ? serial8250_console_write+0x5fc/0x640
+[    3.012011]  serial8250_console_write+0x5fc/0x640
+[    3.012011]  ? rcu_read_lock_bh_held+0xa0/0xa0
+[    3.012011]  ? serial8250_default_handle_irq+0x80/0x80
+[    3.012011]  ? lock_release+0x3b0/0x3b0
+[    3.012011]  ? do_raw_spin_lock+0x107/0x1c0
+[    3.012011]  ? rwlock_bug.part.2+0x60/0x60
+[    3.012011]  ? prb_final_commit+0x50/0x50
+[    3.012011]  console_emit_next_record.constprop.37+0x271/0x4d0
+[    3.012011]  ? info_print_ext_header.constprop.38+0x110/0x110
+[    3.012011]  ? rcu_read_lock_sched_held+0x91/0xc0
+[    3.012011]  console_unlock+0x1d8/0x2c0
+[    3.012011]  ? devkmsg_open+0x170/0x170
+[    3.012011]  ? vprintk_emit+0xda/0x2e0
+[    3.012011]  vprintk_emit+0xe3/0x2e0
+[    3.012011]  _printk+0x96/0xb0
+[    3.012011]  ? pm_suspend.cold.6+0x2e3/0x2e3
+[    3.012011]  ? _raw_write_unlock+0x1f/0x30
+[    3.012011]  ? do_raw_spin_lock+0x107/0x1c0
+[    3.012011]  cblist_init_generic.cold.36+0x24/0x32
+[    3.012011]  rcu_init_tasks_generic+0x23/0xf0
+[    3.012011]  kernel_init_freeable+0x1d3/0x38a
+[    3.012011]  ? _raw_spin_unlock_irq+0x24/0x30
+[    3.012011]  ? rest_init+0x1d0/0x1d0
+[    3.012011]  kernel_init+0x18/0x130
+[    3.012011]  ? rest_init+0x1d0/0x1d0
+[    3.012011]  ret_from_fork+0x1f/0x30
+[    3.012011]  </TASK>
+[    3.012029] cblist_init_generic: Setting shift to 3 and lim to 1.
+[    3.013301] cblist_init_generic: Setting shift to 3 and lim to 1.
+[    3.014203] Running RCU-tasks wait API self tests
