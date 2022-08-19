@@ -2,48 +2,48 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D165FC32771
-	for <rcu@archiver.kernel.org>; Fri, 19 Aug 2022 20:49:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D1467C32771
+	for <rcu@archiver.kernel.org>; Fri, 19 Aug 2022 20:49:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351630AbiHSUtj (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 19 Aug 2022 16:49:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48668 "EHLO
+        id S1351875AbiHSUtn (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 19 Aug 2022 16:49:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351654AbiHSUtS (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S1351664AbiHSUtS (ORCPT <rfc822;rcu@vger.kernel.org>);
         Fri, 19 Aug 2022 16:49:18 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82EFFBFAA5
-        for <rcu@vger.kernel.org>; Fri, 19 Aug 2022 13:49:14 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id w28so4225011qtc.7
-        for <rcu@vger.kernel.org>; Fri, 19 Aug 2022 13:49:14 -0700 (PDT)
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D454BFC4A
+        for <rcu@vger.kernel.org>; Fri, 19 Aug 2022 13:49:15 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id cb8so4254477qtb.0
+        for <rcu@vger.kernel.org>; Fri, 19 Aug 2022 13:49:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc;
-        bh=eOVP7uxcuakWCkD5+BqZt5+xcwwCNJthr/gxNxOlHcg=;
-        b=TbqfUYYOBRlQM1AsIY4GgE+2GpQ/GkZpdyKoO5F732/uJp6Il9dKitV7sHVM1cA9rC
-         RRFRRBgNtpaHAmgnmmdaHwkZAVJ47CrSC6J+Z5mx1DKVwYKo7bCgePitrBl0iQ1ONj5z
-         kVNnqB403PU8vOH/tLiG3e5URPaaC2NwHeDgo=
+        bh=6M/kEQXI6tA+u5+q0q3BfPnsnjCNXvNhf8n1k8Caals=;
+        b=G4RH/9CKm7jJBfWPa3xTDK0qYze8HQ31EQsg72UX6wDKbasiRRCXhvuugbCwbLm31P
+         5TGYIRvZ06nuvqEvU0IRARdrxjuSNS1BbQ/ZZrrV3Jm4MJxp/6fa30p/OFvXnu5mRbSo
+         aOHwkSMPTBQ0nsadszNSKzfIkSPtFP8lxf7mI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc;
-        bh=eOVP7uxcuakWCkD5+BqZt5+xcwwCNJthr/gxNxOlHcg=;
-        b=Tsc2v5YsZh0vDWqPZYCwnlUDzBboAAG+srfjwJ4W7sO0lngee9Y42suL/6jVZSAnIf
-         3nhxbpEEw5+Th9o1t2daeoWeBtRg5N7X9FD9eDzzt87FZORa6Xy3MPfMgvE3sWZgOXVp
-         VWcbAKHGKcAYxl+ElwZkWo0QiiomnJ+dlFU67/ZqvkO9tnfmiY721/HMgggd0JxpVzA1
-         wxITJbEBNRm28QidXdn+kBNBYMBnJksrpk+gvnEkdcDoMWgKnFOvjOWfqF6W073883bj
-         YRYE9ploCvt8y5djxo7uJUiHNBWuDVnbFyUzKzDePK1DSQ9ZKKswEy6W9GeKzhjRlyk/
-         UHxA==
-X-Gm-Message-State: ACgBeo3bvH7Bw3zCf0vDQ6XxUUZND5t9zgAn6JlHs5gqimhNkEiv0hAM
-        W7xhrIMtLnFjanE2ZG94IWT7rw==
-X-Google-Smtp-Source: AA6agR4jfVHEKJ7HKI1Pca8LM6+bM5tC6NBQKXVudmLfwSZfaIKrw8QW130ggamnP9whdSSpTKpeRA==
-X-Received: by 2002:ac8:5889:0:b0:344:57e5:dc54 with SMTP id t9-20020ac85889000000b0034457e5dc54mr8038436qta.465.1660942153560;
-        Fri, 19 Aug 2022 13:49:13 -0700 (PDT)
+        bh=6M/kEQXI6tA+u5+q0q3BfPnsnjCNXvNhf8n1k8Caals=;
+        b=rAla4wglKND1jfE+6chX+lgd+76hBKgOY4bNEp4IDpYcxD70T6DwrdIPE+29Rq6c9w
+         kNx8LibaStB5YTfB7QR8Wgw2WBOiT63mjDc0pX84gsj0sR/8Fc+cU9F7VIsQDptaH6Wx
+         fkjOp919R+0rLahNIFHlrd9S44BMeTiOTpXEhf2xcE05rP+5M1EU48I/2bFS3eabL5Az
+         I2IqnNbGCLb0DF1p30KCOPySUjWRhQ/vMXliLB3y8+fi3W0njnpvzkLcJlq6gey8UnHW
+         IAKZSbY/qF8Cbguj9yKCdY4p/lz2yBldvINtun48LiXmcqnfY6YzlF4e4pyqXkQDLrIi
+         wYYQ==
+X-Gm-Message-State: ACgBeo02gsbFOMiP78FbemiVZ2uGZJmX4nAe1NcN5G4lfWxPzu9dJLg2
+        tJWx/3BFV8vN4K9RqzsNWPGk7g==
+X-Google-Smtp-Source: AA6agR5WaU1OuwtlNb5E8x5UWuI4aQIOzMrkS+bdJ4qsVwxVLpQSeA2Msl6wE+7uTnDjr6siJ+hX/Q==
+X-Received: by 2002:ac8:5f0d:0:b0:343:6e79:f1a2 with SMTP id x13-20020ac85f0d000000b003436e79f1a2mr7981121qta.657.1660942154287;
+        Fri, 19 Aug 2022 13:49:14 -0700 (PDT)
 Received: from joelboxx.c.googlers.com.com (228.221.150.34.bc.googleusercontent.com. [34.150.221.228])
-        by smtp.gmail.com with ESMTPSA id x8-20020a05620a258800b006b9a89d408csm4377123qko.100.2022.08.19.13.49.12
+        by smtp.gmail.com with ESMTPSA id x8-20020a05620a258800b006b9a89d408csm4377123qko.100.2022.08.19.13.49.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Aug 2022 13:49:13 -0700 (PDT)
+        Fri, 19 Aug 2022 13:49:14 -0700 (PDT)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
@@ -54,9 +54,9 @@ Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
         Frederic Weisbecker <frederic@kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         rcu <rcu@vger.kernel.org>, vineeth@bitbyteword.org
-Subject: [PATCH v4 13/14] fork: Move thread_stack_free_rcu to call_rcu_lazy
-Date:   Fri, 19 Aug 2022 20:48:56 +0000
-Message-Id: <20220819204857.3066329-14-joel@joelfernandes.org>
+Subject: [PATCH v4 14/14] rcu/tree: Move trace_rcu_callback() before bypassing
+Date:   Fri, 19 Aug 2022 20:48:57 +0000
+Message-Id: <20220819204857.3066329-15-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.37.2.609.g9ff673ca1a-goog
 In-Reply-To: <20220819204857.3066329-1-joel@joelfernandes.org>
 References: <20220819204857.3066329-1-joel@joelfernandes.org>
@@ -66,45 +66,44 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This is required to prevent callbacks triggering RCU machinery too
-quickly and too often, which adds more power to the system.
+If any CB is queued into the bypass list, then trace_rcu_callback() does
+not show it. This makes it not clear when a callback was actually
+queued, as you only end up getting a trace_rcu_invoke_callback() trace.
+Fix it by moving trace_rcu_callback() before trace_rcu_nocb_try_bypass().
 
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- kernel/fork.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ kernel/rcu/tree.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/fork.c b/kernel/fork.c
-index c9a2e19d67e5..a4535cf5446f 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -227,7 +227,7 @@ static void thread_stack_delayed_free(struct task_struct *tsk)
- 	struct vm_stack *vm_stack = tsk->stack;
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 67026382dc21..6e14f0257669 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3101,10 +3101,7 @@ __call_rcu_common(struct rcu_head *head, rcu_callback_t func, bool lazy)
+ 	}
  
- 	vm_stack->stack_vm_area = tsk->stack_vm_area;
--	call_rcu(&vm_stack->rcu, thread_stack_free_rcu);
-+	call_rcu_lazy(&vm_stack->rcu, thread_stack_free_rcu);
- }
+ 	check_cb_ovld(rdp);
+-	if (rcu_nocb_try_bypass(rdp, head, &was_alldone, flags, lazy))
+-		return; // Enqueued onto ->nocb_bypass, so just leave.
+-	// If no-CBs CPU gets here, rcu_nocb_try_bypass() acquired ->nocb_lock.
+-	rcu_segcblist_enqueue(&rdp->cblist, head);
++
+ 	if (__is_kvfree_rcu_offset((unsigned long)func))
+ 		trace_rcu_kvfree_callback(rcu_state.name, head,
+ 					 (unsigned long)func,
+@@ -3113,6 +3110,11 @@ __call_rcu_common(struct rcu_head *head, rcu_callback_t func, bool lazy)
+ 		trace_rcu_callback(rcu_state.name, head,
+ 				   rcu_segcblist_n_cbs(&rdp->cblist));
  
- static int free_vm_stack_cache(unsigned int cpu)
-@@ -354,7 +354,7 @@ static void thread_stack_delayed_free(struct task_struct *tsk)
- {
- 	struct rcu_head *rh = tsk->stack;
++	if (rcu_nocb_try_bypass(rdp, head, &was_alldone, flags, lazy))
++		return; // Enqueued onto ->nocb_bypass, so just leave.
++	// If no-CBs CPU gets here, rcu_nocb_try_bypass() acquired ->nocb_lock.
++	rcu_segcblist_enqueue(&rdp->cblist, head);
++
+ 	trace_rcu_segcb_stats(&rdp->cblist, TPS("SegCBQueued"));
  
--	call_rcu(rh, thread_stack_free_rcu);
-+	call_rcu_lazy(rh, thread_stack_free_rcu);
- }
- 
- static int alloc_thread_stack_node(struct task_struct *tsk, int node)
-@@ -389,7 +389,7 @@ static void thread_stack_delayed_free(struct task_struct *tsk)
- {
- 	struct rcu_head *rh = tsk->stack;
- 
--	call_rcu(rh, thread_stack_free_rcu);
-+	call_rcu_lazy(rh, thread_stack_free_rcu);
- }
- 
- static int alloc_thread_stack_node(struct task_struct *tsk, int node)
+ 	/* Go handle any RCU core processing required. */
 -- 
 2.37.2.609.g9ff673ca1a-goog
 
