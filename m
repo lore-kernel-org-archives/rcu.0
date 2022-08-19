@@ -2,48 +2,48 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E603C32771
-	for <rcu@archiver.kernel.org>; Fri, 19 Aug 2022 20:49:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 79D51C32792
+	for <rcu@archiver.kernel.org>; Fri, 19 Aug 2022 20:49:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351848AbiHSUth (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 19 Aug 2022 16:49:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48716 "EHLO
+        id S1351854AbiHSUti (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 19 Aug 2022 16:49:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351614AbiHSUtS (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S1351645AbiHSUtS (ORCPT <rfc822;rcu@vger.kernel.org>);
         Fri, 19 Aug 2022 16:49:18 -0400
-Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 803819FA9C
-        for <rcu@vger.kernel.org>; Fri, 19 Aug 2022 13:49:12 -0700 (PDT)
-Received: by mail-qv1-xf35.google.com with SMTP id y4so4203174qvp.3
-        for <rcu@vger.kernel.org>; Fri, 19 Aug 2022 13:49:12 -0700 (PDT)
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C34C4BFA83
+        for <rcu@vger.kernel.org>; Fri, 19 Aug 2022 13:49:13 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id cr9so4200686qtb.13
+        for <rcu@vger.kernel.org>; Fri, 19 Aug 2022 13:49:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc;
-        bh=IM3xuvgYuRBTMeRN6UX20iY+v3dQGfWqdrHzqRgQ3nc=;
-        b=j1zt/vmPhAeHqF3WzjQbwEdocA4ht6wnFFga1N4nnE/ogTiDii9fSTlX1cbj76ACKx
-         rkDnBXZzmErhi7X3m2eBFCzCzDmUBL5ffMMdYDxeijnHDwVr3uO7inraAuHPZ94DWzIh
-         S6PULMcp5wfkjvgZ5K6KG090NhD3f4pk7La+4=
+        bh=F8eqajEJ1oxnqHr7+lKrv0iQaE0C9fuKhV4+YpdptQc=;
+        b=thJJdMHDttiQHWHA9YMQ6t8JnYuDXswlIU6Fd+r+vPkOe/Ek1KbSL/8SQcoZu2Q1dm
+         a6l64ZImF9AQuS+8r2YgWRnXA993zdsdBeTloskJo8YE3oISzmLAx3TnSZz5CXa4vi2n
+         6l+d+3Ebcjv72aP2LdFQGNu2iIZgKzSg77Fq4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc;
-        bh=IM3xuvgYuRBTMeRN6UX20iY+v3dQGfWqdrHzqRgQ3nc=;
-        b=fOBMGDIsbWDs4zS42OdB6cLOOImO4xVj94AbBegvFA9Rvo8Vz+pp7pVYG0DC4gxwkt
-         qdHtm5KddNkDQsSmpok3OaiUMHx1DEkUj9cHBXUhOE+nl2RI/c5/VjGFIlXwkFJXjQtd
-         KS36BucFs3gPrQAtoNYdiEgh8Yti1W2n9z4eS2tfIRJsUJLBs9LY+zPxfu+V9ennKC5Q
-         r26nO4j/IcjYaszdwTXh/AV0xos/Z59UXdmYrVPOsumyQeoTk+Cv8qpl5JODgQODUKLw
-         gRedUGil3FoVmdn8poiqfoQqthbDlOPYCoL1UKYqvDXjRg/jZnlVO1NdH2K1asGeoouE
-         jQQg==
-X-Gm-Message-State: ACgBeo2oWE2Co8/v5Zw0Gk2FYNQiONWih3VZ3AqD7qkrc2hg+YhC9zPG
-        0m4PL/8GwVZ+NvAJPtucLJUCvg==
-X-Google-Smtp-Source: AA6agR78xm+acrn/3AsCNGALGerD8M0khl3rhGk2dAyVszt75ahBd55xnbLLHZC62JHF+LYJ9HIWfA==
-X-Received: by 2002:ad4:5cae:0:b0:496:a988:ddc0 with SMTP id q14-20020ad45cae000000b00496a988ddc0mr7940572qvh.3.1660942151448;
-        Fri, 19 Aug 2022 13:49:11 -0700 (PDT)
+        bh=F8eqajEJ1oxnqHr7+lKrv0iQaE0C9fuKhV4+YpdptQc=;
+        b=xMbUaDzXG+zY9lbfBa5/97PWK3I3yg42uw5CEej62cilzxqkZ0I6yc+ArbIYo22n9A
+         fP7HiFPv68W+xwjyxx+Ixab+FO8wL9Vyd5+mHfRY2NbU1g9O99aav4Peo3C92BYjkEXy
+         9mAI08HVJJ7RNqXxb/OCz0tTTTiHYGcp21347m9oi1YyGVz56Gk1fUdiRn7zRf/m5WZY
+         ROBsov5A1y4+tz/5xUjKsWkMYydTJXON5OS7cXLWwAZVWFySEiSg5V4ArEdDlfnO5Vr9
+         MvtjRtDPlbpfOU0OqGJXTdSyf1yZCBG5Lx3aBIXlcDMsp8nARe/EB5h4CUp8UDtPikuq
+         REpA==
+X-Gm-Message-State: ACgBeo1gK49/Fi8Y1rcS9vn2UghyKF2pPaUMntxbTTpOXoZ9v/iiN+Oe
+        qjSj4aSE+IFNB4dJefEPhw4z0w==
+X-Google-Smtp-Source: AA6agR4uPFXBKcvKDD94qylED1tqBj5WVVD6PD6c49FLD/T+dqSi7r/B+UGnudkd1B7IAJicQq6Yxg==
+X-Received: by 2002:a05:622a:1048:b0:344:9494:3617 with SMTP id f8-20020a05622a104800b0034494943617mr6809664qte.143.1660942152841;
+        Fri, 19 Aug 2022 13:49:12 -0700 (PDT)
 Received: from joelboxx.c.googlers.com.com (228.221.150.34.bc.googleusercontent.com. [34.150.221.228])
-        by smtp.gmail.com with ESMTPSA id x8-20020a05620a258800b006b9a89d408csm4377123qko.100.2022.08.19.13.49.10
+        by smtp.gmail.com with ESMTPSA id x8-20020a05620a258800b006b9a89d408csm4377123qko.100.2022.08.19.13.49.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Aug 2022 13:49:10 -0700 (PDT)
+        Fri, 19 Aug 2022 13:49:12 -0700 (PDT)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
@@ -54,9 +54,9 @@ Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
         Frederic Weisbecker <frederic@kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         rcu <rcu@vger.kernel.org>, vineeth@bitbyteword.org
-Subject: [PATCH v4 10/14] kernel: Move various core kernel usages to call_rcu_lazy()
-Date:   Fri, 19 Aug 2022 20:48:53 +0000
-Message-Id: <20220819204857.3066329-11-joel@joelfernandes.org>
+Subject: [PATCH v4 12/14] i915: Move call_rcu() to call_rcu_lazy()
+Date:   Fri, 19 Aug 2022 20:48:55 +0000
+Message-Id: <20220819204857.3066329-13-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.37.2.609.g9ff673ca1a-goog
 In-Reply-To: <20220819204857.3066329-1-joel@joelfernandes.org>
 References: <20220819204857.3066329-1-joel@joelfernandes.org>
@@ -66,52 +66,27 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+This is required to prevent callbacks triggering RCU machinery too
+quickly and too often, which adds more power to the system.
+
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- kernel/exit.c              | 2 +-
- kernel/pid.c               | 2 +-
- kernel/time/posix-timers.c | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/i915/gem/i915_gem_object.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/exit.c b/kernel/exit.c
-index 853c6a943fce..14cde19ff4c2 100644
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -180,7 +180,7 @@ static void delayed_put_task_struct(struct rcu_head *rhp)
- void put_task_struct_rcu_user(struct task_struct *task)
- {
- 	if (refcount_dec_and_test(&task->rcu_users))
--		call_rcu(&task->rcu, delayed_put_task_struct);
-+		call_rcu_lazy(&task->rcu, delayed_put_task_struct);
- }
+diff --git a/drivers/gpu/drm/i915/gem/i915_gem_object.c b/drivers/gpu/drm/i915/gem/i915_gem_object.c
+index 06b1b188ce5a..74f4b6e707c2 100644
+--- a/drivers/gpu/drm/i915/gem/i915_gem_object.c
++++ b/drivers/gpu/drm/i915/gem/i915_gem_object.c
+@@ -343,7 +343,7 @@ static void __i915_gem_free_objects(struct drm_i915_private *i915,
+ 		__i915_gem_free_object(obj);
  
- void release_task(struct task_struct *p)
-diff --git a/kernel/pid.c b/kernel/pid.c
-index 2fc0a16ec77b..5a5144519d70 100644
---- a/kernel/pid.c
-+++ b/kernel/pid.c
-@@ -153,7 +153,7 @@ void free_pid(struct pid *pid)
+ 		/* But keep the pointer alive for RCU-protected lookups */
+-		call_rcu(&obj->rcu, __i915_gem_free_object_rcu);
++		call_rcu_lazy(&obj->rcu, __i915_gem_free_object_rcu);
+ 		cond_resched();
  	}
- 	spin_unlock_irqrestore(&pidmap_lock, flags);
- 
--	call_rcu(&pid->rcu, delayed_put_pid);
-+	call_rcu_lazy(&pid->rcu, delayed_put_pid);
  }
- 
- struct pid *alloc_pid(struct pid_namespace *ns, pid_t *set_tid,
-diff --git a/kernel/time/posix-timers.c b/kernel/time/posix-timers.c
-index 06d1236b3804..63489c4070cd 100644
---- a/kernel/time/posix-timers.c
-+++ b/kernel/time/posix-timers.c
-@@ -485,7 +485,7 @@ static void release_posix_timer(struct k_itimer *tmr, int it_id_set)
- 	}
- 	put_pid(tmr->it_pid);
- 	sigqueue_free(tmr->sigq);
--	call_rcu(&tmr->rcu, k_itimer_rcu_free);
-+	call_rcu_lazy(&tmr->rcu, k_itimer_rcu_free);
- }
- 
- static int common_timer_create(struct k_itimer *new_timer)
 -- 
 2.37.2.609.g9ff673ca1a-goog
 
