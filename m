@@ -2,108 +2,104 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D1467C32771
-	for <rcu@archiver.kernel.org>; Fri, 19 Aug 2022 20:49:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A064AC3F6B0
+	for <rcu@archiver.kernel.org>; Sat, 20 Aug 2022 08:33:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351875AbiHSUtn (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 19 Aug 2022 16:49:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48696 "EHLO
+        id S234988AbiHTIdE (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 20 Aug 2022 04:33:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351664AbiHSUtS (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 19 Aug 2022 16:49:18 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D454BFC4A
-        for <rcu@vger.kernel.org>; Fri, 19 Aug 2022 13:49:15 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id cb8so4254477qtb.0
-        for <rcu@vger.kernel.org>; Fri, 19 Aug 2022 13:49:15 -0700 (PDT)
+        with ESMTP id S231132AbiHTIdD (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 20 Aug 2022 04:33:03 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA2EDBCC08;
+        Sat, 20 Aug 2022 01:33:02 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id y4so5912183plb.2;
+        Sat, 20 Aug 2022 01:33:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc;
-        bh=6M/kEQXI6tA+u5+q0q3BfPnsnjCNXvNhf8n1k8Caals=;
-        b=G4RH/9CKm7jJBfWPa3xTDK0qYze8HQ31EQsg72UX6wDKbasiRRCXhvuugbCwbLm31P
-         5TGYIRvZ06nuvqEvU0IRARdrxjuSNS1BbQ/ZZrrV3Jm4MJxp/6fa30p/OFvXnu5mRbSo
-         aOHwkSMPTBQ0nsadszNSKzfIkSPtFP8lxf7mI=
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc;
+        bh=GXMlBTj8rp/1n/HAGZvUMfQREbty/R31f1moliWBoWA=;
+        b=T8HQDdiGofhR2v7BqB3ArKm+chR0aJu0YhKXqtgF9rHeE8kPvQ5CZYUoWAQyg5dkma
+         mc7Vr8EtMFf0AnKDfymQZVONZuIocyzqs2gKg2T8b4jiCLNy3a8L3nZH6Pe1LjLQbnZt
+         8bWEuTn6ck3SLlq4RbCj6rpgHo7mPsmDmCO3Q6ImciJuDJjjzkMaghJN729MTpwO6yYd
+         u7YROk0Jgx748O806xs6zx2oxMD9Xk9rRshe5NaRX4GickiIodDtYQNYMwDITe+iktTG
+         Q4vCJp1ozAatF9Y57rocCTh5Viqm0+NQYfCw64knp9UWgKEi5YhzczbypbXO7H8RuzSB
+         y6sA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc;
-        bh=6M/kEQXI6tA+u5+q0q3BfPnsnjCNXvNhf8n1k8Caals=;
-        b=rAla4wglKND1jfE+6chX+lgd+76hBKgOY4bNEp4IDpYcxD70T6DwrdIPE+29Rq6c9w
-         kNx8LibaStB5YTfB7QR8Wgw2WBOiT63mjDc0pX84gsj0sR/8Fc+cU9F7VIsQDptaH6Wx
-         fkjOp919R+0rLahNIFHlrd9S44BMeTiOTpXEhf2xcE05rP+5M1EU48I/2bFS3eabL5Az
-         I2IqnNbGCLb0DF1p30KCOPySUjWRhQ/vMXliLB3y8+fi3W0njnpvzkLcJlq6gey8UnHW
-         IAKZSbY/qF8Cbguj9yKCdY4p/lz2yBldvINtun48LiXmcqnfY6YzlF4e4pyqXkQDLrIi
-         wYYQ==
-X-Gm-Message-State: ACgBeo02gsbFOMiP78FbemiVZ2uGZJmX4nAe1NcN5G4lfWxPzu9dJLg2
-        tJWx/3BFV8vN4K9RqzsNWPGk7g==
-X-Google-Smtp-Source: AA6agR5WaU1OuwtlNb5E8x5UWuI4aQIOzMrkS+bdJ4qsVwxVLpQSeA2Msl6wE+7uTnDjr6siJ+hX/Q==
-X-Received: by 2002:ac8:5f0d:0:b0:343:6e79:f1a2 with SMTP id x13-20020ac85f0d000000b003436e79f1a2mr7981121qta.657.1660942154287;
-        Fri, 19 Aug 2022 13:49:14 -0700 (PDT)
-Received: from joelboxx.c.googlers.com.com (228.221.150.34.bc.googleusercontent.com. [34.150.221.228])
-        by smtp.gmail.com with ESMTPSA id x8-20020a05620a258800b006b9a89d408csm4377123qko.100.2022.08.19.13.49.13
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc;
+        bh=GXMlBTj8rp/1n/HAGZvUMfQREbty/R31f1moliWBoWA=;
+        b=fMiiL6wJJ2Jdl6KTMWeEUYagzfu4/xzTpqHdxjuxoXhRYmkrn8sBu23kz1bsN0xChu
+         1YjBpDfvEYHZ5BvR3L66wBnhDhBESbFZLW0IEh6z3Z4hpj/QzMFx/sdtOYrpEWfSauDW
+         cKVW+Pa3be8Ba6zD8nGoS7h6zE9F4fzOgSjYrskaxgagMSc7KioG8J6Puzi+jLn/47nd
+         vrS0ltslCd6SQZ5hc3SQOp27Lg0ZrUnkR1UGSMyUKvO6RNxSvbH5ydus0nUcrg9fW6GT
+         VhmGCpRu1xH0mOSV8CCnz7pW10tGulzc7WhoanLZIlHOIlXu/PhlqmHh73HeqSM2dTgl
+         ui7w==
+X-Gm-Message-State: ACgBeo18+x0p8vyksoaQMPuxthupts2MGveNBsLPfxq19xrW5DyCk19e
+        iJOah9j8ver5p9o90OcE84Y=
+X-Google-Smtp-Source: AA6agR5GF0Y5mkSIz6CGZOo1MvejXLJSQwOAWf5XeE1t9MEyHxUYvmdM/d0Dpg0bpAyNv0vRd/PG4w==
+X-Received: by 2002:a17:903:32c9:b0:171:2846:eef8 with SMTP id i9-20020a17090332c900b001712846eef8mr11768765plr.117.1660984382172;
+        Sat, 20 Aug 2022 01:33:02 -0700 (PDT)
+Received: from ccs100203-Sabre-15.home (2001-b011-7006-189e-d048-0cf2-8a80-70a2.dynamic-ip6.hinet.net. [2001:b011:7006:189e:d048:cf2:8a80:70a2])
+        by smtp.gmail.com with ESMTPSA id x24-20020aa79ad8000000b00528c8ed356dsm4857614pfp.96.2022.08.20.01.32.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Aug 2022 13:49:14 -0700 (PDT)
-From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        paulmck@kernel.org,
-        Rushikesh S Kadam <rushikesh.s.kadam@intel.com>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        Neeraj upadhyay <neeraj.iitr10@gmail.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        rcu <rcu@vger.kernel.org>, vineeth@bitbyteword.org
-Subject: [PATCH v4 14/14] rcu/tree: Move trace_rcu_callback() before bypassing
-Date:   Fri, 19 Aug 2022 20:48:57 +0000
-Message-Id: <20220819204857.3066329-15-joel@joelfernandes.org>
-X-Mailer: git-send-email 2.37.2.609.g9ff673ca1a-goog
-In-Reply-To: <20220819204857.3066329-1-joel@joelfernandes.org>
-References: <20220819204857.3066329-1-joel@joelfernandes.org>
+        Sat, 20 Aug 2022 01:33:01 -0700 (PDT)
+From:   Shao-Tse Hung <ccs100203@gmail.com>
+To:     corbet@lwn.net, paulmck@kernel.org
+Cc:     frederic@kernel.org, quic_neeraju@quicinc.com,
+        josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, rcu@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shao-Tse Hung <ccs100203@gmail.com>
+Subject: [PATCH] doc/rcu: Update LWN articles at the beginning
+Date:   Sat, 20 Aug 2022 16:32:44 +0800
+Message-Id: <20220820083244.28338-1-ccs100203@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-If any CB is queued into the bypass list, then trace_rcu_callback() does
-not show it. This makes it not clear when a callback was actually
-queued, as you only end up getting a trace_rcu_invoke_callback() trace.
-Fix it by moving trace_rcu_callback() before trace_rcu_nocb_try_bypass().
+This patch adds LWN articles about RCU APIs which were released in 2019.
+Also, HTTP URLs are replaced by HTTPS.
 
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Signed-off-by: Shao-Tse Hung <ccs100203@gmail.com>
 ---
- kernel/rcu/tree.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ Documentation/RCU/whatisRCU.rst | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 67026382dc21..6e14f0257669 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3101,10 +3101,7 @@ __call_rcu_common(struct rcu_head *head, rcu_callback_t func, bool lazy)
- 	}
+diff --git a/Documentation/RCU/whatisRCU.rst b/Documentation/RCU/whatisRCU.rst
+index 77ea260efd12..682529123b9d 100644
+--- a/Documentation/RCU/whatisRCU.rst
++++ b/Documentation/RCU/whatisRCU.rst
+@@ -6,13 +6,15 @@ What is RCU?  --  "Read, Copy, Update"
+ Please note that the "What is RCU?" LWN series is an excellent place
+ to start learning about RCU:
  
- 	check_cb_ovld(rdp);
--	if (rcu_nocb_try_bypass(rdp, head, &was_alldone, flags, lazy))
--		return; // Enqueued onto ->nocb_bypass, so just leave.
--	// If no-CBs CPU gets here, rcu_nocb_try_bypass() acquired ->nocb_lock.
--	rcu_segcblist_enqueue(&rdp->cblist, head);
-+
- 	if (__is_kvfree_rcu_offset((unsigned long)func))
- 		trace_rcu_kvfree_callback(rcu_state.name, head,
- 					 (unsigned long)func,
-@@ -3113,6 +3110,11 @@ __call_rcu_common(struct rcu_head *head, rcu_callback_t func, bool lazy)
- 		trace_rcu_callback(rcu_state.name, head,
- 				   rcu_segcblist_n_cbs(&rdp->cblist));
+-| 1.	What is RCU, Fundamentally?  http://lwn.net/Articles/262464/
+-| 2.	What is RCU? Part 2: Usage   http://lwn.net/Articles/263130/
+-| 3.	RCU part 3: the RCU API      http://lwn.net/Articles/264090/
+-| 4.	The RCU API, 2010 Edition    http://lwn.net/Articles/418853/
+-| 	2010 Big API Table           http://lwn.net/Articles/419086/
+-| 5.	The RCU API, 2014 Edition    http://lwn.net/Articles/609904/
+-|	2014 Big API Table           http://lwn.net/Articles/609973/
++| 1.	What is RCU, Fundamentally?  https://lwn.net/Articles/262464/
++| 2.	What is RCU? Part 2: Usage   https://lwn.net/Articles/263130/
++| 3.	RCU part 3: the RCU API      https://lwn.net/Articles/264090/
++| 4.	The RCU API, 2010 Edition    https://lwn.net/Articles/418853/
++| 	2010 Big API Table           https://lwn.net/Articles/419086/
++| 5.	The RCU API, 2014 Edition    https://lwn.net/Articles/609904/
++|	2014 Big API Table           https://lwn.net/Articles/609973/
++| 6.	The RCU API, 2019 Edition    https://lwn.net/Articles/777036/
++|	2019 Big API Table           https://lwn.net/Articles/777165/
  
-+	if (rcu_nocb_try_bypass(rdp, head, &was_alldone, flags, lazy))
-+		return; // Enqueued onto ->nocb_bypass, so just leave.
-+	// If no-CBs CPU gets here, rcu_nocb_try_bypass() acquired ->nocb_lock.
-+	rcu_segcblist_enqueue(&rdp->cblist, head);
-+
- 	trace_rcu_segcb_stats(&rdp->cblist, TPS("SegCBQueued"));
  
- 	/* Go handle any RCU core processing required. */
+ What is RCU?
 -- 
-2.37.2.609.g9ff673ca1a-goog
+2.25.1
 
