@@ -2,106 +2,122 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B9B6C25B08
-	for <rcu@archiver.kernel.org>; Sat, 20 Aug 2022 13:06:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 35FE0C25B08
+	for <rcu@archiver.kernel.org>; Sat, 20 Aug 2022 15:37:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346413AbiHTNGA (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 20 Aug 2022 09:06:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53764 "EHLO
+        id S1345955AbiHTPhr (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 20 Aug 2022 11:37:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348420AbiHTNF7 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 20 Aug 2022 09:05:59 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33F56FD06;
-        Sat, 20 Aug 2022 06:05:58 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id g18so6984629pju.0;
-        Sat, 20 Aug 2022 06:05:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc;
-        bh=2zOBbjpazl8s57/XiU2lbdevcEWjRoAb9VSfq8YjUQg=;
-        b=ND4Av5P0qlLxEj7+crbFAgOALB0pd7miYDDOPKNvz3UzUj68fzMefaoMY1I9gHac40
-         dL74FQ9r4eOggMyubGiK176A+MoJbmX0RXYQ+poPLUvy3Exdi8DyFDRgK2drv65nb1Cz
-         LDhWpgdDXg+4I22AlbF7mrHVKP5Ji32WE2ITbEP7EBQ43s+uz7kDREKwFlpdNhZBmjYJ
-         j9harzTZrUZp87cCJFrXJRcQvIJCJ5R+7u2rabfhwYLZP/bv3mooj3d5qSWWNlSSVtm1
-         Z84TpdQQlt8KrsR1gS0kZJV0QGKcf4dNh0mFl1hjvyMeLu8K23LzwKfk/Jvt4QKmhObx
-         +aUA==
+        with ESMTP id S229605AbiHTPhq (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 20 Aug 2022 11:37:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F9866716E
+        for <rcu@vger.kernel.org>; Sat, 20 Aug 2022 08:37:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1661009864;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CSUDwEi1svTWS13A5fcvj35eehBaJVIHJlmeSdMUK/M=;
+        b=cx1EAOZFIZNVYkUlcg2+QrxMupJaHKVBd/yPygNDCsxdyUQOQ8rd2xcKUTr5CUtAM0yywo
+        izedAR11QX9rMSNcAtvRtfYeTWQ4m+/iXwkuRenBVTcuGHxH5rX+OC9lyBAm4aX3PABXha
+        DZ+Ue0RpTWsDiR42GwihLzGsm+JewIM=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-600-EbHDVEY2NjStN4dXp2OweQ-1; Sat, 20 Aug 2022 11:37:43 -0400
+X-MC-Unique: EbHDVEY2NjStN4dXp2OweQ-1
+Received: by mail-ed1-f69.google.com with SMTP id b13-20020a056402350d00b0043dfc84c533so4343719edd.5
+        for <rcu@vger.kernel.org>; Sat, 20 Aug 2022 08:37:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc;
-        bh=2zOBbjpazl8s57/XiU2lbdevcEWjRoAb9VSfq8YjUQg=;
-        b=7v40BkBvn6lswQ5P3stx1CDnjQTcNcMC/cQn8qUafaU0ssyp99Y5IJZT0p+HG4NRuc
-         IKsItEojzkt+S809Zz76WvFz9OigyHtUYgXzB2gWfuhyHonog+7zDAM5rRIHAhqU89Ea
-         FlVRJa4/2kkKndaURoj0l3mg3ENKUqv2gojPmxbQyYVJ7V1IEhUEZs60TzZMP3wHcso+
-         O1ftKS6tzW+kts/JkGIPEEjAEeL1LUL5PVj+J1/mtjiTPNnl0MRn9kW1aXohSs/KaN+I
-         RborkyS60oNyL37RX43mySF9F3FDlvov8+WnsfYDWipRFtGSqKGqMcN0BZFEW9jnIJR9
-         AAnQ==
-X-Gm-Message-State: ACgBeo3MCCb9km+vAjCw8zpBfxyEIMpp3fdnEeueor4YlKDS1Ht8Gb3B
-        p6AHg5Lq5d/FD+IkpGJdVPPNDgsUEsI=
-X-Google-Smtp-Source: AA6agR7jWkYSTki/k2c0Y6EKP69+uqDweVtoCPWQRCpoopmtfW/s6ufzx7Ae7nwF+QPWN3LqtBjKnw==
-X-Received: by 2002:a17:90b:1d89:b0:1f5:a59:46b1 with SMTP id pf9-20020a17090b1d8900b001f50a5946b1mr13392684pjb.173.1661000757722;
-        Sat, 20 Aug 2022 06:05:57 -0700 (PDT)
-Received: from [192.168.43.80] (subs10b-223-255-225-239.three.co.id. [223.255.225.239])
-        by smtp.gmail.com with ESMTPSA id r1-20020a170902e3c100b001618b70dcc9sm4865960ple.101.2022.08.20.06.05.52
+        bh=CSUDwEi1svTWS13A5fcvj35eehBaJVIHJlmeSdMUK/M=;
+        b=5vP2i9A47wAO7qXcu1sptVKwMGjYZ/Rdf/NIBt3zLB2j9ZP6K3yLY/VWxiYsVrVuwy
+         CPt0iI4XyKSfS8h016jMc1Nqj7OfVy51oFyln2DmK9CudlXXxiDTb25oGO4zA2RPRMl5
+         PbShcswQcRXxjkGxumg9Xpx5+oZ4ciHuTUdYaGNP5AhjN+pWDmMttLUaRgjQ/jBasc1H
+         nhi24oXwFCgr1HxPkLmxjx8XAfH6aCnk4GkgZcYDdcInVWrsYiZOcnMzUZi6tsCnRW+g
+         GcOa9aeHVHxPUe+r4utgTS/96NsaRxX2UlJkAprE+4+jnW2cUUrZmizuIi8DN/h7OB3v
+         FpwQ==
+X-Gm-Message-State: ACgBeo3SSv2d9adLv/PBujfA/Vk0g7GfgLN7kJqu8VDNkAkhZeSle2lx
+        Sf3+Nc61A6uVzBNJ7r3gVlq9XPxUirz7OClA9qUIW5YHdARCLR2yWkPjZuRZYIOmZUE29y9NbCe
+        9lRCcVbjtZFLt
+X-Received: by 2002:a05:6402:3495:b0:43d:d76e:e9ff with SMTP id v21-20020a056402349500b0043dd76ee9ffmr10158397edc.227.1661009862301;
+        Sat, 20 Aug 2022 08:37:42 -0700 (PDT)
+X-Google-Smtp-Source: AA6agR56NKhopv/ioAeFb925MKnrc4gMGSU/vLUjnbjCFZdK2VcWWVNy8nDcXS+vYMB17jvhSSMtNQ==
+X-Received: by 2002:a05:6402:3495:b0:43d:d76e:e9ff with SMTP id v21-20020a056402349500b0043dd76ee9ffmr10158391edc.227.1661009862150;
+        Sat, 20 Aug 2022 08:37:42 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c1e:bf00:d69d:5353:dba5:ee81? (2001-1c00-0c1e-bf00-d69d-5353-dba5-ee81.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:d69d:5353:dba5:ee81])
+        by smtp.gmail.com with ESMTPSA id ku7-20020a170907788700b0073d15dfdc09sm2324594ejc.11.2022.08.20.08.37.41
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 20 Aug 2022 06:05:57 -0700 (PDT)
-Message-ID: <d63cc303-0b73-4100-829d-01c6e3bb3548@gmail.com>
-Date:   Sat, 20 Aug 2022 20:05:47 +0700
+        Sat, 20 Aug 2022 08:37:41 -0700 (PDT)
+Message-ID: <1c4ffc37-df00-0487-2e4e-79b5178d9741@redhat.com>
+Date:   Sat, 20 Aug 2022 17:37:40 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.12.0
-Subject: Re: [PATCH] doc/rcu: Update LWN articles at the beginning
+Subject: Re: 6.0-rc1 regression block (blk_mq) / RCU task stuck errors +
+ block-io hang
 Content-Language: en-US
-To:     Shao-Tse Hung <ccs100203@gmail.com>, corbet@lwn.net,
-        paulmck@kernel.org
-Cc:     frederic@kernel.org, quic_neeraju@quicinc.com,
-        josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20220820083244.28338-1-ccs100203@gmail.com>
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-In-Reply-To: <20220820083244.28338-1-ccs100203@gmail.com>
+To:     Bart Van Assche <bvanassche@acm.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "regressions@lists.linux.dev" <regressions@lists.linux.dev>,
+        Jens Axboe <axboe@kernel.dk>
+Cc:     linux-block@vger.kernel.org, rcu@vger.kernel.org
+References: <dd6844e7-f338-a4e9-2dad-0960e25b2ca1@redhat.com>
+ <17ccd5ae-0268-1bee-7822-1352f4c676ba@acm.org>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <17ccd5ae-0268-1bee-7822-1352f4c676ba@acm.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 8/20/22 15:32, Shao-Tse Hung wrote:
-> This patch adds LWN articles about RCU APIs which were released in 2019.
-> Also, HTTP URLs are replaced by HTTPS.
+Hi Bart,
+
+On 8/19/22 16:49, Bart Van Assche wrote:
+> On 8/19/22 05:01, Hans de Goede wrote:
+>> I've been dogfooding 6.0-rc1 on my main workstation and I have hit
+>> this pretty serious bug, serious enough for me to go back to 5.19
+>>
+>> My dmesg is showing various blk_mq (RCU?) related lockdep splats
+>> followed by some tasks getting stuck on disk-IO. E.g. "sync"
+>> is guaranteed to hang, but other tasks too.
+>>
+>> This seems to be mainly the case on "sd" disks (both sata
+>> and USB) where as my main nvme drive seems fine, which has
+>> probably saved me from worse issues...
+>>
+>> Here are 4 task stuck reports from my last boot, where
+>> I had to turn off the machine by keeping the power button
+>> pressed for 4 seconds.
+>>
+>> [ ... ]
+>>
+>> Sorry for not being able to write a better bug-report but I don't have
+>> the time to dive into this deeper. I hope this report is enough for
+>> someone to have a clue what is going on.
 > 
+> Thank you for the detailed report. I think this report is detailed enough to root-cause this issue, something that was not possible before this report.
+> 
+> Please help with verifying whether this patch fixes this issue: "[PATCH] scsi: sd: Revert "Rework asynchronous resume support"" (https://lore.kernel.org/linux-scsi/20220816172638.538734-1-bvanassche@acm.org/).
 
-Please write patch description in imperative mood (say "Add 2019 edition
-of RCU API documentation and use HTTPS links." instead).
+Thanks that is very useful. I'm running 6.0-rc1 with this
+patch added now and so far I've not seen the problem re-occur.
 
-> -| 1.	What is RCU, Fundamentally?  http://lwn.net/Articles/262464/
-> -| 2.	What is RCU? Part 2: Usage   http://lwn.net/Articles/263130/
-> -| 3.	RCU part 3: the RCU API      http://lwn.net/Articles/264090/
-> -| 4.	The RCU API, 2010 Edition    http://lwn.net/Articles/418853/
-> -| 	2010 Big API Table           http://lwn.net/Articles/419086/
-> -| 5.	The RCU API, 2014 Edition    http://lwn.net/Articles/609904/
-> -|	2014 Big API Table           http://lwn.net/Articles/609973/
-> +| 1.	What is RCU, Fundamentally?  https://lwn.net/Articles/262464/
-> +| 2.	What is RCU? Part 2: Usage   https://lwn.net/Articles/263130/
-> +| 3.	RCU part 3: the RCU API      https://lwn.net/Articles/264090/
-> +| 4.	The RCU API, 2010 Edition    https://lwn.net/Articles/418853/
-> +| 	2010 Big API Table           https://lwn.net/Articles/419086/
-> +| 5.	The RCU API, 2014 Edition    https://lwn.net/Articles/609904/
-> +|	2014 Big API Table           https://lwn.net/Articles/609973/
-> +| 6.	The RCU API, 2019 Edition    https://lwn.net/Articles/777036/
-> +|	2019 Big API Table           https://lwn.net/Articles/777165/
->  
+I was also seeing 6.0 suspend/resume issues on 2 laptops with
+sata disks (rather then NVME) which I did not yet get around
+to collecting logs from / reporting. I'm happy to report that
+those suspend/resume issues are also fixed by this.
 
-I don't think line blocks are necessary for lists. Instead, use nested
-list. Why? Big API entry should be as sublist.
+I'll reply to the patch with my Tested-by for this.
 
-Thanks.
+Regards,
 
--- 
-An old man doll... just what I always wanted! - Clara
+Hans
+
