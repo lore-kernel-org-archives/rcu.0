@@ -2,104 +2,106 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A064AC3F6B0
-	for <rcu@archiver.kernel.org>; Sat, 20 Aug 2022 08:33:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B9B6C25B08
+	for <rcu@archiver.kernel.org>; Sat, 20 Aug 2022 13:06:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234988AbiHTIdE (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 20 Aug 2022 04:33:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39710 "EHLO
+        id S1346413AbiHTNGA (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 20 Aug 2022 09:06:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231132AbiHTIdD (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 20 Aug 2022 04:33:03 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA2EDBCC08;
-        Sat, 20 Aug 2022 01:33:02 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id y4so5912183plb.2;
-        Sat, 20 Aug 2022 01:33:02 -0700 (PDT)
+        with ESMTP id S1348420AbiHTNF7 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 20 Aug 2022 09:05:59 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33F56FD06;
+        Sat, 20 Aug 2022 06:05:58 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id g18so6984629pju.0;
+        Sat, 20 Aug 2022 06:05:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc;
-        bh=GXMlBTj8rp/1n/HAGZvUMfQREbty/R31f1moliWBoWA=;
-        b=T8HQDdiGofhR2v7BqB3ArKm+chR0aJu0YhKXqtgF9rHeE8kPvQ5CZYUoWAQyg5dkma
-         mc7Vr8EtMFf0AnKDfymQZVONZuIocyzqs2gKg2T8b4jiCLNy3a8L3nZH6Pe1LjLQbnZt
-         8bWEuTn6ck3SLlq4RbCj6rpgHo7mPsmDmCO3Q6ImciJuDJjjzkMaghJN729MTpwO6yYd
-         u7YROk0Jgx748O806xs6zx2oxMD9Xk9rRshe5NaRX4GickiIodDtYQNYMwDITe+iktTG
-         Q4vCJp1ozAatF9Y57rocCTh5Viqm0+NQYfCw64knp9UWgKEi5YhzczbypbXO7H8RuzSB
-         y6sA==
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc;
+        bh=2zOBbjpazl8s57/XiU2lbdevcEWjRoAb9VSfq8YjUQg=;
+        b=ND4Av5P0qlLxEj7+crbFAgOALB0pd7miYDDOPKNvz3UzUj68fzMefaoMY1I9gHac40
+         dL74FQ9r4eOggMyubGiK176A+MoJbmX0RXYQ+poPLUvy3Exdi8DyFDRgK2drv65nb1Cz
+         LDhWpgdDXg+4I22AlbF7mrHVKP5Ji32WE2ITbEP7EBQ43s+uz7kDREKwFlpdNhZBmjYJ
+         j9harzTZrUZp87cCJFrXJRcQvIJCJ5R+7u2rabfhwYLZP/bv3mooj3d5qSWWNlSSVtm1
+         Z84TpdQQlt8KrsR1gS0kZJV0QGKcf4dNh0mFl1hjvyMeLu8K23LzwKfk/Jvt4QKmhObx
+         +aUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc;
-        bh=GXMlBTj8rp/1n/HAGZvUMfQREbty/R31f1moliWBoWA=;
-        b=fMiiL6wJJ2Jdl6KTMWeEUYagzfu4/xzTpqHdxjuxoXhRYmkrn8sBu23kz1bsN0xChu
-         1YjBpDfvEYHZ5BvR3L66wBnhDhBESbFZLW0IEh6z3Z4hpj/QzMFx/sdtOYrpEWfSauDW
-         cKVW+Pa3be8Ba6zD8nGoS7h6zE9F4fzOgSjYrskaxgagMSc7KioG8J6Puzi+jLn/47nd
-         vrS0ltslCd6SQZ5hc3SQOp27Lg0ZrUnkR1UGSMyUKvO6RNxSvbH5ydus0nUcrg9fW6GT
-         VhmGCpRu1xH0mOSV8CCnz7pW10tGulzc7WhoanLZIlHOIlXu/PhlqmHh73HeqSM2dTgl
-         ui7w==
-X-Gm-Message-State: ACgBeo18+x0p8vyksoaQMPuxthupts2MGveNBsLPfxq19xrW5DyCk19e
-        iJOah9j8ver5p9o90OcE84Y=
-X-Google-Smtp-Source: AA6agR5GF0Y5mkSIz6CGZOo1MvejXLJSQwOAWf5XeE1t9MEyHxUYvmdM/d0Dpg0bpAyNv0vRd/PG4w==
-X-Received: by 2002:a17:903:32c9:b0:171:2846:eef8 with SMTP id i9-20020a17090332c900b001712846eef8mr11768765plr.117.1660984382172;
-        Sat, 20 Aug 2022 01:33:02 -0700 (PDT)
-Received: from ccs100203-Sabre-15.home (2001-b011-7006-189e-d048-0cf2-8a80-70a2.dynamic-ip6.hinet.net. [2001:b011:7006:189e:d048:cf2:8a80:70a2])
-        by smtp.gmail.com with ESMTPSA id x24-20020aa79ad8000000b00528c8ed356dsm4857614pfp.96.2022.08.20.01.32.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Aug 2022 01:33:01 -0700 (PDT)
-From:   Shao-Tse Hung <ccs100203@gmail.com>
-To:     corbet@lwn.net, paulmck@kernel.org
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc;
+        bh=2zOBbjpazl8s57/XiU2lbdevcEWjRoAb9VSfq8YjUQg=;
+        b=7v40BkBvn6lswQ5P3stx1CDnjQTcNcMC/cQn8qUafaU0ssyp99Y5IJZT0p+HG4NRuc
+         IKsItEojzkt+S809Zz76WvFz9OigyHtUYgXzB2gWfuhyHonog+7zDAM5rRIHAhqU89Ea
+         FlVRJa4/2kkKndaURoj0l3mg3ENKUqv2gojPmxbQyYVJ7V1IEhUEZs60TzZMP3wHcso+
+         O1ftKS6tzW+kts/JkGIPEEjAEeL1LUL5PVj+J1/mtjiTPNnl0MRn9kW1aXohSs/KaN+I
+         RborkyS60oNyL37RX43mySF9F3FDlvov8+WnsfYDWipRFtGSqKGqMcN0BZFEW9jnIJR9
+         AAnQ==
+X-Gm-Message-State: ACgBeo3MCCb9km+vAjCw8zpBfxyEIMpp3fdnEeueor4YlKDS1Ht8Gb3B
+        p6AHg5Lq5d/FD+IkpGJdVPPNDgsUEsI=
+X-Google-Smtp-Source: AA6agR7jWkYSTki/k2c0Y6EKP69+uqDweVtoCPWQRCpoopmtfW/s6ufzx7Ae7nwF+QPWN3LqtBjKnw==
+X-Received: by 2002:a17:90b:1d89:b0:1f5:a59:46b1 with SMTP id pf9-20020a17090b1d8900b001f50a5946b1mr13392684pjb.173.1661000757722;
+        Sat, 20 Aug 2022 06:05:57 -0700 (PDT)
+Received: from [192.168.43.80] (subs10b-223-255-225-239.three.co.id. [223.255.225.239])
+        by smtp.gmail.com with ESMTPSA id r1-20020a170902e3c100b001618b70dcc9sm4865960ple.101.2022.08.20.06.05.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 20 Aug 2022 06:05:57 -0700 (PDT)
+Message-ID: <d63cc303-0b73-4100-829d-01c6e3bb3548@gmail.com>
+Date:   Sat, 20 Aug 2022 20:05:47 +0700
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.12.0
+Subject: Re: [PATCH] doc/rcu: Update LWN articles at the beginning
+Content-Language: en-US
+To:     Shao-Tse Hung <ccs100203@gmail.com>, corbet@lwn.net,
+        paulmck@kernel.org
 Cc:     frederic@kernel.org, quic_neeraju@quicinc.com,
         josh@joshtriplett.org, rostedt@goodmis.org,
         mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
         joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shao-Tse Hung <ccs100203@gmail.com>
-Subject: [PATCH] doc/rcu: Update LWN articles at the beginning
-Date:   Sat, 20 Aug 2022 16:32:44 +0800
-Message-Id: <20220820083244.28338-1-ccs100203@gmail.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20220820083244.28338-1-ccs100203@gmail.com>
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+In-Reply-To: <20220820083244.28338-1-ccs100203@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This patch adds LWN articles about RCU APIs which were released in 2019.
-Also, HTTP URLs are replaced by HTTPS.
+On 8/20/22 15:32, Shao-Tse Hung wrote:
+> This patch adds LWN articles about RCU APIs which were released in 2019.
+> Also, HTTP URLs are replaced by HTTPS.
+> 
 
-Signed-off-by: Shao-Tse Hung <ccs100203@gmail.com>
----
- Documentation/RCU/whatisRCU.rst | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+Please write patch description in imperative mood (say "Add 2019 edition
+of RCU API documentation and use HTTPS links." instead).
 
-diff --git a/Documentation/RCU/whatisRCU.rst b/Documentation/RCU/whatisRCU.rst
-index 77ea260efd12..682529123b9d 100644
---- a/Documentation/RCU/whatisRCU.rst
-+++ b/Documentation/RCU/whatisRCU.rst
-@@ -6,13 +6,15 @@ What is RCU?  --  "Read, Copy, Update"
- Please note that the "What is RCU?" LWN series is an excellent place
- to start learning about RCU:
- 
--| 1.	What is RCU, Fundamentally?  http://lwn.net/Articles/262464/
--| 2.	What is RCU? Part 2: Usage   http://lwn.net/Articles/263130/
--| 3.	RCU part 3: the RCU API      http://lwn.net/Articles/264090/
--| 4.	The RCU API, 2010 Edition    http://lwn.net/Articles/418853/
--| 	2010 Big API Table           http://lwn.net/Articles/419086/
--| 5.	The RCU API, 2014 Edition    http://lwn.net/Articles/609904/
--|	2014 Big API Table           http://lwn.net/Articles/609973/
-+| 1.	What is RCU, Fundamentally?  https://lwn.net/Articles/262464/
-+| 2.	What is RCU? Part 2: Usage   https://lwn.net/Articles/263130/
-+| 3.	RCU part 3: the RCU API      https://lwn.net/Articles/264090/
-+| 4.	The RCU API, 2010 Edition    https://lwn.net/Articles/418853/
-+| 	2010 Big API Table           https://lwn.net/Articles/419086/
-+| 5.	The RCU API, 2014 Edition    https://lwn.net/Articles/609904/
-+|	2014 Big API Table           https://lwn.net/Articles/609973/
-+| 6.	The RCU API, 2019 Edition    https://lwn.net/Articles/777036/
-+|	2019 Big API Table           https://lwn.net/Articles/777165/
- 
- 
- What is RCU?
+> -| 1.	What is RCU, Fundamentally?  http://lwn.net/Articles/262464/
+> -| 2.	What is RCU? Part 2: Usage   http://lwn.net/Articles/263130/
+> -| 3.	RCU part 3: the RCU API      http://lwn.net/Articles/264090/
+> -| 4.	The RCU API, 2010 Edition    http://lwn.net/Articles/418853/
+> -| 	2010 Big API Table           http://lwn.net/Articles/419086/
+> -| 5.	The RCU API, 2014 Edition    http://lwn.net/Articles/609904/
+> -|	2014 Big API Table           http://lwn.net/Articles/609973/
+> +| 1.	What is RCU, Fundamentally?  https://lwn.net/Articles/262464/
+> +| 2.	What is RCU? Part 2: Usage   https://lwn.net/Articles/263130/
+> +| 3.	RCU part 3: the RCU API      https://lwn.net/Articles/264090/
+> +| 4.	The RCU API, 2010 Edition    https://lwn.net/Articles/418853/
+> +| 	2010 Big API Table           https://lwn.net/Articles/419086/
+> +| 5.	The RCU API, 2014 Edition    https://lwn.net/Articles/609904/
+> +|	2014 Big API Table           https://lwn.net/Articles/609973/
+> +| 6.	The RCU API, 2019 Edition    https://lwn.net/Articles/777036/
+> +|	2019 Big API Table           https://lwn.net/Articles/777165/
+>  
+
+I don't think line blocks are necessary for lists. Instead, use nested
+list. Why? Big API entry should be as sublist.
+
+Thanks.
+
 -- 
-2.25.1
-
+An old man doll... just what I always wanted! - Clara
