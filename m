@@ -2,141 +2,131 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 15BE5C25B08
-	for <rcu@archiver.kernel.org>; Sun, 21 Aug 2022 01:00:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C9332C00140
+	for <rcu@archiver.kernel.org>; Mon, 22 Aug 2022 02:16:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233554AbiHUBAv (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 20 Aug 2022 21:00:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33912 "EHLO
+        id S232353AbiHVCQo (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 21 Aug 2022 22:16:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232315AbiHUBAu (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 20 Aug 2022 21:00:50 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60A101E3EA;
-        Sat, 20 Aug 2022 18:00:49 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id b5so4901910wrr.5;
-        Sat, 20 Aug 2022 18:00:49 -0700 (PDT)
+        with ESMTP id S232410AbiHVCQ2 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 21 Aug 2022 22:16:28 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A37EA222B4;
+        Sun, 21 Aug 2022 19:16:18 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id l64so8204056pge.0;
+        Sun, 21 Aug 2022 19:16:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc;
-        bh=a4jNHFHiClDdq/v49nsMbA8I7HwKAy8R6hrK4YLcETg=;
-        b=AXPnI89Txz85BoWVYAFCMtMPbQcGFSRW9UnKTu6iScu4HS0WqlGWSD9JtoSlTj70EP
-         mZiagAyiMBkanQ7JZ7mBCJueCAvdX0+/UkZ5D5VPGYEnOaqT1tXH7H/xw0T3hQwXlC4b
-         vl3orITND69HNkgeXNp56lMh5QVGVWA5jAYDKERihJAGkVIx2trU73w2i7dh/BNDJG82
-         Ep9cwajpDz7iBIOmLCm7ODT7JtrbCTr+rduE9jiQ8cfpX/PEGHjP6Aai1P6VFTImcO66
-         kcYtnqjcC7Pzq/JWMdynbGRSoowQgEZszBEltfRK6NHhRu5PdcmWfqmcUQpXi9TGhooV
-         Wu4A==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc;
+        bh=1Aq+TVGo9jWjEOz30MnnCagkM1BEYPOn6zoekJQrcT8=;
+        b=Lz0gNtnR0Gx/blm6zrBVhXfF2MRVTbwlEL1W81C3w2unXlO+5HrmDF2WUIx+7vPA/p
+         5h26+kDRmt6agXESmcH7W1XPsWzhNtF+Hhc5epkLkEqsC6lV5h80hUb5rumqD8Aat9+8
+         az50QeOE3YFOGu168p8qC9UcWS0LT45eCLOdSKt7l0Ubh8sOX3hneZpi80j2XnHP0zkN
+         BFD8wiPD/Pf37aSGTzr7XBIzsXaHRMSIMMmDbIpQSwhWQointOliw4mnNomAJGF3An4a
+         dpxHHJ9T6yCioZ2u38tL9HbxZRzbu4NXg585fk/7At6WOx3mLm9cWD3MEGNwq2sEgGM/
+         KbaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc;
-        bh=a4jNHFHiClDdq/v49nsMbA8I7HwKAy8R6hrK4YLcETg=;
-        b=ahZsxp3B0FV/o0aUGOymNfH7V5PhlR7ak6f75t8mZAfbO012oLJnzkeV664RoxE2XI
-         idku2LYObldQH2RFAzhI+WE19VHFwWR00OG5ZLpB9XRp2UZS4zAj4rKdEWeYbyOMxb9p
-         SKFCXQlMQj7cwyWodCkin1WkjXxEwF6qr/7hSP6LXZ7s8vriZS29Vn0rg7b5nsS2F/I7
-         zpYY2mJ2fHjo2eod7Ne19qTWT0Fktv381/maGB3CtotIV0ni1HVINyk8vTkx8FHkzL1d
-         mOL/Bi1sknhsiQkczioFFeB3aSL0If36EUK9wjTsvVR99f4ohBI6HKQ/u979BSIEzPhK
-         cNOg==
-X-Gm-Message-State: ACgBeo1hWGogJeLIqGxF1VzYBPIDxzeJJu7ZmzFimkdMO9ztuTpOSNaq
-        1LqCtM5LQu2NKMkgwGA6DbJ8AeASKFc=
-X-Google-Smtp-Source: AA6agR5zLE9kQ65fXHG6rjjR2ZpdPg7mUbxbgX8Wf/KmxTkJHk+7GWOjEPvnFelVMh/hMofl4rxKbg==
-X-Received: by 2002:adf:f208:0:b0:225:25e6:c964 with SMTP id p8-20020adff208000000b0022525e6c964mr7555213wro.531.1661043647749;
-        Sat, 20 Aug 2022 18:00:47 -0700 (PDT)
-Received: from localhost.localdomain ([185.192.68.223])
-        by smtp.gmail.com with ESMTPSA id r38-20020a05600c322600b003a2e92edeccsm12148515wmp.46.2022.08.20.18.00.39
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc;
+        bh=1Aq+TVGo9jWjEOz30MnnCagkM1BEYPOn6zoekJQrcT8=;
+        b=gyZ+UsOboqXBFDc8qrQ6sXRBBJsx1qb1vCrrik2qH0k3YvkUr/OFgjSr0DTLxv2wnP
+         TSiD8XVyg7QEBeXMAkd5MFARcbUB3XzK69GGm++pBdKLZnF6/X8v9HTvRuMEIrvPNpB+
+         vtLuunQL5Zq5sTgWQHAL/COMZeKY9h5eGS9th2jmlbr6CDulG9zv3F6gqMC0fOajAi1G
+         nlAKgZmI1yHKEmLSJnKgYeCudbfI+zlxHyLso2SE31TvFmQLOHVsX3MpTn8ic3h+NZ9a
+         XchLc4aK/toRv78FV//J8JAnqnBGJcnUsxhWOTUm2MJROIj1Mn5K2IOJqZqJCRQyPFiq
+         eK1w==
+X-Gm-Message-State: ACgBeo10LfgMRJkTBsW19d96crsV7ulNS8xsdULrD5HbN5MUFP32V8wn
+        suIxV2sqUstGjjWpP3rDoCVPNUDITA==
+X-Google-Smtp-Source: AA6agR4D50rPJbn2tq2GNSeHmdvNBpKQlkNzme4yJlxq0DguP1NGJn/0sSXGbSX983tnXc0H9IKnEg==
+X-Received: by 2002:a63:df13:0:b0:42a:b008:3d56 with SMTP id u19-20020a63df13000000b0042ab0083d56mr2751744pgg.425.1661134577330;
+        Sun, 21 Aug 2022 19:16:17 -0700 (PDT)
+Received: from piliu.users.ipa.redhat.com ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id k3-20020aa79723000000b005321340753fsm7312139pfg.103.2022.08.21.19.16.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Aug 2022 18:00:44 -0700 (PDT)
-From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
-To:     mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
-        atrajeev@linux.vnet.ibm.com, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, lance@osuosl.org, paulmck@kernel.org,
-        rcu@vger.kernel.org
-Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>
-Subject: [PATCH linux-next] powerpc: disable sanitizer in irq_soft_mask_set
-Date:   Sun, 21 Aug 2022 09:00:30 +0800
-Message-Id: <20220821010030.97539-1-zhouzhouyi@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Sun, 21 Aug 2022 19:16:16 -0700 (PDT)
+From:   Pingfan Liu <kernelfans@gmail.com>
+To:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Cc:     Pingfan Liu <kernelfans@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Price <steven.price@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>
+Subject: [RFC 06/10] rcu/hotplug: Make rcutree_dead_cpu() parallel
+Date:   Mon, 22 Aug 2022 10:15:16 +0800
+Message-Id: <20220822021520.6996-7-kernelfans@gmail.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20220822021520.6996-1-kernelfans@gmail.com>
+References: <20220822021520.6996-1-kernelfans@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-In ppc, compiler based sanitizer will generate instrument instructions
-around statement WRITE_ONCE(local_paca->irq_soft_mask, mask):
+In order to support parallel, rcu_state.n_online_cpus should be
+atomic_dec()
 
-   0xc000000000295cb0 <+0>:	addis   r2,r12,774
-   0xc000000000295cb4 <+4>:	addi    r2,r2,16464
-   0xc000000000295cb8 <+8>:	mflr    r0
-   0xc000000000295cbc <+12>:	bl      0xc00000000008bb4c <mcount>
-   0xc000000000295cc0 <+16>:	mflr    r0
-   0xc000000000295cc4 <+20>:	std     r31,-8(r1)
-   0xc000000000295cc8 <+24>:	addi    r3,r13,2354
-   0xc000000000295ccc <+28>:	mr      r31,r13
-   0xc000000000295cd0 <+32>:	std     r0,16(r1)
-   0xc000000000295cd4 <+36>:	stdu    r1,-48(r1)
-   0xc000000000295cd8 <+40>:	bl      0xc000000000609b98 <__asan_store1+8>
-   0xc000000000295cdc <+44>:	nop
-   0xc000000000295ce0 <+48>:	li      r9,1
-   0xc000000000295ce4 <+52>:	stb     r9,2354(r31)
-   0xc000000000295ce8 <+56>:	addi    r1,r1,48
-   0xc000000000295cec <+60>:	ld      r0,16(r1)
-   0xc000000000295cf0 <+64>:	ld      r31,-8(r1)
-   0xc000000000295cf4 <+68>:	mtlr    r0
-
-If there is a context switch before "stb     r9,2354(r31)", r31 may
-not equal to r13, in such case, irq soft mask will not work.
-
-This patch disable sanitizer in irq_soft_mask_set.
-
-Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Frederic Weisbecker <frederic@kernel.org>
+Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+Cc: Josh Triplett <josh@joshtriplett.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+Cc: Joel Fernandes <joel@joelfernandes.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Steven Price <steven.price@arm.com>
+Cc: "Peter Zijlstra
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>
+To: linux-kernel@vger.kernel.org
+To: rcu@vger.kernel.org
 ---
-Dear PPC developers
+ kernel/cpu.c      | 1 +
+ kernel/rcu/tree.c | 3 ++-
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
-I found this bug when trying to do rcutorture tests in ppc VM of
-Open Source Lab of Oregon State University following Paul E. McKenny's guidance.
-
-console.log report following bug:
-
-[  346.527467][  T100] BUG: using smp_processor_id() in preemptible [00000000] code: rcu_torture_rea/100^M
-[  346.529416][  T100] caller is rcu_preempt_deferred_qs_irqrestore+0x74/0xed0^M
-[  346.531157][  T100] CPU: 4 PID: 100 Comm: rcu_torture_rea Tainted: G        W          5.19.0-rc5-next-20220708-dirty #253^M
-[  346.533620][  T100] Call Trace:^M
-[  346.534449][  T100] [c0000000094876c0] [c000000000ce2b68] dump_stack_lvl+0xbc/0x108 (unreliable)^M
-[  346.536632][  T100] [c000000009487710] [c000000001712954] check_preemption_disabled+0x154/0x160^M
-[  346.538665][  T100] [c0000000094877a0] [c0000000002ce2d4] rcu_preempt_deferred_qs_irqrestore+0x74/0xed0^M
-[  346.540830][  T100] [c0000000094878b0] [c0000000002cf3c0] __rcu_read_unlock+0x290/0x3b0^M
-[  346.542746][  T100] [c000000009487910] [c0000000002bb330] rcu_torture_read_unlock+0x30/0xb0^M
-[  346.544779][  T100] [c000000009487930] [c0000000002b7ff8] rcutorture_one_extend+0x198/0x810^M
-[  346.546851][  T100] [c000000009487a10] [c0000000002b8bfc] rcu_torture_one_read+0x58c/0xc90^M
-[  346.548844][  T100] [c000000009487ca0] [c0000000002b942c] rcu_torture_reader+0x12c/0x360^M
-[  346.550784][  T100] [c000000009487db0] [c0000000001de978] kthread+0x1e8/0x220^M
-[  346.552555][  T100] [c000000009487e10] [c00000000000cd54] ret_from_kernel_thread+0x5c/0x64^M
-
-After 12 days debugging, I finally narrow the problem to irq_soft_mask_set.
-
-I am a beginner, hope I can be of some beneficial to the community ;-)
-
-Thanks
-Zhouyi
---
- arch/powerpc/include/asm/hw_irq.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/powerpc/include/asm/hw_irq.h b/arch/powerpc/include/asm/hw_irq.h
-index 26ede09c521d..a5ae8d82cc9d 100644
---- a/arch/powerpc/include/asm/hw_irq.h
-+++ b/arch/powerpc/include/asm/hw_irq.h
-@@ -121,7 +121,7 @@ static inline notrace unsigned long irq_soft_mask_return(void)
-  * for the critical section and as a clobber because
-  * we changed paca->irq_soft_mask
-  */
--static inline notrace void irq_soft_mask_set(unsigned long mask)
-+static inline notrace __no_kcsan __no_sanitize_address void irq_soft_mask_set(unsigned long mask)
- {
+diff --git a/kernel/cpu.c b/kernel/cpu.c
+index 1261c3f3be51..90debbe28e85 100644
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -1872,6 +1872,7 @@ static struct cpuhp_step cpuhp_hp_states[] = {
+ 		.name			= "RCU/tree:prepare",
+ 		.startup.single		= rcutree_prepare_cpu,
+ 		.teardown.single	= rcutree_dead_cpu,
++		.support_kexec_parallel	= true,
+ 	},
  	/*
- 	 * The irq mask must always include the STD bit if any are set.
+ 	 * On the tear-down path, timers_dead_cpu() must be invoked
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 79aea7df4345..07d31e16c65e 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2168,7 +2168,8 @@ int rcutree_dead_cpu(unsigned int cpu)
+ 	if (!IS_ENABLED(CONFIG_HOTPLUG_CPU))
+ 		return 0;
+ 
+-	WRITE_ONCE(rcu_state.n_online_cpus, rcu_state.n_online_cpus - 1);
++	/* Hot remove path allows parallel, while Hot add races against remove on lock */
++	atomic_dec((atomic_t *)&rcu_state.n_online_cpus);
+ 	/* Adjust any no-longer-needed kthreads. */
+ 	rcu_boost_kthread_setaffinity(rnp, -1);
+ 	// Stop-machine done, so allow nohz_full to disable tick.
 -- 
-2.34.1
+2.31.1
 
