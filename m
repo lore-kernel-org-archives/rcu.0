@@ -2,138 +2,98 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B5809C28D13
-	for <rcu@archiver.kernel.org>; Mon, 22 Aug 2022 16:35:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CD004C28D13
+	for <rcu@archiver.kernel.org>; Mon, 22 Aug 2022 16:45:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237030AbiHVQfP (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 22 Aug 2022 12:35:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55142 "EHLO
+        id S236320AbiHVQo7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 22 Aug 2022 12:44:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237072AbiHVQfP (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 22 Aug 2022 12:35:15 -0400
+        with ESMTP id S237123AbiHVQo5 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 22 Aug 2022 12:44:57 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81DFB419B5;
-        Mon, 22 Aug 2022 09:35:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB25518E25;
+        Mon, 22 Aug 2022 09:44:56 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1A06D60F91;
-        Mon, 22 Aug 2022 16:35:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A9A6C433C1;
-        Mon, 22 Aug 2022 16:35:13 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 570726120C;
+        Mon, 22 Aug 2022 16:44:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB504C433C1;
+        Mon, 22 Aug 2022 16:44:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1661186113;
-        bh=y+S14L9OvviihyJrTKTyBpSCtDnXo0ez48uTpsNV6nU=;
+        s=k20201202; t=1661186695;
+        bh=hFhF+HtHsqWMVE4q3w289LQbuAM7D1wcvxRb+QUpfz4=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=lyem7v7qG2dX54DKpJXyPnPgJ7xyn/xVuXitSa+rlVhFDoX8HpWPNpwKremUVOFCl
-         UT4s1aS4bknHE7pC7qCfA/NiBqutcvzeOzyyvjV0vXti4iH9rJ9JEoKM9gpKB8rlkT
-         W+jdZSpZTu1P7zh8gTQb358aD3IGTdA4t4bz2hITbtPMzV4bAJjRX6oUDqTHgITcQn
-         x2LwTh9vWSVxrL3cRTCdVM/2fx14h31VLKlFnmDQh78IFVddHQwK9SNEVE1jR3S7hV
-         j7jZ9n/tOUsyJ6i71cApIo5m+HPVY7zexaGVZmmqPq4cYAAsKHdPMFiZXeyE6x3qfT
-         DTafXmwAAGNDw==
+        b=JZWYE0xu4YHJCN761L/B/S7shttEN9JIplBp8bjrBVbaTuxf5lqzOwY958FZcdd2E
+         CS9PmsVuBmZFL66bOK9NYptOLyhNPXcUxjklnbfGLy9VXzQIrjgdhv6dblfWPXLrFh
+         L5DnEOFsAkAYlKbmD22qD5pY+OtaSzqZMdmWtdQvKGtDYxTmblrraCiHo1AFsc4YaG
+         4lG6frtyvLdVletNg57g4HeDjntAGCpUEfLY6668a6KAvSMaVE3xzf8ienyI4ufk84
+         OwMnAF1t3H8im1vaO1ZEPq4JlPIAe7SaAVP0qh/LkFxWieDbJQ8mVtoJsR+j8a2WR6
+         jWi3Fj9R+z7PQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 01A895C03F3; Mon, 22 Aug 2022 09:35:13 -0700 (PDT)
-Date:   Mon, 22 Aug 2022 09:35:12 -0700
+        id 4C7925C05A0; Mon, 22 Aug 2022 09:44:55 -0700 (PDT)
+Date:   Mon, 22 Aug 2022 09:44:55 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/2] rcu: Simplify the code logic of rcu_init_nohz()
-Message-ID: <20220822163512.GG6159@paulmck-ThinkPad-P17-Gen-1>
+To:     Shao-Tse Hung <ccs100203@gmail.com>
+Cc:     corbet@lwn.net, frederic@kernel.org, quic_neeraju@quicinc.com,
+        josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, rcu@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] doc/rcu: Update LWN articles at the beginning
+Message-ID: <20220822164455.GH6159@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20220817014253.1982-1-thunder.leizhen@huawei.com>
- <20220817014253.1982-3-thunder.leizhen@huawei.com>
+References: <20220820083244.28338-1-ccs100203@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220817014253.1982-3-thunder.leizhen@huawei.com>
+In-Reply-To: <20220820083244.28338-1-ccs100203@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Aug 17, 2022 at 09:42:53AM +0800, Zhen Lei wrote:
-> When CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y or CONFIG_NO_HZ_FULL=y, additional
-> CPUs need to be added to 'rcu_nocb_mask'. But 'rcu_nocb_mask' may be not
-> available now, due to 'rcu_nocbs' is not specified. Check and initialize
-> 'rcu_nocb_mask' before using it. This code simplification strictly follows
-> this logic, compared with old implementations, unnecessary crossovers are
-> avoided and easy to understand.
+On Sat, Aug 20, 2022 at 04:32:44PM +0800, Shao-Tse Hung wrote:
+> This patch adds LWN articles about RCU APIs which were released in 2019.
+> Also, HTTP URLs are replaced by HTTPS.
 > 
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> Signed-off-by: Shao-Tse Hung <ccs100203@gmail.com>
 
-This looks like a nice simplification, but I will wait for your response
-on Patch 1/1 before trying it out.
+Good catch, queued, thank you!
 
 							Thanx, Paul
 
 > ---
->  kernel/rcu/tree_nocb.h | 32 +++++++++-----------------------
->  1 file changed, 9 insertions(+), 23 deletions(-)
+>  Documentation/RCU/whatisRCU.rst | 16 +++++++++-------
+>  1 file changed, 9 insertions(+), 7 deletions(-)
 > 
-> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-> index ff763e7dc53551f..3c59b12f4465af1 100644
-> --- a/kernel/rcu/tree_nocb.h
-> +++ b/kernel/rcu/tree_nocb.h
-> @@ -1209,44 +1209,30 @@ EXPORT_SYMBOL_GPL(rcu_nocb_cpu_offload);
->  void __init rcu_init_nohz(void)
->  {
->  	int cpu;
-> -	bool need_rcu_nocb_mask = false;
-> -	bool offload_all = false;
->  	struct rcu_data *rdp;
-> +	const struct cpumask *cpumask = NULL;
+> diff --git a/Documentation/RCU/whatisRCU.rst b/Documentation/RCU/whatisRCU.rst
+> index 77ea260efd12..682529123b9d 100644
+> --- a/Documentation/RCU/whatisRCU.rst
+> +++ b/Documentation/RCU/whatisRCU.rst
+> @@ -6,13 +6,15 @@ What is RCU?  --  "Read, Copy, Update"
+>  Please note that the "What is RCU?" LWN series is an excellent place
+>  to start learning about RCU:
 >  
->  #if defined(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL)
-> -	if (!cpumask_available(rcu_nocb_mask)) {
-> -		need_rcu_nocb_mask = true;
-> -		offload_all = true;
-> -	}
-> -#endif /* #if defined(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL) */
-> -
-> -#if defined(CONFIG_NO_HZ_FULL)
-> -	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask)) {
-> -		need_rcu_nocb_mask = true;
-> -		offload_all = false; /* NO_HZ_FULL has its own mask. */
-> -	}
-> -#endif /* #if defined(CONFIG_NO_HZ_FULL) */
-> +	cpumask = cpu_possible_mask;
-> +#elif defined(CONFIG_NO_HZ_FULL)
-> +	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask))
-> +		cpumask = tick_nohz_full_mask;
-> +#endif
+> -| 1.	What is RCU, Fundamentally?  http://lwn.net/Articles/262464/
+> -| 2.	What is RCU? Part 2: Usage   http://lwn.net/Articles/263130/
+> -| 3.	RCU part 3: the RCU API      http://lwn.net/Articles/264090/
+> -| 4.	The RCU API, 2010 Edition    http://lwn.net/Articles/418853/
+> -| 	2010 Big API Table           http://lwn.net/Articles/419086/
+> -| 5.	The RCU API, 2014 Edition    http://lwn.net/Articles/609904/
+> -|	2014 Big API Table           http://lwn.net/Articles/609973/
+> +| 1.	What is RCU, Fundamentally?  https://lwn.net/Articles/262464/
+> +| 2.	What is RCU? Part 2: Usage   https://lwn.net/Articles/263130/
+> +| 3.	RCU part 3: the RCU API      https://lwn.net/Articles/264090/
+> +| 4.	The RCU API, 2010 Edition    https://lwn.net/Articles/418853/
+> +| 	2010 Big API Table           https://lwn.net/Articles/419086/
+> +| 5.	The RCU API, 2014 Edition    https://lwn.net/Articles/609904/
+> +|	2014 Big API Table           https://lwn.net/Articles/609973/
+> +| 6.	The RCU API, 2019 Edition    https://lwn.net/Articles/777036/
+> +|	2019 Big API Table           https://lwn.net/Articles/777165/
 >  
-> -	if (need_rcu_nocb_mask) {
-> +	if (cpumask) {
->  		if (!cpumask_available(rcu_nocb_mask)) {
->  			if (!zalloc_cpumask_var(&rcu_nocb_mask, GFP_KERNEL)) {
->  				pr_info("rcu_nocb_mask allocation failed, callback offloading disabled.\n");
->  				return;
->  			}
->  		}
-> +
-> +		cpumask_or(rcu_nocb_mask, rcu_nocb_mask, cpumask);
->  	}
 >  
->  	if (!cpumask_available(rcu_nocb_mask))
->  		return;
->  
-> -#if defined(CONFIG_NO_HZ_FULL)
-> -	if (tick_nohz_full_running)
-> -		cpumask_or(rcu_nocb_mask, rcu_nocb_mask, tick_nohz_full_mask);
-> -#endif /* #if defined(CONFIG_NO_HZ_FULL) */
-> -
-> -	if (offload_all)
-> -		cpumask_setall(rcu_nocb_mask);
-> -
->  	if (!cpumask_subset(rcu_nocb_mask, cpu_possible_mask)) {
->  		pr_info("\tNote: kernel parameter 'rcu_nocbs=', 'nohz_full', or 'isolcpus=' contains nonexistent CPUs.\n");
->  		cpumask_and(rcu_nocb_mask, cpu_possible_mask,
+>  What is RCU?
 > -- 
 > 2.25.1
 > 
