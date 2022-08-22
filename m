@@ -2,98 +2,132 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CD004C28D13
-	for <rcu@archiver.kernel.org>; Mon, 22 Aug 2022 16:45:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D51DC3F6B0
+	for <rcu@archiver.kernel.org>; Mon, 22 Aug 2022 18:08:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236320AbiHVQo7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 22 Aug 2022 12:44:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36138 "EHLO
+        id S235815AbiHVSIw (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 22 Aug 2022 14:08:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237123AbiHVQo5 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 22 Aug 2022 12:44:57 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB25518E25;
-        Mon, 22 Aug 2022 09:44:56 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 570726120C;
-        Mon, 22 Aug 2022 16:44:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB504C433C1;
-        Mon, 22 Aug 2022 16:44:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1661186695;
-        bh=hFhF+HtHsqWMVE4q3w289LQbuAM7D1wcvxRb+QUpfz4=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=JZWYE0xu4YHJCN761L/B/S7shttEN9JIplBp8bjrBVbaTuxf5lqzOwY958FZcdd2E
-         CS9PmsVuBmZFL66bOK9NYptOLyhNPXcUxjklnbfGLy9VXzQIrjgdhv6dblfWPXLrFh
-         L5DnEOFsAkAYlKbmD22qD5pY+OtaSzqZMdmWtdQvKGtDYxTmblrraCiHo1AFsc4YaG
-         4lG6frtyvLdVletNg57g4HeDjntAGCpUEfLY6668a6KAvSMaVE3xzf8ienyI4ufk84
-         OwMnAF1t3H8im1vaO1ZEPq4JlPIAe7SaAVP0qh/LkFxWieDbJQ8mVtoJsR+j8a2WR6
-         jWi3Fj9R+z7PQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 4C7925C05A0; Mon, 22 Aug 2022 09:44:55 -0700 (PDT)
-Date:   Mon, 22 Aug 2022 09:44:55 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Shao-Tse Hung <ccs100203@gmail.com>
-Cc:     corbet@lwn.net, frederic@kernel.org, quic_neeraju@quicinc.com,
-        josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] doc/rcu: Update LWN articles at the beginning
-Message-ID: <20220822164455.GH6159@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220820083244.28338-1-ccs100203@gmail.com>
+        with ESMTP id S235869AbiHVSIv (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 22 Aug 2022 14:08:51 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDBA41D0E6
+        for <rcu@vger.kernel.org>; Mon, 22 Aug 2022 11:08:49 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id x64so8988336iof.1
+        for <rcu@vger.kernel.org>; Mon, 22 Aug 2022 11:08:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=WgzWzZj00zOWLrpbCwQ4WTwiDIwDcKzbwKa8iAf7tLg=;
+        b=OWC1nKVBtluEW62ASQUxzNEKPaHq+xaPILPsqberXSM3ZYA8aUQyGYB7lYfxVvO3Kx
+         02oQPI4Hbh1a3fXkORCfP/LGkRxymrN2VbrNgvOeSz6RdEkVVWDFzSS/DH1ojr0uBAqu
+         IGw2jTYyP8dKkaI73RXI091fqraCH6NvcfoR0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=WgzWzZj00zOWLrpbCwQ4WTwiDIwDcKzbwKa8iAf7tLg=;
+        b=jTu13CZ2Kfb6u5TZwEuAjFxRT3jNRgEnb+ghzmHYzMfepCI0pmMc4f3Cq5vjNq+wNw
+         8b9Orix05/Lx/C0fQsOmksI3/B54V9EH4m7FJFkeRvMxbUgEGqsG4UWrXyF4pz5T6hYr
+         lGyKzkA3bmzfmO4oG4Wnk6q3ShFcW0/A2Vnx5rhDPv1macTP0UuIzBwW+eQwIos1wv35
+         980JXPSuUvbzhw89kPq09m6lyeBRQkzXJwtC88QuVSfght+Pu7tX9c8UkLfa+IguyrKE
+         3dsSq/rFdkuHM6lR0tP66SvUmGL4W7ENjmiCiBY2QehWYZt0bpnNLFWk8l3IXqzstuiD
+         Vh1w==
+X-Gm-Message-State: ACgBeo28HTXqDYjpxd0KPzbOyAwUGWBlcRifQtUB3JAZY0QON14eKY0F
+        fMnQgAVfhsya29evU+H3CCUuGlwN8ypx5I53y1Nh4A==
+X-Google-Smtp-Source: AA6agR7cV0NmQ6+Pqp4g7/80o66iJ+BRcBW4jtTnfFVQmkwALzchwVQ5BWOGJnuehHgZpFba5YCOnN125O5Tw0wa6SA=
+X-Received: by 2002:a5d:9914:0:b0:67c:2039:caff with SMTP id
+ x20-20020a5d9914000000b0067c2039caffmr9103230iol.201.1661191729339; Mon, 22
+ Aug 2022 11:08:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220820083244.28338-1-ccs100203@gmail.com>
+References: <20220822021520.6996-1-kernelfans@gmail.com> <20220822021520.6996-7-kernelfans@gmail.com>
+In-Reply-To: <20220822021520.6996-7-kernelfans@gmail.com>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Mon, 22 Aug 2022 14:08:38 -0400
+Message-ID: <CAEXW_YRH11xFg-0nQfvv59SMFCW=SNTEEL0oHJKTs1X45wGr7w@mail.gmail.com>
+Subject: Re: [RFC 06/10] rcu/hotplug: Make rcutree_dead_cpu() parallel
+To:     Pingfan Liu <kernelfans@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Price <steven.price@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, Aug 20, 2022 at 04:32:44PM +0800, Shao-Tse Hung wrote:
-> This patch adds LWN articles about RCU APIs which were released in 2019.
-> Also, HTTP URLs are replaced by HTTPS.
-> 
-> Signed-off-by: Shao-Tse Hung <ccs100203@gmail.com>
+On Sun, Aug 21, 2022 at 10:16 PM Pingfan Liu <kernelfans@gmail.com> wrote:
+>
+> In order to support parallel, rcu_state.n_online_cpus should be
+> atomic_dec()
 
-Good catch, queued, thank you!
+What does Parallel mean? Is that some kexec terminology?
 
-							Thanx, Paul
+Thanks,
 
+ - Joel
+
+>
+> Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+> Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> Cc: Frederic Weisbecker <frederic@kernel.org>
+> Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+> Cc: Josh Triplett <josh@joshtriplett.org>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> Cc: Joel Fernandes <joel@joelfernandes.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Steven Price <steven.price@arm.com>
+> Cc: "Peter Zijlstra
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>
+> To: linux-kernel@vger.kernel.org
+> To: rcu@vger.kernel.org
 > ---
->  Documentation/RCU/whatisRCU.rst | 16 +++++++++-------
->  1 file changed, 9 insertions(+), 7 deletions(-)
-> 
-> diff --git a/Documentation/RCU/whatisRCU.rst b/Documentation/RCU/whatisRCU.rst
-> index 77ea260efd12..682529123b9d 100644
-> --- a/Documentation/RCU/whatisRCU.rst
-> +++ b/Documentation/RCU/whatisRCU.rst
-> @@ -6,13 +6,15 @@ What is RCU?  --  "Read, Copy, Update"
->  Please note that the "What is RCU?" LWN series is an excellent place
->  to start learning about RCU:
->  
-> -| 1.	What is RCU, Fundamentally?  http://lwn.net/Articles/262464/
-> -| 2.	What is RCU? Part 2: Usage   http://lwn.net/Articles/263130/
-> -| 3.	RCU part 3: the RCU API      http://lwn.net/Articles/264090/
-> -| 4.	The RCU API, 2010 Edition    http://lwn.net/Articles/418853/
-> -| 	2010 Big API Table           http://lwn.net/Articles/419086/
-> -| 5.	The RCU API, 2014 Edition    http://lwn.net/Articles/609904/
-> -|	2014 Big API Table           http://lwn.net/Articles/609973/
-> +| 1.	What is RCU, Fundamentally?  https://lwn.net/Articles/262464/
-> +| 2.	What is RCU? Part 2: Usage   https://lwn.net/Articles/263130/
-> +| 3.	RCU part 3: the RCU API      https://lwn.net/Articles/264090/
-> +| 4.	The RCU API, 2010 Edition    https://lwn.net/Articles/418853/
-> +| 	2010 Big API Table           https://lwn.net/Articles/419086/
-> +| 5.	The RCU API, 2014 Edition    https://lwn.net/Articles/609904/
-> +|	2014 Big API Table           https://lwn.net/Articles/609973/
-> +| 6.	The RCU API, 2019 Edition    https://lwn.net/Articles/777036/
-> +|	2019 Big API Table           https://lwn.net/Articles/777165/
->  
->  
->  What is RCU?
-> -- 
-> 2.25.1
-> 
+>  kernel/cpu.c      | 1 +
+>  kernel/rcu/tree.c | 3 ++-
+>  2 files changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/kernel/cpu.c b/kernel/cpu.c
+> index 1261c3f3be51..90debbe28e85 100644
+> --- a/kernel/cpu.c
+> +++ b/kernel/cpu.c
+> @@ -1872,6 +1872,7 @@ static struct cpuhp_step cpuhp_hp_states[] = {
+>                 .name                   = "RCU/tree:prepare",
+>                 .startup.single         = rcutree_prepare_cpu,
+>                 .teardown.single        = rcutree_dead_cpu,
+> +               .support_kexec_parallel = true,
+>         },
+>         /*
+>          * On the tear-down path, timers_dead_cpu() must be invoked
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 79aea7df4345..07d31e16c65e 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -2168,7 +2168,8 @@ int rcutree_dead_cpu(unsigned int cpu)
+>         if (!IS_ENABLED(CONFIG_HOTPLUG_CPU))
+>                 return 0;
+>
+> -       WRITE_ONCE(rcu_state.n_online_cpus, rcu_state.n_online_cpus - 1);
+> +       /* Hot remove path allows parallel, while Hot add races against remove on lock */
+> +       atomic_dec((atomic_t *)&rcu_state.n_online_cpus);
+>         /* Adjust any no-longer-needed kthreads. */
+>         rcu_boost_kthread_setaffinity(rnp, -1);
+>         // Stop-machine done, so allow nohz_full to disable tick.
+> --
+> 2.31.1
+>
