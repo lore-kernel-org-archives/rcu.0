@@ -2,38 +2,38 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D0CFC28D13
-	for <rcu@archiver.kernel.org>; Mon, 22 Aug 2022 16:34:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B5809C28D13
+	for <rcu@archiver.kernel.org>; Mon, 22 Aug 2022 16:35:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229524AbiHVQeR (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 22 Aug 2022 12:34:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54016 "EHLO
+        id S237030AbiHVQfP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 22 Aug 2022 12:35:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236643AbiHVQeP (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 22 Aug 2022 12:34:15 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A6EA3E75E;
-        Mon, 22 Aug 2022 09:34:14 -0700 (PDT)
+        with ESMTP id S237072AbiHVQfP (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 22 Aug 2022 12:35:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81DFB419B5;
+        Mon, 22 Aug 2022 09:35:14 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id DD548B815FA;
-        Mon, 22 Aug 2022 16:34:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8AB1CC433C1;
-        Mon, 22 Aug 2022 16:34:11 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1A06D60F91;
+        Mon, 22 Aug 2022 16:35:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A9A6C433C1;
+        Mon, 22 Aug 2022 16:35:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1661186051;
-        bh=Sdn5r6QikL4jluue7U4GUaFlfJWYvo0Gnhk3nReb2OM=;
+        s=k20201202; t=1661186113;
+        bh=y+S14L9OvviihyJrTKTyBpSCtDnXo0ez48uTpsNV6nU=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=I2D7PuFgDfrAAmTjAd4D2MzrsgdpKfvbxbORYCNdTCVs1Rnkp3a/VLO7yQhDIBDrf
-         nddPlo6TNTBBQrSEpNiYa/cVAUxqpbs8YHBdlgDGuxXYWYzN2tTK4rOCH//bSHP5s7
-         RVfaBH6Y7c2qHZMi8NKgSzGKyqJs8BLzJBKlpo//Ek29sLxq2ObbAWXwDlJBYV4VpN
-         T2ah6tLj3QL2x06qRPiroPLBj48N9hX8g/1vBlQe00clctK9Kn/9ZWtURIPEexYy12
-         3PEpUuCwd6p406RH/d1OQlrwHyAaL15qNc4X1sU4M2pS/REEleaSrREHA/8jDiFiBW
-         Z+6SNd5NGV7LQ==
+        b=lyem7v7qG2dX54DKpJXyPnPgJ7xyn/xVuXitSa+rlVhFDoX8HpWPNpwKremUVOFCl
+         UT4s1aS4bknHE7pC7qCfA/NiBqutcvzeOzyyvjV0vXti4iH9rJ9JEoKM9gpKB8rlkT
+         W+jdZSpZTu1P7zh8gTQb358aD3IGTdA4t4bz2hITbtPMzV4bAJjRX6oUDqTHgITcQn
+         x2LwTh9vWSVxrL3cRTCdVM/2fx14h31VLKlFnmDQh78IFVddHQwK9SNEVE1jR3S7hV
+         j7jZ9n/tOUsyJ6i71cApIo5m+HPVY7zexaGVZmmqPq4cYAAsKHdPMFiZXeyE6x3qfT
+         DTafXmwAAGNDw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 0875D5C03F3; Mon, 22 Aug 2022 09:34:11 -0700 (PDT)
-Date:   Mon, 22 Aug 2022 09:34:11 -0700
+        id 01A895C03F3; Mon, 22 Aug 2022 09:35:13 -0700 (PDT)
+Date:   Mon, 22 Aug 2022 09:35:12 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     Zhen Lei <thunder.leizhen@huawei.com>
 Cc:     Frederic Weisbecker <frederic@kernel.org>,
@@ -44,104 +44,96 @@ Cc:     Frederic Weisbecker <frederic@kernel.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/2] rcu: Eliminate rcu_state.nocb_is_setup
-Message-ID: <20220822163411.GF6159@paulmck-ThinkPad-P17-Gen-1>
+Subject: Re: [PATCH v4 2/2] rcu: Simplify the code logic of rcu_init_nohz()
+Message-ID: <20220822163512.GG6159@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
 References: <20220817014253.1982-1-thunder.leizhen@huawei.com>
- <20220817014253.1982-2-thunder.leizhen@huawei.com>
+ <20220817014253.1982-3-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220817014253.1982-2-thunder.leizhen@huawei.com>
+In-Reply-To: <20220817014253.1982-3-thunder.leizhen@huawei.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Aug 17, 2022 at 09:42:52AM +0800, Zhen Lei wrote:
-> 'rcu_state.nocb_is_setup' is initialized to true only if 'rcu_nocb_mask'
-> successfully allocates memory. So it can be replaced by
-> 'cpumask_available(rcu_nocb_mask)'. More importantly, the latter is more
-> intuitive, and it has been used in several places.
+On Wed, Aug 17, 2022 at 09:42:53AM +0800, Zhen Lei wrote:
+> When CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y or CONFIG_NO_HZ_FULL=y, additional
+> CPUs need to be added to 'rcu_nocb_mask'. But 'rcu_nocb_mask' may be not
+> available now, due to 'rcu_nocbs' is not specified. Check and initialize
+> 'rcu_nocb_mask' before using it. This code simplification strictly follows
+> this logic, compared with old implementations, unnecessary crossovers are
+> avoided and easy to understand.
 > 
 > Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 
-One of the implementations of cpumask_available() does indeed check
-for NULL.  But here is the other one:
-
-static inline bool cpumask_available(cpumask_var_t mask)
-{
-	return true;
-}
-
-So I have to ask...  In a kernel built with CONFIG_CPUMASK_OFFSTACK=n,
-will this change really work?
-
-Another important question is "Do all of the existing uses of
-cpumask_available() really work?"  Yes, I do believe that they do
-work, but it would be good to get another set of eyes on that code.
-"All software developers are blind!"  ;-)
+This looks like a nice simplification, but I will wait for your response
+on Patch 1/1 before trying it out.
 
 							Thanx, Paul
 
 > ---
->  kernel/rcu/tree.h      | 1 -
->  kernel/rcu/tree_nocb.h | 8 +++-----
->  2 files changed, 3 insertions(+), 6 deletions(-)
+>  kernel/rcu/tree_nocb.h | 32 +++++++++-----------------------
+>  1 file changed, 9 insertions(+), 23 deletions(-)
 > 
-> diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-> index d4a97e40ea9c3e2..06f659c63d2d192 100644
-> --- a/kernel/rcu/tree.h
-> +++ b/kernel/rcu/tree.h
-> @@ -375,7 +375,6 @@ struct rcu_state {
->  	arch_spinlock_t ofl_lock ____cacheline_internodealigned_in_smp;
->  						/* Synchronize offline with */
->  						/*  GP pre-initialization. */
-> -	int nocb_is_setup;			/* nocb is setup from boot */
->  };
->  
->  /* Values for rcu_state structure's gp_flags field. */
 > diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-> index 0a5f0ef41484518..ff763e7dc53551f 100644
+> index ff763e7dc53551f..3c59b12f4465af1 100644
 > --- a/kernel/rcu/tree_nocb.h
 > +++ b/kernel/rcu/tree_nocb.h
-> @@ -69,7 +69,6 @@ static int __init rcu_nocb_setup(char *str)
->  			cpumask_setall(rcu_nocb_mask);
->  		}
->  	}
-> -	rcu_state.nocb_is_setup = true;
->  	return 1;
->  }
->  __setup("rcu_nocbs", rcu_nocb_setup);
-> @@ -1215,7 +1214,7 @@ void __init rcu_init_nohz(void)
+> @@ -1209,44 +1209,30 @@ EXPORT_SYMBOL_GPL(rcu_nocb_cpu_offload);
+>  void __init rcu_init_nohz(void)
+>  {
+>  	int cpu;
+> -	bool need_rcu_nocb_mask = false;
+> -	bool offload_all = false;
 >  	struct rcu_data *rdp;
+> +	const struct cpumask *cpumask = NULL;
 >  
 >  #if defined(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL)
-> -	if (!rcu_state.nocb_is_setup) {
-> +	if (!cpumask_available(rcu_nocb_mask)) {
->  		need_rcu_nocb_mask = true;
->  		offload_all = true;
->  	}
-> @@ -1235,10 +1234,9 @@ void __init rcu_init_nohz(void)
+> -	if (!cpumask_available(rcu_nocb_mask)) {
+> -		need_rcu_nocb_mask = true;
+> -		offload_all = true;
+> -	}
+> -#endif /* #if defined(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL) */
+> -
+> -#if defined(CONFIG_NO_HZ_FULL)
+> -	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask)) {
+> -		need_rcu_nocb_mask = true;
+> -		offload_all = false; /* NO_HZ_FULL has its own mask. */
+> -	}
+> -#endif /* #if defined(CONFIG_NO_HZ_FULL) */
+> +	cpumask = cpu_possible_mask;
+> +#elif defined(CONFIG_NO_HZ_FULL)
+> +	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask))
+> +		cpumask = tick_nohz_full_mask;
+> +#endif
+>  
+> -	if (need_rcu_nocb_mask) {
+> +	if (cpumask) {
+>  		if (!cpumask_available(rcu_nocb_mask)) {
+>  			if (!zalloc_cpumask_var(&rcu_nocb_mask, GFP_KERNEL)) {
+>  				pr_info("rcu_nocb_mask allocation failed, callback offloading disabled.\n");
 >  				return;
 >  			}
 >  		}
-> -		rcu_state.nocb_is_setup = true;
+> +
+> +		cpumask_or(rcu_nocb_mask, rcu_nocb_mask, cpumask);
 >  	}
 >  
-> -	if (!rcu_state.nocb_is_setup)
-> +	if (!cpumask_available(rcu_nocb_mask))
+>  	if (!cpumask_available(rcu_nocb_mask))
 >  		return;
 >  
->  #if defined(CONFIG_NO_HZ_FULL)
-> @@ -1299,7 +1297,7 @@ static void rcu_spawn_cpu_nocb_kthread(int cpu)
->  	struct task_struct *t;
->  	struct sched_param sp;
->  
-> -	if (!rcu_scheduler_fully_active || !rcu_state.nocb_is_setup)
-> +	if (!rcu_scheduler_fully_active || !cpumask_available(rcu_nocb_mask))
->  		return;
->  
->  	/* If there already is an rcuo kthread, then nothing to do. */
+> -#if defined(CONFIG_NO_HZ_FULL)
+> -	if (tick_nohz_full_running)
+> -		cpumask_or(rcu_nocb_mask, rcu_nocb_mask, tick_nohz_full_mask);
+> -#endif /* #if defined(CONFIG_NO_HZ_FULL) */
+> -
+> -	if (offload_all)
+> -		cpumask_setall(rcu_nocb_mask);
+> -
+>  	if (!cpumask_subset(rcu_nocb_mask, cpu_possible_mask)) {
+>  		pr_info("\tNote: kernel parameter 'rcu_nocbs=', 'nohz_full', or 'isolcpus=' contains nonexistent CPUs.\n");
+>  		cpumask_and(rcu_nocb_mask, cpu_possible_mask,
 > -- 
 > 2.25.1
 > 
