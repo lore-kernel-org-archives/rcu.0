@@ -2,201 +2,135 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D7EDC32774
-	for <rcu@archiver.kernel.org>; Tue, 23 Aug 2022 05:54:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2930EC3F6B0
+	for <rcu@archiver.kernel.org>; Tue, 23 Aug 2022 09:22:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240317AbiHWFyC (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 23 Aug 2022 01:54:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54176 "EHLO
+        id S240378AbiHWJWO (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 23 Aug 2022 05:22:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240296AbiHWFxy (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 23 Aug 2022 01:53:54 -0400
-Received: from FRA01-PR2-obe.outbound.protection.outlook.com (mail-eopbgr120072.outbound.protection.outlook.com [40.107.12.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 573BD2A256;
-        Mon, 22 Aug 2022 22:53:53 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AdDCtX/N13isY8G+gI9H5laEsouMky2rTbztoJU7bcIF9JJbW8FC88ohr2Vl0yI2XnFPQ/wt/gJObVRDT7SgMrC4gx/+rsISkcnptA/c0aJ0TE0rmJ9enGgyG8wsV22X5XaJzXbhy4D/4xuz+tY8XZSxr5ScIMM9NnryEeE/Xr2VFVjFoSlSscM5S2Cc0Z/fWUrBtxVl8KBxKi7NCjqiJW4rvChOiF0LjoOmTbXdHdS6an1trny6GQ24UriDoZSI1fMpify4Q9ZTZXxBQSvgbviel4dIQzjBlZd6v8X/mVIbUYMJqssj7TP5KfWeB28bqHSx2HEm0gzfz4pEj2T9zA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=eR/E9Z/BqZQkaIijKYTqxeoG2RmIVtMGnSkrbaR1djw=;
- b=jP0q0Wl6AP0gLhkgwrTv0D5nm70mzzqX+Ve1arxsCXc3Da9xI94NpzXnYLDBP0jr5zbGcT0UY1kH5u+XzPyMv/VZy+JMP6GfQ9Tgn7zC9t6sys3akHWRI1V7pupRRnwQ+4R5XccbYJiOA/WveW9Ysz+9qevIAuCye3AhAFlC0QLtpzBESciDh99tfnj6sQlJv83QZexvT1kMPhw3H2e3Yt9it74A5Wmr7NHeXMPeBEvFXTLvLeOLkTtf4ZjRRQCmx8IPWU4qj7idWGnmO/bCuloSHON5JKJHzWcXNxR4tZnrUJfwZU/GE0Ez5hH9JjWlTox6X8qZo+UJKGl62wIfYA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
- dkim=pass header.d=csgroup.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eR/E9Z/BqZQkaIijKYTqxeoG2RmIVtMGnSkrbaR1djw=;
- b=xDfQXO4e2leraLSkIX2coqvzX9z7iWvVig2q4X0DAdsR2tZ++JaxHIbkm61Sv/UyU//Hm/5FOpN/PF5KUVcYOc3mIag9A19DD9hAJ4AHvGjKN8uow/9OMw3xtrQzZWuvLD6KMo80JeHMdP0lppD9rW7H4rVlHmSPIegPlGjZL2QxlMtU08LVK+VhSdiMmkhHJxljjgi69kNkjCerK67K2Y6hpULLCIyo6GQ1xs594lcFWo7277iEZWjZ/BOLrB//FmOiDbVt53k82Te9INSSwmo/S4A9FUDs+GRbSdodzDaG8Ehi1nufZMSXXHnKqDVqVVIU6ipk/0b4cxe6KU6EHQ==
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
- by MR1P264MB1684.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:3::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5546.17; Tue, 23 Aug
- 2022 05:53:50 +0000
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::888e:a92e:a4ee:ce9e]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::888e:a92e:a4ee:ce9e%5]) with mapi id 15.20.5546.024; Tue, 23 Aug 2022
- 05:53:50 +0000
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Zhouyi Zhou <zhouzhouyi@gmail.com>
-CC:     "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "npiggin@gmail.com" <npiggin@gmail.com>,
-        "atrajeev@linux.vnet.ibm.com" <atrajeev@linux.vnet.ibm.com>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "lance@osuosl.org" <lance@osuosl.org>,
-        "paulmck@kernel.org" <paulmck@kernel.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>
-Subject: Re: [PATCH linux-next] powerpc: disable sanitizer in
- irq_soft_mask_set
-Thread-Topic: [PATCH linux-next] powerpc: disable sanitizer in
- irq_soft_mask_set
-Thread-Index: AQHYtPl0/VA1s9ADPEeW7qUGdddrzK26cACAgAFJbACAAEYPgA==
-Date:   Tue, 23 Aug 2022 05:53:50 +0000
-Message-ID: <7f5cff06-903f-f823-db10-ed6d2aafba23@csgroup.eu>
+        with ESMTP id S1350134AbiHWJVa (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 23 Aug 2022 05:21:30 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 777A48C456;
+        Tue, 23 Aug 2022 01:34:36 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4MBjDH5BJcz4xYS;
+        Tue, 23 Aug 2022 18:33:19 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1661243600;
+        bh=jzL+tYVj4e9+zENm5e4p359zO1COy5i/CDx3a5RuXi0=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=DWH/riAmZijXBMyFpMOiCjZL/u14KNbC33rDY2XPlmwRTlIHFZEyB3l4hZ6CutX2M
+         /hxh+Z+F6vNEwwgMah0o1MIoBK/i6qQfhDYcu9Ac4BZf6IxKGhWAcJIfsROANYVH0M
+         2cJCD7cGrgSm+6Hle+5F8DQiDlE3nNy4QRjFvW+n5WL+2Nkq4AKPDtSCDwkc9uk8QA
+         KEzBaddNdy74sR7hw0/y6OjlExq3oBBYjU97e95jCsGLYAR20kqphSEuAqjx6FngzL
+         qNIH2G9b0IyZaSi49GgtXATGN0SmKeTKjGlFe7UyPR4YxQbjQdI+Z1PfSv2CDedkjL
+         cs//ozxWcigLA==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Zhouyi Zhou <zhouzhouyi@gmail.com>, npiggin@gmail.com,
+        christophe.leroy@csgroup.eu, atrajeev@linux.vnet.ibm.com,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        lance@osuosl.org, paulmck@kernel.org, rcu@vger.kernel.org
+Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>
+Subject: Re: [PATCH linux-next] powerpc: disable sanitizer in irq_soft_mask_set
+In-Reply-To: <20220821010030.97539-1-zhouzhouyi@gmail.com>
 References: <20220821010030.97539-1-zhouzhouyi@gmail.com>
- <6375fd69-d57f-be90-6b17-f183e918dbc8@csgroup.eu>
- <CAABZP2y8dGAWHZwbXpbQgc3iO+7hBMuexqvcYUK-GKaKnAHH5Q@mail.gmail.com>
-In-Reply-To: <CAABZP2y8dGAWHZwbXpbQgc3iO+7hBMuexqvcYUK-GKaKnAHH5Q@mail.gmail.com>
-Accept-Language: fr-FR, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=csgroup.eu;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 542a8bae-219a-4091-85b1-08da84cbdaa1
-x-ms-traffictypediagnostic: MR1P264MB1684:EE_
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 6/z3CYs+UV9FnW9yArTRBiDMrJwmaH5NIpB/wmYwRrawPZrTxTc/45N0+n7hAytQRuU8yblzH/MR6DlI93zV4vV0MUaaG+tH9KwfEYrvZE4iw27n96riU00cBTibFDDrjKtjZEmlg8AOv6q9piEJQI29lzOokQhN0RvVPNVt8ma8uNcvUcIsbq8mPaRiQ8+y1rhGWThLkXvhY4p3DqnVbn/UfqqZS1+1em2BHxeMPQztZxKGIOvp5URCxEmx3IqJ+xjVKnvqCONnA6Esz7pARPuN/Z2qKJ5avRzyg0EV24YWUtruYpaKydcx9VxeaiKoot9AAI+D/H3ZzgIuSoa75zkxViVX9anT8k11SxVEng1xJ7WJHVJ5YpWn58yLjQx4MAcoKVLIXxqRzF19nMKOLrCm+L3vKOX8BzCQrTgO4TTNwiCfxnMRQWqBZTgADP4I//mpLPpffDLvCiEY2ultuVHr3xJZgZ5mIWgVzSYQTTFeCE+51thxzbnZjX0vIQNals2Gx8w8uk4c0nOLswt649Is/AG8jI1OwgibYDhWTTCZzPq/aeus9cqSDDwlGpZfSnDwpR6qh7wW0OGObN7GieZfF5vq5Qm1DASbELMdl/f/GJetew81TfZ5vEV+hc68kLUKbmIRUm/iZ6aTRRZuRqUOdDMw6hsJ5HA/5P25bwYNO20EIOyEybysPnXKvBT10mZzZUesl2SwWYhGFTIlBmlZryRF2cTh5nxHYOQlj6MaMLjsGmDkKZEmbeIrLATiQKvtnkpY8TY1y3KfYriBP9CTWcIR5pF6FFMYLv5v/PAXKzom8BfpwYUhSkClI+/zKMk0Gk16EkjKlky2j5ayxg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230016)(4636009)(346002)(376002)(396003)(366004)(136003)(39850400004)(41300700001)(5660300002)(8936002)(6486002)(478600001)(31696002)(53546011)(2906002)(6506007)(26005)(6512007)(44832011)(86362001)(122000001)(38100700002)(186003)(66574015)(2616005)(38070700005)(83380400001)(8676002)(76116006)(31686004)(6916009)(71200400001)(316002)(4326008)(66946007)(66446008)(64756008)(66556008)(66476007)(36756003)(91956017)(54906003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?aGhZZE9sOHAzZFppNlBkK1NWWFdWbnBrNWF0NG0ydjlwU1NuNFRLemVoL0Nw?=
- =?utf-8?B?RlorNXhSUU83a0RoNHQ0aXpUTDdwM1ZjNW90RzJhRUZSUCtHaDAwcmJ2Nk9V?=
- =?utf-8?B?eXRWblRxVWFxTTJDVk9uc25EWkF6OCszVkFDTk0rYjI0QXZiMUE4c0tXalRP?=
- =?utf-8?B?dzNWNjh5emlab0NNMzdHZkJVazVCRzVNemxPZ05VMjJSdElJNTJCcHFZQmUr?=
- =?utf-8?B?cHFVOVh4Ny9sRmVPU1ZxeEVYUG9DY252T01PZTBVZTQ5OHV4QUJ3WmVWMC9C?=
- =?utf-8?B?RVRiZjVvRENhSm8vVDduNktKZDlNbThNVi9NQ3h4dUd4RVZzRmdvZ1h3dlBR?=
- =?utf-8?B?cVVFY0wyNjF2bGRSMmV3YXZFUkQzZHZBYzZXNndpaTRQSVZJQTNCOW55b0I4?=
- =?utf-8?B?QVdUbjlHTHcrQUtObXdEYWVSVFZXRTZyM3dkejJhaERMMitWclJvRjRiSnll?=
- =?utf-8?B?MWgxRXYvKzRyVXZqbnZmNHh5SkNwTmlTb0tJVFpSWUpsWU9FNktvRERYZEJC?=
- =?utf-8?B?NU1ySEhuNVplbTNNQXJHZzkxd3dsbFBKN1VRdjNjaW5BOTFjMzhHbkp6L0Ir?=
- =?utf-8?B?aGlLc1ZGTzVHTmNkcC9JK3JtcDkveURLVEVuTjVzejQzenVEUFA4dTh5TjIw?=
- =?utf-8?B?Ky9idXlTQzd0ZFE3dzhjS0xIZkxKNHRLaERkZWhNZncrYkRuWXJWaE84ckMx?=
- =?utf-8?B?emlMdFVmaFMxVk5XTXlmejlOWVpTM0VoMm1KUEh2K3E5QnQ5T2RRbzRLKzJu?=
- =?utf-8?B?T24zODBndTlCb21ET3YvUE5yZ1B3ZkI5NVkvYnlnRFhURnEyelMwd2ljL3Jl?=
- =?utf-8?B?d0NFRnVpdzVHQ3NtRFV2ZVh4R05Wekk0STU3aVN4Syt3SUt3TUdFRDB6ZGht?=
- =?utf-8?B?ZGkvdVVHcXRnU00zMUgvZVhWcmZqQ2RkTWY4VC9idWZlVnFBaExOLzg4cTN2?=
- =?utf-8?B?KzlJdHBFTEsxcmFWQlErMWhTMmlrR0l1elF5M0FkNEYwVk5wNWUyczJ1SlpN?=
- =?utf-8?B?NVZqMkpVY2VVWDhIU2l0ZzFkcFVTZEluaFFhS3ZYdTRRZ1liMHlLSjNmaUty?=
- =?utf-8?B?c0tnM1kyOXJ3SENEWGxhQnBHRDZqMVdWYUlNeFpyUFZLRkxRRERWOFg3am81?=
- =?utf-8?B?ZFM2T3ZpMEYvdTRCbU9vekZJdk1TR2xlSXlPeXFWNGJwSG4rc2JvZ2Z0bktJ?=
- =?utf-8?B?MVNGR2EvaDNWNDhDZUM4TnJDWE5YWC8vdVl3ZEJkNmwzR2QzbkJyQWJWQjNF?=
- =?utf-8?B?YjNUNmFKdUVPVnREb2ZCTW5BNm9Mb3JDUUxrSmpwaVZIR3pEcTRFUjRFVFB4?=
- =?utf-8?B?UlUwVEhtdWZyRDNHekxwNDZPQ2lBMmRBZlJKQWtrVkExakRvbEtYRU0xa2RX?=
- =?utf-8?B?T3JpT294dUJlT093WXJhSFRTMERqbXhEakVIaFY5bVpyL3U1WmdlRDl1TnlX?=
- =?utf-8?B?QWJHd0VlRk1rc1gvTjNMeXlSZUdUMmdNMVV6VHlpc0JQNWloOGZ3SWdjc2ty?=
- =?utf-8?B?SloxWmpHL2s5SXkvcXFINjJPWWMyZFE5TTV0TGhETDgzb1NXSU5IQVdzSUpk?=
- =?utf-8?B?YmpzMmpTS01OYUJOM0NEUEpLdWdNZ3VrMTZlSkMrYWR4dFNQT3crYVdFbFd4?=
- =?utf-8?B?dXJBK0tzZjl1cjloczVWZFJDdHJyZC8xV3RmTS9Oc2JscG9uYWFmR3gvd2c4?=
- =?utf-8?B?bW9HOSs2c3lWYkRWeXlxa3VWbTczcFNxSHQ3dm1ySHg1KzJzZWJ4N3hXV1pG?=
- =?utf-8?B?b2Nwdlh3cStYbmR5SXBDTmhvMlYva3pwODY0Wnl0Vy9IMG5tbVowbzFRSnBF?=
- =?utf-8?B?Q2VBZlJQbU5GaExkc2hsWHVzRStFUmJRdGtUZ1JLK1ltcDN0VTZUNTNXN1JT?=
- =?utf-8?B?MnUyZEhnaFkwbnVjMmZGUjNjVDJmd3E5bnJMYkpaMXdVRWlMWkErdWZxY2cy?=
- =?utf-8?B?TnlxNnQ4TlFJMmtFWVBLYjJzMi9yeUJ5SHZXaHRuWTI1WXVMZE9Ib3NweDZI?=
- =?utf-8?B?YVF2WHBaL2ZIOTNZNlZpaHFjL0NJTnFmZ1Vuc3BsK01McnJ2Z2hqVVJmTjkx?=
- =?utf-8?B?a0V0NG4wWEVSQUlwVHE3eG8veWRaZmgzQ2kzOGIwY2tyRFVxSkVUV2o4dUFP?=
- =?utf-8?B?dURKbzhTSk8wNEVWT1pUNlRjTWFvVldBUDNER3RBYy9Ed0xQMXVpbk1PVWJP?=
- =?utf-8?Q?bpwx0WQFGRQdCdAENM59xZE=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <2C6E2157CB2EF64ABE49D43ADE2D4A08@FRAP264.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+Date:   Tue, 23 Aug 2022 18:33:14 +1000
+Message-ID: <87edx7l5px.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-X-OriginatorOrg: csgroup.eu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 542a8bae-219a-4091-85b1-08da84cbdaa1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Aug 2022 05:53:50.6368
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 5KCH46b69MwQHilInSTd1VtM05s4LX0f1guX6sLgnNoNfLHmJwTlxd8UzzNLgpWpiLaGk5wsNSoywZkIkF3s0mvE1UPHyIKt43rfksVCk+Q=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MR1P264MB1684
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-DQoNCkxlIDIzLzA4LzIwMjIgw6AgMDM6NDMsIFpob3V5aSBaaG91IGEgw6ljcml0wqA6DQo+IE9u
-IE1vbiwgQXVnIDIyLCAyMDIyIGF0IDI6MDQgUE0gQ2hyaXN0b3BoZSBMZXJveQ0KPiA8Y2hyaXN0
-b3BoZS5sZXJveUBjc2dyb3VwLmV1PiB3cm90ZToNCj4+DQo+Pg0KPj4NCj4+IExlIDIxLzA4LzIw
-MjIgw6AgMDM6MDAsIFpob3V5aSBaaG91IGEgw6ljcml0IDoNCj4+PiBJbiBwcGMsIGNvbXBpbGVy
-IGJhc2VkIHNhbml0aXplciB3aWxsIGdlbmVyYXRlIGluc3RydW1lbnQgaW5zdHJ1Y3Rpb25zDQo+
-Pj4gYXJvdW5kIHN0YXRlbWVudCBXUklURV9PTkNFKGxvY2FsX3BhY2EtPmlycV9zb2Z0X21hc2ss
-IG1hc2spOg0KPj4+DQo+Pj4gICAgICAweGMwMDAwMDAwMDAyOTVjYjAgPCswPjogIGFkZGlzICAg
-cjIscjEyLDc3NA0KPj4+ICAgICAgMHhjMDAwMDAwMDAwMjk1Y2I0IDwrND46ICBhZGRpICAgIHIy
-LHIyLDE2NDY0DQo+Pj4gICAgICAweGMwMDAwMDAwMDAyOTVjYjggPCs4PjogIG1mbHIgICAgcjAN
-Cj4+PiAgICAgIDB4YzAwMDAwMDAwMDI5NWNiYyA8KzEyPjogYmwgICAgICAweGMwMDAwMDAwMDAw
-OGJiNGMgPG1jb3VudD4NCj4+PiAgICAgIDB4YzAwMDAwMDAwMDI5NWNjMCA8KzE2PjogbWZsciAg
-ICByMA0KPj4+ICAgICAgMHhjMDAwMDAwMDAwMjk1Y2M0IDwrMjA+OiBzdGQgICAgIHIzMSwtOChy
-MSkNCj4+PiAgICAgIDB4YzAwMDAwMDAwMDI5NWNjOCA8KzI0PjogYWRkaSAgICByMyxyMTMsMjM1
-NA0KPj4+ICAgICAgMHhjMDAwMDAwMDAwMjk1Y2NjIDwrMjg+OiBtciAgICAgIHIzMSxyMTMNCj4+
-PiAgICAgIDB4YzAwMDAwMDAwMDI5NWNkMCA8KzMyPjogc3RkICAgICByMCwxNihyMSkNCj4+PiAg
-ICAgIDB4YzAwMDAwMDAwMDI5NWNkNCA8KzM2Pjogc3RkdSAgICByMSwtNDgocjEpDQo+Pj4gICAg
-ICAweGMwMDAwMDAwMDAyOTVjZDggPCs0MD46IGJsICAgICAgMHhjMDAwMDAwMDAwNjA5Yjk4IDxf
-X2FzYW5fc3RvcmUxKzg+DQo+Pj4gICAgICAweGMwMDAwMDAwMDAyOTVjZGMgPCs0ND46IG5vcA0K
-Pj4+ICAgICAgMHhjMDAwMDAwMDAwMjk1Y2UwIDwrNDg+OiBsaSAgICAgIHI5LDENCj4+PiAgICAg
-IDB4YzAwMDAwMDAwMDI5NWNlNCA8KzUyPjogc3RiICAgICByOSwyMzU0KHIzMSkNCj4+PiAgICAg
-IDB4YzAwMDAwMDAwMDI5NWNlOCA8KzU2PjogYWRkaSAgICByMSxyMSw0OA0KPj4+ICAgICAgMHhj
-MDAwMDAwMDAwMjk1Y2VjIDwrNjA+OiBsZCAgICAgIHIwLDE2KHIxKQ0KPj4+ICAgICAgMHhjMDAw
-MDAwMDAwMjk1Y2YwIDwrNjQ+OiBsZCAgICAgIHIzMSwtOChyMSkNCj4+PiAgICAgIDB4YzAwMDAw
-MDAwMDI5NWNmNCA8KzY4PjogbXRsciAgICByMA0KPj4+DQo+Pj4gSWYgdGhlcmUgaXMgYSBjb250
-ZXh0IHN3aXRjaCBiZWZvcmUgInN0YiAgICAgcjksMjM1NChyMzEpIiwgcjMxIG1heQ0KPj4+IG5v
-dCBlcXVhbCB0byByMTMsIGluIHN1Y2ggY2FzZSwgaXJxIHNvZnQgbWFzayB3aWxsIG5vdCB3b3Jr
-Lg0KPj4+DQo+Pj4gVGhpcyBwYXRjaCBkaXNhYmxlIHNhbml0aXplciBpbiBpcnFfc29mdF9tYXNr
-X3NldC4NCj4+DQo+PiBXZWxsIHNwb3R0ZWQsIHRoYW5rcy4NCj4gVGhhbmsgQ2hyaXN0b3BoZSBm
-b3IgcmV2aWV3aW5nIG15IHBhdGNoIGFuZCB5b3VyIGd1aWRhbmNlIQ0KPj4NCj4+IFlvdSBzaG91
-bGQgYWRkOg0KPj4NCj4+IEZpeGVzOiBlZjViNTcwZDM3MDAgKCJwb3dlcnBjL2lycTogRG9uJ3Qg
-b3BlbiBjb2RlIGlycV9zb2Z0X21hc2sgaGVscGVycyIpDQo+IE9LLCBJIHdpbGwgZG8gaXQhDQo+
-Pg0KPj4gQnkgdGhlIHdheSwgSSB0aGluayB0aGUgUkVBRF9PTkNFKCkgbGlrZWx5IGhhcyB0aGUg
-c2FtZSBpc3N1ZSBzbyB5b3UNCj4+IHNob3VsZCBmaXggaXJxX3NvZnRfbWFza19yZXR1cm4oKSBh
-dCB0aGUgc2FtZSB0aW1lLg0KPiBZZXMsIGFmdGVyIGRpc2Fzc2VtYmxpbmcgaXJxX3NvZnRfbWFz
-a19yZXR1cm4sIHNoZSBoYXMgdGhlIHNhbWUgaXNzdWUNCj4gYXMgaXJxX3NvZnRfbWFza19zZXQu
-DQo+IA0KPiBJbiBhZGRpdGlvbiwgSSByZWFkIGh3X2lycS5oIGJ5IG5ha2VkIGV5ZSB0byBzZWFy
-Y2ggZm9yIHJlbW92ZWQgaW5saW5lDQo+IGFzc2VtYmx5IG9uZSBieSBvbmUsDQo+IEkgZm91bmQg
-YW5vdGhlciBwbGFjZSB0aGF0IHdlIGNvdWxkIHBvc3NpYmxlIGVuaGFuY2UgKFRoYW5rIFBhdWwg
-RS4NCj4gTWNLZW5ueSBmb3IgdGVhY2hpbmcgbWUgdXNlIGdpdCBibGFtZSA7LSkpOg0KPiAwNzdm
-YzYyYjJiNjZhKCJwb3dlcnBjL2lycTogcmVtb3ZlIGlubGluZSBhc3NlbWJseSBpbiBoYXJkX2ly
-cV9kaXNhYmxlIG1hY3JvIikNCj4gLS0tIGEvYXJjaC9wb3dlcnBjL2luY2x1ZGUvYXNtL2h3X2ly
-cS5oDQo+ICsrKyBiL2FyY2gvcG93ZXJwYy9pbmNsdWRlL2FzbS9od19pcnEuaA0KPiBAQCAtMjgy
-LDkgKzI4Miw3IEBAIHN0YXRpYyBpbmxpbmUgYm9vbCBwbWlfaXJxX3BlbmRpbmcodm9pZCkNCj4g
-ICAgICAgICAgZmxhZ3MgPSBpcnFfc29mdF9tYXNrX3NldF9yZXR1cm4oSVJRU19BTExfRElTQUJM
-RUQpOyAgICAgICAgICAgIFwNCj4gICAgICAgICAgbG9jYWxfcGFjYS0+aXJxX2hhcHBlbmVkIHw9
-IFBBQ0FfSVJRX0hBUkRfRElTOyAgICAgICAgICAgICAgICAgIFwNCj4gICAgICAgICAgaWYgKCFh
-cmNoX2lycXNfZGlzYWJsZWRfZmxhZ3MoZmxhZ3MpKSB7ICAgICAgICAgICAgICAgICAgICAgICAg
-IFwNCj4gLSAgICAgICAgICAgICAgIGFzbSAoInN0ZHggJSVyMSwgMCwgJTEgOyIgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgXA0KPiAtICAgICAgICAgICAgICAgICAgICA6ICI9bSIgKGxv
-Y2FsX3BhY2EtPnNhdmVkX3IxKSAgICAgICAgICAgICAgICAgICAgICBcDQo+IC0gICAgICAgICAg
-ICAgICAgICAgIDogImIiICgmbG9jYWxfcGFjYS0+c2F2ZWRfcjEpKTsgICAgICAgICAgICAgICAg
-ICAgIFwNCj4gKyAgICAgICAgICAgICAgIFdSSVRFX09OQ0UobG9jYWxfcGFjYS0+c2F2ZWRfcjEs
-IGN1cnJlbnRfc3RhY2tfcG9pbnRlcik7XA0KPiAgICAgICAgICAgICAgICAgIHRyYWNlX2hhcmRp
-cnFzX29mZigpOyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXA0KPiAgICAgICAg
-ICB9ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgXA0KPiAgIH0gd2hpbGUoMCkNCj4gSSB3cmFwIHRoZSBtYWNybyBoYXJkX2lycV9k
-aXNhYmxlIGludG8gYSB0ZXN0IGZ1bmN0aW9uIGFuZCBkaXNhc3NlbWJsZQ0KPiBpdCwgc2hlIGhh
-cyB0aGUgYWJvdmUgaXNzdWUgdG9vOg0KPiAoZ2RiKSBkaXNhc3NlbWJsZSB0ZXN0MDAyDQo+IER1
-bXAgb2YgYXNzZW1ibGVyIGNvZGUgZm9yIGZ1bmN0aW9uIHRlc3QwMDI6DQouLi4NCj4gQ291bGQg
-d2UgcmV3cml0ZSB0aGlzIG1hY3JvIGludG8gYSBzdGF0aWMgaW5saW5lIGZ1bmN0aW9uIGFzDQo+
-IGlycV9zb2Z0X21hc2tfc2V0IGRvZXMsIGFuZCBkaXNhYmxlIHNhbml0aXplciBmb3IgaXQ/DQoN
-ClllcyB3ZSBjb3VsZCB0cnkgdG8gZG8gdGhhdCwgaG9waW5nIGl0IHdpbGwgbm90IGJyaW5nIHRv
-byBtdWNoIHRyb3VibGVzIA0Kd2l0aCBjaXJjdWxhciBoZWFkZXIgaW5jbHVzaW9uLg0KDQpBbm90
-aGVyIHBvc3NpYmxlIGFwcHJvYWNoIGNvdWxkIGJlIHRvIGNyZWF0ZSBhIFdSSVRFX09OQ0VfTk9D
-SEVDSygpIG1vcmUgDQpvciBsZXNzIHNpbWlsYXIgdG8gZXhpc3RpbmcgUkVBRF9PTkNFX05PQ0hF
-Q0soKS4NCg0KV2UgY291bGQgYWxzbyBjaGFuZ2UgUkVBRF9PTkNFX05PQ0hFQ0soKSB0byBhY2Nl
-cHQgYnl0ZXMgc2l6ZSB0aGVuIHVzZSANCml0IGZvciBpcnFfc29mdF9tYXNrX3JldHVybigpIC4N
-Cg0KQ2hyaXN0b3BoZQ==
+Zhouyi Zhou <zhouzhouyi@gmail.com> writes:
+> In ppc, compiler based sanitizer will generate instrument instructions
+> around statement WRITE_ONCE(local_paca->irq_soft_mask, mask):
+>
+>    0xc000000000295cb0 <+0>:	addis   r2,r12,774
+>    0xc000000000295cb4 <+4>:	addi    r2,r2,16464
+>    0xc000000000295cb8 <+8>:	mflr    r0
+>    0xc000000000295cbc <+12>:	bl      0xc00000000008bb4c <mcount>
+>    0xc000000000295cc0 <+16>:	mflr    r0
+>    0xc000000000295cc4 <+20>:	std     r31,-8(r1)
+>    0xc000000000295cc8 <+24>:	addi    r3,r13,2354
+>    0xc000000000295ccc <+28>:	mr      r31,r13
+>    0xc000000000295cd0 <+32>:	std     r0,16(r1)
+>    0xc000000000295cd4 <+36>:	stdu    r1,-48(r1)
+>    0xc000000000295cd8 <+40>:	bl      0xc000000000609b98 <__asan_store1+8>
+>    0xc000000000295cdc <+44>:	nop
+>    0xc000000000295ce0 <+48>:	li      r9,1
+>    0xc000000000295ce4 <+52>:	stb     r9,2354(r31)
+>    0xc000000000295ce8 <+56>:	addi    r1,r1,48
+>    0xc000000000295cec <+60>:	ld      r0,16(r1)
+>    0xc000000000295cf0 <+64>:	ld      r31,-8(r1)
+>    0xc000000000295cf4 <+68>:	mtlr    r0
+>
+> If there is a context switch before "stb     r9,2354(r31)", r31 may
+> not equal to r13, in such case, irq soft mask will not work.
+>
+> This patch disable sanitizer in irq_soft_mask_set.
+>
+> Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+> ---
+> Dear PPC developers
+>
+> I found this bug when trying to do rcutorture tests in ppc VM of
+> Open Source Lab of Oregon State University following Paul E. McKenny's guidance.
+>
+> console.log report following bug:
+>
+> [  346.527467][  T100] BUG: using smp_processor_id() in preemptible [00000000] code: rcu_torture_rea/100^M
+> [  346.529416][  T100] caller is rcu_preempt_deferred_qs_irqrestore+0x74/0xed0^M
+> [  346.531157][  T100] CPU: 4 PID: 100 Comm: rcu_torture_rea Tainted: G        W          5.19.0-rc5-next-20220708-dirty #253^M
+> [  346.533620][  T100] Call Trace:^M
+> [  346.534449][  T100] [c0000000094876c0] [c000000000ce2b68] dump_stack_lvl+0xbc/0x108 (unreliable)^M
+> [  346.536632][  T100] [c000000009487710] [c000000001712954] check_preemption_disabled+0x154/0x160^M
+> [  346.538665][  T100] [c0000000094877a0] [c0000000002ce2d4] rcu_preempt_deferred_qs_irqrestore+0x74/0xed0^M
+> [  346.540830][  T100] [c0000000094878b0] [c0000000002cf3c0] __rcu_read_unlock+0x290/0x3b0^M
+> [  346.542746][  T100] [c000000009487910] [c0000000002bb330] rcu_torture_read_unlock+0x30/0xb0^M
+> [  346.544779][  T100] [c000000009487930] [c0000000002b7ff8] rcutorture_one_extend+0x198/0x810^M
+> [  346.546851][  T100] [c000000009487a10] [c0000000002b8bfc] rcu_torture_one_read+0x58c/0xc90^M
+> [  346.548844][  T100] [c000000009487ca0] [c0000000002b942c] rcu_torture_reader+0x12c/0x360^M
+> [  346.550784][  T100] [c000000009487db0] [c0000000001de978] kthread+0x1e8/0x220^M
+> [  346.552555][  T100] [c000000009487e10] [c00000000000cd54] ret_from_kernel_thread+0x5c/0x64^M
+>
+> After 12 days debugging, I finally narrow the problem to irq_soft_mask_set.
+
+Thanks for spending 12 days debugging it! O_o
+
+> diff --git a/arch/powerpc/include/asm/hw_irq.h b/arch/powerpc/include/asm/hw_irq.h
+> index 26ede09c521d..a5ae8d82cc9d 100644
+> --- a/arch/powerpc/include/asm/hw_irq.h
+> +++ b/arch/powerpc/include/asm/hw_irq.h
+> @@ -121,7 +121,7 @@ static inline notrace unsigned long irq_soft_mask_return(void)
+>   * for the critical section and as a clobber because
+>   * we changed paca->irq_soft_mask
+>   */
+> -static inline notrace void irq_soft_mask_set(unsigned long mask)
+> +static inline notrace __no_kcsan __no_sanitize_address void irq_soft_mask_set(unsigned long mask)
+>  {
+>  	/*
+>  	 * The irq mask must always include the STD bit if any are set.
+
+My worry is that this will force irq_soft_mask_set() out of line, which
+we would rather avoid. It's meant to be a fast path.
+
+In fact with this applied I see nearly 300 out-of-line copies of the
+function when building a defconfig, and ~1700 calls to it.
+
+Normally it is inlined at every call site.
+
+
+So I think I'm inclined to revert ef5b570d3700 ("powerpc/irq: Don't open
+code irq_soft_mask helpers").
+
+It was a nice looking cleanup, but those loads must not be instrumented
+by KASAN, but we also want them inlined, and AFAICS the only way to
+achieve that is to go back to inline asm.
+
+cheers
