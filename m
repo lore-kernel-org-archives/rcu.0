@@ -2,113 +2,107 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8EC00C28D13
-	for <rcu@archiver.kernel.org>; Tue, 23 Aug 2022 03:02:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C8D0C28D13
+	for <rcu@archiver.kernel.org>; Tue, 23 Aug 2022 03:15:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239663AbiHWDCf (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 22 Aug 2022 23:02:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54902 "EHLO
+        id S239996AbiHWDPG (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 22 Aug 2022 23:15:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239676AbiHWDB4 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 22 Aug 2022 23:01:56 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83C745C9D4;
-        Mon, 22 Aug 2022 20:01:28 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 332C1B81A03;
-        Tue, 23 Aug 2022 03:01:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C69BBC43470;
-        Tue, 23 Aug 2022 03:01:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1661223685;
-        bh=cdJDXRIWTW/8wjvzlgdNdAomL6Qpg0Nri5tYiSOPmhM=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=PvrfzSj/YciPY/yB2jSUnAMRkVQNYF3UvHLoubupvCDCDwdwGqfN4WsXAeieGrxTI
-         CLP/U+3Uk73iWKXykpvAMn+K5I4B7HIAsq2lDFcJCJehdgEkRcCrU+2CDmV5tEXnS1
-         Iv3AhAJt0yWPvlKP/midjkLtJe4jI4J7GmO1X8f+3unUDVFEwxk3lEeb4aZb/pFPRP
-         fxFutr5hg/A1oA6bZlQJvJy4dlOIG0I/RjW9y8eTUScIGqSgdnYE8HDL2gZUrFCzaN
-         c5B3GUzA+NJRRSYOLQfazqere8hBquYcvX73m1vTEYkpa1DNhq6Di6BDGUXOInSPq6
-         8Y2e2fMfC45hw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 7341A5C05A0; Mon, 22 Aug 2022 20:01:25 -0700 (PDT)
-Date:   Mon, 22 Aug 2022 20:01:25 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
+        with ESMTP id S239970AbiHWDOp (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 22 Aug 2022 23:14:45 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82A604E84B
+        for <rcu@vger.kernel.org>; Mon, 22 Aug 2022 20:14:42 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id r141so9945892iod.4
+        for <rcu@vger.kernel.org>; Mon, 22 Aug 2022 20:14:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=k1tX+ZbUdF03T5VtJ8Jt7LwJ5Z2g+Fw58Un+X9nHhXc=;
+        b=VgkQ2YZ9MV2sL20MeBgM+yktyD8vRBViJq7qYqIp6xpNRpoAyTiIl/i8dGxB9tT8jS
+         TxYtNuTHt7KWqeEDNhEosY1IkWyDIWPXoGOxUstMpWsg4+tiVET0feKQpCRKUcV40sFq
+         tM2krRC6EpW/TbAPwFCDFfrlCx3UI19/gMGes=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=k1tX+ZbUdF03T5VtJ8Jt7LwJ5Z2g+Fw58Un+X9nHhXc=;
+        b=ZfO/+zIPz+daD3knuKRk73a5wmHw6y6FYmflZ36reIXiJh+59mtvcHjh9kniS3RDrA
+         u2EjmtXtXRhSFnCJlxE/aWMiBNK/lItWdCNgxxKhnlcdTNRFLQ57mya1ApvVl+jhWRwe
+         x/qKYn20mz+hrLtHyyvpgIQpW0qWAyRjg7fplZzialm0YIXDiUPthmbBFYPk6bt2vad3
+         gyIlc4lOQKroFHkSP09dK6Kfgi9KJ1qoiel/cN5hi4oBA8H7SZ54lAlPBB6tyR2gHAOn
+         WGPrInFyPAFAoC+TmvYWGILVURyVfMV5/0mO5vqLA8ZWitWxvninY1VPU9uceLnrTcPv
+         S7/w==
+X-Gm-Message-State: ACgBeo3eTXIw8e+sURnI+9FicI55tWWEDyFCnX3AMzsp3YEuAFX4VQIk
+        zliW/xG2gCyxK+TcwFA64eDRJfK+igNnCxdsymd50w==
+X-Google-Smtp-Source: AA6agR4/kXJa7I8Po5qtsZBqG+SYCbfzDvTP+K5FlNviAv2rK7n0yytdDyZh2DR4oy885HIsBrglJaxbDoxmbFi4rx4=
+X-Received: by 2002:a05:6638:378c:b0:343:447e:e6e2 with SMTP id
+ w12-20020a056638378c00b00343447ee6e2mr10324712jal.118.1661224481194; Mon, 22
+ Aug 2022 20:14:41 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220822021520.6996-1-kernelfans@gmail.com> <20220822021520.6996-7-kernelfans@gmail.com>
+ <CAEXW_YRH11xFg-0nQfvv59SMFCW=SNTEEL0oHJKTs1X45wGr7w@mail.gmail.com> <YwQzyMlY6fa2WrM5@piliu.users.ipa.redhat.com>
+In-Reply-To: <YwQzyMlY6fa2WrM5@piliu.users.ipa.redhat.com>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Mon, 22 Aug 2022 23:14:29 -0400
+Message-ID: <CAEXW_YTJGqmi15itkPBNt_=Pj6PNG7aXWxq02UWQZ7rzj2mTiA@mail.gmail.com>
+Subject: Re: [RFC 06/10] rcu/hotplug: Make rcutree_dead_cpu() parallel
 To:     Pingfan Liu <kernelfans@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+Cc:     LKML <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
         Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Steven Price <steven.price@arm.com>,
         Mark Rutland <mark.rutland@arm.com>,
         Kuppuswamy Sathyanarayanan 
         <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>, boqun.feng@gmail.com
-Subject: Re: [RFC 06/10] rcu/hotplug: Make rcutree_dead_cpu() parallel
-Message-ID: <20220823030125.GJ6159@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220822021520.6996-1-kernelfans@gmail.com>
- <20220822021520.6996-7-kernelfans@gmail.com>
- <20220822024528.GC6159@paulmck-ThinkPad-P17-Gen-1>
- <YwQygLBtzqwxuMIJ@piliu.users.ipa.redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YwQygLBtzqwxuMIJ@piliu.users.ipa.redhat.com>
+        "Jason A. Donenfeld" <Jason@zx2c4.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Aug 23, 2022 at 09:50:56AM +0800, Pingfan Liu wrote:
-> On Sun, Aug 21, 2022 at 07:45:28PM -0700, Paul E. McKenney wrote:
-> > On Mon, Aug 22, 2022 at 10:15:16AM +0800, Pingfan Liu wrote:
+On Mon, Aug 22, 2022 at 9:56 PM Pingfan Liu <kernelfans@gmail.com> wrote:
+>
+> On Mon, Aug 22, 2022 at 02:08:38PM -0400, Joel Fernandes wrote:
+> > On Sun, Aug 21, 2022 at 10:16 PM Pingfan Liu <kernelfans@gmail.com> wrote:
+> > >
 > > > In order to support parallel, rcu_state.n_online_cpus should be
 > > > atomic_dec()
-> > > 
-> > > Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
-> > 
-> > I have to ask...  What testing have you subjected this patch to?
-> > 
-> 
-> This patch subjects to [1]. The series aims to enable kexec-reboot in
-> parallel on all cpu. As a result, the involved RCU part is expected to
-> support parallel.
+> >
+> > What does Parallel mean? Is that some kexec terminology?
+> >
+>
+> 'Parallel' means concurrent. It is not a kexec terminology, instead,
+> should be SMP.
 
-I understand (and even sympathize with) the expectation.  But results
-sometimes diverge from expectations.  There have been implicit assumptions
-in RCU about only one CPU going offline at a time, and I am not sure
-that all of them have been addressed.  Concurrent CPU onlining has
-been looked at recently here:
+Ah ok! Makes sense. Apologies to be the word-police here, but you
+probably could reword it to "In order to support parallel offlining"
+or some such.
 
-https://docs.google.com/document/d/1jymsaCPQ1PUDcfjIKm0UIbVdrJAaGX-6cXrmcfm0PRU/edit?usp=sharing
+ - Joel
 
-You did us atomic_dec() to make rcu_state.n_online_cpus decrementing be
-atomic, which is good.  Did you look through the rest of RCU's CPU-offline
-code paths and related code paths?
 
-> [1]: https://lore.kernel.org/linux-arm-kernel/20220822021520.6996-3-kernelfans@gmail.com/T/#mf62352138d7b040fdb583ba66f8cd0ed1e145feb
 
-Perhaps I am more blind than usual today, but I am not seeing anything
-in this patch describing the testing.  At this point, I am thinking in
-terms of making rcutorture test concurrent CPU offlining.
-
-Thoughts?
-
-							Thanx, Paul
-
+>
 > Thanks,
-> 
-> 	Pingfan
-> 
-> 
-> > 							Thanx, Paul
-> > 
+>
+>         Pingfan
+>
+>
+> > Thanks,
+> >
+> >  - Joel
+> >
+> > >
+> > > Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
 > > > Cc: "Paul E. McKenney" <paulmck@kernel.org>
 > > > Cc: Frederic Weisbecker <frederic@kernel.org>
 > > > Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
@@ -129,33 +123,33 @@ Thoughts?
 > > >  kernel/cpu.c      | 1 +
 > > >  kernel/rcu/tree.c | 3 ++-
 > > >  2 files changed, 3 insertions(+), 1 deletion(-)
-> > > 
+> > >
 > > > diff --git a/kernel/cpu.c b/kernel/cpu.c
 > > > index 1261c3f3be51..90debbe28e85 100644
 > > > --- a/kernel/cpu.c
 > > > +++ b/kernel/cpu.c
 > > > @@ -1872,6 +1872,7 @@ static struct cpuhp_step cpuhp_hp_states[] = {
-> > >  		.name			= "RCU/tree:prepare",
-> > >  		.startup.single		= rcutree_prepare_cpu,
-> > >  		.teardown.single	= rcutree_dead_cpu,
-> > > +		.support_kexec_parallel	= true,
-> > >  	},
-> > >  	/*
-> > >  	 * On the tear-down path, timers_dead_cpu() must be invoked
+> > >                 .name                   = "RCU/tree:prepare",
+> > >                 .startup.single         = rcutree_prepare_cpu,
+> > >                 .teardown.single        = rcutree_dead_cpu,
+> > > +               .support_kexec_parallel = true,
+> > >         },
+> > >         /*
+> > >          * On the tear-down path, timers_dead_cpu() must be invoked
 > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
 > > > index 79aea7df4345..07d31e16c65e 100644
 > > > --- a/kernel/rcu/tree.c
 > > > +++ b/kernel/rcu/tree.c
 > > > @@ -2168,7 +2168,8 @@ int rcutree_dead_cpu(unsigned int cpu)
-> > >  	if (!IS_ENABLED(CONFIG_HOTPLUG_CPU))
-> > >  		return 0;
-> > >  
-> > > -	WRITE_ONCE(rcu_state.n_online_cpus, rcu_state.n_online_cpus - 1);
-> > > +	/* Hot remove path allows parallel, while Hot add races against remove on lock */
-> > > +	atomic_dec((atomic_t *)&rcu_state.n_online_cpus);
-> > >  	/* Adjust any no-longer-needed kthreads. */
-> > >  	rcu_boost_kthread_setaffinity(rnp, -1);
-> > >  	// Stop-machine done, so allow nohz_full to disable tick.
-> > > -- 
+> > >         if (!IS_ENABLED(CONFIG_HOTPLUG_CPU))
+> > >                 return 0;
+> > >
+> > > -       WRITE_ONCE(rcu_state.n_online_cpus, rcu_state.n_online_cpus - 1);
+> > > +       /* Hot remove path allows parallel, while Hot add races against remove on lock */
+> > > +       atomic_dec((atomic_t *)&rcu_state.n_online_cpus);
+> > >         /* Adjust any no-longer-needed kthreads. */
+> > >         rcu_boost_kthread_setaffinity(rnp, -1);
+> > >         // Stop-machine done, so allow nohz_full to disable tick.
+> > > --
 > > > 2.31.1
-> > > 
+> > >
