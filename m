@@ -2,30 +2,30 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 64604C3F6B0
-	for <rcu@archiver.kernel.org>; Tue, 23 Aug 2022 14:50:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 624C2C32772
+	for <rcu@archiver.kernel.org>; Tue, 23 Aug 2022 15:09:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241841AbiHWOuv (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 23 Aug 2022 10:50:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49880 "EHLO
+        id S243250AbiHWPJp (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 23 Aug 2022 11:09:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242167AbiHWOuc (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 23 Aug 2022 10:50:32 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0372A2F1F7A;
-        Tue, 23 Aug 2022 05:13:56 -0700 (PDT)
-Received: from dggpemm500023.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4MBp1n0b3jz1N7M7;
-        Tue, 23 Aug 2022 20:09:33 +0800 (CST)
+        with ESMTP id S243309AbiHWPJb (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 23 Aug 2022 11:09:31 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 891F4107758;
+        Tue, 23 Aug 2022 05:39:15 -0700 (PDT)
+Received: from dggpemm500022.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4MBnlC3xpmzlVpd;
+        Tue, 23 Aug 2022 19:56:55 +0800 (CST)
 Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
+ dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Tue, 23 Aug 2022 20:13:01 +0800
+ 15.1.2375.24; Tue, 23 Aug 2022 20:00:08 +0800
 Received: from [10.174.178.55] (10.174.178.55) by
  dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Tue, 23 Aug 2022 20:13:01 +0800
-Subject: Re: [PATCH v4 2/2] rcu: Simplify the code logic of rcu_init_nohz()
+ 15.1.2375.24; Tue, 23 Aug 2022 20:00:07 +0800
+Subject: Re: [PATCH v4 1/2] rcu: Eliminate rcu_state.nocb_is_setup
 To:     <paulmck@kernel.org>
 CC:     Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
@@ -36,15 +36,15 @@ CC:     Frederic Weisbecker <frederic@kernel.org>,
         Joel Fernandes <joel@joelfernandes.org>, <rcu@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
 References: <20220817014253.1982-1-thunder.leizhen@huawei.com>
- <20220817014253.1982-3-thunder.leizhen@huawei.com>
- <20220822163512.GG6159@paulmck-ThinkPad-P17-Gen-1>
+ <20220817014253.1982-2-thunder.leizhen@huawei.com>
+ <20220822163411.GF6159@paulmck-ThinkPad-P17-Gen-1>
 From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <ccfdb4f1-3384-254e-7dff-25645bd7f02d@huawei.com>
-Date:   Tue, 23 Aug 2022 20:13:00 +0800
+Message-ID: <89bd14ea-6980-4857-9e2a-9d89c94e88a7@huawei.com>
+Date:   Tue, 23 Aug 2022 20:00:07 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <20220822163512.GG6159@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20220822163411.GF6159@paulmck-ThinkPad-P17-Gen-1>
 Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -58,88 +58,134 @@ X-Mailing-List: rcu@vger.kernel.org
 
 
 
-On 2022/8/23 0:35, Paul E. McKenney wrote:
-> On Wed, Aug 17, 2022 at 09:42:53AM +0800, Zhen Lei wrote:
->> When CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y or CONFIG_NO_HZ_FULL=y, additional
->> CPUs need to be added to 'rcu_nocb_mask'. But 'rcu_nocb_mask' may be not
->> available now, due to 'rcu_nocbs' is not specified. Check and initialize
->> 'rcu_nocb_mask' before using it. This code simplification strictly follows
->> this logic, compared with old implementations, unnecessary crossovers are
->> avoided and easy to understand.
+On 2022/8/23 0:34, Paul E. McKenney wrote:
+> On Wed, Aug 17, 2022 at 09:42:52AM +0800, Zhen Lei wrote:
+>> 'rcu_state.nocb_is_setup' is initialized to true only if 'rcu_nocb_mask'
+>> successfully allocates memory. So it can be replaced by
+>> 'cpumask_available(rcu_nocb_mask)'. More importantly, the latter is more
+>> intuitive, and it has been used in several places.
 >>
 >> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 > 
-> This looks like a nice simplification, but I will wait for your response
-> on Patch 1/1 before trying it out.
+> One of the implementations of cpumask_available() does indeed check
+> for NULL.  But here is the other one:
+> 
+> static inline bool cpumask_available(cpumask_var_t mask)
+> {
+> 	return true;
+> }
 
-How about I post v5 and just do this simplification? Patch 1/2 seems to require
-further discussion and in-depth analysis, which may take a long time.
+Thanks for the heads-up.
 
+> 
+> So I have to ask...  In a kernel built with CONFIG_CPUMASK_OFFSTACK=n,
+> will this change really work?
+
+Yes, I run the test cases on arm64, which does not turn on option
+CONFIG_CPUMASK_OFFSTACK by default.
+
+I've listed a combination of build options in the cover-letter. In
+this case, cpumask_empty(rcu_nocb_mask) is true.
+----
+CONFIG_NO_HZ_FULL=n, CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=n, cmdline without rcu_nocbs
+[    0.000000] rcu:     Offload RCU callbacks from CPUs: (none).
+----
+
+> 
+> Another important question is "Do all of the existing uses of
+> cpumask_available() really work?"  Yes, I do believe that they do
+
+The only functional change caused by this patch is:
+For clarity, CONFIG_RCU_NOCB_CPU=y and CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=n are
+omitted from the following conditions.
+
+When
+  CONFIG_NO_HZ_FULL=n and boot cmdline without 'rcu_nocbs='.
+or
+  CONFIG_NO_HZ_FULL=y and boot cmdline without 'nohz_full='.
+
+The rdp->nocb_gp_kthread and rdp->nocb_cb_kthread threads are still created.
+
+But we have provided EXPORT_SYMBOL_GPL functions rcu_nocb_cpu_deoffload() and
+rcu_nocb_cpu_offload(), which can dynamically modify 'rcu_nocb_mask'. So it
+seems appropriate to prepare these threads in advance. Of course, it looks like
+only 'rcutorture' currently uses these two functions now.
+
+Otherwise, we can do some optimization:
+If none of the CPUs in a 'nocb_gp' group is marked in rcu_nocb_mask, this
+grouping does not need to create corresponding threads "rcuog/%d" and "rcuo%c/%d".
+
+And in rcu_init_nohz():
+-       if (!rcu_state.nocb_is_setup)
++       if (!cpumask_available(rcu_nocb_mask) || cpumask_empty(rcu_nocb_mask))
+                return;
+
+
+
+> work, but it would be good to get another set of eyes on that code.
+> "All software developers are blind!"  ;-)
 > 
 > 							Thanx, Paul
 > 
 >> ---
->>  kernel/rcu/tree_nocb.h | 32 +++++++++-----------------------
->>  1 file changed, 9 insertions(+), 23 deletions(-)
+>>  kernel/rcu/tree.h      | 1 -
+>>  kernel/rcu/tree_nocb.h | 8 +++-----
+>>  2 files changed, 3 insertions(+), 6 deletions(-)
 >>
+>> diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+>> index d4a97e40ea9c3e2..06f659c63d2d192 100644
+>> --- a/kernel/rcu/tree.h
+>> +++ b/kernel/rcu/tree.h
+>> @@ -375,7 +375,6 @@ struct rcu_state {
+>>  	arch_spinlock_t ofl_lock ____cacheline_internodealigned_in_smp;
+>>  						/* Synchronize offline with */
+>>  						/*  GP pre-initialization. */
+>> -	int nocb_is_setup;			/* nocb is setup from boot */
+>>  };
+>>  
+>>  /* Values for rcu_state structure's gp_flags field. */
 >> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
->> index ff763e7dc53551f..3c59b12f4465af1 100644
+>> index 0a5f0ef41484518..ff763e7dc53551f 100644
 >> --- a/kernel/rcu/tree_nocb.h
 >> +++ b/kernel/rcu/tree_nocb.h
->> @@ -1209,44 +1209,30 @@ EXPORT_SYMBOL_GPL(rcu_nocb_cpu_offload);
->>  void __init rcu_init_nohz(void)
->>  {
->>  	int cpu;
->> -	bool need_rcu_nocb_mask = false;
->> -	bool offload_all = false;
+>> @@ -69,7 +69,6 @@ static int __init rcu_nocb_setup(char *str)
+>>  			cpumask_setall(rcu_nocb_mask);
+>>  		}
+>>  	}
+>> -	rcu_state.nocb_is_setup = true;
+>>  	return 1;
+>>  }
+>>  __setup("rcu_nocbs", rcu_nocb_setup);
+>> @@ -1215,7 +1214,7 @@ void __init rcu_init_nohz(void)
 >>  	struct rcu_data *rdp;
->> +	const struct cpumask *cpumask = NULL;
 >>  
 >>  #if defined(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL)
->> -	if (!cpumask_available(rcu_nocb_mask)) {
->> -		need_rcu_nocb_mask = true;
->> -		offload_all = true;
->> -	}
->> -#endif /* #if defined(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL) */
->> -
->> -#if defined(CONFIG_NO_HZ_FULL)
->> -	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask)) {
->> -		need_rcu_nocb_mask = true;
->> -		offload_all = false; /* NO_HZ_FULL has its own mask. */
->> -	}
->> -#endif /* #if defined(CONFIG_NO_HZ_FULL) */
->> +	cpumask = cpu_possible_mask;
->> +#elif defined(CONFIG_NO_HZ_FULL)
->> +	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask))
->> +		cpumask = tick_nohz_full_mask;
->> +#endif
->>  
->> -	if (need_rcu_nocb_mask) {
->> +	if (cpumask) {
->>  		if (!cpumask_available(rcu_nocb_mask)) {
->>  			if (!zalloc_cpumask_var(&rcu_nocb_mask, GFP_KERNEL)) {
->>  				pr_info("rcu_nocb_mask allocation failed, callback offloading disabled.\n");
+>> -	if (!rcu_state.nocb_is_setup) {
+>> +	if (!cpumask_available(rcu_nocb_mask)) {
+>>  		need_rcu_nocb_mask = true;
+>>  		offload_all = true;
+>>  	}
+>> @@ -1235,10 +1234,9 @@ void __init rcu_init_nohz(void)
 >>  				return;
 >>  			}
 >>  		}
->> +
->> +		cpumask_or(rcu_nocb_mask, rcu_nocb_mask, cpumask);
+>> -		rcu_state.nocb_is_setup = true;
 >>  	}
 >>  
->>  	if (!cpumask_available(rcu_nocb_mask))
+>> -	if (!rcu_state.nocb_is_setup)
+>> +	if (!cpumask_available(rcu_nocb_mask))
 >>  		return;
 >>  
->> -#if defined(CONFIG_NO_HZ_FULL)
->> -	if (tick_nohz_full_running)
->> -		cpumask_or(rcu_nocb_mask, rcu_nocb_mask, tick_nohz_full_mask);
->> -#endif /* #if defined(CONFIG_NO_HZ_FULL) */
->> -
->> -	if (offload_all)
->> -		cpumask_setall(rcu_nocb_mask);
->> -
->>  	if (!cpumask_subset(rcu_nocb_mask, cpu_possible_mask)) {
->>  		pr_info("\tNote: kernel parameter 'rcu_nocbs=', 'nohz_full', or 'isolcpus=' contains nonexistent CPUs.\n");
->>  		cpumask_and(rcu_nocb_mask, cpu_possible_mask,
+>>  #if defined(CONFIG_NO_HZ_FULL)
+>> @@ -1299,7 +1297,7 @@ static void rcu_spawn_cpu_nocb_kthread(int cpu)
+>>  	struct task_struct *t;
+>>  	struct sched_param sp;
+>>  
+>> -	if (!rcu_scheduler_fully_active || !rcu_state.nocb_is_setup)
+>> +	if (!rcu_scheduler_fully_active || !cpumask_available(rcu_nocb_mask))
+>>  		return;
+>>  
+>>  	/* If there already is an rcuo kthread, then nothing to do. */
 >> -- 
 >> 2.25.1
 >>
