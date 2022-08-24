@@ -2,109 +2,170 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2774EC38142
-	for <rcu@archiver.kernel.org>; Wed, 24 Aug 2022 01:25:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 09F68C00140
+	for <rcu@archiver.kernel.org>; Wed, 24 Aug 2022 13:38:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229742AbiHXBZ6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 23 Aug 2022 21:25:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40644 "EHLO
+        id S238353AbiHXNi0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 24 Aug 2022 09:38:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbiHXBZ5 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 23 Aug 2022 21:25:57 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24CC52B60B;
-        Tue, 23 Aug 2022 18:25:57 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id 20so14342804plo.10;
-        Tue, 23 Aug 2022 18:25:57 -0700 (PDT)
+        with ESMTP id S238375AbiHXNiW (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 24 Aug 2022 09:38:22 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4D347D7BB;
+        Wed, 24 Aug 2022 06:38:21 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id n15so2960079lfe.3;
+        Wed, 24 Aug 2022 06:38:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc;
-        bh=uUmdHBpzbriSuoiotw31C+sqS36Q04kPztFqTxJQriw=;
-        b=dpb/yMlot+zmKLKXIjN6Lvob6LhNAAMCj/+/Os1pajANbCivi3fer2r0Fmqkba5q5j
-         mbVtDCeEkBqAxJA3Jwlcnmc1UGiPMfco0NiKCUraZVvrh30cMjKwZxOY9GGgVhthe9Ba
-         9YnAbqk5d/0N1mR8i2cUsV7gh4GHg62DdyrbY8WR+VFMR8zadMzS98Xqp6+Rt14tDot6
-         pPYnphfWLxgQrJveBRXJbcJ65Cl48WyQilgLXE7j4egkKdSNlm0kFrmVKaakvi1wWVxf
-         fPS6XZsZsSycgRBMgX8F1jZmlqbGON/rJYkPsA+k23m1N6Yq7vijy6NkAS6mIBkCqrXR
-         D+0g==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=OdBnoS8zGnfacBUoB38O3wipMG6DwRHyyQgDcbST94Y=;
+        b=BCzSMmHT4nrXEhbH+xrvIhbKLDFCz8BfUSaUvbExriat86XTcUJqUXmZozIcLok1+U
+         Nm8y5nFXpVX1Weeizbj+m6+foV4ZUpCNN/aSrbmDzssnL0KyUgdNqqpsskqXth91KhEU
+         VG51XEejAMiszJ8tnoG2PmJjz8sibLv+urZYVMlxULaDk5M+qOVPuxXW5FJFmPxDtq5B
+         PLRIBxjadn8ld+q9izfiVagHkOrY6a39nuWfQLqHzZYlKHxfFDE+enjrnfnr8jivK1NB
+         VVtdldxUstBr+TJFEWPCjLiYAzlNIuv/othu/hrCunbCR3Wlr+GN82eVOagu130Z/F81
+         MfRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc;
-        bh=uUmdHBpzbriSuoiotw31C+sqS36Q04kPztFqTxJQriw=;
-        b=GPNj+g7jpkJARxsmHFEPO3PW5Qgs4TkPO1QuL8hmr1d44q2AyiEEYkaHd2UY4Zwdmo
-         Nni63aX0MBR0UJdmKD1XAutHRS42C1C7joFqxQaCj37xINdB1G71NRcxoOkUsAg9E1W2
-         4Zv8pGRey91RYpT1P+g80nJ3gxW5B4IZc4JWMypBlkw7He1H5axSUJM5C/Eua554bJzN
-         1dVtfDBSMuQasDQhK843E9/MmRS9oXfsfdC+OIZjyarv7vdaQke3S/9y2ayWzbrVR/R+
-         aAbsZmymkNnaNv1x4vNCTl6j6RqHbmb4KOlDWOeMZF0AaHpTeT4/jn6WL8j2iS4IYSKG
-         HCBg==
-X-Gm-Message-State: ACgBeo1ph3rDgF6DE46Qy1BZTPmvR4U5dtK/lHDzqap2C7Ho0pr9VNqb
-        JZhPqv9XYMML7S3/L+al4Hy/d8XQpseH4iZND6U=
-X-Google-Smtp-Source: AA6agR7xbfLJ1Uo0SN1Sc8YyuIhlZnLymcTgcuHc3xIKaCc5l2Col+H8uCrdOb9eDMMna3TkYDUkhhZNCNjnMhaqWsU=
-X-Received: by 2002:a17:90b:4a05:b0:1f5:62d5:4155 with SMTP id
- kk5-20020a17090b4a0500b001f562d54155mr6063079pjb.6.1661304356632; Tue, 23 Aug
- 2022 18:25:56 -0700 (PDT)
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=OdBnoS8zGnfacBUoB38O3wipMG6DwRHyyQgDcbST94Y=;
+        b=rhe1R8SXCySx0zvMEkMciZ2eLhOka/utCR6dBh4AF0FkToT6nujpb4HISxRKJp4jkE
+         dxYl8HmMSNKxNylTpiW4LdaoJnQpbUpP5S98Gu/IgWjpSa8QtbvJJ5ws+I89L7v9VbB8
+         ocncbJsBKantdANN2hxGUY25JZHrM2LZP+33O7jZcFJsAs/dG6Ln4inU4sz82demo3En
+         KfVfIpWi6ANbwfA5XilgI7C8kbTQ4TzHJ09ZIyeGAnDzz5oSenPx9KKdxLidXAykRBoI
+         +pI9h+Fl3+E7ztpzrqprxmhJt2x39waVyJR4v+7yY6LI7vpJx/2BMo0jKxFL+vfGOUsd
+         Zhzw==
+X-Gm-Message-State: ACgBeo11XWEHKhRl7SpjXMi+uMiWNqUd2ka32JHcWd4pua92aP+1w4lr
+        H2nX+aLTN/4rYHDJRBQMPfJOHgFufG9dyCHNDA==
+X-Google-Smtp-Source: AA6agR7Z0zmPZ2oTAyl5ghHIdjlSL5e3Ijh1+AfwqpZX6nNCu1Q6vqfZNvjO8c9qRfVSO0gGPMo+SZIWqcvHyA1ZcWw=
+X-Received: by 2002:a05:6512:228a:b0:48a:fa84:e298 with SMTP id
+ f10-20020a056512228a00b0048afa84e298mr9475953lfu.183.1661348299946; Wed, 24
+ Aug 2022 06:38:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220821010030.97539-1-zhouzhouyi@gmail.com> <87edx7l5px.fsf@mpe.ellerman.id.au>
- <0d7b55bc-4dd2-7de1-8ca5-353b1a044caf@csgroup.eu> <3756ad84-a5b0-b404-7962-86f77d6f38b3@csgroup.eu>
-In-Reply-To: <3756ad84-a5b0-b404-7962-86f77d6f38b3@csgroup.eu>
-From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
-Date:   Wed, 24 Aug 2022 09:25:45 +0800
-Message-ID: <CAABZP2w5zOWwLknAEY4UoEQZraOn29TqpaaZxmZKpqS2GhT_yQ@mail.gmail.com>
-Subject: Re: [PATCH linux-next] powerpc: disable sanitizer in irq_soft_mask_set
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        atrajeev@linux.vnet.ibm.com,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>, lance@osuosl.org,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu <rcu@vger.kernel.org>
+References: <20220822021520.6996-1-kernelfans@gmail.com> <20220822021520.6996-7-kernelfans@gmail.com>
+ <CAEXW_YRH11xFg-0nQfvv59SMFCW=SNTEEL0oHJKTs1X45wGr7w@mail.gmail.com>
+ <YwQzyMlY6fa2WrM5@piliu.users.ipa.redhat.com> <CAEXW_YTJGqmi15itkPBNt_=Pj6PNG7aXWxq02UWQZ7rzj2mTiA@mail.gmail.com>
+In-Reply-To: <CAEXW_YTJGqmi15itkPBNt_=Pj6PNG7aXWxq02UWQZ7rzj2mTiA@mail.gmail.com>
+From:   Pingfan Liu <kernelfans@gmail.com>
+Date:   Wed, 24 Aug 2022 21:38:08 +0800
+Message-ID: <CAFgQCTsp9QmMrmC_3-ecpwWYFuFYO5zYGP=nhOLktfAKX1OqBA@mail.gmail.com>
+Subject: Re: [RFC 06/10] rcu/hotplug: Make rcutree_dead_cpu() parallel
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Price <steven.price@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Aug 24, 2022 at 12:50 AM Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
+On Tue, Aug 23, 2022 at 11:14 AM Joel Fernandes <joel@joelfernandes.org> wrote:
 >
->
->
-> Le 23/08/2022 =C3=A0 10:47, Christophe Leroy a =C3=A9crit :
+> On Mon, Aug 22, 2022 at 9:56 PM Pingfan Liu <kernelfans@gmail.com> wrote:
 > >
+> > On Mon, Aug 22, 2022 at 02:08:38PM -0400, Joel Fernandes wrote:
+> > > On Sun, Aug 21, 2022 at 10:16 PM Pingfan Liu <kernelfans@gmail.com> wrote:
+> > > >
+> > > > In order to support parallel, rcu_state.n_online_cpus should be
+> > > > atomic_dec()
+> > >
+> > > What does Parallel mean? Is that some kexec terminology?
+> > >
 > >
-> > Le 23/08/2022 =C3=A0 10:33, Michael Ellerman a =C3=A9crit :
-> >> Zhouyi Zhou <zhouzhouyi@gmail.com> writes:
-> >>
-> >> My worry is that this will force irq_soft_mask_set() out of line, whic=
-h
-> >> we would rather avoid. It's meant to be a fast path.
-> >>
-> >> In fact with this applied I see nearly 300 out-of-line copies of the
-> >> function when building a defconfig, and ~1700 calls to it.
-> >>
-> >> Normally it is inlined at every call site.
-> >>
-> >>
-> >> So I think I'm inclined to revert ef5b570d3700 ("powerpc/irq: Don't op=
-en
-> >> code irq_soft_mask helpers").
-> >
-> > Could you revert it only partially ? In extenso, revert the
-> > READ/WRITE_ONCE and bring back the inline asm in irq_soft_mask_return()
-> >   and irq_soft_mask_set(), but keep other changes.
+> > 'Parallel' means concurrent. It is not a kexec terminology, instead,
+> > should be SMP.
 >
-> I sent a patch doing that.
-Thank Christophe for the fix. I am very glad to be of benefit to the
-community ;-)
-Also thank Michael and Paul for your constant encouragement and
-guidance, I learned to use objdump to count the number of failed
-inline function calls today ;-)
+> Ah ok! Makes sense. Apologies to be the word-police here, but you
+> probably could reword it to "In order to support parallel offlining"
+> or some such.
+>
 
-By the way, from my experiments, both gcc-11 and clang-14 behave the
-same as Michael has described.
+Thanks for your advice. It is a good English lesson, which can give
+more productivity in the community.
 
-Cheers
-Zhouyi
+
+Thanks,
+
+    Pingfan
+
+
+>  - Joel
 >
-> Christophe
+>
+>
+> >
+> > Thanks,
+> >
+> >         Pingfan
+> >
+> >
+> > > Thanks,
+> > >
+> > >  - Joel
+> > >
+> > > >
+> > > > Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+> > > > Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> > > > Cc: Frederic Weisbecker <frederic@kernel.org>
+> > > > Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+> > > > Cc: Josh Triplett <josh@joshtriplett.org>
+> > > > Cc: Steven Rostedt <rostedt@goodmis.org>
+> > > > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > > > Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> > > > Cc: Joel Fernandes <joel@joelfernandes.org>
+> > > > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > > > Cc: Steven Price <steven.price@arm.com>
+> > > > Cc: "Peter Zijlstra
+> > > > Cc: Mark Rutland <mark.rutland@arm.com>
+> > > > Cc: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> > > > Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>
+> > > > To: linux-kernel@vger.kernel.org
+> > > > To: rcu@vger.kernel.org
+> > > > ---
+> > > >  kernel/cpu.c      | 1 +
+> > > >  kernel/rcu/tree.c | 3 ++-
+> > > >  2 files changed, 3 insertions(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/kernel/cpu.c b/kernel/cpu.c
+> > > > index 1261c3f3be51..90debbe28e85 100644
+> > > > --- a/kernel/cpu.c
+> > > > +++ b/kernel/cpu.c
+> > > > @@ -1872,6 +1872,7 @@ static struct cpuhp_step cpuhp_hp_states[] = {
+> > > >                 .name                   = "RCU/tree:prepare",
+> > > >                 .startup.single         = rcutree_prepare_cpu,
+> > > >                 .teardown.single        = rcutree_dead_cpu,
+> > > > +               .support_kexec_parallel = true,
+> > > >         },
+> > > >         /*
+> > > >          * On the tear-down path, timers_dead_cpu() must be invoked
+> > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > > index 79aea7df4345..07d31e16c65e 100644
+> > > > --- a/kernel/rcu/tree.c
+> > > > +++ b/kernel/rcu/tree.c
+> > > > @@ -2168,7 +2168,8 @@ int rcutree_dead_cpu(unsigned int cpu)
+> > > >         if (!IS_ENABLED(CONFIG_HOTPLUG_CPU))
+> > > >                 return 0;
+> > > >
+> > > > -       WRITE_ONCE(rcu_state.n_online_cpus, rcu_state.n_online_cpus - 1);
+> > > > +       /* Hot remove path allows parallel, while Hot add races against remove on lock */
+> > > > +       atomic_dec((atomic_t *)&rcu_state.n_online_cpus);
+> > > >         /* Adjust any no-longer-needed kthreads. */
+> > > >         rcu_boost_kthread_setaffinity(rnp, -1);
+> > > >         // Stop-machine done, so allow nohz_full to disable tick.
+> > > > --
+> > > > 2.31.1
+> > > >
