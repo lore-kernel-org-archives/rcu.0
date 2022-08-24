@@ -2,59 +2,60 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 09F68C00140
-	for <rcu@archiver.kernel.org>; Wed, 24 Aug 2022 13:38:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FC6BC00140
+	for <rcu@archiver.kernel.org>; Wed, 24 Aug 2022 13:51:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238353AbiHXNi0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 24 Aug 2022 09:38:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54122 "EHLO
+        id S236248AbiHXNvc (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 24 Aug 2022 09:51:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238375AbiHXNiW (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 24 Aug 2022 09:38:22 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4D347D7BB;
-        Wed, 24 Aug 2022 06:38:21 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id n15so2960079lfe.3;
-        Wed, 24 Aug 2022 06:38:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=OdBnoS8zGnfacBUoB38O3wipMG6DwRHyyQgDcbST94Y=;
-        b=BCzSMmHT4nrXEhbH+xrvIhbKLDFCz8BfUSaUvbExriat86XTcUJqUXmZozIcLok1+U
-         Nm8y5nFXpVX1Weeizbj+m6+foV4ZUpCNN/aSrbmDzssnL0KyUgdNqqpsskqXth91KhEU
-         VG51XEejAMiszJ8tnoG2PmJjz8sibLv+urZYVMlxULaDk5M+qOVPuxXW5FJFmPxDtq5B
-         PLRIBxjadn8ld+q9izfiVagHkOrY6a39nuWfQLqHzZYlKHxfFDE+enjrnfnr8jivK1NB
-         VVtdldxUstBr+TJFEWPCjLiYAzlNIuv/othu/hrCunbCR3Wlr+GN82eVOagu130Z/F81
-         MfRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=OdBnoS8zGnfacBUoB38O3wipMG6DwRHyyQgDcbST94Y=;
-        b=rhe1R8SXCySx0zvMEkMciZ2eLhOka/utCR6dBh4AF0FkToT6nujpb4HISxRKJp4jkE
-         dxYl8HmMSNKxNylTpiW4LdaoJnQpbUpP5S98Gu/IgWjpSa8QtbvJJ5ws+I89L7v9VbB8
-         ocncbJsBKantdANN2hxGUY25JZHrM2LZP+33O7jZcFJsAs/dG6Ln4inU4sz82demo3En
-         KfVfIpWi6ANbwfA5XilgI7C8kbTQ4TzHJ09ZIyeGAnDzz5oSenPx9KKdxLidXAykRBoI
-         +pI9h+Fl3+E7ztpzrqprxmhJt2x39waVyJR4v+7yY6LI7vpJx/2BMo0jKxFL+vfGOUsd
-         Zhzw==
-X-Gm-Message-State: ACgBeo11XWEHKhRl7SpjXMi+uMiWNqUd2ka32JHcWd4pua92aP+1w4lr
-        H2nX+aLTN/4rYHDJRBQMPfJOHgFufG9dyCHNDA==
-X-Google-Smtp-Source: AA6agR7Z0zmPZ2oTAyl5ghHIdjlSL5e3Ijh1+AfwqpZX6nNCu1Q6vqfZNvjO8c9qRfVSO0gGPMo+SZIWqcvHyA1ZcWw=
-X-Received: by 2002:a05:6512:228a:b0:48a:fa84:e298 with SMTP id
- f10-20020a056512228a00b0048afa84e298mr9475953lfu.183.1661348299946; Wed, 24
- Aug 2022 06:38:19 -0700 (PDT)
+        with ESMTP id S238763AbiHXNty (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 24 Aug 2022 09:49:54 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3776F9A9DA;
+        Wed, 24 Aug 2022 06:45:09 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A931B61786;
+        Wed, 24 Aug 2022 13:45:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D79A4C433D6;
+        Wed, 24 Aug 2022 13:45:06 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="iGKKsQGw"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1661348703;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZLtAsF2uZ9ocOb5E6/KIG4KyzKa728jhYH5YX05G5Ac=;
+        b=iGKKsQGwwzxqfQugSyH9e8+0wsfHfn7IASIQBlcjRKKwha/bjUVL0mcdoCXN6zZh51j72s
+        Ci1MTsR0ad1DtVx5X0D1UnePA5xn2WGTWOE53t0kJkLDs0nfVmEyerJtOWplVsej7D809S
+        I4luJft4eIGfz54Wxl4PMBRgQN1m6Hc=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id d95281f0 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Wed, 24 Aug 2022 13:45:03 +0000 (UTC)
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-3375488624aso431904707b3.3;
+        Wed, 24 Aug 2022 06:45:02 -0700 (PDT)
+X-Gm-Message-State: ACgBeo3BGl+Ru6yEq67sjmpUY3YFP8hVwuP/HKWWrO4hWKrnHtr4ws1j
+        2zKZvL4FUC6EQg+CHAH+QfYEJcMGytRfvW0R0Vs=
+X-Google-Smtp-Source: AA6agR72fmrESu0IuSCwVNckXUvR1jJheO3GJct5r4F5XpU2Zpb00FWb1tpIjnDDNhvAKv6ek8rQRFeF6upoFJlPA8Q=
+X-Received: by 2002:a81:6141:0:b0:328:30e0:a6ca with SMTP id
+ v62-20020a816141000000b0032830e0a6camr32712430ywb.454.1661348699719; Wed, 24
+ Aug 2022 06:44:59 -0700 (PDT)
 MIME-Version: 1.0
+Received: by 2002:a05:7110:2589:b0:191:2a95:8ff9 with HTTP; Wed, 24 Aug 2022
+ 06:44:59 -0700 (PDT)
+In-Reply-To: <YwQzyMlY6fa2WrM5@piliu.users.ipa.redhat.com>
 References: <20220822021520.6996-1-kernelfans@gmail.com> <20220822021520.6996-7-kernelfans@gmail.com>
- <CAEXW_YRH11xFg-0nQfvv59SMFCW=SNTEEL0oHJKTs1X45wGr7w@mail.gmail.com>
- <YwQzyMlY6fa2WrM5@piliu.users.ipa.redhat.com> <CAEXW_YTJGqmi15itkPBNt_=Pj6PNG7aXWxq02UWQZ7rzj2mTiA@mail.gmail.com>
-In-Reply-To: <CAEXW_YTJGqmi15itkPBNt_=Pj6PNG7aXWxq02UWQZ7rzj2mTiA@mail.gmail.com>
-From:   Pingfan Liu <kernelfans@gmail.com>
-Date:   Wed, 24 Aug 2022 21:38:08 +0800
-Message-ID: <CAFgQCTsp9QmMrmC_3-ecpwWYFuFYO5zYGP=nhOLktfAKX1OqBA@mail.gmail.com>
+ <CAEXW_YRH11xFg-0nQfvv59SMFCW=SNTEEL0oHJKTs1X45wGr7w@mail.gmail.com> <YwQzyMlY6fa2WrM5@piliu.users.ipa.redhat.com>
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+Date:   Wed, 24 Aug 2022 09:44:59 -0400
+X-Gmail-Original-Message-ID: <CAHmME9oLpTus_yVEcocWLB35RGi32xR8pJtTEL_dK180knW=Og@mail.gmail.com>
+Message-ID: <CAHmME9oLpTus_yVEcocWLB35RGi32xR8pJtTEL_dK180knW=Og@mail.gmail.com>
 Subject: Re: [RFC 06/10] rcu/hotplug: Make rcutree_dead_cpu() parallel
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
+To:     Pingfan Liu <kernelfans@gmail.com>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        LKML <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
         "Paul E. McKenney" <paulmck@kernel.org>,
         Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
@@ -66,106 +67,27 @@ Cc:     LKML <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
         Steven Price <steven.price@arm.com>,
         Mark Rutland <mark.rutland@arm.com>,
         Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Aug 23, 2022 at 11:14 AM Joel Fernandes <joel@joelfernandes.org> wrote:
+On 8/22/22, Pingfan Liu <kernelfans@gmail.com> wrote:
+> On Mon, Aug 22, 2022 at 02:08:38PM -0400, Joel Fernandes wrote:
+>> On Sun, Aug 21, 2022 at 10:16 PM Pingfan Liu <kernelfans@gmail.com>
+>> wrote:
+>> >
+>> > In order to support parallel, rcu_state.n_online_cpus should be
+>> > atomic_dec()
+>>
+>> What does Parallel mean? Is that some kexec terminology?
+>>
 >
-> On Mon, Aug 22, 2022 at 9:56 PM Pingfan Liu <kernelfans@gmail.com> wrote:
-> >
-> > On Mon, Aug 22, 2022 at 02:08:38PM -0400, Joel Fernandes wrote:
-> > > On Sun, Aug 21, 2022 at 10:16 PM Pingfan Liu <kernelfans@gmail.com> wrote:
-> > > >
-> > > > In order to support parallel, rcu_state.n_online_cpus should be
-> > > > atomic_dec()
-> > >
-> > > What does Parallel mean? Is that some kexec terminology?
-> > >
-> >
-> > 'Parallel' means concurrent. It is not a kexec terminology, instead,
-> > should be SMP.
->
-> Ah ok! Makes sense. Apologies to be the word-police here, but you
-> probably could reword it to "In order to support parallel offlining"
-> or some such.
->
+> 'Parallel' means concurrent. It is not a kexec terminology, instead,
+> should be SMP.
 
-Thanks for your advice. It is a good English lesson, which can give
-more productivity in the community.
+Only sort of. See section A.6 of Paul 's book:
+http://kernel.org/pub/linux/kernel/people/paulmck/perfbook/perfbook.html
 
-
-Thanks,
-
-    Pingfan
-
-
->  - Joel
->
->
->
-> >
-> > Thanks,
-> >
-> >         Pingfan
-> >
-> >
-> > > Thanks,
-> > >
-> > >  - Joel
-> > >
-> > > >
-> > > > Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
-> > > > Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> > > > Cc: Frederic Weisbecker <frederic@kernel.org>
-> > > > Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
-> > > > Cc: Josh Triplett <josh@joshtriplett.org>
-> > > > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > > > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > > > Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-> > > > Cc: Joel Fernandes <joel@joelfernandes.org>
-> > > > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > > > Cc: Steven Price <steven.price@arm.com>
-> > > > Cc: "Peter Zijlstra
-> > > > Cc: Mark Rutland <mark.rutland@arm.com>
-> > > > Cc: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-> > > > Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>
-> > > > To: linux-kernel@vger.kernel.org
-> > > > To: rcu@vger.kernel.org
-> > > > ---
-> > > >  kernel/cpu.c      | 1 +
-> > > >  kernel/rcu/tree.c | 3 ++-
-> > > >  2 files changed, 3 insertions(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/kernel/cpu.c b/kernel/cpu.c
-> > > > index 1261c3f3be51..90debbe28e85 100644
-> > > > --- a/kernel/cpu.c
-> > > > +++ b/kernel/cpu.c
-> > > > @@ -1872,6 +1872,7 @@ static struct cpuhp_step cpuhp_hp_states[] = {
-> > > >                 .name                   = "RCU/tree:prepare",
-> > > >                 .startup.single         = rcutree_prepare_cpu,
-> > > >                 .teardown.single        = rcutree_dead_cpu,
-> > > > +               .support_kexec_parallel = true,
-> > > >         },
-> > > >         /*
-> > > >          * On the tear-down path, timers_dead_cpu() must be invoked
-> > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > > index 79aea7df4345..07d31e16c65e 100644
-> > > > --- a/kernel/rcu/tree.c
-> > > > +++ b/kernel/rcu/tree.c
-> > > > @@ -2168,7 +2168,8 @@ int rcutree_dead_cpu(unsigned int cpu)
-> > > >         if (!IS_ENABLED(CONFIG_HOTPLUG_CPU))
-> > > >                 return 0;
-> > > >
-> > > > -       WRITE_ONCE(rcu_state.n_online_cpus, rcu_state.n_online_cpus - 1);
-> > > > +       /* Hot remove path allows parallel, while Hot add races against remove on lock */
-> > > > +       atomic_dec((atomic_t *)&rcu_state.n_online_cpus);
-> > > >         /* Adjust any no-longer-needed kthreads. */
-> > > >         rcu_boost_kthread_setaffinity(rnp, -1);
-> > > >         // Stop-machine done, so allow nohz_full to disable tick.
-> > > > --
-> > > > 2.31.1
-> > > >
+Jason
