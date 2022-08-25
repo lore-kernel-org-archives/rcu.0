@@ -2,108 +2,146 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B6857C04AA5
-	for <rcu@archiver.kernel.org>; Thu, 25 Aug 2022 02:56:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 425FBC28D13
+	for <rcu@archiver.kernel.org>; Thu, 25 Aug 2022 07:13:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229869AbiHYC4G (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 24 Aug 2022 22:56:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42716 "EHLO
+        id S231305AbiHYHN1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 25 Aug 2022 03:13:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229741AbiHYC4G (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 24 Aug 2022 22:56:06 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C35D9DF96
-        for <rcu@vger.kernel.org>; Wed, 24 Aug 2022 19:56:04 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id a15so14213854qko.4
-        for <rcu@vger.kernel.org>; Wed, 24 Aug 2022 19:56:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=content-transfer-encoding:subject:from:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc;
-        bh=p2GbpmYJgjV2N881UGR0VWD4BcfHaSZy8YTSUqUtlwE=;
-        b=AIFtsz6fvKf9Zc8bACH9V1Jpfq/1Rj/tIQpXXBDKeXMv0DwwiblKBsreVWQCzDEfqE
-         GwPza+60nwCvbbFL3VxY/5dH2q+lZ2Uy5cIVihg31TOnpRQ2rUgIjlKb6LZAs1VQpD5F
-         zhLhou9O5ylVqcchX/4GgJ6zWAbGJaKlbvBqc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:subject:from:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc;
-        bh=p2GbpmYJgjV2N881UGR0VWD4BcfHaSZy8YTSUqUtlwE=;
-        b=qGFuxDLw49c8tS5BAcUKe5SDv2gIcJsN6H2kQwJ2hMSB8E8wLhks/3/ZFlqg/iQZd3
-         FTR3Q0hC2vCOVQ1gkfHzXkrTqw8rL3Fe748YNSIbXkBcoEOkU7f8sHYzgPznCFi1TxlH
-         yvaA/5N7W2zOMKHD8/jc9/fsJCYAiPgEozz1vQqz9Q/wdjLuzbBcQPgqNjxbKiGZxZo4
-         3aBF85KPvM6kcnQ9m1Qf3bzICIS9JnKoSAOeM9TC9bncxHjFCJW8oSZynNxUrCeyT4IZ
-         cZ+1UW2tqKAX3ViIDX7qcHoN9X0Ajnb2dG7kYRKam5xSkVVDG1LPGaXhJOXAiFWvoBKv
-         G33Q==
-X-Gm-Message-State: ACgBeo1T6WA2t2qFcfJULn5KkI86nNfDBPT2e+ZxncvWmNqNT2Mjkw6+
-        TWebtmRA1DGOIAbq/srFJbAINQ==
-X-Google-Smtp-Source: AA6agR7SnUtF1dbnk0cQr/GjTQ8nmmOLGApC69IqSxYCik7tcgB0RH+WpC9j+SPOep0F8XSDNBv1Rw==
-X-Received: by 2002:a05:620a:1919:b0:6bb:6778:ea80 with SMTP id bj25-20020a05620a191900b006bb6778ea80mr1634269qkb.41.1661396163668;
-        Wed, 24 Aug 2022 19:56:03 -0700 (PDT)
-Received: from [10.0.0.40] (c-73-148-104-166.hsd1.va.comcast.net. [73.148.104.166])
-        by smtp.gmail.com with ESMTPSA id f3-20020ac80683000000b00339163a06fcsm13668334qth.6.2022.08.24.19.56.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Aug 2022 19:56:03 -0700 (PDT)
-Message-ID: <85afd876-d8bb-0804-b2c5-48ed3055e702@joelfernandes.org>
-Date:   Wed, 24 Aug 2022 22:56:01 -0400
+        with ESMTP id S236760AbiHYHN0 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 25 Aug 2022 03:13:26 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E85ED18E26
+        for <rcu@vger.kernel.org>; Thu, 25 Aug 2022 00:13:24 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 9C02C1FD45;
+        Thu, 25 Aug 2022 07:13:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1661411603; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3Q0BQN9PeDNTGKIZYJb+MBKCVnLgmAIYlCOIYS/xuNc=;
+        b=cO1Eoa7l4RqT7OJVr/GXM7Srsni5gEdnmPKi1NAYtzeXksjU5C5A0w2aqq5miuXIyJ+Eiy
+        FHDyHUHlAWAL+shy/zD7NoJ8P2Rwge35FqDosQ4WIseS4tOm6Up84N0YXQc+dVRgaI36RG
+        Vrxn2qHRMEgYkT2i8JgO9edhnPu+E5o=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1661411603;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3Q0BQN9PeDNTGKIZYJb+MBKCVnLgmAIYlCOIYS/xuNc=;
+        b=TuKUq7Cww8wI0pfwjllcUNZiUt64az+8nBQ4uKwhxg+LE84xChb/wvDbbxoJo9ZV0TjDYL
+        sqJBxtIcXzhdX+BA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 84E4713A47;
+        Thu, 25 Aug 2022 07:13:23 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 46qDHxMhB2NaSAAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Thu, 25 Aug 2022 07:13:23 +0000
+Message-ID: <be4edb7f-031b-905e-d615-560ac206d82a@suse.cz>
+Date:   Thu, 25 Aug 2022 09:13:23 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.1.2
+Subject: Re: How to increase rcu_head size without breaking -mm ?
+To:     Joel Fernandes <joel@joelfernandes.org>, willy@infradead.org,
+        paulmck@kernel.org, rcu <rcu@vger.kernel.org>
+References: <85afd876-d8bb-0804-b2c5-48ed3055e702@joelfernandes.org>
 Content-Language: en-US
-To:     vbabka@suse.cz, willy@infradead.org, paulmck@kernel.org,
-        rcu <rcu@vger.kernel.org>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Subject: How to increase rcu_head size without breaking -mm ?
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <85afd876-d8bb-0804-b2c5-48ed3055e702@joelfernandes.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi,
-I am trying to add some debug information to rcu_head for some patches, and need
-your help! At least this used to work some time ago (> 1 year).
+On 8/25/22 04:56, Joel Fernandes wrote:
+> Hi,
+> I am trying to add some debug information to rcu_head for some patches, and need
+> your help! At least this used to work some time ago (> 1 year).
 
-I get various SLAB_MATCH() errors with a change like this:
+Hmm, got a patch of how it worked back then? Because what I see (in v5.12)
+struct page definition:
 
-diff --git a/include/linux/types.h b/include/linux/types.h
-index ea8cf60a8a79..daf7682a7a3b 100644
---- a/include/linux/types.h
-+++ b/include/linux/types.h
-@@ -220,6 +220,7 @@ struct ustat {
- struct callback_head {
-        struct callback_head *next;
-        void (*func)(struct callback_head *head);
-+       char buf[4];
- } __attribute__((aligned(sizeof(void *))));
- #define rcu_head callback_head
----
+	struct rcu_head rcu_head;
 
-Errors:
-mm/slab.h:67:9: note: in expansion of macro ‘static_assert’
-   67 |         static_assert(offsetof(struct page, pg) == offsetof(struct slab,
-sl))
-      |         ^~~~~~~~~~~~~
-mm/slab.h:73:1: note: in expansion of macro ‘SLAB_MATCH’
-   73 | SLAB_MATCH(_refcount, __page_refcount);
-      | ^~~~~~~~~~
+is in union with the whole of
 
-----------
+	struct {        /* slab, slob and slub */ ... }
 
-I tried various things like increasing the struct slab or struct page size using
-dummy variables, but nothing gives.
+which starts with
 
-I tried to print the offsets of the struct using the compiler, but that requires
-compilation to actually succeed. The same exercise with a pre-processor also
-does not help because nested structures could also including rcu_heads.
+	union { struct list_head slab_list;  ... }
+	struct kmem_cache *slab_cache; /* not slob */
 
-If I at least knew how the offsets were off, I could hack it for my needs (of
-course upstreaming such a change is a different story, but I do want to upstream
-some variant of rcu_head debug info).
+and there's e.g. kmem_rcu_free() in mm/slab.c that does
 
-Any thoughts on how we can accomplish this?
+        page = container_of(head, struct page, rcu_head);
+        cachep = page->slab_cache;
 
-Thanks!
+and very similar thing in mm/slub.c rcu_free_slab() - we assume that the
+rcu_head and slab_cache fields can coexist.
 
- - Joel
+So this looks silently fragile to me? In case rcu_head becomes larger than
+list_head, e.g. with your buf[4], it would start overlaping the
+page->slab_cache field, no?
+
+AFAICS the way it's structured now in struct slab in mm/slab.h, it makes the
+overlap impossible, thus the struct slab will grow as rcu_head grows, and
+offsets of the later fields stop matching struct page counterparts, which
+doesn't grow. Hmm.
+
+> I get various SLAB_MATCH() errors with a change like this:
+> 
+> diff --git a/include/linux/types.h b/include/linux/types.h
+> index ea8cf60a8a79..daf7682a7a3b 100644
+> --- a/include/linux/types.h
+> +++ b/include/linux/types.h
+> @@ -220,6 +220,7 @@ struct ustat {
+>  struct callback_head {
+>         struct callback_head *next;
+>         void (*func)(struct callback_head *head);
+> +       char buf[4];
+>  } __attribute__((aligned(sizeof(void *))));
+>  #define rcu_head callback_head
+> ---
+> 
+> Errors:
+> mm/slab.h:67:9: note: in expansion of macro ‘static_assert’
+>    67 |         static_assert(offsetof(struct page, pg) == offsetof(struct slab,
+> sl))
+>       |         ^~~~~~~~~~~~~
+> mm/slab.h:73:1: note: in expansion of macro ‘SLAB_MATCH’
+>    73 | SLAB_MATCH(_refcount, __page_refcount);
+>       | ^~~~~~~~~~
+> 
+> ----------
+> 
+> I tried various things like increasing the struct slab or struct page size using
+> dummy variables, but nothing gives.
+> 
+> I tried to print the offsets of the struct using the compiler, but that requires
+> compilation to actually succeed. The same exercise with a pre-processor also
+> does not help because nested structures could also including rcu_heads.
+> 
+> If I at least knew how the offsets were off, I could hack it for my needs (of
+> course upstreaming such a change is a different story, but I do want to upstream
+> some variant of rcu_head debug info).
+> 
+> Any thoughts on how we can accomplish this?
+> 
+> Thanks!
+> 
+>  - Joel
+
