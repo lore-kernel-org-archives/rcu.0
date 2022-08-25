@@ -2,225 +2,164 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 90592C28D13
-	for <rcu@archiver.kernel.org>; Thu, 25 Aug 2022 08:14:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F72CC28D13
+	for <rcu@archiver.kernel.org>; Thu, 25 Aug 2022 09:24:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236149AbiHYIOU (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 25 Aug 2022 04:14:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57072 "EHLO
+        id S239083AbiHYJYp (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 25 Aug 2022 05:24:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239512AbiHYIOU (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 25 Aug 2022 04:14:20 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD75E5C34C
-        for <rcu@vger.kernel.org>; Thu, 25 Aug 2022 01:14:18 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 2CBE120A6F;
-        Thu, 25 Aug 2022 08:14:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1661415257; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aOpaSBiOtqYNUf3Vwgx9gJZ+pualrFMxioa+DYNeAR4=;
-        b=IgdOmn7nCaZnd448P4z6k+6wtSzjSpfbi12MMbL1J5vCVkKf+oZe0yvofo1C1Ls+YcuX5Z
-        xiBo35JXzf5fs8nE1qdWWkdMrzBnu5X0AEum/shsqXYCr/JwhyuP4BtEB+azzeOAsDiGdA
-        hblLZhplD9nRXpvKKucA5e+FUTEXVng=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1661415257;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aOpaSBiOtqYNUf3Vwgx9gJZ+pualrFMxioa+DYNeAR4=;
-        b=ltb0y3d1uurwQLG7Dj3rKWCS//Zo6VZcmOn35MmPw7YQTGE+ixQFdpOl3++q6ez1wgm2Qm
-        +Pz3V47vjBtGOfBw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1638913A8E;
-        Thu, 25 Aug 2022 08:14:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id c8LaBFkvB2PlJgAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Thu, 25 Aug 2022 08:14:17 +0000
-Message-ID: <9ac74328-decf-bf67-d943-121008ed59b8@suse.cz>
-Date:   Thu, 25 Aug 2022 10:14:16 +0200
+        with ESMTP id S239950AbiHYJYh (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 25 Aug 2022 05:24:37 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3541AA368;
+        Thu, 25 Aug 2022 02:24:32 -0700 (PDT)
+Received: from dggpemm500024.china.huawei.com (unknown [172.30.72.53])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4MCyBM6CV4z1N7Gr;
+        Thu, 25 Aug 2022 17:20:59 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggpemm500024.china.huawei.com (7.185.36.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Thu, 25 Aug 2022 17:24:31 +0800
+Received: from thunder-town.china.huawei.com (10.174.178.55) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Thu, 25 Aug 2022 17:24:30 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        "Josh Triplett" <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, <rcu@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH v5 0/1] rcu/nocb: Delete local variable 'need_rcu_nocb_mask' in rcu_init_nohz()
+Date:   Thu, 25 Aug 2022 17:23:10 +0800
+Message-ID: <20220825092311.179-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: How to increase rcu_head size without breaking -mm ?
-Content-Language: en-US
-From:   Vlastimil Babka <vbabka@suse.cz>
-To:     Joel Fernandes <joel@joelfernandes.org>, willy@infradead.org,
-        paulmck@kernel.org, rcu <rcu@vger.kernel.org>
-References: <85afd876-d8bb-0804-b2c5-48ed3055e702@joelfernandes.org>
- <be4edb7f-031b-905e-d615-560ac206d82a@suse.cz>
- <ed9ebc8e-0ea8-4e5b-45fc-38f2538e7d36@suse.cz>
-In-Reply-To: <ed9ebc8e-0ea8-4e5b-45fc-38f2538e7d36@suse.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.178.55]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+v4 --> v5:
+1. Cancel eliminate rcu_state.nocb_is_setup. It is useful for case 1) below.
 
-On 8/25/22 09:50, Vlastimil Babka wrote:
-> 
-> On 8/25/22 09:13, Vlastimil Babka wrote:
->> On 8/25/22 04:56, Joel Fernandes wrote:
->>> Hi,
->>> I am trying to add some debug information to rcu_head for some patches, and need
->>> your help! At least this used to work some time ago (> 1 year).
->> 
->> Hmm, got a patch of how it worked back then? Because what I see (in v5.12)
->> struct page definition:
->> 
->> 	struct rcu_head rcu_head;
->> 
->> is in union with the whole of
->> 
->> 	struct {        /* slab, slob and slub */ ... }
->> 
->> which starts with
->> 
->> 	union { struct list_head slab_list;  ... }
->> 	struct kmem_cache *slab_cache; /* not slob */
->> 
->> and there's e.g. kmem_rcu_free() in mm/slab.c that does
->> 
->>         page = container_of(head, struct page, rcu_head);
->>         cachep = page->slab_cache;
->> 
->> and very similar thing in mm/slub.c rcu_free_slab() - we assume that the
->> rcu_head and slab_cache fields can coexist.
->> 
->> So this looks silently fragile to me? In case rcu_head becomes larger than
->> list_head, e.g. with your buf[4], it would start overlaping the
->> page->slab_cache field, no?
->> 
->> AFAICS the way it's structured now in struct slab in mm/slab.h, it makes the
->> overlap impossible, thus the struct slab will grow as rcu_head grows, and
->> offsets of the later fields stop matching struct page counterparts, which
->> doesn't grow. Hmm.
-> 
-> The following has made things compile for both SLUB and SLAB (didn't adjust
-> SLOB), the idea is to define more explicitly that everything can overlap
-> with rcu_head except slab_cache. So the structures don't even grow in the
-> end. Which requires moving slab_cache field around. Which would be fine
-> except for SLUB and its cmpxchg_double usage, which requires the
-> freelist+counter fields to be 128bit aligned, which means we can't fit it
-> all with these constraints. So that's broken with the patch and I don't see
-> an easy way to fix this.
+Test cases and test results as below:
+ ----------------------------------------------------------------------
+| CONFIG_NO_HZ_FULL  | CONFIG_RCU_NOCB_CPU_DEFAULT_ALL |    cmdline    |
+ ----------------------------------------------------------------------
+1)         N         |                 N               |     none      |
+2)         N         |                 N               | rcu_nocbs=1-2 |
+3)         Y         |                 N               | nohz_full=1-2 |
+4)         Y         |                 Y               |     none      |
+ ----------------------------------------------------------------------
+ 
+1)
+[ 1018.082417] rcu-torture:--- End of test: SUCCESS (default)
+root@genericarmv8:~# dmesg | grep "Offload RCU callbacks"
 
-Ah maybe I found a way. It requires that rcu_head in struct slab would be at
-different offset in struct page, and we drop the particular SLAB_MATCH
-check. I think it should be fine as we don't cast struct slab to struct page
-in the rcu calls/callbacks so it was probably there just for intermediate
-steps of the struct slab series, and can be dropped now.
+root@genericarmv8:~# zcat /proc/config.gz | grep NOCB
+CONFIG_RCU_NOCB_CPU=y
+# CONFIG_RCU_NOCB_CPU_DEFAULT_ALL is not set
+root@genericarmv8:~# zcat /proc/config.gz | grep NO_HZ_FULL
+# CONFIG_NO_HZ_FULL is not set
+root@genericarmv8:~# cat /proc/cmdline
+console=ttyS0 earlyprintk=serial root=/dev/sda rw
 
-So this should allow you to use up to 32 bytes of rcu_head.
+2) 3) 4)
+The same to v4.
 
-----8<----
-diff --git a/include/linux/types.h b/include/linux/types.h
-index ea8cf60a8a79..daf7682a7a3b 100644
---- a/include/linux/types.h
-+++ b/include/linux/types.h
-@@ -220,6 +220,7 @@ struct ustat {
- struct callback_head {
- 	struct callback_head *next;
- 	void (*func)(struct callback_head *head);
-+	char buf[4];
- } __attribute__((aligned(sizeof(void *))));
- #define rcu_head callback_head
- 
-diff --git a/mm/slab.h b/mm/slab.h
-index 4ec82bec15ec..dd49851f9814 100644
---- a/mm/slab.h
-+++ b/mm/slab.h
-@@ -12,37 +12,45 @@ struct slab {
- #if defined(CONFIG_SLAB)
- 
- 	union {
--		struct list_head slab_list;
-+		struct {
-+			struct list_head slab_list;
-+			void *freelist;	/* array of free object indexes */
-+			void *s_mem;	/* first object */
-+		};
- 		struct rcu_head rcu_head;
- 	};
- 	struct kmem_cache *slab_cache;
--	void *freelist;	/* array of free object indexes */
--	void *s_mem;	/* first object */
- 	unsigned int active;
- 
- #elif defined(CONFIG_SLUB)
- 
--	union {
--		struct list_head slab_list;
--		struct rcu_head rcu_head;
--#ifdef CONFIG_SLUB_CPU_PARTIAL
--		struct {
--			struct slab *next;
--			int slabs;	/* Nr of slabs left */
--		};
--#endif
--	};
- 	struct kmem_cache *slab_cache;
--	/* Double-word boundary */
--	void *freelist;		/* first free object */
-+
- 	union {
--		unsigned long counters;
- 		struct {
--			unsigned inuse:16;
--			unsigned objects:15;
--			unsigned frozen:1;
-+			union {
-+				struct list_head slab_list;
-+#ifdef CONFIG_SLUB_CPU_PARTIAL
-+				struct {
-+					struct slab *next;
-+					int slabs;	/* Nr of slabs left */
-+				};
-+#endif
-+			};
-+			/* Double-word boundary */
-+			void *freelist;		/* first free object */
-+			union {
-+				unsigned long counters;
-+				struct {
-+					unsigned inuse:16;
-+					unsigned objects:15;
-+					unsigned frozen:1;
-+				};
-+			};
- 		};
-+		struct rcu_head rcu_head;
- 	};
-+
- 	unsigned int __unused;
- 
- #elif defined(CONFIG_SLOB)
-@@ -66,9 +74,13 @@ struct slab {
- #define SLAB_MATCH(pg, sl)						\
- 	static_assert(offsetof(struct page, pg) == offsetof(struct slab, sl))
- SLAB_MATCH(flags, __page_flags);
-+#ifdef CONFIG_SLUB
-+SLAB_MATCH(compound_head, slab_cache);	/* Ensure bit 0 is clear */
-+#else
- SLAB_MATCH(compound_head, slab_list);	/* Ensure bit 0 is clear */
-+#endif
- #ifndef CONFIG_SLOB
--SLAB_MATCH(rcu_head, rcu_head);
-+// SLAB_MATCH(rcu_head, rcu_head); /* not necessary, hopefully? */
- #endif
- SLAB_MATCH(_refcount, __page_refcount);
- #ifdef CONFIG_MEMCG
 
+v3 --> v4:
+Fix a build warning.
+-       struct cpumask *cpumask = NULL;
++       const struct cpumask *cpumask = NULL;
+
+v2 --> v3:
+1. Eliminate rcu_state.nocb_is_setup
+2. Update the code based on the above patch and commit b37a667c6242
+   ("rcu/nocb: Add an option to offload all CPUs on boot").
+
+Test cases and test results as below:
+
+ ----------------------------------------------------------------------
+| CONFIG_NO_HZ_FULL  | CONFIG_RCU_NOCB_CPU_DEFAULT_ALL |    cmdline    |
+ ----------------------------------------------------------------------
+1)         N         |                 N               |     none      |
+2)         N         |                 N               | rcu_nocbs=1-2 |
+3)         Y         |                 N               | nohz_full=1-2 |
+4)         Y         |                 Y               |     none      |
+ ----------------------------------------------------------------------
+
+1)
+[ 1085.691770] rcu-torture:--- End of test: SUCCESS: (default)
+root@genericarmv8:~# dmesg | grep "Offload RCU callbacks"
+[    0.000000] rcu:     Offload RCU callbacks from CPUs: (none).
+root@genericarmv8:~# zcat /proc/config.gz | grep NOCB
+CONFIG_RCU_NOCB_CPU=y
+# CONFIG_RCU_NOCB_CPU_DEFAULT_ALL is not set
+root@genericarmv8:~# zcat /proc/config.gz | grep NO_HZ_FULL
+# CONFIG_NO_HZ_FULL is not set
+root@genericarmv8:~# cat /proc/cmdline
+console=ttyAMA0 root=/dev/vda2 crashkernel=256M@ee000000
+
+2)
+[ 1022.532198] rcu-torture:--- End of test: SUCCESS: (default)
+root@genericarmv8:~# dmesg | grep "Offload RCU callbacks"
+[    0.000000] rcu:     Offload RCU callbacks from CPUs: 1-2.
+root@genericarmv8:~# zcat /proc/config.gz | grep NOCB
+CONFIG_RCU_NOCB_CPU=y
+# CONFIG_RCU_NOCB_CPU_DEFAULT_ALL is not set
+root@genericarmv8:~# zcat /proc/config.gz | grep NO_HZ_FULL
+# CONFIG_NO_HZ_FULL is not set
+root@genericarmv8:~# cat /proc/cmdline
+console=ttyAMA0 root=/dev/vda2 crashkernel=256M@ee000000 rcu_nocbs=1-2
+
+3)
+[ 1011.714712] rcu-torture:--- End of test: SUCCESS: (default)
+root@genericarmv8:~# dmesg | grep "Offload RCU callbacks"
+[    0.000000] rcu:     Offload RCU callbacks from CPUs: 1-2.
+root@genericarmv8:~# zcat /proc/config.gz | grep NOCB
+CONFIG_RCU_NOCB_CPU=y
+# CONFIG_RCU_NOCB_CPU_DEFAULT_ALL is not set
+root@genericarmv8:~# zcat /proc/config.gz | grep NO_HZ_FULL
+CONFIG_NO_HZ_FULL=y
+root@genericarmv8:~# cat /proc/cmdline
+console=ttyAMA0 root=/dev/vda2 crashkernel=256M@ee000000 nohz_full=1-2
+
+4)
+[ 1031.047094] rcu-torture:--- End of test: SUCCESS: (default)
+root@genericarmv8:~# dmesg | grep "Offload RCU callbacks"
+[    0.000000] rcu:     Offload RCU callbacks from CPUs: 0-3.
+root@genericarmv8:~# zcat /proc/config.gz | grep NOCB
+CONFIG_RCU_NOCB_CPU=y
+CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y
+root@genericarmv8:~# zcat /proc/config.gz | grep NO_HZ_FULL
+CONFIG_NO_HZ_FULL=y
+root@genericarmv8:~# cat /proc/cmdline
+console=ttyAMA0 root=/dev/vda2 crashkernel=256M@ee000000
+
+
+v1 --> v2:
+Update commit message.
+
+
+Zhen Lei (1):
+  rcu: Simplify the code logic of rcu_init_nohz()
+
+ kernel/rcu/tree_nocb.h | 32 +++++++++-----------------------
+ 1 file changed, 9 insertions(+), 23 deletions(-)
+
+-- 
+2.25.1
 
