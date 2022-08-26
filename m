@@ -2,172 +2,123 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 50768ECAAA3
-	for <rcu@archiver.kernel.org>; Fri, 26 Aug 2022 01:42:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B87BECAAA3
+	for <rcu@archiver.kernel.org>; Fri, 26 Aug 2022 08:35:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244476AbiHZBmb (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 25 Aug 2022 21:42:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48182 "EHLO
+        id S231506AbiHZIf1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 26 Aug 2022 04:35:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231253AbiHZBma (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 25 Aug 2022 21:42:30 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A09DB3B27;
-        Thu, 25 Aug 2022 18:42:29 -0700 (PDT)
-Received: from dggpemm500024.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4MDMws2Q1tzGpqw;
-        Fri, 26 Aug 2022 09:40:45 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggpemm500024.china.huawei.com (7.185.36.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Fri, 26 Aug 2022 09:42:13 +0800
-Received: from [10.174.178.55] (10.174.178.55) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Fri, 26 Aug 2022 09:42:12 +0800
-Subject: Re: [PATCH v5 1/1] rcu: Simplify the code logic of rcu_init_nohz()
-To:     <paulmck@kernel.org>
-CC:     Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        "Steven Rostedt" <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, <rcu@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20220825092311.179-1-thunder.leizhen@huawei.com>
- <20220825092311.179-2-thunder.leizhen@huawei.com>
- <20220825172654.GP6159@paulmck-ThinkPad-P17-Gen-1>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <43370a3c-8c7a-c7c7-ac2b-bec2bf6c8728@huawei.com>
-Date:   Fri, 26 Aug 2022 09:42:11 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        with ESMTP id S236513AbiHZIfZ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 26 Aug 2022 04:35:25 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5557D24BC7
+        for <rcu@vger.kernel.org>; Fri, 26 Aug 2022 01:35:20 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 580231F88B;
+        Fri, 26 Aug 2022 08:35:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1661502919; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dQFM5veE9E83Qj5CVc2xWfzbe/ASbvDCJ4ztgwCSaqI=;
+        b=ZCaBmjpg+1lUbSr9Nq3o8QevlsT2Pgn/NQLnHEPNEoJAvG9ODXZWLy27wuOKWveDsrVNNb
+        JS41wdrZoNLCBJDcIGxuUXicawWp1ials1tK54oUoXo7fFveuDBcz+DzQOIWn4yo+ocIHK
+        S21vMkw4Z30IQCmTVT3khBt7spJw4dM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1661502919;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dQFM5veE9E83Qj5CVc2xWfzbe/ASbvDCJ4ztgwCSaqI=;
+        b=2DyJETc232CO1uSxIKyxmfXdi1pQr4bijHFTugoY6hx/7UuB9jczpNFY1H84DrJ2q3YCMb
+        i8YdfNZylRhDVlAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4211213A7E;
+        Fri, 26 Aug 2022 08:35:19 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id KPdSD8eFCGOOKgAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Fri, 26 Aug 2022 08:35:19 +0000
+Message-ID: <2837161b-4933-0778-42be-70922c6bd0fe@suse.cz>
+Date:   Fri, 26 Aug 2022 10:35:19 +0200
 MIME-Version: 1.0
-In-Reply-To: <20220825172654.GP6159@paulmck-ThinkPad-P17-Gen-1>
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.2
+Subject: Re: How to increase rcu_head size without breaking -mm ?
 Content-Language: en-US
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     willy@infradead.org, paulmck@kernel.org, rcu <rcu@vger.kernel.org>
+References: <85afd876-d8bb-0804-b2c5-48ed3055e702@joelfernandes.org>
+ <be4edb7f-031b-905e-d615-560ac206d82a@suse.cz>
+ <ed9ebc8e-0ea8-4e5b-45fc-38f2538e7d36@suse.cz>
+ <9ac74328-decf-bf67-d943-121008ed59b8@suse.cz> <YweOepUcoY3Sol8J@google.com>
+ <a13be7c9-7b6f-58f9-cf53-f51a8ad0d238@suse.cz> <YwfSsMPqHmHMG6gN@google.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <YwfSsMPqHmHMG6gN@google.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.55]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On 8/25/22 21:51, Joel Fernandes wrote:
+>> But we need to check the slab freeing functions themselves.
+>> It looks like SLAB is fine, slab_destroy() there takes care to copy the
+>> freelist pointer away before call_rcu() already and then it only works with
+>> the copy. Also nothing should need s_mem either, in case you need more bytes
+>> for the rcu_head debug.
+>> 
+>> SLUB seems also fine as the freeing doesn't try to look at the freelist even
+>> in case of debugging consistency checks being enabled. It could be a problem
+>> in case of a double-free, but that's already a problem anyway.
+>> In case you need more than the 8 bytes of freelist pointer, then overwriting
+>> the next 'counters' union would be a problem for the consistency checks as
+>> it reads slab->objects from there.
+>> But I guess we could do those checks before call_rcu, so the callback would
+>> then only free the slab page. The state expected by those checks doesn't
+>> depend on the grace period expiring.
+> 
+> Ok, sounds good, I can run it for a few days on real hardware and see if
+> something breaks or such. The most I can get with your patch is 12 bytes
+> before the FOLIO checks start complainting. I can stick to 8 bytes, and
+> perhaps we can allocate a separate debug object if we need more or something.
 
+Weird, it works for me with 16 bytes, both SLAB and SLUB.
 
-On 2022/8/26 1:26, Paul E. McKenney wrote:
-> On Thu, Aug 25, 2022 at 05:23:11PM +0800, Zhen Lei wrote:
->> When CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y or CONFIG_NO_HZ_FULL=y, additional
->> CPUs need to be added to 'rcu_nocb_mask'. But 'rcu_nocb_mask' may be not
->> available now, due to 'rcu_nocbs' is not specified. Check and initialize
->> 'rcu_nocb_mask' before using it. This code simplification strictly follows
->> this logic, compared with old implementations, unnecessary crossovers are
->> avoided and easy to understand.
->>
->> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>> >> @@ -66,9 +74,13 @@ struct slab {
+>> >>  #define SLAB_MATCH(pg, sl)						\
+>> >>  	static_assert(offsetof(struct page, pg) == offsetof(struct slab, sl))
+>> >>  SLAB_MATCH(flags, __page_flags);
+>> >> +#ifdef CONFIG_SLUB
+>> >> +SLAB_MATCH(compound_head, slab_cache);	/* Ensure bit 0 is clear */
+>> >> +#else
+>> >>  SLAB_MATCH(compound_head, slab_list);	/* Ensure bit 0 is clear */
+>> >> +#endif
+>> >>  #ifndef CONFIG_SLOB
+>> >> -SLAB_MATCH(rcu_head, rcu_head);
+>> >> +// SLAB_MATCH(rcu_head, rcu_head); /* not necessary, hopefully? */
+>> > 
+>> > I think if it helps, I can make this check as a dependency on a default-off
+>> > debug config option.
+>> 
+>> It wouldn't help as with this patch, for SLUB the rcu_head would start at
+>> different offset regardless of whether you enable the option to increase its
+>> size.
 > 
-> Much nicer, thank you!
+> True, unless we maintained 2 versions of the structs based on CONFIGs but
+> that's really ugly.
 > 
-> As usual, I could not resist the urge to wordsmith.  Could you please
-> check to make sure that I did not mess anything up?
+> Thanks so much for this patch, its surely helpful for debugging purposes and
+> I look forward to testing it more and providing you any feedback!
 
-Okay, thank you very much. The boot option name "rcu_nocb_mask=" is
-incorrect, should be "rcu_nocbs=".
+I'll send a formal RFC soon.
 
-> 
-> 							Thanx, Paul
-> 
-> ------------------------------------------------------------------------
-> 
-> commit 4ac3b3d1a19943b1522c0b1d0895aefbb80ec294
-> Author: Zhen Lei <thunder.leizhen@huawei.com>
-> Date:   Thu Aug 25 17:23:11 2022 +0800
-> 
->     rcu: Simplify rcu_init_nohz() cpumask handling
->     
->     In kernels built with either CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y or
->     CONFIG_NO_HZ_FULL=y, additional CPUs must be added to rcu_nocb_mask.
->     Except that kernels booted without the rcu_nocb_mask= will not have
-
-rcu_nocb_mask=   ---->  rcu_nocbs=
-
->     allocated rcu_nocb_mask.  And the current rcu_init_nohz() function uses
->     its need_rcu_nocb_mask and offload_all local variables to track the
->     rcu_nocb and nohz_full state.
->     
->     But there is a much simpler approach, namely creating a cpumask pointer
->     to track the default and then using cpumask_available() to check the
->     rcu_nocb_mask state.  This commit takes this approach, thereby simplifying
->     and shortening the rcu_init_nohz() function.
->     
->     Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
->     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> 
-> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-> index 0a5f0ef414845..c8167be2288fa 100644
-> --- a/kernel/rcu/tree_nocb.h
-> +++ b/kernel/rcu/tree_nocb.h
-> @@ -1210,45 +1210,31 @@ EXPORT_SYMBOL_GPL(rcu_nocb_cpu_offload);
->  void __init rcu_init_nohz(void)
->  {
->  	int cpu;
-> -	bool need_rcu_nocb_mask = false;
-> -	bool offload_all = false;
->  	struct rcu_data *rdp;
-> +	const struct cpumask *cpumask = NULL;
->  
->  #if defined(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL)
-> -	if (!rcu_state.nocb_is_setup) {
-> -		need_rcu_nocb_mask = true;
-> -		offload_all = true;
-> -	}
-> -#endif /* #if defined(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL) */
-> -
-> -#if defined(CONFIG_NO_HZ_FULL)
-> -	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask)) {
-> -		need_rcu_nocb_mask = true;
-> -		offload_all = false; /* NO_HZ_FULL has its own mask. */
-> -	}
-> -#endif /* #if defined(CONFIG_NO_HZ_FULL) */
-> +	cpumask = cpu_possible_mask;
-> +#elif defined(CONFIG_NO_HZ_FULL)
-> +	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask))
-> +		cpumask = tick_nohz_full_mask;
-> +#endif
->  
-> -	if (need_rcu_nocb_mask) {
-> +	if (cpumask) {
->  		if (!cpumask_available(rcu_nocb_mask)) {
->  			if (!zalloc_cpumask_var(&rcu_nocb_mask, GFP_KERNEL)) {
->  				pr_info("rcu_nocb_mask allocation failed, callback offloading disabled.\n");
->  				return;
->  			}
->  		}
-> +
-> +		cpumask_or(rcu_nocb_mask, rcu_nocb_mask, cpumask);
->  		rcu_state.nocb_is_setup = true;
->  	}
->  
->  	if (!rcu_state.nocb_is_setup)
->  		return;
->  
-> -#if defined(CONFIG_NO_HZ_FULL)
-> -	if (tick_nohz_full_running)
-> -		cpumask_or(rcu_nocb_mask, rcu_nocb_mask, tick_nohz_full_mask);
-> -#endif /* #if defined(CONFIG_NO_HZ_FULL) */
-> -
-> -	if (offload_all)
-> -		cpumask_setall(rcu_nocb_mask);
-> -
->  	if (!cpumask_subset(rcu_nocb_mask, cpu_possible_mask)) {
->  		pr_info("\tNote: kernel parameter 'rcu_nocbs=', 'nohz_full', or 'isolcpus=' contains nonexistent CPUs.\n");
->  		cpumask_and(rcu_nocb_mask, cpu_possible_mask,
-> .
-> 
-
--- 
-Regards,
-  Zhen Lei
