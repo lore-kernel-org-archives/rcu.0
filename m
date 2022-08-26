@@ -2,203 +2,177 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CEECECAAD6
-	for <rcu@archiver.kernel.org>; Fri, 26 Aug 2022 09:09:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BD86EECAAD4
+	for <rcu@archiver.kernel.org>; Fri, 26 Aug 2022 13:47:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240799AbiHZJJZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 26 Aug 2022 05:09:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53178 "EHLO
+        id S230256AbiHZNrY (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 26 Aug 2022 09:47:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245211AbiHZJJZ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 26 Aug 2022 05:09:25 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C4E1D6314
-        for <rcu@vger.kernel.org>; Fri, 26 Aug 2022 02:09:24 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        with ESMTP id S1344378AbiHZNpZ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 26 Aug 2022 09:45:25 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1B5943E73;
+        Fri, 26 Aug 2022 06:45:23 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id E717133781;
-        Fri, 26 Aug 2022 09:09:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1661504962; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZXkb4HY1mJ7b/yG1nPhGnlCQaSjYWZRhffChGjlIspw=;
-        b=Uak6h5LyLWDAta0jaB+p5B8743G8eOSF8Iv1p7lHcQa8ZzuyQpUyo5iEixNzmN+4xnsh/i
-        alXuDx/b6tD3DtPQWSOe4AfHjbmg7LlKheh9s8MUZPTJAeOv1Rln/9sRnvTZkNyOg5rnh2
-        qGX8nzqUiJ3FNQsKxRKFUZxJ1iUKvOk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1661504962;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZXkb4HY1mJ7b/yG1nPhGnlCQaSjYWZRhffChGjlIspw=;
-        b=O7YA+Q01Ob1Q7DJjscAWExfuehssAxgp+OH11zXQALwQfnEuxi4N7aJcOY66VPqEGcAvO9
-        PWEqpkBnBwaabPCA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B0F5B13A82;
-        Fri, 26 Aug 2022 09:09:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id WK6hKsKNCGOxOAAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Fri, 26 Aug 2022 09:09:22 +0000
-From:   Vlastimil Babka <vbabka@suse.cz>
-To:     Christoph Lameter <cl@linux.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        David Rientjes <rientjes@google.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>
-Cc:     Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>, linux-mm@kvack.org,
-        Matthew Wilcox <willy@infradead.org>, paulmck@kernel.org,
-        rcu@vger.kernel.org, Vlastimil Babka <vbabka@suse.cz>
-Subject: [RFC PATCH 2/2] mm/sl[au]b: rearrange struct slab fields to allow larger rcu_head
-Date:   Fri, 26 Aug 2022 11:09:12 +0200
-Message-Id: <20220826090912.11292-2-vbabka@suse.cz>
-X-Mailer: git-send-email 2.37.2
-In-Reply-To: <20220826090912.11292-1-vbabka@suse.cz>
-References: <20220826090912.11292-1-vbabka@suse.cz>
+        by ams.source.kernel.org (Postfix) with ESMTPS id D7FE6B82F84;
+        Fri, 26 Aug 2022 13:45:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8466CC433D6;
+        Fri, 26 Aug 2022 13:45:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1661521520;
+        bh=/wCO+8NSsd2IYaROtKGfH5tdFKHXG6nMlG+xYwW1HJk=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=oZUROb8qX+9vmEmC4yo3jFzm26WdhONdNte9Nj1h7bIjlxeM0fdO/WkSUsg2SmV5I
+         FGlDnvy9isRLKMkqtfXr6i6Oh8WMQzZSttVt2iIaHtC9/Z4jsHYGl9+O9/METg+xFH
+         PsL8XHqVghg+eFaG4Tn8YTHEdDIT7wOBHtTEou6eM8vP6aOX/TqQN9DLLkCXVRTMaY
+         7EnAsvKAyq6PqBURbknt42CUz9ZuWEQ+PlCXayS5d7UUBZa3YJSX2BlofCs+JqWPyb
+         DUsbjGkYUwFVWA9c7ql/21r+TBd8gSrjmkzo66Nnxc+guBh2RSTZbzaDyKrKu+fCdB
+         94IqVvvTF2dvw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 1FF0F5C03F3; Fri, 26 Aug 2022 06:45:20 -0700 (PDT)
+Date:   Fri, 26 Aug 2022 06:45:20 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 1/1] rcu: Simplify the code logic of rcu_init_nohz()
+Message-ID: <20220826134520.GS6159@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20220825092311.179-1-thunder.leizhen@huawei.com>
+ <20220825092311.179-2-thunder.leizhen@huawei.com>
+ <20220825172654.GP6159@paulmck-ThinkPad-P17-Gen-1>
+ <43370a3c-8c7a-c7c7-ac2b-bec2bf6c8728@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <43370a3c-8c7a-c7c7-ac2b-bec2bf6c8728@huawei.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Joel reports [1] that increasing the rcu_head size for debugging
-purposes used to work before struct slab was split from struct page, but
-now runs into the various SLAB_MATCH() sanity checks of the layout.
+On Fri, Aug 26, 2022 at 09:42:11AM +0800, Leizhen (ThunderTown) wrote:
+> 
+> 
+> On 2022/8/26 1:26, Paul E. McKenney wrote:
+> > On Thu, Aug 25, 2022 at 05:23:11PM +0800, Zhen Lei wrote:
+> >> When CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y or CONFIG_NO_HZ_FULL=y, additional
+> >> CPUs need to be added to 'rcu_nocb_mask'. But 'rcu_nocb_mask' may be not
+> >> available now, due to 'rcu_nocbs' is not specified. Check and initialize
+> >> 'rcu_nocb_mask' before using it. This code simplification strictly follows
+> >> this logic, compared with old implementations, unnecessary crossovers are
+> >> avoided and easy to understand.
+> >>
+> >> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> > 
+> > Much nicer, thank you!
+> > 
+> > As usual, I could not resist the urge to wordsmith.  Could you please
+> > check to make sure that I did not mess anything up?
+> 
+> Okay, thank you very much. The boot option name "rcu_nocb_mask=" is
+> incorrect, should be "rcu_nocbs=".
 
-This is because the rcu_head in struct page is in union with large
-sub-structures and has space to grow without exceeding their size, while
-in struct slab (for SLAB and SLUB) it's in union only with a list_head.
+Good eyes, thank you!  I will fix this on the next rebase.
 
-On closer inspection (and after the previous patch) we can put all
-fields except slab_cache to a union with rcu_head, as slab_cache is
-sufficient for the rcu freeing callbacks to work and the rest can be
-overwritten by rcu_head without causing issues.
+							Thanx, Paul
 
-This is only somewhat complicated by the need to keep SLUB's
-freelist+counters aligned for cmpxchg_double. As a result the fields
-need to be reordered so that slab_cache is first (after page flags) and
-the union with rcu_head follows. For consistency, do that for SLAB as
-well, although not necessary there.
-
-As a result, the rcu_head field in struct page and struct slab is no
-longer at the same offset, but that doesn't matter as there is no
-casting that would rely on that in the slab freeing callbacks, so we can
-just drop the respective SLAB_MATCH() check.
-
-Also we need to update the SLAB_MATCH() for compound_head to reflect the
-new ordering.
-
-While at it, also add a static_assert to check the alignment needed for
-cmpxchg_double so mistakes are found sooner than a runtime GPF.
-
-[1] https://lore.kernel.org/all/85afd876-d8bb-0804-b2c5-48ed3055e702@joelfernandes.org/
-
-Reported-by: Joel Fernandes <joel@joelfernandes.org>
-Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
----
- mm/slab.h | 54 ++++++++++++++++++++++++++++++++----------------------
- 1 file changed, 32 insertions(+), 22 deletions(-)
-
-diff --git a/mm/slab.h b/mm/slab.h
-index 4ec82bec15ec..2c248864ea91 100644
---- a/mm/slab.h
-+++ b/mm/slab.h
-@@ -11,37 +11,43 @@ struct slab {
- 
- #if defined(CONFIG_SLAB)
- 
-+	struct kmem_cache *slab_cache;
- 	union {
--		struct list_head slab_list;
-+		struct {
-+			struct list_head slab_list;
-+			void *freelist;	/* array of free object indexes */
-+			void *s_mem;	/* first object */
-+		};
- 		struct rcu_head rcu_head;
- 	};
--	struct kmem_cache *slab_cache;
--	void *freelist;	/* array of free object indexes */
--	void *s_mem;	/* first object */
- 	unsigned int active;
- 
- #elif defined(CONFIG_SLUB)
- 
--	union {
--		struct list_head slab_list;
--		struct rcu_head rcu_head;
--#ifdef CONFIG_SLUB_CPU_PARTIAL
--		struct {
--			struct slab *next;
--			int slabs;	/* Nr of slabs left */
--		};
--#endif
--	};
- 	struct kmem_cache *slab_cache;
--	/* Double-word boundary */
--	void *freelist;		/* first free object */
- 	union {
--		unsigned long counters;
- 		struct {
--			unsigned inuse:16;
--			unsigned objects:15;
--			unsigned frozen:1;
-+			union {
-+				struct list_head slab_list;
-+#ifdef CONFIG_SLUB_CPU_PARTIAL
-+				struct {
-+					struct slab *next;
-+					int slabs;	/* Nr of slabs left */
-+				};
-+#endif
-+			};
-+			/* Double-word boundary */
-+			void *freelist;		/* first free object */
-+			union {
-+				unsigned long counters;
-+				struct {
-+					unsigned inuse:16;
-+					unsigned objects:15;
-+					unsigned frozen:1;
-+				};
-+			};
- 		};
-+		struct rcu_head rcu_head;
- 	};
- 	unsigned int __unused;
- 
-@@ -66,9 +72,10 @@ struct slab {
- #define SLAB_MATCH(pg, sl)						\
- 	static_assert(offsetof(struct page, pg) == offsetof(struct slab, sl))
- SLAB_MATCH(flags, __page_flags);
--SLAB_MATCH(compound_head, slab_list);	/* Ensure bit 0 is clear */
- #ifndef CONFIG_SLOB
--SLAB_MATCH(rcu_head, rcu_head);
-+SLAB_MATCH(compound_head, slab_cache);	/* Ensure bit 0 is clear */
-+#else
-+SLAB_MATCH(compound_head, slab_list);	/* Ensure bit 0 is clear */
- #endif
- SLAB_MATCH(_refcount, __page_refcount);
- #ifdef CONFIG_MEMCG
-@@ -76,6 +83,9 @@ SLAB_MATCH(memcg_data, memcg_data);
- #endif
- #undef SLAB_MATCH
- static_assert(sizeof(struct slab) <= sizeof(struct page));
-+#if defined(CONFIG_HAVE_CMPXCHG_DOUBLE) && defined(CONFIG_SLUB)
-+static_assert(IS_ALIGNED(offsetof(struct slab, freelist), 16));
-+#endif
- 
- /**
-  * folio_slab - Converts from folio to slab.
--- 
-2.37.2
-
+> > ------------------------------------------------------------------------
+> > 
+> > commit 4ac3b3d1a19943b1522c0b1d0895aefbb80ec294
+> > Author: Zhen Lei <thunder.leizhen@huawei.com>
+> > Date:   Thu Aug 25 17:23:11 2022 +0800
+> > 
+> >     rcu: Simplify rcu_init_nohz() cpumask handling
+> >     
+> >     In kernels built with either CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y or
+> >     CONFIG_NO_HZ_FULL=y, additional CPUs must be added to rcu_nocb_mask.
+> >     Except that kernels booted without the rcu_nocb_mask= will not have
+> 
+> rcu_nocb_mask=   ---->  rcu_nocbs=
+> 
+> >     allocated rcu_nocb_mask.  And the current rcu_init_nohz() function uses
+> >     its need_rcu_nocb_mask and offload_all local variables to track the
+> >     rcu_nocb and nohz_full state.
+> >     
+> >     But there is a much simpler approach, namely creating a cpumask pointer
+> >     to track the default and then using cpumask_available() to check the
+> >     rcu_nocb_mask state.  This commit takes this approach, thereby simplifying
+> >     and shortening the rcu_init_nohz() function.
+> >     
+> >     Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > 
+> > diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> > index 0a5f0ef414845..c8167be2288fa 100644
+> > --- a/kernel/rcu/tree_nocb.h
+> > +++ b/kernel/rcu/tree_nocb.h
+> > @@ -1210,45 +1210,31 @@ EXPORT_SYMBOL_GPL(rcu_nocb_cpu_offload);
+> >  void __init rcu_init_nohz(void)
+> >  {
+> >  	int cpu;
+> > -	bool need_rcu_nocb_mask = false;
+> > -	bool offload_all = false;
+> >  	struct rcu_data *rdp;
+> > +	const struct cpumask *cpumask = NULL;
+> >  
+> >  #if defined(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL)
+> > -	if (!rcu_state.nocb_is_setup) {
+> > -		need_rcu_nocb_mask = true;
+> > -		offload_all = true;
+> > -	}
+> > -#endif /* #if defined(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL) */
+> > -
+> > -#if defined(CONFIG_NO_HZ_FULL)
+> > -	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask)) {
+> > -		need_rcu_nocb_mask = true;
+> > -		offload_all = false; /* NO_HZ_FULL has its own mask. */
+> > -	}
+> > -#endif /* #if defined(CONFIG_NO_HZ_FULL) */
+> > +	cpumask = cpu_possible_mask;
+> > +#elif defined(CONFIG_NO_HZ_FULL)
+> > +	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask))
+> > +		cpumask = tick_nohz_full_mask;
+> > +#endif
+> >  
+> > -	if (need_rcu_nocb_mask) {
+> > +	if (cpumask) {
+> >  		if (!cpumask_available(rcu_nocb_mask)) {
+> >  			if (!zalloc_cpumask_var(&rcu_nocb_mask, GFP_KERNEL)) {
+> >  				pr_info("rcu_nocb_mask allocation failed, callback offloading disabled.\n");
+> >  				return;
+> >  			}
+> >  		}
+> > +
+> > +		cpumask_or(rcu_nocb_mask, rcu_nocb_mask, cpumask);
+> >  		rcu_state.nocb_is_setup = true;
+> >  	}
+> >  
+> >  	if (!rcu_state.nocb_is_setup)
+> >  		return;
+> >  
+> > -#if defined(CONFIG_NO_HZ_FULL)
+> > -	if (tick_nohz_full_running)
+> > -		cpumask_or(rcu_nocb_mask, rcu_nocb_mask, tick_nohz_full_mask);
+> > -#endif /* #if defined(CONFIG_NO_HZ_FULL) */
+> > -
+> > -	if (offload_all)
+> > -		cpumask_setall(rcu_nocb_mask);
+> > -
+> >  	if (!cpumask_subset(rcu_nocb_mask, cpu_possible_mask)) {
+> >  		pr_info("\tNote: kernel parameter 'rcu_nocbs=', 'nohz_full', or 'isolcpus=' contains nonexistent CPUs.\n");
+> >  		cpumask_and(rcu_nocb_mask, cpu_possible_mask,
+> > .
+> > 
+> 
+> -- 
+> Regards,
+>   Zhen Lei
