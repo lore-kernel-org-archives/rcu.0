@@ -2,191 +2,209 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 44240C0502C
-	for <rcu@archiver.kernel.org>; Mon, 29 Aug 2022 16:45:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7DCC7ECAAD2
+	for <rcu@archiver.kernel.org>; Mon, 29 Aug 2022 19:46:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229628AbiH2Qpq (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 29 Aug 2022 12:45:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35084 "EHLO
+        id S229786AbiH2Tqa (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 29 Aug 2022 15:46:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbiH2Qpq (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 29 Aug 2022 12:45:46 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F9EA2F380
-        for <rcu@vger.kernel.org>; Mon, 29 Aug 2022 09:45:43 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id j17so6556376qtp.12
-        for <rcu@vger.kernel.org>; Mon, 29 Aug 2022 09:45:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc;
-        bh=fDt4IBgtt5exwhmeKX+OT1Q9RovTLDUYtPqjcVD2JHU=;
-        b=iToL8uE5DE1tqOsdsobu/E8FmFht38INvZNaS1aWZFtpVp5DmnDAEIq4KnUs5zhAdu
-         uzaPlYoUTO5wAgOX5iwvOnsurmIfNdp4EPlpyhxA+CyEYkqONNXEkxac07Sqd0ePgqro
-         R+KOIrw/Oq10P3GNBl96SKl+ERU6Rqi/nmyZQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc;
-        bh=fDt4IBgtt5exwhmeKX+OT1Q9RovTLDUYtPqjcVD2JHU=;
-        b=71Li42eDBTYZjpkPFQRXnaUPTPgyeqttE1DB3hS04hB6oAJkj4jZRiYPyXQTDbDugd
-         6Sj5cOop4bIy9Mfl62yP00yrcp3T56ZSURG1OwN0BZedmYwO6vTDLrZTv2ZXD/UJ8CxV
-         gV1GWyGf0sjmf29Z2VkGdVrFR00WyYhuuxuCi2xlFzaDswXtoQtusT7JtBCLNmyIqIdh
-         RnEj9afE1prm+6Y8dr32NgLuOr57WA1S0TLlm616VLeutnUDtleMrV6YKcqFIGP3So/W
-         g9FKAuM0shyOrYLZvh1NGpl/VpfjdEg+roxOt5nbUP2USV88/NJ19Ig4bX1WJuqh6eTg
-         ikxQ==
-X-Gm-Message-State: ACgBeo1GChrUWbNJl+cWKZp/0npdFsW1JAEiGSk2MW7OS+lWIIolGSeK
-        QbrQYl/9/Pb96edwp37lb56R+g==
-X-Google-Smtp-Source: AA6agR4+RWQgms3oFXpW5BnC2J62dhhNHmynoWse/Pah2gSlvOSjcovV9+ApiaFW1yRHX/Q8mt68hw==
-X-Received: by 2002:a05:622a:143:b0:344:95bf:8f02 with SMTP id v3-20020a05622a014300b0034495bf8f02mr10573138qtw.202.1661791541845;
-        Mon, 29 Aug 2022 09:45:41 -0700 (PDT)
-Received: from [10.0.0.40] (c-73-148-104-166.hsd1.va.comcast.net. [73.148.104.166])
-        by smtp.gmail.com with ESMTPSA id s18-20020a05620a255200b006bbc09af9f5sm6516375qko.101.2022.08.29.09.45.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Aug 2022 09:45:41 -0700 (PDT)
-Message-ID: <1f7dd31b-f4d0-5c1c-ce28-c27f75c17f05@joelfernandes.org>
-Date:   Mon, 29 Aug 2022 12:45:40 -0400
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.0
-Subject: Re: [PATCH v4 00/14] Implement call_rcu_lazy() and miscellaneous
- fixes
-Content-Language: en-US
-To:     Frederic Weisbecker <frederic@kernel.org>
+        with ESMTP id S229472AbiH2Tqa (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 29 Aug 2022 15:46:30 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98F3774DFB;
+        Mon, 29 Aug 2022 12:46:28 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 4E53CB811D7;
+        Mon, 29 Aug 2022 19:46:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FD5FC433C1;
+        Mon, 29 Aug 2022 19:46:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1661802385;
+        bh=5oyOyaNLtrIRXGGWLGuKyeYQs9I+IWvvhJbaoJUZNeU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oWrKHk694bt9llQ3GmOKKIRdA8JgtVDDDKoEfnrM3oYa6LaiKOfzKaaP7Y+FUzsy7
+         +Yu39SHzn7muLWlOuZILqGOpcw1iNwpLK+XFmJd7CJb058StSm36DTJELYb+CACmn+
+         F5bW7WrCYyPxmIHaWiEyuBXabRE5of+bCYUVyMKzyBBs8gnYnqefvDTcM+/9YLy2eh
+         26KTESWN7YnS7k0dz7ntkd9Lp9G8UjdIsyNBJdQ4Tvd55bwK7og3x+w0sHYXvfKcAO
+         17vnZ53SPoSztUhLFXcMeH5RWkXx0ObW7MJLKJiGOrIsUtliLTAjMD6VQzNoKd69A3
+         z+tm09NQtzA1A==
+Date:   Mon, 29 Aug 2022 21:46:22 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
 Cc:     linux-kernel@vger.kernel.org, paulmck@kernel.org,
         Rushikesh S Kadam <rushikesh.s.kadam@intel.com>,
         "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
         Neeraj upadhyay <neeraj.iitr10@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         rcu <rcu@vger.kernel.org>, vineeth@bitbyteword.org
+Subject: Re: [PATCH v4 00/14] Implement call_rcu_lazy() and miscellaneous
+ fixes
+Message-ID: <20220829194622.GA58291@lothringen>
 References: <20220819204857.3066329-1-joel@joelfernandes.org>
  <20220829134045.GA54589@lothringen>
-From:   Joel Fernandes <joel@joelfernandes.org>
-In-Reply-To: <20220829134045.GA54589@lothringen>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+ <1f7dd31b-f4d0-5c1c-ce28-c27f75c17f05@joelfernandes.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1f7dd31b-f4d0-5c1c-ce28-c27f75c17f05@joelfernandes.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Frederick,
-
-On 8/29/2022 9:40 AM, Frederic Weisbecker wrote:
-> On Fri, Aug 19, 2022 at 08:48:43PM +0000, Joel Fernandes (Google) wrote:
->> Refresh tested on real ChromeOS userspace and hardware, passes boot time tests
->> and rcuscale tests.
->>
->> Fixes on top of v3:
->> - Fix boot issues due to a race in the lazy RCU logic which caused a missed
->>   wakeup of the RCU GP thread, causing synchronize_rcu() to stall.
->> - Fixed trace_rcu_callback tracepoint
->>
->> I tested power previously [1], I am in the process of testing power again but I
->> wanted share my latest code as others who are testing power as well could use
->> the above fixes.
+On Mon, Aug 29, 2022 at 12:45:40PM -0400, Joel Fernandes wrote:
+> Hi Frederick,
 > 
-> Your patch is very likely to be _generally_ useful and therefore,
-> the more I look into this, the more I wonder if it is a good idea to rely on
-> bypass at all, let alone NOCB. Of course in the long term the goal is to have
-> bypass working without NOCB but why even bothering implementing it for nocb
-> in the first place?
-
-This was discussed with Paul [1]. Quoting:
-
-----
-Joel:
->> Also, does doing so not prevent usage of lazy CBs on systems without
->> NOCB? So if we want to future-proof this, I guess that might not be a
->> good decision.
->
-Paul:
-> True enough, but would this future actually arrive?  After all, if
-> someone cared enough about energy efficiency to use call_rcu_lazy(),
-> why wouldn't they also offload callbacks?
-
-Joel: I am not sure, but I also don't mind making it depend on NOCB for now
-(see below).
-
-[1] https://www.spinics.net/lists/rcu/msg07908.html
-----
-
-While I agree with you that perhaps making it more generic is better, this did
-take a significant amount of time, testing and corner case hunting to come up
-with, and v5 is also in the works so I'd appreciate if we can do it the
-bypass-way and optimize later. Arguably the bypass way is quite simple and
-allows us to leverage its effects of rcu_barrier and such. And the API will not
-change.
-
-> Several highlights:
+> On 8/29/2022 9:40 AM, Frederic Weisbecker wrote:
+> > On Fri, Aug 19, 2022 at 08:48:43PM +0000, Joel Fernandes (Google) wrote:
+> >> Refresh tested on real ChromeOS userspace and hardware, passes boot time tests
+> >> and rcuscale tests.
+> >>
+> >> Fixes on top of v3:
+> >> - Fix boot issues due to a race in the lazy RCU logic which caused a missed
+> >>   wakeup of the RCU GP thread, causing synchronize_rcu() to stall.
+> >> - Fixed trace_rcu_callback tracepoint
+> >>
+> >> I tested power previously [1], I am in the process of testing power again but I
+> >> wanted share my latest code as others who are testing power as well could use
+> >> the above fixes.
+> > 
+> > Your patch is very likely to be _generally_ useful and therefore,
+> > the more I look into this, the more I wonder if it is a good idea to rely on
+> > bypass at all, let alone NOCB. Of course in the long term the goal is to have
+> > bypass working without NOCB but why even bothering implementing it for nocb
+> > in the first place?
 > 
-> 1) NOCB is most often needed for nohz_full and the latter has terrible power
-> management. The CPU 0 is active all the time there.
-
-I see. We don't use nohz_full much. NOCB itself gives good power improvement.
-
-> 2) NOCB without nohz_full has extremely rare usecase (RT niche:
-> https://lore.kernel.org/lkml/CAFzL-7vqTX-y06Kc3HaLqRWAYE0d=ms3TzVtZLn0c6ATrKD+Qw@mail.gmail.com/
-> )
-
-Really? Android has been using it for a long time. It seems to be quite popular
-in the battery-powered space.
-
-> 2) NOCB implies performance issues.
-
-Which kinds of? There is slightly worse boot times, but I'm guessing that's do
-with the extra scheduling overhead of the extra threads which is usually not a
-problem except that RCU is used in the critical path of boot up (on ChromeOS).
-
-> 3) We are mixing up two very different things in a single list of callbacks:
->    lazy callbacks and flooding callbacks, as a result we are adding lots of
->    off-topic corner cases all around:
->      * a seperate lazy len field to struct rcu_cblist whose purpose is much more
->        general than just bypass/lazy
->      * "lazy" specialized parameters to general purpose cblist management
->        functions
-
-I think just 1 or 2 functions have a new lazy param. It didn't seem too
-intrusive to me.
-
-> 4) This is further complexifying bypass core code, nocb timer management, core
->    nocb group management, all of which being already very complicated.
-
-True, I agree, a few more cases to handle for sure, but I think I got them all
-now (hopefully).
-
-> 5) The !NOCB implementation is going to be very different
+> This was discussed with Paul [1]. Quoting:
 > 
-> Ok I can admit one counter argument in favour of using NO_CB:
+> ----
+> Joel:
+> >> Also, does doing so not prevent usage of lazy CBs on systems without
+> >> NOCB? So if we want to future-proof this, I guess that might not be a
+> >> good decision.
+> >
+> Paul:
+> > True enough, but would this future actually arrive?  After all, if
+> > someone cared enough about energy efficiency to use call_rcu_lazy(),
+> > why wouldn't they also offload callbacks?
 > 
-> -1) The scheduler can benefit from a wake CPU to run the callbacks on behalf of a bunch
-> of idle CPUs, instead of waking up that bunch of CPUs. But still we are dealing
-> with callbacks that can actually wait...
+> Joel: I am not sure, but I also don't mind making it depend on NOCB for now
+> (see below).
+> 
+> [1] https://www.spinics.net/lists/rcu/msg07908.html
+> ----
+> 
+> While I agree with you that perhaps making it more generic is better, this did
+> take a significant amount of time, testing and corner case hunting to come up
+> with, and v5 is also in the works so I'd appreciate if we can do it the
+> bypass-way and optimize later. Arguably the bypass way is quite simple and
+> allows us to leverage its effects of rcu_barrier and such. And the API will not
+> change.
 
-Yeah that's huge. Significant amount of power improvement seems to come from
-idle CPUs not being disturbed and their corresponding timer ticks turned off for
-longer periods. That's experimentally confirmed (NO_CB giving significant power
-improvement on battery-power systems as compared to !NO_CB).
+Keep in mind that if we later need to rewrite the whole in order to have a
+generic approach, this will take even more time in the long run.
+
+> > 2) NOCB without nohz_full has extremely rare usecase (RT niche:
+> > https://lore.kernel.org/lkml/CAFzL-7vqTX-y06Kc3HaLqRWAYE0d=ms3TzVtZLn0c6ATrKD+Qw@mail.gmail.com/
+> > )
+> 
+> Really? Android has been using it for a long time. It seems to be quite popular
+> in the battery-powered space.
+
+It's really sad that this is the first time I hear about that. I've been working
+on this code for years now without this usecase in mind. And yet it's fundamental.
+
+I asked several times around about other usecases of rcu_nocbs than nohz_full=
+and nobody reported that. I can hardly even google a significant link
+between power saving and rcu_nocbs=
+
+If this is really used that way for a long time then it's a cruel disconnection
+between users and developers.
+
+> > 2) NOCB implies performance issues.
+> 
+> Which kinds of? There is slightly worse boot times, but I'm guessing that's do
+> with the extra scheduling overhead of the extra threads which is usually not a
+> problem except that RCU is used in the critical path of boot up (on ChromeOS).
+
+I never measured it myself but executing callbacks on another CPUs, with
+context switches and locking can only involve significant performance issues if callbacks
+are frequent. So it's a tradeoff between power and performance.
 
 > 
-> So here is a proposal: how about forgetting NOCB for now and instead add a new
-> RCU_LAZY_TAIL segment in the struct rcu_segcblist right after RCU_NEXT_TAIL?
-> Then ignore that segment until some timer expiry has been met or the CPU is
-> known to be busy? Probably some tiny bits need to be tweaked in segcblist
-> management functions but probably not that much. And also make sure that entrain()
-> queues to RCU_LAZY_TAIL.
+> > 3) We are mixing up two very different things in a single list of callbacks:
+> >    lazy callbacks and flooding callbacks, as a result we are adding lots of
+> >    off-topic corner cases all around:
+> >      * a seperate lazy len field to struct rcu_cblist whose purpose is much more
+> >        general than just bypass/lazy
+> >      * "lazy" specialized parameters to general purpose cblist management
+> >        functions
 > 
-> Then the only difference in the case of NOCB is that we add a new timer to the
-> nocb group leader instead of a local timer in !NOCB.
+> I think just 1 or 2 functions have a new lazy param. It didn't seem too
+> intrusive to me.
 
-It sounds reasonable, but I'll go with Paul on the usecase argument - who would
-actually care about lazy CBs outside of power, and would those guys ever use
-!NO_CB if they cared about power / battery?
-
-Thanks,
-
- - Joel
+What bothers me is that struct cblist has a general purpose and we are adding a field
+and a parameter that is relevant to only one specialized user.
 
 
+> > 4) This is further complexifying bypass core code, nocb timer management, core
+> >    nocb group management, all of which being already very complicated.
+> 
+> True, I agree, a few more cases to handle for sure, but I think I got them all
+> now (hopefully).
 
+Now I'm worried about maintainability. Hence why I'd rather see a generic code
+for them all if possible.
+
+> > 5) The !NOCB implementation is going to be very different
+> > 
+> > Ok I can admit one counter argument in favour of using NO_CB:
+> > 
+> > -1) The scheduler can benefit from a wake CPU to run the callbacks on behalf of a bunch
+> > of idle CPUs, instead of waking up that bunch of CPUs. But still we are dealing
+> > with callbacks that can actually wait...
+> 
+> Yeah that's huge. Significant amount of power improvement seems to come from
+> idle CPUs not being disturbed and their corresponding timer ticks turned off for
+> longer periods. That's experimentally confirmed (NO_CB giving significant power
+> improvement on battery-power systems as compared to !NO_CB).
+
+It's a good news to hear that nocbs is used way beyond its initial purpose.
+But still very sad to hear about that several years late.
+
+> > So here is a proposal: how about forgetting NOCB for now and instead add a new
+> > RCU_LAZY_TAIL segment in the struct rcu_segcblist right after RCU_NEXT_TAIL?
+> > Then ignore that segment until some timer expiry has been met or the CPU is
+> > known to be busy? Probably some tiny bits need to be tweaked in segcblist
+> > management functions but probably not that much. And also make sure that entrain()
+> > queues to RCU_LAZY_TAIL.
+> > 
+> > Then the only difference in the case of NOCB is that we add a new timer to the
+> > nocb group leader instead of a local timer in !NOCB.
+> 
+> It sounds reasonable, but I'll go with Paul on the usecase argument - who would
+> actually care about lazy CBs outside of power, and would those guys ever use
+> !NO_CB if they cared about power / battery?
+
+_Everybody_ cares about power. Those who don't yet will very soon ;-)
+
+And given the numbers you provided with your measurements, I bet this will
+be significant with !NOCB as well. This is not only delaying callbacks execution,
+this also reduces the frequency of grace periods, and that impact should be
+quite visible.
+
+Note I'm not stricly opposed to the current approach. But I can't say I'm
+comfortable with it.
+
+Can we do a simple test? Would it be possible to affine every rcuo%c/%d kthread
+to the corresponding CPU%d? For example affine rcuop/1 to CPU 1, rcuop/2 to
+CPU2, etc... And then relaunch your measurements on top of that?
+
+The point is that having the callback kthreads affined to their corresponding
+CPUs should elude the power saving advantages of rcu_nocbs=, back to roughly
+a !NOCB behaviour powerwise (except we have context switches). If you find good
+numbers with this setup then you'll find good numbers with !NOCB.
+
+Thanks.
