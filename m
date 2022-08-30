@@ -2,128 +2,255 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E39DDECAAD1
-	for <rcu@archiver.kernel.org>; Tue, 30 Aug 2022 16:46:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C7E9ECAAD5
+	for <rcu@archiver.kernel.org>; Tue, 30 Aug 2022 18:40:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229691AbiH3Qqj (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 30 Aug 2022 12:46:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57758 "EHLO
+        id S231293AbiH3Ski (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 30 Aug 2022 14:40:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229559AbiH3Qqi (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 30 Aug 2022 12:46:38 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4F18B2CF2;
-        Tue, 30 Aug 2022 09:46:37 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 753B6B81C35;
-        Tue, 30 Aug 2022 16:46:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B51AC433C1;
-        Tue, 30 Aug 2022 16:46:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1661877995;
-        bh=AR8ycBXfaOCATMPDffJV6k+LpBnMDGH/P5BC77bn7rk=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=DhJNH6a6reToiPh/T+FS/mZQUF+qaOZAk2XtdC3omOuoy2VSkRU8UVHSTlAb9FJlm
-         1GfW87TueIgO4VnqYO1YGxmIOXC/qOvT1e1FzF5NmNATZtNfpe5yz7lnzYJlqs1xDu
-         HP/HppLMk5YnUz8Jy2t04yRe3Gx5bA5PICZQ4Bdrv3s76tCekJFSUUT4tnBQnli+kX
-         lWuiQKwdQQSJI6sxqVSbiiqdtqc56KaTGj8Y85qe6nSaGzTlkvpw3GkPAeJETppL7L
-         aUltoS4WcFu8N6LVAcMSMB8o8wKGmPPlv/PEA5Zy8D5R9aUd4j2EpBOB5nrOTVV7/G
-         sJWMhMvTyHslg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id B7B6C5C0981; Tue, 30 Aug 2022 09:46:34 -0700 (PDT)
-Date:   Tue, 30 Aug 2022 09:46:34 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
+        with ESMTP id S230519AbiH3Skd (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 30 Aug 2022 14:40:33 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE2B7108E
+        for <rcu@vger.kernel.org>; Tue, 30 Aug 2022 11:40:30 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id x5so9262230qtv.9
+        for <rcu@vger.kernel.org>; Tue, 30 Aug 2022 11:40:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc;
+        bh=ujKtYZWkqPWJ0rAahC5tNvpJoUsawP+7mlaKliAMVqw=;
+        b=Vg342SWCgXX6Ws9hP2+aHD/F+KzEVh4IaHzkG9irtTiDxx0BEkKg7sBZir7Rrr8FbH
+         WA48FFHScmF/1986/uWWQ4p1p4nb15Ii5qIX0zoVmXOzfs5pISG0RruUzrFfdTGQ+dAQ
+         BTLzeGkE9XuInhqsV7uTZ6E1BnWcu4rEAs8B0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc;
+        bh=ujKtYZWkqPWJ0rAahC5tNvpJoUsawP+7mlaKliAMVqw=;
+        b=FA4s2NMk4DEtY7m/Av8QsNFmjXIYaGGTQuU62BqVTJvgA639LADocoeIie9+tWALfj
+         IaeffdJjI+x1UtWvH93nPTn/hPsw/GKWgXSrY42JQcaB3hAQWjgyn86v5S+3zlFJYbZv
+         3/817SRC23xT+os85t9/Imq3+k21Sw+DiXAZvccMAQnhsPoTlNu8aQ4tsyLhv55xO/DA
+         Gju1YgJmtweVlHxyxPM/xAEC7qF2Qqp08B7NnGN8pBlpIcAKorMb+egbOL9w554yKkZB
+         YqfqWOHLCesnxWu7sxPyM8KBkgPR40BrJfDsr3g2qHTrOww2uIMguhIrHLsliaY8tuB/
+         YbbQ==
+X-Gm-Message-State: ACgBeo2gG44ltulLvLdaRPPD4buYaeEcljbp10g2gVk6P7ZtMfL5voOR
+        otG3NzI18qjEXO0yyNYcp2g2Qg==
+X-Google-Smtp-Source: AA6agR53BILwU6j8+ChzRZxYFHFCKAkOenTMkx9tNaQV0tVFgO4LyWwIybXNECZh9UmcvV7OiaXUaw==
+X-Received: by 2002:a05:622a:1302:b0:344:8a9d:817d with SMTP id v2-20020a05622a130200b003448a9d817dmr15966873qtk.339.1661884829807;
+        Tue, 30 Aug 2022 11:40:29 -0700 (PDT)
+Received: from [10.0.0.40] (c-73-148-104-166.hsd1.va.comcast.net. [73.148.104.166])
+        by smtp.gmail.com with ESMTPSA id m10-20020a05620a290a00b006bb87c4833asm8790543qkp.109.2022.08.30.11.40.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Aug 2022 11:40:29 -0700 (PDT)
+Message-ID: <606288d9-5d59-ad7d-c945-e8418b375c51@joelfernandes.org>
+Date:   Tue, 30 Aug 2022 14:40:27 -0400
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.0
+Subject: Re: [PATCH v4 00/14] Implement call_rcu_lazy() and miscellaneous
+ fixes
+Content-Language: en-US
 To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
         LKML <linux-kernel@vger.kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
         Rushikesh S Kadam <rushikesh.s.kadam@intel.com>,
         "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
         Neeraj upadhyay <neeraj.iitr10@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         rcu <rcu@vger.kernel.org>,
         Vineeth Pillai <vineeth@bitbyteword.org>
-Subject: Re: [PATCH v4 00/14] Implement call_rcu_lazy() and miscellaneous
- fixes
-Message-ID: <20220830164634.GC6159@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
 References: <20220819204857.3066329-1-joel@joelfernandes.org>
  <20220829134045.GA54589@lothringen>
  <1f7dd31b-f4d0-5c1c-ce28-c27f75c17f05@joelfernandes.org>
  <20220829194622.GA58291@lothringen>
  <CAEXW_YS593n8Gget+REaD-c8vT8Ht_AzOY0kXA_uc674LOyvVw@mail.gmail.com>
- <20220829204202.GQ6159@paulmck-ThinkPad-P17-Gen-1>
- <20220830105324.GA71266@lothringen>
- <20220830114343.GS6159@paulmck-ThinkPad-P17-Gen-1>
- <20220830160316.GC71266@lothringen>
- <20220830162244.GA73392@lothringen>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220830162244.GA73392@lothringen>
+ <20220830102619.GB58291@lothringen>
+From:   Joel Fernandes <joel@joelfernandes.org>
+In-Reply-To: <20220830102619.GB58291@lothringen>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Aug 30, 2022 at 06:22:44PM +0200, Frederic Weisbecker wrote:
-> On Tue, Aug 30, 2022 at 06:03:16PM +0200, Frederic Weisbecker wrote:
-> > On Tue, Aug 30, 2022 at 04:43:43AM -0700, Paul E. McKenney wrote:
-> > > On Tue, Aug 30, 2022 at 12:53:24PM +0200, Frederic Weisbecker wrote:
-> > > > On Mon, Aug 29, 2022 at 01:42:02PM -0700, Paul E. McKenney wrote:
-> > > > > On Mon, Aug 29, 2022 at 04:36:40PM -0400, Joel Fernandes wrote:
-> > > > > > On Mon, Aug 29, 2022 at 3:46 PM Frederic Weisbecker <frederic@kernel.org> wrote:
-> > > > > > > On Mon, Aug 29, 2022 at 12:45:40PM -0400, Joel Fernandes wrote:
-> > > > > > > > On 8/29/2022 9:40 AM, Frederic Weisbecker wrote:
-> > > > > 
-> > > > > [ . .  . ]
-> > > > > 
-> > > > > > > > > 2) NOCB implies performance issues.
-> > > > > > > >
-> > > > > > > > Which kinds of? There is slightly worse boot times, but I'm guessing that's do
-> > > > > > > > with the extra scheduling overhead of the extra threads which is usually not a
-> > > > > > > > problem except that RCU is used in the critical path of boot up (on ChromeOS).
-> > > > > > >
-> > > > > > > I never measured it myself but executing callbacks on another CPUs, with
-> > > > > > > context switches and locking can only involve significant performance issues if callbacks
-> > > > > > > are frequent. So it's a tradeoff between power and performance.
-> > > > > > 
-> > > > > > In my testing of benchmarks on real systems with 8-16 CPUs, the
-> > > > > > performance hit is down in the noise. It is possible though that maybe
-> > > > > > one can write a non-realistic synthetic test to force the performance
-> > > > > > issues, but I've not seen it in the real world. Maybe on
-> > > > > > networking-heavy servers with lots of cores, you'll see it but their
-> > > > > > batteries if any would be pretty big :-).
-> > > > > 
-> > > > > To Frederic's point, if you have enough servers, even a 1% decrease in
-> > > > > power consumption is a very big deal.  ;-)
-> > > > 
-> > > > The world has enough servers, for that matters ;-)
-> > > 
-> > > True enough!  Now you need only demonstrate that call_rcu_lazy() for
-> > > !rcu_nocbs servers would actually deliver that 1%.  ;-)
-> > 
-> > Well, !rcu_nocbs is not only used by server but also by pretty much
-> > everything else, except android IIUC.
+Hi Frederick,
 
-And soon, ChromeOS.
-
-> >                                       I can't really measure the whole
-> > world but I don't see how the idleness of a server/router/desktop/embedded/rt/hpc
-> > device differs from the idleness of an android device.
-> > 
-> > But ok I'll try to measure that.
+On 8/30/2022 6:26 AM, Frederic Weisbecker wrote:
+> On Mon, Aug 29, 2022 at 04:36:40PM -0400, Joel Fernandes wrote:
+[..]
+>>>>> 2) NOCB without nohz_full has extremely rare usecase (RT niche:
+>>>>> https://lore.kernel.org/lkml/CAFzL-7vqTX-y06Kc3HaLqRWAYE0d=ms3TzVtZLn0c6ATrKD+Qw@mail.gmail.com/
+>>>>> )
+>>>>
+>>>> Really? Android has been using it for a long time. It seems to be quite popular
+>>>> in the battery-powered space.
+>>>
+>>> It's really sad that this is the first time I hear about that. I've been working
+>>> on this code for years now without this usecase in mind. And yet it's fundamental.
+>>>
+>>> I asked several times around about other usecases of rcu_nocbs than nohz_full=
+>>> and nobody reported that. I can hardly even google a significant link
+>>> between power saving and rcu_nocbs=
+>>>
+>>> If this is really used that way for a long time then it's a cruel disconnection
+>>> between users and developers.
+>>
+>> I was not involved with Android or RCU back then. But my guess is I
+>> don't think it was enabled with the intent of saving power, it is just
+>> that using RCU_NO_CB_CPU has become the way to go to keep dynick-idle
+>> CPUs undisturbed: https://paulmck.livejournal.com/66807.html . Paul ,
+>> +Dietmar Eggemann can probably provide more history.
 > 
-> Although who knows, may be some periodic file operation while idle are specific
-> to Android. I'll try to trace lazy callbacks while idle and the number of grace
-> periods associated.
+> Thanks for the pointer!
 
-Sounds like a good start.
+No problem. Paul proves to us that any and every bit of writing effort pays off
+in one way or the other :-D.
 
-And yes, we don't need to show that the whole !NOCB world needs this,
-just some significant portion of it.  But we do need some decent evidence.
-After all, it is all too easy to do a whole lot of work and find that
-the expected benefits fail to materialize.
+>>>>> 2) NOCB implies performance issues.
+>>>>
+>>>> Which kinds of? There is slightly worse boot times, but I'm guessing that's do
+>>>> with the extra scheduling overhead of the extra threads which is usually not a
+>>>> problem except that RCU is used in the critical path of boot up (on ChromeOS).
+>>>
+>>> I never measured it myself but executing callbacks on another CPUs, with
+>>> context switches and locking can only involve significant performance issues if callbacks
+>>> are frequent. So it's a tradeoff between power and performance.
+>>
+>> In my testing of benchmarks on real systems with 8-16 CPUs, the
+>> performance hit is down in the noise. It is possible though that maybe
+>> one can write a non-realistic synthetic test to force the performance
+>> issues, but I've not seen it in the real world. Maybe on
+>> networking-heavy servers with lots of cores, you'll see it but their
+>> batteries if any would be pretty big :-).
+> 
+> Yeah I suspect this should have an impact on servers. And even servers may
+> deserve idleness sometimes.
 
-							Thanx, Paul
+Sure. I think I am pretty sure you will see power savings on servers but I guess
+the big question is will you regress server workloads with those savings. I do
+remember, Eric Dumazet from Google posting to LKML that callback flooding can
+happen on servers.
+
+>>>>> 3) We are mixing up two very different things in a single list of callbacks:
+>>>>>    lazy callbacks and flooding callbacks, as a result we are adding lots of
+>>>>>    off-topic corner cases all around:
+>>>>>      * a seperate lazy len field to struct rcu_cblist whose purpose is much more
+>>>>>        general than just bypass/lazy
+>>>>>      * "lazy" specialized parameters to general purpose cblist management
+>>>>>        functions
+>>>>
+>>>> I think just 1 or 2 functions have a new lazy param. It didn't seem too
+>>>> intrusive to me.
+>>>
+>>> What bothers me is that struct cblist has a general purpose and we are adding a field
+>>> and a parameter that is relevant to only one specialized user.
+>>
+>> To Paul's point, we can change it to a flag I think. The 3 states are:
+>> - no CBs.
+>> - All lazy
+>> - All non-lazy
+> 
+> Yeah that makes sense, should we take the generic direction!
+
+Sure, thanks.
+
+>>
+>> Or, worse case, we can move the flag to the per-cpu rcu_data
+>> structure, I think. Does that alleviate your concern?
+>>
+>>>>> 4) This is further complexifying bypass core code, nocb timer management, core
+>>>>>    nocb group management, all of which being already very complicated.
+>>>>
+>>>> True, I agree, a few more cases to handle for sure, but I think I got them all
+>>>> now (hopefully).
+>>>
+>>> Now I'm worried about maintainability. Hence why I'd rather see a generic code
+>>> for them all if possible.
+>>
+>> Maintainability is a concern for any new code. I rely a lot on testing
+>> both synthetic, and real-world. I have spent a lot of time on test
+>> code on this.
+> 
+> And I thank you for that. I've always been terrible at performance/power/latency
+> testing so I'm always relieved when others take over on that :)
+
+Thanks, appreciate it.
+
+>>>
+>>> Note I'm not stricly opposed to the current approach. But I can't say I'm
+>>> comfortable with it.
+>>
+>> Maybe we can find a way in the code to see what can be changed. One
+>> concern you rightly raised is the length variables , but I think
+>> that's not a blocker.
+> 
+> That's just a detail indeed. If we proceed with the current NOCB approach I'll
+> give a deeper review.
+> 
+>>
+>>> Can we do a simple test? Would it be possible to affine every rcuo%c/%d kthread
+>>> to the corresponding CPU%d? For example affine rcuop/1 to CPU 1, rcuop/2 to
+>>> CPU2, etc... And then relaunch your measurements on top of that?
+>>
+>> We already did that and it does not help, it makes things worse. The
+>> decision of where to run RCU threads is best left to the scheduler
+>> (for both performance and power).
+> 
+> That's the point, we want to artificially remove NOCB advantages to get
+> a behaviour close to !NOCB, so that we know if it's worth expanding the
+> patchset to !NOCB.
+> Let me clarify. The point of NOCB, powerwise, is that the RCU kthreads
+> track and execute the callbacks to an optimized selection of CPUs, thanks to the
+> scheduler. And the new lazy flow optimize that further.
+> 
+> Now we would like to know if call_rcu_lazy() also works on !NOCB. But we have
+> no way to test that right now because we only have an implemention for NOCB.
+
+I am happy to try this, but I want to make a counter-suggestion. You can 'hack'
+a behavior similar to call_rcu_lazy() by just increasing jiffiest_till_first_fqs
+to 24 or 48 (via boot param). The downside of doing this, you'll slow down
+synchronize_rcu() and tracing will be slow. That can be remedied by passing
+rcupdate.rcu_expedited boot parameter to speed up synchronous_rcu(). However, it
+will still slow down *all* call_rcu(). Neverthless, its a neat trick to see the
+light at the end of the tunnel but not for product.
+
+Would it be possible for you try this out with some workloads on a server, or
+even the server just being idle?
+
+Just to mention - the power savings between NO_CB and !NO_CB is enormous for us
+(40% !!). We attributed this directly to the tick not getting turned off and the
+hardware SoC thus not entering a deeper SoC-wide lower state (known as package
+C-state). While a server does not typically have an SoC, I suspect *some* power
+savings at least.
+
+> But if we affine each rcuop/%d to their corresponding CPU%d, we get a behaviour
+> that is close to !NOCB because then the scheduler doesn't help anymore and
+> callbacks are executed locally (the only difference is that we do context
+> switches, locking and and we still have rcuog around but still, that
+> should give a rough idea of what we get with !NOCB).
+> 
+> Therefore if you test your measurements again before and after your patchset,
+> both with each rcuop/%d affine to their CPU%d counterpart, you should get a
+> comparison of before VS after your patchset on what would be an implementation
+> on !NOCB.
+
+My suspicion is that if I did this experiment on my hardware, it will still not
+give  you a good idea of what a server will see. Because I don't have those kind
+of  workloads or many-CPU hardware. So it may not be that representative of what
+the !NOCB world wants. Further, my hardware is an Intel SoC which is more
+integrated than a typical server board so SoC-wide power savings might not be
+representative of the server hardware. However, I am happy to try out your
+suggestion out of respect for you, if you still feel its worth doing.
+
+Thanks,
+
+ - Joel
+
+
+
+
