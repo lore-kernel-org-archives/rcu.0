@@ -2,64 +2,64 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A8ACECAAA1
-	for <rcu@archiver.kernel.org>; Tue, 30 Aug 2022 18:47:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D6E8ECAAA1
+	for <rcu@archiver.kernel.org>; Tue, 30 Aug 2022 18:53:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231540AbiH3SrF (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 30 Aug 2022 14:47:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58078 "EHLO
+        id S229524AbiH3SxM (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 30 Aug 2022 14:53:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229736AbiH3SrE (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 30 Aug 2022 14:47:04 -0400
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 748496B674
-        for <rcu@vger.kernel.org>; Tue, 30 Aug 2022 11:47:02 -0700 (PDT)
-Received: by mail-qv1-xf2b.google.com with SMTP id x14so4942460qvr.6
-        for <rcu@vger.kernel.org>; Tue, 30 Aug 2022 11:47:02 -0700 (PDT)
+        with ESMTP id S229510AbiH3SxL (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 30 Aug 2022 14:53:11 -0400
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44ED845F43
+        for <rcu@vger.kernel.org>; Tue, 30 Aug 2022 11:53:10 -0700 (PDT)
+Received: by mail-qv1-xf2a.google.com with SMTP id cv7so6906991qvb.3
+        for <rcu@vger.kernel.org>; Tue, 30 Aug 2022 11:53:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc;
-        bh=XaXlF349lOKckpeRFZDQNo5GwNs0MMYghB0K5tskEEA=;
-        b=v2Em28vJsFBxBufUF/UfGuZsx0qmO1twBw6Du9kdtlLTlSUTLRWLJKsvNJuHfTNxNt
-         0UOo8jfgTrVj7vUnWZYdWCHIqLtLRaryAknxGqPmsUtfipNUWVah4oHCUMWxbP8qMvP3
-         YcEWVHQsCqmn6Jbi8oT3NZkdRTDcEMh0U2EbA=
+        bh=HBsYGhZMRgIdA5lBnnjoLpc9bLfQZYRKl7YPPGK3ddA=;
+        b=XYz5d/hd5jOPgb3I7CzUIB+zoQ9HjLvebPDsAUKgtWNG+0Dp3jZeCPtQr3mwx+67c+
+         3ePVYelD2VtZrK98r6o6PdnhW6jvYF5WTnhxi08YiRfT65osnsAniOUTZW6VaR9xkKor
+         CcLXoO8Sa5ctsad9BVmOHpb+Rgwq5GpAY64+I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc;
-        bh=XaXlF349lOKckpeRFZDQNo5GwNs0MMYghB0K5tskEEA=;
-        b=sGoe68OgPVbq+mc5Um4Ap/3JZBQ68l7mjN7kuMmv4blhvaPtQ8MV/nC4u2eHxAUtZ0
-         n1gPjJKcSaIZvJ1lmToTD3JtvsAYMpf+kkKhdFM7rPT5g75Xw22yB8xU94VVsygSjV09
-         sEOJQjktGMXJQIX+52P+fJEzFZV11w5CG7VT+ZkJWIbz2FeoRuzyCAyF9JvEX/btPAcM
-         egLOJHSmOL5KGe5PRp80ws9d/hT/SCEYu0iiqRR6vYlzV5TcWVSjX1TxrCIV5oydnkCA
-         LGi3EFP95TF4tSLT5M5Br32mHQ6//1k/+dI1bD+vBGD0ZV/hjzABJrU0eNnCGRUNRXeL
-         VmHg==
-X-Gm-Message-State: ACgBeo0fFgdVwwZoSJokejSJRynb/JPIWWivasUTkbvuLOYEA37vylcN
-        QXaNeUmf+jlpSrXl+tTtaPZD3g==
-X-Google-Smtp-Source: AA6agR4oKF8hpWH3cMJA+GxQhC85lxseU3x3imVzSGoaVv3jtv/sBtxUEAAXMdXk9mmAVhkeq7jAbg==
-X-Received: by 2002:a05:6214:ccf:b0:499:72d:ccf9 with SMTP id 15-20020a0562140ccf00b00499072dccf9mr7640496qvx.116.1661885221571;
-        Tue, 30 Aug 2022 11:47:01 -0700 (PDT)
+        bh=HBsYGhZMRgIdA5lBnnjoLpc9bLfQZYRKl7YPPGK3ddA=;
+        b=DN4E+hNPv7htLJoOB8qr4BhU6N/gjbd2J47hJu1mOF14OuGgwmAiXUajPrUkUNdA2d
+         ySD+i5rJzWR/7hTYZdaBWPJCQtV3MuifcvYjtwl/iAMGgDk0TV2F/jseZMEqgMg62BEQ
+         1g+dbbEKGlVrddGF5p3RSQdLaOdBOUuackMlUKzrdS6WFyGBmvLqkdTkKMsdBzPxIQlW
+         zVOTQtxk/UkWaqPiLwCdD92uOWT8a4GCZSE5XU02OM9uG4uaYZmlrSoVRARyyF3FtrkS
+         D3D3qMH082M848mzSCbsRZfk1E1l/lQ1YiVsTJKIguhhHrFgY+87uBmrCYleuu02uR3Z
+         0cJA==
+X-Gm-Message-State: ACgBeo2TupGpbqq8TM5tW5ebLcYFkWtxc25rX2jW0KMiHDpisFnLVyBP
+        jY0ldkBS0Rkk5E4swB39xDdcvw==
+X-Google-Smtp-Source: AA6agR6gKiPDwJ52i4lQAo1oeeGkp55e0BQYa6XLPS5fQf0KRaP7XvXuESWn5LFdNsUHtNCNvjoeAg==
+X-Received: by 2002:ad4:5def:0:b0:476:c97f:e28d with SMTP id jn15-20020ad45def000000b00476c97fe28dmr16915963qvb.42.1661885589438;
+        Tue, 30 Aug 2022 11:53:09 -0700 (PDT)
 Received: from [10.0.0.40] (c-73-148-104-166.hsd1.va.comcast.net. [73.148.104.166])
-        by smtp.gmail.com with ESMTPSA id l5-20020a37f905000000b006af3f3b385csm8448512qkj.98.2022.08.30.11.47.00
+        by smtp.gmail.com with ESMTPSA id bj33-20020a05620a192100b006b9c6d590fasm8549342qkb.61.2022.08.30.11.53.08
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Aug 2022 11:47:01 -0700 (PDT)
-Message-ID: <de01d018-c2c7-95a5-2bf6-9128ba9dd133@joelfernandes.org>
-Date:   Tue, 30 Aug 2022 14:46:59 -0400
+        Tue, 30 Aug 2022 11:53:09 -0700 (PDT)
+Message-ID: <7c164cfb-534d-e5eb-f326-a37de9268e6e@joelfernandes.org>
+Date:   Tue, 30 Aug 2022 14:53:07 -0400
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
  Thunderbird/102.2.0
 Subject: Re: [PATCH v4 00/14] Implement call_rcu_lazy() and miscellaneous
  fixes
 Content-Language: en-US
-To:     Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+To:     Uladzislau Rezki <urezki@gmail.com>,
+        Frederic Weisbecker <frederic@kernel.org>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
         LKML <linux-kernel@vger.kernel.org>,
         Rushikesh S Kadam <rushikesh.s.kadam@intel.com>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
         Neeraj upadhyay <neeraj.iitr10@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         rcu <rcu@vger.kernel.org>,
@@ -73,8 +73,9 @@ References: <20220819204857.3066329-1-joel@joelfernandes.org>
  <20220830105324.GA71266@lothringen>
  <20220830114343.GS6159@paulmck-ThinkPad-P17-Gen-1>
  <20220830160316.GC71266@lothringen> <20220830162244.GA73392@lothringen>
+ <Yw4+g/0yEf7fpHrh@pc636>
 From:   Joel Fernandes <joel@joelfernandes.org>
-In-Reply-To: <20220830162244.GA73392@lothringen>
+In-Reply-To: <Yw4+g/0yEf7fpHrh@pc636>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
@@ -83,60 +84,35 @@ X-Mailing-List: rcu@vger.kernel.org
 
 
 
-On 8/30/2022 12:22 PM, Frederic Weisbecker wrote:
-> On Tue, Aug 30, 2022 at 06:03:16PM +0200, Frederic Weisbecker wrote:
->> On Tue, Aug 30, 2022 at 04:43:43AM -0700, Paul E. McKenney wrote:
->>> On Tue, Aug 30, 2022 at 12:53:24PM +0200, Frederic Weisbecker wrote:
->>>> On Mon, Aug 29, 2022 at 01:42:02PM -0700, Paul E. McKenney wrote:
->>>>> On Mon, Aug 29, 2022 at 04:36:40PM -0400, Joel Fernandes wrote:
->>>>>> On Mon, Aug 29, 2022 at 3:46 PM Frederic Weisbecker <frederic@kernel.org> wrote:
->>>>>>> On Mon, Aug 29, 2022 at 12:45:40PM -0400, Joel Fernandes wrote:
->>>>>>>> On 8/29/2022 9:40 AM, Frederic Weisbecker wrote:
->>>>>
->>>>> [ . .  . ]
->>>>>
->>>>>>>>> 2) NOCB implies performance issues.
->>>>>>>>
->>>>>>>> Which kinds of? There is slightly worse boot times, but I'm guessing that's do
->>>>>>>> with the extra scheduling overhead of the extra threads which is usually not a
->>>>>>>> problem except that RCU is used in the critical path of boot up (on ChromeOS).
->>>>>>>
->>>>>>> I never measured it myself but executing callbacks on another CPUs, with
->>>>>>> context switches and locking can only involve significant performance issues if callbacks
->>>>>>> are frequent. So it's a tradeoff between power and performance.
->>>>>>
->>>>>> In my testing of benchmarks on real systems with 8-16 CPUs, the
->>>>>> performance hit is down in the noise. It is possible though that maybe
->>>>>> one can write a non-realistic synthetic test to force the performance
->>>>>> issues, but I've not seen it in the real world. Maybe on
->>>>>> networking-heavy servers with lots of cores, you'll see it but their
->>>>>> batteries if any would be pretty big :-).
->>>>>
->>>>> To Frederic's point, if you have enough servers, even a 1% decrease in
->>>>> power consumption is a very big deal.  ;-)
->>>>
->>>> The world has enough servers, for that matters ;-)
->>>
->>> True enough!  Now you need only demonstrate that call_rcu_lazy() for
->>> !rcu_nocbs servers would actually deliver that 1%.  ;-)
->>
->> Well, !rcu_nocbs is not only used by server but also by pretty much
->> everything else, except android IIUC. I can't really measure the whole
->> world but I don't see how the idleness of a server/router/desktop/embedded/rt/hpc
->> device differs from the idleness of an android device.
->>
->> But ok I'll try to measure that.
+On 8/30/2022 12:44 PM, Uladzislau Rezki wrote:
+> Hello, Frederic.
 > 
-> Although who knows, may be some periodic file operation while idle are specific
-> to Android. I'll try to trace lazy callbacks while idle and the number of grace
-> periods associated.
+>>
+>> Although who knows, may be some periodic file operation while idle are specific
+>> to Android. I'll try to trace lazy callbacks while idle and the number of grace
+>> periods associated.
+>>
+>>
+> Everything related to lazy call-backs is about not waking "nocb"
+> kthreads in order to offload one or i should say few callbacks
+> because it is more or less useless. Currently if incoming callback
+> is the only one, it will kick a GP whereas a GP will kick nocb_kthread
+> to offload.
+> 
+> In "light" loaded test cases, especially where a power drain is a key
+> thing, such light load may lead to some kind of "noise" produced by the
+> RCU core, i.e. kicking idle CPUs, thus wasting power. On our ARM devices
+> it is not painful, but there is a small power gain and it is visible.
+> For other systems, like Joel measures for Intel SoC it is more visible,
+> because of a power cost getting in/out of isle states.
 
-One potential usecase could be logging if the logger is opening and closing log
-files during logging updates. Uladzislau reported this on Android, that a system
-logger was doing file open/close and triggering RCU that way (file table,
-dentry, inode code all queue RCU callbacks).
+Indeed! And Intel (Rushikesh) reminded me today that it has become more
+important than before to not disturb idle CPUs, because more and more pieces of
+hardware are moving into SoCs. So if the whole SoC cannot go into deeper sleep
+state (package C-state) because of the CPU getting disturbed, then that's lesser
+power savings than say in the not-so-recent past. Rushikesh could shed more
+light on that fact.
 
 Thanks,
 
  - Joel
-
