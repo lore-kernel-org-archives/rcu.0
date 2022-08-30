@@ -2,124 +2,82 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D4F7ECAAD2
-	for <rcu@archiver.kernel.org>; Mon, 29 Aug 2022 20:55:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6FB52ECAAA1
+	for <rcu@archiver.kernel.org>; Tue, 30 Aug 2022 08:25:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229547AbiH2UzZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 29 Aug 2022 16:55:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53834 "EHLO
+        id S230312AbiH3IZw (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 30 Aug 2022 04:25:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229739AbiH2UzO (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 29 Aug 2022 16:55:14 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 109DE1E3D9
-        for <rcu@vger.kernel.org>; Mon, 29 Aug 2022 13:55:13 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id e195so1694912iof.1
-        for <rcu@vger.kernel.org>; Mon, 29 Aug 2022 13:55:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=/WpZ2alG1CIoH2ULE/+JUbbWqOiZ8hhsZtBC3ijgmwo=;
-        b=pJlkh9If2amT6Si6KqoPWg6CjHpZMdIU+/ut+dgDT08GDDA6YC4jAvg9OVCnK/Zjod
-         hFYl37in2dJkI15GejgeVPzN98Tger0B0DPotX0rGuLgTeFBssRocoxgE0rBh+2XJCS6
-         rUpnan58ARvUdHzPKDIHnmfa+Y6/gkPaviqYQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=/WpZ2alG1CIoH2ULE/+JUbbWqOiZ8hhsZtBC3ijgmwo=;
-        b=SIxGLaYPRFzDcsPZzEmrZSTur4p9vkqE8SVwaiv4H8BZbfxg/sA4B3vHkH/KHWRdq9
-         aftUw17zsXufefiGcV8idW98xsmZxr2tFwc0fad4R0vNtDjSKrDpuoh9f32a5PJ1WXzv
-         LoIsy8hxMBIZoUHar7PNBfNL/kXLon/luNQ8pV3x8rxW/DbcpAUj4OVohKRiHtV/k/qM
-         QDUlf8mVS+HhOC+eyETgZAF6Ye1wicyBH8N/9dopLA8t/vfwH24H0frz+vilWpbJznvp
-         5mnR91nKafrr9orGK/HdndtZ/qjwqCMHY0POx3i8hcIjeIlViec7n4q1y2OwRmujlnQv
-         Q9mQ==
-X-Gm-Message-State: ACgBeo3LxmxszvRxbH+4KjfBFi501Afqn3U3/Zwy7u2MSEA5/k5NiiaX
-        ld1fb8iHzB5Sj13ddJtz2AnMuA5ROlWc4HEY2fMRfw==
-X-Google-Smtp-Source: AA6agR7+DLtTKGZtljenFFZGN/TsTDrf1+ohMTR/lFVEMYQ7Emfj8+dSuxEWx9ak8yEfo4uBY0Ryh7Pth1HL9+bn+ZE=
-X-Received: by 2002:a05:6602:26d5:b0:68a:db5d:2923 with SMTP id
- g21-20020a05660226d500b0068adb5d2923mr9121176ioo.175.1661806512482; Mon, 29
- Aug 2022 13:55:12 -0700 (PDT)
+        with ESMTP id S230430AbiH3IZv (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 30 Aug 2022 04:25:51 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1031253000;
+        Tue, 30 Aug 2022 01:25:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1661847951; x=1693383951;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=FM2Nw6OVv3oANgo8eVrCve+EM/odlJq6l1r72WRUiCU=;
+  b=AMdaVOefmx3cat1jWPp1TxPxt+elMIwRs+K3p5i7rDGxRb7SEDcc4nEt
+   996zMz708/UXcjQbAcJetzsFbhCXuTz5J4pidbZniMr3VppKokDRUKaNh
+   wbQF9P3UNvY3Ukiv2g6+htqQoOnfzajg1qtPpbIljpBfipaLDxaOFAtwJ
+   lI2l44ynQTc3mcN32GDbpSvoEukdLktrog05TYhL+x2yxlAcJC3xjH8gb
+   /kNjPP6JI7TmvYKlrgIfgEBG04oaZheZF5OUlZMUbx5De+B/uSbwI7Gav
+   zbN14GU6XeAhhF+tOXSDCGD+Fwmk/YkJYLQTeYEfSpe81KB754xqjJYFa
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10454"; a="275517826"
+X-IronPort-AV: E=Sophos;i="5.93,274,1654585200"; 
+   d="scan'208";a="275517826"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2022 01:25:50 -0700
+X-IronPort-AV: E=Sophos;i="5.93,274,1654585200"; 
+   d="scan'208";a="672751679"
+Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.129])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2022 01:25:49 -0700
+From:   Zqiang <qiang1.zhang@intel.com>
+To:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
+        joel@joelfernandes.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] rcu: Remove duplicate RCU exp QS report from rcu_report_dead()
+Date:   Tue, 30 Aug 2022 16:31:51 +0800
+Message-Id: <20220830083151.396561-1-qiang1.zhang@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20220819204857.3066329-1-joel@joelfernandes.org>
- <20220829134045.GA54589@lothringen> <1f7dd31b-f4d0-5c1c-ce28-c27f75c17f05@joelfernandes.org>
- <20220829194622.GA58291@lothringen> <20220829203131.GP6159@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20220829203131.GP6159@paulmck-ThinkPad-P17-Gen-1>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Mon, 29 Aug 2022 16:54:59 -0400
-Message-ID: <CAEXW_YRay19Dw5W1QVjshoi5b7DWhFb=pzSdF9hs-asH3do2cA@mail.gmail.com>
-Subject: Re: [PATCH v4 00/14] Implement call_rcu_lazy() and miscellaneous fixes
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Rushikesh S Kadam <rushikesh.s.kadam@intel.com>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        Neeraj upadhyay <neeraj.iitr10@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        rcu <rcu@vger.kernel.org>,
-        Vineeth Pillai <vineeth@bitbyteword.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
- On Mon, Aug 29, 2022 at 4:31 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-[...]
-> > > > 3) We are mixing up two very different things in a single list of callbacks:
-> > > >    lazy callbacks and flooding callbacks, as a result we are adding lots of
-> > > >    off-topic corner cases all around:
-> > > >      * a seperate lazy len field to struct rcu_cblist whose purpose is much more
-> > > >        general than just bypass/lazy
-> > > >      * "lazy" specialized parameters to general purpose cblist management
-> > > >        functions
-> > >
-> > > I think just 1 or 2 functions have a new lazy param. It didn't seem too
-> > > intrusive to me.
-> >
-> > What bothers me is that struct cblist has a general purpose and we are adding a field
-> > and a parameter that is relevant to only one specialized user.
->
-> This does sound like a bad idea, now that you mention it.  Joel, if
-> this is still in place, can it be moved near the rcu_data structure's
-> bypass-related fields?
+For PREEMPT_RCU, the rcu_report_dead() is invoked means that the
+outgoing CPU mask is clear from leaf rcu_node and has no further
+need of RCU, so invoke rcu_preempt_depth() return value is always
+zero in rcu_report_dead(), if the current outgoing CPU rcu_data
+structure's cpu_no_qs.b.exp is true, the rcu_preempt_deferred_qs()
+will invoke rcu_report_exp_rdp() to report exp QS.
 
-Yes, I can certainly do that! Consider it gone *poof* from the
-rcu_cblist structure, and moved into the rcu_data.
+for non-PREEMPT_RCU, the rcu_preempt_deferred_qs() is equivalent to
+rcu_report_exp_rdp().
 
->
-> And by the way, thank you for reviewing this patch series!
+Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+---
+ kernel/rcu/tree.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-And my thanks as well! I am deeply appreciative of y'alls work and
-participation.
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 6bb8e72bc815..0ca21ac0f064 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -4276,8 +4276,6 @@ void rcu_report_dead(unsigned int cpu)
+ 	// Do any dangling deferred wakeups.
+ 	do_nocb_deferred_wakeup(rdp);
+ 
+-	/* QS for any half-done expedited grace period. */
+-	rcu_report_exp_rdp(rdp);
+ 	rcu_preempt_deferred_qs(current);
+ 
+ 	/* Remove outgoing CPU from mask in the leaf rcu_node structure. */
+-- 
+2.25.1
 
-> > > > So here is a proposal: how about forgetting NOCB for now and instead add a new
-> > > > RCU_LAZY_TAIL segment in the struct rcu_segcblist right after RCU_NEXT_TAIL?
-> > > > Then ignore that segment until some timer expiry has been met or the CPU is
-> > > > known to be busy? Probably some tiny bits need to be tweaked in segcblist
-> > > > management functions but probably not that much. And also make sure that entrain()
-> > > > queues to RCU_LAZY_TAIL.
-> > > >
-> > > > Then the only difference in the case of NOCB is that we add a new timer to the
-> > > > nocb group leader instead of a local timer in !NOCB.
-> > >
-> > > It sounds reasonable, but I'll go with Paul on the usecase argument - who would
-> > > actually care about lazy CBs outside of power, and would those guys ever use
-> > > !NO_CB if they cared about power / battery?
-> >
-> > _Everybody_ cares about power. Those who don't yet will very soon ;-)
->
-> Apparently not enough to use CONFIG_RCU_FAST_NO_HZ.  Though to be fair,
-> that option had its own performance issues.  And it would not reduce
-> grace periods anywhere near as much as call_rcu_lazy().  But the problem
-> was that last I checked on server workloads, the callbacks were mostly
-> those that could not reasonably be lazy.
-
-I see! FWIW, lazy-RCU does not have a lot of benefit on busy systems
-in our testing (because other non-lazy RCU CBs keep churning grace
-period cycles). So for servers that are mostly busy, the power benefit
-may not be that much IMHO.
-
-Thanks,
-
- - Joel
