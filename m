@@ -2,124 +2,81 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 796A4C0502A
-	for <rcu@archiver.kernel.org>; Wed, 31 Aug 2022 18:14:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C0B96ECAAD1
+	for <rcu@archiver.kernel.org>; Wed, 31 Aug 2022 18:14:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232630AbiHaSOd (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 31 Aug 2022 14:14:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56468 "EHLO
+        id S232283AbiHaSOp (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 31 Aug 2022 14:14:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232666AbiHaSNu (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 31 Aug 2022 14:13:50 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91296F14FE;
-        Wed, 31 Aug 2022 11:12:33 -0700 (PDT)
+        with ESMTP id S232151AbiHaSNy (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 31 Aug 2022 14:13:54 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3DAFF23C1;
+        Wed, 31 Aug 2022 11:12:38 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id D4DA0CE1EA8;
-        Wed, 31 Aug 2022 18:12:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85AB3C433D6;
-        Wed, 31 Aug 2022 18:12:07 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EC4D961C5B;
+        Wed, 31 Aug 2022 18:12:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 131E5C43143;
+        Wed, 31 Aug 2022 18:12:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1661969527;
-        bh=qlD6PiN5oNaKRenh0ue19Tcym26xYgZfF1mk6pNSa+8=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=b/LI+sV3g/X8yGBznI+mXYDTQ48hV6MxxYOHd0Vmoo0IQReqd8alHoOEqXmqjjerN
-         qUHi1FE9F0aNBO6ghYfISaEiZ/WpWyeSbsYBwluoZOeVeym3nQv5YuxTOCNpewe0Ss
-         Vw8IYu61mcNhqnpS23atznJcDwJZAd58IUPIBVI3N3+cG87lHCiSzqfBW+lEWCm2DC
-         9k7FPNE15joI4Qy11wACqcJC3WGi1zl5sD9Tga42O46ao8Z8Kv0SBMyUMZYPeN4FY4
-         2jB1RuG2NVeNwphGnOGjAX0FxUIX35mNTYFk7FPIiun3HikGOGsiiFsf0Ls+2sohuB
-         sLKuw/P2LCv6w==
+        s=k20201202; t=1661969532;
+        bh=ZZy+CEe3X58TPi2PAPGr5aGa6z9m03nXkRDid1QaiUI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=OGXrTPXSb4TPHXnCBLSOBtXGt0Y94oSzDImoM2jqzg1pHChP8X1dYFbLmekKt0tMv
+         8cpWdbxKCA9njeByXWmVnYRH0NLeRKRNtAQTuvwvwmztU652njMUWSsNqYSK0f33ku
+         3uSeM9RqwqfbnRxS2ccONiNqjt6T86lni0KjUf4VnUWHoQ1i/O3THV6wB62wSSHP0g
+         4C0R1sOsfdC7Il/+S/klZi8MDS9SIg5o2HlLhEKp7moOVSRDqFkgeaqaQtKyiON5Mq
+         Hu9UzQhFBgeJaVQzyDLkcF5OgkUM61gqHJfL5QlsAlZ83t8Xi0Zal6ZdRIdsmCw+Uc
+         M4JlZ8Q0m9+3Q==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 2C0DE5C015D; Wed, 31 Aug 2022 11:12:07 -0700 (PDT)
-Date:   Wed, 31 Aug 2022 11:12:07 -0700
+        id 71A895C0B54; Wed, 31 Aug 2022 11:12:11 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org
-Subject: [PATCH rcu 0/7] Polled grace-period updates for v6.1
-Message-ID: <20220831181207.GA2694717@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 14/25] rcu: Set rcu_data structures' initial ->gpwrap value to true
+Date:   Wed, 31 Aug 2022 11:11:59 -0700
+Message-Id: <20220831181210.2695080-14-paulmck@kernel.org>
+X-Mailer: git-send-email 2.31.1.189.g2e36527f23
+In-Reply-To: <20220831181207.GA2694717@paulmck-ThinkPad-P17-Gen-1>
+References: <20220831181207.GA2694717@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello!
+It would be good do reduce the size of the rcu_gp_oldstate structure
+from three unsigned long instances to two, but this requires that the
+boot-time optimized grace periods update the various ->gp_seq fields.
+Updating these fields in the rcu_state structure and in all of the
+rcu_node structures is at least semi-reasonable, but updating them in
+all of the rcu_data structures is a bridge too far.  This means that if
+there are too many early boot-time grace periods, the ->gp_seq field in
+the rcu_data structure cannot be trusted.  This commit therefore sets
+each rcu_data structure's ->gpwrap field to provide the necessary impetus
+for a suitable level of distrust.
 
-This series adds support for full-state polled RCU grace periods, both
-normal and expedited:
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ kernel/rcu/tree.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-1.	Add full-sized polling for get_completed*() and poll_state*().
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 5c4ec9dd4ce70..03b089184b37e 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -76,6 +76,7 @@
+ /* Data structures. */
+ 
+ static DEFINE_PER_CPU_SHARED_ALIGNED(struct rcu_data, rcu_data) = {
++	.gpwrap = true,
+ #ifdef CONFIG_RCU_NOCB_CPU
+ 	.cblist.flags = SEGCBLIST_RCU_CORE,
+ #endif
+-- 
+2.31.1.189.g2e36527f23
 
-2.	Add full-sized polling for get_state().
-
-3.	Abstract synchronous and polled API testing.
-
-4.	Allow per-RCU-flavor polled double-GP check.
-
-5.	Verify RCU reader prevents full polling from completing.
-
-6.	Remove redundant RTWS_DEF_FREE check.
-
-7.	Verify long-running reader prevents full polling from completing.
-
-8.	Add full-sized polling for start_poll().
-
-9.	Add full-sized polling for start_poll_expedited().
-
-10.	Remove blank line from poll_state_synchronize_rcu() docbook
-	header.
-
-11.	Add full-sized polling for cond_sync_full().
-
-12.	Add full-sized polling for cond_sync_exp_full().
-
-13.	Disable run-time single-CPU grace-period optimization.
-
-14.	Set rcu_data structures' initial ->gpwrap value to true.
-
-15.	rcu-tasks: Remove grace-period fast-path rcu-tasks helper.
-
-16.	Make synchronize_rcu() fast path update ->gp_seq counters.
-
-17.	Remove expedited grace-period fast-path forward-progress helper.
-
-18.	Make synchronize_rcu_expedited() fast path update
-	.expedited_sequence.
-
-19.	Remove ->rgos_polled field from rcu_gp_oldstate structure.
-
-20.	Adjust rcu_poll_need_2gp() for rcu_gp_oldstate field removal.
-
-21.	Make synchronize_rcu() fastpath update only boot-CPU counters.
-
-22.	Use 1-suffixed variable in rcu_torture_write_types() check.
-
-23.	Expand rcu_torture_write_types() first "if" statement.
-
-24.	Add functions to compare grace-period state values.
-
-25.	Limit read-side polling-API testing.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- b/include/linux/rcupdate.h |    3 
- b/include/linux/rcutiny.h  |    9 
- b/include/linux/rcutree.h  |    8 
- b/kernel/rcu/rcutorture.c  |    9 
- b/kernel/rcu/tiny.c        |   10 +
- b/kernel/rcu/tree.c        |   76 +++++++-
- b/kernel/rcu/tree_exp.h    |   18 +
- include/linux/rcupdate.h   |   21 ++
- include/linux/rcutiny.h    |   41 ++++
- include/linux/rcutree.h    |   34 +++
- kernel/rcu/rcutorture.c    |  412 +++++++++++++++++++++++++++++++++------------
- kernel/rcu/tree.c          |  230 +++++++++++++++++--------
- kernel/rcu/tree_exp.h      |   35 +++
- 13 files changed, 720 insertions(+), 186 deletions(-)
