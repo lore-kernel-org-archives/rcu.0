@@ -2,69 +2,84 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E8766ECAAD3
-	for <rcu@archiver.kernel.org>; Wed, 31 Aug 2022 18:11:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ED55CECAAD3
+	for <rcu@archiver.kernel.org>; Wed, 31 Aug 2022 18:11:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232496AbiHaSLF (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 31 Aug 2022 14:11:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44982 "EHLO
+        id S232417AbiHaSLK (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 31 Aug 2022 14:11:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232058AbiHaSKt (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 31 Aug 2022 14:10:49 -0400
+        with ESMTP id S232421AbiHaSKz (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 31 Aug 2022 14:10:55 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 620BF5853C;
-        Wed, 31 Aug 2022 11:10:09 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C09FE1904;
+        Wed, 31 Aug 2022 11:10:29 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id AC14BB82012;
-        Wed, 31 Aug 2022 18:09:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A649C433D6;
-        Wed, 31 Aug 2022 18:09:17 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 79179B82272;
+        Wed, 31 Aug 2022 18:09:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 407BCC433D7;
+        Wed, 31 Aug 2022 18:09:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1661969357;
-        bh=EZCaHFNfWzzK81BUJHas2+EH26hcxKcbRtxd2gbUdDc=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=TiKAENTnjrECd4Xna+cz74y6FT50vB1jrnin5uWfY3H6yBAPla+EoG+VfhwEnWl7W
-         i/keiA4tAA+Z6luGjr4Tk1MA9GFTj67WyWbJzkdulbseyT5UhFG7hliYO//j6epMq0
-         8a0WF/3580uBOjx3H2sxYxqp+PY14z/gyKt4R0Yk8beNVbswINe3QqBLIiKXPnlG5F
-         PxiD7mOpj0QsCAVm6dti5PjU0yEGa7S+NaqXui81Tadnu8vnaNz4xO90OHgQ1evCPh
-         Ditl9sokGanELEXbpCnyMqfsgX5J4rHOgYSU7matcT0NmW/QXeZBQm+ssAFs0AtR8X
-         IvDByMozyJW4g==
+        s=k20201202; t=1661969363;
+        bh=ceDPItoNiUMap9R4gIe5pPog2RIqMPTPWZ/pngjibCk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ojZK7e7g/vPC97dOPizdjJcJQOptdULd1jMc3kllquHhTbrrhHdb74kxQi5WJ3wz3
+         Xy6RYLGBq0hb+K6IKwNjgVn/kLcCyoTxpTxAVatUe9eq5Nr3T2yKk66jPTLfXO9F1+
+         QVr65rCZtum+0sXzkdULU45/nyeFlkml0+Vf0YunzlBj4v3wuNwMBxgBSspmij/gVN
+         a9ZVXBMVRWL3zcLKxHZIcGvxknV1AMkT9VnLqupY1v3BlosG+PY6EQmoDveEWGf98P
+         9VMPqcIwLCgzL2S0HkFa2IdZAoL1FtBosgAxeTmobgA0VqFKEGCoFKkxMOZ5uq3nXa
+         cUBX0yl0EQgGw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id F0DA15C015D; Wed, 31 Aug 2022 11:09:16 -0700 (PDT)
-Date:   Wed, 31 Aug 2022 11:09:16 -0700
+        id 02DBD5C019C; Wed, 31 Aug 2022 11:09:23 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org
-Subject: [PATCH rcu 0/7] kvfree_rcu updates for v6.1
-Message-ID: <20220831180916.GA2693797@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        rostedt@goodmis.org,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 2/3] rcu/kfree: Fix kfree_rcu_shrink_count() return value
+Date:   Wed, 31 Aug 2022 11:09:20 -0700
+Message-Id: <20220831180921.2694017-2-paulmck@kernel.org>
+X-Mailer: git-send-email 2.31.1.189.g2e36527f23
+In-Reply-To: <20220831180916.GA2693797@paulmck-ThinkPad-P17-Gen-1>
+References: <20220831180916.GA2693797@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello!
+From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
 
-This series contains a few kvfree_rcu() updates:
+As per the comments in include/linux/shrinker.h, .count_objects callback
+should return the number of freeable items, but if there are no objects
+to free, SHRINK_EMPTY should be returned. The only time 0 is returned
+should be when we are unable to determine the number of objects, or the
+cache should be skipped for another reason.
 
-1.	Back off upon fill_page_cache_func() allocation failure, courtesy
-	of Michal Hocko.
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ kernel/rcu/tree.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-2.	Fix kfree_rcu_shrink_count() return value, courtesy of "Joel
-	Fernandes (Google)".
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index eb435941e92fd..3d234d536d4c3 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3372,7 +3372,7 @@ kfree_rcu_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
+ 		atomic_set(&krcp->backoff_page_cache_fill, 1);
+ 	}
+ 
+-	return count;
++	return count == 0 ? SHRINK_EMPTY : count;
+ }
+ 
+ static unsigned long
+-- 
+2.31.1.189.g2e36527f23
 
-3.	Update KFREE_DRAIN_JIFFIES interval, courtesy of "Uladzislau Rezki
-	(Sony)".
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- b/kernel/rcu/tree.c |   17 +++++++++--------
- kernel/rcu/tree.c   |   25 ++++++++++++++++++++-----
- 2 files changed, 29 insertions(+), 13 deletions(-)
