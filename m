@@ -2,158 +2,178 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0FCF1ECAAD3
-	for <rcu@archiver.kernel.org>; Wed, 31 Aug 2022 16:15:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B973ECAAD1
+	for <rcu@archiver.kernel.org>; Wed, 31 Aug 2022 17:02:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231715AbiHaQPb (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 31 Aug 2022 12:15:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51374 "EHLO
+        id S231928AbiHaRC3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 31 Aug 2022 13:02:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231891AbiHaQPa (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 31 Aug 2022 12:15:30 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E486F4C620;
-        Wed, 31 Aug 2022 09:15:25 -0700 (PDT)
+        with ESMTP id S231963AbiHaRCK (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 31 Aug 2022 13:02:10 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26A8FDEA75;
+        Wed, 31 Aug 2022 10:00:51 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 67D2BB821EB;
-        Wed, 31 Aug 2022 16:15:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08551C433C1;
-        Wed, 31 Aug 2022 16:15:23 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5317661A28;
+        Wed, 31 Aug 2022 17:00:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0B56C433D6;
+        Wed, 31 Aug 2022 17:00:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1661962523;
-        bh=SCqfgJyLIQD7HI1202DMV2VpiKYadpluO6AM1dsF7Ss=;
+        s=k20201202; t=1661965245;
+        bh=Zhjh7G7sPVKRPFjsonBsqBM5O5A+diJMnILvCS3tHeo=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=GDyBUKFa0NjK5kefHxgnzNIdYQ0xhwE6M9ghoIgQbE6EiVDSN+B3FQLdtEPAtHizF
-         7yNnmPliX9ubT5TD30xMIblvoMSW/0BB48Va1Tu1ZyB7ZeWrvfesQb2Ogt2TN1jQgf
-         4ju3BvbZtLDofQT20CDI7FKJQw0MMQxaEfWRZcH8aX/TAkzDrhLLk2n/uFOh9RiUBP
-         v/RwKK6OOR7oQsM80M5O/t+IyjMllB4vtb934tSxLarM+vAdgsscO85hPobWWvpcSy
-         Bs3k2RekVxPulSi7eobHOiGqpbsPpvcu1BcsZRldO1l+Rsjf6T1kEF7UxlhC9RmFlh
-         trF9gqeOLDbzA==
+        b=LXMpglWCbk+7CT2yhdwvVQ18LK0yJyJpH3ems6RSUVbZJWZPL1lh1XHtsngBmCu36
+         WXOC0G3IpNreNt4ZGsMLbMrLr+HeKe6h6WE4MF+X2hLN31qSCUTfCNS1dEvzUgkzvA
+         uKGOqAKA7DCnS3+oCCodorVbpCTgJnepL1HQNnRqVvkWr3+EsJWp0SvilI5S7SwXQJ
+         7h0mT+CnDBse0TKj0IsdNBTkJXB4QtquKIzr8SzbBNTuBs2OvVLiDaz8dezMQmC3yp
+         DgMq3k+KvpvBXOcaz7E21KDkf+BPzdu+dPc1Oz0I+Q0fM0wCeMxz1plXjFu6aqDU6E
+         fyWAnz53b1Azg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 9934E5C015D; Wed, 31 Aug 2022 09:15:22 -0700 (PDT)
-Date:   Wed, 31 Aug 2022 09:15:22 -0700
+        id 37EAF5C015D; Wed, 31 Aug 2022 10:00:45 -0700 (PDT)
+Date:   Wed, 31 Aug 2022 10:00:45 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Pingfan Liu <kernelfans@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Price <steven.price@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>, boqun.feng@gmail.com
-Subject: Re: [RFC 06/10] rcu/hotplug: Make rcutree_dead_cpu() parallel
-Message-ID: <20220831161522.GA2582451@paulmck-ThinkPad-P17-Gen-1>
+To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
+Cc:     "frederic@kernel.org" <frederic@kernel.org>,
+        "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>,
+        "joel@joelfernandes.org" <joel@joelfernandes.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] rcu: Remove duplicate RCU exp QS report from
+ rcu_report_dead()
+Message-ID: <20220831170045.GL6159@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20220822021520.6996-1-kernelfans@gmail.com>
- <20220822021520.6996-7-kernelfans@gmail.com>
- <20220822024528.GC6159@paulmck-ThinkPad-P17-Gen-1>
- <YwQygLBtzqwxuMIJ@piliu.users.ipa.redhat.com>
- <20220823030125.GJ6159@paulmck-ThinkPad-P17-Gen-1>
- <CAFgQCTup0uTqnKi79Tu+5Q0POYVdcE4UkGes8KfHXBd6VR552A@mail.gmail.com>
- <20220824162050.GA6159@paulmck-ThinkPad-P17-Gen-1>
+References: <20220830083151.396561-1-qiang1.zhang@intel.com>
+ <20220830090623.GR6159@paulmck-ThinkPad-P17-Gen-1>
+ <PH0PR11MB58809A3EB14FDBD408292446DA799@PH0PR11MB5880.namprd11.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220824162050.GA6159@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <PH0PR11MB58809A3EB14FDBD408292446DA799@PH0PR11MB5880.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Aug 24, 2022 at 09:20:50AM -0700, Paul E. McKenney wrote:
-> On Wed, Aug 24, 2022 at 09:53:11PM +0800, Pingfan Liu wrote:
-> > On Tue, Aug 23, 2022 at 11:01 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > On Tue, Aug 23, 2022 at 09:50:56AM +0800, Pingfan Liu wrote:
-> > > > On Sun, Aug 21, 2022 at 07:45:28PM -0700, Paul E. McKenney wrote:
-> > > > > On Mon, Aug 22, 2022 at 10:15:16AM +0800, Pingfan Liu wrote:
-> > > > > > In order to support parallel, rcu_state.n_online_cpus should be
-> > > > > > atomic_dec()
-> > > > > >
-> > > > > > Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
-> > > > >
-> > > > > I have to ask...  What testing have you subjected this patch to?
-> > > > >
-> > > >
-> > > > This patch subjects to [1]. The series aims to enable kexec-reboot in
-> > > > parallel on all cpu. As a result, the involved RCU part is expected to
-> > > > support parallel.
-> > >
-> > > I understand (and even sympathize with) the expectation.  But results
-> > > sometimes diverge from expectations.  There have been implicit assumptions
-> > > in RCU about only one CPU going offline at a time, and I am not sure
-> > > that all of them have been addressed.  Concurrent CPU onlining has
-> > > been looked at recently here:
-> > >
-> > > https://docs.google.com/document/d/1jymsaCPQ1PUDcfjIKm0UIbVdrJAaGX-6cXrmcfm0PRU/edit?usp=sharing
-> > >
-> > > You did us atomic_dec() to make rcu_state.n_online_cpus decrementing be
-> > > atomic, which is good.  Did you look through the rest of RCU's CPU-offline
-> > > code paths and related code paths?
+On Tue, Aug 30, 2022 at 11:30:39AM +0000, Zhang, Qiang1 wrote:
+> On Tue, Aug 30, 2022 at 04:31:51PM +0800, Zqiang wrote:
+> > For PREEMPT_RCU, the rcu_report_dead() is invoked means that the
+> > outgoing CPU mask is clear from leaf rcu_node and has no further
+> > need of RCU, so invoke rcu_preempt_depth() return value is always
+> > zero in rcu_report_dead(), if the current outgoing CPU rcu_data
+> > structure's cpu_no_qs.b.exp is true, the rcu_preempt_deferred_qs()
+> > will invoke rcu_report_exp_rdp() to report exp QS.
 > > 
-> > I went through those codes at a shallow level, especially at each
-> > cpuhp_step hook in the RCU system.
+> > for non-PREEMPT_RCU, the rcu_preempt_deferred_qs() is equivalent to
+> > rcu_report_exp_rdp().
+> > 
+> > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+> >
+> >Nice!  
+> >
+> >One question... Currently, for PREEMPT_RCU, the outgoing CPU silently
+> >reports a quiescent state even if there was a bug that resulted in that
+> >CPU still being in an RCU read-side critical section.  With your change,
+> >the outgoing CPU would silently refuse to report a quiescent state.
+> >
+> >Is there something along the CPU-offline code path that already complains
+> >about this situation?  If not, I believe that the first WARN_ON_ONCE()
+> >in rcu_implicit_dynticks_qs() would complain.
 > 
-> And that is fine, at least as a first step.
+> In the following code, the current CPU will report QS if (rnp->qsmask & mask) return true.
+> it means that the WARN_ON_ONCE(!rcu_rdp_cpu_online(rdp)) is not trigger.
 > 
-> > But as you pointed out, there are implicit assumptions about only one
-> > CPU going offline at a time, I will chew the google doc which you
-> > share.  Then I can come to a final result.
+> if (rnp->qsmask & mask) { /* RCU waiting on outgoing CPU? */
+>                 /* Report quiescent state -before- changing ->qsmaskinitnext! */
+>                 rcu_disable_urgency_upon_qs(rdp);
+>                 rcu_report_qs_rnp(mask, rnp, rnp->gp_seq, flags);
+>                 raw_spin_lock_irqsave_rcu_node(rnp, flags);
+>         }
+>  WRITE_ONCE(rnp->qsmaskinitnext, rnp->qsmaskinitnext & ~mask);
 > 
-> Boqun Feng, Neeraj Upadhyay, Uladzislau Rezki, and I took a quick look,
-> and rcu_boost_kthread_setaffinity() seems to need some help.  As it
-> stands, it appears that concurrent invocations of this function from the
-> CPU-offline path will cause all but the last outgoing CPU's bit to be
-> (incorrectly) set in the cpumask_var_t passed to set_cpus_allowed_ptr().
+> >
+> >Could you please try this, just so we know what happens in this case?
+> >One way of forcing this would be to do rcu_read_lock() just before the
+> >call to rcu_report_dead(), though other diagnostics might require that
+> >rcu_read_lock() to be earlier in the code.
+> >
+> >
+> >Another question in both cases...  There is a more subtle change where the
+> >old code ignores rdp->cpu_no_qs.b.exp (thus invoking rcu_report_exp_rdp()
+> >unconditionally) and the new code avoids invoking rcu_report_exp_rdp()
+> >unless this is set.  How does this interact with a new expedited
+> >grace period that starts just as this CPU calls rcu_report_dead()?
 > 
-> This should not be difficult to fix, for example, by maintaining a
-> separate per-leaf-rcu_node-structure bitmask of the concurrently outgoing
-> CPUs for that rcu_node structure.  (Similar in structure to the
-> ->qsmask field.)
+> 1.When a new expedited grace period that starts just as this CPU call rcu_report_dead(),
+> if in this time, this CPU rcu_data structure's cpu_no_qs.b.exp is not set true, 
+> the rcu_preempt_deferred_qs() will not call rcu_report_exp_rdp().  but when call
+> rcu_report_dead(),  this CPU have been offline(cpu_is_offline(this CPU) return true).
 > 
-> There are probably more where that one came from.  ;-)
+> 2.In __sync_rcu_exp_select_node_cpus(), invoke smp_call_function_single() for this
+> CPU will return -ENXIO,  and then check  (rnp->qsmaskinitnext & mask) and (rnp->expmask & mask) 
+> 
+> 3.If in this time, the rcu_report_dead() has not yet clear CPU mask from rnp->qsmaskinitnext,
+> we will redo 2 step,  recall smp_call_function_single(), but is always return -ENXIO, 
+> and recheck (rnp->qsmaskinitnext & mask) and (rnp->expmask & mask), until rcu_report_dead()
+> clear CPU mask from rnp->qsmaskinitnext.  
+> 
+> Therefore, the __sync_rcu_exp_select_node_cpus() will call rcu_report_exp_cpu_mult()
+> to report this offline CPU's exp QS 
 
-And here is one more from this week's session.
+Very good, thank you!
 
-The calls to tick_dep_set() and tick_dep_clear() use atomic operations,
-but they operate on a global variable.  This means that the first call
-to rcutree_offline_cpu() would enable the tick and the first call to
-rcutree_dead_cpu() would disable the tick.  This might be OK, but it
-is at the very least bad practice.  There needs to be a counter
-mediating these calls.
-
-For more detail, please see the Google document:
-
-https://docs.google.com/document/d/1jymsaCPQ1PUDcfjIKm0UIbVdrJAaGX-6cXrmcfm0PRU/edit?usp=sharing
+Please see below for the newly applied patch with the usual wordsmithing.
+As always, please let me know if I messed anything up.
 
 							Thanx, Paul
 
-> > > > [1]: https://lore.kernel.org/linux-arm-kernel/20220822021520.6996-3-kernelfans@gmail.com/T/#mf62352138d7b040fdb583ba66f8cd0ed1e145feb
-> > >
-> > > Perhaps I am more blind than usual today, but I am not seeing anything
-> > > in this patch describing the testing.  At this point, I am thinking in
-> > > terms of making rcutorture test concurrent CPU offlining parallel
-> > 
-> > Yes, testing results are more convincing in this area.
-> > 
-> > After making clear the implicit assumptions, I will write some code to
-> > bridge my code and rcutorture test. Since the series is a little
-> > different from parallel cpu offlining. It happens after all devices
-> > are torn down, and there is no way to rollback.
-> 
-> Very good, looking forward to seeing what you come up with!
-> 
-> > > Thoughts?
-> > 
-> > Need a deeper dive into this field. Hope to bring out something soon.
-> 
-> Again, looking forward to seeing what you find!
-> 
-> 							Thanx, Paul
+------------------------------------------------------------------------
+
+commit d51fbcdfb30dbe6e2e9c5874b9821f2c78092b2e
+Author: Zqiang <qiang1.zhang@intel.com>
+Date:   Tue Aug 30 16:31:51 2022 +0800
+
+    rcu: Remove duplicate RCU exp QS report from rcu_report_dead()
+    
+    The rcu_report_dead() function invokes rcu_report_exp_rdp() in order
+    to force an immediate expedited quiescent state on the outgoing
+    CPU, and then it invokes rcu_preempt_deferred_qs() to provide any
+    required deferred quiescent state of either sort.  Because the call to
+    rcu_preempt_deferred_qs() provides the expedited RCU quiescent state if
+    requested, the call to rcu_report_exp_rdp() is potentially redundant.
+    
+    One possible issue is a concurrent start of a new expedited RCU
+    grace period, but this situation is already handled correctly
+    by __sync_rcu_exp_select_node_cpus().  This function will detect
+    that the CPU is going offline via the error return from its call
+    to smp_call_function_single().  In that case, it will retry, and
+    eventually stop retrying due to rcu_report_exp_rdp() clearing the
+    ->qsmaskinitnext bit corresponding to the target CPU.  As a result,
+    __sync_rcu_exp_select_node_cpus() will report the necessary quiescent
+    state after dealing with any remaining CPU.
+    
+    This change assumes that control does not enter rcu_report_dead() within
+    an RCU read-side critical section, but then again, the surviving call
+    to rcu_preempt_deferred_qs() has always made this assumption.
+    
+    This commit therefore removes the call to rcu_report_exp_rdp(), thus
+    relying on rcu_preempt_deferred_qs() to handle both normal and expedited
+    quiescent states.
+    
+    Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 6bb8e72bc8151..0ca21ac0f0648 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -4276,8 +4276,6 @@ void rcu_report_dead(unsigned int cpu)
+ 	// Do any dangling deferred wakeups.
+ 	do_nocb_deferred_wakeup(rdp);
+ 
+-	/* QS for any half-done expedited grace period. */
+-	rcu_report_exp_rdp(rdp);
+ 	rcu_preempt_deferred_qs(current);
+ 
+ 	/* Remove outgoing CPU from mask in the leaf rcu_node structure. */
