@@ -2,53 +2,45 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9AA96ECAAD1
-	for <rcu@archiver.kernel.org>; Wed, 31 Aug 2022 18:08:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D4D82C0502A
+	for <rcu@archiver.kernel.org>; Wed, 31 Aug 2022 18:08:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232292AbiHaSIQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 31 Aug 2022 14:08:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42938 "EHLO
+        id S232115AbiHaSIR (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 31 Aug 2022 14:08:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230249AbiHaSIL (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S232141AbiHaSIL (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 31 Aug 2022 14:08:11 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1616E3426;
-        Wed, 31 Aug 2022 11:08:08 -0700 (PDT)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24C49E3943;
+        Wed, 31 Aug 2022 11:08:09 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6EA4D61BFB;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9A03161C19;
         Wed, 31 Aug 2022 18:08:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92A4FC43147;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9652FC4314A;
         Wed, 31 Aug 2022 18:08:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1661969287;
-        bh=/uL5W9eLHl+SeaTGYxjhOKKa+37RcoDRIc6rSK6aGYY=;
+        bh=DfIvCam7iGu1hPFxklqGzZcjvwrU/yGB++vrN26Fk/w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ya7lrUH6BuPPFoMDt5cTFT8U63Rj19ssY0sIun5dQA7NevNz8LavQbqDHbSFtqfk3
-         RWbx1nPgIdMjxpfJuT5T1x6xNQFl9NtkJtKfdYgR1WZz6zbeYDBIq+9ZFzM77f/J6b
-         vZ7iWq0FuBAh2NcunU4Hv2KLHTQdwli0b2VVdeMl0+zgUygvNZ0dgDe/m6KVTDJgNV
-         IXq+p21r1Ww/B6U3q47VemMbwYWCwYNALdUgUP5b/zNeu3dpugBJrKqTRD85AncDmt
-         fziOsWN4xSNi0kwUTiIk9tNZbNzlUzRBoBXhTnqHtDEusZHSOHt6RwuaB8CWP/ksf4
-         xiKWAZqiHP5aQ==
+        b=usadxwQdhiAWoS7zwJlmjAdFT4pokIH1Cu8Mo3ttdlp2zJrrjagbSh+VdgzIfZwN8
+         InzRn01jWX3tPupYsaaLmuwGw7LTxgI5+yjriSfPlpihQdwzQGZ55JMcBgoliwX1KC
+         ebuJsMurLgWMi7cNPHLftgYsD55dED0XcKw/WCYowCbLPsIu75PchFH9Oiv1yCdi8F
+         pQGonP9uEKTXvG6O64VoQcUAV4RAzrTgwFbjvzakmuCmhlFr0oQq2/0U0MqLFeZEmw
+         hnWwykXblNuPhnetUaYWUskEo+UuTbY2FTMAOl4BDAvUeW7/lnso5+Ci0QWVfYU+ic
+         g1ZO69gIeugxQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 022C75C0950; Wed, 31 Aug 2022 11:08:07 -0700 (PDT)
+        id 061E25C09C2; Wed, 31 Aug 2022 11:08:07 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org, Zhen Lei <thunder.leizhen@huawei.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>
-Subject: [PATCH rcu 07/10] sched/debug: Try trigger_single_cpu_backtrace(cpu) in dump_cpu_task()
-Date:   Wed, 31 Aug 2022 11:08:02 -0700
-Message-Id: <20220831180805.2693546-7-paulmck@kernel.org>
+        rostedt@goodmis.org, Zqiang <qiang1.zhang@intel.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 09/10] rcu: Avoid triggering strict-GP irq-work when RCU is idle
+Date:   Wed, 31 Aug 2022 11:08:04 -0700
+Message-Id: <20220831180805.2693546-9-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220831180759.GA2693289@paulmck-ThinkPad-P17-Gen-1>
 References: <20220831180759.GA2693289@paulmck-ThinkPad-P17-Gen-1>
@@ -58,86 +50,72 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+From: Zqiang <qiang1.zhang@intel.com>
 
-The trigger_all_cpu_backtrace() function attempts to send an NMI to the
-target CPU, which usually provides much better stack traces than the
-dump_cpu_task() function's approach of dumping that stack from some other
-CPU.  So much so that most calls to dump_cpu_task() only happen after
-a call to trigger_all_cpu_backtrace() has failed.  And the exception to
-this rule really should attempt to use trigger_all_cpu_backtrace() first.
+Kernels built with PREEMPT_RCU=y and RCU_STRICT_GRACE_PERIOD=y trigger
+irq-work from rcu_read_unlock(), and the resulting irq-work handler
+invokes rcu_preempt_deferred_qs_handle().  The point of this triggering
+is to force grace periods to end quickly in order to give tools like KASAN
+a better chance of detecting RCU usage bugs such as leaking RCU-protected
+pointers out of an RCU read-side critical section.
 
-Therefore, move the trigger_all_cpu_backtrace() invocation into
-dump_cpu_task().
+However, this irq-work triggering is unconditional.  This works, but
+there is no point in doing this irq-work unless the current grace period
+is waiting on the running CPU or task, which is not the common case.
+After all, in the common case there are many rcu_read_unlock() calls
+per CPU per grace period.
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+This commit therefore triggers the irq-work only when the current grace
+period is waiting on the running CPU or task.
+
+This change was tested as follows on a four-CPU system:
+
+	echo rcu_preempt_deferred_qs_handler > /sys/kernel/debug/tracing/set_ftrace_filter
+	echo 1 > /sys/kernel/debug/tracing/function_profile_enabled
+	insmod rcutorture.ko
+	sleep 20
+	rmmod rcutorture.ko
+	echo 0 > /sys/kernel/debug/tracing/function_profile_enabled
+	echo > /sys/kernel/debug/tracing/set_ftrace_filter
+
+This procedure produces results in this per-CPU set of files:
+
+	/sys/kernel/debug/tracing/trace_stat/function*
+
+Sample output from one of these files is as follows:
+
+  Function                               Hit    Time            Avg             s^2
+  --------                               ---    ----            ---             ---
+  rcu_preempt_deferred_qs_handle      838746    182650.3 us     0.217 us        0.004 us
+
+The baseline sum of the "Hit" values (the number of calls to this
+function) was 3,319,015.  With this commit, that sum was 1,140,359,
+for a 2.9x reduction.  The worst-case variance across the CPUs was less
+than 25%, so this large effect size is statistically significant.
+
+The raw data is available in the Link: URL.
+
+Link: https://lore.kernel.org/all/20220808022626.12825-1-qiang1.zhang@intel.com/
+Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: Ben Segall <bsegall@google.com>
-Cc: Mel Gorman <mgorman@suse.de>
-Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc: Valentin Schneider <vschneid@redhat.com>
 ---
- kernel/rcu/tree_stall.h | 5 ++---
- kernel/sched/core.c     | 3 +++
- kernel/smp.c            | 3 +--
- 3 files changed, 6 insertions(+), 5 deletions(-)
+ kernel/rcu/tree_plugin.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index c3fbbcc09327f..5653560573e22 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -368,7 +368,7 @@ static void rcu_dump_cpu_stacks(void)
- 			if (rnp->qsmask & leaf_node_cpu_bit(rnp, cpu)) {
- 				if (cpu_is_offline(cpu))
- 					pr_err("Offline CPU %d blocking current GP.\n", cpu);
--				else if (!trigger_single_cpu_backtrace(cpu))
-+				else
- 					dump_cpu_task(cpu);
- 			}
- 		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-@@ -511,8 +511,7 @@ static void rcu_check_gp_kthread_starvation(void)
- 					pr_err("RCU GP kthread last ran on offline CPU %d.\n", cpu);
- 				} else  {
- 					pr_err("Stack dump where RCU GP kthread last ran:\n");
--					if (!trigger_single_cpu_backtrace(cpu))
--						dump_cpu_task(cpu);
-+					dump_cpu_task(cpu);
- 				}
- 			}
- 			wake_up_process(gpk);
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index ee28253c9ac0c..e15b6a7f34f47 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -11183,6 +11183,9 @@ struct cgroup_subsys cpu_cgrp_subsys = {
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index c46b3c74dad1f..207617f69aa56 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -641,7 +641,8 @@ static void rcu_read_unlock_special(struct task_struct *t)
  
- void dump_cpu_task(int cpu)
- {
-+	if (trigger_single_cpu_backtrace(cpu))
-+		return;
-+
- 	pr_info("Task dump for CPU %d:\n", cpu);
- 	sched_show_task(cpu_curr(cpu));
- }
-diff --git a/kernel/smp.c b/kernel/smp.c
-index 650810a6f29b3..e8cdc025a046f 100644
---- a/kernel/smp.c
-+++ b/kernel/smp.c
-@@ -370,8 +370,7 @@ static bool csd_lock_wait_toolong(struct __call_single_data *csd, u64 ts0, u64 *
- 	if (cpu >= 0) {
- 		if (static_branch_unlikely(&csdlock_debug_extended))
- 			csd_lock_print_extended(csd, cpu);
--		if (!trigger_single_cpu_backtrace(cpu))
--			dump_cpu_task(cpu);
-+		dump_cpu_task(cpu);
- 		if (!cpu_cur_csd) {
- 			pr_alert("csd: Re-sending CSD lock (#%d) IPI from CPU#%02d to CPU#%02d\n", *bug_id, raw_smp_processor_id(), cpu);
- 			arch_send_call_function_single_ipi(cpu);
+ 		expboost = (t->rcu_blocked_node && READ_ONCE(t->rcu_blocked_node->exp_tasks)) ||
+ 			   (rdp->grpmask & READ_ONCE(rnp->expmask)) ||
+-			   IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD) ||
++			   (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD) &&
++			   ((rdp->grpmask & READ_ONCE(rnp->qsmask)) || t->rcu_blocked_node)) ||
+ 			   (IS_ENABLED(CONFIG_RCU_BOOST) && irqs_were_disabled &&
+ 			    t->rcu_blocked_node);
+ 		// Need to defer quiescent state until everything is enabled.
 -- 
 2.31.1.189.g2e36527f23
 
