@@ -2,93 +2,66 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2EC67ECAAD3
-	for <rcu@archiver.kernel.org>; Wed, 31 Aug 2022 18:21:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B4CAECAAD1
+	for <rcu@archiver.kernel.org>; Wed, 31 Aug 2022 18:23:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232814AbiHaSVq (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 31 Aug 2022 14:21:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48006 "EHLO
+        id S232779AbiHaSW7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 31 Aug 2022 14:22:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232506AbiHaSVR (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 31 Aug 2022 14:21:17 -0400
+        with ESMTP id S232778AbiHaSWf (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 31 Aug 2022 14:22:35 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09D72FCA2C;
-        Wed, 31 Aug 2022 11:17:47 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B12C26392;
+        Wed, 31 Aug 2022 11:18:47 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D5EFBB82275;
-        Wed, 31 Aug 2022 18:15:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 907C9C433D6;
-        Wed, 31 Aug 2022 18:15:58 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 216CEB82274;
+        Wed, 31 Aug 2022 18:17:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8880C433C1;
+        Wed, 31 Aug 2022 18:17:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1661969758;
-        bh=cOpJs5hW2vyuuvdpJqbaSWv/BpYUcc3a3SIz66ot+sU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QHeSUc5vrkyZmaZXYyfv5gghetqxmCZI/3IV1j0ZgBBTh+j6LPsKoeZoaKqAwjCKk
-         V3KhZRCjMRZMZ4YRZUb9vI4C2/4L5cUxiBuAoChoK2OYrVmz9mg4SjggSS8Y2XVQNU
-         vfZ17DeFZvHCpH14OC2wpWtxWIMaPhE0HpMM/AyIuhmnRZ7n4LIQz5w1gTOk8lNf3A
-         KLZddC+nwZZgjzru+1H04rh5pYpES24Ym1qGWKsBvoy/uIv9OK3v3yNMb4miHqrUzn
-         b5YbZMVmdn8v12eKgypv4haIsYoDzbrEvLFH54T9pchyo4x51smSh6OObiPx2NvjKM
-         CgJckhCxcy6aQ==
+        s=k20201202; t=1661969820;
+        bh=0sDnYptc08FWB8kG7eorPS+nmpd5VtGv81FjBwB21Gc=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=ozp3AS+ZkjdKwGA24ZQ8R9QNRXdsOwTLJnsgOqKSYN6fuFNb9EJns9XX+pg+PAD9o
+         eK/zvdssnccifhbkuNrxuFL+MxQ8UWk8IM4ltdf3gX6Df4ATwbvhBYUVAR8ZVJlBBj
+         6FX16rhi2wGsXoULEmQZ52bLfoHsMABqL4Kl9RsugO6Q3tYPEZPXAxpqpIn51E3GjM
+         VccVTRMTFB+0MnLFPZw1DDSu3VYaGfdbdo+6JVlUaqTIPM/0LFkwcD+soUjPkHY+GR
+         P5psz5RsU6kdAAKJR5mW3XXVv1Li9XFX4CpbnjWkGnvor4dmniGZKaRLknRF0uNmHC
+         V87E8AtrSxVdA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 533045C019C; Wed, 31 Aug 2022 11:15:58 -0700 (PDT)
+        id 7AA8F5C015D; Wed, 31 Aug 2022 11:17:00 -0700 (PDT)
+Date:   Wed, 31 Aug 2022 11:17:00 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 2/3] rcu-tasks: Ensure RCU Tasks Trace loops have quiescent states
-Date:   Wed, 31 Aug 2022 11:15:55 -0700
-Message-Id: <20220831181556.2696404-2-paulmck@kernel.org>
-X-Mailer: git-send-email 2.31.1.189.g2e36527f23
-In-Reply-To: <20220831181553.GA2696186@paulmck-ThinkPad-P17-Gen-1>
-References: <20220831181553.GA2696186@paulmck-ThinkPad-P17-Gen-1>
+        rostedt@goodmis.org
+Subject: [PATCH rcu 0/7] Torture-test updates for v6.1
+Message-ID: <20220831181700.GA2696707@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The RCU Tasks Trace grace-period kthread loops across all CPUs, and
-there can be quite a few CPUs, with some commercially available systems
-sporting well over a thousand of them.  Some of these loops can feature
-IPIs, which can take some time.  This commit therefore places a call to
-cond_resched_tasks_rcu_qs() in each such loop.
+Hello!
 
-Link: https://docs.google.com/document/d/1V0YnG1HTWMt9WHJjroiJL9lf-hMrud4v8Fn3fhyY0cI/edit?usp=sharing
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/rcu/tasks.h | 3 +++
- 1 file changed, 3 insertions(+)
+This series provides a couple of torture-test updates:
 
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 469bf2a3b505e..f5bf6fb430dab 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -1500,6 +1500,7 @@ static void rcu_tasks_trace_pregp_step(struct list_head *hop)
- 		if (rcu_tasks_trace_pertask_prep(t, true))
- 			trc_add_holdout(t, hop);
- 		rcu_read_unlock();
-+		cond_resched_tasks_rcu_qs();
- 	}
- 
- 	// Only after all running tasks have been accounted for is it
-@@ -1520,6 +1521,7 @@ static void rcu_tasks_trace_pregp_step(struct list_head *hop)
- 			raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
- 		}
- 		raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
-+		cond_resched_tasks_rcu_qs();
- 	}
- 
- 	// Re-enable CPU hotplug now that the holdout list is populated.
-@@ -1619,6 +1621,7 @@ static void check_all_holdout_tasks_trace(struct list_head *hop,
- 			trc_del_holdout(t);
- 		else if (needreport)
- 			show_stalled_task_trace(t, firstreport);
-+		cond_resched_tasks_rcu_qs();
- 	}
- 
- 	// Re-enable CPU hotplug now that the holdout list scan has completed.
--- 
-2.31.1.189.g2e36527f23
+1.	Optionally flush printk() buffers before powering off.
 
+2.	Use the barrier operation specified by cur_ops, courtesy of
+	Zqiang.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ Documentation/admin-guide/kernel-parameters.txt |    6 ++++++
+ kernel/rcu/rcutorture.c                         |    4 ++--
+ kernel/torture.c                                |    7 +++++++
+ 3 files changed, 15 insertions(+), 2 deletions(-)
