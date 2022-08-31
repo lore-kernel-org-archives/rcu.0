@@ -2,45 +2,52 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 08F9CECAAD1
-	for <rcu@archiver.kernel.org>; Wed, 31 Aug 2022 18:11:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 93F6EECAAD1
+	for <rcu@archiver.kernel.org>; Wed, 31 Aug 2022 18:11:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232458AbiHaSLS (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 31 Aug 2022 14:11:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44190 "EHLO
+        id S232552AbiHaSLX (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 31 Aug 2022 14:11:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232513AbiHaSK6 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 31 Aug 2022 14:10:58 -0400
+        with ESMTP id S232446AbiHaSK7 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 31 Aug 2022 14:10:59 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 120971EACB;
-        Wed, 31 Aug 2022 11:10:31 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93FCADF663;
+        Wed, 31 Aug 2022 11:10:27 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 80265B82274;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 74B41B8220A;
         Wed, 31 Aug 2022 18:09:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4630EC433C1;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4078EC433D6;
         Wed, 31 Aug 2022 18:09:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1661969363;
-        bh=gYye8cztVvf5q0SrvDpPmm9vHD/4KC8Vluo/kUFEdSs=;
+        bh=Bw8UbnSJg6wjZnrx3ZkAFqEfYqJl3xi80KpmA3oTN54=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MVFROl2UCqgbvgrItfItWT6+BhZ7AGvu+cQEZqlY6yfPI8k6tJunzLjMFOO+bfax+
-         rgTgdn5eXU4lng9ZP0cKq3yG0h+qJqDftPjOhixCDi9bWPRbGpEj71qOueVa1V7GtP
-         jqugCTjD4Vh4Fteozl8sDqqrpoPsNAewTxZUZX215lt2Qsd/MAz/zzI1gB+jD9797a
-         LFgVsX1Pwe7qixLw9gRO7M1H4yjUK2ChNh2EG5QpoOj8nRB6I3/ikvLqS5uA9CNK7i
-         2dRDJ0evwqEJiN13ewkuAE6WxO6j8I+6hL9/L4lz1mRCBJHD0LLWyn+nbbuR7gIaDb
-         +Birq9x4oLTrw==
+        b=PNtR+99a6pCu8Pd6K/iw3aCwUat6AcpmMLyF1ZNf/fKnFUKFzrT37aMjtrK0iX/sX
+         XmekCbTDMvCjmjU3s9U1Hy3nqqWBQ81fp40+4/gCqu2VNf98/x3yq9j5qJzMoSf6W7
+         7Dw/xAy3kL+LTtkmzuTGMTS8//E9IlXLCacXvUMOcJs3rYvIdw0Q6T5OzX9nyffska
+         nDbMxj1vGh5hYF1+BJ5lXSkTAamfT1ef6fL6bnNd7EgZkZoXrfJ9bh64/V5k6qDeQ7
+         hplhn+cLi19czp440QeuleuF/4+AbhXef4ijxQE92OoXj67vqWVsmD+sjSak/+D4cS
+         F2RoRfkuvsu2Q==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 04DBB5C02A9; Wed, 31 Aug 2022 11:09:23 -0700 (PDT)
+        id 0064C5C015D; Wed, 31 Aug 2022 11:09:22 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org, "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 3/3] rcu/kvfree: Update KFREE_DRAIN_JIFFIES interval
-Date:   Wed, 31 Aug 2022 11:09:21 -0700
-Message-Id: <20220831180921.2694017-3-paulmck@kernel.org>
+        rostedt@goodmis.org, Michal Hocko <mhocko@suse.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: [PATCH rcu 1/3] rcu: Back off upon fill_page_cache_func() allocation failure
+Date:   Wed, 31 Aug 2022 11:09:19 -0700
+Message-Id: <20220831180921.2694017-1-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220831180916.GA2693797@paulmck-ThinkPad-P17-Gen-1>
 References: <20220831180916.GA2693797@paulmck-ThinkPad-P17-Gen-1>
@@ -50,116 +57,84 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+From: Michal Hocko <mhocko@suse.com>
 
-Currently the monitor work is scheduled with a fixed interval of HZ/20,
-which is roughly 50 milliseconds. The drawback of this approach is
-low utilization of the 512 page slots in scenarios with infrequence
-kvfree_rcu() calls.  For example on an Android system:
+The fill_page_cache_func() function allocates couple of pages to store
+kvfree_rcu_bulk_data structures. This is a lightweight (GFP_NORETRY)
+allocation which can fail under memory pressure. The function will,
+however keep retrying even when the previous attempt has failed.
 
-<snip>
-  kworker/3:3-507     [003] ....   470.286305: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000d0f0dde5 nr_records=6
-  kworker/6:1-76      [006] ....   470.416613: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000ea0d6556 nr_records=1
-  kworker/6:1-76      [006] ....   470.416625: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000003e025849 nr_records=9
-  kworker/3:3-507     [003] ....   471.390000: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000815a8713 nr_records=48
-  kworker/1:1-73      [001] ....   471.725785: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000fda9bf20 nr_records=3
-  kworker/1:1-73      [001] ....   471.725833: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000a425b67b nr_records=76
-  kworker/0:4-1411    [000] ....   472.085673: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000007996be9d nr_records=1
-  kworker/0:4-1411    [000] ....   472.085728: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000d0f0dde5 nr_records=5
-  kworker/6:1-76      [006] ....   472.260340: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000065630ee4 nr_records=102
-<snip>
+This retrying is in theory correct, but in practice the allocation is
+invoked from workqueue context, which means that if the memory reclaim
+gets stuck, these retries can hog the worker for quite some time.
+Although the workqueues subsystem automatically adjusts concurrency, such
+adjustment is not guaranteed to happen until the worker context sleeps.
+And the fill_page_cache_func() function's retry loop is not guaranteed
+to sleep (see the should_reclaim_retry() function).
 
-In many cases, out of 512 slots, fewer than 10 were actually used.
-In order to improve batching and make utilization more efficient this
-commit sets a drain interval to a fixed 5-seconds interval. Floods are
-detected when a page fills quickly, and in that case, the reclaim work
-is re-scheduled for the next scheduling-clock tick (jiffy).
+And we have seen this function cause workqueue lockups:
 
-After this change:
+kernel: BUG: workqueue lockup - pool cpus=93 node=1 flags=0x1 nice=0 stuck for 32s!
+[...]
+kernel: pool 74: cpus=37 node=0 flags=0x1 nice=0 hung=32s workers=2 manager: 2146
+kernel:   pwq 498: cpus=249 node=1 flags=0x1 nice=0 active=4/256 refcnt=5
+kernel:     in-flight: 1917:fill_page_cache_func
+kernel:     pending: dbs_work_handler, free_work, kfree_rcu_monitor
 
-<snip>
-  kworker/7:1-371     [007] ....  5630.725708: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000005ab0ffb3 nr_records=121
-  kworker/7:1-371     [007] ....  5630.989702: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000060c84761 nr_records=47
-  kworker/7:1-371     [007] ....  5630.989714: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000000babf308 nr_records=510
-  kworker/7:1-371     [007] ....  5631.553790: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000bb7bd0ef nr_records=169
-  kworker/7:1-371     [007] ....  5631.553808: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x0000000044c78753 nr_records=510
-  kworker/5:6-9428    [005] ....  5631.746102: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000d98519aa nr_records=123
-  kworker/4:7-9434    [004] ....  5632.001758: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x00000000526c9d44 nr_records=322
-  kworker/4:7-9434    [004] ....  5632.002073: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000002c6a8afa nr_records=185
-  kworker/7:1-371     [007] ....  5632.277515: rcu_invoke_kfree_bulk_callback: rcu_preempt bulk=0x000000007f4a962f nr_records=510
-<snip>
+Originally, we thought that the root cause of this lockup was several
+retries with direct reclaim, but this is not yet confirmed.  Furthermore,
+we have seen similar lockups without any heavy memory pressure.  This
+suggests that there are other factors contributing to these lockups.
+However, it is not really clear that endless retries are desireable.
 
-Here, all but one of the cases, more than one hundreds slots were used,
-representing an order-of-magnitude improvement.
+So let's make the fill_page_cache_func() function back off after
+allocation failure.
 
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Cc: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Frederic Weisbecker <frederic@kernel.org>
+Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+Cc: Josh Triplett <josh@joshtriplett.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+Cc: Joel Fernandes <joel@joelfernandes.org>
+Signed-off-by: Michal Hocko <mhocko@suse.com>
+Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c | 23 +++++++++++++++++++----
- 1 file changed, 19 insertions(+), 4 deletions(-)
+ kernel/rcu/tree.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 3d234d536d4c3..7b90478b752e8 100644
+index 79aea7df4345e..eb435941e92fd 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -2832,7 +2832,7 @@ EXPORT_SYMBOL_GPL(call_rcu);
+@@ -3183,15 +3183,16 @@ static void fill_page_cache_func(struct work_struct *work)
+ 		bnode = (struct kvfree_rcu_bulk_data *)
+ 			__get_free_page(GFP_KERNEL | __GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN);
  
+-		if (bnode) {
+-			raw_spin_lock_irqsave(&krcp->lock, flags);
+-			pushed = put_cached_bnode(krcp, bnode);
+-			raw_spin_unlock_irqrestore(&krcp->lock, flags);
++		if (!bnode)
++			break;
  
- /* Maximum number of jiffies to wait before draining a batch. */
--#define KFREE_DRAIN_JIFFIES (HZ / 50)
-+#define KFREE_DRAIN_JIFFIES (5 * HZ)
- #define KFREE_N_BATCHES 2
- #define FREE_N_CHANNELS 2
- 
-@@ -3093,6 +3093,21 @@ need_offload_krc(struct kfree_rcu_cpu *krcp)
- 	return !!krcp->head;
- }
- 
-+static void
-+schedule_delayed_monitor_work(struct kfree_rcu_cpu *krcp)
-+{
-+	long delay, delay_left;
+-			if (!pushed) {
+-				free_page((unsigned long) bnode);
+-				break;
+-			}
++		raw_spin_lock_irqsave(&krcp->lock, flags);
++		pushed = put_cached_bnode(krcp, bnode);
++		raw_spin_unlock_irqrestore(&krcp->lock, flags);
 +
-+	delay = READ_ONCE(krcp->count) >= KVFREE_BULK_MAX_ENTR ? 1:KFREE_DRAIN_JIFFIES;
-+	if (delayed_work_pending(&krcp->monitor_work)) {
-+		delay_left = krcp->monitor_work.timer.expires - jiffies;
-+		if (delay < delay_left)
-+			mod_delayed_work(system_wq, &krcp->monitor_work, delay);
-+		return;
-+	}
-+	queue_delayed_work(system_wq, &krcp->monitor_work, delay);
-+}
-+
- /*
-  * This function is invoked after the KFREE_DRAIN_JIFFIES timeout.
-  */
-@@ -3150,7 +3165,7 @@ static void kfree_rcu_monitor(struct work_struct *work)
- 	// work to repeat an attempt. Because previous batches are
- 	// still in progress.
- 	if (need_offload_krc(krcp))
--		schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
-+		schedule_delayed_monitor_work(krcp);
- 
- 	raw_spin_unlock_irqrestore(&krcp->lock, flags);
- }
-@@ -3339,7 +3354,7 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
- 
- 	// Set timer to drain after KFREE_DRAIN_JIFFIES.
- 	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING)
--		schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
-+		schedule_delayed_monitor_work(krcp);
- 
- unlock_return:
- 	krc_this_cpu_unlock(krcp, flags);
-@@ -3415,7 +3430,7 @@ void __init kfree_rcu_scheduler_running(void)
- 
- 		raw_spin_lock_irqsave(&krcp->lock, flags);
- 		if (need_offload_krc(krcp))
--			schedule_delayed_work_on(cpu, &krcp->monitor_work, KFREE_DRAIN_JIFFIES);
-+			schedule_delayed_monitor_work(krcp);
- 		raw_spin_unlock_irqrestore(&krcp->lock, flags);
++		if (!pushed) {
++			free_page((unsigned long) bnode);
++			break;
+ 		}
  	}
- }
+ 
 -- 
 2.31.1.189.g2e36527f23
 
