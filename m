@@ -2,44 +2,44 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 17874ECAAD3
-	for <rcu@archiver.kernel.org>; Wed, 31 Aug 2022 18:16:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0335EECAAD3
+	for <rcu@archiver.kernel.org>; Wed, 31 Aug 2022 18:17:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231559AbiHaSQj (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 31 Aug 2022 14:16:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59350 "EHLO
+        id S232417AbiHaSRE (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 31 Aug 2022 14:17:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230456AbiHaSQF (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 31 Aug 2022 14:16:05 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 114833ECE8;
-        Wed, 31 Aug 2022 11:13:16 -0700 (PDT)
+        with ESMTP id S232689AbiHaSQQ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 31 Aug 2022 14:16:16 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08173EF9FB;
+        Wed, 31 Aug 2022 11:13:24 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3E4D461BF0;
-        Wed, 31 Aug 2022 18:12:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61809C433D6;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 320ACB8227A;
+        Wed, 31 Aug 2022 18:12:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52D4EC4347C;
         Wed, 31 Aug 2022 18:12:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1661969532;
-        bh=nicJ2bfIfXKr9ehxtHXUaWlz+sCDzYP0wUG+MHreSZc=;
+        bh=TwQvXPSEvLyzs2xgFi3POyva60hZdjGop9E3Q6E66NA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rM71sH2vJfF1sA33XvJKPk+V+qI+9v3hyKAmEcdC6DyhIFmFs04S0Y84AtpYnr4vn
-         kQoMVf2hPUK1NgGecFpGOCuXOKq47a2YBx42HE+QrFPjRwMcFJX9iLsrpwtijBCebF
-         KteMGV44w07nU3SCwjyMBVBDID/bsZsMy1h78hCFwkiPR1tLx8GYkE7xOa5n08HSzd
-         iVfFSk/hd7jZ1t/VY1Wap9z6w4gcgfeWGhj5rXwLcoNqKTdEG9c5Q3uURSRD/JfEac
-         9mziIirxoXUfwMez6hze0LJowlasHucTbCrDULxGGntS+YnnbwN3jUEco8xQQLmzho
-         ROeTnNRcyqPbg==
+        b=tIFl2jRYM/70ivwGtBc1NUThPZtbFDPC4tP4XsBJP3whZimUxtfZqLCXaGsWZEOKZ
+         mvboeGMrwn80J1xnwsXJB0KaqL+SQiXyDQzJpST/dRjtKXftyqXUZCTKKrJSlNcZsA
+         RPUVfvd0YK/h3WwxsAtJzhcSkX7PVhtGx+V1f+Elgq75dPS08csNSR90IbNIAREExC
+         5mllniGYgQMqveB7u9EIvGzgRwcaBFy+hhmQC6sbZ3lbzmXiusGhzUOYcA/2eMq6VO
+         dyBYvjXhm8Y33nqS+rAUBVPMjw6EveHIuyogYEIN1ZumZcZ9AYttvrMkZMFmPwbXjs
+         9qSaYAPblZqkQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 7BCFB5C0EAC; Wed, 31 Aug 2022 11:12:11 -0700 (PDT)
+        id 786FF5C0E4D; Wed, 31 Aug 2022 11:12:11 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
         rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 20/25] rcutorture: Adjust rcu_poll_need_2gp() for rcu_gp_oldstate field removal
-Date:   Wed, 31 Aug 2022 11:12:05 -0700
-Message-Id: <20220831181210.2695080-20-paulmck@kernel.org>
+Subject: [PATCH rcu 18/25] rcu: Make synchronize_rcu_expedited() fast path update .expedited_sequence
+Date:   Wed, 31 Aug 2022 11:12:03 -0700
+Message-Id: <20220831181210.2695080-18-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220831181207.GA2694717@paulmck-ThinkPad-P17-Gen-1>
 References: <20220831181207.GA2694717@paulmck-ThinkPad-P17-Gen-1>
@@ -49,30 +49,43 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Now that rcu_gp_oldstate can accurately track both normal and
-expedited grace periods regardless of system state, rcutorture's
-rcu_poll_need_2gp() function need only call for a second grace period
-for the old single-unsigned-long grace-period polling APIs
-This commit therefore adjusts rcu_poll_need_2gp() accordingly.
+This commit causes the early boot single-CPU synchronize_rcu_expedited()
+fastpath to update the rcu_state structure's ->expedited_sequence
+counter.  This will allow the full-state polled grace-period APIs to
+detect all expedited grace periods without the need to track the special
+combined polling-only counter, which is another step towards removing
+the ->rgos_polled field from the rcu_gp_oldstate, thereby reducing its
+size by one third.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/rcutorture.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/rcu/tree_exp.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 8995429c6f1c2..029de67a9da91 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -520,7 +520,7 @@ static void rcu_sync_torture_init(void)
- 
- static bool rcu_poll_need_2gp(bool poll, bool poll_full)
+diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+index 1a51f9301ebff..54e05d13d1512 100644
+--- a/kernel/rcu/tree_exp.h
++++ b/kernel/rcu/tree_exp.h
+@@ -906,6 +906,7 @@ static int rcu_print_task_exp_stall(struct rcu_node *rnp)
+ void synchronize_rcu_expedited(void)
  {
--	return poll || (!IS_ENABLED(CONFIG_TINY_RCU) && poll_full && num_online_cpus() <= 1);
-+	return poll;
- }
+ 	bool boottime = (rcu_scheduler_active == RCU_SCHEDULER_INIT);
++	unsigned long flags;
+ 	struct rcu_exp_work rew;
+ 	struct rcu_node *rnp;
+ 	unsigned long s;
+@@ -924,6 +925,11 @@ void synchronize_rcu_expedited(void)
+ 		// them, which allows reuse of ->gp_seq_polled_exp_snap.
+ 		rcu_poll_gp_seq_start_unlocked(&rcu_state.gp_seq_polled_exp_snap);
+ 		rcu_poll_gp_seq_end_unlocked(&rcu_state.gp_seq_polled_exp_snap);
++
++		local_irq_save(flags);
++		WARN_ON_ONCE(num_online_cpus() > 1);
++		rcu_state.expedited_sequence += (1 << RCU_SEQ_CTR_SHIFT);
++		local_irq_restore(flags);
+ 		return;  // Context allows vacuous grace periods.
+ 	}
  
- static struct rcu_torture_ops rcu_ops = {
 -- 
 2.31.1.189.g2e36527f23
 
