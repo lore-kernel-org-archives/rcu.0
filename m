@@ -2,44 +2,44 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5443BECAAD3
-	for <rcu@archiver.kernel.org>; Wed, 31 Aug 2022 18:16:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 22518ECAAD1
+	for <rcu@archiver.kernel.org>; Wed, 31 Aug 2022 18:16:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232618AbiHaSQe (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 31 Aug 2022 14:16:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56460 "EHLO
+        id S232755AbiHaSQg (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 31 Aug 2022 14:16:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232717AbiHaSPs (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 31 Aug 2022 14:15:48 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7C75F2437;
-        Wed, 31 Aug 2022 11:13:09 -0700 (PDT)
+        with ESMTP id S232625AbiHaSPt (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 31 Aug 2022 14:15:49 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0D2BE7253;
+        Wed, 31 Aug 2022 11:13:02 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id DFB69B82012;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 98E3761CAF;
+        Wed, 31 Aug 2022 18:12:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57682C43159;
         Wed, 31 Aug 2022 18:12:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BE3DC43470;
-        Wed, 31 Aug 2022 18:12:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1661969531;
-        bh=r7ITDQsToWIAnjiMtcCwlUOAgpHxXqPd8jbQE2qiT+c=;
+        s=k20201202; t=1661969532;
+        bh=07ujm17gMsps1cdH2vluoTIiYIZi7L2itN8CAFloXZ0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mPE5z1X7II7GIIqBcigRZQVmmrBlB6uNqDnEW4nKnAf4uJvCnwW6HzFatBBPP7xGQ
-         KlOSqPx8la/E+xIAGbISGpcBOLdFqR7wfKdeovKdWa8h7llPnc/tQXH9BAJwQir0QL
-         SQa2l6juC0sUSHEw3y9Kh/TQ0VhtRI1MmNt4PTEFN9vNoE6FKB36sOzDqXPzafxYWZ
-         fYllOYs0oYqbZCqwMQPIVEaB+pZ66nXN5b1SypRqWHGAzat4jvDa8ftui7QNlPlRdM
-         qXjq9h8tDwbbvlLMN8ZREzBHMUlT0+tOinUC3a3du4W1HNMJ+rZXh7+T7t6fLUwqon
-         lZ3lHLPsxsSSQ==
+        b=YhzskBwu8BVukyWgCBe63YyYzo06ZIImFpph2t6GpUjgxxkLGJcHuLAgvQntDM/3Z
+         w5ERahQtM6wjpcPhLF4VDen1frxImEJMWXl80JkLQ3Mipxe9htYQPb+QsAgZRQMdES
+         sfwdBlmw/wTDExszu7BhqrVp6XfT+C91hUWmvcOiZNrjwGbjLhLb8OTPaml8j8ncjZ
+         KwhFO36TFo5Nw5HScoBY/jVXovQc84/zBgKT5XpzBvxpDmdDBFze9JaRx1wo5nlGbR
+         8dd39jzNnJbjkKfUVvvvItCSCNBE+/eleGaA0j1HlyEF5GuoJuCWW4uFa+8wv/xti/
+         BjVZg49QBTswQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 5D4685C02A9; Wed, 31 Aug 2022 11:12:11 -0700 (PDT)
+        id 750175C0DE5; Wed, 31 Aug 2022 11:12:11 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
         rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 03/25] rcutorture: Abstract synchronous and polled API testing
-Date:   Wed, 31 Aug 2022 11:11:48 -0700
-Message-Id: <20220831181210.2695080-3-paulmck@kernel.org>
+Subject: [PATCH rcu 16/25] rcu: Make synchronize_rcu() fast path update ->gp_seq counters
+Date:   Wed, 31 Aug 2022 11:12:01 -0700
+Message-Id: <20220831181210.2695080-16-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220831181207.GA2694717@paulmck-ThinkPad-P17-Gen-1>
 References: <20220831181207.GA2694717@paulmck-ThinkPad-P17-Gen-1>
@@ -49,88 +49,74 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This commit abstracts a do_rtws_sync() function that does synchronous
-grace-period testing, but also testing the polled API 25% of the time
-each for the normal and full-state variants of the polled API.
+This commit causes the early boot single-CPU synchronize_rcu() fastpath to
+update the rcu_state and rcu_node structures' ->gp_seq and ->gp_seq_needed
+counters.  This will allow the full-state polled grace-period APIs to
+detect all normal grace periods without the need to track the special
+combined polling-only counter, which is a step towards removing the
+->rgos_polled field from the rcu_gp_oldstate, thereby reducing its size
+by one third.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/rcutorture.c | 48 ++++++++++++++++++++++++++++++-----------
- 1 file changed, 36 insertions(+), 12 deletions(-)
+ kernel/rcu/tree.c | 39 ++++++++++++++++++++++++++-------------
+ 1 file changed, 26 insertions(+), 13 deletions(-)
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 4f196ebce7f29..c3c94e343eb28 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -1207,6 +1207,40 @@ static void rcu_torture_write_types(void)
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 0ff7d5eaa3761..8fa5ec0f3d111 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3480,24 +3480,37 @@ static int rcu_blocking_is_gp(void)
+  */
+ void synchronize_rcu(void)
+ {
++	unsigned long flags;
++	struct rcu_node *rnp;
++
+ 	RCU_LOCKDEP_WARN(lock_is_held(&rcu_bh_lock_map) ||
+ 			 lock_is_held(&rcu_lock_map) ||
+ 			 lock_is_held(&rcu_sched_lock_map),
+ 			 "Illegal synchronize_rcu() in RCU read-side critical section");
+-	if (rcu_blocking_is_gp()) {
+-		// Note well that this code runs with !PREEMPT && !SMP.
+-		// In addition, all code that advances grace periods runs at
+-		// process level.  Therefore, this normal GP overlaps with
+-		// other normal GPs only by being fully nested within them,
+-		// which allows reuse of ->gp_seq_polled_snap.
+-		rcu_poll_gp_seq_start_unlocked(&rcu_state.gp_seq_polled_snap);
+-		rcu_poll_gp_seq_end_unlocked(&rcu_state.gp_seq_polled_snap);
+-		return;  // Context allows vacuous grace periods.
++	if (!rcu_blocking_is_gp()) {
++		if (rcu_gp_is_expedited())
++			synchronize_rcu_expedited();
++		else
++			wait_rcu_gp(call_rcu);
++		return;
  	}
+-	if (rcu_gp_is_expedited())
+-		synchronize_rcu_expedited();
+-	else
+-		wait_rcu_gp(call_rcu);
++
++	// Context allows vacuous grace periods.
++	// Note well that this code runs with !PREEMPT && !SMP.
++	// In addition, all code that advances grace periods runs at
++	// process level.  Therefore, this normal GP overlaps with other
++	// normal GPs only by being fully nested within them, which allows
++	// reuse of ->gp_seq_polled_snap.
++	rcu_poll_gp_seq_start_unlocked(&rcu_state.gp_seq_polled_snap);
++	rcu_poll_gp_seq_end_unlocked(&rcu_state.gp_seq_polled_snap);
++
++	// Update normal grace-period counters to record grace period.
++	local_irq_save(flags);
++	WARN_ON_ONCE(num_online_cpus() > 1);
++	rcu_state.gp_seq += (1 << RCU_SEQ_CTR_SHIFT);
++	rcu_for_each_node_breadth_first(rnp)
++		rnp->gp_seq_needed = rnp->gp_seq = rcu_state.gp_seq;
++	local_irq_restore(flags);
  }
+ EXPORT_SYMBOL_GPL(synchronize_rcu);
  
-+/*
-+ * Do the specified rcu_torture_writer() synchronous grace period,
-+ * while also testing out the polled APIs.  Note well that the single-CPU
-+ * grace-period optimizations must be accounted for.
-+ */
-+static void do_rtws_sync(struct torture_random_state *trsp, void (*sync)(void))
-+{
-+	unsigned long cookie;
-+	struct rcu_gp_oldstate cookie_full;
-+	bool dopoll;
-+	bool dopoll_full;
-+	unsigned long r = torture_random(trsp);
-+
-+	dopoll = cur_ops->get_gp_state && cur_ops->poll_gp_state && !(r & 0x300);
-+	dopoll_full = cur_ops->get_gp_state_full && cur_ops->poll_gp_state_full && !(r & 0xc00);
-+	if (dopoll || dopoll_full)
-+		cpus_read_lock();
-+	if (dopoll)
-+		cookie = cur_ops->get_gp_state();
-+	if (dopoll_full)
-+		cur_ops->get_gp_state_full(&cookie_full);
-+	if (dopoll || (!IS_ENABLED(CONFIG_TINY_RCU) && dopoll_full && num_online_cpus() <= 1))
-+		sync();
-+	sync();
-+	WARN_ONCE(dopoll && !cur_ops->poll_gp_state(cookie),
-+		  "%s: Cookie check 3 failed %pS() online %*pbl.",
-+		  __func__, sync, cpumask_pr_args(cpu_online_mask));
-+	WARN_ONCE(dopoll_full && !cur_ops->poll_gp_state_full(&cookie_full),
-+		  "%s: Cookie check 4 failed %pS() online %*pbl",
-+		  __func__, sync, cpumask_pr_args(cpu_online_mask));
-+	if (dopoll || dopoll_full)
-+		cpus_read_unlock();
-+}
-+
- /*
-  * RCU torture writer kthread.  Repeatedly substitutes a new structure
-  * for that pointed to by rcu_torture_current, freeing the old structure
-@@ -1295,12 +1329,7 @@ rcu_torture_writer(void *arg)
- 				break;
- 			case RTWS_EXP_SYNC:
- 				rcu_torture_writer_state = RTWS_EXP_SYNC;
--				if (cur_ops->get_gp_state_full && cur_ops->poll_gp_state_full)
--					cur_ops->get_gp_state_full(&cookie_full);
--				cur_ops->exp_sync();
--				cur_ops->exp_sync();
--				if (cur_ops->get_gp_state_full && cur_ops->poll_gp_state_full)
--					WARN_ON_ONCE(!cur_ops->poll_gp_state_full(&cookie_full));
-+				do_rtws_sync(&rand, cur_ops->exp_sync);
- 				rcu_torture_pipe_update(old_rp);
- 				break;
- 			case RTWS_COND_GET:
-@@ -1339,12 +1368,7 @@ rcu_torture_writer(void *arg)
- 				break;
- 			case RTWS_SYNC:
- 				rcu_torture_writer_state = RTWS_SYNC;
--				if (cur_ops->get_gp_state && cur_ops->poll_gp_state)
--					cookie = cur_ops->get_gp_state();
--				cur_ops->sync();
--				cur_ops->sync();
--				if (cur_ops->get_gp_state && cur_ops->poll_gp_state)
--					WARN_ON_ONCE(!cur_ops->poll_gp_state(cookie));
-+				do_rtws_sync(&rand, cur_ops->sync);
- 				rcu_torture_pipe_update(old_rp);
- 				break;
- 			default:
 -- 
 2.31.1.189.g2e36527f23
 
