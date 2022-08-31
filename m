@@ -2,44 +2,44 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1CA6CECAAD3
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D7CA4ECAAD1
 	for <rcu@archiver.kernel.org>; Wed, 31 Aug 2022 18:16:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232673AbiHaSQI (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 31 Aug 2022 14:16:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57674 "EHLO
+        id S232680AbiHaSQJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 31 Aug 2022 14:16:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232417AbiHaSOu (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 31 Aug 2022 14:14:50 -0400
+        with ESMTP id S232340AbiHaSO4 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 31 Aug 2022 14:14:56 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E74F4EA31B;
-        Wed, 31 Aug 2022 11:12:59 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B4B9ED02B;
+        Wed, 31 Aug 2022 11:12:51 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5974861C63;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0F6E961C67;
         Wed, 31 Aug 2022 18:12:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F1FEC43160;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A510C4314A;
         Wed, 31 Aug 2022 18:12:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1661969532;
-        bh=FckxDIfC5El2OqaWesfPy5RPaKRRdDuIXx9ES9lRUp8=;
+        bh=wGST3YDzy3o68YtlnXnYOiYlSDAYr4NnGFg4G17K0hw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q6LUYnVSjbw66FR4A9plBc3in+qKuwp8ICUSBQ4EK4TPPxiCxyFyg3WTiH/VQ9Uk9
-         LyX91cRg5vYB+Z3N10yiHpIHpp5lObGg+upVLVUFOfmW9HiuFF68+3hhCb/pPThnSn
-         eaFm7tTqqovfFE1NRHVL0f6tICSIqdvnuFUr0kVTJfOhD8SLt3G9KhEyGndm2uUozY
-         3UjPG6AWWLITF3qWnsPfT4Uqm158AqzdGcZTSqxpQ5uOB7ltYB/95bL1qAmGJ734lA
-         KRn0+ZZjR40cXUnm4p/6EAyDtXb9C7hxQVtLmBh5OeuVo895mb4UPnSSo91ItLNup5
-         qBk21n8asI2CA==
+        b=IcCxvanwi7RJ1Tw6jEy70675ckfhTiR9WefHcwRGJs6BfwIXx6pxkvjZq1GG+OyvH
+         8KJ7oakE/BkND9ASAGkwA0NKdTNn3Q6hyRPBqPUtxGyWuHSQu5FaCF/eKez+RwUxOM
+         MCe9vmu8003kBbPsjp0FSKFqzO6/eYCnPf6auXB4k+KiU7rf53e3R7a8WoE/OrSi4z
+         Osm9QpsXS5p0RnYq/N0KhJPhYbbU4fe1POMBC9Bcp10x+vbvNIqONjGwI5j4eVC6tm
+         w81/89H9Q31qSFxRteMuzXDsMPkri3LIdSdU2HzA/SP+hKsmaXUjURCUImempVjxi+
+         HJE+h8hD2k0LQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 847EC5C0F13; Wed, 31 Aug 2022 11:12:11 -0700 (PDT)
+        id 6FF295C0B07; Wed, 31 Aug 2022 11:12:11 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
         rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 25/25] rcutorture: Limit read-side polling-API testing
-Date:   Wed, 31 Aug 2022 11:12:10 -0700
-Message-Id: <20220831181210.2695080-25-paulmck@kernel.org>
+Subject: [PATCH rcu 13/25] rcu: Disable run-time single-CPU grace-period optimization
+Date:   Wed, 31 Aug 2022 11:11:58 -0700
+Message-Id: <20220831181210.2695080-13-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220831181207.GA2694717@paulmck-ThinkPad-P17-Gen-1>
 References: <20220831181207.GA2694717@paulmck-ThinkPad-P17-Gen-1>
@@ -49,82 +49,79 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-RCU's polled grace-period API is reasonably lightweight, but still
-contains heavyweight memory barriers.  This commit therefore limits
-testing of this API from rcutorture's readers in order to avoid the
-false negatives that these heavyweight operations could provoke.
+The run-time single-CPU grace-period optimization applies only to
+kernels built with CONFIG_SMP=y && CONFIG_PREEMPTION=y that are running
+on a single-CPU system.  But a kernel intended for a single-CPU system
+should instead be built with CONFIG_SMP=n, and in any case, single-CPU
+systems running Linux no longer appear to be the common case.  Plus this
+optimization results in the rcu_gp_oldstate structure being half again
+larger than it needs to be.
+
+This commit therefore disables the run-time single-CPU grace-period
+optimization, so that this optimization applies only during the
+pre-scheduler portion of the boot sequence.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/rcutorture.c | 41 +++++++++++++++++++++++------------------
- 1 file changed, 23 insertions(+), 18 deletions(-)
+ kernel/rcu/tree.c | 40 +++++++++-------------------------------
+ 1 file changed, 9 insertions(+), 31 deletions(-)
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index fe1836aad6466..91103279d7b4f 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -1903,6 +1903,7 @@ rcutorture_loop_extend(int *readstate, struct torture_random_state *trsp,
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 5c46c0d34ef0d..5c4ec9dd4ce70 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3423,42 +3423,20 @@ void __init kfree_rcu_scheduler_running(void)
+ 
+ /*
+  * During early boot, any blocking grace-period wait automatically
+- * implies a grace period.  Later on, this is never the case for PREEMPTION.
++ * implies a grace period.
+  *
+- * However, because a context switch is a grace period for !PREEMPTION, any
+- * blocking grace-period wait automatically implies a grace period if
+- * there is only one CPU online at any point time during execution of
+- * either synchronize_rcu() or synchronize_rcu_expedited().  It is OK to
+- * occasionally incorrectly indicate that there are multiple CPUs online
+- * when there was in fact only one the whole time, as this just adds some
+- * overhead: RCU still operates correctly.
++ * Later on, this could in theory be the case for kernels built with
++ * CONFIG_SMP=y && CONFIG_PREEMPTION=y running on a single CPU, but this
++ * is not a common case.  Furthermore, this optimization would cause
++ * the rcu_gp_oldstate structure to expand by 50%, so this potential
++ * grace-period optimization is ignored once the scheduler is running.
   */
- static bool rcu_torture_one_read(struct torture_random_state *trsp, long myid)
+ static int rcu_blocking_is_gp(void)
  {
-+	bool checkpolling = !(torture_random(trsp) & 0xfff);
- 	unsigned long cookie;
- 	struct rcu_gp_oldstate cookie_full;
- 	int i;
-@@ -1920,10 +1921,12 @@ static bool rcu_torture_one_read(struct torture_random_state *trsp, long myid)
- 	WARN_ON_ONCE(!rcu_is_watching());
- 	newstate = rcutorture_extend_mask(readstate, trsp);
- 	rcutorture_one_extend(&readstate, newstate, trsp, rtrsp++);
--	if (cur_ops->get_gp_state && cur_ops->poll_gp_state)
--		cookie = cur_ops->get_gp_state();
--	if (cur_ops->get_gp_state_full && cur_ops->poll_gp_state_full)
--		cur_ops->get_gp_state_full(&cookie_full);
-+	if (checkpolling) {
-+		if (cur_ops->get_gp_state && cur_ops->poll_gp_state)
-+			cookie = cur_ops->get_gp_state();
-+		if (cur_ops->get_gp_state_full && cur_ops->poll_gp_state_full)
-+			cur_ops->get_gp_state_full(&cookie_full);
-+	}
- 	started = cur_ops->get_gp_seq();
- 	ts = rcu_trace_clock_local();
- 	p = rcu_dereference_check(rcu_torture_current,
-@@ -1957,20 +1960,22 @@ static bool rcu_torture_one_read(struct torture_random_state *trsp, long myid)
- 	}
- 	__this_cpu_inc(rcu_torture_batch[completed]);
- 	preempt_enable();
--	if (cur_ops->get_gp_state && cur_ops->poll_gp_state)
--		WARN_ONCE(cur_ops->poll_gp_state(cookie),
--			  "%s: Cookie check 2 failed %s(%d) %lu->%lu\n",
--			  __func__,
--			  rcu_torture_writer_state_getname(),
--			  rcu_torture_writer_state,
--			  cookie, cur_ops->get_gp_state());
--	if (cur_ops->get_gp_state_full && cur_ops->poll_gp_state_full)
--		WARN_ONCE(cur_ops->poll_gp_state_full(&cookie_full),
--			  "%s: Cookie check 6 failed %s(%d) online %*pbl\n",
--			  __func__,
--			  rcu_torture_writer_state_getname(),
--			  rcu_torture_writer_state,
--			  cpumask_pr_args(cpu_online_mask));
-+	if (checkpolling) {
-+		if (cur_ops->get_gp_state && cur_ops->poll_gp_state)
-+			WARN_ONCE(cur_ops->poll_gp_state(cookie),
-+				  "%s: Cookie check 2 failed %s(%d) %lu->%lu\n",
-+				  __func__,
-+				  rcu_torture_writer_state_getname(),
-+				  rcu_torture_writer_state,
-+				  cookie, cur_ops->get_gp_state());
-+		if (cur_ops->get_gp_state_full && cur_ops->poll_gp_state_full)
-+			WARN_ONCE(cur_ops->poll_gp_state_full(&cookie_full),
-+				  "%s: Cookie check 6 failed %s(%d) online %*pbl\n",
-+				  __func__,
-+				  rcu_torture_writer_state_getname(),
-+				  rcu_torture_writer_state,
-+				  cpumask_pr_args(cpu_online_mask));
-+	}
- 	rcutorture_one_extend(&readstate, 0, trsp, rtrsp);
- 	WARN_ON_ONCE(readstate);
- 	// This next splat is expected behavior if leakpointer, especially
+-	int ret;
+-
+-	// Invoking preempt_model_*() too early gets a splat.
+-	if (rcu_scheduler_active == RCU_SCHEDULER_INACTIVE ||
+-	    preempt_model_full() || preempt_model_rt())
+-		return rcu_scheduler_active == RCU_SCHEDULER_INACTIVE;
++	if (rcu_scheduler_active != RCU_SCHEDULER_INACTIVE)
++		return false;
+ 	might_sleep();  /* Check for RCU read-side critical section. */
+-	preempt_disable();
+-	/*
+-	 * If the rcu_state.n_online_cpus counter is equal to one,
+-	 * there is only one CPU, and that CPU sees all prior accesses
+-	 * made by any CPU that was online at the time of its access.
+-	 * Furthermore, if this counter is equal to one, its value cannot
+-	 * change until after the preempt_enable() below.
+-	 *
+-	 * Furthermore, if rcu_state.n_online_cpus is equal to one here,
+-	 * all later CPUs (both this one and any that come online later
+-	 * on) are guaranteed to see all accesses prior to this point
+-	 * in the code, without the need for additional memory barriers.
+-	 * Those memory barriers are provided by CPU-hotplug code.
+-	 */
+-	ret = READ_ONCE(rcu_state.n_online_cpus) <= 1;
+-	preempt_enable();
+-	return ret;
++	return true;
+ }
+ 
+ /**
 -- 
 2.31.1.189.g2e36527f23
 
