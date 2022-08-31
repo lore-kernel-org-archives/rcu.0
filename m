@@ -2,44 +2,44 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 54CB6ECAAD1
-	for <rcu@archiver.kernel.org>; Wed, 31 Aug 2022 18:14:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 25DBDECAAD3
+	for <rcu@archiver.kernel.org>; Wed, 31 Aug 2022 18:14:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232589AbiHaSOJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 31 Aug 2022 14:14:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56384 "EHLO
+        id S232620AbiHaSOc (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 31 Aug 2022 14:14:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232637AbiHaSNq (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 31 Aug 2022 14:13:46 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2855EDF663;
-        Wed, 31 Aug 2022 11:12:37 -0700 (PDT)
+        with ESMTP id S232658AbiHaSNt (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 31 Aug 2022 14:13:49 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 085DDF14CB;
+        Wed, 31 Aug 2022 11:12:40 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D454261C58;
+        by sin.source.kernel.org (Postfix) with ESMTPS id C591BCE205F;
+        Wed, 31 Aug 2022 18:12:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76A6EC4315A;
         Wed, 31 Aug 2022 18:12:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F339DC43148;
-        Wed, 31 Aug 2022 18:12:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1661969532;
-        bh=UfgC0TnAMojW9BPApDiZOMQioOSmMjDrtGha0d9H3ys=;
+        bh=3hit05VM9H5Pv/TaHqZN5KHI+BLHnN72k5omzSbGN8U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iNXjlPDmqlcjMfkbH4V1ViLpxZfHrJPigIg3k6fIjltq8cjc8e7llmkMXnfxBoR9O
-         SN9KrjTBUr5eT/pddiY47XdFzSKZiYl/zYX+ufgxIAlYYiV44e1RN3MQnNRbBdrv7m
-         ekM31Qm0OfIrtmZUdhDwo0FGp8V8V1JVQJS8jxOFscfw+cjhWvS6iVHI0S4Sce5Zt4
-         eaA6NSmQ9FlhX99JquvC/ra6pJWRw2PYtt2PxKYSSjDL62knKgDErtNjJoFuNvWCiO
-         Ft5NFJzyl/z5EEQRv+6KGPGhD0YsfFiNQoDQq1oaDrjQfoubImAbr87C6FXWq6H5sP
-         CXIvanZmQOmbQ==
+        b=dU1hK/lZj2+BkLaTtGTPGvKQvOFvM6D7CCvjwuYo6kUuQGsu7bXEIAq2Ev4iAuXNQ
+         g76f0dZ2iIE2dnix6KRuDJDgY3ovicziybEC8MrSfXuklwONX9+Zp3fEgMBghYmSed
+         XfzSRzAnNQz7QUKSsuWzynH+bafZMaMRLF8nWmkb8169KxRIgvIhqsJTaaiFnFmF13
+         bznhd+KCPlyccNgxCWIKPo7Cow/nLuzg/24Y5DfVy9i/0x0p7X2iVjs0pmsXJJSYBq
+         N6xPChZ9C2DZrmSOLqRZP7yrgrh5TYM78rEML4aN+aEeTSQpM826022lOM6YmzORHz
+         9oBZ73+2+zeCQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 6A69C5C0A6B; Wed, 31 Aug 2022 11:12:11 -0700 (PDT)
+        id 80E075C0ED4; Wed, 31 Aug 2022 11:12:11 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
         rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 10/25] rcu: Remove blank line from poll_state_synchronize_rcu() docbook header
-Date:   Wed, 31 Aug 2022 11:11:55 -0700
-Message-Id: <20220831181210.2695080-10-paulmck@kernel.org>
+Subject: [PATCH rcu 23/25] rcutorture: Expand rcu_torture_write_types() first "if" statement
+Date:   Wed, 31 Aug 2022 11:12:08 -0700
+Message-Id: <20220831181210.2695080-23-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220831181207.GA2694717@paulmck-ThinkPad-P17-Gen-1>
 References: <20220831181207.GA2694717@paulmck-ThinkPad-P17-Gen-1>
@@ -49,41 +49,55 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This commit removes the blank line preceding the oldstate parameter to
-the docbook header for the poll_state_synchronize_rcu() function and
-marks uses of this parameter later in that header.
+This commit expands the rcu_torture_write_types() function's first "if"
+condition and body, placing one element per line, in order to make the
+compiler's error messages more helpful.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ kernel/rcu/rcutorture.c | 29 +++++++++++++++++++++++------
+ 1 file changed, 23 insertions(+), 6 deletions(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 89572385fd1aa..0a24ef4d6b823 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3662,11 +3662,10 @@ EXPORT_SYMBOL_GPL(start_poll_synchronize_rcu_full);
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 71d1af9c060e1..fe1836aad6466 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -1195,12 +1195,29 @@ static void rcu_torture_write_types(void)
+ 	bool gp_poll_full1 = gp_poll_full, gp_sync1 = gp_sync;
  
- /**
-  * poll_state_synchronize_rcu - Has the specified RCU grace period completed?
-- *
-  * @oldstate: value from get_state_synchronize_rcu() or start_poll_synchronize_rcu()
-  *
-  * If a full RCU grace period has elapsed since the earlier call from
-- * which oldstate was obtained, return @true, otherwise return @false.
-+ * which @oldstate was obtained, return @true, otherwise return @false.
-  * If @false is returned, it is the caller's responsibility to invoke this
-  * function later on until it does return @true.  Alternatively, the caller
-  * can explicitly wait for a grace period, for example, by passing @oldstate
-@@ -3675,7 +3674,7 @@ EXPORT_SYMBOL_GPL(start_poll_synchronize_rcu_full);
-  * Yes, this function does not take counter wrap into account.
-  * But counter wrap is harmless.  If the counter wraps, we have waited for
-  * more than a billion grace periods (and way more on a 64-bit system!).
-- * Those needing to keep oldstate values for very long time periods
-+ * Those needing to keep old state values for very long time periods
-  * (many hours even on 32-bit systems) should check them occasionally and
-  * either refresh them or set a flag indicating that the grace period has
-  * completed.  Alternatively, they can use get_completed_synchronize_rcu()
+ 	/* Initialize synctype[] array.  If none set, take default. */
+-	if (!gp_cond1 && !gp_cond_exp1 && !gp_cond_full1 && !gp_cond_exp_full1 && !gp_exp1 &&
+-	    !gp_poll_exp1 && !gp_poll_exp_full1 && !gp_normal1 && !gp_poll1 && !gp_poll_full1 &&
+-	    !gp_sync1)
+-		gp_cond1 = gp_cond_exp1 = gp_cond_full1 = gp_cond_exp_full1 = gp_exp1 =
+-			   gp_poll_exp1 = gp_poll_exp_full1 = gp_normal1 = gp_poll1 =
+-			   gp_poll_full1 = gp_sync1 = true;
++	if (!gp_cond1 &&
++	    !gp_cond_exp1 &&
++	    !gp_cond_full1 &&
++	    !gp_cond_exp_full1 &&
++	    !gp_exp1 &&
++	    !gp_poll_exp1 &&
++	    !gp_poll_exp_full1 &&
++	    !gp_normal1 &&
++	    !gp_poll1 &&
++	    !gp_poll_full1 &&
++	    !gp_sync1) {
++		gp_cond1 = true;
++		gp_cond_exp1 = true;
++		gp_cond_full1 = true;
++		gp_cond_exp_full1 = true;
++		gp_exp1 = true;
++		gp_poll_exp1 = true;
++		gp_poll_exp_full1 = true;
++		gp_normal1 = true;
++		gp_poll1 = true;
++		gp_poll_full1 = true;
++		gp_sync1 = true;
++	}
+ 	if (gp_cond1 && cur_ops->get_gp_state && cur_ops->cond_sync) {
+ 		synctype[nsynctypes++] = RTWS_COND_GET;
+ 		pr_info("%s: Testing conditional GPs.\n", __func__);
 -- 
 2.31.1.189.g2e36527f23
 
