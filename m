@@ -2,45 +2,44 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DAF09ECAAD4
-	for <rcu@archiver.kernel.org>; Wed, 31 Aug 2022 18:06:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F1FEECAAD1
+	for <rcu@archiver.kernel.org>; Wed, 31 Aug 2022 18:06:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231978AbiHaSGg (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S232208AbiHaSGg (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Wed, 31 Aug 2022 14:06:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40726 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232131AbiHaSGd (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 31 Aug 2022 14:06:33 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8096CE3961;
-        Wed, 31 Aug 2022 11:06:29 -0700 (PDT)
+        with ESMTP id S232140AbiHaSGe (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 31 Aug 2022 14:06:34 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81385E3981;
+        Wed, 31 Aug 2022 11:06:30 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8DD8B61C0D;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 98E51B82272;
         Wed, 31 Aug 2022 18:06:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A160EC4314D;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4ED4EC43142;
         Wed, 31 Aug 2022 18:06:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1661969187;
-        bh=rs0JwDT2NwpNg38wdlwMWQtd1f0wzKLTC7t9vHoDofY=;
+        bh=YULC0Awo0Pmc3BNtKXn9TIdi3s0Oc+2WQtMPeTYpzNg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GN6Vr0/SNEhlqwkE+C5hAfS6zQ5Iok6a4N2Fb5De2CM4iQb/KMMVUSP1RkrICOmDl
-         SahAKk0uFt3MD0/222qERXCycipcYwy/rm5gNF2yZyIS1ofQS6DMAk0d1sDIOC2t4y
-         vqa1JBNrMygaX51m80KrFCMxnnWJfwZ41s0dOInC82vPESXkKmsuSK/SRMpH5EYlux
-         v29dm+9+CeMbNeGjzKPavJycTB33Y77UwdTyMCbAydH7QH6T+LjBwTkDGsB7n76/HO
-         +QDw7/6HkRZb6WWty68pYAwrvH+dDDg3hNkjrldVy14arAiVrL9JXa8EaOg4j67D7+
-         ZeR0mjkoUmv9A==
+        b=bQUcWmkPJrpPakJFFhALVi+buMr/rimCe9eo9vtqxMWvPwSN22Pk1+aMA52vIuQfo
+         sx/JtT95oOe+YpTicgrT362gvTmRzQGMTlZ2GzNJ5btt5A0AmJqTOPsZmouD6pkv2G
+         LTZLJXyKAEOR9sB/Le11G7SciQg0d/BmGCjlj7rxqFT6ipIjcOc0tFbL89kJ/2j/R7
+         m7uP4oouL7HJ63C+sVrEwdGfCW0JYX5cocAQLZPJJp7JbFbR1smksgbEad6GObxkGM
+         3YCT0xGfDiuiPDbYfZwkJ2b61okWEM1Cj0q5MeMYS/NioZHSmHpTmjqO+3N4i8OJ8Q
+         fM+M1Y4HFjIug==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 0AD6A5C0950; Wed, 31 Aug 2022 11:06:27 -0700 (PDT)
+        id 013A65C019C; Wed, 31 Aug 2022 11:06:26 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org, Shao-Tse Hung <ccs100203@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 7/7] doc/rcu: Update LWN article URLs and add 2019 article
-Date:   Wed, 31 Aug 2022 11:06:25 -0700
-Message-Id: <20220831180625.2692892-7-paulmck@kernel.org>
+        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 2/7] doc: Call out queue_rcu_work() for blocking RCU callbacks
+Date:   Wed, 31 Aug 2022 11:06:20 -0700
+Message-Id: <20220831180625.2692892-2-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220831180617.GA2692480@paulmck-ThinkPad-P17-Gen-1>
 References: <20220831180617.GA2692480@paulmck-ThinkPad-P17-Gen-1>
@@ -50,44 +49,30 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Shao-Tse Hung <ccs100203@gmail.com>
+The current checklist.rst file correctly notes that RCU callbacks execute
+in BH context, and cannot block.  This commit adds words advising people
+needing callbacks to block to use workqueues, for example, by replacing
+call_rcu() with queue_rcu_work().
 
-This patch adds LWN articles about RCU APIs which were released in 2019.
-Also, HTTP URLs are replaced by HTTPS.
-
-Signed-off-by: Shao-Tse Hung <ccs100203@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- Documentation/RCU/whatisRCU.rst | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+ Documentation/RCU/checklist.rst | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/RCU/whatisRCU.rst b/Documentation/RCU/whatisRCU.rst
-index 97f2d0fa84dfa..1c747ac3f2c8e 100644
---- a/Documentation/RCU/whatisRCU.rst
-+++ b/Documentation/RCU/whatisRCU.rst
-@@ -6,13 +6,15 @@ What is RCU?  --  "Read, Copy, Update"
- Please note that the "What is RCU?" LWN series is an excellent place
- to start learning about RCU:
+diff --git a/Documentation/RCU/checklist.rst b/Documentation/RCU/checklist.rst
+index 5eedef027d922..2db206fc3465f 100644
+--- a/Documentation/RCU/checklist.rst
++++ b/Documentation/RCU/checklist.rst
+@@ -190,6 +190,9 @@ over a rather long period of time, but improvements are always welcome!
  
--| 1.	What is RCU, Fundamentally?  http://lwn.net/Articles/262464/
--| 2.	What is RCU? Part 2: Usage   http://lwn.net/Articles/263130/
--| 3.	RCU part 3: the RCU API      http://lwn.net/Articles/264090/
--| 4.	The RCU API, 2010 Edition    http://lwn.net/Articles/418853/
--| 	2010 Big API Table           http://lwn.net/Articles/419086/
--| 5.	The RCU API, 2014 Edition    http://lwn.net/Articles/609904/
--|	2014 Big API Table           http://lwn.net/Articles/609973/
-+| 1.	What is RCU, Fundamentally?  https://lwn.net/Articles/262464/
-+| 2.	What is RCU? Part 2: Usage   https://lwn.net/Articles/263130/
-+| 3.	RCU part 3: the RCU API      https://lwn.net/Articles/264090/
-+| 4.	The RCU API, 2010 Edition    https://lwn.net/Articles/418853/
-+| 	2010 Big API Table           https://lwn.net/Articles/419086/
-+| 5.	The RCU API, 2014 Edition    https://lwn.net/Articles/609904/
-+|	2014 Big API Table           https://lwn.net/Articles/609973/
-+| 6.	The RCU API, 2019 Edition    https://lwn.net/Articles/777036/
-+|	2019 Big API Table           https://lwn.net/Articles/777165/
+ 5.	If call_rcu() or call_srcu() is used, the callback function will
+ 	be called from softirq context.  In particular, it cannot block.
++	If you need the callback to block, run that code in a workqueue
++	handler scheduled from the callback.  The queue_rcu_work()
++	function does this for you in the case of call_rcu().
  
- 
- What is RCU?
+ 6.	Since synchronize_rcu() can block, it cannot be called
+ 	from any sort of irq context.  The same rule applies
 -- 
 2.31.1.189.g2e36527f23
 
