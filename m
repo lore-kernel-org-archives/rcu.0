@@ -2,139 +2,89 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93F6EECAAD1
-	for <rcu@archiver.kernel.org>; Wed, 31 Aug 2022 18:11:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 51DA0ECAAD1
+	for <rcu@archiver.kernel.org>; Wed, 31 Aug 2022 18:13:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232552AbiHaSLX (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 31 Aug 2022 14:11:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43450 "EHLO
+        id S232432AbiHaSM7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 31 Aug 2022 14:12:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232446AbiHaSK7 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 31 Aug 2022 14:10:59 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93FCADF663;
-        Wed, 31 Aug 2022 11:10:27 -0700 (PDT)
+        with ESMTP id S232409AbiHaSMl (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 31 Aug 2022 14:12:41 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92071E3961;
+        Wed, 31 Aug 2022 11:11:42 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 74B41B8220A;
-        Wed, 31 Aug 2022 18:09:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4078EC433D6;
-        Wed, 31 Aug 2022 18:09:23 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DEEDC61BF0;
+        Wed, 31 Aug 2022 18:10:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CC2FC433D6;
+        Wed, 31 Aug 2022 18:10:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1661969363;
-        bh=Bw8UbnSJg6wjZnrx3ZkAFqEfYqJl3xi80KpmA3oTN54=;
+        s=k20201202; t=1661969446;
+        bh=RzA/0h68ZhBe7KOWBZY3n3Aj4fMOY0YIfHq1RWU0ov4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PNtR+99a6pCu8Pd6K/iw3aCwUat6AcpmMLyF1ZNf/fKnFUKFzrT37aMjtrK0iX/sX
-         XmekCbTDMvCjmjU3s9U1Hy3nqqWBQ81fp40+4/gCqu2VNf98/x3yq9j5qJzMoSf6W7
-         7Dw/xAy3kL+LTtkmzuTGMTS8//E9IlXLCacXvUMOcJs3rYvIdw0Q6T5OzX9nyffska
-         nDbMxj1vGh5hYF1+BJ5lXSkTAamfT1ef6fL6bnNd7EgZkZoXrfJ9bh64/V5k6qDeQ7
-         hplhn+cLi19czp440QeuleuF/4+AbhXef4ijxQE92OoXj67vqWVsmD+sjSak/+D4cS
-         F2RoRfkuvsu2Q==
+        b=AhLOP54ZWRohzBkh5yFGWcRdlrY5IQ7hBScdDCNCfQFaKOWaV/OVPWBdHYwQ6H1Fx
+         fuyyZcMC+Nfpkn377Bu3xN/SzZMyvq4VhqLR6y0c6x0dj5RM3R7moXPfFlfYYInYsT
+         s+uFqkEu2cTP9aPp2wmJ5sLwD7jIpMiBuWRprTXEQaJ0E0jSyk1HpA3OYmr/i2uqDv
+         ndgZNpZiZyUNLWyY5OslicLNgrGj8tAu3xJxgN/HHeNrCWSRwo9kXBHzTwMzfp1L58
+         NpIKnMIYrDTGcfhjY+Pz38Qlnnkzj5dNcb9A8XkWZMB1nRKpLNisB+q1ya8yEl0ECT
+         cTvRMz0NX5LsA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 0064C5C015D; Wed, 31 Aug 2022 11:09:22 -0700 (PDT)
+        id 0AA015C019C; Wed, 31 Aug 2022 11:10:46 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org, Michal Hocko <mhocko@suse.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: [PATCH rcu 1/3] rcu: Back off upon fill_page_cache_func() allocation failure
-Date:   Wed, 31 Aug 2022 11:09:19 -0700
-Message-Id: <20220831180921.2694017-1-paulmck@kernel.org>
+        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>
+Subject: [PATCH rcu 2/3] rcu/nocb: Add CPU number to CPU-{,de}offload failure messages
+Date:   Wed, 31 Aug 2022 11:10:43 -0700
+Message-Id: <20220831181044.2694488-2-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
-In-Reply-To: <20220831180916.GA2693797@paulmck-ThinkPad-P17-Gen-1>
-References: <20220831180916.GA2693797@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20220831181040.GA2694278@paulmck-ThinkPad-P17-Gen-1>
+References: <20220831181040.GA2694278@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Michal Hocko <mhocko@suse.com>
+Offline CPUs cannot be offloaded or deoffloaded.  Any attempt to offload
+or deoffload an offline CPU causes a message to be printed on the console,
+which is good, but this message does not contain the CPU number, which
+is bad.  Such a CPU number can be helpful when debugging, as it gives a
+clear indication that the CPU in question is in fact offline.  This commit
+therefore adds the CPU number to the CPU-{,de}offload failure messages.
 
-The fill_page_cache_func() function allocates couple of pages to store
-kvfree_rcu_bulk_data structures. This is a lightweight (GFP_NORETRY)
-allocation which can fail under memory pressure. The function will,
-however keep retrying even when the previous attempt has failed.
-
-This retrying is in theory correct, but in practice the allocation is
-invoked from workqueue context, which means that if the memory reclaim
-gets stuck, these retries can hog the worker for quite some time.
-Although the workqueues subsystem automatically adjusts concurrency, such
-adjustment is not guaranteed to happen until the worker context sleeps.
-And the fill_page_cache_func() function's retry loop is not guaranteed
-to sleep (see the should_reclaim_retry() function).
-
-And we have seen this function cause workqueue lockups:
-
-kernel: BUG: workqueue lockup - pool cpus=93 node=1 flags=0x1 nice=0 stuck for 32s!
-[...]
-kernel: pool 74: cpus=37 node=0 flags=0x1 nice=0 hung=32s workers=2 manager: 2146
-kernel:   pwq 498: cpus=249 node=1 flags=0x1 nice=0 active=4/256 refcnt=5
-kernel:     in-flight: 1917:fill_page_cache_func
-kernel:     pending: dbs_work_handler, free_work, kfree_rcu_monitor
-
-Originally, we thought that the root cause of this lockup was several
-retries with direct reclaim, but this is not yet confirmed.  Furthermore,
-we have seen similar lockups without any heavy memory pressure.  This
-suggests that there are other factors contributing to these lockups.
-However, it is not really clear that endless retries are desireable.
-
-So let's make the fill_page_cache_func() function back off after
-allocation failure.
-
-Cc: Uladzislau Rezki (Sony) <urezki@gmail.com>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>
 Cc: Frederic Weisbecker <frederic@kernel.org>
-Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
-Cc: Josh Triplett <josh@joshtriplett.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-Cc: Joel Fernandes <joel@joelfernandes.org>
-Signed-off-by: Michal Hocko <mhocko@suse.com>
-Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
+ kernel/rcu/tree_nocb.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 79aea7df4345e..eb435941e92fd 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3183,15 +3183,16 @@ static void fill_page_cache_func(struct work_struct *work)
- 		bnode = (struct kvfree_rcu_bulk_data *)
- 			__get_free_page(GFP_KERNEL | __GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN);
- 
--		if (bnode) {
--			raw_spin_lock_irqsave(&krcp->lock, flags);
--			pushed = put_cached_bnode(krcp, bnode);
--			raw_spin_unlock_irqrestore(&krcp->lock, flags);
-+		if (!bnode)
-+			break;
- 
--			if (!pushed) {
--				free_page((unsigned long) bnode);
--				break;
--			}
-+		raw_spin_lock_irqsave(&krcp->lock, flags);
-+		pushed = put_cached_bnode(krcp, bnode);
-+		raw_spin_unlock_irqrestore(&krcp->lock, flags);
-+
-+		if (!pushed) {
-+			free_page((unsigned long) bnode);
-+			break;
+diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+index f20aec4f4394b..0a5f0ef414845 100644
+--- a/kernel/rcu/tree_nocb.h
++++ b/kernel/rcu/tree_nocb.h
+@@ -1111,7 +1111,7 @@ int rcu_nocb_cpu_deoffload(int cpu)
+ 			if (!ret)
+ 				cpumask_clear_cpu(cpu, rcu_nocb_mask);
+ 		} else {
+-			pr_info("NOCB: Can't CB-deoffload an offline CPU\n");
++			pr_info("NOCB: Cannot CB-deoffload offline CPU %d\n", rdp->cpu);
+ 			ret = -EINVAL;
  		}
  	}
- 
+@@ -1196,7 +1196,7 @@ int rcu_nocb_cpu_offload(int cpu)
+ 			if (!ret)
+ 				cpumask_set_cpu(cpu, rcu_nocb_mask);
+ 		} else {
+-			pr_info("NOCB: Can't CB-offload an offline CPU\n");
++			pr_info("NOCB: Cannot CB-offload offline CPU %d\n", rdp->cpu);
+ 			ret = -EINVAL;
+ 		}
+ 	}
 -- 
 2.31.1.189.g2e36527f23
 
