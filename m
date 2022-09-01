@@ -2,101 +2,91 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 937B3ECAAD1
-	for <rcu@archiver.kernel.org>; Thu,  1 Sep 2022 15:13:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 47212ECAAD3
+	for <rcu@archiver.kernel.org>; Thu,  1 Sep 2022 15:27:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231290AbiIAPN4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 1 Sep 2022 11:13:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43434 "EHLO
+        id S234579AbiIAP1A (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 1 Sep 2022 11:27:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbiIAPNz (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 1 Sep 2022 11:13:55 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8965885FEA;
-        Thu,  1 Sep 2022 08:13:54 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 031A061E48;
-        Thu,  1 Sep 2022 15:13:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1066BC433D6;
-        Thu,  1 Sep 2022 15:13:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662045233;
-        bh=0t8/KQ98NzBwSJ4fHc5D6nxTVXNraYwC1s9/iFWtwkQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uTIEH2lj86kQHwiT276ARAOQ1PjOkr49jT8a+knYDEzzoD8okdpydEc1JNKxDtuBb
-         ITp0R8qShGI/4TkMP4BQBpYRGF/J7sJkn8E/oEvMx7+P3fq2agkFAkhBTpVRXZeYTD
-         mquRxl+61NpIZqXJTBBSu2mMjnY5jcKEcKPjvjY85YPJtkyjcds5DklbPHjzkZ2qgi
-         EiW0SRGve/h3IKyxEF31Ometku4gSOpycbneyp9WuQFIOta60xTO0gpi+RJlkB2lL/
-         U+DLOdk/nZnDOeyV2EJGQnf9UkACmErvec8H7OHZ2x2W71BdNaQAr11J4nBUiNLvOm
-         nv4acXRMO+M0w==
-Date:   Thu, 1 Sep 2022 17:13:50 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Rushikesh S Kadam <rushikesh.s.kadam@intel.com>,
-        Neeraj upadhyay <neeraj.iitr10@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        rcu <rcu@vger.kernel.org>,
-        Vineeth Pillai <vineeth@bitbyteword.org>
-Subject: Re: [PATCH v4 00/14] Implement call_rcu_lazy() and miscellaneous
- fixes
-Message-ID: <20220901151350.GC105556@lothringen>
-References: <20220829194622.GA58291@lothringen>
- <CAEXW_YS593n8Gget+REaD-c8vT8Ht_AzOY0kXA_uc674LOyvVw@mail.gmail.com>
- <20220829204202.GQ6159@paulmck-ThinkPad-P17-Gen-1>
- <20220830105324.GA71266@lothringen>
- <20220830114343.GS6159@paulmck-ThinkPad-P17-Gen-1>
- <20220830160316.GC71266@lothringen>
- <20220830162244.GA73392@lothringen>
- <Yw4+g/0yEf7fpHrh@pc636>
- <20220901112947.GA105556@lothringen>
- <YxCejoKH8dGIeW22@pc636>
+        with ESMTP id S234516AbiIAP0l (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 1 Sep 2022 11:26:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 159175B78D
+        for <rcu@vger.kernel.org>; Thu,  1 Sep 2022 08:26:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1662045996;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=kGC9RvLszX/F52Fly+GHqDOOZPC038OUoGyy20N2fe8=;
+        b=F/GvseEq137pZJHZQ7hgUdLt9b3DLURYAa2xAVuvTr+40eODQKQW/W561A+1rPp+5BRpS6
+        oFcAV/81cdxm8ENb6Bum0HtIK2QplkeiUsFZUfDPXPwMFLHadw17U2ymGLtPsoCDXCxpbi
+        mvxfcFLd3bSosAhZF+HhbH/XXYAI/e0=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-656-xejrY-HOPomK5SoZedHZBA-1; Thu, 01 Sep 2022 11:26:35 -0400
+X-MC-Unique: xejrY-HOPomK5SoZedHZBA-1
+Received: by mail-ed1-f69.google.com with SMTP id y12-20020a056402358c00b00448898f1c33so7559680edc.7
+        for <rcu@vger.kernel.org>; Thu, 01 Sep 2022 08:26:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date;
+        bh=kGC9RvLszX/F52Fly+GHqDOOZPC038OUoGyy20N2fe8=;
+        b=lIJyj0a5JK3IdGln5zr1c7gpQ/cOmKrrmqt8bj5bW4xv7DwdXzCqSvhuf7Z35j4eVt
+         cnSppB3cWIJYE5LWFch/rIY8BO9L74MauKeITEkqmt81MbDtMVR9OvshRqfGLoaPrAFw
+         sktGyvKtc3pO1jchF26ktm6kRO8R6/uylQJcP/hKZUbvy1ByZf5edclpRggbL+na7Ahj
+         t7wdmM4+04+GmnIvRTz9BKnmH2BEuXoHXULhHbVrbXEztzaF+0Yvuh0SoyPaHYmrr4WQ
+         +Qm5ueyE6f2hLx3oj6mFdsXXg9e516smWxrT2qVImo8f6AehT1Ke8QNGhRh/699BSddN
+         W5xw==
+X-Gm-Message-State: ACgBeo2tK6kQCN7zNti9hkZne5SU3OJ/QlTNmb5dvBLbEf/I1SHjmaHB
+        npTnKzTKQK1M0UKyyCjzvE1iwqrVcdXFlE9I7kz0KmKknlIn17fxMHVhEqj5z+HN/CWA3ztMjR8
+        kJovW1GKw2qXF
+X-Received: by 2002:a17:907:2716:b0:73d:cdf9:b08a with SMTP id w22-20020a170907271600b0073dcdf9b08amr23273244ejk.463.1662045994400;
+        Thu, 01 Sep 2022 08:26:34 -0700 (PDT)
+X-Google-Smtp-Source: AA6agR4QRSL2W4ltgrQ+2jhvMhXxgK8EO5Y0yo9Y0cYkz7dkRoZMMOmRYstqqGCjd+xE8U5lttpmRQ==
+X-Received: by 2002:a17:907:2716:b0:73d:cdf9:b08a with SMTP id w22-20020a170907271600b0073dcdf9b08amr23273233ejk.463.1662045994222;
+        Thu, 01 Sep 2022 08:26:34 -0700 (PDT)
+Received: from localhost.localdomain (nat-pool-brq-t.redhat.com. [213.175.37.10])
+        by smtp.gmail.com with ESMTPSA id o23-20020a170906775700b00730bfe6adc4sm8646031ejn.37.2022.09.01.08.26.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Sep 2022 08:26:33 -0700 (PDT)
+From:   Ondrej Mosnacek <omosnace@redhat.com>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>
+Cc:     linux-fsdevel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Martin Pitt <mpitt@redhat.com>
+Subject: [PATCH 0/2] fs: fix capable() call in simple_xattr_list()
+Date:   Thu,  1 Sep 2022 17:26:30 +0200
+Message-Id: <20220901152632.970018-1-omosnace@redhat.com>
+X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YxCejoKH8dGIeW22@pc636>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Sep 01, 2022 at 01:59:10PM +0200, Uladzislau Rezki wrote:
-> On Thu, Sep 01, 2022 at 01:29:47PM +0200, Frederic Weisbecker wrote:
-> > On Tue, Aug 30, 2022 at 06:44:51PM +0200, Uladzislau Rezki wrote:
-> > > Hello, Frederic.
-> > > 
-> > > > 
-> > > > Although who knows, may be some periodic file operation while idle are specific
-> > > > to Android. I'll try to trace lazy callbacks while idle and the number of grace
-> > > > periods associated.
-> > > > 
-> > > > 
-> > > Everything related to lazy call-backs is about not waking "nocb"
-> > > kthreads in order to offload one or i should say few callbacks
-> > > because it is more or less useless. Currently if incoming callback
-> > > is the only one, it will kick a GP whereas a GP will kick nocb_kthread
-> > > to offload.
-> > 
-> > Not sure this is only about not waking "nocb" kthreads. The grace period
-> > kthread is also awaken in !NOCB and has quite some work to do. And there,
-> > having a server expands the issue because you may have a lot of CPUs's extended
-> > quiescent states to check.
-> > 
-> I mean here the following combination: NOCB + call_rcu_lazy() tandem.
-> The !NOCB is not about power save, IMHO. Because it implies callbacks
-> to be processed on CPUs they are landed.
+The goal of these patches is to avoid calling capable() unconditionally
+in simple_xattr_list(), which causes issues under SELinux (see
+explanation in the second patch).
 
-I'm sorry but I still feel confused reading that !NOCB is not about power
-save. To me everything is about power save. NOCB just appears to help optimizing
-it without significant tradeoff on some given workloads.
+The first patch tries to make this change safer by converting
+simple_xattrs to use the RCU mechanism, so that capable() is not called
+while the xattrs->lock is held. I didn't find evidence that this is an
+issue in the current code, but it can't hurt to make that change
+either way (and it was quite straightforward).
 
-> In this scenario you can not let the EAS scheduler to find a more
-> efficient CPU for further handling.
+Ondrej Mosnacek (2):
+  fs: convert simple_xattrs to RCU list
+  fs: don't call capable() prematurely in simple_xattr_list()
 
-Sure but that doesn't mean there wouldn't be a power saving gain anyway.
+ fs/xattr.c            | 39 +++++++++++++++++++++++----------------
+ include/linux/xattr.h |  1 +
+ 2 files changed, 24 insertions(+), 16 deletions(-)
 
-Thanks.
+-- 
+2.37.2
+
