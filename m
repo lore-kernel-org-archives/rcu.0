@@ -2,144 +2,95 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E7003ECAAD3
-	for <rcu@archiver.kernel.org>; Thu,  1 Sep 2022 10:36:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 98AD2C0502C
+	for <rcu@archiver.kernel.org>; Thu,  1 Sep 2022 11:11:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229572AbiIAKge (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 1 Sep 2022 06:36:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46890 "EHLO
+        id S233046AbiIALLX (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 1 Sep 2022 07:11:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233737AbiIAKgc (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 1 Sep 2022 06:36:32 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0026B122698
-        for <rcu@vger.kernel.org>; Thu,  1 Sep 2022 03:36:29 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1oThYh-0001V1-JV; Thu, 01 Sep 2022 12:36:27 +0200
-Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1oThYf-0000mU-Q7; Thu, 01 Sep 2022 12:36:25 +0200
-Date:   Thu, 1 Sep 2022 12:36:25 +0200
+        with ESMTP id S233616AbiIALLV (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 1 Sep 2022 07:11:21 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91C2F13063B;
+        Thu,  1 Sep 2022 04:11:20 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 2CE60B825C9;
+        Thu,  1 Sep 2022 11:11:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74A2DC43470;
+        Thu,  1 Sep 2022 11:11:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1662030677;
+        bh=isbEsGMAd6l+5tzFGahWL4tHVrV73zrpC+Q4RxEL45k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=K6p9ZCffk9sWe4cMEyhVqCv0/XRv8BDKZOOf0jx3304smil9IEzCP9LP8kv8Awokp
+         PyHFLLq54Km5/ip0GobbIeKTQyFUBLOgdbBPqQ0ztEnZolbTEw+p970c24QH60u8va
+         sJPfMz3WZkuTQHHJ8xD73AD2zAJ+egUgbwREJpycKwnLXxsSt8IeGhTKsdb3mrtFS4
+         QhzSi1KV/1dbBrVq/lM+9n3op+dgwTRUB5BYkLsn8HRoP0djNZ+tiTXG9HSn+QNhfU
+         9xydU+mQ3RnGhnizDv/0Vg7FNFzAiqgZ6C7f+uH9q31qLLHc6b1ciG0HSq3W0NX59V
+         pSb6vFv/hrRuw==
+Date:   Thu, 1 Sep 2022 13:11:14 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
 To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel-team@fb.com, rostedt@goodmis.org,
-        Matthew Wilcox <willy@infradead.org>,
-        Zhouyi Zhou <zhouzhouyi@gmail.com>, kernel@pengutronix.de
-Subject: Re: [PATCH rcu 04/32] rcu-tasks: Drive synchronous grace periods
- from calling task
-Message-ID: <20220901103625.GA1658@pengutronix.de>
-References: <20220620225402.GA3842369@paulmck-ThinkPad-P17-Gen-1>
- <20220620225411.3842519-4-paulmck@kernel.org>
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH rcu 3/3] rcu: Simplify rcu_init_nohz() cpumask handling
+Message-ID: <20220901111114.GA103483@lothringen>
+References: <20220831181040.GA2694278@paulmck-ThinkPad-P17-Gen-1>
+ <20220831181044.2694488-3-paulmck@kernel.org>
+ <20220901091557.GA101341@lothringen>
+ <20220901102520.GQ6159@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220620225411.3842519-4-paulmck@kernel.org>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-User-Agent: Mutt/1.10.1 (2018-07-13)
-From:   Sascha Hauer <sha@pengutronix.de>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: rcu@vger.kernel.org
+In-Reply-To: <20220901102520.GQ6159@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Paul,
-
-On Mon, Jun 20, 2022 at 03:53:43PM -0700, Paul E. McKenney wrote:
-> This commit causes synchronous grace periods to be driven from the task
-> invoking synchronize_rcu_*(), allowing these functions to be invoked from
-> the mid-boot dead zone extending from when the scheduler was initialized
-> to to point that the various RCU tasks grace-period kthreads are spawned.
-> This change will allow the self-tests to run in a consistent manner.
+On Thu, Sep 01, 2022 at 03:25:20AM -0700, Paul E. McKenney wrote:
+> On Thu, Sep 01, 2022 at 11:15:57AM +0200, Frederic Weisbecker wrote:
+> > > +#elif defined(CONFIG_NO_HZ_FULL)
+> > > +	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask))
+> > > +		cpumask = tick_nohz_full_mask;
+> > > +#endif
+> > 
+> > A subtle behaviour difference here too: CONFIG_RCU_NOCB_CPU_DEFAULT_ALL will
+> > now override nohz_full=
+> > 
+> > I don't mind, it's probably what we want in the end, but the changelog should
+> > tell about it, or even better, this should be a separate change.
 > 
-> Reported-by: Matthew Wilcox <willy@infradead.org>
-> Reported-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> Good point.  Perhaps the key point is that if there is nohz_full=,
+> rcu_nocbs=, and CONFIG_RCU_NOCB_CPU_DEFAULT_ALL, we still need rcu_nocbs=
+> to include at least those bits set by nohz_full=.
 
-This commit (appeared in mainline as 4a8cc433b8bf) breaks booting my
-ARMv7 based i.MX6ul board when CONFIG_PROVE_RCU is enabled. Reverting
-this patch on v6.0-rc3 makes my board boot again. See below for a boot
-log. The last message is "Running RCU-tasks wait API self tests", after
-that the board hangs. Any idea what goes wrong here?
+Not sure I get what you mean. nohz_full= should in any case always force
+rcu_nocbs at least on the nohz_full CPUs.
 
-Sascha
+For example assuming the following combination: rcu_nocbs=6, nohz_full=7 AND
+CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y, then the result should be:
 
-----------------------------8<-----------------------------
+NOCB CPUs = 6,7
+NOHZ_FULL CPUs = 7
 
-[    0.000000] Booting Linux on physical CPU 0x0
-[    0.000000] Linux version 5.19.0-rc3-00004-g4a8cc433b8bf (sha@dude02) (arm-v7a-linux-gnueabihf-gcc (OSELAS.Toolchain-2021.07.0 11-20210703) 11.1.1 20210703, GNU ld (GNU Binutils) 2.36.1) #229 SMP Thu Sep 1 12:00:07 CEST 2022
-[    0.000000] CPU: ARMv7 Processor [410fc075] revision 5 (ARMv7), cr=10c5387d
-[    0.000000] CPU: div instructions available: patching division code
-[    0.000000] CPU: PIPT / VIPT nonaliasing data cache, VIPT aliasing instruction cache
-[    0.000000] OF: fdt: Machine model: IDS CU33X
-[    0.000000] earlycon: ec_imx6q0 at MMIO 0x02020000 (options '')
-[    0.000000] printk: bootconsole [ec_imx6q0] enabled
-[    0.000000] Memory policy: Data cache writealloc
-[    0.000000] cma: Reserved 64 MiB at 0x8c000000
-[    0.000000] Zone ranges:
-[    0.000000]   Normal   [mem 0x0000000080000000-0x000000008fffffff]
-[    0.000000]   HighMem  empty
-[    0.000000] Movable zone start for each node
-[    0.000000] Early memory node ranges
-[    0.000000]   node   0: [mem 0x0000000080000000-0x000000008fffffff]
-[    0.000000] Initmem setup node 0 [mem 0x0000000080000000-0x000000008fffffff]
-[    0.000000] percpu: Embedded 17 pages/cpu s38068 r8192 d23372 u69632
-[    0.000000] Built 1 zonelists, mobility grouping on.  Total pages: 65024
-[    0.000000] Kernel command line: console=ttymxc0,115200n8 earlycon ip=dhcp root=/dev/nfs nfsroot=192.168.8.12:/hom
-e/sha/nfsroot/cu33x,v3,tcp
-[    0.000000] Dentry cache hash table entries: 32768 (order: 5, 131072 bytes, linear)
-[    0.000000] Inode-cache hash table entries: 16384 (order: 4, 65536 bytes, linear)
-[    0.000000] mem auto-init: stack:off, heap alloc:off, heap free:off
-[    0.000000] Memory: 162600K/262144K available (15360K kernel code, 2146K rwdata, 5472K rodata, 1024K init, 6681K b
-ss, 34008K reserved, 65536K cma-reserved, 0K highmem)
-[    0.000000] SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=1, Nodes=1
-[    0.000000] trace event string verifier disabled
-[    0.000000] Running RCU self tests
-[    0.000000] rcu: Hierarchical RCU implementation.
-[    0.000000] rcu:     RCU event tracing is enabled.
-[    0.000000] rcu:     RCU lockdep checking is enabled.
-[    0.000000] rcu:     RCU restricting CPUs from NR_CPUS=4 to nr_cpu_ids=1.
-[    0.000000]  Tracing variant of Tasks RCU enabled.
-[    0.000000] rcu: RCU calculated value of scheduler-enlistment delay is 10 jiffies.
-[    0.000000] rcu: Adjusting geometry for rcu_fanout_leaf=16, nr_cpu_ids=1
-[    0.000000] NR_IRQS: 16, nr_irqs: 16, preallocated irqs: 16
-[    0.000000] rcu: srcu_init: Setting srcu_struct sizes based on contention.
-[    0.000000] Switching to timer-based delay loop, resolution 41ns
-[    0.000003] sched_clock: 32 bits at 24MHz, resolution 41ns, wraps every 89478484971ns
-[    0.007810] clocksource: mxc_timer1: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 79635851949 ns
-[    0.021748] Console: colour dummy device 80x30
-[    0.023488] Lock dependency validator: Copyright (c) 2006 Red Hat, Inc., Ingo Molnar
-[    0.032009] ... MAX_LOCKDEP_SUBCLASSES:  8
-[    0.035282] ... MAX_LOCK_DEPTH:          48
-[    0.039445] ... MAX_LOCKDEP_KEYS:        8192
-[    0.043886] ... CLASSHASH_SIZE:          4096
-[    0.048127] ... MAX_LOCKDEP_ENTRIES:     32768
-[    0.052552] ... MAX_LOCKDEP_CHAINS:      65536
-[    0.057069] ... CHAINHASH_SIZE:          32768
-[    0.061405]  memory used by lock dependency info: 4061 kB
-[    0.066788]  memory used for stack traces: 2112 kB
-[    0.071645]  per task-struct memory footprint: 1536 bytes
-[    0.077138] Calibrating delay loop (skipped), value calculated using timer frequency.. 48.00 BogoMIPS (lpj=240000)
-[    0.087384] pid_max: default: 32768 minimum: 301
-[    0.093527] Mount-cache hash table entries: 1024 (order: 0, 4096 bytes, linear)
-[    0.099327] Mountpoint-cache hash table entries: 1024 (order: 0, 4096 bytes, linear)
-[    0.116798] CPU: Testing write buffer coherency: ok
-[    0.122036] CPU0: update cpu_capacity 1024
-[    0.123381] CPU0: thread -1, cpu 0, socket 0, mpidr 80000000
-[    0.137390] cblist_init_generic: Setting adjustable number of callback queues.
-[    0.142282] cblist_init_generic: Setting shift to 0 and lim to 1.
-[    0.149333] Running RCU-tasks wait API self tests
+(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y is overriden by rcu_nocbs=6).
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Now if we have nohz_full=7 AND CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y, then the
+result is expected to be either:
+
+NOCB CPUs = 7 (upstream behaviour)
+NOHZ_FULL CPUs = 7
+
+or 
+
+NOCB CPUs = all
+NOHZ_FULL CPUs = 7
+
+The second makes more sense IMHO but that should be in a separate change.
+
+Thanks.
