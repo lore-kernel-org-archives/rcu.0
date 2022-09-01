@@ -2,98 +2,124 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B81CBECAAD3
-	for <rcu@archiver.kernel.org>; Thu,  1 Sep 2022 16:11:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 62B6EECAAD3
+	for <rcu@archiver.kernel.org>; Thu,  1 Sep 2022 16:49:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234448AbiIAQLS (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 1 Sep 2022 12:11:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43950 "EHLO
+        id S233399AbiIAQte (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 1 Sep 2022 12:49:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234909AbiIAQLP (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 1 Sep 2022 12:11:15 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B4474F182
-        for <rcu@vger.kernel.org>; Thu,  1 Sep 2022 09:11:12 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id g21so13638923qka.5
-        for <rcu@vger.kernel.org>; Thu, 01 Sep 2022 09:11:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc;
-        bh=//crJhFC2MP6k+HqBJNKrFTDqDx3Mg1jCPzBiBq8JGQ=;
-        b=DK8L+9n+n2ETtpIVa2bW5wX4fRT1GikHoburKedmagzhhyxwVaZ4UTYmAk9NhZbNHZ
-         eMSwrLbJhT3hR/JaUA3aihvQedzouBDxTUdXpaqQvmdFhM1SLxXQA5AVsejxo2VmwEx9
-         n2PI9JHmr49EANJrGwFswqazuWU75iWJapKrQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc;
-        bh=//crJhFC2MP6k+HqBJNKrFTDqDx3Mg1jCPzBiBq8JGQ=;
-        b=SQucR5C4tAfIuJ9vpjlbogFro1BJ1vzv7+zxJc4Rrrom7tjpJL3bX+1bxf5EvcC7VP
-         7gOxxUODyYgpaZ0bRasaZ2b8urIb9xygWVPCQbyZVIXOhvDA1wgMSQXVQcFRd+2glVNq
-         9mLkTOZUmmSYZDO04C9U/QsbIFoYksCWzNaSias7wETKuDkVYnns5g3+mFs30/WNJeHl
-         cYTCy23jzS8FIUSureFzHwnsXzknoXFuJkieanKm68RWZpW27rIn7KoMkzOdyl/pPTfi
-         JfDMvA4bIWhD5iZnFqBcylWbmXBnPkOnyI39dflTs8tA0CIZy/+Zz5C0bbTK5scSheVG
-         5mYA==
-X-Gm-Message-State: ACgBeo068uykxEJj4q5K6fGpXsVDgssVrbgIzk86yCdAUBCOqfgB7aYR
-        My4oDHKlgHWyBcGfqb0EOvmdog==
-X-Google-Smtp-Source: AA6agR5uFGoSCi5T5ZGXDJDTTEG/opf7vE6mOpV4fQ7WbI4io+T3C6z3skjl/kN8pa8uHldxMPaM5w==
-X-Received: by 2002:a37:9a16:0:b0:6ba:f09a:a61b with SMTP id c22-20020a379a16000000b006baf09aa61bmr20312266qke.486.1662048671547;
-        Thu, 01 Sep 2022 09:11:11 -0700 (PDT)
-Received: from [10.0.0.40] (c-73-148-104-166.hsd1.va.comcast.net. [73.148.104.166])
-        by smtp.gmail.com with ESMTPSA id bq42-20020a05620a46aa00b006b8f4ade2c9sm12570413qkb.19.2022.09.01.09.11.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Sep 2022 09:11:11 -0700 (PDT)
-Message-ID: <1a25723e-a7ad-a9f6-bd9f-278b1248d822@joelfernandes.org>
-Date:   Thu, 1 Sep 2022 12:11:08 -0400
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.0
-Subject: Re: [PATCH v4 00/14] Implement call_rcu_lazy() and miscellaneous
- fixes
-Content-Language: en-US
-To:     Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        with ESMTP id S232557AbiIAQtd (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 1 Sep 2022 12:49:33 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26E7298589;
+        Thu,  1 Sep 2022 09:49:32 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 7429BCE28F4;
+        Thu,  1 Sep 2022 16:49:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB640C433D6;
+        Thu,  1 Sep 2022 16:49:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1662050968;
+        bh=O+c/dwFtaC6r32rAjIcVyeF4cmFKSBmo4TEvZ5rCvFs=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=O7y6ZPkkXna1h/1oq0PnOwNbnqbHk6IxxYObIm2uKfQ9voTPSaQvLbM1mq03O61Tt
+         0JKMTdOD6n4o2mennWVkyIi18sclCX0eqXIihkNy2o2BYFxXm+WmoltuHy/8+24jPs
+         79mfhrrm+ITYY30SNTh7pOLlGR01pn2CQPifith7R4/uiuqMK6wRCITJHLxNGRrFOz
+         xdENAscQUghrLbNQ1yRbyV5Yyk6kxiT9ZytIFMXiWMkPPUxz0Z9XgMbN/nycVyIOEp
+         pJGuoq0Wj47hviQpuJjnsYLTJ5fnMDjCrol4dkw1kdoJujJ9FZ0qHvU1xht4hHmyRL
+         1rx9GaYLI817w==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 586035C0691; Thu,  1 Sep 2022 09:49:28 -0700 (PDT)
+Date:   Thu, 1 Sep 2022 09:49:28 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
         Dietmar Eggemann <dietmar.eggemann@arm.com>,
         LKML <linux-kernel@vger.kernel.org>,
         Rushikesh S Kadam <rushikesh.s.kadam@intel.com>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
         Neeraj upadhyay <neeraj.iitr10@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         rcu <rcu@vger.kernel.org>,
         Vineeth Pillai <vineeth@bitbyteword.org>
-References: <CAEXW_YS593n8Gget+REaD-c8vT8Ht_AzOY0kXA_uc674LOyvVw@mail.gmail.com>
- <20220829204202.GQ6159@paulmck-ThinkPad-P17-Gen-1>
+Subject: Re: [PATCH v4 00/14] Implement call_rcu_lazy() and miscellaneous
+ fixes
+Message-ID: <20220901164928.GZ6159@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20220829204202.GQ6159@paulmck-ThinkPad-P17-Gen-1>
  <20220830105324.GA71266@lothringen>
  <20220830114343.GS6159@paulmck-ThinkPad-P17-Gen-1>
- <20220830160316.GC71266@lothringen> <20220830162244.GA73392@lothringen>
- <Yw4+g/0yEf7fpHrh@pc636> <20220901112947.GA105556@lothringen>
- <YxCejoKH8dGIeW22@pc636> <20220901144158.GV6159@paulmck-ThinkPad-P17-Gen-1>
- <20220901153034.GA106955@lothringen>
-From:   Joel Fernandes <joel@joelfernandes.org>
-In-Reply-To: <20220901153034.GA106955@lothringen>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+ <20220830160316.GC71266@lothringen>
+ <20220830162244.GA73392@lothringen>
+ <20220830164634.GC6159@paulmck-ThinkPad-P17-Gen-1>
+ <20220831152658.GA89704@lothringen>
+ <20220901143907.GU6159@paulmck-ThinkPad-P17-Gen-1>
+ <20220901145819.GB105556@lothringen>
+ <0e8687de-bf45-5de6-c2f1-be6084991921@joelfernandes.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0e8687de-bf45-5de6-c2f1-be6084991921@joelfernandes.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Thu, Sep 01, 2022 at 12:07:56PM -0400, Joel Fernandes wrote:
+> 
+> 
+> On 9/1/2022 10:58 AM, Frederic Weisbecker wrote:
+> > On Thu, Sep 01, 2022 at 07:39:07AM -0700, Paul E. McKenney wrote:
+> >> On Wed, Aug 31, 2022 at 05:26:58PM +0200, Frederic Weisbecker wrote:
+> >>> On Tue, Aug 30, 2022 at 09:46:34AM -0700, Paul E. McKenney wrote:
+> >>>>> Although who knows, may be some periodic file operation while idle are specific
+> >>>>> to Android. I'll try to trace lazy callbacks while idle and the number of grace
+> >>>>> periods associated.
+> >>>>
+> >>>> Sounds like a good start.
+> >>>>
+> >>>> And yes, we don't need to show that the whole !NOCB world needs this,
+> >>>> just some significant portion of it.  But we do need some decent evidence.
+> >>>> After all, it is all too easy to do a whole lot of work and find that
+> >>>> the expected benefits fail to materialize.
+> >>>
+> >>> So here is some quick test. I made a patch that replaces Joel's 1st patch
+> >>> with an implementation of call_rcu_lazy() that queues lazy callbacks
+> >>> through the regular call_rcu() way but it counts them in a lazy_count.
+> >>>
+> >>> Upon idle entry it reports whether the tick is retained solely by lazy
+> >>> callbacks or not.
+> >>>
+> >>> I get periodic and frequent results on my idle test box, something must be
+> >>> opening/closing some file periodically perhaps.
+> >>>
+> >>> Anyway the thing can be tested with this branch:
+> >>>
+> >>> git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
+> >>> 	rcu/lazy-trace
+> >>>
+> >>> Excerpt:
+> >>>
+> >>>           <idle>-0       [007] d..1.   414.226966: rcu_needs_cpu: BAD: 1 lazy callbacks retaining dynticks-idle
+> >>>           <idle>-0       [007] d..1.   414.228271: rcu_needs_cpu: BAD: 1 lazy callbacks retaining dynticks-idle
+> >>>           <idle>-0       [007] d..1.   414.232269: rcu_needs_cpu: BAD: 1 lazy callbacks retaining dynticks-idle
+> >>>           <idle>-0       [007] d..1.   414.236269: rcu_needs_cpu: BAD: 1 lazy callbacks retaining dynticks-idle
+> >>
+> >> Just to make sure that I understand, at this point, there is only the
+> >> one lazy callback (and no non-lazy callbacks) on this CPU, and that
+> >> CPU is therefore keeping the tick on only for the benefit of that one
+> >> lazy callback.  And for the above four traces, this is likely the same
+> >> lazy callback.
+> >>
+> >> Did I get it right, or is there something else going on?
+> > 
+> > Exactly that!
 
+Are these callbacks confined to the RCU_NEXT_READY_TAIL and RCU_NEXT_TAIL
+segments, which are the ones that could (in theory) buffer callbacks
+without having started a grace period?  Or is it all the callbacks
+regardless of segment?
 
-On 9/1/2022 11:30 AM, Frederic Weisbecker wrote:
-> So I'm not entirely comfortable but I'm going to review the current patchset
-> anyway and once it lands -rcu I'll try to hack a quick !NOCB implementation
-> for measurements purpose.
-
-Sounds good, arguable the core implementation to use bypass list is not too
-complex or anything, and maybe you can generalize the bypass list for !NONCB as
-well and re-use most of the code. You will need a per-cpu list anyway (bypass or
-some other) to queue the CBs. In v1, we had a separate per-cpu list.
-
-Thanks for offering to review the patches, you guys really motivate me to work
-on it (I am currently on leave but still working on it). I'll be looking forward
-to getting that out soon. Yesterday was good progress.
-
- - Joel
+							Thanx, Paul
