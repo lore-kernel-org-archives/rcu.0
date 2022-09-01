@@ -2,148 +2,102 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 10656ECAAD3
-	for <rcu@archiver.kernel.org>; Thu,  1 Sep 2022 13:29:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E8AA9C65C0D
+	for <rcu@archiver.kernel.org>; Thu,  1 Sep 2022 13:34:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232146AbiIAN3Q (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 1 Sep 2022 09:29:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33086 "EHLO
+        id S232631AbiIANeV (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 1 Sep 2022 09:34:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234347AbiIAN21 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 1 Sep 2022 09:28:27 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9831326E5;
-        Thu,  1 Sep 2022 06:25:09 -0700 (PDT)
-Received: from dggpemm500023.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4MJMBZ4fCSz1N7gB;
-        Thu,  1 Sep 2022 21:21:26 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Thu, 1 Sep 2022 21:25:07 +0800
-Received: from [10.174.178.55] (10.174.178.55) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Thu, 1 Sep 2022 21:25:06 +0800
-Subject: Re: [PATCH v6 1/2] rcu: Simplify rcu_init_nohz() cpumask handling
-To:     "Paul E . McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        "Josh Triplett" <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, <rcu@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20220901131436.986-1-thunder.leizhen@huawei.com>
- <20220901131436.986-2-thunder.leizhen@huawei.com>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <4849b7c1-2fea-6f9f-31dc-c0408b32044e@huawei.com>
-Date:   Thu, 1 Sep 2022 21:25:06 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        with ESMTP id S234679AbiIANeC (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 1 Sep 2022 09:34:02 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAEE13CBF2;
+        Thu,  1 Sep 2022 06:31:57 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0360361F4F;
+        Thu,  1 Sep 2022 13:31:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 512ABC433D6;
+        Thu,  1 Sep 2022 13:31:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1662039116;
+        bh=aAfFaNRSRlNYlMv6ajEpeKIZNVBhQeTMMAeMGgdKIUs=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=cRixDfeGIrQQYsuRLIJOVxj1LnnD47j/+SoOcmXOQkUUgs/l0qAEd8J1TpKVffgRm
+         /iEpP1X8QE9QT+5eXzz8E/SLfUX7Tmcm1/z7aHNId3oiLG7bOBucBD54XNPCuZDr50
+         JuIc0RiCc9FxYJFHp0Owm+d0EG8Yw/4ZtzjM9uMoz1CjNemmhaF2ZwwrVZLZZaPlZ0
+         aBo/+eOuLr844xsKEZ+AfPZni8QWJK6D8Vt/ERGD2kf7oY6ql+xSfi+JG8nMjPx/X4
+         ZRJcsYxu2dBWEOqsikPOwoc/urUpwUlWF4j+BsqGEUCB4pZBw6MtHKQfGQbnd3K/Sv
+         WU4OfbOplWayQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id DCA635C05A0; Thu,  1 Sep 2022 06:31:55 -0700 (PDT)
+Date:   Thu, 1 Sep 2022 06:31:55 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, rostedt@goodmis.org,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH rcu 3/3] rcu: Simplify rcu_init_nohz() cpumask handling
+Message-ID: <20220901133155.GT6159@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20220831181040.GA2694278@paulmck-ThinkPad-P17-Gen-1>
+ <20220831181044.2694488-3-paulmck@kernel.org>
+ <20220901091557.GA101341@lothringen>
+ <20220901102520.GQ6159@paulmck-ThinkPad-P17-Gen-1>
+ <20220901111114.GA103483@lothringen>
 MIME-Version: 1.0
-In-Reply-To: <20220901131436.986-2-thunder.leizhen@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.55]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220901111114.GA103483@lothringen>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-
-
-On 2022/9/1 21:14, Zhen Lei wrote:
-> In kernels built with either CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y or
-> CONFIG_NO_HZ_FULL=y, additional CPUs must be added to rcu_nocb_mask.
-> Except that kernels booted without the rcu_nocbs= will not have
-> allocated rcu_nocb_mask.  And the current rcu_init_nohz() function uses
-> its need_rcu_nocb_mask and offload_all local variables to track the
-> rcu_nocb and nohz_full state.
+On Thu, Sep 01, 2022 at 01:11:14PM +0200, Frederic Weisbecker wrote:
+> On Thu, Sep 01, 2022 at 03:25:20AM -0700, Paul E. McKenney wrote:
+> > On Thu, Sep 01, 2022 at 11:15:57AM +0200, Frederic Weisbecker wrote:
+> > > > +#elif defined(CONFIG_NO_HZ_FULL)
+> > > > +	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask))
+> > > > +		cpumask = tick_nohz_full_mask;
+> > > > +#endif
+> > > 
+> > > A subtle behaviour difference here too: CONFIG_RCU_NOCB_CPU_DEFAULT_ALL will
+> > > now override nohz_full=
+> > > 
+> > > I don't mind, it's probably what we want in the end, but the changelog should
+> > > tell about it, or even better, this should be a separate change.
+> > 
+> > Good point.  Perhaps the key point is that if there is nohz_full=,
+> > rcu_nocbs=, and CONFIG_RCU_NOCB_CPU_DEFAULT_ALL, we still need rcu_nocbs=
+> > to include at least those bits set by nohz_full=.
 > 
-> But there is a much simpler approach, namely creating a cpumask pointer
-> to track the default and then using cpumask_available() to check the
-> rcu_nocb_mask state.  This commit takes this approach, thereby simplifying
-> and shortening the rcu_init_nohz() function.
+> Not sure I get what you mean. nohz_full= should in any case always force
+> rcu_nocbs at least on the nohz_full CPUs.
 > 
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-Sorry, I forgot remove this "Signed-off-by".
-
-> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> ---
->  kernel/rcu/tree_nocb.h | 35 ++++++++++++-----------------------
->  1 file changed, 12 insertions(+), 23 deletions(-)
+> For example assuming the following combination: rcu_nocbs=6, nohz_full=7 AND
+> CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y, then the result should be:
 > 
-> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-> index 0a5f0ef41484518..8b6dceeabde0b4d 100644
-> --- a/kernel/rcu/tree_nocb.h
-> +++ b/kernel/rcu/tree_nocb.h
-> @@ -1210,45 +1210,34 @@ EXPORT_SYMBOL_GPL(rcu_nocb_cpu_offload);
->  void __init rcu_init_nohz(void)
->  {
->  	int cpu;
-> -	bool need_rcu_nocb_mask = false;
-> -	bool offload_all = false;
->  	struct rcu_data *rdp;
-> -
-> -#if defined(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL)
-> -	if (!rcu_state.nocb_is_setup) {
-> -		need_rcu_nocb_mask = true;
-> -		offload_all = true;
-> -	}
-> -#endif /* #if defined(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL) */
-> +	const struct cpumask *cpumask = NULL;
->  
->  #if defined(CONFIG_NO_HZ_FULL)
-> -	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask)) {
-> -		need_rcu_nocb_mask = true;
-> -		offload_all = false; /* NO_HZ_FULL has its own mask. */
-> -	}
-> -#endif /* #if defined(CONFIG_NO_HZ_FULL) */
-> +	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask))
-> +		cpumask = tick_nohz_full_mask;
-> +#endif
-> +
-> +#if defined(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL)
-> +	if (!rcu_state.nocb_is_setup && !cpumask)
-> +		cpumask = cpu_possible_mask;
-> +#endif
->  
-> -	if (need_rcu_nocb_mask) {
-> +	if (cpumask) {
->  		if (!cpumask_available(rcu_nocb_mask)) {
->  			if (!zalloc_cpumask_var(&rcu_nocb_mask, GFP_KERNEL)) {
->  				pr_info("rcu_nocb_mask allocation failed, callback offloading disabled.\n");
->  				return;
->  			}
->  		}
-> +
-> +		cpumask_or(rcu_nocb_mask, rcu_nocb_mask, cpumask);
->  		rcu_state.nocb_is_setup = true;
->  	}
->  
->  	if (!rcu_state.nocb_is_setup)
->  		return;
->  
-> -#if defined(CONFIG_NO_HZ_FULL)
-> -	if (tick_nohz_full_running)
-> -		cpumask_or(rcu_nocb_mask, rcu_nocb_mask, tick_nohz_full_mask);
-> -#endif /* #if defined(CONFIG_NO_HZ_FULL) */
-> -
-> -	if (offload_all)
-> -		cpumask_setall(rcu_nocb_mask);
-> -
->  	if (!cpumask_subset(rcu_nocb_mask, cpu_possible_mask)) {
->  		pr_info("\tNote: kernel parameter 'rcu_nocbs=', 'nohz_full', or 'isolcpus=' contains nonexistent CPUs.\n");
->  		cpumask_and(rcu_nocb_mask, cpu_possible_mask,
+> NOCB CPUs = 6,7
+> NOHZ_FULL CPUs = 7
 > 
+> (CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y is overriden by rcu_nocbs=6).
+> 
+> Now if we have nohz_full=7 AND CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y, then the
+> result is expected to be either:
+> 
+> NOCB CPUs = 7 (upstream behaviour)
+> NOHZ_FULL CPUs = 7
+> 
+> or 
+> 
+> NOCB CPUs = all
+> NOHZ_FULL CPUs = 7
+> 
+> The second makes more sense IMHO but that should be in a separate change.
 
--- 
-Regards,
-  Zhen Lei
+Your examples are consistent with what I was trying to say.  ;-)
+
+							Thanx, Paul
