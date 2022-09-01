@@ -2,121 +2,158 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B189EECAAD3
-	for <rcu@archiver.kernel.org>; Thu,  1 Sep 2022 16:52:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 62E10ECAAD5
+	for <rcu@archiver.kernel.org>; Thu,  1 Sep 2022 16:55:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232994AbiIAQwP (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 1 Sep 2022 12:52:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37428 "EHLO
+        id S231133AbiIAQzB (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 1 Sep 2022 12:55:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232557AbiIAQwO (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 1 Sep 2022 12:52:14 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AE39979DA;
-        Thu,  1 Sep 2022 09:52:13 -0700 (PDT)
+        with ESMTP id S231281AbiIAQy6 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 1 Sep 2022 12:54:58 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A07910541;
+        Thu,  1 Sep 2022 09:54:57 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id C59D4CE28D5;
-        Thu,  1 Sep 2022 16:52:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DF7DC433C1;
-        Thu,  1 Sep 2022 16:52:10 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 05FCD61FCC;
+        Thu,  1 Sep 2022 16:54:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 529D0C433C1;
+        Thu,  1 Sep 2022 16:54:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662051130;
-        bh=fwnNs67ZFBWw6DkWLKvb+7JiRojuVmxIxKtpiQTBCNM=;
+        s=k20201202; t=1662051296;
+        bh=7FYLfwjXAYaFsdwLNtKcqI4+Kia6WIEZKLw/kcERa2Y=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=QBTC3Pku9CajQUNAdqMXreZd11O7yedw+JlN+d8sLEP/CH1T6K9M8657vJDcnjl51
-         FDATmpHC2FCF4//31dZAq4KzkNfo13Waw7WMQTsw3vvojM6++vPGgI8yO6zliq0rd5
-         jPNnxd9OkDjW1aLFcJjrzB2VNOG+AERp2ba5vrlEelbdnPL6S/M+2qhgyYW/a/c88x
-         S0qXBtWdxFtFjPl5C8ZNorSsKyvZsw4dk/W0eXwjsD+6v7THXKchtHvhHwO1loaQUa
-         j1qy4QNzSwMtNS23pqcvCN/jo15WMkidyhhBO3AfGCYx4Ua87WlqzgzcJm2VvyilUX
-         zi10BlrHEw2xg==
+        b=F14e1LvLxOy8giklK/8qsg38dkTBva6gGBt+pI1HaoN0HUXr6xvSahc+4yUkv9623
+         61kBwrE3dnT7hWoQbjHexbWdmxfqwPZGZJWa3SgTWIbc5VrczmVXLxK7/QDbFcenui
+         K5LPsTl2oLnYPSa35YUf7TDdt4tSFeDHgrbp9Joc+FuwmUzfPevxx1d/+J7mY/Tj4Z
+         pYr/2gycpFgG+d1I0zzdJETwTkhCkLRbvsQlGZ+yyiGfoZV8QynrzrdHVKnfl72/vk
+         yVcptgwYR9neowiCPtWEWzIxB0ppbD9xTXL3cVP7y2iR0AzBw+EjoyI4JZy+LlKskb
+         G5YxYCLU+NaFw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id BCBA15C0691; Thu,  1 Sep 2022 09:52:09 -0700 (PDT)
-Date:   Thu, 1 Sep 2022 09:52:09 -0700
+        id E495B5C0691; Thu,  1 Sep 2022 09:54:55 -0700 (PDT)
+Date:   Thu, 1 Sep 2022 09:54:55 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Rushikesh S Kadam <rushikesh.s.kadam@intel.com>,
-        Neeraj upadhyay <neeraj.iitr10@gmail.com>,
+To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
-        rcu <rcu@vger.kernel.org>,
-        Vineeth Pillai <vineeth@bitbyteword.org>
-Subject: Re: [PATCH v4 00/14] Implement call_rcu_lazy() and miscellaneous
- fixes
-Message-ID: <20220901165209.GA6159@paulmck-ThinkPad-P17-Gen-1>
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 1/2] rcu: Simplify rcu_init_nohz() cpumask handling
+Message-ID: <20220901165455.GB6159@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20220829204202.GQ6159@paulmck-ThinkPad-P17-Gen-1>
- <20220830105324.GA71266@lothringen>
- <20220830114343.GS6159@paulmck-ThinkPad-P17-Gen-1>
- <20220830160316.GC71266@lothringen>
- <20220830162244.GA73392@lothringen>
- <Yw4+g/0yEf7fpHrh@pc636>
- <20220901112947.GA105556@lothringen>
- <YxCejoKH8dGIeW22@pc636>
- <20220901144158.GV6159@paulmck-ThinkPad-P17-Gen-1>
- <20220901153034.GA106955@lothringen>
+References: <20220901131436.986-1-thunder.leizhen@huawei.com>
+ <20220901131436.986-2-thunder.leizhen@huawei.com>
+ <4849b7c1-2fea-6f9f-31dc-c0408b32044e@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220901153034.GA106955@lothringen>
+In-Reply-To: <4849b7c1-2fea-6f9f-31dc-c0408b32044e@huawei.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Sep 01, 2022 at 05:30:34PM +0200, Frederic Weisbecker wrote:
-> On Thu, Sep 01, 2022 at 07:41:58AM -0700, Paul E. McKenney wrote:
-> > On Thu, Sep 01, 2022 at 01:59:10PM +0200, Uladzislau Rezki wrote:
-> > > On Thu, Sep 01, 2022 at 01:29:47PM +0200, Frederic Weisbecker wrote:
-> > > > On Tue, Aug 30, 2022 at 06:44:51PM +0200, Uladzislau Rezki wrote:
-> > > > > Hello, Frederic.
-> > > > > 
-> > > > > > 
-> > > > > > Although who knows, may be some periodic file operation while idle are specific
-> > > > > > to Android. I'll try to trace lazy callbacks while idle and the number of grace
-> > > > > > periods associated.
-> > > > > > 
-> > > > > > 
-> > > > > Everything related to lazy call-backs is about not waking "nocb"
-> > > > > kthreads in order to offload one or i should say few callbacks
-> > > > > because it is more or less useless. Currently if incoming callback
-> > > > > is the only one, it will kick a GP whereas a GP will kick nocb_kthread
-> > > > > to offload.
-> > > > 
-> > > > Not sure this is only about not waking "nocb" kthreads. The grace period
-> > > > kthread is also awaken in !NOCB and has quite some work to do. And there,
-> > > > having a server expands the issue because you may have a lot of CPUs's extended
-> > > > quiescent states to check.
-> > > > 
-> > > I mean here the following combination: NOCB + call_rcu_lazy() tandem.
-> > > The !NOCB is not about power save, IMHO. Because it implies callbacks
-> > > to be processed on CPUs they are landed.
-> > > 
-> > > In this scenario you can not let the EAS scheduler to find a more
-> > > efficient CPU for further handling.
+On Thu, Sep 01, 2022 at 09:25:06PM +0800, Leizhen (ThunderTown) wrote:
+> 
+> 
+> On 2022/9/1 21:14, Zhen Lei wrote:
+> > In kernels built with either CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y or
+> > CONFIG_NO_HZ_FULL=y, additional CPUs must be added to rcu_nocb_mask.
+> > Except that kernels booted without the rcu_nocbs= will not have
+> > allocated rcu_nocb_mask.  And the current rcu_init_nohz() function uses
+> > its need_rcu_nocb_mask and offload_all local variables to track the
+> > rcu_nocb and nohz_full state.
 > > 
-> > Just to follow up, Uladzislau and others did some detailed performance
-> > analysis of NOCB on Android.  Of course, this analysis might or might
-> > not carry over to servers, but it was pretty detailed.
+> > But there is a much simpler approach, namely creating a cpumask pointer
+> > to track the default and then using cpumask_available() to check the
+> > rcu_nocb_mask state.  This commit takes this approach, thereby simplifying
+> > and shortening the rcu_init_nohz() function.
+> > 
+> > Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 > 
-> Sure I certainly don't deny the benefit on Android and similar workload.
-> What I'm worried about is that we are making this feature too specialized
-> when it may deserve to be made more generic.
-> 
-> I'm not convincing anyone though and I don't have the means to provide
-> numbers, I would need to produce an actual !NOCB implementation for that.
+> Sorry, I forgot remove this "Signed-off-by".
 
-I have not yet given up on thinking about what measurements I could take
-that would be convincing within Meta.  Maybe some idea will present itself
-on the plane.  If nothing else, exploratory measurements with rcutop.
-
-> So I'm not entirely comfortable but I'm going to review the current patchset
-> anyway and once it lands -rcu I'll try to hack a quick !NOCB implementation
-> for measurements purpose.
-
-That sounds like a very good approach!
+Not a problem, especially given that in view of my oversight on the
+previous version, I am going to let Frederic take first crack at this
+version.  ;-)
 
 							Thanx, Paul
+
+> > Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > ---
+> >  kernel/rcu/tree_nocb.h | 35 ++++++++++++-----------------------
+> >  1 file changed, 12 insertions(+), 23 deletions(-)
+> > 
+> > diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> > index 0a5f0ef41484518..8b6dceeabde0b4d 100644
+> > --- a/kernel/rcu/tree_nocb.h
+> > +++ b/kernel/rcu/tree_nocb.h
+> > @@ -1210,45 +1210,34 @@ EXPORT_SYMBOL_GPL(rcu_nocb_cpu_offload);
+> >  void __init rcu_init_nohz(void)
+> >  {
+> >  	int cpu;
+> > -	bool need_rcu_nocb_mask = false;
+> > -	bool offload_all = false;
+> >  	struct rcu_data *rdp;
+> > -
+> > -#if defined(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL)
+> > -	if (!rcu_state.nocb_is_setup) {
+> > -		need_rcu_nocb_mask = true;
+> > -		offload_all = true;
+> > -	}
+> > -#endif /* #if defined(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL) */
+> > +	const struct cpumask *cpumask = NULL;
+> >  
+> >  #if defined(CONFIG_NO_HZ_FULL)
+> > -	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask)) {
+> > -		need_rcu_nocb_mask = true;
+> > -		offload_all = false; /* NO_HZ_FULL has its own mask. */
+> > -	}
+> > -#endif /* #if defined(CONFIG_NO_HZ_FULL) */
+> > +	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask))
+> > +		cpumask = tick_nohz_full_mask;
+> > +#endif
+> > +
+> > +#if defined(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL)
+> > +	if (!rcu_state.nocb_is_setup && !cpumask)
+> > +		cpumask = cpu_possible_mask;
+> > +#endif
+> >  
+> > -	if (need_rcu_nocb_mask) {
+> > +	if (cpumask) {
+> >  		if (!cpumask_available(rcu_nocb_mask)) {
+> >  			if (!zalloc_cpumask_var(&rcu_nocb_mask, GFP_KERNEL)) {
+> >  				pr_info("rcu_nocb_mask allocation failed, callback offloading disabled.\n");
+> >  				return;
+> >  			}
+> >  		}
+> > +
+> > +		cpumask_or(rcu_nocb_mask, rcu_nocb_mask, cpumask);
+> >  		rcu_state.nocb_is_setup = true;
+> >  	}
+> >  
+> >  	if (!rcu_state.nocb_is_setup)
+> >  		return;
+> >  
+> > -#if defined(CONFIG_NO_HZ_FULL)
+> > -	if (tick_nohz_full_running)
+> > -		cpumask_or(rcu_nocb_mask, rcu_nocb_mask, tick_nohz_full_mask);
+> > -#endif /* #if defined(CONFIG_NO_HZ_FULL) */
+> > -
+> > -	if (offload_all)
+> > -		cpumask_setall(rcu_nocb_mask);
+> > -
+> >  	if (!cpumask_subset(rcu_nocb_mask, cpu_possible_mask)) {
+> >  		pr_info("\tNote: kernel parameter 'rcu_nocbs=', 'nohz_full', or 'isolcpus=' contains nonexistent CPUs.\n");
+> >  		cpumask_and(rcu_nocb_mask, cpu_possible_mask,
+> > 
+> 
+> -- 
+> Regards,
+>   Zhen Lei
