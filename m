@@ -2,102 +2,149 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E8AA9C65C0D
-	for <rcu@archiver.kernel.org>; Thu,  1 Sep 2022 13:34:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3685CECAAD1
+	for <rcu@archiver.kernel.org>; Thu,  1 Sep 2022 14:39:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232631AbiIANeV (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 1 Sep 2022 09:34:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50870 "EHLO
+        id S231843AbiIAOjN (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 1 Sep 2022 10:39:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234679AbiIANeC (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 1 Sep 2022 09:34:02 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAEE13CBF2;
-        Thu,  1 Sep 2022 06:31:57 -0700 (PDT)
+        with ESMTP id S232082AbiIAOjL (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 1 Sep 2022 10:39:11 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D9956111D;
+        Thu,  1 Sep 2022 07:39:10 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0360361F4F;
-        Thu,  1 Sep 2022 13:31:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 512ABC433D6;
-        Thu,  1 Sep 2022 13:31:56 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id DF84CB82792;
+        Thu,  1 Sep 2022 14:39:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87B97C433D7;
+        Thu,  1 Sep 2022 14:39:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662039116;
-        bh=aAfFaNRSRlNYlMv6ajEpeKIZNVBhQeTMMAeMGgdKIUs=;
+        s=k20201202; t=1662043147;
+        bh=Zlv8PTqryFC5Iwr9tOs8oP1zJQVJrbVwngfYUl7mMcg=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=cRixDfeGIrQQYsuRLIJOVxj1LnnD47j/+SoOcmXOQkUUgs/l0qAEd8J1TpKVffgRm
-         /iEpP1X8QE9QT+5eXzz8E/SLfUX7Tmcm1/z7aHNId3oiLG7bOBucBD54XNPCuZDr50
-         JuIc0RiCc9FxYJFHp0Owm+d0EG8Yw/4ZtzjM9uMoz1CjNemmhaF2ZwwrVZLZZaPlZ0
-         aBo/+eOuLr844xsKEZ+AfPZni8QWJK6D8Vt/ERGD2kf7oY6ql+xSfi+JG8nMjPx/X4
-         ZRJcsYxu2dBWEOqsikPOwoc/urUpwUlWF4j+BsqGEUCB4pZBw6MtHKQfGQbnd3K/Sv
-         WU4OfbOplWayQ==
+        b=p0eNvqUdLTOaX9N3Jz2w+gJyO9ywgFPvZ+K1sUYkBVZcJar52lD76Ro53Q0Y+y4wd
+         kfWHbi21NPFdgZTduvfY2Q1gB9sFiabeSoMmHlxOM6dkrFBww0NdoaiDX6G0IQY9Y0
+         cd63TIMP9omTGijbYJjoNXTLNw4wUB3RTi1/515CzPNHri0RqUiL86+ffSHeTjErLI
+         0cdUhqiDOYLpdKi0Vq+ecmO/0b6KE8y1SxqqkcB2/u8HMtPvWa8M2w7ODbfoE3dK/6
+         /q8YBD4ZET5lS91SmKsochD2OjCVbwIr0wSXaZW8s2EEaGeiqVI6WtZPOczZVlJpFT
+         bVjTmtSnJRZmw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id DCA635C05A0; Thu,  1 Sep 2022 06:31:55 -0700 (PDT)
-Date:   Thu, 1 Sep 2022 06:31:55 -0700
+        id 2F1795C05A0; Thu,  1 Sep 2022 07:39:07 -0700 (PDT)
+Date:   Thu, 1 Sep 2022 07:39:07 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, rostedt@goodmis.org,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [PATCH rcu 3/3] rcu: Simplify rcu_init_nohz() cpumask handling
-Message-ID: <20220901133155.GT6159@paulmck-ThinkPad-P17-Gen-1>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Rushikesh S Kadam <rushikesh.s.kadam@intel.com>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        Neeraj upadhyay <neeraj.iitr10@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        rcu <rcu@vger.kernel.org>,
+        Vineeth Pillai <vineeth@bitbyteword.org>
+Subject: Re: [PATCH v4 00/14] Implement call_rcu_lazy() and miscellaneous
+ fixes
+Message-ID: <20220901143907.GU6159@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20220831181040.GA2694278@paulmck-ThinkPad-P17-Gen-1>
- <20220831181044.2694488-3-paulmck@kernel.org>
- <20220901091557.GA101341@lothringen>
- <20220901102520.GQ6159@paulmck-ThinkPad-P17-Gen-1>
- <20220901111114.GA103483@lothringen>
+References: <1f7dd31b-f4d0-5c1c-ce28-c27f75c17f05@joelfernandes.org>
+ <20220829194622.GA58291@lothringen>
+ <CAEXW_YS593n8Gget+REaD-c8vT8Ht_AzOY0kXA_uc674LOyvVw@mail.gmail.com>
+ <20220829204202.GQ6159@paulmck-ThinkPad-P17-Gen-1>
+ <20220830105324.GA71266@lothringen>
+ <20220830114343.GS6159@paulmck-ThinkPad-P17-Gen-1>
+ <20220830160316.GC71266@lothringen>
+ <20220830162244.GA73392@lothringen>
+ <20220830164634.GC6159@paulmck-ThinkPad-P17-Gen-1>
+ <20220831152658.GA89704@lothringen>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220901111114.GA103483@lothringen>
+In-Reply-To: <20220831152658.GA89704@lothringen>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Sep 01, 2022 at 01:11:14PM +0200, Frederic Weisbecker wrote:
-> On Thu, Sep 01, 2022 at 03:25:20AM -0700, Paul E. McKenney wrote:
-> > On Thu, Sep 01, 2022 at 11:15:57AM +0200, Frederic Weisbecker wrote:
-> > > > +#elif defined(CONFIG_NO_HZ_FULL)
-> > > > +	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask))
-> > > > +		cpumask = tick_nohz_full_mask;
-> > > > +#endif
-> > > 
-> > > A subtle behaviour difference here too: CONFIG_RCU_NOCB_CPU_DEFAULT_ALL will
-> > > now override nohz_full=
-> > > 
-> > > I don't mind, it's probably what we want in the end, but the changelog should
-> > > tell about it, or even better, this should be a separate change.
+On Wed, Aug 31, 2022 at 05:26:58PM +0200, Frederic Weisbecker wrote:
+> On Tue, Aug 30, 2022 at 09:46:34AM -0700, Paul E. McKenney wrote:
+> > > Although who knows, may be some periodic file operation while idle are specific
+> > > to Android. I'll try to trace lazy callbacks while idle and the number of grace
+> > > periods associated.
 > > 
-> > Good point.  Perhaps the key point is that if there is nohz_full=,
-> > rcu_nocbs=, and CONFIG_RCU_NOCB_CPU_DEFAULT_ALL, we still need rcu_nocbs=
-> > to include at least those bits set by nohz_full=.
+> > Sounds like a good start.
+> > 
+> > And yes, we don't need to show that the whole !NOCB world needs this,
+> > just some significant portion of it.  But we do need some decent evidence.
+> > After all, it is all too easy to do a whole lot of work and find that
+> > the expected benefits fail to materialize.
 > 
-> Not sure I get what you mean. nohz_full= should in any case always force
-> rcu_nocbs at least on the nohz_full CPUs.
+> So here is some quick test. I made a patch that replaces Joel's 1st patch
+> with an implementation of call_rcu_lazy() that queues lazy callbacks
+> through the regular call_rcu() way but it counts them in a lazy_count.
 > 
-> For example assuming the following combination: rcu_nocbs=6, nohz_full=7 AND
-> CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y, then the result should be:
+> Upon idle entry it reports whether the tick is retained solely by lazy
+> callbacks or not.
 > 
-> NOCB CPUs = 6,7
-> NOHZ_FULL CPUs = 7
+> I get periodic and frequent results on my idle test box, something must be
+> opening/closing some file periodically perhaps.
 > 
-> (CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y is overriden by rcu_nocbs=6).
+> Anyway the thing can be tested with this branch:
 > 
-> Now if we have nohz_full=7 AND CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y, then the
-> result is expected to be either:
+> git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
+> 	rcu/lazy-trace
 > 
-> NOCB CPUs = 7 (upstream behaviour)
-> NOHZ_FULL CPUs = 7
+> Excerpt:
 > 
-> or 
-> 
-> NOCB CPUs = all
-> NOHZ_FULL CPUs = 7
-> 
-> The second makes more sense IMHO but that should be in a separate change.
+>           <idle>-0       [007] d..1.   414.226966: rcu_needs_cpu: BAD: 1 lazy callbacks retaining dynticks-idle
+>           <idle>-0       [007] d..1.   414.228271: rcu_needs_cpu: BAD: 1 lazy callbacks retaining dynticks-idle
+>           <idle>-0       [007] d..1.   414.232269: rcu_needs_cpu: BAD: 1 lazy callbacks retaining dynticks-idle
+>           <idle>-0       [007] d..1.   414.236269: rcu_needs_cpu: BAD: 1 lazy callbacks retaining dynticks-idle
 
-Your examples are consistent with what I was trying to say.  ;-)
+Just to make sure that I understand, at this point, there is only the
+one lazy callback (and no non-lazy callbacks) on this CPU, and that
+CPU is therefore keeping the tick on only for the benefit of that one
+lazy callback.  And for the above four traces, this is likely the same
+lazy callback.
+
+Did I get it right, or is there something else going on?
 
 							Thanx, Paul
+
+>           <idle>-0       [007] d..1.   414.468048: rcu_needs_cpu: BAD: 1 lazy callbacks retaining dynticks-idle
+>           <idle>-0       [007] d..1.   414.468268: rcu_needs_cpu: BAD: 1 lazy callbacks retaining dynticks-idle
+>           <idle>-0       [007] d..1.   414.472268: rcu_needs_cpu: BAD: 1 lazy callbacks retaining dynticks-idle
+>           <idle>-0       [007] d..1.   414.476269: rcu_needs_cpu: BAD: 1 lazy callbacks retaining dynticks-idle
+>           <idle>-0       [007] d..1.   419.500577: rcu_needs_cpu: BAD: 1 lazy callbacks retaining dynticks-idle
+>           <idle>-0       [007] d..1.   419.504253: rcu_needs_cpu: BAD: 1 lazy callbacks retaining dynticks-idle
+>           <idle>-0       [007] d..1.   419.508250: rcu_needs_cpu: BAD: 1 lazy callbacks retaining dynticks-idle
+>           <idle>-0       [007] d..1.   419.512249: rcu_needs_cpu: BAD: 1 lazy callbacks retaining dynticks-idle
+>           <idle>-0       [007] d..1.   419.566881: rcu_needs_cpu: BAD: 1 lazy callbacks retaining dynticks-idle
+>           <idle>-0       [007] d..1.   419.568252: rcu_needs_cpu: BAD: 1 lazy callbacks retaining dynticks-idle
+>           <idle>-0       [007] d..1.   419.572249: rcu_needs_cpu: BAD: 1 lazy callbacks retaining dynticks-idle
+>           <idle>-0       [007] d..1.   419.576255: rcu_needs_cpu: BAD: 1 lazy callbacks retaining dynticks-idle
+>           <idle>-0       [007] d..1.   424.666873: rcu_needs_cpu: BAD: 1 lazy callbacks retaining dynticks-idle
+>           <idle>-0       [007] d..1.   424.668233: rcu_needs_cpu: BAD: 1 lazy callbacks retaining dynticks-idle
+>           <idle>-0       [007] d..1.   424.672230: rcu_needs_cpu: BAD: 1 lazy callbacks retaining dynticks-idle
+>           <idle>-0       [007] d..1.   424.676232: rcu_needs_cpu: BAD: 1 lazy callbacks retaining dynticks-idle
+>           <idle>-0       [007] d..1.   424.737283: rcu_needs_cpu: BAD: 1 lazy callbacks retaining dynticks-idle
+>           <idle>-0       [007] d..1.   424.740233: rcu_needs_cpu: BAD: 1 lazy callbacks retaining dynticks-idle
+>           <idle>-0       [007] d..1.   424.744230: rcu_needs_cpu: BAD: 1 lazy callbacks retaining dynticks-idle
+>           <idle>-0       [007] d..1.   424.748231: rcu_needs_cpu: BAD: 1 lazy callbacks retaining dynticks-idle
+>           <idle>-0       [007] d..1.   429.767922: rcu_needs_cpu: BAD: 1 lazy callbacks retaining dynticks-idle
+>           <idle>-0       [007] d..1.   429.768209: rcu_needs_cpu: BAD: 1 lazy callbacks retaining dynticks-idle
+>           <idle>-0       [007] d..1.   429.772212: rcu_needs_cpu: BAD: 1 lazy callbacks retaining dynticks-idle
+>           <idle>-0       [007] d..1.   429.776212: rcu_needs_cpu: BAD: 1 lazy callbacks retaining dynticks-idle
+>           <idle>-0       [007] d..1.   429.972931: rcu_needs_cpu: BAD: 1 lazy callbacks retaining dynticks-idle
+>           <idle>-0       [007] d..1.   429.976214: rcu_needs_cpu: BAD: 1 lazy callbacks retaining dynticks-idle
+>           <idle>-0       [007] d..1.   429.980211: rcu_needs_cpu: BAD: 1 lazy callbacks retaining dynticks-idle
+>           <idle>-0       [007] d..1.   429.984212: rcu_needs_cpu: BAD: 1 lazy callbacks retaining dynticks-idle
+>           <idle>-0       [003] d..1.   430.402139: rcu_needs_cpu: BAD: 1 lazy callbacks retaining dynticks-idle
+>           <idle>-0       [003] d..1.   430.404211: rcu_needs_cpu: BAD: 1 lazy callbacks retaining dynticks-idle
+>           <idle>-0       [003] d..1.   430.404290: rcu_needs_cpu: BAD: 1 lazy callbacks retaining dynticks-idle
+>           <idle>-0       [003] d..1.   430.408235: rcu_needs_cpu: BAD: 1 lazy callbacks retaining dynticks-idle
+>           <idle>-0       [003] d..1.   430.408304: rcu_needs_cpu: BAD: 1 lazy callbacks retaining dynticks-idle
+>           <idle>-0       [003] d..1.   430.412215: rcu_needs_cpu: BAD: 1 lazy callbacks retaining dynticks-idle
+> 
+> Thanks.
