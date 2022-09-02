@@ -2,125 +2,154 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BC62ECAAD5
-	for <rcu@archiver.kernel.org>; Fri,  2 Sep 2022 11:35:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B70ADECAAD5
+	for <rcu@archiver.kernel.org>; Fri,  2 Sep 2022 11:52:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229496AbiIBLfP (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 2 Sep 2022 07:35:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55764 "EHLO
+        id S232699AbiIBLwf (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 2 Sep 2022 07:52:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235434AbiIBLfI (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 2 Sep 2022 07:35:08 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 298CE13D23;
-        Fri,  2 Sep 2022 04:35:06 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id DF680B82A62;
-        Fri,  2 Sep 2022 11:35:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F717C433C1;
-        Fri,  2 Sep 2022 11:35:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662118503;
-        bh=2/OOTjoOIduO1UI7uBOAGDsBOU3c9ZeozsMCg1Vve0U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kodGV5uAXxcpEJWoO7bQx9nEBLin1ASmVRNrHL6Uh68eMrFL50tJaLWcMUgX1UTmI
-         GYO3qKsxxxVbTzfRDsxI5qgEdQgZu2k4WNi/d9xFV7Yp72eUOGOW/81pHO38nWDo1U
-         KV8byabl3rBB6CUxFfsf3PjOUusLHdr5k78vtyUrc6Uw4ut3Y+MqlF4pNI6WC1wlIc
-         w5zSHU1GZgIMd54YB5JWJ4UVB4yVo6cElx9xPZXFBrc2rU2MdAQLyKX0RD/s/SazzU
-         CpNtTX9yRDbtCssvlvEvDvJFZ+4Wp9UrjB0rnT5OZZoBsP0hrI+ezUn41BA0nnmncq
-         etnc5p+hyL3KQ==
-Date:   Fri, 2 Sep 2022 13:35:00 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+        with ESMTP id S231752AbiIBLwe (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 2 Sep 2022 07:52:34 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE32AB8A5B
+        for <rcu@vger.kernel.org>; Fri,  2 Sep 2022 04:52:32 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1oU5Dr-0004Hs-Bp; Fri, 02 Sep 2022 13:52:31 +0200
+Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1oU5Do-0002nP-O3; Fri, 02 Sep 2022 13:52:28 +0200
+Date:   Fri, 2 Sep 2022 13:52:28 +0200
+From:   Sascha Hauer <sha@pengutronix.de>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rushikesh.s.kadam@intel.com, urezki@gmail.com,
-        neeraj.iitr10@gmail.com, paulmck@kernel.org, rostedt@goodmis.org,
-        vineeth@bitbyteword.org, boqun.feng@gmail.com
-Subject: Re: [PATCH v5 04/18] rcu: Fix late wakeup when flush of bypass
- cblist happens
-Message-ID: <20220902113500.GA113405@lothringen>
-References: <20220901221720.1105021-1-joel@joelfernandes.org>
- <20220901221720.1105021-5-joel@joelfernandes.org>
+        kernel-team@fb.com, rostedt@goodmis.org,
+        Matthew Wilcox <willy@infradead.org>,
+        Zhouyi Zhou <zhouzhouyi@gmail.com>, kernel@pengutronix.de
+Subject: Re: [PATCH rcu 04/32] rcu-tasks: Drive synchronous grace periods
+ from calling task
+Message-ID: <20220902115228.GV24324@pengutronix.de>
+References: <20220620225402.GA3842369@paulmck-ThinkPad-P17-Gen-1>
+ <20220620225411.3842519-4-paulmck@kernel.org>
+ <20220901103625.GA1658@pengutronix.de>
+ <20220901172725.GC6159@paulmck-ThinkPad-P17-Gen-1>
+ <20220901173304.GA2280413@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220901221720.1105021-5-joel@joelfernandes.org>
+In-Reply-To: <20220901173304.GA2280413@paulmck-ThinkPad-P17-Gen-1>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: rcu@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Sep 01, 2022 at 10:17:06PM +0000, Joel Fernandes (Google) wrote:
-> When the bypass cblist gets too big or its timeout has occurred, it is
-> flushed into the main cblist. However, the bypass timer is still running
-> and the behavior is that it would eventually expire and wake the GP
-> thread.
+On Thu, Sep 01, 2022 at 10:33:04AM -0700, Paul E. McKenney wrote:
+> On Thu, Sep 01, 2022 at 10:27:25AM -0700, Paul E. McKenney wrote:
+> > On Thu, Sep 01, 2022 at 12:36:25PM +0200, Sascha Hauer wrote:
+> > > Hi Paul,
+> > > 
+> > > On Mon, Jun 20, 2022 at 03:53:43PM -0700, Paul E. McKenney wrote:
+> > > > This commit causes synchronous grace periods to be driven from the task
+> > > > invoking synchronize_rcu_*(), allowing these functions to be invoked from
+> > > > the mid-boot dead zone extending from when the scheduler was initialized
+> > > > to to point that the various RCU tasks grace-period kthreads are spawned.
+> > > > This change will allow the self-tests to run in a consistent manner.
+> > > > 
+> > > > Reported-by: Matthew Wilcox <willy@infradead.org>
+> > > > Reported-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+> > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > 
+> > > This commit (appeared in mainline as 4a8cc433b8bf) breaks booting my
+> > > ARMv7 based i.MX6ul board when CONFIG_PROVE_RCU is enabled. Reverting
+> > > this patch on v6.0-rc3 makes my board boot again. See below for a boot
+> > > log. The last message is "Running RCU-tasks wait API self tests", after
+> > > that the board hangs. Any idea what goes wrong here?
+> > 
+> > New one on me!
+> > 
+> > Is it possible to get a stack trace of the hang, perhaps via
+> > one form or another of sysrq-T?  Such a stack trace would likely
+> > include synchronize_rcu_tasks(), synchronize_rcu_tasks_rude(), or
+> > synchronize_rcu_tasks_trace() followed by synchronize_rcu_tasks_generic(),
+> > rcu_tasks_one_gp(), and one of rcu_tasks_wait_gp(),
+> > rcu_tasks_rude_wait_gp(), or rcu_tasks_wait_gp().
 > 
-> Since we are going to use the bypass cblist for lazy CBs, do the wakeup
-> soon as the flush happens. Otherwise, the lazy-timer will go off much
-> later and the now-non-lazy cblist CBs can get stranded for the duration
-> of the timer.
+> If there is no chance of sysrq-T, kernel debuggers, kernel crash
+> dumps, or any other source of the stack trace, please decorate the
+> code path with printk() or similar and let me know where it goes.
+> Under normal circumstances, this code path is not sensitive to performance
+> perturbations of the printk() persuasion.
+
+Some unrelated bug I was searching for made me turn on early console
+output with the "earlycon" parameter. It turned out that when I remove
+this parameter then my board boots fine.
+
+I then realized that even with earlycon enabled my board boots fine
+when I remove the call to
+
+	pr_info("Running RCU-tasks wait API self tests\n");
+
+Given that I am not sure how useful it is to add more printk. I did that
+anyway like this:
+
+> static void rcu_tasks_one_gp(struct rcu_tasks *rtp, bool midboot)
+> {
+> 	int needgpcb;
 > 
-> This is a good thing to do anyway (regardless of this series), since it
-> makes the behavior consistent with behavior of other code paths where queueing
-> something into the ->cblist makes the GP kthread in a non-sleeping state
-> quickly.
+> 	printk("%s: mutex_lock... midboot: %d\n", __func__, midboot);
+> 	mutex_lock(&rtp->tasks_gp_mutex);
+> 	printk("%s: mutex_locked midboot: %d\n", __func__, midboot);
 > 
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> ---
->  kernel/rcu/tree_nocb.h | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
+> 	// If there were none, wait a bit and start over.
+> 	if (unlikely(midboot)) {
+> 		needgpcb = 0x2;
+> 	} else {
+> 		printk("%s: set_tasks_gp_state(RTGS_WAIT_CBS)...\n", __func__);
+> 		set_tasks_gp_state(rtp, RTGS_WAIT_CBS);
+> 		printk("%s: rcuwait_wait_event...\n", __func__);
+> 		rcuwait_wait_event(&rtp->cbs_wait,
+> 				   (needgpcb = rcu_tasks_need_gpcb(rtp)),
+> 				   TASK_IDLE);
+>		printk("%s: rcuwait_wait_event done\n", __func__);
+> 	}
+>
+
+What I see then is:
+
+[    0.156362] synchronize_rcu_tasks_generic: rcu_tasks_one_gp....
+[    0.162087] rcu_tasks_one_gp: mutex_lock... midboot: 1
+[    0.167386] rcu_tasks_one_gp: mutex_lock... midboot: 0
+[    0.172489] rcu_tasks_one_gp: mutex_locked midboot: 0
+[    0.177535] rcu_tasks_one_gp: set_tasks_gp_state(RTGS_WAIT_CBS)...
+[    0.183525] rcu_tasks_one_gp: rcuwait_wait_event...
+
+Here the board hangs. After some time I get:
+
+[  254.493010] random: crng init done
+
+But that's it.
+
 > 
-> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-> index 0a5f0ef41484..31068dd31315 100644
-> --- a/kernel/rcu/tree_nocb.h
-> +++ b/kernel/rcu/tree_nocb.h
-> @@ -447,7 +447,13 @@ static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
->  			rcu_advance_cbs_nowake(rdp->mynode, rdp);
->  			rdp->nocb_gp_adv_time = j;
->  		}
-> -		rcu_nocb_unlock_irqrestore(rdp, flags);
-> +
-> +		// The flush succeeded and we moved CBs into the ->cblist.
-> +		// However, the bypass timer might still be running. Wakeup the
-> +		// GP thread by calling a helper with was_all_done set so that
-> +		// wake up happens (needed if main CB list was empty before).
-> +		__call_rcu_nocb_wake(rdp, true, flags)
-> +
+> > At this point in the boot sequence, there is only one online CPU,
+> > correct?
 
-Ok so there are two different changes here:
+Yes, it's a single core system.
 
-1) wake up nocb_gp as we just flushed the bypass list. Indeed if the regular
-   callback list was empty before flushing, we rather want to immediately wake
-   up nocb_gp instead of waiting for the bypass timer to process them.
+Sascha
 
-2) wake up nocb_gp unconditionally (ie: even if the regular queue was not empty
-   before bypass flushing) so that nocb_gp_wait() is forced through another loop
-   starting with cancelling the bypass timer (I suggest you put such explanation
-   in the comment btw because that process may not be obvious for mortals).
-
-The change 1) looks like a good idea to me.
-
-The change 2) has unclear motivation. It forces nocb_gp_wait() through another
-costly loop even though the timer might have been cancelled into some near
-future, eventually avoiding that extra costly loop. Also it abuses the
-was_alldone stuff and we may get rcu_nocb_wake with incoherent meanings
-(WakeEmpty/WakeEmptyIsDeferred) when it's actually not empty.
-
-So you may need to clarify the purpose. And I would suggest to make two patches
-here.
-
-Thanks!
-
-
-   
-
-   
-
->  		return true; // Callback already enqueued.
->  	}
->  
-> -- 
-> 2.37.2.789.g6183377224-goog
-> 
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
