@@ -2,128 +2,125 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B32B6C38145
-	for <rcu@archiver.kernel.org>; Fri,  2 Sep 2022 09:31:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BC62ECAAD5
+	for <rcu@archiver.kernel.org>; Fri,  2 Sep 2022 11:35:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233539AbiIBJbG (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 2 Sep 2022 05:31:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36536 "EHLO
+        id S229496AbiIBLfP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 2 Sep 2022 07:35:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235568AbiIBJac (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 2 Sep 2022 05:30:32 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 389302C67D;
-        Fri,  2 Sep 2022 02:30:22 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        with ESMTP id S235434AbiIBLfI (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 2 Sep 2022 07:35:08 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 298CE13D23;
+        Fri,  2 Sep 2022 04:35:06 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id CF738342A7;
-        Fri,  2 Sep 2022 09:30:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1662111020; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Rd3pA8qgIDU8b5TFfRtTYXB5vFvZyeLlgLZGMf5H4xA=;
-        b=GFigYEkmlXk35LHz5yFJR9FZflvsV06MWtczzY6e4BHvfMKWxhaTDECJrMkGR97r1/XxSf
-        tDAb5fcR0XnKs5NgRKD/14Db53Z9BeBaARjhbGSEaa9ZFDEmtE35t1esbi3mAXSasOXmCP
-        NFFgAdnVZzKcvsy6FlA6Grj7SezicZM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1662111020;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Rd3pA8qgIDU8b5TFfRtTYXB5vFvZyeLlgLZGMf5H4xA=;
-        b=GqkxwC7jobr70fRwxJZncNc5CZwwtb3n21oJMDKEf3Y4GNsnWOYENYgnKr4gLLh4Fm5sWe
-        nxfQ0pJQWzxSVuBA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A543413328;
-        Fri,  2 Sep 2022 09:30:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id ORWWJyzNEWNsFAAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Fri, 02 Sep 2022 09:30:20 +0000
-Message-ID: <75ad3ed3-7dcd-474c-472c-ca32c1734281@suse.cz>
-Date:   Fri, 2 Sep 2022 11:30:20 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.0
-Subject: Re: [PATCH v5 02/18] mm/sl[au]b: rearrange struct slab fields to
- allow larger rcu_head
-Content-Language: en-US
-From:   Vlastimil Babka <vbabka@suse.cz>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, rushikesh.s.kadam@intel.com,
-        urezki@gmail.com, neeraj.iitr10@gmail.com, frederic@kernel.org,
-        paulmck@kernel.org, rostedt@goodmis.org, vineeth@bitbyteword.org,
-        boqun.feng@gmail.com, Hyeonggon Yoo <42.hyeyoo@gmail.com>
+        by ams.source.kernel.org (Postfix) with ESMTPS id DF680B82A62;
+        Fri,  2 Sep 2022 11:35:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F717C433C1;
+        Fri,  2 Sep 2022 11:35:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1662118503;
+        bh=2/OOTjoOIduO1UI7uBOAGDsBOU3c9ZeozsMCg1Vve0U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kodGV5uAXxcpEJWoO7bQx9nEBLin1ASmVRNrHL6Uh68eMrFL50tJaLWcMUgX1UTmI
+         GYO3qKsxxxVbTzfRDsxI5qgEdQgZu2k4WNi/d9xFV7Yp72eUOGOW/81pHO38nWDo1U
+         KV8byabl3rBB6CUxFfsf3PjOUusLHdr5k78vtyUrc6Uw4ut3Y+MqlF4pNI6WC1wlIc
+         w5zSHU1GZgIMd54YB5JWJ4UVB4yVo6cElx9xPZXFBrc2rU2MdAQLyKX0RD/s/SazzU
+         CpNtTX9yRDbtCssvlvEvDvJFZ+4Wp9UrjB0rnT5OZZoBsP0hrI+ezUn41BA0nnmncq
+         etnc5p+hyL3KQ==
+Date:   Fri, 2 Sep 2022 13:35:00 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rushikesh.s.kadam@intel.com, urezki@gmail.com,
+        neeraj.iitr10@gmail.com, paulmck@kernel.org, rostedt@goodmis.org,
+        vineeth@bitbyteword.org, boqun.feng@gmail.com
+Subject: Re: [PATCH v5 04/18] rcu: Fix late wakeup when flush of bypass
+ cblist happens
+Message-ID: <20220902113500.GA113405@lothringen>
 References: <20220901221720.1105021-1-joel@joelfernandes.org>
- <20220901221720.1105021-3-joel@joelfernandes.org>
- <e84c90f2-d76f-83d4-d40b-403f894eda33@suse.cz>
-In-Reply-To: <e84c90f2-d76f-83d4-d40b-403f894eda33@suse.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+ <20220901221720.1105021-5-joel@joelfernandes.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220901221720.1105021-5-joel@joelfernandes.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 9/2/22 11:26, Vlastimil Babka wrote:
-> On 9/2/22 00:17, Joel Fernandes (Google) wrote:
->> From: Vlastimil Babka <vbabka@suse.cz>
->> 
->> Joel reports [1] that increasing the rcu_head size for debugging
->> purposes used to work before struct slab was split from struct page, but
->> now runs into the various SLAB_MATCH() sanity checks of the layout.
->> 
->> This is because the rcu_head in struct page is in union with large
->> sub-structures and has space to grow without exceeding their size, while
->> in struct slab (for SLAB and SLUB) it's in union only with a list_head.
->> 
->> On closer inspection (and after the previous patch) we can put all
->> fields except slab_cache to a union with rcu_head, as slab_cache is
->> sufficient for the rcu freeing callbacks to work and the rest can be
->> overwritten by rcu_head without causing issues.
->> 
->> This is only somewhat complicated by the need to keep SLUB's
->> freelist+counters aligned for cmpxchg_double. As a result the fields
->> need to be reordered so that slab_cache is first (after page flags) and
->> the union with rcu_head follows. For consistency, do that for SLAB as
->> well, although not necessary there.
->> 
->> As a result, the rcu_head field in struct page and struct slab is no
->> longer at the same offset, but that doesn't matter as there is no
->> casting that would rely on that in the slab freeing callbacks, so we can
->> just drop the respective SLAB_MATCH() check.
->> 
->> Also we need to update the SLAB_MATCH() for compound_head to reflect the
->> new ordering.
->> 
->> While at it, also add a static_assert to check the alignment needed for
->> cmpxchg_double so mistakes are found sooner than a runtime GPF.
->> 
->> [1] https://lore.kernel.org/all/85afd876-d8bb-0804-b2c5-48ed3055e702@joelfernandes.org/
->> 
->> Reported-by: Joel Fernandes <joel@joelfernandes.org>
->> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+On Thu, Sep 01, 2022 at 10:17:06PM +0000, Joel Fernandes (Google) wrote:
+> When the bypass cblist gets too big or its timeout has occurred, it is
+> flushed into the main cblist. However, the bypass timer is still running
+> and the behavior is that it would eventually expire and wake the GP
+> thread.
 > 
-> I've added patches 01 and 02 to slab tree for -next exposure before Joel's
-> full series posting, but it should be also ok if rcu tree carries them with
-> the whole patchset. I can then drop them from slab tree (there are no
-> dependencies with other stuff there) so we don't introduce duplicite commits
-> needlessly, just give me a heads up.
+> Since we are going to use the bypass cblist for lazy CBs, do the wakeup
+> soon as the flush happens. Otherwise, the lazy-timer will go off much
+> later and the now-non-lazy cblist CBs can get stranded for the duration
+> of the timer.
+> 
+> This is a good thing to do anyway (regardless of this series), since it
+> makes the behavior consistent with behavior of other code paths where queueing
+> something into the ->cblist makes the GP kthread in a non-sleeping state
+> quickly.
+> 
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> ---
+>  kernel/rcu/tree_nocb.h | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> index 0a5f0ef41484..31068dd31315 100644
+> --- a/kernel/rcu/tree_nocb.h
+> +++ b/kernel/rcu/tree_nocb.h
+> @@ -447,7 +447,13 @@ static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
+>  			rcu_advance_cbs_nowake(rdp->mynode, rdp);
+>  			rdp->nocb_gp_adv_time = j;
+>  		}
+> -		rcu_nocb_unlock_irqrestore(rdp, flags);
+> +
+> +		// The flush succeeded and we moved CBs into the ->cblist.
+> +		// However, the bypass timer might still be running. Wakeup the
+> +		// GP thread by calling a helper with was_all_done set so that
+> +		// wake up happens (needed if main CB list was empty before).
+> +		__call_rcu_nocb_wake(rdp, true, flags)
+> +
 
-Ah but in that case please apply the reviews from my posting [1]
+Ok so there are two different changes here:
 
-patch 1:
-Reviewed-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+1) wake up nocb_gp as we just flushed the bypass list. Indeed if the regular
+   callback list was empty before flushing, we rather want to immediately wake
+   up nocb_gp instead of waiting for the bypass timer to process them.
 
-patch 2
-Acked-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+2) wake up nocb_gp unconditionally (ie: even if the regular queue was not empty
+   before bypass flushing) so that nocb_gp_wait() is forced through another loop
+   starting with cancelling the bypass timer (I suggest you put such explanation
+   in the comment btw because that process may not be obvious for mortals).
 
-[1] https://lore.kernel.org/all/20220826090912.11292-1-vbabka@suse.cz/
+The change 1) looks like a good idea to me.
+
+The change 2) has unclear motivation. It forces nocb_gp_wait() through another
+costly loop even though the timer might have been cancelled into some near
+future, eventually avoiding that extra costly loop. Also it abuses the
+was_alldone stuff and we may get rcu_nocb_wake with incoherent meanings
+(WakeEmpty/WakeEmptyIsDeferred) when it's actually not empty.
+
+So you may need to clarify the purpose. And I would suggest to make two patches
+here.
+
+Thanks!
+
+
+   
+
+   
+
+>  		return true; // Callback already enqueued.
+>  	}
+>  
+> -- 
+> 2.37.2.789.g6183377224-goog
+> 
