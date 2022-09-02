@@ -2,154 +2,176 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B70ADECAAD5
-	for <rcu@archiver.kernel.org>; Fri,  2 Sep 2022 11:52:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 315BAECAAD5
+	for <rcu@archiver.kernel.org>; Fri,  2 Sep 2022 12:04:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232699AbiIBLwf (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 2 Sep 2022 07:52:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56488 "EHLO
+        id S235648AbiIBMEy (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 2 Sep 2022 08:04:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231752AbiIBLwe (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 2 Sep 2022 07:52:34 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE32AB8A5B
-        for <rcu@vger.kernel.org>; Fri,  2 Sep 2022 04:52:32 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1oU5Dr-0004Hs-Bp; Fri, 02 Sep 2022 13:52:31 +0200
-Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1oU5Do-0002nP-O3; Fri, 02 Sep 2022 13:52:28 +0200
-Date:   Fri, 2 Sep 2022 13:52:28 +0200
-From:   Sascha Hauer <sha@pengutronix.de>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
+        with ESMTP id S235636AbiIBMEx (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 2 Sep 2022 08:04:53 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64AEE2AFA;
+        Fri,  2 Sep 2022 05:04:50 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 217E7B82A6F;
+        Fri,  2 Sep 2022 12:04:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1CB9C433D7;
+        Fri,  2 Sep 2022 12:04:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1662120287;
+        bh=RJzkQrYginDaiEze6Bo3xEmoYSFz6uJmuVZ7EbH+59I=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=t/sO9+33at7eXYHo30eKDNFt6A10JX8BQL80Zk0CtX8wMOH0ViaxuwYKqnhM0qm8U
+         9zt8zfZRS3q6viKGVJxSHEPbcZVS2MmNDW0QMq7IVmE4HCf71/PmIB74aTCYWnZ9RM
+         LnvqgsdjbhcalC6AdfspIkYOwRpO+Ty9jYcax3XcMqKvTvHdoa9Waxd+pYd1ugkjGR
+         kfWp0AML1TK56ToL7yjKjsOP+droGeQhqh+e0gfSIHGMvBJiyVzGEEne/tmwmwq9iT
+         S6sdW/MskApjS/00/KzPo1+RSxLBypDbz0iSrSLUpDBC3axaj54JvYINQOkutLcDUF
+         wA2nMRjJPA6bw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 4BF965C06A7; Fri,  2 Sep 2022 05:04:47 -0700 (PDT)
+Date:   Fri, 2 Sep 2022 05:04:47 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Sascha Hauer <sha@pengutronix.de>
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel-team@fb.com, rostedt@goodmis.org,
         Matthew Wilcox <willy@infradead.org>,
         Zhouyi Zhou <zhouzhouyi@gmail.com>, kernel@pengutronix.de
 Subject: Re: [PATCH rcu 04/32] rcu-tasks: Drive synchronous grace periods
  from calling task
-Message-ID: <20220902115228.GV24324@pengutronix.de>
+Message-ID: <20220902120447.GH6159@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 References: <20220620225402.GA3842369@paulmck-ThinkPad-P17-Gen-1>
  <20220620225411.3842519-4-paulmck@kernel.org>
  <20220901103625.GA1658@pengutronix.de>
  <20220901172725.GC6159@paulmck-ThinkPad-P17-Gen-1>
  <20220901173304.GA2280413@paulmck-ThinkPad-P17-Gen-1>
+ <20220902115228.GV24324@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220901173304.GA2280413@paulmck-ThinkPad-P17-Gen-1>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: rcu@vger.kernel.org
+In-Reply-To: <20220902115228.GV24324@pengutronix.de>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Sep 01, 2022 at 10:33:04AM -0700, Paul E. McKenney wrote:
-> On Thu, Sep 01, 2022 at 10:27:25AM -0700, Paul E. McKenney wrote:
-> > On Thu, Sep 01, 2022 at 12:36:25PM +0200, Sascha Hauer wrote:
-> > > Hi Paul,
-> > > 
-> > > On Mon, Jun 20, 2022 at 03:53:43PM -0700, Paul E. McKenney wrote:
-> > > > This commit causes synchronous grace periods to be driven from the task
-> > > > invoking synchronize_rcu_*(), allowing these functions to be invoked from
-> > > > the mid-boot dead zone extending from when the scheduler was initialized
-> > > > to to point that the various RCU tasks grace-period kthreads are spawned.
-> > > > This change will allow the self-tests to run in a consistent manner.
+On Fri, Sep 02, 2022 at 01:52:28PM +0200, Sascha Hauer wrote:
+> On Thu, Sep 01, 2022 at 10:33:04AM -0700, Paul E. McKenney wrote:
+> > On Thu, Sep 01, 2022 at 10:27:25AM -0700, Paul E. McKenney wrote:
+> > > On Thu, Sep 01, 2022 at 12:36:25PM +0200, Sascha Hauer wrote:
+> > > > Hi Paul,
 > > > > 
-> > > > Reported-by: Matthew Wilcox <willy@infradead.org>
-> > > > Reported-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > > On Mon, Jun 20, 2022 at 03:53:43PM -0700, Paul E. McKenney wrote:
+> > > > > This commit causes synchronous grace periods to be driven from the task
+> > > > > invoking synchronize_rcu_*(), allowing these functions to be invoked from
+> > > > > the mid-boot dead zone extending from when the scheduler was initialized
+> > > > > to to point that the various RCU tasks grace-period kthreads are spawned.
+> > > > > This change will allow the self-tests to run in a consistent manner.
+> > > > > 
+> > > > > Reported-by: Matthew Wilcox <willy@infradead.org>
+> > > > > Reported-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+> > > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > > 
+> > > > This commit (appeared in mainline as 4a8cc433b8bf) breaks booting my
+> > > > ARMv7 based i.MX6ul board when CONFIG_PROVE_RCU is enabled. Reverting
+> > > > this patch on v6.0-rc3 makes my board boot again. See below for a boot
+> > > > log. The last message is "Running RCU-tasks wait API self tests", after
+> > > > that the board hangs. Any idea what goes wrong here?
 > > > 
-> > > This commit (appeared in mainline as 4a8cc433b8bf) breaks booting my
-> > > ARMv7 based i.MX6ul board when CONFIG_PROVE_RCU is enabled. Reverting
-> > > this patch on v6.0-rc3 makes my board boot again. See below for a boot
-> > > log. The last message is "Running RCU-tasks wait API self tests", after
-> > > that the board hangs. Any idea what goes wrong here?
+> > > New one on me!
+> > > 
+> > > Is it possible to get a stack trace of the hang, perhaps via
+> > > one form or another of sysrq-T?  Such a stack trace would likely
+> > > include synchronize_rcu_tasks(), synchronize_rcu_tasks_rude(), or
+> > > synchronize_rcu_tasks_trace() followed by synchronize_rcu_tasks_generic(),
+> > > rcu_tasks_one_gp(), and one of rcu_tasks_wait_gp(),
+> > > rcu_tasks_rude_wait_gp(), or rcu_tasks_wait_gp().
 > > 
-> > New one on me!
+> > If there is no chance of sysrq-T, kernel debuggers, kernel crash
+> > dumps, or any other source of the stack trace, please decorate the
+> > code path with printk() or similar and let me know where it goes.
+> > Under normal circumstances, this code path is not sensitive to performance
+> > perturbations of the printk() persuasion.
+> 
+> Some unrelated bug I was searching for made me turn on early console
+> output with the "earlycon" parameter. It turned out that when I remove
+> this parameter then my board boots fine.
+> 
+> I then realized that even with earlycon enabled my board boots fine
+> when I remove the call to
+> 
+> 	pr_info("Running RCU-tasks wait API self tests\n");
+
+Ah, there are some printk() fixes in the works.  Maybe this is one area
+needed that.  Or maybe not.
+
+> Given that I am not sure how useful it is to add more printk. I did that
+> anyway like this:
+> 
+> > static void rcu_tasks_one_gp(struct rcu_tasks *rtp, bool midboot)
+> > {
+> > 	int needgpcb;
 > > 
-> > Is it possible to get a stack trace of the hang, perhaps via
-> > one form or another of sysrq-T?  Such a stack trace would likely
-> > include synchronize_rcu_tasks(), synchronize_rcu_tasks_rude(), or
-> > synchronize_rcu_tasks_trace() followed by synchronize_rcu_tasks_generic(),
-> > rcu_tasks_one_gp(), and one of rcu_tasks_wait_gp(),
-> > rcu_tasks_rude_wait_gp(), or rcu_tasks_wait_gp().
+> > 	printk("%s: mutex_lock... midboot: %d\n", __func__, midboot);
+> > 	mutex_lock(&rtp->tasks_gp_mutex);
+> > 	printk("%s: mutex_locked midboot: %d\n", __func__, midboot);
+> > 
+> > 	// If there were none, wait a bit and start over.
+> > 	if (unlikely(midboot)) {
+> > 		needgpcb = 0x2;
+> > 	} else {
+> > 		printk("%s: set_tasks_gp_state(RTGS_WAIT_CBS)...\n", __func__);
+> > 		set_tasks_gp_state(rtp, RTGS_WAIT_CBS);
+> > 		printk("%s: rcuwait_wait_event...\n", __func__);
+> > 		rcuwait_wait_event(&rtp->cbs_wait,
+> > 				   (needgpcb = rcu_tasks_need_gpcb(rtp)),
+> > 				   TASK_IDLE);
+> >		printk("%s: rcuwait_wait_event done\n", __func__);
+> > 	}
+> >
 > 
-> If there is no chance of sysrq-T, kernel debuggers, kernel crash
-> dumps, or any other source of the stack trace, please decorate the
-> code path with printk() or similar and let me know where it goes.
-> Under normal circumstances, this code path is not sensitive to performance
-> perturbations of the printk() persuasion.
-
-Some unrelated bug I was searching for made me turn on early console
-output with the "earlycon" parameter. It turned out that when I remove
-this parameter then my board boots fine.
-
-I then realized that even with earlycon enabled my board boots fine
-when I remove the call to
-
-	pr_info("Running RCU-tasks wait API self tests\n");
-
-Given that I am not sure how useful it is to add more printk. I did that
-anyway like this:
-
-> static void rcu_tasks_one_gp(struct rcu_tasks *rtp, bool midboot)
-> {
-> 	int needgpcb;
+> What I see then is:
 > 
-> 	printk("%s: mutex_lock... midboot: %d\n", __func__, midboot);
-> 	mutex_lock(&rtp->tasks_gp_mutex);
-> 	printk("%s: mutex_locked midboot: %d\n", __func__, midboot);
+> [    0.156362] synchronize_rcu_tasks_generic: rcu_tasks_one_gp....
+> [    0.162087] rcu_tasks_one_gp: mutex_lock... midboot: 1
+
+So one task gets stuck either in mutex_lock() or the printk() above
+and some other task below moves ahead?  Or might some printk()s have
+been lost?
+
+> [    0.167386] rcu_tasks_one_gp: mutex_lock... midboot: 0
+> [    0.172489] rcu_tasks_one_gp: mutex_locked midboot: 0
+> [    0.177535] rcu_tasks_one_gp: set_tasks_gp_state(RTGS_WAIT_CBS)...
+> [    0.183525] rcu_tasks_one_gp: rcuwait_wait_event...
+
+Given that everything works with printk()s turned off, my current
+suspicion is a printk() issue.
+
+> Here the board hangs. After some time I get:
 > 
-> 	// If there were none, wait a bit and start over.
-> 	if (unlikely(midboot)) {
-> 		needgpcb = 0x2;
-> 	} else {
-> 		printk("%s: set_tasks_gp_state(RTGS_WAIT_CBS)...\n", __func__);
-> 		set_tasks_gp_state(rtp, RTGS_WAIT_CBS);
-> 		printk("%s: rcuwait_wait_event...\n", __func__);
-> 		rcuwait_wait_event(&rtp->cbs_wait,
-> 				   (needgpcb = rcu_tasks_need_gpcb(rtp)),
-> 				   TASK_IDLE);
->		printk("%s: rcuwait_wait_event done\n", __func__);
-> 	}
->
+> [  254.493010] random: crng init done
 
-What I see then is:
+This looks unrelated.
 
-[    0.156362] synchronize_rcu_tasks_generic: rcu_tasks_one_gp....
-[    0.162087] rcu_tasks_one_gp: mutex_lock... midboot: 1
-[    0.167386] rcu_tasks_one_gp: mutex_lock... midboot: 0
-[    0.172489] rcu_tasks_one_gp: mutex_locked midboot: 0
-[    0.177535] rcu_tasks_one_gp: set_tasks_gp_state(RTGS_WAIT_CBS)...
-[    0.183525] rcu_tasks_one_gp: rcuwait_wait_event...
-
-Here the board hangs. After some time I get:
-
-[  254.493010] random: crng init done
-
-But that's it.
-
+> But that's it.
 > 
-> > At this point in the boot sequence, there is only one online CPU,
-> > correct?
+> > 
+> > > At this point in the boot sequence, there is only one online CPU,
+> > > correct?
+> 
+> Yes, it's a single core system.
 
-Yes, it's a single core system.
+OK, then we should be able to rule out SMP issues.  ;-)
 
-Sascha
+								Thanx, Paul
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+> Sascha
+> 
+> -- 
+> Pengutronix e.K.                           |                             |
+> Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+> 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
