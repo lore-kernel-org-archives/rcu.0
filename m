@@ -2,230 +2,95 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 829F8ECAAD5
-	for <rcu@archiver.kernel.org>; Sat,  3 Sep 2022 22:00:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 66C6CECAAD5
+	for <rcu@archiver.kernel.org>; Sun,  4 Sep 2022 21:01:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231445AbiICWAe (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 3 Sep 2022 18:00:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43104 "EHLO
+        id S229627AbiIDVBi (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 4 Sep 2022 17:01:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230333AbiICWAd (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 3 Sep 2022 18:00:33 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D8E248EBC
-        for <rcu@vger.kernel.org>; Sat,  3 Sep 2022 15:00:31 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id a15so4225014qko.4
-        for <rcu@vger.kernel.org>; Sat, 03 Sep 2022 15:00:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date;
-        bh=u+kxf3Mk8+FQgloXjB0j6r4XiunuDU8cUK2uuImDHew=;
-        b=WRk8qIaK1KlK/bMR9yB/rnuP0D7C4gkK1fxXvaCOHkpQOPOqzW/y3ua4Dso1vEvS3Y
-         Mqk88gd9/98GwbFwUECnlBiszMnRMM6BVTetZLzbOi2phpVx1ua4OanmomNHitknNLvV
-         vEsEZ2LfuxjFoc5YKlUKKVr42rFFWBFY92owY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
-        bh=u+kxf3Mk8+FQgloXjB0j6r4XiunuDU8cUK2uuImDHew=;
-        b=Ns8hBArFFyeJIIvYpgvV4oYOCW0NWNQRhMitLg8EtxXXIKZix81KHuuaqUVFwNfpyC
-         guHbPmqYkPIMGFCZJXs+CPg3JoImbF/n5bULSP3hFYSOJrudVjn7xgjCQsTQdHLqDydI
-         fAAZVCKeplJgUcKclT+nGCzBOGBt+L1nXjUTkpdc/P0RLBsSHqXJrOUNJ0gMisgxokHO
-         ZhAXB3hqbAqoKsDTSH3HMKmqgYhE40kl6eNfuTdpAKvsgoPMBoJDcpLKPnljMka14gYf
-         bQ+O8Ry+m3I0NsSX+y6+46w5gpdXPFucIG/Wq+wHo4bo5wgMc7X5xszhCws7EmS1LfPh
-         Ckww==
-X-Gm-Message-State: ACgBeo3uwHlHGGZ4OnrAexgpLzc4MYLJddjheQ+UmW25rEvPE8CoBBA3
-        KItM1VbNn77DeJ/htIOBLpAi7Q==
-X-Google-Smtp-Source: AA6agR5ekOGLODSeUofP+ecxaHtu90UOsouL28dyBxK9YtL/I6e0BeBlxPnij3XHIxSr85XcSeGzTA==
-X-Received: by 2002:a05:620a:4155:b0:6bb:2061:1167 with SMTP id k21-20020a05620a415500b006bb20611167mr28395464qko.623.1662242430206;
-        Sat, 03 Sep 2022 15:00:30 -0700 (PDT)
-Received: from localhost (228.221.150.34.bc.googleusercontent.com. [34.150.221.228])
-        by smtp.gmail.com with ESMTPSA id bm15-20020a05620a198f00b006bb9125363fsm4576297qkb.121.2022.09.03.15.00.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Sep 2022 15:00:29 -0700 (PDT)
-Date:   Sat, 3 Sep 2022 22:00:29 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
+        with ESMTP id S229596AbiIDVBi (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 4 Sep 2022 17:01:38 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5261B2870C;
+        Sun,  4 Sep 2022 14:01:37 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DE88561018;
+        Sun,  4 Sep 2022 21:01:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA58DC433D6;
+        Sun,  4 Sep 2022 21:01:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1662325296;
+        bh=eMJUB1gy+kxLJqRVw1Z/bd/e2b4QxmsudxdCqmT87wk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MG3gYYfZAXBsoxy72zSrFZEDlCJ/iKqdbn1FOuYNJQOnd+yT/5wmCcfLNN0IlTmp1
+         qK7LNbnuGbRO6CbCrddF5DMAa75abGY2H+39oSFoQGMMXVmVHqeUzCst0XQW3QwbcI
+         nIpnVgVXeHUUGdJUZf8PgU7ZbsAfhgJbKWaP7WcZiN84hqCygVdUOW//UZQNX+e6PQ
+         WvEzk/JeZy60hbZqF1jAj6Q+pZ34eqv7YN2AINuk3wt2I6+m8YsjjctLk8yRABGtGY
+         FaBIWXQGa4BHayy5JzG9qBGyZZQFweTC2D68x+o82GrjD1Ycao9VgnqTmoXgmBq1vn
+         XLHT/M/Oame6Q==
+Date:   Sun, 4 Sep 2022 23:01:33 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         rushikesh.s.kadam@intel.com, urezki@gmail.com,
         neeraj.iitr10@gmail.com, paulmck@kernel.org, rostedt@goodmis.org,
         vineeth@bitbyteword.org, boqun.feng@gmail.com
 Subject: Re: [PATCH v5 06/18] rcu: Introduce call_rcu_lazy() API
  implementation
-Message-ID: <YxPOfVMzRWEa7xqf@google.com>
+Message-ID: <20220904210133.GA149888@lothringen>
 References: <20220901221720.1105021-1-joel@joelfernandes.org>
  <20220901221720.1105021-7-joel@joelfernandes.org>
  <20220902152132.GA115525@lothringen>
+ <YxPOfVMzRWEa7xqf@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220902152132.GA115525@lothringen>
+In-Reply-To: <YxPOfVMzRWEa7xqf@google.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Sep 02, 2022 at 05:21:32PM +0200, Frederic Weisbecker wrote:
-[..] 
-> > +
-> >  	raw_spin_unlock_irqrestore(&rdp_gp->nocb_gp_lock, flags);
-> >  
-> >  	trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, reason);
-> [...]
-> > @@ -705,12 +816,21 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
-> >  	my_rdp->nocb_gp_gp = needwait_gp;
-> >  	my_rdp->nocb_gp_seq = needwait_gp ? wait_gp_seq : 0;
-> >  
-> > -	if (bypass && !rcu_nocb_poll) {
-> > -		// At least one child with non-empty ->nocb_bypass, so set
-> > -		// timer in order to avoid stranding its callbacks.
-> > -		wake_nocb_gp_defer(my_rdp, RCU_NOCB_WAKE_BYPASS,
-> > -				   TPS("WakeBypassIsDeferred"));
-> > +	// At least one child with non-empty ->nocb_bypass, so set
-> > +	// timer in order to avoid stranding its callbacks.
-> > +	if (!rcu_nocb_poll) {
-> > +		// If bypass list only has lazy CBs. Add a deferred
-> > +		// lazy wake up.
-> > +		if (lazy && !bypass) {
-> > +			wake_nocb_gp_defer(my_rdp, RCU_NOCB_WAKE_LAZY,
-> > +					TPS("WakeLazyIsDeferred"));
+On Sat, Sep 03, 2022 at 10:00:29PM +0000, Joel Fernandes wrote:
+> On Fri, Sep 02, 2022 at 05:21:32PM +0200, Frederic Weisbecker wrote:
+> +
+> +	raw_spin_lock_irqsave(&my_rdp->nocb_gp_lock, flags);
+
+This is locking during the whole group iteration potentially contending call_rcu(),
+idle loop, resume to userspace on all rdp in the group...
+
+How about not overwriting timers instead and only set the RCU_NOCB_WAKE_LAZY
+timer when it is previously in RCU_NOCB_WAKE_NOT state? After all if the timer is armed,
+it's because we have regular callbacks queued and thus we don't need to wait
+before processing the lazy callbacks since we are going to start a grace period
+anyway.
+
+Thanks.
+
+
+>  	list_for_each_entry_rcu(rdp, &my_rdp->nocb_head_rdp, nocb_entry_rdp, 1) {
+>  		bool needwake_state = false;
+>  		bool flush_bypass = false;
+> @@ -855,14 +870,15 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
+>  		// If bypass list only has lazy CBs. Add a deferred
+>  		// lazy wake up.
+>  		if (lazy && !bypass) {
+> -			wake_nocb_gp_defer(my_rdp, RCU_NOCB_WAKE_LAZY,
+> +			wake_nocb_gp_defer_locked(my_rdp, RCU_NOCB_WAKE_LAZY,
+>  					TPS("WakeLazyIsDeferred"));
+>  		// Otherwise add a deferred bypass wake up.
+>  		} else if (bypass) {
+> -			wake_nocb_gp_defer(my_rdp, RCU_NOCB_WAKE_BYPASS,
+> +			wake_nocb_gp_defer_locked(my_rdp, RCU_NOCB_WAKE_BYPASS,
+>  					TPS("WakeBypassIsDeferred"));
+>  		}
+>  	}
+> +	raw_spin_unlock_irqrestore(&my_rdp->nocb_gp_lock, flags);
+>  
+>  	if (rcu_nocb_poll) {
+>  		/* Polling, so trace if first poll in the series. */
+> -- 
+> 2.37.2.789.g6183377224-goog
 > 
-> What if:
-> 
-> 1) rdp(1) has lazy callbacks
-> 2) all other rdp's have no callback at all
-> 3) nocb_gp_wait() runs through all rdp's, everything is handled, except for
->    these lazy callbacks
-> 4) It reaches the above path, ready to arm the RCU_NOCB_WAKE_LAZY timer,
->    but it hasn't yet called wake_nocb_gp_defer()
-> 5) Oh but rdp(2) queues a non-lazy callback. interrupts are disabled so it defers
->    the wake up to nocb_gp_wait() with arming the timer in RCU_NOCB_WAKE.
-> 6) nocb_gp_wait() finally calls wake_nocb_gp_defer() and override the timeout
->    to several seconds ahead.
-> 7) No more callbacks queued, the non-lazy callback will have to wait several
->    seconds to complete.
-> 
-> Or did I miss something? Note that the race exists with RCU_NOCB_WAKE_BYPASS
-> but it's only about one jiffy delay, not seconds.
-> 
-
-So I think the below patch should fix that. But I have not tested it at all
-and it could very well have issues. In particular, there is a likelihood of a
-wake up while holding a lock which I'm not sure is safe due to scheduler
-locks. I'll test it next week. Let me know any thoughts though.
-
----8<-----------------------
-
-From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Subject: [PATCH] rcu: Fix race where wake_nocb_gp_defer() lazy wake can
- overwrite a non-lazy wake
-
-Fix by holding nocb_gp_lock when observing the state of all rdps. If any
-rdp queued a non-lazy CB, we would do a wake up of the main gp thread.
-
-This should address the race Frederick reported (which could effect both
-non-lazy CBs using the bypass list, and lazy CBs, though lazy CBs much
-more noticeably).
-
-Quoting from Frederic's email:
-
-1) rdp(1) has lazy callbacks
-2) all other rdp's have no callback at all
-3) nocb_gp_wait() runs through all rdp's, everything is handled, except for
-   these lazy callbacks
-4) It reaches the above path, ready to arm the RCU_NOCB_WAKE_LAZY timer,
-   but it hasn't yet called wake_nocb_gp_defer()
-5) Oh but rdp(2) queues a non-lazy callback. interrupts are disabled so it defers
-   the wake up to nocb_gp_wait() with arming the timer in RCU_NOCB_WAKE.
-6) nocb_gp_wait() finally calls wake_nocb_gp_defer() and override the timeout
-   to several seconds ahead.
-7) No more callbacks queued, the non-lazy callback will have to wait several
-   seconds to complete.
-
-Here, the nocb gp lock is held when #4 happens. So the deferred wakeup
-on #5 has to wait till #4 finishes.
-
-Reported-by: Frederic Weisbecker <fweisbec@gmail.com>
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
----
- kernel/rcu/tree_nocb.h | 28 ++++++++++++++++++++++------
- 1 file changed, 22 insertions(+), 6 deletions(-)
-
-diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index 8b46442e4473..6690ece8fe20 100644
---- a/kernel/rcu/tree_nocb.h
-+++ b/kernel/rcu/tree_nocb.h
-@@ -285,14 +285,15 @@ EXPORT_SYMBOL(rcu_lazy_get_jiffies_till_flush);
-  * Arrange to wake the GP kthread for this NOCB group at some future
-  * time when it is safe to do so.
-  */
--static void wake_nocb_gp_defer(struct rcu_data *rdp, int waketype,
--			       const char *reason)
-+static void __wake_nocb_gp_defer(struct rcu_data *rdp, int waketype,
-+			       const char *reason, bool locked)
- {
- 	unsigned long flags;
- 	struct rcu_data *rdp_gp = rdp->nocb_gp_rdp;
- 	unsigned long mod_jif = 0;
- 
--	raw_spin_lock_irqsave(&rdp_gp->nocb_gp_lock, flags);
-+	if (!locked)
-+		raw_spin_lock_irqsave(&rdp_gp->nocb_gp_lock, flags);
- 
- 	/*
- 	 * Bypass and lazy wakeup overrides previous deferments. In case of
-@@ -323,11 +324,23 @@ static void wake_nocb_gp_defer(struct rcu_data *rdp, int waketype,
- 	if (rdp_gp->nocb_defer_wakeup < waketype)
- 		WRITE_ONCE(rdp_gp->nocb_defer_wakeup, waketype);
- 
--	raw_spin_unlock_irqrestore(&rdp_gp->nocb_gp_lock, flags);
-+	if (!locked)
-+		raw_spin_unlock_irqrestore(&rdp_gp->nocb_gp_lock, flags);
- 
- 	trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, reason);
- }
- 
-+static void wake_nocb_gp_defer(struct rcu_data *rdp, int waketype,
-+		const char *reason) {
-+	__wake_nocb_gp_defer(rdp, waketype, reason, false);
-+}
-+
-+
-+static void wake_nocb_gp_defer_locked(struct rcu_data *rdp, int waketype,
-+		const char *reason) {
-+	__wake_nocb_gp_defer(rdp, waketype, reason, true);
-
-+
- /*
-  * Flush the ->nocb_bypass queue into ->cblist, enqueuing rhp if non-NULL.
-  * However, if there is a callback to be enqueued and if ->nocb_bypass
-@@ -754,6 +767,8 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
- 	 * is added to the list, so the skipped-over rcu_data structures
- 	 * won't be ignored for long.
- 	 */
-+
-+	raw_spin_lock_irqsave(&my_rdp->nocb_gp_lock, flags);
- 	list_for_each_entry_rcu(rdp, &my_rdp->nocb_head_rdp, nocb_entry_rdp, 1) {
- 		bool needwake_state = false;
- 		bool flush_bypass = false;
-@@ -855,14 +870,15 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
- 		// If bypass list only has lazy CBs. Add a deferred
- 		// lazy wake up.
- 		if (lazy && !bypass) {
--			wake_nocb_gp_defer(my_rdp, RCU_NOCB_WAKE_LAZY,
-+			wake_nocb_gp_defer_locked(my_rdp, RCU_NOCB_WAKE_LAZY,
- 					TPS("WakeLazyIsDeferred"));
- 		// Otherwise add a deferred bypass wake up.
- 		} else if (bypass) {
--			wake_nocb_gp_defer(my_rdp, RCU_NOCB_WAKE_BYPASS,
-+			wake_nocb_gp_defer_locked(my_rdp, RCU_NOCB_WAKE_BYPASS,
- 					TPS("WakeBypassIsDeferred"));
- 		}
- 	}
-+	raw_spin_unlock_irqrestore(&my_rdp->nocb_gp_lock, flags);
- 
- 	if (rcu_nocb_poll) {
- 		/* Polling, so trace if first poll in the series. */
--- 
-2.37.2.789.g6183377224-goog
-
