@@ -2,164 +2,74 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B57FECAAD5
-	for <rcu@archiver.kernel.org>; Mon,  5 Sep 2022 03:54:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E7157C6FA86
+	for <rcu@archiver.kernel.org>; Mon,  5 Sep 2022 09:08:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234778AbiIEDyJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 4 Sep 2022 23:54:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49294 "EHLO
+        id S237641AbiIEJIT (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 5 Sep 2022 05:08:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232198AbiIEDyH (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 4 Sep 2022 23:54:07 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F3881A3BA;
-        Sun,  4 Sep 2022 20:54:06 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id bx38so7917149ljb.10;
-        Sun, 04 Sep 2022 20:54:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=EO9cXvZpaINegPiNkQW8Jq/6uz9vUDKC0ucIfZt4MuU=;
-        b=DuE+pMDxJr8BWfHfLyiVSf4CHnvzuqVwOt1OoxmkJKqIko2jTVqD3AWm6u/33u1mWG
-         YBnzCGA+wfjkRIuwuMsHLSZU3mIcHFnZS2SMsPQahbWlhD6c4zbRhRBXzACX7Z9rAVJi
-         P3pDjqJKjpRM9mN7BVx2QUnn5eBT8y89LpJCBcghUGm6qmlNZwBV8T2RrX86DlqyO1W+
-         uuzczll5JmQqHOJ7wnX+13Gik+zhquZ5PQhvlE7hIRyiPetv7rMEkP43AP3RTBtY9NE1
-         xCswrqCgAhV3OkxTzm2UwgqWHSqmprJWIs4eoG4c+uuUvmCK8uInJgkhoXp+9wCIwnQ4
-         x+iA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=EO9cXvZpaINegPiNkQW8Jq/6uz9vUDKC0ucIfZt4MuU=;
-        b=eRuMKXbi8FSd5LUXkGUrCeg8S+YttIsQW+3ZUNPuBk1QDvuKfy5fhj5j/ffzytFzGb
-         irLhKfBfhtN0XIzUTwxmugsOvjgFFLvICQy58b5qCTX+STmRDVBygC3gs5MR5Ef4ZcXs
-         cd+YHt4GlaIwOYEkGhyupSda0kfD4AfOW8Nog+U4QwTXKQ2Ht8MQNiuGCzJgb6lcpsxI
-         I9VUmvg7nBYIrfmWWqEvmJofHrjPv+U+H2bsFwud83u84a6n5C21h5B9+absQaO9oph7
-         J7nAL0LymcxvDdPnUzohiL7VLy8rwtfWkHblEwrzQ2AFOz4ZkXaAjpIny5kPQ9yNucK0
-         Cp7A==
-X-Gm-Message-State: ACgBeo0HSNPW6OX9gBxE5YNXNsBRO2pQBp4igZyj8evWkoQoICbymviz
-        SDXTrxgLqr3s7n2zFLgXg3aDRK7iyamfpTXGAa/17J8BJ7py
-X-Google-Smtp-Source: AA6agR7ofiw+M0kfm5zOIunpVJxULlxJQ/yEwVOxRIUYlRpULWr8k5W1qtf4lXQffluXHuitUXkdecmo1MQPzd/8lh8=
-X-Received: by 2002:a05:651c:1112:b0:268:a0ad:ac1d with SMTP id
- e18-20020a05651c111200b00268a0adac1dmr5494717ljo.261.1662350044124; Sun, 04
- Sep 2022 20:54:04 -0700 (PDT)
+        with ESMTP id S234357AbiIEJIS (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 5 Sep 2022 05:08:18 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA88A4F690;
+        Mon,  5 Sep 2022 02:08:17 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 620016118A;
+        Mon,  5 Sep 2022 09:08:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A450C433D6;
+        Mon,  5 Sep 2022 09:08:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1662368896;
+        bh=S2p2RLiAi4qCOG2G2v8yboDeC5W0c2K+DwY7rJTXPE4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oAodLkEOM0uh9XXgMZ1gMB2ypQ+Jr4jGT+WX2Sm6hs4rY6kJ9FlHK42AISP3LPvO7
+         SuxEXRjHelJGM0mGwfPh9vvheHyViVXD7rAXRukwnMA+suY0Au1gHhS0PnNg4QDK5t
+         4/X5aQPCF/D3rZGiNQO7ij28tAFsmMc4lmm9Om1VX8ZDHdVPUzW2WmnfIEcOwUUgwy
+         szAWlZAncDiemkJdYCu44iFFsYlnajlKlZcYbF+c+UjKz/F/W8dZ8044zugYQbowbz
+         +74P5CeiCLJlb1w4bIAs3Ek+Kh+stJQYQmAzXhyPO6ox2YJ+FDxBVkuONtA1Xy1sFv
+         RHXh8nEE0cnSw==
+Date:   Mon, 5 Sep 2022 11:08:11 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Ondrej Mosnacek <omosnace@redhat.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Martin Pitt <mpitt@redhat.com>, Vasily Averin <vvs@openvz.org>
+Subject: Re: [PATCH 0/2] fs: fix capable() call in simple_xattr_list()
+Message-ID: <20220905090811.ocnnc53y2bow7m3i@wittgenstein>
+References: <20220901152632.970018-1-omosnace@redhat.com>
 MIME-Version: 1.0
-References: <20220822021520.6996-1-kernelfans@gmail.com> <20220822021520.6996-7-kernelfans@gmail.com>
- <20220822024528.GC6159@paulmck-ThinkPad-P17-Gen-1> <YwQygLBtzqwxuMIJ@piliu.users.ipa.redhat.com>
- <20220823030125.GJ6159@paulmck-ThinkPad-P17-Gen-1> <CAFgQCTup0uTqnKi79Tu+5Q0POYVdcE4UkGes8KfHXBd6VR552A@mail.gmail.com>
- <20220824162050.GA6159@paulmck-ThinkPad-P17-Gen-1> <20220831161522.GA2582451@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20220831161522.GA2582451@paulmck-ThinkPad-P17-Gen-1>
-From:   Pingfan Liu <kernelfans@gmail.com>
-Date:   Mon, 5 Sep 2022 11:53:52 +0800
-Message-ID: <CAFgQCTuNw3sdO=X1KNHkTZW8YvK8xo4bmTxyN_uJ9=kkWOW=zw@mail.gmail.com>
-Subject: Re: [RFC 06/10] rcu/hotplug: Make rcutree_dead_cpu() parallel
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Price <steven.price@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>, boqun.feng@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20220901152632.970018-1-omosnace@redhat.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Sep 1, 2022 at 12:15 AM Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> On Wed, Aug 24, 2022 at 09:20:50AM -0700, Paul E. McKenney wrote:
-> > On Wed, Aug 24, 2022 at 09:53:11PM +0800, Pingfan Liu wrote:
-> > > On Tue, Aug 23, 2022 at 11:01 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > > On Tue, Aug 23, 2022 at 09:50:56AM +0800, Pingfan Liu wrote:
-> > > > > On Sun, Aug 21, 2022 at 07:45:28PM -0700, Paul E. McKenney wrote:
-> > > > > > On Mon, Aug 22, 2022 at 10:15:16AM +0800, Pingfan Liu wrote:
-> > > > > > > In order to support parallel, rcu_state.n_online_cpus should be
-> > > > > > > atomic_dec()
-> > > > > > >
-> > > > > > > Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
-> > > > > >
-> > > > > > I have to ask...  What testing have you subjected this patch to?
-> > > > > >
-> > > > >
-> > > > > This patch subjects to [1]. The series aims to enable kexec-reboot in
-> > > > > parallel on all cpu. As a result, the involved RCU part is expected to
-> > > > > support parallel.
-> > > >
-> > > > I understand (and even sympathize with) the expectation.  But results
-> > > > sometimes diverge from expectations.  There have been implicit assumptions
-> > > > in RCU about only one CPU going offline at a time, and I am not sure
-> > > > that all of them have been addressed.  Concurrent CPU onlining has
-> > > > been looked at recently here:
-> > > >
-> > > > https://docs.google.com/document/d/1jymsaCPQ1PUDcfjIKm0UIbVdrJAaGX-6cXrmcfm0PRU/edit?usp=sharing
-> > > >
-> > > > You did us atomic_dec() to make rcu_state.n_online_cpus decrementing be
-> > > > atomic, which is good.  Did you look through the rest of RCU's CPU-offline
-> > > > code paths and related code paths?
-> > >
-> > > I went through those codes at a shallow level, especially at each
-> > > cpuhp_step hook in the RCU system.
-> >
-> > And that is fine, at least as a first step.
-> >
-> > > But as you pointed out, there are implicit assumptions about only one
-> > > CPU going offline at a time, I will chew the google doc which you
-> > > share.  Then I can come to a final result.
-> >
-> > Boqun Feng, Neeraj Upadhyay, Uladzislau Rezki, and I took a quick look,
-> > and rcu_boost_kthread_setaffinity() seems to need some help.  As it
-> > stands, it appears that concurrent invocations of this function from the
-> > CPU-offline path will cause all but the last outgoing CPU's bit to be
-> > (incorrectly) set in the cpumask_var_t passed to set_cpus_allowed_ptr().
-> >
-> > This should not be difficult to fix, for example, by maintaining a
-> > separate per-leaf-rcu_node-structure bitmask of the concurrently outgoing
-> > CPUs for that rcu_node structure.  (Similar in structure to the
-> > ->qsmask field.)
-> >
+On Thu, Sep 01, 2022 at 05:26:30PM +0200, Ondrej Mosnacek wrote:
+> The goal of these patches is to avoid calling capable() unconditionally
+> in simple_xattr_list(), which causes issues under SELinux (see
+> explanation in the second patch).
+> 
+> The first patch tries to make this change safer by converting
+> simple_xattrs to use the RCU mechanism, so that capable() is not called
+> while the xattrs->lock is held. I didn't find evidence that this is an
+> issue in the current code, but it can't hurt to make that change
+> either way (and it was quite straightforward).
 
-Sorry to reply late, since I am interrupted by some other things.
-I have took a different way and posted a series ([PATCH 1/3] rcu:
-remove redundant cpu affinity setting during teardown) for that on
-https://lore.kernel.org/rcu/20220905033852.18988-1-kernelfans@gmail.com/T/#t
+Hey Ondrey,
 
-Besides, for the integration of the concurrency cpu hot-removing into
-the rcu torture test, I begin to do it.
+There's another patchset I'd like to see first which switches from a
+linked list to an rbtree to get rid of performance issues in this code
+that can be used to dos tmpfs in containers:
 
-> > There are probably more where that one came from.  ;-)
->
-> And here is one more from this week's session.
->
+https://lore.kernel.org/lkml/d73bd478-e373-f759-2acb-2777f6bba06f@openvz.org
 
-Thanks for the update.
+I don't think Vasily has time to continue with this so I'll just pick it
+up hopefully this or the week after LPC.
 
-> The calls to tick_dep_set() and tick_dep_clear() use atomic operations,
-> but they operate on a global variable.  This means that the first call
-> to rcutree_offline_cpu() would enable the tick and the first call to
-> rcutree_dead_cpu() would disable the tick.  This might be OK, but it
-> is at the very least bad practice.  There needs to be a counter
-> mediating these calls.
->
-
-I will see what I can do here.
-
-> For more detail, please see the Google document:
->
-> https://docs.google.com/document/d/1jymsaCPQ1PUDcfjIKm0UIbVdrJAaGX-6cXrmcfm0PRU/edit?usp=sharing
->
-
-Have read it and hope that both online and offline concurrency can
-come to true in near future.
-
-Thanks,
-
-    Pingfan
+Christian
