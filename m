@@ -2,57 +2,60 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C6ECECAAA1
-	for <rcu@archiver.kernel.org>; Mon,  5 Sep 2022 03:39:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B57FECAAD5
+	for <rcu@archiver.kernel.org>; Mon,  5 Sep 2022 03:54:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235618AbiIEDjT (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 4 Sep 2022 23:39:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60416 "EHLO
+        id S234778AbiIEDyJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 4 Sep 2022 23:54:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230013AbiIEDjS (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 4 Sep 2022 23:39:18 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2F272ED50
-        for <rcu@vger.kernel.org>; Sun,  4 Sep 2022 20:39:16 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id b196so7024094pga.7
-        for <rcu@vger.kernel.org>; Sun, 04 Sep 2022 20:39:16 -0700 (PDT)
+        with ESMTP id S232198AbiIEDyH (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 4 Sep 2022 23:54:07 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F3881A3BA;
+        Sun,  4 Sep 2022 20:54:06 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id bx38so7917149ljb.10;
+        Sun, 04 Sep 2022 20:54:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
-        bh=qxkPzWWZI92LxvOm1fKr9hzMe+kooWrVanvPGMIZF1Y=;
-        b=hRKyV0j0Vpa127A0xdJNV/mPFlFEPGv7yHytbIw8lt3bStgKQ2hH/Sp7EbgkQ+2KMY
-         JKmqU8jJwn8Zw0XBa0c9h3PVmjev2Ztf756o7ew8dVBtX6JvJ3nxvsbM8oIHigCMF1g7
-         3jfJuS64h8GjrAsX+jDKly6g53O3VtfRtsjXRszX2dS5PNEDa2vznif6vod0L+ttFMYW
-         3/LZtaWyJC1UehsLY1C9gjuU7biiXBJ+LFhLtYiOX/81TN6nC8nQeT3xDnd+qlFZm9Vl
-         M+1S55OgW1awoxzE9NuAQA2HQSAbG+gRllD8LmJq4larksV2NZvSgpgHhv5I8yBd23c+
-         3SNQ==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=EO9cXvZpaINegPiNkQW8Jq/6uz9vUDKC0ucIfZt4MuU=;
+        b=DuE+pMDxJr8BWfHfLyiVSf4CHnvzuqVwOt1OoxmkJKqIko2jTVqD3AWm6u/33u1mWG
+         YBnzCGA+wfjkRIuwuMsHLSZU3mIcHFnZS2SMsPQahbWlhD6c4zbRhRBXzACX7Z9rAVJi
+         P3pDjqJKjpRM9mN7BVx2QUnn5eBT8y89LpJCBcghUGm6qmlNZwBV8T2RrX86DlqyO1W+
+         uuzczll5JmQqHOJ7wnX+13Gik+zhquZ5PQhvlE7hIRyiPetv7rMEkP43AP3RTBtY9NE1
+         xCswrqCgAhV3OkxTzm2UwgqWHSqmprJWIs4eoG4c+uuUvmCK8uInJgkhoXp+9wCIwnQ4
+         x+iA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date;
-        bh=qxkPzWWZI92LxvOm1fKr9hzMe+kooWrVanvPGMIZF1Y=;
-        b=a6RFqGRYVphexqoJehw54e/YZYW9TkhappSkpAoGP/ACOWTobA5JDKYPVJXdyedUuF
-         H6pclHZB2ceOolN97jMHQnLnUd9GUGtSOsi8kK0nY+rH7+3KP1Q9ky/6gcVXL6P8Jaix
-         txTlpmhuk+ECoP2kvc8QpUExgvI4A7pvBRO5CYSTQt10Yazpf1jPnc2gTdqm3UXhRCgQ
-         uv+7e73InznpQBRh8r99RtuZ1FO09gP6ld1C9OmGrd18wf3uNsAAdl8MzvwvoUACa78T
-         1vzW6Qq7dUvFPVfYxLMldp+2pFSjnKUG7h/SGCRu0q9rLYuNWr8qCETD2k5j4/h4ozOE
-         FpKw==
-X-Gm-Message-State: ACgBeo1+l8U449GPqYR35MMgR2744/GIQwEg2ISknhQ75//BskbbOKL3
-        UhPX90a2XTm/z3aweaGgwz1L3CdlT001QUo=
-X-Google-Smtp-Source: AA6agR4LLcd9oIDcxCtr/9bJXEI8SFWV1McZoV8UoI6XCXklpXIkxDjyrq6vnhXNIs9kD+PISpsSjA==
-X-Received: by 2002:a63:5007:0:b0:42a:29:2780 with SMTP id e7-20020a635007000000b0042a00292780mr39591460pgb.45.1662349155957;
-        Sun, 04 Sep 2022 20:39:15 -0700 (PDT)
-Received: from piliu.users.ipa.redhat.com ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id o11-20020a62cd0b000000b0052cc561f320sm6403467pfg.54.2022.09.04.20.39.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Sep 2022 20:39:15 -0700 (PDT)
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=EO9cXvZpaINegPiNkQW8Jq/6uz9vUDKC0ucIfZt4MuU=;
+        b=eRuMKXbi8FSd5LUXkGUrCeg8S+YttIsQW+3ZUNPuBk1QDvuKfy5fhj5j/ffzytFzGb
+         irLhKfBfhtN0XIzUTwxmugsOvjgFFLvICQy58b5qCTX+STmRDVBygC3gs5MR5Ef4ZcXs
+         cd+YHt4GlaIwOYEkGhyupSda0kfD4AfOW8Nog+U4QwTXKQ2Ht8MQNiuGCzJgb6lcpsxI
+         I9VUmvg7nBYIrfmWWqEvmJofHrjPv+U+H2bsFwud83u84a6n5C21h5B9+absQaO9oph7
+         J7nAL0LymcxvDdPnUzohiL7VLy8rwtfWkHblEwrzQ2AFOz4ZkXaAjpIny5kPQ9yNucK0
+         Cp7A==
+X-Gm-Message-State: ACgBeo0HSNPW6OX9gBxE5YNXNsBRO2pQBp4igZyj8evWkoQoICbymviz
+        SDXTrxgLqr3s7n2zFLgXg3aDRK7iyamfpTXGAa/17J8BJ7py
+X-Google-Smtp-Source: AA6agR7ofiw+M0kfm5zOIunpVJxULlxJQ/yEwVOxRIUYlRpULWr8k5W1qtf4lXQffluXHuitUXkdecmo1MQPzd/8lh8=
+X-Received: by 2002:a05:651c:1112:b0:268:a0ad:ac1d with SMTP id
+ e18-20020a05651c111200b00268a0adac1dmr5494717ljo.261.1662350044124; Sun, 04
+ Sep 2022 20:54:04 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220822021520.6996-1-kernelfans@gmail.com> <20220822021520.6996-7-kernelfans@gmail.com>
+ <20220822024528.GC6159@paulmck-ThinkPad-P17-Gen-1> <YwQygLBtzqwxuMIJ@piliu.users.ipa.redhat.com>
+ <20220823030125.GJ6159@paulmck-ThinkPad-P17-Gen-1> <CAFgQCTup0uTqnKi79Tu+5Q0POYVdcE4UkGes8KfHXBd6VR552A@mail.gmail.com>
+ <20220824162050.GA6159@paulmck-ThinkPad-P17-Gen-1> <20220831161522.GA2582451@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20220831161522.GA2582451@paulmck-ThinkPad-P17-Gen-1>
 From:   Pingfan Liu <kernelfans@gmail.com>
-To:     rcu@vger.kernel.org
-Cc:     Pingfan Liu <kernelfans@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        David Woodhouse <dwmw@amazon.co.uk>,
+Date:   Mon, 5 Sep 2022 11:53:52 +0800
+Message-ID: <CAFgQCTuNw3sdO=X1KNHkTZW8YvK8xo4bmTxyN_uJ9=kkWOW=zw@mail.gmail.com>
+Subject: Re: [RFC 06/10] rcu/hotplug: Make rcutree_dead_cpu() parallel
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
         Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Josh Triplett <josh@joshtriplett.org>,
@@ -60,85 +63,103 @@ Cc:     Pingfan Liu <kernelfans@gmail.com>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: [PATCH 3/3] rcu: Keep qsmaskinitnext fresh for rcu_boost_kthread_setaffinity()
-Date:   Mon,  5 Sep 2022 11:38:52 +0800
-Message-Id: <20220905033852.18988-3-kernelfans@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20220905033852.18988-1-kernelfans@gmail.com>
-References: <20220905033852.18988-1-kernelfans@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Price <steven.price@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>, boqun.feng@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-rcutree_online_cpu() is concurrent, so there is the following race
-scene:
+On Thu, Sep 1, 2022 at 12:15 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+>
+> On Wed, Aug 24, 2022 at 09:20:50AM -0700, Paul E. McKenney wrote:
+> > On Wed, Aug 24, 2022 at 09:53:11PM +0800, Pingfan Liu wrote:
+> > > On Tue, Aug 23, 2022 at 11:01 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+> > > > On Tue, Aug 23, 2022 at 09:50:56AM +0800, Pingfan Liu wrote:
+> > > > > On Sun, Aug 21, 2022 at 07:45:28PM -0700, Paul E. McKenney wrote:
+> > > > > > On Mon, Aug 22, 2022 at 10:15:16AM +0800, Pingfan Liu wrote:
+> > > > > > > In order to support parallel, rcu_state.n_online_cpus should be
+> > > > > > > atomic_dec()
+> > > > > > >
+> > > > > > > Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+> > > > > >
+> > > > > > I have to ask...  What testing have you subjected this patch to?
+> > > > > >
+> > > > >
+> > > > > This patch subjects to [1]. The series aims to enable kexec-reboot in
+> > > > > parallel on all cpu. As a result, the involved RCU part is expected to
+> > > > > support parallel.
+> > > >
+> > > > I understand (and even sympathize with) the expectation.  But results
+> > > > sometimes diverge from expectations.  There have been implicit assumptions
+> > > > in RCU about only one CPU going offline at a time, and I am not sure
+> > > > that all of them have been addressed.  Concurrent CPU onlining has
+> > > > been looked at recently here:
+> > > >
+> > > > https://docs.google.com/document/d/1jymsaCPQ1PUDcfjIKm0UIbVdrJAaGX-6cXrmcfm0PRU/edit?usp=sharing
+> > > >
+> > > > You did us atomic_dec() to make rcu_state.n_online_cpus decrementing be
+> > > > atomic, which is good.  Did you look through the rest of RCU's CPU-offline
+> > > > code paths and related code paths?
+> > >
+> > > I went through those codes at a shallow level, especially at each
+> > > cpuhp_step hook in the RCU system.
+> >
+> > And that is fine, at least as a first step.
+> >
+> > > But as you pointed out, there are implicit assumptions about only one
+> > > CPU going offline at a time, I will chew the google doc which you
+> > > share.  Then I can come to a final result.
+> >
+> > Boqun Feng, Neeraj Upadhyay, Uladzislau Rezki, and I took a quick look,
+> > and rcu_boost_kthread_setaffinity() seems to need some help.  As it
+> > stands, it appears that concurrent invocations of this function from the
+> > CPU-offline path will cause all but the last outgoing CPU's bit to be
+> > (incorrectly) set in the cpumask_var_t passed to set_cpus_allowed_ptr().
+> >
+> > This should not be difficult to fix, for example, by maintaining a
+> > separate per-leaf-rcu_node-structure bitmask of the concurrently outgoing
+> > CPUs for that rcu_node structure.  (Similar in structure to the
+> > ->qsmask field.)
+> >
 
-        CPU 1                               CPU2
-mask_old = rcu_rnp_online_cpus(rnp);
-...
+Sorry to reply late, since I am interrupted by some other things.
+I have took a different way and posted a series ([PATCH 1/3] rcu:
+remove redundant cpu affinity setting during teardown) for that on
+https://lore.kernel.org/rcu/20220905033852.18988-1-kernelfans@gmail.com/T/#t
 
-                                   mask_new = rcu_rnp_online_cpus(rnp);
-                                   ...
-                                   set_cpus_allowed_ptr(t, cm);
+Besides, for the integration of the concurrency cpu hot-removing into
+the rcu torture test, I begin to do it.
 
-set_cpus_allowed_ptr(t, cm);
+> > There are probably more where that one came from.  ;-)
+>
+> And here is one more from this week's session.
+>
 
-Consequently, the old mask will overwrite the new mask in the task's cpus_ptr.
+Thanks for the update.
 
-Since there is a mutex ->boost_kthread_mutex, using it to build an
-order, then the latest ->qsmaskinitnext will be fetched for updating cpus_ptr.
+> The calls to tick_dep_set() and tick_dep_clear() use atomic operations,
+> but they operate on a global variable.  This means that the first call
+> to rcutree_offline_cpu() would enable the tick and the first call to
+> rcutree_dead_cpu() would disable the tick.  This might be OK, but it
+> is at the very least bad practice.  There needs to be a counter
+> mediating these calls.
+>
 
-Notes about the cpu teardown: The cpu hot-removing initiator executes
-rcutree_dead_cpu() for the teardown cpu. If in future, an initiator can
-hot-remove several cpus at a time, it executes rcutree_dead_cpu() in
-series for each cpu. So it is still race-free without the mutex.  But
-considering this is a cold path, applying that redundant mutex is
-harmless.
+I will see what I can do here.
 
-Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: David Woodhouse <dwmw@amazon.co.uk>
-Cc: Frederic Weisbecker <frederic@kernel.org>
-Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
-Cc: Josh Triplett <josh@joshtriplett.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-Cc: Joel Fernandes <joel@joelfernandes.org>
-Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>
-To: rcu@vger.kernel.org
----
- kernel/rcu/tree_plugin.h | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+> For more detail, please see the Google document:
+>
+> https://docs.google.com/document/d/1jymsaCPQ1PUDcfjIKm0UIbVdrJAaGX-6cXrmcfm0PRU/edit?usp=sharing
+>
 
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 0bf6de185af5..b868ac6c6ac8 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -1223,7 +1223,7 @@ static void rcu_spawn_one_boost_kthread(struct rcu_node *rnp)
- static void rcu_boost_kthread_setaffinity(struct rcu_node *rnp)
- {
- 	struct task_struct *t = rnp->boost_kthread_task;
--	unsigned long mask = rcu_rnp_online_cpus(rnp);
-+	unsigned long mask;
- 	cpumask_var_t cm;
- 	int cpu;
- 
-@@ -1232,6 +1232,11 @@ static void rcu_boost_kthread_setaffinity(struct rcu_node *rnp)
- 	if (!zalloc_cpumask_var(&cm, GFP_KERNEL))
- 		return;
- 	mutex_lock(&rnp->boost_kthread_mutex);
-+	/*
-+	 * Relying on the lock to serialize, so the latest qsmaskinitnext is for
-+	 * cpus_ptr.
-+	 */
-+	mask = rcu_rnp_online_cpus(rnp);
- 	for_each_leaf_node_possible_cpu(rnp, cpu)
- 		if ((mask & leaf_node_cpu_bit(rnp, cpu)))
- 			cpumask_set_cpu(cpu, cm);
--- 
-2.31.1
+Have read it and hope that both online and offline concurrency can
+come to true in near future.
 
+Thanks,
+
+    Pingfan
