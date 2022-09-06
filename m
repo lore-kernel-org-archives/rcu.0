@@ -2,216 +2,181 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B6864ECAAA1
-	for <rcu@archiver.kernel.org>; Tue,  6 Sep 2022 15:55:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 74B9DECAAA1
+	for <rcu@archiver.kernel.org>; Tue,  6 Sep 2022 15:59:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233983AbiIFPza (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 6 Sep 2022 11:55:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44882 "EHLO
+        id S230145AbiIFP73 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 6 Sep 2022 11:59:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238981AbiIFPxy (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 6 Sep 2022 11:53:54 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D1271008
-        for <rcu@vger.kernel.org>; Tue,  6 Sep 2022 08:11:04 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        with ESMTP id S239107AbiIFP7F (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 6 Sep 2022 11:59:05 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33912B867;
+        Tue,  6 Sep 2022 08:18:02 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 866D6338D0;
-        Tue,  6 Sep 2022 15:11:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1662477063; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LPaHQ3M5+5/BONmV+6B5JimVTvwkYKLaJSJYL4MX8Kg=;
-        b=CUkBu/Jb6RNdsqplMUQmsWy7gbwV3GnTXDfWCqVGQTaxv8NYXIWeQnfeE1cKj21BfsvR1u
-        8yQY2ECMeuhlajw0JS3OzGm2G1zgnrpZSz1/z+RDwl3qAilNzbetEkTJzQyKzkLOoPKv/8
-        vsIm2Ww7Ua91V7bnXPJsTjvVAA0xhKI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1662477063;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LPaHQ3M5+5/BONmV+6B5JimVTvwkYKLaJSJYL4MX8Kg=;
-        b=7U/RrsKInh/2JYqsgZgrgpsU4M19oMb9JhTtm/oXBuIg8C+MFo7yVwIXbRgP2Ju4x6fqqA
-        iZZmKLJc0qnb+rAg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 53AEE13A7A;
-        Tue,  6 Sep 2022 15:11:03 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id wIaCEwdjF2OcEwAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Tue, 06 Sep 2022 15:11:03 +0000
-Message-ID: <416149c0-1e18-0e00-d116-dd3738957556@suse.cz>
-Date:   Tue, 6 Sep 2022 17:11:02 +0200
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C7C1361584;
+        Tue,  6 Sep 2022 15:18:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6394C433D6;
+        Tue,  6 Sep 2022 15:18:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1662477481;
+        bh=6bXYrJvn3otuSLF3aA7hYluot/Fn9Xe12IYghkcz9pc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sUeBZKlIOyqiOkXEFtxsynBhXtE/f/0WKVZ/n+Hmvl2nSM5qc+x+gGnEBQd2yKjo6
+         6rcgtiUp5izbkqdEo15Eyl1uVBE3VKUDekkyOe0ztTRodGoa4PVwuCHffIwd5HtxyO
+         EGZL2fiXOrWURihOCV/xYy9L3nN0LiBYSnSqjgBV0DtGIOAQa04nHRzx0PNp26SLvs
+         ltoWH7/JpG2PMO1ogPZHihQHg6DDEfBDiq+nNRgvuEy8+VVYF6l+ZzkNIOC+1cbjsM
+         xFVzTsUGAZEQm1fEaoXkr1374V+fSEYeEWiXn4tZPciZObznIDf84HNkSAY1oYXBgh
+         DB6Sdq2bvCM/A==
+Date:   Tue, 6 Sep 2022 17:17:57 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rushikesh.s.kadam@intel.com, urezki@gmail.com,
+        neeraj.iitr10@gmail.com, paulmck@kernel.org, rostedt@goodmis.org,
+        vineeth@bitbyteword.org, boqun.feng@gmail.com
+Subject: Re: [PATCH v5 06/18] rcu: Introduce call_rcu_lazy() API
+ implementation
+Message-ID: <20220906151757.GA183806@lothringen>
+References: <20220901221720.1105021-1-joel@joelfernandes.org>
+ <20220901221720.1105021-7-joel@joelfernandes.org>
+ <20220902152132.GA115525@lothringen>
+ <Yxa5Ch574cRZxRdo@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.1
-Subject: Re: [mm/sl[au]b] 3c4cafa313: canonical_address#:#[##]
-Content-Language: en-US
-To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        kernel test robot <yujie.liu@intel.com>
-Cc:     lkp@lists.01.org, lkp@intel.com,
-        Joel Fernandes <joel@joelfernandes.org>, linux-mm@kvack.org,
-        rcu@vger.kernel.org, paulmck@kernel.org,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>
-References: <20220906074548.GA72649@inn2.lkp.intel.com>
- <208c1757-5edd-fd42-67d4-1940cc43b50f@intel.com> <YxdfpTDdfBt6VIpo@hyeyoo>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <YxdfpTDdfBt6VIpo@hyeyoo>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Yxa5Ch574cRZxRdo@google.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 9/6/22 16:56, Hyeonggon Yoo wrote:
-> On Tue, Sep 06, 2022 at 03:51:01PM +0800, kernel test robot wrote:
->> Greeting,
->>
->> FYI, we noticed the following commit (built with gcc-11):
->>
->> commit: 3c4cafa313d978b31a1d5dc17c323074b19a1d63 ("mm/sl[au]b: rearrange struct slab fields to allow larger rcu_head")
->> git://git.kernel.org/cgit/linux/kernel/git/vbabka/slab.git for-6.1/fit_rcu_head
->>
->> in testcase: fio-basic
->> version: fio-x86_64-3.15-1_20220903
->> with following parameters:
->>
->> 	disk: 2pmem
->> 	fs: xfs
->> 	runtime: 200s
->> 	nr_task: 50%
->> 	time_based: tb
->> 	rw: randrw
->> 	bs: 2M
->> 	ioengine: mmap
->> 	test_size: 200G
->> 	cpufreq_governor: performance
->>
->> test-description: Fio is a tool that will spawn a number of threads or processes doing a particular type of I/O action as specified by the user.
->> test-url:https://github.com/axboe/fio
->>
->>
->> on test machine: 96 threads 2 sockets Intel(R) Xeon(R) Gold 6252 CPU @ 2.10GHz (Cascade Lake) with 512G memory
->>
->> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
->>
->>
->> [  304.700893][   C40] perf: interrupt took too long (12747 > 12477), lowering kernel.perf_event_max_sample_rate to 15000
->> [  305.015834][   C40] perf: interrupt took too long (15947 > 15933), lowering kernel.perf_event_max_sample_rate to 12000
->> [  305.954702][   C40] perf: interrupt took too long (19968 > 19933), lowering kernel.perf_event_max_sample_rate to 10000
->> [  309.554949][   C31] perf: interrupt took too long (25118 > 24960), lowering kernel.perf_event_max_sample_rate to 7000
->> [  315.068744][   C95] sched: RT throttling activated
->> [  317.121806][  T590] general protection fault, probably for non-canonical address 0xdead000000000120: 0000 [#1] SMP NOPTI
->> [  317.133291][  T590] CPU: 61 PID: 590 Comm: kcompactd0 Tainted: G S                 6.0.0-rc2-00002-g3c4cafa313d9 #1
->> [  317.144084][  T590] Hardware name: Intel Corporation S2600WFT/S2600WFT, BIOS SE5C620.86B.02.01.0008.031920191559 03/19/2019
->> [ 317.155668][ T590] RIP: 0010:isolate_movable_page (mm/migrate.c:103)
->> [ 317.162016][ T590] Code: ba 28 00 0f 82 88 00 00 00 48 89 ef e8 e2 3a f8 ff 84 c0 74 74 48 8b 45 00 a9 00 00 04 00 75 69 48 8b 45 18 44 89 e6 48 89 ef <48> 8b 40 fe ff d0 0f 1f 00 84 c0 74 52 48 8b 45 00 a9 00 00 04 00
->> All code
->> ========
->>     0:	ba 28 00 0f 82       	mov    $0x820f0028,%edx
->>     5:	88 00                	mov    %al,(%rax)
->>     7:	00 00                	add    %al,(%rax)
->>     9:	48 89 ef             	mov    %rbp,%rdi
->>     c:	e8 e2 3a f8 ff       	callq  0xfffffffffff83af3
->>    11:	84 c0                	test   %al,%al
->>    13:	74 74                	je     0x89
->>    15:	48 8b 45 00          	mov    0x0(%rbp),%rax
->>    19:	a9 00 00 04 00       	test   $0x40000,%eax
->>    1e:	75 69                	jne    0x89
->>    20:	48 8b 45 18          	mov    0x18(%rbp),%rax
->>    24:	44 89 e6             	mov    %r12d,%esi
->>    27:	48 89 ef             	mov    %rbp,%rdi
->>    2a:*	48 8b 40 fe          	mov    -0x2(%rax),%rax		<-- trapping instruction
->>    2e:	ff d0                	callq  *%rax
->>    30:	0f 1f 00             	nopl   (%rax)
->>    33:	84 c0                	test   %al,%al
->>    35:	74 52                	je     0x89
->>    37:	48 8b 45 00          	mov    0x0(%rbp),%rax
->>    3b:	a9 00 00 04 00       	test   $0x40000,%eax
->>
->> Code starting with the faulting instruction
->> ===========================================
->>     0:	48 8b 40 fe          	mov    -0x2(%rax),%rax
->>     4:	ff d0                	callq  *%rax
->>     6:	0f 1f 00             	nopl   (%rax)
->>     9:	84 c0                	test   %al,%al
->>     b:	74 52                	je     0x5f
->>     d:	48 8b 45 00          	mov    0x0(%rbp),%rax
->>    11:	a9 00 00 04 00       	test   $0x40000,%eax
->> [  317.182354][  T590] RSP: 0018:ffffc9000e1d3c78 EFLAGS: 00010246
->> [  317.188668][  T590] RAX: dead000000000122 RBX: ffffea0004031034 RCX: 000000000000000c
->> [  317.196890][  T590] RDX: dead000000000101 RSI: 000000000000000c RDI: ffffea0004031000
->> [  317.205273][  T590] RBP: ffffea0004031000 R08: 0000000004031000 R09: 0000000000000004
->> [  317.213752][  T590] R10: 00000000000066b6 R11: 0000000000000004 R12: 000000000000000c
->> [  317.222384][  T590] R13: ffffea0004031000 R14: 0000000000100c40 R15: ffffc9000e1d3df0
->> [  317.230679][  T590] FS:  0000000000000000(0000) GS:ffff88c04ff40000(0000) knlGS:0000000000000000
->> [  317.239896][  T590] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> [  317.247098][  T590] CR2: 0000000000451c00 CR3: 0000008064ca4002 CR4: 00000000007706e0
->> [  317.255788][  T590] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->> [  317.264256][  T590] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->> [  317.272772][  T590] PKRU: 55555554
->> [  317.276783][  T590] Call Trace:
->> [  317.280932][  T590]  <TASK>
->> [ 317.284315][ T590] isolate_migratepages_block (mm/compaction.c:982)
->> [ 317.290702][ T590] isolate_migratepages (mm/compaction.c:1960)
->> [ 317.296278][ T590] compact_zone (mm/compaction.c:2393)
->> [ 317.301202][ T590] proactive_compact_node (mm/compaction.c:2661 (discriminator 2))
-> Hmm... Let's debug.
-> 
-> FYI, simply echo 1 > /proc/sys/vm/compact_memory invokes same bug on my test
-> environment.
-> 
-> the 'mops' is invalid address in mm/migrate.c:103.
-> 
-> Hmm, why is this slab page confused as movable page?
-> -> Because page->'mapping' and slab->slabs field has same offset.
-> 
-> I think this is invoked because lowest two bits of slab->slabs is not 0.
-> 
-> Vlastimil, any thoughts?
+On Tue, Sep 06, 2022 at 03:05:46AM +0000, Joel Fernandes wrote:
+> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> index 4dc86274b3e8..b201606f7c4f 100644
+> --- a/kernel/rcu/tree_nocb.h
+> +++ b/kernel/rcu/tree_nocb.h
+> @@ -256,6 +256,31 @@ static bool wake_nocb_gp(struct rcu_data *rdp, bool force)
+>  	return __wake_nocb_gp(rdp_gp, rdp, force, flags);
+>  }
+>  
+> +/*
+> + * LAZY_FLUSH_JIFFIES decides the maximum amount of time that
+> + * can elapse before lazy callbacks are flushed. Lazy callbacks
+> + * could be flushed much earlier for a number of other reasons
+> + * however, LAZY_FLUSH_JIFFIES will ensure no lazy callbacks are
+> + * left unsubmitted to RCU after those many jiffies.
+> + */
+> +#define LAZY_FLUSH_JIFFIES (10 * HZ)
+> +unsigned long jiffies_till_flush = LAZY_FLUSH_JIFFIES;
 
-Yeah, slabs->slabs could do that, and the remedy would be to exchange it 
-with the slab->next field.
-However the report points to the value dead000000000122 which is 
-LIST_POISON2, which unfortunately contains the lower bit after 
-4c6080cd6f8b ("lib/list: tweak LIST_POISON2 for better code generation 
-on x86_64")
+Still not static.
 
-Probably the simplest fix would be to check for PageSlab() before 
-__PageMovable().
+> @@ -293,12 +322,16 @@ static void wake_nocb_gp_defer(struct rcu_data *rdp, int waketype,
+>   * proves to be initially empty, just return false because the no-CB GP
+>   * kthread may need to be awakened in this case.
+>   *
+> + * Return true if there was something to be flushed and it succeeded, otherwise
+> + * false.
+> + *
 
-But heads up for Joel - if your rcu_head debugging info series (didn't 
-check) has something like a counter in the 3rd 64bit word, where bit 1 
-can thus be set, it can cause the same issue fooling the __PageMovable() 
-check.
+This kind of contradict the comment that follows. Not sure you need to add
+that line because the existing comment seem to cover it.
 
->>
->> If you fix the issue, kindly add following tag
->> Reported-by: kernel test robot<yujie.liu@intel.com>
->>
->>
->> To reproduce:
->>
->>          git clonehttps://github.com/intel/lkp-tests.git
->>          cd lkp-tests
->>          sudo bin/lkp install job.yaml           # job file is attached in this email
->>          bin/lkp split-job --compatible job.yaml # generate the yaml file for lkp run
->>          sudo bin/lkp run generated-yaml-file
->>
->>          # if come across any failure that blocks the test,
->>          # please remove ~/.lkp and /lkp dir to run from a clean state.
->>
->>
->> -- 
->> 0-DAY CI Kernel Test Service
->> https://01.org/lkp
+>   * Note that this function always returns true if rhp is NULL.
 
+>   */
+>  static bool rcu_nocb_do_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
+> -				     unsigned long j)
+> +				     unsigned long j, unsigned long flush_flags)
+>  {
+>  	struct rcu_cblist rcl;
+> +	bool lazy = flush_flags & FLUSH_BP_LAZY;
+>  
+>  	WARN_ON_ONCE(!rcu_rdp_is_offloaded(rdp));
+>  	rcu_lockdep_assert_cblist_protected(rdp);
+> @@ -326,13 +372,20 @@ static bool rcu_nocb_do_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
+>   * Note that this function always returns true if rhp is NULL.
+>   */
+>  static bool rcu_nocb_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
+> -				  unsigned long j)
+> +				  unsigned long j, unsigned long flush_flags)
+>  {
+> +	bool ret;
+> +
+>  	if (!rcu_rdp_is_offloaded(rdp))
+>  		return true;
+>  	rcu_lockdep_assert_cblist_protected(rdp);
+>  	rcu_nocb_bypass_lock(rdp);
+> -	return rcu_nocb_do_flush_bypass(rdp, rhp, j);
+> +	ret = rcu_nocb_do_flush_bypass(rdp, rhp, j, flush_flags);
+> +
+> +	if (flush_flags & FLUSH_BP_WAKE)
+> +		wake_nocb_gp(rdp, true);
+
+Why the true above?
+
+Also should we check if the wake up is really necessary (otherwise it means we
+force a wake up for all rdp's from rcu_barrier())?
+
+       was_alldone = rcu_segcblist_pend_cbs(&rdp->cblist);
+       ret = rcu_nocb_do_flush_bypass(rdp, rhp, j, flush_flags);
+       if (was_alldone && rcu_segcblist_pend_cbs(&rdp->cblist))
+       	  wake_nocb_gp(rdp, false);
+
+
+> @@ -461,16 +521,29 @@ static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
+>  	// We need to use the bypass.
+>  	rcu_nocb_wait_contended(rdp);
+>  	rcu_nocb_bypass_lock(rdp);
+> +
+>  	ncbs = rcu_cblist_n_cbs(&rdp->nocb_bypass);
+>  	rcu_segcblist_inc_len(&rdp->cblist); /* Must precede enqueue. */
+>  	rcu_cblist_enqueue(&rdp->nocb_bypass, rhp);
+> +
+> +	if (IS_ENABLED(CONFIG_RCU_LAZY) && lazy)
+> +		WRITE_ONCE(rdp->lazy_len, rdp->lazy_len + 1);
+> +
+>  	if (!ncbs) {
+>  		WRITE_ONCE(rdp->nocb_bypass_first, j);
+>  		trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("FirstBQ"));
+>  	}
+> +
+>  	rcu_nocb_bypass_unlock(rdp);
+>  	smp_mb(); /* Order enqueue before wake. */
+> -	if (ncbs) {
+> +
+> +	// We had CBs in the bypass list before. There is nothing else to do if:
+> +	// There were only non-lazy CBs before, in this case, the bypass timer
+
+Kind of misleading. I would replace "There were only non-lazy CBs before" with
+"There was at least one non-lazy CBs before".
+
+> +	// or GP-thread will handle the CBs including any new lazy ones.
+> +	// Or, the new CB is lazy and the old bypass-CBs were also lazy. In this
+> +	// case the old lazy timer would have been setup. When that expires,
+> +	// the new lazy one will be handled.
+> +	if (ncbs && (!bypass_is_lazy || lazy)) {
+>  		local_irq_restore(flags);
+>  	} else {
+>  		// No-CBs GP kthread might be indefinitely asleep, if so, wake.
+> @@ -479,6 +552,10 @@ static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
+>  			trace_rcu_nocb_wake(rcu_state.name, rdp->cpu,
+>  					    TPS("FirstBQwake"));
+>  			__call_rcu_nocb_wake(rdp, true, flags);
+> +		} else if (bypass_is_lazy && !lazy) {
+> +			trace_rcu_nocb_wake(rcu_state.name, rdp->cpu,
+> +					    TPS("FirstBQwakeLazy2Non"));
+> +			__call_rcu_nocb_wake(rdp, true, flags);
+
+Not sure we need this chunk. Since there are pending callbacks anyway,
+nocb_gp_wait() should be handling them and it will set the appropriate
+timer on the next loop.
+
+Thanks.
+
+>  		} else {
+>  			trace_rcu_nocb_wake(rcu_state.name, rdp->cpu,
+>  					    TPS("FirstBQnoWake"));
