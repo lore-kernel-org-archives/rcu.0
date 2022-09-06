@@ -2,147 +2,77 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 62583ECAAA1
-	for <rcu@archiver.kernel.org>; Tue,  6 Sep 2022 03:07:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C961C38145
+	for <rcu@archiver.kernel.org>; Tue,  6 Sep 2022 08:55:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231913AbiIFDHN (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 5 Sep 2022 23:07:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56292 "EHLO
+        id S233100AbiIFIzS (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 6 Sep 2022 04:55:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232190AbiIFDHK (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 5 Sep 2022 23:07:10 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0058D6BD50
-        for <rcu@vger.kernel.org>; Mon,  5 Sep 2022 20:07:06 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id x5so7133459qtv.9
-        for <rcu@vger.kernel.org>; Mon, 05 Sep 2022 20:07:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date;
-        bh=Iof3uBcXac1OYnK64M0AGcn2zYxIce4MLzQivYg+G8I=;
-        b=ha1poO5zWbhEaZKUgA8TxySFc3/vws2jUihXcjUuExpPQwbl8xVSos3TONo6CUTFia
-         7fKZdMWbVHbGLFk97gnXZsb0uotv/dWxGnDewNqy+RpoAcvvczlHmGO17z/iPch6eegK
-         SvZFdIz9FNUh80v4b884QXTlKvhE3AWjauvMg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
-        bh=Iof3uBcXac1OYnK64M0AGcn2zYxIce4MLzQivYg+G8I=;
-        b=6b2imaz0yebrPmJYxSKHmDukCQfGdRVMxg5da/mMWmOCWs2e3KwZAFi7MnlNRHwKDr
-         Sho5I7rZuL3bVGXGlW8Uwegjt8UjU5E1GFLdekpNnKL17maqAHIdICBS7lkcda6a/wpv
-         Va8fYhNr8sVueSWSMIS3Yf0+xS3oPY9zMlE1mTUJpDlh986j9FutRWB/ZibS9A+bNYov
-         SZYpN9ua8XjB1uXDPHxOyvmG/h8KHoAEEzZb4kvD0Q5c1r5QqWgjU7TiDfNSIkwa23lh
-         8OAqtSnJkL8x1cPwFcr15Scq7FF1WDI8+CKOteXOeUNmZQPhgL2GIsxZNr9EyhU+9fF+
-         aTkA==
-X-Gm-Message-State: ACgBeo3yNynu/b7NaZ8SBsexd7v4/K6G2gb+PktqislKNqeSfTqrBGFK
-        yWO4AkqyBjENE36aI5AInVcAKV1UdVJ05A==
-X-Google-Smtp-Source: AA6agR4ltdgdqPGHRrF4utjX7sVSXd/S+WYKGkbHWU246ikvc8x+/mInugwob/XCXHxA7YLgbGF93Q==
-X-Received: by 2002:ac8:7d13:0:b0:343:33d:f03a with SMTP id g19-20020ac87d13000000b00343033df03amr42352278qtb.500.1662433625868;
-        Mon, 05 Sep 2022 20:07:05 -0700 (PDT)
-Received: from localhost (228.221.150.34.bc.googleusercontent.com. [34.150.221.228])
-        by smtp.gmail.com with ESMTPSA id u16-20020a05622a199000b0031f0485aee0sm8714928qtc.88.2022.09.05.20.07.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Sep 2022 20:07:05 -0700 (PDT)
-Date:   Tue, 6 Sep 2022 03:07:05 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, rushikesh.s.kadam@intel.com,
-        urezki@gmail.com, neeraj.iitr10@gmail.com, frederic@kernel.org,
-        paulmck@kernel.org, rostedt@goodmis.org, vineeth@bitbyteword.org,
-        boqun.feng@gmail.com
-Subject: Re: [PATCH v5 04/18] rcu: Fix late wakeup when flush of bypass
- cblist happens
-Message-ID: <Yxa5WVwwcDmCL9Dw@google.com>
+        with ESMTP id S232511AbiIFIzR (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 6 Sep 2022 04:55:17 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB96119288;
+        Tue,  6 Sep 2022 01:55:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 52B8E61350;
+        Tue,  6 Sep 2022 08:55:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 728B5C433D6;
+        Tue,  6 Sep 2022 08:55:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1662454515;
+        bh=A8VKRtYKUm9wCQHpRouUBvdnM8FexdjJBSs3MkiJec0=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=JcReit0zD6HMNAAudT8BsvNj5dLWEg+F9ELdMbYV8+ZvzNoGWyUBt2Kl5DBs0ScUt
+         HvEVJ0PbOz4tQeszOR8rIrZTGXx7gtRARIB5HIsMQBZUhb3VEetwbskgz6OUlhTawv
+         HjbCrm/3B2u/Ipi/bKUvIsWeQZPjFfWXim362y96yLir6nWGCbnugK8URcjcVT8KsN
+         5rIDdaDl7czGsGLcznKSwBKhIxM4ILt0nhBOitG0vRlpf8xoC93SFNY2t12tPkgaA3
+         HDeTUZ9D7QzAxjflfmX9Ly8+eWN/GkhBl360v+9+Kxr/NH9vX4nPpzJgGgr5ZPmU5l
+         HsqN9sqKgrrow==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 445B55C0834; Tue,  6 Sep 2022 01:55:12 -0700 (PDT)
+Date:   Tue, 6 Sep 2022 01:55:12 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Frederic Weisbecker <frederic@kernel.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rushikesh.s.kadam@intel.com,
+        urezki@gmail.com, neeraj.iitr10@gmail.com, rostedt@goodmis.org,
+        vineeth@bitbyteword.org, boqun.feng@gmail.com
+Subject: Re: [PATCH v5 06/18] rcu: Introduce call_rcu_lazy() API
+ implementation
+Message-ID: <20220906085512.GI4315@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 References: <20220901221720.1105021-1-joel@joelfernandes.org>
- <20220901221720.1105021-5-joel@joelfernandes.org>
+ <20220901221720.1105021-7-joel@joelfernandes.org>
+ <20220902152132.GA115525@lothringen>
+ <67122ae3-d69e-438c-18fc-a8de6e40201e@joelfernandes.org>
+ <20220905125949.GA173859@lothringen>
+ <d82fec15-af9a-6ff6-69dd-a315cdca9892@joelfernandes.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220901221720.1105021-5-joel@joelfernandes.org>
+In-Reply-To: <d82fec15-af9a-6ff6-69dd-a315cdca9892@joelfernandes.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Sep 01, 2022 at 10:17:06PM +0000, Joel Fernandes (Google) wrote:
-> When the bypass cblist gets too big or its timeout has occurred, it is
-> flushed into the main cblist. However, the bypass timer is still running
-> and the behavior is that it would eventually expire and wake the GP
-> thread.
+On Mon, Sep 05, 2022 at 04:32:26PM -0400, Joel Fernandes wrote:
 > 
-> Since we are going to use the bypass cblist for lazy CBs, do the wakeup
-> soon as the flush happens. Otherwise, the lazy-timer will go off much
-> later and the now-non-lazy cblist CBs can get stranded for the duration
-> of the timer.
 > 
-> This is a good thing to do anyway (regardless of this series), since it
-> makes the behavior consistent with behavior of other code paths where queueing
-> something into the ->cblist makes the GP kthread in a non-sleeping state
-> quickly.
+> On 9/5/2022 8:59 AM, Frederic Weisbecker wrote:
+> > I'd rather see an updated patch (not the whole patchset but just this one) rather
+> > than deltas, just to make sure I'm not missing something in the whole picture.
+> > 
+> > Thanks.
 > 
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> ---
+> There is also the previous patch which needs a fix up you suggested.
+> 
+> I will reply to individual patches with in-line patch (for you), as well as
+> refreshing whole series since it might be easier for Paul to apply them together.
 
-Here is the updated version of this patch after review comments from
-Frederic:
+To say nothing of the greater probability that the result will match
+your intent.  ;-)
 
----8<-----------------------
-
-From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Subject: [PATCH v6] rcu: Fix late wakeup when flush of bypass cblist happens
-
-When the bypass cblist gets too big or its timeout has occurred, it is
-flushed into the main cblist. However, the bypass timer is still running
-and the behavior is that it would eventually expire and wake the GP
-thread.
-
-Since we are going to use the bypass cblist for lazy CBs, do the wakeup
-soon as the flush happens. Otherwise, the lazy-timer will go off much
-later and the now-non-lazy cblist CBs can get stranded for the duration
-of the timer.
-
-This is a good thing to do anyway (regardless of this series), since it
-makes the behavior consistent with behavior of other code paths where queueing
-something into the ->cblist makes the GP kthread in a non-sleeping state
-quickly.
-
-[ Frederic Weisbec: changes to not do wake up GP thread unless needed ].
-
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
----
- kernel/rcu/tree_nocb.h | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index 0a5f0ef41484..4dc86274b3e8 100644
---- a/kernel/rcu/tree_nocb.h
-+++ b/kernel/rcu/tree_nocb.h
-@@ -433,8 +433,9 @@ static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
- 	if ((ncbs && j != READ_ONCE(rdp->nocb_bypass_first)) ||
- 	    ncbs >= qhimark) {
- 		rcu_nocb_lock(rdp);
-+		*was_alldone = !rcu_segcblist_pend_cbs(&rdp->cblist);
-+
- 		if (!rcu_nocb_flush_bypass(rdp, rhp, j)) {
--			*was_alldone = !rcu_segcblist_pend_cbs(&rdp->cblist);
- 			if (*was_alldone)
- 				trace_rcu_nocb_wake(rcu_state.name, rdp->cpu,
- 						    TPS("FirstQ"));
-@@ -447,7 +448,13 @@ static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
- 			rcu_advance_cbs_nowake(rdp->mynode, rdp);
- 			rdp->nocb_gp_adv_time = j;
- 		}
--		rcu_nocb_unlock_irqrestore(rdp, flags);
-+
-+		// The flush succeeded and we moved CBs into the ->cblist.
-+		// However, the bypass timer might still be running. Wakeup the
-+		// GP thread by calling a helper with was_all_done set so that
-+		// wake up happens (needed if main CB list was empty before).
-+		__call_rcu_nocb_wake(rdp, *was_alldone, flags);
-+
- 		return true; // Callback already enqueued.
- 	}
- 
--- 
-2.37.2.789.g6183377224-goog
-
+							Thanx, Paul
