@@ -2,85 +2,150 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D960C38145
-	for <rcu@archiver.kernel.org>; Tue,  6 Sep 2022 17:17:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8FC04ECAAA1
+	for <rcu@archiver.kernel.org>; Tue,  6 Sep 2022 17:31:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237674AbiIFRRh (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 6 Sep 2022 13:17:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49172 "EHLO
+        id S239425AbiIFRbb (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 6 Sep 2022 13:31:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237758AbiIFRRQ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 6 Sep 2022 13:17:16 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5A8895694;
-        Tue,  6 Sep 2022 10:06:16 -0700 (PDT)
+        with ESMTP id S233597AbiIFRat (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 6 Sep 2022 13:30:49 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C9B025C7D
+        for <rcu@vger.kernel.org>; Tue,  6 Sep 2022 10:24:49 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9BAC7615C1;
-        Tue,  6 Sep 2022 17:05:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C096AC433D7;
-        Tue,  6 Sep 2022 17:05:19 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 40D47615EB
+        for <rcu@vger.kernel.org>; Tue,  6 Sep 2022 17:24:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12239C433D6;
+        Tue,  6 Sep 2022 17:24:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662483920;
-        bh=pkC2ANF3tna1pzIjDrSAqSZoO9hFwZIzhtSAi9gowNk=;
+        s=k20201202; t=1662485088;
+        bh=ZrAFe3xE9PO2pfUl2Dt5wpvYSOPtobToO/tk65CCqb4=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=PjAMYIYcPZWbcgvRkmd+ptsJC8tLyiy+WgXoZvqzf6QiX5NOl0P/E3uzQHDU1njIg
-         MCpsFLTdbWORt6N0JqSnVFSrH5YJ9UAPUYuD5y9U6tNQ4CT6fxSfL/WYNEcOzvCMZr
-         DCQ7CIQxD3HxjV/dQZPIbjvHq8jtZo94pxUrl3J2KFqi9zwK9KbuB3Vu9pSRM3DQZu
-         Lo9RIICjydeOl68HUSgSroRfAWBnvXEX9F956ffWJF7/RF6CYF6swGh2uGXeyaSP1n
-         wO0AMwFQ2Kj2AfTVtFYG+I59ov/6LOBFPiljXiBsJ/+monShyBpUurxEoCFnRKoDmW
-         f8z/sR8plnWcA==
+        b=CU5MvHwlQb3m5J+end7fBn/dCEWVNqDxzHX65S2K8P6fNDU4nU4Cpbp/jSiaPf5VY
+         g2vUvc42Np+c4JxVVdNadv71bHs6xnG3tir416Z+9uz6Hwg9EdmhczFUbj/0e9qWpK
+         t33dSgxHETQRfmgYQSODgMBk7iDunSOl4k4Wsct5puoOvrEit4nGpFg4ImPfFaL/dF
+         rib7b7SIXfhjPvx9+UTlJbOeg8nmD+m8dJaXxBarOocUWJxl9YNdWpLw1AHjjM1/Zt
+         GTbWfAwK4IYCnfUFisBNsQT+DUJQPsi5GFRWfAnengHVPGM0YXADL01yWr+059zNKh
+         QDQCZPbmnluVA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id B99A85C0834; Tue,  6 Sep 2022 10:05:01 -0700 (PDT)
-Date:   Tue, 6 Sep 2022 10:05:01 -0700
+        id 08E5E5C0834; Tue,  6 Sep 2022 10:24:41 -0700 (PDT)
+Date:   Tue, 6 Sep 2022 10:24:41 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Frederic Weisbecker <frederic@kernel.org>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rushikesh.s.kadam@intel.com,
-        urezki@gmail.com, neeraj.iitr10@gmail.com, rostedt@goodmis.org,
-        vineeth@bitbyteword.org, boqun.feng@gmail.com
-Subject: Re: [PATCH v5 06/18] rcu: Introduce call_rcu_lazy() API
- implementation
-Message-ID: <20220906170501.GX4315@paulmck-ThinkPad-P17-Gen-1>
+To:     Pingfan Liu <kernelfans@gmail.com>
+Cc:     rcu@vger.kernel.org, David Woodhouse <dwmw@amazon.co.uk>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>
+Subject: Re: [PATCH 1/3] rcu: remove redundant cpu affinity setting during
+ teardown
+Message-ID: <20220906172441.GY4315@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20220901221720.1105021-1-joel@joelfernandes.org>
- <20220901221720.1105021-7-joel@joelfernandes.org>
- <20220902152132.GA115525@lothringen>
- <67122ae3-d69e-438c-18fc-a8de6e40201e@joelfernandes.org>
- <20220905125949.GA173859@lothringen>
- <d82fec15-af9a-6ff6-69dd-a315cdca9892@joelfernandes.org>
- <20220906085512.GI4315@paulmck-ThinkPad-P17-Gen-1>
- <11d8b17a-1a82-148d-6da9-5e624b8e5942@joelfernandes.org>
+References: <20220905033852.18988-1-kernelfans@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <11d8b17a-1a82-148d-6da9-5e624b8e5942@joelfernandes.org>
+In-Reply-To: <20220905033852.18988-1-kernelfans@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Sep 06, 2022 at 12:16:19PM -0400, Joel Fernandes wrote:
-> On 9/6/2022 4:55 AM, Paul E. McKenney wrote:
-> > On Mon, Sep 05, 2022 at 04:32:26PM -0400, Joel Fernandes wrote:
-> >>
-> >>
-> >> On 9/5/2022 8:59 AM, Frederic Weisbecker wrote:
-> >>> I'd rather see an updated patch (not the whole patchset but just this one) rather
-> >>> than deltas, just to make sure I'm not missing something in the whole picture.
-> >>>
-> >>> Thanks.
-> >>
-> >> There is also the previous patch which needs a fix up you suggested.
-> >>
-> >> I will reply to individual patches with in-line patch (for you), as well as
-> >> refreshing whole series since it might be easier for Paul to apply them together.
-> > 
-> > To say nothing of the greater probability that the result will match
-> > your intent.  ;-)
+On Mon, Sep 05, 2022 at 11:38:50AM +0800, Pingfan Liu wrote:
+> At present, during the cpu teardown, rcu_boost_kthread_setaffinity() is
+> called twice. Firstly by rcutree_offline_cpu(), then by
+> rcutree_dead_cpu() as the CPUHP_RCUTREE_PREP  cpuhp_step callback.
 > 
-> It is shaping up well ;-)
+> >From the scheduler's perspective, a bit in cpu_online_mask means that the cpu
+> is visible to the scheduler. Furthermore, a bit in cpu_active_mask
+> means that the cpu is suitable as a migration destination.
+> 
+> Now turning back to the case in rcu offlining. sched_cpu_deactivate()
+> has disabled the dying cpu as the migration destination before
+> rcutree_offline_cpu().  Furthermore, if the boost kthread is on the dying
+> cpu, it will be migrated to another suitable online cpu by the scheduler.
+> So the affinity setting by rcutree_offline_cpu() is redundant and can be
+> eliminated.
+> 
+> Besides, this patch does an trival code rearrangement by unfolding
+> rcutree_affinity_setting() into rcutree_online_cpu(), considering that
+> the latter one is the only user of the former.
+> 
+> Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+> Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> Cc: David Woodhouse <dwmw@amazon.co.uk>
+> Cc: Frederic Weisbecker <frederic@kernel.org>
+> Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+> Cc: Josh Triplett <josh@joshtriplett.org>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> Cc: Joel Fernandes <joel@joelfernandes.org>
+> Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>
+> To: rcu@vger.kernel.org
+> ---
+>  kernel/rcu/tree.c | 14 +-------------
+>  1 file changed, 1 insertion(+), 13 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 79aea7df4345..b90f6487fd45 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -3978,16 +3978,6 @@ int rcutree_prepare_cpu(unsigned int cpu)
+>  	return 0;
+>  }
+>  
+> -/*
+> - * Update RCU priority boot kthread affinity for CPU-hotplug changes.
+> - */
+> -static void rcutree_affinity_setting(unsigned int cpu, int outgoing)
+> -{
+> -	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
+> -
+> -	rcu_boost_kthread_setaffinity(rdp->mynode, outgoing);
+> -}
 
-Very good, looking forward to the next round!
+Good point, tiven how simple a wrapper this is and how little it is used,
+getting rid of it does sound like a reasonable idea.
+
+>  /*
+>   * Near the end of the CPU-online process.  Pretty much all services
+>   * enabled, and the CPU is now very much alive.
+> @@ -4006,7 +3996,7 @@ int rcutree_online_cpu(unsigned int cpu)
+>  	if (rcu_scheduler_active == RCU_SCHEDULER_INACTIVE)
+>  		return 0; /* Too early in boot for scheduler work. */
+>  	sync_sched_exp_online_cleanup(cpu);
+> -	rcutree_affinity_setting(cpu, -1);
+> +	rcu_boost_kthread_setaffinity(rdp->mynode, -1);
+>  
+>  	// Stop-machine done, so allow nohz_full to disable tick.
+>  	tick_dep_clear(TICK_DEP_BIT_RCU);
+> @@ -4029,8 +4019,6 @@ int rcutree_offline_cpu(unsigned int cpu)
+>  	rnp->ffmask &= ~rdp->grpmask;
+>  	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+>  
+> -	rcutree_affinity_setting(cpu, cpu);
+
+We do need to keep this one because the CPU is going away.
+
+One the other hand, it might well be that we could get rid of the call
+to rcutree_affinity_setting() in rcutree_dead_cpu().
+
+Or am I missing something subtle here?
 
 							Thanx, Paul
+
+> -
+>  	// nohz_full CPUs need the tick for stop-machine to work quickly
+>  	tick_dep_set(TICK_DEP_BIT_RCU);
+>  	return 0;
+> -- 
+> 2.31.1
+> 
