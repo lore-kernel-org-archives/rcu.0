@@ -2,96 +2,127 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D8AFC38145
-	for <rcu@archiver.kernel.org>; Tue,  6 Sep 2022 19:11:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EBC60C38145
+	for <rcu@archiver.kernel.org>; Tue,  6 Sep 2022 22:27:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229459AbiIFTLV (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 6 Sep 2022 15:11:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36630 "EHLO
+        id S229732AbiIFW1y (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 6 Sep 2022 18:27:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229721AbiIFTLU (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 6 Sep 2022 15:11:20 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7C9DA2D97;
-        Tue,  6 Sep 2022 12:11:15 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 45657B819F7;
-        Tue,  6 Sep 2022 19:11:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 900FEC433C1;
-        Tue,  6 Sep 2022 19:11:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662491472;
-        bh=I2thZSdsMA3fAvQeM9frwdjRPaDPr7Ghu/hTt+TPzy4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hCJaUttRCTAa7ZyovROYIPZpH2DCmCqtP430NHFmrESACmlK0JcaP0r69c1ZtfYYl
-         S2oH/cGOWmqUyrsz9IwSmehKBiiG9pd0F9fEOkfDRIUEXiTpmFrbDpwcJM1vSh8DDZ
-         Esatx2eS7D2pdwLmRw4aZTcAcC5zLn4ozmz4n4yGVP2JTqmF4bHQ8MuzK6X9rXnONY
-         LcyYoMstLFMVGz2RJ4p1lazjpapwQcXpCzxblRMW+7I85//IVSie++B0fVDAWbzubg
-         E0YAUtQV/2/CUI9XS4EKysseVpwdf/bW5e0vV4e/1Z9ukNFkk0PXPsm4VlS4x4wBuO
-         mbfkvFFtUzieA==
-Date:   Tue, 6 Sep 2022 21:11:10 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
+        with ESMTP id S229627AbiIFW1x (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 6 Sep 2022 18:27:53 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADC21DF7A;
+        Tue,  6 Sep 2022 15:27:52 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id h27so9289745qkk.9;
+        Tue, 06 Sep 2022 15:27:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date;
+        bh=0QAInJ0rO3zMboDJklVEn7XuhNzPndw7J1Dim+/9qYU=;
+        b=q5fqXrb83oFF0SHKb5t4llQCJugKT3iuOfMKSlMiEURbJknWMLUg7UMbrauEDn8gkB
+         YU+4Z5Auy4EYBPNyX0C5CpceW8p+xHj+9zWigB5J7nZCWwsPI/Y93+i8qrtxwLQWguiA
+         FfFQFZBUKJbYTKpCKmiSR0eQOkquH29sZLWsWGGFEjwsteFEgc7MUiupsar0PmIM9Su4
+         u0hP+lJcZx67/dlodScBq7exYxJMLlSpHm6zGDk8D9OPX+T3Dms9y92uY+ZcA9WF0qcv
+         wAqcKsjH+z4gfiLPbJJP63LfN20A3XLPnrFPfuPjnzg2sxg7S+MkIHxvDsbVhP4X7nex
+         K3YA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date;
+        bh=0QAInJ0rO3zMboDJklVEn7XuhNzPndw7J1Dim+/9qYU=;
+        b=VK8c6Ocsb+2McojbU91vZ97YwBPo/P+9uIR9xlrtDHalgB9KmMEq7RctVEbv3E6eOK
+         o1vKiwdSSfPlZzfvbA1Wrd1ogFV5hYbL/9YQskfb3BSop9HC2uJb+Y/icOc/Z8fKqMry
+         mR4msXJv6awNx7tDeuhNt1ph/9+m70gmbmj5cfvg2SwtqYxhB4V7n3/sgRXhLe3CmQ8K
+         ZKjbag63p2rJ1Se113T/NJ0eX+kJhdYq5CARQ7l1vkHlJvVYLTC60j4Bs/+RiK0RUSQz
+         PppPPbiFSxr9MFlWhFAGFKtZqlvNdRRQbGQwwUSGE4CGFRnB5ErP3z8bm+wjsivgmo7D
+         JXwg==
+X-Gm-Message-State: ACgBeo3H/bac+q18U/cqPNsbJMe0xBJN/I9HN7Nalr38SGBCc8wft6Bz
+        6MpzsElBTuqGPkXqAiUD8Ng=
+X-Google-Smtp-Source: AA6agR7k88P3nJjkeozrP/du1MqKUB0DDDznKJoQNOg8jKu2y1mOgggV2i+eymc/QNK1JCtipn8yTA==
+X-Received: by 2002:a05:620a:1468:b0:6bb:822d:2c48 with SMTP id j8-20020a05620a146800b006bb822d2c48mr709502qkl.393.1662503271853;
+        Tue, 06 Sep 2022 15:27:51 -0700 (PDT)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id q2-20020a05620a0d8200b006b555509398sm12967840qkl.136.2022.09.06.15.27.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Sep 2022 15:27:51 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailauth.nyi.internal (Postfix) with ESMTP id A50D627C0054;
+        Tue,  6 Sep 2022 18:27:50 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Tue, 06 Sep 2022 18:27:50 -0400
+X-ME-Sender: <xms:ZskXY_p6gCKU4PVFFRL59-GRrZvVI3V5kg-DJU8NV5JSG5jsStEYAQ>
+    <xme:ZskXY5oUn5FFrcr4VUtHs5KnfuYLT-EVUfgo0Nlqk2sKvZo5My3YXnuOl1zz6bDl_
+    tx1NF94UAGXaWPfjg>
+X-ME-Received: <xmr:ZskXY8N5lm7dGSScDvgMyQ4YVo5DFT5nM0DTfUzADNOd6rxzltFuqNdlfts>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrvdelledguddtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
+    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
+    htthgvrhhnpeehudfgudffffetuedtvdehueevledvhfelleeivedtgeeuhfegueeviedu
+    ffeivdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
+    gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
+    igmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:ZskXYy52HubPOOE9AH8OU_IVCYR4yXQdxWppOJpbYcUuhOu1ubpTBg>
+    <xmx:ZskXY-5p0WsYo7YqxKkAJnvuY6WQydxt7Iryb2LYGmmkEYOI9wfCZQ>
+    <xmx:ZskXY6iKpJnFJgu5jCV3-FnrQhSq3b9iS9R2hF-_W2F7GPcV3Y1kfQ>
+    <xmx:ZskXY3F-lZRXEbiAW_oOWdEpzKpiqfV8Nv46WAbdXV9Ih7Pr8ppWyw>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 6 Sep 2022 18:27:49 -0400 (EDT)
+Date:   Tue, 6 Sep 2022 15:26:33 -0700
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         rushikesh.s.kadam@intel.com, urezki@gmail.com,
-        neeraj.iitr10@gmail.com, paulmck@kernel.org, rostedt@goodmis.org,
-        vineeth@bitbyteword.org, boqun.feng@gmail.com
-Subject: Re: [PATCH v5 06/18] rcu: Introduce call_rcu_lazy() API
- implementation
-Message-ID: <20220906191110.GA187950@lothringen>
+        neeraj.iitr10@gmail.com, frederic@kernel.org, paulmck@kernel.org,
+        rostedt@goodmis.org, vineeth@bitbyteword.org
+Subject: Re: [PATCH v5 03/18] rcu/tree: Use READ_ONCE() for lockless read of
+ rnp->qsmask
+Message-ID: <YxfJGYP2l0xbxxdr@boqun-archlinux>
 References: <20220901221720.1105021-1-joel@joelfernandes.org>
- <20220901221720.1105021-7-joel@joelfernandes.org>
- <20220902152132.GA115525@lothringen>
- <Yxa5Ch574cRZxRdo@google.com>
- <20220906151757.GA183806@lothringen>
- <cde6586e-ae61-5e85-3c9a-1ce7dd2464ed@joelfernandes.org>
- <64f5770c-df37-8975-200d-7908de23fa73@joelfernandes.org>
- <da45d265-52f9-6314-7fcd-ea71e2bf4cec@joelfernandes.org>
- <4f6061f0-0de7-2916-dc6e-9f5af9b944c0@joelfernandes.org>
+ <20220901221720.1105021-4-joel@joelfernandes.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4f6061f0-0de7-2916-dc6e-9f5af9b944c0@joelfernandes.org>
+In-Reply-To: <20220901221720.1105021-4-joel@joelfernandes.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Sep 06, 2022 at 12:43:52PM -0400, Joel Fernandes wrote:
-> On 9/6/2022 12:38 PM, Joel Fernandes wrote:
-> Ah, now I know why I got confused. I *used* to flush the bypass list before when
-> !lazy CBs showed up. Paul suggested this is overkill. In this old overkill
-> method, I was missing a wake up which was likely causing the boot regression.
-> Forcing a wake up fixed that. Now in v5 I make it such that I don't do the flush
-> on a !lazy rate-limit.
+On Thu, Sep 01, 2022 at 10:17:05PM +0000, Joel Fernandes (Google) wrote:
+> The rnp->qsmask is locklessly accessed from rcutree_dying_cpu(). This
+> may help avoid load/store tearing due to concurrent access, KCSAN
+
+Nit: you can avoid only load tearing with READ_ONCE().
+
+Regards,
+Boqun
+
+> issues, and preserve sanity of people reading the mask in tracing.
 > 
-> I am sorry for the confusion. Either way, in my defense this is just an extra
-> bit of code that I have to delete. This code is hard. I have mostly relied on a
-> test-driven development. But now thanks to this review and I am learning the
-> code more and more...
-
-Yeah this code is hard.
-
-Especially as it's possible to flush from both sides and queue the timer
-from both sides. And both sides read the bypass/lazy counter locklessly.
-But only call_rcu_*() can queue/increase the bypass size whereas only
-nocb_gp_wait() can cancel the timer. Phew!
-
-Among the many possible dances between rcu_nocb_try_bypass()
-and nocb_gp_wait(), I haven't found a way yet for the timer to be
-set to LAZY when it should be BYPASS (or other kind of accident such
-as an ignored callback).
-
-In the worst case we may arm an earlier timer than necessary
-(RCU_NOCB_WAKE_BYPASS instead of RCU_NOCB_WAKE_LAZY for example).
-
-Famous last words...
-
-
-> Thanks,
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> ---
+>  kernel/rcu/tree.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
->  - Joel
-> 
-> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 0ca21ac0f064..5ec97e3f7468 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -2106,7 +2106,7 @@ int rcutree_dying_cpu(unsigned int cpu)
+>  	if (!IS_ENABLED(CONFIG_HOTPLUG_CPU))
+>  		return 0;
+>  
+> -	blkd = !!(rnp->qsmask & rdp->grpmask);
+> +	blkd = !!(READ_ONCE(rnp->qsmask) & rdp->grpmask);
+>  	trace_rcu_grace_period(rcu_state.name, READ_ONCE(rnp->gp_seq),
+>  			       blkd ? TPS("cpuofl-bgp") : TPS("cpuofl"));
+>  	return 0;
+> -- 
+> 2.37.2.789.g6183377224-goog
 > 
