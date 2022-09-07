@@ -2,36 +2,36 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E4BF7C38145
-	for <rcu@archiver.kernel.org>; Wed,  7 Sep 2022 09:40:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2ED8EC38145
+	for <rcu@archiver.kernel.org>; Wed,  7 Sep 2022 09:56:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229518AbiIGJkV (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 7 Sep 2022 05:40:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50870 "EHLO
+        id S230076AbiIGJ4N (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 7 Sep 2022 05:56:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229926AbiIGJkU (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 7 Sep 2022 05:40:20 -0400
+        with ESMTP id S230089AbiIGJ4M (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 7 Sep 2022 05:56:12 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5483A84EDD;
-        Wed,  7 Sep 2022 02:40:18 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30B222A436;
+        Wed,  7 Sep 2022 02:56:05 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DA4096183D;
-        Wed,  7 Sep 2022 09:40:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDDB9C433D6;
-        Wed,  7 Sep 2022 09:40:16 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E4CF861834;
+        Wed,  7 Sep 2022 09:56:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD67DC433D7;
+        Wed,  7 Sep 2022 09:56:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662543617;
-        bh=Hr5+aZcVWl6y16hq00Ch1HiG5Xj0qqyjZBPbI6n2aJI=;
+        s=k20201202; t=1662544564;
+        bh=43j1/GXOQ8HjrTpBSPu9G1AgM4IhX1nLYs/I4J5dp1g=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EEKEXeLi2DMICa6qMVttCThbm7230aMFc3x/0NvPQ9f4JLVjt3u0NrDBKr7wkeeJB
-         GQ9H1VCa09WxK7P39c93t8EmE4/FHmE4QSnxoXgMssmJ97/nYZWFfh3zAAZj7SBazF
-         noAtbrHz+NxC0/RbIZuZSePwfYppPuE5bRK8287lZwphYk/ZE+msBg5Ar+nNxnYQkf
-         yXl3VCubvkZnxAM0fEmkSDWrgKpMP5m/ueGFkkmcEJjz1L/JBYZavkNdJkO9UP0/pR
-         ddV1gnNBEgRxwUnAb6AcTF6TCryzFIqEGQt/ymhauhdwlwvldb5K8+YWXoQf3lFWZ5
-         4ZcjZPS20O3wA==
-Date:   Wed, 7 Sep 2022 11:40:14 +0200
+        b=kWpHwkKnG5jm3GRd1QEOnAGFiOkgolGgxZJrrbVgaR804F1WxHy9qM5tspu2/J9Ic
+         6vGLAf1Ke5HOFhysEIRWwnDMfwEQ73a6939yBVKcICL4nJS0bXZFgbMJG810UXtPs3
+         YQ/nUIG3ZX1C/DxIQ/QO4PkcrRpTPG5BVrByiVCg1JIaXuSdInQ8fmW3tsF3jw6Vu/
+         pgoEOCbU0PHBwVJwQkBeuwf7SiwtMTC/ManazRJbd52XMe/A9PCXMtA4IUFsqiYVsA
+         Dl3VI+KjU6IEhuCo5JbhWw16+DEp3+ObqcfsJ6xy9t9GLfVGa9WhwMy7YdTLZR15kX
+         GCw2JM6mbblgQ==
+Date:   Wed, 7 Sep 2022 11:56:01 +0200
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     Joel Fernandes <joel@joelfernandes.org>
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -40,90 +40,45 @@ Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         vineeth@bitbyteword.org, boqun.feng@gmail.com
 Subject: Re: [PATCH v5 06/18] rcu: Introduce call_rcu_lazy() API
  implementation
-Message-ID: <20220907094014.GA193994@lothringen>
-References: <20220901221720.1105021-1-joel@joelfernandes.org>
- <20220901221720.1105021-7-joel@joelfernandes.org>
+Message-ID: <20220907095601.GA194889@lothringen>
+References: <20220901221720.1105021-7-joel@joelfernandes.org>
  <20220902152132.GA115525@lothringen>
  <Yxa5Ch574cRZxRdo@google.com>
  <20220906151757.GA183806@lothringen>
- <Yxfggt1/cLBhUi/y@google.com>
+ <cde6586e-ae61-5e85-3c9a-1ce7dd2464ed@joelfernandes.org>
+ <64f5770c-df37-8975-200d-7908de23fa73@joelfernandes.org>
+ <da45d265-52f9-6314-7fcd-ea71e2bf4cec@joelfernandes.org>
+ <4f6061f0-0de7-2916-dc6e-9f5af9b944c0@joelfernandes.org>
+ <20220906191110.GA187950@lothringen>
+ <8812ea75-ef14-0d5d-19d8-bda70394b41a@joelfernandes.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Yxfggt1/cLBhUi/y@google.com>
+In-Reply-To: <8812ea75-ef14-0d5d-19d8-bda70394b41a@joelfernandes.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Sep 07, 2022 at 12:06:26AM +0000, Joel Fernandes wrote:
-> > > @@ -326,13 +372,20 @@ static bool rcu_nocb_do_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
-> > >   * Note that this function always returns true if rhp is NULL.
-> > >   */
-> > >  static bool rcu_nocb_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
-> > > -				  unsigned long j)
-> > > +				  unsigned long j, unsigned long flush_flags)
-> > >  {
-> > > +	bool ret;
-> > > +
-> > >  	if (!rcu_rdp_is_offloaded(rdp))
-> > >  		return true;
-> > >  	rcu_lockdep_assert_cblist_protected(rdp);
-> > >  	rcu_nocb_bypass_lock(rdp);
-> > > -	return rcu_nocb_do_flush_bypass(rdp, rhp, j);
-> > > +	ret = rcu_nocb_do_flush_bypass(rdp, rhp, j, flush_flags);
-> > > +
-> > > +	if (flush_flags & FLUSH_BP_WAKE)
-> > > +		wake_nocb_gp(rdp, true);
-> > 
-> > Why the true above?
-> > 
-> > Also should we check if the wake up is really necessary (otherwise it means we
-> > force a wake up for all rdp's from rcu_barrier())?
-> > 
-> >        was_alldone = rcu_segcblist_pend_cbs(&rdp->cblist);
-> >        ret = rcu_nocb_do_flush_bypass(rdp, rhp, j, flush_flags);
-> >        if (was_alldone && rcu_segcblist_pend_cbs(&rdp->cblist))
-> >        	  wake_nocb_gp(rdp, false);
+On Tue, Sep 06, 2022 at 10:56:01PM -0400, Joel Fernandes wrote:
+> On the issue of regressions with non-lazy things being treated as lazy, I was
+> thinking of adding a bounded-time-check to:
 > 
-> You mean something like the following right? Though I'm thinking if its
-> better to call wake_nocb_gp() from tree.c in entrain() and let that handle
-> the wake. That way, we can get rid of the extra FLUSH_BP flags as well and
-> let the flush callers deal with the wakeups..
+> [PATCH v5 08/18] rcu: Add per-CB tracing for queuing, flush and invocation.
+> 
+> Where, if a non-lazy CB takes an abnormally long time to execute (say it was
+> subject to a race-condition), it would splat. This can be done because I am
+> tracking the queue-time in the rcu_head in that patch.
+> 
+> On another note, boot time regressions show up pretty quickly (at least on
+> ChromeOS) when non-lazy things become lazy and so far with the latest code it
+> has fortunately been pretty well behaved.
 
-Ah yes that could make sense if only one caller cares.
+Makes sense. We definetly need some sort of detection for delayed non-lazy
+callbacks.
+
+Thanks!
 
 > 
-> Anyway, for testing this should be good...
+> Thanks,
 > 
-> ---8<-----------------------
-> 
-> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-> index bd8f39ee2cd0..e3344c262672 100644
-> --- a/kernel/rcu/tree_nocb.h
-> +++ b/kernel/rcu/tree_nocb.h
-> @@ -382,15 +382,19 @@ static bool rcu_nocb_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
->  				  unsigned long j, unsigned long flush_flags)
->  {
->  	bool ret;
-> +	bool was_alldone;
->  
->  	if (!rcu_rdp_is_offloaded(rdp))
->  		return true;
->  	rcu_lockdep_assert_cblist_protected(rdp);
->  	rcu_nocb_bypass_lock(rdp);
-> +	if (flush_flags & FLUSH_BP_WAKE)
-> +		was_alldone = !rcu_segcblist_pend_cbs(&rdp->cblist);
-> +
-
-You can check that outside bypass lock (but you still need nocb_lock).
-
->  	ret = rcu_nocb_do_flush_bypass(rdp, rhp, j, flush_flags);
->  
-> -	if (flush_flags & FLUSH_BP_WAKE)
-> -		wake_nocb_gp(rdp, true);
-> +	if (flush_flags & FLUSH_BP_WAKE && was_alldone)
-> +		wake_nocb_gp(rdp, false);
-
-That doesn't check if the bypass list was empty.
-
-Thanks.
+>  - Joel
