@@ -2,128 +2,154 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D72E3C54EE9
-	for <rcu@archiver.kernel.org>; Wed,  7 Sep 2022 14:01:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 13CC0C54EE9
+	for <rcu@archiver.kernel.org>; Wed,  7 Sep 2022 14:58:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229836AbiIGOBX (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 7 Sep 2022 10:01:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51758 "EHLO
+        id S229493AbiIGO6N (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 7 Sep 2022 10:58:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbiIGOBV (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 7 Sep 2022 10:01:21 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6020D6CF4C
-        for <rcu@vger.kernel.org>; Wed,  7 Sep 2022 07:01:20 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id m5so10515837qkk.1
-        for <rcu@vger.kernel.org>; Wed, 07 Sep 2022 07:01:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date;
-        bh=/s29LV2sR+vq6yN67Lm8Tg/CBgP8Mafr42Z5nWlRis4=;
-        b=a1EH48PXO2HWnFkMr2lckeI3ZeIMzujU9/AVEutHPRJbwWB4FXTYrKVICugf0zgD0l
-         C9ijJ0XmodomYxoNRd906F8T7JlQv9gPAn1QGXrESsy99SvMcFO0ta/O0ftnRkTuypMa
-         r7vpYltcScc+dBchRLYT/A/bAm/k53n+hTneU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date;
-        bh=/s29LV2sR+vq6yN67Lm8Tg/CBgP8Mafr42Z5nWlRis4=;
-        b=5M3wuNj1CRctm5vQadbMWBwmMmF4p5v6G3t0b5yTr6jP2o70+EqX8XCZrs3KplHeKT
-         WFW4nqmsuOYF+LKzs8mppGnsXGnHwRWONIaMIUAgw1zDavzCRedfeb9z2II5Q/FMAWI1
-         4HmrW1tLY+kHHH6BVrVRbpoS1exd96ZC6e81x82iS3kydSnUA0E7FM6QE/yCr6Q7MPlC
-         LxyLW8Xtc6szVFGKsUsluSqWIDKDUj5kqPKywpRTEellPZW429n+iDoHwcM1rvcsZzSs
-         /raYoJ1Hsw1a7CBaHkHc5dtvAOBfbDrmG4NZ9mRC9RwCkUdqXa4Y/Wwr7L2Z7/yPv6tq
-         cWTQ==
-X-Gm-Message-State: ACgBeo1XTlczhJEbxq3i3d2mCtjPLXpd73ff8wWGQDa3O24rJJOLa29y
-        GY2XRHw/f8gajjxNlyiLR9K+vA==
-X-Google-Smtp-Source: AA6agR7Vf1kI9nc64NEmeizsB7LyogdUqy4T6UbinGSXFJslNqEA7lhb3SWeJvZiL15yTsHtKnb1hw==
-X-Received: by 2002:a37:4553:0:b0:6be:6c1d:92ff with SMTP id s80-20020a374553000000b006be6c1d92ffmr2819196qka.151.1662559279446;
-        Wed, 07 Sep 2022 07:01:19 -0700 (PDT)
-Received: from [10.0.0.40] (c-73-148-104-166.hsd1.va.comcast.net. [73.148.104.166])
-        by smtp.gmail.com with ESMTPSA id 6-20020a370c06000000b006bbbd4ce6e1sm13319885qkm.35.2022.09.07.07.01.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Sep 2022 07:01:18 -0700 (PDT)
-Message-ID: <b106edc3-2557-0669-86bf-10c08739a86a@joelfernandes.org>
-Date:   Wed, 7 Sep 2022 10:01:16 -0400
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.1
-Subject: Re: [PATCH v5 06/18] rcu: Introduce call_rcu_lazy() API
- implementation
-Content-Language: en-US
+        with ESMTP id S229912AbiIGO6K (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 7 Sep 2022 10:58:10 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92B7FDFD9;
+        Wed,  7 Sep 2022 07:58:04 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B9B3F618F2;
+        Wed,  7 Sep 2022 14:58:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC9ABC433C1;
+        Wed,  7 Sep 2022 14:58:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1662562683;
+        bh=ViJUR2o7ZIgJQbtkn3NFgvbNbMNMn+IMw6KDOhSMojc=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=SsAY9P8PYnz5Y9qEWhLssf7zUyQ18Ozk+iAaO65/3a/plSCblo0W20uKzpYZe2RIb
+         92mrcrheX6zX61eN5sofXaJOvIiFegtxsB4mFHIjgnVpmqLuxs7sE5gw8fnIKob/Jv
+         CaMS0iPZBfSxbncIHlD5t0uduOCC5QiTC7VYKeXib0UGAf+BlCaUx6h6KpK1vJbgxm
+         s5nxa6rA9IKtKT+U0JOQV2Wj3zQzT4os8BFgIuUtndgpmsKelEMUZcREIOM7sBIQ07
+         BV6A9K0ZLTqNs3hp/2w9d5GnSiBKA1mYxnq7FYUo0eHLdDdbbneUT1T2ajHqZ5xDDf
+         ITjQW/Oa6y6Tw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 1D5A25C0A6B; Wed,  7 Sep 2022 07:57:59 -0700 (PDT)
+Date:   Wed, 7 Sep 2022 07:57:59 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     Frederic Weisbecker <frederic@kernel.org>
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rushikesh.s.kadam@intel.com, urezki@gmail.com,
-        neeraj.iitr10@gmail.com, paulmck@kernel.org, rostedt@goodmis.org,
-        vineeth@bitbyteword.org, boqun.feng@gmail.com
-References: <20220901221720.1105021-1-joel@joelfernandes.org>
- <20220901221720.1105021-7-joel@joelfernandes.org>
- <20220902152132.GA115525@lothringen> <Yxa5Ch574cRZxRdo@google.com>
- <20220906151757.GA183806@lothringen>
- <cde6586e-ae61-5e85-3c9a-1ce7dd2464ed@joelfernandes.org>
- <20220907100349.GB194889@lothringen>
-From:   Joel Fernandes <joel@joelfernandes.org>
-In-Reply-To: <20220907100349.GB194889@lothringen>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+        kernel-team@fb.com, rostedt@goodmis.org,
+        Zqiang <qiang1.zhang@intel.com>
+Subject: Re: [PATCH rcu 03/10] rcu: Add QS check in rcu_exp_handler() for
+ non-preemptible kernels
+Message-ID: <20220907145759.GJ4315@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20220831180759.GA2693289@paulmck-ThinkPad-P17-Gen-1>
+ <20220831180805.2693546-3-paulmck@kernel.org>
+ <20220907121010.GA196513@lothringen>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220907121010.GA196513@lothringen>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-
-
-On 9/7/2022 6:03 AM, Frederic Weisbecker wrote:
-> On Tue, Sep 06, 2022 at 12:15:19PM -0400, Joel Fernandes wrote:
->>>> +
->>>> +	// We had CBs in the bypass list before. There is nothing else to do if:
->>>> +	// There were only non-lazy CBs before, in this case, the bypass timer
->>>
->>> Kind of misleading. I would replace "There were only non-lazy CBs before" with
->>> "There was at least one non-lazy CBs before".
->>
->> I really mean "There were only non-lazy CBs ever queued in the bypass list
->> before". That's the bypass_is_lazy variable. So I did not fully understand your
->> suggested comment change.
+On Wed, Sep 07, 2022 at 02:10:10PM +0200, Frederic Weisbecker wrote:
+> On Wed, Aug 31, 2022 at 11:07:58AM -0700, Paul E. McKenney wrote:
+> > From: Zqiang <qiang1.zhang@intel.com>
+> > 
+> > Kernels built with CONFIG_PREEMPTION=n and CONFIG_PREEMPT_COUNT=y maintain
+> > preempt_count() state.  Because such kernels map __rcu_read_lock()
+> > and __rcu_read_unlock() to preempt_disable() and preempt_enable(),
+> > respectively, this allows the expedited grace period's !CONFIG_PREEMPT_RCU
+> > version of the rcu_exp_handler() IPI handler function to use
+> > preempt_count() to detect quiescent states.
+> > 
+> > This preempt_count() usage might seem to risk failures due to
+> > use of implicit RCU readers in portions of the kernel under #ifndef
+> > CONFIG_PREEMPTION, except that rcu_core() already disallows such implicit
+> > RCU readers.  The moral of this story is that you must use explicit
+> > read-side markings such as rcu_read_lock() or preempt_disable() even if
+> > the code knows that this kernel does not support preemption.
+> > 
+> > This commit therefore adds a preempt_count()-based check for a quiescent
+> > state in the !CONFIG_PREEMPT_RCU version of the rcu_exp_handler()
+> > function for kernels built with CONFIG_PREEMPT_COUNT=y, reporting an
+> > immediate quiescent state when the interrupted code had both preemption
+> > and softirqs enabled.
+> > 
+> > This change results in about a 2% reduction in expedited grace-period
+> > latency in kernels built with both CONFIG_PREEMPT_RCU=n and
+> > CONFIG_PREEMPT_COUNT=y.
+> > 
+> > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > Link: https://lore.kernel.org/all/20220622103549.2840087-1-qiang1.zhang@intel.com/
+> > ---
+> >  kernel/rcu/tree_exp.h | 4 +++-
+> >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+> > index be667583a5547..b07998159d1fa 100644
+> > --- a/kernel/rcu/tree_exp.h
+> > +++ b/kernel/rcu/tree_exp.h
+> > @@ -828,11 +828,13 @@ static void rcu_exp_handler(void *unused)
+> >  {
+> >  	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
+> >  	struct rcu_node *rnp = rdp->mynode;
+> > +	bool preempt_bh_enabled = !(preempt_count() & (PREEMPT_MASK |
+> > SOFTIRQ_MASK));
 > 
-> I may well be missing something but to me it seems that:
+> I don't know if nested hardirqs still exist. I only heard old rumours
+> about broken drivers. Should we take care of them?
+
+Last I checked, certain tracing scenarios from irq handlers looked
+to RCU like nested irq handlers.  Given that, does your more robust
+approach below work correctly?
+
+						Thanx, Paul
+
+> Also are we sure that all callers of flush_smp_call_function_queue()
+> are QS?
 > 
-> bypass_is_lazy = all bypass callbacks are lazy
-> !bypass_is_lazy = there is at least one non-lazy bypass callback
+> Let's see we know that rcu_exp_handler() can either be executed from:
 > 
-> And indeed as long as there is at least one non-lazy callback, we don't
-> want to rely on the LAZY timer.
+> * hardirqs
 > 
-> Am I overlooking something?
-
-No you are not over looking and you are very right that I may need to change the
-comment.
-
-To clarify my intent, a wake up or timer adjustment needs to be done only if:
-
-1. Bypass list was fully empty before (this is the first bypass list entry).
-
-Or both the below conditions are met:
-
-1. Bypass list had only lazy CBs before.
-
-2. The new CB is non-lazy.
-
-Instead of saying, "nothing needs to be done if...", I will change it to:
-
-        // A wake up of the grace period kthread or timer adjustment needs to
-        // be done only if:
-        // 1. Bypass list was empty before (this is the first bypass queue).
-        //      Or, both the below conditions are met:
-        // 1. Bypass list had only lazy CBs before.
-        // 2. The new CB is non-lazy.
-
-That sounds less confusing...
-
-Or, I can just make the edit you suggested... let me know either way!
-
-Thanks!
-
- - Joel
+> Or from process context, expected to be RCU QS states at least in idle
+> as the comment above flush_smp_call_function_queue() in idle says
+> (but I'd rather check all the in-process callers before stating all
+> of them are in QS)
+> 
+> * idle (in which case preemption is disabled unfortunately so the current
+> test won't help)
+> * stop_machine
+>   _ When CPU is dead and out of RCU (rcutree_dead_cpu() called)
+>     so that should be a QS.
+>   _ When CPU is migrating (is it a QS then?)
+> 
+> If we check further that all non-IRQ callers of flush_smp_call_function_queue()
+> are always quiescent states then we could deduce that !in_hardirq() means we are in
+> a quiescent state, whether preemption is disabled or not.
+> 
+> In any case for the current patch, perhaps a more robust test against nested
+> hardirqs would be:
+> 
+> unsigned long cnt = preempt_count();
+> bool preempt_bh_enabled = (!cnt || cnt == HARDIRQ_OFFSET)
+> 
+> Thanks.
+> 
+> >  
+> >  	if (!(READ_ONCE(rnp->expmask) & rdp->grpmask) ||
+> >  	    __this_cpu_read(rcu_data.cpu_no_qs.b.exp))
+> >  		return;
+> > -	if (rcu_is_cpu_rrupt_from_idle()) {
+> > +	if (rcu_is_cpu_rrupt_from_idle() ||
+> > +	    (IS_ENABLED(CONFIG_PREEMPT_COUNT) && preempt_bh_enabled)) {
+> >  		rcu_report_exp_rdp(this_cpu_ptr(&rcu_data));
+> >  		return;
+> >  	}
+> > -- 
+> > 2.31.1.189.g2e36527f23
+> > 
