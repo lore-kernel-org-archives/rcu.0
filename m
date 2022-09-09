@@ -2,137 +2,356 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AE195C54EE9
-	for <rcu@archiver.kernel.org>; Wed,  7 Sep 2022 15:39:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C90BBECAAA1
+	for <rcu@archiver.kernel.org>; Fri,  9 Sep 2022 10:21:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229939AbiIGPjm (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 7 Sep 2022 11:39:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34298 "EHLO
+        id S230304AbiIIKVi (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 9 Sep 2022 06:21:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229744AbiIGPjl (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 7 Sep 2022 11:39:41 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E5241A05B
-        for <rcu@vger.kernel.org>; Wed,  7 Sep 2022 08:39:40 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id g16so10730694qkl.11
-        for <rcu@vger.kernel.org>; Wed, 07 Sep 2022 08:39:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date;
-        bh=VFsvBRrLGMqiandnt/BZ5X7eFmfya9PSY9gKTWZIt0U=;
-        b=JdHn0stdszmYFagtThduBXGIH0Pkq5WVZPr63iBGr/Pzbo81jgifE/mYkdYKuCxuVy
-         1qG/Tu06lAnhlIAT2D7NA+IKMZdsJy8AX7pW+gV+x/dobLn0VlB3OVIHURlHeurGhVai
-         RRgOjeGDFMBfxuhqpKKDkm9L3f8d3x6G6CIfU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date;
-        bh=VFsvBRrLGMqiandnt/BZ5X7eFmfya9PSY9gKTWZIt0U=;
-        b=USY/i5jSeSKGy2Q7d6dPT9Cni2TaU77xzF00B9fMYouKaoguvExWauxpgsB3nRTIi5
-         1iFEd5ZMZfvRu4t9aZTquSYbyK9CSWzMsQgKO+1WPCUYkom2lsDKmawfAvl6z8mhYFWI
-         vDd4kxa+NCcu8ORV3JbAOC2JVJZ5WUMFBnZpfJvhXsnq6Wz3Ev9QYU/bScvXgLJ87KA5
-         Mq/zqe8HFZkd6WoQp4RQF2pD0Z1zN9LsXFWC21x9ETBhkRyJJgzE+fvCNlkuIp3cyIic
-         OxeF93tacWFjZYnKn4aBaIWce/UdBdv0BZ9a2qYOgm3UKz2y6PIITz9OOq3/aQHkK2e2
-         FGfA==
-X-Gm-Message-State: ACgBeo1sgbI63eoNvchEBKQk98ZoEKrl8ZDtfZfbdLBSvRSt2rWzIJU1
-        tCsvoycs7hx4VxlbGYpWy2mDPw==
-X-Google-Smtp-Source: AA6agR5G32UCcKvI9zxhdNDRi1/Zv87RtjSFEmP61E05auhqP3lb8UrIHuJWnIFdWfHVf9XzdcO2aw==
-X-Received: by 2002:a05:620a:2681:b0:6b5:b50c:99c0 with SMTP id c1-20020a05620a268100b006b5b50c99c0mr3122997qkp.527.1662565179215;
-        Wed, 07 Sep 2022 08:39:39 -0700 (PDT)
-Received: from [10.0.0.40] (c-73-148-104-166.hsd1.va.comcast.net. [73.148.104.166])
-        by smtp.gmail.com with ESMTPSA id k18-20020ac81412000000b003445b83de67sm12090609qtj.3.2022.09.07.08.39.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Sep 2022 08:39:38 -0700 (PDT)
-Message-ID: <1a0df62f-1dfb-6ffe-651e-5908ff7069d3@joelfernandes.org>
-Date:   Wed, 7 Sep 2022 11:39:37 -0400
+        with ESMTP id S230342AbiIIKVh (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 9 Sep 2022 06:21:37 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5925F2D69
+        for <rcu@vger.kernel.org>; Fri,  9 Sep 2022 03:21:34 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 51BA21F8C3;
+        Fri,  9 Sep 2022 10:21:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1662718893; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WJXDcWL4vglOGb82BFVLXyxBcQ57mrMRjRCZB24r+bk=;
+        b=V7xXwMelq/vezSaqdE1RWAj5kBi81WAtei8/GLCHLN0n3qCx/b/3UtyuKsxL5Eom2XXcLR
+        Ttaa+WsmreTQoqKiqOUrhg5gNy2XmCBy2H+mlLG0E0rLZSL5MU/YSzaIQRSFGZ+DkR4fOj
+        07ooAQ8wFQ1EcjT12lZev32eTCDo9hw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1662718893;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WJXDcWL4vglOGb82BFVLXyxBcQ57mrMRjRCZB24r+bk=;
+        b=Ui/lefyHi8447L+WSbRAziZbLueA6uVYsOYufybvWoLQCOABfjuBR0A/pS925asmwkX+Se
+        +0YRH0BbOBnB+4DA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2F05C13A93;
+        Fri,  9 Sep 2022 10:21:33 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id KDquCq0TG2NEdgAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Fri, 09 Sep 2022 10:21:33 +0000
+Message-ID: <aec59f53-0e53-1736-5932-25407125d4d4@suse.cz>
+Date:   Fri, 9 Sep 2022 12:21:32 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.2.1
-Subject: Re: [PATCH v5 06/18] rcu: Introduce call_rcu_lazy() API
- implementation
+Subject: Re: [mm/sl[au]b] 3c4cafa313: canonical_address#:#[##]
+From:   Vlastimil Babka <vbabka@suse.cz>
+To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        kernel test robot <yujie.liu@intel.com>
+Cc:     lkp@lists.01.org, lkp@intel.com,
+        Joel Fernandes <joel@joelfernandes.org>, linux-mm@kvack.org,
+        rcu@vger.kernel.org, paulmck@kernel.org,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>
+References: <20220906074548.GA72649@inn2.lkp.intel.com>
+ <208c1757-5edd-fd42-67d4-1940cc43b50f@intel.com> <YxdfpTDdfBt6VIpo@hyeyoo>
+ <416149c0-1e18-0e00-d116-dd3738957556@suse.cz>
 Content-Language: en-US
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rushikesh.s.kadam@intel.com, urezki@gmail.com,
-        neeraj.iitr10@gmail.com, paulmck@kernel.org, rostedt@goodmis.org,
-        vineeth@bitbyteword.org, boqun.feng@gmail.com
-References: <20220901221720.1105021-1-joel@joelfernandes.org>
- <20220901221720.1105021-7-joel@joelfernandes.org>
- <20220902152132.GA115525@lothringen> <Yxa5Ch574cRZxRdo@google.com>
- <20220906151757.GA183806@lothringen> <Yxfggt1/cLBhUi/y@google.com>
- <20220907094014.GA193994@lothringen>
- <07215af0-4164-efb6-4ba8-63d33fe8664e@joelfernandes.org>
- <20220907153801.GB198228@lothringen>
-From:   Joel Fernandes <joel@joelfernandes.org>
-In-Reply-To: <20220907153801.GB198228@lothringen>
+In-Reply-To: <416149c0-1e18-0e00-d116-dd3738957556@suse.cz>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
 
-
-On 9/7/2022 11:38 AM, Frederic Weisbecker wrote:
-> On Wed, Sep 07, 2022 at 09:44:01AM -0400, Joel Fernandes wrote:
->> Hi Frederic,
->>
->> On 9/7/2022 5:40 AM, Frederic Weisbecker wrote:
->>>>
->>>> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
->>>> index bd8f39ee2cd0..e3344c262672 100644
->>>> --- a/kernel/rcu/tree_nocb.h
->>>> +++ b/kernel/rcu/tree_nocb.h
->>>> @@ -382,15 +382,19 @@ static bool rcu_nocb_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
->>>>  				  unsigned long j, unsigned long flush_flags)
->>>>  {
->>>>  	bool ret;
->>>> +	bool was_alldone;
->>>>  
->>>>  	if (!rcu_rdp_is_offloaded(rdp))
->>>>  		return true;
->>>>  	rcu_lockdep_assert_cblist_protected(rdp);
->>>>  	rcu_nocb_bypass_lock(rdp);
->>>> +	if (flush_flags & FLUSH_BP_WAKE)
->>>> +		was_alldone = !rcu_segcblist_pend_cbs(&rdp->cblist);
->>>> +
->>> You can check that outside bypass lock (but you still need nocb_lock).
->>
->> Right, ok. I can make it outside the bypass lock, and the nocb_lock is implied
->> by rcu_lockdep_assert_cblist_protected().
->>
+On 9/6/22 17:11, Vlastimil Babka wrote:
+> On 9/6/22 16:56, Hyeonggon Yoo wrote:
+>> On Tue, Sep 06, 2022 at 03:51:01PM +0800, kernel test robot wrote:
+>>> Greeting,
 >>>
->>>>  	ret = rcu_nocb_do_flush_bypass(rdp, rhp, j, flush_flags);
->>>>  
->>>> -	if (flush_flags & FLUSH_BP_WAKE)
->>>> -		wake_nocb_gp(rdp, true);
->>>> +	if (flush_flags & FLUSH_BP_WAKE && was_alldone)
->>>> +		wake_nocb_gp(rdp, false);
->>> That doesn't check if the bypass list was empty.
+>>> FYI, we noticed the following commit (built with gcc-11):
+>>>
+>>> commit: 3c4cafa313d978b31a1d5dc17c323074b19a1d63 ("mm/sl[au]b: rearrange
+>>> struct slab fields to allow larger rcu_head")
+>>> git://git.kernel.org/cgit/linux/kernel/git/vbabka/slab.git
+>>> for-6.1/fit_rcu_head
+>>>
+>>> in testcase: fio-basic
+>>> version: fio-x86_64-3.15-1_20220903
+>>> with following parameters:
+>>>
+>>>     disk: 2pmem
+>>>     fs: xfs
+>>>     runtime: 200s
+>>>     nr_task: 50%
+>>>     time_based: tb
+>>>     rw: randrw
+>>>     bs: 2M
+>>>     ioengine: mmap
+>>>     test_size: 200G
+>>>     cpufreq_governor: performance
+>>>
+>>> test-description: Fio is a tool that will spawn a number of threads or
+>>> processes doing a particular type of I/O action as specified by the user.
+>>> test-url:https://github.com/axboe/fio
+>>>
+>>>
+>>> on test machine: 96 threads 2 sockets Intel(R) Xeon(R) Gold 6252 CPU @
+>>> 2.10GHz (Cascade Lake) with 512G memory
+>>>
+>>> caused below changes (please refer to attached dmesg/kmsg for entire
+>>> log/backtrace):
+>>>
+>>>
+>>> [  304.700893][   C40] perf: interrupt took too long (12747 > 12477),
+>>> lowering kernel.perf_event_max_sample_rate to 15000
+>>> [  305.015834][   C40] perf: interrupt took too long (15947 > 15933),
+>>> lowering kernel.perf_event_max_sample_rate to 12000
+>>> [  305.954702][   C40] perf: interrupt took too long (19968 > 19933),
+>>> lowering kernel.perf_event_max_sample_rate to 10000
+>>> [  309.554949][   C31] perf: interrupt took too long (25118 > 24960),
+>>> lowering kernel.perf_event_max_sample_rate to 7000
+>>> [  315.068744][   C95] sched: RT throttling activated
+>>> [  317.121806][  T590] general protection fault, probably for
+>>> non-canonical address 0xdead000000000120: 0000 [#1] SMP NOPTI
+>>> [  317.133291][  T590] CPU: 61 PID: 590 Comm: kcompactd0 Tainted: G
+>>> S                 6.0.0-rc2-00002-g3c4cafa313d9 #1
+>>> [  317.144084][  T590] Hardware name: Intel Corporation
+>>> S2600WFT/S2600WFT, BIOS SE5C620.86B.02.01.0008.031920191559 03/19/2019
+>>> [ 317.155668][ T590] RIP: 0010:isolate_movable_page (mm/migrate.c:103)
+>>> [ 317.162016][ T590] Code: ba 28 00 0f 82 88 00 00 00 48 89 ef e8 e2 3a
+>>> f8 ff 84 c0 74 74 48 8b 45 00 a9 00 00 04 00 75 69 48 8b 45 18 44 89 e6
+>>> 48 89 ef <48> 8b 40 fe ff d0 0f 1f 00 84 c0 74 52 48 8b 45 00 a9 00 00 04 00
+>>> All code
+>>> ========
+>>>     0:    ba 28 00 0f 82           mov    $0x820f0028,%edx
+>>>     5:    88 00                    mov    %al,(%rax)
+>>>     7:    00 00                    add    %al,(%rax)
+>>>     9:    48 89 ef                 mov    %rbp,%rdi
+>>>     c:    e8 e2 3a f8 ff           callq  0xfffffffffff83af3
+>>>    11:    84 c0                    test   %al,%al
+>>>    13:    74 74                    je     0x89
+>>>    15:    48 8b 45 00              mov    0x0(%rbp),%rax
+>>>    19:    a9 00 00 04 00           test   $0x40000,%eax
+>>>    1e:    75 69                    jne    0x89
+>>>    20:    48 8b 45 18              mov    0x18(%rbp),%rax
+>>>    24:    44 89 e6                 mov    %r12d,%esi
+>>>    27:    48 89 ef                 mov    %rbp,%rdi
+>>>    2a:*    48 8b 40 fe              mov    -0x2(%rax),%rax        <--
+>>> trapping instruction
+>>>    2e:    ff d0                    callq  *%rax
+>>>    30:    0f 1f 00                 nopl   (%rax)
+>>>    33:    84 c0                    test   %al,%al
+>>>    35:    74 52                    je     0x89
+>>>    37:    48 8b 45 00              mov    0x0(%rbp),%rax
+>>>    3b:    a9 00 00 04 00           test   $0x40000,%eax
+>>>
+>>> Code starting with the faulting instruction
+>>> ===========================================
+>>>     0:    48 8b 40 fe              mov    -0x2(%rax),%rax
+>>>     4:    ff d0                    callq  *%rax
+>>>     6:    0f 1f 00                 nopl   (%rax)
+>>>     9:    84 c0                    test   %al,%al
+>>>     b:    74 52                    je     0x5f
+>>>     d:    48 8b 45 00              mov    0x0(%rbp),%rax
+>>>    11:    a9 00 00 04 00           test   $0x40000,%eax
+>>> [  317.182354][  T590] RSP: 0018:ffffc9000e1d3c78 EFLAGS: 00010246
+>>> [  317.188668][  T590] RAX: dead000000000122 RBX: ffffea0004031034 RCX:
+>>> 000000000000000c
+>>> [  317.196890][  T590] RDX: dead000000000101 RSI: 000000000000000c RDI:
+>>> ffffea0004031000
+>>> [  317.205273][  T590] RBP: ffffea0004031000 R08: 0000000004031000 R09:
+>>> 0000000000000004
+>>> [  317.213752][  T590] R10: 00000000000066b6 R11: 0000000000000004 R12:
+>>> 000000000000000c
+>>> [  317.222384][  T590] R13: ffffea0004031000 R14: 0000000000100c40 R15:
+>>> ffffc9000e1d3df0
+>>> [  317.230679][  T590] FS:  0000000000000000(0000)
+>>> GS:ffff88c04ff40000(0000) knlGS:0000000000000000
+>>> [  317.239896][  T590] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>> [  317.247098][  T590] CR2: 0000000000451c00 CR3: 0000008064ca4002 CR4:
+>>> 00000000007706e0
+>>> [  317.255788][  T590] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
+>>> 0000000000000000
+>>> [  317.264256][  T590] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
+>>> 0000000000000400
+>>> [  317.272772][  T590] PKRU: 55555554
+>>> [  317.276783][  T590] Call Trace:
+>>> [  317.280932][  T590]  <TASK>
+>>> [ 317.284315][ T590] isolate_migratepages_block (mm/compaction.c:982)
+>>> [ 317.290702][ T590] isolate_migratepages (mm/compaction.c:1960)
+>>> [ 317.296278][ T590] compact_zone (mm/compaction.c:2393)
+>>> [ 317.301202][ T590] proactive_compact_node (mm/compaction.c:2661
+>>> (discriminator 2))
+>> Hmm... Let's debug.
 >>
->> thanks, will add your suggested optimization, however I have a general question:
+>> FYI, simply echo 1 > /proc/sys/vm/compact_memory invokes same bug on my test
+>> environment.
 >>
->> For the case where the bypass list is empty, where does rcu_barrier() do a wake
->> up of the nocb GP thread after entrain()?
+>> the 'mops' is invalid address in mm/migrate.c:103.
 >>
->> I don't see a call to __call_rcu_nocb_wake() like rcutree_migrate_callbacks()
->> does. Is the wake up done in some other path?
+>> Hmm, why is this slab page confused as movable page?
+>> -> Because page->'mapping' and slab->slabs field has same offset.
+>>
+>> I think this is invoked because lowest two bits of slab->slabs is not 0.
+>>
+>> Vlastimil, any thoughts?
 > 
-> Actually I can't find it. You're right it may be missing. It's not even just
-> about the bypass list but also the entrain'ed callback. Would you be willing to
-> cook a fix?
+> Yeah, slabs->slabs could do that, and the remedy would be to exchange it
+> with the slab->next field.
+> However the report points to the value dead000000000122 which is
+> LIST_POISON2, which unfortunately contains the lower bit after 4c6080cd6f8b
+> ("lib/list: tweak LIST_POISON2 for better code generation on x86_64")
+> 
+> Probably the simplest fix would be to check for PageSlab() before
+> __PageMovable().
 
-Sounds good, yes I am happy to make a fix and include it in the next series
-posting. Thanks for confirming the potential issue.
+So I've done with the patch below, that I added to the for-6.1/fit_rcu_head
+branch in slab.git. It's not very nice though with all the new membarriers.
+I hope it's at least correct...
 
-I will be on a plan in a few hours, I can even try to do it on the plane but
-will see how it goes ;)
+> But heads up for Joel - if your rcu_head debugging info series (didn't
+> check) has something like a counter in the 3rd 64bit word, where bit 1 can
+> thus be set, it can cause the same issue fooling the __PageMovable() check.
 
-Thanks!
+----8<----
+From d6f9fbb33b908eb8162cc1f6ce7f7c970d0f285f Mon Sep 17 00:00:00 2001
+From: Vlastimil Babka <vbabka@suse.cz>
+Date: Fri, 9 Sep 2022 12:03:10 +0200
+Subject: [PATCH 2/3] mm/migrate: make isolate_movable_page() skip slab pages
 
- - Joel
+In the next commit we want to rearrange struct slab fields to allow a
+larger rcu_head. Afterwards, the page->mapping field will overlap
+with SLUB's "struct list_head slab_list", where the value of prev
+pointer can become LIST_POISON2, which is 0x122 + POISON_POINTER_DELTA.
+Unfortunately the bit 1 being set can confuse PageMovable() to be a
+false positive and cause a GPF as reported by lkp [1].
+
+To fix this, make isolate_movable_page() skip pages with the PageSlab
+flag set. This is a bit tricky as we need to add memory barriers to SLAB
+and SLUB's page allocation and freeing, and their counterparts to
+isolate_movable_page().
+
+[1] https://lore.kernel.org/all/208c1757-5edd-fd42-67d4-1940cc43b50f@intel.com/
+
+Reported-by: kernel test robot <yujie.liu@intel.com>
+Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+---
+ mm/compaction.c |  2 +-
+ mm/migrate.c    | 12 +++++++++++-
+ mm/slab.c       |  6 +++++-
+ mm/slub.c       |  6 +++++-
+ 4 files changed, 22 insertions(+), 4 deletions(-)
+
+diff --git a/mm/compaction.c b/mm/compaction.c
+index 640fa76228dd..b697c207beec 100644
+--- a/mm/compaction.c
++++ b/mm/compaction.c
+@@ -972,7 +972,7 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
+ 			 * __PageMovable can return false positive so we need
+ 			 * to verify it under page_lock.
+ 			 */
+-			if (unlikely(__PageMovable(page)) &&
++			if (unlikely(!PageSlab(page) && __PageMovable(page)) &&
+ 					!PageIsolated(page)) {
+ 				if (locked) {
+ 					unlock_page_lruvec_irqrestore(locked, flags);
+diff --git a/mm/migrate.c b/mm/migrate.c
+index 6a1597c92261..7f661b45d431 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -78,7 +78,7 @@ int isolate_movable_page(struct page *page, isolate_mode_t mode)
+ 	 * assumes anybody doesn't touch PG_lock of newly allocated page
+ 	 * so unconditionally grabbing the lock ruins page's owner side.
+ 	 */
+-	if (unlikely(!__PageMovable(page)))
++	if (unlikely(!__PageMovable(page) || PageSlab(page)))
+ 		goto out_putpage;
+ 	/*
+ 	 * As movable pages are not isolated from LRU lists, concurrent
+@@ -94,9 +94,19 @@ int isolate_movable_page(struct page *page, isolate_mode_t mode)
+ 	if (unlikely(!trylock_page(page)))
+ 		goto out_putpage;
+ 
++	if (unlikely(PageSlab(page)))
++		goto out_no_isolated;
++	/* Pairs with smp_wmb() in slab freeing, e.g. SLUB's __free_slab() */
++	smp_rmb();
++
+ 	if (!PageMovable(page) || PageIsolated(page))
+ 		goto out_no_isolated;
+ 
++	/* Pairs with smp_wmb() in slab allocation, e.g. SLUB's alloc_slab_page() */
++	smp_rmb();
++	if (unlikely(PageSlab(page)))
++		goto out_no_isolated;
++
+ 	mops = page_movable_ops(page);
+ 	VM_BUG_ON_PAGE(!mops, page);
+ 
+diff --git a/mm/slab.c b/mm/slab.c
+index 10e96137b44f..25e9a6ef4f74 100644
+--- a/mm/slab.c
++++ b/mm/slab.c
+@@ -1370,6 +1370,8 @@ static struct slab *kmem_getpages(struct kmem_cache *cachep, gfp_t flags,
+ 
+ 	account_slab(slab, cachep->gfporder, cachep, flags);
+ 	__folio_set_slab(folio);
++	/* Make the flag visible before any changes to folio->mapping */
++	smp_wmb();
+ 	/* Record if ALLOC_NO_WATERMARKS was set when allocating the slab */
+ 	if (sk_memalloc_socks() && page_is_pfmemalloc(folio_page(folio, 0)))
+ 		slab_set_pfmemalloc(slab);
+@@ -1387,9 +1389,11 @@ static void kmem_freepages(struct kmem_cache *cachep, struct slab *slab)
+ 
+ 	BUG_ON(!folio_test_slab(folio));
+ 	__slab_clear_pfmemalloc(slab);
+-	__folio_clear_slab(folio);
+ 	page_mapcount_reset(folio_page(folio, 0));
+ 	folio->mapping = NULL;
++	/* Make the mapping reset visible before clearing the flag */
++	smp_wmb();
++	__folio_clear_slab(folio);
+ 
+ 	if (current->reclaim_state)
+ 		current->reclaim_state->reclaimed_slab += 1 << order;
+diff --git a/mm/slub.c b/mm/slub.c
+index d86be1b0d09f..2f9cb6e67de3 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -1830,6 +1830,8 @@ static inline struct slab *alloc_slab_page(gfp_t flags, int node,
+ 
+ 	slab = folio_slab(folio);
+ 	__folio_set_slab(folio);
++	/* Make the flag visible before any changes to folio->mapping */
++	smp_wmb();
+ 	if (page_is_pfmemalloc(folio_page(folio, 0)))
+ 		slab_set_pfmemalloc(slab);
+ 
+@@ -2037,8 +2039,10 @@ static void __free_slab(struct kmem_cache *s, struct slab *slab)
+ 	int pages = 1 << order;
+ 
+ 	__slab_clear_pfmemalloc(slab);
+-	__folio_clear_slab(folio);
+ 	folio->mapping = NULL;
++	/* Make the mapping reset visible before clearing the flag */
++	smp_wmb();
++	__folio_clear_slab(folio);
+ 	if (current->reclaim_state)
+ 		current->reclaim_state->reclaimed_slab += pages;
+ 	unaccount_slab(slab, order, s);
+-- 
+2.37.3
+
 
 
