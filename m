@@ -2,29 +2,29 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02FF9ECAAA1
-	for <rcu@archiver.kernel.org>; Tue, 13 Sep 2022 03:01:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E50A8C6FA82
+	for <rcu@archiver.kernel.org>; Tue, 13 Sep 2022 03:01:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230058AbiIMDBI (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 12 Sep 2022 23:01:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48780 "EHLO
+        id S230105AbiIMDBJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 12 Sep 2022 23:01:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230014AbiIMDBG (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 12 Sep 2022 23:01:06 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3497610567;
+        with ESMTP id S230050AbiIMDBI (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 12 Sep 2022 23:01:08 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC1241147F;
         Mon, 12 Sep 2022 20:01:05 -0700 (PDT)
-Received: from dggpemm500021.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4MRSmg0gyNzlVtZ;
-        Tue, 13 Sep 2022 10:57:07 +0800 (CST)
+Received: from dggpemm500020.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4MRSmh0Spfz14QVV;
+        Tue, 13 Sep 2022 10:57:08 +0800 (CST)
 Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggpemm500021.china.huawei.com (7.185.36.109) with Microsoft SMTP Server
+ dggpemm500020.china.huawei.com (7.185.36.49) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.1.2375.24; Tue, 13 Sep 2022 11:01:03 +0800
 Received: from thunder-town.china.huawei.com (10.174.178.55) by
  dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Tue, 13 Sep 2022 11:01:02 +0800
+ 15.1.2375.24; Tue, 13 Sep 2022 11:01:03 +0800
 From:   Zhen Lei <thunder.leizhen@huawei.com>
 To:     "Paul E . McKenney" <paulmck@kernel.org>,
         Frederic Weisbecker <frederic@kernel.org>,
@@ -36,10 +36,12 @@ To:     "Paul E . McKenney" <paulmck@kernel.org>,
         Joel Fernandes <joel@joelfernandes.org>, <rcu@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
 CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH v7 0/1] cu/nocb: Delete local variable 'need_rcu_nocb_mask' in rcu_init_nohz()
-Date:   Tue, 13 Sep 2022 11:00:35 +0800
-Message-ID: <20220913030036.1569-1-thunder.leizhen@huawei.com>
+Subject: [PATCH v7 1/1] rcu: Simplify rcu_init_nohz() cpumask handling
+Date:   Tue, 13 Sep 2022 11:00:36 +0800
+Message-ID: <20220913030036.1569-2-thunder.leizhen@huawei.com>
 X-Mailer: git-send-email 2.26.0.windows.1
+In-Reply-To: <20220913030036.1569-1-thunder.leizhen@huawei.com>
+References: <20220913030036.1569-1-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -51,178 +53,86 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-v6 --> v7:
-1. Replace "#if defined(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL)" with
-   "IS_ENABLED(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL)".
-2. Drop patch 2, Keep the semantics of "CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y"
-   unchanged. So the test result of case 7) is different in v6 and v7.
+In kernels built with either CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y or
+CONFIG_NO_HZ_FULL=y, additional CPUs must be added to rcu_nocb_mask.
+Except that kernels booted without the rcu_nocbs= will not have
+allocated rcu_nocb_mask.  And the current rcu_init_nohz() function uses
+its need_rcu_nocb_mask and offload_all local variables to track the
+rcu_nocb and nohz_full state.
 
-Test cases and test results as below:
- ----------------------------------------------------------------------
-| CONFIG_NO_HZ_FULL  | CONFIG_RCU_NOCB_CPU_DEFAULT_ALL |    cmdline    |
- ----------------------------------------------------------------------
-1)         N         |                 N               |     none      |
-2)         N         |                 N               | rcu_nocbs=1-2 |
-3)         Y         |                 N               | nohz_full=2-3 |
-4)         Y         |                 N               | rcu_nocbs=1 nohz_full=3 |
-5)         Y         |                 Y               |      none     |
-6)         Y         |                 Y               | rcu_nocbs=1-2 |
-7)         Y         |                 Y               | nohz_full=2-3 |
-8)         Y         |                 Y               | rcu_nocbs=1 nohz_full=3 |
- ----------------------------------------------------------------------
- 
-dmesg | grep "Offload RCU callbacks"
-1) none
-2) Offload RCU callbacks from CPUs: 1-2.
-3) Offload RCU callbacks from CPUs: 2-3.
-4) Offload RCU callbacks from CPUs: 1,3.
-5) Offload RCU callbacks from CPUs: 0-3.
-6) Offload RCU callbacks from CPUs: 1-2.
-7) Offload RCU callbacks from CPUs: 2-3.
-8) Offload RCU callbacks from CPUs: 1,3.
+But there is a much simpler approach, namely creating a cpumask pointer
+to track the default and then using cpumask_available() to check the
+rcu_nocb_mask state.  This commit takes this approach, thereby simplifying
+and shortening the rcu_init_nohz() function.
 
-
-v5 --> v6:
-1. Frist, update patch 1/2, so that, CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y takes
-   effect only when there are no 'rcu_nocbs=' and 'nohz_full='. Retain the same
-   semantics as the original.
-2. Then, add patch 2/2, so that, CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y takes effect
-   as long as there is no "rcu_nocbs=" boot parameter. This is suggested by
-   Frederic Weisbecker.
-
-Test cases and test results as below:
- ----------------------------------------------------------------------
-| CONFIG_NO_HZ_FULL  | CONFIG_RCU_NOCB_CPU_DEFAULT_ALL |    cmdline    |
- ----------------------------------------------------------------------
-1)         N         |                 N               |     none      |
-2)         N         |                 N               | rcu_nocbs=1-2 |
-3)         Y         |                 N               | nohz_full=2-3 |
-4)         Y         |                 N               | rcu_nocbs=1 nohz_full=3 |
-5)         Y         |                 Y               |      none     |
-6)         Y         |                 Y               | rcu_nocbs=1-2 |
-7)         Y         |                 Y               | nohz_full=2-3 |
-8)         Y         |                 Y               | rcu_nocbs=1 nohz_full=3 |
- ----------------------------------------------------------------------
-
-dmesg | grep "Offload RCU callbacks"
-1) none
-2) Offload RCU callbacks from CPUs: 1-2.
-3) Offload RCU callbacks from CPUs: 2-3.
-4) Offload RCU callbacks from CPUs: 1,3.
-5) Offload RCU callbacks from CPUs: 0-3.
-6) Offload RCU callbacks from CPUs: 1-2.
-7) Offload RCU callbacks from CPUs: 0-3.
-8) Offload RCU callbacks from CPUs: 1,3.
-
-
-v4 --> v5:
-1. Cancel eliminate rcu_state.nocb_is_setup. It is useful for case 1) below.
-
-Test cases and test results as below:
- ----------------------------------------------------------------------
-| CONFIG_NO_HZ_FULL  | CONFIG_RCU_NOCB_CPU_DEFAULT_ALL |    cmdline    |
- ----------------------------------------------------------------------
-1)         N         |                 N               |     none      |
-2)         N         |                 N               | rcu_nocbs=1-2 |
-3)         Y         |                 N               | nohz_full=1-2 |
-4)         Y         |                 Y               |     none      |
- ----------------------------------------------------------------------
- 
-1)
-[ 1018.082417] rcu-torture:--- End of test: SUCCESS (default)
-root@genericarmv8:~# dmesg | grep "Offload RCU callbacks"
-
-root@genericarmv8:~# zcat /proc/config.gz | grep NOCB
-CONFIG_RCU_NOCB_CPU=y
-# CONFIG_RCU_NOCB_CPU_DEFAULT_ALL is not set
-root@genericarmv8:~# zcat /proc/config.gz | grep NO_HZ_FULL
-# CONFIG_NO_HZ_FULL is not set
-root@genericarmv8:~# cat /proc/cmdline
-console=ttyS0 earlyprintk=serial root=/dev/sda rw
-
-2) 3) 4)
-The same to v4.
-
-
-v3 --> v4:
-Fix a build warning.
--       struct cpumask *cpumask = NULL;
-+       const struct cpumask *cpumask = NULL;
-
-v2 --> v3:
-1. Eliminate rcu_state.nocb_is_setup
-2. Update the code based on the above patch and commit b37a667c6242
-   ("rcu/nocb: Add an option to offload all CPUs on boot").
-
-Test cases and test results as below:
-
- ----------------------------------------------------------------------
-| CONFIG_NO_HZ_FULL  | CONFIG_RCU_NOCB_CPU_DEFAULT_ALL |    cmdline    |
- ----------------------------------------------------------------------
-1)         N         |                 N               |     none      |
-2)         N         |                 N               | rcu_nocbs=1-2 |
-3)         Y         |                 N               | nohz_full=1-2 |
-4)         Y         |                 Y               |     none      |
- ----------------------------------------------------------------------
-
-1)
-[ 1085.691770] rcu-torture:--- End of test: SUCCESS: (default)
-root@genericarmv8:~# dmesg | grep "Offload RCU callbacks"
-[    0.000000] rcu:     Offload RCU callbacks from CPUs: (none).
-root@genericarmv8:~# zcat /proc/config.gz | grep NOCB
-CONFIG_RCU_NOCB_CPU=y
-# CONFIG_RCU_NOCB_CPU_DEFAULT_ALL is not set
-root@genericarmv8:~# zcat /proc/config.gz | grep NO_HZ_FULL
-# CONFIG_NO_HZ_FULL is not set
-root@genericarmv8:~# cat /proc/cmdline
-console=ttyAMA0 root=/dev/vda2 crashkernel=256M@ee000000
-
-2)
-[ 1022.532198] rcu-torture:--- End of test: SUCCESS: (default)
-root@genericarmv8:~# dmesg | grep "Offload RCU callbacks"
-[    0.000000] rcu:     Offload RCU callbacks from CPUs: 1-2.
-root@genericarmv8:~# zcat /proc/config.gz | grep NOCB
-CONFIG_RCU_NOCB_CPU=y
-# CONFIG_RCU_NOCB_CPU_DEFAULT_ALL is not set
-root@genericarmv8:~# zcat /proc/config.gz | grep NO_HZ_FULL
-# CONFIG_NO_HZ_FULL is not set
-root@genericarmv8:~# cat /proc/cmdline
-console=ttyAMA0 root=/dev/vda2 crashkernel=256M@ee000000 rcu_nocbs=1-2
-
-3)
-[ 1011.714712] rcu-torture:--- End of test: SUCCESS: (default)
-root@genericarmv8:~# dmesg | grep "Offload RCU callbacks"
-[    0.000000] rcu:     Offload RCU callbacks from CPUs: 1-2.
-root@genericarmv8:~# zcat /proc/config.gz | grep NOCB
-CONFIG_RCU_NOCB_CPU=y
-# CONFIG_RCU_NOCB_CPU_DEFAULT_ALL is not set
-root@genericarmv8:~# zcat /proc/config.gz | grep NO_HZ_FULL
-CONFIG_NO_HZ_FULL=y
-root@genericarmv8:~# cat /proc/cmdline
-console=ttyAMA0 root=/dev/vda2 crashkernel=256M@ee000000 nohz_full=1-2
-
-4)
-[ 1031.047094] rcu-torture:--- End of test: SUCCESS: (default)
-root@genericarmv8:~# dmesg | grep "Offload RCU callbacks"
-[    0.000000] rcu:     Offload RCU callbacks from CPUs: 0-3.
-root@genericarmv8:~# zcat /proc/config.gz | grep NOCB
-CONFIG_RCU_NOCB_CPU=y
-CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y
-root@genericarmv8:~# zcat /proc/config.gz | grep NO_HZ_FULL
-CONFIG_NO_HZ_FULL=y
-root@genericarmv8:~# cat /proc/cmdline
-console=ttyAMA0 root=/dev/vda2 crashkernel=256M@ee000000
-
-
-v1 --> v2:
-Update commit message.
-
-Zhen Lei (1):
-  rcu: Simplify rcu_init_nohz() cpumask handling
-
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Acked-by: Frederic Weisbecker <frederic@kernel.org>
+---
  kernel/rcu/tree_nocb.h | 34 +++++++++++-----------------------
  1 file changed, 11 insertions(+), 23 deletions(-)
 
+diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+index 0a5f0ef41484518..ce526cc2791ca6c 100644
+--- a/kernel/rcu/tree_nocb.h
++++ b/kernel/rcu/tree_nocb.h
+@@ -1210,45 +1210,33 @@ EXPORT_SYMBOL_GPL(rcu_nocb_cpu_offload);
+ void __init rcu_init_nohz(void)
+ {
+ 	int cpu;
+-	bool need_rcu_nocb_mask = false;
+-	bool offload_all = false;
+ 	struct rcu_data *rdp;
+-
+-#if defined(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL)
+-	if (!rcu_state.nocb_is_setup) {
+-		need_rcu_nocb_mask = true;
+-		offload_all = true;
+-	}
+-#endif /* #if defined(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL) */
++	const struct cpumask *cpumask = NULL;
+ 
+ #if defined(CONFIG_NO_HZ_FULL)
+-	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask)) {
+-		need_rcu_nocb_mask = true;
+-		offload_all = false; /* NO_HZ_FULL has its own mask. */
+-	}
+-#endif /* #if defined(CONFIG_NO_HZ_FULL) */
++	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask))
++		cpumask = tick_nohz_full_mask;
++#endif
++
++	if (IS_ENABLED(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL) &&
++	    !rcu_state.nocb_is_setup && !cpumask)
++		cpumask = cpu_possible_mask;
+ 
+-	if (need_rcu_nocb_mask) {
++	if (cpumask) {
+ 		if (!cpumask_available(rcu_nocb_mask)) {
+ 			if (!zalloc_cpumask_var(&rcu_nocb_mask, GFP_KERNEL)) {
+ 				pr_info("rcu_nocb_mask allocation failed, callback offloading disabled.\n");
+ 				return;
+ 			}
+ 		}
++
++		cpumask_or(rcu_nocb_mask, rcu_nocb_mask, cpumask);
+ 		rcu_state.nocb_is_setup = true;
+ 	}
+ 
+ 	if (!rcu_state.nocb_is_setup)
+ 		return;
+ 
+-#if defined(CONFIG_NO_HZ_FULL)
+-	if (tick_nohz_full_running)
+-		cpumask_or(rcu_nocb_mask, rcu_nocb_mask, tick_nohz_full_mask);
+-#endif /* #if defined(CONFIG_NO_HZ_FULL) */
+-
+-	if (offload_all)
+-		cpumask_setall(rcu_nocb_mask);
+-
+ 	if (!cpumask_subset(rcu_nocb_mask, cpu_possible_mask)) {
+ 		pr_info("\tNote: kernel parameter 'rcu_nocbs=', 'nohz_full', or 'isolcpus=' contains nonexistent CPUs.\n");
+ 		cpumask_and(rcu_nocb_mask, cpu_possible_mask,
 -- 
 2.25.1
 
