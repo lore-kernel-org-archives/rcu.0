@@ -2,185 +2,151 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C825ECAAD8
-	for <rcu@archiver.kernel.org>; Wed, 14 Sep 2022 02:15:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EB09BECAAD3
+	for <rcu@archiver.kernel.org>; Wed, 14 Sep 2022 06:34:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229638AbiINCPp (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 13 Sep 2022 22:15:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45518 "EHLO
+        id S229463AbiINGd7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 14 Sep 2022 02:33:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229812AbiINCPn (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 13 Sep 2022 22:15:43 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF6ED47BB2;
-        Tue, 13 Sep 2022 19:15:42 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id fv3so13121754pjb.0;
-        Tue, 13 Sep 2022 19:15:42 -0700 (PDT)
+        with ESMTP id S230016AbiINGd6 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 14 Sep 2022 02:33:58 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABC75696EC
+        for <rcu@vger.kernel.org>; Tue, 13 Sep 2022 23:33:57 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id d64-20020a17090a6f4600b00202ce056566so8467604pjk.4
+        for <rcu@vger.kernel.org>; Tue, 13 Sep 2022 23:33:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date;
-        bh=HLs00qLGkRYsRs/Qs4OSx3zhLgfT7QPCYF2RVcp6Dnw=;
-        b=JVNZrBvMEakmiimzfvMyEqUuOFoaYIxkE7IZ6Uiqx8ikeXCbZRH5jC37NcZLjJKTvh
-         QPw7wQu7uaKL3PlIrh+anQoiFPZwItj9hdbbsD/0zpJ/GKCym2WnVOK3SqoPeUmR5Z/H
-         ctDUd4rdvbo8HEsFWVxJHnfJSnEtJFPT2B7TgDk68tpHAeQKz9lEJWi18WHGY4/Lh8Yg
-         Q7r6TU51e6DsklGPC1DsFRX2WbkE4gPYE0hL8Gji/2tkRxFlNRksj/oS7J9iiuaUyAXV
-         kJ8YRqQ3RNpIKPPIj/e04lKMOPkz1xARs4Rzzyihjqf46cXXbm1pUkJXvPVZS6XHYFln
-         4a5w==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date;
+        bh=Snq77pgWGuBdhSsfi8MS1XPk8bTI55UIIEAHYPZaB1Y=;
+        b=aHOWylDRjar56CZgOKRun2pNmDxLm7upcYLBzSAj46O4d+0lTwTQsK41EDexvCujaB
+         dultCKuPSlmmGBHNThsRee8oRof/okF4pRN4c7I/P9l9GKGhOddsegSuQ6LBGw6o523V
+         gtoY5e6iJpktzqZAM5BReGyBGlkxUChLAu0FwtE5QMRrYaRRqZz5El+SAJdsP3nMHib+
+         92Fdk4DZw8JfSYpRRUDG/wav25olLCJEw8Jq4JsIb7TW40etbI2G0MNvVlwAXHiUxMS2
+         u06FKKVoTYqSX6WpzOY7k2lCZL9MmhxwIXzCNrIJXd9eDXyRekTK8/agon0BKcNBfVYu
+         fw5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date;
-        bh=HLs00qLGkRYsRs/Qs4OSx3zhLgfT7QPCYF2RVcp6Dnw=;
-        b=vNuChH6tVnzKPeydUTmjhiMzBff43aL0E2WKkCEaCbCT+QHmsDLKKoKA8IBVCkkYYa
-         r/KXHNJHXP50fcFEW2XoWqm4LtTuPjClwsEHaRF2fkvrqMq8CO7sIawN079PQBG9PxK2
-         12HGCLuj1F9qjDclPQyK3YUJD3KTt3WsroA2uphasfvznsAof1X2GOLFX3QNAPzslGcJ
-         mFAHyyEtab/PEg3EDo5ism4Me9tPIwKAVezZlfFfDVaieI43+KYxm2qBoJL6MSR0pCA4
-         hdEfXgQje/HbVs/OgchRImu4gdGAE1HbRTiFXDShrUemjUi4ET1oU+BXWKQdLZstvJts
-         fFzQ==
-X-Gm-Message-State: ACrzQf0g3rswleO4hSdETAwhF7bY0dF5lleu0fA3p+xJkS7Wm1yeoIIg
-        wxDQU/3Zf6pjIr0HoVlQTB4=
-X-Google-Smtp-Source: AMsMyM7R+4iL3pfpcVaoK8BnJh2Kbp150IOZXSMqzOihpjKT1NL6dCeS4RSsgTkeIzZhBLJm1DuOzA==
-X-Received: by 2002:a17:90b:3909:b0:202:c879:51a9 with SMTP id ob9-20020a17090b390900b00202c87951a9mr2168744pjb.83.1663121742226;
-        Tue, 13 Sep 2022 19:15:42 -0700 (PDT)
-Received: from localhost.localdomain ([194.5.48.32])
-        by smtp.gmail.com with ESMTPSA id f13-20020a170902684d00b0016ed8af2ec0sm9343655pln.29.2022.09.13.19.15.38
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
+        bh=Snq77pgWGuBdhSsfi8MS1XPk8bTI55UIIEAHYPZaB1Y=;
+        b=14iiLr0wplet2TYO8zFx3r0tqf6fXrbfGkrB0/ZtEGzyxTupMmpO2IhGjwFRFu/0GU
+         6ex4VQrH20eCfvWE0xFx8Q/+zTI9ALMhBwVN0RxBh/03Su1OhkoC6zvhZVKf8pPJlvpw
+         C3vbuL7q9c1j8DT18aFhVRB4fIgz3wTG/T7LZfXx67uQRfjdsSzK3iYIYQC5A52OXDkx
+         UD5NZEovVxpYVRWZ4SXG36gWVEs0xLLKLScTefqwSi5QRZHMKdmjNkgDXRLg7/bx9h4Z
+         8AzFftrCLoeWe5eo6g3AB/JyZJ2v38oWXhiE/gbmbHhJOy8CwoEseSxn6e7NyCaXhdHJ
+         XQ9Q==
+X-Gm-Message-State: ACgBeo1JqkrOm+kvkDu+wJE8bez2H1EEDYRvEHDSmtROTQFSR3ZFsF53
+        R10LMKRptMJwG/fftuxKS28=
+X-Google-Smtp-Source: AA6agR6wz/wRqsLGA1VDFCnrcJ6RF79Yt/qicnNT11CsJOqIpgO2RVF7xPfIkEvuXilrG2DkywD5VA==
+X-Received: by 2002:a17:902:9b98:b0:176:70e1:1f86 with SMTP id y24-20020a1709029b9800b0017670e11f86mr34884976plp.60.1663137237143;
+        Tue, 13 Sep 2022 23:33:57 -0700 (PDT)
+Received: from hyeyoo ([114.29.91.56])
+        by smtp.gmail.com with ESMTPSA id o9-20020a62cd09000000b0053e199aa99bsm9033475pfg.220.2022.09.13.23.33.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Sep 2022 19:15:41 -0700 (PDT)
-From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
-To:     mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
-        atrajeev@linux.vnet.ibm.com, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, lance@osuosl.org, paulmck@kernel.org,
-        rcu@vger.kernel.org
-Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>
-Subject: [PATCH linux-next][RFC] powerpc: protect cpu offlining by RCU offline lock
-Date:   Wed, 14 Sep 2022 10:15:28 +0800
-Message-Id: <20220914021528.15946-1-zhouzhouyi@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Tue, 13 Sep 2022 23:33:56 -0700 (PDT)
+Date:   Wed, 14 Sep 2022 15:33:50 +0900
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     kernel test robot <yujie.liu@intel.com>, lkp@lists.01.org,
+        lkp@intel.com, Joel Fernandes <joel@joelfernandes.org>,
+        linux-mm@kvack.org, rcu@vger.kernel.org, paulmck@kernel.org,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [mm/sl[au]b] 3c4cafa313: canonical_address#:#[##]
+Message-ID: <YyF1zgAC2GBdW3Bk@hyeyoo>
+References: <20220906074548.GA72649@inn2.lkp.intel.com>
+ <208c1757-5edd-fd42-67d4-1940cc43b50f@intel.com>
+ <YxdfpTDdfBt6VIpo@hyeyoo>
+ <416149c0-1e18-0e00-d116-dd3738957556@suse.cz>
+ <aec59f53-0e53-1736-5932-25407125d4d4@suse.cz>
+ <Yxsd625lvTS6IWc+@hyeyoo>
+ <3d178109-5981-f4ee-8fe5-4f1d0c557ed2@suse.cz>
+ <YxtOjYB9DvR4Fkdp@hyeyoo>
+ <cf7404ac-0838-7985-cdd0-524d540ad42a@suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cf7404ac-0838-7985-cdd0-524d540ad42a@suse.cz>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-During the cpu offlining, the sub functions of xive_teardown_cpu will
-call __lock_acquire when CONFIG_LOCKDEP=y. The latter function will
-travel RCU protected list, so "WARNING: suspicious RCU usage" will be
-triggered.
+On Fri, Sep 09, 2022 at 11:16:51PM +0200, Vlastimil Babka wrote:
+> On 9/9/22 16:32, Hyeonggon Yoo wrote:
+> > On Fri, Sep 09, 2022 at 03:44:19PM +0200, Vlastimil Babka wrote:
+> >> On 9/9/22 13:05, Hyeonggon Yoo wrote:
+> >> >> ----8<----
+> >> >> From d6f9fbb33b908eb8162cc1f6ce7f7c970d0f285f Mon Sep 17 00:00:00 2001
+> >> >> From: Vlastimil Babka <vbabka@suse.cz>
+> >> >> Date: Fri, 9 Sep 2022 12:03:10 +0200
+> >> >> Subject: [PATCH 2/3] mm/migrate: make isolate_movable_page() skip slab pages
+> >> >> 
+> >> >> In the next commit we want to rearrange struct slab fields to allow a
+> >> >> larger rcu_head. Afterwards, the page->mapping field will overlap
+> >> >> with SLUB's "struct list_head slab_list", where the value of prev
+> >> >> pointer can become LIST_POISON2, which is 0x122 + POISON_POINTER_DELTA.
+> >> >> Unfortunately the bit 1 being set can confuse PageMovable() to be a
+> >> >> false positive and cause a GPF as reported by lkp [1].
+> >> >> 
+> >> >> To fix this, make isolate_movable_page() skip pages with the PageSlab
+> >> >> flag set. This is a bit tricky as we need to add memory barriers to SLAB
+> >> >> and SLUB's page allocation and freeing, and their counterparts to
+> >> >> isolate_movable_page().
+> >> > 
+> >> > Hello, I just took a quick grasp,
+> >> > Is this approach okay with folio_test_anon()?
+> >> 
+> >> Not if used on a completely random page as compaction scanners can, but
+> >> relies on those being first tested for PageLRU or coming from a page table
+> >> lookup etc.
+> >> Not ideal huh. Well I could improve also by switching 'next' and 'slabs'
+> >> field and relying on the fact that the value of LIST_POISON2 doesn't include
+> >> 0x1, just 0x2.
+> > 
+> > What about swapping counters and freelist?
+> > freelist should be always aligned.  
+> 
+> Great suggestion, thanks!
+> 
+> Had to deal with SLAB too as there was list_head.prev also aliasing
+> page->mapping. Wanted to use freelist as well, but turns out it's not
+> aligned, so had to use s_mem instead.
+> 
+> The patch that isolate_movable_page() skip slab pages was thus dropped. The
+> result is in slab.git below and if nothing blows up, will restore it to -next
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/vbabka/slab.git/log/?h=for-6.1/fit_rcu_head
 
-Try to protect cpu offlining by RCU offline lock.
+I realized that there is also relevant comment in
+include/linux/mm_types.h:
 
-Tested on PPC VM of Open Source Lab of Oregon State University.
-(Each round of tests takes about 19 hours to finish)
-Test results show that although "WARNING: suspicious RCU usage" has gone,
-but there are more "BUG: soft lockup" reports than the original kernel
-(10 vs 6), so I add a [RFC] to my subject line.
+>  62  * SLUB uses cmpxchg_double() to atomically update its freelist and counters.
+>  63  * That requires that freelist & counters in struct slab be adjacent and
+>  64  * double-word aligned. Because struct slab currently just reinterprets the
+>  65  * bits of struct page, we align all struct pages to double-word boundaries,
+>  66  * and ensure that 'freelist' is aligned within struct slab.
+>  67  */
 
-Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
----
-[it seems that there are some delivery problem in my previous email,
- so I send again via gmail, sorry for the trouble]
+Also we may add a comment,
+something like this?
+
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -79,6 +79,9 @@ struct page {
+         * WARNING: bit 0 of the first word is used for PageTail(). That
+         * means the other users of this union MUST NOT use the bit to
+         * avoid collision and false-positive PageTail().
++        *
++        * WARNING: lower two bits of third word is used for PAGE_MAPPING_FLAGS.
++        * using those bits can lead compaction code to general protection fault.
+         */
+        union {
+                struct {        /* Page cache and anonymous pages */
  
-Dear PPC and RCU developers
 
-I found this bug when trying to do rcutorture tests in ppc VM of
-Open Source Lab of Oregon State University.
-
-console.log report following bug:
-[   37.635545][    T0] WARNING: suspicious RCU usage^M
-[   37.636409][    T0] 6.0.0-rc4-next-20220907-dirty #8 Not tainted^M
-[   37.637575][    T0] -----------------------------^M
-[   37.638306][    T0] kernel/locking/lockdep.c:3723 RCU-list traversed in non-reader section!!^M
-[   37.639651][    T0] ^M
-[   37.639651][    T0] other info that might help us debug this:^M
-[   37.639651][    T0] ^M
-[   37.641381][    T0] ^M
-[   37.641381][    T0] RCU used illegally from offline CPU!^M
-[   37.641381][    T0] rcu_scheduler_active = 2, debug_locks = 1^M
-[   37.667170][    T0] no locks held by swapper/6/0.^M
-[   37.668328][    T0] ^M
-[   37.668328][    T0] stack backtrace:^M
-[   37.669995][    T0] CPU: 6 PID: 0 Comm: swapper/6 Not tainted 6.0.0-rc4-next-20220907-dirty #8^M
-[   37.672777][    T0] Call Trace:^M
-[   37.673729][    T0] [c000000004653920] [c00000000097f9b4] dump_stack_lvl+0x98/0xe0 (unreliable)^M
-[   37.678579][    T0] [c000000004653960] [c0000000001f2eb8] lockdep_rcu_suspicious+0x148/0x16c^M
-[   37.680425][    T0] [c0000000046539f0] [c0000000001ed9b4] __lock_acquire+0x10f4/0x26e0^M
-[   37.682450][    T0] [c000000004653b30] [c0000000001efc2c] lock_acquire+0x12c/0x420^M
-[   37.684113][    T0] [c000000004653c20] [c0000000010d704c] _raw_spin_lock_irqsave+0x6c/0xc0^M
-[   37.686154][    T0] [c000000004653c60] [c0000000000c7b4c] xive_spapr_put_ipi+0xcc/0x150^M
-[   37.687879][    T0] [c000000004653ca0] [c0000000010c72a8] xive_cleanup_cpu_ipi+0xc8/0xf0^M
-[   37.689856][    T0] [c000000004653cf0] [c0000000010c7370] xive_teardown_cpu+0xa0/0xf0^M
-[   37.691877][    T0] [c000000004653d30] [c0000000000fba5c] pseries_cpu_offline_self+0x5c/0x100^M
-[   37.693882][    T0] [c000000004653da0] [c00000000005d2c4] arch_cpu_idle_dead+0x44/0x60^M
-[   37.695739][    T0] [c000000004653dc0] [c0000000001c740c] do_idle+0x16c/0x3d0^M
-[   37.697536][    T0] [c000000004653e70] [c0000000001c7a1c] cpu_startup_entry+0x3c/0x40^M
-[   37.699694][    T0] [c000000004653ea0] [c00000000005ca20] start_secondary+0x6c0/0xb50^M
-[   37.701742][    T0] [c000000004653f90] [c00000000000d054] start_secondary_prolog+0x10/0x14^M
-
-
-I am a beginner, hope I can be of some beneficial to the community ;-)
-
-Thanks
-Zhouyi
---
- arch/powerpc/platforms/pseries/hotplug-cpu.c |  5 ++++-
- include/linux/rcupdate.h                     |  3 ++-
- kernel/rcu/tree.c                            | 10 ++++++++++
- 3 files changed, 16 insertions(+), 2 deletions(-)
-
-diff --git a/arch/powerpc/platforms/pseries/hotplug-cpu.c b/arch/powerpc/platforms/pseries/hotplug-cpu.c
-index 0f8cd8b06432..ddf66a253c70 100644
---- a/arch/powerpc/platforms/pseries/hotplug-cpu.c
-+++ b/arch/powerpc/platforms/pseries/hotplug-cpu.c
-@@ -64,11 +64,14 @@ static void pseries_cpu_offline_self(void)
- 
- 	local_irq_disable();
- 	idle_task_exit();
-+
-+	/* Because the cpu is now offline, let rcu know that */
-+	rcu_state_ofl_lock();
- 	if (xive_enabled())
- 		xive_teardown_cpu();
- 	else
- 		xics_teardown_cpu();
--
-+	rcu_state_ofl_unlock();
- 	unregister_slb_shadow(hwcpu);
- 	rtas_stop_self();
- 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index 63d2e6a60ad7..d857955a02ba 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -1034,5 +1034,6 @@ rcu_head_after_call_rcu(struct rcu_head *rhp, rcu_callback_t f)
- /* kernel/ksysfs.c definitions */
- extern int rcu_expedited;
- extern int rcu_normal;
--
-+void rcu_state_ofl_lock(void);
-+void rcu_state_ofl_unlock(void);
- #endif /* __LINUX_RCUPDATE_H */
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 6bb8e72bc815..3282725f1054 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -4796,6 +4796,16 @@ void __init rcu_init(void)
- 		(void)start_poll_synchronize_rcu_expedited();
- }
- 
-+void rcu_state_ofl_lock(void)
-+{
-+	arch_spin_lock(&rcu_state.ofl_lock);
-+}
-+
-+void rcu_state_ofl_unlock(void)
-+{
-+	arch_spin_unlock(&rcu_state.ofl_lock);
-+}
-+
- #include "tree_stall.h"
- #include "tree_exp.h"
- #include "tree_nocb.h"
 -- 
-2.34.1
-
+Thanks,
+Hyeonggon
