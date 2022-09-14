@@ -2,127 +2,234 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CD8B3ECAAD3
-	for <rcu@archiver.kernel.org>; Wed, 14 Sep 2022 07:42:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 49FEAECAAD3
+	for <rcu@archiver.kernel.org>; Wed, 14 Sep 2022 10:12:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229940AbiINHmv (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 14 Sep 2022 03:42:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41378 "EHLO
+        id S229633AbiINKMl (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 14 Sep 2022 06:12:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229903AbiINHmr (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 14 Sep 2022 03:42:47 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE1FA72B64
-        for <rcu@vger.kernel.org>; Wed, 14 Sep 2022 00:42:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/qL9W+SzWLNHnKvVBVn4fKxNoXgKffqZs2eqeyelFh8=; b=uAt5mZZQdAvcBIld9pMVpV65s4
-        xJIiTLouljdxOZooV7ByVk48AtZqW4Ipc6N+TgwQrw1Vr05J1r6XTPjmVZiTym9dJB7rKbKtrOPQD
-        +7dE31rBZXtXkWcjYA+mPuXnDj3bYngXRCGU+VixEpv03ga/O34Ce8Y8V1oT5zoXYTNkvH2YixC2v
-        q3yg9RJJp6/40ex3PtSn2V31Klxlupng/kShS2pMlAMzMNBSjEYbsBVrqgEPSJRiCuDmevKwpfS2D
-        Yk013Ra5oc6I4a5ew3AJc73mKMOp+Ie/rTam7/tNN2EykVL27JcBsFVH40PhqoL4wK46v1TD2uhVD
-        huV2TrpA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1oYN2c-00Ha7M-Kb; Wed, 14 Sep 2022 07:42:38 +0000
-Date:   Wed, 14 Sep 2022 08:42:38 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        kernel test robot <yujie.liu@intel.com>, lkp@lists.01.org,
-        lkp@intel.com, Joel Fernandes <joel@joelfernandes.org>,
-        linux-mm@kvack.org, rcu@vger.kernel.org, paulmck@kernel.org,
-        Alexey Dobriyan <adobriyan@gmail.com>
-Subject: Re: [mm/sl[au]b] 3c4cafa313: canonical_address#:#[##]
-Message-ID: <YyGF7rHetCp0mWhV@casper.infradead.org>
-References: <20220906074548.GA72649@inn2.lkp.intel.com>
- <208c1757-5edd-fd42-67d4-1940cc43b50f@intel.com>
- <YxdfpTDdfBt6VIpo@hyeyoo>
- <416149c0-1e18-0e00-d116-dd3738957556@suse.cz>
- <aec59f53-0e53-1736-5932-25407125d4d4@suse.cz>
- <Yxsd625lvTS6IWc+@hyeyoo>
- <3d178109-5981-f4ee-8fe5-4f1d0c557ed2@suse.cz>
- <YxtOjYB9DvR4Fkdp@hyeyoo>
- <cf7404ac-0838-7985-cdd0-524d540ad42a@suse.cz>
- <YyF1zgAC2GBdW3Bk@hyeyoo>
+        with ESMTP id S229637AbiINKMi (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 14 Sep 2022 06:12:38 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 051406580E
+        for <rcu@vger.kernel.org>; Wed, 14 Sep 2022 03:12:36 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id x1so14648810plv.5
+        for <rcu@vger.kernel.org>; Wed, 14 Sep 2022 03:12:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date;
+        bh=I+BQcwwB9FksAWtE8UIHySzaN5PH6WM6Ov9wPqv4dAg=;
+        b=f4EQi2vwf4azG0YVYHs57m+fs7+S6K1s0XdeEskbxHCuwcbPXssqMSkCsK6TnNFfN/
+         TQBE2FAKbgo67UKxjqoNusMl79Erd6/DzR61mJGENaiLhSmbhXSlAlWViQ9fSAbLC71o
+         LS5XRma0iQ6ozLTEb4M/Vg914m13S/TYDlGuqEY3aXnp/6IZ4UXh03gUKS76aym4AOKT
+         BgSmKf9yKoYKPcnBb65HdFkAftvjKO3UlnPchNxIwS6UazrA2vDQKNFwCe5NZTEe2kVx
+         laui1uzNYUIHi1m7a3LcB43nPdlUCsU0boNfbqxjBfzA/Z/QChf4QGx9PhRH5f05kRxz
+         19Qw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
+        bh=I+BQcwwB9FksAWtE8UIHySzaN5PH6WM6Ov9wPqv4dAg=;
+        b=5PlzL0/MQcGIn1Chg5M7JjOKcUFHArMFVY4eXpGwMDPZzL7sUb2jnWa2Gr7p5GGi2N
+         FQWKuSUojCb+HK1b93Q58a3xKNCmlSMFxco1csae8dSAgECwckhEV4uKrJhZ+0Ces9Jp
+         FPsJDFCL5ki2RvJn+F0CP00AJ9pRDb3gBtv5mXdeGK/Jn/dIDiP9cKDqRZQwdnzoJ9Ph
+         ZAEpF2KUaynMdGcN0hEQqfov4R/jPHEoSW0vpwXi99hQDUc3NBG3A3/pjtA5cwWN5DvW
+         eKjyn88dH1Go1Uu80ojbBfaKKA2O92H1nnML7iD1RxSP6HotrEVS2Ru0v0NlPujAR8x6
+         LKZA==
+X-Gm-Message-State: ACrzQf0RscVtrN881T522bfHuOtw9l6aMqCz3FdmVfynbmqt8WQADYAx
+        YkWaCg83jtnJCpE8fQ1sgDukavfDCQ==
+X-Google-Smtp-Source: AMsMyM4cfSOqec0B+aAvVX21ZCr5Ccc+jUXVkUGm5JIaUYep4WKOijKvfVdR1ouKgXlPSIHXP8wTgQ==
+X-Received: by 2002:a17:90a:8c8e:b0:202:883b:2644 with SMTP id b14-20020a17090a8c8e00b00202883b2644mr3944629pjo.89.1663150355453;
+        Wed, 14 Sep 2022 03:12:35 -0700 (PDT)
+Received: from piliu.users.ipa.redhat.com ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id v2-20020aa799c2000000b0052e6c058bccsm9714550pfi.61.2022.09.14.03.12.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Sep 2022 03:12:34 -0700 (PDT)
+Date:   Wed, 14 Sep 2022 18:12:27 +0800
+From:   Pingfan Liu <kernelfans@gmail.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     rcu@vger.kernel.org, David Woodhouse <dwmw@amazon.co.uk>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>
+Subject: Re: [PATCH 1/3] rcu: remove redundant cpu affinity setting during
+ teardown
+Message-ID: <YyGpC03H0c9EXTv9@piliu.users.ipa.redhat.com>
+References: <20220905033852.18988-1-kernelfans@gmail.com>
+ <20220906172441.GY4315@paulmck-ThinkPad-P17-Gen-1>
+ <Yxf2jRB9LXr4q6ri@piliu.users.ipa.redhat.com>
+ <20220910203622.GI4315@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YyF1zgAC2GBdW3Bk@hyeyoo>
+In-Reply-To: <20220910203622.GI4315@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Sep 14, 2022 at 03:33:50PM +0900, Hyeonggon Yoo wrote:
-> On Fri, Sep 09, 2022 at 11:16:51PM +0200, Vlastimil Babka wrote:
-> > On 9/9/22 16:32, Hyeonggon Yoo wrote:
-> > > On Fri, Sep 09, 2022 at 03:44:19PM +0200, Vlastimil Babka wrote:
-> > >> On 9/9/22 13:05, Hyeonggon Yoo wrote:
-> > >> >> ----8<----
-> > >> >> From d6f9fbb33b908eb8162cc1f6ce7f7c970d0f285f Mon Sep 17 00:00:00 2001
-> > >> >> From: Vlastimil Babka <vbabka@suse.cz>
-> > >> >> Date: Fri, 9 Sep 2022 12:03:10 +0200
-> > >> >> Subject: [PATCH 2/3] mm/migrate: make isolate_movable_page() skip slab pages
-> > >> >> 
-> > >> >> In the next commit we want to rearrange struct slab fields to allow a
-> > >> >> larger rcu_head. Afterwards, the page->mapping field will overlap
-> > >> >> with SLUB's "struct list_head slab_list", where the value of prev
-> > >> >> pointer can become LIST_POISON2, which is 0x122 + POISON_POINTER_DELTA.
-> > >> >> Unfortunately the bit 1 being set can confuse PageMovable() to be a
-> > >> >> false positive and cause a GPF as reported by lkp [1].
-> > >> >> 
-> > >> >> To fix this, make isolate_movable_page() skip pages with the PageSlab
-> > >> >> flag set. This is a bit tricky as we need to add memory barriers to SLAB
-> > >> >> and SLUB's page allocation and freeing, and their counterparts to
-> > >> >> isolate_movable_page().
-> > >> > 
-> > >> > Hello, I just took a quick grasp,
-> > >> > Is this approach okay with folio_test_anon()?
-> > >> 
-> > >> Not if used on a completely random page as compaction scanners can, but
-> > >> relies on those being first tested for PageLRU or coming from a page table
-> > >> lookup etc.
-> > >> Not ideal huh. Well I could improve also by switching 'next' and 'slabs'
-> > >> field and relying on the fact that the value of LIST_POISON2 doesn't include
-> > >> 0x1, just 0x2.
+On Sat, Sep 10, 2022 at 01:36:22PM -0700, Paul E. McKenney wrote:
+> On Wed, Sep 07, 2022 at 09:40:29AM +0800, Pingfan Liu wrote:
+> > On Tue, Sep 06, 2022 at 10:24:41AM -0700, Paul E. McKenney wrote:
+> > > On Mon, Sep 05, 2022 at 11:38:50AM +0800, Pingfan Liu wrote:
+> > > > At present, during the cpu teardown, rcu_boost_kthread_setaffinity() is
+> > > > called twice. Firstly by rcutree_offline_cpu(), then by
+> > > > rcutree_dead_cpu() as the CPUHP_RCUTREE_PREP  cpuhp_step callback.
+> > > > 
+> > > > >From the scheduler's perspective, a bit in cpu_online_mask means that the cpu
+> > > > is visible to the scheduler. Furthermore, a bit in cpu_active_mask
+> > > > means that the cpu is suitable as a migration destination.
+> > > > 
+> > > > Now turning back to the case in rcu offlining. sched_cpu_deactivate()
+> > > > has disabled the dying cpu as the migration destination before
+> > > > rcutree_offline_cpu().  Furthermore, if the boost kthread is on the dying
+> > > > cpu, it will be migrated to another suitable online cpu by the scheduler.
+> > > > So the affinity setting by rcutree_offline_cpu() is redundant and can be
+> > > > eliminated.
+> > > > 
+> > > > Besides, this patch does an trival code rearrangement by unfolding
+> > > > rcutree_affinity_setting() into rcutree_online_cpu(), considering that
+> > > > the latter one is the only user of the former.
+> > > > 
+> > > > Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+> > > > Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> > > > Cc: David Woodhouse <dwmw@amazon.co.uk>
+> > > > Cc: Frederic Weisbecker <frederic@kernel.org>
+> > > > Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+> > > > Cc: Josh Triplett <josh@joshtriplett.org>
+> > > > Cc: Steven Rostedt <rostedt@goodmis.org>
+> > > > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > > > Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> > > > Cc: Joel Fernandes <joel@joelfernandes.org>
+> > > > Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>
+> > > > To: rcu@vger.kernel.org
+> > > > ---
+> > > >  kernel/rcu/tree.c | 14 +-------------
+> > > >  1 file changed, 1 insertion(+), 13 deletions(-)
+> > > > 
+> > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > > index 79aea7df4345..b90f6487fd45 100644
+> > > > --- a/kernel/rcu/tree.c
+> > > > +++ b/kernel/rcu/tree.c
+> > > > @@ -3978,16 +3978,6 @@ int rcutree_prepare_cpu(unsigned int cpu)
+> > > >  	return 0;
+> > > >  }
+> > > >  
+> > > > -/*
+> > > > - * Update RCU priority boot kthread affinity for CPU-hotplug changes.
+> > > > - */
+> > > > -static void rcutree_affinity_setting(unsigned int cpu, int outgoing)
+> > > > -{
+> > > > -	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
+> > > > -
+> > > > -	rcu_boost_kthread_setaffinity(rdp->mynode, outgoing);
+> > > > -}
 > > > 
-> > > What about swapping counters and freelist?
-> > > freelist should be always aligned.  
+> > > Good point, tiven how simple a wrapper this is and how little it is used,
+> > > getting rid of it does sound like a reasonable idea.
+> > > 
+> > > >  /*
+> > > >   * Near the end of the CPU-online process.  Pretty much all services
+> > > >   * enabled, and the CPU is now very much alive.
+> > > > @@ -4006,7 +3996,7 @@ int rcutree_online_cpu(unsigned int cpu)
+> > > >  	if (rcu_scheduler_active == RCU_SCHEDULER_INACTIVE)
+> > > >  		return 0; /* Too early in boot for scheduler work. */
+> > > >  	sync_sched_exp_online_cleanup(cpu);
+> > > > -	rcutree_affinity_setting(cpu, -1);
+> > > > +	rcu_boost_kthread_setaffinity(rdp->mynode, -1);
+> > > >  
+> > > >  	// Stop-machine done, so allow nohz_full to disable tick.
+> > > >  	tick_dep_clear(TICK_DEP_BIT_RCU);
+> > > > @@ -4029,8 +4019,6 @@ int rcutree_offline_cpu(unsigned int cpu)
+> > > >  	rnp->ffmask &= ~rdp->grpmask;
+> > > >  	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+> > > >  
+> > > > -	rcutree_affinity_setting(cpu, cpu);
+> > > 
+> > > We do need to keep this one because the CPU is going away.
+> > > 
+> > > One the other hand, it might well be that we could get rid of the call
+> > > to rcutree_affinity_setting() in rcutree_dead_cpu().
+> > > 
+> > > Or am I missing something subtle here?
 > > 
-> > Great suggestion, thanks!
+> > Oops, I think I need to rephrase my commit log to describe this nuance.
+> > The keypoint is whether ->qsmaskinitnext is stable.
 > > 
-> > Had to deal with SLAB too as there was list_head.prev also aliasing
-> > page->mapping. Wanted to use freelist as well, but turns out it's not
-> > aligned, so had to use s_mem instead.
+> > The teardown code path on a single dying cpu looks like:
 > > 
-> > The patch that isolate_movable_page() skip slab pages was thus dropped. The
-> > result is in slab.git below and if nothing blows up, will restore it to -next
-> > 
-> > https://git.kernel.org/pub/scm/linux/kernel/git/vbabka/slab.git/log/?h=for-6.1/fit_rcu_head
+> > sched_cpu_deactivate() // prevent this dying cpu as a migration dst.
 > 
-> I realized that there is also relevant comment in
-> include/linux/mm_types.h:
+> Suppose that this was the last CPU that the task was permitted to
+> run on.
 > 
-> >  62  * SLUB uses cmpxchg_double() to atomically update its freelist and counters.
-> >  63  * That requires that freelist & counters in struct slab be adjacent and
-> >  64  * double-word aligned. Because struct slab currently just reinterprets the
-> >  65  * bits of struct page, we align all struct pages to double-word boundaries,
-> >  66  * and ensure that 'freelist' is aligned within struct slab.
-> >  67  */
-> 
-> Also we may add a comment,
-> something like this?
-> 
-> --- a/include/linux/mm_types.h
-> +++ b/include/linux/mm_types.h
-> @@ -79,6 +79,9 @@ struct page {
->          * WARNING: bit 0 of the first word is used for PageTail(). That
->          * means the other users of this union MUST NOT use the bit to
->          * avoid collision and false-positive PageTail().
-> +        *
-> +        * WARNING: lower two bits of third word is used for PAGE_MAPPING_FLAGS.
-> +        * using those bits can lead compaction code to general protection fault.
 
-I'm really not comfortable with adding that documentation.  I feel the
-compaction code should be fixed.
+Get your concern, please see the comment below.
+
+> > rcutree_offline_cpu()  // as a result, the scheduler core will take care
+> >                        // of the transient affinity mismatching until
+> > 		       // rcutree_dead_cpu(). (I think it also stands in
+> > 		       // the concurrent offlining)
+> > 
+> > rcu_report_dead()      // running on the dying cpu, and clear its bit in ->qsmaskinitnext
+> > 
+> > rcutree_dead_cpu()     // running on the initiator (a initiator cpu will
+> >                        // execute this function for each dying cpu)
+> > 		       // At this point, ->qsmaskinitnext reflects the
+> > 		       // offlining, and the affinity can get right.
+> > 
+> > Sorry that my commit log had emphasized on the first part, but forgot to
+> > mention the ->qsmaskinitnext.
+> > 
+> > 
+> > Does this justification stand?
+> 
+> We should ensure that the task's permitted set of CPUs always contained
+> at least one online CPU.  Unless I am missing something, your suggested
+> change will sometimes end up with the task having no online CPUs in
+> its mask.
+> 
+
+Actually, the scheduler will pick up one online cpu for the boost
+thread.
+
+On the last cpu, boost is subject to migration, and is pushed away by
+__balance_push_cpu_stop()
+{
+        if (task_rq(p) == rq && task_on_rq_queued(p)) {
+                cpu = select_fallback_rq(rq->cpu, p);
+                rq = __migrate_task(rq, &rf, p, cpu);
+        }
+}
+
+Now, turning to select_fallback_rq(), inside that function, if
+p->cpus_ptr has no suitable cpus, then case cpuset or possible will make it
+point to cpuset or cpu_possible_mask.  So finally, there is a valid cpu
+is picked up. (I have not found the online cpu there. The trick should hide
+elsewhere. But that rendered the same result as in v5.16, where
+rcu_boost_kthread_setaffinity()->cpumask_setall(cm))
+
+But now, in 6.0, it changes into housekeeping_cpumask(HK_TYPE_RCU),
+which appeals for a more careful thinking.
+If there is a cpuset for housekeeping so that select_fallback_rq() can
+pick up one from that cpuset?
+
+To Frederic, could you show some light here and is it worth introducing
+such a cpuset so that select_fallback_rq() can pick up a cpu in
+housekeeping set in this case?
+
+
+Anyway, as the last resort, TICK_DEP_BIT_RCU has already appealed for
+the awareness of the concurrent rcutree_offline_cpu(), the affinity
+setting could be done there if select_fallback_rq() can not work.
+
+
+Thanks,
+
+	Pingfan
