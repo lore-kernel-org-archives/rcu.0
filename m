@@ -2,87 +2,80 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D977AC32771
-	for <rcu@archiver.kernel.org>; Thu, 15 Sep 2022 20:25:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A135EC54EE9
+	for <rcu@archiver.kernel.org>; Fri, 16 Sep 2022 11:04:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229581AbiIOUZF (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 15 Sep 2022 16:25:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44408 "EHLO
+        id S232166AbiIPLEg (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 16 Sep 2022 07:04:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbiIOUZE (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 15 Sep 2022 16:25:04 -0400
+        with ESMTP id S232339AbiIPLD6 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 16 Sep 2022 07:03:58 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11BC65725E;
-        Thu, 15 Sep 2022 13:25:04 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C6508F95E;
+        Fri, 16 Sep 2022 03:55:28 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A00E862446;
-        Thu, 15 Sep 2022 20:25:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA742C433D6;
-        Thu, 15 Sep 2022 20:25:02 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9C0DC62ADE;
+        Fri, 16 Sep 2022 10:55:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FAB8C433C1;
+        Fri, 16 Sep 2022 10:55:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1663273503;
-        bh=2mlgeLCCM9tgN/+2+P7WYlBHu2uO/quU2wwweklHWC0=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=EQCBBlYXft7dDfY4y0E22efFuLqrOqifVcdaPE7i3Y63Tg0m0UGLfz0mELFWClKXA
-         HyNVeAZp59Duzd38P74206XpoCXjsQmk+dtOu6R5oJUbYRTy8wPyWqp5ti+LRg6Ca7
-         CYK+gBjmhgFbtjDzvHs4FFTIsgDNS2L5mChnEF4LGAW2S7qkpqYN3jC5wKdzwp4OCf
-         vNYruYU0RriM/8DERH6sGuhZxfktXptxxcbNUdWpUvc8jY5U8AEiLHouUOIp79bbqa
-         1sXooEseEWJRBjNAJUGWvPR4T+CJLVZfHyhnY72QFy4vkdZlPNlVzLQve9BXL6aVFv
-         1bJoc26Z9hMPQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 4CA205C0514; Thu, 15 Sep 2022 13:25:00 -0700 (PDT)
-Date:   Thu, 15 Sep 2022 13:25:00 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        s=k20201202; t=1663325727;
+        bh=d7++6KU0EYcQnNvGqmzIiNTKAGfjD93jm1cap1+0pPE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZXYYnDGwLn70nlBjLtd/c66NwpHeLZEzfwnC3alj08Y2cj6e8xajqmmrhC+MLeIdW
+         N4upEfDRxvgJ+HUNadVTM6ctcTY+T4tjg3ZYFVvtcrVAyvGJr6lcROYyaXjoM+z/mn
+         F2AACSFZyR37QxvmshO8jmMuDmAn80jjgLmM8RDDF1SICIe7qJw1ldI07VsfVbytfo
+         8m3Q6LytrD9wgBt/LChZ1axAZ0AxkiUvKmZHcJ9lKnEIoua6t7govZs6YsxQQod5Hf
+         PnRCtYlxatHeuRCtClvvt3sHRpwZwPh+kSaYhJrsSsMinJG9FHxbhcCKpKZkPg9A48
+         yENH/1TgT8log==
+Date:   Fri, 16 Sep 2022 12:55:23 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org,
         Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 1/1] rcu: Simplify rcu_init_nohz() cpumask handling
-Message-ID: <20220915202500.GA346406@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220913030036.1569-1-thunder.leizhen@huawei.com>
- <20220913030036.1569-2-thunder.leizhen@huawei.com>
- <20220914104634.GC1936@lothringen>
- <20220914113006.GX246308@paulmck-ThinkPad-P17-Gen-1>
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH rcu/next 1/3] rcu/tree: Use READ_ONCE() for lockless read
+ of rnp->qsmask
+Message-ID: <20220916105523.GA25456@lothringen>
+References: <20220915001419.55617-1-joel@joelfernandes.org>
+ <20220915001419.55617-2-joel@joelfernandes.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220914113006.GX246308@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20220915001419.55617-2-joel@joelfernandes.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Sep 14, 2022 at 04:30:06AM -0700, Paul E. McKenney wrote:
-> On Wed, Sep 14, 2022 at 12:46:34PM +0200, Frederic Weisbecker wrote:
-> > On Tue, Sep 13, 2022 at 11:00:36AM +0800, Zhen Lei wrote:
-> > > In kernels built with either CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y or
-> > > CONFIG_NO_HZ_FULL=y, additional CPUs must be added to rcu_nocb_mask.
-> > > Except that kernels booted without the rcu_nocbs= will not have
-> > > allocated rcu_nocb_mask.  And the current rcu_init_nohz() function uses
-> > > its need_rcu_nocb_mask and offload_all local variables to track the
-> > > rcu_nocb and nohz_full state.
-> > > 
-> > > But there is a much simpler approach, namely creating a cpumask pointer
-> > > to track the default and then using cpumask_available() to check the
-> > > rcu_nocb_mask state.  This commit takes this approach, thereby simplifying
-> > > and shortening the rcu_init_nohz() function.
-> > > 
-> > > Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> > > Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > > Acked-by: Frederic Weisbecker <frederic@kernel.org>
-> > 
-> > Looks good, thanks!
+On Thu, Sep 15, 2022 at 12:14:17AM +0000, Joel Fernandes (Google) wrote:
+> The rnp->qsmask is locklessly accessed from rcutree_dying_cpu(). This
+> may help avoid load tearing due to concurrent access, KCSAN
+> issues, and preserve sanity of people reading the mask in tracing.
 > 
-> Queued and pushed, thank you all!
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> ---
+>  kernel/rcu/tree.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 0ca21ac0f064..5ec97e3f7468 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -2106,7 +2106,7 @@ int rcutree_dying_cpu(unsigned int cpu)
+>  	if (!IS_ENABLED(CONFIG_HOTPLUG_CPU))
+>  		return 0;
+>  
+> -	blkd = !!(rnp->qsmask & rdp->grpmask);
+> +	blkd = !!(READ_ONCE(rnp->qsmask) & rdp->grpmask);
+>  	trace_rcu_grace_period(rcu_state.name, READ_ONCE(rnp->gp_seq),
+>  			       blkd ? TPS("cpuofl-bgp") : TPS("cpuofl"));
+>  	return 0;
 
-And this time, actually queued the most recent version.  Apologies for
-my confusion.
-
-							Thanx, Paul
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
