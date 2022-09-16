@@ -2,131 +2,196 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BC1A3C54EE9
-	for <rcu@archiver.kernel.org>; Fri, 16 Sep 2022 13:43:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C945BC6FA91
+	for <rcu@archiver.kernel.org>; Fri, 16 Sep 2022 14:10:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230327AbiIPNnE (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 16 Sep 2022 09:43:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56916 "EHLO
+        id S230282AbiIPOKK (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 16 Sep 2022 10:10:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbiIPNnD (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 16 Sep 2022 09:43:03 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60ED6AD987
-        for <rcu@vger.kernel.org>; Fri, 16 Sep 2022 06:43:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BF4B162BB7
-        for <rcu@vger.kernel.org>; Fri, 16 Sep 2022 13:43:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4A5AC433D6;
-        Fri, 16 Sep 2022 13:43:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1663335781;
-        bh=CNdxcz5B1TyP8vHzOR7NNvl+ozER8xSgz1G3FKironw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AezXXRKa8XY/eYxUsIxB+8UuA70FJyebl1xG06kTpKmp13PknTnGh/Gt2q3G24oHI
-         m2jZhcgij5ScN4PaUFZ+UjFxLxW2+dl55idtNe9XGz37+onIejNh7gKTq++qA0y0Vx
-         Uv9IKqStdxuHkZacme0vmOk21afQSgY/8zkqVXtD8KOqCYyxGYZw3eWkMlg3M0dhxw
-         v9O4jLOJFZKIuA7ACG1QKMqNhKtZ8uGGhuBTuwDBDJSy7nbI8+lt8HqhPfzNsazRCZ
-         B+zctPvAbfx9f6Gl6cEMKfNdp5dA7xs7F0J9WJFXqh+sjh4LH+AUbRaXrOjuETHMul
-         HklczEdLKzrDg==
-Date:   Fri, 16 Sep 2022 15:42:58 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Pingfan Liu <kernelfans@gmail.com>
-Cc:     rcu@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        with ESMTP id S229673AbiIPOKJ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 16 Sep 2022 10:10:09 -0400
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FA3D4C63F
+        for <rcu@vger.kernel.org>; Fri, 16 Sep 2022 07:10:07 -0700 (PDT)
+Received: by mail-qv1-xf2d.google.com with SMTP id m9so16693223qvv.7
+        for <rcu@vger.kernel.org>; Fri, 16 Sep 2022 07:10:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date;
+        bh=D/nvdqaHFpe1zsfIJuakh3iZT0co15SWz9wcaywW0Nc=;
+        b=Lxc6rGaMYj3BTp03h17nsZvZ1yGoIrwXZFUMpt8WIoL4Ihj3JR9s5Y9wpdySUXm9la
+         pKCimgsi7ob7A3M5yWltfz98quADLsldNe6GgpYHyMV0tERq6E8lhGUjVIHdcMt7dakb
+         qWCeZJq3w+Pyjzpnzz1zh7t0KzuLXCD6kQQKQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
+        bh=D/nvdqaHFpe1zsfIJuakh3iZT0co15SWz9wcaywW0Nc=;
+        b=1u4hB6cwMy4+F8CN52ZRy9jy2rxOJf2lzu3jiwwVx9g9H5CWQ+h3aVFPBoTOGxEiVA
+         8cfqphmFu6AezDwRI13LLuGDc5esj62jAOFWaUqNKc2WFEBDxkxfQwTD1Q+OeozCXhEr
+         7IDZU5o3ENh1qGz606RMCfMEY9zUDVRRzhh7MZwg327XMZgAkFnq2+eFEXojbEAveYN9
+         sc1/tXLis4qEQFWMLfvhyGQYfBrJXkkZXHg7jagsNsywX4D5msnHAYsfhNbcQgo2DjsN
+         d6BVCMmw1sgZdqSFFq51kwVo234g2eWHxVWe+1EI6q1MmPjneIfSxQ7n8tI59WaX/Msz
+         x2iA==
+X-Gm-Message-State: ACrzQf1uoEnoNxBKDP4Ku6nRUNnQCHMBoosE1PXGrQ+JXZElYDhe9ARH
+        HG2RUxux0cf52mWt50q07MR26g==
+X-Google-Smtp-Source: AMsMyM5TniT6S1SCYiW4TGU4hf+uummzTjOmRnODlrqrT3s7hjL1vqPZ3SVSrfEtEoas7uMR3IRumQ==
+X-Received: by 2002:a05:6214:c8b:b0:4ac:c1f7:660f with SMTP id r11-20020a0562140c8b00b004acc1f7660fmr4577227qvr.52.1663337406080;
+        Fri, 16 Sep 2022 07:10:06 -0700 (PDT)
+Received: from localhost (228.221.150.34.bc.googleusercontent.com. [34.150.221.228])
+        by smtp.gmail.com with ESMTPSA id c18-20020a379a12000000b006b8d1914504sm6269991qke.22.2022.09.16.07.10.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Sep 2022 07:10:05 -0700 (PDT)
+Date:   Fri, 16 Sep 2022 14:10:05 +0000
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
         Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: Re: [PATCHv2 3/3] rcu: coordinate tick dependency during concurrent
- offlining
-Message-ID: <20220916134258.GB25891@lothringen>
-References: <20220915055825.21525-1-kernelfans@gmail.com>
- <20220915055825.21525-4-kernelfans@gmail.com>
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH rcu/next 2/3] rcu: Move trace_rcu_callback() before
+ bypassing
+Message-ID: <YySDvbF/BfDhy40H@google.com>
+References: <20220915001419.55617-1-joel@joelfernandes.org>
+ <20220915001419.55617-3-joel@joelfernandes.org>
+ <20220916110949.GB25456@lothringen>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220915055825.21525-4-kernelfans@gmail.com>
+In-Reply-To: <20220916110949.GB25456@lothringen>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Sep 15, 2022 at 01:58:25PM +0800, Pingfan Liu wrote:
-> As Paul pointed out  "The tick_dep_clear() is SMP-safe because it uses
-> atomic operations, but the problem is that if there are multiple
-> nohz_full CPUs going offline concurrently, the first CPU to invoke
-> rcutree_dead_cpu() will turn the tick off.  This might require an
-> atomically manipulated counter to mediate the calls to
-> rcutree_dead_cpu(). "
+On Fri, Sep 16, 2022 at 01:09:49PM +0200, Frederic Weisbecker wrote:
+> On Thu, Sep 15, 2022 at 12:14:18AM +0000, Joel Fernandes (Google) wrote:
+> > If any CB is queued into the bypass list, then trace_rcu_callback() does
+> > not show it. This makes it not clear when a callback was actually
+> > queued, as you only end up getting a trace_rcu_invoke_callback() trace.
+> > Fix it by moving trace_rcu_callback() before
+> > trace_rcu_nocb_try_bypass().
+> > 
+> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > ---
+> >  kernel/rcu/tree.c | 10 ++++++----
+> >  1 file changed, 6 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index 5ec97e3f7468..9fe581be8696 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -2809,10 +2809,7 @@ void call_rcu(struct rcu_head *head, rcu_callback_t func)
+> >  	}
+> >  
+> >  	check_cb_ovld(rdp);
+> > -	if (rcu_nocb_try_bypass(rdp, head, &was_alldone, flags))
+> > -		return; // Enqueued onto ->nocb_bypass, so just leave.
+> > -	// If no-CBs CPU gets here, rcu_nocb_try_bypass() acquired ->nocb_lock.
+> > -	rcu_segcblist_enqueue(&rdp->cblist, head);
+> > +
+> >  	if (__is_kvfree_rcu_offset((unsigned long)func))
+> >  		trace_rcu_kvfree_callback(rcu_state.name, head,
+> >  					 (unsigned long)func,
+> > @@ -2821,6 +2818,11 @@ void call_rcu(struct rcu_head *head, rcu_callback_t func)
+> >  		trace_rcu_callback(rcu_state.name, head,
+> >  				   rcu_segcblist_n_cbs(&rdp->cblist));
+> >  
+> > +	if (rcu_nocb_try_bypass(rdp, head, &was_alldone, flags))
+> > +		return; // Enqueued onto ->nocb_bypass, so just leave.
+> > +	// If no-CBs CPU gets here, rcu_nocb_try_bypass() acquired ->nocb_lock.
+> > +	rcu_segcblist_enqueue(&rdp->cblist, head);
+> > +
+> >  	trace_rcu_segcb_stats(&rdp->cblist, TPS("SegCBQueued"));
+> >  
+> >  	/* Go handle any RCU core processing required. */
 > 
-> This patch introduces a new member ->dying to rcu_node, which reflects
-> the number of concurrent offlining cpu. TICK_DEP_BIT_RCU is set by
-> the first entrance and cleared by the last.
+> Two subtle changes induced here:
 > 
-> Note: now, tick_dep_set() is put under the rnp->lock, but since it takes
-> no lock, no extra locking order is introduced.
+> * rcu_segcblist_n_cbs() is now read lockless. It's just tracing so no huge deal
+>   but still, if this races with callbacks invocation, we may on some rare occasion
+>   read stale numbers on traces while enqueuing (think about rcu_top for example)
 > 
-> Suggested-by: "Paul E. McKenney" <paulmck@kernel.org>
-> Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
-> Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> Cc: David Woodhouse <dwmw@amazon.co.uk>
-> Cc: Frederic Weisbecker <frederic@kernel.org>
-> Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
-> Cc: Josh Triplett <josh@joshtriplett.org>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-> Cc: Joel Fernandes <joel@joelfernandes.org>
-> Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>
-> To: rcu@vger.kernel.org
-> ---
->  kernel/rcu/tree.c | 19 ++++++++++++++-----
->  kernel/rcu/tree.h |  1 +
->  2 files changed, 15 insertions(+), 5 deletions(-)
+> * trace_rcu_callback() will now show the number of callbacks _before_ enqueuing
+>   instead of _after_. Not sure if it matters, but sometimes tools rely on trace
+>   events.
 > 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 8a829b64f5b2..f8bd0fc5fd2f 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -2164,13 +2164,19 @@ int rcutree_dead_cpu(unsigned int cpu)
->  {
->  	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
->  	struct rcu_node *rnp = rdp->mynode;  /* Outgoing CPU's rdp & rnp. */
-> +	unsigned long flags;
-> +	u8 dying;
->  
->  	if (!IS_ENABLED(CONFIG_HOTPLUG_CPU))
->  		return 0;
->  
->  	WRITE_ONCE(rcu_state.n_online_cpus, rcu_state.n_online_cpus - 1);
-> -	// Stop-machine done, so allow nohz_full to disable tick.
-> -	tick_dep_clear(TICK_DEP_BIT_RCU);
-> +	raw_spin_lock_irqsave_rcu_node(rnp, flags);
-> +	dying = --rnp->dying;
-> +	if (!dying)
-> +		// Stop-machine done, so allow nohz_full to disable tick.
-> +		tick_dep_clear(TICK_DEP_BIT_RCU);
-> +	raw_spin_lock_irqsave_rcu_node(rnp, flags);
+> To avoid all that, how about a new trace_rcu_nocb_bypass() instead?
 
-Note this is only locking the rdp's node, not the root node.
-Therefore if CPU 0 and CPU 256 are going off at the same time and they
-don't belong to the same node, the above won't protect against concurrent
-TICK_DEP_BIT_RCU set/clear.
+Great points, thanks much and you rock. How about something like the
+following? That way we don't need to add yet another trace point:
 
-My suspicion is that we don't need this TICK_DEP_BIT_RCU tick dependency
-anymore. I believe it was there because of issues that were fixed with:
+---8<-----------------------
 
-	53e87e3cdc15 (timers/nohz: Last resort update jiffies on nohz_full IRQ entry)
-and:
+From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Subject: [PATCH v2] rcu: Call trace_rcu_callback() also for bypassing
 
-	a1ff03cd6fb9 (tick: Detect and fix jiffies update stall)
+If any CB is queued into the bypass list, then trace_rcu_callback() does
+not show it. This makes it not clear when a callback was actually
+queued, as you only end up getting a trace_rcu_invoke_callback() trace.
+Fix it by calling the tracing function even for bypass queue.
 
-It's unfortunately just suspicion because the reason for that tick dependency
-is unclear but I believe it should be safe to remove now.
+[Frederic: Hold lock while tracing]
 
-Thanks.
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+---
+ kernel/rcu/tree.c | 29 +++++++++++++++++++++--------
+ 1 file changed, 21 insertions(+), 8 deletions(-)
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 5ec97e3f7468..85609ccbb8ed 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2728,6 +2728,22 @@ static void check_cb_ovld(struct rcu_data *rdp)
+ 	raw_spin_unlock_rcu_node(rnp);
+ }
+ 
++/*
++ * Trace RCU callback helper, call after enqueuing callback.
++ * The ->cblist must be locked when called.
++ */
++static void trace_rcu_callback_locked(struct rcu_head *head,
++				      struct rcu_data *rdp)
++{
++	if (__is_kvfree_rcu_offset((unsigned long)head->func))
++		trace_rcu_kvfree_callback(rcu_state.name, head,
++					 (unsigned long)head->func,
++					 rcu_segcblist_n_cbs(&rdp->cblist));
++	else
++		trace_rcu_callback(rcu_state.name, head,
++				   rcu_segcblist_n_cbs(&rdp->cblist));
++}
++
+ /**
+  * call_rcu() - Queue an RCU callback for invocation after a grace period.
+  * @head: structure to be used for queueing the RCU updates.
+@@ -2809,17 +2825,14 @@ void call_rcu(struct rcu_head *head, rcu_callback_t func)
+ 	}
+ 
+ 	check_cb_ovld(rdp);
+-	if (rcu_nocb_try_bypass(rdp, head, &was_alldone, flags))
++
++	if (rcu_nocb_try_bypass(rdp, head, &was_alldone, flags)) {
++		trace_rcu_callback_locked(head, rdp);
+ 		return; // Enqueued onto ->nocb_bypass, so just leave.
++	}
+ 	// If no-CBs CPU gets here, rcu_nocb_try_bypass() acquired ->nocb_lock.
+ 	rcu_segcblist_enqueue(&rdp->cblist, head);
+-	if (__is_kvfree_rcu_offset((unsigned long)func))
+-		trace_rcu_kvfree_callback(rcu_state.name, head,
+-					 (unsigned long)func,
+-					 rcu_segcblist_n_cbs(&rdp->cblist));
+-	else
+-		trace_rcu_callback(rcu_state.name, head,
+-				   rcu_segcblist_n_cbs(&rdp->cblist));
++	trace_rcu_callback_locked(head, rdp);
+ 
+ 	trace_rcu_segcb_stats(&rdp->cblist, TPS("SegCBQueued"));
+ 
+-- 
+2.37.3.968.ga6b4b080e4-goog
+
