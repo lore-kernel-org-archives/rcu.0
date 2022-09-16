@@ -2,73 +2,131 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CA59ECAAD8
-	for <rcu@archiver.kernel.org>; Fri, 16 Sep 2022 12:51:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BC1A3C54EE9
+	for <rcu@archiver.kernel.org>; Fri, 16 Sep 2022 13:43:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229864AbiIPMvp (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 16 Sep 2022 08:51:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40130 "EHLO
+        id S230327AbiIPNnE (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 16 Sep 2022 09:43:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229621AbiIPMvo (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 16 Sep 2022 08:51:44 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29DC5AB04E;
-        Fri, 16 Sep 2022 05:51:44 -0700 (PDT)
+        with ESMTP id S229484AbiIPNnD (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 16 Sep 2022 09:43:03 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60ED6AD987
+        for <rcu@vger.kernel.org>; Fri, 16 Sep 2022 06:43:02 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C061962B81;
-        Fri, 16 Sep 2022 12:51:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91040C433D6;
-        Fri, 16 Sep 2022 12:51:42 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BF4B162BB7
+        for <rcu@vger.kernel.org>; Fri, 16 Sep 2022 13:43:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4A5AC433D6;
+        Fri, 16 Sep 2022 13:43:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1663332703;
-        bh=syr2iOZ8WLAe2Icyqy1ThqP3eS6SIEsErM11Ey6B3rg=;
+        s=k20201202; t=1663335781;
+        bh=CNdxcz5B1TyP8vHzOR7NNvl+ozER8xSgz1G3FKironw=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DWatUGiGP06fAQsLcj/fzno2Sad3MZYajIeoz8YDh58G7mP2mVRap6D3P6WXQ5M+T
-         cC+2fg22SkYbre5HxjEf/rLLlV9AOBUQTX8h2S5BvtvKwWMkDDFC5SgQkCMprWrBfZ
-         Gj0s/M4NUmVN9AA4ZArIhb/2EmK5WHH813gbWr805QiZfq+TUwr7mQWuVa0TG3IFCJ
-         4Y0hIY5w8FXxHXgwyB6JM16UoyZK0FqUdSw4xie1d23IjNkQlmUt7vQCC8iHR26JXA
-         u99DMwUqBwfRBXtbhbLBSFPKctBo48OhxWDoZC/JFkKlGJH8PRR1p21WdhzOx5QiJM
-         WDiOtv38F6ASA==
-Date:   Fri, 16 Sep 2022 14:51:39 +0200
+        b=AezXXRKa8XY/eYxUsIxB+8UuA70FJyebl1xG06kTpKmp13PknTnGh/Gt2q3G24oHI
+         m2jZhcgij5ScN4PaUFZ+UjFxLxW2+dl55idtNe9XGz37+onIejNh7gKTq++qA0y0Vx
+         Uv9IKqStdxuHkZacme0vmOk21afQSgY/8zkqVXtD8KOqCYyxGYZw3eWkMlg3M0dhxw
+         v9O4jLOJFZKIuA7ACG1QKMqNhKtZ8uGGhuBTuwDBDJSy7nbI8+lt8HqhPfzNsazRCZ
+         B+zctPvAbfx9f6Gl6cEMKfNdp5dA7xs7F0J9WJFXqh+sjh4LH+AUbRaXrOjuETHMul
+         HklczEdLKzrDg==
+Date:   Fri, 16 Sep 2022 15:42:58 +0200
 From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+To:     Pingfan Liu <kernelfans@gmail.com>
+Cc:     rcu@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        David Woodhouse <dwmw@amazon.co.uk>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH rcu/next 3/3] rcu: Fix late wakeup when flush of bypass
- cblist happens
-Message-ID: <20220916125139.GA25891@lothringen>
-References: <20220915001419.55617-1-joel@joelfernandes.org>
- <20220915001419.55617-4-joel@joelfernandes.org>
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>
+Subject: Re: [PATCHv2 3/3] rcu: coordinate tick dependency during concurrent
+ offlining
+Message-ID: <20220916134258.GB25891@lothringen>
+References: <20220915055825.21525-1-kernelfans@gmail.com>
+ <20220915055825.21525-4-kernelfans@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220915001419.55617-4-joel@joelfernandes.org>
+In-Reply-To: <20220915055825.21525-4-kernelfans@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Sep 15, 2022 at 12:14:19AM +0000, Joel Fernandes (Google) wrote:
-> When the bypass cblist gets too big or its timeout has occurred, it is
-> flushed into the main cblist. However, the bypass timer is still running
-> and the behavior is that it would eventually expire and wake the GP
-> thread.
+On Thu, Sep 15, 2022 at 01:58:25PM +0800, Pingfan Liu wrote:
+> As Paul pointed out  "The tick_dep_clear() is SMP-safe because it uses
+> atomic operations, but the problem is that if there are multiple
+> nohz_full CPUs going offline concurrently, the first CPU to invoke
+> rcutree_dead_cpu() will turn the tick off.  This might require an
+> atomically manipulated counter to mediate the calls to
+> rcutree_dead_cpu(). "
 > 
-> Since we are going to use the bypass cblist for lazy CBs, do the wakeup
-> soon as the flush happens. Otherwise, the lazy-timer will go off much
-> later and the now-non-lazy cblist CBs can get stranded for the duration
-> of the timer.
+> This patch introduces a new member ->dying to rcu_node, which reflects
+> the number of concurrent offlining cpu. TICK_DEP_BIT_RCU is set by
+> the first entrance and cleared by the last.
 > 
-> This is a good thing to do anyway, since it makes the behavior consistent with
-> behavior of other code paths where queueing something into the ->cblist makes
-> the GP kthread in a non-sleeping state quickly.
+> Note: now, tick_dep_set() is put under the rnp->lock, but since it takes
+> no lock, no extra locking order is introduced.
 > 
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> Suggested-by: "Paul E. McKenney" <paulmck@kernel.org>
+> Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+> Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> Cc: David Woodhouse <dwmw@amazon.co.uk>
+> Cc: Frederic Weisbecker <frederic@kernel.org>
+> Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+> Cc: Josh Triplett <josh@joshtriplett.org>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> Cc: Joel Fernandes <joel@joelfernandes.org>
+> Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>
+> To: rcu@vger.kernel.org
+> ---
+>  kernel/rcu/tree.c | 19 ++++++++++++++-----
+>  kernel/rcu/tree.h |  1 +
+>  2 files changed, 15 insertions(+), 5 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 8a829b64f5b2..f8bd0fc5fd2f 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -2164,13 +2164,19 @@ int rcutree_dead_cpu(unsigned int cpu)
+>  {
+>  	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
+>  	struct rcu_node *rnp = rdp->mynode;  /* Outgoing CPU's rdp & rnp. */
+> +	unsigned long flags;
+> +	u8 dying;
+>  
+>  	if (!IS_ENABLED(CONFIG_HOTPLUG_CPU))
+>  		return 0;
+>  
+>  	WRITE_ONCE(rcu_state.n_online_cpus, rcu_state.n_online_cpus - 1);
+> -	// Stop-machine done, so allow nohz_full to disable tick.
+> -	tick_dep_clear(TICK_DEP_BIT_RCU);
+> +	raw_spin_lock_irqsave_rcu_node(rnp, flags);
+> +	dying = --rnp->dying;
+> +	if (!dying)
+> +		// Stop-machine done, so allow nohz_full to disable tick.
+> +		tick_dep_clear(TICK_DEP_BIT_RCU);
+> +	raw_spin_lock_irqsave_rcu_node(rnp, flags);
 
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+Note this is only locking the rdp's node, not the root node.
+Therefore if CPU 0 and CPU 256 are going off at the same time and they
+don't belong to the same node, the above won't protect against concurrent
+TICK_DEP_BIT_RCU set/clear.
+
+My suspicion is that we don't need this TICK_DEP_BIT_RCU tick dependency
+anymore. I believe it was there because of issues that were fixed with:
+
+	53e87e3cdc15 (timers/nohz: Last resort update jiffies on nohz_full IRQ entry)
+and:
+
+	a1ff03cd6fb9 (tick: Detect and fix jiffies update stall)
+
+It's unfortunately just suspicion because the reason for that tick dependency
+is unclear but I believe it should be safe to remove now.
+
+Thanks.
