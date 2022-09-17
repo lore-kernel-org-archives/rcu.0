@@ -2,86 +2,90 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CBBDECAAA1
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 766C6C6FA82
 	for <rcu@archiver.kernel.org>; Sat, 17 Sep 2022 16:42:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229711AbiIQQmg (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 17 Sep 2022 12:42:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42298 "EHLO
+        id S229527AbiIQQmh (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 17 Sep 2022 12:42:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbiIQQmf (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 17 Sep 2022 12:42:35 -0400
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D9172DAB8
+        with ESMTP id S229703AbiIQQmg (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 17 Sep 2022 12:42:36 -0400
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DC682F393
         for <rcu@vger.kernel.org>; Sat, 17 Sep 2022 09:42:33 -0700 (PDT)
-Received: by mail-qv1-xf31.google.com with SMTP id o13so18925437qvw.12
+Received: by mail-qv1-xf34.google.com with SMTP id m9so18934807qvv.7
         for <rcu@vger.kernel.org>; Sat, 17 Sep 2022 09:42:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date;
-        bh=djHngNemHi3eZpfRKmBBroxPgd9zL0hx+UyXGlRbBPY=;
-        b=tM/vT2smjuv+K6a7RszMHlsIt2sTsMv+X6bVV7YqUcB2ch34LJ/F8YtsOIgNwSJ67b
-         oWffBHlgLLaDv/5aI5RXzSHFvqt4ndmNVUJTHMPL8hE6i+b4l0nsMUERHUdVatzJSu9c
-         2zHPllDXV63MTFTHvPdresmc/xZe3jODMx25U=
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
+        bh=YtXTLA3M+nWqodgxztJaMgLvSRyU03TOMEk16miDVSg=;
+        b=ShOLZGx75Ii8OwDydiUuECJDaVrzXu7dm1LvXWu1uMAHXy8OWxy3+sY1KgJKUVy9sc
+         lJGUEgu7gVKBhWs0Wz0ZhBtUO3JLjqMoq0kpgajDLoDILUKTL2HipbaT+ktS1fFKI787
+         zPzc24o/oNUffNEGEUH9lEkxMlvjJIA+zFR6g=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date;
-        bh=djHngNemHi3eZpfRKmBBroxPgd9zL0hx+UyXGlRbBPY=;
-        b=lfJ0d5nrYttaXdGO9BJxSbohnq0vlGzT5L0ZrM6nxS9aexVwHWWvIhalxR2v7OpsRR
-         daJpLtqJ8Lrbr7uoGK6aCoaQituthl+1OnaTcPsBrUy1/i8QVqyc5mF9wGPaUvzHmt4t
-         cws9dTLZVF1ht4pQJXjYeUwmRhU2sdG1syJnHTiZerOEZIRIK+ZF9ya9o3EegOo6flb0
-         rCSziUBVD50qtMBoWE4V48gHvsD0wTMtvVWsMBntPhob4a8dB3e6W3YDPneKOm8sUPo/
-         yq0xFYGLuDhzoVonzCn87Z8yQAcholGVeddfmoiaUmCCYTrcVhUkOoMdP5ViwYayyATr
-         BfuQ==
-X-Gm-Message-State: ACrzQf0B6u49igG/p3x2a4os26caNkYn/GZEOiain8B6IYEdriv1DZO+
-        dkVjauXUbwIsj7I+S2zT7RawHRGtOYctww==
-X-Google-Smtp-Source: AMsMyM48LNU+nDO9OS2sTlYYOlcMNBhQLnc/NBRvCQ2zYhK6WU9+dsqh1fAuPk5Y8f32doofRZY2XQ==
-X-Received: by 2002:a05:6214:27ca:b0:4a9:d3f8:9cfb with SMTP id ge10-20020a05621427ca00b004a9d3f89cfbmr8316860qvb.56.1663432951722;
-        Sat, 17 Sep 2022 09:42:31 -0700 (PDT)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date;
+        bh=YtXTLA3M+nWqodgxztJaMgLvSRyU03TOMEk16miDVSg=;
+        b=iahv5tWXuFvKFYy+HAE3DNFdDykQ4GVbLGlQG0fCfUuFVyhH65IPipl0YCuZItZFsm
+         9vYdfJWmE06JCkISiAOVw6y+BrrehATBSTzwIb7OJgzZnw/z4h3jLe4HRVNnIAHXPliR
+         VHS+8jU0X52P5LR0Q4ImPH25cSOnaPl+o1MQtQ9TO/+ai1HDUvR8MYfCpBZJUa1Slvpu
+         7+oU17uWHaqh8WKl6KbpjQFxwyK8OLkMPyz4K1TwV1iubOPtLxk079laAN5yquRHVrX3
+         IigkK11AD1dsMUceyjxvyg+G9RhkMGrc9s3t7gmiTmLRuaGszKjzfkZwLFj17w20HIfP
+         8QiQ==
+X-Gm-Message-State: ACrzQf1YvunS7vWVXw3h4bQIxsmM4nrm0J7hcvgDPVccC+zLpzn8kWPR
+        8MSEx2cXvUdUGOxjs2dRz1fPJ2CwVlLQbA==
+X-Google-Smtp-Source: AMsMyM4IYHlTU6MQt7EpgMPbONgN5h3lvYXkOHlxQ4yG2OYh9ORFH9JAXc2T1IMbliGqy+f9+mm10Q==
+X-Received: by 2002:a05:6214:1d21:b0:4ad:1361:befa with SMTP id f1-20020a0562141d2100b004ad1361befamr6419573qvd.111.1663432952613;
+        Sat, 17 Sep 2022 09:42:32 -0700 (PDT)
 Received: from joelboxx.c.googlers.com.com (228.221.150.34.bc.googleusercontent.com. [34.150.221.228])
         by smtp.gmail.com with ESMTPSA id q31-20020a05620a2a5f00b006bb0e5ca4bbsm9479239qkp.85.2022.09.17.09.42.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Sep 2022 09:42:31 -0700 (PDT)
+        Sat, 17 Sep 2022 09:42:32 -0700 (PDT)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, rushikesh.s.kadam@intel.com,
         urezki@gmail.com, neeraj.iitr10@gmail.com, frederic@kernel.org,
         paulmck@kernel.org, rostedt@goodmis.org,
         "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Subject: [PATCH rcu/next 0/3] Preparatory patches borrowed from lazy rcu v5
-Date:   Sat, 17 Sep 2022 16:41:57 +0000
-Message-Id: <20220917164200.511783-1-joel@joelfernandes.org>
+Subject: [PATCH rcu/next 1/3] rcu/tree: Use READ_ONCE() for lockless read of rnp->qsmask
+Date:   Sat, 17 Sep 2022 16:41:58 +0000
+Message-Id: <20220917164200.511783-2-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.37.3.968.ga6b4b080e4-goog
+In-Reply-To: <20220917164200.511783-1-joel@joelfernandes.org>
+References: <20220917164200.511783-1-joel@joelfernandes.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello,
+The rnp->qsmask is locklessly accessed from rcutree_dying_cpu(). This
+may help avoid load tearing due to concurrent access, KCSAN
+issues, and preserve sanity of people reading the mask in tracing.
 
-Just sending a few patches before lazy rcu v6 can come out. That can come out
-after more testing to check feasibility of ideas discussed at LPC. I will try
-to get rcutop pushed as well before that, but in the meanwhile I don't see much
-reason to block these few patches for 6.1. These apply to Paul's rcu/next
-branch. What do you think?
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+---
+ kernel/rcu/tree.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-For Resend:
-- Added Reviewed-by tags from Frederic on 1/3 and 3/3. For 2/3, I implemented
-changes after last discussion.
-- Better commit messages.
-
-Joel Fernandes (Google) (3):
-rcu/tree: Use READ_ONCE() for lockless read of rnp->qsmask
-rcu: Fix late wakeup when flush of bypass cblist happens (v6)
-rcu: Call trace_rcu_callback() also for bypass queuing (v2)
-
-kernel/rcu/tree.c      | 32 +++++++++++++++++++++++---------
-kernel/rcu/tree_nocb.h | 10 ++++++++--
-2 files changed, 31 insertions(+), 11 deletions(-)
-
---
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 0ca21ac0f064..5ec97e3f7468 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2106,7 +2106,7 @@ int rcutree_dying_cpu(unsigned int cpu)
+ 	if (!IS_ENABLED(CONFIG_HOTPLUG_CPU))
+ 		return 0;
+ 
+-	blkd = !!(rnp->qsmask & rdp->grpmask);
++	blkd = !!(READ_ONCE(rnp->qsmask) & rdp->grpmask);
+ 	trace_rcu_grace_period(rcu_state.name, READ_ONCE(rnp->gp_seq),
+ 			       blkd ? TPS("cpuofl-bgp") : TPS("cpuofl"));
+ 	return 0;
+-- 
 2.37.3.968.ga6b4b080e4-goog
 
