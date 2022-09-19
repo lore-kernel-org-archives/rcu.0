@@ -2,107 +2,96 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3476DECAAD3
-	for <rcu@archiver.kernel.org>; Mon, 19 Sep 2022 10:56:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D1E48ECAAA1
+	for <rcu@archiver.kernel.org>; Mon, 19 Sep 2022 21:01:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229706AbiISK41 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 19 Sep 2022 06:56:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56764 "EHLO
+        id S229617AbiISVBT (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 19 Sep 2022 17:01:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230110AbiISK4I (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 19 Sep 2022 06:56:08 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D51E01054F
-        for <rcu@vger.kernel.org>; Mon, 19 Sep 2022 03:51:55 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 8A548B819A4
-        for <rcu@vger.kernel.org>; Mon, 19 Sep 2022 10:51:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF812C433C1;
-        Mon, 19 Sep 2022 10:51:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1663584713;
-        bh=nmFqW3TjkjE2QVblrzWfVg9k4JK6XqUL7eUpw4/PeWs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uhhagX9Jpc4cuj5sK2TmR725SH63Tf+87Db/HYkitdT0QCYf1vJq/AZv70y5LDsbx
-         fVZyeLfhmbN0cjc8wxGDJyF6oqGDAFuXKlNvJQDvlDavuWjgQHCFK0Ir9j2TsoSN9t
-         ipM7x6e3SWvGi7Xdf8ZUg25E03HnFjLD8opttHEQNmpl70z/8ijPhYrfmPlL9MK9bq
-         +qIZ9SHlbH9wx9Oug3c53FNqj+0RYr5+BMVSN2kKefdT5l7KXhpwVD/HwDmkf0+chX
-         hSG8tjElVtLxlnO1AdObMV+5SL8Rw4MCq5KeZUQhB3ag7A+Y0T5fq4Jel5YHwGClBL
-         RJNYXOXG0lrAA==
-Date:   Mon, 19 Sep 2022 12:51:49 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Pingfan Liu <kernelfans@gmail.com>
-Cc:     rcu@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: Re: [PATCHv2 1/3] rcu: Keep qsmaskinitnext fresh when
- rcutree_online_cpu()
-Message-ID: <20220919105149.GA58144@lothringen>
-References: <20220915055825.21525-1-kernelfans@gmail.com>
- <20220915055825.21525-2-kernelfans@gmail.com>
- <20220916145240.GA27819@lothringen>
- <CAFgQCTuB72QZNL4AW95WntkCUqAinzis=6Mjwyfdy_NiMi_pgQ@mail.gmail.com>
+        with ESMTP id S229877AbiISVAs (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 19 Sep 2022 17:00:48 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E49E14BD15
+        for <rcu@vger.kernel.org>; Mon, 19 Sep 2022 14:00:42 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id i15so665545qvp.5
+        for <rcu@vger.kernel.org>; Mon, 19 Sep 2022 14:00:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date;
+        bh=+TpJY9WA2TgbKk/FBFvRVyGAUeZgvGLaYz5TdJGtlf8=;
+        b=cpw4k/mKjf/eRLwXExK0P1CNtft8mtxO2omAgM2yLwgj17aRiniJkN/+fQopoTcFsM
+         4TrZazwKaImECkxpymH4XrPV+B6BZf6VhV2wwHUgUjO186f9syskCuANjMtvmXJ/KHIi
+         MC8pZpwgWCXuUP66Ow0czTuxpn8fH7uf1UVZ4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date;
+        bh=+TpJY9WA2TgbKk/FBFvRVyGAUeZgvGLaYz5TdJGtlf8=;
+        b=jkBEvYeqrvM5R6xg3XjPokKNh90wvQQaPLbdWpPlLBciHSr6SfNynu47vMlou1KKBx
+         Wm0JlZeN2iSvE2L/B1nKvWuk62G0MY4P/88xZdUkeo14nuBVtWp6DkOK/53/3UgJqJ9G
+         jBKqQNGvaCAzihyZ9uQ+mgDxLkeh3nMxM144JVat4Gs2/SlqqdYfcKZbvN+rMGkPvl4U
+         YIBV+M7+9VphLm+sJ01Lsc4Kl2AOT4UjF2zoLl16h5+m+MNR66pBHMaILNUF9Q0Hmw66
+         wKyd7DUBg6ty/BfMTjhByAIOOduY99XdEvh6Nee68fJWoFB3YvGCnNR3+69QW8/cMqov
+         qx9w==
+X-Gm-Message-State: ACrzQf0NV3kixQwh6fvXj4oIPz0Eg1u3ikxwChIXA9HXbftikNFs6C7O
+        fp/ukdPq6DeoqTYs1VzZeZzikMqsFnrcuCAi
+X-Google-Smtp-Source: AMsMyM6XWNDSwpR8DvxvlafkY5AtGT85GBC74I/In4fGAR7WLSNCVpkK6dWZA9jAbPDtV+tm/LxFYw==
+X-Received: by 2002:a05:6214:1c07:b0:4a4:bf44:df79 with SMTP id u7-20020a0562141c0700b004a4bf44df79mr15999852qvc.1.1663621241739;
+        Mon, 19 Sep 2022 14:00:41 -0700 (PDT)
+Received: from [10.0.0.40] (c-73-148-104-166.hsd1.va.comcast.net. [73.148.104.166])
+        by smtp.gmail.com with ESMTPSA id i18-20020a05620a405200b006bb9125363fsm12612292qko.121.2022.09.19.14.00.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Sep 2022 14:00:41 -0700 (PDT)
+Message-ID: <c244a304-1689-274e-2bba-2ee1ce5f1bff@joelfernandes.org>
+Date:   Mon, 19 Sep 2022 17:00:39 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFgQCTuB72QZNL4AW95WntkCUqAinzis=6Mjwyfdy_NiMi_pgQ@mail.gmail.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.2
+Subject: Re: [RFC] rcu/nocb: Fix possible bugs in rcu_barrier()
+Content-Language: en-US
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        urezki@gmail.com, neeraj.iitr10@gmail.com, paulmck@kernel.org,
+        rostedt@goodmis.org
+References: <20220918221231.79143-1-joel@joelfernandes.org>
+ <20220919093411.GB56640@lothringen>
+From:   Joel Fernandes <joel@joelfernandes.org>
+In-Reply-To: <20220919093411.GB56640@lothringen>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Sep 19, 2022 at 06:24:21PM +0800, Pingfan Liu wrote:
-> On Fri, Sep 16, 2022 at 10:52 PM Frederic Weisbecker
-> <frederic@kernel.org> wrote:
-> > > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> > > index 438ecae6bd7e..ef6d3ae239b9 100644
-> > > --- a/kernel/rcu/tree_plugin.h
-> > > +++ b/kernel/rcu/tree_plugin.h
-> > > @@ -1224,7 +1224,7 @@ static void rcu_spawn_one_boost_kthread(struct rcu_node *rnp)
-> > >  static void rcu_boost_kthread_setaffinity(struct rcu_node *rnp, int outgoingcpu)
-> > >  {
-> > >       struct task_struct *t = rnp->boost_kthread_task;
-> > > -     unsigned long mask = rcu_rnp_online_cpus(rnp);
-> > > +     unsigned long mask;
-> > >       cpumask_var_t cm;
-> > >       int cpu;
-> > >
-> > > @@ -1233,6 +1233,11 @@ static void rcu_boost_kthread_setaffinity(struct rcu_node *rnp, int outgoingcpu)
-> > >       if (!zalloc_cpumask_var(&cm, GFP_KERNEL))
-> > >               return;
-> > >       mutex_lock(&rnp->boost_kthread_mutex);
-> > > +     /*
-> > > +      * Relying on the lock to serialize, so when onlining, the latest
-> > > +      * qsmaskinitnext is for cpus_ptr.
-> > > +      */
-> > > +     mask = rcu_rnp_online_cpus(rnp);
-> > >       for_each_leaf_node_possible_cpu(rnp, cpu)
-> > >               if ((mask & leaf_node_cpu_bit(rnp, cpu)) &&
-> > >                   cpu != outgoingcpu)
-> >
-> > Right but you still race against concurrent rcu_report_dead() doing:
-> >
-> >       WRITE_ONCE(rnp->qsmaskinitnext, rnp->qsmaskinitnext & ~mask)
-> >
+
+
+On 9/19/2022 5:34 AM, Frederic Weisbecker wrote:
+> On Sun, Sep 18, 2022 at 10:12:31PM +0000, Joel Fernandes (Google) wrote:
+>> When going through the lazy-rcu work, I noticed that
+>> rcu_barrier_entrain() does not really wake up the rcuog GP thread in any
+>> path after entraining. This means it is possible the GP thread is not
+>> awakened soon (say there were no CBs in the cblist after entraining
+>> time).
 > 
-> Ah. Indeed, my commit log is not precisely described.
+> Right.
 > 
-> In fact, either speedup smp_init [1] or fast kexec reboot [2] still
-> uses the model: one hotplug initiator and several reactors.  The
-> initiators are still excluded from each other by the pair
-> cpu_maps_update_begin()/cpu_maps_update_done(). So there can not be a
-> cpu-up and cpu-down event at the same time.
+>>
+>> Further, nothing appears to be calling the rcu_barrier callback
+>> directly in the case the ->cblist was empty which means if the IPI gets
+>> delayed enough to make the ->cblist empty and it turns out to be the last
+>> CPU holding, then nothing calls completes rcu_state.barrier_completion.
+> 
+> No need for that, if the cblist is empty there is no need for a callback
+> to enqueue.
+> 
 
-Yes but two downing CPUs may race right?
+Thanks! I was worried about the race where an smp_call_function_single() takes a
+long time to IPI. But I missed that the smp_call_function_single() in
+rcu_barrier() is in a synchronous wait. I wrongly thought thought that the
+waiting was facilitated by barrier_completion which has a whole different purpose.
 
-So isn't it possible to have rcu_report_dead() racing against
-rcutree_offline_cpu()?
-
-Thanks.
+ - Joel
