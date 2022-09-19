@@ -2,135 +2,159 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A56E0ECAAD8
-	for <rcu@archiver.kernel.org>; Sun, 18 Sep 2022 22:17:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A6D9C54EE9
+	for <rcu@archiver.kernel.org>; Mon, 19 Sep 2022 04:33:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229567AbiIRWR0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 18 Sep 2022 18:17:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40866 "EHLO
+        id S229606AbiISEdv (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 19 Sep 2022 00:33:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbiIRWRZ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 18 Sep 2022 18:17:25 -0400
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBAA217AAC
-        for <rcu@vger.kernel.org>; Sun, 18 Sep 2022 15:17:24 -0700 (PDT)
-Received: by mail-qv1-xf2d.google.com with SMTP id d1so20737463qvs.0
-        for <rcu@vger.kernel.org>; Sun, 18 Sep 2022 15:17:24 -0700 (PDT)
+        with ESMTP id S229579AbiISEds (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 19 Sep 2022 00:33:48 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B42EE12AA7
+        for <rcu@vger.kernel.org>; Sun, 18 Sep 2022 21:33:36 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id c7so21101779ljm.12
+        for <rcu@vger.kernel.org>; Sun, 18 Sep 2022 21:33:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date;
-        bh=COUBS8Lrq/6s4OMF0vyhqM9K1ay0PGRLj6YjKDWMuz8=;
-        b=sJGpVsSp8CVYVUTysZ5Dk8xKpexCVaWHglXuw3u9h7QWjExiwspIb/uvE25CeM/5s+
-         81jiTtQ1MHFuRsqG1jdLKE1kvqw01+//fG4D1LCFYnsgY72GhKAn6DFNOqL50Y8Hec5w
-         nPhjQJwVoIgygPPqlXUDJ5NXOVPtrJLak+NbM=
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=lYcFPyTXbTQ5LHmM8iwqaBZEt6Pbv7CGd01ig+HF4F4=;
+        b=orgT6/bIeXU5NcFgL4Ej6xhfhg0wx/LD9VS1otZvvF46wPYSSE1UvhtQc8WvosrXiH
+         SWLGWr2KXaWTAsBC0vlrdytsi+ZfVQo06L9Fuan0ouM6OsuH/naYIIMuhVtgfciocxxH
+         f1Fs808rD3zWRMSXG9wKVAKpmnm3iuOrjDtmh53e4fp6igiKZBqOFtu5GaFd6SNFZXP0
+         lEsemzVR2l51XETNdNb7ZWxB1bZz40qxMYLMtO9AlPaRUeQrfLQiJKi1S0DTPGPOWlY+
+         wzh3i2bOCErN+iDH1kd9P3hMjhVvsKadfOrCvdunSoh0enBw3y4+ctIPh0dMshSTM2kU
+         9F1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date;
-        bh=COUBS8Lrq/6s4OMF0vyhqM9K1ay0PGRLj6YjKDWMuz8=;
-        b=sH4Yk8WeATLhSONEqFcv3KcUEzHIyIo4yivhOZ7vA5amxt2NgyX/BlRYGMNS+dqtrG
-         cdiuIiG8wDGbEk5B+FYfFc5SMGj6plNgaruaGpGwhVJQcsoDS5whJXZ7LMGdHsi0tzDd
-         NJhdPeR5DzBCSdPHg6vN7MfTHWZfkGkH8kiQ4nPpCseXcbqHuOydssaATCP8XZmrMKuN
-         Vfubr+O2XrvFaAmiCs/dClj8kq5yXdtDdLVjmakjia6Giy5W9+huLPbv5I8x7c/HvmZa
-         wlcByzr7eDLPIWfj4LNXxb78j4AXD1DxXSuxE8tW1YnhbeGHUyBl99IQbFTXE7Fn/tc0
-         vXsQ==
-X-Gm-Message-State: ACrzQf3J62SU2XDYMtl+5ejsnBu4hNkP3DyHxiQxbx8e8kGlN1xcumsK
-        Xxnvkvxs4bJ3kvFX9TGCVAs9Dv9lZHVW9Db7
-X-Google-Smtp-Source: AMsMyM5uvOM+G4Sqi/2Jepd/gqyOg1z9T1h4PK+xrm3buvX2t6zUSYQgCgIj+1p1C8elok6gl2VeUA==
-X-Received: by 2002:a05:6214:4106:b0:4ac:9160:747b with SMTP id kc6-20020a056214410600b004ac9160747bmr12462773qvb.28.1663539443703;
-        Sun, 18 Sep 2022 15:17:23 -0700 (PDT)
-Received: from [10.0.0.40] (c-73-148-104-166.hsd1.va.comcast.net. [73.148.104.166])
-        by smtp.gmail.com with ESMTPSA id c18-20020a379a12000000b006b8d1914504sm11183358qke.22.2022.09.18.15.17.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 18 Sep 2022 15:17:23 -0700 (PDT)
-Message-ID: <2aa3311d-936c-8f6d-7f2a-6d67776fda00@joelfernandes.org>
-Date:   Sun, 18 Sep 2022 18:17:21 -0400
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=lYcFPyTXbTQ5LHmM8iwqaBZEt6Pbv7CGd01ig+HF4F4=;
+        b=sevo7qm+q/NMTSpAaWdK0053LV2ciPYsbejvAfZe8q0meI7D8ieWhycMqXvctNVqRO
+         G/noNfD5Pq+OL6j6n63e8SY6hx7CRBBoBtiKntBhc0s4CrC0tcpXW7SFByfjI6A2SnUM
+         l6IO+oSBDuf4AKaO2YahZZnmwG1EKpqWqQaNsDWIOstfhLnB196kNESR1BOzgU9l+NVV
+         ewOjJspSFXzpWkMIc0DgUMunTW8UpH/wwjq9Z2DZdX8PZ9BRbuSwO0dWABx4Ktlk9ySU
+         ojMGfFhsQ49saqEBFisNORYgld5Yvk01xI4JTX3tD8mCpJ+T+Jt27/aZBKF+MZQEZOGM
+         jJvg==
+X-Gm-Message-State: ACrzQf1YbF0e96GxEUF67fZPBU740prs/rR9wb745QAt1BNULPvT/ocU
+        KKtLCfRbDs9r8uf4FE4cR2h8sFsqvMX41hrP4mMPIfyNVQ==
+X-Google-Smtp-Source: AMsMyM4FdltwXLTwKrJAhnuKkZ3vD5NXG/yWyaAUzrPWlUHv4dDmXaeW2jpKy5+dnEp7xBpkoAPMnsL+XDbIEhin4Zw=
+X-Received: by 2002:a2e:960e:0:b0:26b:e5ae:cd78 with SMTP id
+ v14-20020a2e960e000000b0026be5aecd78mr4490541ljh.129.1663562014983; Sun, 18
+ Sep 2022 21:33:34 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.2
-Subject: Re: [RFC] rcu/nocb: Fix possible bugs in rcu_barrier()
-Content-Language: en-US
-To:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     urezki@gmail.com, neeraj.iitr10@gmail.com, frederic@kernel.org,
-        paulmck@kernel.org, rostedt@goodmis.org
-References: <20220918221231.79143-1-joel@joelfernandes.org>
-From:   Joel Fernandes <joel@joelfernandes.org>
-In-Reply-To: <20220918221231.79143-1-joel@joelfernandes.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20220915055825.21525-1-kernelfans@gmail.com> <20220915055825.21525-3-kernelfans@gmail.com>
+ <20220916142358.GA27246@lothringen>
+In-Reply-To: <20220916142358.GA27246@lothringen>
+From:   Pingfan Liu <kernelfans@gmail.com>
+Date:   Mon, 19 Sep 2022 12:33:23 +0800
+Message-ID: <CAFgQCTu6cxrbZ4jLdV6og2uhAG35LRjhjTw0Emgfpy0BW4kq6Q@mail.gmail.com>
+Subject: Re: [PATCHv2 2/3] rcu: Resort to cpu_dying_mask for affinity when offlining
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     rcu@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Fri, Sep 16, 2022 at 10:24 PM Frederic Weisbecker
+<frederic@kernel.org> wrote:
+>
+> On Thu, Sep 15, 2022 at 01:58:24PM +0800, Pingfan Liu wrote:
+> > During offlining, the concurrent rcutree_offline_cpu() can not be aware
+> > of each other through ->qsmaskinitnext.  But cpu_dying_mask carries such
+> > information at that point and can be utilized.
+> >
+> > Besides, a trivial change which removes the redudant call to
+> > rcu_boost_kthread_setaffinity() in rcutree_dead_cpu() since
+> > rcutree_offline_cpu() can fully serve that purpose.
+> >
+> > Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+> > Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> > Cc: David Woodhouse <dwmw@amazon.co.uk>
+> > Cc: Frederic Weisbecker <frederic@kernel.org>
+> > Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+> > Cc: Josh Triplett <josh@joshtriplett.org>
+> > Cc: Steven Rostedt <rostedt@goodmis.org>
+> > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> > Cc: Joel Fernandes <joel@joelfernandes.org>
+> > Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>
+> > To: rcu@vger.kernel.org
+> > ---
+> >  kernel/rcu/tree.c        | 2 --
+> >  kernel/rcu/tree_plugin.h | 6 ++++++
+> >  2 files changed, 6 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index 79aea7df4345..8a829b64f5b2 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -2169,8 +2169,6 @@ int rcutree_dead_cpu(unsigned int cpu)
+> >               return 0;
+> >
+> >       WRITE_ONCE(rcu_state.n_online_cpus, rcu_state.n_online_cpus - 1);
+> > -     /* Adjust any no-longer-needed kthreads. */
+> > -     rcu_boost_kthread_setaffinity(rnp, -1);
+> >       // Stop-machine done, so allow nohz_full to disable tick.
+> >       tick_dep_clear(TICK_DEP_BIT_RCU);
+> >       return 0;
+>
+> I would suggest to make this a separate change, for bisectability and
+> readability.
+>
 
+OK, I will.
 
-On 9/18/2022 6:12 PM, Joel Fernandes (Google) wrote:
-> When going through the lazy-rcu work, I noticed that
-> rcu_barrier_entrain() does not really wake up the rcuog GP thread in any
-> path after entraining. This means it is possible the GP thread is not
-> awakened soon (say there were no CBs in the cblist after entraining
-> time).
-> 
-> Further, nothing appears to be calling the rcu_barrier callback
-> directly in the case the ->cblist was empty which means if the IPI gets
-> delayed enough to make the ->cblist empty and it turns out to be the last
-> CPU holding, then nothing calls completes rcu_state.barrier_completion.
-> 
-> Fix both these issues.
-> 
-> A note on the wakeup, there are 3 cases AFAICS after the call to
-> rcu_nocb_flush_bypass():
-> 
-> 1. The rdp->cblist has pending CBs.
-> 
-> 2. The rdp->cblist has all done CBs.
-> 
-> 3. The rdp->cblist has no CBs at all (say the IPI took a long time to
-> arrive and some other path dequeued them in the meanwhile).
-> 
-> For #3, entraining a CB is not needed and we should bail.  For #1 and
-> needed. But for #2 it is needed.
-> 
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> ---
-> I only build tested this and wanted to post it in advance for discussions. I
-> will test it more soon. Thanks.
-> 
->  kernel/rcu/tree.c | 22 +++++++++++++++-------
->  1 file changed, 15 insertions(+), 7 deletions(-)
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 18f07e167d5e..65d439286757 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -3904,10 +3904,11 @@ static void rcu_barrier_callback(struct rcu_head *rhp)
->  /*
->   * If needed, entrain an rcu_barrier() callback on rdp->cblist.
->   */
-> -static void rcu_barrier_entrain(struct rcu_data *rdp)
-> +static void rcu_barrier_entrain(struct rcu_data *rdp, unsigned long flags)
->  {
->  	unsigned long gseq = READ_ONCE(rcu_state.barrier_sequence);
->  	unsigned long lseq = READ_ONCE(rdp->barrier_seq_snap);
-> +	bool was_alldone;
->  
->  	lockdep_assert_held(&rcu_state.barrier_lock);
->  	if (rcu_seq_state(lseq) || !rcu_seq_state(gseq) || rcu_seq_ctr(lseq) != rcu_seq_ctr(gseq))
-> @@ -3916,14 +3917,20 @@ static void rcu_barrier_entrain(struct rcu_data *rdp)
->  	rdp->barrier_head.func = rcu_barrier_callback;
->  	debug_rcu_head_queue(&rdp->barrier_head);
->  	rcu_nocb_lock(rdp);
-> +	was_alldone = !rcu_segcblist_pend_cbs(&rdp->cblist);
->  	WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, jiffies));
-> +
->  	if (rcu_segcblist_entrain(&rdp->cblist, &rdp->barrier_head)) {
->  		atomic_inc(&rcu_state.barrier_cpu_count);
-> +		__call_rcu_nocb_wake(rdp, was_alldone, flags); /* unlocks */
+> > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> > index ef6d3ae239b9..e5afc63bd97f 100644
+> > --- a/kernel/rcu/tree_plugin.h
+> > +++ b/kernel/rcu/tree_plugin.h
+> > @@ -1243,6 +1243,12 @@ static void rcu_boost_kthread_setaffinity(struct rcu_node *rnp, int outgoingcpu)
+> >                   cpu != outgoingcpu)
+> >                       cpumask_set_cpu(cpu, cm);
+> >       cpumask_and(cm, cm, housekeeping_cpumask(HK_TYPE_RCU));
+> > +     /*
+> > +      * For concurrent offlining, bit of qsmaskinitnext is not cleared yet.
+> > +      * So resort to cpu_dying_mask, whose changes has already been visible.
+> > +      */
+> > +     if (outgoingcpu != -1)
+> > +             cpumask_andnot(cm, cm, cpu_dying_mask);
+>
+> I'm not sure how the infrastructure changes in your concurrent down patchset
+> but can the cpu_dying_mask concurrently change at this stage?
+>
 
-I noticed that __call_rcu_nocb_wake() does a restore of the flags, which may not
-work for all callers of rcu_nocb_entrain(). Sigh. The patch needs to be fixed
-for that, but at least it highlights the potential issues.
+For the concurrent down patchset [1], it extends the cpu_down()
+capability to let an initiator to tear down several cpus in a batch
+and in parallel.
 
+At the first step, all cpus to be torn down should experience
+cpuhp_set_state(cpu, st, CPUHP_TEARDOWN_CPU), by that way, they are
+set in the bitmap cpu_dying_mask [2]. Then the cpu hotplug kthread on
+each teardown cpu can be kicked to work. (Indeed, [2] has a bug, and I
+need to fix it by using another loop to call
+cpuhp_kick_ap_work_async(cpu);)
+
+At the outmost, the pair
+cpu_maps_update_begin()/cpu_maps_update_done() still prevent any new
+initiator from launching another concurrent hot-add/remove event. So
+cpu_dying_mask can be stable during the batched and concurrent cpus'
+teardown.
+
+[1]: https://lore.kernel.org/all/20220822021520.6996-1-kernelfans@gmail.com/
+[2]: https://lore.kernel.org/all/20220822021520.6996-4-kernelfans@gmail.com/
+
+Thanks,
+
+    Pingfan
