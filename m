@@ -2,54 +2,38 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BFA7EECAAD8
-	for <rcu@archiver.kernel.org>; Tue, 20 Sep 2022 07:26:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24C12ECAAD8
+	for <rcu@archiver.kernel.org>; Tue, 20 Sep 2022 09:01:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229816AbiITH0j (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 20 Sep 2022 03:26:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57940 "EHLO
+        id S229917AbiITJBR (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 20 Sep 2022 05:01:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229872AbiITH0i (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 20 Sep 2022 03:26:38 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCAB959263
-        for <rcu@vger.kernel.org>; Tue, 20 Sep 2022 00:26:36 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id p18so1513662plr.8
-        for <rcu@vger.kernel.org>; Tue, 20 Sep 2022 00:26:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date;
-        bh=p2rNR4Kj1hpBCMiW7AS+lBqxR2mV7zkNpZ/5tL3N5Co=;
-        b=RsG/mzPlfK5FNvLNNdCCD8sXT2oak3XOFl2eJshIfDZqPwVTz0uxZ4ip0/9irEM2xD
-         iPIeOKSYk6j1IdLtUKrSjGtbda+UyqzWBYkoL6vNls/biq0fmk4tKsLMnpwG/HWyi1T7
-         i/3yOp0jlS0bUolRmrDt13YLUIf/fDcMkqqinf6TYNuAuCSeGOP0nmvg4mpcv5FEI95e
-         FVvlwREKaBZq7SiUKh0ZLqa0zsyxu7C+x7dpViLWceGXPJj8JwXTPydBYLyx0wCboQVw
-         aT3wRCgJ9CeN8duD97ESrrRBOdBYOoyfSGeW4nKRNY8w/M638HyPxb43F742xNSenh8u
-         HQVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
-        bh=p2rNR4Kj1hpBCMiW7AS+lBqxR2mV7zkNpZ/5tL3N5Co=;
-        b=TwG3ODjTUFR0eLmuyKAe+cz2bJeBhHo8CUPetTYtp7aItb6RNHj0Afl36LkeW1gG9r
-         Gl9f1NXK2GANKTOZ32eeLPJs6Q+d1dgXXGQoEwnw6jVnNQU8Shd6exzj8+8EKEhUkicj
-         Egs+LSgHY9jwxKebR7UjAAbthZ2iwrrXx42w7pXi6+gTdU7MrkBZTE5ToT5BLIuYmw7J
-         475EopG12eU2uTuomXVcId8cCWIQJWjEmi0xcT06SM/WCSn5xqg40M2rhafsZRKlmMwA
-         opkSul07DbkXxpsU+KeUqgxgi6+QLMv2KSU52nZHzygejIO7Vqp3Kzcd8QsstoMYqrCH
-         fX8g==
-X-Gm-Message-State: ACrzQf3f7AOVPC0DLys4N79wC3jTwrFupz2q2mFwSXb5kBMFsgLZdJTH
-        GNRtnRBvwgD7zfzuTn8EIg==
-X-Google-Smtp-Source: AMsMyM7F+O5eMo3gYf6+ARiHYk06Y1GOh0mbjbqsgn06V8736roGAtCB44gVf+dgtht3ATEVRoLyEA==
-X-Received: by 2002:a17:90b:3a85:b0:203:214d:4288 with SMTP id om5-20020a17090b3a8500b00203214d4288mr2344071pjb.183.1663658796178;
-        Tue, 20 Sep 2022 00:26:36 -0700 (PDT)
-Received: from piliu.users.ipa.redhat.com ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id z4-20020aa79904000000b0053e9d14e51asm793731pff.98.2022.09.20.00.26.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Sep 2022 00:26:35 -0700 (PDT)
-Date:   Tue, 20 Sep 2022 15:26:28 +0800
-From:   Pingfan Liu <kernelfans@gmail.com>
-To:     Frederic Weisbecker <frederic@kernel.org>
+        with ESMTP id S231575AbiITJAd (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 20 Sep 2022 05:00:33 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E9766253
+        for <rcu@vger.kernel.org>; Tue, 20 Sep 2022 02:00:30 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id E4232CE16A5
+        for <rcu@vger.kernel.org>; Tue, 20 Sep 2022 09:00:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A853AC433D6;
+        Tue, 20 Sep 2022 09:00:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1663664425;
+        bh=P2FJ+QFIEceUj3/7YFsZI8LxnUKqTW5z0aybBZA9TbI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=e8DdL51aKQtdylYDbYkoQv+ll+t+u66vlcQl40sHI5X5ijzSxrpi+RpNv/OLNIesn
+         FNK7EcIW8Eek5efELx5E1ObDDZhlssCUHLOfyeP6YDGh1PytprIJ1xxZ0kALHSRGCJ
+         Ktn35UsFHj5JbM1g8yTu5psRu7scm/QH5xc8Rm15DKHf4XcK2cpnETc9Vhnr4ctOe6
+         4IHU7DuAmee3Ez/hHwX14SXN2BRUo2Dwyx/IXwr+ZBstppHutc0paa93zl6kaVh68q
+         jxaJTqjIFkL+V2BnZBiXaJXlC7mVFG6RVZA2kZDO6c+LclXYmzjZqu+tzRvPtKgzBS
+         Vn26gWSf3KUIw==
+Date:   Tue, 20 Sep 2022 11:00:21 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Pingfan Liu <kernelfans@gmail.com>
 Cc:     rcu@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         David Woodhouse <dwmw@amazon.co.uk>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
@@ -59,110 +43,84 @@ Cc:     rcu@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>,
         "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: Re: [PATCHv2 3/3] rcu: coordinate tick dependency during concurrent
+Subject: Re: [PATCHv2 2/3] rcu: Resort to cpu_dying_mask for affinity when
  offlining
-Message-ID: <YylrJCjYPrcT6xKJ@piliu.users.ipa.redhat.com>
+Message-ID: <20220920090021.GC69891@lothringen>
 References: <20220915055825.21525-1-kernelfans@gmail.com>
- <20220915055825.21525-4-kernelfans@gmail.com>
- <20220916134258.GB25891@lothringen>
+ <20220915055825.21525-3-kernelfans@gmail.com>
+ <20220916142358.GA27246@lothringen>
+ <CAFgQCTu6cxrbZ4jLdV6og2uhAG35LRjhjTw0Emgfpy0BW4kq6Q@mail.gmail.com>
+ <20220919103432.GA57002@lothringen>
+ <YykweX7mXEk/83Ft@piliu.users.ipa.redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220916134258.GB25891@lothringen>
+In-Reply-To: <YykweX7mXEk/83Ft@piliu.users.ipa.redhat.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Sep 16, 2022 at 03:42:58PM +0200, Frederic Weisbecker wrote:
-> On Thu, Sep 15, 2022 at 01:58:25PM +0800, Pingfan Liu wrote:
-> > As Paul pointed out  "The tick_dep_clear() is SMP-safe because it uses
-> > atomic operations, but the problem is that if there are multiple
-> > nohz_full CPUs going offline concurrently, the first CPU to invoke
-> > rcutree_dead_cpu() will turn the tick off.  This might require an
-> > atomically manipulated counter to mediate the calls to
-> > rcutree_dead_cpu(). "
+On Tue, Sep 20, 2022 at 11:16:09AM +0800, Pingfan Liu wrote:
+> On Mon, Sep 19, 2022 at 12:34:32PM +0200, Frederic Weisbecker wrote:
+> > On Mon, Sep 19, 2022 at 12:33:23PM +0800, Pingfan Liu wrote:
+> > > On Fri, Sep 16, 2022 at 10:24 PM Frederic Weisbecker
+> > > > > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> > > > > index ef6d3ae239b9..e5afc63bd97f 100644
+> > > > > --- a/kernel/rcu/tree_plugin.h
+> > > > > +++ b/kernel/rcu/tree_plugin.h
+> > > > > @@ -1243,6 +1243,12 @@ static void rcu_boost_kthread_setaffinity(struct rcu_node *rnp, int outgoingcpu)
+> > > > >                   cpu != outgoingcpu)
+> > > > >                       cpumask_set_cpu(cpu, cm);
+> > > > >       cpumask_and(cm, cm, housekeeping_cpumask(HK_TYPE_RCU));
+> > > > > +     /*
+> > > > > +      * For concurrent offlining, bit of qsmaskinitnext is not cleared yet.
+> > > > > +      * So resort to cpu_dying_mask, whose changes has already been visible.
+> > > > > +      */
+> > > > > +     if (outgoingcpu != -1)
+> > > > > +             cpumask_andnot(cm, cm, cpu_dying_mask);
+> > > >
+> > > > I'm not sure how the infrastructure changes in your concurrent down patchset
+> > > > but can the cpu_dying_mask concurrently change at this stage?
+> > > >
+> > > 
+> > > For the concurrent down patchset [1], it extends the cpu_down()
+> > > capability to let an initiator to tear down several cpus in a batch
+> > > and in parallel.
+> > > 
+> > > At the first step, all cpus to be torn down should experience
+> > > cpuhp_set_state(cpu, st, CPUHP_TEARDOWN_CPU), by that way, they are
+> > > set in the bitmap cpu_dying_mask [2]. Then the cpu hotplug kthread on
+> > > each teardown cpu can be kicked to work. (Indeed, [2] has a bug, and I
+> > > need to fix it by using another loop to call
+> > > cpuhp_kick_ap_work_async(cpu);)
 > > 
-> > This patch introduces a new member ->dying to rcu_node, which reflects
-> > the number of concurrent offlining cpu. TICK_DEP_BIT_RCU is set by
-> > the first entrance and cleared by the last.
+> > So if I understand correctly there is a synchronization point for all
+> > CPUs between cpuhp_set_state() and CPUHP_AP_RCUTREE_ONLINE ?
 > > 
-> > Note: now, tick_dep_set() is put under the rnp->lock, but since it takes
-> > no lock, no extra locking order is introduced.
+> 
+> Yes, your understanding is right.
+> 
+> > And how about rollbacks through cpuhp_reset_state() ?
 > > 
-> > Suggested-by: "Paul E. McKenney" <paulmck@kernel.org>
-> > Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
-> > Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> > Cc: David Woodhouse <dwmw@amazon.co.uk>
-> > Cc: Frederic Weisbecker <frederic@kernel.org>
-> > Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
-> > Cc: Josh Triplett <josh@joshtriplett.org>
-> > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-> > Cc: Joel Fernandes <joel@joelfernandes.org>
-> > Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>
-> > To: rcu@vger.kernel.org
-> > ---
-> >  kernel/rcu/tree.c | 19 ++++++++++++++-----
-> >  kernel/rcu/tree.h |  1 +
-> >  2 files changed, 15 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index 8a829b64f5b2..f8bd0fc5fd2f 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -2164,13 +2164,19 @@ int rcutree_dead_cpu(unsigned int cpu)
-> >  {
-> >  	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
-> >  	struct rcu_node *rnp = rdp->mynode;  /* Outgoing CPU's rdp & rnp. */
-> > +	unsigned long flags;
-> > +	u8 dying;
-> >  
-> >  	if (!IS_ENABLED(CONFIG_HOTPLUG_CPU))
-> >  		return 0;
-> >  
-> >  	WRITE_ONCE(rcu_state.n_online_cpus, rcu_state.n_online_cpus - 1);
-> > -	// Stop-machine done, so allow nohz_full to disable tick.
-> > -	tick_dep_clear(TICK_DEP_BIT_RCU);
-> > +	raw_spin_lock_irqsave_rcu_node(rnp, flags);
-> > +	dying = --rnp->dying;
-> > +	if (!dying)
-> > +		// Stop-machine done, so allow nohz_full to disable tick.
-> > +		tick_dep_clear(TICK_DEP_BIT_RCU);
-> > +	raw_spin_lock_irqsave_rcu_node(rnp, flags);
 > 
-> Note this is only locking the rdp's node, not the root node.
-> Therefore if CPU 0 and CPU 256 are going off at the same time and they
-> don't belong to the same node, the above won't protect against concurrent
-> TICK_DEP_BIT_RCU set/clear.
+> Originally, cpuhp_reset_state() is not considered in my fast kexec
+> reboot series since at that point, all devices have been shutdown and
+> have no way to back. The rebooting just adventures to move on.
 > 
-
-Nice, thanks for the careful thoughts. How about moving the counting
-place to the root node?
-
-> My suspicion is that we don't need this TICK_DEP_BIT_RCU tick dependency
-> anymore. I believe it was there because of issues that were fixed with:
+> But yes as you point out, cpuhp_reset_state() throws a challenge to keep
+> the stability of cpu_dying_mask.
 > 
-> 	53e87e3cdc15 (timers/nohz: Last resort update jiffies on nohz_full IRQ entry)
-> and:
+> Considering we have the following order.
+> 1.
+>   set_cpu_dying(true)
+>   rcutree_offline_cpu()
+> 2. when rollback
+>   set_cpu_dying(false)
+>   rcutree_online_cpu()
 > 
-> 	a1ff03cd6fb9 (tick: Detect and fix jiffies update stall)
 > 
-> It's unfortunately just suspicion because the reason for that tick dependency
-> is unclear but I believe it should be safe to remove now.
-> 
+> The dying mask is stable before rcu routines, and
+> rnp->boost_kthread_mutex can be used to build a order to access the
+> latest cpu_dying_mask as in [1/3].
 
-I have gone through this tick dependency again, but got less.
-
-I think at least from the RCU's viewpoint, it is useless since
-multi_cpu_stop()->rcu_momentary_dyntick_idle() has eliminate the
-requirement for tick interrupt.
-
-
-Is there a way to have a convincing test so that these code can be removed?
-Or this code will be got along with?
-
-
-Thanks,
-
-	Pingfan
+Ok thanks for the clarification!
