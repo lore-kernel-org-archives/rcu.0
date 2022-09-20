@@ -2,36 +2,36 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1EE10C54EE9
-	for <rcu@archiver.kernel.org>; Tue, 20 Sep 2022 09:23:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8AA01C6FA8B
+	for <rcu@archiver.kernel.org>; Tue, 20 Sep 2022 09:39:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231744AbiITJXa (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 20 Sep 2022 05:23:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47976 "EHLO
+        id S230437AbiITJjC (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 20 Sep 2022 05:39:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231484AbiITJXS (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 20 Sep 2022 05:23:18 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F20776BD59
-        for <rcu@vger.kernel.org>; Tue, 20 Sep 2022 02:23:08 -0700 (PDT)
+        with ESMTP id S230386AbiITJjB (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 20 Sep 2022 05:39:01 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 525EB66A70
+        for <rcu@vger.kernel.org>; Tue, 20 Sep 2022 02:39:00 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 2CA10B8092F
-        for <rcu@vger.kernel.org>; Tue, 20 Sep 2022 09:23:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99638C433C1;
-        Tue, 20 Sep 2022 09:23:05 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id ED88C626FD
+        for <rcu@vger.kernel.org>; Tue, 20 Sep 2022 09:38:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC11BC433C1;
+        Tue, 20 Sep 2022 09:38:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1663665786;
-        bh=txS+G2Xvgn9VwQfPhSIHVlxMXCxR6lm+DpL0pb8pwOg=;
+        s=k20201202; t=1663666739;
+        bh=oApQbBQGIhFEx+iu94WGqi99S9HWhUHqazh3ihDF7Nk=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZrSGhZ0pogT/Vl3Rk3Wv1WTqMpkDajEnJTikQ8Lg2VbabnhvRP8VPKupFGSxb/rfX
-         Wm9xGVmCvoROn/93kxMTtC7oG/Cl/fvfzsHOSw38Rr4POmi1WzirBHt2aoSjZyaNs/
-         hARgfamSvP7A09leNGhlhXsjiX6iCXh64TK90JoDyiBbVb8smM6GPqVcI04y2A2tI/
-         SlcDnGG3ZxUW5HPUD9gx/vzXqOKrR6BXqz2DYtXveCSze+KPtz0SwMPQUHZHf+E94w
-         cKaCTLUXSCpH1SI5rAQPd5M0xZDODfyxlTFyZOm1WaFjPfvYO7DbcA+TC88qAbwdhG
-         M/mxBTMe/55ug==
-Date:   Tue, 20 Sep 2022 11:23:03 +0200
+        b=AvcmWY2+c4iKC3vBORg95vIJ3tzmmms4+dsWhHQmhYzt/a3wc6CU6c514+ohd+uaV
+         rm2alaDzcAiji8J9P8o7EZmbq9ml2n97Wrpz5Gdyu3tGdmLBe4oTa234R9ZLudEFAN
+         hCV2YPRm/OKjbmgCNUpp2+DBxEjaUanwwIBUjwaKukwtzuzm3jH/O240mffks6AS+7
+         dDNbCUyv2uhhNYDpZLHicOqWi4Vd/J7fH1i6D63CaOGicGi3CkQqA02hd5XqjtJg5c
+         O6YcqfpnzKCW5rPfcY3fc6WY3Lg3rNLMNyr+eq8mEGvxoSvT/TSBv/2Nb1rPS3NzuY
+         MaU/vvXXwdEZA==
+Date:   Tue, 20 Sep 2022 11:38:56 +0200
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     Pingfan Liu <kernelfans@gmail.com>
 Cc:     rcu@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -43,93 +43,84 @@ Cc:     rcu@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>,
         "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: Re: [PATCHv2 1/3] rcu: Keep qsmaskinitnext fresh when
- rcutree_online_cpu()
-Message-ID: <20220920092303.GE69891@lothringen>
+Subject: Re: [PATCHv2 2/3] rcu: Resort to cpu_dying_mask for affinity when
+ offlining
+Message-ID: <20220920093856.GF69891@lothringen>
 References: <20220915055825.21525-1-kernelfans@gmail.com>
- <20220915055825.21525-2-kernelfans@gmail.com>
- <20220916145240.GA27819@lothringen>
- <CAFgQCTuB72QZNL4AW95WntkCUqAinzis=6Mjwyfdy_NiMi_pgQ@mail.gmail.com>
- <20220919105149.GA58144@lothringen>
- <Yyk3acmumN7ezhhv@piliu.users.ipa.redhat.com>
+ <20220915055825.21525-3-kernelfans@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Yyk3acmumN7ezhhv@piliu.users.ipa.redhat.com>
+In-Reply-To: <20220915055825.21525-3-kernelfans@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Sep 20, 2022 at 11:45:45AM +0800, Pingfan Liu wrote:
-> On Mon, Sep 19, 2022 at 12:51:49PM +0200, Frederic Weisbecker wrote:
-> > On Mon, Sep 19, 2022 at 06:24:21PM +0800, Pingfan Liu wrote:
-> > > On Fri, Sep 16, 2022 at 10:52 PM Frederic Weisbecker
-> > > <frederic@kernel.org> wrote:
-> > > > > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> > > > > index 438ecae6bd7e..ef6d3ae239b9 100644
-> > > > > --- a/kernel/rcu/tree_plugin.h
-> > > > > +++ b/kernel/rcu/tree_plugin.h
-> > > > > @@ -1224,7 +1224,7 @@ static void rcu_spawn_one_boost_kthread(struct rcu_node *rnp)
-> > > > >  static void rcu_boost_kthread_setaffinity(struct rcu_node *rnp, int outgoingcpu)
-> > > > >  {
-> > > > >       struct task_struct *t = rnp->boost_kthread_task;
-> > > > > -     unsigned long mask = rcu_rnp_online_cpus(rnp);
-> > > > > +     unsigned long mask;
-> > > > >       cpumask_var_t cm;
-> > > > >       int cpu;
-> > > > >
-> > > > > @@ -1233,6 +1233,11 @@ static void rcu_boost_kthread_setaffinity(struct rcu_node *rnp, int outgoingcpu)
-> > > > >       if (!zalloc_cpumask_var(&cm, GFP_KERNEL))
-> > > > >               return;
-> > > > >       mutex_lock(&rnp->boost_kthread_mutex);
-> > > > > +     /*
-> > > > > +      * Relying on the lock to serialize, so when onlining, the latest
-> > > > > +      * qsmaskinitnext is for cpus_ptr.
-> > > > > +      */
-> > > > > +     mask = rcu_rnp_online_cpus(rnp);
-> > > > >       for_each_leaf_node_possible_cpu(rnp, cpu)
-> > > > >               if ((mask & leaf_node_cpu_bit(rnp, cpu)) &&
-> > > > >                   cpu != outgoingcpu)
-> > > >
-> > > > Right but you still race against concurrent rcu_report_dead() doing:
-> > > >
-> > > >       WRITE_ONCE(rnp->qsmaskinitnext, rnp->qsmaskinitnext & ~mask)
-> > > >
-> > > 
-> > > Ah. Indeed, my commit log is not precisely described.
-> > > 
-> > > In fact, either speedup smp_init [1] or fast kexec reboot [2] still
-> > > uses the model: one hotplug initiator and several reactors.  The
-> > > initiators are still excluded from each other by the pair
-> > > cpu_maps_update_begin()/cpu_maps_update_done(). So there can not be a
-> > > cpu-up and cpu-down event at the same time.
-> > 
-> > Yes but two downing CPUs may race right?
-> > 
-> > So isn't it possible to have rcu_report_dead() racing against
-> > rcutree_offline_cpu()?
-> > 
+On Thu, Sep 15, 2022 at 01:58:24PM +0800, Pingfan Liu wrote:
+> During offlining, the concurrent rcutree_offline_cpu() can not be aware
+> of each other through ->qsmaskinitnext.  But cpu_dying_mask carries such
+> information at that point and can be utilized.
 > 
-> Yes, two downing cpus can be in a batch.
+> Besides, a trivial change which removes the redudant call to
+> rcu_boost_kthread_setaffinity() in rcutree_dead_cpu() since
+> rcutree_offline_cpu() can fully serve that purpose.
 > 
-> There is a nuance between onlining and offlining:
-> -1. onlining relies on qsmaskinitnext, which is stable at the point
-> rcutree_online_cpu(). And it is what this patch aims for.
-> -2. offlining relies on cpu_dying_mask [2/3], instead of qsmaskinitnext
-> which is not cleared yet at the point rcutree_offline_cpu().
+> Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+> Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> Cc: David Woodhouse <dwmw@amazon.co.uk>
+> Cc: Frederic Weisbecker <frederic@kernel.org>
+> Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+> Cc: Josh Triplett <josh@joshtriplett.org>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> Cc: Joel Fernandes <joel@joelfernandes.org>
+> Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>
+> To: rcu@vger.kernel.org
+> ---
+>  kernel/rcu/tree.c        | 2 --
+>  kernel/rcu/tree_plugin.h | 6 ++++++
+>  2 files changed, 6 insertions(+), 2 deletions(-)
 > 
-> It is asymmetric owning to the point of updating qsmaskinitnext.
-> 
-> Now considering the racing between rcu_report_dead() and
-> rcutree_offline_cpu():
-> 
-> No matter rcutree_offline_cpu() reads out either stale or fresh value of
-> qsmaskinitnext, it should intersect with cpu_dying_mask.
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 79aea7df4345..8a829b64f5b2 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -2169,8 +2169,6 @@ int rcutree_dead_cpu(unsigned int cpu)
+>  		return 0;
+>  
+>  	WRITE_ONCE(rcu_state.n_online_cpus, rcu_state.n_online_cpus - 1);
+> -	/* Adjust any no-longer-needed kthreads. */
+> -	rcu_boost_kthread_setaffinity(rnp, -1);
+>  	// Stop-machine done, so allow nohz_full to disable tick.
+>  	tick_dep_clear(TICK_DEP_BIT_RCU);
+>  	return 0;
+> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> index ef6d3ae239b9..e5afc63bd97f 100644
+> --- a/kernel/rcu/tree_plugin.h
+> +++ b/kernel/rcu/tree_plugin.h
+> @@ -1243,6 +1243,12 @@ static void rcu_boost_kthread_setaffinity(struct rcu_node *rnp, int outgoingcpu)
+>  		    cpu != outgoingcpu)
+>  			cpumask_set_cpu(cpu, cm);
+>  	cpumask_and(cm, cm, housekeeping_cpumask(HK_TYPE_RCU));
+> +	/*
+> +	 * For concurrent offlining, bit of qsmaskinitnext is not cleared yet.
 
-Ah I see now, so the race can happen but it is then cancelled by the
-stable READ on cpu_dying_mask. Ok.
+For clarification, the comment could be:
 
+           While concurrently offlining, rcu_report_dead() can race, making
+           ->qsmaskinitnext unstable. So rely on cpu_dying_mask which is stable
+           and already contains all the currently offlining CPUs.
+
+Thanks!
+
+> +	 * So resort to cpu_dying_mask, whose changes has already been visible.
+> +	 */
+> +	if (outgoingcpu != -1)
+> +		cpumask_andnot(cm, cm, cpu_dying_mask);
+>  	if (cpumask_empty(cm))
+>  		cpumask_copy(cm, housekeeping_cpumask(HK_TYPE_RCU));
+>  	set_cpus_allowed_ptr(t, cm);
+> -- 
+> 2.31.1
 > 
-> Thanks,
-> 
-> 	Pingfan
