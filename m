@@ -2,92 +2,95 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A7C91C6FA82
-	for <rcu@archiver.kernel.org>; Wed, 21 Sep 2022 14:46:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F012C6FA8E
+	for <rcu@archiver.kernel.org>; Wed, 21 Sep 2022 14:46:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229767AbiIUOq0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 21 Sep 2022 10:46:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33976 "EHLO
+        id S229727AbiIUOqn (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 21 Sep 2022 10:46:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbiIUOqZ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 21 Sep 2022 10:46:25 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C71983BE4;
-        Wed, 21 Sep 2022 07:46:23 -0700 (PDT)
+        with ESMTP id S229641AbiIUOqm (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 21 Sep 2022 10:46:42 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E881F89CD3;
+        Wed, 21 Sep 2022 07:46:41 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 0728EB81A73;
-        Wed, 21 Sep 2022 14:46:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABD63C433D6;
-        Wed, 21 Sep 2022 14:46:20 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8518A62C2D;
+        Wed, 21 Sep 2022 14:46:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D69FEC43470;
+        Wed, 21 Sep 2022 14:46:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1663771580;
-        bh=HATBQ0LpiaUjynQ0ce9PLBK2pIPKrRwoKlfyhQ1IDIQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=aBsYnLVQulIyoPutJzPjFQznHM+fLPIpXMFj+S7R2WMMSMlOVZ219qPjSxZLVU8c6
-         pW3wlX/2kLhUwrkU5tOZwn+v7fGUhRFniwX9Yh3r2usIcvIM5eTq91i8kVEzK/lNEz
-         Uc0kYtT+/ZY3jixCfgrSOtEDp2ttCXZ/4FimYlLb+p0n6E8EmMVHolG36bxWc/vJOv
-         zK4kwiI/N4D4ku3sCtEepF7vDd1g5ZqWSP9RTW9Mx8XHh6GIcmyAVIVr2xIlK7Loby
-         SC6prARP057q129K35EQVY9PUBDaoCCyZl5Wq6COEtunmCcMKupzQIB7Dt2bZN7tgJ
-         J0tcYk26SeL/Q==
+        s=k20201202; t=1663771600;
+        bh=uclQIQLTJ0Fjb3CMUb437WvxBUVstCALy43H9B1aM3o=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=poUcQfpnFSk0s3jba6jl0usVmXnqhhc8ZwIQXuDlfJn/WKUg8XfowqH9RI6mOPv1x
+         2sKqq6GQzhoV5sbxB5igLaEYwFT7NBF4vnNCxsrtiYlrBYrX3QToGEj5L0fEK6S/9i
+         ET59zIIlq4VMND3YCFqqywtu/EtXAzI4ouHw7tnwvomJvABVf4KU9blwAg4wvzQEQW
+         fZ0flbTl+uKXqQI8GwUdOfcL95hJo8i3kfyijvnJbxi1CxyiHV1GE8iZFMbWr52IJA
+         rcbTW3B0XFO/3DbPf9e3CowvCx2GBDm8Z2Y+PccCq0PMW2Bbe7ipZHduFVPA1aALf3
+         jn9nJcRbkjTHg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 4D96B5C0849; Wed, 21 Sep 2022 07:46:20 -0700 (PDT)
-Date:   Wed, 21 Sep 2022 07:46:20 -0700
+        id 7E4955C0AC7; Wed, 21 Sep 2022 07:46:40 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org, tglx@linutronix.de, john.ogness@linutronix.de,
-        pmladek@suse.com
-Subject: [PATCH rcu 0/4] NMI-safe SRCU reader API
-Message-ID: <20220921144620.GA1200846@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        John Ogness <john.ogness@linutronix.de>,
+        Petr Mladek <pmladek@suse.com>
+Subject: [PATCH RFC rcu 4/4] srcu: Check for consistent global per-srcu_struct NMI safety
+Date:   Wed, 21 Sep 2022 07:46:38 -0700
+Message-Id: <20220921144638.1201361-4-paulmck@kernel.org>
+X-Mailer: git-send-email 2.31.1.189.g2e36527f23
+In-Reply-To: <20220921144620.GA1200846@paulmck-ThinkPad-P17-Gen-1>
+References: <20220921144620.GA1200846@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello!
+This commit adds runtime checks to verify that a given srcu_struct uses
+consistent NMI-safe (or not) read-side primitives globally, but based
+on the per-CPU data.  These global checks are made by the grace-period
+code that must scan the srcu_data structures anyway, and are done only
+in kernels built with CONFIG_PROVE_RCU=y.
 
-This RFC series provides an NMI-safe SRCU reader API in the guise
-of srcu_read_lock_nmisafe() and srcu_read_unlock_nmisafe().  A given
-srcu_struct structure must use either the traditional srcu_read_lock()
-and srcu_read_unlock() API or the new _nmisafe() API:  Mixing and matching
-is not permitted.  So much so that kernels built with CONFIG_PROVE_RCU=y
-will complain if you try it.
+Link: https://lore.kernel.org/all/20220910221947.171557773@linutronix.de/
 
-The reason for this restriction is that I have yet to find a use case
-that is not a accident waiting to happen.  And if free intermixing
-were permitted, it is pretty much a given that someone somewhere will
-get confused and use srcu_read_lock_nmisafe() within NMI handlers and
-srcu_read_lock() elsewhere, which will not (repeat, NOT) provide NMI
-safety.
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: John Ogness <john.ogness@linutronix.de>
+Cc: Petr Mladek <pmladek@suse.com>
+---
+ kernel/rcu/srcutree.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-The series is as follows:
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index 09a11f2c2042..5772b8659c89 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -429,13 +429,18 @@ static unsigned long srcu_readers_lock_idx(struct srcu_struct *ssp, int idx)
+ static unsigned long srcu_readers_unlock_idx(struct srcu_struct *ssp, int idx)
+ {
+ 	int cpu;
++	unsigned long mask = 0;
+ 	unsigned long sum = 0;
+ 
+ 	for_each_possible_cpu(cpu) {
+ 		struct srcu_data *cpuc = per_cpu_ptr(ssp->sda, cpu);
+ 
+ 		sum += atomic_long_read(&cpuc->srcu_unlock_count[idx]);
++		if (IS_ENABLED(CONFIG_PROVE_RCU))
++			mask = mask | READ_ONCE(cpuc->srcu_nmi_safety);
+ 	}
++	WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) && (mask & (mask >> 1)),
++		  "Mixed NMI-safe readers for srcu_struct at %ps.\n", ssp);
+ 	return sum;
+ }
+ 
+-- 
+2.31.1.189.g2e36527f23
 
-1.	Convert ->srcu_lock_count and ->srcu_unlock_count to atomic.
-
-2.	Create and srcu_read_lock_nmisafe() and
-	srcu_read_unlock_nmisafe().
-
-3.	Check for consistent per-CPU per-srcu_struct NMI safety.
-
-4.	Check for consistent global per-srcu_struct NMI safety.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- b/include/linux/srcu.h     |   37 ++++++++++++++++++++
- b/include/linux/srcutiny.h |   11 ++++++
- b/include/linux/srcutree.h |    4 +-
- b/kernel/rcu/Kconfig       |    3 +
- b/kernel/rcu/rcutorture.c  |   11 ++++--
- b/kernel/rcu/srcutree.c    |   24 ++++++-------
- include/linux/srcu.h       |    4 +-
- include/linux/srcutiny.h   |    4 +-
- include/linux/srcutree.h   |   12 +++++-
- kernel/rcu/srcutree.c      |   82 +++++++++++++++++++++++++++++++++++++++------
- 10 files changed, 160 insertions(+), 32 deletions(-)
