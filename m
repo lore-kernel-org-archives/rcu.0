@@ -2,203 +2,66 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F1B04ECAAD8
-	for <rcu@archiver.kernel.org>; Wed, 21 Sep 2022 23:52:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DF071C6FA82
+	for <rcu@archiver.kernel.org>; Thu, 22 Sep 2022 07:38:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229815AbiIUXwt (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 21 Sep 2022 19:52:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34558 "EHLO
+        id S230492AbiIVHiU (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 22 Sep 2022 03:38:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229649AbiIUXws (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 21 Sep 2022 19:52:48 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B65A9C2C6
-        for <rcu@vger.kernel.org>; Wed, 21 Sep 2022 16:52:47 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id g23so5278597qtu.2
-        for <rcu@vger.kernel.org>; Wed, 21 Sep 2022 16:52:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date;
-        bh=FECpFjJKptYi5/betqKscw8Hm9Di8iX5KVsNY1fQlRU=;
-        b=kFqIxb3c7aTOYtvRywPvr9C0DSxKXgUgqp0kyxd19QkCGttl5By0bLXCvIZgFE55pl
-         3PvK57KsFb4puWctDuYXpLaBq0qYJjuftNOL7Nw5kb0U1/xv2ftOS+r9LToZNnfFR/SS
-         BxWW7hkSw3f7hehfX+r7ESdZgWZw/L/b97cgE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
-        bh=FECpFjJKptYi5/betqKscw8Hm9Di8iX5KVsNY1fQlRU=;
-        b=lPqDC+8qN+atcubX9uEXYh5OlcuPiVvwmHlKrEk2V52UbcOh+TO0qaoW2Icgk9qL2D
-         +0XYiAHIP6dLriMNV0YPiJrf9vYQlQgt5Pz9vAUGTx0dxu4agPnPUOHAt+sUkWf0W/wp
-         CnxGaXTAh8+nqg9+uFp3Af9sfY10iNXovCGCe667pnm+4XCxYWcBNLToRNr5Ee108x+9
-         iS/a/gb1jMnGMWS2LNlnlpLBxZrlC65WWBGPrWZ/LO+AngM1huDQhxFarxW0n8Kk+AGf
-         cK+U1PgZ1vTaSDE3Iwmwiv90ldaC5SxcmTJzXON4C/WH4vPeYhvUfWwf44oViTOdOmVl
-         c0nw==
-X-Gm-Message-State: ACrzQf0+3+mGnc9IeyMtt2948wY9wAvxtZGeuoQb9wpcacl5CvlUjBtV
-        e9ah4vGVAJ8jH6P1etsdaapyCA==
-X-Google-Smtp-Source: AMsMyM7ptLfmiaAWJuvmyCcT2G+Lv43MG0ZAuZIBYJ10L0kPb08iAHb2HGZmAJkSzKA2lpAbe7GA+g==
-X-Received: by 2002:a05:622a:241:b0:35d:75:88a0 with SMTP id c1-20020a05622a024100b0035d007588a0mr765726qtx.370.1663804366400;
-        Wed, 21 Sep 2022 16:52:46 -0700 (PDT)
-Received: from localhost (48.230.85.34.bc.googleusercontent.com. [34.85.230.48])
-        by smtp.gmail.com with ESMTPSA id l3-20020a05620a28c300b006b872b606b1sm2930436qkp.128.2022.09.21.16.52.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Sep 2022 16:52:45 -0700 (PDT)
-Date:   Wed, 21 Sep 2022 23:52:45 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rushikesh.s.kadam@intel.com, urezki@gmail.com,
-        neeraj.iitr10@gmail.com, paulmck@kernel.org, rostedt@goodmis.org,
-        vineeth@bitbyteword.org, boqun.feng@gmail.com
-Subject: Re: [PATCH v5 06/18] rcu: Introduce call_rcu_lazy() API
- implementation
-Message-ID: <YyujzQ/sU/aAdx4r@google.com>
-References: <20220901221720.1105021-1-joel@joelfernandes.org>
- <20220901221720.1105021-7-joel@joelfernandes.org>
- <20220902152132.GA115525@lothringen>
- <Yxa5Ch574cRZxRdo@google.com>
- <20220906151757.GA183806@lothringen>
- <Yxfggt1/cLBhUi/y@google.com>
- <20220907094014.GA193994@lothringen>
+        with ESMTP id S231184AbiIVHiT (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 22 Sep 2022 03:38:19 -0400
+Received: from mail.coredeal.pl (mail.coredeal.pl [51.75.73.133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B31ED12C7
+        for <rcu@vger.kernel.org>; Thu, 22 Sep 2022 00:38:18 -0700 (PDT)
+Received: by mail.coredeal.pl (Postfix, from userid 1002)
+        id DCE62A39AF; Thu, 22 Sep 2022 07:37:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=coredeal.pl; s=mail;
+        t=1663832295; bh=9KGuIG62LgzC9aYmjKxzocuYLRCVghXg6v9Q1q2LHec=;
+        h=Date:From:To:Subject:From;
+        b=ZYE0T7jYs3KNCZwoIHDds6rlUpspnT8sHhkUolmfr19AEwKeyjVNV1f1cFx0f8VHG
+         FdICKJdkqpTP5HcqyHekLR2p5w2JPm3Ni+i+AbfUprDy+p12qAUWkpI/Ejbs0yXUCA
+         mce7TOikeKPHM2k+oX1sno9PaiicLFV7IBLs6Zs5g3zz6aGczEFFLu9d4YPllb4Bf+
+         dBFV5n8YsKmHTuTizk2BOCAlGEGdN1TwnRnt730oH6+p/zEBM8rT2GpYgNwsexSL7T
+         uDYnUkY7piZreDTc3E0gEK1HSXQcqfuFblybcIov+KNJ3kMN3o0GmruuxwbpoCtMRH
+         f73jIjXOjdVQQ==
+Received: by mail.coredeal.pl for <rcu@vger.kernel.org>; Thu, 22 Sep 2022 07:36:02 GMT
+Message-ID: <20220922064500-0.1.5n.1rjwt.0.afnhv8fb78@coredeal.pl>
+Date:   Thu, 22 Sep 2022 07:36:02 GMT
+From:   "Krzysztof Maj" <krzysztof.maj@coredeal.pl>
+To:     <rcu@vger.kernel.org>
+Subject: Biznesowy angielski
+X-Mailer: mail.coredeal.pl
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220907094014.GA193994@lothringen>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Sep 07, 2022 at 11:40:14AM +0200, Frederic Weisbecker wrote:
-> On Wed, Sep 07, 2022 at 12:06:26AM +0000, Joel Fernandes wrote:
-> > > > @@ -326,13 +372,20 @@ static bool rcu_nocb_do_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
-> > > >   * Note that this function always returns true if rhp is NULL.
-> > > >   */
-> > > >  static bool rcu_nocb_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
-> > > > -				  unsigned long j)
-> > > > +				  unsigned long j, unsigned long flush_flags)
-> > > >  {
-> > > > +	bool ret;
-> > > > +
-> > > >  	if (!rcu_rdp_is_offloaded(rdp))
-> > > >  		return true;
-> > > >  	rcu_lockdep_assert_cblist_protected(rdp);
-> > > >  	rcu_nocb_bypass_lock(rdp);
-> > > > -	return rcu_nocb_do_flush_bypass(rdp, rhp, j);
-> > > > +	ret = rcu_nocb_do_flush_bypass(rdp, rhp, j, flush_flags);
-> > > > +
-> > > > +	if (flush_flags & FLUSH_BP_WAKE)
-> > > > +		wake_nocb_gp(rdp, true);
-> > > 
-> > > Why the true above?
-> > > 
-> > > Also should we check if the wake up is really necessary (otherwise it means we
-> > > force a wake up for all rdp's from rcu_barrier())?
-> > > 
-> > >        was_alldone = rcu_segcblist_pend_cbs(&rdp->cblist);
-> > >        ret = rcu_nocb_do_flush_bypass(rdp, rhp, j, flush_flags);
-> > >        if (was_alldone && rcu_segcblist_pend_cbs(&rdp->cblist))
-> > >        	  wake_nocb_gp(rdp, false);
-> > 
-> > You mean something like the following right? Though I'm thinking if its
-> > better to call wake_nocb_gp() from tree.c in entrain() and let that handle
-> > the wake. That way, we can get rid of the extra FLUSH_BP flags as well and
-> > let the flush callers deal with the wakeups..
-> 
-> Ah yes that could make sense if only one caller cares.
-> 
-> > 
-> > Anyway, for testing this should be good...
-> > 
-> > ---8<-----------------------
-> > 
-> > diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-> > index bd8f39ee2cd0..e3344c262672 100644
-> > --- a/kernel/rcu/tree_nocb.h
-> > +++ b/kernel/rcu/tree_nocb.h
-> > @@ -382,15 +382,19 @@ static bool rcu_nocb_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
-> >  				  unsigned long j, unsigned long flush_flags)
-> >  {
-> >  	bool ret;
-> > +	bool was_alldone;
-> >  
-> >  	if (!rcu_rdp_is_offloaded(rdp))
-> >  		return true;
-> >  	rcu_lockdep_assert_cblist_protected(rdp);
-> >  	rcu_nocb_bypass_lock(rdp);
-> > +	if (flush_flags & FLUSH_BP_WAKE)
-> > +		was_alldone = !rcu_segcblist_pend_cbs(&rdp->cblist);
-> > +
-> 
-> You can check that outside bypass lock (but you still need nocb_lock).
-> 
-> >  	ret = rcu_nocb_do_flush_bypass(rdp, rhp, j, flush_flags);
-> >  
-> > -	if (flush_flags & FLUSH_BP_WAKE)
-> > -		wake_nocb_gp(rdp, true);
-> > +	if (flush_flags & FLUSH_BP_WAKE && was_alldone)
-> > +		wake_nocb_gp(rdp, false);
-> 
-> That doesn't check if the bypass list was empty.
+Dzie=C5=84 dobry,=20
 
-I am ending up with something like the below for v6, after discussing with
-Paul on IRC he pointed out we only need to do the rcu_barrier() related
-wakeup when all the CBs are lazy in the bypass list. Otherwise timer goes
-off. I think Frederic mentioned something similar above in different words.
+czy rozwa=C5=BCali Pa=C5=84stwo rozw=C3=B3j kwalifikacji j=C4=99zykowych =
+swoich pracownik=C3=B3w?
 
-I prefer to keep this logic in tree_nocb.h since rcu_barrier_entrain()
-shouldn't have to deal with nocb internals (in theory anyway).
+Opracowali=C5=9Bmy kursy j=C4=99zykowe dla r=C3=B3=C5=BCnych bran=C5=BC, =
+w kt=C3=B3rych koncentrujemy si=C4=99 na podniesieniu poziomu s=C5=82owni=
+ctwa i jako=C5=9Bci komunikacji wykorzystuj=C4=85c autorsk=C4=85 metod=C4=
+=99, stworzon=C4=85 specjalnie dla wymagaj=C4=85cego biznesu.=20
 
-Looks Ok?
+Niestandardowy kurs on-line, dopasowany do profilu firmy i obszar=C3=B3w =
+=C5=9Bwiadczonych us=C5=82ug, w szybkim czasie przyniesie efekty, kt=C3=B3=
+re zwi=C4=99ksz=C4=85 komfort i jako=C5=9B=C4=87 pracy, rozwijaj=C4=85c m=
+o=C5=BCliwo=C5=9Bci biznesowe.=20
 
-thanks,
+Zdalne szkolenie j=C4=99zykowe to m.in. zaj=C4=99cia z native speakerami,=
+ kt=C3=B3re w szybkim czasie naucz=C4=85 pracownik=C3=B3w rozmawia=C4=87 =
+za pomoc=C4=85 jasnego i zwi=C4=99z=C5=82ego j=C4=99zyka Business English=
+=2E
 
- - Joel
+Czy m=C3=B3g=C5=82bym przedstawi=C4=87 wi=C4=99cej szczeg=C3=B3=C5=82=C3=B3=
+w i opowiedzie=C4=87 jak dzia=C5=82amy?=20
 
----8<-----------------------
 
-From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Subject: [PATCH for v6] fixup! rcu: Introduce call_rcu_lazy() API implementation
-
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
----
- kernel/rcu/tree_nocb.h | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index c197534d0c99..fd056358f041 100644
---- a/kernel/rcu/tree_nocb.h
-+++ b/kernel/rcu/tree_nocb.h
-@@ -375,18 +375,26 @@ static bool rcu_nocb_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
- 				  unsigned long j, unsigned long flush_flags)
- {
- 	bool ret;
--	bool was_alldone;
-+	bool was_alldone = false;
-+	bool bypass_all_lazy = false;
- 
- 	if (!rcu_rdp_is_offloaded(rdp))
- 		return true;
- 	rcu_lockdep_assert_cblist_protected(rdp);
- 	rcu_nocb_bypass_lock(rdp);
--	if (flush_flags & FLUSH_BP_WAKE)
-+
-+	if (flush_flags & FLUSH_BP_WAKE) {
- 		was_alldone = !rcu_segcblist_pend_cbs(&rdp->cblist);
-+		bypass_all_lazy =
-+		  (rcu_cblist_n_cbs(&rdp->nocb_bypass) == rdp->lazy_len);
-+	}
- 
- 	ret = rcu_nocb_do_flush_bypass(rdp, rhp, j, flush_flags);
- 
--	if (flush_flags & FLUSH_BP_WAKE && was_alldone)
-+	// Wake up the nocb GP thread if needed. GP thread could be sleeping
-+	// while waiting for lazy timer to expire (otherwise rcu_barrier may
-+	// end up waiting for the duration of the lazy timer).
-+	if (flush_flags & FLUSH_BP_WAKE && was_alldone && bypass_all_lazy)
- 		wake_nocb_gp(rdp, false);
- 
- 	return ret;
--- 
-2.37.3.998.g577e59143f-goog
-
+Pozdrawiam
+Krzysztof Maj
