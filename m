@@ -2,164 +2,101 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F40E2C54EE9
-	for <rcu@archiver.kernel.org>; Thu, 22 Sep 2022 14:40:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 44FDAECAAD8
+	for <rcu@archiver.kernel.org>; Thu, 22 Sep 2022 22:01:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231996AbiIVOkw (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 22 Sep 2022 10:40:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38314 "EHLO
+        id S230352AbiIVWBc (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 22 Sep 2022 18:01:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232003AbiIVOkY (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 22 Sep 2022 10:40:24 -0400
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82527F859A
-        for <rcu@vger.kernel.org>; Thu, 22 Sep 2022 07:39:09 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id v15so6910795qvi.11
-        for <rcu@vger.kernel.org>; Thu, 22 Sep 2022 07:39:08 -0700 (PDT)
+        with ESMTP id S229551AbiIVWB2 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 22 Sep 2022 18:01:28 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 773C2F311A
+        for <rcu@vger.kernel.org>; Thu, 22 Sep 2022 15:01:27 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id h21so7326596qta.3
+        for <rcu@vger.kernel.org>; Thu, 22 Sep 2022 15:01:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date;
-        bh=hMqblj/4z2GjKNiO1uGu1bXS3FyDtxJFwcuF5B7VkxE=;
-        b=eSODAQej2Oow7dPw7KgIILSrGM0tHsAAz4XYvo8brnIop5QWH3dmoTplvhoWM1Ee2y
-         +IcX+MhotrKxyv2owYiTHNYG7EOISGUVaroSK9rPpV68ZUPD7lJjGRyXTfurduyzs7gr
-         s0YiVKaVSimtx9xSM5dGzvlxLQ9Wk0OUiPjnI=
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date;
+        bh=eySuugiAbw8rDbqyosau5S1qc5DsO8UPUSTZ8DZ24fc=;
+        b=a9qoD9wUuyLv45FLdm4rewR00tvRAXnEJDPVxgUNestW4N4ZrgjgGBNFYnrgWd2SBp
+         vhVLgu3JlNc2MsINcevBcJSnvGDRkmTuzpTf0FMburFikrNzwf5dOH0sAAJW+hMw3ZpF
+         px8UdgmdXJKjF4zRrGS0AIC4oz9ij/aKpaLVo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
-        bh=hMqblj/4z2GjKNiO1uGu1bXS3FyDtxJFwcuF5B7VkxE=;
-        b=jzn6IiysUbULjh0hzQit7zO4IyLbjXGrW8S1oWRPmVn6XZMsc3wI9ziUWtQaJMiPll
-         3s2VXGH4c4k9b1Ukm8JxWimNe8PgU5cF8+RK1kpl82ZrFPri24UgYRCkHmpk9au1ZIea
-         VJhGuDWLpZ2YqvarOYFd97vLNLOR1EudM7lV/MvRbyrgfcfnHIWsXYSz0OHjJzMax1Zr
-         EA6T4xP1/JaalwaZOu4P8FlaWfRI2NVO44HKWJUvIJCsaxFhIq6IJi/y4MRwbXf1CnDM
-         sYeHPzJKFijkXGhBm4GGfi6wG1OC12uWbV22T31BAqBAaKrp+6tovCoEnrS7MXXoqWhD
-         +VbA==
-X-Gm-Message-State: ACrzQf0oiWaKin6o5xqZJyvdDm4ciUkDpHJJ3av6u9p0Nd1bFym+Znn8
-        OghnfCMtPdL5/lAgT41uBNZm29NYHagLnw==
-X-Google-Smtp-Source: AMsMyM62JbbSre6A9RQRYY64mKrvJvjB1oI6J7czcwacXp+TbMr/zaOcidSE8iyD/Gh8CzC5+k03nA==
-X-Received: by 2002:a05:6214:27e5:b0:4ac:a637:729 with SMTP id jt5-20020a05621427e500b004aca6370729mr2823538qvb.73.1663857547981;
-        Thu, 22 Sep 2022 07:39:07 -0700 (PDT)
-Received: from localhost (48.230.85.34.bc.googleusercontent.com. [34.85.230.48])
-        by smtp.gmail.com with ESMTPSA id o24-20020a05620a229800b006ce515196a7sm3949768qkh.8.2022.09.22.07.39.07
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date;
+        bh=eySuugiAbw8rDbqyosau5S1qc5DsO8UPUSTZ8DZ24fc=;
+        b=zVqsqGAQYY7fsWKEE7DJX9pQLtEKk0x/5V/8zPZsUJJhK9H03xF8zAvtJwbFTyhLd5
+         WAO9OZFH+RA9fPyMvegVnOzh4Vlo5bAGXbmLqs1IEaIV1D+0AwjSpEPSoGNnA3aqjaLW
+         rvlTFmZ6h66fJrOxhNRqjFMbtqV+ieR13g7pU6sPZyYw+nt7pBdio9ssT3FLttg/eHla
+         XhVEQku0wloJu5rayOJyOJG/iBCMa0xze7gIlDRUyUQ66YsyLobG5onB5wc5itw9g5YF
+         DFLjYGnAxKo+M7y5MSAvktqMgc8ApdOPAFjOWUBTBggWjqxTaWz45srhRUkNKNU3Alko
+         z5Fw==
+X-Gm-Message-State: ACrzQf3O02m8XADZuM52AXfYn0lCbjp2VsMo+ub+R08EE+ZOiPGHGgbu
+        xLX3iszKwvijqTCR2mRzTzpm3qd/Zs5OzQ==
+X-Google-Smtp-Source: AMsMyM7Fee6VM8U8YV9/jN5K8T8ZKcR1kVi79TKvoRXKcRqn7+KS/FeAFWHz8A7b8FHOlQk+fDv+uw==
+X-Received: by 2002:ac8:5c8c:0:b0:35d:4c5:7e2a with SMTP id r12-20020ac85c8c000000b0035d04c57e2amr4776446qta.293.1663884086307;
+        Thu, 22 Sep 2022 15:01:26 -0700 (PDT)
+Received: from joelboxx.c.googlers.com.com (48.230.85.34.bc.googleusercontent.com. [34.85.230.48])
+        by smtp.gmail.com with ESMTPSA id z12-20020ac87f8c000000b0035ba7012724sm4465833qtj.70.2022.09.22.15.01.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Sep 2022 07:39:07 -0700 (PDT)
-Date:   Thu, 22 Sep 2022 14:39:07 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     rcu@vger.kernel.org, paulmck@kernel.org
-Subject: Re: [PATCH v5 06/18] rcu: Introduce call_rcu_lazy() API
- implementation
-Message-ID: <Yyxzix7f03nUkCnn@google.com>
-References: <20220901221720.1105021-1-joel@joelfernandes.org>
- <20220901221720.1105021-7-joel@joelfernandes.org>
- <20220902152132.GA115525@lothringen>
- <Yxa5Ch574cRZxRdo@google.com>
- <20220906151757.GA183806@lothringen>
- <Yxfggt1/cLBhUi/y@google.com>
- <20220907094014.GA193994@lothringen>
- <YyujzQ/sU/aAdx4r@google.com>
+        Thu, 22 Sep 2022 15:01:25 -0700 (PDT)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, rushikesh.s.kadam@intel.com,
+        urezki@gmail.com, neeraj.iitr10@gmail.com, frederic@kernel.org,
+        paulmck@kernel.org, rostedt@goodmis.org,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Subject: [PATCH v6 0/4] rcu: call_rcu() power improvements
+Date:   Thu, 22 Sep 2022 22:01:00 +0000
+Message-Id: <20220922220104.2446868-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.37.3.998.g577e59143f-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YyujzQ/sU/aAdx4r@google.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Sep 21, 2022 at 11:52:45PM +0000, Joel Fernandes wrote:
-[..]
-> > > Anyway, for testing this should be good...
-> > > 
-> > > ---8<-----------------------
-> > > 
-> > > diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-> > > index bd8f39ee2cd0..e3344c262672 100644
-> > > --- a/kernel/rcu/tree_nocb.h
-> > > +++ b/kernel/rcu/tree_nocb.h
-> > > @@ -382,15 +382,19 @@ static bool rcu_nocb_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
-> > >  				  unsigned long j, unsigned long flush_flags)
-> > >  {
-> > >  	bool ret;
-> > > +	bool was_alldone;
-> > >  
-> > >  	if (!rcu_rdp_is_offloaded(rdp))
-> > >  		return true;
-> > >  	rcu_lockdep_assert_cblist_protected(rdp);
-> > >  	rcu_nocb_bypass_lock(rdp);
-> > > +	if (flush_flags & FLUSH_BP_WAKE)
-> > > +		was_alldone = !rcu_segcblist_pend_cbs(&rdp->cblist);
-> > > +
-> > 
-> > You can check that outside bypass lock (but you still need nocb_lock).
-> > 
-> > >  	ret = rcu_nocb_do_flush_bypass(rdp, rhp, j, flush_flags);
-> > >  
-> > > -	if (flush_flags & FLUSH_BP_WAKE)
-> > > -		wake_nocb_gp(rdp, true);
-> > > +	if (flush_flags & FLUSH_BP_WAKE && was_alldone)
-> > > +		wake_nocb_gp(rdp, false);
-> > 
-> > That doesn't check if the bypass list was empty.
-> 
-> I am ending up with something like the below for v6, after discussing with
-> Paul on IRC he pointed out we only need to do the rcu_barrier() related
-> wakeup when all the CBs are lazy in the bypass list. Otherwise timer goes
-> off. I think Frederic mentioned something similar above in different words.
-> 
-> I prefer to keep this logic in tree_nocb.h since rcu_barrier_entrain()
-> shouldn't have to deal with nocb internals (in theory anyway).
-> 
-> Looks Ok?
+v6 version of RCU lazy patches based on rcu/next branch.
 
-And I did miss something so here is the updated version, testing it further
-now, I think this is the last 'concern' I had before making the other API
-changes we discussed so should hopefully be smooth sailing from here. Thank you!
+To facilitate easier merge, I dropped tracing and other patches and just
+implemented the new changes. I will post the tracing patches later along with
+rcutop as I need to add new tracepoints that Frederic suggested.
 
----8<-----------------------
+Main changes:
+1. rcu_barrier() wake up only for lazy bypass list.
+2. Make all call_rcu() default-lazy and add call_rcu_flush() API.
+3. Take care of some callers using call_rcu_flush() API.
 
-Subject: [PATCH for v6] fixup! rcu: Introduce call_rcu_lazy() API implementation
+I am seeing good performance and power with these patches on real ChromeOS x86
+asymmetric hardware.
 
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
----
- kernel/rcu/tree_nocb.h | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+v5 cover letter is here:
+https://lore.kernel.org/all/20220901221720.1105021-1-joel@joelfernandes.org/
 
-diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index c197534d0c99..472ceb8af6d3 100644
---- a/kernel/rcu/tree_nocb.h
-+++ b/kernel/rcu/tree_nocb.h
-@@ -375,18 +375,27 @@ static bool rcu_nocb_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
- 				  unsigned long j, unsigned long flush_flags)
- {
- 	bool ret;
--	bool was_alldone;
-+	bool was_alldone = false;
-+	bool bypass_all_lazy = false;
-+	long bypass_ncbs;
- 
- 	if (!rcu_rdp_is_offloaded(rdp))
- 		return true;
- 	rcu_lockdep_assert_cblist_protected(rdp);
- 	rcu_nocb_bypass_lock(rdp);
--	if (flush_flags & FLUSH_BP_WAKE)
-+
-+	if (flush_flags & FLUSH_BP_WAKE) {
- 		was_alldone = !rcu_segcblist_pend_cbs(&rdp->cblist);
-+		bypass_ncbs = rcu_cblist_n_cbs(&rdp->nocb_bypass);
-+		bypass_all_lazy = bypass_ncbs && (bypass_ncbs == rdp->lazy_len);
-+	}
- 
- 	ret = rcu_nocb_do_flush_bypass(rdp, rhp, j, flush_flags);
- 
--	if (flush_flags & FLUSH_BP_WAKE && was_alldone)
-+	// Wake up the nocb GP thread if needed. GP thread could be sleeping
-+	// while waiting for lazy timer to expire (otherwise rcu_barrier may
-+	// end up waiting for the duration of the lazy timer).
-+	if (flush_flags & FLUSH_BP_WAKE && was_alldone && bypass_all_lazy)
- 		wake_nocb_gp(rdp, false);
- 
- 	return ret;
--- 
+Joel Fernandes (Google) (3):
+rcu: Make call_rcu() lazy to save power
+rcuscale: Add laziness and kfree tests
+percpu-refcount: Use call_rcu_flush() for atomic switch
+
+Vineeth Pillai (1):
+rcu: shrinker for lazy rcu
+
+include/linux/rcupdate.h |   7 ++
+kernel/rcu/Kconfig       |   8 ++
+kernel/rcu/rcu.h         |   8 ++
+kernel/rcu/rcuscale.c    |  65 ++++++++++-
+kernel/rcu/tiny.c        |   2 +-
+kernel/rcu/tree.c        | 133 ++++++++++++++--------
+kernel/rcu/tree.h        |  17 ++-
+kernel/rcu/tree_exp.h    |   2 +-
+kernel/rcu/tree_nocb.h   | 236 +++++++++++++++++++++++++++++++++------
+lib/percpu-refcount.c    |   3 +-
+10 files changed, 395 insertions(+), 86 deletions(-)
+
+--
 2.37.3.998.g577e59143f-goog
 
