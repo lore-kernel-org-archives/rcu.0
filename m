@@ -2,253 +2,157 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6714CC04A95
-	for <rcu@archiver.kernel.org>; Sun, 25 Sep 2022 17:46:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 963C6C04A95
+	for <rcu@archiver.kernel.org>; Sun, 25 Sep 2022 22:00:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231462AbiIYRq5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 25 Sep 2022 13:46:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42962 "EHLO
+        id S231175AbiIYWAu (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 25 Sep 2022 18:00:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229711AbiIYRq4 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 25 Sep 2022 13:46:56 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38C1B23BCF
-        for <rcu@vger.kernel.org>; Sun, 25 Sep 2022 10:46:55 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id a20so2914675qtw.10
-        for <rcu@vger.kernel.org>; Sun, 25 Sep 2022 10:46:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date;
-        bh=8jE96hogZR+NquxzuPoUFyq87wtmzQSELzXQTPSQhSs=;
-        b=epLVXpG2/zy7Qon/++OSH0d1HDaGjKoWhpyLmAKTQQ/Fk1pd5tw6wNb1s2/Gmdl6rw
-         Dz0fslVf2SO/vVP+GsqszF4a4FRv9pn70FC4yjd0BhYSZr7xwYr6PGkG3VtmdFj0HCxB
-         Edwysi4GYOugxwljAWRwWT3NzSv7tvL4ofUGs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
-        bh=8jE96hogZR+NquxzuPoUFyq87wtmzQSELzXQTPSQhSs=;
-        b=SPgBrz2vpmc9dIH5WKa1XQE3p8/rf8K491YOrZwpiX7W5N+PjdjIKbI6758hVbNtdh
-         iRTB7hjOA8FQlNEL9fHVvJsmsBuRSKmNcDTCn2d5MuCgs5xYB5pRV2VnHn9B0FfL7Qqp
-         YPamV/hXhDx4H9vNpd56+dbFR11Nd7V6HhCDpd/6lvUizI+EMVDK44XlIWDUFSCn2+8w
-         bedAp4ed6T/YR68+/hqmcoInzo+ZJH+Ge+rvf5zFCGu70Xxrok2Kdq7WgtCNJur0W/JG
-         WYbJnU9zI1NFhFTA//oDYY8epPua0UVUGz56DhjZvnYjNchnsdcRb9JXbhW37Wb0VIZB
-         XofQ==
-X-Gm-Message-State: ACrzQf2kh5kttXOmt3zLbYMMWljMy49hkj2XLgntpb3AdCamfpSVGnnj
-        84Xh3dAA9XHPCFr4HHApIUMcyycd18Sq6woJ
-X-Google-Smtp-Source: AMsMyM48SFlUti6V6oANMuQ2XTQDcP59hkQJw62s0fw6lIIkGZVsbHvXEfQ6mrCMwisO1ctjs+9z9A==
-X-Received: by 2002:a05:622a:491:b0:35d:acd:d855 with SMTP id p17-20020a05622a049100b0035d0acdd855mr15118353qtx.143.1664128014323;
-        Sun, 25 Sep 2022 10:46:54 -0700 (PDT)
-Received: from localhost (48.230.85.34.bc.googleusercontent.com. [34.85.230.48])
-        by smtp.gmail.com with ESMTPSA id d7-20020a05620a240700b006cede93c765sm10443329qkn.28.2022.09.25.10.46.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 25 Sep 2022 10:46:53 -0700 (PDT)
-Date:   Sun, 25 Sep 2022 17:46:53 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Uladzislau Rezki <urezki@gmail.com>
+        with ESMTP id S229850AbiIYWAu (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 25 Sep 2022 18:00:50 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E96F2A958;
+        Sun, 25 Sep 2022 15:00:49 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C71C3614B5;
+        Sun, 25 Sep 2022 22:00:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7DFCC433C1;
+        Sun, 25 Sep 2022 22:00:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1664143248;
+        bh=JNT9ovwJ5a7LseZHc7f645e2mjUSE+d6MdNF4U9ZPMw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GlJLiDnRYX23aL6G0c7a9CJ21jrSAh4239BOFw2SnARtZrFBf8hnVx/KGwcQPsKi8
+         64SArqQyosc1iyTJporjKpUqFfs3Pz67UaVZ5JjjnL3Xo8Q75qWdifuXPCUrD4FdfB
+         1GPdwRpEfBn5XUp/8sm68BmN2/2PcMAGu6EGLzPrbFlyMHfR32RVn7tZO2xcvSROvu
+         WKtNjL5OfdWY8SzVc7ny2qMMWAu+XRNtG9Y3/zn54K9L8ciTGsk2XXlUtu44D/yypU
+         govK85Tg4QzzBgr7TPRxiMw4hAWUazdqoqfxcS5+o34kE0p9rKZ1vw9irMGh0zu6is
+         U8Vo9cOWfyFEQ==
+Date:   Mon, 26 Sep 2022 00:00:45 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rushikesh.s.kadam@intel.com, neeraj.iitr10@gmail.com,
-        frederic@kernel.org, paulmck@kernel.org, rostedt@goodmis.org
+        rushikesh.s.kadam@intel.com, urezki@gmail.com,
+        neeraj.iitr10@gmail.com, paulmck@kernel.org, rostedt@goodmis.org
 Subject: Re: [PATCH v6 1/4] rcu: Make call_rcu() lazy to save power
-Message-ID: <YzCUDXn3htWbqM4f@google.com>
-References: <20220922220104.2446868-1-joel@joelfernandes.org>
- <20220922220104.2446868-2-joel@joelfernandes.org>
- <YzAX5kOwjrZzoed6@pc636>
+Message-ID: <20220925220045.GA182613@lothringen>
+References: <19217A4C-7183-4D78-A714-FBFE7BB20742@joelfernandes.org>
+ <22F29015-5962-433D-8815-E4154B4897DD@joelfernandes.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YzAX5kOwjrZzoed6@pc636>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <22F29015-5962-433D-8815-E4154B4897DD@joelfernandes.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Vlad,
-
-On Sun, Sep 25, 2022 at 10:57:10AM +0200, Uladzislau Rezki wrote:
-> > Implement timer-based RCU lazy callback batching. The batch is flushed
-> > whenever a certain amount of time has passed, or the batch on a
-> > particular CPU grows too big. Also memory pressure will flush it in a
-> > future patch.
-> > 
-> > To handle several corner cases automagically (such as rcu_barrier() and
-> > hotplug), we re-use bypass lists to handle lazy CBs. The bypass list
-> > length has the lazy CB length included in it. A separate lazy CB length
-> > counter is also introduced to keep track of the number of lazy CBs.
-> > 
-> > v5->v6:
-> > 
-> > [ Frederic Weisbec: Program the lazy timer only if WAKE_NOT, since other
-> >   deferral levels wake much earlier so for those it is not needed. ]
-> > 
-> > [ Frederic Weisbec: Use flush flags to keep bypass API code clean. ]
-> > 
-> > [ Frederic Weisbec: Make rcu_barrier() wake up only if main list empty. ]
-> > 
-> > [ Frederic Weisbec: Remove extra 'else if' branch in rcu_nocb_try_bypass(). ]
-> > 
-> > [ Joel: Fix issue where I was not resetting lazy_len after moving it to rdp ]
-> > 
-> > [ Paul/Thomas/Joel: Make call_rcu() default lazy so users don't mess up. ]
-> > 
-> I think it make sense to add some data to the commit message
-> illustrating what this patch does.
-
-Sure, will do!
-
-> From my side i gave a try of this patch on my setup. Some data:
+On Sat, Sep 24, 2022 at 09:00:39PM -0400, Joel Fernandes wrote:
 > 
-> <snip>
-> root@pc638:/home/urezki/rcu_v6# ./perf_script_parser ./perf_v6.script | sort -nk 6 | grep rcu
-> name:                       rcuop/23 pid:        184 woken-up     1     interval: min     0     max     0       avg     0
-> name:                       rcuop/26 pid:        206 woken-up     1     interval: min     0     max     0       avg     0
-> name:                       rcuop/29 pid:        227 woken-up     1     interval: min     0     max     0       avg     0
-> name:                        rcuop/2 pid:         35 woken-up     1     interval: min     0     max     0       avg     0
-> name:                       rcuop/33 pid:        256 woken-up     1     interval: min     0     max     0       avg     0
-> name:                       rcuop/34 pid:        263 woken-up     1     interval: min     0     max     0       avg     0
-> name:                       rcuop/35 pid:        270 woken-up     1     interval: min     0     max     0       avg     0
-> name:                       rcuop/36 pid:        277 woken-up     1     interval: min     0     max     0       avg     0
-> name:                       rcuop/37 pid:        284 woken-up     1     interval: min     0     max     0       avg     0
-> name:                       rcuop/38 pid:        291 woken-up     1     interval: min     0     max     0       avg     0
-> name:                       rcuop/49 pid:        370 woken-up     1     interval: min     0     max     0       avg     0
-> name:                       rcuop/59 pid:        441 woken-up     1     interval: min     0     max     0       avg     0
-> name:                       rcuop/63 pid:        469 woken-up     1     interval: min     0     max     0       avg     0
-> name:                        rcuog/0 pid:         16 woken-up     2     interval: min  8034     max  8034       avg  4017
-> name:                       rcuog/24 pid:        191 woken-up     2     interval: min  7941     max  7941       avg  3970
-> name:                       rcuog/32 pid:        248 woken-up     2     interval: min  7542     max  7542       avg  3771
-> name:                       rcuog/48 pid:        362 woken-up     2     interval: min  8065     max  8065       avg  4032
-> name:                       rcuog/56 pid:        419 woken-up     2     interval: min  8076     max  8076       avg  4038
-> name:                       rcuop/21 pid:        170 woken-up     2     interval: min 13311438  max 13311438    avg 6655719
-> name:                       rcuog/16 pid:        134 woken-up     4     interval: min  8029     max 13303387    avg 3329863
-> name:                        rcuop/9 pid:         85 woken-up     4     interval: min 10007570  max 10007586    avg 7505684
-> name:                        rcuog/8 pid:         77 woken-up     8     interval: min  6240     max 10001242    avg 3753622
-> name:                    rcu_preempt pid:         15 woken-up    18     interval: min  6058     max 9999713     avg 2140788
-> name:                     test_rcu/0 pid:       1411 woken-up 10003     interval: min   165     max 19072       avg  4275
-> root@pc638:/home/urezki/rcu_v6#
 > 
-> root@pc638:/home/urezki/rcu_v6# ./perf_script_parser ./perf_default.script | sort -nk 6 | grep rcu
-> name:                       rcuop/33 pid:        256 woken-up     1     interval: min     0     max     0       avg     0
-> name:                       rcuop/51 pid:        384 woken-up     1     interval: min     0     max     0       avg     0
-> name:                       rcuog/32 pid:        248 woken-up     2     interval: min 11927     max 11927       avg  5963
-> name:                       rcuop/63 pid:        469 woken-up     2     interval: min 23963     max 23963       avg 11981
-> name:                       rcuog/56 pid:        419 woken-up     3     interval: min 11132     max 23967       avg 11699
-> name:                       rcuop/50 pid:        377 woken-up     3     interval: min  8057     max 4944344     avg 1650800
-> name:                       rcuog/48 pid:        362 woken-up     8     interval: min  2712     max 37430015    avg 5298801
-> name:                       rcuop/16 pid:        135 woken-up  4790     interval: min  7340     max 16649       avg  8843
-> name:                       rcuog/16 pid:        134 woken-up  4792     interval: min  7368     max 16644       avg  8844
-> name:                    rcu_preempt pid:         15 woken-up  5302     interval: min    26     max 12179       avg  7994
-> name:                     test_rcu/0 pid:       1353 woken-up 10003     interval: min   169     max 18508       avg  4236
-> root@pc638:/home/urezki/rcu_v6#
-> <snip>
+> > On Sep 24, 2022, at 7:28 PM, Joel Fernandes <joel@joelfernandes.org> wrote:
+> > 
+> > ﻿Hi Frederic, thanks for the response, replies
+> > below courtesy fruit company’s device:
+> > 
+> >>> On Sep 24, 2022, at 6:46 PM, Frederic Weisbecker <frederic@kernel.org> wrote:
+> >>> 
+> >>> ﻿On Thu, Sep 22, 2022 at 10:01:01PM +0000, Joel Fernandes (Google) wrote:
+> >>> @@ -3902,7 +3939,11 @@ static void rcu_barrier_entrain(struct rcu_data *rdp)
+> >>>   rdp->barrier_head.func = rcu_barrier_callback;
+> >>>   debug_rcu_head_queue(&rdp->barrier_head);
+> >>>   rcu_nocb_lock(rdp);
+> >>> -    WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, jiffies));
+> >>> +    /*
+> >>> +     * Flush the bypass list, but also wake up the GP thread as otherwise
+> >>> +     * bypass/lazy CBs maynot be noticed, and can cause real long delays!
+> >>> +     */
+> >>> +    WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, jiffies, FLUSH_BP_WAKE));
+> >> 
+> >> This fixes an issue that goes beyond lazy implementation. It should be done
+> >> in a separate patch, handling rcu_segcblist_entrain() as well, with "Fixes: " tag.
+> > 
+> > I wanted to do that, however on discussion with
+> > Paul I thought of making this optimization only for
+> > all lazy bypass CBs. That makes it directly related
+> > this patch since the laziness notion is first
+> > introduced here. On the other hand I could make
+> > this change in a later patch since we are not
+> > super bisectable anyway courtesy of the last
+> > patch (which is not really an issue if the CONFIG
+> > is kept off during someone’s bisection.
 > 
-> so it is obvious that the patch does the job.
-
-Thanks a lot for testing!
-
-> On my KVM machine the boot time is affected:
+> Or are we saying it’s worth doing the wake up for rcu barrier even for regular bypass CB? That’d save 2 jiffies on rcu barrier. If we agree it’s needed, then yes splitting the patch makes sense.
 > 
-> <snip>
-> [    2.273406] e1000 0000:00:03.0 eth0: Intel(R) PRO/1000 Network Connection
-> [   11.945283] e1000 0000:00:03.0 ens3: renamed from eth0
-> [   22.165198] sr 1:0:0:0: [sr0] scsi3-mmc drive: 4x/4x cd/rw xa/form2 tray
-> [   22.165206] cdrom: Uniform CD-ROM driver Revision: 3.20
-> [   32.406981] sr 1:0:0:0: Attached scsi CD-ROM sr0
-> [  104.115418] process '/usr/bin/fstype' started with executable stack
-> [  104.170142] EXT4-fs (sda1): mounted filesystem with ordered data mode. Quota mode: none.
-> [  104.340125] systemd[1]: systemd 241 running in system mode. (+PAM +AUDIT +SELINUX +IMA +APPARMOR +SMACK +SYSVINIT +UTMP +LIBCRYPTSETUP +GCRYPT +GNUTLS +ACL +XZ +LZ4 +SECCOMP +BLKID +ELFUTILS +KMOD -IDN2 +IDN -PCRE2 default-hierarchy=hybrid)
-> [  104.340193] systemd[1]: Detected virtualization kvm.
-> [  104.340196] systemd[1]: Detected architecture x86-64.
-> [  104.359032] systemd[1]: Set hostname to <pc638>.
-> [  105.740109] random: crng init done
-> [  105.741267] systemd[1]: Reached target Remote File Systems.
-> <snip>
+> Please let me know your opinions, thanks,
 > 
-> 2 - 11 and second delay is between 32 - 104. So there are still users which must
-> be waiting for "RCU" in a sync way.
+>  - Joel
 
-I was wondering if you can compare boot logs and see which timestamp does the
-slow down start from. That way, we can narrow down the callback. Also another
-idea is, add "trace_event=rcu:rcu_callback,rcu:rcu_invoke_callback
-ftrace_dump_on_oops" to the boot params, and then manually call
-"tracing_off(); panic();" from the code at the first printk that seems off in
-your comparison of good vs bad. For example, if "crng init done" timestamp is
-off, put the "tracing_off(); panic();" there. Then grab the serial console
-output to see what were the last callbacks that was queued/invoked.
+Sure, I mean since we are fixing the buggy rcu_barrier_entrain() anyway, let's
+just fix bypass as well. Such as in the following (untested):
 
-> > diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-> > index 08605ce7379d..40ae36904825 100644
-> > --- a/include/linux/rcupdate.h
-> > +++ b/include/linux/rcupdate.h
-> > @@ -108,6 +108,13 @@ static inline int rcu_preempt_depth(void)
-> >  
-> >  #endif /* #else #ifdef CONFIG_PREEMPT_RCU */
-> >  
-> > +#ifdef CONFIG_RCU_LAZY
-> > +void call_rcu_flush(struct rcu_head *head, rcu_callback_t func);
-> > +#else
-> > +static inline void call_rcu_flush(struct rcu_head *head,
-> > +		rcu_callback_t func) {  call_rcu(head, func); }
-> > +#endif
-> > +
-> >  /* Internal to kernel */
-> >  void rcu_init(void);
-> >  extern int rcu_scheduler_active;
-> > diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
-> > index f53ad63b2bc6..edd632e68497 100644
-> > --- a/kernel/rcu/Kconfig
-> > +++ b/kernel/rcu/Kconfig
-> > @@ -314,4 +314,12 @@ config TASKS_TRACE_RCU_READ_MB
-> >  	  Say N here if you hate read-side memory barriers.
-> >  	  Take the default if you are unsure.
-> >  
-> > +config RCU_LAZY
-> > +	bool "RCU callback lazy invocation functionality"
-> > +	depends on RCU_NOCB_CPU
-> > +	default n
-> > +	help
-> > +	  To save power, batch RCU callbacks and flush after delay, memory
-> > +	  pressure or callback list growing too big.
-> > +
-> >
-> Do you think you need this kernel option? Can we just consider and make
-> it a run-time configurable? For example much more users will give it a try,
-> so it will increase a coverage. By default it can be off.
-> 
-> Also you do not need to do:
-> 
-> #ifdef LAZY
-
-How does the "LAZY" macro end up being runtime-configurable? That's static /
-compile time. Did I miss something?
-
-> ...
-> #else
-> ...
-> #endif
-> 
-> >  
-> > +/*
-> > + * LAZY_FLUSH_JIFFIES decides the maximum amount of time that
-> > + * can elapse before lazy callbacks are flushed. Lazy callbacks
-> > + * could be flushed much earlier for a number of other reasons
-> > + * however, LAZY_FLUSH_JIFFIES will ensure no lazy callbacks are
-> > + * left unsubmitted to RCU after those many jiffies.
-> > + */
-> > +#define LAZY_FLUSH_JIFFIES (10 * HZ)
-> > +static unsigned long jiffies_till_flush = LAZY_FLUSH_JIFFIES;
-> Make it configurable? I do not think you actually need 10 seconds here.
-> Reducing it will reduce a possibility to hit a low memory condition. 1
-> second would be far enough i think.
-
-Hmm, I can make the delay configurable but for now I'll keep this as default
-as all of our power testing has been done with that and I don't want risk
-losing the optimization.
-
-Honestly, I am not worried too about memory pressure as we have a shrinker
-which triggers flushes on the slightest hint of memory pressure. If it is not
-handling it properly, then we need to fix the shrinker.
-
-thanks,
-
- - Joel
-
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index b39e97175a9e..a0df964abb0e 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3834,6 +3834,8 @@ static void rcu_barrier_entrain(struct rcu_data *rdp)
+ {
+ 	unsigned long gseq = READ_ONCE(rcu_state.barrier_sequence);
+ 	unsigned long lseq = READ_ONCE(rdp->barrier_seq_snap);
++	bool wake_nocb = false;
++	bool was_alldone = false;
+ 
+ 	lockdep_assert_held(&rcu_state.barrier_lock);
+ 	if (rcu_seq_state(lseq) || !rcu_seq_state(gseq) || rcu_seq_ctr(lseq) != rcu_seq_ctr(gseq))
+@@ -3842,6 +3844,8 @@ static void rcu_barrier_entrain(struct rcu_data *rdp)
+ 	rdp->barrier_head.func = rcu_barrier_callback;
+ 	debug_rcu_head_queue(&rdp->barrier_head);
+ 	rcu_nocb_lock(rdp);
++	if (rcu_rdp_is_offloaded(rdp) && !rcu_segcblist_pend_cbs(&rdp->cblist))
++		was_alldone = true;
+ 	WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, jiffies));
+ 	if (rcu_segcblist_entrain(&rdp->cblist, &rdp->barrier_head)) {
+ 		atomic_inc(&rcu_state.barrier_cpu_count);
+@@ -3849,7 +3853,12 @@ static void rcu_barrier_entrain(struct rcu_data *rdp)
+ 		debug_rcu_head_unqueue(&rdp->barrier_head);
+ 		rcu_barrier_trace(TPS("IRQNQ"), -1, rcu_state.barrier_sequence);
+ 	}
++	if (was_alldone && rcu_segcblist_pend_cbs(&rdp->cblist))
++		wake_nocb = true;
+ 	rcu_nocb_unlock(rdp);
++	if (wake_nocb)
++		wake_nocb_gp(rdp, false);
++
+ 	smp_store_release(&rdp->barrier_seq_snap, gseq);
+ }
+ 
+diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+index d4a97e40ea9c..925dd98f8b23 100644
+--- a/kernel/rcu/tree.h
++++ b/kernel/rcu/tree.h
+@@ -439,6 +439,7 @@ static void zero_cpu_stall_ticks(struct rcu_data *rdp);
+ static struct swait_queue_head *rcu_nocb_gp_get(struct rcu_node *rnp);
+ static void rcu_nocb_gp_cleanup(struct swait_queue_head *sq);
+ static void rcu_init_one_nocb(struct rcu_node *rnp);
++static bool wake_nocb_gp(struct rcu_data *rdp, bool force);
+ static bool rcu_nocb_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
+ 				  unsigned long j);
+ static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
+diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+index 538a0ed93946..e1701aa9c82c 100644
+--- a/kernel/rcu/tree_nocb.h
++++ b/kernel/rcu/tree_nocb.h
+@@ -1600,6 +1600,10 @@ static void rcu_init_one_nocb(struct rcu_node *rnp)
+ {
+ }
+ 
++static bool wake_nocb_gp(struct rcu_data *rdp, bool force)
++{
++}
++
+ static bool rcu_nocb_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
+ 				  unsigned long j)
+ {
