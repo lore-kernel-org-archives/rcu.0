@@ -2,227 +2,189 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CFEDC04A95
-	for <rcu@archiver.kernel.org>; Sun, 25 Sep 2022 08:57:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 43FB5C54EE9
+	for <rcu@archiver.kernel.org>; Sun, 25 Sep 2022 17:31:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229674AbiIYI5R (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 25 Sep 2022 04:57:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41500 "EHLO
+        id S232569AbiIYRbU (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 25 Sep 2022 13:31:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbiIYI5Q (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 25 Sep 2022 04:57:16 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83B6F27159;
-        Sun, 25 Sep 2022 01:57:14 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id a41so5349160edf.4;
-        Sun, 25 Sep 2022 01:57:14 -0700 (PDT)
+        with ESMTP id S232814AbiIYRbR (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 25 Sep 2022 13:31:17 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 043352EF06
+        for <rcu@vger.kernel.org>; Sun, 25 Sep 2022 10:31:15 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id ay9so2957732qtb.0
+        for <rcu@vger.kernel.org>; Sun, 25 Sep 2022 10:31:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date;
-        bh=jv1R7uybFiFnN62T7LeT8cPnORSx0H4iaSe0cVM3ZAc=;
-        b=IoHiRSEI45ReK4Rc1Gp5BhLE9lC7AAdkThWNuB+KTHyY4Ao1xIoZ3Dm7trmnHBDK+f
-         XOtjJDHGekOJgev+g5CR5mRc0WPjD78ipcL6/GVyX3dHrMLo+NkDe9p5+ShWXtC7JlUv
-         d1+8iUh35Jt2d2IOU+qEtHkXvEJxRt3vQDM6spFjx43dUyolii29wtDP7pr280e15V3N
-         T44w0r1lXVZTWIN519AIO31pPHEF6SKx2GesW+DRwVuQ7rPpVpW+Mz0gcvBenAROE5GR
-         vx7ckQPlwu/Jb8pDDaSWPmD28KauI9rnkhUHFmhgA5rrzmQCYq0/J4GXjUvc2/MvJDRl
-         ocAA==
+        d=joelfernandes.org; s=google;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date;
+        bh=6Kuxk8rqToAIi+KWtXYDTt/k1nGpW4B/9707Tr2qqFA=;
+        b=A9JGyQ34aMSBbCgPlwGw6UnoxEVJf4nWwXQFt8DQqr2ZRX9k0yyocFBv7R+nwJA5Md
+         9bgfO+Ga25JbPzdNvIdhpE4zzPYx9Hy5GybjTS+HXLJ8SMiJvdq9aVQsT5hbe8VSr701
+         Iq5KmNUVCZdu1I96FWYf5Y2I+OzNagIbtLrRs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date;
-        bh=jv1R7uybFiFnN62T7LeT8cPnORSx0H4iaSe0cVM3ZAc=;
-        b=3NMeTcwHmxvEAOC6YAs+YrOZrBnlyz06YD/eqzWRLP+CZK0TWOkwB5dTCxeETeVbjK
-         PhjUJ0ccQVj2lDZQOi2/mrHyPOpb060+dLysMBKhlxOXHlXGM9LqNuYGY+6W5S9k+Eyt
-         N9T/Mmgcs8lxWb6bXB965LE3VH6j9jZtLy5tn9mQTTytoSsYXV5L0WZiATJX6i1TWGK/
-         mf+mIldh1zoQoonxoxslCPYSiaV4wSj+OfTIaDpLHxo32gQW9zHU8AcmNu5ICL/ICkHh
-         BiENILFnh2DbFZOnBW9OqQPYnEMJ9qK4ATFayLmI06cKufgRiRSoRdVKldyAWrKWg6a2
-         1lvg==
-X-Gm-Message-State: ACrzQf0CtV4gk5g3Ljlmu/si/QfSyP0RpfvpgYqWOAePz6N6kHpogjER
-        DpgP8YAOEpaE6rimHFjgzFVOShfqihKkDg==
-X-Google-Smtp-Source: AMsMyM4gzw+hC15lHyjSL1+1L1SU81RfqzHecb657gJouuBR3aC92MVix4qStEknLCVcsofj41Gmvw==
-X-Received: by 2002:aa7:d293:0:b0:457:65d:c0cb with SMTP id w19-20020aa7d293000000b00457065dc0cbmr5384303edq.25.1664096232886;
-        Sun, 25 Sep 2022 01:57:12 -0700 (PDT)
-Received: from pc636 ([155.137.26.201])
-        by smtp.gmail.com with ESMTPSA id b2-20020aa7dc02000000b00457171d1fffsm1802052edu.44.2022.09.25.01.57.11
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date;
+        bh=6Kuxk8rqToAIi+KWtXYDTt/k1nGpW4B/9707Tr2qqFA=;
+        b=qlWhIxHEg6daKFWoHaMiumXufKLT/Sa+nMaVnDbcP5lOeKW3qfkRDvl2l9TjKoV5bb
+         +cW8yXy340OCe+LN0XjpHKc+Y/5FpY6fZ9MVlcK+WXTXVz2kSAvpd0PSUQZj2FgXHB3A
+         cah46fe3w8uYCfoOJ76XmOT9UjC9b2tVpB4od6H+bpTwmTbtltIafpRAIC9EmSMD86Ri
+         lSq1PVa8ynlx9GdTCUl6ZstJSMzeaCBes+U1K5KaWu4ji9NZLv7JGoZZovDJArsCMC5R
+         hs2TKmMggiZ/VX/qA9T+YdI8T66YjSUhLt4euzXrSXSMPstupBqDuJzWpb3g/acnlGvv
+         SImg==
+X-Gm-Message-State: ACrzQf03DdsumHxOllDtdBw9EtzhG7g7u8nT0vluqCCvn68N8s6zDdjE
+        BCXDY+S3/GyoUapB0J0d8mFZp9ZwMs81+VhQ
+X-Google-Smtp-Source: AMsMyM5s891B7uhkODjOz3jQs4qf6gXPhlAMXQH7E9Y86JDEvLQDVFV6B+FTwg+lIJ5Vt2Yiqyu75Q==
+X-Received: by 2002:a05:622a:38a:b0:35d:6ca:ff91 with SMTP id j10-20020a05622a038a00b0035d06caff91mr15059197qtx.532.1664127074058;
+        Sun, 25 Sep 2022 10:31:14 -0700 (PDT)
+Received: from localhost (48.230.85.34.bc.googleusercontent.com. [34.85.230.48])
+        by smtp.gmail.com with ESMTPSA id bj36-20020a05620a192400b006ceb8f36302sm10130246qkb.71.2022.09.25.10.31.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 25 Sep 2022 01:57:12 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Sun, 25 Sep 2022 10:57:10 +0200
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+        Sun, 25 Sep 2022 10:31:13 -0700 (PDT)
+Date:   Sun, 25 Sep 2022 17:31:13 +0000
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         rushikesh.s.kadam@intel.com, urezki@gmail.com,
-        neeraj.iitr10@gmail.com, frederic@kernel.org, paulmck@kernel.org,
-        rostedt@goodmis.org
+        neeraj.iitr10@gmail.com, frederic@kernel.org, rostedt@goodmis.org
 Subject: Re: [PATCH v6 1/4] rcu: Make call_rcu() lazy to save power
-Message-ID: <YzAX5kOwjrZzoed6@pc636>
-References: <20220922220104.2446868-1-joel@joelfernandes.org>
- <20220922220104.2446868-2-joel@joelfernandes.org>
+Message-ID: <YzCQYW6yRRBWWMXk@google.com>
+References: <20220923214408.GC4196@paulmck-ThinkPad-P17-Gen-1>
+ <4AE2CA06-8D91-42D7-9EE5-0C99BA7F9D13@joelfernandes.org>
+ <20220924211132.GE4196@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20220922220104.2446868-2-joel@joelfernandes.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20220924211132.GE4196@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-> Implement timer-based RCU lazy callback batching. The batch is flushed
-> whenever a certain amount of time has passed, or the batch on a
-> particular CPU grows too big. Also memory pressure will flush it in a
-> future patch.
+Hi Paul,
+
+Back to Mutt for this one ;-)
+
+Replies below:
+
+On Sat, Sep 24, 2022 at 02:11:32PM -0700, Paul E. McKenney wrote:
+[...]
+> > >> +     */
+> > >> +    if (lazy && rhp) {
+> > >> +        rcu_cblist_flush_enqueue(&rcl, &rdp->nocb_bypass, NULL);
+> > >> +        rcu_cblist_enqueue(&rcl, rhp);
+> > > 
+> > > Would it makes sense to enqueue rhp onto ->nocb_bypass first, NULL out
+> > > rhp, then let the rcu_cblist_flush_enqueue() be common code?  Or did this
+> > > function grow a later use of rhp that I missed?
+> > 
+> > No that could be done, but it prefer to keep it this
+> >  way because rhp is a function parameter and I
+> > prefer not to modify those since it could add a
+> > bug in future where rhp passed by user is now
+> > NULL for some reason, half way through the
+> > function.
 > 
-> To handle several corner cases automagically (such as rcu_barrier() and
-> hotplug), we re-use bypass lists to handle lazy CBs. The bypass list
-> length has the lazy CB length included in it. A separate lazy CB length
-> counter is also introduced to keep track of the number of lazy CBs.
+> I agree that changing a function parameter is bad practice.
 > 
-> v5->v6:
+> So the question becomes whether introducing a local would outweigh
+> consolidating this code.  Could you please at least give it a shot?
 > 
-> [ Frederic Weisbec: Program the lazy timer only if WAKE_NOT, since other
->   deferral levels wake much earlier so for those it is not needed. ]
+> > >> +        WRITE_ONCE(rdp->lazy_len, 0);
+> > >> +    } else {
+> > >> +        rcu_cblist_flush_enqueue(&rcl, &rdp->nocb_bypass, rhp);
+> > >> +        WRITE_ONCE(rdp->lazy_len, 0);
+> > > 
+> > > This WRITE_ONCE() can be dropped out of the "if" statement, correct?
+> > 
+> > Yes will update.
 > 
-> [ Frederic Weisbec: Use flush flags to keep bypass API code clean. ]
+> Thank you!
 > 
-> [ Frederic Weisbec: Make rcu_barrier() wake up only if main list empty. ]
+> > > If so, this could be an "if" statement with two statements in its "then"
+> > > clause, no "else" clause, and two statements following the "if" statement.
+> > 
+> > I don’t think we can get rid of the else part but I’ll see what it looks like.
 > 
-> [ Frederic Weisbec: Remove extra 'else if' branch in rcu_nocb_try_bypass(). ]
+> In the function header, s/rhp/rhp_in/, then:
 > 
-> [ Joel: Fix issue where I was not resetting lazy_len after moving it to rdp ]
+> 	struct rcu_head *rhp = rhp_in;
 > 
-> [ Paul/Thomas/Joel: Make call_rcu() default lazy so users don't mess up. ]
+> And then:
 > 
-I think it make sense to add some data to the commit message
-illustrating what this patch does.
+> 	if (lazy && rhp) {
+> 		rcu_cblist_enqueue(&rdp->nocb_bypass, rhp);
+> 		rhp = NULL;
 
-From my side i gave a try of this patch on my setup. Some data:
+This enqueues on to the bypass list, where as if lazy && rhp, I want to queue
+the new rhp on to the main cblist. So the pseudo code in my patch is:
 
-<snip>
-root@pc638:/home/urezki/rcu_v6# ./perf_script_parser ./perf_v6.script | sort -nk 6 | grep rcu
-name:                       rcuop/23 pid:        184 woken-up     1     interval: min     0     max     0       avg     0
-name:                       rcuop/26 pid:        206 woken-up     1     interval: min     0     max     0       avg     0
-name:                       rcuop/29 pid:        227 woken-up     1     interval: min     0     max     0       avg     0
-name:                        rcuop/2 pid:         35 woken-up     1     interval: min     0     max     0       avg     0
-name:                       rcuop/33 pid:        256 woken-up     1     interval: min     0     max     0       avg     0
-name:                       rcuop/34 pid:        263 woken-up     1     interval: min     0     max     0       avg     0
-name:                       rcuop/35 pid:        270 woken-up     1     interval: min     0     max     0       avg     0
-name:                       rcuop/36 pid:        277 woken-up     1     interval: min     0     max     0       avg     0
-name:                       rcuop/37 pid:        284 woken-up     1     interval: min     0     max     0       avg     0
-name:                       rcuop/38 pid:        291 woken-up     1     interval: min     0     max     0       avg     0
-name:                       rcuop/49 pid:        370 woken-up     1     interval: min     0     max     0       avg     0
-name:                       rcuop/59 pid:        441 woken-up     1     interval: min     0     max     0       avg     0
-name:                       rcuop/63 pid:        469 woken-up     1     interval: min     0     max     0       avg     0
-name:                        rcuog/0 pid:         16 woken-up     2     interval: min  8034     max  8034       avg  4017
-name:                       rcuog/24 pid:        191 woken-up     2     interval: min  7941     max  7941       avg  3970
-name:                       rcuog/32 pid:        248 woken-up     2     interval: min  7542     max  7542       avg  3771
-name:                       rcuog/48 pid:        362 woken-up     2     interval: min  8065     max  8065       avg  4032
-name:                       rcuog/56 pid:        419 woken-up     2     interval: min  8076     max  8076       avg  4038
-name:                       rcuop/21 pid:        170 woken-up     2     interval: min 13311438  max 13311438    avg 6655719
-name:                       rcuog/16 pid:        134 woken-up     4     interval: min  8029     max 13303387    avg 3329863
-name:                        rcuop/9 pid:         85 woken-up     4     interval: min 10007570  max 10007586    avg 7505684
-name:                        rcuog/8 pid:         77 woken-up     8     interval: min  6240     max 10001242    avg 3753622
-name:                    rcu_preempt pid:         15 woken-up    18     interval: min  6058     max 9999713     avg 2140788
-name:                     test_rcu/0 pid:       1411 woken-up 10003     interval: min   165     max 19072       avg  4275
-root@pc638:/home/urezki/rcu_v6#
+if (lazy and rhp) then
+	1. flush bypass CBs on to main list.
+	2. queue new CB on to main list.
+else
+	1. flush bypass CBs on to main list
+	2. queue new CB on to bypass list.
 
-root@pc638:/home/urezki/rcu_v6# ./perf_script_parser ./perf_default.script | sort -nk 6 | grep rcu
-name:                       rcuop/33 pid:        256 woken-up     1     interval: min     0     max     0       avg     0
-name:                       rcuop/51 pid:        384 woken-up     1     interval: min     0     max     0       avg     0
-name:                       rcuog/32 pid:        248 woken-up     2     interval: min 11927     max 11927       avg  5963
-name:                       rcuop/63 pid:        469 woken-up     2     interval: min 23963     max 23963       avg 11981
-name:                       rcuog/56 pid:        419 woken-up     3     interval: min 11132     max 23967       avg 11699
-name:                       rcuop/50 pid:        377 woken-up     3     interval: min  8057     max 4944344     avg 1650800
-name:                       rcuog/48 pid:        362 woken-up     8     interval: min  2712     max 37430015    avg 5298801
-name:                       rcuop/16 pid:        135 woken-up  4790     interval: min  7340     max 16649       avg  8843
-name:                       rcuog/16 pid:        134 woken-up  4792     interval: min  7368     max 16644       avg  8844
-name:                    rcu_preempt pid:         15 woken-up  5302     interval: min    26     max 12179       avg  7994
-name:                     test_rcu/0 pid:       1353 woken-up 10003     interval: min   169     max 18508       avg  4236
-root@pc638:/home/urezki/rcu_v6#
-<snip>
+> 	}
+> 	rcu_cblist_flush_enqueue(&rcl, &rdp->nocb_bypass, rhp);
+> 	WRITE_ONCE(rdp->lazy_len, 0);
+> 
+> Or did I mess something up?
 
-so it is obvious that the patch does the job.
+So the rcu_cblist_flush_enqueue() has to happen before the
+rcu_cblist_enqueue() to preserve the ordering of flushing into the main list,
+and queuing on to the main list for the "if". Where as in your snip, the
+order is reversed.
 
-On my KVM machine the boot time is affected:
+If I consolidate it then, it looks like the following. However, it is a bit
+more unreadable. I could instead just take the WRITE_ONCE out of both if/else
+and move it to after the if/else, that would be cleanest. Does that sound
+good to you? Thanks!
 
-<snip>
-[    2.273406] e1000 0000:00:03.0 eth0: Intel(R) PRO/1000 Network Connection
-[   11.945283] e1000 0000:00:03.0 ens3: renamed from eth0
-[   22.165198] sr 1:0:0:0: [sr0] scsi3-mmc drive: 4x/4x cd/rw xa/form2 tray
-[   22.165206] cdrom: Uniform CD-ROM driver Revision: 3.20
-[   32.406981] sr 1:0:0:0: Attached scsi CD-ROM sr0
-[  104.115418] process '/usr/bin/fstype' started with executable stack
-[  104.170142] EXT4-fs (sda1): mounted filesystem with ordered data mode. Quota mode: none.
-[  104.340125] systemd[1]: systemd 241 running in system mode. (+PAM +AUDIT +SELINUX +IMA +APPARMOR +SMACK +SYSVINIT +UTMP +LIBCRYPTSETUP +GCRYPT +GNUTLS +ACL +XZ +LZ4 +SECCOMP +BLKID +ELFUTILS +KMOD -IDN2 +IDN -PCRE2 default-hierarchy=hybrid)
-[  104.340193] systemd[1]: Detected virtualization kvm.
-[  104.340196] systemd[1]: Detected architecture x86-64.
-[  104.359032] systemd[1]: Set hostname to <pc638>.
-[  105.740109] random: crng init done
-[  105.741267] systemd[1]: Reached target Remote File Systems.
-<snip>
+---8<-----------------------
 
-2 - 11 and second delay is between 32 - 104. So there are still users which must
-be waiting for "RCU" in a sync way.
-
-> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-> index 08605ce7379d..40ae36904825 100644
-> --- a/include/linux/rcupdate.h
-> +++ b/include/linux/rcupdate.h
-> @@ -108,6 +108,13 @@ static inline int rcu_preempt_depth(void)
->  
->  #endif /* #else #ifdef CONFIG_PREEMPT_RCU */
->  
-> +#ifdef CONFIG_RCU_LAZY
-> +void call_rcu_flush(struct rcu_head *head, rcu_callback_t func);
-> +#else
-> +static inline void call_rcu_flush(struct rcu_head *head,
-> +		rcu_callback_t func) {  call_rcu(head, func); }
-> +#endif
-> +
->  /* Internal to kernel */
->  void rcu_init(void);
->  extern int rcu_scheduler_active;
-> diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
-> index f53ad63b2bc6..edd632e68497 100644
-> --- a/kernel/rcu/Kconfig
-> +++ b/kernel/rcu/Kconfig
-> @@ -314,4 +314,12 @@ config TASKS_TRACE_RCU_READ_MB
->  	  Say N here if you hate read-side memory barriers.
->  	  Take the default if you are unsure.
->  
-> +config RCU_LAZY
-> +	bool "RCU callback lazy invocation functionality"
-> +	depends on RCU_NOCB_CPU
-> +	default n
-> +	help
-> +	  To save power, batch RCU callbacks and flush after delay, memory
-> +	  pressure or callback list growing too big.
-> +
->
-Do you think you need this kernel option? Can we just consider and make
-it a run-time configurable? For example much more users will give it a try,
-so it will increase a coverage. By default it can be off.
-
-Also you do not need to do:
-
-#ifdef LAZY
-...
-#else
-...
-#endif
-
->  
-> +/*
-> + * LAZY_FLUSH_JIFFIES decides the maximum amount of time that
-> + * can elapse before lazy callbacks are flushed. Lazy callbacks
-> + * could be flushed much earlier for a number of other reasons
-> + * however, LAZY_FLUSH_JIFFIES will ensure no lazy callbacks are
-> + * left unsubmitted to RCU after those many jiffies.
-> + */
-> +#define LAZY_FLUSH_JIFFIES (10 * HZ)
-> +static unsigned long jiffies_till_flush = LAZY_FLUSH_JIFFIES;
-Make it configurable? I do not think you actually need 10 seconds here.
-Reducing it will reduce a possibility to hit a low memory condition. 1
-second would be far enough i think.
-
---
-Uladzislau Rezki
+diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+index 1a182b9c4f6c..bd3f54d314e8 100644
+--- a/kernel/rcu/tree_nocb.h
++++ b/kernel/rcu/tree_nocb.h
+@@ -327,10 +327,11 @@ static void wake_nocb_gp_defer(struct rcu_data *rdp, int waketype,
+  *
+  * Note that this function always returns true if rhp is NULL.
+  */
+-static bool rcu_nocb_do_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
++static bool rcu_nocb_do_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp_in,
+ 				     unsigned long j, unsigned long flush_flags)
+ {
+ 	struct rcu_cblist rcl;
++	struct rcu_head *rhp = rhp_in;
+ 	bool lazy = flush_flags & FLUSH_BP_LAZY;
+ 
+ 	WARN_ON_ONCE(!rcu_rdp_is_offloaded(rdp));
+@@ -348,14 +349,13 @@ static bool rcu_nocb_do_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
+ 	 * If the new CB requested was a lazy one, queue it onto the main
+ 	 * ->cblist so we can take advantage of a sooner grade period.
+ 	 */
+-	if (lazy && rhp) {
+-		rcu_cblist_flush_enqueue(&rcl, &rdp->nocb_bypass, NULL);
+-		rcu_cblist_enqueue(&rcl, rhp);
+-		WRITE_ONCE(rdp->lazy_len, 0);
+-	} else {
+-		rcu_cblist_flush_enqueue(&rcl, &rdp->nocb_bypass, rhp);
+-		WRITE_ONCE(rdp->lazy_len, 0);
+-	}
++	if (lazy && rhp)
++		rhp = NULL;
++	rcu_cblist_flush_enqueue(&rcl, &rdp->nocb_bypass, rhp);
++	if (lazy && rhp_in)
++		rcu_cblist_enqueue(&rcl, rhp_in);
++
++	WRITE_ONCE(rdp->lazy_len, 0);
+ 
+ 	rcu_segcblist_insert_pend_cbs(&rdp->cblist, &rcl);
+ 	WRITE_ONCE(rdp->nocb_bypass_first, j);
