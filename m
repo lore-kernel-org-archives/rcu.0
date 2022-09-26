@@ -2,204 +2,220 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E0AF5C32771
-	for <rcu@archiver.kernel.org>; Mon, 26 Sep 2022 22:23:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E021C07E9D
+	for <rcu@archiver.kernel.org>; Mon, 26 Sep 2022 22:27:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229965AbiIZWX6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 26 Sep 2022 18:23:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55834 "EHLO
+        id S231186AbiIZW1W (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 26 Sep 2022 18:27:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229734AbiIZWX5 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 26 Sep 2022 18:23:57 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 567E482778
-        for <rcu@vger.kernel.org>; Mon, 26 Sep 2022 15:23:55 -0700 (PDT)
+        with ESMTP id S229734AbiIZW1V (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 26 Sep 2022 18:27:21 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34B1D8E9AF;
+        Mon, 26 Sep 2022 15:27:20 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id F3FDCB812A5
-        for <rcu@vger.kernel.org>; Mon, 26 Sep 2022 22:23:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99A19C433D6;
-        Mon, 26 Sep 2022 22:23:52 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C59A9614A5;
+        Mon, 26 Sep 2022 22:27:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B9C3C433C1;
+        Mon, 26 Sep 2022 22:27:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1664231032;
-        bh=MlZ7oJTQxEPGEmKw13jIs8ma283usy/00N8W7J+OvlM=;
+        s=k20201202; t=1664231239;
+        bh=Lv/eWg3lgX5ZK45i7JteXDNcaMfsmS88RtEl72dTyb4=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=WhHWsJsNRxcbBK7kCK9zx5x1aXvr9JfSYTR1DbzmNa6QZDBVjHy1ikgfAVxyNd04u
-         7OIder3UkCy4ZPRQMNs215dulX0L1pl7y2UKD2AAWPlsv5OrVFvYhg4gbFkLI799bR
-         +aoBWouRdDC+tqllCzZiuiXgCmqSF2tM5i+lBFBVap2m237UXI9ANRmbs1opc5H92J
-         /js4dGOkZ/+6GaXVxE+7u+V/VARBaavIqG8G9z/CakS1rzZRzKl6efcKfhqQFCNA/A
-         JUVReImGrqWv5hFofwC//eQ2bDkN2FjwtY88W4zT0nRFfDWaM1cp6Pub1BRSrK6qKV
-         uoGPqTSGSNHRQ==
+        b=OyzeEw7BIfPI36XRkMxPVb45FYDPkqVcvFs7wQQiRdfrPUABG65qLJiutAoKEKniM
+         SG+pAUVCu2lYMW2oXIMFIf+LVNCrPJ1GTmaJ9jIX/JqS34MMUxEQzHCMGMYNRsxOIj
+         gtrAqzbeEzJuOkNcsKgGUdgoivSgz43+fDW8syhPA+5SdAVjkz910BoqHQewDLwnYA
+         npcH789AmCRdYl9xGPQgjhrHZwWyQJA/kGrG4B7ZeR0r03eN4S1MQrE/o3GNBJzICV
+         jGn9AxKPz6QlTd4NLkTFjDyB0EBWHdl1dccsK7jMke5a3E2sR4ZV5yhlp3xsNbrEdg
+         9TLpjZnDT7ozQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 2D8925C05B1; Mon, 26 Sep 2022 15:23:52 -0700 (PDT)
-Date:   Mon, 26 Sep 2022 15:23:52 -0700
+        id BBAD35C05B1; Mon, 26 Sep 2022 15:27:18 -0700 (PDT)
+Date:   Mon, 26 Sep 2022 15:27:18 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Pingfan Liu <kernelfans@gmail.com>
-Cc:     Frederic Weisbecker <frederic@kernel.org>, rcu@vger.kernel.org,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: Re: [PATCHv2 3/3] rcu: coordinate tick dependency during concurrent
- offlining
-Message-ID: <20220926222352.GV4196@paulmck-ThinkPad-P17-Gen-1>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rushikesh.s.kadam@intel.com,
+        neeraj.iitr10@gmail.com, frederic@kernel.org, rostedt@goodmis.org
+Subject: Re: [PATCH v6 1/4] rcu: Make call_rcu() lazy to save power
+Message-ID: <20220926222718.GW4196@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20220915055825.21525-1-kernelfans@gmail.com>
- <20220915055825.21525-4-kernelfans@gmail.com>
- <20220916134258.GB25891@lothringen>
- <YylrJCjYPrcT6xKJ@piliu.users.ipa.redhat.com>
- <20220920094645.GG69891@lothringen>
- <20220920191339.GS4196@paulmck-ThinkPad-P17-Gen-1>
- <Yywq/AtA5DN6J5+6@piliu.users.ipa.redhat.com>
- <20220922135442.GH4196@paulmck-ThinkPad-P17-Gen-1>
- <YzFH6WSMX/Yht+i1@piliu.users.ipa.redhat.com>
+References: <20220922220104.2446868-1-joel@joelfernandes.org>
+ <20220922220104.2446868-2-joel@joelfernandes.org>
+ <YzAX5kOwjrZzoed6@pc636>
+ <YzCUDXn3htWbqM4f@google.com>
+ <20220926174846.GQ4196@paulmck-ThinkPad-P17-Gen-1>
+ <YzH+XAVSlHpuWYoD@pc636>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YzFH6WSMX/Yht+i1@piliu.users.ipa.redhat.com>
+In-Reply-To: <YzH+XAVSlHpuWYoD@pc636>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Sep 26, 2022 at 02:34:17PM +0800, Pingfan Liu wrote:
-> Sorry to reply late. I just realize this e-mail misses in my gmail.
-> 
-> On Thu, Sep 22, 2022 at 06:54:42AM -0700, Paul E. McKenney wrote:
-> [...]
-> > 
-> > If you have tools/.../rcutorture/bin on your path, yes.  This would default
-> > to a 30-minute run.  If you have at least 16 CPUs, you should add
->                                             ^^^ TREE04 has CONFIG_NR_CPUS=8, so I think here the num is 8
-
-Yes, you will get some benefit from --allcpus on systems with from 9-15
-CPUs as well as for 16 and more.  At 8 CPUs, it wouldn't matter.
-
-> > "--allcpus" to do concurrrent runs.  For example, given 64 CPUs you could
-> > do this:
-> > 
-> > tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 10h --bootargs "rcutorture.onoff_interval=200 rcutorture.onoff_holdoff=30" --configs "4*TREE04"
-> > 
-> 
-> I have tried to find a two socket system with 128 cpus and run
->   sh kvm.sh --allcpus --duration 250h --bootargs rcutorture.onoff_interval=200 rcutorture.onoff_holdoff=30 --configs 16*TREE04
-> 
-> Where 250*16=4000
-
-That would work.
-
-> > This would run four concurrent instances of the TREE04 scenario, each for
-> > 10 hours, for a total of 40 hours of test time.
-> > 
-> > > > It does take some time to run.  I did 4,000 hours worth of TREE04
-> > >                                         ^^^ '--duration=4000h' can serve this purpose?
-> > 
-> > You could, at least if you replace the "=" with a space character, but
-> > that really would run a six-month test, which is probably not what you
-> > want to do.  There being 8,760 hours in a year and all that.
-> > 
-> > > Is it related with the cpu's freq?
-> > 
-> > Not at all.  '--duration 10h' would run ten hours of wall-clock time
-> > regardless of the CPU frequencies.
-> > 
-> > > > to confirm lack of bug.  But an 80-CPU dual-socket system can run
-> > > > 10 concurrent instances of TREE04, which gets things down to a more
+On Mon, Sep 26, 2022 at 09:32:44PM +0200, Uladzislau Rezki wrote:
+> On Mon, Sep 26, 2022 at 10:48:46AM -0700, Paul E. McKenney wrote:
+> > On Sun, Sep 25, 2022 at 05:46:53PM +0000, Joel Fernandes wrote:
+> > > Hi Vlad,
 > > > 
-> > > The total demanded hours H = 4000/(system_cpu_num/8)?
+> > > On Sun, Sep 25, 2022 at 10:57:10AM +0200, Uladzislau Rezki wrote:
+> > > > > Implement timer-based RCU lazy callback batching. The batch is flushed
+> > > > > whenever a certain amount of time has passed, or the batch on a
+> > > > > particular CPU grows too big. Also memory pressure will flush it in a
+> > > > > future patch.
+> > > > > 
+> > > > > To handle several corner cases automagically (such as rcu_barrier() and
+> > > > > hotplug), we re-use bypass lists to handle lazy CBs. The bypass list
+> > > > > length has the lazy CB length included in it. A separate lazy CB length
+> > > > > counter is also introduced to keep track of the number of lazy CBs.
+> > > > > 
+> > > > > v5->v6:
+> > > > > 
+> > > > > [ Frederic Weisbec: Program the lazy timer only if WAKE_NOT, since other
+> > > > >   deferral levels wake much earlier so for those it is not needed. ]
+> > > > > 
+> > > > > [ Frederic Weisbec: Use flush flags to keep bypass API code clean. ]
+> > > > > 
+> > > > > [ Frederic Weisbec: Make rcu_barrier() wake up only if main list empty. ]
+> > > > > 
+> > > > > [ Frederic Weisbec: Remove extra 'else if' branch in rcu_nocb_try_bypass(). ]
+> > > > > 
+> > > > > [ Joel: Fix issue where I was not resetting lazy_len after moving it to rdp ]
+> > > > > 
+> > > > > [ Paul/Thomas/Joel: Make call_rcu() default lazy so users don't mess up. ]
+> > > > > 
+> > > > I think it make sense to add some data to the commit message
+> > > > illustrating what this patch does.
+> > > 
+> > > Sure, will do!
+> > > 
+> > > > From my side i gave a try of this patch on my setup. Some data:
+> > > > 
+> > > > <snip>
+> > > > root@pc638:/home/urezki/rcu_v6# ./perf_script_parser ./perf_v6.script | sort -nk 6 | grep rcu
+> > > > name:                       rcuop/23 pid:        184 woken-up     1     interval: min     0     max     0       avg     0
+> > > > name:                       rcuop/26 pid:        206 woken-up     1     interval: min     0     max     0       avg     0
+> > > > name:                       rcuop/29 pid:        227 woken-up     1     interval: min     0     max     0       avg     0
+> > > > name:                        rcuop/2 pid:         35 woken-up     1     interval: min     0     max     0       avg     0
+> > > > name:                       rcuop/33 pid:        256 woken-up     1     interval: min     0     max     0       avg     0
+> > > > name:                       rcuop/34 pid:        263 woken-up     1     interval: min     0     max     0       avg     0
+> > > > name:                       rcuop/35 pid:        270 woken-up     1     interval: min     0     max     0       avg     0
+> > > > name:                       rcuop/36 pid:        277 woken-up     1     interval: min     0     max     0       avg     0
+> > > > name:                       rcuop/37 pid:        284 woken-up     1     interval: min     0     max     0       avg     0
+> > > > name:                       rcuop/38 pid:        291 woken-up     1     interval: min     0     max     0       avg     0
+> > > > name:                       rcuop/49 pid:        370 woken-up     1     interval: min     0     max     0       avg     0
+> > > > name:                       rcuop/59 pid:        441 woken-up     1     interval: min     0     max     0       avg     0
+> > > > name:                       rcuop/63 pid:        469 woken-up     1     interval: min     0     max     0       avg     0
+> > > > name:                        rcuog/0 pid:         16 woken-up     2     interval: min  8034     max  8034       avg  4017
+> > > > name:                       rcuog/24 pid:        191 woken-up     2     interval: min  7941     max  7941       avg  3970
+> > > > name:                       rcuog/32 pid:        248 woken-up     2     interval: min  7542     max  7542       avg  3771
+> > > > name:                       rcuog/48 pid:        362 woken-up     2     interval: min  8065     max  8065       avg  4032
+> > > > name:                       rcuog/56 pid:        419 woken-up     2     interval: min  8076     max  8076       avg  4038
+> > > > name:                       rcuop/21 pid:        170 woken-up     2     interval: min 13311438  max 13311438    avg 6655719
+> > > > name:                       rcuog/16 pid:        134 woken-up     4     interval: min  8029     max 13303387    avg 3329863
+> > > > name:                        rcuop/9 pid:         85 woken-up     4     interval: min 10007570  max 10007586    avg 7505684
+> > > > name:                        rcuog/8 pid:         77 woken-up     8     interval: min  6240     max 10001242    avg 3753622
+> > > > name:                    rcu_preempt pid:         15 woken-up    18     interval: min  6058     max 9999713     avg 2140788
+> > > > name:                     test_rcu/0 pid:       1411 woken-up 10003     interval: min   165     max 19072       avg  4275
+> > > > root@pc638:/home/urezki/rcu_v6#
+> > > > 
+> > > > root@pc638:/home/urezki/rcu_v6# ./perf_script_parser ./perf_default.script | sort -nk 6 | grep rcu
+> > > > name:                       rcuop/33 pid:        256 woken-up     1     interval: min     0     max     0       avg     0
+> > > > name:                       rcuop/51 pid:        384 woken-up     1     interval: min     0     max     0       avg     0
+> > > > name:                       rcuog/32 pid:        248 woken-up     2     interval: min 11927     max 11927       avg  5963
+> > > > name:                       rcuop/63 pid:        469 woken-up     2     interval: min 23963     max 23963       avg 11981
+> > > > name:                       rcuog/56 pid:        419 woken-up     3     interval: min 11132     max 23967       avg 11699
+> > > > name:                       rcuop/50 pid:        377 woken-up     3     interval: min  8057     max 4944344     avg 1650800
+> > > > name:                       rcuog/48 pid:        362 woken-up     8     interval: min  2712     max 37430015    avg 5298801
+> > > > name:                       rcuop/16 pid:        135 woken-up  4790     interval: min  7340     max 16649       avg  8843
+> > > > name:                       rcuog/16 pid:        134 woken-up  4792     interval: min  7368     max 16644       avg  8844
+> > > > name:                    rcu_preempt pid:         15 woken-up  5302     interval: min    26     max 12179       avg  7994
+> > > > name:                     test_rcu/0 pid:       1353 woken-up 10003     interval: min   169     max 18508       avg  4236
+> > > > root@pc638:/home/urezki/rcu_v6#
+> > > > <snip>
+> > > > 
+> > > > so it is obvious that the patch does the job.
+> > > 
+> > > Thanks a lot for testing!
+> > > 
+> > > > On my KVM machine the boot time is affected:
+> > > > 
+> > > > <snip>
+> > > > [    2.273406] e1000 0000:00:03.0 eth0: Intel(R) PRO/1000 Network Connection
+> > > > [   11.945283] e1000 0000:00:03.0 ens3: renamed from eth0
+> > > > [   22.165198] sr 1:0:0:0: [sr0] scsi3-mmc drive: 4x/4x cd/rw xa/form2 tray
+> > > > [   22.165206] cdrom: Uniform CD-ROM driver Revision: 3.20
+> > > > [   32.406981] sr 1:0:0:0: Attached scsi CD-ROM sr0
+> > > > [  104.115418] process '/usr/bin/fstype' started with executable stack
+> > > > [  104.170142] EXT4-fs (sda1): mounted filesystem with ordered data mode. Quota mode: none.
+> > > > [  104.340125] systemd[1]: systemd 241 running in system mode. (+PAM +AUDIT +SELINUX +IMA +APPARMOR +SMACK +SYSVINIT +UTMP +LIBCRYPTSETUP +GCRYPT +GNUTLS +ACL +XZ +LZ4 +SECCOMP +BLKID +ELFUTILS +KMOD -IDN2 +IDN -PCRE2 default-hierarchy=hybrid)
+> > > > [  104.340193] systemd[1]: Detected virtualization kvm.
+> > > > [  104.340196] systemd[1]: Detected architecture x86-64.
+> > > > [  104.359032] systemd[1]: Set hostname to <pc638>.
+> > > > [  105.740109] random: crng init done
+> > > > [  105.741267] systemd[1]: Reached target Remote File Systems.
+> > > > <snip>
+> > > > 
+> > > > 2 - 11 and second delay is between 32 - 104. So there are still users which must
+> > > > be waiting for "RCU" in a sync way.
+> > > 
+> > > I was wondering if you can compare boot logs and see which timestamp does the
+> > > slow down start from. That way, we can narrow down the callback. Also another
+> > > idea is, add "trace_event=rcu:rcu_callback,rcu:rcu_invoke_callback
+> > > ftrace_dump_on_oops" to the boot params, and then manually call
+> > > "tracing_off(); panic();" from the code at the first printk that seems off in
+> > > your comparison of good vs bad. For example, if "crng init done" timestamp is
+> > > off, put the "tracing_off(); panic();" there. Then grab the serial console
+> > > output to see what were the last callbacks that was queued/invoked.
 > > 
-> > Yes.  You can also use multiple systems, which is what kvm-remote.sh is
-> > intended for, again assuming 80 CPUs per system to keep the arithmetic
-> > simple:
-> > 
-> > tools/testing/selftests/rcutorture/bin/kvm-remote.sh "sys1 sys2 ... sys20" --duration 20h --cpus 80 --bootargs "rcutorture.onoff_interval=200 rcutorture.onoff_holdoff=30" --configs "200*TREE04"
-> > 
+> > We do seem to be in need of some way to quickly and easily locate the
+> > callback that needed to be _flush() due to a wakeup.
+> >
+> <snip>
+> diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+> index aeea9731ef80..fe1146d97f1a 100644
+> --- a/kernel/workqueue.c
+> +++ b/kernel/workqueue.c
+> @@ -1771,7 +1771,7 @@ bool queue_rcu_work(struct workqueue_struct *wq, struct rcu_work *rwork)
+>  
+>         if (!test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work))) {
+>                 rwork->wq = wq;
+> -               call_rcu(&rwork->rcu, rcu_work_rcufn);
+> +               call_rcu_flush(&rwork->rcu, rcu_work_rcufn);
+>                 return true;
+>         }
+>  
+> <snip>
 > 
-> That is appealing.
-> 
-> I will see if any opportunity to grasp a batch of machines to run the
-> test.
+> ?
 
-Initial tests with smaller numbers of CPUs are also useful, for example,
-in case reversion causes some bug due to bad interaction with a later
-commit.
+This one does seem like a good candidate.  Someday there might need to
+be a queue_rcu_work_flush() vs. queue_rcu_work(), but that needs to be
+proven.
 
-Please let me know how it goes!
+> But it does not fully solve my boot-up issue. Will debug tomorrow further.
+
+Sounds good!
+
+> > Might one more proactive approach be to use Coccinelle to locate such
+> > callback functions?  We might not want -all- callbacks that do wakeups
+> > to use call_rcu_flush(), but knowing which are which should speed up
+> > slow-boot debugging by quite a bit.
+> > 
+> > Or is there a better way to do this?
+> > 
+> I am not sure what Coccinelle is. If we had something automated that measures
+> a boot time and if needed does some profiling it would be good. Otherwise it
+> is a manual debugging mainly, IMHO.
+
+Coccinelle is sort of like a variant of the "sed" command that understands
+C syntax.  It is useful for searching for patterns in Linux-kernel source
+code.
+
+But if you are able to easily find the call_rcu() invocations that are
+slowing things down, maybe it is not needed.  For now, anyway.
 
 							Thanx, Paul
-
-> Thanks,
-> 
-> 	Pingfan
-> > Here "sys1" is the name of the system, on which you must have an account
-> > so that "ssh sys1 date" runs the date command on the first remote system.
-> > You really do have to use the "--cpus 80" because kvm-remote.sh does not
-> > assume that the system that it is running on is one of the test systems.
-> > 
-> > > > manageable 400 hours.  Please let me know if you don't have access
-> > > > to a few such systems.
-> > > 
-> > > I am happy to have a try if needed. I will try to get a powerful
-> > > machine, which can shrink the test time.
-> > 
-> > Larger numbers of little systems work, also, but in my experience you need
-> > a dual-socket system to have a reasonable chance of reproducing this bug.
-> > Each socket can be small, though, if that helps.
-> > 
-> > If you work for a cloud provider or some such, you can probably get a
-> > large number of systems.  If you can only get a few, you can do initial
-> > testing, and then we can work out what to do about heavier-duty testing.
-> > 
-> > > > I will let Frederic identify which commit(s) should be reverted in
-> > > > order to test the test.
-> > > > 
-> > > 
-> > > My understanding is after removing the tick dep by
-> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > index 79aea7df4345..cbfc884f04a4 100644
-> > > --- a/kernel/rcu/tree.c
-> > > +++ b/kernel/rcu/tree.c
-> > > @@ -2171,8 +2171,6 @@ int rcutree_dead_cpu(unsigned int cpu)
-> > >         WRITE_ONCE(rcu_state.n_online_cpus, rcu_state.n_online_cpus - 1);
-> > >         /* Adjust any no-longer-needed kthreads. */
-> > >         rcu_boost_kthread_setaffinity(rnp, -1);
-> > > -       // Stop-machine done, so allow nohz_full to disable tick.
-> > > -       tick_dep_clear(TICK_DEP_BIT_RCU);
-> > >         return 0;
-> > >  }
-> > > 
-> > > @@ -4008,8 +4006,6 @@ int rcutree_online_cpu(unsigned int cpu)
-> > >         sync_sched_exp_online_cleanup(cpu);
-> > >         rcutree_affinity_setting(cpu, -1);
-> > > 
-> > > -       // Stop-machine done, so allow nohz_full to disable tick.
-> > > -       tick_dep_clear(TICK_DEP_BIT_RCU);
-> > >         return 0;
-> > >  }
-> > > 
-> > > @@ -4031,8 +4027,6 @@ int rcutree_offline_cpu(unsigned int cpu)
-> > > 
-> > >         rcutree_affinity_setting(cpu, cpu);
-> > > 
-> > > -       // nohz_full CPUs need the tick for stop-machine to work quickly
-> > > -       tick_dep_set(TICK_DEP_BIT_RCU);
-> > >         return 0;
-> > >  }
-> > > 
-> > > If the TREE04 can success, then move on to revert the commit(s)
-> > > identified by Frederic, and do test again.
-> > > 
-> > > At this time, a TREE04 failure is expected.
-> > > 
-> > > If the above two results are observed, TICK_DEP_BIT_RCU can be
-> > > removed.
-> > > 
-> > > Is my understanding right?
-> > 
-> > Seems plausible to me, but I again defer to Frederic.
-> > 
-> > 							Thanx, Paul
