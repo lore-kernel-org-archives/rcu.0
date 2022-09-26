@@ -2,197 +2,204 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CE491C32771
-	for <rcu@archiver.kernel.org>; Mon, 26 Sep 2022 21:07:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E0AF5C32771
+	for <rcu@archiver.kernel.org>; Mon, 26 Sep 2022 22:23:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231345AbiIZVHU (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 26 Sep 2022 17:07:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38290 "EHLO
+        id S229965AbiIZWX6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 26 Sep 2022 18:23:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231334AbiIZVHP (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 26 Sep 2022 17:07:15 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F339789933
-        for <rcu@vger.kernel.org>; Mon, 26 Sep 2022 14:07:13 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id c11so4927129qtw.8
-        for <rcu@vger.kernel.org>; Mon, 26 Sep 2022 14:07:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date;
-        bh=0wdi4kgudkAb4vWVe47b6KGKTVhagjKJq/jMRG97Bao=;
-        b=bcm1YizUgOx35Th41pxQLygSgGQ8jyp6MEye2SGFyVwz0rs4p7kTpWVWULVgx0pGJ9
-         h2JsGiknEQLzuCje4vbEfAkZk9pvKZ9EvFitWNH+s8V0Kc8IfpZTe0rbJHyDEz/bUdRM
-         /noPBgFOekxAV26cnbFTjfdwChuMZ/LMGa1Sc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date;
-        bh=0wdi4kgudkAb4vWVe47b6KGKTVhagjKJq/jMRG97Bao=;
-        b=dwleoL4jRhp1ELNlBJLEAErf5aZyk7DDAxxdpDgqarUGzIwUCpK1EzgoMo4Rkv04cW
-         NswmHb3W9QsRi+izWei/PvhraGqQkOBqKU0erinGIV9WJNi6a8z5hGZEhWXXxrnsqulF
-         LIdOFFCkyVQqertfFIybFAiH9+hqSxeNCHGsPcYN17KwbFEKHAaW3IR9gNuISs8guP1L
-         3kYYmWQSHW+/NO4h2Onfv28s2np587Z6b+tuR77mlUdFXuqcovtxPGwJO0FC1nCMly/F
-         RaGU+TC86Z0cDJLIx7cTpiJrSg8Y42d96QPoIIcrss3msROCDYqJw0wneM8/Hkl2uaTw
-         OkSA==
-X-Gm-Message-State: ACrzQf3PNgOf+ZZS8TpozJRTrg9uiKB5P+dlJw9EKguz7CWW4DcoisLy
-        ds8HA1JnQ/ksxOxPCizao48CtPJTXhyypSjC
-X-Google-Smtp-Source: AMsMyM6Ldbfr41q0acFWXiqG+4YB40QCxNYIyY5kFPtGDHq+cjlmsifNF1np3zreqFMvVFPgAv7XwQ==
-X-Received: by 2002:ac8:5995:0:b0:35c:e39a:176b with SMTP id e21-20020ac85995000000b0035ce39a176bmr19956188qte.567.1664226433088;
-        Mon, 26 Sep 2022 14:07:13 -0700 (PDT)
-Received: from localhost (48.230.85.34.bc.googleusercontent.com. [34.85.230.48])
-        by smtp.gmail.com with ESMTPSA id f6-20020a05620a20c600b006b949afa980sm11656927qka.56.2022.09.26.14.07.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Sep 2022 14:07:12 -0700 (PDT)
-Date:   Mon, 26 Sep 2022 21:07:12 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rushikesh.s.kadam@intel.com, urezki@gmail.com,
-        neeraj.iitr10@gmail.com, frederic@kernel.org, rostedt@goodmis.org
-Subject: Re: [PATCH v6 1/4] rcu: Make call_rcu() lazy to save power
-Message-ID: <YzIUgAMOPg+jBKsp@google.com>
-References: <20220923214408.GC4196@paulmck-ThinkPad-P17-Gen-1>
- <4AE2CA06-8D91-42D7-9EE5-0C99BA7F9D13@joelfernandes.org>
- <20220924211132.GE4196@paulmck-ThinkPad-P17-Gen-1>
- <YzCQYW6yRRBWWMXk@google.com>
- <20220926174240.GO4196@paulmck-ThinkPad-P17-Gen-1>
+        with ESMTP id S229734AbiIZWX5 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 26 Sep 2022 18:23:57 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 567E482778
+        for <rcu@vger.kernel.org>; Mon, 26 Sep 2022 15:23:55 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id F3FDCB812A5
+        for <rcu@vger.kernel.org>; Mon, 26 Sep 2022 22:23:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99A19C433D6;
+        Mon, 26 Sep 2022 22:23:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1664231032;
+        bh=MlZ7oJTQxEPGEmKw13jIs8ma283usy/00N8W7J+OvlM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=WhHWsJsNRxcbBK7kCK9zx5x1aXvr9JfSYTR1DbzmNa6QZDBVjHy1ikgfAVxyNd04u
+         7OIder3UkCy4ZPRQMNs215dulX0L1pl7y2UKD2AAWPlsv5OrVFvYhg4gbFkLI799bR
+         +aoBWouRdDC+tqllCzZiuiXgCmqSF2tM5i+lBFBVap2m237UXI9ANRmbs1opc5H92J
+         /js4dGOkZ/+6GaXVxE+7u+V/VARBaavIqG8G9z/CakS1rzZRzKl6efcKfhqQFCNA/A
+         JUVReImGrqWv5hFofwC//eQ2bDkN2FjwtY88W4zT0nRFfDWaM1cp6Pub1BRSrK6qKV
+         uoGPqTSGSNHRQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 2D8925C05B1; Mon, 26 Sep 2022 15:23:52 -0700 (PDT)
+Date:   Mon, 26 Sep 2022 15:23:52 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Pingfan Liu <kernelfans@gmail.com>
+Cc:     Frederic Weisbecker <frederic@kernel.org>, rcu@vger.kernel.org,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>
+Subject: Re: [PATCHv2 3/3] rcu: coordinate tick dependency during concurrent
+ offlining
+Message-ID: <20220926222352.GV4196@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20220915055825.21525-1-kernelfans@gmail.com>
+ <20220915055825.21525-4-kernelfans@gmail.com>
+ <20220916134258.GB25891@lothringen>
+ <YylrJCjYPrcT6xKJ@piliu.users.ipa.redhat.com>
+ <20220920094645.GG69891@lothringen>
+ <20220920191339.GS4196@paulmck-ThinkPad-P17-Gen-1>
+ <Yywq/AtA5DN6J5+6@piliu.users.ipa.redhat.com>
+ <20220922135442.GH4196@paulmck-ThinkPad-P17-Gen-1>
+ <YzFH6WSMX/Yht+i1@piliu.users.ipa.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220926174240.GO4196@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <YzFH6WSMX/Yht+i1@piliu.users.ipa.redhat.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Paul,
+On Mon, Sep 26, 2022 at 02:34:17PM +0800, Pingfan Liu wrote:
+> Sorry to reply late. I just realize this e-mail misses in my gmail.
+> 
+> On Thu, Sep 22, 2022 at 06:54:42AM -0700, Paul E. McKenney wrote:
+> [...]
+> > 
+> > If you have tools/.../rcutorture/bin on your path, yes.  This would default
+> > to a 30-minute run.  If you have at least 16 CPUs, you should add
+>                                             ^^^ TREE04 has CONFIG_NR_CPUS=8, so I think here the num is 8
 
-On Mon, Sep 26, 2022 at 10:42:40AM -0700, Paul E. McKenney wrote:
-[..]
-> > > > >> +        WRITE_ONCE(rdp->lazy_len, 0);
-> > > > >> +    } else {
-> > > > >> +        rcu_cblist_flush_enqueue(&rcl, &rdp->nocb_bypass, rhp);
-> > > > >> +        WRITE_ONCE(rdp->lazy_len, 0);
-> > > > > 
-> > > > > This WRITE_ONCE() can be dropped out of the "if" statement, correct?
+Yes, you will get some benefit from --allcpus on systems with from 9-15
+CPUs as well as for 16 and more.  At 8 CPUs, it wouldn't matter.
+
+> > "--allcpus" to do concurrrent runs.  For example, given 64 CPUs you could
+> > do this:
+> > 
+> > tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 10h --bootargs "rcutorture.onoff_interval=200 rcutorture.onoff_holdoff=30" --configs "4*TREE04"
+> > 
+> 
+> I have tried to find a two socket system with 128 cpus and run
+>   sh kvm.sh --allcpus --duration 250h --bootargs rcutorture.onoff_interval=200 rcutorture.onoff_holdoff=30 --configs 16*TREE04
+> 
+> Where 250*16=4000
+
+That would work.
+
+> > This would run four concurrent instances of the TREE04 scenario, each for
+> > 10 hours, for a total of 40 hours of test time.
+> > 
+> > > > It does take some time to run.  I did 4,000 hours worth of TREE04
+> > >                                         ^^^ '--duration=4000h' can serve this purpose?
+> > 
+> > You could, at least if you replace the "=" with a space character, but
+> > that really would run a six-month test, which is probably not what you
+> > want to do.  There being 8,760 hours in a year and all that.
+> > 
+> > > Is it related with the cpu's freq?
+> > 
+> > Not at all.  '--duration 10h' would run ten hours of wall-clock time
+> > regardless of the CPU frequencies.
+> > 
+> > > > to confirm lack of bug.  But an 80-CPU dual-socket system can run
+> > > > 10 concurrent instances of TREE04, which gets things down to a more
+> > > 
+> > > The total demanded hours H = 4000/(system_cpu_num/8)?
+> > 
+> > Yes.  You can also use multiple systems, which is what kvm-remote.sh is
+> > intended for, again assuming 80 CPUs per system to keep the arithmetic
+> > simple:
+> > 
+> > tools/testing/selftests/rcutorture/bin/kvm-remote.sh "sys1 sys2 ... sys20" --duration 20h --cpus 80 --bootargs "rcutorture.onoff_interval=200 rcutorture.onoff_holdoff=30" --configs "200*TREE04"
+> > 
+> 
+> That is appealing.
+> 
+> I will see if any opportunity to grasp a batch of machines to run the
+> test.
+
+Initial tests with smaller numbers of CPUs are also useful, for example,
+in case reversion causes some bug due to bad interaction with a later
+commit.
+
+Please let me know how it goes!
+
+							Thanx, Paul
+
+> Thanks,
+> 
+> 	Pingfan
+> > Here "sys1" is the name of the system, on which you must have an account
+> > so that "ssh sys1 date" runs the date command on the first remote system.
+> > You really do have to use the "--cpus 80" because kvm-remote.sh does not
+> > assume that the system that it is running on is one of the test systems.
+> > 
+> > > > manageable 400 hours.  Please let me know if you don't have access
+> > > > to a few such systems.
+> > > 
+> > > I am happy to have a try if needed. I will try to get a powerful
+> > > machine, which can shrink the test time.
+> > 
+> > Larger numbers of little systems work, also, but in my experience you need
+> > a dual-socket system to have a reasonable chance of reproducing this bug.
+> > Each socket can be small, though, if that helps.
+> > 
+> > If you work for a cloud provider or some such, you can probably get a
+> > large number of systems.  If you can only get a few, you can do initial
+> > testing, and then we can work out what to do about heavier-duty testing.
+> > 
+> > > > I will let Frederic identify which commit(s) should be reverted in
+> > > > order to test the test.
 > > > > 
-> > > > Yes will update.
 > > > 
-> > > Thank you!
+> > > My understanding is after removing the tick dep by
+> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > index 79aea7df4345..cbfc884f04a4 100644
+> > > --- a/kernel/rcu/tree.c
+> > > +++ b/kernel/rcu/tree.c
+> > > @@ -2171,8 +2171,6 @@ int rcutree_dead_cpu(unsigned int cpu)
+> > >         WRITE_ONCE(rcu_state.n_online_cpus, rcu_state.n_online_cpus - 1);
+> > >         /* Adjust any no-longer-needed kthreads. */
+> > >         rcu_boost_kthread_setaffinity(rnp, -1);
+> > > -       // Stop-machine done, so allow nohz_full to disable tick.
+> > > -       tick_dep_clear(TICK_DEP_BIT_RCU);
+> > >         return 0;
+> > >  }
 > > > 
-> > > > > If so, this could be an "if" statement with two statements in its "then"
-> > > > > clause, no "else" clause, and two statements following the "if" statement.
-> > > > 
-> > > > I don’t think we can get rid of the else part but I’ll see what it looks like.
+> > > @@ -4008,8 +4006,6 @@ int rcutree_online_cpu(unsigned int cpu)
+> > >         sync_sched_exp_online_cleanup(cpu);
+> > >         rcutree_affinity_setting(cpu, -1);
 > > > 
-> > > In the function header, s/rhp/rhp_in/, then:
+> > > -       // Stop-machine done, so allow nohz_full to disable tick.
+> > > -       tick_dep_clear(TICK_DEP_BIT_RCU);
+> > >         return 0;
+> > >  }
 > > > 
-> > > 	struct rcu_head *rhp = rhp_in;
+> > > @@ -4031,8 +4027,6 @@ int rcutree_offline_cpu(unsigned int cpu)
 > > > 
-> > > And then:
+> > >         rcutree_affinity_setting(cpu, cpu);
 > > > 
-> > > 	if (lazy && rhp) {
-> > > 		rcu_cblist_enqueue(&rdp->nocb_bypass, rhp);
-> > > 		rhp = NULL;
+> > > -       // nohz_full CPUs need the tick for stop-machine to work quickly
+> > > -       tick_dep_set(TICK_DEP_BIT_RCU);
+> > >         return 0;
+> > >  }
+> > > 
+> > > If the TREE04 can success, then move on to revert the commit(s)
+> > > identified by Frederic, and do test again.
+> > > 
+> > > At this time, a TREE04 failure is expected.
+> > > 
+> > > If the above two results are observed, TICK_DEP_BIT_RCU can be
+> > > removed.
+> > > 
+> > > Is my understanding right?
 > > 
-> > This enqueues on to the bypass list, where as if lazy && rhp, I want to queue
-> > the new rhp on to the main cblist. So the pseudo code in my patch is:
+> > Seems plausible to me, but I again defer to Frederic.
 > > 
-> > if (lazy and rhp) then
-> > 	1. flush bypass CBs on to main list.
-> > 	2. queue new CB on to main list.
-> 
-> And the difference is here, correct?  I enqueue to the bypass list,
-> which is then flushed (in order) to the main list.  In contrast, you
-> flush the bypass list, then enqueue to the main list.  Either way,
-> the callback referenced by rhp ends up at the end of ->cblist.
-> 
-> Or am I on the wrong branch of this "if" statement?
-
-But we have to flush first, and then queue the new one. Otherwise wouldn't
-the callbacks be invoked out of order? Or did I miss something?
-
-> > else
-> > 	1. flush bypass CBs on to main list
-> > 	2. queue new CB on to bypass list.
-> > 
-> > > 	}
-> > > 	rcu_cblist_flush_enqueue(&rcl, &rdp->nocb_bypass, rhp);
-> > > 	WRITE_ONCE(rdp->lazy_len, 0);
-> > > 
-> > > Or did I mess something up?
-> > 
-> > So the rcu_cblist_flush_enqueue() has to happen before the
-> > rcu_cblist_enqueue() to preserve the ordering of flushing into the main list,
-> > and queuing on to the main list for the "if". Where as in your snip, the
-> > order is reversed.
-> 
-> Did I pick the correct branch of the "if" statement above?  Or were you
-> instead talking about the "else" clause?
-> 
-> I would have been more worried about getting cblist->len right.
-
-Hmm, I think my concern was more the ordering of callbacks, and moving the
-write to length should be Ok.
-
-> > If I consolidate it then, it looks like the following. However, it is a bit
-> > more unreadable. I could instead just take the WRITE_ONCE out of both if/else
-> > and move it to after the if/else, that would be cleanest. Does that sound
-> > good to you? Thanks!
-> 
-> Let's first figure out whether or not we are talking past one another.  ;-)
-
-Haha yeah :-)
-
-thanks,
-
- - Joel
-
-
-> 
-> 							Thanx, Paul
-> 
-> > ---8<-----------------------
-> > 
-> > diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-> > index 1a182b9c4f6c..bd3f54d314e8 100644
-> > --- a/kernel/rcu/tree_nocb.h
-> > +++ b/kernel/rcu/tree_nocb.h
-> > @@ -327,10 +327,11 @@ static void wake_nocb_gp_defer(struct rcu_data *rdp, int waketype,
-> >   *
-> >   * Note that this function always returns true if rhp is NULL.
-> >   */
-> > -static bool rcu_nocb_do_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
-> > +static bool rcu_nocb_do_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp_in,
-> >  				     unsigned long j, unsigned long flush_flags)
-> >  {
-> >  	struct rcu_cblist rcl;
-> > +	struct rcu_head *rhp = rhp_in;
-> >  	bool lazy = flush_flags & FLUSH_BP_LAZY;
-> >  
-> >  	WARN_ON_ONCE(!rcu_rdp_is_offloaded(rdp));
-> > @@ -348,14 +349,13 @@ static bool rcu_nocb_do_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
-> >  	 * If the new CB requested was a lazy one, queue it onto the main
-> >  	 * ->cblist so we can take advantage of a sooner grade period.
-> >  	 */
-> > -	if (lazy && rhp) {
-> > -		rcu_cblist_flush_enqueue(&rcl, &rdp->nocb_bypass, NULL);
-> > -		rcu_cblist_enqueue(&rcl, rhp);
-> > -		WRITE_ONCE(rdp->lazy_len, 0);
-> > -	} else {
-> > -		rcu_cblist_flush_enqueue(&rcl, &rdp->nocb_bypass, rhp);
-> > -		WRITE_ONCE(rdp->lazy_len, 0);
-> > -	}
-> > +	if (lazy && rhp)
-> > +		rhp = NULL;
-> > +	rcu_cblist_flush_enqueue(&rcl, &rdp->nocb_bypass, rhp);
-> > +	if (lazy && rhp_in)
-> > +		rcu_cblist_enqueue(&rcl, rhp_in);
-> > +
-> > +	WRITE_ONCE(rdp->lazy_len, 0);
-> >  
-> >  	rcu_segcblist_insert_pend_cbs(&rdp->cblist, &rcl);
-> >  	WRITE_ONCE(rdp->nocb_bypass_first, j);
+> > 							Thanx, Paul
