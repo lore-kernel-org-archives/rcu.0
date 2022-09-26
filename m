@@ -2,188 +2,163 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 64227C32771
-	for <rcu@archiver.kernel.org>; Mon, 26 Sep 2022 23:47:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B35E0C07E9D
+	for <rcu@archiver.kernel.org>; Mon, 26 Sep 2022 23:54:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229526AbiIZXr4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 26 Sep 2022 19:47:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43412 "EHLO
+        id S229717AbiIZXx6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 26 Sep 2022 19:53:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229720AbiIZXry (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 26 Sep 2022 19:47:54 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E84E392598
-        for <rcu@vger.kernel.org>; Mon, 26 Sep 2022 16:47:52 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id k12so5135227qkj.8
-        for <rcu@vger.kernel.org>; Mon, 26 Sep 2022 16:47:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date;
-        bh=Ns4t/x9DBAySHPZtDToGSpr/LxaXlGe4KfUz12R2qF8=;
-        b=gdVQIqWhFcYJfh88PdaR/FPTLnYukfw1Vl026oJduRBQdkomvO0vwABmc4EojMkBh/
-         BY17WAoJiw+P5VbJYgypQLm30WF/5fXPDnQPlNev43fYV7LIm0ZrBCw3Upi41UqKijL1
-         Fyhqqvz2+6qnkqoninfJ5/lerZa+B8Up7KV7A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
-         :subject:date;
-        bh=Ns4t/x9DBAySHPZtDToGSpr/LxaXlGe4KfUz12R2qF8=;
-        b=NphTAZTn8D6F1X/GQ51XcRasWXa/U0dXOPld1JbQ+pCt/K4bPhPNQY37SAQUp+N1Xf
-         UOW3WbyhKnjLR+Hcd9ak4WnDFFIT0klW/HFnK64GRDOdAykWZ/QryFVb1Orz6Hrakzy4
-         T6I0YT0H2fy+bVR7yGXlYbVn+wC881zW6e6brtSQOCm/PqSLS3j6Of14qebD3qBOOX7Z
-         yq55S09AqAL8WZnuP77alIZp1hZ2qd01OyI4i8PbuoBWn8FZEoFIklhOyDqGGEjMwMoN
-         WP4Q5BfUJEaj3Y1Br1lb9DCCKI5CYDftHZ8rKmYyPzGA62ojw/ZHRevw5U/hrHzOGgWG
-         cWOw==
-X-Gm-Message-State: ACrzQf3+u/T/DNw30XAjbwK4PxgLoId1IeoJrPZljiKmPVYf7DwbiRM0
-        w/pKFzcfrmh/XYUyhaHzXdvr/g==
-X-Google-Smtp-Source: AMsMyM6k3drMMCfs/elpDmyPs5HZhc0KUfZxOZ92oKV/Da628vTY6uGSwgKRHMkcU+Z2l15e8Dh+zA==
-X-Received: by 2002:a05:620a:3724:b0:6ce:1a37:ef29 with SMTP id de36-20020a05620a372400b006ce1a37ef29mr16537662qkb.754.1664236071988;
-        Mon, 26 Sep 2022 16:47:51 -0700 (PDT)
-Received: from smtpclient.apple (26.sub-174-216-180.myvzw.com. [174.216.180.26])
-        by smtp.gmail.com with ESMTPSA id c12-20020a05622a058c00b0035bafecff78sm12713257qtb.74.2022.09.26.16.47.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Sep 2022 16:47:51 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Joel Fernandes <joel@joelfernandes.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v6 1/4] rcu: Make call_rcu() lazy to save power
-Date:   Mon, 26 Sep 2022 19:47:50 -0400
-Message-Id: <8344B0AB-608E-44DA-8FEE-3FE56EDF9172@joelfernandes.org>
-References: <20220926223222.GX4196@paulmck-ThinkPad-P17-Gen-1>
-Cc:     Uladzislau Rezki <urezki@gmail.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rushikesh.s.kadam@intel.com,
+        with ESMTP id S229544AbiIZXx5 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 26 Sep 2022 19:53:57 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEBE99413F;
+        Mon, 26 Sep 2022 16:53:53 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EB2986116E;
+        Mon, 26 Sep 2022 23:53:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55594C433C1;
+        Mon, 26 Sep 2022 23:53:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1664236432;
+        bh=ss+RqrDvxS78Z81A4zz/FrOgTm3pJNYbCSgCQe3jqMQ=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=HJtmuFa5U1ojMu53aKK7Qqg4UNfWqfRDr9q/Lsiwle74FCdTJKk8ysoF8JKAD0HhO
+         EuM/wBt1WOYJnbRwzGQbKOOS3HOQuWYtRAuAWv6ECwZFE6EgwNRTV+zQJr4cy6L8yp
+         kZFWb4/nwTCxnrUc/fsbVT5EqFR0rZCrlXlb7YJe749meCkCfFFfSel2tQAAWMSnCy
+         F3B9HcrJZvGGM4KKfH/W0nnSOtEhL2nzPyN117T/sSeSfQCEmPTLmYut7/m/DW3rfL
+         1i0Ca2YoIEobg0qCY0ih7t3t9oCr208U7TlHtvkUN6tdh6NbyPOWhbd6tNjDlSXGaj
+         P/H4iuPx9J+yw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 02B6F5C0BE3; Mon, 26 Sep 2022 16:53:52 -0700 (PDT)
+Date:   Mon, 26 Sep 2022 16:53:51 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rushikesh.s.kadam@intel.com, urezki@gmail.com,
         neeraj.iitr10@gmail.com, frederic@kernel.org, rostedt@goodmis.org
-In-Reply-To: <20220926223222.GX4196@paulmck-ThinkPad-P17-Gen-1>
-To:     paulmck@kernel.org
-X-Mailer: iPhone Mail (19G82)
+Subject: Re: [PATCH v6 1/4] rcu: Make call_rcu() lazy to save power
+Message-ID: <20220926235351.GC4196@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20220926223751.GZ4196@paulmck-ThinkPad-P17-Gen-1>
+ <A78761F4-5922-418A-AFA3-01101C399778@joelfernandes.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <A78761F4-5922-418A-AFA3-01101C399778@joelfernandes.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Mon, Sep 26, 2022 at 07:33:17PM -0400, Joel Fernandes wrote:
+> 
+> 
+> > On Sep 26, 2022, at 6:37 PM, Paul E. McKenney <paulmck@kernel.org> wrote:
+> > 
+> > ﻿On Mon, Sep 26, 2022 at 09:07:12PM +0000, Joel Fernandes wrote:
+> >> Hi Paul,
+> >> 
+> >> On Mon, Sep 26, 2022 at 10:42:40AM -0700, Paul E. McKenney wrote:
+> >> [..]
+> >>>>>>>> +        WRITE_ONCE(rdp->lazy_len, 0);
+> >>>>>>>> +    } else {
+> >>>>>>>> +        rcu_cblist_flush_enqueue(&rcl, &rdp->nocb_bypass, rhp);
+> >>>>>>>> +        WRITE_ONCE(rdp->lazy_len, 0);
+> >>>>>>> 
+> >>>>>>> This WRITE_ONCE() can be dropped out of the "if" statement, correct?
+> >>>>>> 
+> >>>>>> Yes will update.
+> >>>>> 
+> >>>>> Thank you!
+> >>>>> 
+> >>>>>>> If so, this could be an "if" statement with two statements in its "then"
+> >>>>>>> clause, no "else" clause, and two statements following the "if" statement.
+> >>>>>> 
+> >>>>>> I don’t think we can get rid of the else part but I’ll see what it looks like.
+> >>>>> 
+> >>>>> In the function header, s/rhp/rhp_in/, then:
+> >>>>> 
+> >>>>>    struct rcu_head *rhp = rhp_in;
+> >>>>> 
+> >>>>> And then:
+> >>>>> 
+> >>>>>    if (lazy && rhp) {
+> >>>>>        rcu_cblist_enqueue(&rdp->nocb_bypass, rhp);
+> >>>>>        rhp = NULL;
+> >>>> 
+> >>>> This enqueues on to the bypass list, where as if lazy && rhp, I want to queue
+> >>>> the new rhp on to the main cblist. So the pseudo code in my patch is:
+> >>>> 
+> >>>> if (lazy and rhp) then
+> >>>>    1. flush bypass CBs on to main list.
+> >>>>    2. queue new CB on to main list.
+> >>> 
+> >>> And the difference is here, correct?  I enqueue to the bypass list,
+> >>> which is then flushed (in order) to the main list.  In contrast, you
+> >>> flush the bypass list, then enqueue to the main list.  Either way,
+> >>> the callback referenced by rhp ends up at the end of ->cblist.
+> >>> 
+> >>> Or am I on the wrong branch of this "if" statement?
+> >> 
+> >> But we have to flush first, and then queue the new one. Otherwise wouldn't
+> >> the callbacks be invoked out of order? Or did I miss something?
+> > 
+> > I don't think so...
+> > 
+> > We want the new callback to be last, right?  One way to do that is to
+> > flush the bypass, then queue the new callback onto ->cblist.  Another way
+> > to do that is to enqueue the new callback onto the end of the bypass,
+> > then flush the bypass.  Why wouldn't these result in the same order?
+> 
+> Yes you are right, sorry. I was fixated on the main list. Both your snippet and my patch will be equivalent then. However I find your snippet a bit confusing, as in it is not immediately obvious - why would we queue something on to a list, if we were about to flush it. But any way, it does make it a clever piece of code in some sense and I am ok with doing it this way ;-)
 
+As long as the ->cblist.len comes out with the right value.  ;-)
 
-> On Sep 26, 2022, at 6:32 PM, Paul E. McKenney <paulmck@kernel.org> wrote:
->=20
-> =EF=BB=BFOn Mon, Sep 26, 2022 at 09:02:21PM +0000, Joel Fernandes wrote:
->> On Mon, Sep 26, 2022 at 09:32:44PM +0200, Uladzislau Rezki wrote:
->> [...]
->>>>>> On my KVM machine the boot time is affected:
->>>>>>=20
->>>>>> <snip>
->>>>>> [    2.273406] e1000 0000:00:03.0 eth0: Intel(R) PRO/1000 Network Con=
-nection
->>>>>> [   11.945283] e1000 0000:00:03.0 ens3: renamed from eth0
->>>>>> [   22.165198] sr 1:0:0:0: [sr0] scsi3-mmc drive: 4x/4x cd/rw xa/form=
-2 tray
->>>>>> [   22.165206] cdrom: Uniform CD-ROM driver Revision: 3.20
->>>>>> [   32.406981] sr 1:0:0:0: Attached scsi CD-ROM sr0
->>>>>> [  104.115418] process '/usr/bin/fstype' started with executable stac=
-k
->>>>>> [  104.170142] EXT4-fs (sda1): mounted filesystem with ordered data m=
-ode. Quota mode: none.
->>>>>> [  104.340125] systemd[1]: systemd 241 running in system mode. (+PAM +=
-AUDIT +SELINUX +IMA +APPARMOR +SMACK +SYSVINIT +UTMP +LIBCRYPTSETUP +GCRYPT +=
-GNUTLS +ACL +XZ +LZ4 +SECCOMP +BLKID +ELFUTILS +KMOD -IDN2 +IDN -PCRE2 defau=
-lt-hierarchy=3Dhybrid)
->>>>>> [  104.340193] systemd[1]: Detected virtualization kvm.
->>>>>> [  104.340196] systemd[1]: Detected architecture x86-64.
->>>>>> [  104.359032] systemd[1]: Set hostname to <pc638>.
->>>>>> [  105.740109] random: crng init done
->>>>>> [  105.741267] systemd[1]: Reached target Remote File Systems.
->>>>>> <snip>
->>>>>>=20
->>>>>> 2 - 11 and second delay is between 32 - 104. So there are still users=
- which must
->>>>>> be waiting for "RCU" in a sync way.
->>>>>=20
->>>>> I was wondering if you can compare boot logs and see which timestamp d=
-oes the
->>>>> slow down start from. That way, we can narrow down the callback. Also a=
-nother
->>>>> idea is, add "trace_event=3Drcu:rcu_callback,rcu:rcu_invoke_callback
->>>>> ftrace_dump_on_oops" to the boot params, and then manually call
->>>>> "tracing_off(); panic();" from the code at the first printk that seems=
- off in
->>>>> your comparison of good vs bad. For example, if "crng init done" times=
-tamp is
->>>>> off, put the "tracing_off(); panic();" there. Then grab the serial con=
-sole
->>>>> output to see what were the last callbacks that was queued/invoked.
->>>>=20
->>>> We do seem to be in need of some way to quickly and easily locate the
->>>> callback that needed to be _flush() due to a wakeup.
->>>>=20
->>> <snip>
->>> diff --git a/kernel/workqueue.c b/kernel/workqueue.c
->>> index aeea9731ef80..fe1146d97f1a 100644
->>> --- a/kernel/workqueue.c
->>> +++ b/kernel/workqueue.c
->>> @@ -1771,7 +1771,7 @@ bool queue_rcu_work(struct workqueue_struct *wq, s=
-truct rcu_work *rwork)
->>>=20
->>>        if (!test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(wor=
-k))) {
->>>                rwork->wq =3D wq;
->>> -               call_rcu(&rwork->rcu, rcu_work_rcufn);
->>> +               call_rcu_flush(&rwork->rcu, rcu_work_rcufn);
->>>                return true;
->>>        }
->>>=20
->>> <snip>
->>>=20
->>> ?
->>>=20
->>> But it does not fully solve my boot-up issue. Will debug tomorrow furthe=
-r.
->>=20
->> Ah, but at least its progress, thanks. Could you send me a patch to inclu=
-de
->> in the next revision with details of this?
->>=20
->>>> Might one more proactive approach be to use Coccinelle to locate such
->>>> callback functions?  We might not want -all- callbacks that do wakeups
->>>> to use call_rcu_flush(), but knowing which are which should speed up
->>>> slow-boot debugging by quite a bit.
->>>>=20
->>>> Or is there a better way to do this?
->>>>=20
->>> I am not sure what Coccinelle is. If we had something automated that mea=
-sures
->>> a boot time and if needed does some profiling it would be good. Otherwis=
-e it
->>> is a manual debugging mainly, IMHO.
->>=20
->> Paul, What about using a default-off kernel CONFIG that splats on all laz=
-y
->> call_rcu() callbacks that do a wake up. We could use the trace hooks to d=
-o it
->> in kernel I think. I can talk to Steve to get ideas on how to do that but=
- I
->> think it can be done purely from trace events (we might need a new
->> trace_end_invoke_callback to fire after the callback is invoked). Thought=
-s?
->=20
-> Could you look for wakeups invoked between trace_rcu_batch_start() and
-> trace_rcu_batch_end() that are not from interrupt context?  This would
-> of course need to be associated with a task rather than a CPU.
+							Thanx, Paul
 
-Yes this sounds good, but we also need to know if the callbacks are lazy or n=
-ot since wake-up is ok from a non lazy one. I think I=E2=80=99ll need a tabl=
-e to track that at queuing time.
-
-> Note that you would need to check for wakeups from interrupt handlers
-> even with the extra trace_end_invoke_callback().  The window where an
-> interrupt handler could do a wakeup would be reduced, but not eliminated.
-
-True! Since this is a  debugging option, can we not just disable interrupts a=
-cross callback invocation?
-
-Thanks,
-
-  - Joel
-
->=20
->                            Thanx, Paul
+> Thanks,
+> 
+>   - Joel
+> 
+> 
+> > 
+> >>>> else
+> >>>>    1. flush bypass CBs on to main list
+> >>>>    2. queue new CB on to bypass list.
+> >>>> 
+> >>>>>    }
+> >>>>>    rcu_cblist_flush_enqueue(&rcl, &rdp->nocb_bypass, rhp);
+> >>>>>    WRITE_ONCE(rdp->lazy_len, 0);
+> >>>>> 
+> >>>>> Or did I mess something up?
+> >>>> 
+> >>>> So the rcu_cblist_flush_enqueue() has to happen before the
+> >>>> rcu_cblist_enqueue() to preserve the ordering of flushing into the main list,
+> >>>> and queuing on to the main list for the "if". Where as in your snip, the
+> >>>> order is reversed.
+> >>> 
+> >>> Did I pick the correct branch of the "if" statement above?  Or were you
+> >>> instead talking about the "else" clause?
+> >>> 
+> >>> I would have been more worried about getting cblist->len right.
+> >> 
+> >> Hmm, I think my concern was more the ordering of callbacks, and moving the
+> >> write to length should be Ok.
+> > 
+> > OK, sounds good to me!  ;-)
+> > 
+> >>>> If I consolidate it then, it looks like the following. However, it is a bit
+> >>>> more unreadable. I could instead just take the WRITE_ONCE out of both if/else
+> >>>> and move it to after the if/else, that would be cleanest. Does that sound
+> >>>> good to you? Thanks!
+> >>> 
+> >>> Let's first figure out whether or not we are talking past one another.  ;-)
+> >> 
+> >> Haha yeah :-)
+> > 
+> > So were we?  ;-)
+> > 
+> >                            Thanx, Paul
