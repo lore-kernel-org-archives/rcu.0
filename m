@@ -2,198 +2,130 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E5B8C32771
-	for <rcu@archiver.kernel.org>; Mon, 26 Sep 2022 18:02:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EA63EC07E9D
+	for <rcu@archiver.kernel.org>; Mon, 26 Sep 2022 18:04:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229599AbiIZSCN (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 26 Sep 2022 14:02:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56346 "EHLO
+        id S229771AbiIZSD7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 26 Sep 2022 14:03:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbiIZSBt (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 26 Sep 2022 14:01:49 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2702BE0A8;
-        Mon, 26 Sep 2022 10:42:41 -0700 (PDT)
+        with ESMTP id S231158AbiIZSDi (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 26 Sep 2022 14:03:38 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBB82207;
+        Mon, 26 Sep 2022 10:45:28 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2C65E6112B;
-        Mon, 26 Sep 2022 17:42:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80130C433D6;
-        Mon, 26 Sep 2022 17:42:40 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 81CCEB80B9C;
+        Mon, 26 Sep 2022 17:45:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0972BC433D6;
+        Mon, 26 Sep 2022 17:45:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1664214160;
-        bh=TYfPai1SJhgBw/yIgoHGYTSZw4RvmIQ26nHXVhK7S7o=;
+        s=k20201202; t=1664214326;
+        bh=Bn1HSf7II+l0C0Thc4GW4IZtTClrYEYo9ov431I8puA=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=YWG7As6wlxGdfyT3/OHKOC/y0RwFvt0M9f1BK1wP7mUtNDWTjTlEdMpqyWRjBkvJo
-         kPdrnJjReJdwYpO3TXbQ5MAl/bscyrF23lsFOWlEZYw5yIvnWEOPmbFx6hdexa3C8w
-         JxqwXxymFOh5Ri6Zy/oTmXjKc3aDVEfrzCfAd4CGsDlDXdug73+g3Knd6nEPnqxa1e
-         KCQHKnMHwaB4iQPtFwPvLg9NDrV5wzLxQEk3RRRKgG2xBZmbSXlEycKhIQm1Q7tL79
-         MI4FyvWKyfy0LPYsJPv5Gm42xPevSctPvT0xI3FW2qnnuCU2TGYR3xih3gPBrJ3J1T
-         t6JMSVUDG4ELw==
+        b=HfX/APbfw1n0RbnqwlbUysPcsqzAaX6+uKWg4yCqy2VHR1bSrldnKgonuy5nXVJr1
+         qVouHIH5whFMsZ32r/UbCs+YDpQ8OgMcC64jZJucGOAFQTW4i/QZGgHNzF5poL8Wk7
+         01WVl8VCqeAxBFuAnqGhlwmrJOBmDccU42uduJZIBQ7exf4mi5Ly3iitQ5iMcLuYuk
+         ls7Qouv1H8sQtAWfUzrWyHZdR8vTUmNLD4kGoDPCiCmsOxxZAR+JvWgRyuINKDDp0m
+         m81doRUwQ3BbFz/t2neGoyzp48G6QzDWDkeFL6PQVpW9tFz/eoGx8PeShXw7OeM5TY
+         /xH2TIzrBjItA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 1FD565C05B1; Mon, 26 Sep 2022 10:42:40 -0700 (PDT)
-Date:   Mon, 26 Sep 2022 10:42:40 -0700
+        id 9F3F45C05B1; Mon, 26 Sep 2022 10:45:25 -0700 (PDT)
+Date:   Mon, 26 Sep 2022 10:45:25 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rushikesh.s.kadam@intel.com, urezki@gmail.com,
-        neeraj.iitr10@gmail.com, frederic@kernel.org, rostedt@goodmis.org
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rushikesh.s.kadam@intel.com,
+        urezki@gmail.com, neeraj.iitr10@gmail.com, rostedt@goodmis.org
 Subject: Re: [PATCH v6 1/4] rcu: Make call_rcu() lazy to save power
-Message-ID: <20220926174240.GO4196@paulmck-ThinkPad-P17-Gen-1>
+Message-ID: <20220926174525.GP4196@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20220923214408.GC4196@paulmck-ThinkPad-P17-Gen-1>
- <4AE2CA06-8D91-42D7-9EE5-0C99BA7F9D13@joelfernandes.org>
- <20220924211132.GE4196@paulmck-ThinkPad-P17-Gen-1>
- <YzCQYW6yRRBWWMXk@google.com>
+References: <20220924224637.GA161871@lothringen>
+ <19217A4C-7183-4D78-A714-FBFE7BB20742@joelfernandes.org>
+ <20220925220936.GA182999@lothringen>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YzCQYW6yRRBWWMXk@google.com>
+In-Reply-To: <20220925220936.GA182999@lothringen>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sun, Sep 25, 2022 at 05:31:13PM +0000, Joel Fernandes wrote:
-> Hi Paul,
+On Mon, Sep 26, 2022 at 12:09:36AM +0200, Frederic Weisbecker wrote:
+> On Sat, Sep 24, 2022 at 07:28:16PM -0400, Joel Fernandes wrote:
+> > > And then FLUSH_BP_WAKE is probably not needed anymore. 
+> > 
+> > It is needed as the API is in tree_nocb.h and we
+> > have to have that handle the details of laziness
+> > there rather than tree.c. We could add new apis
+> > to get rid of flag but it’s cleaner (and Paul seemed
+> > to be ok with it).
 > 
-> Back to Mutt for this one ;-)
+> If the wake up is handled outside the flush function, as in the
+> diff I just posted, there is no more user left of FLUSH_BP_WAKE, IIRC...
 
-As they used to say in my youth, "Get a horse!"  ;-)
-
-> Replies below:
-> 
-> On Sat, Sep 24, 2022 at 02:11:32PM -0700, Paul E. McKenney wrote:
-> [...]
-> > > >> +     */
-> > > >> +    if (lazy && rhp) {
-> > > >> +        rcu_cblist_flush_enqueue(&rcl, &rdp->nocb_bypass, NULL);
-> > > >> +        rcu_cblist_enqueue(&rcl, rhp);
-> > > > 
-> > > > Would it makes sense to enqueue rhp onto ->nocb_bypass first, NULL out
-> > > > rhp, then let the rcu_cblist_flush_enqueue() be common code?  Or did this
-> > > > function grow a later use of rhp that I missed?
-> > > 
-> > > No that could be done, but it prefer to keep it this
-> > >  way because rhp is a function parameter and I
-> > > prefer not to modify those since it could add a
-> > > bug in future where rhp passed by user is now
-> > > NULL for some reason, half way through the
-> > > function.
-> > 
-> > I agree that changing a function parameter is bad practice.
-> > 
-> > So the question becomes whether introducing a local would outweigh
-> > consolidating this code.  Could you please at least give it a shot?
-> > 
-> > > >> +        WRITE_ONCE(rdp->lazy_len, 0);
-> > > >> +    } else {
-> > > >> +        rcu_cblist_flush_enqueue(&rcl, &rdp->nocb_bypass, rhp);
-> > > >> +        WRITE_ONCE(rdp->lazy_len, 0);
-> > > > 
-> > > > This WRITE_ONCE() can be dropped out of the "if" statement, correct?
-> > > 
-> > > Yes will update.
-> > 
-> > Thank you!
-> > 
-> > > > If so, this could be an "if" statement with two statements in its "then"
-> > > > clause, no "else" clause, and two statements following the "if" statement.
-> > > 
-> > > I don’t think we can get rid of the else part but I’ll see what it looks like.
-> > 
-> > In the function header, s/rhp/rhp_in/, then:
-> > 
-> > 	struct rcu_head *rhp = rhp_in;
-> > 
-> > And then:
-> > 
-> > 	if (lazy && rhp) {
-> > 		rcu_cblist_enqueue(&rdp->nocb_bypass, rhp);
-> > 		rhp = NULL;
-> 
-> This enqueues on to the bypass list, where as if lazy && rhp, I want to queue
-> the new rhp on to the main cblist. So the pseudo code in my patch is:
-> 
-> if (lazy and rhp) then
-> 	1. flush bypass CBs on to main list.
-> 	2. queue new CB on to main list.
-
-And the difference is here, correct?  I enqueue to the bypass list,
-which is then flushed (in order) to the main list.  In contrast, you
-flush the bypass list, then enqueue to the main list.  Either way,
-the callback referenced by rhp ends up at the end of ->cblist.
-
-Or am I on the wrong branch of this "if" statement?
-
-> else
-> 	1. flush bypass CBs on to main list
-> 	2. queue new CB on to bypass list.
-> 
-> > 	}
-> > 	rcu_cblist_flush_enqueue(&rcl, &rdp->nocb_bypass, rhp);
-> > 	WRITE_ONCE(rdp->lazy_len, 0);
-> > 
-> > Or did I mess something up?
-> 
-> So the rcu_cblist_flush_enqueue() has to happen before the
-> rcu_cblist_enqueue() to preserve the ordering of flushing into the main list,
-> and queuing on to the main list for the "if". Where as in your snip, the
-> order is reversed.
-
-Did I pick the correct branch of the "if" statement above?  Or were you
-instead talking about the "else" clause?
-
-I would have been more worried about getting cblist->len right.
-
-> If I consolidate it then, it looks like the following. However, it is a bit
-> more unreadable. I could instead just take the WRITE_ONCE out of both if/else
-> and move it to after the if/else, that would be cleanest. Does that sound
-> good to you? Thanks!
-
-Let's first figure out whether or not we are talking past one another.  ;-)
+To get rid of FLUSH_BP_WAKE, we might need to pull some rcu_data fields
+out from under #ifdef in order to allow them to be accessed by common
+code.  Which might be a good tradeoff, as the size of rcu_data has not
+been a concern.  Plus the increase in size would be quite small.
 
 							Thanx, Paul
 
-> ---8<-----------------------
+> > >> @@ -512,9 +598,16 @@ static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_alldone,
+> > >>    }
+> > >>    // Need to actually to a wakeup.
+> > >>    len = rcu_segcblist_n_cbs(&rdp->cblist);
+> > >> +    bypass_len = rcu_cblist_n_cbs(&rdp->nocb_bypass);
+> > >> +    lazy_len = READ_ONCE(rdp->lazy_len);
+> > >>    if (was_alldone) {
+> > >>        rdp->qlen_last_fqs_check = len;
+> > >> -        if (!irqs_disabled_flags(flags)) {
+> > >> +        // Only lazy CBs in bypass list
+> > >> +        if (lazy_len && bypass_len == lazy_len) {
+> > >> +            rcu_nocb_unlock_irqrestore(rdp, flags);
+> > >> +            wake_nocb_gp_defer(rdp, RCU_NOCB_WAKE_LAZY,
+> > >> +                       TPS("WakeLazy"));
+> > > 
+> > > I'm trying to think of a case where rcu_nocb_try_bypass() returns false
+> > > (queue to regular list) but then call_rcu() -> __call_rcu_nocb_wake() ends up
+> > > seeing a lazy bypass queue even though we are queueing a non-lazy callback
+> > > (should have flushed in this case).
+> > > 
+> > > Looks like it shouldn't happen, even with concurrent (de-offloading) but just
+> > > in case, can we add:
+> > 
+> > Yes I also feel this couldn’t happen because irq is
+> > off and nocb lock is held throughout the calls to
+> > the above 2 functions. Unless I missed the race
+> > you’re describing?
 > 
-> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-> index 1a182b9c4f6c..bd3f54d314e8 100644
-> --- a/kernel/rcu/tree_nocb.h
-> +++ b/kernel/rcu/tree_nocb.h
-> @@ -327,10 +327,11 @@ static void wake_nocb_gp_defer(struct rcu_data *rdp, int waketype,
->   *
->   * Note that this function always returns true if rhp is NULL.
->   */
-> -static bool rcu_nocb_do_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
-> +static bool rcu_nocb_do_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp_in,
->  				     unsigned long j, unsigned long flush_flags)
->  {
->  	struct rcu_cblist rcl;
-> +	struct rcu_head *rhp = rhp_in;
->  	bool lazy = flush_flags & FLUSH_BP_LAZY;
->  
->  	WARN_ON_ONCE(!rcu_rdp_is_offloaded(rdp));
-> @@ -348,14 +349,13 @@ static bool rcu_nocb_do_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
->  	 * If the new CB requested was a lazy one, queue it onto the main
->  	 * ->cblist so we can take advantage of a sooner grade period.
->  	 */
-> -	if (lazy && rhp) {
-> -		rcu_cblist_flush_enqueue(&rcl, &rdp->nocb_bypass, NULL);
-> -		rcu_cblist_enqueue(&rcl, rhp);
-> -		WRITE_ONCE(rdp->lazy_len, 0);
-> -	} else {
-> -		rcu_cblist_flush_enqueue(&rcl, &rdp->nocb_bypass, rhp);
-> -		WRITE_ONCE(rdp->lazy_len, 0);
-> -	}
-> +	if (lazy && rhp)
-> +		rhp = NULL;
-> +	rcu_cblist_flush_enqueue(&rcl, &rdp->nocb_bypass, rhp);
-> +	if (lazy && rhp_in)
-> +		rcu_cblist_enqueue(&rcl, rhp_in);
-> +
-> +	WRITE_ONCE(rdp->lazy_len, 0);
->  
->  	rcu_segcblist_insert_pend_cbs(&rdp->cblist, &rcl);
->  	WRITE_ONCE(rdp->nocb_bypass_first, j);
+> At least I can't find any either...
+> 
+> > 
+> > > 
+> > >      WARN_ON_ONCE(lazy_len != len)
+> > 
+> > But this condition can be true even in normal
+> > circumstances? len also contains DONE CBs
+> > which are ready to be invoked. Or did I miss
+> > something?
+> 
+> Duh, good point, nevermind then :-)
+> 
+> Thanks.
+> 
+> > 
+> > Thanks,
+> > 
+> >   - Joel
+> > 
+> > > 
+> > >> +        } else if (!irqs_disabled_flags(flags)) {
+> > >>            /* ... if queue was empty ... */
+> > >>            rcu_nocb_unlock_irqrestore(rdp, flags);
+> > >>            wake_nocb_gp(rdp, false);
+> > > 
+> > > Thanks.
