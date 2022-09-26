@@ -2,61 +2,61 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F698C6FA82
-	for <rcu@archiver.kernel.org>; Mon, 26 Sep 2022 23:44:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 64227C32771
+	for <rcu@archiver.kernel.org>; Mon, 26 Sep 2022 23:47:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229597AbiIZXo2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 26 Sep 2022 19:44:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34036 "EHLO
+        id S229526AbiIZXr4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 26 Sep 2022 19:47:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230259AbiIZXoZ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 26 Sep 2022 19:44:25 -0400
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 019C489CE6
-        for <rcu@vger.kernel.org>; Mon, 26 Sep 2022 16:44:21 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id a20so5110628qtw.10
-        for <rcu@vger.kernel.org>; Mon, 26 Sep 2022 16:44:21 -0700 (PDT)
+        with ESMTP id S229720AbiIZXry (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 26 Sep 2022 19:47:54 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E84E392598
+        for <rcu@vger.kernel.org>; Mon, 26 Sep 2022 16:47:52 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id k12so5135227qkj.8
+        for <rcu@vger.kernel.org>; Mon, 26 Sep 2022 16:47:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
          :from:content-transfer-encoding:from:to:cc:subject:date;
-        bh=ASwh/CgTRSpzQFYNiOH2eANmCBYsRG0dH0x+rJ55fRA=;
-        b=pytN1TMD6dIZXBvRDozKmbJWLf1R6mnG1tWyX1jUnyTVUkxDic8eUgLLYupjmw0Nr5
-         fuXqulhwaW3RhaWnvOkmqPV2e5ufhsrltk2ANbBzwgNFS6gsEOdAsQzwBt7XoaW7+Ia+
-         XUAPgmHR8JEAGtB17AxfxsoR3SJEfAqBVPbl8=
+        bh=Ns4t/x9DBAySHPZtDToGSpr/LxaXlGe4KfUz12R2qF8=;
+        b=gdVQIqWhFcYJfh88PdaR/FPTLnYukfw1Vl026oJduRBQdkomvO0vwABmc4EojMkBh/
+         BY17WAoJiw+P5VbJYgypQLm30WF/5fXPDnQPlNev43fYV7LIm0ZrBCw3Upi41UqKijL1
+         Fyhqqvz2+6qnkqoninfJ5/lerZa+B8Up7KV7A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
          :from:content-transfer-encoding:x-gm-message-state:from:to:cc
          :subject:date;
-        bh=ASwh/CgTRSpzQFYNiOH2eANmCBYsRG0dH0x+rJ55fRA=;
-        b=R05jd1A6DafdhFq8VFSOJOe8ofSnkTfpPhVpTcmMJSItCSCIvhmLWx3sYewCvuNKpL
-         /4m90MRUTYe4XWEKT3n3IDJULmjsHCZ5J0fRzcrF9CnDlaYxrblynssT2ISmxDzj/QCk
-         lKSPgud8a95BuSpFWe4XF8d7dRD4jihwv78zdKp2D+kOsfhhlhBg9tXTnDAT6VIiRQyW
-         JbQg+Zx/FyDx3PKUEboaLOkdg+KLf1OFmmn3VFw22AXDc2lpQcEu1Qk+mFN8U7UsZybP
-         QlY9BX/HYl0gUEMAuYjUB5DPJv9vcZEuNilxStrvYlix/oi5pA7XAyT0lkrT0PXqtAgK
-         +K9g==
-X-Gm-Message-State: ACrzQf15ytLJ5mU6WySp75uQzesrtSa7CGsKJXUARvjuYop3WMJTFI66
-        qiWPVBlGpg5lqlyqpDrStTvGfA==
-X-Google-Smtp-Source: AMsMyM6OHHlk3trS7vFIpyoDpWc1oBvF2SfboGAoMWExoAm9HYN02UTIjPjS2Wp5byQ/AcWKLadAEQ==
-X-Received: by 2002:a05:622a:38a:b0:35d:6ca:ff91 with SMTP id j10-20020a05622a038a00b0035d06caff91mr20120657qtx.532.1664235860865;
-        Mon, 26 Sep 2022 16:44:20 -0700 (PDT)
-Received: from smtpclient.apple ([2600:1003:b132:37f:2047:987d:1b5f:cf31])
-        by smtp.gmail.com with ESMTPSA id c12-20020a05622a058c00b0035bafecff78sm12708236qtb.74.2022.09.26.16.44.20
+        bh=Ns4t/x9DBAySHPZtDToGSpr/LxaXlGe4KfUz12R2qF8=;
+        b=NphTAZTn8D6F1X/GQ51XcRasWXa/U0dXOPld1JbQ+pCt/K4bPhPNQY37SAQUp+N1Xf
+         UOW3WbyhKnjLR+Hcd9ak4WnDFFIT0klW/HFnK64GRDOdAykWZ/QryFVb1Orz6Hrakzy4
+         T6I0YT0H2fy+bVR7yGXlYbVn+wC881zW6e6brtSQOCm/PqSLS3j6Of14qebD3qBOOX7Z
+         yq55S09AqAL8WZnuP77alIZp1hZ2qd01OyI4i8PbuoBWn8FZEoFIklhOyDqGGEjMwMoN
+         WP4Q5BfUJEaj3Y1Br1lb9DCCKI5CYDftHZ8rKmYyPzGA62ojw/ZHRevw5U/hrHzOGgWG
+         cWOw==
+X-Gm-Message-State: ACrzQf3+u/T/DNw30XAjbwK4PxgLoId1IeoJrPZljiKmPVYf7DwbiRM0
+        w/pKFzcfrmh/XYUyhaHzXdvr/g==
+X-Google-Smtp-Source: AMsMyM6k3drMMCfs/elpDmyPs5HZhc0KUfZxOZ92oKV/Da628vTY6uGSwgKRHMkcU+Z2l15e8Dh+zA==
+X-Received: by 2002:a05:620a:3724:b0:6ce:1a37:ef29 with SMTP id de36-20020a05620a372400b006ce1a37ef29mr16537662qkb.754.1664236071988;
+        Mon, 26 Sep 2022 16:47:51 -0700 (PDT)
+Received: from smtpclient.apple (26.sub-174-216-180.myvzw.com. [174.216.180.26])
+        by smtp.gmail.com with ESMTPSA id c12-20020a05622a058c00b0035bafecff78sm12713257qtb.74.2022.09.26.16.47.51
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Sep 2022 16:44:20 -0700 (PDT)
+        Mon, 26 Sep 2022 16:47:51 -0700 (PDT)
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 From:   Joel Fernandes <joel@joelfernandes.org>
 Mime-Version: 1.0 (1.0)
 Subject: Re: [PATCH v6 1/4] rcu: Make call_rcu() lazy to save power
-Date:   Mon, 26 Sep 2022 19:44:19 -0400
-Message-Id: <BE2B629D-B5D2-4ED0-944E-2F13E846047E@joelfernandes.org>
-References: <20220926223534.GY4196@paulmck-ThinkPad-P17-Gen-1>
+Date:   Mon, 26 Sep 2022 19:47:50 -0400
+Message-Id: <8344B0AB-608E-44DA-8FEE-3FE56EDF9172@joelfernandes.org>
+References: <20220926223222.GX4196@paulmck-ThinkPad-P17-Gen-1>
 Cc:     Uladzislau Rezki <urezki@gmail.com>, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org, rushikesh.s.kadam@intel.com,
         neeraj.iitr10@gmail.com, frederic@kernel.org, rostedt@goodmis.org
-In-Reply-To: <20220926223534.GY4196@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20220926223222.GX4196@paulmck-ThinkPad-P17-Gen-1>
 To:     paulmck@kernel.org
 X-Mailer: iPhone Mail (19G82)
 Precedence: bulk
@@ -65,142 +65,125 @@ X-Mailing-List: rcu@vger.kernel.org
 
 
 
-> On Sep 26, 2022, at 6:35 PM, Paul E. McKenney <paulmck@kernel.org> wrote:
+> On Sep 26, 2022, at 6:32 PM, Paul E. McKenney <paulmck@kernel.org> wrote:
 >=20
-> =EF=BB=BFOn Mon, Sep 26, 2022 at 08:54:27PM +0000, Joel Fernandes wrote:
->> Hi Vlad,
->>=20
->> On Mon, Sep 26, 2022 at 09:39:23PM +0200, Uladzislau Rezki wrote:
+> =EF=BB=BFOn Mon, Sep 26, 2022 at 09:02:21PM +0000, Joel Fernandes wrote:
+>> On Mon, Sep 26, 2022 at 09:32:44PM +0200, Uladzislau Rezki wrote:
 >> [...]
->>>>> On my KVM machine the boot time is affected:
->>>>>=20
->>>>> <snip>
->>>>> [    2.273406] e1000 0000:00:03.0 eth0: Intel(R) PRO/1000 Network Conn=
-ection
->>>>> [   11.945283] e1000 0000:00:03.0 ens3: renamed from eth0
->>>>> [   22.165198] sr 1:0:0:0: [sr0] scsi3-mmc drive: 4x/4x cd/rw xa/form2=
- tray
->>>>> [   22.165206] cdrom: Uniform CD-ROM driver Revision: 3.20
->>>>> [   32.406981] sr 1:0:0:0: Attached scsi CD-ROM sr0
->>>>> [  104.115418] process '/usr/bin/fstype' started with executable stack=
-
->>>>> [  104.170142] EXT4-fs (sda1): mounted filesystem with ordered data mo=
-de. Quota mode: none.
->>>>> [  104.340125] systemd[1]: systemd 241 running in system mode. (+PAM +=
+>>>>>> On my KVM machine the boot time is affected:
+>>>>>>=20
+>>>>>> <snip>
+>>>>>> [    2.273406] e1000 0000:00:03.0 eth0: Intel(R) PRO/1000 Network Con=
+nection
+>>>>>> [   11.945283] e1000 0000:00:03.0 ens3: renamed from eth0
+>>>>>> [   22.165198] sr 1:0:0:0: [sr0] scsi3-mmc drive: 4x/4x cd/rw xa/form=
+2 tray
+>>>>>> [   22.165206] cdrom: Uniform CD-ROM driver Revision: 3.20
+>>>>>> [   32.406981] sr 1:0:0:0: Attached scsi CD-ROM sr0
+>>>>>> [  104.115418] process '/usr/bin/fstype' started with executable stac=
+k
+>>>>>> [  104.170142] EXT4-fs (sda1): mounted filesystem with ordered data m=
+ode. Quota mode: none.
+>>>>>> [  104.340125] systemd[1]: systemd 241 running in system mode. (+PAM +=
 AUDIT +SELINUX +IMA +APPARMOR +SMACK +SYSVINIT +UTMP +LIBCRYPTSETUP +GCRYPT +=
 GNUTLS +ACL +XZ +LZ4 +SECCOMP +BLKID +ELFUTILS +KMOD -IDN2 +IDN -PCRE2 defau=
 lt-hierarchy=3Dhybrid)
->>>>> [  104.340193] systemd[1]: Detected virtualization kvm.
->>>>> [  104.340196] systemd[1]: Detected architecture x86-64.
->>>>> [  104.359032] systemd[1]: Set hostname to <pc638>.
->>>>> [  105.740109] random: crng init done
->>>>> [  105.741267] systemd[1]: Reached target Remote File Systems.
->>>>> <snip>
+>>>>>> [  104.340193] systemd[1]: Detected virtualization kvm.
+>>>>>> [  104.340196] systemd[1]: Detected architecture x86-64.
+>>>>>> [  104.359032] systemd[1]: Set hostname to <pc638>.
+>>>>>> [  105.740109] random: crng init done
+>>>>>> [  105.741267] systemd[1]: Reached target Remote File Systems.
+>>>>>> <snip>
+>>>>>>=20
+>>>>>> 2 - 11 and second delay is between 32 - 104. So there are still users=
+ which must
+>>>>>> be waiting for "RCU" in a sync way.
 >>>>>=20
->>>>> 2 - 11 and second delay is between 32 - 104. So there are still users w=
-hich must
->>>>> be waiting for "RCU" in a sync way.
->>>>=20
->>>> I was wondering if you can compare boot logs and see which timestamp do=
-es the
->>>> slow down start from. That way, we can narrow down the callback. Also a=
+>>>>> I was wondering if you can compare boot logs and see which timestamp d=
+oes the
+>>>>> slow down start from. That way, we can narrow down the callback. Also a=
 nother
->>>> idea is, add "trace_event=3Drcu:rcu_callback,rcu:rcu_invoke_callback
->>>> ftrace_dump_on_oops" to the boot params, and then manually call
->>>> "tracing_off(); panic();" from the code at the first printk that seems o=
-ff in
->>>> your comparison of good vs bad. For example, if "crng init done" timest=
-amp is
->>>> off, put the "tracing_off(); panic();" there. Then grab the serial cons=
-ole
->>>> output to see what were the last callbacks that was queued/invoked.
->>=20
->> Would you be willing to try these steps? Meanwhile I will try on my side a=
-s
->> well with the .config you sent me in another email.
->>=20
->>>>>> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
->>>>>> index 08605ce7379d..40ae36904825 100644
->>>>>> --- a/include/linux/rcupdate.h
->>>>>> +++ b/include/linux/rcupdate.h
->>>>>> @@ -108,6 +108,13 @@ static inline int rcu_preempt_depth(void)
->>>>>>=20
->>>>>> #endif /* #else #ifdef CONFIG_PREEMPT_RCU */
->>>>>>=20
->>>>>> +#ifdef CONFIG_RCU_LAZY
->>>>>> +void call_rcu_flush(struct rcu_head *head, rcu_callback_t func);
->>>>>> +#else
->>>>>> +static inline void call_rcu_flush(struct rcu_head *head,
->>>>>> +        rcu_callback_t func) {  call_rcu(head, func); }
->>>>>> +#endif
->>>>>> +
->>>>>> /* Internal to kernel */
->>>>>> void rcu_init(void);
->>>>>> extern int rcu_scheduler_active;
->>>>>> diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
->>>>>> index f53ad63b2bc6..edd632e68497 100644
->>>>>> --- a/kernel/rcu/Kconfig
->>>>>> +++ b/kernel/rcu/Kconfig
->>>>>> @@ -314,4 +314,12 @@ config TASKS_TRACE_RCU_READ_MB
->>>>>>      Say N here if you hate read-side memory barriers.
->>>>>>      Take the default if you are unsure.
->>>>>>=20
->>>>>> +config RCU_LAZY
->>>>>> +    bool "RCU callback lazy invocation functionality"
->>>>>> +    depends on RCU_NOCB_CPU
->>>>>> +    default n
->>>>>> +    help
->>>>>> +      To save power, batch RCU callbacks and flush after delay, memo=
-ry
->>>>>> +      pressure or callback list growing too big.
->>>>>> +
->>>>>>=20
->>>>> Do you think you need this kernel option? Can we just consider and mak=
-e
->>>>> it a run-time configurable? For example much more users will give it a=
- try,
->>>>> so it will increase a coverage. By default it can be off.
->>>>>=20
->>>>> Also you do not need to do:
->>>>>=20
->>>>> #ifdef LAZY
+>>>>> idea is, add "trace_event=3Drcu:rcu_callback,rcu:rcu_invoke_callback
+>>>>> ftrace_dump_on_oops" to the boot params, and then manually call
+>>>>> "tracing_off(); panic();" from the code at the first printk that seems=
+ off in
+>>>>> your comparison of good vs bad. For example, if "crng init done" times=
+tamp is
+>>>>> off, put the "tracing_off(); panic();" there. Then grab the serial con=
+sole
+>>>>> output to see what were the last callbacks that was queued/invoked.
 >>>>=20
->>>> How does the "LAZY" macro end up being runtime-configurable? That's sta=
-tic /
->>>> compile time. Did I miss something?
+>>>> We do seem to be in need of some way to quickly and easily locate the
+>>>> callback that needed to be _flush() due to a wakeup.
 >>>>=20
->>> I am talking about removing if:
+>>> <snip>
+>>> diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+>>> index aeea9731ef80..fe1146d97f1a 100644
+>>> --- a/kernel/workqueue.c
+>>> +++ b/kernel/workqueue.c
+>>> @@ -1771,7 +1771,7 @@ bool queue_rcu_work(struct workqueue_struct *wq, s=
+truct rcu_work *rwork)
 >>>=20
->>> config RCU_LAZY
+>>>        if (!test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(wor=
+k))) {
+>>>                rwork->wq =3D wq;
+>>> -               call_rcu(&rwork->rcu, rcu_work_rcufn);
+>>> +               call_rcu_flush(&rwork->rcu, rcu_work_rcufn);
+>>>                return true;
+>>>        }
 >>>=20
->>> we might run into issues related to run-time switching though.
+>>> <snip>
+>>>=20
+>>> ?
+>>>=20
+>>> But it does not fully solve my boot-up issue. Will debug tomorrow furthe=
+r.
 >>=20
->> When we started off, Paul said he wanted it kernel CONFIGurable. I will d=
-efer
->> to Paul on a decision for that. I prefer kernel CONFIG so people don't fo=
-rget
->> to pass a boot param.
+>> Ah, but at least its progress, thanks. Could you send me a patch to inclu=
+de
+>> in the next revision with details of this?
+>>=20
+>>>> Might one more proactive approach be to use Coccinelle to locate such
+>>>> callback functions?  We might not want -all- callbacks that do wakeups
+>>>> to use call_rcu_flush(), but knowing which are which should speed up
+>>>> slow-boot debugging by quite a bit.
+>>>>=20
+>>>> Or is there a better way to do this?
+>>>>=20
+>>> I am not sure what Coccinelle is. If we had something automated that mea=
+sures
+>>> a boot time and if needed does some profiling it would be good. Otherwis=
+e it
+>>> is a manual debugging mainly, IMHO.
+>>=20
+>> Paul, What about using a default-off kernel CONFIG that splats on all laz=
+y
+>> call_rcu() callbacks that do a wake up. We could use the trace hooks to d=
+o it
+>> in kernel I think. I can talk to Steve to get ideas on how to do that but=
+ I
+>> think it can be done purely from trace events (we might need a new
+>> trace_end_invoke_callback to fire after the callback is invoked). Thought=
+s?
 >=20
-> I am fine with a kernel boot parameter for this one.  You guys were the
-> ones preferring Kconfig options.  ;-)
+> Could you look for wakeups invoked between trace_rcu_batch_start() and
+> trace_rcu_batch_end() that are not from interrupt context?  This would
+> of course need to be associated with a task rather than a CPU.
 
-Yes I still prefer that.. ;-)
+Yes this sounds good, but we also need to know if the callbacks are lazy or n=
+ot since wake-up is ok from a non lazy one. I think I=E2=80=99ll need a tabl=
+e to track that at queuing time.
 
-> But in that case, the CONFIG_RCU_NOCB_CPU would come into play to handle
-> the case where there is no bypass.
+> Note that you would need to check for wakeups from interrupt handlers
+> even with the extra trace_end_invoke_callback().  The window where an
+> interrupt handler could do a wakeup would be reduced, but not eliminated.
 
-If you don=E2=80=99t mind, let=E2=80=99s do both like we did for NOCB_CPU_AL=
-L. In which case, Vlad since this was your suggestion, would you be so kind t=
-o send a patch adding a boot parameter on top of the series? ;-). I=E2=80=99=
-ll include it in the next version. I=E2=80=99d suggest keep the boot param d=
-efault off and add a CONFIG option that forces the boot param to be turned o=
-n.
+True! Since this is a  debugging option, can we not just disable interrupts a=
+cross callback invocation?
 
 Thanks,
 
- - Joel
-
-
+  - Joel
 
 >=20
 >                            Thanx, Paul
