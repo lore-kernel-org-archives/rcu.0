@@ -2,146 +2,197 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A03EBC32771
-	for <rcu@archiver.kernel.org>; Mon, 26 Sep 2022 21:02:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CE491C32771
+	for <rcu@archiver.kernel.org>; Mon, 26 Sep 2022 21:07:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231224AbiIZVCZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 26 Sep 2022 17:02:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57550 "EHLO
+        id S231345AbiIZVHU (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 26 Sep 2022 17:07:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231204AbiIZVCY (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 26 Sep 2022 17:02:24 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 373E58320E
-        for <rcu@vger.kernel.org>; Mon, 26 Sep 2022 14:02:23 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id b23so4895608qtr.13
-        for <rcu@vger.kernel.org>; Mon, 26 Sep 2022 14:02:23 -0700 (PDT)
+        with ESMTP id S231334AbiIZVHP (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 26 Sep 2022 17:07:15 -0400
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F339789933
+        for <rcu@vger.kernel.org>; Mon, 26 Sep 2022 14:07:13 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id c11so4927129qtw.8
+        for <rcu@vger.kernel.org>; Mon, 26 Sep 2022 14:07:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date;
-        bh=mYdDalWMvcjIKCsdJOFYlDSxqC6W9ji+KL0JRvVs6bw=;
-        b=Fh+oMyH5NDN5M1UfEEx9JBX3Nrp6XBdWV8pfH2suAo6w7b2bc193zDT6IOAJBe4+bG
-         Xp2kYLkqtkuMQjxnekJEwdXP6dePH7F3NpQxdfke+1P7y8nmWjPIR7xGUpDxkUrUEeXS
-         Arw5O/cURNxRl9NaKIny6j/kV9AqVebI2J0wk=
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date;
+        bh=0wdi4kgudkAb4vWVe47b6KGKTVhagjKJq/jMRG97Bao=;
+        b=bcm1YizUgOx35Th41pxQLygSgGQ8jyp6MEye2SGFyVwz0rs4p7kTpWVWULVgx0pGJ9
+         h2JsGiknEQLzuCje4vbEfAkZk9pvKZ9EvFitWNH+s8V0Kc8IfpZTe0rbJHyDEz/bUdRM
+         /noPBgFOekxAV26cnbFTjfdwChuMZ/LMGa1Sc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
-        bh=mYdDalWMvcjIKCsdJOFYlDSxqC6W9ji+KL0JRvVs6bw=;
-        b=VxCqTrpodSvugI6YL+NEnm5EYUEC05HIpXSK8rlsOaIZA2Bwv0k3ftvyibpxJLDvke
-         dK1pYAlQSZUo4lUxJYkgc2KNNB3cwERsiCskLyxtB7XGFchmRzNZpTtA5ZudRxxXCn1R
-         IS3o1+aPFHwfVngw8gHECzxaXj7EP22aTUxkvZA67D3LBAOxSU1P5E+BHawFNd7fKKXw
-         rzqpAz+CEuOejuE257IMo1Al+6AVzv/hLjRqpW1++0dc9BgwvmrbEOLIAaU+156XHw6a
-         GpzkXSVksVEi15RRs1i/94PDtU5t+ZNN98OeIHznODR318mizEf3p36vsyY2yqsIHHTr
-         J97Q==
-X-Gm-Message-State: ACrzQf0EP15fcu7WLUwsIl3FqXbnW5IcCMtCL36h6N9xseyY432IJdxS
-        a8KMC00RheRpI6d+HAPZrdWFow==
-X-Google-Smtp-Source: AMsMyM6QYMCl/7bPftnCUtsASux0y/Pl7A/NDYUMTYBrw38dwH1v+Ne1J+A110lUw+Z2ogDQbgWIzQ==
-X-Received: by 2002:ac8:59c4:0:b0:35d:fa7:324b with SMTP id f4-20020ac859c4000000b0035d0fa7324bmr18889014qtf.533.1664226142272;
-        Mon, 26 Sep 2022 14:02:22 -0700 (PDT)
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date;
+        bh=0wdi4kgudkAb4vWVe47b6KGKTVhagjKJq/jMRG97Bao=;
+        b=dwleoL4jRhp1ELNlBJLEAErf5aZyk7DDAxxdpDgqarUGzIwUCpK1EzgoMo4Rkv04cW
+         NswmHb3W9QsRi+izWei/PvhraGqQkOBqKU0erinGIV9WJNi6a8z5hGZEhWXXxrnsqulF
+         LIdOFFCkyVQqertfFIybFAiH9+hqSxeNCHGsPcYN17KwbFEKHAaW3IR9gNuISs8guP1L
+         3kYYmWQSHW+/NO4h2Onfv28s2np587Z6b+tuR77mlUdFXuqcovtxPGwJO0FC1nCMly/F
+         RaGU+TC86Z0cDJLIx7cTpiJrSg8Y42d96QPoIIcrss3msROCDYqJw0wneM8/Hkl2uaTw
+         OkSA==
+X-Gm-Message-State: ACrzQf3PNgOf+ZZS8TpozJRTrg9uiKB5P+dlJw9EKguz7CWW4DcoisLy
+        ds8HA1JnQ/ksxOxPCizao48CtPJTXhyypSjC
+X-Google-Smtp-Source: AMsMyM6Ldbfr41q0acFWXiqG+4YB40QCxNYIyY5kFPtGDHq+cjlmsifNF1np3zreqFMvVFPgAv7XwQ==
+X-Received: by 2002:ac8:5995:0:b0:35c:e39a:176b with SMTP id e21-20020ac85995000000b0035ce39a176bmr19956188qte.567.1664226433088;
+        Mon, 26 Sep 2022 14:07:13 -0700 (PDT)
 Received: from localhost (48.230.85.34.bc.googleusercontent.com. [34.85.230.48])
-        by smtp.gmail.com with ESMTPSA id s5-20020a05620a254500b006b98315c6fbsm13047269qko.1.2022.09.26.14.02.21
+        by smtp.gmail.com with ESMTPSA id f6-20020a05620a20c600b006b949afa980sm11656927qka.56.2022.09.26.14.07.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Sep 2022 14:02:21 -0700 (PDT)
-Date:   Mon, 26 Sep 2022 21:02:21 +0000
+        Mon, 26 Sep 2022 14:07:12 -0700 (PDT)
+Date:   Mon, 26 Sep 2022 21:07:12 +0000
 From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rushikesh.s.kadam@intel.com,
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rushikesh.s.kadam@intel.com, urezki@gmail.com,
         neeraj.iitr10@gmail.com, frederic@kernel.org, rostedt@goodmis.org
 Subject: Re: [PATCH v6 1/4] rcu: Make call_rcu() lazy to save power
-Message-ID: <YzITXYGIqfRIebIH@google.com>
-References: <20220922220104.2446868-1-joel@joelfernandes.org>
- <20220922220104.2446868-2-joel@joelfernandes.org>
- <YzAX5kOwjrZzoed6@pc636>
- <YzCUDXn3htWbqM4f@google.com>
- <20220926174846.GQ4196@paulmck-ThinkPad-P17-Gen-1>
- <YzH+XAVSlHpuWYoD@pc636>
+Message-ID: <YzIUgAMOPg+jBKsp@google.com>
+References: <20220923214408.GC4196@paulmck-ThinkPad-P17-Gen-1>
+ <4AE2CA06-8D91-42D7-9EE5-0C99BA7F9D13@joelfernandes.org>
+ <20220924211132.GE4196@paulmck-ThinkPad-P17-Gen-1>
+ <YzCQYW6yRRBWWMXk@google.com>
+ <20220926174240.GO4196@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YzH+XAVSlHpuWYoD@pc636>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20220926174240.GO4196@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Sep 26, 2022 at 09:32:44PM +0200, Uladzislau Rezki wrote:
-[...]
-> > > > On my KVM machine the boot time is affected:
+Hi Paul,
+
+On Mon, Sep 26, 2022 at 10:42:40AM -0700, Paul E. McKenney wrote:
+[..]
+> > > > >> +        WRITE_ONCE(rdp->lazy_len, 0);
+> > > > >> +    } else {
+> > > > >> +        rcu_cblist_flush_enqueue(&rcl, &rdp->nocb_bypass, rhp);
+> > > > >> +        WRITE_ONCE(rdp->lazy_len, 0);
+> > > > > 
+> > > > > This WRITE_ONCE() can be dropped out of the "if" statement, correct?
 > > > > 
-> > > > <snip>
-> > > > [    2.273406] e1000 0000:00:03.0 eth0: Intel(R) PRO/1000 Network Connection
-> > > > [   11.945283] e1000 0000:00:03.0 ens3: renamed from eth0
-> > > > [   22.165198] sr 1:0:0:0: [sr0] scsi3-mmc drive: 4x/4x cd/rw xa/form2 tray
-> > > > [   22.165206] cdrom: Uniform CD-ROM driver Revision: 3.20
-> > > > [   32.406981] sr 1:0:0:0: Attached scsi CD-ROM sr0
-> > > > [  104.115418] process '/usr/bin/fstype' started with executable stack
-> > > > [  104.170142] EXT4-fs (sda1): mounted filesystem with ordered data mode. Quota mode: none.
-> > > > [  104.340125] systemd[1]: systemd 241 running in system mode. (+PAM +AUDIT +SELINUX +IMA +APPARMOR +SMACK +SYSVINIT +UTMP +LIBCRYPTSETUP +GCRYPT +GNUTLS +ACL +XZ +LZ4 +SECCOMP +BLKID +ELFUTILS +KMOD -IDN2 +IDN -PCRE2 default-hierarchy=hybrid)
-> > > > [  104.340193] systemd[1]: Detected virtualization kvm.
-> > > > [  104.340196] systemd[1]: Detected architecture x86-64.
-> > > > [  104.359032] systemd[1]: Set hostname to <pc638>.
-> > > > [  105.740109] random: crng init done
-> > > > [  105.741267] systemd[1]: Reached target Remote File Systems.
-> > > > <snip>
-> > > > 
-> > > > 2 - 11 and second delay is between 32 - 104. So there are still users which must
-> > > > be waiting for "RCU" in a sync way.
+> > > > Yes will update.
 > > > 
-> > > I was wondering if you can compare boot logs and see which timestamp does the
-> > > slow down start from. That way, we can narrow down the callback. Also another
-> > > idea is, add "trace_event=rcu:rcu_callback,rcu:rcu_invoke_callback
-> > > ftrace_dump_on_oops" to the boot params, and then manually call
-> > > "tracing_off(); panic();" from the code at the first printk that seems off in
-> > > your comparison of good vs bad. For example, if "crng init done" timestamp is
-> > > off, put the "tracing_off(); panic();" there. Then grab the serial console
-> > > output to see what were the last callbacks that was queued/invoked.
+> > > Thank you!
+> > > 
+> > > > > If so, this could be an "if" statement with two statements in its "then"
+> > > > > clause, no "else" clause, and two statements following the "if" statement.
+> > > > 
+> > > > I don’t think we can get rid of the else part but I’ll see what it looks like.
+> > > 
+> > > In the function header, s/rhp/rhp_in/, then:
+> > > 
+> > > 	struct rcu_head *rhp = rhp_in;
+> > > 
+> > > And then:
+> > > 
+> > > 	if (lazy && rhp) {
+> > > 		rcu_cblist_enqueue(&rdp->nocb_bypass, rhp);
+> > > 		rhp = NULL;
 > > 
-> > We do seem to be in need of some way to quickly and easily locate the
-> > callback that needed to be _flush() due to a wakeup.
-> >
-> <snip>
-> diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-> index aeea9731ef80..fe1146d97f1a 100644
-> --- a/kernel/workqueue.c
-> +++ b/kernel/workqueue.c
-> @@ -1771,7 +1771,7 @@ bool queue_rcu_work(struct workqueue_struct *wq, struct rcu_work *rwork)
->  
->         if (!test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work))) {
->                 rwork->wq = wq;
-> -               call_rcu(&rwork->rcu, rcu_work_rcufn);
-> +               call_rcu_flush(&rwork->rcu, rcu_work_rcufn);
->                 return true;
->         }
->  
-> <snip>
+> > This enqueues on to the bypass list, where as if lazy && rhp, I want to queue
+> > the new rhp on to the main cblist. So the pseudo code in my patch is:
+> > 
+> > if (lazy and rhp) then
+> > 	1. flush bypass CBs on to main list.
+> > 	2. queue new CB on to main list.
 > 
-> ?
+> And the difference is here, correct?  I enqueue to the bypass list,
+> which is then flushed (in order) to the main list.  In contrast, you
+> flush the bypass list, then enqueue to the main list.  Either way,
+> the callback referenced by rhp ends up at the end of ->cblist.
 > 
-> But it does not fully solve my boot-up issue. Will debug tomorrow further.
+> Or am I on the wrong branch of this "if" statement?
 
-Ah, but at least its progress, thanks. Could you send me a patch to include
-in the next revision with details of this?
+But we have to flush first, and then queue the new one. Otherwise wouldn't
+the callbacks be invoked out of order? Or did I miss something?
 
-> > Might one more proactive approach be to use Coccinelle to locate such
-> > callback functions?  We might not want -all- callbacks that do wakeups
-> > to use call_rcu_flush(), but knowing which are which should speed up
-> > slow-boot debugging by quite a bit.
+> > else
+> > 	1. flush bypass CBs on to main list
+> > 	2. queue new CB on to bypass list.
 > > 
-> > Or is there a better way to do this?
+> > > 	}
+> > > 	rcu_cblist_flush_enqueue(&rcl, &rdp->nocb_bypass, rhp);
+> > > 	WRITE_ONCE(rdp->lazy_len, 0);
+> > > 
+> > > Or did I mess something up?
 > > 
-> I am not sure what Coccinelle is. If we had something automated that measures
-> a boot time and if needed does some profiling it would be good. Otherwise it
-> is a manual debugging mainly, IMHO.
+> > So the rcu_cblist_flush_enqueue() has to happen before the
+> > rcu_cblist_enqueue() to preserve the ordering of flushing into the main list,
+> > and queuing on to the main list for the "if". Where as in your snip, the
+> > order is reversed.
+> 
+> Did I pick the correct branch of the "if" statement above?  Or were you
+> instead talking about the "else" clause?
+> 
+> I would have been more worried about getting cblist->len right.
 
-Paul, What about using a default-off kernel CONFIG that splats on all lazy
-call_rcu() callbacks that do a wake up. We could use the trace hooks to do it
-in kernel I think. I can talk to Steve to get ideas on how to do that but I
-think it can be done purely from trace events (we might need a new
-trace_end_invoke_callback to fire after the callback is invoked). Thoughts?
+Hmm, I think my concern was more the ordering of callbacks, and moving the
+write to length should be Ok.
+
+> > If I consolidate it then, it looks like the following. However, it is a bit
+> > more unreadable. I could instead just take the WRITE_ONCE out of both if/else
+> > and move it to after the if/else, that would be cleanest. Does that sound
+> > good to you? Thanks!
+> 
+> Let's first figure out whether or not we are talking past one another.  ;-)
+
+Haha yeah :-)
 
 thanks,
 
  - Joel
 
+
+> 
+> 							Thanx, Paul
+> 
+> > ---8<-----------------------
+> > 
+> > diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> > index 1a182b9c4f6c..bd3f54d314e8 100644
+> > --- a/kernel/rcu/tree_nocb.h
+> > +++ b/kernel/rcu/tree_nocb.h
+> > @@ -327,10 +327,11 @@ static void wake_nocb_gp_defer(struct rcu_data *rdp, int waketype,
+> >   *
+> >   * Note that this function always returns true if rhp is NULL.
+> >   */
+> > -static bool rcu_nocb_do_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
+> > +static bool rcu_nocb_do_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp_in,
+> >  				     unsigned long j, unsigned long flush_flags)
+> >  {
+> >  	struct rcu_cblist rcl;
+> > +	struct rcu_head *rhp = rhp_in;
+> >  	bool lazy = flush_flags & FLUSH_BP_LAZY;
+> >  
+> >  	WARN_ON_ONCE(!rcu_rdp_is_offloaded(rdp));
+> > @@ -348,14 +349,13 @@ static bool rcu_nocb_do_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
+> >  	 * If the new CB requested was a lazy one, queue it onto the main
+> >  	 * ->cblist so we can take advantage of a sooner grade period.
+> >  	 */
+> > -	if (lazy && rhp) {
+> > -		rcu_cblist_flush_enqueue(&rcl, &rdp->nocb_bypass, NULL);
+> > -		rcu_cblist_enqueue(&rcl, rhp);
+> > -		WRITE_ONCE(rdp->lazy_len, 0);
+> > -	} else {
+> > -		rcu_cblist_flush_enqueue(&rcl, &rdp->nocb_bypass, rhp);
+> > -		WRITE_ONCE(rdp->lazy_len, 0);
+> > -	}
+> > +	if (lazy && rhp)
+> > +		rhp = NULL;
+> > +	rcu_cblist_flush_enqueue(&rcl, &rdp->nocb_bypass, rhp);
+> > +	if (lazy && rhp_in)
+> > +		rcu_cblist_enqueue(&rcl, rhp_in);
+> > +
+> > +	WRITE_ONCE(rdp->lazy_len, 0);
+> >  
+> >  	rcu_segcblist_insert_pend_cbs(&rdp->cblist, &rcl);
+> >  	WRITE_ONCE(rdp->nocb_bypass_first, j);
