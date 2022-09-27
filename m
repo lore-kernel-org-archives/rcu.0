@@ -2,163 +2,183 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9EA3BC07E9D
-	for <rcu@archiver.kernel.org>; Tue, 27 Sep 2022 01:16:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5470EC32771
+	for <rcu@archiver.kernel.org>; Tue, 27 Sep 2022 01:48:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229795AbiI0BQ1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 26 Sep 2022 21:16:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41522 "EHLO
+        id S229913AbiI0Bsm (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 26 Sep 2022 21:48:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229761AbiI0BQ0 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 26 Sep 2022 21:16:26 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAED2816AC
-        for <rcu@vger.kernel.org>; Mon, 26 Sep 2022 18:16:24 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id a20so5204275qtw.10
-        for <rcu@vger.kernel.org>; Mon, 26 Sep 2022 18:16:24 -0700 (PDT)
+        with ESMTP id S229538AbiI0Bsl (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 26 Sep 2022 21:48:41 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D624A7AA4;
+        Mon, 26 Sep 2022 18:48:39 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id bh13so8121429pgb.4;
+        Mon, 26 Sep 2022 18:48:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date;
-        bh=lJiwUX4WFZna6i47oXwO2n1sgR7EUT5w4JOS9Ff/DHs=;
-        b=DMfogkQLrXV5fFaGl5QnBXJa7ZN5DzeF4f2U4vdFC5Bk0q+dIUYqCWOTdHQuq6xnfu
-         KpLyKoqQSsth+BaQTI2X7/uwxJeeZd0+2VlMonOcKEWM7nVkMcQRCUcTSaNozxfhvtlx
-         k3TtMqbUGmFbQ/eA8CHc8+55Ro5tcKGCiLtf8=
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date;
+        bh=Bm3/izTH95Qq9qOWmlsGgVeEZswV/Zz9ewlv/cGnqFg=;
+        b=hsS5QPCREgczLtKQfYIXzWj0bkTL+WGEzYaWTOHT18AroGaB0GxploOH2TKP1GBxDq
+         aZnUILn4t1w5YK15z+5ZSb31NLZ7slcNgKUd4VUfemq1ofIHNGGHt/5nCxkkP9ipy5Oz
+         SyR7V5zAHgFnf+FNUKQ3ErYyO3VlGRvq9ocnTJF8z8ehj1d16iQxZ155dEjYC/oL99fz
+         Z+rS24Z2RA2xrbbNq6gpcBa7yZDLMmJSVa9fJG3LnxlPlQ36GWU+t0tN54fQlrRaLJaH
+         YyIM+Sh0+88vCxbZW1/joIwYNaV+4duaHMY79yghfRO9cO3wBoio23ONWNbdUM+f4glD
+         thLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date;
-        bh=lJiwUX4WFZna6i47oXwO2n1sgR7EUT5w4JOS9Ff/DHs=;
-        b=71Rd3fxOumYV/sThZkbKquupOThUqTer7BunyjlNfcvjUpnkJ8RG3mzYekiXzCecnM
-         4nwQCG5x1kRGMbnqCDw4cEQtJKkch0RetNt9ZMHjNc0i4oDq5Z5yGZDHZEnfR/iAY/6N
-         kYkULFny7mfrds/WUGoDeU9DjXw0hF4+DK5LKQs9WNxNLE5vRmqxjkzYxHSbOzYzQQK9
-         J9n3xTj8G9f8lDE0m6LL+FlSobjpYEnF69oG8KV8g2Tsi8rFA67wiUCt91La8g1epuDn
-         PGmLMxWL/sPYnN4cNSlOUFghRyjBQxDUTWfLkiNNU/gFgEAxopoRSW4qCUtJ4Is9Ru8J
-         pFxA==
-X-Gm-Message-State: ACrzQf35BMWrvzxTqKYWOaWNl1yxoIY3Eyr+iWCT9MMfrQf/xlu1y1Ex
-        FAO4C88nNrTc4y8WNg+hCWZ4Nw==
-X-Google-Smtp-Source: AMsMyM7DObqjxVRoIL4Z/FvfFYgotF8xYyo0sfNheDBWvuAyyuXEPzB7Ar+QtUWnfJu7rVHj5ArW5g==
-X-Received: by 2002:ac8:5748:0:b0:35b:ac34:ff37 with SMTP id 8-20020ac85748000000b0035bac34ff37mr20201051qtx.630.1664241383815;
-        Mon, 26 Sep 2022 18:16:23 -0700 (PDT)
-Received: from localhost (48.230.85.34.bc.googleusercontent.com. [34.85.230.48])
-        by smtp.gmail.com with ESMTPSA id e2-20020ac84e42000000b00338ae1f5421sm24217qtw.0.2022.09.26.18.16.23
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date;
+        bh=Bm3/izTH95Qq9qOWmlsGgVeEZswV/Zz9ewlv/cGnqFg=;
+        b=ySKG4/bQT5jhkO9HxkACvLBgLxv2VNLkhNxwEKdgj5hyprUb19+pD7042BfVK0eU5p
+         IctLJkN7xmqwnmNwxQn8szhCh0Q4Z5xevZpY28Nyzz6o0setWBeqdXmAMQ6cNO4QpHp7
+         JhLgTKmgqtK6Q/64iYMULu5QvjpVvzfjC+E95UMwlYUpwtBJ3xtv5p8EYKbVopG8yOQt
+         qnpZxfmWhkhZ0t7oxhTS3i1VwsJxh8qtIrW3GCXc2KM+LcMQ2+tdSpuNFBvN0dALdOvI
+         qZq03k5bD7UxZUVdu1lvl5DVROMAyTZ8uzrNbnz7hcHVam0JtO/9yCjTQoTTnvz3DlMp
+         L7jQ==
+X-Gm-Message-State: ACrzQf2ALV0e7QkHAhEg0E6G25F+uOPiiDC30gMs/ftZabYgUII/iSh+
+        3TpAdQOGLuy02xB0DFMnVlo=
+X-Google-Smtp-Source: AMsMyM5N5md6258CNNbPNXQkn6VOGEXW0FJ2mRiTSWRCcU2eQQmv9r3WV8QL3kknHdWC2kj9BbiNZw==
+X-Received: by 2002:a63:de16:0:b0:438:675c:9f30 with SMTP id f22-20020a63de16000000b00438675c9f30mr22753437pgg.294.1664243319058;
+        Mon, 26 Sep 2022 18:48:39 -0700 (PDT)
+Received: from localhost.localdomain ([199.101.192.35])
+        by smtp.gmail.com with ESMTPSA id q14-20020a17090311ce00b00178af82a000sm110774plh.122.2022.09.26.18.48.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Sep 2022 18:16:23 -0700 (PDT)
-Date:   Tue, 27 Sep 2022 01:16:23 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rushikesh.s.kadam@intel.com,
-        neeraj.iitr10@gmail.com, frederic@kernel.org, rostedt@goodmis.org
-Subject: Re: [PATCH v6 1/4] rcu: Make call_rcu() lazy to save power
-Message-ID: <YzJO58HXH6YYxmND@google.com>
-References: <20220926223534.GY4196@paulmck-ThinkPad-P17-Gen-1>
- <BE2B629D-B5D2-4ED0-944E-2F13E846047E@joelfernandes.org>
- <20220926235755.GD4196@paulmck-ThinkPad-P17-Gen-1>
+        Mon, 26 Sep 2022 18:48:38 -0700 (PDT)
+From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
+To:     mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
+        atrajeev@linux.vnet.ibm.com, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, lance@osuosl.org, paulmck@kernel.org,
+        rcu@vger.kernel.org
+Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>
+Subject: [PATCH linux-next][RFC] powerpc: avoid lockdep when we are offline
+Date:   Tue, 27 Sep 2022 09:48:23 +0800
+Message-Id: <20220927014823.11439-1-zhouzhouyi@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220926235755.GD4196@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Sep 26, 2022 at 04:57:55PM -0700, Paul E. McKenney wrote:
-[..]
-> > >>>>>> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-> > >>>>>> index 08605ce7379d..40ae36904825 100644
-> > >>>>>> --- a/include/linux/rcupdate.h
-> > >>>>>> +++ b/include/linux/rcupdate.h
-> > >>>>>> @@ -108,6 +108,13 @@ static inline int rcu_preempt_depth(void)
-> > >>>>>> 
-> > >>>>>> #endif /* #else #ifdef CONFIG_PREEMPT_RCU */
-> > >>>>>> 
-> > >>>>>> +#ifdef CONFIG_RCU_LAZY
-> > >>>>>> +void call_rcu_flush(struct rcu_head *head, rcu_callback_t func);
-> > >>>>>> +#else
-> > >>>>>> +static inline void call_rcu_flush(struct rcu_head *head,
-> > >>>>>> +        rcu_callback_t func) {  call_rcu(head, func); }
-> > >>>>>> +#endif
-> > >>>>>> +
-> > >>>>>> /* Internal to kernel */
-> > >>>>>> void rcu_init(void);
-> > >>>>>> extern int rcu_scheduler_active;
-> > >>>>>> diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
-> > >>>>>> index f53ad63b2bc6..edd632e68497 100644
-> > >>>>>> --- a/kernel/rcu/Kconfig
-> > >>>>>> +++ b/kernel/rcu/Kconfig
-> > >>>>>> @@ -314,4 +314,12 @@ config TASKS_TRACE_RCU_READ_MB
-> > >>>>>>      Say N here if you hate read-side memory barriers.
-> > >>>>>>      Take the default if you are unsure.
-> > >>>>>> 
-> > >>>>>> +config RCU_LAZY
-> > >>>>>> +    bool "RCU callback lazy invocation functionality"
-> > >>>>>> +    depends on RCU_NOCB_CPU
-> > >>>>>> +    default n
-> > >>>>>> +    help
-> > >>>>>> +      To save power, batch RCU callbacks and flush after delay, memory
-> > >>>>>> +      pressure or callback list growing too big.
-> > >>>>>> +
-> > >>>>>> 
-> > >>>>> Do you think you need this kernel option? Can we just consider and make
-> > >>>>> it a run-time configurable? For example much more users will give it a try,
-> > >>>>> so it will increase a coverage. By default it can be off.
-> > >>>>> 
-> > >>>>> Also you do not need to do:
-> > >>>>> 
-> > >>>>> #ifdef LAZY
-> > >>>> 
-> > >>>> How does the "LAZY" macro end up being runtime-configurable? That's static /
-> > >>>> compile time. Did I miss something?
-> > >>>> 
-> > >>> I am talking about removing if:
-> > >>> 
-> > >>> config RCU_LAZY
-> > >>> 
-> > >>> we might run into issues related to run-time switching though.
-> > >> 
-> > >> When we started off, Paul said he wanted it kernel CONFIGurable. I will defer
-> > >> to Paul on a decision for that. I prefer kernel CONFIG so people don't forget
-> > >> to pass a boot param.
-> > > 
-> > > I am fine with a kernel boot parameter for this one.  You guys were the
-> > > ones preferring Kconfig options.  ;-)
-> > 
-> > Yes I still prefer that.. ;-)
-> > 
-> > > But in that case, the CONFIG_RCU_NOCB_CPU would come into play to handle
-> > > the case where there is no bypass.
-> > 
-> > If you don’t mind, let’s do both like we did for NOCB_CPU_ALL. In which
-> > case, Vlad since this was your suggestion, would you be so kind to send a
-> > patch adding a boot parameter on top of the series? ;-). I’ll include it
-> > in the next version. I’d suggest keep the boot param default off and add
-> > a CONFIG option that forces the boot param to be turned on.
-> 
-> NOCB_CPU_ALL?  If you are thinking in terms of laziness/flushing being
-> done on a per-CPU basis among the rcu_nocbs CPUs, that sounds like
-> something for later.
+This is second version of my fix to PPC's  "WARNING: suspicious RCU usage",
+I improved my fix under Paul E. McKenney's guidance:
+Link: https://lore.kernel.org/lkml/20220914021528.15946-1-zhouzhouyi@gmail.com/T/
 
-Oh, no, I was just trying to bring that up as an example of making boot
-parameters and CONFIG options for the same thing.
+During the cpu offlining, the sub functions of xive_teardown_cpu will
+call __lock_acquire when CONFIG_LOCKDEP=y. The latter function will
+travel RCU protected list, so "WARNING: suspicious RCU usage" will be
+triggered.
 
-> Are you thinking in terms of Kconfig options that allow: (1) No laziness.
-> (2) Laziness on all rcu_nocbs CPUs, but only if specified by a boot
-> parameter.  (3) Laziness on all rcu_nocbs CPUs regardless of boot
-> parameter.  I could get behind that.
+Avoid lockdep when we are offline.
 
-Sure agreed, or we could just make it CONFIG_RCU_LAZY_DEFAULT=y and if boot
-param is specified, override the CONFIG. That will be the simplest and least
-confusing IMO.
+Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+---
+Dear PPC and RCU developers
 
-thanks :)
+I found this bug when trying to do rcutorture tests in ppc VM of
+Open Source Lab of Oregon State University
 
- - Joel
+console.log report following bug:
+[   37.635545][    T0] WARNING: suspicious RCU usage^M
+[   37.636409][    T0] 6.0.0-rc4-next-20220907-dirty #8 Not tainted^M
+[   37.637575][    T0] -----------------------------^M
+[   37.638306][    T0] kernel/locking/lockdep.c:3723 RCU-list traversed in non-reader section!!^M
+[   37.639651][    T0] ^M
+[   37.639651][    T0] other info that might help us debug this:^M
+[   37.639651][    T0] ^M
+[   37.641381][    T0] ^M
+[   37.641381][    T0] RCU used illegally from offline CPU!^M
+[   37.641381][    T0] rcu_scheduler_active = 2, debug_locks = 1^M
+[   37.667170][    T0] no locks held by swapper/6/0.^M
+[   37.668328][    T0] ^M
+[   37.668328][    T0] stack backtrace:^M
+[   37.669995][    T0] CPU: 6 PID: 0 Comm: swapper/6 Not tainted 6.0.0-rc4-next-20220907-dirty #8^M
+[   37.672777][    T0] Call Trace:^M
+[   37.673729][    T0] [c000000004653920] [c00000000097f9b4] dump_stack_lvl+0x98/0xe0 (unreliable)^M
+[   37.678579][    T0] [c000000004653960] [c0000000001f2eb8] lockdep_rcu_suspicious+0x148/0x16c^M
+[   37.680425][    T0] [c0000000046539f0] [c0000000001ed9b4] __lock_acquire+0x10f4/0x26e0^M
+[   37.682450][    T0] [c000000004653b30] [c0000000001efc2c] lock_acquire+0x12c/0x420^M
+[   37.684113][    T0] [c000000004653c20] [c0000000010d704c] _raw_spin_lock_irqsave+0x6c/0xc0^M
+[   37.686154][    T0] [c000000004653c60] [c0000000000c7b4c] xive_spapr_put_ipi+0xcc/0x150^M
+[   37.687879][    T0] [c000000004653ca0] [c0000000010c72a8] xive_cleanup_cpu_ipi+0xc8/0xf0^M
+[   37.689856][    T0] [c000000004653cf0] [c0000000010c7370] xive_teardown_cpu+0xa0/0xf0^M
+[   37.691877][    T0] [c000000004653d30] [c0000000000fba5c] pseries_cpu_offline_self+0x5c/0x100^M
+[   37.693882][    T0] [c000000004653da0] [c00000000005d2c4] arch_cpu_idle_dead+0x44/0x60^M
+[   37.695739][    T0] [c000000004653dc0] [c0000000001c740c] do_idle+0x16c/0x3d0^M
+[   37.697536][    T0] [c000000004653e70] [c0000000001c7a1c] cpu_startup_entry+0x3c/0x40^M
+[   37.699694][    T0] [c000000004653ea0] [c00000000005ca20] start_secondary+0x6c0/0xb50^M
+[   37.701742][    T0] [c000000004653f90] [c00000000000d054] start_secondary_prolog+0x10/0x14^M
 
 
+Tested on PPC VM of Open Source Lab of Oregon State University.
+Test results show that although "WARNING: suspicious RCU usage" has gone,
+and there are less "BUG: soft lockup" reports than the original kernel
+(9 vs 13), which sounds good ;-)
 
+But after my modification, results-rcutorture-kasan/SRCU-P/console.log.diags
+shows a new warning:
+[  222.289242][  T110] WARNING: CPU: 6 PID: 110 at kernel/rcu/rcutorture.c:2806 rcu_torture_fwd_prog+0xc88/0xdd0
 
-> 
+I guess above new warning also exits in original kernel, so I write a tiny test script as follows:
+
+#!/bin/sh
+
+COUNTER=0
+while [ $COUNTER -lt 1000 ] ; do
+    qemu-system-ppc64 -nographic -smp cores=8,threads=1 -net none -M pseries -nodefaults -device spapr-vscsi -serial file:/tmp/console.log -m 2G -kernel /tmp/vmlinux -append "debug_boot_weak_hash panic=-1 console=ttyS0 rcupdate.rcu_cpu_stall_suppress_at_boot=1 torture.disable_onoff_at_boot rcupdate.rcu_task_stall_timeout=30000 rcutorture.torture_type=srcud rcupdate.rcu_self_test=1 rcutorture.fwd_progress=3 srcutree.big_cpu_lim=5 rcutorture.onoff_interval=1000 rcutorture.onoff_holdoff=30 rcutorture.n_barrier_cbs=4 rcutorture.stat_interval=15 rcutorture.shutdown_secs=420 rcutorture.test_no_idle_hz=1 rcutorture.verbose=1"&
+    qemu_pid=$!
+    cd ~/next1/linux-next
+    make clean
+#I use "make vmlinux -j 8" to create heavy background jitter
+    make vmlinux -j 8  > /dev/null 2>&1 
+    make_pid=$!
+    wait $qemu_pid
+    kill $qemu_pid
+    kill $make_id
+    if grep -q WARN /tmp/console.log;
+    then
+        echo $COUNTER > /tmp/counter
+        exit
+    fi
+    COUNTER=$(($COUNTER+1))
+done
+
+Above test shows that original kernel also warn about
+"WARNING: CPU: 6 PID: 110 at kernel/rcu/rcutorture.c:2806 rcu_torture_fwd_prog+0xc88/0xdd0"
+
+But I am not very sure about my results, so I still add a [RFC] to my subject line.
+
+Thank all of you for your guidance and encouragement ;-)
+
+Cheers
+Zhouyi
+--
+ arch/powerpc/platforms/pseries/hotplug-cpu.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/arch/powerpc/platforms/pseries/hotplug-cpu.c b/arch/powerpc/platforms/pseries/hotplug-cpu.c
+index e0a7ac5db15d..e47098f00da1 100644
+--- a/arch/powerpc/platforms/pseries/hotplug-cpu.c
++++ b/arch/powerpc/platforms/pseries/hotplug-cpu.c
+@@ -64,10 +64,15 @@ static void pseries_cpu_offline_self(void)
+ 
+ 	local_irq_disable();
+ 	idle_task_exit();
++	/* prevent lockdep code from traveling RCU protected list
++	 * when we are offline.
++	 */
++	lockdep_off();
+ 	if (xive_enabled())
+ 		xive_teardown_cpu();
+ 	else
+ 		xics_teardown_cpu();
++	lockdep_on();
+ 
+ 	unregister_slb_shadow(hwcpu);
+ 	rtas_stop_self();
+-- 
+2.25.1
+
