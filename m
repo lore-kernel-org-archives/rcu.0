@@ -2,187 +2,234 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 91069C07E9D
-	for <rcu@archiver.kernel.org>; Tue, 27 Sep 2022 03:24:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2CC70C6FA83
+	for <rcu@archiver.kernel.org>; Tue, 27 Sep 2022 04:25:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229751AbiI0DYa (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 26 Sep 2022 23:24:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52804 "EHLO
+        id S229867AbiI0EZg (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 27 Sep 2022 00:25:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229968AbiI0DXv (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 26 Sep 2022 23:23:51 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53BC1A6ACB;
-        Mon, 26 Sep 2022 20:22:50 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D569AB80D31;
-        Tue, 27 Sep 2022 03:22:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66658C433D6;
-        Tue, 27 Sep 2022 03:22:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1664248967;
-        bh=HQEb/Oidt7dRB+kCBME6ip2wUHKCWzwM5kwmGdGckcs=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=KtiXKt7Na1finD2MEee92tdnWpmnz2jSppx4euCslelpO13u2lCEvB9E/Phw5/XqO
-         j5MNBmwmQrHl2oIzPoZnmZJjNZPpY+DPRZyRQluZlULt2O/GB3iBSYmfw9ig7pV4pe
-         /aQo6qvqHCz/O8sd680Ho5xkUwa9Zcz0FToB0R8rX2Jy8wVRsrHWLG/m8DgW///6m3
-         GXcV7XGGtaGISWE4mOeOOQtqNCbxEKHayQ0bzFokPc4RPgaLP87ZuxcXVfBEe+XFyT
-         uX9mfTeE2ZeyZXf/1HN4Ja4J4yUnAHYqH/gm2zbUTCFuL8JRG9+h9QdoJTv3gsEWh8
-         fYIrZiYHgpu9Q==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 009C55C0B39; Mon, 26 Sep 2022 20:22:46 -0700 (PDT)
-Date:   Mon, 26 Sep 2022 20:22:46 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rushikesh.s.kadam@intel.com,
-        neeraj.iitr10@gmail.com, frederic@kernel.org, rostedt@goodmis.org
-Subject: Re: [PATCH v6 1/4] rcu: Make call_rcu() lazy to save power
-Message-ID: <20220927032246.GH4196@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220926223222.GX4196@paulmck-ThinkPad-P17-Gen-1>
- <8344B0AB-608E-44DA-8FEE-3FE56EDF9172@joelfernandes.org>
- <20220926235944.GE4196@paulmck-ThinkPad-P17-Gen-1>
- <YzJWoRui7mUEDtox@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YzJWoRui7mUEDtox@google.com>
+        with ESMTP id S229889AbiI0EZ3 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 27 Sep 2022 00:25:29 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09D396526F;
+        Mon, 26 Sep 2022 21:25:28 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id 3so8377111pga.1;
+        Mon, 26 Sep 2022 21:25:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:references:to:from:subject:message-id:date
+         :content-transfer-encoding:mime-version:from:to:cc:subject:date;
+        bh=LxbOuUcp4Fl9hDEOZUCmihBUghEH6LuaJsPJ+RBDT+I=;
+        b=Yq57LBzDbv3oiuzWFlq6XSE7gOd1EqfBKzoiQRWN3okeLKqWjn+DJN/0LKvTpID8V+
+         WhTnX2rem4x42LZEr+1C344NB2Pp9P49cc0kOCZO6lsHqFUTsyhLfkNbKscRHuh7lmIn
+         L0dV++ksHe8sAFNeNCnTXHbxg/Nera/5JrEBPkD8XDX6dPYqKiwZXXIvt4NTUfrnFiFV
+         8Vnzunyx22JaK32NUqadIR+KaR9wX5wWqC9rMwHPzPRay5utMcPNrzxTXRLQeDH56+I0
+         h891SOpl2SCBWq1e3FJ36OyZQ/RBVxkD94GkQyyfTce+vLULVign5e5HDc5Yk+dfq9ER
+         Shgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:references:to:from:subject:message-id:date
+         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
+         :cc:subject:date;
+        bh=LxbOuUcp4Fl9hDEOZUCmihBUghEH6LuaJsPJ+RBDT+I=;
+        b=C/50Yw+r02gA2gMmQI+3CJvMwLFrhcGoankS/5eEG5mReThy1+blo+c/Jphk7qqxR7
+         70U+gnqnADjiuPEi2sC17curbyb0GLse9CDC+/b8ZLXjyTxzN4gAnxyABPngqaYmowjQ
+         JuokAAASAoaAVmdIBlP1zfhJ/i8vbfoaUaMXpkgN8KUr1hJfRP8T/No4V8WmI7dLLDpc
+         5EQxO4zXBU17uaOz2Pk31mY82gladWxi0uy1FGWUSlW6JriRxxwnEsgrxR6Zl/UIBa3N
+         eqta2CyCSaR/E9m7Rov9j4vCkfs2gWlbkdpYfTigemsx2IzTf864SOeRZGUVy6NfVN2l
+         mmcQ==
+X-Gm-Message-State: ACrzQf1NMm4XKGCK3rmiBkdYDjfbYgrdSqnfk1Snfq/zzQgoLj1s1TNU
+        bgokIi0L7aOwl3LTnw3IGQo=
+X-Google-Smtp-Source: AMsMyM4jbwJBH9/KA7yuA+aWNSWhwZqGyrtNeoPNi1T9QPhwZLiMgk1/cvQpoKtdDEHGUxkZuzOUWA==
+X-Received: by 2002:a63:5144:0:b0:43b:ed4b:224 with SMTP id r4-20020a635144000000b0043bed4b0224mr23144492pgl.594.1664252727543;
+        Mon, 26 Sep 2022 21:25:27 -0700 (PDT)
+Received: from localhost (193-116-92-8.tpgi.com.au. [193.116.92.8])
+        by smtp.gmail.com with ESMTPSA id y24-20020a634958000000b0043941566481sm353486pgk.39.2022.09.26.21.25.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Sep 2022 21:25:26 -0700 (PDT)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Tue, 27 Sep 2022 14:25:14 +1000
+Message-Id: <CN6WCMKCWHOG.LT2QV3910UJ2@bobo>
+Subject: Re: [PATCH linux-next][RFC] powerpc: avoid lockdep when we are
+ offline
+From:   "Nicholas Piggin" <npiggin@gmail.com>
+To:     "Zhouyi Zhou" <zhouzhouyi@gmail.com>, <mpe@ellerman.id.au>,
+        <christophe.leroy@csgroup.eu>, <atrajeev@linux.vnet.ibm.com>,
+        <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+        <lance@osuosl.org>, <paulmck@kernel.org>, <rcu@vger.kernel.org>
+X-Mailer: aerc 0.11.0
+References: <20220927014823.11439-1-zhouzhouyi@gmail.com>
+In-Reply-To: <20220927014823.11439-1-zhouzhouyi@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Sep 27, 2022 at 01:49:21AM +0000, Joel Fernandes wrote:
-> On Mon, Sep 26, 2022 at 04:59:44PM -0700, Paul E. McKenney wrote:
-> > On Mon, Sep 26, 2022 at 07:47:50PM -0400, Joel Fernandes wrote:
-> > > 
-> > > 
-> > > > On Sep 26, 2022, at 6:32 PM, Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > > 
-> > > > ﻿On Mon, Sep 26, 2022 at 09:02:21PM +0000, Joel Fernandes wrote:
-> > > >> On Mon, Sep 26, 2022 at 09:32:44PM +0200, Uladzislau Rezki wrote:
-> > > >> [...]
-> > > >>>>>> On my KVM machine the boot time is affected:
-> > > >>>>>> 
-> > > >>>>>> <snip>
-> > > >>>>>> [    2.273406] e1000 0000:00:03.0 eth0: Intel(R) PRO/1000 Network Connection
-> > > >>>>>> [   11.945283] e1000 0000:00:03.0 ens3: renamed from eth0
-> > > >>>>>> [   22.165198] sr 1:0:0:0: [sr0] scsi3-mmc drive: 4x/4x cd/rw xa/form2 tray
-> > > >>>>>> [   22.165206] cdrom: Uniform CD-ROM driver Revision: 3.20
-> > > >>>>>> [   32.406981] sr 1:0:0:0: Attached scsi CD-ROM sr0
-> > > >>>>>> [  104.115418] process '/usr/bin/fstype' started with executable stack
-> > > >>>>>> [  104.170142] EXT4-fs (sda1): mounted filesystem with ordered data mode. Quota mode: none.
-> > > >>>>>> [  104.340125] systemd[1]: systemd 241 running in system mode. (+PAM +AUDIT +SELINUX +IMA +APPARMOR +SMACK +SYSVINIT +UTMP +LIBCRYPTSETUP +GCRYPT +GNUTLS +ACL +XZ +LZ4 +SECCOMP +BLKID +ELFUTILS +KMOD -IDN2 +IDN -PCRE2 default-hierarchy=hybrid)
-> > > >>>>>> [  104.340193] systemd[1]: Detected virtualization kvm.
-> > > >>>>>> [  104.340196] systemd[1]: Detected architecture x86-64.
-> > > >>>>>> [  104.359032] systemd[1]: Set hostname to <pc638>.
-> > > >>>>>> [  105.740109] random: crng init done
-> > > >>>>>> [  105.741267] systemd[1]: Reached target Remote File Systems.
-> > > >>>>>> <snip>
-> > > >>>>>> 
-> > > >>>>>> 2 - 11 and second delay is between 32 - 104. So there are still users which must
-> > > >>>>>> be waiting for "RCU" in a sync way.
-> > > >>>>> 
-> > > >>>>> I was wondering if you can compare boot logs and see which timestamp does the
-> > > >>>>> slow down start from. That way, we can narrow down the callback. Also another
-> > > >>>>> idea is, add "trace_event=rcu:rcu_callback,rcu:rcu_invoke_callback
-> > > >>>>> ftrace_dump_on_oops" to the boot params, and then manually call
-> > > >>>>> "tracing_off(); panic();" from the code at the first printk that seems off in
-> > > >>>>> your comparison of good vs bad. For example, if "crng init done" timestamp is
-> > > >>>>> off, put the "tracing_off(); panic();" there. Then grab the serial console
-> > > >>>>> output to see what were the last callbacks that was queued/invoked.
-> > > >>>> 
-> > > >>>> We do seem to be in need of some way to quickly and easily locate the
-> > > >>>> callback that needed to be _flush() due to a wakeup.
-> > > >>>> 
-> > > >>> <snip>
-> > > >>> diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-> > > >>> index aeea9731ef80..fe1146d97f1a 100644
-> > > >>> --- a/kernel/workqueue.c
-> > > >>> +++ b/kernel/workqueue.c
-> > > >>> @@ -1771,7 +1771,7 @@ bool queue_rcu_work(struct workqueue_struct *wq, struct rcu_work *rwork)
-> > > >>> 
-> > > >>>        if (!test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work))) {
-> > > >>>                rwork->wq = wq;
-> > > >>> -               call_rcu(&rwork->rcu, rcu_work_rcufn);
-> > > >>> +               call_rcu_flush(&rwork->rcu, rcu_work_rcufn);
-> > > >>>                return true;
-> > > >>>        }
-> > > >>> 
-> > > >>> <snip>
-> > > >>> 
-> > > >>> ?
-> > > >>> 
-> > > >>> But it does not fully solve my boot-up issue. Will debug tomorrow further.
-> > > >> 
-> > > >> Ah, but at least its progress, thanks. Could you send me a patch to include
-> > > >> in the next revision with details of this?
-> > > >> 
-> > > >>>> Might one more proactive approach be to use Coccinelle to locate such
-> > > >>>> callback functions?  We might not want -all- callbacks that do wakeups
-> > > >>>> to use call_rcu_flush(), but knowing which are which should speed up
-> > > >>>> slow-boot debugging by quite a bit.
-> > > >>>> 
-> > > >>>> Or is there a better way to do this?
-> > > >>>> 
-> > > >>> I am not sure what Coccinelle is. If we had something automated that measures
-> > > >>> a boot time and if needed does some profiling it would be good. Otherwise it
-> > > >>> is a manual debugging mainly, IMHO.
-> > > >> 
-> > > >> Paul, What about using a default-off kernel CONFIG that splats on all lazy
-> > > >> call_rcu() callbacks that do a wake up. We could use the trace hooks to do it
-> > > >> in kernel I think. I can talk to Steve to get ideas on how to do that but I
-> > > >> think it can be done purely from trace events (we might need a new
-> > > >> trace_end_invoke_callback to fire after the callback is invoked). Thoughts?
-> > > > 
-> > > > Could you look for wakeups invoked between trace_rcu_batch_start() and
-> > > > trace_rcu_batch_end() that are not from interrupt context?  This would
-> > > > of course need to be associated with a task rather than a CPU.
-> > > 
-> > > Yes this sounds good, but we also need to know if the callbacks are lazy or not since wake-up is ok from a non lazy one. I think I’ll need a table to track that at queuing time.
-> > 
-> > Agreed.
-> > 
-> > > > Note that you would need to check for wakeups from interrupt handlers
-> > > > even with the extra trace_end_invoke_callback().  The window where an
-> > > > interrupt handler could do a wakeup would be reduced, but not eliminated.
-> > > 
-> > > True! Since this is a  debugging option, can we not just disable interrupts across callback invocation?
-> > 
-> > Not without terminally annoying lockdep, at least for any RCU callbacks
-> > doing things like spin_lock_bh().
-> > 
-> 
-> Sorry if my last email bounced. Looks like my iPhone betrayed me this once ;)
-> 
-> I was thinking something like this:
-> 1. Put a flag in rcu_head to mark CBs as lazy.
-> 2. Add a trace_rcu_invoke_callback_end() trace point.
-> 
-> Both #1 and #2 can be a debug CONFIG option. #2 can be a tracepoint and not
-> exposed if needed.
-> 
-> 3. Put an in-kernel probe on both trace_rcu_invoke_callback_start() and
-> trace_rcu_invoke_callback_end(). In the start probe, set a per-task flag if
-> the current CB is lazy. In the end probe, clear it.
-> 
-> 4. Put an in-kernel probe on trace_rcu_sched_wakeup().
-> 
-> Splat in the wake up probe if:
-> 1. Hard IRQs are on.
-> 2. The per-cpu flag is set.
-> 
-> #3 actually does not even need probes if we can directly call the functions
-> from the rcu_do_batch() function.
+On Tue Sep 27, 2022 at 11:48 AM AEST, Zhouyi Zhou wrote:
+> This is second version of my fix to PPC's  "WARNING: suspicious RCU usage=
+",
+> I improved my fix under Paul E. McKenney's guidance:
+> Link: https://lore.kernel.org/lkml/20220914021528.15946-1-zhouzhouyi@gmai=
+l.com/T/
+>
+> During the cpu offlining, the sub functions of xive_teardown_cpu will
+> call __lock_acquire when CONFIG_LOCKDEP=3Dy. The latter function will
+> travel RCU protected list, so "WARNING: suspicious RCU usage" will be
+> triggered.
+>
+> Avoid lockdep when we are offline.
 
-This is fine for an experiment or a debugging session, but a solution
-based totally on instrumentation would be better for production use.
+I don't see how this is safe. If RCU is no longer watching the CPU then
+the memory it is accessing here could be concurrently freed. I think the
+warning is valid.
 
-> I'll work on it in the morning and also look into Vlad's config.
+powerpc's problem is that cpuhp_report_idle_dead() is called before
+arch_cpu_idle_dead(), so it must not rely on any RCU protection there.
+I would say xive cleanup just needs to be done earlier. I wonder why it
+is not done in __cpu_disable or thereabouts, that's where the interrupt
+controller is supposed to be stopped.
 
-Sounds good!
+Thanks,
+Nick
 
-							Thanx, Paul
+>
+> Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+> ---
+> Dear PPC and RCU developers
+>
+> I found this bug when trying to do rcutorture tests in ppc VM of
+> Open Source Lab of Oregon State University
+>
+> console.log report following bug:
+> [   37.635545][    T0] WARNING: suspicious RCU usage^M
+> [   37.636409][    T0] 6.0.0-rc4-next-20220907-dirty #8 Not tainted^M
+> [   37.637575][    T0] -----------------------------^M
+> [   37.638306][    T0] kernel/locking/lockdep.c:3723 RCU-list traversed i=
+n non-reader section!!^M
+> [   37.639651][    T0] ^M
+> [   37.639651][    T0] other info that might help us debug this:^M
+> [   37.639651][    T0] ^M
+> [   37.641381][    T0] ^M
+> [   37.641381][    T0] RCU used illegally from offline CPU!^M
+> [   37.641381][    T0] rcu_scheduler_active =3D 2, debug_locks =3D 1^M
+> [   37.667170][    T0] no locks held by swapper/6/0.^M
+> [   37.668328][    T0] ^M
+> [   37.668328][    T0] stack backtrace:^M
+> [   37.669995][    T0] CPU: 6 PID: 0 Comm: swapper/6 Not tainted 6.0.0-rc=
+4-next-20220907-dirty #8^M
+> [   37.672777][    T0] Call Trace:^M
+> [   37.673729][    T0] [c000000004653920] [c00000000097f9b4] dump_stack_l=
+vl+0x98/0xe0 (unreliable)^M
+> [   37.678579][    T0] [c000000004653960] [c0000000001f2eb8] lockdep_rcu_=
+suspicious+0x148/0x16c^M
+> [   37.680425][    T0] [c0000000046539f0] [c0000000001ed9b4] __lock_acqui=
+re+0x10f4/0x26e0^M
+> [   37.682450][    T0] [c000000004653b30] [c0000000001efc2c] lock_acquire=
++0x12c/0x420^M
+> [   37.684113][    T0] [c000000004653c20] [c0000000010d704c] _raw_spin_lo=
+ck_irqsave+0x6c/0xc0^M
+> [   37.686154][    T0] [c000000004653c60] [c0000000000c7b4c] xive_spapr_p=
+ut_ipi+0xcc/0x150^M
+> [   37.687879][    T0] [c000000004653ca0] [c0000000010c72a8] xive_cleanup=
+_cpu_ipi+0xc8/0xf0^M
+> [   37.689856][    T0] [c000000004653cf0] [c0000000010c7370] xive_teardow=
+n_cpu+0xa0/0xf0^M
+> [   37.691877][    T0] [c000000004653d30] [c0000000000fba5c] pseries_cpu_=
+offline_self+0x5c/0x100^M
+> [   37.693882][    T0] [c000000004653da0] [c00000000005d2c4] arch_cpu_idl=
+e_dead+0x44/0x60^M
+> [   37.695739][    T0] [c000000004653dc0] [c0000000001c740c] do_idle+0x16=
+c/0x3d0^M
+> [   37.697536][    T0] [c000000004653e70] [c0000000001c7a1c] cpu_startup_=
+entry+0x3c/0x40^M
+> [   37.699694][    T0] [c000000004653ea0] [c00000000005ca20] start_second=
+ary+0x6c0/0xb50^M
+> [   37.701742][    T0] [c000000004653f90] [c00000000000d054] start_second=
+ary_prolog+0x10/0x14^M
+>
+>
+> Tested on PPC VM of Open Source Lab of Oregon State University.
+> Test results show that although "WARNING: suspicious RCU usage" has gone,
+> and there are less "BUG: soft lockup" reports than the original kernel
+> (9 vs 13), which sounds good ;-)
+>
+> But after my modification, results-rcutorture-kasan/SRCU-P/console.log.di=
+ags
+> shows a new warning:
+> [  222.289242][  T110] WARNING: CPU: 6 PID: 110 at kernel/rcu/rcutorture.=
+c:2806 rcu_torture_fwd_prog+0xc88/0xdd0
+>
+> I guess above new warning also exits in original kernel, so I write a tin=
+y test script as follows:
+>
+> #!/bin/sh
+>
+> COUNTER=3D0
+> while [ $COUNTER -lt 1000 ] ; do
+>     qemu-system-ppc64 -nographic -smp cores=3D8,threads=3D1 -net none -M =
+pseries -nodefaults -device spapr-vscsi -serial file:/tmp/console.log -m 2G=
+ -kernel /tmp/vmlinux -append "debug_boot_weak_hash panic=3D-1 console=3Dtt=
+yS0 rcupdate.rcu_cpu_stall_suppress_at_boot=3D1 torture.disable_onoff_at_bo=
+ot rcupdate.rcu_task_stall_timeout=3D30000 rcutorture.torture_type=3Dsrcud =
+rcupdate.rcu_self_test=3D1 rcutorture.fwd_progress=3D3 srcutree.big_cpu_lim=
+=3D5 rcutorture.onoff_interval=3D1000 rcutorture.onoff_holdoff=3D30 rcutort=
+ure.n_barrier_cbs=3D4 rcutorture.stat_interval=3D15 rcutorture.shutdown_sec=
+s=3D420 rcutorture.test_no_idle_hz=3D1 rcutorture.verbose=3D1"&
+>     qemu_pid=3D$!
+>     cd ~/next1/linux-next
+>     make clean
+> #I use "make vmlinux -j 8" to create heavy background jitter
+>     make vmlinux -j 8  > /dev/null 2>&1=20
+>     make_pid=3D$!
+>     wait $qemu_pid
+>     kill $qemu_pid
+>     kill $make_id
+>     if grep -q WARN /tmp/console.log;
+>     then
+>         echo $COUNTER > /tmp/counter
+>         exit
+>     fi
+>     COUNTER=3D$(($COUNTER+1))
+> done
+>
+> Above test shows that original kernel also warn about
+> "WARNING: CPU: 6 PID: 110 at kernel/rcu/rcutorture.c:2806 rcu_torture_fwd=
+_prog+0xc88/0xdd0"
+>
+> But I am not very sure about my results, so I still add a [RFC] to my sub=
+ject line.
+>
+> Thank all of you for your guidance and encouragement ;-)
+>
+> Cheers
+> Zhouyi
+> --
+>  arch/powerpc/platforms/pseries/hotplug-cpu.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
+> diff --git a/arch/powerpc/platforms/pseries/hotplug-cpu.c b/arch/powerpc/=
+platforms/pseries/hotplug-cpu.c
+> index e0a7ac5db15d..e47098f00da1 100644
+> --- a/arch/powerpc/platforms/pseries/hotplug-cpu.c
+> +++ b/arch/powerpc/platforms/pseries/hotplug-cpu.c
+> @@ -64,10 +64,15 @@ static void pseries_cpu_offline_self(void)
+> =20
+>  	local_irq_disable();
+>  	idle_task_exit();
+> +	/* prevent lockdep code from traveling RCU protected list
+> +	 * when we are offline.
+> +	 */
+> +	lockdep_off();
+>  	if (xive_enabled())
+>  		xive_teardown_cpu();
+>  	else
+>  		xics_teardown_cpu();
+> +	lockdep_on();
+> =20
+>  	unregister_slb_shadow(hwcpu);
+>  	rtas_stop_self();
+> --=20
+> 2.25.1
+
