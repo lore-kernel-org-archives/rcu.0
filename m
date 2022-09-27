@@ -2,189 +2,140 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 16F03C6FA82
-	for <rcu@archiver.kernel.org>; Tue, 27 Sep 2022 15:59:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 77533C54EE9
+	for <rcu@archiver.kernel.org>; Tue, 27 Sep 2022 18:51:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231499AbiI0P7r (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 27 Sep 2022 11:59:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33444 "EHLO
+        id S229631AbiI0SvY (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 27 Sep 2022 14:51:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230118AbiI0P7q (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 27 Sep 2022 11:59:46 -0400
+        with ESMTP id S229951AbiI0SvX (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 27 Sep 2022 14:51:23 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30321272D;
-        Tue, 27 Sep 2022 08:59:44 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 019B914AD4E
+        for <rcu@vger.kernel.org>; Tue, 27 Sep 2022 11:51:22 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A07D161A5E;
-        Tue, 27 Sep 2022 15:59:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 010CEC433C1;
-        Tue, 27 Sep 2022 15:59:42 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 920E161B33
+        for <rcu@vger.kernel.org>; Tue, 27 Sep 2022 18:51:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5103C433D6;
+        Tue, 27 Sep 2022 18:51:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1664294383;
-        bh=yKBA+mhcyl7el7HrbsJjrF+9PpXqNwzgQsopCdVv6YY=;
+        s=k20201202; t=1664304682;
+        bh=n33ey5ZgxV5n3qg7TAfLj9YMWFz9aiRkc41sZdN6zyY=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=cRGiIfZGp38IjvdJTXJjrl28kSzQVipJiDp/Otr9+q2UUcNdWAhdTLw16go9G+E42
-         hVHXmG2+LcXelKEA+WKjw0Q5RNQa2DPdClebJxVaYdEfiU/Ne0ihPR+lsf6MFD1uDj
-         KIeOhJKyb7SZG0e4ZY45U2yz7ZicqHoDBqMMlsMLuSeehyy/7XfAiQIVno1nk1QwzK
-         y9OyK3136CczGKGnk0M9dVpDNOEAMUZqH/Dn3bZDvWVM1VcQgWKOszAm8YKbMFe0gw
-         PCIhk/ePgc7mt2MXJrZ9KFi61mDF0DwBkoIbdarHyVeoddpE5mV2z6Sd4zMXRbGiVd
-         pSngXRXn30kOw==
+        b=KF0tj6WS9YjecHNikYoZoEb01zxscbnLOIJUqjvEOMCXVsR53TePi00+y5nYdKTMe
+         1w5ltvDNnKfaQQQVEN6PXu6uwZkrILvwz+6AYgYGlQ5nfA0Xlz8yXg5/SoHCDZ9vv1
+         yZqR11anwver1SBstm6qYmnb6dWgq2GewOpYd83RmUUQTf/LDwq2MJbGaSC2iUt2S/
+         IrPaMARha2b+oTpdkIthag4NEHrdq+4ADKZCqkcqnTLqlCHKgHquFBVG3qxPWacUor
+         RYpY1hYgOaKF5M2SVmRn2Y5HQphrxvfs8Q3zg6y/3QtJg6gIpi25SVRP7u2HQJHc96
+         wXfwEhBepVNKw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 8F7135C0829; Tue, 27 Sep 2022 08:59:42 -0700 (PDT)
-Date:   Tue, 27 Sep 2022 08:59:42 -0700
+        id 896F65C066D; Tue, 27 Sep 2022 11:51:21 -0700 (PDT)
+Date:   Tue, 27 Sep 2022 11:51:21 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rushikesh.s.kadam@intel.com,
-        neeraj.iitr10@gmail.com, frederic@kernel.org, rostedt@goodmis.org
-Subject: Re: [PATCH v6 1/4] rcu: Make call_rcu() lazy to save power
-Message-ID: <20220927155942.GL4196@paulmck-ThinkPad-P17-Gen-1>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     Yipeng Zou <zouyipeng@huawei.com>, rcu@vger.kernel.org,
+        quic_neeraju@quicinc.com, josh@joshtriplett.org,
+        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+        jiangshanlai@gmail.com, joel@joelfernandes.org,
+        rafael.j.wysocki@intel.com, peterz@infradead.org
+Subject: Re: [PATCH] rcu: remove rcu_is_idle_cpu
+Message-ID: <20220927185121.GU4196@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20220926223222.GX4196@paulmck-ThinkPad-P17-Gen-1>
- <8344B0AB-608E-44DA-8FEE-3FE56EDF9172@joelfernandes.org>
- <20220926235944.GE4196@paulmck-ThinkPad-P17-Gen-1>
- <YzJWoRui7mUEDtox@google.com>
- <20220927032246.GH4196@paulmck-ThinkPad-P17-Gen-1>
- <YzL1JauFkeLEMgqV@google.com>
- <20220927141403.GJ4196@paulmck-ThinkPad-P17-Gen-1>
- <YzMHQPStqfm7ll/P@google.com>
- <20220927143020.GK4196@paulmck-ThinkPad-P17-Gen-1>
- <YzMVzpvvHbbkFMs8@google.com>
+References: <20220926015827.227050-1-zouyipeng@huawei.com>
+ <20220926203629.GA183228@lothringen>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YzMVzpvvHbbkFMs8@google.com>
+In-Reply-To: <20220926203629.GA183228@lothringen>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Sep 27, 2022 at 03:25:02PM +0000, Joel Fernandes wrote:
-> On Tue, Sep 27, 2022 at 07:30:20AM -0700, Paul E. McKenney wrote:
-> > On Tue, Sep 27, 2022 at 02:22:56PM +0000, Joel Fernandes wrote:
-> > > On Tue, Sep 27, 2022 at 07:14:03AM -0700, Paul E. McKenney wrote:
-> > > > On Tue, Sep 27, 2022 at 01:05:41PM +0000, Joel Fernandes wrote:
-> > > > > On Mon, Sep 26, 2022 at 08:22:46PM -0700, Paul E. McKenney wrote:
-> > > > > [..]
-> > > > > > > > > >>> --- a/kernel/workqueue.c
-> > > > > > > > > >>> +++ b/kernel/workqueue.c
-> > > > > > > > > >>> @@ -1771,7 +1771,7 @@ bool queue_rcu_work(struct workqueue_struct *wq, struct rcu_work *rwork)
-> > > > > > > > > >>> 
-> > > > > > > > > >>>        if (!test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work))) {
-> > > > > > > > > >>>                rwork->wq = wq;
-> > > > > > > > > >>> -               call_rcu(&rwork->rcu, rcu_work_rcufn);
-> > > > > > > > > >>> +               call_rcu_flush(&rwork->rcu, rcu_work_rcufn);
-> > > > > > > > > >>>                return true;
-> > > > > > > > > >>>        }
-> > > > > > > > > >>> 
-> > > > > > > > > >>> <snip>
-> > > > > > > > > >>> 
-> > > > > > > > > >>> ?
-> > > > > > > > > >>> 
-> > > > > > > > > >>> But it does not fully solve my boot-up issue. Will debug tomorrow further.
-> > > > > > > > > >> 
-> > > > > > > > > >> Ah, but at least its progress, thanks. Could you send me a patch to include
-> > > > > > > > > >> in the next revision with details of this?
-> > > > > > > > > >> 
-> > > > > > > > > >>>> Might one more proactive approach be to use Coccinelle to locate such
-> > > > > > > > > >>>> callback functions?  We might not want -all- callbacks that do wakeups
-> > > > > > > > > >>>> to use call_rcu_flush(), but knowing which are which should speed up
-> > > > > > > > > >>>> slow-boot debugging by quite a bit.
-> > > > > > > > > >>>> 
-> > > > > > > > > >>>> Or is there a better way to do this?
-> > > > > > > > > >>>> 
-> > > > > > > > > >>> I am not sure what Coccinelle is. If we had something automated that measures
-> > > > > > > > > >>> a boot time and if needed does some profiling it would be good. Otherwise it
-> > > > > > > > > >>> is a manual debugging mainly, IMHO.
-> > > > > > > > > >> 
-> > > > > > > > > >> Paul, What about using a default-off kernel CONFIG that splats on all lazy
-> > > > > > > > > >> call_rcu() callbacks that do a wake up. We could use the trace hooks to do it
-> > > > > > > > > >> in kernel I think. I can talk to Steve to get ideas on how to do that but I
-> > > > > > > > > >> think it can be done purely from trace events (we might need a new
-> > > > > > > > > >> trace_end_invoke_callback to fire after the callback is invoked). Thoughts?
-> > > > > > > > > > 
-> > > > > > > > > > Could you look for wakeups invoked between trace_rcu_batch_start() and
-> > > > > > > > > > trace_rcu_batch_end() that are not from interrupt context?  This would
-> > > > > > > > > > of course need to be associated with a task rather than a CPU.
-> > > > > > > > > 
-> > > > > > > > > Yes this sounds good, but we also need to know if the callbacks are
-> > > > > > > > > lazy or not since wake-up is ok from a non lazy one. I think I’ll
-> > > > > > > > > need a table to track that at queuing time.
-> > > > > > > > 
-> > > > > > > > Agreed.
-> > > > > > > > 
-> > > > > > > > > > Note that you would need to check for wakeups from interrupt handlers
-> > > > > > > > > > even with the extra trace_end_invoke_callback().  The window where an
-> > > > > > > > > > interrupt handler could do a wakeup would be reduced, but not eliminated.
-> > > > > > > > > 
-> > > > > > > > > True! Since this is a  debugging option, can we not just disable interrupts across callback invocation?
-> > > > > > > > 
-> > > > > > > > Not without terminally annoying lockdep, at least for any RCU callbacks
-> > > > > > > > doing things like spin_lock_bh().
-> > > > > > > > 
-> > > > > > > 
-> > > > > > > Sorry if my last email bounced. Looks like my iPhone betrayed me this once ;)
-> > > > > > > 
-> > > > > > > I was thinking something like this:
-> > > > > > > 1. Put a flag in rcu_head to mark CBs as lazy.
-> > > > > > > 2. Add a trace_rcu_invoke_callback_end() trace point.
-> > > > > > > 
-> > > > > > > Both #1 and #2 can be a debug CONFIG option. #2 can be a tracepoint and not
-> > > > > > > exposed if needed.
-> > > > > > > 
-> > > > > > > 3. Put an in-kernel probe on both trace_rcu_invoke_callback_start() and
-> > > > > > > trace_rcu_invoke_callback_end(). In the start probe, set a per-task flag if
-> > > > > > > the current CB is lazy. In the end probe, clear it.
-> > > > > > > 
-> > > > > > > 4. Put an in-kernel probe on trace_rcu_sched_wakeup().
-> > > > > > > 
-> > > > > > > Splat in the wake up probe if:
-> > > > > > > 1. Hard IRQs are on.
-> > > > > > > 2. The per-cpu flag is set.
-> > > > > > > 
-> > > > > > > #3 actually does not even need probes if we can directly call the functions
-> > > > > > > from the rcu_do_batch() function.
-> > > > > > 
-> > > > > > This is fine for an experiment or a debugging session, but a solution
-> > > > > > based totally on instrumentation would be better for production use.
-> > > > > 
-> > > > > Maybe we can borrow the least-significant bit of rhp->func to mark laziness?
-> > > > > Then it can be production as long as we're ok with the trace_sched_wakeup
-> > > > > probe.
-> > > > 
-> > > > Last time I tried this, there were architectures that could have odd-valued
-> > > > function addresses.  Maybe this is no longer the case?
-> > > 
-> > > Oh ok! If this happens, maybe we can just make it depend on x86-64 assuming
-> > > x86-64 does not have pointer oddness. We can also add a warning for if the
-> > > function address is odd before setting the bit.
+On Mon, Sep 26, 2022 at 10:36:29PM +0200, Frederic Weisbecker wrote:
+> On Mon, Sep 26, 2022 at 09:58:27AM +0800, Yipeng Zou wrote:
+> > The commit "x86/cpu: Avoid cpuinfo-induced IPIing of idle CPUs" introduce
+> > this function to identify the current CPU idle state.
+> > But after commit "x86/aperfmperf: Replace arch_freq_get_on_cpu()" we
+> > just use MAX_SAMPLE_AGE to do that, So there is no use of this function.
 > > 
-> > Let me rephrase this...  ;-)
-> > 
-> > Given that this used to not work and still might not work, let's see
-> > if we can find some other way to debug this.  Unless and until it can
-> > be demonstrated that there is no supported compiler that will generated
-> > odd-valued function addresses on any supported architecture.
-> > 
-> > Plus there was a time that x86 did odd-valued pointer addresses.
-> > The instruction set is plenty fine with this, so it would have to be a
-> > compiler and assembly-language convention to avoid it.
+> > Fixes: f3eca381bd49 ("x86/aperfmperf: Replace arch_freq_get_on_cpu()")
+> > Signed-off-by: Yipeng Zou <zouyipeng@huawei.com>
 > 
-> Ok, so then I am not sure how to make it work in production at the moment. I
-> could track the lazy callbacks in a hashtable but then that's overhead.
-> 
-> Or, I could focus on trying Vlad's config and figure out what's going on and
-> keep the auto-debug for later.
+> Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 
-For one thing, experience with manual debugging might inform later
-auto-debugging efforts.
+Good eyes, Yipeng!  Queued and pushed, thank you both!
 
-> On another thought, this is the sort of thing that should be doable via Daniel
-> Bristot's runtime verification framework, as its a classical "see if these
-> traces look right" issue which should be teachable to a computer with a few rules.
+As usual, I could not resist the urge to wordsmith, so please check the
+patch below and let me know if I messed something up.
 
-Worth a shot!  Failing that, there is always BPF.  ;-)
+And please include both commit IDs in future patches with the
+formatting shows below.  Makes it easier for me to accept your
+patches, after all.  ;-)
 
-								Thanx, Paul
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+commit f8b389c24cf9a523472e3e505815b26f0174856c
+Author: Yipeng Zou <zouyipeng@huawei.com>
+Date:   Mon Sep 26 09:58:27 2022 +0800
+
+    rcu: Remove rcu_is_idle_cpu()
+    
+    The commit 3fcd6a230fa7 ("x86/cpu: Avoid cpuinfo-induced IPIing of
+    idle CPUs") introduced rcu_is_idle_cpu() in order to identify the
+    current CPU idle state.  But commit f3eca381bd49 ("x86/aperfmperf:
+    Replace arch_freq_get_on_cpu()") switched to using MAX_SAMPLE_AGE,
+    so rcu_is_idle_cpu() is no longer used.  This commit therefore removes it.
+    
+    Fixes: f3eca381bd49 ("x86/aperfmperf: Replace arch_freq_get_on_cpu()")
+    Signed-off-by: Yipeng Zou <zouyipeng@huawei.com>
+    Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
+index 84e930c11065..93485b812712 100644
+--- a/include/linux/rcutiny.h
++++ b/include/linux/rcutiny.h
+@@ -146,8 +146,6 @@ static inline void rcu_virt_note_context_switch(void) { }
+ static inline void rcu_cpu_stall_reset(void) { }
+ static inline int rcu_jiffies_till_stall_check(void) { return 21 * HZ; }
+ static inline void rcu_irq_exit_check_preempt(void) { }
+-#define rcu_is_idle_cpu(cpu) \
+-	(is_idle_task(current) && !in_nmi() && !in_hardirq() && !in_serving_softirq())
+ static inline void exit_rcu(void) { }
+ static inline bool rcu_preempt_need_deferred_qs(struct task_struct *t)
+ {
+diff --git a/include/linux/rcutree.h b/include/linux/rcutree.h
+index 3066e0975022..f41c4ab2a884 100644
+--- a/include/linux/rcutree.h
++++ b/include/linux/rcutree.h
+@@ -87,8 +87,6 @@ bool poll_state_synchronize_rcu_full(struct rcu_gp_oldstate *rgosp);
+ void cond_synchronize_rcu(unsigned long oldstate);
+ void cond_synchronize_rcu_full(struct rcu_gp_oldstate *rgosp);
+ 
+-bool rcu_is_idle_cpu(int cpu);
+-
+ #ifdef CONFIG_PROVE_RCU
+ void rcu_irq_exit_check_preempt(void);
+ #else
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 1930cee1ccdb..96d678c9cfb6 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -301,12 +301,6 @@ static bool rcu_dynticks_in_eqs(int snap)
+ 	return !(snap & RCU_DYNTICKS_IDX);
+ }
+ 
+-/* Return true if the specified CPU is currently idle from an RCU viewpoint.  */
+-bool rcu_is_idle_cpu(int cpu)
+-{
+-	return rcu_dynticks_in_eqs(rcu_dynticks_snap(cpu));
+-}
+-
+ /*
+  * Return true if the CPU corresponding to the specified rcu_data
+  * structure has spent some time in an extended quiescent state since
