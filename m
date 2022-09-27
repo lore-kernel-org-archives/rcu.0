@@ -2,197 +2,150 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4485DC32771
-	for <rcu@archiver.kernel.org>; Tue, 27 Sep 2022 01:49:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F554C07E9D
+	for <rcu@archiver.kernel.org>; Tue, 27 Sep 2022 03:22:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229622AbiI0BtZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 26 Sep 2022 21:49:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37202 "EHLO
+        id S231161AbiI0DWC (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 26 Sep 2022 23:22:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbiI0BtY (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 26 Sep 2022 21:49:24 -0400
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85D0AA7ABC
-        for <rcu@vger.kernel.org>; Mon, 26 Sep 2022 18:49:23 -0700 (PDT)
-Received: by mail-qv1-xf32.google.com with SMTP id s13so5405820qvq.10
-        for <rcu@vger.kernel.org>; Mon, 26 Sep 2022 18:49:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date;
-        bh=F+L/Ikz7ZIS57E9qq2FM8kuT6LyTmfWIeby9ZoIpbkE=;
-        b=STSc2fW+2lHKhOv+rsoG8eVoZdjgapXsQsatTCtuMjBK/KuRMCT+Eq0qxpsPhiqXRR
-         /9ZZG9ixL19LTVaALwyd1/b/xbq1GGACAK31JrC5RYFR8uUmHCNfa65UaYxatHQ8Yv2H
-         Ti9y5s5FLUqBK00fHlVxzadBfvKMmDBJpJKw4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date;
-        bh=F+L/Ikz7ZIS57E9qq2FM8kuT6LyTmfWIeby9ZoIpbkE=;
-        b=c4GBUBM1avQiPPhW/vM7tmfb1cnz9+d7z98itNrn+DHcF7H7k5Ar5ia5i7gGyO7tKD
-         4asIeET+nyIR8iSpxEK5CoYUSFXOEPxVXT7LQc3R8wopdT6R9Ynf2cVh/0JB/4wuzgIg
-         Knvm8ir+sbFOGmpln+VWT13vPpWb3nsSGf6sXGYF1EOXtLiztcfJktvB0HUN3qjoD1HI
-         d6+bWIhItdfMFMCn6axL4AYXC6juL4/SibqocxmIUaD8IpKAlMIdFxtSMR1WZTvrHXfm
-         pMtKCxSNNPYDt1WjvaNA+0C5n/Gzdz8zFAuIbykh/iLA/C1UIjtAuIBQwakP/uVTi4Cv
-         HFvA==
-X-Gm-Message-State: ACrzQf2RaLM0vG4/3SzIYdogw8M/wTOdkaY5ErM7Wcb7oPx3kjDJLrRW
-        18jwZQE3z3l8gR5vQWabul86uQ==
-X-Google-Smtp-Source: AMsMyM7H/+akRxXNmgLBVNTUSCEeNlGH1DX4c183hY3X1KqUIu943+wFR7HxBaLBkyzUZTYhczsjiA==
-X-Received: by 2002:a0c:b295:0:b0:496:b91a:f5f4 with SMTP id r21-20020a0cb295000000b00496b91af5f4mr19888973qve.20.1664243362579;
-        Mon, 26 Sep 2022 18:49:22 -0700 (PDT)
-Received: from localhost (48.230.85.34.bc.googleusercontent.com. [34.85.230.48])
-        by smtp.gmail.com with ESMTPSA id y13-20020a37f60d000000b006bbc09af9f5sm101002qkj.101.2022.09.26.18.49.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Sep 2022 18:49:22 -0700 (PDT)
-Date:   Tue, 27 Sep 2022 01:49:21 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
+        with ESMTP id S231447AbiI0DVQ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 26 Sep 2022 23:21:16 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 766326CF7A;
+        Mon, 26 Sep 2022 20:20:24 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id D4901B81904;
+        Tue, 27 Sep 2022 03:20:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77104C433C1;
+        Tue, 27 Sep 2022 03:20:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1664248821;
+        bh=Ia9r1cC20xjlRYjYtn/YrO85OhxRUaYR0SqK8rn+nVE=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=TwSSFGWy8ou6RUmQ2z5qrPujRluplVj8B9yebO1zCiQk3OgciY6Thr8p58LqXZEnG
+         lAf6AYrczAkidamJSAte9Yu6GredeO/RQsoVxOyfeVvWtL2KKt9V/F7W+C1KSK+kgG
+         SUvbt79UpIWXAPeztnlQ2GBAoROzIqNrFNgVNhUxWsfhT1pf5IDh67vSwnXMqvCS4R
+         qsNMqWcpOAmT3zJGmJ4ocuem4Z+sahlU8R3wjuxnq8GXl5Ar3r0g8ai6ZY5yTL9gcA
+         MxzIeiNa0GWeLjKiR/Ewgt0U9r2tvr9H9F+OJgyU9LcuLtJZyQzQQgSSoUWPSsLRXX
+         Je0UUONKxTkZg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 0C1BA5C0B39; Mon, 26 Sep 2022 20:20:21 -0700 (PDT)
+Date:   Mon, 26 Sep 2022 20:20:21 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
 Cc:     Uladzislau Rezki <urezki@gmail.com>, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org, rushikesh.s.kadam@intel.com,
         neeraj.iitr10@gmail.com, frederic@kernel.org, rostedt@goodmis.org
 Subject: Re: [PATCH v6 1/4] rcu: Make call_rcu() lazy to save power
-Message-ID: <YzJWoRui7mUEDtox@google.com>
-References: <20220926223222.GX4196@paulmck-ThinkPad-P17-Gen-1>
- <8344B0AB-608E-44DA-8FEE-3FE56EDF9172@joelfernandes.org>
- <20220926235944.GE4196@paulmck-ThinkPad-P17-Gen-1>
+Message-ID: <20220927032021.GF4196@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20220926223534.GY4196@paulmck-ThinkPad-P17-Gen-1>
+ <BE2B629D-B5D2-4ED0-944E-2F13E846047E@joelfernandes.org>
+ <20220926235755.GD4196@paulmck-ThinkPad-P17-Gen-1>
+ <YzJO58HXH6YYxmND@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220926235944.GE4196@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <YzJO58HXH6YYxmND@google.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Sep 26, 2022 at 04:59:44PM -0700, Paul E. McKenney wrote:
-> On Mon, Sep 26, 2022 at 07:47:50PM -0400, Joel Fernandes wrote:
-> > 
-> > 
-> > > On Sep 26, 2022, at 6:32 PM, Paul E. McKenney <paulmck@kernel.org> wrote:
+On Tue, Sep 27, 2022 at 01:16:23AM +0000, Joel Fernandes wrote:
+> On Mon, Sep 26, 2022 at 04:57:55PM -0700, Paul E. McKenney wrote:
+> [..]
+> > > >>>>>> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+> > > >>>>>> index 08605ce7379d..40ae36904825 100644
+> > > >>>>>> --- a/include/linux/rcupdate.h
+> > > >>>>>> +++ b/include/linux/rcupdate.h
+> > > >>>>>> @@ -108,6 +108,13 @@ static inline int rcu_preempt_depth(void)
+> > > >>>>>> 
+> > > >>>>>> #endif /* #else #ifdef CONFIG_PREEMPT_RCU */
+> > > >>>>>> 
+> > > >>>>>> +#ifdef CONFIG_RCU_LAZY
+> > > >>>>>> +void call_rcu_flush(struct rcu_head *head, rcu_callback_t func);
+> > > >>>>>> +#else
+> > > >>>>>> +static inline void call_rcu_flush(struct rcu_head *head,
+> > > >>>>>> +        rcu_callback_t func) {  call_rcu(head, func); }
+> > > >>>>>> +#endif
+> > > >>>>>> +
+> > > >>>>>> /* Internal to kernel */
+> > > >>>>>> void rcu_init(void);
+> > > >>>>>> extern int rcu_scheduler_active;
+> > > >>>>>> diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+> > > >>>>>> index f53ad63b2bc6..edd632e68497 100644
+> > > >>>>>> --- a/kernel/rcu/Kconfig
+> > > >>>>>> +++ b/kernel/rcu/Kconfig
+> > > >>>>>> @@ -314,4 +314,12 @@ config TASKS_TRACE_RCU_READ_MB
+> > > >>>>>>      Say N here if you hate read-side memory barriers.
+> > > >>>>>>      Take the default if you are unsure.
+> > > >>>>>> 
+> > > >>>>>> +config RCU_LAZY
+> > > >>>>>> +    bool "RCU callback lazy invocation functionality"
+> > > >>>>>> +    depends on RCU_NOCB_CPU
+> > > >>>>>> +    default n
+> > > >>>>>> +    help
+> > > >>>>>> +      To save power, batch RCU callbacks and flush after delay, memory
+> > > >>>>>> +      pressure or callback list growing too big.
+> > > >>>>>> +
+> > > >>>>>> 
+> > > >>>>> Do you think you need this kernel option? Can we just consider and make
+> > > >>>>> it a run-time configurable? For example much more users will give it a try,
+> > > >>>>> so it will increase a coverage. By default it can be off.
+> > > >>>>> 
+> > > >>>>> Also you do not need to do:
+> > > >>>>> 
+> > > >>>>> #ifdef LAZY
+> > > >>>> 
+> > > >>>> How does the "LAZY" macro end up being runtime-configurable? That's static /
+> > > >>>> compile time. Did I miss something?
+> > > >>>> 
+> > > >>> I am talking about removing if:
+> > > >>> 
+> > > >>> config RCU_LAZY
+> > > >>> 
+> > > >>> we might run into issues related to run-time switching though.
+> > > >> 
+> > > >> When we started off, Paul said he wanted it kernel CONFIGurable. I will defer
+> > > >> to Paul on a decision for that. I prefer kernel CONFIG so people don't forget
+> > > >> to pass a boot param.
+> > > > 
+> > > > I am fine with a kernel boot parameter for this one.  You guys were the
+> > > > ones preferring Kconfig options.  ;-)
 > > > 
-> > > ﻿On Mon, Sep 26, 2022 at 09:02:21PM +0000, Joel Fernandes wrote:
-> > >> On Mon, Sep 26, 2022 at 09:32:44PM +0200, Uladzislau Rezki wrote:
-> > >> [...]
-> > >>>>>> On my KVM machine the boot time is affected:
-> > >>>>>> 
-> > >>>>>> <snip>
-> > >>>>>> [    2.273406] e1000 0000:00:03.0 eth0: Intel(R) PRO/1000 Network Connection
-> > >>>>>> [   11.945283] e1000 0000:00:03.0 ens3: renamed from eth0
-> > >>>>>> [   22.165198] sr 1:0:0:0: [sr0] scsi3-mmc drive: 4x/4x cd/rw xa/form2 tray
-> > >>>>>> [   22.165206] cdrom: Uniform CD-ROM driver Revision: 3.20
-> > >>>>>> [   32.406981] sr 1:0:0:0: Attached scsi CD-ROM sr0
-> > >>>>>> [  104.115418] process '/usr/bin/fstype' started with executable stack
-> > >>>>>> [  104.170142] EXT4-fs (sda1): mounted filesystem with ordered data mode. Quota mode: none.
-> > >>>>>> [  104.340125] systemd[1]: systemd 241 running in system mode. (+PAM +AUDIT +SELINUX +IMA +APPARMOR +SMACK +SYSVINIT +UTMP +LIBCRYPTSETUP +GCRYPT +GNUTLS +ACL +XZ +LZ4 +SECCOMP +BLKID +ELFUTILS +KMOD -IDN2 +IDN -PCRE2 default-hierarchy=hybrid)
-> > >>>>>> [  104.340193] systemd[1]: Detected virtualization kvm.
-> > >>>>>> [  104.340196] systemd[1]: Detected architecture x86-64.
-> > >>>>>> [  104.359032] systemd[1]: Set hostname to <pc638>.
-> > >>>>>> [  105.740109] random: crng init done
-> > >>>>>> [  105.741267] systemd[1]: Reached target Remote File Systems.
-> > >>>>>> <snip>
-> > >>>>>> 
-> > >>>>>> 2 - 11 and second delay is between 32 - 104. So there are still users which must
-> > >>>>>> be waiting for "RCU" in a sync way.
-> > >>>>> 
-> > >>>>> I was wondering if you can compare boot logs and see which timestamp does the
-> > >>>>> slow down start from. That way, we can narrow down the callback. Also another
-> > >>>>> idea is, add "trace_event=rcu:rcu_callback,rcu:rcu_invoke_callback
-> > >>>>> ftrace_dump_on_oops" to the boot params, and then manually call
-> > >>>>> "tracing_off(); panic();" from the code at the first printk that seems off in
-> > >>>>> your comparison of good vs bad. For example, if "crng init done" timestamp is
-> > >>>>> off, put the "tracing_off(); panic();" there. Then grab the serial console
-> > >>>>> output to see what were the last callbacks that was queued/invoked.
-> > >>>> 
-> > >>>> We do seem to be in need of some way to quickly and easily locate the
-> > >>>> callback that needed to be _flush() due to a wakeup.
-> > >>>> 
-> > >>> <snip>
-> > >>> diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-> > >>> index aeea9731ef80..fe1146d97f1a 100644
-> > >>> --- a/kernel/workqueue.c
-> > >>> +++ b/kernel/workqueue.c
-> > >>> @@ -1771,7 +1771,7 @@ bool queue_rcu_work(struct workqueue_struct *wq, struct rcu_work *rwork)
-> > >>> 
-> > >>>        if (!test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work))) {
-> > >>>                rwork->wq = wq;
-> > >>> -               call_rcu(&rwork->rcu, rcu_work_rcufn);
-> > >>> +               call_rcu_flush(&rwork->rcu, rcu_work_rcufn);
-> > >>>                return true;
-> > >>>        }
-> > >>> 
-> > >>> <snip>
-> > >>> 
-> > >>> ?
-> > >>> 
-> > >>> But it does not fully solve my boot-up issue. Will debug tomorrow further.
-> > >> 
-> > >> Ah, but at least its progress, thanks. Could you send me a patch to include
-> > >> in the next revision with details of this?
-> > >> 
-> > >>>> Might one more proactive approach be to use Coccinelle to locate such
-> > >>>> callback functions?  We might not want -all- callbacks that do wakeups
-> > >>>> to use call_rcu_flush(), but knowing which are which should speed up
-> > >>>> slow-boot debugging by quite a bit.
-> > >>>> 
-> > >>>> Or is there a better way to do this?
-> > >>>> 
-> > >>> I am not sure what Coccinelle is. If we had something automated that measures
-> > >>> a boot time and if needed does some profiling it would be good. Otherwise it
-> > >>> is a manual debugging mainly, IMHO.
-> > >> 
-> > >> Paul, What about using a default-off kernel CONFIG that splats on all lazy
-> > >> call_rcu() callbacks that do a wake up. We could use the trace hooks to do it
-> > >> in kernel I think. I can talk to Steve to get ideas on how to do that but I
-> > >> think it can be done purely from trace events (we might need a new
-> > >> trace_end_invoke_callback to fire after the callback is invoked). Thoughts?
+> > > Yes I still prefer that.. ;-)
 > > > 
-> > > Could you look for wakeups invoked between trace_rcu_batch_start() and
-> > > trace_rcu_batch_end() that are not from interrupt context?  This would
-> > > of course need to be associated with a task rather than a CPU.
+> > > > But in that case, the CONFIG_RCU_NOCB_CPU would come into play to handle
+> > > > the case where there is no bypass.
+> > > 
+> > > If you don’t mind, let’s do both like we did for NOCB_CPU_ALL. In which
+> > > case, Vlad since this was your suggestion, would you be so kind to send a
+> > > patch adding a boot parameter on top of the series? ;-). I’ll include it
+> > > in the next version. I’d suggest keep the boot param default off and add
+> > > a CONFIG option that forces the boot param to be turned on.
 > > 
-> > Yes this sounds good, but we also need to know if the callbacks are lazy or not since wake-up is ok from a non lazy one. I think I’ll need a table to track that at queuing time.
+> > NOCB_CPU_ALL?  If you are thinking in terms of laziness/flushing being
+> > done on a per-CPU basis among the rcu_nocbs CPUs, that sounds like
+> > something for later.
 > 
-> Agreed.
+> Oh, no, I was just trying to bring that up as an example of making boot
+> parameters and CONFIG options for the same thing.
 > 
-> > > Note that you would need to check for wakeups from interrupt handlers
-> > > even with the extra trace_end_invoke_callback().  The window where an
-> > > interrupt handler could do a wakeup would be reduced, but not eliminated.
-> > 
-> > True! Since this is a  debugging option, can we not just disable interrupts across callback invocation?
+> > Are you thinking in terms of Kconfig options that allow: (1) No laziness.
+> > (2) Laziness on all rcu_nocbs CPUs, but only if specified by a boot
+> > parameter.  (3) Laziness on all rcu_nocbs CPUs regardless of boot
+> > parameter.  I could get behind that.
 > 
-> Not without terminally annoying lockdep, at least for any RCU callbacks
-> doing things like spin_lock_bh().
-> 
+> Sure agreed, or we could just make it CONFIG_RCU_LAZY_DEFAULT=y and if boot
+> param is specified, override the CONFIG. That will be the simplest and least
+> confusing IMO.
 
-Sorry if my last email bounced. Looks like my iPhone betrayed me this once ;)
+If CONFIG_RCU_LAZY_DEFAULT=n, what (if anything) does the boot parameter do?
 
-I was thinking something like this:
-1. Put a flag in rcu_head to mark CBs as lazy.
-2. Add a trace_rcu_invoke_callback_end() trace point.
+Not criticizing, not yet, anyway.  ;-)
 
-Both #1 and #2 can be a debug CONFIG option. #2 can be a tracepoint and not
-exposed if needed.
-
-3. Put an in-kernel probe on both trace_rcu_invoke_callback_start() and
-trace_rcu_invoke_callback_end(). In the start probe, set a per-task flag if
-the current CB is lazy. In the end probe, clear it.
-
-4. Put an in-kernel probe on trace_rcu_sched_wakeup().
-
-Splat in the wake up probe if:
-1. Hard IRQs are on.
-2. The per-cpu flag is set.
-
-#3 actually does not even need probes if we can directly call the functions
-from the rcu_do_batch() function.
-
-I'll work on it in the morning and also look into Vlad's config.
-
-thanks,
-
- - Joel
-
-
-
+							Thanx, Paul
