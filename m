@@ -2,147 +2,247 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7145FC54EE9
-	for <rcu@archiver.kernel.org>; Wed, 28 Sep 2022 01:24:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FC74C54EE9
+	for <rcu@archiver.kernel.org>; Wed, 28 Sep 2022 01:49:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229771AbiI1BYP (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 27 Sep 2022 21:24:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46610 "EHLO
+        id S229631AbiI1BtH (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 27 Sep 2022 21:49:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229907AbiI1BYP (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 27 Sep 2022 21:24:15 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A5EB188BEA
-        for <rcu@vger.kernel.org>; Tue, 27 Sep 2022 18:24:13 -0700 (PDT)
-Received: from dggpemm500024.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Mcdvb4flXzlVjC;
-        Wed, 28 Sep 2022 09:19:55 +0800 (CST)
-Received: from dggpemm500016.china.huawei.com (7.185.36.25) by
- dggpemm500024.china.huawei.com (7.185.36.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 28 Sep 2022 09:24:11 +0800
-Received: from [10.67.111.115] (10.67.111.115) by
- dggpemm500016.china.huawei.com (7.185.36.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 28 Sep 2022 09:24:11 +0800
-Message-ID: <9b142399-7968-2300-24c4-5a60cee76ec3@huawei.com>
-Date:   Wed, 28 Sep 2022 09:24:10 +0800
+        with ESMTP id S229771AbiI1BtE (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 27 Sep 2022 21:49:04 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDBB61EE74E;
+        Tue, 27 Sep 2022 18:49:03 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d11so10585304pll.8;
+        Tue, 27 Sep 2022 18:49:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date;
+        bh=5Vg9DwF7vi5Rl3xXxBWJzxL4mqinTrC7c17A9WSWn9I=;
+        b=ScSGb+e6Kdbh97BaYYrf5xnUPg2TUlcgJWbl6QelkJeycbjW9RUSF79cPDe0w/ku8T
+         zbhNo/Bm/asCb6cI01SABPnxaHjaHelIz1TJ8BH2s6Bv+AIkrTwKbpI8XsKevXPQ3EsN
+         AQpfWxVLltbQcEfKLW9vBDGQVN8hRb9KvjU1JIrup2xg9HacHsU3/rpAm5kYdbiZkIqj
+         PakmYCb9SqfCeBw0yqwYxFJtZhDEL7Jn8+QGaEnQCY+KpZMQh1x1VfpRoWrmLuDrNbS3
+         Wvxrox8k5DKMYNclpAYwX3pJJdwumdLApoT8JzvTeLHKqEQj5Iov+9192QuYoyIml9Tu
+         a9Ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date;
+        bh=5Vg9DwF7vi5Rl3xXxBWJzxL4mqinTrC7c17A9WSWn9I=;
+        b=pI2xSUZiL80xOKli5BvgEUAT6tayWETPpqvKSoNMAcOD0ZW9F+v/2S29B8is/r98B1
+         jI7FI5AQZlU6MmULMbJhXBwIxTndmtGZyj5WnAJQIyqcSqqpKoMU47PQMEasVFoGHKlV
+         9WIPT8VOeaofSncqijkkApK0mx2huywCzY19sZfQdYHek9xEXS/Qzq899LHJaLQzFQwC
+         so2vFutwRqC2fQz8NhHjkx98a1sBBFxz3C2smwYMnRNdnJvfG1OXzRrJanxQrybwJah5
+         L3fla3i0ePoPp5JpsTQGJcoVD8sxLgfJYzvqMvNgFvMagMyPx3PuQ4vUf0HZz1WX9a9N
+         GsvA==
+X-Gm-Message-State: ACrzQf0jI4Uxjtpb9JECH1GpdFaSrldbnC1pL0ok1rzPNGfXAWjfkUz6
+        6tdj7MQpunnXTO+GND6JKJgjN2RyQtSgAXvaB20=
+X-Google-Smtp-Source: AMsMyM4FsOphlNPc27yHcJFuFy/eZgOUk4rcOBHq3sWv00e0XJ1giG/PqpsP9+UnYyO+P5aXIycnRDgwOU5M0xE/ooA=
+X-Received: by 2002:a17:902:e744:b0:178:6d7b:6d08 with SMTP id
+ p4-20020a170902e74400b001786d7b6d08mr30585585plf.128.1664329743194; Tue, 27
+ Sep 2022 18:49:03 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.0.3
-Subject: Re: [PATCH] rcu: remove rcu_is_idle_cpu
-To:     <paulmck@kernel.org>, Frederic Weisbecker <frederic@kernel.org>
-CC:     <rcu@vger.kernel.org>, <quic_neeraju@quicinc.com>,
-        <josh@joshtriplett.org>, <rostedt@goodmis.org>,
-        <mathieu.desnoyers@efficios.com>, <jiangshanlai@gmail.com>,
-        <joel@joelfernandes.org>, <rafael.j.wysocki@intel.com>,
-        <peterz@infradead.org>
-References: <20220926015827.227050-1-zouyipeng@huawei.com>
- <20220926203629.GA183228@lothringen>
- <20220927185121.GU4196@paulmck-ThinkPad-P17-Gen-1>
-Content-Language: en-US
-From:   Yipeng Zou <zouyipeng@huawei.com>
-In-Reply-To: <20220927185121.GU4196@paulmck-ThinkPad-P17-Gen-1>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.111.115]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500016.china.huawei.com (7.185.36.25)
-X-CFilter-Loop: Reflected
+References: <20220927014823.11439-1-zhouzhouyi@gmail.com> <CN6WCMKCWHOG.LT2QV3910UJ2@bobo>
+In-Reply-To: <CN6WCMKCWHOG.LT2QV3910UJ2@bobo>
+From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
+Date:   Wed, 28 Sep 2022 09:48:52 +0800
+Message-ID: <CAABZP2wYcNXkTo=tgX-ARziwgD2rng+-wCZ-qfQ6M30+vmLEug@mail.gmail.com>
+Subject: Re: [PATCH linux-next][RFC] powerpc: avoid lockdep when we are offline
+To:     Nicholas Piggin <npiggin@gmail.com>
+Cc:     mpe@ellerman.id.au, christophe.leroy@csgroup.eu,
+        atrajeev@linux.vnet.ibm.com, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, lance@osuosl.org, paulmck@kernel.org,
+        rcu@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+Thank Nick for reviewing my patch
 
-在 2022/9/28 2:51, Paul E. McKenney 写道:
-> On Mon, Sep 26, 2022 at 10:36:29PM +0200, Frederic Weisbecker wrote:
->> On Mon, Sep 26, 2022 at 09:58:27AM +0800, Yipeng Zou wrote:
->>> The commit "x86/cpu: Avoid cpuinfo-induced IPIing of idle CPUs" introduce
->>> this function to identify the current CPU idle state.
->>> But after commit "x86/aperfmperf: Replace arch_freq_get_on_cpu()" we
->>> just use MAX_SAMPLE_AGE to do that, So there is no use of this function.
->>>
->>> Fixes: f3eca381bd49 ("x86/aperfmperf: Replace arch_freq_get_on_cpu()")
->>> Signed-off-by: Yipeng Zou <zouyipeng@huawei.com>
->> Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-> Good eyes, Yipeng!  Queued and pushed, thank you both!
+On Tue, Sep 27, 2022 at 12:25 PM Nicholas Piggin <npiggin@gmail.com> wrote:
 >
-> As usual, I could not resist the urge to wordsmith, so please check the
-> patch below and let me know if I messed something up.
+> On Tue Sep 27, 2022 at 11:48 AM AEST, Zhouyi Zhou wrote:
+> > This is second version of my fix to PPC's  "WARNING: suspicious RCU usa=
+ge",
+> > I improved my fix under Paul E. McKenney's guidance:
+> > Link: https://lore.kernel.org/lkml/20220914021528.15946-1-zhouzhouyi@gm=
+ail.com/T/
+> >
+> > During the cpu offlining, the sub functions of xive_teardown_cpu will
+> > call __lock_acquire when CONFIG_LOCKDEP=3Dy. The latter function will
+> > travel RCU protected list, so "WARNING: suspicious RCU usage" will be
+> > triggered.
+> >
+> > Avoid lockdep when we are offline.
+>
+> I don't see how this is safe. If RCU is no longer watching the CPU then
+> the memory it is accessing here could be concurrently freed. I think the
+> warning is valid.
+Agree
+>
+> powerpc's problem is that cpuhp_report_idle_dead() is called before
+> arch_cpu_idle_dead(), so it must not rely on any RCU protection there.
+> I would say xive cleanup just needs to be done earlier. I wonder why it
+> is not done in __cpu_disable or thereabouts, that's where the interrupt
+> controller is supposed to be stopped.
+Yes, I learn flowing events sequence from kgdb debugging
+__cpu_disable -> pseries_cpu_disable -> set_cpu_online(cpu, false)  =3D
+leads to =3D>  do_idle: if (cpu_is_offline(cpu) -> arch_cpu_idle_dead
+so xive cleanup should be done in pseries_cpu_disable.
+But as a beginner, I afraid that I am incompetent to do above
+sophisticated work without error although I am very like to,
+Could any expert do this for us?
 
-Its all good, and thanks for review.
-
-> And please include both commit IDs in future patches with the
-> formatting shows below.  Makes it easier for me to accept your
-> patches, after all.  ;-)
-ok，got it.
+Thanks a lot
+Cheers
+Zhouyi
 >
-> 							Thanx, Paul
+> Thanks,
+> Nick
 >
-> ------------------------------------------------------------------------
+> >
+> > Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+> > ---
+> > Dear PPC and RCU developers
+> >
+> > I found this bug when trying to do rcutorture tests in ppc VM of
+> > Open Source Lab of Oregon State University
+> >
+> > console.log report following bug:
+> > [   37.635545][    T0] WARNING: suspicious RCU usage^M
+> > [   37.636409][    T0] 6.0.0-rc4-next-20220907-dirty #8 Not tainted^M
+> > [   37.637575][    T0] -----------------------------^M
+> > [   37.638306][    T0] kernel/locking/lockdep.c:3723 RCU-list traversed=
+ in non-reader section!!^M
+> > [   37.639651][    T0] ^M
+> > [   37.639651][    T0] other info that might help us debug this:^M
+> > [   37.639651][    T0] ^M
+> > [   37.641381][    T0] ^M
+> > [   37.641381][    T0] RCU used illegally from offline CPU!^M
+> > [   37.641381][    T0] rcu_scheduler_active =3D 2, debug_locks =3D 1^M
+> > [   37.667170][    T0] no locks held by swapper/6/0.^M
+> > [   37.668328][    T0] ^M
+> > [   37.668328][    T0] stack backtrace:^M
+> > [   37.669995][    T0] CPU: 6 PID: 0 Comm: swapper/6 Not tainted 6.0.0-=
+rc4-next-20220907-dirty #8^M
+> > [   37.672777][    T0] Call Trace:^M
+> > [   37.673729][    T0] [c000000004653920] [c00000000097f9b4] dump_stack=
+_lvl+0x98/0xe0 (unreliable)^M
+> > [   37.678579][    T0] [c000000004653960] [c0000000001f2eb8] lockdep_rc=
+u_suspicious+0x148/0x16c^M
+> > [   37.680425][    T0] [c0000000046539f0] [c0000000001ed9b4] __lock_acq=
+uire+0x10f4/0x26e0^M
+> > [   37.682450][    T0] [c000000004653b30] [c0000000001efc2c] lock_acqui=
+re+0x12c/0x420^M
+> > [   37.684113][    T0] [c000000004653c20] [c0000000010d704c] _raw_spin_=
+lock_irqsave+0x6c/0xc0^M
+> > [   37.686154][    T0] [c000000004653c60] [c0000000000c7b4c] xive_spapr=
+_put_ipi+0xcc/0x150^M
+> > [   37.687879][    T0] [c000000004653ca0] [c0000000010c72a8] xive_clean=
+up_cpu_ipi+0xc8/0xf0^M
+> > [   37.689856][    T0] [c000000004653cf0] [c0000000010c7370] xive_teard=
+own_cpu+0xa0/0xf0^M
+> > [   37.691877][    T0] [c000000004653d30] [c0000000000fba5c] pseries_cp=
+u_offline_self+0x5c/0x100^M
+> > [   37.693882][    T0] [c000000004653da0] [c00000000005d2c4] arch_cpu_i=
+dle_dead+0x44/0x60^M
+> > [   37.695739][    T0] [c000000004653dc0] [c0000000001c740c] do_idle+0x=
+16c/0x3d0^M
+> > [   37.697536][    T0] [c000000004653e70] [c0000000001c7a1c] cpu_startu=
+p_entry+0x3c/0x40^M
+> > [   37.699694][    T0] [c000000004653ea0] [c00000000005ca20] start_seco=
+ndary+0x6c0/0xb50^M
+> > [   37.701742][    T0] [c000000004653f90] [c00000000000d054] start_seco=
+ndary_prolog+0x10/0x14^M
+> >
+> >
+> > Tested on PPC VM of Open Source Lab of Oregon State University.
+> > Test results show that although "WARNING: suspicious RCU usage" has gon=
+e,
+> > and there are less "BUG: soft lockup" reports than the original kernel
+> > (9 vs 13), which sounds good ;-)
+> >
+> > But after my modification, results-rcutorture-kasan/SRCU-P/console.log.=
+diags
+> > shows a new warning:
+> > [  222.289242][  T110] WARNING: CPU: 6 PID: 110 at kernel/rcu/rcutortur=
+e.c:2806 rcu_torture_fwd_prog+0xc88/0xdd0
+> >
+> > I guess above new warning also exits in original kernel, so I write a t=
+iny test script as follows:
+> >
+> > #!/bin/sh
+> >
+> > COUNTER=3D0
+> > while [ $COUNTER -lt 1000 ] ; do
+> >     qemu-system-ppc64 -nographic -smp cores=3D8,threads=3D1 -net none -=
+M pseries -nodefaults -device spapr-vscsi -serial file:/tmp/console.log -m =
+2G -kernel /tmp/vmlinux -append "debug_boot_weak_hash panic=3D-1 console=3D=
+ttyS0 rcupdate.rcu_cpu_stall_suppress_at_boot=3D1 torture.disable_onoff_at_=
+boot rcupdate.rcu_task_stall_timeout=3D30000 rcutorture.torture_type=3Dsrcu=
+d rcupdate.rcu_self_test=3D1 rcutorture.fwd_progress=3D3 srcutree.big_cpu_l=
+im=3D5 rcutorture.onoff_interval=3D1000 rcutorture.onoff_holdoff=3D30 rcuto=
+rture.n_barrier_cbs=3D4 rcutorture.stat_interval=3D15 rcutorture.shutdown_s=
+ecs=3D420 rcutorture.test_no_idle_hz=3D1 rcutorture.verbose=3D1"&
+> >     qemu_pid=3D$!
+> >     cd ~/next1/linux-next
+> >     make clean
+> > #I use "make vmlinux -j 8" to create heavy background jitter
+> >     make vmlinux -j 8  > /dev/null 2>&1
+> >     make_pid=3D$!
+> >     wait $qemu_pid
+> >     kill $qemu_pid
+> >     kill $make_id
+> >     if grep -q WARN /tmp/console.log;
+> >     then
+> >         echo $COUNTER > /tmp/counter
+> >         exit
+> >     fi
+> >     COUNTER=3D$(($COUNTER+1))
+> > done
+> >
+> > Above test shows that original kernel also warn about
+> > "WARNING: CPU: 6 PID: 110 at kernel/rcu/rcutorture.c:2806 rcu_torture_f=
+wd_prog+0xc88/0xdd0"
+> >
+> > But I am not very sure about my results, so I still add a [RFC] to my s=
+ubject line.
+> >
+> > Thank all of you for your guidance and encouragement ;-)
+> >
+> > Cheers
+> > Zhouyi
+> > --
+> >  arch/powerpc/platforms/pseries/hotplug-cpu.c | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> >
+> > diff --git a/arch/powerpc/platforms/pseries/hotplug-cpu.c b/arch/powerp=
+c/platforms/pseries/hotplug-cpu.c
+> > index e0a7ac5db15d..e47098f00da1 100644
+> > --- a/arch/powerpc/platforms/pseries/hotplug-cpu.c
+> > +++ b/arch/powerpc/platforms/pseries/hotplug-cpu.c
+> > @@ -64,10 +64,15 @@ static void pseries_cpu_offline_self(void)
+> >
+> >       local_irq_disable();
+> >       idle_task_exit();
+> > +     /* prevent lockdep code from traveling RCU protected list
+> > +      * when we are offline.
+> > +      */
+> > +     lockdep_off();
+> >       if (xive_enabled())
+> >               xive_teardown_cpu();
+> >       else
+> >               xics_teardown_cpu();
+> > +     lockdep_on();
+> >
+> >       unregister_slb_shadow(hwcpu);
+> >       rtas_stop_self();
+> > --
+> > 2.25.1
 >
-> commit f8b389c24cf9a523472e3e505815b26f0174856c
-> Author: Yipeng Zou <zouyipeng@huawei.com>
-> Date:   Mon Sep 26 09:58:27 2022 +0800
->
->      rcu: Remove rcu_is_idle_cpu()
->      
->      The commit 3fcd6a230fa7 ("x86/cpu: Avoid cpuinfo-induced IPIing of
->      idle CPUs") introduced rcu_is_idle_cpu() in order to identify the
->      current CPU idle state.  But commit f3eca381bd49 ("x86/aperfmperf:
->      Replace arch_freq_get_on_cpu()") switched to using MAX_SAMPLE_AGE,
->      so rcu_is_idle_cpu() is no longer used.  This commit therefore removes it.
->      
->      Fixes: f3eca381bd49 ("x86/aperfmperf: Replace arch_freq_get_on_cpu()")
->      Signed-off-by: Yipeng Zou <zouyipeng@huawei.com>
->      Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
->      Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
->
-> diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
-> index 84e930c11065..93485b812712 100644
-> --- a/include/linux/rcutiny.h
-> +++ b/include/linux/rcutiny.h
-> @@ -146,8 +146,6 @@ static inline void rcu_virt_note_context_switch(void) { }
->   static inline void rcu_cpu_stall_reset(void) { }
->   static inline int rcu_jiffies_till_stall_check(void) { return 21 * HZ; }
->   static inline void rcu_irq_exit_check_preempt(void) { }
-> -#define rcu_is_idle_cpu(cpu) \
-> -	(is_idle_task(current) && !in_nmi() && !in_hardirq() && !in_serving_softirq())
->   static inline void exit_rcu(void) { }
->   static inline bool rcu_preempt_need_deferred_qs(struct task_struct *t)
->   {
-> diff --git a/include/linux/rcutree.h b/include/linux/rcutree.h
-> index 3066e0975022..f41c4ab2a884 100644
-> --- a/include/linux/rcutree.h
-> +++ b/include/linux/rcutree.h
-> @@ -87,8 +87,6 @@ bool poll_state_synchronize_rcu_full(struct rcu_gp_oldstate *rgosp);
->   void cond_synchronize_rcu(unsigned long oldstate);
->   void cond_synchronize_rcu_full(struct rcu_gp_oldstate *rgosp);
->   
-> -bool rcu_is_idle_cpu(int cpu);
-> -
->   #ifdef CONFIG_PROVE_RCU
->   void rcu_irq_exit_check_preempt(void);
->   #else
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 1930cee1ccdb..96d678c9cfb6 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -301,12 +301,6 @@ static bool rcu_dynticks_in_eqs(int snap)
->   	return !(snap & RCU_DYNTICKS_IDX);
->   }
->   
-> -/* Return true if the specified CPU is currently idle from an RCU viewpoint.  */
-> -bool rcu_is_idle_cpu(int cpu)
-> -{
-> -	return rcu_dynticks_in_eqs(rcu_dynticks_snap(cpu));
-> -}
-> -
->   /*
->    * Return true if the CPU corresponding to the specified rcu_data
->    * structure has spent some time in an extended quiescent state since
-
--- 
-Regards,
-Yipeng Zou
-
