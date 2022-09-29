@@ -2,55 +2,47 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BFA40C4321E
-	for <rcu@archiver.kernel.org>; Thu, 29 Sep 2022 18:07:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E7F4C4332F
+	for <rcu@archiver.kernel.org>; Thu, 29 Sep 2022 18:07:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234945AbiI2SHi (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 29 Sep 2022 14:07:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57386 "EHLO
+        id S235540AbiI2SHk (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 29 Sep 2022 14:07:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235336AbiI2SHf (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 29 Sep 2022 14:07:35 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B973A1BB6F6;
-        Thu, 29 Sep 2022 11:07:34 -0700 (PDT)
+        with ESMTP id S235409AbiI2SHg (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 29 Sep 2022 14:07:36 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96BC81BEA42;
+        Thu, 29 Sep 2022 11:07:35 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4AFBF62129;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 4B37BB82617;
         Thu, 29 Sep 2022 18:07:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60174C43148;
-        Thu, 29 Sep 2022 18:07:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2FCAC433D6;
+        Thu, 29 Sep 2022 18:07:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1664474853;
-        bh=dxVVyAI/XsDb/XxEurj/fyG2d+UBorNbtmn4Ig6rVNY=;
+        bh=COTwp+YNWkYNcuFXEJn0ESb5JtmT8hmvHQ9dNRYWXy0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FwBur71iPrFaH4Ymbzw7w7w8nzr94QBsKWYizdb6U0oA+JhgrsQbzGA20b6otNv4C
-         bXdAuQz5OOnJJBoH1oXym6/1abW/DdkitXnJ8z3Xj8SofgdBt6+u0s+FFVvbDM1KTN
-         gJeu5w/k5PXnRMXCPdUsoJIW+CjUcbZYJr4RWpQFi/Y0/2rTULN6VDxFmMLSnimklR
-         0mtt7BFBDu1MjpgBGj/yJRlVpFo+DCEmDzce8gyK/sE47vI/4mITwsyCvbPg/Ew1iA
-         2q5SUQVPsAJ6qli0d8lxM/n1L3FwwTkKmRR6rBn1MqPZsEFsV5Uk1i25zlIuVg1w+r
-         WIT/Y6TqnH8GQ==
+        b=S4zI8lLkCZY+bqTGbVSq+nYZRmJ42nmS1K2YiXlq8uJXwLk3FvDfWqgdhkmpmY9s8
+         1a9oGJm45Y55f0U9i6PXkoxGCqhpkc6Oj7A6B8cKxxb+s4Zh3EX90usGJo9j3Fs55D
+         Scu9I24rsjV2CmWdBvFw4NKuU9WFySPBLmm+YiME/AdKk1dYzCeTVE6TdvPt/GgtVy
+         B7PKp/0rqxywlJO4sgqLYKFerMtHjHQK4xtTqyHW8F6hOTPSLElkwhaNs8RD5qFNmk
+         myJqEhNuMitCt8Pl82eCzXfkDEJIqK6fVevoJ8CMtRc943OJiOSR6+SN7KnskFceH4
+         +X46rjFpmTujw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id B90755C0F66; Thu, 29 Sep 2022 11:07:32 -0700 (PDT)
+        id A953D5C0691; Thu, 29 Sep 2022 11:07:32 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
         rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         John Ogness <john.ogness@linutronix.de>,
-        Petr Mladek <pmladek@suse.com>, linux-s390@vger.kernel.org
-Subject: [PATCH RFC v2 rcu 8/8] arch/s390: Add ARCH_HAS_NMI_SAFE_THIS_CPU_OPS Kconfig option
-Date:   Thu, 29 Sep 2022 11:07:31 -0700
-Message-Id: <20220929180731.2875722-8-paulmck@kernel.org>
+        Petr Mladek <pmladek@suse.com>
+Subject: [PATCH RFC v2 rcu 1/8] srcu: Convert ->srcu_lock_count and ->srcu_unlock_count to atomic
+Date:   Thu, 29 Sep 2022 11:07:24 -0700
+Message-Id: <20220929180731.2875722-1-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220929180714.GA2874192@paulmck-ThinkPad-P17-Gen-1>
 References: <20220929180714.GA2874192@paulmck-ThinkPad-P17-Gen-1>
@@ -60,46 +52,114 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The s390 architecture uses either a cmpxchg loop (old systems)
-or the laa add-to-memory instruction (new systems) to implement
-this_cpu_add(), both of which are NMI safe.  This means that the old
-and more-efficient srcu_read_lock() may be used in NMI context, without
-the need for srcu_read_lock_nmisafe().  Therefore, add the new Kconfig
-option ARCH_HAS_NMI_SAFE_THIS_CPU_OPS to arch/arm64/Kconfig, which will
-cause NEED_SRCU_NMI_SAFE to be deselected, thus preserving the current
-srcu_read_lock() behavior.
+NMI-safe variants of srcu_read_lock() and srcu_read_unlock() are needed
+by printk(), which on many architectures entails read-modify-write
+atomic operations.  This commit prepares Tree SRCU for this change by
+making both ->srcu_lock_count and ->srcu_unlock_count by atomic_long_t.
 
 Link: https://lore.kernel.org/all/20220910221947.171557773@linutronix.de/
 
-Suggested-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
-Suggested-by: Frederic Weisbecker <frederic@kernel.org>
-Suggested-by: Boqun Feng <boqun.feng@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Heiko Carstens <hca@linux.ibm.com>
-Cc: Vasily Gorbik <gor@linux.ibm.com>
-Cc: Alexander Gordeev <agordeev@linux.ibm.com>
-Cc: Christian Borntraeger <borntraeger@linux.ibm.com>
-Cc: Sven Schnelle <svens@linux.ibm.com>
 Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: John Ogness <john.ogness@linutronix.de>
 Cc: Petr Mladek <pmladek@suse.com>
-Cc: <linux-s390@vger.kernel.org>
 ---
- arch/s390/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ include/linux/srcutree.h |  4 ++--
+ kernel/rcu/srcutree.c    | 24 ++++++++++++------------
+ 2 files changed, 14 insertions(+), 14 deletions(-)
 
-diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-index 318fce77601d..0acdfda33290 100644
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@ -73,6 +73,7 @@ config S390
- 	select ARCH_HAS_GIGANTIC_PAGE
- 	select ARCH_HAS_KCOV
- 	select ARCH_HAS_MEM_ENCRYPT
-+	select ARCH_HAS_NMI_SAFE_THIS_CPU_OPS
- 	select ARCH_HAS_PTE_SPECIAL
- 	select ARCH_HAS_SCALED_CPUTIME
- 	select ARCH_HAS_SET_MEMORY
+diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
+index e3014319d1ad..0c4eca07d78d 100644
+--- a/include/linux/srcutree.h
++++ b/include/linux/srcutree.h
+@@ -23,8 +23,8 @@ struct srcu_struct;
+  */
+ struct srcu_data {
+ 	/* Read-side state. */
+-	unsigned long srcu_lock_count[2];	/* Locks per CPU. */
+-	unsigned long srcu_unlock_count[2];	/* Unlocks per CPU. */
++	atomic_long_t srcu_lock_count[2];	/* Locks per CPU. */
++	atomic_long_t srcu_unlock_count[2];	/* Unlocks per CPU. */
+ 
+ 	/* Update-side state. */
+ 	spinlock_t __private lock ____cacheline_internodealigned_in_smp;
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index 1c304fec89c0..6fd0665f4d1f 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -417,7 +417,7 @@ static unsigned long srcu_readers_lock_idx(struct srcu_struct *ssp, int idx)
+ 	for_each_possible_cpu(cpu) {
+ 		struct srcu_data *cpuc = per_cpu_ptr(ssp->sda, cpu);
+ 
+-		sum += READ_ONCE(cpuc->srcu_lock_count[idx]);
++		sum += atomic_long_read(&cpuc->srcu_lock_count[idx]);
+ 	}
+ 	return sum;
+ }
+@@ -434,7 +434,7 @@ static unsigned long srcu_readers_unlock_idx(struct srcu_struct *ssp, int idx)
+ 	for_each_possible_cpu(cpu) {
+ 		struct srcu_data *cpuc = per_cpu_ptr(ssp->sda, cpu);
+ 
+-		sum += READ_ONCE(cpuc->srcu_unlock_count[idx]);
++		sum += atomic_long_read(&cpuc->srcu_unlock_count[idx]);
+ 	}
+ 	return sum;
+ }
+@@ -503,10 +503,10 @@ static bool srcu_readers_active(struct srcu_struct *ssp)
+ 	for_each_possible_cpu(cpu) {
+ 		struct srcu_data *cpuc = per_cpu_ptr(ssp->sda, cpu);
+ 
+-		sum += READ_ONCE(cpuc->srcu_lock_count[0]);
+-		sum += READ_ONCE(cpuc->srcu_lock_count[1]);
+-		sum -= READ_ONCE(cpuc->srcu_unlock_count[0]);
+-		sum -= READ_ONCE(cpuc->srcu_unlock_count[1]);
++		sum += atomic_long_read(&cpuc->srcu_lock_count[0]);
++		sum += atomic_long_read(&cpuc->srcu_lock_count[1]);
++		sum -= atomic_long_read(&cpuc->srcu_unlock_count[0]);
++		sum -= atomic_long_read(&cpuc->srcu_unlock_count[1]);
+ 	}
+ 	return sum;
+ }
+@@ -636,7 +636,7 @@ int __srcu_read_lock(struct srcu_struct *ssp)
+ 	int idx;
+ 
+ 	idx = READ_ONCE(ssp->srcu_idx) & 0x1;
+-	this_cpu_inc(ssp->sda->srcu_lock_count[idx]);
++	this_cpu_inc(ssp->sda->srcu_lock_count[idx].counter);
+ 	smp_mb(); /* B */  /* Avoid leaking the critical section. */
+ 	return idx;
+ }
+@@ -650,7 +650,7 @@ EXPORT_SYMBOL_GPL(__srcu_read_lock);
+ void __srcu_read_unlock(struct srcu_struct *ssp, int idx)
+ {
+ 	smp_mb(); /* C */  /* Avoid leaking the critical section. */
+-	this_cpu_inc(ssp->sda->srcu_unlock_count[idx]);
++	this_cpu_inc(ssp->sda->srcu_unlock_count[idx].counter);
+ }
+ EXPORT_SYMBOL_GPL(__srcu_read_unlock);
+ 
+@@ -1687,8 +1687,8 @@ void srcu_torture_stats_print(struct srcu_struct *ssp, char *tt, char *tf)
+ 			struct srcu_data *sdp;
+ 
+ 			sdp = per_cpu_ptr(ssp->sda, cpu);
+-			u0 = data_race(sdp->srcu_unlock_count[!idx]);
+-			u1 = data_race(sdp->srcu_unlock_count[idx]);
++			u0 = data_race(sdp->srcu_unlock_count[!idx].counter);
++			u1 = data_race(sdp->srcu_unlock_count[idx].counter);
+ 
+ 			/*
+ 			 * Make sure that a lock is always counted if the corresponding
+@@ -1696,8 +1696,8 @@ void srcu_torture_stats_print(struct srcu_struct *ssp, char *tt, char *tf)
+ 			 */
+ 			smp_rmb();
+ 
+-			l0 = data_race(sdp->srcu_lock_count[!idx]);
+-			l1 = data_race(sdp->srcu_lock_count[idx]);
++			l0 = data_race(sdp->srcu_lock_count[!idx].counter);
++			l1 = data_race(sdp->srcu_lock_count[idx].counter);
+ 
+ 			c0 = l0 - u0;
+ 			c1 = l1 - u1;
 -- 
 2.31.1.189.g2e36527f23
 
