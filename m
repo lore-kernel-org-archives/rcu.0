@@ -2,50 +2,55 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B7A12C433F5
-	for <rcu@archiver.kernel.org>; Thu, 29 Sep 2022 18:07:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BFA40C4321E
+	for <rcu@archiver.kernel.org>; Thu, 29 Sep 2022 18:07:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235442AbiI2SHj (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 29 Sep 2022 14:07:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57412 "EHLO
+        id S234945AbiI2SHi (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 29 Sep 2022 14:07:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235386AbiI2SHg (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 29 Sep 2022 14:07:36 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3BB31BEA55;
-        Thu, 29 Sep 2022 11:07:35 -0700 (PDT)
+        with ESMTP id S235336AbiI2SHf (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 29 Sep 2022 14:07:35 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B973A1BB6F6;
+        Thu, 29 Sep 2022 11:07:34 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 5ED36B82643;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4AFBF62129;
         Thu, 29 Sep 2022 18:07:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14238C43470;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60174C43148;
         Thu, 29 Sep 2022 18:07:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1664474853;
-        bh=ngiy42v1jAmn2gtQrSvCJSPS7F9XoJDfjE9vMtSui1I=;
+        bh=dxVVyAI/XsDb/XxEurj/fyG2d+UBorNbtmn4Ig6rVNY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W5/DUILQkSvnoRthJ6xnXz11AbPVfjVdJTyWh9g3b0ai50uMKDknpbFt0TJB+sU65
-         plKrwfDqhp6z2tXa4+TQg+RaWS5y/r4Hf+sUUDfNBasetOvBjY5EHflaU5CyfHog5U
-         yPt8GHMoufErHzelv96yf4IxtmyVPvMw2Qpo4bhM2W4uGtOj0E8O9Wl+CK1SuZM+dg
-         raX1qmHOCPiADfzoeg/Suj/CE6sEw7OdeonMnOtDz1In5Vr1psX8MjxcwNHi+f4XYt
-         5W0bu0ji1GyR7cd6bJLm61LHazEuxuy9gu5zhHliDvQbDV4YtLFK+1/wB0wbzFGkCb
-         dKPtZIqUVTuDw==
+        b=FwBur71iPrFaH4Ymbzw7w7w8nzr94QBsKWYizdb6U0oA+JhgrsQbzGA20b6otNv4C
+         bXdAuQz5OOnJJBoH1oXym6/1abW/DdkitXnJ8z3Xj8SofgdBt6+u0s+FFVvbDM1KTN
+         gJeu5w/k5PXnRMXCPdUsoJIW+CjUcbZYJr4RWpQFi/Y0/2rTULN6VDxFmMLSnimklR
+         0mtt7BFBDu1MjpgBGj/yJRlVpFo+DCEmDzce8gyK/sE47vI/4mITwsyCvbPg/Ew1iA
+         2q5SUQVPsAJ6qli0d8lxM/n1L3FwwTkKmRR6rBn1MqPZsEFsV5Uk1i25zlIuVg1w+r
+         WIT/Y6TqnH8GQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id B2D195C0DE5; Thu, 29 Sep 2022 11:07:32 -0700 (PDT)
+        id B90755C0F66; Thu, 29 Sep 2022 11:07:32 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
         rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
         John Ogness <john.ogness@linutronix.de>,
-        Petr Mladek <pmladek@suse.com>, x86@kernel.org
-Subject: [PATCH RFC v2 rcu 5/8] arch/x86: Add ARCH_HAS_NMI_SAFE_THIS_CPU_OPS Kconfig option
-Date:   Thu, 29 Sep 2022 11:07:28 -0700
-Message-Id: <20220929180731.2875722-5-paulmck@kernel.org>
+        Petr Mladek <pmladek@suse.com>, linux-s390@vger.kernel.org
+Subject: [PATCH RFC v2 rcu 8/8] arch/s390: Add ARCH_HAS_NMI_SAFE_THIS_CPU_OPS Kconfig option
+Date:   Thu, 29 Sep 2022 11:07:31 -0700
+Message-Id: <20220929180731.2875722-8-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20220929180714.GA2874192@paulmck-ThinkPad-P17-Gen-1>
 References: <20220929180714.GA2874192@paulmck-ThinkPad-P17-Gen-1>
@@ -55,41 +60,46 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The x86 architecture uses an add-to-memory instruction to implement
-this_cpu_add(), which is NMI safe.  This means that the old and
-more-efficient srcu_read_lock() may be used in NMI context, without
+The s390 architecture uses either a cmpxchg loop (old systems)
+or the laa add-to-memory instruction (new systems) to implement
+this_cpu_add(), both of which are NMI safe.  This means that the old
+and more-efficient srcu_read_lock() may be used in NMI context, without
 the need for srcu_read_lock_nmisafe().  Therefore, add the new Kconfig
-option ARCH_HAS_NMI_SAFE_THIS_CPU_OPS to arch/x86/Kconfig, which will
+option ARCH_HAS_NMI_SAFE_THIS_CPU_OPS to arch/arm64/Kconfig, which will
 cause NEED_SRCU_NMI_SAFE to be deselected, thus preserving the current
 srcu_read_lock() behavior.
 
 Link: https://lore.kernel.org/all/20220910221947.171557773@linutronix.de/
 
+Suggested-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+Suggested-by: Frederic Weisbecker <frederic@kernel.org>
+Suggested-by: Boqun Feng <boqun.feng@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: Alexander Gordeev <agordeev@linux.ibm.com>
+Cc: Christian Borntraeger <borntraeger@linux.ibm.com>
+Cc: Sven Schnelle <svens@linux.ibm.com>
 Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
 Cc: John Ogness <john.ogness@linutronix.de>
 Cc: Petr Mladek <pmladek@suse.com>
-Cc: <x86@kernel.org>
+Cc: <linux-s390@vger.kernel.org>
 ---
- arch/x86/Kconfig | 1 +
+ arch/s390/Kconfig | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index f9920f1341c8..ee5783d8ec71 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -81,6 +81,7 @@ config X86
- 	select ARCH_HAS_KCOV			if X86_64
+diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
+index 318fce77601d..0acdfda33290 100644
+--- a/arch/s390/Kconfig
++++ b/arch/s390/Kconfig
+@@ -73,6 +73,7 @@ config S390
+ 	select ARCH_HAS_GIGANTIC_PAGE
+ 	select ARCH_HAS_KCOV
  	select ARCH_HAS_MEM_ENCRYPT
- 	select ARCH_HAS_MEMBARRIER_SYNC_CORE
 +	select ARCH_HAS_NMI_SAFE_THIS_CPU_OPS
- 	select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
- 	select ARCH_HAS_PMEM_API		if X86_64
- 	select ARCH_HAS_PTE_DEVMAP		if X86_64
+ 	select ARCH_HAS_PTE_SPECIAL
+ 	select ARCH_HAS_SCALED_CPUTIME
+ 	select ARCH_HAS_SET_MEMORY
 -- 
 2.31.1.189.g2e36527f23
 
