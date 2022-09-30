@@ -2,101 +2,114 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 465A2C433F5
-	for <rcu@archiver.kernel.org>; Fri, 30 Sep 2022 13:04:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 76ED9C433FE
+	for <rcu@archiver.kernel.org>; Fri, 30 Sep 2022 15:03:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229741AbiI3NEt (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 30 Sep 2022 09:04:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49790 "EHLO
+        id S229522AbiI3PDV (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 30 Sep 2022 11:03:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229613AbiI3NEr (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 30 Sep 2022 09:04:47 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C0024B98D
-        for <rcu@vger.kernel.org>; Fri, 30 Sep 2022 06:04:45 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id p202so3192864iod.6
-        for <rcu@vger.kernel.org>; Fri, 30 Sep 2022 06:04:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=lzxya8qVf85WLal0PUG5JMgwgRIj0gGWEqZmlBgLRgw=;
-        b=dvkjKUiHSqGTFD1exfqQQYzbsYCv92ZBjDoUoeAh1jwvTj2xmz48ui5fiv9eTMcAua
-         z/j/riLyFWZSMn/idRrS+0vcERaQTM8A44NcWvyRFo4EufG+UVbpDUn9TcVGqHtc652v
-         xypJ1CyGPDVwCG79ZG9Igq/mTLD2xnPVSzo7g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=lzxya8qVf85WLal0PUG5JMgwgRIj0gGWEqZmlBgLRgw=;
-        b=SV5FpSlneecIyCtrk+VOOr0w2JMkEhYCK0jrIC4B+VKjfHy1MzZjJexlrHj6/Rjr8S
-         4OMXyH77thzYYWnaBUyqkPYWsPasAyTZ518rwn7W5pronumuQhp1didHvjkf9SQLmXue
-         U3LERQD4KpFOSPBGL4re0oT64NvAcjnpqYOA7mg3zlkGXsUAJfS0JFJNJ3jmZ0n+Mrn6
-         jvvx3jvuoUjOzYu31YiJcgwXRVB7ajSUKMVwMpH9jO4HQKBaD1spVaw9MwSgLFYZ6BmE
-         T6Ey3MYSJUHutn8sYBSC0whKiby3pvTA0nMQfAM6dtJkIsRhLtiigmqQ7plFcT8fSIU8
-         fqSQ==
-X-Gm-Message-State: ACrzQf19oavVup3YBd/iX6+L5i0pWzs22QQ1qUC5Kb5HfdtfwaKJ1q9r
-        mDBK3srZXRoYm5BK4DD/g3m1RcNxr4RwSm3fceqJxQ==
-X-Google-Smtp-Source: AMsMyM6/U8dvsVBRMMN3DJ/d27mdMq0iAXUfWZBI7N5L2dSD4eeo8hukAXrs3ouVICrYBAUFTcnRGwK1t8gpwbTFIyM=
-X-Received: by 2002:a05:6602:15d2:b0:6a5:14f6:5e53 with SMTP id
- f18-20020a05660215d200b006a514f65e53mr3998673iow.156.1664543085017; Fri, 30
- Sep 2022 06:04:45 -0700 (PDT)
+        with ESMTP id S231156AbiI3PDA (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 30 Sep 2022 11:03:00 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 810731B797;
+        Fri, 30 Sep 2022 08:02:20 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1664550139;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=J+Fn4zMjsLn2Qso2M/bzpTLj/jBiqJSsMiMxkJfaFns=;
+        b=AOo14cMZ2mEMUoXVzdowlMGK9daTRVgM5oGOQ5ZqkClSdLBoEp0pqdM08dbloyxeM9kJol
+        e+l8hmKkF9Dvrd0Rfnt1JDQmORksEWdJJso9YSR0tWkWxqwqTInvbK+PXSIxYk0jFOeRH7
+        jwcRpRgxdOjR75X52gr6rNnb0OcFwXemOJh6qETKQ/lclkFsTkgoN/aNlqcSS5GCc63xYH
+        /0YWZf+VDenoSobJe8mzttRShCmXBilUhNka3hLgCbqRPIpQiMUjvwpuZ2c1wBrMsWm9gE
+        4+1mDiJDpxHKEpji8SR4b3Ju1wxqyTUl5KQBupqwjHE2lZuDhCVXyU9mj0eWiQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1664550139;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=J+Fn4zMjsLn2Qso2M/bzpTLj/jBiqJSsMiMxkJfaFns=;
+        b=fe954LaE1Z/wHa54KHsNWFtY6/lL2vlliP3TsrpJDWG+Q7QPmx96WVhG4Tm4auZVh4M1xx
+        Pd98LjH1kpimYTBw==
+To:     "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
+        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Petr Mladek <pmladek@suse.com>
+Subject: Re: [PATCH RFC v2 rcu 1/8] srcu: Convert ->srcu_lock_count and
+ ->srcu_unlock_count to atomic
+In-Reply-To: <20220929180731.2875722-1-paulmck@kernel.org>
+References: <20220929180714.GA2874192@paulmck-ThinkPad-P17-Gen-1>
+ <20220929180731.2875722-1-paulmck@kernel.org>
+Date:   Fri, 30 Sep 2022 17:08:18 +0206
+Message-ID: <87ill4vrb9.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-References: <20220915055825.21525-1-kernelfans@gmail.com> <20220915055825.21525-4-kernelfans@gmail.com>
- <20220916134258.GB25891@lothringen> <YylrJCjYPrcT6xKJ@piliu.users.ipa.redhat.com>
- <20220920094645.GG69891@lothringen> <20220920191339.GS4196@paulmck-ThinkPad-P17-Gen-1>
- <Yywq/AtA5DN6J5+6@piliu.users.ipa.redhat.com> <20220922135442.GH4196@paulmck-ThinkPad-P17-Gen-1>
- <YzFH6WSMX/Yht+i1@piliu.users.ipa.redhat.com> <20220926222352.GV4196@paulmck-ThinkPad-P17-Gen-1>
- <YzLJZU2mAPjfD/RK@piliu.users.ipa.redhat.com> <CAFgQCTtLm-JXRyQfKo6-+P00SShVGujZGau+khmtCe1AiRodQA@mail.gmail.com>
- <CAFgQCTu-oyFMQOSGc=9q_ni=hJQ87oxM0AAU1joftkX36t9ejw@mail.gmail.com>
-In-Reply-To: <CAFgQCTu-oyFMQOSGc=9q_ni=hJQ87oxM0AAU1joftkX36t9ejw@mail.gmail.com>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Fri, 30 Sep 2022 09:04:35 -0400
-Message-ID: <CAEXW_YQ19C-Drh7zVDvGRj-zsdJzhpAUJJVvzA+6SHNbTJoA9w@mail.gmail.com>
-Subject: Re: [PATCHv2 3/3] rcu: coordinate tick dependency during concurrent offlining
-To:     Pingfan Liu <kernelfans@gmail.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>, rcu@vger.kernel.org,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Sep 29, 2022 at 4:21 AM Pingfan Liu <kernelfans@gmail.com> wrote:
->
-> On Thu, Sep 29, 2022 at 4:19 PM Pingfan Liu <kernelfans@gmail.com> wrote:
-> >
-> [...]
-> > "
-> >
-> > I have no idea whether this is related to the reverted commit.
-> >
->
-> I have started another test against clean v6.0-rc7 to see whether this
-> is an issue with the mainline.
+Hi Paul,
 
-I am not sure what exactly you are reverting (you could clarify that),
-but if you are just removing the entire TICK_DEP_BIT_RCU, I do
-remember (and mentioned on IRC to others recently) that without this
-NOHZ_FULL has a hard time ending grace-periods because the forcing of
-tick is needed for this configuration if we are spinning in the kernel
-with the tick turned off. That seems to align with your TREE04
-(NOHZ_FULL) configuration.
+On 2022-09-29, "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> index 1c304fec89c0..6fd0665f4d1f 100644
+> --- a/kernel/rcu/srcutree.c
+> +++ b/kernel/rcu/srcutree.c
+> @@ -636,7 +636,7 @@ int __srcu_read_lock(struct srcu_struct *ssp)
+>  	int idx;
+>  
+>  	idx = READ_ONCE(ssp->srcu_idx) & 0x1;
+> -	this_cpu_inc(ssp->sda->srcu_lock_count[idx]);
+> +	this_cpu_inc(ssp->sda->srcu_lock_count[idx].counter);
+>  	smp_mb(); /* B */  /* Avoid leaking the critical section. */
+>  	return idx;
+>  }
 
-Also, the commit Frederic suggested to revert seems to be a cosmetic
-optimization in the interrupt-entry path. That should not change
-functionality I believe. So I did not fully follow why reverting that
-is relevant (maybe Frederic can clarify?).
+Is there any particular reason that you are directly modifying @counter
+instead of raw_cpu_ptr()+atomic_long_inc() that do you in
+__srcu_read_lock_nmisafe() of patch 2?
 
-Or, are you trying to just remove its use from the hotplug path?
+> @@ -650,7 +650,7 @@ EXPORT_SYMBOL_GPL(__srcu_read_lock);
+>  void __srcu_read_unlock(struct srcu_struct *ssp, int idx)
+>  {
+>  	smp_mb(); /* C */  /* Avoid leaking the critical section. */
+> -	this_cpu_inc(ssp->sda->srcu_unlock_count[idx]);
+> +	this_cpu_inc(ssp->sda->srcu_unlock_count[idx].counter);
+>  }
+>  EXPORT_SYMBOL_GPL(__srcu_read_unlock);
 
-thanks,
+Ditto.
 
- - Joel
+> @@ -1687,8 +1687,8 @@ void srcu_torture_stats_print(struct srcu_struct *ssp, char *tt, char *tf)
+>  			struct srcu_data *sdp;
+>  
+>  			sdp = per_cpu_ptr(ssp->sda, cpu);
+> -			u0 = data_race(sdp->srcu_unlock_count[!idx]);
+> -			u1 = data_race(sdp->srcu_unlock_count[idx]);
+> +			u0 = data_race(sdp->srcu_unlock_count[!idx].counter);
+> +			u1 = data_race(sdp->srcu_unlock_count[idx].counter);
+>  
+>  			/*
+>  			 * Make sure that a lock is always counted if the corresponding
+
+And instead of atomic_long_read().
+
+> @@ -1696,8 +1696,8 @@ void srcu_torture_stats_print(struct srcu_struct *ssp, char *tt, char *tf)
+>  			 */
+>  			smp_rmb();
+>  
+> -			l0 = data_race(sdp->srcu_lock_count[!idx]);
+> -			l1 = data_race(sdp->srcu_lock_count[idx]);
+> +			l0 = data_race(sdp->srcu_lock_count[!idx].counter);
+> +			l1 = data_race(sdp->srcu_lock_count[idx].counter);
+>  
+>  			c0 = l0 - u0;
+>  			c1 = l1 - u1;
+
+Ditto.
+
+John Ogness
