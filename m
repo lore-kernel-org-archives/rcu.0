@@ -2,196 +2,127 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FA00C433F5
-	for <rcu@archiver.kernel.org>; Sun,  2 Oct 2022 03:10:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 532C1C433FE
+	for <rcu@archiver.kernel.org>; Sun,  2 Oct 2022 05:48:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229540AbiJBDKx (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 1 Oct 2022 23:10:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41034 "EHLO
+        id S229549AbiJBFsL (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 2 Oct 2022 01:48:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbiJBDKv (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 1 Oct 2022 23:10:51 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 402502C66F;
-        Sat,  1 Oct 2022 20:10:48 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DF64A60C3A;
-        Sun,  2 Oct 2022 03:10:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 363B7C433D7;
-        Sun,  2 Oct 2022 03:10:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1664680247;
-        bh=uSKctew27OMSEqlEKC59gBsdzDXIGF0js0N/xW6Lgqw=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=YdIyqYfjUOi8V67hV9+XlxZBHV+jlS86xmrkEWev3VsCDOP0UJ/UDrXGTqw7+7ZPo
-         zfI0DY1hRJynnqVJ7KPl7u0l8YOnAhn39MJlKoXIoqC8a745yPk1JwNTsoUpUPDOa1
-         IWY5Era6dPvpO9CexoGgwyWHBWRd/ttgVZzeCTItogZofDzz9kl8K5PGqeaZeZbbzO
-         RAX8/2vwP3jbGuz+PBpsvhMoaq6chCK2KSwjClsDfYuiQaL1VJJBWp2XAbtX6m64ej
-         qW7gVJL6amF/L6f7/D2RDW4KOlEwSA4zPVN5ul+VqipkGDvCTJHKbdYm7hWtVjre+y
-         9m5+Dd5zu+w9w==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id C100B5C05B1; Sat,  1 Oct 2022 20:10:46 -0700 (PDT)
-Date:   Sat, 1 Oct 2022 20:10:46 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     torvalds@linux-foundation.org
-Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        rcu@vger.kernel.org, kernel-team@fb.com
-Subject: [GIT PULL] RCU changes for v6.1
-Message-ID: <20221002031046.GA3511311@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        with ESMTP id S229449AbiJBFsL (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 2 Oct 2022 01:48:11 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D8AD3AE4F;
+        Sat,  1 Oct 2022 22:48:10 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id d1-20020a17090a6a4100b002095b319b9aso6728309pjm.0;
+        Sat, 01 Oct 2022 22:48:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date;
+        bh=VgNJ1GE8Vgm6Xrjpg25iYal6CFtq/s9kQyktt7aaKUE=;
+        b=G+Nj6O7uP97vjLNbXj4dcOqlrfn4eMtnO/h4QuV/EibeSN4ZaYQmOTtgl4OtxFWRI0
+         Nai1l3/0NNcI+Uz4dCAlRU7YktoD1cWb/eb1XXaOfrdVvWeJHmDxfKTqzC1+1Lsd9dLI
+         g5Duc9IPiWKsY1VbsNNTOIpoCP/bkn14RytKtGZ4IKMdq8pgtPhm6GbO50uLtEF483uf
+         VquHJNKdjBjwNKTzUWDS/6S49AYqYdPJc910tE18zQIu0Md8QblasL+uSiBJiY37WJrI
+         0BstAUkz8zO5JXFnGpIP9cJhiuaq+tvLVbuNzj2+OiFLtTxwiHw3Z0T09fsvsN+bRVYt
+         lgWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
+        bh=VgNJ1GE8Vgm6Xrjpg25iYal6CFtq/s9kQyktt7aaKUE=;
+        b=IKqJzLfDbG/x87F1RIwsObPHbHGHo1hql93c1f90PfwuNtvopqbUNuYPhEs33SXosn
+         h2M9UgS/+2mUsA2VuzQX3eLCdnw5DF4iXi3Ihx2rZ5JgG6uDQQPgGnu/1DxzKqKzsrME
+         IgEK1g9iioYp28jeWACWyAIwe56quNB2jGlSmFC6Ebhd2D+083/Eqnhx14eMklDNNnr7
+         jYcOiDS82vH8+PhCOm4cxvUKIp9xWkZtuWNxIBI5tTCQQTg+O8WeiejfROP8N31em7KZ
+         sYu6eUvefiKFoFH67ILyziK6FBdP7nwMldZz+199q6z0CfQAWPhEeXbwAOVw5BSsoenm
+         HfRg==
+X-Gm-Message-State: ACrzQf1dSvCTKqQfrzfoJ6DDcdNCyH5yqVZZkSZpunB2xUxdXkpH0WiR
+        qkGqJrfg1P+rUS/UyMD/7Mn2yQwRSv6lfQ==
+X-Google-Smtp-Source: AMsMyM6zcOmhnWnhzVBi4ImyiM+v9uxCF+36fpU07h+TPPwm4nBzBAWJMVgaipQrQdbr56KhISXwiQ==
+X-Received: by 2002:a17:902:e841:b0:177:82b6:e6f7 with SMTP id t1-20020a170902e84100b0017782b6e6f7mr16871883plg.66.1664689689467;
+        Sat, 01 Oct 2022 22:48:09 -0700 (PDT)
+Received: from hyeyoo ([114.29.91.56])
+        by smtp.gmail.com with ESMTPSA id f69-20020a623848000000b0055fd8b687fdsm2192713pfa.95.2022.10.01.22.48.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 01 Oct 2022 22:48:08 -0700 (PDT)
+Date:   Sun, 2 Oct 2022 14:48:02 +0900
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        David Laight <David.Laight@aculab.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        rcu@vger.kernel.org
+Subject: Re: amusing SLUB compaction bug when CC_OPTIMIZE_FOR_SIZE
+Message-ID: <YzkmErHFyYW3awRn@hyeyoo>
+References: <ea96c78c-e1dc-1364-e91-51909f82388b@google.com>
+ <YzPgTtFzpKEfwPbK@hyeyoo>
+ <YzRQvoVsnJzsauwb@google.com>
+ <35502bdd-1a78-dea1-6ac3-6ff1bcc073fa@suse.cz>
+ <ff905c1e-5eb3-eaf8-46de-38f189c0b7a5@google.com>
+ <de71b83a-c82c-4785-ef5a-3db4f17bbc8d@suse.cz>
+ <bcecece-f7ce-221d-1674-da3d5ab3fef@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <bcecece-f7ce-221d-1674-da3d5ab3fef@google.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello, Linus,
+On Thu, Sep 29, 2022 at 02:54:45PM -0700, Hugh Dickins wrote:
+> On Thu, 29 Sep 2022, Vlastimil Babka wrote:
+> > On 9/28/22 19:50, Hugh Dickins wrote:
+> > > On Wed, 28 Sep 2022, Vlastimil Babka wrote:
+> > >> On 9/28/22 15:48, Joel Fernandes wrote:
+> > >> > On Wed, Sep 28, 2022 at 02:49:02PM +0900, Hyeonggon Yoo wrote:
+> > >> >> On Tue, Sep 27, 2022 at 10:16:35PM -0700, Hugh Dickins wrote:
+> > >> >>> It's a bug in linux-next, but taking me too long to identify which
+> > >> >>> commit is "to blame", so let me throw it over to you without more
+> > >> >>> delay: I think __PageMovable() now needs to check !PageSlab().
+> > >> 
+> > >> When I tried that, the result wasn't really nice:
+> > >> 
+> > >> https://lore.kernel.org/all/aec59f53-0e53-1736-5932-25407125d4d4@suse.cz/
+> > >> 
+> > >> And what if there's another conflicting page "type" later. Or the debugging
+> > >> variant of rcu_head in struct page itself. The __PageMovable() is just too
+> > >> fragile.
+> > > 
+> > > I don't disagree (and don't really know all the things you're thinking
+> > > of in there).  But if it's important to rescue this feature for 6.1, a
+> > > different approach may be the very simple patch below (I met a similar
+> > > issue with OPTIMIZE_FOR_SIZE in i915 a year ago, and just remembered).
+> > > 
+> > > But you be the judge of it: (a) I do not know whether rcu_free_slab
+> > > is the only risky address ever stuffed into that field; and (b) I'm
+> > > clueless when it comes to those architectures (powerpc etc) where the
+> > > the address of a function is something different from the address of
+> > > the function (have I conveyed my cluelessness adequately?).
+> > 
+> > Thanks a lot Hugh! That's a sufficiently small fix (compared to the other
+> > options) that I'm probably give it one last try.
+> 
+> I suddenly worried that you might be waiting on me for a Signed-off-by,
+> which I couldn't give until I researched my reservations (a) and (b):
+> but I'm pleased to see from your kernel.org tree that you've gone ahead
+> and folded it in - thanks.
+> 
+> Regarding (a): great, you've found it too, mm/slab.c's kmem_rcu_free()
+> looks like it needs the same __aligned(4) as mm/slub.c's rcu_free_slabi().
 
-Once the merge window opens, please pull the latest RCU git tree from:
+Just one more thing, rcu_leak_callback too. RCU seem to use it
+internally to catch double call_rcu().
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu.2022.09.30a
-  # HEAD: 5c0ec4900497f7c9cc12f393c329a52e67bc6b8b Merge branches 'doc.2022.08.31b', 'fixes.2022.08.31b', 'kvfree.2022.08.31b', 'nocb.2022.09.01a', 'poll.2022.08.31b', 'poll-srcu.2022.08.31b' and 'tasks.2022.08.31b' into HEAD
+And some suggestions:
+- what about adding runtime WARN() on slab init code to catch
+  unexpected arch/toolchain issues?
+- instead of 4, we may use macro definition? like (PAGE_MAPPING_FLAGS + 1)?
 
-----------------------------------------------------------------
-
-RCU pull request for v6.1
-
-This pull request contains the following branches:
-
-doc.2022.08.31b: Documentation updates.  This is the first in a series
-	from an ongoing review of the RCU documentation.  "Why are people
-	thinking -that- about RCU?  Oh.  Because that is an entirely
-	reasonable interpretation of its documentation."
-
-fixes.2022.08.31b: Miscellaneous fixes.
-
-kvfree.2022.08.31b: Improved memory allocation and heuristics.
-
-nocb.2022.09.01a: Improve rcu_nocbs diagnostic output.
-
-poll.2022.08.31b: Add full-sized polled RCU grace period state values.
-	These are the same size as an rcu_head structure, which is double
-	that of the traditional unsigned long state values that may still
-	be obtained from et_state_synchronize_rcu().  The added size
-	avoids missing overlapping grace periods.  This benefit is that
-	call_rcu() can be replaced by polling, which can be attractive
-	in situations where RCU-protected data is aged out of memory.
-
-	Early in the series, the size of this state value is three
-	unsigned longs.  Later in the series, the synchronize_rcu() and
-	synchronize_rcu_expedited() fastpaths are reworked to permit
-	the full state to be represented by only two unsigned longs.
-	This reworking slows these two functions down in SMP kernels
-	running either on single-CPU systems or on systems with all but
-	one CPU offlined, but this should not be a significant problem.
-	And if it somehow becomes a problem in some yet-as-unforeseen
-	situations, three-value state values can be provided for only
-	those situations.
-
-	Finally, a pair of functions named same_state_synchronize_rcu()
-	and same_state_synchronize_rcu_full() allow grace-period state
-	values to be compared for equality.  This permits users to
-	maintain lists of data structures having the same state value,
-	removing the need for per-data-structure grace-period state
-	values, thus decreasing memory footprint.
-
-poll-srcu.2022.08.31b: Polled SRCU grace-period updates, including
-	adding tests to rcutorture and reducing the incidence of Tiny
-	SRCU grace-period-state counter wrap.
-
-tasks.2022.08.31b: Improve Tasks RCU diagnostics and quiescent-state
-	detection.
-
-----------------------------------------------------------------
-Joel Fernandes (Google) (1):
-      rcu/kfree: Fix kfree_rcu_shrink_count() return value
-
-Michal Hocko (1):
-      rcu: Back off upon fill_page_cache_func() allocation failure
-
-Paul E. McKenney (41):
-      doc: Emphasize the need for explicit RCU read-side markers
-      doc: Call out queue_rcu_work() for blocking RCU callbacks
-      doc: Use rcu_barrier() to rate-limit RCU callbacks
-      doc: Fix list: rcu_access_pointer() is not lockdep-checked
-      doc: Update rcu_access_pointer() advice in rcu_dereference.rst
-      doc: SLAB_TYPESAFE_BY_RCU uses cannot rely on spinlocks
-      rcu: Document reason for rcu_all_qs() call to preempt_disable()
-      rcu: Update rcu_access_pointer() header for rcu_dereference_protected()
-      rcu: Exclude outgoing CPU when it is the last to leave
-      rcu/nocb: Add CPU number to CPU-{,de}offload failure messages
-      rcu: Add full-sized polling for get_completed*() and poll_state*()
-      rcu: Add full-sized polling for get_state()
-      rcutorture: Abstract synchronous and polled API testing
-      rcutorture: Allow per-RCU-flavor polled double-GP check
-      rcutorture: Verify RCU reader prevents full polling from completing
-      rcutorture: Remove redundant RTWS_DEF_FREE check
-      rcutorture: Verify long-running reader prevents full polling from completing
-      rcu: Add full-sized polling for start_poll()
-      rcu: Add full-sized polling for start_poll_expedited()
-      rcu: Remove blank line from poll_state_synchronize_rcu() docbook header
-      rcu: Add full-sized polling for cond_sync_full()
-      rcu: Add full-sized polling for cond_sync_exp_full()
-      rcu: Disable run-time single-CPU grace-period optimization
-      rcu: Set rcu_data structures' initial ->gpwrap value to true
-      rcu-tasks: Remove grace-period fast-path rcu-tasks helper
-      rcu: Make synchronize_rcu() fast path update ->gp_seq counters
-      rcu: Remove expedited grace-period fast-path forward-progress helper
-      rcu: Make synchronize_rcu_expedited() fast path update .expedited_sequence
-      rcu: Remove ->rgos_polled field from rcu_gp_oldstate structure
-      rcutorture: Adjust rcu_poll_need_2gp() for rcu_gp_oldstate field removal
-      rcu: Make synchronize_rcu() fastpath update only boot-CPU counters
-      rcutorture: Use 1-suffixed variable in rcu_torture_write_types() check
-      rcutorture: Expand rcu_torture_write_types() first "if" statement
-      rcu: Add functions to compare grace-period state values
-      rcutorture: Limit read-side polling-API testing
-      rcutorture: Make "srcud" option also test polled grace-period API
-      srcu: Add GP and maximum requested GP to Tiny SRCU rcutorture output
-      srcu: Make Tiny SRCU poll_state_synchronize_srcu() more precise
-      srcu: Make Tiny SRCU use full-sized grace-period counters
-      rcu-tasks: Ensure RCU Tasks Trace loops have quiescent states
-      Merge branches 'doc.2022.08.31b', 'fixes.2022.08.31b', 'kvfree.2022.08.31b', 'nocb.2022.09.01a', 'poll.2022.08.31b', 'poll-srcu.2022.08.31b' and 'tasks.2022.08.31b' into HEAD
-
-Shao-Tse Hung (1):
-      doc/rcu: Update LWN article URLs and add 2019 article
-
-Uladzislau Rezki (Sony) (1):
-      rcu/kvfree: Update KFREE_DRAIN_JIFFIES interval
-
-Zhen Lei (2):
-      sched/debug: Try trigger_single_cpu_backtrace(cpu) in dump_cpu_task()
-      sched/debug: Show the registers of 'current' in dump_cpu_task()
-
-Zqiang (9):
-      rcu: Fix rcu_read_unlock_strict() strict QS reporting
-      rcu: Update rcu_preempt_deferred_qs() comments for !PREEMPT kernels
-      rcu: Add QS check in rcu_exp_handler() for non-preemptible kernels
-      rcu: Make tiny RCU support leak callbacks for debug-object errors
-      rcu: Avoid triggering strict-GP irq-work when RCU is idle
-      rcu/nocb: Choose the right rcuog/rcuop kthreads to output
-      rcu-tasks: Convert RCU_LOCKDEP_WARN() to WARN_ONCE()
-      rcu-tasks: Make RCU Tasks Trace check for userspace execution
-      rcutorture: Use the barrier operation specified by cur_ops
-
- Documentation/RCU/checklist.rst       |  15 +-
- Documentation/RCU/rcu_dereference.rst |  14 +-
- Documentation/RCU/whatisRCU.rst       |  47 +++--
- include/linux/rcupdate.h              |  42 ++++-
- include/linux/rcutiny.h               |  50 ++++++
- include/linux/rcutree.h               |  40 +++++
- include/linux/srcutiny.h              |  10 +-
- kernel/rcu/rcutorture.c               | 290 +++++++++++++++++++++++++-----
- kernel/rcu/srcutiny.c                 |  14 +-
- kernel/rcu/tasks.h                    |   5 +-
- kernel/rcu/tiny.c                     |  27 ++-
- kernel/rcu/tree.c                     | 330 ++++++++++++++++++++++++++--------
- kernel/rcu/tree_exp.h                 |  57 +++++-
- kernel/rcu/tree_nocb.h                |  10 +-
- kernel/rcu/tree_plugin.h              |  26 +--
- kernel/rcu/tree_stall.h               |   5 +-
- kernel/sched/core.c                   |  14 ++
- kernel/smp.c                          |   3 +-
- 18 files changed, 813 insertions(+), 186 deletions(-)
+-- 
+Thanks,
+Hyeonggon
