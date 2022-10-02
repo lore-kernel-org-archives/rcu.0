@@ -2,175 +2,111 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CA08EC433FE
-	for <rcu@archiver.kernel.org>; Sun,  2 Oct 2022 16:59:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C0AFAC433FE
+	for <rcu@archiver.kernel.org>; Sun,  2 Oct 2022 21:47:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229891AbiJBQ7d (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 2 Oct 2022 12:59:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59906 "EHLO
+        id S229469AbiJBVrU (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 2 Oct 2022 17:47:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229723AbiJBQ7c (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 2 Oct 2022 12:59:32 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5460D252B3
-        for <rcu@vger.kernel.org>; Sun,  2 Oct 2022 09:59:31 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id cj27so5287879qtb.7
-        for <rcu@vger.kernel.org>; Sun, 02 Oct 2022 09:59:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date;
-        bh=7pumZxrRLlldLJSMDfrFxMUDYNJ0LvsZ7shndwUezwg=;
-        b=lm3kHcyHVbCMINn+NU5+Ui3d3Ea8+W8JMxMGOOwejcXKS7VUxWfxGl3W+33D9eT/yZ
-         PIh6gp2z+EIufn7K9+HyrRbC3kvjOZ31uIphrOO1nZbaICj6HI2xIOTEGuUpxd6dm9UB
-         7pUOIrn5wHA10uYZthvCYzGZu/2JrlkliNXr0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
-         :subject:date;
-        bh=7pumZxrRLlldLJSMDfrFxMUDYNJ0LvsZ7shndwUezwg=;
-        b=ESDqNNbcEGacPFRDpiv68YYD/fqtnzYGljemO9FkDh9lvSNsl9jAkTF7/lTlhdVbS4
-         itCHXHyrNzoORN/vIDRK5tFc06WzIBN5YGIO4tylwbDqrvsQvHdjP+nImLvU1EtcWEjB
-         njmdjY16lIQsXmPp9qdvMhfA8DOlXusb0sBeDSzKawco416VvzUitB1lgEtiwVqH5THH
-         yxsssZBPojQhMxSIosNROXu6a4wtQzxBS0LWvZLYAzFSdQmqGUBGEKJyNXV/yZVb2Mw7
-         4APtX8PrlY9Lvrem2SybT6I7I1c1K+CwVCZmCRb8bzRqOHxtxdnizxmh7pIqRDS/zjDx
-         Cxnw==
-X-Gm-Message-State: ACrzQf3oOeiAKwiRNX0mQXDBHID7Q+BilTpS+sDSpy8tlVBz59d2MR8U
-        zgGKCjPcCVZg4e58MLCDytEcWw==
-X-Google-Smtp-Source: AMsMyM7+fLygsHKKvN/CKnMJYf6m7/OubeKYFJ8Cey76x3Wez7yAhKxcAiY113Gs0DAjzkXqtXycRQ==
-X-Received: by 2002:a05:622a:138c:b0:35c:e9d2:8d76 with SMTP id o12-20020a05622a138c00b0035ce9d28d76mr13598556qtk.463.1664729970433;
-        Sun, 02 Oct 2022 09:59:30 -0700 (PDT)
-Received: from smtpclient.apple (c-73-148-104-166.hsd1.va.comcast.net. [73.148.104.166])
-        by smtp.gmail.com with ESMTPSA id t21-20020a05620a451500b006cbdc9f178esm8718529qkp.25.2022.10.02.09.59.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 02 Oct 2022 09:59:29 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Joel Fernandes <joel@joelfernandes.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCHv2 3/3] rcu: coordinate tick dependency during concurrent offlining
-Date:   Sun, 2 Oct 2022 12:59:29 -0400
-Message-Id: <E0988E86-3DC5-4CB5-B073-503A9214ED57@joelfernandes.org>
-References: <20221002165749.GU4196@paulmck-ThinkPad-P17-Gen-1>
-Cc:     Pingfan Liu <kernelfans@gmail.com>,
-        Frederic Weisbecker <frederic@kernel.org>, rcu@vger.kernel.org,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>
-In-Reply-To: <20221002165749.GU4196@paulmck-ThinkPad-P17-Gen-1>
-To:     paulmck@kernel.org
-X-Mailer: iPhone Mail (19G82)
+        with ESMTP id S229449AbiJBVrR (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 2 Oct 2022 17:47:17 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 304D32229F;
+        Sun,  2 Oct 2022 14:47:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id D366CB80DD3;
+        Sun,  2 Oct 2022 21:47:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A1B7C433C1;
+        Sun,  2 Oct 2022 21:47:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1664747233;
+        bh=ECXgpkNzKbEgqV2Aoq3cqkZc/QKqAF6GEAlq+k8sqQo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oGjQqxyhA/DTPJUQI0xkolxX4juf3nzxvfnS1d6ymOdOKWI/7k8WTmObYg2MJOQcg
+         rd7rhx97BfEK6VUk2ntfuRmEa/VKhxKjj4LvIG6k0/Vi/BCM53G823y3kAFP1/Ig8d
+         kwvZN61utHiQAw1q4Ds6Z4QL6mH+GJ8WMgb+4UvkyojVLRUG7lDlogw9gi3Gd8hrYK
+         TxmfDEcYETxhk4PndcxX8WPmVU1fZR/n8iultuqMvnAjx6qPLw1Pju65cD0aXbph3D
+         A6CFFEiJrO7/gvz7KTb7nXw6aOPMSCegBm8kiW0ts6M9ZUMd/WA39Yz8rLgOrZ9c/Q
+         7zfNycX70Uhtg==
+Date:   Sun, 2 Oct 2022 23:47:10 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, rostedt@goodmis.org,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        John Ogness <john.ogness@linutronix.de>,
+        Petr Mladek <pmladek@suse.com>
+Subject: Re: [PATCH RFC v2 rcu 2/8] srcu: Create an srcu_read_lock_nmisafe()
+ and srcu_read_unlock_nmisafe()
+Message-ID: <20221002214710.GA297965@lothringen>
+References: <20220929180714.GA2874192@paulmck-ThinkPad-P17-Gen-1>
+ <20220929180731.2875722-2-paulmck@kernel.org>
+ <20221002155516.GB292620@lothringen>
+ <20221002160957.GP4196@paulmck-ThinkPad-P17-Gen-1>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221002160957.GP4196@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Sun, Oct 02, 2022 at 09:09:57AM -0700, Paul E. McKenney wrote:
+> On Sun, Oct 02, 2022 at 05:55:16PM +0200, Frederic Weisbecker wrote:
+> > On Thu, Sep 29, 2022 at 11:07:25AM -0700, Paul E. McKenney wrote:
+> > > @@ -1090,7 +1121,7 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
+> > >  	int ss_state;
+> > >  
+> > >  	check_init_srcu_struct(ssp);
+> > > -	idx = srcu_read_lock(ssp);
+> > > +	idx = __srcu_read_lock_nmisafe(ssp);
+> > 
+> > Why do we need to force the atomic based version here (even if CONFIG_NEED_SRCU_NMI_SAFE=y)?
+> 
+> In kernels built with CONFIG_NEED_SRCU_NMI_SAFE=n, we of course need it.
+> As you say, in kernels built with CONFIG_NEED_SRCU_NMI_SAFE=y, we don't.
+> But it doesn't hurt to always use __srcu_read_lock_nmisafe() here, and
+> this is nowhere near a fastpath, so there is little benefit to using
+> __srcu_read_lock() when it is safe to do so.
+> 
+> In addition, note that it is possible that a given srcu_struct structure's
+> first grace period is executed before its first reader.  In that
+> case, we have no way of knowing which of __srcu_read_lock_nmisafe()
+> or __srcu_read_lock() to choose.
+> 
+> So this code always does it the slow(ish) safe way.
 
+But then srcu_read_lock_nmisafe() would work as well, right?
 
-> On Oct 2, 2022, at 12:57 PM, Paul E. McKenney <paulmck@kernel.org> wrote:
->=20
-> =EF=BB=BFOn Sun, Oct 02, 2022 at 12:30:52PM -0400, Joel Fernandes wrote:
->>=20
->>=20
->>>> On Oct 2, 2022, at 12:24 PM, Paul E. McKenney <paulmck@kernel.org> wrot=
-e:
->>>=20
->>> =EF=BB=BFOn Sun, Oct 02, 2022 at 12:11:07PM -0400, Joel Fernandes wrote:=
+> 
+> > >  	ss_state = smp_load_acquire(&ssp->srcu_size_state);
+> > >  	if (ss_state < SRCU_SIZE_WAIT_CALL)
+> > >  		sdp = per_cpu_ptr(ssp->sda, 0);
+> > > @@ -1123,7 +1154,7 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
+> > >  		srcu_funnel_gp_start(ssp, sdp, s, do_norm);
+> > >  	else if (needexp)
+> > >  		srcu_funnel_exp_start(ssp, sdp_mynode, s);
+> > > -	srcu_read_unlock(ssp, idx);
+> > > +	__srcu_read_unlock_nmisafe(ssp, idx);
+> > >  	return s;
+> > >  }
+> > >  
+> > > @@ -1427,13 +1458,13 @@ void srcu_barrier(struct srcu_struct *ssp)
+> > >  	/* Initial count prevents reaching zero until all CBs are posted. */
+> > >  	atomic_set(&ssp->srcu_barrier_cpu_cnt, 1);
+> > >  
+> > > -	idx = srcu_read_lock(ssp);
+> > > +	idx = __srcu_read_lock_nmisafe(ssp);
+> > 
+> > And same here?
+> 
+> Yes, same here.  ;-)
 
->>>>=20
->>>>=20
->>>>> On 10/2/2022 10:06 AM, Pingfan Liu wrote:
->>>>> On Fri, Sep 30, 2022 at 9:04 PM Joel Fernandes <joel@joelfernandes.org=
-> wrote:
->>>>>>=20
->>>>>> On Thu, Sep 29, 2022 at 4:21 AM Pingfan Liu <kernelfans@gmail.com> wr=
-ote:
->>>>>>>=20
->>>>>>> On Thu, Sep 29, 2022 at 4:19 PM Pingfan Liu <kernelfans@gmail.com> w=
-rote:
->>>>>>>>=20
->>>>>>> [...]
->>>>>>>> "
->>>>>>>>=20
->>>>>>>> I have no idea whether this is related to the reverted commit.
->>>>>>>>=20
->>>>>>>=20
->>>>>>> I have started another test against clean v6.0-rc7 to see whether th=
-is
->>>>>>> is an issue with the mainline.
->>>>>>=20
->>>>>> I am not sure what exactly you are reverting (you could clarify that)=
-,
->>>>>=20
->>>>> commit 96926686deab ("rcu: Make CPU-hotplug removal operations enable t=
-ick").
->>>>> But due to conflict, "git revert" can not work directly. So I applied
->>>>> it by hand.
->>>>>=20
->>>>>> but if you are just removing the entire TICK_DEP_BIT_RCU, I do
->>>>>> remember (and mentioned on IRC to others recently) that without this
->>>>>> NOHZ_FULL has a hard time ending grace-periods because the forcing of=
+Now bonus question: why do SRCU grace period starting/tracking
+need to be in an SRCU read side critical section? :o)
 
->>>>>> tick is needed for this configuration if we are spinning in the kerne=
-l
->>>>>> with the tick turned off. That seems to align with your TREE04
->>>>>> (NOHZ_FULL) configuration.
->>>>>>=20
->>>>>=20
->>>>> Yes, that is the scenario.
->>>>>=20
->>>>>> Also, the commit Frederic suggested to revert seems to be a cosmetic
->>>>>> optimization in the interrupt-entry path. That should not change
->>>>>> functionality I believe. So I did not fully follow why reverting that=
-
->>>>>> is relevant (maybe Frederic can clarify?).
->>>>>>=20
->>>>>=20
->>>>> Leave this question to Frederic.
->>>>=20
->>>> I take this comment back, Sorry. Indeed the commits Frederic mentioned w=
-ill make
->>>> a functional change to CPU hotplug path.
->>>>=20
->>>> Sorry for the noise.
->>>>=20
->>>> Excited to see exact reason why TICK_DEP_BIT_RCU matters in the hotplug=
- paths. I
->>>> might jump into the investigation with you guys, but I have to make tim=
-e for
->>>> Lazy-RCU v7 next :)
->>>=20
->>> One historical reason was that a nohz_full CPU could enter the kernel wi=
-th
->>> the tick still disabled, and stay that way indefinitely.  Among other
->>> things, this can interfere with the grace-period wait in the offlining
->>> code path.
->>=20
->> Thanks for clarification/confirmation, that was my hunch as well. Does th=
-e emergency forcing on of the tick not suffice for that? If I understand you=
- are sending an IPI to set the same tick dependency if grace periods are bei=
-ng held too long. Another potential fix instead of setting tick dependency i=
-n hotplug, then, could be to reduce the time before which emergency IPIs are=
- sent to free up nohz_full CPUs, I think.
->=20
-> Why not try modifying it to work this way and seeing what (if anything)
-> breaks?  If nothing breaks, then there is still the option of digging
-> into the code.
-
-Yes happy to try :)
-
->=20
-> In both cases, after Lazy-RCU v7, of course.  ;-)
-
-Sounds good and thanks for understanding ;)
-
-Thanks,
-
- - Joel
-
->=20
->                                Thanx, Paul
+Thanks.
