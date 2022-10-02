@@ -2,195 +2,196 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2951AC433F5
-	for <rcu@archiver.kernel.org>; Sat,  1 Oct 2022 16:52:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FA00C433F5
+	for <rcu@archiver.kernel.org>; Sun,  2 Oct 2022 03:10:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229696AbiJAQwS (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 1 Oct 2022 12:52:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42190 "EHLO
+        id S229540AbiJBDKx (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 1 Oct 2022 23:10:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229747AbiJAQv5 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 1 Oct 2022 12:51:57 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BA0A2EF09;
-        Sat,  1 Oct 2022 09:51:56 -0700 (PDT)
+        with ESMTP id S229449AbiJBDKv (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 1 Oct 2022 23:10:51 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 402502C66F;
+        Sat,  1 Oct 2022 20:10:48 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 797FDCE08CA;
-        Sat,  1 Oct 2022 16:51:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A46AC433C1;
-        Sat,  1 Oct 2022 16:51:52 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DF64A60C3A;
+        Sun,  2 Oct 2022 03:10:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 363B7C433D7;
+        Sun,  2 Oct 2022 03:10:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1664643112;
-        bh=F8WRoqMCSj2TJbGQouaKOuAszC23BoBrbhgxWFwgxKo=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=DSsOt/tC4b9dPORWo7gWBdEMfnaplEK6Jb3tTod26Qy37MbMuyCbKghSXbDmRpkrB
-         QrQpntakd0RGd2x53QH/ef3j+L9RwJtaMVDZjOMFUtoTAx5TyN3Ua3gMWlC/6Mp+mF
-         k4t0HzT6va77VK4crYIsTWO2GlmaL3M+8S0re+DzKpmaTqTMCG5p2l58kbkMK1RtbD
-         sBjcs/JweoKft4JbbdaLjWhAFnwAR5ZgpP1xDX9YJyOAFILTm9m8RHfIaI+FkYApBZ
-         8/pedb+4s6Aq9kqM41lU6N+Xn7vnLYz19tjwu/jLTusVF6QkrHLHyIowt04yUBeKHf
-         IUNtB6M5bCJeQ==
+        s=k20201202; t=1664680247;
+        bh=uSKctew27OMSEqlEKC59gBsdzDXIGF0js0N/xW6Lgqw=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=YdIyqYfjUOi8V67hV9+XlxZBHV+jlS86xmrkEWev3VsCDOP0UJ/UDrXGTqw7+7ZPo
+         zfI0DY1hRJynnqVJ7KPl7u0l8YOnAhn39MJlKoXIoqC8a745yPk1JwNTsoUpUPDOa1
+         IWY5Era6dPvpO9CexoGgwyWHBWRd/ttgVZzeCTItogZofDzz9kl8K5PGqeaZeZbbzO
+         RAX8/2vwP3jbGuz+PBpsvhMoaq6chCK2KSwjClsDfYuiQaL1VJJBWp2XAbtX6m64ej
+         qW7gVJL6amF/L6f7/D2RDW4KOlEwSA4zPVN5ul+VqipkGDvCTJHKbdYm7hWtVjre+y
+         9m5+Dd5zu+w9w==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 1987D5C05A8; Sat,  1 Oct 2022 09:51:52 -0700 (PDT)
-Date:   Sat, 1 Oct 2022 09:51:52 -0700
+        id C100B5C05B1; Sat,  1 Oct 2022 20:10:46 -0700 (PDT)
+Date:   Sat, 1 Oct 2022 20:10:46 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, rostedt@goodmis.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Petr Mladek <pmladek@suse.com>
-Subject: Re: [PATCH RFC v2 rcu 1/8] srcu: Convert ->srcu_lock_count and
- ->srcu_unlock_count to atomic
-Message-ID: <20221001165152.GO4196@paulmck-ThinkPad-P17-Gen-1>
+To:     torvalds@linux-foundation.org
+Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        rcu@vger.kernel.org, kernel-team@fb.com
+Subject: [GIT PULL] RCU changes for v6.1
+Message-ID: <20221002031046.GA3511311@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20220929180714.GA2874192@paulmck-ThinkPad-P17-Gen-1>
- <20220929180731.2875722-1-paulmck@kernel.org>
- <87ill4vrb9.fsf@jogness.linutronix.de>
- <20220930153506.GD4196@paulmck-ThinkPad-P17-Gen-1>
- <87wn9k7g4o.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87wn9k7g4o.fsf@jogness.linutronix.de>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Sep 30, 2022 at 10:43:43PM +0206, John Ogness wrote:
-> On 2022-09-30, "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> >> > -	this_cpu_inc(ssp->sda->srcu_lock_count[idx]);
-> >> > +	this_cpu_inc(ssp->sda->srcu_lock_count[idx].counter);
-> >> 
-> >> Is there any particular reason that you are directly modifying
-> >> @counter instead of raw_cpu_ptr()+atomic_long_inc() that do you in
-> >> __srcu_read_lock_nmisafe() of patch 2?
-> >
-> > Performance.  From what I can see, this_cpu_inc() is way faster than
-> > atomic_long_inc() on x86 and s390.  Maybe also on loongarch.  No idea
-> > on arm64.
-> 
-> Yeah, that's what I figured. I just wanted to make sure.
-> 
-> FWIW, the rest of the series looks pretty straight forward to me.
+Hello, Linus,
 
-Thank you for looking it over!  The updated patch is shown below.
-The full series is in -rcu at branch srcunmisafe.2022.09.30a.  Feel free
-to pull it into your printk() series if that makes things easier for you.
+Once the merge window opens, please pull the latest RCU git tree from:
 
-							Thanx, Paul
+  git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu.2022.09.30a
+  # HEAD: 5c0ec4900497f7c9cc12f393c329a52e67bc6b8b Merge branches 'doc.2022.08.31b', 'fixes.2022.08.31b', 'kvfree.2022.08.31b', 'nocb.2022.09.01a', 'poll.2022.08.31b', 'poll-srcu.2022.08.31b' and 'tasks.2022.08.31b' into HEAD
 
-------------------------------------------------------------------------
+----------------------------------------------------------------
 
-commit 24511d0b754db760d4e1a08fc48a180f6a5a948b
-Author: Paul E. McKenney <paulmck@kernel.org>
-Date:   Thu Sep 15 12:09:30 2022 -0700
+RCU pull request for v6.1
 
-    srcu: Convert ->srcu_lock_count and ->srcu_unlock_count to atomic
-    
-    NMI-safe variants of srcu_read_lock() and srcu_read_unlock() are needed
-    by printk(), which on many architectures entails read-modify-write
-    atomic operations.  This commit prepares Tree SRCU for this change by
-    making both ->srcu_lock_count and ->srcu_unlock_count by atomic_long_t.
-    
-    [ paulmck: Apply feedback from John Ogness. ]
-    
-    Link: https://lore.kernel.org/all/20220910221947.171557773@linutronix.de/
-    
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-    Cc: Thomas Gleixner <tglx@linutronix.de>
-    Cc: John Ogness <john.ogness@linutronix.de>
-    Cc: Petr Mladek <pmladek@suse.com>
+This pull request contains the following branches:
 
-diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
-index e3014319d1ad..0c4eca07d78d 100644
---- a/include/linux/srcutree.h
-+++ b/include/linux/srcutree.h
-@@ -23,8 +23,8 @@ struct srcu_struct;
-  */
- struct srcu_data {
- 	/* Read-side state. */
--	unsigned long srcu_lock_count[2];	/* Locks per CPU. */
--	unsigned long srcu_unlock_count[2];	/* Unlocks per CPU. */
-+	atomic_long_t srcu_lock_count[2];	/* Locks per CPU. */
-+	atomic_long_t srcu_unlock_count[2];	/* Unlocks per CPU. */
- 
- 	/* Update-side state. */
- 	spinlock_t __private lock ____cacheline_internodealigned_in_smp;
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 1c304fec89c0..25e9458da6a2 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -417,7 +417,7 @@ static unsigned long srcu_readers_lock_idx(struct srcu_struct *ssp, int idx)
- 	for_each_possible_cpu(cpu) {
- 		struct srcu_data *cpuc = per_cpu_ptr(ssp->sda, cpu);
- 
--		sum += READ_ONCE(cpuc->srcu_lock_count[idx]);
-+		sum += atomic_long_read(&cpuc->srcu_lock_count[idx]);
- 	}
- 	return sum;
- }
-@@ -434,7 +434,7 @@ static unsigned long srcu_readers_unlock_idx(struct srcu_struct *ssp, int idx)
- 	for_each_possible_cpu(cpu) {
- 		struct srcu_data *cpuc = per_cpu_ptr(ssp->sda, cpu);
- 
--		sum += READ_ONCE(cpuc->srcu_unlock_count[idx]);
-+		sum += atomic_long_read(&cpuc->srcu_unlock_count[idx]);
- 	}
- 	return sum;
- }
-@@ -503,10 +503,10 @@ static bool srcu_readers_active(struct srcu_struct *ssp)
- 	for_each_possible_cpu(cpu) {
- 		struct srcu_data *cpuc = per_cpu_ptr(ssp->sda, cpu);
- 
--		sum += READ_ONCE(cpuc->srcu_lock_count[0]);
--		sum += READ_ONCE(cpuc->srcu_lock_count[1]);
--		sum -= READ_ONCE(cpuc->srcu_unlock_count[0]);
--		sum -= READ_ONCE(cpuc->srcu_unlock_count[1]);
-+		sum += atomic_long_read(&cpuc->srcu_lock_count[0]);
-+		sum += atomic_long_read(&cpuc->srcu_lock_count[1]);
-+		sum -= atomic_long_read(&cpuc->srcu_unlock_count[0]);
-+		sum -= atomic_long_read(&cpuc->srcu_unlock_count[1]);
- 	}
- 	return sum;
- }
-@@ -636,7 +636,7 @@ int __srcu_read_lock(struct srcu_struct *ssp)
- 	int idx;
- 
- 	idx = READ_ONCE(ssp->srcu_idx) & 0x1;
--	this_cpu_inc(ssp->sda->srcu_lock_count[idx]);
-+	this_cpu_inc(ssp->sda->srcu_lock_count[idx].counter);
- 	smp_mb(); /* B */  /* Avoid leaking the critical section. */
- 	return idx;
- }
-@@ -650,7 +650,7 @@ EXPORT_SYMBOL_GPL(__srcu_read_lock);
- void __srcu_read_unlock(struct srcu_struct *ssp, int idx)
- {
- 	smp_mb(); /* C */  /* Avoid leaking the critical section. */
--	this_cpu_inc(ssp->sda->srcu_unlock_count[idx]);
-+	this_cpu_inc(ssp->sda->srcu_unlock_count[idx].counter);
- }
- EXPORT_SYMBOL_GPL(__srcu_read_unlock);
- 
-@@ -1687,8 +1687,8 @@ void srcu_torture_stats_print(struct srcu_struct *ssp, char *tt, char *tf)
- 			struct srcu_data *sdp;
- 
- 			sdp = per_cpu_ptr(ssp->sda, cpu);
--			u0 = data_race(sdp->srcu_unlock_count[!idx]);
--			u1 = data_race(sdp->srcu_unlock_count[idx]);
-+			u0 = data_race(atomic_long_read(&sdp->srcu_unlock_count[!idx]));
-+			u1 = data_race(atomic_long_read(&sdp->srcu_unlock_count[idx]));
- 
- 			/*
- 			 * Make sure that a lock is always counted if the corresponding
-@@ -1696,8 +1696,8 @@ void srcu_torture_stats_print(struct srcu_struct *ssp, char *tt, char *tf)
- 			 */
- 			smp_rmb();
- 
--			l0 = data_race(sdp->srcu_lock_count[!idx]);
--			l1 = data_race(sdp->srcu_lock_count[idx]);
-+			l0 = data_race(atomic_long_read(&sdp->srcu_lock_count[!idx]));
-+			l1 = data_race(atomic_long_read(&sdp->srcu_lock_count[idx]));
- 
- 			c0 = l0 - u0;
- 			c1 = l1 - u1;
+doc.2022.08.31b: Documentation updates.  This is the first in a series
+	from an ongoing review of the RCU documentation.  "Why are people
+	thinking -that- about RCU?  Oh.  Because that is an entirely
+	reasonable interpretation of its documentation."
+
+fixes.2022.08.31b: Miscellaneous fixes.
+
+kvfree.2022.08.31b: Improved memory allocation and heuristics.
+
+nocb.2022.09.01a: Improve rcu_nocbs diagnostic output.
+
+poll.2022.08.31b: Add full-sized polled RCU grace period state values.
+	These are the same size as an rcu_head structure, which is double
+	that of the traditional unsigned long state values that may still
+	be obtained from et_state_synchronize_rcu().  The added size
+	avoids missing overlapping grace periods.  This benefit is that
+	call_rcu() can be replaced by polling, which can be attractive
+	in situations where RCU-protected data is aged out of memory.
+
+	Early in the series, the size of this state value is three
+	unsigned longs.  Later in the series, the synchronize_rcu() and
+	synchronize_rcu_expedited() fastpaths are reworked to permit
+	the full state to be represented by only two unsigned longs.
+	This reworking slows these two functions down in SMP kernels
+	running either on single-CPU systems or on systems with all but
+	one CPU offlined, but this should not be a significant problem.
+	And if it somehow becomes a problem in some yet-as-unforeseen
+	situations, three-value state values can be provided for only
+	those situations.
+
+	Finally, a pair of functions named same_state_synchronize_rcu()
+	and same_state_synchronize_rcu_full() allow grace-period state
+	values to be compared for equality.  This permits users to
+	maintain lists of data structures having the same state value,
+	removing the need for per-data-structure grace-period state
+	values, thus decreasing memory footprint.
+
+poll-srcu.2022.08.31b: Polled SRCU grace-period updates, including
+	adding tests to rcutorture and reducing the incidence of Tiny
+	SRCU grace-period-state counter wrap.
+
+tasks.2022.08.31b: Improve Tasks RCU diagnostics and quiescent-state
+	detection.
+
+----------------------------------------------------------------
+Joel Fernandes (Google) (1):
+      rcu/kfree: Fix kfree_rcu_shrink_count() return value
+
+Michal Hocko (1):
+      rcu: Back off upon fill_page_cache_func() allocation failure
+
+Paul E. McKenney (41):
+      doc: Emphasize the need for explicit RCU read-side markers
+      doc: Call out queue_rcu_work() for blocking RCU callbacks
+      doc: Use rcu_barrier() to rate-limit RCU callbacks
+      doc: Fix list: rcu_access_pointer() is not lockdep-checked
+      doc: Update rcu_access_pointer() advice in rcu_dereference.rst
+      doc: SLAB_TYPESAFE_BY_RCU uses cannot rely on spinlocks
+      rcu: Document reason for rcu_all_qs() call to preempt_disable()
+      rcu: Update rcu_access_pointer() header for rcu_dereference_protected()
+      rcu: Exclude outgoing CPU when it is the last to leave
+      rcu/nocb: Add CPU number to CPU-{,de}offload failure messages
+      rcu: Add full-sized polling for get_completed*() and poll_state*()
+      rcu: Add full-sized polling for get_state()
+      rcutorture: Abstract synchronous and polled API testing
+      rcutorture: Allow per-RCU-flavor polled double-GP check
+      rcutorture: Verify RCU reader prevents full polling from completing
+      rcutorture: Remove redundant RTWS_DEF_FREE check
+      rcutorture: Verify long-running reader prevents full polling from completing
+      rcu: Add full-sized polling for start_poll()
+      rcu: Add full-sized polling for start_poll_expedited()
+      rcu: Remove blank line from poll_state_synchronize_rcu() docbook header
+      rcu: Add full-sized polling for cond_sync_full()
+      rcu: Add full-sized polling for cond_sync_exp_full()
+      rcu: Disable run-time single-CPU grace-period optimization
+      rcu: Set rcu_data structures' initial ->gpwrap value to true
+      rcu-tasks: Remove grace-period fast-path rcu-tasks helper
+      rcu: Make synchronize_rcu() fast path update ->gp_seq counters
+      rcu: Remove expedited grace-period fast-path forward-progress helper
+      rcu: Make synchronize_rcu_expedited() fast path update .expedited_sequence
+      rcu: Remove ->rgos_polled field from rcu_gp_oldstate structure
+      rcutorture: Adjust rcu_poll_need_2gp() for rcu_gp_oldstate field removal
+      rcu: Make synchronize_rcu() fastpath update only boot-CPU counters
+      rcutorture: Use 1-suffixed variable in rcu_torture_write_types() check
+      rcutorture: Expand rcu_torture_write_types() first "if" statement
+      rcu: Add functions to compare grace-period state values
+      rcutorture: Limit read-side polling-API testing
+      rcutorture: Make "srcud" option also test polled grace-period API
+      srcu: Add GP and maximum requested GP to Tiny SRCU rcutorture output
+      srcu: Make Tiny SRCU poll_state_synchronize_srcu() more precise
+      srcu: Make Tiny SRCU use full-sized grace-period counters
+      rcu-tasks: Ensure RCU Tasks Trace loops have quiescent states
+      Merge branches 'doc.2022.08.31b', 'fixes.2022.08.31b', 'kvfree.2022.08.31b', 'nocb.2022.09.01a', 'poll.2022.08.31b', 'poll-srcu.2022.08.31b' and 'tasks.2022.08.31b' into HEAD
+
+Shao-Tse Hung (1):
+      doc/rcu: Update LWN article URLs and add 2019 article
+
+Uladzislau Rezki (Sony) (1):
+      rcu/kvfree: Update KFREE_DRAIN_JIFFIES interval
+
+Zhen Lei (2):
+      sched/debug: Try trigger_single_cpu_backtrace(cpu) in dump_cpu_task()
+      sched/debug: Show the registers of 'current' in dump_cpu_task()
+
+Zqiang (9):
+      rcu: Fix rcu_read_unlock_strict() strict QS reporting
+      rcu: Update rcu_preempt_deferred_qs() comments for !PREEMPT kernels
+      rcu: Add QS check in rcu_exp_handler() for non-preemptible kernels
+      rcu: Make tiny RCU support leak callbacks for debug-object errors
+      rcu: Avoid triggering strict-GP irq-work when RCU is idle
+      rcu/nocb: Choose the right rcuog/rcuop kthreads to output
+      rcu-tasks: Convert RCU_LOCKDEP_WARN() to WARN_ONCE()
+      rcu-tasks: Make RCU Tasks Trace check for userspace execution
+      rcutorture: Use the barrier operation specified by cur_ops
+
+ Documentation/RCU/checklist.rst       |  15 +-
+ Documentation/RCU/rcu_dereference.rst |  14 +-
+ Documentation/RCU/whatisRCU.rst       |  47 +++--
+ include/linux/rcupdate.h              |  42 ++++-
+ include/linux/rcutiny.h               |  50 ++++++
+ include/linux/rcutree.h               |  40 +++++
+ include/linux/srcutiny.h              |  10 +-
+ kernel/rcu/rcutorture.c               | 290 +++++++++++++++++++++++++-----
+ kernel/rcu/srcutiny.c                 |  14 +-
+ kernel/rcu/tasks.h                    |   5 +-
+ kernel/rcu/tiny.c                     |  27 ++-
+ kernel/rcu/tree.c                     | 330 ++++++++++++++++++++++++++--------
+ kernel/rcu/tree_exp.h                 |  57 +++++-
+ kernel/rcu/tree_nocb.h                |  10 +-
+ kernel/rcu/tree_plugin.h              |  26 +--
+ kernel/rcu/tree_stall.h               |   5 +-
+ kernel/sched/core.c                   |  14 ++
+ kernel/smp.c                          |   3 +-
+ 18 files changed, 813 insertions(+), 186 deletions(-)
