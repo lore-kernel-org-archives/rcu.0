@@ -2,139 +2,111 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 002A1C433FE
-	for <rcu@archiver.kernel.org>; Mon,  3 Oct 2022 11:52:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 62D27C433FE
+	for <rcu@archiver.kernel.org>; Mon,  3 Oct 2022 11:57:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229480AbiJCLwl (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 3 Oct 2022 07:52:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45006 "EHLO
+        id S229464AbiJCL5X (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 3 Oct 2022 07:57:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229589AbiJCLwk (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 3 Oct 2022 07:52:40 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF9BA33A2E;
-        Mon,  3 Oct 2022 04:52:35 -0700 (PDT)
+        with ESMTP id S229651AbiJCL5W (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 3 Oct 2022 07:57:22 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 040BC4F645;
+        Mon,  3 Oct 2022 04:57:22 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 96018CE0B9B;
-        Mon,  3 Oct 2022 11:52:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A91FC433D7;
-        Mon,  3 Oct 2022 11:52:31 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id B0655B8106E;
+        Mon,  3 Oct 2022 11:57:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F481C433D6;
+        Mon,  3 Oct 2022 11:57:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1664797951;
-        bh=qZ/gyhhra5msYs9vZ80bZK2vWJ31ANToo6dRtYSNDD8=;
+        s=k20201202; t=1664798239;
+        bh=IZiOGNCLznneDfy4glvG+cArR8cL/1LBLIitlhiKGv0=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=i7N0VlfPl9BL44b2w4yt3E9SzdcJrNYBoS1Td46bikS/RrVgRDUe3mchTSE3W9hWN
-         04Tn5Rh5u6b0/+Ma9UxzppSCtMlQsWz0VDKitm+HeHYabCoHA3BJsqMvhTz0EQTUJw
-         UGVy5HO9Ci8O0mf9LJZWWTATQDmFPSKy1e1n/4j4P/qd1vSUmsAGG8Smf1KI0ygVCA
-         OnwjgVcUP+7vKhLlmfUxhumewT+1qH7ObatFhEYOJOygGiiFXE8XifB1P5iLQAMkkz
-         ZbT8iPUyJeVwnomaSmay+D4BqxJxa4AwrntUj4EfsPqac4gvspOBDtzDC7vPiPfyv1
-         sZ2P5WGbG1wBA==
+        b=iB9ieGEJg51ZW/dU/tBRex6wnidNzkSrNibJL1t736pgOuwg5p53FOK1mdhE+xMgJ
+         78laQJXh2xVePxQGfZV9fE8zjKaxAqRrpGPThCR3ZT3I/jFl7EcgGm+53xI71eB+iC
+         zVMtCnRPG2G3O5Vm1F3qssZPJq4/MlgVXO04uV0HNDR6cjKwcHDsZY5MhMd0B4wEjd
+         75LET7OilXitu2yAel+I1L/gRuFuGcqB8nHJf8vZEFQrepgKC+wER3akkdUbDqKqyi
+         KHySgUSxf50RUXrtN7D94bWBWkHUORwhQVFtczHRRWjHldPeV+eAWzWniIf/iJnOP7
+         DVPJH71QjbCBw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 36BA85C0641; Mon,  3 Oct 2022 04:52:31 -0700 (PDT)
-Date:   Mon, 3 Oct 2022 04:52:31 -0700
+        id F082F5C0641; Mon,  3 Oct 2022 04:57:18 -0700 (PDT)
+Date:   Mon, 3 Oct 2022 04:57:18 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     Frederic Weisbecker <frederic@kernel.org>
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel-team@fb.com, rostedt@goodmis.org,
-        Randy Dunlap <rdunlap@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         John Ogness <john.ogness@linutronix.de>,
         Petr Mladek <pmladek@suse.com>
-Subject: Re: [PATCH RFC v2 rcu 2/8] srcu: Create an srcu_read_lock_nmisafe()
- and srcu_read_unlock_nmisafe()
-Message-ID: <20221003115231.GX4196@paulmck-ThinkPad-P17-Gen-1>
+Subject: Re: [PATCH RFC v2 rcu 3/8] srcu: Check for consistent per-CPU
+ per-srcu_struct NMI safety
+Message-ID: <20221003115718.GY4196@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
 References: <20220929180714.GA2874192@paulmck-ThinkPad-P17-Gen-1>
- <20220929180731.2875722-2-paulmck@kernel.org>
- <20221002155516.GB292620@lothringen>
- <20221002160957.GP4196@paulmck-ThinkPad-P17-Gen-1>
- <20221002214710.GA297965@lothringen>
- <20221002234655.GV4196@paulmck-ThinkPad-P17-Gen-1>
- <20221003095535.GA298829@lothringen>
+ <20220929180731.2875722-3-paulmck@kernel.org>
+ <20221002220619.GA298433@lothringen>
+ <20221002235103.GW4196@paulmck-ThinkPad-P17-Gen-1>
+ <20221003101331.GA304186@lothringen>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221003095535.GA298829@lothringen>
+In-Reply-To: <20221003101331.GA304186@lothringen>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Oct 03, 2022 at 11:55:35AM +0200, Frederic Weisbecker wrote:
-> On Sun, Oct 02, 2022 at 04:46:55PM -0700, Paul E. McKenney wrote:
-> > On Sun, Oct 02, 2022 at 11:47:10PM +0200, Frederic Weisbecker wrote:
-> > > On Sun, Oct 02, 2022 at 09:09:57AM -0700, Paul E. McKenney wrote:
-> > > > On Sun, Oct 02, 2022 at 05:55:16PM +0200, Frederic Weisbecker wrote:
-> > > > > On Thu, Sep 29, 2022 at 11:07:25AM -0700, Paul E. McKenney wrote:
-> > > > > > @@ -1090,7 +1121,7 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
-> > > > > >  	int ss_state;
-> > > > > >  
-> > > > > >  	check_init_srcu_struct(ssp);
-> > > > > > -	idx = srcu_read_lock(ssp);
-> > > > > > +	idx = __srcu_read_lock_nmisafe(ssp);
-> > > > > 
-> > > > > Why do we need to force the atomic based version here (even if CONFIG_NEED_SRCU_NMI_SAFE=y)?
+On Mon, Oct 03, 2022 at 12:13:31PM +0200, Frederic Weisbecker wrote:
+> On Sun, Oct 02, 2022 at 04:51:03PM -0700, Paul E. McKenney wrote:
+> > On Mon, Oct 03, 2022 at 12:06:19AM +0200, Frederic Weisbecker wrote:
+> > > On Thu, Sep 29, 2022 at 11:07:26AM -0700, Paul E. McKenney wrote:
+> > > > This commit adds runtime checks to verify that a given srcu_struct uses
+> > > > consistent NMI-safe (or not) read-side primitives on a per-CPU basis.
 > > > > 
-> > > > In kernels built with CONFIG_NEED_SRCU_NMI_SAFE=n, we of course need it.
-> > > > As you say, in kernels built with CONFIG_NEED_SRCU_NMI_SAFE=y, we don't.
-> > > > But it doesn't hurt to always use __srcu_read_lock_nmisafe() here, and
-> > > > this is nowhere near a fastpath, so there is little benefit to using
-> > > > __srcu_read_lock() when it is safe to do so.
+> > > > Link: https://lore.kernel.org/all/20220910221947.171557773@linutronix.de/
 > > > > 
-> > > > In addition, note that it is possible that a given srcu_struct structure's
-> > > > first grace period is executed before its first reader.  In that
-> > > > case, we have no way of knowing which of __srcu_read_lock_nmisafe()
-> > > > or __srcu_read_lock() to choose.
+> > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > > > Cc: John Ogness <john.ogness@linutronix.de>
+> > > > Cc: Petr Mladek <pmladek@suse.com>
+> > > > ---
+> > > >  include/linux/srcu.h     |  4 ++--
+> > > >  include/linux/srcutiny.h |  4 ++--
+> > > >  include/linux/srcutree.h |  9 +++++++--
+> > > >  kernel/rcu/srcutree.c    | 38 ++++++++++++++++++++++++++++++++------
+> > > >  4 files changed, 43 insertions(+), 12 deletions(-)
 > > > > 
-> > > > So this code always does it the slow(ish) safe way.
+> > > > diff --git a/include/linux/srcu.h b/include/linux/srcu.h
+> > > > index 2cc8321c0c86..565f60d57484 100644
+> > > > --- a/include/linux/srcu.h
+> > > > +++ b/include/linux/srcu.h
+> > > > @@ -180,7 +180,7 @@ static inline int srcu_read_lock_nmisafe(struct srcu_struct *ssp) __acquires(ssp
+> > > >  	int retval;
+> > > >  
+> > > >  	if (IS_ENABLED(CONFIG_NEED_SRCU_NMI_SAFE))
+> > > > -		retval = __srcu_read_lock_nmisafe(ssp);
+> > > > +		retval = __srcu_read_lock_nmisafe(ssp, true);
+> > > >  	else
+> > > >  		retval = __srcu_read_lock(ssp);
 > > > 
-> > > But then srcu_read_lock_nmisafe() would work as well, right?
+> > > Shouldn't it be checked also when CONFIG_NEED_SRCU_NMI_SAFE=n ?
 > > 
-> > Almost.
-> > 
-> > The problem is that without the leading "__", this would convince SRCU
-> > that this is an NMI-safe srcu_struct.  Which it might not be.  Worse yet,
-> > if this srcu_struct had already done an srcu_read_lock(), it would splat.
+> > You are asking why there is no "true" argument to __srcu_read_lock()?
+> > That is because it checks unconditionally.
 > 
-> Ah ok, now that makes sense.
+> It checks unconditionally but it always assumes not to be called as nmisafe.
 > 
-> > 
-> > > > > >  	ss_state = smp_load_acquire(&ssp->srcu_size_state);
-> > > > > >  	if (ss_state < SRCU_SIZE_WAIT_CALL)
-> > > > > >  		sdp = per_cpu_ptr(ssp->sda, 0);
-> > > > > > @@ -1123,7 +1154,7 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
-> > > > > >  		srcu_funnel_gp_start(ssp, sdp, s, do_norm);
-> > > > > >  	else if (needexp)
-> > > > > >  		srcu_funnel_exp_start(ssp, sdp_mynode, s);
-> > > > > > -	srcu_read_unlock(ssp, idx);
-> > > > > > +	__srcu_read_unlock_nmisafe(ssp, idx);
-> > > > > >  	return s;
-> > > > > >  }
-> > > > > >  
-> > > > > > @@ -1427,13 +1458,13 @@ void srcu_barrier(struct srcu_struct *ssp)
-> > > > > >  	/* Initial count prevents reaching zero until all CBs are posted. */
-> > > > > >  	atomic_set(&ssp->srcu_barrier_cpu_cnt, 1);
-> > > > > >  
-> > > > > > -	idx = srcu_read_lock(ssp);
-> > > > > > +	idx = __srcu_read_lock_nmisafe(ssp);
-> > > > > 
-> > > > > And same here?
-> > > > 
-> > > > Yes, same here.  ;-)
-> > > 
-> > > Now bonus question: why do SRCU grace period starting/tracking
-> > > need to be in an SRCU read side critical section? :o)
-> > 
-> > Because I am lazy and like to keep things simple?  ;-)
-> > 
-> > More seriously, take a look at srcu_gp_start_if_needed() and the functions
-> > it calls and ask yourself what bad things could happen if they were
-> > preempted for an arbitrarily long period of time.
+> For example on x86/arm64/loongarch, the same ssp used with both srcu_read_lock() and
+> srcu_read_lock_nmisafe() won't report an issue. But on powerpc it will.
 > 
-> I can see a risk for ssp->srcu_gp_seq to overflow. Can't say that was obvious
-> though, at least for me. Am I missing something else?
+> My point is that strong archs should warn as well on behalf of others, to detect
+> mistakes early.
 
-That is what I recall.  There might also be something else, of course.  ;-)
+Good point, especially given that x86_64 and arm64 are a rather large
+fraction of the uses.  Not critically urgent, but definitely nice to have.
 
-							Thanx, Paul
+Did you by chance have a suggestion for a nice way to accomplish this?
+
+								Thanx, Paul
