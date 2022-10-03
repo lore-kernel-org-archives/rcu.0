@@ -2,133 +2,157 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 514D7C433FE
-	for <rcu@archiver.kernel.org>; Mon,  3 Oct 2022 16:38:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 20412C433F5
+	for <rcu@archiver.kernel.org>; Mon,  3 Oct 2022 17:01:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229678AbiJCQiy (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 3 Oct 2022 12:38:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39104 "EHLO
+        id S229459AbiJCRB3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 3 Oct 2022 13:01:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229692AbiJCQiy (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 3 Oct 2022 12:38:54 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CCED252AE;
-        Mon,  3 Oct 2022 09:38:53 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id DBA5DB80E64;
-        Mon,  3 Oct 2022 16:38:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B960C433D6;
-        Mon,  3 Oct 2022 16:38:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1664815130;
-        bh=bVtcCxKvxNTlQPiCRxKMcyMjy/SmMdCn+3d9pLBCBr0=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Y2an+hGza8JQVlOR4W4xLN0+LU9Zofrtxrx9jqxHnBmyNIy0IS0bGZGX+kEFyaiDy
-         T5jJrEeKuL+zlTcjtqqHBF+4s6BNDUGVBSBO3jc/gVzK/za3b2jfl+mdPdscXY1471
-         n4+MopgsfUX62fffYhHnw3kl+g/f6ND09NErX7/q+Fe7uL81s4H37tCpprO1uT75P/
-         pXYYUNCDtwidF5hkT6BRdV3P8qLbYuHJ37j8liRdA4YcyA78k6iyl6luBnR2YitXtG
-         c6RAfIr3BulO/AtRdeSvs13L4IdaGzgBayp7YWchWuFVDS31A2tCU5YZJVD9hwiD0n
-         32s3w0R8KpqCQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 310175C0B03; Mon,  3 Oct 2022 09:38:50 -0700 (PDT)
-Date:   Mon, 3 Oct 2022 09:38:50 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, rostedt@goodmis.org, tglx@linutronix.de,
-        john.ogness@linutronix.de, pmladek@suse.com
-Subject: Re: [PATCH v2 rcu 0/8] NMI-safe SRCU reader API
-Message-ID: <20221003163850.GB4196@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220921144620.GA1200846@paulmck-ThinkPad-P17-Gen-1>
- <20220929180714.GA2874192@paulmck-ThinkPad-P17-Gen-1>
- <20221003141141.GB306466@lothringen>
+        with ESMTP id S229517AbiJCRA5 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 3 Oct 2022 13:00:57 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C027232;
+        Mon,  3 Oct 2022 10:00:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=64kmJcmlBNcd7ZVRV9QGbQ+ehy4GBcry+YjVTQEY9ZY=; b=rv8+76aX7O4tLP53vdvVbSgLsh
+        Ps1cX0t9eK2DvO6xyMeO6QUPo3HVV0n1wVOWpJon/jezexdruEWrCEkTScFzJTqT6uvxo2apBU7dP
+        4DSkdQ69bxyqOZSM2CSXnl6CbtKLIe0RnVr5eWy2E4qbJNW7J2p9NOzdf0YTvZaUzMeVoE5PMrAyo
+        Szs8qpwYp5Rk15Xu10RiQJyp6utdfD26w55CoyFejNvE2i+8LSNv0qLuSxRVsmRDOYhgiAkcZxaGm
+        dWCHMkYop+s4O3DKxueYveZFwZUbfl0qqmuI5HAEjHQjcqZjdGOHTCCSuHan2jN+cztvSs66tDGRB
+        xr0ZMb0Q==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1ofOnz-00GXjv-86; Mon, 03 Oct 2022 17:00:35 +0000
+Date:   Mon, 3 Oct 2022 18:00:35 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Cc:     Hugh Dickins <hughd@google.com>, Vlastimil Babka <vbabka@suse.cz>,
+        David Laight <David.Laight@aculab.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        rcu@vger.kernel.org
+Subject: Re: amusing SLUB compaction bug when CC_OPTIMIZE_FOR_SIZE
+Message-ID: <YzsVM8eToHUeTP75@casper.infradead.org>
+References: <ea96c78c-e1dc-1364-e91-51909f82388b@google.com>
+ <YzPgTtFzpKEfwPbK@hyeyoo>
+ <YzRQvoVsnJzsauwb@google.com>
+ <35502bdd-1a78-dea1-6ac3-6ff1bcc073fa@suse.cz>
+ <ff905c1e-5eb3-eaf8-46de-38f189c0b7a5@google.com>
+ <de71b83a-c82c-4785-ef5a-3db4f17bbc8d@suse.cz>
+ <bcecece-f7ce-221d-1674-da3d5ab3fef@google.com>
+ <YzkmErHFyYW3awRn@hyeyoo>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221003141141.GB306466@lothringen>
+In-Reply-To: <YzkmErHFyYW3awRn@hyeyoo>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Oct 03, 2022 at 04:11:41PM +0200, Frederic Weisbecker wrote:
-> On Thu, Sep 29, 2022 at 11:07:14AM -0700, Paul E. McKenney wrote:
-> > Hello!
-> > 
-> > This RFC series provides the second version of an NMI-safe SRCU reader API
-> > in the guise of srcu_read_lock_nmisafe() and srcu_read_unlock_nmisafe().
-> > A given srcu_struct structure must use either the traditional
-> > srcu_read_lock() and srcu_read_unlock() API or the new _nmisafe() API:
-> > Mixing and matching is not permitted.  So much so that kernels built
-> > with CONFIG_PROVE_RCU=y will complain if you try it.
-> > 
-> > The reason for this restriction is that I have yet to find a use case
-> > that is not a accident waiting to happen.  And if free intermixing
-> > were permitted, it is pretty much a given that someone somewhere will
-> > get confused and use srcu_read_lock_nmisafe() within NMI handlers and
-> > srcu_read_lock() elsewhere, which will not (repeat, NOT) provide NMI
-> > safety.
-> > 
-> > I do not expect to push this into the v6.1 merge window.  However, if
-> > the printk() series that needs it goes in, then I will push it as a fix
-> > for the resulting regression.
-> > 
-> > The series is as follows:
-> > 
-> > 1.	Convert ->srcu_lock_count and ->srcu_unlock_count to atomic.
-> > 
-> > 2.	Create an srcu_read_lock_nmisafe() and srcu_read_unlock_nmisafe().
-> > 
-> > 3.	Check for consistent per-CPU per-srcu_struct NMI safety.
-> > 
-> > 4.	Check for consistent global per-srcu_struct NMI safety.
-> > 
-> > 5.	Add ARCH_HAS_NMI_SAFE_THIS_CPU_OPS Kconfig option.
-> > 
-> > 6.	Add ARCH_HAS_NMI_SAFE_THIS_CPU_OPS Kconfig option.
-> > 
-> > 7.	Add ARCH_HAS_NMI_SAFE_THIS_CPU_OPS Kconfig option.
-> > 
-> > 8.	Add ARCH_HAS_NMI_SAFE_THIS_CPU_OPS Kconfig option.
-> > 
-> > Changes since v1 RFC:
-> > 
-> > 1.	Added enabling patches for arm64, loongarch, s390, and x86.
-> > 	These have what appear to me to be NMI-safe this_cpu_inc()
-> > 	implementations.
-> > 
-> > 2.	Fix a build error on !SMP kernels built without SRCU.
-> > 
-> > 3.	Fix a build error on !SMP kernels.
-> > 
-> > 						Thanx, Paul
-> > 
-> > ------------------------------------------------------------------------
-> > 
-> >  b/arch/arm64/Kconfig       |    1 
-> >  b/arch/loongarch/Kconfig   |    1 
-> >  b/arch/s390/Kconfig        |    1 
-> >  b/arch/x86/Kconfig         |    1 
-> >  b/include/linux/srcu.h     |   39 +++++++++++++++++++++
-> >  b/include/linux/srcutiny.h |   11 ++++++
-> >  b/include/linux/srcutree.h |    4 +-
-> >  b/kernel/rcu/Kconfig       |    3 +
-> >  b/kernel/rcu/rcutorture.c  |   11 ++++--
-> >  b/kernel/rcu/srcutree.c    |   24 ++++++-------
-> >  include/linux/srcu.h       |    4 +-
-> >  include/linux/srcutiny.h   |    4 +-
-> >  include/linux/srcutree.h   |   12 +++++-
-> >  kernel/rcu/srcutree.c      |   82 +++++++++++++++++++++++++++++++++++++++------
-> >  14 files changed, 166 insertions(+), 32 deletions(-)
+On Sun, Oct 02, 2022 at 02:48:02PM +0900, Hyeonggon Yoo wrote:
+> Just one more thing, rcu_leak_callback too. RCU seem to use it
+> internally to catch double call_rcu().
 > 
-> Except for patches 6/7/8, for which I may miss subtle things:
-> 
-> Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+> And some suggestions:
+> - what about adding runtime WARN() on slab init code to catch
+>   unexpected arch/toolchain issues?
+> - instead of 4, we may use macro definition? like (PAGE_MAPPING_FLAGS + 1)?
 
-Applied, thank you!
+I think the real problem here is that isolate_movable_page() is
+insufficiently paranoid.  Looking at the gyrations that GUP and the
+page cache do to convince themselves that the page they got really is
+the page they wanted, there are a few missing pieces (eg checking that
+you actually got a refcount on _this_ page and not some random other
+page you were temporarily part of a compound page with).
 
-The new -rcu branch is srcunmisafe.2022.10.03a.
+This patch does three things:
 
-							Thanx, Paul
+ - Turns one of the comments into English.  There are some others
+   which I'm still scratching my head over.
+ - Uses a folio to help distinguish which operations are being done
+   to the head vs the specific page (this is somewhat an abuse of the
+   folio concept, but it's acceptable)
+ - Add the aforementioned check that we're actually operating on the
+   page that we think we want to be.
+ - Add a check that the folio isn't secretly a slab.
+
+We could put the slab check in PageMapping and call it after taking
+the folio lock, but that seems pointless.  It's the acquisition of
+the refcount which stabilises the slab flag, not holding the lock.
+
+diff --git a/mm/migrate.c b/mm/migrate.c
+index 6a1597c92261..a65598308c83 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -59,6 +59,7 @@
+ 
+ int isolate_movable_page(struct page *page, isolate_mode_t mode)
+ {
++	struct folio *folio = page_folio(page);
+ 	const struct movable_operations *mops;
+ 
+ 	/*
+@@ -70,16 +71,23 @@ int isolate_movable_page(struct page *page, isolate_mode_t mode)
+ 	 * the put_page() at the end of this block will take care of
+ 	 * release this page, thus avoiding a nasty leakage.
+ 	 */
+-	if (unlikely(!get_page_unless_zero(page)))
++	if (unlikely(!folio_try_get(folio)))
+ 		goto out;
+ 
++	/* Recheck the page is still part of the folio we just got */
++	if (unlikely(page_folio(page) != folio))
++		goto out_put;
++
+ 	/*
+-	 * Check PageMovable before holding a PG_lock because page's owner
+-	 * assumes anybody doesn't touch PG_lock of newly allocated page
+-	 * so unconditionally grabbing the lock ruins page's owner side.
++	 * Check movable flag before taking the folio lock because
++	 * we use non-atomic bitops on newly allocated page flags so
++	 * unconditionally grabbing the lock ruins page's owner side.
+ 	 */
+-	if (unlikely(!__PageMovable(page)))
+-		goto out_putpage;
++	if (unlikely(!__folio_test_movable(folio)))
++		goto out_put;
++	if (unlikely(folio_test_slab(folio)))
++		goto out_put;
++
+ 	/*
+ 	 * As movable pages are not isolated from LRU lists, concurrent
+ 	 * compaction threads can race against page migration functions
+@@ -91,8 +99,8 @@ int isolate_movable_page(struct page *page, isolate_mode_t mode)
+ 	 * lets be sure we have the page lock
+ 	 * before proceeding with the movable page isolation steps.
+ 	 */
+-	if (unlikely(!trylock_page(page)))
+-		goto out_putpage;
++	if (unlikely(!folio_trylock(folio)))
++		goto out_put;
+ 
+ 	if (!PageMovable(page) || PageIsolated(page))
+ 		goto out_no_isolated;
+@@ -106,14 +114,14 @@ int isolate_movable_page(struct page *page, isolate_mode_t mode)
+ 	/* Driver shouldn't use PG_isolated bit of page->flags */
+ 	WARN_ON_ONCE(PageIsolated(page));
+ 	SetPageIsolated(page);
+-	unlock_page(page);
++	folio_unlock(folio);
+ 
+ 	return 0;
+ 
+ out_no_isolated:
+-	unlock_page(page);
+-out_putpage:
+-	put_page(page);
++	folio_unlock(folio);
++out_put:
++	folio_put(folio);
+ out:
+ 	return -EBUSY;
+ }
