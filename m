@@ -2,176 +2,122 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 432C6C433FE
-	for <rcu@archiver.kernel.org>; Mon,  3 Oct 2022 13:36:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F3BDBC433FE
+	for <rcu@archiver.kernel.org>; Mon,  3 Oct 2022 14:11:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229932AbiJCNgN (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 3 Oct 2022 09:36:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52706 "EHLO
+        id S229702AbiJCOLs (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 3 Oct 2022 10:11:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229814AbiJCNgL (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 3 Oct 2022 09:36:11 -0400
+        with ESMTP id S229646AbiJCOLq (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 3 Oct 2022 10:11:46 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 392282E9EF;
-        Mon,  3 Oct 2022 06:36:09 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A60F1474C4;
+        Mon,  3 Oct 2022 07:11:45 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5011C6109E;
-        Mon,  3 Oct 2022 13:36:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34A67C433C1;
-        Mon,  3 Oct 2022 13:36:08 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 26036610A5;
+        Mon,  3 Oct 2022 14:11:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28FA7C433D6;
+        Mon,  3 Oct 2022 14:11:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1664804168;
-        bh=APLpxixznGO5XHQlSSK1OhWUCftaVXjDWyjfb1FHWhY=;
+        s=k20201202; t=1664806304;
+        bh=J9ox8N8wYu3SZufmb98XL1XtAY0TbDFRCg8d91zEJBk=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HvUDjr9LoeQP+mKWwzo8llsipcjHY1ym1/PWOko7gAFa6CutGcgrI63Klw//we31L
-         KMfdGOnUB9GBvO8KDH1Ml8Ln1Hyu4WQK32zXUbisSuFRWoNzoHrb2Q+BPQ+ozs0o6J
-         6NQjb0ZiFfOb5Hv6JFnVwLtqBxj+UXsZJ83N0wDmbsq2w1pf6FSED9sXxw+gY2No3e
-         wR6Lyn7zAGhF2MLTU8HUX11W4nVDL84JwX6R92QSBVukli37c41+/RaNpiTXxNesVt
-         UT0OHLymPHFm4mQHAI42KE/gza2UQ9dkJfeVh6kdgux7NTWsD1YZkQa+6zUJYwk9ex
-         b+HXJ+IGk3e3A==
-Date:   Mon, 3 Oct 2022 15:36:05 +0200
+        b=FiH84pjXaOWKhC/txvH6CAY1oJA/qMYXMApe8CN1JpUPryvqZb7Qba2L3aVn77LpD
+         F8KFgAUhvJh1BxteHc7voXwKAPxaiIrmdsdSDMpAw53ss5TyiPKz/cJZOX+/HyQHa+
+         pIqVDQc/WiWqnW6vK3VxoAuhBngQJwKJKD4AE6RfVFDvc6sCQuwr1THffzdUKF74nD
+         u8f15ju3PvJsBi/jhjWCxbzXhOSqBA29Tk6JDHZxzqpc/c9/RVRhWZsAPFzDXNvFj9
+         A0z4QZYE/3jHqT3rpn9QWEss4txuCiJwRaZ8DPCt2CFBTsl0R9jCfwJh6KINN/gcz+
+         jal5kUDLlQQJg==
+Date:   Mon, 3 Oct 2022 16:11:41 +0200
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, rostedt@goodmis.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        John Ogness <john.ogness@linutronix.de>,
-        Petr Mladek <pmladek@suse.com>
-Subject: Re: [PATCH RFC v2 rcu 3/8] srcu: Check for consistent per-CPU
- per-srcu_struct NMI safety
-Message-ID: <20221003133605.GA306466@lothringen>
-References: <20220929180714.GA2874192@paulmck-ThinkPad-P17-Gen-1>
- <20220929180731.2875722-3-paulmck@kernel.org>
- <20221002220619.GA298433@lothringen>
- <20221002235103.GW4196@paulmck-ThinkPad-P17-Gen-1>
- <20221003101331.GA304186@lothringen>
- <20221003115718.GY4196@paulmck-ThinkPad-P17-Gen-1>
- <20221003123721.GA304426@lothringen>
- <20221003133210.GZ4196@paulmck-ThinkPad-P17-Gen-1>
+        kernel-team@fb.com, rostedt@goodmis.org, tglx@linutronix.de,
+        john.ogness@linutronix.de, pmladek@suse.com
+Subject: Re: [PATCH v2 rcu 0/8] NMI-safe SRCU reader API
+Message-ID: <20221003141141.GB306466@lothringen>
+References: <20220921144620.GA1200846@paulmck-ThinkPad-P17-Gen-1>
+ <20220929180714.GA2874192@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221003133210.GZ4196@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20220929180714.GA2874192@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Oct 03, 2022 at 06:32:10AM -0700, Paul E. McKenney wrote:
-> On Mon, Oct 03, 2022 at 02:37:21PM +0200, Frederic Weisbecker wrote:
-> > On Mon, Oct 03, 2022 at 04:57:18AM -0700, Paul E. McKenney wrote:
-> > > On Mon, Oct 03, 2022 at 12:13:31PM +0200, Frederic Weisbecker wrote:
-> > > > On Sun, Oct 02, 2022 at 04:51:03PM -0700, Paul E. McKenney wrote:
-> > > > > On Mon, Oct 03, 2022 at 12:06:19AM +0200, Frederic Weisbecker wrote:
-> > > > > > On Thu, Sep 29, 2022 at 11:07:26AM -0700, Paul E. McKenney wrote:
-> > > > > > > This commit adds runtime checks to verify that a given srcu_struct uses
-> > > > > > > consistent NMI-safe (or not) read-side primitives on a per-CPU basis.
-> > > > > > > 
-> > > > > > > Link: https://lore.kernel.org/all/20220910221947.171557773@linutronix.de/
-> > > > > > > 
-> > > > > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > > > > > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > > > > > > Cc: John Ogness <john.ogness@linutronix.de>
-> > > > > > > Cc: Petr Mladek <pmladek@suse.com>
-> > > > > > > ---
-> > > > > > >  include/linux/srcu.h     |  4 ++--
-> > > > > > >  include/linux/srcutiny.h |  4 ++--
-> > > > > > >  include/linux/srcutree.h |  9 +++++++--
-> > > > > > >  kernel/rcu/srcutree.c    | 38 ++++++++++++++++++++++++++++++++------
-> > > > > > >  4 files changed, 43 insertions(+), 12 deletions(-)
-> > > > > > > 
-> > > > > > > diff --git a/include/linux/srcu.h b/include/linux/srcu.h
-> > > > > > > index 2cc8321c0c86..565f60d57484 100644
-> > > > > > > --- a/include/linux/srcu.h
-> > > > > > > +++ b/include/linux/srcu.h
-> > > > > > > @@ -180,7 +180,7 @@ static inline int srcu_read_lock_nmisafe(struct srcu_struct *ssp) __acquires(ssp
-> > > > > > >  	int retval;
-> > > > > > >  
-> > > > > > >  	if (IS_ENABLED(CONFIG_NEED_SRCU_NMI_SAFE))
-> > > > > > > -		retval = __srcu_read_lock_nmisafe(ssp);
-> > > > > > > +		retval = __srcu_read_lock_nmisafe(ssp, true);
-> > > > > > >  	else
-> > > > > > >  		retval = __srcu_read_lock(ssp);
-> > > > > > 
-> > > > > > Shouldn't it be checked also when CONFIG_NEED_SRCU_NMI_SAFE=n ?
-> > > > > 
-> > > > > You are asking why there is no "true" argument to __srcu_read_lock()?
-> > > > > That is because it checks unconditionally.
-> > > > 
-> > > > It checks unconditionally but it always assumes not to be called as nmisafe.
-> > > > 
-> > > > For example on x86/arm64/loongarch, the same ssp used with both srcu_read_lock() and
-> > > > srcu_read_lock_nmisafe() won't report an issue. But on powerpc it will.
-> > > > 
-> > > > My point is that strong archs should warn as well on behalf of others, to detect
-> > > > mistakes early.
-> > > 
-> > > Good point, especially given that x86_64 and arm64 are a rather large
-> > > fraction of the uses.  Not critically urgent, but definitely nice to have.
-> > 
-> > No indeed.
-> > 
-> > > 
-> > > Did you by chance have a suggestion for a nice way to accomplish this?
-> > 
-> > This could be like this:
-> > 
-> > enum srcu_nmi_flags {
-> >      SRCU_NMI_UNKNOWN = 0x0,
-> >      SRCU_NMI_UNSAFE  = 0x1,
-> >      SRCU_NMI_SAFE    = 0x2
-> > };
-> > 
-> > #ifdef CONFIG_NEED_SRCU_NMI_SAFE
-> > static inline int __srcu_read_lock_nmisafe(struct srcu_struct *ssp, enum srcu_nmi_flags flags)
-> > {
-> > 	int idx;
-> > 	struct srcu_data *sdp = raw_cpu_ptr(ssp->sda);
-> > 
-> > 	idx = READ_ONCE(ssp->srcu_idx) & 0x1;
-> > 	atomic_long_inc(&sdp->srcu_lock_count[idx]);
-> > 	smp_mb__after_atomic(); /* B */  /* Avoid leaking the critical section. */
-> > 
-> > 	srcu_check_nmi_safety(ssp, flags);
-> > 
-> > 	return idx;
-> > }
-> > #else
-> > static inline int __srcu_read_lock_nmisafe(struct srcu_struct *ssp, enum srcu_nmi_flags flags)
-> > {
-> > 	srcu_check_nmi_safety(ssp, flags);
-> > 	return __srcu_read_lock(ssp);
-> > }
-> > #endif
-> > 
-> > static inline int srcu_read_lock_nmisafe(struct srcu_struct *ssp)
-> > {
-> > 	return  __srcu_read_lock_nmisafe(ssp, SRCU_NMI_SAFE);
-> > }
-> > 
-> > // An __srcu_read_lock() caller in kernel/rcu/tasks.h must be
-> > // taken care of as well
-> > static inline int srcu_read_lock(struct srcu_struct *ssp)
-> > {
-> > 	srcu_check_nmi_safety(ssp, SRCU_NMI_UNSAFE);
-> > 	return  __srcu_read_lock(ssp);
-> > }
-> > 
-> > And then you can call __srcu_read_lock_nmisafe(ssp, SRCU_NMI_UNKNOWN) from
-> > initializers of gp.
+On Thu, Sep 29, 2022 at 11:07:14AM -0700, Paul E. McKenney wrote:
+> Hello!
 > 
-> Not bad at all!
+> This RFC series provides the second version of an NMI-safe SRCU reader API
+> in the guise of srcu_read_lock_nmisafe() and srcu_read_unlock_nmisafe().
+> A given srcu_struct structure must use either the traditional
+> srcu_read_lock() and srcu_read_unlock() API or the new _nmisafe() API:
+> Mixing and matching is not permitted.  So much so that kernels built
+> with CONFIG_PROVE_RCU=y will complain if you try it.
 > 
-> Would you like to send a patch?
+> The reason for this restriction is that I have yet to find a use case
+> that is not a accident waiting to happen.  And if free intermixing
+> were permitted, it is pretty much a given that someone somewhere will
+> get confused and use srcu_read_lock_nmisafe() within NMI handlers and
+> srcu_read_lock() elsewhere, which will not (repeat, NOT) provide NMI
+> safety.
 > 
-> I do not consider this to be something for the current merge window even
-> if the rest goes in because printk() is used heavily and because it is
-> easy to get access to powerpc and presumably also riscv systems.
+> I do not expect to push this into the v6.1 merge window.  However, if
+> the printk() series that needs it goes in, then I will push it as a fix
+> for the resulting regression.
 > 
-> But as you say, it would be very good to have longer term for the case
-> where srcu_read_lock_nmisafe() is used for some more obscure purpose.
+> The series is as follows:
+> 
+> 1.	Convert ->srcu_lock_count and ->srcu_unlock_count to atomic.
+> 
+> 2.	Create an srcu_read_lock_nmisafe() and srcu_read_unlock_nmisafe().
+> 
+> 3.	Check for consistent per-CPU per-srcu_struct NMI safety.
+> 
+> 4.	Check for consistent global per-srcu_struct NMI safety.
+> 
+> 5.	Add ARCH_HAS_NMI_SAFE_THIS_CPU_OPS Kconfig option.
+> 
+> 6.	Add ARCH_HAS_NMI_SAFE_THIS_CPU_OPS Kconfig option.
+> 
+> 7.	Add ARCH_HAS_NMI_SAFE_THIS_CPU_OPS Kconfig option.
+> 
+> 8.	Add ARCH_HAS_NMI_SAFE_THIS_CPU_OPS Kconfig option.
+> 
+> Changes since v1 RFC:
+> 
+> 1.	Added enabling patches for arm64, loongarch, s390, and x86.
+> 	These have what appear to me to be NMI-safe this_cpu_inc()
+> 	implementations.
+> 
+> 2.	Fix a build error on !SMP kernels built without SRCU.
+> 
+> 3.	Fix a build error on !SMP kernels.
+> 
+> 						Thanx, Paul
+> 
+> ------------------------------------------------------------------------
+> 
+>  b/arch/arm64/Kconfig       |    1 
+>  b/arch/loongarch/Kconfig   |    1 
+>  b/arch/s390/Kconfig        |    1 
+>  b/arch/x86/Kconfig         |    1 
+>  b/include/linux/srcu.h     |   39 +++++++++++++++++++++
+>  b/include/linux/srcutiny.h |   11 ++++++
+>  b/include/linux/srcutree.h |    4 +-
+>  b/kernel/rcu/Kconfig       |    3 +
+>  b/kernel/rcu/rcutorture.c  |   11 ++++--
+>  b/kernel/rcu/srcutree.c    |   24 ++++++-------
+>  include/linux/srcu.h       |    4 +-
+>  include/linux/srcutiny.h   |    4 +-
+>  include/linux/srcutree.h   |   12 +++++-
+>  kernel/rcu/srcutree.c      |   82 +++++++++++++++++++++++++++++++++++++++------
+>  14 files changed, 166 insertions(+), 32 deletions(-)
 
-Sure thing!
+Except for patches 6/7/8, for which I may miss subtle things:
 
-Thanks.
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
