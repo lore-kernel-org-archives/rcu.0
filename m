@@ -2,89 +2,123 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F02CC433F5
-	for <rcu@archiver.kernel.org>; Tue,  4 Oct 2022 14:40:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5134AC433FE
+	for <rcu@archiver.kernel.org>; Tue,  4 Oct 2022 14:53:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229751AbiJDOkr (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 4 Oct 2022 10:40:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45996 "EHLO
+        id S229865AbiJDOxV (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 4 Oct 2022 10:53:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229806AbiJDOko (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 4 Oct 2022 10:40:44 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 578D618B13;
-        Tue,  4 Oct 2022 07:40:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=hW9HdhVYK8YoDrnaYmqTbVsR1S9wWFhd+9YKhSOTphY=; b=O53LrSO7ngSMB8+B2L67BOxMv6
-        1lAyZEAZ8t9y1VVu3Ysl6iNu703c7QkC8/E65lQ4dXogyEOaJoB9DF8tZc0l99WuTALZjyuXjH0AY
-        2FQ4impjQYOfWaPR67dZiLeQVRj+oHe6fcDrfGkIQTpMWpZdmeSDvhrEcuTY6/5WK+KK4WAfN/XcE
-        6hdW+Su/80heZo1ZU2CGb6Ldf/YJ6ILQsQWGibgNLY32ldWbFaXj8jkXySo703CfafZUZwXNsPX9S
-        bzn48MhgT+HU6mKf6ShXlFLl9iFs0fF11iEyO5/jbPyvNE5K2jTS9iBR5DMh8Se9H/IhnIV2DTkFi
-        rwaiR1Fg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1ofj64-00HFJs-3t; Tue, 04 Oct 2022 14:40:36 +0000
-Date:   Tue, 4 Oct 2022 15:40:36 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Cc:     Hugh Dickins <hughd@google.com>, Vlastimil Babka <vbabka@suse.cz>,
-        David Laight <David.Laight@aculab.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Minchan Kim <minchan@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, rcu@vger.kernel.org
-Subject: Re: amusing SLUB compaction bug when CC_OPTIMIZE_FOR_SIZE
-Message-ID: <YzxF5Bs/tgLDOB0T@casper.infradead.org>
-References: <ea96c78c-e1dc-1364-e91-51909f82388b@google.com>
- <YzPgTtFzpKEfwPbK@hyeyoo>
- <YzRQvoVsnJzsauwb@google.com>
- <35502bdd-1a78-dea1-6ac3-6ff1bcc073fa@suse.cz>
- <ff905c1e-5eb3-eaf8-46de-38f189c0b7a5@google.com>
- <de71b83a-c82c-4785-ef5a-3db4f17bbc8d@suse.cz>
- <bcecece-f7ce-221d-1674-da3d5ab3fef@google.com>
- <YzkmErHFyYW3awRn@hyeyoo>
- <YzsVM8eToHUeTP75@casper.infradead.org>
- <YzxCmR3dGJz45NVD@hyeyoo>
+        with ESMTP id S229635AbiJDOxT (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 4 Oct 2022 10:53:19 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30D6C631F6;
+        Tue,  4 Oct 2022 07:53:15 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id x40so4929992ljq.9;
+        Tue, 04 Oct 2022 07:53:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date;
+        bh=tb5CpuzxP6xt4+1sFoCHk1v84czst0av0IH4YCab41s=;
+        b=j4uqX9bwVUNhbCI3EWfeakJCNaTw+7qy/isjwBex9FKKTvaPh5+hch7TsHTiKMgRa3
+         0rZWg3Vy77IGp1Zi9ADDIjgC3C78N8JBj2j8JRepY7Yme6TS6iCdcaCN8O2SamPksWXS
+         IqyEz8arLupHBE0C11X6JNggygGNgHv8zQ5ZMsiHYdXEhUpEcEDXOf8oOBgvjpQS6DKz
+         eXwVWoavqKarWeUi3TJdCO6YPhXp73uh+XXiod4Y2Xy19SCBIjoyK8wPos5rdUvKjR7D
+         wvSF2jAm/vonwWnED3x5UkH3F9ae4YH12DkxLLicG3O2yERcqCnIm75reyzhQb7Jg2HL
+         1KOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date;
+        bh=tb5CpuzxP6xt4+1sFoCHk1v84czst0av0IH4YCab41s=;
+        b=UuuNx8OVtIHjHFY/fJ/4AfV9RcgdCHXfSQsbfjI725Gz4ghpegpn9puIkGNoF3yGc+
+         Poy7DK10DtjQx8d1WMp2kjQHW/5xS9zb8uFUZDsZyzMcowN/tx2rhLuKJYzseHgvyeFh
+         lB6pbD10Y3e9nwxWOTDIRVluj1NqB5Si+68Lli0KPdgcT74odsaLkA0o65ls2TfWVAez
+         ssAq1OmGc+OI7pe0n2oKZVcdG+BXG0TtLZP1HHpAe9+GZewF5ujMRDuedh6qlktPuCX6
+         HPlXAbQggvim8mlvt+I/kTnkyDTD7vH3F6WEzyTMrBNoM6G1keGfhdM3XJih48s6x0wo
+         UCVg==
+X-Gm-Message-State: ACrzQf0Zo/ubBPL8LLz+eJ4ipuIazTFI3e+kMY2PHKTGuhkbne2wTUD5
+        ODyJK+lo2WHQ6L92Uz5VJeQ=
+X-Google-Smtp-Source: AMsMyM7srvOQ65N9QqMGvKub3sS8+lAML89zP6iJl3l6HHajoP8en8sNU+FcpcyYVir7Bx63fZM3mg==
+X-Received: by 2002:a05:651c:160c:b0:264:a5ae:7dd2 with SMTP id f12-20020a05651c160c00b00264a5ae7dd2mr8585579ljq.80.1664895192459;
+        Tue, 04 Oct 2022 07:53:12 -0700 (PDT)
+Received: from pc636 (host-90-235-28-118.mobileonline.telia.com. [90.235.28.118])
+        by smtp.gmail.com with ESMTPSA id b15-20020a056512304f00b00497a191bf23sm1929628lfb.299.2022.10.04.07.53.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 Oct 2022 07:53:12 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Tue, 4 Oct 2022 16:53:09 +0200
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rushikesh.s.kadam@intel.com, neeraj.iitr10@gmail.com,
+        frederic@kernel.org, rostedt@goodmis.org, youssefesmat@google.com,
+        surenb@google.com
+Subject: Re: [PATCH v7 02/11] rcu: Make call_rcu() lazy to save power
+Message-ID: <YzxI1frUjDnB6MOP@pc636>
+References: <20221004024157.2470238-1-joel@joelfernandes.org>
+ <20221004024157.2470238-3-joel@joelfernandes.org>
+ <Yzwb8vgYhAvDJzK+@pc636>
+ <20221004133004.GD4196@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YzxCmR3dGJz45NVD@hyeyoo>
+In-Reply-To: <20221004133004.GD4196@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Oct 04, 2022 at 11:26:33PM +0900, Hyeonggon Yoo wrote:
-> > It's the acquisition of
-> > the refcount which stabilises the slab flag, not holding the lock.
+On Tue, Oct 04, 2022 at 06:30:04AM -0700, Paul E. McKenney wrote:
+> On Tue, Oct 04, 2022 at 01:41:38PM +0200, Uladzislau Rezki wrote:
+> > >  		trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("Check"));
+> > >  		rcu_nocb_lock_irqsave(rdp, flags);
+> > >  		lockdep_assert_held(&rdp->nocb_lock);
+> > >  		bypass_ncbs = rcu_cblist_n_cbs(&rdp->nocb_bypass);
+> > > -		if (bypass_ncbs &&
+> > > +		lazy_ncbs = READ_ONCE(rdp->lazy_len);
+> > > +
+> > > +		if (bypass_ncbs && (lazy_ncbs == bypass_ncbs) &&
+> > > +		    (time_after(j, READ_ONCE(rdp->nocb_bypass_first) + jiffies_till_flush) ||
+> > > +		     bypass_ncbs > 2 * qhimark)) {
+> > Do you know why we want double "qhimark" threshold? It is not only this
+> > place, there are several. I am asking because it is not expected by the
+> > user.
 > 
-> But can you please elaborate how this prevents race between
-> allocation & initialization of a slab and isolate_movable_page()?
+> OK, I will bite...  What does the user expect?  Or, perhaps a better
+> question, how is this choice causing the user problems?
 > 
-> Or maybe we can handle it with frozen folio as Vlastimil suggested? ;-) 
+Yesterday when i was checking the lazy-v6 on Android i noticed the following:
 
-Yes, we discussed that a little yesterday.  I'm hoping to have a
-refreshed patchset for frozen folios out today.  Some of this patch
-is still needed, even if we go that route.
+<snip>
+...
+     rcuop/4-48      [006] d..1   184.780328: rcu_batch_start: rcu_preempt CBs=15572 bl=121
+     rcuop/6-62      [000] d..1   184.796939: rcu_batch_start: rcu_preempt CBs=21503 bl=167
+     rcuop/6-62      [003] d..1   184.800706: rcu_batch_start: rcu_preempt CBs=24677 bl=192
+     rcuop/6-62      [005] d..1   184.803773: rcu_batch_start: rcu_preempt CBs=27117 bl=211
+     rcuop/6-62      [005] d..1   184.805732: rcu_batch_start: rcu_preempt CBs=22391 bl=174
+     rcuop/6-62      [005] d..1   184.809083: rcu_batch_start: rcu_preempt CBs=12554 bl=98
+     rcuop/6-62      [005] d..1   184.824228: rcu_batch_start: rcu_preempt CBs=16177 bl=126
+     rcuop/4-48      [006] d..1   184.836193: rcu_batch_start: rcu_preempt CBs=24129 bl=188
+     rcuop/4-48      [006] d..1   184.844147: rcu_batch_start: rcu_preempt CBs=25854 bl=201
+     rcuop/4-48      [006] d..1   184.847257: rcu_batch_start: rcu_preempt CBs=21328 bl=166
+     rcuop/4-48      [006] d..1   184.852128: rcu_batch_start: rcu_preempt CBs=21710 bl=169
+...
+<snip>
 
-> > @@ -91,8 +99,8 @@ int isolate_movable_page(struct page *page, isolate_mode_t mode)
-> >  	 * lets be sure we have the page lock
-> >  	 * before proceeding with the movable page isolation steps.
-> >  	 */
-> > -	if (unlikely(!trylock_page(page)))
-> > -		goto out_putpage;
-> > +	if (unlikely(!folio_trylock(folio)))
-> > +		goto out_put;
-> 
-> I don't know much about callers that this is trying to avoid race aginst...
-> 
-> But for this to make sense, I think *every users* that doing their stuff with
-> sub-page of a compound page should acquire folio lock and not page lock
-> of sub-page, right?
+On my device the "qhimark" is set to:
 
-There is no page lock per se.  If you try to acquire the lock on a tail
-page, it acquires the lock on its head page.  It's been that way for a
-very long time.  A lot of people are confused by this, which was part of
-the motivation for making it explicit with folios.
+<snip>
+XQ-CT54:/sys/module/rcutree/parameters # cat qhimark
+10000
+XQ-CT54:/sys/module/rcutree/parameters #
+<snip>
 
+so i expect that once we pass 10 000 callbacks threshold the flush 
+should occur. This parameter gives us an opportunity to control a
+memory that should be reclaimed sooner or later.
+
+--
+Uladzislau Rezki
