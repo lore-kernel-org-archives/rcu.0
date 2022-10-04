@@ -2,96 +2,100 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 79CE2C433FE
-	for <rcu@archiver.kernel.org>; Tue,  4 Oct 2022 18:05:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 41343C433F5
+	for <rcu@archiver.kernel.org>; Tue,  4 Oct 2022 18:06:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229777AbiJDSFW (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 4 Oct 2022 14:05:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55122 "EHLO
+        id S229791AbiJDSG5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 4 Oct 2022 14:06:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229876AbiJDSFT (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 4 Oct 2022 14:05:19 -0400
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D51B38A04
-        for <rcu@vger.kernel.org>; Tue,  4 Oct 2022 11:05:12 -0700 (PDT)
-Received: by mail-il1-x12e.google.com with SMTP id o13so2537335ilc.7
-        for <rcu@vger.kernel.org>; Tue, 04 Oct 2022 11:05:12 -0700 (PDT)
+        with ESMTP id S229709AbiJDSG4 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 4 Oct 2022 14:06:56 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C0BC1F629
+        for <rcu@vger.kernel.org>; Tue,  4 Oct 2022 11:06:55 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id o65so1041869iof.4
+        for <rcu@vger.kernel.org>; Tue, 04 Oct 2022 11:06:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=sLLzbroKqpxLu0HQF1QulfhBmT3Qy5q0rRY0h0xXoW8=;
-        b=QDTMRLES+3c9wfPuGJ1UDQsP5WFZWafybw40aij4Uchx9/VI8x77Kd6QQGUp4rZDOO
-         3/3fX6+wZKuZrNtHh0ltXVCGpNk0UOYFcEz6UpMSSfhSkpR6ekbN+UBF1OA4kd7YVlW1
-         cE7G13glkKpDJUHPZKXiZJs8gOv0PhBxlcVg8=
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date;
+        bh=c+iMt+Zmn4W4daL1eQ1jMpY6swlWjzwhrCtpT283CF8=;
+        b=a3+1CLfIPasemBNKqEoPpR0kvPISBFHqo/qxpHW2TdSRRKNY9Tk6aQscfPUWS1U8s3
+         B+64cP05oBJQcUIpMvNJEg4n8nc9GPRA6mY1Mrs7N2ZAUq0QqBGT3WfMOajzEucbKTno
+         74lpkJf9UkGQbgfLbzwu9ptCsj6q/fsE/JdW0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=sLLzbroKqpxLu0HQF1QulfhBmT3Qy5q0rRY0h0xXoW8=;
-        b=7yTxQrnnauNfV1yegpUJc2K280KvGBnDmAXEHpeHVyDgWrziEQN8HEzUdx+jesEnvc
-         ovHkAILX94lcoFT1eXti5YnEvbA5vRRNJnoMM+i/09gq/wZSGOvcPlsA7qwXBnGNr5nW
-         /xjEMlIZwc8HOzQrvBudc7sMz0TlQndX6lOv2NvfWk3h+yKAmUK6dGJh0gQJwYKIoZpI
-         G2O0PydmzMHvUulzATPO1vgu0uQyIywNCaqsZoQGaMpaBA9J9lo/LLbJaGQBki5fCgUf
-         b4zXxXz/qIqIFEGUlLacPiruSsgmYGiRv83gE/LWUIfYMh/pQEF9C4VhlbqltlE0UNZr
-         p3wg==
-X-Gm-Message-State: ACrzQf2qc6LmxJQAbZyW9TvugdkZHRTv/HXCO93I6vN4MoB4vGSi4/aI
-        GBI/M9JxVkXHGJxJBVWYZw7UAdU6/Eqq0Cb4LdOqkg==
-X-Google-Smtp-Source: AMsMyM7YKsigDeRdaCpRPiK9JEbG1nQ9TQCAOsAfj0pv6RhDXc9ZX8BR78UCcu98nemAHx9h6sIHVySYcDk0L3U2/yM=
-X-Received: by 2002:a05:6e02:2191:b0:2f5:aade:9ea0 with SMTP id
- j17-20020a056e02219100b002f5aade9ea0mr12907928ila.79.1664906711403; Tue, 04
- Oct 2022 11:05:11 -0700 (PDT)
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date;
+        bh=c+iMt+Zmn4W4daL1eQ1jMpY6swlWjzwhrCtpT283CF8=;
+        b=W55CjWb2NXkFN2zccB2MACFa5XWw+4TqXN7mecICCZwCHRI71TIUg4E2pmmv7C9DeE
+         K3S5gq6g7t6lwj/oRDXBUOea/any05LNgVPvzRx1kfbiTGp6CB/mYaU7t9O5x0fT3JS/
+         6s8BWulz/+dvOQ8U3TGDFJW/7jQgcLwKhplkzEc1xzEF8INaOKX0P6ZPdRHo1VlE6qOV
+         jDDFi9NYLjdmLR58RTVjxP/TO6NCmYDK+2agqvjM5d2GzXlPzjEXICSK9+UxgQHVTR2Q
+         FxKFMLySE27jHrB8XjitBVWCp8iBzNhXn7erCCtd+XAEOOvvP1crIbjTtyaB/EEcpCsN
+         0RZQ==
+X-Gm-Message-State: ACrzQf36fV0o5+vENykSf7c1exAIeJXhK7UGnbSlQo2PuLw7oun2dnTa
+        1F7OJA7M8zOaSV3fi62yoKKws6GG5mY95aGEgurgEWWo7ks=
+X-Google-Smtp-Source: AMsMyM7gV1ewQXslE6I25iElynSxAh00oyGlWhU+MXH3mNaqlBEII0fyGTlTSLcSQ9O7JopAG3ebceDqV4sQEMJvHrA=
+X-Received: by 2002:a05:6638:1606:b0:35a:5472:fa1b with SMTP id
+ x6-20020a056638160600b0035a5472fa1bmr13091186jas.241.1664906815032; Tue, 04
+ Oct 2022 11:06:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <20221004024157.2470238-1-joel@joelfernandes.org>
- <20221004024157.2470238-3-joel@joelfernandes.org> <Yzwb8vgYhAvDJzK+@pc636>
-In-Reply-To: <Yzwb8vgYhAvDJzK+@pc636>
+References: <3F5B20A5-6E48-4603-ACBA-0A7947A9C457@joelfernandes.org>
+ <9E3CFF3C-8956-4C44-8072-1CCD5E84CC4C@joelfernandes.org> <YzcVGN8v1yhgIlF6@pc636>
+ <YzwafYASrgKZ24uq@pc636>
+In-Reply-To: <YzwafYASrgKZ24uq@pc636>
 From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Tue, 4 Oct 2022 14:05:01 -0400
-Message-ID: <CAEXW_YScPPbZeCzidU8bwSKKm=pJjEwxNHnFK-XYfnzqSK7ShA@mail.gmail.com>
-Subject: Re: [PATCH v7 02/11] rcu: Make call_rcu() lazy to save power
+Date:   Tue, 4 Oct 2022 14:06:45 -0400
+Message-ID: <CAEXW_YT9qMJFW0sD-_shDd1PSeY4TefZ4HdbKtm_rqDXZcj-5w@mail.gmail.com>
+Subject: Re: [PATCH v6 1/4] rcu: Make call_rcu() lazy to save power
 To:     Uladzislau Rezki <urezki@gmail.com>
 Cc:     paulmck@kernel.org, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org, rushikesh.s.kadam@intel.com,
-        neeraj.iitr10@gmail.com, frederic@kernel.org, rostedt@goodmis.org,
-        youssefesmat@google.com, surenb@google.com
+        neeraj.iitr10@gmail.com, frederic@kernel.org, rostedt@goodmis.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Oct 4, 2022 at 7:41 AM Uladzislau Rezki <urezki@gmail.com> wrote:
+Hi Vlad,
+
+On Tue, Oct 4, 2022 at 7:35 AM Uladzislau Rezki <urezki@gmail.com> wrote:
 >
-> >               trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("Check"));
-> >               rcu_nocb_lock_irqsave(rdp, flags);
-> >               lockdep_assert_held(&rdp->nocb_lock);
-> >               bypass_ncbs = rcu_cblist_n_cbs(&rdp->nocb_bypass);
-> > -             if (bypass_ncbs &&
-> > +             lazy_ncbs = READ_ONCE(rdp->lazy_len);
-> > +
-> > +             if (bypass_ncbs && (lazy_ncbs == bypass_ncbs) &&
-> > +                 (time_after(j, READ_ONCE(rdp->nocb_bypass_first) + jiffies_till_flush) ||
-> > +                  bypass_ncbs > 2 * qhimark)) {
-> Do you know why we want double "qhimark" threshold? It is not only this
-> place, there are several. I am asking because it is not expected by the
-> user.
+> > > >>
+> > > >> OK. Found the boot up issue. In my case i had 120 seconds delay:
+> > > >
+> > > > Wow, nice work.
+> > > >
+> > > >> <snip>
+> > > >> diff --git a/drivers/scsi/scsi_error.c b/drivers/scsi/scsi_error.c
+> > > >> index 448748e3fba5..a56cfd612e3a 100644
+> > > >> --- a/drivers/scsi/scsi_error.c
+> > > >> +++ b/drivers/scsi/scsi_error.c
+> > > >> @@ -312,7 +312,7 @@ void scsi_eh_scmd_add(struct scsi_cmnd *scmd)
+> > > >>        * Ensure that all tasks observe the host state change befor=
+e the
+> > > >>        * host_failed change.
+> > > >>        */
+> > > >> -       call_rcu(&scmd->rcu, scsi_eh_inc_host_failed);
+> > > >> +       call_rcu_flush(&scmd->rcu, scsi_eh_inc_host_failed);
+> > > >
+> > > > Great! Thanks. I=E2=80=99ll include this and the other one you conv=
+erted in the next revision.
+> > >
+> > > By the way, any chance you could check android as well, just to rule =
+out any trouble markers? ChromeOS and your Linux distro are doing well on b=
+oot so that=E2=80=99s a good sign.
+> > >
+> > I will check v6 on Android. I will get back shortly.
+> >
+> OK. Works and boots well. I do not see any issues with Android so far.
+>
 
-I am following the qhimark conventions in existing code. However
-qhimark does not mean that your callbacks cannot exceed these many or
-something, it is not a hard limit on queued callbacks.
-
-qhimark (And Paul can correct me) was introduced to reduce the number
-of callbacks after which RCU will not limit execution of callbacks to
-a batch of them. That has nothing to do with limiting the maximum
-number of callbacks, per-se. However, its usage certainly seems to
-have grown since that introduction.
-
-Maybe you are confusing it with blimit:
-
-#define DEFAULT_RCU_QHIMARK 10000 // If this many pending, ignore blimit.
-static long qhimark = DEFAULT_RCU_QHIMARK;
-#define DEFAULT_RCU_QLOMARK 100   // Once only this many pending, use blimit.
-static long qlowmark = DEFAULT_RCU_QLOMARK;
-
-thanks,
+That's great news and thank you so much for testing Android and all
+your efforts on this work!
 
  - Joel
