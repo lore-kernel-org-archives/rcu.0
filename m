@@ -2,100 +2,129 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 41343C433F5
-	for <rcu@archiver.kernel.org>; Tue,  4 Oct 2022 18:06:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 33305C433FE
+	for <rcu@archiver.kernel.org>; Tue,  4 Oct 2022 18:30:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229791AbiJDSG5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 4 Oct 2022 14:06:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57624 "EHLO
+        id S229565AbiJDS1k (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 4 Oct 2022 14:27:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229709AbiJDSG4 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 4 Oct 2022 14:06:56 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C0BC1F629
-        for <rcu@vger.kernel.org>; Tue,  4 Oct 2022 11:06:55 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id o65so1041869iof.4
-        for <rcu@vger.kernel.org>; Tue, 04 Oct 2022 11:06:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date;
-        bh=c+iMt+Zmn4W4daL1eQ1jMpY6swlWjzwhrCtpT283CF8=;
-        b=a3+1CLfIPasemBNKqEoPpR0kvPISBFHqo/qxpHW2TdSRRKNY9Tk6aQscfPUWS1U8s3
-         B+64cP05oBJQcUIpMvNJEg4n8nc9GPRA6mY1Mrs7N2ZAUq0QqBGT3WfMOajzEucbKTno
-         74lpkJf9UkGQbgfLbzwu9ptCsj6q/fsE/JdW0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date;
-        bh=c+iMt+Zmn4W4daL1eQ1jMpY6swlWjzwhrCtpT283CF8=;
-        b=W55CjWb2NXkFN2zccB2MACFa5XWw+4TqXN7mecICCZwCHRI71TIUg4E2pmmv7C9DeE
-         K3S5gq6g7t6lwj/oRDXBUOea/any05LNgVPvzRx1kfbiTGp6CB/mYaU7t9O5x0fT3JS/
-         6s8BWulz/+dvOQ8U3TGDFJW/7jQgcLwKhplkzEc1xzEF8INaOKX0P6ZPdRHo1VlE6qOV
-         jDDFi9NYLjdmLR58RTVjxP/TO6NCmYDK+2agqvjM5d2GzXlPzjEXICSK9+UxgQHVTR2Q
-         FxKFMLySE27jHrB8XjitBVWCp8iBzNhXn7erCCtd+XAEOOvvP1crIbjTtyaB/EEcpCsN
-         0RZQ==
-X-Gm-Message-State: ACrzQf36fV0o5+vENykSf7c1exAIeJXhK7UGnbSlQo2PuLw7oun2dnTa
-        1F7OJA7M8zOaSV3fi62yoKKws6GG5mY95aGEgurgEWWo7ks=
-X-Google-Smtp-Source: AMsMyM7gV1ewQXslE6I25iElynSxAh00oyGlWhU+MXH3mNaqlBEII0fyGTlTSLcSQ9O7JopAG3ebceDqV4sQEMJvHrA=
-X-Received: by 2002:a05:6638:1606:b0:35a:5472:fa1b with SMTP id
- x6-20020a056638160600b0035a5472fa1bmr13091186jas.241.1664906815032; Tue, 04
- Oct 2022 11:06:55 -0700 (PDT)
-MIME-Version: 1.0
-References: <3F5B20A5-6E48-4603-ACBA-0A7947A9C457@joelfernandes.org>
- <9E3CFF3C-8956-4C44-8072-1CCD5E84CC4C@joelfernandes.org> <YzcVGN8v1yhgIlF6@pc636>
- <YzwafYASrgKZ24uq@pc636>
-In-Reply-To: <YzwafYASrgKZ24uq@pc636>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Tue, 4 Oct 2022 14:06:45 -0400
-Message-ID: <CAEXW_YT9qMJFW0sD-_shDd1PSeY4TefZ4HdbKtm_rqDXZcj-5w@mail.gmail.com>
-Subject: Re: [PATCH v6 1/4] rcu: Make call_rcu() lazy to save power
+        with ESMTP id S229445AbiJDS1k (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 4 Oct 2022 14:27:40 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2906853D3F;
+        Tue,  4 Oct 2022 11:27:39 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B540D614F6;
+        Tue,  4 Oct 2022 18:27:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16B88C433D6;
+        Tue,  4 Oct 2022 18:27:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1664908058;
+        bh=6M/LvGJFTSCvuI10ZRfPX3txBJRAZvIVtrLdartB6aM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Tt6XjqSLKJGWXZ+Lj7Ovyj4+H+oQFXQH9o5uqOcLFp1BAVhriRH/tXSpqPfu0OFry
+         vwOC1SDzoSAxV3u671n+lNq7BADrttZcjfR+HJAawZMIpV/2vsYNwAtiwHO9FnTYjx
+         9KymlbDhYN5DcDgGNZzZ7GcmMFeEnCNNdJGi1puNl+uHDsWptBwgjnrAlB4iSBxcCy
+         LJo/iu0Bb8RSML6JKd6/16zMUsDaM2Mjcjw2BbdHMDXde/NEhOBmyiTtQ9UaLNMPi9
+         p5afwioNml66VuOv3n7urN2swfKPp92q+/tNPh8ssp5WmYd6EbHoNQLftQq2QQh0b3
+         QNl1aUMxmPGVw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id A976D5C0641; Tue,  4 Oct 2022 11:27:37 -0700 (PDT)
+Date:   Tue, 4 Oct 2022 11:27:37 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     paulmck@kernel.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rushikesh.s.kadam@intel.com,
-        neeraj.iitr10@gmail.com, frederic@kernel.org, rostedt@goodmis.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rushikesh.s.kadam@intel.com, neeraj.iitr10@gmail.com,
+        frederic@kernel.org, rostedt@goodmis.org, youssefesmat@google.com,
+        surenb@google.com
+Subject: Re: [PATCH v7 02/11] rcu: Make call_rcu() lazy to save power
+Message-ID: <20221004182737.GH4196@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20221004024157.2470238-1-joel@joelfernandes.org>
+ <20221004024157.2470238-3-joel@joelfernandes.org>
+ <Yzwb8vgYhAvDJzK+@pc636>
+ <20221004133004.GD4196@paulmck-ThinkPad-P17-Gen-1>
+ <YzxI1frUjDnB6MOP@pc636>
+ <20221004155814.GG4196@paulmck-ThinkPad-P17-Gen-1>
+ <YzxdM9tL6vwt2HQ4@pc636>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YzxdM9tL6vwt2HQ4@pc636>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Vlad,
+On Tue, Oct 04, 2022 at 06:20:03PM +0200, Uladzislau Rezki wrote:
+> On Tue, Oct 04, 2022 at 08:58:14AM -0700, Paul E. McKenney wrote:
+> > On Tue, Oct 04, 2022 at 04:53:09PM +0200, Uladzislau Rezki wrote:
+> > > On Tue, Oct 04, 2022 at 06:30:04AM -0700, Paul E. McKenney wrote:
+> > > > On Tue, Oct 04, 2022 at 01:41:38PM +0200, Uladzislau Rezki wrote:
+> > > > > >  		trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("Check"));
+> > > > > >  		rcu_nocb_lock_irqsave(rdp, flags);
+> > > > > >  		lockdep_assert_held(&rdp->nocb_lock);
+> > > > > >  		bypass_ncbs = rcu_cblist_n_cbs(&rdp->nocb_bypass);
+> > > > > > -		if (bypass_ncbs &&
+> > > > > > +		lazy_ncbs = READ_ONCE(rdp->lazy_len);
+> > > > > > +
+> > > > > > +		if (bypass_ncbs && (lazy_ncbs == bypass_ncbs) &&
+> > > > > > +		    (time_after(j, READ_ONCE(rdp->nocb_bypass_first) + jiffies_till_flush) ||
+> > > > > > +		     bypass_ncbs > 2 * qhimark)) {
+> > > > > Do you know why we want double "qhimark" threshold? It is not only this
+> > > > > place, there are several. I am asking because it is not expected by the
+> > > > > user.
+> > > > 
+> > > > OK, I will bite...  What does the user expect?  Or, perhaps a better
+> > > > question, how is this choice causing the user problems?
+> > > > 
+> > > Yesterday when i was checking the lazy-v6 on Android i noticed the following:
+> > > 
+> > > <snip>
+> > > ...
+> > >      rcuop/4-48      [006] d..1   184.780328: rcu_batch_start: rcu_preempt CBs=15572 bl=121
+> > >      rcuop/6-62      [000] d..1   184.796939: rcu_batch_start: rcu_preempt CBs=21503 bl=167
+> > >      rcuop/6-62      [003] d..1   184.800706: rcu_batch_start: rcu_preempt CBs=24677 bl=192
+> > >      rcuop/6-62      [005] d..1   184.803773: rcu_batch_start: rcu_preempt CBs=27117 bl=211
+> > >      rcuop/6-62      [005] d..1   184.805732: rcu_batch_start: rcu_preempt CBs=22391 bl=174
+> > >      rcuop/6-62      [005] d..1   184.809083: rcu_batch_start: rcu_preempt CBs=12554 bl=98
+> > >      rcuop/6-62      [005] d..1   184.824228: rcu_batch_start: rcu_preempt CBs=16177 bl=126
+> > >      rcuop/4-48      [006] d..1   184.836193: rcu_batch_start: rcu_preempt CBs=24129 bl=188
+> > >      rcuop/4-48      [006] d..1   184.844147: rcu_batch_start: rcu_preempt CBs=25854 bl=201
+> > >      rcuop/4-48      [006] d..1   184.847257: rcu_batch_start: rcu_preempt CBs=21328 bl=166
+> > >      rcuop/4-48      [006] d..1   184.852128: rcu_batch_start: rcu_preempt CBs=21710 bl=169
+> > > ...
+> > > <snip>
+> > > 
+> > > On my device the "qhimark" is set to:
+> > > 
+> > > <snip>
+> > > XQ-CT54:/sys/module/rcutree/parameters # cat qhimark
+> > > 10000
+> > > XQ-CT54:/sys/module/rcutree/parameters #
+> > > <snip>
+> > > 
+> > > so i expect that once we pass 10 000 callbacks threshold the flush 
+> > > should occur. This parameter gives us an opportunity to control a
+> > > memory that should be reclaimed sooner or later.
+> > 
+> > I did understand that you were surprised.
+> > 
+> > But what problem did this cause other than you being surprised?
+> > 
+> It is not about surprising. It is about expectation. So if i set a
+> threshold to 100 i expect it that around 100 callbacks my memory will
+> be reclaimed. But the resolution is 2 * 100 in fact.
+> 
+> I am not aware about any issues with it. I just noticed such behaviour
+> during testing.
 
-On Tue, Oct 4, 2022 at 7:35 AM Uladzislau Rezki <urezki@gmail.com> wrote:
->
-> > > >>
-> > > >> OK. Found the boot up issue. In my case i had 120 seconds delay:
-> > > >
-> > > > Wow, nice work.
-> > > >
-> > > >> <snip>
-> > > >> diff --git a/drivers/scsi/scsi_error.c b/drivers/scsi/scsi_error.c
-> > > >> index 448748e3fba5..a56cfd612e3a 100644
-> > > >> --- a/drivers/scsi/scsi_error.c
-> > > >> +++ b/drivers/scsi/scsi_error.c
-> > > >> @@ -312,7 +312,7 @@ void scsi_eh_scmd_add(struct scsi_cmnd *scmd)
-> > > >>        * Ensure that all tasks observe the host state change befor=
-e the
-> > > >>        * host_failed change.
-> > > >>        */
-> > > >> -       call_rcu(&scmd->rcu, scsi_eh_inc_host_failed);
-> > > >> +       call_rcu_flush(&scmd->rcu, scsi_eh_inc_host_failed);
-> > > >
-> > > > Great! Thanks. I=E2=80=99ll include this and the other one you conv=
-erted in the next revision.
-> > >
-> > > By the way, any chance you could check android as well, just to rule =
-out any trouble markers? ChromeOS and your Linux distro are doing well on b=
-oot so that=E2=80=99s a good sign.
-> > >
-> > I will check v6 on Android. I will get back shortly.
-> >
-> OK. Works and boots well. I do not see any issues with Android so far.
->
+Whew!!!
 
-That's great news and thank you so much for testing Android and all
-your efforts on this work!
+This value was arrived at when tuning this code to best deal with callback
+floods.
 
- - Joel
+							Thanx, Paul
