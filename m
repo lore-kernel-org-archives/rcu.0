@@ -2,75 +2,200 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 643ECC433FE
-	for <rcu@archiver.kernel.org>; Tue,  4 Oct 2022 13:30:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A4BBC433F5
+	for <rcu@archiver.kernel.org>; Tue,  4 Oct 2022 14:26:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229706AbiJDNaJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 4 Oct 2022 09:30:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47032 "EHLO
+        id S229588AbiJDO0m (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 4 Oct 2022 10:26:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229578AbiJDNaI (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 4 Oct 2022 09:30:08 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EFFE14D34;
-        Tue,  4 Oct 2022 06:30:07 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 227D0B81A64;
-        Tue,  4 Oct 2022 13:30:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B48B3C433D6;
-        Tue,  4 Oct 2022 13:30:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1664890204;
-        bh=pmD/76THUjmjMv87RaAXR785Z/FUTUEMriT7r4Exd14=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=cg8UakfENBD85c56ET5JLM7T690PtRla3/xj64+A8wTGb7FAgV0fs3Z7pgEFdZPnc
-         M3aK4ideDxGBpM/K7vlwQUHZNv8DxZHDiB5m+tnpdg/tG+2tTmQS8pDGjKpvwAT3r8
-         /Mpzifb+kplZB2wVw3xc6xqx7j7b9r+PTP9K1QNUMjW2JJMkBgdY5db1uMafH6s3Ih
-         iQTBm4+3zB+VAcdCc4Er9yeYH+ro5tfGopw/fn6QQEeLjP0hY1ma158sOUvlcYIdxc
-         rhVGGv8gwAejiQnUO1DuWIJWtuZkgSG/JPcaVYJxSPFz/9lrBdrrnsg30ONRhulqWF
-         TpS+oGRGXxbAA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 5BA1F5C0641; Tue,  4 Oct 2022 06:30:04 -0700 (PDT)
-Date:   Tue, 4 Oct 2022 06:30:04 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rushikesh.s.kadam@intel.com, neeraj.iitr10@gmail.com,
-        frederic@kernel.org, rostedt@goodmis.org, youssefesmat@google.com,
-        surenb@google.com
-Subject: Re: [PATCH v7 02/11] rcu: Make call_rcu() lazy to save power
-Message-ID: <20221004133004.GD4196@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20221004024157.2470238-1-joel@joelfernandes.org>
- <20221004024157.2470238-3-joel@joelfernandes.org>
- <Yzwb8vgYhAvDJzK+@pc636>
+        with ESMTP id S229755AbiJDO0l (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 4 Oct 2022 10:26:41 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 527475F7FE;
+        Tue,  4 Oct 2022 07:26:40 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id 78so12828923pgb.13;
+        Tue, 04 Oct 2022 07:26:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date;
+        bh=a7J7IosKfoRArNJboZpXhy19uGdQlz1RYOvunk4d6kQ=;
+        b=jE3nLP2UVGvlNA2xqINAjLS3bhyyAt4580FWyyiA+If8F93KOaWZ52Bg3gw/zS04PA
+         D3tl8bbtF9xa3nPXbzTDLiajzy+6hvPe7C0Yvwg2TX7H71a6toNLRrWbCAu6AWSsRnH0
+         8Aed4el8Q7Mg9IWcdNoeLGB0jEemS1k0ReCrP2n4ZhWiM9h3aFjomydd4tSb1YnHwZyl
+         es4+2uhnjWeBCjLXLme71uW+JLxDIJYjYy2GwQHzUQm/xwDJmEB93/ouFavmcy1VoKUf
+         Of8IKrN4FQ61K79d3QOVYNNxUbfEOn+0yM9Ylf+8Jw8N6Ui/hmsqHFMYidK1UrR9HcWY
+         Fe1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
+        bh=a7J7IosKfoRArNJboZpXhy19uGdQlz1RYOvunk4d6kQ=;
+        b=iwvsoL4dX3bIz7FFJyq0VSstcQiIC1mkVGpfBkDQbdC6rLT8OYcUSnR4ytgfSQbUce
+         uQrp2lgwam7vKzoLys0duMpqwoFrzjEnuY+DHlX6fX/Cxg/NqP2ioh+EqrmRIl6Qk+TX
+         z9Tek7Aq4ZRlWQuF2dAuI3U6dC4FeuVPfGqwgbxn7dB5W6y1hyde5PkvBcYM7O2wkX0o
+         JMATn5d4ozj7CUyU/q6AifOTQ/U1fU1i2ACV0lrMsmDvqAEkdYk5IFHw3K2UhNKzfOgO
+         RzzkOyyzmU8n6fHosXOI7hYpX0GGZQ5YkRcBCgiOI9RX0nOG6GdC+08AtBj3cqhylYwp
+         Ygkg==
+X-Gm-Message-State: ACrzQf1Uu9mLQOFSQjBobOeEpMfKwKgD7MfkbiriwxvNMpaqaO4/e7oD
+        oP+jb0edJfMBXfaY744PtpUqRCp9XGW4Pw==
+X-Google-Smtp-Source: AMsMyM6H4kalTnP6SQVpdm2v2jEkC7PR9kLBjv9LBaVqcu76PkEZoYVv67wxWEXx865HLykHnWQXQQ==
+X-Received: by 2002:a05:6a00:1a07:b0:541:6060:705d with SMTP id g7-20020a056a001a0700b005416060705dmr28410815pfv.61.1664893599629;
+        Tue, 04 Oct 2022 07:26:39 -0700 (PDT)
+Received: from hyeyoo ([114.29.91.56])
+        by smtp.gmail.com with ESMTPSA id 18-20020a630b12000000b00434d9ba7817sm8538426pgl.30.2022.10.04.07.26.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 Oct 2022 07:26:38 -0700 (PDT)
+Date:   Tue, 4 Oct 2022 23:26:33 +0900
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Hugh Dickins <hughd@google.com>, Vlastimil Babka <vbabka@suse.cz>,
+        David Laight <David.Laight@aculab.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Minchan Kim <minchan@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, rcu@vger.kernel.org
+Subject: Re: amusing SLUB compaction bug when CC_OPTIMIZE_FOR_SIZE
+Message-ID: <YzxCmR3dGJz45NVD@hyeyoo>
+References: <ea96c78c-e1dc-1364-e91-51909f82388b@google.com>
+ <YzPgTtFzpKEfwPbK@hyeyoo>
+ <YzRQvoVsnJzsauwb@google.com>
+ <35502bdd-1a78-dea1-6ac3-6ff1bcc073fa@suse.cz>
+ <ff905c1e-5eb3-eaf8-46de-38f189c0b7a5@google.com>
+ <de71b83a-c82c-4785-ef5a-3db4f17bbc8d@suse.cz>
+ <bcecece-f7ce-221d-1674-da3d5ab3fef@google.com>
+ <YzkmErHFyYW3awRn@hyeyoo>
+ <YzsVM8eToHUeTP75@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Yzwb8vgYhAvDJzK+@pc636>
+In-Reply-To: <YzsVM8eToHUeTP75@casper.infradead.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Oct 04, 2022 at 01:41:38PM +0200, Uladzislau Rezki wrote:
-> >  		trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("Check"));
-> >  		rcu_nocb_lock_irqsave(rdp, flags);
-> >  		lockdep_assert_held(&rdp->nocb_lock);
-> >  		bypass_ncbs = rcu_cblist_n_cbs(&rdp->nocb_bypass);
-> > -		if (bypass_ncbs &&
-> > +		lazy_ncbs = READ_ONCE(rdp->lazy_len);
-> > +
-> > +		if (bypass_ncbs && (lazy_ncbs == bypass_ncbs) &&
-> > +		    (time_after(j, READ_ONCE(rdp->nocb_bypass_first) + jiffies_till_flush) ||
-> > +		     bypass_ncbs > 2 * qhimark)) {
-> Do you know why we want double "qhimark" threshold? It is not only this
-> place, there are several. I am asking because it is not expected by the
-> user.
+On Mon, Oct 03, 2022 at 06:00:35PM +0100, Matthew Wilcox wrote:
+> On Sun, Oct 02, 2022 at 02:48:02PM +0900, Hyeonggon Yoo wrote:
+> > Just one more thing, rcu_leak_callback too. RCU seem to use it
+> > internally to catch double call_rcu().
+> > 
+> > And some suggestions:
+> > - what about adding runtime WARN() on slab init code to catch
+> >   unexpected arch/toolchain issues?
+> > - instead of 4, we may use macro definition? like (PAGE_MAPPING_FLAGS + 1)?
+> 
+> I think the real problem here is that isolate_movable_page() is
+> insufficiently paranoid.  Looking at the gyrations that GUP and the
+> page cache do to convince themselves that the page they got really is
+> the page they wanted, there are a few missing pieces (eg checking that
+> you actually got a refcount on _this_ page and not some random other
+> page you were temporarily part of a compound page with).
+> 
+> This patch does three things:
+> 
+>  - Turns one of the comments into English.  There are some others
+>    which I'm still scratching my head over.
+>  - Uses a folio to help distinguish which operations are being done
+>    to the head vs the specific page (this is somewhat an abuse of the
+>    folio concept, but it's acceptable)
+>  - Add the aforementioned check that we're actually operating on the
+>    page that we think we want to be.
+>  - Add a check that the folio isn't secretly a slab.
+> 
+> We could put the slab check in PageMapping and call it after taking
+> the folio lock, but that seems pointless
 
-OK, I will bite...  What does the user expect?  Or, perhaps a better
-question, how is this choice causing the user problems?
+I partially agree with this patch. I actually like it.
 
-							Thanx, Paul
+> It's the acquisition of
+> the refcount which stabilises the slab flag, not holding the lock.
+
+But can you please elaborate how this prevents race between
+allocation & initialization of a slab and isolate_movable_page()?
+
+Or maybe we can handle it with frozen folio as Vlastimil suggested? ;-) 
+
+> diff --git a/mm/migrate.c b/mm/migrate.c
+> index 6a1597c92261..a65598308c83 100644
+> --- a/mm/migrate.c
+> +++ b/mm/migrate.c
+> @@ -59,6 +59,7 @@
+>  
+>  int isolate_movable_page(struct page *page, isolate_mode_t mode)
+>  {
+> +	struct folio *folio = page_folio(page);
+>  	const struct movable_operations *mops;
+>  
+>  	/*
+> @@ -70,16 +71,23 @@ int isolate_movable_page(struct page *page, isolate_mode_t mode)
+>  	 * the put_page() at the end of this block will take care of
+>  	 * release this page, thus avoiding a nasty leakage.
+>  	 */
+> -	if (unlikely(!get_page_unless_zero(page)))
+> +	if (unlikely(!folio_try_get(folio)))
+>  		goto out;
+>  
+> +	/* Recheck the page is still part of the folio we just got */
+> +	if (unlikely(page_folio(page) != folio))
+> +		goto out_put;
+> +
+>  	/*
+> -	 * Check PageMovable before holding a PG_lock because page's owner
+> -	 * assumes anybody doesn't touch PG_lock of newly allocated page
+> -	 * so unconditionally grabbing the lock ruins page's owner side.
+> +	 * Check movable flag before taking the folio lock because
+> +	 * we use non-atomic bitops on newly allocated page flags so
+> +	 * unconditionally grabbing the lock ruins page's owner side.
+>  	 */
+> -	if (unlikely(!__PageMovable(page)))
+> -		goto out_putpage;
+> +	if (unlikely(!__folio_test_movable(folio)))
+> +		goto out_put;
+> +	if (unlikely(folio_test_slab(folio)))
+> +		goto out_put;
+> +
+>  	/*
+>  	 * As movable pages are not isolated from LRU lists, concurrent
+>  	 * compaction threads can race against page migration functions
+> @@ -91,8 +99,8 @@ int isolate_movable_page(struct page *page, isolate_mode_t mode)
+>  	 * lets be sure we have the page lock
+>  	 * before proceeding with the movable page isolation steps.
+>  	 */
+> -	if (unlikely(!trylock_page(page)))
+> -		goto out_putpage;
+> +	if (unlikely(!folio_trylock(folio)))
+> +		goto out_put;
+
+I don't know much about callers that this is trying to avoid race aginst...
+
+But for this to make sense, I think *every users* that doing their stuff with
+sub-page of a compound page should acquire folio lock and not page lock
+of sub-page, right?
+
+
+>  	if (!PageMovable(page) || PageIsolated(page))
+>  		goto out_no_isolated;
+> @@ -106,14 +114,14 @@ int isolate_movable_page(struct page *page, isolate_mode_t mode)
+>  	/* Driver shouldn't use PG_isolated bit of page->flags */
+>  	WARN_ON_ONCE(PageIsolated(page));
+>  	SetPageIsolated(page);
+> -	unlock_page(page);
+> +	folio_unlock(folio);
+>  
+>  	return 0;
+>  
+>  out_no_isolated:
+> -	unlock_page(page);
+> -out_putpage:
+> -	put_page(page);
+> +	folio_unlock(folio);
+> +out_put:
+> +	folio_put(folio);
+>  out:
+>  	return -EBUSY;
+>  }
+
+-- 
+Thanks,
+Hyeonggon
