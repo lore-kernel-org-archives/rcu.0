@@ -2,85 +2,75 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AF5A3C433F5
-	for <rcu@archiver.kernel.org>; Tue,  4 Oct 2022 11:41:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 643ECC433FE
+	for <rcu@archiver.kernel.org>; Tue,  4 Oct 2022 13:30:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229945AbiJDLlq (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 4 Oct 2022 07:41:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49948 "EHLO
+        id S229706AbiJDNaJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 4 Oct 2022 09:30:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229933AbiJDLlp (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 4 Oct 2022 07:41:45 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D8C74E60A;
-        Tue,  4 Oct 2022 04:41:43 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id bp15so7244179lfb.13;
-        Tue, 04 Oct 2022 04:41:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date;
-        bh=w6aHeemfKJ2dWcTzYlwuaWCnO1Xf4PrC8flGzPMZQ1M=;
-        b=NbJYQKJTpScov9Li3/wLZxcfyjdtxdMmZYmv9rmuj4nq4DoP3pPLGgfpHCvF9thEB/
-         xd/jAB8eDpeYWAorhJA0uYQTrJRfHm2zJntLV0+G4AV7GO9fIFdpVWBDOm7l8rzjnEYc
-         0qomOBRSkwqvBUVzogvuwb4XbHRXTI9u21RZlPOs+UUsQf0utgPjiAuBIs08IWohrraq
-         +mfN5IuOKD6fjgYPtK6It0kWWbjxsToYXeGdChRQFqVsB96FxlNmHNfk6ArQHyU5aXfs
-         2CWuhsnGN3EjRLP1399Mkqqze+w49UjIauB+AxBUYmhhGhr8Ab6uCVzJJi+ra0JNupYZ
-         P2pw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date;
-        bh=w6aHeemfKJ2dWcTzYlwuaWCnO1Xf4PrC8flGzPMZQ1M=;
-        b=Pm/U++DwIXMEn4rTwc0VkJTNmv+1Hl0f4dWokzLvIaLkOP52Xc/nI5NwV9iU/rIwbh
-         DID7kBIsj9hAyABQpMYPskbXVS+NbQtUAMFRHI7yZV/bCzweLI7QO1qo7IpA3rbC47OW
-         ULrCTYit+zxTDIBp4bC53WIhXhl3oxAAV15DfKbth8b4WX+SWXr1nuIFzyGD+mrm9Ejf
-         HmXPykmXD1qoyru4vzXr0OcyfgHL808QP6xAcxem1r0LRMEm/sXCvIPh63wnEYse/wel
-         Abre9gMp1XCjhLvW1nECob+ggckRhjGlTV2HeGT9uwguRtTS5s4qlTMDBZ0Ikj7fdhJf
-         Prfg==
-X-Gm-Message-State: ACrzQf29GCi5omGLxxOQqzlRMSyuj6znbLnt1/p3ijJmbxXvFwFF81dR
-        288XqS1f3Kny1iKE3iVHcnw=
-X-Google-Smtp-Source: AMsMyM7Vd22SsoCN43V1pttf2L8dkOi5cIiC7r4XGhGCc7WTovFNjcSMK8FQvvQFobbD5HZgvZih6g==
-X-Received: by 2002:a05:6512:6ce:b0:4a2:530a:33d0 with SMTP id u14-20020a05651206ce00b004a2530a33d0mr1027041lff.270.1664883701735;
-        Tue, 04 Oct 2022 04:41:41 -0700 (PDT)
-Received: from pc636 (host-90-235-28-118.mobileonline.telia.com. [90.235.28.118])
-        by smtp.gmail.com with ESMTPSA id v2-20020ac25922000000b004949f7cbb6esm1882073lfi.79.2022.10.04.04.41.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Oct 2022 04:41:41 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Tue, 4 Oct 2022 13:41:38 +0200
-To:     paulmck@kernel.org,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rushikesh.s.kadam@intel.com, urezki@gmail.com,
-        neeraj.iitr10@gmail.com, frederic@kernel.org, paulmck@kernel.org,
-        rostedt@goodmis.org, youssefesmat@google.com, surenb@google.com
+        with ESMTP id S229578AbiJDNaI (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 4 Oct 2022 09:30:08 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EFFE14D34;
+        Tue,  4 Oct 2022 06:30:07 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 227D0B81A64;
+        Tue,  4 Oct 2022 13:30:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B48B3C433D6;
+        Tue,  4 Oct 2022 13:30:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1664890204;
+        bh=pmD/76THUjmjMv87RaAXR785Z/FUTUEMriT7r4Exd14=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=cg8UakfENBD85c56ET5JLM7T690PtRla3/xj64+A8wTGb7FAgV0fs3Z7pgEFdZPnc
+         M3aK4ideDxGBpM/K7vlwQUHZNv8DxZHDiB5m+tnpdg/tG+2tTmQS8pDGjKpvwAT3r8
+         /Mpzifb+kplZB2wVw3xc6xqx7j7b9r+PTP9K1QNUMjW2JJMkBgdY5db1uMafH6s3Ih
+         iQTBm4+3zB+VAcdCc4Er9yeYH+ro5tfGopw/fn6QQEeLjP0hY1ma158sOUvlcYIdxc
+         rhVGGv8gwAejiQnUO1DuWIJWtuZkgSG/JPcaVYJxSPFz/9lrBdrrnsg30ONRhulqWF
+         TpS+oGRGXxbAA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 5BA1F5C0641; Tue,  4 Oct 2022 06:30:04 -0700 (PDT)
+Date:   Tue, 4 Oct 2022 06:30:04 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rushikesh.s.kadam@intel.com, neeraj.iitr10@gmail.com,
+        frederic@kernel.org, rostedt@goodmis.org, youssefesmat@google.com,
+        surenb@google.com
 Subject: Re: [PATCH v7 02/11] rcu: Make call_rcu() lazy to save power
-Message-ID: <Yzwb8vgYhAvDJzK+@pc636>
+Message-ID: <20221004133004.GD4196@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 References: <20221004024157.2470238-1-joel@joelfernandes.org>
  <20221004024157.2470238-3-joel@joelfernandes.org>
+ <Yzwb8vgYhAvDJzK+@pc636>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221004024157.2470238-3-joel@joelfernandes.org>
+In-Reply-To: <Yzwb8vgYhAvDJzK+@pc636>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
->  		trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("Check"));
->  		rcu_nocb_lock_irqsave(rdp, flags);
->  		lockdep_assert_held(&rdp->nocb_lock);
->  		bypass_ncbs = rcu_cblist_n_cbs(&rdp->nocb_bypass);
-> -		if (bypass_ncbs &&
-> +		lazy_ncbs = READ_ONCE(rdp->lazy_len);
-> +
-> +		if (bypass_ncbs && (lazy_ncbs == bypass_ncbs) &&
-> +		    (time_after(j, READ_ONCE(rdp->nocb_bypass_first) + jiffies_till_flush) ||
-> +		     bypass_ncbs > 2 * qhimark)) {
-Do you know why we want double "qhimark" threshold? It is not only this
-place, there are several. I am asking because it is not expected by the
-user.
+On Tue, Oct 04, 2022 at 01:41:38PM +0200, Uladzislau Rezki wrote:
+> >  		trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("Check"));
+> >  		rcu_nocb_lock_irqsave(rdp, flags);
+> >  		lockdep_assert_held(&rdp->nocb_lock);
+> >  		bypass_ncbs = rcu_cblist_n_cbs(&rdp->nocb_bypass);
+> > -		if (bypass_ncbs &&
+> > +		lazy_ncbs = READ_ONCE(rdp->lazy_len);
+> > +
+> > +		if (bypass_ncbs && (lazy_ncbs == bypass_ncbs) &&
+> > +		    (time_after(j, READ_ONCE(rdp->nocb_bypass_first) + jiffies_till_flush) ||
+> > +		     bypass_ncbs > 2 * qhimark)) {
+> Do you know why we want double "qhimark" threshold? It is not only this
+> place, there are several. I am asking because it is not expected by the
+> user.
 
---
-Uladzsislau Rezki
+OK, I will bite...  What does the user expect?  Or, perhaps a better
+question, how is this choice causing the user problems?
+
+							Thanx, Paul
