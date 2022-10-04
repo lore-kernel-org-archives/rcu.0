@@ -2,138 +2,96 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D835C4332F
-	for <rcu@archiver.kernel.org>; Tue,  4 Oct 2022 16:22:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 79CE2C433FE
+	for <rcu@archiver.kernel.org>; Tue,  4 Oct 2022 18:05:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229538AbiJDQWh (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 4 Oct 2022 12:22:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55048 "EHLO
+        id S229777AbiJDSFW (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 4 Oct 2022 14:05:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230116AbiJDQWP (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 4 Oct 2022 12:22:15 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3148265573
-        for <rcu@vger.kernel.org>; Tue,  4 Oct 2022 09:22:11 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id d17so8638981qko.13
-        for <rcu@vger.kernel.org>; Tue, 04 Oct 2022 09:22:11 -0700 (PDT)
+        with ESMTP id S229876AbiJDSFT (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 4 Oct 2022 14:05:19 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D51B38A04
+        for <rcu@vger.kernel.org>; Tue,  4 Oct 2022 11:05:12 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id o13so2537335ilc.7
+        for <rcu@vger.kernel.org>; Tue, 04 Oct 2022 11:05:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date;
-        bh=JZ3iUDHSbQXvPSxh5byaUtyxn9JuSZxfLjzTGQtDdiI=;
-        b=i9R1Ftpg4EB3iaDhSe4JE0wNr+N0VO/s0tEkp9MD9mPWT8JlfQJNtSJNoWkM9j6dNa
-         7xITECxQb6zYNVgAWwobDDZNOcwiE8KIAJq236+XHPfUMJHrksId3IWM7WsBszWZDKzO
-         njhPuYo8/mtRorpBuQwPZ20upuHZf7DQCJFcM=
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=sLLzbroKqpxLu0HQF1QulfhBmT3Qy5q0rRY0h0xXoW8=;
+        b=QDTMRLES+3c9wfPuGJ1UDQsP5WFZWafybw40aij4Uchx9/VI8x77Kd6QQGUp4rZDOO
+         3/3fX6+wZKuZrNtHh0ltXVCGpNk0UOYFcEz6UpMSSfhSkpR6ekbN+UBF1OA4kd7YVlW1
+         cE7G13glkKpDJUHPZKXiZJs8gOv0PhBxlcVg8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date;
-        bh=JZ3iUDHSbQXvPSxh5byaUtyxn9JuSZxfLjzTGQtDdiI=;
-        b=M/S6P5hs6UYnLrHS6/52L7b00Vz2B6Urg20n2yCZRnhZMC5NXpmAKINXSJ0pwfMHdS
-         sDK/xpwAbkZJyhPj2WLZDA/fKoamK9LDabahGzHssfT+zVDqhdq1RugxuZxAo9EawTHQ
-         w3zzRtHXuaxWaAhIcv2C2pk9wQoclxRF01wG2LtoM97NxZbAbyaJgtu0y602XGPLoZrU
-         iXvnWaR/LDnldAAD7otRAWA98hwDGrW8EE7uL0cwkAjuqtnHjiir7kl4Im9TN8BLHhlu
-         MbWs7dStqN3GH1sbdE2pXFwXpNVvr7d07tKYZNfmGSGT3snLMsOGF7CMJ7Tm2zohKYj7
-         jFkA==
-X-Gm-Message-State: ACrzQf2IM6vd5mHRvxisJR+9Dc9dqzZ8kmZLJfPLCvEc+StkRxlxpjD5
-        sjF5kiVS+bE0IEmbvfmRfMJ8Aw==
-X-Google-Smtp-Source: AMsMyM7J0hCHyR7qRUBm60QBLfdElNHebAIUKMkTx/+3jeJ8IX0WKoS6RhHoMoF0zxyfFDoo3GEFkg==
-X-Received: by 2002:a05:620a:3706:b0:6e1:dc2d:4e86 with SMTP id de6-20020a05620a370600b006e1dc2d4e86mr129443qkb.428.1664900530016;
-        Tue, 04 Oct 2022 09:22:10 -0700 (PDT)
-Received: from [10.0.0.40] (c-73-148-104-166.hsd1.va.comcast.net. [73.148.104.166])
-        by smtp.gmail.com with ESMTPSA id u5-20020a05620a454500b006bb87c4833asm15109434qkp.109.2022.10.04.09.22.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 04 Oct 2022 09:22:09 -0700 (PDT)
-Message-ID: <39cb5352-4b8d-7ca8-4414-6fbb27bab806@joelfernandes.org>
-Date:   Tue, 4 Oct 2022 12:22:08 -0400
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=sLLzbroKqpxLu0HQF1QulfhBmT3Qy5q0rRY0h0xXoW8=;
+        b=7yTxQrnnauNfV1yegpUJc2K280KvGBnDmAXEHpeHVyDgWrziEQN8HEzUdx+jesEnvc
+         ovHkAILX94lcoFT1eXti5YnEvbA5vRRNJnoMM+i/09gq/wZSGOvcPlsA7qwXBnGNr5nW
+         /xjEMlIZwc8HOzQrvBudc7sMz0TlQndX6lOv2NvfWk3h+yKAmUK6dGJh0gQJwYKIoZpI
+         G2O0PydmzMHvUulzATPO1vgu0uQyIywNCaqsZoQGaMpaBA9J9lo/LLbJaGQBki5fCgUf
+         b4zXxXz/qIqIFEGUlLacPiruSsgmYGiRv83gE/LWUIfYMh/pQEF9C4VhlbqltlE0UNZr
+         p3wg==
+X-Gm-Message-State: ACrzQf2qc6LmxJQAbZyW9TvugdkZHRTv/HXCO93I6vN4MoB4vGSi4/aI
+        GBI/M9JxVkXHGJxJBVWYZw7UAdU6/Eqq0Cb4LdOqkg==
+X-Google-Smtp-Source: AMsMyM7YKsigDeRdaCpRPiK9JEbG1nQ9TQCAOsAfj0pv6RhDXc9ZX8BR78UCcu98nemAHx9h6sIHVySYcDk0L3U2/yM=
+X-Received: by 2002:a05:6e02:2191:b0:2f5:aade:9ea0 with SMTP id
+ j17-20020a056e02219100b002f5aade9ea0mr12907928ila.79.1664906711403; Tue, 04
+ Oct 2022 11:05:11 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.0
-Subject: Re: [PATCH v7 02/11] rcu: Make call_rcu() lazy to save power
-Content-Language: en-US
-To:     Uladzislau Rezki <urezki@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rushikesh.s.kadam@intel.com, neeraj.iitr10@gmail.com,
-        frederic@kernel.org, rostedt@goodmis.org, youssefesmat@google.com,
-        surenb@google.com
 References: <20221004024157.2470238-1-joel@joelfernandes.org>
  <20221004024157.2470238-3-joel@joelfernandes.org> <Yzwb8vgYhAvDJzK+@pc636>
- <20221004133004.GD4196@paulmck-ThinkPad-P17-Gen-1> <YzxI1frUjDnB6MOP@pc636>
+In-Reply-To: <Yzwb8vgYhAvDJzK+@pc636>
 From:   Joel Fernandes <joel@joelfernandes.org>
-In-Reply-To: <YzxI1frUjDnB6MOP@pc636>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Date:   Tue, 4 Oct 2022 14:05:01 -0400
+Message-ID: <CAEXW_YScPPbZeCzidU8bwSKKm=pJjEwxNHnFK-XYfnzqSK7ShA@mail.gmail.com>
+Subject: Re: [PATCH v7 02/11] rcu: Make call_rcu() lazy to save power
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     paulmck@kernel.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rushikesh.s.kadam@intel.com,
+        neeraj.iitr10@gmail.com, frederic@kernel.org, rostedt@goodmis.org,
+        youssefesmat@google.com, surenb@google.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Tue, Oct 4, 2022 at 7:41 AM Uladzislau Rezki <urezki@gmail.com> wrote:
+>
+> >               trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("Check"));
+> >               rcu_nocb_lock_irqsave(rdp, flags);
+> >               lockdep_assert_held(&rdp->nocb_lock);
+> >               bypass_ncbs = rcu_cblist_n_cbs(&rdp->nocb_bypass);
+> > -             if (bypass_ncbs &&
+> > +             lazy_ncbs = READ_ONCE(rdp->lazy_len);
+> > +
+> > +             if (bypass_ncbs && (lazy_ncbs == bypass_ncbs) &&
+> > +                 (time_after(j, READ_ONCE(rdp->nocb_bypass_first) + jiffies_till_flush) ||
+> > +                  bypass_ncbs > 2 * qhimark)) {
+> Do you know why we want double "qhimark" threshold? It is not only this
+> place, there are several. I am asking because it is not expected by the
+> user.
 
+I am following the qhimark conventions in existing code. However
+qhimark does not mean that your callbacks cannot exceed these many or
+something, it is not a hard limit on queued callbacks.
 
-On 10/4/2022 10:53 AM, Uladzislau Rezki wrote:
-> On Tue, Oct 04, 2022 at 06:30:04AM -0700, Paul E. McKenney wrote:
->> On Tue, Oct 04, 2022 at 01:41:38PM +0200, Uladzislau Rezki wrote:
->>>>  		trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("Check"));
->>>>  		rcu_nocb_lock_irqsave(rdp, flags);
->>>>  		lockdep_assert_held(&rdp->nocb_lock);
->>>>  		bypass_ncbs = rcu_cblist_n_cbs(&rdp->nocb_bypass);
->>>> -		if (bypass_ncbs &&
->>>> +		lazy_ncbs = READ_ONCE(rdp->lazy_len);
->>>> +
->>>> +		if (bypass_ncbs && (lazy_ncbs == bypass_ncbs) &&
->>>> +		    (time_after(j, READ_ONCE(rdp->nocb_bypass_first) + jiffies_till_flush) ||
->>>> +		     bypass_ncbs > 2 * qhimark)) {
->>> Do you know why we want double "qhimark" threshold? It is not only this
->>> place, there are several. I am asking because it is not expected by the
->>> user.
->>
->> OK, I will bite...  What does the user expect?  Or, perhaps a better
->> question, how is this choice causing the user problems?
->>
-> Yesterday when i was checking the lazy-v6 on Android i noticed the following:
-> 
-> <snip>
-> ...
->      rcuop/4-48      [006] d..1   184.780328: rcu_batch_start: rcu_preempt CBs=15572 bl=121
->      rcuop/6-62      [000] d..1   184.796939: rcu_batch_start: rcu_preempt CBs=21503 bl=167
->      rcuop/6-62      [003] d..1   184.800706: rcu_batch_start: rcu_preempt CBs=24677 bl=192
->      rcuop/6-62      [005] d..1   184.803773: rcu_batch_start: rcu_preempt CBs=27117 bl=211
->      rcuop/6-62      [005] d..1   184.805732: rcu_batch_start: rcu_preempt CBs=22391 bl=174
->      rcuop/6-62      [005] d..1   184.809083: rcu_batch_start: rcu_preempt CBs=12554 bl=98
->      rcuop/6-62      [005] d..1   184.824228: rcu_batch_start: rcu_preempt CBs=16177 bl=126
->      rcuop/4-48      [006] d..1   184.836193: rcu_batch_start: rcu_preempt CBs=24129 bl=188
->      rcuop/4-48      [006] d..1   184.844147: rcu_batch_start: rcu_preempt CBs=25854 bl=201
->      rcuop/4-48      [006] d..1   184.847257: rcu_batch_start: rcu_preempt CBs=21328 bl=166
->      rcuop/4-48      [006] d..1   184.852128: rcu_batch_start: rcu_preempt CBs=21710 bl=169
+qhimark (And Paul can correct me) was introduced to reduce the number
+of callbacks after which RCU will not limit execution of callbacks to
+a batch of them. That has nothing to do with limiting the maximum
+number of callbacks, per-se. However, its usage certainly seems to
+have grown since that introduction.
 
-This looks normal to me and working as intended, due to the first flush after
-hitting the limit, future callbacks will not be considered lazy until the
-existing ones are drained out of the queue. It is possible the additional
-callbacks showed up before the whole queue was drained. Then add any scheduling
-delays to the rcuop thread etc etc.
+Maybe you are confusing it with blimit:
+
+#define DEFAULT_RCU_QHIMARK 10000 // If this many pending, ignore blimit.
+static long qhimark = DEFAULT_RCU_QHIMARK;
+#define DEFAULT_RCU_QLOMARK 100   // Once only this many pending, use blimit.
+static long qlowmark = DEFAULT_RCU_QLOMARK;
 
 thanks,
 
  - Joel
-
-
-
-> ...
-> <snip>
-> 
-> On my device the "qhimark" is set to:
-> 
-> <snip>
-> XQ-CT54:/sys/module/rcutree/parameters # cat qhimark
-> 10000
-> XQ-CT54:/sys/module/rcutree/parameters #
-> <snip>
-> 
-> so i expect that once we pass 10 000 callbacks threshold the flush 
-> should occur. This parameter gives us an opportunity to control a
-> memory that should be reclaimed sooner or later.
-> 
-> --
-> Uladzislau Rezki
