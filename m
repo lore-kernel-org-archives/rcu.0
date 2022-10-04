@@ -2,195 +2,138 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D63C6C433FE
-	for <rcu@archiver.kernel.org>; Mon,  3 Oct 2022 19:49:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8131CC433FE
+	for <rcu@archiver.kernel.org>; Tue,  4 Oct 2022 02:42:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229699AbiJCTtP (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 3 Oct 2022 15:49:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46466 "EHLO
+        id S229761AbiJDCmW (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 3 Oct 2022 22:42:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229620AbiJCTtN (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 3 Oct 2022 15:49:13 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91D0949B4F;
-        Mon,  3 Oct 2022 12:49:12 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 2764EB81243;
-        Mon,  3 Oct 2022 19:49:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC845C433D7;
-        Mon,  3 Oct 2022 19:49:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1664826549;
-        bh=8RMELpb1gRywIzrfwPRBZ65ezuHZV4slRqNYPKkQ844=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=ic5mtAxpR0r6xaiY5Glh/9q8Okbyt2bQxrEQJcGnH/5g36mPXw9RnV5SLrcdCBcCc
-         xIrbOlfB18AEYuLKWDaRl2t74zbZrbUVR3JINPipQR2VrYxn/6lKwYjPc/r7Ad1Ufn
-         M1sWc2dvK50MbZes4kValr/dtkII/CrimqUkd68I6ogPLi9ChIw9pY6gffac0PLGZG
-         cxxHemwOfMHHEmcJ191GQICW+O6CCjZJsFoGz6rZLKG3J1urkLRwivkqVBakkEOW9c
-         x5WwrQPd8+5MCvx/AgvpFJcLfULE8zeiMY0uG4UxpVluQhQ5n4LgD6zjSVxf9owC5H
-         L1SKVb0IQnBdA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 637E75C089F; Mon,  3 Oct 2022 12:49:09 -0700 (PDT)
-Date:   Mon, 3 Oct 2022 12:49:09 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rushikesh.s.kadam@intel.com, urezki@gmail.com,
-        neeraj.iitr10@gmail.com, frederic@kernel.org, rostedt@goodmis.org
-Subject: Re: [PATCH v6 1/4] rcu: Make call_rcu() lazy to save power
-Message-ID: <20221003194909.GC4196@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220926223751.GZ4196@paulmck-ThinkPad-P17-Gen-1>
- <A78761F4-5922-418A-AFA3-01101C399778@joelfernandes.org>
- <20220926235351.GC4196@paulmck-ThinkPad-P17-Gen-1>
- <Yzs5BC4SSM1A3BTO@google.com>
+        with ESMTP id S229616AbiJDCmV (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 3 Oct 2022 22:42:21 -0400
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A063A2228F
+        for <rcu@vger.kernel.org>; Mon,  3 Oct 2022 19:42:20 -0700 (PDT)
+Received: by mail-qv1-xf29.google.com with SMTP id z18so7830831qvn.6
+        for <rcu@vger.kernel.org>; Mon, 03 Oct 2022 19:42:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date;
+        bh=1Ydh1sTYTB+G4p1TUCm5A0LuEGnTBDPLiVoWccVO8tQ=;
+        b=O6tSjWAnQfyu9jCSUUxAPTRTMJsmk8N8kkQ5yOa4FxOw+7r7YAtQdpfc/cGcrH6Usm
+         JgCK86czKV1GYO0U2GKkgDQxODv4SeGqMMEas5HkH4570qKkMNmAbAQsKMUwhx6ZzDJ7
+         M2/ecRDGMhmCghmjn/sjiWfQBtb1KacRAW4w0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date;
+        bh=1Ydh1sTYTB+G4p1TUCm5A0LuEGnTBDPLiVoWccVO8tQ=;
+        b=jr4RfLiLpuh0tHAp/5VBZJi/Kv/Dh86CUhzAxJnrLQQI++9iaWV9BNaKJElcW7mSSu
+         bjLE3jy1rz9AdAe5x4z/0lx03OqyW5l86IXZq1u8KIKjL0h2xjdzaChuZTm8LTzn0dDa
+         vw7a4lGsLN6sXYopwQ8KvBsVHxyv9Ks+ZSY8wmSZ8Ss+3QxG37IpGTk3i1Ky7xZA35pJ
+         lAyuu5BUdkeuhcBUyNUYNiKX9/vntXGKCVfnxUYa1ChmugPpM8OTy+/7EVBD2WAdO3mo
+         +WxacNcaGLeuHrkpH5r7CdZ76+at5WD2A/KPYRSllRjY70KE3jBH1Y0tvdG3iAlImNpR
+         CiHQ==
+X-Gm-Message-State: ACrzQf3PNerrjsvHxKJSIcSAWorXcN+/uwgX7rWKhGZ0IdljJeK4NmEw
+        jDGWAADqPNCOB/AWILr8p5JOQV0hNbyRKw==
+X-Google-Smtp-Source: AMsMyM46KgEOkbrj/gRFJr3t+N8w+Q5zHpPQJ384OMIMzINV/29fKgbdy6CP5WNhoCykiS8ms651JQ==
+X-Received: by 2002:a05:6214:21ab:b0:4ad:6fe6:be7b with SMTP id t11-20020a05621421ab00b004ad6fe6be7bmr18343392qvc.5.1664851339614;
+        Mon, 03 Oct 2022 19:42:19 -0700 (PDT)
+Received: from joelboxx.c.googlers.com.com (228.221.150.34.bc.googleusercontent.com. [34.150.221.228])
+        by smtp.gmail.com with ESMTPSA id 1-20020ac85901000000b0035cf5edefa6sm11793875qty.56.2022.10.03.19.42.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 Oct 2022 19:42:19 -0700 (PDT)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, rushikesh.s.kadam@intel.com,
+        urezki@gmail.com, neeraj.iitr10@gmail.com, frederic@kernel.org,
+        paulmck@kernel.org, rostedt@goodmis.org, youssefesmat@google.com,
+        surenb@google.com,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Subject: [PATCH v7 00/11] rcu: call_rcu() power improvements
+Date:   Tue,  4 Oct 2022 02:41:46 +0000
+Message-Id: <20221004024157.2470238-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.38.0.rc1.362.ged0d419d3c-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <Yzs5BC4SSM1A3BTO@google.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Oct 03, 2022 at 07:33:24PM +0000, Joel Fernandes wrote:
-> On Mon, Sep 26, 2022 at 04:53:51PM -0700, Paul E. McKenney wrote:
-> > On Mon, Sep 26, 2022 at 07:33:17PM -0400, Joel Fernandes wrote:
-> > > 
-> > > 
-> > > > On Sep 26, 2022, at 6:37 PM, Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > > 
-> > > > ﻿On Mon, Sep 26, 2022 at 09:07:12PM +0000, Joel Fernandes wrote:
-> > > >> Hi Paul,
-> > > >> 
-> > > >> On Mon, Sep 26, 2022 at 10:42:40AM -0700, Paul E. McKenney wrote:
-> > > >> [..]
-> > > >>>>>>>> +        WRITE_ONCE(rdp->lazy_len, 0);
-> > > >>>>>>>> +    } else {
-> > > >>>>>>>> +        rcu_cblist_flush_enqueue(&rcl, &rdp->nocb_bypass, rhp);
-> > > >>>>>>>> +        WRITE_ONCE(rdp->lazy_len, 0);
-> > > >>>>>>> 
-> > > >>>>>>> This WRITE_ONCE() can be dropped out of the "if" statement, correct?
-> > > >>>>>> 
-> > > >>>>>> Yes will update.
-> > > >>>>> 
-> > > >>>>> Thank you!
-> > > >>>>> 
-> > > >>>>>>> If so, this could be an "if" statement with two statements in its "then"
-> > > >>>>>>> clause, no "else" clause, and two statements following the "if" statement.
-> > > >>>>>> 
-> > > >>>>>> I don’t think we can get rid of the else part but I’ll see what it looks like.
-> > > >>>>> 
-> > > >>>>> In the function header, s/rhp/rhp_in/, then:
-> > > >>>>> 
-> > > >>>>>    struct rcu_head *rhp = rhp_in;
-> > > >>>>> 
-> > > >>>>> And then:
-> > > >>>>> 
-> > > >>>>>    if (lazy && rhp) {
-> > > >>>>>        rcu_cblist_enqueue(&rdp->nocb_bypass, rhp);
-> > > >>>>>        rhp = NULL;
-> > > >>>> 
-> > > >>>> This enqueues on to the bypass list, where as if lazy && rhp, I want to queue
-> > > >>>> the new rhp on to the main cblist. So the pseudo code in my patch is:
-> > > >>>> 
-> > > >>>> if (lazy and rhp) then
-> > > >>>>    1. flush bypass CBs on to main list.
-> > > >>>>    2. queue new CB on to main list.
-> > > >>> 
-> > > >>> And the difference is here, correct?  I enqueue to the bypass list,
-> > > >>> which is then flushed (in order) to the main list.  In contrast, you
-> > > >>> flush the bypass list, then enqueue to the main list.  Either way,
-> > > >>> the callback referenced by rhp ends up at the end of ->cblist.
-> > > >>> 
-> > > >>> Or am I on the wrong branch of this "if" statement?
-> > > >> 
-> > > >> But we have to flush first, and then queue the new one. Otherwise wouldn't
-> > > >> the callbacks be invoked out of order? Or did I miss something?
-> > > > 
-> > > > I don't think so...
-> > > > 
-> > > > We want the new callback to be last, right?  One way to do that is to
-> > > > flush the bypass, then queue the new callback onto ->cblist.  Another way
-> > > > to do that is to enqueue the new callback onto the end of the bypass,
-> > > > then flush the bypass.  Why wouldn't these result in the same order?
-> > > 
-> > > Yes you are right, sorry. I was fixated on the main list. Both your snippet and my patch will be equivalent then. However I find your snippet a bit confusing, as in it is not immediately obvious - why would we queue something on to a list, if we were about to flush it. But any way, it does make it a clever piece of code in some sense and I am ok with doing it this way ;-)
-> > 
-> > As long as the ->cblist.len comes out with the right value.  ;-)
-> 
-> The ->cblist.len's value is not effected by your suggested change, because
-> the bypass list's length is already accounted into the ->cblist.len, and for
-> the new rhp, after rcu_nocb_do_flush_bypass() is called, it either ends up in
-> the bypass list (if it is !lazy) or on the main cblist (if its lazy). So
-> everything just works. Below is the change. If its OK with you though, I will
-> put it in a separate commit just to be extra safe, since the code before it
-> was well tested and I am still testing it.
+v7 version of RCU lazy patches based on rcu/next branch.
 
-Having this as a separate simplification commit is fine by me.
+To facilitate easier merge, I dropped tracing and other patches and just
+implemented the new changes. I will post the tracing patches later along with
+rcutop as I need to add new tracepoints that Frederic suggested.
 
-And thank you for digging into this!
+Main recent changes:
+1. rcu_barrier() wake up only for lazy bypass list.
+2. Make all call_rcu() default-lazy and add call_rcu_flush() API.
+3. Take care of some callers using call_rcu_flush() API.
+4. Several refactorings suggested by Paul/Frederic.
+5. New call_rcu() to call_rcu_flush() conversions by Joel/Vlad/Paul.
 
-								Thanx, Paul
+I am seeing good performance and power with these patches on real ChromeOS x86
+asymmetric hardware.
 
-> Thanks.
-> 
-> ---8<-----------------------
-> 
-> From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
-> Subject: [PATCH] rcu: Refactor code a bit in rcu_nocb_do_flush_bypass()
-> 
-> This consolidates the code a bit and makes it cleaner. Functionally it
-> is the same.
-> 
-> Reported-by: Paul E. McKenney <paulmck@kernel.org>
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> ---
->  kernel/rcu/tree_nocb.h | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-> index d69d058a78f9..1fc704d102a3 100644
-> --- a/kernel/rcu/tree_nocb.h
-> +++ b/kernel/rcu/tree_nocb.h
-> @@ -327,10 +327,11 @@ static void wake_nocb_gp_defer(struct rcu_data *rdp, int waketype,
->   *
->   * Note that this function always returns true if rhp is NULL.
->   */
-> -static bool rcu_nocb_do_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
-> +static bool rcu_nocb_do_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp_in,
->  				     unsigned long j, unsigned long flush_flags)
->  {
->  	struct rcu_cblist rcl;
-> +	struct rcu_head *rhp = rhp_in;
->  	bool lazy = flush_flags & FLUSH_BP_LAZY;
->  
->  	WARN_ON_ONCE(!rcu_rdp_is_offloaded(rdp));
-> @@ -347,16 +348,15 @@ static bool rcu_nocb_do_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
->  	/*
->  	 * If the new CB requested was a lazy one, queue it onto the main
->  	 * ->cblist so that we can take advantage of the grace-period that will
-> -	 * happen regardless.
-> +	 * happen regardless. But queue it onto the bypass list first so that
-> +	 * the lazy CB is ordered with the existing CBs in the bypass list.
->  	 */
->  	if (lazy && rhp) {
-> -		rcu_cblist_flush_enqueue(&rcl, &rdp->nocb_bypass, NULL);
-> -		rcu_cblist_enqueue(&rcl, rhp);
-> -		WRITE_ONCE(rdp->lazy_len, 0);
-> -	} else {
-> -		rcu_cblist_flush_enqueue(&rcl, &rdp->nocb_bypass, rhp);
-> -		WRITE_ONCE(rdp->lazy_len, 0);
-> +		rcu_cblist_enqueue(&rdp->nocb_bypass, rhp);
-> +		rhp = NULL;
->  	}
-> +	rcu_cblist_flush_enqueue(&rcl, &rdp->nocb_bypass, rhp);
-> +	WRITE_ONCE(rdp->lazy_len, 0);
->  
->  	rcu_segcblist_insert_pend_cbs(&rdp->cblist, &rcl);
->  	WRITE_ONCE(rdp->nocb_bypass_first, j);
-> -- 
-> 2.38.0.rc1.362.ged0d419d3c-goog
-> 
+Earlier cover letter with lots of details is here:
+https://lore.kernel.org/all/20220901221720.1105021-1-joel@joelfernandes.org/
+
+List of recent changes:
+    
+    [ Frederic Weisbec: Program the lazy timer only if WAKE_NOT, since other
+      deferral levels wake much earlier so for those it is not needed. ]
+    
+    [ Frederic Weisbec: Use flush flags to keep bypass API code clean. ]
+    
+    [ Frederic Weisbec: Make rcu_barrier() wake up only if main list empty. ]
+    
+    [ Frederic Weisbec: Remove extra 'else if' branch in rcu_nocb_try_bypass(). ]
+    
+    [ Joel: Fix issue where I was not resetting lazy_len after moving it to rdp ]
+    
+    [ Paul/Thomas/Joel: Make call_rcu() default lazy so users don't mess up. ]
+    
+    [ Paul/Frederic : Cosmetic changes, split out wakeup of nocb thread. ]
+    
+    [ Vlad/Joel : More call_rcu -> flush conversions ]
+
+Frederic Weisbecker (1):
+rcu: Wake up nocb gp thread on rcu_barrier_entrain()
+
+Joel Fernandes (Google) (7):
+rcu: Make call_rcu() lazy to save power
+rcu: Refactor code a bit in rcu_nocb_do_flush_bypass()
+rcuscale: Add laziness and kfree tests
+percpu-refcount: Use call_rcu_flush() for atomic switch
+rcu/sync: Use call_rcu_flush() instead of call_rcu
+rcu/rcuscale: Use call_rcu_flush() for async reader test
+rcu/rcutorture: Use call_rcu_flush() where needed
+
+Uladzislau Rezki (2):
+scsi/scsi_error: Use call_rcu_flush() instead of call_rcu()
+workqueue: Make queue_rcu_work() use call_rcu_flush()
+
+Vineeth Pillai (1):
+rcu: shrinker for lazy rcu
+
+drivers/scsi/scsi_error.c |   2 +-
+include/linux/rcupdate.h  |   7 ++
+kernel/rcu/Kconfig        |   8 ++
+kernel/rcu/rcu.h          |   8 ++
+kernel/rcu/rcuscale.c     |  67 +++++++++++-
+kernel/rcu/rcutorture.c   |  16 +--
+kernel/rcu/sync.c         |   2 +-
+kernel/rcu/tiny.c         |   2 +-
+kernel/rcu/tree.c         | 140 +++++++++++++++++--------
+kernel/rcu/tree.h         |  12 ++-
+kernel/rcu/tree_exp.h     |   2 +-
+kernel/rcu/tree_nocb.h    | 213 ++++++++++++++++++++++++++++++++------
+kernel/workqueue.c        |   2 +-
+lib/percpu-refcount.c     |   3 +-
+14 files changed, 388 insertions(+), 96 deletions(-)
+
+--
+2.38.0.rc1.362.ged0d419d3c-goog
+
