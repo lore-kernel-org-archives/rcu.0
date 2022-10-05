@@ -2,117 +2,120 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C52CC433F5
-	for <rcu@archiver.kernel.org>; Wed,  5 Oct 2022 10:39:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 14B21C433F5
+	for <rcu@archiver.kernel.org>; Wed,  5 Oct 2022 11:07:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229582AbiJEKj1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 5 Oct 2022 06:39:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46040 "EHLO
+        id S229569AbiJELHb (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 5 Oct 2022 07:07:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbiJEKj0 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 5 Oct 2022 06:39:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCAC458DD7;
-        Wed,  5 Oct 2022 03:39:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D52CC61631;
-        Wed,  5 Oct 2022 10:39:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDA2DC4347C;
-        Wed,  5 Oct 2022 10:39:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1664966363;
-        bh=34r0VvrhY3RK5Xag76GfQPTcTj8nQrZw7LsztzDMZ5s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KmZE/Zzbw6CH4z4rbZtBj92r0jhmLY/7Dh5LJ8ZCj6cCPRbZcSrL8TbpImLuC/JFy
-         kcrEOwsN0bOvK12Rw9rpAHCW5THGP5ZGBI7qQk5NWWfo0wXX/LFS4SX6q5ek9dIRwO
-         PCGctggnIufOK5j6tKLbCx/3yeEgB8XoP6isLVgC8wlfRPJVcYK4R3XpoFC8AqAOP6
-         tnmZpkl49z35OLeRhOh9iB2xuH9n8lcCcRU/SXh3ZoXttc1eQxboGA6335vmtqzfoX
-         bK/0C0bujBbYZTAvA0Evbm0smczkS930T2Ph+kR8VXLIJpspfNrunu/9chTLhkVyrx
-         qEDvsqkXRei7Q==
-Date:   Wed, 5 Oct 2022 12:39:20 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rushikesh.s.kadam@intel.com, urezki@gmail.com,
-        neeraj.iitr10@gmail.com, paulmck@kernel.org, rostedt@goodmis.org,
-        youssefesmat@google.com, surenb@google.com
-Subject: Re: [PATCH v7 01/11] rcu: Wake up nocb gp thread on
- rcu_barrier_entrain()
-Message-ID: <20221005103920.GA326169@lothringen>
-References: <20221004024157.2470238-1-joel@joelfernandes.org>
- <20221004024157.2470238-2-joel@joelfernandes.org>
- <20221004222853.GA323878@lothringen>
- <c634e41e-3c6c-0896-0873-b9d1bb317cea@joelfernandes.org>
+        with ESMTP id S229598AbiJELHa (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 5 Oct 2022 07:07:30 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BB0266116;
+        Wed,  5 Oct 2022 04:07:30 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id bh13so14995860pgb.4;
+        Wed, 05 Oct 2022 04:07:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date;
+        bh=T6cNJN1BhNPosz4VSa6UZSLK0x7rvKXHqaLGbTtwrio=;
+        b=Xd6r4cBUTSnEVZYxm+xmIkHByx7mcvEIip0+xONd3YDwWnW+O/ghjxKjYrW9JIFAIW
+         wAlAPFGTMXDZtEhPUmMuWB2H+71JOfvoMCu0kEplxlSLPMD1lpfTfcScz3UqyGRJvQIa
+         /yoWMbBrIBWXOIl6WZRgfeiqyztiJebIIySbe6QB3ppFGkt5QJdtdlRkvH0Hh8ppKRuW
+         IqUXS79J0TuvmFJanubnGIWfKzjjPjkzA6dAKZdCe4T6AzBtEQjwskMqVTQlHTCnW7Jr
+         94MWUQeI1wJf6W/D8tBC/hwx4vb/NxsQ10rN+jw21Dk/zCM4cAl3cLzB6gEHofKw15f2
+         U9jQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
+        bh=T6cNJN1BhNPosz4VSa6UZSLK0x7rvKXHqaLGbTtwrio=;
+        b=k3A2Zye9DOf9ALJBxjPQ5M+3S5ORtxsvhOr8uWF4kQYMmBIiu9uJaCDW6quXb6j6Z/
+         3Et8TVvrnACrBq/txyN6Bm3fJrZKBYQNgcT2pcjKbEPhnHIQwu4FemookkMOkcCFVrlB
+         yatDgC/PaBxzQ6olyjyzfMCI8XmgK1SfsaMZ0vWlW3iQYbp1gH9Uhrg9ldnFVb0AY5e0
+         v9NOQWuN7X2TzyoBXwsMjdCVDOzrHn93sMpGnjst0x8UfiYmsSfnvl37aJdbdow5iyvQ
+         w+g9hL0dtVr3Z6q9mo88T4ADo+kOD7t25o/VQSDS59W1DOb8HdoxObjzl+o4xfYVIiPB
+         yuGA==
+X-Gm-Message-State: ACrzQf04C/+2lXLJRSUyXi3OBHbN4NbfiITMD/aajimoy12UNWwhg0N5
+        jJqq//jhJMS1jpEs80P2g6I3JkBPbuifVA==
+X-Google-Smtp-Source: AMsMyM4xABv0qGQveu5WBb1LJTFbve6/miMk7xY0HKOkzkNJHgum0LT8wCUu5302g9jha9XGUbAfOA==
+X-Received: by 2002:a63:c06:0:b0:439:9b18:8574 with SMTP id b6-20020a630c06000000b004399b188574mr27029784pgl.608.1664968049671;
+        Wed, 05 Oct 2022 04:07:29 -0700 (PDT)
+Received: from hyeyoo ([114.29.91.56])
+        by smtp.gmail.com with ESMTPSA id v5-20020a626105000000b00561852ff01bsm4872099pfb.61.2022.10.05.04.07.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Oct 2022 04:07:28 -0700 (PDT)
+Date:   Wed, 5 Oct 2022 20:07:23 +0900
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Hugh Dickins <hughd@google.com>, Vlastimil Babka <vbabka@suse.cz>,
+        David Laight <David.Laight@aculab.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Minchan Kim <minchan@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, rcu@vger.kernel.org
+Subject: Re: amusing SLUB compaction bug when CC_OPTIMIZE_FOR_SIZE
+Message-ID: <Yz1lawQXGHZBvuqe@hyeyoo>
+References: <YzPgTtFzpKEfwPbK@hyeyoo>
+ <YzRQvoVsnJzsauwb@google.com>
+ <35502bdd-1a78-dea1-6ac3-6ff1bcc073fa@suse.cz>
+ <ff905c1e-5eb3-eaf8-46de-38f189c0b7a5@google.com>
+ <de71b83a-c82c-4785-ef5a-3db4f17bbc8d@suse.cz>
+ <bcecece-f7ce-221d-1674-da3d5ab3fef@google.com>
+ <YzkmErHFyYW3awRn@hyeyoo>
+ <YzsVM8eToHUeTP75@casper.infradead.org>
+ <YzxCmR3dGJz45NVD@hyeyoo>
+ <YzxF5Bs/tgLDOB0T@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c634e41e-3c6c-0896-0873-b9d1bb317cea@joelfernandes.org>
+In-Reply-To: <YzxF5Bs/tgLDOB0T@casper.infradead.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Oct 04, 2022 at 06:57:59PM -0400, Joel Fernandes wrote:
-> >> needed after an entrain. Otherwise, the RCU barrier callback can wait in
-> >> the queue for several seconds before the lazy callbacks in front of it
-> >> are serviced.
+On Tue, Oct 04, 2022 at 03:40:36PM +0100, Matthew Wilcox wrote:
+> On Tue, Oct 04, 2022 at 11:26:33PM +0900, Hyeonggon Yoo wrote:
+> > > It's the acquisition of
+> > > the refcount which stabilises the slab flag, not holding the lock.
 > > 
-> > It's not about lazy callbacks here (but you can mention the fact that
-> > waking nocb_gp if necessary after flushing bypass is a beneficial side
-> > effect for further lazy implementation).
+> > But can you please elaborate how this prevents race between
+> > allocation & initialization of a slab and isolate_movable_page()?
 > > 
-> > So here is the possible bad scenario:
+> > Or maybe we can handle it with frozen folio as Vlastimil suggested? ;-) 
+> 
+> Yes, we discussed that a little yesterday.  I'm hoping to have a
+> refreshed patchset for frozen folios out today.  Some of this patch
+> is still needed, even if we go that route.
+
+Good to hear that.
+With that, everyting looks sane to me.
+ 
+> > > @@ -91,8 +99,8 @@ int isolate_movable_page(struct page *page, isolate_mode_t mode)
+> > >  	 * lets be sure we have the page lock
+> > >  	 * before proceeding with the movable page isolation steps.
+> > >  	 */
+> > > -	if (unlikely(!trylock_page(page)))
+> > > -		goto out_putpage;
+> > > +	if (unlikely(!folio_trylock(folio)))
+> > > +		goto out_put;
 > > 
-> > 1) CPU 0 is nocb, it queues a callback
-> > 2) CPU 0 goes idle (or userspace with nohz_full) forever
-> > 3) The grace period related to that callback elapses
-> > 4) The callback is moved to the done list (but is not invoked yet), there are no more pending for CPU 0
-> > 5) CPU 1 calls rcu_barrier() and entrains to CPU 0 cblist
-> 
-> CPU 1 can only entrain into CPU 0 if the CPU is offline:
-> 
-> 		if (!rcu_rdp_cpu_online(rdp)) {
-> 			rcu_barrier_entrain(rdp);
-> 			WARN_ON_ONCE(READ_ONCE(rdp->barrier_seq_snap) != gseq);
-> 			raw_spin_unlock_irqrestore(&rcu_state.barrier_lock,
-> 			...
-> 			continue;
-> 		}
-
-Ah good point. So CPU 1 sends an IPI to CPU 0 which entrains itself.
-And then looks like the result is the same.
-
-
-> 
-> Otherwise an IPI does the entraining. So I do not see how CPU 0 being idle
-> causes the cross-CPU entraining.
-
-It doesn't but it shows that the CPU isn't going to enqueue any further
-callback before a while. Though even if it did, it may not even solve the
-situation, not until an RCU_NOCB_WAKE_FORCE is issued...
-
-> 
-> > 6) CPU 1 waits forever
-> 
-> But, I agree it can still wait forever, once the IPI handler does the
-> entraining, since nothing will do the GP thread wakeup.
-> 
-> >>
-> >> Reported-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > I don't know much about callers that this is trying to avoid race aginst...
 > > 
-> > Fixes: 5d6742b37727 ("rcu/nocb: Use rcu_segcblist for no-CBs CPUs")
+> > But for this to make sense, I think *every users* that doing their stuff with
+> > sub-page of a compound page should acquire folio lock and not page lock
+> > of sub-page, right?
 > 
-> So, do you mind writing a proper patch with a proper commit message and Fixes
-> tag then? It can independent of this series and add my Reported-by tag,
-> thanks!
+> There is no page lock per se.  If you try to acquire the lock on a tail
+> page, it acquires the lock on its head page.  It's been that way for a
+> very long time.  A lot of people are confused by this, which was part of
+> the motivation for making it explicit with folios.
 
-Ok will do.
+You are right! Reading the code, too bad
+I even assumed that there was sub-page lock.
 
-Thanks!
-
-> 
-> Thanks!
-> 
->  - Joel
-> 
+-- 
+Thanks,
+Hyeonggon
