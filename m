@@ -2,120 +2,110 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 14B21C433F5
-	for <rcu@archiver.kernel.org>; Wed,  5 Oct 2022 11:07:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B860C433F5
+	for <rcu@archiver.kernel.org>; Wed,  5 Oct 2022 11:12:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229569AbiJELHb (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 5 Oct 2022 07:07:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59168 "EHLO
+        id S229735AbiJELMj (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 5 Oct 2022 07:12:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229598AbiJELHa (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 5 Oct 2022 07:07:30 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BB0266116;
-        Wed,  5 Oct 2022 04:07:30 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id bh13so14995860pgb.4;
-        Wed, 05 Oct 2022 04:07:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date;
-        bh=T6cNJN1BhNPosz4VSa6UZSLK0x7rvKXHqaLGbTtwrio=;
-        b=Xd6r4cBUTSnEVZYxm+xmIkHByx7mcvEIip0+xONd3YDwWnW+O/ghjxKjYrW9JIFAIW
-         wAlAPFGTMXDZtEhPUmMuWB2H+71JOfvoMCu0kEplxlSLPMD1lpfTfcScz3UqyGRJvQIa
-         /yoWMbBrIBWXOIl6WZRgfeiqyztiJebIIySbe6QB3ppFGkt5QJdtdlRkvH0Hh8ppKRuW
-         IqUXS79J0TuvmFJanubnGIWfKzjjPjkzA6dAKZdCe4T6AzBtEQjwskMqVTQlHTCnW7Jr
-         94MWUQeI1wJf6W/D8tBC/hwx4vb/NxsQ10rN+jw21Dk/zCM4cAl3cLzB6gEHofKw15f2
-         U9jQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
-        bh=T6cNJN1BhNPosz4VSa6UZSLK0x7rvKXHqaLGbTtwrio=;
-        b=k3A2Zye9DOf9ALJBxjPQ5M+3S5ORtxsvhOr8uWF4kQYMmBIiu9uJaCDW6quXb6j6Z/
-         3Et8TVvrnACrBq/txyN6Bm3fJrZKBYQNgcT2pcjKbEPhnHIQwu4FemookkMOkcCFVrlB
-         yatDgC/PaBxzQ6olyjyzfMCI8XmgK1SfsaMZ0vWlW3iQYbp1gH9Uhrg9ldnFVb0AY5e0
-         v9NOQWuN7X2TzyoBXwsMjdCVDOzrHn93sMpGnjst0x8UfiYmsSfnvl37aJdbdow5iyvQ
-         w+g9hL0dtVr3Z6q9mo88T4ADo+kOD7t25o/VQSDS59W1DOb8HdoxObjzl+o4xfYVIiPB
-         yuGA==
-X-Gm-Message-State: ACrzQf04C/+2lXLJRSUyXi3OBHbN4NbfiITMD/aajimoy12UNWwhg0N5
-        jJqq//jhJMS1jpEs80P2g6I3JkBPbuifVA==
-X-Google-Smtp-Source: AMsMyM4xABv0qGQveu5WBb1LJTFbve6/miMk7xY0HKOkzkNJHgum0LT8wCUu5302g9jha9XGUbAfOA==
-X-Received: by 2002:a63:c06:0:b0:439:9b18:8574 with SMTP id b6-20020a630c06000000b004399b188574mr27029784pgl.608.1664968049671;
-        Wed, 05 Oct 2022 04:07:29 -0700 (PDT)
-Received: from hyeyoo ([114.29.91.56])
-        by smtp.gmail.com with ESMTPSA id v5-20020a626105000000b00561852ff01bsm4872099pfb.61.2022.10.05.04.07.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Oct 2022 04:07:28 -0700 (PDT)
-Date:   Wed, 5 Oct 2022 20:07:23 +0900
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Hugh Dickins <hughd@google.com>, Vlastimil Babka <vbabka@suse.cz>,
-        David Laight <David.Laight@aculab.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Minchan Kim <minchan@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, rcu@vger.kernel.org
-Subject: Re: amusing SLUB compaction bug when CC_OPTIMIZE_FOR_SIZE
-Message-ID: <Yz1lawQXGHZBvuqe@hyeyoo>
-References: <YzPgTtFzpKEfwPbK@hyeyoo>
- <YzRQvoVsnJzsauwb@google.com>
- <35502bdd-1a78-dea1-6ac3-6ff1bcc073fa@suse.cz>
- <ff905c1e-5eb3-eaf8-46de-38f189c0b7a5@google.com>
- <de71b83a-c82c-4785-ef5a-3db4f17bbc8d@suse.cz>
- <bcecece-f7ce-221d-1674-da3d5ab3fef@google.com>
- <YzkmErHFyYW3awRn@hyeyoo>
- <YzsVM8eToHUeTP75@casper.infradead.org>
- <YzxCmR3dGJz45NVD@hyeyoo>
- <YzxF5Bs/tgLDOB0T@casper.infradead.org>
+        with ESMTP id S229623AbiJELMi (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 5 Oct 2022 07:12:38 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4BA8452FC6;
+        Wed,  5 Oct 2022 04:12:37 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 81643106F;
+        Wed,  5 Oct 2022 04:12:43 -0700 (PDT)
+Received: from FVFF77S0Q05N (unknown [10.57.3.221])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 781673F73B;
+        Wed,  5 Oct 2022 04:12:34 -0700 (PDT)
+Date:   Wed, 5 Oct 2022 12:12:29 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, rostedt@goodmis.org,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        John Ogness <john.ogness@linutronix.de>,
+        Petr Mladek <pmladek@suse.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH RFC v2 rcu 6/8] arch/arm64: Add
+ ARCH_HAS_NMI_SAFE_THIS_CPU_OPS Kconfig option
+Message-ID: <Yz1mneessxDSN8V7@FVFF77S0Q05N>
+References: <20220929180714.GA2874192@paulmck-ThinkPad-P17-Gen-1>
+ <20220929180731.2875722-6-paulmck@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YzxF5Bs/tgLDOB0T@casper.infradead.org>
+In-Reply-To: <20220929180731.2875722-6-paulmck@kernel.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Oct 04, 2022 at 03:40:36PM +0100, Matthew Wilcox wrote:
-> On Tue, Oct 04, 2022 at 11:26:33PM +0900, Hyeonggon Yoo wrote:
-> > > It's the acquisition of
-> > > the refcount which stabilises the slab flag, not holding the lock.
-> > 
-> > But can you please elaborate how this prevents race between
-> > allocation & initialization of a slab and isolate_movable_page()?
-> > 
-> > Or maybe we can handle it with frozen folio as Vlastimil suggested? ;-) 
-> 
-> Yes, we discussed that a little yesterday.  I'm hoping to have a
-> refreshed patchset for frozen folios out today.  Some of this patch
-> is still needed, even if we go that route.
+Hi Paul,
 
-Good to hear that.
-With that, everyting looks sane to me.
- 
-> > > @@ -91,8 +99,8 @@ int isolate_movable_page(struct page *page, isolate_mode_t mode)
-> > >  	 * lets be sure we have the page lock
-> > >  	 * before proceeding with the movable page isolation steps.
-> > >  	 */
-> > > -	if (unlikely(!trylock_page(page)))
-> > > -		goto out_putpage;
-> > > +	if (unlikely(!folio_trylock(folio)))
-> > > +		goto out_put;
-> > 
-> > I don't know much about callers that this is trying to avoid race aginst...
-> > 
-> > But for this to make sense, I think *every users* that doing their stuff with
-> > sub-page of a compound page should acquire folio lock and not page lock
-> > of sub-page, right?
-> 
-> There is no page lock per se.  If you try to acquire the lock on a tail
-> page, it acquires the lock on its head page.  It's been that way for a
-> very long time.  A lot of people are confused by this, which was part of
-> the motivation for making it explicit with folios.
+On Thu, Sep 29, 2022 at 11:07:29AM -0700, Paul E. McKenney wrote:
+> The arm64 architecture uses either an LL/SC loop (old systems) or an LSE
+> stadd instruction (new systems) to implement this_cpu_add(), both of which
+> are NMI safe.
 
-You are right! Reading the code, too bad
-I even assumed that there was sub-page lock.
+IIUC "NMI safe" here just means atomic w.r.t. an NMI being taken and modfying
+the same location the atomic was targetting (i.e. just like
+ARCH_HAVE_NMI_SAFE_CMPXCHG, which arm64 selects today).
 
--- 
+Assuming so:
+
+  Acked-by: Mark Rutland <mark.rutland@arm.com>
+
+Only this patch went to LAKML, so maybe an earlier patch made that clear, but
+I didn't spot it.
+
+As one minor nit, it would be nice to align the naming with
+ARCH_HAVE_NMI_SAFE_CMPXCHG and select them next to each other in the Kconfig
+file is possible, but the Ack stands regardless.
+
 Thanks,
-Hyeonggon
+Mark.
+
+> This means that the old and more-efficient srcu_read_lock()
+> may be used in NMI context, without the need for srcu_read_lock_nmisafe().
+> Therefore, add the new Kconfig option ARCH_HAS_NMI_SAFE_THIS_CPU_OPS to
+> arch/arm64/Kconfig, which will cause NEED_SRCU_NMI_SAFE to be deselected,
+> thus preserving the current srcu_read_lock() behavior.
+> 
+> Link: https://lore.kernel.org/all/20220910221947.171557773@linutronix.de/
+> 
+> Suggested-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+> Suggested-by: Frederic Weisbecker <frederic@kernel.org>
+> Suggested-by: Boqun Feng <boqun.feng@gmail.com>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: John Ogness <john.ogness@linutronix.de>
+> Cc: Petr Mladek <pmladek@suse.com>
+> Cc: <linux-arm-kernel@lists.infradead.org>
+> ---
+>  arch/arm64/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index 571cc234d0b3..664725a0b5dd 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -31,6 +31,7 @@ config ARM64
+>  	select ARCH_HAS_KCOV
+>  	select ARCH_HAS_KEEPINITRD
+>  	select ARCH_HAS_MEMBARRIER_SYNC_CORE
+> +	select ARCH_HAS_NMI_SAFE_THIS_CPU_OPS
+>  	select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
+>  	select ARCH_HAS_PTE_DEVMAP
+>  	select ARCH_HAS_PTE_SPECIAL
+> -- 
+> 2.31.1.189.g2e36527f23
+> 
