@@ -2,211 +2,150 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8AD01C4332F
-	for <rcu@archiver.kernel.org>; Thu,  6 Oct 2022 18:43:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B3C5C433FE
+	for <rcu@archiver.kernel.org>; Thu,  6 Oct 2022 18:55:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229470AbiJFSnK (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 6 Oct 2022 14:43:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46166 "EHLO
+        id S229555AbiJFSzs (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 6 Oct 2022 14:55:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbiJFSnJ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 6 Oct 2022 14:43:09 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 586AFC510E
-        for <rcu@vger.kernel.org>; Thu,  6 Oct 2022 11:43:08 -0700 (PDT)
+        with ESMTP id S229614AbiJFSzr (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 6 Oct 2022 14:55:47 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 025DDC695E;
+        Thu,  6 Oct 2022 11:55:44 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 700CCB82144
-        for <rcu@vger.kernel.org>; Thu,  6 Oct 2022 18:43:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 118F3C433D6;
-        Thu,  6 Oct 2022 18:43:05 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 30AB161A59;
+        Thu,  6 Oct 2022 18:55:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73DD8C433D6;
+        Thu,  6 Oct 2022 18:55:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665081785;
-        bh=PsAOK4CXbZglRLAzpj4kmIb+zy9tfhcR1d3FmJ6+Qn4=;
+        s=k20201202; t=1665082543;
+        bh=tmTicypHL4AJTDy+gvYmq3jzH0FcSXkyP/2IndtLrxU=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=HIEnLrl1NmRN6R49mg2gyXNT1sdWRk6fpIoohfkt0oyf4dHYUvq9K8zZYGCoeuXte
-         yBMGdUAefkUFGEYvYbSut8wsEGiC7FfcnerlbrbnKWbhnQQdynffNo5YnvhKqyz6lF
-         iu0I2wULGRYXwP54ampRakXh5KeooaP3Ih5ZmBJNyvAHEqH9noVzNuRQlAQAf9uxgq
-         oBWIMmSzgCZt5KILyjbj1dklLAyZRvhify2HBeDhQIqdbRy+gT2Sl22t9pIaRWTNQb
-         ZRFF0EVU7NpqgP1T2UYSHLy8rK0LVmk1lL0o9kVLbb4ip3DCTP0mQkAtR7vHTZhZHn
-         HdRDWAEVih53g==
+        b=iqDcM69oSm5yw1ZMskQj4T6lycuKNjpR+eoIF6iiF+J+2525f6mfvvlYVc1KGWTad
+         clEpCM2PyVnzNuvviF5/4HItBeAC6iUVyXXjiDus6MfmHBqHn5jtwd3eiBHu4m2NzP
+         N47wUUZ2dp1pggCNroTsjUrYWhSTrdqqVXmP26iHRf5G91udC/0IRbwWKYP5vxkUD6
+         kAYAC9YfMb/U0VcppwZbhzSAoqstt+u5Df0AdFMA5J7DFPdA4EQLX6ApZofR8lpC2c
+         3wDF568vSz145sUv8BH4yeFfkGcyypK/i0WgkbstG95RWbDPHcmLT54gi52FFD7cE2
+         2M7dbTBsSQagg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id A51175C0F66; Thu,  6 Oct 2022 11:43:04 -0700 (PDT)
-Date:   Thu, 6 Oct 2022 11:43:04 -0700
+        id 0CB035C0F66; Thu,  6 Oct 2022 11:55:43 -0700 (PDT)
+Date:   Thu, 6 Oct 2022 11:55:43 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     5486 <3164135486@qq.com>
-Cc:     rcu <rcu@vger.kernel.org>
-Subject: Re: =?utf-8?B?5Zue5aSN77ya5Zue5aSN77ya5Zue?= =?utf-8?B?5aSN77yaUmU6?=
-Message-ID: <20221006184304.GA4196@paulmck-ThinkPad-P17-Gen-1>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rushikesh.s.kadam@intel.com, urezki@gmail.com,
+        neeraj.iitr10@gmail.com, frederic@kernel.org, rostedt@goodmis.org,
+        youssefesmat@google.com, surenb@google.com
+Subject: Re: [PATCH v7 00/11] rcu: call_rcu() power improvements
+Message-ID: <20221006185543.GB4196@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <tencent_BB0C9F0DE163BBB4638FB155CB4C8FFA6F07@qq.com>
+References: <20221004024157.2470238-1-joel@joelfernandes.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <tencent_BB0C9F0DE163BBB4638FB155CB4C8FFA6F07@qq.com>
+In-Reply-To: <20221004024157.2470238-1-joel@joelfernandes.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Oct 07, 2022 at 12:55:49AM +0800, 5486 wrote:
-> &gt;&nbsp;Note that the last argument to on_each_cpu() is "1", that is,
-> &gt;&nbsp;on_each_cpu() does not return until rcu_barrier_func() has executed on
-> &gt;&nbsp;all CPUs.
-> o .
+On Tue, Oct 04, 2022 at 02:41:46AM +0000, Joel Fernandes (Google) wrote:
+> v7 version of RCU lazy patches based on rcu/next branch.
 > 
+> To facilitate easier merge, I dropped tracing and other patches and just
+> implemented the new changes. I will post the tracing patches later along with
+> rcutop as I need to add new tracepoints that Frederic suggested.
 > 
+> Main recent changes:
+> 1. rcu_barrier() wake up only for lazy bypass list.
+> 2. Make all call_rcu() default-lazy and add call_rcu_flush() API.
+> 3. Take care of some callers using call_rcu_flush() API.
+> 4. Several refactorings suggested by Paul/Frederic.
+> 5. New call_rcu() to call_rcu_flush() conversions by Joel/Vlad/Paul.
 > 
-> &gt;Can your scenario happen?
+> I am seeing good performance and power with these patches on real ChromeOS x86
+> asymmetric hardware.
 > 
-> rcu_barrier_func&nbsp; execution is not enough,the goal is finish all the rcu callback functions.
+> Earlier cover letter with lots of details is here:
+> https://lore.kernel.org/all/20220901221720.1105021-1-joel@joelfernandes.org/
 > 
-> so it can.
+> List of recent changes:
+>     
+>     [ Frederic Weisbec: Program the lazy timer only if WAKE_NOT, since other
+>       deferral levels wake much earlier so for those it is not needed. ]
+>     
+>     [ Frederic Weisbec: Use flush flags to keep bypass API code clean. ]
+>     
+>     [ Frederic Weisbec: Make rcu_barrier() wake up only if main list empty. ]
+>     
+>     [ Frederic Weisbec: Remove extra 'else if' branch in rcu_nocb_try_bypass(). ]
+>     
+>     [ Joel: Fix issue where I was not resetting lazy_len after moving it to rdp ]
+>     
+>     [ Paul/Thomas/Joel: Make call_rcu() default lazy so users don't mess up. ]
+>     
+>     [ Paul/Frederic : Cosmetic changes, split out wakeup of nocb thread. ]
+>     
+>     [ Vlad/Joel : More call_rcu -> flush conversions ]
 
-OK, then please show the sequence of calls to rcu_barrier_func() and
-rcu_barrier_callback() on their respective CPUs, along with their effects
-on rcu_barrier_cpu_count, in order to show exactly how this can happen.
+Thank you for your continued work on this!
+
+I pulled these into an experimental branch, applied Uladzislau's
+Tested-by and ran a quick round of rcutorture.
+
+From TREE02, TREE03, and TREE09 I got this:
+
+In file included from kernel/rcu/tree.c:68:
+kernel/rcu/tree.h:449:13: error: ‘wake_nocb_gp’ used but never defined [-Werror]
+  449 | static bool wake_nocb_gp(struct rcu_data *rdp, bool force);
+      |             ^~~~~~~~~~~~
+
+One could argue that this is not a big deal, except that Linus gets a
+bit tetchy when this sort of thing shows up in mainline.
+
+Nevetheless, it looks like we might be getting quite close!
 
 							Thanx, Paul
 
-> 原始邮件
->                        
->                      
+> Frederic Weisbecker (1):
+> rcu: Wake up nocb gp thread on rcu_barrier_entrain()
 > 
-> 发件人："Paul E. McKenney"< paulmck@kernel.org &gt;;
+> Joel Fernandes (Google) (7):
+> rcu: Make call_rcu() lazy to save power
+> rcu: Refactor code a bit in rcu_nocb_do_flush_bypass()
+> rcuscale: Add laziness and kfree tests
+> percpu-refcount: Use call_rcu_flush() for atomic switch
+> rcu/sync: Use call_rcu_flush() instead of call_rcu
+> rcu/rcuscale: Use call_rcu_flush() for async reader test
+> rcu/rcutorture: Use call_rcu_flush() where needed
 > 
-> 发件时间：2022/10/7 0:46
+> Uladzislau Rezki (2):
+> scsi/scsi_error: Use call_rcu_flush() instead of call_rcu()
+> workqueue: Make queue_rcu_work() use call_rcu_flush()
 > 
-> 收件人："5486"< 3164135486@qq.com &gt;;
+> Vineeth Pillai (1):
+> rcu: shrinker for lazy rcu
 > 
-> 抄送人："rcu"< rcu@vger.kernel.org &gt;;
+> drivers/scsi/scsi_error.c |   2 +-
+> include/linux/rcupdate.h  |   7 ++
+> kernel/rcu/Kconfig        |   8 ++
+> kernel/rcu/rcu.h          |   8 ++
+> kernel/rcu/rcuscale.c     |  67 +++++++++++-
+> kernel/rcu/rcutorture.c   |  16 +--
+> kernel/rcu/sync.c         |   2 +-
+> kernel/rcu/tiny.c         |   2 +-
+> kernel/rcu/tree.c         | 140 +++++++++++++++++--------
+> kernel/rcu/tree.h         |  12 ++-
+> kernel/rcu/tree_exp.h     |   2 +-
+> kernel/rcu/tree_nocb.h    | 213 ++++++++++++++++++++++++++++++++------
+> kernel/workqueue.c        |   2 +-
+> lib/percpu-refcount.c     |   3 +-
+> 14 files changed, 388 insertions(+), 96 deletions(-)
 > 
-> 主题：回复：回复：Re:
+> --
+> 2.38.0.rc1.362.ged0d419d3c-goog
 > 
-> 
-> On Fri, Oct 07, 2022 at 12:38:56AM +0800, 5486 wrote:
-> &gt; In fact suppose there are for cpuscpu0 cpu1 cpu2 cpu3
-> &gt; 
-> &gt; 
-> &gt; the value of rcu_barrier_cpu_count may be
-> &gt; 
-> &gt; 
-> &gt; 1 &nbsp;cpu0 2 -&gt; 1 cpu1 2 -&gt; 1 cpu2 2 -&gt; 1
-> &gt; then on_each_cpu finished rcu_barrier_cpu_count decreased to be 0
-> &gt; then complete(&amp;rcu_barrier_completion); rcu_barrier finished.but rcu_barrier_func of cpu3 may not&nbsp;have been executed.
-> 
-> Note that the last argument to on_each_cpu() is "1", that is,
-> on_each_cpu() does not return until rcu_barrier_func() has executed on
-> all CPUs.
-> 
-> Can your scenario happen?
-> 
-> 							Thanx, Paul
-> 
-> &gt; 原始邮件
-> &gt;                        
-> &gt;                      
-> &gt; 
-> &gt; 发件人："Paul E. McKenney"< paulmck@kernel.org &gt;;
-> &gt; 
-> &gt; 发件时间：2022/10/6 19:57
-> &gt; 
-> &gt; 收件人："5486"< 3164135486@qq.com &gt;;
-> &gt; 
-> &gt; 抄送人："rcu"< rcu@vger.kernel.org &gt;;
-> &gt; 
-> &gt; 主题：回复：Re:
-> &gt; 
-> &gt; 
-> &gt; On Thu, Oct 06, 2022 at 05:56:35PM +0800, 5486 wrote:
-> &gt; &gt; My problem is &nbsp;some grace period can take very little time shorter than the one iteration of on_each_cpu itself。So the complete() can execute on one cpu before the last of all. &nbsp;
-> &gt; 
-> &gt; And that is the bug.  Very good!
-> &gt; 
-> &gt; &gt; but now 
-> &gt; &gt; The key is on_each_cpu &nbsp;,it is really clever that on_each_cpu &nbsp;will prevent completion of any grace periods. Concealed Mechanism！
-> &gt; &gt; Is it?
-> &gt; &gt; In this ancient version code have &nbsp;real race-condition bugs .I will take some time to study to find it and reply to you.
-> &gt; &gt; it is about on_each_cpu have not prohibit preemption? ,I did not cover more things related to the operationg system.
-> &gt; 
-> &gt; Suppose the code instead read as follows?
-> &gt; 
-> &gt; void rcu_barrier(void)
-> &gt; {
-> &gt; 	BUG_ON(in_interrupt());
-> &gt; 	/* Take cpucontrol semaphore to protect against CPU hotplug */
-> &gt; 	down(&amp;rcu_barrier_sema);
-> &gt; 	init_completion(&amp;rcu_barrier_completion);
-> &gt; 	atomic_set(&amp;rcu_barrier_cpu_count, 1);
-> &gt; 	on_each_cpu(rcu_barrier_func, NULL, 0, 1);
-> &gt; 	if (atomic_dec_and_test(&amp;rcu_barrier_cpu_count))
-> &gt; 		complete(&amp;rcu_barrier_completion);
-> &gt; 	wait_for_completion(&amp;rcu_barrier_completion);
-> &gt; 	up(&amp;rcu_barrier_sema);
-> &gt; }
-> &gt; 
-> &gt; Would that work?  Or are there additional bugs?
-> &gt; 
-> &gt; 							Thanx, Paul
-> &gt; 
-> &gt; &gt; Chao,Li
-> &gt; &gt; 
-> &gt; &gt;                        
-> &gt; &gt; 原始邮件
-> &gt; &gt;                        
-> &gt; &gt;                      
-> &gt; &gt; 
-> &gt; &gt; 发件人："Paul E. McKenney"< paulmck@kernel.org &gt;;
-> &gt; &gt; 
-> &gt; &gt; 发件时间：2022/10/5 21:01
-> &gt; &gt; 
-> &gt; &gt; 收件人："5486"< 3164135486@qq.com &gt;;
-> &gt; &gt; 
-> &gt; &gt; 抄送人："rcu"< rcu@vger.kernel.org &gt;;
-> &gt; &gt; 
-> &gt; &gt; 主题：Re: Dear Pualmack help i have a problem with rcu code
-> &gt; &gt; 
-> &gt; &gt; 
-> &gt; &gt; On Tue, Oct 04, 2022 at 03:04:19AM +0800, 5486 wrote:
-> &gt; &gt; &gt; Dear&nbsp;Pualmack i have problem.
-> &gt; &gt; &gt; I have been reading the patch
-> &gt; &gt; &gt; https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/kernel?id=ab4720ec76b756e1f8705e207a7b392b0453afd6
-> &gt; &gt; &gt; 
-> &gt; &gt; &gt; 
-> &gt; &gt; &gt; 
-> &gt; &gt; &gt; +	wait_for_completion(&amp;rcu_barrier_completion);
-> &gt; &gt; &gt; 
-> &gt; &gt; &gt; How this guarantees all completes to be done ?
-> &gt; &gt; &gt; I learn one wait_for_completion corresponds to one&nbsp;x-&gt;done++ once a time
-> &gt; &gt; 
-> &gt; &gt; 2005!  That takes me back a bit!
-> &gt; &gt; 
-> &gt; &gt; Adding the rcu email list on CC to archive this and for others to
-> &gt; &gt; weigh in.
-> &gt; &gt; 
-> &gt; &gt; The trick is that rcu_barrier_callback() is an RCU callback that executes
-> &gt; &gt; on each CPU (see the on_each_cpu() in the rcu_barrier() function.)
-> &gt; &gt; 
-> &gt; &gt; This RCU callback function is queued using call_rcu(), which queues
-> &gt; &gt; that callback at the end of the CPU's callback list.  Thus, all
-> &gt; &gt; RCU callback functions that were already queued on that CPU will
-> &gt; &gt; be invoked before rcu_barrier_callback() in invoked.
-> &gt; &gt; 
-> &gt; &gt; The rcu_barrier_callback() does an atomic_dec_and_test() operation on the
-> &gt; &gt; rcu_barrier_cpu_count global variable, and only when this variable becomes
-> &gt; &gt; zero does it invoke complete().  This atomic_dec_and_test() operation is
-> &gt; &gt; fully ordered, and thus ensures that all the earlier atomic_dec_and_test()
-> &gt; &gt; operations on this variable are globally seen to happen before the last
-> &gt; &gt; such operation (the one that decrements rcu_barrier_cpu_count to zero).
-> &gt; &gt; 
-> &gt; &gt; This last rcu_barrier_callback() will then invoke complete().  This will
-> &gt; &gt; ensure that the wakeup in wait_for_completion() happens only after all
-> &gt; &gt; previously queued RCU callbacks are invoked.
-> &gt; &gt; 
-> &gt; &gt; Almost, anyway.
-> &gt; &gt; 
-> &gt; &gt; There are rare but real race-condition bugs in this ancient version
-> &gt; &gt; of rcu_barrier().  Can you tell me what they are?
-> &gt; &gt; 
-> &gt; &gt; 							Thanx, Paul
