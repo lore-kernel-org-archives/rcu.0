@@ -2,143 +2,104 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F378DC433FE
-	for <rcu@archiver.kernel.org>; Thu,  6 Oct 2022 11:57:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 866BCC433F5
+	for <rcu@archiver.kernel.org>; Thu,  6 Oct 2022 13:33:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229812AbiJFL5Q (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 6 Oct 2022 07:57:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56914 "EHLO
+        id S231715AbiJFNdU (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 6 Oct 2022 09:33:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbiJFL5P (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 6 Oct 2022 07:57:15 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A8D09DDA7
-        for <rcu@vger.kernel.org>; Thu,  6 Oct 2022 04:57:14 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 24C88B81A76
-        for <rcu@vger.kernel.org>; Thu,  6 Oct 2022 11:57:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C982FC433C1;
-        Thu,  6 Oct 2022 11:57:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665057431;
-        bh=OryE8+7tKZXtQBPDrR47ro8e8NblvCMj51IsGauDFKI=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=BnBRrFhPEsD52tBNPT8N72RuKjUkvGbmrxWEJKAArg7TwJs66CcTc0DTsnNMwSPlK
-         ueDm5YPpLWGLvrGaA1oPToE6NcCGvanz8LD7UUoycua3yrLEiBSjw3BL5Pv89KeU5Q
-         cmdtfU1m4UUVuyyT9EgZNH7pL4QwX4XiUVW/DHPRo+RTcKTj5KsMRf1cXHz/5UpDGD
-         Q0bEur5kPBnTkWiT3lbaOYaToc46XbYztV7OU76Vb/XN3mx++ADGxGpOqWu6YneZ5y
-         fQ4sXpiJRxoUmuA0a0sY8xxj3/Ynj1OZZyYuJeyWXDp0olMv0eGpJ7fOTQEx7Pb9+M
-         ihUdhZC4O3FLA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 69CA35C102F; Thu,  6 Oct 2022 04:57:11 -0700 (PDT)
-Date:   Thu, 6 Oct 2022 04:57:11 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     5486 <3164135486@qq.com>
-Cc:     rcu@vger.kernel.org
-Subject: Re: =?utf-8?B?5Zue5aSN77yaUmU=?= =?utf-8?Q?=3A?= Dear Pualmack help
- i have a problem with rcu code
-Message-ID: <20221006115711.GS4196@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <tencent_8D1F53610CBBCEE3E2313BCB310FB46F4E07@qq.com>
+        with ESMTP id S231473AbiJFNdJ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 6 Oct 2022 09:33:09 -0400
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54CE6ABF09
+        for <rcu@vger.kernel.org>; Thu,  6 Oct 2022 06:32:39 -0700 (PDT)
+Received: by mail-qv1-xf30.google.com with SMTP id df9so1147404qvb.9
+        for <rcu@vger.kernel.org>; Thu, 06 Oct 2022 06:32:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:from:to:cc:subject:date;
+        bh=huK45Nt60Oqwkfe5esCRl504StHwOSfI8fOM8xQEOqw=;
+        b=BZW446SAc56TqZDeBdwgv69TRmEZQlyOkd0d+ZmTUQlOdI/aH3/lPpcJ2S5kqzSbjP
+         mzOWQ/kyPGFwsYhkfMt0aY2+67Kcb6L4ISCVU3CdMFBWHeTof9yIuDtoalWelOujlaz+
+         IepyN8EyJ09vuCpi/yg3/AdwBkeglPZ0zRuCA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:x-gm-message-state:from:to:cc:subject:date;
+        bh=huK45Nt60Oqwkfe5esCRl504StHwOSfI8fOM8xQEOqw=;
+        b=2SnItO2p4m/Rj3yucaCbVHbYWKSh01mT78oJND4QGNQHD/Zi2il4UgWOGrHT4K4Zw9
+         K8unuUmNXUtP1+7OYxwFoMXidLROeWmRi2tJK3Xlb+CvFMP823aL/uK+787d2cMNu9yO
+         2n8hWZt9Sk7rYZivnah3oog6BH75ZCuChWJU3gi1uuSAso4yOQLy/LdNKE6MjwozfzvV
+         Yl9I37M9TEAT4wxP0DKhhiwUpkMkIYky+xg2U88y+IJ1/4+Nq6xQbRtmAmdsBZebNapV
+         z2xZJIGTqRmTZFK6gWIY4SR8fZbaT63r14McWLHX8CuD8NiKaGUb3Z0ZJb7mK6nw86P6
+         NWhA==
+X-Gm-Message-State: ACrzQf3JuclVKNjEIiJ7SlqnNhj6610+6sZE78D1vn/Dn44FBs2E/50X
+        wjdyHg8TXKummMIEZZcljyORylNFM0aGDw==
+X-Google-Smtp-Source: AMsMyM741myRLb3JM16m2F1xiRYR7uHBDn2+tcq4iJGdEsNoM++xH/v+D1TlgPAp/KMgwZWr5hjQOg==
+X-Received: by 2002:a05:6214:2301:b0:498:9f6f:28d with SMTP id gc1-20020a056214230100b004989f6f028dmr3826245qvb.5.1665063104435;
+        Thu, 06 Oct 2022 06:31:44 -0700 (PDT)
+Received: from localhost (228.221.150.34.bc.googleusercontent.com. [34.150.221.228])
+        by smtp.gmail.com with ESMTPSA id c9-20020ac85189000000b0038f24b23a36sm4209925qtn.37.2022.10.06.06.31.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Oct 2022 06:31:43 -0700 (PDT)
+Date:   Thu, 6 Oct 2022 13:31:43 +0000
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Daniel Bristot de Oliveira <bristot@redhat.com>,
+        rcu@vger.kernel.org, paulmck@kernel.org, frederic@kernel.org
+Cc:     Florent Carli <fcarli@gmail.com>, linux-rt-users@vger.kernel.org
+Subject: Re: RCU stall warnings even with rcu_nocbs and rcu_nocb_poll
+Message-ID: <Yz7Yv6d3v3oETZYI@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <tencent_8D1F53610CBBCEE3E2313BCB310FB46F4E07@qq.com>
+In-Reply-To: <e86930e4-4b9c-cf18-5119-50c6910b76dd@redhat.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Oct 06, 2022 at 05:56:35PM +0800, 5486 wrote:
-> My problem is &nbsp;some grace period can take very little time shorter than the one iteration of on_each_cpu itself。So the complete() can execute on one cpu before the last of all. &nbsp;
+On Wed, Oct 05, 2022 at 06:03:39PM +0200, Daniel Bristot de Oliveira wrote:
+> On 10/5/22 18:01, Florent Carli wrote:
+> > Hello,
+> > 
+> > I'm trying to isolate some cores to run a CPU-bound real-time task and
+> > even though I'm using rcu_nocbs and rcu_nocb_poll, I can see the rcuc
+> > threads wake up, and I get RCU stall warnings on the isolated core.
 
-And that is the bug.  Very good!
+Isolating a CPU does not mean that RCU activity is forbidden on it, even with
+nohz_full, if the CPU enters the kernel (say syscall or interrupt), then it
+may enter a read-side critical section so RCU will be watching it, and such
+CPU will have to report quiescent state.
 
-> but now 
-> The key is on_each_cpu &nbsp;,it is really clever that on_each_cpu &nbsp;will prevent completion of any grace periods. Concealed Mechanism！
-> Is it?
-> In this ancient version code have &nbsp;real race-condition bugs .I will take some time to study to find it and reply to you.
-> it is about on_each_cpu have not prohibit preemption? ,I did not cover more things related to the operationg system.
+> > As per the documentation, if I use rcutree.kthread_prio with a
+> > priority > my RT task, then the rcu stall does not happen.
 
-Suppose the code instead read as follows?
+Yes, it sounds like the main RCU GP thread (mostly called rcu_preempt thread)
+in your system is competing with your RT task. Increase kthread_prio is
+standard procedure to resolve this issue, as you did.
 
-void rcu_barrier(void)
-{
-	BUG_ON(in_interrupt());
-	/* Take cpucontrol semaphore to protect against CPU hotplug */
-	down(&rcu_barrier_sema);
-	init_completion(&rcu_barrier_completion);
-	atomic_set(&rcu_barrier_cpu_count, 1);
-	on_each_cpu(rcu_barrier_func, NULL, 0, 1);
-	if (atomic_dec_and_test(&rcu_barrier_cpu_count))
-		complete(&rcu_barrier_completion);
-	wait_for_completion(&rcu_barrier_completion);
-	up(&rcu_barrier_sema);
-}
+> > However I find it confusing: why are the rcuc threads woken up on the
+> > isolated cores despite using rcu_nocbs and rcu_nocb_poll? In my (very
+> > likely erroneous) understanding, I shouldn't have to fiddle with rcu
+> > priority... In other words, how come I get rcu stalls on cores that
+> > have no rcu callbacks?
 
-Would that work?  Or are there additional bugs?
+It is not possible to provide further help without more info, in particular
+are you using nohz_full and isolcpus options? Can you provide kernel
+and #CPU configuration?
 
-							Thanx, Paul
+Happy to look further! Also adding some more folks who know a lot about this
+stuff and +rcu list for archives.
 
-> Chao,Li
+thanks,
+
+ - Joel
+
 > 
->                        
-> 原始邮件
->                        
->                      
+> Adding Joel because we had a chat about it during lpc...
 > 
-> 发件人："Paul E. McKenney"< paulmck@kernel.org &gt;;
+> > Thanks.
+> > 
+> -- Daniel
 > 
-> 发件时间：2022/10/5 21:01
-> 
-> 收件人："5486"< 3164135486@qq.com &gt;;
-> 
-> 抄送人："rcu"< rcu@vger.kernel.org &gt;;
-> 
-> 主题：Re: Dear Pualmack help i have a problem with rcu code
-> 
-> 
-> On Tue, Oct 04, 2022 at 03:04:19AM +0800, 5486 wrote:
-> &gt; Dear&nbsp;Pualmack i have problem.
-> &gt; I have been reading the patch
-> &gt; https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/kernel?id=ab4720ec76b756e1f8705e207a7b392b0453afd6
-> &gt; 
-> &gt; 
-> &gt; 
-> &gt; +	wait_for_completion(&amp;rcu_barrier_completion);
-> &gt; 
-> &gt; How this guarantees all completes to be done ?
-> &gt; I learn one wait_for_completion corresponds to one&nbsp;x-&gt;done++ once a time
-> 
-> 2005!  That takes me back a bit!
-> 
-> Adding the rcu email list on CC to archive this and for others to
-> weigh in.
-> 
-> The trick is that rcu_barrier_callback() is an RCU callback that executes
-> on each CPU (see the on_each_cpu() in the rcu_barrier() function.)
-> 
-> This RCU callback function is queued using call_rcu(), which queues
-> that callback at the end of the CPU's callback list.  Thus, all
-> RCU callback functions that were already queued on that CPU will
-> be invoked before rcu_barrier_callback() in invoked.
-> 
-> The rcu_barrier_callback() does an atomic_dec_and_test() operation on the
-> rcu_barrier_cpu_count global variable, and only when this variable becomes
-> zero does it invoke complete().  This atomic_dec_and_test() operation is
-> fully ordered, and thus ensures that all the earlier atomic_dec_and_test()
-> operations on this variable are globally seen to happen before the last
-> such operation (the one that decrements rcu_barrier_cpu_count to zero).
-> 
-> This last rcu_barrier_callback() will then invoke complete().  This will
-> ensure that the wakeup in wait_for_completion() happens only after all
-> previously queued RCU callbacks are invoked.
-> 
-> Almost, anyway.
-> 
-> There are rare but real race-condition bugs in this ancient version
-> of rcu_barrier().  Can you tell me what they are?
-> 
-> 							Thanx, Paul
