@@ -2,241 +2,242 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A69ACC433F5
-	for <rcu@archiver.kernel.org>; Fri,  7 Oct 2022 08:35:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6BEB0C433FE
+	for <rcu@archiver.kernel.org>; Fri,  7 Oct 2022 11:26:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229452AbiJGIfh (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 7 Oct 2022 04:35:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57658 "EHLO
+        id S229586AbiJGL0e (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 7 Oct 2022 07:26:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229738AbiJGIfe (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 7 Oct 2022 04:35:34 -0400
+        with ESMTP id S229495AbiJGL0d (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 7 Oct 2022 07:26:33 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3154233E1D
-        for <rcu@vger.kernel.org>; Fri,  7 Oct 2022 01:35:32 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67F5FCA888;
+        Fri,  7 Oct 2022 04:26:32 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CC78561AFB
-        for <rcu@vger.kernel.org>; Fri,  7 Oct 2022 08:35:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C393C433C1;
-        Fri,  7 Oct 2022 08:35:31 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0282B61CBC;
+        Fri,  7 Oct 2022 11:26:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE660C433C1;
+        Fri,  7 Oct 2022 11:26:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665131731;
-        bh=tB7QbW+MrkAo8hiWaa/USfJzRfi3HhV4J6V9hNU7vcI=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=AlxX5VwOTPL7d3gozwnwi8ixtAgTxN/FZeSv4iUWcBDu1Jb9cdyerG/scFQRwjIKv
-         Hszj8dw2CsvxzNP1a+ctrx/wpAvij3vIrU1HKkXdcxY9IIXe9zOLx99b3rB8NDUQr8
-         HFNGwfN29H5jUr4b1eD3Wdr/++IxObyfzYn62CgpUP/ltddceQMYQvJAy2Yi8uH+cq
-         sWX1qK1GkFi0L3YlJ2WltMunp6InihmMuu90oRiQw+AasLvH827pVGIXT9PKbV15FR
-         LjUZHxTgeHnW2DVEqJ/Cjag9bHz0AuIUFSBI1/NR1Z2N6A1ax5N9tjwuAAxtKIkQ4z
-         uzmMjI63mLnPw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id C44785C0A1F; Fri,  7 Oct 2022 01:35:30 -0700 (PDT)
-Date:   Fri, 7 Oct 2022 01:35:30 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     5486 <3164135486@qq.com>
-Cc:     rcu <rcu@vger.kernel.org>
-Subject: Re: =?utf-8?B?5Zue5aSN77ya5Zue5aSN77ya5Zue?=
- =?utf-8?B?5aSN77ya5Zue5aSN77yaUmU6?=
-Message-ID: <20221007083530.GF4196@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <tencent_B5C892CCA3FDFBC56745B8D50EEB1862AC05@qq.com>
+        s=k20201202; t=1665141991;
+        bh=X7RAvmJNnK4SBmAGNKLQDeBkK71nLPL9krwgOwNB8OU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RC23KyAIY/JtiPjA9kXUBLTM9pRkhsSVW7PkNaHsvCZeI2+hPuCw/vRbjJ17B8M0P
+         fR42YseXkByws5vrhg/caEWSROosh9exRIeeSj94YlAXeHizjkaCoAcRepiVLzv0O6
+         HKXxPM6UB3fxT9GsKBwcIPM29tJQoB7uGuscj9WIcEyNV9Yr1RMhvcFrwYUVtwvXG/
+         V/2UHfJ/rSNMWnY49XgfGMEprRGrNixGwG/BTrlaQ7DzmOFAQaSvObrpXNITZyPz0q
+         2oHozcsVaJWDgjvsTEwNsxhZCi937ZdiDK9so2lLKEnraZ/kCMdn1edZXSqTccbprz
+         2uigwAO/JTs9A==
+Date:   Fri, 7 Oct 2022 13:26:28 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rushikesh.s.kadam@intel.com, urezki@gmail.com,
+        neeraj.iitr10@gmail.com, paulmck@kernel.org, rostedt@goodmis.org,
+        youssefesmat@google.com, surenb@google.com
+Subject: Re: [PATCH v7 01/11] rcu: Wake up nocb gp thread on
+ rcu_barrier_entrain()
+Message-ID: <20221007112628.GA871854@lothringen>
+References: <20221004024157.2470238-1-joel@joelfernandes.org>
+ <20221004024157.2470238-2-joel@joelfernandes.org>
+ <20221004222853.GA323878@lothringen>
+ <c634e41e-3c6c-0896-0873-b9d1bb317cea@joelfernandes.org>
+ <Yz+TWF8ksVK7YzQ0@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <tencent_B5C892CCA3FDFBC56745B8D50EEB1862AC05@qq.com>
+In-Reply-To: <Yz+TWF8ksVK7YzQ0@google.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Good diagram, thank you!
+On Fri, Oct 07, 2022 at 02:47:52AM +0000, Joel Fernandes wrote:
+> On Tue, Oct 04, 2022 at 06:57:59PM -0400, Joel Fernandes wrote:
+> 
+> From: Frederic Weisbecker <frederic@kernel.org>
+> Subject: [PATCH] rcu: Wake up nocb gp thread on rcu_barrier_entrain()
+> 
+> In preparation of RCU lazy changes, wake up the RCU nocb gp thread if
+> needed after an entrain. Otherwise, the RCU barrier callback can wait in
+> the queue for several seconds before the lazy callbacks in front of it
+> are serviced.
+> 
+> Reported-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> ---
+>  kernel/rcu/tree.c      | 11 +++++++++++
+>  kernel/rcu/tree.h      |  1 +
+>  kernel/rcu/tree_nocb.h |  4 ++++
+>  3 files changed, 16 insertions(+)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 5ec97e3f7468..04f33191e5ed 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -3894,6 +3894,8 @@ static void rcu_barrier_entrain(struct rcu_data *rdp)
+>  {
+>  	unsigned long gseq = READ_ONCE(rcu_state.barrier_sequence);
+>  	unsigned long lseq = READ_ONCE(rdp->barrier_seq_snap);
+> +	bool wake_nocb = false;
+> +	bool was_done = false;
+>  
+>  	lockdep_assert_held(&rcu_state.barrier_lock);
+>  	if (rcu_seq_state(lseq) || !rcu_seq_state(gseq) || rcu_seq_ctr(lseq) != rcu_seq_ctr(gseq))
+> @@ -3902,6 +3904,7 @@ static void rcu_barrier_entrain(struct rcu_data *rdp)
+>  	rdp->barrier_head.func = rcu_barrier_callback;
+>  	debug_rcu_head_queue(&rdp->barrier_head);
+>  	rcu_nocb_lock(rdp);
+> +	was_done = rcu_rdp_is_offloaded(rdp) && !rcu_segcblist_pend_cbs(&rdp->cblist);
+>  	WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, jiffies));
+>  	if (rcu_segcblist_entrain(&rdp->cblist, &rdp->barrier_head)) {
+>  		atomic_inc(&rcu_state.barrier_cpu_count);
+> @@ -3909,7 +3912,15 @@ static void rcu_barrier_entrain(struct rcu_data *rdp)
+>  		debug_rcu_head_unqueue(&rdp->barrier_head);
+>  		rcu_barrier_trace(TPS("IRQNQ"), -1, rcu_state.barrier_sequence);
+>  	}
+> +
+> +	/*
+> +	 * If bypass list was non-empty, wake up the nocb GP thread otherwise
+> +	 * bypass/lazy CBs may not be noticed, and can cause real long delays!
+> +	 */
+> +	wake_nocb = was_done && rcu_segcblist_pend_cbs(&rdp->cblist);
+>  	rcu_nocb_unlock(rdp);
+> +	if (wake_nocb)
+> +		wake_nocb_gp(rdp, false);
+>  	smp_store_release(&rdp->barrier_seq_snap, gseq);
+>  }
+>  
+> diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+> index d4a97e40ea9c..41faaf8eb872 100644
+> --- a/kernel/rcu/tree.h
+> +++ b/kernel/rcu/tree.h
+> @@ -443,6 +443,7 @@ static bool rcu_nocb_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
+>  				  unsigned long j);
+>  static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
+>  				bool *was_alldone, unsigned long flags);
+> +static bool wake_nocb_gp(struct rcu_data *rdp, bool force);
+>  static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_empty,
+>  				 unsigned long flags);
+>  static int rcu_nocb_need_deferred_wakeup(struct rcu_data *rdp, int level);
+> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> index f77a6d7e1356..6caade0683dd 100644
+> --- a/kernel/rcu/tree_nocb.h
+> +++ b/kernel/rcu/tree_nocb.h
+> @@ -1558,6 +1558,10 @@ static void rcu_init_one_nocb(struct rcu_node *rnp)
+>  {
+>  }
+>  
+> +static bool wake_nocb_gp(struct rcu_data *rdp, bool force)
+> +{
 
-But that call to on_each_cpu() looks like this:
+It misses a return value...
 
-	on_each_cpu(rcu_barrier_func, NULL, 0, 1);
+> +}
 
-Doesn't that last parameter of "1" mean that on_each_cpu() cannot return
-until after CPU 3's call to rcu_barrier_func() finishes?
+So I planned to post an updated version (please find below) but I triggered
+a rare TREE01 stall related to rcu_barrier(). I just can't remember if it was
+before or after the patch :-s
 
-							Thanx, Paul
+Anyway I'm holding it off until I get more clues.
 
-On Fri, Oct 07, 2022 at 04:03:12PM +0800, 5486 wrote:
-> 原始邮件
->                        
->                      
-> 
-> 发件人："Paul E. McKenney"< paulmck@kernel.org &gt;;
-> 
-> 发件时间：2022/10/7 2:43
-> 
-> 收件人："5486"< 3164135486@qq.com &gt;;
-> 
-> 抄送人："rcu"< rcu@vger.kernel.org &gt;;
-> 
-> 主题：回复：回复：回复：Re:
-> 
-> 
-> On Fri, Oct 07, 2022 at 12:55:49AM +0800, 5486 wrote:
-> &gt; &gt;&nbsp;Note that the last argument to on_each_cpu() is "1", that is,
-> &gt; &gt;&nbsp;on_each_cpu() does not return until rcu_barrier_func() has executed on
-> &gt; &gt;&nbsp;all CPUs.
-> &gt; o .
-> &gt; 
-> &gt; 
-> &gt; 
-> &gt; &gt;Can your scenario happen?
-> &gt; 
-> &gt; rcu_barrier_func&nbsp; execution is not enough,the goal is finish all the rcu callback functions.
-> &gt; 
-> &gt; so it can.
-> 
-> OK, then please show the sequence of calls to rcu_barrier_func() and
-> rcu_barrier_callback() on their respective CPUs, along with their effects
-> on rcu_barrier_cpu_count, in order to show exactly how this can happen.
-> 
-> 							Thanx, Paul
-> 
-> &gt; 原始邮件
-> &gt;                        
-> &gt;                      
-> &gt; 
-> &gt; 发件人："Paul E. McKenney"< paulmck@kernel.org &gt;;
-> &gt; 
-> &gt; 发件时间：2022/10/7 0:46
-> &gt; 
-> &gt; 收件人："5486"< 3164135486@qq.com &gt;;
-> &gt; 
-> &gt; 抄送人："rcu"< rcu@vger.kernel.org &gt;;
-> &gt; 
-> &gt; 主题：回复：回复：Re:
-> &gt; 
-> &gt; 
-> &gt; On Fri, Oct 07, 2022 at 12:38:56AM +0800, 5486 wrote:
-> &gt; &gt; In fact suppose there are for cpuscpu0 cpu1 cpu2 cpu3
-> &gt; &gt; 
-> &gt; &gt; 
-> &gt; &gt; the value of rcu_barrier_cpu_count may be
-> &gt; &gt; 
-> &gt; &gt; 
-> &gt; &gt; 1 &nbsp;cpu0 2 -&gt; 1 cpu1 2 -&gt; 1 cpu2 2 -&gt; 1
-> &gt; &gt; then on_each_cpu finished rcu_barrier_cpu_count decreased to be 0
-> &gt; &gt; then complete(&amp;rcu_barrier_completion); rcu_barrier finished.but rcu_barrier_func of cpu3 may not&nbsp;have been executed.
-> &gt; 
-> &gt; Note that the last argument to on_each_cpu() is "1", that is,
-> &gt; on_each_cpu() does not return until rcu_barrier_func() has executed on
-> &gt; all CPUs.
-> &gt; 
-> &gt; Can your scenario happen?
-> &gt; 
-> &gt; 							Thanx, Paul
-> &gt; 
-> &gt; &gt; 原始邮件
-> &gt; &gt;                        
-> &gt; &gt;                      
-> &gt; &gt; 
-> &gt; &gt; 发件人："Paul E. McKenney"< paulmck@kernel.org &gt;;
-> &gt; &gt; 
-> &gt; &gt; 发件时间：2022/10/6 19:57
-> &gt; &gt; 
-> &gt; &gt; 收件人："5486"< 3164135486@qq.com &gt;;
-> &gt; &gt; 
-> &gt; &gt; 抄送人："rcu"< rcu@vger.kernel.org &gt;;
-> &gt; &gt; 
-> &gt; &gt; 主题：回复：Re:
-> &gt; &gt; 
-> &gt; &gt; 
-> &gt; &gt; On Thu, Oct 06, 2022 at 05:56:35PM +0800, 5486 wrote:
-> &gt; &gt; &gt; My problem is &nbsp;some grace period can take very little time shorter than the one iteration of on_each_cpu itself。So the complete() can execute on one cpu before the last of all. &nbsp;
-> &gt; &gt; 
-> &gt; &gt; And that is the bug.  Very good!
-> &gt; &gt; 
-> &gt; &gt; &gt; but now 
-> &gt; &gt; &gt; The key is on_each_cpu &nbsp;,it is really clever that on_each_cpu &nbsp;will prevent completion of any grace periods. Concealed Mechanism！
-> &gt; &gt; &gt; Is it?
-> &gt; &gt; &gt; In this ancient version code have &nbsp;real race-condition bugs .I will take some time to study to find it and reply to you.
-> &gt; &gt; &gt; it is about on_each_cpu have not prohibit preemption? ,I did not cover more things related to the operationg system.
-> &gt; &gt; 
-> &gt; &gt; Suppose the code instead read as follows?
-> &gt; &gt; 
-> &gt; &gt; void rcu_barrier(void)
-> &gt; &gt; {
-> &gt; &gt; 	BUG_ON(in_interrupt());
-> &gt; &gt; 	/* Take cpucontrol semaphore to protect against CPU hotplug */
-> &gt; &gt; 	down(&amp;rcu_barrier_sema);
-> &gt; &gt; 	init_completion(&amp;rcu_barrier_completion);
-> &gt; &gt; 	atomic_set(&amp;rcu_barrier_cpu_count, 1);
-> &gt; &gt; 	on_each_cpu(rcu_barrier_func, NULL, 0, 1);
-> &gt; &gt; 	if (atomic_dec_and_test(&amp;rcu_barrier_cpu_count))
-> &gt; &gt; 		complete(&amp;rcu_barrier_completion);
-> &gt; &gt; 	wait_for_completion(&amp;rcu_barrier_completion);
-> &gt; &gt; 	up(&amp;rcu_barrier_sema);
-> &gt; &gt; }
-> &gt; &gt; 
-> &gt; &gt; Would that work?  Or are there additional bugs?
-> &gt; &gt; 
-> &gt; &gt; 							Thanx, Paul
-> &gt; &gt; 
-> &gt; &gt; &gt; Chao,Li
-> &gt; &gt; &gt; 
-> &gt; &gt; &gt;                        
-> &gt; &gt; &gt; 原始邮件
-> &gt; &gt; &gt;                        
-> &gt; &gt; &gt;                      
-> &gt; &gt; &gt; 
-> &gt; &gt; &gt; 发件人："Paul E. McKenney"< paulmck@kernel.org &gt;;
-> &gt; &gt; &gt; 
-> &gt; &gt; &gt; 发件时间：2022/10/5 21:01
-> &gt; &gt; &gt; 
-> &gt; &gt; &gt; 收件人："5486"< 3164135486@qq.com &gt;;
-> &gt; &gt; &gt; 
-> &gt; &gt; &gt; 抄送人："rcu"< rcu@vger.kernel.org &gt;;
-> &gt; &gt; &gt; 
-> &gt; &gt; &gt; 主题：Re: Dear Pualmack help i have a problem with rcu code
-> &gt; &gt; &gt; 
-> &gt; &gt; &gt; 
-> &gt; &gt; &gt; On Tue, Oct 04, 2022 at 03:04:19AM +0800, 5486 wrote:
-> &gt; &gt; &gt; &gt; Dear&nbsp;Pualmack i have problem.
-> &gt; &gt; &gt; &gt; I have been reading the patch
-> &gt; &gt; &gt; &gt; https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/kernel?id=ab4720ec76b756e1f8705e207a7b392b0453afd6
-> &gt; &gt; &gt; &gt; 
-> &gt; &gt; &gt; &gt; 
-> &gt; &gt; &gt; &gt; 
-> &gt; &gt; &gt; &gt; +	wait_for_completion(&amp;rcu_barrier_completion);
-> &gt; &gt; &gt; &gt; 
-> &gt; &gt; &gt; &gt; How this guarantees all completes to be done ?
-> &gt; &gt; &gt; &gt; I learn one wait_for_completion corresponds to one&nbsp;x-&gt;done++ once a time
-> &gt; &gt; &gt; 
-> &gt; &gt; &gt; 2005!  That takes me back a bit!
-> &gt; &gt; &gt; 
-> &gt; &gt; &gt; Adding the rcu email list on CC to archive this and for others to
-> &gt; &gt; &gt; weigh in.
-> &gt; &gt; &gt; 
-> &gt; &gt; &gt; The trick is that rcu_barrier_callback() is an RCU callback that executes
-> &gt; &gt; &gt; on each CPU (see the on_each_cpu() in the rcu_barrier() function.)
-> &gt; &gt; &gt; 
-> &gt; &gt; &gt; This RCU callback function is queued using call_rcu(), which queues
-> &gt; &gt; &gt; that callback at the end of the CPU's callback list.  Thus, all
-> &gt; &gt; &gt; RCU callback functions that were already queued on that CPU will
-> &gt; &gt; &gt; be invoked before rcu_barrier_callback() in invoked.
-> &gt; &gt; &gt; 
-> &gt; &gt; &gt; The rcu_barrier_callback() does an atomic_dec_and_test() operation on the
-> &gt; &gt; &gt; rcu_barrier_cpu_count global variable, and only when this variable becomes
-> &gt; &gt; &gt; zero does it invoke complete().  This atomic_dec_and_test() operation is
-> &gt; &gt; &gt; fully ordered, and thus ensures that all the earlier atomic_dec_and_test()
-> &gt; &gt; &gt; operations on this variable are globally seen to happen before the last
-> &gt; &gt; &gt; such operation (the one that decrements rcu_barrier_cpu_count to zero).
-> &gt; &gt; &gt; 
-> &gt; &gt; &gt; This last rcu_barrier_callback() will then invoke complete().  This will
-> &gt; &gt; &gt; ensure that the wakeup in wait_for_completion() happens only after all
-> &gt; &gt; &gt; previously queued RCU callbacks are invoked.
-> &gt; &gt; &gt; 
-> &gt; &gt; &gt; Almost, anyway.
-> &gt; &gt; &gt; 
-> &gt; &gt; &gt; There are rare but real race-condition bugs in this ancient version
-> &gt; &gt; &gt; of rcu_barrier().  Can you tell me what they are?
-> &gt; &gt; &gt; 
-> &gt; &gt; &gt; 							Thanx, Paul
+---
+From: Frederic Weisbecker <frederic@kernel.org>
+Date: Tue, 4 Oct 2022 02:41:47 +0000
+Subject: [PATCH] rcu: Fix missing nocb gp wake on rcu_barrier()
+
+Upon entraining a callback to a NOCB CPU, no further wake up is
+performed on the corresponding nocb_gp kthread. As a result, the callback
+and all the subsequent ones on that CPU may be ignored, at least until
+an RCU_NOCB_WAKE_FORCE timer is ever armed.
+
+Here is a possible bad scenario:
+
+1) CPU 0 is NOCB unlike all other CPUs.
+2) CPU 0 queues a callback
+2) The grace period related to that callback elapses
+3) The callback is moved to the done list (but is not invoked yet),
+   there are no more pending callbacks for CPU 0
+4) CPU 1 calls rcu_barrier() and sends an IPI to CPU 0
+5) CPU 0 entrains the callback but doesn't wake up nocb_gp
+6) CPU 1 blocks forever, unless CPU 0 ever queues enough further
+   callbacks to arm an RCU_NOCB_WAKE_FORCE timer.
+
+Make sure the necessary wake up is issued if necessary.
+
+Reported-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Fixes: 5d6742b37727 ("rcu/nocb: Use rcu_segcblist for no-CBs CPUs")
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+---
+ kernel/rcu/tree.c      | 6 ++++++
+ kernel/rcu/tree.h      | 1 +
+ kernel/rcu/tree_nocb.h | 5 +++++
+ 3 files changed, 12 insertions(+)
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 96d678c9cfb6..025f59f6f97f 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3914,6 +3914,8 @@ static void rcu_barrier_entrain(struct rcu_data *rdp)
+ {
+ 	unsigned long gseq = READ_ONCE(rcu_state.barrier_sequence);
+ 	unsigned long lseq = READ_ONCE(rdp->barrier_seq_snap);
++	bool wake_nocb = false;
++	bool was_alldone = false;
+ 
+ 	lockdep_assert_held(&rcu_state.barrier_lock);
+ 	if (rcu_seq_state(lseq) || !rcu_seq_state(gseq) || rcu_seq_ctr(lseq) != rcu_seq_ctr(gseq))
+@@ -3922,6 +3924,7 @@ static void rcu_barrier_entrain(struct rcu_data *rdp)
+ 	rdp->barrier_head.func = rcu_barrier_callback;
+ 	debug_rcu_head_queue(&rdp->barrier_head);
+ 	rcu_nocb_lock(rdp);
++	was_alldone = rcu_rdp_is_offloaded(rdp) && !rcu_segcblist_pend_cbs(&rdp->cblist);
+ 	WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, jiffies));
+ 	if (rcu_segcblist_entrain(&rdp->cblist, &rdp->barrier_head)) {
+ 		atomic_inc(&rcu_state.barrier_cpu_count);
+@@ -3929,7 +3932,10 @@ static void rcu_barrier_entrain(struct rcu_data *rdp)
+ 		debug_rcu_head_unqueue(&rdp->barrier_head);
+ 		rcu_barrier_trace(TPS("IRQNQ"), -1, rcu_state.barrier_sequence);
+ 	}
++	wake_nocb = was_alldone && rcu_segcblist_pend_cbs(&rdp->cblist);
+ 	rcu_nocb_unlock(rdp);
++	if (wake_nocb)
++		wake_nocb_gp(rdp, false);
+ 	smp_store_release(&rdp->barrier_seq_snap, gseq);
+ }
+ 
+diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+index d4a97e40ea9c..925dd98f8b23 100644
+--- a/kernel/rcu/tree.h
++++ b/kernel/rcu/tree.h
+@@ -439,6 +439,7 @@ static void zero_cpu_stall_ticks(struct rcu_data *rdp);
+ static struct swait_queue_head *rcu_nocb_gp_get(struct rcu_node *rnp);
+ static void rcu_nocb_gp_cleanup(struct swait_queue_head *sq);
+ static void rcu_init_one_nocb(struct rcu_node *rnp);
++static bool wake_nocb_gp(struct rcu_data *rdp, bool force);
+ static bool rcu_nocb_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
+ 				  unsigned long j);
+ static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
+diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+index f77a6d7e1356..094fd454b6c3 100644
+--- a/kernel/rcu/tree_nocb.h
++++ b/kernel/rcu/tree_nocb.h
+@@ -1558,6 +1558,11 @@ static void rcu_init_one_nocb(struct rcu_node *rnp)
+ {
+ }
+ 
++static bool wake_nocb_gp(struct rcu_data *rdp, bool force)
++{
++	return false;
++}
++
+ static bool rcu_nocb_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
+ 				  unsigned long j)
+ {
+-- 
+2.25.1
+
 
 
