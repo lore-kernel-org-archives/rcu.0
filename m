@@ -2,219 +2,125 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D96FC4332F
-	for <rcu@archiver.kernel.org>; Fri,  7 Oct 2022 20:24:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 02921C433FE
+	for <rcu@archiver.kernel.org>; Sun,  9 Oct 2022 20:51:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229459AbiJGUYc (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 7 Oct 2022 16:24:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56174 "EHLO
+        id S230092AbiJIUvn (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 9 Oct 2022 16:51:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230165AbiJGUY1 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 7 Oct 2022 16:24:27 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F043112584B
-        for <rcu@vger.kernel.org>; Fri,  7 Oct 2022 13:24:25 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id r20so3059602ilt.11
-        for <rcu@vger.kernel.org>; Fri, 07 Oct 2022 13:24:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=7+kXfS3Ypp4tpiNNuZYWvfWhiQOP5kv7ZOoacB0ewhA=;
-        b=WITtF1r7a59I3Llnq2W4vuzWvTwUu8n504Xjd0senswKpeYsCPKDFdLtwM8mxFvgA7
-         a25ipzsMLOch0Eay5+x1p5dkRJC2t64xPXuEADMf76X4XAZVySrrQSXIR/KQEjyGYn7c
-         /DAwtVmTCmAVEE0WqVV3nyxEa5A0q4tqO54us=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7+kXfS3Ypp4tpiNNuZYWvfWhiQOP5kv7ZOoacB0ewhA=;
-        b=t05yhwhAdpiVO7DhATvZ4O4IHfEyuHy6w+hPD6QaeAMjLzYWwqH0JzlWpaPTq678Rs
-         fpc1pasbEcZgKk782DZDHZMRUXIHGvY/ed7c5W/EhFmp6uJ5ya2YKW5VrR81eQ8cInAZ
-         nJ7t8woYwch0ECT4M2WJqw8XpZbxSvtd2wgSBN3Vp9HWqx3EN9F60BSnu4AvKP4IICCS
-         Yibv91ld7u5JRsq2BfI3iM8QELiaRkVsNzYn/JQW5JxiAcBqhwflUpD7iINjQBM317fW
-         skeKO9cjSuV+UuEZ1ceb72quYHpIqvOSUmhS+PdgtgjAsW8eDiZl1joCGybUlzoJsQd3
-         3lzw==
-X-Gm-Message-State: ACrzQf2/zZTUgXbsITl3OubdUGebWgJ8ZXHDZ6ArUFd8PaAkRl7whhI5
-        jaeNISBarRrKO1iQRQLnfUE8fHaCi9AgMDlmZzPffQ==
-X-Google-Smtp-Source: AMsMyM5+Huguf0FBF1tGS8CNHuPcURK/7/RuTzh0B4lAxW+jr+dNvJaRw0vQzUfBEj9vohXotuvyWEoJJrTpNmRt8HQ=
-X-Received: by 2002:a92:d686:0:b0:2fa:6226:6247 with SMTP id
- p6-20020a92d686000000b002fa62266247mr3326132iln.79.1665174265292; Fri, 07 Oct
- 2022 13:24:25 -0700 (PDT)
+        with ESMTP id S230082AbiJIUvm (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 9 Oct 2022 16:51:42 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A36F51A38E;
+        Sun,  9 Oct 2022 13:51:41 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 417A060C6F;
+        Sun,  9 Oct 2022 20:51:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B74CDC433D7;
+        Sun,  9 Oct 2022 20:51:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1665348700;
+        bh=EpH8F25ftH4qXMt5E1/aEv6zxIBXRJCjac9DWYRJ0Jc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=QRRV2tqVZZ+AvHNT/8+4CWK3oDxUFn7B4uqV6VqiragiNeZHEGZ7huHk+v50aCs4A
+         6DKrR7cD7ZAPUKqWIAcjH3UHK/Sk0rvOZYENHLkxqplRtqBft2WvCcDv3/Uab8fFwH
+         q1dIJx7KdfdAHJGAmQkYOFkxo4mAzBOM6VdF57age9Zfl2dftruvbjYdtLITI2BZ5+
+         UiVm99T5k6tHk89CH3fyFWVAsRMm+lav1WHDNjbgthMwvkdhN1zTsXqKWIPwduVCVu
+         wpi9PtGvbaP1P5JHnL/XuVF5h9bFHhAJ4Km1wOZSG2DjEcFaLqj0y0wPwx00uO4Ol8
+         j5OJJ5tMjD0Tg==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Zqiang <qiang1.zhang@intel.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, frederic@kernel.org,
+        quic_neeraju@quicinc.com, josh@joshtriplett.org,
+        rcu@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.0 02/18] rcu: Avoid triggering strict-GP irq-work when RCU is idle
+Date:   Sun,  9 Oct 2022 16:51:19 -0400
+Message-Id: <20221009205136.1201774-2-sashal@kernel.org>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20221009205136.1201774-1-sashal@kernel.org>
+References: <20221009205136.1201774-1-sashal@kernel.org>
 MIME-Version: 1.0
-References: <Y0BfvzpF1DE10nOg@google.com> <00F8CD19-98E7-4CEB-AC8E-4E86642E91A7@joelfernandes.org>
- <20221007175208.GI4196@paulmck-ThinkPad-P17-Gen-1> <Y0B+CqZVP3bqQyn5@google.com>
- <20221007195629.GK4196@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20221007195629.GK4196@paulmck-ThinkPad-P17-Gen-1>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Fri, 7 Oct 2022 16:24:14 -0400
-Message-ID: <CAEXW_YQO_i7i9BK8JcCEJw7aekws3Q2MPbbhjJ3rv84ypf8PWA@mail.gmail.com>
-Subject: Re: [PATCH v7 10/11] scsi/scsi_error: Use call_rcu_flush() instead of call_rcu()
-To:     paulmck@kernel.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rushikesh.s.kadam@intel.com, urezki@gmail.com,
-        neeraj.iitr10@gmail.com, frederic@kernel.org, rostedt@goodmis.org,
-        youssefesmat@google.com, surenb@google.com
-Content-Type: text/plain; charset="UTF-8"
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Oct 7, 2022 at 3:56 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-[..]
-> > > > > [    6.887033 ] rcu: *****************************************************
-> > > > > [    6.891242 ] rcu: RCU: A wake up has been detected from a lazy callback!
-> > > > > [    6.895377 ] rcu: The callback name is: scsi_eh_inc_host_failed
-> > > > > [    6.899084 ] rcu: The task it woke up is: scsi_eh_1 (61)
-> > > > > [    6.902405 ] rcu: This could cause performance issues! Check the stack.
-> > > > > [    6.906532 ] rcu: *****************************************************
-> > > > >
-> > > > >
-> > > > > [   17.127128 ] rcu: *****************************************************
-> > > > > [   17.131397 ] rcu: RCU: A wake up has been detected from a lazy callback!
-> > > > > [   17.135703 ] rcu: The callback name is: scsi_eh_inc_host_failed
-> > > > > [   17.139485 ] rcu: The task it woke up is: scsi_eh_1 (61)
-> > > > > [   17.142828 ] rcu: This could cause performance issues! Check the stack.
-> > > > > [   17.146962 ] rcu: *****************************************************
-> > > > >
-> > > > > And thanks to Steve for the binary search code.
-> > > > >
-> > > > > One thing I found is I have to ignore kworkers because there are times when a
-> > > > > work item is queued from a callback and those callbacks don't seem to
-> > > > > contribute to performance issues. So I am filtering these:
-> > > > >
-> > > > > [   38.631724 ] rcu: The callback name is: thread_stack_free_rcu
-> > > > > [   38.635317 ] rcu: The task it woke up is: kworker/3:2 (143)
-> > > > >
-[..]
-> > > > > +    help
-> > > > > +      Debugging to catch issues caused by delayed RCU callbacks.
-> > > > > +
-> > > > > endmenu # "RCU Subsystem"
-> > > > > diff --git a/kernel/rcu/lazy-debug.h b/kernel/rcu/lazy-debug.h
-> > > > > new file mode 100644
-> > > > > index 000000000000..fc1cc1cb89f0
-> > > > > --- /dev/null
-> > > > > +++ b/kernel/rcu/lazy-debug.h
-> > > > > @@ -0,0 +1,149 @@
-> > > > > +#include <linux/string.h>
-> > > > > +#include <linux/spinlock.h>
-> > > > > +
-> > > > > +#ifdef CONFIG_RCU_LAZY_DEBUG
-> > > > > +#include <linux/preempt.h>
-> > > > > +#include <trace/events/sched.h>
-> > > > > +
-> > > > > +static DEFINE_PER_CPU(bool, rcu_lazy_cb_exec) = false;
-> > > > > +static DEFINE_PER_CPU(void *, rcu_lazy_ip) = NULL;
-> > > > > +
-> > > > > +static DEFINE_RAW_SPINLOCK(lazy_funcs_lock);
-> > > > > +
-> > > > > +#define FUNC_SIZE 1024
-> > > >
-> > > > And I know this array can overflow in the future so I will add checks for that in the code if we are going with this patch.
-> > >
-> > > I believe that there are fewer than 300 RCU callback functions, but yes,
-> > > there would need to at least be a check at some point.
-> > >
-> > > I still strongly suggest the static search in addition to this.  Yes, this
-> > > is a cool patch, but it should be mostly used for the difficult-to-find
-> > > instances.
-> >
-> > I wrote some scripts shared below (could be improves) which search for "wake"
-> > in code following an RCU callback's reference. This catches SCSI too but I
-> > did find one more:
-> >
-> > (1)
-> > rxrpc_destroy_connection()
-> >
-> >       which does:
-> >       wake_up_var(&conn->params.local->rxnet->nr_conns);
-> >
-> >
-> > I think I'll change this to call_rcu_flush() to be safe.
-> >
-> > ========
-> >
-> > All others are harmless / false-positives which I inspected and didn't have
-> > anything concerning.
->
-> Very good, and thank you for doing this!
+From: Zqiang <qiang1.zhang@intel.com>
 
-Thanks.
+[ Upstream commit 621189a1fe93cb2b34d62c5cdb9e258bca044813 ]
 
-> Maybe include the script in the cover letter of the next version?
+Kernels built with PREEMPT_RCU=y and RCU_STRICT_GRACE_PERIOD=y trigger
+irq-work from rcu_read_unlock(), and the resulting irq-work handler
+invokes rcu_preempt_deferred_qs_handle().  The point of this triggering
+is to force grace periods to end quickly in order to give tools like KASAN
+a better chance of detecting RCU usage bugs such as leaking RCU-protected
+pointers out of an RCU read-side critical section.
 
-Good idea, thanks, I will do so.
+However, this irq-work triggering is unconditional.  This works, but
+there is no point in doing this irq-work unless the current grace period
+is waiting on the running CPU or task, which is not the common case.
+After all, in the common case there are many rcu_read_unlock() calls
+per CPU per grace period.
 
- - Joel
+This commit therefore triggers the irq-work only when the current grace
+period is waiting on the running CPU or task.
 
+This change was tested as follows on a four-CPU system:
 
->
->                                                         Thanx, Paul
->
-> > ---8<-----------------------
-> >
-> > From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
-> > Subject: [PATCH] debug: look for wake references after rcu callback body
-> >
-> > First run search-call-rcu.sh which generates some files, then run
-> > search-wakers.sh to see the references to wake.
-> >
-> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > ---
-> >  search-call-rcu.sh | 19 +++++++++++++++++++
-> >  search-wakers.sh   | 15 +++++++++++++++
-> >  2 files changed, 34 insertions(+)
-> >  create mode 100755 search-call-rcu.sh
-> >  create mode 100755 search-wakers.sh
-> >
-> > diff --git a/search-call-rcu.sh b/search-call-rcu.sh
-> > new file mode 100755
-> > index 000000000000..21406355888c
-> > --- /dev/null
-> > +++ b/search-call-rcu.sh
-> > @@ -0,0 +1,19 @@
-> > +#!/bin/bash
-> > +
-> > +rm func-list
-> > +touch func-list
-> > +
-> > +for f in $(find . \( -name "*.c" -o -name "*.h" \) | grep -v rcu); do
-> > +
-> > +     funcs=$(perl -0777 -ne 'while(m/call_rcu\([&]?.+,\s?(.+)\).*;/g){print "$1\n";}' $f)
-> > +
-> > +     if [ "x$funcs" != "x" ]; then
-> > +             for func in $funcs; do
-> > +                     echo "$f $func" >> func-list
-> > +                     echo "$f $func"
-> > +             done
-> > +     fi
-> > +
-> > +done
-> > +
-> > +cat func-list | sort | uniq | tee func-list-sorted
-> > diff --git a/search-wakers.sh b/search-wakers.sh
-> > new file mode 100755
-> > index 000000000000..a96d60a7e16b
-> > --- /dev/null
-> > +++ b/search-wakers.sh
-> > @@ -0,0 +1,15 @@
-> > +#!/bin/bash
-> > +
-> > +while read fl; do
-> > +     file=$(echo $fl | cut -d " " -f1)
-> > +     func=$(echo $fl | cut -d " " -f2)
-> > +
-> > +     grep -A 30 $func $file | grep wake > /dev/null
-> > +
-> > +     if [ $? -eq 0 ]; then
-> > +             echo "keyword wake found after function reference $func in $file"
-> > +             echo "Output:"
-> > +             grep -A 30 $func $file
-> > +             echo "==========================================================="
-> > +     fi
-> > +done < func-list-sorted
-> > --
-> > 2.38.0.rc1.362.ged0d419d3c-goog
-> >
+	echo rcu_preempt_deferred_qs_handler > /sys/kernel/debug/tracing/set_ftrace_filter
+	echo 1 > /sys/kernel/debug/tracing/function_profile_enabled
+	insmod rcutorture.ko
+	sleep 20
+	rmmod rcutorture.ko
+	echo 0 > /sys/kernel/debug/tracing/function_profile_enabled
+	echo > /sys/kernel/debug/tracing/set_ftrace_filter
+
+This procedure produces results in this per-CPU set of files:
+
+	/sys/kernel/debug/tracing/trace_stat/function*
+
+Sample output from one of these files is as follows:
+
+  Function                               Hit    Time            Avg             s^2
+  --------                               ---    ----            ---             ---
+  rcu_preempt_deferred_qs_handle      838746    182650.3 us     0.217 us        0.004 us
+
+The baseline sum of the "Hit" values (the number of calls to this
+function) was 3,319,015.  With this commit, that sum was 1,140,359,
+for a 2.9x reduction.  The worst-case variance across the CPUs was less
+than 25%, so this large effect size is statistically significant.
+
+The raw data is available in the Link: URL.
+
+Link: https://lore.kernel.org/all/20220808022626.12825-1-qiang1.zhang@intel.com/
+Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ kernel/rcu/tree_plugin.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index 438ecae6bd7e..49468b4d1b43 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -641,7 +641,8 @@ static void rcu_read_unlock_special(struct task_struct *t)
+ 
+ 		expboost = (t->rcu_blocked_node && READ_ONCE(t->rcu_blocked_node->exp_tasks)) ||
+ 			   (rdp->grpmask & READ_ONCE(rnp->expmask)) ||
+-			   IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD) ||
++			   (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD) &&
++			   ((rdp->grpmask & READ_ONCE(rnp->qsmask)) || t->rcu_blocked_node)) ||
+ 			   (IS_ENABLED(CONFIG_RCU_BOOST) && irqs_were_disabled &&
+ 			    t->rcu_blocked_node);
+ 		// Need to defer quiescent state until everything is enabled.
+-- 
+2.35.1
+
