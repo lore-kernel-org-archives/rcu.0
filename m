@@ -2,35 +2,35 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A91F4C43217
-	for <rcu@archiver.kernel.org>; Sun,  9 Oct 2022 20:56:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 04EC8C433FE
+	for <rcu@archiver.kernel.org>; Sun,  9 Oct 2022 20:59:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230457AbiJIU4Z (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 9 Oct 2022 16:56:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44816 "EHLO
+        id S231304AbiJIU6c (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 9 Oct 2022 16:58:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230453AbiJIUzt (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 9 Oct 2022 16:55:49 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE33731ECD;
-        Sun,  9 Oct 2022 13:53:19 -0700 (PDT)
+        with ESMTP id S231267AbiJIU50 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 9 Oct 2022 16:57:26 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A06D32065;
+        Sun,  9 Oct 2022 13:53:56 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 6CDC8B80DC5;
-        Sun,  9 Oct 2022 20:53:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24919C433C1;
-        Sun,  9 Oct 2022 20:53:16 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 84AAC60CA0;
+        Sun,  9 Oct 2022 20:53:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0298FC433D6;
+        Sun,  9 Oct 2022 20:53:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665348797;
-        bh=NnNOle+6GdU/dCal8eZzhfxhUebGvSc2Ta5UO/0MGsw=;
+        s=k20201202; t=1665348834;
+        bh=oSqopbRO77nvGov1G/esShYNUZjCZlTROPXoWvX/7Ic=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OwhSRwlnPUiGW7PkWAFW3iuQaDVUtCxAMw6QlZpIlaF39c7kabY0tgCVXyYKb/IRg
-         mRJ1ijpBNSVf6H9m64HA+siG6tmLmcbJOnWDu16TMuDwmB2+Jvd1OzmijieZ6YFTfY
-         3TP+MN2G7NYaTWB9MJJlQKBkypZtQGXhc2aLksWgBY18T4HSFEbhc7Eyo4iEqOIb3d
-         PTvCQ2G+5E9VIqn4g6k7ty6phMcm4h63ULCnaAnSoGRzVIzggmWoDVWcfReRUTrsPe
-         e0tpvCr4ebPklGUgcWB7OE1ixJHA8W+KWZbGeGh4/3ksECRZGuDwDQPoob2sdBlw01
-         wWIUpc5Y+oNUw==
+        b=VohpTuQPcB9er0AIM8BWG0dfJAmjYJ7hjkReZMcfdMWWC5anWDl2595h6lfdhQf9G
+         hljWY0MTE0rmlANDNxwMIBYFm1EG1CkzQrc36/VhLK0L3AqM456nIkQklKiI2ye082
+         S/qdLdwuAJ4MYGGvhp8cMLRDZR5RLA1IFrTLXs7QvPp+dXJlYvrvfB+PCJVf01VAUV
+         +83skZD0ooSeGoKsExxQpa6Zih/VLVb0dMzV2lE2zjpIrareHLcsm8e5eQn7y+3ENU
+         dxwRGambRrg0KE186kZW4DneIM//hu9Txx6/H/8XT4crJ1P3Qi9j1mWUa6XJ00VVGk
+         +g7MOfwBmAdZQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Zqiang <qiang1.zhang@intel.com>,
@@ -38,12 +38,12 @@ Cc:     Zqiang <qiang1.zhang@intel.com>,
         Sasha Levin <sashal@kernel.org>, frederic@kernel.org,
         quic_neeraju@quicinc.com, josh@joshtriplett.org,
         rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 04/15] rcu-tasks: Convert RCU_LOCKDEP_WARN() to WARN_ONCE()
-Date:   Sun,  9 Oct 2022 16:52:57 -0400
-Message-Id: <20221009205308.1202627-4-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 02/10] rcu-tasks: Convert RCU_LOCKDEP_WARN() to WARN_ONCE()
+Date:   Sun,  9 Oct 2022 16:53:41 -0400
+Message-Id: <20221009205350.1203176-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20221009205308.1202627-1-sashal@kernel.org>
-References: <20221009205308.1202627-1-sashal@kernel.org>
+In-Reply-To: <20221009205350.1203176-1-sashal@kernel.org>
+References: <20221009205350.1203176-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -75,7 +75,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 60c9eacac25b..ae8396032b5d 100644
+index 14af29fe1377..8b51e6a5b386 100644
 --- a/kernel/rcu/tasks.h
 +++ b/kernel/rcu/tasks.h
 @@ -171,7 +171,7 @@ static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
