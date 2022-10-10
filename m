@@ -2,132 +2,140 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A52E2C433F5
-	for <rcu@archiver.kernel.org>; Mon, 10 Oct 2022 04:25:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A156C433F5
+	for <rcu@archiver.kernel.org>; Mon, 10 Oct 2022 11:21:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229854AbiJJEZc (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 10 Oct 2022 00:25:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33492 "EHLO
+        id S231495AbiJJLVh (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 10 Oct 2022 07:21:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbiJJEZa (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 10 Oct 2022 00:25:30 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64D9D42AEA;
-        Sun,  9 Oct 2022 21:25:29 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id l4so9340110plb.8;
-        Sun, 09 Oct 2022 21:25:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=vAH4rya06AUuc9cGIVqpG9iUHugeEm5tYJ/niYtbVRY=;
-        b=MLxVgjqoSNusMoE1FuWBp1q556Q//9g3yq35wJGCKcTbRZz58TywpUOayoe9r+tXBw
-         6h2JKPPCtaG41E6WtcFxo2hexOQFb3i/eS968uKnerE9TPzv1J6xW28Y93kuTCpIV3he
-         nrTiA91WghpRf0uEuHTfpYggCKaaZh9iq0mHIqQu9S3xs8wRCA0mRVPiFPCcZzu3c2ug
-         9idRwLBqTgyNVhSh9lrTU5BuxcqVFJdYKE/PGpRorh0rgG457xKEDiPt121LjCcQ1lhw
-         HO7ptOLO/EAQKfoH9Z8Mcl9k+522j0CFRDVsWPSMnPGA7UkRUnhZ4O9HDdzVxpu6/mEp
-         JhcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vAH4rya06AUuc9cGIVqpG9iUHugeEm5tYJ/niYtbVRY=;
-        b=6cz8ISoGtNiUz0okpsOtMtwpfjAiapEH0sIjH8sLdojEcANmOZnPrEAARAJ9cEkZVp
-         eULaTvI64moYve1LR13Px/n0thxv47YLMpxU71JfYiplCW5p65hhmgxmrH/tumuZRqPq
-         B7buLJDoUmpvWfKV21gbHIO/vl/7UknFFhi/vjeIvxU9ZiXy/GpKTy5R748MJenluB/m
-         rtcCckfKhY4qVkBRIhmVZS5L33iGmEpG4cSii/tVaP3xaJnapO0wb3BfaG34DgVaeu3S
-         6+MxAPWuB+Sws0pmaxBxyVbqzipxel+tD79pRhlKCzfgCrsyjFaBvp65QmgFtHG5bA07
-         WbVw==
-X-Gm-Message-State: ACrzQf2Q3ATkZMzAxQgCWJ5sDqFc6ueyxF31iMaiTsNfDDdyRG9DlysZ
-        ZtKHlWqoTjwG/95Klr/AFWI9t4eHPYvHiX/38+4=
-X-Google-Smtp-Source: AMsMyM791DUqNXcf3i6ujvTKOJ/C4se8A3QyfbOhaEpB1pPQTDWb2jlQTE2LK/9Ih+qgalZofJvsvIMoB4YHVRaVP/g=
-X-Received: by 2002:a17:90a:7305:b0:20a:6ffd:1f8e with SMTP id
- m5-20020a17090a730500b0020a6ffd1f8emr29173215pjk.69.1665375928676; Sun, 09
- Oct 2022 21:25:28 -0700 (PDT)
+        with ESMTP id S231270AbiJJLVg (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 10 Oct 2022 07:21:36 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4239549B7E;
+        Mon, 10 Oct 2022 04:21:34 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4MmGh84X0tz4wgr;
+        Mon, 10 Oct 2022 22:21:28 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1665400889;
+        bh=lMMl/KHosRqKoaG99tWgP95ZIQ9jboImJ5ERiTEIL78=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=qlkVAQnyj1Lg0FWv1boZL3xZ32fpNKxBW9d8Ecbl7sj+Py6TKF8T8vEO5HA6DwBtP
+         AWuSBcPvAqRevSpDvLGsh1n2XkMW6A3Zu25tSCE9A0NQOINGrfgNJh8gCfApvAsgLb
+         g0w/IOIgxrmLB3SueVEzNXWYQovpweZolQuos++QCKFZ7tHrqeuoQTz9yEB9y4Rp5m
+         Fh6BgnMAh0UyiqcsJsLsDQ6tTpOik/sNh7QMRd2GydwTXJFC8it3bHbT/mAZs+6th7
+         99LSGmFclfJn/EDkB7NIbt6J6VB/EtzQtjaRu80xh3h8wJfp/LMh+R4U4ON4amVUBv
+         3U9t0Y+zIYRng==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Zhouyi Zhou <zhouzhouyi@gmail.com>, npiggin@gmail.com,
+        christophe.leroy@csgroup.eu, atrajeev@linux.vnet.ibm.com,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        lance@osuosl.org, paulmck@kernel.org, rcu@vger.kernel.org
+Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>
+Subject: Re: [PATCH linux-next][RFC] powerpc: fix HOTPLUG error in rcutorture
+In-Reply-To: <20221010023315.98396-1-zhouzhouyi@gmail.com>
+References: <20221010023315.98396-1-zhouzhouyi@gmail.com>
+Date:   Mon, 10 Oct 2022 22:21:24 +1100
+Message-ID: <87bkqjorez.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-References: <20220927014823.11439-1-zhouzhouyi@gmail.com> <CN6WCMKCWHOG.LT2QV3910UJ2@bobo>
- <CAABZP2wYcNXkTo=tgX-ARziwgD2rng+-wCZ-qfQ6M30+vmLEug@mail.gmail.com>
- <CN7OZ6TMLLFS.2HER50Q3SO480@bobo> <CAABZP2xu5w9Ec8LmTUrF31KhY3HCcBjQYSk4xo14bdB9mxOz+A@mail.gmail.com>
- <CNHXQ6R5IEHG.1D2WH96LGUA1I@bobo>
-In-Reply-To: <CNHXQ6R5IEHG.1D2WH96LGUA1I@bobo>
-From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
-Date:   Mon, 10 Oct 2022 04:25:17 +0800
-Message-ID: <CAABZP2x7bc=fzEobjthMYYQcS2DsPtnyg0-rZLwVb-tYn0YDiw@mail.gmail.com>
-Subject: Re: [PATCH linux-next][RFC] powerpc: avoid lockdep when we are offline
-To:     Nicholas Piggin <npiggin@gmail.com>
-Cc:     mpe@ellerman.id.au, christophe.leroy@csgroup.eu,
-        atrajeev@linux.vnet.ibm.com, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, lance@osuosl.org, paulmck@kernel.org,
-        rcu@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Oct 10, 2022 at 11:49 AM Nicholas Piggin <npiggin@gmail.com> wrote:
->
-> On Thu Sep 29, 2022 at 11:48 AM AEST, Zhouyi Zhou wrote:
-> > On Wed, Sep 28, 2022 at 10:51 AM Nicholas Piggin <npiggin@gmail.com> wrote:
-> > >
-> > > On Wed Sep 28, 2022 at 11:48 AM AEST, Zhouyi Zhou wrote:
-> > > > Thank Nick for reviewing my patch
-> > > >
-> > > > On Tue, Sep 27, 2022 at 12:25 PM Nicholas Piggin <npiggin@gmail.com> wrote:
-> > > > >
-> > > > > On Tue Sep 27, 2022 at 11:48 AM AEST, Zhouyi Zhou wrote:
-> > > > > > This is second version of my fix to PPC's  "WARNING: suspicious RCU usage",
-> > > > > > I improved my fix under Paul E. McKenney's guidance:
-> > > > > > Link: https://lore.kernel.org/lkml/20220914021528.15946-1-zhouzhouyi@gmail.com/T/
-> > > > > >
-> > > > > > During the cpu offlining, the sub functions of xive_teardown_cpu will
-> > > > > > call __lock_acquire when CONFIG_LOCKDEP=y. The latter function will
-> > > > > > travel RCU protected list, so "WARNING: suspicious RCU usage" will be
-> > > > > > triggered.
-> > > > > >
-> > > > > > Avoid lockdep when we are offline.
-> > > > >
-> > > > > I don't see how this is safe. If RCU is no longer watching the CPU then
-> > > > > the memory it is accessing here could be concurrently freed. I think the
-> > > > > warning is valid.
-> > > > Agree
-> > > > >
-> > > > > powerpc's problem is that cpuhp_report_idle_dead() is called before
-> > > > > arch_cpu_idle_dead(), so it must not rely on any RCU protection there.
-> > > > > I would say xive cleanup just needs to be done earlier. I wonder why it
-> > > > > is not done in __cpu_disable or thereabouts, that's where the interrupt
-> > > > > controller is supposed to be stopped.
-> > > > Yes, I learn flowing events sequence from kgdb debugging
-> > > > __cpu_disable -> pseries_cpu_disable -> set_cpu_online(cpu, false)  =
-> > > > leads to =>  do_idle: if (cpu_is_offline(cpu) -> arch_cpu_idle_dead
-> > > > so xive cleanup should be done in pseries_cpu_disable.
-> > >
-> > > It's a good catch and a reasonable approach to the problem.
-> > Thank Nick for your encouragement ;-)
-> > >
-> > > > But as a beginner, I afraid that I am incompetent to do above
-> > > > sophisticated work without error although I am very like to,
-> > > > Could any expert do this for us?
-> > >
-> > > This will be difficult for anybody, it's tricky code. I'm not an
-> > > expert at it.
-> > >
-> > > It looks like the interrupt controller disable split has been there
-> > > since long before xive. I would try just move them together than see
-> > > if that works.
-> > Yes, I use "git blame" (I learned "git blame" from Paul E. McKenny ;-)
-> > ) to see the same.
-> > and anticipate your great works!
->
-> I was thinking you could try it and see if it works and what you find.
-> If you are interested and have time to look into it?
-I am interested! and I have time ;-)
-Thank Nick for your trust in me!
-I am going to submit my babyish work in about a month (counting the
-rcutoture tests time), and thank you in advance for your patience.
+Zhouyi Zhou <zhouzhouyi@gmail.com> writes:
+> I think we should avoid torture offline the cpu who do tick timer
+> when nohz full is running.
 
-Cheers
-Zhouyi
+Can you tell us what the bug you're fixing is?
+
+Did you see a crash/oops/hang etc? Or are you just proposing this as
+something that would be a good idea?
+
+> Tested on PPC VM of Open Source Lab of Oregon State University.
+> The test results show that after the fix, the success rate of
+> rcutorture is improved.
+> After:
+> Successes: 40 Failures: 9
+> Before:
+> Successes: 38 Failures: 11
 >
-> Thanks,
-> Nick
+> I examined the console.log and Make.out files one by one, no new
+> compile error or test error is introduced by above fix.
+>
+> Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+> ---
+> Dear PPC developers
+>
+> I found this bug when trying to do rcutorture tests in ppc VM of
+> Open Source Lab of Oregon State University:
+>
+> ubuntu@ubuntu:~/linux-next/tools/testing/selftests/rcutorture/res/2022.09.30-01.06.22-torture$ find . -name "console.log.diags"|xargs grep HOTPLUG
+> ./results-scftorture/NOPREEMPT/console.log.diags:WARNING: HOTPLUG FAILURES NOPREEMPT
+> ./results-rcutorture/TASKS03/console.log.diags:WARNING: HOTPLUG FAILURES TASKS03
+> ./results-rcutorture/TREE04/console.log.diags:WARNING: HOTPLUG FAILURES TREE04
+> ./results-scftorture-kasan/NOPREEMPT/console.log.diags:WARNING: HOTPLUG FAILURES NOPREEMPT
+> ./results-rcutorture-kasan/TASKS03/console.log.diags:WARNING: HOTPLUG FAILURES TASKS03
+> ./results-rcutorture-kasan/TREE04/console.log.diags:WARNING: HOTPLUG FAILURES TREE04
+>
+> I tried to fix this bug.
+>
+> Thanks for your patience and guidance ;-)
+>
+> Thanks 
+> Zhouyi
+> --
+>  arch/powerpc/kernel/sysfs.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/powerpc/kernel/sysfs.c b/arch/powerpc/kernel/sysfs.c
+> index ef9a61718940..be9c0e45337e 100644
+> --- a/arch/powerpc/kernel/sysfs.c
+> +++ b/arch/powerpc/kernel/sysfs.c
+> @@ -4,6 +4,7 @@
+>  #include <linux/smp.h>
+>  #include <linux/percpu.h>
+>  #include <linux/init.h>
+> +#include <linux/tick.h>
+>  #include <linux/sched.h>
+>  #include <linux/export.h>
+>  #include <linux/nodemask.h>
+> @@ -21,6 +22,7 @@
+>  #include <asm/firmware.h>
+>  #include <asm/idle.h>
+>  #include <asm/svm.h>
+> +#include "../../../kernel/time/tick-internal.h"
+  
+Needing to include this internal header is a sign that we are using the
+wrong API or otherwise using time keeping internals we shouldn't be.
+
+>  #include "cacheinfo.h"
+>  #include "setup.h"
+> @@ -1151,7 +1153,11 @@ static int __init topology_init(void)
+>  		 * CPU.  For instance, the boot cpu might never be valid
+>  		 * for hotplugging.
+>  		 */
+> -		if (smp_ops && smp_ops->cpu_offline_self)
+> +		if (smp_ops && smp_ops->cpu_offline_self
+> +#ifdef CONFIG_NO_HZ_FULL
+> +		    && !(tick_nohz_full_running && tick_do_timer_cpu == cpu)
+> +#endif
+> +		    )
+
+I can't see any other arches doing anything like this. I don't think
+it's the arches responsibility.
+
+If the time keeping core needs a CPU to stay online to run the timer
+then it needs to organise that itself IMHO :)
+
+cheers
+
+>  			c->hotpluggable = 1;
+>  #endif
+>  
+> -- 
+> 2.25.1
