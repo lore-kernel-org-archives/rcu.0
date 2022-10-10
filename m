@@ -2,140 +2,144 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A68DC433FE
-	for <rcu@archiver.kernel.org>; Mon, 10 Oct 2022 02:33:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 342C4C433F5
+	for <rcu@archiver.kernel.org>; Mon, 10 Oct 2022 03:49:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230376AbiJJCdl (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 9 Oct 2022 22:33:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37180 "EHLO
+        id S230198AbiJJDt1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 9 Oct 2022 23:49:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230202AbiJJCdg (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 9 Oct 2022 22:33:36 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C72833358;
-        Sun,  9 Oct 2022 19:33:35 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id 67so9599058pfz.12;
-        Sun, 09 Oct 2022 19:33:35 -0700 (PDT)
+        with ESMTP id S229854AbiJJDt0 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 9 Oct 2022 23:49:26 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 773D73DF2C;
+        Sun,  9 Oct 2022 20:49:25 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id g8-20020a17090a128800b0020c79f987ceso4213078pja.5;
+        Sun, 09 Oct 2022 20:49:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=dqNHFO+wnYU3tQ/zlSnRMD0uRUbJO7Cs4TB5ZEpNv3w=;
-        b=Up0OWIpnNumgltMC4JxjBfkp61fbritNxYuU3KT1yMQQE8xemaB4vGSN5iEpp/PaZS
-         AtBJVbIY56HIeXWlowwJR44lVaDNsWi866oUJgFpXvNXpDZBXL3hp/G1/0xMbeV4E8N0
-         JNBPAq/cLI6nicGre1FCEUHNgqQ00NEUXk1MELRzH7fj3fD+2m181PH2G+C1FWfGtvXZ
-         yJjLbQGMTA9ZuZw+w3gYWkKLYfk/DoUmX3ctoVlNxpXNuRKYrgu5svRxjX8LcaKKDhvk
-         b52DleueWhaS9fezhsJjDUJSsn8gQTaLkv3OdcC9wNd2wN5pUf2jhIDSX/QGTN6+3jZi
-         RWpQ==
+        h=in-reply-to:references:subject:cc:to:from:message-id:date
+         :content-transfer-encoding:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=J5uwdgwryFHFJzjWiH++bUzGyJn8a2qBYOFkqPQdUjA=;
+        b=JiFdjcQkZ722P7s3iZCsJihWdE0H8Hb1Xp9mToLMy6UTMLVa1tCTeAPRwv7fmvPIq+
+         8rvkFwCUxFcrDK+3fTfvaFaZAMEyltqjrDVz/PytWUer59eQV1Yyqgh50XgVXauL7Vog
+         oGJr3dns0VUrublr5DdF0JtWb3Ga6TwT8XaZFY25dQ9QbyH1CVyrfzOBtJ3dDtFi+6bM
+         4FaBnTDKc+z1tQ7omh/CnHGX6k/xaRAexHIyAFJH6zA+2/22JywqrL2DD4ZlGMSFimKp
+         eCkRhSDSC5gVtOsYw2u/w2UPJ3VttbeIgjRY1oFln+qveMnci4poe3khwXzntilyOBUx
+         hiNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=dqNHFO+wnYU3tQ/zlSnRMD0uRUbJO7Cs4TB5ZEpNv3w=;
-        b=ZF2w0fx/mFPC+fo3SaKmnHOtAVnJz3S9GfW2mliw3kmJnTupH71ujOAkQ84YErHG8b
-         fHpOU8eimVdNo3md7MIGAq2WwEXNgjd1gfBtpzs/NAjauZdLTYBqjicUp9p7eirEj7os
-         JxDI03X4ElG0XZYpjOY3xjS6M4p71zpKr3PSYqi7YW1K9RjdeL8CsgFWPYzZHM+gFghd
-         dbZmr0zB6YbbL11ByKZNuHTjFw7MXEcQ0jXzPVTlXY5M+jkEXWaKR9bsm5YseMvLZjAZ
-         SB/vlR5EuAtdoolXARL3oDr+Gpb68QJeS/aJU+3vMkMh4mj0Bei++xxNvBhJH66bkLl1
-         Noaw==
-X-Gm-Message-State: ACrzQf2Oyzl2NEIdMxIuqD16thcO0+9gMN9lKlIW0GFxMqY2vA1vQAmt
-        AnmQPMm8CbsQ19lupAex3A1u3VVdROvVow==
-X-Google-Smtp-Source: AMsMyM5JdNHma1WJKgHUKa8vOZplr/d5/dNWYX750tyf+34p/0N26QYC8Fvbs+s55/Gomlx56HP4hw==
-X-Received: by 2002:a63:455e:0:b0:439:9496:ddd8 with SMTP id u30-20020a63455e000000b004399496ddd8mr14573002pgk.261.1665369214974;
-        Sun, 09 Oct 2022 19:33:34 -0700 (PDT)
-Received: from localhost.localdomain ([191.101.132.215])
-        by smtp.gmail.com with ESMTPSA id i20-20020a63e914000000b00434272fe870sm5278816pgh.88.2022.10.09.19.33.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 09 Oct 2022 19:33:34 -0700 (PDT)
-From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
-To:     mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
-        atrajeev@linux.vnet.ibm.com, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, lance@osuosl.org, paulmck@kernel.org,
-        rcu@vger.kernel.org
-Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>
-Subject: [PATCH linux-next][RFC] powerpc: fix HOTPLUG error in rcutorture
-Date:   Mon, 10 Oct 2022 10:33:15 +0800
-Message-Id: <20221010023315.98396-1-zhouzhouyi@gmail.com>
-X-Mailer: git-send-email 2.34.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=in-reply-to:references:subject:cc:to:from:message-id:date
+         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=J5uwdgwryFHFJzjWiH++bUzGyJn8a2qBYOFkqPQdUjA=;
+        b=45XozZTSMTEGkmOhU8g7c2tFeJQx5G/A8ipc9WJu8r8Y1jW8NMClXXeJ22mNWDuBaB
+         gR0xLLD8tG/hsPVmQHu/xqjUhu/CU/utendLtFacxwGytYiIa2iZm5/0WvQMXdpYI6j/
+         tY7Tj7VsIPx5o3H1b5biuaoT8HlSYo0OWM5e3HCZ+YF44tWZXHapzH3K6ruc4tj5ONqw
+         BCTl01tp38E3fvI81ZL4M9iraDbC3jztPJ9gVGKNC3Ech4/kML9zwVlAU6H1v7tx6PVg
+         SGDxQbli+EK9eTCsft7AVJf938wT2Ynl6Z5M+LBOUB3lmt8obOAWlQhtHeuRCpP2ZIE0
+         b/vA==
+X-Gm-Message-State: ACrzQf3zcXVxzp72o6a1BsbtYWYwzSMm2OSzFaI96Fty6gW2nWyceUoq
+        uTF5fsV9MhHuYy72ivtPZgI=
+X-Google-Smtp-Source: AMsMyM7lHoI8Gy9V6tXanpM85kqRN40SxwDXKwUvcHAfUndnPhZXWSUKGr0roRcIdSUSsDrQ3lEemQ==
+X-Received: by 2002:a17:902:7084:b0:181:5304:fef4 with SMTP id z4-20020a170902708400b001815304fef4mr8742887plk.57.1665373764964;
+        Sun, 09 Oct 2022 20:49:24 -0700 (PDT)
+Received: from localhost ([118.208.156.99])
+        by smtp.gmail.com with ESMTPSA id h17-20020a170902f55100b001788ccecbf5sm5468419plf.31.2022.10.09.20.49.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 09 Oct 2022 20:49:24 -0700 (PDT)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Mon, 10 Oct 2022 13:49:18 +1000
+Message-Id: <CNHXQ6R5IEHG.1D2WH96LGUA1I@bobo>
+From:   "Nicholas Piggin" <npiggin@gmail.com>
+To:     "Zhouyi Zhou" <zhouzhouyi@gmail.com>
+Cc:     <mpe@ellerman.id.au>, <christophe.leroy@csgroup.eu>,
+        <atrajeev@linux.vnet.ibm.com>, <linuxppc-dev@lists.ozlabs.org>,
+        <linux-kernel@vger.kernel.org>, <lance@osuosl.org>,
+        <paulmck@kernel.org>, <rcu@vger.kernel.org>
+Subject: Re: [PATCH linux-next][RFC] powerpc: avoid lockdep when we are
+ offline
+X-Mailer: aerc 0.11.0
+References: <20220927014823.11439-1-zhouzhouyi@gmail.com>
+ <CN6WCMKCWHOG.LT2QV3910UJ2@bobo>
+ <CAABZP2wYcNXkTo=tgX-ARziwgD2rng+-wCZ-qfQ6M30+vmLEug@mail.gmail.com>
+ <CN7OZ6TMLLFS.2HER50Q3SO480@bobo>
+ <CAABZP2xu5w9Ec8LmTUrF31KhY3HCcBjQYSk4xo14bdB9mxOz+A@mail.gmail.com>
+In-Reply-To: <CAABZP2xu5w9Ec8LmTUrF31KhY3HCcBjQYSk4xo14bdB9mxOz+A@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-I think we should avoid torture offline the cpu who do tick timer
-when nohz full is running.
+On Thu Sep 29, 2022 at 11:48 AM AEST, Zhouyi Zhou wrote:
+> On Wed, Sep 28, 2022 at 10:51 AM Nicholas Piggin <npiggin@gmail.com> wrot=
+e:
+> >
+> > On Wed Sep 28, 2022 at 11:48 AM AEST, Zhouyi Zhou wrote:
+> > > Thank Nick for reviewing my patch
+> > >
+> > > On Tue, Sep 27, 2022 at 12:25 PM Nicholas Piggin <npiggin@gmail.com> =
+wrote:
+> > > >
+> > > > On Tue Sep 27, 2022 at 11:48 AM AEST, Zhouyi Zhou wrote:
+> > > > > This is second version of my fix to PPC's  "WARNING: suspicious R=
+CU usage",
+> > > > > I improved my fix under Paul E. McKenney's guidance:
+> > > > > Link: https://lore.kernel.org/lkml/20220914021528.15946-1-zhouzho=
+uyi@gmail.com/T/
+> > > > >
+> > > > > During the cpu offlining, the sub functions of xive_teardown_cpu =
+will
+> > > > > call __lock_acquire when CONFIG_LOCKDEP=3Dy. The latter function =
+will
+> > > > > travel RCU protected list, so "WARNING: suspicious RCU usage" wil=
+l be
+> > > > > triggered.
+> > > > >
+> > > > > Avoid lockdep when we are offline.
+> > > >
+> > > > I don't see how this is safe. If RCU is no longer watching the CPU =
+then
+> > > > the memory it is accessing here could be concurrently freed. I thin=
+k the
+> > > > warning is valid.
+> > > Agree
+> > > >
+> > > > powerpc's problem is that cpuhp_report_idle_dead() is called before
+> > > > arch_cpu_idle_dead(), so it must not rely on any RCU protection the=
+re.
+> > > > I would say xive cleanup just needs to be done earlier. I wonder wh=
+y it
+> > > > is not done in __cpu_disable or thereabouts, that's where the inter=
+rupt
+> > > > controller is supposed to be stopped.
+> > > Yes, I learn flowing events sequence from kgdb debugging
+> > > __cpu_disable -> pseries_cpu_disable -> set_cpu_online(cpu, false)  =
+=3D
+> > > leads to =3D>  do_idle: if (cpu_is_offline(cpu) -> arch_cpu_idle_dead
+> > > so xive cleanup should be done in pseries_cpu_disable.
+> >
+> > It's a good catch and a reasonable approach to the problem.
+> Thank Nick for your encouragement ;-)
+> >
+> > > But as a beginner, I afraid that I am incompetent to do above
+> > > sophisticated work without error although I am very like to,
+> > > Could any expert do this for us?
+> >
+> > This will be difficult for anybody, it's tricky code. I'm not an
+> > expert at it.
+> >
+> > It looks like the interrupt controller disable split has been there
+> > since long before xive. I would try just move them together than see
+> > if that works.
+> Yes, I use "git blame" (I learned "git blame" from Paul E. McKenny ;-)
+> ) to see the same.
+> and anticipate your great works!
 
-Tested on PPC VM of Open Source Lab of Oregon State University.
-The test results show that after the fix, the success rate of
-rcutorture is improved.
-After:
-Successes: 40 Failures: 9
-Before:
-Successes: 38 Failures: 11
+I was thinking you could try it and see if it works and what you find.
+If you are interested and have time to look into it?
 
-I examined the console.log and Make.out files one by one, no new
-compile error or test error is introduced by above fix.
-
-Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
----
-Dear PPC developers
-
-I found this bug when trying to do rcutorture tests in ppc VM of
-Open Source Lab of Oregon State University:
-
-ubuntu@ubuntu:~/linux-next/tools/testing/selftests/rcutorture/res/2022.09.30-01.06.22-torture$ find . -name "console.log.diags"|xargs grep HOTPLUG
-./results-scftorture/NOPREEMPT/console.log.diags:WARNING: HOTPLUG FAILURES NOPREEMPT
-./results-rcutorture/TASKS03/console.log.diags:WARNING: HOTPLUG FAILURES TASKS03
-./results-rcutorture/TREE04/console.log.diags:WARNING: HOTPLUG FAILURES TREE04
-./results-scftorture-kasan/NOPREEMPT/console.log.diags:WARNING: HOTPLUG FAILURES NOPREEMPT
-./results-rcutorture-kasan/TASKS03/console.log.diags:WARNING: HOTPLUG FAILURES TASKS03
-./results-rcutorture-kasan/TREE04/console.log.diags:WARNING: HOTPLUG FAILURES TREE04
-
-I tried to fix this bug.
-
-Thanks for your patience and guidance ;-)
-
-Thanks 
-Zhouyi
---
- arch/powerpc/kernel/sysfs.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/arch/powerpc/kernel/sysfs.c b/arch/powerpc/kernel/sysfs.c
-index ef9a61718940..be9c0e45337e 100644
---- a/arch/powerpc/kernel/sysfs.c
-+++ b/arch/powerpc/kernel/sysfs.c
-@@ -4,6 +4,7 @@
- #include <linux/smp.h>
- #include <linux/percpu.h>
- #include <linux/init.h>
-+#include <linux/tick.h>
- #include <linux/sched.h>
- #include <linux/export.h>
- #include <linux/nodemask.h>
-@@ -21,6 +22,7 @@
- #include <asm/firmware.h>
- #include <asm/idle.h>
- #include <asm/svm.h>
-+#include "../../../kernel/time/tick-internal.h"
- 
- #include "cacheinfo.h"
- #include "setup.h"
-@@ -1151,7 +1153,11 @@ static int __init topology_init(void)
- 		 * CPU.  For instance, the boot cpu might never be valid
- 		 * for hotplugging.
- 		 */
--		if (smp_ops && smp_ops->cpu_offline_self)
-+		if (smp_ops && smp_ops->cpu_offline_self
-+#ifdef CONFIG_NO_HZ_FULL
-+		    && !(tick_nohz_full_running && tick_do_timer_cpu == cpu)
-+#endif
-+		    )
- 			c->hotpluggable = 1;
- #endif
- 
--- 
-2.25.1
-
+Thanks,
+Nick
