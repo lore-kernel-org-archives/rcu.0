@@ -2,141 +2,140 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E593C4332F
-	for <rcu@archiver.kernel.org>; Sun,  9 Oct 2022 20:59:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A68DC433FE
+	for <rcu@archiver.kernel.org>; Mon, 10 Oct 2022 02:33:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231311AbiJIU6d (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 9 Oct 2022 16:58:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60002 "EHLO
+        id S230376AbiJJCdl (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 9 Oct 2022 22:33:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231266AbiJIU50 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 9 Oct 2022 16:57:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E743C22B02;
-        Sun,  9 Oct 2022 13:53:54 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CC82760C85;
-        Sun,  9 Oct 2022 20:53:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE3B7C433D7;
-        Sun,  9 Oct 2022 20:53:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665348833;
-        bh=la6Focf99ixLU4gXyDPCNI6jI7AOOZrRr8SSC+3kks4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=UJ9TeZMvhbqiDzrg5J3p5jCj27XeCcBYRD+Q82flaUj7AEHZwegVtosGhKQgCsWfV
-         dQj9OhTC3Cn0bE/ExHpMSZTqS+Khctem7xqnDzi/QZxo2TjpkegZu9kJAzK0sKgaur
-         tqtrfevb1fOPyCJ31I1Z5ISIFIO7fn2Ha+Q4CwhE0JBipBX86mYBF7ss9FZ3jD+mh3
-         0eVX2+O5/3Zj6zUccVOngIEsaiB12gF00aBiHAoxlSJdBlZkKMzCuyeEUd+NQWVQKZ
-         wBl4Jk5f0svVXgYW62IcNZSl6B98fZsAJT83EjMdCGoiUHnBQbSYKb05Nx078egVUr
-         hDyjJkztO9Vgw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sasha Levin <sashal@kernel.org>, rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 01/10] rcu: Back off upon fill_page_cache_func() allocation failure
-Date:   Sun,  9 Oct 2022 16:53:40 -0400
-Message-Id: <20221009205350.1203176-1-sashal@kernel.org>
-X-Mailer: git-send-email 2.35.1
+        with ESMTP id S230202AbiJJCdg (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 9 Oct 2022 22:33:36 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C72833358;
+        Sun,  9 Oct 2022 19:33:35 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id 67so9599058pfz.12;
+        Sun, 09 Oct 2022 19:33:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=dqNHFO+wnYU3tQ/zlSnRMD0uRUbJO7Cs4TB5ZEpNv3w=;
+        b=Up0OWIpnNumgltMC4JxjBfkp61fbritNxYuU3KT1yMQQE8xemaB4vGSN5iEpp/PaZS
+         AtBJVbIY56HIeXWlowwJR44lVaDNsWi866oUJgFpXvNXpDZBXL3hp/G1/0xMbeV4E8N0
+         JNBPAq/cLI6nicGre1FCEUHNgqQ00NEUXk1MELRzH7fj3fD+2m181PH2G+C1FWfGtvXZ
+         yJjLbQGMTA9ZuZw+w3gYWkKLYfk/DoUmX3ctoVlNxpXNuRKYrgu5svRxjX8LcaKKDhvk
+         b52DleueWhaS9fezhsJjDUJSsn8gQTaLkv3OdcC9wNd2wN5pUf2jhIDSX/QGTN6+3jZi
+         RWpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dqNHFO+wnYU3tQ/zlSnRMD0uRUbJO7Cs4TB5ZEpNv3w=;
+        b=ZF2w0fx/mFPC+fo3SaKmnHOtAVnJz3S9GfW2mliw3kmJnTupH71ujOAkQ84YErHG8b
+         fHpOU8eimVdNo3md7MIGAq2WwEXNgjd1gfBtpzs/NAjauZdLTYBqjicUp9p7eirEj7os
+         JxDI03X4ElG0XZYpjOY3xjS6M4p71zpKr3PSYqi7YW1K9RjdeL8CsgFWPYzZHM+gFghd
+         dbZmr0zB6YbbL11ByKZNuHTjFw7MXEcQ0jXzPVTlXY5M+jkEXWaKR9bsm5YseMvLZjAZ
+         SB/vlR5EuAtdoolXARL3oDr+Gpb68QJeS/aJU+3vMkMh4mj0Bei++xxNvBhJH66bkLl1
+         Noaw==
+X-Gm-Message-State: ACrzQf2Oyzl2NEIdMxIuqD16thcO0+9gMN9lKlIW0GFxMqY2vA1vQAmt
+        AnmQPMm8CbsQ19lupAex3A1u3VVdROvVow==
+X-Google-Smtp-Source: AMsMyM5JdNHma1WJKgHUKa8vOZplr/d5/dNWYX750tyf+34p/0N26QYC8Fvbs+s55/Gomlx56HP4hw==
+X-Received: by 2002:a63:455e:0:b0:439:9496:ddd8 with SMTP id u30-20020a63455e000000b004399496ddd8mr14573002pgk.261.1665369214974;
+        Sun, 09 Oct 2022 19:33:34 -0700 (PDT)
+Received: from localhost.localdomain ([191.101.132.215])
+        by smtp.gmail.com with ESMTPSA id i20-20020a63e914000000b00434272fe870sm5278816pgh.88.2022.10.09.19.33.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 09 Oct 2022 19:33:34 -0700 (PDT)
+From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
+To:     mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
+        atrajeev@linux.vnet.ibm.com, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, lance@osuosl.org, paulmck@kernel.org,
+        rcu@vger.kernel.org
+Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>
+Subject: [PATCH linux-next][RFC] powerpc: fix HOTPLUG error in rcutorture
+Date:   Mon, 10 Oct 2022 10:33:15 +0800
+Message-Id: <20221010023315.98396-1-zhouzhouyi@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Michal Hocko <mhocko@suse.com>
+I think we should avoid torture offline the cpu who do tick timer
+when nohz full is running.
 
-[ Upstream commit 093590c16b447f53e66771c8579ae66c96f6ef61 ]
+Tested on PPC VM of Open Source Lab of Oregon State University.
+The test results show that after the fix, the success rate of
+rcutorture is improved.
+After:
+Successes: 40 Failures: 9
+Before:
+Successes: 38 Failures: 11
 
-The fill_page_cache_func() function allocates couple of pages to store
-kvfree_rcu_bulk_data structures. This is a lightweight (GFP_NORETRY)
-allocation which can fail under memory pressure. The function will,
-however keep retrying even when the previous attempt has failed.
+I examined the console.log and Make.out files one by one, no new
+compile error or test error is introduced by above fix.
 
-This retrying is in theory correct, but in practice the allocation is
-invoked from workqueue context, which means that if the memory reclaim
-gets stuck, these retries can hog the worker for quite some time.
-Although the workqueues subsystem automatically adjusts concurrency, such
-adjustment is not guaranteed to happen until the worker context sleeps.
-And the fill_page_cache_func() function's retry loop is not guaranteed
-to sleep (see the should_reclaim_retry() function).
-
-And we have seen this function cause workqueue lockups:
-
-kernel: BUG: workqueue lockup - pool cpus=93 node=1 flags=0x1 nice=0 stuck for 32s!
-[...]
-kernel: pool 74: cpus=37 node=0 flags=0x1 nice=0 hung=32s workers=2 manager: 2146
-kernel:   pwq 498: cpus=249 node=1 flags=0x1 nice=0 active=4/256 refcnt=5
-kernel:     in-flight: 1917:fill_page_cache_func
-kernel:     pending: dbs_work_handler, free_work, kfree_rcu_monitor
-
-Originally, we thought that the root cause of this lockup was several
-retries with direct reclaim, but this is not yet confirmed.  Furthermore,
-we have seen similar lockups without any heavy memory pressure.  This
-suggests that there are other factors contributing to these lockups.
-However, it is not really clear that endless retries are desireable.
-
-So let's make the fill_page_cache_func() function back off after
-allocation failure.
-
-Cc: Uladzislau Rezki (Sony) <urezki@gmail.com>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Frederic Weisbecker <frederic@kernel.org>
-Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
-Cc: Josh Triplett <josh@joshtriplett.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-Cc: Joel Fernandes <joel@joelfernandes.org>
-Signed-off-by: Michal Hocko <mhocko@suse.com>
-Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
 ---
- kernel/rcu/tree.c | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
+Dear PPC developers
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index b41009a283ca..b10d6bcea77d 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3393,15 +3393,16 @@ static void fill_page_cache_func(struct work_struct *work)
- 		bnode = (struct kvfree_rcu_bulk_data *)
- 			__get_free_page(GFP_KERNEL | __GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN);
+I found this bug when trying to do rcutorture tests in ppc VM of
+Open Source Lab of Oregon State University:
+
+ubuntu@ubuntu:~/linux-next/tools/testing/selftests/rcutorture/res/2022.09.30-01.06.22-torture$ find . -name "console.log.diags"|xargs grep HOTPLUG
+./results-scftorture/NOPREEMPT/console.log.diags:WARNING: HOTPLUG FAILURES NOPREEMPT
+./results-rcutorture/TASKS03/console.log.diags:WARNING: HOTPLUG FAILURES TASKS03
+./results-rcutorture/TREE04/console.log.diags:WARNING: HOTPLUG FAILURES TREE04
+./results-scftorture-kasan/NOPREEMPT/console.log.diags:WARNING: HOTPLUG FAILURES NOPREEMPT
+./results-rcutorture-kasan/TASKS03/console.log.diags:WARNING: HOTPLUG FAILURES TASKS03
+./results-rcutorture-kasan/TREE04/console.log.diags:WARNING: HOTPLUG FAILURES TREE04
+
+I tried to fix this bug.
+
+Thanks for your patience and guidance ;-)
+
+Thanks 
+Zhouyi
+--
+ arch/powerpc/kernel/sysfs.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/arch/powerpc/kernel/sysfs.c b/arch/powerpc/kernel/sysfs.c
+index ef9a61718940..be9c0e45337e 100644
+--- a/arch/powerpc/kernel/sysfs.c
++++ b/arch/powerpc/kernel/sysfs.c
+@@ -4,6 +4,7 @@
+ #include <linux/smp.h>
+ #include <linux/percpu.h>
+ #include <linux/init.h>
++#include <linux/tick.h>
+ #include <linux/sched.h>
+ #include <linux/export.h>
+ #include <linux/nodemask.h>
+@@ -21,6 +22,7 @@
+ #include <asm/firmware.h>
+ #include <asm/idle.h>
+ #include <asm/svm.h>
++#include "../../../kernel/time/tick-internal.h"
  
--		if (bnode) {
--			raw_spin_lock_irqsave(&krcp->lock, flags);
--			pushed = put_cached_bnode(krcp, bnode);
--			raw_spin_unlock_irqrestore(&krcp->lock, flags);
-+		if (!bnode)
-+			break;
- 
--			if (!pushed) {
--				free_page((unsigned long) bnode);
--				break;
--			}
-+		raw_spin_lock_irqsave(&krcp->lock, flags);
-+		pushed = put_cached_bnode(krcp, bnode);
-+		raw_spin_unlock_irqrestore(&krcp->lock, flags);
-+
-+		if (!pushed) {
-+			free_page((unsigned long) bnode);
-+			break;
- 		}
- 	}
+ #include "cacheinfo.h"
+ #include "setup.h"
+@@ -1151,7 +1153,11 @@ static int __init topology_init(void)
+ 		 * CPU.  For instance, the boot cpu might never be valid
+ 		 * for hotplugging.
+ 		 */
+-		if (smp_ops && smp_ops->cpu_offline_self)
++		if (smp_ops && smp_ops->cpu_offline_self
++#ifdef CONFIG_NO_HZ_FULL
++		    && !(tick_nohz_full_running && tick_do_timer_cpu == cpu)
++#endif
++		    )
+ 			c->hotpluggable = 1;
+ #endif
  
 -- 
-2.35.1
+2.25.1
 
