@@ -2,163 +2,254 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F81DC433F5
-	for <rcu@archiver.kernel.org>; Tue, 11 Oct 2022 11:31:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 79D49C433FE
+	for <rcu@archiver.kernel.org>; Tue, 11 Oct 2022 13:20:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229757AbiJKLbj (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 11 Oct 2022 07:31:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41152 "EHLO
+        id S230073AbiJKNUT (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 11 Oct 2022 09:20:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229663AbiJKLbi (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 11 Oct 2022 07:31:38 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B58AE6AA3E;
-        Tue, 11 Oct 2022 04:31:34 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Mmtph6qdnzKGBG;
-        Tue, 11 Oct 2022 19:29:16 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-        by APP3 (Coremail) with SMTP id _Ch0CgDH2lwRVEVjOM9hAA--.58130S2;
-        Tue, 11 Oct 2022 19:31:32 +0800 (CST)
-Subject: Re: [PATCH bpf-next 1/3] bpf: Free elements after one RCU-tasks-trace
- grace period
-To:     paulmck@kernel.org, Alexei Starovoitov <ast@kernel.org>
-Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Delyan Kratunov <delyank@fb.com>, rcu@vger.kernel.org,
-        houtao1@huawei.com
-References: <20221011071128.3470622-1-houtao@huaweicloud.com>
- <20221011071128.3470622-2-houtao@huaweicloud.com>
- <20221011090742.GG4221@paulmck-ThinkPad-P17-Gen-1>
-From:   Hou Tao <houtao@huaweicloud.com>
-Message-ID: <d91a9536-8ed2-fc00-733d-733de34af510@huaweicloud.com>
-Date:   Tue, 11 Oct 2022 19:31:28 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        with ESMTP id S230086AbiJKNUA (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 11 Oct 2022 09:20:00 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3E3495AFF;
+        Tue, 11 Oct 2022 06:18:22 -0700 (PDT)
+Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.56])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Mmx9T30Dfz1CF1q;
+        Tue, 11 Oct 2022 21:15:41 +0800 (CST)
+Received: from dggpeml500003.china.huawei.com (7.185.36.200) by
+ dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Tue, 11 Oct 2022 21:18:12 +0800
+Received: from [10.174.177.173] (10.174.177.173) by
+ dggpeml500003.china.huawei.com (7.185.36.200) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Tue, 11 Oct 2022 21:18:11 +0800
+Message-ID: <e015e32d-d068-2d17-1ca5-c584c30ffebb@huawei.com>
+Date:   Tue, 11 Oct 2022 21:18:11 +0800
 MIME-Version: 1.0
-In-Reply-To: <20221011090742.GG4221@paulmck-ThinkPad-P17-Gen-1>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.0
 Content-Language: en-US
-X-CM-TRANSID: _Ch0CgDH2lwRVEVjOM9hAA--.58130S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxJw4ruw43ZFW5uF13WF15Arb_yoWrJFWfpF
-        yxJFyDGrs8ZFs09wn3Zr17CFZ8A39ag3W7ta4Fy3sYkrn8uryDuF4UCa45uFyFkr4fGa1a
-        vF1qkrnrG3WUAFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
-        6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyT
-        uYvjxUFDGOUUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+To:     <paulmck@kernel.org>
+CC:     "liwei (GF)" <liwei391@huawei.com>, <linux-kernel@vger.kernel.org>,
+        <rcu@vger.kernel.org>
+From:   Yu Liao <liaoyu15@huawei.com>
+Subject: [BUG] possible deadlock in __rcu_irq_enter_check_tick
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.173]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500003.china.huawei.com (7.185.36.200)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi,
+Hello,
 
-On 10/11/2022 5:07 PM, Paul E. McKenney wrote:
-> On Tue, Oct 11, 2022 at 03:11:26PM +0800, Hou Tao wrote:
->> From: Hou Tao <houtao1@huawei.com>
->>
->> According to the implementation of RCU Tasks Trace, it inovkes
->> ->postscan_func() to wait for one RCU-tasks-trace grace period and
->> rcu_tasks_trace_postscan() inovkes synchronize_rcu() to wait for one
->> normal RCU grace period in turn, so one RCU-tasks-trace grace period
->> will imply one RCU grace period.
->>
->> So there is no need to do call_rcu() again in the callback of
->> call_rcu_tasks_trace() and it can just free these elements directly.
-> This is true, but this is an implementation detail that is not guaranteed
-> in future versions of the kernel.  But if this additional call_rcu()
-> is causing trouble, I could add some API member that returned true in
-> kernels where it does happen to be the case that call_rcu_tasks_trace()
-> implies a call_rcu()-style grace period.
->
-> The BPF memory allocator could then complain or adapt, as appropriate.
->
-> Thoughts?
-It is indeed an implementation details. But In an idle KVM guest, for memory
-reclamation in bpf memory allocator a RCU tasks trace grace period is about 30ms
-and RCU grace period is about 20 ms. Under stress condition, the grace period
-will be much longer. If the extra RCU grace period can be removed, these memory
-can be reclaimed more quickly and it will be beneficial for memory pressure.
+When I run syzkaller, a deadlock problem occurs. The call stack is as follows:
+[ 1088.244366][    C1] ======================================================
+[ 1088.244838][    C1] WARNING: possible circular locking dependency detected
+[ 1088.245313][    C1] 5.10.0-04424-ga472e3c833d3 #1 Not tainted
+[ 1088.245745][    C1] ------------------------------------------------------
+[ 1088.246214][    C1] syz-executor.2/932 is trying to acquire lock:
+[ 1088.246628][    C1] ffffa0001440c418 (rcu_node_0){..-.}-{2:2}, at:
+__rcu_irq_enter_check_tick+0x128/0x2f4
+[ 1088.247330][    C1]
+[ 1088.247330][    C1] but task is already holding lock:
+[ 1088.247830][    C1] ffff000224d0c298 (&rq->lock){-.-.}-{2:2}, at:
+try_to_wake_up+0x6e0/0xd40
+[ 1088.248424][    C1]
+[ 1088.248424][    C1] which lock already depends on the new lock.
+[ 1088.248424][    C1]
+[ 1088.249127][    C1]
+[ 1088.249127][    C1] the existing dependency chain (in reverse order) is:
+[ 1088.249726][    C1]
+[ 1088.249726][    C1] -> #1 (&rq->lock){-.-.}-{2:2}:
+[ 1088.250239][    C1]        validate_chain+0x6dc/0xb0c
+[ 1088.250591][    C1]        __lock_acquire+0x498/0x940
+[ 1088.250942][    C1]        lock_acquire+0x228/0x580
+[ 1088.251346][    C1]        _raw_spin_lock_irqsave+0xc0/0x15c
+[ 1088.251758][    C1]        resched_cpu+0x5c/0x110
+[ 1088.252091][    C1]        rcu_implicit_dynticks_qs+0x2b0/0x5d0
+[ 1088.252501][    C1]        force_qs_rnp+0x244/0x39c
+[ 1088.252847][    C1]        rcu_gp_fqs_loop+0x2e4/0x440
+[ 1088.253219][    C1]        rcu_gp_kthread+0x1a4/0x240
+[ 1088.253597][    C1]        kthread+0x20c/0x260
+[ 1088.253963][    C1]        ret_from_fork+0x10/0x18
+[ 1088.254389][    C1]
+[ 1088.254389][    C1] -> #0 (rcu_node_0){..-.}-{2:2}:
+[ 1088.255296][    C1]        check_prev_add+0xe0/0x105c
+[ 1088.256000][    C1]        check_prevs_add+0x1c8/0x3d4
+[ 1088.256693][    C1]        validate_chain+0x6dc/0xb0c
+[ 1088.257372][    C1]        __lock_acquire+0x498/0x940
+[ 1088.257731][    C1]        lock_acquire+0x228/0x580
+[ 1088.258079][    C1]        _raw_spin_lock+0xa0/0x120
+[ 1088.258425][    C1]        __rcu_irq_enter_check_tick+0x128/0x2f4
+[ 1088.258844][    C1]        rcu_nmi_enter+0xc4/0xd0
+[ 1088.259183][    C1]        arm64_enter_el1_dbg+0xb0/0x160
+[ 1088.259623][    C1]        el1_dbg+0x28/0x50
+[ 1088.260011][    C1]        el1_sync_handler+0xf4/0x150
+[ 1088.260481][    C1]        el1_sync+0x74/0x100
+[ 1088.260800][    C1]        update_irq_load_avg+0x5d8/0xaa0
+[ 1088.261194][    C1]        update_rq_clock_task+0xb8/0x2d0
+[ 1088.261595][    C1]        update_rq_clock+0x8c/0x120
+[ 1088.261952][    C1]        try_to_wake_up+0x70c/0xd40
+[ 1088.262305][    C1]        wake_up_process+0x1c/0x24
+[ 1088.262652][    C1]        wakeup_softirqd+0x58/0x64
+[ 1088.263000][    C1]        __do_softirq+0x6b8/0x95c
+[ 1088.263345][    C1]        irq_exit+0x27c/0x2d0
+[ 1088.263674][    C1]        __handle_domain_irq+0x100/0x184
+[ 1088.264049][    C1]        gic_handle_irq+0xc0/0x760
+[ 1088.264394][    C1]        el1_irq+0xb8/0x140
+[ 1088.264709][    C1]        _raw_spin_unlock_irqrestore+0x7c/0x130
+[ 1088.265134][    C1]        __aarch64_insn_write+0xc4/0x100
+[ 1088.265516][    C1]        aarch64_insn_patch_text_nosync+0x40/0xa0
+[ 1088.265942][    C1]        ftrace_make_nop+0x120/0x1a4
+[ 1088.266300][    C1]        __ftrace_replace_code+0xdc/0x160
+[ 1088.266684][    C1]        ftrace_replace_code+0x100/0x1a4
+[ 1088.267063][    C1]        ftrace_modify_all_code+0x1a8/0x260
+[ 1088.267456][    C1]        arch_ftrace_update_code+0x1c/0x2c
+[ 1088.267847][    C1]        ftrace_run_update_code+0x38/0xa4
+[ 1088.268259][    C1]        ftrace_shutdown.part.0+0x2dc/0x550
+[ 1088.268682][    C1]        unregister_ftrace_function+0x74/0xc0
+[ 1088.269117][    C1]        perf_ftrace_event_register+0x130/0x1a0
+[ 1088.269559][    C1]        perf_trace_destroy+0x68/0x9c
+[ 1088.269938][    C1]        tp_perf_event_destroy+0x1c/0x2c
+[ 1088.270340][    C1]        _free_event+0x2f4/0x670
+[ 1088.270696][    C1]        put_event+0x7c/0x90
+[ 1088.271031][    C1]        perf_event_release_kernel+0x3c0/0x450
+[ 1088.271467][    C1]        perf_release+0x24/0x34
+[ 1088.271824][    C1]        __fput+0x1dc/0x500
+[ 1088.272155][    C1]        ____fput+0x24/0x30
+[ 1088.272471][    C1]        task_work_run+0xf4/0x1ec
+[ 1088.272811][    C1]        do_notify_resume+0x378/0x410
+[ 1088.273180][    C1]        work_pending+0xc/0x198
+[ 1088.273504][    C1]
+[ 1088.273504][    C1] other info that might help us debug this:
+[ 1088.273504][    C1]
+[ 1088.274168][    C1]  Possible unsafe locking scenario:
+[ 1088.274168][    C1]
+[ 1088.274658][    C1]        CPU0                    CPU1
+[ 1088.275012][    C1]        ----                    ----
+[ 1088.275367][    C1]   lock(&rq->lock);
+[ 1088.275646][    C1]                                lock(rcu_node_0);
+[ 1088.276082][    C1]                                lock(&rq->lock);
+[ 1088.276517][    C1]   lock(rcu_node_0);
+[ 1088.276797][    C1]
+[ 1088.276797][    C1]  *** DEADLOCK ***
+[ 1088.276797][    C1]
+[ 1088.277339][    C1] 4 locks held by syz-executor.2/932:
+[ 1088.277696][    C1]  #0: ffffa000145251e8 (event_mutex){+.+.}-{3:3}, at:
+perf_trace_destroy+0x34/0x9c
+[ 1088.278345][    C1]  #1: ffffa000144fb5a8 (ftrace_lock){+.+.}-{3:3}, at:
+unregister_ftrace_function+0x2c/0xc0
+[ 1088.279034][    C1]  #2: ffff0000c0e0c968 (&p->pi_lock){-.-.}-{2:2}, at:
+try_to_wake_up+0xbc/0xd40
+[ 1088.279672][    C1]  #3: ffff000224d0c298 (&rq->lock){-.-.}-{2:2}, at:
+try_to_wake_up+0x6e0/0xd40
+[ 1088.280300][    C1]
+[ 1088.280300][    C1] stack backtrace:
+[ 1088.280706][    C1] CPU: 1 PID: 932 Comm: syz-executor.2 Not tainted
+5.10.0-04424-ga472e3c833d3 #1
+[ 1088.281315][    C1] Hardware name: linux,dummy-virt (DT)
+[ 1088.281679][    C1] Call trace:
+[ 1088.281910][    C1]  dump_backtrace+0x0/0x41c
+[ 1088.282218][    C1]  show_stack+0x30/0x40
+[ 1088.282505][    C1]  dump_stack+0x1fc/0x2c0
+[ 1088.282807][    C1]  print_circular_bug+0x1ec/0x284
+[ 1088.283149][    C1]  check_noncircular+0x1cc/0x1ec
+[ 1088.283486][    C1]  check_prev_add+0xe0/0x105c
+[ 1088.283804][    C1]  check_prevs_add+0x1c8/0x3d4
+[ 1088.284126][    C1]  validate_chain+0x6dc/0xb0c
+[ 1088.284442][    C1]  __lock_acquire+0x498/0x940
+[ 1088.284764][    C1]  lock_acquire+0x228/0x580
+[ 1088.285072][    C1]  _raw_spin_lock+0xa0/0x120
+[ 1088.285392][    C1]  __rcu_irq_enter_check_tick+0x128/0x2f4
+[ 1088.285779][    C1]  rcu_nmi_enter+0xc4/0xd0
+[ 1088.286082][    C1]  arm64_enter_el1_dbg+0xb0/0x160
+[ 1088.286420][    C1]  el1_dbg+0x28/0x50
+[ 1088.286689][    C1]  el1_sync_handler+0xf4/0x150
+[ 1088.287010][    C1]  el1_sync+0x74/0x100
+[ 1088.287295][    C1]  update_irq_load_avg+0x5d8/0xaa0
+[ 1088.287640][    C1]  update_rq_clock_task+0xb8/0x2d0
+[ 1088.287988][    C1]  update_rq_clock+0x8c/0x120
+[ 1088.288309][    C1]  try_to_wake_up+0x70c/0xd40
+[ 1088.288629][    C1]  wake_up_process+0x1c/0x24
+[ 1088.288945][    C1]  wakeup_softirqd+0x58/0x64
+[ 1088.289271][    C1]  __do_softirq+0x6b8/0x95c
+[ 1088.289580][    C1]  irq_exit+0x27c/0x2d0
+[ 1088.289868][    C1]  __handle_domain_irq+0x100/0x184
+[ 1088.290211][    C1]  gic_handle_irq+0xc0/0x760
+[ 1088.290522][    C1]  el1_irq+0xb8/0x140
+[ 1088.290801][    C1]  _raw_spin_unlock_irqrestore+0x7c/0x130
+[ 1088.291188][    C1]  __aarch64_insn_write+0xc4/0x100
+[ 1088.291533][    C1]  aarch64_insn_patch_text_nosync+0x40/0xa0
+[ 1088.291928][    C1]  ftrace_make_nop+0x120/0x1a4
+[ 1088.292256][    C1]  __ftrace_replace_code+0xdc/0x160
+[ 1088.292613][    C1]  ftrace_replace_code+0x100/0x1a4
+[ 1088.292963][    C1]  ftrace_modify_all_code+0x1a8/0x260
+[ 1088.293335][    C1]  arch_ftrace_update_code+0x1c/0x2c
+[ 1088.293694][    C1]  ftrace_run_update_code+0x38/0xa4
+[ 1088.294048][    C1]  ftrace_shutdown.part.0+0x2dc/0x550
+[ 1088.294415][    C1]  unregister_ftrace_function+0x74/0xc0
+[ 1088.294787][    C1]  perf_ftrace_event_register+0x130/0x1a0
+[ 1088.295172][    C1]  perf_trace_destroy+0x68/0x9c
+[ 1088.295500][    C1]  tp_perf_event_destroy+0x1c/0x2c
+[ 1088.295850][    C1]  _free_event+0x2f4/0x670
+[ 1088.296154][    C1]  put_event+0x7c/0x90
+[ 1088.296439][    C1]  perf_event_release_kernel+0x3c0/0x450
+[ 1088.296820][    C1]  perf_release+0x24/0x34
+[ 1088.297125][    C1]  __fput+0x1dc/0x500
+[ 1088.297404][    C1]  ____fput+0x24/0x30
+[ 1088.297682][    C1]  task_work_run+0xf4/0x1ec
+[ 1088.297989][    C1]  do_notify_resume+0x378/0x410
+[ 1088.298316][    C1]  work_pending+0xc/0x198
 
-Now it seems we can use RCU poll APIs (e.g. get_state_synchronize_rcu() and
-poll_state_synchronize_rcu() ) to check whether or not a RCU grace period has
-passed. But It needs to add at least one unsigned long into the freeing object.
-The extra memory overhead may be OK for bpf memory allocator, but it is not for
-small object. So could you please show example on how these new APIs work ? Does
-it need to modify the to-be-free object ?
->
-> 							Thanx, Paul
->
->> Signed-off-by: Hou Tao <houtao1@huawei.com>
->> ---
->>  kernel/bpf/memalloc.c | 17 ++++++-----------
->>  1 file changed, 6 insertions(+), 11 deletions(-)
->>
->> diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
->> index 5f83be1d2018..6f32dddc804f 100644
->> --- a/kernel/bpf/memalloc.c
->> +++ b/kernel/bpf/memalloc.c
->> @@ -209,6 +209,9 @@ static void free_one(struct bpf_mem_cache *c, void *obj)
->>  	kfree(obj);
->>  }
->>  
->> +/* Now RCU Tasks grace period implies RCU grace period, so no need to do
->> + * an extra call_rcu().
->> + */
->>  static void __free_rcu(struct rcu_head *head)
->>  {
->>  	struct bpf_mem_cache *c = container_of(head, struct bpf_mem_cache, rcu);
->> @@ -220,13 +223,6 @@ static void __free_rcu(struct rcu_head *head)
->>  	atomic_set(&c->call_rcu_in_progress, 0);
->>  }
->>  
->> -static void __free_rcu_tasks_trace(struct rcu_head *head)
->> -{
->> -	struct bpf_mem_cache *c = container_of(head, struct bpf_mem_cache, rcu);
->> -
->> -	call_rcu(&c->rcu, __free_rcu);
->> -}
->> -
->>  static void enque_to_free(struct bpf_mem_cache *c, void *obj)
->>  {
->>  	struct llist_node *llnode = obj;
->> @@ -252,11 +248,10 @@ static void do_call_rcu(struct bpf_mem_cache *c)
->>  		 * from __free_rcu() and from drain_mem_cache().
->>  		 */
->>  		__llist_add(llnode, &c->waiting_for_gp);
->> -	/* Use call_rcu_tasks_trace() to wait for sleepable progs to finish.
->> -	 * Then use call_rcu() to wait for normal progs to finish
->> -	 * and finally do free_one() on each element.
->> +	/* Use call_rcu_tasks_trace() to wait for both sleepable and normal
->> +	 * progs to finish and finally do free_one() on each element.
->>  	 */
->> -	call_rcu_tasks_trace(&c->rcu, __free_rcu_tasks_trace);
->> +	call_rcu_tasks_trace(&c->rcu, __free_rcu);
->>  }
->>  
->>  static void free_bulk(struct bpf_mem_cache *c)
->> -- 
->> 2.29.2
->>
+I checked the code. The following scenarios may cause deadlock.
+
+static void ttwu_queue(struct task_struct *p, int cpu, int wake_flags)
+{
+    struct rq *rq = cpu_rq(cpu);
+    struct rq_flags rf;
+
+    if (ttwu_queue_wakelist(p, cpu, wake_flags))
+        return;
+
+    rq_lock(rq, &rf);
+    update_rq_clock(rq);	
+		===> el1_dbg
+			  ->rcu_nmi_enter
+			    ->__rcu_irq_enter_check_tick
+				  ->raw_spin_lock_rcu_node(rdp->mynode);
+    ttwu_do_activate(rq, p, wake_flags, &rf);
+    rq_unlock(rq, &rf);
+}
+
+static void rcu_gp_fqs(bool first_time)
+{
+    struct rcu_node *rnp = rcu_get_root();
+
+    WRITE_ONCE(rcu_state.gp_activity, jiffies);
+    WRITE_ONCE(rcu_state.n_force_qs, rcu_state.n_force_qs + 1);
+    if (first_time) {
+        /* Collect dyntick-idle snapshots. */
+        force_qs_rnp(dyntick_save_progress_counter);
+    } else {
+        /* Handle dyntick-idle and offline CPUs. */
+        force_qs_rnp(rcu_implicit_dynticks_qs);	
+			===>raw_spin_lock_irqsave_rcu_node(rnp, flags);
+			===>rcu_implicit_dynticks_qs
+				  ->resched_cpu
+				    ->raw_spin_lock_irqsave(&rq->lock, flags);
+    }
+    /* Clear flag to prevent immediate re-entry. */
+    if (READ_ONCE(rcu_state.gp_flags) & RCU_GP_FLAG_FQS) {
+        raw_spin_lock_irq_rcu_node(rnp);
+        WRITE_ONCE(rcu_state.gp_flags,
+               READ_ONCE(rcu_state.gp_flags) & ~RCU_GP_FLAG_FQS);
+        raw_spin_unlock_irq_rcu_node(rnp);
+    }
+}
 
