@@ -2,24 +2,24 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A9D62C43217
-	for <rcu@archiver.kernel.org>; Tue, 11 Oct 2022 06:45:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D28B2C4167B
+	for <rcu@archiver.kernel.org>; Tue, 11 Oct 2022 06:45:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229854AbiJKGpu (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 11 Oct 2022 02:45:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48600 "EHLO
+        id S229631AbiJKGpv (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 11 Oct 2022 02:45:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229698AbiJKGpt (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 11 Oct 2022 02:45:49 -0400
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4634077542;
-        Mon, 10 Oct 2022 23:45:41 -0700 (PDT)
+        with ESMTP id S229863AbiJKGpu (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 11 Oct 2022 02:45:50 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 606D277547;
+        Mon, 10 Oct 2022 23:45:45 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4MmmSs14nqz6PmRS;
-        Tue, 11 Oct 2022 14:43:25 +0800 (CST)
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4MmmSp5D4wzKFQP;
+        Tue, 11 Oct 2022 14:43:22 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP4 (Coremail) with SMTP id gCh0CgD39sgQEUVj3FxfAA--.20636S6;
-        Tue, 11 Oct 2022 14:45:39 +0800 (CST)
+        by APP4 (Coremail) with SMTP id gCh0CgD39sgQEUVj3FxfAA--.20636S4;
+        Tue, 11 Oct 2022 14:45:38 +0800 (CST)
 From:   Hou Tao <houtao@huaweicloud.com>
 To:     bpf@vger.kernel.org
 Cc:     Martin KaFai Lau <kafai@fb.com>,
@@ -37,31 +37,28 @@ Cc:     Martin KaFai Lau <kafai@fb.com>,
         "Paul E . McKenney" <paulmck@kernel.org>,
         Delyan Kratunov <delyank@fb.com>, rcu@vger.kernel.org,
         houtao1@huawei.com
-Subject: [PATCH bpf-next 2/3] bpf: Free local storage memory after one RCU-tasks-trace grace period
-Date:   Tue, 11 Oct 2022 15:11:27 +0800
-Message-Id: <20221011071128.3470622-3-houtao@huaweicloud.com>
+Subject: [PATCH bpf-next 0/3] Remove unnecessary RCU grace period chaining
+Date:   Tue, 11 Oct 2022 15:11:25 +0800
+Message-Id: <20221011071128.3470622-1-houtao@huaweicloud.com>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20221011071128.3470622-1-houtao@huaweicloud.com>
-References: <20221011071128.3470622-1-houtao@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgD39sgQEUVj3FxfAA--.20636S6
-X-Coremail-Antispam: 1UD129KBjvJXoW7uryrtFy8tr15Cw13WrWfXwb_yoW8AF4kpF
-        yUXrn8Jr4Fya1ruanxGF4fAryDXw47Wr1UKFZ5A3yftrZxArWDWFnIkF1Uua43Gw4rWr4I
-        vF90gF1UGw1UZFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBYb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
-        A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
-        Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
-        Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64
-        vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
-        jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2I
-        x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY6xAI
-        w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
-        0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1sa9DUUUUU==
+X-CM-TRANSID: gCh0CgD39sgQEUVj3FxfAA--.20636S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7CrW8WFy3XFWxGw15Ar1xGrg_yoW8Jw4rpF
+        W8tFn8GFn5Ar4Sk3ZxZr4xGryUJws3G34xXFyFk34fA398AryDCr12qa45uF13K3ykAa42
+        vrn8Jw15G3Wqva7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUk2b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28I
+        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
+        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI
+        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42
+        IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
+        87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFDGOUUUUU
 X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 X-CFilter-Loop: Reflected
 Precedence: bulk
@@ -70,53 +67,35 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: Hou Tao <houtao1@huawei.com>
 
-Local storage map is accessible for both sleepable and normal bpf
-program, so its memory is freed by using both call_rcu_tasks_trace() and
-kfree_rcu() to wait for both RCU-tasks-trace grace period and RCU grace
-period to expire.
+Hi,
 
-However According to the current implementation of RCU-tasks-trace, one
-RCU-tasks-trace grace period waits for one RCU grace period, so there is
-no need to call kfree_rcu(), it is safe to call kfree() directly.
+Now bpf uses RCU grace period chaining to wait for the completion of
+access from both sleepable and non-sleepable bpf program: calling
+call_rcu_tasks_trace() firstly to wait for a RCU-tasks-trace grace
+period, then in its callback calls call_rcu() or kfree_rcu() to wait for
+a normal RCU grace period.
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
+According to the implementation of RCU Tasks Trace, it inovkes
+->postscan_func() to wait for one RCU-tasks-trace grace period and
+rcu_tasks_trace_postscan() inovkes synchronize_rcu() to wait for one
+normal RCU grace period in turn, so one RCU-tasks-trace grace period
+will imply one normal RCU grace period. And it also means there is no
+need to do call_rcu() or kfree_rcu() again in the callback of
+call_rcu_tasks_trace() in these grace period chains, so just remove the
+unnecessary call_rcu() or kfree_rcu() calls.
+
+Comments are always welcome.
+
+Hou Tao (3):
+  bpf: Free elements after one RCU-tasks-trace grace period
+  bpf: Free local storage memory after one RCU-tasks-trace grace period
+  bpf: Free trace program array after one RCU-tasks-trace grace period
+
  kernel/bpf/bpf_local_storage.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ kernel/bpf/core.c              |  5 ++++-
+ kernel/bpf/memalloc.c          | 17 ++++++-----------
+ 3 files changed, 18 insertions(+), 14 deletions(-)
 
-diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storage.c
-index 802fc15b0d73..18a2dd611635 100644
---- a/kernel/bpf/bpf_local_storage.c
-+++ b/kernel/bpf/bpf_local_storage.c
-@@ -84,20 +84,26 @@ bpf_selem_alloc(struct bpf_local_storage_map *smap, void *owner,
- 	return NULL;
- }
- 
-+/* Now RCU Tasks grace period implies RCU grace period, so no need to call
-+ * kfree_rcu(), just call kfree() directly.
-+ */
- void bpf_local_storage_free_rcu(struct rcu_head *rcu)
- {
- 	struct bpf_local_storage *local_storage;
- 
- 	local_storage = container_of(rcu, struct bpf_local_storage, rcu);
--	kfree_rcu(local_storage, rcu);
-+	kfree(local_storage);
- }
- 
-+/* Now RCU Tasks grace period implies RCU grace period, so no need to call
-+ * kfree_rcu(), just call kfree() directly.
-+ */
- static void bpf_selem_free_rcu(struct rcu_head *rcu)
- {
- 	struct bpf_local_storage_elem *selem;
- 
- 	selem = container_of(rcu, struct bpf_local_storage_elem, rcu);
--	kfree_rcu(selem, rcu);
-+	kfree(selem);
- }
- 
- /* local_storage->lock must be held and selem->local_storage == local_storage.
 -- 
 2.29.2
 
