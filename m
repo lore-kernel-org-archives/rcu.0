@@ -2,269 +2,301 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 587E1C433FE
-	for <rcu@archiver.kernel.org>; Wed, 12 Oct 2022 06:49:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CAF6C4332F
+	for <rcu@archiver.kernel.org>; Wed, 12 Oct 2022 07:06:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229547AbiJLGtU (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 12 Oct 2022 02:49:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43464 "EHLO
+        id S229625AbiJLHGN (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 12 Oct 2022 03:06:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbiJLGtT (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 12 Oct 2022 02:49:19 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A448361703;
-        Tue, 11 Oct 2022 23:49:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 4ED0BB8197E;
-        Wed, 12 Oct 2022 06:49:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C52AEC433D6;
-        Wed, 12 Oct 2022 06:49:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665557355;
-        bh=LXqJ+cl2mRXtWITdXGQs7RVBFhmUUtKPCqNDPhtVyM8=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=WHq/31x+sNDqfKBFEtvqLfzOiqxRODms5sOtHba11bu3iuKGZiXGsRBclmeQh0C5e
-         LH+8Z6P/Y8qYy/LEFQVbSnzuz+SxX14hCdMx4sunWm14kgiPXma3S3P8XYux6TLPox
-         LU5grv9kdX95pHWSAOARAEc/bZC0Nokwg6c+3RVFVcQenQHBczbLgSLbycQ+1jF/Ja
-         TrkmbV1+wjLm94oBhq02uIZq5wdj5Voih5yTScpY30h0HjgcKq/c3n8dmOLjXxNn7q
-         o/gj+2yldwF4r0GaKoI0PWJKZZ2wP0V+Av++Ra4RScTNGuzc3v24xWTSm3ujwLzTpR
-         iGMDOOPfuHUDg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 32DB55C196D; Tue, 11 Oct 2022 23:49:11 -0700 (PDT)
-Date:   Tue, 11 Oct 2022 23:49:11 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Yu Liao <liaoyu15@huawei.com>
-Cc:     "liwei (GF)" <liwei391@huawei.com>, linux-kernel@vger.kernel.org,
-        rcu@vger.kernel.org
-Subject: Re: [BUG] possible deadlock in __rcu_irq_enter_check_tick
-Message-ID: <20221012064911.GN4221@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <e015e32d-d068-2d17-1ca5-c584c30ffebb@huawei.com>
+        with ESMTP id S229519AbiJLHGL (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 12 Oct 2022 03:06:11 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 844F162921
+        for <rcu@vger.kernel.org>; Wed, 12 Oct 2022 00:06:09 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id sc25so29916925ejc.12
+        for <rcu@vger.kernel.org>; Wed, 12 Oct 2022 00:06:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=3FHxfaX0nUvU3yM6pdGDpraNdXFnmAEzWTxDZP6zVag=;
+        b=cffGMndeYEmELAI2l1vym18F2hWFwe93SbDFuJNsK2tN3mDwPR4EZnrhV1EDQ86JlF
+         oPPORGk/wOJ7GRnpblMJkW2fkc0Vpg83lyYrsWp3r68N1G9QuMe1hcVtSq8663uWEo6W
+         O6WlojTohjO6nTAaeSN416a8SyCidZa0xF2KWz/I5aPvDQ04a2K1xSP0zZz3llF3nOMI
+         MLHfW9ve+SZ+/llayySwVf41keulS2jXW30hXifWIztGNZhu1k/f+JysM8z9J62ouCAs
+         oTL55ao3P7wTCsYgZCR/k8UO78YseOVW2NJJjczVUOaS9pZgTOmuzCBnYo8Ok6O7rOgp
+         G7cQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3FHxfaX0nUvU3yM6pdGDpraNdXFnmAEzWTxDZP6zVag=;
+        b=S7EScYBlXnXTdqC/bRtQncE2S3ts/Yw2MGzq6jxaNrnGwrkzLjQ+CCmyTXcoQUTZnA
+         Ou6e4PwOOCCA/YPMIl39N/MYk1UJjwuoat/LYv8VRNDvchVju1tQMms1fOggHzCSDUWf
+         KzQHIVRtCCeYid5xrEM5ToBrPJ7NqzwzjGZFmSUDyLYAhEXuGSgMWJ5rN7WxC9kNWQV3
+         bYNkX7nfM8XMK0K+vJq3RCuNfbF7ApTvTbHYydNy/HWApYkQXPyBarFrBMnhIQpFuRuO
+         Y+N4LOrRX3tenYOqi+or65hrnYTNwXJSL5xEYtVSGp36JNpr3A0ByEshuBhexGCq8dN2
+         Rz7g==
+X-Gm-Message-State: ACrzQf3jEDp+vUU0J4z383VsZwL6TFFpgMTpQ0xyn3Ej407eVmjIme9B
+        MZGwJIVX3lX/EEsNZ95Y5qQbn+DtDDVlV7jmAP1QNA==
+X-Google-Smtp-Source: AMsMyM6Xi8F6DTgp4ZKvWbVbWHa1cM1s8X+vpij+0T/1ie3OxzN9LtD5fqXK74DtrKVmQ1uJyfPyoOMlh7NiSF/8Kdk=
+X-Received: by 2002:a17:907:7d8e:b0:78d:ed30:643b with SMTP id
+ oz14-20020a1709077d8e00b0078ded30643bmr2862275ejc.253.1665558367879; Wed, 12
+ Oct 2022 00:06:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e015e32d-d068-2d17-1ca5-c584c30ffebb@huawei.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 12 Oct 2022 12:35:56 +0530
+Message-ID: <CA+G9fYui6--jhN1CFH6fXNK81sHNYgosTs2hyybFqPxFRvndpg@mail.gmail.com>
+Subject: BUG: sleeping function called from invalid context at kernel/locking/mutex.c:580
+To:     open list <linux-kernel@vger.kernel.org>,
+        rcu <rcu@vger.kernel.org>, linux-bluetooth@vger.kernel.org,
+        lkft-triage@lists.linaro.org, regressions@lists.linux.dev,
+        Netdev <netdev@vger.kernel.org>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Nicolas Dechesne <nicolas.dechesne@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Oct 11, 2022 at 09:18:11PM +0800, Yu Liao wrote:
-> Hello,
-> 
-> When I run syzkaller, a deadlock problem occurs. The call stack is as follows:
-> [ 1088.244366][    C1] ======================================================
-> [ 1088.244838][    C1] WARNING: possible circular locking dependency detected
-> [ 1088.245313][    C1] 5.10.0-04424-ga472e3c833d3 #1 Not tainted
-> [ 1088.245745][    C1] ------------------------------------------------------
+Following kernel deadlock warnings and BUG noticed on arm64 Qcom db845c dev=
+ice
+While booting Linux next 20221012 tag kernel Image and kselftest configs.
 
-It is quite possible that an unfortunate set of commits were backported
-to v5.10.  Could you please bisect?
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-> [ 1088.246214][    C1] syz-executor.2/932 is trying to acquire lock:
-> [ 1088.246628][    C1] ffffa0001440c418 (rcu_node_0){..-.}-{2:2}, at:
-> __rcu_irq_enter_check_tick+0x128/0x2f4
-> [ 1088.247330][    C1]
-> [ 1088.247330][    C1] but task is already holding lock:
-> [ 1088.247830][    C1] ffff000224d0c298 (&rq->lock){-.-.}-{2:2}, at:
-> try_to_wake_up+0x6e0/0xd40
-> [ 1088.248424][    C1]
-> [ 1088.248424][    C1] which lock already depends on the new lock.
-> [ 1088.248424][    C1]
-> [ 1088.249127][    C1]
-> [ 1088.249127][    C1] the existing dependency chain (in reverse order) is:
-> [ 1088.249726][    C1]
-> [ 1088.249726][    C1] -> #1 (&rq->lock){-.-.}-{2:2}:
-> [ 1088.250239][    C1]        validate_chain+0x6dc/0xb0c
-> [ 1088.250591][    C1]        __lock_acquire+0x498/0x940
-> [ 1088.250942][    C1]        lock_acquire+0x228/0x580
-> [ 1088.251346][    C1]        _raw_spin_lock_irqsave+0xc0/0x15c
-> [ 1088.251758][    C1]        resched_cpu+0x5c/0x110
-> [ 1088.252091][    C1]        rcu_implicit_dynticks_qs+0x2b0/0x5d0
-> [ 1088.252501][    C1]        force_qs_rnp+0x244/0x39c
-> [ 1088.252847][    C1]        rcu_gp_fqs_loop+0x2e4/0x440
-> [ 1088.253219][    C1]        rcu_gp_kthread+0x1a4/0x240
-> [ 1088.253597][    C1]        kthread+0x20c/0x260
-> [ 1088.253963][    C1]        ret_from_fork+0x10/0x18
-> [ 1088.254389][    C1]
-> [ 1088.254389][    C1] -> #0 (rcu_node_0){..-.}-{2:2}:
-> [ 1088.255296][    C1]        check_prev_add+0xe0/0x105c
-> [ 1088.256000][    C1]        check_prevs_add+0x1c8/0x3d4
-> [ 1088.256693][    C1]        validate_chain+0x6dc/0xb0c
-> [ 1088.257372][    C1]        __lock_acquire+0x498/0x940
-> [ 1088.257731][    C1]        lock_acquire+0x228/0x580
-> [ 1088.258079][    C1]        _raw_spin_lock+0xa0/0x120
-> [ 1088.258425][    C1]        __rcu_irq_enter_check_tick+0x128/0x2f4
-> [ 1088.258844][    C1]        rcu_nmi_enter+0xc4/0xd0
+[   18.690573] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+[   18.695938] WARNING: possible recursive locking detected
+[   18.701307] 6.0.0-next-20221012 #1 Not tainted
+[   18.705804] --------------------------------------------
+[   18.711168] kworker/u16:5/256 is trying to acquire lock:
+[   18.716544] ffff58730911e4f8 (&irq_desc_lock_class){-.-.}-{2:2},
+at: __irq_get_desc_lock+0x64/0xa4
+[   18.725629]
+[   18.725629] but task is already holding lock:
+[   18.731519] ffff5873071c64f8 (&irq_desc_lock_class){-.-.}-{2:2},
+at: __irq_get_desc_lock+0x64/0xa4
+[   18.733233] remoteproc remoteproc0: remote processor
+remoteproc-adsp is now up
+[   18.740563]
+[   18.740563] other info that might help us debug this:
+[   18.740566]  Possible unsafe locking scenario:
+[   18.740566]
+[   18.740569]        CPU0
+[   18.740571]        ----
+[   18.740573]   lock(&irq_desc_lock_class);
+[   18.740579]   lock(&irq_desc_lock_class);
+[   18.740585]
+[   18.740585]  *** DEADLOCK ***
+[   18.740585]
+[   18.740587]  May be due to missing lock nesting notation
+[   18.740587]
+[   18.757926] cfg80211: Loading compiled-in X.509 certificates for
+regulatory database
+[   18.760420] 6 locks held by kworker/u16:5/256:
+[   18.760424]  #0: ffff587300032938
+((wq_completion)events_unbound){+.+.}-{0:0}, at:
+process_one_work+0x1e8/0x6d4
+[   18.793798] cfg80211: Loaded X.509 cert 'sforshee: 00b28ddf47aef9cea7'
+[   18.794138]  #1: ffff800009a1bdd0
+(deferred_probe_work){+.+.}-{0:0}, at: process_one_work+0x1e8/0x6d4
+[   18.815528]  #2: ffff5873019e68f8 (&dev->mutex){....}-{3:3}, at:
+__device_attach+0x44/0x200
+[   18.833287]  #3: ffffdd47e98f1cf0 (cpu_hotplug_lock){++++}-{0:0},
+at: cpus_read_lock+0x18/0x24
+M[K[  *** ] (2 of 2) A start j[   18.842012]  #4: ffff587301248518
+(subsys mutex#8){+.ob is running for=C3=A2=E2=82=AC=C2=A6n to /usr/lib/rfsa=
+ (9s / no
+limit)
+[   18.857511]  #5: ffff5873071c64f8
+(&irq_desc_lock_class){-.-.}-{2:2}, at: __irq_get_desc_lock+0x64/0xa4
+[   18.871877]
+[   18.871877] stack backtrace:
+[   18.876286] CPU: 4 PID: 256 Comm: kworker/u16:5 Not tainted
+6.0.0-next-20221012 #1
+[   18.883936] Hardware name: Thundercomm Dragonboard 845c (DT)
+[   18.889655] Workqueue: events_unbound deferred_probe_work_func
+[   18.895566] Call trace:
+[   18.898046]  dump_backtrace+0xe4/0x140
+[   18.901847]  show_stack+0x30/0x60
+[   18.905203]  dump_stack_lvl+0x8c/0xb8
+[   18.908918]  dump_stack+0x18/0x34
+[   18.912274]  __lock_acquire+0x1154/0x2040
+[   18.916330]  lock_acquire.part.0+0xe8/0x24c
+[   18.920568]  lock_acquire+0x84/0xa0
+[   18.924102]  _raw_spin_lock_irqsave+0x70/0xb0
+[   18.928523]  __irq_get_desc_lock+0x64/0xa4
+[   18.928532]  enable_irq+0x40/0xb0
+[   18.928542]  lmh_enable_interrupt+0x3c/0x50 [lmh]
+Coldplug All udev De[   18.94080vices.
+[   18.952775]  __irq_startup+0x88/0xbc
+[K[   18.957451]  irq_startup+0x84/0x180
+[   18.961243]  __enable_irq+0x88/0xa0
+[   18.964776]  enable_irq+0x54/0xb0
+[   18.968140]  qcom_cpufreq_ready+0x2c/0x3c
+[   18.972200]  cpufreq_online+0x2f4/0xb24
+[   18.976083]  cpufreq_add_dev+0xdc/0x100
+[   18.979964]  subsys_interface_register+0x134/0x14c
+[   18.984819]  cpufreq_register_driver+0x16c/0x2e0
+[   18.989488]  qcom_cpufreq_hw_driver_probe+0xdc/0x150
+[   18.994510]  platform_probe+0x70/0x100
+[   18.998311]  really_probe+0xd4/0x3f4
+[   19.001936]  __driver_probe_device+0x8c/0x1a0
+[   19.006347]  driver_probe_device+0x4c/0x13c
+[   19.010584]  __device_attach_driver+0xd8/0x180
+[   19.015081]  bus_for_each_drv+0x88/0xe0
+[   19.018966]  __device_attach+0xb4/0x200
+[   19.022845]  device_initial_probe+0x28/0x40
+[   19.027081]  bus_probe_device+0xa8/0xb0
+[   19.030965]  deferred_probe_work_func+0xc0/0x120
+[   19.035637]  process_one_work+0x280/0x6d4
+[   19.039695]  worker_thread+0x7c/0x430
+[   19.043407]  kthread+0x110/0x114
+[   19.046677]  ret_from_fork+0x10/0x20
+[   19.108471] cpu cpu4: EM: created perf domain
+         Starting Wait for udev To =C3=A2=E2=82=AC=C2=A6plete Device Initia=
+lization.
+[   19.125768] remoteproc remoteproc1: remote processor
+remoteproc-cdsp is now up
+[   19.138140] xhci_hcd 0000:01:00.0: Adding to iommu group 6
+[   19.150419] coresight stm0: STM32 initialized
+[   19.254272] ath10k_snoc 18800000.wifi: Adding to iommu group 10
+[   19.372948] ath10k_snoc 18800000.wifi: supply vdd-3.3-ch1 not
+found, using dummy regulator
+[   19.472640] geni_spi 880000.spi: FIFO mode disabled, but couldn't
+get DMA, fall back to FIFO mode
+[   19.485178] gpi 800000.dma-controller: Adding to iommu group 11
+[  OK  ] Reached target [0;1;39mHardware activated USB gadget.
+[   19.528153] i2c 16-0010: Fixing up cyclic dependency with acb3000.camss
+[   19.559810] i2c 10-003b: Fixing up cyclic dependency with hdmi-out
+[   19.575396] gpi a00000.dma-controller: Adding to iommu group 12
+[   19.590779] qcom-venus aa00000.video-codec: Adding to iommu group 13
+[   19.608167] qcom-venus aa00000.video-codec: non legacy binding
+[   19.618073] remoteproc remoteproc2: 4080000.remoteproc is available
+[   19.629950] qcom-camss acb3000.camss: Adding to iommu group 14
+[   19.630180] Bluetooth: Core ver 2.22
+[   19.639713] NET: Registered PF_BLUETOOTH protocol family
+[   19.645247] Bluetooth: HCI device and connection manager initialized
+[   19.651711] Bluetooth: HCI socket layer initialized
+[   19.656813] Bluetooth: L2CAP socket layer initialized
+[   19.661960] Bluetooth: SCO socket layer initialized
+[   19.743786] adreno 5000000.gpu: Adding to iommu group 15
+[   19.764896] Bluetooth: HCI UART driver ver 2.3
+[   19.769470] Bluetooth: HCI UART protocol H4 registered
+[   19.778004] msm-mdss ae00000.mdss: Adding to iommu group 16
+[   19.783005] Bluetooth: HCI UART protocol LL registered
+[   19.809993] Bluetooth: HCI UART protocol Broadcom registered
+[   19.819508] Bluetooth: HCI UART protocol QCA registered
+[   19.829474] Bluetooth: HCI UART protocol Marvell registered
+[   19.858355] EXT4-fs (sde9): mounted filesystem with ordered data
+mode. Quota mode: none.
+[   19.893331] platform ae94000.dsi: Fixing up cyclic dependency with 10-00=
+3b
+[  OK  ] Finished Mount DSP partition to /usr/lib/rfsa.
+[   19.917937] platform ae94000.dsi: Fixing up cyclic dependency with
+ae01000.display-controller
+[  OK  ] Reached target Local File Systems.
+[  OK  ] Listening on Load/Save RF =C3=A2=E2=82=AC=C2=A6itch Status /dev/rf=
+kill Watch.
+[   19.950987] BUG: sleeping function called from invalid context at
+kernel/locking/mutex.c:580
+[   19.959591] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid:
+258, name: kworker/u16:7
+[   19.968096] preempt_count: 100, expected: 0
+[   19.972374] RCU nest depth: 0, expected: 0
+[   19.976562] INFO: lockdep is turned off.
+[   19.980574] CPU: 0 PID: 258 Comm: kworker/u16:7 Not tainted
+6.0.0-next-20221012 #1
+[   19.988245] Hardware name: Thundercomm Dragonboard 845c (DT)
+[   19.993986] Workqueue: events_unbound async_run_entry_fn
+[   19.999395] Call trace:
+[   20.001886]  dump_backtrace+0xe4/0x140
+[   20.005700]  show_stack+0x30/0x60
+[   20.009069]  dump_stack_lvl+0x8c/0xb8
+[   20.012798]  dump_stack+0x18/0x34
+[   20.016169]  __might_resched+0x1c4/0x240
+[   20.020155]  __might_sleep+0x58/0xb0
+[   20.020802] rtc-pm8xxx c440000.spmi:pmic@0:rtc@6000: registered as rtc0
+[   20.023766]  __mutex_lock+0x54/0x424
+[   20.023778]  mutex_lock_nested+0x50/0x6c
+[   20.030501] rtc-pm8xxx c440000.spmi:pmic@0:rtc@6000: setting system
+clock to 1970-01-01T00:00:30 UTC (30)
+[   20.033086] input: pm8941_pwrkey as
+/devices/platform/soc@0/c440000.spmi/spmi-0/0-00/c440000.spmi:pmic@0:pon@80=
+0/c440000.spmi:pmic@0:pon@800:pwrkey/input/input1
+[   20.034047]  lpg_brightness_single_set+0x48/0x9c [leds_qcom_lpg]
+[   20.034132] systemd-journald[295]: Time jumped backwards, rotating.
+[   20.074723]  led_set_brightness_nosleep+0x54/0x80
+[   20.079509]  led_heartbeat_function+0x88/0x180
+[   20.084024]  call_timer_fn+0xc0/0x3c4
+[   20.087751]  __run_timers.part.0+0x220/0x27c
+[   20.092085]  run_timer_softirq+0x44/0x80
+[   20.096073]  __do_softirq+0x1e4/0x62c
+[   20.099793]  ____do_softirq+0x18/0x24
+[   20.103520]  call_on_irq_stack+0x2c/0x58
+[   20.107511]  do_softirq_own_stack+0x24/0x3c
+[   20.111757]  __irq_exit_rcu+0x168/0x1a0
+[   20.115661]  irq_exit_rcu+0x18/0x40
+[   20.119203]  el1_interrupt+0x38/0x64
+[   20.122838]  el1h_64_irq_handler+0x18/0x2c
+[   20.127002]  el1h_64_irq+0x64/0x68
+[   20.130465]  arch_counter_get_cntvct+0x14/0x30
+[   20.134979]  __delay+0xa4/0x110
+[   20.138179]  __const_udelay+0x34/0x44
+[   20.141900]  qcom_geni_serial_poll_bit+0xc4/0x104
+[   20.146675]  qcom_geni_serial_stop_rx+0xc0/0x190
+[   20.151367]  qcom_geni_serial_set_termios+0x4c/0x360
+[   20.156410]  uart_change_speed+0x60/0x130
+[   20.160479]  uart_set_termios+0x90/0x190
+[   20.164460]  tty_set_termios+0x194/0x240
+[   20.168447]  ttyport_open+0x144/0x180
+[   20.172169]  serdev_device_open+0x38/0xe4
+[   20.176248]  hci_uart_register_device+0x68/0x3ac [hci_uart]
+[   20.181957]  qca_serdev_probe+0x2f4/0x530 [hci_uart]
+[   20.186753] input: pm8941_resin as
+/devices/platform/soc@0/c440000.spmi/spmi-0/0-00/c440000.spmi:pmic@0:pon@80=
+0/c440000.spmi:pmic@0:pon@800:resin/input/input2
+[   20.187003]  serdev_drv_probe+0x44/0x90
+[   20.187016]  really_probe+0xd4/0x3f4
+[   20.208885]  __driver_probe_device+0x8c/0x1a0
+[   20.213311]  driver_probe_device+0x4c/0x13c
+[   20.217555]  __driver_attach_async_helper+0x64/0x110
+[   20.222594]  async_run_entry_fn+0x40/0x180
+[   20.226759]  process_one_work+0x280/0x6d4
+[   20.230837]  worker_thread+0x7c/0x430
+[   20.234557]  kthread+0x110/0x114
+[   20.237849]  ret_from_fork+0x10/0x20
 
-This is looking like we took an interrupt while holding an rq lock.
-Am I reading this correctly?  If so, that is bad in and of itself.
+Full boot log link,
+ - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20221012=
+/testrun/12361480/suite/log-parser-boot/test/check-kernel-bug/log
+ - https://lkft.validation.linaro.org/scheduler/job/5660839#L3720
 
-							Thanx, Paul
 
-> [ 1088.259183][    C1]        arm64_enter_el1_dbg+0xb0/0x160
-> [ 1088.259623][    C1]        el1_dbg+0x28/0x50
-> [ 1088.260011][    C1]        el1_sync_handler+0xf4/0x150
-> [ 1088.260481][    C1]        el1_sync+0x74/0x100
-> [ 1088.260800][    C1]        update_irq_load_avg+0x5d8/0xaa0
-> [ 1088.261194][    C1]        update_rq_clock_task+0xb8/0x2d0
-> [ 1088.261595][    C1]        update_rq_clock+0x8c/0x120
-> [ 1088.261952][    C1]        try_to_wake_up+0x70c/0xd40
-> [ 1088.262305][    C1]        wake_up_process+0x1c/0x24
-> [ 1088.262652][    C1]        wakeup_softirqd+0x58/0x64
-> [ 1088.263000][    C1]        __do_softirq+0x6b8/0x95c
-> [ 1088.263345][    C1]        irq_exit+0x27c/0x2d0
-> [ 1088.263674][    C1]        __handle_domain_irq+0x100/0x184
-> [ 1088.264049][    C1]        gic_handle_irq+0xc0/0x760
-> [ 1088.264394][    C1]        el1_irq+0xb8/0x140
-> [ 1088.264709][    C1]        _raw_spin_unlock_irqrestore+0x7c/0x130
-> [ 1088.265134][    C1]        __aarch64_insn_write+0xc4/0x100
-> [ 1088.265516][    C1]        aarch64_insn_patch_text_nosync+0x40/0xa0
-> [ 1088.265942][    C1]        ftrace_make_nop+0x120/0x1a4
-> [ 1088.266300][    C1]        __ftrace_replace_code+0xdc/0x160
-> [ 1088.266684][    C1]        ftrace_replace_code+0x100/0x1a4
-> [ 1088.267063][    C1]        ftrace_modify_all_code+0x1a8/0x260
-> [ 1088.267456][    C1]        arch_ftrace_update_code+0x1c/0x2c
-> [ 1088.267847][    C1]        ftrace_run_update_code+0x38/0xa4
-> [ 1088.268259][    C1]        ftrace_shutdown.part.0+0x2dc/0x550
-> [ 1088.268682][    C1]        unregister_ftrace_function+0x74/0xc0
-> [ 1088.269117][    C1]        perf_ftrace_event_register+0x130/0x1a0
-> [ 1088.269559][    C1]        perf_trace_destroy+0x68/0x9c
-> [ 1088.269938][    C1]        tp_perf_event_destroy+0x1c/0x2c
-> [ 1088.270340][    C1]        _free_event+0x2f4/0x670
-> [ 1088.270696][    C1]        put_event+0x7c/0x90
-> [ 1088.271031][    C1]        perf_event_release_kernel+0x3c0/0x450
-> [ 1088.271467][    C1]        perf_release+0x24/0x34
-> [ 1088.271824][    C1]        __fput+0x1dc/0x500
-> [ 1088.272155][    C1]        ____fput+0x24/0x30
-> [ 1088.272471][    C1]        task_work_run+0xf4/0x1ec
-> [ 1088.272811][    C1]        do_notify_resume+0x378/0x410
-> [ 1088.273180][    C1]        work_pending+0xc/0x198
-> [ 1088.273504][    C1]
-> [ 1088.273504][    C1] other info that might help us debug this:
-> [ 1088.273504][    C1]
-> [ 1088.274168][    C1]  Possible unsafe locking scenario:
-> [ 1088.274168][    C1]
-> [ 1088.274658][    C1]        CPU0                    CPU1
-> [ 1088.275012][    C1]        ----                    ----
-> [ 1088.275367][    C1]   lock(&rq->lock);
-> [ 1088.275646][    C1]                                lock(rcu_node_0);
-> [ 1088.276082][    C1]                                lock(&rq->lock);
-> [ 1088.276517][    C1]   lock(rcu_node_0);
-> [ 1088.276797][    C1]
-> [ 1088.276797][    C1]  *** DEADLOCK ***
-> [ 1088.276797][    C1]
-> [ 1088.277339][    C1] 4 locks held by syz-executor.2/932:
-> [ 1088.277696][    C1]  #0: ffffa000145251e8 (event_mutex){+.+.}-{3:3}, at:
-> perf_trace_destroy+0x34/0x9c
-> [ 1088.278345][    C1]  #1: ffffa000144fb5a8 (ftrace_lock){+.+.}-{3:3}, at:
-> unregister_ftrace_function+0x2c/0xc0
-> [ 1088.279034][    C1]  #2: ffff0000c0e0c968 (&p->pi_lock){-.-.}-{2:2}, at:
-> try_to_wake_up+0xbc/0xd40
-> [ 1088.279672][    C1]  #3: ffff000224d0c298 (&rq->lock){-.-.}-{2:2}, at:
-> try_to_wake_up+0x6e0/0xd40
-> [ 1088.280300][    C1]
-> [ 1088.280300][    C1] stack backtrace:
-> [ 1088.280706][    C1] CPU: 1 PID: 932 Comm: syz-executor.2 Not tainted
-> 5.10.0-04424-ga472e3c833d3 #1
-> [ 1088.281315][    C1] Hardware name: linux,dummy-virt (DT)
-> [ 1088.281679][    C1] Call trace:
-> [ 1088.281910][    C1]  dump_backtrace+0x0/0x41c
-> [ 1088.282218][    C1]  show_stack+0x30/0x40
-> [ 1088.282505][    C1]  dump_stack+0x1fc/0x2c0
-> [ 1088.282807][    C1]  print_circular_bug+0x1ec/0x284
-> [ 1088.283149][    C1]  check_noncircular+0x1cc/0x1ec
-> [ 1088.283486][    C1]  check_prev_add+0xe0/0x105c
-> [ 1088.283804][    C1]  check_prevs_add+0x1c8/0x3d4
-> [ 1088.284126][    C1]  validate_chain+0x6dc/0xb0c
-> [ 1088.284442][    C1]  __lock_acquire+0x498/0x940
-> [ 1088.284764][    C1]  lock_acquire+0x228/0x580
-> [ 1088.285072][    C1]  _raw_spin_lock+0xa0/0x120
-> [ 1088.285392][    C1]  __rcu_irq_enter_check_tick+0x128/0x2f4
-> [ 1088.285779][    C1]  rcu_nmi_enter+0xc4/0xd0
-> [ 1088.286082][    C1]  arm64_enter_el1_dbg+0xb0/0x160
-> [ 1088.286420][    C1]  el1_dbg+0x28/0x50
-> [ 1088.286689][    C1]  el1_sync_handler+0xf4/0x150
-> [ 1088.287010][    C1]  el1_sync+0x74/0x100
-> [ 1088.287295][    C1]  update_irq_load_avg+0x5d8/0xaa0
-> [ 1088.287640][    C1]  update_rq_clock_task+0xb8/0x2d0
-> [ 1088.287988][    C1]  update_rq_clock+0x8c/0x120
-> [ 1088.288309][    C1]  try_to_wake_up+0x70c/0xd40
-> [ 1088.288629][    C1]  wake_up_process+0x1c/0x24
-> [ 1088.288945][    C1]  wakeup_softirqd+0x58/0x64
-> [ 1088.289271][    C1]  __do_softirq+0x6b8/0x95c
-> [ 1088.289580][    C1]  irq_exit+0x27c/0x2d0
-> [ 1088.289868][    C1]  __handle_domain_irq+0x100/0x184
-> [ 1088.290211][    C1]  gic_handle_irq+0xc0/0x760
-> [ 1088.290522][    C1]  el1_irq+0xb8/0x140
-> [ 1088.290801][    C1]  _raw_spin_unlock_irqrestore+0x7c/0x130
-> [ 1088.291188][    C1]  __aarch64_insn_write+0xc4/0x100
-> [ 1088.291533][    C1]  aarch64_insn_patch_text_nosync+0x40/0xa0
-> [ 1088.291928][    C1]  ftrace_make_nop+0x120/0x1a4
-> [ 1088.292256][    C1]  __ftrace_replace_code+0xdc/0x160
-> [ 1088.292613][    C1]  ftrace_replace_code+0x100/0x1a4
-> [ 1088.292963][    C1]  ftrace_modify_all_code+0x1a8/0x260
-> [ 1088.293335][    C1]  arch_ftrace_update_code+0x1c/0x2c
-> [ 1088.293694][    C1]  ftrace_run_update_code+0x38/0xa4
-> [ 1088.294048][    C1]  ftrace_shutdown.part.0+0x2dc/0x550
-> [ 1088.294415][    C1]  unregister_ftrace_function+0x74/0xc0
-> [ 1088.294787][    C1]  perf_ftrace_event_register+0x130/0x1a0
-> [ 1088.295172][    C1]  perf_trace_destroy+0x68/0x9c
-> [ 1088.295500][    C1]  tp_perf_event_destroy+0x1c/0x2c
-> [ 1088.295850][    C1]  _free_event+0x2f4/0x670
-> [ 1088.296154][    C1]  put_event+0x7c/0x90
-> [ 1088.296439][    C1]  perf_event_release_kernel+0x3c0/0x450
-> [ 1088.296820][    C1]  perf_release+0x24/0x34
-> [ 1088.297125][    C1]  __fput+0x1dc/0x500
-> [ 1088.297404][    C1]  ____fput+0x24/0x30
-> [ 1088.297682][    C1]  task_work_run+0xf4/0x1ec
-> [ 1088.297989][    C1]  do_notify_resume+0x378/0x410
-> [ 1088.298316][    C1]  work_pending+0xc/0x198
-> 
-> I checked the code. The following scenarios may cause deadlock.
-> 
-> static void ttwu_queue(struct task_struct *p, int cpu, int wake_flags)
-> {
->     struct rq *rq = cpu_rq(cpu);
->     struct rq_flags rf;
-> 
->     if (ttwu_queue_wakelist(p, cpu, wake_flags))
->         return;
-> 
->     rq_lock(rq, &rf);
->     update_rq_clock(rq);	
-> 		===> el1_dbg
-> 			  ->rcu_nmi_enter
-> 			    ->__rcu_irq_enter_check_tick
-> 				  ->raw_spin_lock_rcu_node(rdp->mynode);
->     ttwu_do_activate(rq, p, wake_flags, &rf);
->     rq_unlock(rq, &rf);
-> }
-> 
-> static void rcu_gp_fqs(bool first_time)
-> {
->     struct rcu_node *rnp = rcu_get_root();
-> 
->     WRITE_ONCE(rcu_state.gp_activity, jiffies);
->     WRITE_ONCE(rcu_state.n_force_qs, rcu_state.n_force_qs + 1);
->     if (first_time) {
->         /* Collect dyntick-idle snapshots. */
->         force_qs_rnp(dyntick_save_progress_counter);
->     } else {
->         /* Handle dyntick-idle and offline CPUs. */
->         force_qs_rnp(rcu_implicit_dynticks_qs);	
-> 			===>raw_spin_lock_irqsave_rcu_node(rnp, flags);
-> 			===>rcu_implicit_dynticks_qs
-> 				  ->resched_cpu
-> 				    ->raw_spin_lock_irqsave(&rq->lock, flags);
->     }
->     /* Clear flag to prevent immediate re-entry. */
->     if (READ_ONCE(rcu_state.gp_flags) & RCU_GP_FLAG_FQS) {
->         raw_spin_lock_irq_rcu_node(rnp);
->         WRITE_ONCE(rcu_state.gp_flags,
->                READ_ONCE(rcu_state.gp_flags) & ~RCU_GP_FLAG_FQS);
->         raw_spin_unlock_irq_rcu_node(rnp);
->     }
-> }
-> 
+metadata:
+  git_ref: master
+  git_repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
+  git_sha: f843795727e4f5612c612cd178db1557978da742
+  git_describe: next-20221012
+  kernel_version: 6.0.0
+  kernel-config: https://builds.tuxbuild.com/2G10hEBW0Cdgh2jzrxvNzlRXdec/co=
+nfig
+  build-url: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next/-/pipel=
+ines/664367901
+  artifact-location: https://builds.tuxbuild.com/2G10hEBW0Cdgh2jzrxvNzlRXde=
+c
+  toolchain: gcc-11
+  System.map: https://builds.tuxbuild.com/2G10hEBW0Cdgh2jzrxvNzlRXdec/Syste=
+m.map
+  vmlinux.xz: https://builds.tuxbuild.com/2G10hEBW0Cdgh2jzrxvNzlRXdec/vmlin=
+ux.xz
+
+
+--
+Linaro LKFT
+https://lkft.linaro.org
