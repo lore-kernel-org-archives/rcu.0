@@ -2,301 +2,200 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CAF6C4332F
-	for <rcu@archiver.kernel.org>; Wed, 12 Oct 2022 07:06:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 33317C4332F
+	for <rcu@archiver.kernel.org>; Wed, 12 Oct 2022 09:26:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229625AbiJLHGN (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 12 Oct 2022 03:06:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48230 "EHLO
+        id S229665AbiJLJ0e (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 12 Oct 2022 05:26:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbiJLHGL (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 12 Oct 2022 03:06:11 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 844F162921
-        for <rcu@vger.kernel.org>; Wed, 12 Oct 2022 00:06:09 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id sc25so29916925ejc.12
-        for <rcu@vger.kernel.org>; Wed, 12 Oct 2022 00:06:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=3FHxfaX0nUvU3yM6pdGDpraNdXFnmAEzWTxDZP6zVag=;
-        b=cffGMndeYEmELAI2l1vym18F2hWFwe93SbDFuJNsK2tN3mDwPR4EZnrhV1EDQ86JlF
-         oPPORGk/wOJ7GRnpblMJkW2fkc0Vpg83lyYrsWp3r68N1G9QuMe1hcVtSq8663uWEo6W
-         O6WlojTohjO6nTAaeSN416a8SyCidZa0xF2KWz/I5aPvDQ04a2K1xSP0zZz3llF3nOMI
-         MLHfW9ve+SZ+/llayySwVf41keulS2jXW30hXifWIztGNZhu1k/f+JysM8z9J62ouCAs
-         oTL55ao3P7wTCsYgZCR/k8UO78YseOVW2NJJjczVUOaS9pZgTOmuzCBnYo8Ok6O7rOgp
-         G7cQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3FHxfaX0nUvU3yM6pdGDpraNdXFnmAEzWTxDZP6zVag=;
-        b=S7EScYBlXnXTdqC/bRtQncE2S3ts/Yw2MGzq6jxaNrnGwrkzLjQ+CCmyTXcoQUTZnA
-         Ou6e4PwOOCCA/YPMIl39N/MYk1UJjwuoat/LYv8VRNDvchVju1tQMms1fOggHzCSDUWf
-         KzQHIVRtCCeYid5xrEM5ToBrPJ7NqzwzjGZFmSUDyLYAhEXuGSgMWJ5rN7WxC9kNWQV3
-         bYNkX7nfM8XMK0K+vJq3RCuNfbF7ApTvTbHYydNy/HWApYkQXPyBarFrBMnhIQpFuRuO
-         Y+N4LOrRX3tenYOqi+or65hrnYTNwXJSL5xEYtVSGp36JNpr3A0ByEshuBhexGCq8dN2
-         Rz7g==
-X-Gm-Message-State: ACrzQf3jEDp+vUU0J4z383VsZwL6TFFpgMTpQ0xyn3Ej407eVmjIme9B
-        MZGwJIVX3lX/EEsNZ95Y5qQbn+DtDDVlV7jmAP1QNA==
-X-Google-Smtp-Source: AMsMyM6Xi8F6DTgp4ZKvWbVbWHa1cM1s8X+vpij+0T/1ie3OxzN9LtD5fqXK74DtrKVmQ1uJyfPyoOMlh7NiSF/8Kdk=
-X-Received: by 2002:a17:907:7d8e:b0:78d:ed30:643b with SMTP id
- oz14-20020a1709077d8e00b0078ded30643bmr2862275ejc.253.1665558367879; Wed, 12
- Oct 2022 00:06:07 -0700 (PDT)
+        with ESMTP id S229470AbiJLJ0d (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 12 Oct 2022 05:26:33 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8809237C3;
+        Wed, 12 Oct 2022 02:26:31 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4MnS0K5srzzl96v;
+        Wed, 12 Oct 2022 17:24:33 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+        by APP2 (Coremail) with SMTP id Syh0CgAnDdJCiEZjg0iZAA--.28502S2;
+        Wed, 12 Oct 2022 17:26:30 +0800 (CST)
+Subject: Re: [PATCH bpf-next 1/3] bpf: Free elements after one RCU-tasks-trace
+ grace period
+To:     paulmck@kernel.org, Alexei Starovoitov <ast@kernel.org>
+Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Delyan Kratunov <delyank@fb.com>, rcu@vger.kernel.org,
+        houtao1@huawei.com
+References: <20221011071128.3470622-1-houtao@huaweicloud.com>
+ <20221011071128.3470622-2-houtao@huaweicloud.com>
+ <20221011090742.GG4221@paulmck-ThinkPad-P17-Gen-1>
+ <d91a9536-8ed2-fc00-733d-733de34af510@huaweicloud.com>
+ <20221012063607.GM4221@paulmck-ThinkPad-P17-Gen-1>
+From:   Hou Tao <houtao@huaweicloud.com>
+Message-ID: <b0ece7d9-ec48-0ecb-45d9-fb5cf973000b@huaweicloud.com>
+Date:   Wed, 12 Oct 2022 17:26:26 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 12 Oct 2022 12:35:56 +0530
-Message-ID: <CA+G9fYui6--jhN1CFH6fXNK81sHNYgosTs2hyybFqPxFRvndpg@mail.gmail.com>
-Subject: BUG: sleeping function called from invalid context at kernel/locking/mutex.c:580
-To:     open list <linux-kernel@vger.kernel.org>,
-        rcu <rcu@vger.kernel.org>, linux-bluetooth@vger.kernel.org,
-        lkft-triage@lists.linaro.org, regressions@lists.linux.dev,
-        Netdev <netdev@vger.kernel.org>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Nicolas Dechesne <nicolas.dechesne@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20221012063607.GM4221@paulmck-ThinkPad-P17-Gen-1>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-CM-TRANSID: Syh0CgAnDdJCiEZjg0iZAA--.28502S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxtrykJr17Gw1xuw47ZFyfCrg_yoW7CFy8pF
+        W7GF1DCr4DZrs0kwn2vr17CFZIy395K3W2qa40y3s5Crn0kryDuF1jyFy5uFyF9rs3Ga12
+        vF1qywnxX3WUZFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
+        6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+        9x07UZ18PUUUUU=
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Following kernel deadlock warnings and BUG noticed on arm64 Qcom db845c dev=
-ice
-While booting Linux next 20221012 tag kernel Image and kselftest configs.
+Hi,
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+On 10/12/2022 2:36 PM, Paul E. McKenney wrote:
+> On Tue, Oct 11, 2022 at 07:31:28PM +0800, Hou Tao wrote:
+>> Hi,
+>>
+>> On 10/11/2022 5:07 PM, Paul E. McKenney wrote:
+>>> On Tue, Oct 11, 2022 at 03:11:26PM +0800, Hou Tao wrote:
+>>>> From: Hou Tao <houtao1@huawei.com>
+>>>>
+>>>> According to the implementation of RCU Tasks Trace, it inovkes
+>>>> ->postscan_func() to wait for one RCU-tasks-trace grace period and
+>>>> rcu_tasks_trace_postscan() inovkes synchronize_rcu() to wait for one
+>>>> normal RCU grace period in turn, so one RCU-tasks-trace grace period
+>>>> will imply one RCU grace period.
+>>>>
+>>>> So there is no need to do call_rcu() again in the callback of
+>>>> call_rcu_tasks_trace() and it can just free these elements directly.
+>>> This is true, but this is an implementation detail that is not guaranteed
+>>> in future versions of the kernel.  But if this additional call_rcu()
+>>> is causing trouble, I could add some API member that returned true in
+>>> kernels where it does happen to be the case that call_rcu_tasks_trace()
+>>> implies a call_rcu()-style grace period.
+>>>
+>>> The BPF memory allocator could then complain or adapt, as appropriate.
+>>>
+>>> Thoughts?
+>> It is indeed an implementation details. But In an idle KVM guest, for memory
+>> reclamation in bpf memory allocator a RCU tasks trace grace period is about 30ms
+>> and RCU grace period is about 20 ms. Under stress condition, the grace period
+>> will be much longer. If the extra RCU grace period can be removed, these memory
+>> can be reclaimed more quickly and it will be beneficial for memory pressure.
+> I understand the benefits.  We just need to get a safe way to take
+> advantage of them.
+>
+>> Now it seems we can use RCU poll APIs (e.g. get_state_synchronize_rcu() and
+>> poll_state_synchronize_rcu() ) to check whether or not a RCU grace period has
+>> passed. But It needs to add at least one unsigned long into the freeing object.
+>> The extra memory overhead may be OK for bpf memory allocator, but it is not for
+>> small object. So could you please show example on how these new APIs work ? Does
+>> it need to modify the to-be-free object ?
+> Good point on the polling APIs, more on this below.
+>
+> I was thinking in terms of an API like this:
+>
+> 	static inline bool rcu_trace_implies_rcu_gp(void)
+> 	{
+> 		return true;
+> 	}
+>
+> Along with comments on the synchronize_rcu() pointing at the
+> rcu_trace_implies_rcu_gp().
+It is a simple API and the modifications for call_rcu_tasks_trace() users will
+also be simple. The callback of call_rcu_tasks_trace() will invoke
+rcu_trace_implies_rcu_gp(), and it returns true, the callback invokes the
+callback for call_rcu() directly, else it does so through call_rcu().
+>
+> Another approach is to wait for the grace periods concurrently, but this
+> requires not one but two rcu_head structures.
+Beside the extra space usage, does it also complicate the logic in callback
+function because it needs to handle the concurrency problem ?
+>
+> Back to the polling API.  Are these things freed individually, or can
+> they be grouped?  If they can be grouped, the storage for the grace-period
+> state could be associated with the group.
+As said above, for bpf memory allocator it may be OK because it frees elements
+in batch, but for bpf local storage and its element these memories are freed
+individually. So I think if the implication of RCU tasks trace grace period will
+not be changed in the foreseeable future, adding rcu_trace_implies_rcu_gp() and
+using it in bpf is a good idea. What do you think ?
+>
+> 							Thanx, Paul
+>
+>>>> Signed-off-by: Hou Tao <houtao1@huawei.com>
+>>>> ---
+>>>>  kernel/bpf/memalloc.c | 17 ++++++-----------
+>>>>  1 file changed, 6 insertions(+), 11 deletions(-)
+>>>>
+>>>> diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
+>>>> index 5f83be1d2018..6f32dddc804f 100644
+>>>> --- a/kernel/bpf/memalloc.c
+>>>> +++ b/kernel/bpf/memalloc.c
+>>>> @@ -209,6 +209,9 @@ static void free_one(struct bpf_mem_cache *c, void *obj)
+>>>>  	kfree(obj);
+>>>>  }
+>>>>  
+>>>> +/* Now RCU Tasks grace period implies RCU grace period, so no need to do
+>>>> + * an extra call_rcu().
+>>>> + */
+>>>>  static void __free_rcu(struct rcu_head *head)
+>>>>  {
+>>>>  	struct bpf_mem_cache *c = container_of(head, struct bpf_mem_cache, rcu);
+>>>> @@ -220,13 +223,6 @@ static void __free_rcu(struct rcu_head *head)
+>>>>  	atomic_set(&c->call_rcu_in_progress, 0);
+>>>>  }
+>>>>  
+>>>> -static void __free_rcu_tasks_trace(struct rcu_head *head)
+>>>> -{
+>>>> -	struct bpf_mem_cache *c = container_of(head, struct bpf_mem_cache, rcu);
+>>>> -
+>>>> -	call_rcu(&c->rcu, __free_rcu);
+>>>> -}
+>>>> -
+>>>>  static void enque_to_free(struct bpf_mem_cache *c, void *obj)
+>>>>  {
+>>>>  	struct llist_node *llnode = obj;
+>>>> @@ -252,11 +248,10 @@ static void do_call_rcu(struct bpf_mem_cache *c)
+>>>>  		 * from __free_rcu() and from drain_mem_cache().
+>>>>  		 */
+>>>>  		__llist_add(llnode, &c->waiting_for_gp);
+>>>> -	/* Use call_rcu_tasks_trace() to wait for sleepable progs to finish.
+>>>> -	 * Then use call_rcu() to wait for normal progs to finish
+>>>> -	 * and finally do free_one() on each element.
+>>>> +	/* Use call_rcu_tasks_trace() to wait for both sleepable and normal
+>>>> +	 * progs to finish and finally do free_one() on each element.
+>>>>  	 */
+>>>> -	call_rcu_tasks_trace(&c->rcu, __free_rcu_tasks_trace);
+>>>> +	call_rcu_tasks_trace(&c->rcu, __free_rcu);
+>>>>  }
+>>>>  
+>>>>  static void free_bulk(struct bpf_mem_cache *c)
+>>>> -- 
+>>>> 2.29.2
+>>>>
 
-[   18.690573] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-[   18.695938] WARNING: possible recursive locking detected
-[   18.701307] 6.0.0-next-20221012 #1 Not tainted
-[   18.705804] --------------------------------------------
-[   18.711168] kworker/u16:5/256 is trying to acquire lock:
-[   18.716544] ffff58730911e4f8 (&irq_desc_lock_class){-.-.}-{2:2},
-at: __irq_get_desc_lock+0x64/0xa4
-[   18.725629]
-[   18.725629] but task is already holding lock:
-[   18.731519] ffff5873071c64f8 (&irq_desc_lock_class){-.-.}-{2:2},
-at: __irq_get_desc_lock+0x64/0xa4
-[   18.733233] remoteproc remoteproc0: remote processor
-remoteproc-adsp is now up
-[   18.740563]
-[   18.740563] other info that might help us debug this:
-[   18.740566]  Possible unsafe locking scenario:
-[   18.740566]
-[   18.740569]        CPU0
-[   18.740571]        ----
-[   18.740573]   lock(&irq_desc_lock_class);
-[   18.740579]   lock(&irq_desc_lock_class);
-[   18.740585]
-[   18.740585]  *** DEADLOCK ***
-[   18.740585]
-[   18.740587]  May be due to missing lock nesting notation
-[   18.740587]
-[   18.757926] cfg80211: Loading compiled-in X.509 certificates for
-regulatory database
-[   18.760420] 6 locks held by kworker/u16:5/256:
-[   18.760424]  #0: ffff587300032938
-((wq_completion)events_unbound){+.+.}-{0:0}, at:
-process_one_work+0x1e8/0x6d4
-[   18.793798] cfg80211: Loaded X.509 cert 'sforshee: 00b28ddf47aef9cea7'
-[   18.794138]  #1: ffff800009a1bdd0
-(deferred_probe_work){+.+.}-{0:0}, at: process_one_work+0x1e8/0x6d4
-[   18.815528]  #2: ffff5873019e68f8 (&dev->mutex){....}-{3:3}, at:
-__device_attach+0x44/0x200
-[   18.833287]  #3: ffffdd47e98f1cf0 (cpu_hotplug_lock){++++}-{0:0},
-at: cpus_read_lock+0x18/0x24
-M[K[  *** ] (2 of 2) A start j[   18.842012]  #4: ffff587301248518
-(subsys mutex#8){+.ob is running for=C3=A2=E2=82=AC=C2=A6n to /usr/lib/rfsa=
- (9s / no
-limit)
-[   18.857511]  #5: ffff5873071c64f8
-(&irq_desc_lock_class){-.-.}-{2:2}, at: __irq_get_desc_lock+0x64/0xa4
-[   18.871877]
-[   18.871877] stack backtrace:
-[   18.876286] CPU: 4 PID: 256 Comm: kworker/u16:5 Not tainted
-6.0.0-next-20221012 #1
-[   18.883936] Hardware name: Thundercomm Dragonboard 845c (DT)
-[   18.889655] Workqueue: events_unbound deferred_probe_work_func
-[   18.895566] Call trace:
-[   18.898046]  dump_backtrace+0xe4/0x140
-[   18.901847]  show_stack+0x30/0x60
-[   18.905203]  dump_stack_lvl+0x8c/0xb8
-[   18.908918]  dump_stack+0x18/0x34
-[   18.912274]  __lock_acquire+0x1154/0x2040
-[   18.916330]  lock_acquire.part.0+0xe8/0x24c
-[   18.920568]  lock_acquire+0x84/0xa0
-[   18.924102]  _raw_spin_lock_irqsave+0x70/0xb0
-[   18.928523]  __irq_get_desc_lock+0x64/0xa4
-[   18.928532]  enable_irq+0x40/0xb0
-[   18.928542]  lmh_enable_interrupt+0x3c/0x50 [lmh]
-Coldplug All udev De[   18.94080vices.
-[   18.952775]  __irq_startup+0x88/0xbc
-[K[   18.957451]  irq_startup+0x84/0x180
-[   18.961243]  __enable_irq+0x88/0xa0
-[   18.964776]  enable_irq+0x54/0xb0
-[   18.968140]  qcom_cpufreq_ready+0x2c/0x3c
-[   18.972200]  cpufreq_online+0x2f4/0xb24
-[   18.976083]  cpufreq_add_dev+0xdc/0x100
-[   18.979964]  subsys_interface_register+0x134/0x14c
-[   18.984819]  cpufreq_register_driver+0x16c/0x2e0
-[   18.989488]  qcom_cpufreq_hw_driver_probe+0xdc/0x150
-[   18.994510]  platform_probe+0x70/0x100
-[   18.998311]  really_probe+0xd4/0x3f4
-[   19.001936]  __driver_probe_device+0x8c/0x1a0
-[   19.006347]  driver_probe_device+0x4c/0x13c
-[   19.010584]  __device_attach_driver+0xd8/0x180
-[   19.015081]  bus_for_each_drv+0x88/0xe0
-[   19.018966]  __device_attach+0xb4/0x200
-[   19.022845]  device_initial_probe+0x28/0x40
-[   19.027081]  bus_probe_device+0xa8/0xb0
-[   19.030965]  deferred_probe_work_func+0xc0/0x120
-[   19.035637]  process_one_work+0x280/0x6d4
-[   19.039695]  worker_thread+0x7c/0x430
-[   19.043407]  kthread+0x110/0x114
-[   19.046677]  ret_from_fork+0x10/0x20
-[   19.108471] cpu cpu4: EM: created perf domain
-         Starting Wait for udev To =C3=A2=E2=82=AC=C2=A6plete Device Initia=
-lization.
-[   19.125768] remoteproc remoteproc1: remote processor
-remoteproc-cdsp is now up
-[   19.138140] xhci_hcd 0000:01:00.0: Adding to iommu group 6
-[   19.150419] coresight stm0: STM32 initialized
-[   19.254272] ath10k_snoc 18800000.wifi: Adding to iommu group 10
-[   19.372948] ath10k_snoc 18800000.wifi: supply vdd-3.3-ch1 not
-found, using dummy regulator
-[   19.472640] geni_spi 880000.spi: FIFO mode disabled, but couldn't
-get DMA, fall back to FIFO mode
-[   19.485178] gpi 800000.dma-controller: Adding to iommu group 11
-[  OK  ] Reached target [0;1;39mHardware activated USB gadget.
-[   19.528153] i2c 16-0010: Fixing up cyclic dependency with acb3000.camss
-[   19.559810] i2c 10-003b: Fixing up cyclic dependency with hdmi-out
-[   19.575396] gpi a00000.dma-controller: Adding to iommu group 12
-[   19.590779] qcom-venus aa00000.video-codec: Adding to iommu group 13
-[   19.608167] qcom-venus aa00000.video-codec: non legacy binding
-[   19.618073] remoteproc remoteproc2: 4080000.remoteproc is available
-[   19.629950] qcom-camss acb3000.camss: Adding to iommu group 14
-[   19.630180] Bluetooth: Core ver 2.22
-[   19.639713] NET: Registered PF_BLUETOOTH protocol family
-[   19.645247] Bluetooth: HCI device and connection manager initialized
-[   19.651711] Bluetooth: HCI socket layer initialized
-[   19.656813] Bluetooth: L2CAP socket layer initialized
-[   19.661960] Bluetooth: SCO socket layer initialized
-[   19.743786] adreno 5000000.gpu: Adding to iommu group 15
-[   19.764896] Bluetooth: HCI UART driver ver 2.3
-[   19.769470] Bluetooth: HCI UART protocol H4 registered
-[   19.778004] msm-mdss ae00000.mdss: Adding to iommu group 16
-[   19.783005] Bluetooth: HCI UART protocol LL registered
-[   19.809993] Bluetooth: HCI UART protocol Broadcom registered
-[   19.819508] Bluetooth: HCI UART protocol QCA registered
-[   19.829474] Bluetooth: HCI UART protocol Marvell registered
-[   19.858355] EXT4-fs (sde9): mounted filesystem with ordered data
-mode. Quota mode: none.
-[   19.893331] platform ae94000.dsi: Fixing up cyclic dependency with 10-00=
-3b
-[  OK  ] Finished Mount DSP partition to /usr/lib/rfsa.
-[   19.917937] platform ae94000.dsi: Fixing up cyclic dependency with
-ae01000.display-controller
-[  OK  ] Reached target Local File Systems.
-[  OK  ] Listening on Load/Save RF =C3=A2=E2=82=AC=C2=A6itch Status /dev/rf=
-kill Watch.
-[   19.950987] BUG: sleeping function called from invalid context at
-kernel/locking/mutex.c:580
-[   19.959591] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid:
-258, name: kworker/u16:7
-[   19.968096] preempt_count: 100, expected: 0
-[   19.972374] RCU nest depth: 0, expected: 0
-[   19.976562] INFO: lockdep is turned off.
-[   19.980574] CPU: 0 PID: 258 Comm: kworker/u16:7 Not tainted
-6.0.0-next-20221012 #1
-[   19.988245] Hardware name: Thundercomm Dragonboard 845c (DT)
-[   19.993986] Workqueue: events_unbound async_run_entry_fn
-[   19.999395] Call trace:
-[   20.001886]  dump_backtrace+0xe4/0x140
-[   20.005700]  show_stack+0x30/0x60
-[   20.009069]  dump_stack_lvl+0x8c/0xb8
-[   20.012798]  dump_stack+0x18/0x34
-[   20.016169]  __might_resched+0x1c4/0x240
-[   20.020155]  __might_sleep+0x58/0xb0
-[   20.020802] rtc-pm8xxx c440000.spmi:pmic@0:rtc@6000: registered as rtc0
-[   20.023766]  __mutex_lock+0x54/0x424
-[   20.023778]  mutex_lock_nested+0x50/0x6c
-[   20.030501] rtc-pm8xxx c440000.spmi:pmic@0:rtc@6000: setting system
-clock to 1970-01-01T00:00:30 UTC (30)
-[   20.033086] input: pm8941_pwrkey as
-/devices/platform/soc@0/c440000.spmi/spmi-0/0-00/c440000.spmi:pmic@0:pon@80=
-0/c440000.spmi:pmic@0:pon@800:pwrkey/input/input1
-[   20.034047]  lpg_brightness_single_set+0x48/0x9c [leds_qcom_lpg]
-[   20.034132] systemd-journald[295]: Time jumped backwards, rotating.
-[   20.074723]  led_set_brightness_nosleep+0x54/0x80
-[   20.079509]  led_heartbeat_function+0x88/0x180
-[   20.084024]  call_timer_fn+0xc0/0x3c4
-[   20.087751]  __run_timers.part.0+0x220/0x27c
-[   20.092085]  run_timer_softirq+0x44/0x80
-[   20.096073]  __do_softirq+0x1e4/0x62c
-[   20.099793]  ____do_softirq+0x18/0x24
-[   20.103520]  call_on_irq_stack+0x2c/0x58
-[   20.107511]  do_softirq_own_stack+0x24/0x3c
-[   20.111757]  __irq_exit_rcu+0x168/0x1a0
-[   20.115661]  irq_exit_rcu+0x18/0x40
-[   20.119203]  el1_interrupt+0x38/0x64
-[   20.122838]  el1h_64_irq_handler+0x18/0x2c
-[   20.127002]  el1h_64_irq+0x64/0x68
-[   20.130465]  arch_counter_get_cntvct+0x14/0x30
-[   20.134979]  __delay+0xa4/0x110
-[   20.138179]  __const_udelay+0x34/0x44
-[   20.141900]  qcom_geni_serial_poll_bit+0xc4/0x104
-[   20.146675]  qcom_geni_serial_stop_rx+0xc0/0x190
-[   20.151367]  qcom_geni_serial_set_termios+0x4c/0x360
-[   20.156410]  uart_change_speed+0x60/0x130
-[   20.160479]  uart_set_termios+0x90/0x190
-[   20.164460]  tty_set_termios+0x194/0x240
-[   20.168447]  ttyport_open+0x144/0x180
-[   20.172169]  serdev_device_open+0x38/0xe4
-[   20.176248]  hci_uart_register_device+0x68/0x3ac [hci_uart]
-[   20.181957]  qca_serdev_probe+0x2f4/0x530 [hci_uart]
-[   20.186753] input: pm8941_resin as
-/devices/platform/soc@0/c440000.spmi/spmi-0/0-00/c440000.spmi:pmic@0:pon@80=
-0/c440000.spmi:pmic@0:pon@800:resin/input/input2
-[   20.187003]  serdev_drv_probe+0x44/0x90
-[   20.187016]  really_probe+0xd4/0x3f4
-[   20.208885]  __driver_probe_device+0x8c/0x1a0
-[   20.213311]  driver_probe_device+0x4c/0x13c
-[   20.217555]  __driver_attach_async_helper+0x64/0x110
-[   20.222594]  async_run_entry_fn+0x40/0x180
-[   20.226759]  process_one_work+0x280/0x6d4
-[   20.230837]  worker_thread+0x7c/0x430
-[   20.234557]  kthread+0x110/0x114
-[   20.237849]  ret_from_fork+0x10/0x20
-
-Full boot log link,
- - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20221012=
-/testrun/12361480/suite/log-parser-boot/test/check-kernel-bug/log
- - https://lkft.validation.linaro.org/scheduler/job/5660839#L3720
-
-
-metadata:
-  git_ref: master
-  git_repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
-  git_sha: f843795727e4f5612c612cd178db1557978da742
-  git_describe: next-20221012
-  kernel_version: 6.0.0
-  kernel-config: https://builds.tuxbuild.com/2G10hEBW0Cdgh2jzrxvNzlRXdec/co=
-nfig
-  build-url: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next/-/pipel=
-ines/664367901
-  artifact-location: https://builds.tuxbuild.com/2G10hEBW0Cdgh2jzrxvNzlRXde=
-c
-  toolchain: gcc-11
-  System.map: https://builds.tuxbuild.com/2G10hEBW0Cdgh2jzrxvNzlRXdec/Syste=
-m.map
-  vmlinux.xz: https://builds.tuxbuild.com/2G10hEBW0Cdgh2jzrxvNzlRXdec/vmlin=
-ux.xz
-
-
---
-Linaro LKFT
-https://lkft.linaro.org
