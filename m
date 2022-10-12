@@ -2,230 +2,104 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C77D9C4332F
-	for <rcu@archiver.kernel.org>; Wed, 12 Oct 2022 16:11:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 109DAC4332F
+	for <rcu@archiver.kernel.org>; Wed, 12 Oct 2022 19:54:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229537AbiJLQLL (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 12 Oct 2022 12:11:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32856 "EHLO
+        id S229563AbiJLTyl (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 12 Oct 2022 15:54:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbiJLQLK (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 12 Oct 2022 12:11:10 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF2D5A033F;
-        Wed, 12 Oct 2022 09:11:08 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6BC8D61557;
-        Wed, 12 Oct 2022 16:11:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FC1DC433C1;
-        Wed, 12 Oct 2022 16:11:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665591067;
-        bh=5baChwl7p9R7fplrSmrngOXPqaPkRkzDUYbEwWZ0Q10=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=SuoINakrZK0I+x8uRoRqPDBMveQ8mddWgiqdR4LPi+/6zdEaSQmA1TFU0UZUmdpY0
-         mDdPTBEgz1hevFvm/YE4B/wfMIBd75AIBRRS2dmbSUGGdgL+EC9SR4Devpk9ciwbZs
-         E3vSp5aj6JXqAc+TC916KUPpFA5iDoya6PD38fa6Umf3z9OKg6zyEdMk7mDOZWZxxm
-         WHBRzA4OqfJkoihoWhkuQhRMiwy/jbTKVNoJ4QIL7mPX5pPzR+GPcafyzYQoFH1mTa
-         FvE7C49sEcQGXTlGrWfhbg7x3MwIHF/0d7AlfCCuLEKldNgM7SkRr0VrYB7SKTiNOA
-         wL68ylf5I7Kpw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 9D0BF5C196D; Wed, 12 Oct 2022 09:11:03 -0700 (PDT)
-Date:   Wed, 12 Oct 2022 09:11:03 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Hou Tao <houtao@huaweicloud.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Delyan Kratunov <delyank@fb.com>, rcu@vger.kernel.org,
-        houtao1@huawei.com
-Subject: Re: [PATCH bpf-next 1/3] bpf: Free elements after one
- RCU-tasks-trace grace period
-Message-ID: <20221012161103.GU4221@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20221011071128.3470622-1-houtao@huaweicloud.com>
- <20221011071128.3470622-2-houtao@huaweicloud.com>
- <20221011090742.GG4221@paulmck-ThinkPad-P17-Gen-1>
- <d91a9536-8ed2-fc00-733d-733de34af510@huaweicloud.com>
- <20221012063607.GM4221@paulmck-ThinkPad-P17-Gen-1>
- <b0ece7d9-ec48-0ecb-45d9-fb5cf973000b@huaweicloud.com>
+        with ESMTP id S229495AbiJLTyi (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 12 Oct 2022 15:54:38 -0400
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 713B7190
+        for <rcu@vger.kernel.org>; Wed, 12 Oct 2022 12:54:36 -0700 (PDT)
+Received: by mail-il1-x134.google.com with SMTP id u10so9317235ilm.5
+        for <rcu@vger.kernel.org>; Wed, 12 Oct 2022 12:54:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=nIZK921kgx58UdIyVC5ayIJBJbNqULB9uu6tsSeumyA=;
+        b=JGZDcUzJP7GvU3lcTwaBlSH0DdoDDbn3M6ccuZ2yUn3bHouMHUlk/eP0MaDhqbE4xO
+         zXdJPa/5SOiFHfks0kXR0CwvF5mIzznqToOT55cjbD2Pu3g8zO6H+J5V7L5NBbONPbfZ
+         fd4/vy8qzCEoetISe+lXuv4T4jna282pgC8UQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nIZK921kgx58UdIyVC5ayIJBJbNqULB9uu6tsSeumyA=;
+        b=YAJC8Db50ckZ9GRit3YD18MywexkUJM/52G6OnymP7ppA+3P+5RxRgXOutAReeHzXo
+         T6xYESxYCk9TTtwfg4NngiLmQfGPr7wVLQ7c1q01FDwRij7YsgYMey87grZ53vogJ+t0
+         th9360nfcy77Bxx9Yr8PROEY4QtVX2cNkcEtz+IfiM4SBXINyNQbDVsKml62FoK7tO5X
+         eYJCHEWnwGYx5UYGN/VCNUO2mJNbbBZZmN05kvPFeo2ymO3kj8DfWOOtp2PvCaRvGzeH
+         y/12qHstKOtBcfiUNQinM8hrNx7p6TGAIJKQ8Q8Lo6bBjwPvQxeIr3atBF1W2F3DhXuo
+         EeNw==
+X-Gm-Message-State: ACrzQf3PWbfU0L0dE8yJucUJC+7AfynIgSepmuFvoe7mLNDiY9d9cco0
+        +f8ljhw9/0dCaZJ9cEMiPtkYpsd9gX5N8KDa7GUK2w==
+X-Google-Smtp-Source: AMsMyM54rwa+Cp1yIX8hwMtKzNITA9Rk1ufq2G5CcQCpwUxNxjtG5QHDz6FvStyqJctn6j7lFDS7wsw95fA2PpTDcx0=
+X-Received: by 2002:a92:d686:0:b0:2fa:6226:6247 with SMTP id
+ p6-20020a92d686000000b002fa62266247mr15896122iln.79.1665604475795; Wed, 12
+ Oct 2022 12:54:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b0ece7d9-ec48-0ecb-45d9-fb5cf973000b@huaweicloud.com>
+References: <20221011180142.2742289-1-joel@joelfernandes.org>
+ <20221011180142.2742289-3-joel@joelfernandes.org> <20221011231053.GA1052831@lothringen>
+In-Reply-To: <20221011231053.GA1052831@lothringen>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Wed, 12 Oct 2022 15:54:25 -0400
+Message-ID: <CAEXW_YSsEQ8krr9ckCOmO1B=C+Oy+8j_BtetQeNu1McH5nSuQg@mail.gmail.com>
+Subject: Re: [PATCH v8 02/13] rcu: Make call_rcu() lazy to save power
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rushikesh.s.kadam@intel.com, urezki@gmail.com,
+        neeraj.iitr10@gmail.com, paulmck@kernel.org, rostedt@goodmis.org,
+        youssefesmat@google.com, surenb@google.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Oct 12, 2022 at 05:26:26PM +0800, Hou Tao wrote:
-> Hi,
-> 
-> On 10/12/2022 2:36 PM, Paul E. McKenney wrote:
-> > On Tue, Oct 11, 2022 at 07:31:28PM +0800, Hou Tao wrote:
-> >> Hi,
-> >>
-> >> On 10/11/2022 5:07 PM, Paul E. McKenney wrote:
-> >>> On Tue, Oct 11, 2022 at 03:11:26PM +0800, Hou Tao wrote:
-> >>>> From: Hou Tao <houtao1@huawei.com>
-> >>>>
-> >>>> According to the implementation of RCU Tasks Trace, it inovkes
-> >>>> ->postscan_func() to wait for one RCU-tasks-trace grace period and
-> >>>> rcu_tasks_trace_postscan() inovkes synchronize_rcu() to wait for one
-> >>>> normal RCU grace period in turn, so one RCU-tasks-trace grace period
-> >>>> will imply one RCU grace period.
-> >>>>
-> >>>> So there is no need to do call_rcu() again in the callback of
-> >>>> call_rcu_tasks_trace() and it can just free these elements directly.
-> >>> This is true, but this is an implementation detail that is not guaranteed
-> >>> in future versions of the kernel.  But if this additional call_rcu()
-> >>> is causing trouble, I could add some API member that returned true in
-> >>> kernels where it does happen to be the case that call_rcu_tasks_trace()
-> >>> implies a call_rcu()-style grace period.
-> >>>
-> >>> The BPF memory allocator could then complain or adapt, as appropriate.
-> >>>
-> >>> Thoughts?
-> >> It is indeed an implementation details. But In an idle KVM guest, for memory
-> >> reclamation in bpf memory allocator a RCU tasks trace grace period is about 30ms
-> >> and RCU grace period is about 20 ms. Under stress condition, the grace period
-> >> will be much longer. If the extra RCU grace period can be removed, these memory
-> >> can be reclaimed more quickly and it will be beneficial for memory pressure.
-> > I understand the benefits.  We just need to get a safe way to take
-> > advantage of them.
+On Tue, Oct 11, 2022 at 7:10 PM Frederic Weisbecker <frederic@kernel.org> wrote:
+>
+> On Tue, Oct 11, 2022 at 06:01:31PM +0000, Joel Fernandes (Google) wrote:
+> > @@ -269,10 +294,14 @@ static void wake_nocb_gp_defer(struct rcu_data *rdp, int waketype,
+> >       raw_spin_lock_irqsave(&rdp_gp->nocb_gp_lock, flags);
 > >
-> >> Now it seems we can use RCU poll APIs (e.g. get_state_synchronize_rcu() and
-> >> poll_state_synchronize_rcu() ) to check whether or not a RCU grace period has
-> >> passed. But It needs to add at least one unsigned long into the freeing object.
-> >> The extra memory overhead may be OK for bpf memory allocator, but it is not for
-> >> small object. So could you please show example on how these new APIs work ? Does
-> >> it need to modify the to-be-free object ?
-> > Good point on the polling APIs, more on this below.
-> >
-> > I was thinking in terms of an API like this:
-> >
-> > 	static inline bool rcu_trace_implies_rcu_gp(void)
-> > 	{
-> > 		return true;
-> > 	}
-> >
-> > Along with comments on the synchronize_rcu() pointing at the
-> > rcu_trace_implies_rcu_gp().
-> 
-> It is a simple API and the modifications for call_rcu_tasks_trace() users will
-> also be simple. The callback of call_rcu_tasks_trace() will invoke
-> rcu_trace_implies_rcu_gp(), and it returns true, the callback invokes the
-> callback for call_rcu() directly, else it does so through call_rcu().
+> >       /*
+> > -      * Bypass wakeup overrides previous deferments. In case
+> > -      * of callback storm, no need to wake up too early.
+> > +      * Bypass wakeup overrides previous deferments. In case of
+> > +      * callback storm, no need to wake up too early.
+> >        */
+> > -     if (waketype == RCU_NOCB_WAKE_BYPASS) {
+> > +     if (waketype == RCU_NOCB_WAKE_LAZY &&
+> > +         READ_ONCE(rdp->nocb_defer_wakeup) == RCU_NOCB_WAKE_NOT) {
+>
+> No need for READ_ONCE() here.
+>
+> > +             mod_timer(&rdp_gp->nocb_timer, jiffies + jiffies_till_flush);
+> > +             WRITE_ONCE(rdp_gp->nocb_defer_wakeup, waketype);
+> > +     } else if (waketype == RCU_NOCB_WAKE_BYPASS) {
+> >               mod_timer(&rdp_gp->nocb_timer, jiffies + 2);
+> >               WRITE_ONCE(rdp_gp->nocb_defer_wakeup, waketype);
+> >       } else {
+> > @@ -611,6 +682,8 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
+> >       unsigned long flags;
+> >       bool gotcbs = false;
+> >       unsigned long j = jiffies;
+> > +     bool lazy = false;
+> > +     long lazy_ncbs;
+>
+> Looks like lazy_ncbs can be declared withing the loop, as well as bypass_cbs.
+>
+> Anyway, apart from such boring cosmectics:
+>
+> Acked-by: Frederic Weisbecker <frederic@kernel.org>
 
-Sounds good!
+Thanks, I folded the cosmetic suggestions with the Ack and pushed it to:
+https://github.com/joelagnel/linux-kernel.git (branch rcu-next-oct.12.22)
 
-Please note that if the callback function just does kfree() or equivalent,
-this will work fine.  If it acquires spinlocks, you may need to do
-local_bh_disable() before invoking it directly and local_bh_enable()
-afterwards.
+thanks,
 
-> > Another approach is to wait for the grace periods concurrently, but this
-> > requires not one but two rcu_head structures.
-> 
-> Beside the extra space usage, does it also complicate the logic in callback
-> function because it needs to handle the concurrency problem ?
-
-Definitely!!!
-
-Perhaps something like this:
-
-	static void cbf(struct rcu_head *rhp)
-	{
-		p = container_of(rhp, ...);
-
-		if (atomic_dec_and_test(&p->cbs_awaiting))
-			kfree(p);
-	}
-
-	atomic_set(&p->cbs_awating, 2);
-	call_rcu(p->rh1, cbf);
-	call_rcu_tasks_trace(p->rh2, cbf);
-
-Is this worth it?  I have no idea.  I must defer to you.
-
-> > Back to the polling API.  Are these things freed individually, or can
-> > they be grouped?  If they can be grouped, the storage for the grace-period
-> > state could be associated with the group.
-> 
-> As said above, for bpf memory allocator it may be OK because it frees elements
-> in batch, but for bpf local storage and its element these memories are freed
-> individually. So I think if the implication of RCU tasks trace grace period will
-> not be changed in the foreseeable future, adding rcu_trace_implies_rcu_gp() and
-> using it in bpf is a good idea. What do you think ?
-
-Maybe the BPF memory allocator does it one way and BPF local storage
-does it another way.
-
-How about if I produce a patch for rcu_trace_implies_rcu_gp() and let
-you carry it with your series?  That way I don't have an unused function
-in -rcu and you don't have to wait for me to send it upstream?
-
-							Thanx, Paul
-
-> >>>> Signed-off-by: Hou Tao <houtao1@huawei.com>
-> >>>> ---
-> >>>>  kernel/bpf/memalloc.c | 17 ++++++-----------
-> >>>>  1 file changed, 6 insertions(+), 11 deletions(-)
-> >>>>
-> >>>> diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
-> >>>> index 5f83be1d2018..6f32dddc804f 100644
-> >>>> --- a/kernel/bpf/memalloc.c
-> >>>> +++ b/kernel/bpf/memalloc.c
-> >>>> @@ -209,6 +209,9 @@ static void free_one(struct bpf_mem_cache *c, void *obj)
-> >>>>  	kfree(obj);
-> >>>>  }
-> >>>>  
-> >>>> +/* Now RCU Tasks grace period implies RCU grace period, so no need to do
-> >>>> + * an extra call_rcu().
-> >>>> + */
-> >>>>  static void __free_rcu(struct rcu_head *head)
-> >>>>  {
-> >>>>  	struct bpf_mem_cache *c = container_of(head, struct bpf_mem_cache, rcu);
-> >>>> @@ -220,13 +223,6 @@ static void __free_rcu(struct rcu_head *head)
-> >>>>  	atomic_set(&c->call_rcu_in_progress, 0);
-> >>>>  }
-> >>>>  
-> >>>> -static void __free_rcu_tasks_trace(struct rcu_head *head)
-> >>>> -{
-> >>>> -	struct bpf_mem_cache *c = container_of(head, struct bpf_mem_cache, rcu);
-> >>>> -
-> >>>> -	call_rcu(&c->rcu, __free_rcu);
-> >>>> -}
-> >>>> -
-> >>>>  static void enque_to_free(struct bpf_mem_cache *c, void *obj)
-> >>>>  {
-> >>>>  	struct llist_node *llnode = obj;
-> >>>> @@ -252,11 +248,10 @@ static void do_call_rcu(struct bpf_mem_cache *c)
-> >>>>  		 * from __free_rcu() and from drain_mem_cache().
-> >>>>  		 */
-> >>>>  		__llist_add(llnode, &c->waiting_for_gp);
-> >>>> -	/* Use call_rcu_tasks_trace() to wait for sleepable progs to finish.
-> >>>> -	 * Then use call_rcu() to wait for normal progs to finish
-> >>>> -	 * and finally do free_one() on each element.
-> >>>> +	/* Use call_rcu_tasks_trace() to wait for both sleepable and normal
-> >>>> +	 * progs to finish and finally do free_one() on each element.
-> >>>>  	 */
-> >>>> -	call_rcu_tasks_trace(&c->rcu, __free_rcu_tasks_trace);
-> >>>> +	call_rcu_tasks_trace(&c->rcu, __free_rcu);
-> >>>>  }
-> >>>>  
-> >>>>  static void free_bulk(struct bpf_mem_cache *c)
-> >>>> -- 
-> >>>> 2.29.2
-> >>>>
-> 
+ - Joel
