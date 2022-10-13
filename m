@@ -2,111 +2,106 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F9CEC4332F
-	for <rcu@archiver.kernel.org>; Thu, 13 Oct 2022 09:02:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1BDA0C4332F
+	for <rcu@archiver.kernel.org>; Thu, 13 Oct 2022 14:13:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229662AbiJMJCi (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 13 Oct 2022 05:02:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52286 "EHLO
+        id S229576AbiJMONw (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 13 Oct 2022 10:13:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbiJMJCh (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 13 Oct 2022 05:02:37 -0400
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0171FFAA4C;
-        Thu, 13 Oct 2022 02:02:35 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Mp3Ps6Yxlz6PFFl;
-        Thu, 13 Oct 2022 17:00:17 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-        by APP2 (Coremail) with SMTP id Syh0CgD3jtMm1Edj83jNAA--.18495S2;
-        Thu, 13 Oct 2022 17:02:34 +0800 (CST)
-Subject: Re: [PATCH bpf-next 1/3] bpf: Free elements after one RCU-tasks-trace
- grace period
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Delyan Kratunov <delyank@fb.com>, rcu@vger.kernel.org,
-        houtao1@huawei.com, paulmck@kernel.org
-References: <20221011071128.3470622-1-houtao@huaweicloud.com>
- <20221011071128.3470622-2-houtao@huaweicloud.com>
- <20221011090742.GG4221@paulmck-ThinkPad-P17-Gen-1>
- <d91a9536-8ed2-fc00-733d-733de34af510@huaweicloud.com>
- <20221012063607.GM4221@paulmck-ThinkPad-P17-Gen-1>
- <b0ece7d9-ec48-0ecb-45d9-fb5cf973000b@huaweicloud.com>
- <20221012161103.GU4221@paulmck-ThinkPad-P17-Gen-1>
- <ca5f2973-e8b5-0d73-fd23-849f0dfc4347@huaweicloud.com>
- <32d6ebed-c93b-f2eb-184a-47bd85b1ba7a@linux.dev>
-From:   Hou Tao <houtao@huaweicloud.com>
-Message-ID: <47770f24-1c3a-66f6-a46e-896402648b1c@huaweicloud.com>
-Date:   Thu, 13 Oct 2022 17:02:30 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        with ESMTP id S230106AbiJMONu (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 13 Oct 2022 10:13:50 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C0FD50B83;
+        Thu, 13 Oct 2022 07:13:44 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 38886617EC;
+        Thu, 13 Oct 2022 14:13:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63ACAC433D6;
+        Thu, 13 Oct 2022 14:13:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1665670423;
+        bh=AQduuDPRz+ukUglRpLevsrSLIjIFqtofoE9q13bN9RE=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=sySmIm6XLPp6Pfii6YNdD9JseogsLPgRTdlGNgJ22u/LSa+8ujFDEDCxLLK6APMdO
+         oh8fuSrnqg/abevO3IIUO/dqpEubc6JZFfKbM/ov7dFZ6ue4/yALXQjCBQArwFvY8n
+         P3KBd6xY8jIN9Vb3/lbpIlDyrO7BQCmqnHwtNRT1NG/WRnI/Ns9pJAiweAPI5OzLjD
+         gxOZHsLlLlS+P4/Nx7UHHkFBUOlnJtTSURuUBREOcsZ6F2XOKXu1A3yJYA6g/vqTa4
+         wqcKAhKhiDpnUwuFFrS4H4m6tA0BT7J+RyVWz6oTrR7dqut8h3/2ezVbR2IfF93Jbz
+         BldUK+8qEIdRw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id C876D5C32BF; Thu, 13 Oct 2022 07:13:39 -0700 (PDT)
+Date:   Thu, 13 Oct 2022 07:13:39 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Zqiang <qiang1.zhang@intel.com>
+Cc:     frederic@kernel.org, quic_neeraju@quicinc.com,
+        joel@joelfernandes.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu: Fix use __this_cpu_read() warning in preemptible
+ code
+Message-ID: <20221013141339.GY4221@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20221013044148.2894320-1-qiang1.zhang@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <32d6ebed-c93b-f2eb-184a-47bd85b1ba7a@linux.dev>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID: Syh0CgD3jtMm1Edj83jNAA--.18495S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7ZryDWF18AFWDtr1fKw17ZFb_yoW8WrW8pF
-        WY9FsxGrnYk3yF9rn2gw43XFWxt395GF4jq398C348C398JryUWrySyF4j9Fy5Ars5WFy2
-        vF45tF9rAas8ZaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
-        6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-        9x07UZ18PUUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221013044148.2894320-1-qiang1.zhang@intel.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi,
+On Thu, Oct 13, 2022 at 12:41:48PM +0800, Zqiang wrote:
+> BUG: using __this_cpu_read() in preemptible [00000000]
+> code: rcu_torture_fqs/398
+> caller is __this_cpu_preempt_check+0x13/0x20
+> CPU: 3 PID: 398 Comm: rcu_torture_fqs Not tainted 6.0.0-rc1-yoctodev-standard+
+> Call Trace:
+> <TASK>
+> dump_stack_lvl+0x5b/0x86
+> dump_stack+0x10/0x16
+> check_preemption_disabled+0xe5/0xf0
+> __this_cpu_preempt_check+0x13/0x20
+> rcu_force_quiescent_state.part.0+0x1c/0x170
+> rcu_force_quiescent_state+0x1e/0x30
+> rcu_torture_fqs+0xca/0x160
+> ? rcu_torture_boost+0x430/0x430
+> kthread+0x192/0x1d0
+> ? kthread_complete_and_exit+0x30/0x30
+> ret_from_fork+0x22/0x30
+> </TASK>
+> 
+> When enable rcutorture.fqs_duration, the rcu_force_quiescent_state() be
+> invoked in rcu_torture_fqs task context, invoke __this_cpu_read() in
+> preemptible code section will trigger the above calltrace.
+> 
+> This commit convert __this_cpu_read() to raw_cpu_read() to avoid
+> this warning.
+> 
+> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 
-On 10/13/2022 1:07 PM, Martin KaFai Lau wrote:
-> On 10/12/22 6:25 PM, Hou Tao wrote:
->>>>> Back to the polling API.  Are these things freed individually, or can
->>>>> they be grouped?  If they can be grouped, the storage for the grace-period
->>>>> state could be associated with the group.
->>>> As said above, for bpf memory allocator it may be OK because it frees elements
->>>> in batch, but for bpf local storage and its element these memories are freed
->>>> individually. So I think if the implication of RCU tasks trace grace period
->>>> will
->>>> not be changed in the foreseeable future, adding rcu_trace_implies_rcu_gp()
->>>> and
->>>> using it in bpf is a good idea. What do you think ?
->>> Maybe the BPF memory allocator does it one way and BPF local storage
->>> does it another way.
->> Why not. Maybe bpf expert think the space overhead is also reasonable in the BPF
->> local storage case.
->
-> There is only 8 bytes hole left in 'struct bpf_local_storage_elem', so it is
-> precious.  Put aside the space overhead, only deletion of a local storage
-> requires call_rcu_tasks_trace().  The common use case for local storage is to
-> alloc once and stay there for the whole life time of the sk/task/inode.  Thus,
-> delete should happen very infrequent.
->
-> It will still be nice to optimize though if it does not need extra space and
-> that seems possible from reading the thread.
-Understand. Yes, if using the newly added rcu_trace_implies_rcu_gp(), there will
-be no space overhead. I will use the rcu_trace_implies_rcu_gp()-way in all these
-cases and defer the use of RCU polling APIs to future work.
+Good eyes!  Queued, thank you!
 
+							Thanx, Paul
+
+> ---
+>  kernel/rcu/tree.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 96d678c9cfb6..282002e62cf3 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -2436,7 +2436,7 @@ void rcu_force_quiescent_state(void)
+>  	struct rcu_node *rnp_old = NULL;
+>  
+>  	/* Funnel through hierarchy to reduce memory contention. */
+> -	rnp = __this_cpu_read(rcu_data.mynode);
+> +	rnp = raw_cpu_read(rcu_data.mynode);
+>  	for (; rnp != NULL; rnp = rnp->parent) {
+>  		ret = (READ_ONCE(rcu_state.gp_flags) & RCU_GP_FLAG_FQS) ||
+>  		       !raw_spin_trylock(&rnp->fqslock);
+> -- 
+> 2.25.1
+> 
