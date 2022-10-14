@@ -2,24 +2,24 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D4FD3C4167E
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 473F6C4321E
 	for <rcu@archiver.kernel.org>; Fri, 14 Oct 2022 11:14:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229729AbiJNLOU (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S229733AbiJNLOU (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Fri, 14 Oct 2022 07:14:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47044 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229744AbiJNLOS (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S229729AbiJNLOS (ORCPT <rfc822;rcu@vger.kernel.org>);
         Fri, 14 Oct 2022 07:14:18 -0400
 Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C229319B65E;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C247D1BBED0;
         Fri, 14 Oct 2022 04:14:16 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4MpkHG5Lz5z6S3jv;
-        Fri, 14 Oct 2022 19:11:54 +0800 (CST)
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4MpkHJ0cmJz6S3gr;
+        Fri, 14 Oct 2022 19:11:56 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP4 (Coremail) with SMTP id gCh0CgBnZ8lyREljUWYIAQ--.52658S5;
-        Fri, 14 Oct 2022 19:14:11 +0800 (CST)
+        by APP4 (Coremail) with SMTP id gCh0CgBnZ8lyREljUWYIAQ--.52658S7;
+        Fri, 14 Oct 2022 19:14:13 +0800 (CST)
 From:   Hou Tao <houtao@huaweicloud.com>
 To:     bpf@vger.kernel.org
 Cc:     Martin KaFai Lau <kafai@fb.com>,
@@ -36,21 +36,21 @@ Cc:     Martin KaFai Lau <kafai@fb.com>,
         John Fastabend <john.fastabend@gmail.com>, houtao1@huawei.com,
         "Paul E . McKenney" <paulmck@kernel.org>,
         Delyan Kratunov <delyank@fb.com>, rcu@vger.kernel.org
-Subject: [PATCH bpf-next v2 1/4] rcu-tasks: Provide rcu_trace_implies_rcu_gp()
-Date:   Fri, 14 Oct 2022 19:39:43 +0800
-Message-Id: <20221014113946.965131-2-houtao@huaweicloud.com>
+Subject: [PATCH bpf-next v2 3/4] bpf: Use rcu_trace_implies_rcu_gp() in local storage map
+Date:   Fri, 14 Oct 2022 19:39:45 +0800
+Message-Id: <20221014113946.965131-4-houtao@huaweicloud.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20221014113946.965131-1-houtao@huaweicloud.com>
 References: <20221014113946.965131-1-houtao@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgBnZ8lyREljUWYIAQ--.52658S5
-X-Coremail-Antispam: 1UD129KBjvJXoW7ur43uw18Gr1DJrW7Wr1kGrg_yoW8tF13pF
-        Z5CF1kGw1kuryFga4fJw47CrWY9an3GF43Jr9I9w1kC3W5Kr1DXr9aqrsIvF4YqrZ3CFy2
-        vFnxKrW5K3WUZF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUB0b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUGw
-        A2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+X-CM-TRANSID: gCh0CgBnZ8lyREljUWYIAQ--.52658S7
+X-Coremail-Antispam: 1UD129KBjvJXoW7CrykZF15CFyUurW7Kw4kJFb_yoW8CryxpF
+        Wqqrn8Jr4Fya1ruwnxGF4fAryDXw45Wr1UKFZ5A3yftrZrArZ8WF12kF1UuFyagws5WrWf
+        ZryYgF1DGr4UZFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBFb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWw
+        A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
         w2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
         W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
         6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
@@ -58,68 +58,65 @@ X-Coremail-Antispam: 1UD129KBjvJXoW7ur43uw18Gr1DJrW7Wr1kGrg_yoW8tF13pF
         Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64
         vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
         jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2I
-        x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK
-        8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
-        0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU24rWUUUUU
+        x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY6xAI
+        w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
+        0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07UGJPiUUUUU=
 X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+From: Hou Tao <houtao1@huawei.com>
 
-As an accident of implementation, an RCU Tasks Trace grace period also
-acts as an RCU grace period.  However, this could change at any time.
-This commit therefore creates an rcu_trace_implies_rcu_gp() that currently
-returns true to codify this accident.  Code relying on this accident
-must call this function to verify that this accident is still happening.
+Local storage map is accessible for both sleepable and non-sleepable bpf
+program, and its memory is freed by using both call_rcu_tasks_trace() and
+kfree_rcu() to wait for both RCU-tasks-trace grace period and RCU grace
+period to pass.
 
-Reported-by: Hou Tao <houtao@huaweicloud.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>
+With the introduction of rcu_trace_implies_rcu_gp(), both
+bpf_selem_free_rcu() and bpf_local_storage_free_rcu() can check whether
+or not a normal RCU grace period has also passed after a RCU-tasks-trace
+grace period has passed. If it is true, it is safe to call kfree()
+directly.
+
+Signed-off-by: Hou Tao <houtao1@huawei.com>
 ---
- include/linux/rcupdate.h | 12 ++++++++++++
- kernel/rcu/tasks.h       |  2 ++
- 2 files changed, 14 insertions(+)
+ kernel/bpf/bpf_local_storage.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index 08605ce7379d..8822f06e4b40 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -240,6 +240,18 @@ static inline void exit_tasks_rcu_start(void) { }
- static inline void exit_tasks_rcu_finish(void) { }
- #endif /* #else #ifdef CONFIG_TASKS_RCU_GENERIC */
- 
-+/**
-+ * rcu_trace_implies_rcu_gp - does an RCU Tasks Trace grace period imply an RCU grace period?
-+ *
-+ * As an accident of implementation, an RCU Tasks Trace grace period also
-+ * acts as an RCU grace period.  However, this could change at any time.
-+ * Code relying on this accident must call this function to verify that
-+ * this accident is still happening.
-+ *
-+ * You have been warned!
-+ */
-+static inline bool rcu_trace_implies_rcu_gp(void) { return true; }
-+
- /**
-  * cond_resched_tasks_rcu_qs - Report potential quiescent states to RCU
-  *
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index f5bf6fb430da..9435e5a7b53e 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -1535,6 +1535,8 @@ static void rcu_tasks_trace_postscan(struct list_head *hop)
+diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storage.c
+index 802fc15b0d73..9dc6de1cf185 100644
+--- a/kernel/bpf/bpf_local_storage.c
++++ b/kernel/bpf/bpf_local_storage.c
+@@ -88,8 +88,14 @@ void bpf_local_storage_free_rcu(struct rcu_head *rcu)
  {
- 	// Wait for late-stage exiting tasks to finish exiting.
- 	// These might have passed the call to exit_tasks_rcu_finish().
-+
-+	// If you remove the following line, update rcu_trace_implies_rcu_gp()!!!
- 	synchronize_rcu();
- 	// Any tasks that exit after this point will set
- 	// TRC_NEED_QS_CHECKED in ->trc_reader_special.b.need_qs.
+ 	struct bpf_local_storage *local_storage;
+ 
++	/* If RCU Tasks Trace grace period implies RCU grace period, do
++	 * kfree(), else do kfree_rcu().
++	 */
+ 	local_storage = container_of(rcu, struct bpf_local_storage, rcu);
+-	kfree_rcu(local_storage, rcu);
++	if (rcu_trace_implies_rcu_gp())
++		kfree(local_storage);
++	else
++		kfree_rcu(local_storage, rcu);
+ }
+ 
+ static void bpf_selem_free_rcu(struct rcu_head *rcu)
+@@ -97,7 +103,10 @@ static void bpf_selem_free_rcu(struct rcu_head *rcu)
+ 	struct bpf_local_storage_elem *selem;
+ 
+ 	selem = container_of(rcu, struct bpf_local_storage_elem, rcu);
+-	kfree_rcu(selem, rcu);
++	if (rcu_trace_implies_rcu_gp())
++		kfree(selem);
++	else
++		kfree_rcu(selem, rcu);
+ }
+ 
+ /* local_storage->lock must be held and selem->local_storage == local_storage.
 -- 
 2.29.2
 
