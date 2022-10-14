@@ -2,139 +2,101 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E916CC4332F
-	for <rcu@archiver.kernel.org>; Fri, 14 Oct 2022 15:19:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 320CDC4332F
+	for <rcu@archiver.kernel.org>; Fri, 14 Oct 2022 15:46:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229941AbiJNPTo (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 14 Oct 2022 11:19:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53944 "EHLO
+        id S229913AbiJNPqG (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 14 Oct 2022 11:46:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229540AbiJNPTn (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 14 Oct 2022 11:19:43 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A4A01147E
-        for <rcu@vger.kernel.org>; Fri, 14 Oct 2022 08:19:40 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id y17so2668885ilq.8
-        for <rcu@vger.kernel.org>; Fri, 14 Oct 2022 08:19:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=2zvPqb25LaKvgJw1g+vrVj2+cczSny1mletatYObzpQ=;
-        b=pGN7A8z2tVKu/9djyxLPPM6NThRzrQuFMaCSF53ai3awSgyLsrvfjZQWtkmFszlD6X
-         8YaNxkQbdXaYJrBk6HYL3NezbiSSCIhQVwdfe+S+7Oluy3RyN9jhr5K3g5maVVBJgPxv
-         OBEkDJ5C5seL1uz+rQ8n+HMIhaSH3fi0feOYs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2zvPqb25LaKvgJw1g+vrVj2+cczSny1mletatYObzpQ=;
-        b=XmA6fwulnHwj89iQUA4Lhl+fNeK8H7zL4edfNWqI2p1oU8Xm+eoVcHRZuz2LniZZAn
-         sUrjr2WcOSJq55zfJdP+0PLKPyb36imQfDvEilsXTqvF4nRkI5ttl6MvUTwzlwrA+9Pb
-         wxvGmOyAyduehMNFWyHpzFIKTMP1re3ZcfP4eehFIKvGZsbg6rLmFf2c1554cR9e63DQ
-         inCiMc+kflGRuORC6DvZFeTQnzhtTE+IssKADpgJw/lBMVv7BG3II/0/CGqOjVz/SEiX
-         bpKRMp9nOjno8G+xaQCIiEypXiUxVJ0GC3AnCJ/JmFG5WRrJUxc2D5pI//PFaN7bfUJ3
-         G8rw==
-X-Gm-Message-State: ACrzQf1zqbEc0TKM2vZV+xgDWcXgLYyBrGDDbqumGvT2OP2+LT2pm5io
-        57jH73VU4BcB0Q5NJtHdd1SffVlRD9x0gRocQbjJkA==
-X-Google-Smtp-Source: AMsMyM4MPJ3hUAgGaXpcMx8mi1ofWAiMYLpJVm8UYufNwcdwxssquPI8MKQC8suZe3ACqXwf5KjyBRNN6Uz1wnV3SnU=
-X-Received: by 2002:a92:d686:0:b0:2fa:6226:6247 with SMTP id
- p6-20020a92d686000000b002fa62266247mr2813891iln.79.1665760779944; Fri, 14 Oct
- 2022 08:19:39 -0700 (PDT)
-MIME-Version: 1.0
-References: <20221011180142.2742289-1-joel@joelfernandes.org>
- <20221011180142.2742289-2-joel@joelfernandes.org> <20221014142127.GE4221@paulmck-ThinkPad-P17-Gen-1>
- <20221014144019.GB1108603@lothringen> <20221014150344.GG4221@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20221014150344.GG4221@paulmck-ThinkPad-P17-Gen-1>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Fri, 14 Oct 2022 11:19:28 -0400
-Message-ID: <CAEXW_YQoRUJ=0_GJG6JunR58yASmehPanp14zbR3Y+KAGL1TDA@mail.gmail.com>
-Subject: Re: [PATCH v8 01/13] rcu: Fix missing nocb gp wake on rcu_barrier()
-To:     paulmck@kernel.org
+        with ESMTP id S229811AbiJNPqA (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 14 Oct 2022 11:46:00 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 052EC2D740;
+        Fri, 14 Oct 2022 08:45:54 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 09C9BCE268B;
+        Fri, 14 Oct 2022 15:45:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF7A7C433D7;
+        Fri, 14 Oct 2022 15:45:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1665762351;
+        bh=iUfoeiPzouTp8yPh+xwm1NytBnK0yC7vZn1OItlBWhI=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=P9f6Ec5vjtOvSWIUpPkuVwjLViMfY8YOvHc/B7x28zsrO09Z/bjFnp34Dzbeo/3cV
+         nJZnSIsXJyuHImkJAlw00bJM3HfWorshwAis6Px6m0TP2ftmEt62zkHL6CEZy1MpMU
+         Kxiw9cjQzXEshALG7pOEiLTL/RLnewnLh0zCus/5tpqByitnBasVXW0dTeur8GVkd4
+         YD2ulW3rgTtEHy/ZRpiJLxz3KqeQZBu54wWkWq8Blu2p5wNHdHLNkIv+JCweFhKKxN
+         eylVjryfLVVRwSoyH6bDWsfrO2caViqrtRGG3Hf0LkH/pcXlwwcGcsaBmxitHE8k0H
+         0kBrO2i9XCh8w==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id BDA8F5C32BF; Fri, 14 Oct 2022 08:45:47 -0700 (PDT)
+Date:   Fri, 14 Oct 2022 08:45:47 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
 Cc:     Frederic Weisbecker <frederic@kernel.org>, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org, rushikesh.s.kadam@intel.com,
         urezki@gmail.com, neeraj.iitr10@gmail.com, rostedt@goodmis.org,
         youssefesmat@google.com, surenb@google.com
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH v8 02/13] rcu: Make call_rcu() lazy to save power
+Message-ID: <20221014154547.GA710792@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20221011180142.2742289-1-joel@joelfernandes.org>
+ <20221011180142.2742289-3-joel@joelfernandes.org>
+ <20221011231053.GA1052831@lothringen>
+ <CAEXW_YSsEQ8krr9ckCOmO1B=C+Oy+8j_BtetQeNu1McH5nSuQg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEXW_YSsEQ8krr9ckCOmO1B=C+Oy+8j_BtetQeNu1McH5nSuQg@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Oct 14, 2022 at 11:03 AM Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> On Fri, Oct 14, 2022 at 04:40:19PM +0200, Frederic Weisbecker wrote:
-> > On Fri, Oct 14, 2022 at 07:21:27AM -0700, Paul E. McKenney wrote:
-> > > On Tue, Oct 11, 2022 at 06:01:30PM +0000, Joel Fernandes (Google) wrote:
-> > > > From: Frederic Weisbecker <frederic@kernel.org>
-> > > >
-> > > > Upon entraining a callback to a NOCB CPU, no further wake up is
-> > > > issued on the corresponding nocb_gp kthread. As a result, the callback
-> > > > and all the subsequent ones on that CPU may be ignored, at least until
-> > > > an RCU_NOCB_WAKE_FORCE timer is ever armed or another NOCB CPU belonging
-> > > > to the same group enqueues a callback on an empty queue.
-> > > >
-> > > > Here is a possible bad scenario:
-> > > >
-> > > > 1) CPU 0 is NOCB unlike all other CPUs.
-> > > > 2) CPU 0 queues a callback
-> > >
-> > > Call it CB1.
-> > >
-> > > > 2) The grace period related to that callback elapses
-> > > > 3) The callback is moved to the done list (but is not invoked yet),
-> > > >    there are no more pending callbacks for CPU 0
-> > >
-> > > So CB1 is on ->cblist waiting to be invoked, correct?
-> > >
-> > > > 4) CPU 1 calls rcu_barrier() and sends an IPI to CPU 0
-> > > > 5) CPU 0 entrains the callback but doesn't wake up nocb_gp
-> > >
-> > > And CB1 must still be there because otherwise the IPI handler would not
-> > > have entrained the callback, correct?  If so, we have both CB1 and the
-> > > rcu_barrier() callback (call it CB2) in ->cblist, but on the done list.
-> > >
-> > > > 6) CPU 1 blocks forever, unless CPU 0 ever queues enough further
-> > > >    callbacks to arm an RCU_NOCB_WAKE_FORCE timer.
-> > >
-> > > Except that -something- must have already been prepared to wake up in
-> > > order to invoke CB1.  And that something would invoke CB2 along with CB1,
-> > > given that they are both on the done list.  If there is no such wakeup
-> > > already, then the hang could occur with just CB1, without the help of CB2.
+On Wed, Oct 12, 2022 at 03:54:25PM -0400, Joel Fernandes wrote:
+> On Tue, Oct 11, 2022 at 7:10 PM Frederic Weisbecker <frederic@kernel.org> wrote:
 > >
-> > Heh good point. I was confused with CB1 on RCU_DONE_TAIL and the possibility
-> > for CB2 to be entrained on RCU_WAIT_TAIL. But that's indeed not supposed to
-> > happen. Ok so this patch indeed doesn't make sense outside lazy.
->
-> Whew!!!  ;-)
->
-> > > > This is also required to make sure lazy callbacks in future patches
-> > > > don't end up making rcu_barrier() wait for multiple seconds.
+> > On Tue, Oct 11, 2022 at 06:01:31PM +0000, Joel Fernandes (Google) wrote:
+> > > @@ -269,10 +294,14 @@ static void wake_nocb_gp_defer(struct rcu_data *rdp, int waketype,
+> > >       raw_spin_lock_irqsave(&rdp_gp->nocb_gp_lock, flags);
 > > >
-> > > But I do see that the wakeup is needed in the lazy case, and if I remember
-> > > correctly, the ten-second rcu_barrier() delay really did happen.  If I
-
-Yes it did happen. Real world device testing confirmed it.
-
-> > > understand correctly, for this to happen, all of the callbacks must be
-> > > in the bypass list, that is, ->cblist must be empty.
-> > >
-> > > So has the scenario steps 1-6 called out above actually happened in the
-> > > absence of lazy callbacks?
+> > >       /*
+> > > -      * Bypass wakeup overrides previous deferments. In case
+> > > -      * of callback storm, no need to wake up too early.
+> > > +      * Bypass wakeup overrides previous deferments. In case of
+> > > +      * callback storm, no need to wake up too early.
+> > >        */
+> > > -     if (waketype == RCU_NOCB_WAKE_BYPASS) {
+> > > +     if (waketype == RCU_NOCB_WAKE_LAZY &&
+> > > +         READ_ONCE(rdp->nocb_defer_wakeup) == RCU_NOCB_WAKE_NOT) {
 > >
-> > Nope, so I guess we can have the pending check around rcu_nocb_flush_bypass()
-> > only...
->
-> OK, sounds good.
->
-> I have put this series on branch lazy.2022.10.14a and am testing it.
+> > No need for READ_ONCE() here.
+> >
+> > > +             mod_timer(&rdp_gp->nocb_timer, jiffies + jiffies_till_flush);
+> > > +             WRITE_ONCE(rdp_gp->nocb_defer_wakeup, waketype);
+> > > +     } else if (waketype == RCU_NOCB_WAKE_BYPASS) {
+> > >               mod_timer(&rdp_gp->nocb_timer, jiffies + 2);
+> > >               WRITE_ONCE(rdp_gp->nocb_defer_wakeup, waketype);
+> > >       } else {
+> > > @@ -611,6 +682,8 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
+> > >       unsigned long flags;
+> > >       bool gotcbs = false;
+> > >       unsigned long j = jiffies;
+> > > +     bool lazy = false;
+> > > +     long lazy_ncbs;
+> >
+> > Looks like lazy_ncbs can be declared withing the loop, as well as bypass_cbs.
+> >
+> > Anyway, apart from such boring cosmectics:
+> >
+> > Acked-by: Frederic Weisbecker <frederic@kernel.org>
+> 
+> Thanks, I folded the cosmetic suggestions with the Ack and pushed it to:
+> https://github.com/joelagnel/linux-kernel.git (branch rcu-next-oct.12.22)
 
-I agree with the discussion, though if all CBs are in the bypass list,
-the patch will also save 2 jiffies.
+Just following back up with Frederic to see if all of your guys' words
+had the same meanings.  ;-)
 
-So just commit messages that need rework then? This one can be taken instead:
-https://lore.kernel.org/rcu/21ECDA9F-81B1-4D22-8B03-020FB5DADA4F@joelfernandes.org/T/#m14d21fbce23539a521693a4184b28ddc55d7d2c5
-
-Thanks!
-
- - Joel
+							Thanx, Paul
