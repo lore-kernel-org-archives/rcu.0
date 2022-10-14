@@ -2,83 +2,133 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 75EEBC4332F
-	for <rcu@archiver.kernel.org>; Fri, 14 Oct 2022 18:35:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 98A2FC4332F
+	for <rcu@archiver.kernel.org>; Fri, 14 Oct 2022 20:47:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230219AbiJNSfJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 14 Oct 2022 14:35:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52776 "EHLO
+        id S231466AbiJNUr5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 14 Oct 2022 16:47:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230286AbiJNSfI (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 14 Oct 2022 14:35:08 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A89C3FA23;
-        Fri, 14 Oct 2022 11:35:06 -0700 (PDT)
+        with ESMTP id S230392AbiJNUr4 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 14 Oct 2022 16:47:56 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3986C183D9D;
+        Fri, 14 Oct 2022 13:47:54 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 39762B82362;
-        Fri, 14 Oct 2022 18:35:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E8B0C433C1;
-        Fri, 14 Oct 2022 18:35:03 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3D89461C0D;
+        Fri, 14 Oct 2022 20:47:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DA07C433D7;
+        Fri, 14 Oct 2022 20:47:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665772503;
-        bh=3JFYtTPiOuJ7CoqD4Y9wJ7Xb3TwXYCMW/FdwbU/z9Io=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=cJ8wPYcU+GGA2ggdfwZ2DNbQjRbFjKC31uXOenHuoqNvrqtvD+f9gvir2Ih6ADvqp
-         T+3UVq1sA77kDMaS6eyqB/C7JXFLUjNXu4FSoMO2Gi3YnWoAs8Tbxo7g8b3PQqf4ZY
-         e/WCCOaYEiHRKAlcrel4CBulH5aqehz+jGPw9U+rOslQIKU0LqPZasXEmBw/aiKfNl
-         xezBXXIM8xLNVIjXgtXI7qc85q6s4929+S9iaQ8o5MLevFS4QgpGqj1HzAJVrut75G
-         akt0ltwXs+YNABFxNrzsauTlhHEa4HQZrIkCBt82Ga2pP2hfWxMfDsO4bUxXFO4HA5
-         Kg+eLX05TzG4A==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 750D75C32BF; Fri, 14 Oct 2022 11:35:00 -0700 (PDT)
-Date:   Fri, 14 Oct 2022 11:35:00 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, quic_neeraju@quicinc.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        Lai Jiangshan <jiangshanlai@gmail.com>
-Subject: Re: [PATCH 0/3] srcu: A few NMI-safe debugging updates
-Message-ID: <20221014183500.GK4221@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20221013172244.1099010-1-frederic@kernel.org>
+        s=k20201202; t=1665780473;
+        bh=Y7cSkEtUOjuIr7FqCD+7qZvk2lC0Q/y7fiup3u4Ldi0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WNbp6++2LvkDrdKGSTnUe4UQQKhTR4gUKL9HN1pBvDAByrrMAZkZUrq4lAR/x5mW1
+         jbumKhOPY6bNZJuLFYXR7vIFv8PZaZIeRaR+JoDpg6Agpc3RtKP046U5PKcLRv/5Rc
+         wjQhhxx4qQuW5RhcCVUnjuyQJDqX6Q9gaH2bruYafSJc+4m7TBc7CmjJNoBFKptYU3
+         npcALBHnqtq1BAATXkqmfRKxBHpaJKmP9TCRz6kRXxt0eh6nTm2GbubIUJEYuJLxMG
+         edxNdQTDEsOP8dU2E2hMoubZCwqAIt3VE6Rm7RVeH/IJvje19os7PelpSgdH8i42o6
+         BXmNoRx61m5uw==
+Date:   Fri, 14 Oct 2022 22:47:50 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rushikesh.s.kadam@intel.com,
+        urezki@gmail.com, neeraj.iitr10@gmail.com, rostedt@goodmis.org,
+        youssefesmat@google.com, surenb@google.com
+Subject: Re: [PATCH v8 01/13] rcu: Fix missing nocb gp wake on rcu_barrier()
+Message-ID: <20221014204750.GA1119620@lothringen>
+References: <20221011180142.2742289-1-joel@joelfernandes.org>
+ <20221011180142.2742289-2-joel@joelfernandes.org>
+ <20221014142127.GE4221@paulmck-ThinkPad-P17-Gen-1>
+ <20221014144019.GB1108603@lothringen>
+ <20221014150344.GG4221@paulmck-ThinkPad-P17-Gen-1>
+ <CAEXW_YQoRUJ=0_GJG6JunR58yASmehPanp14zbR3Y+KAGL1TDA@mail.gmail.com>
+ <20221014154606.GJ4221@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221013172244.1099010-1-frederic@kernel.org>
+In-Reply-To: <20221014154606.GJ4221@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Oct 13, 2022 at 07:22:41PM +0200, Frederic Weisbecker wrote:
-> Hi,
+On Fri, Oct 14, 2022 at 08:46:06AM -0700, Paul E. McKenney wrote:
+> On Fri, Oct 14, 2022 at 11:19:28AM -0400, Joel Fernandes wrote:
+> > I agree with the discussion, though if all CBs are in the bypass list,
+> > the patch will also save 2 jiffies.
+> > 
+> > So just commit messages that need rework then? This one can be taken instead:
+> > https://lore.kernel.org/rcu/21ECDA9F-81B1-4D22-8B03-020FB5DADA4F@joelfernandes.org/T/#m14d21fbce23539a521693a4184b28ddc55d7d2c5
 > 
-> This has passed SRCU-N, SRCU-P and SRCU-T so far.
-> 
-> git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
-> 	srcu/nmisafe
-> 
-> HEAD: 3cfdc2c6b8e89ca3c33954ea9b0d69e8cd141412
+> This one looks plausible to me.
 
-Thank you, Frederic!
+With the following modified diff (passed 25 hours of TREE01):
 
-I have pulled this is for review and testing.
-
-							Thanx, Paul
-
-> Thanks,
-> 	Frederic
-> ---
-> 
-> Frederic Weisbecker (3):
->       srcu: Warn when NMI-unsafe API is used in NMI
->       srcu: Explain the reason behind the read side critical section on GP start
->       srcu: Debug NMI safety even on archs that don't require it
-> 
-> 
->  include/linux/srcu.h     | 44 ++++++++++++++++++++++++++++++++++----------
->  include/linux/srcutiny.h | 12 ------------
->  include/linux/srcutree.h |  7 -------
->  kernel/rcu/srcutree.c    | 31 ++++++++++++++++---------------
->  4 files changed, 50 insertions(+), 44 deletions(-)
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 96d678c9cfb6..7f1f6f792240 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3914,6 +3914,8 @@ static void rcu_barrier_entrain(struct rcu_data *rdp)
+ {
+ 	unsigned long gseq = READ_ONCE(rcu_state.barrier_sequence);
+ 	unsigned long lseq = READ_ONCE(rdp->barrier_seq_snap);
++	bool wake_nocb = false;
++	bool was_alldone = false;
+ 
+ 	lockdep_assert_held(&rcu_state.barrier_lock);
+ 	if (rcu_seq_state(lseq) || !rcu_seq_state(gseq) || rcu_seq_ctr(lseq) != rcu_seq_ctr(gseq))
+@@ -3922,7 +3924,14 @@ static void rcu_barrier_entrain(struct rcu_data *rdp)
+ 	rdp->barrier_head.func = rcu_barrier_callback;
+ 	debug_rcu_head_queue(&rdp->barrier_head);
+ 	rcu_nocb_lock(rdp);
++	/*
++	 * Flush bypass and wakeup rcuog if we add callbacks to an empty regular
++	 * queue. This way we don't wait for bypass timer that can reach seconds
++	 * if it's fully lazy.
++	 */
++	was_alldone = rcu_rdp_is_offloaded(rdp) && !rcu_segcblist_pend_cbs(&rdp->cblist);
+ 	WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, jiffies));
++	wake_nocb = was_alldone && rcu_segcblist_pend_cbs(&rdp->cblist);
+ 	if (rcu_segcblist_entrain(&rdp->cblist, &rdp->barrier_head)) {
+ 		atomic_inc(&rcu_state.barrier_cpu_count);
+ 	} else {
+@@ -3930,6 +3939,8 @@ static void rcu_barrier_entrain(struct rcu_data *rdp)
+ 		rcu_barrier_trace(TPS("IRQNQ"), -1, rcu_state.barrier_sequence);
+ 	}
+ 	rcu_nocb_unlock(rdp);
++	if (wake_nocb)
++		wake_nocb_gp(rdp, false);
+ 	smp_store_release(&rdp->barrier_seq_snap, gseq);
+ }
+ 
+diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+index d4a97e40ea9c..925dd98f8b23 100644
+--- a/kernel/rcu/tree.h
++++ b/kernel/rcu/tree.h
+@@ -439,6 +439,7 @@ static void zero_cpu_stall_ticks(struct rcu_data *rdp);
+ static struct swait_queue_head *rcu_nocb_gp_get(struct rcu_node *rnp);
+ static void rcu_nocb_gp_cleanup(struct swait_queue_head *sq);
+ static void rcu_init_one_nocb(struct rcu_node *rnp);
++static bool wake_nocb_gp(struct rcu_data *rdp, bool force);
+ static bool rcu_nocb_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
+ 				  unsigned long j);
+ static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
+diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+index f77a6d7e1356..094fd454b6c3 100644
+--- a/kernel/rcu/tree_nocb.h
++++ b/kernel/rcu/tree_nocb.h
+@@ -1558,6 +1558,11 @@ static void rcu_init_one_nocb(struct rcu_node *rnp)
+ {
+ }
+ 
++static bool wake_nocb_gp(struct rcu_data *rdp, bool force)
++{
++	return false;
++}
++
+ static bool rcu_nocb_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
+ 				  unsigned long j)
+ {
