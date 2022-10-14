@@ -2,138 +2,83 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B9C87C4332F
-	for <rcu@archiver.kernel.org>; Fri, 14 Oct 2022 15:46:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 75EEBC4332F
+	for <rcu@archiver.kernel.org>; Fri, 14 Oct 2022 18:35:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230353AbiJNPqQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 14 Oct 2022 11:46:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49074 "EHLO
+        id S230219AbiJNSfJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 14 Oct 2022 14:35:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230375AbiJNPqM (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 14 Oct 2022 11:46:12 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3208236BD2;
-        Fri, 14 Oct 2022 08:46:11 -0700 (PDT)
+        with ESMTP id S230286AbiJNSfI (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 14 Oct 2022 14:35:08 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A89C3FA23;
+        Fri, 14 Oct 2022 11:35:06 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 765C261B87;
-        Fri, 14 Oct 2022 15:46:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1483C433C1;
-        Fri, 14 Oct 2022 15:46:09 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 39762B82362;
+        Fri, 14 Oct 2022 18:35:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E8B0C433C1;
+        Fri, 14 Oct 2022 18:35:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665762369;
-        bh=JuumaXx2IxKYMQXfElyY3vL4dkIV4dwAE5VQdwWTIDw=;
+        s=k20201202; t=1665772503;
+        bh=3JFYtTPiOuJ7CoqD4Y9wJ7Xb3TwXYCMW/FdwbU/z9Io=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=swLD2rfnIQR1SIaYlYoumovcMVc0soI5XCUzffoIblIPGVfXHXMS/5EuhCcU+TDsp
-         XwVgMdGgB15j4JbYC0HAA2RJMuigxJyeV/HdopMcEPoo4pyimXTuBk3G2RdMdn1Dr2
-         6OnatiwuFaBxG1ximcmHTEeyzGdd+ROMYru6uFW2YZxOM57eZA/00/nRMrrivUjWa0
-         +odq1WMQugA1UFaOgscNUwMi+onFIg2fpqLlscIMTbeMURyYuD5CXfFSThs2EwlGU+
-         FQFeUTnMmrsZiiX9ff9j5CO0R7af9cwZPmxMfWyxfyLYPXZCQHZVjcw9/lOQbPVViD
-         3yMG18JygqTgw==
+        b=cJ8wPYcU+GGA2ggdfwZ2DNbQjRbFjKC31uXOenHuoqNvrqtvD+f9gvir2Ih6ADvqp
+         T+3UVq1sA77kDMaS6eyqB/C7JXFLUjNXu4FSoMO2Gi3YnWoAs8Tbxo7g8b3PQqf4ZY
+         e/WCCOaYEiHRKAlcrel4CBulH5aqehz+jGPw9U+rOslQIKU0LqPZasXEmBw/aiKfNl
+         xezBXXIM8xLNVIjXgtXI7qc85q6s4929+S9iaQ8o5MLevFS4QgpGqj1HzAJVrut75G
+         akt0ltwXs+YNABFxNrzsauTlhHEa4HQZrIkCBt82Ga2pP2hfWxMfDsO4bUxXFO4HA5
+         Kg+eLX05TzG4A==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 96B215C32BF; Fri, 14 Oct 2022 08:46:06 -0700 (PDT)
-Date:   Fri, 14 Oct 2022 08:46:06 -0700
+        id 750D75C32BF; Fri, 14 Oct 2022 11:35:00 -0700 (PDT)
+Date:   Fri, 14 Oct 2022 11:35:00 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Frederic Weisbecker <frederic@kernel.org>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rushikesh.s.kadam@intel.com,
-        urezki@gmail.com, neeraj.iitr10@gmail.com, rostedt@goodmis.org,
-        youssefesmat@google.com, surenb@google.com
-Subject: Re: [PATCH v8 01/13] rcu: Fix missing nocb gp wake on rcu_barrier()
-Message-ID: <20221014154606.GJ4221@paulmck-ThinkPad-P17-Gen-1>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, quic_neeraju@quicinc.com,
+        joel@joelfernandes.org, rcu@vger.kernel.org,
+        Lai Jiangshan <jiangshanlai@gmail.com>
+Subject: Re: [PATCH 0/3] srcu: A few NMI-safe debugging updates
+Message-ID: <20221014183500.GK4221@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20221011180142.2742289-1-joel@joelfernandes.org>
- <20221011180142.2742289-2-joel@joelfernandes.org>
- <20221014142127.GE4221@paulmck-ThinkPad-P17-Gen-1>
- <20221014144019.GB1108603@lothringen>
- <20221014150344.GG4221@paulmck-ThinkPad-P17-Gen-1>
- <CAEXW_YQoRUJ=0_GJG6JunR58yASmehPanp14zbR3Y+KAGL1TDA@mail.gmail.com>
+References: <20221013172244.1099010-1-frederic@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEXW_YQoRUJ=0_GJG6JunR58yASmehPanp14zbR3Y+KAGL1TDA@mail.gmail.com>
+In-Reply-To: <20221013172244.1099010-1-frederic@kernel.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Oct 14, 2022 at 11:19:28AM -0400, Joel Fernandes wrote:
-> On Fri, Oct 14, 2022 at 11:03 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Fri, Oct 14, 2022 at 04:40:19PM +0200, Frederic Weisbecker wrote:
-> > > On Fri, Oct 14, 2022 at 07:21:27AM -0700, Paul E. McKenney wrote:
-> > > > On Tue, Oct 11, 2022 at 06:01:30PM +0000, Joel Fernandes (Google) wrote:
-> > > > > From: Frederic Weisbecker <frederic@kernel.org>
-> > > > >
-> > > > > Upon entraining a callback to a NOCB CPU, no further wake up is
-> > > > > issued on the corresponding nocb_gp kthread. As a result, the callback
-> > > > > and all the subsequent ones on that CPU may be ignored, at least until
-> > > > > an RCU_NOCB_WAKE_FORCE timer is ever armed or another NOCB CPU belonging
-> > > > > to the same group enqueues a callback on an empty queue.
-> > > > >
-> > > > > Here is a possible bad scenario:
-> > > > >
-> > > > > 1) CPU 0 is NOCB unlike all other CPUs.
-> > > > > 2) CPU 0 queues a callback
-> > > >
-> > > > Call it CB1.
-> > > >
-> > > > > 2) The grace period related to that callback elapses
-> > > > > 3) The callback is moved to the done list (but is not invoked yet),
-> > > > >    there are no more pending callbacks for CPU 0
-> > > >
-> > > > So CB1 is on ->cblist waiting to be invoked, correct?
-> > > >
-> > > > > 4) CPU 1 calls rcu_barrier() and sends an IPI to CPU 0
-> > > > > 5) CPU 0 entrains the callback but doesn't wake up nocb_gp
-> > > >
-> > > > And CB1 must still be there because otherwise the IPI handler would not
-> > > > have entrained the callback, correct?  If so, we have both CB1 and the
-> > > > rcu_barrier() callback (call it CB2) in ->cblist, but on the done list.
-> > > >
-> > > > > 6) CPU 1 blocks forever, unless CPU 0 ever queues enough further
-> > > > >    callbacks to arm an RCU_NOCB_WAKE_FORCE timer.
-> > > >
-> > > > Except that -something- must have already been prepared to wake up in
-> > > > order to invoke CB1.  And that something would invoke CB2 along with CB1,
-> > > > given that they are both on the done list.  If there is no such wakeup
-> > > > already, then the hang could occur with just CB1, without the help of CB2.
-> > >
-> > > Heh good point. I was confused with CB1 on RCU_DONE_TAIL and the possibility
-> > > for CB2 to be entrained on RCU_WAIT_TAIL. But that's indeed not supposed to
-> > > happen. Ok so this patch indeed doesn't make sense outside lazy.
-> >
-> > Whew!!!  ;-)
-> >
-> > > > > This is also required to make sure lazy callbacks in future patches
-> > > > > don't end up making rcu_barrier() wait for multiple seconds.
-> > > >
-> > > > But I do see that the wakeup is needed in the lazy case, and if I remember
-> > > > correctly, the ten-second rcu_barrier() delay really did happen.  If I
+On Thu, Oct 13, 2022 at 07:22:41PM +0200, Frederic Weisbecker wrote:
+> Hi,
 > 
-> Yes it did happen. Real world device testing confirmed it.
-
-Very good, thank you!
-
-> > > > understand correctly, for this to happen, all of the callbacks must be
-> > > > in the bypass list, that is, ->cblist must be empty.
-> > > >
-> > > > So has the scenario steps 1-6 called out above actually happened in the
-> > > > absence of lazy callbacks?
-> > >
-> > > Nope, so I guess we can have the pending check around rcu_nocb_flush_bypass()
-> > > only...
-> >
-> > OK, sounds good.
-> >
-> > I have put this series on branch lazy.2022.10.14a and am testing it.
+> This has passed SRCU-N, SRCU-P and SRCU-T so far.
 > 
-> I agree with the discussion, though if all CBs are in the bypass list,
-> the patch will also save 2 jiffies.
+> git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
+> 	srcu/nmisafe
 > 
-> So just commit messages that need rework then? This one can be taken instead:
-> https://lore.kernel.org/rcu/21ECDA9F-81B1-4D22-8B03-020FB5DADA4F@joelfernandes.org/T/#m14d21fbce23539a521693a4184b28ddc55d7d2c5
+> HEAD: 3cfdc2c6b8e89ca3c33954ea9b0d69e8cd141412
 
-This one looks plausible to me.
+Thank you, Frederic!
+
+I have pulled this is for review and testing.
 
 							Thanx, Paul
+
+> Thanks,
+> 	Frederic
+> ---
+> 
+> Frederic Weisbecker (3):
+>       srcu: Warn when NMI-unsafe API is used in NMI
+>       srcu: Explain the reason behind the read side critical section on GP start
+>       srcu: Debug NMI safety even on archs that don't require it
+> 
+> 
+>  include/linux/srcu.h     | 44 ++++++++++++++++++++++++++++++++++----------
+>  include/linux/srcutiny.h | 12 ------------
+>  include/linux/srcutree.h |  7 -------
+>  kernel/rcu/srcutree.c    | 31 ++++++++++++++++---------------
+>  4 files changed, 50 insertions(+), 44 deletions(-)
