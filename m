@@ -2,148 +2,91 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BD2FC433FE
-	for <rcu@archiver.kernel.org>; Sun, 16 Oct 2022 15:17:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E132C4332F
+	for <rcu@archiver.kernel.org>; Sun, 16 Oct 2022 15:56:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229861AbiJPPRA (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 16 Oct 2022 11:17:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41138 "EHLO
+        id S229789AbiJPP46 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 16 Oct 2022 11:56:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229711AbiJPPQ7 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 16 Oct 2022 11:16:59 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AF7431DE8;
-        Sun, 16 Oct 2022 08:16:58 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 64DC4B80CBF;
-        Sun, 16 Oct 2022 15:16:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21330C433D6;
-        Sun, 16 Oct 2022 15:16:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665933416;
-        bh=p2AC17y9FzsnRIAnSQtdt8ru86VoJ0PGE02CSXYdDR4=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=nvR/j/RKINBhqT8Mu27cQ+8ZMN9UpU9vuUjWXoZUkZOCUjs5rNP1PGu8pvuDu7bBZ
-         SVVgFs3G4lU31PKReeMeseGppAL4DAAzMUICm4fxb1YlOEOdd5nH64dBi9WZozexgQ
-         wj9UMpADlMrwRa0Wso3+5RJ/0OTFvUdJEWrJDRM7AKrIncYLG5EZLxWhtMg1eI6FQo
-         Z2iouU7HjR5g+ZmNEFnLfK61JD614uyiIHEiICtrO0UJCl0GD2Wgc+xHY3fVpHvMpM
-         5K7reRm5fXEw72WQ5kmgsGzJryg1ewxXvsJRXpqwzhRX0gXU8eOitZbdNTGCwQYbNi
-         0HmGvMFK3rhtA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id AA1C95C0624; Sun, 16 Oct 2022 08:16:55 -0700 (PDT)
-Date:   Sun, 16 Oct 2022 08:16:55 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        with ESMTP id S229694AbiJPP44 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 16 Oct 2022 11:56:56 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9652B2E9C4
+        for <rcu@vger.kernel.org>; Sun, 16 Oct 2022 08:56:54 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id p16so7399632iod.6
+        for <rcu@vger.kernel.org>; Sun, 16 Oct 2022 08:56:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Vog1YlNccwd6IAjfOrBTBXzBPiMg9Fk15Ih5tIXeCPM=;
+        b=Bmcp+DBK743YLYdoRYyixSmm1u/4R/rZzgWtLrLJUv62esbyDG0t7aAdChhiGXIHjA
+         qWvI02ipG6j3q4foAbzKd8wZMIm4axWxcyqMXzZyCWE4RvfqRTmIgwDyIVFCkz7C7QdJ
+         bhwDkah2oLSYsD2gHnZCchEgPkPcPqXH36s80=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Vog1YlNccwd6IAjfOrBTBXzBPiMg9Fk15Ih5tIXeCPM=;
+        b=JLbL3Hy3fKtGpYUXLEl8Wm276bHBx2nZwrq/MbSxSCvKcoMHNlOTL/9VyJ6iq6zpMM
+         I2edLh+0Z1SIH+23l/6L/FN8fdkOv5aaibGYoOaTwTZKJEbhdFdchIb1wQ1xSFrcmhgu
+         o6PWIKF12TM40Migcp9bzcCqCdPvwXhYUy/T/d5xP/Y07oG7FC61CQaw7vyY2rB93EWb
+         LWlZs+R6vXa7ABMIUxNFoikKB0z+/N82JMBlNkNyXLXsyzhTk0fn9DrdBbNBD7O0zzWU
+         FBQF4Jxkh/MLi/s7tduoJUxWVVoVVWirPORoFpOxYUvmmFQBvJrQHBPeMpa4vQkGuHjx
+         nGXw==
+X-Gm-Message-State: ACrzQf17m3YpM+qz6FOaECThFG8tfmLCmAuId9O1ht9OMu2G6Z1RMwlm
+        LmfchNWaxIhyfJNwG+OXXvy+1n8QM1Xfr+Ca3ebk8Q==
+X-Google-Smtp-Source: AMsMyM4zacrwSvTvrpB9P6hhTEO7M4uX/F5mXLMcNbiV3edgHdvQWi/YJm4p0pSShibFP3f0BJ/EdIFm37YelG37elc=
+X-Received: by 2002:a02:a513:0:b0:363:b0dc:222b with SMTP id
+ e19-20020a02a513000000b00363b0dc222bmr3318308jam.213.1665935813952; Sun, 16
+ Oct 2022 08:56:53 -0700 (PDT)
+MIME-Version: 1.0
+References: <20221011180142.2742289-1-joel@joelfernandes.org>
+ <20221011180142.2742289-2-joel@joelfernandes.org> <20221014142127.GE4221@paulmck-ThinkPad-P17-Gen-1>
+ <20221014144019.GB1108603@lothringen> <20221014150344.GG4221@paulmck-ThinkPad-P17-Gen-1>
+ <CAEXW_YQoRUJ=0_GJG6JunR58yASmehPanp14zbR3Y+KAGL1TDA@mail.gmail.com>
+ <20221014154606.GJ4221@paulmck-ThinkPad-P17-Gen-1> <20221014204750.GA1119620@lothringen>
+ <20221016151655.GA5600@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20221016151655.GA5600@paulmck-ThinkPad-P17-Gen-1>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Sun, 16 Oct 2022 11:56:42 -0400
+Message-ID: <CAEXW_YSHN=OWhSu3=Qr+SCeo+=HOHmj3=votKXPmTk0Us2SpdA@mail.gmail.com>
+Subject: Re: [PATCH v8 01/13] rcu: Fix missing nocb gp wake on rcu_barrier()
+To:     paulmck@kernel.org
+Cc:     Frederic Weisbecker <frederic@kernel.org>, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org, rushikesh.s.kadam@intel.com,
         urezki@gmail.com, neeraj.iitr10@gmail.com, rostedt@goodmis.org,
         youssefesmat@google.com, surenb@google.com
-Subject: Re: [PATCH v8 01/13] rcu: Fix missing nocb gp wake on rcu_barrier()
-Message-ID: <20221016151655.GA5600@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20221011180142.2742289-1-joel@joelfernandes.org>
- <20221011180142.2742289-2-joel@joelfernandes.org>
- <20221014142127.GE4221@paulmck-ThinkPad-P17-Gen-1>
- <20221014144019.GB1108603@lothringen>
- <20221014150344.GG4221@paulmck-ThinkPad-P17-Gen-1>
- <CAEXW_YQoRUJ=0_GJG6JunR58yASmehPanp14zbR3Y+KAGL1TDA@mail.gmail.com>
- <20221014154606.GJ4221@paulmck-ThinkPad-P17-Gen-1>
- <20221014204750.GA1119620@lothringen>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221014204750.GA1119620@lothringen>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Oct 14, 2022 at 10:47:50PM +0200, Frederic Weisbecker wrote:
-> On Fri, Oct 14, 2022 at 08:46:06AM -0700, Paul E. McKenney wrote:
-> > On Fri, Oct 14, 2022 at 11:19:28AM -0400, Joel Fernandes wrote:
-> > > I agree with the discussion, though if all CBs are in the bypass list,
-> > > the patch will also save 2 jiffies.
-> > > 
-> > > So just commit messages that need rework then? This one can be taken instead:
-> > > https://lore.kernel.org/rcu/21ECDA9F-81B1-4D22-8B03-020FB5DADA4F@joelfernandes.org/T/#m14d21fbce23539a521693a4184b28ddc55d7d2c5
-> > 
-> > This one looks plausible to me.
-> 
-> With the following modified diff (passed 25 hours of TREE01):
+On Sun, Oct 16, 2022 at 11:16 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+>
+> On Fri, Oct 14, 2022 at 10:47:50PM +0200, Frederic Weisbecker wrote:
+> > On Fri, Oct 14, 2022 at 08:46:06AM -0700, Paul E. McKenney wrote:
+> > > On Fri, Oct 14, 2022 at 11:19:28AM -0400, Joel Fernandes wrote:
+> > > > I agree with the discussion, though if all CBs are in the bypass list,
+> > > > the patch will also save 2 jiffies.
+> > > >
+> > > > So just commit messages that need rework then? This one can be taken instead:
+> > > > https://lore.kernel.org/rcu/21ECDA9F-81B1-4D22-8B03-020FB5DADA4F@joelfernandes.org/T/#m14d21fbce23539a521693a4184b28ddc55d7d2c5
+> > >
+> > > This one looks plausible to me.
+> >
+> > With the following modified diff (passed 25 hours of TREE01):
+>
+> Very good!
+>
+> Could one of you (presumably Joel) please send v9?
+>
+> Just to avoid me getting the wrong patch in the wrong place or similar.
+> Or mangling the required rebase following a pull (otherwise, as soon as I
+> create branches, Stephen Rothwell notes the lack of a committer signoff.)
 
-Very good!
+Taking a break from raking leaves so doing it right now! Those leaves!
 
-Could one of you (presumably Joel) please send v9?
-
-Just to avoid me getting the wrong patch in the wrong place or similar.
-Or mangling the required rebase following a pull (otherwise, as soon as I
-create branches, Stephen Rothwell notes the lack of a committer signoff.)
-
-							Thanx, Paul
-
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 96d678c9cfb6..7f1f6f792240 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -3914,6 +3914,8 @@ static void rcu_barrier_entrain(struct rcu_data *rdp)
->  {
->  	unsigned long gseq = READ_ONCE(rcu_state.barrier_sequence);
->  	unsigned long lseq = READ_ONCE(rdp->barrier_seq_snap);
-> +	bool wake_nocb = false;
-> +	bool was_alldone = false;
->  
->  	lockdep_assert_held(&rcu_state.barrier_lock);
->  	if (rcu_seq_state(lseq) || !rcu_seq_state(gseq) || rcu_seq_ctr(lseq) != rcu_seq_ctr(gseq))
-> @@ -3922,7 +3924,14 @@ static void rcu_barrier_entrain(struct rcu_data *rdp)
->  	rdp->barrier_head.func = rcu_barrier_callback;
->  	debug_rcu_head_queue(&rdp->barrier_head);
->  	rcu_nocb_lock(rdp);
-> +	/*
-> +	 * Flush bypass and wakeup rcuog if we add callbacks to an empty regular
-> +	 * queue. This way we don't wait for bypass timer that can reach seconds
-> +	 * if it's fully lazy.
-> +	 */
-> +	was_alldone = rcu_rdp_is_offloaded(rdp) && !rcu_segcblist_pend_cbs(&rdp->cblist);
->  	WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, jiffies));
-> +	wake_nocb = was_alldone && rcu_segcblist_pend_cbs(&rdp->cblist);
->  	if (rcu_segcblist_entrain(&rdp->cblist, &rdp->barrier_head)) {
->  		atomic_inc(&rcu_state.barrier_cpu_count);
->  	} else {
-> @@ -3930,6 +3939,8 @@ static void rcu_barrier_entrain(struct rcu_data *rdp)
->  		rcu_barrier_trace(TPS("IRQNQ"), -1, rcu_state.barrier_sequence);
->  	}
->  	rcu_nocb_unlock(rdp);
-> +	if (wake_nocb)
-> +		wake_nocb_gp(rdp, false);
->  	smp_store_release(&rdp->barrier_seq_snap, gseq);
->  }
->  
-> diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-> index d4a97e40ea9c..925dd98f8b23 100644
-> --- a/kernel/rcu/tree.h
-> +++ b/kernel/rcu/tree.h
-> @@ -439,6 +439,7 @@ static void zero_cpu_stall_ticks(struct rcu_data *rdp);
->  static struct swait_queue_head *rcu_nocb_gp_get(struct rcu_node *rnp);
->  static void rcu_nocb_gp_cleanup(struct swait_queue_head *sq);
->  static void rcu_init_one_nocb(struct rcu_node *rnp);
-> +static bool wake_nocb_gp(struct rcu_data *rdp, bool force);
->  static bool rcu_nocb_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
->  				  unsigned long j);
->  static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
-> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-> index f77a6d7e1356..094fd454b6c3 100644
-> --- a/kernel/rcu/tree_nocb.h
-> +++ b/kernel/rcu/tree_nocb.h
-> @@ -1558,6 +1558,11 @@ static void rcu_init_one_nocb(struct rcu_node *rnp)
->  {
->  }
->  
-> +static bool wake_nocb_gp(struct rcu_data *rdp, bool force)
-> +{
-> +	return false;
-> +}
-> +
->  static bool rcu_nocb_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
->  				  unsigned long j)
->  {
+ - Joel
