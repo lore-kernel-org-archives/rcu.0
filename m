@@ -2,58 +2,58 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E5EC2C4332F
-	for <rcu@archiver.kernel.org>; Sun, 16 Oct 2022 16:24:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A52E3C43219
+	for <rcu@archiver.kernel.org>; Sun, 16 Oct 2022 16:24:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229616AbiJPQX6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 16 Oct 2022 12:23:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58114 "EHLO
+        id S229646AbiJPQX7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 16 Oct 2022 12:23:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229925AbiJPQXp (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 16 Oct 2022 12:23:45 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8B66303E8
-        for <rcu@vger.kernel.org>; Sun, 16 Oct 2022 09:23:43 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id 8so5416428qka.1
-        for <rcu@vger.kernel.org>; Sun, 16 Oct 2022 09:23:43 -0700 (PDT)
+        with ESMTP id S229922AbiJPQXo (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 16 Oct 2022 12:23:44 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AE923C151
+        for <rcu@vger.kernel.org>; Sun, 16 Oct 2022 09:23:42 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id o2so5390020qkk.10
+        for <rcu@vger.kernel.org>; Sun, 16 Oct 2022 09:23:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=jd4X4oYun9/nS5S7eG1Y6MJBlHQXAJ22sEc4uBevOrk=;
-        b=mrEHqR75/ASzUJYL2Vr1FpBcCW1ogrf9oXsAim5CnXNXTSdkazxj+/9mKkDSVa01Rp
-         A0I7JfTL5YB/qYLf3G92MvHWjYyk9MuBZB+Y288CC7uABNd34F84+s0jyORWJ80iWfzM
-         mmPmsBik655Fuf0CGK0nq+Rn+D1GJYLHvEr0Q=
+        bh=bEtsx5s7XOiwD9ITg4bkmVjdZ73X1TK7P0DFf+XigW8=;
+        b=pOMzhiN56m8msun4IsqBgxhAdONJhpbswx/IqkVNkSzTeoZyLosoi3Vb7h3daV57N2
+         tbMeo2SLUtbhULfjpnA/VGwusi+VwdrN9fM3xRm7qFybgF62fYRKEGDPgdni8VnOptlp
+         3VpNZBINyx4R1NGkCDqif21jM8JelQbOO5AKQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=jd4X4oYun9/nS5S7eG1Y6MJBlHQXAJ22sEc4uBevOrk=;
-        b=zyihhGWhuZ0mxKy7idHK8RnsMSpRKnsQ7uY16iBpFceKxZFV/GzHwUri9oNlJgakfb
-         NCsztmH5jx6r6qeyH774U+qDmOORHVXEZ0INHx4Khwr0JNO2CKavPPD+sN36ThOKKOOw
-         +cPOHwsX0raFltEsbNLNUj8uNOPnVFe6BIIyE0JtciJb9DhdwktecRLT0RboaCipSkr0
-         0jFYCiI/FGghBL+DSRWZszOi8S7XYxacoXwp4F2o2skI0kHnpZGJSD39YhaUjewnacr8
-         fGXeEdFmSlKJF9EWAINX5eijoVYNJFb5nja08ishBVTL5Ol+5/R2JTREF5CkSykzWBmX
-         AOag==
-X-Gm-Message-State: ACrzQf2P1wezxCq7bo8JH9/PfULByWM4MAY2wmD7fW9z1/EekbohFP3d
-        prLvvS46Sxbi2KDIBOEkEKJisDkgH0A21w==
-X-Google-Smtp-Source: AMsMyM4uhEsICS3Fc3WVYe2ZiLXWLquTZxuLWKT4B9PHyo6xu5DhswcnF5IBnDaQcUYkcI2VpTkclQ==
-X-Received: by 2002:a05:620a:2913:b0:6ee:d427:1c5c with SMTP id m19-20020a05620a291300b006eed4271c5cmr5142629qkp.484.1665937420846;
-        Sun, 16 Oct 2022 09:23:40 -0700 (PDT)
+        bh=bEtsx5s7XOiwD9ITg4bkmVjdZ73X1TK7P0DFf+XigW8=;
+        b=k+yIl4qtc2ggS2CSfELJ/4/f4Qm0uwvRoCiPlMVhdPdxNQbLA9nugmhS+11f7Y6brC
+         QETHqjherkm33TIvIh3m00qWZGkVm0OF0/wHStffK5rcpUiW2M9Kz+O4Hoie2cPP3hqt
+         SIpU98fGEahx57YWv70O+dc7oDQ0RmfcZZmgpv0aqZ/ZR5HEj9VAohcC9abZiGa3ziGN
+         3H/KP6OTqPy+uPwuNsz0UNs9Xql6p2u+PKfJDQ75x0ilhJMOKa6SIJo3bbrC6H8BqgDe
+         cygiC9AdI0CeWms+2CIlTgUXjoh65kJ6bwQL5wbCsg9CbBn1d7g9VEqnkpJlbZ5flSwg
+         u8xQ==
+X-Gm-Message-State: ACrzQf1pMVmgj+1iC9crbPpWVsZaB3Rkn4eJzjaReNCqAD+CieI6TNsS
+        OoA8UiDJ0C4GxUQO6tE1psQd61oEIOxUIw==
+X-Google-Smtp-Source: AMsMyM6yGlhG1jMARZVapw8+tf5joMmfgRkmzBDiCtBUJkkPqdbBN7kTkDtgGznT9qezr0r1+nL2yQ==
+X-Received: by 2002:a05:620a:28c1:b0:6ee:d4f1:21df with SMTP id l1-20020a05620a28c100b006eed4f121dfmr4953922qkp.724.1665937421930;
+        Sun, 16 Oct 2022 09:23:41 -0700 (PDT)
 Received: from joelboxx.c.googlers.com.com (228.221.150.34.bc.googleusercontent.com. [34.150.221.228])
-        by smtp.gmail.com with ESMTPSA id x19-20020ac87ed3000000b003436103df40sm6001207qtj.8.2022.10.16.09.23.40
+        by smtp.gmail.com with ESMTPSA id x19-20020ac87ed3000000b003436103df40sm6001207qtj.8.2022.10.16.09.23.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 16 Oct 2022 09:23:40 -0700 (PDT)
+        Sun, 16 Oct 2022 09:23:41 -0700 (PDT)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, frederic@kernel.org,
-        paulmck@kernel.org, Uladzislau Rezki <urezki@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: [PATCH v9 10/13] scsi/scsi_error: Use call_rcu_flush() instead of call_rcu()
-Date:   Sun, 16 Oct 2022 16:23:02 +0000
-Message-Id: <20221016162305.2489629-11-joel@joelfernandes.org>
+        paulmck@kernel.org,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Subject: [PATCH v9 12/13] rxrpc: Use call_rcu_flush() instead of call_rcu()
+Date:   Sun, 16 Oct 2022 16:23:04 +0000
+Message-Id: <20221016162305.2489629-13-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.38.0.413.g74048e4d9e-goog
 In-Reply-To: <20221016162305.2489629-1-joel@joelfernandes.org>
 References: <20221016162305.2489629-1-joel@joelfernandes.org>
@@ -63,33 +63,31 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Uladzislau Rezki <urezki@gmail.com>
+call_rcu() changes to save power may cause slowness. Use the
+call_rcu_flush() API instead which reverts to the old behavior.
 
-Slow boot time is seen on KVM running typical Linux distributions due to
-SCSI layer calling call_rcu(). Recent changes to save power may be
-causing this slowness. Using call_rcu_flush() fixes the issue and brings
-the boot time back to what it originally was. Convert it.
+We find this via inspection that the RCU callback does a wakeup of a
+thread. This usually indicates that something is waiting on it. To be
+safe, let us use call_rcu_flush() here instead.
 
-Tested-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Signed-off-by: Uladzislau Rezki <urezki@gmail.com>
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- drivers/scsi/scsi_error.c | 2 +-
+ net/rxrpc/conn_object.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/scsi_error.c b/drivers/scsi/scsi_error.c
-index 448748e3fba5..a56cfd612e3a 100644
---- a/drivers/scsi/scsi_error.c
-+++ b/drivers/scsi/scsi_error.c
-@@ -312,7 +312,7 @@ void scsi_eh_scmd_add(struct scsi_cmnd *scmd)
- 	 * Ensure that all tasks observe the host state change before the
- 	 * host_failed change.
+diff --git a/net/rxrpc/conn_object.c b/net/rxrpc/conn_object.c
+index 22089e37e97f..fdcfb509cc44 100644
+--- a/net/rxrpc/conn_object.c
++++ b/net/rxrpc/conn_object.c
+@@ -253,7 +253,7 @@ void rxrpc_kill_connection(struct rxrpc_connection *conn)
+ 	 * must carry a ref on the connection to prevent us getting here whilst
+ 	 * it is queued or running.
  	 */
--	call_rcu(&scmd->rcu, scsi_eh_inc_host_failed);
-+	call_rcu_flush(&scmd->rcu, scsi_eh_inc_host_failed);
+-	call_rcu(&conn->rcu, rxrpc_destroy_connection);
++	call_rcu_flush(&conn->rcu, rxrpc_destroy_connection);
  }
  
- /**
+ /*
 -- 
 2.38.0.413.g74048e4d9e-goog
 
