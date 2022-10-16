@@ -2,58 +2,58 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BCFE3C4332F
-	for <rcu@archiver.kernel.org>; Sun, 16 Oct 2022 16:23:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 181FFC433FE
+	for <rcu@archiver.kernel.org>; Sun, 16 Oct 2022 16:23:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229959AbiJPQXz (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 16 Oct 2022 12:23:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58086 "EHLO
+        id S229964AbiJPQX4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 16 Oct 2022 12:23:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229910AbiJPQXo (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 16 Oct 2022 12:23:44 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FA7C36DDC
-        for <rcu@vger.kernel.org>; Sun, 16 Oct 2022 09:23:41 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id a18so5436054qko.0
-        for <rcu@vger.kernel.org>; Sun, 16 Oct 2022 09:23:41 -0700 (PDT)
+        with ESMTP id S229646AbiJPQXr (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 16 Oct 2022 12:23:47 -0400
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A0BE3CBF9
+        for <rcu@vger.kernel.org>; Sun, 16 Oct 2022 09:23:40 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id a24so6477761qto.10
+        for <rcu@vger.kernel.org>; Sun, 16 Oct 2022 09:23:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8IMqQmd/XghF0vc5rGTchLEnwifIWdplO8ZK5ZR9Yzk=;
-        b=py7m4915l5o5WsLd4bMO+78MLiz5ALzpVVpmzpKDyUl2p5IK12I+DK7uMK1ctklRZc
-         0ctsYyMCESSdCSlRIci8QFRlMwzZFyL/wDKPbOgLpI9GsDGWmO+UREym0nzKAi3x0z06
-         1U5rjt6VxS5AmaRVMN/lURrp/Fv3eAx599HvA=
+        bh=U8qbMoDbUFjsjnsgxbcBmmoHnL4WHNlLEOswqF5VihY=;
+        b=cPVn8FK4CZBrAZ54M7KyfKKXkgSC09g74rPm8n5OxaX0too8i+UKW9oibRperEQbdB
+         caGBzcF4Y/av5TTpiExqn2n7TqsKqj+ELYhFHnNn+EX5s3NPocr8W/EUabv236NHx3at
+         EM0iYxYDDNzjjFxe4XpBuqZJ9v6kXZ2zkQ9gg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=8IMqQmd/XghF0vc5rGTchLEnwifIWdplO8ZK5ZR9Yzk=;
-        b=Jkw16AXL7RPs+EyBAb/U6yfvbwSgYGB0kwM+E/r73+BpnC/24URTZp6SXD3YfNZrjm
-         vZNt+UONoYPT9acLSvzcL17wA+Wk0w4XsUrvBqPtP5R0kQQ6DNXyr/tGiEGIbgYiydGF
-         SQ84DHZW236VciO/DDJJjnF0h4aMHFTW70QT5BlH2w6La1BQjx2iMGmwB6EEirUnycM9
-         qBe416eAa+TaeNAhxzSCPzTJGsNj9QXCeLbXNBsEXAmAWF35mQCxRMSJztIPjrwxHqzQ
-         h+C/J5gLnsF8LE16S8HYSfp88Ru0P8vkZxqMrRPEQN6ruRcJHRQFba7yghjGcWCaWZ69
-         QO3g==
-X-Gm-Message-State: ACrzQf01GEPD078f4JEfguO1pUTFSe2PsdXDPidRMI7JQnYYOdi/z6Ii
-        HyIGdzS641mU21jbi0t5xm7IKC5rsc14Kw==
-X-Google-Smtp-Source: AMsMyM7B+qxY2by1V80Iz7B1giQEQSaStGfhI9NCYkeSiOKo4y/7wOpJUJbmcS876UGqN1p2LoXwsQ==
-X-Received: by 2002:a05:620a:2045:b0:6ec:bd25:ea67 with SMTP id d5-20020a05620a204500b006ecbd25ea67mr5004470qka.85.1665937421414;
-        Sun, 16 Oct 2022 09:23:41 -0700 (PDT)
+        bh=U8qbMoDbUFjsjnsgxbcBmmoHnL4WHNlLEOswqF5VihY=;
+        b=HJvGIKOIVqn9+LAeVBOcY3qHv4DShfx9kJVbsTptqQyzmXV05El9hueo6A49iJPSaa
+         Npc6jnlVvyVk397JYlwBtZNMaJdSuugYg/2F47t09CSBWgtFiTaOSfuulh2asWhhtPA+
+         Ah4aBEyhpAQdBwf+3/CJOymfAHdwYv7RwiPxvJf0eBBw/NM8E+V4emZqdfW3yifADnjp
+         FmvT2qqnRyvuliQCCF3yqJuZKkIp+RvMsMhJFS+sLqxdrKwaPfEVonWbJZygC7Lel0J3
+         fiwo6wxsDl/HU5tkavIcZ2PZIEp7FISlslqoc7KmlB8WlzYLDVQSkyieP9x0t1OwaUIY
+         t90Q==
+X-Gm-Message-State: ACrzQf2pVTCqItOqhn0XAIvO0v/ou0hhFMjo2a8oAZCUiYd2MYWLJnHy
+        4pePiammhRLOrL54zGmKWnfFlx6zmSFOcg==
+X-Google-Smtp-Source: AMsMyM4aRlBR8reojoEP7avo2GL0SxBHG/lxbAZy6E7ZYAuokZLaPUCTHS9KEDoDufg0ICgXfqQZGg==
+X-Received: by 2002:ac8:5c45:0:b0:39c:dcea:c552 with SMTP id j5-20020ac85c45000000b0039cdceac552mr5547567qtj.128.1665937420317;
+        Sun, 16 Oct 2022 09:23:40 -0700 (PDT)
 Received: from joelboxx.c.googlers.com.com (228.221.150.34.bc.googleusercontent.com. [34.150.221.228])
-        by smtp.gmail.com with ESMTPSA id x19-20020ac87ed3000000b003436103df40sm6001207qtj.8.2022.10.16.09.23.40
+        by smtp.gmail.com with ESMTPSA id x19-20020ac87ed3000000b003436103df40sm6001207qtj.8.2022.10.16.09.23.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 16 Oct 2022 09:23:41 -0700 (PDT)
+        Sun, 16 Oct 2022 09:23:39 -0700 (PDT)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, frederic@kernel.org,
-        paulmck@kernel.org, Uladzislau Rezki <urezki@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: [PATCH v9 11/13] workqueue: Make queue_rcu_work() use call_rcu_flush()
-Date:   Sun, 16 Oct 2022 16:23:03 +0000
-Message-Id: <20221016162305.2489629-12-joel@joelfernandes.org>
+        paulmck@kernel.org,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Subject: [PATCH v9 09/13] rcu/rcutorture: Use call_rcu_flush() where needed
+Date:   Sun, 16 Oct 2022 16:23:01 +0000
+Message-Id: <20221016162305.2489629-10-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.38.0.413.g74048e4d9e-goog
 In-Reply-To: <20221016162305.2489629-1-joel@joelfernandes.org>
 References: <20221016162305.2489629-1-joel@joelfernandes.org>
@@ -63,32 +63,66 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Uladzislau Rezki <urezki@gmail.com>
+call_rcu() changes to save power will change the behavior of rcutorture
+tests. Use the call_rcu_flush() API instead which reverts to the old
+behavior.
 
-call_rcu() changes to save power will slow down RCU workqueue items
-queued via queue_rcu_work(). This may not be an issue, however we cannot
-assume that workqueue users are OK with long delays. Use
-call_rcu_flush() API instead which reverts to the old behavior.
-
-Signed-off-by: Uladzislau Rezki <urezki@gmail.com>
+Reported-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- kernel/workqueue.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/rcu/rcutorture.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index aeea9731ef80..fe1146d97f1a 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -1771,7 +1771,7 @@ bool queue_rcu_work(struct workqueue_struct *wq, struct rcu_work *rwork)
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 684e24f12a79..fd56202ae4f4 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -514,7 +514,7 @@ static unsigned long rcu_no_completed(void)
  
- 	if (!test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work))) {
- 		rwork->wq = wq;
--		call_rcu(&rwork->rcu, rcu_work_rcufn);
-+		call_rcu_flush(&rwork->rcu, rcu_work_rcufn);
- 		return true;
+ static void rcu_torture_deferred_free(struct rcu_torture *p)
+ {
+-	call_rcu(&p->rtort_rcu, rcu_torture_cb);
++	call_rcu_flush(&p->rtort_rcu, rcu_torture_cb);
+ }
+ 
+ static void rcu_sync_torture_init(void)
+@@ -559,7 +559,7 @@ static struct rcu_torture_ops rcu_ops = {
+ 	.start_gp_poll_exp_full	= start_poll_synchronize_rcu_expedited_full,
+ 	.poll_gp_state_exp	= poll_state_synchronize_rcu,
+ 	.cond_sync_exp		= cond_synchronize_rcu_expedited,
+-	.call			= call_rcu,
++	.call			= call_rcu_flush,
+ 	.cb_barrier		= rcu_barrier,
+ 	.fqs			= rcu_force_quiescent_state,
+ 	.stats			= NULL,
+@@ -863,7 +863,7 @@ static void rcu_tasks_torture_deferred_free(struct rcu_torture *p)
+ 
+ static void synchronize_rcu_mult_test(void)
+ {
+-	synchronize_rcu_mult(call_rcu_tasks, call_rcu);
++	synchronize_rcu_mult(call_rcu_tasks, call_rcu_flush);
+ }
+ 
+ static struct rcu_torture_ops tasks_ops = {
+@@ -3432,13 +3432,13 @@ static void rcu_test_debug_objects(void)
+ 	/* Try to queue the rh2 pair of callbacks for the same grace period. */
+ 	preempt_disable(); /* Prevent preemption from interrupting test. */
+ 	rcu_read_lock(); /* Make it impossible to finish a grace period. */
+-	call_rcu(&rh1, rcu_torture_leak_cb); /* Start grace period. */
++	call_rcu_flush(&rh1, rcu_torture_leak_cb); /* Start grace period. */
+ 	local_irq_disable(); /* Make it harder to start a new grace period. */
+-	call_rcu(&rh2, rcu_torture_leak_cb);
+-	call_rcu(&rh2, rcu_torture_err_cb); /* Duplicate callback. */
++	call_rcu_flush(&rh2, rcu_torture_leak_cb);
++	call_rcu_flush(&rh2, rcu_torture_err_cb); /* Duplicate callback. */
+ 	if (rhp) {
+-		call_rcu(rhp, rcu_torture_leak_cb);
+-		call_rcu(rhp, rcu_torture_err_cb); /* Another duplicate callback. */
++		call_rcu_flush(rhp, rcu_torture_leak_cb);
++		call_rcu_flush(rhp, rcu_torture_err_cb); /* Another duplicate callback. */
  	}
- 
+ 	local_irq_enable();
+ 	rcu_read_unlock();
 -- 
 2.38.0.413.g74048e4d9e-goog
 
