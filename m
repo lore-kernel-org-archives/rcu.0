@@ -2,127 +2,144 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B6C2C4332F
-	for <rcu@archiver.kernel.org>; Mon, 17 Oct 2022 13:39:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3CA40C433FE
+	for <rcu@archiver.kernel.org>; Mon, 17 Oct 2022 13:47:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229663AbiJQNjp (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 17 Oct 2022 09:39:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56256 "EHLO
+        id S229775AbiJQNrN (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 17 Oct 2022 09:47:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229774AbiJQNjo (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 17 Oct 2022 09:39:44 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CFA3193DC;
-        Mon, 17 Oct 2022 06:39:43 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 90CBB61149;
-        Mon, 17 Oct 2022 13:39:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3EA5C433D6;
-        Mon, 17 Oct 2022 13:39:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666013981;
-        bh=VWdsyJklIFqTKFzaZdG160rEOXJvSY1pTS3ruH0xx9Y=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=iocHajVGnjaoi7KlkLktTXZ+e4bx9AD+KSesMhZ/aglmZAf+I90ZU0kCz3ES7F7t6
-         fDFtGjqpaWOp7RllrRWBd/MHY24YaUikbFvCe+eVUaN5LMHSg7AZNx1K4dmoQEbESK
-         omq6lelD8idiWvdBvZXuc9S1DnI2Ll3Aanju6yf7k2pCmGa+4s7nN5wt84Jwyq5ZQ7
-         m5ohv3dsQjeB8o+1IGB6CyKtPUK0Q+iMjSv8gpdsGW+3T69h+tlNSb4mGGlLbTkpqY
-         HBQlkeJp2FiT02pSXlOaUcUcVI2j9tZNjOg6ZZ4ok34t14t67vIbutIs93svt6nXvD
-         0OsGGkknSou3Q==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 7CB565C0622; Mon, 17 Oct 2022 06:39:41 -0700 (PDT)
-Date:   Mon, 17 Oct 2022 06:39:41 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Hou Tao <houtao@huaweicloud.com>
-Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>, houtao1@huawei.com,
-        Delyan Kratunov <delyank@fb.com>, rcu@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2 0/4] Remove unnecessary RCU grace period
- chaining
-Message-ID: <20221017133941.GF5600@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20221014113946.965131-1-houtao@huaweicloud.com>
+        with ESMTP id S229716AbiJQNrN (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 17 Oct 2022 09:47:13 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BD8152816
+        for <rcu@vger.kernel.org>; Mon, 17 Oct 2022 06:47:12 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id d142so9050135iof.7
+        for <rcu@vger.kernel.org>; Mon, 17 Oct 2022 06:47:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=tp5Hh6O/9A3srRlAZuCsYvFyaZFl+pX5X5HoG/4ElAU=;
+        b=BkU5qF0dzUpUIC9KulmtP0BV02i/Hc+ZIukXmznU6DSFGPncHSk5xOwsfVBE12TSjy
+         BP2RcKTW68QFdfFkoEMiYIh45Lnr0sNlqCMJNSceCwDypaKdo22u9xFM3kexofmLH/zg
+         xq37h5vc/v60b2DbaTlJKTLBcbmcCkr0I1L40=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tp5Hh6O/9A3srRlAZuCsYvFyaZFl+pX5X5HoG/4ElAU=;
+        b=2dkA9rsfJzgs+LnEinvBx/exUYe0/XUanBftJQYUQjB6AhZ/wkF2dmIUv0I7rG3uMC
+         jadzFgD4A2JvIQXlVpFb1fB7/5KF62vgxXoHIDD4XlFfz7UAG92T8qffEfIEPZ18lYuW
+         H4OkEK3z02F2PnloTMZBsrVNDQjJZEJOlnBDfYi74E58ORFJrgF3L88rRI0imcSPyJ3k
+         v2yK7B/9bXP3bymPhn3HychFEYk75e5xcdZX2pfRxQHOkb7NI8PTwky0IvFn+TwFXOqc
+         yw+2Za8o+kGD7Jov7siSm2GNiKV0E6P8KJPtWKI0IrlyA+fSVhuzWFzqw1FjrUnwqJJi
+         XWxQ==
+X-Gm-Message-State: ACrzQf2QOfDZee92Mn8q85x+hnQmkX7B6YeWZiL+EnXKBTj8I1oqdlWH
+        Vjaxudg+pJyiL3RVgin7a1lR7lWhAr4LeGbfn+oWW74nY9g=
+X-Google-Smtp-Source: AMsMyM47AVWwcAp7qkyKwstKtc+LVH7Vc9Mv6/Oad//okiRD3lriys+APzVwh5TYSft0aMfQYHPP0jnatDn0qJf/4EE=
+X-Received: by 2002:a05:6638:408b:b0:364:768:e8c2 with SMTP id
+ m11-20020a056638408b00b003640768e8c2mr5433037jam.107.1666014431529; Mon, 17
+ Oct 2022 06:47:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221014113946.965131-1-houtao@huaweicloud.com>
+References: <20221016162305.2489629-1-joel@joelfernandes.org> <20221017133738.GE5600@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20221017133738.GE5600@paulmck-ThinkPad-P17-Gen-1>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Mon, 17 Oct 2022 09:47:00 -0400
+Message-ID: <CAEXW_YS8TkqX8acJESE54woR2adyiBOQq0ZRZKTLTqLGkkHPuQ@mail.gmail.com>
+Subject: Re: [PATCH v9 00/13] rcu: call_rcu() power improvements
+To:     paulmck@kernel.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        frederic@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Oct 14, 2022 at 07:39:42PM +0800, Hou Tao wrote:
-> From: Hou Tao <houtao1@huawei.com>
-> 
-> Hi,
-> 
-> Now bpf uses RCU grace period chaining to wait for the completion of
-> access from both sleepable and non-sleepable bpf program: calling
-> call_rcu_tasks_trace() firstly to wait for a RCU-tasks-trace grace
-> period, then in its callback calls call_rcu() or kfree_rcu() to wait for
-> a normal RCU grace period.
-> 
-> According to the implementation of RCU Tasks Trace, it inovkes
-> ->postscan_func() to wait for one RCU-tasks-trace grace period and
-> rcu_tasks_trace_postscan() inovkes synchronize_rcu() to wait for one
-> normal RCU grace period in turn, so one RCU-tasks-trace grace period
-> will imply one normal RCU grace period. To codify the implication,
-> introduces rcu_trace_implies_rcu_gp() in patch #1. And using it in patch
-> #2~#4 to remove unnecessary call_rcu() or kfree_rcu() in bpf subsystem.
-> Other two uses of call_rcu_tasks_trace() are unchanged: for
-> __bpf_prog_put_rcu() there is no gp chain and for
-> __bpf_tramp_image_put_rcu_tasks() it chains RCU tasks trace GP and RCU
-> tasks GP.
-> 
-> An alternative way to remove these unnecessary RCU grace period
-> chainings is using the RCU polling API to check whether or not a normal
-> RCU grace period has passed (e.g. get_state_synchronize_rcu()). But it
-> needs an unsigned long space for each free element or each call, and
-> it is not affordable for local storage element, so as for now always
-> rcu_trace_implies_rcu_gp().
-> 
-> Comments are always welcome.
+On Mon, Oct 17, 2022 at 9:37 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+>
+> On Sun, Oct 16, 2022 at 04:22:52PM +0000, Joel Fernandes (Google) wrote:
+> > v9 version of RCU lazy patches based on rcu/next branch.
+> >  Only change since v8 is this discussion:
+> >  https://lore.kernel.org/rcu/20221011180142.2742289-1-joel@joelfernandes.org/T/#m8eff15110477f3430b3b02561b66f7b0d34a73b0
+> >
+> > To facilitate easier merge, I dropped tracing and other patches and just
+> > implemented the new changes. I will post the tracing patches later along with
+> > rcutop as I need to add new tracepoints that Frederic suggested.
+> >
+> > Main recent changes:
+> > 1. rcu_barrier() wake up only for lazy bypass list.
+> > 2. Make all call_rcu() default-lazy and add call_rcu_flush() API.
+> > 3. Take care of some callers using call_rcu_flush() API.
+> > 4. Several refactorings suggested by Paul/Frederic.
+> > 5. New call_rcu() to call_rcu_flush() conversions by Joel/Vlad/Paul.
+> >
+> > I am seeing good performance and power with these patches on real ChromeOS x86
+> > asymmetric hardware.
+> >
+> > Earlier cover letter with lots of details is here:
+> > https://lore.kernel.org/all/20220901221720.1105021-1-joel@joelfernandes.org/
+> >
+[...]
+>
+> Very good, thank you all!
+>
+> I have pulled these in for further review and testing.
+>
+> I am holding off on the last one ("rcu/debug: Add wake-up debugging for
+> lazy callbacks") for the immediate future, but let's see how it goes.
 
-For #2-#4:
+Thanks! And nice timing with RCU just turning 20 years old ;-)
 
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+ - Joel
 
-(#1 already has my Signed-off-by, in case anyone was wondering.)
 
-> Change Log:
-> 
-> v2:
->  * codify the implication of RCU Tasks Trace grace period instead of
->    assuming for it
-> 
-> v1: https://lore.kernel.org/bpf/20221011071128.3470622-1-houtao@huaweicloud.com
-> 
-> Hou Tao (3):
->   bpf: Use rcu_trace_implies_rcu_gp() in bpf memory allocator
->   bpf: Use rcu_trace_implies_rcu_gp() in local storage map
->   bpf: Use rcu_trace_implies_rcu_gp() for program array freeing
-> 
-> Paul E. McKenney (1):
->   rcu-tasks: Provide rcu_trace_implies_rcu_gp()
-> 
->  include/linux/rcupdate.h       | 12 ++++++++++++
->  kernel/bpf/bpf_local_storage.c | 13 +++++++++++--
->  kernel/bpf/core.c              |  8 +++++++-
->  kernel/bpf/memalloc.c          | 15 ++++++++++-----
->  kernel/rcu/tasks.h             |  2 ++
->  5 files changed, 42 insertions(+), 8 deletions(-)
-> 
-> -- 
-> 2.29.2
-> 
+
+
+>
+>                                                         Thanx, Paul
+>
+> > Frederic Weisbecker (1):
+> > rcu: Fix missing nocb gp wake on rcu_barrier()
+> >
+> > Joel Fernandes (Google) (9):
+> > rcu: Make call_rcu() lazy to save power
+> > rcu: Refactor code a bit in rcu_nocb_do_flush_bypass()
+> > rcuscale: Add laziness and kfree tests
+> > percpu-refcount: Use call_rcu_flush() for atomic switch
+> > rcu/sync: Use call_rcu_flush() instead of call_rcu
+> > rcu/rcuscale: Use call_rcu_flush() for async reader test
+> > rcu/rcutorture: Use call_rcu_flush() where needed
+> > rxrpc: Use call_rcu_flush() instead of call_rcu()
+> > rcu/debug: Add wake-up debugging for lazy callbacks
+> >
+> > Uladzislau Rezki (2):
+> > scsi/scsi_error: Use call_rcu_flush() instead of call_rcu()
+> > workqueue: Make queue_rcu_work() use call_rcu_flush()
+> >
+> > Vineeth Pillai (1):
+> > rcu: shrinker for lazy rcu
+> >
+> > drivers/scsi/scsi_error.c |   2 +-
+> > include/linux/rcupdate.h  |   7 ++
+> > kernel/rcu/Kconfig        |  15 +++
+> > kernel/rcu/lazy-debug.h   | 154 +++++++++++++++++++++++++++
+> > kernel/rcu/rcu.h          |   8 ++
+> > kernel/rcu/rcuscale.c     |  70 +++++++++++-
+> > kernel/rcu/rcutorture.c   |  16 +--
+> > kernel/rcu/sync.c         |   2 +-
+> > kernel/rcu/tiny.c         |   2 +-
+> > kernel/rcu/tree.c         | 149 ++++++++++++++++++--------
+> > kernel/rcu/tree.h         |  12 ++-
+> > kernel/rcu/tree_exp.h     |   2 +-
+> > kernel/rcu/tree_nocb.h    | 217 ++++++++++++++++++++++++++++++++------
+> > kernel/workqueue.c        |   2 +-
+> > lib/percpu-refcount.c     |   3 +-
+> > net/rxrpc/conn_object.c   |   2 +-
+> > 16 files changed, 565 insertions(+), 98 deletions(-)
+> > create mode 100644 kernel/rcu/lazy-debug.h
+> >
+> > --
+> > 2.38.0.413.g74048e4d9e-goog
+> >
