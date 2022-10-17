@@ -2,156 +2,167 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A243EC4332F
-	for <rcu@archiver.kernel.org>; Sun, 16 Oct 2022 18:23:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BC84CC433FE
+	for <rcu@archiver.kernel.org>; Mon, 17 Oct 2022 06:56:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229732AbiJPSX1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 16 Oct 2022 14:23:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59170 "EHLO
+        id S230151AbiJQG4q (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 17 Oct 2022 02:56:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229662AbiJPSX0 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 16 Oct 2022 14:23:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E681040579;
-        Sun, 16 Oct 2022 11:23:25 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 79F8860DE6;
-        Sun, 16 Oct 2022 18:23:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0B4DC433D6;
-        Sun, 16 Oct 2022 18:23:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665944604;
-        bh=aPwiNLMoVuU3ql6A62evx6yCzs8kR0OVLUB2F9S194Y=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=ldEULLb46QM1z7HQOVI0plPodg7KE0MaxgaaevHjapDJzQfxq3/t/c/lpaLhuSHYE
-         iSFgpEHYcWYZSxtsmu8oKoTZC2tyV3e4ckED68bDxb1XE1f+zIEAQoma9wi7yFB3gT
-         AnUUUOs5qBhwh0zNR1JpwuNahSOXMZbqlFKvRH1LYlcBA8hCpZEh2Ku4EdPAJY43/v
-         bUtEHsOero/b3JEG91psuy/PUaDiPvNx0PHZAuzz+PKhDFGDdxnokmt70iDL3cAR8V
-         OGu+PDZaLqM/vjMnUIBSns9JCXF2zqTRHXWZv6m0GPUHQSgfzXMWj13I5MpvbVcMGf
-         kok+TxJv2HOZw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 7175F5C0624; Sun, 16 Oct 2022 11:23:24 -0700 (PDT)
-Date:   Sun, 16 Oct 2022 11:23:24 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        frederic@kernel.org
-Subject: Re: [PATCH v9 01/13] rcu: Fix missing nocb gp wake on rcu_barrier()
-Message-ID: <20221016182324.GB5600@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20221016162305.2489629-1-joel@joelfernandes.org>
- <20221016162305.2489629-2-joel@joelfernandes.org>
- <CAEXW_YTqgs__LBdyho4ZNuMbmY01KmH-8k_2j87qPS6kx1i8FA@mail.gmail.com>
+        with ESMTP id S230090AbiJQG4T (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 17 Oct 2022 02:56:19 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E24710B9;
+        Sun, 16 Oct 2022 23:55:57 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4MrSPf6yRKzKG3v;
+        Mon, 17 Oct 2022 14:53:26 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+        by APP2 (Coremail) with SMTP id Syh0CgB3XdJu_ExjKnadAQ--.53907S2;
+        Mon, 17 Oct 2022 14:55:46 +0800 (CST)
+Subject: Re: [PATCH bpf-next 1/3] bpf: Free elements after one RCU-tasks-trace
+ grace period
+To:     paulmck@kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Delyan Kratunov <delyank@fb.com>, rcu@vger.kernel.org,
+        houtao1@huawei.com
+References: <20221011071128.3470622-1-houtao@huaweicloud.com>
+ <20221011071128.3470622-2-houtao@huaweicloud.com>
+ <20221011090742.GG4221@paulmck-ThinkPad-P17-Gen-1>
+ <d91a9536-8ed2-fc00-733d-733de34af510@huaweicloud.com>
+ <20221012063607.GM4221@paulmck-ThinkPad-P17-Gen-1>
+ <b0ece7d9-ec48-0ecb-45d9-fb5cf973000b@huaweicloud.com>
+ <20221012161103.GU4221@paulmck-ThinkPad-P17-Gen-1>
+ <ca5f2973-e8b5-0d73-fd23-849f0dfc4347@huaweicloud.com>
+ <20221013190041.GZ4221@paulmck-ThinkPad-P17-Gen-1>
+ <08d09b15-5a6b-7f76-d53d-242fb20ed394@huaweicloud.com>
+ <20221014121507.GB4221@paulmck-ThinkPad-P17-Gen-1>
+From:   Hou Tao <houtao@huaweicloud.com>
+Message-ID: <05a580b3-02ca-a844-f553-400d842385d7@huaweicloud.com>
+Date:   Mon, 17 Oct 2022 14:55:42 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEXW_YTqgs__LBdyho4ZNuMbmY01KmH-8k_2j87qPS6kx1i8FA@mail.gmail.com>
+In-Reply-To: <20221014121507.GB4221@paulmck-ThinkPad-P17-Gen-1>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-CM-TRANSID: Syh0CgB3XdJu_ExjKnadAQ--.53907S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxZw18ur1ftw15WFWrKF45Jrb_yoW5Kry3pF
+        Z3KFsFkr4kXr10kw1Iqw17Cr12vasxGF13Xry5Wr18A3Z0vr17Jr1Iqr4F9FyFqrZ3Ca42
+        vr1Yq345K3W5ZaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
+        6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+        9x07UZ18PUUUUU=
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sun, Oct 16, 2022 at 12:25:32PM -0400, Joel Fernandes wrote:
-> On Sun, Oct 16, 2022 at 12:23 PM Joel Fernandes (Google)
-> <joel@joelfernandes.org> wrote:
-> >
-> > From: Frederic Weisbecker <frederic@kernel.org>
-> >
-> > In preparation of RCU lazy changes, wake up the RCU nocb gp thread if
-> > needed after an entrain. Otherwise, the RCU barrier callback can wait in
-> > the queue for several seconds before the lazy callbacks in front of it
-> > are serviced.
-> >
-> > Reported-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > Change-Id: I830269cd41b18862a1a58b26ce3292c6c4457bc7
-> 
-> Ah, sorry for the Change-id Paul! If you don't mind, please edit this
-> out from the change log for this and the next patch (it is only in
-> these 2!)
+Hi,
 
-That I can safely do.  ;-)
+On 10/14/2022 8:15 PM, Paul E. McKenney wrote:
+> On Fri, Oct 14, 2022 at 12:20:19PM +0800, Hou Tao wrote:
+>> Hi,
+>>
+>> On 10/14/2022 3:00 AM, Paul E. McKenney wrote:
+>>> On Thu, Oct 13, 2022 at 09:25:31AM +0800, Hou Tao wrote:
+>>>> Hi,
+>>>>
+>>>> On 10/13/2022 12:11 AM, Paul E. McKenney wrote:
+>>>>> On Wed, Oct 12, 2022 at 05:26:26PM +0800, Hou Tao wrote:
+>> SNIP
+>>>>> How about if I produce a patch for rcu_trace_implies_rcu_gp() and let
+>>>>> you carry it with your series?  That way I don't have an unused function
+>>>>> in -rcu and you don't have to wait for me to send it upstream?
+>>>> Sound reasonable to me. Also thanks for your suggestions.
+>>> Here you go!  Thoughts?
+>> It looks great and thanks for it.
+> Very good!  I will carry it in -rcu for some time, so please let me know
+> when/if you pull it into a series.
+Have already included the patch in v2 patch-set and send it out [0].
 
-But not today, too many timezones yesterday.
+0: https://lore.kernel.org/bpf/20221014113946.965131-1-houtao@huaweicloud.com/T/#t
 
-							Thanx, Paul
+>
+> 							Thanx, Paul
+>
+>>> ------------------------------------------------------------------------
+>>>
+>>> commit 2eac2f7a9a6d8921e8084a6acdffa595e99dbd17
+>>> Author: Paul E. McKenney <paulmck@kernel.org>
+>>> Date:   Thu Oct 13 11:54:13 2022 -0700
+>>>
+>>>     rcu-tasks: Provide rcu_trace_implies_rcu_gp()
+>>>     
+>>>     As an accident of implementation, an RCU Tasks Trace grace period also
+>>>     acts as an RCU grace period.  However, this could change at any time.
+>>>     This commit therefore creates an rcu_trace_implies_rcu_gp() that currently
+>>>     returns true to codify this accident.  Code relying on this accident
+>>>     must call this function to verify that this accident is still happening.
+>>>     
+>>>     Reported-by: Hou Tao <houtao@huaweicloud.com>
+>>>     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+>>>     Cc: Alexei Starovoitov <ast@kernel.org>
+>>>     Cc: Martin KaFai Lau <martin.lau@linux.dev>
+>>>
+>>> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+>>> index 08605ce7379d7..8822f06e4b40c 100644
+>>> --- a/include/linux/rcupdate.h
+>>> +++ b/include/linux/rcupdate.h
+>>> @@ -240,6 +240,18 @@ static inline void exit_tasks_rcu_start(void) { }
+>>>  static inline void exit_tasks_rcu_finish(void) { }
+>>>  #endif /* #else #ifdef CONFIG_TASKS_RCU_GENERIC */
+>>>  
+>>> +/**
+>>> + * rcu_trace_implies_rcu_gp - does an RCU Tasks Trace grace period imply an RCU grace period?
+>>> + *
+>>> + * As an accident of implementation, an RCU Tasks Trace grace period also
+>>> + * acts as an RCU grace period.  However, this could change at any time.
+>>> + * Code relying on this accident must call this function to verify that
+>>> + * this accident is still happening.
+>>> + *
+>>> + * You have been warned!
+>>> + */
+>>> +static inline bool rcu_trace_implies_rcu_gp(void) { return true; }
+>>> +
+>>>  /**
+>>>   * cond_resched_tasks_rcu_qs - Report potential quiescent states to RCU
+>>>   *
+>>> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+>>> index b0b885e071fa8..fe9840d90e960 100644
+>>> --- a/kernel/rcu/tasks.h
+>>> +++ b/kernel/rcu/tasks.h
+>>> @@ -1535,6 +1535,8 @@ static void rcu_tasks_trace_postscan(struct list_head *hop)
+>>>  {
+>>>  	// Wait for late-stage exiting tasks to finish exiting.
+>>>  	// These might have passed the call to exit_tasks_rcu_finish().
+>>> +
+>>> +	// If you remove the following line, update rcu_trace_implies_rcu_gp()!!!
+>>>  	synchronize_rcu();
+>>>  	// Any tasks that exit after this point will set
+>>>  	// TRC_NEED_QS_CHECKED in ->trc_reader_special.b.need_qs.
+> .
 
->  - Joel
-> 
-> 
-> > ---
-> >  kernel/rcu/tree.c      | 11 +++++++++++
-> >  kernel/rcu/tree.h      |  1 +
-> >  kernel/rcu/tree_nocb.h |  5 +++++
-> >  3 files changed, 17 insertions(+)
-> >
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index 5ec97e3f7468..67a1ae5151f5 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -3894,6 +3894,8 @@ static void rcu_barrier_entrain(struct rcu_data *rdp)
-> >  {
-> >         unsigned long gseq = READ_ONCE(rcu_state.barrier_sequence);
-> >         unsigned long lseq = READ_ONCE(rdp->barrier_seq_snap);
-> > +       bool wake_nocb = false;
-> > +       bool was_alldone = false;
-> >
-> >         lockdep_assert_held(&rcu_state.barrier_lock);
-> >         if (rcu_seq_state(lseq) || !rcu_seq_state(gseq) || rcu_seq_ctr(lseq) != rcu_seq_ctr(gseq))
-> > @@ -3902,7 +3904,14 @@ static void rcu_barrier_entrain(struct rcu_data *rdp)
-> >         rdp->barrier_head.func = rcu_barrier_callback;
-> >         debug_rcu_head_queue(&rdp->barrier_head);
-> >         rcu_nocb_lock(rdp);
-> > +       /*
-> > +        * Flush bypass and wakeup rcuog if we add callbacks to an empty regular
-> > +        * queue. This way we don't wait for bypass timer that can reach seconds
-> > +        * if it's fully lazy.
-> > +        */
-> > +       was_alldone = rcu_rdp_is_offloaded(rdp) && !rcu_segcblist_pend_cbs(&rdp->cblist);
-> >         WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, jiffies));
-> > +       wake_nocb = was_alldone && rcu_segcblist_pend_cbs(&rdp->cblist);
-> >         if (rcu_segcblist_entrain(&rdp->cblist, &rdp->barrier_head)) {
-> >                 atomic_inc(&rcu_state.barrier_cpu_count);
-> >         } else {
-> > @@ -3910,6 +3919,8 @@ static void rcu_barrier_entrain(struct rcu_data *rdp)
-> >                 rcu_barrier_trace(TPS("IRQNQ"), -1, rcu_state.barrier_sequence);
-> >         }
-> >         rcu_nocb_unlock(rdp);
-> > +       if (wake_nocb)
-> > +               wake_nocb_gp(rdp, false);
-> >         smp_store_release(&rdp->barrier_seq_snap, gseq);
-> >  }
-> >
-> > diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-> > index d4a97e40ea9c..925dd98f8b23 100644
-> > --- a/kernel/rcu/tree.h
-> > +++ b/kernel/rcu/tree.h
-> > @@ -439,6 +439,7 @@ static void zero_cpu_stall_ticks(struct rcu_data *rdp);
-> >  static struct swait_queue_head *rcu_nocb_gp_get(struct rcu_node *rnp);
-> >  static void rcu_nocb_gp_cleanup(struct swait_queue_head *sq);
-> >  static void rcu_init_one_nocb(struct rcu_node *rnp);
-> > +static bool wake_nocb_gp(struct rcu_data *rdp, bool force);
-> >  static bool rcu_nocb_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
-> >                                   unsigned long j);
-> >  static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
-> > diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-> > index f77a6d7e1356..094fd454b6c3 100644
-> > --- a/kernel/rcu/tree_nocb.h
-> > +++ b/kernel/rcu/tree_nocb.h
-> > @@ -1558,6 +1558,11 @@ static void rcu_init_one_nocb(struct rcu_node *rnp)
-> >  {
-> >  }
-> >
-> > +static bool wake_nocb_gp(struct rcu_data *rdp, bool force)
-> > +{
-> > +       return false;
-> > +}
-> > +
-> >  static bool rcu_nocb_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
-> >                                   unsigned long j)
-> >  {
-> > --
-> > 2.38.0.413.g74048e4d9e-goog
-> >
