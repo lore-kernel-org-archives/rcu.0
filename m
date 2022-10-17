@@ -2,94 +2,161 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7FEBCC4332F
-	for <rcu@archiver.kernel.org>; Mon, 17 Oct 2022 10:02:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 86FEAC43219
+	for <rcu@archiver.kernel.org>; Mon, 17 Oct 2022 10:23:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230154AbiJQKCM (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 17 Oct 2022 06:02:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47274 "EHLO
+        id S230140AbiJQKXr (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 17 Oct 2022 06:23:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231203AbiJQKCL (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 17 Oct 2022 06:02:11 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F2892AE2C;
-        Mon, 17 Oct 2022 03:02:09 -0700 (PDT)
-Received: from dggpemm500020.china.huawei.com (unknown [172.30.72.56])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4MrXXL2bxrzJn6p;
-        Mon, 17 Oct 2022 17:59:30 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggpemm500020.china.huawei.com (7.185.36.49) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Mon, 17 Oct 2022 18:01:34 +0800
-Received: from thunder-town.china.huawei.com (10.174.178.55) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Mon, 17 Oct 2022 18:01:33 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     "Paul E . McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        "Josh Triplett" <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, <rcu@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH 2/3] sched: Add helper nr_context_switches_cpu()
-Date:   Mon, 17 Oct 2022 18:01:07 +0800
-Message-ID: <20221017100108.2063-3-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.37.3.windows.1
-In-Reply-To: <20221017100108.2063-1-thunder.leizhen@huawei.com>
-References: <20221017100108.2063-1-thunder.leizhen@huawei.com>
+        with ESMTP id S230273AbiJQKXh (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 17 Oct 2022 06:23:37 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1FC95FF78;
+        Mon, 17 Oct 2022 03:23:31 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 0E3C6B80EBC;
+        Mon, 17 Oct 2022 10:23:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AFD5DC433C1;
+        Mon, 17 Oct 2022 10:23:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1666002208;
+        bh=QLEHGCW7xXfc4Y5boWh9RvlBYFF23CeV0KDD6wxy52Y=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=n62nZxvWty97PrIb3kgXodtLNqxbk+3LIuywgTHNFR74f9BsHPS1/n5UPHmyvojB9
+         qqMgLXwO9s5EEQxb+L5+OgRTec/WfTzU/gjxsYMBlVy6jjE06zrH69V3HNEgwKC87u
+         zf5c8YPgbvjyXXqMYJ9+gdRsZv3X8/LkbW4bNOMtLnts9yuQ/Tu/nSJME67KP75uZ1
+         u6xEnXRsGITldb7MQchk/AhdcS2EQFzjigCMjB/Rmlrd2p7E6DwpYzhVeUJal+cCkP
+         PZQdYCg8ZskEWvXlzwxYT4m/cP7gpeHrPVUvfjeE9QmSuIlMHPsF3lkDZb2iJegSDY
+         lBE4OwhMvOOfA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 551685C08EC; Mon, 17 Oct 2022 03:23:28 -0700 (PDT)
+Date:   Mon, 17 Oct 2022 03:23:28 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Hou Tao <houtao@huaweicloud.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Delyan Kratunov <delyank@fb.com>, rcu@vger.kernel.org,
+        houtao1@huawei.com
+Subject: Re: [PATCH bpf-next 1/3] bpf: Free elements after one
+ RCU-tasks-trace grace period
+Message-ID: <20221017102328.GC5600@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20221011090742.GG4221@paulmck-ThinkPad-P17-Gen-1>
+ <d91a9536-8ed2-fc00-733d-733de34af510@huaweicloud.com>
+ <20221012063607.GM4221@paulmck-ThinkPad-P17-Gen-1>
+ <b0ece7d9-ec48-0ecb-45d9-fb5cf973000b@huaweicloud.com>
+ <20221012161103.GU4221@paulmck-ThinkPad-P17-Gen-1>
+ <ca5f2973-e8b5-0d73-fd23-849f0dfc4347@huaweicloud.com>
+ <20221013190041.GZ4221@paulmck-ThinkPad-P17-Gen-1>
+ <08d09b15-5a6b-7f76-d53d-242fb20ed394@huaweicloud.com>
+ <20221014121507.GB4221@paulmck-ThinkPad-P17-Gen-1>
+ <05a580b3-02ca-a844-f553-400d842385d7@huaweicloud.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.178.55]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <05a580b3-02ca-a844-f553-400d842385d7@huaweicloud.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Returns the number of context switches on the specified CPU, which can be
-used to diagnose rcu stall.
+On Mon, Oct 17, 2022 at 02:55:42PM +0800, Hou Tao wrote:
+> Hi,
+> 
+> On 10/14/2022 8:15 PM, Paul E. McKenney wrote:
+> > On Fri, Oct 14, 2022 at 12:20:19PM +0800, Hou Tao wrote:
+> >> Hi,
+> >>
+> >> On 10/14/2022 3:00 AM, Paul E. McKenney wrote:
+> >>> On Thu, Oct 13, 2022 at 09:25:31AM +0800, Hou Tao wrote:
+> >>>> Hi,
+> >>>>
+> >>>> On 10/13/2022 12:11 AM, Paul E. McKenney wrote:
+> >>>>> On Wed, Oct 12, 2022 at 05:26:26PM +0800, Hou Tao wrote:
+> >> SNIP
+> >>>>> How about if I produce a patch for rcu_trace_implies_rcu_gp() and let
+> >>>>> you carry it with your series?  That way I don't have an unused function
+> >>>>> in -rcu and you don't have to wait for me to send it upstream?
+> >>>> Sound reasonable to me. Also thanks for your suggestions.
+> >>> Here you go!  Thoughts?
+> >> It looks great and thanks for it.
+> > Very good!  I will carry it in -rcu for some time, so please let me know
+> > when/if you pull it into a series.
+> Have already included the patch in v2 patch-set and send it out [0].
+> 
+> 0: https://lore.kernel.org/bpf/20221014113946.965131-1-houtao@huaweicloud.com/T/#t
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- include/linux/kernel_stat.h | 1 +
- kernel/sched/core.c         | 5 +++++
- 2 files changed, 6 insertions(+)
+Thank you, I will drop it from -rcu on my next rebase.  Should you need
+to refer to it again, it will remain at tag rcutrace-rcu.2022.10.13a.
 
-diff --git a/include/linux/kernel_stat.h b/include/linux/kernel_stat.h
-index 61d427c1962bf1c..ac4f9302b559c9d 100644
---- a/include/linux/kernel_stat.h
-+++ b/include/linux/kernel_stat.h
-@@ -52,6 +52,7 @@ DECLARE_PER_CPU(struct kernel_cpustat, kernel_cpustat);
- #define kstat_cpu(cpu) per_cpu(kstat, cpu)
- #define kcpustat_cpu(cpu) per_cpu(kernel_cpustat, cpu)
- 
-+extern unsigned long long nr_context_switches_cpu(int cpu);
- extern unsigned long long nr_context_switches(void);
- 
- extern unsigned int kstat_irqs_cpu(unsigned int irq, int cpu);
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 5800b0623ff3068..a0d19f67f2046d9 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -5229,6 +5229,11 @@ bool single_task_running(void)
- }
- EXPORT_SYMBOL(single_task_running);
- 
-+unsigned long long nr_context_switches_cpu(int cpu)
-+{
-+	return cpu_rq(cpu)->nr_switches;
-+}
-+
- unsigned long long nr_context_switches(void)
- {
- 	int i;
--- 
-2.25.1
+							Thanx, Paul
 
+> >>> ------------------------------------------------------------------------
+> >>>
+> >>> commit 2eac2f7a9a6d8921e8084a6acdffa595e99dbd17
+> >>> Author: Paul E. McKenney <paulmck@kernel.org>
+> >>> Date:   Thu Oct 13 11:54:13 2022 -0700
+> >>>
+> >>>     rcu-tasks: Provide rcu_trace_implies_rcu_gp()
+> >>>     
+> >>>     As an accident of implementation, an RCU Tasks Trace grace period also
+> >>>     acts as an RCU grace period.  However, this could change at any time.
+> >>>     This commit therefore creates an rcu_trace_implies_rcu_gp() that currently
+> >>>     returns true to codify this accident.  Code relying on this accident
+> >>>     must call this function to verify that this accident is still happening.
+> >>>     
+> >>>     Reported-by: Hou Tao <houtao@huaweicloud.com>
+> >>>     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> >>>     Cc: Alexei Starovoitov <ast@kernel.org>
+> >>>     Cc: Martin KaFai Lau <martin.lau@linux.dev>
+> >>>
+> >>> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+> >>> index 08605ce7379d7..8822f06e4b40c 100644
+> >>> --- a/include/linux/rcupdate.h
+> >>> +++ b/include/linux/rcupdate.h
+> >>> @@ -240,6 +240,18 @@ static inline void exit_tasks_rcu_start(void) { }
+> >>>  static inline void exit_tasks_rcu_finish(void) { }
+> >>>  #endif /* #else #ifdef CONFIG_TASKS_RCU_GENERIC */
+> >>>  
+> >>> +/**
+> >>> + * rcu_trace_implies_rcu_gp - does an RCU Tasks Trace grace period imply an RCU grace period?
+> >>> + *
+> >>> + * As an accident of implementation, an RCU Tasks Trace grace period also
+> >>> + * acts as an RCU grace period.  However, this could change at any time.
+> >>> + * Code relying on this accident must call this function to verify that
+> >>> + * this accident is still happening.
+> >>> + *
+> >>> + * You have been warned!
+> >>> + */
+> >>> +static inline bool rcu_trace_implies_rcu_gp(void) { return true; }
+> >>> +
+> >>>  /**
+> >>>   * cond_resched_tasks_rcu_qs - Report potential quiescent states to RCU
+> >>>   *
+> >>> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> >>> index b0b885e071fa8..fe9840d90e960 100644
+> >>> --- a/kernel/rcu/tasks.h
+> >>> +++ b/kernel/rcu/tasks.h
+> >>> @@ -1535,6 +1535,8 @@ static void rcu_tasks_trace_postscan(struct list_head *hop)
+> >>>  {
+> >>>  	// Wait for late-stage exiting tasks to finish exiting.
+> >>>  	// These might have passed the call to exit_tasks_rcu_finish().
+> >>> +
+> >>> +	// If you remove the following line, update rcu_trace_implies_rcu_gp()!!!
+> >>>  	synchronize_rcu();
+> >>>  	// Any tasks that exit after this point will set
+> >>>  	// TRC_NEED_QS_CHECKED in ->trc_reader_special.b.need_qs.
+> > .
+> 
