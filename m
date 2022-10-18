@@ -2,88 +2,89 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 19B33C4332F
-	for <rcu@archiver.kernel.org>; Tue, 18 Oct 2022 15:24:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EDCD7C4332F
+	for <rcu@archiver.kernel.org>; Tue, 18 Oct 2022 17:40:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229935AbiJRPYX (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 18 Oct 2022 11:24:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57442 "EHLO
+        id S229773AbiJRRk0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 18 Oct 2022 13:40:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230217AbiJRPYW (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 18 Oct 2022 11:24:22 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6635625B;
-        Tue, 18 Oct 2022 08:24:20 -0700 (PDT)
+        with ESMTP id S230058AbiJRRkX (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 18 Oct 2022 13:40:23 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECB588E0CF;
+        Tue, 18 Oct 2022 10:40:20 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F0EDE615C5;
-        Tue, 18 Oct 2022 15:24:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5CBB8C433D6;
-        Tue, 18 Oct 2022 15:24:19 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id A0ADFB8208B;
+        Tue, 18 Oct 2022 17:40:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 5A3A8C433D6;
+        Tue, 18 Oct 2022 17:40:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666106659;
-        bh=BC2Hq7y2IYPbSVkSJem2YkCxDtM4WUocEUlVsVjhl5E=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Pi2DQhxFBnpCX6HRCABC6Vnh/z7gDugQU/22bxdQ8rr1lw7bBpww/pIqFP+DW56Yw
-         mOXllpywLImJT1IUVcIpyaCHhWJHRPyxUtUthP7QwHy6+U9TxHtndc+BPeiMwATQAY
-         JieK49edOoqdA2wISlR/IfVRdNqoAcjWa9MB4WoT3AqdYELxTVLzgXHECUHgi66qDH
-         0HZ3sUXrmp3ST57wOe8R+oozatSjOGGZy0AHc+YJZoA1gnNUmXDZ5MasAfsgnv5iwU
-         RIvyvFO2qP6TLKW686CoNaGL+EJXsviDkcIBEY5dDEVTPTR/Yhm27y8vzTKS889WA+
-         77dD++DAsi3iA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 03E285C0528; Tue, 18 Oct 2022 08:24:18 -0700 (PDT)
-Date:   Tue, 18 Oct 2022 08:24:18 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, rostedt@goodmis.org, tglx@linutronix.de,
-        pmladek@suse.com, Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH v2 rcu 0/8] NMI-safe SRCU reader API
-Message-ID: <20221018152418.GR5600@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220921144620.GA1200846@paulmck-ThinkPad-P17-Gen-1>
- <20220929180714.GA2874192@paulmck-ThinkPad-P17-Gen-1>
- <87k04x4e0r.fsf@jogness.linutronix.de>
+        s=k20201202; t=1666114818;
+        bh=ExrBvq02T/pMlTaOvGLaEYzZKrmnzuXHfqBA/PMlOhA=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=IMzmYZgP1jVDPeeUIz0rSw9v0l3KTjvIN13d9Axzv39P2a5s9mr4tTyXjMH6FAHzK
+         awAT2KGxCU8ynpd8HSvgxqsIvrgCR0RWy1dqNlswCi1bJmB+j8dVBF2JELqfKoG81v
+         ULg6puhhZM7jr0M5frkPbadgstXOqKrvh6qPbNp2b+XW8722+Neaj+99uo9LQX0aI9
+         EJfdNLFFG5XRVzIRk6ZKuNcR3LUnU6Jsj/87EJf+jfuInjOkdFrAA5CzsOlrw5iHTp
+         S6bnFSCvxU1xUVkSGJiVlcZRG5+6IGnHTeMn7DM6qfCAMSHdi2YNl/lgwH31lJpWpe
+         HIrvmWXp4F0EA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3CB2DE4D008;
+        Tue, 18 Oct 2022 17:40:18 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87k04x4e0r.fsf@jogness.linutronix.de>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v2 0/4] Remove unnecessary RCU grace period chaining
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166611481822.6047.9797387760407103080.git-patchwork-notify@kernel.org>
+Date:   Tue, 18 Oct 2022 17:40:18 +0000
+References: <20221014113946.965131-1-houtao@huaweicloud.com>
+In-Reply-To: <20221014113946.965131-1-houtao@huaweicloud.com>
+To:     Hou Tao <houtao@huaweicloud.com>
+Cc:     bpf@vger.kernel.org, kafai@fb.com, andrii@kernel.org,
+        songliubraving@fb.com, haoluo@google.com, yhs@fb.com,
+        ast@kernel.org, daniel@iogearbox.net, kpsingh@kernel.org,
+        davem@davemloft.net, kuba@kernel.org, sdf@google.com,
+        jolsa@kernel.org, john.fastabend@gmail.com, houtao1@huawei.com,
+        paulmck@kernel.org, delyank@fb.com, rcu@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Oct 18, 2022 at 12:39:40PM +0206, John Ogness wrote:
-> Hi Paul,
+Hello:
+
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
+
+On Fri, 14 Oct 2022 19:39:42 +0800 you wrote:
+> From: Hou Tao <houtao1@huawei.com>
 > 
-> On 2022-09-29, "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> > This RFC series provides the second version of an NMI-safe SRCU reader
-> > API in the guise of srcu_read_lock_nmisafe() and
-> > srcu_read_unlock_nmisafe().
+> Hi,
 > 
-> I would like to post a new series for printk that will rely on the
-> NMI-safe reader API. From the feedback of this series it appears that
-> the RFC v2 is an acceptable starting point. How should we proceed?
+> Now bpf uses RCU grace period chaining to wait for the completion of
+> access from both sleepable and non-sleepable bpf program: calling
+> call_rcu_tasks_trace() firstly to wait for a RCU-tasks-trace grace
+> period, then in its callback calls call_rcu() or kfree_rcu() to wait for
+> a normal RCU grace period.
+> 
+> [...]
 
-Currently, I have this series on -rcu branch srcunmisafe.2022.10.03a,
-with Frederic's patches on branch "dev".  I will be producing a shiny
-new branch with your fix and Frederic's debug later today, Pacific Time.
-With luck, based on v6.1-rc1.
+Here is the summary with links:
+  - [bpf-next,v2,1/4] rcu-tasks: Provide rcu_trace_implies_rcu_gp()
+    https://git.kernel.org/bpf/bpf-next/c/e6c86c513f44
+  - [bpf-next,v2,2/4] bpf: Use rcu_trace_implies_rcu_gp() in bpf memory allocator
+    https://git.kernel.org/bpf/bpf-next/c/59be91e5e70a
+  - [bpf-next,v2,3/4] bpf: Use rcu_trace_implies_rcu_gp() in local storage map
+    https://git.kernel.org/bpf/bpf-next/c/d39d1445d377
+  - [bpf-next,v2,4/4] bpf: Use rcu_trace_implies_rcu_gp() for program array freeing
+    https://git.kernel.org/bpf/bpf-next/c/4835f9ee980c
 
-> Will Frederic be sending a patch for the extra safety checks using
-> srcu_nmi_flags? Are you planning on posting a new version? Should I
-> include this or another version within my upcoming series?
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-I will be incorporating these commits from Frederic:
 
-6558b914fc4e ("srcu: Warn when NMI-unsafe API is used in NMI")
-5dc788627109 ("srcu: Explain the reason behind the read side critical section on GP start")
-54a118fce487 ("srcu: Debug NMI safety even on archs that don't require it")
-
-Are there other patches I should be applying?
-
-> Thanks for all your help on this!
-
-And looking forward to the new improved printk()!
-
-							Thanx, Paul
