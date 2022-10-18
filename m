@@ -2,181 +2,91 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6CBE2C4332F
-	for <rcu@archiver.kernel.org>; Tue, 18 Oct 2022 15:08:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D8DCC433FE
+	for <rcu@archiver.kernel.org>; Tue, 18 Oct 2022 15:18:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230262AbiJRPIa (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 18 Oct 2022 11:08:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51078 "EHLO
+        id S229875AbiJRPSx (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 18 Oct 2022 11:18:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229755AbiJRPI3 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 18 Oct 2022 11:08:29 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2448FDCAC3;
-        Tue, 18 Oct 2022 08:08:27 -0700 (PDT)
+        with ESMTP id S229958AbiJRPSv (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 18 Oct 2022 11:18:51 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD9B7D18E2;
+        Tue, 18 Oct 2022 08:18:48 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 31E17B81F70;
-        Tue, 18 Oct 2022 15:08:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4FBAC433D7;
-        Tue, 18 Oct 2022 15:08:24 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E857961506;
+        Tue, 18 Oct 2022 15:18:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51DB5C433D7;
+        Tue, 18 Oct 2022 15:18:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666105704;
-        bh=uQ71n2yHyt3Vm2nyfySFXCMiNXt4ocCVpPKxwNbf2bk=;
+        s=k20201202; t=1666106327;
+        bh=DT+xBIq3KLucEcQYj5yJMWsM59FQDbce08H2SNjYeg8=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=kL5pmhQFWvBzJMPvTyMgRASEU28/yjWhGxlxeKtDuq/+fqcOV/SjTUnAT+8qnk1dx
-         G3B7mPz6vnpDrozmYrBSVhSOclxrDM29PzXY/KkQkQzkmjdlxhSLFGeYdA9O7KXxua
-         DHtgxwThO/hDtbr2E3x96SfHJ79L73q+uwuG4RwTFj0phEgEavT3viy7qEZXWaB12o
-         RGaffPVXuVBOrOU5fwDX4Bq9mlYck3JpeA32ISFsR0F9IodhClEF4/hI+28qTQJyN/
-         QNjd+B/p6jCSwE7wHc0PGxSp8GnKnnikNdXobmiHRyGYfChx9AJSTfOgqOuJ7CbfbK
-         MGqUlbQEMODOQ==
+        b=ehHMQGtnxm5egs3G9/maEaptkzg5UwDnQ8jbtuqPakZE0J2M8Op07EF/XSe6l0bxj
+         HvXUG1GNsr5Hb51oSpmH9bpawG3nsbzS6iIDBjAeQvcnI1N+ST8fgHGZa05e/WsG5e
+         uXvEqpaeUcVXH32bCwA/Bkyz+xPcPrBkEbRvHQGhzJCkLpk3+BZOmbwKknX1YZqSaj
+         M58JKa9xYT5Qaladzg8i9WfDvaI97B3aAQc/PQ+sKlZZv193vYNNbHB/E/jOArqtkw
+         8fzJdsJ5ZNqs8e0zTfijDfAbrJGDtePtMen0mLlAHPSiSfrG9l2A1psBpReK1s1uRr
+         lx5p9uhZF8taw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 72D1D5C0528; Tue, 18 Oct 2022 08:08:24 -0700 (PDT)
-Date:   Tue, 18 Oct 2022 08:08:24 -0700
+        id E6F115C0528; Tue, 18 Oct 2022 08:18:46 -0700 (PDT)
+Date:   Tue, 18 Oct 2022 08:18:46 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Hou Tao <houtao@huaweicloud.com>
-Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>, houtao1@huawei.com,
-        Delyan Kratunov <delyank@fb.com>, rcu@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2 0/4] Remove unnecessary RCU grace period
- chaining
-Message-ID: <20221018150824.GP5600@paulmck-ThinkPad-P17-Gen-1>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, rostedt@goodmis.org,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Petr Mladek <pmladek@suse.com>
+Subject: Re: [PATCH RFC v2 rcu 2/8] srcu: Create an srcu_read_lock_nmisafe()
+ and srcu_read_unlock_nmisafe()
+Message-ID: <20221018151846.GQ5600@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20221014113946.965131-1-houtao@huaweicloud.com>
- <20221017133941.GF5600@paulmck-ThinkPad-P17-Gen-1>
- <0b01d904-523e-14de-71fa-23bf23d2743f@huaweicloud.com>
+References: <20220929180714.GA2874192@paulmck-ThinkPad-P17-Gen-1>
+ <20220929180731.2875722-2-paulmck@kernel.org>
+ <87edv54316.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <0b01d904-523e-14de-71fa-23bf23d2743f@huaweicloud.com>
+In-Reply-To: <87edv54316.fsf@jogness.linutronix.de>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Oct 18, 2022 at 03:31:20PM +0800, Hou Tao wrote:
-> Hi,
+On Tue, Oct 18, 2022 at 04:37:01PM +0206, John Ogness wrote:
+> Hi Paul,
 > 
-> On 10/17/2022 9:39 PM, Paul E. McKenney wrote:
-> > On Fri, Oct 14, 2022 at 07:39:42PM +0800, Hou Tao wrote:
-> >> From: Hou Tao <houtao1@huawei.com>
-> >>
-> >> Hi,
-> >>
-> >> Now bpf uses RCU grace period chaining to wait for the completion of
-> >> access from both sleepable and non-sleepable bpf program: calling
-> >> call_rcu_tasks_trace() firstly to wait for a RCU-tasks-trace grace
-> >> period, then in its callback calls call_rcu() or kfree_rcu() to wait for
-> >> a normal RCU grace period.
-> >>
-> >> According to the implementation of RCU Tasks Trace, it inovkes
-> >> ->postscan_func() to wait for one RCU-tasks-trace grace period and
-> >> rcu_tasks_trace_postscan() inovkes synchronize_rcu() to wait for one
-> >> normal RCU grace period in turn, so one RCU-tasks-trace grace period
-> >> will imply one normal RCU grace period. To codify the implication,
-> >> introduces rcu_trace_implies_rcu_gp() in patch #1. And using it in patch
-> >> #2~#4 to remove unnecessary call_rcu() or kfree_rcu() in bpf subsystem.
-> >> Other two uses of call_rcu_tasks_trace() are unchanged: for
-> >> __bpf_prog_put_rcu() there is no gp chain and for
-> >> __bpf_tramp_image_put_rcu_tasks() it chains RCU tasks trace GP and RCU
-> >> tasks GP.
-> >>
-> >> An alternative way to remove these unnecessary RCU grace period
-> >> chainings is using the RCU polling API to check whether or not a normal
-> >> RCU grace period has passed (e.g. get_state_synchronize_rcu()). But it
-> >> needs an unsigned long space for each free element or each call, and
-> >> it is not affordable for local storage element, so as for now always
-> >> rcu_trace_implies_rcu_gp().
-> >>
-> >> Comments are always welcome.
-> > For #2-#4:
-> >
-> > Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
-> >
-> > (#1 already has my Signed-off-by, in case anyone was wondering.)
-> Thanks for the review. But it seems I missed another possible use case for
-> rcu_trace_implies_rcu_gp() in bpf memory allocator. The code snippet for
-> free_mem_alloc() is as following:
+> Sorry for the late response here. I am now trying to actually use this
+> series.
 > 
-> static void free_mem_alloc(struct bpf_mem_alloc *ma)
-> {
->         /* waiting_for_gp lists was drained, but __free_rcu might
->          * still execute. Wait for it now before we freeing percpu caches.
->          */
->         rcu_barrier_tasks_trace();
->         rcu_barrier();
->         free_mem_alloc_no_barrier(ma);
-> }
+> On 2022-09-29, "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> > diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+> > index d471d22a5e21..f53ad63b2bc6 100644
+> > --- a/kernel/rcu/Kconfig
+> > +++ b/kernel/rcu/Kconfig
+> > @@ -72,6 +72,9 @@ config TREE_SRCU
+> >  	help
+> >  	  This option selects the full-fledged version of SRCU.
+> >  
 > 
-> It uses rcu_barrier_tasks_trace() and rcu_barrier() to wait for the completion
-> of pending call_rcu_tasks_trace()s and call_rcu()s. I think it is also safe to
-> check rcu_trace_implies_rcu_gp() in free_mem_alloc() and if it is true, there is
-> no need to call rcu_barrier().
+> You are missing a:
 > 
-> static void free_mem_alloc(struct bpf_mem_alloc *ma)
-> {
->         /* waiting_for_gp lists was drained, but __free_rcu_tasks_trace()
->          * or __free_rcu() might still execute. Wait for it now before we
->          * freeing percpu caches.
->          */
->         rcu_barrier_tasks_trace();
->         if (!rcu_trace_implies_rcu_gp())
->                 rcu_barrier();
->         free_mem_alloc_no_barrier(ma);
-> }
+> +config ARCH_HAS_NMI_SAFE_THIS_CPU_OPS
+> +	bool
+> +
 > 
-> Does the above change look good to you ? If it is, I will post v3 to include the
-> above change and add your Reviewed-by tag.
+> Otherwise there is no CONFIG_ARCH_HAS_NMI_SAFE_THIS_CPU_OPS, so for
+> example CONFIG_NEED_SRCU_NMI_SAFE always ends up with y on X86.
 
-Unfortunately, although synchronize_rcu_tasks_trace() implies
-that synchronize_rcu(), there is no relationship between the
-callbacks.  Furthermore, rcu_barrier_tasks_trace() does not imply
-synchronize_rcu_tasks_trace().
-
-So the above change really would break things.  Please do not do it.
-
-You could use workqueues or similar to make the rcu_barrier_tasks_trace()
-and the rcu_barrier() wait concurrently, though.  This would of course
-require some synchronization.
+Good catch, thank you!  Pulling this in with attribution.
 
 							Thanx, Paul
 
-> >> Change Log:
-> >>
-> >> v2:
-> >>  * codify the implication of RCU Tasks Trace grace period instead of
-> >>    assuming for it
-> >>
-> >> v1: https://lore.kernel.org/bpf/20221011071128.3470622-1-houtao@huaweicloud.com
-> >>
-> >> Hou Tao (3):
-> >>   bpf: Use rcu_trace_implies_rcu_gp() in bpf memory allocator
-> >>   bpf: Use rcu_trace_implies_rcu_gp() in local storage map
-> >>   bpf: Use rcu_trace_implies_rcu_gp() for program array freeing
-> >>
-> >> Paul E. McKenney (1):
-> >>   rcu-tasks: Provide rcu_trace_implies_rcu_gp()
-> >>
-> >>  include/linux/rcupdate.h       | 12 ++++++++++++
-> >>  kernel/bpf/bpf_local_storage.c | 13 +++++++++++--
-> >>  kernel/bpf/core.c              |  8 +++++++-
-> >>  kernel/bpf/memalloc.c          | 15 ++++++++++-----
-> >>  kernel/rcu/tasks.h             |  2 ++
-> >>  5 files changed, 42 insertions(+), 8 deletions(-)
-> >>
-> >> -- 
-> >> 2.29.2
-> >>
-> > .
+> > +config NEED_SRCU_NMI_SAFE
+> > +	def_bool HAVE_NMI && !ARCH_HAS_NMI_SAFE_THIS_CPU_OPS && !TINY_SRCU
+> > +
 > 
+> John
