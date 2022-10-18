@@ -2,69 +2,85 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0ADC0C4332F
-	for <rcu@archiver.kernel.org>; Tue, 18 Oct 2022 10:33:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FAD0C433FE
+	for <rcu@archiver.kernel.org>; Tue, 18 Oct 2022 10:45:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229865AbiJRKdo (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 18 Oct 2022 06:33:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57796 "EHLO
+        id S229717AbiJRKpk (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 18 Oct 2022 06:45:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229775AbiJRKdo (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 18 Oct 2022 06:33:44 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 797C2B40CF;
-        Tue, 18 Oct 2022 03:33:43 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1666089221;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GvKiGfPyShsK+GvYYLINaiTRXie/hm95P1NyidQp4i4=;
-        b=QLoke5eOwT1o//npbqpx2AqoX4S+0Mmm72lMh8+pPLzxVa7g6ro7O3oXXR7u/dgQgEgiI0
-        hig9rZ3EmXA7oEyf/vOqSvlT32SsOMiG3xzFePEGINz1cEhARP4mqiS1f38Nin2m+AT+OA
-        C7hVF8++3KIV3IVBtYt2Z54+xZbw07vy0Ckps8Ax5ps/pyF62Y+bme1Z4yuoraa2v37QKr
-        2yohNMbyuiAfauYzmtQVckB4v9NeA8NnDICZdczUJ2Y731gBU81d5IzU+asMFHxBzZNVxm
-        aM/aG3I8LPwa0wZnMlRyqBjfsvgir7wbZJ2sY7uJPTlW1nLr42EPuQhj+8Wrcg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1666089221;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GvKiGfPyShsK+GvYYLINaiTRXie/hm95P1NyidQp4i4=;
-        b=avunMScV36xH2kpBqOeIH1n+lVDuyyk0drjwE5lKBDodAY38VRm0dEfrr4rU1LLQSoZJFw
-        4dEyoJmfZBsvTnDg==
-To:     paulmck@kernel.org, rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org, tglx@linutronix.de, pmladek@suse.com,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH v2 rcu 0/8] NMI-safe SRCU reader API
-In-Reply-To: <20220929180714.GA2874192@paulmck-ThinkPad-P17-Gen-1>
-References: <20220921144620.GA1200846@paulmck-ThinkPad-P17-Gen-1>
- <20220929180714.GA2874192@paulmck-ThinkPad-P17-Gen-1>
-Date:   Tue, 18 Oct 2022 12:39:40 +0206
-Message-ID: <87k04x4e0r.fsf@jogness.linutronix.de>
+        with ESMTP id S229800AbiJRKpi (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 18 Oct 2022 06:45:38 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 988C6AE200;
+        Tue, 18 Oct 2022 03:45:37 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3350961509;
+        Tue, 18 Oct 2022 10:45:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E444C433D6;
+        Tue, 18 Oct 2022 10:45:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1666089936;
+        bh=YRTmL5xkaTfmRIDMwKf4sITaZkX+1CA1Gi17Z9hNhhE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=e9DQEQIeYvuOr94UHcB8/w6+XKlbTtNHsCfGxKmNYFsMe/R4ksbgiBMyrSgsW7z6g
+         NGPv1qyKxl/iHZ2jE9gYnUx35636+z/DmQbfI7N9dnZPigNKo1igrJJ58UTiJJi+MC
+         aKD2aq/R1XDPIM7PH89BO5P843aAts8+0oXbHfwNQHdWmdzL+Vm8KCQqITKQTF3i9Y
+         YGNPmhY4kXs2oZc/YKSKP2c3Hca02EssGU625oIgzzId9xqUwpoivjwm2b1TZU/02+
+         qAqvywdhMQkGOFjFnnIpAf03ulX1tWFKdBxHhPVNybX3ypLzbfF0a5C864MVivCwxM
+         LsclmgRus5e/A==
+Date:   Tue, 18 Oct 2022 12:45:33 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Zqiang <qiang1.zhang@intel.com>
+Cc:     paulmck@kernel.org, joel@joelfernandes.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] srcu: Export srcu_check_nmi_safety() to modules
+Message-ID: <20221018104533.GC1166572@lothringen>
+References: <20221018013906.3890007-1-qiang1.zhang@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221018013906.3890007-1-qiang1.zhang@intel.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Paul,
+On Tue, Oct 18, 2022 at 09:39:06AM +0800, Zqiang wrote:
+> When enable CONFIG_PROVE_RCU and built modules, the following
+> error appear:
+> 
+> ERROR: modpost: "srcu_check_nmi_safety" [kernel/rcu/rcutorture.ko] undefined!
+> ERROR: modpost: "srcu_check_nmi_safety" [kernel/rcu/rcuscale.ko] undefined!
+> 
+> This commit fix it by exporting the srcu_check_nmi_safety().
+> 
+> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 
-On 2022-09-29, "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> This RFC series provides the second version of an NMI-safe SRCU reader
-> API in the guise of srcu_read_lock_nmisafe() and
-> srcu_read_unlock_nmisafe().
+Paul, whichever way you prefer, editing the commit or adding this
+one on top.
 
-I would like to post a new series for printk that will rely on the
-NMI-safe reader API. From the feedback of this series it appears that
-the RFC v2 is an acceptable starting point. How should we proceed?
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 
-Will Frederic be sending a patch for the extra safety checks using
-srcu_nmi_flags? Are you planning on posting a new version? Should I
-include this or another version within my upcoming series?
+Thanks.
 
-Thanks for all your help on this!
-
-John
+> ---
+>  kernel/rcu/srcutree.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> index 382236dd5e46..bcd629f5f902 100644
+> --- a/kernel/rcu/srcutree.c
+> +++ b/kernel/rcu/srcutree.c
+> @@ -651,6 +651,7 @@ void srcu_check_nmi_safety(struct srcu_struct *ssp, bool nmi_safe)
+>  	}
+>  	WARN_ONCE(old_nmi_safe_mask != nmi_safe_mask, "CPU %d old state %d new state %d\n", sdp->cpu, old_nmi_safe_mask, nmi_safe_mask);
+>  }
+> +EXPORT_SYMBOL_GPL(srcu_check_nmi_safety);
+>  #endif /* CONFIG_PROVE_RCU */
+>  
+>  /*
+> -- 
+> 2.25.1
+> 
