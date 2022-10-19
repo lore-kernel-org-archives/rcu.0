@@ -2,47 +2,46 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D5740C4332F
-	for <rcu@archiver.kernel.org>; Wed, 19 Oct 2022 22:47:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C669C4321E
+	for <rcu@archiver.kernel.org>; Wed, 19 Oct 2022 22:47:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230270AbiJSWrD (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 19 Oct 2022 18:47:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36156 "EHLO
+        id S230387AbiJSWrG (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 19 Oct 2022 18:47:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230192AbiJSWrC (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 19 Oct 2022 18:47:02 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CBEE17C167;
+        with ESMTP id S230234AbiJSWrD (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 19 Oct 2022 18:47:03 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8820717FD5C;
         Wed, 19 Oct 2022 15:47:02 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 928ED619E9;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 22755619D6;
+        Wed, 19 Oct 2022 22:47:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5060CC43149;
         Wed, 19 Oct 2022 22:47:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC272C43470;
-        Wed, 19 Oct 2022 22:47:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1666219621;
-        bh=+mIw1jy8wj3gxm+o9ZlbmvXenuiwqx+JElmYZGbXaeg=;
+        bh=CDl8H2MGOjWvC458fdEn7dT11YxGntP9ARrgviEeMhY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jZ9Z0O4bxNI1YlzPyEqaNEYwOgorClEeEvpkHvp2pmO6GzXevqCV3HxCsEQqCysOu
-         bmpwnxQkAHY3unTeNRtyIKVQfx5peSYFKdS3cri2lzyajtFdxKd1Sy8izG2XH0tEfT
-         DxQ/ZPj+Q0TRLxJCPp2RHrMk//Q8/2JZTfYObUG4EhM1yL+w0aGD5BMW07/pLaSWu+
-         ihoL++h+iI9JvfAYPU4ifHt13KidQ6HWdyj0+w9H4FrRSepBvE3fDIUCa9EHYZ5pbj
-         sTOvJlTYpyQeR8xJSK16uUQV3qWt6w3SVDmE3Pz2U3wMDeiYgBraK7p+EGRFse76Ab
-         PHR0j5Jf0qN5A==
+        b=tuC9VoJUsxYY/4c+0Pc8LrQ1NGvAKs1dMjfH9r+iKyPsUll5AXr+M8mzGLDsSgWsc
+         wNZkFN8/urxwPLqOoviVRke4/rJGfytC7VoI/4ExKL6ikIH8zSDpmSs7VGFH1rf/bT
+         AE9DZl2rrmOoaHRLKi9uSR2a6dK851gFDFHp3a04uSuhov9GeK36VtvC5mCmne1dpU
+         PAn+ouBxcTUFL9Civ4mINIPu8vnvSSs6P5heivUd6ApQ9BEkJmoKY9dvA6huIWeH/+
+         Ew+TTrGXjp4GD/qunPYACNRTIUTSMSBEAwcN98aCDMgs1y03E41YnNyklrkA2rCEXJ
+         dZAatlp2GWijA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id AB23C5C0920; Wed, 19 Oct 2022 15:47:00 -0700 (PDT)
+        id B2E8E5C0B8F; Wed, 19 Oct 2022 15:47:00 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
+        rostedt@goodmis.org, Zqiang <qiang1.zhang@intel.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 4/8] rcu: Use READ_ONCE() for lockless read of rnp->qsmask
-Date:   Wed, 19 Oct 2022 15:46:55 -0700
-Message-Id: <20221019224659.2499511-4-paulmck@kernel.org>
+Subject: [PATCH rcu 8/8] rcu: Fix __this_cpu_read() lockdep warning in rcu_force_quiescent_state()
+Date:   Wed, 19 Oct 2022 15:46:59 -0700
+Message-Id: <20221019224659.2499511-8-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20221019224652.GA2499358@paulmck-ThinkPad-P17-Gen-1>
 References: <20221019224652.GA2499358@paulmck-ThinkPad-P17-Gen-1>
@@ -52,32 +51,54 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+From: Zqiang <qiang1.zhang@intel.com>
 
-The rnp->qsmask is locklessly accessed from rcutree_dying_cpu(). This
-may help avoid load tearing due to concurrent access, KCSAN
-issues, and preserve sanity of people reading the mask in tracing.
+Running rcutorture with non-zero fqs_duration module parameter in a
+kernel built with CONFIG_PREEMPTION=y results in the following splat:
 
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+BUG: using __this_cpu_read() in preemptible [00000000]
+code: rcu_torture_fqs/398
+caller is __this_cpu_preempt_check+0x13/0x20
+CPU: 3 PID: 398 Comm: rcu_torture_fqs Not tainted 6.0.0-rc1-yoctodev-standard+
+Call Trace:
+<TASK>
+dump_stack_lvl+0x5b/0x86
+dump_stack+0x10/0x16
+check_preemption_disabled+0xe5/0xf0
+__this_cpu_preempt_check+0x13/0x20
+rcu_force_quiescent_state.part.0+0x1c/0x170
+rcu_force_quiescent_state+0x1e/0x30
+rcu_torture_fqs+0xca/0x160
+? rcu_torture_boost+0x430/0x430
+kthread+0x192/0x1d0
+? kthread_complete_and_exit+0x30/0x30
+ret_from_fork+0x22/0x30
+</TASK>
+
+The problem is that rcu_force_quiescent_state() uses __this_cpu_read()
+in preemptible code instead of the proper raw_cpu_read().  This commit
+therefore changes __this_cpu_read() to raw_cpu_read().
+
+Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
  kernel/rcu/tree.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 0ca21ac0f0648..5ec97e3f7468f 100644
+index f6561aa401c04..1e1d333d07ffe 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -2106,7 +2106,7 @@ int rcutree_dying_cpu(unsigned int cpu)
- 	if (!IS_ENABLED(CONFIG_HOTPLUG_CPU))
- 		return 0;
+@@ -2410,7 +2410,7 @@ void rcu_force_quiescent_state(void)
+ 	struct rcu_node *rnp_old = NULL;
  
--	blkd = !!(rnp->qsmask & rdp->grpmask);
-+	blkd = !!(READ_ONCE(rnp->qsmask) & rdp->grpmask);
- 	trace_rcu_grace_period(rcu_state.name, READ_ONCE(rnp->gp_seq),
- 			       blkd ? TPS("cpuofl-bgp") : TPS("cpuofl"));
- 	return 0;
+ 	/* Funnel through hierarchy to reduce memory contention. */
+-	rnp = __this_cpu_read(rcu_data.mynode);
++	rnp = raw_cpu_read(rcu_data.mynode);
+ 	for (; rnp != NULL; rnp = rnp->parent) {
+ 		ret = (READ_ONCE(rcu_state.gp_flags) & RCU_GP_FLAG_FQS) ||
+ 		       !raw_spin_trylock(&rnp->fqslock);
 -- 
 2.31.1.189.g2e36527f23
 
