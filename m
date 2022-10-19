@@ -2,77 +2,91 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 53516C4332F
-	for <rcu@archiver.kernel.org>; Wed, 19 Oct 2022 07:07:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EAB89C433FE
+	for <rcu@archiver.kernel.org>; Wed, 19 Oct 2022 11:07:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229767AbiJSHHY (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 19 Oct 2022 03:07:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53216 "EHLO
+        id S232788AbiJSLHF (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 19 Oct 2022 07:07:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229904AbiJSHHX (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 19 Oct 2022 03:07:23 -0400
-X-Greylist: delayed 1917 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 19 Oct 2022 00:07:20 PDT
-Received: from m15113.mail.126.com (m15113.mail.126.com [220.181.15.113])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7CE1C7657C;
-        Wed, 19 Oct 2022 00:07:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=lidC2
-        05/jwIwLT3qu8Cp7EEyC/GOm0Zd2Cl9irOAQPs=; b=KCZUwjfqXz0KPGJwIpy0G
-        QdPf/Xs2Evz4j6kJA9wpXpIZ0w+tjSDkEeRw5HlhhV7Pr7oO1ExfgcdszDZUF1h3
-        86K9UatXi701vLoYmd6JOCp0e+5COn9yLcQh2TwKp2GS/SrSmpxgY1CnW7vHPRi7
-        E2apIAf879uXXehgEH36LY=
-Received: from fedora.. (unknown [123.52.27.102])
-        by smtp3 (Coremail) with SMTP id DcmowAAnLqqGmk9jTN0VDQ--.39346S2;
-        Wed, 19 Oct 2022 14:34:47 +0800 (CST)
-From:   zhaomzhao@126.com
-To:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
-        josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, edumazet@google.com
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zhao Mengmeng <zhaomengmeng@kylinos.cn>
-Subject: [PATCH v1] rcu: use hlist_nulls_next_rcu() in hlist_nulls_add_tail_rcu()
-Date:   Wed, 19 Oct 2022 08:36:50 -0400
-Message-Id: <20221019123650.139210-1-zhaomzhao@126.com>
-X-Mailer: git-send-email 2.37.1
+        with ESMTP id S234339AbiJSLGm (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 19 Oct 2022 07:06:42 -0400
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9917102DE8;
+        Wed, 19 Oct 2022 03:35:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1666175742; x=1697711742;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=+Z1UQaZoC71MDvVH2UIbpGIxKwdpGYtiyrhpruzz4ZI=;
+  b=lYoVsCXtzewdeWgEtzSywYxcbIEq/prA64yAzTp3JbD2qxKgkJwUpsmq
+   bCq7MuEW8FGZMJ6NUuKFqXHVGksys/+9yGLZ0kaKq20YIv3t9j6iK49j5
+   PAIxhXoqDs9u67xNuMILQm+1/pwOtvP0Exa1Y8cZSOdDoVnYWdqrAb4cT
+   AY64h+swjm/Sh6djBO5WuLqnqO9iWzxoSDtKpiFDu4o3OJLk3GKrT3vs2
+   l1fxUZxVKEmp9vkQfbgl2GHt2Q/A6mpp8sUtbaT3iUuuPL43SozA3bS7x
+   J1AH1uMkNQBA7Njj7fJZl44DK/O+NtPp3HQ1zGtUXeMJPfJdnc1U4x8vE
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10504"; a="303989043"
+X-IronPort-AV: E=Sophos;i="5.95,196,1661842800"; 
+   d="scan'208";a="303989043"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2022 03:34:31 -0700
+X-IronPort-AV: E=McAfee;i="6500,9779,10504"; a="607034094"
+X-IronPort-AV: E=Sophos;i="5.95,196,1661842800"; 
+   d="scan'208";a="607034094"
+Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.129])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2022 03:34:29 -0700
+From:   Zqiang <qiang1.zhang@intel.com>
+To:     paulmck@kernel.org, frederic@kernel.org, joel@joelfernandes.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] rcu: Make call_rcu() lazy only when CONFIG_RCU_LAZY is enabled
+Date:   Wed, 19 Oct 2022 18:40:45 +0800
+Message-Id: <20221019104045.160283-1-qiang1.zhang@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DcmowAAnLqqGmk9jTN0VDQ--.39346S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7GFy8try3uw4rKrWDZr1rCrg_yoWDArbEv3
-        40kw1I9F4SqF4Dur1jvr1IqF98Kr13Xr93Xr1xJr1aya4DCwnxG3WUGr1qyFy7KrW3KrZ5
-        JF4kKryvkFn7GjkaLaAFLSUrUUUUbb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUYuCJPUUUUU==
-X-Originating-IP: [123.52.27.102]
-X-CM-SenderInfo: 52kd0zp2kd0qqrswhudrp/1tbiEAefd1pEDd-FJQAAsT
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Zhao Mengmeng <zhaomengmeng@kylinos.cn>
+Currently, regardless of whether the CONFIG_RCU_LAZY is enabled,
+invoke the call_rcu() is always lazy, it also means that when
+CONFIG_RCU_LAZY is disabled, invoke the call_rcu_flush() is also
+lazy. therefore, this commit make call_rcu() lazy only when
+CONFIG_RCU_LAZY is enabled.
 
-In commit 8dbd76e79a16 ("tcp/dccp: fix possible race
-__inet_lookup_established()"), function hlist_nulls_add_tail_rcu() was
-added back, but the local variable *last* is of type hlist_nulls_node,
-so use hlist_nulls_next_rcu() instead of hlist_next_rcu().
-
-Signed-off-by: Zhao Mengmeng <zhaomengmeng@kylinos.cn>
+Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 ---
- include/linux/rculist_nulls.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/rcu/tree.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/rculist_nulls.h b/include/linux/rculist_nulls.h
-index d8afdb8784c1..ba4c00dd8005 100644
---- a/include/linux/rculist_nulls.h
-+++ b/include/linux/rculist_nulls.h
-@@ -139,7 +139,7 @@ static inline void hlist_nulls_add_tail_rcu(struct hlist_nulls_node *n,
- 	if (last) {
- 		n->next = last->next;
- 		n->pprev = &last->next;
--		rcu_assign_pointer(hlist_next_rcu(last), n);
-+		rcu_assign_pointer(hlist_nulls_next_rcu(last), n);
- 	} else {
- 		hlist_nulls_add_head_rcu(n, h);
- 	}
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index abc615808b6e..97ef602da3d5 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2839,7 +2839,6 @@ void call_rcu_flush(struct rcu_head *head, rcu_callback_t func)
+ 	return __call_rcu_common(head, func, false);
+ }
+ EXPORT_SYMBOL_GPL(call_rcu_flush);
+-#endif
+ 
+ /**
+  * call_rcu() - Queue an RCU callback for invocation after a grace period.
+@@ -2890,6 +2889,13 @@ void call_rcu(struct rcu_head *head, rcu_callback_t func)
+ 	return __call_rcu_common(head, func, true);
+ }
+ EXPORT_SYMBOL_GPL(call_rcu);
++#else
++void call_rcu(struct rcu_head *head, rcu_callback_t func)
++{
++	return __call_rcu_common(head, func, false);
++}
++EXPORT_SYMBOL_GPL(call_rcu);
++#endif
+ 
+ /* Maximum number of jiffies to wait before draining a batch. */
+ #define KFREE_DRAIN_JIFFIES (5 * HZ)
 -- 
-2.37.1
+2.25.1
 
