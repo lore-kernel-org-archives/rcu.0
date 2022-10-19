@@ -2,118 +2,139 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2026CC433FE
-	for <rcu@archiver.kernel.org>; Wed, 19 Oct 2022 22:51:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 08596C4332F
+	for <rcu@archiver.kernel.org>; Wed, 19 Oct 2022 22:51:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229644AbiJSWvm (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 19 Oct 2022 18:51:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51062 "EHLO
+        id S230199AbiJSWvx (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 19 Oct 2022 18:51:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbiJSWvl (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 19 Oct 2022 18:51:41 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18F71F0347;
-        Wed, 19 Oct 2022 15:51:41 -0700 (PDT)
+        with ESMTP id S230270AbiJSWvs (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 19 Oct 2022 18:51:48 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E88B2181CB1;
+        Wed, 19 Oct 2022 15:51:47 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id B8702B8260A;
-        Wed, 19 Oct 2022 22:51:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6945FC433D6;
-        Wed, 19 Oct 2022 22:51:38 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6A17D619E8;
+        Wed, 19 Oct 2022 22:51:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC79DC433D7;
+        Wed, 19 Oct 2022 22:51:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666219898;
-        bh=UST9akqGgKijeYQNO4FdueU2YnDxTO/0ttUDn2X6T0k=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=XRA5wehRbgkjjZI0HyFSLboyDaeS0AORi+2YzUGqE7fbtosJpSNcrFqZNLw4KImbc
-         0Ifjf/GfKGGvoTjr1SK+0cZ3UWtIqOWWhGnnjq3g+mc+19QKlREXdXjk0IFRT6GceS
-         COGATVhSXmn0XowNFSYqQZNVSmnTmgnf4ydLNQLEMqyQLCvDsOyZQlWgebK+pb1WSr
-         R50BkbxU1lJU6s95lKy751zOuKkr/dK8K/JEcsc4kcnylzLQaMPnAdACNnX+WLnMzT
-         j/b/AoQ85gY/xNhEjMMStHDLYF7qyOcDUlns3N8TPnwzmEu0y2he7ApD+n6IJlZBbA
-         Ruca7DChvaLBA==
+        s=k20201202; t=1666219906;
+        bh=KTUh/BBOVf/jDi48jtrSyvr3uGxVW8ae61JQrk9NyJc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=QMnspMzNjGvI3eZcJ9PJnKKYTgCQgWhpSkDUKzx4lmQ5tOQf3lVjsfp2BOtXzL5Gk
+         vu0dEyFrZXgwafcYKYjpu0Y27GSxwm1KKhl3FjaFKv5nuABUfkhHjkjKQWSxRZkYCb
+         HM2E+cqEyFrqiVfSRTvAYhMOlQMtpcmVKbH/iXfmSW3CCCIwZCp1cWnsYvQsWOUF2B
+         0qr9TT+Yzb8/ra4woz0xMTP5HazBmWakNQyf1nDfed3yguzWkgUCFzQAy36bhMDgAp
+         OWwQm2ASc6yz6oYl5r1Ue7kMaR5Xdx9A/4UK+jvcTo6GWYkT3b0z5I2amWSrjauGKx
+         fxXkLf+1pzVRw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 0ABE15C06B4; Wed, 19 Oct 2022 15:51:38 -0700 (PDT)
-Date:   Wed, 19 Oct 2022 15:51:38 -0700
+        id 756C85C06B4; Wed, 19 Oct 2022 15:51:46 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org
-Subject: [PATCH rcu 0/14] Lazy call_rcu() updates for v6.2
-Message-ID: <20221019225138.GA2499943@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        rostedt@goodmis.org, Zhen Lei <thunder.leizhen@huawei.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 01/14] rcu: Simplify rcu_init_nohz() cpumask handling
+Date:   Wed, 19 Oct 2022 15:51:31 -0700
+Message-Id: <20221019225144.2500095-1-paulmck@kernel.org>
+X-Mailer: git-send-email 2.31.1.189.g2e36527f23
+In-Reply-To: <20221019225138.GA2499943@paulmck-ThinkPad-P17-Gen-1>
+References: <20221019225138.GA2499943@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello!
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-This series provides energy efficiency for nearly-idle systems by making
-call_rcu() more lazy.  Several NOCB changes come along for the ride:
+In kernels built with either CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y or
+CONFIG_NO_HZ_FULL=y, additional CPUs must be added to rcu_nocb_mask.
+Except that kernels booted without the rcu_nocbs= will not have
+allocated rcu_nocb_mask.  And the current rcu_init_nohz() function uses
+its need_rcu_nocb_mask and offload_all local variables to track the
+rcu_nocb and nohz_full state.
 
-1.	Simplify rcu_init_nohz() cpumask handling, courtesy of Zhen Lei.
+But there is a much simpler approach, namely creating a cpumask pointer
+to track the default and then using cpumask_available() to check the
+rcu_nocb_mask state.  This commit takes this approach, thereby simplifying
+and shortening the rcu_init_nohz() function.
 
-2.	Fix late wakeup when flush of bypass cblist happens, courtesy of
-	"Joel Fernandes (Google)".
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Acked-by: Frederic Weisbecker <frederic@kernel.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ kernel/rcu/tree_nocb.h | 34 +++++++++++-----------------------
+ 1 file changed, 11 insertions(+), 23 deletions(-)
 
-3.	Fix missing nocb gp wake on rcu_barrier(), courtesy of Frederic
-	Weisbecker.
+diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+index 0a5f0ef414845..ce526cc2791ca 100644
+--- a/kernel/rcu/tree_nocb.h
++++ b/kernel/rcu/tree_nocb.h
+@@ -1210,45 +1210,33 @@ EXPORT_SYMBOL_GPL(rcu_nocb_cpu_offload);
+ void __init rcu_init_nohz(void)
+ {
+ 	int cpu;
+-	bool need_rcu_nocb_mask = false;
+-	bool offload_all = false;
+ 	struct rcu_data *rdp;
+-
+-#if defined(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL)
+-	if (!rcu_state.nocb_is_setup) {
+-		need_rcu_nocb_mask = true;
+-		offload_all = true;
+-	}
+-#endif /* #if defined(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL) */
++	const struct cpumask *cpumask = NULL;
+ 
+ #if defined(CONFIG_NO_HZ_FULL)
+-	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask)) {
+-		need_rcu_nocb_mask = true;
+-		offload_all = false; /* NO_HZ_FULL has its own mask. */
+-	}
+-#endif /* #if defined(CONFIG_NO_HZ_FULL) */
++	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask))
++		cpumask = tick_nohz_full_mask;
++#endif
++
++	if (IS_ENABLED(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL) &&
++	    !rcu_state.nocb_is_setup && !cpumask)
++		cpumask = cpu_possible_mask;
+ 
+-	if (need_rcu_nocb_mask) {
++	if (cpumask) {
+ 		if (!cpumask_available(rcu_nocb_mask)) {
+ 			if (!zalloc_cpumask_var(&rcu_nocb_mask, GFP_KERNEL)) {
+ 				pr_info("rcu_nocb_mask allocation failed, callback offloading disabled.\n");
+ 				return;
+ 			}
+ 		}
++
++		cpumask_or(rcu_nocb_mask, rcu_nocb_mask, cpumask);
+ 		rcu_state.nocb_is_setup = true;
+ 	}
+ 
+ 	if (!rcu_state.nocb_is_setup)
+ 		return;
+ 
+-#if defined(CONFIG_NO_HZ_FULL)
+-	if (tick_nohz_full_running)
+-		cpumask_or(rcu_nocb_mask, rcu_nocb_mask, tick_nohz_full_mask);
+-#endif /* #if defined(CONFIG_NO_HZ_FULL) */
+-
+-	if (offload_all)
+-		cpumask_setall(rcu_nocb_mask);
+-
+ 	if (!cpumask_subset(rcu_nocb_mask, cpu_possible_mask)) {
+ 		pr_info("\tNote: kernel parameter 'rcu_nocbs=', 'nohz_full', or 'isolcpus=' contains nonexistent CPUs.\n");
+ 		cpumask_and(rcu_nocb_mask, cpu_possible_mask,
+-- 
+2.31.1.189.g2e36527f23
 
-4.	Make call_rcu() lazy to save power, courtesy of "Joel Fernandes
-	(Google)".
-
-5.	Refactor code a bit in rcu_nocb_do_flush_bypass(), courtesy of
-	"Joel Fernandes (Google)".
-
-6.	Shrinker for lazy rcu, courtesy of Vineeth Pillai.
-
-7.	Add laziness and kfree tests, courtesy of "Joel Fernandes
-	(Google)".
-
-8.	percpu-refcount: Use call_rcu_flush() for atomic switch, courtesy
-	of "Joel Fernandes (Google)".
-
-9.	Use call_rcu_flush() instead of call_rcu, courtesy of "Joel
-	Fernandes (Google)".
-
-10.	Use call_rcu_flush() for async reader test, courtesy of "Joel
-	Fernandes (Google)".
-
-11.	Use call_rcu_flush() where needed, courtesy of "Joel Fernandes
-	(Google)".
-
-12.	scsi/scsi_error: Use call_rcu_flush() instead of call_rcu(),
-	courtesy of Uladzislau Rezki.
-
-13.	Make queue_rcu_work() use call_rcu_flush(), courtesy of Uladzislau
-	Rezki.
-
-14.	Use call_rcu_flush() instead of call_rcu(), courtesy of "Joel
-	Fernandes (Google)".
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- b/drivers/scsi/scsi_error.c |    2 
- b/include/linux/rcupdate.h  |    9 +
- b/kernel/rcu/Kconfig        |    8 +
- b/kernel/rcu/rcu.h          |    8 +
- b/kernel/rcu/rcuscale.c     |   68 +++++++++++-
- b/kernel/rcu/rcutorture.c   |   16 +-
- b/kernel/rcu/sync.c         |    2 
- b/kernel/rcu/tiny.c         |    2 
- b/kernel/rcu/tree.c         |   11 +
- b/kernel/rcu/tree.h         |    1 
- b/kernel/rcu/tree_exp.h     |    2 
- b/kernel/rcu/tree_nocb.h    |   34 +-----
- b/kernel/workqueue.c        |    2 
- b/lib/percpu-refcount.c     |    3 
- b/net/rxrpc/conn_object.c   |    2 
- kernel/rcu/rcuscale.c       |    2 
- kernel/rcu/tree.c           |  129 +++++++++++++++--------
- kernel/rcu/tree.h           |   11 +
- kernel/rcu/tree_nocb.h      |  243 ++++++++++++++++++++++++++++++++++++--------
- 19 files changed, 424 insertions(+), 131 deletions(-)
