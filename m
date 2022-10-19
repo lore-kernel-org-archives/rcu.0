@@ -2,91 +2,81 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EAB89C433FE
-	for <rcu@archiver.kernel.org>; Wed, 19 Oct 2022 11:07:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D4B1C4332F
+	for <rcu@archiver.kernel.org>; Wed, 19 Oct 2022 11:46:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232788AbiJSLHF (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 19 Oct 2022 07:07:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33200 "EHLO
+        id S231641AbiJSLqr (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 19 Oct 2022 07:46:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234339AbiJSLGm (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 19 Oct 2022 07:06:42 -0400
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9917102DE8;
-        Wed, 19 Oct 2022 03:35:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1666175742; x=1697711742;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=+Z1UQaZoC71MDvVH2UIbpGIxKwdpGYtiyrhpruzz4ZI=;
-  b=lYoVsCXtzewdeWgEtzSywYxcbIEq/prA64yAzTp3JbD2qxKgkJwUpsmq
-   bCq7MuEW8FGZMJ6NUuKFqXHVGksys/+9yGLZ0kaKq20YIv3t9j6iK49j5
-   PAIxhXoqDs9u67xNuMILQm+1/pwOtvP0Exa1Y8cZSOdDoVnYWdqrAb4cT
-   AY64h+swjm/Sh6djBO5WuLqnqO9iWzxoSDtKpiFDu4o3OJLk3GKrT3vs2
-   l1fxUZxVKEmp9vkQfbgl2GHt2Q/A6mpp8sUtbaT3iUuuPL43SozA3bS7x
-   J1AH1uMkNQBA7Njj7fJZl44DK/O+NtPp3HQ1zGtUXeMJPfJdnc1U4x8vE
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10504"; a="303989043"
-X-IronPort-AV: E=Sophos;i="5.95,196,1661842800"; 
-   d="scan'208";a="303989043"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2022 03:34:31 -0700
-X-IronPort-AV: E=McAfee;i="6500,9779,10504"; a="607034094"
-X-IronPort-AV: E=Sophos;i="5.95,196,1661842800"; 
-   d="scan'208";a="607034094"
-Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.129])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2022 03:34:29 -0700
-From:   Zqiang <qiang1.zhang@intel.com>
-To:     paulmck@kernel.org, frederic@kernel.org, joel@joelfernandes.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] rcu: Make call_rcu() lazy only when CONFIG_RCU_LAZY is enabled
-Date:   Wed, 19 Oct 2022 18:40:45 +0800
-Message-Id: <20221019104045.160283-1-qiang1.zhang@intel.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S231661AbiJSLqX (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 19 Oct 2022 07:46:23 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FE5319C079;
+        Wed, 19 Oct 2022 04:26:03 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1666178034;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9//IKOu9ewVBs2/Obw0rBK1SP6wrE+NMqEzAlqdIk0E=;
+        b=ScLWj7YaNe++ZhkWz9LgyX3UVuU4Q/2sddgtgCmihQNZ/YgpzOFtGX0J2NUbD9dZfc3ASX
+        cvXj/zuFtu/uOcgye1B4Nn2O1myXjAdCYMVIIFaPOuUFHBsZbn8IB9OYvbIhWmYfUT5i6t
+        MZVjgOZ/jNkY+O9C+pPkjhompmbA8OZpIf3ZBkrYjKzonqlNt4avwXz5/QT1xlwI+v2v/9
+        d1yRaqR8z9K10tQtafPGswC36YxpKmTMyWFxHPYNuC14+GynN0bUa2NwhuN9G0CeI9gcNo
+        J7HIFHvGvbZ3c4tYkAgZ6Ns29naxA5A0S0IOZxBt9FsXYQeVx3M5hd2ul12pjA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1666178034;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9//IKOu9ewVBs2/Obw0rBK1SP6wrE+NMqEzAlqdIk0E=;
+        b=Cgq+LsU88Xix1l7OMljpqQ5LmkwRCzO+lLXgpUKGeAWSLPags9fFQQMJeFUuPxauNuMPQZ
+        H3QXSAmADgVZ0/AQ==
+To:     paulmck@kernel.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, rostedt@goodmis.org, tglx@linutronix.de,
+        pmladek@suse.com, Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [PATCH v2 rcu 0/8] NMI-safe SRCU reader API
+In-Reply-To: <20221018215721.GA1716567@paulmck-ThinkPad-P17-Gen-1>
+References: <20220921144620.GA1200846@paulmck-ThinkPad-P17-Gen-1>
+ <20220929180714.GA2874192@paulmck-ThinkPad-P17-Gen-1>
+ <87k04x4e0r.fsf@jogness.linutronix.de>
+ <20221018152418.GR5600@paulmck-ThinkPad-P17-Gen-1>
+ <87ilkh0y52.fsf@jogness.linutronix.de>
+ <20221018185936.GX5600@paulmck-ThinkPad-P17-Gen-1>
+ <20221018215721.GA1716567@paulmck-ThinkPad-P17-Gen-1>
+Date:   Wed, 19 Oct 2022 13:19:53 +0206
+Message-ID: <87pmeoawwe.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Currently, regardless of whether the CONFIG_RCU_LAZY is enabled,
-invoke the call_rcu() is always lazy, it also means that when
-CONFIG_RCU_LAZY is disabled, invoke the call_rcu_flush() is also
-lazy. therefore, this commit make call_rcu() lazy only when
-CONFIG_RCU_LAZY is enabled.
+On 2022-10-18, "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> And the v6.1-rc1 stack is now at srcunmisafe.2022.10.18b.
 
-Signed-off-by: Zqiang <qiang1.zhang@intel.com>
----
- kernel/rcu/tree.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+Thanks!
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index abc615808b6e..97ef602da3d5 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2839,7 +2839,6 @@ void call_rcu_flush(struct rcu_head *head, rcu_callback_t func)
- 	return __call_rcu_common(head, func, false);
- }
- EXPORT_SYMBOL_GPL(call_rcu_flush);
--#endif
- 
- /**
-  * call_rcu() - Queue an RCU callback for invocation after a grace period.
-@@ -2890,6 +2889,13 @@ void call_rcu(struct rcu_head *head, rcu_callback_t func)
- 	return __call_rcu_common(head, func, true);
- }
- EXPORT_SYMBOL_GPL(call_rcu);
-+#else
-+void call_rcu(struct rcu_head *head, rcu_callback_t func)
-+{
-+	return __call_rcu_common(head, func, false);
-+}
-+EXPORT_SYMBOL_GPL(call_rcu);
-+#endif
- 
- /* Maximum number of jiffies to wait before draining a batch. */
- #define KFREE_DRAIN_JIFFIES (5 * HZ)
--- 
-2.25.1
+I guess the kernel test robot will catch this, but if you checkout
+commit 79c95dc428ad ("arch/x86: Add ARCH_HAS_NMI_SAFE_THIS_CPU_OPS
+Kconfig option") and build for x86_64, you will get:
 
+x86_64-linux-gnu-ld: kernel/rcu/srcutree.o: in function `srcu_gp_start_if_needed':
+srcutree.c:(.text+0x133a): undefined reference to `__srcu_read_lock_nmisafe'
+x86_64-linux-gnu-ld: srcutree.c:(.text+0x1490): undefined reference to `__srcu_read_unlock_nmisafe'
+x86_64-linux-gnu-ld: kernel/rcu/srcutree.o: in function `srcu_barrier':
+srcutree.c:(.text+0x1b03): undefined reference to `__srcu_read_lock_nmisafe'
+x86_64-linux-gnu-ld: srcutree.c:(.text+0x1b38): undefined reference to `__srcu_read_unlock_nmisafe'
+
+Note that this error is fixed with a later commit:
+
+commit c2d158a284ab ("srcu: Debug NMI safety even on archs that don't
+require it").
+
+This does not affect what I am working on, so feel free to take care of
+it whenever it fits your schedule.
+
+John Ogness
