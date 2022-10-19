@@ -2,53 +2,52 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6375FC4167D
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F2852C4332F
 	for <rcu@archiver.kernel.org>; Wed, 19 Oct 2022 22:47:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230452AbiJSWrI (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 19 Oct 2022 18:47:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36156 "EHLO
+        id S230393AbiJSWrJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 19 Oct 2022 18:47:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230285AbiJSWrE (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S230299AbiJSWrE (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 19 Oct 2022 18:47:04 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 966D01849BE;
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B463E186D70;
         Wed, 19 Oct 2022 15:47:03 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 4CD7BB82613;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 64496B825E1;
         Wed, 19 Oct 2022 22:47:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4999C433D6;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0562DC4347C;
         Wed, 19 Oct 2022 22:47:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1666219621;
-        bh=zhI+nSG0LEQR2PAAAvwCyyYQdtfxOPlUmkdh0E4iu6E=;
+        bh=U+1luf3mbgyTSKOMl8vtX4dFmH8rl+GKNY2TDjN1IyY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ie/0CtZv4oEdoViQqjdmdwAOkuUbEniXSDznUSiM+fM8btdjJ+wZZM2Nh2vOHGJBK
-         kuQUWupa2Mqkf1yLJFOutIuIHllryTzfrPxQyLNBM4qdYDtaHkftNSP3NVz68HSGB0
-         IIUB+ijLG9OUCiSW8lCz5etbYQY3MHEHNmg0wwb/8d5S9ximif6nNJQpgMmBPNNZZP
-         tS8EnPBF1QFqoIJD96pTmSVl2edtkzBI6abWSzoYOroWhUZhPPIYAcKUWvpNyH43vD
-         9iuN2l8GfB7H79el4Pi63Mw0C+d6nAORSLbaPu0MJXOakr8ZDhujDXh/SPrsKFgKBH
-         YlnijjYTyPRSw==
+        b=XMSKFGEu/uzR3N52gimUSRvlUY77ksX6bwSP5MEEbrhoYubbKoJVO455NMN69R4xj
+         x9GRwiRrinWyIWvqcLaI+JhV5ZHw0Ow+vjol3spPlLV+EDFsRspfhySJYB1hNYEyDD
+         aSGLKC8qpWBT4nbxwHNQOo7RmG1Z0Y+5PDZjmaBTcnkG3j3YRGb2Ycr+/iXr0GVAM8
+         f3R8P+eO4JCLRSgp7mHQtfS9keccHmF/hGloP0UzUPKujvCNZbkgV3dyp0o5SzcWdJ
+         GLdFjAAokYxUviKsgseded/9rmE6dJI2yUYwAvyjELLvaU6fXnXMYEQiD9ItgNieST
+         uSvkQeYinB1kw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id A6FAF5C0879; Wed, 19 Oct 2022 15:47:00 -0700 (PDT)
+        id AD5D05C0A04; Wed, 19 Oct 2022 15:47:00 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org, Pingfan Liu <kernelfans@gmail.com>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 2/8] rcu: Synchronize ->qsmaskinitnext in rcu_boost_kthread_setaffinity()
-Date:   Wed, 19 Oct 2022 15:46:53 -0700
-Message-Id: <20221019224659.2499511-2-paulmck@kernel.org>
+        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org
+Subject: [PATCH rcu 5/8] slab: Explain why SLAB_DESTROY_BY_RCU reference before locking
+Date:   Wed, 19 Oct 2022 15:46:56 -0700
+Message-Id: <20221019224659.2499511-5-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20221019224652.GA2499358@paulmck-ThinkPad-P17-Gen-1>
 References: <20221019224652.GA2499358@paulmck-ThinkPad-P17-Gen-1>
@@ -58,72 +57,41 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Pingfan Liu <kernelfans@gmail.com>
+It is not obvious to the casual user why it is absolutely necessary to
+acquire a reference to a SLAB_DESTROY_BY_RCU structure before acquiring
+a lock in that structure.  Therefore, add a comment explaining this point.
 
-Once either rcutree_online_cpu() or rcutree_dead_cpu() is invoked
-concurrently, the following rcu_boost_kthread_setaffinity() race can
-occur:
-
-        CPU 1                               CPU2
-mask = rcu_rnp_online_cpus(rnp);
-...
-
-                                   mask = rcu_rnp_online_cpus(rnp);
-                                   ...
-                                   set_cpus_allowed_ptr(t, cm);
-
-set_cpus_allowed_ptr(t, cm);
-
-This results in CPU2's update being overwritten by that of CPU1, and
-thus the possibility of ->boost_kthread_task continuing to run on a
-to-be-offlined CPU.
-
-This commit therefore eliminates this race by relying on the pre-existing
-acquisition of ->boost_kthread_mutex to serialize the full process of
-changing the affinity of ->boost_kthread_task.
-
-Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
-Cc: David Woodhouse <dwmw@amazon.co.uk>
-Cc: Frederic Weisbecker <frederic@kernel.org>
-Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
-Cc: Josh Triplett <josh@joshtriplett.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-Cc: Joel Fernandes <joel@joelfernandes.org>
-Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Cc: Christoph Lameter <cl@linux.com>
+Cc: Pekka Enberg <penberg@kernel.org>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Cc: <linux-mm@kvack.org>
 ---
- kernel/rcu/tree_plugin.h | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ include/linux/slab.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index e3142ee35fc6a..7b0fe741a0886 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -1221,11 +1221,13 @@ static void rcu_spawn_one_boost_kthread(struct rcu_node *rnp)
-  * We don't include outgoingcpu in the affinity set, use -1 if there is
-  * no outgoing CPU.  If there are no CPUs left in the affinity set,
-  * this function allows the kthread to execute on any CPU.
+diff --git a/include/linux/slab.h b/include/linux/slab.h
+index 90877fcde70bd..446303e385265 100644
+--- a/include/linux/slab.h
++++ b/include/linux/slab.h
+@@ -76,6 +76,12 @@
+  * rcu_read_lock before reading the address, then rcu_read_unlock after
+  * taking the spinlock within the structure expected at that address.
+  *
++ * Note that it is not possible to acquire a lock within a structure
++ * allocated with SLAB_DESTROY_BY_RCU without first acquiring a reference
++ * as described above.  The reason is that SLAB_DESTROY_BY_RCU pages are
++ * not zeroed before being given to the slab, which means that any locks
++ * must be initialized after each and every kmem_struct_alloc().
 + *
-+ * Any future concurrent calls are serialized via ->boost_kthread_mutex.
+  * Note that SLAB_TYPESAFE_BY_RCU was originally named SLAB_DESTROY_BY_RCU.
   */
- static void rcu_boost_kthread_setaffinity(struct rcu_node *rnp, int outgoingcpu)
- {
- 	struct task_struct *t = rnp->boost_kthread_task;
--	unsigned long mask = rcu_rnp_online_cpus(rnp);
-+	unsigned long mask;
- 	cpumask_var_t cm;
- 	int cpu;
- 
-@@ -1234,6 +1236,7 @@ static void rcu_boost_kthread_setaffinity(struct rcu_node *rnp, int outgoingcpu)
- 	if (!zalloc_cpumask_var(&cm, GFP_KERNEL))
- 		return;
- 	mutex_lock(&rnp->boost_kthread_mutex);
-+	mask = rcu_rnp_online_cpus(rnp);
- 	for_each_leaf_node_possible_cpu(rnp, cpu)
- 		if ((mask & leaf_node_cpu_bit(rnp, cpu)) &&
- 		    cpu != outgoingcpu)
+ /* Defer freeing slabs to RCU */
 -- 
 2.31.1.189.g2e36527f23
 
