@@ -2,83 +2,128 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E007CC43217
-	for <rcu@archiver.kernel.org>; Wed, 19 Oct 2022 22:52:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 70030C433FE
+	for <rcu@archiver.kernel.org>; Wed, 19 Oct 2022 22:58:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231132AbiJSWwG (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 19 Oct 2022 18:52:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51376 "EHLO
+        id S230357AbiJSW6m (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 19 Oct 2022 18:58:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231252AbiJSWv4 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 19 Oct 2022 18:51:56 -0400
+        with ESMTP id S229657AbiJSW6m (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 19 Oct 2022 18:58:42 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC0B018DD58;
-        Wed, 19 Oct 2022 15:51:53 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EB851CA5A8;
+        Wed, 19 Oct 2022 15:58:41 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 82A9EB82625;
-        Wed, 19 Oct 2022 22:51:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E5DEC4314E;
-        Wed, 19 Oct 2022 22:51:47 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 9F7D1B82565;
+        Wed, 19 Oct 2022 22:58:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65D36C433C1;
+        Wed, 19 Oct 2022 22:58:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666219907;
-        bh=mhcpLJZcHbiLjOBEVgPlVc5Zs6jp1PTb1ytPNog7Qy4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tT1EJTN+S1m0Ws51ZJ2CUpp/35nOFOnx0Nrqc0pVhtve35sQ5QKg5oABH2+dZYKLZ
-         RyNb2mkA1cqKxeibNUnzFKG1fEFWiia+sKd08hawKOFpC8IWO8ZfhHCpXZNL/K6O7u
-         2VPp3Eq6w6wzJQjfdHYniExubZP/g/wD6l6Ym1wnPRHgxKP02qp87QnouD6cXwVZPH
-         l6zKFEZAtItER+MAkWi1Wi98W6AfmUv904rH+o3o47GOR2VMVXkr5cbCjjUMMZMIJJ
-         4W3x5LdBiUiryhYxg4UVe4P5+ld3HFaLo9ptC5Of3F5OAO8Z7r9+pu0E1gkUW1ODv5
-         uHmTOcjkhDSDA==
+        s=k20201202; t=1666220318;
+        bh=Mh9ezMM/tIFWw3JVOz7+hv2YrMBmNextlCaUDvsDd+s=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=RM34ePOKnAZAib6uT7KxGKcPYkZre+LnmRGG8uUpXsDFPv8jALMULh2vkE2zJLVRS
+         vPMJYiP/PtdGnZRLYAjvf+lo1kXGHQFy6g4CRTTQpIM2sDWfFDBnWU28axjP2+7TwX
+         MJBNgX6MQEYS2T8b7dRI/p44xBXEWb9rtV3zTaFdXh08QOMQvFkPNcMYu3pbf5gDrT
+         +9cwe3OWRYrP5QzkXZihxHXaAQskfgLwmJDzcfl3qLC9MBrdUTlF48uuqDIo84E4IC
+         8zC8/cM3Kne+orSmpCReMtKpJ2sV436rAROTJCbvohOU+oAsa5MlY1rlgttDpBetaZ
+         IpLz76ZAfM88w==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 8B5795C0E1E; Wed, 19 Oct 2022 15:51:46 -0700 (PDT)
+        id 151495C06B4; Wed, 19 Oct 2022 15:58:38 -0700 (PDT)
+Date:   Wed, 19 Oct 2022 15:58:38 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org, Uladzislau Rezki <urezki@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 12/14] scsi/scsi_error: Use call_rcu_flush() instead of call_rcu()
-Date:   Wed, 19 Oct 2022 15:51:42 -0700
-Message-Id: <20221019225144.2500095-12-paulmck@kernel.org>
-X-Mailer: git-send-email 2.31.1.189.g2e36527f23
-In-Reply-To: <20221019225138.GA2499943@paulmck-ThinkPad-P17-Gen-1>
-References: <20221019225138.GA2499943@paulmck-ThinkPad-P17-Gen-1>
+        rostedt@goodmis.org
+Subject: [PATCH rcu 0/11] NMI-safe SRCU readers for v6.2
+Message-ID: <20221019225838.GA2500612@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Uladzislau Rezki <urezki@gmail.com>
+Hello!
 
-Slow boot time is seen on KVM running typical Linux distributions due to
-SCSI layer calling call_rcu(). Recent changes to save power may be
-causing this slowness. Using call_rcu_flush() fixes the issue and brings
-the boot time back to what it originally was. Convert it.
+This series provides the second version of an NMI-safe SRCU reader API in
+the guise of srcu_read_lock_nmisafe() and srcu_read_unlock_nmisafe().
+A given srcu_struct structure must use either the traditional
+srcu_read_lock() and srcu_read_unlock() API or the new _nmisafe() API:
+Mixing and matching is not permitted.  So much so that kernels built
+with CONFIG_PROVE_RCU=y will complain if you try it.
 
-Tested-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Signed-off-by: Uladzislau Rezki <urezki@gmail.com>
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- drivers/scsi/scsi_error.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The reason for this restriction is that I have yet to find a use case
+that is not a accident waiting to happen.  And if free intermixing
+were permitted, it is pretty much a given that someone somewhere will
+get confused and use srcu_read_lock_nmisafe() within NMI handlers and
+srcu_read_lock() elsewhere, which will not (repeat, NOT) provide NMI
+safety.
 
-diff --git a/drivers/scsi/scsi_error.c b/drivers/scsi/scsi_error.c
-index 6995c89792300..634672e67c81f 100644
---- a/drivers/scsi/scsi_error.c
-+++ b/drivers/scsi/scsi_error.c
-@@ -312,7 +312,7 @@ void scsi_eh_scmd_add(struct scsi_cmnd *scmd)
- 	 * Ensure that all tasks observe the host state change before the
- 	 * host_failed change.
- 	 */
--	call_rcu(&scmd->rcu, scsi_eh_inc_host_failed);
-+	call_rcu_flush(&scmd->rcu, scsi_eh_inc_host_failed);
- }
- 
- /**
--- 
-2.31.1.189.g2e36527f23
+The series is as follows:
 
+1.	Convert ->srcu_lock_count and ->srcu_unlock_count to atomic.
+
+2.	Create an srcu_read_lock_nmisafe() and srcu_read_unlock_nmisafe().
+
+3.	Check for consistent per-CPU per-srcu_struct NMI safety.
+
+4.	Check for consistent global per-srcu_struct NMI safety.
+
+5.	Add ARCH_HAS_NMI_SAFE_THIS_CPU_OPS Kconfig option.
+
+6.	Add ARCH_HAS_NMI_SAFE_THIS_CPU_OPS Kconfig option.
+
+7.	Add ARCH_HAS_NMI_SAFE_THIS_CPU_OPS Kconfig option.
+
+8.	Add ARCH_HAS_NMI_SAFE_THIS_CPU_OPS Kconfig option.
+
+9.	Warn when NMI-unsafe API is used in NMI, courtesy of Frederic
+	Weisbecker.
+
+10.	Explain the reason behind the read side critical section on GP
+	start, courtesy of Frederic Weisbecker.
+
+11.	Debug NMI safety even on archs that don't require it, courtesy
+	of Frederic Weisbecker.
+
+Changes since v2:
+
+1.	Added ability for architectures having implicitly NMI-safe
+	SRCU readers to warn about uses that cause trouble for other
+	architectures.
+
+Changes since v1:
+
+1.	Added enabling patches for arm64, loongarch, s390, and x86.
+	These have what appear to me to be NMI-safe this_cpu_inc()
+	implementations.
+
+2.	Fix a build error on !SMP kernels built without SRCU.
+
+3.	Fix a build error on !SMP kernels.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ b/arch/Kconfig             |    3 +
+ b/arch/arm64/Kconfig       |    1 
+ b/arch/loongarch/Kconfig   |    1 
+ b/arch/s390/Kconfig        |    1 
+ b/arch/x86/Kconfig         |    1 
+ b/include/linux/srcu.h     |   39 ++++++++++++++
+ b/include/linux/srcutiny.h |   11 ++++
+ b/include/linux/srcutree.h |    4 -
+ b/kernel/rcu/Kconfig       |    3 +
+ b/kernel/rcu/rcutorture.c  |   11 +++-
+ b/kernel/rcu/srcutree.c    |   24 ++++-----
+ include/linux/srcu.h       |   48 +++++++++++++-----
+ include/linux/srcutiny.h   |   16 ------
+ include/linux/srcutree.h   |   19 +++----
+ kernel/rcu/srcutree.c      |  118 +++++++++++++++++++++++++++++++++++----------
+ 15 files changed, 224 insertions(+), 76 deletions(-)
