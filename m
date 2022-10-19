@@ -2,44 +2,44 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48941C4332F
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F5CBC43217
 	for <rcu@archiver.kernel.org>; Wed, 19 Oct 2022 23:02:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231436AbiJSXCs (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S231372AbiJSXCs (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Wed, 19 Oct 2022 19:02:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56334 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231548AbiJSXCa (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S230460AbiJSXCa (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 19 Oct 2022 19:02:30 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 085941D639B;
-        Wed, 19 Oct 2022 16:02:27 -0700 (PDT)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6D12BC8E;
+        Wed, 19 Oct 2022 16:02:28 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 82F58619D6;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 97FD4B82628;
         Wed, 19 Oct 2022 23:02:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D912C43145;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37C8EC433C1;
         Wed, 19 Oct 2022 23:02:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1666220528;
-        bh=OglLR7CZcvCfPWNgseELmu/1oNbrB+8cqkekoCOt4F4=;
+        bh=tHcc2B7c83D/AJeLWIhIM+jYPygjYHJqQ8I1kz/8AQs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ibrSr6c4FC2mMxQFw7N6h/dFgGz3kIq6/3mTpg7Vf2U7mshQzOk5GfSxP7hopjndL
-         y249yAkSzrvC8zHrqhw7y2YOSk2GlKJvsbxZVqtj1zDKvutfdxEwcE2FQ4R8IXbHGr
-         PqsbURueYbqkI31nZk1Z/G3zUWa+jMjQRsDQxUzPxSvz60KCa2qhBOk0NSjAr8GOIU
-         REcMpHYka7opn9TPC+MPVWuWW6L5BwE+Jjx1wNrbg7BAA3bmntWCWr0FzPZjjg8ftR
-         VQW2rLvZrcRS51aycaPJOngd/5pUM87e2KSlCCEyDX3ZyTbnWcg1wrL69XeeIgAF8M
-         Sj4breg03QPLw==
+        b=OsyMZgEUf4T635jHRA/9oARMtIje01NcafXIXP5AWDx3mtOSXoDx0k6nMAjABdP82
+         NanHk9itMjd0BWB8bqYPMH6mN+Jn2KRWVYpbUh5r2GTLREmqd9zs+DUpfRirdL7uTn
+         Z0Ox9C6sY0IUJCv0HCk0i9cfJyMFWFUk0A4KH8f0spwC7IVE6VlVm8cYSXC2tivO6f
+         BkBpu4ISKA8V7b1lQ/ts6NFI31bI2FaDY53jVGL0HW+63851jGalIf86o6xmLy6Czm
+         9lDagiWXIK6BvQi2Tx9Wy47NCYAkAqkUwEA+xcB7bb/o0eusxhUCX9o1ZsPPwOAgQz
+         zN0M46UotIWiQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id F24C15C0A40; Wed, 19 Oct 2022 16:02:07 -0700 (PDT)
+        id E774B5C06B4; Wed, 19 Oct 2022 16:02:07 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
         rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH v3 rcu 6/8] rcutorture: Avoid redundant builds for rcuscale and refscale in torture.sh
-Date:   Wed, 19 Oct 2022 16:02:04 -0700
-Message-Id: <20221019230206.2501794-6-paulmck@kernel.org>
+Subject: [PATCH v3 rcu 1/8] rcutorture: Add --bootargs parameter to kvm-again.sh
+Date:   Wed, 19 Oct 2022 16:01:59 -0700
+Message-Id: <20221019230206.2501794-1-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20221019230203.GA2501612@paulmck-ThinkPad-P17-Gen-1>
 References: <20221019230203.GA2501612@paulmck-ThinkPad-P17-Gen-1>
@@ -49,152 +49,175 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This commit causes torture.sh to use the new --bootargs and --datestamp
-parameters to kvm-again.sh in order to avoid redundant kernel builds
-during rcuscale and refscale testing.  This trims the better part of an
-hour off of torture.sh runs that use --do-kasan.
+The kvm-again.sh script can be used to repeat short boot-time tests,
+but the kernel boot arguments cannot be changed.  This means that every
+change in kernel boot arguments currently necessitates a kernel build,
+which greatly increases the duration of kernel-boot testing.
+
+This commit therefore adds a --bootargs parameter to kvm-again.sh,
+which allows a given kernel to be repeatedly booted, but overriding
+old and adding new kernel boot parameters.  This allows an old kernel
+to be booted with new kernel boot parameters, avoiding the overhead of
+rebuilding the kernel under test.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- .../selftests/rcutorture/bin/torture.sh       | 87 ++++++++++++++++++-
- 1 file changed, 83 insertions(+), 4 deletions(-)
+ .../selftests/rcutorture/bin/kvm-again.sh     |  9 ++-
+ .../selftests/rcutorture/bin/kvm-transform.sh | 68 ++++++++++++++++---
+ 2 files changed, 65 insertions(+), 12 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/torture.sh b/tools/testing/selftests/rcutorture/bin/torture.sh
-index 4d285db2fbbdd..b376688fe280a 100755
---- a/tools/testing/selftests/rcutorture/bin/torture.sh
-+++ b/tools/testing/selftests/rcutorture/bin/torture.sh
-@@ -277,6 +277,8 @@ function torture_one {
- 	then
- 		cat $T/$curflavor.out | tee -a $T/log
- 		echo retcode=$retcode | tee -a $T/log
-+	else
-+		echo $resdir > $T/last-resdir
- 	fi
- 	if test "$retcode" == 0
- 	then
-@@ -302,10 +304,12 @@ function torture_set {
- 	shift
- 	curflavor=$flavor
- 	torture_one "$@"
-+	mv $T/last-resdir $T/last-resdir-nodebug || :
- 	if test "$do_kasan" = "yes"
- 	then
- 		curflavor=${flavor}-kasan
- 		torture_one "$@" --kasan
-+		mv $T/last-resdir $T/last-resdir-kasan || :
- 	fi
- 	if test "$do_kcsan" = "yes"
- 	then
-@@ -316,6 +320,7 @@ function torture_set {
- 			cur_kcsan_kmake_args="$kcsan_kmake_args"
- 		fi
- 		torture_one "$@" --kconfig "CONFIG_DEBUG_LOCK_ALLOC=y CONFIG_PROVE_LOCKING=y" $kcsan_kmake_tag $cur_kcsan_kmake_args --kcsan
-+		mv $T/last-resdir $T/last-resdir-kcsan || :
- 	fi
- }
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-again.sh b/tools/testing/selftests/rcutorture/bin/kvm-again.sh
+index 0941f1ddab658..85cfd139f9737 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm-again.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm-again.sh
+@@ -51,6 +51,7 @@ RCUTORTURE="`pwd`/tools/testing/selftests/rcutorture"; export RCUTORTURE
+ PATH=${RCUTORTURE}/bin:$PATH; export PATH
+ . functions.sh
  
-@@ -378,11 +383,48 @@ then
- else
- 	primlist=
- fi
-+firsttime=1
-+do_kasan_save="$do_kasan"
-+do_kcsan_save="$do_kcsan"
- for prim in $primlist
++bootargs=
+ dryrun=
+ dur=
+ default_link="cp -R"
+@@ -61,6 +62,7 @@ starttime="`get_starttime`"
+ 
+ usage () {
+ 	echo "Usage: $scriptname $oldrun [ arguments ]:"
++	echo "       --bootargs kernel-boot-arguments"
+ 	echo "       --dryrun"
+ 	echo "       --duration minutes | <seconds>s | <hours>h | <days>d"
+ 	echo "       --link hard|soft|copy"
+@@ -72,6 +74,11 @@ usage () {
+ while test $# -gt 0
  do
--	torture_bootargs="refscale.scale_type="$prim" refscale.nreaders=$HALF_ALLOTED_CPUS refscale.loops=10000 refscale.holdoff=20 torture.disable_onoff_at_boot"
--	torture_set "refscale-$prim" tools/testing/selftests/rcutorture/bin/kvm.sh --torture refscale --allcpus --duration 5 --kconfig "CONFIG_TASKS_TRACE_RCU=y CONFIG_NR_CPUS=$HALF_ALLOTED_CPUS" --bootargs "verbose_batched=$VERBOSE_BATCH_CPUS torture.verbose_sleep_frequency=8 torture.verbose_sleep_duration=$VERBOSE_BATCH_CPUS" --trust-make
-+	if test -n "$firsttime"
-+	then
-+		torture_bootargs="refscale.scale_type="$prim" refscale.nreaders=$HALF_ALLOTED_CPUS refscale.loops=10000 refscale.holdoff=20 torture.disable_onoff_at_boot"
-+		torture_set "refscale-$prim" tools/testing/selftests/rcutorture/bin/kvm.sh --torture refscale --allcpus --duration 5 --kconfig "CONFIG_TASKS_TRACE_RCU=y CONFIG_NR_CPUS=$HALF_ALLOTED_CPUS" --bootargs "verbose_batched=$VERBOSE_BATCH_CPUS torture.verbose_sleep_frequency=8 torture.verbose_sleep_duration=$VERBOSE_BATCH_CPUS" --trust-make
-+		mv $T/last-resdir-nodebug $T/first-resdir-nodebug || :
-+		if test -f "$T/last-resdir-kasan"
-+		then
-+			mv $T/last-resdir-kasan $T/first-resdir-kasan || :
-+		fi
-+		if test -f "$T/last-resdir-kcsan"
-+		then
-+			mv $T/last-resdir-kcsan $T/first-resdir-kcsan || :
-+		fi
-+		firsttime=
-+		do_kasan=
-+		do_kcsan=
-+	else
-+		torture_bootargs=
-+		for i in $T/first-resdir-*
-+		do
-+			case "$i" in
-+			*-nodebug)
-+				torture_suffix=
-+				;;
-+			*-kasan)
-+				torture_suffix="-kasan"
-+				;;
-+			*-kcsan)
-+				torture_suffix="-kcsan"
-+				;;
-+			esac
-+			torture_set "refscale-$prim$torture_suffix" tools/testing/selftests/rcutorture/bin/kvm-again.sh "`cat "$i"`" --duration 5 --bootargs "refscale.scale_type=$prim"
-+		done
-+	fi
- done
-+do_kasan="$do_kasan_save"
-+do_kcsan="$do_kcsan_save"
+ 	case "$1" in
++	--bootargs|--bootarg)
++		checkarg --bootargs "(list of kernel boot arguments)" "$#" "$2" '.*' '^--'
++		bootargs="$bootargs $2"
++		shift
++		;;
+ 	--dryrun)
+ 		dryrun=1
+ 		;;
+@@ -156,7 +163,7 @@ do
+ 	qemu_cmd_dir="`dirname "$i"`"
+ 	kernel_dir="`echo $qemu_cmd_dir | sed -e 's/\.[0-9]\+$//'`"
+ 	jitter_dir="`dirname "$kernel_dir"`"
+-	kvm-transform.sh "$kernel_dir/bzImage" "$qemu_cmd_dir/console.log" "$jitter_dir" $dur < $T/qemu-cmd > $i
++	kvm-transform.sh "$kernel_dir/bzImage" "$qemu_cmd_dir/console.log" "$jitter_dir" $dur "$bootargs" < $T/qemu-cmd > $i
+ 	if test -n "$arg_remote"
+ 	then
+ 		echo "# TORTURE_KCONFIG_GDB_ARG=''" >> $i
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-transform.sh b/tools/testing/selftests/rcutorture/bin/kvm-transform.sh
+index d40b4e60a50cb..75a2610a27f37 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm-transform.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm-transform.sh
+@@ -3,10 +3,14 @@
+ #
+ # Transform a qemu-cmd file to allow reuse.
+ #
+-# Usage: kvm-transform.sh bzImage console.log jitter_dir [ seconds ] < qemu-cmd-in > qemu-cmd-out
++# Usage: kvm-transform.sh bzImage console.log jitter_dir seconds [ bootargs ] < qemu-cmd-in > qemu-cmd-out
+ #
+ #	bzImage: Kernel and initrd from the same prior kvm.sh run.
+ #	console.log: File into which to place console output.
++#	jitter_dir: Jitter directory for TORTURE_JITTER_START and
++#		TORTURE_JITTER_STOP environment variables.
++#	seconds: Run duaration for *.shutdown_secs module parameter.
++#	bootargs: New kernel boot parameters.  Beware of Robert Tables.
+ #
+ # The original qemu-cmd file is provided on standard input.
+ # The transformed qemu-cmd file is on standard output.
+@@ -17,6 +21,9 @@
+ #
+ # Authors: Paul E. McKenney <paulmck@kernel.org>
  
- if test "$do_rcuscale" = yes
++T=`mktemp -d /tmp/kvm-transform.sh.XXXXXXXXXX`
++trap 'rm -rf $T' 0 2
++
+ image="$1"
+ if test -z "$image"
  then
-@@ -390,11 +432,48 @@ then
- else
- 	primlist=
+@@ -41,9 +48,17 @@ then
+ 	echo "Invalid duration, should be numeric in seconds: '$seconds'"
+ 	exit 1
  fi
-+firsttime=1
-+do_kasan_save="$do_kasan"
-+do_kcsan_save="$do_kcsan"
- for prim in $primlist
- do
--	torture_bootargs="rcuscale.scale_type="$prim" rcuscale.nwriters=$HALF_ALLOTED_CPUS rcuscale.holdoff=20 torture.disable_onoff_at_boot"
--	torture_set "rcuscale-$prim" tools/testing/selftests/rcutorture/bin/kvm.sh --torture rcuscale --allcpus --duration 5 --kconfig "CONFIG_TASKS_TRACE_RCU=y CONFIG_NR_CPUS=$HALF_ALLOTED_CPUS" --trust-make
-+	if test -n "$firsttime"
-+	then
-+		torture_bootargs="rcuscale.scale_type="$prim" rcuscale.nwriters=$HALF_ALLOTED_CPUS rcuscale.holdoff=20 torture.disable_onoff_at_boot"
-+		torture_set "rcuscale-$prim" tools/testing/selftests/rcutorture/bin/kvm.sh --torture rcuscale --allcpus --duration 5 --kconfig "CONFIG_TASKS_TRACE_RCU=y CONFIG_NR_CPUS=$HALF_ALLOTED_CPUS" --trust-make
-+		mv $T/last-resdir-nodebug $T/first-resdir-nodebug || :
-+		if test -f "$T/last-resdir-kasan"
-+		then
-+			mv $T/last-resdir-kasan $T/first-resdir-kasan || :
-+		fi
-+		if test -f "$T/last-resdir-kcsan"
-+		then
-+			mv $T/last-resdir-kcsan $T/first-resdir-kcsan || :
-+		fi
-+		firsttime=
-+		do_kasan=
-+		do_kcsan=
-+	else
-+		torture_bootargs=
-+		for i in $T/first-resdir-*
-+		do
-+			case "$i" in
-+			*-nodebug)
-+				torture_suffix=
-+				;;
-+			*-kasan)
-+				torture_suffix="-kasan"
-+				;;
-+			*-kcsan)
-+				torture_suffix="-kcsan"
-+				;;
-+			esac
-+			torture_set "rcuscale-$prim$torture_suffix" tools/testing/selftests/rcutorture/bin/kvm-again.sh "`cat "$i"`" --duration 5 --bootargs "rcuscale.scale_type=$prim"
-+		done
-+	fi
- done
-+do_kasan="$do_kasan_save"
-+do_kcsan="$do_kcsan_save"
++bootargs="$5"
++
++# Build awk program.
++echo "BEGIN {" > $T/bootarg.awk
++echo $bootargs | tr -s ' ' '\012' |
++	awk -v dq='"' '/./ { print "\tbootarg[" NR "] = " dq $1 dq ";" }' >> $T/bootarg.awk
++echo $bootargs | tr -s ' ' '\012' | sed -e 's/=.*$//' |
++	awk -v dq='"' '/./ { print "\tbootpar[" NR "] = " dq $1 dq ";" }' >> $T/bootarg.awk
++cat >> $T/bootarg.awk << '___EOF___'
++}
  
- if test "$do_kvfree" = "yes"
- then
+-awk -v image="$image" -v consolelog="$consolelog" -v jitter_dir="$jitter_dir" \
+-    -v seconds="$seconds" '
+ /^# seconds=/ {
+ 	if (seconds == "")
+ 		print $0;
+@@ -70,13 +85,7 @@ awk -v image="$image" -v consolelog="$consolelog" -v jitter_dir="$jitter_dir" \
+ {
+ 	line = "";
+ 	for (i = 1; i <= NF; i++) {
+-		if ("" seconds != "" && $i ~ /\.shutdown_secs=[0-9]*$/) {
+-			sub(/[0-9]*$/, seconds, $i);
+-			if (line == "")
+-				line = $i;
+-			else
+-				line = line " " $i;
+-		} else if (line == "") {
++		if (line == "") {
+ 			line = $i;
+ 		} else {
+ 			line = line " " $i;
+@@ -87,7 +96,44 @@ awk -v image="$image" -v consolelog="$consolelog" -v jitter_dir="$jitter_dir" \
+ 		} else if ($i == "-kernel") {
+ 			i++;
+ 			line = line " " image;
++		} else if ($i == "-append") {
++			for (i++; i <= NF; i++) {
++				arg = $i;
++				lq = "";
++				rq = "";
++				if ("" seconds != "" && $i ~ /\.shutdown_secs=[0-9]*$/)
++					sub(/[0-9]*$/, seconds, arg);
++				if (arg ~ /^"/) {
++					lq = substr(arg, 1, 1);
++					arg  = substr(arg, 2);
++				}
++				if (arg ~ /"$/) {
++					rq = substr(arg, length($i), 1);
++					arg = substr(arg, 1, length($i) - 1);
++				}
++				par = arg;
++				gsub(/=.*$/, "", par);
++				j = 1;
++				while (bootpar[j] != "") {
++					if (bootpar[j] == par) {
++						arg = "";
++						break;
++					}
++					j++;
++				}
++				if (line == "")
++					line = lq arg;
++				else
++					line = line " " lq arg;
++			}
++			for (j in bootarg)
++				line = line " " bootarg[j];
++			line = line rq;
+ 		}
+ 	}
+ 	print line;
+-}'
++}
++___EOF___
++
++awk -v image="$image" -v consolelog="$consolelog" -v jitter_dir="$jitter_dir" \
++    -v seconds="$seconds" -f $T/bootarg.awk
 -- 
 2.31.1.189.g2e36527f23
 
