@@ -2,46 +2,46 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5EE7EC4332F
-	for <rcu@archiver.kernel.org>; Wed, 19 Oct 2022 22:52:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 13DD6C4321E
+	for <rcu@archiver.kernel.org>; Wed, 19 Oct 2022 22:52:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbiJSWwA (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S231181AbiJSWwA (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Wed, 19 Oct 2022 18:52:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51164 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230371AbiJSWvx (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S230387AbiJSWvx (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 19 Oct 2022 18:51:53 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6B2518F26F;
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8ADD17C156;
         Wed, 19 Oct 2022 15:51:49 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 30935B8261B;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CC78E619EE;
         Wed, 19 Oct 2022 22:51:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEFD7C4347C;
-        Wed, 19 Oct 2022 22:51:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E67BC43150;
+        Wed, 19 Oct 2022 22:51:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666219906;
-        bh=U3+4ieL/lmCXWeRZRiLB8u0S5rhXMcyArw0nT7Mm3tc=;
+        s=k20201202; t=1666219907;
+        bh=MQ9LcMOdsSRTz38i4kDvf32ku4ItL7jI+4EvtYFoPC0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aXyfqiSSPcD8uihbcQQsOhuv8uB2FhPe5BW3m7mBtg8Njne6MornkUtJW2OjiMWKj
-         LqyXFvjZw8GPKhvNIvuocWTS4z0aImtcd6CzrM7J8bbL5Nwvl8Ojd1et9HFJi28We1
-         4KXX7qt8Jwqbh29nHQ05z7eTsRLzKuaimihSOg5xwuBrlQgDG0L+etBFrn9oKA4JSR
-         XVEDKhm27IADRU/VtEYXAf6lEKoCuHsjT/Qb+uKNV1g+C6hpDXxBj1AYSbac/GY57Q
-         EXpWTeuMcgE2V3p8EoGJrnBshgmOPfg5kAaUEP2AJlZRtCMq+dl93qtdMDY9UvJV9b
-         F/ePiJKHoEl8Q==
+        b=UAl/iSQsuk1+2M6aDOUrrdjnjX8vuEJOxRzokcPebrX5Up7justHJnoXtapDkXiir
+         H08aHzwHoHP7hWGyOpklSAJhMwDvlPg4eJI2BtOj1fQ03u27rQVehlmN6QMsyhd27t
+         F03ExYx0PhDcUp//Auh8E/Xn2//+YcgvzH5YFVrMJ5FVgdcnZ1HrECn0AX3Uw7dNdS
+         uUTzQDtaldoqtV7/RUFeGOBGi4v7t4EYHeyuRAETDRrDmvp5sX1wGTG3Zxl9wMs8ZK
+         8vk5sqJoRvXkOoyp7Tt6sFvwNnqMNGEuCPxtpW7TzwGXSi8pSeFv57FpHBmibahNCN
+         3ZupmHrjfTdww==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 7EC325C0A04; Wed, 19 Oct 2022 15:51:46 -0700 (PDT)
+        id 8D1785C0E57; Wed, 19 Oct 2022 15:51:46 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        rostedt@goodmis.org, Uladzislau Rezki <urezki@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 05/14] rcu: Refactor code a bit in rcu_nocb_do_flush_bypass()
-Date:   Wed, 19 Oct 2022 15:51:35 -0700
-Message-Id: <20221019225144.2500095-5-paulmck@kernel.org>
+Subject: [PATCH rcu 13/14] workqueue: Make queue_rcu_work() use call_rcu_flush()
+Date:   Wed, 19 Oct 2022 15:51:43 -0700
+Message-Id: <20221019225144.2500095-13-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20221019225138.GA2499943@paulmck-ThinkPad-P17-Gen-1>
 References: <20221019225138.GA2499943@paulmck-ThinkPad-P17-Gen-1>
@@ -51,59 +51,33 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+From: Uladzislau Rezki <urezki@gmail.com>
 
-This consolidates the code a bit and makes it cleaner. Functionally it
-is the same.
+call_rcu() changes to save power will slow down RCU workqueue items
+queued via queue_rcu_work(). This may not be an issue, however we cannot
+assume that workqueue users are OK with long delays. Use
+call_rcu_flush() API instead which reverts to the old behavior.
 
-Reported-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Uladzislau Rezki <urezki@gmail.com>
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_nocb.h | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
+ kernel/workqueue.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index d6e4c076b0515..213daf81c057f 100644
---- a/kernel/rcu/tree_nocb.h
-+++ b/kernel/rcu/tree_nocb.h
-@@ -327,10 +327,11 @@ static void wake_nocb_gp_defer(struct rcu_data *rdp, int waketype,
-  *
-  * Note that this function always returns true if rhp is NULL.
-  */
--static bool rcu_nocb_do_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
-+static bool rcu_nocb_do_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp_in,
- 				     unsigned long j, bool lazy)
- {
- 	struct rcu_cblist rcl;
-+	struct rcu_head *rhp = rhp_in;
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index 7cd5f5e7e0a1b..b4b0e828b529e 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -1771,7 +1771,7 @@ bool queue_rcu_work(struct workqueue_struct *wq, struct rcu_work *rwork)
  
- 	WARN_ON_ONCE(!rcu_rdp_is_offloaded(rdp));
- 	rcu_lockdep_assert_cblist_protected(rdp);
-@@ -345,16 +346,16 @@ static bool rcu_nocb_do_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
- 
- 	/*
- 	 * If the new CB requested was a lazy one, queue it onto the main
--	 * ->cblist so we can take advantage of a sooner grade period.
-+	 * ->cblist so that we can take advantage of the grace-period that will
-+	 * happen regardless. But queue it onto the bypass list first so that
-+	 * the lazy CB is ordered with the existing CBs in the bypass list.
- 	 */
- 	if (lazy && rhp) {
--		rcu_cblist_flush_enqueue(&rcl, &rdp->nocb_bypass, NULL);
--		rcu_cblist_enqueue(&rcl, rhp);
--		WRITE_ONCE(rdp->lazy_len, 0);
--	} else {
--		rcu_cblist_flush_enqueue(&rcl, &rdp->nocb_bypass, rhp);
--		WRITE_ONCE(rdp->lazy_len, 0);
-+		rcu_cblist_enqueue(&rdp->nocb_bypass, rhp);
-+		rhp = NULL;
+ 	if (!test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work))) {
+ 		rwork->wq = wq;
+-		call_rcu(&rwork->rcu, rcu_work_rcufn);
++		call_rcu_flush(&rwork->rcu, rcu_work_rcufn);
+ 		return true;
  	}
-+	rcu_cblist_flush_enqueue(&rcl, &rdp->nocb_bypass, rhp);
-+	WRITE_ONCE(rdp->lazy_len, 0);
  
- 	rcu_segcblist_insert_pend_cbs(&rdp->cblist, &rcl);
- 	WRITE_ONCE(rdp->nocb_bypass_first, j);
 -- 
 2.31.1.189.g2e36527f23
 
