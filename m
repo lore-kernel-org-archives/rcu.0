@@ -2,44 +2,44 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 75672C433FE
-	for <rcu@archiver.kernel.org>; Wed, 19 Oct 2022 23:03:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 662E7C4332F
+	for <rcu@archiver.kernel.org>; Wed, 19 Oct 2022 23:03:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231653AbiJSXDK (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 19 Oct 2022 19:03:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34820 "EHLO
+        id S231715AbiJSXDP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 19 Oct 2022 19:03:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231691AbiJSXCw (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 19 Oct 2022 19:02:52 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28E3F1D3A7A;
-        Wed, 19 Oct 2022 16:02:28 -0700 (PDT)
+        with ESMTP id S231586AbiJSXCp (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 19 Oct 2022 19:02:45 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5F421D6380;
+        Wed, 19 Oct 2022 16:02:32 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 9D583B82629;
-        Wed, 19 Oct 2022 23:02:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 404C5C433D6;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 3A378B8262B;
+        Wed, 19 Oct 2022 23:02:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DABAC43147;
         Wed, 19 Oct 2022 23:02:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1666220528;
-        bh=al9IGfgTo+phnGZ+G5WnJmjzW9Xtyv4OkdugthUrZOM=;
+        bh=dc1vemrXfCAsmBUyroVNDV5/ZP+1Wth1la2LR9X0DkY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M6H+LTr4nboGTBgy1Vx6YGj5gNxX04QALStfJRWFJYNGV0CFtzC9WkLEJvmb7UX5e
-         m4JVFyljrDsWGgPNw9I9baaiaDlc8lt8Ulm2mB7hKlSwfrJSFVvFxrhrQrkFuubz4X
-         uaBB1TKJaHttQTn/2XvwwgcUeWPCvolDPRXrL0N5mf3uzXVI4f8PMJZLsHSSSLy6Fh
-         Me+J5HIpmFF0dmLvXv1SR6xFwPcTZWApyk278tYslYJPLIARztb3xy5QT027wTHVCr
-         2i57PdJhkzlg+f3UxtW6fHpBjZR3jF8nzJ7f7vgdNrC4nspfftaA9VNoxTs6TVcngk
-         eOqCcvRxW1SLQ==
+        b=YJmGcMOu5riSIpqeYWguClEiqqOm8+lczkDNSE2TyVYNXJtx+dWAxTBZoaoIipD1P
+         Qb51+wlBXMZn9sBmH1CxZBoNGPsohK4Vrg0kb0mBmpUQlkAmwnciaFzHKm9qbnBTwV
+         8mgXGrEseXsinuJ11ywycWKzavnBHFyN2YI8mZ7OhX76z45JFyqf0NjPrJbPqRLDsM
+         qDPLSkrFg4oWeheFyqXtgEvptwkbTgXFTsDPRHifZhsXvQLc9wS/qAUSdaB/gqxqGE
+         q5LawjqDLnGkQBiHhOaeSyfaCZwZ/SuCDt0vvrmXXvbgPL/sqjDRcdoDnxopl+IIif
+         zFeFmVBlc7mGA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id EE2585C0920; Wed, 19 Oct 2022 16:02:07 -0700 (PDT)
+        id 01CDB5C0B8F; Wed, 19 Oct 2022 16:02:08 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
         rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH v3 rcu 4/8] rcutorture: Make kvm-recheck.sh export TORTURE_SUITE
-Date:   Wed, 19 Oct 2022 16:02:02 -0700
-Message-Id: <20221019230206.2501794-4-paulmck@kernel.org>
+Subject: [PATCH v3 rcu 8/8] torture: Make torture.sh create a properly formatted log file
+Date:   Wed, 19 Oct 2022 16:02:06 -0700
+Message-Id: <20221019230206.2501794-8-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20221019230203.GA2501612@paulmck-ThinkPad-P17-Gen-1>
 References: <20221019230203.GA2501612@paulmck-ThinkPad-P17-Gen-1>
@@ -49,32 +49,64 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-As it should, the kvm-recheck.sh script sets the TORTURE_SUITE bash
-variable based on the type of rcutorture test being run.  However,
-it does not export it.  Which is OK, at least until you try running
-kvm-again.sh on either a rcuscale or a refscale test, at which point you
-get false-positive "no success message, N successful version messages"
-errors.  This commit therefore causes the kvm-recheck.sh script to export
-TORTURE_SUITE, suppressing these false positives.
+Currently, if the torture.sh allmodconfig step fails, this is counted as
+an error (as it should be), but there is also an extraneous complaint
+about a missing log file.  This commit therefore adds that log file,
+which is hoped to reduce confused reactions to the error report.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/kvm-recheck.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../selftests/rcutorture/bin/torture.sh       | 32 +++++++++++++------
+ 1 file changed, 23 insertions(+), 9 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh b/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh
-index 0789c5606d2ab..1df7e695edf75 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh
-@@ -30,7 +30,7 @@ do
- 			resdir=`echo $i | sed -e 's,/$,,' -e 's,/[^/]*$,,'`
- 			head -1 $resdir/log
- 		fi
--		TORTURE_SUITE="`cat $i/../torture_suite`"
-+		TORTURE_SUITE="`cat $i/../torture_suite`" ; export TORTURE_SUITE
- 		configfile=`echo $i | sed -e 's,^.*/,,'`
- 		rm -f $i/console.log.*.diags
- 		case "${TORTURE_SUITE}" in
+diff --git a/tools/testing/selftests/rcutorture/bin/torture.sh b/tools/testing/selftests/rcutorture/bin/torture.sh
+index fc63539377147..ec3d8a2d513f1 100755
+--- a/tools/testing/selftests/rcutorture/bin/torture.sh
++++ b/tools/testing/selftests/rcutorture/bin/torture.sh
+@@ -330,20 +330,34 @@ then
+ 	echo " --- allmodconfig:" Start `date` | tee -a $T/log
+ 	amcdir="tools/testing/selftests/rcutorture/res/$ds/allmodconfig"
+ 	mkdir -p "$amcdir"
+-	echo " --- make clean" > "$amcdir/Make.out" 2>&1
++	echo " --- make clean" | tee $amcdir/log > "$amcdir/Make.out" 2>&1
+ 	make -j$MAKE_ALLOTED_CPUS clean >> "$amcdir/Make.out" 2>&1
+-	echo " --- make allmodconfig" >> "$amcdir/Make.out" 2>&1
+-	cp .config $amcdir
+-	make -j$MAKE_ALLOTED_CPUS allmodconfig >> "$amcdir/Make.out" 2>&1
+-	echo " --- make " >> "$amcdir/Make.out" 2>&1
+-	make -j$MAKE_ALLOTED_CPUS >> "$amcdir/Make.out" 2>&1
+-	retcode="$?"
+-	echo $retcode > "$amcdir/Make.exitcode"
+-	if test "$retcode" == 0
++	retcode=$?
++	buildphase='"make clean"'
++	if test "$retcode" -eq 0
++	then
++		echo " --- make allmodconfig" | tee -a $amcdir/log >> "$amcdir/Make.out" 2>&1
++		cp .config $amcdir
++		make -j$MAKE_ALLOTED_CPUS allmodconfig >> "$amcdir/Make.out" 2>&1
++		retcode=$?
++		buildphase='"make allmodconfig"'
++	fi
++	if test "$retcode" -eq 0
++	then
++		echo " --- make " | tee -a $amcdir/log >> "$amcdir/Make.out" 2>&1
++		make -j$MAKE_ALLOTED_CPUS >> "$amcdir/Make.out" 2>&1
++		retcode="$?"
++		echo $retcode > "$amcdir/Make.exitcode"
++		buildphase='"make"'
++	fi
++	if test "$retcode" -eq 0
+ 	then
+ 		echo "allmodconfig($retcode)" $amcdir >> $T/successes
++		echo Success >> $amcdir/log
+ 	else
+ 		echo "allmodconfig($retcode)" $amcdir >> $T/failures
++		echo " --- allmodconfig Test summary:" >> $amcdir/log
++		echo " --- Summary: Exit code $retcode from $buildphase, see Make.out" >> $amcdir/log
+ 	fi
+ fi
+ 
 -- 
 2.31.1.189.g2e36527f23
 
