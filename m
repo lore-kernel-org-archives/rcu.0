@@ -2,46 +2,44 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 731A4C4332F
-	for <rcu@archiver.kernel.org>; Wed, 19 Oct 2022 19:14:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E152C433FE
+	for <rcu@archiver.kernel.org>; Wed, 19 Oct 2022 21:39:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229763AbiJSTO1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 19 Oct 2022 15:14:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54322 "EHLO
+        id S230348AbiJSVjD (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 19 Oct 2022 17:39:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229972AbiJSTOX (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 19 Oct 2022 15:14:23 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69B776304;
-        Wed, 19 Oct 2022 12:14:21 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 1F46FB81E62;
-        Wed, 19 Oct 2022 19:14:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1F30C433D6;
-        Wed, 19 Oct 2022 19:14:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666206858;
-        bh=ZnaNNe4+IYDPSjHEvFMiErBoP5l71S+0Eij3ayOtFl0=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=SDNsL1/j6RZ1QROiYf/v+ERgbVDQU/eheiZDuXxsJ75L9RWgZwyu8amGBysSIAj3O
-         prvImTPP4afi7jtRxEFxTVCIM1lMNnobsgZsfB08JY+Yp2GfCwuxa9fPiWI6SQhSn+
-         zmNbZrshfgZKdtISBLzxApm1sJVZtM+MXe/2CllCKTpfn7xlhBf4UaQUBCP3bROFx4
-         5UhIfeU4S7NHiIrHbjNZHOfjFseh4VyKm7BGJtEFRIO8FjxErnmhCEeSK3alWog8/H
-         ISf6TQqcWl5ZJ3YnGwO4O0lT6xISZkYQ4WlOkASwBIWg8G9nbXoyNQ3DjLQiimo7jc
-         SL+TtW69P10lA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 5E90E5C06B4; Wed, 19 Oct 2022 12:14:18 -0700 (PDT)
-Date:   Wed, 19 Oct 2022 12:14:18 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     John Ogness <john.ogness@linutronix.de>
+        with ESMTP id S231278AbiJSVi7 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 19 Oct 2022 17:38:59 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB27C1956F5;
+        Wed, 19 Oct 2022 14:38:58 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1666215536;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VNePVIgPGNqgS+SwB/8484A+Is/lBhjxfV0Sa3OBHZk=;
+        b=ACgXFXxaJSbl5RRlRXmhzmHnGjrq4h4hsirx/c2WZ0OPRARyeYklxLSl2fMMyUJdsKN6jr
+        P0lbq6qt6X2GvzPN7eRzvSJnKpz0Ht2TbQggA7ok1pXOqW8LNvbpsbvXvJro7AoQHp7hnL
+        BXuOEVL4ExL+4ORURm9kiC6IgDK/8tpWo20o0wAbYQOOq8RtfyhavdgWvu0Z9tyY6iADJR
+        wLx1YpKCIaE3xsA5k/e8GQmZAFXwGVr79DzJ9BZvmoKHBVgWt1SElrXT5hCLsFYTB/iy6O
+        H9DlLrzHKoztp/7Y6MGoNEbyvC+361+FCPv9WdGIZPW2hIJc53cMzOLF3DhB1w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1666215536;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VNePVIgPGNqgS+SwB/8484A+Is/lBhjxfV0Sa3OBHZk=;
+        b=KiO7CbEEYZGc2wK8BV3m3o2VLOu8/3aBPJjoI0wFI6pr+yryxmgX1XhaKkaUmVKgcYHfp5
+        tDIARXB4sx3eqCBA==
+To:     paulmck@kernel.org
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel-team@fb.com, rostedt@goodmis.org, tglx@linutronix.de,
         pmladek@suse.com, Frederic Weisbecker <frederic@kernel.org>
 Subject: Re: [PATCH v2 rcu 0/8] NMI-safe SRCU reader API
-Message-ID: <20221019191418.GF5600@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+In-Reply-To: <20221019191418.GF5600@paulmck-ThinkPad-P17-Gen-1>
 References: <20220921144620.GA1200846@paulmck-ThinkPad-P17-Gen-1>
  <20220929180714.GA2874192@paulmck-ThinkPad-P17-Gen-1>
  <87k04x4e0r.fsf@jogness.linutronix.de>
@@ -50,50 +48,24 @@ References: <20220921144620.GA1200846@paulmck-ThinkPad-P17-Gen-1>
  <20221018185936.GX5600@paulmck-ThinkPad-P17-Gen-1>
  <20221018215721.GA1716567@paulmck-ThinkPad-P17-Gen-1>
  <87pmeoawwe.fsf@jogness.linutronix.de>
+ <20221019191418.GF5600@paulmck-ThinkPad-P17-Gen-1>
+Date:   Wed, 19 Oct 2022 23:44:55 +0206
+Message-ID: <87tu3z334g.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87pmeoawwe.fsf@jogness.linutronix.de>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Oct 19, 2022 at 01:19:53PM +0206, John Ogness wrote:
-> On 2022-10-18, "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> > And the v6.1-rc1 stack is now at srcunmisafe.2022.10.18b.
-> 
-> Thanks!
-> 
-> I guess the kernel test robot will catch this, but if you checkout
-> commit 79c95dc428ad ("arch/x86: Add ARCH_HAS_NMI_SAFE_THIS_CPU_OPS
-> Kconfig option") and build for x86_64, you will get:
-> 
-> x86_64-linux-gnu-ld: kernel/rcu/srcutree.o: in function `srcu_gp_start_if_needed':
-> srcutree.c:(.text+0x133a): undefined reference to `__srcu_read_lock_nmisafe'
-> x86_64-linux-gnu-ld: srcutree.c:(.text+0x1490): undefined reference to `__srcu_read_unlock_nmisafe'
-> x86_64-linux-gnu-ld: kernel/rcu/srcutree.o: in function `srcu_barrier':
-> srcutree.c:(.text+0x1b03): undefined reference to `__srcu_read_lock_nmisafe'
-> x86_64-linux-gnu-ld: srcutree.c:(.text+0x1b38): undefined reference to `__srcu_read_unlock_nmisafe'
-> 
-> Note that this error is fixed with a later commit:
-> 
-> commit c2d158a284ab ("srcu: Debug NMI safety even on archs that don't
-> require it").
-> 
-> This does not affect what I am working on, so feel free to take care of
-> it whenever it fits your schedule.
+On 2022-10-19, "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> my thought is to make this change in the name of bisectability,
+> then produce a new srcunmisafe branch.  The printk() series would
+> then need to rebase or remerge this new series.
+>
+> John, would that work for you?
 
-Good catch, thank you!
+Yes, that is fine. It really is just a bisectability issue, so for the
+review of my v2 series it does not matter. I will rebase on the new
+branch for my v3. ;-)
 
-It looks like the first two hunks in include/linux/srcu.h from that
-later commit need to be in that earlier commit.
-
-Frederic, does this make sense, or am I off in the weeds?
-
-If so, my thought is to make this change in the name of bisectability,
-then produce a new srcunmisafe branch.  The printk() series would
-then need to rebase or remerge this new series.
-
-John, would that work for you?
-
-							Thanx, Paul
+John
