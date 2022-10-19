@@ -2,48 +2,53 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B3EEC433FE
-	for <rcu@archiver.kernel.org>; Wed, 19 Oct 2022 22:58:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6511CC43219
+	for <rcu@archiver.kernel.org>; Wed, 19 Oct 2022 22:58:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231128AbiJSW6v (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 19 Oct 2022 18:58:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44410 "EHLO
+        id S231299AbiJSW6x (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 19 Oct 2022 18:58:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230440AbiJSW6u (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 19 Oct 2022 18:58:50 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02D8A1CBA94;
-        Wed, 19 Oct 2022 15:58:49 -0700 (PDT)
+        with ESMTP id S231209AbiJSW6w (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 19 Oct 2022 18:58:52 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 134321CC768;
+        Wed, 19 Oct 2022 15:58:50 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9195D61920;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6074F619E8;
+        Wed, 19 Oct 2022 22:58:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F393C4315C;
         Wed, 19 Oct 2022 22:58:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA56CC433C1;
-        Wed, 19 Oct 2022 22:58:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1666220328;
-        bh=lC2ZhkuunFA2ksKMDckPtMceJ6zVcRmtLkRgyIgtcls=;
+        bh=Nb+xsXAeDl9rjVwYT8+uivwa9boPW8pnKYqH3COPbBY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cnfRlwEud8zypsIPnkwkCkn4HzzhbvLYXCgPFisO8zPb3C9evnYf+kZ3SQCxwnJHu
-         5R9xpAjW3LITHmqT4vuhUGiA6f3pnLgLI1uyh2NP3h/sgiOfkqgUUb+PO5BAhzptBn
-         dgGpyTdlk4eBWNcDLem7An8S6TbmugUekGrA3uLk1rv/K6gNaoJ416WnYw19pRhroW
-         7rXKmCMtL/u2/czbqQraIF1CRXk/WWpE2VQqm3SVOyUOt393LxO9arF800iV3GXnmN
-         jEEvmzO5mbnEppwdS85MqBgABaBfTg783962fITifkN43P+5H2drvNoQk4319L54O+
-         oGF8SQRQ88njA==
+        b=VfqMvXcayMmhZ5/iuy3j3lXwyVT0aBX9tfr5xmh7SpBuHwKwazuBBRp/wJlePRVBr
+         mh7NW+8FEl+rP7Bu4leZvBTLjzJzpKMMWOXoDn+LTxRpuVzWLVJqAJOl8nWaopjnzv
+         kARyhKaFZJSQ5r3CgujnfJnwIQ0uUgPV5WkMHfLOU2CBMkjxREKJe4nEZFBwp7ODwa
+         AbCK5NvLIINjI72QR/DrBWPIO2DVw4C2QCMshI6JjQoFMDTAsyFvx4/5SoEMrgeGUa
+         J2t32wNwZJr07kzRfhQM3X4LuQ61Z0SrNeNFHE0hp2ba/rUMHOtnlm1OXlh51UFI0q
+         EQtpf4HBUuGIQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id AA4CD5C06B4; Wed, 19 Oct 2022 15:58:47 -0700 (PDT)
+        id B59075C0A40; Wed, 19 Oct 2022 15:58:47 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
         rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Frederic Weisbecker <frederic@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         John Ogness <john.ogness@linutronix.de>,
-        Petr Mladek <pmladek@suse.com>
-Subject: [PATCH v3 rcu 01/11] srcu: Convert ->srcu_lock_count and ->srcu_unlock_count to atomic
-Date:   Wed, 19 Oct 2022 15:58:36 -0700
-Message-Id: <20221019225846.2501109-1-paulmck@kernel.org>
+        Petr Mladek <pmladek@suse.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v3 rcu 06/11] arch/arm64: Add ARCH_HAS_NMI_SAFE_THIS_CPU_OPS Kconfig option
+Date:   Wed, 19 Oct 2022 15:58:41 -0700
+Message-Id: <20221019225846.2501109-6-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20221019225838.GA2500612@paulmck-ThinkPad-P17-Gen-1>
 References: <20221019225838.GA2500612@paulmck-ThinkPad-P17-Gen-1>
@@ -53,117 +58,42 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-NMI-safe variants of srcu_read_lock() and srcu_read_unlock() are needed
-by printk(), which on many architectures entails read-modify-write
-atomic operations.  This commit prepares Tree SRCU for this change by
-making both ->srcu_lock_count and ->srcu_unlock_count by atomic_long_t.
-
-[ paulmck: Apply feedback from John Ogness. ]
+The arm64 architecture uses either an LL/SC loop (old systems) or an LSE
+stadd instruction (new systems) to implement this_cpu_add(), both of which
+are NMI safe.  This means that the old and more-efficient srcu_read_lock()
+may be used in NMI context, without the need for srcu_read_lock_nmisafe().
+Therefore, add the new Kconfig option ARCH_HAS_NMI_SAFE_THIS_CPU_OPS to
+arch/arm64/Kconfig, which will cause NEED_SRCU_NMI_SAFE to be deselected,
+thus preserving the current srcu_read_lock() behavior.
 
 Link: https://lore.kernel.org/all/20220910221947.171557773@linutronix.de/
 
+Suggested-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+Suggested-by: Frederic Weisbecker <frederic@kernel.org>
+Suggested-by: Boqun Feng <boqun.feng@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
 Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: John Ogness <john.ogness@linutronix.de>
 Cc: Petr Mladek <pmladek@suse.com>
+Cc: <linux-arm-kernel@lists.infradead.org>
 ---
- include/linux/srcutree.h |  4 ++--
- kernel/rcu/srcutree.c    | 24 ++++++++++++------------
- 2 files changed, 14 insertions(+), 14 deletions(-)
+ arch/arm64/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
-index e3014319d1ade..0c4eca07d78d5 100644
---- a/include/linux/srcutree.h
-+++ b/include/linux/srcutree.h
-@@ -23,8 +23,8 @@ struct srcu_struct;
-  */
- struct srcu_data {
- 	/* Read-side state. */
--	unsigned long srcu_lock_count[2];	/* Locks per CPU. */
--	unsigned long srcu_unlock_count[2];	/* Unlocks per CPU. */
-+	atomic_long_t srcu_lock_count[2];	/* Locks per CPU. */
-+	atomic_long_t srcu_unlock_count[2];	/* Unlocks per CPU. */
- 
- 	/* Update-side state. */
- 	spinlock_t __private lock ____cacheline_internodealigned_in_smp;
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 1c304fec89c02..25e9458da6a26 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -417,7 +417,7 @@ static unsigned long srcu_readers_lock_idx(struct srcu_struct *ssp, int idx)
- 	for_each_possible_cpu(cpu) {
- 		struct srcu_data *cpuc = per_cpu_ptr(ssp->sda, cpu);
- 
--		sum += READ_ONCE(cpuc->srcu_lock_count[idx]);
-+		sum += atomic_long_read(&cpuc->srcu_lock_count[idx]);
- 	}
- 	return sum;
- }
-@@ -434,7 +434,7 @@ static unsigned long srcu_readers_unlock_idx(struct srcu_struct *ssp, int idx)
- 	for_each_possible_cpu(cpu) {
- 		struct srcu_data *cpuc = per_cpu_ptr(ssp->sda, cpu);
- 
--		sum += READ_ONCE(cpuc->srcu_unlock_count[idx]);
-+		sum += atomic_long_read(&cpuc->srcu_unlock_count[idx]);
- 	}
- 	return sum;
- }
-@@ -503,10 +503,10 @@ static bool srcu_readers_active(struct srcu_struct *ssp)
- 	for_each_possible_cpu(cpu) {
- 		struct srcu_data *cpuc = per_cpu_ptr(ssp->sda, cpu);
- 
--		sum += READ_ONCE(cpuc->srcu_lock_count[0]);
--		sum += READ_ONCE(cpuc->srcu_lock_count[1]);
--		sum -= READ_ONCE(cpuc->srcu_unlock_count[0]);
--		sum -= READ_ONCE(cpuc->srcu_unlock_count[1]);
-+		sum += atomic_long_read(&cpuc->srcu_lock_count[0]);
-+		sum += atomic_long_read(&cpuc->srcu_lock_count[1]);
-+		sum -= atomic_long_read(&cpuc->srcu_unlock_count[0]);
-+		sum -= atomic_long_read(&cpuc->srcu_unlock_count[1]);
- 	}
- 	return sum;
- }
-@@ -636,7 +636,7 @@ int __srcu_read_lock(struct srcu_struct *ssp)
- 	int idx;
- 
- 	idx = READ_ONCE(ssp->srcu_idx) & 0x1;
--	this_cpu_inc(ssp->sda->srcu_lock_count[idx]);
-+	this_cpu_inc(ssp->sda->srcu_lock_count[idx].counter);
- 	smp_mb(); /* B */  /* Avoid leaking the critical section. */
- 	return idx;
- }
-@@ -650,7 +650,7 @@ EXPORT_SYMBOL_GPL(__srcu_read_lock);
- void __srcu_read_unlock(struct srcu_struct *ssp, int idx)
- {
- 	smp_mb(); /* C */  /* Avoid leaking the critical section. */
--	this_cpu_inc(ssp->sda->srcu_unlock_count[idx]);
-+	this_cpu_inc(ssp->sda->srcu_unlock_count[idx].counter);
- }
- EXPORT_SYMBOL_GPL(__srcu_read_unlock);
- 
-@@ -1687,8 +1687,8 @@ void srcu_torture_stats_print(struct srcu_struct *ssp, char *tt, char *tf)
- 			struct srcu_data *sdp;
- 
- 			sdp = per_cpu_ptr(ssp->sda, cpu);
--			u0 = data_race(sdp->srcu_unlock_count[!idx]);
--			u1 = data_race(sdp->srcu_unlock_count[idx]);
-+			u0 = data_race(atomic_long_read(&sdp->srcu_unlock_count[!idx]));
-+			u1 = data_race(atomic_long_read(&sdp->srcu_unlock_count[idx]));
- 
- 			/*
- 			 * Make sure that a lock is always counted if the corresponding
-@@ -1696,8 +1696,8 @@ void srcu_torture_stats_print(struct srcu_struct *ssp, char *tt, char *tf)
- 			 */
- 			smp_rmb();
- 
--			l0 = data_race(sdp->srcu_lock_count[!idx]);
--			l1 = data_race(sdp->srcu_lock_count[idx]);
-+			l0 = data_race(atomic_long_read(&sdp->srcu_lock_count[!idx]));
-+			l1 = data_race(atomic_long_read(&sdp->srcu_lock_count[idx]));
- 
- 			c0 = l0 - u0;
- 			c1 = l1 - u1;
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index 505c8a1ccbe0c..099ee812f3f18 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -31,6 +31,7 @@ config ARM64
+ 	select ARCH_HAS_KCOV
+ 	select ARCH_HAS_KEEPINITRD
+ 	select ARCH_HAS_MEMBARRIER_SYNC_CORE
++	select ARCH_HAS_NMI_SAFE_THIS_CPU_OPS
+ 	select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
+ 	select ARCH_HAS_PTE_DEVMAP
+ 	select ARCH_HAS_PTE_SPECIAL
 -- 
 2.31.1.189.g2e36527f23
 
