@@ -2,71 +2,83 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2645DC433FE
-	for <rcu@archiver.kernel.org>; Wed, 19 Oct 2022 22:45:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CA7A0C433FE
+	for <rcu@archiver.kernel.org>; Wed, 19 Oct 2022 22:45:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229463AbiJSWpc (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 19 Oct 2022 18:45:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33012 "EHLO
+        id S229552AbiJSWpm (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 19 Oct 2022 18:45:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbiJSWpb (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 19 Oct 2022 18:45:31 -0400
+        with ESMTP id S229977AbiJSWpk (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 19 Oct 2022 18:45:40 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFA5415A20;
-        Wed, 19 Oct 2022 15:45:29 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7823816E2A9;
+        Wed, 19 Oct 2022 15:45:38 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8BC3B619E5;
-        Wed, 19 Oct 2022 22:45:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9946C433C1;
-        Wed, 19 Oct 2022 22:45:28 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DA157619EE;
+        Wed, 19 Oct 2022 22:45:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3667BC433C1;
+        Wed, 19 Oct 2022 22:45:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666219529;
-        bh=nEXcglxmuQMmEVn5saQrYZMN/AGmbuW/BHI2o8Yoviw=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=iBCf4Q4AaJmOiohfD4+jfr6qyOkzRoy/nMsCEW5DVd8Ju/hETfi15x5cTjSfojik+
-         kks8QwZ9jxZAc70XuI99aMWh6ZYUwWsN4jVpQczvFTP9ZaqhUz/TIF3Tmy4JOm7u1r
-         vJY9x8/Ch5DelYyzHRlp2LtS8X75KuiIKHbatUxAkRK1qnRwrR0SwnCowoypCUXMAU
-         yhfA/g+hmchD98vD8aHc9wW45VQuBVoPIb8aNPraIQzWYOK2apeOb1YNIcd4hUo6Zg
-         05Adthf6aI6xVhT7cYFtNQmBEQ9xsXIRkrUwT20T56Hl8H1CR+nEbUFukNM7Y3FS/G
-         cLU+i5b1HpVpA==
+        s=k20201202; t=1666219537;
+        bh=pV5mo9YkfwujPNnScLsSaaIUnNu98NTR9NAcopA4yPc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=RHxjoTnrtsdRpptAneAFdyOGOthkGrCVlE4AusM/6sCSLj7z1vrFU5jsnIzwsCuGE
+         ehfoX4T6Y2SsTujRWgaUMqN0wHYwAYlIjCyMZHfYNH2zpU2B6CNGzX/dIiWGjuDGWJ
+         nE16T3qE5DRpazl9MpXSAo6Vv5ZJsgwavbma8fnEL9Mj2ssVVOcHXgvGkwnTJYzwC0
+         75RNIpapAidL8yFZHXfKo80ejSxndZ9Xoc/LzPKRjpLrMhYGE5wzdhEkk2cB0UjRnn
+         DYNcafypYAyzaFWbiU+AHqHtRmo2UKTINZ4buUJ+3Gaql0P34adoPdlgfln0hoEp+w
+         qdBPM5b6Jixeg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 913235C06B4; Wed, 19 Oct 2022 15:45:28 -0700 (PDT)
-Date:   Wed, 19 Oct 2022 15:45:28 -0700
+        id E09B35C0920; Wed, 19 Oct 2022 15:45:36 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org
-Subject: [PATCH rcu 0/4] Documentation updates for v6.2
-Message-ID: <20221019224528.GA2499145@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 4/4] doc: Update RCU's lockdep.rst
+Date:   Wed, 19 Oct 2022 15:45:35 -0700
+Message-Id: <20221019224535.2499245-4-paulmck@kernel.org>
+X-Mailer: git-send-email 2.31.1.189.g2e36527f23
+In-Reply-To: <20221019224528.GA2499145@paulmck-ThinkPad-P17-Gen-1>
+References: <20221019224528.GA2499145@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello!
+This commit adds a couple of new functions to the documentation.
 
-This series contains documentation updates:
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ Documentation/RCU/lockdep.rst | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-1.	Remove arrayRCU.rst.
+diff --git a/Documentation/RCU/lockdep.rst b/Documentation/RCU/lockdep.rst
+index a94f55991a71c..9308f1bdba05d 100644
+--- a/Documentation/RCU/lockdep.rst
++++ b/Documentation/RCU/lockdep.rst
+@@ -17,7 +17,9 @@ state::
+ 	rcu_read_lock_held() for normal RCU.
+ 	rcu_read_lock_bh_held() for RCU-bh.
+ 	rcu_read_lock_sched_held() for RCU-sched.
++	rcu_read_lock_any_held() for any of normal RCU, RCU-bh, and RCU-sched.
+ 	srcu_read_lock_held() for SRCU.
++	rcu_read_lock_trace_held() for RCU Tasks Trace.
+ 
+ These functions are conservative, and will therefore return 1 if they
+ aren't certain (for example, if CONFIG_DEBUG_LOCK_ALLOC is not set).
+@@ -53,6 +55,8 @@ checking of rcu_dereference() primitives:
+ 		is invoked by both SRCU readers and updaters.
+ 	rcu_dereference_raw(p):
+ 		Don't check.  (Use sparingly, if at all.)
++	rcu_dereference_raw_check(p):
++		Don't do lockdep at all.  (Use sparingly, if at all.)
+ 	rcu_dereference_protected(p, c):
+ 		Use explicit check expression "c", and omit all barriers
+ 		and compiler constraints.  This is useful when the data
+-- 
+2.31.1.189.g2e36527f23
 
-2.	Update checklist.txt.
-
-3.	Update listRCU.rst.
-
-4.	Update RCU's lockdep.rst.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- Documentation/RCU/arrayRCU.rst    |  165 -------------------------
- b/Documentation/RCU/checklist.rst |  244 ++++++++++++++++++++++----------------
- b/Documentation/RCU/index.rst     |    1 
- b/Documentation/RCU/listRCU.rst   |  174 ++++++++++++++++-----------
- b/Documentation/RCU/lockdep.rst   |    4 
- 5 files changed, 250 insertions(+), 338 deletions(-)
