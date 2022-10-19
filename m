@@ -2,45 +2,52 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1140CC43217
-	for <rcu@archiver.kernel.org>; Wed, 19 Oct 2022 22:59:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DFE4C04A95
+	for <rcu@archiver.kernel.org>; Wed, 19 Oct 2022 22:59:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231476AbiJSW67 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 19 Oct 2022 18:58:59 -0400
+        id S230357AbiJSW70 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 19 Oct 2022 18:59:26 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231375AbiJSW6z (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 19 Oct 2022 18:58:55 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D83A1CD688;
-        Wed, 19 Oct 2022 15:58:52 -0700 (PDT)
+        with ESMTP id S231392AbiJSW65 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 19 Oct 2022 18:58:57 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A9821CC762;
+        Wed, 19 Oct 2022 15:58:54 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 7DB39B82624;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 7E0CAB82625;
         Wed, 19 Oct 2022 22:58:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59E48C4315B;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F2CFC43158;
         Wed, 19 Oct 2022 22:58:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1666220328;
-        bh=Lw7Q0GwSzhjX27kJ3r/Pu5VkOmW/ZLbkQEvvvISFP7I=;
+        bh=q+Nh2vqtEVu5d5wW0RvHG/vkrFq6MOVxBevrDf1eSrY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rrgNEcCvnt9q2Ei1GCPn0fArdrA82frgyah4oWktNFVTH01HA4b2GnkskY46J8peD
-         3AzWfEUiIuOHcksy1hvxYjs5auNbV0LjN2jRF7FgONsTlUYJ0yF5FPygzUThbcn/ks
-         5ngY96d2lwGndXGz5zEeYU5a1RnZk3ZkR0+MiAwZpgw/duszA+iyiaiyoXcGEPyBak
-         tIAES6BW4ZKPKhINAaCaSllhJBB+B2+eYyjjFda7Ubsa/haPD+unNMQQKX+QtBP7v8
-         2ReYkEMsdLQBjt7RIVd9D2jqojVRVRuXEhk7qga4dvKR1vKaVdRbCs+uGCDGb9Td6p
-         YUwBPwuuRZqoQ==
+        b=uN2Y657PIuHGDtEfThRsABBfDWmMY2nPkfEzviDg/z53XUHh45lsuuSSilpTZJSpz
+         3NHYNYSreQ/zQyMhpaYFRd684T2E8r+C4cuCUGN8buVHW+bgLaKsVO5niw4BheQgfv
+         oI5CKDeCHTWd2QrYmZc51KrYDFFP33b8kAwHeXne1pIAaKFfwlxGCJq7Uzo7gTSBRC
+         lXUSAqY6VVWYmet5AZvswNsazH0XCr6W2/y4lIkcQ/XP8gY6a5SvaeLcOPBmnkRYcq
+         /qOtDVcglyW/+UqM11sLKetAjdUp4xjzvBGSdoE0dPfB32hce9PNR70MKY34hCpHgA
+         t5I0+l6rN+eLw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id BD0FC5C0D2B; Wed, 19 Oct 2022 15:58:47 -0700 (PDT)
+        id B781A5C0AC5; Wed, 19 Oct 2022 15:58:47 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org, Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH v3 rcu 10/11] srcu: Explain the reason behind the read side critical section on GP start
-Date:   Wed, 19 Oct 2022 15:58:45 -0700
-Message-Id: <20221019225846.2501109-10-paulmck@kernel.org>
+        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        John Ogness <john.ogness@linutronix.de>,
+        Petr Mladek <pmladek@suse.com>, loongarch@lists.linux.dev
+Subject: [PATCH v3 rcu 07/11] arch/loongarch: Add ARCH_HAS_NMI_SAFE_THIS_CPU_OPS Kconfig option
+Date:   Wed, 19 Oct 2022 15:58:42 -0700
+Message-Id: <20221019225846.2501109-7-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20221019225838.GA2500612@paulmck-ThinkPad-P17-Gen-1>
 References: <20221019225838.GA2500612@paulmck-ThinkPad-P17-Gen-1>
@@ -50,34 +57,42 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Frederic Weisbecker <frederic@kernel.org>
+The loongarch architecture uses the atomic read-modify-write amadd
+instruction to implement this_cpu_add(), which is NMI safe.  This means
+that the old and more-efficient srcu_read_lock() may be used in NMI
+context, without the need for srcu_read_lock_nmisafe().  Therefore, add
+the new Kconfig option ARCH_HAS_NMI_SAFE_THIS_CPU_OPS to arch/x86/Kconfig,
+which will cause NEED_SRCU_NMI_SAFE to be deselected, thus preserving
+the current srcu_read_lock() behavior.
 
-Tell about the need to protect against concurrent updaters who may
-overflow the GP counter behind the current update.
+Link: https://lore.kernel.org/all/20220910221947.171557773@linutronix.de/
 
-Reported-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Suggested-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+Suggested-by: Frederic Weisbecker <frederic@kernel.org>
+Suggested-by: Boqun Feng <boqun.feng@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Cc: Huacai Chen <chenhuacai@kernel.org>
+Cc: WANG Xuerui <kernel@xen0n.name>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: John Ogness <john.ogness@linutronix.de>
+Cc: Petr Mladek <pmladek@suse.com>
+Cc: <loongarch@lists.linux.dev>
 ---
- kernel/rcu/srcutree.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ arch/loongarch/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 18bb696cff8ca..272830a87e566 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -1158,6 +1158,11 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
- 	int ss_state;
- 
- 	check_init_srcu_struct(ssp);
-+	/*
-+	 * While starting a new grace period, make sure we are in an
-+	 * SRCU read-side critical section so that the grace-period
-+	 * sequence number cannot wrap around in the meantime.
-+	 */
- 	idx = __srcu_read_lock_nmisafe(ssp, false);
- 	ss_state = smp_load_acquire(&ssp->srcu_size_state);
- 	if (ss_state < SRCU_SIZE_WAIT_CALL)
+diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
+index 903096bd87f88..386adde2feffb 100644
+--- a/arch/loongarch/Kconfig
++++ b/arch/loongarch/Kconfig
+@@ -10,6 +10,7 @@ config LOONGARCH
+ 	select ARCH_ENABLE_MEMORY_HOTPLUG
+ 	select ARCH_ENABLE_MEMORY_HOTREMOVE
+ 	select ARCH_HAS_ACPI_TABLE_UPGRADE	if ACPI
++	select ARCH_HAS_NMI_SAFE_THIS_CPU_OPS
+ 	select ARCH_HAS_PTE_SPECIAL
+ 	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
+ 	select ARCH_INLINE_READ_LOCK if !PREEMPTION
 -- 
 2.31.1.189.g2e36527f23
 
