@@ -2,739 +2,183 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D3E0EC4332F
-	for <rcu@archiver.kernel.org>; Thu, 20 Oct 2022 22:19:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CEB22C433FE
+	for <rcu@archiver.kernel.org>; Thu, 20 Oct 2022 22:27:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229738AbiJTWTB (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 20 Oct 2022 18:19:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54964 "EHLO
+        id S229449AbiJTW1X (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 20 Oct 2022 18:27:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229949AbiJTWTA (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 20 Oct 2022 18:19:00 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BABA226E49;
-        Thu, 20 Oct 2022 15:18:58 -0700 (PDT)
+        with ESMTP id S229489AbiJTW1W (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 20 Oct 2022 18:27:22 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D98922BAC9;
+        Thu, 20 Oct 2022 15:27:21 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 093EE61CE0;
-        Thu, 20 Oct 2022 22:18:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65F54C433C1;
-        Thu, 20 Oct 2022 22:18:57 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id CB342B8238D;
+        Thu, 20 Oct 2022 22:27:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CB16C433D6;
+        Thu, 20 Oct 2022 22:27:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666304337;
-        bh=V87vKR9T7nPobJ5gcHM5vmRqETGTcd8W6bwZ17M4Mkk=;
+        s=k20201202; t=1666304838;
+        bh=Hplm7yNv/x7EyeXp8SfEb20uj/fqyD9O6uJA3g5LIrI=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=MzwH2O3aGMsuJgeQW0qgRRDshY3YPT4V7tQqdQ8sPx6B/qeRovhqQjQtuSR6F0SI0
-         qsW1N2H7+2xc273TzX+wG498NI9zF7TsyHELsTDkVyFJ2D4yQ5G3YBXxUBT65/V7B1
-         k75KlrDM7+dlPZQPZs7uKt8xyA99oJ07NEerUMAWxJdnvIzorCHq50aQ5+IIWx67L6
-         qSwR7kxvHd2Hl6ATGxz/jsTvijiY9QfBqZRpvBLRHxTzunvnFy3p/QEpltDQ1cxadY
-         ElUQcYbFqW2fPdgsjq/KpFhojC79gv3ZFxdTD54Mttb+NRL40yCZBtk5SC07Mn2Jz3
-         HyWuMMxNdfsBw==
+        b=vJ8sA+wiQF4XIzA+76+EQxH5rvFbrJDxIsxHj5Rp+iJ/n4t+dQSRas9krLQmExXWj
+         DxzJPCbEAi5fE8d64TvDhBERvhy5Ai3sP339Z/J7aEbr/ERR3xZvl2k4QhuZZNWJAm
+         mhTbY3UVicyH61NAL5n71UaYjWqd8KqyqODlSfaq/Hq64gYkNWweKdaOrYEMND1Ndg
+         RjeEI2nDQgvsWh/IQql6INCiQcmsYG5aMMxN7lAPyoRElI6g1GW1rn26PAkaNi2kBc
+         UqaedyD/A11SXRYzuKF7uCjDDmIqTTahVW+WoDAlTF30JS2Ii25TuBsVqalT/Umej7
+         w5YwR0CVrhxPg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 136DB5C1109; Thu, 20 Oct 2022 15:18:57 -0700 (PDT)
-Date:   Thu, 20 Oct 2022 15:18:57 -0700
+        id 1D8B15C1109; Thu, 20 Oct 2022 15:27:18 -0700 (PDT)
+Date:   Thu, 20 Oct 2022 15:27:18 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Zqiang <qiang1.zhang@intel.com>
-Cc:     frederic@kernel.org, joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] rcu: Make call_rcu() lazy only when CONFIG_RCU_LAZY
- is enabled
-Message-ID: <20221020221857.GY5600@paulmck-ThinkPad-P17-Gen-1>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     John Ogness <john.ogness@linutronix.de>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com,
+        rostedt@goodmis.org, tglx@linutronix.de, pmladek@suse.com
+Subject: Re: [PATCH v2 rcu 0/8] NMI-safe SRCU reader API
+Message-ID: <20221020222718.GA5600@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20221020010242.453121-1-qiang1.zhang@intel.com>
+References: <20220921144620.GA1200846@paulmck-ThinkPad-P17-Gen-1>
+ <20220929180714.GA2874192@paulmck-ThinkPad-P17-Gen-1>
+ <87k04x4e0r.fsf@jogness.linutronix.de>
+ <20221018152418.GR5600@paulmck-ThinkPad-P17-Gen-1>
+ <87ilkh0y52.fsf@jogness.linutronix.de>
+ <20221018185936.GX5600@paulmck-ThinkPad-P17-Gen-1>
+ <20221018215721.GA1716567@paulmck-ThinkPad-P17-Gen-1>
+ <87pmeoawwe.fsf@jogness.linutronix.de>
+ <20221019191418.GF5600@paulmck-ThinkPad-P17-Gen-1>
+ <20221019220537.GA1234896@lothringen>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221020010242.453121-1-qiang1.zhang@intel.com>
+In-Reply-To: <20221019220537.GA1234896@lothringen>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Oct 20, 2022 at 09:02:42AM +0800, Zqiang wrote:
-> Currently, regardless of whether the CONFIG_RCU_LAZY is enabled,
-> invoke the call_rcu() is always lazy, it also means that when
-> CONFIG_RCU_LAZY is disabled, invoke the call_rcu_flush() is also
-> lazy. therefore, this commit make call_rcu() lazy only when
-> CONFIG_RCU_LAZY is enabled.
+On Thu, Oct 20, 2022 at 12:05:37AM +0200, Frederic Weisbecker wrote:
+> On Wed, Oct 19, 2022 at 12:14:18PM -0700, Paul E. McKenney wrote:
+> > On Wed, Oct 19, 2022 at 01:19:53PM +0206, John Ogness wrote:
+> > > On 2022-10-18, "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> > > > And the v6.1-rc1 stack is now at srcunmisafe.2022.10.18b.
+> > > 
+> > > Thanks!
+> > > 
+> > > I guess the kernel test robot will catch this, but if you checkout
+> > > commit 79c95dc428ad ("arch/x86: Add ARCH_HAS_NMI_SAFE_THIS_CPU_OPS
+> > > Kconfig option") and build for x86_64, you will get:
+> > > 
+> > > x86_64-linux-gnu-ld: kernel/rcu/srcutree.o: in function `srcu_gp_start_if_needed':
+> > > srcutree.c:(.text+0x133a): undefined reference to `__srcu_read_lock_nmisafe'
+> > > x86_64-linux-gnu-ld: srcutree.c:(.text+0x1490): undefined reference to `__srcu_read_unlock_nmisafe'
+> > > x86_64-linux-gnu-ld: kernel/rcu/srcutree.o: in function `srcu_barrier':
+> > > srcutree.c:(.text+0x1b03): undefined reference to `__srcu_read_lock_nmisafe'
+> > > x86_64-linux-gnu-ld: srcutree.c:(.text+0x1b38): undefined reference to `__srcu_read_unlock_nmisafe'
+> > > 
+> > > Note that this error is fixed with a later commit:
+> > > 
+> > > commit c2d158a284ab ("srcu: Debug NMI safety even on archs that don't
+> > > require it").
+> > > 
+> > > This does not affect what I am working on, so feel free to take care of
+> > > it whenever it fits your schedule.
+> > 
+> > Good catch, thank you!
+> > 
+> > It looks like the first two hunks in include/linux/srcu.h from that
+> > later commit need to be in that earlier commit.
+> > 
+> > Frederic, does this make sense, or am I off in the weeds?
 > 
-> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+> Actually you need to do that earlier, in
+> 6584822b1be1 ("srcu: Create an srcu_read_lock_nmisafe() and srcu_read_unlock_nmisafe()")
+> 
+> This way you don't only fix x86 bisectability but also the one of all the other safe archs.
+> 
+> And it's not just the first two hunks, you also need to include
+> the removal of the srcutiny.h/srcutree.h definitions.
+> 
+> So namely you need to apply the following to 6584822b1be1. You might
+> meet some minor retro-conflicts (the chknmisafe parameter didn't exist yet),
+> but that's pretty much it:
 
-Again, good eyes, and thank you!
+Thank you both!
 
-I folded this into the original with attribution as shown below.
+I have an untested but allegedly fixed branch on -rcu on branch
+srcunmisafe.2022.10.20a.
 
 							Thanx, Paul
 
-------------------------------------------------------------------------
-
-commit 65d030d037b06fc01b1670a9a0662b5d85ceb850
-Author: Joel Fernandes (Google) <joel@joelfernandes.org>
-Date:   Sun Oct 16 16:22:54 2022 +0000
-
-    rcu: Make call_rcu() lazy to save power
-    
-    Implement timer-based RCU callback batching (also known as lazy
-    callbacks). With this we save about 5-10% of power consumed due
-    to RCU requests that happen when system is lightly loaded or idle.
-    
-    By default, all async callbacks (queued via call_rcu) are marked
-    lazy. An alternate API call_rcu_flush() is provided for the few users,
-    for example synchronize_rcu(), that need the old behavior.
-    
-    The batch is flushed whenever a certain amount of time has passed, or
-    the batch on a particular CPU grows too big. Also memory pressure will
-    flush it in a future patch.
-    
-    To handle several corner cases automagically (such as rcu_barrier() and
-    hotplug), we re-use bypass lists which were originally introduced to
-    address lock contention, to handle lazy CBs as well. The bypass list
-    length has the lazy CB length included in it. A separate lazy CB length
-    counter is also introduced to keep track of the number of lazy CBs.
-    
-    [ paulmck: Fix formatting of inline call_rcu_lazy() definition. ]
-    [ paulmck: Apply Zqiang feedback. ]
-    
-    Suggested-by: Paul McKenney <paulmck@kernel.org>
-    Acked-by: Frederic Weisbecker <frederic@kernel.org>
-    Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index 08605ce7379d7..f6288c1124425 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -108,6 +108,15 @@ static inline int rcu_preempt_depth(void)
- 
- #endif /* #else #ifdef CONFIG_PREEMPT_RCU */
- 
-+#ifdef CONFIG_RCU_LAZY
-+void call_rcu_flush(struct rcu_head *head, rcu_callback_t func);
-+#else
-+static inline void call_rcu_flush(struct rcu_head *head, rcu_callback_t func)
-+{
-+	call_rcu(head, func);
-+}
-+#endif
-+
- /* Internal to kernel */
- void rcu_init(void);
- extern int rcu_scheduler_active;
-diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
-index d471d22a5e21b..d78f6181c8aad 100644
---- a/kernel/rcu/Kconfig
-+++ b/kernel/rcu/Kconfig
-@@ -311,4 +311,12 @@ config TASKS_TRACE_RCU_READ_MB
- 	  Say N here if you hate read-side memory barriers.
- 	  Take the default if you are unsure.
- 
-+config RCU_LAZY
-+	bool "RCU callback lazy invocation functionality"
-+	depends on RCU_NOCB_CPU
-+	default n
-+	help
-+	  To save power, batch RCU callbacks and flush after delay, memory
-+	  pressure, or callback list growing too big.
-+
- endmenu # "RCU Subsystem"
-diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-index be5979da07f59..65704cbc9df7b 100644
---- a/kernel/rcu/rcu.h
-+++ b/kernel/rcu/rcu.h
-@@ -474,6 +474,14 @@ enum rcutorture_type {
- 	INVALID_RCU_FLAVOR
- };
- 
-+#if defined(CONFIG_RCU_LAZY)
-+unsigned long rcu_lazy_get_jiffies_till_flush(void);
-+void rcu_lazy_set_jiffies_till_flush(unsigned long j);
-+#else
-+static inline unsigned long rcu_lazy_get_jiffies_till_flush(void) { return 0; }
-+static inline void rcu_lazy_set_jiffies_till_flush(unsigned long j) { }
-+#endif
-+
- #if defined(CONFIG_TREE_RCU)
- void rcutorture_get_gp_data(enum rcutorture_type test_type, int *flags,
- 			    unsigned long *gp_seq);
-diff --git a/kernel/rcu/tiny.c b/kernel/rcu/tiny.c
-index a33a8d4942c37..810479cf17bae 100644
---- a/kernel/rcu/tiny.c
-+++ b/kernel/rcu/tiny.c
-@@ -44,7 +44,7 @@ static struct rcu_ctrlblk rcu_ctrlblk = {
- 
- void rcu_barrier(void)
- {
--	wait_rcu_gp(call_rcu);
-+	wait_rcu_gp(call_rcu_flush);
- }
- EXPORT_SYMBOL(rcu_barrier);
- 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index fb7a1b95af71e..e3c939b507ac5 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2728,47 +2728,8 @@ static void check_cb_ovld(struct rcu_data *rdp)
- 	raw_spin_unlock_rcu_node(rnp);
- }
- 
--/**
-- * call_rcu() - Queue an RCU callback for invocation after a grace period.
-- * @head: structure to be used for queueing the RCU updates.
-- * @func: actual callback function to be invoked after the grace period
-- *
-- * The callback function will be invoked some time after a full grace
-- * period elapses, in other words after all pre-existing RCU read-side
-- * critical sections have completed.  However, the callback function
-- * might well execute concurrently with RCU read-side critical sections
-- * that started after call_rcu() was invoked.
-- *
-- * RCU read-side critical sections are delimited by rcu_read_lock()
-- * and rcu_read_unlock(), and may be nested.  In addition, but only in
-- * v5.0 and later, regions of code across which interrupts, preemption,
-- * or softirqs have been disabled also serve as RCU read-side critical
-- * sections.  This includes hardware interrupt handlers, softirq handlers,
-- * and NMI handlers.
-- *
-- * Note that all CPUs must agree that the grace period extended beyond
-- * all pre-existing RCU read-side critical section.  On systems with more
-- * than one CPU, this means that when "func()" is invoked, each CPU is
-- * guaranteed to have executed a full memory barrier since the end of its
-- * last RCU read-side critical section whose beginning preceded the call
-- * to call_rcu().  It also means that each CPU executing an RCU read-side
-- * critical section that continues beyond the start of "func()" must have
-- * executed a memory barrier after the call_rcu() but before the beginning
-- * of that RCU read-side critical section.  Note that these guarantees
-- * include CPUs that are offline, idle, or executing in user mode, as
-- * well as CPUs that are executing in the kernel.
-- *
-- * Furthermore, if CPU A invoked call_rcu() and CPU B invoked the
-- * resulting RCU callback function "func()", then both CPU A and CPU B are
-- * guaranteed to execute a full memory barrier during the time interval
-- * between the call to call_rcu() and the invocation of "func()" -- even
-- * if CPU A and CPU B are the same CPU (but again only if the system has
-- * more than one CPU).
-- *
-- * Implementation of these memory-ordering guarantees is described here:
-- * Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst.
-- */
--void call_rcu(struct rcu_head *head, rcu_callback_t func)
-+static void
-+__call_rcu_common(struct rcu_head *head, rcu_callback_t func, bool lazy)
- {
- 	static atomic_t doublefrees;
- 	unsigned long flags;
-@@ -2809,7 +2770,7 @@ void call_rcu(struct rcu_head *head, rcu_callback_t func)
- 	}
- 
- 	check_cb_ovld(rdp);
--	if (rcu_nocb_try_bypass(rdp, head, &was_alldone, flags))
-+	if (rcu_nocb_try_bypass(rdp, head, &was_alldone, flags, lazy))
- 		return; // Enqueued onto ->nocb_bypass, so just leave.
- 	// If no-CBs CPU gets here, rcu_nocb_try_bypass() acquired ->nocb_lock.
- 	rcu_segcblist_enqueue(&rdp->cblist, head);
-@@ -2831,8 +2792,84 @@ void call_rcu(struct rcu_head *head, rcu_callback_t func)
- 		local_irq_restore(flags);
- 	}
- }
--EXPORT_SYMBOL_GPL(call_rcu);
- 
-+#ifdef CONFIG_RCU_LAZY
-+/**
-+ * call_rcu_flush() - Queue RCU callback for invocation after grace period, and
-+ * flush all lazy callbacks (including the new one) to the main ->cblist while
-+ * doing so.
-+ *
-+ * @head: structure to be used for queueing the RCU updates.
-+ * @func: actual callback function to be invoked after the grace period
-+ *
-+ * The callback function will be invoked some time after a full grace
-+ * period elapses, in other words after all pre-existing RCU read-side
-+ * critical sections have completed.
-+ *
-+ * Use this API instead of call_rcu() if you don't want the callback to be
-+ * invoked after very long periods of time, which can happen on systems without
-+ * memory pressure and on systems which are lightly loaded or mostly idle.
-+ * This function will cause callbacks to be invoked sooner than later at the
-+ * expense of extra power. Other than that, this function is identical to, and
-+ * reuses call_rcu()'s logic. Refer to call_rcu() for more details about memory
-+ * ordering and other functionality.
-+ */
-+void call_rcu_flush(struct rcu_head *head, rcu_callback_t func)
-+{
-+	return __call_rcu_common(head, func, false);
-+}
-+EXPORT_SYMBOL_GPL(call_rcu_flush);
-+#endif
-+
-+/**
-+ * call_rcu() - Queue an RCU callback for invocation after a grace period.
-+ * By default the callbacks are 'lazy' and are kept hidden from the main
-+ * ->cblist to prevent starting of grace periods too soon.
-+ * If you desire grace periods to start very soon, use call_rcu_flush().
-+ *
-+ * @head: structure to be used for queueing the RCU updates.
-+ * @func: actual callback function to be invoked after the grace period
-+ *
-+ * The callback function will be invoked some time after a full grace
-+ * period elapses, in other words after all pre-existing RCU read-side
-+ * critical sections have completed.  However, the callback function
-+ * might well execute concurrently with RCU read-side critical sections
-+ * that started after call_rcu() was invoked.
-+ *
-+ * RCU read-side critical sections are delimited by rcu_read_lock()
-+ * and rcu_read_unlock(), and may be nested.  In addition, but only in
-+ * v5.0 and later, regions of code across which interrupts, preemption,
-+ * or softirqs have been disabled also serve as RCU read-side critical
-+ * sections.  This includes hardware interrupt handlers, softirq handlers,
-+ * and NMI handlers.
-+ *
-+ * Note that all CPUs must agree that the grace period extended beyond
-+ * all pre-existing RCU read-side critical section.  On systems with more
-+ * than one CPU, this means that when "func()" is invoked, each CPU is
-+ * guaranteed to have executed a full memory barrier since the end of its
-+ * last RCU read-side critical section whose beginning preceded the call
-+ * to call_rcu().  It also means that each CPU executing an RCU read-side
-+ * critical section that continues beyond the start of "func()" must have
-+ * executed a memory barrier after the call_rcu() but before the beginning
-+ * of that RCU read-side critical section.  Note that these guarantees
-+ * include CPUs that are offline, idle, or executing in user mode, as
-+ * well as CPUs that are executing in the kernel.
-+ *
-+ * Furthermore, if CPU A invoked call_rcu() and CPU B invoked the
-+ * resulting RCU callback function "func()", then both CPU A and CPU B are
-+ * guaranteed to execute a full memory barrier during the time interval
-+ * between the call to call_rcu() and the invocation of "func()" -- even
-+ * if CPU A and CPU B are the same CPU (but again only if the system has
-+ * more than one CPU).
-+ *
-+ * Implementation of these memory-ordering guarantees is described here:
-+ * Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst.
-+ */
-+void call_rcu(struct rcu_head *head, rcu_callback_t func)
-+{
-+	return __call_rcu_common(head, func, IS_ENABLED(CONFIG_RCU_LAZY));
-+}
-+EXPORT_SYMBOL_GPL(call_rcu);
- 
- /* Maximum number of jiffies to wait before draining a batch. */
- #define KFREE_DRAIN_JIFFIES (5 * HZ)
-@@ -3507,7 +3544,7 @@ void synchronize_rcu(void)
- 		if (rcu_gp_is_expedited())
- 			synchronize_rcu_expedited();
- 		else
--			wait_rcu_gp(call_rcu);
-+			wait_rcu_gp(call_rcu_flush);
- 		return;
- 	}
- 
-@@ -3910,7 +3947,7 @@ static void rcu_barrier_entrain(struct rcu_data *rdp)
- 	 * if it's fully lazy.
- 	 */
- 	was_alldone = rcu_rdp_is_offloaded(rdp) && !rcu_segcblist_pend_cbs(&rdp->cblist);
--	WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, jiffies));
-+	WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, jiffies, false));
- 	wake_nocb = was_alldone && rcu_segcblist_pend_cbs(&rdp->cblist);
- 	if (rcu_segcblist_entrain(&rdp->cblist, &rdp->barrier_head)) {
- 		atomic_inc(&rcu_state.barrier_cpu_count);
-@@ -4336,7 +4373,7 @@ void rcutree_migrate_callbacks(int cpu)
- 	my_rdp = this_cpu_ptr(&rcu_data);
- 	my_rnp = my_rdp->mynode;
- 	rcu_nocb_lock(my_rdp); /* irqs already disabled. */
--	WARN_ON_ONCE(!rcu_nocb_flush_bypass(my_rdp, NULL, jiffies));
-+	WARN_ON_ONCE(!rcu_nocb_flush_bypass(my_rdp, NULL, jiffies, false));
- 	raw_spin_lock_rcu_node(my_rnp); /* irqs already disabled. */
- 	/* Leverage recent GPs and set GP for new callbacks. */
- 	needwake = rcu_advance_cbs(my_rnp, rdp) ||
-diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index 925dd98f8b23b..fcb5d696eb170 100644
---- a/kernel/rcu/tree.h
-+++ b/kernel/rcu/tree.h
-@@ -263,14 +263,16 @@ struct rcu_data {
- 	unsigned long last_fqs_resched;	/* Time of last rcu_resched(). */
- 	unsigned long last_sched_clock;	/* Jiffies of last rcu_sched_clock_irq(). */
- 
-+	long lazy_len;			/* Length of buffered lazy callbacks. */
- 	int cpu;
- };
- 
- /* Values for nocb_defer_wakeup field in struct rcu_data. */
- #define RCU_NOCB_WAKE_NOT	0
- #define RCU_NOCB_WAKE_BYPASS	1
--#define RCU_NOCB_WAKE		2
--#define RCU_NOCB_WAKE_FORCE	3
-+#define RCU_NOCB_WAKE_LAZY	2
-+#define RCU_NOCB_WAKE		3
-+#define RCU_NOCB_WAKE_FORCE	4
- 
- #define RCU_JIFFIES_TILL_FORCE_QS (1 + (HZ > 250) + (HZ > 500))
- 					/* For jiffies_till_first_fqs and */
-@@ -441,9 +443,10 @@ static void rcu_nocb_gp_cleanup(struct swait_queue_head *sq);
- static void rcu_init_one_nocb(struct rcu_node *rnp);
- static bool wake_nocb_gp(struct rcu_data *rdp, bool force);
- static bool rcu_nocb_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
--				  unsigned long j);
-+				  unsigned long j, bool lazy);
- static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
--				bool *was_alldone, unsigned long flags);
-+				bool *was_alldone, unsigned long flags,
-+				bool lazy);
- static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_empty,
- 				 unsigned long flags);
- static int rcu_nocb_need_deferred_wakeup(struct rcu_data *rdp, int level);
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index 18e9b4cd78ef8..5cac056007982 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -937,7 +937,7 @@ void synchronize_rcu_expedited(void)
- 
- 	/* If expedited grace periods are prohibited, fall back to normal. */
- 	if (rcu_gp_is_normal()) {
--		wait_rcu_gp(call_rcu);
-+		wait_rcu_gp(call_rcu_flush);
- 		return;
- 	}
- 
-diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index 094fd454b6c38..d6e4c076b0515 100644
---- a/kernel/rcu/tree_nocb.h
-+++ b/kernel/rcu/tree_nocb.h
-@@ -256,6 +256,31 @@ static bool wake_nocb_gp(struct rcu_data *rdp, bool force)
- 	return __wake_nocb_gp(rdp_gp, rdp, force, flags);
- }
- 
-+/*
-+ * LAZY_FLUSH_JIFFIES decides the maximum amount of time that
-+ * can elapse before lazy callbacks are flushed. Lazy callbacks
-+ * could be flushed much earlier for a number of other reasons
-+ * however, LAZY_FLUSH_JIFFIES will ensure no lazy callbacks are
-+ * left unsubmitted to RCU after those many jiffies.
-+ */
-+#define LAZY_FLUSH_JIFFIES (10 * HZ)
-+static unsigned long jiffies_till_flush = LAZY_FLUSH_JIFFIES;
-+
-+#ifdef CONFIG_RCU_LAZY
-+// To be called only from test code.
-+void rcu_lazy_set_jiffies_till_flush(unsigned long jif)
-+{
-+	jiffies_till_flush = jif;
-+}
-+EXPORT_SYMBOL(rcu_lazy_set_jiffies_till_flush);
-+
-+unsigned long rcu_lazy_get_jiffies_till_flush(void)
-+{
-+	return jiffies_till_flush;
-+}
-+EXPORT_SYMBOL(rcu_lazy_get_jiffies_till_flush);
-+#endif
-+
- /*
-  * Arrange to wake the GP kthread for this NOCB group at some future
-  * time when it is safe to do so.
-@@ -269,10 +294,14 @@ static void wake_nocb_gp_defer(struct rcu_data *rdp, int waketype,
- 	raw_spin_lock_irqsave(&rdp_gp->nocb_gp_lock, flags);
- 
- 	/*
--	 * Bypass wakeup overrides previous deferments. In case
--	 * of callback storm, no need to wake up too early.
-+	 * Bypass wakeup overrides previous deferments. In case of
-+	 * callback storms, no need to wake up too early.
- 	 */
--	if (waketype == RCU_NOCB_WAKE_BYPASS) {
-+	if (waketype == RCU_NOCB_WAKE_LAZY &&
-+	    rdp->nocb_defer_wakeup == RCU_NOCB_WAKE_NOT) {
-+		mod_timer(&rdp_gp->nocb_timer, jiffies + jiffies_till_flush);
-+		WRITE_ONCE(rdp_gp->nocb_defer_wakeup, waketype);
-+	} else if (waketype == RCU_NOCB_WAKE_BYPASS) {
- 		mod_timer(&rdp_gp->nocb_timer, jiffies + 2);
- 		WRITE_ONCE(rdp_gp->nocb_defer_wakeup, waketype);
- 	} else {
-@@ -293,10 +322,13 @@ static void wake_nocb_gp_defer(struct rcu_data *rdp, int waketype,
-  * proves to be initially empty, just return false because the no-CB GP
-  * kthread may need to be awakened in this case.
-  *
-+ * Return true if there was something to be flushed and it succeeded, otherwise
-+ * false.
-+ *
-  * Note that this function always returns true if rhp is NULL.
-  */
- static bool rcu_nocb_do_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
--				     unsigned long j)
-+				     unsigned long j, bool lazy)
- {
- 	struct rcu_cblist rcl;
- 
-@@ -310,7 +342,20 @@ static bool rcu_nocb_do_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
- 	/* Note: ->cblist.len already accounts for ->nocb_bypass contents. */
- 	if (rhp)
- 		rcu_segcblist_inc_len(&rdp->cblist); /* Must precede enqueue. */
--	rcu_cblist_flush_enqueue(&rcl, &rdp->nocb_bypass, rhp);
-+
-+	/*
-+	 * If the new CB requested was a lazy one, queue it onto the main
-+	 * ->cblist so we can take advantage of a sooner grade period.
-+	 */
-+	if (lazy && rhp) {
-+		rcu_cblist_flush_enqueue(&rcl, &rdp->nocb_bypass, NULL);
-+		rcu_cblist_enqueue(&rcl, rhp);
-+		WRITE_ONCE(rdp->lazy_len, 0);
-+	} else {
-+		rcu_cblist_flush_enqueue(&rcl, &rdp->nocb_bypass, rhp);
-+		WRITE_ONCE(rdp->lazy_len, 0);
-+	}
-+
- 	rcu_segcblist_insert_pend_cbs(&rdp->cblist, &rcl);
- 	WRITE_ONCE(rdp->nocb_bypass_first, j);
- 	rcu_nocb_bypass_unlock(rdp);
-@@ -326,13 +371,13 @@ static bool rcu_nocb_do_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
-  * Note that this function always returns true if rhp is NULL.
-  */
- static bool rcu_nocb_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
--				  unsigned long j)
-+				  unsigned long j, bool lazy)
- {
- 	if (!rcu_rdp_is_offloaded(rdp))
- 		return true;
- 	rcu_lockdep_assert_cblist_protected(rdp);
- 	rcu_nocb_bypass_lock(rdp);
--	return rcu_nocb_do_flush_bypass(rdp, rhp, j);
-+	return rcu_nocb_do_flush_bypass(rdp, rhp, j, lazy);
- }
- 
- /*
-@@ -345,7 +390,7 @@ static void rcu_nocb_try_flush_bypass(struct rcu_data *rdp, unsigned long j)
- 	if (!rcu_rdp_is_offloaded(rdp) ||
- 	    !rcu_nocb_bypass_trylock(rdp))
- 		return;
--	WARN_ON_ONCE(!rcu_nocb_do_flush_bypass(rdp, NULL, j));
-+	WARN_ON_ONCE(!rcu_nocb_do_flush_bypass(rdp, NULL, j, false));
- }
- 
- /*
-@@ -367,12 +412,14 @@ static void rcu_nocb_try_flush_bypass(struct rcu_data *rdp, unsigned long j)
-  * there is only one CPU in operation.
-  */
- static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
--				bool *was_alldone, unsigned long flags)
-+				bool *was_alldone, unsigned long flags,
-+				bool lazy)
- {
- 	unsigned long c;
- 	unsigned long cur_gp_seq;
- 	unsigned long j = jiffies;
- 	long ncbs = rcu_cblist_n_cbs(&rdp->nocb_bypass);
-+	bool bypass_is_lazy = (ncbs == READ_ONCE(rdp->lazy_len));
- 
- 	lockdep_assert_irqs_disabled();
- 
-@@ -417,25 +464,29 @@ static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
- 	// If there hasn't yet been all that many ->cblist enqueues
- 	// this jiffy, tell the caller to enqueue onto ->cblist.  But flush
- 	// ->nocb_bypass first.
--	if (rdp->nocb_nobypass_count < nocb_nobypass_lim_per_jiffy) {
-+	// Lazy CBs throttle this back and do immediate bypass queuing.
-+	if (rdp->nocb_nobypass_count < nocb_nobypass_lim_per_jiffy && !lazy) {
- 		rcu_nocb_lock(rdp);
- 		*was_alldone = !rcu_segcblist_pend_cbs(&rdp->cblist);
- 		if (*was_alldone)
- 			trace_rcu_nocb_wake(rcu_state.name, rdp->cpu,
- 					    TPS("FirstQ"));
--		WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, j));
-+
-+		WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, j, false));
- 		WARN_ON_ONCE(rcu_cblist_n_cbs(&rdp->nocb_bypass));
- 		return false; // Caller must enqueue the callback.
- 	}
- 
- 	// If ->nocb_bypass has been used too long or is too full,
- 	// flush ->nocb_bypass to ->cblist.
--	if ((ncbs && j != READ_ONCE(rdp->nocb_bypass_first)) ||
-+	if ((ncbs && !bypass_is_lazy && j != READ_ONCE(rdp->nocb_bypass_first)) ||
-+	    (ncbs &&  bypass_is_lazy &&
-+	     (time_after(j, READ_ONCE(rdp->nocb_bypass_first) + jiffies_till_flush))) ||
- 	    ncbs >= qhimark) {
- 		rcu_nocb_lock(rdp);
- 		*was_alldone = !rcu_segcblist_pend_cbs(&rdp->cblist);
- 
--		if (!rcu_nocb_flush_bypass(rdp, rhp, j)) {
-+		if (!rcu_nocb_flush_bypass(rdp, rhp, j, lazy)) {
- 			if (*was_alldone)
- 				trace_rcu_nocb_wake(rcu_state.name, rdp->cpu,
- 						    TPS("FirstQ"));
-@@ -463,13 +514,24 @@ static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
- 	ncbs = rcu_cblist_n_cbs(&rdp->nocb_bypass);
- 	rcu_segcblist_inc_len(&rdp->cblist); /* Must precede enqueue. */
- 	rcu_cblist_enqueue(&rdp->nocb_bypass, rhp);
-+
-+	if (lazy)
-+		WRITE_ONCE(rdp->lazy_len, rdp->lazy_len + 1);
-+
- 	if (!ncbs) {
- 		WRITE_ONCE(rdp->nocb_bypass_first, j);
- 		trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("FirstBQ"));
- 	}
- 	rcu_nocb_bypass_unlock(rdp);
- 	smp_mb(); /* Order enqueue before wake. */
--	if (ncbs) {
-+	// A wake up of the grace period kthread or timer adjustment
-+	// needs to be done only if:
-+	// 1. Bypass list was fully empty before (this is the first
-+	//    bypass list entry), or:
-+	// 2. Both of these conditions are met:
-+	//    a. The bypass list previously had only lazy CBs, and:
-+	//    b. The new CB is non-lazy.
-+	if (ncbs && (!bypass_is_lazy || lazy)) {
- 		local_irq_restore(flags);
- 	} else {
- 		// No-CBs GP kthread might be indefinitely asleep, if so, wake.
-@@ -497,8 +559,10 @@ static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_alldone,
- 				 unsigned long flags)
- 				 __releases(rdp->nocb_lock)
- {
-+	long bypass_len;
- 	unsigned long cur_gp_seq;
- 	unsigned long j;
-+	long lazy_len;
- 	long len;
- 	struct task_struct *t;
- 
-@@ -512,9 +576,16 @@ static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_alldone,
- 	}
- 	// Need to actually to a wakeup.
- 	len = rcu_segcblist_n_cbs(&rdp->cblist);
-+	bypass_len = rcu_cblist_n_cbs(&rdp->nocb_bypass);
-+	lazy_len = READ_ONCE(rdp->lazy_len);
- 	if (was_alldone) {
- 		rdp->qlen_last_fqs_check = len;
--		if (!irqs_disabled_flags(flags)) {
-+		// Only lazy CBs in bypass list
-+		if (lazy_len && bypass_len == lazy_len) {
-+			rcu_nocb_unlock_irqrestore(rdp, flags);
-+			wake_nocb_gp_defer(rdp, RCU_NOCB_WAKE_LAZY,
-+					   TPS("WakeLazy"));
-+		} else if (!irqs_disabled_flags(flags)) {
- 			/* ... if queue was empty ... */
- 			rcu_nocb_unlock_irqrestore(rdp, flags);
- 			wake_nocb_gp(rdp, false);
-@@ -605,12 +676,12 @@ static void nocb_gp_sleep(struct rcu_data *my_rdp, int cpu)
- static void nocb_gp_wait(struct rcu_data *my_rdp)
- {
- 	bool bypass = false;
--	long bypass_ncbs;
- 	int __maybe_unused cpu = my_rdp->cpu;
- 	unsigned long cur_gp_seq;
- 	unsigned long flags;
- 	bool gotcbs = false;
- 	unsigned long j = jiffies;
-+	bool lazy = false;
- 	bool needwait_gp = false; // This prevents actual uninitialized use.
- 	bool needwake;
- 	bool needwake_gp;
-@@ -640,24 +711,43 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
- 	 * won't be ignored for long.
- 	 */
- 	list_for_each_entry(rdp, &my_rdp->nocb_head_rdp, nocb_entry_rdp) {
-+		long bypass_ncbs;
-+		bool flush_bypass = false;
-+		long lazy_ncbs;
-+
- 		trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("Check"));
- 		rcu_nocb_lock_irqsave(rdp, flags);
- 		lockdep_assert_held(&rdp->nocb_lock);
- 		bypass_ncbs = rcu_cblist_n_cbs(&rdp->nocb_bypass);
--		if (bypass_ncbs &&
-+		lazy_ncbs = READ_ONCE(rdp->lazy_len);
-+
-+		if (bypass_ncbs && (lazy_ncbs == bypass_ncbs) &&
-+		    (time_after(j, READ_ONCE(rdp->nocb_bypass_first) + jiffies_till_flush) ||
-+		     bypass_ncbs > 2 * qhimark)) {
-+			flush_bypass = true;
-+		} else if (bypass_ncbs && (lazy_ncbs != bypass_ncbs) &&
- 		    (time_after(j, READ_ONCE(rdp->nocb_bypass_first) + 1) ||
- 		     bypass_ncbs > 2 * qhimark)) {
--			// Bypass full or old, so flush it.
--			(void)rcu_nocb_try_flush_bypass(rdp, j);
--			bypass_ncbs = rcu_cblist_n_cbs(&rdp->nocb_bypass);
-+			flush_bypass = true;
- 		} else if (!bypass_ncbs && rcu_segcblist_empty(&rdp->cblist)) {
- 			rcu_nocb_unlock_irqrestore(rdp, flags);
- 			continue; /* No callbacks here, try next. */
- 		}
-+
-+		if (flush_bypass) {
-+			// Bypass full or old, so flush it.
-+			(void)rcu_nocb_try_flush_bypass(rdp, j);
-+			bypass_ncbs = rcu_cblist_n_cbs(&rdp->nocb_bypass);
-+			lazy_ncbs = READ_ONCE(rdp->lazy_len);
-+		}
-+
- 		if (bypass_ncbs) {
- 			trace_rcu_nocb_wake(rcu_state.name, rdp->cpu,
--					    TPS("Bypass"));
--			bypass = true;
-+					    bypass_ncbs == lazy_ncbs ? TPS("Lazy") : TPS("Bypass"));
-+			if (bypass_ncbs == lazy_ncbs)
-+				lazy = true;
-+			else
-+				bypass = true;
- 		}
- 		rnp = rdp->mynode;
- 
-@@ -705,12 +795,20 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
- 	my_rdp->nocb_gp_gp = needwait_gp;
- 	my_rdp->nocb_gp_seq = needwait_gp ? wait_gp_seq : 0;
- 
--	if (bypass && !rcu_nocb_poll) {
--		// At least one child with non-empty ->nocb_bypass, so set
--		// timer in order to avoid stranding its callbacks.
--		wake_nocb_gp_defer(my_rdp, RCU_NOCB_WAKE_BYPASS,
--				   TPS("WakeBypassIsDeferred"));
-+	// At least one child with non-empty ->nocb_bypass, so set
-+	// timer in order to avoid stranding its callbacks.
-+	if (!rcu_nocb_poll) {
-+		// If bypass list only has lazy CBs. Add a deferred lazy wake up.
-+		if (lazy && !bypass) {
-+			wake_nocb_gp_defer(my_rdp, RCU_NOCB_WAKE_LAZY,
-+					TPS("WakeLazyIsDeferred"));
-+		// Otherwise add a deferred bypass wake up.
-+		} else if (bypass) {
-+			wake_nocb_gp_defer(my_rdp, RCU_NOCB_WAKE_BYPASS,
-+					TPS("WakeBypassIsDeferred"));
-+		}
- 	}
-+
- 	if (rcu_nocb_poll) {
- 		/* Polling, so trace if first poll in the series. */
- 		if (gotcbs)
-@@ -1036,7 +1134,7 @@ static long rcu_nocb_rdp_deoffload(void *arg)
- 	 * return false, which means that future calls to rcu_nocb_try_bypass()
- 	 * will refuse to put anything into the bypass.
- 	 */
--	WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, jiffies));
-+	WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, jiffies, false));
- 	/*
- 	 * Start with invoking rcu_core() early. This way if the current thread
- 	 * happens to preempt an ongoing call to rcu_core() in the middle,
-@@ -1278,6 +1376,7 @@ static void __init rcu_boot_init_nocb_percpu_data(struct rcu_data *rdp)
- 	raw_spin_lock_init(&rdp->nocb_gp_lock);
- 	timer_setup(&rdp->nocb_timer, do_nocb_deferred_wakeup_timer, 0);
- 	rcu_cblist_init(&rdp->nocb_bypass);
-+	WRITE_ONCE(rdp->lazy_len, 0);
- 	mutex_init(&rdp->nocb_gp_kthread_mutex);
- }
- 
-@@ -1564,13 +1663,13 @@ static bool wake_nocb_gp(struct rcu_data *rdp, bool force)
- }
- 
- static bool rcu_nocb_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
--				  unsigned long j)
-+				  unsigned long j, bool lazy)
- {
- 	return true;
- }
- 
- static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
--				bool *was_alldone, unsigned long flags)
-+				bool *was_alldone, unsigned long flags, bool lazy)
- {
- 	return false;
- }
+> diff --git a/include/linux/srcu.h b/include/linux/srcu.h
+> index 565f60d57484..f0814ffca34b 100644
+> --- a/include/linux/srcu.h
+> +++ b/include/linux/srcu.h
+> @@ -52,8 +52,6 @@ int init_srcu_struct(struct srcu_struct *ssp);
+>  #else
+>  /* Dummy definition for things like notifiers.  Actual use gets link error. */
+>  struct srcu_struct { };
+> -int __srcu_read_lock_nmisafe(struct srcu_struct *ssp, bool chknmisafe) __acquires(ssp);
+> -void __srcu_read_unlock_nmisafe(struct srcu_struct *ssp, int idx, bool chknmisafe) __releases(ssp);
+>  #endif
+>  
+>  void call_srcu(struct srcu_struct *ssp, struct rcu_head *head,
+> @@ -66,6 +64,20 @@ unsigned long get_state_synchronize_srcu(struct srcu_struct *ssp);
+>  unsigned long start_poll_synchronize_srcu(struct srcu_struct *ssp);
+>  bool poll_state_synchronize_srcu(struct srcu_struct *ssp, unsigned long cookie);
+>  
+> +#ifdef CONFIG_NEED_SRCU_NMI_SAFE
+> +int __srcu_read_lock_nmisafe(struct srcu_struct *ssp) __acquires(ssp);
+> +void __srcu_read_unlock_nmisafe(struct srcu_struct *ssp, int idx) __releases(ssp);
+> +#else
+> +static inline int __srcu_read_lock_nmisafe(struct srcu_struct *ssp)
+> +{
+> +	return __srcu_read_lock(ssp);
+> +}
+> +static inline void __srcu_read_unlock_nmisafe(struct srcu_struct *ssp, int idx)
+> +{
+> +	__srcu_read_unlock(ssp, idx);
+> +}
+> +#endif /* CONFIG_NEED_SRCU_NMI_SAFE */
+> +
+>  #ifdef CONFIG_SRCU
+>  void srcu_init(void);
+>  #else /* #ifdef CONFIG_SRCU */
+> diff --git a/include/linux/srcutiny.h b/include/linux/srcutiny.h
+> index f890301f123d..f3a4d65b91ef 100644
+> --- a/include/linux/srcutiny.h
+> +++ b/include/linux/srcutiny.h
+> @@ -89,16 +89,4 @@ static inline void srcu_torture_stats_print(struct srcu_struct *ssp,
+>  		 data_race(READ_ONCE(ssp->srcu_idx)),
+>  		 data_race(READ_ONCE(ssp->srcu_idx_max)));
+>  }
+> -
+> -static inline int __srcu_read_lock_nmisafe(struct srcu_struct *ssp, bool chknmisafe)
+> -{
+> -	BUG();
+> -	return 0;
+> -}
+> -
+> -static inline void __srcu_read_unlock_nmisafe(struct srcu_struct *ssp, int idx, bool chknmisafe)
+> -{
+> -	BUG();
+> -}
+> -
+>  #endif
+> diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
+> index 35ffdedf86cc..c689a81752c9 100644
+> --- a/include/linux/srcutree.h
+> +++ b/include/linux/srcutree.h
+> @@ -159,7 +155,4 @@ void synchronize_srcu_expedited(struct srcu_struct *ssp);
+>  void srcu_barrier(struct srcu_struct *ssp);
+>  void srcu_torture_stats_print(struct srcu_struct *ssp, char *tt, char *tf);
+>  
+> -int __srcu_read_lock_nmisafe(struct srcu_struct *ssp, bool chknmisafe) __acquires(ssp);
+> -void __srcu_read_unlock_nmisafe(struct srcu_struct *ssp, int idx, bool chknmisafe) __releases(ssp);
+> -
+>  #endif
+> 
+> 
