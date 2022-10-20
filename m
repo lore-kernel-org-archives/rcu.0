@@ -2,105 +2,204 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C5F37C433FE
-	for <rcu@archiver.kernel.org>; Thu, 20 Oct 2022 08:28:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E981AC433FE
+	for <rcu@archiver.kernel.org>; Thu, 20 Oct 2022 08:42:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229501AbiJTI2A (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 20 Oct 2022 04:28:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50974 "EHLO
+        id S229996AbiJTImJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 20 Oct 2022 04:42:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbiJTI17 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 20 Oct 2022 04:27:59 -0400
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A284188133
-        for <rcu@vger.kernel.org>; Thu, 20 Oct 2022 01:27:58 -0700 (PDT)
-Received: by mail-qv1-xf34.google.com with SMTP id i12so13072049qvs.2
-        for <rcu@vger.kernel.org>; Thu, 20 Oct 2022 01:27:58 -0700 (PDT)
+        with ESMTP id S229616AbiJTImI (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 20 Oct 2022 04:42:08 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 488E5159D41
+        for <rcu@vger.kernel.org>; Thu, 20 Oct 2022 01:42:07 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id g11so13293034qts.1
+        for <rcu@vger.kernel.org>; Thu, 20 Oct 2022 01:42:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
          :from:content-transfer-encoding:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=vAYFmXkINTjJjSvosD7JyY8mMrc36MRPPjiOcaF+K1Y=;
-        b=MF9mY9LrtxQJ9y/MfIehqQFud5E+lhTwm+09rzk0yD/RFbw66AjuV6Gto/DzQLulq4
-         pD0YcPljm4H5M/iJghYWZhGuPmWLVvFDT6rdgTx2b5JWxLif3z461paHZqQMJTSAHCjt
-         nRkOudsDu+gEIX2T0wrVipLSdCxfJoDMUVaCs=
+        bh=StguZxeIZvSJHx8TIRzR/2jIU4L9v9uNe0d+i/ToWZQ=;
+        b=WOcb8PzTO38DsVhQafWoNz35Dhjl+BXOaZAbJd5V73YqL1ZINuUhqXGH+uGzebmIWQ
+         RJZza0lsMLrerlsfVjMUBDL9S0dpFXf/U1eAn+x6/AEajd+aAXTIr6AWB8Krq9WvssgZ
+         fdnoNGPXFqtgzFrdGeGASYF11+0mS7a5mGZKU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
          :from:content-transfer-encoding:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=vAYFmXkINTjJjSvosD7JyY8mMrc36MRPPjiOcaF+K1Y=;
-        b=HX4AM0lKjaDbTj5J9ZokqhdVhb366c7aGKntpVaN3/FQGPeIi4rIeVWSlQh4ln3bgi
-         vRtPf6xsXWMpcvQQB3cxVEXMrF+HUMFjpjTqa6c1yAkGwf+oovrziuAMvP+208csm5o4
-         ItBes8hQ1TGg9556MZajwU3R4dm//CESQKnhMw4k3U+5cjB4TTeecLrpsTFEZc6+aJIn
-         frH8v1jU+ORENy2yqHCQjgPn9x7PC5+9lXptcdpyizNgvcr8YCOcq4bKjd1BRB1Twez0
-         UuBoD+frVCO1n49ABxcx1Vp0oJfM/+SITnj2aP0vBXZW0UfYp5MSY3EjzDoqzwLHIxe4
-         nbgA==
-X-Gm-Message-State: ACrzQf1q8lZsUjaCLkyt7SNtUMW/so/dAhPCh81AAf9OYZrbn+7crpbv
-        xcaqujSKXkZ0vlXUchWopxt2YA==
-X-Google-Smtp-Source: AMsMyM4gVknx/zGimNxQCk6OKQeMPCHi9kxUIY0rGsdAUdUJvhROid4TAt1xP4mWJtITy4EJr5D3yw==
-X-Received: by 2002:a0c:f54f:0:b0:4b1:872e:102 with SMTP id p15-20020a0cf54f000000b004b1872e0102mr10244381qvm.123.1666254477516;
-        Thu, 20 Oct 2022 01:27:57 -0700 (PDT)
+        bh=StguZxeIZvSJHx8TIRzR/2jIU4L9v9uNe0d+i/ToWZQ=;
+        b=qJvRCnNXwXoRZT9N9APDYk4CviA/+yuk4sBGGB6L16h/vm4SVvtWGv2whUfqTNPtnW
+         l/lvw9eqrzsKCqA24JpMAGLeIHEe8L8BVU1iJrYwwUdid83RxxzOtbIgJ0Lt6zV2g34c
+         HTQ4xP50qm+bh/axpQVipgnXGcgoaA6SJ9kN2HfAKEAMV+ZT8L/gx+RioTFHPibG3gne
+         Ov7zjEteofhusMRMegwlKyrT0E99443C4+VCM8xs6lVFt4kea3v429/PIHrp9kI63CEv
+         82MP7/YpV/vcBv4vxfIp2CFzXklqgSDoMctHyY+vnv7SgF0ojhWCljfO0j+puI7ViA75
+         gdig==
+X-Gm-Message-State: ACrzQf3i2iVtZp9YvPyJCtnSPLDCONozfO0hyrA6JQx02Vkxs4wh9QmG
+        FrWTMIpprLxzPnVOxM+pmWUii1gV7oECTw==
+X-Google-Smtp-Source: AMsMyM5LcSx05k8/8fwlnDgM9wnUjMX0Az//Un5dA+ip5TWswPhSg6FWDhOcmtiXrWOl0ARTQHBf5w==
+X-Received: by 2002:ac8:7c46:0:b0:39c:fa92:a27a with SMTP id o6-20020ac87c46000000b0039cfa92a27amr7457664qtv.61.1666255326244;
+        Thu, 20 Oct 2022 01:42:06 -0700 (PDT)
 Received: from smtpclient.apple (c-73-148-104-166.hsd1.va.comcast.net. [73.148.104.166])
-        by smtp.gmail.com with ESMTPSA id h10-20020ac8744a000000b0039953dcc480sm5564728qtr.88.2022.10.20.01.27.57
+        by smtp.gmail.com with ESMTPSA id r2-20020ae9d602000000b006ceb933a9fesm6727041qkk.81.2022.10.20.01.42.05
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Oct 2022 01:27:57 -0700 (PDT)
+        Thu, 20 Oct 2022 01:42:05 -0700 (PDT)
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 From:   Joel Fernandes <joel@joelfernandes.org>
 Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v3] rcu: Make call_rcu() lazy only when CONFIG_RCU_LAZY is enabled
-Date:   Thu, 20 Oct 2022 04:27:56 -0400
-Message-Id: <07E5D3DD-2AA5-48B2-ADCF-48004D889724@joelfernandes.org>
-References: <20221020010242.453121-1-qiang1.zhang@intel.com>
-Cc:     paulmck@kernel.org, frederic@kernel.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20221020010242.453121-1-qiang1.zhang@intel.com>
-To:     Zqiang <qiang1.zhang@intel.com>
+Subject: Re: [PATCH] rcu: Make call_rcu() lazy only when CONFIG_RCU_LAZY is enabled
+Date:   Thu, 20 Oct 2022 04:42:05 -0400
+Message-Id: <D7F0EE3F-0A06-4868-87E3-B88B9BD6480C@joelfernandes.org>
+References: <20221019233419.GI5600@paulmck-ThinkPad-P17-Gen-1>
+Cc:     Zqiang <qiang1.zhang@intel.com>, frederic@kernel.org,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20221019233419.GI5600@paulmck-ThinkPad-P17-Gen-1>
+To:     paulmck@kernel.org
 X-Mailer: iPhone Mail (19G82)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
 
-> On Oct 19, 2022, at 8:56 PM, Zqiang <qiang1.zhang@intel.com> wrote:
->=20
-> =EF=BB=BFCurrently, regardless of whether the CONFIG_RCU_LAZY is enabled,
-> invoke the call_rcu() is always lazy, it also means that when
-> CONFIG_RCU_LAZY is disabled, invoke the call_rcu_flush() is also
-> lazy. therefore, this commit make call_rcu() lazy only when
-> CONFIG_RCU_LAZY is enabled.
->=20
-> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-> ---
-> v1->v2->v3:
-> Use IS_ENABLED(CONFIG_RCU_LAZY) to the existing function of the same name.=
-=20
 
-Acked-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-
-Best,
-
- - J
-
-
-> kernel/rcu/tree.c | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
+> On Oct 19, 2022, at 7:34 PM, Paul E. McKenney <paulmck@kernel.org> wrote:
 >=20
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index abc615808b6e..1f6a4b2b13da 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -2887,7 +2887,7 @@ EXPORT_SYMBOL_GPL(call_rcu_flush);
->  */
-> void call_rcu(struct rcu_head *head, rcu_callback_t func)
-> {
-> -    return __call_rcu_common(head, func, true);
-> +    return __call_rcu_common(head, func, IS_ENABLED(CONFIG_RCU_LAZY));
-> }
-> EXPORT_SYMBOL_GPL(call_rcu);
+> =EF=BB=BFOn Wed, Oct 19, 2022 at 02:25:29PM -0400, Joel Fernandes wrote:
+>>=20
+>>=20
+>>>> On Oct 19, 2022, at 1:45 PM, Paul E. McKenney <paulmck@kernel.org> wrot=
+e:
+>>>=20
+>>> =EF=BB=BFOn Wed, Oct 19, 2022 at 08:12:30AM -0400, Joel Fernandes wrote:=
+
+>>>>> On Oct 19, 2022, at 8:10 AM, Joel Fernandes <joel@joelfernandes.org> w=
+rote:
+>>>>>>> On Oct 19, 2022, at 6:34 AM, Zqiang <qiang1.zhang@intel.com> wrote:
+>>>>>>>=20
+>>>>>>> =EF=BB=BFCurrently, regardless of whether the CONFIG_RCU_LAZY is ena=
+bled,
+>>>>>>> invoke the call_rcu() is always lazy, it also means that when
+>>>>>>> CONFIG_RCU_LAZY is disabled, invoke the call_rcu_flush() is also
+>>>>>>> lazy. therefore, this commit make call_rcu() lazy only when
+>>>>>>> CONFIG_RCU_LAZY is enabled.
+>>>>=20
+>>>> First, good eyes!  Thank you for spotting this!!
+
+Indeed.
+
+>>>>>>> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+>>>>>>> ---
+>>>>>>> kernel/rcu/tree.c | 8 +++++++-
+>>>>>>> 1 file changed, 7 insertions(+), 1 deletion(-)
+>>>>>>>=20
+>>>>>>> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+>>>>>>> index abc615808b6e..97ef602da3d5 100644
+>>>>>>> --- a/kernel/rcu/tree.c
+>>>>>>> +++ b/kernel/rcu/tree.c
+>>>>>>> @@ -2839,7 +2839,6 @@ void call_rcu_flush(struct rcu_head *head, rcu=
+_callback_t func)
+>>>>>>> return __call_rcu_common(head, func, false);
+>>>>>>> }
+>>>>>>> EXPORT_SYMBOL_GPL(call_rcu_flush);
+>>>>>>> -#endif
+>>>>>>>=20
+>>>>>>> /**
+>>>>>>> * call_rcu() - Queue an RCU callback for invocation after a grace pe=
+riod.
+>>>>>>> @@ -2890,6 +2889,13 @@ void call_rcu(struct rcu_head *head, rcu_call=
+back_t func)
+>>>>>>> return __call_rcu_common(head, func, true);
+>>>>>>> }
+>>>>>>> EXPORT_SYMBOL_GPL(call_rcu);
+>>>>>>> +#else
+>>>>>>> +void call_rcu(struct rcu_head *head, rcu_callback_t func)
+>>>>>>> +{
+>>>>>>> +    return __call_rcu_common(head, func, false);
+>>>>>=20
+>>>>> Thanks. Instead of adding new function, you can also pass IS_ENABLED(C=
+ONFIG=E2=80=A6) to the existing function of the same name.
+>>>=20
+>>> I do like this approach better -- less code, more obvious what is going o=
+n.
+>>=20
+>> Sounds good. Zqiang, do you mind updating your patch along these lines? T=
+hat way you get the proper attribution.
+
+Acked that patch.
+
+>> More comments below:
+>>>=20
+>>>>> Looks like though I made every one test the patch without having to en=
+able the config option ;-). Hey, I=E2=80=99m a half glass full kind of guy, w=
+hy do you ask?
+>>>>>=20
+>>>>> Paul, I=E2=80=99ll take a closer look once I=E2=80=99m at the desk, bu=
+t would you prefer to squash a diff into the existing patch, or want a new p=
+atch altogether?
+>>>>=20
+>>>> On the other hand, what I=E2=80=99d want is to nuke the config option a=
+ltogether or make it default y, we want to catch issues sooner than later.
+>>>=20
+>>> That might be what we do at some point, but one thing at a time.  Let's
+>>> not penalize innocent bystanders, at least not just yet.
+>>=20
+>> It=E2=80=99s a trade off, I thought that=E2=80=99s why we wanted to have t=
+he binary search stuff. If no one reports issue on Linux-next, then that cod=
+e won=E2=80=99t be put to use in the near future at least.
 >=20
-> --=20
-> 2.25.1
+> Well, not to put too fine a point on it, but we currently really are
+> exposing -next to lazy call_rcu().  ;-)
+
+This is true. I think I assumed nobody will enable a default off config opti=
+on but I probably meant a smaller percentage will.
+
+>>> I do very strongly encourage the ChromeOS and Android folks to test this=
+
+>>> very severely, however.
+>>=20
+>> Agreed. Yes that will happen, though I have to make a note for Android fo=
+lks other than Vlad, to backports these (and enable the config option), care=
+fully! Especially on pre-5.15 kernels. Luckily I had to do this (not so triv=
+ial) exercise myself.
 >=20
+> And this is another situation in which the binary search stuff may prove
+> extremely useful.
+
+Agreed. Thanks. Very least I owe per-rdp splitting of the hashtable, to that=
+ code.  Steven and me talked today that probably the hashtable can go into t=
+he rcu_segcblist itself, and protect it by the nocb lock.
+
+Thanks,
+
+ - Joel
+
+
+>                            Thanx, Paul
+>=20
+>> Thanks!
+>>=20
+>> - Joel
+>>=20
+>>>=20
+>>>                           Thanx, Paul
+>>>=20
+>>>> Thanks.
+>>>>=20
+>>>>>=20
+>>>>> Thanks.
+>>>>>=20
+>>>>> - Joel
+>>>>>=20
+>>>>>=20
+>>>>>> +}
+>>>>>> +EXPORT_SYMBOL_GPL(call_rcu);
+>>>>>> +#endif
+>>>>>>=20
+>>>>>> /* Maximum number of jiffies to wait before draining a batch. */
+>>>>>> #define KFREE_DRAIN_JIFFIES (5 * HZ)
+>>>>>> --=20
+>>>>>> 2.25.1
+>>>>>>=20
