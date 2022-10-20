@@ -2,169 +2,113 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A665FC433FE
-	for <rcu@archiver.kernel.org>; Thu, 20 Oct 2022 21:33:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2EA17C4332F
+	for <rcu@archiver.kernel.org>; Thu, 20 Oct 2022 22:16:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229978AbiJTVdl (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 20 Oct 2022 17:33:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60012 "EHLO
+        id S229608AbiJTWQI (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 20 Oct 2022 18:16:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230009AbiJTVdk (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 20 Oct 2022 17:33:40 -0400
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27A192248C6
-        for <rcu@vger.kernel.org>; Thu, 20 Oct 2022 14:33:39 -0700 (PDT)
-Received: by mail-qv1-xf2a.google.com with SMTP id x15so608299qvp.1
-        for <rcu@vger.kernel.org>; Thu, 20 Oct 2022 14:33:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Y1If2fEA1ln1Ldj1cDxXYN45cAJ7HIJhk+exacuEf5U=;
-        b=SlnwfwnpEsI3kHTxvfD9wyQZpOGRfB6PPis7kHiM2LhDYB1zLec9xgwY0ugllOJSTe
-         OEkoKuh/hS/IapZV8iQjoGrHJN1+LmJ1m5bWlg0/DUJikJjJpMHg904VANNsTpWLZNC/
-         cvz96eBPRXTL7a0eRv7fiu9UY2Awh2x/K3lF0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Y1If2fEA1ln1Ldj1cDxXYN45cAJ7HIJhk+exacuEf5U=;
-        b=v0bd2qgd4o0Y3/1KfU61yaZ5oruiUh3nw69QfdIvz9PfExc1qkzgrbQIyhU1TOqn3r
-         uwfb/ZRdxRcpHR8jjCl0dpI38dalhMnMuQSf6Hbjzf8itCpp8XA8nWrEXMWINYGpJL4S
-         Z4Hex6CLYYTwW3xFBleif8lxfem/rT7VGxoyiV+W1vH2EfOGjabwpvCAXUmPI/p15Qd2
-         DQffyzYFLEssaILabrr9ahze9Ml7nXvPSt/LeivhkdEUKOnoh6LVvqo6iSOnw85VC1Bg
-         5RL8M/wSYY4W1EXOZLCul4iry6pgBJ6jNEb0YTeNevooUlxdhHsJqExh7Je1Zj1Ef3t0
-         GFjw==
-X-Gm-Message-State: ACrzQf18IpRgmVQtezFNCZMF2F3tCwyQMmEqHEo1l6KpshVm4CVrXRn1
-        dHBs3S5unUW62tiSo+4ULE7vK9cbR2CQIA==
-X-Google-Smtp-Source: AMsMyM7tyRGkWMnqdw99NN/hOhwv9PDbG7dUHeGYG42co04kH+8w5RTU74/6uPi/eHThAha+q5AKrg==
-X-Received: by 2002:a0c:e193:0:b0:4b4:7ac2:8c42 with SMTP id p19-20020a0ce193000000b004b47ac28c42mr13650926qvl.51.1666301618237;
-        Thu, 20 Oct 2022 14:33:38 -0700 (PDT)
-Received: from smtpclient.apple ([2600:1003:b843:47ff:86c:c87:eba3:8788])
-        by smtp.gmail.com with ESMTPSA id do20-20020a05620a2b1400b006ec9f5e3396sm8481939qkb.72.2022.10.20.14.33.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Oct 2022 14:33:37 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Joel Fernandes <joel@joelfernandes.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH] rcu: Make call_rcu() lazy only when CONFIG_RCU_LAZY is enabled
-Date:   Thu, 20 Oct 2022 17:33:37 -0400
-Message-Id: <DC93C5EB-91A5-4291-A642-8A57179930E4@joelfernandes.org>
-References: <95331C23-3632-4E0B-9959-43CE159FE60F@joelfernandes.org>
-Cc:     Zqiang <qiang1.zhang@intel.com>, frederic@kernel.org,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-In-Reply-To: <95331C23-3632-4E0B-9959-43CE159FE60F@joelfernandes.org>
-To:     paulmck@kernel.org
-X-Mailer: iPhone Mail (19G82)
+        with ESMTP id S229719AbiJTWQG (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 20 Oct 2022 18:16:06 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF906122BCF;
+        Thu, 20 Oct 2022 15:16:05 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1B8BE61D28;
+        Thu, 20 Oct 2022 22:16:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F464C433D6;
+        Thu, 20 Oct 2022 22:16:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1666304164;
+        bh=gLRQGPgh6vv1pyqgyAZdU6mSmmdNocASosKJU5FROQ8=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=FoZ/OhMbJoPpERRdoMn282AWWkAtAzKzgKn2Visc/y3Thn1wKGZcLB51/408ZbGK6
+         kqCqyKBvARECR79VL9TlJyBr4s4BmIB7tupTg+jISsMvS3Y8VAj0nWGwuSG/KdXOVL
+         yrBu6fe9meezE4hvYIsnKaKx36nuDL4v5W40+SZyaeg4ABYB7PMTGgBHfqyyNTutGX
+         UZmHYqJzaRoU9aovr81BYrM7RiPrBy2DYhnZ3n2W0SemoNPNqc5BdmKVQyBT7UPjmK
+         bMLfdGCrQt1pbg16g4XaASjBV6lo/+E/mrnciR62qEy53ba7vNFTnqpqh+h/iA+kev
+         TCObGyxgsghKw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 0EB325C1109; Thu, 20 Oct 2022 15:16:04 -0700 (PDT)
+Date:   Thu, 20 Oct 2022 15:16:04 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, quic_neeraju@quicinc.com,
+        rcu@vger.kernel.org, Lai Jiangshan <jiangshanlai@gmail.com>
+Subject: Re: [PATCH 1/3] srcu: Warn when NMI-unsafe API is used in NMI
+Message-ID: <20221020221604.GW5600@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20221013172244.1099010-1-frederic@kernel.org>
+ <20221013172244.1099010-2-frederic@kernel.org>
+ <Y0nmcH0SktDdonyW@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y0nmcH0SktDdonyW@google.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Fri, Oct 14, 2022 at 10:45:04PM +0000, Joel Fernandes wrote:
+> On Thu, Oct 13, 2022 at 07:22:42PM +0200, Frederic Weisbecker wrote:
+> > Using the NMI-unsafe reader API from within NMIs is very likely to be
+> > buggy for three reasons:
+> > 
+> > 1) NMIs aren't strictly re-entrant (a pending nested NMI will execute
+> >    at the end of the current one) so it should be fine to use a
+> >    non-atomic increment here. However breakpoints can still interrupt
+> >    NMIs and if a breakpoint callback has a reader on that same ssp, a
+> >    racy increment can happen.
+> > 
+> > 2) If the only reader site for a given ssp is in an NMI, RCU is definetly
+> 								  definitely
+> >    a better choice over SRCU.
+> 
+> Just checking - because NMI are by definition not-preemptibe, so SRCU over
+> RCU doesn't make much sense right?
 
+Agreed.  But you never know...
 
-> On Oct 20, 2022, at 2:46 PM, Joel Fernandes <joel@joelfernandes.org> wrote=
-:
->>>=20
->>>>> More comments below:
->>>>>>=20
->>>>>>>> Looks like though I made every one test the patch without having to=
- enable the config option ;-). Hey, I=E2=80=99m a half glass full kind of gu=
-y, why do you ask?
->>>>>>>>=20
->>>>>>>> Paul, I=E2=80=99ll take a closer look once I=E2=80=99m at the desk,=
- but would you prefer to squash a diff into the existing patch, or want a ne=
-w patch altogether?
->>>>>>>=20
->>>>>>> On the other hand, what I=E2=80=99d want is to nuke the config optio=
-n altogether or make it default y, we want to catch issues sooner than later=
-.
->>>>>>=20
->>>>>> That might be what we do at some point, but one thing at a time.  Let=
-'s
->>>>>> not penalize innocent bystanders, at least not just yet.
->>>>>=20
->>>>> It=E2=80=99s a trade off, I thought that=E2=80=99s why we wanted to ha=
-ve the binary search stuff. If no one reports issue on Linux-next, then that=
- code won=E2=80=99t be put to use in the near future at least.
->>>>=20
->>>> Well, not to put too fine a point on it, but we currently really are
->>>> exposing -next to lazy call_rcu().  ;-)
->>>=20
->>> This is true. I think I assumed nobody will enable a default off config o=
-ption but I probably meant a smaller percentage will.
->>>=20
->>>>>> I do very strongly encourage the ChromeOS and Android folks to test t=
-his
->>>>>> very severely, however.
->>>>>=20
->>>>> Agreed. Yes that will happen, though I have to make a note for Android=
- folks other than Vlad, to backports these (and enable the config option), c=
-arefully! Especially on pre-5.15 kernels. Luckily I had to do this (not so t=
-rivial) exercise myself.
->>>>=20
->>>> And this is another situation in which the binary search stuff may prov=
-e
->>>> extremely useful.
->>>=20
->>> Agreed. Thanks. Very least I owe per-rdp splitting of the hashtable, to t=
-hat code.  Steven and me talked today that probably the hashtable can go int=
-o the rcu_segcblist itself, and protect it by the nocb lock.
->>=20
->> I have to ask...
->>=20
->> How does this fit in with CPU-hotplug and callback migration?
->=20
-> Yes it will require change and I already thought of that, have to update t=
-he hashtable on all such events.
->=20
->> More to the point, what events would cause us to decide that this is
->> required?  For example, shouldn't we give your current binary-search
->> code at least a few chances to save the day?
->=20
-> Totally, if you=E2=80=99re taking the patch as is, I would be very happy. A=
-nd I=E2=80=99ll continue to improve it with the above. But I was not sure ye=
-t if you=E2=80=99re taking it.
->=20
-> I think it=E2=80=99s a worthwhile to take it for mainline in the current s=
-tate and I=E2=80=99ll also add more data about callbacks to it in future (qu=
-euing time of callback, etc) =E2=80=94 basically all the stuff I wanted to a=
-dd to rcu_head.
->=20
-> One reason for the above proposal is I also want to keep it turned on in p=
-roduction, and the current solution cannot be, due to the global locking and=
- is not expected to be kept on in production. But is still a worthwhile addi=
-tion for debug kernels IMO.
+> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-I realized while talking to Steve that the hashtable has to be per CPU if we=
- are to store more than a lazy flag, such as queuing timestamps. This is bec=
-ause you can have multiple callbacks of the same function pointer queued on m=
-ultiple CPUs. So you can have multiple timestamps to store. Same thing if we=
- stored automata. It=E2=80=99s per callback instance, not per callback funct=
-ion.
+I will apply on the next rebase (after today's rebase), thank you!
 
-Thanks,
+							Thanx, Paul
 
- - Joel
-
-
->=20
-> Thanks,
->=20
-> - Joel
->=20
->=20
->>                           Thanx, Paul
->>=20
->>>>>>>>> +}
->>>>>>>>> +EXPORT_SYMBOL_GPL(call_rcu);
->>>>>>>>> +#endif
->>>>>>>>>=20
->>>>>>>>> /* Maximum number of jiffies to wait before draining a batch. */
->>>>>>>>> #define KFREE_DRAIN_JIFFIES (5 * HZ)
->>>>>>>>> --=20
->>>>>>>>> 2.25.1
->>>>>>>>>=20
+> thanks,
+> 
+>  - Joel
+> 
+> > 
+> > 3) Because of the previous reason (2), an ssp having an SRCU read side
+> >    critical section in an NMI is likely to have another one from a task
+> >    context.
+> > 
+> > For all these reasons, warn if an nmi unsafe reader API is used from an
+> > NMI.
+> > 
+> > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> > ---
+> >  kernel/rcu/srcutree.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> > 
+> > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> > index c54142374793..8b7ef1031d89 100644
+> > --- a/kernel/rcu/srcutree.c
+> > +++ b/kernel/rcu/srcutree.c
+> > @@ -642,6 +642,8 @@ static void srcu_check_nmi_safety(struct srcu_struct *ssp, bool nmi_safe)
+> >  
+> >  	if (!IS_ENABLED(CONFIG_PROVE_RCU))
+> >  		return;
+> > +	/* NMI-unsafe use in NMI is a bad sign */
+> > +	WARN_ON_ONCE(!nmi_safe && in_nmi());
+> >  	sdp = raw_cpu_ptr(ssp->sda);
+> >  	old_nmi_safe_mask = READ_ONCE(sdp->srcu_nmi_safety);
+> >  	if (!old_nmi_safe_mask) {
+> > -- 
+> > 2.25.1
+> > 
