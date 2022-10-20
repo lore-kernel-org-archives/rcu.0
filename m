@@ -2,101 +2,157 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AE8AC43217
-	for <rcu@archiver.kernel.org>; Thu, 20 Oct 2022 16:35:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B539C4332F
+	for <rcu@archiver.kernel.org>; Thu, 20 Oct 2022 18:39:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229854AbiJTQfW (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 20 Oct 2022 12:35:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39302 "EHLO
+        id S229865AbiJTSjK (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 20 Oct 2022 14:39:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230139AbiJTQfU (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 20 Oct 2022 12:35:20 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 631EA12A346;
-        Thu, 20 Oct 2022 09:35:11 -0700 (PDT)
+        with ESMTP id S229556AbiJTSjK (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 20 Oct 2022 14:39:10 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D8861FAE6A;
+        Thu, 20 Oct 2022 11:39:05 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D9D47B826C4;
-        Thu, 20 Oct 2022 16:35:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84C10C433D6;
-        Thu, 20 Oct 2022 16:35:03 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 4A236CE2781;
+        Thu, 20 Oct 2022 18:39:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52297C433D6;
+        Thu, 20 Oct 2022 18:39:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666283703;
-        bh=1D50o0naBc2gRDAfGm82dEQ7o6F3FtNqy0eWFByAG7M=;
+        s=k20201202; t=1666291142;
+        bh=2IEnIhsZ/ggObgGJtVdutDm0mfUrlryP2aN6GgYhzbo=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=JJgVs/jKQbha1MJ/tMXRUd38n/8JTRLH+incUHDo585lwYHRAA6HCxLmU+XWNsA/P
-         O9MlU3/sW93OUer5A0lh61+uX7y8HzkYAF8X28Ezi7qmmCT4HeR69+NZTS+sG2RrPq
-         7ZodZ5+qo3R0IA7QIDDqBAG9ALtgH2uCX67JwZpuYFoiKJheECrHlbMzkPvQHtQ+6o
-         jNUoIBkKzkJA4jxIcJIsk+y4y24gDDvqAB/nYS6s/K8sXFCvveK6esE89jutTyMAEQ
-         RWEDcP5BEzU16xhGxoY+WMA1JnzrfSi7lp/2n+YOyug/biSIVB5xVkIFLy0tMS4nbg
-         Te8MCGbG6KCjg==
+        b=eoHmo9VrfhPUqdAno6Fc/em/BqOzlL1/Gc1/rY6YH1xU3PnywwH8SMML28C5xWruk
+         IJEZdglKxXWbQfDILzcoUPBRhXun3uNFqr1pQbPUJTl5+iOf/+SubSgxc0qIlbc9XT
+         Fr2rtyELnHekimMN5kY/u2HV5+rcQtPmssi+5JMnAI1jEi9caowW7eZTrHfsPzNtgX
+         zB+rxW9rHx7SdCOqun4XRIRjXV24LpmBHd4C6wKWJi0Okr19J+h3rQ+TZ9DISsUPIm
+         ZH1Cnpt9yos3uEDIMxlhMPdah76c6/BN89yNZoNyrq7t5rUmHVMIW8gYNcfycKbYcK
+         heCGuc/3eCqFw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 2BF0C5C04D0; Thu, 20 Oct 2022 09:35:03 -0700 (PDT)
-Date:   Thu, 20 Oct 2022 09:35:03 -0700
+        id E76A05C0624; Thu, 20 Oct 2022 11:39:01 -0700 (PDT)
+Date:   Thu, 20 Oct 2022 11:39:01 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Heiko Carstens <hca@linux.ibm.com>
-Cc:     Christian Borntraeger <borntraeger@linux.ibm.com>,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, rostedt@goodmis.org,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        John Ogness <john.ogness@linutronix.de>,
-        Petr Mladek <pmladek@suse.com>, linux-s390@vger.kernel.org
-Subject: Re: [PATCH v3 rcu 08/11] arch/s390: Add
- ARCH_HAS_NMI_SAFE_THIS_CPU_OPS Kconfig option
-Message-ID: <20221020163503.GQ5600@paulmck-ThinkPad-P17-Gen-1>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Zqiang <qiang1.zhang@intel.com>, frederic@kernel.org,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu: Make call_rcu() lazy only when CONFIG_RCU_LAZY is
+ enabled
+Message-ID: <20221020183901.GU5600@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20221019225838.GA2500612@paulmck-ThinkPad-P17-Gen-1>
- <20221019225846.2501109-8-paulmck@kernel.org>
- <b74752cc-5833-c1b5-3697-262c523e794b@linux.ibm.com>
- <Y1D3hReCp/9C9gD3@osiris>
- <Y1D4aYbjRJjUEelZ@osiris>
+References: <20221019233419.GI5600@paulmck-ThinkPad-P17-Gen-1>
+ <D7F0EE3F-0A06-4868-87E3-B88B9BD6480C@joelfernandes.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <Y1D4aYbjRJjUEelZ@osiris>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <D7F0EE3F-0A06-4868-87E3-B88B9BD6480C@joelfernandes.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Oct 20, 2022 at 09:27:37AM +0200, Heiko Carstens wrote:
-> On Thu, Oct 20, 2022 at 09:23:49AM +0200, Heiko Carstens wrote:
-> > On Thu, Oct 20, 2022 at 07:16:44AM +0200, Christian Borntraeger wrote:
-> > > Am 20.10.22 um 00:58 schrieb Paul E. McKenney:
-> > > > The s390 architecture uses either a cmpxchg loop (old systems)
-> > > > or the laa add-to-memory instruction (new systems) to implement
-> > > > this_cpu_add(), both of which are NMI safe.  This means that the old
-> > > > and more-efficient srcu_read_lock() may be used in NMI context, without
-> > > > the need for srcu_read_lock_nmisafe().  Therefore, add the new Kconfig
-> > > > option ARCH_HAS_NMI_SAFE_THIS_CPU_OPS to arch/arm64/Kconfig, which will
-> > > 						s390 ?
-> 
-> Ah, this typo is what Christian pointed out; missed that.
-> 
-> > > > cause NEED_SRCU_NMI_SAFE to be deselected, thus preserving the current
-> > > > srcu_read_lock() behavior.
-> > > > 
-> > > > Link: https://lore.kernel.org/all/20220910221947.171557773@linutronix.de/
-> > > > 
-> > > > Suggested-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
-> > > > Suggested-by: Frederic Weisbecker <frederic@kernel.org>
-> > > > Suggested-by: Boqun Feng <boqun.feng@gmail.com>
-> > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > ...
-> > > > ---
-> > > >   arch/s390/Kconfig | 1 +
-> > > >   1 file changed, 1 insertion(+)
+On Thu, Oct 20, 2022 at 04:42:05AM -0400, Joel Fernandes wrote:
+> > On Oct 19, 2022, at 7:34 PM, Paul E. McKenney <paulmck@kernel.org> wrote:
 > > 
-> > Not sure what Christian was trying to say with his empty reply :)
-> > In any case:
-> > Acked-by: Heiko Carstens <hca@linux.ibm.com>
+> > ﻿On Wed, Oct 19, 2022 at 02:25:29PM -0400, Joel Fernandes wrote:
+> >> 
+> >> 
+> >>>> On Oct 19, 2022, at 1:45 PM, Paul E. McKenney <paulmck@kernel.org> wrote:
+> >>> 
+> >>> ﻿On Wed, Oct 19, 2022 at 08:12:30AM -0400, Joel Fernandes wrote:
+> >>>>> On Oct 19, 2022, at 8:10 AM, Joel Fernandes <joel@joelfernandes.org> wrote:
+> >>>>>>> On Oct 19, 2022, at 6:34 AM, Zqiang <qiang1.zhang@intel.com> wrote:
+> >>>>>>> 
+> >>>>>>> ﻿Currently, regardless of whether the CONFIG_RCU_LAZY is enabled,
+> >>>>>>> invoke the call_rcu() is always lazy, it also means that when
+> >>>>>>> CONFIG_RCU_LAZY is disabled, invoke the call_rcu_flush() is also
+> >>>>>>> lazy. therefore, this commit make call_rcu() lazy only when
+> >>>>>>> CONFIG_RCU_LAZY is enabled.
+> >>>> 
+> >>>> First, good eyes!  Thank you for spotting this!!
+> 
+> Indeed.
+> 
+> >>>>>>> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+> >>>>>>> ---
+> >>>>>>> kernel/rcu/tree.c | 8 +++++++-
+> >>>>>>> 1 file changed, 7 insertions(+), 1 deletion(-)
+> >>>>>>> 
+> >>>>>>> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> >>>>>>> index abc615808b6e..97ef602da3d5 100644
+> >>>>>>> --- a/kernel/rcu/tree.c
+> >>>>>>> +++ b/kernel/rcu/tree.c
+> >>>>>>> @@ -2839,7 +2839,6 @@ void call_rcu_flush(struct rcu_head *head, rcu_callback_t func)
+> >>>>>>> return __call_rcu_common(head, func, false);
+> >>>>>>> }
+> >>>>>>> EXPORT_SYMBOL_GPL(call_rcu_flush);
+> >>>>>>> -#endif
+> >>>>>>> 
+> >>>>>>> /**
+> >>>>>>> * call_rcu() - Queue an RCU callback for invocation after a grace period.
+> >>>>>>> @@ -2890,6 +2889,13 @@ void call_rcu(struct rcu_head *head, rcu_callback_t func)
+> >>>>>>> return __call_rcu_common(head, func, true);
+> >>>>>>> }
+> >>>>>>> EXPORT_SYMBOL_GPL(call_rcu);
+> >>>>>>> +#else
+> >>>>>>> +void call_rcu(struct rcu_head *head, rcu_callback_t func)
+> >>>>>>> +{
+> >>>>>>> +    return __call_rcu_common(head, func, false);
+> >>>>> 
+> >>>>> Thanks. Instead of adding new function, you can also pass IS_ENABLED(CONFIG…) to the existing function of the same name.
+> >>> 
+> >>> I do like this approach better -- less code, more obvious what is going on.
+> >> 
+> >> Sounds good. Zqiang, do you mind updating your patch along these lines? That way you get the proper attribution.
+> 
+> Acked that patch.
+> 
+> >> More comments below:
+> >>> 
+> >>>>> Looks like though I made every one test the patch without having to enable the config option ;-). Hey, I’m a half glass full kind of guy, why do you ask?
+> >>>>> 
+> >>>>> Paul, I’ll take a closer look once I’m at the desk, but would you prefer to squash a diff into the existing patch, or want a new patch altogether?
+> >>>> 
+> >>>> On the other hand, what I’d want is to nuke the config option altogether or make it default y, we want to catch issues sooner than later.
+> >>> 
+> >>> That might be what we do at some point, but one thing at a time.  Let's
+> >>> not penalize innocent bystanders, at least not just yet.
+> >> 
+> >> It’s a trade off, I thought that’s why we wanted to have the binary search stuff. If no one reports issue on Linux-next, then that code won’t be put to use in the near future at least.
+> > 
+> > Well, not to put too fine a point on it, but we currently really are
+> > exposing -next to lazy call_rcu().  ;-)
+> 
+> This is true. I think I assumed nobody will enable a default off config option but I probably meant a smaller percentage will.
+> 
+> >>> I do very strongly encourage the ChromeOS and Android folks to test this
+> >>> very severely, however.
+> >> 
+> >> Agreed. Yes that will happen, though I have to make a note for Android folks other than Vlad, to backports these (and enable the config option), carefully! Especially on pre-5.15 kernels. Luckily I had to do this (not so trivial) exercise myself.
+> > 
+> > And this is another situation in which the binary search stuff may prove
+> > extremely useful.
+> 
+> Agreed. Thanks. Very least I owe per-rdp splitting of the hashtable, to that code.  Steven and me talked today that probably the hashtable can go into the rcu_segcblist itself, and protect it by the nocb lock.
 
-I will apply the fix and the ack on my next rebase, thank you both!
+I have to ask...
+
+How does this fit in with CPU-hotplug and callback migration?
+
+More to the point, what events would cause us to decide that this is
+required?  For example, shouldn't we give your current binary-search
+code at least a few chances to save the day?
 
 							Thanx, Paul
+
+> >>>>>> +}
+> >>>>>> +EXPORT_SYMBOL_GPL(call_rcu);
+> >>>>>> +#endif
+> >>>>>> 
+> >>>>>> /* Maximum number of jiffies to wait before draining a batch. */
+> >>>>>> #define KFREE_DRAIN_JIFFIES (5 * HZ)
+> >>>>>> -- 
+> >>>>>> 2.25.1
+> >>>>>> 
