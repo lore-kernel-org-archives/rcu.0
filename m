@@ -2,113 +2,132 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2EA17C4332F
-	for <rcu@archiver.kernel.org>; Thu, 20 Oct 2022 22:16:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3999CC4332F
+	for <rcu@archiver.kernel.org>; Thu, 20 Oct 2022 22:17:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229608AbiJTWQI (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 20 Oct 2022 18:16:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48910 "EHLO
+        id S229874AbiJTWRM (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 20 Oct 2022 18:17:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229719AbiJTWQG (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 20 Oct 2022 18:16:06 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF906122BCF;
-        Thu, 20 Oct 2022 15:16:05 -0700 (PDT)
+        with ESMTP id S229843AbiJTWRM (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 20 Oct 2022 18:17:12 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3316A219FDD;
+        Thu, 20 Oct 2022 15:17:11 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1B8BE61D28;
-        Thu, 20 Oct 2022 22:16:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F464C433D6;
-        Thu, 20 Oct 2022 22:16:04 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C3A8261D40;
+        Thu, 20 Oct 2022 22:17:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29C46C433D6;
+        Thu, 20 Oct 2022 22:17:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666304164;
-        bh=gLRQGPgh6vv1pyqgyAZdU6mSmmdNocASosKJU5FROQ8=;
+        s=k20201202; t=1666304230;
+        bh=Il3d0PlX0wY6nzksO56o3AO8e9bOL8S6BjAlHket0ug=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=FoZ/OhMbJoPpERRdoMn282AWWkAtAzKzgKn2Visc/y3Thn1wKGZcLB51/408ZbGK6
-         kqCqyKBvARECR79VL9TlJyBr4s4BmIB7tupTg+jISsMvS3Y8VAj0nWGwuSG/KdXOVL
-         yrBu6fe9meezE4hvYIsnKaKx36nuDL4v5W40+SZyaeg4ABYB7PMTGgBHfqyyNTutGX
-         UZmHYqJzaRoU9aovr81BYrM7RiPrBy2DYhnZ3n2W0SemoNPNqc5BdmKVQyBT7UPjmK
-         bMLfdGCrQt1pbg16g4XaASjBV6lo/+E/mrnciR62qEy53ba7vNFTnqpqh+h/iA+kev
-         TCObGyxgsghKw==
+        b=jd41YewXS1bdCjMK58vj9ft4COtTK5GVIjLuBXrSQzggVFdwxOEDlSGnLXPLopykT
+         ZGXWTuUA8j9vDuvx3WwAboeAFWj8F+RZaDC77DkSPGcaMlS34cnYOMhD7TAmFV9VX2
+         Ry+zqeOa+uJiFbtS1BBm4JXR5N4Xzq6G3Zq/KHVeddOSlH3EjVpZ/5fkrBXjRyA82g
+         03oicmFFS1N8ffnTOM2kj4QZ/h8WYvXfzRqw9kJ+NB01rMk1P1iq5yOIGQmbMXT56f
+         aYuaorvNHsAssCdNf+gH+sLrU/nMNXU2on16O0A68B51DQb+/rhEcMl9t+DAkbFGF1
+         dxd/j5Kg5dlRA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 0EB325C1109; Thu, 20 Oct 2022 15:16:04 -0700 (PDT)
-Date:   Thu, 20 Oct 2022 15:16:04 -0700
+        id C29315C1109; Thu, 20 Oct 2022 15:17:09 -0700 (PDT)
+Date:   Thu, 20 Oct 2022 15:17:09 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, quic_neeraju@quicinc.com,
-        rcu@vger.kernel.org, Lai Jiangshan <jiangshanlai@gmail.com>
-Subject: Re: [PATCH 1/3] srcu: Warn when NMI-unsafe API is used in NMI
-Message-ID: <20221020221604.GW5600@paulmck-ThinkPad-P17-Gen-1>
+Cc:     Zqiang <qiang1.zhang@intel.com>, frederic@kernel.org,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH] rcu: Make call_rcu() lazy only when CONFIG_RCU_LAZY is
+ enabled
+Message-ID: <20221020221709.GX5600@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20221013172244.1099010-1-frederic@kernel.org>
- <20221013172244.1099010-2-frederic@kernel.org>
- <Y0nmcH0SktDdonyW@google.com>
+References: <95331C23-3632-4E0B-9959-43CE159FE60F@joelfernandes.org>
+ <DC93C5EB-91A5-4291-A642-8A57179930E4@joelfernandes.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <Y0nmcH0SktDdonyW@google.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <DC93C5EB-91A5-4291-A642-8A57179930E4@joelfernandes.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Oct 14, 2022 at 10:45:04PM +0000, Joel Fernandes wrote:
-> On Thu, Oct 13, 2022 at 07:22:42PM +0200, Frederic Weisbecker wrote:
-> > Using the NMI-unsafe reader API from within NMIs is very likely to be
-> > buggy for three reasons:
-> > 
-> > 1) NMIs aren't strictly re-entrant (a pending nested NMI will execute
-> >    at the end of the current one) so it should be fine to use a
-> >    non-atomic increment here. However breakpoints can still interrupt
-> >    NMIs and if a breakpoint callback has a reader on that same ssp, a
-> >    racy increment can happen.
-> > 
-> > 2) If the only reader site for a given ssp is in an NMI, RCU is definetly
-> 								  definitely
-> >    a better choice over SRCU.
+On Thu, Oct 20, 2022 at 05:33:37PM -0400, Joel Fernandes wrote:
 > 
-> Just checking - because NMI are by definition not-preemptibe, so SRCU over
-> RCU doesn't make much sense right?
+> 
+> > On Oct 20, 2022, at 2:46 PM, Joel Fernandes <joel@joelfernandes.org> wrote:
+> >>> 
+> >>>>> More comments below:
+> >>>>>> 
+> >>>>>>>> Looks like though I made every one test the patch without having to enable the config option ;-). Hey, I’m a half glass full kind of guy, why do you ask?
+> >>>>>>>> 
+> >>>>>>>> Paul, I’ll take a closer look once I’m at the desk, but would you prefer to squash a diff into the existing patch, or want a new patch altogether?
+> >>>>>>> 
+> >>>>>>> On the other hand, what I’d want is to nuke the config option altogether or make it default y, we want to catch issues sooner than later.
+> >>>>>> 
+> >>>>>> That might be what we do at some point, but one thing at a time.  Let's
+> >>>>>> not penalize innocent bystanders, at least not just yet.
+> >>>>> 
+> >>>>> It’s a trade off, I thought that’s why we wanted to have the binary search stuff. If no one reports issue on Linux-next, then that code won’t be put to use in the near future at least.
+> >>>> 
+> >>>> Well, not to put too fine a point on it, but we currently really are
+> >>>> exposing -next to lazy call_rcu().  ;-)
+> >>> 
+> >>> This is true. I think I assumed nobody will enable a default off config option but I probably meant a smaller percentage will.
+> >>> 
+> >>>>>> I do very strongly encourage the ChromeOS and Android folks to test this
+> >>>>>> very severely, however.
+> >>>>> 
+> >>>>> Agreed. Yes that will happen, though I have to make a note for Android folks other than Vlad, to backports these (and enable the config option), carefully! Especially on pre-5.15 kernels. Luckily I had to do this (not so trivial) exercise myself.
+> >>>> 
+> >>>> And this is another situation in which the binary search stuff may prove
+> >>>> extremely useful.
+> >>> 
+> >>> Agreed. Thanks. Very least I owe per-rdp splitting of the hashtable, to that code.  Steven and me talked today that probably the hashtable can go into the rcu_segcblist itself, and protect it by the nocb lock.
+> >> 
+> >> I have to ask...
+> >> 
+> >> How does this fit in with CPU-hotplug and callback migration?
+> > 
+> > Yes it will require change and I already thought of that, have to update the hashtable on all such events.
+> > 
+> >> More to the point, what events would cause us to decide that this is
+> >> required?  For example, shouldn't we give your current binary-search
+> >> code at least a few chances to save the day?
+> > 
+> > Totally, if you’re taking the patch as is, I would be very happy. And I’ll continue to improve it with the above. But I was not sure yet if you’re taking it.
+> > 
+> > I think it’s a worthwhile to take it for mainline in the current state and I’ll also add more data about callbacks to it in future (queuing time of callback, etc) — basically all the stuff I wanted to add to rcu_head.
+> > 
+> > One reason for the above proposal is I also want to keep it turned on in production, and the current solution cannot be, due to the global locking and is not expected to be kept on in production. But is still a worthwhile addition for debug kernels IMO.
+> 
+> I realized while talking to Steve that the hashtable has to be per CPU if we are to store more than a lazy flag, such as queuing timestamps. This is because you can have multiple callbacks of the same function pointer queued on multiple CPUs. So you can have multiple timestamps to store. Same thing if we stored automata. It’s per callback instance, not per callback function.
 
-Agreed.  But you never know...
-
-> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-
-I will apply on the next rebase (after today's rebase), thank you!
+Agreed, to be useful, this must be per callback instance.
 
 							Thanx, Paul
 
-> thanks,
+> Thanks,
 > 
 >  - Joel
 > 
+> 
 > > 
-> > 3) Because of the previous reason (2), an ssp having an SRCU read side
-> >    critical section in an NMI is likely to have another one from a task
-> >    context.
+> > Thanks,
 > > 
-> > For all these reasons, warn if an nmi unsafe reader API is used from an
-> > NMI.
+> > - Joel
 > > 
-> > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> > ---
-> >  kernel/rcu/srcutree.c | 2 ++
-> >  1 file changed, 2 insertions(+)
 > > 
-> > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> > index c54142374793..8b7ef1031d89 100644
-> > --- a/kernel/rcu/srcutree.c
-> > +++ b/kernel/rcu/srcutree.c
-> > @@ -642,6 +642,8 @@ static void srcu_check_nmi_safety(struct srcu_struct *ssp, bool nmi_safe)
-> >  
-> >  	if (!IS_ENABLED(CONFIG_PROVE_RCU))
-> >  		return;
-> > +	/* NMI-unsafe use in NMI is a bad sign */
-> > +	WARN_ON_ONCE(!nmi_safe && in_nmi());
-> >  	sdp = raw_cpu_ptr(ssp->sda);
-> >  	old_nmi_safe_mask = READ_ONCE(sdp->srcu_nmi_safety);
-> >  	if (!old_nmi_safe_mask) {
-> > -- 
-> > 2.25.1
-> > 
+> >>                           Thanx, Paul
+> >> 
+> >>>>>>>>> +}
+> >>>>>>>>> +EXPORT_SYMBOL_GPL(call_rcu);
+> >>>>>>>>> +#endif
+> >>>>>>>>> 
+> >>>>>>>>> /* Maximum number of jiffies to wait before draining a batch. */
+> >>>>>>>>> #define KFREE_DRAIN_JIFFIES (5 * HZ)
+> >>>>>>>>> -- 
+> >>>>>>>>> 2.25.1
+> >>>>>>>>> 
