@@ -2,178 +2,187 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E1451C38A2D
-	for <rcu@archiver.kernel.org>; Fri, 21 Oct 2022 18:50:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E480C38A2D
+	for <rcu@archiver.kernel.org>; Fri, 21 Oct 2022 19:16:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229755AbiJUSuI (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 21 Oct 2022 14:50:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39458 "EHLO
+        id S230428AbiJUTQ1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 21 Oct 2022 15:16:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbiJUSuG (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 21 Oct 2022 14:50:06 -0400
+        with ESMTP id S230395AbiJUTQM (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 21 Oct 2022 15:16:12 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5481A5723C;
-        Fri, 21 Oct 2022 11:50:04 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD4DB11DA9A;
+        Fri, 21 Oct 2022 12:15:27 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E598061E60;
-        Fri, 21 Oct 2022 18:50:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 372D9C433D6;
-        Fri, 21 Oct 2022 18:50:03 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5C6B661F55;
+        Fri, 21 Oct 2022 19:15:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4520C433D6;
+        Fri, 21 Oct 2022 19:15:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666378203;
-        bh=MIMk8SykGtHu+JTAbFVSE1Qacg13FwxfgiTIJ0aoahs=;
+        s=k20201202; t=1666379700;
+        bh=AbUS1JFjhdv2c6YdetyoszWM62iOHLCtRYVnnCFAhoM=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=WGZc+y5LARC/x5z6wooSAa9pmaYMba9XUckBwbtotub0Nnen6fZoTmjE52CTegJye
-         777gCJq0VsQKIHXzsriNrhHFYGU/8xDrirP3ZElVxxN4yYPu9pjiTn2+LWaL4FdXFN
-         IjEqJkCL/we7LCE3NuDLzfMFcvP32UB4exBVtyOC64d1goKsWSP4lCKjigNqU0CfXc
-         oXcwbV/iJvQfBioFaSOp5agohTWoFwEh0d4krGL6lizyfIzXEuMXSY4FiXKUdXOmkd
-         hkHI7NtWuy9RcLEncUYSkD08faYcaAcH8AKuayMjHcbigrTtJ9LeYY4nN/+JO6Dqcw
-         kgpumB9cLDplw==
+        b=GLJTK/LEUuv3GZyohwrD7kcLsCb/T4vxGwS3o8IX3TsHCXrW81WfQuJaxBVG7D1Ap
+         Y1wQawJjdUNzaeellVjogxe/VoBs6QocR6Oy1JJXbdupfo3AW1PY5ZD85xmsXO6vsj
+         37sWYdn357YvoQ+ROvKKbHR53asY7cu2a5kBXxjaOaNKS3uvUeujNxynhatIojJGcg
+         007MEQQ/xxaigY8yRwBm2BEQsiUhD8+pcCKxfdDils+FnrhI7ZuT2XvXh3qss1VQsq
+         HR3XEFhNm2MJhCAX2+HGmvoMb6WSpZaiZsrCsCLG3dBq7GocnNYJN2//mkB1kzToHF
+         WCNB1TjtNp/7A==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id CA29B5C0543; Fri, 21 Oct 2022 11:50:02 -0700 (PDT)
-Date:   Fri, 21 Oct 2022 11:50:02 -0700
+        id 4F4AB5C0543; Fri, 21 Oct 2022 12:15:00 -0700 (PDT)
+Date:   Fri, 21 Oct 2022 12:15:00 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Hou Tao <houtao@huaweicloud.com>
-Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>, houtao1@huawei.com,
-        Delyan Kratunov <delyank@fb.com>, rcu@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2 0/4] Remove unnecessary RCU grace period
- chaining
-Message-ID: <20221021185002.GP5600@paulmck-ThinkPad-P17-Gen-1>
+To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] rcu: Add RCU stall diagnosis information
+Message-ID: <20221021191500.GQ5600@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20221014113946.965131-1-houtao@huaweicloud.com>
- <20221017133941.GF5600@paulmck-ThinkPad-P17-Gen-1>
- <0b01d904-523e-14de-71fa-23bf23d2743f@huaweicloud.com>
- <20221018150824.GP5600@paulmck-ThinkPad-P17-Gen-1>
- <da44591b-71d3-1cf4-fb68-1218d7a531b7@huaweicloud.com>
+References: <20221017100108.2063-1-thunder.leizhen@huawei.com>
+ <20221020231353.GC5600@paulmck-ThinkPad-P17-Gen-1>
+ <f71fa16b-10c8-58a8-4646-9b5efc44a429@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <da44591b-71d3-1cf4-fb68-1218d7a531b7@huaweicloud.com>
+In-Reply-To: <f71fa16b-10c8-58a8-4646-9b5efc44a429@huawei.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Oct 21, 2022 at 03:08:21PM +0800, Hou Tao wrote:
-> Hi,
+On Fri, Oct 21, 2022 at 04:07:43PM +0800, Leizhen (ThunderTown) wrote:
 > 
-> On 10/18/2022 11:08 PM, Paul E. McKenney wrote:
-> > On Tue, Oct 18, 2022 at 03:31:20PM +0800, Hou Tao wrote:
-> >> Hi,
-> >>
-> >> On 10/17/2022 9:39 PM, Paul E. McKenney wrote:
-> >>> On Fri, Oct 14, 2022 at 07:39:42PM +0800, Hou Tao wrote:
-> SNIP
-> >>>
-> >> Thanks for the review. But it seems I missed another possible use case for
-> >> rcu_trace_implies_rcu_gp() in bpf memory allocator. The code snippet for
-> >> free_mem_alloc() is as following:
-> >>
-> >> static void free_mem_alloc(struct bpf_mem_alloc *ma)
-> >> {
-> >>         /* waiting_for_gp lists was drained, but __free_rcu might
-> >>          * still execute. Wait for it now before we freeing percpu caches.
-> >>          */
-> >>         rcu_barrier_tasks_trace();
-> >>         rcu_barrier();
-> >>         free_mem_alloc_no_barrier(ma);
-> >> }
-> >>
-> >> It uses rcu_barrier_tasks_trace() and rcu_barrier() to wait for the completion
-> >> of pending call_rcu_tasks_trace()s and call_rcu()s. I think it is also safe to
-> >> check rcu_trace_implies_rcu_gp() in free_mem_alloc() and if it is true, there is
-> >> no need to call rcu_barrier().
-> >>
-> >> static void free_mem_alloc(struct bpf_mem_alloc *ma)
-> >> {
-> >>         /* waiting_for_gp lists was drained, but __free_rcu_tasks_trace()
-> >>          * or __free_rcu() might still execute. Wait for it now before we
-> >>          * freeing percpu caches.
-> >>          */
-> >>         rcu_barrier_tasks_trace();
-> >>         if (!rcu_trace_implies_rcu_gp())
-> >>                 rcu_barrier();
-> >>         free_mem_alloc_no_barrier(ma);
-> >> }
-> >>
-> >> Does the above change look good to you ? If it is, I will post v3 to include the
-> >> above change and add your Reviewed-by tag.
-> > Unfortunately, although synchronize_rcu_tasks_trace() implies
-> > that synchronize_rcu(), there is no relationship between the
-> > callbacks.  Furthermore, rcu_barrier_tasks_trace() does not imply
-> > synchronize_rcu_tasks_trace().
 > 
-> Yes. I see. And according to the code, if there is not pending cb,
-> rcu_barrier_tasks_trace() will returned immediately. It is also possible
-> rcu_tasks_trace kthread is in the middle of grace period waiting when invoking
-> rcu_barrier_task_trace(), so rcu_barrier_task_trace() does not imply
-> synchronize_rcu_tasks_trace().
-
-Very good!
-
-> > So the above change really would break things.  Please do not do it.
+> On 2022/10/21 7:13, Paul E. McKenney wrote:
+> > On Mon, Oct 17, 2022 at 06:01:05PM +0800, Zhen Lei wrote:
+> >> In some extreme cases, such as the I/O pressure test, the CPU usage may
+> >> be 100%, causing RCU stall. In this case, the printed information about
+> >> current is not useful. Displays the number and usage of hard interrupts,
+> >> soft interrupts, and context switches that are generated within half of
+> >> the CPU stall timeout, can help us make a general judgment. In other
+> >> cases, we can preliminarily determine whether an infinite loop occurs
+> >> when local_irq, local_bh or preempt is disabled.
+> >>
+> >> Zhen Lei (3):
+> >>   sched: Add helper kstat_cpu_softirqs_sum()
+> >>   sched: Add helper nr_context_switches_cpu()
+> >>   rcu: Add RCU stall diagnosis information
+> > 
+> > Interesting approach, thank you!
+> > 
+> > I have pulled this in for testing and review, having rescued it from my
+> > spam folder.
 > 
-> However I am a little confused about the conclusion. If only considering the
-> invocations of call_rcu() and call_rcu_tasks_trace() in kernel/bpf/memalloc.c, I
-> think it is safe to do so, right ? Because if  rcu_trace_implies_rcu_gp() is
-> true, there will be no invocation of call_rcu() and rcu_barrier_tasks_trace()
-> will wait for the completion of pending call_rcu_tasks_trace(). If
-> rcu_trace_implies_rcu_gp(), rcu_barrier_tasks_trace() and rcu_barrier() will do
-> the job. If considering the invocations of call_rcu() in other places, I think
-> it is definitely unsafe to do that, right ?
+> Thanks. My company's mail system has been having some problems lately.
+> 
+> Also, I need to apologize that yesterday I found out there was a mistake
+> in patch 3/3. Yesterday, I finally got to print_other_cpu_stall() by forcing
+> a stub.
 
-Agreed, I am being cautious and pessimistic in assuming that there are
-other call_rcu() invocations.  On the other hand, my caution and pessimism
-is based on their having been other call_rcu() invocations in the past.
-So please verify that there are none before making this sort of change.
+OK, I done dropped your three patches for the time being.
+
+Please feel free to submit v2 whenever you are ready to do so.
+
+> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+> index 08cfcf526f7d245..caaee5f4ee091df 100644
+> --- a/kernel/rcu/tree_stall.h
+> +++ b/kernel/rcu/tree_stall.h
+> @@ -451,7 +451,7 @@ static void print_cpu_stat_info(int cpu)
+>         if (r->gp_seq != rdp->gp_seq)
+>                 return;
+> 
+> -       cpustat = kcpustat_this_cpu->cpustat;
+> +       cpustat = kcpustat_cpu(cpu).cpustat;
+>         half_timeout = rcu_jiffies_till_stall_check() / 2;
+> 
+>         pr_err("         hardirqs   softirqs   csw/system\n");
+> 
+> > 
+> > Some questions that might come up include:  (1) Can the addition of
+> > things like cond_resched() make RCU happier with the I/O pressure test?
+> > (2) Should there be a way to turn this off for environments with slow
+> > consoles?  (3) If this information shows heavy CPU usage, what debug
+> > and fix approach should be used?
+> 
+> If the CPU usage is high due to busy services, I think it is excusable
+> to report RCU stall warning.
+
+Not so much.  RCU CPU stall warning usually means that there is some
+overly long loop in the kernel.
+
+>                              When users see RCU stall, they are most
+> worried about whether there are unrecoverable errors, such as dead loop.
+> If the cause is known to be the CPU usage, the I/O performance has
+> reached its peak, this is probably what people want to see.
+
+You have a workload that can be carried out entirely in interrupt
+handlers?  If not, the kernel code really should be updated to avoid
+the RCU CPU stall warnings.
+
+> (1) This needs to be considered by the business task itself. As far as I
+>     know some drivers' data processing is done in an interrupt context.
+
+You are seeing an entire CPU being consumed by interrupt handlers?
+If so, is the CPU being carefully placed in the idle loop beforehand?
+If not, how do you keep the long delays in the interrupted processing
+from causing problems?
+
+> (2) Do you mean to suppress such new debugging information that I added?
+>     or the whole RCU stall information?
+
+Only the new debugging information.  I already get complaints about RCU
+CPU stall warnings producing more output than people like.
+
+> (3) The statistics can be accurate to a single hard interrupt, software
+>     interrupt, or task. However, the price will be higher. Users can
+>     recall what they did at the time, then reproduce it. Maybe we can get
+>     this code ready, add a new debugging option, and turn it on when needed.
+
+Let me ask this a different way.  What combination of numbers would lead
+you to believe that a given RCU CPU stall warning can safely be ignored?
+
+> > For an example of #1, if a CPU is flooded with softirq activity, one
+> > might hope that the call to rcu_softirq_qs() would prevent the RCU CPU
+> > stall warning, at least for kernels built with CONFIG_PREEMPT_RT=n.
+> > Similarly, if there are huge numbers of context switches, one might hope
+> > that the rcu_note_context_switch() would report a quiescent state sooner
+> > rather than later.
+> 
+> Good idea. I'm going to dig deeper.
+> 
+> How about dynamically extending the stall timeout if the CPU usage is too high?
+
+Let's first work out why the RCU CPU stalls are happening.  After all, if
+there is a particular case that is truly harmless, it would be better to
+arrange that stalls not be printed at all in that case.  It is better to
+just not have false positives, right?
 
 							Thanx, Paul
 
-> > You could use workqueues or similar to make the rcu_barrier_tasks_trace()
-> > and the rcu_barrier() wait concurrently, though.  This would of course
-> > require some synchronization.
-> Thanks for the suggestion. Will check it later.
-> >
+> > Thoughts?
+> > 
 > > 							Thanx, Paul
-> >
-> >>>> Change Log:
-> >>>>
-> >>>> v2:
-> >>>>  * codify the implication of RCU Tasks Trace grace period instead of
-> >>>>    assuming for it
-> >>>>
-> >>>> v1: https://lore.kernel.org/bpf/20221011071128.3470622-1-houtao@huaweicloud.com
-> >>>>
-> >>>> Hou Tao (3):
-> >>>>   bpf: Use rcu_trace_implies_rcu_gp() in bpf memory allocator
-> >>>>   bpf: Use rcu_trace_implies_rcu_gp() in local storage map
-> >>>>   bpf: Use rcu_trace_implies_rcu_gp() for program array freeing
-> >>>>
-> >>>> Paul E. McKenney (1):
-> >>>>   rcu-tasks: Provide rcu_trace_implies_rcu_gp()
-> >>>>
-> >>>>  include/linux/rcupdate.h       | 12 ++++++++++++
-> >>>>  kernel/bpf/bpf_local_storage.c | 13 +++++++++++--
-> >>>>  kernel/bpf/core.c              |  8 +++++++-
-> >>>>  kernel/bpf/memalloc.c          | 15 ++++++++++-----
-> >>>>  kernel/rcu/tasks.h             |  2 ++
-> >>>>  5 files changed, 42 insertions(+), 8 deletions(-)
-> >>>>
-> >>>> -- 
-> >>>> 2.29.2
-> >>>>
-> >>> .
+> > 
+> >>  include/linux/kernel_stat.h | 12 +++++++++++
+> >>  kernel/rcu/tree.h           | 11 ++++++++++
+> >>  kernel/rcu/tree_stall.h     | 40 +++++++++++++++++++++++++++++++++++++
+> >>  kernel/sched/core.c         |  5 +++++
+> >>  4 files changed, 68 insertions(+)
+> >>
+> >> -- 
+> >> 2.25.1
+> >>
+> > .
+> > 
 > 
+> -- 
+> Regards,
+>   Zhen Lei
