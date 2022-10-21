@@ -2,156 +2,74 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A23DAC433FE
-	for <rcu@archiver.kernel.org>; Fri, 21 Oct 2022 13:50:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 959E3C4332F
+	for <rcu@archiver.kernel.org>; Fri, 21 Oct 2022 13:59:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229734AbiJUNu0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 21 Oct 2022 09:50:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48220 "EHLO
+        id S231205AbiJUN7P (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 21 Oct 2022 09:59:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229788AbiJUNuY (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 21 Oct 2022 09:50:24 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 700F51D93E8;
-        Fri, 21 Oct 2022 06:50:19 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        with ESMTP id S231241AbiJUN7O (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 21 Oct 2022 09:59:14 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C04A2793EB;
+        Fri, 21 Oct 2022 06:59:14 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id BEDDA219C8;
-        Fri, 21 Oct 2022 13:50:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1666360217; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=52+XSCFwlMADDtkLiX19EF6vTQJl2O9f027xZLvwVcs=;
-        b=hR9+lF5W88X7dPunQ9qH12qpIXwbBHgIQm6M1oruIRx+4IpMWcAF62LCaQRfxDLqi6QWbQ
-        dkkaYG4FBcTQs04j8f5dduv4gOme3KNYpeODqcj4ChFrBRSWdQgueoKkdkKdDw6UD4+9CC
-        mrQbRTPDzOSM4edBXrI+cUW/zqyo+Kw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1666360217;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=52+XSCFwlMADDtkLiX19EF6vTQJl2O9f027xZLvwVcs=;
-        b=7vT+QMr+lniBsnyY5+/gvxzD17hl9ND9mP8k9zXzlx8cRN6Sd5u//l7GTILQr4tE/efZw9
-        x+dD1n0ObwDMQ2CQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8C42F1331A;
-        Fri, 21 Oct 2022 13:50:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id YPOWIZmjUmNIDwAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Fri, 21 Oct 2022 13:50:17 +0000
-Message-ID: <8504f36a-b6bc-4c46-843e-55d8cd5a1dd0@suse.cz>
-Date:   Fri, 21 Oct 2022 15:50:17 +0200
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D326661DE5;
+        Fri, 21 Oct 2022 13:59:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C13AC433C1;
+        Fri, 21 Oct 2022 13:59:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1666360753;
+        bh=mBq+yY6UtHl0vbnfTZZhgMvA7MKGsu005ng6CNo5lDM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Aj2MeGaTHdBrjA3ZHYJXXRjuIdEIeqQrq/EVAH2kWn/zE/3K/wSg/JgMv3pygReX0
+         qVtyhOiL1/SccEmDIg6cV6iylIgxUZvu7olqerDXuM8LvozjavQ14SsQB5FiXMZecE
+         y+Xa4Wf2IlkP6ZnNmBQuf7p/bNa8r1FrGQ97izynNe7EkWX1fy6T7p120W+ogcmyCo
+         EoMipz/S/MstwGgkaOUH6RpLpJIxw2IIJSNdBEyFu5vW00HQ77IjAJQQWtcRNhV1Cs
+         UqdBknhlr9TPTme5K0pC+EPkI0rMScihGtzAO3fnwCPrf7HyiRhSarMM3MKDcPx0l9
+         /oMZZpHb1QLPg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id CE6D35C033E; Fri, 21 Oct 2022 06:59:12 -0700 (PDT)
+Date:   Fri, 21 Oct 2022 06:59:12 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Frederic Weisbecker <frederic@kernel.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com,
+        rostedt@goodmis.org, tglx@linutronix.de, pmladek@suse.com
+Subject: Re: [PATCH v2 rcu 0/8] NMI-safe SRCU reader API
+Message-ID: <20221021135912.GI5600@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <87k04x4e0r.fsf@jogness.linutronix.de>
+ <20221018152418.GR5600@paulmck-ThinkPad-P17-Gen-1>
+ <87ilkh0y52.fsf@jogness.linutronix.de>
+ <20221018185936.GX5600@paulmck-ThinkPad-P17-Gen-1>
+ <20221018215721.GA1716567@paulmck-ThinkPad-P17-Gen-1>
+ <87pmeoawwe.fsf@jogness.linutronix.de>
+ <20221019191418.GF5600@paulmck-ThinkPad-P17-Gen-1>
+ <20221019220537.GA1234896@lothringen>
+ <20221020222718.GA5600@paulmck-ThinkPad-P17-Gen-1>
+ <87r0z1gy51.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.3
-Subject: Re: [PATCH rcu 5/8] slab: Explain why SLAB_DESTROY_BY_RCU reference
- before locking
-Content-Language: en-US
-To:     paulmck@kernel.org, Christoph Lameter <cl@gentwo.de>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, rostedt@goodmis.org,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org
-References: <20221019224652.GA2499358@paulmck-ThinkPad-P17-Gen-1>
- <20221019224659.2499511-5-paulmck@kernel.org>
- <03d5730-9241-542d-76c6-728be4487c4@gentwo.de>
- <20221021134309.GG5600@paulmck-ThinkPad-P17-Gen-1>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20221021134309.GG5600@paulmck-ThinkPad-P17-Gen-1>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87r0z1gy51.fsf@jogness.linutronix.de>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 10/21/22 15:43, Paul E. McKenney wrote:
-> On Fri, Oct 21, 2022 at 09:44:23AM +0200, Christoph Lameter wrote:
->> On Wed, 19 Oct 2022, Paul E. McKenney wrote:
->> 
->> > It is not obvious to the casual user why it is absolutely necessary to
->> > acquire a reference to a SLAB_DESTROY_BY_RCU structure before acquiring
->> > a lock in that structure.  Therefore, add a comment explaining this point.
->> 
->> Sorry but this is not correct and difficult to comprehend.
->> 
->> 1. You do not need a reference to a slab object after it was allocated.
->>    Objects must be properly protected by rcu_locks.
->> 
->> 2. Locks are initialized once on slab allocation via a constructor (*not* on object allocation via kmem_cache_alloc)
->> 
->> 3. Modifying locks at allocation/free is not possible since references to
->>    these objects may still persist after free and before alloc.
->> 
->> 4. The old term SLAB_DESTROY_BY_RCU is used here.
+On Fri, Oct 21, 2022 at 02:33:22PM +0206, John Ogness wrote:
+> On 2022-10-20, "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> > I have an untested but allegedly fixed branch on -rcu on branch
+> > srcunmisafe.2022.10.20a.
 > 
-> Thank you for looking this over, but Vlastimil beat you to it.  How does
-> the update below look?
+> FWIW, my C-I build system was happy with srcunmisafe.2022.10.20a.
 
-LGTM.
+Thank you for checking!
 
-> 							Thanx, Paul
-> 
-> ------------------------------------------------------------------------
-> 
-> commit ff4c536e6b44e2e185e38c3653851f92e07139da
-> Author: Paul E. McKenney <paulmck@kernel.org>
-> Date:   Mon Sep 26 08:57:56 2022 -0700
-> 
->     slab: Explain why SLAB_TYPESAFE_BY_RCU reference before locking
->     
->     It is not obvious to the casual user why it is absolutely necessary to
->     acquire a reference to a SLAB_TYPESAFE_BY_RCU structure before acquiring
->     a lock in that structure.  Therefore, add a comment explaining this point.
->     
->     [ paulmck: Apply Vlastimil Babka feedback. ]
->     
->     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Today's transformation will have the same overall diffs, so here is
+hoping!
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
-
->     Cc: Christoph Lameter <cl@linux.com>
->     Cc: Pekka Enberg <penberg@kernel.org>
->     Cc: David Rientjes <rientjes@google.com>
->     Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
->     Cc: Andrew Morton <akpm@linux-foundation.org>
->     Cc: Vlastimil Babka <vbabka@suse.cz>
->     Cc: Roman Gushchin <roman.gushchin@linux.dev>
->     Cc: Hyeonggon Yoo <42.hyeyoo@gmail.com>
->     Cc: <linux-mm@kvack.org>
-> 
-> diff --git a/include/linux/slab.h b/include/linux/slab.h
-> index 90877fcde70bd..487418c7ea8cd 100644
-> --- a/include/linux/slab.h
-> +++ b/include/linux/slab.h
-> @@ -76,6 +76,17 @@
->   * rcu_read_lock before reading the address, then rcu_read_unlock after
->   * taking the spinlock within the structure expected at that address.
->   *
-> + * Note that it is not possible to acquire a lock within a structure
-> + * allocated with SLAB_TYPESAFE_BY_RCU without first acquiring a reference
-> + * as described above.  The reason is that SLAB_TYPESAFE_BY_RCU pages
-> + * are not zeroed before being given to the slab, which means that any
-> + * locks must be initialized after each and every kmem_struct_alloc().
-> + * Alternatively, make the ctor passed to kmem_cache_create() initialize
-> + * the locks at page-allocation time, as is done in __i915_request_ctor(),
-> + * sighand_ctor(), and anon_vma_ctor().  Such a ctor permits readers
-> + * to safely acquire those ctor-initialized locks under rcu_read_lock()
-> + * protection.
-> + *
->   * Note that SLAB_TYPESAFE_BY_RCU was originally named SLAB_DESTROY_BY_RCU.
->   */
->  /* Defer freeing slabs to RCU */
-
+							Thanx, Paul
