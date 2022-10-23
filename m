@@ -2,189 +2,93 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 928A8C433FE
-	for <rcu@archiver.kernel.org>; Sat, 22 Oct 2022 12:46:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A5A13C3A59D
+	for <rcu@archiver.kernel.org>; Sun, 23 Oct 2022 22:31:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229683AbiJVMqN (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 22 Oct 2022 08:46:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60218 "EHLO
+        id S229585AbiJWWbu (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 23 Oct 2022 18:31:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229766AbiJVMqL (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 22 Oct 2022 08:46:11 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 215B1FAA55;
-        Sat, 22 Oct 2022 05:46:09 -0700 (PDT)
-Received: from dggpemm500022.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Mvgtm0YkTz15LxN;
-        Sat, 22 Oct 2022 20:41:20 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Sat, 22 Oct 2022 20:46:07 +0800
-Received: from thunder-town.china.huawei.com (10.174.178.55) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Sat, 22 Oct 2022 20:46:07 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     "Paul E . McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        "Josh Triplett" <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, <rcu@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH v2 3/3] rcu: Add RCU stall diagnosis information
-Date:   Sat, 22 Oct 2022 20:45:25 +0800
-Message-ID: <20221022124525.2080-4-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.37.3.windows.1
-In-Reply-To: <20221022124525.2080-1-thunder.leizhen@huawei.com>
-References: <20221022124525.2080-1-thunder.leizhen@huawei.com>
+        with ESMTP id S229520AbiJWWbt (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 23 Oct 2022 18:31:49 -0400
+X-Greylist: delayed 245 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 23 Oct 2022 15:31:48 PDT
+Received: from mail.usefulaso.com (unknown [98.126.219.146])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0B6F2F659
+        for <rcu@vger.kernel.org>; Sun, 23 Oct 2022 15:31:48 -0700 (PDT)
+Received: from localhost (unknown [127.0.0.1])
+        by mail.usefulaso.com (Postfix) with ESMTP id 1C2FD805077
+        for <rcu@vger.kernel.org>; Sun, 23 Oct 2022 22:27:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=usefulaso.com; h=
+        content-transfer-encoding:content-type:content-type:mime-version
+        :message-id:date:date:subject:subject:to:from:from:reply-to; s=
+        dkim; t=1666564062; x=1669156063; bh=6BCzqfPxvfWAXH1YzLdnC5ticl4
+        240zfbKFE+TqgQzE=; b=pCsiymyOpZNYdwTyu1Q1ysD326yG5tGxXQsYsT8limE
+        lKPlVm8RXz+yVEzVkxyRvu4SGnWtUw7M+RSZliZrQ+K/NzYiXpL9VR1PYkUE/ZpM
+        +GgDjcf77Hmb6DMziV0Z5ljC4VsrDB/TnCN1OL7/NzGx6ydp38XqcFkUecaObXCk
+        =
+X-Virus-Scanned: amavisd-new at usefulaso.com
+Received: from mail.usefulaso.com ([127.0.0.1])
+        by localhost (mail.usefulaso.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 5lalA8aW1HZx for <rcu@vger.kernel.org>;
+        Mon, 24 Oct 2022 06:27:42 +0800 (CST)
+Received: from usefulaso.com (unknown [84.17.52.166])
+        by mail.usefulaso.com (Postfix) with ESMTPA id EF98E805078
+        for <rcu@vger.kernel.org>; Mon, 24 Oct 2022 06:27:40 +0800 (CST)
+Reply-To: jacques_bouchex@yahoo.com
+From:   Jacques BOUCHE <esther@usefulaso.com>
+To:     rcu@vger.kernel.org
+Subject: =?UTF-8?B?Qm9uam91ciwgLyBEb2Jyw70gZGVuLA==?=
+Date:   23 Oct 2022 23:27:12 +0100
+Message-ID: <20221023232711.801191E3EBA00E4C@usefulaso.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.178.55]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-In some extreme cases, such as the I/O pressure test, the CPU usage may
-be 100%, causing RCU stall. In this case, the printed information about
-current is not useful. Displays the number and usage of hard interrupts,
-soft interrupts, and context switches that are generated within half of
-the CPU stall timeout, can help us make a general judgment. In other
-cases, we can preliminarily determine whether an infinite loop occurs
-when local_irq, local_bh or preempt is disabled.
+Bonjour,
+D=C3=A9sol=C3=A9 pour cette fa=C3=A7on de vous contacter, je viens de voir =
+votre=20
+profil et j'ai pens=C3=A9 que vous =C3=A9tiez la personne dont j'avais=20
+besoin. En bref, je m'appelle Jacques BOUCHEX, d'origine=20
+fran=C3=A7aise. Je suis atteint d'une maladie grave qui me condamne =C3=A0=
+=20
+une mort certaine, un cancer du cerveau, et je dispose d'une=20
+somme de vingt-cinq millions cinq cent mille euros (25.500.000=20
+euros) que je souhaite remettre =C3=A0 un tiers fiable et honn=C3=AAte pour=
+=20
+son bon usage. J'ai une entreprise qui importe de l'huile rouge=20
+en France et dans d'autres pays. J'ai perdu ma femme et deux=20
+adorables enfants il y a 10 ans dans un malheureux accident de la=20
+route. J'aimerais faire don de cette somme avant de mourir car=20
+mes jours sont compt=C3=A9s. Veuillez m'envoyer un courriel =C3=A0=20
+l'adresse suivante : jacques_bouchex@yahoo.com Que le Seigneur=20
+vous b=C3=A9nisse.
 
-For example:
-rcu: INFO: rcu_preempt self-detected stall on CPU
-rcu:     0-....: (1250 ticks this GP) <omitted>
-rcu:          hardirqs   softirqs   csw/system
-rcu:  number:      624         45            0
-rcu: cputime:       69          1         2425   ==> 2500(ms)
+-
 
-The example above shows that the number of hard and soft interrupts is
-small, there is zero context switching, and the system takes up a lot of
-time. We can quickly conclude that the current task is infinitely looped
-with preempt_disable().
-
-The impact on system performance is negligible because snapshot is
-recorded only one time after 1/2 CPU stall timeout.
-
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- kernel/rcu/tree.c       | 16 ++++++++++++++++
- kernel/rcu/tree.h       | 11 +++++++++++
- kernel/rcu/tree_stall.h | 28 ++++++++++++++++++++++++++++
- 3 files changed, 55 insertions(+)
-
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 6bb8e72bc8151ef..56c49a3117e7a81 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -931,6 +931,22 @@ static int rcu_implicit_dynticks_qs(struct rcu_data *rdp)
- 			rdp->rcu_iw_gp_seq = rnp->gp_seq;
- 			irq_work_queue_on(&rdp->rcu_iw, rdp->cpu);
- 		}
-+
-+		if (rdp->snap_record.gp_seq != rdp->gp_seq) {
-+			u64 *cpustat;
-+			struct rcu_snap_record *r;
-+
-+			cpustat = kcpustat_cpu(rdp->cpu).cpustat;
-+
-+			r = &rdp->snap_record;
-+			r->cputime_irq     = cpustat[CPUTIME_IRQ];
-+			r->cputime_softirq = cpustat[CPUTIME_SOFTIRQ];
-+			r->cputime_system  = cpustat[CPUTIME_SYSTEM];
-+			r->nr_hardirqs = kstat_cpu_irqs_sum(rdp->cpu);
-+			r->nr_softirqs = kstat_cpu_softirqs_sum(rdp->cpu);
-+			r->nr_csw = nr_context_switches_cpu(rdp->cpu);
-+			r->gp_seq = rdp->gp_seq;
-+		}
- 	}
- 
- 	return 0;
-diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index d4a97e40ea9c3e2..fb3121d15cca6f8 100644
---- a/kernel/rcu/tree.h
-+++ b/kernel/rcu/tree.h
-@@ -158,6 +158,16 @@ union rcu_noqs {
- 	u16 s; /* Set of bits, aggregate OR here. */
- };
- 
-+struct rcu_snap_record {
-+	unsigned long	gp_seq;
-+	u64		cputime_irq;
-+	u64		cputime_softirq;
-+	u64		cputime_system;
-+	unsigned int	nr_hardirqs;
-+	unsigned int	nr_softirqs;
-+	unsigned long long nr_csw;
-+};
-+
- /* Per-CPU data for read-copy update. */
- struct rcu_data {
- 	/* 1) quiescent-state and grace-period handling : */
-@@ -262,6 +272,7 @@ struct rcu_data {
- 	short rcu_onl_gp_flags;		/* ->gp_flags at last online. */
- 	unsigned long last_fqs_resched;	/* Time of last rcu_resched(). */
- 	unsigned long last_sched_clock;	/* Jiffies of last rcu_sched_clock_irq(). */
-+	struct rcu_snap_record snap_record;
- 
- 	int cpu;
- };
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index 5653560573e22d6..f8c9d0284d116a8 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -428,6 +428,32 @@ static bool rcu_is_rcuc_kthread_starving(struct rcu_data *rdp, unsigned long *jp
- 	return j > 2 * HZ;
- }
- 
-+static void print_cpu_stat_info(int cpu)
-+{
-+	u64 *cpustat;
-+	unsigned long half_timeout;
-+	struct rcu_snap_record *r;
-+	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
-+
-+	r = &rdp->snap_record;
-+	if (r->gp_seq != rdp->gp_seq)
-+		return;
-+
-+	cpustat = kcpustat_cpu(cpu).cpustat;
-+	half_timeout = rcu_jiffies_till_stall_check() / 2;
-+
-+	pr_err("         hardirqs   softirqs   csw/system\n");
-+	pr_err(" number: %8d %10d %12lld\n",
-+		kstat_cpu_irqs_sum(cpu) - r->nr_hardirqs,
-+		kstat_cpu_softirqs_sum(cpu) - r->nr_softirqs,
-+		nr_context_switches_cpu(cpu) - r->nr_csw);
-+	pr_err("cputime: %8lld %10lld %12lld   ==> %lld(ms)\n",
-+		div_u64(cpustat[CPUTIME_IRQ] - r->cputime_irq, NSEC_PER_MSEC),
-+		div_u64(cpustat[CPUTIME_SOFTIRQ] - r->cputime_softirq, NSEC_PER_MSEC),
-+		div_u64(cpustat[CPUTIME_SYSTEM] - r->cputime_system, NSEC_PER_MSEC),
-+		jiffies64_to_msecs(half_timeout));
-+}
-+
- /*
-  * Print out diagnostic information for the specified stalled CPU.
-  *
-@@ -484,6 +510,8 @@ static void print_cpu_stall_info(int cpu)
- 	       data_race(rcu_state.n_force_qs) - rcu_state.n_force_qs_gpstart,
- 	       rcuc_starved ? buf : "",
- 	       falsepositive ? " (false positive?)" : "");
-+
-+	print_cpu_stat_info(cpu);
- }
- 
- /* Complain about starvation of grace-period kthread.  */
--- 
-2.25.1
-
+Dobr=C3=BD den,
+Omlouv=C3=A1m se za tento zp=C5=AFsob kontaktov=C3=A1n=C3=AD, jen jsem vid=
+=C4=9Bl v=C3=A1=C5=A1=20
+profil a myslel jsem, =C5=BEe jste osoba, kterou pot=C5=99ebuji. Jmenuji se=
+=20
+Jacques BOUCHEX, jsem francouzsk=C3=A9ho p=C5=AFvodu. Trp=C3=ADm v=C3=A1=C5=
+=BEnou nemoc=C3=AD,=20
+kter=C3=A1 m=C4=9B odsuzuje k jist=C3=A9 smrti, rakovinou mozku, a disponuj=
+i=20
+=C4=8D=C3=A1stkou 25 500 000 eur (dvacet p=C4=9Bt milion=C5=AF p=C4=9Bt set=
+ tis=C3=ADc eur),=20
+kterou chci p=C5=99edat spolehliv=C3=A9 a poctiv=C3=A9 t=C5=99et=C3=AD stra=
+n=C4=9B k =C5=99=C3=A1dn=C3=A9mu=20
+vyu=C5=BEit=C3=AD. M=C3=A1m spole=C4=8Dnost, kter=C3=A1 dov=C3=A1=C5=BE=C3=
+=AD =C4=8Derven=C3=BD olej do Francie a=20
+dal=C5=A1=C3=ADch zem=C3=AD. P=C5=99ed deseti lety jsem p=C5=99i ne=C5=A1=
+=C5=A5astn=C3=A9 dopravn=C3=AD nehod=C4=9B=20
+p=C5=99i=C5=A1el o man=C5=BEelku a dv=C4=9B kr=C3=A1sn=C3=A9 d=C4=9Bti. R=
+=C3=A1d bych tuto =C4=8D=C3=A1stku daroval=20
+p=C5=99ed svou smrt=C3=AD, proto=C5=BEe m=C3=A9 dny jsou se=C4=8Dteny. Pros=
+=C3=ADm, po=C5=A1lete mi=20
+e-mail na adresu jacques_bouchex@yahoo.com. A=C5=A5 v=C3=A1m P=C3=A1n =C5=
+=BEehn=C3=A1.
