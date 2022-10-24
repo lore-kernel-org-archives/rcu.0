@@ -2,222 +2,164 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 17B28C38A2D
-	for <rcu@archiver.kernel.org>; Mon, 24 Oct 2022 09:23:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 93402ECAAA1
+	for <rcu@archiver.kernel.org>; Mon, 24 Oct 2022 10:50:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229588AbiJXJXt (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 24 Oct 2022 05:23:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54112 "EHLO
+        id S229649AbiJXKt5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 24 Oct 2022 06:49:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230003AbiJXJXr (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 24 Oct 2022 05:23:47 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 338B75D893;
-        Mon, 24 Oct 2022 02:23:46 -0700 (PDT)
-Received: from dggpemm500020.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4MwqJM68rXzVj05;
-        Mon, 24 Oct 2022 17:18:59 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggpemm500020.china.huawei.com (7.185.36.49) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Mon, 24 Oct 2022 17:23:44 +0800
-Received: from [10.174.178.55] (10.174.178.55) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Mon, 24 Oct 2022 17:23:43 +0800
-Subject: Re: [PATCH 0/3] rcu: Add RCU stall diagnosis information
-To:     <paulmck@kernel.org>
-CC:     Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        "Steven Rostedt" <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, <rcu@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20221017100108.2063-1-thunder.leizhen@huawei.com>
- <20221020231353.GC5600@paulmck-ThinkPad-P17-Gen-1>
- <f71fa16b-10c8-58a8-4646-9b5efc44a429@huawei.com>
- <20221021191500.GQ5600@paulmck-ThinkPad-P17-Gen-1>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <505c9dc1-9413-5813-9593-15ebd80e02b2@huawei.com>
-Date:   Mon, 24 Oct 2022 17:23:32 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        with ESMTP id S229685AbiJXKty (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 24 Oct 2022 06:49:54 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFEA622BD4;
+        Mon, 24 Oct 2022 03:49:52 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id a29so16079160lfo.1;
+        Mon, 24 Oct 2022 03:49:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Zja/Cz2UNdEAT2UerRwGcdXhwOP4DGiqzZVhukFpGEc=;
+        b=iSaWbSmP5q4Bg9r9NNGlpO/ZBh8z1SNuKqE8j/tuv2bIKbPiwQmq3MacI2kaVoXgEg
+         nQWePWWhS931CwQQ7ATmDnka9lU6VpeZYV4DEXAJLCOu5LbdRaOUHk4Pb+U7qae/VRZb
+         rj/8MDN4ryPmKjKtGUvhmD4TdFWTjE0l0PBXM+fHwLuFAlnrdxMxWKCul253ReeEM1QT
+         gIwo2f0IPcyfuLEXeWzRCCXJLTL+eSBpiOzpixpwFwmrBoTXeJlGwj8fIwLsYN96IxPu
+         Hnb8MbneBY9WTkVFB+srk+ppW8rjmQLQyTvKIvUX3ss5V81939BWE4Q4BqphSK094U9g
+         a3JQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Zja/Cz2UNdEAT2UerRwGcdXhwOP4DGiqzZVhukFpGEc=;
+        b=0NSZKo+4mqSuHh385i7Actvg+7n/MU6N3IK4fcDu4rQgEAZgD2VqbgzCh1VTVi84EY
+         fM2Ki2qtBO4OMpSg6oMb85mjkrVmWjRuq20iF8R7bq+R3OZM5CJ3SdPZ6uO5X1uVSvbP
+         eP3iLuVFVtMAxVll9I3MxJy6Hy4m5k2o2c/99W4YodBT5moKy0ghgDpiSWPoLCa6IQfe
+         fQwHi0uEOMJ5koiFzms9tn+zZMOoQiFMkFoRJPMtvYYKZVcXaT0bcR/+rLsinl9My0qJ
+         I+3MvNu7i8kbGoS1+ZW3cmvzndUsn13xp/eEl/d9N4c/otllugCBioxAQ5nnhXk3gYbN
+         TEFg==
+X-Gm-Message-State: ACrzQf1WO0wx5oX9iYncjTk4jkKz242IOp+597L+YT71vKg9Zba+x0B9
+        qEOBIZT59M29HMKUGNhjiCE=
+X-Google-Smtp-Source: AMsMyM7tUVW6OjSoFoFrhsnXJdbFwdhqcLnkJwUiIND46gNDa0Xbt1qh6HixDJrO2RoMFhdLmxeEaw==
+X-Received: by 2002:a05:6512:3402:b0:49f:e6a:3cc8 with SMTP id i2-20020a056512340200b0049f0e6a3cc8mr13125523lfr.457.1666608591056;
+        Mon, 24 Oct 2022 03:49:51 -0700 (PDT)
+Received: from pc636 (host-90-235-65-92.mobileonline.telia.com. [90.235.65.92])
+        by smtp.gmail.com with ESMTPSA id f5-20020a05651c02c500b002770c030dc0sm421718ljo.109.2022.10.24.03.49.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Oct 2022 03:49:50 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Mon, 24 Oct 2022 12:49:46 +0200
+To:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>
+Cc:     Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com,
+        rostedt@goodmis.org, Uladzislau Rezki <urezki@gmail.com>
+Subject: Re: [PATCH rcu 13/14] workqueue: Make queue_rcu_work() use
+ call_rcu_flush()
+Message-ID: <Y1ZtyjxKCcV0Hfjn@pc636>
+References: <20221019225138.GA2499943@paulmck-ThinkPad-P17-Gen-1>
+ <20221019225144.2500095-13-paulmck@kernel.org>
+ <CAEXW_YQgSwMYisZVctXkjFu6_5YhFCpL_E5o5H4oJooS5Syp+g@mail.gmail.com>
+ <20221024031540.GU5600@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-In-Reply-To: <20221021191500.GQ5600@paulmck-ThinkPad-P17-Gen-1>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.55]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221024031540.GU5600@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+> On Sun, Oct 23, 2022 at 08:36:00PM -0400, Joel Fernandes wrote:
+> > Hello,
+> > 
+> > On Wed, Oct 19, 2022 at 6:51 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> > >
+> > > From: Uladzislau Rezki <urezki@gmail.com>
+> > >
+> > > call_rcu() changes to save power will slow down RCU workqueue items
+> > > queued via queue_rcu_work(). This may not be an issue, however we cannot
+> > > assume that workqueue users are OK with long delays. Use
+> > > call_rcu_flush() API instead which reverts to the old behavio
+> > 
+> > On ChromeOS, I can see that queue_rcu_work() is pretty noisy and the
+> > batching is much better if we can just keep it as call_rcu() instead
+> > of call_rcu_flush().
+> > 
+> > Is there really any reason to keep it as call_rcu_flush() ?  If I
+> > recall, the real reason Vlad's system was slowing down was because of
+> > scsi and the queue_rcu_work() conversion was really a red herring.
+> 
+<snip>
+*** drivers/acpi/osl.c:
+acpi_os_drop_map_ref[401]      queue_rcu_work(system_wq, &map->track.rwork);
 
+*** drivers/gpu/drm/i915/gt/intel_execlists_submission.c:
+virtual_context_destroy[3653]  queue_rcu_work(system_wq, &ve->rcu);
 
-On 2022/10/22 3:15, Paul E. McKenney wrote:
-> On Fri, Oct 21, 2022 at 04:07:43PM +0800, Leizhen (ThunderTown) wrote:
->>
->>
->> On 2022/10/21 7:13, Paul E. McKenney wrote:
->>> On Mon, Oct 17, 2022 at 06:01:05PM +0800, Zhen Lei wrote:
->>>> In some extreme cases, such as the I/O pressure test, the CPU usage may
->>>> be 100%, causing RCU stall. In this case, the printed information about
->>>> current is not useful. Displays the number and usage of hard interrupts,
->>>> soft interrupts, and context switches that are generated within half of
->>>> the CPU stall timeout, can help us make a general judgment. In other
->>>> cases, we can preliminarily determine whether an infinite loop occurs
->>>> when local_irq, local_bh or preempt is disabled.
->>>>
->>>> Zhen Lei (3):
->>>>   sched: Add helper kstat_cpu_softirqs_sum()
->>>>   sched: Add helper nr_context_switches_cpu()
->>>>   rcu: Add RCU stall diagnosis information
->>>
->>> Interesting approach, thank you!
->>>
->>> I have pulled this in for testing and review, having rescued it from my
->>> spam folder.
->>
->> Thanks. My company's mail system has been having some problems lately.
->>
->> Also, I need to apologize that yesterday I found out there was a mistake
->> in patch 3/3. Yesterday, I finally got to print_other_cpu_stall() by forcing
->> a stub.
-> 
-> OK, I done dropped your three patches for the time being.
-> 
-> Please feel free to submit v2 whenever you are ready to do so.
-> 
->> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
->> index 08cfcf526f7d245..caaee5f4ee091df 100644
->> --- a/kernel/rcu/tree_stall.h
->> +++ b/kernel/rcu/tree_stall.h
->> @@ -451,7 +451,7 @@ static void print_cpu_stat_info(int cpu)
->>         if (r->gp_seq != rdp->gp_seq)
->>                 return;
->>
->> -       cpustat = kcpustat_this_cpu->cpustat;
->> +       cpustat = kcpustat_cpu(cpu).cpustat;
->>         half_timeout = rcu_jiffies_till_stall_check() / 2;
->>
->>         pr_err("         hardirqs   softirqs   csw/system\n");
->>
->>>
->>> Some questions that might come up include:  (1) Can the addition of
->>> things like cond_resched() make RCU happier with the I/O pressure test?
->>> (2) Should there be a way to turn this off for environments with slow
->>> consoles?  (3) If this information shows heavy CPU usage, what debug
->>> and fix approach should be used?
->>
->> If the CPU usage is high due to busy services, I think it is excusable
->> to report RCU stall warning.
-> 
-> Not so much.  RCU CPU stall warning usually means that there is some
-> overly long loop in the kernel.
+*** fs/aio.c:
+free_ioctx_reqs[632]           queue_rcu_work(system_wq, &ctx->free_rwork);
 
-Yes, so the added statistics are helpful. Low count means long loop may exist.
+*** fs/fs-writeback.c:
+inode_switch_wbs[604]          queue_rcu_work(isw_wq, &isw->work);
+cleanup_offline_cgwb[676]      queue_rcu_work(isw_wq, &isw->work);
 
-> 
->>                              When users see RCU stall, they are most
->> worried about whether there are unrecoverable errors, such as dead loop.
->> If the cause is known to be the CPU usage, the I/O performance has
->> reached its peak, this is probably what people want to see.
-> 
-> You have a workload that can be carried out entirely in interrupt
-> handlers?  If not, the kernel code really should be updated to avoid
-> the RCU CPU stall warnings.
-> 
->> (1) This needs to be considered by the business task itself. As far as I
->>     know some drivers' data processing is done in an interrupt context.
-> 
-> You are seeing an entire CPU being consumed by interrupt handlers?
-> If so, is the CPU being carefully placed in the idle loop beforehand?
-> If not, how do you keep the long delays in the interrupted processing
-> from causing problems?
+*** include/linux/workqueue.h:
+__printf[446]                  extern bool queue_rcu_work(struct workqueue_struct *wq, struct rcu_work *rwork);
 
-Some chips with poor implementation may respond to interrupts on only a
-few cores. However, I didn't actually see. After all, these process
-information, if not specifically recorded, will not be seen again.
+*** kernel/cgroup/cgroup.c:
+css_release_work_fn[5253]      queue_rcu_work(cgroup_destroy_wq, &css->destroy_rwork);
+css_create[5384]               queue_rcu_work(cgroup_destroy_wq, &css->destroy_rwork);
 
+*** kernel/rcu/tree.c:
+kfree_rcu_monitor[3192]        queue_rcu_work(system_wq, &krwp->rcu_work);
+
+*** net/core/skmsg.c:
+sk_psock_drop[852]             queue_rcu_work(system_wq, &psock->rwork);
+
+*** net/sched/act_ct.c:
+tcf_ct_flow_table_put[355]     queue_rcu_work(act_ct_wq, &ct_ft->rwork);
+
+*** net/sched/cls_api.c:
+tcf_queue_work[225]            return queue_rcu_work(tc_filter_wq, rwork);
+<snip>
+There are 9 users of the queue_rcu_work() functions. I think there can be
+a side effect if we keep it as lazy variant. Please note that i have not
+checked all those users.
+
+> There are less than 20 invocations of queue_rcu_work(), so it should
+> be possible look through each.  The low-risk approach is of course to
+> have queue_rcu_work() use call_rcu_flush().
+> 
+> The next approach might be to have a Kconfig option and/or kernel
+> boot parameter that allowed a per-system choice.
+> 
+> But it would not hurt to double-check on Android.
+> 
+I did not see such noise but i will come back some data on 5.10 kernel
+today.
 
 > 
->> (2) Do you mean to suppress such new debugging information that I added?
->>     or the whole RCU stall information?
-> 
-> Only the new debugging information.  I already get complaints about RCU
-> CPU stall warnings producing more output than people like.
+> > Vlad, any thoughts?
+> > 
+At least for the kvfree_rcu() i would like to keep the sync variant, because
+we have the below patch that improves bathing:
 
-OK, I got it.
+<snip>
+commit 51824b780b719c53113dc39e027fbf670dc66028
+Author: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Date:   Thu Jun 30 18:33:35 2022 +0200
 
-Perhaps we can consider recording the RCU stall information in the buffer
-and printing the following brief information.
-Warning: RCU stall id=%d
+    rcu/kvfree: Update KFREE_DRAIN_JIFFIES interval
 
-Then, the user-mode process accesses the new added RCU attribute file and
-queries detailed information based on the ID.
+    Currently the monitor work is scheduled with a fixed interval of HZ/20,
+    which is roughly 50 milliseconds. The drawback of this approach is
+    low utilization of the 512 page slots in scenarios with infrequence
+    kvfree_rcu() calls.  For example on an Android system:
+<snip>
 
-Or delay printing until the new GP or panic.
+Apparently i see it in the "dev" branch only.
 
-> 
->> (3) The statistics can be accurate to a single hard interrupt, software
->>     interrupt, or task. However, the price will be higher. Users can
->>     recall what they did at the time, then reproduce it. Maybe we can get
->>     this code ready, add a new debugging option, and turn it on when needed.
-> 
-> Let me ask this a different way.  What combination of numbers would lead
-> you to believe that a given RCU CPU stall warning can safely be ignored?
-> 
->>> For an example of #1, if a CPU is flooded with softirq activity, one
->>> might hope that the call to rcu_softirq_qs() would prevent the RCU CPU
->>> stall warning, at least for kernels built with CONFIG_PREEMPT_RT=n.
->>> Similarly, if there are huge numbers of context switches, one might hope
->>> that the rcu_note_context_switch() would report a quiescent state sooner
->>> rather than later.
->>
->> Good idea. I'm going to dig deeper.
->>
->> How about dynamically extending the stall timeout if the CPU usage is too high?
-> 
-> Let's first work out why the RCU CPU stalls are happening.  After all, if
-
-OK
-
-> there is a particular case that is truly harmless, it would be better to
-> arrange that stalls not be printed at all in that case.  It is better to
-> just not have false positives, right?
-
-Yes.
-
-> 
-> 							Thanx, Paul
-> 
->>> Thoughts?
->>>
->>> 							Thanx, Paul
->>>
->>>>  include/linux/kernel_stat.h | 12 +++++++++++
->>>>  kernel/rcu/tree.h           | 11 ++++++++++
->>>>  kernel/rcu/tree_stall.h     | 40 +++++++++++++++++++++++++++++++++++++
->>>>  kernel/sched/core.c         |  5 +++++
->>>>  4 files changed, 68 insertions(+)
->>>>
->>>> -- 
->>>> 2.25.1
->>>>
->>> .
->>>
->>
->> -- 
->> Regards,
->>   Zhen Lei
-> .
-> 
-
--- 
-Regards,
-  Zhen Lei
+--
+Uladzislau Rezki
