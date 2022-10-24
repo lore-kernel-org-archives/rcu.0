@@ -2,149 +2,105 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 05A36FA373D
-	for <rcu@archiver.kernel.org>; Mon, 24 Oct 2022 22:40:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 63C0BC38A2D
+	for <rcu@archiver.kernel.org>; Mon, 24 Oct 2022 22:52:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231694AbiJXWkU (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 24 Oct 2022 18:40:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43472 "EHLO
+        id S230303AbiJXWwh (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 24 Oct 2022 18:52:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232627AbiJXWjt (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 24 Oct 2022 18:39:49 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0994D251D51
-        for <rcu@vger.kernel.org>; Mon, 24 Oct 2022 14:03:36 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id 13so7913080ejn.3
-        for <rcu@vger.kernel.org>; Mon, 24 Oct 2022 14:03:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=TN+4CLVPOaLPfFfD4l3BOQq9btd26vYRipeqUVUogrw=;
-        b=CHGUmjzzVADitTJdeAKKWn175egj3oymTJY/n5VMrxNMBhEZCQkpHMSO18HeyUq8te
-         BncnfIVbkj5PXRR8urQTOrcNRaRR/pxopzQwiOUdxnw8E3OOzAPmrK4UZrgkJAUxeAd1
-         vKu16acropvPBfytcGuLZKRmLUy2kk3i38by0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TN+4CLVPOaLPfFfD4l3BOQq9btd26vYRipeqUVUogrw=;
-        b=0LL/MzYi98ns9bAf7De9fmcKF3clznoKuqVKT7L1XUp420XXgrLlW9W9H/1087Ys6Y
-         OGSFQttGbDtwOh7/qKP4aeHgWU1Yp+tgfqx/I1SnoA3EitkaSQGT+b26Zo//82eJYkK4
-         d2X9vJ6cs2Y72FyFBDQRHyMRTYuIFj8mnf8DPVdrFDafhVZlEBfwiitA28IbToXbNUfE
-         b0E+HcTlUC1uuHonPX0UoLVENhZ/X8PAs9IfFV314mIrnb/F3EbimOAfjYeuEHQQrZjh
-         PTJzJiuQ+/6v5SfAtgdRR56q1pgo5KehbGXtQyXyw1eWqOVQcAgmXqMFGHJ12g4V4VI8
-         GE4A==
-X-Gm-Message-State: ACrzQf05X599yzBdnGD6enUTLuI8sjQxv4ZN3J9xamy7skoOUE3889CV
-        cF7+i2Ih8wKspqgf5cXcVzf3F4BV0jEJutSJZy+8QSOzDEY=
-X-Google-Smtp-Source: AMsMyM6kg8DRwMIr2A7Fxz5wrwTQYtbCBxRmVyWFzbesNoZGYOp7YbwuVAaNBTrc0dH1usEAieMIf/6/ItWiO44xIlU=
-X-Received: by 2002:a05:6402:3551:b0:45d:a52f:2d77 with SMTP id
- f17-20020a056402355100b0045da52f2d77mr33392780edd.67.1666643202138; Mon, 24
- Oct 2022 13:26:42 -0700 (PDT)
+        with ESMTP id S231671AbiJXWwV (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 24 Oct 2022 18:52:21 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FF42320B55;
+        Mon, 24 Oct 2022 14:14:21 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 638F461572;
+        Mon, 24 Oct 2022 20:04:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BACADC433C1;
+        Mon, 24 Oct 2022 20:04:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1666641886;
+        bh=jizu7/ZumgplJo0/abAjfwvHnMiHdDjhuRmpuyRU9OY=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Mk+8jPX+4Xxs7S4+YFMO6Tyb7aZ7p08D/+g+p63bWkfpUJnrwbBWU5Sql9/xQNr6U
+         Wft++X2QuJpstY5N5eAeCIz1LKmbejIasdJCStp2O16dfGXSRdZXzny1qGBzRAE+6L
+         Y1G4PxMrkmTmW7eV3jS92eKUGdQd21UWy1z7w3/LWqFOERlO3GXELbFEerTRfK1in1
+         UE+q4KhIddlu9Zi8qKyWOEtlvWiWc3INrxzPBA+36nI/j50dEOl3GJ7du/mQj/3kVt
+         BQQGuL61+LoubnfYhtEtuHjgdLxGWJPbMBO2b1A4ao1mjbL2k5SkdCYs1r/vaSWRpk
+         j05wm1Hr36xoQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 542D35C0DDA; Mon, 24 Oct 2022 13:04:46 -0700 (PDT)
+Date:   Mon, 24 Oct 2022 13:04:46 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        rcu@vger.kernel.org, kernel-team@fb.com, rostedt@goodmis.org
+Subject: Re: [GIT PULL] Keep synchronize_rcu() from enabling irqs in early
+ boot
+Message-ID: <20221024200446.GD5600@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20221024165421.GA1246679@paulmck-ThinkPad-P17-Gen-1>
+ <CAHk-=wi1GXyh+kn1XfrbLA209MBGktteN=L+=cTEcoruxBtu3g@mail.gmail.com>
 MIME-Version: 1.0
-References: <Y1aDy3maaO39ClSU@pc636> <Y1ahs83258Lok9+O@google.com>
- <20221024153958.GY5600@paulmck-ThinkPad-P17-Gen-1> <Y1a8ei1h7SzyYZx9@pc636>
- <20221024164819.GA5600@paulmck-ThinkPad-P17-Gen-1> <Y1bDdP3iHoa4xqZL@pc636>
- <Y1bGcQ7RPleYp3ge@pc636> <CAEXW_YQqiD1GU7HGrv9UU6vL_MqbxVt14=rxZAKqUpK+pkPDPw@mail.gmail.com>
- <20221024173558.GC5600@paulmck-ThinkPad-P17-Gen-1> <CAEXW_YQFNd8evWMxv=sWwZ0q28wxAwStCMgaJnDu6QM6YqqjMA@mail.gmail.com>
- <20221024201953.GE5600@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20221024201953.GE5600@paulmck-ThinkPad-P17-Gen-1>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Mon, 24 Oct 2022 16:26:30 -0400
-Message-ID: <CAEXW_YT_8y2X1YgGoYRtUB=az7zUgX94TtgcTTsBBy8Qw8Vhcg@mail.gmail.com>
-Subject: Re: [PATCH rcu 13/14] workqueue: Make queue_rcu_work() use call_rcu_flush()
-To:     paulmck@kernel.org
-Cc:     Uladzislau Rezki <urezki@gmail.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wi1GXyh+kn1XfrbLA209MBGktteN=L+=cTEcoruxBtu3g@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Oct 24, 2022 at 4:19 PM Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> On Mon, Oct 24, 2022 at 04:12:59PM -0400, Joel Fernandes wrote:
-> > On Mon, Oct 24, 2022 at 1:36 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > >
-> > > On Mon, Oct 24, 2022 at 01:20:26PM -0400, Joel Fernandes wrote:
-> > > > On Mon, Oct 24, 2022 at 1:08 PM Uladzislau Rezki <urezki@gmail.com> wrote:
-> > > > >
-> > > > > On Mon, Oct 24, 2022 at 06:55:16PM +0200, Uladzislau Rezki wrote:
-> > > > > > On Mon, Oct 24, 2022 at 09:48:19AM -0700, Paul E. McKenney wrote:
-> > > > > > > On Mon, Oct 24, 2022 at 06:25:30PM +0200, Uladzislau Rezki wrote:
-> > > > > > > > >
-> > > > > > > > > You guys might need to agree on the definition of "good" here.  Or maybe
-> > > > > > > > > understand the differences in your respective platforms' definitions of
-> > > > > > > > > "good".  ;-)
-> > > > > > > > >
-> > > > > > > > Indeed. Bad is when once per-millisecond infinitely :) At least in such use
-> > > > > > > > workload a can detect a power delta and power gain. Anyway, below is a new
-> > > > > > > > trace where i do not use "flush" variant for the kvfree_rcu():
-> > > > > > > >
-> > > > > > > > <snip>
-> > > > > > > > 1. Home screen swipe:
-> > > > > > > >          rcuop/0-15      [003] d..1  1792.767750: rcu_batch_start: rcu_preempt CBs=1003 bl=10
-> > > > > > > >          rcuop/2-33      [002] d..1  1792.771717: rcu_batch_start: rcu_preempt CBs=934 bl=10
-> > > > > > > >          rcuop/3-40      [001] d..1  1794.811816: rcu_batch_start: rcu_preempt CBs=1508 bl=11
-> > > > > > > >          rcuop/1-26      [003] d..1  1797.116382: rcu_batch_start: rcu_preempt CBs=2127 bl=16
-> > > > > > > >          rcuop/4-48      [001] d..1  1797.124422: rcu_batch_start: rcu_preempt CBs=95 bl=10
-> > > > > > > >          rcuop/5-55      [002] d..1  1797.124731: rcu_batch_start: rcu_preempt CBs=143 bl=10
-> > > > > > > >          rcuop/6-62      [005] d..1  1798.911719: rcu_batch_start: rcu_preempt CBs=132 bl=10
-> > > > > > > >          rcuop/2-33      [002] d..1  1803.003966: rcu_batch_start: rcu_preempt CBs=3797 bl=29
-> > > > > > > >          rcuop/0-15      [003] d..1  1803.004707: rcu_batch_start: rcu_preempt CBs=2969 bl=23
-> > > >
-> > > > > > > > 2. App launches:
-> > > > > > > >          rcuop/4-48      [005] d..1  1831.087612: rcu_batch_start: rcu_preempt CBs=6141 bl=47
-> > > > > > > >          rcuop/7-69      [007] d..1  1831.095578: rcu_batch_start: rcu_preempt CBs=5464 bl=42
-> > > > > > > >          rcuop/5-55      [004] d..1  1832.703571: rcu_batch_start: rcu_preempt CBs=8461 bl=66
-> > > > > > > >          rcuop/0-15      [004] d..1  1833.731603: rcu_batch_start: rcu_preempt CBs=2548 bl=19
-> > > > > > > >          rcuop/1-26      [006] d..1  1833.743691: rcu_batch_start: rcu_preempt CBs=2567 bl=20
-> > > > > > > >          rcuop/2-33      [006] d..1  1833.744005: rcu_batch_start: rcu_preempt CBs=2359 bl=18
-> > > > > > > >          rcuop/3-40      [006] d..1  1833.744286: rcu_batch_start: rcu_preempt CBs=3681 bl=28
-> > > > > > > >          rcuop/4-48      [002] d..1  1838.079777: rcu_batch_start: rcu_preempt CBs=10444 bl=81
-> > > > > > > >          rcuop/7-69      [001] d..1  1838.080375: rcu_batch_start: rcu_preempt CBs=12572 bl=98
-> > > > > > > >            <...>-62      [002] d..1  1838.080646: rcu_batch_start: rcu_preempt CBs=14135 bl=110
-> > > > > > > >          rcuop/6-62      [000] d..1  1838.087722: rcu_batch_start: rcu_preempt CBs=10839 bl=84
-> > > > > > > >            <...>-62      [003] d..1  1839.227022: rcu_batch_start: rcu_preempt CBs=1834 bl=14
-> > > > > > > >            <...>-26      [001] d..1  1839.963315: rcu_batch_start: rcu_preempt CBs=5769 bl=45
-> > > > > > > >          rcuop/2-33      [001] d..1  1839.966485: rcu_batch_start: rcu_preempt CBs=3789 bl=29
-> > > > > > > >            <...>-40      [001] d..1  1839.966596: rcu_batch_start: rcu_preempt CBs=6425 bl=50
-> > > > > > > >          rcuop/2-33      [005] d..1  1840.541272: rcu_batch_start: rcu_preempt CBs=825 bl=10
-> > > > > > > >          rcuop/2-33      [005] d..1  1840.547724: rcu_batch_start: rcu_preempt CBs=44 bl=10
-> > > > > > > >          rcuop/2-33      [005] d..1  1841.075759: rcu_batch_start: rcu_preempt CBs=516 bl=10
-> > > > > > > >          rcuop/0-15      [002] d..1  1841.695716: rcu_batch_start: rcu_preempt CBs=6312 bl=49
-> > > > > > > >          rcuop/0-15      [003] d..1  1841.709714: rcu_batch_start: rcu_preempt CBs=39 bl=10
-> > > > > > > >          rcuop/5-55      [004] d..1  1843.112442: rcu_batch_start: rcu_preempt CBs=16007 bl=125
-> > > > > > > >          rcuop/5-55      [004] d..1  1843.115444: rcu_batch_start: rcu_preempt CBs=7901 bl=61
-> > > > > > > >          rcuop/6-62      [001] dn.1  1843.123983: rcu_batch_start: rcu_preempt CBs=8427 bl=65
-> > > > > > > >          rcuop/6-62      [006] d..1  1843.412383: rcu_batch_start: rcu_preempt CBs=981 bl=10
-> > > > > > > >          rcuop/0-15      [003] d..1  1844.659812: rcu_batch_start: rcu_preempt CBs=1851 bl=14
-> > > > > > > >          rcuop/0-15      [003] d..1  1844.667790: rcu_batch_start: rcu_preempt CBs=135 bl=10
-> > > >
-> > > > Definitely better, but I'd still ask why not just rely on the lazy
-> > > > batching that we now have, since it is a memory pressure related
-> > > > usecase. Or another approach could be, for CONFIG_RCU_LAZY, don't
-> > > > disturb the lazy-RCU batching by queuing these "free memory" CBs; and
-> > > > instead keep your improved kvfree_rcu() batching only for
-> > > > !CONFIG_RCU_LAZY.
-> > >
-> > > Given that making the kvfree_rcu()-level batching conditional on
-> > > CONFIG_RCU_LAZY would complicate the code, what bad thing happens when
-> > > keeping the kvfree_rcu-level batching unconditionally?
+On Mon, Oct 24, 2022 at 12:40:01PM -0700, Linus Torvalds wrote:
+> On Mon, Oct 24, 2022 at 9:54 AM Paul E. McKenney <paulmck@kernel.org> wrote:
 > >
-> > The bad thing happening is power impact. There is a noticeable impact
-> > in our testing, and when we dropped this particular patch, it got much
-> > better results.
-> >
-> > I also run rcutop and I see without the patch that I have several
-> > seconds of laziness at a time, unlike with the patch.
->
-> Fair point, but is this visible at the power meter?
+> > This pull request contains a commit that fixes bf95b2bc3e42 ("rcu: Switch
+> > polled grace-period APIs to ->gp_seq_polled"), which could incorrectly
+> > leave interrupts enabled after an early-boot call to synchronize_rcu().
+> 
+> Minor stylistic nit-pick - please try to keep the commit tags
+> together, ie the "Fixes:" tags goes with Reported-by: tags and
+> sign-offs etc..
 
-Yes it is and it came up as a part of debugging I did, I am not making
-it up ;-) The delta in power is 10%. As you saw in Vlad's traces as
-well, the kvfree_rcu() can be called quite frequently.
+Please accept my apologies for my confusion!
 
- - Joel
+Please see below for a pull request for a better-formatted commit.
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+This pull request fixes a merge-window regression noted by Steve Rostedt.
+
+The following changes since commit 9abf2313adc1ca1b6180c508c25f22f9395cc780:
+
+  Linux 6.1-rc1 (2022-10-16 15:36:24 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git tags/rcu-urgent.2022.10.24a
+
+for you to fetch changes up to c216e5557395092a1a30ddb2be8ab924b0364585:
+
+  rcu: Keep synchronize_rcu() from enabling irqs in early boot (2022-10-24 12:55:37 -0700)
+
+----------------------------------------------------------------
+Urgent RCU pull request for v6.1
+
+This pull request contains a commit that fixes bf95b2bc3e42 ("rcu: Switch
+polled grace-period APIs to ->gp_seq_polled"), which could incorrectly
+leave interrupts enabled after an early-boot call to synchronize_rcu().
+Such synchronize_rcu() calls must acquire leaf rcu_node locks in order to
+properly interact with polled grace periods, but the code did not take
+into account the possibility of synchronize_rcu() being invoked from
+the portion of the boot sequence during which interrupts are disabled.
+This commit therefore switches the lock acquisition and release from
+irq to irqsave/irqrestore.
+
+----------------------------------------------------------------
+Paul E. McKenney (1):
+      rcu: Keep synchronize_rcu() from enabling irqs in early boot
+
+ kernel/rcu/tree.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
