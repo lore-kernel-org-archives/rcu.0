@@ -2,64 +2,47 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 68646FA373F
-	for <rcu@archiver.kernel.org>; Mon, 24 Oct 2022 19:05:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BA2BBFA3740
+	for <rcu@archiver.kernel.org>; Mon, 24 Oct 2022 19:11:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230124AbiJXTFK (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 24 Oct 2022 15:05:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42790 "EHLO
+        id S231923AbiJXTLA (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 24 Oct 2022 15:11:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232236AbiJXTDh (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 24 Oct 2022 15:03:37 -0400
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AD8024F02;
-        Mon, 24 Oct 2022 10:42:59 -0700 (PDT)
-Received: by mail-lj1-f177.google.com with SMTP id r22so13718110ljn.10;
-        Mon, 24 Oct 2022 10:42:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=k+ZGsCv52AyvcytZAyENT4YxLktt40yzp/IYwZy2m0Y=;
-        b=CYYBEuVKj1akkCH9zm4QH+Irr3CQvgoDGtaBwTC30YSC84ZHZdmCiXoSKqjGltzsbY
-         FqqQPcDWn2kA3YEJrwZUr4j8Fg150XqLXEAOjXbj7EYiSy3MynKi+xZ0kFqfjkCX37Sg
-         +mBAOsX/b/igU7z+MOLpi4VMBxlwOH4mf7KqgPnWSJWxwBQkVQk/qZQaCUnMk7nb/Wig
-         fbqif3WJ9utp2MNb3TYvjf2jEGhTprv+9hGNOrToFH40lqaVbizYxgi8fdGKb+VThNeL
-         DLsCY8+W17BwtqHPw30QjwYlV46013czvkqOdUNcMr/h4k8OUf3VqxLaPedryId+e/la
-         Hw/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=k+ZGsCv52AyvcytZAyENT4YxLktt40yzp/IYwZy2m0Y=;
-        b=SOdC9bk0GdZrUwYC8cUyb5tnwalvByjhIaZrbfFhHI9kpr8v17tYG3D/kWDPkRgtCD
-         CgC8UDutM5srKQFs4vWv8Maf9pyJO4/ob65x9tfYV6HnBVSJLk6kqamkQmn6LaMOe6LV
-         5Mv0emFZvkWxMCFE0t8+/Qs9huF0XAmXEknedYTWEVG3pn+bU3YUXuDN/PH4X1GYo5iN
-         12KpjJ1hjqLxPNLvfOtg5ovRPGirJIPgNtxhzTLHEMnf0S9BClRvTvpP+8Is7iIwUBBX
-         8l60ytEgS+5U4MMxqNiwhzxIBVjiurpsteCKr5nueeBtwVlKQscY/FKbY4faszJ+Vlrn
-         jlzw==
-X-Gm-Message-State: ACrzQf3PzBOA0H8ol/tUT+6jx2a4lNf5N/jOC0S4kuniDscfnRHRvK/P
-        sSoR4ErktQuPAloWQE3E3eE=
-X-Google-Smtp-Source: AMsMyM7WNx9SgGodckUypwQsSaISfmtww/pkdqcbq2PjMsdErXJdZ35wd3CS75SCNTcTRGaz2ymiKg==
-X-Received: by 2002:a2e:88c6:0:b0:275:ad8d:f3ec with SMTP id a6-20020a2e88c6000000b00275ad8df3ecmr7170698ljk.273.1666633233453;
-        Mon, 24 Oct 2022 10:40:33 -0700 (PDT)
-Received: from pc636 (host-217-213-69-138.mobileonline.telia.com. [217.213.69.138])
-        by smtp.gmail.com with ESMTPSA id j11-20020a056512344b00b004a100c21eaesm12029lfr.97.2022.10.24.10.40.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Oct 2022 10:40:32 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Mon, 24 Oct 2022 19:40:30 +0200
-To:     Joel Fernandes <joel@joelfernandes.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        with ESMTP id S232262AbiJXTKf (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 24 Oct 2022 15:10:35 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE88ABB071;
+        Mon, 24 Oct 2022 10:49:39 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 0F466B81199;
+        Mon, 24 Oct 2022 17:36:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B365EC433B5;
+        Mon, 24 Oct 2022 17:35:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1666632958;
+        bh=AK3lqOHcyxajvDoG591jQ3SatKKeHxaZGCF7PwAwWXQ=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Cp4O0dtU4VVTruczF4u5BUv+Hk1GV4XQcZ4pxxHmazUwWVZDIZ/+T4jPGBfAAHAsZ
+         pf7DSS6H6I8e8bJdNJPsQibydqltWH4LPuOSCUV4drihCb+fj8RBDNSJKmDqI6dNjV
+         W5qDzdVIULJViqky9gFZ5tYH3L824RNj5jZzZMETymZ7e3n0DQp2qnPdyJPS7Sl8Qv
+         WiBbN2NzpW1W89HOWV2o76KpAw7vGNnzhaJ9+3jZw8Coij4/4ppT8tcSwPQtZHp/vQ
+         RsZtwtJHgHmmMWVcioHH8JP01SBdfY/yNc20JmxdJ12WVTxiC309TKP68pSSmnQDZL
+         nwRc7Ek9EYCHg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 50FA65C0692; Mon, 24 Oct 2022 10:35:58 -0700 (PDT)
+Date:   Mon, 24 Oct 2022 10:35:58 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org, kernel-team@fb.com,
         rostedt@goodmis.org
 Subject: Re: [PATCH rcu 13/14] workqueue: Make queue_rcu_work() use
  call_rcu_flush()
-Message-ID: <Y1bODlfqVMQivzJU@pc636>
+Message-ID: <20221024173558.GC5600@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 References: <20221024031540.GU5600@paulmck-ThinkPad-P17-Gen-1>
  <Y1ZtyjxKCcV0Hfjn@pc636>
  <Y1aDy3maaO39ClSU@pc636>
@@ -139,30 +122,9 @@ On Mon, Oct 24, 2022 at 01:20:26PM -0400, Joel Fernandes wrote:
 > disturb the lazy-RCU batching by queuing these "free memory" CBs; and
 > instead keep your improved kvfree_rcu() batching only for
 > !CONFIG_RCU_LAZY.
->
 
-1. Double-batching?
+Given that making the kvfree_rcu()-level batching conditional on
+CONFIG_RCU_LAZY would complicate the code, what bad thing happens when
+keeping the kvfree_rcu-level batching unconditionally?
 
-The kvfree_rcu() interface itself keeps track of when to reclaim:
-  a) when a page is full;
-  b) when i high storm of freeing over rcu;
-  c) when a low memory condition.
-
-such control stays inside the kvfree_rcu(). Converting it to lazy
-variant:
-  a) lose the control, what will become as a problem;
-  b) nothing is improved.
-
-2. Converting the queue_rcu_work() to lazy variant breaks a humanity
-interpretation when a queued work is supposed to be run. People do not
-expect seconds when they queue the work. Same as in the kvfree_rcu()
-we do not expect it we even used a high_prio queue in the beginning.
-
-There are ~10 users who queue the work and they did not expect it to
-be run in 10 seconds when they wrote the code.
-
-3. With the "rcu/kvfree: Update KFREE_DRAIN_JIFFIES interval" there
-is no sense in doing it. Same data in active and idle use cases.
-
---
-Uladzislau Rezki
+							Thanx, Paul
