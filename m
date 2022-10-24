@@ -2,129 +2,122 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BA2BBFA3740
-	for <rcu@archiver.kernel.org>; Mon, 24 Oct 2022 19:11:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 45C8FC38A2D
+	for <rcu@archiver.kernel.org>; Mon, 24 Oct 2022 19:19:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231923AbiJXTLA (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 24 Oct 2022 15:11:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39428 "EHLO
+        id S230265AbiJXTTj (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 24 Oct 2022 15:19:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232262AbiJXTKf (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 24 Oct 2022 15:10:35 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE88ABB071;
-        Mon, 24 Oct 2022 10:49:39 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S232392AbiJXTTD (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 24 Oct 2022 15:19:03 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85EB8659F6;
+        Mon, 24 Oct 2022 10:55:28 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 0F466B81199;
-        Mon, 24 Oct 2022 17:36:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B365EC433B5;
-        Mon, 24 Oct 2022 17:35:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666632958;
-        bh=AK3lqOHcyxajvDoG591jQ3SatKKeHxaZGCF7PwAwWXQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Cp4O0dtU4VVTruczF4u5BUv+Hk1GV4XQcZ4pxxHmazUwWVZDIZ/+T4jPGBfAAHAsZ
-         pf7DSS6H6I8e8bJdNJPsQibydqltWH4LPuOSCUV4drihCb+fj8RBDNSJKmDqI6dNjV
-         W5qDzdVIULJViqky9gFZ5tYH3L824RNj5jZzZMETymZ7e3n0DQp2qnPdyJPS7Sl8Qv
-         WiBbN2NzpW1W89HOWV2o76KpAw7vGNnzhaJ9+3jZw8Coij4/4ppT8tcSwPQtZHp/vQ
-         RsZtwtJHgHmmMWVcioHH8JP01SBdfY/yNc20JmxdJ12WVTxiC309TKP68pSSmnQDZL
-         nwRc7Ek9EYCHg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 50FA65C0692; Mon, 24 Oct 2022 10:35:58 -0700 (PDT)
-Date:   Mon, 24 Oct 2022 10:35:58 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org
-Subject: Re: [PATCH rcu 13/14] workqueue: Make queue_rcu_work() use
- call_rcu_flush()
-Message-ID: <20221024173558.GC5600@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20221024031540.GU5600@paulmck-ThinkPad-P17-Gen-1>
- <Y1ZtyjxKCcV0Hfjn@pc636>
- <Y1aDy3maaO39ClSU@pc636>
- <Y1ahs83258Lok9+O@google.com>
- <20221024153958.GY5600@paulmck-ThinkPad-P17-Gen-1>
- <Y1a8ei1h7SzyYZx9@pc636>
- <20221024164819.GA5600@paulmck-ThinkPad-P17-Gen-1>
- <Y1bDdP3iHoa4xqZL@pc636>
- <Y1bGcQ7RPleYp3ge@pc636>
- <CAEXW_YQqiD1GU7HGrv9UU6vL_MqbxVt14=rxZAKqUpK+pkPDPw@mail.gmail.com>
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 939E521E78;
+        Mon, 24 Oct 2022 15:25:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1666625100; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NM/KgVrKralP4JTRInKOEYReTClkj2ojL2ILbxVa1Do=;
+        b=IR0GqbZQTIi+J8BL97b72o11n4G64RRaPTm6Qqg5lsRAG3svoifzLSY7rpPnh8hP00/oN5
+        UMiIGcQHIHQkYILcwblnXB3127/vw3mSJsg8m6MjtcBJjc3gGSpfzmmv0oZW7AIsPwVEw2
+        vS6E418MOVXClJL3OLwxOyDIMqEQF8g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1666625100;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NM/KgVrKralP4JTRInKOEYReTClkj2ojL2ILbxVa1Do=;
+        b=6f0QZsVzdtd+WGWoFywA7cc1yelqaD6Coa885+eE0n6EXTcyTOOmrrPfgDT3LCjJUK2OGV
+        aZ9RSKgeX2HHT0AA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 74BD113357;
+        Mon, 24 Oct 2022 15:25:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id fefMG0yuVmOpQwAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Mon, 24 Oct 2022 15:25:00 +0000
+Message-ID: <bb593a4d-bd4d-cf4a-8542-6f2c60053f45@suse.cz>
+Date:   Mon, 24 Oct 2022 17:24:59 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEXW_YQqiD1GU7HGrv9UU6vL_MqbxVt14=rxZAKqUpK+pkPDPw@mail.gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.3
+Subject: Re: amusing SLUB compaction bug when CC_OPTIMIZE_FOR_SIZE
+Content-Language: en-US
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Hugh Dickins <hughd@google.com>,
+        David Laight <David.Laight@aculab.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        rcu@vger.kernel.org
+References: <ea96c78c-e1dc-1364-e91-51909f82388b@google.com>
+ <YzPgTtFzpKEfwPbK@hyeyoo> <YzRQvoVsnJzsauwb@google.com>
+ <35502bdd-1a78-dea1-6ac3-6ff1bcc073fa@suse.cz>
+ <ff905c1e-5eb3-eaf8-46de-38f189c0b7a5@google.com>
+ <de71b83a-c82c-4785-ef5a-3db4f17bbc8d@suse.cz>
+ <bcecece-f7ce-221d-1674-da3d5ab3fef@google.com> <YzkmErHFyYW3awRn@hyeyoo>
+ <YzsVM8eToHUeTP75@casper.infradead.org>
+ <7dddca4c-bc36-2cf0-de1c-a770bef9e1b7@suse.cz>
+ <Y1ap9YAcZKFuIt/I@casper.infradead.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <Y1ap9YAcZKFuIt/I@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Oct 24, 2022 at 01:20:26PM -0400, Joel Fernandes wrote:
-> On Mon, Oct 24, 2022 at 1:08 PM Uladzislau Rezki <urezki@gmail.com> wrote:
-> >
-> > On Mon, Oct 24, 2022 at 06:55:16PM +0200, Uladzislau Rezki wrote:
-> > > On Mon, Oct 24, 2022 at 09:48:19AM -0700, Paul E. McKenney wrote:
-> > > > On Mon, Oct 24, 2022 at 06:25:30PM +0200, Uladzislau Rezki wrote:
-> > > > > >
-> > > > > > You guys might need to agree on the definition of "good" here.  Or maybe
-> > > > > > understand the differences in your respective platforms' definitions of
-> > > > > > "good".  ;-)
-> > > > > >
-> > > > > Indeed. Bad is when once per-millisecond infinitely :) At least in such use
-> > > > > workload a can detect a power delta and power gain. Anyway, below is a new
-> > > > > trace where i do not use "flush" variant for the kvfree_rcu():
-> > > > >
-> > > > > <snip>
-> > > > > 1. Home screen swipe:
-> > > > >          rcuop/0-15      [003] d..1  1792.767750: rcu_batch_start: rcu_preempt CBs=1003 bl=10
-> > > > >          rcuop/2-33      [002] d..1  1792.771717: rcu_batch_start: rcu_preempt CBs=934 bl=10
-> > > > >          rcuop/3-40      [001] d..1  1794.811816: rcu_batch_start: rcu_preempt CBs=1508 bl=11
-> > > > >          rcuop/1-26      [003] d..1  1797.116382: rcu_batch_start: rcu_preempt CBs=2127 bl=16
-> > > > >          rcuop/4-48      [001] d..1  1797.124422: rcu_batch_start: rcu_preempt CBs=95 bl=10
-> > > > >          rcuop/5-55      [002] d..1  1797.124731: rcu_batch_start: rcu_preempt CBs=143 bl=10
-> > > > >          rcuop/6-62      [005] d..1  1798.911719: rcu_batch_start: rcu_preempt CBs=132 bl=10
-> > > > >          rcuop/2-33      [002] d..1  1803.003966: rcu_batch_start: rcu_preempt CBs=3797 bl=29
-> > > > >          rcuop/0-15      [003] d..1  1803.004707: rcu_batch_start: rcu_preempt CBs=2969 bl=23
+On 10/24/22 17:06, Matthew Wilcox wrote:
+> On Mon, Oct 24, 2022 at 04:35:04PM +0200, Vlastimil Babka wrote:
+>> I would like to have a working safe version in -next, even if we are able
+>> simplify it later thanks to frozen refcounts. I've made a formal patch of
+>> yours, but I'm still convinced the slab check needs to be more paranoid so
+>> it can't observe a false positive __folio_test_movable() while missing the
+>> folio_test_slab(), hence I added the barriers as in my previous attempt [1].
+>> Does that work for you and can I add your S-o-b?
 > 
-> > > > > 2. App launches:
-> > > > >          rcuop/4-48      [005] d..1  1831.087612: rcu_batch_start: rcu_preempt CBs=6141 bl=47
-> > > > >          rcuop/7-69      [007] d..1  1831.095578: rcu_batch_start: rcu_preempt CBs=5464 bl=42
-> > > > >          rcuop/5-55      [004] d..1  1832.703571: rcu_batch_start: rcu_preempt CBs=8461 bl=66
-> > > > >          rcuop/0-15      [004] d..1  1833.731603: rcu_batch_start: rcu_preempt CBs=2548 bl=19
-> > > > >          rcuop/1-26      [006] d..1  1833.743691: rcu_batch_start: rcu_preempt CBs=2567 bl=20
-> > > > >          rcuop/2-33      [006] d..1  1833.744005: rcu_batch_start: rcu_preempt CBs=2359 bl=18
-> > > > >          rcuop/3-40      [006] d..1  1833.744286: rcu_batch_start: rcu_preempt CBs=3681 bl=28
-> > > > >          rcuop/4-48      [002] d..1  1838.079777: rcu_batch_start: rcu_preempt CBs=10444 bl=81
-> > > > >          rcuop/7-69      [001] d..1  1838.080375: rcu_batch_start: rcu_preempt CBs=12572 bl=98
-> > > > >            <...>-62      [002] d..1  1838.080646: rcu_batch_start: rcu_preempt CBs=14135 bl=110
-> > > > >          rcuop/6-62      [000] d..1  1838.087722: rcu_batch_start: rcu_preempt CBs=10839 bl=84
-> > > > >            <...>-62      [003] d..1  1839.227022: rcu_batch_start: rcu_preempt CBs=1834 bl=14
-> > > > >            <...>-26      [001] d..1  1839.963315: rcu_batch_start: rcu_preempt CBs=5769 bl=45
-> > > > >          rcuop/2-33      [001] d..1  1839.966485: rcu_batch_start: rcu_preempt CBs=3789 bl=29
-> > > > >            <...>-40      [001] d..1  1839.966596: rcu_batch_start: rcu_preempt CBs=6425 bl=50
-> > > > >          rcuop/2-33      [005] d..1  1840.541272: rcu_batch_start: rcu_preempt CBs=825 bl=10
-> > > > >          rcuop/2-33      [005] d..1  1840.547724: rcu_batch_start: rcu_preempt CBs=44 bl=10
-> > > > >          rcuop/2-33      [005] d..1  1841.075759: rcu_batch_start: rcu_preempt CBs=516 bl=10
-> > > > >          rcuop/0-15      [002] d..1  1841.695716: rcu_batch_start: rcu_preempt CBs=6312 bl=49
-> > > > >          rcuop/0-15      [003] d..1  1841.709714: rcu_batch_start: rcu_preempt CBs=39 bl=10
-> > > > >          rcuop/5-55      [004] d..1  1843.112442: rcu_batch_start: rcu_preempt CBs=16007 bl=125
-> > > > >          rcuop/5-55      [004] d..1  1843.115444: rcu_batch_start: rcu_preempt CBs=7901 bl=61
-> > > > >          rcuop/6-62      [001] dn.1  1843.123983: rcu_batch_start: rcu_preempt CBs=8427 bl=65
-> > > > >          rcuop/6-62      [006] d..1  1843.412383: rcu_batch_start: rcu_preempt CBs=981 bl=10
-> > > > >          rcuop/0-15      [003] d..1  1844.659812: rcu_batch_start: rcu_preempt CBs=1851 bl=14
-> > > > >          rcuop/0-15      [003] d..1  1844.667790: rcu_batch_start: rcu_preempt CBs=135 bl=10
+> Thanks for picking this back up.
 > 
-> Definitely better, but I'd still ask why not just rely on the lazy
-> batching that we now have, since it is a memory pressure related
-> usecase. Or another approach could be, for CONFIG_RCU_LAZY, don't
-> disturb the lazy-RCU batching by queuing these "free memory" CBs; and
-> instead keep your improved kvfree_rcu() batching only for
-> !CONFIG_RCU_LAZY.
+>> +++ b/mm/slab.c
+>> @@ -1370,6 +1370,8 @@ static struct slab *kmem_getpages(struct kmem_cache *cachep, gfp_t flags,
+>>  
+>>  	account_slab(slab, cachep->gfporder, cachep, flags);
+>>  	__folio_set_slab(folio);
+>> +	/* Make the flag visible before any changes to folio->mapping */
+>> +	smp_wmb();
+> 
+> So what's the point of using __folio_set_slab() only to call smp_wmb()
+> afterwards?  If we call folio_set_slab() instead, don't all the other
+> barriers go away?  (This is a genuine question; I am bad at this kind
+> of reasoning).  Obviously it would still need a comment.
 
-Given that making the kvfree_rcu()-level batching conditional on
-CONFIG_RCU_LAZY would complicate the code, what bad thing happens when
-keeping the kvfree_rcu-level batching unconditionally?
+AFAIU (which doesn't mean much, TBH :)) folio_set_slab() makes the setting
+of the flag protected against other flags set operations so our setting is
+not lost in a non-atomic RMW. But as we are the only one who can be setting
+any page/folio flag here (isolate_movable_page() for sure doesn't), we don't
+need it for that kind of atomicity for page/folio flags field.
 
-							Thanx, Paul
+And, simply changing it to folio_set_slab() would not add the sufficient
+smp_wmb() semantics to order the flags write visibility against a later
+write to the struct slab field that overlaps page->mapping. Only some atomic
+operations have that implicit barrier, (per
+Documentation/memory-barriers.txt and Documentation/atomic_bitops.txt) and
+set_bit() is not one of those. So we'd still need a smp_mb__after_atomic()
+AFAIU and at that point, doing the above seems less obscure to me.
+
+(Of course if we had the reason to use folio_set_slab() for its own atomic
+guarantee, then smp_mb__after_atomic() instead of smp_wmb() would be better
+as on some architectures it would make the barrier no-op).
