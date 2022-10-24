@@ -2,62 +2,63 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CFEBC67871
-	for <rcu@archiver.kernel.org>; Mon, 24 Oct 2022 21:34:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D5A28C38A2D
+	for <rcu@archiver.kernel.org>; Mon, 24 Oct 2022 21:54:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231823AbiJXVem (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 24 Oct 2022 17:34:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54620 "EHLO
+        id S229674AbiJXVyk (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 24 Oct 2022 17:54:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230377AbiJXVeU (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 24 Oct 2022 17:34:20 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A87B4295B01
-        for <rcu@vger.kernel.org>; Mon, 24 Oct 2022 12:41:26 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id a5so6739873qkl.6
-        for <rcu@vger.kernel.org>; Mon, 24 Oct 2022 12:41:26 -0700 (PDT)
+        with ESMTP id S231370AbiJXVxx (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 24 Oct 2022 17:53:53 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2DCC39118
+        for <rcu@vger.kernel.org>; Mon, 24 Oct 2022 13:07:53 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id e15so7083665qvo.4
+        for <rcu@vger.kernel.org>; Mon, 24 Oct 2022 13:07:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linux-foundation.org; s=google;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=RHwylrpUhj9v4/w8TtnyC8haWHtRwyVJQggauiAHehQ=;
-        b=XwVorEtf3KoWJHKCNWfx/5m0XsHd+TojlQiZa2lTRU2tMPjvHFUP2MXHNmB9G5WCLM
-         wnlvDUNfwHCWCVk960vhH/PdBT4jJExZ7npaGpp2QaYphHUTlRih7b+t+2I0i3k+Tru/
-         BiOAM6q/OZRt/nZ9nWFvF90lCeUKgKCznjjjQ=
+        bh=MDpgzQG8dmgEoiEUfYcpSbDd31DVRx70fLapPMBjtJI=;
+        b=LCfRZon3vZnZHSxce4XZXcxfQd2il/sh41ERF0J3f8mlXerhKZxGO+aNgMRfqAC7u8
+         HXrBUv5kabYITECZt9ZOzVsYJQ5cii/lIZ/BHPsZYpeqfaLHH/DPc3J0Pxxw0KRxbMZL
+         y1vY9wimStgmzEIEHtluo6/5SDdCg6pmWfi/I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=RHwylrpUhj9v4/w8TtnyC8haWHtRwyVJQggauiAHehQ=;
-        b=dVL56eJqknCs3WyMZkhDnu4RZ6H217WrPBbhPrgzgD213hnAR/AWnLh+guzaG9ilz9
-         N9BncqmNnDudimhgzqr+JDALRXWhkJEuubLGzF+JkxVOZszf/TRFV9JSmJhtv6/Feo36
-         //tr9PeA6KVLHt6nhduL8bzVcETbnZn5G6V13n6emhQ18qoOywkqygWztcVChXCkyDeX
-         bjNvekdFgbW9x1q9+gbcFKoLqGN8IKnIo9koLtpMtYeaqwNfIAkLvGasQkSlGq6d5zLo
-         zdRGWithb3OHEvBDiLapWQF5tjs2Jp+Q7ZQ5e0K2SA8jUdLR5nJy1irQUyjKnHlOBEwD
-         st0Q==
-X-Gm-Message-State: ACrzQf3LpBRXV6zvrmSXrxiDGpa942VtTuSm9uddYeJmt5W2zm1O2koP
-        cYXz/FHhglLxmKEssFId8pND+8YAxyduIA==
-X-Google-Smtp-Source: AMsMyM4f2pur9iSe4o7nePtKAH4fepqfa6ZrQWYiJF/zhJjuq8iFNMACn2W+tS6XLwRlevmoh41vUA==
-X-Received: by 2002:a05:620a:4611:b0:6ee:9e55:9d30 with SMTP id br17-20020a05620a461100b006ee9e559d30mr23440836qkb.210.1666640420002;
-        Mon, 24 Oct 2022 12:40:20 -0700 (PDT)
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com. [209.85.219.177])
-        by smtp.gmail.com with ESMTPSA id s14-20020a05620a254e00b006cf8fc6e922sm521858qko.119.2022.10.24.12.40.18
+        bh=MDpgzQG8dmgEoiEUfYcpSbDd31DVRx70fLapPMBjtJI=;
+        b=Spx9n5Kb5MHL1XrS9jXrfhz8sxBe9nVPJ+r8IY2QdvNtHhXgVKnDdhpp9tFKk5+Y4w
+         cm5zL5ROClVU5nOHcAmMIpq+pMOji5CWjhlUaTxQYOkxoipz2vjCr7A+RCkCLvj2xkfP
+         S5zX6wzq4R2WEIHcxV2OwvKcf4SQErqtjmHk1ZzW6F1fk+yyTdH98GAbwl6CQOUCv9DX
+         gQ8nreLvfDVjQgSpK7Eece6NOnNTaE7LAvxyKiSNv3L8qS2xIKhbc4Zl8b9VZYmJJQ9H
+         8JGx1GEA7lAaYsjaqbjlnyBcIHEJIkwynd2+/xqX+W3F0BMZzzaFdeUTqbf62463G/yp
+         QWXw==
+X-Gm-Message-State: ACrzQf0siaq+I5NwoDgm7ObdnJdu4N4k/9B/O1fpw4TEqWnXy19T/H1L
+        zkkLg2Cxa6/PzhHIDNp6WHvnvttt7n/b1A==
+X-Google-Smtp-Source: AMsMyM79jFEo6nY8D+btmCVlTCcJJ7Q263PyHSzYEq8wHIJryd5csuggdQwT4uqTZ4Xo55xfbZ/odA==
+X-Received: by 2002:a05:6214:500f:b0:4b1:d2b1:54c with SMTP id jo15-20020a056214500f00b004b1d2b1054cmr29113036qvb.54.1666641990638;
+        Mon, 24 Oct 2022 13:06:30 -0700 (PDT)
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
+        by smtp.gmail.com with ESMTPSA id j19-20020a05620a411300b006cfaee39ccesm557238qko.114.2022.10.24.13.06.28
         for <rcu@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Oct 2022 12:40:18 -0700 (PDT)
-Received: by mail-yb1-f177.google.com with SMTP id l145so12245424ybl.0
-        for <rcu@vger.kernel.org>; Mon, 24 Oct 2022 12:40:18 -0700 (PDT)
-X-Received: by 2002:a05:6902:124f:b0:66e:e3da:487e with SMTP id
- t15-20020a056902124f00b0066ee3da487emr32262663ybu.310.1666640417860; Mon, 24
- Oct 2022 12:40:17 -0700 (PDT)
+        Mon, 24 Oct 2022 13:06:29 -0700 (PDT)
+Received: by mail-yb1-f169.google.com with SMTP id y72so12188373yby.13
+        for <rcu@vger.kernel.org>; Mon, 24 Oct 2022 13:06:28 -0700 (PDT)
+X-Received: by 2002:a25:84cf:0:b0:6b3:c0c3:19d8 with SMTP id
+ x15-20020a2584cf000000b006b3c0c319d8mr28662460ybm.349.1666641988539; Mon, 24
+ Oct 2022 13:06:28 -0700 (PDT)
 MIME-Version: 1.0
 References: <20221024165421.GA1246679@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20221024165421.GA1246679@paulmck-ThinkPad-P17-Gen-1>
+ <CAHk-=wi1GXyh+kn1XfrbLA209MBGktteN=L+=cTEcoruxBtu3g@mail.gmail.com> <20221024200446.GD5600@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20221024200446.GD5600@paulmck-ThinkPad-P17-Gen-1>
 From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 24 Oct 2022 12:40:01 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wi1GXyh+kn1XfrbLA209MBGktteN=L+=cTEcoruxBtu3g@mail.gmail.com>
-Message-ID: <CAHk-=wi1GXyh+kn1XfrbLA209MBGktteN=L+=cTEcoruxBtu3g@mail.gmail.com>
+Date:   Mon, 24 Oct 2022 13:06:12 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wi5fhyHfabjN6kDD+ow5m1JF4iduq0SHDkidqK1+G9aLA@mail.gmail.com>
+Message-ID: <CAHk-=wi5fhyHfabjN6kDD+ow5m1JF4iduq0SHDkidqK1+G9aLA@mail.gmail.com>
 Subject: Re: [GIT PULL] Keep synchronize_rcu() from enabling irqs in early boot
 To:     paulmck@kernel.org
 Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, tglx@linutronix.de,
@@ -67,14 +68,14 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Oct 24, 2022 at 9:54 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+On Mon, Oct 24, 2022 at 1:04 PM Paul E. McKenney <paulmck@kernel.org> wrote:
 >
-> This pull request contains a commit that fixes bf95b2bc3e42 ("rcu: Switch
-> polled grace-period APIs to ->gp_seq_polled"), which could incorrectly
-> leave interrupts enabled after an early-boot call to synchronize_rcu().
+> Please accept my apologies for my confusion!
+>
+> Please see below for a pull request for a better-formatted commit.
 
-Minor stylistic nit-pick - please try to keep the commit tags
-together, ie the "Fixes:" tags goes with Reported-by: tags and
-sign-offs etc..
+Oh, it was such a small nit that I already pulled your tree - my note
+was really just a "not a big deal, but in the future it would be nice
+if.."
 
-              Linus
+                Linus
