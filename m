@@ -2,149 +2,125 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D4628C67871
-	for <rcu@archiver.kernel.org>; Mon, 24 Oct 2022 23:17:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C9F8FA3742
+	for <rcu@archiver.kernel.org>; Tue, 25 Oct 2022 04:20:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230035AbiJXXRH (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 24 Oct 2022 19:17:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48972 "EHLO
+        id S230012AbiJYEUF (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 25 Oct 2022 00:20:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230151AbiJXXQh (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 24 Oct 2022 19:16:37 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7203C2E0821
-        for <rcu@vger.kernel.org>; Mon, 24 Oct 2022 14:37:34 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id d3so7956639ljl.1
-        for <rcu@vger.kernel.org>; Mon, 24 Oct 2022 14:37:33 -0700 (PDT)
+        with ESMTP id S230179AbiJYEUE (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 25 Oct 2022 00:20:04 -0400
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8492443AD0
+        for <rcu@vger.kernel.org>; Mon, 24 Oct 2022 21:20:01 -0700 (PDT)
+Received: by mail-qv1-xf2d.google.com with SMTP id ml12so6825875qvb.0
+        for <rcu@vger.kernel.org>; Mon, 24 Oct 2022 21:20:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=4VHkG0IaVo65yuk+uBu9L48M8KsiGI72vU5AUm+F3qo=;
-        b=MurGtccy8HeHUSP3yRBzRa/4yl9OYQcsOhSzQEcVo2fSgZf4wFkkpYY/gXct5OWiMD
-         8I2Qp3i7WHcE4orPkBCVWfTkzn+y9E0PvfL5VYuW2onTDXV/r6Eln4ZGHOHCsoSxfO4m
-         YiVlPVOxTckIFKNans0JCIiZvVyiCQGSCO2V8=
+        d=google.com; s=20210112;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=+Uw0upS0qH/Dh6yWZ0csr+I4nuaoeQNCZlNeulnctJs=;
+        b=RDzgd4ItPvImIQboV1VWvznNQIPTNeHho7E1eUhEFK83/jL7VU+OhV2spCBPifZGX6
+         PKc5Ar7wtvabBZ4tfMi3kjCHPA7I/8c1GxIk1R0awna963WmhJKRuVtH2oArQ47el8+f
+         R1H2JnHR2DD04eYuSwLeiPP6dzGAhYXBZ0OtNQCxmAErqnDgXy60U86Vy8wwyLw/3qSp
+         9da/dhvntOdFlWu8r905Lq9ukv4swNZ9Lbb5WOf9LYL8iLWRHLVDzgNzmYLJ7JQI+Ac0
+         tL4y3WhMjjetRUKbEbanyYPxK7cA2RraGXSx1x+2LkemAZWs/MFX7313o/Os7hLOJX9e
+         aAEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4VHkG0IaVo65yuk+uBu9L48M8KsiGI72vU5AUm+F3qo=;
-        b=yMFbGOojBXdayNl1s1U9KsG+FHxf0IsXrLUEnG25bPaefQS/Tzp2G+Al/JnDQde/u6
-         5fTPXlCbhL0Q4xheUAoHv4ah/4fY18JNRO40j1emT6Rn2bibPT49TH3B8BYPegxiMgOP
-         B5dWsk4qwsvxy7gTqSv1tBy4stsTLqGdYr4mqWaQ+XG9QNrC0cFYtu1U1x+J6fs/F+ki
-         TNjd5IyU0w+hYZP+LIQSsD3nK8qFu6tgeZEyBnyE2HU6TQ3lK1JzftSPZBgw0S/KbPRx
-         K+i6rAeD8k+WdJ2+Tz5Pf4YK26LRWz+lvCimmIWGIUNcgPlrgb9bw2IG6lRd24YuZPeZ
-         GgmQ==
-X-Gm-Message-State: ACrzQf2SaBJt/mhA//D6gTmd3Zgqy5tyjglkSQ8nkMhBieV1tlzoyiRo
-        kN+ZJWZ2GjLyfOyf19bpt0vtViPWtS27pqB16WskAivoGKY=
-X-Google-Smtp-Source: AMsMyM4oRs4Ctsa8x3GgduqC9+zTstCXwvFp007mVWsaEmYY935B04d5ObwJn9HJFo6pWafyOWnLpQs5XixovrVGLZs=
-X-Received: by 2002:a17:907:3f19:b0:7a3:2317:4221 with SMTP id
- hq25-20020a1709073f1900b007a323174221mr9593961ejc.562.1666642390915; Mon, 24
- Oct 2022 13:13:10 -0700 (PDT)
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+Uw0upS0qH/Dh6yWZ0csr+I4nuaoeQNCZlNeulnctJs=;
+        b=dSo23a4K6iYUR6bNAyFXPE1fbxTZE1EK7twPDkzKWZiWpevf1djnJhoryMsUMclnvn
+         nvQKlEGFjClnVBFEcyi0Gj6xEETH3vPk0B277fQPeUmRsqDrazn8m0r3KH/8NtoQb1lc
+         LKXdpeUEvt9rGudzqH1SNcWLWuEawslYHQ2OaairOwN+sHkLdsPPqw3GDjH+t/AvwQmO
+         UD9mw3V8xSiUzBuYt0CcxPtTJ0/NS3mxvxqiluJ0qRtSgcO4p/hBR3SHcxsYrlx2KpcP
+         K8pxNgAAkEDhY0ijDaHY2g70/uCpcdV5adlbVo5d8yoLlWTYDr0ZhlaSvCWT/DLl35SY
+         USWQ==
+X-Gm-Message-State: ACrzQf10QV1U20/YEONotI8T4sU5TKApvg65IEmhUl7ccAoZRzco4L4M
+        IXQgmltLCtWJrEXpYpeEZvRp/g==
+X-Google-Smtp-Source: AMsMyM4f6ujxPgWdNjBGcU8lOd4F2/NW5zXc74HddwAQGUoyu7EeaL4Av/QPlNNPkt2CB+eZjFq8Cg==
+X-Received: by 2002:a0c:f5ca:0:b0:4bb:6f16:c0ca with SMTP id q10-20020a0cf5ca000000b004bb6f16c0camr7292716qvm.111.1666671600184;
+        Mon, 24 Oct 2022 21:20:00 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id x14-20020a05620a448e00b006ed30a8fb21sm1345417qkp.76.2022.10.24.21.19.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Oct 2022 21:19:59 -0700 (PDT)
+Date:   Mon, 24 Oct 2022 21:19:57 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.attlocal.net
+To:     Vlastimil Babka <vbabka@suse.cz>
+cc:     Matthew Wilcox <willy@infradead.org>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Hugh Dickins <hughd@google.com>,
+        David Laight <David.Laight@aculab.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        rcu@vger.kernel.org
+Subject: Re: amusing SLUB compaction bug when CC_OPTIMIZE_FOR_SIZE
+In-Reply-To: <7dddca4c-bc36-2cf0-de1c-a770bef9e1b7@suse.cz>
+Message-ID: <904cc831-eb16-b1e5-10e5-9e7a171ef83@google.com>
+References: <ea96c78c-e1dc-1364-e91-51909f82388b@google.com> <YzPgTtFzpKEfwPbK@hyeyoo> <YzRQvoVsnJzsauwb@google.com> <35502bdd-1a78-dea1-6ac3-6ff1bcc073fa@suse.cz> <ff905c1e-5eb3-eaf8-46de-38f189c0b7a5@google.com> <de71b83a-c82c-4785-ef5a-3db4f17bbc8d@suse.cz>
+ <bcecece-f7ce-221d-1674-da3d5ab3fef@google.com> <YzkmErHFyYW3awRn@hyeyoo> <YzsVM8eToHUeTP75@casper.infradead.org> <7dddca4c-bc36-2cf0-de1c-a770bef9e1b7@suse.cz>
 MIME-Version: 1.0
-References: <20221024031540.GU5600@paulmck-ThinkPad-P17-Gen-1>
- <Y1ZtyjxKCcV0Hfjn@pc636> <Y1aDy3maaO39ClSU@pc636> <Y1ahs83258Lok9+O@google.com>
- <20221024153958.GY5600@paulmck-ThinkPad-P17-Gen-1> <Y1a8ei1h7SzyYZx9@pc636>
- <20221024164819.GA5600@paulmck-ThinkPad-P17-Gen-1> <Y1bDdP3iHoa4xqZL@pc636>
- <Y1bGcQ7RPleYp3ge@pc636> <CAEXW_YQqiD1GU7HGrv9UU6vL_MqbxVt14=rxZAKqUpK+pkPDPw@mail.gmail.com>
- <20221024173558.GC5600@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20221024173558.GC5600@paulmck-ThinkPad-P17-Gen-1>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Mon, 24 Oct 2022 16:12:59 -0400
-Message-ID: <CAEXW_YQFNd8evWMxv=sWwZ0q28wxAwStCMgaJnDu6QM6YqqjMA@mail.gmail.com>
-Subject: Re: [PATCH rcu 13/14] workqueue: Make queue_rcu_work() use call_rcu_flush()
-To:     paulmck@kernel.org
-Cc:     Uladzislau Rezki <urezki@gmail.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Oct 24, 2022 at 1:36 PM Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> On Mon, Oct 24, 2022 at 01:20:26PM -0400, Joel Fernandes wrote:
-> > On Mon, Oct 24, 2022 at 1:08 PM Uladzislau Rezki <urezki@gmail.com> wrote:
-> > >
-> > > On Mon, Oct 24, 2022 at 06:55:16PM +0200, Uladzislau Rezki wrote:
-> > > > On Mon, Oct 24, 2022 at 09:48:19AM -0700, Paul E. McKenney wrote:
-> > > > > On Mon, Oct 24, 2022 at 06:25:30PM +0200, Uladzislau Rezki wrote:
-> > > > > > >
-> > > > > > > You guys might need to agree on the definition of "good" here.  Or maybe
-> > > > > > > understand the differences in your respective platforms' definitions of
-> > > > > > > "good".  ;-)
-> > > > > > >
-> > > > > > Indeed. Bad is when once per-millisecond infinitely :) At least in such use
-> > > > > > workload a can detect a power delta and power gain. Anyway, below is a new
-> > > > > > trace where i do not use "flush" variant for the kvfree_rcu():
-> > > > > >
-> > > > > > <snip>
-> > > > > > 1. Home screen swipe:
-> > > > > >          rcuop/0-15      [003] d..1  1792.767750: rcu_batch_start: rcu_preempt CBs=1003 bl=10
-> > > > > >          rcuop/2-33      [002] d..1  1792.771717: rcu_batch_start: rcu_preempt CBs=934 bl=10
-> > > > > >          rcuop/3-40      [001] d..1  1794.811816: rcu_batch_start: rcu_preempt CBs=1508 bl=11
-> > > > > >          rcuop/1-26      [003] d..1  1797.116382: rcu_batch_start: rcu_preempt CBs=2127 bl=16
-> > > > > >          rcuop/4-48      [001] d..1  1797.124422: rcu_batch_start: rcu_preempt CBs=95 bl=10
-> > > > > >          rcuop/5-55      [002] d..1  1797.124731: rcu_batch_start: rcu_preempt CBs=143 bl=10
-> > > > > >          rcuop/6-62      [005] d..1  1798.911719: rcu_batch_start: rcu_preempt CBs=132 bl=10
-> > > > > >          rcuop/2-33      [002] d..1  1803.003966: rcu_batch_start: rcu_preempt CBs=3797 bl=29
-> > > > > >          rcuop/0-15      [003] d..1  1803.004707: rcu_batch_start: rcu_preempt CBs=2969 bl=23
-> >
-> > > > > > 2. App launches:
-> > > > > >          rcuop/4-48      [005] d..1  1831.087612: rcu_batch_start: rcu_preempt CBs=6141 bl=47
-> > > > > >          rcuop/7-69      [007] d..1  1831.095578: rcu_batch_start: rcu_preempt CBs=5464 bl=42
-> > > > > >          rcuop/5-55      [004] d..1  1832.703571: rcu_batch_start: rcu_preempt CBs=8461 bl=66
-> > > > > >          rcuop/0-15      [004] d..1  1833.731603: rcu_batch_start: rcu_preempt CBs=2548 bl=19
-> > > > > >          rcuop/1-26      [006] d..1  1833.743691: rcu_batch_start: rcu_preempt CBs=2567 bl=20
-> > > > > >          rcuop/2-33      [006] d..1  1833.744005: rcu_batch_start: rcu_preempt CBs=2359 bl=18
-> > > > > >          rcuop/3-40      [006] d..1  1833.744286: rcu_batch_start: rcu_preempt CBs=3681 bl=28
-> > > > > >          rcuop/4-48      [002] d..1  1838.079777: rcu_batch_start: rcu_preempt CBs=10444 bl=81
-> > > > > >          rcuop/7-69      [001] d..1  1838.080375: rcu_batch_start: rcu_preempt CBs=12572 bl=98
-> > > > > >            <...>-62      [002] d..1  1838.080646: rcu_batch_start: rcu_preempt CBs=14135 bl=110
-> > > > > >          rcuop/6-62      [000] d..1  1838.087722: rcu_batch_start: rcu_preempt CBs=10839 bl=84
-> > > > > >            <...>-62      [003] d..1  1839.227022: rcu_batch_start: rcu_preempt CBs=1834 bl=14
-> > > > > >            <...>-26      [001] d..1  1839.963315: rcu_batch_start: rcu_preempt CBs=5769 bl=45
-> > > > > >          rcuop/2-33      [001] d..1  1839.966485: rcu_batch_start: rcu_preempt CBs=3789 bl=29
-> > > > > >            <...>-40      [001] d..1  1839.966596: rcu_batch_start: rcu_preempt CBs=6425 bl=50
-> > > > > >          rcuop/2-33      [005] d..1  1840.541272: rcu_batch_start: rcu_preempt CBs=825 bl=10
-> > > > > >          rcuop/2-33      [005] d..1  1840.547724: rcu_batch_start: rcu_preempt CBs=44 bl=10
-> > > > > >          rcuop/2-33      [005] d..1  1841.075759: rcu_batch_start: rcu_preempt CBs=516 bl=10
-> > > > > >          rcuop/0-15      [002] d..1  1841.695716: rcu_batch_start: rcu_preempt CBs=6312 bl=49
-> > > > > >          rcuop/0-15      [003] d..1  1841.709714: rcu_batch_start: rcu_preempt CBs=39 bl=10
-> > > > > >          rcuop/5-55      [004] d..1  1843.112442: rcu_batch_start: rcu_preempt CBs=16007 bl=125
-> > > > > >          rcuop/5-55      [004] d..1  1843.115444: rcu_batch_start: rcu_preempt CBs=7901 bl=61
-> > > > > >          rcuop/6-62      [001] dn.1  1843.123983: rcu_batch_start: rcu_preempt CBs=8427 bl=65
-> > > > > >          rcuop/6-62      [006] d..1  1843.412383: rcu_batch_start: rcu_preempt CBs=981 bl=10
-> > > > > >          rcuop/0-15      [003] d..1  1844.659812: rcu_batch_start: rcu_preempt CBs=1851 bl=14
-> > > > > >          rcuop/0-15      [003] d..1  1844.667790: rcu_batch_start: rcu_preempt CBs=135 bl=10
-> >
-> > Definitely better, but I'd still ask why not just rely on the lazy
-> > batching that we now have, since it is a memory pressure related
-> > usecase. Or another approach could be, for CONFIG_RCU_LAZY, don't
-> > disturb the lazy-RCU batching by queuing these "free memory" CBs; and
-> > instead keep your improved kvfree_rcu() batching only for
-> > !CONFIG_RCU_LAZY.
->
-> Given that making the kvfree_rcu()-level batching conditional on
-> CONFIG_RCU_LAZY would complicate the code, what bad thing happens when
-> keeping the kvfree_rcu-level batching unconditionally?
+On Mon, 24 Oct 2022, Vlastimil Babka wrote:
+> On 10/3/22 19:00, Matthew Wilcox wrote:
+> > On Sun, Oct 02, 2022 at 02:48:02PM +0900, Hyeonggon Yoo wrote:
+> >> Just one more thing, rcu_leak_callback too. RCU seem to use it
+> >> internally to catch double call_rcu().
+> >> 
+> >> And some suggestions:
+> >> - what about adding runtime WARN() on slab init code to catch
+> >>   unexpected arch/toolchain issues?
+> >> - instead of 4, we may use macro definition? like (PAGE_MAPPING_FLAGS + 1)?
+> > 
+> > I think the real problem here is that isolate_movable_page() is
+> > insufficiently paranoid.  Looking at the gyrations that GUP and the
+> > page cache do to convince themselves that the page they got really is
+> > the page they wanted, there are a few missing pieces (eg checking that
+> > you actually got a refcount on _this_ page and not some random other
+> > page you were temporarily part of a compound page with).
+> > 
+> > This patch does three things:
+> > 
+> >  - Turns one of the comments into English.  There are some others
+> >    which I'm still scratching my head over.
+> >  - Uses a folio to help distinguish which operations are being done
+> >    to the head vs the specific page (this is somewhat an abuse of the
+> >    folio concept, but it's acceptable)
+> >  - Add the aforementioned check that we're actually operating on the
+> >    page that we think we want to be.
+> >  - Add a check that the folio isn't secretly a slab.
+> > 
+> > We could put the slab check in PageMapping and call it after taking
+> > the folio lock, but that seems pointless.  It's the acquisition of
+> > the refcount which stabilises the slab flag, not holding the lock.
+> > 
+> 
+> I would like to have a working safe version in -next, even if we are able
+> simplify it later thanks to frozen refcounts. I've made a formal patch of
+> yours, but I'm still convinced the slab check needs to be more paranoid so
+> it can't observe a false positive __folio_test_movable() while missing the
+> folio_test_slab(), hence I added the barriers as in my previous attempt [1].
+> Does that work for you and can I add your S-o-b?
+> 
+> [1] https://lore.kernel.org/all/aec59f53-0e53-1736-5932-25407125d4d4@suse.cz/
 
-The bad thing happening is power impact. There is a noticeable impact
-in our testing, and when we dropped this particular patch, it got much
-better results.
+Ignore me, don't let me distract if you're happy with Matthew's patch
+(I know little of PageMovable, and I haven't tried to understand it);
+but it did look to me more like 6.2 material, and I was surprised that
+you dropped the simple align(4) approach for 6.1.
 
-I also run rcutop and I see without the patch that I have several
-seconds of laziness at a time, unlike with the patch.
+Because of Hyeonggon's rcu_leak_callback() observation?  That was a
+good catch, but turned out to be irrelevant, because it was only for
+an RCU debugging option, which would never be set up on a struct page
+(well, maybe it would in a dynamically-allocated-struct-page future).
 
-Even in the beginning when I came up with an implementation for
-call_rcu_lazy(), I had to mark queue_rcu_work() as lazy as well since
-it was quite frequent (on ChromeOS). But when we introduced the
-flush() API, I forgot to not use flush() on it.  But unfortunately
-this patch slipped into my last series when Vlad and I were debugging
-the SCSI issue, and did not really help for the SCSI issue itself.
-
-Thanks,
-
- - Joel
+Hugh
