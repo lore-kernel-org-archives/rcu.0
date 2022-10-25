@@ -2,116 +2,190 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EF4F4C04A95
-	for <rcu@archiver.kernel.org>; Tue, 25 Oct 2022 09:22:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 94334C04A95
+	for <rcu@archiver.kernel.org>; Tue, 25 Oct 2022 10:47:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230310AbiJYJW4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 25 Oct 2022 05:22:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42146 "EHLO
+        id S231631AbiJYKrV (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 25 Oct 2022 06:47:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231213AbiJYJWU (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 25 Oct 2022 05:22:20 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 289BDFCA;
-        Tue, 25 Oct 2022 02:17:41 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 01ECD1FD6C;
-        Tue, 25 Oct 2022 09:17:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1666689460; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zD8OApJsTbBnv3iSDEQ49cotr+aBwY7HUsO9Mmm7DyI=;
-        b=tZNaBpgRS2zftFAhvMLdtVxWOpW3DR3e9FK3I5hXXbAIDvLr7G8T7UgYtxstGKE/nJRrVq
-        YkqlGUdwW1JyGmNM5dF/AEGZiKHNwqSZ/GIyJgG8RGfUcxLBb00POG5rljywVvmsQIhxbO
-        d8CgwSKzMPKy2RxSJd63ru2SkcOBq0k=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1666689460;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zD8OApJsTbBnv3iSDEQ49cotr+aBwY7HUsO9Mmm7DyI=;
-        b=UIV++LU+F+Fv84uskaMlBHpmjO0+klcnp4ZLkqUp4JULhXo9MLl/3WPaZOU53Zf1hyW9N+
-        BsaLrSFTvaqfQ8DQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CAC8C134CA;
-        Tue, 25 Oct 2022 09:17:39 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id FIDSMLOpV2McOwAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Tue, 25 Oct 2022 09:17:39 +0000
-Message-ID: <32fe01dc-dda1-2154-af8e-7e9f64d6f811@suse.cz>
-Date:   Tue, 25 Oct 2022 11:17:39 +0200
+        with ESMTP id S231548AbiJYKrV (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 25 Oct 2022 06:47:21 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09B86A6C24;
+        Tue, 25 Oct 2022 03:47:20 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id j14so16235073ljh.12;
+        Tue, 25 Oct 2022 03:47:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=yDolnT/RMDA2ia3vo1ncrXG8L2hzO1Ln2khDwYafPVU=;
+        b=Bv1toL1wi9GCsIhk+SUDXDHzpzSiPk9+R3/vv2WL8BwhtthEkMNF8EUHMsNeU6u0K4
+         0W8g+U8xrqoaC4wmd8dIO2xw3NaVSpqkS+EzJ6Bf0oMrXPm4lTeeMjBwQ6plJ/ACjEyO
+         sBOWcAN7p6ORo1QpBCVw9g8Pln211+bGlH/HjWZ0+MSVFuWlCkjhC1z7r7Oz/3Xf/uG7
+         W1/chzrl9NwoqjvxV5jxb1DbEAxsIMjAjYsA3aiul8280butreAmqy4do11NoyRcP96W
+         ac8K17b3shJzi0OCwPPAVlKIEDIjVCTuFaZ4Xdn1Gp318mQEg5hcsiLQgJUVHgf+MBQb
+         6laA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yDolnT/RMDA2ia3vo1ncrXG8L2hzO1Ln2khDwYafPVU=;
+        b=GC0ipdfKcc7zozB42Cbaa/D1/BrNjIp00nZwnTwgaAdcde3Ud0/JuJxUTikQU0JKtr
+         OC72WfXzFjHLR6/E6wXRKyPJ3MwBL72z5GjDFwOibSyQGNEAIYMnEpgVQ1SZ5LwbTYve
+         OlVtjr0xDFyVEdF+AA6Z9bMCqkOuH4iXeVBbUNb10lPCgtIjnCn6c8y58ZoHJfBQY1o9
+         6X/xlTP2vEBTUqmQg6Hp/8yvUIaptoqFrguoB+91RtIu6uVI1oGZnBryExLXJVbyt278
+         ELjRAOwBfecxkOtAVGYrltiVQj1aUH6RjeOOWbRkouucs47VVO2l04Ch37gOQcjSjMsu
+         fDpA==
+X-Gm-Message-State: ACrzQf34GLob5ZHivKIRZl9ujfCkSXLtfut1F+I/av8AXOdup6R2mjuM
+        nzX5LJ8pPhVnsyxVLwTPmbcQYIL+Sqo=
+X-Google-Smtp-Source: AMsMyM4Vh4nBIpi0wERhyjXXzZAGFQ5nGvlxBo5ZfO16IRIAZ1JnU+ReXOowahQFB02QI58x6LL1MQ==
+X-Received: by 2002:a05:651c:384:b0:276:9855:fea6 with SMTP id e4-20020a05651c038400b002769855fea6mr6982674ljp.145.1666694838170;
+        Tue, 25 Oct 2022 03:47:18 -0700 (PDT)
+Received: from pc636 (host-217-213-69-138.mobileonline.telia.com. [217.213.69.138])
+        by smtp.gmail.com with ESMTPSA id p26-20020ac246da000000b00499cf3e3ebesm363506lfo.121.2022.10.25.03.47.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Oct 2022 03:47:17 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Tue, 25 Oct 2022 12:47:15 +0200
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com,
+        rostedt@goodmis.org
+Subject: Re: [PATCH rcu 13/14] workqueue: Make queue_rcu_work() use
+ call_rcu_flush()
+Message-ID: <Y1e+s3gVPdRSrAWv@pc636>
+References: <Y1aDy3maaO39ClSU@pc636>
+ <Y1ahs83258Lok9+O@google.com>
+ <20221024153958.GY5600@paulmck-ThinkPad-P17-Gen-1>
+ <Y1a8ei1h7SzyYZx9@pc636>
+ <20221024164819.GA5600@paulmck-ThinkPad-P17-Gen-1>
+ <Y1bDdP3iHoa4xqZL@pc636>
+ <Y1bGcQ7RPleYp3ge@pc636>
+ <CAEXW_YQqiD1GU7HGrv9UU6vL_MqbxVt14=rxZAKqUpK+pkPDPw@mail.gmail.com>
+ <Y1bODlfqVMQivzJU@pc636>
+ <CAEXW_YSRkNDhJu591S3GGQyJnCxCDJy6u_+-1Q_8z5_cQHb1Qg@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.3
-Subject: Re: amusing SLUB compaction bug when CC_OPTIMIZE_FOR_SIZE
-Content-Language: en-US
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        David Laight <David.Laight@aculab.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        rcu@vger.kernel.org, David Laight <David.Laight@ACULAB.COM>,
-        Kees Cook <keescook@chromium.org>
-References: <ea96c78c-e1dc-1364-e91-51909f82388b@google.com>
- <YzPgTtFzpKEfwPbK@hyeyoo> <YzRQvoVsnJzsauwb@google.com>
- <35502bdd-1a78-dea1-6ac3-6ff1bcc073fa@suse.cz>
- <ff905c1e-5eb3-eaf8-46de-38f189c0b7a5@google.com>
- <de71b83a-c82c-4785-ef5a-3db4f17bbc8d@suse.cz>
- <bcecece-f7ce-221d-1674-da3d5ab3fef@google.com> <YzkmErHFyYW3awRn@hyeyoo>
- <YzsVM8eToHUeTP75@casper.infradead.org>
- <7dddca4c-bc36-2cf0-de1c-a770bef9e1b7@suse.cz>
- <904cc831-eb16-b1e5-10e5-9e7a171ef83@google.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <904cc831-eb16-b1e5-10e5-9e7a171ef83@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEXW_YSRkNDhJu591S3GGQyJnCxCDJy6u_+-1Q_8z5_cQHb1Qg@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 10/25/22 06:19, Hugh Dickins wrote:
-> On Mon, 24 Oct 2022, Vlastimil Babka wrote:
-
->> 
->> [1] https://lore.kernel.org/all/aec59f53-0e53-1736-5932-25407125d4d4@suse.cz/
+On Mon, Oct 24, 2022 at 04:08:17PM -0400, Joel Fernandes wrote:
+> On Mon, Oct 24, 2022 at 1:40 PM Uladzislau Rezki <urezki@gmail.com> wrote:
+> >
+> > On Mon, Oct 24, 2022 at 01:20:26PM -0400, Joel Fernandes wrote:
+> > > On Mon, Oct 24, 2022 at 1:08 PM Uladzislau Rezki <urezki@gmail.com> wrote:
+> > > >
+> > > > On Mon, Oct 24, 2022 at 06:55:16PM +0200, Uladzislau Rezki wrote:
+> > > > > On Mon, Oct 24, 2022 at 09:48:19AM -0700, Paul E. McKenney wrote:
+> > > > > > On Mon, Oct 24, 2022 at 06:25:30PM +0200, Uladzislau Rezki wrote:
+> > > > > > > >
+> > > > > > > > You guys might need to agree on the definition of "good" here.  Or maybe
+> > > > > > > > understand the differences in your respective platforms' definitions of
+> > > > > > > > "good".  ;-)
+> > > > > > > >
+> > > > > > > Indeed. Bad is when once per-millisecond infinitely :) At least in such use
+> > > > > > > workload a can detect a power delta and power gain. Anyway, below is a new
+> > > > > > > trace where i do not use "flush" variant for the kvfree_rcu():
+> > > > > > >
+> > > > > > > <snip>
+> > > > > > > 1. Home screen swipe:
+> > > > > > >          rcuop/0-15      [003] d..1  1792.767750: rcu_batch_start: rcu_preempt CBs=1003 bl=10
+> > > > > > >          rcuop/2-33      [002] d..1  1792.771717: rcu_batch_start: rcu_preempt CBs=934 bl=10
+> > > > > > >          rcuop/3-40      [001] d..1  1794.811816: rcu_batch_start: rcu_preempt CBs=1508 bl=11
+> > > > > > >          rcuop/1-26      [003] d..1  1797.116382: rcu_batch_start: rcu_preempt CBs=2127 bl=16
+> > > > > > >          rcuop/4-48      [001] d..1  1797.124422: rcu_batch_start: rcu_preempt CBs=95 bl=10
+> > > > > > >          rcuop/5-55      [002] d..1  1797.124731: rcu_batch_start: rcu_preempt CBs=143 bl=10
+> > > > > > >          rcuop/6-62      [005] d..1  1798.911719: rcu_batch_start: rcu_preempt CBs=132 bl=10
+> > > > > > >          rcuop/2-33      [002] d..1  1803.003966: rcu_batch_start: rcu_preempt CBs=3797 bl=29
+> > > > > > >          rcuop/0-15      [003] d..1  1803.004707: rcu_batch_start: rcu_preempt CBs=2969 bl=23
+> > >
+> > > > > > > 2. App launches:
+> > > > > > >          rcuop/4-48      [005] d..1  1831.087612: rcu_batch_start: rcu_preempt CBs=6141 bl=47
+> > > > > > >          rcuop/7-69      [007] d..1  1831.095578: rcu_batch_start: rcu_preempt CBs=5464 bl=42
+> > > > > > >          rcuop/5-55      [004] d..1  1832.703571: rcu_batch_start: rcu_preempt CBs=8461 bl=66
+> > > > > > >          rcuop/0-15      [004] d..1  1833.731603: rcu_batch_start: rcu_preempt CBs=2548 bl=19
+> > > > > > >          rcuop/1-26      [006] d..1  1833.743691: rcu_batch_start: rcu_preempt CBs=2567 bl=20
+> > > > > > >          rcuop/2-33      [006] d..1  1833.744005: rcu_batch_start: rcu_preempt CBs=2359 bl=18
+> > > > > > >          rcuop/3-40      [006] d..1  1833.744286: rcu_batch_start: rcu_preempt CBs=3681 bl=28
+> > > > > > >          rcuop/4-48      [002] d..1  1838.079777: rcu_batch_start: rcu_preempt CBs=10444 bl=81
+> > > > > > >          rcuop/7-69      [001] d..1  1838.080375: rcu_batch_start: rcu_preempt CBs=12572 bl=98
+> > > > > > >            <...>-62      [002] d..1  1838.080646: rcu_batch_start: rcu_preempt CBs=14135 bl=110
+> > > > > > >          rcuop/6-62      [000] d..1  1838.087722: rcu_batch_start: rcu_preempt CBs=10839 bl=84
+> > > > > > >            <...>-62      [003] d..1  1839.227022: rcu_batch_start: rcu_preempt CBs=1834 bl=14
+> > > > > > >            <...>-26      [001] d..1  1839.963315: rcu_batch_start: rcu_preempt CBs=5769 bl=45
+> > > > > > >          rcuop/2-33      [001] d..1  1839.966485: rcu_batch_start: rcu_preempt CBs=3789 bl=29
+> > > > > > >            <...>-40      [001] d..1  1839.966596: rcu_batch_start: rcu_preempt CBs=6425 bl=50
+> > > > > > >          rcuop/2-33      [005] d..1  1840.541272: rcu_batch_start: rcu_preempt CBs=825 bl=10
+> > > > > > >          rcuop/2-33      [005] d..1  1840.547724: rcu_batch_start: rcu_preempt CBs=44 bl=10
+> > > > > > >          rcuop/2-33      [005] d..1  1841.075759: rcu_batch_start: rcu_preempt CBs=516 bl=10
+> > > > > > >          rcuop/0-15      [002] d..1  1841.695716: rcu_batch_start: rcu_preempt CBs=6312 bl=49
+> > > > > > >          rcuop/0-15      [003] d..1  1841.709714: rcu_batch_start: rcu_preempt CBs=39 bl=10
+> > > > > > >          rcuop/5-55      [004] d..1  1843.112442: rcu_batch_start: rcu_preempt CBs=16007 bl=125
+> > > > > > >          rcuop/5-55      [004] d..1  1843.115444: rcu_batch_start: rcu_preempt CBs=7901 bl=61
+> > > > > > >          rcuop/6-62      [001] dn.1  1843.123983: rcu_batch_start: rcu_preempt CBs=8427 bl=65
+> > > > > > >          rcuop/6-62      [006] d..1  1843.412383: rcu_batch_start: rcu_preempt CBs=981 bl=10
+> > > > > > >          rcuop/0-15      [003] d..1  1844.659812: rcu_batch_start: rcu_preempt CBs=1851 bl=14
+> > > > > > >          rcuop/0-15      [003] d..1  1844.667790: rcu_batch_start: rcu_preempt CBs=135 bl=10
+> > >
+> > > Definitely better, but I'd still ask why not just rely on the lazy
+> > > batching that we now have, since it is a memory pressure related
+> > > usecase. Or another approach could be, for CONFIG_RCU_LAZY, don't
+> > > disturb the lazy-RCU batching by queuing these "free memory" CBs; and
+> > > instead keep your improved kvfree_rcu() batching only for
+> > > !CONFIG_RCU_LAZY.
+> > >
+> >
+> > 1. Double-batching?
+> >
+> > The kvfree_rcu() interface itself keeps track of when to reclaim:
+> >   a) when a page is full;
+> >   b) when i high storm of freeing over rcu;
+> >   c) when a low memory condition.
+> >
+> > such control stays inside the kvfree_rcu(). Converting it to lazy
+> > variant:
+> >   a) lose the control, what will become as a problem;
+> >   b) nothing is improved.
 > 
-> Ignore me, don't let me distract if you're happy with Matthew's patch
-> (I know little of PageMovable, and I haven't tried to understand it);
-> but it did look to me more like 6.2 material,
-
-Yes, it is targetted towards 6.2 now.
-
-> and I was surprised that
-> you dropped the simple align(4) approach for 6.1.
+> AFAICS, the only thing being changed is when you are giving memory
+> back to the system. So you will be holding on to memory a bit longer.
+> And there's shrinkers that are already flushing those. I don't think
+> the users of kvfree_rcu() want to free memory instantly. If there is
+> such usecase, please share it.
 > 
-> Because of Hyeonggon's rcu_leak_callback() observation?  That was a
-> good catch, but turned out to be irrelevant, because it was only for
-> an RCU debugging option, which would never be set up on a struct page
-> (well, maybe it would in a dynamically-allocated-struct-page future).
+Actually, ideally, we want to free a memory asap. The problem with extra 10
+seconds is a big amount of un-reclaimed memory that usually can lead
+to more frequent memory pressure and doing shrinking. We do not want
+ideally trigger any shrinker. Because for us it is a big slow down
+in a device behaviour.
 
-It was mainly due to David's observation:
+> > 2. Converting the queue_rcu_work() to lazy variant breaks a humanity
+> > interpretation when a queued work is supposed to be run. People do not
+> > expect seconds when they queue the work.
+> 
+> Which people? ;)
+> 
+Who wrote the code :)
 
-https://lore.kernel.org/all/c1c8920a56014a179dbb82d483f2ad28@AcuMS.aculab.com/
+> > Same as in the kvfree_rcu()
+> > we do not expect it we even used a high_prio queue in the beginning.
+> > There are ~10 users who queue the work and they did not expect it to
+> > be run in 10 seconds when they wrote the code.
+> 
+> That's a bit of a misinterpretation of what I'm saying. A variant
+> queue_rcu_work_flush() can be added for those users (such as ones that
+> are not freeing memory).
+> 
+If it is added for the kvfree_rcu() it is totally fine. Because there is
+a batching in place.
 
-I did also conclude that align(4) indeed overrides anything set via
-CONFIG_FUNCTION_ALIGNMENT (and passed by -falign-functions) in a way that a
-globally configured larger alignment can be made smaller by this macro, and
-it was all too risky and last minute to me, while Joel's series wasn't
-targetted to 6.1 anyway so there was no urgency.
-
-And yeah it looks like a gcc bug to me.
-
-> Hugh
-
+--
+Uladzislau Rezki
