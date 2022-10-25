@@ -2,190 +2,247 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A1494C38A2D
-	for <rcu@archiver.kernel.org>; Tue, 25 Oct 2022 14:10:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B507CC04A95
+	for <rcu@archiver.kernel.org>; Tue, 25 Oct 2022 14:46:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231629AbiJYOKh (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 25 Oct 2022 10:10:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48194 "EHLO
+        id S232619AbiJYOqW (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 25 Oct 2022 10:46:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231484AbiJYOKM (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 25 Oct 2022 10:10:12 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21FB8101ED;
-        Tue, 25 Oct 2022 07:08:35 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id BC2C81FA48;
-        Tue, 25 Oct 2022 14:08:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1666706913; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RoEGXx+CsUxH6vRbiyjgkwQmdQ57d5+pOzoy1MCTSxE=;
-        b=25cKaaFcs2vuVtqnTFrQ7vRegg0CsjbfHGVKF7yckheWqDXaeYjv2Es6UZYsrBPerpQiKD
-        GUvSLeW8RsxX6/mPYdj0DLOuE8svtna781AgN4Mbqu74zh6FZasUbNSV8lXD5dxgm7MCQc
-        uC+anx//u6JzOi8rWST4ek7JYRNe91g=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1666706913;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RoEGXx+CsUxH6vRbiyjgkwQmdQ57d5+pOzoy1MCTSxE=;
-        b=qPwtU3v9Yms0R9q4E8cn/pdrbrRzqbn74UwUm4PMxRYs4uF/+pKqoFt1ley+ocXsYlFsD1
-        4xus56OnANhfxJCw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 94981134CA;
-        Tue, 25 Oct 2022 14:08:33 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 9O2VI+HtV2PPUgAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Tue, 25 Oct 2022 14:08:33 +0000
-Message-ID: <ad3fae63-984b-3a4e-4bfc-a09db0ad35b0@suse.cz>
-Date:   Tue, 25 Oct 2022 16:08:33 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.3
-Subject: Re: amusing SLUB compaction bug when CC_OPTIMIZE_FOR_SIZE
-Content-Language: en-US
-To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        David Laight <David.Laight@aculab.com>,
+        with ESMTP id S232697AbiJYOqU (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 25 Oct 2022 10:46:20 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B98FF188126;
+        Tue, 25 Oct 2022 07:46:18 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id y14so13075922ejd.9;
+        Tue, 25 Oct 2022 07:46:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=bv2yciqWXVf1nawsif5m+jnHjZDrY4BaG8l2aHPj3u0=;
+        b=T3VrzCl2VUwTA1hQpT3Lg3Yn/FYN0GtoetEJy3NhGdEUFJAX9EAsZFI7wtsXHEgVqb
+         2g5ujVKzErcjJBtPS/juOCBapHRuJPmElWNaH5oM0oOoH6keDIXVSsinX5ul4L0kKQWp
+         2YVfMQKEhY5L5OETUDnXlTefSVOzRwCTcT/ll4cqNSg2PZUJjHsU3NmaCqScVtsdnwmJ
+         SaN1M4c6pOnpwHMv5YBYbm76yq/rc1VcjXoUMY2gzfxI7yfd44ToqqjNrgPfwHYRG1v5
+         iBNzBziYcLVuSeUOAp8x6dJGL+7D0sZGhgzyvva07pIy3eJJGwUqsydmn1ZBZljU1i2K
+         igNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bv2yciqWXVf1nawsif5m+jnHjZDrY4BaG8l2aHPj3u0=;
+        b=OkH/wI8CpUwOim05fgeU5OISXgEMb8ClVDcyw6WoIkh0WRyLk2QZYQuSK2KsHsZ9VK
+         xe91y0r8VjxlphfkWrI4HmHlf7RDSWJPsAAx3YI/27YNdCk3RKooTfdnWfmZVbWDP65s
+         IelyMU/niKgXbOeJXFCf5qxZ70q5AM4L2venSavAyqIj0VDX7nQC3X3cGrnNC7aRF7X7
+         m1+vuz97+UPkJ6PAfmDAcK48SbSfV+koN647ACy2s4mNmUn4mcLbHNmZj/Otqzc+wxjr
+         TzBbNMK9XpQtbFVmqYUaZQOI2apUU6hCGJct0PRYwX1Q59YdtDk7x/nuu+et3rdFenc6
+         Jt6g==
+X-Gm-Message-State: ACrzQf1U8q3hxBAHicpRyXUGqoinyYwR7s+nNhqNcZBv3cJ9GCOAQNjF
+        ptXjDHn/ICdZs0WYShY7TX8juyn3n9U=
+X-Google-Smtp-Source: AMsMyM4I9d5rImEGae4mCaZYkgtxaTJAsRanxYoDI91cG4h3UrV/Zj0KrVKp3w+t2q47uH4lDyZXlQ==
+X-Received: by 2002:a17:906:7315:b0:7ab:8542:559c with SMTP id di21-20020a170906731500b007ab8542559cmr4973622ejc.639.1666709177096;
+        Tue, 25 Oct 2022 07:46:17 -0700 (PDT)
+Received: from pc638.lan ([155.137.26.201])
+        by smtp.gmail.com with ESMTPSA id z2-20020a1709067e4200b007a8de84ce36sm1474505ejr.206.2022.10.25.07.46.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Oct 2022 07:46:16 -0700 (PDT)
+From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        rcu@vger.kernel.org, "Paul E . McKenney" <paulmck@kernel.org>
-References: <ea96c78c-e1dc-1364-e91-51909f82388b@google.com>
- <YzPgTtFzpKEfwPbK@hyeyoo> <YzRQvoVsnJzsauwb@google.com>
- <35502bdd-1a78-dea1-6ac3-6ff1bcc073fa@suse.cz>
- <ff905c1e-5eb3-eaf8-46de-38f189c0b7a5@google.com>
- <de71b83a-c82c-4785-ef5a-3db4f17bbc8d@suse.cz>
- <bcecece-f7ce-221d-1674-da3d5ab3fef@google.com> <YzkmErHFyYW3awRn@hyeyoo>
- <YzsVM8eToHUeTP75@casper.infradead.org>
- <7dddca4c-bc36-2cf0-de1c-a770bef9e1b7@suse.cz> <Y1fpABCR3/Vs/u0H@hyeyoo>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <Y1fpABCR3/Vs/u0H@hyeyoo>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+        Uladzislau Rezki <urezki@gmail.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: [PATCH 1/1] rcu: Refactor kvfree_call_rcu() and high-level helpers
+Date:   Tue, 25 Oct 2022 16:46:12 +0200
+Message-Id: <20221025144612.506951-1-urezki@gmail.com>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 10/25/22 15:47, Hyeonggon Yoo wrote:
-> On Mon, Oct 24, 2022 at 04:35:04PM +0200, Vlastimil Babka wrote:
-> 
-> [,,,]
-> 
->> diff --git a/mm/slab.c b/mm/slab.c
->> index 59c8e28f7b6a..219beb48588e 100644
->> --- a/mm/slab.c
->> +++ b/mm/slab.c
->> @@ -1370,6 +1370,8 @@ static struct slab *kmem_getpages(struct kmem_cache *cachep, gfp_t flags,
->>  
->>  	account_slab(slab, cachep->gfporder, cachep, flags);
->>  	__folio_set_slab(folio);
->> +	/* Make the flag visible before any changes to folio->mapping */
->> +	smp_wmb();
->>  	/* Record if ALLOC_NO_WATERMARKS was set when allocating the slab */
->>  	if (sk_memalloc_socks() && page_is_pfmemalloc(folio_page(folio, 0)))
->>  		slab_set_pfmemalloc(slab);
->> @@ -1387,9 +1389,11 @@ static void kmem_freepages(struct kmem_cache *cachep, struct slab *slab)
->>  
->>  	BUG_ON(!folio_test_slab(folio));
->>  	__slab_clear_pfmemalloc(slab);
->> -	__folio_clear_slab(folio);
->>  	page_mapcount_reset(folio_page(folio, 0));
->>  	folio->mapping = NULL;
->> +	/* Make the mapping reset visible before clearing the flag */
->> +	smp_wmb();
->> +	__folio_clear_slab(folio);
->>  
->>  	if (current->reclaim_state)
->>  		current->reclaim_state->reclaimed_slab += 1 << order;
->> diff --git a/mm/slub.c b/mm/slub.c
->> index 157527d7101b..6dc17cb915c5 100644
->> --- a/mm/slub.c
->> +++ b/mm/slub.c
->> @@ -1800,6 +1800,8 @@ static inline struct slab *alloc_slab_page(gfp_t flags, int node,
->>  
->>  	slab = folio_slab(folio);
->>  	__folio_set_slab(folio);
->> +	/* Make the flag visible before any changes to folio->mapping */
->> +	smp_wmb();
->>  	if (page_is_pfmemalloc(folio_page(folio, 0)))
->>  		slab_set_pfmemalloc(slab);
->>  
->> @@ -2008,8 +2010,10 @@ static void __free_slab(struct kmem_cache *s, struct slab *slab)
->>  	}
->>  
->>  	__slab_clear_pfmemalloc(slab);
->> -	__folio_clear_slab(folio);
->>  	folio->mapping = NULL;
->> +	/* Make the mapping reset visible before clearing the flag */
->> +	smp_wmb();
->> +	__folio_clear_slab(folio);
->>  	if (current->reclaim_state)
->>  		current->reclaim_state->reclaimed_slab += pages;
->>  	unaccount_slab(slab, order, s);
->> -- 
->> 2.38.0
-> 
-> Do we need to try this with memory barriers before frozen refcount lands in?
+Currently a kvfree_call_rcu() takes an offset within a
+structure as a second parameter, so a helper such as a
+kvfree_rcu_arg_2() has to convert rcu_head and a freed
+ptr to an offset in order to pass it. That leads to an
+extra conversion on macro entry.
 
-There was IIRC an unresolved issue with frozen refcount tripping the page
-isolation code so I didn't want to be depending on that.
+Instead of converting, refactor the code in way that a
+pointer that has to be freed is passed directly to the
+kvfree_call_rcu().
 
-> It's quite complicated and IIUC there is a still theoretical race:
-> 
-> At isolate_movable_page:        At slab alloc:                          At slab free:
->                                 folio = alloc_pages(flags, order)
-> 
-> folio_try_get()
-> folio_test_slab() == false
->                                 __folio_set_slab(folio)
->                                 smp_wmb()
-> 
->                                                                         call_rcu(&slab->rcu_head, rcu_free_slab);
-> 
-> 
-> smp_rmb()
-> __folio_test_movable() == true
-> 
->                                                                         folio->mapping = NULL;
->                                                                         smp_wmb()
->                                                                         __folio_clear_slab(folio);
-> smp_rmb()
-> folio_test_slab() == false
-> 
-> folio_trylock()
+This patch does not make any functional change and is
+transparent to all kvfree_rcu() users.
 
-There's also between above and below:
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+---
+ include/linux/rcupdate.h |  5 ++---
+ include/linux/rcutiny.h  | 12 ++++++------
+ include/linux/rcutree.h  |  2 +-
+ kernel/rcu/tiny.c        |  9 +++------
+ kernel/rcu/tree.c        | 29 ++++++++++++-----------------
+ 5 files changed, 24 insertions(+), 33 deletions(-)
 
-if (!PageMovable(page) || PageIsolated(page))
-	goto out_no_isolated;
-
-mops = page_movable_ops(page);
-
-If we put another smp_rmb() before the PageMovable test, could that have
-helped? It would assure we observe the folio->mapping = NULL; from the "slab
-free" side?
-
-But yeah, it's getting ridiculous. Maybe there's a simpler way to check two
-bits in two different bytes atomically. Or maybe it's just an impossible
-task, I feel I just dunno computers at this point.
-
-> mops->isolate_page() (*crash*)
-> 
-> 
-> Please let me know if I'm missing something ;-)
-> Thanks!
-> 
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index 08605ce7379d..cbd34058fff1 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -985,8 +985,7 @@ do {									\
+ 									\
+ 	if (___p) {									\
+ 		BUILD_BUG_ON(!__is_kvfree_rcu_offset(offsetof(typeof(*(ptr)), rhf)));	\
+-		kvfree_call_rcu(&((___p)->rhf), (rcu_callback_t)(unsigned long)		\
+-			(offsetof(typeof(*(ptr)), rhf)));				\
++		kvfree_call_rcu(&((___p)->rhf), (void *) (___p));			\
+ 	}										\
+ } while (0)
+ 
+@@ -995,7 +994,7 @@ do {								\
+ 	typeof(ptr) ___p = (ptr);				\
+ 								\
+ 	if (___p)						\
+-		kvfree_call_rcu(NULL, (rcu_callback_t) (___p));	\
++		kvfree_call_rcu(NULL, (void *) (___p));		\
+ } while (0)
+ 
+ /*
+diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
+index 768196a5f39d..9623c039964c 100644
+--- a/include/linux/rcutiny.h
++++ b/include/linux/rcutiny.h
+@@ -98,25 +98,25 @@ static inline void synchronize_rcu_expedited(void)
+  */
+ extern void kvfree(const void *addr);
+ 
+-static inline void __kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
++static inline void __kvfree_call_rcu(struct rcu_head *head, void *ptr)
+ {
+ 	if (head) {
+-		call_rcu(head, func);
++		call_rcu(head, (rcu_callback_t) ((void *) head - ptr));
+ 		return;
+ 	}
+ 
+ 	// kvfree_rcu(one_arg) call.
+ 	might_sleep();
+ 	synchronize_rcu();
+-	kvfree((void *) func);
++	kvfree(ptr);
+ }
+ 
+ #ifdef CONFIG_KASAN_GENERIC
+-void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func);
++void kvfree_call_rcu(struct rcu_head *head, void *ptr);
+ #else
+-static inline void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
++static inline void kvfree_call_rcu(struct rcu_head *head, void *ptr)
+ {
+-	__kvfree_call_rcu(head, func);
++	__kvfree_call_rcu(head, ptr);
+ }
+ #endif
+ 
+diff --git a/include/linux/rcutree.h b/include/linux/rcutree.h
+index 5efb51486e8a..e37a0747a8b2 100644
+--- a/include/linux/rcutree.h
++++ b/include/linux/rcutree.h
+@@ -33,7 +33,7 @@ static inline void rcu_virt_note_context_switch(int cpu)
+ }
+ 
+ void synchronize_rcu_expedited(void);
+-void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func);
++void kvfree_call_rcu(struct rcu_head *head, void *ptr);
+ 
+ void rcu_barrier(void);
+ bool rcu_eqs_special_set(int cpu);
+diff --git a/kernel/rcu/tiny.c b/kernel/rcu/tiny.c
+index a33a8d4942c3..6c9496d08669 100644
+--- a/kernel/rcu/tiny.c
++++ b/kernel/rcu/tiny.c
+@@ -246,15 +246,12 @@ bool poll_state_synchronize_rcu(unsigned long oldstate)
+ EXPORT_SYMBOL_GPL(poll_state_synchronize_rcu);
+ 
+ #ifdef CONFIG_KASAN_GENERIC
+-void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
++void kvfree_call_rcu(struct rcu_head *head, void *ptr)
+ {
+-	if (head) {
+-		void *ptr = (void *) head - (unsigned long) func;
+-
++	if (head)
+ 		kasan_record_aux_stack_noalloc(ptr);
+-	}
+ 
+-	__kvfree_call_rcu(head, func);
++	__kvfree_call_rcu(head, ptr);
+ }
+ EXPORT_SYMBOL_GPL(kvfree_call_rcu);
+ #endif
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 0ca21ac0f064..9fea2aff87a1 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3068,8 +3068,8 @@ static void kfree_rcu_work(struct work_struct *work)
+ 	 * This list is named "Channel 3".
+ 	 */
+ 	for (; head; head = next) {
+-		unsigned long offset = (unsigned long)head->func;
+-		void *ptr = (void *)head - offset;
++		void *ptr = (void *) head->func;
++		unsigned long offset = (void *) head - ptr;
+ 
+ 		next = head->next;
+ 		debug_rcu_head_unqueue((struct rcu_head *)ptr);
+@@ -3307,26 +3307,21 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
+  * be free'd in workqueue context. This allows us to: batch requests together to
+  * reduce the number of grace periods during heavy kfree_rcu()/kvfree_rcu() load.
+  */
+-void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
++void kvfree_call_rcu(struct rcu_head *head, void *ptr)
+ {
+ 	unsigned long flags;
+ 	struct kfree_rcu_cpu *krcp;
+ 	bool success;
+-	void *ptr;
+ 
+-	if (head) {
+-		ptr = (void *) head - (unsigned long) func;
+-	} else {
+-		/*
+-		 * Please note there is a limitation for the head-less
+-		 * variant, that is why there is a clear rule for such
+-		 * objects: it can be used from might_sleep() context
+-		 * only. For other places please embed an rcu_head to
+-		 * your data.
+-		 */
++	/*
++	 * Please note there is a limitation for the head-less
++	 * variant, that is why there is a clear rule for such
++	 * objects: it can be used from might_sleep() context
++	 * only. For other places please embed an rcu_head to
++	 * your data.
++	 */
++	if (!head)
+ 		might_sleep();
+-		ptr = (unsigned long *) func;
+-	}
+ 
+ 	// Queue the object but don't yet schedule the batch.
+ 	if (debug_rcu_head_queue(ptr)) {
+@@ -3347,7 +3342,7 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ 			// Inline if kvfree_rcu(one_arg) call.
+ 			goto unlock_return;
+ 
+-		head->func = func;
++		head->func = ptr;
+ 		head->next = krcp->head;
+ 		krcp->head = head;
+ 		success = true;
+-- 
+2.30.2
 
