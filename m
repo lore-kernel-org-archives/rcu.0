@@ -2,244 +2,188 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 64799FA373E
-	for <rcu@archiver.kernel.org>; Wed, 26 Oct 2022 17:38:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0086FC38A2D
+	for <rcu@archiver.kernel.org>; Wed, 26 Oct 2022 20:35:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234154AbiJZRiu (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 26 Oct 2022 13:38:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33580 "EHLO
+        id S234415AbiJZUfs (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 26 Oct 2022 16:35:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234137AbiJZRit (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 26 Oct 2022 13:38:49 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47566BECE7;
-        Wed, 26 Oct 2022 10:38:48 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E1CC861FFC;
-        Wed, 26 Oct 2022 17:38:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F1CCC433D6;
-        Wed, 26 Oct 2022 17:38:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666805927;
-        bh=vwqpmGUZc3BSLxZLKxJIYXRkmkp4FjHgGBH1uTJ7iRw=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=usohgiDGQaZljMppPbloxCseE3J6s52Z1KmiRkTgTZJC7iOTlCLKskCE6pdDHJ1db
-         k1A4yxR8xAv3MGSs2R8f81OqgtLIX6dTQWGw2YD7AD7WC4RuY4gs2aXCWM8qMdfJQy
-         blSlWh+AZekrhaZdr3L99nQf1XjZRMqukJcm2znsoHzYMV/8HuPdQ/nSVnyJxy8cNe
-         Cy4g2BcLsm9Fv9x+47A8h6x+ep3FwYZH8nysQgQlltaD8DwT5hkOzAWWimPeI4rvfc
-         74psiwAxeaAAWP14IIDqGNwBFyR7pJdWS4QoxHSK4beGgr0pyMUFil+7Zq6Bqq//ga
-         YzOJdxik+Jr7Q==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id CD77B5C05F8; Wed, 26 Oct 2022 10:38:46 -0700 (PDT)
-Date:   Wed, 26 Oct 2022 10:38:46 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: Re: [PATCH 1/1] rcu: Refactor kvfree_call_rcu() and high-level
- helpers
-Message-ID: <20221026173846.GO5600@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20221025144612.506951-1-urezki@gmail.com>
+        with ESMTP id S234371AbiJZUfr (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 26 Oct 2022 16:35:47 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5066C4DF0C;
+        Wed, 26 Oct 2022 13:35:44 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id m15so43527331edb.13;
+        Wed, 26 Oct 2022 13:35:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zxC7NKfNQXQTMveKSZHTWW/q8Bbl4PV5mNveFlM92tU=;
+        b=FHCRCR3CMrt0YoGDG35KzOzzctTiDIkk4QFS5ffKbzC12hdxg88JyxpyyW4AdTNnEF
+         7iBQR3daQRn9p5T31S3wCPqjBolSKoqYvEmFvey7Nysj71euOHMAfM6Qufg1i4c4cLYS
+         1q/wYMa2wMEn77ZtFnasqliUemwdZoSmMXoFIBfcfAQOye66Zi0mt0VuoKvquXHWvMYe
+         qXVLKxpt+gwq7CN+3FrjVQfDwJonp6EtOb3ThjbFVnknSC6IHt+SNmY0q/VkXpJsxtC1
+         xEXlP1VhA7Kd+22Zt+Qj6PMzK7bol4pcpyRUnCNHuxtGGrHpYGXlNljGu5TZUDsNuqKx
+         OBng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zxC7NKfNQXQTMveKSZHTWW/q8Bbl4PV5mNveFlM92tU=;
+        b=TgaXxxAsIUjSR1WtjKXQK6L7Tpl26Ye76hvpi3ka9vNDWr45soTpL+G/E/IebCA0mF
+         QvZ1MWRW9um7oLJ8HOZTwSlLFafB89fcUEpqtbbiRlybWRPBj1OvVA1HXHSMXUO9VZi3
+         jAG2G1tiaHD5Y/0xalUx7Y27L9drqZZCaiYmeg4uqLNimUXqE4DwHnT0V3qLdsx+DShF
+         kyHS1Px1jpgsMZpCZGxOGW6a9LEvoo3pQu1m8bVqs5LLvJRwLFlj9N/x5AsoVr9tHDwb
+         CGBSY9WnAah0EeuyKZULuet+LUeRfLgsBzsZ/JB72sMaNaDpvTP4gFNcs9HcEorOzW9y
+         Rg7w==
+X-Gm-Message-State: ACrzQf1K1zbk4FCoEslkMeiCekYQoeqdYao9ST6g2uRU4xlAQVefpr66
+        2Tuc4fnVCDp6eCzZMEWyAo8=
+X-Google-Smtp-Source: AMsMyM6A3gVtrqCCgZ8xlStm2xeXwoe47yKnrtTYUlOeDKMg/PYWg0BzV3kzajKezvcV7d/fW6ZbSw==
+X-Received: by 2002:a05:6402:410:b0:451:ea13:4ed7 with SMTP id q16-20020a056402041000b00451ea134ed7mr44442319edv.262.1666816542668;
+        Wed, 26 Oct 2022 13:35:42 -0700 (PDT)
+Received: from pc636 ([155.137.26.201])
+        by smtp.gmail.com with ESMTPSA id n16-20020a056402515000b00451319a43dasm4079749edd.2.2022.10.26.13.35.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Oct 2022 13:35:42 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Wed, 26 Oct 2022 22:35:29 +0200
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>, paulmck@kernel.org,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, rostedt@goodmis.org
+Subject: Re: [PATCH rcu 13/14] workqueue: Make queue_rcu_work() use
+ call_rcu_flush()
+Message-ID: <Y1maEUsTUmQ3onsu@pc636>
+References: <Y1a8ei1h7SzyYZx9@pc636>
+ <20221024164819.GA5600@paulmck-ThinkPad-P17-Gen-1>
+ <Y1bDdP3iHoa4xqZL@pc636>
+ <Y1bGcQ7RPleYp3ge@pc636>
+ <CAEXW_YQqiD1GU7HGrv9UU6vL_MqbxVt14=rxZAKqUpK+pkPDPw@mail.gmail.com>
+ <20221024173558.GC5600@paulmck-ThinkPad-P17-Gen-1>
+ <CAEXW_YQFNd8evWMxv=sWwZ0q28wxAwStCMgaJnDu6QM6YqqjMA@mail.gmail.com>
+ <CAEXW_YQr1Ag0L+J6RZ28vQKbBZwM98+YdsCqmt6mU0At67HDxQ@mail.gmail.com>
+ <Y1e+/LD8BPu4JC9I@pc636>
+ <CAEXW_YQAXee2iGDC8XQJnF7sAaaB2tPX4p6Bb3cYr9pMUnC9nQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221025144612.506951-1-urezki@gmail.com>
+In-Reply-To: <CAEXW_YQAXee2iGDC8XQJnF7sAaaB2tPX4p6Bb3cYr9pMUnC9nQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Oct 25, 2022 at 04:46:12PM +0200, Uladzislau Rezki (Sony) wrote:
-> Currently a kvfree_call_rcu() takes an offset within a
-> structure as a second parameter, so a helper such as a
-> kvfree_rcu_arg_2() has to convert rcu_head and a freed
-> ptr to an offset in order to pass it. That leads to an
-> extra conversion on macro entry.
+On Tue, Oct 25, 2022 at 11:05:57AM -0400, Joel Fernandes wrote:
+> On Tue, Oct 25, 2022 at 6:48 AM Uladzislau Rezki <urezki@gmail.com> wrote:
+> >
+> > On Mon, Oct 24, 2022 at 04:16:20PM -0400, Joel Fernandes wrote:
+> > > On Mon, Oct 24, 2022 at 4:12 PM Joel Fernandes <joel@joelfernandes.org> wrote:
+> > > >
+> > > > On Mon, Oct 24, 2022 at 1:36 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> > > > >
+> > > > > On Mon, Oct 24, 2022 at 01:20:26PM -0400, Joel Fernandes wrote:
+> > > > > > On Mon, Oct 24, 2022 at 1:08 PM Uladzislau Rezki <urezki@gmail.com> wrote:
+> > > > > > >
+> > > > > > > On Mon, Oct 24, 2022 at 06:55:16PM +0200, Uladzislau Rezki wrote:
+> > > > > > > > On Mon, Oct 24, 2022 at 09:48:19AM -0700, Paul E. McKenney wrote:
+> > > > > > > > > On Mon, Oct 24, 2022 at 06:25:30PM +0200, Uladzislau Rezki wrote:
+> > > > > > > > > > >
+> > > > > > > > > > > You guys might need to agree on the definition of "good" here.  Or maybe
+> > > > > > > > > > > understand the differences in your respective platforms' definitions of
+> > > > > > > > > > > "good".  ;-)
+> > > > > > > > > > >
+> > > > > > > > > > Indeed. Bad is when once per-millisecond infinitely :) At least in such use
+> > > > > > > > > > workload a can detect a power delta and power gain. Anyway, below is a new
+> > > > > > > > > > trace where i do not use "flush" variant for the kvfree_rcu():
+> > > > > > > > > >
+> > > > > > > > > > <snip>
+> > > > > > > > > > 1. Home screen swipe:
+> > > > > > > > > >          rcuop/0-15      [003] d..1  1792.767750: rcu_batch_start: rcu_preempt CBs=1003 bl=10
+> > > > > > > > > >          rcuop/2-33      [002] d..1  1792.771717: rcu_batch_start: rcu_preempt CBs=934 bl=10
+> > > > > > > > > >          rcuop/3-40      [001] d..1  1794.811816: rcu_batch_start: rcu_preempt CBs=1508 bl=11
+> > > > > > > > > >          rcuop/1-26      [003] d..1  1797.116382: rcu_batch_start: rcu_preempt CBs=2127 bl=16
+> > > > > > > > > >          rcuop/4-48      [001] d..1  1797.124422: rcu_batch_start: rcu_preempt CBs=95 bl=10
+> > > > > > > > > >          rcuop/5-55      [002] d..1  1797.124731: rcu_batch_start: rcu_preempt CBs=143 bl=10
+> > > > > > > > > >          rcuop/6-62      [005] d..1  1798.911719: rcu_batch_start: rcu_preempt CBs=132 bl=10
+> > > > > > > > > >          rcuop/2-33      [002] d..1  1803.003966: rcu_batch_start: rcu_preempt CBs=3797 bl=29
+> > > > > > > > > >          rcuop/0-15      [003] d..1  1803.004707: rcu_batch_start: rcu_preempt CBs=2969 bl=23
+> > > > > >
+> > > > > > > > > > 2. App launches:
+> > > > > > > > > >          rcuop/4-48      [005] d..1  1831.087612: rcu_batch_start: rcu_preempt CBs=6141 bl=47
+> > > > > > > > > >          rcuop/7-69      [007] d..1  1831.095578: rcu_batch_start: rcu_preempt CBs=5464 bl=42
+> > > > > > > > > >          rcuop/5-55      [004] d..1  1832.703571: rcu_batch_start: rcu_preempt CBs=8461 bl=66
+> > > > > > > > > >          rcuop/0-15      [004] d..1  1833.731603: rcu_batch_start: rcu_preempt CBs=2548 bl=19
+> > > > > > > > > >          rcuop/1-26      [006] d..1  1833.743691: rcu_batch_start: rcu_preempt CBs=2567 bl=20
+> > > > > > > > > >          rcuop/2-33      [006] d..1  1833.744005: rcu_batch_start: rcu_preempt CBs=2359 bl=18
+> > > > > > > > > >          rcuop/3-40      [006] d..1  1833.744286: rcu_batch_start: rcu_preempt CBs=3681 bl=28
+> > > > > > > > > >          rcuop/4-48      [002] d..1  1838.079777: rcu_batch_start: rcu_preempt CBs=10444 bl=81
+> > > > > > > > > >          rcuop/7-69      [001] d..1  1838.080375: rcu_batch_start: rcu_preempt CBs=12572 bl=98
+> > > > > > > > > >            <...>-62      [002] d..1  1838.080646: rcu_batch_start: rcu_preempt CBs=14135 bl=110
+> > > > > > > > > >          rcuop/6-62      [000] d..1  1838.087722: rcu_batch_start: rcu_preempt CBs=10839 bl=84
+> > > > > > > > > >            <...>-62      [003] d..1  1839.227022: rcu_batch_start: rcu_preempt CBs=1834 bl=14
+> > > > > > > > > >            <...>-26      [001] d..1  1839.963315: rcu_batch_start: rcu_preempt CBs=5769 bl=45
+> > > > > > > > > >          rcuop/2-33      [001] d..1  1839.966485: rcu_batch_start: rcu_preempt CBs=3789 bl=29
+> > > > > > > > > >            <...>-40      [001] d..1  1839.966596: rcu_batch_start: rcu_preempt CBs=6425 bl=50
+> > > > > > > > > >          rcuop/2-33      [005] d..1  1840.541272: rcu_batch_start: rcu_preempt CBs=825 bl=10
+> > > > > > > > > >          rcuop/2-33      [005] d..1  1840.547724: rcu_batch_start: rcu_preempt CBs=44 bl=10
+> > > > > > > > > >          rcuop/2-33      [005] d..1  1841.075759: rcu_batch_start: rcu_preempt CBs=516 bl=10
+> > > > > > > > > >          rcuop/0-15      [002] d..1  1841.695716: rcu_batch_start: rcu_preempt CBs=6312 bl=49
+> > > > > > > > > >          rcuop/0-15      [003] d..1  1841.709714: rcu_batch_start: rcu_preempt CBs=39 bl=10
+> > > > > > > > > >          rcuop/5-55      [004] d..1  1843.112442: rcu_batch_start: rcu_preempt CBs=16007 bl=125
+> > > > > > > > > >          rcuop/5-55      [004] d..1  1843.115444: rcu_batch_start: rcu_preempt CBs=7901 bl=61
+> > > > > > > > > >          rcuop/6-62      [001] dn.1  1843.123983: rcu_batch_start: rcu_preempt CBs=8427 bl=65
+> > > > > > > > > >          rcuop/6-62      [006] d..1  1843.412383: rcu_batch_start: rcu_preempt CBs=981 bl=10
+> > > > > > > > > >          rcuop/0-15      [003] d..1  1844.659812: rcu_batch_start: rcu_preempt CBs=1851 bl=14
+> > > > > > > > > >          rcuop/0-15      [003] d..1  1844.667790: rcu_batch_start: rcu_preempt CBs=135 bl=10
+> > > > > >
+> > > > > > Definitely better, but I'd still ask why not just rely on the lazy
+> > > > > > batching that we now have, since it is a memory pressure related
+> > > > > > usecase. Or another approach could be, for CONFIG_RCU_LAZY, don't
+> > > > > > disturb the lazy-RCU batching by queuing these "free memory" CBs; and
+> > > > > > instead keep your improved kvfree_rcu() batching only for
+> > > > > > !CONFIG_RCU_LAZY.
+> > > > >
+> > > > > Given that making the kvfree_rcu()-level batching conditional on
+> > > > > CONFIG_RCU_LAZY would complicate the code, what bad thing happens when
+> > > > > keeping the kvfree_rcu-level batching unconditionally?
+> > > >
+> > > > The bad thing happening is power impact. There is a noticeable impact
+> > > > in our testing, and when we dropped this particular patch, it got much
+> > > > better results.
+> > > >
+> > > > I also run rcutop and I see without the patch that I have several
+> > > > seconds of laziness at a time, unlike with the patch.
+> > > >
+> > > > Even in the beginning when I came up with an implementation for
+> > > > call_rcu_lazy(), I had to mark queue_rcu_work() as lazy as well since
+> > > > it was quite frequent (on ChromeOS). But when we introduced the
+> > > > flush() API, I forgot to not use flush() on it.  But unfortunately
+> > > > this patch slipped into my last series when Vlad and I were debugging
+> > > > the SCSI issue, and did not really help for the SCSI issue itself.
+> > >
+> > > I could try to run Vlad's other mainline patch itself and measure
+> > > power, I'll get back on that. Thanks!
+> > >
+> > That makes sense. It would be good to have a look at your power figures
+> > and traces.
 > 
-> Instead of converting, refactor the code in way that a
-> pointer that has to be freed is passed directly to the
-> kvfree_call_rcu().
+> If you don't mind, could you backport that patch to 5.10?
+> Here is my 5.10 tree for reference (without the patch)
+> https://github.com/joelagnel/linux-kernel.git    (branch
+> 5.10-v9-minus-queuework-plus-kfreebatch)
 > 
-> This patch does not make any functional change and is
-> transparent to all kvfree_rcu() users.
+> and I am getting conflicts if I cherry-pick:
+> 51824b780b71 ("rcu/kvfree: Update KFREE_DRAIN_JIFFIES interval")
 > 
-> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> I am assuming you have already done the backport, that's why you got
+> the traces above. If so, I would appreciate a link to your branch so I
+> don't mess the backport up!
+> 
+Sure. I sent you the patches privately so i do not want to paste
+here a lot of code to make extra line-nose.
 
-Nice simplification!
-
-Hearing no immediate protests, I have pulled this in for testing and
-for further review.
-
-							Thanx, Paul
-
-> ---
->  include/linux/rcupdate.h |  5 ++---
->  include/linux/rcutiny.h  | 12 ++++++------
->  include/linux/rcutree.h  |  2 +-
->  kernel/rcu/tiny.c        |  9 +++------
->  kernel/rcu/tree.c        | 29 ++++++++++++-----------------
->  5 files changed, 24 insertions(+), 33 deletions(-)
-> 
-> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-> index 08605ce7379d..cbd34058fff1 100644
-> --- a/include/linux/rcupdate.h
-> +++ b/include/linux/rcupdate.h
-> @@ -985,8 +985,7 @@ do {									\
->  									\
->  	if (___p) {									\
->  		BUILD_BUG_ON(!__is_kvfree_rcu_offset(offsetof(typeof(*(ptr)), rhf)));	\
-> -		kvfree_call_rcu(&((___p)->rhf), (rcu_callback_t)(unsigned long)		\
-> -			(offsetof(typeof(*(ptr)), rhf)));				\
-> +		kvfree_call_rcu(&((___p)->rhf), (void *) (___p));			\
->  	}										\
->  } while (0)
->  
-> @@ -995,7 +994,7 @@ do {								\
->  	typeof(ptr) ___p = (ptr);				\
->  								\
->  	if (___p)						\
-> -		kvfree_call_rcu(NULL, (rcu_callback_t) (___p));	\
-> +		kvfree_call_rcu(NULL, (void *) (___p));		\
->  } while (0)
->  
->  /*
-> diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
-> index 768196a5f39d..9623c039964c 100644
-> --- a/include/linux/rcutiny.h
-> +++ b/include/linux/rcutiny.h
-> @@ -98,25 +98,25 @@ static inline void synchronize_rcu_expedited(void)
->   */
->  extern void kvfree(const void *addr);
->  
-> -static inline void __kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
-> +static inline void __kvfree_call_rcu(struct rcu_head *head, void *ptr)
->  {
->  	if (head) {
-> -		call_rcu(head, func);
-> +		call_rcu(head, (rcu_callback_t) ((void *) head - ptr));
->  		return;
->  	}
->  
->  	// kvfree_rcu(one_arg) call.
->  	might_sleep();
->  	synchronize_rcu();
-> -	kvfree((void *) func);
-> +	kvfree(ptr);
->  }
->  
->  #ifdef CONFIG_KASAN_GENERIC
-> -void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func);
-> +void kvfree_call_rcu(struct rcu_head *head, void *ptr);
->  #else
-> -static inline void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
-> +static inline void kvfree_call_rcu(struct rcu_head *head, void *ptr)
->  {
-> -	__kvfree_call_rcu(head, func);
-> +	__kvfree_call_rcu(head, ptr);
->  }
->  #endif
->  
-> diff --git a/include/linux/rcutree.h b/include/linux/rcutree.h
-> index 5efb51486e8a..e37a0747a8b2 100644
-> --- a/include/linux/rcutree.h
-> +++ b/include/linux/rcutree.h
-> @@ -33,7 +33,7 @@ static inline void rcu_virt_note_context_switch(int cpu)
->  }
->  
->  void synchronize_rcu_expedited(void);
-> -void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func);
-> +void kvfree_call_rcu(struct rcu_head *head, void *ptr);
->  
->  void rcu_barrier(void);
->  bool rcu_eqs_special_set(int cpu);
-> diff --git a/kernel/rcu/tiny.c b/kernel/rcu/tiny.c
-> index a33a8d4942c3..6c9496d08669 100644
-> --- a/kernel/rcu/tiny.c
-> +++ b/kernel/rcu/tiny.c
-> @@ -246,15 +246,12 @@ bool poll_state_synchronize_rcu(unsigned long oldstate)
->  EXPORT_SYMBOL_GPL(poll_state_synchronize_rcu);
->  
->  #ifdef CONFIG_KASAN_GENERIC
-> -void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
-> +void kvfree_call_rcu(struct rcu_head *head, void *ptr)
->  {
-> -	if (head) {
-> -		void *ptr = (void *) head - (unsigned long) func;
-> -
-> +	if (head)
->  		kasan_record_aux_stack_noalloc(ptr);
-> -	}
->  
-> -	__kvfree_call_rcu(head, func);
-> +	__kvfree_call_rcu(head, ptr);
->  }
->  EXPORT_SYMBOL_GPL(kvfree_call_rcu);
->  #endif
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 0ca21ac0f064..9fea2aff87a1 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -3068,8 +3068,8 @@ static void kfree_rcu_work(struct work_struct *work)
->  	 * This list is named "Channel 3".
->  	 */
->  	for (; head; head = next) {
-> -		unsigned long offset = (unsigned long)head->func;
-> -		void *ptr = (void *)head - offset;
-> +		void *ptr = (void *) head->func;
-> +		unsigned long offset = (void *) head - ptr;
->  
->  		next = head->next;
->  		debug_rcu_head_unqueue((struct rcu_head *)ptr);
-> @@ -3307,26 +3307,21 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
->   * be free'd in workqueue context. This allows us to: batch requests together to
->   * reduce the number of grace periods during heavy kfree_rcu()/kvfree_rcu() load.
->   */
-> -void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
-> +void kvfree_call_rcu(struct rcu_head *head, void *ptr)
->  {
->  	unsigned long flags;
->  	struct kfree_rcu_cpu *krcp;
->  	bool success;
-> -	void *ptr;
->  
-> -	if (head) {
-> -		ptr = (void *) head - (unsigned long) func;
-> -	} else {
-> -		/*
-> -		 * Please note there is a limitation for the head-less
-> -		 * variant, that is why there is a clear rule for such
-> -		 * objects: it can be used from might_sleep() context
-> -		 * only. For other places please embed an rcu_head to
-> -		 * your data.
-> -		 */
-> +	/*
-> +	 * Please note there is a limitation for the head-less
-> +	 * variant, that is why there is a clear rule for such
-> +	 * objects: it can be used from might_sleep() context
-> +	 * only. For other places please embed an rcu_head to
-> +	 * your data.
-> +	 */
-> +	if (!head)
->  		might_sleep();
-> -		ptr = (unsigned long *) func;
-> -	}
->  
->  	// Queue the object but don't yet schedule the batch.
->  	if (debug_rcu_head_queue(ptr)) {
-> @@ -3347,7 +3342,7 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
->  			// Inline if kvfree_rcu(one_arg) call.
->  			goto unlock_return;
->  
-> -		head->func = func;
-> +		head->func = ptr;
->  		head->next = krcp->head;
->  		krcp->head = head;
->  		success = true;
-> -- 
-> 2.30.2
-> 
+--
+Uladzislau Rezki
