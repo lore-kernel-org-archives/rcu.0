@@ -2,215 +2,374 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BD6D7C38A2D
-	for <rcu@archiver.kernel.org>; Wed, 26 Oct 2022 08:21:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E2138FA3740
+	for <rcu@archiver.kernel.org>; Wed, 26 Oct 2022 10:52:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232842AbiJZIVp (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 26 Oct 2022 04:21:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48938 "EHLO
+        id S233055AbiJZKwF (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 26 Oct 2022 06:52:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233094AbiJZIVn (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 26 Oct 2022 04:21:43 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9941B7EF1
-        for <rcu@vger.kernel.org>; Wed, 26 Oct 2022 01:21:39 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id j4so27204073lfk.0
-        for <rcu@vger.kernel.org>; Wed, 26 Oct 2022 01:21:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=34Oi4GiKGEagLyw/4x12s/w+YdPKSCgmMxAOUOL2N/g=;
-        b=cHl2jUWzqssC+bSjP6CdTZogNODVrfh/1mxR1/w2umAs9YIx47C7lU20FhOz3zFa59
-         zqIgt7bEgHGUkthhLj0Zzr1k+RFdH99I4Pp5GCQrdVhg+lS+AUf8RWHSB3uJSy8ij7kn
-         FcXB/iqYoQVkZL8nM/F2gLRome5rBMtKqivbbqIoCSk6VziqeuAqdY8QkTZGSPVzGC0n
-         AULri5DjRy/cONULILRYMN2Esk6TZYSoH8W2BrsAZ2ORL2WhQ7CjtshtBEkvAIbqaODO
-         PVmr6gDo/OnYPki3irVY4rOLpkMLWk3kZwbdUpHWeM79H/ouRT043mXkL1ZEnUD8Agdy
-         EfIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=34Oi4GiKGEagLyw/4x12s/w+YdPKSCgmMxAOUOL2N/g=;
-        b=2BaCYOqgEztzTBTjUkVSPDaKNmHy/nrc/vZdcqldsT+1KpotFk6seH1bSbH5YvfHCC
-         cC1w36OWEeZU1/vwBDl17Og7ex5UKNmd9VUGLc6FHENPdRwV2IjzOrZ3kyWhQ4a3GT+d
-         3eIYanQcfK2+38Zpbbd8Wjs9DCQn2WHuYRcK0wdUoGkP+t25zbLWYgNDaBKL3P3BWklE
-         ocCI91L/Tbxrx+8f+pNsgSIpRmmJY+z49LRy8LYHHKIp5gJNe0u9w/BpK8Gll7Fp9+Y3
-         +mDneKnx/1HRu9M5tJm3c2RpTQotq40Eol0GskLJOI86ALcXbwXfSU3FvHos5f+wm/Hu
-         0pSA==
-X-Gm-Message-State: ACrzQf0y2ripde5A1YzoStKtWkri22w9dpD5UToYe+Z/kH5s+//c3k53
-        gZOhJsw3TFIMgXeumQkdwDKAlYhi06WykCcysw==
-X-Google-Smtp-Source: AMsMyM7oVilaUGx0d4msnnFEwZvFTe9qu9QHzBOIJNjtN+HmfKULm0f+zm3to+efBhp7+IH8TIC4OW1BY2TblAMBhoE=
-X-Received: by 2002:a05:6512:e83:b0:4a2:cdaa:5e3e with SMTP id
- bi3-20020a0565120e8300b004a2cdaa5e3emr14962624lfb.308.1666772497927; Wed, 26
- Oct 2022 01:21:37 -0700 (PDT)
+        with ESMTP id S233287AbiJZKwE (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 26 Oct 2022 06:52:04 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19E797AB07;
+        Wed, 26 Oct 2022 03:52:03 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id BDCBA1F8F2;
+        Wed, 26 Oct 2022 10:52:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1666781521; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=I/9MxA2nqtLvv/nblRFcqLSboC1NnO6//9e0dIi9iYc=;
+        b=RDCaxEY2acAri4nKcAhwRUXcR2iCcjcCDJ4ZI0i9g+gJHDecJLvtJg84fpnXHBnJSklPEY
+        NNgXaIOiftwsAYaoQIvsTBRYX/TRN5IIM/z2cn2oZWmQGGKAgvUorVEcJ2Hr1MTdh/6gLp
+        2qOwuXsLOWwTtfyrtrDZX7bAS6UYfD0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1666781521;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=I/9MxA2nqtLvv/nblRFcqLSboC1NnO6//9e0dIi9iYc=;
+        b=a3dWpX/91tksGkMbHJiSgA49VmOd31hY9VJ8WN/nN8LmWV2gmcj4Nim5QFheIVWCdlV6RU
+        gsKvO5SDUHFIXfCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6B6EF13A77;
+        Wed, 26 Oct 2022 10:52:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id C1neGFERWWNkDgAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Wed, 26 Oct 2022 10:52:01 +0000
+Message-ID: <521ecc3f-c45a-74bb-9c2b-2d6284589e15@suse.cz>
+Date:   Wed, 26 Oct 2022 12:52:01 +0200
 MIME-Version: 1.0
-References: <20221026032716.78674-1-kernelfans@gmail.com> <PH0PR11MB5880F4D3045159634170EFD0DA309@PH0PR11MB5880.namprd11.prod.outlook.com>
-In-Reply-To: <PH0PR11MB5880F4D3045159634170EFD0DA309@PH0PR11MB5880.namprd11.prod.outlook.com>
-From:   Pingfan Liu <kernelfans@gmail.com>
-Date:   Wed, 26 Oct 2022 16:21:26 +0800
-Message-ID: <CAFgQCTsFoS2qmF8N3KsQzKStPJesAqbNQK=VxhEs825OqfW2Kw@mail.gmail.com>
-Subject: Re: [PATCH] srcu: Delegate work to the first online cpu if using SRCU_SIZE_SMALL
-To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
-Cc:     "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.3
+Subject: Re: amusing SLUB compaction bug when CC_OPTIMIZE_FOR_SIZE
+Content-Language: en-US
+From:   Vlastimil Babka <vbabka@suse.cz>
+To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Hugh Dickins <hughd@google.com>,
+        David Laight <David.Laight@aculab.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        rcu@vger.kernel.org, "Paul E . McKenney" <paulmck@kernel.org>
+References: <ea96c78c-e1dc-1364-e91-51909f82388b@google.com>
+ <YzPgTtFzpKEfwPbK@hyeyoo> <YzRQvoVsnJzsauwb@google.com>
+ <35502bdd-1a78-dea1-6ac3-6ff1bcc073fa@suse.cz>
+ <ff905c1e-5eb3-eaf8-46de-38f189c0b7a5@google.com>
+ <de71b83a-c82c-4785-ef5a-3db4f17bbc8d@suse.cz>
+ <bcecece-f7ce-221d-1674-da3d5ab3fef@google.com> <YzkmErHFyYW3awRn@hyeyoo>
+ <YzsVM8eToHUeTP75@casper.infradead.org>
+ <7dddca4c-bc36-2cf0-de1c-a770bef9e1b7@suse.cz> <Y1fpABCR3/Vs/u0H@hyeyoo>
+ <ad3fae63-984b-3a4e-4bfc-a09db0ad35b0@suse.cz>
+In-Reply-To: <ad3fae63-984b-3a4e-4bfc-a09db0ad35b0@suse.cz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Oct 26, 2022 at 12:36 PM Zhang, Qiang1 <qiang1.zhang@intel.com> wrote:
->
-> >
-> >commit 994f706872e6 ("srcu: Make Tree SRCU able to operate without
-> >snp_node array") assumes that cpu 0 is always online, but that is not
-> >the truth when using maxcpus=1 in the command line for the kdump kernel.
-> >
-> >On a PowerPC, the following kdump kernel hanging is observed:
-> >...
-> >[    1.740036] systemd[1]: Hostname set to <xyz.com>
-> >[  243.686240] INFO: task systemd:1 blocked for more than 122 seconds.
-> >[  243.686264]       Not tainted 6.1.0-rc1 #1
-> >[  243.686272] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> >[  243.686281] task:systemd         state:D stack:0     pid:1     ppid:0      flags:0x00042000
-> >[  243.686296] Call Trace:
-> >[  243.686301] [c000000016657640] [c000000016657670] 0xc000000016657670 (unreliable)
-> >[  243.686317] [c000000016657830] [c00000001001dec0] __switch_to+0x130/0x220
-> >[  243.686333] [c000000016657890] [c000000010f607b8] __schedule+0x1f8/0x580
-> >[  243.686347] [c000000016657940] [c000000010f60bb4] schedule+0x74/0x140
-> >[  243.686361] [c0000000166579b0] [c000000010f699b8] schedule_timeout+0x168/0x1c0
-> >[  243.686374] [c000000016657a80] [c000000010f61de8] __wait_for_common+0x148/0x360
-> >[  243.686387] [c000000016657b20] [c000000010176bb0] __flush_work.isra.0+0x1c0/0x3d0
-> >[  243.686401] [c000000016657bb0] [c0000000105f2768] fsnotify_wait_marks_destroyed+0x28/0x40
-> >[  243.686415] [c000000016657bd0] [c0000000105f21b8] fsnotify_destroy_group+0x68/0x160
-> >[  243.686428] [c000000016657c40] [c0000000105f6500] inotify_release+0x30/0xa0
-> >[  243.686440] [c000000016657cb0] [c0000000105751a8] __fput+0xc8/0x350
-> >[  243.686452] [c000000016657d00] [c00000001017d524] task_work_run+0xe4/0x170
-> >[  243.686464] [c000000016657d50] [c000000010020e94] do_notify_resume+0x134/0x140
-> >[  243.686478] [c000000016657d80] [c00000001002eb18] interrupt_exit_user_prepare_main+0x198/0x270
-> >[  243.686493] [c000000016657de0] [c00000001002ec60] syscall_exit_prepare+0x70/0x180
-> >[  243.686505] [c000000016657e10] [c00000001000bf7c] system_call_vectored_common+0xfc/0x280
-> >[  243.686520] --- interrupt: 3000 at 0x7fffa47d5ba4
-> >[  243.686528] NIP:  00007fffa47d5ba4 LR: 0000000000000000 CTR: 0000000000000000
-> >[  243.686538] REGS: c000000016657e80 TRAP: 3000   Not tainted  (6.1.0-rc1)
-> >[  243.686548] MSR:  800000000000d033 <SF,EE,PR,ME,IR,DR,RI,LE>  CR: 42044440  XER: 00000000
-> >[  243.686572] IRQMASK: 0
-> >[  243.686572] GPR00: 0000000000000006 00007ffffa606710 00007fffa48e7200 0000000000000000
-> >[  243.686572] GPR04: 0000000000000002 000000000000000a 0000000000000000 0000000000000001
-> >[  243.686572] GPR08: 000001000c172dd0 0000000000000000 0000000000000000 0000000000000000
-> >[  243.686572] GPR12: 0000000000000000 00007fffa4ff4bc0 0000000000000000 0000000000000000
-> >[  243.686572] GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-> >[  243.686572] GPR20: 0000000132dfdc50 000000000000000e 0000000000189375 0000000000000000
-> >[  243.686572] GPR24: 00007ffffa606ae0 0000000000000005 000001000c185490 000001000c172570
-> >[  243.686572] GPR28: 000001000c172990 000001000c184850 000001000c172e00 00007fffa4fedd98
-> >[  243.686683] NIP [00007fffa47d5ba4] 0x7fffa47d5ba4
-> >[  243.686691] LR [0000000000000000] 0x0
-> >[  243.686698] --- interrupt: 3000
-> >[  243.686708] INFO: task kworker/u16:1:24 blocked for more than 122 seconds.
-> >[  243.686717]       Not tainted 6.1.0-rc1 #1
-> >[  243.686724] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> >[  243.686733] task:kworker/u16:1   state:D stack:0     pid:24    ppid:2      flags:0x00000800
-> >[  243.686747] Workqueue: events_unbound fsnotify_mark_destroy_workfn
-> >[  243.686758] Call Trace:
-> >[  243.686762] [c0000000166736e0] [c00000004fd91000] 0xc00000004fd91000 (unreliable)
-> >[  243.686775] [c0000000166738d0] [c00000001001dec0] __switch_to+0x130/0x220
-> >[  243.686788] [c000000016673930] [c000000010f607b8] __schedule+0x1f8/0x580
-> >[  243.686801] [c0000000166739e0] [c000000010f60bb4] schedule+0x74/0x140
-> >[  243.686814] [c000000016673a50] [c000000010f699b8] schedule_timeout+0x168/0x1c0
-> >[  243.686827] [c000000016673b20] [c000000010f61de8] __wait_for_common+0x148/0x360
-> >[  243.686840] [c000000016673bc0] [c000000010210840] __synchronize_srcu.part.0+0xa0/0xe0
-> >[  243.686855] [c000000016673c30] [c0000000105f2c64] fsnotify_mark_destroy_workfn+0xc4/0x1a0
-> >[  243.686868] [c000000016673ca0] [c000000010174ea8] process_one_work+0x2a8/0x570
-> >[  243.686882] [c000000016673d40] [c000000010175208] worker_thread+0x98/0x5e0
-> >[  243.686895] [c000000016673dc0] [c0000000101828d4] kthread+0x124/0x130
-> >[  243.686908] [c000000016673e10] [c00000001000cd40] ret_from_kernel_thread+0x5c/0x64
-> >[  366.566274] INFO: task systemd:1 blocked for more than 245 seconds.
-> >[  366.566298]       Not tainted 6.1.0-rc1 #1
-> >[  366.566305] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> >[  366.566314] task:systemd         state:D stack:0     pid:1     ppid:0      flags:0x00042000
-> >[  366.566329] Call Trace:
-> >...
-> >
-> >In that case, note that maxcpus=1 instead of nr_cpus=1 is used in the
-> >kernel command line on the PowerPC platform. Consequently, the crash cpu
-> >is the only onlined cpu in the kdump kernel, but with its logical id not
-> >necessary 0. While SRCU queues a sdp->work on cpu 0, on which no worker
-> >thread is created, so sdp->work will be never executed and
-> >__synchronize_srcu() can not be completed.
-> >
-> >Tackle this issue by queueing sdp->work on the first onlined cpu.
-> >
-> >Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
-> >Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> >Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-> >Cc: Josh Triplett <josh@joshtriplett.org>
-> >Cc: Steven Rostedt <rostedt@goodmis.org>
-> >Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> >To: rcu@vger.kernel.org
-> >---
-> > kernel/rcu/srcutree.c | 10 ++++++----
-> > 1 file changed, 6 insertions(+), 4 deletions(-)
-> >
-> >diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> >index 1c304fec89c0..f2df561e0995 100644
-> >--- a/kernel/rcu/srcutree.c
-> >+++ b/kernel/rcu/srcutree.c
-> >@@ -663,7 +663,7 @@ static void srcu_gp_start(struct srcu_struct *ssp)
-> >       int state;
-> >
-> >       if (smp_load_acquire(&ssp->srcu_size_state) < SRCU_SIZE_WAIT_BARRIER)
-> >-              sdp = per_cpu_ptr(ssp->sda, 0);
-> >+              sdp = per_cpu_ptr(ssp->sda, cpumask_first(cpu_online_mask));
-> >       else
-> >               sdp = this_cpu_ptr(ssp->sda);
-> >       lockdep_assert_held(&ACCESS_PRIVATE(ssp, lock));
-> >@@ -774,7 +774,8 @@ static void srcu_gp_end(struct srcu_struct *ssp)
-> >       /* Initiate callback invocation as needed. */
-> >       ss_state = smp_load_acquire(&ssp->srcu_size_state);
-> >       if (ss_state < SRCU_SIZE_WAIT_BARRIER) {
-> >-              srcu_schedule_cbs_sdp(per_cpu_ptr(ssp->sda, 0), cbdelay);
-> >+              srcu_schedule_cbs_sdp(per_cpu_ptr(ssp->sda,
-> >+                                      cpumask_first(cpu_online_mask)), cbdelay);
-> >       } else {
-> >               idx = rcu_seq_ctr(gpseq) % ARRAY_SIZE(snp->srcu_have_cbs);
-> >               srcu_for_each_node_breadth_first(ssp, snp) {
-> >@@ -1093,7 +1094,7 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
-> >       idx = srcu_read_lock(ssp);
-> >       ss_state = smp_load_acquire(&ssp->srcu_size_state);
-> >       if (ss_state < SRCU_SIZE_WAIT_CALL)
-> >-              sdp = per_cpu_ptr(ssp->sda, 0);
-> >+              sdp = per_cpu_ptr(ssp->sda, cpumask_first(cpu_online_mask));
->
-> Hi Pingfan
->
-> If CPU0 support hotplug.
-> For example , in this time cpumask_first(cpu_online_mask) return 0
->
-> >       else
-> >               sdp = raw_cpu_ptr(ssp->sda);
-> >       spin_lock_irqsave_sdp_contention(sdp, &flags);
-> >@@ -1429,7 +1430,8 @@ void srcu_barrier(struct srcu_struct *ssp)
-> >
-> >       idx = srcu_read_lock(ssp);
-> >       if (smp_load_acquire(&ssp->srcu_size_state) < SRCU_SIZE_WAIT_BARRIER)
-> >-              srcu_barrier_one_cpu(ssp, per_cpu_ptr(ssp->sda, 0));
-> >+              srcu_barrier_one_cpu(ssp, per_cpu_ptr(ssp->sda,
-> >+                                      cpumask_first(cpu_online_mask)));
->
-> Due to CPU hotplug, CPU0 have been offline, assume srcu_size_state is still SRCU_SIZE_WAIT_CALL.
-> in this time, cpumask_first(cpu_online_mask) not return 0,  this will cause the srcu barrier to return directly.
->
+On 10/25/22 16:08, Vlastimil Babka wrote:
+> On 10/25/22 15:47, Hyeonggon Yoo wrote:
+>> On Mon, Oct 24, 2022 at 04:35:04PM +0200, Vlastimil Babka wrote:
+>> 
+>> [,,,]
+>> 
+>>> diff --git a/mm/slab.c b/mm/slab.c
+>>> index 59c8e28f7b6a..219beb48588e 100644
+>>> --- a/mm/slab.c
+>>> +++ b/mm/slab.c
+>>> @@ -1370,6 +1370,8 @@ static struct slab *kmem_getpages(struct kmem_cache *cachep, gfp_t flags,
+>>>  
+>>>  	account_slab(slab, cachep->gfporder, cachep, flags);
+>>>  	__folio_set_slab(folio);
+>>> +	/* Make the flag visible before any changes to folio->mapping */
+>>> +	smp_wmb();
+>>>  	/* Record if ALLOC_NO_WATERMARKS was set when allocating the slab */
+>>>  	if (sk_memalloc_socks() && page_is_pfmemalloc(folio_page(folio, 0)))
+>>>  		slab_set_pfmemalloc(slab);
+>>> @@ -1387,9 +1389,11 @@ static void kmem_freepages(struct kmem_cache *cachep, struct slab *slab)
+>>>  
+>>>  	BUG_ON(!folio_test_slab(folio));
+>>>  	__slab_clear_pfmemalloc(slab);
+>>> -	__folio_clear_slab(folio);
+>>>  	page_mapcount_reset(folio_page(folio, 0));
+>>>  	folio->mapping = NULL;
+>>> +	/* Make the mapping reset visible before clearing the flag */
+>>> +	smp_wmb();
+>>> +	__folio_clear_slab(folio);
+>>>  
+>>>  	if (current->reclaim_state)
+>>>  		current->reclaim_state->reclaimed_slab += 1 << order;
+>>> diff --git a/mm/slub.c b/mm/slub.c
+>>> index 157527d7101b..6dc17cb915c5 100644
+>>> --- a/mm/slub.c
+>>> +++ b/mm/slub.c
+>>> @@ -1800,6 +1800,8 @@ static inline struct slab *alloc_slab_page(gfp_t flags, int node,
+>>>  
+>>>  	slab = folio_slab(folio);
+>>>  	__folio_set_slab(folio);
+>>> +	/* Make the flag visible before any changes to folio->mapping */
+>>> +	smp_wmb();
+>>>  	if (page_is_pfmemalloc(folio_page(folio, 0)))
+>>>  		slab_set_pfmemalloc(slab);
+>>>  
+>>> @@ -2008,8 +2010,10 @@ static void __free_slab(struct kmem_cache *s, struct slab *slab)
+>>>  	}
+>>>  
+>>>  	__slab_clear_pfmemalloc(slab);
+>>> -	__folio_clear_slab(folio);
+>>>  	folio->mapping = NULL;
+>>> +	/* Make the mapping reset visible before clearing the flag */
+>>> +	smp_wmb();
+>>> +	__folio_clear_slab(folio);
+>>>  	if (current->reclaim_state)
+>>>  		current->reclaim_state->reclaimed_slab += pages;
+>>>  	unaccount_slab(slab, order, s);
+>>> -- 
+>>> 2.38.0
+>> 
+>> Do we need to try this with memory barriers before frozen refcount lands in?
+> 
+> There was IIRC an unresolved issue with frozen refcount tripping the page
+> isolation code so I didn't want to be depending on that.
+> 
+>> It's quite complicated and IIUC there is a still theoretical race:
+>> 
+>> At isolate_movable_page:        At slab alloc:                          At slab free:
+>>                                 folio = alloc_pages(flags, order)
+>> 
+>> folio_try_get()
+>> folio_test_slab() == false
+>>                                 __folio_set_slab(folio)
+>>                                 smp_wmb()
+>> 
+>>                                                                         call_rcu(&slab->rcu_head, rcu_free_slab);
+>> 
+>> 
+>> smp_rmb()
+>> __folio_test_movable() == true
+>> 
+>>                                                                         folio->mapping = NULL;
+>>                                                                         smp_wmb()
+>>                                                                         __folio_clear_slab(folio);
+>> smp_rmb()
+>> folio_test_slab() == false
+>> 
+>> folio_trylock()
+> 
+> There's also between above and below:
+> 
+> if (!PageMovable(page) || PageIsolated(page))
+> 	goto out_no_isolated;
+> 
+> mops = page_movable_ops(page);
+> 
+> If we put another smp_rmb() before the PageMovable test, could that have
+> helped? It would assure we observe the folio->mapping = NULL; from the "slab
+> free" side?
+> 
+> But yeah, it's getting ridiculous. Maybe there's a simpler way to check two
+> bits in two different bytes atomically. Or maybe it's just an impossible
+> task, I feel I just dunno computers at this point.
 
-Thanks for catching this bug.
+After more thought, I think I just made a mistake by doing two
+folio_test_slab() tests around a single __folio_test_movable(). What I was
+supposed to do was two __folio_test_movable() tests around a single
+folio_test_slab()... I hope. That should take care of your scenario, or do
+you see another one? Thanks.
 
-It seems that get_boot_cpu_id() can tackle the whole issue.  I will
-wait for more comments and send out V2.
+----8----
+From 5ca1c10f6411d73ad579b58d4fa10326bf77cf0a Mon Sep 17 00:00:00 2001
+From: Matthew Wilcox <willy@infradead.org>
+Date: Mon, 24 Oct 2022 16:11:27 +0200
+Subject: [PATCH] mm/migrate: make isolate_movable_page() skip slab pages
 
-Thanks,
+In the next commit we want to rearrange struct slab fields to allow a
+larger rcu_head. Afterwards, the page->mapping field will overlap
+with SLUB's "struct list_head slab_list", where the value of prev
+pointer can become LIST_POISON2, which is 0x122 + POISON_POINTER_DELTA.
+Unfortunately the bit 1 being set can confuse PageMovable() to be a
+false positive and cause a GPF as reported by lkp [1].
 
-    Pingfan
+I think the real problem here is that isolate_movable_page() is
+insufficiently paranoid.  Looking at the gyrations that GUP and the
+page cache do to convince themselves that the page they got really is
+the page they wanted, there are a few missing pieces (eg checking that
+you actually got a refcount on _this_ page and not some random other
+page you were temporarily part of a compound page with).
+
+This patch does three things:
+
+ - Turns one of the comments into English.  There are some others
+   which I'm still scratching my head over.
+ - Uses a folio to help distinguish which operations are being done
+   to the head vs the specific page (this is somewhat an abuse of the
+   folio concept, but it's acceptable)
+ - Add the aforementioned check that we're actually operating on the
+   page that we think we want to be.
+ - Add a check that the folio isn't secretly a slab.
+
+We could put the slab check in PageMapping and call it after taking
+the folio lock, but that seems pointless.  It's the acquisition of
+the refcount which stabilises the slab flag, not holding the lock.
+
+[ vbabka@suse.cz: add memory barriers to SLAB and SLUB's page allocation
+  and freeing, and their counterparts to isolate_movable_page(), to make
+  the checks for folio_test_slab() and __folio_test_movable() SMP safe ]
+
+[1] https://lore.kernel.org/all/208c1757-5edd-fd42-67d4-1940cc43b50f@intel.com/
+
+Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+---
+ mm/migrate.c | 40 ++++++++++++++++++++++++++++------------
+ mm/slab.c    |  6 +++++-
+ mm/slub.c    |  6 +++++-
+ 3 files changed, 38 insertions(+), 14 deletions(-)
+
+diff --git a/mm/migrate.c b/mm/migrate.c
+index 1379e1912772..f0f58e42c1d4 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -60,6 +60,7 @@
+ 
+ int isolate_movable_page(struct page *page, isolate_mode_t mode)
+ {
++	struct folio *folio = page_folio(page);
+ 	const struct movable_operations *mops;
+ 
+ 	/*
+@@ -71,16 +72,31 @@ int isolate_movable_page(struct page *page, isolate_mode_t mode)
+ 	 * the put_page() at the end of this block will take care of
+ 	 * release this page, thus avoiding a nasty leakage.
+ 	 */
+-	if (unlikely(!get_page_unless_zero(page)))
++	if (unlikely(!folio_try_get(folio)))
+ 		goto out;
+ 
++	/* Recheck the page is still part of the folio we just got */
++	if (unlikely(page_folio(page) != folio))
++		goto out_put;
++
+ 	/*
+-	 * Check PageMovable before holding a PG_lock because page's owner
+-	 * assumes anybody doesn't touch PG_lock of newly allocated page
+-	 * so unconditionally grabbing the lock ruins page's owner side.
++	 * Check movable flag before taking the folio lock because
++	 * we use non-atomic bitops on newly allocated page flags so
++	 * unconditionally grabbing the lock ruins page's owner side.
++	 * Make sure we don't have a slab folio here as its usage of the
++	 * mapping field can cause a false positive movable flag.
+ 	 */
+-	if (unlikely(!__PageMovable(page)))
+-		goto out_putpage;
++	if (unlikely(!__folio_test_movable(folio)))
++		goto out_put;
++	/* Pairs with smp_wmb() in slab allocation, e.g. SLUB's alloc_slab_page() */
++	smp_rmb();
++	if (unlikely(folio_test_slab(folio)))
++		goto out_put;
++	/* Pairs with smp_wmb() in slab freeing, e.g. SLUB's __free_slab() */
++	smp_rmb();
++	if (unlikely(!__folio_test_movable(folio)))
++		goto out_put;
++
+ 	/*
+ 	 * As movable pages are not isolated from LRU lists, concurrent
+ 	 * compaction threads can race against page migration functions
+@@ -92,8 +108,8 @@ int isolate_movable_page(struct page *page, isolate_mode_t mode)
+ 	 * lets be sure we have the page lock
+ 	 * before proceeding with the movable page isolation steps.
+ 	 */
+-	if (unlikely(!trylock_page(page)))
+-		goto out_putpage;
++	if (unlikely(!folio_trylock(folio)))
++		goto out_put;
+ 
+ 	if (!PageMovable(page) || PageIsolated(page))
+ 		goto out_no_isolated;
+@@ -107,14 +123,14 @@ int isolate_movable_page(struct page *page, isolate_mode_t mode)
+ 	/* Driver shouldn't use PG_isolated bit of page->flags */
+ 	WARN_ON_ONCE(PageIsolated(page));
+ 	SetPageIsolated(page);
+-	unlock_page(page);
++	folio_unlock(folio);
+ 
+ 	return 0;
+ 
+ out_no_isolated:
+-	unlock_page(page);
+-out_putpage:
+-	put_page(page);
++	folio_unlock(folio);
++out_put:
++	folio_put(folio);
+ out:
+ 	return -EBUSY;
+ }
+diff --git a/mm/slab.c b/mm/slab.c
+index 59c8e28f7b6a..219beb48588e 100644
+--- a/mm/slab.c
++++ b/mm/slab.c
+@@ -1370,6 +1370,8 @@ static struct slab *kmem_getpages(struct kmem_cache *cachep, gfp_t flags,
+ 
+ 	account_slab(slab, cachep->gfporder, cachep, flags);
+ 	__folio_set_slab(folio);
++	/* Make the flag visible before any changes to folio->mapping */
++	smp_wmb();
+ 	/* Record if ALLOC_NO_WATERMARKS was set when allocating the slab */
+ 	if (sk_memalloc_socks() && page_is_pfmemalloc(folio_page(folio, 0)))
+ 		slab_set_pfmemalloc(slab);
+@@ -1387,9 +1389,11 @@ static void kmem_freepages(struct kmem_cache *cachep, struct slab *slab)
+ 
+ 	BUG_ON(!folio_test_slab(folio));
+ 	__slab_clear_pfmemalloc(slab);
+-	__folio_clear_slab(folio);
+ 	page_mapcount_reset(folio_page(folio, 0));
+ 	folio->mapping = NULL;
++	/* Make the mapping reset visible before clearing the flag */
++	smp_wmb();
++	__folio_clear_slab(folio);
+ 
+ 	if (current->reclaim_state)
+ 		current->reclaim_state->reclaimed_slab += 1 << order;
+diff --git a/mm/slub.c b/mm/slub.c
+index 99ba865afc4a..5e6519d5169c 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -1800,6 +1800,8 @@ static inline struct slab *alloc_slab_page(gfp_t flags, int node,
+ 
+ 	slab = folio_slab(folio);
+ 	__folio_set_slab(folio);
++	/* Make the flag visible before any changes to folio->mapping */
++	smp_wmb();
+ 	if (page_is_pfmemalloc(folio_page(folio, 0)))
+ 		slab_set_pfmemalloc(slab);
+ 
+@@ -2000,8 +2002,10 @@ static void __free_slab(struct kmem_cache *s, struct slab *slab)
+ 	int pages = 1 << order;
+ 
+ 	__slab_clear_pfmemalloc(slab);
+-	__folio_clear_slab(folio);
+ 	folio->mapping = NULL;
++	/* Make the mapping reset visible before clearing the flag */
++	smp_wmb();
++	__folio_clear_slab(folio);
+ 	if (current->reclaim_state)
+ 		current->reclaim_state->reclaimed_slab += pages;
+ 	unaccount_slab(slab, order, s);
+-- 
+2.38.0
+
+
