@@ -2,221 +2,163 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E828BECAAA1
-	for <rcu@archiver.kernel.org>; Thu, 27 Oct 2022 17:33:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0FE73ECAAA1
+	for <rcu@archiver.kernel.org>; Thu, 27 Oct 2022 17:46:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235854AbiJ0Rdm (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 27 Oct 2022 13:33:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46508 "EHLO
+        id S235905AbiJ0Rqa (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 27 Oct 2022 13:46:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235840AbiJ0Rdg (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 27 Oct 2022 13:33:36 -0400
+        with ESMTP id S235838AbiJ0RqX (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 27 Oct 2022 13:46:23 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9631B1A5B14;
-        Thu, 27 Oct 2022 10:33:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80EEBD6B87
+        for <rcu@vger.kernel.org>; Thu, 27 Oct 2022 10:46:21 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2BDCD623EE;
-        Thu, 27 Oct 2022 17:33:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A984C433D6;
-        Thu, 27 Oct 2022 17:33:34 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2A4FA623EE
+        for <rcu@vger.kernel.org>; Thu, 27 Oct 2022 17:46:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B555C433C1;
+        Thu, 27 Oct 2022 17:46:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666892014;
-        bh=BBHv33+chmEyNHv+Pk6YM7Pyhqw3FDPg1OaGwMb+nyM=;
+        s=k20201202; t=1666892780;
+        bh=Qg9Ag7mnmZ7MLfkcJOCd97ZqMFBJn7uX+Dap4FTOVtk=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=tpC19FAWsvWJ2eM7xJXNAD5qX2RE19UofMYyMOroxWixHgsAfQ2SO25WnCsGrRBMs
-         3B78CC+KkOig8tM7Xh9gRao/F+E0SuJkeU5dbBj1+7vJPbfvfFXYLPBmVcqzEpkfJg
-         hfmH6hoLjLfaxbIB6G3AIyF/8q8FrbnyOIx5pCuhxKjZdpjpOb/J4/1QAt3J7VAmFR
-         dskfCeoyR8iW+nilgOYxFLkOsjpa9wX7QOnwoBDrcl4BghsnoiCumo7KGwpqutE3O2
-         soOyG+9ur5ZB+l3qJr5LLLDUALI75UfvEa8UA0MvoUIZajZYhrZns26b2ozH1HqMus
-         6a6AZQdSbvuxA==
+        b=VQnlUStQq22hnEk2K/LhGuGGlisIzydsahS7b+nd+tZXCzLe4LOk6nILhRdT9SF0j
+         /eAIT35F6TWx3ZnCOWlYyjhX8LVS4Z2nKFytr5D30ZW4RHuLExpuNTz2x7GZOuL6aB
+         ZN+L6Cwq2qmKPFx6PC6yrPHEyuMD5jEng88JUaRqJTCBV7arfQGvZwMxZVaYzWbVCJ
+         x6ODSn0cIcVqsNz76ZVZ8RV8kKr406diGeBG5UQh3iqm3plpHeYOtAE09A73jUnV+E
+         yaN2Ih28uMzF7keHpCBSfz5zNVTjomczHnlBEYPqo5RSxJRgNtykSGZ7Z/tg70bc6R
+         yqJA5rNll2SFw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 227E95C0A59; Thu, 27 Oct 2022 10:33:34 -0700 (PDT)
-Date:   Thu, 27 Oct 2022 10:33:34 -0700
+        id 2BB625C0A59; Thu, 27 Oct 2022 10:46:20 -0700 (PDT)
+Date:   Thu, 27 Oct 2022 10:46:20 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
+To:     Pingfan Liu <kernelfans@gmail.com>
+Cc:     Frederic Weisbecker <frederic@kernel.org>, rcu@vger.kernel.org,
+        David Woodhouse <dwmw@amazon.co.uk>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] rcu: Add RCU stall diagnosis information
-Message-ID: <20221027173334.GB5600@paulmck-ThinkPad-P17-Gen-1>
+        Joel Fernandes <joel@joelfernandes.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>
+Subject: Re: [PATCHv2 3/3] rcu: coordinate tick dependency during concurrent
+ offlining
+Message-ID: <20221027174620.GC5600@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20221022124525.2080-1-thunder.leizhen@huawei.com>
- <20221022124525.2080-4-thunder.leizhen@huawei.com>
+References: <Yywq/AtA5DN6J5+6@piliu.users.ipa.redhat.com>
+ <20220922135442.GH4196@paulmck-ThinkPad-P17-Gen-1>
+ <YzFH6WSMX/Yht+i1@piliu.users.ipa.redhat.com>
+ <20220926222352.GV4196@paulmck-ThinkPad-P17-Gen-1>
+ <YzLJZU2mAPjfD/RK@piliu.users.ipa.redhat.com>
+ <CAFgQCTtLm-JXRyQfKo6-+P00SShVGujZGau+khmtCe1AiRodQA@mail.gmail.com>
+ <20220930154459.GF4196@paulmck-ThinkPad-P17-Gen-1>
+ <CAFgQCTu75NPFM8L6a8-bgAzwzNtEdAV+DkXc7ssu6arf3o-o-A@mail.gmail.com>
+ <20221002162002.GR4196@paulmck-ThinkPad-P17-Gen-1>
+ <CAFgQCTtgLfc0NeYqyWk4Ew-pA9rMREjRjWSnQhYLv-V5117s9Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221022124525.2080-4-thunder.leizhen@huawei.com>
+In-Reply-To: <CAFgQCTtgLfc0NeYqyWk4Ew-pA9rMREjRjWSnQhYLv-V5117s9Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, Oct 22, 2022 at 08:45:25PM +0800, Zhen Lei wrote:
-> In some extreme cases, such as the I/O pressure test, the CPU usage may
-> be 100%, causing RCU stall. In this case, the printed information about
-> current is not useful. Displays the number and usage of hard interrupts,
-> soft interrupts, and context switches that are generated within half of
-> the CPU stall timeout, can help us make a general judgment. In other
-> cases, we can preliminarily determine whether an infinite loop occurs
-> when local_irq, local_bh or preempt is disabled.
+On Mon, Oct 10, 2022 at 09:55:26AM +0800, Pingfan Liu wrote:
+> On Mon, Oct 3, 2022 at 12:20 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> [...]
 > 
-> For example:
-> rcu: INFO: rcu_preempt self-detected stall on CPU
-> rcu:     0-....: (1250 ticks this GP) <omitted>
-> rcu:          hardirqs   softirqs   csw/system
-> rcu:  number:      624         45            0
-> rcu: cputime:       69          1         2425   ==> 2500(ms)
+> > >
+> > > But unfortunately, I did not keep the data. I will run it again and
+> > > submit the data.
+> >
 > 
-> The example above shows that the number of hard and soft interrupts is
-> small, there is zero context switching, and the system takes up a lot of
-> time. We can quickly conclude that the current task is infinitely looped
-> with preempt_disable().
+> I have finished the test on a machine with two sockets and 256 cpus.
+> The test runs against the kernel with three commits reverted.
+>   96926686deab ("rcu: Make CPU-hotplug removal operations enable tick")
+>   53e87e3cdc15 ("timers/nohz: Last resort update jiffies on nohz_full
+> IRQ entry")
+>   a1ff03cd6fb9c5 ("tick: Detect and fix jiffies update stall")
 > 
-> The impact on system performance is negligible because snapshot is
-> recorded only one time after 1/2 CPU stall timeout.
-> 
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> ---
->  kernel/rcu/tree.c       | 16 ++++++++++++++++
->  kernel/rcu/tree.h       | 11 +++++++++++
->  kernel/rcu/tree_stall.h | 28 ++++++++++++++++++++++++++++
->  3 files changed, 55 insertions(+)
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 6bb8e72bc8151ef..56c49a3117e7a81 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -931,6 +931,22 @@ static int rcu_implicit_dynticks_qs(struct rcu_data *rdp)
->  			rdp->rcu_iw_gp_seq = rnp->gp_seq;
->  			irq_work_queue_on(&rdp->rcu_iw, rdp->cpu);
->  		}
-> +
-> +		if (rdp->snap_record.gp_seq != rdp->gp_seq) {
-> +			u64 *cpustat;
-> +			struct rcu_snap_record *r;
-> +
-> +			cpustat = kcpustat_cpu(rdp->cpu).cpustat;
-> +
-> +			r = &rdp->snap_record;
-> +			r->cputime_irq     = cpustat[CPUTIME_IRQ];
-> +			r->cputime_softirq = cpustat[CPUTIME_SOFTIRQ];
-> +			r->cputime_system  = cpustat[CPUTIME_SYSTEM];
-> +			r->nr_hardirqs = kstat_cpu_irqs_sum(rdp->cpu);
-> +			r->nr_softirqs = kstat_cpu_softirqs_sum(rdp->cpu);
-> +			r->nr_csw = nr_context_switches_cpu(rdp->cpu);
-> +			r->gp_seq = rdp->gp_seq;
+> Summary from console.log
+> "
+>  --- Sat Oct  8 11:34:02 AM EDT 2022 Test summary:
+> Results directory:
+> /home/linux/tools/testing/selftests/rcutorture/res/2022.10.07-23.10.54
+> tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration
+> 125h --bootargs rcutorture.onoff_interval=200
+> rcutorture.onoff_holdoff=30 --configs 32*TREE04
+> TREE04 ------- 1365444 GPs (3.03432/s) n_max_cbs: 850290
+> TREE04 no success message, 2897 successful version messages
+> Completed in 44512 vs. 450000
+> TREE04.10 ------- 1331565 GPs (2.95903/s) n_max_cbs: 909075
+> TREE04.10 no success message, 2897 successful version messages
+> Completed in 44511 vs. 450000
+> TREE04.11 ------- 1331535 GPs (2.95897/s) n_max_cbs: 1213974
+> TREE04.11 no success message, 2897 successful version messages
+> Completed in 44511 vs. 450000
+> TREE04.12 ------- 1322160 GPs (2.93813/s) n_max_cbs: 2615313
+> TREE04.12 no success message, 2897 successful version messages
+> Completed in 44511 vs. 450000
+> TREE04.13 ------- 1320032 GPs (2.9334/s) n_max_cbs: 914751
+> TREE04.13 no success message, 2897 successful version messages
+> Completed in 44511 vs. 450000
+> TREE04.14 ------- 1339969 GPs (2.97771/s) n_max_cbs: 1560203
+> TREE04.14 no success message, 2897 successful version messages
+> Completed in 44511 vs. 450000
+> TREE04.15 ------- 1318805 GPs (2.93068/s) n_max_cbs: 1757478
+> TREE04.15 no success message, 2897 successful version messages
+> Completed in 44510 vs. 450000
+> TREE04.16 ------- 1340633 GPs (2.97918/s) n_max_cbs: 1377647
+> TREE04.16 no success message, 2897 successful version messages
+> Completed in 44510 vs. 450000
+> TREE04.17 ------- 1322798 GPs (2.93955/s) n_max_cbs: 1266344
+> TREE04.17 no success message, 2897 successful version messages
+> Completed in 44511 vs. 450000
+> TREE04.18 ------- 1346302 GPs (2.99178/s) n_max_cbs: 1030713
+> TREE04.18 no success message, 2897 successful version messages
+> Completed in 44511 vs. 450000
+> TREE04.19 ------- 1322499 GPs (2.93889/s) n_max_cbs: 917118
+> TREE04.19 no success message, 2897 successful version messages
+> Completed in 44511 vs. 450000
+> ...
+> TREE04.4 ------- 1310283 GPs (2.91174/s) n_max_cbs: 2146905
+> TREE04.4 no success message, 2897 successful version messages
+> Completed in 44511 vs. 450000
+> TREE04.5 ------- 1333238 GPs (2.96275/s) n_max_cbs: 1027172
+> TREE04.5 no success message, 2897 successful version messages
+> Completed in 44511 vs. 450000
+> TREE04.6 ------- 1313915 GPs (2.91981/s) n_max_cbs: 1017511
+> TREE04.6 no success message, 2897 successful version messages
+> Completed in 44511 vs. 450000
+> TREE04.7 ------- 1341871 GPs (2.98194/s) n_max_cbs: 816265
+> TREE04.7 no success message, 2897 successful version messages
+> Completed in 44511 vs. 450000
+> TREE04.8 ------- 1339412 GPs (2.97647/s) n_max_cbs: 1316404
+> TREE04.8 no success message, 2897 successful version messages
+> Completed in 44511 vs. 450000
+> TREE04.9 ------- 1327240 GPs (2.94942/s) n_max_cbs: 1409531
+> TREE04.9 no success message, 2897 successful version messages
+> Completed in 44510 vs. 450000
+> 32 runs with runtime errors.
+>  --- Done at Sat Oct  8 11:34:10 AM EDT 2022 (12:23:16) exitcode 2
+> "
+> I have no idea about the test so just arbitrarily pick up the
+> console.log of TREE04.10 as an example. Please get it from attachment.
 
-This needs to be optional.  Yes, it is normally rarely executed, but
-people who don't want the additional information should not pay the
-price for it.
+Very good, thank you!
 
-> +		}
->  	}
->  
->  	return 0;
-> diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-> index d4a97e40ea9c3e2..fb3121d15cca6f8 100644
-> --- a/kernel/rcu/tree.h
-> +++ b/kernel/rcu/tree.h
-> @@ -158,6 +158,16 @@ union rcu_noqs {
->  	u16 s; /* Set of bits, aggregate OR here. */
->  };
->  
-> +struct rcu_snap_record {
-> +	unsigned long	gp_seq;
-> +	u64		cputime_irq;
-> +	u64		cputime_softirq;
-> +	u64		cputime_system;
-> +	unsigned int	nr_hardirqs;
-> +	unsigned int	nr_softirqs;
-> +	unsigned long long nr_csw;
-> +};
+Could you please clearly indicate what you tested?  For example, if
+you have an externally visible git tree, please point me at the tree
+and the SHA-1.  Or send a patch series clearly indicating what it is
+based on.
 
-Please add a comment saying what this is and what it is used for.
+Then I can try a long run on a larger collection of systems.
 
-> +
->  /* Per-CPU data for read-copy update. */
->  struct rcu_data {
->  	/* 1) quiescent-state and grace-period handling : */
-> @@ -262,6 +272,7 @@ struct rcu_data {
->  	short rcu_onl_gp_flags;		/* ->gp_flags at last online. */
->  	unsigned long last_fqs_resched;	/* Time of last rcu_resched(). */
->  	unsigned long last_sched_clock;	/* Jiffies of last rcu_sched_clock_irq(). */
-> +	struct rcu_snap_record snap_record;
-
-And here as well, please.
-
->  	int cpu;
->  };
-> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-> index 5653560573e22d6..f8c9d0284d116a8 100644
-> --- a/kernel/rcu/tree_stall.h
-> +++ b/kernel/rcu/tree_stall.h
-> @@ -428,6 +428,32 @@ static bool rcu_is_rcuc_kthread_starving(struct rcu_data *rdp, unsigned long *jp
->  	return j > 2 * HZ;
->  }
->  
-> +static void print_cpu_stat_info(int cpu)
-> +{
-> +	u64 *cpustat;
-> +	unsigned long half_timeout;
-> +	struct rcu_snap_record *r;
-
-Let's please follow convention and call it "rsrp" rather than just "r".
-
-> +	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
-> +
-> +	r = &rdp->snap_record;
-> +	if (r->gp_seq != rdp->gp_seq)
-> +		return;
-> +
-> +	cpustat = kcpustat_cpu(cpu).cpustat;
-> +	half_timeout = rcu_jiffies_till_stall_check() / 2;
-> +
-> +	pr_err("         hardirqs   softirqs   csw/system\n");
-> +	pr_err(" number: %8d %10d %12lld\n",
-> +		kstat_cpu_irqs_sum(cpu) - r->nr_hardirqs,
-> +		kstat_cpu_softirqs_sum(cpu) - r->nr_softirqs,
-> +		nr_context_switches_cpu(cpu) - r->nr_csw);
-> +	pr_err("cputime: %8lld %10lld %12lld   ==> %lld(ms)\n",
-> +		div_u64(cpustat[CPUTIME_IRQ] - r->cputime_irq, NSEC_PER_MSEC),
-> +		div_u64(cpustat[CPUTIME_SOFTIRQ] - r->cputime_softirq, NSEC_PER_MSEC),
-> +		div_u64(cpustat[CPUTIME_SYSTEM] - r->cputime_system, NSEC_PER_MSEC),
-> +		jiffies64_to_msecs(half_timeout));
-> +}
-> +
->  /*
->   * Print out diagnostic information for the specified stalled CPU.
->   *
-> @@ -484,6 +510,8 @@ static void print_cpu_stall_info(int cpu)
->  	       data_race(rcu_state.n_force_qs) - rcu_state.n_force_qs_gpstart,
->  	       rcuc_starved ? buf : "",
->  	       falsepositive ? " (false positive?)" : "");
-> +
-> +	print_cpu_stat_info(cpu);
-
-Again, please make this conditional.  One way to do that is with a
-Kconfig option.  Another is with a kernel boot parameter, as is done
-wtih module_param() elsewhere in tree_stall.h.  Or if the parsing needs
-to be fancy (it shouldn't) using kernel_param_ops as is done in tree.c.
-Distros tend to like kernel boot parameters, while people dealing with
-large numbers of devices tend to like Kconfig options.  Choose wisely.  ;-)
-
-Please make this initially default-off.  If enough people enable it for
-long enough, we can later switch it to default-on and maybe even later
-to unconditional.  But let's start carefully.
+If that works out, we can see about adjustments to mainline.  ;-)
 
 							Thanx, Paul
-
->  }
->  
->  /* Complain about starvation of grace-period kthread.  */
-> -- 
-> 2.25.1
-> 
