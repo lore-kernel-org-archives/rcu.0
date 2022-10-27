@@ -2,195 +2,200 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 79C3FECAAA1
-	for <rcu@archiver.kernel.org>; Thu, 27 Oct 2022 18:13:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 09B9CFA3743
+	for <rcu@archiver.kernel.org>; Thu, 27 Oct 2022 19:05:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235730AbiJ0SNy (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 27 Oct 2022 14:13:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46882 "EHLO
+        id S235986AbiJ0TFP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 27 Oct 2022 15:05:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbiJ0SNx (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 27 Oct 2022 14:13:53 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA8F9EE28
-        for <rcu@vger.kernel.org>; Thu, 27 Oct 2022 11:13:50 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        with ESMTP id S234915AbiJ0TFN (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 27 Oct 2022 15:05:13 -0400
+Received: from mx0a-002e3701.pphosted.com (mx0a-002e3701.pphosted.com [148.163.147.86])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DCD213F96;
+        Thu, 27 Oct 2022 12:05:12 -0700 (PDT)
+Received: from pps.filterd (m0148663.ppops.net [127.0.0.1])
+        by mx0a-002e3701.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29REKeI6006133;
+        Thu, 27 Oct 2022 19:04:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : subject :
+ date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pps0720;
+ bh=lrV3Aoc1dwf7a4GMAKRHKYwgG2PLJ9jeiLbyYnRyg1Y=;
+ b=G9JS0qe4nO4wXO5Pvz2YI2P+moAEzTleMvOk22UZrqZYPR+BB8vSh97uS2bkem9uofGw
+ ivPaaPNk4n2i+wNARL6UJbGIJZHYetO09liTH8WBwgjwZBRv3xQaQhBpZHw6VxSqu/Ht
+ AU3I0tnNLUe5+s1yoWt3cE4Qf8GxZgj5/lLPRSgCy0vqvI3MD/jt14sqRGrPo44A+ySb
+ G87IkQpJ0aLtin0mSCgcShADKGK0SsvuCKEHB4QH2yvQLaxFGiVgCLfV9jl4LXnf4m8j
+ cQdxUypFYwICkXt9bzjK/DAMZ7KNDCCuTqeqbnWBrZK+Yx6kNYIGaMA7RI5OlzpEiTVz zQ== 
+Received: from p1lg14881.it.hpe.com (p1lg14881.it.hpe.com [16.230.97.202])
+        by mx0a-002e3701.pphosted.com (PPS) with ESMTPS id 3kfunptevy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Oct 2022 19:04:56 +0000
+Received: from p1wg14925.americas.hpqcorp.net (unknown [10.119.18.114])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 27313CE27F6
-        for <rcu@vger.kernel.org>; Thu, 27 Oct 2022 18:13:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B2C6C433C1;
-        Thu, 27 Oct 2022 18:13:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666894427;
-        bh=U9RZZY2K1GlvKT0PpXSPDChpa5gXLsAzdxGQdD7TIAA=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=H+1KfdtZz0lsRmrbIhhZyXuJZJVa8XCUCdDmhGyOtdp9ICbBbOzgWctMvd/pkuDUw
-         LkxOGUI8frCy12oMuEZOO8kwsBGnRThmG9ilRD9LncpSIElJvEROFZ05ubZU0Qxjs5
-         WvKBpXAK3oGznZbW8R+TsuXkVE2jK/MSLgzK/btQapidwiNchB42w10z8oVB5n/rmR
-         5aC/p0bfy/SI/DgL3dh6O4pAhXmWDip82HQQQ9LdvU3zSDj7fi5sijfk6vwh38B32c
-         cb7RXzU86yCKmwIGfgJyv1J3lmZ0O3rS03bO0hDuQxnKA127ymt/9tBqYSPzVCB+y+
-         8ULy/bAGIXt1A==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id D15875C0A59; Thu, 27 Oct 2022 11:13:46 -0700 (PDT)
-Date:   Thu, 27 Oct 2022 11:13:46 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Pingfan Liu <kernelfans@gmail.com>
-Cc:     Frederic Weisbecker <frederic@kernel.org>, rcu@vger.kernel.org,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        by p1lg14881.it.hpe.com (Postfix) with ESMTPS id 84B4F80470E;
+        Thu, 27 Oct 2022 19:04:55 +0000 (UTC)
+Received: from p1wg14927.americas.hpqcorp.net (10.119.18.117) by
+ p1wg14925.americas.hpqcorp.net (10.119.18.114) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.15; Thu, 27 Oct 2022 07:04:55 -1200
+Received: from p1wg14920.americas.hpqcorp.net (16.230.19.123) by
+ p1wg14927.americas.hpqcorp.net (10.119.18.117) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.15
+ via Frontend Transport; Thu, 27 Oct 2022 07:04:55 -1200
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (192.58.206.38)
+ by edge.it.hpe.com (16.230.19.123) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.15; Thu, 27 Oct 2022 07:04:54 -1200
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PxSBa+1sK2HDe/U5gvOVyA8TOqan6d4N5iU5cT7ezZvoY3/w4xGmP22+az/2p2X0ikZoSCO5uQdjNvHyydboOXOSc0/c7eFhXz4YdBZt1KEbHmUCO0GYUbu+E2ITxixoKlAlhhP47oqOdq150BtE/tQlX95HLObZyNAblhsDiLlGleFVhR/h/wepfu6KhPod7m3I8VXT2kikXUT7teRwqnJLkyHYmwVoHclv9T63+4XrhcG3e91HMTyf5P91LqHM4XCsv6Ggecqa/73mTd9Aag15HjOf+s0q4Eujo0cJkOd35AqwLe88mBk8GG7BuB4KEo0tlFxgjBYudKYSCwLmkg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=lrV3Aoc1dwf7a4GMAKRHKYwgG2PLJ9jeiLbyYnRyg1Y=;
+ b=SEJK8SWr3JWK3AUnYMK5b8iFb+mj1AnrOO8PE+npx+Yb8qd5LelXlbMK6odt6gYm8NOvrUfMk+8abFRoLMU38Y79MvFn4WBmrOHoIX0WGSybKvB3XlotgA5gxJcMNz4bxldtLL/6pZXhluE/sJ3/hsmNiT5K4OurSSAbv+RNn9vfUV7rnXTwgzyBL7FifDxT+OPHQI5IxSPSjXK8EEQipFSiLjTCPnYisICGIffc4US8pbbwFmw7CZk1wpOEcTE/5u0c54qpYMJW0eF2X5LWKb18YYZa75OrWuEfwfHtu/JnFfeScAeqaMMIh93Du6ZsNj6oFrIfiiGhxMYcl1Rc3g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=hpe.com; dmarc=pass action=none header.from=hpe.com; dkim=pass
+ header.d=hpe.com; arc=none
+Received: from MW5PR84MB1842.NAMPRD84.PROD.OUTLOOK.COM (2603:10b6:303:1c4::18)
+ by DM4PR84MB1782.NAMPRD84.PROD.OUTLOOK.COM (2603:10b6:8:4d::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5746.28; Thu, 27 Oct
+ 2022 19:04:53 +0000
+Received: from MW5PR84MB1842.NAMPRD84.PROD.OUTLOOK.COM
+ ([fe80::c023:cb9a:111f:a1b2]) by MW5PR84MB1842.NAMPRD84.PROD.OUTLOOK.COM
+ ([fe80::c023:cb9a:111f:a1b2%5]) with mapi id 15.20.5769.014; Thu, 27 Oct 2022
+ 19:04:53 +0000
+From:   "Elliott, Robert (Servers)" <elliott@hpe.com>
+To:     Zhen Lei <thunder.leizhen@huawei.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        "Neeraj Upadhyay" <quic_neeraju@quicinc.com>,
         Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: Re: [PATCHv2 3/3] rcu: coordinate tick dependency during concurrent
- offlining
-Message-ID: <20221027181346.GD5600@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <Yywq/AtA5DN6J5+6@piliu.users.ipa.redhat.com>
- <20220922135442.GH4196@paulmck-ThinkPad-P17-Gen-1>
- <YzFH6WSMX/Yht+i1@piliu.users.ipa.redhat.com>
- <20220926222352.GV4196@paulmck-ThinkPad-P17-Gen-1>
- <YzLJZU2mAPjfD/RK@piliu.users.ipa.redhat.com>
- <CAFgQCTtLm-JXRyQfKo6-+P00SShVGujZGau+khmtCe1AiRodQA@mail.gmail.com>
- <20220930154459.GF4196@paulmck-ThinkPad-P17-Gen-1>
- <CAFgQCTu75NPFM8L6a8-bgAzwzNtEdAV+DkXc7ssu6arf3o-o-A@mail.gmail.com>
- <20221002162002.GR4196@paulmck-ThinkPad-P17-Gen-1>
- <CAFgQCTtNetv7v_Law=abPtngC8Gv6OGcGz9M_wWMxz_GAEWDUQ@mail.gmail.com>
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v2 1/3] sched: Add helper kstat_cpu_softirqs_sum()
+Thread-Topic: [PATCH v2 1/3] sched: Add helper kstat_cpu_softirqs_sum()
+Thread-Index: AQHY5hRPGohirfZ+NUCi6rPTBZAIq64imQUw
+Date:   Thu, 27 Oct 2022 19:04:53 +0000
+Message-ID: <MW5PR84MB18423C3F30D3F789EB48D0A5AB339@MW5PR84MB1842.NAMPRD84.PROD.OUTLOOK.COM>
+References: <20221022124525.2080-1-thunder.leizhen@huawei.com>
+ <20221022124525.2080-2-thunder.leizhen@huawei.com>
+In-Reply-To: <20221022124525.2080-2-thunder.leizhen@huawei.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MW5PR84MB1842:EE_|DM4PR84MB1782:EE_
+x-ms-office365-filtering-correlation-id: 5589bc8c-b604-49b9-257b-08dab84e2189
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: skoPz/RAQjowq/vJOikFci7O4+stwogjF4G65CnZCFeJSAsvi6LtAVKUdoDcCRKcovu69c3DTgDKsb/eOH91SAeiJHChNS9BBlNoR+M+9nh3Vlar4+q4WLDTLcZ9tpCGGTehnIixtWT3QhK8tz7JldAb3ZvOZY1H6O3DZVZpMt3Whn+Wf1a5TlYwezfBvia3Aq+J8fZCLJ3EFx7+xc1bKq9hdAEhk2nHvU6HEDgwYNA7KJdUR7lXBKr47ZgY3waTPC6pK6WGseGEu7xfNGB3hM1L18AP2DUjy1jFI7eFK+5FaOh+NwxF6WmfubDAKoCCOakLZbWeNjm9gNzormNQQyo9P5kAeb7p0uj9vVNjezohqKS6+237rnjYInDA/juQdHYKq/TM/yxJZCz+otgTjIiB+SrWk0R+hgGrZoHBMkEBNRshn4CfZbAenFd9gyVyhpBDJlWr7cMjsq+V8CdULoegoSVhhglmqXlMfUdp6wMOEz2Cf4UxCsnhLN9KvT14WQiHVGc8tYQa0H0QaXpKaMwQTYV6LumiWBYlcQVu+Ea6BBRCjbSTYh7tO2QsaH9maE59TPZEz817lnSKIaH9XVoQS+9d/TrtfFie5WTH7xPWZ1T9SympXd3MyXov8X+zVdnB8KX7hYkJgf3dCWee+XWvHexNm8W+Cb9AQkMwTksXe1oHLkYXCYgdyFjHmRtoL4lhJNWESX8xN+PRU02QSOY2nzoBBIpc73Z5X/wGKEP1Lr4IkTXkI0o069IeZoo67J2+ouB4VLwYvYVM3Kn2M3kczewKpyKnlXUZXDkLjME=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW5PR84MB1842.NAMPRD84.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230022)(366004)(136003)(346002)(39860400002)(396003)(376002)(451199015)(71200400001)(7416002)(186003)(478600001)(38070700005)(316002)(110136005)(82960400001)(8676002)(33656002)(7696005)(5660300002)(6506007)(64756008)(66446008)(66476007)(66556008)(66946007)(76116006)(52536014)(26005)(55016003)(8936002)(9686003)(86362001)(2906002)(122000001)(41300700001)(38100700002)(921005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?kZNNfs0LZBFm6myslkVDvuLJ0QHVvE7UFv8Aka9/gYCaQfGlwETgFLE1Ut4G?=
+ =?us-ascii?Q?ssngPmXEsA6NwmW2b6Ibj6213Uh6czcascxnEqqlmkQfhFgcqWwRsbPC+9UP?=
+ =?us-ascii?Q?BCaTGSZGOVykSINeobuZIHICZNQNGzPaZ51dNMyYf5G4ZL9DYKd3dN2MieMJ?=
+ =?us-ascii?Q?BwYzNwPPtekZ6UD2zMaWIu+KdFirAzTMjbLRFUpq0jh8Hg5X1ZMIIOucYKNc?=
+ =?us-ascii?Q?KigdTKGySuHakkc9ZirTiIt9/LUQHYQBBdYO2/n4QTP+vPruAUmEQ5vuOwKv?=
+ =?us-ascii?Q?HFsNUxfNQbVsAo05F97nF10fejrK03KAaTwofwFFrduNnM2S4HCpVEyVxiQ4?=
+ =?us-ascii?Q?nGlGa5mK/FwIjUZV8o7uqH3ZJvqMwmHOoICZF33rG72rDpbCavzQC5+kn3zN?=
+ =?us-ascii?Q?W9/s7NCehQARK2u98wBrytKSzHLmk5nDYyMHvEiiZ+lOHe7Z8guGmWqYql0q?=
+ =?us-ascii?Q?sxolubTj7j9EqMsPYeO/HW87ng1F87tgJkUsKngzu1YvY2K2TK3rrzX8aAOl?=
+ =?us-ascii?Q?/L+qEheWDzsSAm+q7reRgcuyFDybQJCGfFXT1O7H3/xx0/QkfPxV98GAJqeH?=
+ =?us-ascii?Q?l7MLNqIID/KLe10vXiuSttpYKlky1bXR7Vlt8D5RQULexMXaaOKk0iYRh+Ig?=
+ =?us-ascii?Q?GbNVolrddO0LzK8R/RhjefBECYuldabEhVrYy7Xiz7oXFnb02zUelDkfPefL?=
+ =?us-ascii?Q?+T529wO0qKgr7bb5WXclYFu0YbHItP8LivG0sq898WSxvq5mSDNZEBIcjmCH?=
+ =?us-ascii?Q?qrFjh76audishWelZg2Y1yvbNXH+srl44dzLFdvCeEW5Zz7A7hNkA1+CLBp4?=
+ =?us-ascii?Q?IZrHULHdvnnI6U6XA/JQth3jQeANOBmfuaMVDaEqaIIjXZ0ikLUmQuU1Qly7?=
+ =?us-ascii?Q?3TFOGEfdNb0Kzea2HdRI3Wd/r1wme+EOcPK0PsJ09o7tbeomfc6YrF5v3prm?=
+ =?us-ascii?Q?9IyTR/8ZQz8Piq+YeTccCSQMyzvFMW98zbebXGaSSZX6Azz+ZIneZjtnSXVb?=
+ =?us-ascii?Q?z0NLYNMhhp2qFXsaeHIsIIssW1bhF7S2bZPA4E2XxhB8Dp5uLAIyk2fKMbr0?=
+ =?us-ascii?Q?6X4y6cstQBdgJW8aqgXEyACOsoW0I9q4TCh6RWRoZjK4IMM5nM9SZ8QqynCn?=
+ =?us-ascii?Q?PNtyAugJz03nf4NQ02/mFJ7DblgA9FTCHB8F46Lmk/wfflf3UERutiG7VjYY?=
+ =?us-ascii?Q?i+3of9HjV5bAbOd+AovWlckKmxbEDYcFUxEgS4F4LJB6F2z49qihwGWPRUde?=
+ =?us-ascii?Q?bSpX4UJN0OH7rcovhRyBXtbUBdrKqSvrhM1JYCv1yZya5YPpz90NIxdElHfl?=
+ =?us-ascii?Q?ubiKGCzx6pXNHlWWYLtuBm0vk75InBS8Zen7jT9xi0nb48mBSD4qkpQaXslW?=
+ =?us-ascii?Q?4pAHV1ob2R1YIyFedkpMxl5oCFiRI31fv4wZJw5VsIZIF+S2ZzzG1ujTejt/?=
+ =?us-ascii?Q?m7zAm+n9+oPoAlr4RLS6lEUzMIDXUmY47MJAZbT9yZci0xVGudjYpKlhhO7a?=
+ =?us-ascii?Q?lkVVU8pCpFSribyybu3oGSGxmoFwvmx81ipf9Lx0AEIjWKrQ2MTk9v/qbEtt?=
+ =?us-ascii?Q?IOnLpPPfw/WCMN0onFs=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFgQCTtNetv7v_Law=abPtngC8Gv6OGcGz9M_wWMxz_GAEWDUQ@mail.gmail.com>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW5PR84MB1842.NAMPRD84.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5589bc8c-b604-49b9-257b-08dab84e2189
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Oct 2022 19:04:53.5473
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 105b2061-b669-4b31-92ac-24d304d195dc
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: qVHiTpPZKuYaupkRjnrsKcQfr/JesDnWSaGBt4sc9of8KHzZOMJ7jeKdLkB9tBZ8
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR84MB1782
+X-OriginatorOrg: hpe.com
+X-Proofpoint-GUID: xQz7ykjYaBPxWWw3ZXBmCAwmTA8tn1P6
+X-Proofpoint-ORIG-GUID: xQz7ykjYaBPxWWw3ZXBmCAwmTA8tn1P6
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-10-27_07,2022-10-27_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
+ clxscore=1011 mlxlogscore=710 lowpriorityscore=0 malwarescore=0
+ adultscore=0 mlxscore=0 spamscore=0 bulkscore=0 impostorscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2210170000 definitions=main-2210270108
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Oct 10, 2022 at 09:42:07AM +0800, Pingfan Liu wrote:
-> On Mon, Oct 3, 2022 at 12:20 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Sun, Oct 02, 2022 at 09:29:59PM +0800, Pingfan Liu wrote:
-> [...]
-> 
-> > >
-> > > Quote from TREE04.43 console.log
-> > > "
-> > > ...
-> > > [162003.262292] rcu-torture: rtc: 0000000000000000 VER: 4371112 tfle:
-> > > 0 rta: 4371112 rtaf: 0 rtf: 4371103 rtmbe: 0 rtmbkf: 0/1801158 rtbe: 0
-> > > rtbke: 0 rtbre: 0 rtbf: 0 rtb: 0 nt: 206435148 onoff:
-> > > 189317/189317:189321/189321 1,1877:1,3248 25561605:45469848 (HZ=1000)
-> > > barrier: 769073/769073:0 read-exits: 185104 nocb-toggles: 0:0
-> > > [162003.264714] rcu-torture: Reader Pipe:  338936620402 7452360 0 0 0
-> > > 0 0 0 0 0 0
-> > > [162003.265336] rcu-torture: Reader Batch:  338929088717 14984045 0 0
-> > > 0 0 0 0 0 0 0
-> > > [162003.265967] rcu-torture: Free-Block Circulation:  4371111 4371111
-> > > 4371110 4371109 4371108 4371107 4371106 4371105 4371104 4371103 0
-> > > [162003.266980] rcu-torture: rcu_torture_stats is stopping
-> > > [162003.267450] rcu_torture_cleanup: Invoking rcu_barrier+0x0/0x3b0().
-> > > [162003.278480] Stack Depot allocating hash table of 32768 entries with kvcalloc
-> > > [162003.279947] mem_dump_obj() slab test: rcu_torture_stats =
-> > > 0000000000000000, &rhp = ffffa0aa0035feb8, rhp = ffff965e01a58000, &z
-> > > = ffffffffa676d9a0
-> > > [162003.281079] mem_dump_obj(ZERO_SIZE_PTR): zero-size pointer
-> > > [162003.281563] mem_dump_obj(NULL): NULL pointer
-> > > [162003.281935] mem_dump_obj(ffffa0aa0035feb8): 4-page vmalloc region
-> > > starting at 0xffffa0aa0035c000 allocated at kernel_clone+0x92/0x3b0
-> > > [162003.283044] mem_dump_obj(ffff965e01a58000): slab rcuscale start
-> > > ffff965e01a58000 pointer offset 0 allocated at
-> > > rcu_torture_cleanup+0x432/0x4e0
-> > > [162003.284138]     kmem_cache_alloc+0x19d/0x1b0
-> > > [162003.284522]     rcu_torture_cleanup+0x432/0x4e0
-> > > [162003.284918]     torture_shutdown+0xce/0x1c0
-> > > [162003.285285]     kthread+0xb7/0xe0
-> > > [162003.285587]     ret_from_fork+0x22/0x30
-> > > [162003.285926] mem_dump_obj(ffff965e01a58008): slab rcuscale start
-> > > ffff965e01a58000 pointer offset 8 allocated at
-> > > rcu_torture_cleanup+0x432/0x4e0
-> > > [162003.287045]     kmem_cache_alloc+0x19d/0x1b0
-> > > [162003.287436]     rcu_torture_cleanup+0x432/0x4e0
-> > > [162003.287835]     torture_shutdown+0xce/0x1c0
-> > > [162003.288202]     kthread+0xb7/0xe0
-> > > [162003.288510]     ret_from_fork+0x22/0x30
-> > > [162003.288848] mem_dump_obj(ffffffffa676d9a0): non-slab/vmalloc memory
-> > > [162003.289426] mem_dump_obj() kmalloc test: rcu_torture_stats =
-> > > 0000000000000000, &rhp = ffffa0aa0035feb8, rhp = ffff965e144447e0
-> > > [162003.290421] mem_dump_obj(kmalloc ffff965e144447e0): slab
-> > > kmalloc-16 start ffff965e144447e0 pointer offset 0 size 16
-> > > [162003.291316] mem_dump_obj(kmalloc ffff965e144447e8): slab
-> > > kmalloc-16 start ffff965e144447e0 pointer offset 8 size 16
-> > > [162003.292211] mem_dump_obj() vmalloc test: rcu_torture_stats =
-> > > 0000000000000000, &rhp = ffffa0aa0035feb8, rhp = ffffa0aa0002d000
-> > > [162003.293186] mem_dump_obj(vmalloc ffffa0aa0002d000): 1-page vmalloc
-> > > region starting at 0xffffa0aa0002d000 allocated at
-> > > rcu_torture_cleanup.cold+0x287/0x3ef
-> > > [162003.294372] mem_dump_obj(vmalloc ffffa0aa0002d008): 1-page vmalloc
-> > > region starting at 0xffffa0aa0002d000 allocated at
-> > > rcu_torture_cleanup.cold+0x287/0x3ef
-> > > [162003.295548] rcu-torture: rtc: 0000000000000000 VER: 4371112 tfle:
-> > > 0 rta: 4371112 rtaf: 0 rtf: 4371103 rtmbe: 0 rtmbkf: 0/1801158 rtbe: 0
-> > > rtbke: 0 rtbre: 0 rtbf: 0 rtb: 0 nt: 206435148 onoff:
-> > > 189317/189317:189321/189321 1,1877:1,3248 25561605:45469848 (HZ=1000)
-> > > barrier: 769073/769073:0 read-exits: 185104 nocb-toggles: 0:0
-> > > [162003.297956] rcu-torture: Reader Pipe:  338936620402 7452360 0 0 0
-> > > 0 0 0 0 0 0
-> > > [162003.298578] rcu-torture: Reader Batch:  338929088717 14984045 0 0
-> > > 0 0 0 0 0 0 0
-> > > [162003.299208] rcu-torture: Free-Block Circulation:  4371111 4371111
-> > > 4371110 4371109 4371108 4371107 4371106 4371105 4371104 4371103 0
-> > > [162003.300220] rcu-torture:--- End of test: SUCCESS: nreaders=7
-> > > nfakewriters=4 stat_interval=15 verbose=1 test_no_idle_hz=1
-> > > shuffle_interval=3 stutter=5 irqreader=1 fqs_duration=0 fqs_holdoff=0
-> > > fqs_stutter=3 test_boost=1/0 test_boost_interval=7
-> > > test_boost_duration=4 shutdown_secs=162000 stall_cpu=0
-> > > stall_cpu_holdoff=10 stall_cpu_irqsoff=0 stall_cpu_block=0
-> > > n_barrier_cbs=4 onoff_interval=200 onoff_holdoff=30 read_exit_delay=13
-> > > read_exit_burst=16 nocbs_nthreads=0 nocbs_toggle=1000
-> > > [162003.304162] i2c i2c-0: shutdown
-> > > [162003.304461] alarmtimer alarmtimer.0.auto: shutdown
-> > > [162003.304878] psmouse serio1: shutdown
-> > > ...
-> > > "
-> >
-> > Huh.  Shutdown writer stall on the first one, but I am not seeing the
-> > but in the second one.  Was the "Call Trace" located somewhere else in
-> > the console.log file?
-> >
-> > I have not seen the shutdown writer stall lately, but such stalls have
-> > flagged many sorts of bugs for me to fix in the past.
-> >
-> >
-> > So maybe there is yet another bug that my testing is for whatever reason
-> > not seeing.
-> 
-> Sorry to reply late, I just came back from a long holiday.
 
-Given my delay, I guess that I cannot complain...
+> Similar to kstat_cpu_irqs_sum(), it counts the sum of all software
+> interrupts on a specified CPU.
+>=20
+> diff --git a/include/linux/kernel_stat.h b/include/linux/kernel_stat.h
+> @@ -67,6 +67,17 @@ static inline unsigned int kstat_softirqs_cpu(unsigned=
+ int irq, int cpu)
+>         return kstat_cpu(cpu).softirqs[irq];
+>  }
+>=20
+> +static inline unsigned int kstat_cpu_softirqs_sum(int cpu)
+> +{
+> +	int i;
+> +	unsigned int sum =3D 0;
+> +
+> +	for (i =3D 0; i < NR_SOFTIRQS; i++)
+> +		sum +=3D kstat_softirqs_cpu(i, cpu);
+> +
+> +	return sum;
+> +}
 
-> The attachment is the complete log of TREE04.43.
+In the function upon which this is based:
 
-This happens because rcutorture hit OOM while doing RCU callback flood
-testing.  This -might- be related to the changes, for example if timers
-slowed down, thus slowing down RCU grace periods, thus allowing the
-kthread doing the flooding exhaust memory.
+irqs_sumstruct kernel_stat {
+        unsigned long irqs_sum;
+        unsigned int softirqs[NR_SOFTIRQS];
+};
 
-Grace periods are progressing in the histogram:
+static inline unsigned int kstat_cpu_irqs_sum(unsigned int cpu)
+{
+        return kstat_cpu(cpu).irqs_sum;
+}
 
-[12077.630343] rcu_torture_fwd_cb_hist: Callback-invocation histogram 0 (duration 1321 jiffies): 1s/10: 75043:17 2s/10: 137085:35 3s/10: 143871:14 4s/10: 66038:26 5s/10: 51754:18 6s/10: 67000:16 7s/10: 54155:17 8s/10: 56749:23 9s/10: 120850:8 10s/10: 87789:17 11s/10: 111123:32 12s/10: 136322:50 13s/10: 108813:33 14s/10: 138489:1
-[12077.632824] rcu: rcu_fwd_progress_check: GP age 17 jiffies
+kstat_cpu_irqs_sum returns an unsigned long as an unsigned int, which
+could cause large values to be truncated. Should that return
+unsigned long? The only existing caller is fs/proc/stat.c which
+puts it into a u64:
+        u64 sum =3D 0;
+        ...
+        sum             +=3D kstat_cpu_irqs_sum(i);
 
-And there is this:
+The softirqs field is an unsigned int, so the new function doesn't have
+this inconsistency.
 
-[12077.644478] rcu: RCU callbacks invoked since boot: 102942584
-[12077.644974] rcu: rcu_fwd_progress_check: callbacks 0: 45 4: 7973717
-[12077.695770] rcutorture_oom_notify: Freed 592481 RCU callbacks.
-
-So another question is "how much memory was available to rcutorture?"
-
-Less than 512MB could explain this.
-
-(I do see this from time to time, but on single-CPU TREE09 runs.)
-
-							Thanx, Paul
