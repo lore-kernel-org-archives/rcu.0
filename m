@@ -2,47 +2,47 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D78CEFA3740
-	for <rcu@archiver.kernel.org>; Thu, 27 Oct 2022 14:39:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 036ABFA3740
+	for <rcu@archiver.kernel.org>; Thu, 27 Oct 2022 16:01:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233473AbiJ0Ojy (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 27 Oct 2022 10:39:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47160 "EHLO
+        id S236236AbiJ0QBl (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 27 Oct 2022 12:01:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235489AbiJ0Ojw (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 27 Oct 2022 10:39:52 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED42F58525;
-        Thu, 27 Oct 2022 07:39:51 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1666881588;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jbxARsfRC6v5A83uXW6hh52ECqe0nM8Oe/dP4o5OVDQ=;
-        b=GRt8WmOOYTVQYQdbVvUO9ozbKobBIHsAqnsxffGe0aRtNiCGayoW0HpSWWOur4SwiLVKq0
-        WDvOhVKRp9+oBG7ma8og9hKAK97tI6S0rJZEG0xjyj6KKsAyEl/nQZbMSSMSTU1NkB3C7O
-        SSfDlaakqotzDdEQwyRYjdHRzH+4/L5k0dzEDBKAMUSmPJOJasznQX/VTXNh+asURWOxkX
-        m3bzyXH28+zubtQ3JJEIWGp8MkCT64bnonogoy5WzYE3E++MEPjsYP36tN1/cIABHJzV3Z
-        qwVKYvUBwBD3Px2ZeRyiONVLeW1eSXRHJM95fUoHsBYzW2OHkpDc6K51STgudw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1666881588;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jbxARsfRC6v5A83uXW6hh52ECqe0nM8Oe/dP4o5OVDQ=;
-        b=RRC4iqdInwglcGXrHzMsTN+Tp1Aj4twNF78GnyK14oGdgK5t4Wlzn/4bprc5cM+75jPget
-        TrVUU0ytp+519qAg==
-To:     paulmck@kernel.org
+        with ESMTP id S236047AbiJ0QBk (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 27 Oct 2022 12:01:40 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0D5E9F77C;
+        Thu, 27 Oct 2022 09:01:39 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 708ADB826F9;
+        Thu, 27 Oct 2022 16:01:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D446C433D6;
+        Thu, 27 Oct 2022 16:01:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1666886497;
+        bh=Baj4V+Mot+1k5z7U2r5M5/8F0M4nNVn8kZp8DYNpR4A=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=ZuPpADKp4sYROuMM1T2Z0x0Am8t+kXlsqx5aGhj5UWua6SRLydfpPV4kiB7G1fi6C
+         PTJ2wBMTfygD2KrguGXZOXDt+Nr0qxnOd7NYv8a/k2RzMfaSL4oB5Kcn8pFQwu0JLj
+         Q7vI+VcsHTHaz7g2OmU2NCalzTx7q7PLjfefn8ivdAKX5GPwT2TLKMkSittmexJ2bp
+         9EF9Km9k8IR5Zvp5GXYRkWm7QytUaX3bgPfhl0m8rZGH6yKmo3Y9Jkv3eg87xdumf2
+         K5Jm2x1z+ByoEC5Q5dDKXavCiImD51KKYt4q1nAg7qTyi9rR0e5Io07pW9Do39JyNs
+         EmM9DgZtA+kxg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id A44BC5C0692; Thu, 27 Oct 2022 09:01:36 -0700 (PDT)
+Date:   Thu, 27 Oct 2022 09:01:36 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     John Ogness <john.ogness@linutronix.de>
 Cc:     Frederic Weisbecker <frederic@kernel.org>, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org, kernel-team@fb.com,
         rostedt@goodmis.org, tglx@linutronix.de, pmladek@suse.com
 Subject: Re: [PATCH v2 rcu 0/8] NMI-safe SRCU reader API
-In-Reply-To: <20221027141045.GX5600@paulmck-ThinkPad-P17-Gen-1>
-References: <20221018215721.GA1716567@paulmck-ThinkPad-P17-Gen-1>
- <87pmeoawwe.fsf@jogness.linutronix.de>
- <20221019191418.GF5600@paulmck-ThinkPad-P17-Gen-1>
+Message-ID: <20221027160136.GY5600@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20221019191418.GF5600@paulmck-ThinkPad-P17-Gen-1>
  <20221019220537.GA1234896@lothringen>
  <20221020222718.GA5600@paulmck-ThinkPad-P17-Gen-1>
  <87r0z1gy51.fsf@jogness.linutronix.de>
@@ -51,20 +51,24 @@ References: <20221018215721.GA1716567@paulmck-ThinkPad-P17-Gen-1>
  <20221024134727.GV5600@paulmck-ThinkPad-P17-Gen-1>
  <874jvpehod.fsf@jogness.linutronix.de>
  <20221027141045.GX5600@paulmck-ThinkPad-P17-Gen-1>
-Date:   Thu, 27 Oct 2022 16:45:47 +0206
-Message-ID: <87sfj9couk.fsf@jogness.linutronix.de>
+ <87sfj9couk.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87sfj9couk.fsf@jogness.linutronix.de>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 2022-10-27, "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> The warning is claiming that this srcu_struct was passed to
-> srcu_read_lock() at some point and is now being passed to
-> srcu_read_lock_nmisafe().
+On Thu, Oct 27, 2022 at 04:45:47PM +0206, John Ogness wrote:
+> On 2022-10-27, "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> > The warning is claiming that this srcu_struct was passed to
+> > srcu_read_lock() at some point and is now being passed to
+> > srcu_read_lock_nmisafe().
+> 
+> Indeed, I found some code that was not using my wrappers. Thanks. Living
+> proof that it was a good idea to add the checks. ;-)
 
-Indeed, I found some code that was not using my wrappers. Thanks. Living
-proof that it was a good idea to add the checks. ;-)
+Glad that they helped, and a big "thank you!" to Frederic!
 
-John
+							Thanx, Paul
