@@ -2,188 +2,250 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0086FC38A2D
-	for <rcu@archiver.kernel.org>; Wed, 26 Oct 2022 20:35:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2CDBCC433FE
+	for <rcu@archiver.kernel.org>; Thu, 27 Oct 2022 03:04:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234415AbiJZUfs (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 26 Oct 2022 16:35:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50528 "EHLO
+        id S234196AbiJ0DEJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 26 Oct 2022 23:04:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234371AbiJZUfr (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 26 Oct 2022 16:35:47 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5066C4DF0C;
-        Wed, 26 Oct 2022 13:35:44 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id m15so43527331edb.13;
-        Wed, 26 Oct 2022 13:35:44 -0700 (PDT)
+        with ESMTP id S234262AbiJ0DEB (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 26 Oct 2022 23:04:01 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67E485FAC7
+        for <rcu@vger.kernel.org>; Wed, 26 Oct 2022 20:04:00 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id m14-20020a17090a3f8e00b00212dab39bcdso5003612pjc.0
+        for <rcu@vger.kernel.org>; Wed, 26 Oct 2022 20:04:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=zxC7NKfNQXQTMveKSZHTWW/q8Bbl4PV5mNveFlM92tU=;
-        b=FHCRCR3CMrt0YoGDG35KzOzzctTiDIkk4QFS5ffKbzC12hdxg88JyxpyyW4AdTNnEF
-         7iBQR3daQRn9p5T31S3wCPqjBolSKoqYvEmFvey7Nysj71euOHMAfM6Qufg1i4c4cLYS
-         1q/wYMa2wMEn77ZtFnasqliUemwdZoSmMXoFIBfcfAQOye66Zi0mt0VuoKvquXHWvMYe
-         qXVLKxpt+gwq7CN+3FrjVQfDwJonp6EtOb3ThjbFVnknSC6IHt+SNmY0q/VkXpJsxtC1
-         xEXlP1VhA7Kd+22Zt+Qj6PMzK7bol4pcpyRUnCNHuxtGGrHpYGXlNljGu5TZUDsNuqKx
-         OBng==
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=TC9dwUVEA0aiuAOVpn3zpjNCbxltjsBvjRCwgfsywzw=;
+        b=Zx3olVKPnQCC4qVHh6LIynEgoWkelNuepvk8ZLZAHIcIPRFNSbCHMrO4gO00LQ50oH
+         Vg3OzznbuVOM6f4bPDJjMpPI4hcLlS98+V4RVJOvU7bwY3LIv6SCu756E7AFk4IB8nEI
+         nNX//bCBhZ4O+MPUHXZoK6+NL0o6PsYALLV++Vd2BfhjzRF3gALw7KdxwTMfq7DUdVeP
+         Y+cgtlrdxn1cJRejSdxQenmoxMhm63A3VhaNb1cOBvtI993dZbxd1Qn+FYFX7Yx04Kkd
+         rsOA1asAKHU8e8C3m7+UCIkkfLVfLH7KxhDxtwkdlcfjO1GsXWcgWumIN3OAxplRPIUD
+         oWpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=zxC7NKfNQXQTMveKSZHTWW/q8Bbl4PV5mNveFlM92tU=;
-        b=TgaXxxAsIUjSR1WtjKXQK6L7Tpl26Ye76hvpi3ka9vNDWr45soTpL+G/E/IebCA0mF
-         QvZ1MWRW9um7oLJ8HOZTwSlLFafB89fcUEpqtbbiRlybWRPBj1OvVA1HXHSMXUO9VZi3
-         jAG2G1tiaHD5Y/0xalUx7Y27L9drqZZCaiYmeg4uqLNimUXqE4DwHnT0V3qLdsx+DShF
-         kyHS1Px1jpgsMZpCZGxOGW6a9LEvoo3pQu1m8bVqs5LLvJRwLFlj9N/x5AsoVr9tHDwb
-         CGBSY9WnAah0EeuyKZULuet+LUeRfLgsBzsZ/JB72sMaNaDpvTP4gFNcs9HcEorOzW9y
-         Rg7w==
-X-Gm-Message-State: ACrzQf1K1zbk4FCoEslkMeiCekYQoeqdYao9ST6g2uRU4xlAQVefpr66
-        2Tuc4fnVCDp6eCzZMEWyAo8=
-X-Google-Smtp-Source: AMsMyM6A3gVtrqCCgZ8xlStm2xeXwoe47yKnrtTYUlOeDKMg/PYWg0BzV3kzajKezvcV7d/fW6ZbSw==
-X-Received: by 2002:a05:6402:410:b0:451:ea13:4ed7 with SMTP id q16-20020a056402041000b00451ea134ed7mr44442319edv.262.1666816542668;
-        Wed, 26 Oct 2022 13:35:42 -0700 (PDT)
-Received: from pc636 ([155.137.26.201])
-        by smtp.gmail.com with ESMTPSA id n16-20020a056402515000b00451319a43dasm4079749edd.2.2022.10.26.13.35.41
+        bh=TC9dwUVEA0aiuAOVpn3zpjNCbxltjsBvjRCwgfsywzw=;
+        b=UHZYxuZODoniP17w+zvI/WyeltI06cJMcmeMo6/m+JRfCSE463hyccJdddAbRttsy0
+         +o/42RCFl0qaWil8a0PSqZiYsze2K7ivF1zEOuEfYyCX7qVWAb3Fd9WWwUtUblsK1WTT
+         sSJCRyjIMBE5wiQovJSA1/WMZXwtJj/feMul+075CmeGLOICNt2znGohrqGoUgf9B77Q
+         eOGBOjFcgj9DXYAOlHI675go7iNiT3P5Iw/gsSxbkTCG+gMa3nzcmFmw9io8ZUFAdI6Y
+         /okRNffxgXpHLUc1kat3GD6l8vv6UrUOtjgS3++Oj0OzICq00P6sqcyPtUCPcULrAk6K
+         Ggkg==
+X-Gm-Message-State: ACrzQf0U22qIbjnUBhEaNRiYgVaeyphKWI7twkNRE771LJhy2ITUGLIY
+        AtE3/XgTkIbqFPeta3zp0Q==
+X-Google-Smtp-Source: AMsMyM6gkEu38+HnmA/yyrqcPWLJwPstnd9QP7FF4pL6TiMe7ClpEMXpQ3/jTTcvrWjUmA/JQ6qtFQ==
+X-Received: by 2002:a17:90b:3a86:b0:20d:616f:4bb6 with SMTP id om6-20020a17090b3a8600b0020d616f4bb6mr7826344pjb.238.1666839839838;
+        Wed, 26 Oct 2022 20:03:59 -0700 (PDT)
+Received: from piliu.users.ipa.redhat.com ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id y4-20020a17090322c400b00176d347e9a7sm23089plg.233.2022.10.26.20.03.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Oct 2022 13:35:42 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Wed, 26 Oct 2022 22:35:29 +0200
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>, paulmck@kernel.org,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, rostedt@goodmis.org
-Subject: Re: [PATCH rcu 13/14] workqueue: Make queue_rcu_work() use
- call_rcu_flush()
-Message-ID: <Y1maEUsTUmQ3onsu@pc636>
-References: <Y1a8ei1h7SzyYZx9@pc636>
- <20221024164819.GA5600@paulmck-ThinkPad-P17-Gen-1>
- <Y1bDdP3iHoa4xqZL@pc636>
- <Y1bGcQ7RPleYp3ge@pc636>
- <CAEXW_YQqiD1GU7HGrv9UU6vL_MqbxVt14=rxZAKqUpK+pkPDPw@mail.gmail.com>
- <20221024173558.GC5600@paulmck-ThinkPad-P17-Gen-1>
- <CAEXW_YQFNd8evWMxv=sWwZ0q28wxAwStCMgaJnDu6QM6YqqjMA@mail.gmail.com>
- <CAEXW_YQr1Ag0L+J6RZ28vQKbBZwM98+YdsCqmt6mU0At67HDxQ@mail.gmail.com>
- <Y1e+/LD8BPu4JC9I@pc636>
- <CAEXW_YQAXee2iGDC8XQJnF7sAaaB2tPX4p6Bb3cYr9pMUnC9nQ@mail.gmail.com>
+        Wed, 26 Oct 2022 20:03:59 -0700 (PDT)
+Date:   Thu, 27 Oct 2022 11:03:53 +0800
+From:   Pingfan Liu <kernelfans@gmail.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     "Zhang, Qiang1" <qiang1.zhang@intel.com>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: Re: [PATCH] srcu: Delegate work to the first online cpu if using
+ SRCU_SIZE_SMALL
+Message-ID: <Y1n1GT4HSxUEGYlT@piliu.users.ipa.redhat.com>
+References: <20221026032716.78674-1-kernelfans@gmail.com>
+ <PH0PR11MB5880F4D3045159634170EFD0DA309@PH0PR11MB5880.namprd11.prod.outlook.com>
+ <CAFgQCTsFoS2qmF8N3KsQzKStPJesAqbNQK=VxhEs825OqfW2Kw@mail.gmail.com>
+ <20221026135552.GJ5600@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEXW_YQAXee2iGDC8XQJnF7sAaaB2tPX4p6Bb3cYr9pMUnC9nQ@mail.gmail.com>
+In-Reply-To: <20221026135552.GJ5600@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Oct 25, 2022 at 11:05:57AM -0400, Joel Fernandes wrote:
-> On Tue, Oct 25, 2022 at 6:48 AM Uladzislau Rezki <urezki@gmail.com> wrote:
-> >
-> > On Mon, Oct 24, 2022 at 04:16:20PM -0400, Joel Fernandes wrote:
-> > > On Mon, Oct 24, 2022 at 4:12 PM Joel Fernandes <joel@joelfernandes.org> wrote:
-> > > >
-> > > > On Mon, Oct 24, 2022 at 1:36 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > > >
-> > > > > On Mon, Oct 24, 2022 at 01:20:26PM -0400, Joel Fernandes wrote:
-> > > > > > On Mon, Oct 24, 2022 at 1:08 PM Uladzislau Rezki <urezki@gmail.com> wrote:
-> > > > > > >
-> > > > > > > On Mon, Oct 24, 2022 at 06:55:16PM +0200, Uladzislau Rezki wrote:
-> > > > > > > > On Mon, Oct 24, 2022 at 09:48:19AM -0700, Paul E. McKenney wrote:
-> > > > > > > > > On Mon, Oct 24, 2022 at 06:25:30PM +0200, Uladzislau Rezki wrote:
-> > > > > > > > > > >
-> > > > > > > > > > > You guys might need to agree on the definition of "good" here.  Or maybe
-> > > > > > > > > > > understand the differences in your respective platforms' definitions of
-> > > > > > > > > > > "good".  ;-)
-> > > > > > > > > > >
-> > > > > > > > > > Indeed. Bad is when once per-millisecond infinitely :) At least in such use
-> > > > > > > > > > workload a can detect a power delta and power gain. Anyway, below is a new
-> > > > > > > > > > trace where i do not use "flush" variant for the kvfree_rcu():
-> > > > > > > > > >
-> > > > > > > > > > <snip>
-> > > > > > > > > > 1. Home screen swipe:
-> > > > > > > > > >          rcuop/0-15      [003] d..1  1792.767750: rcu_batch_start: rcu_preempt CBs=1003 bl=10
-> > > > > > > > > >          rcuop/2-33      [002] d..1  1792.771717: rcu_batch_start: rcu_preempt CBs=934 bl=10
-> > > > > > > > > >          rcuop/3-40      [001] d..1  1794.811816: rcu_batch_start: rcu_preempt CBs=1508 bl=11
-> > > > > > > > > >          rcuop/1-26      [003] d..1  1797.116382: rcu_batch_start: rcu_preempt CBs=2127 bl=16
-> > > > > > > > > >          rcuop/4-48      [001] d..1  1797.124422: rcu_batch_start: rcu_preempt CBs=95 bl=10
-> > > > > > > > > >          rcuop/5-55      [002] d..1  1797.124731: rcu_batch_start: rcu_preempt CBs=143 bl=10
-> > > > > > > > > >          rcuop/6-62      [005] d..1  1798.911719: rcu_batch_start: rcu_preempt CBs=132 bl=10
-> > > > > > > > > >          rcuop/2-33      [002] d..1  1803.003966: rcu_batch_start: rcu_preempt CBs=3797 bl=29
-> > > > > > > > > >          rcuop/0-15      [003] d..1  1803.004707: rcu_batch_start: rcu_preempt CBs=2969 bl=23
-> > > > > >
-> > > > > > > > > > 2. App launches:
-> > > > > > > > > >          rcuop/4-48      [005] d..1  1831.087612: rcu_batch_start: rcu_preempt CBs=6141 bl=47
-> > > > > > > > > >          rcuop/7-69      [007] d..1  1831.095578: rcu_batch_start: rcu_preempt CBs=5464 bl=42
-> > > > > > > > > >          rcuop/5-55      [004] d..1  1832.703571: rcu_batch_start: rcu_preempt CBs=8461 bl=66
-> > > > > > > > > >          rcuop/0-15      [004] d..1  1833.731603: rcu_batch_start: rcu_preempt CBs=2548 bl=19
-> > > > > > > > > >          rcuop/1-26      [006] d..1  1833.743691: rcu_batch_start: rcu_preempt CBs=2567 bl=20
-> > > > > > > > > >          rcuop/2-33      [006] d..1  1833.744005: rcu_batch_start: rcu_preempt CBs=2359 bl=18
-> > > > > > > > > >          rcuop/3-40      [006] d..1  1833.744286: rcu_batch_start: rcu_preempt CBs=3681 bl=28
-> > > > > > > > > >          rcuop/4-48      [002] d..1  1838.079777: rcu_batch_start: rcu_preempt CBs=10444 bl=81
-> > > > > > > > > >          rcuop/7-69      [001] d..1  1838.080375: rcu_batch_start: rcu_preempt CBs=12572 bl=98
-> > > > > > > > > >            <...>-62      [002] d..1  1838.080646: rcu_batch_start: rcu_preempt CBs=14135 bl=110
-> > > > > > > > > >          rcuop/6-62      [000] d..1  1838.087722: rcu_batch_start: rcu_preempt CBs=10839 bl=84
-> > > > > > > > > >            <...>-62      [003] d..1  1839.227022: rcu_batch_start: rcu_preempt CBs=1834 bl=14
-> > > > > > > > > >            <...>-26      [001] d..1  1839.963315: rcu_batch_start: rcu_preempt CBs=5769 bl=45
-> > > > > > > > > >          rcuop/2-33      [001] d..1  1839.966485: rcu_batch_start: rcu_preempt CBs=3789 bl=29
-> > > > > > > > > >            <...>-40      [001] d..1  1839.966596: rcu_batch_start: rcu_preempt CBs=6425 bl=50
-> > > > > > > > > >          rcuop/2-33      [005] d..1  1840.541272: rcu_batch_start: rcu_preempt CBs=825 bl=10
-> > > > > > > > > >          rcuop/2-33      [005] d..1  1840.547724: rcu_batch_start: rcu_preempt CBs=44 bl=10
-> > > > > > > > > >          rcuop/2-33      [005] d..1  1841.075759: rcu_batch_start: rcu_preempt CBs=516 bl=10
-> > > > > > > > > >          rcuop/0-15      [002] d..1  1841.695716: rcu_batch_start: rcu_preempt CBs=6312 bl=49
-> > > > > > > > > >          rcuop/0-15      [003] d..1  1841.709714: rcu_batch_start: rcu_preempt CBs=39 bl=10
-> > > > > > > > > >          rcuop/5-55      [004] d..1  1843.112442: rcu_batch_start: rcu_preempt CBs=16007 bl=125
-> > > > > > > > > >          rcuop/5-55      [004] d..1  1843.115444: rcu_batch_start: rcu_preempt CBs=7901 bl=61
-> > > > > > > > > >          rcuop/6-62      [001] dn.1  1843.123983: rcu_batch_start: rcu_preempt CBs=8427 bl=65
-> > > > > > > > > >          rcuop/6-62      [006] d..1  1843.412383: rcu_batch_start: rcu_preempt CBs=981 bl=10
-> > > > > > > > > >          rcuop/0-15      [003] d..1  1844.659812: rcu_batch_start: rcu_preempt CBs=1851 bl=14
-> > > > > > > > > >          rcuop/0-15      [003] d..1  1844.667790: rcu_batch_start: rcu_preempt CBs=135 bl=10
-> > > > > >
-> > > > > > Definitely better, but I'd still ask why not just rely on the lazy
-> > > > > > batching that we now have, since it is a memory pressure related
-> > > > > > usecase. Or another approach could be, for CONFIG_RCU_LAZY, don't
-> > > > > > disturb the lazy-RCU batching by queuing these "free memory" CBs; and
-> > > > > > instead keep your improved kvfree_rcu() batching only for
-> > > > > > !CONFIG_RCU_LAZY.
-> > > > >
-> > > > > Given that making the kvfree_rcu()-level batching conditional on
-> > > > > CONFIG_RCU_LAZY would complicate the code, what bad thing happens when
-> > > > > keeping the kvfree_rcu-level batching unconditionally?
-> > > >
-> > > > The bad thing happening is power impact. There is a noticeable impact
-> > > > in our testing, and when we dropped this particular patch, it got much
-> > > > better results.
-> > > >
-> > > > I also run rcutop and I see without the patch that I have several
-> > > > seconds of laziness at a time, unlike with the patch.
-> > > >
-> > > > Even in the beginning when I came up with an implementation for
-> > > > call_rcu_lazy(), I had to mark queue_rcu_work() as lazy as well since
-> > > > it was quite frequent (on ChromeOS). But when we introduced the
-> > > > flush() API, I forgot to not use flush() on it.  But unfortunately
-> > > > this patch slipped into my last series when Vlad and I were debugging
-> > > > the SCSI issue, and did not really help for the SCSI issue itself.
+On Wed, Oct 26, 2022 at 06:55:52AM -0700, Paul E. McKenney wrote:
+> On Wed, Oct 26, 2022 at 04:21:26PM +0800, Pingfan Liu wrote:
+> > On Wed, Oct 26, 2022 at 12:36 PM Zhang, Qiang1 <qiang1.zhang@intel.com> wrote:
 > > >
-> > > I could try to run Vlad's other mainline patch itself and measure
-> > > power, I'll get back on that. Thanks!
+> > > >
+> > > >commit 994f706872e6 ("srcu: Make Tree SRCU able to operate without
+> > > >snp_node array") assumes that cpu 0 is always online, but that is not
+> > > >the truth when using maxcpus=1 in the command line for the kdump kernel.
+> > > >
+> > > >On a PowerPC, the following kdump kernel hanging is observed:
+> > > >...
+> > > >[    1.740036] systemd[1]: Hostname set to <xyz.com>
+> > > >[  243.686240] INFO: task systemd:1 blocked for more than 122 seconds.
+> > > >[  243.686264]       Not tainted 6.1.0-rc1 #1
+> > > >[  243.686272] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> > > >[  243.686281] task:systemd         state:D stack:0     pid:1     ppid:0      flags:0x00042000
+> > > >[  243.686296] Call Trace:
+> > > >[  243.686301] [c000000016657640] [c000000016657670] 0xc000000016657670 (unreliable)
+> > > >[  243.686317] [c000000016657830] [c00000001001dec0] __switch_to+0x130/0x220
+> > > >[  243.686333] [c000000016657890] [c000000010f607b8] __schedule+0x1f8/0x580
+> > > >[  243.686347] [c000000016657940] [c000000010f60bb4] schedule+0x74/0x140
+> > > >[  243.686361] [c0000000166579b0] [c000000010f699b8] schedule_timeout+0x168/0x1c0
+> > > >[  243.686374] [c000000016657a80] [c000000010f61de8] __wait_for_common+0x148/0x360
+> > > >[  243.686387] [c000000016657b20] [c000000010176bb0] __flush_work.isra.0+0x1c0/0x3d0
+> > > >[  243.686401] [c000000016657bb0] [c0000000105f2768] fsnotify_wait_marks_destroyed+0x28/0x40
+> > > >[  243.686415] [c000000016657bd0] [c0000000105f21b8] fsnotify_destroy_group+0x68/0x160
+> > > >[  243.686428] [c000000016657c40] [c0000000105f6500] inotify_release+0x30/0xa0
+> > > >[  243.686440] [c000000016657cb0] [c0000000105751a8] __fput+0xc8/0x350
+> > > >[  243.686452] [c000000016657d00] [c00000001017d524] task_work_run+0xe4/0x170
+> > > >[  243.686464] [c000000016657d50] [c000000010020e94] do_notify_resume+0x134/0x140
+> > > >[  243.686478] [c000000016657d80] [c00000001002eb18] interrupt_exit_user_prepare_main+0x198/0x270
+> > > >[  243.686493] [c000000016657de0] [c00000001002ec60] syscall_exit_prepare+0x70/0x180
+> > > >[  243.686505] [c000000016657e10] [c00000001000bf7c] system_call_vectored_common+0xfc/0x280
+> > > >[  243.686520] --- interrupt: 3000 at 0x7fffa47d5ba4
+> > > >[  243.686528] NIP:  00007fffa47d5ba4 LR: 0000000000000000 CTR: 0000000000000000
+> > > >[  243.686538] REGS: c000000016657e80 TRAP: 3000   Not tainted  (6.1.0-rc1)
+> > > >[  243.686548] MSR:  800000000000d033 <SF,EE,PR,ME,IR,DR,RI,LE>  CR: 42044440  XER: 00000000
+> > > >[  243.686572] IRQMASK: 0
+> > > >[  243.686572] GPR00: 0000000000000006 00007ffffa606710 00007fffa48e7200 0000000000000000
+> > > >[  243.686572] GPR04: 0000000000000002 000000000000000a 0000000000000000 0000000000000001
+> > > >[  243.686572] GPR08: 000001000c172dd0 0000000000000000 0000000000000000 0000000000000000
+> > > >[  243.686572] GPR12: 0000000000000000 00007fffa4ff4bc0 0000000000000000 0000000000000000
+> > > >[  243.686572] GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
+> > > >[  243.686572] GPR20: 0000000132dfdc50 000000000000000e 0000000000189375 0000000000000000
+> > > >[  243.686572] GPR24: 00007ffffa606ae0 0000000000000005 000001000c185490 000001000c172570
+> > > >[  243.686572] GPR28: 000001000c172990 000001000c184850 000001000c172e00 00007fffa4fedd98
+> > > >[  243.686683] NIP [00007fffa47d5ba4] 0x7fffa47d5ba4
+> > > >[  243.686691] LR [0000000000000000] 0x0
+> > > >[  243.686698] --- interrupt: 3000
+> > > >[  243.686708] INFO: task kworker/u16:1:24 blocked for more than 122 seconds.
+> > > >[  243.686717]       Not tainted 6.1.0-rc1 #1
+> > > >[  243.686724] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> > > >[  243.686733] task:kworker/u16:1   state:D stack:0     pid:24    ppid:2      flags:0x00000800
+> > > >[  243.686747] Workqueue: events_unbound fsnotify_mark_destroy_workfn
+> > > >[  243.686758] Call Trace:
+> > > >[  243.686762] [c0000000166736e0] [c00000004fd91000] 0xc00000004fd91000 (unreliable)
+> > > >[  243.686775] [c0000000166738d0] [c00000001001dec0] __switch_to+0x130/0x220
+> > > >[  243.686788] [c000000016673930] [c000000010f607b8] __schedule+0x1f8/0x580
+> > > >[  243.686801] [c0000000166739e0] [c000000010f60bb4] schedule+0x74/0x140
+> > > >[  243.686814] [c000000016673a50] [c000000010f699b8] schedule_timeout+0x168/0x1c0
+> > > >[  243.686827] [c000000016673b20] [c000000010f61de8] __wait_for_common+0x148/0x360
+> > > >[  243.686840] [c000000016673bc0] [c000000010210840] __synchronize_srcu.part.0+0xa0/0xe0
+> > > >[  243.686855] [c000000016673c30] [c0000000105f2c64] fsnotify_mark_destroy_workfn+0xc4/0x1a0
+> > > >[  243.686868] [c000000016673ca0] [c000000010174ea8] process_one_work+0x2a8/0x570
+> > > >[  243.686882] [c000000016673d40] [c000000010175208] worker_thread+0x98/0x5e0
+> > > >[  243.686895] [c000000016673dc0] [c0000000101828d4] kthread+0x124/0x130
+> > > >[  243.686908] [c000000016673e10] [c00000001000cd40] ret_from_kernel_thread+0x5c/0x64
+> > > >[  366.566274] INFO: task systemd:1 blocked for more than 245 seconds.
+> > > >[  366.566298]       Not tainted 6.1.0-rc1 #1
+> > > >[  366.566305] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> > > >[  366.566314] task:systemd         state:D stack:0     pid:1     ppid:0      flags:0x00042000
+> > > >[  366.566329] Call Trace:
+> > > >...
+> > > >
+> > > >In that case, note that maxcpus=1 instead of nr_cpus=1 is used in the
+> > > >kernel command line on the PowerPC platform. Consequently, the crash cpu
+> > > >is the only onlined cpu in the kdump kernel, but with its logical id not
+> > > >necessary 0. While SRCU queues a sdp->work on cpu 0, on which no worker
+> > > >thread is created, so sdp->work will be never executed and
+> > > >__synchronize_srcu() can not be completed.
+> > > >
+> > > >Tackle this issue by queueing sdp->work on the first onlined cpu.
+> > > >
+> > > >Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+> > > >Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> > > >Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> > > >Cc: Josh Triplett <josh@joshtriplett.org>
+> > > >Cc: Steven Rostedt <rostedt@goodmis.org>
+> > > >Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > > >To: rcu@vger.kernel.org
+> > > >---
+> > > > kernel/rcu/srcutree.c | 10 ++++++----
+> > > > 1 file changed, 6 insertions(+), 4 deletions(-)
+> > > >
+> > > >diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> > > >index 1c304fec89c0..f2df561e0995 100644
+> > > >--- a/kernel/rcu/srcutree.c
+> > > >+++ b/kernel/rcu/srcutree.c
+> > > >@@ -663,7 +663,7 @@ static void srcu_gp_start(struct srcu_struct *ssp)
+> > > >       int state;
+> > > >
+> > > >       if (smp_load_acquire(&ssp->srcu_size_state) < SRCU_SIZE_WAIT_BARRIER)
+> > > >-              sdp = per_cpu_ptr(ssp->sda, 0);
+> > > >+              sdp = per_cpu_ptr(ssp->sda, cpumask_first(cpu_online_mask));
+> > > >       else
+> > > >               sdp = this_cpu_ptr(ssp->sda);
+> > > >       lockdep_assert_held(&ACCESS_PRIVATE(ssp, lock));
+> > > >@@ -774,7 +774,8 @@ static void srcu_gp_end(struct srcu_struct *ssp)
+> > > >       /* Initiate callback invocation as needed. */
+> > > >       ss_state = smp_load_acquire(&ssp->srcu_size_state);
+> > > >       if (ss_state < SRCU_SIZE_WAIT_BARRIER) {
+> > > >-              srcu_schedule_cbs_sdp(per_cpu_ptr(ssp->sda, 0), cbdelay);
+> > > >+              srcu_schedule_cbs_sdp(per_cpu_ptr(ssp->sda,
+> > > >+                                      cpumask_first(cpu_online_mask)), cbdelay);
+> > > >       } else {
+> > > >               idx = rcu_seq_ctr(gpseq) % ARRAY_SIZE(snp->srcu_have_cbs);
+> > > >               srcu_for_each_node_breadth_first(ssp, snp) {
+> > > >@@ -1093,7 +1094,7 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
+> > > >       idx = srcu_read_lock(ssp);
+> > > >       ss_state = smp_load_acquire(&ssp->srcu_size_state);
+> > > >       if (ss_state < SRCU_SIZE_WAIT_CALL)
+> > > >-              sdp = per_cpu_ptr(ssp->sda, 0);
+> > > >+              sdp = per_cpu_ptr(ssp->sda, cpumask_first(cpu_online_mask));
 > > >
-> > That makes sense. It would be good to have a look at your power figures
-> > and traces.
+> > > Hi Pingfan
+> > >
+> > > If CPU0 support hotplug.
+> > > For example , in this time cpumask_first(cpu_online_mask) return 0
+> > >
+> > > >       else
+> > > >               sdp = raw_cpu_ptr(ssp->sda);
+> > > >       spin_lock_irqsave_sdp_contention(sdp, &flags);
+> > > >@@ -1429,7 +1430,8 @@ void srcu_barrier(struct srcu_struct *ssp)
+> > > >
+> > > >       idx = srcu_read_lock(ssp);
+> > > >       if (smp_load_acquire(&ssp->srcu_size_state) < SRCU_SIZE_WAIT_BARRIER)
+> > > >-              srcu_barrier_one_cpu(ssp, per_cpu_ptr(ssp->sda, 0));
+> > > >+              srcu_barrier_one_cpu(ssp, per_cpu_ptr(ssp->sda,
+> > > >+                                      cpumask_first(cpu_online_mask)));
+> > >
+> > > Due to CPU hotplug, CPU0 have been offline, assume srcu_size_state is still SRCU_SIZE_WAIT_CALL.
+> > > in this time, cpumask_first(cpu_online_mask) not return 0,  this will cause the srcu barrier to return directly.
+> > 
+> > Thanks for catching this bug.
 > 
-> If you don't mind, could you backport that patch to 5.10?
-> Here is my 5.10 tree for reference (without the patch)
-> https://github.com/joelagnel/linux-kernel.git    (branch
-> 5.10-v9-minus-queuework-plus-kfreebatch)
+> Indeed, good catch!
 > 
-> and I am getting conflicts if I cherry-pick:
-> 51824b780b71 ("rcu/kvfree: Update KFREE_DRAIN_JIFFIES interval")
+> > It seems that get_boot_cpu_id() can tackle the whole issue.  I will
+> > wait for more comments and send out V2.
 > 
-> I am assuming you have already done the backport, that's why you got
-> the traces above. If so, I would appreciate a link to your branch so I
-> don't mess the backport up!
+> Does your patch require the CPU indicated by get_boot_cpu_id() to always
+> stay online?  If so, is that CPU guaranteed to always stay online?
 > 
-Sure. I sent you the patches privately so i do not want to paste
-here a lot of code to make extra line-nose.
 
---
-Uladzislau Rezki
+No, it is just a replacement for cpu 0.
+
+A qualified candidate should meet two requirements:
+-1. worker_pool is initialized, so it has worker thread to dispatch
+work. This is satisfied by once the cpu was onlined.  
+
+-2. this cpu id is persistent as Zqiang pointed out.
+
+For hotplug, it is the same as cpu 0, which is taken care of by the
+workqueue infrastructure.
+
+> I am still asking my question about PowerPC booting with a non-zero CPU.
+> After all, if all remaining architectures always boot with CPU 0, then
+> perhaps some simplification is in order.
+> 
+
+As my understanding, it is not easy. Let us unfold the discussion in
+another thread post by you.
+
+
+Thanks,
+
+	Pingfan
