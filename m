@@ -2,136 +2,230 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 01DD0ECAAA1
-	for <rcu@archiver.kernel.org>; Fri, 28 Oct 2022 22:35:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 238A5ECAAA1
+	for <rcu@archiver.kernel.org>; Fri, 28 Oct 2022 22:55:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229510AbiJ1WfV (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 28 Oct 2022 18:35:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53792 "EHLO
+        id S229994AbiJ1WzP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 28 Oct 2022 18:55:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbiJ1WfU (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 28 Oct 2022 18:35:20 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91F5D69F7A;
-        Fri, 28 Oct 2022 15:35:17 -0700 (PDT)
+        with ESMTP id S229756AbiJ1WzP (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 28 Oct 2022 18:55:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AE1F625D1;
+        Fri, 28 Oct 2022 15:55:13 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 48D77B828F8;
-        Fri, 28 Oct 2022 22:35:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD613C433D6;
-        Fri, 28 Oct 2022 22:35:14 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CFDF562AC3;
+        Fri, 28 Oct 2022 22:55:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 375EEC433C1;
+        Fri, 28 Oct 2022 22:55:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666996514;
-        bh=7fjuvPKA0vAPJznN/TY2LeFqZmEvMZgy+SDt0KY2T3U=;
+        s=k20201202; t=1666997712;
+        bh=Qx+Ar6Rx89QSE4eSqCXte9rvP+OpROy88fkjDeTVhQ4=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=oVs1kltzrwaGTEYxOAy2+1kuEIEyiI9FxqV4MBIEMPxv6chtgE9LNv+IYmqrXB+0y
-         Rpp9/GDJ42cB8LB2ucM6jGyN3MJB+kewAzGzJ9ynWrqN9NwXF6wL4EwsnFGeU1HCOS
-         gdIKVi5ynZrZf7MHh81rSF02pVVtGgkPwNV/Uayqvbxzzc4CKVLBu0SSodsF2uiR8J
-         562ckUIVJziQ1A3p6vjOjZwUNraCz+BJpBxghnqAM8IuvZ54PEaVjOrP+yb1dFw684
-         VVTz/O2ju8GfEgJhUyFqSZ8Cc/0K9JYD9ck5/Waegpyo6HRQSSgdZbpxKbNOu5zk4A
-         0k6Ch8Ue/PxnA==
+        b=EhsdrU+GdlkPq3Oem82ZGnkkVXIxxoM34IU27mNFuMiLbvRIObPus34UZboNoT5Pm
+         C0AV0gQD+vjMbLSINUCm1709njJRJn3Yws4jiofNRsTh9debLXhwIkRoZUncdCqJTv
+         CXYcrcKsIWVvZPmgscfqHObE7mHXDARO0ABt3Gv0P6LfjARuBgOcqXXtHFRzCFsXLV
+         MPCl5wVi08M9nI4Sa+OM3nqGIVc7fYMm6uD/yGpOeliPxhbrxstrf+RW6hUTnoT1eU
+         Yrhf4EJ62S5ou4dCbUWjarIKqOewaNBOS0+VaOgrWRaZyKK87s+aEA0ig8USxZxuIx
+         besiEXGCdmRSQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 79C765C1040; Fri, 28 Oct 2022 15:35:14 -0700 (PDT)
-Date:   Fri, 28 Oct 2022 15:35:14 -0700
+        id BCBCF5C1040; Fri, 28 Oct 2022 15:55:11 -0700 (PDT)
+Date:   Fri, 28 Oct 2022 15:55:11 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Cc:     "Elliott, Robert (Servers)" <elliott@hpe.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/3] sched: Add helper kstat_cpu_softirqs_sum()
-Message-ID: <20221028223514.GV5600@paulmck-ThinkPad-P17-Gen-1>
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] rcu: Add RCU stall diagnosis information
+Message-ID: <20221028225511.GW5600@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
 References: <20221022124525.2080-1-thunder.leizhen@huawei.com>
- <20221022124525.2080-2-thunder.leizhen@huawei.com>
- <MW5PR84MB18423C3F30D3F789EB48D0A5AB339@MW5PR84MB1842.NAMPRD84.PROD.OUTLOOK.COM>
- <e15cd40f-6613-ba44-cc54-0d00f3c7eab1@huawei.com>
+ <20221022124525.2080-4-thunder.leizhen@huawei.com>
+ <20221027173334.GB5600@paulmck-ThinkPad-P17-Gen-1>
+ <5a4acb9d-48ba-7f41-51c7-19f300a47f22@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e15cd40f-6613-ba44-cc54-0d00f3c7eab1@huawei.com>
+In-Reply-To: <5a4acb9d-48ba-7f41-51c7-19f300a47f22@huawei.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Oct 28, 2022 at 10:38:15AM +0800, Leizhen (ThunderTown) wrote:
+On Fri, Oct 28, 2022 at 11:16:55AM +0800, Leizhen (ThunderTown) wrote:
 > 
 > 
-> On 2022/10/28 3:04, Elliott, Robert (Servers) wrote:
-> > 
-> >> Similar to kstat_cpu_irqs_sum(), it counts the sum of all software
-> >> interrupts on a specified CPU.
+> On 2022/10/28 1:33, Paul E. McKenney wrote:
+> > On Sat, Oct 22, 2022 at 08:45:25PM +0800, Zhen Lei wrote:
+> >> In some extreme cases, such as the I/O pressure test, the CPU usage may
+> >> be 100%, causing RCU stall. In this case, the printed information about
+> >> current is not useful. Displays the number and usage of hard interrupts,
+> >> soft interrupts, and context switches that are generated within half of
+> >> the CPU stall timeout, can help us make a general judgment. In other
+> >> cases, we can preliminarily determine whether an infinite loop occurs
+> >> when local_irq, local_bh or preempt is disabled.
 > >>
-> >> diff --git a/include/linux/kernel_stat.h b/include/linux/kernel_stat.h
-> >> @@ -67,6 +67,17 @@ static inline unsigned int kstat_softirqs_cpu(unsigned int irq, int cpu)
-> >>         return kstat_cpu(cpu).softirqs[irq];
+> >> For example:
+> >> rcu: INFO: rcu_preempt self-detected stall on CPU
+> >> rcu:     0-....: (1250 ticks this GP) <omitted>
+> >> rcu:          hardirqs   softirqs   csw/system
+> >> rcu:  number:      624         45            0
+> >> rcu: cputime:       69          1         2425   ==> 2500(ms)
+> >>
+> >> The example above shows that the number of hard and soft interrupts is
+> >> small, there is zero context switching, and the system takes up a lot of
+> >> time. We can quickly conclude that the current task is infinitely looped
+> >> with preempt_disable().
+> >>
+> >> The impact on system performance is negligible because snapshot is
+> >> recorded only one time after 1/2 CPU stall timeout.
+> >>
+> >> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> >> ---
+> >>  kernel/rcu/tree.c       | 16 ++++++++++++++++
+> >>  kernel/rcu/tree.h       | 11 +++++++++++
+> >>  kernel/rcu/tree_stall.h | 28 ++++++++++++++++++++++++++++
+> >>  3 files changed, 55 insertions(+)
+> >>
+> >> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> >> index 6bb8e72bc8151ef..56c49a3117e7a81 100644
+> >> --- a/kernel/rcu/tree.c
+> >> +++ b/kernel/rcu/tree.c
+> >> @@ -931,6 +931,22 @@ static int rcu_implicit_dynticks_qs(struct rcu_data *rdp)
+> >>  			rdp->rcu_iw_gp_seq = rnp->gp_seq;
+> >>  			irq_work_queue_on(&rdp->rcu_iw, rdp->cpu);
+> >>  		}
+> >> +
+> >> +		if (rdp->snap_record.gp_seq != rdp->gp_seq) {
+> >> +			u64 *cpustat;
+> >> +			struct rcu_snap_record *r;
+> >> +
+> >> +			cpustat = kcpustat_cpu(rdp->cpu).cpustat;
+> >> +
+> >> +			r = &rdp->snap_record;
+> >> +			r->cputime_irq     = cpustat[CPUTIME_IRQ];
+> >> +			r->cputime_softirq = cpustat[CPUTIME_SOFTIRQ];
+> >> +			r->cputime_system  = cpustat[CPUTIME_SYSTEM];
+> >> +			r->nr_hardirqs = kstat_cpu_irqs_sum(rdp->cpu);
+> >> +			r->nr_softirqs = kstat_cpu_softirqs_sum(rdp->cpu);
+> >> +			r->nr_csw = nr_context_switches_cpu(rdp->cpu);
+> >> +			r->gp_seq = rdp->gp_seq;
+> > 
+> > This needs to be optional.  Yes, it is normally rarely executed, but
+> > people who don't want the additional information should not pay the
+> > price for it.
+> > 
+> >> +		}
+> >>  	}
+> >>  
+> >>  	return 0;
+> >> diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+> >> index d4a97e40ea9c3e2..fb3121d15cca6f8 100644
+> >> --- a/kernel/rcu/tree.h
+> >> +++ b/kernel/rcu/tree.h
+> >> @@ -158,6 +158,16 @@ union rcu_noqs {
+> >>  	u16 s; /* Set of bits, aggregate OR here. */
+> >>  };
+> >>  
+> >> +struct rcu_snap_record {
+> >> +	unsigned long	gp_seq;
+> >> +	u64		cputime_irq;
+> >> +	u64		cputime_softirq;
+> >> +	u64		cputime_system;
+> >> +	unsigned int	nr_hardirqs;
+> >> +	unsigned int	nr_softirqs;
+> >> +	unsigned long long nr_csw;
+> >> +};
+> > 
+> > Please add a comment saying what this is and what it is used for.
+> 
+> OK, I will do it.
+> 
+> > 
+> >> +
+> >>  /* Per-CPU data for read-copy update. */
+> >>  struct rcu_data {
+> >>  	/* 1) quiescent-state and grace-period handling : */
+> >> @@ -262,6 +272,7 @@ struct rcu_data {
+> >>  	short rcu_onl_gp_flags;		/* ->gp_flags at last online. */
+> >>  	unsigned long last_fqs_resched;	/* Time of last rcu_resched(). */
+> >>  	unsigned long last_sched_clock;	/* Jiffies of last rcu_sched_clock_irq(). */
+> >> +	struct rcu_snap_record snap_record;
+> > 
+> > And here as well, please.
+> 
+> OK
+> 
+> > 
+> >>  	int cpu;
+> >>  };
+> >> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+> >> index 5653560573e22d6..f8c9d0284d116a8 100644
+> >> --- a/kernel/rcu/tree_stall.h
+> >> +++ b/kernel/rcu/tree_stall.h
+> >> @@ -428,6 +428,32 @@ static bool rcu_is_rcuc_kthread_starving(struct rcu_data *rdp, unsigned long *jp
+> >>  	return j > 2 * HZ;
 > >>  }
-> >>
-> >> +static inline unsigned int kstat_cpu_softirqs_sum(int cpu)
+> >>  
+> >> +static void print_cpu_stat_info(int cpu)
 > >> +{
-> >> +	int i;
-> >> +	unsigned int sum = 0;
+> >> +	u64 *cpustat;
+> >> +	unsigned long half_timeout;
+> >> +	struct rcu_snap_record *r;
+> > 
+> > Let's please follow convention and call it "rsrp" rather than just "r".
+> 
+> OK
+> 
+> > 
+> >> +	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
 > >> +
-> >> +	for (i = 0; i < NR_SOFTIRQS; i++)
-> >> +		sum += kstat_softirqs_cpu(i, cpu);
+> >> +	r = &rdp->snap_record;
+> >> +	if (r->gp_seq != rdp->gp_seq)
+> >> +		return;
 > >> +
-> >> +	return sum;
+> >> +	cpustat = kcpustat_cpu(cpu).cpustat;
+> >> +	half_timeout = rcu_jiffies_till_stall_check() / 2;
+> >> +
+> >> +	pr_err("         hardirqs   softirqs   csw/system\n");
+> >> +	pr_err(" number: %8d %10d %12lld\n",
+> >> +		kstat_cpu_irqs_sum(cpu) - r->nr_hardirqs,
+> >> +		kstat_cpu_softirqs_sum(cpu) - r->nr_softirqs,
+> >> +		nr_context_switches_cpu(cpu) - r->nr_csw);
+> >> +	pr_err("cputime: %8lld %10lld %12lld   ==> %lld(ms)\n",
+> >> +		div_u64(cpustat[CPUTIME_IRQ] - r->cputime_irq, NSEC_PER_MSEC),
+> >> +		div_u64(cpustat[CPUTIME_SOFTIRQ] - r->cputime_softirq, NSEC_PER_MSEC),
+> >> +		div_u64(cpustat[CPUTIME_SYSTEM] - r->cputime_system, NSEC_PER_MSEC),
+> >> +		jiffies64_to_msecs(half_timeout));
 > >> +}
+> >> +
+> >>  /*
+> >>   * Print out diagnostic information for the specified stalled CPU.
+> >>   *
+> >> @@ -484,6 +510,8 @@ static void print_cpu_stall_info(int cpu)
+> >>  	       data_race(rcu_state.n_force_qs) - rcu_state.n_force_qs_gpstart,
+> >>  	       rcuc_starved ? buf : "",
+> >>  	       falsepositive ? " (false positive?)" : "");
+> >> +
+> >> +	print_cpu_stat_info(cpu);
 > > 
-> > In the function upon which this is based:
-> > 
-> > struct kernel_stat {
-> >         unsigned long irqs_sum;
-> >         unsigned int softirqs[NR_SOFTIRQS];
-> > };
-> > 
-> > static inline unsigned int kstat_cpu_irqs_sum(unsigned int cpu)
-> > {
-> >         return kstat_cpu(cpu).irqs_sum;
-> > }
-> > 
-> > kstat_cpu_irqs_sum returns an unsigned long as an unsigned int, which
-> > could cause large values to be truncated. Should that return
-> > unsigned long? The only existing caller is fs/proc/stat.c which
+> > Again, please make this conditional.  One way to do that is with a
+> > Kconfig option.  Another is with a kernel boot parameter, as is done
+> > wtih module_param() elsewhere in tree_stall.h.  Or if the parsing needs
+> > to be fancy (it shouldn't) using kernel_param_ops as is done in tree.c.
+> > Distros tend to like kernel boot parameters, while people dealing with
+> > large numbers of devices tend to like Kconfig options.  Choose wisely.  ;-)
 > 
-> This should be a mistake on:
-> commit f2c66cd8eeddedb4 ("/proc/stat: scalability of irq num per cpu")
-> 
-> I'll correct it to "unsigned long" in the next version. Thanks.
-> 
-> > puts it into a u64:
-> >         u64 sum = 0;
-> >         ...
-> >         sum             += kstat_cpu_irqs_sum(i);
-> > 
-> > The softirqs field is an unsigned int, so the new function doesn't have
-> > this inconsistency.
-> 
-> OK.
-> 
-> To be honest, I did the math. CONFIG_HZ=250
-> 2^32 / 250 / 3600 / 24 / 365 = 0.545 < 1 year
+> OK. I will add both Kconfig option and boot parameter, let the user
+> choose freely.
 
-For this to be a problem, our RCU CPU stall warning would have to be
-for a months-long grace period, even on systems with HZ=1000.  In almost
-all cases, the system would have OOMed long before then.
-
-> So, in theory, for those 32-bit processors, we should use "unsigned long long".
-> Of course, from a programming point of view, 64-bit consists of two 32-bits,
-> and there is an atomicity problem. I think that's probably why members of
-> struct kernel_stat don't use u64.
-> 
-> However, it seems that the type of member softirqs can currently be changed to
-> unsigned long. So, at least on a 64-bit processor, it won't have a count
-> overflow problem.
-
-An unsigned long should suffice.  ;-)
+Works for me!  ;-)
 
 							Thanx, Paul
