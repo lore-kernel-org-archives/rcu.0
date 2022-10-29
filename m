@@ -2,157 +2,128 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4BB8BC433FE
-	for <rcu@archiver.kernel.org>; Sat, 29 Oct 2022 09:51:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C1996C38A02
+	for <rcu@archiver.kernel.org>; Sat, 29 Oct 2022 13:29:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229536AbiJ2Jv5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 29 Oct 2022 05:51:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60260 "EHLO
+        id S229489AbiJ2N3P (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 29 Oct 2022 09:29:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbiJ2Jv5 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 29 Oct 2022 05:51:57 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31421107A92;
-        Sat, 29 Oct 2022 02:51:54 -0700 (PDT)
-Received: from dggpemm500023.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4MzvhH4TpVz15Lx9;
-        Sat, 29 Oct 2022 17:46:55 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Sat, 29 Oct 2022 17:51:52 +0800
-Received: from [10.174.178.55] (10.174.178.55) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Sat, 29 Oct 2022 17:51:51 +0800
-Subject: Re: [PATCH v2 1/3] sched: Add helper kstat_cpu_softirqs_sum()
-To:     <paulmck@kernel.org>
-CC:     "Elliott, Robert (Servers)" <elliott@hpe.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        "Josh Triplett" <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20221022124525.2080-1-thunder.leizhen@huawei.com>
- <20221022124525.2080-2-thunder.leizhen@huawei.com>
- <MW5PR84MB18423C3F30D3F789EB48D0A5AB339@MW5PR84MB1842.NAMPRD84.PROD.OUTLOOK.COM>
- <e15cd40f-6613-ba44-cc54-0d00f3c7eab1@huawei.com>
- <20221028223514.GV5600@paulmck-ThinkPad-P17-Gen-1>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <40cf1a2c-821d-51da-14b1-cdf6d5b8aeef@huawei.com>
-Date:   Sat, 29 Oct 2022 17:51:51 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        with ESMTP id S229441AbiJ2N3O (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 29 Oct 2022 09:29:14 -0400
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDD843B973
+        for <rcu@vger.kernel.org>; Sat, 29 Oct 2022 06:29:13 -0700 (PDT)
+Received: by mail-qv1-xf2f.google.com with SMTP id c8so5779539qvn.10
+        for <rcu@vger.kernel.org>; Sat, 29 Oct 2022 06:29:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=QCeOrmF4sULE5fXDGGQt+e1Jnohk08bl1WSeFsgJlgA=;
+        b=xMvWDbz0oeAQAIrRFyo+vUr+dMPxopQnuakIKzTkv+acMn9+1gxGF0ASPykFKV99ek
+         8Z5q3vjtUY2jrsiRp1+jE80bVJrfMz8D6Yn228v7hFV0EQ/KmdTZqIzO5kqUDNyY1dFN
+         h9IjdWjbLI2WPORr7k2EjnRc+RXKIeLDc+FmQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QCeOrmF4sULE5fXDGGQt+e1Jnohk08bl1WSeFsgJlgA=;
+        b=CUGWsYh0PeaYuaxeMjwXEhpvI8g1nHYPgyGPVIalqK+xIZUYtdKZJedzaBuWRaGI8H
+         4B+9n214XQ1o76M5WgGv5kOm6sxsQ5Fvd9lxf8+6HcwhQTKWhG0AgqAsZg+LCjTD/cCP
+         xj/pJikkFR6s5tWiStvjMoNHN+2JZymBKPDqxU/NDC1AOJhZ+U9C1ou/5HuQH9WVqPqD
+         MPsD9neCSuwPjyRENB9jD4DOUDm+M4+qzpdx201KOL2kyviFKm0Z/xUeYg8LfNSNIE0Z
+         UcUDpO+2J1y4avLi9OTyJgxD8XuiKxrlaYKTWo81WZ0jBijD+hJw/gFrI3LygdD/A4AC
+         Yd6g==
+X-Gm-Message-State: ACrzQf3A4E2MKQWh79vRzjKICsaIhjN3sTG8HcnmrYR9ndNud1mvIKg0
+        cc5oK5nEkiuST/6rZBn/IgxLF7hqDtcGxg==
+X-Google-Smtp-Source: AMsMyM7eNySHwa1HVwzxGmBhrU8qjaZvi462BJFkCrr+ifBczzJRKwji6Emu9gxLigdXcXLb6C3m6A==
+X-Received: by 2002:a05:6214:29e7:b0:4bb:db99:c393 with SMTP id jv7-20020a05621429e700b004bbdb99c393mr360121qvb.12.1667050152789;
+        Sat, 29 Oct 2022 06:29:12 -0700 (PDT)
+Received: from joelboxx.c.googlers.com.com (48.230.85.34.bc.googleusercontent.com. [34.85.230.48])
+        by smtp.gmail.com with ESMTPSA id m22-20020a05620a291600b006f926a0572asm1085843qkp.27.2022.10.29.06.29.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 29 Oct 2022 06:29:11 -0700 (PDT)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, paulmck@kernel.org, urezki@gmail.com,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: [PATCH RFC] rcu/kfree: Do not request RCU when not needed
+Date:   Sat, 29 Oct 2022 13:28:56 +0000
+Message-Id: <20221029132856.3752018-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.38.1.273.g43a17bfeac-goog
 MIME-Version: 1.0
-In-Reply-To: <20221028223514.GV5600@paulmck-ThinkPad-P17-Gen-1>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.55]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On ChromeOS, I am (almost) always seeing the optimization trigger.
+Tested boot up and trace_printk'ing how often it triggers.
 
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+---
+ kernel/rcu/tree.c | 18 +++++++++++++++++-
+ 1 file changed, 17 insertions(+), 1 deletion(-)
 
-On 2022/10/29 6:35, Paul E. McKenney wrote:
-> On Fri, Oct 28, 2022 at 10:38:15AM +0800, Leizhen (ThunderTown) wrote:
->>
->>
->> On 2022/10/28 3:04, Elliott, Robert (Servers) wrote:
->>>
->>>> Similar to kstat_cpu_irqs_sum(), it counts the sum of all software
->>>> interrupts on a specified CPU.
->>>>
->>>> diff --git a/include/linux/kernel_stat.h b/include/linux/kernel_stat.h
->>>> @@ -67,6 +67,17 @@ static inline unsigned int kstat_softirqs_cpu(unsigned int irq, int cpu)
->>>>         return kstat_cpu(cpu).softirqs[irq];
->>>>  }
->>>>
->>>> +static inline unsigned int kstat_cpu_softirqs_sum(int cpu)
->>>> +{
->>>> +	int i;
->>>> +	unsigned int sum = 0;
->>>> +
->>>> +	for (i = 0; i < NR_SOFTIRQS; i++)
->>>> +		sum += kstat_softirqs_cpu(i, cpu);
->>>> +
->>>> +	return sum;
->>>> +}
->>>
->>> In the function upon which this is based:
->>>
->>> struct kernel_stat {
->>>         unsigned long irqs_sum;
->>>         unsigned int softirqs[NR_SOFTIRQS];
->>> };
->>>
->>> static inline unsigned int kstat_cpu_irqs_sum(unsigned int cpu)
->>> {
->>>         return kstat_cpu(cpu).irqs_sum;
->>> }
->>>
->>> kstat_cpu_irqs_sum returns an unsigned long as an unsigned int, which
->>> could cause large values to be truncated. Should that return
->>> unsigned long? The only existing caller is fs/proc/stat.c which
->>
->> This should be a mistake on:
->> commit f2c66cd8eeddedb4 ("/proc/stat: scalability of irq num per cpu")
->>
->> I'll correct it to "unsigned long" in the next version. Thanks.
->>
->>> puts it into a u64:
->>>         u64 sum = 0;
->>>         ...
->>>         sum             += kstat_cpu_irqs_sum(i);
->>>
->>> The softirqs field is an unsigned int, so the new function doesn't have
->>> this inconsistency.
->>
->> OK.
->>
->> To be honest, I did the math. CONFIG_HZ=250
->> 2^32 / 250 / 3600 / 24 / 365 = 0.545 < 1 year
-> 
-> For this to be a problem, our RCU CPU stall warning would have to be
-> for a months-long grace period, even on systems with HZ=1000.  In almost
-> all cases, the system would have OOMed long before then.
-
-Yes.
-
-> 
->> So, in theory, for those 32-bit processors, we should use "unsigned long long".
->> Of course, from a programming point of view, 64-bit consists of two 32-bits,
->> and there is an atomicity problem. I think that's probably why members of
->> struct kernel_stat don't use u64.
->>
->> However, it seems that the type of member softirqs can currently be changed to
->> unsigned long. So, at least on a 64-bit processor, it won't have a count
->> overflow problem.
-> 
-> An unsigned long should suffice.  ;-)
-
-include/linux/irqdesc.h:58:     unsigned int __percpu   *kstat_irqs;
-
-I found another place where the hard interrupt count was stored with type "unsigned int",
-it's used by "/proc/interrupts". Maybe the user-mode program gets it periodically and
-accumulates it to a 64-bit value. Of course, maybe half a year later, no one cares about
-the specific interrupts count anymore.
-
-So, apart from what Elliott mentioned, I won't change the rest.
-
-> 
-> 							Thanx, Paul
-> .
-> 
-
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 591187b6352e..3e4c50b9fd33 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2935,6 +2935,7 @@ struct kfree_rcu_cpu_work {
+ 
+ /**
+  * struct kfree_rcu_cpu - batch up kfree_rcu() requests for RCU grace period
++ * @rdp: The rdp of the CPU that this kfree_rcu corresponds to.
+  * @head: List of kfree_rcu() objects not yet waiting for a grace period
+  * @bkvhead: Bulk-List of kvfree_rcu() objects not yet waiting for a grace period
+  * @krw_arr: Array of batches of kfree_rcu() objects waiting for a grace period
+@@ -2964,6 +2965,8 @@ struct kfree_rcu_cpu {
+ 	struct kfree_rcu_cpu_work krw_arr[KFREE_N_BATCHES];
+ 	raw_spinlock_t lock;
+ 	struct delayed_work monitor_work;
++	struct rcu_data *rdp;
++	unsigned long last_gp_seq;
+ 	bool initialized;
+ 	int count;
+ 
+@@ -3167,6 +3170,7 @@ schedule_delayed_monitor_work(struct kfree_rcu_cpu *krcp)
+ 			mod_delayed_work(system_wq, &krcp->monitor_work, delay);
+ 		return;
+ 	}
++	krcp->last_gp_seq = krcp->rdp->gp_seq;
+ 	queue_delayed_work(system_wq, &krcp->monitor_work, delay);
+ }
+ 
+@@ -3217,7 +3221,17 @@ static void kfree_rcu_monitor(struct work_struct *work)
+ 			// be that the work is in the pending state when
+ 			// channels have been detached following by each
+ 			// other.
+-			queue_rcu_work(system_wq, &krwp->rcu_work);
++			//
++			// NOTE about gp_seq wrap: In case of gp_seq overflow,
++			// it is possible for rdp->gp_seq to be less than
++			// krcp->last_gp_seq even though a GP might be over. In
++			// this rare case, we would just have one extra GP.
++			if (krcp->last_gp_seq &&
++			    rcu_seq_completed_gp(krcp->last_gp_seq, krcp->rdp->gp_seq)) {
++				queue_work(system_wq, &krwp->rcu_work.work);
++			} else {
++				queue_rcu_work(system_wq, &krwp->rcu_work);
++			}
+ 		}
+ 	}
+ 
+@@ -4802,6 +4816,8 @@ static void __init kfree_rcu_batch_init(void)
+ 	for_each_possible_cpu(cpu) {
+ 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+ 
++		krcp->rdp = per_cpu_ptr(&rcu_data, cpu);
++		krcp->last_gp_seq = 0;
+ 		for (i = 0; i < KFREE_N_BATCHES; i++) {
+ 			INIT_RCU_WORK(&krcp->krw_arr[i].rcu_work, kfree_rcu_work);
+ 			krcp->krw_arr[i].krcp = krcp;
 -- 
-Regards,
-  Zhen Lei
+2.38.1.273.g43a17bfeac-goog
+
