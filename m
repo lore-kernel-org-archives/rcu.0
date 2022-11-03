@@ -2,95 +2,165 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DA07C433FE
-	for <rcu@archiver.kernel.org>; Thu,  3 Nov 2022 12:44:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 605F4C4332F
+	for <rcu@archiver.kernel.org>; Thu,  3 Nov 2022 12:54:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230261AbiKCMo4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 3 Nov 2022 08:44:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60194 "EHLO
+        id S229700AbiKCMy3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 3 Nov 2022 08:54:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230094AbiKCMoz (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 3 Nov 2022 08:44:55 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C806F101EF;
-        Thu,  3 Nov 2022 05:44:54 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id d26so4822390eje.10;
-        Thu, 03 Nov 2022 05:44:54 -0700 (PDT)
+        with ESMTP id S229539AbiKCMy2 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 3 Nov 2022 08:54:28 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9048621AC;
+        Thu,  3 Nov 2022 05:54:27 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id ud5so4975150ejc.4;
+        Thu, 03 Nov 2022 05:54:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=m1DVWcK/fPvxwYKjOU/YI+rXNMZdzDbCW84zWy8prE4=;
-        b=H5fIzf9eK0AjkszI67lchy3AV48ysJKI18cu/KsnSygYiagzdB6hDcxlgV644EbUOf
-         xWuKOLU8GHJDkJy4wjcIe6JNzEzbc+idLVlioTCdwuzQIFmB/cXPVV8RVHK+vfenkWSr
-         gC2LPzyXDP5xn3nUgfJPCYPOqniYMH4ZovzOSevgIUEVjU2NMpj/TWittDGuN8zicnvX
-         dgnVa29c/HMfcJ2krTNMdflND3jUIGd8epI21piYQUAS6LLnJuTRkWhxrUQXWpqEf8dl
-         4VhrnIRMC89N8vAp2ChrXfuTxpWgPmPIMVs40iZSt5D9ZZjqzMBQW6FtHllwn9wmu0d2
-         Ob4A==
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=miU7g+NHsqyy3M5Aizo1RDgHrGlyDeZ8d0dqj7GSP7M=;
+        b=a7wsjvvTsvH25LtX4RmJDXCuYMvNHNc1HQrKl7k3C6hyn8xmpRgILgE8yx4CoSqAUn
+         W19ViAYWy3h891EtWYXagzBsyuUtPbWpaCrPMASMn4yxYKojTc6woqAfLC8dG769C8qe
+         hnEMRf+Ca/3YCPF4Exf6uF/EKg8mkM0f1+A5PQv7qczx8uWy+lFd6mSZxY59J+82A0NR
+         CYeH5PCiAeW2lzJcwGzPCgfbw8EDR6zWm/L6XMKzgoBTajYZfJdziv11zNFyTaYaJCMn
+         ckWI4RXTrsgCLu4K0I8osxP/tdoqSf3hRV+Kgfs3TtC1eAwi9ZeBIsquVfAqtp49amqN
+         23TQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=m1DVWcK/fPvxwYKjOU/YI+rXNMZdzDbCW84zWy8prE4=;
-        b=0ewwAQJPZN1O0DmQ6hOTRKrquV7nVenYEoYSlmUqAZPKvgFa5Uy+a1lDplI0Af3mPB
-         EXDSR98jgoZe1Wgq46pXwb7c2hsFNTJciMBC9V33p6WN4+vLrLBCjd4tuKsIz2yANuIF
-         Wm5hQusvUKs0Wfi+LVO6zZIn3GlgURyC9EvypE8+zuV9W1SsPyc+VmHWPwdd3KFkRa60
-         d6Li+n+aNgDDGK+scrQyDhzq3CCiFW3f9oyfCwo6yjQTHqjqWfr2TEenaMB0adTnatys
-         BTVf/Eqj0jQwvG2sAO0ypFs6BAZpeIwF5tNUWCodnoSc8Wpb3oddlwxldrq9bcVkhZno
-         mKoQ==
-X-Gm-Message-State: ACrzQf0t8L843a463C1kHh1ll1Eu8+LMOZebHFkzcJ5xL8f2E1w0Ujlw
-        8fdTfe6yqMs/2bRGh1IkiPE=
-X-Google-Smtp-Source: AMsMyM5QaKNutgTeV3yG2v5UgXmJ9MxmPLRixJKR5Md9zyqeXWU6KmQDHm0pJmMonDg7w3EQmuQSPQ==
-X-Received: by 2002:a17:907:97d5:b0:7ac:5f72:6c1a with SMTP id js21-20020a17090797d500b007ac5f726c1amr28561297ejc.126.1667479493163;
-        Thu, 03 Nov 2022 05:44:53 -0700 (PDT)
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=miU7g+NHsqyy3M5Aizo1RDgHrGlyDeZ8d0dqj7GSP7M=;
+        b=Dii4mVh3IDRV7Gi91SJ6Aa4VRNCajGlsLG4UfMBOQPv4zihp9xgU6xGVcCqheyaH6L
+         inITrx8iNXM4SaUd5QxQr2EA3mxyhZoDnK2fX5iah1PzcnnDGTYg6ajkYRqlFQTbR/1X
+         8pyQf41aU6YAPOKTzTW010kNeVYwpYp59RVRgNcXv0iJtqdz0EGxu7LqGo0MdYwUFGuV
+         ljoqdKISX8HECUKlvXauXvD8+ibaua+yTLoUaWcvYmxcBPrhYJBPnrHy3C7Jo+jjFdzZ
+         EFXjjK9tJ6oVzSX82w1OPl7v0W7hRpzDao1B+3FUud+D5hJhJX7fPKy58RVlxHKBSmzm
+         yzog==
+X-Gm-Message-State: ACrzQf165FFvRfhht8xerLnDY8953ebxSQfydJSPE3q+gYfVlEWow2xX
+        X8JtkvIp6ns4kYiW7wQtOdY=
+X-Google-Smtp-Source: AMsMyM7eCB2nRzQ45l0ieqT3T8XwayR0GLihEHpuuYZng0MTL+hs340ezErW5Cagm4a3azvmnlNxWg==
+X-Received: by 2002:a17:907:8a09:b0:7ad:adff:ddf6 with SMTP id sc9-20020a1709078a0900b007adadffddf6mr29738309ejc.320.1667480066107;
+        Thu, 03 Nov 2022 05:54:26 -0700 (PDT)
 Received: from pc638.lan ([155.137.26.201])
-        by smtp.gmail.com with ESMTPSA id p23-20020a056402155700b004615e1bbaf4sm460429edx.87.2022.11.03.05.44.52
+        by smtp.gmail.com with ESMTPSA id o25-20020a170906769900b0078194737761sm453998ejm.124.2022.11.03.05.54.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Nov 2022 05:44:52 -0700 (PDT)
+        Thu, 03 Nov 2022 05:54:25 -0700 (PDT)
 From:   Uladzislau Rezki <urezki@gmail.com>
 X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Thu, 3 Nov 2022 13:44:51 +0100
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        Uladzislau Rezki <urezki@gmail.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Date:   Thu, 3 Nov 2022 13:54:23 +0100
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        linux-kernel@vger.kernel.org, rcu@vger.kernel.org
 Subject: Re: [PATCH RFC] rcu/kfree: Do not request RCU when not needed
-Message-ID: <Y2O3w3d3qmTg6VAP@pc638.lan>
-References: <20221102184911.GP5600@paulmck-ThinkPad-P17-Gen-1>
- <755B5ED1-653D-4E57-B114-77CDE10A9033@joelfernandes.org>
- <20221102202813.GR5600@paulmck-ThinkPad-P17-Gen-1>
- <CAEXW_YQ+SxBoNUkPHhC3O0DJNQtZomN_4GPtvaWuDs5sSU4FAw@mail.gmail.com>
- <20221102223516.GT5600@paulmck-ThinkPad-P17-Gen-1>
+Message-ID: <Y2O5/3vPoWILRj10@pc638.lan>
+References: <20221029132856.3752018-1-joel@joelfernandes.org>
+ <Y2JkoVV3jaVS4y0Q@pc636>
+ <CAEXW_YRZO086TUJCFzuGpAWRpQ-uKD1S5wDipJ9hR9=XddNFSw@mail.gmail.com>
+ <20221102163544.GM5600@paulmck-ThinkPad-P17-Gen-1>
+ <Y2KnxKDebPKiqTFZ@pc636>
+ <CAEXW_YRquk15oGMCrYXLTKWtMzfPJhEJpjENM_rqt4qjwtAt+g@mail.gmail.com>
+ <Y2K3jFv12yKJIAYP@pc638.lan>
+ <CAEXW_YQWYfJPpeXoV0ZDGC7Kd585LJ+h2YbKfB3unDDZinxTRQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20221102223516.GT5600@paulmck-ThinkPad-P17-Gen-1>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEXW_YQWYfJPpeXoV0ZDGC7Kd585LJ+h2YbKfB3unDDZinxTRQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
 > 
-> > Though I am thinking, workqueue context is normally used to invoke
-> > code that can block, and would the issue you mentioned affect those as
-> > well, or affect RCU when those non-RCU work items block. So for
-> > example, when other things in the system that can queue things on the
-> > system_wq and block.  (I might be throwing darts in the dark).
-> > 
-> > To be safe, we can implement your suggestion which is basically a form
-> > of my initial patch.
-> > 
-> > Should we add Tejun to the thread?
 > 
-> Let's get organized first, but that would be a good thing.  Or I could
-> reach out to Tejun internally.
+> Nice, I am happy you worked on it. A comment bellow:
 > 
-> For but one thing to get organized about, maybe kfree_rcu() should be
-> using a workqueue with the WQ_MEM_RECLAIM flag set.
+> Below what i have came up with to switch for polling APIs:
+> >
+> > From 799ce1653d159ef3d35f34a284f738c2c267c75f Mon Sep 17 00:00:00 2001
+> > From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+> > Date: Wed, 2 Nov 2022 19:26:27 +0100
+> > Subject: [PATCH 1/1] rcu: kvfree_rcu: Reduce a memory footptint by using
+> >  polling APIs
+> >
+> > Total time taken by all kfree'ers: 6564718459 ns, loops: 10000, batches:
+> > 1110, memory footprint: 5057MB
+> > Total time taken by all kfree'ers: 8431051895 ns, loops: 10000, batches:
+> > 1109, memory footprint: 2749MB
+> > Total time taken by all kfree'ers: 9477830789 ns, loops: 10000, batches:
+> > 1158, memory footprint: 2934MB
+> > Total time taken by all kfree'ers: 9950211144 ns, loops: 10000, batches:
+> > 981, memory footprint: 2704MB
+> >
+> > with a patch:
 > 
-It can be as an option to consider. Because such workqueue has some
-special priority for better handling of memory releasing. I can have
-a look at it closer to see how kvfree_rcu() works if it goes with WQ_MEM_RECLAIM.
+> 
+> >
+> > Total time taken by all kfree'ers: 7712110118 ns, loops: 10000, batches:
+> > 1660, memory footprint: 91MB
+> > Total time taken by all kfree'ers: 7002403664 ns, loops: 10000, batches:
+> > 1482, memory footprint: 86MB
+> > Total time taken by all kfree'ers: 7842282319 ns, loops: 10000, batches:
+> > 1738, memory footprint: 86MB
+> > Total time taken by all kfree'ers: 7230161977 ns, loops: 10000, batches:
+> > 1542, memory footprint: 72MB
+> >
+> > Tested with NOCB option, all offloading CPUs:
+> 
+> 
+> > kvm.sh --memory 10G --torture rcuscale --allcpus --duration 1 \
+> >   --kconfig CONFIG_NR_CPUS=64 \
+> >   --kconfig CONFIG_RCU_NOCB_CPU=y \
+> >   --kconfig CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y \
+> >   --bootargs "rcuscale.kfree_rcu_test=1 rcuscale.kfree_nthreads=16 \
+> >   rcuscale.holdoff=20 rcuscale.kfree_loops=10000
+> > torture.disable_onoff_at_boot" --trust-make
+> >
+> > According to data there is a big gain in memory footprint with a patch.
+> > It is because of call_rcu() and call_rcu_flush() take more effort and
+> > time to queue a callback and then wait for a gp.
+> 
+> 
+> >
+> > With polling API:
+> >   a) we do not need to queue any callback;
+> >   b) we might not even need wait for a GP completion.
+> >
+> 
+> Wow, I did not expect an extra grace period or 2 to cause so much memory
+> unreclaimed.
+> 
+> Does this kernel have the 5 second timeout change?
+> 
+Yes. But it does not matter. Why? Because 5 second time out happens only
+when a system lightly loaded. It can be 10 or 100 seconds.
+
+Once a flood is detected we start to offload back-logged memory.
+
+>
+> If yes, then I am confused why extra grace period matters for memory. My
+> goal with the idea was to avoid pointless RCU work when we don’t need it.
+> But I can’t complaint.
+> 
+This patch does the same. It avoids of using any call_rcu() because we
+do not need it. I mean extra layer.
+
+Why it matters for the memory. I explained it in previous answer. But it
+is because of extra layer. Since it is a flood scenario such delays can
+lead to higher memory footprint.
+
+The test easily detects it.
+
+>
+> Or is it that this test floods the pointer page so we do not wait full 5
+> seconds, and benefit when we reclaim sooner with polled API, than waiting
+> for grace periods?
+> 
+Right. Reclaim sooner with polling API.
 
 --
 Uladzislau Rezki
