@@ -2,61 +2,61 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 78816C4332F
-	for <rcu@archiver.kernel.org>; Thu,  3 Nov 2022 18:36:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 69767C433FE
+	for <rcu@archiver.kernel.org>; Thu,  3 Nov 2022 18:43:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229637AbiKCSgf (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 3 Nov 2022 14:36:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35784 "EHLO
+        id S229461AbiKCSnZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 3 Nov 2022 14:43:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229496AbiKCSge (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 3 Nov 2022 14:36:34 -0400
-Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60994F40
-        for <rcu@vger.kernel.org>; Thu,  3 Nov 2022 11:36:33 -0700 (PDT)
-Received: by mail-qv1-xf35.google.com with SMTP id c8so1720901qvn.10
-        for <rcu@vger.kernel.org>; Thu, 03 Nov 2022 11:36:33 -0700 (PDT)
+        with ESMTP id S229733AbiKCSnX (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 3 Nov 2022 14:43:23 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88732CE7
+        for <rcu@vger.kernel.org>; Thu,  3 Nov 2022 11:43:21 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id v8so1726616qkg.12
+        for <rcu@vger.kernel.org>; Thu, 03 Nov 2022 11:43:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
          :from:content-transfer-encoding:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=S380dCKKg+A8bwJUTQWjtqzaOyXFXP7JJeY17NUMHEs=;
-        b=asnCQKbz6DWupBln1HDqgQERBYic/Pm9wz9FThG1CSb8qOWiTFSvEmXfjKa99bCrzr
-         lFRci5S3aBNk/W0a9BWdgW7InK1B8yKgXLpK0sU0+2QSE3am4qIPQFJvo/YTDzMSL/Ul
-         d2xHPkqUQiCEPxHHtPufwo5NPvtzuNipmn/p4=
+        bh=AWy/+AoZQrbN3iIKv4BFdNipWPhvWomNsLM4Zg8osWY=;
+        b=WE0QnifmSse1nBrGAyXeZbcBitv6wpI9jsDpp/P6UZbIN0Hcps8yioFioDErlSw4wq
+         sfEsisd33TLLSHw9HZdwa8nDuPPk+WqxURBi97+faV/L7skIzMcq8lmwR31/Vz159S1k
+         dmZWHPYxk3fvs973amPakA7Ew8ACV4RqpbXdU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
          :from:content-transfer-encoding:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=S380dCKKg+A8bwJUTQWjtqzaOyXFXP7JJeY17NUMHEs=;
-        b=HTfMixgBF9Xu7qClqYK+9HnkhH/do8m+slGaf4mG+vCRbxnUNb9tjAaaETqSd0EXq5
-         tiSIWzWJohtTKwCf7vNuty0eqD7gWvM37D4FqrNCdIhMNnGL27biL9++51QYi8xpl+xp
-         piI4nFEe55XoBF0MvTco+TatY5cGZJDJZgXK8vQJ5wzRTw0FTYwL6KkLDxWe6kZbjIGO
-         xB25ER02Tyk2z/ixclwuEGcezH6rd7UMneSHL0xCgDLnCHOVmMN5DZuay6kWeQZSkJH+
-         bamND/Yj/qUvoENiBcH6BZO8VJJtZFn371MvZIiNZkxX3tDkgwvyYqoEfyYJNGt1E6jI
-         nwXQ==
-X-Gm-Message-State: ACrzQf20NEnZIydL9nBZDb7bDcDPTCQfJzAN4a6lCHYIxdXxo4B9YsKm
-        gvE03p7xJLE59NOhRtU4W/OkZw==
-X-Google-Smtp-Source: AMsMyM4u7w/stQ68aks1Ab43yVkPtehYePGVAMOabmDSVp/Q6qrfXEGSPeAEJVHddhzsweSth9H51w==
-X-Received: by 2002:ad4:5d41:0:b0:4b8:9fd2:c7e2 with SMTP id jk1-20020ad45d41000000b004b89fd2c7e2mr28669239qvb.91.1667500592421;
-        Thu, 03 Nov 2022 11:36:32 -0700 (PDT)
+        bh=AWy/+AoZQrbN3iIKv4BFdNipWPhvWomNsLM4Zg8osWY=;
+        b=qrlPxVTtL8U3RzWseUyzEzolz6fgr91Np5tpsUYYCzPXfk+PerHTUHq+I+apMLS1ne
+         upxHSRlQ9t7J76JhjPvsCIRaoxpCc9JE8WEKAkwcl/z2RcB1jqTo7bbzhukcXfgCbZor
+         WmTiyjGR+tkiJTVspbSlYPIlCUIbK7O2iE5352cJA6tOIH5rQJrentVTgMWC36cbw3xg
+         xfn5qEVcMrMBP56CRPBdaeZHWgSM/uSy63ZLm4A/ZHxThJ1GX+U9OKLYJhL5z9RsU2K3
+         sc3mvX60qD/QU2czvZyuinTDJgRxskK3ltJjtauFv2VFTtEmAERro1zsCsEJH6lUNQKT
+         8L3Q==
+X-Gm-Message-State: ACrzQf2whLB9qzgqn/LMjk4VT66TG7cIxan0ciPsSZoue0pP6Z7SKAjM
+        oCTGLjgOGxg5uh3xYIDSOyA9Fw==
+X-Google-Smtp-Source: AMsMyM4bKJ7a9fnkqO9t7XU5UjZv9wjEwMOfuIN5O/BJtkVKpksgG760fSKh4xLGEN/l6/zJtbmDfg==
+X-Received: by 2002:a05:620a:24ca:b0:6ee:d4e0:de38 with SMTP id m10-20020a05620a24ca00b006eed4e0de38mr23294806qkn.313.1667501000642;
+        Thu, 03 Nov 2022 11:43:20 -0700 (PDT)
 Received: from smtpclient.apple (c-73-148-104-166.hsd1.va.comcast.net. [73.148.104.166])
-        by smtp.gmail.com with ESMTPSA id c10-20020ac86e8a000000b003a54a19c550sm947652qtv.57.2022.11.03.11.36.31
+        by smtp.gmail.com with ESMTPSA id u23-20020ac87517000000b0039a372fbaa5sm930810qtq.69.2022.11.03.11.43.19
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Nov 2022 11:36:31 -0700 (PDT)
+        Thu, 03 Nov 2022 11:43:20 -0700 (PDT)
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 From:   Joel Fernandes <joel@joelfernandes.org>
 Mime-Version: 1.0 (1.0)
 Subject: Re: [PATCH RFC] rcu/kfree: Do not request RCU when not needed
-Date:   Thu, 3 Nov 2022 14:36:30 -0400
-Message-Id: <ACF5E134-0C17-484B-AF9E-D4E6FAC9535F@joelfernandes.org>
-References: <20221103175143.GB5600@paulmck-ThinkPad-P17-Gen-1>
+Date:   Thu, 3 Nov 2022 14:43:19 -0400
+Message-Id: <B78EFE6F-D479-4F96-89CC-E19CA4146FF8@joelfernandes.org>
+References: <ACF5E134-0C17-484B-AF9E-D4E6FAC9535F@joelfernandes.org>
 Cc:     Uladzislau Rezki <urezki@gmail.com>, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20221103175143.GB5600@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <ACF5E134-0C17-484B-AF9E-D4E6FAC9535F@joelfernandes.org>
 To:     paulmck@kernel.org
 X-Mailer: iPhone Mail (19G82)
 Precedence: bulk
@@ -65,105 +65,122 @@ X-Mailing-List: rcu@vger.kernel.org
 
 
 
-> On Nov 3, 2022, at 1:51 PM, Paul E. McKenney <paulmck@kernel.org> wrote:
->=20
-> =EF=BB=BFOn Thu, Nov 03, 2022 at 01:41:43PM +0100, Uladzislau Rezki wrote:=
+> On Nov 3, 2022, at 2:36 PM, Joel Fernandes <joel@joelfernandes.org> wrote:=
 
->>>>>> /**
->>>>>> @@ -3066,10 +3068,12 @@ static void kfree_rcu_work(struct work_struct=
- *work)
->>>>>>   struct kfree_rcu_cpu_work *krwp;
->>>>>>   int i, j;
+>=20
+> =EF=BB=BF
+>=20
+>> On Nov 3, 2022, at 1:51 PM, Paul E. McKenney <paulmck@kernel.org> wrote:
+>>=20
+>> =EF=BB=BFOn Thu, Nov 03, 2022 at 01:41:43PM +0100, Uladzislau Rezki wrote=
+:
+>>>>>>> /**
+>>>>>>> @@ -3066,10 +3068,12 @@ static void kfree_rcu_work(struct work_struc=
+t *work)
+>>>>>>>  struct kfree_rcu_cpu_work *krwp;
+>>>>>>>  int i, j;
+>>>>>>>=20
+>>>>>>> -    krwp =3D container_of(to_rcu_work(work),
+>>>>>>> +    krwp =3D container_of(work,
+>>>>>>>              struct kfree_rcu_cpu_work, rcu_work);
+>>>>>>>  krcp =3D krwp->krcp;
+>>>>>>>=20
+>>>>>>> +    cond_synchronize_rcu(krwp->gp_snap);
 >>>>>>=20
->>>>>> -    krwp =3D container_of(to_rcu_work(work),
->>>>>> +    krwp =3D container_of(work,
->>>>>>               struct kfree_rcu_cpu_work, rcu_work);
->>>>>>   krcp =3D krwp->krcp;
+>>>>>> Might this provoke OOMs in case of callback flooding?
 >>>>>>=20
->>>>>> +    cond_synchronize_rcu(krwp->gp_snap);
+>>>>>> An alternative might be something like this:
+>>>>>>=20
+>>>>>>  if (!poll_state_synchronize_rcu(krwp->gp_snap)) {
+>>>>>>      queue_rcu_work(system_wq, &krwp->rcu_work);
+>>>>>>      return;
+>>>>>>  }
+>>>>>>=20
+>>>>>> Either way gets you a non-lazy callback in the case where a grace
+>>>>>> period has not yet elapsed.
+>>>>>> Or am I missing something that prevents OOMs here?
 >>>>>=20
->>>>> Might this provoke OOMs in case of callback flooding?
+>>>>> The memory consumptions appears to be much less in his testing with th=
+e onslaught of kfree, which makes OOM probably less likely.
 >>>>>=20
->>>>> An alternative might be something like this:
+>>>>> Though, was your reasoning that in case of a grace period not elapsing=
+, we need a non lazy callback queued, so as to make the reclaim happen soone=
+r?
 >>>>>=20
->>>>>   if (!poll_state_synchronize_rcu(krwp->gp_snap)) {
->>>>>       queue_rcu_work(system_wq, &krwp->rcu_work);
->>>>>       return;
->>>>>   }
->>>>>=20
->>>>> Either way gets you a non-lazy callback in the case where a grace
->>>>> period has not yet elapsed.
->>>>> Or am I missing something that prevents OOMs here?
+>>>>> If so, the cond_synchronize_rcu() should already be conditionally queu=
+eing non-lazy CB since we don=E2=80=99t make synchronous users wait for seco=
+nds. Or did I miss something?
 >>>>=20
->>>> The memory consumptions appears to be much less in his testing with the=
- onslaught of kfree, which makes OOM probably less likely.
+>>>> My concern is that the synchronize_rcu() will block a kworker kthread
+>>>> for some time, and that in callback-flood situations this might slow
+>>>> things down due to exhausting the supply of kworkers.
 >>>>=20
->>>> Though, was your reasoning that in case of a grace period not elapsing,=
- we need a non lazy callback queued, so as to make the reclaim happen sooner=
-?
->>>>=20
->>>> If so, the cond_synchronize_rcu() should already be conditionally queue=
-ing non-lazy CB since we don=E2=80=99t make synchronous users wait for secon=
-ds. Or did I miss something?
+>>> This concern works in both cases. I mean in default configuration and
+>>> with a posted patch. The reclaim work, which name is kfree_rcu_work() on=
+ly
+>>> does a progress when a gp is passed so the rcu_work_rcufn() can queue
+>>> our reclaim kworker.
 >>>=20
->>> My concern is that the synchronize_rcu() will block a kworker kthread
->>> for some time, and that in callback-flood situations this might slow
->>> things down due to exhausting the supply of kworkers.
+>>> As it is now:
 >>>=20
->> This concern works in both cases. I mean in default configuration and
->> with a posted patch. The reclaim work, which name is kfree_rcu_work() onl=
-y
->> does a progress when a gp is passed so the rcu_work_rcufn() can queue
->> our reclaim kworker.
+>>> 1. Collect pointers, then we decide to drop them we queue the
+>>>  monitro_work() worker to the system_wq.
+>>>=20
+>>> 2. The monitor work, kfree_rcu_work(), tries to attach or saying
+>>> it by another words bypass a "backlog" to "free" channels.
+>>>=20
+>>> 3. It invokes the queue_rcu_work() that does call_rcu_flush() and
+>>> in its turn it queues our worker from the handler. So the worker
+>>> is run after GP is passed.
 >>=20
->> As it is now:
+>> So as it is now, we are not tying up a kworker kthread while waiting
+>> for the grace period, correct?  We instead have an RCU callback queued
+>> during that time, and the kworker kthread gets involved only after the
+>> grace period ends.
 >>=20
->> 1. Collect pointers, then we decide to drop them we queue the
->>   monitro_work() worker to the system_wq.
+>>> With a patch:=20
+>>>=20
+>>> [1] and [2] steps are the same. But on third step we do:
+>>>=20
+>>> 1. Record the GP status for last in channel;
+>>> 2. Directly queue the drain work without any call_rcu() helpers;
+>>> 3. On the reclaim worker entry we check if GP is passed;
+>>> 4. If not it invokes synchronize_rcu().
 >>=20
->> 2. The monitor work, kfree_rcu_work(), tries to attach or saying
->> it by another words bypass a "backlog" to "free" channels.
+>> And #4 changes that, by (sometimes) tying up a kworker kthread for the
+>> full grace period.
 >>=20
->> 3. It invokes the queue_rcu_work() that does call_rcu_flush() and
->> in its turn it queues our worker from the handler. So the worker
->> is run after GP is passed.
->=20
-> So as it is now, we are not tying up a kworker kthread while waiting
-> for the grace period, correct?  We instead have an RCU callback queued
-> during that time, and the kworker kthread gets involved only after the
-> grace period ends.
->=20
->> With a patch:=20
+>>> The patch eliminates extra steps by not going via RCU-core route
+>>> instead it directly invokes the reclaim worker where it either
+>>> proceed or wait a GP if needed.
 >>=20
->> [1] and [2] steps are the same. But on third step we do:
+>> I agree that the use of the polled API could be reducing delays, which
+>> is a good thing.  Just being my usual greedy self and asking "Why not
+>> both?", that is use queue_rcu_work() instead of synchronize_rcu() in
+>> conjunction with the polled APIs so as to avoid both the grace-period
+>> delay and the tying up of the kworker kthread.
 >>=20
->> 1. Record the GP status for last in channel;
->> 2. Directly queue the drain work without any call_rcu() helpers;
->> 3. On the reclaim worker entry we check if GP is passed;
->> 4. If not it invokes synchronize_rcu().
+>> Or am I missing something here?
 >=20
-> And #4 changes that, by (sometimes) tying up a kworker kthread for the
-> full grace period.
->=20
->> The patch eliminates extra steps by not going via RCU-core route
->> instead it directly invokes the reclaim worker where it either
->> proceed or wait a GP if needed.
->=20
-> I agree that the use of the polled API could be reducing delays, which
-> is a good thing.  Just being my usual greedy self and asking "Why not
-> both?", that is use queue_rcu_work() instead of synchronize_rcu() in
-> conjunction with the polled APIs so as to avoid both the grace-period
-> delay and the tying up of the kworker kthread.
->=20
-> Or am I missing something here?
+> Yeah I am with Paul on this, NAK on =E2=80=9Cblocking in kworker=E2=80=9D i=
+nstead of =E2=80=9Cchecking for grace period + queuing either regular work o=
+r RCU work=E2=80=9D. Note that blocking also adds a pointless and fully avoi=
+dable scheduler round trip.
 
-Yeah I am with Paul on this, NAK on =E2=80=9Cblocking in kworker=E2=80=9D in=
-stead of =E2=80=9Cchecking for grace period + queuing either regular work or=
- RCU work=E2=80=9D. Note that blocking also adds a pointless and fully avoid=
-able scheduler round trip.
+As a side note, it=E2=80=99s notable how nicely this work evolved over the y=
+ears thanks to Vlad and all of y=E2=80=99all=E2=80=99s work. For instance, f=
+looding pages with kfree pointers and grace period polling was not something=
+ even invented back when kfree_rcu was a simple wrapper. Now it soon will be=
+ actually freeing memory faster, by avoiding waiting on RCU when not needed!=
+ And of course this is all happening probably because we wanted RCU to be la=
+zy in nocb is a nice side effect of that effort ;-)
 
  - Joel
 
 
 >=20
->                            Thanx, Paul
+> - Joel
+>=20
+>=20
+>>=20
+>>                           Thanx, Paul
