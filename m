@@ -2,91 +2,186 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2EC6FC433FE
-	for <rcu@archiver.kernel.org>; Thu,  3 Nov 2022 16:37:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 08D9AC4332F
+	for <rcu@archiver.kernel.org>; Thu,  3 Nov 2022 16:51:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229598AbiKCQho (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 3 Nov 2022 12:37:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57506 "EHLO
+        id S231398AbiKCQvw (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 3 Nov 2022 12:51:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231913AbiKCQh1 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 3 Nov 2022 12:37:27 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48EAF2250D;
-        Thu,  3 Nov 2022 09:34:31 -0700 (PDT)
+        with ESMTP id S231260AbiKCQvq (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 3 Nov 2022 12:51:46 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEA5BDD
+        for <rcu@vger.kernel.org>; Thu,  3 Nov 2022 09:51:44 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 52273CE25AB;
-        Thu,  3 Nov 2022 16:34:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 889ADC433D6;
-        Thu,  3 Nov 2022 16:34:08 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 773C161F82
+        for <rcu@vger.kernel.org>; Thu,  3 Nov 2022 16:51:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA4B8C433C1;
+        Thu,  3 Nov 2022 16:51:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1667493248;
-        bh=1Bv/v+/mHhcB6d9gI+g/4wnALLUDPHN6sTCbpCCTzvw=;
+        s=k20201202; t=1667494303;
+        bh=+n+piBzojLeY4UvrDGzVNH/0RiFMqzHcXdap/z9CyDM=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=XU+OyksUyUuh3tc8EVx/z2kSZ4uZlvXpl6koVetu7U1KasNMooKH3geBdAKDVec/4
-         6CXOMS18/injViwiAMxK3lzncXVgEe/I1G7462u8e3gfNz1Q2P/Ij81+wkeoGH1D54
-         ay+1DJwfd7JQi5+21N3DHf2UAoc3sVygu2Yx9ntTlFlyiyl+y8Dow0GL4h3305CN86
-         F2jlcvnP6sc1Ox4SFLt8Uoc4OtukJFy693hka9wD/at0/cCNAH5D/7Iqf+c3Ujy+bW
-         wpnd5Mgq5MJ6tYGfi6eRP5kw6Orokn2tiQru89ZQ7L+E2Hd/3O24GD4oKqAGr1jQy/
-         Af885LPFDSMAA==
+        b=qB9zNE2F6TUCVN+jIKu73yPTIIbbkVpCbwHS83Bepwk3+2ApXvmqY3n4cAkKVuEjU
+         2mA84N5s3z/cHBKQwuxrulfjXPUwXRqD8Dund/owVtTJHU7z/aJxlgtI4dG3Y5pPf8
+         SZw8wDNKNGch/SNqm+oZYeEbwbqy1b3smTA8gi0TYzkZ7Ve11yNiCbd0IXO42ceqkP
+         0nqxcj6OMouxOOe3ifo/M0mTgSVZEEORAwOCPbb1I6wakCIB2UiqMu5824SR4oXiCG
+         e5n1bdz0x15MED/iLTjSBI+q6TtyPhHScHoh0GazEDRCwq0ogqUMap57fPphkUrm9h
+         d7EajabqHn7Fw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 2A8FD5C097E; Thu,  3 Nov 2022 09:34:08 -0700 (PDT)
-Date:   Thu, 3 Nov 2022 09:34:08 -0700
+        id 6D1B85C097E; Thu,  3 Nov 2022 09:51:43 -0700 (PDT)
+Date:   Thu, 3 Nov 2022 09:51:43 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC] rcu/kfree: Do not request RCU when not needed
-Message-ID: <20221103163408.GU5600@paulmck-ThinkPad-P17-Gen-1>
+To:     Pingfan Liu <kernelfans@gmail.com>
+Cc:     Frederic Weisbecker <frederic@kernel.org>, rcu@vger.kernel.org,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>
+Subject: Re: [PATCHv2 3/3] rcu: coordinate tick dependency during concurrent
+ offlining
+Message-ID: <20221103165143.GX5600@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20221102184911.GP5600@paulmck-ThinkPad-P17-Gen-1>
- <755B5ED1-653D-4E57-B114-77CDE10A9033@joelfernandes.org>
- <20221102202813.GR5600@paulmck-ThinkPad-P17-Gen-1>
- <CAEXW_YQ+SxBoNUkPHhC3O0DJNQtZomN_4GPtvaWuDs5sSU4FAw@mail.gmail.com>
- <20221102223516.GT5600@paulmck-ThinkPad-P17-Gen-1>
- <Y2O3w3d3qmTg6VAP@pc638.lan>
- <Y2O8k2U+ACr1N6Fe@pc638.lan>
+References: <YzFH6WSMX/Yht+i1@piliu.users.ipa.redhat.com>
+ <20220926222352.GV4196@paulmck-ThinkPad-P17-Gen-1>
+ <YzLJZU2mAPjfD/RK@piliu.users.ipa.redhat.com>
+ <CAFgQCTtLm-JXRyQfKo6-+P00SShVGujZGau+khmtCe1AiRodQA@mail.gmail.com>
+ <20220930154459.GF4196@paulmck-ThinkPad-P17-Gen-1>
+ <CAFgQCTu75NPFM8L6a8-bgAzwzNtEdAV+DkXc7ssu6arf3o-o-A@mail.gmail.com>
+ <20221002162002.GR4196@paulmck-ThinkPad-P17-Gen-1>
+ <CAFgQCTtgLfc0NeYqyWk4Ew-pA9rMREjRjWSnQhYLv-V5117s9Q@mail.gmail.com>
+ <20221027174620.GC5600@paulmck-ThinkPad-P17-Gen-1>
+ <CAFgQCTuoy+9DdQsVZvbLcn70JaHUhR2HZ=D35Akj4=GceGO2Lg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Y2O8k2U+ACr1N6Fe@pc638.lan>
+In-Reply-To: <CAFgQCTuoy+9DdQsVZvbLcn70JaHUhR2HZ=D35Akj4=GceGO2Lg@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Nov 03, 2022 at 02:05:23PM +0100, Uladzislau Rezki wrote:
-> On Thu, Nov 03, 2022 at 01:44:51PM +0100, Uladzislau Rezki wrote:
-> > > 
-> > > > Though I am thinking, workqueue context is normally used to invoke
-> > > > code that can block, and would the issue you mentioned affect those as
-> > > > well, or affect RCU when those non-RCU work items block. So for
-> > > > example, when other things in the system that can queue things on the
-> > > > system_wq and block.  (I might be throwing darts in the dark).
-> > > > 
-> > > > To be safe, we can implement your suggestion which is basically a form
-> > > > of my initial patch.
-> > > > 
-> > > > Should we add Tejun to the thread?
-> > > 
-> > > Let's get organized first, but that would be a good thing.  Or I could
-> > > reach out to Tejun internally.
-> > > 
-> > > For but one thing to get organized about, maybe kfree_rcu() should be
-> > > using a workqueue with the WQ_MEM_RECLAIM flag set.
-> > > 
-> > It can be as an option to consider. Because such workqueue has some
-> > special priority for better handling of memory releasing. I can have
-> > a look at it closer to see how kvfree_rcu() works if it goes with WQ_MEM_RECLAIM.
-> > 
-> An extra note. It would work well with posted patch because we can
-> directly queue the reclaim work to the WQ_MEM_RECLAIM queue.
+On Mon, Oct 31, 2022 at 11:24:37AM +0800, Pingfan Liu wrote:
+> On Fri, Oct 28, 2022 at 1:46 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > On Mon, Oct 10, 2022 at 09:55:26AM +0800, Pingfan Liu wrote:
+> > > On Mon, Oct 3, 2022 at 12:20 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+> > > >
+> > > [...]
+> > >
+> > > > >
+> > > > > But unfortunately, I did not keep the data. I will run it again and
+> > > > > submit the data.
+> > > >
+> > >
+> > > I have finished the test on a machine with two sockets and 256 cpus.
+> > > The test runs against the kernel with three commits reverted.
+> > >   96926686deab ("rcu: Make CPU-hotplug removal operations enable tick")
+> > >   53e87e3cdc15 ("timers/nohz: Last resort update jiffies on nohz_full
+> > > IRQ entry")
+> > >   a1ff03cd6fb9c5 ("tick: Detect and fix jiffies update stall")
+> > >
+> > > Summary from console.log
+> > > "
+> > >  --- Sat Oct  8 11:34:02 AM EDT 2022 Test summary:
+> > > Results directory:
+> > > /home/linux/tools/testing/selftests/rcutorture/res/2022.10.07-23.10.54
+> > > tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration
+> > > 125h --bootargs rcutorture.onoff_interval=200
+> > > rcutorture.onoff_holdoff=30 --configs 32*TREE04
+> > > TREE04 ------- 1365444 GPs (3.03432/s) n_max_cbs: 850290
+> > > TREE04 no success message, 2897 successful version messages
+> > > Completed in 44512 vs. 450000
+> > > TREE04.10 ------- 1331565 GPs (2.95903/s) n_max_cbs: 909075
+> > > TREE04.10 no success message, 2897 successful version messages
+> > > Completed in 44511 vs. 450000
+> > > TREE04.11 ------- 1331535 GPs (2.95897/s) n_max_cbs: 1213974
+> > > TREE04.11 no success message, 2897 successful version messages
+> > > Completed in 44511 vs. 450000
+> > > TREE04.12 ------- 1322160 GPs (2.93813/s) n_max_cbs: 2615313
+> > > TREE04.12 no success message, 2897 successful version messages
+> > > Completed in 44511 vs. 450000
+> > > TREE04.13 ------- 1320032 GPs (2.9334/s) n_max_cbs: 914751
+> > > TREE04.13 no success message, 2897 successful version messages
+> > > Completed in 44511 vs. 450000
+> > > TREE04.14 ------- 1339969 GPs (2.97771/s) n_max_cbs: 1560203
+> > > TREE04.14 no success message, 2897 successful version messages
+> > > Completed in 44511 vs. 450000
+> > > TREE04.15 ------- 1318805 GPs (2.93068/s) n_max_cbs: 1757478
+> > > TREE04.15 no success message, 2897 successful version messages
+> > > Completed in 44510 vs. 450000
+> > > TREE04.16 ------- 1340633 GPs (2.97918/s) n_max_cbs: 1377647
+> > > TREE04.16 no success message, 2897 successful version messages
+> > > Completed in 44510 vs. 450000
+> > > TREE04.17 ------- 1322798 GPs (2.93955/s) n_max_cbs: 1266344
+> > > TREE04.17 no success message, 2897 successful version messages
+> > > Completed in 44511 vs. 450000
+> > > TREE04.18 ------- 1346302 GPs (2.99178/s) n_max_cbs: 1030713
+> > > TREE04.18 no success message, 2897 successful version messages
+> > > Completed in 44511 vs. 450000
+> > > TREE04.19 ------- 1322499 GPs (2.93889/s) n_max_cbs: 917118
+> > > TREE04.19 no success message, 2897 successful version messages
+> > > Completed in 44511 vs. 450000
+> > > ...
+> > > TREE04.4 ------- 1310283 GPs (2.91174/s) n_max_cbs: 2146905
+> > > TREE04.4 no success message, 2897 successful version messages
+> > > Completed in 44511 vs. 450000
+> > > TREE04.5 ------- 1333238 GPs (2.96275/s) n_max_cbs: 1027172
+> > > TREE04.5 no success message, 2897 successful version messages
+> > > Completed in 44511 vs. 450000
+> > > TREE04.6 ------- 1313915 GPs (2.91981/s) n_max_cbs: 1017511
+> > > TREE04.6 no success message, 2897 successful version messages
+> > > Completed in 44511 vs. 450000
+> > > TREE04.7 ------- 1341871 GPs (2.98194/s) n_max_cbs: 816265
+> > > TREE04.7 no success message, 2897 successful version messages
+> > > Completed in 44511 vs. 450000
+> > > TREE04.8 ------- 1339412 GPs (2.97647/s) n_max_cbs: 1316404
+> > > TREE04.8 no success message, 2897 successful version messages
+> > > Completed in 44511 vs. 450000
+> > > TREE04.9 ------- 1327240 GPs (2.94942/s) n_max_cbs: 1409531
+> > > TREE04.9 no success message, 2897 successful version messages
+> > > Completed in 44510 vs. 450000
+> > > 32 runs with runtime errors.
+> > >  --- Done at Sat Oct  8 11:34:10 AM EDT 2022 (12:23:16) exitcode 2
+> > > "
+> > > I have no idea about the test so just arbitrarily pick up the
+> > > console.log of TREE04.10 as an example. Please get it from attachment.
+> >
+> > Very good, thank you!
+> >
+> > Could you please clearly indicate what you tested?  For example, if
+> > you have an externally visible git tree, please point me at the tree
+> > and the SHA-1.  Or send a patch series clearly indicating what it is
+> > based on.
+> >
 > 
-> As for now RCU-core kthreads like: rcugp, rcuop use "regular"
-> queue. I think system_wq one.
+> Yes, it is a good way to eliminate any unexpected mistakes before a rigid test.
+> 
+> Please clone it from https://github.com/pfliu/linux.git  branch:
+> rcu#revert_tick_dep
 
-Agreed, it is the expedited grace period that uses WQ_MEM_RECLAIM
-workqueues.
+Thank you very much!
+
+> > Then I can try a long run on a larger collection of systems.
+> >
+> 
+> Thank you very much.
+> 
+> > If that works out, we can see about adjustments to mainline.  ;-)
+> >
+> 
+> Eager to see.
+
+I ran 200 hours of TREE04 and got an RCU CPU stall warning.  I ran 2000
+hours on v6.0, which precedes these commits, and everything passed.
+
+I will run more, primarily on v6.0, but that is what I have thus far.
+At the moment, I have some concerns about this change.
 
 							Thanx, Paul
