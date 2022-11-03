@@ -2,103 +2,137 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0816DC433FE
-	for <rcu@archiver.kernel.org>; Thu,  3 Nov 2022 13:06:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8EDB4C433FE
+	for <rcu@archiver.kernel.org>; Thu,  3 Nov 2022 13:14:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231743AbiKCNGj (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 3 Nov 2022 09:06:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42720 "EHLO
+        id S230297AbiKCNOG (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 3 Nov 2022 09:14:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230320AbiKCNFy (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 3 Nov 2022 09:05:54 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17FB614D3B;
-        Thu,  3 Nov 2022 06:05:27 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id n12so4962013eja.11;
-        Thu, 03 Nov 2022 06:05:27 -0700 (PDT)
+        with ESMTP id S231444AbiKCNNq (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 3 Nov 2022 09:13:46 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1DA914D24
+        for <rcu@vger.kernel.org>; Thu,  3 Nov 2022 06:13:29 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id f63so1639416pgc.2
+        for <rcu@vger.kernel.org>; Thu, 03 Nov 2022 06:13:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=gBTVx2yYg4uG/7BMBUSu1/Ui13eYHVUWqefVD6Wjd50=;
-        b=BDJTsfeBbbvFJmbFb1tMf63UPYdmvz/AgFBYJlfY5y7XiqTgqRAAPnQFgRmvA8ddTM
-         nrRohq4vJXnBueCFFW8hMOjnt2D2qzpgEHun9ctmJpAOhmo4PMYrHz8MYrhd1n05gW1k
-         5kgGYzzqMoyLahT4dA39QksYHFQJSViVQ214BRB4QCzqVbQB0bEo1HjN23Um2zNV286u
-         43SxY3ks6RCAqqW56g30O7HojW05GTQZzWxvCT5/VolTsR3Ubi5gCZnBpre6AJh/9j1F
-         lBKRZGQmtDhnoV77pSLvs5YPmspyQw9hGnUlny6IBDdLeb5ZulDxVQ8bs9ccaFz+2N2m
-         hBjQ==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=8i3HOPgQD8h0tleJXR3Dl7B6Fax/sa1QpGi6GzW7JKU=;
+        b=hcck/yLu0dBwa2x0PUHfqS5MhO7YH1sOnBOBrTOvLvpCKg+iv/w/uzSeILfQFLsRTe
+         /7OAzNZGLTpGukKUG/Gsl6pNiFoj5zYAQzpAlMoFfV6NLtMynOWkQxana2nvqj/ystjW
+         ht4vFEk3EcbI/PW8T0Kpy+NpPI2Q0OUl4H3H6Pd0R4cPqJw+KDnpFMsjTy465GKtKS8G
+         n6BKce4i7GmbIGmvs/bwx7AKg4Kq52yPsr2btt8oFumRfY0H1fKt+IYdEDtQClS3g5c/
+         IMiRX+GGYfcr1lXSGFY8N9QkAJwEqDgkgR7Fq7BsLPTL6LKkgZRsGdpNTyzzZCHGHIZl
+         Gw9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gBTVx2yYg4uG/7BMBUSu1/Ui13eYHVUWqefVD6Wjd50=;
-        b=f0LWMcMCj2R9uNl0pA/wxRUZo1Sdgkgu5mk+7QMIV8FFSypRd2GFZbycPk+l64/bda
-         LL62AwO56TOxBx5OVoeNw116l4osYX8u5mWkQKo69IFaCRmbrhyR1yX+bVgN3zQuLeqS
-         k4gMRAC1QCvs5JSy/WldrnAYgkqvwj3ATT54BAtys/kFdOg5jDMIbmLfngWNh1ijF2jW
-         ZcklZizTazdjOyW7ENlcr3HAalhU/bWsb8PI06FOvgm5xf5KAw8LebdKR3k2MxR5ThG3
-         JK5T4C1L+/9yzNMm9+9nQHvGuW4SUEfrw5/Sh4oK/UrSaobHfSi8L4LC30i7dzdpGNV5
-         xrWA==
-X-Gm-Message-State: ACrzQf3V0kDvQWRYIJgqI3GL2ZAhPCWVEXm+LjSHDOTwZxYguc2xtyeN
-        vG5lchuFRg19QuAWajG9ItHQjLp4ecQ=
-X-Google-Smtp-Source: AMsMyM4E2PCWOMmyu4QI3E+6iJXT3/HT5iqu2cXhm6Mt3a+tcVlCn+T/jHruE+xTQ4YThFTqGpSWmA==
-X-Received: by 2002:a17:907:7632:b0:7a1:d4f0:e7c5 with SMTP id jy18-20020a170907763200b007a1d4f0e7c5mr29212148ejc.160.1667480725574;
-        Thu, 03 Nov 2022 06:05:25 -0700 (PDT)
-Received: from pc638.lan ([155.137.26.201])
-        by smtp.gmail.com with ESMTPSA id cs1-20020a0564020c4100b00451319a43dasm521661edb.2.2022.11.03.06.05.24
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8i3HOPgQD8h0tleJXR3Dl7B6Fax/sa1QpGi6GzW7JKU=;
+        b=rHefvMv0JQqQW332+ub3MbaNIC7R52OZaoS8GkcIw0hbqXYPqxNPbgBxvJcF8x2KPk
+         oDo42ePwOFmHzPo+pjrWDa4BpQ/qP+0GR2wHbDIvqLpej8rj0ZUU26TzKsgdG38VdeWY
+         CJl/DWYN06uKwH3G+WGC1G3Uy68cI5sp4aYxLiWgMluXin77PFDFCgpKeqfgpDoJCv9G
+         UUJ5bdsq2qTDJq9ls8RnowKvSztKTyWuWQS178SKQ3dxl7Ehzq74WDjWUt5JLJBS+v/s
+         BD00vNkk1rQhbixBzrK1O/aBNCAFlbVQ2T8w0P1VuvC3ggwog1LNVZEKKgB+pabL0raR
+         fhHQ==
+X-Gm-Message-State: ACrzQf0XBlu0nti8X1uq5PP5Fif+BX+jGYxYMP+FJVi/B2VOLep+Rri+
+        ZjwY9iwuTUA6vem8u76NY1EdMg8VnZCW
+X-Google-Smtp-Source: AMsMyM7l7OGUpD+LFI7727cikjvVgG+fJS+8mAqEsHNik4fr2zC8yjDKCgUf1Jd0T94wUdCo6C0gKA==
+X-Received: by 2002:a05:6a00:993:b0:56c:80f6:db5 with SMTP id u19-20020a056a00099300b0056c80f60db5mr30065480pfg.45.1667481207141;
+        Thu, 03 Nov 2022 06:13:27 -0700 (PDT)
+Received: from piliu.users.ipa.redhat.com ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id h16-20020aa796d0000000b0056c2e497b02sm704433pfq.173.2022.11.03.06.13.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Nov 2022 06:05:25 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Thu, 3 Nov 2022 14:05:23 +0100
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC] rcu/kfree: Do not request RCU when not needed
-Message-ID: <Y2O8k2U+ACr1N6Fe@pc638.lan>
-References: <20221102184911.GP5600@paulmck-ThinkPad-P17-Gen-1>
- <755B5ED1-653D-4E57-B114-77CDE10A9033@joelfernandes.org>
- <20221102202813.GR5600@paulmck-ThinkPad-P17-Gen-1>
- <CAEXW_YQ+SxBoNUkPHhC3O0DJNQtZomN_4GPtvaWuDs5sSU4FAw@mail.gmail.com>
- <20221102223516.GT5600@paulmck-ThinkPad-P17-Gen-1>
- <Y2O3w3d3qmTg6VAP@pc638.lan>
+        Thu, 03 Nov 2022 06:13:26 -0700 (PDT)
+From:   Pingfan Liu <kernelfans@gmail.com>
+To:     rcu@vger.kernel.org
+Cc:     Pingfan Liu <kernelfans@gmail.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: [PATCH] srcu: Fix a rare race issue in __srcu_read_(un)lock()
+Date:   Thu,  3 Nov 2022 21:13:13 +0800
+Message-Id: <20221103131313.41536-1-kernelfans@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y2O3w3d3qmTg6VAP@pc638.lan>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Nov 03, 2022 at 01:44:51PM +0100, Uladzislau Rezki wrote:
-> > 
-> > > Though I am thinking, workqueue context is normally used to invoke
-> > > code that can block, and would the issue you mentioned affect those as
-> > > well, or affect RCU when those non-RCU work items block. So for
-> > > example, when other things in the system that can queue things on the
-> > > system_wq and block.  (I might be throwing darts in the dark).
-> > > 
-> > > To be safe, we can implement your suggestion which is basically a form
-> > > of my initial patch.
-> > > 
-> > > Should we add Tejun to the thread?
-> > 
-> > Let's get organized first, but that would be a good thing.  Or I could
-> > reach out to Tejun internally.
-> > 
-> > For but one thing to get organized about, maybe kfree_rcu() should be
-> > using a workqueue with the WQ_MEM_RECLAIM flag set.
-> > 
-> It can be as an option to consider. Because such workqueue has some
-> special priority for better handling of memory releasing. I can have
-> a look at it closer to see how kvfree_rcu() works if it goes with WQ_MEM_RECLAIM.
-> 
-An extra note. It would work well with posted patch because we can
-directly queue the reclaim work to the WQ_MEM_RECLAIM queue.
+Clarify at first:
+  This issue is totally detected by code suspicion, not a real experience.
 
-As for now RCU-core kthreads like: rcugp, rcuop use "regular"
-queue. I think system_wq one.
+Scene:
 
---
-Uladzislau Rezki
+  __srcu_read_(un)lock() uses percpu variable srcu_(un)lock_count[2].
+Normally, the percpu can help avoid the non-atomic RMW issue, but in
+some rare cases, it can not.
+
+Supposing that __srcu_read_lock() runs on cpuX, the statement
+    this_cpu_inc(ssp->sda->srcu_lock_count[idx]);
+can be decomposed into two sub group:
+    -1. get the address of this_cpu_ptr(ssp->sda)->srcu_lock_count[idx],
+denoted as addressX and let unsigned long *pX = addressX;
+    -2. *pX = *pX + 1;
+
+Now, assuming there are two tasks, denoted as taskA and taskB, three
+cpus, denoted as cpuX, cpuY and cpuZ. Let both taskA and taskB finish
+the first step as above on cpuX, but migrate to cpuY and cpuZ
+individually just before the second step. Then both of them continue to
+execute concurrently from the second step. This will raise a typical
+non-atomic RMW issue.
+
+Solution:
+
+  This issue can be tackled by disable preemption around the two sub
+groups.
+
+Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Josh Triplett <josh@joshtriplett.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To: rcu@vger.kernel.org
+---
+ kernel/rcu/srcutree.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index 1c304fec89c0..a38a3779dc01 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -636,7 +636,11 @@ int __srcu_read_lock(struct srcu_struct *ssp)
+ 	int idx;
+ 
+ 	idx = READ_ONCE(ssp->srcu_idx) & 0x1;
++	__preempt_count_inc();
++	barrier();
+ 	this_cpu_inc(ssp->sda->srcu_lock_count[idx]);
++	barrier();
++	__preempt_count_dec();
+ 	smp_mb(); /* B */  /* Avoid leaking the critical section. */
+ 	return idx;
+ }
+@@ -650,7 +654,11 @@ EXPORT_SYMBOL_GPL(__srcu_read_lock);
+ void __srcu_read_unlock(struct srcu_struct *ssp, int idx)
+ {
+ 	smp_mb(); /* C */  /* Avoid leaking the critical section. */
++	__preempt_count_inc();
++	barrier();
+ 	this_cpu_inc(ssp->sda->srcu_unlock_count[idx]);
++	barrier();
++	__preempt_count_dec();
+ }
+ EXPORT_SYMBOL_GPL(__srcu_read_unlock);
+ 
+-- 
+2.31.1
+
