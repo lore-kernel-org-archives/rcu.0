@@ -2,80 +2,132 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 40521C433FE
-	for <rcu@archiver.kernel.org>; Fri,  4 Nov 2022 14:41:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E383C433FE
+	for <rcu@archiver.kernel.org>; Fri,  4 Nov 2022 15:58:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230491AbiKDOlI (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 4 Nov 2022 10:41:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56752 "EHLO
+        id S229699AbiKDP56 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 4 Nov 2022 11:57:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232009AbiKDOk2 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 4 Nov 2022 10:40:28 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39399252;
-        Fri,  4 Nov 2022 07:39:13 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id kt23so13784914ejc.7;
-        Fri, 04 Nov 2022 07:39:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=TKI2Rm0nmAOBvoxMHybRVhHgXn9iOorCatBXZqOgdZQ=;
-        b=KyeWtzWN1f6d/r8FPUC2Hejyin0NjpcVdthIye+ByVrThaas4/ycSeE4Dl2r/v9o/L
-         tJApK9jqpu7Jq73ium4P/LULmFioy4gHnWcpyp/Lo+3eMc9t9p+CQGh9uR4vHFk6QPKP
-         dLy58PY4huuLSWpfTj/5vKA5tS89PnsrfUSxWVji4Tba+eSX/dHA2/IH4neQf5AnHZ8p
-         ts7WAVqQf2kvaTfYt/0lSvIUbBOXjb8lyf5U5IbAG6Wb9gT2H4+m/CjunDGXNJ4IkgWQ
-         0w0ZwNYlIJ9TN2nB4gcTIzmwd/FhCIU2b6253Z1mQdWzEICOLL2Z+pZXy3B2mE6etZ/E
-         NUqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TKI2Rm0nmAOBvoxMHybRVhHgXn9iOorCatBXZqOgdZQ=;
-        b=zaExL5eG4AXeXfdS2hZCtc9MkkAEE4bDJRBxFvckvpCfDvqxHy+wgDmqXmHC7l+OPu
-         g92LMfA0GGssbTR2ey7P4DB+JJUzXTNhdQc3mAAhnu2v0wPziU8U9H2brAptjK0G1vfz
-         HwDkWeXihL/dlLDfyCDHPJptgMX5LPwOfQu0iyiG3r2KECn9P51hV95MvFrPvQvxn+dt
-         SBDAKXDACC6ohV+eWqC8T/BZoU9fo3TGXRAZEJTqHq/PbONRzZY6vlj1aDo/VZcp9BUa
-         pbg0EL8dEyFhz+c/9RrS2ZgdyxjTu5JllFlvLgjukNm/TK53tqTYqaeDgyKiHOjX8ixd
-         XZyQ==
-X-Gm-Message-State: ACrzQf3JHN3eijOQ2xhoHYnKkET70cnDcTfItyzvIok2lXgQoBSwTG5M
-        V87wrDCap/++ZwWNk036A2o=
-X-Google-Smtp-Source: AMsMyM4PLmGit3FGL9qRVhbCnGUWxyNsqyUD7mQyrD2IFqsNFrbdPvR41NcNJevkiyrOrugAGNWrYA==
-X-Received: by 2002:a17:906:8473:b0:77b:efa8:50e4 with SMTP id hx19-20020a170906847300b0077befa850e4mr34569102ejc.250.1667572751642;
-        Fri, 04 Nov 2022 07:39:11 -0700 (PDT)
-Received: from pc638.lan ([155.137.26.201])
-        by smtp.gmail.com with ESMTPSA id x67-20020a50bac9000000b00457b5ba968csm2001658ede.27.2022.11.04.07.39.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Nov 2022 07:39:11 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Fri, 4 Nov 2022 15:39:09 +0100
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     paulmck@kernel.org, Uladzislau Rezki <urezki@gmail.com>,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC] rcu/kfree: Do not request RCU when not needed
-Message-ID: <Y2UkDZDKXOaH9jA0@pc638.lan>
-References: <ACF5E134-0C17-484B-AF9E-D4E6FAC9535F@joelfernandes.org>
- <B78EFE6F-D479-4F96-89CC-E19CA4146FF8@joelfernandes.org>
+        with ESMTP id S229749AbiKDP54 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 4 Nov 2022 11:57:56 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 071AD3120C;
+        Fri,  4 Nov 2022 08:57:53 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 7032C21A0D;
+        Fri,  4 Nov 2022 15:57:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1667577472; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xkdgu/IhDvyt2G73OuT4ZRFXwxGssWFVHtB3chCyIes=;
+        b=ih5GGGTqTeuC9bX6BVot0vGcfozyxqz4eGBGMcXMCWz39VHPPLRZuwdMmUMD78RhLj+Uu7
+        QD/Bt4pnAcdZOYbAcjI+x9gAimp8PBBDbwG2TCG7eAW7mW4dx4tPid982hsF+8AkaYsPug
+        JaoNaWA2x/9RBs4bwrc/N6BMfKil0uA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1667577472;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xkdgu/IhDvyt2G73OuT4ZRFXwxGssWFVHtB3chCyIes=;
+        b=j2lg/F/goGpqhKdWfZMxBXZv3NoXEKvMsD10uSeUqu/4T6OxlDCsxsBVtPKchIJCcqfF9A
+        FCPemW/F1cfRcdCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 414D213216;
+        Fri,  4 Nov 2022 15:57:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 0CXXDoA2ZWMWYwAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Fri, 04 Nov 2022 15:57:52 +0000
+Message-ID: <a80932ef-d029-c82e-d171-ab8bdac8cbdc@suse.cz>
+Date:   Fri, 4 Nov 2022 16:57:51 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <B78EFE6F-D479-4F96-89CC-E19CA4146FF8@joelfernandes.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.1
+Subject: Re: amusing SLUB compaction bug when CC_OPTIMIZE_FOR_SIZE
+Content-Language: en-US
+From:   Vlastimil Babka <vbabka@suse.cz>
+To:     Matthew Wilcox <willy@infradead.org>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Cc:     Hugh Dickins <hughd@google.com>,
+        David Laight <David.Laight@aculab.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        rcu@vger.kernel.org
+References: <ea96c78c-e1dc-1364-e91-51909f82388b@google.com>
+ <YzPgTtFzpKEfwPbK@hyeyoo> <YzRQvoVsnJzsauwb@google.com>
+ <35502bdd-1a78-dea1-6ac3-6ff1bcc073fa@suse.cz>
+ <ff905c1e-5eb3-eaf8-46de-38f189c0b7a5@google.com>
+ <de71b83a-c82c-4785-ef5a-3db4f17bbc8d@suse.cz>
+ <bcecece-f7ce-221d-1674-da3d5ab3fef@google.com> <YzkmErHFyYW3awRn@hyeyoo>
+ <YzsVM8eToHUeTP75@casper.infradead.org>
+ <7dddca4c-bc36-2cf0-de1c-a770bef9e1b7@suse.cz>
+In-Reply-To: <7dddca4c-bc36-2cf0-de1c-a770bef9e1b7@suse.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-> >> 
-> >> Or am I missing something here?
-> > 
-> > Yeah I am with Paul on this, NAK on “blocking in kworker” instead of “checking for grace period + queuing either regular work or RCU work”. Note that blocking also adds a pointless and fully avoidable scheduler round trip.
+On 10/24/22 16:35, Vlastimil Babka wrote:
+> On 10/3/22 19:00, Matthew Wilcox wrote:
+>> On Sun, Oct 02, 2022 at 02:48:02PM +0900, Hyeonggon Yoo wrote:
+>>> Just one more thing, rcu_leak_callback too. RCU seem to use it
+>>> internally to catch double call_rcu().
+>>>
+>>> And some suggestions:
+>>> - what about adding runtime WARN() on slab init code to catch
+>>>    unexpected arch/toolchain issues?
+>>> - instead of 4, we may use macro definition? like (PAGE_MAPPING_FLAGS + 1)?
+>>
+>> I think the real problem here is that isolate_movable_page() is
+>> insufficiently paranoid.  Looking at the gyrations that GUP and the
+>> page cache do to convince themselves that the page they got really is
+>> the page they wanted, there are a few missing pieces (eg checking that
+>> you actually got a refcount on _this_ page and not some random other
+>> page you were temporarily part of a compound page with).
+>>
+>> This patch does three things:
+>>
+>>   - Turns one of the comments into English.  There are some others
+>>     which I'm still scratching my head over.
+>>   - Uses a folio to help distinguish which operations are being done
+>>     to the head vs the specific page (this is somewhat an abuse of the
+>>     folio concept, but it's acceptable)
+>>   - Add the aforementioned check that we're actually operating on the
+>>     page that we think we want to be.
+>>   - Add a check that the folio isn't secretly a slab.
+>>
+>> We could put the slab check in PageMapping and call it after taking
+>> the folio lock, but that seems pointless.  It's the acquisition of
+>> the refcount which stabilises the slab flag, not holding the lock.
+>>
 > 
-> As a side note, it’s notable how nicely this work evolved over the years thanks to Vlad and all of y’all’s work. For instance, flooding pages with kfree pointers and grace period polling was not something even invented back when kfree_rcu was a simple wrapper. Now it soon will be actually freeing memory faster, by avoiding waiting on RCU when not needed! And of course this is all happening probably because we wanted RCU to be lazy in nocb is a nice side effect of that effort ;-)
+> I would like to have a working safe version in -next, even if we are able
+> simplify it later thanks to frozen refcounts. I've made a formal patch of
+> yours, but I'm still convinced the slab check needs to be more paranoid so
+> it can't observe a false positive __folio_test_movable() while missing the
+> folio_test_slab(), hence I added the barriers as in my previous attempt [1].
+> Does that work for you and can I add your S-o-b?
 > 
-Yep. We want sometimes everything to be lazy :)
+> [1] https://lore.kernel.org/all/aec59f53-0e53-1736-5932-25407125d4d4@suse.cz/
 
---
-Uladzislau Rezki
+To move on, I pushed a branch based on a new version of [1] above. It 
+lacks Matthew's folio parts, which are not IMHO that critical right now, 
+so can be added later.
+
+It's here: 
+https://git.kernel.org/pub/scm/linux/kernel/git/vbabka/slab.git/log/?h=slab/for-6.2/fit_rcu_head
+
+Will also send for formal review soon.
+
