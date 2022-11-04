@@ -2,132 +2,120 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E383C433FE
-	for <rcu@archiver.kernel.org>; Fri,  4 Nov 2022 15:58:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C09DCC4332F
+	for <rcu@archiver.kernel.org>; Fri,  4 Nov 2022 17:06:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229699AbiKDP56 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 4 Nov 2022 11:57:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33726 "EHLO
+        id S229749AbiKDRGn (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 4 Nov 2022 13:06:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229749AbiKDP54 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 4 Nov 2022 11:57:56 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 071AD3120C;
-        Fri,  4 Nov 2022 08:57:53 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 7032C21A0D;
-        Fri,  4 Nov 2022 15:57:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1667577472; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xkdgu/IhDvyt2G73OuT4ZRFXwxGssWFVHtB3chCyIes=;
-        b=ih5GGGTqTeuC9bX6BVot0vGcfozyxqz4eGBGMcXMCWz39VHPPLRZuwdMmUMD78RhLj+Uu7
-        QD/Bt4pnAcdZOYbAcjI+x9gAimp8PBBDbwG2TCG7eAW7mW4dx4tPid982hsF+8AkaYsPug
-        JaoNaWA2x/9RBs4bwrc/N6BMfKil0uA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1667577472;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xkdgu/IhDvyt2G73OuT4ZRFXwxGssWFVHtB3chCyIes=;
-        b=j2lg/F/goGpqhKdWfZMxBXZv3NoXEKvMsD10uSeUqu/4T6OxlDCsxsBVtPKchIJCcqfF9A
-        FCPemW/F1cfRcdCQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 414D213216;
-        Fri,  4 Nov 2022 15:57:52 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 0CXXDoA2ZWMWYwAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Fri, 04 Nov 2022 15:57:52 +0000
-Message-ID: <a80932ef-d029-c82e-d171-ab8bdac8cbdc@suse.cz>
-Date:   Fri, 4 Nov 2022 16:57:51 +0100
+        with ESMTP id S231309AbiKDRGj (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 4 Nov 2022 13:06:39 -0400
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18FFB3E099
+        for <rcu@vger.kernel.org>; Fri,  4 Nov 2022 10:06:39 -0700 (PDT)
+Received: by mail-qt1-x829.google.com with SMTP id z6so3409564qtv.5
+        for <rcu@vger.kernel.org>; Fri, 04 Nov 2022 10:06:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=/jNIi3NLp/0QE0eLEgGhnlZnXslRxZtVSsauwMnJ52A=;
+        b=TyCMiI4ARMPxd18RVlEv+qm2LWR7zC104Hlivn40qb5lZJslIeDFuCNMNvjneFE/Nj
+         LFwCX5vAwmEX/R8qjGO9x9K9/hgdwoRd2q59WUqMzWoiDvISQjer+tTT1jJ7UfSLA8Vn
+         fR3VeAjk206NeR5DC2lSXJH82ZME8JVM9jplc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/jNIi3NLp/0QE0eLEgGhnlZnXslRxZtVSsauwMnJ52A=;
+        b=pLkA5lIbrOMBynFGKuEDIblaoEAov8UgMmG0UGj78dagkkGVDJJjJxM1j+5fbdunRK
+         bR6lwsqFqdDDSkEF5Leoli/CtfspInhcE0uvgJbPqmwp5TgWCn2+nQTNpqfJp37pCb0s
+         MHOIEil+69rd+OuzQw8b+5SNaqpgvq8vudfockhd/dRTDaXQUQ4Q/AdsGFbSTcQ7NMne
+         xvsRU3/kqUG5aCHXTxrDbLxYvc5g+cRUj2X6WXzn5fabWR9ujUOLVVIfw2Pqax9pU60F
+         f48jG2N2AwKtbRuIuQ5NLHFLNb8jaB0Tk8+UjxnqTvHXvS230qcB5dtr7BJukCdAjbE0
+         3b/g==
+X-Gm-Message-State: ACrzQf2FN1N3uvgywu7VGKt2l2m3muRZcjvyobByr0jBnvfQcYMMTnjH
+        9oCo/KubaW6B/hVGvKiGjFAA4a9Lc31f+A==
+X-Google-Smtp-Source: AMsMyM7hAMPfBA10HwUK2vQtdU5EcB1jW/4xMfMIU8oRkM2pvRi22g06fCdiKUWSk8i2fZ60kVxjYQ==
+X-Received: by 2002:a05:622a:284:b0:39c:cbec:e1f0 with SMTP id z4-20020a05622a028400b0039ccbece1f0mr29659151qtw.451.1667581597964;
+        Fri, 04 Nov 2022 10:06:37 -0700 (PDT)
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com. [209.85.219.177])
+        by smtp.gmail.com with ESMTPSA id bp9-20020a05620a458900b006f7ee901674sm3294595qkb.2.2022.11.04.10.06.37
+        for <rcu@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 04 Nov 2022 10:06:37 -0700 (PDT)
+Received: by mail-yb1-f177.google.com with SMTP id z192so6583796yba.0
+        for <rcu@vger.kernel.org>; Fri, 04 Nov 2022 10:06:37 -0700 (PDT)
+X-Received: by 2002:a81:8241:0:b0:370:5fad:47f0 with SMTP id
+ s62-20020a818241000000b003705fad47f0mr27409344ywf.441.1667581219811; Fri, 04
+ Nov 2022 10:00:19 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.1
-Subject: Re: amusing SLUB compaction bug when CC_OPTIMIZE_FOR_SIZE
-Content-Language: en-US
-From:   Vlastimil Babka <vbabka@suse.cz>
-To:     Matthew Wilcox <willy@infradead.org>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Cc:     Hugh Dickins <hughd@google.com>,
-        David Laight <David.Laight@aculab.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        rcu@vger.kernel.org
-References: <ea96c78c-e1dc-1364-e91-51909f82388b@google.com>
- <YzPgTtFzpKEfwPbK@hyeyoo> <YzRQvoVsnJzsauwb@google.com>
- <35502bdd-1a78-dea1-6ac3-6ff1bcc073fa@suse.cz>
- <ff905c1e-5eb3-eaf8-46de-38f189c0b7a5@google.com>
- <de71b83a-c82c-4785-ef5a-3db4f17bbc8d@suse.cz>
- <bcecece-f7ce-221d-1674-da3d5ab3fef@google.com> <YzkmErHFyYW3awRn@hyeyoo>
- <YzsVM8eToHUeTP75@casper.infradead.org>
- <7dddca4c-bc36-2cf0-de1c-a770bef9e1b7@suse.cz>
-In-Reply-To: <7dddca4c-bc36-2cf0-de1c-a770bef9e1b7@suse.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20221104054053.431922658@goodmis.org>
+In-Reply-To: <20221104054053.431922658@goodmis.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 4 Nov 2022 10:00:03 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whKE5UL+AuCC2wK8oq8D_ueSO_T7-9Acx4POouqVi8ZHg@mail.gmail.com>
+Message-ID: <CAHk-=whKE5UL+AuCC2wK8oq8D_ueSO_T7-9Acx4POouqVi8ZHg@mail.gmail.com>
+Subject: Re: [RFC][PATCH v3 00/33] timers: Use timer_shutdown*() before
+ freeing timers
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Anna-Maria Gleixner <anna-maria@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>, rcu@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-edac@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-acpi@vger.kernel.org,
+        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
+        linux-pm@vger.kernel.org, drbd-dev@lists.linbit.com,
+        linux-bluetooth@vger.kernel.org,
+        openipmi-developer@lists.sourceforge.net,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org, intel-gfx@lists.freedesktop.org,
+        linux-input@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-leds@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-ext4@vger.kernel.org, linux-nilfs@vger.kernel.org,
+        bridge@lists.linux-foundation.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, lvs-devel@vger.kernel.org,
+        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 10/24/22 16:35, Vlastimil Babka wrote:
-> On 10/3/22 19:00, Matthew Wilcox wrote:
->> On Sun, Oct 02, 2022 at 02:48:02PM +0900, Hyeonggon Yoo wrote:
->>> Just one more thing, rcu_leak_callback too. RCU seem to use it
->>> internally to catch double call_rcu().
->>>
->>> And some suggestions:
->>> - what about adding runtime WARN() on slab init code to catch
->>>    unexpected arch/toolchain issues?
->>> - instead of 4, we may use macro definition? like (PAGE_MAPPING_FLAGS + 1)?
->>
->> I think the real problem here is that isolate_movable_page() is
->> insufficiently paranoid.  Looking at the gyrations that GUP and the
->> page cache do to convince themselves that the page they got really is
->> the page they wanted, there are a few missing pieces (eg checking that
->> you actually got a refcount on _this_ page and not some random other
->> page you were temporarily part of a compound page with).
->>
->> This patch does three things:
->>
->>   - Turns one of the comments into English.  There are some others
->>     which I'm still scratching my head over.
->>   - Uses a folio to help distinguish which operations are being done
->>     to the head vs the specific page (this is somewhat an abuse of the
->>     folio concept, but it's acceptable)
->>   - Add the aforementioned check that we're actually operating on the
->>     page that we think we want to be.
->>   - Add a check that the folio isn't secretly a slab.
->>
->> We could put the slab check in PageMapping and call it after taking
->> the folio lock, but that seems pointless.  It's the acquisition of
->> the refcount which stabilises the slab flag, not holding the lock.
->>
-> 
-> I would like to have a working safe version in -next, even if we are able
-> simplify it later thanks to frozen refcounts. I've made a formal patch of
-> yours, but I'm still convinced the slab check needs to be more paranoid so
-> it can't observe a false positive __folio_test_movable() while missing the
-> folio_test_slab(), hence I added the barriers as in my previous attempt [1].
-> Does that work for you and can I add your S-o-b?
-> 
-> [1] https://lore.kernel.org/all/aec59f53-0e53-1736-5932-25407125d4d4@suse.cz/
+On Thu, Nov 3, 2022 at 10:48 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> Ideally, I would have the first patch go into this rc cycle, which is mostly
+> non functional as it will allow the other patches to come in via the respective
+> subsystems in the next merge window.
 
-To move on, I pushed a branch based on a new version of [1] above. It 
-lacks Matthew's folio parts, which are not IMHO that critical right now, 
-so can be added later.
+Ack.
 
-It's here: 
-https://git.kernel.org/pub/scm/linux/kernel/git/vbabka/slab.git/log/?h=slab/for-6.2/fit_rcu_head
+I also wonder if we could do the completely trivially correct
+conversions immediately.
 
-Will also send for formal review soon.
+I'm talking about the scripted ones where it's currently a
+"del_timer_sync()", and the very next action is freeing whatever data
+structure the timer is in (possibly with something like free_irq() in
+between - my point is that there's an unconditional free that is very
+clear and unambiguous), so that there is absolutely no question about
+whether they should use "timer_shutdown_sync()" or not.
 
+IOW, things like patches 03, 17 and 31, and at least parts others in
+this series.
+
+This series clearly has several much more complex cases that need
+actual real code review, and I think it would help to have the
+completely unambiguous cases out of the way, just to get rid of noise.
+
+So I'd take that first patch, and a scripted set of "this cannot
+change any semantics" patches early.
+
+                Linus
