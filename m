@@ -2,184 +2,80 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B4419C43217
-	for <rcu@archiver.kernel.org>; Fri,  4 Nov 2022 14:38:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 40521C433FE
+	for <rcu@archiver.kernel.org>; Fri,  4 Nov 2022 14:41:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232184AbiKDOih (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 4 Nov 2022 10:38:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53410 "EHLO
+        id S230491AbiKDOlI (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 4 Nov 2022 10:41:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231971AbiKDOiS (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 4 Nov 2022 10:38:18 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CD30303F4;
-        Fri,  4 Nov 2022 07:36:03 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id d26so13729845eje.10;
-        Fri, 04 Nov 2022 07:36:02 -0700 (PDT)
+        with ESMTP id S232009AbiKDOk2 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 4 Nov 2022 10:40:28 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39399252;
+        Fri,  4 Nov 2022 07:39:13 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id kt23so13784914ejc.7;
+        Fri, 04 Nov 2022 07:39:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=hbI2QD5UMs4NHXnChO3Yb2pwO6s4X4JcbZn2M8Fkfew=;
-        b=gNwZsJ71w0WB1ijO8qhTbMDr93hj8/oIvBBZt/r+dWTQ1sBXrm/MCVGHjmP73KNqpu
-         M5qC52KxXbcq0TvzYo+/wSqhtDVCTFCawJs5RxCqjP2eKimkH+7vHCmgiA/WOQKL16QR
-         6Xx+PzNh3faR2kJseRA4I7ElYnCIps+kvJ6PAsNvKqK0X+I40AsHz4YtKVxqI6ijYOde
-         HDCw5eEz5CswnalwzsfUxYDqsDCQY0Oi3+5WmIUI4DpHW0xA2z4C4FXbWUhKw6bUHieM
-         Avo1JxIrwkhZ9JwNOF/20Kr+NRrU6wqMX7z/HuWpkJ+VGUvnaoCPEKSVrj464p8Oxz5Y
-         n5+Q==
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=TKI2Rm0nmAOBvoxMHybRVhHgXn9iOorCatBXZqOgdZQ=;
+        b=KyeWtzWN1f6d/r8FPUC2Hejyin0NjpcVdthIye+ByVrThaas4/ycSeE4Dl2r/v9o/L
+         tJApK9jqpu7Jq73ium4P/LULmFioy4gHnWcpyp/Lo+3eMc9t9p+CQGh9uR4vHFk6QPKP
+         dLy58PY4huuLSWpfTj/5vKA5tS89PnsrfUSxWVji4Tba+eSX/dHA2/IH4neQf5AnHZ8p
+         ts7WAVqQf2kvaTfYt/0lSvIUbBOXjb8lyf5U5IbAG6Wb9gT2H4+m/CjunDGXNJ4IkgWQ
+         0w0ZwNYlIJ9TN2nB4gcTIzmwd/FhCIU2b6253Z1mQdWzEICOLL2Z+pZXy3B2mE6etZ/E
+         NUqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hbI2QD5UMs4NHXnChO3Yb2pwO6s4X4JcbZn2M8Fkfew=;
-        b=TtyM3uoUiCcOFqQQHwUaL3seRP+EpsWTFWH+VkJByHwSUwrCSI6COtej7wqe4bVpXt
-         eIxJfu0KGL4jso6eaihqyPeEp0gUczAnT7hqz9gP2fJxZCZw8L8di1yGNBi7WweKrdfC
-         kXywb19YLx9caCgUkLyqCzoaa7tzPHDjJu0DJKpiySTJiCneW9k17D1ttzRCId2XsfPF
-         9bWR5Dpd45AfxLfXl0dkOYNN/TygA7tXwLz+/Ymov0vL2fahjoSdbDwINYR6x1JOWFFK
-         W1rBJMEIewKTLrOBPXYnWqzZlhKjo0n2WNPHLUcPHJ4JOOrIe753s5iYbvs9ELN38Mqp
-         Z0yA==
-X-Gm-Message-State: ACrzQf2ZSQI/+2D5316eqX/L8LqVUiRMxwR7jLbxRWO3wPQxScoquDvx
-        dc0pim06QX5rHYsqVhrwvf0=
-X-Google-Smtp-Source: AMsMyM7P8lYkc7sPcBWqSE3zEBKP+RbMXkWMfPWimF8wBLwHVsl871neEyeuucrytYW7/9Rccz3z8A==
-X-Received: by 2002:a17:907:6288:b0:78d:ab30:c374 with SMTP id nd8-20020a170907628800b0078dab30c374mr34859893ejc.266.1667572561249;
-        Fri, 04 Nov 2022 07:36:01 -0700 (PDT)
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TKI2Rm0nmAOBvoxMHybRVhHgXn9iOorCatBXZqOgdZQ=;
+        b=zaExL5eG4AXeXfdS2hZCtc9MkkAEE4bDJRBxFvckvpCfDvqxHy+wgDmqXmHC7l+OPu
+         g92LMfA0GGssbTR2ey7P4DB+JJUzXTNhdQc3mAAhnu2v0wPziU8U9H2brAptjK0G1vfz
+         HwDkWeXihL/dlLDfyCDHPJptgMX5LPwOfQu0iyiG3r2KECn9P51hV95MvFrPvQvxn+dt
+         SBDAKXDACC6ohV+eWqC8T/BZoU9fo3TGXRAZEJTqHq/PbONRzZY6vlj1aDo/VZcp9BUa
+         pbg0EL8dEyFhz+c/9RrS2ZgdyxjTu5JllFlvLgjukNm/TK53tqTYqaeDgyKiHOjX8ixd
+         XZyQ==
+X-Gm-Message-State: ACrzQf3JHN3eijOQ2xhoHYnKkET70cnDcTfItyzvIok2lXgQoBSwTG5M
+        V87wrDCap/++ZwWNk036A2o=
+X-Google-Smtp-Source: AMsMyM4PLmGit3FGL9qRVhbCnGUWxyNsqyUD7mQyrD2IFqsNFrbdPvR41NcNJevkiyrOrugAGNWrYA==
+X-Received: by 2002:a17:906:8473:b0:77b:efa8:50e4 with SMTP id hx19-20020a170906847300b0077befa850e4mr34569102ejc.250.1667572751642;
+        Fri, 04 Nov 2022 07:39:11 -0700 (PDT)
 Received: from pc638.lan ([155.137.26.201])
-        by smtp.gmail.com with ESMTPSA id n10-20020aa7db4a000000b00461621cae1fsm1982024edt.16.2022.11.04.07.36.00
+        by smtp.gmail.com with ESMTPSA id x67-20020a50bac9000000b00457b5ba968csm2001658ede.27.2022.11.04.07.39.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Nov 2022 07:36:00 -0700 (PDT)
+        Fri, 04 Nov 2022 07:39:11 -0700 (PDT)
 From:   Uladzislau Rezki <urezki@gmail.com>
 X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Fri, 4 Nov 2022 15:35:59 +0100
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Date:   Fri, 4 Nov 2022 15:39:09 +0100
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     paulmck@kernel.org, Uladzislau Rezki <urezki@gmail.com>,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH RFC] rcu/kfree: Do not request RCU when not needed
-Message-ID: <Y2UjT4yuFvU5d6FU@pc638.lan>
-References: <20221102184911.GP5600@paulmck-ThinkPad-P17-Gen-1>
- <755B5ED1-653D-4E57-B114-77CDE10A9033@joelfernandes.org>
- <20221102202813.GR5600@paulmck-ThinkPad-P17-Gen-1>
- <Y2O3Bz0DMEBZF+83@pc638.lan>
- <20221103175143.GB5600@paulmck-ThinkPad-P17-Gen-1>
+Message-ID: <Y2UkDZDKXOaH9jA0@pc638.lan>
+References: <ACF5E134-0C17-484B-AF9E-D4E6FAC9535F@joelfernandes.org>
+ <B78EFE6F-D479-4F96-89CC-E19CA4146FF8@joelfernandes.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20221103175143.GB5600@paulmck-ThinkPad-P17-Gen-1>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <B78EFE6F-D479-4F96-89CC-E19CA4146FF8@joelfernandes.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-> > > 
-> > This concern works in both cases. I mean in default configuration and
-> > with a posted patch. The reclaim work, which name is kfree_rcu_work() only
-> > does a progress when a gp is passed so the rcu_work_rcufn() can queue
-> > our reclaim kworker.
+> >> 
+> >> Or am I missing something here?
 > > 
-> > As it is now:
-> > 
-> > 1. Collect pointers, then we decide to drop them we queue the
-> >    monitro_work() worker to the system_wq.
-> > 
-> > 2. The monitor work, kfree_rcu_work(), tries to attach or saying
-> > it by another words bypass a "backlog" to "free" channels.
-> > 
-> > 3. It invokes the queue_rcu_work() that does call_rcu_flush() and
-> > in its turn it queues our worker from the handler. So the worker
-> > is run after GP is passed.
+> > Yeah I am with Paul on this, NAK on “blocking in kworker” instead of “checking for grace period + queuing either regular work or RCU work”. Note that blocking also adds a pointless and fully avoidable scheduler round trip.
 > 
-> So as it is now, we are not tying up a kworker kthread while waiting
-> for the grace period, correct?  We instead have an RCU callback queued
-> during that time, and the kworker kthread gets involved only after the
-> grace period ends.
+> As a side note, it’s notable how nicely this work evolved over the years thanks to Vlad and all of y’all’s work. For instance, flooding pages with kfree pointers and grace period polling was not something even invented back when kfree_rcu was a simple wrapper. Now it soon will be actually freeing memory faster, by avoiding waiting on RCU when not needed! And of course this is all happening probably because we wanted RCU to be lazy in nocb is a nice side effect of that effort ;-)
 > 
-Yes. The reclaim kworker is not kicked until a wrapper callback pushed
-via queue_rcu_work() -> call_rcu_flush() is invoked by the nocb-kthread:
-
-<snip>
-static void rcu_work_rcufn(struct rcu_head *rcu)
-{
-...
-	/* read the comment in __queue_work() */
-	local_irq_disable();
-	__queue_work(WORK_CPU_UNBOUND, rwork->wq, &rwork->work);
-	local_irq_enable();
-}
-
-bool queue_rcu_work(struct workqueue_struct *wq, struct rcu_work *rwork)
-{
-...
-	if (!test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work))) {
-		rwork->wq = wq;
-		call_rcu_flush(&rwork->rcu, rcu_work_rcufn);
-..
-<snip>
-
-rcu_work_rcufn() callback runs our reclaim work after a full grace period.
-There is not so good dependency. If it is number, say, 10 000 in the cblist
-then we just wait for our time in a queue.
-
-> > With a patch: 
-> > 
-> > [1] and [2] steps are the same. But on third step we do:
-> > 
-> > 1. Record the GP status for last in channel;
-> > 2. Directly queue the drain work without any call_rcu() helpers;
-> > 3. On the reclaim worker entry we check if GP is passed;
-> > 4. If not it invokes synchronize_rcu().
-> 
-> And #4 changes that, by (sometimes) tying up a kworker kthread for the
-> full grace period.
-> 
-Yes if GP is not passed we need to wait it anyway. Like this is done in
-default case. call_rcu()'s callback waits for a full grace period also
-and after that queues the work.
-
-It is the same. But patched version can proceed reclaim right away if
-"during the fly" the GP is passed. On my tests i see it is ~30-40% of
-cases.
-
-With a patch it also does not require go over RCU-core layer that is
-definitely longer.
-
-> > The patch eliminates extra steps by not going via RCU-core route
-> > instead it directly invokes the reclaim worker where it either
-> > proceed or wait a GP if needed.
-> 
-> I agree that the use of the polled API could be reducing delays, which
-> is a good thing.  Just being my usual greedy self and asking "Why not
-> both?", that is use queue_rcu_work() instead of synchronize_rcu() in
-> conjunction with the polled APIs so as to avoid both the grace-period
-> delay and the tying up of the kworker kthread.
-> 
-> Or am I missing something here?
-> 
-Looks like not :) 
-
-1.
-I was thinking about tracking a GP status for set of objects. With last
-in one we need to keep it updated for the whole set. Such objects can be
-freed faster, for example from monitor kworker. All other can go over
-queue_rcu_work().
-
-This is more complex design but probably could be better. It will require
-split such chains for whom a GP is passed and not.
-
-Please note there can be hidden problems and what i wrote might not be
-easily applicable.
-
-The patch i sent is an attempt to optimize it by not introducing the
-big delta to current design.
-
-2. 
-call_rcu()
-   -> queue_work();
-          -> do reclaim
-
-queue_work();
-    -> synchronize_rcu() or not if passed, do reclaim
-
-I can miss something though, why the latest is a bad way?
+Yep. We want sometimes everything to be lazy :)
 
 --
 Uladzislau Rezki
