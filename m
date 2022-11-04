@@ -2,114 +2,95 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 16873C4332F
-	for <rcu@archiver.kernel.org>; Fri,  4 Nov 2022 13:43:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DC3D3C4332F
+	for <rcu@archiver.kernel.org>; Fri,  4 Nov 2022 14:12:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231309AbiKDNn3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 4 Nov 2022 09:43:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37254 "EHLO
+        id S231620AbiKDOMN (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 4 Nov 2022 10:12:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231230AbiKDNnT (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 4 Nov 2022 09:43:19 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CBA22EF78;
-        Fri,  4 Nov 2022 06:43:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 222AF621CC;
-        Fri,  4 Nov 2022 13:43:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F090C433D7;
-        Fri,  4 Nov 2022 13:43:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1667569396;
-        bh=LPyJaxaOHK4G2D48z6wF/Zc06S5BTDosBA89vgZ2y4k=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=kE3AnVQtlAjHQl05ZDPcMaE+T3APoJ27ZAZUYt/YvUuX/mVuIe6HprPEmjDzodfBb
-         zTuFmevsVGQaiY1ftU/vc9OpHLHIwBH4sfHyMlKmZN/D12jkAY2diSb0KFO2yrJcDQ
-         LEjpp4T8MfWtnSgCqb/Cj4D1BPpusw60rVtfNpjl3GXh9FvvOafHPjfzYCF2cqOn9S
-         cU1O/q903X2p3c+46N+G8Su3NcHU0FBvaglL3cwUb+/DIGi0NDwxBsp+DDTPoJzi3A
-         SdvXqhrSk9xddhvyylZYplxG9iSdAMdRgAufXMJNZwetEyhRxHyUgUAHbFkoGlZiIp
-         +SyXxuawWpwSg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 22EDC5C0A0A; Fri,  4 Nov 2022 06:43:16 -0700 (PDT)
-Date:   Fri, 4 Nov 2022 06:43:16 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        with ESMTP id S231238AbiKDOMM (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 4 Nov 2022 10:12:12 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 604DBDF13;
+        Fri,  4 Nov 2022 07:12:11 -0700 (PDT)
+Received: from dggpemm500022.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4N3jHW29YCzRp2L;
+        Fri,  4 Nov 2022 22:12:07 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Fri, 4 Nov 2022 22:12:09 +0800
+Received: from thunder-town.china.huawei.com (10.174.178.55) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Fri, 4 Nov 2022 22:12:08 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
+        "Josh Triplett" <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Robert Elliott <elliott@hpe.com>
-Subject: Re: [PATCH v4 4/4] rcu: Add RCU stall diagnosis information
-Message-ID: <20221104134316.GM5600@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20221104021224.102-1-thunder.leizhen@huawei.com>
- <20221104021224.102-5-thunder.leizhen@huawei.com>
- <311242b9-e61c-376f-4db1-f3d6b30ec84e@huawei.com>
+        Joel Fernandes <joel@joelfernandes.org>, <rcu@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Robert Elliott <elliott@hpe.com>
+Subject: [PATCH v5 3/4] sched: Add helper nr_context_switches_cpu()
+Date:   Fri, 4 Nov 2022 22:11:16 +0800
+Message-ID: <20221104141118.119-4-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.37.3.windows.1
+In-Reply-To: <20221104141118.119-1-thunder.leizhen@huawei.com>
+References: <20221104141118.119-1-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <311242b9-e61c-376f-4db1-f3d6b30ec84e@huawei.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.178.55]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Nov 04, 2022 at 11:12:02AM +0800, Leizhen (ThunderTown) wrote:
-> 
-> 
-> On 2022/11/4 10:12, Zhen Lei wrote:
-> > diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-> > index d4a97e40ea9c3e2..44d49819a31f050 100644
-> > --- a/kernel/rcu/tree.h
-> > +++ b/kernel/rcu/tree.h
-> > @@ -158,6 +158,22 @@ union rcu_noqs {
-> >  	u16 s; /* Set of bits, aggregate OR here. */
-> >  };
-> >  
-> > +/*
-> > + * Record the snapshot of the core stats at 1/2 rcu stall timeout. The member
-> > + * gp_seq is used to ensure that all members are updated only once during the
-> > + * second half period. The snapshot is taken only if this gp_seq is not equal
-> > + * to rdp->gp_seq.
-> > + */
-> > +struct rcu_snap_record {
-> > +	unsigned long	gp_seq;		/* Track rdp->gp_seq counter */
-> > +	u64		cputime_irq;	/* Accumulated cputime of hard irqs */
-> > +	u64		cputime_softirq;/* Accumulated cputime of soft irqs */
-> > +	u64		cputime_system; /* Accumulated cputime of kernel tasks */
-> > +	unsigned long	nr_hardirqs;	/* Accumulated number of hard irqs */
-> > +	unsigned int	nr_softirqs;	/* Accumulated number of soft irqs */
-> > +	unsigned long long nr_csw;	/* Accumulated number of task switches */
-> > +};
-> > +
-> >  /* Per-CPU data for read-copy update. */
-> >  struct rcu_data {
-> >  	/* 1) quiescent-state and grace-period handling : */
-> > @@ -262,6 +278,7 @@ struct rcu_data {
-> >  	short rcu_onl_gp_flags;		/* ->gp_flags at last online. */
-> >  	unsigned long last_fqs_resched;	/* Time of last rcu_resched(). */
-> >  	unsigned long last_sched_clock;	/* Jiffies of last rcu_sched_clock_irq(). */
-> > +	struct rcu_snap_record snap_record; /* Snapshot of core stats at 1/2 rcu stall timeout */
-> >  
-> >  	int cpu;
-> >  };
-> 
-> Sorry, I forgot to update linux-rcu.git. There is a conflict here.
-> 
-> ----------------
->  	int cpu;
->   };
-> ------------should be--------
->  	long lazy_len;			/* Length of buffered lazy callbacks. */
->  	int cpu;
-> ----------------
+Returns the number of context switches on the specified CPU, which can be
+used to diagnose rcu stall.
 
-Not a problem!  Looks good otherwise.
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+---
+ include/linux/kernel_stat.h | 1 +
+ kernel/sched/core.c         | 5 +++++
+ 2 files changed, 6 insertions(+)
 
-So please just rebase your series onto -rcu and repost.
+diff --git a/include/linux/kernel_stat.h b/include/linux/kernel_stat.h
+index 898076e173a928a..9935f7ecbfb9e31 100644
+--- a/include/linux/kernel_stat.h
++++ b/include/linux/kernel_stat.h
+@@ -52,6 +52,7 @@ DECLARE_PER_CPU(struct kernel_cpustat, kernel_cpustat);
+ #define kstat_cpu(cpu) per_cpu(kstat, cpu)
+ #define kcpustat_cpu(cpu) per_cpu(kernel_cpustat, cpu)
+ 
++extern unsigned long long nr_context_switches_cpu(int cpu);
+ extern unsigned long long nr_context_switches(void);
+ 
+ extern unsigned int kstat_irqs_cpu(unsigned int irq, int cpu);
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 5800b0623ff3068..a0d19f67f2046d9 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -5229,6 +5229,11 @@ bool single_task_running(void)
+ }
+ EXPORT_SYMBOL(single_task_running);
+ 
++unsigned long long nr_context_switches_cpu(int cpu)
++{
++	return cpu_rq(cpu)->nr_switches;
++}
++
+ unsigned long long nr_context_switches(void)
+ {
+ 	int i;
+-- 
+2.25.1
 
-							Thanx, Paul
