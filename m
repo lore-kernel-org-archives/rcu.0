@@ -2,99 +2,114 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 45668C4332F
-	for <rcu@archiver.kernel.org>; Fri,  4 Nov 2022 09:38:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 16873C4332F
+	for <rcu@archiver.kernel.org>; Fri,  4 Nov 2022 13:43:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230089AbiKDJiV (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 4 Nov 2022 05:38:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54192 "EHLO
+        id S231309AbiKDNn3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 4 Nov 2022 09:43:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231527AbiKDJiT (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 4 Nov 2022 05:38:19 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6CCC2A96F
-        for <rcu@vger.kernel.org>; Fri,  4 Nov 2022 02:38:17 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id g12so6681529lfh.3
-        for <rcu@vger.kernel.org>; Fri, 04 Nov 2022 02:38:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=dhhnkI9EEd+K9MLjuL6iawNK/Q1MgYNmURrylUzFfVA=;
-        b=PEy3wa7HWBIMn1UajWkjMUIVgDNVUATzRlqlQq43sZYvzWgE80yQTFlyD+hm2IGkFL
-         KeH3pJjdC/sTX3ffzRmmjEm3TCv0S0ZRjaIov1ay+RRDucJxR0YnK3nrItigqiFf9GfU
-         K1ypNJgJGEdAgWMyD5W4asRIJIXPFfBKAay6nEUDuQpnCiH5HNzDCf/Mzj90QMHcuxsk
-         cDd0cc/8AHoska7ucCcNHAg2vutiVJzSXP5WKP8cp7R24pPhbnG5pLmdCLFGzuZmKdQY
-         xep+zzsyfH/cfv6+c9KQTBDB7LlsF+a9o5m/zpKYu6lnV03ljulAKQJWI/EaQUOTh1Og
-         R2WA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=dhhnkI9EEd+K9MLjuL6iawNK/Q1MgYNmURrylUzFfVA=;
-        b=eimfAiODGBB2BZA1k0KNfOsEwP0UHJrK1iuYxuijE5gfeEH3LLPj5xNzgMTvz5ah3o
-         MXNmoNpi38hCNrUjscRIO7Rw3Fy6rwNoLAiCAWh8IO7m3QAdJToqwk1PFp8Iu7VzSWVU
-         oVNmnOkWrb4xxDABlQEsevRLk3BFzJBV6bXoVKhrs0KZlG9QUj70Yc+wsi629Q8gMBNS
-         vJ+jeV2A/nwtveX4eafmLIoyY4xK3rhD+OHyhO7YnCSAtEdKywRllv69SrklGuGHcDUn
-         PsoIweeDbY7dO3Dlh8/s08ds92nKtFRbkH4fasxuG2yUzWfTlEk+amHyYyGfGZ+N6B5X
-         r6zw==
-X-Gm-Message-State: ACrzQf0j1nUmwpQGfoBbLZvxeDfW2VQf+bGHacoU92CI72ge18UfW8gY
-        bC6NOZh1RDCApPoC9/rPlI3nxEBhTUpsin3D0A==
-X-Google-Smtp-Source: AMsMyM4kmIvQhnMsj7o0wzleUCco66rghGk34B6JIOIRuQNMfpvYue3RLJfiAvXiqNSgmZFBUAgvSgJCPA6cTQgA5w4=
-X-Received: by 2002:ac2:4908:0:b0:4b1:5094:d45 with SMTP id
- n8-20020ac24908000000b004b150940d45mr5488705lfi.1.1667554696040; Fri, 04 Nov
- 2022 02:38:16 -0700 (PDT)
-MIME-Version: 1.0
-References: <20221103131313.41536-1-kernelfans@gmail.com> <20221103133607.GB1410480@lothringen>
-In-Reply-To: <20221103133607.GB1410480@lothringen>
-From:   Pingfan Liu <kernelfans@gmail.com>
-Date:   Fri, 4 Nov 2022 17:38:04 +0800
-Message-ID: <CAFgQCTsq58dRvAKJ+4WSLntNxn1y8-K+aVTdgZXGDSbsOJsKpg@mail.gmail.com>
-Subject: Re: [PATCH] srcu: Fix a rare race issue in __srcu_read_(un)lock()
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     rcu@vger.kernel.org, Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
+        with ESMTP id S231230AbiKDNnT (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 4 Nov 2022 09:43:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CBA22EF78;
+        Fri,  4 Nov 2022 06:43:17 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 222AF621CC;
+        Fri,  4 Nov 2022 13:43:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F090C433D7;
+        Fri,  4 Nov 2022 13:43:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1667569396;
+        bh=LPyJaxaOHK4G2D48z6wF/Zc06S5BTDosBA89vgZ2y4k=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=kE3AnVQtlAjHQl05ZDPcMaE+T3APoJ27ZAZUYt/YvUuX/mVuIe6HprPEmjDzodfBb
+         zTuFmevsVGQaiY1ftU/vc9OpHLHIwBH4sfHyMlKmZN/D12jkAY2diSb0KFO2yrJcDQ
+         LEjpp4T8MfWtnSgCqb/Cj4D1BPpusw60rVtfNpjl3GXh9FvvOafHPjfzYCF2cqOn9S
+         cU1O/q903X2p3c+46N+G8Su3NcHU0FBvaglL3cwUb+/DIGi0NDwxBsp+DDTPoJzi3A
+         SdvXqhrSk9xddhvyylZYplxG9iSdAMdRgAufXMJNZwetEyhRxHyUgUAHbFkoGlZiIp
+         +SyXxuawWpwSg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 22EDC5C0A0A; Fri,  4 Nov 2022 06:43:16 -0700 (PDT)
+Date:   Fri, 4 Nov 2022 06:43:16 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Content-Type: text/plain; charset="UTF-8"
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Robert Elliott <elliott@hpe.com>
+Subject: Re: [PATCH v4 4/4] rcu: Add RCU stall diagnosis information
+Message-ID: <20221104134316.GM5600@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20221104021224.102-1-thunder.leizhen@huawei.com>
+ <20221104021224.102-5-thunder.leizhen@huawei.com>
+ <311242b9-e61c-376f-4db1-f3d6b30ec84e@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <311242b9-e61c-376f-4db1-f3d6b30ec84e@huawei.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Nov 3, 2022 at 9:36 PM Frederic Weisbecker <frederic@kernel.org> wrote:
->
-> On Thu, Nov 03, 2022 at 09:13:13PM +0800, Pingfan Liu wrote:
-> > Clarify at first:
-> >   This issue is totally detected by code suspicion, not a real experience.
-> >
-> > Scene:
-> >
-> >   __srcu_read_(un)lock() uses percpu variable srcu_(un)lock_count[2].
-> > Normally, the percpu can help avoid the non-atomic RMW issue, but in
-> > some rare cases, it can not.
-> >
-> > Supposing that __srcu_read_lock() runs on cpuX, the statement
-> >     this_cpu_inc(ssp->sda->srcu_lock_count[idx]);
-> > can be decomposed into two sub group:
-> >     -1. get the address of this_cpu_ptr(ssp->sda)->srcu_lock_count[idx],
-> > denoted as addressX and let unsigned long *pX = addressX;
-> >     -2. *pX = *pX + 1;
->
-> It's not supposed to happen:
->
-> * The weak version of this_cpu_inc() disables interrupts during the whole.
-> * x86 adds directly to gs/fs memory
-> * arm64, loongarch, s390 disable preemption
->
-> This has to be a fundamental constraint of this_cpu_*() ops implementation.
->
+On Fri, Nov 04, 2022 at 11:12:02AM +0800, Leizhen (ThunderTown) wrote:
+> 
+> 
+> On 2022/11/4 10:12, Zhen Lei wrote:
+> > diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+> > index d4a97e40ea9c3e2..44d49819a31f050 100644
+> > --- a/kernel/rcu/tree.h
+> > +++ b/kernel/rcu/tree.h
+> > @@ -158,6 +158,22 @@ union rcu_noqs {
+> >  	u16 s; /* Set of bits, aggregate OR here. */
+> >  };
+> >  
+> > +/*
+> > + * Record the snapshot of the core stats at 1/2 rcu stall timeout. The member
+> > + * gp_seq is used to ensure that all members are updated only once during the
+> > + * second half period. The snapshot is taken only if this gp_seq is not equal
+> > + * to rdp->gp_seq.
+> > + */
+> > +struct rcu_snap_record {
+> > +	unsigned long	gp_seq;		/* Track rdp->gp_seq counter */
+> > +	u64		cputime_irq;	/* Accumulated cputime of hard irqs */
+> > +	u64		cputime_softirq;/* Accumulated cputime of soft irqs */
+> > +	u64		cputime_system; /* Accumulated cputime of kernel tasks */
+> > +	unsigned long	nr_hardirqs;	/* Accumulated number of hard irqs */
+> > +	unsigned int	nr_softirqs;	/* Accumulated number of soft irqs */
+> > +	unsigned long long nr_csw;	/* Accumulated number of task switches */
+> > +};
+> > +
+> >  /* Per-CPU data for read-copy update. */
+> >  struct rcu_data {
+> >  	/* 1) quiescent-state and grace-period handling : */
+> > @@ -262,6 +278,7 @@ struct rcu_data {
+> >  	short rcu_onl_gp_flags;		/* ->gp_flags at last online. */
+> >  	unsigned long last_fqs_resched;	/* Time of last rcu_resched(). */
+> >  	unsigned long last_sched_clock;	/* Jiffies of last rcu_sched_clock_irq(). */
+> > +	struct rcu_snap_record snap_record; /* Snapshot of core stats at 1/2 rcu stall timeout */
+> >  
+> >  	int cpu;
+> >  };
+> 
+> Sorry, I forgot to update linux-rcu.git. There is a conflict here.
+> 
+> ----------------
+>  	int cpu;
+>   };
+> ------------should be--------
+>  	long lazy_len;			/* Length of buffered lazy callbacks. */
+>  	int cpu;
+> ----------------
 
-Thanks! I find the exact implementation in the code, also there is
-notes about this_cpu_*() api, which says they are safe from preemption
-and interrupt.
+Not a problem!  Looks good otherwise.
 
-Regards,
+So please just rebase your series onto -rcu and repost.
 
-    Pingfan
+							Thanx, Paul
