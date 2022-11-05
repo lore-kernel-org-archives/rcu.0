@@ -2,99 +2,105 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 05CBAC4332F
-	for <rcu@archiver.kernel.org>; Sat,  5 Nov 2022 20:32:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 15A6BC433FE
+	for <rcu@archiver.kernel.org>; Sat,  5 Nov 2022 21:03:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229956AbiKEUcb (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 5 Nov 2022 16:32:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46992 "EHLO
+        id S230078AbiKEVDm (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 5 Nov 2022 17:03:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229694AbiKEUc3 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 5 Nov 2022 16:32:29 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B025BB7FD;
-        Sat,  5 Nov 2022 13:32:25 -0700 (PDT)
+        with ESMTP id S229453AbiKEVDe (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 5 Nov 2022 17:03:34 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5BADDFB2;
+        Sat,  5 Nov 2022 14:03:32 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8954360BA8;
-        Sat,  5 Nov 2022 20:32:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF3E3C433C1;
-        Sat,  5 Nov 2022 20:32:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1667680343;
-        bh=4IoyiSINcZesU5NJzWsAUfgEAFFynTO7glS9QxuuuOs=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=VedjwSz99ciD3apPl27Y0/mEDKEjrN00Vka/IajeGepbXBtBmy0jpvQtTa97iHoC/
-         Cjl86A9A2mojNeO8qtzjxdWANkMz8a73t8Vdi00xEWyyes8B1lRXITyntbNRc99ZAZ
-         DXpy6k82NBaRc0TgkphPV3VuOKksAzpYTFh88Jn3rDebrMmzgpgzFVQaNcxnOcz45S
-         Ui6uI2ig0KeFOWZ3uRje/5v/cZEl/IHKb4YpbAM0fmSqMU5t4sDet50mJHcsnQ/Pfj
-         OhDKcVwBvxPNqKGJM+1yzOl3ZMZTUwL2HJ3qmKp9/BQmgHH3GktCqadPazpRT9grkM
-         xLFlC9tMQs/Vg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 0B4B95C09A2; Sat,  5 Nov 2022 13:32:20 -0700 (PDT)
-Date:   Sat, 5 Nov 2022 13:32:20 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Cc:     "Elliott, Robert (Servers)" <elliott@hpe.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 4/4] rcu: Add RCU stall diagnosis information
-Message-ID: <20221105203220.GD28461@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20221104021224.102-1-thunder.leizhen@huawei.com>
- <20221104021224.102-5-thunder.leizhen@huawei.com>
- <MW5PR84MB18425CBD1259317004F7771AAB3A9@MW5PR84MB1842.NAMPRD84.PROD.OUTLOOK.COM>
- <14e3aa38-98e6-01be-8cde-68fd1f85edf4@huawei.com>
+        by ams.source.kernel.org (Postfix) with ESMTPS id 54DF4B808BF;
+        Sat,  5 Nov 2022 21:03:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69FADC433D6;
+        Sat,  5 Nov 2022 21:03:26 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="Ek158U/I"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1667682204;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=eqdLYS8BDcnZ1CTVSLTL2V9mpBrsInljjeWX569KabI=;
+        b=Ek158U/IwAdzp/7JgxH8/niYIDD2c7iDpM/q00frrsf+kptgL3uCiSQ7Xlb7SIQ9YvTtg5
+        hlBVvQrg9GahoQxIsHXxgh/CGzM4sTACdo/WX2PYJwuZbLx0SZ+njeVN3snq9LgpG5MQMr
+        EBxmnADIwq+lyFhZU+rPI7l5k3bHDuo=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id f7ca4808 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Sat, 5 Nov 2022 21:03:23 +0000 (UTC)
+Date:   Sat, 5 Nov 2022 22:03:18 +0100
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Anna-Maria Gleixner <anna-maria@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>, rcu@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-edac@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-acpi@vger.kernel.org,
+        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
+        linux-pm@vger.kernel.org, drbd-dev@lists.linbit.com,
+        linux-bluetooth@vger.kernel.org,
+        openipmi-developer@lists.sourceforge.net,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org, intel-gfx@lists.freedesktop.org,
+        linux-input@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-leds@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-ext4@vger.kernel.org, linux-nilfs@vger.kernel.org,
+        bridge@lists.linux-foundation.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, lvs-devel@vger.kernel.org,
+        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net, alsa-devel@alsa-project.org
+Subject: Re: [PATCH v4a 00/38] timers: Use timer_shutdown*() before freeing
+ timers
+Message-ID: <Y2bPlllkHo5DUmLY@zx2c4.com>
+References: <20221105060024.598488967@goodmis.org>
+ <CAHk-=wi95dGkg7DiuOZ27gGW+mxJipn9ykB6LHB-HrbbLG6OMQ@mail.gmail.com>
+ <20221105123642.596371c7@rorschach.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <14e3aa38-98e6-01be-8cde-68fd1f85edf4@huawei.com>
+In-Reply-To: <20221105123642.596371c7@rorschach.local.home>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, Nov 05, 2022 at 03:03:14PM +0800, Leizhen (ThunderTown) wrote:
-> On 2022/11/5 9:58, Elliott, Robert (Servers) wrote:
+On Sat, Nov 05, 2022 at 12:36:42PM -0400, Steven Rostedt wrote:
+> ----------------------8<------------------------
+> @@
+> identifier ptr, timer, rfield, slab;
+> @@
+> (
+> -	del_timer(&ptr->timer);
+> +	timer_shutdown(&ptr->timer);
+> |
+> -	del_timer_sync(&ptr->timer);
+> +	timer_shutdown_sync(&ptr->timer);
+> )
+>     ...
+> (
+> 	kfree_rcu(ptr, rfield);
+> |
+> 	kmem_cache_free(slab, ptr);
+> |
+> 	kfree(ptr);
+> )
+> ---------------------->8------------------------
 
-[ . . . ]
+Something that might help here is changing the `...` into
+`... when exists` or into `... when != ptr` or similar.
+See this section of the manual:
+https://coccinelle.gitlabpages.inria.fr/website/docs/main_grammar004.html
 
-> >> +int rcu_cpu_stall_cputime __read_mostly =
-> >> IS_ENABLED(CONFIG_RCU_CPU_STALL_CPUTIME);
-> > 
-> > As a config option and module parameter, adding some more
-> > instrumentation overhead might be worthwhile for other
-> > likely causes of rcu stalls.
-> > 
-> > For example, if enabled, have these functions (if available
-> > on the architecture) maintain a per-CPU running count of
-> > their invocations, which also cause the CPU to be unavailable
-> > for rcu: 
-> > - kernel_fpu_begin() calls - FPU/SIMD context preservation,
-> >   which also calls preempt_disable()
-> > - preempt_disable() calls - scheduler context switches disabled
-> > - local_irq_save() calls - interrupts disabled
-> > - cond_resched() calls - lack of these is a problem
-> > 
-> > For kernel_fpu_begin and preempt_disable, knowing if it is
-> > currently blocked for those reasons is probably the most
-> > helpful.
-> 
-> These instructions is already in Documentation/RCU/stallwarn.rst
-
-Excellent point -- this document also needs to be updated with this
-new information.  I have pulled in your four patches as noted in my
-previous email.  They are on the -rcu tree's "dev" branch.
-
-Could you please send a patch containing an initial update to
-stallwarn.rst?  The main thing I need is your perspective on how each
-field is used.
-
-							Thanx, Paul
+Jason
