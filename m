@@ -2,227 +2,122 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E2EE5C4332F
-	for <rcu@archiver.kernel.org>; Sat,  5 Nov 2022 07:03:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 54028C4332F
+	for <rcu@archiver.kernel.org>; Sat,  5 Nov 2022 14:18:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229570AbiKEHDV (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 5 Nov 2022 03:03:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51574 "EHLO
+        id S229551AbiKEOSf (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 5 Nov 2022 10:18:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbiKEHDT (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 5 Nov 2022 03:03:19 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C111A2ED6C;
-        Sat,  5 Nov 2022 00:03:17 -0700 (PDT)
-Received: from dggpemm500024.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4N47f33f5PzpW3m;
-        Sat,  5 Nov 2022 14:59:39 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggpemm500024.china.huawei.com (7.185.36.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Sat, 5 Nov 2022 15:03:15 +0800
-Received: from [10.174.178.55] (10.174.178.55) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Sat, 5 Nov 2022 15:03:15 +0800
-Subject: Re: [PATCH v4 4/4] rcu: Add RCU stall diagnosis information
-To:     "Elliott, Robert (Servers)" <elliott@hpe.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Neeraj Upadhyay" <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20221104021224.102-1-thunder.leizhen@huawei.com>
- <20221104021224.102-5-thunder.leizhen@huawei.com>
- <MW5PR84MB18425CBD1259317004F7771AAB3A9@MW5PR84MB1842.NAMPRD84.PROD.OUTLOOK.COM>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <14e3aa38-98e6-01be-8cde-68fd1f85edf4@huawei.com>
-Date:   Sat, 5 Nov 2022 15:03:14 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        with ESMTP id S229614AbiKEOS0 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 5 Nov 2022 10:18:26 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6100D8;
+        Sat,  5 Nov 2022 07:18:20 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id t62so7927689oib.12;
+        Sat, 05 Nov 2022 07:18:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PYhR6hYWBdnOcbKjn7H8NpQf1Qg9j5JtEEKHrz9oi/g=;
+        b=cEC5IT1XpqlAK68Dgo5+fxnDFCjVpzY0DRagRqxTDry42i1dK2tcbNHYd7Ayss+LTR
+         Zq5Ih2v2443bsxwUvCZI2AevutQelDkhHOJqQhhh90RAdGwH1ztuIkNBULvbO0OWUDyB
+         Zs3Rt+XqCTKE2Cs9eS/ndyLispMby6sUmCV9hIPpDCZ1JKOuE8AnRRE6npVgjTBnltto
+         YYH4ZircOfT5HS0GEZGZOnxYVDveuMG1fd0QtTxHxYW8Huxn/roqBK+JFSqL6Tdp87g+
+         GSZROE0361WHir4UDtfX6jA945ccs7fZ7mz9TOtoNTCBa80eZ2tSlHY0p6xlLXtkRQTo
+         pyNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PYhR6hYWBdnOcbKjn7H8NpQf1Qg9j5JtEEKHrz9oi/g=;
+        b=0L+F2Y9iQVD8xQC609r+5wtBIbz4VSSrBvwYsDE8sqfnClPBPVBbPQOCHtW+jReblG
+         sEmjRm428bVRXRcihuGA9nlbWR0DIv2H5zluwgOboNHo0lw31c/xMfGunfKLiFMd+V7w
+         qwMnOruxPwTg0g6wOIBjDlqX/mwwix4yHgLiCr/ttKljHbWH3Z3OfYEm1luKqYf9b0YZ
+         aEJ2jVAWoo89BTy5TJoucdP0dV/3eRHyHNdQdzPqFmDGGfZ6mUT134dqX9WGF0nvx8yC
+         VEes7HL/5g7/6CmUIlRYtJMPEFaDV+mxm3GGjOEQi4DvaLTtx9VsLLt9H14AGR3iig59
+         kEcg==
+X-Gm-Message-State: ACrzQf09gjQhXq48MF8zZNCAcEnjIXQLQhQeHddD0pUBo5Ys//Yua2s/
+        6aCtjDEuSx3VNdFHeHWvkzw=
+X-Google-Smtp-Source: AMsMyM5In/UjkQAOQkguZQ2rHL63I8msSs9c6an0J/9gKdjSX2hezT8PwL34Y+85tQUi0BEYyplo0Q==
+X-Received: by 2002:a05:6808:2104:b0:35a:5e9:a411 with SMTP id r4-20020a056808210400b0035a05e9a411mr18764923oiw.168.1667657900081;
+        Sat, 05 Nov 2022 07:18:20 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id e1-20020a056870c0c100b00132741e966asm830469oad.51.2022.11.05.07.18.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 05 Nov 2022 07:18:19 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Sat, 5 Nov 2022 07:18:17 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Anna-Maria Gleixner <anna-maria@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>, rcu@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-edac@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-acpi@vger.kernel.org,
+        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
+        linux-pm@vger.kernel.org, drbd-dev@lists.linbit.com,
+        linux-bluetooth@vger.kernel.org,
+        openipmi-developer@lists.sourceforge.net,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org, intel-gfx@lists.freedesktop.org,
+        linux-input@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-leds@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-ext4@vger.kernel.org, linux-nilfs@vger.kernel.org,
+        bridge@lists.linux-foundation.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, lvs-devel@vger.kernel.org,
+        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net, alsa-devel@alsa-project.org
+Subject: Re: [PATCH v4a 00/38] timers: Use timer_shutdown*() before freeing
+ timers
+Message-ID: <20221105141817.GF1606271@roeck-us.net>
+References: <20221105060024.598488967@goodmis.org>
 MIME-Version: 1.0
-In-Reply-To: <MW5PR84MB18425CBD1259317004F7771AAB3A9@MW5PR84MB1842.NAMPRD84.PROD.OUTLOOK.COM>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.55]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221105060024.598488967@goodmis.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-
-
-On 2022/11/5 9:58, Elliott, Robert (Servers) wrote:
+On Sat, Nov 05, 2022 at 02:00:24AM -0400, Steven Rostedt wrote:
 > 
->> --- a/kernel/rcu/Kconfig.debug
->> +++ b/kernel/rcu/Kconfig.debug
->> @@ -95,6 +95,16 @@ config RCU_EXP_CPU_STALL_TIMEOUT
->>  	  says to use the RCU_CPU_STALL_TIMEOUT value converted from
->>  	  seconds to milliseconds.
->>
->> +config RCU_CPU_STALL_CPUTIME
+> Back in April, I posted an RFC patch set to help mitigate a common issue
+> where a timer gets armed just before it is freed, and when the timer
+> goes off, it crashes in the timer code without any evidence of who the
+> culprit was. I got side tracked and never finished up on that patch set.
+> Since this type of crash is still our #1 crash we are seeing in the field,
+> it has become a priority again to finish it.
 > 
-> Since the information might change and grow over time, consider
-> calling it "ADDITIONAL_INFO" rather than just "CPUTIME".
-
-I think it's okay. But I need to wait for Paul's opinion.
-In fact, I've also considered using MORE_DEBUG_INFO.
-
+> The last version of that patch set is here:
 > 
->> +	bool "Provide additional rcu stall debug information"
->> +	depends on RCU_STALL_COMMON
->> +	default n
->> +	help
->> +	  Statistics during the period from RCU_CPU_STALL_TIMEOUT/2 to
->> +	  RCU_CPU_STALL_TIMEOUT, such as the number of (hard interrupts,
->> soft
->> +	  interrupts, task switches) and the cputime of (hard interrupts,
->> soft
->> +	  interrupts, kerenl tasks) are added to the rcu stall report.
+>   https://lore.kernel.org/all/20221104054053.431922658@goodmis.org/
 > 
-> s/kerenl/kernel/
-
-Good catch.
-
-> 
-> Those parenthetical words are not grammatically correct, and
-> nobody will remember to update Kconfig if they change the code.
-> 
-> Try making it is a little less precise: 
-> "Collect statistics during the RCU stall timeout period
-
-the second half period of RCU stall timeout
-
-> (e.g., counts and CPU time consumed by hard interrupts, soft
-> interrupts, task switches, and kernel tasks) and include
-
-Maybe we can remove "task switches, and kernel tasks". Just for example,
-no need to exhaustively.
-
-> them in the RCU stall console error message."
-
-Looks good above. Thanks.
-
-> 
-> ...
->> +
->> +	pr_err("         hardirqs   softirqs   csw/system\n");
->> +	pr_err(" number: %8ld %10d %12lld\n",
-> 
-> Everything after a %d is a "number". These are more specifically counts.
-> 
->> +		kstat_cpu_irqs_sum(cpu) - rsrp->nr_hardirqs,
->> +		kstat_cpu_softirqs_sum(cpu) - rsrp->nr_softirqs,
->> +		nr_context_switches_cpu(cpu) - rsrp->nr_csw);
-> 
-> Two columns are plural and one is not. 
-
-I didn't understand. Do you mean:
-(1)
-             hardirqs   softirqs  csw  system
-     number:                      xx   N/A
-cputime(ms):                      N/A   xx
-
-> 
-> Within a few lines, this is referred to as "context_switches", cws, 
-> and "task switches." One term would be better. vmstat uses "cs", 
-> pidstat uses "cswch", and /proc/<pid>/status uses "ctxt_switches,"
-> so there's not one ideal term for that column. Matching one
-> of those might be better than using another unique name.
-
-struct task_struct {
-        /* Context switch counts: */
-        unsigned long                   nvcsw;
-        unsigned long                   nivcsw;
-
-There's nothing wrong with 'csw'.
-
-> 
-> Since no other variants are shown, the "/system" suffix is a bit
-> confusing.
-
-I don't think it's a problem! Because the prefix cputime already exists,
-so CPUTIME_SYSTEM --> system.
-
-How about:
-             hardirqs   softirqs  tasks
-     counts:
-cputime(ms):
-
-It's like drawing a head with a pipe in the men's room, and a head with
-long hair in the women's room. Although women may also have smokers, men
-may also have long hair. Oh, the example right in front of us, who would
-interpret the first line as the number of interrupt types? So I think
-it's pretty good to use 'tasks'.
-
-> 
-> 
->> +	pr_err("cputime: %8lld %10lld %12lld   ==> %lld(ms)\n",
->> +		div_u64(cpustat[CPUTIME_IRQ] - rsrp->cputime_irq, NSEC_PER_MSEC),
->> +		div_u64(cpustat[CPUTIME_SOFTIRQ] - rsrp->cputime_softirq, NSEC_PER_MSEC),
->> +		div_u64(cpustat[CPUTIME_SYSTEM] - rsrp->cputime_system, NSEC_PER_MSEC),
->> +		jiffies64_to_msecs(half_timeout));
-> 
-> There is no column header for that fourth number. "half_timeout"
-> might be good, dropping the "==>".
-
-If we use words, I'll use "sampling period" or "period".
-
-To be honest, the printed information of the RCU needs to be understood in
-combination with the code. For exmaple:
-
-pr_err("\t%d-%c%c%c%c: (%lu %s) idle=%04x/%ld/%#lx softirq=%u/%u fqs=%ld%s%s\n",
-               cpu,
-               "O."[!!cpu_online(cpu)],
-               "o."[!!(rdp->grpmask & rdp->mynode->qsmaskinit)],
-               "N."[!!(rdp->grpmask & rdp->mynode->qsmaskinitnext)],
-
-Paul mentioned a few days ago that there were complaints that the RCU was
-printing too much. So "==>" is better suited for people who often deal with
-rcu stall issues.
-
-> 
-> The "(ms)" at the end is awkward. Try moving it to the left
-> as "cputime (ms): "
-
-OK
-
-> 
->> +int rcu_cpu_stall_cputime __read_mostly =
->> IS_ENABLED(CONFIG_RCU_CPU_STALL_CPUTIME);
-> 
-> As a config option and module parameter, adding some more
-> instrumentation overhead might be worthwhile for other
-> likely causes of rcu stalls.
-> 
-> For example, if enabled, have these functions (if available
-> on the architecture) maintain a per-CPU running count of
-> their invocations, which also cause the CPU to be unavailable
-> for rcu: 
-> - kernel_fpu_begin() calls - FPU/SIMD context preservation,
->   which also calls preempt_disable()
-> - preempt_disable() calls - scheduler context switches disabled
-> - local_irq_save() calls - interrupts disabled
-> - cond_resched() calls - lack of these is a problem
-> 
-> For kernel_fpu_begin and preempt_disable, knowing if it is
-> currently blocked for those reasons is probably the most
-> helpful.
-
-These instructions is already in Documentation/RCU/stallwarn.rst
-
-> 
-> .
+> I'm calling this version 4a as it only has obvious changes were the timer that
+> is being shutdown is in the same function where it will be freed or released,
+> as this series should be "safe" for adding. I'll be calling the other patches
+> 4b for the next merge window.
 > 
 
--- 
-Regards,
-  Zhen Lei
+Just in case you didn't notice:
+
+Looking through the resulting code, I think some of the remaining
+calls to del_singleshot_timer_sync() can be converted as well.
+
+The calls in drivers/staging/wlan-ng/prism2usb.c:prism2sta_disconnect_usb()
+are obvious (the containing data structure is freed in the same function).
+For drivers/char/tpm/tpm-dev-common.c:tpm_common_release(), the containing
+data structure is freed in the calling code.
+
+Thanks,
+Guenter
