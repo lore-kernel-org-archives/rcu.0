@@ -2,40 +2,39 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 882ECC4332F
-	for <rcu@archiver.kernel.org>; Mon,  7 Nov 2022 18:05:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 300EAC4332F
+	for <rcu@archiver.kernel.org>; Mon,  7 Nov 2022 19:23:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231906AbiKGSF0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 7 Nov 2022 13:05:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45988 "EHLO
+        id S232461AbiKGTXM (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 7 Nov 2022 14:23:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232270AbiKGSFE (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 7 Nov 2022 13:05:04 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFC2224968;
-        Mon,  7 Nov 2022 10:02:00 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 49099611BD;
-        Mon,  7 Nov 2022 18:02:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96654C433C1;
-        Mon,  7 Nov 2022 18:01:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1667844119;
-        bh=aR8pMC8ZTAkBjOgsSkUFawwVBw1I28GB4Ej9Sis/Em0=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=IoF4JUcn8BXIWZtIcHbwIPEbyZCeTDgFaJBWhx/0bY1Uj4lAtCjyKL0GtT/JSahmB
-         UXxwwfIms6UFN0Lbq0AfY8hOxv+1+0O99BZ3YTiY/AOaRUEyuwJwrHmnxQXua6X3SU
-         EoQuIIXu0TAyTVrg1M4N7PkkZNq9nMMW953BFq0ywmSPBEHWH0EPjXTTLoW0BIfpvq
-         vX65U0tBh89bIu/2SoISDqknwx3vz8EA4eQzSaqCote/6/qAM/ApsdAyhZHIBox28J
-         TD1VbJfyO7C67DAnXJePYFJX2f/LK9dJKLOMb5zRWTTaLyTtMR/tPG+krJq55Q4bG6
-         ityDzBE9yaYcw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id CFB085C095F; Mon,  7 Nov 2022 10:01:57 -0800 (PST)
-Date:   Mon, 7 Nov 2022 10:01:57 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     John Ogness <john.ogness@linutronix.de>
+        with ESMTP id S232504AbiKGTXG (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 7 Nov 2022 14:23:06 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DDA82A977;
+        Mon,  7 Nov 2022 11:23:04 -0800 (PST)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1667848982;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7p/ayoMYEZOszbj3azJd/UmvgO45YhgQaQ55gMey2Wg=;
+        b=Hu555M8XWA2JR5fR4ULUmSBdajYRaNog6UPBDrFxFI5SwDhkZ6d10+KvDyuU55BlDNXsn/
+        jgP2XasxN9Qr9gVSeJ24smKD96wXRz979jRcXAOZtBYpL6l1Qiz8oxCSy0a5vnwJFN9yWc
+        qAx4e476rEe9l/ndCPKqduQIAIcaIWycicuR+iiQlSQvAwKgP1IEj0EUcGSwUamF/BWiIl
+        Q8qnUr3m8zGF3WAknHCvtmoimiMB5fCw8mmjCPkBUllgsMqr8atUZKexsmBr16SR5PWoRQ
+        TpRiDtFKTp/fLNI2SFDqbGe8fcR7ETrLqsE6FYotyHM8FtquIB4b13ANbdZAbw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1667848982;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7p/ayoMYEZOszbj3azJd/UmvgO45YhgQaQ55gMey2Wg=;
+        b=QAQ/Cd1Q+ZF4t2ZrTw0dxibL2qK67/oBAGjz/mqBdH9RqH/FK31sBkiBTp74rqBdPa66EK
+        JYHm0UiEuxjjSQCg==
+To:     paulmck@kernel.org
 Cc:     Petr Mladek <pmladek@suse.com>,
         Sergey Senozhatsky <senozhatsky@chromium.org>,
         Steven Rostedt <rostedt@goodmis.org>,
@@ -49,56 +48,30 @@ Cc:     Petr Mladek <pmladek@suse.com>,
         Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
 Subject: Re: [PATCH printk v3 01/40] rcu: implement lockdep_rcu_enabled for
  !CONFIG_DEBUG_LOCK_ALLOC
-Message-ID: <20221107180157.GL28461@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+In-Reply-To: <20221107180157.GL28461@paulmck-ThinkPad-P17-Gen-1>
 References: <20221107141638.3790965-1-john.ogness@linutronix.de>
  <20221107141638.3790965-2-john.ogness@linutronix.de>
+ <20221107180157.GL28461@paulmck-ThinkPad-P17-Gen-1>
+Date:   Mon, 07 Nov 2022 20:29:01 +0106
+Message-ID: <87h6za602y.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221107141638.3790965-2-john.ogness@linutronix.de>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Nov 07, 2022 at 03:21:59PM +0106, John Ogness wrote:
-> Provide an implementation for debug_lockdep_rcu_enabled() when
-> CONFIG_DEBUG_LOCK_ALLOC is not enabled. This allows code to check
-> if rcu lockdep debugging is available without needing an extra
-> check if CONFIG_DEBUG_LOCK_ALLOC is enabled.
-> 
-> Signed-off-by: John Ogness <john.ogness@linutronix.de>
+On 2022-11-07, "Paul E. McKenney" <paulmck@kernel.org> wrote:
+>> Provide an implementation for debug_lockdep_rcu_enabled() when
+>> CONFIG_DEBUG_LOCK_ALLOC is not enabled. This allows code to check
+>> if rcu lockdep debugging is available without needing an extra
+>> check if CONFIG_DEBUG_LOCK_ALLOC is enabled.
+>> 
+>> Signed-off-by: John Ogness <john.ogness@linutronix.de>
+>
+> If you would like me to take this one, please let me know.
 
-If you would like me to take this one, please let me know.
+Yes, it would be great if you would carry this in the rcu tree. This
+printk series is already relying on the rcu tree for the NMI-safe
+work. Thanks!
 
-Otherwise:
-
-Acked-by: Paul E. McKenney <paulmck@kernel.org>
-
-> ---
->  I also sent this patch to Paul as a suggestion. If it is not
->  acceptable, I just need to add an ifdef CONFIG_DEBUG_LOCK_ALLOC
->  into console_list_lock() of patch 21.
-> 
->  include/linux/rcupdate.h | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-> index 08605ce7379d..65178c40ab6f 100644
-> --- a/include/linux/rcupdate.h
-> +++ b/include/linux/rcupdate.h
-> @@ -340,6 +340,11 @@ static inline int rcu_read_lock_any_held(void)
->  	return !preemptible();
->  }
->  
-> +static inline int debug_lockdep_rcu_enabled(void)
-> +{
-> +	return 0;
-> +}
-> +
->  #endif /* #else #ifdef CONFIG_DEBUG_LOCK_ALLOC */
->  
->  #ifdef CONFIG_PROVE_RCU
-> -- 
-> 2.30.2
-> 
+John
