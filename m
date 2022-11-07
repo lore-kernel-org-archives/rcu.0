@@ -2,114 +2,168 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 74A1FC4332F
-	for <rcu@archiver.kernel.org>; Mon,  7 Nov 2022 11:48:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ACEBDC4332F
+	for <rcu@archiver.kernel.org>; Mon,  7 Nov 2022 11:49:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231918AbiKGLsh (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 7 Nov 2022 06:48:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56346 "EHLO
+        id S231932AbiKGLtN (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 7 Nov 2022 06:49:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231714AbiKGLsa (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 7 Nov 2022 06:48:30 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E231F07;
-        Mon,  7 Nov 2022 03:48:29 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id l6so10351580pjj.0;
-        Mon, 07 Nov 2022 03:48:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:content-language:subject
-         :references:cc:to:user-agent:mime-version:date:message-id:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fvr80PkwpQ6hjNpvYYW8IQLkFqmVccni+PUYRawFuvA=;
-        b=fiukTMYTyjxWsa8x4fgdJLv5PDFoiEE1XxSRatZoFKxoH7GH1RMZsCkCy2fEwy44mA
-         szrXgMAM/yMVeDAVodGIhhtL4XQU6+L0jSha7dJD0UMEfyZcnJYqAhw+5y/QlQutHlvo
-         bv96oclSReRuS4Yak/ILdzhnjThlv2fOXeNzMrIkoPTH39xEaJHLr0BeJ0nKFi18tRW3
-         F+ZszIAILyQcyG3AjjcBi4wpnUJGpRATlBNcBVdvpa+DYnxuQgAaJzBxkMAwnflYrDXu
-         TR4YA2N47q3unWbbUaoqxbqL++NRvVwBxxICbhxtXWMJpcYDpSAAIr35de7NwR26VxOV
-         Ko/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:content-language:subject
-         :references:cc:to:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fvr80PkwpQ6hjNpvYYW8IQLkFqmVccni+PUYRawFuvA=;
-        b=eSNfePrcie8bQJ/b5bZKlnmsOr7cEbQFPuO2tyBx/V3n4yLwBxAl20hC8f/wSUYPbs
-         YDZ64FGeM3Ux1KMj47KadXUXma431CYlCLYXB7Av43xM2b4fU/lMUE+rq0Td84jeBQKZ
-         9HjOjAIyAg9HsWWA0EAHrHT0BlFXx2VZYbO4/rSW8NPKhGQ6F2hRCV2N2I9QfamVBbAd
-         sMb5vH8HgSJ/PrbfmO9vvmeG6ZRTo6PuwumtmpI1Jhx1ZPwSDGz+wK+wHQgw1VX2KOyf
-         xLGVjzg7nx5k1EPERb9Eb2dAYb4xWR8+n2brQ6nDzg+EY3dPNZ2G5P1HzYsEAnb0hbc+
-         kfKQ==
-X-Gm-Message-State: ACrzQf2NB880NH0rLfAcOMcTmyDob3l57F7ZlE8e1XdQWMXxoLBNVJzX
-        gKvfRUWt237Rk4hs+PmRC3Q=
-X-Google-Smtp-Source: AMsMyM5V7PN2Fq+vgPQifeaOqVZZiQmGUcwKXiHgqltKBZooPx0NBJmWSu6MlCOI7pyEwVw5IkPYmQ==
-X-Received: by 2002:a17:902:ba8d:b0:187:11c7:e878 with SMTP id k13-20020a170902ba8d00b0018711c7e878mr44671991pls.67.1667821708620;
-        Mon, 07 Nov 2022 03:48:28 -0800 (PST)
-Received: from [192.168.11.9] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
-        by smtp.gmail.com with ESMTPSA id l16-20020a170903121000b00176b3c9693esm4789489plh.299.2022.11.07.03.48.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Nov 2022 03:48:28 -0800 (PST)
-Message-ID: <af3ec8bf-310e-69ea-9d32-f7aec740b306@gmail.com>
-Date:   Mon, 7 Nov 2022 20:48:23 +0900
+        with ESMTP id S231933AbiKGLtM (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 7 Nov 2022 06:49:12 -0500
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24B591A3B0;
+        Mon,  7 Nov 2022 03:49:08 -0800 (PST)
+Received: from dggpemm500024.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4N5Tyg1GpVzHvhN;
+        Mon,  7 Nov 2022 19:48:43 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggpemm500024.china.huawei.com (7.185.36.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Mon, 7 Nov 2022 19:49:06 +0800
+Received: from [10.174.178.55] (10.174.178.55) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Mon, 7 Nov 2022 19:49:05 +0800
+Subject: Re: [PATCH v4 4/4] rcu: Add RCU stall diagnosis information
+To:     "Elliott, Robert (Servers)" <elliott@hpe.com>,
+        "paulmck@kernel.org" <paulmck@kernel.org>
+CC:     Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        "Steven Rostedt" <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20221104021224.102-1-thunder.leizhen@huawei.com>
+ <20221104021224.102-5-thunder.leizhen@huawei.com>
+ <MW5PR84MB18425CBD1259317004F7771AAB3A9@MW5PR84MB1842.NAMPRD84.PROD.OUTLOOK.COM>
+ <20221105200637.GC28461@paulmck-ThinkPad-P17-Gen-1>
+ <MW5PR84MB1842933AB81EECFAF2ECCE7DAB3C9@MW5PR84MB1842.NAMPRD84.PROD.OUTLOOK.COM>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <5133bd4b-c17f-f5ed-eae2-fe2d199dc5db@huawei.com>
+Date:   Mon, 7 Nov 2022 19:49:04 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.2
-To:     Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     corbet@lwn.net, frederic@kernel.org, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, josh@joshtriplett.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-next@vger.kernel.org, mathieu.desnoyers@efficios.com,
-        paulmck@kernel.org, quic_neeraju@quicinc.com, rcu@vger.kernel.org,
-        rostedt@goodmis.org, sfr@canb.auug.org.au,
-        Akira Yokosawa <akiyks@gmail.com>
-References: <Y2jWAR1QESe3OrhH@debian.me>
-Subject: [PATCH] Documentation: RCU: use code blocks with autogenerated line
- (was: Re: linux-next: build warning after merge of the rcu tree)
+In-Reply-To: <MW5PR84MB1842933AB81EECFAF2ECCE7DAB3C9@MW5PR84MB1842.NAMPRD84.PROD.OUTLOOK.COM>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-From:   Akira Yokosawa <akiyks@gmail.com>
-In-Reply-To: <Y2jWAR1QESe3OrhH@debian.me>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.55]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Bagas,
 
-On Mon, 7 Nov 2022 16:55:13 +0700, Bagas Sanjaya wrote:
-> On Sun, Nov 06, 2022 at 09:02:12PM -0800, Paul E. McKenney wrote:
->> On Mon, Nov 07, 2022 at 02:26:41PM +1100, Stephen Rothwell wrote:
->> > Hi all,
->> > 
->> > After merging the rcu tree, today's linux-next build (htmldocs)
->> > produced this warning:
->> > 
->> > Documentation/RCU/rcubarrier.rst:205: WARNING: Literal block ends without a blank line; unexpected unindent.
->> > 
->> > Introduced by commit
->> > 
->> >   21c2e3909721 ("doc: Update rcubarrier.rst")
->> 
->> Huh.  I guess that numbered code samples are not supposed to have more
->> than nine lines?  Ah well, easy to fix by going back to left-justified
->> numbers.  I was wondering about that!
->> 
+
+On 2022/11/7 10:10, Elliott, Robert (Servers) wrote:
 > 
-> I think the proper fix is just let Sphinx generates line number:
+>>>> +config RCU_CPU_STALL_CPUTIME
+>>>
+>>> Since the information might change and grow over time, consider
+>>> calling it "ADDITIONAL_INFO" rather than just "CPUTIME".
+>>
+>> Except that I already redirected Zhen Lei from a generic description
+>> to a more specific one.  The reason for this is that I already get
+>> complaints about the large volume of output from RCU CPU stall warnings,
+>> which suggests that unless the additional information is quite small,
+>> it should get its own Kconfig option and kernel boot parameter.
+>>
+>> So we well be keeping RCU_CPU_STALL_CPUTIME.
+> 
+> No problem - CPUTIME is easier to search for, and will likely
+> always remain as one of the values reported.
+> 
+>> But please tie any such patch to an actual use case.  After all, if no
+>> one actually uses that additional information, we have irritates untold
+>> numbers of electrons for no purpose.
+> 
+> I've been working on fixing intermittent RCU stalls that turned out to be
+> caused by x86-optimized crypto modules holding kernel_fpu_begin()/end()
+> too long and crypto tests not calling cond_resched() often enough, so am
+> interested in features that will help identify and prevent such
+> problems.
+> 
+>> Also, some of those functions are on fastpaths, so adding unconditional
+>> instrumentation overhead might result in an objection or three.
+>>
+>> As always, choose wisely!  ;-)
+>>
+>> If I don't see anything from you by this coming Friday, I will fold my
+>> usual wordsmithing into the patch.
+> 
+> I applied the series to a tree not including any crypto module
+> fixes, but an overnight run didn't trigger any RCU stalls. So, I
+> modified the tcrypt test module to simulate a problem by
+> running a lengthy loop after kernel_fpu_begin().  
+> Here's an example of how the output looks:
+> 
+> 
+> [ 1816.698380] rcu: INFO: rcu_preempt self-detected stall on CPU
+> [ 1816.704368] rcu:     0-....: (2999 ticks this GP) idle=1dbc/1/0x4000000000000000 softirq=39683/39683 fqs=751
+> [ 1816.714200] rcu:          hardirqs   softirqs   csw/system
+> [ 1816.719922] rcu:  number:        5         10            0
+> [ 1816.725643] rcu: cputime:        3          0         1492   ==> 1500(ms)
+> [ 1816.732669]  (t=3030 jiffies g=89765 q=308 ncpus=56)
+> [ 1816.737857] CPU: 0 PID: 46826 Comm: modprobe Tainted: G        W          6.0.0+ #5
+> [ 1816.745754] Hardware name: HPE ProLiant DL360 Gen10/ProLiant DL360 Gen10, BIOS U32 03/08/2022
+> [ 1816.754523] RIP: 0010:rude_sleep_cycles.constprop.0+0x1c/0x30 [tcrypt]
+> [ 1816.761290] Code: 5d 41 5c 41 5d 41 5e 41 5f c3 cc cc cc cc 0f 1f 44 00 00 0f 31 48 c1 e2 20 be ab 90 41 00 48 89 d1 48 c1 e6 0b 48 09 c1 0f 31 <48> c1 e2 20 48 09 c2 48 29 ca 48 39 d6 73 ef c3 cc cc cc cc 48 8b
+> ...
+> 
+> That makes me realize what "csw/switch" means:
+> - "csw" context switches applies to the number line
+> - "system" applies the cputime line
+>  
+> Maybe this shouldn't be a table? Make it grep-friendly:
+> [ 1816.719922] rcu: half-timeout counts: hardirq =5 softirq=10 csw=0
+> [ 1816.725643] rcu: half_timeout cputimes (ms): time=1500 hardirq=3 softirq=0 system=1492
 
-That might be true if all you care about were the generated documents,
-but we need to pay attention to readers of .rst files as plain-text.
+I prefer the table. Table look clearer and easier to compare.
 
-There are a bunch of references to line numbers in RCU documents.
-If explicit line numbers are removed from snippets, such readers need
-to count the lines by themselves, which doesn't sound reasonable to me.
+> 
+> The new prints interfere with existing prints, pushing the "t=3030" line 
+> further away from its context. That's from a pr_cont. Existing prints after
+> the "self-detect stall" message all start with \t, so they are roughly
+> related to the first line. The new prints should probably do the same.
+> 
+> Since the first line ends with \n, the pr_cont will never make it on the
+> same line, so it might be cleaner to use pr_err instead. That way it'll have
+> the "rcu:" prefix of the other lines.
+> 
+> That's from:
+>         pr_err("INFO: %s self-detected stall on CPU\n", rcu_state.name);
+>         raw_spin_lock_irqsave_rcu_node(rdp->mynode, flags);
+>         print_cpu_stall_info(smp_processor_id());
+> [that's where this patch adds more prints]
+>         raw_spin_unlock_irqrestore_rcu_node(rdp->mynode, flags);
+>         for_each_possible_cpu(cpu)
+>                 totqlen += rcu_get_n_cbs_cpu(cpu);
+>         pr_cont("\t(t=%lu jiffies g=%ld q=%lu ncpus=%d)\n",
+>                 jiffies - gps,
+>                 (long)rcu_seq_current(&rcu_state.gp_seq), totqlen, rcu_state.n_online_cpus);
+> 
+> 
+> One other print has similar construction:
+>         pr_err("INFO: %s detected stalls on CPUs/tasks:\n", rcu_state.name);
+>         ...
+>                                         print_cpu_stall_info(cpu);
+>         ...
+>         pr_cont("\t(detected by %d, t=%ld jiffies, g=%ld, q=%lu ncpus=%d)\n",
+>                smp_processor_id(), (long)(jiffies - gps),
+>                (long)rcu_seq_current(&rcu_state.gp_seq), totqlen, rcu_state.n_online_cpus);
+> 
+> 
+> 
+> .
+> 
 
-If you can put labels to referenced lines within code snippets, auto
-generation of line numbers might work, but as far as I know, Sphinx
-doesn't provide such a nice feature.
-
-Of course, you can prove me wrong.
-
-          Thanks, Akira 
-
-  
+-- 
+Regards,
+  Zhen Lei
