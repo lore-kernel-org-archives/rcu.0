@@ -2,185 +2,100 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AB35FC4167D
-	for <rcu@archiver.kernel.org>; Mon,  7 Nov 2022 17:06:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 81660C43217
+	for <rcu@archiver.kernel.org>; Mon,  7 Nov 2022 17:50:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232657AbiKGRGC (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 7 Nov 2022 12:06:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54812 "EHLO
+        id S231440AbiKGRu3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 7 Nov 2022 12:50:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231124AbiKGRGA (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 7 Nov 2022 12:06:00 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 834011EED6;
-        Mon,  7 Nov 2022 09:05:59 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        with ESMTP id S231753AbiKGRu0 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 7 Nov 2022 12:50:26 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AA5F201A1;
+        Mon,  7 Nov 2022 09:50:23 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 9C8E11F86C;
-        Mon,  7 Nov 2022 17:05:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1667840757; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XWjycHIf1fSEY4m1EHn+sUN2YmLp5Vnftx1jsDrRGXI=;
-        b=kxzFyQGhSBAuYX3n5vugY5Y1QRoh5BV3g26LWmvLqWvL+G4qKvJ3XBBofnMtINeFd2bF5H
-        7CejRIjqnhbPP0kkN1YSvz+BK6moFCDtlwFGDOYIXsczJ84EiAhExjcYYzpXM9CKH8HdCN
-        oBNV8Ic1D6HYqSCaWDTGvuJqUvcZoBQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1667840757;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XWjycHIf1fSEY4m1EHn+sUN2YmLp5Vnftx1jsDrRGXI=;
-        b=yRTYUHecqIiNuULs8LuFdpJ7HeC/EhwT6lAYv0dSjjqOZpf7JTBj+IAUFnKwzGa15nNh8r
-        caIfQ/3exJcVyGBQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 71CBC13AC7;
-        Mon,  7 Nov 2022 17:05:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id EJQxG/U6aWOYfwAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Mon, 07 Nov 2022 17:05:57 +0000
-From:   Vlastimil Babka <vbabka@suse.cz>
-To:     Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>
-Cc:     Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Matthew Wilcox <willy@infradead.org>, paulmck@kernel.org,
-        rcu@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
-        Vlastimil Babka <vbabka@suse.cz>,
-        kernel test robot <yujie.liu@intel.com>
-Subject: [PATCH v2 2/3] mm/migrate: make isolate_movable_page() skip slab pages
-Date:   Mon,  7 Nov 2022 18:05:53 +0100
-Message-Id: <20221107170554.7869-3-vbabka@suse.cz>
-X-Mailer: git-send-email 2.38.0
-In-Reply-To: <20221107170554.7869-1-vbabka@suse.cz>
-References: <20221107170554.7869-1-vbabka@suse.cz>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DA75C611DC;
+        Mon,  7 Nov 2022 17:50:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30D21C433D7;
+        Mon,  7 Nov 2022 17:50:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1667843422;
+        bh=X/8V0nAcFr0+vvZNgkQz91zumxxBgy8u33dDByEsG+E=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=kE2LQDxEVYPfS8uwOaKIm+PdR5F5waMX8d2P10VQJSAhTJ0C+Ggd0nLWPNMVLS/qa
+         FWwP7B4RqqInfvceoLGiOXkHOiccR0ZfaG8E5viRUGBn6XQnr2N7mTjQ16f2+wB11Z
+         3+GuuAFcI3JhvUqoXSLT6+j7VzeKSgrle8sFxma1YSIHSycf53aX7IDi0iy+AjOxbo
+         hGoB1ABfaq+dLE1BoO5txJ0nzIItoD8k6SQ2bdeDjvhAFfQjS7m8dkYZRQeOp3MD+t
+         Tc44WFojMx8mkv9hHi7UDOLGnfyz3jWomygsdW1b7SBwARJnWvfvcAZwJrygfoQcAN
+         LUXkth5NGcsxA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 45E1B5C095F; Mon,  7 Nov 2022 09:50:20 -0800 (PST)
+Date:   Mon, 7 Nov 2022 09:50:20 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Akira Yokosawa <akiyks@gmail.com>
+Cc:     Bagas Sanjaya <bagasdotme@gmail.com>, corbet@lwn.net,
+        frederic@kernel.org, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, josh@joshtriplett.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-next@vger.kernel.org, mathieu.desnoyers@efficios.com,
+        quic_neeraju@quicinc.com, rcu@vger.kernel.org, rostedt@goodmis.org,
+        sfr@canb.auug.org.au
+Subject: Re: [PATCH] Documentation: RCU: use code blocks with autogenerated
+ line (was: Re: linux-next: build warning after merge of the rcu tree)
+Message-ID: <20221107175020.GK28461@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <Y2jWAR1QESe3OrhH@debian.me>
+ <af3ec8bf-310e-69ea-9d32-f7aec740b306@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <af3ec8bf-310e-69ea-9d32-f7aec740b306@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-In the next commit we want to rearrange struct slab fields to allow a larger
-rcu_head. Afterwards, the page->mapping field will overlap with SLUB's "struct
-list_head slab_list", where the value of prev pointer can become LIST_POISON2,
-which is 0x122 + POISON_POINTER_DELTA.  Unfortunately the bit 1 being set can
-confuse PageMovable() to be a false positive and cause a GPF as reported by lkp
-[1].
+On Mon, Nov 07, 2022 at 08:48:23PM +0900, Akira Yokosawa wrote:
+> Hi Bagas,
+> 
+> On Mon, 7 Nov 2022 16:55:13 +0700, Bagas Sanjaya wrote:
+> > On Sun, Nov 06, 2022 at 09:02:12PM -0800, Paul E. McKenney wrote:
+> >> On Mon, Nov 07, 2022 at 02:26:41PM +1100, Stephen Rothwell wrote:
+> >> > Hi all,
+> >> > 
+> >> > After merging the rcu tree, today's linux-next build (htmldocs)
+> >> > produced this warning:
+> >> > 
+> >> > Documentation/RCU/rcubarrier.rst:205: WARNING: Literal block ends without a blank line; unexpected unindent.
+> >> > 
+> >> > Introduced by commit
+> >> > 
+> >> >   21c2e3909721 ("doc: Update rcubarrier.rst")
+> >> 
+> >> Huh.  I guess that numbered code samples are not supposed to have more
+> >> than nine lines?  Ah well, easy to fix by going back to left-justified
+> >> numbers.  I was wondering about that!
+> >> 
+> > 
+> > I think the proper fix is just let Sphinx generates line number:
+> 
+> That might be true if all you care about were the generated documents,
+> but we need to pay attention to readers of .rst files as plain-text.
+> 
+> There are a bunch of references to line numbers in RCU documents.
+> If explicit line numbers are removed from snippets, such readers need
+> to count the lines by themselves, which doesn't sound reasonable to me.
+> 
+> If you can put labels to referenced lines within code snippets, auto
+> generation of line numbers might work, but as far as I know, Sphinx
+> doesn't provide such a nice feature.
+> 
+> Of course, you can prove me wrong.
 
-To fix this, make isolate_movable_page() skip pages with the PageSlab flag set.
-This is a bit tricky as we need to add memory barriers to SLAB and SLUB's page
-allocation and freeing, and their counterparts to isolate_movable_page().
+I will give Bagas a few days to prove Akira wrong.  ;-)
 
-Based on my RFC from [2]. Added a comment update from Matthew's variant in [3]
-and, as done there, moved the PageSlab checks to happen before trying to take
-the page lock.
+Either way, thank you both for looking into this!
 
-[1] https://lore.kernel.org/all/208c1757-5edd-fd42-67d4-1940cc43b50f@intel.com/
-[2] https://lore.kernel.org/all/aec59f53-0e53-1736-5932-25407125d4d4@suse.cz/
-[3] https://lore.kernel.org/all/YzsVM8eToHUeTP75@casper.infradead.org/
-
-Reported-by: kernel test robot <yujie.liu@intel.com>
-Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
----
- mm/migrate.c | 15 ++++++++++++---
- mm/slab.c    |  6 +++++-
- mm/slub.c    |  6 +++++-
- 3 files changed, 22 insertions(+), 5 deletions(-)
-
-diff --git a/mm/migrate.c b/mm/migrate.c
-index 1379e1912772..959c99cff814 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -74,13 +74,22 @@ int isolate_movable_page(struct page *page, isolate_mode_t mode)
- 	if (unlikely(!get_page_unless_zero(page)))
- 		goto out;
- 
-+	if (unlikely(PageSlab(page)))
-+		goto out_putpage;
-+	/* Pairs with smp_wmb() in slab freeing, e.g. SLUB's __free_slab() */
-+	smp_rmb();
- 	/*
--	 * Check PageMovable before holding a PG_lock because page's owner
--	 * assumes anybody doesn't touch PG_lock of newly allocated page
--	 * so unconditionally grabbing the lock ruins page's owner side.
-+	 * Check movable flag before taking the page lock because
-+	 * we use non-atomic bitops on newly allocated page flags so
-+	 * unconditionally grabbing the lock ruins page's owner side.
- 	 */
- 	if (unlikely(!__PageMovable(page)))
- 		goto out_putpage;
-+	/* Pairs with smp_wmb() in slab allocation, e.g. SLUB's alloc_slab_page() */
-+	smp_rmb();
-+	if (unlikely(PageSlab(page)))
-+		goto out_putpage;
-+
- 	/*
- 	 * As movable pages are not isolated from LRU lists, concurrent
- 	 * compaction threads can race against page migration functions
-diff --git a/mm/slab.c b/mm/slab.c
-index 59c8e28f7b6a..219beb48588e 100644
---- a/mm/slab.c
-+++ b/mm/slab.c
-@@ -1370,6 +1370,8 @@ static struct slab *kmem_getpages(struct kmem_cache *cachep, gfp_t flags,
- 
- 	account_slab(slab, cachep->gfporder, cachep, flags);
- 	__folio_set_slab(folio);
-+	/* Make the flag visible before any changes to folio->mapping */
-+	smp_wmb();
- 	/* Record if ALLOC_NO_WATERMARKS was set when allocating the slab */
- 	if (sk_memalloc_socks() && page_is_pfmemalloc(folio_page(folio, 0)))
- 		slab_set_pfmemalloc(slab);
-@@ -1387,9 +1389,11 @@ static void kmem_freepages(struct kmem_cache *cachep, struct slab *slab)
- 
- 	BUG_ON(!folio_test_slab(folio));
- 	__slab_clear_pfmemalloc(slab);
--	__folio_clear_slab(folio);
- 	page_mapcount_reset(folio_page(folio, 0));
- 	folio->mapping = NULL;
-+	/* Make the mapping reset visible before clearing the flag */
-+	smp_wmb();
-+	__folio_clear_slab(folio);
- 
- 	if (current->reclaim_state)
- 		current->reclaim_state->reclaimed_slab += 1 << order;
-diff --git a/mm/slub.c b/mm/slub.c
-index 99ba865afc4a..5e6519d5169c 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -1800,6 +1800,8 @@ static inline struct slab *alloc_slab_page(gfp_t flags, int node,
- 
- 	slab = folio_slab(folio);
- 	__folio_set_slab(folio);
-+	/* Make the flag visible before any changes to folio->mapping */
-+	smp_wmb();
- 	if (page_is_pfmemalloc(folio_page(folio, 0)))
- 		slab_set_pfmemalloc(slab);
- 
-@@ -2000,8 +2002,10 @@ static void __free_slab(struct kmem_cache *s, struct slab *slab)
- 	int pages = 1 << order;
- 
- 	__slab_clear_pfmemalloc(slab);
--	__folio_clear_slab(folio);
- 	folio->mapping = NULL;
-+	/* Make the mapping reset visible before clearing the flag */
-+	smp_wmb();
-+	__folio_clear_slab(folio);
- 	if (current->reclaim_state)
- 		current->reclaim_state->reclaimed_slab += pages;
- 	unaccount_slab(slab, order, s);
--- 
-2.38.0
-
+							Thanx, Paul
