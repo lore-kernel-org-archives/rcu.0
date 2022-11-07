@@ -2,51 +2,51 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 46D8DC4321E
-	for <rcu@archiver.kernel.org>; Mon,  7 Nov 2022 17:06:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 30618C43217
+	for <rcu@archiver.kernel.org>; Mon,  7 Nov 2022 17:06:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232559AbiKGRGC (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 7 Nov 2022 12:06:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54808 "EHLO
+        id S231302AbiKGRGB (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 7 Nov 2022 12:06:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232399AbiKGRGA (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S232465AbiKGRGA (ORCPT <rfc822;rcu@vger.kernel.org>);
         Mon, 7 Nov 2022 12:06:00 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8322F1A20F;
-        Mon,  7 Nov 2022 09:05:58 -0800 (PST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8335B1EED1;
+        Mon,  7 Nov 2022 09:05:59 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 70B181F383;
+        by smtp-out1.suse.de (Postfix) with ESMTPS id C62E522603;
         Mon,  7 Nov 2022 17:05:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
         t=1667840757; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=oxt8DX9hjtQmJzjUJiAZ/pvWxZcY7FsbKiwy/1OaLtI=;
-        b=1lzbk6FbmE1Ji+YX8AWT7ByzYWFkLM0klQ18smQktoXQgePMt4bnUreeY86am0yeokdgEB
-        QtyUgF0y1bSbUbA4seztn2v1HaYPKT7kweuMv8/mtw7mvcTHFTpYuU3bI9UV1+pw3mhlYL
-        zcc1aLbFLU9ErXpbWcHUaWMx8pOCWFM=
+        bh=te1FgowaQW4ajxXT21DupqE727nwz0E07tdMxGVIwvM=;
+        b=eZrg0Bb6FfKs5zUeME2xDzdDaSCW9wKdPIZQUd/jHn2PtVDZ98avwrl1K0MUWTM9GtLiqb
+        RuQYoaqynCD851IBxgVlcgj/DmHRdugG9EXIppCwNCAK4LZDbxvws5eTI317gD8+K/qi2b
+        qby22iRZ+muOHAIdAqrZg6UuNe4YktM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
         s=susede2_ed25519; t=1667840757;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=oxt8DX9hjtQmJzjUJiAZ/pvWxZcY7FsbKiwy/1OaLtI=;
-        b=FCrIbgvyydHhHw/n93XtEZbWSlxOoQ4AzWmAzv1mIMBmWnFUVUVo3fQQbiVVUehzRBXspC
-        3I84wT07/3zCFOBw==
+        bh=te1FgowaQW4ajxXT21DupqE727nwz0E07tdMxGVIwvM=;
+        b=VxHcEmvMeK3KoFF2RqyDhg8iYFFenBZHRvDc3WJrXtFo3H4VSLhbie1vkwD0Z/zl5ctK2P
+        DnQwl8r2Z2cocXBQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 45BDD13ADB;
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9C94A13ADB;
         Mon,  7 Nov 2022 17:05:57 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id MNB2EPU6aWOYfwAAMHmgww
+        id GOjFJfU6aWOYfwAAMHmgww
         (envelope-from <vbabka@suse.cz>); Mon, 07 Nov 2022 17:05:57 +0000
 From:   Vlastimil Babka <vbabka@suse.cz>
 To:     Christoph Lameter <cl@linux.com>,
@@ -60,9 +60,9 @@ Cc:     Hyeonggon Yoo <42.hyeyoo@gmail.com>,
         rcu@vger.kernel.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org, patches@lists.linux.dev,
         Vlastimil Babka <vbabka@suse.cz>
-Subject: [PATCH v2 1/3] mm/slub: perform free consistency checks before call_rcu
-Date:   Mon,  7 Nov 2022 18:05:52 +0100
-Message-Id: <20221107170554.7869-2-vbabka@suse.cz>
+Subject: [PATCH v2 3/3] mm/sl[au]b: rearrange struct slab fields to allow larger rcu_head
+Date:   Mon,  7 Nov 2022 18:05:54 +0100
+Message-Id: <20221107170554.7869-4-vbabka@suse.cz>
 X-Mailer: git-send-email 2.38.0
 In-Reply-To: <20221107170554.7869-1-vbabka@suse.cz>
 References: <20221107170554.7869-1-vbabka@suse.cz>
@@ -72,70 +72,136 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-For SLAB_TYPESAFE_BY_RCU caches we use call_rcu to perform empty slab
-freeing. The rcu callback rcu_free_slab() calls __free_slab() that
-currently includes checking the slab consistency for caches with
-SLAB_CONSISTENCY_CHECKS flags. This check needs the slab->objects field
-to be intact.
+Joel reports [1] that increasing the rcu_head size for debugging
+purposes used to work before struct slab was split from struct page, but
+now runs into the various SLAB_MATCH() sanity checks of the layout.
 
-Because in the next patch we want to allow rcu_head in struct slab to
-become larger in debug configurations and thus potentially overwrite
-more fields through a union than slab_list, we want to limit the fields
-used in rcu_free_slab().  Thus move the consistency checks to
-free_slab() before call_rcu(). This can be done safely even for
-SLAB_TYPESAFE_BY_RCU caches where accesses to the objects can still
-occur after freeing them.
+This is because the rcu_head in struct page is in union with large
+sub-structures and has space to grow without exceeding their size, while
+in struct slab (for SLAB and SLUB) it's in union only with a list_head.
 
-As a result, only the slab->slab_cache field has to be physically
-separate from rcu_head for the freeing callback to work. We also save
-some cycles in the rcu callback for caches with consistency checks
-enabled.
+On closer inspection (and after the previous patch) we can put all
+fields except slab_cache to a union with rcu_head, as slab_cache is
+sufficient for the rcu freeing callbacks to work and the rest can be
+overwritten by rcu_head without causing issues.
 
+This is only somewhat complicated by the need to keep SLUB's
+freelist+counters aligned for cmpxchg_double. As a result the fields
+need to be reordered so that slab_cache is first (after page flags) and
+the union with rcu_head follows. For consistency, do that for SLAB as
+well, although not necessary there.
+
+As a result, the rcu_head field in struct page and struct slab is no
+longer at the same offset, but that doesn't matter as there is no
+casting that would rely on that in the slab freeing callbacks, so we can
+just drop the respective SLAB_MATCH() check.
+
+Also we need to update the SLAB_MATCH() for compound_head to reflect the
+new ordering.
+
+While at it, also add a static_assert to check the alignment needed for
+cmpxchg_double so mistakes are found sooner than a runtime GPF.
+
+[1] https://lore.kernel.org/all/85afd876-d8bb-0804-b2c5-48ed3055e702@joelfernandes.org/
+
+Reported-by: Joel Fernandes <joel@joelfernandes.org>
 Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-Reviewed-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Acked-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
 ---
- mm/slub.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ mm/slab.h | 54 ++++++++++++++++++++++++++++++++----------------------
+ 1 file changed, 32 insertions(+), 22 deletions(-)
 
-diff --git a/mm/slub.c b/mm/slub.c
-index 157527d7101b..99ba865afc4a 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -1999,14 +1999,6 @@ static void __free_slab(struct kmem_cache *s, struct slab *slab)
- 	int order = folio_order(folio);
- 	int pages = 1 << order;
+diff --git a/mm/slab.h b/mm/slab.h
+index 0202a8c2f0d2..b373952eef70 100644
+--- a/mm/slab.h
++++ b/mm/slab.h
+@@ -11,37 +11,43 @@ struct slab {
  
--	if (kmem_cache_debug_flags(s, SLAB_CONSISTENCY_CHECKS)) {
--		void *p;
--
--		slab_pad_check(s, slab);
--		for_each_object(p, s, slab_address(slab), slab->objects)
--			check_object(s, slab, p, SLUB_RED_INACTIVE);
--	}
--
- 	__slab_clear_pfmemalloc(slab);
- 	__folio_clear_slab(folio);
- 	folio->mapping = NULL;
-@@ -2025,9 +2017,17 @@ static void rcu_free_slab(struct rcu_head *h)
+ #if defined(CONFIG_SLAB)
  
- static void free_slab(struct kmem_cache *s, struct slab *slab)
- {
--	if (unlikely(s->flags & SLAB_TYPESAFE_BY_RCU)) {
-+	if (kmem_cache_debug_flags(s, SLAB_CONSISTENCY_CHECKS)) {
-+		void *p;
-+
-+		slab_pad_check(s, slab);
-+		for_each_object(p, s, slab_address(slab), slab->objects)
-+			check_object(s, slab, p, SLUB_RED_INACTIVE);
-+	}
-+
-+	if (unlikely(s->flags & SLAB_TYPESAFE_BY_RCU))
- 		call_rcu(&slab->rcu_head, rcu_free_slab);
--	} else
-+	else
- 		__free_slab(s, slab);
- }
++	struct kmem_cache *slab_cache;
+ 	union {
+-		struct list_head slab_list;
++		struct {
++			struct list_head slab_list;
++			void *freelist;	/* array of free object indexes */
++			void *s_mem;	/* first object */
++		};
+ 		struct rcu_head rcu_head;
+ 	};
+-	struct kmem_cache *slab_cache;
+-	void *freelist;	/* array of free object indexes */
+-	void *s_mem;	/* first object */
+ 	unsigned int active;
  
+ #elif defined(CONFIG_SLUB)
+ 
+-	union {
+-		struct list_head slab_list;
+-		struct rcu_head rcu_head;
+-#ifdef CONFIG_SLUB_CPU_PARTIAL
+-		struct {
+-			struct slab *next;
+-			int slabs;	/* Nr of slabs left */
+-		};
+-#endif
+-	};
+ 	struct kmem_cache *slab_cache;
+-	/* Double-word boundary */
+-	void *freelist;		/* first free object */
+ 	union {
+-		unsigned long counters;
+ 		struct {
+-			unsigned inuse:16;
+-			unsigned objects:15;
+-			unsigned frozen:1;
++			union {
++				struct list_head slab_list;
++#ifdef CONFIG_SLUB_CPU_PARTIAL
++				struct {
++					struct slab *next;
++					int slabs;	/* Nr of slabs left */
++				};
++#endif
++			};
++			/* Double-word boundary */
++			void *freelist;		/* first free object */
++			union {
++				unsigned long counters;
++				struct {
++					unsigned inuse:16;
++					unsigned objects:15;
++					unsigned frozen:1;
++				};
++			};
+ 		};
++		struct rcu_head rcu_head;
+ 	};
+ 	unsigned int __unused;
+ 
+@@ -66,9 +72,10 @@ struct slab {
+ #define SLAB_MATCH(pg, sl)						\
+ 	static_assert(offsetof(struct page, pg) == offsetof(struct slab, sl))
+ SLAB_MATCH(flags, __page_flags);
+-SLAB_MATCH(compound_head, slab_list);	/* Ensure bit 0 is clear */
+ #ifndef CONFIG_SLOB
+-SLAB_MATCH(rcu_head, rcu_head);
++SLAB_MATCH(compound_head, slab_cache);	/* Ensure bit 0 is clear */
++#else
++SLAB_MATCH(compound_head, slab_list);	/* Ensure bit 0 is clear */
+ #endif
+ SLAB_MATCH(_refcount, __page_refcount);
+ #ifdef CONFIG_MEMCG
+@@ -76,6 +83,9 @@ SLAB_MATCH(memcg_data, memcg_data);
+ #endif
+ #undef SLAB_MATCH
+ static_assert(sizeof(struct slab) <= sizeof(struct page));
++#if defined(CONFIG_HAVE_CMPXCHG_DOUBLE) && defined(CONFIG_SLUB)
++static_assert(IS_ALIGNED(offsetof(struct slab, freelist), 2*sizeof(void *)));
++#endif
+ 
+ /**
+  * folio_slab - Converts from folio to slab.
 -- 
 2.38.0
 
