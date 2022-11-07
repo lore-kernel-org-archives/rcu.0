@@ -2,168 +2,93 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ACEBDC4332F
-	for <rcu@archiver.kernel.org>; Mon,  7 Nov 2022 11:49:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C5FB3C43219
+	for <rcu@archiver.kernel.org>; Mon,  7 Nov 2022 14:16:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231932AbiKGLtN (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 7 Nov 2022 06:49:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56602 "EHLO
+        id S232077AbiKGOQo (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 7 Nov 2022 09:16:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231933AbiKGLtM (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 7 Nov 2022 06:49:12 -0500
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24B591A3B0;
-        Mon,  7 Nov 2022 03:49:08 -0800 (PST)
-Received: from dggpemm500024.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4N5Tyg1GpVzHvhN;
-        Mon,  7 Nov 2022 19:48:43 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggpemm500024.china.huawei.com (7.185.36.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Mon, 7 Nov 2022 19:49:06 +0800
-Received: from [10.174.178.55] (10.174.178.55) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Mon, 7 Nov 2022 19:49:05 +0800
-Subject: Re: [PATCH v4 4/4] rcu: Add RCU stall diagnosis information
-To:     "Elliott, Robert (Servers)" <elliott@hpe.com>,
-        "paulmck@kernel.org" <paulmck@kernel.org>
-CC:     Frederic Weisbecker <frederic@kernel.org>,
+        with ESMTP id S231367AbiKGOQn (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 7 Nov 2022 09:16:43 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16F5E19C2A;
+        Mon,  7 Nov 2022 06:16:42 -0800 (PST)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1667830600;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Hsx1u5F/1CiKvy2GFTZ4ZBzQ1rYlt65AF3SRkTuxsig=;
+        b=gGZzuKnOEmjKPxnbVv/2pWVKTnVFnDA6n6uJGrTaFNs5ZYKCtrOZcWBE0nUslYYBrhiBFC
+        wWXzKY0XCcdwU49sdLis2tWo+CqiLw27jBnhr7tjmFvfKL1ktOzUawjgzEsiy43FowPSV+
+        2R9HP522uAqxmgAD/Z92yUxYQeOtbus8a/JAigqgIL9U1loZ5DnW140SsJvb8Ab/i7cokn
+        48tUsK+EubYJAZr2PCtGbTlP1T+9Z/al4ryuJnrvWsLq9PyqJYttnZWggUbaOgfsRQD3bQ
+        FICdkdqh8pvtpKl3+PBEpjQJ6Ky3mRf3ya0jmwlyBd+Q6GZY4U1uV66yHgUUgA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1667830600;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Hsx1u5F/1CiKvy2GFTZ4ZBzQ1rYlt65AF3SRkTuxsig=;
+        b=O0NGeysRpJ2rTQa3JNmWJZLtFDJUBBFvVlOpA/ai0W0bs6FRiXV/Cp6mDv/3mE65r7hslX
+        eRRyPQGXENizajAA==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Josh Triplett <josh@joshtriplett.org>,
-        "Steven Rostedt" <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20221104021224.102-1-thunder.leizhen@huawei.com>
- <20221104021224.102-5-thunder.leizhen@huawei.com>
- <MW5PR84MB18425CBD1259317004F7771AAB3A9@MW5PR84MB1842.NAMPRD84.PROD.OUTLOOK.COM>
- <20221105200637.GC28461@paulmck-ThinkPad-P17-Gen-1>
- <MW5PR84MB1842933AB81EECFAF2ECCE7DAB3C9@MW5PR84MB1842.NAMPRD84.PROD.OUTLOOK.COM>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <5133bd4b-c17f-f5ed-eae2-fe2d199dc5db@huawei.com>
-Date:   Mon, 7 Nov 2022 19:49:04 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
+Subject: [PATCH printk v3 01/40] rcu: implement lockdep_rcu_enabled for !CONFIG_DEBUG_LOCK_ALLOC
+Date:   Mon,  7 Nov 2022 15:21:59 +0106
+Message-Id: <20221107141638.3790965-2-john.ogness@linutronix.de>
+In-Reply-To: <20221107141638.3790965-1-john.ogness@linutronix.de>
+References: <20221107141638.3790965-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <MW5PR84MB1842933AB81EECFAF2ECCE7DAB3C9@MW5PR84MB1842.NAMPRD84.PROD.OUTLOOK.COM>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.55]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+Provide an implementation for debug_lockdep_rcu_enabled() when
+CONFIG_DEBUG_LOCK_ALLOC is not enabled. This allows code to check
+if rcu lockdep debugging is available without needing an extra
+check if CONFIG_DEBUG_LOCK_ALLOC is enabled.
 
+Signed-off-by: John Ogness <john.ogness@linutronix.de>
+---
+ I also sent this patch to Paul as a suggestion. If it is not
+ acceptable, I just need to add an ifdef CONFIG_DEBUG_LOCK_ALLOC
+ into console_list_lock() of patch 21.
 
-On 2022/11/7 10:10, Elliott, Robert (Servers) wrote:
-> 
->>>> +config RCU_CPU_STALL_CPUTIME
->>>
->>> Since the information might change and grow over time, consider
->>> calling it "ADDITIONAL_INFO" rather than just "CPUTIME".
->>
->> Except that I already redirected Zhen Lei from a generic description
->> to a more specific one.  The reason for this is that I already get
->> complaints about the large volume of output from RCU CPU stall warnings,
->> which suggests that unless the additional information is quite small,
->> it should get its own Kconfig option and kernel boot parameter.
->>
->> So we well be keeping RCU_CPU_STALL_CPUTIME.
-> 
-> No problem - CPUTIME is easier to search for, and will likely
-> always remain as one of the values reported.
-> 
->> But please tie any such patch to an actual use case.  After all, if no
->> one actually uses that additional information, we have irritates untold
->> numbers of electrons for no purpose.
-> 
-> I've been working on fixing intermittent RCU stalls that turned out to be
-> caused by x86-optimized crypto modules holding kernel_fpu_begin()/end()
-> too long and crypto tests not calling cond_resched() often enough, so am
-> interested in features that will help identify and prevent such
-> problems.
-> 
->> Also, some of those functions are on fastpaths, so adding unconditional
->> instrumentation overhead might result in an objection or three.
->>
->> As always, choose wisely!  ;-)
->>
->> If I don't see anything from you by this coming Friday, I will fold my
->> usual wordsmithing into the patch.
-> 
-> I applied the series to a tree not including any crypto module
-> fixes, but an overnight run didn't trigger any RCU stalls. So, I
-> modified the tcrypt test module to simulate a problem by
-> running a lengthy loop after kernel_fpu_begin().  
-> Here's an example of how the output looks:
-> 
-> 
-> [ 1816.698380] rcu: INFO: rcu_preempt self-detected stall on CPU
-> [ 1816.704368] rcu:     0-....: (2999 ticks this GP) idle=1dbc/1/0x4000000000000000 softirq=39683/39683 fqs=751
-> [ 1816.714200] rcu:          hardirqs   softirqs   csw/system
-> [ 1816.719922] rcu:  number:        5         10            0
-> [ 1816.725643] rcu: cputime:        3          0         1492   ==> 1500(ms)
-> [ 1816.732669]  (t=3030 jiffies g=89765 q=308 ncpus=56)
-> [ 1816.737857] CPU: 0 PID: 46826 Comm: modprobe Tainted: G        W          6.0.0+ #5
-> [ 1816.745754] Hardware name: HPE ProLiant DL360 Gen10/ProLiant DL360 Gen10, BIOS U32 03/08/2022
-> [ 1816.754523] RIP: 0010:rude_sleep_cycles.constprop.0+0x1c/0x30 [tcrypt]
-> [ 1816.761290] Code: 5d 41 5c 41 5d 41 5e 41 5f c3 cc cc cc cc 0f 1f 44 00 00 0f 31 48 c1 e2 20 be ab 90 41 00 48 89 d1 48 c1 e6 0b 48 09 c1 0f 31 <48> c1 e2 20 48 09 c2 48 29 ca 48 39 d6 73 ef c3 cc cc cc cc 48 8b
-> ...
-> 
-> That makes me realize what "csw/switch" means:
-> - "csw" context switches applies to the number line
-> - "system" applies the cputime line
->  
-> Maybe this shouldn't be a table? Make it grep-friendly:
-> [ 1816.719922] rcu: half-timeout counts: hardirq =5 softirq=10 csw=0
-> [ 1816.725643] rcu: half_timeout cputimes (ms): time=1500 hardirq=3 softirq=0 system=1492
+ include/linux/rcupdate.h | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-I prefer the table. Table look clearer and easier to compare.
-
-> 
-> The new prints interfere with existing prints, pushing the "t=3030" line 
-> further away from its context. That's from a pr_cont. Existing prints after
-> the "self-detect stall" message all start with \t, so they are roughly
-> related to the first line. The new prints should probably do the same.
-> 
-> Since the first line ends with \n, the pr_cont will never make it on the
-> same line, so it might be cleaner to use pr_err instead. That way it'll have
-> the "rcu:" prefix of the other lines.
-> 
-> That's from:
->         pr_err("INFO: %s self-detected stall on CPU\n", rcu_state.name);
->         raw_spin_lock_irqsave_rcu_node(rdp->mynode, flags);
->         print_cpu_stall_info(smp_processor_id());
-> [that's where this patch adds more prints]
->         raw_spin_unlock_irqrestore_rcu_node(rdp->mynode, flags);
->         for_each_possible_cpu(cpu)
->                 totqlen += rcu_get_n_cbs_cpu(cpu);
->         pr_cont("\t(t=%lu jiffies g=%ld q=%lu ncpus=%d)\n",
->                 jiffies - gps,
->                 (long)rcu_seq_current(&rcu_state.gp_seq), totqlen, rcu_state.n_online_cpus);
-> 
-> 
-> One other print has similar construction:
->         pr_err("INFO: %s detected stalls on CPUs/tasks:\n", rcu_state.name);
->         ...
->                                         print_cpu_stall_info(cpu);
->         ...
->         pr_cont("\t(detected by %d, t=%ld jiffies, g=%ld, q=%lu ncpus=%d)\n",
->                smp_processor_id(), (long)(jiffies - gps),
->                (long)rcu_seq_current(&rcu_state.gp_seq), totqlen, rcu_state.n_online_cpus);
-> 
-> 
-> 
-> .
-> 
-
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index 08605ce7379d..65178c40ab6f 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -340,6 +340,11 @@ static inline int rcu_read_lock_any_held(void)
+ 	return !preemptible();
+ }
+ 
++static inline int debug_lockdep_rcu_enabled(void)
++{
++	return 0;
++}
++
+ #endif /* #else #ifdef CONFIG_DEBUG_LOCK_ALLOC */
+ 
+ #ifdef CONFIG_PROVE_RCU
 -- 
-Regards,
-  Zhen Lei
+2.30.2
+
