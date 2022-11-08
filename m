@@ -2,102 +2,203 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 269FBC433FE
-	for <rcu@archiver.kernel.org>; Tue,  8 Nov 2022 10:29:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F70FC433FE
+	for <rcu@archiver.kernel.org>; Tue,  8 Nov 2022 13:23:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232891AbiKHK3h (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 8 Nov 2022 05:29:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54468 "EHLO
+        id S233899AbiKHNXI (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 8 Nov 2022 08:23:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232125AbiKHK3g (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 8 Nov 2022 05:29:36 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57CA3614A;
-        Tue,  8 Nov 2022 02:29:35 -0800 (PST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 01EB91F8BD;
-        Tue,  8 Nov 2022 10:29:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1667903374; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=42Wym6hzhZrHL5OTzyhJU3dom4Zp+KxcEH8YfQkDIFA=;
-        b=XXk3dL2kcI3cUCEHnlBi+X3mJXJ/iOiZHahAhF39ojcDurjARdKOPBIL642UWdpvEJ592O
-        O+PeIZEY6Frk+4BO+rVkzLme/PGXrfw06copVWtDMDuYDIKyBH1t6uF0yh4wht7pDofiSm
-        q6V9GnVki532OqQHws4P4FoAfkNUF70=
-Received: from suse.cz (unknown [10.100.208.146])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 791932C141;
-        Tue,  8 Nov 2022 10:29:33 +0000 (UTC)
-Date:   Tue, 8 Nov 2022 11:29:32 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: Re: [PATCH printk v3 01/40] rcu: implement lockdep_rcu_enabled for
- !CONFIG_DEBUG_LOCK_ALLOC
-Message-ID: <Y2ovjKa11/yojrNK@alley>
-References: <20221107141638.3790965-1-john.ogness@linutronix.de>
- <20221107141638.3790965-2-john.ogness@linutronix.de>
+        with ESMTP id S234010AbiKHNXH (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 8 Nov 2022 08:23:07 -0500
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A9DA4FF8A
+        for <rcu@vger.kernel.org>; Tue,  8 Nov 2022 05:23:06 -0800 (PST)
+Received: by mail-lj1-x231.google.com with SMTP id a15so21063136ljb.7
+        for <rcu@vger.kernel.org>; Tue, 08 Nov 2022 05:23:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z9c+SUVCFkEFiJw6QS4JW6Vj6oicQMjFRZ8L0jMBW+8=;
+        b=SbulKQbCCeZOo/k0KYrMctPhxU44c/4sPfjA1xr9ultHFcwpw1MWIu0QG4a3751R95
+         xiKcRDjpyFHgVeVYUrC0jn91wcQn7nbY03vVdcLJ1zAqNNIW7w79sngUY5BZxLcSPHKt
+         cJzsfKHUkiDQY2rITj0umhgwfTXoMJKbdGLSRbo8W54Au+u74iGvJ4IQvWjloDp//lFc
+         FPFJXdR7pCanqIwPgf45tacue+s9qvnEk55uaXu9aUJkxA6DR0ectVLKGVg+12G2rGUl
+         vMLJHunpErpFeHmWZyy99nLeshil4EkXeqWQivbx0vn4P8juSGlQr95KY7zHd8ApwMCo
+         TfHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Z9c+SUVCFkEFiJw6QS4JW6Vj6oicQMjFRZ8L0jMBW+8=;
+        b=XzTRkTSv7G8cIwL6gEHZQcUiYWWWKVs++mT4XDnc6Gi6exmAdSO//rpYd7+AAi09fe
+         SXMp+6MUKlg9lcMuaqlMDEimiDWpF7a5L4zjVcDKv3xrPDEkm719dPdMiYRZ2Qr7xH2e
+         hSQkzKJqFZUgd0KnIaLUxGDRv1ZVeo8/7QBIa5ekAwBEzNdkIn432KlgU1sLq/B6/pZf
+         exg09NBNQQ1nl4Cfx9/RydlDtZ6FUteCzplHJhrh7kwmXOsvhP4KTcZr7HWRxH72mpNQ
+         wvG1nsSF2F08kLd1riC2VK4cBQ1POEaba2GSRWJDEM4ARxAM7bULU3vS/+4K6ZRFKMoE
+         MDQQ==
+X-Gm-Message-State: ACrzQf3aiRUEJ4qWzg2qcP7CITM9BDL5QyyHBZbUhH9eaTsnsYMe0v9v
+        +c2NYgESS2wz9CvAtAWK6P8yoJBJtNE17g8AgC7BjZk=
+X-Google-Smtp-Source: AMsMyM7HE5sUffedZt0kRFJxnN1idMj3puRq6S6psI8lIpJ6jIqjL0t7q6DZZcq2sWL0YdHUkssQAvduJlFFPJrETCs=
+X-Received: by 2002:a2e:960f:0:b0:277:1e3f:5ff8 with SMTP id
+ v15-20020a2e960f000000b002771e3f5ff8mr20489325ljh.199.1667913783783; Tue, 08
+ Nov 2022 05:23:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221107141638.3790965-2-john.ogness@linutronix.de>
+References: <20221028181305.GQ5600@paulmck-ThinkPad-P17-Gen-1> <20221031015237.10294-1-kernelfans@gmail.com>
+In-Reply-To: <20221031015237.10294-1-kernelfans@gmail.com>
+From:   Pingfan Liu <kernelfans@gmail.com>
+Date:   Tue, 8 Nov 2022 21:22:52 +0800
+Message-ID: <CAFgQCTvmHUSaKeb18XaoN8L2_UsqrrxMdzBOiA7yVSs0BWXrXQ@mail.gmail.com>
+Subject: Re: [PATCHv2] srcu: Delegate work to the boot cpu if using SRCU_SIZE_SMALL
+To:     rcu@vger.kernel.org
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon 2022-11-07 15:21:59, John Ogness wrote:
-> Provide an implementation for debug_lockdep_rcu_enabled() when
-> CONFIG_DEBUG_LOCK_ALLOC is not enabled. This allows code to check
-> if rcu lockdep debugging is available without needing an extra
-> check if CONFIG_DEBUG_LOCK_ALLOC is enabled.
-> 
-> Signed-off-by: John Ogness <john.ogness@linutronix.de>
+Gently ping. :)
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
-
-Just a small nit below.
-
+On Mon, Oct 31, 2022 at 9:52 AM Pingfan Liu <kernelfans@gmail.com> wrote:
+>
+> commit 994f706872e6 ("srcu: Make Tree SRCU able to operate without
+> snp_node array") assumes that cpu 0 is always online, but that is not
+> the truth when using maxcpus=1 in the command line for the kdump kernel.
+>
+> On a PowerPC, the following kdump kernel hanging is observed:
+> ...
+> [    1.740036] systemd[1]: Hostname set to <xyz.com>
+> [  243.686240] INFO: task systemd:1 blocked for more than 122 seconds.
+> [  243.686264]       Not tainted 6.1.0-rc1 #1
+> [  243.686272] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> [  243.686281] task:systemd         state:D stack:0     pid:1     ppid:0      flags:0x00042000
+> [  243.686296] Call Trace:
+> [  243.686301] [c000000016657640] [c000000016657670] 0xc000000016657670 (unreliable)
+> [  243.686317] [c000000016657830] [c00000001001dec0] __switch_to+0x130/0x220
+> [  243.686333] [c000000016657890] [c000000010f607b8] __schedule+0x1f8/0x580
+> [  243.686347] [c000000016657940] [c000000010f60bb4] schedule+0x74/0x140
+> [  243.686361] [c0000000166579b0] [c000000010f699b8] schedule_timeout+0x168/0x1c0
+> [  243.686374] [c000000016657a80] [c000000010f61de8] __wait_for_common+0x148/0x360
+> [  243.686387] [c000000016657b20] [c000000010176bb0] __flush_work.isra.0+0x1c0/0x3d0
+> [  243.686401] [c000000016657bb0] [c0000000105f2768] fsnotify_wait_marks_destroyed+0x28/0x40
+> [  243.686415] [c000000016657bd0] [c0000000105f21b8] fsnotify_destroy_group+0x68/0x160
+> [  243.686428] [c000000016657c40] [c0000000105f6500] inotify_release+0x30/0xa0
+> [  243.686440] [c000000016657cb0] [c0000000105751a8] __fput+0xc8/0x350
+> [  243.686452] [c000000016657d00] [c00000001017d524] task_work_run+0xe4/0x170
+> [  243.686464] [c000000016657d50] [c000000010020e94] do_notify_resume+0x134/0x140
+> [  243.686478] [c000000016657d80] [c00000001002eb18] interrupt_exit_user_prepare_main+0x198/0x270
+> [  243.686493] [c000000016657de0] [c00000001002ec60] syscall_exit_prepare+0x70/0x180
+> [  243.686505] [c000000016657e10] [c00000001000bf7c] system_call_vectored_common+0xfc/0x280
+> [  243.686520] --- interrupt: 3000 at 0x7fffa47d5ba4
+> [  243.686528] NIP:  00007fffa47d5ba4 LR: 0000000000000000 CTR: 0000000000000000
+> [  243.686538] REGS: c000000016657e80 TRAP: 3000   Not tainted  (6.1.0-rc1)
+> [  243.686548] MSR:  800000000000d033 <SF,EE,PR,ME,IR,DR,RI,LE>  CR: 42044440  XER: 00000000
+> [  243.686572] IRQMASK: 0
+> [  243.686572] GPR00: 0000000000000006 00007ffffa606710 00007fffa48e7200 0000000000000000
+> [  243.686572] GPR04: 0000000000000002 000000000000000a 0000000000000000 0000000000000001
+> [  243.686572] GPR08: 000001000c172dd0 0000000000000000 0000000000000000 0000000000000000
+> [  243.686572] GPR12: 0000000000000000 00007fffa4ff4bc0 0000000000000000 0000000000000000
+> [  243.686572] GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
+> [  243.686572] GPR20: 0000000132dfdc50 000000000000000e 0000000000189375 0000000000000000
+> [  243.686572] GPR24: 00007ffffa606ae0 0000000000000005 000001000c185490 000001000c172570
+> [  243.686572] GPR28: 000001000c172990 000001000c184850 000001000c172e00 00007fffa4fedd98
+> [  243.686683] NIP [00007fffa47d5ba4] 0x7fffa47d5ba4
+> [  243.686691] LR [0000000000000000] 0x0
+> [  243.686698] --- interrupt: 3000
+> [  243.686708] INFO: task kworker/u16:1:24 blocked for more than 122 seconds.
+> [  243.686717]       Not tainted 6.1.0-rc1 #1
+> [  243.686724] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> [  243.686733] task:kworker/u16:1   state:D stack:0     pid:24    ppid:2      flags:0x00000800
+> [  243.686747] Workqueue: events_unbound fsnotify_mark_destroy_workfn
+> [  243.686758] Call Trace:
+> [  243.686762] [c0000000166736e0] [c00000004fd91000] 0xc00000004fd91000 (unreliable)
+> [  243.686775] [c0000000166738d0] [c00000001001dec0] __switch_to+0x130/0x220
+> [  243.686788] [c000000016673930] [c000000010f607b8] __schedule+0x1f8/0x580
+> [  243.686801] [c0000000166739e0] [c000000010f60bb4] schedule+0x74/0x140
+> [  243.686814] [c000000016673a50] [c000000010f699b8] schedule_timeout+0x168/0x1c0
+> [  243.686827] [c000000016673b20] [c000000010f61de8] __wait_for_common+0x148/0x360
+> [  243.686840] [c000000016673bc0] [c000000010210840] __synchronize_srcu.part.0+0xa0/0xe0
+> [  243.686855] [c000000016673c30] [c0000000105f2c64] fsnotify_mark_destroy_workfn+0xc4/0x1a0
+> [  243.686868] [c000000016673ca0] [c000000010174ea8] process_one_work+0x2a8/0x570
+> [  243.686882] [c000000016673d40] [c000000010175208] worker_thread+0x98/0x5e0
+> [  243.686895] [c000000016673dc0] [c0000000101828d4] kthread+0x124/0x130
+> [  243.686908] [c000000016673e10] [c00000001000cd40] ret_from_kernel_thread+0x5c/0x64
+> [  366.566274] INFO: task systemd:1 blocked for more than 245 seconds.
+> [  366.566298]       Not tainted 6.1.0-rc1 #1
+> [  366.566305] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> [  366.566314] task:systemd         state:D stack:0     pid:1     ppid:0      flags:0x00042000
+> [  366.566329] Call Trace:
+> ...
+>
+> In that case, note that maxcpus=1 instead of nr_cpus=1 is used in the
+> kernel command line on the PowerPC platform. Consequently, the crash cpu
+> is the only onlined cpu in the kdump kernel, but with its logical id not
+> necessary 0. While SRCU queues a sdp->work on cpu 0, on which no worker
+> thread is created, so sdp->work will be never executed and
+> __synchronize_srcu() can not be completed.
+>
+> Tackle this issue by replacing the cpu logic id 0 with
+> get_boot_cpu_id(). Since get_boot_cpu_id() guarantees the cpu to be once
+> online, based on the fact experienced by the running code.
+>
+> Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+> Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> Cc: Josh Triplett <josh@joshtriplett.org>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> To: rcu@vger.kernel.org
 > ---
->  I also sent this patch to Paul as a suggestion. If it is not
->  acceptable, I just need to add an ifdef CONFIG_DEBUG_LOCK_ALLOC
->  into console_list_lock() of patch 21.
-> 
->  include/linux/rcupdate.h | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-> index 08605ce7379d..65178c40ab6f 100644
-> --- a/include/linux/rcupdate.h
-> +++ b/include/linux/rcupdate.h
-> @@ -340,6 +340,11 @@ static inline int rcu_read_lock_any_held(void)
->  	return !preemptible();
->  }
->  
-> +static inline int debug_lockdep_rcu_enabled(void)
-> +{
-> +	return 0;
-> +}
-> +
-
-It would make sense to move this up before rcu_read_lock_held()
-definition so that the declarations and definitions are in
-the same order in both #ifdef CONFIG_DEBUG_LOCK_ALLOC branches.
-
->  #endif /* #else #ifdef CONFIG_DEBUG_LOCK_ALLOC */
->  
->  #ifdef CONFIG_PROVE_RCU
-
-Best Regards,
-PEtr
+>  kernel/rcu/srcutree.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+>
+> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> index 1c304fec89c0..4db36d543be3 100644
+> --- a/kernel/rcu/srcutree.c
+> +++ b/kernel/rcu/srcutree.c
+> @@ -663,7 +663,7 @@ static void srcu_gp_start(struct srcu_struct *ssp)
+>         int state;
+>
+>         if (smp_load_acquire(&ssp->srcu_size_state) < SRCU_SIZE_WAIT_BARRIER)
+> -               sdp = per_cpu_ptr(ssp->sda, 0);
+> +               sdp = per_cpu_ptr(ssp->sda, get_boot_cpu_id());
+>         else
+>                 sdp = this_cpu_ptr(ssp->sda);
+>         lockdep_assert_held(&ACCESS_PRIVATE(ssp, lock));
+> @@ -774,7 +774,8 @@ static void srcu_gp_end(struct srcu_struct *ssp)
+>         /* Initiate callback invocation as needed. */
+>         ss_state = smp_load_acquire(&ssp->srcu_size_state);
+>         if (ss_state < SRCU_SIZE_WAIT_BARRIER) {
+> -               srcu_schedule_cbs_sdp(per_cpu_ptr(ssp->sda, 0), cbdelay);
+> +               srcu_schedule_cbs_sdp(per_cpu_ptr(ssp->sda, get_boot_cpu_id()),
+> +                                       cbdelay);
+>         } else {
+>                 idx = rcu_seq_ctr(gpseq) % ARRAY_SIZE(snp->srcu_have_cbs);
+>                 srcu_for_each_node_breadth_first(ssp, snp) {
+> @@ -1093,7 +1094,7 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
+>         idx = srcu_read_lock(ssp);
+>         ss_state = smp_load_acquire(&ssp->srcu_size_state);
+>         if (ss_state < SRCU_SIZE_WAIT_CALL)
+> -               sdp = per_cpu_ptr(ssp->sda, 0);
+> +               sdp = per_cpu_ptr(ssp->sda, get_boot_cpu_id());
+>         else
+>                 sdp = raw_cpu_ptr(ssp->sda);
+>         spin_lock_irqsave_sdp_contention(sdp, &flags);
+> @@ -1429,7 +1430,7 @@ void srcu_barrier(struct srcu_struct *ssp)
+>
+>         idx = srcu_read_lock(ssp);
+>         if (smp_load_acquire(&ssp->srcu_size_state) < SRCU_SIZE_WAIT_BARRIER)
+> -               srcu_barrier_one_cpu(ssp, per_cpu_ptr(ssp->sda, 0));
+> +               srcu_barrier_one_cpu(ssp, per_cpu_ptr(ssp->sda, get_boot_cpu_id()));
+>         else
+>                 for_each_possible_cpu(cpu)
+>                         srcu_barrier_one_cpu(ssp, per_cpu_ptr(ssp->sda, cpu));
+> --
+> 2.31.1
+>
