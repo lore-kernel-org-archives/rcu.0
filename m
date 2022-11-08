@@ -2,29 +2,29 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 89054C4332F
-	for <rcu@archiver.kernel.org>; Tue,  8 Nov 2022 03:07:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 49A60C433FE
+	for <rcu@archiver.kernel.org>; Tue,  8 Nov 2022 03:19:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233389AbiKHDHH (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 7 Nov 2022 22:07:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43402 "EHLO
+        id S233242AbiKHDS7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 7 Nov 2022 22:18:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233363AbiKHDGm (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 7 Nov 2022 22:06:42 -0500
+        with ESMTP id S232679AbiKHDS6 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 7 Nov 2022 22:18:58 -0500
 Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6840303D8;
-        Mon,  7 Nov 2022 19:06:40 -0800 (PST)
-Received: from dggpemm500023.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4N5tKg56pyzRp5C;
-        Tue,  8 Nov 2022 11:06:31 +0800 (CST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EF8A27919;
+        Mon,  7 Nov 2022 19:18:56 -0800 (PST)
+Received: from dggpemm500022.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4N5tbW0PQ7zHvgV;
+        Tue,  8 Nov 2022 11:18:31 +0800 (CST)
 Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
+ dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Tue, 8 Nov 2022 11:06:39 +0800
+ 15.1.2375.31; Tue, 8 Nov 2022 11:18:54 +0800
 Received: from [10.174.178.55] (10.174.178.55) by
  dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Tue, 8 Nov 2022 11:06:38 +0800
+ 15.1.2375.31; Tue, 8 Nov 2022 11:18:54 +0800
 Subject: Re: [PATCH v4 4/4] rcu: Add RCU stall diagnosis information
 To:     "Elliott, Robert (Servers)" <elliott@hpe.com>,
         "paulmck@kernel.org" <paulmck@kernel.org>
@@ -44,19 +44,18 @@ References: <20221104021224.102-1-thunder.leizhen@huawei.com>
  <MW5PR84MB1842933AB81EECFAF2ECCE7DAB3C9@MW5PR84MB1842.NAMPRD84.PROD.OUTLOOK.COM>
  <5133bd4b-c17f-f5ed-eae2-fe2d199dc5db@huawei.com>
  <MW5PR84MB18427CB2FF17CE0D91BE9944AB3C9@MW5PR84MB1842.NAMPRD84.PROD.OUTLOOK.COM>
- <MW5PR84MB1842199BE77619EFB93AB1DAAB3C9@MW5PR84MB1842.NAMPRD84.PROD.OUTLOOK.COM>
 From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <ac89012c-c9c8-aed1-2007-d5cc93433db7@huawei.com>
-Date:   Tue, 8 Nov 2022 11:06:37 +0800
+Message-ID: <3adb6360-ac90-2ef7-5dcb-e2013f19dd13@huawei.com>
+Date:   Tue, 8 Nov 2022 11:18:53 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <MW5PR84MB1842199BE77619EFB93AB1DAAB3C9@MW5PR84MB1842.NAMPRD84.PROD.OUTLOOK.COM>
+In-Reply-To: <MW5PR84MB18427CB2FF17CE0D91BE9944AB3C9@MW5PR84MB1842.NAMPRD84.PROD.OUTLOOK.COM>
 Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 X-Originating-IP: [10.174.178.55]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  dggpemm500006.china.huawei.com (7.185.36.236)
 X-CFilter-Loop: Reflected
 Precedence: bulk
@@ -65,57 +64,100 @@ X-Mailing-List: rcu@vger.kernel.org
 
 
 
-On 2022/11/8 5:57, Elliott, Robert (Servers) wrote:
-> I created a 22 second stall, which triggered two self-detected stall
-> messages. The second one covers 18 seconds (and reports 17444 ms
-> of system cputime), but still reports the half_timeout of 2.5 s on
-
-Because I have not updated rsrp->gp_seq in print_cpu_stat_info().
-
-Please add rsrp->gp_seq-- at the bottom of print_cpu_stat_info()
-and try again.
-
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index 2e560a70d88fd87..6f6c95d599e6436 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -455,6 +455,7 @@ static void print_cpu_stat_info(int cpu)
-                div_u64(cpustat[CPUTIME_SOFTIRQ] - rsrp->cputime_softirq, NSEC_PER_MSEC),
-                div_u64(cpustat[CPUTIME_SYSTEM] - rsrp->cputime_system, NSEC_PER_MSEC),
-                jiffies64_to_msecs(half_timeout));
-+       rsrp->gp_seq--;
- }
-
- /*
-
-> the right. The duration since the snapshot was taken would be
-> more meaningful.
+On 2022/11/8 4:38, Elliott, Robert (Servers) wrote:
 > 
-> [ 3428.422726] tcrypt: rcu testing - preempt_disable for rude 22 s
-> [ 3433.419012] rcu: INFO: rcu_preempt self-detected stall on CPU
-> [ 3433.425145] rcu:     52-....: (4993 ticks this GP) idle=7704/1/0x4000000000000000 softirq=8448/8448 fqs=1247
-> [ 3433.435073] rcu:               hardirqs   softirqs          csw     system cond_resched
-> [ 3433.443096] rcu:      number:        0          5            0                      0
-> [ 3433.450930] rcu:     cputime:        8          0                     2489              ==> 2500 (ms)
-> [ 3433.460151] rcu:     current: in_kernel_fpu_begin=0 this_cpu_preemptible=0
-> [ 3433.467006]  (t=5044 jiffies g=127261 q=179 ncpus=56)
-> [ 3433.472285] CPU: 52 PID: 44429 Comm: modprobe Not tainted 6.0.0+ #11
-> [ 3433.478879] Hardware name: HPE ProLiant DL360 Gen10/ProLiant DL360 Gen10, BIOS U32 03/08/2022
-> [ 3433.487664] RIP: 0010:rude_sleep_cycles+0x13/0x27 [tcrypt]
-> ...
-> [ 3433.717818]  </TASK>
-> [ 3448.719827] rcu: INFO: rcu_preempt self-detected stall on CPU
-> [ 3448.725816] rcu:     52-....: (19994 ticks this GP) idle=7704/1/0x4000000000000000 softirq=8448/8448 fqs=5002
-> [ 3448.735736] rcu:               hardirqs   softirqs          csw     system cond_resched
-> [ 3448.743735] rcu:      number:        0         38            0                      0
-> [ 3448.751560] rcu:     cputime:      354          0                    17444              ==> 2500 (ms)
-> [ 3448.760780] rcu:     current: in_kernel_fpu_begin=0 this_cpu_preemptible=0
-> [ 3448.767643]  (t=20348 jiffies g=127261 q=1019 ncpus=56)
-> [ 3448.773106] CPU: 52 PID: 44429 Comm: modprobe Not tainted 6.0.0+ #11
-> [ 3448.779704] Hardware name: HPE ProLiant DL360 Gen10/ProLiant DL360 Gen10, BIOS U32 03/08/2022
-> [ 3448.788488] RIP: 0010:rude_sleep_cycles+0x13/0x27 [tcrypt]
-> ...
 > 
+>>> Maybe this shouldn't be a table? Make it grep-friendly:
+>>> [ 1816.719922] rcu: half-timeout counts: hardirq =5 softirq=10 csw=0
+>>> [ 1816.725643] rcu: half_timeout cputimes (ms): time=1500 hardirq=3
+>> softirq=0 system=1492
+>>
+>> I prefer the table. Table look clearer and easier to compare.
+> 
+> Here's an example where it also triggers expedited stalls. The 
+> self-detected stall prints including the new table can end up
+> interleaved with the expedited stall prints.
+
+But even if use your format, it won't solve the printing
+interleaving problem. We should use lock.
+
+> 
+> (the table is expanded a bit here to experiment with adding more info, 
+> and I included the \t prefixes)
+> 
+> [  933.728032] tcrypt: rcu testing - kernel_fpu_disable for rude 6 s
+> [  938.038278] rcu: INFO: rcu_preempt detected expedited stalls on CPUs/tasks: { 46-.... } 4 jiffies s: 521 root: 0x8/.
+> [  938.049151] rcu: blocking rcu_node structures (internal RCU debug): l=1:42-55:0x10/.
+> [  938.057236] Sending NMI from CPU 35 to CPUs 46:
+> [  938.062048] NMI backtrace for cpu 46
+> [  938.062050] CPU: 46 PID: 44184 Comm: modprobe Not tainted 6.0.0+ #11
+> [  938.062052] Hardware name: HPE ProLiant DL360 Gen10/ProLiant DL360 Gen10, BIOS U32 03/08/2022
+> [  938.062053] RIP: 0010:rude_sleep_cycles+0x13/0x27 [tcrypt]
+> ...
+> [  938.062151]  </TASK>
+> [  938.073277] rcu: INFO: rcu_preempt detected expedited stalls on CPUs/tasks: { 46-.... } 289 jiffies s: 521 root: 0x8/.
+> [  938.334292] rcu: blocking rcu_node structures (internal RCU debug): l=1:42-55:0x10/.
+> [  938.342289] Sending NMI from CPU 35 to CPUs 46:
+> [  938.347049] NMI backtrace for cpu 46
+> [  938.347050] CPU: 46 PID: 44184 Comm: modprobe Not tainted 6.0.0+ #11
+> [  938.347051] Hardware name: HPE ProLiant DL360 Gen10/ProLiant DL360 Gen10, BIOS U32 03/08/2022
+> [  938.347052] RIP: 0010:rude_sleep_cycles+0x13/0x27 [tcrypt]
+> ...
+> [  938.347121]  </TASK>
+> [  938.358275] rcu: INFO: rcu_preempt detected expedited stalls on CPUs/tasks: { 46-.... } 573 jiffies s: 521 root: 0x8/.
+> [  938.619182] rcu: blocking rcu_node structures (internal RCU debug): l=1:42-55:0x10/.
+> [  938.627179] Sending NMI from CPU 35 to CPUs 46:
+> [  938.631939] NMI backtrace for cpu 46
+> [  938.631939] CPU: 46 PID: 44184 Comm: modprobe Not tainted 6.0.0+ #11
+> [  938.631941] Hardware name: HPE ProLiant DL360 Gen10/ProLiant DL360 Gen10, BIOS U32 03/08/2022
+> [  938.631942] RIP: 0010:rude_sleep_cycles+0x13/0x27 [tcrypt]
+> ...
+> [  938.631997]  </TASK>
+> [  938.643272] rcu: INFO: rcu_preempt detected expedited stalls on CPUs/tasks: {
+> [  938.734267] rcu: INFO: rcu_preempt self-detected stall on CPU
+> [  938.740111]  46-....
+> [  938.747282] rcu:     46-....: (4948 ticks this GP) idle=a9cc/1/0x4000000000000000 softirq=7598/7598 fqs=1253
+> [  938.747285] rcu:               hardirqs   softirqs          csw     system cond_resched
+> [  938.747286] rcu:      number:        0          0            0                      0
+> [  938.754461]  } 720 jiffies s: 521 root: 0x8/.
+> [  938.757178] rcu:     cputime:       62          0                     2436              ==> 2500 (ms)
+> [  938.757179] rcu:     current: in_kernel_fpu_begin=1 this_cpu_preemptible=0
+> [  938.757181]  (t=5023 jiffies g=61053 q=704 ncpus=56)
+> [  938.759640] rcu: blocking rcu_node structures (internal RCU debug):
+> 
+> The first "46-" line is from the expedited stall.
+> The second "46-" line is from the self-detected stall.
+> The table lines are from the self-detected stall.
+> The "} 720" line is from the expedited stall.
+> The "(t=5023" line is from the self-detected stall.
+> The "blocking" line is from the expedited stall.
+> 
+> [  938.761745] CPU: 46 PID: 44184 Comm: modprobe Not tainted 6.0.0+ #11
+> [  938.761747] Hardware name: HPE ProLiant DL360 Gen10/ProLiant DL360 Gen10, BIOS U32 03/08/2022
+> [  938.982118] RIP: 0010:rude_sleep_cycles+0x13/0x27 [tcrypt]
+> ...
+> [  939.221833]  </TASK>
+> [  939.224239]  l=1:42-55:0x10/.
+> [  939.227440] Sending NMI from CPU 35 to CPUs 46:
+> [  939.232204] NMI backtrace for cpu 46
+> [  939.232205] CPU: 46 PID: 44184 Comm: modprobe Not tainted 6.0.0+ #11
+> [  939.232206] Hardware name: HPE ProLiant DL360 Gen10/ProLiant DL360 Gen10, BIOS U32 03/08/2022
+> [  939.232207] RIP: 0010:rude_sleep_cycles+0x13/0x27 [tcrypt]
+> ...
+> [  939.232262]  </TASK>
+> [  939.243264] rcu: INFO: rcu_preempt detected expedited stalls on CPUs/tasks: { 46-.... } 1458 jiffies s: 521 root: 0x8/.
+> [  939.503926] rcu: blocking rcu_node structures (internal RCU debug): l=1:42-55:0x10/.
+> [  939.511920] Sending NMI from CPU 35 to CPUs 46:
+> [  939.516678] NMI backtrace for cpu 46
+> [  939.516679] CPU: 46 PID: 44184 Comm: modprobe Not tainted 6.0.0+ #11
+> [  939.516680] Hardware name: HPE ProLiant DL360 Gen10/ProLiant DL360 Gen10, BIOS U32 03/08/2022
+> [  939.516680] RIP: 0010:rude_sleep_cycles+0x13/0x27 [tcrypt]
+> ...
+> [  939.516732]  </TASK>
+> [  939.528263] rcu: INFO: rcu_preempt detected expedited stalls on CPUs/tasks: {
+> [  939.748586] initcall tcrypt_mod_init+0x0/0x1000 [tcrypt] returned -11 after 6020623 usecs
+> [  939.753200]  46-.... } 1718 jiffies s: 521 root: 0x8/.
+> [  939.791580] rcu: blocking rcu_node structures (internal RCU debug):
 > 
 > 
 
