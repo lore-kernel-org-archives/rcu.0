@@ -2,77 +2,102 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2BE26C433FE
-	for <rcu@archiver.kernel.org>; Tue,  8 Nov 2022 08:36:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 269FBC433FE
+	for <rcu@archiver.kernel.org>; Tue,  8 Nov 2022 10:29:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233453AbiKHIgo (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 8 Nov 2022 03:36:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46776 "EHLO
+        id S232891AbiKHK3h (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 8 Nov 2022 05:29:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233411AbiKHIgn (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 8 Nov 2022 03:36:43 -0500
-X-Greylist: delayed 352 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 08 Nov 2022 00:36:42 PST
-Received: from mail.celebrcket.pl (mail.celebrcket.pl [151.236.28.110])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DE42FCF1
-        for <rcu@vger.kernel.org>; Tue,  8 Nov 2022 00:36:42 -0800 (PST)
-Received: by mail.celebrcket.pl (Postfix, from userid 1001)
-        id 056884226B; Tue,  8 Nov 2022 09:30:41 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=celebrcket.pl;
-        s=mail; t=1667896249;
-        bh=se/FEXf5wQsf2mHc3qwjfm79hMqve+JiwdtdE0sxgo0=;
-        h=Date:From:To:Subject:From;
-        b=C8GvbEx7znpJl8z2ZMfTEiediOPJzUzXD0+yBTj61zlnr9jk2Rxwo4dP6ACYl+d70
-         kSqp1r2XX7A8eMjSO/ML2+0wILoalV8HMmza9JGaG83V6hDHKZXZ6qn6xOK0MFC7q/
-         54yR7Vm9Wmnj8kHWyjgCy4sBGg9zjqTv0tWzdXQPCopjJKledW/u365GgTxt1FeHXS
-         uULuJyOv6c4nicxyfMpnN2herFfw7RcLSHL5xUc550K3EEY2VSelEFDazGeUMXV/0p
-         yRTKp17UKE57Xt8eq1ScEoYcRhN6RDiBsVQDVTr39PYvl+vtGCNhjmzr8j4bUtcbZI
-         qWktSxsOPuF6g==
-Received: by mail.celebrcket.pl for <rcu@vger.kernel.org>; Tue,  8 Nov 2022 08:30:33 GMT
-Message-ID: <20221108084500-0.1.5d.sjok.0.jok7rjyuzk@celebrcket.pl>
-Date:   Tue,  8 Nov 2022 08:30:33 GMT
-From:   "Marcelina Szymuta" <marcelina.szymuta@celebrcket.pl>
-To:     <rcu@vger.kernel.org>
-Subject: Projekt na wizerunek marki
-X-Mailer: mail.celebrcket.pl
+        with ESMTP id S232125AbiKHK3g (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 8 Nov 2022 05:29:36 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57CA3614A;
+        Tue,  8 Nov 2022 02:29:35 -0800 (PST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 01EB91F8BD;
+        Tue,  8 Nov 2022 10:29:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1667903374; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=42Wym6hzhZrHL5OTzyhJU3dom4Zp+KxcEH8YfQkDIFA=;
+        b=XXk3dL2kcI3cUCEHnlBi+X3mJXJ/iOiZHahAhF39ojcDurjARdKOPBIL642UWdpvEJ592O
+        O+PeIZEY6Frk+4BO+rVkzLme/PGXrfw06copVWtDMDuYDIKyBH1t6uF0yh4wht7pDofiSm
+        q6V9GnVki532OqQHws4P4FoAfkNUF70=
+Received: from suse.cz (unknown [10.100.208.146])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 791932C141;
+        Tue,  8 Nov 2022 10:29:33 +0000 (UTC)
+Date:   Tue, 8 Nov 2022 11:29:32 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
+Subject: Re: [PATCH printk v3 01/40] rcu: implement lockdep_rcu_enabled for
+ !CONFIG_DEBUG_LOCK_ALLOC
+Message-ID: <Y2ovjKa11/yojrNK@alley>
+References: <20221107141638.3790965-1-john.ogness@linutronix.de>
+ <20221107141638.3790965-2-john.ogness@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221107141638.3790965-2-john.ogness@linutronix.de>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Dzie=C5=84 dobry,
+On Mon 2022-11-07 15:21:59, John Ogness wrote:
+> Provide an implementation for debug_lockdep_rcu_enabled() when
+> CONFIG_DEBUG_LOCK_ALLOC is not enabled. This allows code to check
+> if rcu lockdep debugging is available without needing an extra
+> check if CONFIG_DEBUG_LOCK_ALLOC is enabled.
+> 
+> Signed-off-by: John Ogness <john.ogness@linutronix.de>
 
-od wielu lat zapewniamy kompleksowe wsparcie kreuj=C4=85ce pozytywny wize=
-runek marki oraz podnosz=C4=85ce sprzeda=C5=BC produkt=C3=B3w i us=C5=82u=
-g.
+Reviewed-by: Petr Mladek <pmladek@suse.com>
 
-Od lat realizujemy skuteczne kampanie reklamowe i prowadzimy dzia=C5=82an=
-ia w Social Media dla r=C3=B3=C5=BCnych marek, buduj=C4=85c dynamiczn=C4=85=
- komunikacj=C4=99, kt=C3=B3ra przynosi wymierne rezultaty.
+Just a small nit below.
 
-Wiemy, jak wykorzysta=C4=87 r=C3=B3=C5=BCnorodne i innowacyjne pomys=C5=82=
-y oraz dost=C4=99pn=C4=85 technologi=C4=99 z zakresu content marketingu, =
-SEO i User Experience, aby podnie=C5=9B=C4=87 rozpoznawalno=C5=9B=C4=87 P=
-a=C5=84stwa firmy na rynku czy zwi=C4=99kszy=C4=87 ilo=C5=9B=C4=87 zapyta=
-=C5=84 ofertowych.
+> ---
+>  I also sent this patch to Paul as a suggestion. If it is not
+>  acceptable, I just need to add an ifdef CONFIG_DEBUG_LOCK_ALLOC
+>  into console_list_lock() of patch 21.
+> 
+>  include/linux/rcupdate.h | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+> index 08605ce7379d..65178c40ab6f 100644
+> --- a/include/linux/rcupdate.h
+> +++ b/include/linux/rcupdate.h
+> @@ -340,6 +340,11 @@ static inline int rcu_read_lock_any_held(void)
+>  	return !preemptible();
+>  }
+>  
+> +static inline int debug_lockdep_rcu_enabled(void)
+> +{
+> +	return 0;
+> +}
+> +
 
-Dysponujemy nowoczesnymi narz=C4=99dziami, kt=C3=B3re dobieramy i dostoso=
-wujemy indywidualnie dla ka=C5=BCdej kampanii oraz na bie=C5=BC=C4=85co o=
-ptymalizujemy ich funkcjonowanie.=20
+It would make sense to move this up before rcu_read_lock_held()
+definition so that the declarations and definitions are in
+the same order in both #ifdef CONFIG_DEBUG_LOCK_ALLOC branches.
 
-Pracujemy na wymiernych wska=C5=BAnikach efektywno=C5=9Bci podejmowanych =
-dzia=C5=82a=C5=84, dzi=C4=99ki kt=C3=B3rym stawiamy wy=C5=82=C4=85cznie n=
-a najskuteczniejsze narz=C4=99dzia, by zwi=C4=99ksza=C4=87 zainteresowani=
-e Pa=C5=84stwa mark=C4=85 i obni=C5=BCa=C4=87 koszty (eliminacja inwestyc=
-ji w nieefektywne projekty).=20
+>  #endif /* #else #ifdef CONFIG_DEBUG_LOCK_ALLOC */
+>  
+>  #ifdef CONFIG_PROVE_RCU
 
-Wierz=C4=99, =C5=BCe nasza propozycja oka=C5=BCe si=C4=99 dla Pa=C5=84stw=
-a na tyle interesuj=C4=85ca, =C5=BCe b=C4=99dziemy mieli przyjemno=C5=9B=C4=
-=87 wspiera=C4=87 Pa=C5=84stwa w rozwoju biznesu=20
-
-Interesuje Pa=C5=84stwa wsp=C3=B3=C5=82praca w tym zakresie?
-
-
-Z serdecznymi pozdrowieniami,
-Marcelina Szymuta
+Best Regards,
+PEtr
