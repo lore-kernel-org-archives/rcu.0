@@ -2,192 +2,117 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 70885C433FE
-	for <rcu@archiver.kernel.org>; Wed,  9 Nov 2022 02:09:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A1099C4332F
+	for <rcu@archiver.kernel.org>; Wed,  9 Nov 2022 02:48:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229452AbiKICJw (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 8 Nov 2022 21:09:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48110 "EHLO
+        id S230062AbiKICsF (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 8 Nov 2022 21:48:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbiKICJw (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 8 Nov 2022 21:09:52 -0500
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB83C5D697;
-        Tue,  8 Nov 2022 18:09:50 -0800 (PST)
-Received: from dggpemm500022.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4N6T1c1VPqzRp6V;
-        Wed,  9 Nov 2022 10:09:40 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 9 Nov 2022 10:09:48 +0800
-Received: from [10.174.178.55] (10.174.178.55) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 9 Nov 2022 10:09:48 +0800
-Subject: Re: [PATCH] rcu: Illustrate the stall information of
- CONFIG_RCU_CPU_STALL_CPUTIME=y
-To:     <paulmck@kernel.org>
-CC:     Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        "Steven Rostedt" <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, <rcu@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Robert Elliott <elliott@hpe.com>
-References: <20221107152935.167-1-thunder.leizhen@huawei.com>
- <20221108204640.GJ3907045@paulmck-ThinkPad-P17-Gen-1>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <61c45ec1-69ec-0e65-6a48-1329e66ec30f@huawei.com>
-Date:   Wed, 9 Nov 2022 10:09:47 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        with ESMTP id S230055AbiKICsE (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 8 Nov 2022 21:48:04 -0500
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14D181F631
+        for <rcu@vger.kernel.org>; Tue,  8 Nov 2022 18:48:04 -0800 (PST)
+Received: by mail-qt1-x82f.google.com with SMTP id h21so9766159qtu.2
+        for <rcu@vger.kernel.org>; Tue, 08 Nov 2022 18:48:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=POLyPFhcRrWc7CPsHxZIScHcqeGIL/i1T9EVfkZiKf8=;
+        b=kVdePAWSoLRynI3q+9txnpRyNNJrqvi1yKkDnmec2nkuV78lLp+hy7GL6+AllmN0Wo
+         nWGHzPLEtXHk5WzwzOXs0PR/63yzNjCrqGyj/mlvL6o/IfyQMuKaPX7tX5e3U3O4a268
+         FSGA6cIo00JcVlUDFhOopAuMqrZHay6HtLizo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=POLyPFhcRrWc7CPsHxZIScHcqeGIL/i1T9EVfkZiKf8=;
+        b=oJIsvyFrjVhp2/ydKULf9gnrT7F7NP8Z65D8O/hni5dC3xhz/QJyjhMUMtv1iIDT7V
+         /Iffl5E+KGdgGCmTwAZsOrPHBNt3Mk9tXbI3egaLm4z5puGulzajKlAhpWvwaatuvS3d
+         KB/9uUBQ00Z2SQ+BDg2C3A7G+WWZgnWUdbv0Hz0a+IBJUk2Ot4zvSJ35FQKLoRqQBBS/
+         SS5jkN2xmZpdZtzei74Rs/CeK5y48SNuYfrjZoA/+MzkhluFLEe96R0qI8SpYIvD1uW3
+         MmF1RFOcWdq2cRdfTOEC2kBYaP6ptqjriiyke3ykeNt77d01K7RCoe1u0gRjLpDVzlh1
+         F1iQ==
+X-Gm-Message-State: ACrzQf2ToOE7h9xBElmY6R8FPD5SMuU8egXeXnKAGl8hYsE788lJYtur
+        0syhYhQxnnbwvWXZaMNKSH3P9Md4ECYLNQ==
+X-Google-Smtp-Source: AMsMyM4x/Mu1ps7RCJybA4u3yokDOI9jloyiI2QhvENo/y8MSQEctIM69iqH68lc+UgPTxswLlhiEQ==
+X-Received: by 2002:a05:622a:408d:b0:3a5:533b:5421 with SMTP id cg13-20020a05622a408d00b003a5533b5421mr23458856qtb.442.1667962082883;
+        Tue, 08 Nov 2022 18:48:02 -0800 (PST)
+Received: from joelboxx.c.googlers.com.com (228.221.150.34.bc.googleusercontent.com. [34.150.221.228])
+        by smtp.gmail.com with ESMTPSA id w13-20020a05620a444d00b006cbc00db595sm10498011qkp.23.2022.11.08.18.48.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Nov 2022 18:48:02 -0800 (PST)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, paulmck@kernel.org, urezki@gmail.com,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Subject: [PATCH v2] rcu/kfree: Do not request RCU when not needed
+Date:   Wed,  9 Nov 2022 02:47:58 +0000
+Message-Id: <20221109024758.2644936-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.38.1.431.g37b22c650d-goog
+X-Mailer: git-send-email 2.38.1.431.g37b22c650d-goog
 MIME-Version: 1.0
-In-Reply-To: <20221108204640.GJ3907045@paulmck-ThinkPad-P17-Gen-1>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.55]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On ChromeOS, using this with the increased timeout, we see that we almost always
+never need to initiate a new grace period. Testing also shows this frees large
+amounts of unreclaimed memory, under intense kfree_rcu() pressure.
 
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+---
+v1->v2: Same logic but use polled grace periods instead of sampling gp_seq.
 
-On 2022/11/9 4:46, Paul E. McKenney wrote:
-> On Mon, Nov 07, 2022 at 11:29:35PM +0800, Zhen Lei wrote:
->> Describes how to quickly determine the RCU stall fault type based on the
->> extra output information during CONFIG_RCU_CPU_STALL_CPUTIME=y.
->>
->> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> 
-> Hearing no objections, I queued the following for further review.
-> 
-> This commit might of course need to change based on your ongoing
-> discussion with Robert.  I that case, please feel free to send me a
-> replacment patch or to send me an incremental patch that I can fold into
-> this patch.  Either way works.
+ kernel/rcu/tree.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-I'll issue incremental patches on the basis of your adjustment! This will
-make it clearer and save your time in reviewing.
-
-Thanks for your help. I really admire your verbal skills. Your improved
-description is much better than mine.
-
-> 
-> 							Thanx, Paul
-> 
-> ------------------------------------------------------------------------
-> 
-> commit b05c2a06ff8a1267b7e8dc812e3944119535d6b6
-> Author: Zhen Lei <thunder.leizhen@huawei.com>
-> Date:   Mon Nov 7 23:29:35 2022 +0800
-> 
->     doc: Document CONFIG_RCU_CPU_STALL_CPUTIME=y stall information
->     
->     This commit doucments how to quickly determine the bug causing a given
->     RCU CPU stall fault warning based on the output information provided
->     by CONFIG_RCU_CPU_STALL_CPUTIME=y.
->     
->     [ paulmck: Apply wordsmithing. ]
->     
->     Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
->     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> 
-> diff --git a/Documentation/RCU/stallwarn.rst b/Documentation/RCU/stallwarn.rst
-> index dfa4db8c0931e..bd8cf6c640984 100644
-> --- a/Documentation/RCU/stallwarn.rst
-> +++ b/Documentation/RCU/stallwarn.rst
-> @@ -390,3 +390,82 @@ for example, "P3421".
->  
->  It is entirely possible to see stall warnings from normal and from
->  expedited grace periods at about the same time during the same run.
-> +
-> +RCU_CPU_STALL_CPUTIME
-> +=====================
-> +
-> +In kernels built with CONFIG_RCU_CPU_STALL_CPUTIME=y or booted with
-> +rcupdate.rcu_cpu_stall_cputime=1, the following additional information
-> +is supplied with each RCU CPU stall warning::
-> +
-> +rcu:          hardirqs   softirqs   csw/system
-> +rcu:  number:      624         45            0
-> +rcu: cputime:       69          1         2425   ==> 2500(ms)
-> +
-> +These statistics are collected during the second half of the rcu stall
-> +timeout. The values in row "number:" are the number of hard interrupts,
-> +number of soft interrupts, and number of context switches on the stalled
-> +CPU. The first three values in row "cputime:" indicate the CPU time in
-> +milliseconds consumed by hard interrupts, soft interrupts, and tasks
-> +on the stalled CPU.  The last number is the measurement interval, again
-> +in milliseconds.  Because user-mode tasks normally do not cause RCU CPU
-> +stalls, these tasks are typically kernel tasks, which is why only the
-> +system CPU time are considered.
-> +
-> +The following describes four typical scenarios:
-> +
-> +1. A CPU looping with interrupts disabled.::
-> +
-> +   rcu:          hardirqs   softirqs   csw/system
-> +   rcu:  number:        0          0            0
-> +   rcu: cputime:        0          0            0   ==> 2500(ms)
-> +
-> +   Because interrupts have been disabled throughout the measurement
-> +   interval, there are no interrupts and no context switches.
-> +   Furthermore, because CPU time consumption was measured using interrupt
-> +   handlers, the system CPU consumption is misleadingly measured as zero.
-> +   This scenario will normally also have "(0 ticks this GP)" printed on
-> +   this CPU's summary line.
-> +
-> +2. A CPU looping with bottom halves disabled.
-> +
-> +   This is similar to the previous example, but with non-zero number of
-> +   and CPU time consumed by hard interrupts, along with non-zero CPU
-> +   time consumed by in-kernel execution.::
-> +
-> +   rcu:          hardirqs   softirqs   csw/system
-> +   rcu:  number:      624          0            0
-> +   rcu: cputime:       49          0         2446   ==> 2500(ms)
-> +
-> +   The fact that there are zero softirqs gives a hint that these were
-> +   disabled, perhaps via local_bh_disable().  It is of course possible
-> +   that there were no softirqs, perhaps because all events that would
-> +   result in softirq execution are confined to other CPUs.  In this case,
-> +   the diagnosis should continue as shown in the next example.
-> +
-> +3. A CPU looping with preemption disabled.
-> +
-> +   Here, only the number of context switches is zero.::
-> +
-> +   rcu:          hardirqs   softirqs   csw/system
-> +   rcu:  number:      624         45            0
-> +   rcu: cputime:       69          1         2425   ==> 2500(ms)
-> +
-> +   This situation hints that the stalled CPU was looping with preemption
-> +   disabled.
-> +
-> +4. No looping, but massive hard and soft interrupts.::
-> +
-> +   rcu:          hardirqs   softirqs   csw/system
-> +   rcu:  number:       xx         xx            0
-> +   rcu: cputime:       xx         xx            0   ==> 2500(ms)
-> +
-> +   Here, the number and CPU time of hard interrupts are all non-zero,
-> +   but the number of context switches and the in-kernel CPU time consumed
-> +   are zero. The number and cputime of soft interrupts will usually be
-> +   non-zero, but could be zero, for example, if the CPU was spinning
-> +   within a single hard interrupt handler.
-> +
-> +   If this type of RCU CPU stall warning can be reproduced, you can
-> +   narrow it down by looking at /proc/interrupts or by writing code to
-> +   trace each interrupt, for example, by referring to show_interrupts().
-> .
-> 
-
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 591187b6352e..ed41243f7a49 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2935,6 +2935,7 @@ struct kfree_rcu_cpu_work {
+ 
+ /**
+  * struct kfree_rcu_cpu - batch up kfree_rcu() requests for RCU grace period
++ * @gp_snap: The GP snapshot recorded at the last scheduling of monitor work.
+  * @head: List of kfree_rcu() objects not yet waiting for a grace period
+  * @bkvhead: Bulk-List of kvfree_rcu() objects not yet waiting for a grace period
+  * @krw_arr: Array of batches of kfree_rcu() objects waiting for a grace period
+@@ -2964,6 +2965,7 @@ struct kfree_rcu_cpu {
+ 	struct kfree_rcu_cpu_work krw_arr[KFREE_N_BATCHES];
+ 	raw_spinlock_t lock;
+ 	struct delayed_work monitor_work;
++	unsigned long gp_snap;
+ 	bool initialized;
+ 	int count;
+ 
+@@ -3167,6 +3169,7 @@ schedule_delayed_monitor_work(struct kfree_rcu_cpu *krcp)
+ 			mod_delayed_work(system_wq, &krcp->monitor_work, delay);
+ 		return;
+ 	}
++	krcp->gp_snap = get_state_synchronize_rcu();
+ 	queue_delayed_work(system_wq, &krcp->monitor_work, delay);
+ }
+ 
+@@ -3217,7 +3220,10 @@ static void kfree_rcu_monitor(struct work_struct *work)
+ 			// be that the work is in the pending state when
+ 			// channels have been detached following by each
+ 			// other.
+-			queue_rcu_work(system_wq, &krwp->rcu_work);
++			if (poll_state_synchronize_rcu(krcp->gp_snap))
++				queue_work(system_wq, &krwp->rcu_work.work);
++			else
++				queue_rcu_work(system_wq, &krwp->rcu_work);
+ 		}
+ 	}
+ 
 -- 
-Regards,
-  Zhen Lei
+2.38.1.431.g37b22c650d-goog
+
+
