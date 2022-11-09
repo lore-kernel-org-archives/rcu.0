@@ -2,84 +2,105 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8EBF9C4332F
-	for <rcu@archiver.kernel.org>; Wed,  9 Nov 2022 07:30:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7AEDCC433FE
+	for <rcu@archiver.kernel.org>; Wed,  9 Nov 2022 08:30:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229885AbiKIHaz (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 9 Nov 2022 02:30:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38652 "EHLO
+        id S230050AbiKIIaX (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 9 Nov 2022 03:30:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229888AbiKIHap (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 9 Nov 2022 02:30:45 -0500
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54CC1193D8;
-        Tue,  8 Nov 2022 23:30:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1667979038; x=1699515038;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=PMzlzdz0ybzMH3t3AqOhxfPPE3vzhr6WZmccqfoaki8=;
-  b=Wp/6K3ni/Q6hVN0lWj8Nlc1COWXhRmS3uGLjP2jsB9xTye5/z/ncfgcO
-   8h9xvemQG+BJdJyytBUsL7SPwZLVc/DvqMZ+dZtXaBFzv7PFK1z41vR4u
-   vS9r6Tc78HWKsNJvhYaicumEDuk8haVRLpg6QIyE1YqEx2xGtP7Fk7FZI
-   ZbD7TRX1zemKjF2LriIncnAvUvlhBIerrHB6xrYJc6tsj7Mb6kRwz5kPJ
-   TVDvvQeuZM1UxskyO7T97jSOXIFBrzrCF1jj/rSm9EoiQfPsDQPlF3zbM
-   G8o/SObGg2pBev6QCKNBGD+v73d3loOvqbAnRq1FT/X6nQtoGchjodVkR
-   g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10525"; a="337642947"
-X-IronPort-AV: E=Sophos;i="5.96,149,1665471600"; 
-   d="scan'208";a="337642947"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2022 23:30:38 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10525"; a="881827031"
-X-IronPort-AV: E=Sophos;i="5.96,149,1665471600"; 
-   d="scan'208";a="881827031"
-Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.129])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2022 23:30:36 -0800
-From:   Zqiang <qiang1.zhang@intel.com>
-To:     paulmck@kernel.org, frederic@kernel.org, joel@joelfernandes.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] srcu: Make Tiny SRCU synchronize_srcu() more complete
-Date:   Wed,  9 Nov 2022 15:36:38 +0800
-Message-Id: <20221109073638.935473-1-qiang1.zhang@intel.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S230051AbiKIIaH (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 9 Nov 2022 03:30:07 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1BB02229C;
+        Wed,  9 Nov 2022 00:29:12 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id i3so16032266pfc.11;
+        Wed, 09 Nov 2022 00:29:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dHqVmoBRLCXyP1j0l5deF9pd4e0PRBaQAjJLi6rMh3Y=;
+        b=bNYpd6fOAEPkFBgdNJfAnjfYOFgRecFDIVcFdbCB3kotZsewF4/r2mF3qVJN0EooBR
+         2g6EQbZnxLleP8zZ2wMl+8oZqcKRVzPhYMT0rAO5X+BXnh8GGgQD1PcZjYTmouSRWV+/
+         COYD+nyVEbl/88JLOpf5jkSagfnAnjIM9sN+/rlwobP0A7849CHePTt4Xd4qAWCp6NIT
+         fRVP1knBiVFtDOWWKukUMdilAkeFlCShOlMClrPE8t8QgrqsCKURB2goXZQDSk8RCO9m
+         MBsGxZ1Kzsou4CETTxjExpySKmu9ptlHul+y8MTWD19wNTu4GKeB1NzRDzF7Opb/3z1d
+         Q+tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dHqVmoBRLCXyP1j0l5deF9pd4e0PRBaQAjJLi6rMh3Y=;
+        b=IyACUCvTvWK0CXxaCTnnynDV1tmoonTHtX2/cyrPjWJPYx7g2aTSycMF3TR5DonBSu
+         BmenqPCTH5QTKJYTQsHhqEHwytLsH511o8AWyIBDEH+3EbhRvGvA48MuvlReR/VqAXEJ
+         WQyA4H6kZ5yn3yboRW07hVFxQny4rrgEBGrkw3qy1wrIoX5xPXLP8Cu3s1Z3zcaXrq3V
+         nABUi4e24MulQzMRDEJSHXpOPcMTaREpuWAsnGFTFCbi3ZFuxpAH8hgAg/QsYgkrgiUd
+         10qzvlO7kYaR3s30ToDPav/yJMxwSPdtj8aqrAvh6xeqGG8nw6hqEfseIiMgUMmGnjyv
+         vGoA==
+X-Gm-Message-State: ACrzQf2pDJh+xzNsrmJDvSVntnYRAVqFULfcIM8/u/k+7VTRHK4+TqqJ
+        vM3q8bfQhxUhIBfZ28cX1rbgg9lwFjX4xA==
+X-Google-Smtp-Source: AMsMyM4MyGSXc8iDU8z4fBb//Iy/GbYqIP0Xou51QXtMwzfDgIECKrQbjuGpptL8qpOK6Fh7cXGImA==
+X-Received: by 2002:a63:8449:0:b0:46e:ecba:c46d with SMTP id k70-20020a638449000000b0046eecbac46dmr52659709pgd.310.1667982549534;
+        Wed, 09 Nov 2022 00:29:09 -0800 (PST)
+Received: from [192.168.43.80] (subs02-180-214-232-21.three.co.id. [180.214.232.21])
+        by smtp.gmail.com with ESMTPSA id b6-20020a170903228600b00186b0ac12c5sm8418374plh.172.2022.11.09.00.28.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Nov 2022 00:29:09 -0800 (PST)
+Message-ID: <26188ff7-9a0c-d72c-b956-63d8f1c500ba@gmail.com>
+Date:   Wed, 9 Nov 2022 15:28:54 +0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.1
+Subject: Re: [PATCH] Documentation: RCU: use code blocks with autogenerated
+ line (was: Re: linux-next: build warning after merge of the rcu tree)
+Content-Language: en-US
+To:     Akira Yokosawa <akiyks@gmail.com>
+Cc:     corbet@lwn.net, linux-kernel@vger.kernel.org,
+        linux-next@vger.kernel.org, paulmck@kernel.org, rcu@vger.kernel.org
+References: <Y2jWAR1QESe3OrhH@debian.me>
+ <af3ec8bf-310e-69ea-9d32-f7aec740b306@gmail.com>
+ <206a95eb-5430-f9bf-15ad-4e644393255e@gmail.com>
+ <fd1903d4-a721-931e-c928-1818cd650490@gmail.com>
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+In-Reply-To: <fd1903d4-a721-931e-c928-1818cd650490@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This commit add lockdep detection for illegal use synchronize_srcu()
-in same-type SRCU (or in RCU) read-side critical section and support
-early boot operations.
+On 11/8/22 21:53, Akira Yokosawa wrote:
+>> I think only rcubarrier.rst have explicit references to line numbers.
+> 
+> Oh, I find such references in (not limited to):
+> 
+>   - Documentation/RCU/Design/Requirements/Requirements.rst
+>   - Documentation/RCU/Design/Data-Structures/Data-Structures.rst
+> 
 
-Signed-off-by: Zqiang <qiang1.zhang@intel.com>
----
- kernel/rcu/srcutiny.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+Ah, I don't see these above!
 
-diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
-index 33adafdad261..b12fb0cec44d 100644
---- a/kernel/rcu/srcutiny.c
-+++ b/kernel/rcu/srcutiny.c
-@@ -197,6 +197,16 @@ void synchronize_srcu(struct srcu_struct *ssp)
- {
- 	struct rcu_synchronize rs;
- 
-+	RCU_LOCKDEP_WARN(lockdep_is_held(ssp) ||
-+			lock_is_held(&rcu_bh_lock_map) ||
-+			lock_is_held(&rcu_lock_map) ||
-+			lock_is_held(&rcu_sched_lock_map),
-+			"Illegal synchronize_srcu() in same-type SRCU (or in RCU) read-side critical section");
-+
-+	if (rcu_scheduler_active == RCU_SCHEDULER_INACTIVE)
-+		return;
-+
-+	might_sleep();
- 	init_rcu_head_on_stack(&rs.head);
- 	init_completion(&rs.completion);
- 	call_srcu(ssp, &rs.head, wakeme_after_rcu);
+> Remember there is a note in Documentation/doc-guide/sphinx.rst
+> which reads:
+> 
+>   Please don't go overboard with reStructuredText markup. Keep it simple.
+>   For the most part the documentation should be plain text with just enough
+>   consistency in formatting that it can be converted to other formats.
+> 
+> My interpretation of above:
+> 
+>   .rst sources should be kept as close to plain-text which can be
+>   easily understood in dumb terminals, as far as possible.
+> 
+
+Ah! I always forget that. I'm leaning towards *abusing* the markup,
+though.
+
+Thanks for the reminder.
+
 -- 
-2.25.1
+An old man doll... just what I always wanted! - Clara
 
