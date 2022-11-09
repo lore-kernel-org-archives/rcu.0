@@ -2,39 +2,41 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F3EC6C4332F
-	for <rcu@archiver.kernel.org>; Wed,  9 Nov 2022 15:26:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C4A8CC433FE
+	for <rcu@archiver.kernel.org>; Wed,  9 Nov 2022 15:56:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232072AbiKIP02 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 9 Nov 2022 10:26:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56954 "EHLO
+        id S229518AbiKIP4t (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 9 Nov 2022 10:56:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232084AbiKIP0Z (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 9 Nov 2022 10:26:25 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC463BE05;
-        Wed,  9 Nov 2022 07:26:24 -0800 (PST)
+        with ESMTP id S230405AbiKIP4r (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 9 Nov 2022 10:56:47 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1841918374;
+        Wed,  9 Nov 2022 07:56:45 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8774361B91;
-        Wed,  9 Nov 2022 15:26:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60098C433D7;
-        Wed,  9 Nov 2022 15:26:23 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 5AF17B81F2A;
+        Wed,  9 Nov 2022 15:56:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF7A9C433D6;
+        Wed,  9 Nov 2022 15:56:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668007583;
-        bh=Pymxl7n2ZYnyw0RfNbgM6GPwZJA+tDvhsLK+AEj1BeY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TB7ExP5ufy4aISASgWuc05goswVICGpEEyRnvHQ4or/hixANtp2I5+tbwEr5fjdnQ
-         olZKSDmVszAsEw7exmnEZuMP6qBhD33QC+nsmUDlrZdhA2JmZPbbD/KbcLEpmlf3y5
-         L6FrDmNfgYg7ekPK5yaUYOyWkiuKAoqrYfuN6fjYXg3R4DyHsz80rdTqb/5oKnj6ZT
-         kMN1XKW/xATlZokeu6gzkLmxW1rIukitaluvjHlovSbShoG1j0JW6XErOPfZ2qKhQz
-         HAh3o+2+J1RLx2/tIWKVxjeiFjdoUL2JARn+FTF2Bzg4z8Z8Ic0e4bNvLhsVll33Cs
-         xIjccerdW8vPw==
-Date:   Wed, 9 Nov 2022 16:26:21 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
+        s=k20201202; t=1668009403;
+        bh=Eem6KsBQlG6910BgkY+LYsgfspL+ZzI/7YJPT1RLl2o=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=QdwYKXbuUv2qL5BRiW5NffLid7q24O7JgGI+eVXrEUvJQflhkv/QEDhRcX5qcreUi
+         i3KS8R/Hn/QyRyXkMznpbBnb6+R4oa05fln9vRHyoSmvxZoF4JoAFdV+LgCfNglXQb
+         8iLzsFaNVwIUQRxILbb17e+LamVwjGsbtcpfCGqlzjIT7SZQ32h/6eYmvRIZM2KqoN
+         hbrtOgkDWj/veXxF2o3oVqFTcqKh4aDBbCg6LpL2Kf9bOUjz0U1owbu1CUoJ18LOPf
+         J3sUN/HSVpg63DdxmQhFu16ONUZjPpjAQK+D123SZP+3H2BELyF7MMeuVG3NpjXqcz
+         /yQZeQ3rVPlYQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 705465C097E; Wed,  9 Nov 2022 07:56:40 -0800 (PST)
+Date:   Wed, 9 Nov 2022 07:56:40 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
@@ -42,81 +44,167 @@ Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org, Robert Elliott <elliott@hpe.com>
-Subject: Re: [PATCH v6 0/2] rcu: Add RCU stall diagnosis information
-Message-ID: <20221109152621.GB298683@lothringen>
-References: <20221109093739.187-1-thunder.leizhen@huawei.com>
+Subject: Re: [PATCH] rcu: Illustrate the stall information of
+ CONFIG_RCU_CPU_STALL_CPUTIME=y
+Message-ID: <20221109155640.GC725751@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20221107152935.167-1-thunder.leizhen@huawei.com>
+ <20221108204640.GJ3907045@paulmck-ThinkPad-P17-Gen-1>
+ <61c45ec1-69ec-0e65-6a48-1329e66ec30f@huawei.com>
+ <31c1dfb1-623f-4a9e-7f2c-48b83dd4490d@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221109093739.187-1-thunder.leizhen@huawei.com>
+In-Reply-To: <31c1dfb1-623f-4a9e-7f2c-48b83dd4490d@huawei.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Zhen Lei,
+On Wed, Nov 09, 2022 at 04:46:01PM +0800, Leizhen (ThunderTown) wrote:
+> 
+> 
+> On 2022/11/9 10:09, Leizhen (ThunderTown) wrote:
+> > 
+> > 
+> > On 2022/11/9 4:46, Paul E. McKenney wrote:
+> >> On Mon, Nov 07, 2022 at 11:29:35PM +0800, Zhen Lei wrote:
+> >>> Describes how to quickly determine the RCU stall fault type based on the
+> >>> extra output information during CONFIG_RCU_CPU_STALL_CPUTIME=y.
+> >>>
+> >>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> >>
+> >> Hearing no objections, I queued the following for further review.
+> >>
+> >> This commit might of course need to change based on your ongoing
+> >> discussion with Robert.  I that case, please feel free to send me a
+> >> replacment patch or to send me an incremental patch that I can fold into
+> >> this patch.  Either way works.
+> > 
+> > I'll issue incremental patches on the basis of your adjustment! This will
+> > make it clearer and save your time in reviewing.
+> 
+> I found that Patch 4/4 had one line of description that needed to be changed,
+> so I had to switch to method 1.
 
-On Wed, Nov 09, 2022 at 05:37:36PM +0800, Zhen Lei wrote:
-> v5 --> v6:
-> 1. When there are more than two continuous RCU stallings, correctly handle the
->    value of the second and subsequent sampling periods. Update comments and
->    document.
->    Thanks to Elliott, Robert for the test.
-> 2. Change "rcu stall" to "RCU stall".
-> 
-> v4 --> v5:
-> 1. Resolve a git am conflict. No code change.
-> 
-> v3 --> v4:
-> 1. Rename rcu_cpu_stall_deep_debug to rcu_cpu_stall_cputime.
-> 
-> v2 --> v3:
-> 1. Fix the return type of kstat_cpu_irqs_sum()
-> 2. Add Kconfig option CONFIG_RCU_CPU_STALL_DEEP_DEBUG and boot parameter
->    rcupdate.rcu_cpu_stall_deep_debug.
-> 3. Add comments and normalize local variable name
-> 
-> 
-> v1 --> v2:
-> 1. Fixed a bug in the code. If the rcu stall is detected by another CPU,
->    kcpustat_this_cpu cannot be used.
-> @@ -451,7 +451,7 @@ static void print_cpu_stat_info(int cpu)
->         if (r->gp_seq != rdp->gp_seq)
->                 return;
-> 
-> -       cpustat = kcpustat_this_cpu->cpustat;
-> +       cpustat = kcpustat_cpu(cpu).cpustat;
-> 2. Move the start point of statistics from rcu_stall_kick_kthreads() to
->    rcu_implicit_dynticks_qs(), removing the dependency on irq_work.
-> 
-> v1:
-> In some extreme cases, such as the I/O pressure test, the CPU usage may
-> be 100%, causing RCU stall. In this case, the printed information about
-> current is not useful. Displays the number and usage of hard interrupts,
-> soft interrupts, and context switches that are generated within half of
-> the CPU stall timeout, can help us make a general judgment. In other
-> cases, we can preliminarily determine whether an infinite loop occurs
-> when local_irq, local_bh or preempt is disabled.
+Sounds good!  I will drop what I have (five patches) and take the next
+series with Frederic's feedback addressed.
 
-That looks useful but I have to ask: what does it bring that the softlockup
-and hardlockup watchdog can not already solve?
+							Thanx, Paul
 
-Thanks.
-
-> 
-> Zhen Lei (2):
->   rcu: Add RCU stall diagnosis information
->   doc: Document CONFIG_RCU_CPU_STALL_CPUTIME=y stall information
-> 
->  Documentation/RCU/stallwarn.rst               | 88 +++++++++++++++++++
->  .../admin-guide/kernel-parameters.txt         |  6 ++
->  kernel/rcu/Kconfig.debug                      | 11 +++
->  kernel/rcu/rcu.h                              |  1 +
->  kernel/rcu/tree.c                             | 17 ++++
->  kernel/rcu/tree.h                             | 19 ++++
->  kernel/rcu/tree_stall.h                       | 29 ++++++
->  kernel/rcu/update.c                           |  2 +
->  8 files changed, 173 insertions(+)
+> > Thanks for your help. I really admire your verbal skills. Your improved
+> > description is much better than mine.
+> > 
+> >>
+> >> 							Thanx, Paul
+> >>
+> >> ------------------------------------------------------------------------
+> >>
+> >> commit b05c2a06ff8a1267b7e8dc812e3944119535d6b6
+> >> Author: Zhen Lei <thunder.leizhen@huawei.com>
+> >> Date:   Mon Nov 7 23:29:35 2022 +0800
+> >>
+> >>     doc: Document CONFIG_RCU_CPU_STALL_CPUTIME=y stall information
+> >>     
+> >>     This commit doucments how to quickly determine the bug causing a given
+> >>     RCU CPU stall fault warning based on the output information provided
+> >>     by CONFIG_RCU_CPU_STALL_CPUTIME=y.
+> >>     
+> >>     [ paulmck: Apply wordsmithing. ]
+> >>     
+> >>     Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> >>     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> >>
+> >> diff --git a/Documentation/RCU/stallwarn.rst b/Documentation/RCU/stallwarn.rst
+> >> index dfa4db8c0931e..bd8cf6c640984 100644
+> >> --- a/Documentation/RCU/stallwarn.rst
+> >> +++ b/Documentation/RCU/stallwarn.rst
+> >> @@ -390,3 +390,82 @@ for example, "P3421".
+> >>  
+> >>  It is entirely possible to see stall warnings from normal and from
+> >>  expedited grace periods at about the same time during the same run.
+> >> +
+> >> +RCU_CPU_STALL_CPUTIME
+> >> +=====================
+> >> +
+> >> +In kernels built with CONFIG_RCU_CPU_STALL_CPUTIME=y or booted with
+> >> +rcupdate.rcu_cpu_stall_cputime=1, the following additional information
+> >> +is supplied with each RCU CPU stall warning::
+> >> +
+> >> +rcu:          hardirqs   softirqs   csw/system
+> >> +rcu:  number:      624         45            0
+> >> +rcu: cputime:       69          1         2425   ==> 2500(ms)
+> >> +
+> >> +These statistics are collected during the second half of the rcu stall
+> >> +timeout. The values in row "number:" are the number of hard interrupts,
+> >> +number of soft interrupts, and number of context switches on the stalled
+> >> +CPU. The first three values in row "cputime:" indicate the CPU time in
+> >> +milliseconds consumed by hard interrupts, soft interrupts, and tasks
+> >> +on the stalled CPU.  The last number is the measurement interval, again
+> >> +in milliseconds.  Because user-mode tasks normally do not cause RCU CPU
+> >> +stalls, these tasks are typically kernel tasks, which is why only the
+> >> +system CPU time are considered.
+> >> +
+> >> +The following describes four typical scenarios:
+> >> +
+> >> +1. A CPU looping with interrupts disabled.::
+> >> +
+> >> +   rcu:          hardirqs   softirqs   csw/system
+> >> +   rcu:  number:        0          0            0
+> >> +   rcu: cputime:        0          0            0   ==> 2500(ms)
+> >> +
+> >> +   Because interrupts have been disabled throughout the measurement
+> >> +   interval, there are no interrupts and no context switches.
+> >> +   Furthermore, because CPU time consumption was measured using interrupt
+> >> +   handlers, the system CPU consumption is misleadingly measured as zero.
+> >> +   This scenario will normally also have "(0 ticks this GP)" printed on
+> >> +   this CPU's summary line.
+> >> +
+> >> +2. A CPU looping with bottom halves disabled.
+> >> +
+> >> +   This is similar to the previous example, but with non-zero number of
+> >> +   and CPU time consumed by hard interrupts, along with non-zero CPU
+> >> +   time consumed by in-kernel execution.::
+> >> +
+> >> +   rcu:          hardirqs   softirqs   csw/system
+> >> +   rcu:  number:      624          0            0
+> >> +   rcu: cputime:       49          0         2446   ==> 2500(ms)
+> >> +
+> >> +   The fact that there are zero softirqs gives a hint that these were
+> >> +   disabled, perhaps via local_bh_disable().  It is of course possible
+> >> +   that there were no softirqs, perhaps because all events that would
+> >> +   result in softirq execution are confined to other CPUs.  In this case,
+> >> +   the diagnosis should continue as shown in the next example.
+> >> +
+> >> +3. A CPU looping with preemption disabled.
+> >> +
+> >> +   Here, only the number of context switches is zero.::
+> >> +
+> >> +   rcu:          hardirqs   softirqs   csw/system
+> >> +   rcu:  number:      624         45            0
+> >> +   rcu: cputime:       69          1         2425   ==> 2500(ms)
+> >> +
+> >> +   This situation hints that the stalled CPU was looping with preemption
+> >> +   disabled.
+> >> +
+> >> +4. No looping, but massive hard and soft interrupts.::
+> >> +
+> >> +   rcu:          hardirqs   softirqs   csw/system
+> >> +   rcu:  number:       xx         xx            0
+> >> +   rcu: cputime:       xx         xx            0   ==> 2500(ms)
+> >> +
+> >> +   Here, the number and CPU time of hard interrupts are all non-zero,
+> >> +   but the number of context switches and the in-kernel CPU time consumed
+> >> +   are zero. The number and cputime of soft interrupts will usually be
+> >> +   non-zero, but could be zero, for example, if the CPU was spinning
+> >> +   within a single hard interrupt handler.
+> >> +
+> >> +   If this type of RCU CPU stall warning can be reproduced, you can
+> >> +   narrow it down by looking at /proc/interrupts or by writing code to
+> >> +   trace each interrupt, for example, by referring to show_interrupts().
+> >> .
+> >>
+> > 
 > 
 > -- 
-> 2.25.1
-> 
+> Regards,
+>   Zhen Lei
