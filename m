@@ -2,29 +2,29 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0452DC4332F
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E3B3FC43217
 	for <rcu@archiver.kernel.org>; Wed,  9 Nov 2022 09:38:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230003AbiKIJi3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 9 Nov 2022 04:38:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42046 "EHLO
+        id S230349AbiKIJib (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 9 Nov 2022 04:38:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbiKIJi1 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 9 Nov 2022 04:38:27 -0500
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D4EB26DD;
-        Wed,  9 Nov 2022 01:38:26 -0800 (PST)
-Received: from dggpemm500022.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4N6fyw1FCFzHvkk;
-        Wed,  9 Nov 2022 17:38:00 +0800 (CST)
+        with ESMTP id S230212AbiKIJia (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 9 Nov 2022 04:38:30 -0500
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E56E5F8C;
+        Wed,  9 Nov 2022 01:38:28 -0800 (PST)
+Received: from dggpemm500024.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4N6fz93D0WzmVjL;
+        Wed,  9 Nov 2022 17:38:13 +0800 (CST)
 Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
+ dggpemm500024.china.huawei.com (7.185.36.203) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 9 Nov 2022 17:38:24 +0800
+ 15.1.2375.31; Wed, 9 Nov 2022 17:38:26 +0800
 Received: from thunder-town.china.huawei.com (10.174.178.55) by
  dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 9 Nov 2022 17:38:24 +0800
+ 15.1.2375.31; Wed, 9 Nov 2022 17:38:25 +0800
 From:   Zhen Lei <thunder.leizhen@huawei.com>
 To:     "Paul E . McKenney" <paulmck@kernel.org>,
         Frederic Weisbecker <frederic@kernel.org>,
@@ -37,10 +37,12 @@ To:     "Paul E . McKenney" <paulmck@kernel.org>,
         <linux-kernel@vger.kernel.org>
 CC:     Zhen Lei <thunder.leizhen@huawei.com>,
         Robert Elliott <elliott@hpe.com>
-Subject: [PATCH v6 0/2] rcu: Add RCU stall diagnosis information
-Date:   Wed, 9 Nov 2022 17:37:36 +0800
-Message-ID: <20221109093739.187-1-thunder.leizhen@huawei.com>
+Subject: [PATCH v6 2/2] doc: Document CONFIG_RCU_CPU_STALL_CPUTIME=y stall information
+Date:   Wed, 9 Nov 2022 17:37:38 +0800
+Message-ID: <20221109093739.187-3-thunder.leizhen@huawei.com>
 X-Mailer: git-send-email 2.37.3.windows.1
+In-Reply-To: <20221109093739.187-1-thunder.leizhen@huawei.com>
+References: <20221109093739.187-1-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -52,61 +54,114 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-v5 --> v6:
-1. When there are more than two continuous RCU stallings, correctly handle the
-   value of the second and subsequent sampling periods. Update comments and
-   document.
-   Thanks to Elliott, Robert for the test.
-2. Change "rcu stall" to "RCU stall".
+This commit doucments how to quickly determine the bug causing a given
+RCU CPU stall fault warning based on the output information provided
+by CONFIG_RCU_CPU_STALL_CPUTIME=y.
 
-v4 --> v5:
-1. Resolve a git am conflict. No code change.
+[ paulmck: Apply wordsmithing. ]
 
-v3 --> v4:
-1. Rename rcu_cpu_stall_deep_debug to rcu_cpu_stall_cputime.
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ Documentation/RCU/stallwarn.rst | 88 +++++++++++++++++++++++++++++++++
+ 1 file changed, 88 insertions(+)
 
-v2 --> v3:
-1. Fix the return type of kstat_cpu_irqs_sum()
-2. Add Kconfig option CONFIG_RCU_CPU_STALL_DEEP_DEBUG and boot parameter
-   rcupdate.rcu_cpu_stall_deep_debug.
-3. Add comments and normalize local variable name
-
-
-v1 --> v2:
-1. Fixed a bug in the code. If the rcu stall is detected by another CPU,
-   kcpustat_this_cpu cannot be used.
-@@ -451,7 +451,7 @@ static void print_cpu_stat_info(int cpu)
-        if (r->gp_seq != rdp->gp_seq)
-                return;
-
--       cpustat = kcpustat_this_cpu->cpustat;
-+       cpustat = kcpustat_cpu(cpu).cpustat;
-2. Move the start point of statistics from rcu_stall_kick_kthreads() to
-   rcu_implicit_dynticks_qs(), removing the dependency on irq_work.
-
-v1:
-In some extreme cases, such as the I/O pressure test, the CPU usage may
-be 100%, causing RCU stall. In this case, the printed information about
-current is not useful. Displays the number and usage of hard interrupts,
-soft interrupts, and context switches that are generated within half of
-the CPU stall timeout, can help us make a general judgment. In other
-cases, we can preliminarily determine whether an infinite loop occurs
-when local_irq, local_bh or preempt is disabled.
-
-Zhen Lei (2):
-  rcu: Add RCU stall diagnosis information
-  doc: Document CONFIG_RCU_CPU_STALL_CPUTIME=y stall information
-
- Documentation/RCU/stallwarn.rst               | 88 +++++++++++++++++++
- .../admin-guide/kernel-parameters.txt         |  6 ++
- kernel/rcu/Kconfig.debug                      | 11 +++
- kernel/rcu/rcu.h                              |  1 +
- kernel/rcu/tree.c                             | 17 ++++
- kernel/rcu/tree.h                             | 19 ++++
- kernel/rcu/tree_stall.h                       | 29 ++++++
- kernel/rcu/update.c                           |  2 +
- 8 files changed, 173 insertions(+)
-
+diff --git a/Documentation/RCU/stallwarn.rst b/Documentation/RCU/stallwarn.rst
+index dfa4db8c0931eaf..5e24e849290a286 100644
+--- a/Documentation/RCU/stallwarn.rst
++++ b/Documentation/RCU/stallwarn.rst
+@@ -390,3 +390,91 @@ for example, "P3421".
+ 
+ It is entirely possible to see stall warnings from normal and from
+ expedited grace periods at about the same time during the same run.
++
++RCU_CPU_STALL_CPUTIME
++=====================
++
++In kernels built with CONFIG_RCU_CPU_STALL_CPUTIME=y or booted with
++rcupdate.rcu_cpu_stall_cputime=1, the following additional information
++is supplied with each RCU CPU stall warning::
++
++rcu:          hardirqs   softirqs   csw/system
++rcu:  number:      624         45            0
++rcu: cputime:       69          1         2425   ==> 2500(ms)
++
++These statistics are collected during the sampling period. The values
++in row "number:" are the number of hard interrupts, number of soft
++interrupts, and number of context switches on the stalled CPU. The
++first three values in row "cputime:" indicate the CPU time in
++milliseconds consumed by hard interrupts, soft interrupts, and tasks
++on the stalled CPU.  The last number is the measurement interval, again
++in milliseconds.  Because user-mode tasks normally do not cause RCU CPU
++stalls, these tasks are typically kernel tasks, which is why only the
++system CPU time are considered.
++
++The sampling period is shown as follows:
++|<------------first timeout---------->|<-----second timeout----->|
++|<--half timeout-->|<--half timeout-->|                          |
++|                  |<--first period-->|                          |
++|                  |<-----------second sampling period---------->|
++|                  |                  |                          |
++|          sampling time point    1st-stall                  2nd-stall
++
++
++The following describes four typical scenarios:
++
++1. A CPU looping with interrupts disabled.::
++
++   rcu:          hardirqs   softirqs   csw/system
++   rcu:  number:        0          0            0
++   rcu: cputime:        0          0            0   ==> 2500(ms)
++
++   Because interrupts have been disabled throughout the measurement
++   interval, there are no interrupts and no context switches.
++   Furthermore, because CPU time consumption was measured using interrupt
++   handlers, the system CPU consumption is misleadingly measured as zero.
++   This scenario will normally also have "(0 ticks this GP)" printed on
++   this CPU's summary line.
++
++2. A CPU looping with bottom halves disabled.
++
++   This is similar to the previous example, but with non-zero number of
++   and CPU time consumed by hard interrupts, along with non-zero CPU
++   time consumed by in-kernel execution.::
++
++   rcu:          hardirqs   softirqs   csw/system
++   rcu:  number:      624          0            0
++   rcu: cputime:       49          0         2446   ==> 2500(ms)
++
++   The fact that there are zero softirqs gives a hint that these were
++   disabled, perhaps via local_bh_disable().  It is of course possible
++   that there were no softirqs, perhaps because all events that would
++   result in softirq execution are confined to other CPUs.  In this case,
++   the diagnosis should continue as shown in the next example.
++
++3. A CPU looping with preemption disabled.
++
++   Here, only the number of context switches is zero.::
++
++   rcu:          hardirqs   softirqs   csw/system
++   rcu:  number:      624         45            0
++   rcu: cputime:       69          1         2425   ==> 2500(ms)
++
++   This situation hints that the stalled CPU was looping with preemption
++   disabled.
++
++4. No looping, but massive hard and soft interrupts.::
++
++   rcu:          hardirqs   softirqs   csw/system
++   rcu:  number:       xx         xx            0
++   rcu: cputime:       xx         xx            0   ==> 2500(ms)
++
++   Here, the number and CPU time of hard interrupts are all non-zero,
++   but the number of context switches and the in-kernel CPU time consumed
++   are zero. The number and cputime of soft interrupts will usually be
++   non-zero, but could be zero, for example, if the CPU was spinning
++   within a single hard interrupt handler.
++
++   If this type of RCU CPU stall warning can be reproduced, you can
++   narrow it down by looking at /proc/interrupts or by writing code to
++   trace each interrupt, for example, by referring to show_interrupts().
 -- 
 2.25.1
 
