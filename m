@@ -2,179 +2,90 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B245C4332F
-	for <rcu@archiver.kernel.org>; Wed,  9 Nov 2022 17:22:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 17D48C433FE
+	for <rcu@archiver.kernel.org>; Wed,  9 Nov 2022 17:49:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231460AbiKIRWe (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 9 Nov 2022 12:22:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46776 "EHLO
+        id S229452AbiKIRty (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 9 Nov 2022 12:49:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230154AbiKIRWd (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 9 Nov 2022 12:22:33 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EA5E21E0D;
-        Wed,  9 Nov 2022 09:22:32 -0800 (PST)
+        with ESMTP id S231758AbiKIRtk (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 9 Nov 2022 12:49:40 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 687A725C7B;
+        Wed,  9 Nov 2022 09:49:20 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id AED1EB81F3E;
-        Wed,  9 Nov 2022 17:22:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2006BC433C1;
-        Wed,  9 Nov 2022 17:22:29 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 05C0561C14;
+        Wed,  9 Nov 2022 17:49:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46073C433D6;
+        Wed,  9 Nov 2022 17:49:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668014549;
-        bh=g0VO7thGoHJFU3IbUO6+nT8hsNvajw3msao3OnfaJk4=;
+        s=k20201202; t=1668016159;
+        bh=iuQVvtvtB8HYf4rE2xjy67B/UvlG9neLcNN/266qS7E=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=WtZ/Hh1D6OhHuEai4nHZrh5WIoJFfdlU5G08uEQL8Rr4bphX6AA8YrC6+PUy17/Nz
-         IRM9Fsg9QSe9Num8IbyRNohcz/RmJNSPjtBEsXbLo+1ba45vyrRN/FV7Ctp4PgLs3+
-         /icyTRcU3PjoHmea2KaaATr3bUmEHHdhvvH0H7t91JWryXJQN7KXCvOm7+FZKk9EXY
-         Zvs26YiF/Wv71QGLH6Uq87L9JpH2tvpkTJhJILAT5IFpslp960fiOBnNmIRsNAWrY0
-         TYo1Sesbq6n0fMhXeEd38dRHmXcatCyopf/Wf+CeWk8R5ia5Mnz3uv4ayYojA/SY49
-         aT/bFl8flUzww==
+        b=C3ep/5HlG3cEYPt04OUQYkCm3jGL2sV+/sY+9K2yqaYSOtAeRTwRbbKkYSRT400nK
+         RNs0BO/r/woj9xMK9x7LT9fhXnuAC5dWEYs+2GububLaBRNYpdN1F5DaRKMO2tw1LB
+         TYDrDnJ8Y7rxOmCaMNffbKeWo/8KcDa7MLCwaey5tNFqxp7iIwz3Yn3q2dEYlXbKrv
+         wWyJMUvfIvKHE86FiYV5XAevy2E0i77oIMwONMAVNrRabmg3Sx9+Ry5PKuA1gAFXnY
+         Po2Iyy1oWEP052FqSIizUnr+Gf24RyedFY4v6QGplAAO4Ng5G5gJT8rCXXylR0P75D
+         vPNrcwu9PCJKA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id A830B5C0EBC; Wed,  9 Nov 2022 09:22:21 -0800 (PST)
-Date:   Wed, 9 Nov 2022 09:22:21 -0800
+        id B91405C0EBC; Wed,  9 Nov 2022 09:49:17 -0800 (PST)
+Date:   Wed, 9 Nov 2022 09:49:17 -0800
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     Zhen Lei <thunder.leizhen@huawei.com>,
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Robert Elliott <elliott@hpe.com>
-Subject: Re: [PATCH v6 0/2] rcu: Add RCU stall diagnosis information
-Message-ID: <20221109172221.GD725751@paulmck-ThinkPad-P17-Gen-1>
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
+Subject: Re: [PATCH printk v3 01/40] rcu: implement lockdep_rcu_enabled for
+ !CONFIG_DEBUG_LOCK_ALLOC
+Message-ID: <20221109174917.GA734694@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20221109093739.187-1-thunder.leizhen@huawei.com>
- <20221109152621.GB298683@lothringen>
- <20221109155901.GA727034@paulmck-ThinkPad-P17-Gen-1>
- <20221109170317.GA300561@lothringen>
+References: <20221107141638.3790965-1-john.ogness@linutronix.de>
+ <20221107141638.3790965-2-john.ogness@linutronix.de>
+ <20221107180157.GL28461@paulmck-ThinkPad-P17-Gen-1>
+ <87h6za602y.fsf@jogness.linutronix.de>
+ <20221108192724.GI3907045@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221109170317.GA300561@lothringen>
+In-Reply-To: <20221108192724.GI3907045@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Nov 09, 2022 at 06:03:17PM +0100, Frederic Weisbecker wrote:
-> On Wed, Nov 09, 2022 at 07:59:01AM -0800, Paul E. McKenney wrote:
-> > On Wed, Nov 09, 2022 at 04:26:21PM +0100, Frederic Weisbecker wrote:
-> > > Hi Zhen Lei,
-> > > 
-> > > On Wed, Nov 09, 2022 at 05:37:36PM +0800, Zhen Lei wrote:
-> > > > v5 --> v6:
-> > > > 1. When there are more than two continuous RCU stallings, correctly handle the
-> > > >    value of the second and subsequent sampling periods. Update comments and
-> > > >    document.
-> > > >    Thanks to Elliott, Robert for the test.
-> > > > 2. Change "rcu stall" to "RCU stall".
-> > > > 
-> > > > v4 --> v5:
-> > > > 1. Resolve a git am conflict. No code change.
-> > > > 
-> > > > v3 --> v4:
-> > > > 1. Rename rcu_cpu_stall_deep_debug to rcu_cpu_stall_cputime.
-> > > > 
-> > > > v2 --> v3:
-> > > > 1. Fix the return type of kstat_cpu_irqs_sum()
-> > > > 2. Add Kconfig option CONFIG_RCU_CPU_STALL_DEEP_DEBUG and boot parameter
-> > > >    rcupdate.rcu_cpu_stall_deep_debug.
-> > > > 3. Add comments and normalize local variable name
-> > > > 
-> > > > 
-> > > > v1 --> v2:
-> > > > 1. Fixed a bug in the code. If the rcu stall is detected by another CPU,
-> > > >    kcpustat_this_cpu cannot be used.
-> > > > @@ -451,7 +451,7 @@ static void print_cpu_stat_info(int cpu)
-> > > >         if (r->gp_seq != rdp->gp_seq)
-> > > >                 return;
-> > > > 
-> > > > -       cpustat = kcpustat_this_cpu->cpustat;
-> > > > +       cpustat = kcpustat_cpu(cpu).cpustat;
-> > > > 2. Move the start point of statistics from rcu_stall_kick_kthreads() to
-> > > >    rcu_implicit_dynticks_qs(), removing the dependency on irq_work.
-> > > > 
-> > > > v1:
-> > > > In some extreme cases, such as the I/O pressure test, the CPU usage may
-> > > > be 100%, causing RCU stall. In this case, the printed information about
-> > > > current is not useful. Displays the number and usage of hard interrupts,
-> > > > soft interrupts, and context switches that are generated within half of
-> > > > the CPU stall timeout, can help us make a general judgment. In other
-> > > > cases, we can preliminarily determine whether an infinite loop occurs
-> > > > when local_irq, local_bh or preempt is disabled.
-> > > 
-> > > That looks useful but I have to ask: what does it bring that the softlockup
-> > > and hardlockup watchdog can not already solve?
+On Tue, Nov 08, 2022 at 11:27:24AM -0800, Paul E. McKenney wrote:
+> On Mon, Nov 07, 2022 at 08:29:01PM +0106, John Ogness wrote:
+> > On 2022-11-07, "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> > >> Provide an implementation for debug_lockdep_rcu_enabled() when
+> > >> CONFIG_DEBUG_LOCK_ALLOC is not enabled. This allows code to check
+> > >> if rcu lockdep debugging is available without needing an extra
+> > >> check if CONFIG_DEBUG_LOCK_ALLOC is enabled.
+> > >> 
+> > >> Signed-off-by: John Ogness <john.ogness@linutronix.de>
+> > >
+> > > If you would like me to take this one, please let me know.
 > > 
-> > This is a good point.  One possible benefit is putting the needed information
-> > in one spot, for example, in cases where the soft/hard lockup timeouts are
-> > significantly different than the RCU CPU stall warning timeout.
+> > Yes, it would be great if you would carry this in the rcu tree. This
+> > printk series is already relying on the rcu tree for the NMI-safe
+> > work. Thanks!
 > 
-> Arguably, the hardlockup/softlockup detectors usually trigger after RCU stall,
-> unless all CPUs are caught into a hardlockup, in which case only the hardlockup
-> detector has a chance.
-> 
-> Anyway I would say that in this case just lower the delay for the lockup
-> detectors to consider the situation is a lockup?
+> Very good, I have queued it.  It is currently on -rcu branch "dev",
+> but will find its way to srcunmisafe.2022.10.21a in the next day or two.
 
-Try it both ways and see how it works?  The rcutorture module parameters
-stall_cpu and stall_cpu_irqsoff are easy ways to generate these sorts
-of scenarios.
+But make that srcunmisafe.2022.11.09a, where it now resides.
 
-Actually, that does remind me of something.  Back when I was chasing
-that interrupt storm, would this patch have helped me?  In that case, the
-half-way point would have been reached while all online CPUs were spinning
-with interrupts disabled and the incoming CPU was getting hammered with
-continual scheduling-clock interrupts.  So I suspect that the answer is
-"no" because the incoming CPU was not blocking the grace period.
-
-Instead of being snapshot halfway to the RCU CPU stall warning, should
-the values be snapshot when the CPU notices the beginning or end of an
-RCU grace period and when a CPU goes offline?
-
-But that would not suffice, because detailed information would not have
-been dumped for the incoming CPU.
-
-However, the lack of context switches and interrupts on the rest of the
-CPUs would likely have been a big cluebat, so there is that.  It might
-be better to rework the warning at the beginning of rcu_sched_clock_irq()
-to complain if more than (say) 10 scheduling-clock interrupts occur on
-a given CPU during a single jiffy.
-
-Independent of Zhen Lei patch.
-
-Thoughts?
+The old srcunmisafe.2022.10.21a remains in its previous location, just
+in case someone else is using it.  Branches are cheap...
 
 							Thanx, Paul
-
-> Thanks.
-> 
-> 
-> > 
-> > Thoughts?
-> > 
-> > 							Thanx, Paul
-> > 
-> > > Thanks.
-> > > 
-> > > > 
-> > > > Zhen Lei (2):
-> > > >   rcu: Add RCU stall diagnosis information
-> > > >   doc: Document CONFIG_RCU_CPU_STALL_CPUTIME=y stall information
-> > > > 
-> > > >  Documentation/RCU/stallwarn.rst               | 88 +++++++++++++++++++
-> > > >  .../admin-guide/kernel-parameters.txt         |  6 ++
-> > > >  kernel/rcu/Kconfig.debug                      | 11 +++
-> > > >  kernel/rcu/rcu.h                              |  1 +
-> > > >  kernel/rcu/tree.c                             | 17 ++++
-> > > >  kernel/rcu/tree.h                             | 19 ++++
-> > > >  kernel/rcu/tree_stall.h                       | 29 ++++++
-> > > >  kernel/rcu/update.c                           |  2 +
-> > > >  8 files changed, 173 insertions(+)
-> > > > 
-> > > > -- 
-> > > > 2.25.1
-> > > > 
