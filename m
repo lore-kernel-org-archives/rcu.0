@@ -2,141 +2,79 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D4DFEC4332F
-	for <rcu@archiver.kernel.org>; Thu, 10 Nov 2022 06:55:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 99C1AC4332F
+	for <rcu@archiver.kernel.org>; Thu, 10 Nov 2022 07:24:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229697AbiKJGzS (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 10 Nov 2022 01:55:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57050 "EHLO
+        id S232320AbiKJHYR (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 10 Nov 2022 02:24:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbiKJGzR (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 10 Nov 2022 01:55:17 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6579F1570B;
-        Wed,  9 Nov 2022 22:55:16 -0800 (PST)
-Received: from dggpemm500024.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4N7CJN3305zmVtX;
-        Thu, 10 Nov 2022 14:55:00 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggpemm500024.china.huawei.com (7.185.36.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 10 Nov 2022 14:55:14 +0800
-Received: from [10.174.178.55] (10.174.178.55) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 10 Nov 2022 14:55:14 +0800
-Subject: Re: [PATCH v6 1/2] rcu: Add RCU stall diagnosis information
-To:     Frederic Weisbecker <frederic@kernel.org>
-CC:     "Paul E . McKenney" <paulmck@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        "Steven Rostedt" <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, <rcu@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Robert Elliott <elliott@hpe.com>
-References: <20221109093739.187-1-thunder.leizhen@huawei.com>
- <20221109093739.187-2-thunder.leizhen@huawei.com>
- <20221109152017.GA298612@lothringen>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <e7b9843f-e301-0cbd-3b04-9ee6641a3fdd@huawei.com>
-Date:   Thu, 10 Nov 2022 14:55:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        with ESMTP id S229974AbiKJHYQ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 10 Nov 2022 02:24:16 -0500
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A461A32079;
+        Wed,  9 Nov 2022 23:24:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1668065055; x=1699601055;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=NpR3zgsRWqyqRv4WG8Mje9a0YXH5njFAug2x1iSvPYM=;
+  b=eFBe8wjzIaYjKj8U1SQr225WeXjvJ/cHOXQzl0lHiSWiGFjn6N0UYeEu
+   74QrR1fZ+CsU3TiTuneI/2gnkETV7jmdzw375B/e8xGQmu7M+5tPU/GIr
+   /HCbzA8FsPGjQ7GbqUj9ngcmY9ERRyy6O6JlDS9xm1aiNHzBLslFnaysu
+   jlVEEm+dwVOmAntmpUkBF4B0ewEIkW33mmCszTri1UdRKVSJI5A867o7H
+   4ANZkiPKkS6WCfHDLqFtei03W7WEG3Q/yz3M49ZxEW1PDt2yPnPQwYzba
+   Tm4yPxUBy8XvsznQafooEKmirbPSP5QC2JGUzEgI7/M+aZ50wfuCHTYe/
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10526"; a="309950674"
+X-IronPort-AV: E=Sophos;i="5.96,153,1665471600"; 
+   d="scan'208";a="309950674"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2022 23:24:15 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10526"; a="614994605"
+X-IronPort-AV: E=Sophos;i="5.96,153,1665471600"; 
+   d="scan'208";a="614994605"
+Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.129])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2022 23:24:13 -0800
+From:   Zqiang <qiang1.zhang@intel.com>
+To:     paulmck@kernel.org, frederic@kernel.org, joel@joelfernandes.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] srcu: Release early_srcu resources when no longer in use
+Date:   Thu, 10 Nov 2022 15:30:13 +0800
+Message-Id: <20221110073013.1302564-1-qiang1.zhang@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20221109152017.GA298612@lothringen>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.55]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+When the "rcupdate.rcu_self_test = 1" is set in bootargs and CONFIG_SRCU
+option is enabled, the early_srcu will be tested, currently, for TREE SRCU,
+if "srcutree.convert_to_big = 1" is set, the srcu_node structure will be
+allocated at invoke init_srcu_struct_fields() time, after the test is
+completed, the early_srcu will not be used.
+Therefore, this commit invoke cleanup_srcu_struct() to release srcu_node
+structure.
 
+Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+---
+ kernel/rcu/update.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-On 2022/11/9 23:20, Frederic Weisbecker wrote:
-> On Wed, Nov 09, 2022 at 05:37:37PM +0800, Zhen Lei wrote:
->> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
->> index ed93ddb8203d42c..e1ff23b2a14d71d 100644
->> --- a/kernel/rcu/tree.c
->> +++ b/kernel/rcu/tree.c
->> @@ -866,6 +866,23 @@ static int rcu_implicit_dynticks_qs(struct rcu_data *rdp)
->>  			rdp->rcu_iw_gp_seq = rnp->gp_seq;
->>  			irq_work_queue_on(&rdp->rcu_iw, rdp->cpu);
->>  		}
->> +
->> +		if (rcu_cpu_stall_cputime && rdp->snap_record.gp_seq != rdp->gp_seq) {
->> +			u64 *cpustat;
->> +			struct rcu_snap_record *rsrp;
->> +
->> +			cpustat = kcpustat_cpu(rdp->cpu).cpustat;
->> +
->> +			rsrp = &rdp->snap_record;
->> +			rsrp->cputime_irq     = cpustat[CPUTIME_IRQ];
->> +			rsrp->cputime_softirq = cpustat[CPUTIME_SOFTIRQ];
->> +			rsrp->cputime_system  = cpustat[CPUTIME_SYSTEM];
-> 
-> You need to use kcpustat_field(), otherwise you'll get stalled values on nohz_full CPUs.
-
-OK, I'll update it. Thanks.
-
-> 
->> +			rsrp->nr_hardirqs = kstat_cpu_irqs_sum(rdp->cpu);
->> +			rsrp->nr_softirqs = kstat_cpu_softirqs_sum(rdp->cpu);
->> +			rsrp->nr_csw = nr_context_switches_cpu(rdp->cpu);
->> +			rsrp->jiffies = jiffies;
->> +			rsrp->gp_seq = rdp->gp_seq;
->> +		}
->>  	}
->>  
->>  	return 0;
->> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
->> index 5653560573e22d6..7b6afb9c7b96dbe 100644
->> --- a/kernel/rcu/tree_stall.h
->> +++ b/kernel/rcu/tree_stall.h
->> @@ -428,6 +428,33 @@ static bool rcu_is_rcuc_kthread_starving(struct rcu_data *rdp, unsigned long *jp
->>  	return j > 2 * HZ;
->>  }
->>  
->> +static void print_cpu_stat_info(int cpu)
->> +{
->> +	u64 *cpustat;
->> +	struct rcu_snap_record *rsrp;
->> +	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
->> +
->> +	if (!rcu_cpu_stall_cputime)
->> +		return;
->> +
->> +	rsrp = &rdp->snap_record;
->> +	if (rsrp->gp_seq != rdp->gp_seq)
->> +		return;
->> +
->> +	cpustat = kcpustat_cpu(cpu).cpustat;
->> +
->> +	pr_err("         hardirqs   softirqs   csw/system\n");
->> +	pr_err(" number: %8ld %10d %12lld\n",
->> +		kstat_cpu_irqs_sum(cpu) - rsrp->nr_hardirqs,
->> +		kstat_cpu_softirqs_sum(cpu) - rsrp->nr_softirqs,
->> +		nr_context_switches_cpu(cpu) - rsrp->nr_csw);
->> +	pr_err("cputime: %8lld %10lld %12lld   ==> %lld(ms)\n",
->> +		div_u64(cpustat[CPUTIME_IRQ] - rsrp->cputime_irq, NSEC_PER_MSEC),
->> +		div_u64(cpustat[CPUTIME_SOFTIRQ] - rsrp->cputime_softirq, NSEC_PER_MSEC),
->> +		div_u64(cpustat[CPUTIME_SYSTEM] - rsrp->cputime_system,
->> NSEC_PER_MSEC),
-> 
-> Same here.
-
-OK
-
-> 
-> Thanks.
-> .
-> 
-
+diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
+index 738842c4886b..a05e23648c6b 100644
+--- a/kernel/rcu/update.c
++++ b/kernel/rcu/update.c
+@@ -589,6 +589,7 @@ static int rcu_verify_early_boot_tests(void)
+ 			early_boot_test_counter++;
+ 			srcu_barrier(&early_srcu);
+ 			WARN_ON_ONCE(!poll_state_synchronize_srcu(&early_srcu, early_srcu_cookie));
++			cleanup_srcu_struct(&early_srcu);
+ 		}
+ 	}
+ 	if (rcu_self_test_counter != early_boot_test_counter) {
 -- 
-Regards,
-  Zhen Lei
+2.25.1
+
