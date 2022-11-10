@@ -2,31 +2,30 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C012DC4332F
-	for <rcu@archiver.kernel.org>; Thu, 10 Nov 2022 02:54:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D4DFEC4332F
+	for <rcu@archiver.kernel.org>; Thu, 10 Nov 2022 06:55:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232598AbiKJCyY (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 9 Nov 2022 21:54:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54954 "EHLO
+        id S229697AbiKJGzS (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 10 Nov 2022 01:55:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232599AbiKJCyX (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 9 Nov 2022 21:54:23 -0500
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BE4024BF3;
-        Wed,  9 Nov 2022 18:54:20 -0800 (PST)
-Received: from dggpemm500022.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4N75yS2CWKzRp3j;
-        Thu, 10 Nov 2022 10:54:08 +0800 (CST)
+        with ESMTP id S229514AbiKJGzR (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 10 Nov 2022 01:55:17 -0500
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6579F1570B;
+        Wed,  9 Nov 2022 22:55:16 -0800 (PST)
+Received: from dggpemm500024.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4N7CJN3305zmVtX;
+        Thu, 10 Nov 2022 14:55:00 +0800 (CST)
 Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
+ dggpemm500024.china.huawei.com (7.185.36.203) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 10 Nov 2022 10:54:14 +0800
+ 15.1.2375.31; Thu, 10 Nov 2022 14:55:14 +0800
 Received: from [10.174.178.55] (10.174.178.55) by
  dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 10 Nov 2022 10:54:14 +0800
-Subject: Re: [PATCH v6 2/2] doc: Document CONFIG_RCU_CPU_STALL_CPUTIME=y stall
- information
+ 15.1.2375.31; Thu, 10 Nov 2022 14:55:14 +0800
+Subject: Re: [PATCH v6 1/2] rcu: Add RCU stall diagnosis information
 To:     Frederic Weisbecker <frederic@kernel.org>
 CC:     "Paul E . McKenney" <paulmck@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
@@ -37,20 +36,20 @@ CC:     "Paul E . McKenney" <paulmck@kernel.org>,
         Joel Fernandes <joel@joelfernandes.org>, <rcu@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, Robert Elliott <elliott@hpe.com>
 References: <20221109093739.187-1-thunder.leizhen@huawei.com>
- <20221109093739.187-3-thunder.leizhen@huawei.com>
- <20221109150834.GA127536@lothringen>
+ <20221109093739.187-2-thunder.leizhen@huawei.com>
+ <20221109152017.GA298612@lothringen>
 From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <54d3262f-3f5f-12af-e965-d56166724bcc@huawei.com>
-Date:   Thu, 10 Nov 2022 10:54:13 +0800
+Message-ID: <e7b9843f-e301-0cbd-3b04-9ee6641a3fdd@huawei.com>
+Date:   Thu, 10 Nov 2022 14:55:13 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <20221109150834.GA127536@lothringen>
+In-Reply-To: <20221109152017.GA298612@lothringen>
 Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 X-Originating-IP: [10.174.178.55]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  dggpemm500006.china.huawei.com (7.185.36.236)
 X-CFilter-Loop: Reflected
 Precedence: bulk
@@ -59,95 +58,80 @@ X-Mailing-List: rcu@vger.kernel.org
 
 
 
-On 2022/11/9 23:08, Frederic Weisbecker wrote:
-> On Wed, Nov 09, 2022 at 05:37:38PM +0800, Zhen Lei wrote:
->> This commit doucments how to quickly determine the bug causing a given
->> RCU CPU stall fault warning based on the output information provided
->> by CONFIG_RCU_CPU_STALL_CPUTIME=y.
->>
->> [ paulmck: Apply wordsmithing. ]
->>
->> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
->> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
->> ---
->>  Documentation/RCU/stallwarn.rst | 88 +++++++++++++++++++++++++++++++++
->>  1 file changed, 88 insertions(+)
->>
->> diff --git a/Documentation/RCU/stallwarn.rst b/Documentation/RCU/stallwarn.rst
->> index dfa4db8c0931eaf..5e24e849290a286 100644
->> --- a/Documentation/RCU/stallwarn.rst
->> +++ b/Documentation/RCU/stallwarn.rst
->> @@ -390,3 +390,91 @@ for example, "P3421".
+On 2022/11/9 23:20, Frederic Weisbecker wrote:
+> On Wed, Nov 09, 2022 at 05:37:37PM +0800, Zhen Lei wrote:
+>> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+>> index ed93ddb8203d42c..e1ff23b2a14d71d 100644
+>> --- a/kernel/rcu/tree.c
+>> +++ b/kernel/rcu/tree.c
+>> @@ -866,6 +866,23 @@ static int rcu_implicit_dynticks_qs(struct rcu_data *rdp)
+>>  			rdp->rcu_iw_gp_seq = rnp->gp_seq;
+>>  			irq_work_queue_on(&rdp->rcu_iw, rdp->cpu);
+>>  		}
+>> +
+>> +		if (rcu_cpu_stall_cputime && rdp->snap_record.gp_seq != rdp->gp_seq) {
+>> +			u64 *cpustat;
+>> +			struct rcu_snap_record *rsrp;
+>> +
+>> +			cpustat = kcpustat_cpu(rdp->cpu).cpustat;
+>> +
+>> +			rsrp = &rdp->snap_record;
+>> +			rsrp->cputime_irq     = cpustat[CPUTIME_IRQ];
+>> +			rsrp->cputime_softirq = cpustat[CPUTIME_SOFTIRQ];
+>> +			rsrp->cputime_system  = cpustat[CPUTIME_SYSTEM];
+> 
+> You need to use kcpustat_field(), otherwise you'll get stalled values on nohz_full CPUs.
+
+OK, I'll update it. Thanks.
+
+> 
+>> +			rsrp->nr_hardirqs = kstat_cpu_irqs_sum(rdp->cpu);
+>> +			rsrp->nr_softirqs = kstat_cpu_softirqs_sum(rdp->cpu);
+>> +			rsrp->nr_csw = nr_context_switches_cpu(rdp->cpu);
+>> +			rsrp->jiffies = jiffies;
+>> +			rsrp->gp_seq = rdp->gp_seq;
+>> +		}
+>>  	}
 >>  
->>  It is entirely possible to see stall warnings from normal and from
->>  expedited grace periods at about the same time during the same run.
+>>  	return 0;
+>> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+>> index 5653560573e22d6..7b6afb9c7b96dbe 100644
+>> --- a/kernel/rcu/tree_stall.h
+>> +++ b/kernel/rcu/tree_stall.h
+>> @@ -428,6 +428,33 @@ static bool rcu_is_rcuc_kthread_starving(struct rcu_data *rdp, unsigned long *jp
+>>  	return j > 2 * HZ;
+>>  }
+>>  
+>> +static void print_cpu_stat_info(int cpu)
+>> +{
+>> +	u64 *cpustat;
+>> +	struct rcu_snap_record *rsrp;
+>> +	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
 >> +
->> +RCU_CPU_STALL_CPUTIME
->> +=====================
+>> +	if (!rcu_cpu_stall_cputime)
+>> +		return;
 >> +
->> +In kernels built with CONFIG_RCU_CPU_STALL_CPUTIME=y or booted with
->> +rcupdate.rcu_cpu_stall_cputime=1, the following additional information
->> +is supplied with each RCU CPU stall warning::
+>> +	rsrp = &rdp->snap_record;
+>> +	if (rsrp->gp_seq != rdp->gp_seq)
+>> +		return;
 >> +
->> +rcu:          hardirqs   softirqs   csw/system
->> +rcu:  number:      624         45            0
->> +rcu: cputime:       69          1         2425   ==> 2500(ms)
+>> +	cpustat = kcpustat_cpu(cpu).cpustat;
 >> +
->> +These statistics are collected during the sampling period. The values
->> +in row "number:" are the number of hard interrupts, number of soft
->> +interrupts, and number of context switches on the stalled CPU. The
->> +first three values in row "cputime:" indicate the CPU time in
->> +milliseconds consumed by hard interrupts, soft interrupts, and tasks
->> +on the stalled CPU.
+>> +	pr_err("         hardirqs   softirqs   csw/system\n");
+>> +	pr_err(" number: %8ld %10d %12lld\n",
+>> +		kstat_cpu_irqs_sum(cpu) - rsrp->nr_hardirqs,
+>> +		kstat_cpu_softirqs_sum(cpu) - rsrp->nr_softirqs,
+>> +		nr_context_switches_cpu(cpu) - rsrp->nr_csw);
+>> +	pr_err("cputime: %8lld %10lld %12lld   ==> %lld(ms)\n",
+>> +		div_u64(cpustat[CPUTIME_IRQ] - rsrp->cputime_irq, NSEC_PER_MSEC),
+>> +		div_u64(cpustat[CPUTIME_SOFTIRQ] - rsrp->cputime_softirq, NSEC_PER_MSEC),
+>> +		div_u64(cpustat[CPUTIME_SYSTEM] - rsrp->cputime_system,
+>> NSEC_PER_MSEC),
 > 
-> Is that since the boot or since the last snapshot?
+> Same here.
 
-Since the last snapshot. See the diagram below:
+OK
 
-+The sampling period is shown as follows:
-+|<------------first timeout---------->|<-----second timeout----->|
-+|<--half timeout-->|<--half timeout-->|                          |
-+|                  |<--first period-->|                          |
-+|                  |<-----------second sampling period---------->|
-+|                  |                  |                          |
-+|          sampling time point    1st-stall                  2nd-stall
-                    |
-                    |
-                    Take the snapshot at this time
-
-> 
->> The last number is the measurement interval, again
->> +in milliseconds.  Because user-mode tasks normally do not cause RCU CPU
->> +stalls, these tasks are typically kernel tasks, which is why only the
->> +system CPU time are considered.
->> +
->> +The sampling period is shown as follows:
->> +|<------------first timeout---------->|<-----second timeout----->|
->> +|<--half timeout-->|<--half timeout-->|                          |
->> +|                  |<--first period-->|                          |
->> +|                  |<-----------second sampling period---------->|
->> +|                  |                  |                          |
->> +|          sampling time point    1st-stall                  2nd-stall
->> +
->> +
->> +The following describes four typical scenarios:
->> +
->> +1. A CPU looping with interrupts disabled.::
->> +
->> +   rcu:          hardirqs   softirqs   csw/system
->> +   rcu:  number:        0          0            0
->> +   rcu: cputime:        0          0            0   ==> 2500(ms)
->> +
->> +   Because interrupts have been disabled throughout the measurement
->> +   interval, there are no interrupts and no context switches.
->> +   Furthermore, because CPU time consumption was measured using interrupt
->> +   handlers, the system CPU consumption is misleadingly measured as zero.
->> +   This scenario will normally also have "(0 ticks this GP)" printed on
->> +   this CPU's summary line.
-> 
-> Right, unless you're running with CONFIG_NO_HZ_FULL=y and the target CPU
-> is nohz_full=, in that case you should see a delta in stime because the
-> cputime is measured with the CPU clock.
 > 
 > Thanks.
 > .
