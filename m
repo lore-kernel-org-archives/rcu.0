@@ -2,204 +2,306 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EE622C433FE
-	for <rcu@archiver.kernel.org>; Thu, 10 Nov 2022 13:49:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BF530C4332F
+	for <rcu@archiver.kernel.org>; Thu, 10 Nov 2022 14:01:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231264AbiKJNtF (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 10 Nov 2022 08:49:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34212 "EHLO
+        id S229809AbiKJOBi (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 10 Nov 2022 09:01:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231261AbiKJNtC (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 10 Nov 2022 08:49:02 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3A55FD33;
-        Thu, 10 Nov 2022 05:48:59 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id z26so2170013pff.1;
-        Thu, 10 Nov 2022 05:48:59 -0800 (PST)
+        with ESMTP id S229547AbiKJOBh (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 10 Nov 2022 09:01:37 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF9821DF24;
+        Thu, 10 Nov 2022 06:01:34 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id a67so3174981edf.12;
+        Thu, 10 Nov 2022 06:01:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LnFXtuVA4NYqbhGKoWGds6kgTIbomnPNzPXIEWeGMzA=;
-        b=Rq4WavHCZSENVhdgHs1/rY+/SSxB00ToA/rMllcLsCMKD3jblV1wXVIrhk2ITsU070
-         RtkJ73FaZqP4cCekNlMnzLDeEJMVpEcam5UTEI3l5piEzDvw15ZKf12sR6vlsuDgUld8
-         j9mba8Gin1SdeeRXVQdlIiSh/iANUo6iRoIwFxEJPwZHTK5Lv3pAutoSLLtlZJWub0NF
-         yNTUKp8MsqJvWQlAOwe+l8fZJBCk4LI98t2tE4Bm+iR+0md8yQRSHkYHRWvB+GI18oZD
-         nxz8njas6j+F7P959vRjlc77ladwwhBn+31PWTIA29/tuehfh5sFRLCVaz7FGP2khHbB
-         kwaw==
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=lpETae63QxzxVvnA0A2Di32LB9M0/Q32ZxpQ3mgqJbA=;
+        b=Uj8qm5QN57HBe2lM2chgrKVPDbKZpDs/37BtHlj+jS5HupIZ92lLRsjIDcE42t2wl4
+         dSoKP3jQQw/l//pX6VVMP8WGCULxb04ZgkYnGYdYq4JrCM3fqA+aAU5y/QtbDbGhJmHN
+         Z9dhaX7tLfAh160TZmi6wtP5fyCmCEWX7e5HrPL2U+mKeg0O9BNARdWuhSqLW/GrmM1y
+         mkytoAFJP4Os2uKr2D5HLT7iblnFuOtx4tiobctsow2+AimW5ZrSQRmyvkQmTJ7el4iB
+         l+yrTKUdC4zXq9tA8NQCVGJbTSaicI0YI39Z3UhU0qtcYyImwYn8t1axOoRoY05JmzNE
+         OJKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LnFXtuVA4NYqbhGKoWGds6kgTIbomnPNzPXIEWeGMzA=;
-        b=lZz6yjiuquF8ElEeELji8gv3drcuq6xejDweu5eSleJL2BoakG+apGOIWzazVpufx1
-         gThh/uax0C3KqhZocQyNM0sMKVI/EJCFVxOaGrIQCiQYzhU81izqXW9E3p5h7RhlGJ5k
-         uEK/O2tsGO1eXZRvPNetSMFsiQUX4BdR9AIPeeW//x7HDmBS+SbZqrsvVDdckjI5uEFb
-         VDWhXHQ9uEf6TA17fqwJcCBojxZfOEuY1RKr/woqlihdHrSLIFTb8zaGGq7HGZxzKJeF
-         w8cS6B1yaynrUlW4Z5K8h7VtuyFtlldowD9tQJBIJEQvZqrFKNcbkJ+S78deAgsa4cVt
-         GxOQ==
-X-Gm-Message-State: ACrzQf18vG/HgOu0NV1BW4WK8f5TzKyhllaiPGDFdFRSBSkfp3nMgfpH
-        aVP7T183YjkbiRGfwJKYw7I=
-X-Google-Smtp-Source: AMsMyM43/BE/K1xNrCRl0YtgPZEMGAS9AkDZFR+/Yilr+I8eGgX+HEWjonQeoiWTN1IlbV/xdOlmkw==
-X-Received: by 2002:a05:6a00:3497:b0:56b:6936:ddfb with SMTP id cp23-20020a056a00349700b0056b6936ddfbmr2688071pfb.15.1668088138958;
-        Thu, 10 Nov 2022 05:48:58 -0800 (PST)
-Received: from hyeyoo ([114.29.91.56])
-        by smtp.gmail.com with ESMTPSA id j9-20020a170902690900b0017a018221e2sm11236297plk.70.2022.11.10.05.48.55
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lpETae63QxzxVvnA0A2Di32LB9M0/Q32ZxpQ3mgqJbA=;
+        b=RyOIa1bAVtZ9DPAKQqNiTlvasyZDJZrVYtBYJBl/M8Vf9ccPx0HHlJgPcAlFauDDqo
+         E4OKLsxxT4OJAjy4eHMXo3N7q9CAGVrKM/fg91xvFynjdL25u7e4nM/4f7L2Hd0+eqaW
+         izMonGf4c93lzbGZwucKD3EvIxuVbWrQgg7PVyU5UDz4OGhTONjGlwBMf7Le5L+1LA/K
+         yWbBYe+kTbpLn4uG6eCxc2vtclMtl+iEcyZu5ZJQ7tc9Z+i1GMB76FQa1T4xIczBZV/f
+         7TPAKUMshZ0MTI1JTooTxrTTFOkplVcUxiVipeSp9IDtnBqLtdBKyStiyS/67fh6haE0
+         8ziA==
+X-Gm-Message-State: ACrzQf3bdiB0klB9KM2KEg+gxaocFLt+n/X6VG9W2icQa3PT0HYHPmU2
+        dXFZD99nZdJXSb1XXLH1P6q8bQPuTwM=
+X-Google-Smtp-Source: AMsMyM51Pt72kKmfLgoq7H7jhnlmOHCLQ3KSHFH6AfdDq3Pz2LEx81TLg4Rd5gR+r+oTHVgt45lyQA==
+X-Received: by 2002:a05:6402:414d:b0:451:73f0:e113 with SMTP id x13-20020a056402414d00b0045173f0e113mr63009067eda.207.1668088893096;
+        Thu, 10 Nov 2022 06:01:33 -0800 (PST)
+Received: from pc638.lan ([155.137.26.201])
+        by smtp.gmail.com with ESMTPSA id bl3-20020a170906c24300b0078ca30ee18bsm7333241ejb.95.2022.11.10.06.01.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Nov 2022 05:48:58 -0800 (PST)
-Date:   Thu, 10 Nov 2022 22:48:52 +0900
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Matthew Wilcox <willy@infradead.org>, paulmck@kernel.org,
-        rcu@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
-        kernel test robot <yujie.liu@intel.com>
-Subject: Re: [PATCH v2 2/3] mm/migrate: make isolate_movable_page() skip slab
- pages
-Message-ID: <Y20BRJmRzRVMzoJw@hyeyoo>
-References: <20221107170554.7869-1-vbabka@suse.cz>
- <20221107170554.7869-3-vbabka@suse.cz>
+        Thu, 10 Nov 2022 06:01:32 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Thu, 10 Nov 2022 15:01:30 +0100
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>, linux-kernel@vger.kernel.org,
+        paulmck@kernel.org, rcu@vger.kernel.org
+Subject: Re: [PATCH v2] rcu/kfree: Do not request RCU when not needed
+Message-ID: <Y20EOinwcLSZHmXg@pc638.lan>
+References: <20221109024758.2644936-1-joel@joelfernandes.org>
+ <Y2z3Mb3u8bFZ12wY@pc636>
+ <CAEXW_YSq89xzgyQ9Tdt1tCqz8VAfzb7kSXVZmnxDuJ65U0UZ3w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20221107170554.7869-3-vbabka@suse.cz>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEXW_YSq89xzgyQ9Tdt1tCqz8VAfzb7kSXVZmnxDuJ65U0UZ3w@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Nov 07, 2022 at 06:05:53PM +0100, Vlastimil Babka wrote:
-> In the next commit we want to rearrange struct slab fields to allow a larger
-> rcu_head. Afterwards, the page->mapping field will overlap with SLUB's "struct
-> list_head slab_list", where the value of prev pointer can become LIST_POISON2,
-> which is 0x122 + POISON_POINTER_DELTA.  Unfortunately the bit 1 being set can
-> confuse PageMovable() to be a false positive and cause a GPF as reported by lkp
-> [1].
+> Hi,
 > 
-> To fix this, make isolate_movable_page() skip pages with the PageSlab flag set.
-> This is a bit tricky as we need to add memory barriers to SLAB and SLUB's page
-> allocation and freeing, and their counterparts to isolate_movable_page().
+> On Thu, Nov 10, 2022 at 8:05 AM Uladzislau Rezki <urezki@gmail.com> wrote:
 > 
-> Based on my RFC from [2]. Added a comment update from Matthew's variant in [3]
-> and, as done there, moved the PageSlab checks to happen before trying to take
-> the page lock.
+> > > On ChromeOS, using this with the increased timeout, we see that we
+> > almost always
+> > > never need to initiate a new grace period. Testing also shows this frees
+> > large
+> > > amounts of unreclaimed memory, under intense kfree_rcu() pressure.
+> > >
+> > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > > ---
+> > > v1->v2: Same logic but use polled grace periods instead of sampling
+> > gp_seq.
+> > >
+> > >  kernel/rcu/tree.c | 8 +++++++-
+> > >  1 file changed, 7 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > index 591187b6352e..ed41243f7a49 100644
+> > > --- a/kernel/rcu/tree.c
+> > > +++ b/kernel/rcu/tree.c
+> > > @@ -2935,6 +2935,7 @@ struct kfree_rcu_cpu_work {
+> > >
+> > >  /**
+> > >   * struct kfree_rcu_cpu - batch up kfree_rcu() requests for RCU grace
+> > period
+> > > + * @gp_snap: The GP snapshot recorded at the last scheduling of monitor
+> > work.
+> > >   * @head: List of kfree_rcu() objects not yet waiting for a grace period
+> > >   * @bkvhead: Bulk-List of kvfree_rcu() objects not yet waiting for a
+> > grace period
+> > >   * @krw_arr: Array of batches of kfree_rcu() objects waiting for a
+> > grace period
+> > > @@ -2964,6 +2965,7 @@ struct kfree_rcu_cpu {
+> > >       struct kfree_rcu_cpu_work krw_arr[KFREE_N_BATCHES];
+> > >       raw_spinlock_t lock;
+> > >       struct delayed_work monitor_work;
+> > > +     unsigned long gp_snap;
+> > >       bool initialized;
+> > >       int count;
+> > >
+> > > @@ -3167,6 +3169,7 @@ schedule_delayed_monitor_work(struct kfree_rcu_cpu
+> > *krcp)
+> > >                       mod_delayed_work(system_wq, &krcp->monitor_work,
+> > delay);
+> > >               return;
+> > >       }
+> > > +     krcp->gp_snap = get_state_synchronize_rcu();
+> > >       queue_delayed_work(system_wq, &krcp->monitor_work, delay);
+> > >  }
+> > >
+> > How do you guarantee a full grace period for objects which proceed
+> > to be placed into an input stream that is not yet detached?
 > 
-> [1] https://lore.kernel.org/all/208c1757-5edd-fd42-67d4-1940cc43b50f@intel.com/
-> [2] https://lore.kernel.org/all/aec59f53-0e53-1736-5932-25407125d4d4@suse.cz/
-> [3] https://lore.kernel.org/all/YzsVM8eToHUeTP75@casper.infradead.org/
 > 
-> Reported-by: kernel test robot <yujie.liu@intel.com>
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> ---
->  mm/migrate.c | 15 ++++++++++++---
->  mm/slab.c    |  6 +++++-
->  mm/slub.c    |  6 +++++-
->  3 files changed, 22 insertions(+), 5 deletions(-)
+> Just replying from phone as I’m OOO today.
 > 
-> diff --git a/mm/migrate.c b/mm/migrate.c
-> index 1379e1912772..959c99cff814 100644
-> --- a/mm/migrate.c
-> +++ b/mm/migrate.c
-> @@ -74,13 +74,22 @@ int isolate_movable_page(struct page *page, isolate_mode_t mode)
->  	if (unlikely(!get_page_unless_zero(page)))
->  		goto out;
->  
-> +	if (unlikely(PageSlab(page)))
-> +		goto out_putpage;
-> +	/* Pairs with smp_wmb() in slab freeing, e.g. SLUB's __free_slab() */
-> +	smp_rmb();
->  	/*
-> -	 * Check PageMovable before holding a PG_lock because page's owner
-> -	 * assumes anybody doesn't touch PG_lock of newly allocated page
-> -	 * so unconditionally grabbing the lock ruins page's owner side.
-> +	 * Check movable flag before taking the page lock because
-> +	 * we use non-atomic bitops on newly allocated page flags so
-> +	 * unconditionally grabbing the lock ruins page's owner side.
->  	 */
->  	if (unlikely(!__PageMovable(page)))
->  		goto out_putpage;
-> +	/* Pairs with smp_wmb() in slab allocation, e.g. SLUB's alloc_slab_page() */
-> +	smp_rmb();
-> +	if (unlikely(PageSlab(page)))
-> +		goto out_putpage;
-> +
->  	/*
->  	 * As movable pages are not isolated from LRU lists, concurrent
->  	 * compaction threads can race against page migration functions
-> diff --git a/mm/slab.c b/mm/slab.c
-> index 59c8e28f7b6a..219beb48588e 100644
-> --- a/mm/slab.c
-> +++ b/mm/slab.c
-> @@ -1370,6 +1370,8 @@ static struct slab *kmem_getpages(struct kmem_cache *cachep, gfp_t flags,
->  
->  	account_slab(slab, cachep->gfporder, cachep, flags);
->  	__folio_set_slab(folio);
-> +	/* Make the flag visible before any changes to folio->mapping */
-> +	smp_wmb();
->  	/* Record if ALLOC_NO_WATERMARKS was set when allocating the slab */
->  	if (sk_memalloc_socks() && page_is_pfmemalloc(folio_page(folio, 0)))
->  		slab_set_pfmemalloc(slab);
-> @@ -1387,9 +1389,11 @@ static void kmem_freepages(struct kmem_cache *cachep, struct slab *slab)
->  
->  	BUG_ON(!folio_test_slab(folio));
->  	__slab_clear_pfmemalloc(slab);
-> -	__folio_clear_slab(folio);
->  	page_mapcount_reset(folio_page(folio, 0));
->  	folio->mapping = NULL;
-> +	/* Make the mapping reset visible before clearing the flag */
-> +	smp_wmb();
-> +	__folio_clear_slab(folio);
->  
->  	if (current->reclaim_state)
->  		current->reclaim_state->reclaimed_slab += 1 << order;
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 99ba865afc4a..5e6519d5169c 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -1800,6 +1800,8 @@ static inline struct slab *alloc_slab_page(gfp_t flags, int node,
->  
->  	slab = folio_slab(folio);
->  	__folio_set_slab(folio);
-> +	/* Make the flag visible before any changes to folio->mapping */
-> +	smp_wmb();
->  	if (page_is_pfmemalloc(folio_page(folio, 0)))
->  		slab_set_pfmemalloc(slab);
->  
-> @@ -2000,8 +2002,10 @@ static void __free_slab(struct kmem_cache *s, struct slab *slab)
->  	int pages = 1 << order;
->  
->  	__slab_clear_pfmemalloc(slab);
-> -	__folio_clear_slab(folio);
->  	folio->mapping = NULL;
-> +	/* Make the mapping reset visible before clearing the flag */
-> +	smp_wmb();
-> +	__folio_clear_slab(folio);
->  	if (current->reclaim_state)
->  		current->reclaim_state->reclaimed_slab += pages;
->  	unaccount_slab(slab, order, s);
-> -- 
-> 2.38.0
+> Hmm, so you’re saying that objects can be queued after the delayed work has
+> been queued, but processed when the delayed work is run? I’m looking at
+> this code after few years so I may have missed something.
+> 
+> That’s a good point and I think I missed that. I think your version did too
+> but I’ll have to double check.
+> 
+> The fix then is to sample the clock for the latest object queued, not for
+> when the delayed work is queued.
+> 
+The patch i sent gurantee it. Just in case see v2:
 
-This looks correct to me.
+From 7ff4038d5dac8d2044b240adeee630ad7944ab8d Mon Sep 17 00:00:00 2001
+From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Date: Wed, 2 Nov 2022 19:26:27 +0100
+Subject: [PATCH] rcu: kvfree_rcu: Reduce a memory footptint by using polling
+ APIs
 
-Acked-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Total time taken by all kfree'ers: 6564718459 ns, loops: 10000, batches: 1110, memory footprint: 5057MB
+Total time taken by all kfree'ers: 8431051895 ns, loops: 10000, batches: 1109, memory footprint: 2749MB
+Total time taken by all kfree'ers: 9477830789 ns, loops: 10000, batches: 1158, memory footprint: 2934MB
+Total time taken by all kfree'ers: 9950211144 ns, loops: 10000, batches: 981, memory footprint: 2704MB
 
-Just noting to myself to avoid confusion in the future:
+with a patch:
 
-- When one sees PageSlab() == false, __PageMovable() == true should not be false positive
-  from slab page because resetting ->mapping is visible first and then it clears PG_slab.
+Total time taken by all kfree'ers: 7712110118 ns, loops: 10000, batches: 1660, memory footprint: 91MB
+Total time taken by all kfree'ers: 7002403664 ns, loops: 10000, batches: 1482, memory footprint: 86MB
+Total time taken by all kfree'ers: 7842282319 ns, loops: 10000, batches: 1738, memory footprint: 86MB
+Total time taken by all kfree'ers: 7230161977 ns, loops: 10000, batches: 1542, memory footprint: 72MB
 
-- When one sees __PageMoveable() == true for slab page, PageSlab() must be true because
-  setting PG_slab in slab allocation is visible first and then it writes to ->mapping field.
+Tested with NOCB option, all offloading CPUs:
 
-I hope it's nicely reshaped after Matthew's frozen refcount series.
+kvm.sh --memory 10G --torture rcuscale --allcpus --duration 1 \
+  --kconfig CONFIG_NR_CPUS=64 \
+  --kconfig CONFIG_RCU_NOCB_CPU=y \
+  --kconfig CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y \
+  --bootargs "rcuscale.kfree_rcu_test=1 rcuscale.kfree_nthreads=16 \
+  rcuscale.holdoff=20 rcuscale.kfree_loops=10000 torture.disable_onoff_at_boot" --trust-make
 
--- 
-Thanks,
-Hyeonggon
+According to data there is a big gain in memory footprint with a patch.
+It is because of call_rcu() and call_rcu_flush() take more effort and
+time to queue a callback and then wait for a gp.
+
+With polling API:
+  a) we do not need to queue any callback;
+  b) we might not even need wait for a GP completion.
+
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+---
+ kernel/rcu/tree.c | 32 ++++++++++++++++++++++++++------
+ 1 file changed, 26 insertions(+), 6 deletions(-)
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 76973d716921..2be4f80867f2 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2919,18 +2919,20 @@ struct kvfree_rcu_bulk_data {
+ 	((PAGE_SIZE - sizeof(struct kvfree_rcu_bulk_data)) / sizeof(void *))
+ 
+ /**
++ * @rcu_work: A work to reclaim a memory after a grace period
+  * struct kfree_rcu_cpu_work - single batch of kfree_rcu() requests
+- * @rcu_work: Let queue_rcu_work() invoke workqueue handler after grace period
+  * @head_free: List of kfree_rcu() objects waiting for a grace period
+  * @bkvhead_free: Bulk-List of kvfree_rcu() objects waiting for a grace period
+  * @krcp: Pointer to @kfree_rcu_cpu structure
++ * @gp_snap: A snapshot of current grace period
+  */
+ 
+ struct kfree_rcu_cpu_work {
+-	struct rcu_work rcu_work;
++	struct work_struct rcu_work;
+ 	struct rcu_head *head_free;
+ 	struct kvfree_rcu_bulk_data *bkvhead_free[FREE_N_CHANNELS];
+ 	struct kfree_rcu_cpu *krcp;
++	unsigned long gp_snap;
+ };
+ 
+ /**
+@@ -3064,10 +3066,11 @@ static void kfree_rcu_work(struct work_struct *work)
+ 	struct rcu_head *head, *next;
+ 	struct kfree_rcu_cpu *krcp;
+ 	struct kfree_rcu_cpu_work *krwp;
++	unsigned long this_krwp_gp_snap;
+ 	int i, j;
+ 
+-	krwp = container_of(to_rcu_work(work),
+-			    struct kfree_rcu_cpu_work, rcu_work);
++	krwp = container_of(work,
++		struct kfree_rcu_cpu_work, rcu_work);
+ 	krcp = krwp->krcp;
+ 
+ 	raw_spin_lock_irqsave(&krcp->lock, flags);
+@@ -3080,8 +3083,15 @@ static void kfree_rcu_work(struct work_struct *work)
+ 	// Channel 3.
+ 	head = krwp->head_free;
+ 	krwp->head_free = NULL;
++
++	// Get the latest saved state of grace period
++	// associated with this "krwp" and objects there.
++	this_krwp_gp_snap = krwp->gp_snap;
+ 	raw_spin_unlock_irqrestore(&krcp->lock, flags);
+ 
++	// Check the state.
++	cond_synchronize_rcu(this_krwp_gp_snap);
++
+ 	// Handle the first two channels.
+ 	for (i = 0; i < FREE_N_CHANNELS; i++) {
+ 		for (; bkvhead[i]; bkvhead[i] = bnext) {
+@@ -3212,12 +3222,22 @@ static void kfree_rcu_monitor(struct work_struct *work)
+ 
+ 			WRITE_ONCE(krcp->count, 0);
+ 
++			// 1. Take a snapshot for this krwp. Please note no
++			// more any objects can be added to channels which
++			// have already been attached.
++			//
++			// 2. Since a "krwp" has several free channels a GP
++			// status of latest attached one is recorded, i.e.
++			// it allows us to maintain a GP status for last in
++			// objects among all channels.
++			krwp->gp_snap = get_state_synchronize_rcu();
++
+ 			// One work is per one batch, so there are three
+ 			// "free channels", the batch can handle. It can
+ 			// be that the work is in the pending state when
+ 			// channels have been detached following by each
+ 			// other.
+-			queue_rcu_work(system_wq, &krwp->rcu_work);
++			queue_work(system_wq, &krwp->rcu_work);
+ 		}
+ 	}
+ 
+@@ -4808,7 +4828,7 @@ static void __init kfree_rcu_batch_init(void)
+ 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+ 
+ 		for (i = 0; i < KFREE_N_BATCHES; i++) {
+-			INIT_RCU_WORK(&krcp->krw_arr[i].rcu_work, kfree_rcu_work);
++			INIT_WORK(&krcp->krw_arr[i].rcu_work, kfree_rcu_work);
+ 			krcp->krw_arr[i].krcp = krcp;
+ 		}
+ 
+> > > @@ -3217,7 +3220,10 @@ static void kfree_rcu_monitor(struct work_struct
+> > *work)
+> > >                       // be that the work is in the pending state when
+> > >                       // channels have been detached following by each
+> > >                       // other.
+> > > -                     queue_rcu_work(system_wq, &krwp->rcu_work);
+> > > +                     if (poll_state_synchronize_rcu(krcp->gp_snap))
+> > > +                             queue_work(system_wq, &krwp->rcu_work.work
+> > );
+> > > +                     else
+> > > +                             queue_rcu_work(system_wq, &krwp->rcu_work);
+> > >               }
+> > >
+> > Why do you want to queue a work over RCU-core?
+> >
+> > 1.
+> > call_rcu()
+> >    -> queue_work();
+> >       -> do reclaim
+> >
+> > if it can be improved and simplified as:
+> >
+> > 2.
+> > queue_work();
+> >     -> cond_synchronize_rcu(), do reclaim
+> 
+> 
+> The second one blocks, the first doesn’t. So I’m not sure how that’s an
+> improvement? I think we don’t want to block in kworker due to possible
+> scheduling issues and hurting other kwork during critical operations, if
+> possible.
+> 
+Does the first wait for a full grace period so our kworker is not even run?
+
+--
+Uladzislau Rezki
