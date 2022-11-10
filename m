@@ -2,79 +2,177 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 99C1AC4332F
-	for <rcu@archiver.kernel.org>; Thu, 10 Nov 2022 07:24:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B6EAEC43217
+	for <rcu@archiver.kernel.org>; Thu, 10 Nov 2022 07:29:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232320AbiKJHYR (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 10 Nov 2022 02:24:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43158 "EHLO
+        id S232758AbiKJH3N (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 10 Nov 2022 02:29:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229974AbiKJHYQ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 10 Nov 2022 02:24:16 -0500
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A461A32079;
-        Wed,  9 Nov 2022 23:24:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1668065055; x=1699601055;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=NpR3zgsRWqyqRv4WG8Mje9a0YXH5njFAug2x1iSvPYM=;
-  b=eFBe8wjzIaYjKj8U1SQr225WeXjvJ/cHOXQzl0lHiSWiGFjn6N0UYeEu
-   74QrR1fZ+CsU3TiTuneI/2gnkETV7jmdzw375B/e8xGQmu7M+5tPU/GIr
-   /HCbzA8FsPGjQ7GbqUj9ngcmY9ERRyy6O6JlDS9xm1aiNHzBLslFnaysu
-   jlVEEm+dwVOmAntmpUkBF4B0ewEIkW33mmCszTri1UdRKVSJI5A867o7H
-   4ANZkiPKkS6WCfHDLqFtei03W7WEG3Q/yz3M49ZxEW1PDt2yPnPQwYzba
-   Tm4yPxUBy8XvsznQafooEKmirbPSP5QC2JGUzEgI7/M+aZ50wfuCHTYe/
-   w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10526"; a="309950674"
-X-IronPort-AV: E=Sophos;i="5.96,153,1665471600"; 
-   d="scan'208";a="309950674"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2022 23:24:15 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10526"; a="614994605"
-X-IronPort-AV: E=Sophos;i="5.96,153,1665471600"; 
-   d="scan'208";a="614994605"
-Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.129])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2022 23:24:13 -0800
-From:   Zqiang <qiang1.zhang@intel.com>
-To:     paulmck@kernel.org, frederic@kernel.org, joel@joelfernandes.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] srcu: Release early_srcu resources when no longer in use
-Date:   Thu, 10 Nov 2022 15:30:13 +0800
-Message-Id: <20221110073013.1302564-1-qiang1.zhang@intel.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S232735AbiKJH3M (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 10 Nov 2022 02:29:12 -0500
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 143F3326C4;
+        Wed,  9 Nov 2022 23:29:07 -0800 (PST)
+Received: from dggpemm500021.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4N7D3D3kjyzHvpN;
+        Thu, 10 Nov 2022 15:28:40 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggpemm500021.china.huawei.com (7.185.36.109) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Thu, 10 Nov 2022 15:29:06 +0800
+Received: from [10.174.178.55] (10.174.178.55) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Thu, 10 Nov 2022 15:29:05 +0800
+Subject: Re: [PATCH v6 0/2] rcu: Add RCU stall diagnosis information
+To:     Frederic Weisbecker <frederic@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+CC:     Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Mathieu Desnoyers" <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, <rcu@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Robert Elliott <elliott@hpe.com>
+References: <20221109093739.187-1-thunder.leizhen@huawei.com>
+ <20221109152621.GB298683@lothringen>
+ <20221109155901.GA727034@paulmck-ThinkPad-P17-Gen-1>
+ <20221109170317.GA300561@lothringen>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <c8b7deaa-1d4f-0e73-269a-32d6105b89a7@huawei.com>
+Date:   Thu, 10 Nov 2022 15:29:04 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20221109170317.GA300561@lothringen>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.55]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-When the "rcupdate.rcu_self_test = 1" is set in bootargs and CONFIG_SRCU
-option is enabled, the early_srcu will be tested, currently, for TREE SRCU,
-if "srcutree.convert_to_big = 1" is set, the srcu_node structure will be
-allocated at invoke init_srcu_struct_fields() time, after the test is
-completed, the early_srcu will not be used.
-Therefore, this commit invoke cleanup_srcu_struct() to release srcu_node
-structure.
 
-Signed-off-by: Zqiang <qiang1.zhang@intel.com>
----
- kernel/rcu/update.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
-index 738842c4886b..a05e23648c6b 100644
---- a/kernel/rcu/update.c
-+++ b/kernel/rcu/update.c
-@@ -589,6 +589,7 @@ static int rcu_verify_early_boot_tests(void)
- 			early_boot_test_counter++;
- 			srcu_barrier(&early_srcu);
- 			WARN_ON_ONCE(!poll_state_synchronize_srcu(&early_srcu, early_srcu_cookie));
-+			cleanup_srcu_struct(&early_srcu);
- 		}
- 	}
- 	if (rcu_self_test_counter != early_boot_test_counter) {
+On 2022/11/10 1:03, Frederic Weisbecker wrote:
+> On Wed, Nov 09, 2022 at 07:59:01AM -0800, Paul E. McKenney wrote:
+>> On Wed, Nov 09, 2022 at 04:26:21PM +0100, Frederic Weisbecker wrote:
+>>> Hi Zhen Lei,
+>>>
+>>> On Wed, Nov 09, 2022 at 05:37:36PM +0800, Zhen Lei wrote:
+>>>> v5 --> v6:
+>>>> 1. When there are more than two continuous RCU stallings, correctly handle the
+>>>>    value of the second and subsequent sampling periods. Update comments and
+>>>>    document.
+>>>>    Thanks to Elliott, Robert for the test.
+>>>> 2. Change "rcu stall" to "RCU stall".
+>>>>
+>>>> v4 --> v5:
+>>>> 1. Resolve a git am conflict. No code change.
+>>>>
+>>>> v3 --> v4:
+>>>> 1. Rename rcu_cpu_stall_deep_debug to rcu_cpu_stall_cputime.
+>>>>
+>>>> v2 --> v3:
+>>>> 1. Fix the return type of kstat_cpu_irqs_sum()
+>>>> 2. Add Kconfig option CONFIG_RCU_CPU_STALL_DEEP_DEBUG and boot parameter
+>>>>    rcupdate.rcu_cpu_stall_deep_debug.
+>>>> 3. Add comments and normalize local variable name
+>>>>
+>>>>
+>>>> v1 --> v2:
+>>>> 1. Fixed a bug in the code. If the rcu stall is detected by another CPU,
+>>>>    kcpustat_this_cpu cannot be used.
+>>>> @@ -451,7 +451,7 @@ static void print_cpu_stat_info(int cpu)
+>>>>         if (r->gp_seq != rdp->gp_seq)
+>>>>                 return;
+>>>>
+>>>> -       cpustat = kcpustat_this_cpu->cpustat;
+>>>> +       cpustat = kcpustat_cpu(cpu).cpustat;
+>>>> 2. Move the start point of statistics from rcu_stall_kick_kthreads() to
+>>>>    rcu_implicit_dynticks_qs(), removing the dependency on irq_work.
+>>>>
+>>>> v1:
+>>>> In some extreme cases, such as the I/O pressure test, the CPU usage may
+>>>> be 100%, causing RCU stall. In this case, the printed information about
+>>>> current is not useful. Displays the number and usage of hard interrupts,
+>>>> soft interrupts, and context switches that are generated within half of
+>>>> the CPU stall timeout, can help us make a general judgment. In other
+>>>> cases, we can preliminarily determine whether an infinite loop occurs
+>>>> when local_irq, local_bh or preempt is disabled.
+>>>
+>>> That looks useful but I have to ask: what does it bring that the softlockup
+>>> and hardlockup watchdog can not already solve?
+>>
+>> This is a good point.  One possible benefit is putting the needed information
+>> in one spot, for example, in cases where the soft/hard lockup timeouts are
+>> significantly different than the RCU CPU stall warning timeout.
+> 
+> Arguably, the hardlockup/softlockup detectors usually trigger after RCU stall,
+> unless all CPUs are caught into a hardlockup, in which case only the hardlockup
+> detector has a chance.
+
+But not all ARCHs support hardlockup, such as s390. Maybe arm64.
+
+config HARDLOCKUP_DETECTOR
+        bool "Detect Hard Lockups"
+        depends on DEBUG_KERNEL && !S390
+        depends on HAVE_HARDLOCKUP_DETECTOR_PERF || HAVE_HARDLOCKUP_DETECTOR_ARCH
+
+> 
+> Anyway I would say that in this case just lower the delay for the lockup
+> detectors to consider the situation is a lockup?
+
+In most architectures, CONFIG_SOFTLOCKUP_DETECTOR is not set by default.
+Otherwise 20 is less than 21.
+
+Softlockups are bugs that cause the kernel to loop in kernel
+mode for more than 20 seconds, without giving other tasks a
+chance to run.
+
+config RCU_CPU_STALL_TIMEOUT
+	default 21
+
+
+In short, hardlockup and softlockup are completely uncontrollable to RCU stall.
+
+> 
+> Thanks.
+> 
+> 
+>>
+>> Thoughts?
+>>
+>> 							Thanx, Paul
+>>
+>>> Thanks.
+>>>
+>>>>
+>>>> Zhen Lei (2):
+>>>>   rcu: Add RCU stall diagnosis information
+>>>>   doc: Document CONFIG_RCU_CPU_STALL_CPUTIME=y stall information
+>>>>
+>>>>  Documentation/RCU/stallwarn.rst               | 88 +++++++++++++++++++
+>>>>  .../admin-guide/kernel-parameters.txt         |  6 ++
+>>>>  kernel/rcu/Kconfig.debug                      | 11 +++
+>>>>  kernel/rcu/rcu.h                              |  1 +
+>>>>  kernel/rcu/tree.c                             | 17 ++++
+>>>>  kernel/rcu/tree.h                             | 19 ++++
+>>>>  kernel/rcu/tree_stall.h                       | 29 ++++++
+>>>>  kernel/rcu/update.c                           |  2 +
+>>>>  8 files changed, 173 insertions(+)
+>>>>
+>>>> -- 
+>>>> 2.25.1
+>>>>
+> .
+> 
+
 -- 
-2.25.1
-
+Regards,
+  Zhen Lei
