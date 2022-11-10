@@ -2,133 +2,129 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E75A0C433FE
-	for <rcu@archiver.kernel.org>; Thu, 10 Nov 2022 08:27:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 656FEC4332F
+	for <rcu@archiver.kernel.org>; Thu, 10 Nov 2022 11:35:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232836AbiKJI1l (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 10 Nov 2022 03:27:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48178 "EHLO
+        id S229752AbiKJLfN (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 10 Nov 2022 06:35:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229960AbiKJI1k (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 10 Nov 2022 03:27:40 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A29D1EEF5;
-        Thu, 10 Nov 2022 00:27:38 -0800 (PST)
-Received: from dggpemm500024.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4N7FLy11jLzmVYx;
-        Thu, 10 Nov 2022 16:27:22 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggpemm500024.china.huawei.com (7.185.36.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 10 Nov 2022 16:27:36 +0800
-Received: from [10.174.178.55] (10.174.178.55) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 10 Nov 2022 16:27:35 +0800
-Subject: Re: [PATCH v6 1/2] rcu: Add RCU stall diagnosis information
-To:     "Elliott, Robert (Servers)" <elliott@hpe.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Neeraj Upadhyay" <quic_neeraju@quicinc.com>,
+        with ESMTP id S229736AbiKJLfL (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 10 Nov 2022 06:35:11 -0500
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA2BC657C8;
+        Thu, 10 Nov 2022 03:35:10 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 56A62CE223D;
+        Thu, 10 Nov 2022 11:35:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE944C433D6;
+        Thu, 10 Nov 2022 11:35:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1668080106;
+        bh=LmlA1KvKNiCBzyvniKHyrhNeQe12u7RcZBNQGuu1HjE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ry4t1NfrCFz+0ZncYL9OQxkW7TuBEpQULUlh73sSxMqh3Qi7EUXEOQwxfzNHCOeYa
+         xg99dE2YPDtnWjAQlvPAkBd4ZR2Uw+v/9RwxUGNiw6AJm+RodOVWu/Pj8xU3c+Mvu5
+         t6O5Gk4Ef2ETwPR8Ihw6vmHR0Yji259Bl2UJ230viL8VUrDiM1Wul+RbyIaWk6BVWz
+         ydCuelFwbVZJYWjESLF41z5/lqjQN7y5VVwgM/T767SMVyegShKmDSD1rSIKHj4m8o
+         GOCRr0wBkKtdwqDha3WvDJ5HvMBtPxKuc9wnMD/4V/nJ3FILdwN6s3/96niqtlK0mH
+         uEvhyCuIWSI2g==
+Date:   Thu, 10 Nov 2022 12:35:02 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Robert Elliott <elliott@hpe.com>
+Subject: Re: [PATCH v6 0/2] rcu: Add RCU stall diagnosis information
+Message-ID: <20221110113502.GE300561@lothringen>
 References: <20221109093739.187-1-thunder.leizhen@huawei.com>
- <20221109093739.187-2-thunder.leizhen@huawei.com>
- <MW5PR84MB18423CA291ABCD3DCCE3D416AB3E9@MW5PR84MB1842.NAMPRD84.PROD.OUTLOOK.COM>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <4e93b955-28bf-7b9d-14af-7681b47fada7@huawei.com>
-Date:   Thu, 10 Nov 2022 16:27:35 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+ <20221109152621.GB298683@lothringen>
+ <20221109155901.GA727034@paulmck-ThinkPad-P17-Gen-1>
+ <20221109170317.GA300561@lothringen>
+ <c8b7deaa-1d4f-0e73-269a-32d6105b89a7@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <MW5PR84MB18423CA291ABCD3DCCE3D416AB3E9@MW5PR84MB1842.NAMPRD84.PROD.OUTLOOK.COM>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.55]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c8b7deaa-1d4f-0e73-269a-32d6105b89a7@huawei.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Thu, Nov 10, 2022 at 03:29:04PM +0800, Leizhen (ThunderTown) wrote:
+> 
+> 
+> On 2022/11/10 1:03, Frederic Weisbecker wrote:
+> > On Wed, Nov 09, 2022 at 07:59:01AM -0800, Paul E. McKenney wrote:
+> >> On Wed, Nov 09, 2022 at 04:26:21PM +0100, Frederic Weisbecker wrote:
+> >>> Hi Zhen Lei,
+> >>>
+> >>> On Wed, Nov 09, 2022 at 05:37:36PM +0800, Zhen Lei wrote:
+> >>>> v5 --> v6:
+> >>>> 1. When there are more than two continuous RCU stallings, correctly handle the
+> >>>>    value of the second and subsequent sampling periods. Update comments and
+> >>>>    document.
+> >>>>    Thanks to Elliott, Robert for the test.
+> >>>> 2. Change "rcu stall" to "RCU stall".
+> >>>>
+> >>>> v4 --> v5:
+> >>>> 1. Resolve a git am conflict. No code change.
+> >>>>
+> >>>> v3 --> v4:
+> >>>> 1. Rename rcu_cpu_stall_deep_debug to rcu_cpu_stall_cputime.
+> >>>>
+> >>>> v2 --> v3:
+> >>>> 1. Fix the return type of kstat_cpu_irqs_sum()
+> >>>> 2. Add Kconfig option CONFIG_RCU_CPU_STALL_DEEP_DEBUG and boot parameter
+> >>>>    rcupdate.rcu_cpu_stall_deep_debug.
+> >>>> 3. Add comments and normalize local variable name
+> >>>>
+> >>>>
+> >>>> v1 --> v2:
+> >>>> 1. Fixed a bug in the code. If the rcu stall is detected by another CPU,
+> >>>>    kcpustat_this_cpu cannot be used.
+> >>>> @@ -451,7 +451,7 @@ static void print_cpu_stat_info(int cpu)
+> >>>>         if (r->gp_seq != rdp->gp_seq)
+> >>>>                 return;
+> >>>>
+> >>>> -       cpustat = kcpustat_this_cpu->cpustat;
+> >>>> +       cpustat = kcpustat_cpu(cpu).cpustat;
+> >>>> 2. Move the start point of statistics from rcu_stall_kick_kthreads() to
+> >>>>    rcu_implicit_dynticks_qs(), removing the dependency on irq_work.
+> >>>>
+> >>>> v1:
+> >>>> In some extreme cases, such as the I/O pressure test, the CPU usage may
+> >>>> be 100%, causing RCU stall. In this case, the printed information about
+> >>>> current is not useful. Displays the number and usage of hard interrupts,
+> >>>> soft interrupts, and context switches that are generated within half of
+> >>>> the CPU stall timeout, can help us make a general judgment. In other
+> >>>> cases, we can preliminarily determine whether an infinite loop occurs
+> >>>> when local_irq, local_bh or preempt is disabled.
+> >>>
+> >>> That looks useful but I have to ask: what does it bring that the softlockup
+> >>> and hardlockup watchdog can not already solve?
+> >>
+> >> This is a good point.  One possible benefit is putting the needed information
+> >> in one spot, for example, in cases where the soft/hard lockup timeouts are
+> >> significantly different than the RCU CPU stall warning timeout.
+> > 
+> > Arguably, the hardlockup/softlockup detectors usually trigger after RCU stall,
+> > unless all CPUs are caught into a hardlockup, in which case only the hardlockup
+> > detector has a chance.
+> 
+> But not all ARCHs support hardlockup, such as s390. Maybe arm64.
+> 
+> config HARDLOCKUP_DETECTOR
+>         bool "Detect Hard Lockups"
+>         depends on DEBUG_KERNEL && !S390
+>         depends on HAVE_HARDLOCKUP_DETECTOR_PERF || HAVE_HARDLOCKUP_DETECTOR_ARCH
 
+Ah fair point indeed.
 
-On 2022/11/10 0:55, Elliott, Robert (Servers) wrote:
-> 
-> 
->> b/Documentation/admin-guide/kernel-parameters.txt
->> index a465d5242774af8..2729f3ad11d108b 100644
->> --- a/Documentation/admin-guide/kernel-parameters.txt
->> +++ b/Documentation/admin-guide/kernel-parameters.txt
->> @@ -5082,6 +5082,12 @@
->>  			rcupdate.rcu_cpu_stall_timeout to be used (after
->>  			conversion from seconds to milliseconds).
->>
->> +	rcupdate.rcu_cpu_stall_cputime= [KNL]
->> +			Provide statistics on the cputime and count of
->> +			interrupts and tasks during the sampling period. For
->> +			multiple continuous RCU stalls, all sampling periods
->> +			begin at half of the first RCU stall timeout.
-> 
-> This description should start with:
->     "In kernels built with CONFIG_RCU_CPU_STALL_TIME=y, "
-> 
-> Also, that parameter name seems like it contains a time value, but
-> it's really just treated as zero vs. anything else. Consider renaming
-> it to rcu_cpu_stall_cputime_en or describing the values in the
-> description ("0 disables, all other values enable").
-> 
->> diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
->> +struct rcu_snap_record {
->> +	unsigned long	gp_seq;		/* Track rdp->gp_seq counter */
->> +	u64		cputime_irq;	/* Accumulated cputime of hard irqs */
->> +	u64		cputime_softirq;/* Accumulated cputime of soft irqs */
->> +	u64		cputime_system; /* Accumulated cputime of kernel tasks
->> */
->> +	unsigned long	nr_hardirqs;	/* Accumulated number of hard irqs */
->> +	unsigned int	nr_softirqs;	/* Accumulated number of soft irqs */
-> 
-> That should be "unsigned long" to match the other patch
-
-We have discussed this before. And you mentioned:
-
-irqs_sumstruct kernel_stat {
-        unsigned long irqs_sum;
-        unsigned int softirqs[NR_SOFTIRQS];
-};
-
-The softirqs field is an unsigned int, so the new function doesn't have
-this inconsistency.
-
-> 
-> 
->> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
->> +static void print_cpu_stat_info(int cpu)
->> +{
-> ...
->> +	pr_err("         hardirqs   softirqs   csw/system\n");
->> +	pr_err(" number: %8ld %10d %12lld\n",
->> +		kstat_cpu_irqs_sum(cpu) - rsrp->nr_hardirqs,
->> +		kstat_cpu_softirqs_sum(cpu) - rsrp->nr_softirqs,
->> +		nr_context_switches_cpu(cpu) - rsrp->nr_csw);
->> +	pr_err("cputime: %8lld %10lld %12lld   ==> %lld(ms)\n",
-> 
-> Those should all start with "\t" to match other related prints.
-
-Right, thanks.
-
-> 
-> 
-> .
-> 
-
--- 
-Regards,
-  Zhen Lei
+Thanks!
