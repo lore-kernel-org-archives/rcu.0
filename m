@@ -2,87 +2,90 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7900CC4332F
-	for <rcu@archiver.kernel.org>; Fri, 11 Nov 2022 07:47:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AD6BAC4332F
+	for <rcu@archiver.kernel.org>; Fri, 11 Nov 2022 08:04:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232628AbiKKHq7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 11 Nov 2022 02:46:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33144 "EHLO
+        id S231221AbiKKIEu (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 11 Nov 2022 03:04:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230043AbiKKHq7 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 11 Nov 2022 02:46:59 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0CF1748E1;
-        Thu, 10 Nov 2022 23:46:58 -0800 (PST)
+        with ESMTP id S232988AbiKKIEs (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 11 Nov 2022 03:04:48 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4E3569DEA;
+        Fri, 11 Nov 2022 00:04:47 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3608F61EBF;
-        Fri, 11 Nov 2022 07:46:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EFCFC433D6;
-        Fri, 11 Nov 2022 07:46:57 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 8D003B823FF;
+        Fri, 11 Nov 2022 08:04:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21029C433C1;
+        Fri, 11 Nov 2022 08:04:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668152817;
-        bh=vv62wWwduqinrCtZbQZIaSqRP/SZaLuyOTjLzL5M2II=;
+        s=k20201202; t=1668153885;
+        bh=UH08BgNIy0Ir2cfbIMbIdEh7C7tlvhLyxSSliZqjUek=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=jUljLXKbTkBM1clnDanu46i0KM2d1foJBR6/TP/rfUQrkVzilDLS1L3siifcm+wxA
-         y0sxUEcus6M0Wdrk4/dUCYeyfYY+5PFOaKmVSz3K6ySWVkjSypYrW+PK9WsuoxpQUZ
-         NjrYuePXAi/mVkUyhaHAbVS+fyvEYGzk+N45gXinaX9lKafBxLbnFpQnre8tGz6Izo
-         +AlvrWCkI4NZhIhUkLNLToQRk+Krq331WnrdxrSD+Y8pDbDVwc235rWURLudsVyF0g
-         s3noIW7AwWbgtvozfegpTSgzfi+r3qlh28W7STwc3o7wRH1l543RCTAAI0D4FJryIr
-         fxcQ3zIPp1p9w==
+        b=S8mj79k718mREVoqdFRhDIGz19Y3+5qssHA769RxwE12gayAl6Hko04Ii158uV0qQ
+         RTEatj47R5rMD8o1/qXhRS1aBGI6SdpsXaEFyG8ZD7dpy+9iufmzxSeY3shJ4K9AK7
+         iOJ9o3b8LMfs+kavNNC9bMeXhCBVnym7MUzHW3WHlbEdBGY4AaT45ZFvw7CEJTGkPk
+         bBDUKkuxiS/fKFqjjbCT/QTox1g7JjTZCnG8wKuz5PoyMMVSfZulaAO0cmRmPkaR2Q
+         Tq098x8mzG6c/avZ8GKeP06EvqiuSSaeJzIbCqyEEGEXFNmbHTxV9kfVdMIMOei7ND
+         CK7tvZqISskuw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 165005C13DC; Thu, 10 Nov 2022 23:46:56 -0800 (PST)
-Date:   Thu, 10 Nov 2022 23:46:56 -0800
+        id C4A395C0A59; Fri, 11 Nov 2022 00:04:42 -0800 (PST)
+Date:   Fri, 11 Nov 2022 00:04:42 -0800
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     Zqiang <qiang1.zhang@intel.com>
 Cc:     frederic@kernel.org, joel@joelfernandes.org, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] srcu: Release early_srcu resources when no longer in use
-Message-ID: <20221111074656.GT725751@paulmck-ThinkPad-P17-Gen-1>
+Subject: Re: [PATCH] srcu: Make Tiny SRCU synchronize_srcu() more complete
+Message-ID: <20221111080442.GU725751@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20221110073013.1302564-1-qiang1.zhang@intel.com>
+References: <20221109073638.935473-1-qiang1.zhang@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221110073013.1302564-1-qiang1.zhang@intel.com>
+In-Reply-To: <20221109073638.935473-1-qiang1.zhang@intel.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Nov 10, 2022 at 03:30:13PM +0800, Zqiang wrote:
-> When the "rcupdate.rcu_self_test = 1" is set in bootargs and CONFIG_SRCU
-> option is enabled, the early_srcu will be tested, currently, for TREE SRCU,
-> if "srcutree.convert_to_big = 1" is set, the srcu_node structure will be
-> allocated at invoke init_srcu_struct_fields() time, after the test is
-> completed, the early_srcu will not be used.
-> Therefore, this commit invoke cleanup_srcu_struct() to release srcu_node
-> structure.
+On Wed, Nov 09, 2022 at 03:36:38PM +0800, Zqiang wrote:
+> This commit add lockdep detection for illegal use synchronize_srcu()
+> in same-type SRCU (or in RCU) read-side critical section and support
+> early boot operations.
 > 
 > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 
-Queued for further review and testing, thank you!
-
-Also with the usual wordsmithing, so please check.
+Queued and pushed with the usual wordsmithing (please check), thank you!
 
 							Thanx, Paul
 
 > ---
->  kernel/rcu/update.c | 1 +
->  1 file changed, 1 insertion(+)
+>  kernel/rcu/srcutiny.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
 > 
-> diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
-> index 738842c4886b..a05e23648c6b 100644
-> --- a/kernel/rcu/update.c
-> +++ b/kernel/rcu/update.c
-> @@ -589,6 +589,7 @@ static int rcu_verify_early_boot_tests(void)
->  			early_boot_test_counter++;
->  			srcu_barrier(&early_srcu);
->  			WARN_ON_ONCE(!poll_state_synchronize_srcu(&early_srcu, early_srcu_cookie));
-> +			cleanup_srcu_struct(&early_srcu);
->  		}
->  	}
->  	if (rcu_self_test_counter != early_boot_test_counter) {
+> diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
+> index 33adafdad261..b12fb0cec44d 100644
+> --- a/kernel/rcu/srcutiny.c
+> +++ b/kernel/rcu/srcutiny.c
+> @@ -197,6 +197,16 @@ void synchronize_srcu(struct srcu_struct *ssp)
+>  {
+>  	struct rcu_synchronize rs;
+>  
+> +	RCU_LOCKDEP_WARN(lockdep_is_held(ssp) ||
+> +			lock_is_held(&rcu_bh_lock_map) ||
+> +			lock_is_held(&rcu_lock_map) ||
+> +			lock_is_held(&rcu_sched_lock_map),
+> +			"Illegal synchronize_srcu() in same-type SRCU (or in RCU) read-side critical section");
+> +
+> +	if (rcu_scheduler_active == RCU_SCHEDULER_INACTIVE)
+> +		return;
+> +
+> +	might_sleep();
+>  	init_rcu_head_on_stack(&rs.head);
+>  	init_completion(&rs.completion);
+>  	call_srcu(ssp, &rs.head, wakeme_after_rcu);
 > -- 
 > 2.25.1
 > 
