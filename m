@@ -2,29 +2,29 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2ED4CC433FE
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C6D0BC4332F
 	for <rcu@archiver.kernel.org>; Fri, 11 Nov 2022 13:08:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233869AbiKKNH7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 11 Nov 2022 08:07:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36376 "EHLO
+        id S233877AbiKKNIA (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 11 Nov 2022 08:08:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233926AbiKKNHx (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S233927AbiKKNHx (ORCPT <rfc822;rcu@vger.kernel.org>);
         Fri, 11 Nov 2022 08:07:53 -0500
 Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FE8083B9A;
-        Fri, 11 Nov 2022 05:07:47 -0800 (PST)
-Received: from dggpemm500021.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4N7zWj1j1dzmVlV;
-        Fri, 11 Nov 2022 21:07:29 +0800 (CST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A9E787B3E;
+        Fri, 11 Nov 2022 05:07:49 -0800 (PST)
+Received: from dggpemm500023.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4N7zRm5VQ5zbncR;
+        Fri, 11 Nov 2022 21:04:04 +0800 (CST)
 Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggpemm500021.china.huawei.com (7.185.36.109) with Microsoft SMTP Server
+ dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Fri, 11 Nov 2022 21:07:45 +0800
+ 15.1.2375.31; Fri, 11 Nov 2022 21:07:47 +0800
 Received: from thunder-town.china.huawei.com (10.174.178.55) by
  dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Fri, 11 Nov 2022 21:07:44 +0800
+ 15.1.2375.31; Fri, 11 Nov 2022 21:07:46 +0800
 From:   Zhen Lei <thunder.leizhen@huawei.com>
 To:     "Paul E . McKenney" <paulmck@kernel.org>,
         Frederic Weisbecker <frederic@kernel.org>,
@@ -37,10 +37,12 @@ To:     "Paul E . McKenney" <paulmck@kernel.org>,
         <linux-kernel@vger.kernel.org>
 CC:     Zhen Lei <thunder.leizhen@huawei.com>,
         Robert Elliott <elliott@hpe.com>
-Subject: [PATCH v7 0/6] rcu: Add RCU stall diagnosis information
-Date:   Fri, 11 Nov 2022 21:07:03 +0800
-Message-ID: <20221111130709.247-1-thunder.leizhen@huawei.com>
+Subject: [PATCH v7 3/6] sched: Add helper nr_context_switches_cpu()
+Date:   Fri, 11 Nov 2022 21:07:06 +0800
+Message-ID: <20221111130709.247-4-thunder.leizhen@huawei.com>
 X-Mailer: git-send-email 2.37.3.windows.1
+In-Reply-To: <20221111130709.247-1-thunder.leizhen@huawei.com>
+References: <20221111130709.247-1-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -52,72 +54,43 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-v6 --> v7:
-1. Use kcpustat_field() to obtain the cputime.
-2. Make the output start with "\t" to match other related prints.
-3. Aligns the output of the last line of RCU stall.
+Returns the number of context switches on the specified CPU, which can be
+used to diagnose rcu stall.
 
-v5 --> v6:
-1. When there are more than two continuous RCU stallings, correctly handle the
-   value of the second and subsequent sampling periods. Update comments and
-   document.
-   Thanks to Elliott, Robert for the test.
-2. Change "rcu stall" to "RCU stall".
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+---
+ include/linux/kernel_stat.h | 1 +
+ kernel/sched/core.c         | 5 +++++
+ 2 files changed, 6 insertions(+)
 
-v4 --> v5:
-1. Resolve a git am conflict. No code change.
-
-v3 --> v4:
-1. Rename rcu_cpu_stall_deep_debug to rcu_cpu_stall_cputime.
-
-v2 --> v3:
-1. Fix the return type of kstat_cpu_irqs_sum()
-2. Add Kconfig option CONFIG_RCU_CPU_STALL_DEEP_DEBUG and boot parameter
-   rcupdate.rcu_cpu_stall_deep_debug.
-3. Add comments and normalize local variable name
-
-
-v1 --> v2:
-1. Fixed a bug in the code. If the rcu stall is detected by another CPU,
-   kcpustat_this_cpu cannot be used.
-@@ -451,7 +451,7 @@ static void print_cpu_stat_info(int cpu)
-        if (r->gp_seq != rdp->gp_seq)
-                return;
-
--       cpustat = kcpustat_this_cpu->cpustat;
-+       cpustat = kcpustat_cpu(cpu).cpustat;
-2. Move the start point of statistics from rcu_stall_kick_kthreads() to
-   rcu_implicit_dynticks_qs(), removing the dependency on irq_work.
-
-v1:
-In some extreme cases, such as the I/O pressure test, the CPU usage may
-be 100%, causing RCU stall. In this case, the printed information about
-current is not useful. Displays the number and usage of hard interrupts,
-soft interrupts, and context switches that are generated within half of
-the CPU stall timeout, can help us make a general judgment. In other
-cases, we can preliminarily determine whether an infinite loop occurs
-when local_irq, local_bh or preempt is disabled.
-
-Zhen Lei (6):
-  genirq: Fix the return type of kstat_cpu_irqs_sum()
-  sched: Add helper kstat_cpu_softirqs_sum()
-  sched: Add helper nr_context_switches_cpu()
-  rcu: Add RCU stall diagnosis information
-  doc: Document CONFIG_RCU_CPU_STALL_CPUTIME=y stall information
-  rcu: Align the output of RCU stall
-
- Documentation/RCU/stallwarn.rst               | 88 +++++++++++++++++++
- .../admin-guide/kernel-parameters.txt         |  6 ++
- include/linux/kernel_stat.h                   | 14 ++-
- kernel/rcu/Kconfig.debug                      | 11 +++
- kernel/rcu/rcu.h                              |  1 +
- kernel/rcu/tree.c                             | 18 ++++
- kernel/rcu/tree.h                             | 19 ++++
- kernel/rcu/tree_stall.h                       | 35 +++++++-
- kernel/rcu/update.c                           |  2 +
- kernel/sched/core.c                           |  5 ++
- 10 files changed, 196 insertions(+), 3 deletions(-)
-
+diff --git a/include/linux/kernel_stat.h b/include/linux/kernel_stat.h
+index 898076e173a928a..9935f7ecbfb9e31 100644
+--- a/include/linux/kernel_stat.h
++++ b/include/linux/kernel_stat.h
+@@ -52,6 +52,7 @@ DECLARE_PER_CPU(struct kernel_cpustat, kernel_cpustat);
+ #define kstat_cpu(cpu) per_cpu(kstat, cpu)
+ #define kcpustat_cpu(cpu) per_cpu(kernel_cpustat, cpu)
+ 
++extern unsigned long long nr_context_switches_cpu(int cpu);
+ extern unsigned long long nr_context_switches(void);
+ 
+ extern unsigned int kstat_irqs_cpu(unsigned int irq, int cpu);
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 5800b0623ff3068..a0d19f67f2046d9 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -5229,6 +5229,11 @@ bool single_task_running(void)
+ }
+ EXPORT_SYMBOL(single_task_running);
+ 
++unsigned long long nr_context_switches_cpu(int cpu)
++{
++	return cpu_rq(cpu)->nr_switches;
++}
++
+ unsigned long long nr_context_switches(void)
+ {
+ 	int i;
 -- 
 2.25.1
 
