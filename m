@@ -2,207 +2,231 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 32DC8C4332F
-	for <rcu@archiver.kernel.org>; Sat, 12 Nov 2022 18:59:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F876C433FE
+	for <rcu@archiver.kernel.org>; Sun, 13 Nov 2022 02:35:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234540AbiKLS7u (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 12 Nov 2022 13:59:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51032 "EHLO
+        id S231252AbiKMCfQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 12 Nov 2022 21:35:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230257AbiKLS7t (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 12 Nov 2022 13:59:49 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 196C22706;
-        Sat, 12 Nov 2022 10:59:47 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 80969B80B07;
-        Sat, 12 Nov 2022 18:59:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED841C433D6;
-        Sat, 12 Nov 2022 18:59:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668279585;
-        bh=3MxJWQ4V8Ernje8HFQ2ldHzE+pKK2tRT6hQuwIow7VY=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=eoeD214sWEMuyzQ22hlaKc/9h/7jZSm+t3bzW4HbiUVsfQbTd9pkXappZ1ujsMDxr
-         4sAjchfMa4TYyV9xk6I8m5Pip6H/J+xfLj0v5sx769vxzOkghiKJoHe4XcLKBNdfx8
-         3W9I/POsrHLWP5y1tY86vMbw5vC+EMbviGl+D8xbXk6AgoztcUI2c5AerLbosS7RWo
-         MqJpjv6HS4RPKjMeB9wzIydYfZfA0y/zZpoYO1l6bWgsJeRO1qP4/zumjbBttxUnda
-         Sq8UEnO6id1dTVVOexcvnZbieXReZ3ZmfGJTqr1M+yA0FQ6DBLcZjS4Qvqa9+nCzxs
-         kSbdb97VLHVSw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 0DBDD5C0FC9; Sat, 12 Nov 2022 10:59:41 -0800 (PST)
-Date:   Sat, 12 Nov 2022 10:59:41 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Robert Elliott <elliott@hpe.com>
-Subject: Re: [PATCH v6 0/2] rcu: Add RCU stall diagnosis information
-Message-ID: <20221112185941.GG725751@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20221109093739.187-1-thunder.leizhen@huawei.com>
- <20221109152621.GB298683@lothringen>
- <20221109155901.GA727034@paulmck-ThinkPad-P17-Gen-1>
- <20221109170317.GA300561@lothringen>
- <20221109172221.GD725751@paulmck-ThinkPad-P17-Gen-1>
- <a48a3eb1-5fa4-4b6b-f7bf-e0bc589f7bf6@huawei.com>
+        with ESMTP id S230170AbiKMCfP (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 12 Nov 2022 21:35:15 -0500
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB8A1FD02;
+        Sat, 12 Nov 2022 18:35:14 -0800 (PST)
+Received: by mail-pg1-x52a.google.com with SMTP id 136so7476454pga.1;
+        Sat, 12 Nov 2022 18:35:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=5CsSwyo4jN4ThWQ8+juXA0dRTOlHjW4IoApBU1fpU1k=;
+        b=qS+J+eeZUgXl6JfEMJ9bs3p/nlCFU2pSL08jttp3R9fh8UUVgLuz4hJztqe3WHYrDB
+         S/j5MNjdR8z5fyct9i0j7EMhII0SKn1AnuGxtSRHdEVi7B6Y2daSEEBNqku2BRkH+ES+
+         /Fgr/qfo0k6MYB/fV/ALfn87em44xKlOaXBinDSPoS/qk/tQiU4JHR+CgHljTyQ3NpW6
+         qPLOPPs9IImllpn2hQvGpHrDsKSi9E0cM0cmwu9iZLt2rvcQjX0C3OtEEeJFyawvwCSh
+         syNvZy7QsgFjtmsRCpf8k3zKVHJQQyRxjmVO0wT3iL7LF8c82zk3DL2YbouRNsExQjEu
+         IQhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5CsSwyo4jN4ThWQ8+juXA0dRTOlHjW4IoApBU1fpU1k=;
+        b=lnz37uDDpGeBe6OGFdhr3oUcA1QRvrePfHTpqWnzvmsEVorkufgBcKt2ajFD8NLbOr
+         Ztq9+/bpPyPmjAfVwa9wd0eRt0KtGS4Z4kdF7UCmsERqn11W6EI9+QjpkxKfxRitYsu1
+         DYjRSbXbOzo4E30bohH9WhlxEtz+z3ZoTXlpqLQ+k8cMPNWWafDDy/MZPtqxYkphyr5E
+         XSl8KtNKirus3ABv7NygUedMbC9/lJHaAcHl1eblyPBBx0nYN1P5I9SoPgSQZM7gNlo3
+         F77CHIdOpNSbrBMj60P6eFHBeak/d3/AoYMOLasWAeZLJj9WKOHsQHNw+RjcMsReyp2U
+         moPQ==
+X-Gm-Message-State: ANoB5pkt0UmiRO5qj1qu9lDI0TRkRPfvJkfm7eHvPiL+wz2qEbz4msnN
+        EcN6SktpPWazFZFyX2qI3ORkmhQggjOvYCEPW3M=
+X-Google-Smtp-Source: AA0mqf5xYB1jNVvvsmtjIP5m13hMa3pcOYArwr+4mt3KWllQOGUbxkiiRAclcwpNWONCavbjD87bPm5lFrWD17kLYBI=
+X-Received: by 2002:a63:5307:0:b0:45b:f8be:7402 with SMTP id
+ h7-20020a635307000000b0045bf8be7402mr6958674pgb.484.1668306914167; Sat, 12
+ Nov 2022 18:35:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a48a3eb1-5fa4-4b6b-f7bf-e0bc589f7bf6@huawei.com>
+References: <20221010023315.98396-1-zhouzhouyi@gmail.com> <87bkqjorez.fsf@mpe.ellerman.id.au>
+ <CAABZP2wFY19MTsDm1SH86Ms_zRRgC77oceMkJKPqawxyExJjqQ@mail.gmail.com>
+In-Reply-To: <CAABZP2wFY19MTsDm1SH86Ms_zRRgC77oceMkJKPqawxyExJjqQ@mail.gmail.com>
+From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
+Date:   Sun, 13 Nov 2022 10:35:02 +0800
+Message-ID: <CAABZP2x9OBDBqPKLoCMDKZiLZYO16beCzS0VUVEjcXU-VU3REw@mail.gmail.com>
+Subject: Re: [PATCH linux-next][RFC] powerpc: fix HOTPLUG error in rcutorture
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     npiggin@gmail.com, christophe.leroy@csgroup.eu,
+        atrajeev@linux.vnet.ibm.com, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, lance@osuosl.org, paulmck@kernel.org,
+        rcu@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Nov 10, 2022 at 10:27:44AM +0800, Leizhen (ThunderTown) wrote:
-> On 2022/11/10 1:22, Paul E. McKenney wrote:
-> > On Wed, Nov 09, 2022 at 06:03:17PM +0100, Frederic Weisbecker wrote:
-> >> On Wed, Nov 09, 2022 at 07:59:01AM -0800, Paul E. McKenney wrote:
-> >>> On Wed, Nov 09, 2022 at 04:26:21PM +0100, Frederic Weisbecker wrote:
-> >>>> Hi Zhen Lei,
-> >>>>
-> >>>> On Wed, Nov 09, 2022 at 05:37:36PM +0800, Zhen Lei wrote:
-> >>>>> v5 --> v6:
-> >>>>> 1. When there are more than two continuous RCU stallings, correctly handle the
-> >>>>>    value of the second and subsequent sampling periods. Update comments and
-> >>>>>    document.
-> >>>>>    Thanks to Elliott, Robert for the test.
-> >>>>> 2. Change "rcu stall" to "RCU stall".
-> >>>>>
-> >>>>> v4 --> v5:
-> >>>>> 1. Resolve a git am conflict. No code change.
-> >>>>>
-> >>>>> v3 --> v4:
-> >>>>> 1. Rename rcu_cpu_stall_deep_debug to rcu_cpu_stall_cputime.
-> >>>>>
-> >>>>> v2 --> v3:
-> >>>>> 1. Fix the return type of kstat_cpu_irqs_sum()
-> >>>>> 2. Add Kconfig option CONFIG_RCU_CPU_STALL_DEEP_DEBUG and boot parameter
-> >>>>>    rcupdate.rcu_cpu_stall_deep_debug.
-> >>>>> 3. Add comments and normalize local variable name
-> >>>>>
-> >>>>>
-> >>>>> v1 --> v2:
-> >>>>> 1. Fixed a bug in the code. If the rcu stall is detected by another CPU,
-> >>>>>    kcpustat_this_cpu cannot be used.
-> >>>>> @@ -451,7 +451,7 @@ static void print_cpu_stat_info(int cpu)
-> >>>>>         if (r->gp_seq != rdp->gp_seq)
-> >>>>>                 return;
-> >>>>>
-> >>>>> -       cpustat = kcpustat_this_cpu->cpustat;
-> >>>>> +       cpustat = kcpustat_cpu(cpu).cpustat;
-> >>>>> 2. Move the start point of statistics from rcu_stall_kick_kthreads() to
-> >>>>>    rcu_implicit_dynticks_qs(), removing the dependency on irq_work.
-> >>>>>
-> >>>>> v1:
-> >>>>> In some extreme cases, such as the I/O pressure test, the CPU usage may
-> >>>>> be 100%, causing RCU stall. In this case, the printed information about
-> >>>>> current is not useful. Displays the number and usage of hard interrupts,
-> >>>>> soft interrupts, and context switches that are generated within half of
-> >>>>> the CPU stall timeout, can help us make a general judgment. In other
-> >>>>> cases, we can preliminarily determine whether an infinite loop occurs
-> >>>>> when local_irq, local_bh or preempt is disabled.
-> >>>>
-> >>>> That looks useful but I have to ask: what does it bring that the softlockup
-> >>>> and hardlockup watchdog can not already solve?
-> >>>
-> >>> This is a good point.  One possible benefit is putting the needed information
-> >>> in one spot, for example, in cases where the soft/hard lockup timeouts are
-> >>> significantly different than the RCU CPU stall warning timeout.
-> >>
-> >> Arguably, the hardlockup/softlockup detectors usually trigger after RCU stall,
-> >> unless all CPUs are caught into a hardlockup, in which case only the hardlockup
-> >> detector has a chance.
-> >>
-> >> Anyway I would say that in this case just lower the delay for the lockup
-> >> detectors to consider the situation is a lockup?
-> > 
-> > Try it both ways and see how it works?  The rcutorture module parameters
-> > stall_cpu and stall_cpu_irqsoff are easy ways to generate these sorts
-> > of scenarios.
-> > 
-> > Actually, that does remind me of something.  Back when I was chasing
-> > that interrupt storm, would this patch have helped me?  In that case, the
-> 
-> Yes, this patch series originally addressed an RCU stall issue caused by an
-> interruption storm. The serial port driver written by another project team
-> failed to write the register in a specific condition. As a result, interrupts
-> were repeatedly reported.
+Hi,
+I also reappear the same phenomenon in RISC-V:
+[  120.156380] scftorture: --- End of test: LOCK_HOTPLUG
 
-Very good!
+So I guess it is not the arch's responsibility.
+I am very interested in it ;-)
 
-> > half-way point would have been reached while all online CPUs were spinning
-> > with interrupts disabled and the incoming CPU was getting hammered with
-> > continual scheduling-clock interrupts.  So I suspect that the answer is
-> > "no" because the incoming CPU was not blocking the grace period.
-> > 
-> > Instead of being snapshot halfway to the RCU CPU stall warning, should
-> > the values be snapshot when the CPU notices the beginning or end of an
-> > RCU grace period and when a CPU goes offline?
-> 
-> This won't work. Those normal counts that occurred before the failure
-> have an impact on our analysis. For example, some software interrupts
-> may have been generated before local_bh_disable() is called.
+Thank you both for your guidance!
+Cheers
+Zhouyi
 
-Fair enough, and thank you for considering this option.  But please be
-prepared to adjust (somehow or another) as needed to accommodate other
-failure scenarios as they arise.
-
-							Thanx, Paul
-
-> > But that would not suffice, because detailed information would not have
-> > been dumped for the incoming CPU.
-> > 
-> > However, the lack of context switches and interrupts on the rest of the
-> > CPUs would likely have been a big cluebat, so there is that.  It might
-> > be better to rework the warning at the beginning of rcu_sched_clock_irq()
-> > to complain if more than (say) 10 scheduling-clock interrupts occur on
-> > a given CPU during a single jiffy.
-> > 
-> > Independent of Zhen Lei patch.
-> > 
-> > Thoughts?
-> > 
-> > 							Thanx, Paul
-> > 
-> >> Thanks.
-> >>
-> >>
-> >>>
-> >>> Thoughts?
-> >>>
-> >>> 							Thanx, Paul
-> >>>
-> >>>> Thanks.
-> >>>>
-> >>>>>
-> >>>>> Zhen Lei (2):
-> >>>>>   rcu: Add RCU stall diagnosis information
-> >>>>>   doc: Document CONFIG_RCU_CPU_STALL_CPUTIME=y stall information
-> >>>>>
-> >>>>>  Documentation/RCU/stallwarn.rst               | 88 +++++++++++++++++++
-> >>>>>  .../admin-guide/kernel-parameters.txt         |  6 ++
-> >>>>>  kernel/rcu/Kconfig.debug                      | 11 +++
-> >>>>>  kernel/rcu/rcu.h                              |  1 +
-> >>>>>  kernel/rcu/tree.c                             | 17 ++++
-> >>>>>  kernel/rcu/tree.h                             | 19 ++++
-> >>>>>  kernel/rcu/tree_stall.h                       | 29 ++++++
-> >>>>>  kernel/rcu/update.c                           |  2 +
-> >>>>>  8 files changed, 173 insertions(+)
-> >>>>>
-> >>>>> -- 
-> >>>>> 2.25.1
-> >>>>>
-> > .
-> > 
-> 
-> -- 
-> Regards,
->   Zhen Lei
+On Tue, Oct 11, 2022 at 9:59 AM Zhouyi Zhou <zhouzhouyi@gmail.com> wrote:
+>
+> Thanks Michael for reviewing my patch
+>
+> On Mon, Oct 10, 2022 at 7:21 PM Michael Ellerman <mpe@ellerman.id.au> wrote:
+> >
+> > Zhouyi Zhou <zhouzhouyi@gmail.com> writes:
+> > > I think we should avoid torture offline the cpu who do tick timer
+> > > when nohz full is running.
+> >
+> > Can you tell us what the bug you're fixing is?
+> >
+> > Did you see a crash/oops/hang etc? Or are you just proposing this as
+> > something that would be a good idea?
+> Sorry for the trouble and inconvenience that I bring to the community.
+> I haven't made myself clear in my patch.
+> The ins and outs are as follows:
+> 1) cd linux-next
+> 2) ./tools/testing/selftests/rcutorture/bin/torture.sh
+> after 19 hours ;-)
+> 3) tail  ./tools/testing/selftests/rcutorture/res/2022.09.30-01.06.22-torture/results-scftorture/NOPREEMPT/console.log
+>
+> [  121.449268][   T57] scftorture:  scf_invoked_count VER: 2415215
+> resched: 697463 single: 619512/619760 single_ofl: 255751/256554
+> single_rpc: 620692 single_rpc_ofl: 0 many: 155476/154658 all:
+> 77282/76988 onoff: 3/3:5/6 18,25:9,28 63:93 (HZ=100) ste: 0 stnmie: 0
+> stnmoe: 0 staf: 0
+> [  121.454485][   T57] scftorture: --- End of test: LOCK_HOTPLUG:
+> verbose=1 holdoff=10 longwait=0 nthreads=4 onoff_holdoff=30
+> onoff_interval=1000 shutdown_secs=1 stat_interval=15 stutter=5
+> use_cpus_read_lock=0, weight_resched=-1, weight_single=-1,
+> weight_single_rpc=-1, weight_single_wait=-1, weight_many=-1,
+> weight_many_wait=-1, weight_all=-1, weight_all_wait=-1
+> [  121.469305][   T57] reboot: Power down
+>
+> I see "End of test: LOCK_HOTPLUG", which means the function
+> torture_offline in kernel torture.c failed to bring down the cpu.
+> 4) Then I chase the reason down to tick_nohz_cpu_down:
+> if (tick_nohz_full_running && tick_do_timer_cpu == cpu)
+>       return -EBUSY;
+> 5) I create above patch
+> >
+> > > Tested on PPC VM of Open Source Lab of Oregon State University.
+> > > The test results show that after the fix, the success rate of
+> > > rcutorture is improved.
+> > > After:
+> > > Successes: 40 Failures: 9
+> > > Before:
+> > > Successes: 38 Failures: 11
+> > >
+> > > I examined the console.log and Make.out files one by one, no new
+> > > compile error or test error is introduced by above fix.
+> > >
+> > > Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+> > > ---
+> > > Dear PPC developers
+> > >
+> > > I found this bug when trying to do rcutorture tests in ppc VM of
+> > > Open Source Lab of Oregon State University:
+> > >
+> > > ubuntu@ubuntu:~/linux-next/tools/testing/selftests/rcutorture/res/2022.09.30-01.06.22-torture$ find . -name "console.log.diags"|xargs grep HOTPLUG
+> > > ./results-scftorture/NOPREEMPT/console.log.diags:WARNING: HOTPLUG FAILURES NOPREEMPT
+> > > ./results-rcutorture/TASKS03/console.log.diags:WARNING: HOTPLUG FAILURES TASKS03
+> > > ./results-rcutorture/TREE04/console.log.diags:WARNING: HOTPLUG FAILURES TREE04
+> > > ./results-scftorture-kasan/NOPREEMPT/console.log.diags:WARNING: HOTPLUG FAILURES NOPREEMPT
+> > > ./results-rcutorture-kasan/TASKS03/console.log.diags:WARNING: HOTPLUG FAILURES TASKS03
+> > > ./results-rcutorture-kasan/TREE04/console.log.diags:WARNING: HOTPLUG FAILURES TREE04
+> > >
+> > > I tried to fix this bug.
+> > >
+> > > Thanks for your patience and guidance ;-)
+> > >
+> > > Thanks
+> > > Zhouyi
+> > > --
+> > >  arch/powerpc/kernel/sysfs.c | 8 +++++++-
+> > >  1 file changed, 7 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/arch/powerpc/kernel/sysfs.c b/arch/powerpc/kernel/sysfs.c
+> > > index ef9a61718940..be9c0e45337e 100644
+> > > --- a/arch/powerpc/kernel/sysfs.c
+> > > +++ b/arch/powerpc/kernel/sysfs.c
+> > > @@ -4,6 +4,7 @@
+> > >  #include <linux/smp.h>
+> > >  #include <linux/percpu.h>
+> > >  #include <linux/init.h>
+> > > +#include <linux/tick.h>
+> > >  #include <linux/sched.h>
+> > >  #include <linux/export.h>
+> > >  #include <linux/nodemask.h>
+> > > @@ -21,6 +22,7 @@
+> > >  #include <asm/firmware.h>
+> > >  #include <asm/idle.h>
+> > >  #include <asm/svm.h>
+> > > +#include "../../../kernel/time/tick-internal.h"
+> >
+> > Needing to include this internal header is a sign that we are using the
+> > wrong API or otherwise using time keeping internals we shouldn't be.
+> Yes, when I do this, I guess there is something wrong in my patch.
+> >
+> > >  #include "cacheinfo.h"
+> > >  #include "setup.h"
+> > > @@ -1151,7 +1153,11 @@ static int __init topology_init(void)
+> > >                * CPU.  For instance, the boot cpu might never be valid
+> > >                * for hotplugging.
+> > >                */
+> > > -             if (smp_ops && smp_ops->cpu_offline_self)
+> > > +             if (smp_ops && smp_ops->cpu_offline_self
+> > > +#ifdef CONFIG_NO_HZ_FULL
+> > > +                 && !(tick_nohz_full_running && tick_do_timer_cpu == cpu)
+> > > +#endif
+> > > +                 )
+> >
+> > I can't see any other arches doing anything like this. I don't think
+> > it's the arches responsibility.
+> Agree!
+>
+> X86 seems to disable CPU0's hotplug by default, while
+> tick_do_timer_cpu has a default value 0.
+>
+> 42 #ifdef CONFIG_BOOTPARAM_HOTPLUG_CPU0
+> 43 static int cpu0_hotpluggable = 1;
+> 44 #else
+> 45 static int cpu0_hotpluggable;
+> 46 static int __init enable_cpu0_hotplug(char *str)
+> 47 {
+> 48         cpu0_hotpluggable = 1;
+> 49         return 1;
+> 50 }
+> 51
+> 52 __setup("cpu0_hotplug", enable_cpu0_hotplug);
+> 53 #endif
+>
+> I need more time to make clear the relationship of X86's
+> cpu0_hotpluggable and tick_do_timer_cpu, but
+> I also intend to think it's time keeping the mechanism's responsibility.
+>
+>
+> >
+> > If the time keeping core needs a CPU to stay online to run the timer
+> > then it needs to organise that itself IMHO :)
+>
+> Um, I am going to submit a patch to time keeping community sometime
+> next month ;-)
+>
+> Thanks again
+> Cheers
+> Zhouyi
+> >
+> > cheers
+> >
+> > >                       c->hotpluggable = 1;
+> > >  #endif
+> > >
+> > > --
+> > > 2.25.1
