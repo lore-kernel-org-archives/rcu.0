@@ -2,171 +2,93 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EA311C4332F
-	for <rcu@archiver.kernel.org>; Mon, 14 Nov 2022 16:18:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 43837C4332F
+	for <rcu@archiver.kernel.org>; Mon, 14 Nov 2022 16:34:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237034AbiKNQSY (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 14 Nov 2022 11:18:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53180 "EHLO
+        id S237749AbiKNQeB (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 14 Nov 2022 11:34:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237418AbiKNQRv (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 14 Nov 2022 11:17:51 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 864622EF20;
-        Mon, 14 Nov 2022 08:17:36 -0800 (PST)
+        with ESMTP id S237753AbiKNQdp (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 14 Nov 2022 11:33:45 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7351331230;
+        Mon, 14 Nov 2022 08:30:16 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 424B5B8105F;
-        Mon, 14 Nov 2022 16:17:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE488C433C1;
-        Mon, 14 Nov 2022 16:17:33 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 6B161B8104F;
+        Mon, 14 Nov 2022 16:30:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B60DC433C1;
+        Mon, 14 Nov 2022 16:30:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668442654;
-        bh=8ch4EQw2RQcU4v2aPE4PxOMAb0sV9YuUbfQfBTcLzdA=;
+        s=k20201202; t=1668443410;
+        bh=i3fM5D45EHtL70h2VJLiq8sI4O+TUzWx3M5h1tIWM9g=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=X6dM0QmwVhUDqqtHsdmJzjwBfCCuaeP7IPhCI+KeTrJ14KKT4czxeBfE0/UhjWkF6
-         +ST/X6dgtwU7bcYGpV1+Kgpx2oAbHNCmogEFLEJOMY0fHPsfymh8MsI+GssBRZsJNK
-         095zixMYR7YOn+mA10EtOnzMchOY9DUM3Kekrf6OCHX69l+qKpg9lb0tMRLydrF0FZ
-         BRi2VHP1u+AgaL9hURB1Gx4SqU1NTHJeNgzwNbujNacDLXFtEwunayt8Ktd7Oc/0qs
-         EQoQvzSOHKOKi9tKF2KTHqgkPiQyekOrxVnd2plXLpbfzu33UqP9L1LhqE8KIh6xiA
-         /jwdUMS+CkhSQ==
+        b=XPZr1PmapyZe0sVbruVI4r4CRgFK6lmvv0GjXf9DywfwyH8eKbIXC1exNdeIK+/R/
+         xr/wjGH+llrwx23Kwlyi1Zmzt/gMSuCPVfpgtjuBuXwNsGD0ON7D13Knd+Yfhhwdm+
+         pHVw5Z00Pnx3Sw2pRynr4doEbE4crJau8Kb7llQ2rbDeMMPX8iJwecf8JimlNTaCKA
+         8vZKvFAFH+2aIhL9GWC5ERWRzTet8sgT6e0XfaCQ/616JNhuG1n4H8dODVXwox9I+h
+         Vp5ZEmXuvqd1Ok7EU0ZxbyuNsL9cILPjscoj0Rw6n1M8fMkVGfRYZg+hsKxFeNNFAP
+         qyxzPAG8A5ewg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 93B635C0F9C; Mon, 14 Nov 2022 08:17:33 -0800 (PST)
-Date:   Mon, 14 Nov 2022 08:17:33 -0800
+        id B83D85C0F9C; Mon, 14 Nov 2022 08:30:09 -0800 (PST)
+Date:   Mon, 14 Nov 2022 08:30:09 -0800
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
+To:     Sven Schnelle <svens@linux.ibm.com>
+Cc:     Davidlohr Bueso <dave@stgolabs.net>,
+        Josh Triplett <josh@joshtriplett.org>,
         linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [PATCH v2] rcu/kfree: Do not request RCU when not needed
-Message-ID: <20221114161733.GD4001@paulmck-ThinkPad-P17-Gen-1>
+Subject: Re: [PATCH 1/2] torture: use for_each_present() loop in
+ torture_online_all()
+Message-ID: <20221114163009.GE4001@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20221109024758.2644936-1-joel@joelfernandes.org>
- <Y2z3Mb3u8bFZ12wY@pc636>
- <CAEXW_YSq89xzgyQ9Tdt1tCqz8VAfzb7kSXVZmnxDuJ65U0UZ3w@mail.gmail.com>
- <Y20EOinwcLSZHmXg@pc638.lan>
- <Y22ry4Q2OY2zovco@google.com>
- <Y3Iyka86FlUh9D1P@pc636>
+References: <20221111125126.3319474-1-svens@linux.ibm.com>
+ <20221111125126.3319474-2-svens@linux.ibm.com>
+ <20221111185331.GA725751@paulmck-ThinkPad-P17-Gen-1>
+ <yt9dtu31k0r9.fsf@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Y3Iyka86FlUh9D1P@pc636>
+In-Reply-To: <yt9dtu31k0r9.fsf@linux.ibm.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Nov 14, 2022 at 01:20:33PM +0100, Uladzislau Rezki wrote:
-> > On Thu, Nov 10, 2022 at 03:01:30PM +0100, Uladzislau Rezki wrote:
-> > > > Hi,
-> > > > 
-> > > > On Thu, Nov 10, 2022 at 8:05 AM Uladzislau Rezki <urezki@gmail.com> wrote:
-> > > > 
-> > > > > > On ChromeOS, using this with the increased timeout, we see that we
-> > > > > almost always
-> > > > > > never need to initiate a new grace period. Testing also shows this frees
-> > > > > large
-> > > > > > amounts of unreclaimed memory, under intense kfree_rcu() pressure.
-> > > > > >
-> > > > > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > > > > > ---
-> > > > > > v1->v2: Same logic but use polled grace periods instead of sampling
-> > > > > gp_seq.
-> > > > > >
-> > > > > >  kernel/rcu/tree.c | 8 +++++++-
-> > > > > >  1 file changed, 7 insertions(+), 1 deletion(-)
-> > > > > >
-> > > > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > > > > index 591187b6352e..ed41243f7a49 100644
-> > > > > > --- a/kernel/rcu/tree.c
-> > > > > > +++ b/kernel/rcu/tree.c
-> > > > > > @@ -2935,6 +2935,7 @@ struct kfree_rcu_cpu_work {
-> > > > > >
-> > > > > >  /**
-> > > > > >   * struct kfree_rcu_cpu - batch up kfree_rcu() requests for RCU grace
-> > > > > period
-> > > > > > + * @gp_snap: The GP snapshot recorded at the last scheduling of monitor
-> > > > > work.
-> > > > > >   * @head: List of kfree_rcu() objects not yet waiting for a grace period
-> > > > > >   * @bkvhead: Bulk-List of kvfree_rcu() objects not yet waiting for a
-> > > > > grace period
-> > > > > >   * @krw_arr: Array of batches of kfree_rcu() objects waiting for a
-> > > > > grace period
-> > > > > > @@ -2964,6 +2965,7 @@ struct kfree_rcu_cpu {
-> > > > > >       struct kfree_rcu_cpu_work krw_arr[KFREE_N_BATCHES];
-> > > > > >       raw_spinlock_t lock;
-> > > > > >       struct delayed_work monitor_work;
-> > > > > > +     unsigned long gp_snap;
-> > > > > >       bool initialized;
-> > > > > >       int count;
-> > > > > >
-> > > > > > @@ -3167,6 +3169,7 @@ schedule_delayed_monitor_work(struct kfree_rcu_cpu
-> > > > > *krcp)
-> > > > > >                       mod_delayed_work(system_wq, &krcp->monitor_work,
-> > > > > delay);
-> > > > > >               return;
-> > > > > >       }
-> > > > > > +     krcp->gp_snap = get_state_synchronize_rcu();
-> > > > > >       queue_delayed_work(system_wq, &krcp->monitor_work, delay);
-> > > > > >  }
-> > > > > >
-> > > > > How do you guarantee a full grace period for objects which proceed
-> > > > > to be placed into an input stream that is not yet detached?
-> > > > 
-> > > > 
-> > > > Just replying from phone as I’m OOO today.
-> > > > 
-> > > > Hmm, so you’re saying that objects can be queued after the delayed work has
-> > > > been queued, but processed when the delayed work is run? I’m looking at
-> > > > this code after few years so I may have missed something.
-> > > > 
-> > > > That’s a good point and I think I missed that. I think your version did too
-> > > > but I’ll have to double check.
-> > > > 
-> > > > The fix then is to sample the clock for the latest object queued, not for
-> > > > when the delayed work is queued.
-> > > > 
-> > > The patch i sent gurantee it. Just in case see v2:
-> > 
-> > You are right and thank you! CBs can be queued while the monitor timer is in
-> > progress. So we need to sample unconditionally. I think my approach is still
-> > better since I take advantage of multiple seconds (I update snapshot on every
-> > CB queue monitor and sample in the monitor handler).
-> > 
-> > Whereas your patch is snapshotting before queuing the regular work and when
-> > the work is executed (This is a much shorter duration and I bet you would be
-> > blocking in cond_synchronize..() more often).
-> > 
-> There is a performance test that measures a taken time and memory
-> footprint, so you can do a quick comparison. A "rcutorture" can be
-> run with various parameters to figure out if a patch that is in question
-> makes any difference.
+On Mon, Nov 14, 2022 at 04:35:06PM +0100, Sven Schnelle wrote:
+> "Paul E. McKenney" <paulmck@kernel.org> writes:
 > 
-> Usually i run it as:
+> > On Fri, Nov 11, 2022 at 01:51:24PM +0100, Sven Schnelle wrote:
+> >> A CPU listed in the possible mask doesn't have to be present, in
+> >> which case it would crash the kernel in torture_online_all().
+> >> To prevent this use a for_each_present() loop.
+> >> 
+> >> Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
+> >
+> > Looks good to me!  Any reason for no mailing list on CC?
 > 
-> <snip>
-> #! /usr/bin/env bash
-> 
-> LOOPS=10
-> 
-> for (( i=0; i<$LOOPS; i++ )); do
->         tools/testing/selftests/rcutorture/bin/kvm.sh --memory 10G --torture rcuscale --allcpus --duration 1 \
->         --kconfig CONFIG_NR_CPUS=64 \
->         --kconfig CONFIG_RCU_NOCB_CPU=y \
->         --kconfig CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y \
->         --kconfig CONFIG_RCU_LAZY=n \
->         --bootargs "rcuscale.kfree_rcu_test=1 rcuscale.kfree_nthreads=16 rcuscale.holdoff=20 rcuscale.kfree_loops=10000 torture.disable_onoff_at_boot" --trust-make
->         echo "Done $i"
-> done
-> <snip>
-> 
-> just run it from your linux sandbox.
+> No, my fault. I setup get_maintainer.pl to be called from git
+> send-email, but looks like i did it wrong :-)
 
-Would it make sense to modify the "if test "$do_kvfree" = "yes" code
-in tools/testing/selftests/rcutorture/bin/torture.sh to do something
-like this instead of what it currently does?
+Been there, done that!  ;-)
 
-Though if so, it would be much faster to use kvm.sh's --buildonly flag
-to build the kernel, then kvm-again.sh to rerun that kernel.
+> > Ah, and any synchronization required in case it is possible for a CPU
+> > to leave the cpu_present_mask?  Or can they only be added?
+> 
+> Hmm... I think the main question is, whether it is ok for a cpu to be
+> removed from the system when rcutorture is running? In both cases it
+> would disappear from the cpu online mask, so i don't think the patch
+> would change the behaviour. But i can check and send additional patches
+> if there are other places that needs adjustment.
 
-						Thanx, Paul
+Yes, rcutorture has lower-level checks for CPUs being hotplugged
+behind its back.  Which might be sufficient.  But this patch is in
+response to something bad happening if the CPU is also not present in
+the cpu_present_mask.  Would that same bad thing happen if rcutorture saw
+the CPU in cpu_online_mask, but by the time it attempted to CPU-hotplug
+it, that CPU was gone not just from cpu_online_mask, but also from
+cpu_present_mask?
+
+Or are CPUs never removed from cpu_present_mask?
+
+							Thanx, Paul
