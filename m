@@ -2,202 +2,212 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 39975C4332F
-	for <rcu@archiver.kernel.org>; Mon, 14 Nov 2022 17:57:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 97165C4332F
+	for <rcu@archiver.kernel.org>; Mon, 14 Nov 2022 18:22:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237492AbiKNR5E (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 14 Nov 2022 12:57:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53850 "EHLO
+        id S236756AbiKNSWy (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 14 Nov 2022 13:22:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237875AbiKNR4p (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 14 Nov 2022 12:56:45 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D539525C6F
-        for <rcu@vger.kernel.org>; Mon, 14 Nov 2022 09:56:43 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 9371DB810E5
-        for <rcu@vger.kernel.org>; Mon, 14 Nov 2022 17:56:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3DB42C433D6;
-        Mon, 14 Nov 2022 17:56:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668448601;
-        bh=IJBaCIrGbK/yeBnIbTSTZm0b7i3nLNg0/FMpDq2pJjU=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=psTzkhYRFSidZI9wLb2DSD7xI1XzUnzEM19q0AQIklIPOt1iMSk7MAyVc2Utj321B
-         jXLDbr4fxmTIhutYjgjf+bWc7E/0hAQcEYwwcukOTSSuVtK2VLcPiCkkG1dThioMS9
-         SkDMZRFYWZRK9Hjhxa59S2t8eMwP3ZyoIYa+r0VNTUKDvZmLZhooqjzssBvN3KZFpb
-         S7vUx7WsAdz044Wq9HSOVy314GMHdMp5ivIM4Bko/fOroiN66eb/zvyMwdDME4RjN2
-         hKlahjRhIPfdGrUNw7BjGd9dJDfrbz3dtWJNmW2VbPQwTB0MFgZQZn4c8mG60zDtmN
-         n0zlw9KXAF/3w==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id DC37D5C0F9C; Mon, 14 Nov 2022 09:56:40 -0800 (PST)
-Date:   Mon, 14 Nov 2022 09:56:40 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Pingfan Liu <kernelfans@gmail.com>
-Cc:     rcu@vger.kernel.org, Lai Jiangshan <jiangshanlai@gmail.com>,
+        with ESMTP id S236723AbiKNSWw (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 14 Nov 2022 13:22:52 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EF4F1F626;
+        Mon, 14 Nov 2022 10:22:48 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id s5so2338841edc.12;
+        Mon, 14 Nov 2022 10:22:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=aDXxKHLRFv/x+7OmfIE6j1OewWDmroQlwdA1n+DR15E=;
+        b=Iwf/EpGF9e3LON/9bPkgkoP4a09wFYSD9Mvl1Ae2bduouD20bTp8BNiziDl6T5uHth
+         tfUg6I5gFVnswDS6IGOdReiSZvhcIyLX+/ls/d0okJP+J9C7tZ3calFUgBDRG5ewBg/j
+         eF3bqzLNLaFJ4YR8z9ddQkJJD52JTaqAXtVaUxzTrx3g291NV7CrmkDBocCceYCB+46U
+         1aEhy2dzJk2LHi2GPbO0NsbZvUncPpm4r/N8VCWHrXmt0targU2+d39dKmkhh88WtcRw
+         rjmNRQWgD6waMgRTMKqKHdHU6+NGwGMdMHtNkHillKAlN6TDUyibUYnZP8E+2ke2HPjK
+         XhmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aDXxKHLRFv/x+7OmfIE6j1OewWDmroQlwdA1n+DR15E=;
+        b=eXsj742v5o72EPKs4k3qCUMKfTwyZtej3p44zDDo6PckERMi5MbcL9E7LVGpipgV2n
+         oKcHfwjGGGAJrQTI/tRzNsVltcCpp7N20dFQWR50zL29I5N1xIY8VO0f91m+2/JH7QcQ
+         Sc8ZwFVRRGp3psWtyaWjLXiC12Og0egS9ZyDO/l1BlOwX0mxKf7DZTxyrFK+Xj0Wui8X
+         zuXBP6Zs36SVq1jwDS/mQaQMJfGeXlMTt52lrCs2pLRm4nXdj9cEbsyLaK5CpsX3tDKh
+         g5qxUtgJocbKYgbsu1ctlM1YTe+127cbdHnuJXfEGBxBabgFhegWdOrr2yqxKHAtrei2
+         9plA==
+X-Gm-Message-State: ANoB5pmHXr0aLnf0b85nK1u1BiPSRr8LcuXP5rAHTF3Sp3H9r7sNLbcC
+        qRsxnmaoYW0kdAcr3NCaALg=
+X-Google-Smtp-Source: AA0mqf6agzknSq9KfT81rxs/0Jtp+LQ9+rWmLK+bBpPUCaQR52uNQT5+Q8C1PTxdmh8AhIzVFIP7Vw==
+X-Received: by 2002:aa7:c6d0:0:b0:461:ee90:3d77 with SMTP id b16-20020aa7c6d0000000b00461ee903d77mr11940466eds.322.1668450166445;
+        Mon, 14 Nov 2022 10:22:46 -0800 (PST)
+Received: from pc638.lan ([155.137.26.201])
+        by smtp.gmail.com with ESMTPSA id em3-20020a056402364300b00458b41d9460sm5100416edb.92.2022.11.14.10.22.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Nov 2022 10:22:46 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Mon, 14 Nov 2022 19:22:44 +0100
+To:     "Paul E. McKenney" <paulmck@kernel.org>, Zhang@pc638.lan,
+        Qiang1 <qiang1.zhang@intel.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     "Zhang, Qiang1" <qiang1.zhang@intel.com>,
+        "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: Re: [PATCHv2] srcu: Delegate work to the boot cpu if using
- SRCU_SIZE_SMALL
-Message-ID: <20221114175640.GA410504@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20221028181305.GQ5600@paulmck-ThinkPad-P17-Gen-1>
- <20221031015237.10294-1-kernelfans@gmail.com>
- <CAFgQCTvmHUSaKeb18XaoN8L2_UsqrrxMdzBOiA7yVSs0BWXrXQ@mail.gmail.com>
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] rcu: Dump memory object info if callback function is
+ invalid
+Message-ID: <Y3KHdBjAIR3FNKpS@pc638.lan>
+References: <20221111102822.224-1-thunder.leizhen@huawei.com>
+ <PH0PR11MB5880E3A11437CD0402941F4DDA009@PH0PR11MB5880.namprd11.prod.outlook.com>
+ <ed264f0e-bc13-5662-1a71-1458952ffd71@huawei.com>
+ <PH0PR11MB5880FEAD72BAE59185256195DA009@PH0PR11MB5880.namprd11.prod.outlook.com>
+ <20221111184238.GX725751@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAFgQCTvmHUSaKeb18XaoN8L2_UsqrrxMdzBOiA7yVSs0BWXrXQ@mail.gmail.com>
+In-Reply-To: <20221111184238.GX725751@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Nov 08, 2022 at 09:22:52PM +0800, Pingfan Liu wrote:
-> Gently ping. :)
+> On Fri, Nov 11, 2022 at 01:05:56PM +0000, Zhang, Qiang1 wrote:
+> > On 2022/11/11 19:54, Zhang, Qiang1 wrote:
+> > >> When a structure containing an RCU callback rhp is (incorrectly) 
+> > >> freed and reallocated after rhp is passed to call_rcu(), it is not 
+> > >> unusual for
+> > >> rhp->func to be set to NULL. This defeats the debugging prints used 
+> > >> rhp->by
+> > >> __call_rcu_common() in kernels built with 
+> > >> CONFIG_DEBUG_OBJECTS_RCU_HEAD=y, which expect to identify the 
+> > >> offending code using the identity of this function.
+> > >>
+> > >> And in kernels build without CONFIG_DEBUG_OBJECTS_RCU_HEAD=y, things 
+> > >> are even worse, as can be seen from this splat:
+> > >>
+> > >> Unable to handle kernel NULL pointer dereference at virtual address 0 
+> > >> ... ...
+> > >> PC is at 0x0
+> > >> LR is at rcu_do_batch+0x1c0/0x3b8
+> > >> ... ...
+> > >> (rcu_do_batch) from (rcu_core+0x1d4/0x284)
+> > >> (rcu_core) from (__do_softirq+0x24c/0x344)
+> > >> (__do_softirq) from (__irq_exit_rcu+0x64/0x108)
+> > >> (__irq_exit_rcu) from (irq_exit+0x8/0x10)
+> > >> (irq_exit) from (__handle_domain_irq+0x74/0x9c)
+> > >> (__handle_domain_irq) from (gic_handle_irq+0x8c/0x98)
+> > >> (gic_handle_irq) from (__irq_svc+0x5c/0x94)
+> > >> (__irq_svc) from (arch_cpu_idle+0x20/0x3c)
+> > >> (arch_cpu_idle) from (default_idle_call+0x4c/0x78)
+> > >> (default_idle_call) from (do_idle+0xf8/0x150)
+> > >> (do_idle) from (cpu_startup_entry+0x18/0x20)
+> > >> (cpu_startup_entry) from (0xc01530)
+> > >>
+> > >> This commit therefore adds calls to mem_dump_obj(rhp) to output some 
+> > >> information, for example:
+> > >>
+> > >>  slab kmalloc-256 start ffff410c45019900 pointer offset 0 size 256
+> > >>
+> > >> This provides the rough size of the memory block and the offset of 
+> > >> the rcu_head structure, which as least provides at least a few clues 
+> > >> to help locate the problem. If the problem is reproducible, 
+> > >> additional slab debugging can be enabled, for example, 
+> > >> CONFIG_DEBUG_SLAB=y, which can provide significantly more information.
+> > >>
+> > >> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> > >> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > >> ---
+> > >> kernel/rcu/rcu.h      | 7 +++++++
+> > >> kernel/rcu/srcutiny.c | 1 +
+> > >> kernel/rcu/srcutree.c | 1 +
+> > >> kernel/rcu/tasks.h    | 1 +
+> > >> kernel/rcu/tiny.c     | 1 +
+> > >> kernel/rcu/tree.c     | 1 +
+> > >> 6 files changed, 12 insertions(+)
+> > >>
+> > >> v1 --> v2:
+> > >> 1. Remove condition "(unsigned long)rhp->func & 0x3", it have problems on x86.
+> > >> 2. Paul E. McKenney helped me update the commit message, thanks.
+> > >>
+> > > 
+> > > Hi, Zhen Lei
+> > > 
+> > > Maybe the following scenarios should be considered:
+> > > 
+> > >                 CPU 0
+> > > tasks context
+> > >    spin_lock(&vmap_area_lock)
+> > >           Interrupt 
+> > > 	 RCU softirq
+> > > 	      rcu_do_batch
+> > > 		mem_dump_obj
+> > >                                   vmalloc_dump_obj
+> > >                                        spin_lock(&vmap_area_lock)   <--  deadlock     
+> > 
+> > >Right, thanks. I just saw the robot's report. So this patch should be dropped.
+> > >I'll try to add an helper in mm, where I can check whether the lock has been held, and dump the content of memory object.
+> > 
+> > This is a workaround, or maybe try a modification like the following, 
+> > of course, need to ask Paul's opinion.
+> 
+> Another approach is to schedule a workqueue handler to do the
+> mem_dump_obj().  This would allow mem_dump_obj() to run in a clean
+> environment.
+> 
+> This would allow vmalloc_dump_obj() to be called unconditionally.
+> 
+> Other thoughts?
+> 
+<snip>
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index ca71de7c9d77..956eb28f9c77 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -2591,6 +2591,19 @@ struct vm_struct *find_vm_area(const void *addr)
+ 	return va->vm;
+ }
+ 
++static struct vm_struct *
++find_vm_area_trylock(const void *addr)
++{
++	struct vmap_area *va = NULL;
++
++	if (spin_trylock(&vmap_area_lock)) {
++		va = __find_vmap_area((unsigned long)addr, &vmap_area_root);
++		spin_unlock(&vmap_area_lock);
++	}
++
++	return va ? va->vm : NULL;
++}
++
+ /**
+  * remove_vm_area - find and remove a continuous kernel virtual area
+  * @addr:	    base address
+@@ -4048,7 +4061,7 @@ bool vmalloc_dump_obj(void *object)
+ 	struct vm_struct *vm;
+ 	void *objp = (void *)PAGE_ALIGN((unsigned long)object);
+ 
+-	vm = find_vm_area(objp);
++	vm = find_vm_area_trylock(objp);
+ 	if (!vm)
+ 		return false;
+ 	pr_cont(" %u-page vmalloc region starting at %#lx allocated at %pS\n",
+<snip>
 
-I was hoping to hear about CPU 0's per-CPU variables (or lack thereof),
-but hearing no response, I have queued your patch for further review
-and testing.
+There is one issue though, it is not correct to reference vm->members
+after a lock is dropped because of: use after free bugs. It is better
+to embed the search and read out: nr_pages, addr, caller and drop the
+lock.
 
-							Thanx, Paul
-
-> On Mon, Oct 31, 2022 at 9:52 AM Pingfan Liu <kernelfans@gmail.com> wrote:
-> >
-> > commit 994f706872e6 ("srcu: Make Tree SRCU able to operate without
-> > snp_node array") assumes that cpu 0 is always online, but that is not
-> > the truth when using maxcpus=1 in the command line for the kdump kernel.
-> >
-> > On a PowerPC, the following kdump kernel hanging is observed:
-> > ...
-> > [    1.740036] systemd[1]: Hostname set to <xyz.com>
-> > [  243.686240] INFO: task systemd:1 blocked for more than 122 seconds.
-> > [  243.686264]       Not tainted 6.1.0-rc1 #1
-> > [  243.686272] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> > [  243.686281] task:systemd         state:D stack:0     pid:1     ppid:0      flags:0x00042000
-> > [  243.686296] Call Trace:
-> > [  243.686301] [c000000016657640] [c000000016657670] 0xc000000016657670 (unreliable)
-> > [  243.686317] [c000000016657830] [c00000001001dec0] __switch_to+0x130/0x220
-> > [  243.686333] [c000000016657890] [c000000010f607b8] __schedule+0x1f8/0x580
-> > [  243.686347] [c000000016657940] [c000000010f60bb4] schedule+0x74/0x140
-> > [  243.686361] [c0000000166579b0] [c000000010f699b8] schedule_timeout+0x168/0x1c0
-> > [  243.686374] [c000000016657a80] [c000000010f61de8] __wait_for_common+0x148/0x360
-> > [  243.686387] [c000000016657b20] [c000000010176bb0] __flush_work.isra.0+0x1c0/0x3d0
-> > [  243.686401] [c000000016657bb0] [c0000000105f2768] fsnotify_wait_marks_destroyed+0x28/0x40
-> > [  243.686415] [c000000016657bd0] [c0000000105f21b8] fsnotify_destroy_group+0x68/0x160
-> > [  243.686428] [c000000016657c40] [c0000000105f6500] inotify_release+0x30/0xa0
-> > [  243.686440] [c000000016657cb0] [c0000000105751a8] __fput+0xc8/0x350
-> > [  243.686452] [c000000016657d00] [c00000001017d524] task_work_run+0xe4/0x170
-> > [  243.686464] [c000000016657d50] [c000000010020e94] do_notify_resume+0x134/0x140
-> > [  243.686478] [c000000016657d80] [c00000001002eb18] interrupt_exit_user_prepare_main+0x198/0x270
-> > [  243.686493] [c000000016657de0] [c00000001002ec60] syscall_exit_prepare+0x70/0x180
-> > [  243.686505] [c000000016657e10] [c00000001000bf7c] system_call_vectored_common+0xfc/0x280
-> > [  243.686520] --- interrupt: 3000 at 0x7fffa47d5ba4
-> > [  243.686528] NIP:  00007fffa47d5ba4 LR: 0000000000000000 CTR: 0000000000000000
-> > [  243.686538] REGS: c000000016657e80 TRAP: 3000   Not tainted  (6.1.0-rc1)
-> > [  243.686548] MSR:  800000000000d033 <SF,EE,PR,ME,IR,DR,RI,LE>  CR: 42044440  XER: 00000000
-> > [  243.686572] IRQMASK: 0
-> > [  243.686572] GPR00: 0000000000000006 00007ffffa606710 00007fffa48e7200 0000000000000000
-> > [  243.686572] GPR04: 0000000000000002 000000000000000a 0000000000000000 0000000000000001
-> > [  243.686572] GPR08: 000001000c172dd0 0000000000000000 0000000000000000 0000000000000000
-> > [  243.686572] GPR12: 0000000000000000 00007fffa4ff4bc0 0000000000000000 0000000000000000
-> > [  243.686572] GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-> > [  243.686572] GPR20: 0000000132dfdc50 000000000000000e 0000000000189375 0000000000000000
-> > [  243.686572] GPR24: 00007ffffa606ae0 0000000000000005 000001000c185490 000001000c172570
-> > [  243.686572] GPR28: 000001000c172990 000001000c184850 000001000c172e00 00007fffa4fedd98
-> > [  243.686683] NIP [00007fffa47d5ba4] 0x7fffa47d5ba4
-> > [  243.686691] LR [0000000000000000] 0x0
-> > [  243.686698] --- interrupt: 3000
-> > [  243.686708] INFO: task kworker/u16:1:24 blocked for more than 122 seconds.
-> > [  243.686717]       Not tainted 6.1.0-rc1 #1
-> > [  243.686724] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> > [  243.686733] task:kworker/u16:1   state:D stack:0     pid:24    ppid:2      flags:0x00000800
-> > [  243.686747] Workqueue: events_unbound fsnotify_mark_destroy_workfn
-> > [  243.686758] Call Trace:
-> > [  243.686762] [c0000000166736e0] [c00000004fd91000] 0xc00000004fd91000 (unreliable)
-> > [  243.686775] [c0000000166738d0] [c00000001001dec0] __switch_to+0x130/0x220
-> > [  243.686788] [c000000016673930] [c000000010f607b8] __schedule+0x1f8/0x580
-> > [  243.686801] [c0000000166739e0] [c000000010f60bb4] schedule+0x74/0x140
-> > [  243.686814] [c000000016673a50] [c000000010f699b8] schedule_timeout+0x168/0x1c0
-> > [  243.686827] [c000000016673b20] [c000000010f61de8] __wait_for_common+0x148/0x360
-> > [  243.686840] [c000000016673bc0] [c000000010210840] __synchronize_srcu.part.0+0xa0/0xe0
-> > [  243.686855] [c000000016673c30] [c0000000105f2c64] fsnotify_mark_destroy_workfn+0xc4/0x1a0
-> > [  243.686868] [c000000016673ca0] [c000000010174ea8] process_one_work+0x2a8/0x570
-> > [  243.686882] [c000000016673d40] [c000000010175208] worker_thread+0x98/0x5e0
-> > [  243.686895] [c000000016673dc0] [c0000000101828d4] kthread+0x124/0x130
-> > [  243.686908] [c000000016673e10] [c00000001000cd40] ret_from_kernel_thread+0x5c/0x64
-> > [  366.566274] INFO: task systemd:1 blocked for more than 245 seconds.
-> > [  366.566298]       Not tainted 6.1.0-rc1 #1
-> > [  366.566305] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> > [  366.566314] task:systemd         state:D stack:0     pid:1     ppid:0      flags:0x00042000
-> > [  366.566329] Call Trace:
-> > ...
-> >
-> > In that case, note that maxcpus=1 instead of nr_cpus=1 is used in the
-> > kernel command line on the PowerPC platform. Consequently, the crash cpu
-> > is the only onlined cpu in the kdump kernel, but with its logical id not
-> > necessary 0. While SRCU queues a sdp->work on cpu 0, on which no worker
-> > thread is created, so sdp->work will be never executed and
-> > __synchronize_srcu() can not be completed.
-> >
-> > Tackle this issue by replacing the cpu logic id 0 with
-> > get_boot_cpu_id(). Since get_boot_cpu_id() guarantees the cpu to be once
-> > online, based on the fact experienced by the running code.
-> >
-> > Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
-> > Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> > Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-> > Cc: Josh Triplett <josh@joshtriplett.org>
-> > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > To: rcu@vger.kernel.org
-> > ---
-> >  kernel/rcu/srcutree.c | 9 +++++----
-> >  1 file changed, 5 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> > index 1c304fec89c0..4db36d543be3 100644
-> > --- a/kernel/rcu/srcutree.c
-> > +++ b/kernel/rcu/srcutree.c
-> > @@ -663,7 +663,7 @@ static void srcu_gp_start(struct srcu_struct *ssp)
-> >         int state;
-> >
-> >         if (smp_load_acquire(&ssp->srcu_size_state) < SRCU_SIZE_WAIT_BARRIER)
-> > -               sdp = per_cpu_ptr(ssp->sda, 0);
-> > +               sdp = per_cpu_ptr(ssp->sda, get_boot_cpu_id());
-> >         else
-> >                 sdp = this_cpu_ptr(ssp->sda);
-> >         lockdep_assert_held(&ACCESS_PRIVATE(ssp, lock));
-> > @@ -774,7 +774,8 @@ static void srcu_gp_end(struct srcu_struct *ssp)
-> >         /* Initiate callback invocation as needed. */
-> >         ss_state = smp_load_acquire(&ssp->srcu_size_state);
-> >         if (ss_state < SRCU_SIZE_WAIT_BARRIER) {
-> > -               srcu_schedule_cbs_sdp(per_cpu_ptr(ssp->sda, 0), cbdelay);
-> > +               srcu_schedule_cbs_sdp(per_cpu_ptr(ssp->sda, get_boot_cpu_id()),
-> > +                                       cbdelay);
-> >         } else {
-> >                 idx = rcu_seq_ctr(gpseq) % ARRAY_SIZE(snp->srcu_have_cbs);
-> >                 srcu_for_each_node_breadth_first(ssp, snp) {
-> > @@ -1093,7 +1094,7 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
-> >         idx = srcu_read_lock(ssp);
-> >         ss_state = smp_load_acquire(&ssp->srcu_size_state);
-> >         if (ss_state < SRCU_SIZE_WAIT_CALL)
-> > -               sdp = per_cpu_ptr(ssp->sda, 0);
-> > +               sdp = per_cpu_ptr(ssp->sda, get_boot_cpu_id());
-> >         else
-> >                 sdp = raw_cpu_ptr(ssp->sda);
-> >         spin_lock_irqsave_sdp_contention(sdp, &flags);
-> > @@ -1429,7 +1430,7 @@ void srcu_barrier(struct srcu_struct *ssp)
-> >
-> >         idx = srcu_read_lock(ssp);
-> >         if (smp_load_acquire(&ssp->srcu_size_state) < SRCU_SIZE_WAIT_BARRIER)
-> > -               srcu_barrier_one_cpu(ssp, per_cpu_ptr(ssp->sda, 0));
-> > +               srcu_barrier_one_cpu(ssp, per_cpu_ptr(ssp->sda, get_boot_cpu_id()));
-> >         else
-> >                 for_each_possible_cpu(cpu)
-> >                         srcu_barrier_one_cpu(ssp, per_cpu_ptr(ssp->sda, cpu));
-> > --
-> > 2.31.1
-> >
+--
+Uladzislau Rezki
