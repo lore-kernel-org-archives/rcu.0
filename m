@@ -2,225 +2,208 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 64868C433FE
-	for <rcu@archiver.kernel.org>; Tue, 15 Nov 2022 09:12:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 297B6C4332F
+	for <rcu@archiver.kernel.org>; Tue, 15 Nov 2022 12:06:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237875AbiKOJMT (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 15 Nov 2022 04:12:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41600 "EHLO
+        id S238246AbiKOMGX (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 15 Nov 2022 07:06:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237902AbiKOJMK (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 15 Nov 2022 04:12:10 -0500
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51B8622281;
-        Tue, 15 Nov 2022 01:12:08 -0800 (PST)
-Received: from dggpemm500022.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4NBL2g0gfTzJnhM;
-        Tue, 15 Nov 2022 17:08:59 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Tue, 15 Nov 2022 17:11:38 +0800
-Received: from [10.174.178.55] (10.174.178.55) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Tue, 15 Nov 2022 17:11:38 +0800
-Subject: Re: [PATCH v6 0/2] rcu: Add RCU stall diagnosis information
-To:     <paulmck@kernel.org>
-CC:     Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        "Steven Rostedt" <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, <rcu@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Robert Elliott <elliott@hpe.com>
-References: <20221109093739.187-1-thunder.leizhen@huawei.com>
- <20221109152621.GB298683@lothringen>
- <20221109155901.GA727034@paulmck-ThinkPad-P17-Gen-1>
- <20221109170317.GA300561@lothringen>
- <20221109172221.GD725751@paulmck-ThinkPad-P17-Gen-1>
- <a48a3eb1-5fa4-4b6b-f7bf-e0bc589f7bf6@huawei.com>
- <20221112185941.GG725751@paulmck-ThinkPad-P17-Gen-1>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <621a08d5-5dfa-8054-a180-64eac01596a5@huawei.com>
-Date:   Tue, 15 Nov 2022 17:11:37 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        with ESMTP id S232860AbiKOMGB (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 15 Nov 2022 07:06:01 -0500
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2501613D78;
+        Tue, 15 Nov 2022 04:05:12 -0800 (PST)
+Received: by mail-lj1-x22a.google.com with SMTP id d20so17185083ljc.12;
+        Tue, 15 Nov 2022 04:05:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=3EvCa6cklZcleBkPtAW83KAAzvvUfzZuN+g/oi5bp1s=;
+        b=K40SJr58G5kItKrjShn3I9/gAUG9y/SeLEozWo0jyXiVHDP0lbc/TP32E6y/iTrPN4
+         eARtkyAT+orQGZk4gBGoQDMk34ex2hG+t3wvkvqKstMs4TfhZPNfAGrBU3fOUdV+CM8p
+         KTzzxVFZHCNeHkXxACMZydKst3N7JsflXgSs8QMcCw1m8bkpCWQhFQmvJ88oMYUs6GWk
+         CGWGdWDoiUCR7Afo6kORS07PLbayTmtScj+AG7l9/+sOtxS+xDHo9KYokAToeDLw/JdQ
+         BtbuB8kfpBxtDYPHDFtrgDY16dGL4mwBjUBPEW3DBla90O7Y2EBeVDlnTnmqJNkXvBLs
+         jWeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3EvCa6cklZcleBkPtAW83KAAzvvUfzZuN+g/oi5bp1s=;
+        b=PYJaP3Xb2vtVtlMmNy6sxlxOTkFHWjw0avCAf49sGjhWK6NLmcPWnyG48Bz8U0b+1f
+         21qB5enwKrZMu1eGEYR1/zZmIiHcybmRFzvatt0cPPoHwsai9SS6VnrKFFJRgZ7U4JXP
+         I7d7t9X0wXZ1VrewIaEVri4BLrLQkma8ZRpCeCBK4l30u6BSbaehJ6TOxYjKSFJSlpE+
+         RHZX9u6qy1vG1Hkc/vyNXGbYZmcd8UkU6XzkGjZeV1ylQF3TARiHAJu62qWTfb/rRTr2
+         8+xb+Od75Dq9uNnZ9MDSVO3PsVDlnKwlmKgdAlcKgRaMMUWiI7MdtRHieL1MigAvT8hb
+         Ou/w==
+X-Gm-Message-State: ANoB5pnRqxbNGJ3YVwu0xeCAZSH6tktajdP/XA1GBZA2AJ31i+zrk4Cs
+        zz587/ggA8+wvg3T4xczc1MuAC5XbfQ=
+X-Google-Smtp-Source: AA0mqf7nnXr/zUzO3pJI10gT7XN5i4OwGyrXzs7SEaBLvLCs/1794UCVHIRD85uExkpFs8yA5/qJgA==
+X-Received: by 2002:a05:651c:2203:b0:26f:bda0:cf0d with SMTP id y3-20020a05651c220300b0026fbda0cf0dmr5570405ljq.227.1668513910252;
+        Tue, 15 Nov 2022 04:05:10 -0800 (PST)
+Received: from pc636 (host-90-235-25-77.mobileonline.telia.com. [90.235.25.77])
+        by smtp.gmail.com with ESMTPSA id i20-20020a198c54000000b004aa14caf6e9sm2186738lfj.58.2022.11.15.04.05.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Nov 2022 04:05:09 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Tue, 15 Nov 2022 13:05:07 +0100
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Subject: Re: [PATCH v2] rcu/kfree: Do not request RCU when not needed
+Message-ID: <Y3OAc+cBK5Dcky8l@pc636>
+References: <20221109024758.2644936-1-joel@joelfernandes.org>
+ <Y2z3Mb3u8bFZ12wY@pc636>
+ <CAEXW_YSq89xzgyQ9Tdt1tCqz8VAfzb7kSXVZmnxDuJ65U0UZ3w@mail.gmail.com>
+ <Y20EOinwcLSZHmXg@pc638.lan>
+ <Y22ry4Q2OY2zovco@google.com>
+ <Y3Iyka86FlUh9D1P@pc636>
+ <20221114161733.GD4001@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-In-Reply-To: <20221112185941.GG725751@paulmck-ThinkPad-P17-Gen-1>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.55]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20221114161733.GD4001@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-
-
-On 2022/11/13 2:59, Paul E. McKenney wrote:
-> On Thu, Nov 10, 2022 at 10:27:44AM +0800, Leizhen (ThunderTown) wrote:
->> On 2022/11/10 1:22, Paul E. McKenney wrote:
->>> On Wed, Nov 09, 2022 at 06:03:17PM +0100, Frederic Weisbecker wrote:
->>>> On Wed, Nov 09, 2022 at 07:59:01AM -0800, Paul E. McKenney wrote:
->>>>> On Wed, Nov 09, 2022 at 04:26:21PM +0100, Frederic Weisbecker wrote:
->>>>>> Hi Zhen Lei,
->>>>>>
->>>>>> On Wed, Nov 09, 2022 at 05:37:36PM +0800, Zhen Lei wrote:
->>>>>>> v5 --> v6:
->>>>>>> 1. When there are more than two continuous RCU stallings, correctly handle the
->>>>>>>    value of the second and subsequent sampling periods. Update comments and
->>>>>>>    document.
->>>>>>>    Thanks to Elliott, Robert for the test.
->>>>>>> 2. Change "rcu stall" to "RCU stall".
->>>>>>>
->>>>>>> v4 --> v5:
->>>>>>> 1. Resolve a git am conflict. No code change.
->>>>>>>
->>>>>>> v3 --> v4:
->>>>>>> 1. Rename rcu_cpu_stall_deep_debug to rcu_cpu_stall_cputime.
->>>>>>>
->>>>>>> v2 --> v3:
->>>>>>> 1. Fix the return type of kstat_cpu_irqs_sum()
->>>>>>> 2. Add Kconfig option CONFIG_RCU_CPU_STALL_DEEP_DEBUG and boot parameter
->>>>>>>    rcupdate.rcu_cpu_stall_deep_debug.
->>>>>>> 3. Add comments and normalize local variable name
->>>>>>>
->>>>>>>
->>>>>>> v1 --> v2:
->>>>>>> 1. Fixed a bug in the code. If the rcu stall is detected by another CPU,
->>>>>>>    kcpustat_this_cpu cannot be used.
->>>>>>> @@ -451,7 +451,7 @@ static void print_cpu_stat_info(int cpu)
->>>>>>>         if (r->gp_seq != rdp->gp_seq)
->>>>>>>                 return;
->>>>>>>
->>>>>>> -       cpustat = kcpustat_this_cpu->cpustat;
->>>>>>> +       cpustat = kcpustat_cpu(cpu).cpustat;
->>>>>>> 2. Move the start point of statistics from rcu_stall_kick_kthreads() to
->>>>>>>    rcu_implicit_dynticks_qs(), removing the dependency on irq_work.
->>>>>>>
->>>>>>> v1:
->>>>>>> In some extreme cases, such as the I/O pressure test, the CPU usage may
->>>>>>> be 100%, causing RCU stall. In this case, the printed information about
->>>>>>> current is not useful. Displays the number and usage of hard interrupts,
->>>>>>> soft interrupts, and context switches that are generated within half of
->>>>>>> the CPU stall timeout, can help us make a general judgment. In other
->>>>>>> cases, we can preliminarily determine whether an infinite loop occurs
->>>>>>> when local_irq, local_bh or preempt is disabled.
->>>>>>
->>>>>> That looks useful but I have to ask: what does it bring that the softlockup
->>>>>> and hardlockup watchdog can not already solve?
->>>>>
->>>>> This is a good point.  One possible benefit is putting the needed information
->>>>> in one spot, for example, in cases where the soft/hard lockup timeouts are
->>>>> significantly different than the RCU CPU stall warning timeout.
->>>>
->>>> Arguably, the hardlockup/softlockup detectors usually trigger after RCU stall,
->>>> unless all CPUs are caught into a hardlockup, in which case only the hardlockup
->>>> detector has a chance.
->>>>
->>>> Anyway I would say that in this case just lower the delay for the lockup
->>>> detectors to consider the situation is a lockup?
->>>
->>> Try it both ways and see how it works?  The rcutorture module parameters
->>> stall_cpu and stall_cpu_irqsoff are easy ways to generate these sorts
->>> of scenarios.
->>>
->>> Actually, that does remind me of something.  Back when I was chasing
->>> that interrupt storm, would this patch have helped me?  In that case, the
->>
->> Yes, this patch series originally addressed an RCU stall issue caused by an
->> interruption storm. The serial port driver written by another project team
->> failed to write the register in a specific condition. As a result, interrupts
->> were repeatedly reported.
+On Mon, Nov 14, 2022 at 08:17:33AM -0800, Paul E. McKenney wrote:
+> On Mon, Nov 14, 2022 at 01:20:33PM +0100, Uladzislau Rezki wrote:
+> > > On Thu, Nov 10, 2022 at 03:01:30PM +0100, Uladzislau Rezki wrote:
+> > > > > Hi,
+> > > > > 
+> > > > > On Thu, Nov 10, 2022 at 8:05 AM Uladzislau Rezki <urezki@gmail.com> wrote:
+> > > > > 
+> > > > > > > On ChromeOS, using this with the increased timeout, we see that we
+> > > > > > almost always
+> > > > > > > never need to initiate a new grace period. Testing also shows this frees
+> > > > > > large
+> > > > > > > amounts of unreclaimed memory, under intense kfree_rcu() pressure.
+> > > > > > >
+> > > > > > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > > > > > > ---
+> > > > > > > v1->v2: Same logic but use polled grace periods instead of sampling
+> > > > > > gp_seq.
+> > > > > > >
+> > > > > > >  kernel/rcu/tree.c | 8 +++++++-
+> > > > > > >  1 file changed, 7 insertions(+), 1 deletion(-)
+> > > > > > >
+> > > > > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > > > > > index 591187b6352e..ed41243f7a49 100644
+> > > > > > > --- a/kernel/rcu/tree.c
+> > > > > > > +++ b/kernel/rcu/tree.c
+> > > > > > > @@ -2935,6 +2935,7 @@ struct kfree_rcu_cpu_work {
+> > > > > > >
+> > > > > > >  /**
+> > > > > > >   * struct kfree_rcu_cpu - batch up kfree_rcu() requests for RCU grace
+> > > > > > period
+> > > > > > > + * @gp_snap: The GP snapshot recorded at the last scheduling of monitor
+> > > > > > work.
+> > > > > > >   * @head: List of kfree_rcu() objects not yet waiting for a grace period
+> > > > > > >   * @bkvhead: Bulk-List of kvfree_rcu() objects not yet waiting for a
+> > > > > > grace period
+> > > > > > >   * @krw_arr: Array of batches of kfree_rcu() objects waiting for a
+> > > > > > grace period
+> > > > > > > @@ -2964,6 +2965,7 @@ struct kfree_rcu_cpu {
+> > > > > > >       struct kfree_rcu_cpu_work krw_arr[KFREE_N_BATCHES];
+> > > > > > >       raw_spinlock_t lock;
+> > > > > > >       struct delayed_work monitor_work;
+> > > > > > > +     unsigned long gp_snap;
+> > > > > > >       bool initialized;
+> > > > > > >       int count;
+> > > > > > >
+> > > > > > > @@ -3167,6 +3169,7 @@ schedule_delayed_monitor_work(struct kfree_rcu_cpu
+> > > > > > *krcp)
+> > > > > > >                       mod_delayed_work(system_wq, &krcp->monitor_work,
+> > > > > > delay);
+> > > > > > >               return;
+> > > > > > >       }
+> > > > > > > +     krcp->gp_snap = get_state_synchronize_rcu();
+> > > > > > >       queue_delayed_work(system_wq, &krcp->monitor_work, delay);
+> > > > > > >  }
+> > > > > > >
+> > > > > > How do you guarantee a full grace period for objects which proceed
+> > > > > > to be placed into an input stream that is not yet detached?
+> > > > > 
+> > > > > 
+> > > > > Just replying from phone as I’m OOO today.
+> > > > > 
+> > > > > Hmm, so you’re saying that objects can be queued after the delayed work has
+> > > > > been queued, but processed when the delayed work is run? I’m looking at
+> > > > > this code after few years so I may have missed something.
+> > > > > 
+> > > > > That’s a good point and I think I missed that. I think your version did too
+> > > > > but I’ll have to double check.
+> > > > > 
+> > > > > The fix then is to sample the clock for the latest object queued, not for
+> > > > > when the delayed work is queued.
+> > > > > 
+> > > > The patch i sent gurantee it. Just in case see v2:
+> > > 
+> > > You are right and thank you! CBs can be queued while the monitor timer is in
+> > > progress. So we need to sample unconditionally. I think my approach is still
+> > > better since I take advantage of multiple seconds (I update snapshot on every
+> > > CB queue monitor and sample in the monitor handler).
+> > > 
+> > > Whereas your patch is snapshotting before queuing the regular work and when
+> > > the work is executed (This is a much shorter duration and I bet you would be
+> > > blocking in cond_synchronize..() more often).
+> > > 
+> > There is a performance test that measures a taken time and memory
+> > footprint, so you can do a quick comparison. A "rcutorture" can be
+> > run with various parameters to figure out if a patch that is in question
+> > makes any difference.
+> > 
+> > Usually i run it as:
+> > 
+> > <snip>
+> > #! /usr/bin/env bash
+> > 
+> > LOOPS=10
+> > 
+> > for (( i=0; i<$LOOPS; i++ )); do
+> >         tools/testing/selftests/rcutorture/bin/kvm.sh --memory 10G --torture rcuscale --allcpus --duration 1 \
+> >         --kconfig CONFIG_NR_CPUS=64 \
+> >         --kconfig CONFIG_RCU_NOCB_CPU=y \
+> >         --kconfig CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y \
+> >         --kconfig CONFIG_RCU_LAZY=n \
+> >         --bootargs "rcuscale.kfree_rcu_test=1 rcuscale.kfree_nthreads=16 rcuscale.holdoff=20 rcuscale.kfree_loops=10000 torture.disable_onoff_at_boot" --trust-make
+> >         echo "Done $i"
+> > done
+> > <snip>
+> > 
+> > just run it from your linux sandbox.
 > 
-> Very good!
-> 
->>> half-way point would have been reached while all online CPUs were spinning
->>> with interrupts disabled and the incoming CPU was getting hammered with
->>> continual scheduling-clock interrupts.  So I suspect that the answer is
->>> "no" because the incoming CPU was not blocking the grace period.
->>>
->>> Instead of being snapshot halfway to the RCU CPU stall warning, should
->>> the values be snapshot when the CPU notices the beginning or end of an
->>> RCU grace period and when a CPU goes offline?
->>
->> This won't work. Those normal counts that occurred before the failure
->> have an impact on our analysis. For example, some software interrupts
->> may have been generated before local_bh_disable() is called.
-> 
-> Fair enough, and thank you for considering this option.  But please be
-> prepared to adjust (somehow or another) as needed to accommodate other
-> failure scenarios as they arise.
-
-Except the document has an warning of "make htmldocs". I can't think of
-anything to improve on the v7 at the moment.
-
-Change the type of softirqs[NR_SOFTIRQS] from "unsigned int" to
-"unsigned long", I will post a separate patch in future. Because
-more people may join the discussion.
-
-How about I post v8 tomorrow?
-
-> 
-> 							Thanx, Paul
-> 
->>> But that would not suffice, because detailed information would not have
->>> been dumped for the incoming CPU.
->>>
->>> However, the lack of context switches and interrupts on the rest of the
->>> CPUs would likely have been a big cluebat, so there is that.  It might
->>> be better to rework the warning at the beginning of rcu_sched_clock_irq()
->>> to complain if more than (say) 10 scheduling-clock interrupts occur on
->>> a given CPU during a single jiffy.
->>>
->>> Independent of Zhen Lei patch.
->>>
->>> Thoughts?
->>>
->>> 							Thanx, Paul
->>>
->>>> Thanks.
->>>>
->>>>
->>>>>
->>>>> Thoughts?
->>>>>
->>>>> 							Thanx, Paul
->>>>>
->>>>>> Thanks.
->>>>>>
->>>>>>>
->>>>>>> Zhen Lei (2):
->>>>>>>   rcu: Add RCU stall diagnosis information
->>>>>>>   doc: Document CONFIG_RCU_CPU_STALL_CPUTIME=y stall information
->>>>>>>
->>>>>>>  Documentation/RCU/stallwarn.rst               | 88 +++++++++++++++++++
->>>>>>>  .../admin-guide/kernel-parameters.txt         |  6 ++
->>>>>>>  kernel/rcu/Kconfig.debug                      | 11 +++
->>>>>>>  kernel/rcu/rcu.h                              |  1 +
->>>>>>>  kernel/rcu/tree.c                             | 17 ++++
->>>>>>>  kernel/rcu/tree.h                             | 19 ++++
->>>>>>>  kernel/rcu/tree_stall.h                       | 29 ++++++
->>>>>>>  kernel/rcu/update.c                           |  2 +
->>>>>>>  8 files changed, 173 insertions(+)
->>>>>>>
->>>>>>> -- 
->>>>>>> 2.25.1
->>>>>>>
->>> .
->>>
->>
->> -- 
->> Regards,
->>   Zhen Lei
-> .
+> Would it make sense to modify the "if test "$do_kvfree" = "yes" code
+> in tools/testing/selftests/rcutorture/bin/torture.sh to do something
+> like this instead of what it currently does?
 > 
 
--- 
-Regards,
-  Zhen Lei
+<snip>
+if test "$do_kvfree" = "yes"
+then
+        torture_bootargs="rcuscale.kfree_rcu_test=1 rcuscale.kfree_nthreads=16 rcuscale.holdoff=20 rcuscale.kfree_loops=10000 torture.disable_onoff_at_boot"
+        torture_set "rcuscale-kvfree" tools/testing/selftests/rcutorture/bin/kvm.sh --torture rcuscale --allcpus --duration 10 --kconfig "CONFIG_NR_CPUS=$HALF_ALLOTED_CPUS" --memory 2G --trust-make
+fi
+<snip>
+
+it does almost the same but i add some repeat loops usually to get some
+average results.
+
+> Though if so, it would be much faster to use kvm.sh's --buildonly flag
+> to build the kernel, then kvm-again.sh to rerun that kernel.
+> 
+I think can be easily run from the bash in while true; do ... done; script
+with a desired number of iteration.
+
+But maybe torture.sh already has it. I mean number of iterations.
+
+--
+Uladzislau Rezki
