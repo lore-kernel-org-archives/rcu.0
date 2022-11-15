@@ -2,131 +2,225 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 285F8C433FE
-	for <rcu@archiver.kernel.org>; Tue, 15 Nov 2022 06:56:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 64868C433FE
+	for <rcu@archiver.kernel.org>; Tue, 15 Nov 2022 09:12:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230250AbiKOG4H (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 15 Nov 2022 01:56:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33538 "EHLO
+        id S237875AbiKOJMT (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 15 Nov 2022 04:12:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229685AbiKOG4G (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 15 Nov 2022 01:56:06 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DA4A639D;
-        Mon, 14 Nov 2022 22:56:02 -0800 (PST)
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2AF6ftTF025471;
-        Tue, 15 Nov 2022 06:55:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : references : date : in-reply-to : message-id : mime-version :
- content-type; s=pp1; bh=ptfk3Z0aqUjuwRhWp6fIEl22ZV3Y4VjXJ7dcnTyeahg=;
- b=bpPrJGJ5QN8KUpe5SthbwpQTBWDXuTDuGCapYYJTKJys4zuhgydm3OV0Lr+f+QR/5ODd
- sXd6Z5tBgUaNVJusUjJ8W3w15D77vyjjEBHqsHse1S6Fnl4Q87HZz1SmOPne/oBj7ZJo
- yhch2xtQ4vqEzXUt8pbhgkxF3MBDec8C8aHSjU9as3wF1WvlnB6GilAYdZ+1kcGrBLcS
- C7OE0CQ/otVjNrmeFOEp/i8a9A5u5yJbvvZSA+N3PhZIWPv/+yyeYypIj988kVfgxydy
- rztmIBmK6+kG5x46+0sOrMkUQOizydBdEN04KWb0JcZGD+sz33LXHGz0Z0Agrhw0N6w9 hg== 
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3kv5qqg948-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Nov 2022 06:55:55 +0000
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2AF6pBWs013869;
-        Tue, 15 Nov 2022 06:55:53 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma04fra.de.ibm.com with ESMTP id 3kt349at5n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Nov 2022 06:55:53 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 2AF6uUVW49742294
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 15 Nov 2022 06:56:30 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C748B4C044;
-        Tue, 15 Nov 2022 06:55:50 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9323A4C040;
-        Tue, 15 Nov 2022 06:55:50 +0000 (GMT)
-Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Tue, 15 Nov 2022 06:55:50 +0000 (GMT)
-From:   Sven Schnelle <svens@linux.ibm.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Davidlohr Bueso <dave@stgolabs.net>,
+        with ESMTP id S237902AbiKOJMK (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 15 Nov 2022 04:12:10 -0500
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51B8622281;
+        Tue, 15 Nov 2022 01:12:08 -0800 (PST)
+Received: from dggpemm500022.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4NBL2g0gfTzJnhM;
+        Tue, 15 Nov 2022 17:08:59 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Tue, 15 Nov 2022 17:11:38 +0800
+Received: from [10.174.178.55] (10.174.178.55) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Tue, 15 Nov 2022 17:11:38 +0800
+Subject: Re: [PATCH v6 0/2] rcu: Add RCU stall diagnosis information
+To:     <paulmck@kernel.org>
+CC:     Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Josh Triplett <josh@joshtriplett.org>,
-        linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [PATCH 1/2] torture: use for_each_present() loop in
- torture_online_all()
-References: <20221111125126.3319474-1-svens@linux.ibm.com>
-        <20221111125126.3319474-2-svens@linux.ibm.com>
-        <20221111185331.GA725751@paulmck-ThinkPad-P17-Gen-1>
-        <yt9dtu31k0r9.fsf@linux.ibm.com>
-        <20221114163009.GE4001@paulmck-ThinkPad-P17-Gen-1>
-Date:   Tue, 15 Nov 2022 07:55:50 +0100
-In-Reply-To: <20221114163009.GE4001@paulmck-ThinkPad-P17-Gen-1> (Paul
-        E. McKenney's message of "Mon, 14 Nov 2022 08:30:09 -0800")
-Message-ID: <yt9dzgcsiu4p.fsf@linux.ibm.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
+        "Steven Rostedt" <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, <rcu@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Robert Elliott <elliott@hpe.com>
+References: <20221109093739.187-1-thunder.leizhen@huawei.com>
+ <20221109152621.GB298683@lothringen>
+ <20221109155901.GA727034@paulmck-ThinkPad-P17-Gen-1>
+ <20221109170317.GA300561@lothringen>
+ <20221109172221.GD725751@paulmck-ThinkPad-P17-Gen-1>
+ <a48a3eb1-5fa4-4b6b-f7bf-e0bc589f7bf6@huawei.com>
+ <20221112185941.GG725751@paulmck-ThinkPad-P17-Gen-1>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <621a08d5-5dfa-8054-a180-64eac01596a5@huawei.com>
+Date:   Tue, 15 Nov 2022 17:11:37 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 0artusJ36xUPpeRK3PcNy5KwTH7iJp1T
-X-Proofpoint-ORIG-GUID: 0artusJ36xUPpeRK3PcNy5KwTH7iJp1T
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-11-15_02,2022-11-11_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
- phishscore=0 priorityscore=1501 impostorscore=0 lowpriorityscore=0
- spamscore=0 adultscore=0 mlxlogscore=488 suspectscore=0 malwarescore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2210170000 definitions=main-2211150047
+In-Reply-To: <20221112185941.GG725751@paulmck-ThinkPad-P17-Gen-1>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.55]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Paul,
 
-"Paul E. McKenney" <paulmck@kernel.org> writes:
 
-> On Mon, Nov 14, 2022 at 04:35:06PM +0100, Sven Schnelle wrote:
->> "Paul E. McKenney" <paulmck@kernel.org> writes:
->> 
->> > On Fri, Nov 11, 2022 at 01:51:24PM +0100, Sven Schnelle wrote:
->> >> A CPU listed in the possible mask doesn't have to be present, in
->> >> which case it would crash the kernel in torture_online_all().
->> >> To prevent this use a for_each_present() loop.
->> >> 
->> >> Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
->> >
->> > Looks good to me!  Any reason for no mailing list on CC?
->> 
->> No, my fault. I setup get_maintainer.pl to be called from git
->> send-email, but looks like i did it wrong :-)
->
-> Been there, done that!  ;-)
->
->> > Ah, and any synchronization required in case it is possible for a CPU
->> > to leave the cpu_present_mask?  Or can they only be added?
->> 
->> Hmm... I think the main question is, whether it is ok for a cpu to be
->> removed from the system when rcutorture is running? In both cases it
->> would disappear from the cpu online mask, so i don't think the patch
->> would change the behaviour. But i can check and send additional patches
->> if there are other places that needs adjustment.
->
-> Yes, rcutorture has lower-level checks for CPUs being hotplugged
-> behind its back.  Which might be sufficient.  But this patch is in
-> response to something bad happening if the CPU is also not present in
-> the cpu_present_mask.  Would that same bad thing happen if rcutorture saw
-> the CPU in cpu_online_mask, but by the time it attempted to CPU-hotplug
-> it, that CPU was gone not just from cpu_online_mask, but also from
-> cpu_present_mask?
->
-> Or are CPUs never removed from cpu_present_mask?
+On 2022/11/13 2:59, Paul E. McKenney wrote:
+> On Thu, Nov 10, 2022 at 10:27:44AM +0800, Leizhen (ThunderTown) wrote:
+>> On 2022/11/10 1:22, Paul E. McKenney wrote:
+>>> On Wed, Nov 09, 2022 at 06:03:17PM +0100, Frederic Weisbecker wrote:
+>>>> On Wed, Nov 09, 2022 at 07:59:01AM -0800, Paul E. McKenney wrote:
+>>>>> On Wed, Nov 09, 2022 at 04:26:21PM +0100, Frederic Weisbecker wrote:
+>>>>>> Hi Zhen Lei,
+>>>>>>
+>>>>>> On Wed, Nov 09, 2022 at 05:37:36PM +0800, Zhen Lei wrote:
+>>>>>>> v5 --> v6:
+>>>>>>> 1. When there are more than two continuous RCU stallings, correctly handle the
+>>>>>>>    value of the second and subsequent sampling periods. Update comments and
+>>>>>>>    document.
+>>>>>>>    Thanks to Elliott, Robert for the test.
+>>>>>>> 2. Change "rcu stall" to "RCU stall".
+>>>>>>>
+>>>>>>> v4 --> v5:
+>>>>>>> 1. Resolve a git am conflict. No code change.
+>>>>>>>
+>>>>>>> v3 --> v4:
+>>>>>>> 1. Rename rcu_cpu_stall_deep_debug to rcu_cpu_stall_cputime.
+>>>>>>>
+>>>>>>> v2 --> v3:
+>>>>>>> 1. Fix the return type of kstat_cpu_irqs_sum()
+>>>>>>> 2. Add Kconfig option CONFIG_RCU_CPU_STALL_DEEP_DEBUG and boot parameter
+>>>>>>>    rcupdate.rcu_cpu_stall_deep_debug.
+>>>>>>> 3. Add comments and normalize local variable name
+>>>>>>>
+>>>>>>>
+>>>>>>> v1 --> v2:
+>>>>>>> 1. Fixed a bug in the code. If the rcu stall is detected by another CPU,
+>>>>>>>    kcpustat_this_cpu cannot be used.
+>>>>>>> @@ -451,7 +451,7 @@ static void print_cpu_stat_info(int cpu)
+>>>>>>>         if (r->gp_seq != rdp->gp_seq)
+>>>>>>>                 return;
+>>>>>>>
+>>>>>>> -       cpustat = kcpustat_this_cpu->cpustat;
+>>>>>>> +       cpustat = kcpustat_cpu(cpu).cpustat;
+>>>>>>> 2. Move the start point of statistics from rcu_stall_kick_kthreads() to
+>>>>>>>    rcu_implicit_dynticks_qs(), removing the dependency on irq_work.
+>>>>>>>
+>>>>>>> v1:
+>>>>>>> In some extreme cases, such as the I/O pressure test, the CPU usage may
+>>>>>>> be 100%, causing RCU stall. In this case, the printed information about
+>>>>>>> current is not useful. Displays the number and usage of hard interrupts,
+>>>>>>> soft interrupts, and context switches that are generated within half of
+>>>>>>> the CPU stall timeout, can help us make a general judgment. In other
+>>>>>>> cases, we can preliminarily determine whether an infinite loop occurs
+>>>>>>> when local_irq, local_bh or preempt is disabled.
+>>>>>>
+>>>>>> That looks useful but I have to ask: what does it bring that the softlockup
+>>>>>> and hardlockup watchdog can not already solve?
+>>>>>
+>>>>> This is a good point.  One possible benefit is putting the needed information
+>>>>> in one spot, for example, in cases where the soft/hard lockup timeouts are
+>>>>> significantly different than the RCU CPU stall warning timeout.
+>>>>
+>>>> Arguably, the hardlockup/softlockup detectors usually trigger after RCU stall,
+>>>> unless all CPUs are caught into a hardlockup, in which case only the hardlockup
+>>>> detector has a chance.
+>>>>
+>>>> Anyway I would say that in this case just lower the delay for the lockup
+>>>> detectors to consider the situation is a lockup?
+>>>
+>>> Try it both ways and see how it works?  The rcutorture module parameters
+>>> stall_cpu and stall_cpu_irqsoff are easy ways to generate these sorts
+>>> of scenarios.
+>>>
+>>> Actually, that does remind me of something.  Back when I was chasing
+>>> that interrupt storm, would this patch have helped me?  In that case, the
+>>
+>> Yes, this patch series originally addressed an RCU stall issue caused by an
+>> interruption storm. The serial port driver written by another project team
+>> failed to write the register in a specific condition. As a result, interrupts
+>> were repeatedly reported.
+> 
+> Very good!
+> 
+>>> half-way point would have been reached while all online CPUs were spinning
+>>> with interrupts disabled and the incoming CPU was getting hammered with
+>>> continual scheduling-clock interrupts.  So I suspect that the answer is
+>>> "no" because the incoming CPU was not blocking the grace period.
+>>>
+>>> Instead of being snapshot halfway to the RCU CPU stall warning, should
+>>> the values be snapshot when the CPU notices the beginning or end of an
+>>> RCU grace period and when a CPU goes offline?
+>>
+>> This won't work. Those normal counts that occurred before the failure
+>> have an impact on our analysis. For example, some software interrupts
+>> may have been generated before local_bh_disable() is called.
+> 
+> Fair enough, and thank you for considering this option.  But please be
+> prepared to adjust (somehow or another) as needed to accommodate other
+> failure scenarios as they arise.
 
-In the current implementation CPUs can only be added to the
-cpu_present_mask, but never removed. This might change in the future
-when we get support from firmware for that, but the current s390 code
-doesn't do that.
+Except the document has an warning of "make htmldocs". I can't think of
+anything to improve on the v7 at the moment.
 
-Regards
-Sven
+Change the type of softirqs[NR_SOFTIRQS] from "unsigned int" to
+"unsigned long", I will post a separate patch in future. Because
+more people may join the discussion.
+
+How about I post v8 tomorrow?
+
+> 
+> 							Thanx, Paul
+> 
+>>> But that would not suffice, because detailed information would not have
+>>> been dumped for the incoming CPU.
+>>>
+>>> However, the lack of context switches and interrupts on the rest of the
+>>> CPUs would likely have been a big cluebat, so there is that.  It might
+>>> be better to rework the warning at the beginning of rcu_sched_clock_irq()
+>>> to complain if more than (say) 10 scheduling-clock interrupts occur on
+>>> a given CPU during a single jiffy.
+>>>
+>>> Independent of Zhen Lei patch.
+>>>
+>>> Thoughts?
+>>>
+>>> 							Thanx, Paul
+>>>
+>>>> Thanks.
+>>>>
+>>>>
+>>>>>
+>>>>> Thoughts?
+>>>>>
+>>>>> 							Thanx, Paul
+>>>>>
+>>>>>> Thanks.
+>>>>>>
+>>>>>>>
+>>>>>>> Zhen Lei (2):
+>>>>>>>   rcu: Add RCU stall diagnosis information
+>>>>>>>   doc: Document CONFIG_RCU_CPU_STALL_CPUTIME=y stall information
+>>>>>>>
+>>>>>>>  Documentation/RCU/stallwarn.rst               | 88 +++++++++++++++++++
+>>>>>>>  .../admin-guide/kernel-parameters.txt         |  6 ++
+>>>>>>>  kernel/rcu/Kconfig.debug                      | 11 +++
+>>>>>>>  kernel/rcu/rcu.h                              |  1 +
+>>>>>>>  kernel/rcu/tree.c                             | 17 ++++
+>>>>>>>  kernel/rcu/tree.h                             | 19 ++++
+>>>>>>>  kernel/rcu/tree_stall.h                       | 29 ++++++
+>>>>>>>  kernel/rcu/update.c                           |  2 +
+>>>>>>>  8 files changed, 173 insertions(+)
+>>>>>>>
+>>>>>>> -- 
+>>>>>>> 2.25.1
+>>>>>>>
+>>> .
+>>>
+>>
+>> -- 
+>> Regards,
+>>   Zhen Lei
+> .
+> 
+
+-- 
+Regards,
+  Zhen Lei
