@@ -2,83 +2,110 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DE065C433FE
-	for <rcu@archiver.kernel.org>; Tue, 15 Nov 2022 13:13:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CEC2BC433FE
+	for <rcu@archiver.kernel.org>; Tue, 15 Nov 2022 13:41:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229924AbiKONNw (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 15 Nov 2022 08:13:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46030 "EHLO
+        id S238367AbiKONln (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 15 Nov 2022 08:41:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232222AbiKONNp (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 15 Nov 2022 08:13:45 -0500
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6554B1D2;
-        Tue, 15 Nov 2022 05:13:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1668518019; x=1700054019;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=KJFXj3YWKvBgdKbZAu8eoga4jTJKbrFgb7rok5iDpxA=;
-  b=HtIx8PUnM7oNMLWloO2Yg3latnTs7KgnJOSzZT6+9kW2Lr+Cv+7HVLrQ
-   qJuV1ULwqyYCapdtI+LYAITqsDud4XPS83bsXWBHo2WEH4cI3KcLbKRjk
-   et5JWV2kmKo3sgAzlPff7Gq2+xMEeHOh1VJ2Pe5ib8yHvGoeNfHydcUHk
-   kiZy4MvnvXgjj+AvY2jU1mfBJF5Z16vyHOnm9nb9MNrHppnBu7b8dpXHR
-   EsSHSNwuSIeixGzS6yWDDK0q2btRU/64oDZ0WDiCDFGEQybrlilQuJGOC
-   JKzBzxbIvHdwTB4ZO99G0JD7YiV6azABaXhlEFNyydQqlrbO6aEPBz8zW
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10531"; a="309875258"
-X-IronPort-AV: E=Sophos;i="5.96,166,1665471600"; 
-   d="scan'208";a="309875258"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2022 05:13:31 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10531"; a="744586943"
-X-IronPort-AV: E=Sophos;i="5.96,166,1665471600"; 
-   d="scan'208";a="744586943"
-Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.129])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2022 05:13:28 -0800
-From:   Zqiang <qiang1.zhang@intel.com>
-To:     paulmck@kernel.org, frederic@kernel.org, joel@joelfernandes.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] rcu: Avoid invalid wakeup for rcuc kthreads in RCU_KTHREAD_OFFCPU status
-Date:   Tue, 15 Nov 2022 21:19:26 +0800
-Message-Id: <20221115131926.3409974-1-qiang1.zhang@intel.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S238293AbiKONln (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 15 Nov 2022 08:41:43 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32DA613FA6;
+        Tue, 15 Nov 2022 05:41:42 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id E42F7B8162B;
+        Tue, 15 Nov 2022 13:41:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97D14C433C1;
+        Tue, 15 Nov 2022 13:41:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1668519699;
+        bh=mKox1DaCdoOGN/b/rv48hmEDDIpYcldE8+6d+IFTW6g=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=NSu8PpvvI0ptwXg2ezuzWCu8XxXJMJkPRmPQF16lz9GzZhCQQxkoITCiGXvcO3+0n
+         WRgUNcimy7nGeAVK00ZHkuRKeGVggHsRbZXEZvSfsn6A1KvSJxqjU5Q8T/AtFNYw6z
+         we82+NWA/DJsR3batXpSXeQwmQAHcaL5B7ER4J8n3tnZIj1NSYaqlrJ2IwKZIGCrf6
+         6nLLRelbHB+pFuoVUXYMmF8hXL8U6PFAosNOjV49sCoFYI/V9E9z/+0WyI9IDMYnsO
+         dUVNMSXYgcrlrsTP+DOSymt5xiKhckrcE7+nWIrJvK47J4nEt39l4/LeomRJuZVZ7G
+         4U5UwgMMrEKcA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 3A0A45C118E; Tue, 15 Nov 2022 05:41:39 -0800 (PST)
+Date:   Tue, 15 Nov 2022 05:41:39 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Sven Schnelle <svens@linux.ibm.com>
+Cc:     Davidlohr Bueso <dave@stgolabs.net>,
+        Josh Triplett <josh@joshtriplett.org>,
+        linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Subject: Re: [PATCH 1/2] torture: use for_each_present() loop in
+ torture_online_all()
+Message-ID: <20221115134139.GI4001@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20221111125126.3319474-1-svens@linux.ibm.com>
+ <20221111125126.3319474-2-svens@linux.ibm.com>
+ <20221111185331.GA725751@paulmck-ThinkPad-P17-Gen-1>
+ <yt9dtu31k0r9.fsf@linux.ibm.com>
+ <20221114163009.GE4001@paulmck-ThinkPad-P17-Gen-1>
+ <yt9dzgcsiu4p.fsf@linux.ibm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <yt9dzgcsiu4p.fsf@linux.ibm.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-For CONFIG_PREEMPT_RT=y kernel, the "use_softirq=0" will be set, the
-RCU_SOFTIRQ processing is moved to per-CPU rcuc kthreads which created
-by smpboot_register_percpu_thread(). when CPU is going offline, the
-corresponding rcu_data.rcu_cpu_kthread_status is set RCU_KTHREAD_OFFCPU,
-and the rcuc kthreads enter TASK_PARKED state, kthreads in TASK_PARKED
-state only accept kthread_unpark() to wakeup.
+On Tue, Nov 15, 2022 at 07:55:50AM +0100, Sven Schnelle wrote:
+> Hi Paul,
+> 
+> "Paul E. McKenney" <paulmck@kernel.org> writes:
+> 
+> > On Mon, Nov 14, 2022 at 04:35:06PM +0100, Sven Schnelle wrote:
+> >> "Paul E. McKenney" <paulmck@kernel.org> writes:
+> >> 
+> >> > On Fri, Nov 11, 2022 at 01:51:24PM +0100, Sven Schnelle wrote:
+> >> >> A CPU listed in the possible mask doesn't have to be present, in
+> >> >> which case it would crash the kernel in torture_online_all().
+> >> >> To prevent this use a for_each_present() loop.
+> >> >> 
+> >> >> Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
+> >> >
+> >> > Looks good to me!  Any reason for no mailing list on CC?
+> >> 
+> >> No, my fault. I setup get_maintainer.pl to be called from git
+> >> send-email, but looks like i did it wrong :-)
+> >
+> > Been there, done that!  ;-)
+> >
+> >> > Ah, and any synchronization required in case it is possible for a CPU
+> >> > to leave the cpu_present_mask?  Or can they only be added?
+> >> 
+> >> Hmm... I think the main question is, whether it is ok for a cpu to be
+> >> removed from the system when rcutorture is running? In both cases it
+> >> would disappear from the cpu online mask, so i don't think the patch
+> >> would change the behaviour. But i can check and send additional patches
+> >> if there are other places that needs adjustment.
+> >
+> > Yes, rcutorture has lower-level checks for CPUs being hotplugged
+> > behind its back.  Which might be sufficient.  But this patch is in
+> > response to something bad happening if the CPU is also not present in
+> > the cpu_present_mask.  Would that same bad thing happen if rcutorture saw
+> > the CPU in cpu_online_mask, but by the time it attempted to CPU-hotplug
+> > it, that CPU was gone not just from cpu_online_mask, but also from
+> > cpu_present_mask?
+> >
+> > Or are CPUs never removed from cpu_present_mask?
+> 
+> In the current implementation CPUs can only be added to the
+> cpu_present_mask, but never removed. This might change in the future
+> when we get support from firmware for that, but the current s390 code
+> doesn't do that.
 
-Therefore, This commit avoid invoke wake_up_process() to rcuc kthreads
-in TASK_PARKED state.
+Very good!
 
-Signed-off-by: Zqiang <qiang1.zhang@intel.com>
----
- kernel/rcu/tree.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Then could the patch please check that bits are never removed?
+That way the code will complain should firmware support be added.
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 3ccad468887e..49dd87356851 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2375,7 +2375,8 @@ static void rcu_wake_cond(struct task_struct *t, int status)
- 	 * If the thread is yielding, only wake it when this
- 	 * is invoked from idle
- 	 */
--	if (t && (status != RCU_KTHREAD_YIELDING || is_idle_task(current)))
-+	if (t && (status != RCU_KTHREAD_YIELDING || is_idle_task(current)) &&
-+				status != RCU_KTHREAD_OFFCPU)
- 		wake_up_process(t);
- }
- 
--- 
-2.25.1
-
+							Thanx, Paul
