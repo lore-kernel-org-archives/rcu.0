@@ -2,85 +2,85 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 297B6C4332F
-	for <rcu@archiver.kernel.org>; Tue, 15 Nov 2022 12:06:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C4A3C433FE
+	for <rcu@archiver.kernel.org>; Tue, 15 Nov 2022 13:07:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238246AbiKOMGX (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 15 Nov 2022 07:06:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54758 "EHLO
+        id S229955AbiKONHx (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 15 Nov 2022 08:07:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232860AbiKOMGB (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 15 Nov 2022 07:06:01 -0500
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2501613D78;
-        Tue, 15 Nov 2022 04:05:12 -0800 (PST)
-Received: by mail-lj1-x22a.google.com with SMTP id d20so17185083ljc.12;
-        Tue, 15 Nov 2022 04:05:12 -0800 (PST)
+        with ESMTP id S229698AbiKONHw (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 15 Nov 2022 08:07:52 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD0D012AED;
+        Tue, 15 Nov 2022 05:07:51 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id bp15so24251879lfb.13;
+        Tue, 15 Nov 2022 05:07:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:date:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=3EvCa6cklZcleBkPtAW83KAAzvvUfzZuN+g/oi5bp1s=;
-        b=K40SJr58G5kItKrjShn3I9/gAUG9y/SeLEozWo0jyXiVHDP0lbc/TP32E6y/iTrPN4
-         eARtkyAT+orQGZk4gBGoQDMk34ex2hG+t3wvkvqKstMs4TfhZPNfAGrBU3fOUdV+CM8p
-         KTzzxVFZHCNeHkXxACMZydKst3N7JsflXgSs8QMcCw1m8bkpCWQhFQmvJ88oMYUs6GWk
-         CGWGdWDoiUCR7Afo6kORS07PLbayTmtScj+AG7l9/+sOtxS+xDHo9KYokAToeDLw/JdQ
-         BtbuB8kfpBxtDYPHDFtrgDY16dGL4mwBjUBPEW3DBla90O7Y2EBeVDlnTnmqJNkXvBLs
-         jWeA==
+        bh=Jit8/LMIi2E2JbS+B0jlbkJrIY5fatnANghVdci0Jow=;
+        b=TA1tZ2At0TX0fgo78X2fKrojsqeP0jXwc8xMILewE7h7gBnAqQBf9PmI+wNMvv4QpP
+         02hsHLd7H6rr/10x/JUe0EMcD0wirwv4/x9CZbN/Lu91oFIl6D/+6xWmNYEaJMGN990s
+         eYuTRXf9+uD10Z0Mr9tiG3qd9ZLYAbHhGjWDmlIHjrplE5pIiBv+FLKpbNbzqJDHzjUj
+         EFQ87Bbli6XL52haS29jJy0BJTStwIRkixJaAYYWuiIeiSI0iFpEpIFv7LFnNLxDIflF
+         NSjgT7QOKh/ndzTiD3BhkxS8Yot0gSHVICZGa9VH0QHDZB8S9QrFWK4g1JW/hV24Qowr
+         dOBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:date:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3EvCa6cklZcleBkPtAW83KAAzvvUfzZuN+g/oi5bp1s=;
-        b=PYJaP3Xb2vtVtlMmNy6sxlxOTkFHWjw0avCAf49sGjhWK6NLmcPWnyG48Bz8U0b+1f
-         21qB5enwKrZMu1eGEYR1/zZmIiHcybmRFzvatt0cPPoHwsai9SS6VnrKFFJRgZ7U4JXP
-         I7d7t9X0wXZ1VrewIaEVri4BLrLQkma8ZRpCeCBK4l30u6BSbaehJ6TOxYjKSFJSlpE+
-         RHZX9u6qy1vG1Hkc/vyNXGbYZmcd8UkU6XzkGjZeV1ylQF3TARiHAJu62qWTfb/rRTr2
-         8+xb+Od75Dq9uNnZ9MDSVO3PsVDlnKwlmKgdAlcKgRaMMUWiI7MdtRHieL1MigAvT8hb
-         Ou/w==
-X-Gm-Message-State: ANoB5pnRqxbNGJ3YVwu0xeCAZSH6tktajdP/XA1GBZA2AJ31i+zrk4Cs
-        zz587/ggA8+wvg3T4xczc1MuAC5XbfQ=
-X-Google-Smtp-Source: AA0mqf7nnXr/zUzO3pJI10gT7XN5i4OwGyrXzs7SEaBLvLCs/1794UCVHIRD85uExkpFs8yA5/qJgA==
-X-Received: by 2002:a05:651c:2203:b0:26f:bda0:cf0d with SMTP id y3-20020a05651c220300b0026fbda0cf0dmr5570405ljq.227.1668513910252;
-        Tue, 15 Nov 2022 04:05:10 -0800 (PST)
+        bh=Jit8/LMIi2E2JbS+B0jlbkJrIY5fatnANghVdci0Jow=;
+        b=hjH6SuTnwXBiKpiy7t7WV4zoohKb5usE1Al7PwBIFrXkpyOhXqdpgeAC3gl5tM5qIZ
+         PBXyP24bamFOziGp5FN+EuSqbfyLz1CsEVZwKNFGoj0nsjPuj7jgxN7Va32GO5D5XF5l
+         78hCnfvqWYE2sWNdlR87wkjhM4lAbIhe5mUgekFortEFkY4nnC7DT8Z/b77PV3OB+foK
+         SLu85BBC8suw/XtuapaQFJViExaDH3wr4uZUfBov/qyEH9XqSi+FVrvN3COFlWj5EPTt
+         RbeILdYQnYj74U1QWgQ+5+9o7Wmhgq8O6GSRRe3V1VUDYgl2vPUdXyBKCJz01DbCyvfl
+         lmOw==
+X-Gm-Message-State: ANoB5pnaa2EQVNxE33K8Fzj0521m2TYz4a2KO6GmI8jKe9sWUWOJqMKi
+        2jSHJ8cbdEmbZvtOpxGqYJo=
+X-Google-Smtp-Source: AA0mqf6lk4j7FNDRj9vujNwx5fO7muYBMA1P6euzRTK5dVLh216qBJCxxpXctQBUezisiCNp3+mzSQ==
+X-Received: by 2002:a19:7608:0:b0:497:aa48:8fe7 with SMTP id c8-20020a197608000000b00497aa488fe7mr6320236lff.612.1668517669730;
+        Tue, 15 Nov 2022 05:07:49 -0800 (PST)
 Received: from pc636 (host-90-235-25-77.mobileonline.telia.com. [90.235.25.77])
-        by smtp.gmail.com with ESMTPSA id i20-20020a198c54000000b004aa14caf6e9sm2186738lfj.58.2022.11.15.04.05.09
+        by smtp.gmail.com with ESMTPSA id p7-20020a2eb107000000b0026de0c8098csm2510739ljl.26.2022.11.15.05.07.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Nov 2022 04:05:09 -0800 (PST)
+        Tue, 15 Nov 2022 05:07:49 -0800 (PST)
 From:   Uladzislau Rezki <urezki@gmail.com>
 X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Tue, 15 Nov 2022 13:05:07 +0100
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Date:   Tue, 15 Nov 2022 14:07:47 +0100
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>, linux-kernel@vger.kernel.org,
+        paulmck@kernel.org, rcu@vger.kernel.org
 Subject: Re: [PATCH v2] rcu/kfree: Do not request RCU when not needed
-Message-ID: <Y3OAc+cBK5Dcky8l@pc636>
+Message-ID: <Y3OPI/pWZ5jf4X9y@pc636>
 References: <20221109024758.2644936-1-joel@joelfernandes.org>
  <Y2z3Mb3u8bFZ12wY@pc636>
  <CAEXW_YSq89xzgyQ9Tdt1tCqz8VAfzb7kSXVZmnxDuJ65U0UZ3w@mail.gmail.com>
  <Y20EOinwcLSZHmXg@pc638.lan>
  <Y22ry4Q2OY2zovco@google.com>
  <Y3Iyka86FlUh9D1P@pc636>
- <20221114161733.GD4001@paulmck-ThinkPad-P17-Gen-1>
+ <CAEXW_YR8ycdF0Y80p2qKXQm3Qc+XA441jQZ3uiHk=TbaXngNkQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20221114161733.GD4001@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <CAEXW_YR8ycdF0Y80p2qKXQm3Qc+XA441jQZ3uiHk=TbaXngNkQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Nov 14, 2022 at 08:17:33AM -0800, Paul E. McKenney wrote:
-> On Mon, Nov 14, 2022 at 01:20:33PM +0100, Uladzislau Rezki wrote:
+On Mon, Nov 14, 2022 at 03:49:16PM -0500, Joel Fernandes wrote:
+> On Mon, Nov 14, 2022 at 7:20 AM Uladzislau Rezki <urezki@gmail.com> wrote:
+> >
 > > > On Thu, Nov 10, 2022 at 03:01:30PM +0100, Uladzislau Rezki wrote:
 > > > > > Hi,
-> > > > > 
+> > > > >
 > > > > > On Thu, Nov 10, 2022 at 8:05 AM Uladzislau Rezki <urezki@gmail.com> wrote:
-> > > > > 
+> > > > >
 > > > > > > > On ChromeOS, using this with the increased timeout, we see that we
 > > > > > > almost always
 > > > > > > > never need to initiate a new grace period. Testing also shows this frees
@@ -131,79 +131,68 @@ On Mon, Nov 14, 2022 at 08:17:33AM -0800, Paul E. McKenney wrote:
 > > > > > > >
 > > > > > > How do you guarantee a full grace period for objects which proceed
 > > > > > > to be placed into an input stream that is not yet detached?
-> > > > > 
-> > > > > 
+> > > > >
+> > > > >
 > > > > > Just replying from phone as I’m OOO today.
-> > > > > 
+> > > > >
 > > > > > Hmm, so you’re saying that objects can be queued after the delayed work has
 > > > > > been queued, but processed when the delayed work is run? I’m looking at
 > > > > > this code after few years so I may have missed something.
-> > > > > 
+> > > > >
 > > > > > That’s a good point and I think I missed that. I think your version did too
 > > > > > but I’ll have to double check.
-> > > > > 
+> > > > >
 > > > > > The fix then is to sample the clock for the latest object queued, not for
 > > > > > when the delayed work is queued.
-> > > > > 
+> > > > >
 > > > > The patch i sent gurantee it. Just in case see v2:
-> > > 
+> > >
 > > > You are right and thank you! CBs can be queued while the monitor timer is in
 > > > progress. So we need to sample unconditionally. I think my approach is still
 > > > better since I take advantage of multiple seconds (I update snapshot on every
 > > > CB queue monitor and sample in the monitor handler).
-> > > 
+> > >
 > > > Whereas your patch is snapshotting before queuing the regular work and when
 > > > the work is executed (This is a much shorter duration and I bet you would be
 > > > blocking in cond_synchronize..() more often).
-> > > 
+> > >
 > > There is a performance test that measures a taken time and memory
 > > footprint, so you can do a quick comparison. A "rcutorture" can be
 > > run with various parameters to figure out if a patch that is in question
 > > makes any difference.
-> > 
-> > Usually i run it as:
-> > 
-> > <snip>
-> > #! /usr/bin/env bash
-> > 
-> > LOOPS=10
-> > 
-> > for (( i=0; i<$LOOPS; i++ )); do
-> >         tools/testing/selftests/rcutorture/bin/kvm.sh --memory 10G --torture rcuscale --allcpus --duration 1 \
-> >         --kconfig CONFIG_NR_CPUS=64 \
-> >         --kconfig CONFIG_RCU_NOCB_CPU=y \
-> >         --kconfig CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y \
-> >         --kconfig CONFIG_RCU_LAZY=n \
-> >         --bootargs "rcuscale.kfree_rcu_test=1 rcuscale.kfree_nthreads=16 rcuscale.holdoff=20 rcuscale.kfree_loops=10000 torture.disable_onoff_at_boot" --trust-make
-> >         echo "Done $i"
-> > done
-> > <snip>
-> > 
-> > just run it from your linux sandbox.
 > 
-> Would it make sense to modify the "if test "$do_kvfree" = "yes" code
-> in tools/testing/selftests/rcutorture/bin/torture.sh to do something
-> like this instead of what it currently does?
+> Yes sure, I am doing a run now with my patch. However, I have a
+> question -- why do you feel blocking in the kworker is not an issue?
+> You are taking a snapshot before queuing the normal kwork and then
+> reading the snapshot when the normal kwork runs. Considering it is a
+> high priority queue, the delay between when you are taking the
+> snapshot, and reading it is likely small so there is a bigger chance
+> of blocking in cond_synchronize_rcu(). Did I miss something?
 > 
+We can wait indeed in the reclaim worker. But the worker does not do any
+nasty or extra work here. If there is a need we block and wait. After a
+grace period, we are awoken and proceed.
 
-<snip>
-if test "$do_kvfree" = "yes"
-then
-        torture_bootargs="rcuscale.kfree_rcu_test=1 rcuscale.kfree_nthreads=16 rcuscale.holdoff=20 rcuscale.kfree_loops=10000 torture.disable_onoff_at_boot"
-        torture_set "rcuscale-kvfree" tools/testing/selftests/rcutorture/bin/kvm.sh --torture rcuscale --allcpus --duration 10 --kconfig "CONFIG_NR_CPUS=$HALF_ALLOTED_CPUS" --memory 2G --trust-make
-fi
-<snip>
+Therefore i do not see the reason in handling two cases:
 
-it does almost the same but i add some repeat loops usually to get some
-average results.
+if (gp_done)
+    queue_work();
+else
+    queue_rcu_work();
 
-> Though if so, it would be much faster to use kvm.sh's --buildonly flag
-> to build the kernel, then kvm-again.sh to rerun that kernel.
-> 
-I think can be easily run from the bash in while true; do ... done; script
-with a desired number of iteration.
+it is the same if we just queue the work and check on entry. The current
+scenario is: queue the work after a grace period. This is the difference.
 
-But maybe torture.sh already has it. I mean number of iterations.
+Right if the reclaimer was a high prio kthread a time would be shorter. 
+
+In your scenario the time seems even shorter(i have not checked) because
+you update a snapshot of krcp each time a kvfree_rcu() is invoked. So
+basically even though you have objects whose grace period is passed you
+do not separate it anyhow. Because you update the:
+
+krcp->gp_snap = get_state_synchronize_rcu();
+
+too often.
 
 --
 Uladzislau Rezki
