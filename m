@@ -2,105 +2,94 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C196C433FE
-	for <rcu@archiver.kernel.org>; Wed, 16 Nov 2022 15:01:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E7E3EC4332F
+	for <rcu@archiver.kernel.org>; Wed, 16 Nov 2022 16:50:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233009AbiKPPBi (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 16 Nov 2022 10:01:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53452 "EHLO
+        id S233407AbiKPQut (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 16 Nov 2022 11:50:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233694AbiKPPBf (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 16 Nov 2022 10:01:35 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8216FB22;
-        Wed, 16 Nov 2022 07:01:34 -0800 (PST)
+        with ESMTP id S234618AbiKPQu0 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 16 Nov 2022 11:50:26 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D78D2654
+        for <rcu@vger.kernel.org>; Wed, 16 Nov 2022 08:48:32 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1CAFC61E65;
-        Wed, 16 Nov 2022 15:01:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 028CAC433D7;
-        Wed, 16 Nov 2022 15:01:32 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id DCAA8B81DFD
+        for <rcu@vger.kernel.org>; Wed, 16 Nov 2022 16:48:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D987C433D6;
+        Wed, 16 Nov 2022 16:48:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668610893;
-        bh=GCLTsKWd3l2oU79ad7ndCO0sGERp+hW9GVMLdBk7v+k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=E6oeGQT7ibMjTKUpuBJc/iLSrD/y8yIheNo+1A3Wl3g3cIXSnrXH8an5f9/qL4+T7
-         H1Ue8sXOWsXvTv3u0CAf/47KNbeyokRY07nH6hk/bAqzD3sZPbmIQFQHepipNxGzj2
-         p6ZJ+9TZje56oRJvdJO38EFN1kD9bqjMzCyVSRSLDGT3Y7GSTtqUBAu6FGZMJiQ60M
-         w9nTxOhsy5ulhI1N7aItOSnKRSpqFX0pE4vy30/lmYUUPQ/WO/laRhKdjTc32CI1aK
-         tdNMg4uDeOy5nJS2fjGV6DfFIRuN8YEqqoiZUB+xOk56dUsQsE6sTCHJ2ZFpjAG4NM
-         iW4ODprbIdsPQ==
-Date:   Wed, 16 Nov 2022 16:01:30 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
-Cc:     "paulmck@kernel.org" <paulmck@kernel.org>,
-        "joel@joelfernandes.org" <joel@joelfernandes.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] rcu: Avoid invalid wakeup for rcuc kthreads in
- RCU_KTHREAD_OFFCPU status
-Message-ID: <20221116150130.GD816333@lothringen>
-References: <20221115131926.3409974-1-qiang1.zhang@intel.com>
- <20221116124716.GA813995@lothringen>
- <PH0PR11MB5880FD7499114743BCE3E5A3DA079@PH0PR11MB5880.namprd11.prod.outlook.com>
+        s=k20201202; t=1668617309;
+        bh=hqOQXWncjiWGU2gvC6GR+XBuzhRLsvlfFAiHZCJvies=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=m0my92uADGd/QLIlK6byXEYQ/GAxdK0W9Z5R2QZ9OSRu9mntWI9amHjEH6p+2KFey
+         tEO1LPBQwUBqD8icO3OsMWWVA8FxIyDJKBEAHFMJPqe56rxaqnQ4hymj+XUVB/tskR
+         pM1GY/oDtx9AoFjpE2gJbJwidNwUJNx97ywS78Xo5ZGZVRnCYMwNN/u/K7FHoBuVdJ
+         MoF/ZjKlwqhOO+IveEMzRhs/uGAf6LClWwNTnMs2nmQwwwOci82zoks4qDzKv3p4va
+         aEENMyBu0MYQA6Q6L5gcq7kVZszXjNmOhU/tHwokeov99c+0TPkT/bqEai+/GDzQF1
+         4ywDge37is4bQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 2C77A5C0865; Wed, 16 Nov 2022 08:48:29 -0800 (PST)
+Date:   Wed, 16 Nov 2022 08:48:29 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     Pingfan Liu <kernelfans@gmail.com>, rcu@vger.kernel.org,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: Re: [PATCH 1/2] srcu: Fix a misspelling in note
+Message-ID: <20221116164829.GP4001@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20221116015244.10539-1-kernelfans@gmail.com>
+ <20221116133625.GB816333@lothringen>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <PH0PR11MB5880FD7499114743BCE3E5A3DA079@PH0PR11MB5880.namprd11.prod.outlook.com>
+In-Reply-To: <20221116133625.GB816333@lothringen>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Nov 16, 2022 at 02:07:28PM +0000, Zhang, Qiang1 wrote:
-> On Tue, Nov 15, 2022 at 09:19:26PM +0800, Zqiang wrote:
-> >And more important! On unpark time RCU_KTHREAD_OFFCPU isn't cleared. Only the
-> >rcuc kthread does it, and after your patch it couldn't be awaken to perform
-> >that, unless rcuc is lucky enough to have rcu_data.rcu_cpu_has_work = 1
-> >by the time it unparks and that isn't guaranteed. So rcuc may sleep forever.
+On Wed, Nov 16, 2022 at 02:36:25PM +0100, Frederic Weisbecker wrote:
+> On Wed, Nov 16, 2022 at 09:52:43AM +0800, Pingfan Liu wrote:
+> > Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+> > Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> > Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> > Cc: Frederic Weisbecker <frederic@kernel.org>
+> > Cc: Josh Triplett <josh@joshtriplett.org>
+> > Cc: Steven Rostedt <rostedt@goodmis.org>
+> > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > To: rcu@vger.kernel.org
+> > ---
+> >  include/linux/srcutree.h | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
+> > index e3014319d1ad..f52820e88018 100644
+> > --- a/include/linux/srcutree.h
+> > +++ b/include/linux/srcutree.h
+> > @@ -48,7 +48,7 @@ struct srcu_data {
+> >  struct srcu_node {
+> >  	spinlock_t __private lock;
+> >  	unsigned long srcu_have_cbs[4];		/* GP seq for children having CBs, but only */
+> > -						/*  if greater than ->srcu_gq_seq. */
+> > +						/*  if greater than ->srcu_gp_seq. */
 > 
-> Thanks for review, yes I should register an unpark function to clear RCU_KTHREAD_OFFCPU.
-> Is the following modification more appropriate?
+> Sharp eye ;-)
 > 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 3ccad468887e..a2248af0ccda 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -2375,7 +2375,8 @@ static void rcu_wake_cond(struct task_struct *t, int status)
->          * If the thread is yielding, only wake it when this
->          * is invoked from idle
->          */
-> -       if (t && (status != RCU_KTHREAD_YIELDING || is_idle_task(current)))
-> +       if (t && (status != RCU_KTHREAD_YIELDING || is_idle_task(current)) &&
-> +                               status != RCU_KTHREAD_OFFCPU)
->                 wake_up_process(t);
->  }
-> 
-> @@ -2407,7 +2408,14 @@ static void invoke_rcu_core(void)
-> 
->  static void rcu_cpu_kthread_park(unsigned int cpu)
->  {
-> -       per_cpu(rcu_data.rcu_cpu_kthread_status, cpu) = RCU_KTHREAD_OFFCPU;
-> +       WARN_ON_ONCE(cpu != smp_processor_id());
-> +       __this_cpu_write(rcu_data.rcu_cpu_kthread_status, RCU_KTHREAD_OFFCPU);
-> +}
-> +
-> +static void rcu_cpu_kthread_unpark(unsigned int cpu)
-> +{
-> +       WARN_ON_ONCE(cpu != smp_processor_id());
-> +       __this_cpu_write(rcu_data.rcu_cpu_kthread_status, RCU_KTHREAD_ONCPU);
->  }
-> 
->  static int rcu_cpu_kthread_should_run(unsigned int cpu)
-> @@ -2460,6 +2468,7 @@ static struct smp_hotplug_thread rcu_cpu_thread_spec = {
->         .thread_comm            = "rcuc/%u",
->         .setup                  = rcu_cpu_kthread_setup,
->         .park                   = rcu_cpu_kthread_park,
-> +       .unpark                 = rcu_cpu_kthread_unpark,
+> Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 
-Well, personally I don't think it's worth the burden because wake_up_process()
-already does an early exit if it's not dealing with a TASK_[UN]INTERRUPTIBLE task and
-the window is so short and rare that it doesn't look like a good candidate for
-extra optimization;
+Applied with both Reviewed-by tags, thank you all!
 
-Thanks.
+							Thanx, Paul
+
+> >  	unsigned long srcu_data_have_cbs[4];	/* Which srcu_data structs have CBs for given GP? */
+> >  	unsigned long srcu_gp_seq_needed_exp;	/* Furthest future exp GP. */
+> >  	struct srcu_node *srcu_parent;		/* Next up in tree. */
+> > -- 
+> > 2.31.1
+> > 
