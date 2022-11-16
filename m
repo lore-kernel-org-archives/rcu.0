@@ -2,447 +2,97 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4BD1DC4332F
-	for <rcu@archiver.kernel.org>; Wed, 16 Nov 2022 22:06:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AF1E3C4332F
+	for <rcu@archiver.kernel.org>; Wed, 16 Nov 2022 22:40:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233758AbiKPWGP (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 16 Nov 2022 17:06:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35440 "EHLO
+        id S231625AbiKPWj7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 16 Nov 2022 17:39:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234443AbiKPWGB (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 16 Nov 2022 17:06:01 -0500
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 462CF663E7
-        for <rcu@vger.kernel.org>; Wed, 16 Nov 2022 14:05:58 -0800 (PST)
-Received: by mail-oi1-x232.google.com with SMTP id n186so20142537oih.7
-        for <rcu@vger.kernel.org>; Wed, 16 Nov 2022 14:05:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=gvTQVdXY5Pl1BTRTqQoQae4SrYrJGbtZrmu0iRf9PZE=;
-        b=Ma4/DARyojcjp92NypZnhY8JOG88UEZb3d2xXVbVtk73l3GNe+jvtk3ORRymgktfFg
-         RvazEuLZggT9+74OgQdfd6YNg6ceVyiHQCYcXRlxQFuq4dXgDxtMWDREbLy0iAagn7r4
-         0Dj+2c4nttKA6VGGORNLiBasE6G1QtDACOPHM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gvTQVdXY5Pl1BTRTqQoQae4SrYrJGbtZrmu0iRf9PZE=;
-        b=KnTtfgBQ9N26xpeYmJe/y6NaXgAe2rKl4acfH/mMgd4wLEX3hcvG30cRwAqjktHGip
-         3GXH9yNhy+ufTqrh/qQkbiHOIFIKn4sfFQx+YENgeMvU2fSVhr+1H4TQmUU7fK/VdjQi
-         v5N1R5Rc+jgiiRBR8s+8J6wd8GNlGqP0rjFdIeHcIRtrcXehY59QyEUdwhOudtOW+M6R
-         9hG3UyGacWJwfSsggCPnSyB8W0bpshzs/QoUENolaccXvDKOsrbGUIj7Qrl5rYp4iQZZ
-         6T04zcmkwl9sJVkR/FegFPxgcmlc6hkATbp+FEZ6uz91bYnnujqE+S2o/5315q8vcnis
-         nPDA==
-X-Gm-Message-State: ANoB5pkbyOFm48VPIy9n2ZR0zolbwbdCbFkDHbMQdP/cIB7icA7tkCbL
-        ilEEVd75GlhB+JfN185JELJiKq1AEKEptuwUp+b4Dg==
-X-Google-Smtp-Source: AA0mqf6FuH7EPjBx57WrPiUP3SrRxCovMlvhGPjwUslyoCk12z1NFO4/LfYalYGGkAsU3VqqF6eM92ixzDrltdDbYjE=
-X-Received: by 2002:a05:6808:1a09:b0:354:4a36:aa32 with SMTP id
- bk9-20020a0568081a0900b003544a36aa32mr2687133oib.15.1668636357485; Wed, 16
- Nov 2022 14:05:57 -0800 (PST)
+        with ESMTP id S234139AbiKPWjr (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 16 Nov 2022 17:39:47 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2C4C59878;
+        Wed, 16 Nov 2022 14:39:46 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 50E6161FF9;
+        Wed, 16 Nov 2022 22:39:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35CDDC433D6;
+        Wed, 16 Nov 2022 22:39:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1668638385;
+        bh=ieNpiLVdRQunBu175zpt6RHDSuNw5y2DmXy3+JAlHuc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VX9H5+oaEIeH/5Zn+GPn6WPKff7fSkYMmav3bvxfKs2qBw9qPPxIi9T5JCyU42kvb
+         hSV4MrzCzxdpZX0RXRAeIFiGe3EdiD06xQDEnim8XauSAjAI2JUF5mkICwwBAiYayD
+         idSsj7VC9QOs2A2XaGMHyepfmwQoah1zszOZE9zdg/H9rTswOtw1rcEyxRoy/jbgSS
+         5ZKhQ5sqp6dpbxNmechqQc01ZtBV4FZ1WNnINIyIaWMW4c8GMvJ1KmPw4TyiPIhNpL
+         2M5nqHPEOqc2PmJF9Pv/LCd5LjvJTnoZCe7ITDdhRwGRkcN60I6LBUHlwJbV737l9W
+         LP0xjMVKZi/5g==
+Date:   Wed, 16 Nov 2022 23:39:42 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Robert Elliott <elliott@hpe.com>
+Subject: Re: [PATCH v7 4/6] rcu: Add RCU stall diagnosis information
+Message-ID: <20221116223942.GA838972@lothringen>
+References: <20221111130709.247-1-thunder.leizhen@huawei.com>
+ <20221111130709.247-5-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
-References: <20221109024758.2644936-1-joel@joelfernandes.org>
- <Y2z3Mb3u8bFZ12wY@pc636> <CAEXW_YSq89xzgyQ9Tdt1tCqz8VAfzb7kSXVZmnxDuJ65U0UZ3w@mail.gmail.com>
- <Y20EOinwcLSZHmXg@pc638.lan> <Y22ry4Q2OY2zovco@google.com>
- <Y3Iyka86FlUh9D1P@pc636> <CAEXW_YR8ycdF0Y80p2qKXQm3Qc+XA441jQZ3uiHk=TbaXngNkQ@mail.gmail.com>
- <Y3OPI/pWZ5jf4X9y@pc636> <Y3U3zPzLMux8fpVY@pc638.lan>
-In-Reply-To: <Y3U3zPzLMux8fpVY@pc638.lan>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Wed, 16 Nov 2022 22:05:46 +0000
-Message-ID: <CAEXW_YTVmGnC_aBNQ49OfNiD+CX1VX0-R6c_3mNZNvvAoAw0hA@mail.gmail.com>
-Subject: Re: [PATCH v2] rcu/kfree: Do not request RCU when not needed
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     paulmck@kernel.org, linux-kernel@vger.kernel.org,
-        rcu@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221111130709.247-5-thunder.leizhen@huawei.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Nov 16, 2022 at 7:19 PM Uladzislau Rezki <urezki@gmail.com> wrote:
->
-> Hello, Paul, Joel.
->
-> > >
-> > > Yes sure, I am doing a run now with my patch. However, I have a
-> > > question -- why do you feel blocking in the kworker is not an issue?
-> > > You are taking a snapshot before queuing the normal kwork and then
-> > > reading the snapshot when the normal kwork runs. Considering it is a
-> > > high priority queue, the delay between when you are taking the
-> > > snapshot, and reading it is likely small so there is a bigger chance
-> > > of blocking in cond_synchronize_rcu(). Did I miss something?
-> > >
-> > We can wait indeed in the reclaim worker. But the worker does not do any
-> > nasty or extra work here. If there is a need we block and wait. After a
-> > grace period, we are awoken and proceed.
-> >
-> > Therefore i do not see the reason in handling two cases:
-> >
-> > if (gp_done)
-> >     queue_work();
-> > else
-> >     queue_rcu_work();
-> >
-> > it is the same if we just queue the work and check on entry. The current
-> > scenario is: queue the work after a grace period. This is the difference.
-> >
-> > Right if the reclaimer was a high prio kthread a time would be shorter.
-> >
-> > In your scenario the time seems even shorter(i have not checked) because
-> > you update a snapshot of krcp each time a kvfree_rcu() is invoked. So
-> > basically even though you have objects whose grace period is passed you
-> > do not separate it anyhow. Because you update the:
-> >
-> > krcp->gp_snap = get_state_synchronize_rcu();
-> >
-> > too often.
-> >
-> Once upon a time we discussed that it is worth to keep track of GP
-> per-a-page in order to reduce a memory footprint. Below patch addresses
-> it:
+On Fri, Nov 11, 2022 at 09:07:07PM +0800, Zhen Lei wrote:
+> @@ -262,6 +279,8 @@ struct rcu_data {
+>  	short rcu_onl_gp_flags;		/* ->gp_flags at last online. */
+>  	unsigned long last_fqs_resched;	/* Time of last rcu_resched(). */
+>  	unsigned long last_sched_clock;	/* Jiffies of last rcu_sched_clock_irq(). */
+> +	struct rcu_snap_record snap_record; /* Snapshot of core stats at half of */
+> +					    /* the first RCU stall timeout */
 
-In the patch below, it appears you are tracking the GP per krwp, and
-not per page. But I could be missing something - could you split it
-into separate patches for easier review?
+This should be under #ifdef CONFIG_RCU_CPU_STALL_CPUTIME
 
-Also it still does cond_synchronize_rcu() :-(
+> +static void print_cpu_stat_info(int cpu)
+> +{
+> +	struct rcu_snap_record rsr, *rsrp;
+> +	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
+> +	struct kernel_cpustat *kcsp = &kcpustat_cpu(cpu);
+> +
+> +	if (!rcu_cpu_stall_cputime)
+> +		return;
+> +
+> +	rsrp = &rdp->snap_record;
+> +	if (rsrp->gp_seq != rdp->gp_seq)
+> +		return;
+> +
+> +	rsr.cputime_irq     = kcpustat_field(kcsp, CPUTIME_IRQ, cpu);
+> +	rsr.cputime_softirq = kcpustat_field(kcsp, CPUTIME_SOFTIRQ, cpu);
+> +	rsr.cputime_system  = kcpustat_field(kcsp, CPUTIME_SYSTEM, cpu);
+> +
+> +	pr_err("\t         hardirqs   softirqs   csw/system\n");
+> +	pr_err("\t number: %8ld %10d %12lld\n",
+> +		kstat_cpu_irqs_sum(cpu) - rsrp->nr_hardirqs,
+> +		kstat_cpu_softirqs_sum(cpu) - rsrp->nr_softirqs,
+> +		nr_context_switches_cpu(cpu) - rsrp->nr_csw);
+> +	pr_err("\tcputime: %8lld %10lld %12lld   ==> %lld(ms)\n",
+> +		div_u64(rsr.cputime_irq - rsrp->cputime_irq, NSEC_PER_MSEC),
+> +		div_u64(rsr.cputime_softirq - rsrp->cputime_softirq, NSEC_PER_MSEC),
+> +		div_u64(rsr.cputime_system - rsrp->cputime_system, NSEC_PER_MSEC),
+> +		jiffies64_to_msecs(jiffies - rsrp->jiffies));
 
-thanks,
+jiffies_to_msecs() should be enough.
 
- - Joel
+Thanks.
 
-
->
-> <snip>
-> From 76fc6a1398f22341758edcd9aa911127e0cf5129 Mon Sep 17 00:00:00 2001
-> From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-> Date: Wed, 2 Nov 2022 19:26:27 +0100
-> Subject: [PATCH v3 1/1] rcu: kvfree_rcu: Reduce a memory footptint by using
->  polling APIs
->
-> Total time taken by all kfree'ers: 6564718459 ns, loops: 10000, batches: 1110, memory footprint: 5057MB
-> Total time taken by all kfree'ers: 8431051895 ns, loops: 10000, batches: 1109, memory footprint: 2749MB
-> Total time taken by all kfree'ers: 9477830789 ns, loops: 10000, batches: 1158, memory footprint: 2934MB
-> Total time taken by all kfree'ers: 9950211144 ns, loops: 10000, batches: 981, memory footprint: 2704MB
->
-> with a patch:
->
-> Total time taken by all kfree'ers: 7712110118 ns, loops: 10000, batches: 1660, memory footprint: 91MB
-> Total time taken by all kfree'ers: 7002403664 ns, loops: 10000, batches: 1482, memory footprint: 86MB
-> Total time taken by all kfree'ers: 7842282319 ns, loops: 10000, batches: 1738, memory footprint: 86MB
-> Total time taken by all kfree'ers: 7230161977 ns, loops: 10000, batches: 1542, memory footprint: 72MB
->
-> Tested with NOCB option, all offloading CPUs:
->
-> kvm.sh --memory 10G --torture rcuscale --allcpus --duration 1 \
->   --kconfig CONFIG_NR_CPUS=64 \
->   --kconfig CONFIG_RCU_NOCB_CPU=y \
->   --kconfig CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y \
->   --bootargs "rcuscale.kfree_rcu_test=1 rcuscale.kfree_nthreads=16 \
->   rcuscale.holdoff=20 rcuscale.kfree_loops=10000 torture.disable_onoff_at_boot" --trust-make
->
-> According to data there is a big gain in memory footprint with a patch.
-> It is because of call_rcu() and call_rcu_flush() take more effort and
-> time to queue a callback and then wait for a gp.
->
-> With polling API:
->   a) we do not need to queue any callback;
->   b) we might not even need wait for a GP completion.
->
-> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> ---
->  kernel/rcu/tree.c | 115 +++++++++++++++++++++++++++-------------------
->  1 file changed, 67 insertions(+), 48 deletions(-)
->
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 76973d716921..6a1f66dd5f09 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -2900,13 +2900,16 @@ EXPORT_SYMBOL_GPL(call_rcu);
->
->  /**
->   * struct kvfree_rcu_bulk_data - single block to store kvfree_rcu() pointers
-> + * @gp_snap: Snapshot of current GP for objects in a page
->   * @nr_records: Number of active pointers in the array
-> + * @list: Page list
->   * @next: Next bulk object in the block chain
->   * @records: Array of the kvfree_rcu() pointers
->   */
->  struct kvfree_rcu_bulk_data {
-> +       unsigned long gp_snap;
->         unsigned long nr_records;
-> -       struct kvfree_rcu_bulk_data *next;
-> +       struct list_head list;
->         void *records[];
->  };
->
-> @@ -2919,24 +2922,26 @@ struct kvfree_rcu_bulk_data {
->         ((PAGE_SIZE - sizeof(struct kvfree_rcu_bulk_data)) / sizeof(void *))
->
->  /**
-> + * @rcu_work: A work to reclaim a memory after a grace period
->   * struct kfree_rcu_cpu_work - single batch of kfree_rcu() requests
-> - * @rcu_work: Let queue_rcu_work() invoke workqueue handler after grace period
->   * @head_free: List of kfree_rcu() objects waiting for a grace period
-> - * @bkvhead_free: Bulk-List of kvfree_rcu() objects waiting for a grace period
-> + * @head_free_gp_snap: Snapshot of current GP for "@head_free" objects
->   * @krcp: Pointer to @kfree_rcu_cpu structure
->   */
->
->  struct kfree_rcu_cpu_work {
-> -       struct rcu_work rcu_work;
-> +       struct work_struct rcu_work;
->         struct rcu_head *head_free;
-> -       struct kvfree_rcu_bulk_data *bkvhead_free[FREE_N_CHANNELS];
-> +       unsigned long head_free_gp_snap;
-> +
-> +       struct list_head page_free_head[FREE_N_CHANNELS];
->         struct kfree_rcu_cpu *krcp;
->  };
->
->  /**
->   * struct kfree_rcu_cpu - batch up kfree_rcu() requests for RCU grace period
->   * @head: List of kfree_rcu() objects not yet waiting for a grace period
-> - * @bkvhead: Bulk-List of kvfree_rcu() objects not yet waiting for a grace period
-> + * @page_head: Bulk-List of kvfree_rcu() objects not yet waiting for a grace period
->   * @krw_arr: Array of batches of kfree_rcu() objects waiting for a grace period
->   * @lock: Synchronize access to this structure
->   * @monitor_work: Promote @head to @head_free after KFREE_DRAIN_JIFFIES
-> @@ -2960,7 +2965,7 @@ struct kfree_rcu_cpu_work {
->   */
->  struct kfree_rcu_cpu {
->         struct rcu_head *head;
-> -       struct kvfree_rcu_bulk_data *bkvhead[FREE_N_CHANNELS];
-> +       struct list_head page_head[FREE_N_CHANNELS];
->         struct kfree_rcu_cpu_work krw_arr[KFREE_N_BATCHES];
->         raw_spinlock_t lock;
->         struct delayed_work monitor_work;
-> @@ -3060,60 +3065,62 @@ drain_page_cache(struct kfree_rcu_cpu *krcp)
->  static void kfree_rcu_work(struct work_struct *work)
->  {
->         unsigned long flags;
-> -       struct kvfree_rcu_bulk_data *bkvhead[FREE_N_CHANNELS], *bnext;
-> +       struct kvfree_rcu_bulk_data *page, *n;
-> +       struct list_head local_page_head[FREE_N_CHANNELS];
->         struct rcu_head *head, *next;
->         struct kfree_rcu_cpu *krcp;
->         struct kfree_rcu_cpu_work *krwp;
-> +       unsigned long head_free_gp_snap;
->         int i, j;
->
-> -       krwp = container_of(to_rcu_work(work),
-> -                           struct kfree_rcu_cpu_work, rcu_work);
-> +       krwp = container_of(work,
-> +               struct kfree_rcu_cpu_work, rcu_work);
->         krcp = krwp->krcp;
->
->         raw_spin_lock_irqsave(&krcp->lock, flags);
->         // Channels 1 and 2.
-> -       for (i = 0; i < FREE_N_CHANNELS; i++) {
-> -               bkvhead[i] = krwp->bkvhead_free[i];
-> -               krwp->bkvhead_free[i] = NULL;
-> -       }
-> +       for (i = 0; i < FREE_N_CHANNELS; i++)
-> +               // Initialized or empty it does not matter just replace.
-> +               list_replace_init(&krwp->page_free_head[i], &local_page_head[i]);
->
->         // Channel 3.
->         head = krwp->head_free;
->         krwp->head_free = NULL;
-> +
-> +       head_free_gp_snap = krwp->head_free_gp_snap;
->         raw_spin_unlock_irqrestore(&krcp->lock, flags);
->
->         // Handle the first two channels.
->         for (i = 0; i < FREE_N_CHANNELS; i++) {
-> -               for (; bkvhead[i]; bkvhead[i] = bnext) {
-> -                       bnext = bkvhead[i]->next;
-> -                       debug_rcu_bhead_unqueue(bkvhead[i]);
-> +               // Start from the tail page, so a GP is likely passed for it.
-> +               list_for_each_entry_safe_reverse(page, n, &local_page_head[i], list) {
-> +                       cond_synchronize_rcu(page->gp_snap);
-> +                       debug_rcu_bhead_unqueue(page);
->
->                         rcu_lock_acquire(&rcu_callback_map);
->                         if (i == 0) { // kmalloc() / kfree().
->                                 trace_rcu_invoke_kfree_bulk_callback(
-> -                                       rcu_state.name, bkvhead[i]->nr_records,
-> -                                       bkvhead[i]->records);
-> +                                       rcu_state.name, page->nr_records,
-> +                                       page->records);
->
-> -                               kfree_bulk(bkvhead[i]->nr_records,
-> -                                       bkvhead[i]->records);
-> +                               kfree_bulk(page->nr_records, page->records);
->                         } else { // vmalloc() / vfree().
-> -                               for (j = 0; j < bkvhead[i]->nr_records; j++) {
-> +                               for (j = 0; j < page->nr_records; j++) {
->                                         trace_rcu_invoke_kvfree_callback(
-> -                                               rcu_state.name,
-> -                                               bkvhead[i]->records[j], 0);
-> +                                               rcu_state.name, page->records[j], 0);
->
-> -                                       vfree(bkvhead[i]->records[j]);
-> +                                       vfree(page->records[j]);
->                                 }
->                         }
->                         rcu_lock_release(&rcu_callback_map);
->
->                         raw_spin_lock_irqsave(&krcp->lock, flags);
-> -                       if (put_cached_bnode(krcp, bkvhead[i]))
-> -                               bkvhead[i] = NULL;
-> +                       if (put_cached_bnode(krcp, page))
-> +                               page = NULL;
->                         raw_spin_unlock_irqrestore(&krcp->lock, flags);
->
-> -                       if (bkvhead[i])
-> -                               free_page((unsigned long) bkvhead[i]);
-> +                       if (page)
-> +                               free_page((unsigned long) page);
->
->                         cond_resched_tasks_rcu_qs();
->                 }
-> @@ -3126,6 +3133,9 @@ static void kfree_rcu_work(struct work_struct *work)
->          * queued on a linked list through their rcu_head structures.
->          * This list is named "Channel 3".
->          */
-> +       if (head)
-> +               cond_synchronize_rcu(head_free_gp_snap);
-> +
->         for (; head; head = next) {
->                 unsigned long offset = (unsigned long)head->func;
->                 void *ptr = (void *)head - offset;
-> @@ -3149,7 +3159,7 @@ need_offload_krc(struct kfree_rcu_cpu *krcp)
->         int i;
->
->         for (i = 0; i < FREE_N_CHANNELS; i++)
-> -               if (krcp->bkvhead[i])
-> +               if (!list_empty(&krcp->page_head[i]))
->                         return true;
->
->         return !!krcp->head;
-> @@ -3191,16 +3201,15 @@ static void kfree_rcu_monitor(struct work_struct *work)
->                 // a previous RCU batch is in progress, it means that
->                 // immediately to queue another one is not possible so
->                 // in that case the monitor work is rearmed.
-> -               if ((krcp->bkvhead[0] && !krwp->bkvhead_free[0]) ||
-> -                       (krcp->bkvhead[1] && !krwp->bkvhead_free[1]) ||
-> +               if ((!list_empty(&krcp->page_head[0]) && list_empty(&krwp->page_free_head[0])) ||
-> +                       (!list_empty(&krcp->page_head[1]) && list_empty(&krwp->page_free_head[1])) ||
->                                 (krcp->head && !krwp->head_free)) {
-> +
->                         // Channel 1 corresponds to the SLAB-pointer bulk path.
->                         // Channel 2 corresponds to vmalloc-pointer bulk path.
->                         for (j = 0; j < FREE_N_CHANNELS; j++) {
-> -                               if (!krwp->bkvhead_free[j]) {
-> -                                       krwp->bkvhead_free[j] = krcp->bkvhead[j];
-> -                                       krcp->bkvhead[j] = NULL;
-> -                               }
-> +                               if (list_empty(&krwp->page_free_head[j]))
-> +                                       list_replace_init(&krcp->page_head[j], &krwp->page_free_head[j]);
->                         }
->
->                         // Channel 3 corresponds to both SLAB and vmalloc
-> @@ -3208,6 +3217,11 @@ static void kfree_rcu_monitor(struct work_struct *work)
->                         if (!krwp->head_free) {
->                                 krwp->head_free = krcp->head;
->                                 krcp->head = NULL;
-> +
-> +                               // Take a snapshot for this krwp. Please note no more
-> +                               // any objects can be added to attached head_free channel
-> +                               // therefore fixate a GP for it here.
-> +                               krwp->head_free_gp_snap = get_state_synchronize_rcu();
->                         }
->
->                         WRITE_ONCE(krcp->count, 0);
-> @@ -3217,7 +3231,7 @@ static void kfree_rcu_monitor(struct work_struct *work)
->                         // be that the work is in the pending state when
->                         // channels have been detached following by each
->                         // other.
-> -                       queue_rcu_work(system_wq, &krwp->rcu_work);
-> +                       queue_work(system_wq, &krwp->rcu_work);
->                 }
->         }
->
-> @@ -3312,10 +3326,11 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
->                 return false;
->
->         idx = !!is_vmalloc_addr(ptr);
-> +       bnode = list_first_entry_or_null(&(*krcp)->page_head[idx],
-> +               struct kvfree_rcu_bulk_data, list);
->
->         /* Check if a new block is required. */
-> -       if (!(*krcp)->bkvhead[idx] ||
-> -                       (*krcp)->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
-> +       if (!bnode || bnode->nr_records == KVFREE_BULK_MAX_ENTR) {
->                 bnode = get_cached_bnode(*krcp);
->                 if (!bnode && can_alloc) {
->                         krc_this_cpu_unlock(*krcp, *flags);
-> @@ -3339,18 +3354,16 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
->                 if (!bnode)
->                         return false;
->
-> -               /* Initialize the new block. */
-> +               /* Initialize a new block. */
->                 bnode->nr_records = 0;
-> -               bnode->next = (*krcp)->bkvhead[idx];
-> -
-> -               /* Attach it to the head. */
-> -               (*krcp)->bkvhead[idx] = bnode;
-> +               list_add(&bnode->list, &(*krcp)->page_head[idx]);
->         }
->
->         /* Finally insert. */
-> -       (*krcp)->bkvhead[idx]->records
-> -               [(*krcp)->bkvhead[idx]->nr_records++] = ptr;
-> +       bnode->records[bnode->nr_records++] = ptr;
->
-> +       /* Keep updated a GP status of this page. */
-> +       bnode->gp_snap = get_state_synchronize_rcu();
->         return true;
->  }
->
-> @@ -4790,7 +4803,7 @@ struct workqueue_struct *rcu_gp_wq;
->  static void __init kfree_rcu_batch_init(void)
->  {
->         int cpu;
-> -       int i;
-> +       int i, j;
->
->         /* Clamp it to [0:100] seconds interval. */
->         if (rcu_delay_page_cache_fill_msec < 0 ||
-> @@ -4808,10 +4821,16 @@ static void __init kfree_rcu_batch_init(void)
->                 struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
->
->                 for (i = 0; i < KFREE_N_BATCHES; i++) {
-> -                       INIT_RCU_WORK(&krcp->krw_arr[i].rcu_work, kfree_rcu_work);
-> +                       INIT_WORK(&krcp->krw_arr[i].rcu_work, kfree_rcu_work);
->                         krcp->krw_arr[i].krcp = krcp;
-> +
-> +                       for (j = 0; j < FREE_N_CHANNELS; j++)
-> +                               INIT_LIST_HEAD(&krcp->krw_arr[i].page_free_head[j]);
->                 }
->
-> +               for (i = 0; i < FREE_N_CHANNELS; i++)
-> +                       INIT_LIST_HEAD(&krcp->page_head[i]);
-> +
->                 INIT_DELAYED_WORK(&krcp->monitor_work, kfree_rcu_monitor);
->                 INIT_DELAYED_WORK(&krcp->page_cache_work, fill_page_cache_func);
->                 krcp->initialized = true;
-> --
-> 2.30.2
-> <snip>
->
-> it is pretty simple. It does the following:
->
-> 1) A GP status is sampled per a page that drives pointers;
-> 2) Reclaim is done in reverse order because an oldest page more likely passed its GP;
-> 3) Returning a memory occurs faster thus it reduces a memory footprint;
-> 4) Improves readability of the code.
->
-> Any inputs? I will test and check on our devices with real workloads.
->
-> --
-> Uladzislau Rezki
