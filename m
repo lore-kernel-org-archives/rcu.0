@@ -2,93 +2,94 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 15A02C433FE
-	for <rcu@archiver.kernel.org>; Wed, 16 Nov 2022 12:47:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B75C9C4332F
+	for <rcu@archiver.kernel.org>; Wed, 16 Nov 2022 13:34:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233216AbiKPMrZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 16 Nov 2022 07:47:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37706 "EHLO
+        id S229931AbiKPNen (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 16 Nov 2022 08:34:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230123AbiKPMrY (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 16 Nov 2022 07:47:24 -0500
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC221167EA;
-        Wed, 16 Nov 2022 04:47:23 -0800 (PST)
+        with ESMTP id S229517AbiKPNem (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 16 Nov 2022 08:34:42 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 179CF62D6
+        for <rcu@vger.kernel.org>; Wed, 16 Nov 2022 05:34:42 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id EFB5FCE19DA;
-        Wed, 16 Nov 2022 12:47:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82BF5C433C1;
-        Wed, 16 Nov 2022 12:47:19 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A7BE561DF3
+        for <rcu@vger.kernel.org>; Wed, 16 Nov 2022 13:34:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 899C7C433D6;
+        Wed, 16 Nov 2022 13:34:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668602840;
-        bh=tKLpMlH43+Qp3G1HljC8JkJIT/xBjIxdBYhEplhIlas=;
+        s=k20201202; t=1668605681;
+        bh=vD58OhzEiAcnymtDDc3nrxk5GSCoFgOdkF76I3xjgmo=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Bqm9xOt5Hv+xGuCPRbdv5wlwB9N2yJWiNBxdnZ3qZmrzMupjjucPh4HkTAgBMgQcb
-         6NqGw1DmG1z0tdFbwB8Cl2CWdHlaRc2JqjQL/gWQaH2a4EY2Durhp/Ijglc8qjWvDq
-         /fmCJqMJAcQKDxEhkFaocn+S/TQ0poysS/pFil5LQCo1GtjlF4ClH3SO63RdSSrYPf
-         UG1amBzpILy5qDMvEovh4WDPxl+FGJBduIF0fkEoYQcgc6w/pcTEE8JlSgQfg45+WL
-         WSyLKj8p4h+MTTc+MpqlV5tl+QzpvVAvHB1yzg+jOz66XCIzF9sdo6+a/6+FJmuixK
-         FYDrB2lSe7Png==
-Date:   Wed, 16 Nov 2022 13:47:16 +0100
+        b=lCJhu9vKmF7jw84aPBrl0SnvpNitS7lSLUvCQwciPenvK1rOkPZqdXvf1/SaX6wWH
+         Cpg5KoWYmEMAX5y7ieO9JkGzF6fT9zVrQGMIgKMOufi9CwRVqd615u0cfIRTz+Ope3
+         xOWpgLvnt1nE9w7+/OixSBU1kucihMrS4PqBb/N34v8BMwlsvLBsrGB5SKYfQKwTK8
+         FtFIqpNS9jpJJFrfD63b+FUYAZJZM1VSj3AtXOXZ4BTW6Le18vixn0ZDfLbPGCE7jY
+         +IYEsdlbBo52l8p1730N/sjmWVumwvL/uVMTHimhYdPu3f/o/9KK/RXmlWdlPsenDw
+         3niZ+8+z5ig+Q==
+Date:   Wed, 16 Nov 2022 14:34:37 +0100
 From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Zqiang <qiang1.zhang@intel.com>
-Cc:     paulmck@kernel.org, joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu: Avoid invalid wakeup for rcuc kthreads in
- RCU_KTHREAD_OFFCPU status
-Message-ID: <20221116124716.GA813995@lothringen>
-References: <20221115131926.3409974-1-qiang1.zhang@intel.com>
+To:     Pingfan Liu <kernelfans@gmail.com>
+Cc:     rcu@vger.kernel.org, Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: Re: [PATCH 2/2] srcu: Fix the comparision in srcu_invl_snp_seq()
+Message-ID: <20221116133437.GA816333@lothringen>
+References: <20221116015244.10539-1-kernelfans@gmail.com>
+ <20221116015244.10539-2-kernelfans@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221115131926.3409974-1-qiang1.zhang@intel.com>
+In-Reply-To: <20221116015244.10539-2-kernelfans@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Nov 15, 2022 at 09:19:26PM +0800, Zqiang wrote:
-> For CONFIG_PREEMPT_RT=y kernel, the "use_softirq=0" will be set, the
-> RCU_SOFTIRQ processing is moved to per-CPU rcuc kthreads which created
-> by smpboot_register_percpu_thread(). when CPU is going offline, the
-> corresponding rcu_data.rcu_cpu_kthread_status is set RCU_KTHREAD_OFFCPU,
-> and the rcuc kthreads enter TASK_PARKED state, kthreads in TASK_PARKED
-> state only accept kthread_unpark() to wakeup.
+On Wed, Nov 16, 2022 at 09:52:44AM +0800, Pingfan Liu wrote:
+> A seq contains two fields: counter and state.
 > 
-> Therefore, This commit avoid invoke wake_up_process() to rcuc kthreads
-> in TASK_PARKED state.
+> SRCU_SNP_INIT_SEQ is used as invalid initial value for srcu_node GP
+> sequence numbers. Hence srcu_invl_snp_seq() should compare both fields
+> of a seq.
 > 
-> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+> Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> Cc: Frederic Weisbecker <frederic@kernel.org>
+> Cc: Josh Triplett <josh@joshtriplett.org>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> To: rcu@vger.kernel.org
 > ---
->  kernel/rcu/tree.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>  kernel/rcu/srcutree.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 3ccad468887e..49dd87356851 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -2375,7 +2375,8 @@ static void rcu_wake_cond(struct task_struct *t, int status)
->  	 * If the thread is yielding, only wake it when this
->  	 * is invoked from idle
->  	 */
-> -	if (t && (status != RCU_KTHREAD_YIELDING || is_idle_task(current)))
-> +	if (t && (status != RCU_KTHREAD_YIELDING || is_idle_task(current)) &&
-> +				status != RCU_KTHREAD_OFFCPU)
->  		wake_up_process(t);
+> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> index 1c304fec89c0..725c82bb0a6a 100644
+> --- a/kernel/rcu/srcutree.c
+> +++ b/kernel/rcu/srcutree.c
+> @@ -154,7 +154,7 @@ static void init_srcu_struct_data(struct srcu_struct *ssp)
+>   */
+>  static inline bool srcu_invl_snp_seq(unsigned long s)
+>  {
+> -	return rcu_seq_state(s) == SRCU_SNP_INIT_SEQ;
+> +	return s == SRCU_SNP_INIT_SEQ;
 
-There is a tiny window where this can happen (between CPUHP_TEARDOWN_CPU
-and CPUHP_AP_SMPBOOT_THREADS) and it can't cause a spurious unpark because
-wake_up_process() only wakes up from TASK_[UN]INTERRUPTIBLE states. And even
-if it did, the KTHREAD_SHOULD_PARK bit would still be on.
+Doesn't hurt and makes it less confusing as it doesn't suggest anymore
+there _might_ be a gp number behind.
 
-And more important! On unpark time RCU_KTHREAD_OFFCPU isn't cleared. Only the
-rcuc kthread does it, and after your patch it couldn't be awaken to perform
-that, unless rcuc is lucky enough to have rcu_data.rcu_cpu_has_work = 1
-by the time it unparks and that isn't guaranteed. So rcuc may sleep forever.
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 
-OTOH one cleanup that could be done is to make rcu_cpu_kthread_park() to use
-__this_cpu_write as it's guaranteed that cpu == smp_processor_id().
 
-Thanks.
-
+>  }
+>  
+>  /*
+> -- 
+> 2.31.1
+> 
