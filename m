@@ -2,114 +2,122 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 605E5C4332F
-	for <rcu@archiver.kernel.org>; Thu, 17 Nov 2022 11:19:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E1A9C4332F
+	for <rcu@archiver.kernel.org>; Thu, 17 Nov 2022 12:22:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234237AbiKQLTd (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 17 Nov 2022 06:19:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36262 "EHLO
+        id S234510AbiKQMWo (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 17 Nov 2022 07:22:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239668AbiKQLT3 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 17 Nov 2022 06:19:29 -0500
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBB972B251;
-        Thu, 17 Nov 2022 03:19:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1668683967; x=1700219967;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=R7Tw/bo/e0ph1HCAxMg1wWzO55ZqQuYAf2pd0W+MSkw=;
-  b=FrbBE4mbJXnFogg+pl0S1qnwtECG82+HREd9SjRsRyzkf8cwRaHzMCBK
-   uJ8T/zWZJyUzPUkcJ81QaNyMg6DRa+Yx2LC7OtImv5yi2I5xVIyPxl0KN
-   3RQaDtwlE/DT6ly++h4Bzu5apV8XLowwoOsD2fwdZD6rwOqktQ3snfFvH
-   tuMx0thSkdKgN6i/e5b2laXdeBkmt38pluteCuI3glEy+qP8bTyFM5UxV
-   RU6LfYqPzz2aw/YUes10B3Xk7ouQiyYS50UaTxsXkJAEvGbUyFZYN/LU2
-   9MKBTBj8FUImBr3Yy8b0u8/i+0mBIUyB1uGwRK+ZcBPUERpvWNeI264to
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10533"; a="377090197"
-X-IronPort-AV: E=Sophos;i="5.96,171,1665471600"; 
-   d="scan'208";a="377090197"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2022 03:19:27 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10533"; a="642063469"
-X-IronPort-AV: E=Sophos;i="5.96,171,1665471600"; 
-   d="scan'208";a="642063469"
-Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.129])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2022 03:19:24 -0800
-From:   Zqiang <qiang1.zhang@intel.com>
-To:     paulmck@kernel.org, thunder.leizhen@huawei.com,
-        akpm@linux-foundation.org, frederic@kernel.org,
-        joel@joelfernandes.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] mm: Make vmalloc_dump_obj() call in a preemptible context
-Date:   Thu, 17 Nov 2022 19:25:20 +0800
-Message-Id: <20221117112520.3942618-1-qiang1.zhang@intel.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S231489AbiKQMWn (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 17 Nov 2022 07:22:43 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AE40CDB;
+        Thu, 17 Nov 2022 04:22:42 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2734661482;
+        Thu, 17 Nov 2022 12:22:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF504C433C1;
+        Thu, 17 Nov 2022 12:22:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1668687761;
+        bh=zx0pWb4nQH5eQDMQu6wkWFs3SGyhmtK2xNcBwlJKago=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EOEcrIuJuXo3UqeHSLDo4YcpL+sR1xv99xElhrQ5H3zZ7gavxEZ3MiyfMmP7DT4td
+         RBF36nj/9nq/sU80QmRWCE2hPI2nNqTopUFc0xlGqr3+UoL3VrnW3ZO9N72UQGud01
+         T6B4F1peVgNtAM8xE+km2Erhp9Ldqwh6TXfSIUPsxPWYegK3+ZZ+wq1tMcvtM1y0MK
+         oIuudSVQxwDeG7F99C7a/5h7NGLK0P1muN2SmAdIlCL7T7DkabPvz0TWl4I2yTO5qt
+         dVveaM7ccLfzPS4iAKF2EB8EVMJ431y+T98fw63gaFe5zDv8vm4s3X5UFjA9YWuLaF
+         jH4oYq5Oq7uUg==
+Date:   Thu, 17 Nov 2022 13:22:38 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Robert Elliott <elliott@hpe.com>
+Subject: Re: [PATCH v7 4/6] rcu: Add RCU stall diagnosis information
+Message-ID: <20221117122238.GC839309@lothringen>
+References: <20221111130709.247-1-thunder.leizhen@huawei.com>
+ <20221111130709.247-5-thunder.leizhen@huawei.com>
+ <20221116223942.GA838972@lothringen>
+ <d4f7f41c-e1ef-606f-d700-3e67059bb06d@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d4f7f41c-e1ef-606f-d700-3e67059bb06d@huawei.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Currently, the mem_dump_obj() is invoked in call_rcu(), the
-call_rcu() is maybe invoked in non-preemptive code segment,
-for object allocated from vmalloc(), the following scenarios
-may occur:
+On Thu, Nov 17, 2022 at 09:57:18AM +0800, Leizhen (ThunderTown) wrote:
+> 
+> 
+> On 2022/11/17 6:39, Frederic Weisbecker wrote:
+> > On Fri, Nov 11, 2022 at 09:07:07PM +0800, Zhen Lei wrote:
+> >> @@ -262,6 +279,8 @@ struct rcu_data {
+> >>  	short rcu_onl_gp_flags;		/* ->gp_flags at last online. */
+> >>  	unsigned long last_fqs_resched;	/* Time of last rcu_resched(). */
+> >>  	unsigned long last_sched_clock;	/* Jiffies of last rcu_sched_clock_irq(). */
+> >> +	struct rcu_snap_record snap_record; /* Snapshot of core stats at half of */
+> >> +					    /* the first RCU stall timeout */
+> > 
+> > This should be under #ifdef CONFIG_RCU_CPU_STALL_CPUTIME
+> 
+> This will not work for now because we also support boot option
+> rcupdate.rcu_cpu_stall_cputime.
 
-        CPU 0
-tasks context
-   spin_lock(&vmap_area_lock)
-          Interrupt context
-              call_rcu()
-                mem_dump_obj
-                  vmalloc_dump_obj
-                    spin_lock(&vmap_area_lock) <--deadlock
+I'm confused. If CONFIG_RCU_CPU_STALL_CPUTIME=n then rcupdate.rcu_cpu_stall_cputime has
+no effect, right?
 
-and for PREEMPT-RT kernel, the spinlock will convert to sleepable
-lock, so the vmap_area_lock spinlock not allowed to get in non-preemptive
-code segment. therefore, this commit make the vmalloc_dump_obj() call in
-a preemptible context.
+Thanks.
 
-Signed-off-by: Zqiang <qiang1.zhang@intel.com>
----
- v1->v2:
- Add IS_ENABLED(CONFIG_PREEMPT_RT) check.
-
- mm/util.c    | 4 +++-
- mm/vmalloc.c | 4 ++++
- 2 files changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/mm/util.c b/mm/util.c
-index 12984e76767e..2b0222a728cc 100644
---- a/mm/util.c
-+++ b/mm/util.c
-@@ -1128,7 +1128,9 @@ void mem_dump_obj(void *object)
- 		return;
- 
- 	if (virt_addr_valid(object))
--		type = "non-slab/vmalloc memory";
-+		type = "non-slab memory";
-+	else if (is_vmalloc_addr(object))
-+		type = "vmalloc memory";
- 	else if (object == NULL)
- 		type = "NULL pointer";
- 	else if (object == ZERO_SIZE_PTR)
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index ccaa461998f3..018e417b12d6 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -4034,6 +4034,10 @@ bool vmalloc_dump_obj(void *object)
- 	struct vm_struct *vm;
- 	void *objp = (void *)PAGE_ALIGN((unsigned long)object);
- 
-+	if (!is_vmalloc_addr(objp) || ((IS_ENABLED(CONFIG_PREEMPT_RT) &&
-+				!preemptible()) || in_interrupt()))
-+		return false;
-+
- 	vm = find_vm_area(objp);
- 	if (!vm)
- 		return false;
--- 
-2.25.1
-
+> 
+> > 
+> >> +static void print_cpu_stat_info(int cpu)
+> >> +{
+> >> +	struct rcu_snap_record rsr, *rsrp;
+> >> +	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
+> >> +	struct kernel_cpustat *kcsp = &kcpustat_cpu(cpu);
+> >> +
+> >> +	if (!rcu_cpu_stall_cputime)
+> >> +		return;
+> >> +
+> >> +	rsrp = &rdp->snap_record;
+> >> +	if (rsrp->gp_seq != rdp->gp_seq)
+> >> +		return;
+> >> +
+> >> +	rsr.cputime_irq     = kcpustat_field(kcsp, CPUTIME_IRQ, cpu);
+> >> +	rsr.cputime_softirq = kcpustat_field(kcsp, CPUTIME_SOFTIRQ, cpu);
+> >> +	rsr.cputime_system  = kcpustat_field(kcsp, CPUTIME_SYSTEM, cpu);
+> >> +
+> >> +	pr_err("\t         hardirqs   softirqs   csw/system\n");
+> >> +	pr_err("\t number: %8ld %10d %12lld\n",
+> >> +		kstat_cpu_irqs_sum(cpu) - rsrp->nr_hardirqs,
+> >> +		kstat_cpu_softirqs_sum(cpu) - rsrp->nr_softirqs,
+> >> +		nr_context_switches_cpu(cpu) - rsrp->nr_csw);
+> >> +	pr_err("\tcputime: %8lld %10lld %12lld   ==> %lld(ms)\n",
+> >> +		div_u64(rsr.cputime_irq - rsrp->cputime_irq, NSEC_PER_MSEC),
+> >> +		div_u64(rsr.cputime_softirq - rsrp->cputime_softirq, NSEC_PER_MSEC),
+> >> +		div_u64(rsr.cputime_system - rsrp->cputime_system, NSEC_PER_MSEC),
+> >> +		jiffies64_to_msecs(jiffies - rsrp->jiffies));
+> > 
+> > jiffies_to_msecs() should be enough.
+> 
+> OK, thanks.
+> 
+> > 
+> > Thanks.
+> > 
+> > .
+> > 
+> 
+> -- 
+> Regards,
+>   Zhen Lei
