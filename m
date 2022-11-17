@@ -2,132 +2,163 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D75FAC433FE
-	for <rcu@archiver.kernel.org>; Thu, 17 Nov 2022 02:03:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BFAECC4332F
+	for <rcu@archiver.kernel.org>; Thu, 17 Nov 2022 02:34:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229910AbiKQCDY (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 16 Nov 2022 21:03:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50614 "EHLO
+        id S234184AbiKQCeT (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 16 Nov 2022 21:34:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229939AbiKQCDV (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 16 Nov 2022 21:03:21 -0500
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F10956A745;
-        Wed, 16 Nov 2022 18:03:19 -0800 (PST)
-Received: from dggpemm500022.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4NCNV95hY7zRpNf;
-        Thu, 17 Nov 2022 10:02:57 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 17 Nov 2022 10:03:18 +0800
-Received: from [10.174.178.55] (10.174.178.55) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 17 Nov 2022 10:03:17 +0800
-Subject: Re: [PATCH v7 5/6] doc: Document CONFIG_RCU_CPU_STALL_CPUTIME=y stall
- information
-To:     Frederic Weisbecker <frederic@kernel.org>
-CC:     "Paul E . McKenney" <paulmck@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        "Steven Rostedt" <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, <rcu@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Robert Elliott <elliott@hpe.com>
-References: <20221111130709.247-1-thunder.leizhen@huawei.com>
- <20221111130709.247-6-thunder.leizhen@huawei.com>
- <20221116225507.GA839220@lothringen>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <1d007125-9e1a-8018-d6b4-8838ecc1a873@huawei.com>
-Date:   Thu, 17 Nov 2022 10:03:17 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        with ESMTP id S232809AbiKQCeS (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 16 Nov 2022 21:34:18 -0500
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC20E12A8F
+        for <rcu@vger.kernel.org>; Wed, 16 Nov 2022 18:34:16 -0800 (PST)
+Received: by mail-lj1-x235.google.com with SMTP id l8so885340ljh.13
+        for <rcu@vger.kernel.org>; Wed, 16 Nov 2022 18:34:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=dII0QeignRL4u4sLkO4R1zMJ93UrKg3JRgBrGTMrAYo=;
+        b=mYd2Rfi10wdDrtBrGhNb/5QeFskflJfXBY645vUrCAwCYte8shjMSxqdPZPeoQ1tKZ
+         aKa6GSYsg6UiyHDJrlQt40WDqGl+zfoXJMkCHHRvfDgzYQTkgTrmeap+O5EXpgbqJ9x4
+         eWCHINqta0365CLFezr6SjtXs1icGhPU5Lo9Q/P4FFjPBToe66/KPicyVuMSPgphUmpm
+         VG3pdkkZRjJISCRnVbhfh+Tnb6Bc6cdhrzsKo80z294XyqrbMw36CgNG+0uvMLJ08g3m
+         j+FmUvmMItyad6a4pLqQoe8jxurVOgTcgFE+XR/Sb8Jn7OGAY6ZuLuJi7LciGZxkxN0X
+         6Dzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dII0QeignRL4u4sLkO4R1zMJ93UrKg3JRgBrGTMrAYo=;
+        b=XYDclTcpmYdAuIxpImPGbBW5kvhdg9xC38l1GmmNuxr1jXTrAuU4/5PSdc+x/hUAhH
+         8QQeVsvVU94pP0sjhdraFpeyooFCptqKpv5Vy5ywXNV2yR/xo/aW9+pT2pAlsvD6KiVf
+         zs7D0jVGjxpKKixV4BQNXW6VZHqdQYR5VVMk7p0V1EdtuYO1wABP3H6MgLdrWhH3yV5u
+         +4P9YYYANDVaLWqGrEfnL1+gTXQx0WTVCtkdJ7URhoXmqdrXTDfPNP0gNwSEmpEejT0K
+         LK5d9IsajxKx2Eu+9rnGv3OuK4siP6yVcY0QE7wd3DvPscOAAAroqunfD8Efv+CQhYIK
+         NLAA==
+X-Gm-Message-State: ANoB5pmJpQ0yeFiauLl95ULqAuZPeR0nlt76/GzfRyy7tyl8R9Jfk8e3
+        E1ym59w/gd/+gu00g6bUVbfbFNvr2AVcUhEQlFmMSWE=
+X-Google-Smtp-Source: AA0mqf7JwTVZU+AkVfdkDYmeYvvAEjRdj2Ih26DMqMQ/Tp+EBZjmuWcx4EX4JxO/ZW6SFuNC0Uev+NQs1B7I+vvdiRE=
+X-Received: by 2002:a2e:a80a:0:b0:277:2600:9cc0 with SMTP id
+ l10-20020a2ea80a000000b0027726009cc0mr310977ljq.437.1668652454947; Wed, 16
+ Nov 2022 18:34:14 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20221116225507.GA839220@lothringen>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.55]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+References: <20221116015244.10539-1-kernelfans@gmail.com> <20221116015244.10539-2-kernelfans@gmail.com>
+ <20221116133437.GA816333@lothringen> <20221116172643.GA1432130@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20221116172643.GA1432130@paulmck-ThinkPad-P17-Gen-1>
+From:   Pingfan Liu <kernelfans@gmail.com>
+Date:   Thu, 17 Nov 2022 10:34:03 +0800
+Message-ID: <CAFgQCTvybjfgpZCDQkSDOojNP5HVmfRJGEnGf1NwxphUL5igcg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] srcu: Fix the comparision in srcu_invl_snp_seq()
+To:     paulmck@kernel.org
+Cc:     Frederic Weisbecker <frederic@kernel.org>, rcu@vger.kernel.org,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Thu, Nov 17, 2022 at 1:26 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+>
+> On Wed, Nov 16, 2022 at 02:34:37PM +0100, Frederic Weisbecker wrote:
+> > On Wed, Nov 16, 2022 at 09:52:44AM +0800, Pingfan Liu wrote:
+> > > A seq contains two fields: counter and state.
+> > >
+> > > SRCU_SNP_INIT_SEQ is used as invalid initial value for srcu_node GP
+> > > sequence numbers. Hence srcu_invl_snp_seq() should compare both fields
+> > > of a seq.
+> > >
+> > > Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+> > > Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> > > Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> > > Cc: Frederic Weisbecker <frederic@kernel.org>
+> > > Cc: Josh Triplett <josh@joshtriplett.org>
+> > > Cc: Steven Rostedt <rostedt@goodmis.org>
+> > > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > > To: rcu@vger.kernel.org
+> > > ---
+> > >  kernel/rcu/srcutree.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> > > index 1c304fec89c0..725c82bb0a6a 100644
+> > > --- a/kernel/rcu/srcutree.c
+> > > +++ b/kernel/rcu/srcutree.c
+> > > @@ -154,7 +154,7 @@ static void init_srcu_struct_data(struct srcu_struct *ssp)
+> > >   */
+> > >  static inline bool srcu_invl_snp_seq(unsigned long s)
+> > >  {
+> > > -   return rcu_seq_state(s) == SRCU_SNP_INIT_SEQ;
+> > > +   return s == SRCU_SNP_INIT_SEQ;
+> >
+> > Doesn't hurt and makes it less confusing as it doesn't suggest anymore
+> > there _might_ be a gp number behind.
+> >
+> > Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+>
+> Good catch, thank you both!
+>
+> My first reaction was that this patch was wrong, so I recorded the
+> results of my investigation in the commit log.  Please check below in
+> case I messed something up.
+>
+
+It looks more clear now. Thanks for improving the log.
+
+Thanks,
+
+    Pingfan
 
 
-On 2022/11/17 6:55, Frederic Weisbecker wrote:
-> On Fri, Nov 11, 2022 at 09:07:08PM +0800, Zhen Lei wrote:
->> +1. A CPU looping with interrupts disabled.::
->> +
->> +   rcu:          hardirqs   softirqs   csw/system
->> +   rcu:  number:        0          0            0
->> +65;6003;1c   rcu: cputime:        0          0            0   ==> 2500(ms)
->> +
->> +   Because interrupts have been disabled throughout the measurement
->> +   interval, there are no interrupts and no context switches.
->> +   Furthermore, because CPU time consumption was measured using interrupt
->> +   handlers, the system CPU consumption is misleadingly measured as zero.
->> +   This scenario will normally also have "(0 ticks this GP)" printed on
->> +   this CPU's summary line.
->> +
->> +2. A CPU looping with bottom halves disabled.
->> +
->> +   This is similar to the previous example, but with non-zero number of
->> +   and CPU time consumed by hard interrupts, along with non-zero CPU
->> +   time consumed by in-kernel execution.::
->> +
->> +   rcu:          hardirqs   softirqs   csw/system
->> +   rcu:  number:      624          0            0
->> +   rcu: cputime:       49          0         2446   ==> 2500(ms)
->> +
->> +   The fact that there are zero softirqs gives a hint that these were
->> +   disabled, perhaps via local_bh_disable().  It is of course possible
->> +   that there were no softirqs, perhaps because all events that would
->> +   result in softirq execution are confined to other CPUs.  In this case,
->> +   the diagnosis should continue as shown in the next example.
->> +
->> +3. A CPU looping with preemption disabled.
->> +
->> +   Here, only the number of context switches is zero.::
->> +
->> +   rcu:          hardirqs   softirqs   csw/system
->> +   rcu:  number:      624         45            0
->> +   rcu: cputime:       69          1         2425   ==> 2500(ms)
->> +
->> +   This situation hints that the stalled CPU was looping with preemption
->> +   disabled.
->> +
->> +4. No looping, but massive hard and soft interrupts.::
->> +
->> +   rcu:          hardirqs   softirqs   csw/system
->> +   rcu:  number:       xx         xx            0
->> +   rcu: cputime:       xx         xx            0   ==> 2500(ms)
->> +
->> +   Here, the number and CPU time of hard interrupts are all non-zero,
->> +   but the number of context switches and the in-kernel CPU time consumed
->> +   are zero. The number and cputime of soft interrupts will usually be
->> +   non-zero, but could be zero, for example, if the CPU was spinning
->> +   within a single hard interrupt handler.
->> +
->> +   If this type of RCU CPU stall warning can be reproduced, you can
->> +   narrow it down by looking at /proc/interrupts or by writing code to
->> +   trace each interrupt, for example, by referring to show_interrupts().
-> 
-> One last question I have. Usually all these informations can be deduced by
-> just looking at the stacktrace that comes along an RCU stall report. So on
-> which kind of situation the stacktrace is not enough?
-
-Interrupt storm.
-
-> 
-> Thanks.
-> .
-> 
-
--- 
-Regards,
-  Zhen Lei
+>                                                         Thanx, Paul
+>
+> ------------------------------------------------------------------------
+>
+> commit 08d9c4f609afaf5c3032320d50f2bae4acdca314
+> Author: Pingfan Liu <kernelfans@gmail.com>
+> Date:   Wed Nov 16 09:52:44 2022 +0800
+>
+>     srcu: Fix the comparision in srcu_invl_snp_seq()
+>
+>     A grace-period sequence number contains two fields: counter and
+>     state.  SRCU_SNP_INIT_SEQ provides a guaranteed invalid value for
+>     grace-period sequence numbers in newly allocated srcu_node structures'
+>     ->srcu_have_cbs[] and ->srcu_gp_seq_needed_exp fields.  The point of the
+>     comparison in srcu_invl_snp_seq() is not to detect invalid grace-period
+>     sequence numbers in general, but rather to detect a newly allocated
+>     srcu_node structure whose ->srcu_have_cbs[] and ->srcu_gp_seq_needed_exp
+>     fields need to be brought into line with the srcu_struct structure's
+>     ->srcu_gp_seq field.
+>
+>     This commit therefore causes srcu_invl_snp_seq() to compare both fields
+>     of the specified grace-period sequence number.
+>
+>     Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+>     Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+>     Cc: "Paul E. McKenney" <paulmck@kernel.org>
+>     Cc: Josh Triplett <josh@joshtriplett.org>
+>     Cc: Steven Rostedt <rostedt@goodmis.org>
+>     Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+>     Cc: <rcu@vger.kernel.org>
+>     Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+>     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+>
+> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> index 16953784a0bdf..6af0312005801 100644
+> --- a/kernel/rcu/srcutree.c
+> +++ b/kernel/rcu/srcutree.c
+> @@ -154,7 +154,7 @@ static void init_srcu_struct_data(struct srcu_struct *ssp)
+>   */
+>  static inline bool srcu_invl_snp_seq(unsigned long s)
+>  {
+> -       return rcu_seq_state(s) == SRCU_SNP_INIT_SEQ;
+> +       return s == SRCU_SNP_INIT_SEQ;
+>  }
+>
+>  /*
