@@ -2,147 +2,88 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B36E8C4332F
-	for <rcu@archiver.kernel.org>; Thu, 17 Nov 2022 13:44:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CB248C4332F
+	for <rcu@archiver.kernel.org>; Thu, 17 Nov 2022 14:20:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239601AbiKQNoB (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 17 Nov 2022 08:44:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54732 "EHLO
+        id S240352AbiKQOUe (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 17 Nov 2022 09:20:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239851AbiKQNn7 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 17 Nov 2022 08:43:59 -0500
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 316FA716E3;
-        Thu, 17 Nov 2022 05:43:58 -0800 (PST)
-Received: by mail-lj1-x22b.google.com with SMTP id u11so2738657ljk.6;
-        Thu, 17 Nov 2022 05:43:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=39fAotyhMYZaBu0mj5cNmHTlGzK+8bWVHaBxa8IRXT8=;
-        b=mxC9wd2ZWDuMo/eEpfQ2dEI8F1VemvEeNYLxIfS4RMf8y+v/3S6U1XUbEOAQetHyw5
-         vNxh1kRCEsw/ZO6FY86kjNfnQjbynDcoxBOa0MN2VIzJ3rtgjem2rOhHAV7RTdTzCWoY
-         G3uBqny4f3svsIHy4aQM7olfvvwNr7B3xcGuSkInWULtA+NH0GOtXSsNJUr8AKQ+ikOQ
-         vrFrjsZudSYm+twYG8w/QmLO2h11zkAtCVx+qDtsHl6OIIhsZCqIN0vZ4C2xoifRCpTt
-         XgnFESqaRu8yo4/ER3ofxjGOmADf/5fQURlh5cnhCXWgbSPp2yBQ1r6hGMBAtcVaUDkl
-         i1aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=39fAotyhMYZaBu0mj5cNmHTlGzK+8bWVHaBxa8IRXT8=;
-        b=mrMSePPDf7DqNJJ6iRIOCLx279D/uq2YkJHL8AXq2OildNXWGSVN9oZ8Xt/C/BkluM
-         V9eAolLs6w5m/NHOc6tfDKke2zQ9DnEUvLkPyOUhbtGJRUol7/IjMpXAxjnLL7+lecAR
-         8WSd6Bp9aj33dngSXOhq2r+WcNuu9tEokD17YdpJcNvr6G5j0gw0ACysT5X1vtOavlsO
-         gGmGNrZzdaGYk3HWzimXzdRTGgJJjdt3aKCVtJdWbFQCuqMPrcnm4BGkIe1iPYfRCxP+
-         DRzQZLX3mNvmyvvt7dSFg/NoKruFJdq8q+1g0GlzcXFhsPs33YC2WP2/sNrOAMvBfhcb
-         fB1Q==
-X-Gm-Message-State: ANoB5pmlt4UnvHYhnexsVLPmZb5E5dvIM+wADbDNJ9iUuw/46cMW1JaX
-        mMAX82atTmYvmLUhZySiQRxZeoDh0tw=
-X-Google-Smtp-Source: AA0mqf6t4c/zD3RJc0wX7jOwkrlkYqCkjoiHic08R4lCvZ9T7Wt0p27N9uDJmMu8regsa0UcQ3yUvA==
-X-Received: by 2002:a2e:9457:0:b0:26e:6730:2da2 with SMTP id o23-20020a2e9457000000b0026e67302da2mr1027292ljh.245.1668692636384;
-        Thu, 17 Nov 2022 05:43:56 -0800 (PST)
-Received: from pc636 (host-90-235-25-77.mobileonline.telia.com. [90.235.25.77])
-        by smtp.gmail.com with ESMTPSA id q17-20020a19a411000000b004b40c2fccfdsm158148lfc.59.2022.11.17.05.43.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Nov 2022 05:43:56 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Thu, 17 Nov 2022 14:43:53 +0100
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>, paulmck@kernel.org,
-        linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [PATCH v2] rcu/kfree: Do not request RCU when not needed
-Message-ID: <Y3Y6mU5WUqbxfunf@pc636>
-References: <Y3YzCi9exKhiAAd0@pc636>
- <938BD0DD-9F91-44E6-BCBA-3DA3FA6779C0@joelfernandes.org>
+        with ESMTP id S240327AbiKQOUd (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 17 Nov 2022 09:20:33 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3408E59176;
+        Thu, 17 Nov 2022 06:20:31 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id D32E8B8206C;
+        Thu, 17 Nov 2022 14:20:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C67BC433C1;
+        Thu, 17 Nov 2022 14:20:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1668694828;
+        bh=9bz8ozLdU5Gqps188cWO1G1463iIY/CYrGproHkRxuY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kGi+9EhFk57oUyfocvE1BH9Nhdw62cTIMyPneJDuUssbY+smB+DRaap8sQRXvfzkO
+         3R8RsmutTLeeJvjiOlDMtd2H4CzqRVE//2NJLOE/s81nW1JOsR3t4sx5wDICXTd8ER
+         gazosC8kR4TzZxGcuZCjxz83C/Yr/mW7OkzxEkkWZragvQFZqAosqTMSrEBxjL2BhK
+         3WBkrnXVlM3nVFP+OyE7UtTi3lMXnuEFCQCCVgSml2oRNUT1ZvJKFk1BPXW6/o1akx
+         WdabsjdF7li0XN/n5MuvCajMwKrjEthafHsS6PbQX86jhGu3mY1deu/7V3zWt7B5L0
+         OwR9jYE7Q23JQ==
+Date:   Thu, 17 Nov 2022 15:20:25 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Zqiang <qiang1.zhang@intel.com>
+Cc:     paulmck@kernel.org, joel@joelfernandes.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] srcu: Add detection of boot CPU srcu_data
+ structure's->srcu_cblist
+Message-ID: <20221117142025.GE839309@lothringen>
+References: <20221117112050.3942407-1-qiang1.zhang@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <938BD0DD-9F91-44E6-BCBA-3DA3FA6779C0@joelfernandes.org>
+In-Reply-To: <20221117112050.3942407-1-qiang1.zhang@intel.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Nov 17, 2022 at 08:23:30AM -0500, Joel Fernandes wrote:
+On Thu, Nov 17, 2022 at 07:20:50PM +0800, Zqiang wrote:
+> Before SRCU_SIZE_WAIT_CALL srcu_size_state is reached, the srcu
+> callback only insert to boot-CPU srcu_data structure's->srcu_cblist
+> and other CPU srcu_data structure's->srcu_cblist is always empty. so
+> before SRCU_SIZE_WAIT_CALL is reached, need to correctly check boot-CPU
+> pend cbs in srcu_might_be_idle().
 > 
+> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+> ---
+>  kernel/rcu/srcutree.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
 > 
-> > On Nov 17, 2022, at 8:11 AM, Uladzislau Rezki <urezki@gmail.com> wrote:
-> > 
-> > ﻿On Thu, Nov 17, 2022 at 08:06:21AM -0500, Joel Fernandes wrote:
-> >> 
-> >> 
-> >>>> On Nov 17, 2022, at 7:58 AM, Uladzislau Rezki <urezki@gmail.com> wrote:
-> >>> 
-> >>> ﻿On Wed, Nov 16, 2022 at 10:05:46PM +0000, Joel Fernandes wrote:
-> >>>>> On Wed, Nov 16, 2022 at 7:19 PM Uladzislau Rezki <urezki@gmail.com> wrote:
-> >>>>> 
-> >>>>> Hello, Paul, Joel.
-> >>>>> 
-> >>>>>>> 
-> >>>>>>> Yes sure, I am doing a run now with my patch. However, I have a
-> >>>>>>> question -- why do you feel blocking in the kworker is not an issue?
-> >>>>>>> You are taking a snapshot before queuing the normal kwork and then
-> >>>>>>> reading the snapshot when the normal kwork runs. Considering it is a
-> >>>>>>> high priority queue, the delay between when you are taking the
-> >>>>>>> snapshot, and reading it is likely small so there is a bigger chance
-> >>>>>>> of blocking in cond_synchronize_rcu(). Did I miss something?
-> >>>>>>> 
-> >>>>>> We can wait indeed in the reclaim worker. But the worker does not do any
-> >>>>>> nasty or extra work here. If there is a need we block and wait. After a
-> >>>>>> grace period, we are awoken and proceed.
-> >>>>>> 
-> >>>>>> Therefore i do not see the reason in handling two cases:
-> >>>>>> 
-> >>>>>> if (gp_done)
-> >>>>>>   queue_work();
-> >>>>>> else
-> >>>>>>   queue_rcu_work();
-> >>>>>> 
-> >>>>>> it is the same if we just queue the work and check on entry. The current
-> >>>>>> scenario is: queue the work after a grace period. This is the difference.
-> >>>>>> 
-> >>>>>> Right if the reclaimer was a high prio kthread a time would be shorter.
-> >>>>>> 
-> >>>>>> In your scenario the time seems even shorter(i have not checked) because
-> >>>>>> you update a snapshot of krcp each time a kvfree_rcu() is invoked. So
-> >>>>>> basically even though you have objects whose grace period is passed you
-> >>>>>> do not separate it anyhow. Because you update the:
-> >>>>>> 
-> >>>>>> krcp->gp_snap = get_state_synchronize_rcu();
-> >>>>>> 
-> >>>>>> too often.
-> >>>>>> 
-> >>>>> Once upon a time we discussed that it is worth to keep track of GP
-> >>>>> per-a-page in order to reduce a memory footprint. Below patch addresses
-> >>>>> it:
-> >>>> 
-> >>>> In the patch below, it appears you are tracking the GP per krwp, and
-> >>>> not per page. But I could be missing something - could you split it
-> >>>> into separate patches for easier review?
-> >>>> 
-> >>> I will split. I was thinking about it. The GP is tracked per-a-page. As for
-> >>> krwp it is only for channel_3. Everything goes there if no-page or no cache.
-> >>> 
-> >> Ah, ok.
-> >> 
-> >>>> 
-> >>>> Also it still does cond_synchronize_rcu() :-(
-> >>>> 
-> >>> Sometimes we need to wait for a GP we can not just release :)
-> >> 
-> >> You know that is not what I meant ;) I was concerned about the blocking.
-> >> 
-> > Let me split. After that we/you can test and check if there is any issue
-> > with sleeping on entry for waiting a GP if needed.
-> 
-> Ack. What I’ll also do is, whenever you split it, I’ll put it on ChromeOS and see in real world, how many times we block. It could be I’m missing something of how polled GP works.
-> 
-Good!
+> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> index 6af031200580..6d9af9901765 100644
+> --- a/kernel/rcu/srcutree.c
+> +++ b/kernel/rcu/srcutree.c
+> @@ -1098,8 +1098,11 @@ static bool srcu_might_be_idle(struct srcu_struct *ssp)
+>  	unsigned long tlast;
+>  
+>  	check_init_srcu_struct(ssp);
+> -	/* If the local srcu_data structure has callbacks, not idle.  */
+> -	sdp = raw_cpu_ptr(ssp->sda);
+> +	/* If the boot CPU or local srcu_data structure has callbacks, not idle.  */
+> +	if (smp_load_acquire(&ssp->srcu_size_state) < SRCU_SIZE_WAIT_CALL)
+> +		sdp = per_cpu_ptr(ssp->sda, get_boot_cpu_id());
+> +	else
+> +		sdp = raw_cpu_ptr(ssp->sda);
 
---
-Uladzislau Rezki
+While at it if someone is interested in documenting/commenting on the meaning of
+all these SRCU_SIZE_* things, it would be much appreciated!
+
+Thanks.
+
+>  	spin_lock_irqsave_rcu_node(sdp, flags);
+>  	if (rcu_segcblist_pend_cbs(&sdp->srcu_cblist)) {
+>  		spin_unlock_irqrestore_rcu_node(sdp, flags);
+> -- 
+> 2.25.1
+> 
