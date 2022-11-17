@@ -2,163 +2,98 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BFAECC4332F
-	for <rcu@archiver.kernel.org>; Thu, 17 Nov 2022 02:34:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C720C433FE
+	for <rcu@archiver.kernel.org>; Thu, 17 Nov 2022 03:16:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234184AbiKQCeT (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 16 Nov 2022 21:34:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59100 "EHLO
+        id S234404AbiKQDQH (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 16 Nov 2022 22:16:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232809AbiKQCeS (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 16 Nov 2022 21:34:18 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC20E12A8F
-        for <rcu@vger.kernel.org>; Wed, 16 Nov 2022 18:34:16 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id l8so885340ljh.13
-        for <rcu@vger.kernel.org>; Wed, 16 Nov 2022 18:34:16 -0800 (PST)
+        with ESMTP id S231564AbiKQDQG (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 16 Nov 2022 22:16:06 -0500
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 611FA627F4
+        for <rcu@vger.kernel.org>; Wed, 16 Nov 2022 19:16:04 -0800 (PST)
+Received: by mail-qt1-x82c.google.com with SMTP id c15so373284qtw.8
+        for <rcu@vger.kernel.org>; Wed, 16 Nov 2022 19:16:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=dII0QeignRL4u4sLkO4R1zMJ93UrKg3JRgBrGTMrAYo=;
-        b=mYd2Rfi10wdDrtBrGhNb/5QeFskflJfXBY645vUrCAwCYte8shjMSxqdPZPeoQ1tKZ
-         aKa6GSYsg6UiyHDJrlQt40WDqGl+zfoXJMkCHHRvfDgzYQTkgTrmeap+O5EXpgbqJ9x4
-         eWCHINqta0365CLFezr6SjtXs1icGhPU5Lo9Q/P4FFjPBToe66/KPicyVuMSPgphUmpm
-         VG3pdkkZRjJISCRnVbhfh+Tnb6Bc6cdhrzsKo80z294XyqrbMw36CgNG+0uvMLJ08g3m
-         j+FmUvmMItyad6a4pLqQoe8jxurVOgTcgFE+XR/Sb8Jn7OGAY6ZuLuJi7LciGZxkxN0X
-         6Dzw==
+        d=joelfernandes.org; s=google;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=S1ptF9mncQNJ+YzPoHhaIMd3nHddn4TGB/DoUobLdZU=;
+        b=GcfN8q0cdS6ovJPkcYbDaqLvjp2zegbXELs5S4CRJutF7b+qeUEjdTBvXgBMq/OP0O
+         5F0oDVaz0IMlsc3dJM130Zm51BsN/20FkgL5+YveFNxpF5QeQZUfW2actFnGJSzQOl7k
+         9FJPLPu3eSIQwGzgteA3hAdyBxrFV0KXV9dzw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=dII0QeignRL4u4sLkO4R1zMJ93UrKg3JRgBrGTMrAYo=;
-        b=XYDclTcpmYdAuIxpImPGbBW5kvhdg9xC38l1GmmNuxr1jXTrAuU4/5PSdc+x/hUAhH
-         8QQeVsvVU94pP0sjhdraFpeyooFCptqKpv5Vy5ywXNV2yR/xo/aW9+pT2pAlsvD6KiVf
-         zs7D0jVGjxpKKixV4BQNXW6VZHqdQYR5VVMk7p0V1EdtuYO1wABP3H6MgLdrWhH3yV5u
-         +4P9YYYANDVaLWqGrEfnL1+gTXQx0WTVCtkdJ7URhoXmqdrXTDfPNP0gNwSEmpEejT0K
-         LK5d9IsajxKx2Eu+9rnGv3OuK4siP6yVcY0QE7wd3DvPscOAAAroqunfD8Efv+CQhYIK
-         NLAA==
-X-Gm-Message-State: ANoB5pmJpQ0yeFiauLl95ULqAuZPeR0nlt76/GzfRyy7tyl8R9Jfk8e3
-        E1ym59w/gd/+gu00g6bUVbfbFNvr2AVcUhEQlFmMSWE=
-X-Google-Smtp-Source: AA0mqf7JwTVZU+AkVfdkDYmeYvvAEjRdj2Ih26DMqMQ/Tp+EBZjmuWcx4EX4JxO/ZW6SFuNC0Uev+NQs1B7I+vvdiRE=
-X-Received: by 2002:a2e:a80a:0:b0:277:2600:9cc0 with SMTP id
- l10-20020a2ea80a000000b0027726009cc0mr310977ljq.437.1668652454947; Wed, 16
- Nov 2022 18:34:14 -0800 (PST)
+        bh=S1ptF9mncQNJ+YzPoHhaIMd3nHddn4TGB/DoUobLdZU=;
+        b=daN31oXMzIpiHw6YSYhHlXdrTdQYorpjhI3T3aUuQWALQsmcFBE7xHz4thGPo594Q1
+         hsknhF8J1W+umEoX7J6FL1bjSGeUjBibN1mdwieJxn5N0CJuXputV9lXgmJu1W+DKP6H
+         Eow3DgwweCSVP8HK9ytZqi5mGnUvfSEURlYODmYpYZ0Z6k5oqVgCb5Gatsu0wrHf30Ud
+         hHcw6MQmjCb+kia4+xOThBGbVE22nWpsf/0eKK5z8TgUKx08/+kw+wHEzPoB2EXMt3E4
+         PKy4iXOQnXbF873ohHyWw4V15je6gF8SKCLSGjQP33Jogvm5iGmgmxsmys1v6vgG+SOR
+         BcpQ==
+X-Gm-Message-State: ANoB5pkgx9Oc8ZpExKhI9m1BYnS2wdSCS0aW0Y58qjKe04QPlwLVXdxZ
+        K55TDOUZ1K8g4EnnFjBu9cOW1g==
+X-Google-Smtp-Source: AA0mqf6wIKIMbSXoQzryo0edy3a17i21tuwAle5TzhjMCIbXHB1V2gGJhQuKdO3B3/Yxj47fWCqMTA==
+X-Received: by 2002:a05:622a:401b:b0:3a5:2c7c:c915 with SMTP id cf27-20020a05622a401b00b003a52c7cc915mr722597qtb.499.1668654963515;
+        Wed, 16 Nov 2022 19:16:03 -0800 (PST)
+Received: from joelboxx.c.googlers.com.com (228.221.150.34.bc.googleusercontent.com. [34.150.221.228])
+        by smtp.gmail.com with ESMTPSA id k19-20020a05620a415300b006cdd0939ffbsm11398318qko.86.2022.11.16.19.16.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Nov 2022 19:16:03 -0800 (PST)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Jiri Pirko <jiri@resnulli.us>, netdev@vger.kernel.org,
+        Paolo Abeni <pabeni@redhat.com>, rcu@vger.kernel.org,
+        rostedt@goodmis.org, paulmck@kernel.org, fweisbec@gmail.com
+Subject: [PATCH rcu/dev 1/3] net: Use call_rcu_flush() for qdisc_free_cb
+Date:   Thu, 17 Nov 2022 03:15:48 +0000
+Message-Id: <20221117031551.1142289-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.38.1.584.g0f3c55d4c2-goog
 MIME-Version: 1.0
-References: <20221116015244.10539-1-kernelfans@gmail.com> <20221116015244.10539-2-kernelfans@gmail.com>
- <20221116133437.GA816333@lothringen> <20221116172643.GA1432130@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20221116172643.GA1432130@paulmck-ThinkPad-P17-Gen-1>
-From:   Pingfan Liu <kernelfans@gmail.com>
-Date:   Thu, 17 Nov 2022 10:34:03 +0800
-Message-ID: <CAFgQCTvybjfgpZCDQkSDOojNP5HVmfRJGEnGf1NwxphUL5igcg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] srcu: Fix the comparision in srcu_invl_snp_seq()
-To:     paulmck@kernel.org
-Cc:     Frederic Weisbecker <frederic@kernel.org>, rcu@vger.kernel.org,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Nov 17, 2022 at 1:26 AM Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> On Wed, Nov 16, 2022 at 02:34:37PM +0100, Frederic Weisbecker wrote:
-> > On Wed, Nov 16, 2022 at 09:52:44AM +0800, Pingfan Liu wrote:
-> > > A seq contains two fields: counter and state.
-> > >
-> > > SRCU_SNP_INIT_SEQ is used as invalid initial value for srcu_node GP
-> > > sequence numbers. Hence srcu_invl_snp_seq() should compare both fields
-> > > of a seq.
-> > >
-> > > Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
-> > > Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-> > > Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> > > Cc: Frederic Weisbecker <frederic@kernel.org>
-> > > Cc: Josh Triplett <josh@joshtriplett.org>
-> > > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > > To: rcu@vger.kernel.org
-> > > ---
-> > >  kernel/rcu/srcutree.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> > > index 1c304fec89c0..725c82bb0a6a 100644
-> > > --- a/kernel/rcu/srcutree.c
-> > > +++ b/kernel/rcu/srcutree.c
-> > > @@ -154,7 +154,7 @@ static void init_srcu_struct_data(struct srcu_struct *ssp)
-> > >   */
-> > >  static inline bool srcu_invl_snp_seq(unsigned long s)
-> > >  {
-> > > -   return rcu_seq_state(s) == SRCU_SNP_INIT_SEQ;
-> > > +   return s == SRCU_SNP_INIT_SEQ;
-> >
-> > Doesn't hurt and makes it less confusing as it doesn't suggest anymore
-> > there _might_ be a gp number behind.
-> >
-> > Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
->
-> Good catch, thank you both!
->
-> My first reaction was that this patch was wrong, so I recorded the
-> results of my investigation in the commit log.  Please check below in
-> case I messed something up.
->
+In a networking test on ChromeOS, we find that using the new CONFIG_RCU_LAZY
+causes a networking test to fail in the teardown phase.
 
-It looks more clear now. Thanks for improving the log.
+The failure happens during: ip netns del <name>
 
-Thanks,
+Using ftrace, I found the callbacks it was queuing which this series fixes. Use
+call_rcu_flush() to revert to the old behavior. With that, the test passes.
 
-    Pingfan
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+---
+ net/sched/sch_generic.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
+index a9aadc4e6858..63fbf640d3b2 100644
+--- a/net/sched/sch_generic.c
++++ b/net/sched/sch_generic.c
+@@ -1067,7 +1067,7 @@ static void qdisc_destroy(struct Qdisc *qdisc)
+ 
+ 	trace_qdisc_destroy(qdisc);
+ 
+-	call_rcu(&qdisc->rcu, qdisc_free_cb);
++	call_rcu_flush(&qdisc->rcu, qdisc_free_cb);
+ }
+ 
+ void qdisc_put(struct Qdisc *qdisc)
+-- 
+2.38.1.584.g0f3c55d4c2-goog
 
->                                                         Thanx, Paul
->
-> ------------------------------------------------------------------------
->
-> commit 08d9c4f609afaf5c3032320d50f2bae4acdca314
-> Author: Pingfan Liu <kernelfans@gmail.com>
-> Date:   Wed Nov 16 09:52:44 2022 +0800
->
->     srcu: Fix the comparision in srcu_invl_snp_seq()
->
->     A grace-period sequence number contains two fields: counter and
->     state.  SRCU_SNP_INIT_SEQ provides a guaranteed invalid value for
->     grace-period sequence numbers in newly allocated srcu_node structures'
->     ->srcu_have_cbs[] and ->srcu_gp_seq_needed_exp fields.  The point of the
->     comparison in srcu_invl_snp_seq() is not to detect invalid grace-period
->     sequence numbers in general, but rather to detect a newly allocated
->     srcu_node structure whose ->srcu_have_cbs[] and ->srcu_gp_seq_needed_exp
->     fields need to be brought into line with the srcu_struct structure's
->     ->srcu_gp_seq field.
->
->     This commit therefore causes srcu_invl_snp_seq() to compare both fields
->     of the specified grace-period sequence number.
->
->     Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
->     Cc: Lai Jiangshan <jiangshanlai@gmail.com>
->     Cc: "Paul E. McKenney" <paulmck@kernel.org>
->     Cc: Josh Triplett <josh@joshtriplett.org>
->     Cc: Steven Rostedt <rostedt@goodmis.org>
->     Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
->     Cc: <rcu@vger.kernel.org>
->     Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
->     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
->
-> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> index 16953784a0bdf..6af0312005801 100644
-> --- a/kernel/rcu/srcutree.c
-> +++ b/kernel/rcu/srcutree.c
-> @@ -154,7 +154,7 @@ static void init_srcu_struct_data(struct srcu_struct *ssp)
->   */
->  static inline bool srcu_invl_snp_seq(unsigned long s)
->  {
-> -       return rcu_seq_state(s) == SRCU_SNP_INIT_SEQ;
-> +       return s == SRCU_SNP_INIT_SEQ;
->  }
->
->  /*
