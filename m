@@ -2,117 +2,228 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B0BF5C433FE
-	for <rcu@archiver.kernel.org>; Thu, 17 Nov 2022 20:33:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E1469C433FE
+	for <rcu@archiver.kernel.org>; Thu, 17 Nov 2022 21:19:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239514AbiKQUdq (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 17 Nov 2022 15:33:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35344 "EHLO
+        id S232532AbiKQVTg (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 17 Nov 2022 16:19:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230287AbiKQUd1 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 17 Nov 2022 15:33:27 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 573E1E01;
-        Thu, 17 Nov 2022 12:33:26 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C9FA762260;
-        Thu, 17 Nov 2022 20:33:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ECCE0C433D6;
-        Thu, 17 Nov 2022 20:33:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1668717205;
-        bh=J1Zev6kImlFGtY0atk2gzgbyl3HFY7zcz895np01klE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=fSBbmNSJwKeF9aaQNye1w0lI2iZo/47DwIU8iqTmIvN10BcHDdcf8jenPtftm2F/Q
-         dJUCcsyYiesYxSEtD+AA7cmqXHLXdmlPDbbDR34ZqRI2QIBLt1706qWq3H0MFW0Hol
-         Y9J7fyqH2SjeDuhdgth11VoAtDnD5Ob9utHpyz/I=
-Date:   Thu, 17 Nov 2022 12:33:24 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Zqiang <qiang1.zhang@intel.com>
-Cc:     paulmck@kernel.org, thunder.leizhen@huawei.com,
-        frederic@kernel.org, joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mm: Make vmalloc_dump_obj() call in a preemptible
- context
-Message-Id: <20221117123324.c3cdad45b3204d57b5f7bc3d@linux-foundation.org>
-In-Reply-To: <20221117112520.3942618-1-qiang1.zhang@intel.com>
-References: <20221117112520.3942618-1-qiang1.zhang@intel.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        with ESMTP id S240884AbiKQVSo (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 17 Nov 2022 16:18:44 -0500
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DE588E281
+        for <rcu@vger.kernel.org>; Thu, 17 Nov 2022 13:16:47 -0800 (PST)
+Received: by mail-qt1-x833.google.com with SMTP id a27so1964552qtw.10
+        for <rcu@vger.kernel.org>; Thu, 17 Nov 2022 13:16:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8qHr/A/HsR6Kfxxon9N/W//z78EQTrNeI3dtZDxgu7I=;
+        b=x6vjBoSKE06VUDrF0LUklQxJ155Vc79k910vj+TloiikwANfBEGLQyuSx+GirdDBdH
+         uRgZ6uJnzL/KCLdVW6cquOTXbLWm+qak55ZkpCZpwn2nen2rCmmA04UdZWV15jumMuoF
+         MEr+FMLvbF+9/HBDcpgr2nxLtnd/RyJoIOs/g=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8qHr/A/HsR6Kfxxon9N/W//z78EQTrNeI3dtZDxgu7I=;
+        b=hKXIEZMBxkHp33+l0ryzHOGqLs0mhZXKBdJer3gdeKT/09Amqg1naFnwtGtXW8u6jX
+         bljj5yEW6B9CAwENMBhJbcPzmJqq11BIs3cEe/4tF7MlIZ5qsDCLLQIqNkl92RJEn1qi
+         B8Lk6InHR43ltIeVCGeS+DvPY26s28xfO2at2GSXW4tNZNVJgUCZu3VjzVAUk0Afc9/N
+         BS0Rt167QsxRZLlF6aXJisgWh0rAKwUSLcnUK5sL8MLqb3CXwYuVdRAUNGYud63VDagF
+         jxZG+NShPuT3hM9G/NXZHzQW5V4V/7qbHCp4cjhWYeEJjC6bjmHXHzhhI77WmQQZFWi9
+         +peA==
+X-Gm-Message-State: ANoB5pkznHVjdrDV04ym7DsbDoX/qSdIMnWXu1HFH3orntPdilBkt0oU
+        rSvZesQQgUmZX23GelZr1n3ZKg==
+X-Google-Smtp-Source: AA0mqf6khvBt7GMR8wp7GqQGnscxyK0aMMVFMnZPQGmleS/expSz6dqWfBEJ0QH2An3wc4fpRwsjSQ==
+X-Received: by 2002:a05:622a:514d:b0:3a5:258c:d69c with SMTP id ew13-20020a05622a514d00b003a5258cd69cmr4065956qtb.279.1668719805959;
+        Thu, 17 Nov 2022 13:16:45 -0800 (PST)
+Received: from smtpclient.apple (c-73-148-104-166.hsd1.va.comcast.net. [73.148.104.166])
+        by smtp.gmail.com with ESMTPSA id az20-20020a05620a171400b006ec771d8f89sm1162744qkb.112.2022.11.17.13.16.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Nov 2022 13:16:44 -0800 (PST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Joel Fernandes <joel@joelfernandes.org>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH rcu/dev 3/3] net: Use call_rcu_flush() for dst_destroy_rcu
+Date:   Thu, 17 Nov 2022 16:16:43 -0500
+Message-Id: <CC3744B1-20A7-4628-873A-2551938009D4@joelfernandes.org>
+References: <20221117192949.GD4001@paulmck-ThinkPad-P17-Gen-1>
+Cc:     Eric Dumazet <edumazet@google.com>, linux-kernel@vger.kernel.org,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Jiri Pirko <jiri@resnulli.us>, netdev@vger.kernel.org,
+        Paolo Abeni <pabeni@redhat.com>, rcu@vger.kernel.org,
+        rostedt@goodmis.org, fweisbec@gmail.com, jiejiang@google.com,
+        Thomas Glexiner <tglx@linutronix.de>
+In-Reply-To: <20221117192949.GD4001@paulmck-ThinkPad-P17-Gen-1>
+To:     paulmck@kernel.org
+X-Mailer: iPhone Mail (19G82)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, 17 Nov 2022 19:25:20 +0800 Zqiang <qiang1.zhang@intel.com> wrote:
 
-> Currently, the mem_dump_obj() is invoked in call_rcu(), the
-> call_rcu() is maybe invoked in non-preemptive code segment,
-> for object allocated from vmalloc(), the following scenarios
-> may occur:
-> 
->         CPU 0
-> tasks context
->    spin_lock(&vmap_area_lock)
->           Interrupt context
->               call_rcu()
->                 mem_dump_obj
->                   vmalloc_dump_obj
->                     spin_lock(&vmap_area_lock) <--deadlock
-> 
-> and for PREEMPT-RT kernel, the spinlock will convert to sleepable
-> lock, so the vmap_area_lock spinlock not allowed to get in non-preemptive
-> code segment. therefore, this commit make the vmalloc_dump_obj() call in
-> a preemptible context.
-> 
-> ...
->
-> --- a/mm/util.c
-> +++ b/mm/util.c
-> @@ -1128,7 +1128,9 @@ void mem_dump_obj(void *object)
->  		return;
->  
->  	if (virt_addr_valid(object))
-> -		type = "non-slab/vmalloc memory";
-> +		type = "non-slab memory";
-> +	else if (is_vmalloc_addr(object))
-> +		type = "vmalloc memory";
->  	else if (object == NULL)
->  		type = "NULL pointer";
->  	else if (object == ZERO_SIZE_PTR)
-> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> index ccaa461998f3..018e417b12d6 100644
-> --- a/mm/vmalloc.c
-> +++ b/mm/vmalloc.c
-> @@ -4034,6 +4034,10 @@ bool vmalloc_dump_obj(void *object)
->  	struct vm_struct *vm;
->  	void *objp = (void *)PAGE_ALIGN((unsigned long)object);
->  
-> +	if (!is_vmalloc_addr(objp) || ((IS_ENABLED(CONFIG_PREEMPT_RT) &&
-> +				!preemptible()) || in_interrupt()))
-> +		return false;
-> +
->  	vm = find_vm_area(objp);
->  	if (!vm)
->  		return false;
 
-I suggest this be restructured so we can comment each test:
+> On Nov 17, 2022, at 2:29 PM, Paul E. McKenney <paulmck@kernel.org> wrote:
+>=20
+> =EF=BB=BFOn Thu, Nov 17, 2022 at 05:40:40PM +0000, Joel Fernandes wrote:
+>>> On Thu, Nov 17, 2022 at 5:38 PM Joel Fernandes <joel@joelfernandes.org> w=
+rote:
+>>>=20
+>>> On Thu, Nov 17, 2022 at 5:17 PM Eric Dumazet <edumazet@google.com> wrote=
+:
+>>>>=20
+>>>> On Thu, Nov 17, 2022 at 7:58 AM Joel Fernandes <joel@joelfernandes.org>=
+ wrote:
+>>>>>=20
+>>>>> Hello Eric,
+>>>>>=20
+>>>>> On Wed, Nov 16, 2022 at 07:44:41PM -0800, Eric Dumazet wrote:
+>>>>>> On Wed, Nov 16, 2022 at 7:16 PM Joel Fernandes (Google)
+>>>>>> <joel@joelfernandes.org> wrote:
+>>>>>>>=20
+>>>>>>> In a networking test on ChromeOS, we find that using the new CONFIG_=
+RCU_LAZY
+>>>>>>> causes a networking test to fail in the teardown phase.
+>>>>>>>=20
+>>>>>>> The failure happens during: ip netns del <name>
+>>>>>>=20
+>>>>>> And ? What happens then next ?
+>>>>>=20
+>>>>> The test is doing the 'ip netns del <name>' and then polling for the
+>>>>> disappearance of a network interface name for upto 5 seconds. I believ=
+e it is
+>>>>> using netlink to get a table of interfaces. That polling is timing out=
+.
+>>>>>=20
+>>>>> Here is some more details from the test's owner (copy pasting from ano=
+ther
+>>>>> bug report):
+>>>>> In the cleanup, we remove the netns, and thus will cause the veth pair=
+ being
+>>>>> removed automatically, so we use a poll to check that if the veth in t=
+he root
+>>>>> netns still exists to know whether the cleanup is done.
+>>>>>=20
+>>>>> Here is a public link to the code that is failing (its in golang):
+>>>>> https://source.chromium.org/chromiumos/chromiumos/codesearch/+/main:sr=
+c/platform/tast-tests/src/chromiumos/tast/local/network/virtualnet/env/env.g=
+o;drc=3D6c2841d6cc3eadd23e07912ec331943ee33d7de8;l=3D161
+>>>>>=20
+>>>>> Here is a public link to the line of code in the actual test leading u=
+p to the above
+>>>>> path (this is the test that is run:
+>>>>> network.RoutingFallthrough.ipv4_only_primary) :
+>>>>> https://source.chromium.org/chromiumos/chromiumos/codesearch/+/main:sr=
+c/platform/tast-tests/src/chromiumos/tast/local/bundles/cros/network/routing=
+_fallthrough.go;drc=3D8fbf2c53960bc8917a6a01fda5405cad7c17201e;l=3D52
+>>>>>=20
+>>>>>>> Using ftrace, I found the callbacks it was queuing which this series=
+ fixes. Use
+>>>>>>> call_rcu_flush() to revert to the old behavior. With that, the test p=
+asses.
+>>>>>>=20
+>>>>>> What is this test about ? What barrier was used to make it not flaky ?=
 
-	/* comment goes here */
-	if (!is_vmalloc_addr(objp))
-		return false;
+>>>>>=20
+>>>>> I provided the links above, let me know if you have any questions.
+>>>>>=20
+>>>>>> Was it depending on some undocumented RCU behavior ?
+>>>>>=20
+>>>>> This is a new RCU feature posted here for significant power-savings on=
 
-	/* comment goes here */
-	if (IS_ENABLED(CONFIG_PREEMPT_RT) && !preemptible())
-		return false;
+>>>>> battery-powered devices:
+>>>>> https://lore.kernel.org/rcu/20221017140726.GG5600@paulmck-ThinkPad-P17=
+-Gen-1/T/#m7a54809b8903b41538850194d67eb34f203c752a
+>>>>>=20
+>>>>> There is also an LPC presentation about the same, I can dig the link i=
+f you
+>>>>> are interested.
+>>>>>=20
+>>>>>> Maybe adding a sysctl to force the flush would be better for function=
+al tests ?
+>>>>>>=20
+>>>>>> I would rather change the test(s), than adding call_rcu_flush(),
+>>>>>> adding merge conflicts to future backports.
+>>>>>=20
+>>>>> I am not too sure about that, I think a user might expect the network
+>>>>> interface to disappear from the networking tables quickly enough witho=
+ut
+>>>>> dealing with barriers or kernel iternals. However, I added the authors=
+ of the
+>>>>> test to this email in the hopes he can provide is point of views as we=
+ll.
+>>>>>=20
+>>>>> The general approach we are taking with this sort of thing is to use
+>>>>> call_rcu_flush() which is basically the same as call_rcu() for systems=
+ with
+>>>>> CALL_RCU_LAZY=3Dn. You can see some examples of that in the patch seri=
+es link
+>>>>> above. Just to note, CALL_RCU_LAZY depends on CONFIG_RCU_NOCB_CPU so i=
+ts only
+>>>>> Android and ChromeOS that are using it. I am adding Jie to share any i=
+nput,
+>>>>> he is from the networking team and knows this test well.
+>>>>>=20
+>>>>>=20
+>>>>=20
+>>>> I do not know what is this RCU_LAZY thing, but IMO this should be opt-i=
+n
+>>>=20
+>>> You should read the links I sent you. We did already try opt-in,
+>>> Thomas Gleixner made a point at LPC that we should not add new APIs
+>>> for this purpose and confuse kernel developers.
+>>>=20
+>>>> For instance, only kfree_rcu() should use it.
+>>>=20
+>>> No. Most of the call_rcu() usages are for freeing memory, so the
+>>> consensus is we should apply this as opt out and fix issues along the
+>>> way. We already did a lot of research/diligence on seeing which users
+>>> need conversion.
+>>>=20
+>>>> We can not review hundreds of call_rcu() call sites and decide if
+>>>> adding arbitrary delays cou hurt .
+>>>=20
+>>> That work has already been done as much as possible, please read the
+>>> links I sent.
+>>=20
+>> Also just to add, this test is a bit weird / corner case, as in anyone
+>> expecting a quick response from call_rcu() is broken by design.
+>> However, for these callbacks, it does not matter much which API they
+>> use as they are quite infrequent for power savings.
+>=20
+> The "broken by design" is a bit strong.  Some of those call_rcu()
+> invocations have been around for the better part of 20 years, after all.
+>=20
+> That aside, I do hope that we can arrive at something that will enhance
+> battery lifetime while avoiding unnecessary disruption.  But we are
+> unlikely to be able to completely avoid disruption.  As this email
+> thread illustrates.  ;-)
 
-	/* comment goes here */
-	if (in_interrupt()))
-		return false;
+Another approach, with these 3 patches could be to keep the call_rcu() but a=
+dd an rcu_barrier() after them. I think people running ip del netns should n=
+ot have to wait for their RCU cb to take too long to run and remove user vis=
+ible state. But I would need suggestions from networking experts which CBs o=
+f these 3, to do this for. Or for all of them.
 
-Where each comment carefully explains why we're performing the test. 
-It will generate the same code.
+Alternatively, we can also patch just the test with a new knob that does rcu=
+_barrier. But I dislike that as it does not fix it for all users. Probably t=
+he ip utilities will also need a patch then.
 
+Thanks,
+
+- Joel=20
+
+
+>=20
+>                            Thanx, Paul
