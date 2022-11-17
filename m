@@ -2,118 +2,157 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CFBAAC433FE
-	for <rcu@archiver.kernel.org>; Thu, 17 Nov 2022 06:30:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1019DC433FE
+	for <rcu@archiver.kernel.org>; Thu, 17 Nov 2022 07:04:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239161AbiKQGay (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 17 Nov 2022 01:30:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35880 "EHLO
+        id S234442AbiKQHEO (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 17 Nov 2022 02:04:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239246AbiKQGao (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 17 Nov 2022 01:30:44 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4FD2654F5;
-        Wed, 16 Nov 2022 22:30:43 -0800 (PST)
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2AH6DpYf012440;
-        Thu, 17 Nov 2022 06:30:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : references : date : in-reply-to : message-id : mime-version :
- content-type; s=pp1; bh=lsPssmad/2OKMG9PBKUb6Gr7P3GFl7GpUMlPs+Vy6H8=;
- b=B4SE8KsZ2HHaa4ywr8lt0SGmCfH5OYuU0YKDZfBfOtTkinZa3li99uTuSmUBi5il11Jm
- QDF5UZd84uHV1Mx6Me9zv7XfpUyogUGiTWh2dD1wgAxGTOsEsghKUObpKh5+weq9SZnU
- GWE3t8NP4sFRSL6Pm7XaIUHxG4bGJvxmDwVWoQnX+BhOyvhTHKQJ60Qn+cvzeKXKV12d
- SWc7e4ILxHNZaz7uw453nPwz6R5xKvfOcGK0We4xWzG7a1iDefGhwm8cLA2MYnFm0ots
- wj8/RnN3ahoFPfFPLaxgC0SvpxN//3ZN74ElnV/7PYvjlrecPz3/+CZBV3nseMaZA7Oi hw== 
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3kwfgerbbf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 17 Nov 2022 06:30:37 +0000
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2AH6M13k002750;
-        Thu, 17 Nov 2022 06:30:35 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma02fra.de.ibm.com with ESMTP id 3kt3495ae4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 17 Nov 2022 06:30:35 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 2AH6UWLk16712130
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 17 Nov 2022 06:30:32 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B5A09A4054;
-        Thu, 17 Nov 2022 06:30:32 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7D045A4060;
-        Thu, 17 Nov 2022 06:30:32 +0000 (GMT)
-Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Thu, 17 Nov 2022 06:30:32 +0000 (GMT)
-From:   Sven Schnelle <svens@linux.ibm.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Davidlohr Bueso <dave@stgolabs.net>,
-        Josh Triplett <josh@joshtriplett.org>,
-        linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [PATCH 1/2] torture: use for_each_present() loop in
- torture_online_all()
-References: <20221111125126.3319474-1-svens@linux.ibm.com>
-        <20221111125126.3319474-2-svens@linux.ibm.com>
-        <20221111185331.GA725751@paulmck-ThinkPad-P17-Gen-1>
-        <yt9dtu31k0r9.fsf@linux.ibm.com>
-        <20221114163009.GE4001@paulmck-ThinkPad-P17-Gen-1>
-        <yt9dzgcsiu4p.fsf@linux.ibm.com>
-        <20221115134139.GI4001@paulmck-ThinkPad-P17-Gen-1>
-Date:   Thu, 17 Nov 2022 07:30:32 +0100
-In-Reply-To: <20221115134139.GI4001@paulmck-ThinkPad-P17-Gen-1> (Paul
-        E. McKenney's message of "Tue, 15 Nov 2022 05:41:39 -0800")
-Message-ID: <yt9dr0y29jp3.fsf@linux.ibm.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
+        with ESMTP id S234493AbiKQHEL (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 17 Nov 2022 02:04:11 -0500
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAB9D62386;
+        Wed, 16 Nov 2022 23:04:09 -0800 (PST)
+Received: from dggpemm500024.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4NCW616XcxzJnpN;
+        Thu, 17 Nov 2022 15:00:57 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggpemm500024.china.huawei.com (7.185.36.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Thu, 17 Nov 2022 15:04:07 +0800
+Received: from [10.174.178.55] (10.174.178.55) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Thu, 17 Nov 2022 15:04:07 +0800
+Subject: Re: [PATCH] rcu: Make vmalloc_dump_obj() call in a preemptible
+ context
+To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>,
+        "paulmck@kernel.org" <paulmck@kernel.org>,
+        "frederic@kernel.org" <frederic@kernel.org>,
+        "joel@joelfernandes.org" <joel@joelfernandes.org>
+CC:     "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20221116141511.3695680-1-qiang1.zhang@intel.com>
+ <bbcb265f-0731-47c7-3a04-976504b95915@huawei.com>
+ <PH0PR11MB5880515EC312E9BA1FCF6A28DA069@PH0PR11MB5880.namprd11.prod.outlook.com>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <e9404e66-19ca-37c1-1f75-2d729b8af831@huawei.com>
+Date:   Thu, 17 Nov 2022 15:04:06 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: xx48Qoq1H6rdKtSjVvuggAQH2GYOe2pv
-X-Proofpoint-ORIG-GUID: xx48Qoq1H6rdKtSjVvuggAQH2GYOe2pv
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-11-17_02,2022-11-16_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
- clxscore=1015 phishscore=0 suspectscore=0 malwarescore=0 mlxscore=0
- priorityscore=1501 spamscore=0 mlxlogscore=361 lowpriorityscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2210170000 definitions=main-2211170045
+In-Reply-To: <PH0PR11MB5880515EC312E9BA1FCF6A28DA069@PH0PR11MB5880.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.55]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Paul,
 
-"Paul E. McKenney" <paulmck@kernel.org> writes:
 
->> > Yes, rcutorture has lower-level checks for CPUs being hotplugged
->> > behind its back.  Which might be sufficient.  But this patch is in
->> > response to something bad happening if the CPU is also not present in
->> > the cpu_present_mask.  Would that same bad thing happen if rcutorture saw
->> > the CPU in cpu_online_mask, but by the time it attempted to CPU-hotplug
->> > it, that CPU was gone not just from cpu_online_mask, but also from
->> > cpu_present_mask?
->> >
->> > Or are CPUs never removed from cpu_present_mask?
->> 
->> In the current implementation CPUs can only be added to the
->> cpu_present_mask, but never removed. This might change in the future
->> when we get support from firmware for that, but the current s390 code
->> doesn't do that.
->
-> Very good!
->
-> Then could the patch please check that bits are never removed?
-> That way the code will complain should firmware support be added.
->
-> 							Thanx, Paul
+On 2022/11/17 13:20, Zhang, Qiang1 wrote:
+> 
+> 
+> On 2022/11/16 22:15, Zqiang wrote:
+>> Currently, the mem_dump_obj() is invoked in call_rcu(), the
+>>
+>> Plan to call mem_dump_obj() in rcu_do_batch().
+>>
+>> call_rcu() is maybe invoked in non-preemptive code segment,
+>> for object allocated from vmalloc(), the following scenarios
+>> may occur:
+>>
+>> 	CPU 0
+>> tasks context
+>>    spin_lock(&vmap_area_lock)
+>>           Interrupt context
+>> 	      call_rcu()
+>> 		mem_dump_obj
+>>                   vmalloc_dump_obj
+>>                     spin_lock(&vmap_area_lock) <--deadlock
+>>
+>> and for PREEMPT-RT kernel, the spinlock will convert to sleepable
+>> lock, it also make vmap_area_lock spinlock can not acquire in
+>> non-preemptive code segment. therefore, this commit make the
+>> vmalloc_dump_obj() call in a preemptible context.
+>>
+>> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+>> ---
+>>  mm/util.c | 10 +++++++---
+>>  1 file changed, 7 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/mm/util.c b/mm/util.c
+>> index 12984e76767e..465f8b8824ca 100644
+>> --- a/mm/util.c
+>> +++ b/mm/util.c
+>> @@ -1124,8 +1124,12 @@ void mem_dump_obj(void *object)
+>>  		return;
+>>  	}
+>>  
+>> -	if (vmalloc_dump_obj(object))
+>> -		return;
+>> +	if (is_vmalloc_addr(object)) {
+>> +		if (preemptible() && vmalloc_dump_obj(object))
+>>
+>> preemptible() --> !in_interrupt()?
+> 
+> Hi Leizhen 
+> 
+> !in_interrupt()  not include following scenario:
+> 
+> task context:
+> 
+> local_irq_save() or preempt_disable();
+> call_rcu()
+>       mem_dump_obj()
+> 	vmalloc_dump_obj()
+> 		spin_lock(&vmap_area_lock)
+> local_irq_restore() or preempt_denable();
+> 
+> for PREEMPT-RT kernel, spinlock will convert to sleepable lock.
 
-I'm not sure whether i fully understand that. If the CPU could
-be removed from the system and the cpu_present_mask, that could
-happen at any time. So i don't see how we should check about that?
+OK.
 
-Regards
-Sven
+> 
+>>
+>> +			return;
+>> +		type = "vmalloc memory";
+>> +		goto end;
+>> +	}
+>>
+>> Move into vmalloc_dump_obj()?
+> 
+> you mean move preemptible() into vmalloc_dump_obj()?
+
+Move all? Currently, vmalloc_dump_obj() is invoked only by
+mem_dump_obj(). The encapsulation is a little better in my opinion.
+
+> 
+> Thanks
+> Zqiang
+> 
+>>
+>>  
+>>  	if (virt_addr_valid(object))
+>>  		type = "non-slab/vmalloc memory";
+>> @@ -1135,7 +1139,7 @@ void mem_dump_obj(void *object)
+>>  		type = "zero-size pointer";
+>>  	else
+>>  		type = "non-paged memory";
+>> -
+>> +end:
+>>  	pr_cont(" %s\n", type);
+>>  }
+>>  EXPORT_SYMBOL_GPL(mem_dump_obj);
+>>
+> 
+
+-- 
+Regards,
+  Zhen Lei
