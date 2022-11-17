@@ -2,96 +2,96 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C2B35C4332F
-	for <rcu@archiver.kernel.org>; Thu, 17 Nov 2022 14:27:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B0A9C4332F
+	for <rcu@archiver.kernel.org>; Thu, 17 Nov 2022 14:41:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231634AbiKQO1P (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 17 Nov 2022 09:27:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54826 "EHLO
+        id S234898AbiKQOlQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 17 Nov 2022 09:41:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240425AbiKQO05 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 17 Nov 2022 09:26:57 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DF6679E37;
-        Thu, 17 Nov 2022 06:26:52 -0800 (PST)
+        with ESMTP id S240539AbiKQOkn (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 17 Nov 2022 09:40:43 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4246073B8D
+        for <rcu@vger.kernel.org>; Thu, 17 Nov 2022 06:39:50 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 61CC161EB0;
-        Thu, 17 Nov 2022 14:26:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4473BC433C1;
-        Thu, 17 Nov 2022 14:26:51 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DCFFB61E7A
+        for <rcu@vger.kernel.org>; Thu, 17 Nov 2022 14:39:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C87DFC433D6;
+        Thu, 17 Nov 2022 14:39:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668695211;
-        bh=D1wwaHLrcK7v98VTHcsp0E+y8XbdwP5RwD0WwgWL2o0=;
+        s=k20201202; t=1668695989;
+        bh=lfo7XWZsyzJz1kV9AVsvvxJ69PXuStzXRIjK9YLStpg=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=h7rZTPAT0gEHyEj2BGoOmE0ex1yRgX9Y7rkCasrlSear/w5e7Nt+uw1ZeXYWi2KUb
-         /ZbFtFTa804+yGKSjj+bcodLz/KBzO0zR/nwMwsqoW/AzNVgIq+3r+Muvn/4GSZFBr
-         fu/e2ttYP4ycVWdSgfFS9oDkXRw0hxiU/kPUwcYA+orGgFjCnUgVnedetXAJp1Kbot
-         cqTfR++pT87Iib3hWvgv7orzwKsJGSVnbCYcDskBBNTPP4VeQma9gNGFBj789z6D0Z
-         ftPFs8G+LPHU95xCGugNhDHawf30A4ycxpS8h0XbrQPs4vWvrKx19XCwYQendraeU8
-         esQe+IfLZs9CA==
-Date:   Thu, 17 Nov 2022 15:26:48 +0100
+        b=qnYzU9c6xo4DS8Tjo+8r6kwAHWld7UKAhh2m4ia3I6C+BMeGrJVWA8jyJbWhRS8Ag
+         1YLuHwMmov3Lif8WCn7CiY3tQkAVmvetJj031udZoE06COarVj8cThC77478rlzyUL
+         cbWVqRsJcp3Yp6HIRv7HJQ+9mypoau7rIaMEWLBfEU82BRyaPx4ahIhCRXRLvepaqk
+         DzWrgmfG/F3NPzvreTxybvB15SGjXy1kqNFl3JuwOY+sfS7cTSJxYk8eH3G4EquyYo
+         FNwF17CXuxLaNsNrdQjlL+dA5ORobfplrYAgAx+dlxC8yfPy7/X1eO41XeQeAiJFy0
+         LnP3s6Qf8mgAw==
+Date:   Thu, 17 Nov 2022 15:39:46 +0100
 From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Pingfan Liu <kernelfans@gmail.com>, rcu@vger.kernel.org,
+        David Woodhouse <dwmw@amazon.co.uk>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Robert Elliott <elliott@hpe.com>
-Subject: Re: [PATCH v7 4/6] rcu: Add RCU stall diagnosis information
-Message-ID: <20221117142648.GF839309@lothringen>
-References: <20221111130709.247-1-thunder.leizhen@huawei.com>
- <20221111130709.247-5-thunder.leizhen@huawei.com>
- <20221116223942.GA838972@lothringen>
- <d4f7f41c-e1ef-606f-d700-3e67059bb06d@huawei.com>
- <20221117122238.GC839309@lothringen>
- <54aa07c4-b7e3-1a0e-e6a3-444573caba16@huawei.com>
+        Joel Fernandes <joel@joelfernandes.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>
+Subject: Re: [PATCHv2 3/3] rcu: coordinate tick dependency during concurrent
+ offlining
+Message-ID: <20221117143946.GG839309@lothringen>
+References: <YzLJZU2mAPjfD/RK@piliu.users.ipa.redhat.com>
+ <CAFgQCTtLm-JXRyQfKo6-+P00SShVGujZGau+khmtCe1AiRodQA@mail.gmail.com>
+ <20220930154459.GF4196@paulmck-ThinkPad-P17-Gen-1>
+ <CAFgQCTu75NPFM8L6a8-bgAzwzNtEdAV+DkXc7ssu6arf3o-o-A@mail.gmail.com>
+ <20221002162002.GR4196@paulmck-ThinkPad-P17-Gen-1>
+ <CAFgQCTtgLfc0NeYqyWk4Ew-pA9rMREjRjWSnQhYLv-V5117s9Q@mail.gmail.com>
+ <20221027174620.GC5600@paulmck-ThinkPad-P17-Gen-1>
+ <CAFgQCTuoy+9DdQsVZvbLcn70JaHUhR2HZ=D35Akj4=GceGO2Lg@mail.gmail.com>
+ <20221103165143.GX5600@paulmck-ThinkPad-P17-Gen-1>
+ <20221107160726.GA3892067@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <54aa07c4-b7e3-1a0e-e6a3-444573caba16@huawei.com>
+In-Reply-To: <20221107160726.GA3892067@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Nov 17, 2022 at 09:25:44PM +0800, Leizhen (ThunderTown) wrote:
-> 
-> 
-> On 2022/11/17 20:22, Frederic Weisbecker wrote:
-> > On Thu, Nov 17, 2022 at 09:57:18AM +0800, Leizhen (ThunderTown) wrote:
-> >>
-> >>
-> >> On 2022/11/17 6:39, Frederic Weisbecker wrote:
-> >>> On Fri, Nov 11, 2022 at 09:07:07PM +0800, Zhen Lei wrote:
-> >>>> @@ -262,6 +279,8 @@ struct rcu_data {
-> >>>>  	short rcu_onl_gp_flags;		/* ->gp_flags at last online. */
-> >>>>  	unsigned long last_fqs_resched;	/* Time of last rcu_resched(). */
-> >>>>  	unsigned long last_sched_clock;	/* Jiffies of last rcu_sched_clock_irq(). */
-> >>>> +	struct rcu_snap_record snap_record; /* Snapshot of core stats at half of */
-> >>>> +					    /* the first RCU stall timeout */
-> >>>
-> >>> This should be under #ifdef CONFIG_RCU_CPU_STALL_CPUTIME
-> >>
-> >> This will not work for now because we also support boot option
-> >> rcupdate.rcu_cpu_stall_cputime.
+On Mon, Nov 07, 2022 at 08:07:26AM -0800, Paul E. McKenney wrote:
+> > I ran 200 hours of TREE04 and got an RCU CPU stall warning.  I ran 2000
+> > hours on v6.0, which precedes these commits, and everything passed.
 > > 
-> > I'm confused. If CONFIG_RCU_CPU_STALL_CPUTIME=n then rcupdate.rcu_cpu_stall_cputime has
-> > no effect, right?
+> > I will run more, primarily on v6.0, but that is what I have thus far.
+> > At the moment, I have some concerns about this change.
 > 
-> No, rcupdate.rcu_cpu_stall_cputime override CONFIG_RCU_CPU_STALL_CPUTIME. Because
-> the default value of CONFIG_RCU_CPU_STALL_CPUTIME is n, so in most cases, we need
-> rcupdate.rcu_cpu_stall_cputime as the escape route.
+> OK, so I have run a total of 8000 hours on v6.0 without failure.  I have
+> run 4200 hours on rcu#revert_tick_dep with 15 failures.  The ones I
+> looked at were RCU CPU stall warnings with timer failures.
 > 
-> If CONFIG_RCU_CPU_STALL_CPUTIME=y is default, your suggestion is more
-> appropriate.
+> This data suggests that the kernel is not yet ready for that commit
+> to be reverted.
 
-Oh ok I thought it was a support Kconfig switch.
+But that branch has the three commits reverted:
 
-Then please just mention that rcupdate.rcu_cpu_stall_cputime overrides
-CONFIG_RCU_CPU_STALL_CPUTIME behaviour in the Kconfig help text.
+1) tick: Detect and fix jiffies update stall
+2) timers/nohz: Last resort update jiffies on nohz_full IRQ entry*
+3) rcu: Make CPU-hotplug removal operations enable tick
+
+Reverting all of them is expected to fail anyway.
+
+What we would like to know is if reverting just 3) is fine. Because
+1) and 2) are supposed to fix the underlying issue.
+
+I personally didn't manage to trigger failures with just reverting 3)
+after thousands hours. But it failed with reverting all of them.
+
+Has someone managed to trigger a failure with only 3) reverted?
 
 Thanks.
