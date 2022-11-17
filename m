@@ -2,80 +2,132 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 38D4BC433FE
-	for <rcu@archiver.kernel.org>; Thu, 17 Nov 2022 12:23:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 74AC6C4332F
+	for <rcu@archiver.kernel.org>; Thu, 17 Nov 2022 12:59:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231489AbiKQMXn (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 17 Nov 2022 07:23:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49798 "EHLO
+        id S234774AbiKQM7A (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 17 Nov 2022 07:59:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230327AbiKQMXm (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 17 Nov 2022 07:23:42 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D96A4DED8;
-        Thu, 17 Nov 2022 04:23:40 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 81752B82032;
-        Thu, 17 Nov 2022 12:23:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B336C433C1;
-        Thu, 17 Nov 2022 12:23:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668687818;
-        bh=bUlvDWenMKOSW37r6XauBtynPOLrrbofXsL89kzAaF8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=p8BAEB2SjFfIOkqSlOYMeppqsk6LHwbMJhRPlImqSWbXJwbBBdSgKvZ+036+lURBk
-         AdmapwZen3cryovwwnGXxLmlqCQMRJ/UnrBbBTW0CW59mtSFbTBV7bc+crAIPPlDLF
-         hbFuN+YJ7jK8Ky9Xbn4xZtXqSs9BxrCAZgxp3p0S6/6DPA0g3Uo821wXTgI5q7DfoV
-         v1r5ASQIDDHAg6xa0TedOWOVBLc7eTlA9YatpJsQxi5H2RbuTO0yiMJG5FALgx+2ZZ
-         kUQzgdbXiT7an7eJuv6MJovoYJWsJXWI0Fw84Rz5xTQyYqxOxyenvcdvLdgCGnaW3Y
-         gE5iX2nrvaRoA==
-Date:   Thu, 17 Nov 2022 13:23:35 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Robert Elliott <elliott@hpe.com>
-Subject: Re: [PATCH v7 5/6] doc: Document CONFIG_RCU_CPU_STALL_CPUTIME=y
- stall information
-Message-ID: <20221117122335.GD839309@lothringen>
-References: <20221111130709.247-1-thunder.leizhen@huawei.com>
- <20221111130709.247-6-thunder.leizhen@huawei.com>
- <20221116225507.GA839220@lothringen>
- <1d007125-9e1a-8018-d6b4-8838ecc1a873@huawei.com>
+        with ESMTP id S234942AbiKQM67 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 17 Nov 2022 07:58:59 -0500
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 719E243AD3;
+        Thu, 17 Nov 2022 04:58:58 -0800 (PST)
+Received: by mail-lj1-x22e.google.com with SMTP id l8so2545543ljh.13;
+        Thu, 17 Nov 2022 04:58:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4M57t7OTYcTJSURkZCimQgbB4Jr0X+04ID9CvGlRIYw=;
+        b=UP34KdXI2/OgF70xNfa2goOp9brX4OwQZBDswcubWNdwRgwVK4rJTcDlD0tFWbPzpq
+         5wRnHHSoO/9L7CuMY6jzi1jbE9T3vK1mczWnzoJm84STvjjcQodQgxwRbKugDX4Wbk5L
+         mH+jITgl3PNOgLUUl8YAUoUn4ehLW9FC1VJ0IW9sbB2CSXAfSRcFtqTl7LgcmpXZSh+O
+         Ck8NAOzXBjK2np4NbJM8r27pJzeUapbyStJ7WcevzAqjOoGbMH7cmKFGDQgkApoILMs/
+         prEyTMncyPxHbnMCNiuUEqDW5fAE9qvJOERc8FZNeSlMsJ/rOhQDT6jsme8PYEn8s49s
+         6/VA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4M57t7OTYcTJSURkZCimQgbB4Jr0X+04ID9CvGlRIYw=;
+        b=lfQHY3A2PFQKwsutBH29PAtmfoBzr5Af7jyWl6KVNlLVOe3ukNiMnsTMelW7JG7JPf
+         hrbIPS2Oz41AQ1fm5FMNzd7RH0yTjwPGeRsE+TlYKUyuj7qE5/Oc7NMprNG4y7CB9eQW
+         vTtKlYHCPB8BzNb1MAjrKki02ESBHw2n/sV/jTVFpBiGEQ73mq3i3iOVRrad6jp3sL0E
+         134UIqT/ZZEm5u0hFX6c11IUpHjmWPzL8+1rQzRyX5IQSGYxbwKX3VPlOrUPcJ4YxyD9
+         y6mVdR0+s20IFoByMX8SlfvvwlhhJWZdrqBuIE+5X4wVUUnwKE7xgaARiUwXA8GO9NLe
+         J7bA==
+X-Gm-Message-State: ANoB5plR9ToUq30lWcPaycG4AO9uHq5F+THjPWbzX49nco5kWJevGvkT
+        t3CvyVh++1HPEhfmXHTvgSY=
+X-Google-Smtp-Source: AA0mqf7st/5wwsDYJQtakeDuEYYh6gQHjTSvgKCecK6CrMPFGlT6HYFaePwvZ95gxNfflboIqyyTSg==
+X-Received: by 2002:a05:651c:247:b0:278:fa62:bc91 with SMTP id x7-20020a05651c024700b00278fa62bc91mr900665ljn.100.1668689936666;
+        Thu, 17 Nov 2022 04:58:56 -0800 (PST)
+Received: from pc636 (host-90-235-25-77.mobileonline.telia.com. [90.235.25.77])
+        by smtp.gmail.com with ESMTPSA id q30-20020a19431e000000b0049735cec78dsm140026lfa.67.2022.11.17.04.58.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Nov 2022 04:58:56 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Thu, 17 Nov 2022 13:58:54 +0100
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>, paulmck@kernel.org,
+        linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Subject: Re: [PATCH v2] rcu/kfree: Do not request RCU when not needed
+Message-ID: <Y3YwDuKibmOiz6/7@pc636>
+References: <20221109024758.2644936-1-joel@joelfernandes.org>
+ <Y2z3Mb3u8bFZ12wY@pc636>
+ <CAEXW_YSq89xzgyQ9Tdt1tCqz8VAfzb7kSXVZmnxDuJ65U0UZ3w@mail.gmail.com>
+ <Y20EOinwcLSZHmXg@pc638.lan>
+ <Y22ry4Q2OY2zovco@google.com>
+ <Y3Iyka86FlUh9D1P@pc636>
+ <CAEXW_YR8ycdF0Y80p2qKXQm3Qc+XA441jQZ3uiHk=TbaXngNkQ@mail.gmail.com>
+ <Y3OPI/pWZ5jf4X9y@pc636>
+ <Y3U3zPzLMux8fpVY@pc638.lan>
+ <CAEXW_YTVmGnC_aBNQ49OfNiD+CX1VX0-R6c_3mNZNvvAoAw0hA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1d007125-9e1a-8018-d6b4-8838ecc1a873@huawei.com>
+In-Reply-To: <CAEXW_YTVmGnC_aBNQ49OfNiD+CX1VX0-R6c_3mNZNvvAoAw0hA@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Nov 17, 2022 at 10:03:17AM +0800, Leizhen (ThunderTown) wrote:
-> On 2022/11/17 6:55, Frederic Weisbecker wrote:
-> > On Fri, Nov 11, 2022 at 09:07:08PM +0800, Zhen Lei wrote:
-> > One last question I have. Usually all these informations can be deduced by
-> > just looking at the stacktrace that comes along an RCU stall report. So on
-> > which kind of situation the stacktrace is not enough?
+On Wed, Nov 16, 2022 at 10:05:46PM +0000, Joel Fernandes wrote:
+> On Wed, Nov 16, 2022 at 7:19 PM Uladzislau Rezki <urezki@gmail.com> wrote:
+> >
+> > Hello, Paul, Joel.
+> >
+> > > >
+> > > > Yes sure, I am doing a run now with my patch. However, I have a
+> > > > question -- why do you feel blocking in the kworker is not an issue?
+> > > > You are taking a snapshot before queuing the normal kwork and then
+> > > > reading the snapshot when the normal kwork runs. Considering it is a
+> > > > high priority queue, the delay between when you are taking the
+> > > > snapshot, and reading it is likely small so there is a bigger chance
+> > > > of blocking in cond_synchronize_rcu(). Did I miss something?
+> > > >
+> > > We can wait indeed in the reclaim worker. But the worker does not do any
+> > > nasty or extra work here. If there is a need we block and wait. After a
+> > > grace period, we are awoken and proceed.
+> > >
+> > > Therefore i do not see the reason in handling two cases:
+> > >
+> > > if (gp_done)
+> > >     queue_work();
+> > > else
+> > >     queue_rcu_work();
+> > >
+> > > it is the same if we just queue the work and check on entry. The current
+> > > scenario is: queue the work after a grace period. This is the difference.
+> > >
+> > > Right if the reclaimer was a high prio kthread a time would be shorter.
+> > >
+> > > In your scenario the time seems even shorter(i have not checked) because
+> > > you update a snapshot of krcp each time a kvfree_rcu() is invoked. So
+> > > basically even though you have objects whose grace period is passed you
+> > > do not separate it anyhow. Because you update the:
+> > >
+> > > krcp->gp_snap = get_state_synchronize_rcu();
+> > >
+> > > too often.
+> > >
+> > Once upon a time we discussed that it is worth to keep track of GP
+> > per-a-page in order to reduce a memory footprint. Below patch addresses
+> > it:
 > 
-> Interrupt storm.
-
-Now that makes sense :)
-
-Thanks.
+> In the patch below, it appears you are tracking the GP per krwp, and
+> not per page. But I could be missing something - could you split it
+> into separate patches for easier review?
+>
+I will split. I was thinking about it. The GP is tracked per-a-page. As for
+krwp it is only for channel_3. Everything goes there if no-page or no cache.
 
 > 
-> > 
-> > Thanks.
-> > .
-> > 
+> Also it still does cond_synchronize_rcu() :-(
 > 
-> -- 
-> Regards,
->   Zhen Lei
+Sometimes we need to wait for a GP we can not just release :)
+
+--
+Uladzislau Rezki
