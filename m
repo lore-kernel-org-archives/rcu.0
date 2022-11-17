@@ -2,57 +2,58 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CF14AC4332F
-	for <rcu@archiver.kernel.org>; Thu, 17 Nov 2022 21:44:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BE88DC4167D
+	for <rcu@archiver.kernel.org>; Thu, 17 Nov 2022 22:00:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234813AbiKQVo2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 17 Nov 2022 16:44:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57708 "EHLO
+        id S241094AbiKQWAI (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 17 Nov 2022 17:00:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240005AbiKQVo0 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 17 Nov 2022 16:44:26 -0500
-Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01C20248DB
-        for <rcu@vger.kernel.org>; Thu, 17 Nov 2022 13:44:25 -0800 (PST)
-Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-3691e040abaso31956287b3.9
-        for <rcu@vger.kernel.org>; Thu, 17 Nov 2022 13:44:24 -0800 (PST)
+        with ESMTP id S241112AbiKQV7w (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 17 Nov 2022 16:59:52 -0500
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 967BA9FEC
+        for <rcu@vger.kernel.org>; Thu, 17 Nov 2022 13:58:28 -0800 (PST)
+Received: by mail-qk1-x729.google.com with SMTP id g10so2234681qkl.6
+        for <rcu@vger.kernel.org>; Thu, 17 Nov 2022 13:58:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=0dEySP+67Qj/8hz+k7RmfDq3r5ZO5uceZ2qx/Czfr+M=;
-        b=omnRQJUQBaSHQeWZbMGNBkbJ+SnZ5V1BQjcZAa495uLQ1wVGH0DTgBo+MG+ihfuYSq
-         AU7So10AWNKX24Js4oaY7jasYv59XVn3qoyi41ZJKUO768yQ1FhjG8sdavJIKFSm+0Ho
-         d51rh1Dwn2zBcjkzj7CG/CqDn+qKcD4KKPZmm7wFze7PpuiUe7JpedP3Tps91N6PBkNa
-         4ERbjjTu9M5iNr0Z7U+mx4jzcXALPpIJfxfppsT1K7AFDZLk/W/Tfi+nsuoi3vlzRNXI
-         UJLlPDquXJWZyipp194uzndT00am22SjimPMZkDo9VxFeA08UV4Ji0eU1V3zU4smQRWt
-         YMSw==
+        d=joelfernandes.org; s=google;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sdJwHvXndE3LnyuSwNgHfLaxUa5yGh5fKAZ/2I7kMxw=;
+        b=Hq8SHtfQDMLJrzI1zZisebHGzHqdL4OgvuhVqmJqF4exqNzl1GwiShmFzcKxci0s/y
+         2nsm8XGhEy0YccW0bWQOK2pVfZ2+byGo1j2wjwhculPCpRCo5pjJqj+dtp64qmsTTjke
+         moW7TrwAPa1QkM65Y2rCfiLDZ25T78zCqBHQo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0dEySP+67Qj/8hz+k7RmfDq3r5ZO5uceZ2qx/Czfr+M=;
-        b=JoCYKUyoPbMIpspNgIZGOG24MohGJEEtA1B182yh8icAiAPzGrlNdNKP+6cVnKFq+A
-         wEeexE9OkPGrmQ8HZtovxaAQe1o42exwL0PwCHqW/2g9lNKTg5JfjFcMUJ/fiNI7aQZh
-         ifptQMHP+VN4mYMW50fMmcY8UEWq9ABreumj20vYEuvgtcqq3TaBMlwv6d6rTlSJRWKs
-         tthcz4kldkyg8KPOxWJubWYQjLFaMtyF/QxJAw60xqzpFDv9qdS2h2CmC/HEfsq6YW9U
-         nvjopiaKh/hGuri/GorQeiG/d2P2tgwDPlYwrwv+xdSFomIoJTnEVFC2I+9hYqxTV/19
-         /TSg==
-X-Gm-Message-State: ANoB5pktkOLc0mETbUceHiAq0NcBEs/b1LdC5njF7BQH4nOPvMg699bq
-        wBp1hqqTyYYW/xbvcVxCrz7cRicSIgPeAwGC2t9jdQ==
-X-Google-Smtp-Source: AA0mqf631fAYnWegGJdIShhSJBXQaE2RbCmkeJ51neWtuvbN2uJaFUii0vw1s59iT9DZBR4RufY1V9jQSFUbL4DFWbs=
-X-Received: by 2002:a81:5f04:0:b0:393:ab0b:5a31 with SMTP id
- t4-20020a815f04000000b00393ab0b5a31mr1799919ywb.55.1668721463959; Thu, 17 Nov
- 2022 13:44:23 -0800 (PST)
-MIME-Version: 1.0
-References: <20221117031551.1142289-1-joel@joelfernandes.org>
-In-Reply-To: <20221117031551.1142289-1-joel@joelfernandes.org>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Thu, 17 Nov 2022 13:44:12 -0800
-Message-ID: <CANn89iJuy=PuAiwrjF3qZY0M+86eRQ=o_x-m-eoxOdyAM8yoSg@mail.gmail.com>
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sdJwHvXndE3LnyuSwNgHfLaxUa5yGh5fKAZ/2I7kMxw=;
+        b=PK0XTINKZS8ITpu+CgnRApIkki9nWT39YSLi+maTZ3CHwTKDVkiMTL9syaBhOpzkWm
+         xk2MUI2ORtgIEBf1u/ElFUiEdE9rxSQ4mjO1AuU+FOsJRFow+OZzN2EsCLIowd9gkr6E
+         JOw5r4nt0Jwok+C6ojF77GOkYFnYdbaaEVRoDwq4P2uJFNQMkx42OoVbRGR2/F+KaeRK
+         HdQ2LPxO4OQFygWpUJcF1spGefBU0JvYjOC/aE7X4QnXMrsoWZ6XRSIRRQgjRP5J9Unt
+         kk7gIRKKNmHHn7MyMY7fgtlxaB2Tu3ScTTAUPJuoo20rvUql7NyQN5ZFdnIeuvJf6yqT
+         fsAQ==
+X-Gm-Message-State: ANoB5plCphPlaZ2sxPjBiPzSXyBN0uET26dktlFpxAo2MYm/y0vJQNS5
+        L1oJtOmntdHKU1dtbcR1XsZfFg==
+X-Google-Smtp-Source: AA0mqf4F1WSB/TnhqpkihBlK3h3QxuREsXKoZ/dGjhYzWK/h+ls0do4OcG4lzJNsx96nqWOb+v7rkQ==
+X-Received: by 2002:a05:620a:530c:b0:6fa:6e0c:ab79 with SMTP id oo12-20020a05620a530c00b006fa6e0cab79mr3651369qkn.74.1668722307650;
+        Thu, 17 Nov 2022 13:58:27 -0800 (PST)
+Received: from smtpclient.apple (c-73-148-104-166.hsd1.va.comcast.net. [73.148.104.166])
+        by smtp.gmail.com with ESMTPSA id j11-20020a05620a410b00b006bba46e5eeasm1261335qko.37.2022.11.17.13.58.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Nov 2022 13:58:27 -0800 (PST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Joel Fernandes <joel@joelfernandes.org>
+Mime-Version: 1.0 (1.0)
 Subject: Re: [PATCH rcu/dev 1/3] net: Use call_rcu_flush() for qdisc_free_cb
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Date:   Thu, 17 Nov 2022 16:58:26 -0500
+Message-Id: <DCDBA54C-C35B-497D-BB39-224C88B94660@joelfernandes.org>
+References: <CANn89iJuy=PuAiwrjF3qZY0M+86eRQ=o_x-m-eoxOdyAM8yoSg@mail.gmail.com>
 Cc:     linux-kernel@vger.kernel.org, Cong Wang <xiyou.wangcong@gmail.com>,
         David Ahern <dsahern@kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
@@ -62,42 +63,62 @@ Cc:     linux-kernel@vger.kernel.org, Cong Wang <xiyou.wangcong@gmail.com>,
         Jiri Pirko <jiri@resnulli.us>, netdev@vger.kernel.org,
         Paolo Abeni <pabeni@redhat.com>, rcu@vger.kernel.org,
         rostedt@goodmis.org, paulmck@kernel.org, fweisbec@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CANn89iJuy=PuAiwrjF3qZY0M+86eRQ=o_x-m-eoxOdyAM8yoSg@mail.gmail.com>
+To:     Eric Dumazet <edumazet@google.com>
+X-Mailer: iPhone Mail (19G82)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Nov 16, 2022 at 7:16 PM Joel Fernandes (Google)
-<joel@joelfernandes.org> wrote:
->
-> In a networking test on ChromeOS, we find that using the new CONFIG_RCU_LAZY
-> causes a networking test to fail in the teardown phase.
->
-> The failure happens during: ip netns del <name>
->
-> Using ftrace, I found the callbacks it was queuing which this series fixes. Use
-> call_rcu_flush() to revert to the old behavior. With that, the test passes.
->
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> ---
->  net/sched/sch_generic.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
-> index a9aadc4e6858..63fbf640d3b2 100644
-> --- a/net/sched/sch_generic.c
-> +++ b/net/sched/sch_generic.c
-> @@ -1067,7 +1067,7 @@ static void qdisc_destroy(struct Qdisc *qdisc)
->
->         trace_qdisc_destroy(qdisc);
->
-> -       call_rcu(&qdisc->rcu, qdisc_free_cb);
-> +       call_rcu_flush(&qdisc->rcu, qdisc_free_cb);
->  }
 
-I took a look at this one.
 
-qdisc_free_cb() is essentially freeing : Some per-cpu memory, and the
-'struct Qdisc'
+> On Nov 17, 2022, at 4:44 PM, Eric Dumazet <edumazet@google.com> wrote:
+>=20
+> =EF=BB=BFOn Wed, Nov 16, 2022 at 7:16 PM Joel Fernandes (Google)
+> <joel@joelfernandes.org> wrote:
+>>=20
+>> In a networking test on ChromeOS, we find that using the new CONFIG_RCU_L=
+AZY
+>> causes a networking test to fail in the teardown phase.
+>>=20
+>> The failure happens during: ip netns del <name>
+>>=20
+>> Using ftrace, I found the callbacks it was queuing which this series fixe=
+s. Use
+>> call_rcu_flush() to revert to the old behavior. With that, the test passe=
+s.
+>>=20
+>> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+>> ---
+>> net/sched/sch_generic.c | 2 +-
+>> 1 file changed, 1 insertion(+), 1 deletion(-)
+>>=20
+>> diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
+>> index a9aadc4e6858..63fbf640d3b2 100644
+>> --- a/net/sched/sch_generic.c
+>> +++ b/net/sched/sch_generic.c
+>> @@ -1067,7 +1067,7 @@ static void qdisc_destroy(struct Qdisc *qdisc)
+>>=20
+>>        trace_qdisc_destroy(qdisc);
+>>=20
+>> -       call_rcu(&qdisc->rcu, qdisc_free_cb);
+>> +       call_rcu_flush(&qdisc->rcu, qdisc_free_cb);
+>> }
+>=20
+> I took a look at this one.
+>=20
+> qdisc_free_cb() is essentially freeing : Some per-cpu memory, and the
+> 'struct Qdisc'
+>=20
+> I do not see why we need to force a flush for this (small ?) piece of memo=
+ry.
 
-I do not see why we need to force a flush for this (small ?) piece of memory.
+I=E2=80=99ll try to drop that and rerun the test, and get back to you. It co=
+uld be that there is a different callback that this flush() is compensating f=
+or, or something. I am pretty sure at one point, dropping this patch made th=
+e test fail most of the time. Now it passes 100%.
+
+I=E2=80=99ll also attempt to collect a complete trace, maybe I=E2=80=99ll le=
+arn some networking code in the process..
+
+Thanks!=
