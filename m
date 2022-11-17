@@ -2,47 +2,49 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F1385C4332F
-	for <rcu@archiver.kernel.org>; Thu, 17 Nov 2022 11:15:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 605E5C4332F
+	for <rcu@archiver.kernel.org>; Thu, 17 Nov 2022 11:19:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229931AbiKQLPE (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 17 Nov 2022 06:15:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60838 "EHLO
+        id S234237AbiKQLTd (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 17 Nov 2022 06:19:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234729AbiKQLO5 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 17 Nov 2022 06:14:57 -0500
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66832B02;
-        Thu, 17 Nov 2022 03:14:56 -0800 (PST)
+        with ESMTP id S239668AbiKQLT3 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 17 Nov 2022 06:19:29 -0500
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBB972B251;
+        Thu, 17 Nov 2022 03:19:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1668683696; x=1700219696;
+  t=1668683967; x=1700219967;
   h=from:to:cc:subject:date:message-id:mime-version:
    content-transfer-encoding;
-  bh=v04Ag2ceXqVcD6vlEr0yMJgTmBUx6AYrMeEO/PVcnzE=;
-  b=TUlY7ARYQLeZW0+40xt1ivtVwnWYr3VbUDzxkiWGdALGh9ZwXbISCaFP
-   sc+AN1wDgLUy8Uu7wCaByiVXbTEvO+2i4YQKkg2R5+PJtVijQ0N6lvMpP
-   h+MXqYjuDf0gPLaOPoclq5YTw+wvfLVChVDIPaK2C4/XBG5wexsX/OgOF
-   DOVD/X5luuHlxzlN76GmDfOjsTEbPM50Yy19SyzZAIGzSs2itAe0ngRUm
-   ryA3RbBji/ZeTL90vr6OAibRm9AhY4iZMdvXp9FUZMSxqwBqiW5/KPo4H
-   8d6InvXRru/+lkUPDaefS7PYp8TQpb7BNjb4oiU7Ne5ME1hWoSD9rHSJh
+  bh=R7Tw/bo/e0ph1HCAxMg1wWzO55ZqQuYAf2pd0W+MSkw=;
+  b=FrbBE4mbJXnFogg+pl0S1qnwtECG82+HREd9SjRsRyzkf8cwRaHzMCBK
+   uJ8T/zWZJyUzPUkcJ81QaNyMg6DRa+Yx2LC7OtImv5yi2I5xVIyPxl0KN
+   3RQaDtwlE/DT6ly++h4Bzu5apV8XLowwoOsD2fwdZD6rwOqktQ3snfFvH
+   tuMx0thSkdKgN6i/e5b2laXdeBkmt38pluteCuI3glEy+qP8bTyFM5UxV
+   RU6LfYqPzz2aw/YUes10B3Xk7ouQiyYS50UaTxsXkJAEvGbUyFZYN/LU2
+   9MKBTBj8FUImBr3Yy8b0u8/i+0mBIUyB1uGwRK+ZcBPUERpvWNeI264to
    A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10533"; a="311528571"
+X-IronPort-AV: E=McAfee;i="6500,9779,10533"; a="377090197"
 X-IronPort-AV: E=Sophos;i="5.96,171,1665471600"; 
-   d="scan'208";a="311528571"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2022 03:14:56 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10533"; a="814483089"
+   d="scan'208";a="377090197"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2022 03:19:27 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10533"; a="642063469"
 X-IronPort-AV: E=Sophos;i="5.96,171,1665471600"; 
-   d="scan'208";a="814483089"
+   d="scan'208";a="642063469"
 Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.129])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2022 03:14:53 -0800
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2022 03:19:24 -0800
 From:   Zqiang <qiang1.zhang@intel.com>
-To:     paulmck@kernel.org, frederic@kernel.org, joel@joelfernandes.org
+To:     paulmck@kernel.org, thunder.leizhen@huawei.com,
+        akpm@linux-foundation.org, frederic@kernel.org,
+        joel@joelfernandes.org
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] srcu: Add detection of boot CPU srcu_data structure's->srcu_cblist
-Date:   Thu, 17 Nov 2022 19:20:50 +0800
-Message-Id: <20221117112050.3942407-1-qiang1.zhang@intel.com>
+Subject: [PATCH v2] mm: Make vmalloc_dump_obj() call in a preemptible context
+Date:   Thu, 17 Nov 2022 19:25:20 +0800
+Message-Id: <20221117112520.3942618-1-qiang1.zhang@intel.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -50,35 +52,64 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Before SRCU_SIZE_WAIT_CALL srcu_size_state is reached, the srcu
-callback only insert to boot-CPU srcu_data structure's->srcu_cblist
-and other CPU srcu_data structure's->srcu_cblist is always empty. so
-before SRCU_SIZE_WAIT_CALL is reached, need to correctly check boot-CPU
-pend cbs in srcu_might_be_idle().
+Currently, the mem_dump_obj() is invoked in call_rcu(), the
+call_rcu() is maybe invoked in non-preemptive code segment,
+for object allocated from vmalloc(), the following scenarios
+may occur:
+
+        CPU 0
+tasks context
+   spin_lock(&vmap_area_lock)
+          Interrupt context
+              call_rcu()
+                mem_dump_obj
+                  vmalloc_dump_obj
+                    spin_lock(&vmap_area_lock) <--deadlock
+
+and for PREEMPT-RT kernel, the spinlock will convert to sleepable
+lock, so the vmap_area_lock spinlock not allowed to get in non-preemptive
+code segment. therefore, this commit make the vmalloc_dump_obj() call in
+a preemptible context.
 
 Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 ---
- kernel/rcu/srcutree.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ v1->v2:
+ Add IS_ENABLED(CONFIG_PREEMPT_RT) check.
 
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 6af031200580..6d9af9901765 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -1098,8 +1098,11 @@ static bool srcu_might_be_idle(struct srcu_struct *ssp)
- 	unsigned long tlast;
+ mm/util.c    | 4 +++-
+ mm/vmalloc.c | 4 ++++
+ 2 files changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/mm/util.c b/mm/util.c
+index 12984e76767e..2b0222a728cc 100644
+--- a/mm/util.c
++++ b/mm/util.c
+@@ -1128,7 +1128,9 @@ void mem_dump_obj(void *object)
+ 		return;
  
- 	check_init_srcu_struct(ssp);
--	/* If the local srcu_data structure has callbacks, not idle.  */
--	sdp = raw_cpu_ptr(ssp->sda);
-+	/* If the boot CPU or local srcu_data structure has callbacks, not idle.  */
-+	if (smp_load_acquire(&ssp->srcu_size_state) < SRCU_SIZE_WAIT_CALL)
-+		sdp = per_cpu_ptr(ssp->sda, get_boot_cpu_id());
-+	else
-+		sdp = raw_cpu_ptr(ssp->sda);
- 	spin_lock_irqsave_rcu_node(sdp, flags);
- 	if (rcu_segcblist_pend_cbs(&sdp->srcu_cblist)) {
- 		spin_unlock_irqrestore_rcu_node(sdp, flags);
+ 	if (virt_addr_valid(object))
+-		type = "non-slab/vmalloc memory";
++		type = "non-slab memory";
++	else if (is_vmalloc_addr(object))
++		type = "vmalloc memory";
+ 	else if (object == NULL)
+ 		type = "NULL pointer";
+ 	else if (object == ZERO_SIZE_PTR)
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index ccaa461998f3..018e417b12d6 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -4034,6 +4034,10 @@ bool vmalloc_dump_obj(void *object)
+ 	struct vm_struct *vm;
+ 	void *objp = (void *)PAGE_ALIGN((unsigned long)object);
+ 
++	if (!is_vmalloc_addr(objp) || ((IS_ENABLED(CONFIG_PREEMPT_RT) &&
++				!preemptible()) || in_interrupt()))
++		return false;
++
+ 	vm = find_vm_area(objp);
+ 	if (!vm)
+ 		return false;
 -- 
 2.25.1
 
