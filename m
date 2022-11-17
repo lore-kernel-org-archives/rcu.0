@@ -2,58 +2,57 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BE88DC4167D
-	for <rcu@archiver.kernel.org>; Thu, 17 Nov 2022 22:00:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5668DC4332F
+	for <rcu@archiver.kernel.org>; Thu, 17 Nov 2022 22:00:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241094AbiKQWAI (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 17 Nov 2022 17:00:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38078 "EHLO
+        id S241089AbiKQWAJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 17 Nov 2022 17:00:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241112AbiKQV7w (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 17 Nov 2022 16:59:52 -0500
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 967BA9FEC
-        for <rcu@vger.kernel.org>; Thu, 17 Nov 2022 13:58:28 -0800 (PST)
-Received: by mail-qk1-x729.google.com with SMTP id g10so2234681qkl.6
-        for <rcu@vger.kernel.org>; Thu, 17 Nov 2022 13:58:28 -0800 (PST)
+        with ESMTP id S241031AbiKQV7x (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 17 Nov 2022 16:59:53 -0500
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E4B27671
+        for <rcu@vger.kernel.org>; Thu, 17 Nov 2022 13:58:30 -0800 (PST)
+Received: by mail-yb1-xb32.google.com with SMTP id i131so3530549ybc.9
+        for <rcu@vger.kernel.org>; Thu, 17 Nov 2022 13:58:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=sdJwHvXndE3LnyuSwNgHfLaxUa5yGh5fKAZ/2I7kMxw=;
-        b=Hq8SHtfQDMLJrzI1zZisebHGzHqdL4OgvuhVqmJqF4exqNzl1GwiShmFzcKxci0s/y
-         2nsm8XGhEy0YccW0bWQOK2pVfZ2+byGo1j2wjwhculPCpRCo5pjJqj+dtp64qmsTTjke
-         moW7TrwAPa1QkM65Y2rCfiLDZ25T78zCqBHQo=
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=RgumxfwxThuKjg8yg5dtYwukRopRTEm6oZ8ITbTV/uo=;
+        b=n0G5zTHzacXIAgd7mjoenJz/ejLGbNkXRpZgXMFWraIDIofsRa35jrgZzI2vzpdKpL
+         tV0iwsPhA5gMQ7FOJHSPGarwOvUmleFDr5vJOQUVHEndQbzY/23HGZqRQ7MJ0MhZhodb
+         3cD5JxvfGWMNgJY6C14G7j6ZcaPlFnKNZSpXXSwnL/fvDjEDRdPQEHF1a4fSExQzdhWB
+         Ykbq3UH4TzgdXUBNtG9af4zSV65gx/dDsE2AxLAqD5xdZQ6kNJG4OX0bnE4l4Ooho7aJ
+         wjkf3TM8Pdm+YiJiF2qPaF6CcQ4kklcB0W8PHt8d+h0WmSbRsEo2r2HluVOW6J/ehPo3
+         YP5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sdJwHvXndE3LnyuSwNgHfLaxUa5yGh5fKAZ/2I7kMxw=;
-        b=PK0XTINKZS8ITpu+CgnRApIkki9nWT39YSLi+maTZ3CHwTKDVkiMTL9syaBhOpzkWm
-         xk2MUI2ORtgIEBf1u/ElFUiEdE9rxSQ4mjO1AuU+FOsJRFow+OZzN2EsCLIowd9gkr6E
-         JOw5r4nt0Jwok+C6ojF77GOkYFnYdbaaEVRoDwq4P2uJFNQMkx42OoVbRGR2/F+KaeRK
-         HdQ2LPxO4OQFygWpUJcF1spGefBU0JvYjOC/aE7X4QnXMrsoWZ6XRSIRRQgjRP5J9Unt
-         kk7gIRKKNmHHn7MyMY7fgtlxaB2Tu3ScTTAUPJuoo20rvUql7NyQN5ZFdnIeuvJf6yqT
-         fsAQ==
-X-Gm-Message-State: ANoB5plCphPlaZ2sxPjBiPzSXyBN0uET26dktlFpxAo2MYm/y0vJQNS5
-        L1oJtOmntdHKU1dtbcR1XsZfFg==
-X-Google-Smtp-Source: AA0mqf4F1WSB/TnhqpkihBlK3h3QxuREsXKoZ/dGjhYzWK/h+ls0do4OcG4lzJNsx96nqWOb+v7rkQ==
-X-Received: by 2002:a05:620a:530c:b0:6fa:6e0c:ab79 with SMTP id oo12-20020a05620a530c00b006fa6e0cab79mr3651369qkn.74.1668722307650;
-        Thu, 17 Nov 2022 13:58:27 -0800 (PST)
-Received: from smtpclient.apple (c-73-148-104-166.hsd1.va.comcast.net. [73.148.104.166])
-        by smtp.gmail.com with ESMTPSA id j11-20020a05620a410b00b006bba46e5eeasm1261335qko.37.2022.11.17.13.58.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Nov 2022 13:58:27 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Joel Fernandes <joel@joelfernandes.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH rcu/dev 1/3] net: Use call_rcu_flush() for qdisc_free_cb
-Date:   Thu, 17 Nov 2022 16:58:26 -0500
-Message-Id: <DCDBA54C-C35B-497D-BB39-224C88B94660@joelfernandes.org>
-References: <CANn89iJuy=PuAiwrjF3qZY0M+86eRQ=o_x-m-eoxOdyAM8yoSg@mail.gmail.com>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RgumxfwxThuKjg8yg5dtYwukRopRTEm6oZ8ITbTV/uo=;
+        b=j9qGL5RfPEnZo1YCjQ2Jch/2sRM6/aF9dRvR3ZGZyUeX2oiNpBLfpgQW8I+txNXPir
+         BHMWLGn9kBg5QP8+NgvmH5n5+Oa1nSPiaWwtINlnFzxFbenFFPbIE0i0ImCzGIG6c6vH
+         TVEH5FhMLsL6/6gyXhJCpWcJldJmZ4P3vnirqLtACZ+u0m+xNFr8fRHfUiUxyGP2Q6eK
+         gczFTRJ7PjWsFA4c3wH5QX3bHH20BbfKdUKpDCSlMcuPPt/RUFa9Ka5NIBZ1ZmHSp0qb
+         Nm8wcVi7EySShpVskB+kyTjTcimxCVK2fQ8CpXr+X+TtCQ593r2bkgwmIwm9bJG40bbP
+         CHxw==
+X-Gm-Message-State: ANoB5pkKi2NJhFizI7KLTCUvC88n7WJALi5+M/+kwpof1FPZ8DJYFfT8
+        7aotuRk+m95TPwtEKG6O9+JcGdn91m6ZuApnDKBYZA==
+X-Google-Smtp-Source: AA0mqf4Yigljrmxq3yh0btTQMbgwSgrKFFiBC27fc/y57fyL+Q0/akvblcaxWH12hdyVzF7CHnhhPaGMuiEHJN1pwbo=
+X-Received: by 2002:a05:6902:11cd:b0:6e7:f2ba:7c0f with SMTP id
+ n13-20020a05690211cd00b006e7f2ba7c0fmr2115271ybu.55.1668722309460; Thu, 17
+ Nov 2022 13:58:29 -0800 (PST)
+MIME-Version: 1.0
+References: <20221117031551.1142289-1-joel@joelfernandes.org> <20221117031551.1142289-2-joel@joelfernandes.org>
+In-Reply-To: <20221117031551.1142289-2-joel@joelfernandes.org>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Thu, 17 Nov 2022 13:58:18 -0800
+Message-ID: <CANn89iK345JjXoCAPYK6hZF99zBBWRM1z7xCWbstQJLb4aBGQg@mail.gmail.com>
+Subject: Re: [PATCH rcu/dev 2/3] net: Use call_rcu_flush() for in_dev_rcu_put
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
 Cc:     linux-kernel@vger.kernel.org, Cong Wang <xiyou.wangcong@gmail.com>,
         David Ahern <dsahern@kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
@@ -63,62 +62,103 @@ Cc:     linux-kernel@vger.kernel.org, Cong Wang <xiyou.wangcong@gmail.com>,
         Jiri Pirko <jiri@resnulli.us>, netdev@vger.kernel.org,
         Paolo Abeni <pabeni@redhat.com>, rcu@vger.kernel.org,
         rostedt@goodmis.org, paulmck@kernel.org, fweisbec@gmail.com
-In-Reply-To: <CANn89iJuy=PuAiwrjF3qZY0M+86eRQ=o_x-m-eoxOdyAM8yoSg@mail.gmail.com>
-To:     Eric Dumazet <edumazet@google.com>
-X-Mailer: iPhone Mail (19G82)
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Wed, Nov 16, 2022 at 7:16 PM Joel Fernandes (Google)
+<joel@joelfernandes.org> wrote:
+>
+> In a networking test on ChromeOS, we find that using the new CONFIG_RCU_LAZY
+> causes a networking test to fail in the teardown phase.
+>
+> The failure happens during: ip netns del <name>
+>
+> Using ftrace, I found the callbacks it was queuing which this series fixes. Use
+> call_rcu_flush() to revert to the old behavior. With that, the test passes.
+>
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> ---
+>  net/ipv4/devinet.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/net/ipv4/devinet.c b/net/ipv4/devinet.c
+> index e8b9a9202fec..98b20f333e00 100644
+> --- a/net/ipv4/devinet.c
+> +++ b/net/ipv4/devinet.c
+> @@ -328,7 +328,7 @@ static void inetdev_destroy(struct in_device *in_dev)
+>         neigh_parms_release(&arp_tbl, in_dev->arp_parms);
+>         arp_ifdown(dev);
+>
+> -       call_rcu(&in_dev->rcu_head, in_dev_rcu_put);
+> +       call_rcu_flush(&in_dev->rcu_head, in_dev_rcu_put);
+>  }
 
+For this one, I suspect the issue is about device refcount lingering ?
 
-> On Nov 17, 2022, at 4:44 PM, Eric Dumazet <edumazet@google.com> wrote:
->=20
-> =EF=BB=BFOn Wed, Nov 16, 2022 at 7:16 PM Joel Fernandes (Google)
-> <joel@joelfernandes.org> wrote:
->>=20
->> In a networking test on ChromeOS, we find that using the new CONFIG_RCU_L=
-AZY
->> causes a networking test to fail in the teardown phase.
->>=20
->> The failure happens during: ip netns del <name>
->>=20
->> Using ftrace, I found the callbacks it was queuing which this series fixe=
-s. Use
->> call_rcu_flush() to revert to the old behavior. With that, the test passe=
-s.
->>=20
->> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
->> ---
->> net/sched/sch_generic.c | 2 +-
->> 1 file changed, 1 insertion(+), 1 deletion(-)
->>=20
->> diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
->> index a9aadc4e6858..63fbf640d3b2 100644
->> --- a/net/sched/sch_generic.c
->> +++ b/net/sched/sch_generic.c
->> @@ -1067,7 +1067,7 @@ static void qdisc_destroy(struct Qdisc *qdisc)
->>=20
->>        trace_qdisc_destroy(qdisc);
->>=20
->> -       call_rcu(&qdisc->rcu, qdisc_free_cb);
->> +       call_rcu_flush(&qdisc->rcu, qdisc_free_cb);
->> }
->=20
-> I took a look at this one.
->=20
-> qdisc_free_cb() is essentially freeing : Some per-cpu memory, and the
-> 'struct Qdisc'
->=20
-> I do not see why we need to force a flush for this (small ?) piece of memo=
-ry.
+I think we should release refcounts earlier (and only delegate the
+freeing part after RCU grace period, which can be 'lazy' just fine)
 
-I=E2=80=99ll try to drop that and rerun the test, and get back to you. It co=
-uld be that there is a different callback that this flush() is compensating f=
-or, or something. I am pretty sure at one point, dropping this patch made th=
-e test fail most of the time. Now it passes 100%.
+Something like:
 
-I=E2=80=99ll also attempt to collect a complete trace, maybe I=E2=80=99ll le=
-arn some networking code in the process..
+diff --git a/net/ipv4/devinet.c b/net/ipv4/devinet.c
+index e8b9a9202fecd913137f169f161dfdccc16f7edf..e0258aef4211ec6a72d062963470a32776e6d010
+100644
+--- a/net/ipv4/devinet.c
++++ b/net/ipv4/devinet.c
+@@ -234,13 +234,21 @@ static void inet_free_ifa(struct in_ifaddr *ifa)
+        call_rcu(&ifa->rcu_head, inet_rcu_free_ifa);
+ }
 
-Thanks!=
++static void in_dev_free_rcu(struct rcu_head *head)
++{
++       struct in_device *idev = container_of(head, struct in_device, rcu_head);
++
++       kfree(rcu_dereference_protected(idev->mc_hash, 1));
++       kfree(idev);
++}
++
+ void in_dev_finish_destroy(struct in_device *idev)
+ {
+        struct net_device *dev = idev->dev;
+
+        WARN_ON(idev->ifa_list);
+        WARN_ON(idev->mc_list);
+-       kfree(rcu_dereference_protected(idev->mc_hash, 1));
++
+ #ifdef NET_REFCNT_DEBUG
+        pr_debug("%s: %p=%s\n", __func__, idev, dev ? dev->name : "NIL");
+ #endif
+@@ -248,7 +256,7 @@ void in_dev_finish_destroy(struct in_device *idev)
+        if (!idev->dead)
+                pr_err("Freeing alive in_device %p\n", idev);
+        else
+-               kfree(idev);
++               call_rcu(&idev->rcu_head, in_dev_free_rcu);
+ }
+ EXPORT_SYMBOL(in_dev_finish_destroy);
+
+@@ -298,12 +306,6 @@ static struct in_device *inetdev_init(struct
+net_device *dev)
+        goto out;
+ }
+
+-static void in_dev_rcu_put(struct rcu_head *head)
+-{
+-       struct in_device *idev = container_of(head, struct in_device, rcu_head);
+-       in_dev_put(idev);
+-}
+-
+ static void inetdev_destroy(struct in_device *in_dev)
+ {
+        struct net_device *dev;
+@@ -328,7 +330,7 @@ static void inetdev_destroy(struct in_device *in_dev)
+        neigh_parms_release(&arp_tbl, in_dev->arp_parms);
+        arp_ifdown(dev);
+
+-       call_rcu(&in_dev->rcu_head, in_dev_rcu_put);
++       in_dev_put(in_dev);
+ }
+
+ int inet_addr_onlink(struct in_device *in_dev, __be32 a, __be32 b)
