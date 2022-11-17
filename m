@@ -2,57 +2,61 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 969E6C433FE
-	for <rcu@archiver.kernel.org>; Thu, 17 Nov 2022 17:42:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 56772C4332F
+	for <rcu@archiver.kernel.org>; Thu, 17 Nov 2022 17:49:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233270AbiKQRm2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 17 Nov 2022 12:42:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32914 "EHLO
+        id S239771AbiKQRtS (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 17 Nov 2022 12:49:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231377AbiKQRm1 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 17 Nov 2022 12:42:27 -0500
-Received: from mail-oa1-x2d.google.com (mail-oa1-x2d.google.com [IPv6:2001:4860:4864:20::2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70E199FFB
-        for <rcu@vger.kernel.org>; Thu, 17 Nov 2022 09:42:26 -0800 (PST)
-Received: by mail-oa1-x2d.google.com with SMTP id 586e51a60fabf-13b6c1c89bdso2948840fac.13
-        for <rcu@vger.kernel.org>; Thu, 17 Nov 2022 09:42:26 -0800 (PST)
+        with ESMTP id S234902AbiKQRtR (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 17 Nov 2022 12:49:17 -0500
+Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 793757C02E
+        for <rcu@vger.kernel.org>; Thu, 17 Nov 2022 09:49:16 -0800 (PST)
+Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-367b8adf788so26283537b3.2
+        for <rcu@vger.kernel.org>; Thu, 17 Nov 2022 09:49:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
+        d=google.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=RfORcEnRNI40YvWBc5y1Em70ZVblOHNV3oKHjYQR7dc=;
-        b=j+DFMuYmsxvGLfPcmv0ANKN1bbBdxegl3OjLWAop7KTeXYyQulIUZRoaf+DJBfe6k/
-         5/yZWx9ZkhFavd8PgTjvwuWIgvpbm4IM64k9HwhLS27NrFLILA/L+OUl7qYbmmxX2PNy
-         NjNPCV6fr5oArPBq/g+1IU4x7MZq0eMGMUl8Y=
+        bh=1wrgTKzaDrTBJIAKqG3lHjG1mI6f1GpMwMp11e5egR4=;
+        b=sGSF4x/7CTOsgayZlnfj2zXvpdTitbQ0wiOoKT9SHtguKHoW7+ek6d1GzqnEZpw6bU
+         YjVWpF/I/Y5R93HVFOgQeDkqofnxtjaoTJOZytTKzU8n/YfGQ9vExjo+7JW9sCps92AW
+         EUYGhreqcjqAh7RAsg2zUkCy4DYtAtxR0j3OFk4nPEJzT2DUKHmaIcFb8b1KFpSFyrbw
+         hNUIjO4KuaElNKvdBerAmw4rDiV9lZ9RVdKhdYMKf6qnvQwU2n+fd/lUcdUkj7w6/2ga
+         tEtWfyTYJZrJzMPfTMwzXQwSTSqJDJOKIVhoCH5oZx55kGDaW0F9vMFRyNnxFx/jrPB/
+         SzLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=RfORcEnRNI40YvWBc5y1Em70ZVblOHNV3oKHjYQR7dc=;
-        b=LLat90cGVrxuWHegxdGF28950wjI4kQ9eM/+kxd0f+jjrDQVnEx7+DKeNRaruIrLYd
-         IpP26h1Ko5kYvorC7bhyjHQXH0da/wltVqStrp30an3HHkY6xLjFrZMYDgOUxtjnYdUo
-         OfYJTYM8KAmarCg/JRFQEwNO1Yys7ZkpczjVbuZZqAmHUhGSzRzkIrlLyhQdvgYlVd39
-         YRloxstmS9jld91NSYX/PJj/Oe2MW0u0uen8TLTVcHCbd2HnPGf4EMcFlzzUDpa2p6gF
-         nZFQrnwtrD1twkmHq6Sp9OZfiivJ7JvAMRV9dPVDT9kKOXCGc32NGd9FTmk99l7pWSIi
-         /XAw==
-X-Gm-Message-State: ANoB5pm3cV/+ngPEA+5DxqGE66SuqPKFOThapdL87/9QI6bB8aISmKCe
-        AX8X9G1vlbt3MMQpsA0KV63+RLL24gDCPZXXj9pyWA==
-X-Google-Smtp-Source: AA0mqf5TwZQoOYT1jHxYgRDVMEmTtUN232TguQIURbIWHB70y5QL2vtLGeTJlyytNW9PS+z7/JOeWKuHxfcM1lgMOPw=
-X-Received: by 2002:a05:6870:591:b0:13b:bbbb:1623 with SMTP id
- m17-20020a056870059100b0013bbbbb1623mr1886559oap.115.1668706945539; Thu, 17
- Nov 2022 09:42:25 -0800 (PST)
+        bh=1wrgTKzaDrTBJIAKqG3lHjG1mI6f1GpMwMp11e5egR4=;
+        b=fRdiqP0Bd3lT5KoM9ztEPKUxPwv4a4y0kZzomIWHnWAVgvsADvy+h98ZdUxHhNzSFC
+         u46e2+J3/28VI5nZ5FMGJGJRNI1ZkSL30eXoKnbu9Ktw+jjYefVRdL57qm6b+6MO7ek7
+         MJXnc+E96gZm8oxpInFxPw2PhQIlozrficAJaFLbeKoi5GOcX0SFsPzAk1iwe44V63jF
+         TvMuqSzKSYP4NMUbSvYQ4Cvul9NNUIfbhKFXgfp5FdwB/bvY8uRllphs20HA9b4IIt4i
+         bQd9MZiU7aCUxMoefr/94Ni2r36QcZDHPPcTWYJJVgQ1fWCRA18JAUc/Tg1uddZsMkKp
+         KATQ==
+X-Gm-Message-State: ANoB5pntinvJIlyttH6Sbgl03jQL6AAfRfQoF8GhtfgoSwcZQ29UiOSu
+        9+CSXgh5H7OvQhGd2mjl/ipG988ZH6tbQ9+Hrq3nXw==
+X-Google-Smtp-Source: AA0mqf75oUkC2jN9k/dkeEOGIn/OfK3gmDlfMwThyzfEwe2njYu0dxQ+llKYE22+YU/VQDAmOt3iBT/0LEi2Shh2NTg=
+X-Received: by 2002:a0d:e601:0:b0:356:d0ed:6a79 with SMTP id
+ p1-20020a0de601000000b00356d0ed6a79mr2911019ywe.489.1668707355322; Thu, 17
+ Nov 2022 09:49:15 -0800 (PST)
 MIME-Version: 1.0
 References: <20221117031551.1142289-1-joel@joelfernandes.org>
  <20221117031551.1142289-3-joel@joelfernandes.org> <CANn89i+gKVdveEtR9DX15Xr7E9Nn2my6SEEbXTMmxbqtezm2vg@mail.gmail.com>
  <Y3ZaH4C4omQs1OR4@google.com> <CANn89iJRhr8+osviYKVYhcHHk5TnQQD53x87-WG3iTo4YNa0qA@mail.gmail.com>
- <CAEXW_YRULY2KzMtkv+KjA_hSr1tSKhQLuCt-RrOkMLjjwAbwKg@mail.gmail.com> <CANn89i+9XRh+p-ZiyY_VKy=EcxEyg+3AdtruMnj=KCgXF7QtoQ@mail.gmail.com>
-In-Reply-To: <CANn89i+9XRh+p-ZiyY_VKy=EcxEyg+3AdtruMnj=KCgXF7QtoQ@mail.gmail.com>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Thu, 17 Nov 2022 17:42:14 +0000
-Message-ID: <CAEXW_YS-d_URqjfcasNnqf3zhCKAny8dhhLifAxtrpz1XYd_=w@mail.gmail.com>
+ <CAEXW_YRULY2KzMtkv+KjA_hSr1tSKhQLuCt-RrOkMLjjwAbwKg@mail.gmail.com>
+ <CANn89i+9XRh+p-ZiyY_VKy=EcxEyg+3AdtruMnj=KCgXF7QtoQ@mail.gmail.com> <CAEXW_YS-d_URqjfcasNnqf3zhCKAny8dhhLifAxtrpz1XYd_=w@mail.gmail.com>
+In-Reply-To: <CAEXW_YS-d_URqjfcasNnqf3zhCKAny8dhhLifAxtrpz1XYd_=w@mail.gmail.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Thu, 17 Nov 2022 09:49:04 -0800
+Message-ID: <CANn89i+GcVzgg56fd9iO5Ma6vSUVvJmLHTvRwPMoYKMPR4G4Lw@mail.gmail.com>
 Subject: Re: [PATCH rcu/dev 3/3] net: Use call_rcu_flush() for dst_destroy_rcu
-To:     Eric Dumazet <edumazet@google.com>
+To:     Joel Fernandes <joel@joelfernandes.org>
 Cc:     linux-kernel@vger.kernel.org, Cong Wang <xiyou.wangcong@gmail.com>,
         David Ahern <dsahern@kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
@@ -68,104 +72,50 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Nov 17, 2022 at 5:40 PM Eric Dumazet <edumazet@google.com> wrote:
+On Thu, Nov 17, 2022 at 9:42 AM Joel Fernandes <joel@joelfernandes.org> wrote:
 >
-> On Thu, Nov 17, 2022 at 9:38 AM Joel Fernandes <joel@joelfernandes.org> wrote:
-> >
-> > On Thu, Nov 17, 2022 at 5:17 PM Eric Dumazet <edumazet@google.com> wrote:
-> > >
-> > > On Thu, Nov 17, 2022 at 7:58 AM Joel Fernandes <joel@joelfernandes.org> wrote:
-> > > >
-> > > > Hello Eric,
-> > > >
-> > > > On Wed, Nov 16, 2022 at 07:44:41PM -0800, Eric Dumazet wrote:
-> > > > > On Wed, Nov 16, 2022 at 7:16 PM Joel Fernandes (Google)
-> > > > > <joel@joelfernandes.org> wrote:
-> > > > > >
-> > > > > > In a networking test on ChromeOS, we find that using the new CONFIG_RCU_LAZY
-> > > > > > causes a networking test to fail in the teardown phase.
-> > > > > >
-> > > > > > The failure happens during: ip netns del <name>
-> > > > >
-> > > > > And ? What happens then next ?
-> > > >
-> > > > The test is doing the 'ip netns del <name>' and then polling for the
-> > > > disappearance of a network interface name for upto 5 seconds. I believe it is
-> > > > using netlink to get a table of interfaces. That polling is timing out.
-> > > >
-> > > > Here is some more details from the test's owner (copy pasting from another
-> > > > bug report):
-> > > > In the cleanup, we remove the netns, and thus will cause the veth pair being
-> > > > removed automatically, so we use a poll to check that if the veth in the root
-> > > > netns still exists to know whether the cleanup is done.
-> > > >
-> > > > Here is a public link to the code that is failing (its in golang):
-> > > > https://source.chromium.org/chromiumos/chromiumos/codesearch/+/main:src/platform/tast-tests/src/chromiumos/tast/local/network/virtualnet/env/env.go;drc=6c2841d6cc3eadd23e07912ec331943ee33d7de8;l=161
-> > > >
-> > > > Here is a public link to the line of code in the actual test leading up to the above
-> > > > path (this is the test that is run:
-> > > > network.RoutingFallthrough.ipv4_only_primary) :
-> > > > https://source.chromium.org/chromiumos/chromiumos/codesearch/+/main:src/platform/tast-tests/src/chromiumos/tast/local/bundles/cros/network/routing_fallthrough.go;drc=8fbf2c53960bc8917a6a01fda5405cad7c17201e;l=52
-> > > >
-> > > > > > Using ftrace, I found the callbacks it was queuing which this series fixes. Use
-> > > > > > call_rcu_flush() to revert to the old behavior. With that, the test passes.
-> > > > >
-> > > > > What is this test about ? What barrier was used to make it not flaky ?
-> > > >
-> > > > I provided the links above, let me know if you have any questions.
-> > > >
-> > > > > Was it depending on some undocumented RCU behavior ?
-> > > >
-> > > > This is a new RCU feature posted here for significant power-savings on
-> > > > battery-powered devices:
-> > > > https://lore.kernel.org/rcu/20221017140726.GG5600@paulmck-ThinkPad-P17-Gen-1/T/#m7a54809b8903b41538850194d67eb34f203c752a
-> > > >
-> > > > There is also an LPC presentation about the same, I can dig the link if you
-> > > > are interested.
-> > > >
-> > > > > Maybe adding a sysctl to force the flush would be better for functional tests ?
-> > > > >
-> > > > > I would rather change the test(s), than adding call_rcu_flush(),
-> > > > > adding merge conflicts to future backports.
-> > > >
-> > > > I am not too sure about that, I think a user might expect the network
-> > > > interface to disappear from the networking tables quickly enough without
-> > > > dealing with barriers or kernel iternals. However, I added the authors of the
-> > > > test to this email in the hopes he can provide is point of views as well.
-> > > >
-> > > > The general approach we are taking with this sort of thing is to use
-> > > > call_rcu_flush() which is basically the same as call_rcu() for systems with
-> > > > CALL_RCU_LAZY=n. You can see some examples of that in the patch series link
-> > > > above. Just to note, CALL_RCU_LAZY depends on CONFIG_RCU_NOCB_CPU so its only
-> > > > Android and ChromeOS that are using it. I am adding Jie to share any input,
-> > > > he is from the networking team and knows this test well.
-> > > >
-> > > >
-> > >
-> > > I do not know what is this RCU_LAZY thing, but IMO this should be opt-in
-> >
-> > You should read the links I sent you. We did already try opt-in,
-> > Thomas Gleixner made a point at LPC that we should not add new APIs
-> > for this purpose and confuse kernel developers.
-> >
-> > > For instance, only kfree_rcu() should use it.
-> >
-> > No. Most of the call_rcu() usages are for freeing memory, so the
-> > consensus is we should apply this as opt out and fix issues along the
-> > way. We already did a lot of research/diligence on seeing which users
-> > need conversion.
-> >
-> > > We can not review hundreds of call_rcu() call sites and decide if
-> > > adding arbitrary delays cou hurt .
-> >
-> > That work has already been done as much as possible, please read the
-> > links I sent.
->
-> Oh well. No.
->
-> I will leave it to other folks dealing with this crazy thing.
 
-Yes, I agree. Your comments here have not been useful (or respectful)
-so I am Ok with that.
+>
+> Yes, I agree. Your comments here have not been useful (or respectful)
+> so I am Ok with that.
+>
+>  - Joel
 
- - Joel
+Well, I have discovered that some changes went in networking tree
+without network maintainers being involved nor CCed.
+
+What can I say ?
+
+It seems I have no say, right ?
+
+
+commit f32846476afbe1f296c41d036219178b3dfb6a9d
+Author: Joel Fernandes (Google) <joel@joelfernandes.org>
+Date:   Sun Oct 16 16:23:04 2022 +0000
+
+    rxrpc: Use call_rcu_flush() instead of call_rcu()
+
+    call_rcu() changes to save power may cause slowness. Use the
+    call_rcu_flush() API instead which reverts to the old behavior.
+
+    We find this via inspection that the RCU callback does a wakeup of a
+    thread. This usually indicates that something is waiting on it. To be
+    safe, let us use call_rcu_flush() here instead.
+
+    Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/net/rxrpc/conn_object.c b/net/rxrpc/conn_object.c
+index 22089e37e97f0628f780855f9e219e5c33d4afa1..fdcfb509cc4434b0781b76623532aff9c854ce60
+100644
+--- a/net/rxrpc/conn_object.c
++++ b/net/rxrpc/conn_object.c
+@@ -253,7 +253,7 @@ void rxrpc_kill_connection(struct rxrpc_connection *conn)
+         * must carry a ref on the connection to prevent us getting here whilst
+         * it is queued or running.
+         */
+-       call_rcu(&conn->rcu, rxrpc_destroy_connection);
++       call_rcu_flush(&conn->rcu, rxrpc_destroy_connection);
+ }
+
+ /*
