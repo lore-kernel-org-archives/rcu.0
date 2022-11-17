@@ -2,59 +2,63 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D2F6BC4332F
-	for <rcu@archiver.kernel.org>; Thu, 17 Nov 2022 18:18:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 33C54C433FE
+	for <rcu@archiver.kernel.org>; Thu, 17 Nov 2022 18:22:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234811AbiKQSSi (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 17 Nov 2022 13:18:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55906 "EHLO
+        id S240424AbiKQSWg (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 17 Nov 2022 13:22:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239999AbiKQSS2 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 17 Nov 2022 13:18:28 -0500
-Received: from mail-oa1-x33.google.com (mail-oa1-x33.google.com [IPv6:2001:4860:4864:20::33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B73BB9FE3
-        for <rcu@vger.kernel.org>; Thu, 17 Nov 2022 10:18:27 -0800 (PST)
-Received: by mail-oa1-x33.google.com with SMTP id 586e51a60fabf-13ae8117023so3099258fac.9
-        for <rcu@vger.kernel.org>; Thu, 17 Nov 2022 10:18:27 -0800 (PST)
+        with ESMTP id S234861AbiKQSWf (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 17 Nov 2022 13:22:35 -0500
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE92E4B9B3
+        for <rcu@vger.kernel.org>; Thu, 17 Nov 2022 10:22:34 -0800 (PST)
+Received: by mail-yb1-xb2e.google.com with SMTP id k84so2877043ybk.3
+        for <rcu@vger.kernel.org>; Thu, 17 Nov 2022 10:22:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
+        d=google.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=tLa0hKjA9GOfaZoCfXhipYOOpTt3ShAuZvGXM0OsUH4=;
-        b=cUWWJ9/H7LmDougtNe1jq+6N61GxqO6ADwcq4fYEHFFP69BzrPVNN3yKre5HzqII3W
-         v7EDJXHPQmdo8PzSGGPmhQ/1PZ8vQ0ERMesoMIpSzRg6d0QP6bL1P+EQGVpH5iRpuAhg
-         WkPX528/HIVlFMT7JzFWOr1bXBnTKbHJ7ut1c=
+        bh=Jfw5a5L8IvV/kvGKF/DMQqdusHiCh0R6uAmQu8nYnr4=;
+        b=hhaKe9nmlIc9X4Cmc8AhvoNPtHtitfsgQ7h0eCN2o7MPAQzrzYJx3f+IIL6a1Ve0dA
+         a+Gl2GeZdlwbc12piw1ri0yNfOPBrcCqEoJHXdPcrE5gY+PYmkVcpnWvfJmCTn83dmSW
+         PS97FcUQeBOy89fduiZRqVY8iiv8sD+jsWGf5njDs575tBaCKH7IFL1XhQPK61vTZ1Ao
+         EXt6bjQr4DFr7ZBr/4kUU4xyCaUIz1KvuZbTyDlbtcPXu/rHbBCv+mBOqFJWTnBN8SkJ
+         RxYk9uEkt1GsQ5cWr3PV2SlNgwG2j4Cp/UWegVlnpa8YVHUN4EWyl41cEecoL4USxfo/
+         A3ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=tLa0hKjA9GOfaZoCfXhipYOOpTt3ShAuZvGXM0OsUH4=;
-        b=mj78OU85ipvcH2so3ps35OSh8XGJF6X8ps2a8DIAu5DvI99kK1vveGuARito3SdDxm
-         s0Nn0ZWgIBBqI7WsIRUwBYXQ3fg/7Oua/DQhU/pRfZetn+12/wKsdNgZuLm4q8yVDZDl
-         EHqJ7UL5NGBPLE1XyPKGoSa35Pq+SSD3pQlabVdjWS1P9I2TruJuOJtiClb0ExyugqZo
-         tUXiALLPc1tZ0gA3R6BTn0AlQWV82Qp952lGB455EPbxMjUoNYJlsZL5+LhSFVN+hWYI
-         mVoBIe3nD8YkCUGQUofPehZ/ikQ1qseKqzIDPmENIsE5D9vNmZ611T1S+MrDQKp22diR
-         fvpA==
-X-Gm-Message-State: ANoB5pkmFeY/N0reA++d83Os/VaFNxgk87pZ+ygKfPUyg43PFzXGbSPK
-        BCi6OCZHD/Iu4FXAre9D23cA3LJAl9tjqAtlunH/gg==
-X-Google-Smtp-Source: AA0mqf6e5Hi2hX35v0tmRvnjU0cXdmkFcXS4bpSFybzqkModBqm4jbFeny5aOqhA88YzBHxkVI8/GrRv5uAWqjsXDzY=
-X-Received: by 2002:a05:6870:bacb:b0:13a:dd16:9b83 with SMTP id
- js11-20020a056870bacb00b0013add169b83mr5018049oab.15.1668709104973; Thu, 17
- Nov 2022 10:18:24 -0800 (PST)
+        bh=Jfw5a5L8IvV/kvGKF/DMQqdusHiCh0R6uAmQu8nYnr4=;
+        b=ktlDv6mcJi6HASCsAaTGvZaHPTf6OxkZtJSeg7c/YkRN2hijGNNYzmSJE67If60KQn
+         UQ57okO/YY8NC93LkiBU6Xdt3a/1meL2e5ePwyvqxmvUIA266EL24AzYRSXmv/WsddKv
+         bxbUGUZEiUqNoI7GqWys9C7zxQ9jiMHwTqDsOKtFLAg9sc8EyfarPHWtpSOLO3GDGjtF
+         4GZdhLP+TnyCkc2QYIxf2gh4Y1HXKAABZLHNAmLe7swIVahsa4mxMQHBmlCuK5yvCUPX
+         ray7uhGnEnqqNM6O57Z2nVttQIkEWnmyUfBOGy3RSdxW7XY0JmJNFxusHL3adhW79tmO
+         Nn8Q==
+X-Gm-Message-State: ANoB5pnsdhKltJbljH4bF1SuGoXvvh2vyOx1nKx5t8Idk8lXf3FPakcN
+        eGMt7KnC7ff20F9ogifO6hdB/yf7m/BYeaqKE2bFrg==
+X-Google-Smtp-Source: AA0mqf5KlD5QStHh0O7F5hQQBDfNprNdYBO58yBn4u5NkFxM4ijVuetszSLxi8cDgRzyQaJfc0pBNCtKbgDXl3I4IE0=
+X-Received: by 2002:a25:e90f:0:b0:6d2:d710:7454 with SMTP id
+ n15-20020a25e90f000000b006d2d7107454mr3122162ybd.407.1668709353799; Thu, 17
+ Nov 2022 10:22:33 -0800 (PST)
 MIME-Version: 1.0
 References: <20221117031551.1142289-1-joel@joelfernandes.org>
  <20221117031551.1142289-3-joel@joelfernandes.org> <CANn89i+gKVdveEtR9DX15Xr7E9Nn2my6SEEbXTMmxbqtezm2vg@mail.gmail.com>
  <Y3ZaH4C4omQs1OR4@google.com> <CANn89iJRhr8+osviYKVYhcHHk5TnQQD53x87-WG3iTo4YNa0qA@mail.gmail.com>
  <CAEXW_YRULY2KzMtkv+KjA_hSr1tSKhQLuCt-RrOkMLjjwAbwKg@mail.gmail.com>
  <CANn89i+9XRh+p-ZiyY_VKy=EcxEyg+3AdtruMnj=KCgXF7QtoQ@mail.gmail.com>
- <CAEXW_YS-d_URqjfcasNnqf3zhCKAny8dhhLifAxtrpz1XYd_=w@mail.gmail.com> <CANn89i+GcVzgg56fd9iO5Ma6vSUVvJmLHTvRwPMoYKMPR4G4Lw@mail.gmail.com>
-In-Reply-To: <CANn89i+GcVzgg56fd9iO5Ma6vSUVvJmLHTvRwPMoYKMPR4G4Lw@mail.gmail.com>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Thu, 17 Nov 2022 18:18:14 +0000
-Message-ID: <CAEXW_YSyZswszFo-J6rEFsb2mAcXLytZaFSqi1L1LpSHWfTXMQ@mail.gmail.com>
+ <CAEXW_YS-d_URqjfcasNnqf3zhCKAny8dhhLifAxtrpz1XYd_=w@mail.gmail.com>
+ <CANn89i+GcVzgg56fd9iO5Ma6vSUVvJmLHTvRwPMoYKMPR4G4Lw@mail.gmail.com> <CAEXW_YSyZswszFo-J6rEFsb2mAcXLytZaFSqi1L1LpSHWfTXMQ@mail.gmail.com>
+In-Reply-To: <CAEXW_YSyZswszFo-J6rEFsb2mAcXLytZaFSqi1L1LpSHWfTXMQ@mail.gmail.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Thu, 17 Nov 2022 10:22:22 -0800
+Message-ID: <CANn89iL_m=TS92-V=rE4pvB1_Wu=etb6c2UT8AxWiKwZjiLNQA@mail.gmail.com>
 Subject: Re: [PATCH rcu/dev 3/3] net: Use call_rcu_flush() for dst_destroy_rcu
-To:     Eric Dumazet <edumazet@google.com>
+To:     Joel Fernandes <joel@joelfernandes.org>
 Cc:     linux-kernel@vger.kernel.org, Cong Wang <xiyou.wangcong@gmail.com>,
         David Ahern <dsahern@kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
@@ -70,80 +74,55 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Nov 17, 2022 at 5:49 PM Eric Dumazet <edumazet@google.com> wrote:
+On Thu, Nov 17, 2022 at 10:18 AM Joel Fernandes <joel@joelfernandes.org> wrote:
 >
-> On Thu, Nov 17, 2022 at 9:42 AM Joel Fernandes <joel@joelfernandes.org> wrote:
+> On Thu, Nov 17, 2022 at 5:49 PM Eric Dumazet <edumazet@google.com> wrote:
 > >
->
+> > On Thu, Nov 17, 2022 at 9:42 AM Joel Fernandes <joel@joelfernandes.org> wrote:
+> > >
 > >
-> > Yes, I agree. Your comments here have not been useful (or respectful)
-> > so I am Ok with that.
+> > >
+> > > Yes, I agree. Your comments here have not been useful (or respectful)
+> > > so I am Ok with that.
+> > >
+> > >  - Joel
 > >
-> >  - Joel
+> > Well, I have discovered that some changes went in networking tree
+> > without network maintainers being involved nor CCed.
+> >
+> > What can I say ?
+> >
+> > It seems I have no say, right ?
 >
-> Well, I have discovered that some changes went in networking tree
-> without network maintainers being involved nor CCed.
+> Sorry, I take responsibility for that. FWIW, the rxrpc change is not
+> yet in Linus's tree.
 >
-> What can I say ?
+> Also FWIW, the rxrpc case came up because we detected that it does a
+> scheduler wakeup from the callback. We did both static and dynamic
+> testing to identify callbacks that do wakeups throughout the kernel
+> (kernel patch available on request), as the pattern observed is things
+> doing wakeups typically are for use cases that are not freeing memory
+> but something blocking, similar to synchronize_rcu(). So it was a
+> "trivial/obvious" change to make for rxrpc which I might have assumed
+> did not need much supervision because it just reverts that API to the
+> old behavior -- still probably no excuse.
 >
-> It seems I have no say, right ?
+> Again, we can talk this out no problem. But I would strongly recommend
+> not calling it "crazy thing", as we did all due diligence for almost a
+> year (talking about it at LPC, working through various code paths and
+> bugs, 4 different patch redesigns on the idea (including the opt-in
+> that you are bringing up), including a late night debugging session to
+> figure this out etc).
 
-Sorry, I take responsibility for that. FWIW, the rxrpc change is not
-yet in Linus's tree.
+Apologies.
 
-Also FWIW, the rxrpc case came up because we detected that it does a
-scheduler wakeup from the callback. We did both static and dynamic
-testing to identify callbacks that do wakeups throughout the kernel
-(kernel patch available on request), as the pattern observed is things
-doing wakeups typically are for use cases that are not freeing memory
-but something blocking, similar to synchronize_rcu(). So it was a
-"trivial/obvious" change to make for rxrpc which I might have assumed
-did not need much supervision because it just reverts that API to the
-old behavior -- still probably no excuse.
+For me "crazy" does not have the same meaning, apparently.
 
-Again, we can talk this out no problem. But I would strongly recommend
-not calling it "crazy thing", as we did all due diligence for almost a
-year (talking about it at LPC, working through various code paths and
-bugs, 4 different patch redesigns on the idea (including the opt-in
-that you are bringing up), including a late night debugging session to
-figure this out etc).
+I will try to use more neutral words in the future.
 
-Just to clarify, I know you review/maintain a lot of the networking
-code and I really appreciate that (not praising just for the sake).
-And I care about the kernel too, just like you.
-
-thanks,
-
- - Joel
-
-
-> commit f32846476afbe1f296c41d036219178b3dfb6a9d
-> Author: Joel Fernandes (Google) <joel@joelfernandes.org>
-> Date:   Sun Oct 16 16:23:04 2022 +0000
 >
->     rxrpc: Use call_rcu_flush() instead of call_rcu()
->
->     call_rcu() changes to save power may cause slowness. Use the
->     call_rcu_flush() API instead which reverts to the old behavior.
->
->     We find this via inspection that the RCU callback does a wakeup of a
->     thread. This usually indicates that something is waiting on it. To be
->     safe, let us use call_rcu_flush() here instead.
->
->     Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
->     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
->
-> diff --git a/net/rxrpc/conn_object.c b/net/rxrpc/conn_object.c
-> index 22089e37e97f0628f780855f9e219e5c33d4afa1..fdcfb509cc4434b0781b76623532aff9c854ce60
-> 100644
-> --- a/net/rxrpc/conn_object.c
-> +++ b/net/rxrpc/conn_object.c
-> @@ -253,7 +253,7 @@ void rxrpc_kill_connection(struct rxrpc_connection *conn)
->          * must carry a ref on the connection to prevent us getting here whilst
->          * it is queued or running.
->          */
-> -       call_rcu(&conn->rcu, rxrpc_destroy_connection);
-> +       call_rcu_flush(&conn->rcu, rxrpc_destroy_connection);
->  }
->
->  /*
+> Just to clarify, I know you review/maintain a lot of the networking
+> code and I really appreciate that (not praising just for the sake).
+> And I care about the kernel too, just like you.
+
+I had no doubts about that, really.
