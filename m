@@ -2,145 +2,132 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 79B92C4332F
-	for <rcu@archiver.kernel.org>; Fri, 18 Nov 2022 22:24:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E4296C433FE
+	for <rcu@archiver.kernel.org>; Fri, 18 Nov 2022 23:43:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230448AbiKRWYl (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 18 Nov 2022 17:24:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46108 "EHLO
+        id S236615AbiKRXnN (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 18 Nov 2022 18:43:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229635AbiKRWYV (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 18 Nov 2022 17:24:21 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F30003205A;
-        Fri, 18 Nov 2022 14:23:49 -0800 (PST)
+        with ESMTP id S237153AbiKRXmp (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 18 Nov 2022 18:42:45 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D7448CBA7;
+        Fri, 18 Nov 2022 15:23:53 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8F8BD627B8;
-        Fri, 18 Nov 2022 22:23:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAAE5C433D6;
-        Fri, 18 Nov 2022 22:23:48 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6470B627C1;
+        Fri, 18 Nov 2022 23:23:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD33FC433D7;
+        Fri, 18 Nov 2022 23:23:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668810229;
-        bh=saD4ekaR7aTv0tgNKWhed7zpzPCX3G62radVkykS1Us=;
+        s=k20201202; t=1668813830;
+        bh=7XBXVXhCCU9Em+DNHd2vQ8ORuGvO8P1sSalA66wErCk=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Nrr9/LDlLu0c7qtlU9AyNxbP/NzttRuFpt0JOV0n8IDqKQDrgVZIDsW94d1ys3hRZ
-         M3m0hZIBRA8X4OGed/P5VUQvNUWqYs1I2PBy95NlmAriDnLF44f1sJ6BX6eEIGgXZj
-         RmrQ3i0CBnGwoETXl2cU4pKP0cmpovPjpAbaUlOF+tWr0Pi277cVaVSbJGmJAt4x6a
-         vZ4doG6op8I6glx03SoNDGtQIqJaDw510Du6TFJmGk5DSZRK7c7h9OHkm5zqCm5Ns6
-         eLs2P7iq3udRnLyPtFd1WeGekKPPNv+KW3R+GlkAZKlmorfAoU2seVBLMi944ErsgD
-         gGRXJunwDodwA==
+        b=blwOQFIuTxcwSMpQfrpRN3vC+oXQ40d5Lx+Q0/7zTNaBJTFcIK2j+q+GS+VrLqn5K
+         B79Cgvf4A9grFKlXAGPPqkY1372eQqdzBUtKiJRKwDkDbr3G0/6ds+KtZjWXsigm6X
+         vsXaSRjoqxaoNAL0BfBqbQThoPiMeK3UphY5UqY7q+MiLYEP1oF72dXrBWzBwuanFC
+         XouSFG7wXvG9SgmIPoEudeVCIW7/1x2bRf951UUJoJov4aYB+CERze2SH3/yvbxIrG
+         rUT2UPdfTMSZeiU9K1cTI+qkRHzn2amvhwVfHBX3NBEmv9HO51kk9FFC3j/w8rtxbE
+         7wy4ERwgRrMvw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 991EB5C0F9C; Fri, 18 Nov 2022 14:23:48 -0800 (PST)
-Date:   Fri, 18 Nov 2022 14:23:48 -0800
+        id 6A8A35C0EBE; Fri, 18 Nov 2022 15:23:50 -0800 (PST)
+Date:   Fri, 18 Nov 2022 15:23:50 -0800
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        Paolo Abeni <pabeni@redhat.com>, rcu@vger.kernel.org,
-        rostedt@goodmis.org, fweisbec@gmail.com
-Subject: Re: [PATCH v2 2/2] net: devinet: Reduce refcount before grace period
-Message-ID: <20221118222348.GQ4001@paulmck-ThinkPad-P17-Gen-1>
+To:     Sven Schnelle <svens@linux.ibm.com>
+Cc:     Davidlohr Bueso <dave@stgolabs.net>,
+        Josh Triplett <josh@joshtriplett.org>,
+        linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Subject: Re: [PATCH 1/2] torture: use for_each_present() loop in
+ torture_online_all()
+Message-ID: <20221118232350.GA2340322@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20221118191909.1756624-1-joel@joelfernandes.org>
- <20221118191909.1756624-2-joel@joelfernandes.org>
+References: <20221111125126.3319474-1-svens@linux.ibm.com>
+ <20221111125126.3319474-2-svens@linux.ibm.com>
+ <20221111185331.GA725751@paulmck-ThinkPad-P17-Gen-1>
+ <yt9dtu31k0r9.fsf@linux.ibm.com>
+ <20221114163009.GE4001@paulmck-ThinkPad-P17-Gen-1>
+ <yt9dzgcsiu4p.fsf@linux.ibm.com>
+ <20221115134139.GI4001@paulmck-ThinkPad-P17-Gen-1>
+ <yt9dr0y29jp3.fsf@linux.ibm.com>
+ <20221117150637.GB4001@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221118191909.1756624-2-joel@joelfernandes.org>
+In-Reply-To: <20221117150637.GB4001@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Nov 18, 2022 at 07:19:09PM +0000, Joel Fernandes (Google) wrote:
-> From: Eric Dumazet <edumazet@google.com>
+On Thu, Nov 17, 2022 at 07:06:37AM -0800, Paul E. McKenney wrote:
+> On Thu, Nov 17, 2022 at 07:30:32AM +0100, Sven Schnelle wrote:
+> > Hi Paul,
+> > 
+> > "Paul E. McKenney" <paulmck@kernel.org> writes:
+> > 
+> > >> > Yes, rcutorture has lower-level checks for CPUs being hotplugged
+> > >> > behind its back.  Which might be sufficient.  But this patch is in
+> > >> > response to something bad happening if the CPU is also not present in
+> > >> > the cpu_present_mask.  Would that same bad thing happen if rcutorture saw
+> > >> > the CPU in cpu_online_mask, but by the time it attempted to CPU-hotplug
+> > >> > it, that CPU was gone not just from cpu_online_mask, but also from
+> > >> > cpu_present_mask?
+> > >> >
+> > >> > Or are CPUs never removed from cpu_present_mask?
+> > >> 
+> > >> In the current implementation CPUs can only be added to the
+> > >> cpu_present_mask, but never removed. This might change in the future
+> > >> when we get support from firmware for that, but the current s390 code
+> > >> doesn't do that.
+> > >
+> > > Very good!
+> > >
+> > > Then could the patch please check that bits are never removed?
+> > > That way the code will complain should firmware support be added.
+> > >
+> > > 							Thanx, Paul
+> > 
+> > I'm not sure whether i fully understand that. If the CPU could
+> > be removed from the system and the cpu_present_mask, that could
+> > happen at any time. So i don't see how we should check about that?
 > 
-> Currently, the inetdev_destroy() function waits for an RCU grace period
-> before decrementing the refcount and freeing memory. This causes a delay
-> with a new RCU configuration that tries to save power, which results in the
-> network interface disappearing later than expected. The resulting delay
-> causes test failures on ChromeOS.
+> Well, that is my question to you.  ;-)
 > 
-> Refactor the code such that the refcount is freed before the grace period
-> and memory is freed after. With this a ChromeOS network test passes that
-> does 'ip netns del' and polls for an interface disappearing, now passes.
+> Suppose we have the following sequence of events:
 > 
-> Reported-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> Signed-off-by: Eric Dumazet <edumazet@google.com>
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> o	rcutorture sees that CPU 5 is in cpu_present_mask, but offline.
+> 
+> o	rcutorture therefore decides to online CPU 5.
+> 
+> o	s390 firmware removes CPU 5, and s390 architecture code then
+> 	clears it from the cpu_present_mask.
+> 
+> o	rcutorture proceeds with onlining CPU 5.
+> 
+> Don't we then get the same problem that prompted you to change from
+> cpu_possible_mask to cpu_present mask?  If not, why can't the rcutorture
+> code continue to use cpu_possible_mask?
+> 
+> If it really is bad to try to online or offline a CPU that is in
+> cpu_possible_mask but not in cpu_present_mask, and if CPUs can be removed
+> from cpu_present_mask, then we need some way to synchronize the removal
+> of CPUs from cpu_present_mask.  There are of course a lot of possible
+> ways to do that synchronization, for example, protecting cpu_present_mask
+> with a mutex or similar.
+> 
+> Alternatively, s390 could restrict things.  One way to do that would
+> be to turn off rcutorture's use of CPU hotplug when running on s390,
+> for example, by using the module parameters provided for that purpose.
+> Another way to do that would be to refrain from removing CPUs from
+> cpu_present_mask while rcutorture is running.
+> 
+> Are there other approaches?
 
-Queued and pushed, thank you both!
+For the near term, why not have rcutorture keep a snapshot of
+cpu_present_mask, and splat if a CPU is ever removed from that mask?
 
-This patch can go as-is based on Eric's Signed-off-by, but the first
-one of course needs at least an ack.
+That would catch any issues, and defer any synchronization decisions to
+a time at which we actually have some chance of knowing what is going on.
 
 							Thanx, Paul
-
-> ---
->  net/ipv4/devinet.c | 19 ++++++++++---------
->  1 file changed, 10 insertions(+), 9 deletions(-)
-> 
-> diff --git a/net/ipv4/devinet.c b/net/ipv4/devinet.c
-> index e8b9a9202fec..b0acf6e19aed 100644
-> --- a/net/ipv4/devinet.c
-> +++ b/net/ipv4/devinet.c
-> @@ -234,13 +234,20 @@ static void inet_free_ifa(struct in_ifaddr *ifa)
->  	call_rcu(&ifa->rcu_head, inet_rcu_free_ifa);
->  }
->  
-> +static void in_dev_free_rcu(struct rcu_head *head)
-> +{
-> +	struct in_device *idev = container_of(head, struct in_device, rcu_head);
-> +
-> +	kfree(rcu_dereference_protected(idev->mc_hash, 1));
-> +	kfree(idev);
-> +}
-> +
->  void in_dev_finish_destroy(struct in_device *idev)
->  {
->  	struct net_device *dev = idev->dev;
->  
->  	WARN_ON(idev->ifa_list);
->  	WARN_ON(idev->mc_list);
-> -	kfree(rcu_dereference_protected(idev->mc_hash, 1));
->  #ifdef NET_REFCNT_DEBUG
->  	pr_debug("%s: %p=%s\n", __func__, idev, dev ? dev->name : "NIL");
->  #endif
-> @@ -248,7 +255,7 @@ void in_dev_finish_destroy(struct in_device *idev)
->  	if (!idev->dead)
->  		pr_err("Freeing alive in_device %p\n", idev);
->  	else
-> -		kfree(idev);
-> +		call_rcu(&idev->rcu_head, in_dev_free_rcu);
->  }
->  EXPORT_SYMBOL(in_dev_finish_destroy);
->  
-> @@ -298,12 +305,6 @@ static struct in_device *inetdev_init(struct net_device *dev)
->  	goto out;
->  }
->  
-> -static void in_dev_rcu_put(struct rcu_head *head)
-> -{
-> -	struct in_device *idev = container_of(head, struct in_device, rcu_head);
-> -	in_dev_put(idev);
-> -}
-> -
->  static void inetdev_destroy(struct in_device *in_dev)
->  {
->  	struct net_device *dev;
-> @@ -328,7 +329,7 @@ static void inetdev_destroy(struct in_device *in_dev)
->  	neigh_parms_release(&arp_tbl, in_dev->arp_parms);
->  	arp_ifdown(dev);
->  
-> -	call_rcu(&in_dev->rcu_head, in_dev_rcu_put);
-> +	in_dev_put(in_dev);
->  }
->  
->  int inet_addr_onlink(struct in_device *in_dev, __be32 a, __be32 b)
-> -- 
-> 2.38.1.584.g0f3c55d4c2-goog
-> 
