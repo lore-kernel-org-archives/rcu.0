@@ -2,117 +2,137 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FE21C43217
-	for <rcu@archiver.kernel.org>; Fri, 18 Nov 2022 00:24:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D4A7C4332F
+	for <rcu@archiver.kernel.org>; Fri, 18 Nov 2022 00:29:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235050AbiKRAYG (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 17 Nov 2022 19:24:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37726 "EHLO
+        id S240676AbiKRA3G (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 17 Nov 2022 19:29:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234847AbiKRAYE (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 17 Nov 2022 19:24:04 -0500
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70A3868298
-        for <rcu@vger.kernel.org>; Thu, 17 Nov 2022 16:24:01 -0800 (PST)
-Received: by mail-qt1-x833.google.com with SMTP id jr19so2237303qtb.7
-        for <rcu@vger.kernel.org>; Thu, 17 Nov 2022 16:24:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=PQALVvBpG9Tgm4QJd1bZefWDruQZ7+FZQSohOhIfB6E=;
-        b=WdVSFjUXoLnDIwsaQd/YCFQYOfKxlJH+t+28yswVvhFD8+/5OsWHv3c1mXajHuV7TN
-         FB8/dQlrzdu9V/hdN5EfH52HdApuaiULyJCJHTWp/BL0H8/WaFqlz1coGPm6H+qr8P8h
-         qgR+O7JetxtHeRm8yq7fn2IdswK27/UJQM/LQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PQALVvBpG9Tgm4QJd1bZefWDruQZ7+FZQSohOhIfB6E=;
-        b=lpff/Z0yy+Rs8H69wQXoE4IKX3dlcp5ip2X0h2yB+wSUSPg5aIFugcj8+CPkTkilXu
-         LX1WjcjKoCROCW+wvUefrTdpcQcLPj7z9RozatZHblq7NSNoWF+Gbif1OYoqm7Bk8Vr5
-         70pyvhiAoU3xi6/VmOeP7RiBFEywDr4h63KD/rVfB1DaRww4cY/nHPBremiVJo8bJViC
-         GxaHvQaaz7RqjDJnKsrmzB1DGDuizkQQzjjDPSp5t9ezLsl08U/0Dq/57mMYK8FwJZ24
-         pP4X1sdTyf5plmepU/LVH+Q55HBlxDi+zf6a/xfpnmTvXUeOT+SgwxGtqw3zFJIhocmJ
-         i6gw==
-X-Gm-Message-State: ANoB5pmduPtzlTNvcBJDQa7n9pKrv/colIidSnvOphc72kpAhatskKBA
-        bToFHrwHobr5ToMFWnaGqqgo2A==
-X-Google-Smtp-Source: AA0mqf5+rcoA5TgBVpqXybDxHbeal+yxGKYtKjh3sTqi9/GyE+4DuAC4zmbWbWOTZCcBVwClObMadA==
-X-Received: by 2002:a05:622a:428e:b0:3a5:5a43:b36b with SMTP id cr14-20020a05622a428e00b003a55a43b36bmr4654919qtb.407.1668731040558;
-        Thu, 17 Nov 2022 16:24:00 -0800 (PST)
-Received: from localhost (228.221.150.34.bc.googleusercontent.com. [34.150.221.228])
-        by smtp.gmail.com with ESMTPSA id i15-20020a05620a248f00b006fa9d101775sm1476838qkn.33.2022.11.17.16.23.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Nov 2022 16:23:59 -0800 (PST)
-Date:   Fri, 18 Nov 2022 00:23:59 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     linux-kernel@vger.kernel.org, Cong Wang <xiyou.wangcong@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Jiri Pirko <jiri@resnulli.us>, netdev@vger.kernel.org,
-        Paolo Abeni <pabeni@redhat.com>, rcu@vger.kernel.org,
-        rostedt@goodmis.org, paulmck@kernel.org, fweisbec@gmail.com
-Subject: Re: [PATCH rcu/dev 1/3] net: Use call_rcu_flush() for qdisc_free_cb
-Message-ID: <Y3bQn3o1A4KFp7qV@google.com>
-References: <20221117031551.1142289-1-joel@joelfernandes.org>
- <CANn89iJuy=PuAiwrjF3qZY0M+86eRQ=o_x-m-eoxOdyAM8yoSg@mail.gmail.com>
+        with ESMTP id S240496AbiKRA2v (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 17 Nov 2022 19:28:51 -0500
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C263B70A1E;
+        Thu, 17 Nov 2022 16:28:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1668731327; x=1700267327;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=GmWPbqaX/RKcrEpQEce2Uo62AEQ/ECmJrcr2BAPP4A8=;
+  b=iVV7oBaGYvAam04asypzkbV9TfS4KzilAvKhSlCR5HYMHFFamYfoq0b4
+   6XHU65iJtxNM4zmWXgX4CJ2C44guf6u7QsBvY8K+N4e+ShK7zMVmGVJ9P
+   d1aryDNWJG1dmCb1m0IaLGqr3d1fkJs4iiqu+seyaDUOQmgJM3sXo+Im2
+   Iwk+Z4K+7lsjfA20K9ox0IG0hUdeSA14h2q7LlwfrJUfWh7Y5a6w9Jx07
+   PWMLAde+ZLq5MH2RJcc2nqwpgmtn/nUcOaT/3sgYSLXHSnqCJK8ltOUzb
+   719mkgK35+/bWkPGqJPKZ7HmhQ0zOH0BSILxNCvQwvN5gXSMnsWA/Zsdd
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10534"; a="311716973"
+X-IronPort-AV: E=Sophos;i="5.96,172,1665471600"; 
+   d="scan'208";a="311716973"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2022 16:28:47 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10534"; a="703539952"
+X-IronPort-AV: E=Sophos;i="5.96,172,1665471600"; 
+   d="scan'208";a="703539952"
+Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.129])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2022 16:28:45 -0800
+From:   Zqiang <qiang1.zhang@intel.com>
+To:     paulmck@kernel.org, akpm@linux-foundation.org,
+        thunder.leizhen@huawei.com, frederic@kernel.org,
+        joel@joelfernandes.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3] mm: Make vmalloc_dump_obj() call in clean context
+Date:   Fri, 18 Nov 2022 08:34:41 +0800
+Message-Id: <20221118003441.3980437-1-qiang1.zhang@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANn89iJuy=PuAiwrjF3qZY0M+86eRQ=o_x-m-eoxOdyAM8yoSg@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Nov 17, 2022 at 01:44:12PM -0800, Eric Dumazet wrote:
-> On Wed, Nov 16, 2022 at 7:16 PM Joel Fernandes (Google)
-> <joel@joelfernandes.org> wrote:
-> >
-> > In a networking test on ChromeOS, we find that using the new CONFIG_RCU_LAZY
-> > causes a networking test to fail in the teardown phase.
-> >
-> > The failure happens during: ip netns del <name>
-> >
-> > Using ftrace, I found the callbacks it was queuing which this series fixes. Use
-> > call_rcu_flush() to revert to the old behavior. With that, the test passes.
-> >
-> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > ---
-> >  net/sched/sch_generic.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
-> > index a9aadc4e6858..63fbf640d3b2 100644
-> > --- a/net/sched/sch_generic.c
-> > +++ b/net/sched/sch_generic.c
-> > @@ -1067,7 +1067,7 @@ static void qdisc_destroy(struct Qdisc *qdisc)
-> >
-> >         trace_qdisc_destroy(qdisc);
-> >
-> > -       call_rcu(&qdisc->rcu, qdisc_free_cb);
-> > +       call_rcu_flush(&qdisc->rcu, qdisc_free_cb);
-> >  }
-> 
-> I took a look at this one.
-> 
-> qdisc_free_cb() is essentially freeing : Some per-cpu memory, and the
-> 'struct Qdisc'
-> 
-> I do not see why we need to force a flush for this (small ?) piece of memory.
+Currently, the mem_dump_obj() is invoked in call_rcu(), the
+call_rcu() is maybe invoked in non-preemptive code segment,
+for object allocated from vmalloc(), the following scenarios
+may occur:
 
-Indeed! Just tested and dropping this one still makes the test pass.
+        CPU 0
+tasks context
+   spin_lock(&vmap_area_lock)
+       Interrupt context
+           call_rcu()
+             mem_dump_obj
+               vmalloc_dump_obj
+                 spin_lock(&vmap_area_lock) <--deadlock
 
-I believe this patch was papering over the issues fixed by the other
-patches, so it stuck.
+and for PREEMPT-RT kernel, the spinlock will convert to sleepable
+lock, so the vmap_area_lock spinlock not allowed to get in non-preemptive
+code segment. therefore, this commit make the vmalloc_dump_obj() call in
+a clean context.
 
-I will drop this one and move over to trying your suggestions for 2/3.
+Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+---
+ v1->v2:
+ add IS_ENABLED(CONFIG_PREEMPT_RT) check.
+ v2->v3:
+ change commit message and add some comment.
 
-Thanks for taking a look,
+ mm/util.c    |  4 +++-
+ mm/vmalloc.c | 25 +++++++++++++++++++++++++
+ 2 files changed, 28 insertions(+), 1 deletion(-)
 
- - Joel
+diff --git a/mm/util.c b/mm/util.c
+index 12984e76767e..2b0222a728cc 100644
+--- a/mm/util.c
++++ b/mm/util.c
+@@ -1128,7 +1128,9 @@ void mem_dump_obj(void *object)
+ 		return;
+ 
+ 	if (virt_addr_valid(object))
+-		type = "non-slab/vmalloc memory";
++		type = "non-slab memory";
++	else if (is_vmalloc_addr(object))
++		type = "vmalloc memory";
+ 	else if (object == NULL)
+ 		type = "NULL pointer";
+ 	else if (object == ZERO_SIZE_PTR)
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index ccaa461998f3..4351eafbe7ab 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -4034,6 +4034,31 @@ bool vmalloc_dump_obj(void *object)
+ 	struct vm_struct *vm;
+ 	void *objp = (void *)PAGE_ALIGN((unsigned long)object);
+ 
++	/* for non-vmalloc addr, return directly */
++	if (!is_vmalloc_addr(objp))
++		return false;
++
++	/**
++	 * for non-Preempt-RT kernel, return directly. otherwise not
++	 * only needs to determine whether it is in the interrupt context
++	 * (in_interrupt())to avoid deadlock, but also to avoid acquire
++	 * vmap_area_lock spinlock in disables interrupts or preempts
++	 * critical sections, because the vmap_area_lock spinlock convert
++	 * to sleepable lock
++	 */
++	if (IS_ENABLED(CONFIG_PREEMPT_RT) && !preemptible())
++		return false;
++
++	/**
++	 * get here, for Preempt-RT kernel, it means that we are in
++	 * preemptible context(preemptible() is true), it also means
++	 * that the in_interrupt() will return false.
++	 * for non-Preempt-RT kernel, only needs to determine whether
++	 * it is in the interrupt context(in_interrupt()) to avoid deadlock
++	 */
++	if (in_interrupt())
++		return false;
++
+ 	vm = find_vm_area(objp);
+ 	if (!vm)
+ 		return false;
+-- 
+2.25.1
 
