@@ -2,120 +2,110 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B67DC4332F
-	for <rcu@archiver.kernel.org>; Fri, 18 Nov 2022 01:46:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 213CCC433FE
+	for <rcu@archiver.kernel.org>; Fri, 18 Nov 2022 02:04:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234080AbiKRBqK (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 17 Nov 2022 20:46:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56192 "EHLO
+        id S235074AbiKRCED (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 17 Nov 2022 21:04:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240834AbiKRBqG (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 17 Nov 2022 20:46:06 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8614B742E1
-        for <rcu@vger.kernel.org>; Thu, 17 Nov 2022 17:46:05 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id l12so5847512lfp.6
-        for <rcu@vger.kernel.org>; Thu, 17 Nov 2022 17:46:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Fsm5q2Fbqh+S9+BA461w10oQVPp4wjse4b1o1TaHjxg=;
-        b=N4pipC4csb2coM7Y606RWgHws9WRzgLgMDP4sDdxeZxBHoV4Fw73UbqcjdsICOlEls
-         EakQcsg67HHBUTgCoh9g2FMmXzLWDs2rfd1IkDHgsECU7DNJdGFtXYL/Mx6o4pYWptuD
-         QjYdfiwSt7U3aUYQPNxelXXseVGeZeit2Ofsz2nbjPhSMoSgf//1e0fmPgw8k7oSYNPj
-         dnXHYev3hKHFo/PuXbm8o5q0Und26KWYMzEWx1GokjyYEdGaoNjho61Ph4cNNbSuaVIU
-         xSn2hMfkGZJLByBfks/piQDifilwP4Ss/zkJ51vIkPAjTSQZ3LhVGTVaWQO3wAzUF6s2
-         uF+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Fsm5q2Fbqh+S9+BA461w10oQVPp4wjse4b1o1TaHjxg=;
-        b=fwz2P76gMABtPzYUGNr0eJ4HpprkmmtySh3Z+zWXwXIBYu5zz/b4LIFL3yGCc8S7LQ
-         lgo8oQ/XPzpH6dml+cmbf6iXsv9QMX0cVx5gfANo0Rg2LWjftHcbTU3UoYbmmj9+Ghbo
-         P8yIf7tnvrNq/YY9ZTupPrYVdFyo+F1eTu0yrZp6A87z5LvZiGkJvWobqAtQZEp2hfui
-         WhK9l6dWcwZiCZlk9k9LlwfIPxT2UtFO7cDf/uQeMeQTdsyfnkOXeGYY6YELv8MNCZzA
-         N0u+HQenITFAhL3zKHIDHdr2VkE24f+/Gew/EjzZ9uk64FnY8xWVgclssIGtFIfQVElF
-         /yBw==
-X-Gm-Message-State: ANoB5plXyE0Y/195RPeUiupza6NOqzhFonNUMyP86c5M/iOYpJmIOwDJ
-        lvpMNzMgXYuF2Efcgp8A7PqJKL7nmN05TOKYBPa84DdJH4EF
-X-Google-Smtp-Source: AA0mqf5satcBD7PFN0RuTTvKQb0lYQduobanzWOkqXKoi7r0MPMQG8t5xuqA+p1i7qaUki0sWzhbQN5d0y5yeWEfb1k=
-X-Received: by 2002:a05:6512:36c3:b0:4b4:c0c:8995 with SMTP id
- e3-20020a05651236c300b004b40c0c8995mr1952427lfs.326.1668735963769; Thu, 17
- Nov 2022 17:46:03 -0800 (PST)
-MIME-Version: 1.0
-References: <YzLJZU2mAPjfD/RK@piliu.users.ipa.redhat.com> <CAFgQCTtLm-JXRyQfKo6-+P00SShVGujZGau+khmtCe1AiRodQA@mail.gmail.com>
- <20220930154459.GF4196@paulmck-ThinkPad-P17-Gen-1> <CAFgQCTu75NPFM8L6a8-bgAzwzNtEdAV+DkXc7ssu6arf3o-o-A@mail.gmail.com>
- <20221002162002.GR4196@paulmck-ThinkPad-P17-Gen-1> <CAFgQCTtgLfc0NeYqyWk4Ew-pA9rMREjRjWSnQhYLv-V5117s9Q@mail.gmail.com>
- <20221027174620.GC5600@paulmck-ThinkPad-P17-Gen-1> <CAFgQCTuoy+9DdQsVZvbLcn70JaHUhR2HZ=D35Akj4=GceGO2Lg@mail.gmail.com>
- <20221103165143.GX5600@paulmck-ThinkPad-P17-Gen-1> <20221107160726.GA3892067@paulmck-ThinkPad-P17-Gen-1>
- <20221117143946.GG839309@lothringen>
-In-Reply-To: <20221117143946.GG839309@lothringen>
-From:   Pingfan Liu <kernelfans@gmail.com>
-Date:   Fri, 18 Nov 2022 09:45:52 +0800
-Message-ID: <CAFgQCTsyzHiv0bkF25riwV_Ruqezz4ec=f8z72-b_MvP4VwXqQ@mail.gmail.com>
-Subject: Re: [PATCHv2 3/3] rcu: coordinate tick dependency during concurrent offlining
+        with ESMTP id S235011AbiKRCEC (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 17 Nov 2022 21:04:02 -0500
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C44D97A35E;
+        Thu, 17 Nov 2022 18:04:00 -0800 (PST)
+Received: from dggpemm500024.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4ND0SS6sPMzRpK0;
+        Fri, 18 Nov 2022 10:03:36 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggpemm500024.china.huawei.com (7.185.36.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Fri, 18 Nov 2022 10:03:59 +0800
+Received: from [10.174.178.55] (10.174.178.55) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Fri, 18 Nov 2022 10:03:58 +0800
+Subject: Re: [PATCH v7 4/6] rcu: Add RCU stall diagnosis information
 To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        David Woodhouse <dwmw@amazon.co.uk>,
+CC:     "Paul E . McKenney" <paulmck@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
+        "Steven Rostedt" <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>
-Content-Type: text/plain; charset="UTF-8"
+        Joel Fernandes <joel@joelfernandes.org>, <rcu@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Robert Elliott <elliott@hpe.com>
+References: <20221111130709.247-1-thunder.leizhen@huawei.com>
+ <20221111130709.247-5-thunder.leizhen@huawei.com>
+ <20221116223942.GA838972@lothringen>
+ <d4f7f41c-e1ef-606f-d700-3e67059bb06d@huawei.com>
+ <20221117122238.GC839309@lothringen>
+ <54aa07c4-b7e3-1a0e-e6a3-444573caba16@huawei.com>
+ <20221117142648.GF839309@lothringen>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <ba11daa5-806e-5c94-107a-e20bf6ce9e10@huawei.com>
+Date:   Fri, 18 Nov 2022 10:03:46 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
+MIME-Version: 1.0
+In-Reply-To: <20221117142648.GF839309@lothringen>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.55]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Nov 17, 2022 at 10:39 PM Frederic Weisbecker
-<frederic@kernel.org> wrote:
->
-> On Mon, Nov 07, 2022 at 08:07:26AM -0800, Paul E. McKenney wrote:
-> > > I ran 200 hours of TREE04 and got an RCU CPU stall warning.  I ran 2000
-> > > hours on v6.0, which precedes these commits, and everything passed.
-> > >
-> > > I will run more, primarily on v6.0, but that is what I have thus far.
-> > > At the moment, I have some concerns about this change.
-> >
-> > OK, so I have run a total of 8000 hours on v6.0 without failure.  I have
-> > run 4200 hours on rcu#revert_tick_dep with 15 failures.  The ones I
-> > looked at were RCU CPU stall warnings with timer failures.
-> >
-> > This data suggests that the kernel is not yet ready for that commit
-> > to be reverted.
->
-> But that branch has the three commits reverted:
->
-> 1) tick: Detect and fix jiffies update stall
-> 2) timers/nohz: Last resort update jiffies on nohz_full IRQ entry*
-> 3) rcu: Make CPU-hotplug removal operations enable tick
->
-> Reverting all of them is expected to fail anyway.
->
-> What we would like to know is if reverting just 3) is fine. Because
-> 1) and 2) are supposed to fix the underlying issue.
->
-> I personally didn't manage to trigger failures with just reverting 3)
-> after thousands hours. But it failed with reverting all of them.
->
-> Has someone managed to trigger a failure with only 3) reverted?
->
 
-Oh, a long long thread hides the history!   Once it was done [1].  But
-I have not kept the data (IIRC, it occupied ~1GB).
 
-If the information and attachment in [1] are not enough for you, I am
-happy to redo the test.
+On 2022/11/17 22:26, Frederic Weisbecker wrote:
+> On Thu, Nov 17, 2022 at 09:25:44PM +0800, Leizhen (ThunderTown) wrote:
+>>
+>>
+>> On 2022/11/17 20:22, Frederic Weisbecker wrote:
+>>> On Thu, Nov 17, 2022 at 09:57:18AM +0800, Leizhen (ThunderTown) wrote:
+>>>>
+>>>>
+>>>> On 2022/11/17 6:39, Frederic Weisbecker wrote:
+>>>>> On Fri, Nov 11, 2022 at 09:07:07PM +0800, Zhen Lei wrote:
+>>>>>> @@ -262,6 +279,8 @@ struct rcu_data {
+>>>>>>  	short rcu_onl_gp_flags;		/* ->gp_flags at last online. */
+>>>>>>  	unsigned long last_fqs_resched;	/* Time of last rcu_resched(). */
+>>>>>>  	unsigned long last_sched_clock;	/* Jiffies of last rcu_sched_clock_irq(). */
+>>>>>> +	struct rcu_snap_record snap_record; /* Snapshot of core stats at half of */
+>>>>>> +					    /* the first RCU stall timeout */
+>>>>>
+>>>>> This should be under #ifdef CONFIG_RCU_CPU_STALL_CPUTIME
+>>>>
+>>>> This will not work for now because we also support boot option
+>>>> rcupdate.rcu_cpu_stall_cputime.
+>>>
+>>> I'm confused. If CONFIG_RCU_CPU_STALL_CPUTIME=n then rcupdate.rcu_cpu_stall_cputime has
+>>> no effect, right?
+>>
+>> No, rcupdate.rcu_cpu_stall_cputime override CONFIG_RCU_CPU_STALL_CPUTIME. Because
+>> the default value of CONFIG_RCU_CPU_STALL_CPUTIME is n, so in most cases, we need
+>> rcupdate.rcu_cpu_stall_cputime as the escape route.
+>>
+>> If CONFIG_RCU_CPU_STALL_CPUTIME=y is default, your suggestion is more
+>> appropriate.
+> 
+> Oh ok I thought it was a support Kconfig switch.
+> 
+> Then please just mention that rcupdate.rcu_cpu_stall_cputime overrides
+> CONFIG_RCU_CPU_STALL_CPUTIME behaviour in the Kconfig help text.
 
-Thanks,
+Okay, I'll add the description.
 
-    Pingfan
-
-[1]: https://lore.kernel.org/all/CAFgQCTtLm-JXRyQfKo6-+P00SShVGujZGau+khmtCe1AiRodQA@mail.gmail.com/
-
+> 
 > Thanks.
+> .
+> 
+
+-- 
+Regards,
+  Zhen Lei
