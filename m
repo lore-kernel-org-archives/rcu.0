@@ -2,128 +2,81 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EEAA0C4332F
-	for <rcu@archiver.kernel.org>; Sat, 19 Nov 2022 04:00:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 759CDC433FE
+	for <rcu@archiver.kernel.org>; Sat, 19 Nov 2022 09:26:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229946AbiKSEAk (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 18 Nov 2022 23:00:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52856 "EHLO
+        id S232812AbiKSJ0u (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 19 Nov 2022 04:26:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229742AbiKSEA3 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 18 Nov 2022 23:00:29 -0500
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CADFE084;
-        Fri, 18 Nov 2022 20:00:25 -0800 (PST)
-Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4NDg0F5NfVz15Mcv;
-        Sat, 19 Nov 2022 11:59:57 +0800 (CST)
-Received: from dggpeml100012.china.huawei.com (7.185.36.121) by
- dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
+        with ESMTP id S229515AbiKSJ0s (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 19 Nov 2022 04:26:48 -0500
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC3E2776F2;
+        Sat, 19 Nov 2022 01:26:47 -0800 (PST)
+Received: from dggpemm500023.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4NDp8v1PHczqSNy;
+        Sat, 19 Nov 2022 17:22:55 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Sat, 19 Nov 2022 12:00:22 +0800
-Received: from localhost.localdomain (10.67.175.61) by
- dggpeml100012.china.huawei.com (7.185.36.121) with Microsoft SMTP Server
+ 15.1.2375.31; Sat, 19 Nov 2022 17:26:46 +0800
+Received: from thunder-town.china.huawei.com (10.174.178.55) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Sat, 19 Nov 2022 12:00:22 +0800
-From:   Zheng Yejian <zhengyejian1@huawei.com>
-To:     <paulmck@kernel.org>, <frederic@kernel.org>,
-        <quic_neeraju@quicinc.com>, <josh@joshtriplett.org>,
-        <rostedt@goodmis.org>, <mathieu.desnoyers@efficios.com>,
-        <jiangshanlai@gmail.com>, <joel@joelfernandes.org>,
-        <rcu@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <zhengyejian1@huawei.com>
-Subject: [PATCH] rcu: Fix kernel stack overflow caused by kprobe on rcu_irq_enter_check_tick()
-Date:   Sat, 19 Nov 2022 12:00:49 +0800
-Message-ID: <20221119040049.795065-1-zhengyejian1@huawei.com>
-X-Mailer: git-send-email 2.25.1
+ 15.1.2375.31; Sat, 19 Nov 2022 17:26:45 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        "Josh Triplett" <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, <rcu@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Robert Elliott <elliott@hpe.com>
+Subject: [PATCH v8 1/6] genirq: Fix the return type of kstat_cpu_irqs_sum()
+Date:   Sat, 19 Nov 2022 17:25:03 +0800
+Message-ID: <20221119092508.1766-2-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.37.3.windows.1
+In-Reply-To: <20221119092508.1766-1-thunder.leizhen@huawei.com>
+References: <20221119092508.1766-1-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.175.61]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml100012.china.huawei.com (7.185.36.121)
+X-Originating-IP: [10.174.178.55]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Register kprobe on __rcu_irq_enter_check_tick() can cause kernel stack
-overflow [1]. This issue is first found in v5.10 and can be reproduced
-by enabling CONFIG_NO_HZ_FULL and doing like:
-  # cd /sys/kernel/debug/tracing/
-  # echo 'p:mp1 __rcu_irq_enter_check_tick' >> kprobe_events
-  # echo 1 > events/kprobes/enable
+The type of member irqs_sum is unsigned long, so kstat_cpu_irqs_sum()
+should also return unsigned long. Otherwise, the value maybe truncated.
 
-So __rcu_irq_enter_check_tick() should not be kprobed, mark it as noinstr.
-
-[1]
-Insufficient stack space to handle exception!
-Insufficient stack space to handle exception!
-[...]
-Kernel panic - not syncing: kernel stack overflow
-CPU: 3 PID: 34 Comm: migration/3 Not tainted
-6.1.0-rc5-00884-g84368d882b96 #2
-Hardware name: linux,dummy-virt (DT)
-Stopper: multi_cpu_stop+0x0/0x228 <- __stop_cpus.constprop.0+0xa4/0x100
-Call trace:
- dump_backtrace+0xf8/0x108
- show_stack+0x20/0x48
- dump_stack_lvl+0x68/0x84
- dump_stack+0x1c/0x38
- panic+0x214/0x404
- add_taint+0x0/0xf0
- panic_bad_stack+0x144/0x160
- handle_bad_stack+0x38/0x58
- __bad_stack+0x78/0x7c
- el1h_64_sync_handler+0x4/0xe8
- __rcu_irq_enter_check_tick+0x0/0x1b8
- arm64_enter_el1_dbg.isra.0+0x14/0x20
- el1_dbg+0x2c/0x90
- el1h_64_sync_handler+0xcc/0xe8
- el1h_64_sync+0x64/0x68
- __rcu_irq_enter_check_tick+0x0/0x1b8
- arm64_enter_el1_dbg.isra.0+0x14/0x20
- el1_dbg+0x2c/0x90
- el1h_64_sync_handler+0xcc/0xe8
- el1h_64_sync+0x64/0x68
- __rcu_irq_enter_check_tick+0x0/0x1b8
- arm64_enter_el1_dbg.isra.0+0x14/0x20
- el1_dbg+0x2c/0x90
- el1h_64_sync_handler+0xcc/0xe8
- el1h_64_sync+0x64/0x68
- __rcu_irq_enter_check_tick+0x0/0x1b8
- arm64_enter_el1_dbg.isra.0+0x14/0x20
- el1_dbg+0x2c/0x90
- el1h_64_sync_handler+0xcc/0xe8
- el1h_64_sync+0x64/0x68
- __rcu_irq_enter_check_tick+0x0/0x1b8
- arm64_enter_el1_dbg.isra.0+0x14/0x20
- el1_dbg+0x2c/0x90
- el1h_64_sync_handler+0xcc/0xe8
- el1h_64_sync+0x64/0x68
- __rcu_irq_enter_check_tick+0x0/0x1b8
- [...]
-
-Cc: stable@vger.kernel.org
-Fixes: aaf2bc50df1f ("rcu: Abstract out rcu_irq_enter_check_tick() from rcu_nmi_enter()")
-Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
+Fixes: f2c66cd8eedd ("/proc/stat: scalability of irq num per cpu")
+Reported-by: Elliott, Robert (Servers) <elliott@hpe.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 ---
- kernel/rcu/tree.c | 2 +-
+ include/linux/kernel_stat.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 93416afebd59..68230f02cfb7 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -631,7 +631,7 @@ void rcu_irq_exit_check_preempt(void)
-  * controlled environments, this function allows RCU to get what it
-  * needs without creating otherwise useless interruptions.
+diff --git a/include/linux/kernel_stat.h b/include/linux/kernel_stat.h
+index ddb5a358fd829f4..90e2fdc17d79ff8 100644
+--- a/include/linux/kernel_stat.h
++++ b/include/linux/kernel_stat.h
+@@ -75,7 +75,7 @@ extern unsigned int kstat_irqs_usr(unsigned int irq);
+ /*
+  * Number of interrupts per cpu, since bootup
   */
--void __rcu_irq_enter_check_tick(void)
-+noinstr void __rcu_irq_enter_check_tick(void)
+-static inline unsigned int kstat_cpu_irqs_sum(unsigned int cpu)
++static inline unsigned long kstat_cpu_irqs_sum(unsigned int cpu)
  {
- 	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
- 
+ 	return kstat_cpu(cpu).irqs_sum;
+ }
 -- 
 2.25.1
 
