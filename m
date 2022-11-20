@@ -2,95 +2,196 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 25EFFC433FE
-	for <rcu@archiver.kernel.org>; Sun, 20 Nov 2022 03:40:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D2420C433FE
+	for <rcu@archiver.kernel.org>; Sun, 20 Nov 2022 05:00:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229456AbiKTDkk (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 19 Nov 2022 22:40:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56162 "EHLO
+        id S229456AbiKTFAu (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 20 Nov 2022 00:00:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbiKTDkj (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 19 Nov 2022 22:40:39 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6D5BA8C24
-        for <rcu@vger.kernel.org>; Sat, 19 Nov 2022 19:40:38 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id r18so8305498pgr.12
-        for <rcu@vger.kernel.org>; Sat, 19 Nov 2022 19:40:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WiNXBMi5a60FPiTGLznN6GlG311S8i8YBj6N2/PptqE=;
-        b=GylSTi3Itl1GH+rQGnpcDazb7EmawFLZtc15U43Xiojv+08ATT2ZkASGRFnHB6TK6r
-         I5Up36C+P50b6TmUT1zkZlDx38GErhIekTqpsZIASOUWq1ZM5M+fpAd/3R24AYrKY2gN
-         dBANmbYRvxGmatUVxhjrrc/dmruRyJucdpfkyGWf2EhbDr8U4P9xMuelJ0yqCZM61wPD
-         XXjf0vPB+yRuYB+vry5Acrd0JywsXfzrsiTvgjP2mefReXIcVv/U16sAby55qKcOG8Pp
-         i7JaqvadkPFiWIGOb+F5pfvbN0QAGfEq/N0elbbKOeQsn+uwd9S5jdrXiqSl+UgCJE42
-         MqTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WiNXBMi5a60FPiTGLznN6GlG311S8i8YBj6N2/PptqE=;
-        b=QgZzoQe2osin2ioznBNEOKGQWC2YvWaV/EMxe7LICQbt6scLYMAtRAxAKwGytEvrHt
-         XC8TKyUdk36JfuG/hSSkRGV+3B/OsOBnzmj2YZ4wmud77BoXaSQh1zghSfhLGdIDhhXE
-         YoMdhWFYB0h4CQ9RXB2Lw+/oT6N9gxkFdWAb2Q32HMZtxyqotii6cT/W7UJmJLYDh5tL
-         GIwODmFl71ZlYIlC4zHyfMUoGwEUL/LSMA0vNOP0LOwI+Yv2C9wyPb4u3w99Skg5/6Uq
-         qcdb7HiarCu2I5JGkE+FdaTlE980PJHGhs/K8ps+JbZrCgVaLWFYiMtkM3D/gKLyuDoe
-         ogaQ==
-X-Gm-Message-State: ANoB5pm0NHisK01mc7s+Bp0B68KNYFvB1SVzsCHDv2lT8ZPv6nwYNm2l
-        ZNZGTuQz60yzh4RlzOth8rR8K5I+kg==
-X-Google-Smtp-Source: AA0mqf5RfY9u8NnwvWhsJmPCCPJeiiLb2U4SSlCWQ1uR2jwO88y727KTwTnwtUGDMK2XmSZBDX+H8Q==
-X-Received: by 2002:a63:1514:0:b0:46e:a4ed:467e with SMTP id v20-20020a631514000000b0046ea4ed467emr1037122pgl.319.1668915637829;
-        Sat, 19 Nov 2022 19:40:37 -0800 (PST)
-Received: from piliu.users.ipa.redhat.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id gq18-20020a17090b105200b0021864cf062dsm5297260pjb.21.2022.11.19.19.40.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Nov 2022 19:40:37 -0800 (PST)
-From:   Pingfan Liu <kernelfans@gmail.com>
-To:     rcu@vger.kernel.org
-Cc:     Pingfan Liu <kernelfans@gmail.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
+        with ESMTP id S229446AbiKTFAt (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 20 Nov 2022 00:00:49 -0500
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91CDB75DBC
+        for <rcu@vger.kernel.org>; Sat, 19 Nov 2022 21:00:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1668920447; x=1700456447;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=2ZIzchiS1lUhTkr1EkpKV+P4dxtpMIio/4re665kZy0=;
+  b=U7zY4tlgVDRlcMUbMEGIh/bOay4dj5UNNV7iXKhsXr/ijuWEGLutAOIt
+   ECJMhz59hgVt7eQflNyW5P2RfRZNXo1IfLpGcUrz3GwHE8PTpuN8fALbA
+   8rUgMeQ5hEo2n0gcHLjQO+LDSlaNt6Nnglvks0K579LX0n3ggavpudnzl
+   71GEzY87fjkdE/u05gO2GCOJS3mCTtIuXu6YvxMhLgWeo0vfNn3ae8VUD
+   CCJJ9MeZwUZizsX/SGwemT4P8J1C42AwG3KI9hgyFw8wyQlfw17iZ4eu9
+   tbEG4S/JFL+DJTuNQvyihRasCrr2QnJ2j44kRK0OKCF0Nw98vnvZlN2M1
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10536"; a="313397545"
+X-IronPort-AV: E=Sophos;i="5.96,178,1665471600"; 
+   d="scan'208";a="313397545"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2022 21:00:47 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10536"; a="673627901"
+X-IronPort-AV: E=Sophos;i="5.96,178,1665471600"; 
+   d="scan'208";a="673627901"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orsmga001.jf.intel.com with ESMTP; 19 Nov 2022 21:00:46 -0800
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Sat, 19 Nov 2022 21:00:46 -0800
+Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Sat, 19 Nov 2022 21:00:46 -0800
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31 via Frontend Transport; Sat, 19 Nov 2022 21:00:46 -0800
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.43) by
+ edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2375.31; Sat, 19 Nov 2022 21:00:46 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=n5yC217GbKWlKMsH66l94F/V8i7FjT34TkUjparPoo1Bf/vU4Mlu43jvPMt0DvExWdGiBzGHYmO3Bw2JSHX+SszsWC/GzjWKoU9GTSk/PcceR/Qs0MNNQ2eBJCSFDQ3QIIxRK5xsjt98el8NywS5KXlCGNEU1eUGHhTKCFtNnumLjTaGh2TSp3a9agWP1Hv3xaN/3WMf2NIz0zwizr2tfpwU8OKG6xBsbKXc2b2LGqJesOoqr5tF1EY2e8NjJxDuXV7jj9O91J+AQnmHfMkDaP7yvzUr0GThNUJ9BE9gbik10eTsVfHp9SoAYIzNALCtI69SrMtG53mojyy7iRZTNA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Sz+WgfYxJ4tjlULoHn7t10ZGz6qtqDyMrIXKE+ztU48=;
+ b=RkjmiCvobF9er5IGO/lCL3MKBqHYaGbDft5WiSl//W1iFOupvxnH5Pd06kIJAudjkBQ8oxmrbNdvZDe2GZk1NXUkM70Csa+jSQOXjgIfmyGyBI/TWMRQZv8ewIWlv5WAQk23Bgppoq9QSiMR2vfnbwr0yVuTr4wlzrEZrhjO5yBhcQAr/qB3GT8O8JPvEXX7Pkjzw+WM3UxJ9Ae+eT5kwcwFmoZWYIgyyVdJGgeygFwM/yXOTwL+1MfzKdzSoLNLZu92sa3Q3E5WGgXiLwIg8IdXKC+BP5EXzcmi+MH2S8WMpoPXq+dvCN7Q4G/je+Dgptshv1cs214J0NzjJ84jsg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from PH0PR11MB5880.namprd11.prod.outlook.com (2603:10b6:510:143::14)
+ by IA1PR11MB7678.namprd11.prod.outlook.com (2603:10b6:208:3f4::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5813.16; Sun, 20 Nov
+ 2022 05:00:44 +0000
+Received: from PH0PR11MB5880.namprd11.prod.outlook.com
+ ([fe80::8f92:b03a:1de2:e315]) by PH0PR11MB5880.namprd11.prod.outlook.com
+ ([fe80::8f92:b03a:1de2:e315%6]) with mapi id 15.20.5834.009; Sun, 20 Nov 2022
+ 05:00:44 +0000
+From:   "Zhang, Qiang1" <qiang1.zhang@intel.com>
+To:     Pingfan Liu <kernelfans@gmail.com>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>
+CC:     Lai Jiangshan <jiangshanlai@gmail.com>,
         "Paul E. McKenney" <paulmck@kernel.org>,
         Frederic Weisbecker <frederic@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
+        "Josh Triplett" <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: [PATCH 2/2] srcu: Remove needless updating of srcu_have_cbs in srcu_gp_end()
-Date:   Sun, 20 Nov 2022 11:40:14 +0800
-Message-Id: <20221120034014.7390-3-kernelfans@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20221120034014.7390-1-kernelfans@gmail.com>
+Subject: RE: [PATCH 1/2] srcu: Remove needless rcu_seq_done() check while
+ holding read lock
+Thread-Topic: [PATCH 1/2] srcu: Remove needless rcu_seq_done() check while
+ holding read lock
+Thread-Index: AQHY/JHd9d//U0/L4k2HFU5iBCpwNq5HO1gQ
+Date:   Sun, 20 Nov 2022 05:00:43 +0000
+Message-ID: <PH0PR11MB58801BEEBD2DED79AB1ADBDBDA0B9@PH0PR11MB5880.namprd11.prod.outlook.com>
 References: <20221120034014.7390-1-kernelfans@gmail.com>
+ <20221120034014.7390-2-kernelfans@gmail.com>
+In-Reply-To: <20221120034014.7390-2-kernelfans@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-version: 11.6.500.17
+dlp-reaction: no-action
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR11MB5880:EE_|IA1PR11MB7678:EE_
+x-ms-office365-filtering-correlation-id: 85ab9f07-dde0-4cf5-4d51-08dacab42dfc
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 8nb+bbmsMmjzBfiQRU2Hg8S/Zfyy2QqhTNox288aZzlZYAQxNn3J50OfWKjnagOYdxvd8uvzFwdoR8ugx3cGeJTDFii9l4o1s7S1NphlyFZ7dXwBRrrVEtNsaJfI4xtRl3FkxCJ7U1Aaqo/lvRjGUa8+oTtBcu0P8Kx3GQruli7SIBcitA11AOEV6hqAwmDrdu+OdlV3P5qnfkpkTINzsN+L6xHtMwXLP5zxyAyNWPMy3rcT6jysgCPh29zbETIkf+shTCO9a1ur6F8vBdoXiDWiaYFTfNdVRqlbr/Xs8uoN4SPIN8onhXrZCkFdLLIUAUSMHVgIzqe+tgjP43nSl7tyHUhsV9kfjTm3Lf9wSdyh/kd5wYfHAJHdf/xo9tGx4KR5YVKJ2luHH45aKmmc2loLws+gb9ZabBqpZGZ+lI05MM5gQpx65DXhUIHc8ylsNbo8Fs8bJiGpAZvkjh/jF2Bs3TtmL4OT7ZxAB6wC/LJpV/IiraxR2ZtRGfs5zyErIsmDkE1KjsF9FgV+QZ+X9W8+stEL6TIzBAL6soBxcIyAiStkBBIlwLAWipW73ONLdNfUviH9H4n1YkkUN1LeVQXRJXk3TjNkSlqdV/omkaQ8ynz9tLnavV2gs0atrxMZJOHEBStORYauoxeRKj5Eq4tf07SEPxszEOR6DeMkEAvpe2k4MxVEWD5Uuc78ldXlfC+nRJNsLTAlHHAmiDZK0w==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5880.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(366004)(396003)(346002)(136003)(39860400002)(376002)(451199015)(6506007)(186003)(7696005)(9686003)(26005)(110136005)(2906002)(478600001)(71200400001)(122000001)(38100700002)(38070700005)(82960400001)(86362001)(55016003)(33656002)(83380400001)(8936002)(41300700001)(76116006)(64756008)(66476007)(66556008)(66446008)(66946007)(52536014)(8676002)(5660300002)(4326008)(54906003)(316002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?VwO+cSNzb4ToldoO8aPqOJhxs828T7bthHVUKcOo70He9u4PEcfRbl64IQJT?=
+ =?us-ascii?Q?/UGNgM4VvAp5G9F2bsijF57t6DPHKBWfD8N08HmI0fIVauPu6WoP3o+9+y0q?=
+ =?us-ascii?Q?zBECoVQYmmgn/8bhel580apm6kqeJey/fNcd2AS3mjmK4sH/FS6PfUix8o2p?=
+ =?us-ascii?Q?6za5srqgCIj3AGCwfeXHXP9GTzAXVyCU4zvlkbllT5LeIu4SYeIF9hIprwrw?=
+ =?us-ascii?Q?zpJJFz+DHcBQ11beVRM/31csXZcuCuh472XXuKjTm8h1NJNZgY1LcnOsaShF?=
+ =?us-ascii?Q?prcu4pycqqMgtxiQT15+AUaEXGcMQdyoWyqngq7VuovZVo5lidCFB3R+Y0uY?=
+ =?us-ascii?Q?ckjUWeNhU/EiVMakClBCedpAq+NvKxNWBUyymV0At7AdNTSshVzApAcJYJJH?=
+ =?us-ascii?Q?0vD8NaDrtH1CRrMVcAcn+vDMoY16onzkxIsLDy2pjMgAvgJtCYMPrc1f0dh6?=
+ =?us-ascii?Q?3ZAH6K20N/yQcL3PajetUZUU39pp5sQZlsGvhOYtC7zy10UMcuNC3Dj1WJSI?=
+ =?us-ascii?Q?VpkYlHm4NUQSg/6MwW0d481c4mHpDC1p/blKLbhjoT+Ev04O9NyD/TVOEeLp?=
+ =?us-ascii?Q?XAi6f/AyTbSZ6WDl9ADJzHHBVtd9y5vB56YcpPEz911dXX7P+01P9f2ugm4W?=
+ =?us-ascii?Q?AlDHhK7HyCVIZo//LzQQaM5KBU8HldQQvROAAj1oknmS0eLPMHDB9MB+Ue06?=
+ =?us-ascii?Q?L8SwJRfLF3yAK88JkTpag/3OMrXzKsScRLLgNLPGPII466tMLHQAendjfdCl?=
+ =?us-ascii?Q?pccEop7MZlGPX8BeZxQuisGPV3TkGvgW51FeHAOYDO4JoY7Ju2QI3e8p89wA?=
+ =?us-ascii?Q?mqq527JGmrxUxz93yaUPPOsCLD64eJRiEaZhGDjmhjV7WYGYBc5LLDDMAa1F?=
+ =?us-ascii?Q?WUiobqX49tVKAKHCGYwlQ07esfrkNHCoqR/tAerbfoOxkPJvzwP4amHNVB8f?=
+ =?us-ascii?Q?mnABaTx8ESbBIB6ZBNtVLESsiYPKbRd+q8CH4WG6NAeE0R27hQlpo9/qkfb6?=
+ =?us-ascii?Q?k33AFNDyA1Xa3d6w708UWf2b/Acu2Lv1hOVdxQLw+qOpTmt3QsRWx6i0Yc61?=
+ =?us-ascii?Q?VsPZyGDSI757RF1xTe+WuHMYhwQnyaVihmnmRFbvvrwIPTVjF/dCSJPc66ji?=
+ =?us-ascii?Q?Gze24hjwMVNREi7oIifTPJjC1mEQVrY4/Ti6d/Def4t5q6iMoYkV+3/FKS2h?=
+ =?us-ascii?Q?rLvbsWfn0HiTBo2dZBH78yNarFEXiVK6g8yynSwq4YPomkHOpenUSfnKjCLf?=
+ =?us-ascii?Q?eptESk251TcM3xcLlkwRiQUtTXM8I+Cm0bJifei+qtYZvveDkhuM4MAqH98R?=
+ =?us-ascii?Q?1Lug04SaZ4LowmGLcG3Lh0jWBsS56TFHAsGdr9UWk+461eqp6PXAIiEo9LIg?=
+ =?us-ascii?Q?4xiqEjowkggTX7HxoF4qtcJrkWhitE3CK8xqMJoT+tmfanO1Du9Uigw56PNx?=
+ =?us-ascii?Q?bPuh2ypppdm1FlCXIp7GX3ilB+JtrL4YA9XtvYnLp3wlYsmn+GHS6/QypUlZ?=
+ =?us-ascii?Q?iAVg8bwo++PH7D01/J+IApGJnBWxqYC2xXoj8eii9v6NnWjSE7exCDAcpU+n?=
+ =?us-ascii?Q?lEhkh6du38GNl81eFRS9IE2tNHZvGbw06CE8Nhmy?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5880.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 85ab9f07-dde0-4cf5-4d51-08dacab42dfc
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Nov 2022 05:00:44.0311
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: O2NI2bk++SfXrbsIe9bqklTivnmGV4UxTpB8fKRm8+wfsh7Ns1begce6pCahMA46dnXqHap8aKuNcs6Nxbmrpg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB7678
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-At present, snp->srcu_have_cbs[idx] is updated by either
-srcu_funnel_gp_start() or srcu_gp_end().
+>
+>As the code changes, now, srcu_gp_start_if_needed() holds the srcu read
+>lock, gets the gp_seq snap and call srcu_funnel_gp_start() passing that
+>snap value.
+>
+>As the rcu_seq_snap() promises "a full grace period has elapsed since
+>the current time".  In srcu_funnel_gp_start(), the statement
+>  rcu_seq_done(&ssp->srcu_gp_seq, s)
+>always return false.
 
-But as the code changes, now, srcu_funnel_gp_start() is called with srcu
-read lock held. And its input parameter s, s = rcu_seq_snap(&ssp->srcu_gp_seq),
-whose counter field always proceeds that of the srcu_gp_seq by one or two.
+Hi Pingfan
 
-If the seq snap only proceeds by one, the state machine should be in
-state SRCU_STATE_IDLE, the held srcu read lock will prevent the state
-machine from moving ahead. So when srcu_gp_end() updates
-snp->srcu_have_cbs[idx], the idx must be the past idx for
-srcu_funnel_gp_start() that is cared by nobody.
+Please correct me if I understand your commit message incorrectly. because =
+the srcu_gp_start_if_needed() is
+protected  by srcu read lock,  and the  rcu_seq_snap()  seq is a  at the en=
+d of the current or next srcu grace period,=20
+so as long as we are still in the srcu_gp_start_if_needed(), it also means =
+that we are in SRCU critical section.
+the current or next srcu grace period will not end, it also means that we c=
+an not invoke rcu_seq_end() to update=20
+'ssp->secu_gp_seq' , so the rcu_seq_done(&ssp->srcu_gp_seq, s) is always re=
+turn false.
 
-So removing the unnecessary updating in srcu_gp_end().
+Thanks
+Zqiang
 
-Test info:
-  Running "tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 10h --configs 18*SRCU-P"
-without any failure.
-
-Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+>
+>The same condition stands for srcu_funnel_exp_start(). Hence removing
+>all the checks of rcu_seq_done().
+>
+>Test info:
+>  Running "tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --durat=
+ion 10h --configs 18*SRCU-P"
+>without any failure.
+>
+>Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+>Cc: Lai Jiangshan <jiangshanlai@gmail.com>
 Cc: "Paul E. McKenney" <paulmck@kernel.org>
 Cc: Frederic Weisbecker <frederic@kernel.org>
 Cc: Josh Triplett <josh@joshtriplett.org>
@@ -98,22 +199,60 @@ Cc: Steven Rostedt <rostedt@goodmis.org>
 Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 To: rcu@vger.kernel.org
 ---
- kernel/rcu/srcutree.c | 2 --
- 1 file changed, 2 deletions(-)
+ kernel/rcu/srcutree.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
 diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 7df59fc8073e..c54d6c04751f 100644
+index 1c304fec89c0..7df59fc8073e 100644
 --- a/kernel/rcu/srcutree.c
 +++ b/kernel/rcu/srcutree.c
-@@ -783,8 +783,6 @@ static void srcu_gp_end(struct srcu_struct *ssp)
- 			last_lvl = snp >= ssp->level[rcu_num_lvls - 1];
- 			if (last_lvl)
- 				cbs = ss_state < SRCU_SIZE_BIG || snp->srcu_have_cbs[idx] == gpseq;
--			snp->srcu_have_cbs[idx] = gpseq;
--			rcu_seq_set_state(&snp->srcu_have_cbs[idx], 1);
- 			sgsne = snp->srcu_gp_seq_needed_exp;
- 			if (srcu_invl_snp_seq(sgsne) || ULONG_CMP_LT(sgsne, gpseq))
- 				WRITE_ONCE(snp->srcu_gp_seq_needed_exp, gpseq);
--- 
+@@ -851,8 +851,7 @@ static void srcu_funnel_exp_start(struct srcu_struct *s=
+sp, struct srcu_node *snp
+ 	if (snp)
+ 		for (; snp !=3D NULL; snp =3D snp->srcu_parent) {
+ 			sgsne =3D READ_ONCE(snp->srcu_gp_seq_needed_exp);
+-			if (rcu_seq_done(&ssp->srcu_gp_seq, s) ||
+-			    (!srcu_invl_snp_seq(sgsne) && ULONG_CMP_GE(sgsne, s)))
++			if (!srcu_invl_snp_seq(sgsne) && ULONG_CMP_GE(sgsne, s))
+ 				return;
+ 			spin_lock_irqsave_rcu_node(snp, flags);
+ 			sgsne =3D snp->srcu_gp_seq_needed_exp;
+@@ -878,6 +877,9 @@ static void srcu_funnel_exp_start(struct srcu_struct *s=
+sp, struct srcu_node *snp
+  *
+  * Note that this function also does the work of srcu_funnel_exp_start(),
+  * in some cases by directly invoking it.
++ *
++ * The srcu read lock should be hold around this function. And s is a seq =
+snap
++ * after holding that lock.
+  */
+ static void srcu_funnel_gp_start(struct srcu_struct *ssp, struct srcu_data=
+ *sdp,
+ 				 unsigned long s, bool do_norm)
+@@ -898,8 +900,6 @@ static void srcu_funnel_gp_start(struct srcu_struct *ss=
+p, struct srcu_data *sdp,
+ 	if (snp_leaf)
+ 		/* Each pass through the loop does one level of the srcu_node tree. */
+ 		for (snp =3D snp_leaf; snp !=3D NULL; snp =3D snp->srcu_parent) {
+-			if (rcu_seq_done(&ssp->srcu_gp_seq, s) && snp !=3D snp_leaf)
+-				return; /* GP already done and CBs recorded. */
+ 			spin_lock_irqsave_rcu_node(snp, flags);
+ 			snp_seq =3D snp->srcu_have_cbs[idx];
+ 			if (!srcu_invl_snp_seq(snp_seq) && ULONG_CMP_GE(snp_seq, s)) {
+@@ -935,9 +935,8 @@ static void srcu_funnel_gp_start(struct srcu_struct *ss=
+p, struct srcu_data *sdp,
+ 	if (!do_norm && ULONG_CMP_LT(ssp->srcu_gp_seq_needed_exp, s))
+ 		WRITE_ONCE(ssp->srcu_gp_seq_needed_exp, s);
+=20
+-	/* If grace period not already done and none in progress, start it. */
+-	if (!rcu_seq_done(&ssp->srcu_gp_seq, s) &&
+-	    rcu_seq_state(ssp->srcu_gp_seq) =3D=3D SRCU_STATE_IDLE) {
++	/* If grace period not already in progress, start it. */
++	if (rcu_seq_state(ssp->srcu_gp_seq) =3D=3D SRCU_STATE_IDLE) {
+ 		WARN_ON_ONCE(ULONG_CMP_GE(ssp->srcu_gp_seq, ssp->srcu_gp_seq_needed));
+ 		srcu_gp_start(ssp);
+=20
+--=20
 2.31.1
 
