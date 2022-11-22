@@ -2,52 +2,49 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1DE69C4321E
-	for <rcu@archiver.kernel.org>; Tue, 22 Nov 2022 01:04:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 38830C4167B
+	for <rcu@archiver.kernel.org>; Tue, 22 Nov 2022 01:04:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232029AbiKVBEb (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 21 Nov 2022 20:04:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44806 "EHLO
+        id S232024AbiKVBEa (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 21 Nov 2022 20:04:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231956AbiKVBE0 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 21 Nov 2022 20:04:26 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C42C1C901;
-        Mon, 21 Nov 2022 17:04:25 -0800 (PST)
+        with ESMTP id S231948AbiKVBEZ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 21 Nov 2022 20:04:25 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4AD615FF5;
+        Mon, 21 Nov 2022 17:04:24 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 75F0061511;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1301E6151A;
         Tue, 22 Nov 2022 01:04:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33D5FC43156;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F617C43155;
         Tue, 22 Nov 2022 01:04:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1669079063;
-        bh=QNpGjRTwvCwUOFj/pR6pze23etHEHGqQMnnOZBmIHF0=;
+        bh=wpD5zzzo6w7p3WOWI5WdmBr7p4BboEaBNwhD+AKKK+A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fjaKQJ3eSDwRn22hicp3w41Zl2GWI3YjHGmDWDJVyAPiyxrZOPD78A4UgUF/RxlKB
-         mXGO2rgS6XfFXotIqbsRqz4o+pd1q/Hs692e4No5+HTCd0nOByQWtv9EHTTE1hc24X
-         CFJQp86yxs1lzaKlkx+DuntsELItJ0tfxyeN6coVE+eJQ+MD+thR7MIPPb4Ie090Xp
-         UZm6mR87a4Top0HJCaCJNNz08fh8MG6AgBOxWL2doq4PriTEJZZbwiURgI4Xy6Flqh
-         qn4dfosyXjLIxsH4W3GBjX+5zNJCur7P2JuBr9Pit8CDSkARL0mDq5+BiumQOmTzzD
-         nUWm6MnXK4CZA==
+        b=PK1gNZVJ0kcEPvGy8l9MHsEaFYI4887MGYxjwddokCvV+5CR0pd79fl0p1glOCGRn
+         0UZ933OfAr+4Gq4dPyQQ4ggYYy7ccvWAq7u3GjOOQ7+zHHDtLvQye8pH8M+W0mlL9y
+         sPKNHqGeUQX6wHnzugWH1EkLj7EBiasEKdjqPfB+3Mn6fRhazpJViEPEdVXvGMH8Mp
+         8V3kgK6niSFEXIPG0ggFZbhKEYuigziC8Lr+NN51KI8fNT4wMU7AyIBoB+ybCdNHHm
+         eL1fFHymyVCC6ufBOz1XhfkVZUFfGDaG9XQKwLeKE7dV3bVxproQTa3yKrUxKkYe2e
+         wEDKHMa+wadsw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 8B2805C1695; Mon, 21 Nov 2022 17:04:22 -0800 (PST)
+        id 8788A5C1523; Mon, 21 Nov 2022 17:04:22 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-afs@lists.infradead.org,
-        netdev@vger.kernel.org, "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH v2 rcu 14/16] rxrpc: Use call_rcu_flush() instead of call_rcu()
-Date:   Mon, 21 Nov 2022 17:04:19 -0800
-Message-Id: <20221122010421.3799681-14-paulmck@kernel.org>
+        rostedt@goodmis.org, Uladzislau Rezki <urezki@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH v2 rcu 12/16] scsi/scsi_error: Use call_rcu_flush() instead of call_rcu()
+Date:   Mon, 21 Nov 2022 17:04:17 -0800
+Message-Id: <20221122010421.3799681-12-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20221122010408.GA3799268@paulmck-ThinkPad-P17-Gen-1>
 References: <20221122010408.GA3799268@paulmck-ThinkPad-P17-Gen-1>
@@ -57,7 +54,7 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+From: Uladzislau Rezki <urezki@gmail.com>
 
 Earlier commits in this series allow battery-powered systems to build
 their kernels with the default-disabled CONFIG_RCU_LAZY=y Kconfig option.
@@ -96,40 +93,37 @@ feedback at the 2022 Linux Plumbers Conference shifted the approach
 to call_rcu() being lazy with call_rcu_flush() for the few places
 where laziness is inappropriate.
 
-And another call_rcu() instance that cannot be lazy is the one
-in rxrpc_kill_connection(), which sometimes does a wakeup
-that should not be unduly delayed.
+And another call_rcu() instance that cannot be lazy is the one in the
+scsi_eh_scmd_add() function.  Leaving this instance lazy results in
+unacceptably slow boot times.
 
-Therefore, make rxrpc_kill_connection() use call_rcu_flush() in order
-to revert to the old behavior.
+Therefore, make scsi_eh_scmd_add() use call_rcu_flush() in order to
+revert to the old behavior.
 
+Tested-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Signed-off-by: Uladzislau Rezki <urezki@gmail.com>
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Cc: David Howells <dhowells@redhat.com>
-Cc: Marc Dionne <marc.dionne@auristor.com>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Paolo Abeni <pabeni@redhat.com>
-Cc: <linux-afs@lists.infradead.org>
-Cc: <netdev@vger.kernel.org>
+Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
+Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc: <linux-scsi@vger.kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- net/rxrpc/conn_object.c | 2 +-
+ drivers/scsi/scsi_error.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/rxrpc/conn_object.c b/net/rxrpc/conn_object.c
-index 22089e37e97f0..fdcfb509cc443 100644
---- a/net/rxrpc/conn_object.c
-+++ b/net/rxrpc/conn_object.c
-@@ -253,7 +253,7 @@ void rxrpc_kill_connection(struct rxrpc_connection *conn)
- 	 * must carry a ref on the connection to prevent us getting here whilst
- 	 * it is queued or running.
+diff --git a/drivers/scsi/scsi_error.c b/drivers/scsi/scsi_error.c
+index 6995c89792300..634672e67c81f 100644
+--- a/drivers/scsi/scsi_error.c
++++ b/drivers/scsi/scsi_error.c
+@@ -312,7 +312,7 @@ void scsi_eh_scmd_add(struct scsi_cmnd *scmd)
+ 	 * Ensure that all tasks observe the host state change before the
+ 	 * host_failed change.
  	 */
--	call_rcu(&conn->rcu, rxrpc_destroy_connection);
-+	call_rcu_flush(&conn->rcu, rxrpc_destroy_connection);
+-	call_rcu(&scmd->rcu, scsi_eh_inc_host_failed);
++	call_rcu_flush(&scmd->rcu, scsi_eh_inc_host_failed);
  }
  
- /*
+ /**
 -- 
 2.31.1.189.g2e36527f23
 
