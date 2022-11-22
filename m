@@ -2,139 +2,135 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B3AAC4332F
-	for <rcu@archiver.kernel.org>; Mon, 21 Nov 2022 22:29:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4947FC433FE
+	for <rcu@archiver.kernel.org>; Tue, 22 Nov 2022 01:04:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229687AbiKUW3P (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 21 Nov 2022 17:29:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40190 "EHLO
+        id S231844AbiKVBEN (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 21 Nov 2022 20:04:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229585AbiKUW3P (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 21 Nov 2022 17:29:15 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7510C694A;
-        Mon, 21 Nov 2022 14:29:13 -0800 (PST)
+        with ESMTP id S231825AbiKVBEM (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 21 Nov 2022 20:04:12 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E9E8D121;
+        Mon, 21 Nov 2022 17:04:11 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 8D6CDB810DB;
-        Mon, 21 Nov 2022 22:29:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5268BC433C1;
-        Mon, 21 Nov 2022 22:29:11 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id CBC0EB818BC;
+        Tue, 22 Nov 2022 01:04:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D5E1C433C1;
+        Tue, 22 Nov 2022 01:04:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669069751;
-        bh=/eg94iwVmYNRjwpHdAHBpwFGQ8ZAlh9U7hMm2Nx7ZME=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=d2PvJhwDZse8EP5R1tPpuigYIZAWgjZ8eeV11wv2inj2erpOwci3dpMQGopU2yKpP
-         vmHcVGYqyFFXU/acHZpZoZ8mbMz0T2MRX7KiPACUxciweEhyCgKkOXfJFoEcI6Hup8
-         46SwZbikSH4WZF/JaevpO/bc5WbMXlcDWVJIBSoeYXv45VZd62/RqEmmHyxMzp9ulX
-         mqLzxfo120jAyUjkG7MNuE+37XAMM11RnQN+LIEjviQyV+58ta7BPCW0ubYmaiW3/s
-         ZUS3iViuDdJgODG7NmBAehy1Nmi3JGhuU9Q9W8fbVGxj+8tmTrMCm1U/74+cYU9vf4
-         BHsAB27mntXGA==
+        s=k20201202; t=1669079048;
+        bh=1WsAEwovNFRqPIrTBB1RlDI1n+nRzJzZkVm03kcczKk=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=RFBpFGt+aJlV3b9VjxKSIt4mjkPHaRJbVkm/g/gTDZjoVjaTccJHN4czCwAkzzHtt
+         Ja3mBNPB4xKScxE41osTksS/+1qSJ94tmcl0LIwmgwbJ8Aw8Vr4hquSi9j73DYPNen
+         M21i7THoq9GQxpakzCQul/VEuPkBn0quMheCExoiPTsmkjCC/ST6pNxKonG5WUH0KE
+         BssZ4sNe5z4kyn0lFz/zX7sIKG4aYSvtqLWCvpromsvpyAeC/McmZs3Y64xP9h1+HX
+         Hrl1DqvrO4gmcKsJ8hU6FR3Q96EyaAxYjbdEHvweW3pJVyqEmcr8H3hQByKiNVxheG
+         tBJ7nzSCjGcnA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id DCACF5C0DFC; Mon, 21 Nov 2022 14:29:10 -0800 (PST)
-Date:   Mon, 21 Nov 2022 14:29:10 -0800
+        id 27AD35C0641; Mon, 21 Nov 2022 17:04:08 -0800 (PST)
+Date:   Mon, 21 Nov 2022 17:04:08 -0800
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Robert Elliott <elliott@hpe.com>
-Subject: Re: [PATCH v8 0/6] rcu: Add RCU stall diagnosis information
-Message-ID: <20221121222910.GP4001@paulmck-ThinkPad-P17-Gen-1>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        rostedt@goodmis.org
+Subject: [PATCH rcu 0/16 Lazy call_rcu() updates for v6.2
+Message-ID: <20221122010408.GA3799268@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20221119092508.1766-1-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221119092508.1766-1-thunder.leizhen@huawei.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, Nov 19, 2022 at 05:25:02PM +0800, Zhen Lei wrote:
-> v7 --> v8:
-> 1. Change call jiffies64_to_msecs() to call jiffies_to_msecs().
-> 2. Mention that rcupdate.rcu_cpu_stall_cputime overrides
->    CONFIG_RCU_CPU_STALL_CPUTIME behaviour in the Kconfig help text.
-> 3. Fix a make htmldocs warning, change "|...|" to ":...:".
-> 
-> v6 --> v7:
-> 1. Use kcpustat_field() to obtain the cputime.
-> 2. Make the output start with "\t" to match other related prints.
-> 3. Aligns the output of the last line of RCU stall.
-> 
-> v5 --> v6:
-> 1. When there are more than two continuous RCU stallings, correctly handle the
->    value of the second and subsequent sampling periods. Update comments and
->    document.
->    Thanks to Elliott, Robert for the test.
-> 2. Change "rcu stall" to "RCU stall".
-> 
-> v4 --> v5:
-> 1. Resolve a git am conflict. No code change.
-> 
-> v3 --> v4:
-> 1. Rename rcu_cpu_stall_deep_debug to rcu_cpu_stall_cputime.
-> 
-> v2 --> v3:
-> 1. Fix the return type of kstat_cpu_irqs_sum()
-> 2. Add Kconfig option CONFIG_RCU_CPU_STALL_DEEP_DEBUG and boot parameter
->    rcupdate.rcu_cpu_stall_deep_debug.
-> 3. Add comments and normalize local variable name
-> 
-> v1 --> v2:
-> 1. Fixed a bug in the code. If the rcu stall is detected by another CPU,
->    kcpustat_this_cpu cannot be used.
-> @@ -451,7 +451,7 @@ static void print_cpu_stat_info(int cpu)
->         if (r->gp_seq != rdp->gp_seq)
->                 return;
-> 
-> -       cpustat = kcpustat_this_cpu->cpustat;
-> +       cpustat = kcpustat_cpu(cpu).cpustat;
-> 2. Move the start point of statistics from rcu_stall_kick_kthreads() to
->    rcu_implicit_dynticks_qs(), removing the dependency on irq_work.
-> 
-> v1:
-> In some extreme cases, such as the I/O pressure test, the CPU usage may
-> be 100%, causing RCU stall. In this case, the printed information about
-> current is not useful. Displays the number and usage of hard interrupts,
-> soft interrupts, and context switches that are generated within half of
-> the CPU stall timeout, can help us make a general judgment. In other
-> cases, we can preliminarily determine whether an infinite loop occurs
-> when local_irq, local_bh or preempt is disabled.
+Hello!
 
-Queued for further review and testing, thank you!
+This series provides energy efficiency for nearly-idle systems by making
+call_rcu() more lazy.  Several NOCB changes come along for the ride:
 
-I did the usual wordsmithing, so please check to see if I messed
-something up.
+1.	Simplify rcu_init_nohz() cpumask handling, courtesy of Zhen Lei.
 
-							Thanx, Paul
+2.	Fix late wakeup when flush of bypass cblist happens, courtesy of
+	"Joel Fernandes (Google)".
 
-> Zhen Lei (6):
->   genirq: Fix the return type of kstat_cpu_irqs_sum()
->   sched: Add helper kstat_cpu_softirqs_sum()
->   sched: Add helper nr_context_switches_cpu()
->   rcu: Add RCU stall diagnosis information
->   doc: Document CONFIG_RCU_CPU_STALL_CPUTIME=y stall information
->   rcu: Align the output of RCU stall
-> 
->  Documentation/RCU/stallwarn.rst               | 88 +++++++++++++++++++
->  .../admin-guide/kernel-parameters.txt         |  6 ++
->  include/linux/kernel_stat.h                   | 14 ++-
->  kernel/rcu/Kconfig.debug                      | 13 +++
->  kernel/rcu/rcu.h                              |  1 +
->  kernel/rcu/tree.c                             | 18 ++++
->  kernel/rcu/tree.h                             | 19 ++++
->  kernel/rcu/tree_stall.h                       | 35 +++++++-
->  kernel/rcu/update.c                           |  2 +
->  kernel/sched/core.c                           |  5 ++
->  10 files changed, 198 insertions(+), 3 deletions(-)
-> 
-> -- 
-> 2.25.1
-> 
+3.	Fix missing nocb gp wake on rcu_barrier(), courtesy of Frederic
+	Weisbecker.
+
+4.	Make call_rcu() lazy to save power, courtesy of "Joel Fernandes
+	(Google)".
+
+5.	Refactor code a bit in rcu_nocb_do_flush_bypass(), courtesy of
+	"Joel Fernandes (Google)".
+
+6.	Shrinker for lazy rcu, courtesy of Vineeth Pillai.
+
+7.	Add laziness and kfree tests, courtesy of "Joel Fernandes
+	(Google)".
+
+8.	percpu-refcount: Use call_rcu_flush() for atomic switch, courtesy
+	of "Joel Fernandes (Google)".
+
+9.	Use call_rcu_flush() instead of call_rcu, courtesy of "Joel
+	Fernandes (Google)".
+
+10.	Use call_rcu_flush() for async reader test, courtesy of "Joel
+	Fernandes (Google)".
+
+11.	Use call_rcu_flush() where needed, courtesy of "Joel Fernandes
+	(Google)".
+
+12.	scsi/scsi_error: Use call_rcu_flush() instead of call_rcu(),
+	courtesy of Uladzislau Rezki.
+
+13.	Make queue_rcu_work() use call_rcu_flush(), courtesy of Uladzislau
+	Rezki.
+
+14.	Use call_rcu_flush() instead of call_rcu(), courtesy of "Joel
+	Fernandes (Google)".
+
+15.	Use call_rcu_flush() for dst_release(), courtesy of "Joel
+	Fernandes (Google)".
+
+16.	devinet: Reduce refcount before grace period, courtesy of Eric
+	Dumazet.
+
+Changes since v1:
+
+o	Add more adjustments to avoid excessive laziness (#15 and
+	#16 above).
+
+o	Get appropriate Cc lines onto non-RCU patches.
+
+https://lore.kernel.org/all/20221019225138.GA2499943@paulmck-ThinkPad-P17-Gen-1/
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ b/drivers/scsi/scsi_error.c |    2 
+ b/include/linux/rcupdate.h  |    9 +
+ b/kernel/rcu/Kconfig        |    8 +
+ b/kernel/rcu/rcu.h          |    8 +
+ b/kernel/rcu/rcuscale.c     |   67 +++++++++++-
+ b/kernel/rcu/rcutorture.c   |   16 +-
+ b/kernel/rcu/sync.c         |    2 
+ b/kernel/rcu/tiny.c         |    2 
+ b/kernel/rcu/tree.c         |   11 +
+ b/kernel/rcu/tree.h         |    1 
+ b/kernel/rcu/tree_exp.h     |    2 
+ b/kernel/rcu/tree_nocb.h    |   34 +-----
+ b/kernel/workqueue.c        |    2 
+ b/lib/percpu-refcount.c     |    3 
+ b/net/core/dst.c            |    2 
+ b/net/ipv4/devinet.c        |   19 +--
+ b/net/rxrpc/conn_object.c   |    2 
+ kernel/rcu/rcuscale.c       |    2 
+ kernel/rcu/tree.c           |  129 +++++++++++++++--------
+ kernel/rcu/tree.h           |   11 +
+ kernel/rcu/tree_nocb.h      |  243 ++++++++++++++++++++++++++++++++++++--------
+ 21 files changed, 434 insertions(+), 141 deletions(-)
