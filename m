@@ -2,46 +2,47 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 62E52C4332F
-	for <rcu@archiver.kernel.org>; Tue, 22 Nov 2022 01:04:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 23E3FC43219
+	for <rcu@archiver.kernel.org>; Tue, 22 Nov 2022 01:04:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231942AbiKVBEZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 21 Nov 2022 20:04:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44778 "EHLO
+        id S231964AbiKVBE0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 21 Nov 2022 20:04:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231927AbiKVBEY (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S231928AbiKVBEY (ORCPT <rfc822;rcu@vger.kernel.org>);
         Mon, 21 Nov 2022 20:04:24 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D505511A12;
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4ECBDF40;
         Mon, 21 Nov 2022 17:04:23 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5F9BC61505;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 65A6961519;
         Tue, 22 Nov 2022 01:04:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B38BBC433D7;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7E53C433B5;
         Tue, 22 Nov 2022 01:04:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1669079062;
-        bh=JgCYhsIq4xhCHA9e/N+ivpZlC63szLfECFNNQENWSoc=;
+        bh=KTUh/BBOVf/jDi48jtrSyvr3uGxVW8ae61JQrk9NyJc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FStEKe3UKD8G3yecmoiH9U+hi00FGgXyD45l/lhOmtJ104VYltWb4uubccUFvAgr4
-         gyJ77WtydXtgorQjyx4cKIfVf0rQAm4qcRpfShZXhrdR3HFS8duP385sCvj47gn9GD
-         UOQAV925FbSslF3kyd0GpnkH87vF16s5nN6QCDAwvC9ZgWkcWPvE/Y2gPQSe7NT+Qj
-         iwlHLa6We21VIpsqRc+qDLbCvq3vPLRpjYLAfZR3SLEC8ekk94sMKjap2zwa2Sne/9
-         9DTkb67x+WBKkxFCa8NRDlzVzYKUij3AKfprKx02lfQuFOunOr2rCnThYSV3c+Pfrf
-         RTeaRLM+MTfWA==
+        b=JOQXCNm70PQyyZeRLbwg93f07Dsei0nOfLuJ9J1re8t1PshudLXi0wOHO/zVlqGIJ
+         fVVt/hwTYo9vGZqtrEO1CZRGiTXXVBXqaf+dkjkWlt60fJwBTjP/bp9KPDvz+MsFnM
+         KDxvtvd9htvS0DItqONR8FyIvfCdbEc8wilPNw3hQOJfqZpXyDRbPaiNOBElGMjGAt
+         vwn2Z/RP5gnqRTfvP6NmirIWhApQ/Z+zy6mgsJkEf4LTQXgUdo9Cb8FF3IN9mGnf6e
+         +3vOtMoi/mz0ptRX5ZwaWDg8ZigkbAZDUqaO7IH64hw5l/IakTXYlKT/d1z3RzRbI1
+         5oNlhcSSFvNSg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 756A15C0D1D; Mon, 21 Nov 2022 17:04:22 -0800 (PST)
+        id 717D15C0641; Mon, 21 Nov 2022 17:04:22 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org, Frederic Weisbecker <frederic@kernel.org>,
+        rostedt@goodmis.org, Zhen Lei <thunder.leizhen@huawei.com>,
         Joel Fernandes <joel@joelfernandes.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH v2 rcu 03/16] rcu: Fix missing nocb gp wake on rcu_barrier()
-Date:   Mon, 21 Nov 2022 17:04:08 -0800
-Message-Id: <20221122010421.3799681-3-paulmck@kernel.org>
+Subject: [PATCH v2 rcu 01/16] rcu: Simplify rcu_init_nohz() cpumask handling
+Date:   Mon, 21 Nov 2022 17:04:06 -0800
+Message-Id: <20221122010421.3799681-1-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20221122010408.GA3799268@paulmck-ThinkPad-P17-Gen-1>
 References: <20221122010408.GA3799268@paulmck-ThinkPad-P17-Gen-1>
@@ -51,88 +52,89 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Frederic Weisbecker <frederic@kernel.org>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-In preparation for RCU lazy changes, wake up the RCU nocb gp thread if
-needed after an entrain.  This change prevents the RCU barrier callback
-from waiting in the queue for several seconds before the lazy callbacks
-in front of it are serviced.
+In kernels built with either CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y or
+CONFIG_NO_HZ_FULL=y, additional CPUs must be added to rcu_nocb_mask.
+Except that kernels booted without the rcu_nocbs= will not have
+allocated rcu_nocb_mask.  And the current rcu_init_nohz() function uses
+its need_rcu_nocb_mask and offload_all local variables to track the
+rcu_nocb and nohz_full state.
 
-Reported-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+But there is a much simpler approach, namely creating a cpumask pointer
+to track the default and then using cpumask_available() to check the
+rcu_nocb_mask state.  This commit takes this approach, thereby simplifying
+and shortening the rcu_init_nohz() function.
+
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Acked-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c      | 11 +++++++++++
- kernel/rcu/tree.h      |  1 +
- kernel/rcu/tree_nocb.h |  5 +++++
- 3 files changed, 17 insertions(+)
+ kernel/rcu/tree_nocb.h | 34 +++++++++++-----------------------
+ 1 file changed, 11 insertions(+), 23 deletions(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 6bb8e72bc8151..fb7a1b95af71e 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3894,6 +3894,8 @@ static void rcu_barrier_entrain(struct rcu_data *rdp)
- {
- 	unsigned long gseq = READ_ONCE(rcu_state.barrier_sequence);
- 	unsigned long lseq = READ_ONCE(rdp->barrier_seq_snap);
-+	bool wake_nocb = false;
-+	bool was_alldone = false;
- 
- 	lockdep_assert_held(&rcu_state.barrier_lock);
- 	if (rcu_seq_state(lseq) || !rcu_seq_state(gseq) || rcu_seq_ctr(lseq) != rcu_seq_ctr(gseq))
-@@ -3902,7 +3904,14 @@ static void rcu_barrier_entrain(struct rcu_data *rdp)
- 	rdp->barrier_head.func = rcu_barrier_callback;
- 	debug_rcu_head_queue(&rdp->barrier_head);
- 	rcu_nocb_lock(rdp);
-+	/*
-+	 * Flush bypass and wakeup rcuog if we add callbacks to an empty regular
-+	 * queue. This way we don't wait for bypass timer that can reach seconds
-+	 * if it's fully lazy.
-+	 */
-+	was_alldone = rcu_rdp_is_offloaded(rdp) && !rcu_segcblist_pend_cbs(&rdp->cblist);
- 	WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, jiffies));
-+	wake_nocb = was_alldone && rcu_segcblist_pend_cbs(&rdp->cblist);
- 	if (rcu_segcblist_entrain(&rdp->cblist, &rdp->barrier_head)) {
- 		atomic_inc(&rcu_state.barrier_cpu_count);
- 	} else {
-@@ -3910,6 +3919,8 @@ static void rcu_barrier_entrain(struct rcu_data *rdp)
- 		rcu_barrier_trace(TPS("IRQNQ"), -1, rcu_state.barrier_sequence);
- 	}
- 	rcu_nocb_unlock(rdp);
-+	if (wake_nocb)
-+		wake_nocb_gp(rdp, false);
- 	smp_store_release(&rdp->barrier_seq_snap, gseq);
- }
- 
-diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index d4a97e40ea9c3..925dd98f8b23b 100644
---- a/kernel/rcu/tree.h
-+++ b/kernel/rcu/tree.h
-@@ -439,6 +439,7 @@ static void zero_cpu_stall_ticks(struct rcu_data *rdp);
- static struct swait_queue_head *rcu_nocb_gp_get(struct rcu_node *rnp);
- static void rcu_nocb_gp_cleanup(struct swait_queue_head *sq);
- static void rcu_init_one_nocb(struct rcu_node *rnp);
-+static bool wake_nocb_gp(struct rcu_data *rdp, bool force);
- static bool rcu_nocb_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
- 				  unsigned long j);
- static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
 diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index f77a6d7e13564..094fd454b6c38 100644
+index 0a5f0ef414845..ce526cc2791ca 100644
 --- a/kernel/rcu/tree_nocb.h
 +++ b/kernel/rcu/tree_nocb.h
-@@ -1558,6 +1558,11 @@ static void rcu_init_one_nocb(struct rcu_node *rnp)
+@@ -1210,45 +1210,33 @@ EXPORT_SYMBOL_GPL(rcu_nocb_cpu_offload);
+ void __init rcu_init_nohz(void)
  {
- }
+ 	int cpu;
+-	bool need_rcu_nocb_mask = false;
+-	bool offload_all = false;
+ 	struct rcu_data *rdp;
+-
+-#if defined(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL)
+-	if (!rcu_state.nocb_is_setup) {
+-		need_rcu_nocb_mask = true;
+-		offload_all = true;
+-	}
+-#endif /* #if defined(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL) */
++	const struct cpumask *cpumask = NULL;
  
-+static bool wake_nocb_gp(struct rcu_data *rdp, bool force)
-+{
-+	return false;
-+}
+ #if defined(CONFIG_NO_HZ_FULL)
+-	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask)) {
+-		need_rcu_nocb_mask = true;
+-		offload_all = false; /* NO_HZ_FULL has its own mask. */
+-	}
+-#endif /* #if defined(CONFIG_NO_HZ_FULL) */
++	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask))
++		cpumask = tick_nohz_full_mask;
++#endif
 +
- static bool rcu_nocb_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
- 				  unsigned long j)
- {
++	if (IS_ENABLED(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL) &&
++	    !rcu_state.nocb_is_setup && !cpumask)
++		cpumask = cpu_possible_mask;
+ 
+-	if (need_rcu_nocb_mask) {
++	if (cpumask) {
+ 		if (!cpumask_available(rcu_nocb_mask)) {
+ 			if (!zalloc_cpumask_var(&rcu_nocb_mask, GFP_KERNEL)) {
+ 				pr_info("rcu_nocb_mask allocation failed, callback offloading disabled.\n");
+ 				return;
+ 			}
+ 		}
++
++		cpumask_or(rcu_nocb_mask, rcu_nocb_mask, cpumask);
+ 		rcu_state.nocb_is_setup = true;
+ 	}
+ 
+ 	if (!rcu_state.nocb_is_setup)
+ 		return;
+ 
+-#if defined(CONFIG_NO_HZ_FULL)
+-	if (tick_nohz_full_running)
+-		cpumask_or(rcu_nocb_mask, rcu_nocb_mask, tick_nohz_full_mask);
+-#endif /* #if defined(CONFIG_NO_HZ_FULL) */
+-
+-	if (offload_all)
+-		cpumask_setall(rcu_nocb_mask);
+-
+ 	if (!cpumask_subset(rcu_nocb_mask, cpu_possible_mask)) {
+ 		pr_info("\tNote: kernel parameter 'rcu_nocbs=', 'nohz_full', or 'isolcpus=' contains nonexistent CPUs.\n");
+ 		cpumask_and(rcu_nocb_mask, cpu_possible_mask,
 -- 
 2.31.1.189.g2e36527f23
 
