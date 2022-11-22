@@ -2,73 +2,85 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EDC0FC433FE
-	for <rcu@archiver.kernel.org>; Tue, 22 Nov 2022 17:22:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B245C4321E
+	for <rcu@archiver.kernel.org>; Tue, 22 Nov 2022 21:31:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233240AbiKVRWF (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 22 Nov 2022 12:22:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41350 "EHLO
+        id S233174AbiKVVbE (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 22 Nov 2022 16:31:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234499AbiKVRWD (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 22 Nov 2022 12:22:03 -0500
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80E3F79905;
-        Tue, 22 Nov 2022 09:22:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-        s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=xopA+ReQUsDUbSSdoZR1/j1x5CA0eJOyUg7BC+5CkKw=; b=Lo2Jm2g0Z8O4nJ1DAYm1TuKy6T
-        7RrtNsB1uoAh5YFuo6LX4Uszjbc8nb8JLagayHwUC+IN0uW5gbQZyy71MuoEtvJkCxEXasOzKLeFr
-        629kXjOjSyVps4K5tt3ENAyonGwh+HbfQ5x9749t4JnyGRiw6/djxuDJZJjheuF2pFWkob2DF0jGv
-        H1p+ZTKRMZ8TBPxeDkNZbtINQClevCD6fv9B28nhumyn6TKk+MwsQCR5I7AHlP3IaAxEcueZrZs7i
-        H5KaYRwx3Xlv0/R442BrYLRcVbychpeAFyQLJ5AONtQFxu1x7axz5pNzqmokQY41DJt9xA5noEvJe
-        eFLOIaaA==;
-Received: from [177.102.6.147] (helo=[192.168.1.60])
-        by fanzine2.igalia.com with esmtpsa 
-        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-        id 1oxWy2-0076XC-KZ; Tue, 22 Nov 2022 18:21:55 +0100
-Message-ID: <5d54530f-e039-6b88-9e58-5eb286c8276e@igalia.com>
-Date:   Tue, 22 Nov 2022 14:21:49 -0300
+        with ESMTP id S234962AbiKVVbC (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 22 Nov 2022 16:31:02 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97E2DB9610;
+        Tue, 22 Nov 2022 13:31:01 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id io19so14886617plb.8;
+        Tue, 22 Nov 2022 13:31:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zgAzLb21LUXWU3y9hF9rBv/DHaAVEQZ/YKwR9d55bTI=;
+        b=YVQdzVIZbibPhLOEFlF57clDLA+X15XkRrsfUglOAE9R+Cpix/tplVgJcMXWAextq6
+         Cj7BLFYJ4Mdkcm98HnTNCj1y9w/cNF9O+FImxwZlMzkc1vVPv/+EWHZspB9Ubp7IxbKx
+         16eDF/6XUv9XZ9jafVapPTmjJeaB8wCeVqT4FTHngDXVpqjsuJKfOoNV9q3cbq62AkPA
+         jhVdZ0Z4Z/XJO4VPfoaRPvJmFZaQFWyQTH+F02dCexifBwMbKea+qvkjhWkDwjIKVzqe
+         tX3Q+XY5s91LEVenN+2MxsnNA36q/185ANW898Na7J2Cbto+889mXoi/C+sW1SoDfn5j
+         90Ag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zgAzLb21LUXWU3y9hF9rBv/DHaAVEQZ/YKwR9d55bTI=;
+        b=Ek6aM1Aly6tIq+IDkvyOS/wdoIO7kQSGMzludcKamQBpsAUYm89/JUfklVPbGCOmhi
+         tRALQdJ5E012YfoPbKezrTtIN4F2BEvMVIYVCJA9UxPKSMtSvJeKYRrxCudRqkh0LTep
+         7UoYqIpIBm8thF6bPrM2s4FJROdvZWi1ZhzW72CZVMiRUPW1F0tKwbgg/kLEt1qOq5bJ
+         oFeA53NmnygTatYuEi4AuFr0f2WG5Fa676TLrIH5Pov+VCTx1r/mSc09Oqic/UhZzua/
+         Wl31malw9y7Y+Jsci4TadJLjWBMUjPxTZ6aPYMIp6E7sKTQetURgzIfEKz4QyGNHSpVH
+         JZmQ==
+X-Gm-Message-State: ANoB5plulAHLfSdwUFhg7DGczVhNBih/eG16GRc72/eS//ae+3zmYvOB
+        PxodhVxB7v4fLL92rYC3lEM=
+X-Google-Smtp-Source: AA0mqf5HxKVR8LTCNXRXWXwrEqv6V5Z/JxABGLA60tu8cexYrguplGO1C8PjL9HR1ebhh7j3Ct32TQ==
+X-Received: by 2002:a17:902:ef44:b0:185:40ca:68b8 with SMTP id e4-20020a170902ef4400b0018540ca68b8mr7210411plx.16.1669152660911;
+        Tue, 22 Nov 2022 13:31:00 -0800 (PST)
+Received: from localhost ([2620:10d:c090:400::5:bb3])
+        by smtp.gmail.com with ESMTPSA id q16-20020a17090311d000b00182a9c27acfsm12587293plh.227.2022.11.22.13.31.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Nov 2022 13:31:00 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 22 Nov 2022 11:30:59 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com, rostedt@goodmis.org,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>
+Subject: Re: [PATCH v2 rcu 13/16] workqueue: Make queue_rcu_work() use
+ call_rcu_flush()
+Message-ID: <Y30/k7uPX99Qgni4@slm.duckdns.org>
+References: <20221122010408.GA3799268@paulmck-ThinkPad-P17-Gen-1>
+ <20221122010421.3799681-13-paulmck@kernel.org>
+ <Y3whScgTs0FgrVtY@slm.duckdns.org>
+ <20221122012357.GV4001@paulmck-ThinkPad-P17-Gen-1>
+ <Y3wn9AK1XxEZIIFw@slm.duckdns.org>
+ <20221122015202.GC4001@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.2
-Subject: Re: [PATCH] ftrace: Prevent RCU stall on PREEMPT_VOLUNTARY kernels
-Content-Language: en-US
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-        linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        kernel-dev@igalia.com, kernel@gpiccoli.net,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-References: <20221115204847.593616-1-gpiccoli@igalia.com>
- <20221116153620.353819e9c6acb1bf39adeca2@kernel.org>
- <d32e7b3d-31f3-9699-1eee-c1e3b2839fe2@igalia.com>
- <20221122104921.0185c58e@gandalf.local.home>
-From:   "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-In-Reply-To: <20221122104921.0185c58e@gandalf.local.home>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221122015202.GC4001@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 22/11/2022 12:49, Steven Rostedt wrote:
-> [...]
-> I was traveling for work from Oct 31-Nov 14 and when I got back, I had over
-> 300 patches to review in my queue. I'm now down under 100, so hopefully I
-> can get to it soon.
-> 
-> Just may take a bit.
-> 
-> Thanks,
-> 
-> -- Steve
+On Mon, Nov 21, 2022 at 05:52:02PM -0800, Paul E. McKenney wrote:
+> Maybe we should have used call_rcu_hurry()?
 
-No hurries, thanks for your heads-up!
-Cheers,
+That sounds good to me.
 
+Thanks.
 
-Guilherme
+-- 
+tejun
