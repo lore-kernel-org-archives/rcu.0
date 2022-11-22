@@ -2,270 +2,102 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E950C4332F
-	for <rcu@archiver.kernel.org>; Tue, 22 Nov 2022 01:33:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BB72FC4332F
+	for <rcu@archiver.kernel.org>; Tue, 22 Nov 2022 01:38:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232255AbiKVBdl (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 21 Nov 2022 20:33:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39086 "EHLO
+        id S232312AbiKVBiA (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 21 Nov 2022 20:38:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232270AbiKVBdg (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 21 Nov 2022 20:33:36 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3288B9BB3
-        for <rcu@vger.kernel.org>; Mon, 21 Nov 2022 17:33:33 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6F2AD61503
-        for <rcu@vger.kernel.org>; Tue, 22 Nov 2022 01:33:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD61DC433C1;
-        Tue, 22 Nov 2022 01:33:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669080812;
-        bh=pac3gX2KzfVItYVoIPHBRhhvDuY150S5++S1NaPk0gs=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=CRZH1l9OsL+KJR9wwaaCz2B2YTHOc0lGn590hkUTYlLPYcl8bz6wBGQE0dePJbfai
-         +ZgK5+bdTeECK6NJW6OAH10FtOEkx/ZtLYPk9hcqNo1k0L9EnALA4ae4NlReP5qvdv
-         vdgHvjL6J88WFf2UOlwJNQivFJb3++K0OY9YvAUtKUL44Yll1GGOnHO6mpDtv6Unod
-         54LauNOy5iXJXj8aF5mjjT0Ntbci3B67jChoMr8Nt2XUGaH7fDv9eXTSJf/CSzKlpe
-         pzXsCyMSAL9ejXVEisunwUCqyYRhPn3sXdvQBGAHJ9hl+ky7BU7cbas0PipR/B6Fzh
-         25/u3zWau+nNA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 6C45D5C0641; Mon, 21 Nov 2022 17:33:32 -0800 (PST)
-Date:   Mon, 21 Nov 2022 17:33:32 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Pingfan Liu <kernelfans@gmail.com>
-Cc:     rcu@vger.kernel.org, Lai Jiangshan <jiangshanlai@gmail.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: Re: [PATCH] srcu: Move updating of segcblist from srcu_gp_start() to
- srcu_might_be_idle()
-Message-ID: <20221122013332.GX4001@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20221116015626.10872-1-kernelfans@gmail.com>
- <20221116175922.GR4001@paulmck-ThinkPad-P17-Gen-1>
- <Y3YJ+XX/UUQAkkmF@piliu.users.ipa.redhat.com>
- <20221119011050.GT4001@paulmck-ThinkPad-P17-Gen-1>
- <Y3rk0ApkTpzX3pm1@piliu.users.ipa.redhat.com>
+        with ESMTP id S232300AbiKVBiA (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 21 Nov 2022 20:38:00 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8137A3422;
+        Mon, 21 Nov 2022 17:37:58 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id y13so12967554pfp.7;
+        Mon, 21 Nov 2022 17:37:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OglGzgpYMyqj8QLL99cHzcyrtXf8AaVJLvZ6MUdXVbM=;
+        b=DMZCQQU6xzfha3oRwrG/+v6K3YeyvSHyIguZJUnk8JqHaetRW6TjzBQ/PnIWLZhncb
+         1awxrf+ChpGwbGqk8lqyUldWtsThOZkUUbcKB86w5whDLwfNS6KcpXf1E78ihksY8iaB
+         ST7tNVluqG9NU0iXimFDE5srH7vyke7+cNoj5B9v8XInspfnM15yuG0mH3KVrGNnNM3D
+         bL2QfxOofnnMIphXunC+uZHe5C0mL1TfTl/bniKdu2/FBvsU1CURG3zen2oMD4DLiS+4
+         a2jYwVRJAoIWUFFHXB9a1Qv+wCdX3IReMf0qgTDFKiZcTBjiMXrp96Cl/JSStksVlFE4
+         CAQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OglGzgpYMyqj8QLL99cHzcyrtXf8AaVJLvZ6MUdXVbM=;
+        b=HuQLKsUHmC/5z4V1Iget7h0ZfH3fZwyZZ6uJkW+r7Rhvw/O+OzCdI2sa9wpwWCWpin
+         g18GNF73SttPtxWyyJ6MPAy5gjW7q7ukTM34xeyoAWCxnNKxNn2m8zcshwmzkN0QV8Xb
+         E6rJpMDrpl4fyVXRDXBeRQcK92g5D2sA0rKYId/oBbT2mre2DhEYi2jzPDlDaxIXG2qc
+         pTkqSVe/wGRRWELhsM1SsG2nEop+2If0E/5Mo8F5YRc5Ol3WumpQK8UcdtykNz3Rql9K
+         ml9icPkushwxSSvPNLwEjHJBc9i6m6NQFuIzuYfwyvW/k5XlbQ3qaDBl/y+QOS7EoZNT
+         oNJA==
+X-Gm-Message-State: ANoB5plTpUliGl507TnIppdAhmnTRf7Pkz3FXpIiE/Gem+ZQFn4yl5Gf
+        T4ef5RTxEhB8eErXQkjb4Dk=
+X-Google-Smtp-Source: AA0mqf7fvIADqXeFH5nRswqo5AfA2P/FscS26XdKuh6ZX/1pWBoUcCzu8yfjpafSEduYL0FEDa1bJw==
+X-Received: by 2002:a65:694e:0:b0:474:6749:407d with SMTP id w14-20020a65694e000000b004746749407dmr1311330pgq.425.1669081078088;
+        Mon, 21 Nov 2022 17:37:58 -0800 (PST)
+Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
+        by smtp.gmail.com with ESMTPSA id 8-20020a17090a004800b0020ae09e9724sm8319928pjb.53.2022.11.21.17.37.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Nov 2022 17:37:57 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 21 Nov 2022 15:37:56 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com, rostedt@goodmis.org,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>
+Subject: Re: [PATCH v2 rcu 13/16] workqueue: Make queue_rcu_work() use
+ call_rcu_flush()
+Message-ID: <Y3wn9AK1XxEZIIFw@slm.duckdns.org>
+References: <20221122010408.GA3799268@paulmck-ThinkPad-P17-Gen-1>
+ <20221122010421.3799681-13-paulmck@kernel.org>
+ <Y3whScgTs0FgrVtY@slm.duckdns.org>
+ <20221122012357.GV4001@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Y3rk0ApkTpzX3pm1@piliu.users.ipa.redhat.com>
+In-Reply-To: <20221122012357.GV4001@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Nov 21, 2022 at 10:39:12AM +0800, Pingfan Liu wrote:
-> On Fri, Nov 18, 2022 at 05:10:50PM -0800, Paul E. McKenney wrote:
-> > On Thu, Nov 17, 2022 at 06:16:25PM +0800, Pingfan Liu wrote:
-> > > On Wed, Nov 16, 2022 at 09:59:22AM -0800, Paul E. McKenney wrote:
-> > > > On Wed, Nov 16, 2022 at 09:56:26AM +0800, Pingfan Liu wrote:
-> > > > > The pair of segcblist operations: rcu_segcblist_advance() and
-> > > > > rcu_segcblist_accelerate() in srcu_gp_start() is needless from two
-> > > > > perspectives:
-> > > > > 
-> > > > >   -1. As a part of the SRCU state machine, it should take care of either
-> > > > > all sda or none. But here it only takes care of a single sda.
-> > > > 
-> > > > I am not so sure that I agree.
-> > > > 
-> > > > Taking care of all srcu_node structures' callbacks would be extremely
-> > > > expensive, with the expense increasing with the number of CPUs.  However,
-> > > > the cost of taking care of the current CPU's callbacks is quite cheap,
-> > > > at least in the case where the srcu_struct structure's ->srcu_size_state
-> > > > field is equal to SRCU_SIZE_BIG.
-> > > > 
-> > > > But are you seeing performance issues with that code on real hardware
-> > > > running real workloads when the srcu_struct structure's ->srcu_size_state
-> > > > field does not equal SRCU_SIZE_BIG?  My guess is "no" given that this
-> > > > code has already paid the cost of acquiring the srcu_struct structure's
-> > > > ->lock, but I figured I should ask.  The opinion of real hardware running
-> > > > real workloads beats any of our opinions, after all.  ;-)
-> > > > 
-> > > > If you are seeing real slowdowns, then one option is to decrease the
-> > > > default value of big_cpu_lim from 128 to some appropriate smaller value.
-> > > > Maybe 16 or 32?
-> > > > 
-> > > > Alternatively, the code in srcu_gp_start() that this patch removes might
-> > > > be executed only when ssp->srcu_size_state is equal to SRCU_SIZE_BIG.
-> > > > But this approach would likely still have performance issues due to the
-> > > > acquisition of srcu_struct structure's ->lock, right?
-> > > > 
-> > > > Also, if you are seeing real slowdowns, please place that information
-> > > > in the commit log.
-> > > 
-> > > Thanks for stiring up so much internal information. It is useful to
-> > > guild me through the code reading.
-> > > 
-> > > I have not seen any slowdowns, just try to organize the code. Since the
-> > > note before srcu_might_be_idle() explains why it only evaluate a local
-> > > sda, while srcu_gp_start() has not, so I am puzzled about it.
+On Mon, Nov 21, 2022 at 05:23:57PM -0800, Paul E. McKenney wrote:
+> On Mon, Nov 21, 2022 at 03:09:29PM -1000, Tejun Heo wrote:
+> > On Mon, Nov 21, 2022 at 05:04:18PM -0800, Paul E. McKenney wrote:
+> > > And another call_rcu() instance that cannot be lazy is the one
+> > > in queue_rcu_work(), given that callers to queue_rcu_work() are
+> > > not necessarily OK with long delays.
 > > 
-> > Locality of reference is a good thing in general, so unless it is a
-> > strange case, there won't always be a "do this to promote locality of
-> > reference" comment.
+> > So, this is fine but another thing we can do is propagating the distinction
+> > through the workqueue interface so that the the choice can be made by
+> > workqueue users. Would that make sense?
 > 
-> Learned.
-> 
-> > > > Thoughts?
-> > > > 
-> > > > >   -2. From the viewpoint of the callback, at the entrance,
-> > > > > srcu_gp_start_if_needed() has called that pair operations and attached
-> > > > > it with gp_seq. At the exit, srcu_invoke_callbacks() calls that pair
-> > > > > again to extract the done callbacks. So the harvesting of the callback
-> > > > > is not affected by the call to that pair in srcu_gp_start().
-> > > > > 
-> > > > > But because the updating of RCU_DONE_TAIL by srcu_invoke_callbacks() may
-> > > > > have some delay than by srcu_gp_end()->srcu_gp_start(), the removal may
-> > > > > cause srcu_might_be_idle() not to be real time.  To compensate that,
-> > > > > supplement that pair just before the calling to rcu_segcblist_pend_cbs()
-> > > > > in srcu_might_be_idle().
-> > > > 
-> > > > I agree that srcu_might_be_idle() is not a bad place to add such a check,
-> > > > especially given that it has other reasons to acquire the srcu_data
-> > > > structure's ->lock.  Except that this misses both call_srcu() and
-> > > > synchronize_srcu_expedited(), so that if a workload invokes call_srcu()
-> > > > and/or synchronize_srcu_expedited() on a given srcu_struct structure,
-> > > > but never synchronize)srcu(), the opportunity to advance that CPU's
-> > > > callbacks at the beginning of a grace period will always be lost.
-> > > 
-> > > srcu_gp_start_if_needed() has rcu_segcblist_{advance/accelerate}()
-> > > unconditionally, so the beginning of a grace period will be always
-> > > detected via any path through __call_srcu(). Do I miss anything?
-> > 
-> > Grace periods can also be started by srcu_gp_end().
-> 
-> But it is helpless for assiciating a gp with the enqueued callback. 
+> It might well!  My thought was to wait to suggest that until we found a
+> real-life case where this was needed, but I have no objection to being
+> proactive here.
 
-Yes, the newly enqueued callbacks should have grace-period numbers
-associated at call_srcu() time, but the callbacks might be advanced
-at rcu_gp_end() time.  Some of those grace periods might well have
-completed.
+Oh yeah, I'm completely fine either way too.
 
-> > > And I think the core issue is if it matters that the updating of
-> > > segcblist defers from srcu_gp_end()->srcu_gp_start() to
-> > > srcu_invoke_callbacks().
-> > 
-> > The main reason for advancing/accelerating from __call_srcu() is to
-> > make sure that the newly enqueued callback will be associated with a
-> > grace period.  Otherwise, the newly enqueued callback might well just
-> > sit there for a very long time.
-> > 
-> > Unlike normal RCU, there is no callback polling mechanism in SRCU.
-> > Nor can there reasonably be, due to the potentially very large number
-> > of srcu_struct structures.
-> > 
-> > (Yes, if __call_srcu() was to become a performance bottleneck, there
-> > are adjustments that could be made, but let's not increase complexity
-> > before we see a clear need to do so.)
-> > 
-> > > > Alternatively, if we have checks in both synchronize_srcu() and
-> > > > srcu_gp_start_if_needed(), we end up duplicating the work in the case
-> > > > where synchronize_srcu() is invoked.  This is also not particularly good.
-> > > 
-> > > Here srcu_gp_start() has the following caller:
-> > >   srcu_advance_state()
-> > >   srcu_funnel_gp_start()
-> > >   srcu_reschedule()
-> > >   srcu_gp_end()
-> > > 
-> > > Except srcu_gp_end() increase the gp_seq's counter, the rest has not changed the
-> > > gp_seq's counter. so the calling to rcu_segcblist_{advance/accelerate}() is
-> > > needless there.
-> > 
-> > Suppose that this srcu_struct is in state SRCU_SIZE_BIG, so that there
-> > is a callback list for each CPU.
-> > 
-> > > Anyway I tried to understand the code and some internal. If you dislike
-> > > it, please skip it.
-> > 
-> > Let's skip this for the moment.
-> 
-> Sure. And I have learned a lot from this thread.
-> 
-> > > Thanks again for your precious time.
-> > 
-> > Please let me know if additional information on locality of reference
-> > would be helpful.
-> 
-> No. That is enough.
-> 
-> Appreciate for your detailed explanation. It is very helpful for me to
-> understand the code more deeply.
+> But the hard part...  Thought for a good name?  ;-)
 
-Thank you, and glad that it was helpful.
+If we go with a separate interface, yeah, _flush would be confusing for
+workqueue. Maybe _quick or _hurry? Hmm... it'd be nice to keep the suffix
+consistent with RCU. What's the relationship with
+synchronize_rcu_expedited()? Would using _expedited be confusing?
 
-							Thanx, Paul
+Thanks.
 
-> Thanks,
-> 
-> 	Pingfan
-> 
-> 
-> > 							Thanx, Paul
-> > 
-> > > 	Pingfan
-> > > 
-> > > > Again, thoughts?
-> > > > 
-> > > > 							Thanx, Paul
-> > > > 
-> > > > > Test info:
-> > > > > torture test passed using the following command against commit 094226ad94f4 ("Linux 6.1-rc5")
-> > > > >    tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 10h --configs 18*SRCU-P
-> > > > > 
-> > > > > Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
-> > > > > Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-> > > > > Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> > > > > Cc: Frederic Weisbecker <frederic@kernel.org>
-> > > > > Cc: Josh Triplett <josh@joshtriplett.org>
-> > > > > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > > > > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > > > > To: rcu@vger.kernel.org
-> > > > > ---
-> > > > >  kernel/rcu/srcutree.c | 15 ++++-----------
-> > > > >  1 file changed, 4 insertions(+), 11 deletions(-)
-> > > > > 
-> > > > > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> > > > > index 725c82bb0a6a..36ba18967133 100644
-> > > > > --- a/kernel/rcu/srcutree.c
-> > > > > +++ b/kernel/rcu/srcutree.c
-> > > > > @@ -659,21 +659,10 @@ EXPORT_SYMBOL_GPL(__srcu_read_unlock);
-> > > > >   */
-> > > > >  static void srcu_gp_start(struct srcu_struct *ssp)
-> > > > >  {
-> > > > > -	struct srcu_data *sdp;
-> > > > >  	int state;
-> > > > >  
-> > > > > -	if (smp_load_acquire(&ssp->srcu_size_state) < SRCU_SIZE_WAIT_BARRIER)
-> > > > > -		sdp = per_cpu_ptr(ssp->sda, 0);
-> > > > > -	else
-> > > > > -		sdp = this_cpu_ptr(ssp->sda);
-> > > > >  	lockdep_assert_held(&ACCESS_PRIVATE(ssp, lock));
-> > > > >  	WARN_ON_ONCE(ULONG_CMP_GE(ssp->srcu_gp_seq, ssp->srcu_gp_seq_needed));
-> > > > > -	spin_lock_rcu_node(sdp);  /* Interrupts already disabled. */
-> > > > > -	rcu_segcblist_advance(&sdp->srcu_cblist,
-> > > > > -			      rcu_seq_current(&ssp->srcu_gp_seq));
-> > > > > -	(void)rcu_segcblist_accelerate(&sdp->srcu_cblist,
-> > > > > -				       rcu_seq_snap(&ssp->srcu_gp_seq));
-> > > > > -	spin_unlock_rcu_node(sdp);  /* Interrupts remain disabled. */
-> > > > >  	WRITE_ONCE(ssp->srcu_gp_start, jiffies);
-> > > > >  	WRITE_ONCE(ssp->srcu_n_exp_nodelay, 0);
-> > > > >  	smp_mb(); /* Order prior store to ->srcu_gp_seq_needed vs. GP start. */
-> > > > > @@ -1037,6 +1026,10 @@ static bool srcu_might_be_idle(struct srcu_struct *ssp)
-> > > > >  	/* If the local srcu_data structure has callbacks, not idle.  */
-> > > > >  	sdp = raw_cpu_ptr(ssp->sda);
-> > > > >  	spin_lock_irqsave_rcu_node(sdp, flags);
-> > > > > +	rcu_segcblist_advance(&sdp->srcu_cblist,
-> > > > > +			      rcu_seq_current(&ssp->srcu_gp_seq));
-> > > > > +	(void)rcu_segcblist_accelerate(&sdp->srcu_cblist,
-> > > > > +				       rcu_seq_snap(&ssp->srcu_gp_seq));
-> > > > >  	if (rcu_segcblist_pend_cbs(&sdp->srcu_cblist)) {
-> > > > >  		spin_unlock_irqrestore_rcu_node(sdp, flags);
-> > > > >  		return false; /* Callbacks already present, so not idle. */
-> > > > > -- 
-> > > > > 2.31.1
-> > > > > 
+-- 
+tejun
