@@ -2,139 +2,134 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 61421C4332F
-	for <rcu@archiver.kernel.org>; Tue, 22 Nov 2022 09:59:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B613C433FE
+	for <rcu@archiver.kernel.org>; Tue, 22 Nov 2022 11:59:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230255AbiKVJ7W (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 22 Nov 2022 04:59:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58284 "EHLO
+        id S232943AbiKVL7h (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 22 Nov 2022 06:59:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231487AbiKVJ7U (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 22 Nov 2022 04:59:20 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD52B186E8
-        for <rcu@vger.kernel.org>; Tue, 22 Nov 2022 01:59:19 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id k2-20020a17090a4c8200b002187cce2f92so11611015pjh.2
-        for <rcu@vger.kernel.org>; Tue, 22 Nov 2022 01:59:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=GRT500nO9ut4XtpCQ2OHPe2qt4yHY5HiNR4FKG/d4os=;
-        b=hyoL40tafRzbtWrPoP9VtQ3cXMfnzazvbhlXwkYwHithTXr7NWBSgQSB4lTBqIAku6
-         nJsy9c7pqKS4M/tYHjzVDVjsdKyAhmgnshJ9sxPOTZBnqhLqEoFVa4+kQGwBSD1mGhj6
-         U0cziOxkzpZZBrGls4N39uwQbLhV9m3cU8cXnK7hJd2Yv4IyDMcd+ZRydSgDUq6cNaCV
-         Trua9D6USdi2NrqHne6bZJNnWWuCJRjpjEEk12kJj7+sIXdsErwllNYEgYzc//zVFEbj
-         avldoLZyM72QpXzBbV6dyQE/Enewr77igMifxfkak0utYMJmtWPG6rnsbFVnUuROf3HQ
-         Bw3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GRT500nO9ut4XtpCQ2OHPe2qt4yHY5HiNR4FKG/d4os=;
-        b=vNps4TooF64DeP+wyi1zsWQIMf3QVXaOrHnWRGrWQtJm6s5NY9Ue6w/xBHFyAjH68U
-         VnMGeA2BCWHpzDgxX5TCnd/DlbdOzdPbE46Dv7Hd/Ow9wWIuQ9TsAn/si309rnCcbWsG
-         nQzOy9Y1Tlvl2sUHZ7GizV7OXhX9nOwgldevfqi//xol825LRQbuOiJUP07jZ2dUfGTS
-         9HXECK3+cBKStBQhQEtETFxxRoTTWBejjgz3zcpsPcXbxxR0SJTkOM+6HpivAkokFXkI
-         ugl71cy7jVY3Cmg5XJF3TofPDg0j/wKxda2UmX4Lf7I4GnCjkL99607oOXAibX5k79P2
-         W7lg==
-X-Gm-Message-State: ANoB5pn0SwGE5STvFZGpxX7uAE41CJbFy7n0TS9ZPME4aJ0PoN5a6bKG
-        fKo4GB3d5Okm2/O3ZW3J7w==
-X-Google-Smtp-Source: AA0mqf6Jn1Q7Wa/X2eJgGjzTKB4Two54212ZqzsZTsglxv/z7mUFU5/bRBKmXQykZYLxJz4y+P9wLQ==
-X-Received: by 2002:a17:902:708c:b0:189:33cd:64b with SMTP id z12-20020a170902708c00b0018933cd064bmr2342896plk.81.1669111159341;
-        Tue, 22 Nov 2022 01:59:19 -0800 (PST)
-Received: from piliu.users.ipa.redhat.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id t2-20020a170902e84200b00185507b5ef8sm11625751plg.50.2022.11.22.01.59.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Nov 2022 01:59:18 -0800 (PST)
-Date:   Tue, 22 Nov 2022 17:59:12 +0800
-From:   Pingfan Liu <kernelfans@gmail.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     rcu@vger.kernel.org, Lai Jiangshan <jiangshanlai@gmail.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
+        with ESMTP id S231583AbiKVL7f (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 22 Nov 2022 06:59:35 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B8D513EB0;
+        Tue, 22 Nov 2022 03:59:34 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 13A7BB81A09;
+        Tue, 22 Nov 2022 11:59:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D863C433D6;
+        Tue, 22 Nov 2022 11:59:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1669118371;
+        bh=awIitadsf/uo1C7l6pvVh4QYBC6b2uHMr5qvDAo+Zvs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BZo7+YFb6KE0Xfg4iZY0adz7ph8k7Q2yTgCQ4Ul963JgXTlUMRMPubmkI7sdeReax
+         LXPv/DojlpOddNPYtD3tC2LK5BitNd7sKQC4Ou1/DK3lCtN3SVY4EjAQgPLHpBVbiw
+         VdFFpvzc4qT//7YyxvfpKIG53GdweNBlIwYqL8laUivXCD7etXBqlE84kK0IPNkyMQ
+         0zmt9RnbhQ63aTIzPOepNaM9o6as3tpIY1ieWgknUqbBxRDl3Pa1eDo0f/aBw44Crg
+         6fdsV1qErdGzV17ISPIJz0xEXIxzFC2rgQVWo+hoJo91DuzfvwraSZ45IuDkTj5Up7
+         oTUAPJ5j9+xeg==
+Date:   Tue, 22 Nov 2022 12:59:28 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: Re: [PATCH 2/2] srcu: Remove needless updating of srcu_have_cbs in
- srcu_gp_end()
-Message-ID: <Y3ydcMAkqpCGNosw@piliu.users.ipa.redhat.com>
-References: <20221120034014.7390-1-kernelfans@gmail.com>
- <20221120034014.7390-3-kernelfans@gmail.com>
- <20221122011916.GT4001@paulmck-ThinkPad-P17-Gen-1>
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Robert Elliott <elliott@hpe.com>
+Subject: Re: [PATCH v8 0/6] rcu: Add RCU stall diagnosis information
+Message-ID: <20221122115928.GA1158713@lothringen>
+References: <20221119092508.1766-1-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221122011916.GT4001@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20221119092508.1766-1-thunder.leizhen@huawei.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Nov 21, 2022 at 05:19:16PM -0800, Paul E. McKenney wrote:
-> On Sun, Nov 20, 2022 at 11:40:14AM +0800, Pingfan Liu wrote:
-> > At present, snp->srcu_have_cbs[idx] is updated by either
-> > srcu_funnel_gp_start() or srcu_gp_end().
-> > 
-> > But as the code changes, now, srcu_funnel_gp_start() is called with srcu
-> > read lock held. And its input parameter s, s = rcu_seq_snap(&ssp->srcu_gp_seq),
-> > whose counter field always proceeds that of the srcu_gp_seq by one or two.
-> > 
-> > If the seq snap only proceeds by one, the state machine should be in
-> > state SRCU_STATE_IDLE, the held srcu read lock will prevent the state
-> > machine from moving ahead. So when srcu_gp_end() updates
-> > snp->srcu_have_cbs[idx], the idx must be the past idx for
-> > srcu_funnel_gp_start() that is cared by nobody.
-> > 
-> > So removing the unnecessary updating in srcu_gp_end().
+On Sat, Nov 19, 2022 at 05:25:02PM +0800, Zhen Lei wrote:
+> v7 --> v8:
+> 1. Change call jiffies64_to_msecs() to call jiffies_to_msecs().
+> 2. Mention that rcupdate.rcu_cpu_stall_cputime overrides
+>    CONFIG_RCU_CPU_STALL_CPUTIME behaviour in the Kconfig help text.
+> 3. Fix a make htmldocs warning, change "|...|" to ":...:".
 > 
-> This looks plausible, good eyes!
+> v6 --> v7:
+> 1. Use kcpustat_field() to obtain the cputime.
+> 2. Make the output start with "\t" to match other related prints.
+> 3. Aligns the output of the last line of RCU stall.
 > 
-> But is there a debug check that could verify that this is unnecessary?
-> Logical reasoning is all well and good, but the actual system always
-> wins arguments.  ;-)
+> v5 --> v6:
+> 1. When there are more than two continuous RCU stallings, correctly handle the
+>    value of the second and subsequent sampling periods. Update comments and
+>    document.
+>    Thanks to Elliott, Robert for the test.
+> 2. Change "rcu stall" to "RCU stall".
 > 
-
-Agree. Reasoning may miss some ground and render a wrong result.
-
-But it is a little hard to demonstrate the past idx is not accessed. I
-will go on to figure a way out.
-
-
-Thanks,
-
-	Pingfan
-
-> 							Thanx, Paul
+> v4 --> v5:
+> 1. Resolve a git am conflict. No code change.
 > 
-> > Test info:
-> >   Running "tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 10h --configs 18*SRCU-P"
-> > without any failure.
-> > 
-> > Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
-> > Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-> > Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> > Cc: Frederic Weisbecker <frederic@kernel.org>
-> > Cc: Josh Triplett <josh@joshtriplett.org>
-> > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > To: rcu@vger.kernel.org
-> > ---
-> >  kernel/rcu/srcutree.c | 2 --
-> >  1 file changed, 2 deletions(-)
-> > 
-> > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> > index 7df59fc8073e..c54d6c04751f 100644
-> > --- a/kernel/rcu/srcutree.c
-> > +++ b/kernel/rcu/srcutree.c
-> > @@ -783,8 +783,6 @@ static void srcu_gp_end(struct srcu_struct *ssp)
-> >  			last_lvl = snp >= ssp->level[rcu_num_lvls - 1];
-> >  			if (last_lvl)
-> >  				cbs = ss_state < SRCU_SIZE_BIG || snp->srcu_have_cbs[idx] == gpseq;
-> > -			snp->srcu_have_cbs[idx] = gpseq;
-> > -			rcu_seq_set_state(&snp->srcu_have_cbs[idx], 1);
-> >  			sgsne = snp->srcu_gp_seq_needed_exp;
-> >  			if (srcu_invl_snp_seq(sgsne) || ULONG_CMP_LT(sgsne, gpseq))
-> >  				WRITE_ONCE(snp->srcu_gp_seq_needed_exp, gpseq);
-> > -- 
-> > 2.31.1
-> > 
+> v3 --> v4:
+> 1. Rename rcu_cpu_stall_deep_debug to rcu_cpu_stall_cputime.
+> 
+> v2 --> v3:
+> 1. Fix the return type of kstat_cpu_irqs_sum()
+> 2. Add Kconfig option CONFIG_RCU_CPU_STALL_DEEP_DEBUG and boot parameter
+>    rcupdate.rcu_cpu_stall_deep_debug.
+> 3. Add comments and normalize local variable name
+> 
+> v1 --> v2:
+> 1. Fixed a bug in the code. If the rcu stall is detected by another CPU,
+>    kcpustat_this_cpu cannot be used.
+> @@ -451,7 +451,7 @@ static void print_cpu_stat_info(int cpu)
+>         if (r->gp_seq != rdp->gp_seq)
+>                 return;
+> 
+> -       cpustat = kcpustat_this_cpu->cpustat;
+> +       cpustat = kcpustat_cpu(cpu).cpustat;
+> 2. Move the start point of statistics from rcu_stall_kick_kthreads() to
+>    rcu_implicit_dynticks_qs(), removing the dependency on irq_work.
+> 
+> v1:
+> In some extreme cases, such as the I/O pressure test, the CPU usage may
+> be 100%, causing RCU stall. In this case, the printed information about
+> current is not useful. Displays the number and usage of hard interrupts,
+> soft interrupts, and context switches that are generated within half of
+> the CPU stall timeout, can help us make a general judgment. In other
+> cases, we can preliminarily determine whether an infinite loop occurs
+> when local_irq, local_bh or preempt is disabled.
+> 
+> Zhen Lei (6):
+>   genirq: Fix the return type of kstat_cpu_irqs_sum()
+>   sched: Add helper kstat_cpu_softirqs_sum()
+>   sched: Add helper nr_context_switches_cpu()
+>   rcu: Add RCU stall diagnosis information
+>   doc: Document CONFIG_RCU_CPU_STALL_CPUTIME=y stall information
+>   rcu: Align the output of RCU stall
+
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+
+Thanks!
+
+> 
+>  Documentation/RCU/stallwarn.rst               | 88 +++++++++++++++++++
+>  .../admin-guide/kernel-parameters.txt         |  6 ++
+>  include/linux/kernel_stat.h                   | 14 ++-
+>  kernel/rcu/Kconfig.debug                      | 13 +++
+>  kernel/rcu/rcu.h                              |  1 +
+>  kernel/rcu/tree.c                             | 18 ++++
+>  kernel/rcu/tree.h                             | 19 ++++
+>  kernel/rcu/tree_stall.h                       | 35 +++++++-
+>  kernel/rcu/update.c                           |  2 +
+>  kernel/sched/core.c                           |  5 ++
+>  10 files changed, 198 insertions(+), 3 deletions(-)
+> 
+> -- 
+> 2.25.1
+> 
