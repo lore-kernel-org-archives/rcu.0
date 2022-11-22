@@ -2,157 +2,171 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 86EA0C4332F
-	for <rcu@archiver.kernel.org>; Tue, 22 Nov 2022 02:14:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AE719C433FE
+	for <rcu@archiver.kernel.org>; Tue, 22 Nov 2022 09:50:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231536AbiKVCOL (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 21 Nov 2022 21:14:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40916 "EHLO
+        id S233442AbiKVJuz (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 22 Nov 2022 04:50:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbiKVCOJ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 21 Nov 2022 21:14:09 -0500
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 908B5E0CB5;
-        Mon, 21 Nov 2022 18:14:07 -0800 (PST)
-Received: from dggpemm500021.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4NGSV96m2CzRpcc;
-        Tue, 22 Nov 2022 10:13:37 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggpemm500021.china.huawei.com (7.185.36.109) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Tue, 22 Nov 2022 10:14:05 +0800
-Received: from [10.174.178.55] (10.174.178.55) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Tue, 22 Nov 2022 10:14:05 +0800
-Subject: Re: [PATCH v8 0/6] rcu: Add RCU stall diagnosis information
-To:     <paulmck@kernel.org>
-CC:     Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        with ESMTP id S233460AbiKVJug (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 22 Nov 2022 04:50:36 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A064952141
+        for <rcu@vger.kernel.org>; Tue, 22 Nov 2022 01:50:33 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id 130so13870978pfu.8
+        for <rcu@vger.kernel.org>; Tue, 22 Nov 2022 01:50:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=5GQ+4QMY2u/Xmt9scHdTYRLLk9tLW+PvbAyHXQGmOiw=;
+        b=Gq1sIfTdPAl4onlwqGb4bYOstf0tU72D8z/aON7pkcJgoep9e99NZdvCzfww1kfQGU
+         Nn/AF7jy4l0DjBulnyRXah3oW/BDzBsWu5BzFd5O0yWvhCLIuxsZoNXxlAe+e3rH6MaV
+         es+HYNDFqkpJ/fUz6v7Ocvm2UBhW+rteW82MhmWISZbJBTh6bujUZyUu6K9pINmeFmKZ
+         DqksRaHGEiXNyEccVKKJzReazIywUsysEnNJiy1TNlsqW9B9MmJu2Xemcbif215bMpkJ
+         /MrwGyvWI3LYcdv06QYN5GUIvJPNqNt09Q9omSy68DkPsffMez4P0FIUCDtBBBHbZV02
+         HY6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5GQ+4QMY2u/Xmt9scHdTYRLLk9tLW+PvbAyHXQGmOiw=;
+        b=iMLcrZbHUAPVCpehURowTgjYvyKkJXeZlVyvXbCs2HI6LNNnKkSWCyX4O7ZiIQ+g60
+         rYrpw60LgZ8TOXrOQGEBJhu5tjeN76ejXL/+KA9lXWiaDe4sSiWT6q+rxrn2XQPr4Sh5
+         fLpzoByNe+mO1b2HaMMkRqLHsCodqXw2T0UcRQACz387G8gnS9rGLGw9HK6ktGYwxYpB
+         oSoQThz+0ehc/TleUt7gdMKRfmlQ53Xp2AvyYdNxKw/bzWOE2oTkLmj9TXqg+q3Or1l4
+         9yRHfWOh5trHq9iK4vezfXs8B821P/BLrdhifrNaFApvOgzCgkA1HHs/I5TgsDpPZWMK
+         fiTQ==
+X-Gm-Message-State: ANoB5pkDUhFC9u1ArT3/NqA9Mii80tlI9YtsjuwAn8Rb8xQnmYxixLa+
+        3rwU0xEFt2piuQ+bCtNeLg==
+X-Google-Smtp-Source: AA0mqf6a5sv+qNDfXjideEoR9/OmqZ3wA5/54EhJyMODMSsHgoXkxNTkbKQFJsfJBgXxL+7vS0I9uA==
+X-Received: by 2002:a63:180c:0:b0:476:848f:1ecd with SMTP id y12-20020a63180c000000b00476848f1ecdmr21388350pgl.589.1669110633156;
+        Tue, 22 Nov 2022 01:50:33 -0800 (PST)
+Received: from piliu.users.ipa.redhat.com ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id b7-20020a170902d50700b0017c37a5a2fdsm11529921plg.216.2022.11.22.01.50.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Nov 2022 01:50:32 -0800 (PST)
+Date:   Tue, 22 Nov 2022 17:50:26 +0800
+From:   Pingfan Liu <kernelfans@gmail.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     rcu@vger.kernel.org, Lai Jiangshan <jiangshanlai@gmail.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
         Josh Triplett <josh@joshtriplett.org>,
-        "Steven Rostedt" <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, <rcu@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Robert Elliott <elliott@hpe.com>
-References: <20221119092508.1766-1-thunder.leizhen@huawei.com>
- <20221121222910.GP4001@paulmck-ThinkPad-P17-Gen-1>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <6877d891-7314-d9b3-5e1a-3e6bd239489b@huawei.com>
-Date:   Tue, 22 Nov 2022 10:14:04 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: Re: [PATCH 1/2] srcu: Remove needless rcu_seq_done() check while
+ holding read lock
+Message-ID: <Y3ybYubzvbmBFeah@piliu.users.ipa.redhat.com>
+References: <20221120034014.7390-1-kernelfans@gmail.com>
+ <20221120034014.7390-2-kernelfans@gmail.com>
+ <20221122011345.GS4001@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-In-Reply-To: <20221121222910.GP4001@paulmck-ThinkPad-P17-Gen-1>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.55]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221122011345.GS4001@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-
-
-On 2022/11/22 6:29, Paul E. McKenney wrote:
-> On Sat, Nov 19, 2022 at 05:25:02PM +0800, Zhen Lei wrote:
->> v7 --> v8:
->> 1. Change call jiffies64_to_msecs() to call jiffies_to_msecs().
->> 2. Mention that rcupdate.rcu_cpu_stall_cputime overrides
->>    CONFIG_RCU_CPU_STALL_CPUTIME behaviour in the Kconfig help text.
->> 3. Fix a make htmldocs warning, change "|...|" to ":...:".
->>
->> v6 --> v7:
->> 1. Use kcpustat_field() to obtain the cputime.
->> 2. Make the output start with "\t" to match other related prints.
->> 3. Aligns the output of the last line of RCU stall.
->>
->> v5 --> v6:
->> 1. When there are more than two continuous RCU stallings, correctly handle the
->>    value of the second and subsequent sampling periods. Update comments and
->>    document.
->>    Thanks to Elliott, Robert for the test.
->> 2. Change "rcu stall" to "RCU stall".
->>
->> v4 --> v5:
->> 1. Resolve a git am conflict. No code change.
->>
->> v3 --> v4:
->> 1. Rename rcu_cpu_stall_deep_debug to rcu_cpu_stall_cputime.
->>
->> v2 --> v3:
->> 1. Fix the return type of kstat_cpu_irqs_sum()
->> 2. Add Kconfig option CONFIG_RCU_CPU_STALL_DEEP_DEBUG and boot parameter
->>    rcupdate.rcu_cpu_stall_deep_debug.
->> 3. Add comments and normalize local variable name
->>
->> v1 --> v2:
->> 1. Fixed a bug in the code. If the rcu stall is detected by another CPU,
->>    kcpustat_this_cpu cannot be used.
->> @@ -451,7 +451,7 @@ static void print_cpu_stat_info(int cpu)
->>         if (r->gp_seq != rdp->gp_seq)
->>                 return;
->>
->> -       cpustat = kcpustat_this_cpu->cpustat;
->> +       cpustat = kcpustat_cpu(cpu).cpustat;
->> 2. Move the start point of statistics from rcu_stall_kick_kthreads() to
->>    rcu_implicit_dynticks_qs(), removing the dependency on irq_work.
->>
->> v1:
->> In some extreme cases, such as the I/O pressure test, the CPU usage may
->> be 100%, causing RCU stall. In this case, the printed information about
->> current is not useful. Displays the number and usage of hard interrupts,
->> soft interrupts, and context switches that are generated within half of
->> the CPU stall timeout, can help us make a general judgment. In other
->> cases, we can preliminarily determine whether an infinite loop occurs
->> when local_irq, local_bh or preempt is disabled.
+On Mon, Nov 21, 2022 at 05:13:45PM -0800, Paul E. McKenney wrote:
+> On Sun, Nov 20, 2022 at 11:40:13AM +0800, Pingfan Liu wrote:
+> > As the code changes, now, srcu_gp_start_if_needed() holds the srcu read
+> > lock, gets the gp_seq snap and call srcu_funnel_gp_start() passing that
+> > snap value.
+> > 
+> > As the rcu_seq_snap() promises "a full grace period has elapsed since
+> > the current time".  In srcu_funnel_gp_start(), the statement
+> >   rcu_seq_done(&ssp->srcu_gp_seq, s)
+> > always return false.
+> > 
+> > The same condition stands for srcu_funnel_exp_start(). Hence removing
+> > all the checks of rcu_seq_done().
+> > 
+> > Test info:
+> >   Running "tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 10h --configs 18*SRCU-P"
+> > without any failure.
 > 
-> Queued for further review and testing, thank you!
+> Nice catch!!!  And I do appreciate the testing.
 > 
-> I did the usual wordsmithing, so please check to see if I messed
-> something up.
-
-Thanks for your help.
-
-Sorry, I think I missed a word in the commit message of patch 5/6.
-
-This commit documents the additional RCU CPU stall warning output produced
-- by kernels built with CONFIG_RCU_CPU_STALL_CPUTIME=y.
-+ by kernels built with CONFIG_RCU_CPU_STALL_CPUTIME=y or booted with
-+ rcupdate.rcu_cpu_stall_cputime=1.
-
+> But if we are going to do this, let's please also place lockdep assertions
+> in srcu_funnel_exp_start() and srcu_funnel_gp_start() to verify that these
+> functions are in fact invoked within an SRCU read-side critical section.
+> Also a WARN_ON_ONCE(rcu_seq_done(&ssp->srcu_gp_seq, s)), please.
 > 
+
+OK, I will do both.
+
+> Things changed to make the rcu_seq_done() unnecessary, so they could just
+> as easily change again.
+> 
+
+Yes. It is wise to prevent from the future variation.
+
+Thanks,
+
+	Pingfan
+
 > 							Thanx, Paul
 > 
->> Zhen Lei (6):
->>   genirq: Fix the return type of kstat_cpu_irqs_sum()
->>   sched: Add helper kstat_cpu_softirqs_sum()
->>   sched: Add helper nr_context_switches_cpu()
->>   rcu: Add RCU stall diagnosis information
->>   doc: Document CONFIG_RCU_CPU_STALL_CPUTIME=y stall information
->>   rcu: Align the output of RCU stall
->>
->>  Documentation/RCU/stallwarn.rst               | 88 +++++++++++++++++++
->>  .../admin-guide/kernel-parameters.txt         |  6 ++
->>  include/linux/kernel_stat.h                   | 14 ++-
->>  kernel/rcu/Kconfig.debug                      | 13 +++
->>  kernel/rcu/rcu.h                              |  1 +
->>  kernel/rcu/tree.c                             | 18 ++++
->>  kernel/rcu/tree.h                             | 19 ++++
->>  kernel/rcu/tree_stall.h                       | 35 +++++++-
->>  kernel/rcu/update.c                           |  2 +
->>  kernel/sched/core.c                           |  5 ++
->>  10 files changed, 198 insertions(+), 3 deletions(-)
->>
->> -- 
->> 2.25.1
->>
-> .
-> 
-
--- 
-Regards,
-  Zhen Lei
+> > Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+> > Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> > Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> > Cc: Frederic Weisbecker <frederic@kernel.org>
+> > Cc: Josh Triplett <josh@joshtriplett.org>
+> > Cc: Steven Rostedt <rostedt@goodmis.org>
+> > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > To: rcu@vger.kernel.org
+> > ---
+> >  kernel/rcu/srcutree.c | 13 ++++++-------
+> >  1 file changed, 6 insertions(+), 7 deletions(-)
+> > 
+> > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> > index 1c304fec89c0..7df59fc8073e 100644
+> > --- a/kernel/rcu/srcutree.c
+> > +++ b/kernel/rcu/srcutree.c
+> > @@ -851,8 +851,7 @@ static void srcu_funnel_exp_start(struct srcu_struct *ssp, struct srcu_node *snp
+> >  	if (snp)
+> >  		for (; snp != NULL; snp = snp->srcu_parent) {
+> >  			sgsne = READ_ONCE(snp->srcu_gp_seq_needed_exp);
+> > -			if (rcu_seq_done(&ssp->srcu_gp_seq, s) ||
+> > -			    (!srcu_invl_snp_seq(sgsne) && ULONG_CMP_GE(sgsne, s)))
+> > +			if (!srcu_invl_snp_seq(sgsne) && ULONG_CMP_GE(sgsne, s))
+> >  				return;
+> >  			spin_lock_irqsave_rcu_node(snp, flags);
+> >  			sgsne = snp->srcu_gp_seq_needed_exp;
+> > @@ -878,6 +877,9 @@ static void srcu_funnel_exp_start(struct srcu_struct *ssp, struct srcu_node *snp
+> >   *
+> >   * Note that this function also does the work of srcu_funnel_exp_start(),
+> >   * in some cases by directly invoking it.
+> > + *
+> > + * The srcu read lock should be hold around this function. And s is a seq snap
+> > + * after holding that lock.
+> >   */
+> >  static void srcu_funnel_gp_start(struct srcu_struct *ssp, struct srcu_data *sdp,
+> >  				 unsigned long s, bool do_norm)
+> > @@ -898,8 +900,6 @@ static void srcu_funnel_gp_start(struct srcu_struct *ssp, struct srcu_data *sdp,
+> >  	if (snp_leaf)
+> >  		/* Each pass through the loop does one level of the srcu_node tree. */
+> >  		for (snp = snp_leaf; snp != NULL; snp = snp->srcu_parent) {
+> > -			if (rcu_seq_done(&ssp->srcu_gp_seq, s) && snp != snp_leaf)
+> > -				return; /* GP already done and CBs recorded. */
+> >  			spin_lock_irqsave_rcu_node(snp, flags);
+> >  			snp_seq = snp->srcu_have_cbs[idx];
+> >  			if (!srcu_invl_snp_seq(snp_seq) && ULONG_CMP_GE(snp_seq, s)) {
+> > @@ -935,9 +935,8 @@ static void srcu_funnel_gp_start(struct srcu_struct *ssp, struct srcu_data *sdp,
+> >  	if (!do_norm && ULONG_CMP_LT(ssp->srcu_gp_seq_needed_exp, s))
+> >  		WRITE_ONCE(ssp->srcu_gp_seq_needed_exp, s);
+> >  
+> > -	/* If grace period not already done and none in progress, start it. */
+> > -	if (!rcu_seq_done(&ssp->srcu_gp_seq, s) &&
+> > -	    rcu_seq_state(ssp->srcu_gp_seq) == SRCU_STATE_IDLE) {
+> > +	/* If grace period not already in progress, start it. */
+> > +	if (rcu_seq_state(ssp->srcu_gp_seq) == SRCU_STATE_IDLE) {
+> >  		WARN_ON_ONCE(ULONG_CMP_GE(ssp->srcu_gp_seq, ssp->srcu_gp_seq_needed));
+> >  		srcu_gp_start(ssp);
+> >  
+> > -- 
+> > 2.31.1
+> > 
