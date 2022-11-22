@@ -2,92 +2,157 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B50EC433FE
-	for <rcu@archiver.kernel.org>; Tue, 22 Nov 2022 01:52:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 86EA0C4332F
+	for <rcu@archiver.kernel.org>; Tue, 22 Nov 2022 02:14:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232384AbiKVBwK (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 21 Nov 2022 20:52:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52946 "EHLO
+        id S231536AbiKVCOL (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 21 Nov 2022 21:14:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231978AbiKVBwH (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 21 Nov 2022 20:52:07 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7028E2225;
-        Mon, 21 Nov 2022 17:52:05 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 71A1CB8190A;
-        Tue, 22 Nov 2022 01:52:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C694C43470;
-        Tue, 22 Nov 2022 01:52:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669081923;
-        bh=DJGYx9EZbvMPd63erzhkQ7/znuplLOsu/ELX137ez+Y=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=GxfIIkFMJTOmXEhvkEfsEIMmPjQAWiuj+OVeiY8Q5+6bovw5ogHhjKmcrNa07pWKI
-         yTUh61QcjHNoJYy0+mNww3Wu6QFjFi6rdNEcwRVdnAu942cP5GGNLdM0sdpJxoODqi
-         rVtgZUjg/E3RRYzCW9vy004gOpAbEkday5ZOxMuHUCg14LlfB3yl77b+rIFeuWji4Z
-         fCjBC4cdsewtrEOajhkNiSagGi7ZQKYaVfQvMWgJeMi98fIv77cFp6qRy/odBvQIQD
-         WJUpGLxtu0x8YVjaCx7AQB1OKAleD98xRW1CGVRL8wQL+VarrdIlhBMv9G3nAyqdKn
-         Um/eWpDZVQelw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id D497E5C0641; Mon, 21 Nov 2022 17:52:02 -0800 (PST)
-Date:   Mon, 21 Nov 2022 17:52:02 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, rostedt@goodmis.org,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>
-Subject: Re: [PATCH v2 rcu 13/16] workqueue: Make queue_rcu_work() use
- call_rcu_flush()
-Message-ID: <20221122015202.GC4001@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20221122010408.GA3799268@paulmck-ThinkPad-P17-Gen-1>
- <20221122010421.3799681-13-paulmck@kernel.org>
- <Y3whScgTs0FgrVtY@slm.duckdns.org>
- <20221122012357.GV4001@paulmck-ThinkPad-P17-Gen-1>
- <Y3wn9AK1XxEZIIFw@slm.duckdns.org>
+        with ESMTP id S229671AbiKVCOJ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 21 Nov 2022 21:14:09 -0500
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 908B5E0CB5;
+        Mon, 21 Nov 2022 18:14:07 -0800 (PST)
+Received: from dggpemm500021.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4NGSV96m2CzRpcc;
+        Tue, 22 Nov 2022 10:13:37 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggpemm500021.china.huawei.com (7.185.36.109) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Tue, 22 Nov 2022 10:14:05 +0800
+Received: from [10.174.178.55] (10.174.178.55) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Tue, 22 Nov 2022 10:14:05 +0800
+Subject: Re: [PATCH v8 0/6] rcu: Add RCU stall diagnosis information
+To:     <paulmck@kernel.org>
+CC:     Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        "Steven Rostedt" <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, <rcu@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Robert Elliott <elliott@hpe.com>
+References: <20221119092508.1766-1-thunder.leizhen@huawei.com>
+ <20221121222910.GP4001@paulmck-ThinkPad-P17-Gen-1>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <6877d891-7314-d9b3-5e1a-3e6bd239489b@huawei.com>
+Date:   Tue, 22 Nov 2022 10:14:04 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y3wn9AK1XxEZIIFw@slm.duckdns.org>
+In-Reply-To: <20221121222910.GP4001@paulmck-ThinkPad-P17-Gen-1>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.55]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Nov 21, 2022 at 03:37:56PM -1000, Tejun Heo wrote:
-> On Mon, Nov 21, 2022 at 05:23:57PM -0800, Paul E. McKenney wrote:
-> > On Mon, Nov 21, 2022 at 03:09:29PM -1000, Tejun Heo wrote:
-> > > On Mon, Nov 21, 2022 at 05:04:18PM -0800, Paul E. McKenney wrote:
-> > > > And another call_rcu() instance that cannot be lazy is the one
-> > > > in queue_rcu_work(), given that callers to queue_rcu_work() are
-> > > > not necessarily OK with long delays.
-> > > 
-> > > So, this is fine but another thing we can do is propagating the distinction
-> > > through the workqueue interface so that the the choice can be made by
-> > > workqueue users. Would that make sense?
-> > 
-> > It might well!  My thought was to wait to suggest that until we found a
-> > real-life case where this was needed, but I have no objection to being
-> > proactive here.
+
+
+On 2022/11/22 6:29, Paul E. McKenney wrote:
+> On Sat, Nov 19, 2022 at 05:25:02PM +0800, Zhen Lei wrote:
+>> v7 --> v8:
+>> 1. Change call jiffies64_to_msecs() to call jiffies_to_msecs().
+>> 2. Mention that rcupdate.rcu_cpu_stall_cputime overrides
+>>    CONFIG_RCU_CPU_STALL_CPUTIME behaviour in the Kconfig help text.
+>> 3. Fix a make htmldocs warning, change "|...|" to ":...:".
+>>
+>> v6 --> v7:
+>> 1. Use kcpustat_field() to obtain the cputime.
+>> 2. Make the output start with "\t" to match other related prints.
+>> 3. Aligns the output of the last line of RCU stall.
+>>
+>> v5 --> v6:
+>> 1. When there are more than two continuous RCU stallings, correctly handle the
+>>    value of the second and subsequent sampling periods. Update comments and
+>>    document.
+>>    Thanks to Elliott, Robert for the test.
+>> 2. Change "rcu stall" to "RCU stall".
+>>
+>> v4 --> v5:
+>> 1. Resolve a git am conflict. No code change.
+>>
+>> v3 --> v4:
+>> 1. Rename rcu_cpu_stall_deep_debug to rcu_cpu_stall_cputime.
+>>
+>> v2 --> v3:
+>> 1. Fix the return type of kstat_cpu_irqs_sum()
+>> 2. Add Kconfig option CONFIG_RCU_CPU_STALL_DEEP_DEBUG and boot parameter
+>>    rcupdate.rcu_cpu_stall_deep_debug.
+>> 3. Add comments and normalize local variable name
+>>
+>> v1 --> v2:
+>> 1. Fixed a bug in the code. If the rcu stall is detected by another CPU,
+>>    kcpustat_this_cpu cannot be used.
+>> @@ -451,7 +451,7 @@ static void print_cpu_stat_info(int cpu)
+>>         if (r->gp_seq != rdp->gp_seq)
+>>                 return;
+>>
+>> -       cpustat = kcpustat_this_cpu->cpustat;
+>> +       cpustat = kcpustat_cpu(cpu).cpustat;
+>> 2. Move the start point of statistics from rcu_stall_kick_kthreads() to
+>>    rcu_implicit_dynticks_qs(), removing the dependency on irq_work.
+>>
+>> v1:
+>> In some extreme cases, such as the I/O pressure test, the CPU usage may
+>> be 100%, causing RCU stall. In this case, the printed information about
+>> current is not useful. Displays the number and usage of hard interrupts,
+>> soft interrupts, and context switches that are generated within half of
+>> the CPU stall timeout, can help us make a general judgment. In other
+>> cases, we can preliminarily determine whether an infinite loop occurs
+>> when local_irq, local_bh or preempt is disabled.
 > 
-> Oh yeah, I'm completely fine either way too.
+> Queued for further review and testing, thank you!
 > 
-> > But the hard part...  Thought for a good name?  ;-)
+> I did the usual wordsmithing, so please check to see if I messed
+> something up.
+
+Thanks for your help.
+
+Sorry, I think I missed a word in the commit message of patch 5/6.
+
+This commit documents the additional RCU CPU stall warning output produced
+- by kernels built with CONFIG_RCU_CPU_STALL_CPUTIME=y.
++ by kernels built with CONFIG_RCU_CPU_STALL_CPUTIME=y or booted with
++ rcupdate.rcu_cpu_stall_cputime=1.
+
 > 
-> If we go with a separate interface, yeah, _flush would be confusing for
-> workqueue. Maybe _quick or _hurry? Hmm... it'd be nice to keep the suffix
-> consistent with RCU. What's the relationship with
-> synchronize_rcu_expedited()? Would using _expedited be confusing?
+> 							Thanx, Paul
+> 
+>> Zhen Lei (6):
+>>   genirq: Fix the return type of kstat_cpu_irqs_sum()
+>>   sched: Add helper kstat_cpu_softirqs_sum()
+>>   sched: Add helper nr_context_switches_cpu()
+>>   rcu: Add RCU stall diagnosis information
+>>   doc: Document CONFIG_RCU_CPU_STALL_CPUTIME=y stall information
+>>   rcu: Align the output of RCU stall
+>>
+>>  Documentation/RCU/stallwarn.rst               | 88 +++++++++++++++++++
+>>  .../admin-guide/kernel-parameters.txt         |  6 ++
+>>  include/linux/kernel_stat.h                   | 14 ++-
+>>  kernel/rcu/Kconfig.debug                      | 13 +++
+>>  kernel/rcu/rcu.h                              |  1 +
+>>  kernel/rcu/tree.c                             | 18 ++++
+>>  kernel/rcu/tree.h                             | 19 ++++
+>>  kernel/rcu/tree_stall.h                       | 35 +++++++-
+>>  kernel/rcu/update.c                           |  2 +
+>>  kernel/sched/core.c                           |  5 ++
+>>  10 files changed, 198 insertions(+), 3 deletions(-)
+>>
+>> -- 
+>> 2.25.1
+>>
+> .
+> 
 
-I expect that _expedited() would be because this has nothing whatever
-to do with expedited grace periods.
-
-Maybe we should have used call_rcu_hurry()?
-
-What is in a name?  ;-)
-
-							Thanx, Paul
+-- 
+Regards,
+  Zhen Lei
