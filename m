@@ -2,127 +2,108 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 47D3EC433FE
-	for <rcu@archiver.kernel.org>; Wed, 23 Nov 2022 17:54:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D64C4C433FE
+	for <rcu@archiver.kernel.org>; Wed, 23 Nov 2022 18:33:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239253AbiKWRym (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 23 Nov 2022 12:54:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46102 "EHLO
+        id S239695AbiKWSdK (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 23 Nov 2022 13:33:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236601AbiKWRyl (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 23 Nov 2022 12:54:41 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6152E65844;
-        Wed, 23 Nov 2022 09:54:40 -0800 (PST)
+        with ESMTP id S239730AbiKWScc (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 23 Nov 2022 13:32:32 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E95126453;
+        Wed, 23 Nov 2022 10:32:25 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id E55BBB82208;
-        Wed, 23 Nov 2022 17:54:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97AA9C433D7;
-        Wed, 23 Nov 2022 17:54:37 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 831A761E73;
+        Wed, 23 Nov 2022 18:32:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9952C433C1;
+        Wed, 23 Nov 2022 18:32:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669226077;
-        bh=KojPnCJDd+viWW6lLyZAJlQQAA7kDDhcYbMJeadUl/g=;
+        s=k20201202; t=1669228345;
+        bh=qlJGkQUoH97jjulOJM08KV8g3ZWseUgpcf17OKcB79c=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=ZmFzWMqQyUimMTw5jdhvuXaNi9STJVNZY0Dj3dlMyquHVUUkGbbMCY4ot4DNMsNqT
-         PFmUbxfCqQIOf+slnTfIercvXQvZhn2v82VM+yFA25mLs63I9cB4itvtbZL4Ho+4EB
-         RRBISd6ETV0iFXGXQGqmYcO67QR+QRjj+5+eIcXmbAZ0gNV/aZ0KDK1TXfdLEw67v6
-         eLTwtI9A6uwVrI73FKLibYsqMEdYH9Rv0OoTZcEPfkvOGsMI7oUrMLOtsx4/ma6ky6
-         gkck0ema33P83/BIt6BOqVGNcE2yMFaQOyEyt31ZrpxxJSaMOok7GX8cj9ous7Tj27
-         EYG6j/JywzdeA==
+        b=jppLilPjVrlbm208AqRfBA9BYCISp8szS9PJbocUzBxqDon0m4d9BJs9hqowDn3Jx
+         CYvcH2hqxOPG8JeHsN2qpAqy9MJ7wTuq2WlouqqkPpz6jz9lQ8ROWCfs0wvQrCXCY3
+         JxSiJZDnOlwqAVQV0FpYluRImZGrDk35EwTlKvUikXSP+Xtu58CSyUKU9iDcLpLm2C
+         yicnPkzMvxgiRrMYqM0+5QW4Kg5m3WmQs2bzkhUVrHaW4sOJw/C34NywjRZ6ryrlYI
+         7VZlra67etNM8CUbrSnwfGyfFXWfyON1aYEzlemqXsvgSd9BZZ0G0EW8QDcwnWapr8
+         88tPHZA7LsQFA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 3313F5C0A3F; Wed, 23 Nov 2022 09:54:37 -0800 (PST)
-Date:   Wed, 23 Nov 2022 09:54:37 -0800
+        id 9DD645C0A3F; Wed, 23 Nov 2022 10:32:24 -0800 (PST)
+Date:   Wed, 23 Nov 2022 10:32:24 -0800
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
+To:     Akira Yokosawa <akiyks@gmail.com>
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, rostedt@goodmis.org,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Subject: Re: [PATCH v2 rcu 05/16] rcu: Refactor code a bit in
- rcu_nocb_do_flush_bypass()
-Message-ID: <20221123175437.GA4001@paulmck-ThinkPad-P17-Gen-1>
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH 1/2] docs/RCU/rcubarrier: Adjust 'Answer' parts of QQs as
+ definition-lists
+Message-ID: <20221123183224.GB4001@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20221122010408.GA3799268@paulmck-ThinkPad-P17-Gen-1>
- <20221122010421.3799681-5-paulmck@kernel.org>
- <20221123155929.GB1387380@lothringen>
+References: <b74e2e19-0317-e717-cc15-a7854b04adf4@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221123155929.GB1387380@lothringen>
+In-Reply-To: <b74e2e19-0317-e717-cc15-a7854b04adf4@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Nov 23, 2022 at 04:59:29PM +0100, Frederic Weisbecker wrote:
-> On Mon, Nov 21, 2022 at 05:04:10PM -0800, Paul E. McKenney wrote:
-> > From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
-> > 
-> > This consolidates the code a bit and makes it cleaner. Functionally it
-> > is the same.
-> > 
-> > Reported-by: Paul E. McKenney <paulmck@kernel.org>
-> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > ---
-> >  kernel/rcu/tree_nocb.h | 17 +++++++++--------
-> >  1 file changed, 9 insertions(+), 8 deletions(-)
-> > 
-> > diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-> > index d6e4c076b0515..213daf81c057f 100644
-> > --- a/kernel/rcu/tree_nocb.h
-> > +++ b/kernel/rcu/tree_nocb.h
-> > @@ -327,10 +327,11 @@ static void wake_nocb_gp_defer(struct rcu_data *rdp, int waketype,
-> >   *
-> >   * Note that this function always returns true if rhp is NULL.
-> >   */
-> > -static bool rcu_nocb_do_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
-> > +static bool rcu_nocb_do_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp_in,
-> >  				     unsigned long j, bool lazy)
-> >  {
-> >  	struct rcu_cblist rcl;
-> > +	struct rcu_head *rhp = rhp_in;
+On Wed, Nov 23, 2022 at 06:23:09PM +0900, Akira Yokosawa wrote:
+> The "Answer" parts of QQs divert from proper format of definition-lists
+> as described at [1] and are not rendered as such.
 > 
-> Why that intermediate rhp_in?
-
-To avoid modifying the formal parameter, should the original value prove
-useful, for example, for tracing or debugging.
-
-> >  	WARN_ON_ONCE(!rcu_rdp_is_offloaded(rdp));
-> >  	rcu_lockdep_assert_cblist_protected(rdp);
-> > @@ -345,16 +346,16 @@ static bool rcu_nocb_do_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
-> >  
-> >  	/*
-> >  	 * If the new CB requested was a lazy one, queue it onto the main
-> > -	 * ->cblist so we can take advantage of a sooner grade period.
-> > +	 * ->cblist so that we can take advantage of the grace-period that will
-> > +	 * happen regardless. But queue it onto the bypass list first so that
-> > +	 * the lazy CB is ordered with the existing CBs in the bypass list.
-> >  	 */
-> >  	if (lazy && rhp) {
-> > -		rcu_cblist_flush_enqueue(&rcl, &rdp->nocb_bypass, NULL);
-> > -		rcu_cblist_enqueue(&rcl, rhp);
-> > -		WRITE_ONCE(rdp->lazy_len, 0);
-> > -	} else {
-> > -		rcu_cblist_flush_enqueue(&rcl, &rdp->nocb_bypass, rhp);
-> > -		WRITE_ONCE(rdp->lazy_len, 0);
-> > +		rcu_cblist_enqueue(&rdp->nocb_bypass, rhp);
-> > +		rhp = NULL;
-> >  	}
-> > +	rcu_cblist_flush_enqueue(&rcl, &rdp->nocb_bypass, rhp);
-> > +	WRITE_ONCE(rdp->lazy_len, 0);
+> Adjust them.
 > 
-> Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+> Link: [1] https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#definition-lists
+> Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
 
-Thank you!  I will apply this on my next rebase.
+Applied both, thank you!
 
 							Thanx, Paul
 
-> Thanks.
+> ---
+>  Documentation/RCU/rcubarrier.rst | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
 > 
-> >  
-> >  	rcu_segcblist_insert_pend_cbs(&rdp->cblist, &rcl);
-> >  	WRITE_ONCE(rdp->nocb_bypass_first, j);
-> > -- 
-> > 2.31.1.189.g2e36527f23
-> > 
+> diff --git a/Documentation/RCU/rcubarrier.rst b/Documentation/RCU/rcubarrier.rst
+> index 5a643e5233d5..9fb9ed777355 100644
+> --- a/Documentation/RCU/rcubarrier.rst
+> +++ b/Documentation/RCU/rcubarrier.rst
+> @@ -296,7 +296,8 @@ Quick Quiz #1:
+>  	Is there any other situation where rcu_barrier() might
+>  	be required?
+>  
+> -Answer: Interestingly enough, rcu_barrier() was not originally
+> +Answer:
+> +	Interestingly enough, rcu_barrier() was not originally
+>  	implemented for module unloading. Nikita Danilov was using
+>  	RCU in a filesystem, which resulted in a similar situation at
+>  	filesystem-unmount time. Dipankar Sarma coded up rcu_barrier()
+> @@ -315,7 +316,8 @@ Quick Quiz #2:
+>  	Why doesn't line 8 initialize rcu_barrier_cpu_count to zero,
+>  	thereby avoiding the need for lines 9 and 10?
+>  
+> -Answer: Suppose that the on_each_cpu() function shown on line 8 was
+> +Answer:
+> +	Suppose that the on_each_cpu() function shown on line 8 was
+>  	delayed, so that CPU 0's rcu_barrier_func() executed and
+>  	the corresponding grace period elapsed, all before CPU 1's
+>  	rcu_barrier_func() started executing.  This would result in
+> @@ -351,7 +353,8 @@ Quick Quiz #3:
+>  	are delayed for a full grace period? Couldn't this result in
+>  	rcu_barrier() returning prematurely?
+>  
+> -Answer: This cannot happen. The reason is that on_each_cpu() has its last
+> +Answer:
+> +	This cannot happen. The reason is that on_each_cpu() has its last
+>  	argument, the wait flag, set to "1". This flag is passed through
+>  	to smp_call_function() and further to smp_call_function_on_cpu(),
+>  	causing this latter to spin until the cross-CPU invocation of
+> 
+> base-commit: 741cfda870057958c53f9cb0b21ac33f531baaf4
+> -- 
+> 2.25.1
+> 
