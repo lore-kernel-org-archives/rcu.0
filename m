@@ -2,128 +2,150 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 709A8C4332F
-	for <rcu@archiver.kernel.org>; Wed, 23 Nov 2022 14:02:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EA9C9C4332F
+	for <rcu@archiver.kernel.org>; Wed, 23 Nov 2022 14:38:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238090AbiKWOC3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 23 Nov 2022 09:02:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51458 "EHLO
+        id S237702AbiKWOiJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 23 Nov 2022 09:38:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238545AbiKWOCE (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 23 Nov 2022 09:02:04 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B85078517B
-        for <rcu@vger.kernel.org>; Wed, 23 Nov 2022 05:57:09 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id v28so17360592pfi.12
-        for <rcu@vger.kernel.org>; Wed, 23 Nov 2022 05:57:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Frc03htJZ059XDf8jvNx8xF1z8MxlsBIYwkX/Pm2UpU=;
-        b=DNAdAzBrkta6W+WG60HsupasjZnlUbd9g8I9n218vA6Zg0HdfNY4d3QYwpH8uZ04Q+
-         j1XlaK8G39QrGPfYQYZ4uiT3TdubtMJTqRdbGiYSG2G5mL1d4omzmkCTNsvirkJBCryF
-         5Ud+I6gf6myz3uPJdGF04GZNafZH65LaJRRdvYPYu3tx+74RLvGQFCKGgjk3XGynIRFb
-         7hkj68fDD1pRerQf5LeTPX4gFtuk1PW6iFrToZiKiePAP1TmLHIhqSqwmVtGTAClmG2d
-         zyAJAWRN1do6pbcOGbpHrI2wymOnf9MK2x4qs3bnLC7KxcywdzU+cmfllG/R4s4MmbWC
-         2Crw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Frc03htJZ059XDf8jvNx8xF1z8MxlsBIYwkX/Pm2UpU=;
-        b=25qUWByDO6yBHGjko5hy6YsrQoFy+omcTgLfyKUAahFur9bNrP7gvrzHsBE4YDuTok
-         QIZC5dKyevtEG5Wvjw776TvOmDZWwhXv67F7+7lcDkf708FE5QiTXSAKYZEOpmY/oXiE
-         bVx2Mk/fK5/y4l+dsBEgDXE580UvFteLwoKmvyiqJDPfwZx39iyhrsYzD8CYAMhfBFeT
-         6UQOvUJuBeAsophjmh1ucrNpZYTM4O47PoRMIpmesq1UsbwOThu+Fjoqt+UJJv57yT3Y
-         LSszKl86sluD+fefzWhGDd6SAvRiTxLMnL7+/edbtvC0Wj8PqhHUABedxyhRKICMNkB+
-         wCMA==
-X-Gm-Message-State: ANoB5pmXjDDb8yh1fA8uPsRpTjnT26yo8D4KU1ymh3E8C5HQv1uZN9MX
-        GkdWvz1wZSmPQWXGEpsDAM0gqprxRw==
-X-Google-Smtp-Source: AA0mqf7JZuzYzPQc+lg1xSdGGvT+Nehv8IspFgxhSfhTk4PHjN3OjBmUUQp6xMvt9JDW/aMOtmCqIw==
-X-Received: by 2002:a63:5c1e:0:b0:46e:96ba:494d with SMTP id q30-20020a635c1e000000b0046e96ba494dmr8046481pgb.404.1669211828825;
-        Wed, 23 Nov 2022 05:57:08 -0800 (PST)
-Received: from piliu.users.ipa.redhat.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id u11-20020a63d34b000000b0047048c201e3sm10895996pgi.33.2022.11.23.05.57.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Nov 2022 05:57:08 -0800 (PST)
-From:   Pingfan Liu <kernelfans@gmail.com>
-To:     rcu@vger.kernel.org
-Cc:     Pingfan Liu <kernelfans@gmail.com>,
+        with ESMTP id S237797AbiKWOiH (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 23 Nov 2022 09:38:07 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D6CE1F62B;
+        Wed, 23 Nov 2022 06:38:04 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 1D916B8205D;
+        Wed, 23 Nov 2022 14:38:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 498CAC433C1;
+        Wed, 23 Nov 2022 14:38:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1669214281;
+        bh=DHdFXSKtZ+h0ShqK6NSzY3nVLisD1LxX3VpZknCiL8o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dtaG+XPyeMXqZfsyxUDuqS0XRT8Fq7/xgVbdsbW9prjHKH9yfH77O7+grJJEon+ND
+         diC9HUqrOx/47Hikvg0bSu2RzxTcwPwv2TAJ84ZBfFiaqEuurGSZIJvG60PlkY0heJ
+         C4FxFEOAsEUiwv23kRjZMNo01JOV3x57yYfucd3kIfKQhVAr8M4rljaGs2b2fF96NF
+         Ura2EaHfx0R9j/NT0w9COCh9unO8E76Y22s3qdjgX0eMzmFPYkbyf0Pnv2/V48UeXd
+         ktGFEGQVwSN/IjOygGHkeQmvjvsRzp02FykL6C/ENPK1QovoP10+MNbctICJHnF0nZ
+         KdElVR5+4p1Zw==
+Date:   Wed, 23 Nov 2022 15:37:58 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Pengfei Xu <pengfei.xu@intel.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: [PATCHv2 2/2] srcu: Eliminate the case that snp_seq bigger than snap in srcu_funnel_gp_start()
-Date:   Wed, 23 Nov 2022 21:56:38 +0800
-Message-Id: <20221123135638.79021-3-kernelfans@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20221123135638.79021-1-kernelfans@gmail.com>
-References: <20221123135638.79021-1-kernelfans@gmail.com>
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Christian Brauner <brauner@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     linux-kernel@vger.kernel.org, heng.su@intel.com,
+        rcu@vger.kernel.org
+Subject: PID_NS unshare VS synchronize_rcu_tasks() (was: Re: [Syzkaller &
+ bisect] There is task hung in "synchronize_rcu" in v6.1-rc5 kernel)
+Message-ID: <20221123143758.GA1387380@lothringen>
+References: <Y3sOgrOmMQqPMItu@xpf.sh.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y3sOgrOmMQqPMItu@xpf.sh.intel.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Since the srcu read lock is still held during srcu_funnel_gp_start(),
-the seq snap should be the largest number for the slot
-srcu_have_cbs[idx].
+On Mon, Nov 21, 2022 at 01:37:06PM +0800, Pengfei Xu wrote:
+> Hi Frederic Weisbecker and kernel developers,
+> 
+> Greeting!
+> There is task hung in "synchronize_rcu" in v6.1-rc5 kernel.
+> 
+> Bisected the issue on Raptor and server(No atom small core, big core only),
+> both platforms bisected results show that:
+> first bad commit is c597bfddc9e9e8a63817252b67c3ca0e544ace26:
+> "sched: Provide Kconfig support for default dynamic preempt mode"
+> 
+> [  300.097166] INFO: task rcu_tasks_kthre:11 blocked for more than 147 seconds.
+> [  300.097455]       Not tainted 6.1.0-rc5-094226ad94f4 #1
+> [  300.097641] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> [  300.097922] task:rcu_tasks_kthre state:D stack:0     pid:11    ppid:2      flags:0x00004000
+> [  300.098230] Call Trace:
+> [  300.098325]  <TASK>
+> [  300.098410]  __schedule+0x2de/0x8f0
+> [  300.098562]  schedule+0x5b/0xe0
+> [  300.098693]  schedule_timeout+0x3f1/0x4b0
+> [  300.098849]  ? __sanitizer_cov_trace_pc+0x25/0x60
+> [  300.099032]  ? queue_delayed_work_on+0x82/0xc0
+> [  300.099206]  wait_for_completion+0x81/0x140
+> [  300.099373]  __synchronize_srcu.part.23+0x83/0xb0
+> [  300.099558]  ? __bpf_trace_rcu_stall_warning+0x20/0x20
+> [  300.099757]  synchronize_srcu+0xd6/0x100
+> [  300.099913]  rcu_tasks_postscan+0x19/0x20
+> [  300.100070]  rcu_tasks_wait_gp+0x108/0x290
+> [  300.100230]  ? _raw_spin_unlock+0x1d/0x40
+> [  300.100389]  rcu_tasks_one_gp+0x27f/0x370
+> [  300.100546]  ? rcu_tasks_postscan+0x20/0x20
+> [  300.100709]  rcu_tasks_kthread+0x37/0x50
+> [  300.100863]  kthread+0x14d/0x190
+> [  300.100998]  ? kthread_complete_and_exit+0x40/0x40
+> [  300.101199]  ret_from_fork+0x1f/0x30
+> [  300.101347]  </TASK>
 
-Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Frederic Weisbecker <frederic@kernel.org>
-Cc: Josh Triplett <josh@joshtriplett.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To: rcu@vger.kernel.org
----
- include/linux/rcupdate.h |  1 +
- kernel/rcu/srcutree.c    | 11 ++++++-----
- 2 files changed, 7 insertions(+), 5 deletions(-)
+Thanks for reporting this. Fortunately I managed to reproduce and debug.
+It took me a few days to understand the complicated circular dependency
+involved.
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index 08605ce7379d..a09007236660 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -32,6 +32,7 @@
- #include <linux/context_tracking_irq.h>
- 
- #define ULONG_CMP_GE(a, b)	(ULONG_MAX / 2 >= (a) - (b))
-+#define ULONG_CMP_GT(a, b)	(ULONG_MAX / 2 > (a) - (b))
- #define ULONG_CMP_LT(a, b)	(ULONG_MAX / 2 < (a) - (b))
- #define ulong2long(a)		(*(long *)(&(a)))
- #define USHORT_CMP_GE(a, b)	(USHRT_MAX / 2 >= (unsigned short)((a) - (b)))
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 2fc0e775ade4..41902b823687 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -905,14 +905,15 @@ static void srcu_funnel_gp_start(struct srcu_struct *ssp, struct srcu_data *sdp,
- 		for (snp = snp_leaf; snp != NULL; snp = snp->srcu_parent) {
- 			spin_lock_irqsave_rcu_node(snp, flags);
- 			snp_seq = snp->srcu_have_cbs[idx];
--			if (!srcu_invl_snp_seq(snp_seq) && ULONG_CMP_GE(snp_seq, s)) {
-+			/*
-+			 * s should be the biggest in the current slot. Hence only LE is
-+			 * valid
-+			 */
-+			BUG_ON(ULONG_CMP_GT(snp_seq, s));
-+			if (!srcu_invl_snp_seq(snp_seq) && (snp_seq == s)) {
- 				if (snp == snp_leaf && snp_seq == s)
- 					snp->srcu_data_have_cbs[idx] |= sdp->grpmask;
- 				spin_unlock_irqrestore_rcu_node(snp, flags);
--				if (snp == snp_leaf && snp_seq != s) {
--					srcu_schedule_cbs_sdp(sdp, do_norm ? SRCU_INTERVAL : 0);
--					return;
--				}
- 				if (!do_norm)
- 					srcu_funnel_exp_start(ssp, snp, s);
- 				return;
--- 
-2.31.1
+So here is a summary:
 
+1) TASK A calls unshare(CLONE_NEWPID), this creates a new PID namespace
+   that every subsequent child of TASK A will belong to. But TASK A doesn't
+   itself belong to that new PID namespace.
+
+2) TASK A forks() and creates TASK B (it is a new threadgroup so it is a
+   thread group leader). TASK A stays attached to its PID namespace (let's say PID_NS1)
+   and TASK B is the first task belonging to the new PID namespace created by
+   unshare()  (let's call it PID_NS2).
+
+3) Since TASK B is the first task attached to PID_NS2, it becomes the PID_NS2
+   child reaper.
+
+4) TASK A forks() again and creates TASK C which get attached to PID_NS2.
+   Note how TASK C has TASK A as a parent (belonging to PID_NS1) but has
+   TASK B (belonging to PID_NS2) as a pid_namespace child_reaper.
+
+3) TASK B exits and since it is the child reaper for PID_NS2, it has to
+   kill all other tasks attached to PID_NS2, and wait for all of them to die
+   before reaping itself (zap_pid_ns_process()). Note it seems to make a
+   misleading assumption here, trusting that all tasks in PID_NS2 either
+   get reaped by a parent belonging to the same namespace or by TASK B.
+   And it is confident that since it deactivated SIGCHLD handler, all
+   the remaining tasks ultimately autoreap. And it waits for that to happen.
+   However TASK C escapes that rule because it will get reaped by its parent
+   TASK A belonging to PID_NS1.
+
+4) TASK A calls synchronize_rcu_tasks() which leads to
+   synchronize_srcu(&tasks_rcu_exit_srcu).
+
+5) TASK B is waiting for TASK C to get reaped (wrongly assuming it autoreaps)
+   But TASK B is under a tasks_rcu_exit_srcu SRCU critical section
+   (exit_notify() is between exit_tasks_rcu_start() and
+   exit_tasks_rcu_finish()), blocking TASK A
+
+6) TASK C exits and since TASK A is its parent, it waits for it to reap TASK C,
+   but it can't because TASK A waits for TASK B that waits for TASK C.
+
+So there is a circular dependency:
+
+_ TASK A waits for TASK B to get out of tasks_rcu_exit_srcu SRCU critical
+section
+_ TASK B waits for TASK C to get reaped
+_ TASK C waits for TASK A to reap it.
+
+I have no idea how to solve the situation without violating the pid_namespace
+rules and unshare() semantics (although I wish unshare(CLONE_NEWPID) had a less
+error prone behaviour with allowing creating more than one task belonging to the
+same namespace).
+
+So probably having an SRCU read side critical section within exit_notify() is
+not a good idea, is there a solution to work around that for rcu tasks?
+
+Thanks.
