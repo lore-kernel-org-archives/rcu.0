@@ -2,178 +2,98 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6BD87C46467
-	for <rcu@archiver.kernel.org>; Wed, 23 Nov 2022 11:41:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 67D48C433FE
+	for <rcu@archiver.kernel.org>; Wed, 23 Nov 2022 11:46:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237411AbiKWLlR (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 23 Nov 2022 06:41:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49996 "EHLO
+        id S235633AbiKWLqs (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 23 Nov 2022 06:46:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237391AbiKWLlP (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 23 Nov 2022 06:41:15 -0500
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70C411095AA;
-        Wed, 23 Nov 2022 03:41:13 -0800 (PST)
-Received: from dggpemm500023.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4NHJyp4rQJzJnrl;
-        Wed, 23 Nov 2022 19:37:54 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 23 Nov 2022 19:41:10 +0800
-Received: from [10.174.178.55] (10.174.178.55) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 23 Nov 2022 19:41:10 +0800
-Subject: Re: [PATCH] doc: Fix htmldocs build warnings of stallwarn.rst
-To:     "Paul E . McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        "Josh Triplett" <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, <rcu@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        <linux-next@vger.kernel.org>
-References: <20221123091246.1890-1-thunder.leizhen@huawei.com>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <9dd0bfd0-19e7-607a-0d75-567cdfa6ab86@huawei.com>
-Date:   Wed, 23 Nov 2022 19:41:09 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        with ESMTP id S229472AbiKWLqr (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 23 Nov 2022 06:46:47 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 106E311091F
+        for <rcu@vger.kernel.org>; Wed, 23 Nov 2022 03:46:47 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id AF4121F8C6;
+        Wed, 23 Nov 2022 11:46:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1669204005; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=SqUX/4goCSHHkrQ7WbQyYqbF+UxH5EZLQzDUablKl2Q=;
+        b=Y2bdG+PSVn/qC+O9dor2MS+7wmIOJgJ8kpaBxMgc/W+wwpfh22aa7Ua/GumM2YoPKnD9FP
+        go6Kt4bR3etOlKXsHJETvj3gCCNLZA75J+orzqzIVp5mHheC2UZBawTC4LnhxSnKnTRtYQ
+        11jkgGhJNbLnEVoCKRgcVTJaF8VypHw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1669204005;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=SqUX/4goCSHHkrQ7WbQyYqbF+UxH5EZLQzDUablKl2Q=;
+        b=B06RLmMnF/jncFbdGZlCdzKJFj8czMxIK8JF8L7E3ntn5pdBF/FKcX9t7sI0ByA4BeGOVo
+        QAN3RSuABznN6hAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A159A13AE7;
+        Wed, 23 Nov 2022 11:46:45 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id tbOLJyUIfmNdVAAAMHmgww
+        (envelope-from <jack@suse.cz>); Wed, 23 Nov 2022 11:46:45 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 35693A0709; Wed, 23 Nov 2022 12:46:45 +0100 (CET)
+Date:   Wed, 23 Nov 2022 12:46:45 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     rcu@vger.kernel.org
+Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Amir Goldstein <amir73il@gmail.com>
+Subject: SRCU use from different contexts
+Message-ID: <20221123114645.3aowv3hw4hxqr2ed@quack3>
 MIME-Version: 1.0
-In-Reply-To: <20221123091246.1890-1-thunder.leizhen@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.55]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+Hello!
 
+We were pondering with Amir about some issues with fsnotify subsystem and
+as a building block we would need a mechanism to make sure write(2) has
+completed. For simplicity we could imagine it like a sequence
 
-On 2022/11/23 17:12, Zhen Lei wrote:
-> Documentation/RCU/stallwarn.rst:
-> 401: WARNING: Literal block expected; none found.
-> 428: WARNING: Literal block expected; none found.
-> 445: WARNING: Literal block expected; none found.
-> 459: WARNING: Literal block expected; none found.
-> 468: WARNING: Literal block expected; none found.
-> 
-> The literal block need to be indented, so add two spaces to each line.
-> 
-> In addition, ':', which is used as a boundary in the literal block, is
-> replaced by '|'.
-> 
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> ---
->  Documentation/RCU/stallwarn.rst | 44 ++++++++++++++++-----------------
->  1 file changed, 22 insertions(+), 22 deletions(-)
-> 
-> diff --git a/Documentation/RCU/stallwarn.rst b/Documentation/RCU/stallwarn.rst
-> index c1e92dfef40d501..0f6a58ebf5d7855 100644
-> --- a/Documentation/RCU/stallwarn.rst
-> +++ b/Documentation/RCU/stallwarn.rst
-> @@ -398,9 +398,9 @@ In kernels built with CONFIG_RCU_CPU_STALL_CPUTIME=y or booted with
->  rcupdate.rcu_cpu_stall_cputime=1, the following additional information
->  is supplied with each RCU CPU stall warning::
->  
-> -rcu:          hardirqs   softirqs   csw/system
-> -rcu:  number:      624         45            0
-> -rcu: cputime:       69          1         2425   ==> 2500(ms)
-> +  rcu:          hardirqs   softirqs   csw/system
-> +  rcu:  number:      624         45            0
-> +  rcu: cputime:       69          1         2425   ==> 2500(ms)
->  
->  These statistics are collected during the sampling period. The values
->  in row "number:" are the number of hard interrupts, number of soft
-> @@ -412,22 +412,22 @@ in milliseconds.  Because user-mode tasks normally do not cause RCU CPU
->  stalls, these tasks are typically kernel tasks, which is why only the
->  system CPU time are considered.
->  
-> -The sampling period is shown as follows:
-> -:<------------first timeout---------->:<-----second timeout----->:
-> -:<--half timeout-->:<--half timeout-->:                          :
-> -:                  :<--first period-->:                          :
-> -:                  :<-----------second sampling period---------->:
-> -:                  :                  :                          :
-> -:          snapshot time point    1st-stall                  2nd-stall
-> +The sampling period is shown as follows::
->  
-> +  |<------------first timeout---------->|<-----second timeout----->|
-> +  |<--half timeout-->|<--half timeout-->|                          |
-> +  |                  |<--first period-->|                          |
-> +  |                  |<-----------second sampling period---------->|
-> +  |                  |                  |                          |
-> +  |          snapshot time point    1st-stall                  2nd-stall
->  
->  The following describes four typical scenarios:
->  
->  1. A CPU looping with interrupts disabled.::
->  
+write(2)
+  START
+  do stuff to perform write
+  END
 
-Wait, a space is need to be added before "::", otherwise, only one colon
-will be removed from the output. And in this way, other paragraphs after
-literal block are also displayed in red when using vim to edit stallwarn.rst.
-So it would be better to use expanded form.
+and we need a mechanism to wait for all processes that already passed START
+to reach END. Ideally without blocking new writes while we wait for the
+pending ones. Now this seems like a good task for SRCU. We could do:
 
-I will post v2.
+write(2)
+  srcu_read_lock(&sb->s_write_rcu);
+  do stuff to perform write
+  srcu_read_unlock(&sb->s_write_rcu);
 
-> -   rcu:          hardirqs   softirqs   csw/system
-> -   rcu:  number:        0          0            0
-> -   rcu: cputime:        0          0            0   ==> 2500(ms)
-> +     rcu:          hardirqs   softirqs   csw/system
-> +     rcu:  number:        0          0            0
-> +     rcu: cputime:        0          0            0   ==> 2500(ms)
->  
->     Because interrupts have been disabled throughout the measurement
->     interval, there are no interrupts and no context switches.
-> @@ -442,9 +442,9 @@ The following describes four typical scenarios:
->     and CPU time consumed by hard interrupts, along with non-zero CPU
->     time consumed by in-kernel execution.::
->  
-> -   rcu:          hardirqs   softirqs   csw/system
-> -   rcu:  number:      624          0            0
-> -   rcu: cputime:       49          0         2446   ==> 2500(ms)
-> +     rcu:          hardirqs   softirqs   csw/system
-> +     rcu:  number:      624          0            0
-> +     rcu: cputime:       49          0         2446   ==> 2500(ms)
->  
->     The fact that there are zero softirqs gives a hint that these were
->     disabled, perhaps via local_bh_disable().  It is of course possible
-> @@ -456,18 +456,18 @@ The following describes four typical scenarios:
->  
->     Here, only the number of context switches is zero.::
->  
-> -   rcu:          hardirqs   softirqs   csw/system
-> -   rcu:  number:      624         45            0
-> -   rcu: cputime:       69          1         2425   ==> 2500(ms)
-> +     rcu:          hardirqs   softirqs   csw/system
-> +     rcu:  number:      624         45            0
-> +     rcu: cputime:       69          1         2425   ==> 2500(ms)
->  
->     This situation hints that the stalled CPU was looping with preemption
->     disabled.
->  
->  4. No looping, but massive hard and soft interrupts.::
->  
-> -   rcu:          hardirqs   softirqs   csw/system
-> -   rcu:  number:       xx         xx            0
-> -   rcu: cputime:       xx         xx            0   ==> 2500(ms)
-> +     rcu:          hardirqs   softirqs   csw/system
-> +     rcu:  number:       xx         xx            0
-> +     rcu: cputime:       xx         xx            0   ==> 2500(ms)
->  
->     Here, the number and CPU time of hard interrupts are all non-zero,
->     but the number of context switches and the in-kernel CPU time consumed
-> 
+and use synchronize_srcu(&sb->s_write_rcu) for waiting.
 
+But the trouble with writes is there are things like aio or io_uring where
+the part with srcu_read_lock() happens from one task (the submitter) while
+the part with srcu_read_unlock() happens from another context (usually worker
+thread triggered by IRQ reporting that the HW has finished the IO).
+
+Is there any chance to make SRCU work in a situation like this? It seems to
+me in principle it should be possible to make this work but maybe there are
+some implementation constraints I'm missing... 
+
+								Honza
 -- 
-Regards,
-  Zhen Lei
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
