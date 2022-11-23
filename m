@@ -2,118 +2,307 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B6FDC433FE
-	for <rcu@archiver.kernel.org>; Wed, 23 Nov 2022 09:25:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 79374C43219
+	for <rcu@archiver.kernel.org>; Wed, 23 Nov 2022 09:31:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237605AbiKWJZO (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 23 Nov 2022 04:25:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36446 "EHLO
+        id S237835AbiKWJbE (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 23 Nov 2022 04:31:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237603AbiKWJYp (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 23 Nov 2022 04:24:45 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 374ADC67D3;
-        Wed, 23 Nov 2022 01:23:15 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id 71-20020a17090a09cd00b00218adeb3549so1304170pjo.1;
-        Wed, 23 Nov 2022 01:23:15 -0800 (PST)
+        with ESMTP id S237800AbiKWJao (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 23 Nov 2022 04:30:44 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFDD4112C40;
+        Wed, 23 Nov 2022 01:29:04 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id 9so72503pfx.11;
+        Wed, 23 Nov 2022 01:29:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Y1KGy9n58ZkZbS12xnuR7faOBWPURlhUbJkhTIBbBqs=;
-        b=ke+Z+JBfOqu2kGtngliDyo225zh79bEMbrNGsp/Bz0wyGFLte/9kT35A0TsxWQyhAZ
-         J4THCGI/d/e46n/S3dR3WSYx8n76+ZQzDgbPX2ssu5sMArgqmzdEuXaPHGe01hUfxY3v
-         dQYnkM98QJqfMGEJZMNFpllDJV7goX8wuCAfpQ83QxFEKRq6/1n1tdjvxoVo1vXNwI9I
-         1HPoc7xlPC4WrrjtsVUr1LtMPJThQIgBgRtYxx+Qv8goOmRgI8l9YsnBvnUQUqYbjeQY
-         NzD7dVFxlFfJAT6Xw2hmc36i6qsnzdPZPCWTYWKrmIQ3aiBSiOmmGh0MMluKiJ0oXyKm
-         fPqw==
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=w6QNzC9ocFbEzOB+8PUforSOIJ9U2Z9Tj4lmWNCBNrQ=;
+        b=HsPZQ6MeK2HGmFt1PkmV433jHTU3aRoWz+5zpoNsHNJYfMFsP+aQHWjRdg+3u/1K98
+         ulQzbK5GpR+1HiDlVs0FLsSs0t3DGRyesyoEAdWOHookfZ0CqSqPKRhYzIOzT9QrEEJH
+         9ug60lEEvOLhZ97v2F8TzPaflJetangVDohD5TYef3Z6QVRF7EHj8QlZpEfCc4oPFTxN
+         WLooMweToI/4CDTbByrgMRy1iy2ql6qoNe5yAyedPY3vfOBraghA3xK4jXqHqOWIgEh3
+         /HaG80OEoFC6UWnjjXee7+51Oq8NcYHXjr4HmaR8rFh+EQxoom9t+3Js+Z2bgj8uxcsQ
+         624w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Y1KGy9n58ZkZbS12xnuR7faOBWPURlhUbJkhTIBbBqs=;
-        b=2JJdXDTPS1ykqDLGqT2JrV/H5adcNUEWie+CrA5jTcAieE4uZG2K1G67/WODwVmsol
-         sA9r9rEf4KaDdh9nWlRe7kCiDXoUPRZYfOXp+0kYWycQ1f/bJxWLDAbvGzCMGdJWM/oX
-         BrvCg9Pk6C02EJil8JNIgAAXnSsyawBgpZY5LgzNbFRPwHO5cRv5S75rOKaA8BqrqzHM
-         0aFtExI5X9LGiC7y9BYAD0h2LJqJRJioLDaxLW7tOzzCH6bf+RFeh1q6HVQYqNa6yj2Q
-         08muhfWstzkzTo6UcIaWSgDb8YZUK66ar4u+NZEHdoAYjYfX1bJS/ruAIy3wnxLYkACv
-         YgUw==
-X-Gm-Message-State: ANoB5pnyvnbwH9Z7r4XqZSO09jbDudB5LYcSmiovW4wz3aTQIZf7zOqk
-        45L4psCzY/39PP/1pHXQI8FHyN0OsiU=
-X-Google-Smtp-Source: AA0mqf50wYGXZE1SGuXOcnhys5cudkZ3dda8hH0o7UHEtYXHQ/PBWXsmbxy2cjyt11AmRJbOoktn6A==
-X-Received: by 2002:a17:902:cf05:b0:188:53bd:878a with SMTP id i5-20020a170902cf0500b0018853bd878amr7856859plg.12.1669195394554;
-        Wed, 23 Nov 2022 01:23:14 -0800 (PST)
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=w6QNzC9ocFbEzOB+8PUforSOIJ9U2Z9Tj4lmWNCBNrQ=;
+        b=QbK7+KniqkrIfmDNFlmOi6XFF4mqKTdeMlm1WX/2Uhlf8wHL+Bxx67kihyysu/N/j1
+         PfOht78Q53jRw0t7r5tsuVwD9pln9EGa4SGBxL3qqPGbotJh/3J+KNuDn0q89Ua+VfiQ
+         AW/1hMBehVwfKaf+zzTdnWd7YMsJm9hiK5vtO8Ds54QgLtfMeI6it7wwB2j6d7U4Mt8N
+         tNZfckGOCwEwWm9VOzOAJfRTaXydcdQypcuEekwzpcfXzUSyestYMDnW3OGFI+Q/H3RD
+         kwMX+dIK3uhygcvDCaCSb/IGNx2QtvgO3P5k2zwAQCJDpYseixy1fvvmow6sfJ61caxm
+         fPwg==
+X-Gm-Message-State: ANoB5pmeB5kadcg1xtlQ6Z5On05BFBIBINvdDSIh3Eb6t6XCXDD0vuk7
+        p1UCu5Xu8+br4XG7Q6IKLqH+oVo9XPU=
+X-Google-Smtp-Source: AA0mqf7VMggc0XycomC3EhXcNKF+oNFN0Jg9O68Tig95wp2kPtkH7Ak4yfGvygRUtI0RTmn8q6wmAg==
+X-Received: by 2002:a63:3d8:0:b0:476:eee6:d394 with SMTP id 207-20020a6303d8000000b00476eee6d394mr15101648pgd.228.1669195744501;
+        Wed, 23 Nov 2022 01:29:04 -0800 (PST)
 Received: from [192.168.11.9] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
-        by smtp.gmail.com with ESMTPSA id x10-20020a17090a294a00b00218b8f8af91sm946469pjf.48.2022.11.23.01.23.12
+        by smtp.gmail.com with ESMTPSA id e14-20020a170902784e00b0018661d627d7sm13620444pln.59.2022.11.23.01.29.02
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Nov 2022 01:23:14 -0800 (PST)
-Message-ID: <b74e2e19-0317-e717-cc15-a7854b04adf4@gmail.com>
-Date:   Wed, 23 Nov 2022 18:23:09 +0900
+        Wed, 23 Nov 2022 01:29:04 -0800 (PST)
+Message-ID: <e458e625-9a4e-da3f-13cd-a5b56fc36edf@gmail.com>
+Date:   Wed, 23 Nov 2022 18:29:00 +0900
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.4.2
-Content-Language: en-US
+Subject: [PATCH 2/2] docs/RCU/rcubarrier: Right-adjust line numbers in code
+ snippets
 To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Akira Yokosawa <akiyks@gmail.com>, linux-doc@vger.kernel.org
+        linux-doc@vger.kernel.org, Akira Yokosawa <akiyks@gmail.com>
+References: <b74e2e19-0317-e717-cc15-a7854b04adf4@gmail.com>
+Content-Language: en-US
 From:   Akira Yokosawa <akiyks@gmail.com>
-Subject: [PATCH 1/2] docs/RCU/rcubarrier: Adjust 'Answer' parts of QQs as
- definition-lists
+In-Reply-To: <b74e2e19-0317-e717-cc15-a7854b04adf4@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The "Answer" parts of QQs divert from proper format of definition-lists
-as described at [1] and are not rendered as such.
+Line numbers in code snippets in rcubarrier.rst have beed left adjusted
+since commit 4af498306ffd ("doc: Convert to rcubarrier.txt to ReST").
+This might have been because right adjusting them had confused Sphinx.
 
-Adjust them.
+The rules around a literal block in reST are:
 
-Link: [1] https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#definition-lists
+  - Need a blank line above it.
+  - A line with the same indent level as the line above it is regarded
+    as the end of it.
+
+Those line numbers can be right adjusted by keeping indents at two-
+digit numbers. While at it, add some spaces between the column of line
+numbers and the code area for better readability.
+
 Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
 ---
- Documentation/RCU/rcubarrier.rst | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ Documentation/RCU/rcubarrier.rst | 168 +++++++++++++++----------------
+ 1 file changed, 84 insertions(+), 84 deletions(-)
 
 diff --git a/Documentation/RCU/rcubarrier.rst b/Documentation/RCU/rcubarrier.rst
-index 5a643e5233d5..9fb9ed777355 100644
+index 9fb9ed777355..6da7f66da2a8 100644
 --- a/Documentation/RCU/rcubarrier.rst
 +++ b/Documentation/RCU/rcubarrier.rst
-@@ -296,7 +296,8 @@ Quick Quiz #1:
- 	Is there any other situation where rcu_barrier() might
- 	be required?
+@@ -72,9 +72,9 @@ For example, if it uses call_rcu(), call_srcu() on srcu_struct_1, and
+ call_srcu() on srcu_struct_2, then the following three lines of code
+ will be required when unloading::
  
--Answer: Interestingly enough, rcu_barrier() was not originally
-+Answer:
-+	Interestingly enough, rcu_barrier() was not originally
- 	implemented for module unloading. Nikita Danilov was using
- 	RCU in a filesystem, which resulted in a similar situation at
- 	filesystem-unmount time. Dipankar Sarma coded up rcu_barrier()
-@@ -315,7 +316,8 @@ Quick Quiz #2:
- 	Why doesn't line 8 initialize rcu_barrier_cpu_count to zero,
- 	thereby avoiding the need for lines 9 and 10?
+- 1 rcu_barrier();
+- 2 srcu_barrier(&srcu_struct_1);
+- 3 srcu_barrier(&srcu_struct_2);
++  1  rcu_barrier();
++  2  srcu_barrier(&srcu_struct_1);
++  3  srcu_barrier(&srcu_struct_2);
  
--Answer: Suppose that the on_each_cpu() function shown on line 8 was
-+Answer:
-+	Suppose that the on_each_cpu() function shown on line 8 was
- 	delayed, so that CPU 0's rcu_barrier_func() executed and
- 	the corresponding grace period elapsed, all before CPU 1's
- 	rcu_barrier_func() started executing.  This would result in
-@@ -351,7 +353,8 @@ Quick Quiz #3:
- 	are delayed for a full grace period? Couldn't this result in
- 	rcu_barrier() returning prematurely?
+ If latency is of the essence, workqueues could be used to run these
+ three functions concurrently.
+@@ -82,69 +82,69 @@ three functions concurrently.
+ An ancient version of the rcutorture module makes use of rcu_barrier()
+ in its exit function as follows::
  
--Answer: This cannot happen. The reason is that on_each_cpu() has its last
-+Answer:
-+	This cannot happen. The reason is that on_each_cpu() has its last
- 	argument, the wait flag, set to "1". This flag is passed through
- 	to smp_call_function() and further to smp_call_function_on_cpu(),
- 	causing this latter to spin until the cross-CPU invocation of
-
-base-commit: 741cfda870057958c53f9cb0b21ac33f531baaf4
+- 1  static void
+- 2  rcu_torture_cleanup(void)
+- 3  {
+- 4    int i;
+- 5
+- 6    fullstop = 1;
+- 7    if (shuffler_task != NULL) {
+- 8     VERBOSE_PRINTK_STRING("Stopping rcu_torture_shuffle task");
+- 9     kthread_stop(shuffler_task);
+- 10   }
+- 11   shuffler_task = NULL;
++  1  static void
++  2  rcu_torture_cleanup(void)
++  3  {
++  4    int i;
++  5
++  6    fullstop = 1;
++  7    if (shuffler_task != NULL) {
++  8      VERBOSE_PRINTK_STRING("Stopping rcu_torture_shuffle task");
++  9      kthread_stop(shuffler_task);
++ 10    }
++ 11    shuffler_task = NULL;
+  12
+- 13   if (writer_task != NULL) {
+- 14     VERBOSE_PRINTK_STRING("Stopping rcu_torture_writer task");
+- 15     kthread_stop(writer_task);
+- 16   }
+- 17   writer_task = NULL;
++ 13    if (writer_task != NULL) {
++ 14      VERBOSE_PRINTK_STRING("Stopping rcu_torture_writer task");
++ 15      kthread_stop(writer_task);
++ 16    }
++ 17    writer_task = NULL;
+  18
+- 19   if (reader_tasks != NULL) {
+- 20     for (i = 0; i < nrealreaders; i++) {
+- 21       if (reader_tasks[i] != NULL) {
+- 22         VERBOSE_PRINTK_STRING(
+- 23           "Stopping rcu_torture_reader task");
+- 24         kthread_stop(reader_tasks[i]);
+- 25       }
+- 26       reader_tasks[i] = NULL;
+- 27     }
+- 28     kfree(reader_tasks);
+- 29     reader_tasks = NULL;
+- 30   }
+- 31   rcu_torture_current = NULL;
++ 19    if (reader_tasks != NULL) {
++ 20      for (i = 0; i < nrealreaders; i++) {
++ 21        if (reader_tasks[i] != NULL) {
++ 22          VERBOSE_PRINTK_STRING(
++ 23            "Stopping rcu_torture_reader task");
++ 24          kthread_stop(reader_tasks[i]);
++ 25        }
++ 26        reader_tasks[i] = NULL;
++ 27      }
++ 28      kfree(reader_tasks);
++ 29      reader_tasks = NULL;
++ 30    }
++ 31    rcu_torture_current = NULL;
+  32
+- 33   if (fakewriter_tasks != NULL) {
+- 34     for (i = 0; i < nfakewriters; i++) {
+- 35       if (fakewriter_tasks[i] != NULL) {
+- 36         VERBOSE_PRINTK_STRING(
+- 37           "Stopping rcu_torture_fakewriter task");
+- 38         kthread_stop(fakewriter_tasks[i]);
+- 39       }
+- 40       fakewriter_tasks[i] = NULL;
+- 41     }
+- 42     kfree(fakewriter_tasks);
+- 43     fakewriter_tasks = NULL;
+- 44   }
++ 33    if (fakewriter_tasks != NULL) {
++ 34      for (i = 0; i < nfakewriters; i++) {
++ 35        if (fakewriter_tasks[i] != NULL) {
++ 36          VERBOSE_PRINTK_STRING(
++ 37            "Stopping rcu_torture_fakewriter task");
++ 38          kthread_stop(fakewriter_tasks[i]);
++ 39        }
++ 40        fakewriter_tasks[i] = NULL;
++ 41      }
++ 42      kfree(fakewriter_tasks);
++ 43      fakewriter_tasks = NULL;
++ 44    }
+  45
+- 46   if (stats_task != NULL) {
+- 47     VERBOSE_PRINTK_STRING("Stopping rcu_torture_stats task");
+- 48     kthread_stop(stats_task);
+- 49   }
+- 50   stats_task = NULL;
++ 46    if (stats_task != NULL) {
++ 47      VERBOSE_PRINTK_STRING("Stopping rcu_torture_stats task");
++ 48      kthread_stop(stats_task);
++ 49    }
++ 50    stats_task = NULL;
+  51
+- 52   /* Wait for all RCU callbacks to fire. */
+- 53   rcu_barrier();
++ 52    /* Wait for all RCU callbacks to fire. */
++ 53    rcu_barrier();
+  54
+- 55   rcu_torture_stats_print(); /* -After- the stats thread is stopped! */
++ 55    rcu_torture_stats_print(); /* -After- the stats thread is stopped! */
+  56
+- 57   if (cur_ops->cleanup != NULL)
+- 58     cur_ops->cleanup();
+- 59   if (atomic_read(&n_rcu_torture_error))
+- 60     rcu_torture_print_module_parms("End of test: FAILURE");
+- 61   else
+- 62     rcu_torture_print_module_parms("End of test: SUCCESS");
+- 63 }
++ 57    if (cur_ops->cleanup != NULL)
++ 58      cur_ops->cleanup();
++ 59    if (atomic_read(&n_rcu_torture_error))
++ 60      rcu_torture_print_module_parms("End of test: FAILURE");
++ 61    else
++ 62      rcu_torture_print_module_parms("End of test: SUCCESS");
++ 63  }
+ 
+ Line 6 sets a global variable that prevents any RCU callbacks from
+ re-posting themselves. This will not be necessary in most cases, since
+@@ -193,16 +193,16 @@ which point, all earlier RCU callbacks are guaranteed to have completed.
+ 
+ The original code for rcu_barrier() was roughly as follows::
+ 
+- 1   void rcu_barrier(void)
+- 2   {
+- 3     BUG_ON(in_interrupt());
+- 4     /* Take cpucontrol mutex to protect against CPU hotplug */
+- 5     mutex_lock(&rcu_barrier_mutex);
+- 6     init_completion(&rcu_barrier_completion);
+- 7     atomic_set(&rcu_barrier_cpu_count, 1);
+- 8     on_each_cpu(rcu_barrier_func, NULL, 0, 1);
+- 9     if (atomic_dec_and_test(&rcu_barrier_cpu_count))
+- 10       complete(&rcu_barrier_completion);
++  1  void rcu_barrier(void)
++  2  {
++  3    BUG_ON(in_interrupt());
++  4    /* Take cpucontrol mutex to protect against CPU hotplug */
++  5    mutex_lock(&rcu_barrier_mutex);
++  6    init_completion(&rcu_barrier_completion);
++  7    atomic_set(&rcu_barrier_cpu_count, 1);
++  8    on_each_cpu(rcu_barrier_func, NULL, 0, 1);
++  9    if (atomic_dec_and_test(&rcu_barrier_cpu_count))
++ 10      complete(&rcu_barrier_completion);
+  11    wait_for_completion(&rcu_barrier_completion);
+  12    mutex_unlock(&rcu_barrier_mutex);
+  13  }
+@@ -232,16 +232,16 @@ still gives the general idea.
+ The rcu_barrier_func() runs on each CPU, where it invokes call_rcu()
+ to post an RCU callback, as follows::
+ 
+- 1  static void rcu_barrier_func(void *notused)
+- 2  {
+- 3    int cpu = smp_processor_id();
+- 4    struct rcu_data *rdp = &per_cpu(rcu_data, cpu);
+- 5    struct rcu_head *head;
+- 6
+- 7    head = &rdp->barrier;
+- 8    atomic_inc(&rcu_barrier_cpu_count);
+- 9    call_rcu(head, rcu_barrier_callback);
+- 10 }
++  1  static void rcu_barrier_func(void *notused)
++  2  {
++  3    int cpu = smp_processor_id();
++  4    struct rcu_data *rdp = &per_cpu(rcu_data, cpu);
++  5    struct rcu_head *head;
++  6
++  7    head = &rdp->barrier;
++  8    atomic_inc(&rcu_barrier_cpu_count);
++  9    call_rcu(head, rcu_barrier_callback);
++ 10  }
+ 
+ Lines 3 and 4 locate RCU's internal per-CPU rcu_data structure,
+ which contains the struct rcu_head that needed for the later call to
+@@ -254,11 +254,11 @@ The rcu_barrier_callback() function simply atomically decrements the
+ rcu_barrier_cpu_count variable and finalizes the completion when it
+ reaches zero, as follows::
+ 
+- 1 static void rcu_barrier_callback(struct rcu_head *notused)
+- 2 {
+- 3   if (atomic_dec_and_test(&rcu_barrier_cpu_count))
+- 4     complete(&rcu_barrier_completion);
+- 5 }
++  1  static void rcu_barrier_callback(struct rcu_head *notused)
++  2  {
++  3    if (atomic_dec_and_test(&rcu_barrier_cpu_count))
++  4      complete(&rcu_barrier_completion);
++  5  }
+ 
+ .. _rcubarrier_quiz_3:
+ 
 -- 
 2.25.1
+
 
