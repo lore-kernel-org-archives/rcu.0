@@ -2,162 +2,118 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B0043C47088
-	for <rcu@archiver.kernel.org>; Wed, 23 Nov 2022 09:13:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B6FDC433FE
+	for <rcu@archiver.kernel.org>; Wed, 23 Nov 2022 09:25:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237244AbiKWJN6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 23 Nov 2022 04:13:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55624 "EHLO
+        id S237605AbiKWJZO (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 23 Nov 2022 04:25:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237213AbiKWJN5 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 23 Nov 2022 04:13:57 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB611106103;
-        Wed, 23 Nov 2022 01:13:55 -0800 (PST)
-Received: from dggpemm500024.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4NHFm21sNqzmW81;
-        Wed, 23 Nov 2022 17:13:22 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggpemm500024.china.huawei.com (7.185.36.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 23 Nov 2022 17:13:53 +0800
-Received: from thunder-town.china.huawei.com (10.174.178.55) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 23 Nov 2022 17:13:53 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     "Paul E . McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        "Josh Triplett" <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, <rcu@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        <linux-next@vger.kernel.org>
-Subject: [PATCH] doc: Fix htmldocs build warnings of stallwarn.rst
-Date:   Wed, 23 Nov 2022 17:12:46 +0800
-Message-ID: <20221123091246.1890-1-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.37.3.windows.1
+        with ESMTP id S237603AbiKWJYp (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 23 Nov 2022 04:24:45 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 374ADC67D3;
+        Wed, 23 Nov 2022 01:23:15 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id 71-20020a17090a09cd00b00218adeb3549so1304170pjo.1;
+        Wed, 23 Nov 2022 01:23:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Y1KGy9n58ZkZbS12xnuR7faOBWPURlhUbJkhTIBbBqs=;
+        b=ke+Z+JBfOqu2kGtngliDyo225zh79bEMbrNGsp/Bz0wyGFLte/9kT35A0TsxWQyhAZ
+         J4THCGI/d/e46n/S3dR3WSYx8n76+ZQzDgbPX2ssu5sMArgqmzdEuXaPHGe01hUfxY3v
+         dQYnkM98QJqfMGEJZMNFpllDJV7goX8wuCAfpQ83QxFEKRq6/1n1tdjvxoVo1vXNwI9I
+         1HPoc7xlPC4WrrjtsVUr1LtMPJThQIgBgRtYxx+Qv8goOmRgI8l9YsnBvnUQUqYbjeQY
+         NzD7dVFxlFfJAT6Xw2hmc36i6qsnzdPZPCWTYWKrmIQ3aiBSiOmmGh0MMluKiJ0oXyKm
+         fPqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Y1KGy9n58ZkZbS12xnuR7faOBWPURlhUbJkhTIBbBqs=;
+        b=2JJdXDTPS1ykqDLGqT2JrV/H5adcNUEWie+CrA5jTcAieE4uZG2K1G67/WODwVmsol
+         sA9r9rEf4KaDdh9nWlRe7kCiDXoUPRZYfOXp+0kYWycQ1f/bJxWLDAbvGzCMGdJWM/oX
+         BrvCg9Pk6C02EJil8JNIgAAXnSsyawBgpZY5LgzNbFRPwHO5cRv5S75rOKaA8BqrqzHM
+         0aFtExI5X9LGiC7y9BYAD0h2LJqJRJioLDaxLW7tOzzCH6bf+RFeh1q6HVQYqNa6yj2Q
+         08muhfWstzkzTo6UcIaWSgDb8YZUK66ar4u+NZEHdoAYjYfX1bJS/ruAIy3wnxLYkACv
+         YgUw==
+X-Gm-Message-State: ANoB5pnyvnbwH9Z7r4XqZSO09jbDudB5LYcSmiovW4wz3aTQIZf7zOqk
+        45L4psCzY/39PP/1pHXQI8FHyN0OsiU=
+X-Google-Smtp-Source: AA0mqf50wYGXZE1SGuXOcnhys5cudkZ3dda8hH0o7UHEtYXHQ/PBWXsmbxy2cjyt11AmRJbOoktn6A==
+X-Received: by 2002:a17:902:cf05:b0:188:53bd:878a with SMTP id i5-20020a170902cf0500b0018853bd878amr7856859plg.12.1669195394554;
+        Wed, 23 Nov 2022 01:23:14 -0800 (PST)
+Received: from [192.168.11.9] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
+        by smtp.gmail.com with ESMTPSA id x10-20020a17090a294a00b00218b8f8af91sm946469pjf.48.2022.11.23.01.23.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Nov 2022 01:23:14 -0800 (PST)
+Message-ID: <b74e2e19-0317-e717-cc15-a7854b04adf4@gmail.com>
+Date:   Wed, 23 Nov 2022 18:23:09 +0900
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.178.55]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+Content-Language: en-US
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Akira Yokosawa <akiyks@gmail.com>, linux-doc@vger.kernel.org
+From:   Akira Yokosawa <akiyks@gmail.com>
+Subject: [PATCH 1/2] docs/RCU/rcubarrier: Adjust 'Answer' parts of QQs as
+ definition-lists
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Documentation/RCU/stallwarn.rst:
-401: WARNING: Literal block expected; none found.
-428: WARNING: Literal block expected; none found.
-445: WARNING: Literal block expected; none found.
-459: WARNING: Literal block expected; none found.
-468: WARNING: Literal block expected; none found.
+The "Answer" parts of QQs divert from proper format of definition-lists
+as described at [1] and are not rendered as such.
 
-The literal block need to be indented, so add two spaces to each line.
+Adjust them.
 
-In addition, ':', which is used as a boundary in the literal block, is
-replaced by '|'.
-
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Link: [1] https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#definition-lists
+Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
 ---
- Documentation/RCU/stallwarn.rst | 44 ++++++++++++++++-----------------
- 1 file changed, 22 insertions(+), 22 deletions(-)
+ Documentation/RCU/rcubarrier.rst | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/RCU/stallwarn.rst b/Documentation/RCU/stallwarn.rst
-index c1e92dfef40d501..0f6a58ebf5d7855 100644
---- a/Documentation/RCU/stallwarn.rst
-+++ b/Documentation/RCU/stallwarn.rst
-@@ -398,9 +398,9 @@ In kernels built with CONFIG_RCU_CPU_STALL_CPUTIME=y or booted with
- rcupdate.rcu_cpu_stall_cputime=1, the following additional information
- is supplied with each RCU CPU stall warning::
+diff --git a/Documentation/RCU/rcubarrier.rst b/Documentation/RCU/rcubarrier.rst
+index 5a643e5233d5..9fb9ed777355 100644
+--- a/Documentation/RCU/rcubarrier.rst
++++ b/Documentation/RCU/rcubarrier.rst
+@@ -296,7 +296,8 @@ Quick Quiz #1:
+ 	Is there any other situation where rcu_barrier() might
+ 	be required?
  
--rcu:          hardirqs   softirqs   csw/system
--rcu:  number:      624         45            0
--rcu: cputime:       69          1         2425   ==> 2500(ms)
-+  rcu:          hardirqs   softirqs   csw/system
-+  rcu:  number:      624         45            0
-+  rcu: cputime:       69          1         2425   ==> 2500(ms)
+-Answer: Interestingly enough, rcu_barrier() was not originally
++Answer:
++	Interestingly enough, rcu_barrier() was not originally
+ 	implemented for module unloading. Nikita Danilov was using
+ 	RCU in a filesystem, which resulted in a similar situation at
+ 	filesystem-unmount time. Dipankar Sarma coded up rcu_barrier()
+@@ -315,7 +316,8 @@ Quick Quiz #2:
+ 	Why doesn't line 8 initialize rcu_barrier_cpu_count to zero,
+ 	thereby avoiding the need for lines 9 and 10?
  
- These statistics are collected during the sampling period. The values
- in row "number:" are the number of hard interrupts, number of soft
-@@ -412,22 +412,22 @@ in milliseconds.  Because user-mode tasks normally do not cause RCU CPU
- stalls, these tasks are typically kernel tasks, which is why only the
- system CPU time are considered.
+-Answer: Suppose that the on_each_cpu() function shown on line 8 was
++Answer:
++	Suppose that the on_each_cpu() function shown on line 8 was
+ 	delayed, so that CPU 0's rcu_barrier_func() executed and
+ 	the corresponding grace period elapsed, all before CPU 1's
+ 	rcu_barrier_func() started executing.  This would result in
+@@ -351,7 +353,8 @@ Quick Quiz #3:
+ 	are delayed for a full grace period? Couldn't this result in
+ 	rcu_barrier() returning prematurely?
  
--The sampling period is shown as follows:
--:<------------first timeout---------->:<-----second timeout----->:
--:<--half timeout-->:<--half timeout-->:                          :
--:                  :<--first period-->:                          :
--:                  :<-----------second sampling period---------->:
--:                  :                  :                          :
--:          snapshot time point    1st-stall                  2nd-stall
-+The sampling period is shown as follows::
- 
-+  |<------------first timeout---------->|<-----second timeout----->|
-+  |<--half timeout-->|<--half timeout-->|                          |
-+  |                  |<--first period-->|                          |
-+  |                  |<-----------second sampling period---------->|
-+  |                  |                  |                          |
-+  |          snapshot time point    1st-stall                  2nd-stall
- 
- The following describes four typical scenarios:
- 
- 1. A CPU looping with interrupts disabled.::
- 
--   rcu:          hardirqs   softirqs   csw/system
--   rcu:  number:        0          0            0
--   rcu: cputime:        0          0            0   ==> 2500(ms)
-+     rcu:          hardirqs   softirqs   csw/system
-+     rcu:  number:        0          0            0
-+     rcu: cputime:        0          0            0   ==> 2500(ms)
- 
-    Because interrupts have been disabled throughout the measurement
-    interval, there are no interrupts and no context switches.
-@@ -442,9 +442,9 @@ The following describes four typical scenarios:
-    and CPU time consumed by hard interrupts, along with non-zero CPU
-    time consumed by in-kernel execution.::
- 
--   rcu:          hardirqs   softirqs   csw/system
--   rcu:  number:      624          0            0
--   rcu: cputime:       49          0         2446   ==> 2500(ms)
-+     rcu:          hardirqs   softirqs   csw/system
-+     rcu:  number:      624          0            0
-+     rcu: cputime:       49          0         2446   ==> 2500(ms)
- 
-    The fact that there are zero softirqs gives a hint that these were
-    disabled, perhaps via local_bh_disable().  It is of course possible
-@@ -456,18 +456,18 @@ The following describes four typical scenarios:
- 
-    Here, only the number of context switches is zero.::
- 
--   rcu:          hardirqs   softirqs   csw/system
--   rcu:  number:      624         45            0
--   rcu: cputime:       69          1         2425   ==> 2500(ms)
-+     rcu:          hardirqs   softirqs   csw/system
-+     rcu:  number:      624         45            0
-+     rcu: cputime:       69          1         2425   ==> 2500(ms)
- 
-    This situation hints that the stalled CPU was looping with preemption
-    disabled.
- 
- 4. No looping, but massive hard and soft interrupts.::
- 
--   rcu:          hardirqs   softirqs   csw/system
--   rcu:  number:       xx         xx            0
--   rcu: cputime:       xx         xx            0   ==> 2500(ms)
-+     rcu:          hardirqs   softirqs   csw/system
-+     rcu:  number:       xx         xx            0
-+     rcu: cputime:       xx         xx            0   ==> 2500(ms)
- 
-    Here, the number and CPU time of hard interrupts are all non-zero,
-    but the number of context switches and the in-kernel CPU time consumed
+-Answer: This cannot happen. The reason is that on_each_cpu() has its last
++Answer:
++	This cannot happen. The reason is that on_each_cpu() has its last
+ 	argument, the wait flag, set to "1". This flag is passed through
+ 	to smp_call_function() and further to smp_call_function_on_cpu(),
+ 	causing this latter to spin until the cross-CPU invocation of
+
+base-commit: 741cfda870057958c53f9cb0b21ac33f531baaf4
 -- 
 2.25.1
 
