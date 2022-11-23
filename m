@@ -2,53 +2,53 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EA86FC433FE
-	for <rcu@archiver.kernel.org>; Wed, 23 Nov 2022 14:02:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 709A8C4332F
+	for <rcu@archiver.kernel.org>; Wed, 23 Nov 2022 14:02:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237484AbiKWOCX (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 23 Nov 2022 09:02:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49272 "EHLO
+        id S238090AbiKWOC3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 23 Nov 2022 09:02:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238477AbiKWOCB (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 23 Nov 2022 09:02:01 -0500
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07D956450
-        for <rcu@vger.kernel.org>; Wed, 23 Nov 2022 05:57:05 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id 140so17382076pfz.6
-        for <rcu@vger.kernel.org>; Wed, 23 Nov 2022 05:57:05 -0800 (PST)
+        with ESMTP id S238545AbiKWOCE (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 23 Nov 2022 09:02:04 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B85078517B
+        for <rcu@vger.kernel.org>; Wed, 23 Nov 2022 05:57:09 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id v28so17360592pfi.12
+        for <rcu@vger.kernel.org>; Wed, 23 Nov 2022 05:57:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MoUggZl+Oa5NqrF+uLpglO5wF50cmi6tsX38yMVbO3E=;
-        b=ILt6dTIA547h28Yj15g0Y/sKxXoGVj5M7+zN2pyrk5KNRl3A898noDHYKpLBvAW5o8
-         FLlIF84aUj1fuLzV3zpeha4evQIOCWZJ0cMgbfNkvBMH/n3EAK8m6XO4jfcC6WNj6zRI
-         J13hkrJ0amr7MM+O+DbXuCO8AyYHll4S6I5LID22xCpN8L/2UNidd3SZgeHmT3ibDnxs
-         end542+dcYkc3hPu81nN5LBxkjtud3oomI+KCTqN2L4gXlGSKjHFIPl7DwLTOgD3Wl8r
-         YMitso8ONaBXv6kTyyWfVJxSi0HiGwvybDTCi/YnZ7e/2ALVuEcP93a/ZouNLq3uWCVG
-         V0ZQ==
+        bh=Frc03htJZ059XDf8jvNx8xF1z8MxlsBIYwkX/Pm2UpU=;
+        b=DNAdAzBrkta6W+WG60HsupasjZnlUbd9g8I9n218vA6Zg0HdfNY4d3QYwpH8uZ04Q+
+         j1XlaK8G39QrGPfYQYZ4uiT3TdubtMJTqRdbGiYSG2G5mL1d4omzmkCTNsvirkJBCryF
+         5Ud+I6gf6myz3uPJdGF04GZNafZH65LaJRRdvYPYu3tx+74RLvGQFCKGgjk3XGynIRFb
+         7hkj68fDD1pRerQf5LeTPX4gFtuk1PW6iFrToZiKiePAP1TmLHIhqSqwmVtGTAClmG2d
+         zyAJAWRN1do6pbcOGbpHrI2wymOnf9MK2x4qs3bnLC7KxcywdzU+cmfllG/R4s4MmbWC
+         2Crw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=MoUggZl+Oa5NqrF+uLpglO5wF50cmi6tsX38yMVbO3E=;
-        b=wIDsZbhQD1riwuo5By9SbNHUBkfXOIeZdhai46sEizuudmiocSFxecqxO2/V2FuBKB
-         kgCldBZTysn2VZyS/dOzte8c7LGa7JNmCrjWUE+/ftiTpp/xpx7UKojaf1GTIPmW50CP
-         XCx5vgK5N6ikr46G8W5CS0j5uu8hqEKh1/G2T2zL2X0qrDY4H/0Ug8ysTik5azFeVd2F
-         onR9l7xciW3Pqc5OXj7cvn2ysN9wSPFA7S3pVh97SMhwRMw0JYr3VyOnGrfU4M9ghPz2
-         5dqJa83P+YcwECiCed2N1SbVqGuBfylkvQcvnHEMsG/9YrBgEDue6sjy6vA4Cr0D7T+w
-         rr+A==
-X-Gm-Message-State: ANoB5pn9dvLwH2EIdMqdBYTipaH57nxEeAzu0yM9AIKqTGwRBauaW6pj
-        oowK0j2cb5yVBmNvdOavGbrRivR40g==
-X-Google-Smtp-Source: AA0mqf5yxtbSdbfLYbHfKFMCvKkDc3EnizBjuE2ocq8LqmArFQW8Nh7zrCqvKlse1M+DvzuSnQmNrQ==
-X-Received: by 2002:a63:e444:0:b0:477:6a3a:e614 with SMTP id i4-20020a63e444000000b004776a3ae614mr8636562pgk.81.1669211824273;
-        Wed, 23 Nov 2022 05:57:04 -0800 (PST)
+        bh=Frc03htJZ059XDf8jvNx8xF1z8MxlsBIYwkX/Pm2UpU=;
+        b=25qUWByDO6yBHGjko5hy6YsrQoFy+omcTgLfyKUAahFur9bNrP7gvrzHsBE4YDuTok
+         QIZC5dKyevtEG5Wvjw776TvOmDZWwhXv67F7+7lcDkf708FE5QiTXSAKYZEOpmY/oXiE
+         bVx2Mk/fK5/y4l+dsBEgDXE580UvFteLwoKmvyiqJDPfwZx39iyhrsYzD8CYAMhfBFeT
+         6UQOvUJuBeAsophjmh1ucrNpZYTM4O47PoRMIpmesq1UsbwOThu+Fjoqt+UJJv57yT3Y
+         LSszKl86sluD+fefzWhGDd6SAvRiTxLMnL7+/edbtvC0Wj8PqhHUABedxyhRKICMNkB+
+         wCMA==
+X-Gm-Message-State: ANoB5pmXjDDb8yh1fA8uPsRpTjnT26yo8D4KU1ymh3E8C5HQv1uZN9MX
+        GkdWvz1wZSmPQWXGEpsDAM0gqprxRw==
+X-Google-Smtp-Source: AA0mqf7JZuzYzPQc+lg1xSdGGvT+Nehv8IspFgxhSfhTk4PHjN3OjBmUUQp6xMvt9JDW/aMOtmCqIw==
+X-Received: by 2002:a63:5c1e:0:b0:46e:96ba:494d with SMTP id q30-20020a635c1e000000b0046e96ba494dmr8046481pgb.404.1669211828825;
+        Wed, 23 Nov 2022 05:57:08 -0800 (PST)
 Received: from piliu.users.ipa.redhat.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id u11-20020a63d34b000000b0047048c201e3sm10895996pgi.33.2022.11.23.05.57.00
+        by smtp.gmail.com with ESMTPSA id u11-20020a63d34b000000b0047048c201e3sm10895996pgi.33.2022.11.23.05.57.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Nov 2022 05:57:03 -0800 (PST)
+        Wed, 23 Nov 2022 05:57:08 -0800 (PST)
 From:   Pingfan Liu <kernelfans@gmail.com>
 To:     rcu@vger.kernel.org
 Cc:     Pingfan Liu <kernelfans@gmail.com>,
@@ -58,9 +58,9 @@ Cc:     Pingfan Liu <kernelfans@gmail.com>,
         Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: [PATCHv2 1/2] srcu: Remove needless rcu_seq_done() check while holding read lock
-Date:   Wed, 23 Nov 2022 21:56:37 +0800
-Message-Id: <20221123135638.79021-2-kernelfans@gmail.com>
+Subject: [PATCHv2 2/2] srcu: Eliminate the case that snp_seq bigger than snap in srcu_funnel_gp_start()
+Date:   Wed, 23 Nov 2022 21:56:38 +0800
+Message-Id: <20221123135638.79021-3-kernelfans@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20221123135638.79021-1-kernelfans@gmail.com>
 References: <20221123135638.79021-1-kernelfans@gmail.com>
@@ -70,17 +70,9 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-As the code changes, now, srcu_gp_start_if_needed() holds the srcu read
-lock, gets the gp_seq snap and call srcu_funnel_gp_start() passing that
-snap value.
-
-As the rcu_seq_snap() promises "a full grace period has elapsed since
-the current time".  In srcu_funnel_gp_start(), the statement
-  rcu_seq_done(&ssp->srcu_gp_seq, s)
-always return false.
-
-The same condition stands for srcu_funnel_exp_start(). Hence removing
-all the checks of rcu_seq_done().
+Since the srcu read lock is still held during srcu_funnel_gp_start(),
+the seq snap should be the largest number for the slot
+srcu_have_cbs[idx].
 
 Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
 Cc: Lai Jiangshan <jiangshanlai@gmail.com>
@@ -91,60 +83,47 @@ Cc: Steven Rostedt <rostedt@goodmis.org>
 Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 To: rcu@vger.kernel.org
 ---
- kernel/rcu/srcutree.c | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+ include/linux/rcupdate.h |  1 +
+ kernel/rcu/srcutree.c    | 11 ++++++-----
+ 2 files changed, 7 insertions(+), 5 deletions(-)
 
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index 08605ce7379d..a09007236660 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -32,6 +32,7 @@
+ #include <linux/context_tracking_irq.h>
+ 
+ #define ULONG_CMP_GE(a, b)	(ULONG_MAX / 2 >= (a) - (b))
++#define ULONG_CMP_GT(a, b)	(ULONG_MAX / 2 > (a) - (b))
+ #define ULONG_CMP_LT(a, b)	(ULONG_MAX / 2 < (a) - (b))
+ #define ulong2long(a)		(*(long *)(&(a)))
+ #define USHORT_CMP_GE(a, b)	(USHRT_MAX / 2 >= (unsigned short)((a) - (b)))
 diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 1c304fec89c0..2fc0e775ade4 100644
+index 2fc0e775ade4..41902b823687 100644
 --- a/kernel/rcu/srcutree.c
 +++ b/kernel/rcu/srcutree.c
-@@ -851,8 +851,7 @@ static void srcu_funnel_exp_start(struct srcu_struct *ssp, struct srcu_node *snp
- 	if (snp)
- 		for (; snp != NULL; snp = snp->srcu_parent) {
- 			sgsne = READ_ONCE(snp->srcu_gp_seq_needed_exp);
--			if (rcu_seq_done(&ssp->srcu_gp_seq, s) ||
--			    (!srcu_invl_snp_seq(sgsne) && ULONG_CMP_GE(sgsne, s)))
-+			if (!srcu_invl_snp_seq(sgsne) && ULONG_CMP_GE(sgsne, s))
- 				return;
- 			spin_lock_irqsave_rcu_node(snp, flags);
- 			sgsne = snp->srcu_gp_seq_needed_exp;
-@@ -878,6 +877,9 @@ static void srcu_funnel_exp_start(struct srcu_struct *ssp, struct srcu_node *snp
-  *
-  * Note that this function also does the work of srcu_funnel_exp_start(),
-  * in some cases by directly invoking it.
-+ *
-+ * The srcu read lock should be hold around this function. And s is a seq snap
-+ * after holding that lock.
-  */
- static void srcu_funnel_gp_start(struct srcu_struct *ssp, struct srcu_data *sdp,
- 				 unsigned long s, bool do_norm)
-@@ -895,11 +897,12 @@ static void srcu_funnel_gp_start(struct srcu_struct *ssp, struct srcu_data *sdp,
- 	else
- 		snp_leaf = sdp->mynode;
- 
-+	BUG_ON(!srcu_read_lock_held(ssp));
-+	WARN_ON_ONCE(rcu_seq_done(&ssp->srcu_gp_seq, s));
-+
- 	if (snp_leaf)
- 		/* Each pass through the loop does one level of the srcu_node tree. */
+@@ -905,14 +905,15 @@ static void srcu_funnel_gp_start(struct srcu_struct *ssp, struct srcu_data *sdp,
  		for (snp = snp_leaf; snp != NULL; snp = snp->srcu_parent) {
--			if (rcu_seq_done(&ssp->srcu_gp_seq, s) && snp != snp_leaf)
--				return; /* GP already done and CBs recorded. */
  			spin_lock_irqsave_rcu_node(snp, flags);
  			snp_seq = snp->srcu_have_cbs[idx];
- 			if (!srcu_invl_snp_seq(snp_seq) && ULONG_CMP_GE(snp_seq, s)) {
-@@ -935,9 +938,8 @@ static void srcu_funnel_gp_start(struct srcu_struct *ssp, struct srcu_data *sdp,
- 	if (!do_norm && ULONG_CMP_LT(ssp->srcu_gp_seq_needed_exp, s))
- 		WRITE_ONCE(ssp->srcu_gp_seq_needed_exp, s);
- 
--	/* If grace period not already done and none in progress, start it. */
--	if (!rcu_seq_done(&ssp->srcu_gp_seq, s) &&
--	    rcu_seq_state(ssp->srcu_gp_seq) == SRCU_STATE_IDLE) {
-+	/* If grace period not already in progress, start it. */
-+	if (rcu_seq_state(ssp->srcu_gp_seq) == SRCU_STATE_IDLE) {
- 		WARN_ON_ONCE(ULONG_CMP_GE(ssp->srcu_gp_seq, ssp->srcu_gp_seq_needed));
- 		srcu_gp_start(ssp);
- 
+-			if (!srcu_invl_snp_seq(snp_seq) && ULONG_CMP_GE(snp_seq, s)) {
++			/*
++			 * s should be the biggest in the current slot. Hence only LE is
++			 * valid
++			 */
++			BUG_ON(ULONG_CMP_GT(snp_seq, s));
++			if (!srcu_invl_snp_seq(snp_seq) && (snp_seq == s)) {
+ 				if (snp == snp_leaf && snp_seq == s)
+ 					snp->srcu_data_have_cbs[idx] |= sdp->grpmask;
+ 				spin_unlock_irqrestore_rcu_node(snp, flags);
+-				if (snp == snp_leaf && snp_seq != s) {
+-					srcu_schedule_cbs_sdp(sdp, do_norm ? SRCU_INTERVAL : 0);
+-					return;
+-				}
+ 				if (!do_norm)
+ 					srcu_funnel_exp_start(ssp, snp, s);
+ 				return;
 -- 
 2.31.1
 
