@@ -2,166 +2,258 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C49DEC4332F
-	for <rcu@archiver.kernel.org>; Wed, 23 Nov 2022 13:41:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 47A92C4167D
+	for <rcu@archiver.kernel.org>; Wed, 23 Nov 2022 14:00:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238419AbiKWNle (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 23 Nov 2022 08:41:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54582 "EHLO
+        id S237952AbiKWOAR (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 23 Nov 2022 09:00:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237984AbiKWNlS (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 23 Nov 2022 08:41:18 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B2BD1B78E
-        for <rcu@vger.kernel.org>; Wed, 23 Nov 2022 05:29:24 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id a22-20020a17090a6d9600b0021896eb5554so2024110pjk.1
-        for <rcu@vger.kernel.org>; Wed, 23 Nov 2022 05:29:24 -0800 (PST)
+        with ESMTP id S236038AbiKWN76 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 23 Nov 2022 08:59:58 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53B75EA4;
+        Wed, 23 Nov 2022 05:54:46 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id x13-20020a17090a46cd00b00218f611b6e9so261256pjg.1;
+        Wed, 23 Nov 2022 05:54:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=hJEhJwgSxHk9ZBET+nXV0gP26iUPgmyBX2hPM/coDQQ=;
-        b=nxfKond9J57iz6iujQewofkDohuDPumqAnbdFXqiDxJsJlZydnGZ2XotsctrG5rcfy
-         dtlcSQuHcwmQ4jPNuIJD0hNn2Kbw4oURrTco/ATuv6zXxOW8eJwSzvQlH4cqyxWVXUuN
-         K6StzhCQa+/cuEhErnlACzYD4RZHdHSzf/1jeMxlb0mSvgRYws/60SkDlL2u4s7AkK/v
-         jWvJkDj9HAYRwuzlXkAGIwAGPvplgF3H7RujH+S0bqe8Rt0K4iCCaGZdyaKVKJ17/Fav
-         U+2613PnmyGEHsy4ciK4i8ZkkXFj+P+QvtE6on1/wvG7FRdplEggiLlUfHyeCT1KHnyh
-         DbSw==
+        bh=3L4jiY6FXPps/XaKmzU/Sf6AyPI2m9wPunUZC4P5Nu8=;
+        b=D6RgXf8HMRQKPT2fpNnyp4nH0QnKk6GiTc68BlFsp0M8jW2r079WNug7O4wOpYv2A7
+         l3AK6e1kLiq+r6dozvZj0xXzeC2zw7wPRUlwToNu1YBC/lf76ncrKlDTrCG0PPxRJAm/
+         kjQvUVKUcYTxbZKSz4rTgYA8XEt/LaP9rFqMYl2jmnbK+UfQtxKotaovujNlnf5BdrFS
+         TijGsOILhcdYendDo88MCwk9+e39oSrZLocq6A9d4VutfWrOlWcYUiC70qHXnCBpD6Ih
+         OTWqxvEQcXDk+bUplLQAmkRmIuykpAab4oRLnnXU+O2eQI5gWO5qgt35qVH20/X9zXmZ
+         CLRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hJEhJwgSxHk9ZBET+nXV0gP26iUPgmyBX2hPM/coDQQ=;
-        b=YZP+GlHzNVI8at2VbB2cmjQSYGMd4COueRqVRuKBA0sGhdGp3opMalB/FbOxp09PvQ
-         4iEKOJFrePLXlY/17ZwVWZDbWhfjUWCoNdd3SlPwg+pxjvyT6peB4eEEC5m4wErnaNiF
-         6pn02elV2IhFlKNI8WIlOLykvybzintfMQvvPVP47zizewUHs9rCYxD3Pgkt3sIDbOYU
-         1p5nhaSkIfA2kQoQHCBGhTGH+VsliAbCmCx3l0woVSZs4P9bOOelPVeYmJSIc/Q642mL
-         4NzOBF6Ut2PJYdcvYx9j1Eb3xhom5kpYBtfD8RCOi0fKAzBuDvL69mObOsMOwPIE9I4x
-         4yvg==
-X-Gm-Message-State: ANoB5pmHcGXvrdJgAlyYh4E+Yt8AZOXZiCvyADXd7KNY7Kzcze4o0iJi
-        OFD56VhSvM/8N5zoO8ZF4Q==
-X-Google-Smtp-Source: AA0mqf6wAv6Ah7SvDYI7yrqcze13ptWEUgCfjsKxKMM4WB0rHKrX11KprJpVshL90oL/hma41nYKlw==
-X-Received: by 2002:a17:902:8212:b0:186:85c3:98b7 with SMTP id x18-20020a170902821200b0018685c398b7mr9483265pln.31.1669210164140;
-        Wed, 23 Nov 2022 05:29:24 -0800 (PST)
-Received: from piliu.users.ipa.redhat.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id k2-20020a17090a4c8200b00200461cfa99sm1421742pjh.11.2022.11.23.05.29.20
+        bh=3L4jiY6FXPps/XaKmzU/Sf6AyPI2m9wPunUZC4P5Nu8=;
+        b=W5OibCw2WuxswGuVgZFlV640zbv3KJsbc9aTevhaxEwHCwsNFzTC6B7jD2Uk48m3En
+         rLDGykN+LxD2Nb2xETDcm5RItouy8uQ9DjGtu5yHBt7EloPX99F0Dh8betMB12zKcNbx
+         qDHhF3tWLYbso6DOxdGOWupvIGcMLjBdomhhHZ1jm8YAWl4etVZvb5hgmowSS/yNgOTa
+         yWUn0xz5rf/Twk5uMDqTUJeSex6PBK9OY/VsLPemwrtUqOJaMZsh6CY5WiHw7sJrkicb
+         CshX5hsWHNoyj5DV8CohfMa6WztC1PB3JnLOMJyDryu6nv+NHI2ONYHyz36qTpxOYLgi
+         5qqQ==
+X-Gm-Message-State: ANoB5pk61WVyfT2nRqogrCR9xP9S/jGNbRKbbOu8X3M/CrS8zoCoiZas
+        lR1Jd1Ou3IpFyQnCyzNtZgU=
+X-Google-Smtp-Source: AA0mqf5Ux/meve6jdcw71YlDFSFPE7R27UkaRozU/ipN8waa0IQGXVxR/t1jGLLbWSOwIyei0J2NXQ==
+X-Received: by 2002:a17:902:868b:b0:186:8c19:d472 with SMTP id g11-20020a170902868b00b001868c19d472mr9523673plo.12.1669211685816;
+        Wed, 23 Nov 2022 05:54:45 -0800 (PST)
+Received: from debian.me (subs02-180-214-232-75.three.co.id. [180.214.232.75])
+        by smtp.gmail.com with ESMTPSA id f91-20020a17090a706400b00203ab277966sm1478297pjk.7.2022.11.23.05.54.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Nov 2022 05:29:23 -0800 (PST)
-Date:   Wed, 23 Nov 2022 21:29:17 +0800
-From:   Pingfan Liu <kernelfans@gmail.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     rcu@vger.kernel.org, Lai Jiangshan <jiangshanlai@gmail.com>,
+        Wed, 23 Nov 2022 05:54:45 -0800 (PST)
+Received: by debian.me (Postfix, from userid 1000)
+        id 6F0C8103FB7; Wed, 23 Nov 2022 20:54:42 +0700 (WIB)
+Date:   Wed, 23 Nov 2022 20:54:42 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
         Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: Re: [PATCH 2/2] srcu: Remove needless updating of srcu_have_cbs in
- srcu_gp_end()
-Message-ID: <Y34gLXdlr2ppvL4J@piliu.users.ipa.redhat.com>
-References: <20221120034014.7390-1-kernelfans@gmail.com>
- <20221120034014.7390-3-kernelfans@gmail.com>
- <20221122011916.GT4001@paulmck-ThinkPad-P17-Gen-1>
- <Y3ydcMAkqpCGNosw@piliu.users.ipa.redhat.com>
- <20221122144549.GH4001@paulmck-ThinkPad-P17-Gen-1>
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        linux-next@vger.kernel.org
+Subject: Re: [PATCH v2] doc: Fix htmldocs build warnings of stallwarn.rst
+Message-ID: <Y34mIhHYjFFzywsk@debian.me>
+References: <20221123120238.1904-1-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="hoqvooc+Zx6ORxue"
 Content-Disposition: inline
-In-Reply-To: <20221122144549.GH4001@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20221123120238.1904-1-thunder.leizhen@huawei.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Nov 22, 2022 at 06:45:49AM -0800, Paul E. McKenney wrote:
-> On Tue, Nov 22, 2022 at 05:59:12PM +0800, Pingfan Liu wrote:
-> > On Mon, Nov 21, 2022 at 05:19:16PM -0800, Paul E. McKenney wrote:
-> > > On Sun, Nov 20, 2022 at 11:40:14AM +0800, Pingfan Liu wrote:
-> > > > At present, snp->srcu_have_cbs[idx] is updated by either
-> > > > srcu_funnel_gp_start() or srcu_gp_end().
-> > > > 
-> > > > But as the code changes, now, srcu_funnel_gp_start() is called with srcu
-> > > > read lock held. And its input parameter s, s = rcu_seq_snap(&ssp->srcu_gp_seq),
-> > > > whose counter field always proceeds that of the srcu_gp_seq by one or two.
-> > > > 
-> > > > If the seq snap only proceeds by one, the state machine should be in
-> > > > state SRCU_STATE_IDLE, the held srcu read lock will prevent the state
-> > > > machine from moving ahead. So when srcu_gp_end() updates
-> > > > snp->srcu_have_cbs[idx], the idx must be the past idx for
-> > > > srcu_funnel_gp_start() that is cared by nobody.
-> > > > 
-> > > > So removing the unnecessary updating in srcu_gp_end().
-> > > 
-> > > This looks plausible, good eyes!
-> > > 
-> > > But is there a debug check that could verify that this is unnecessary?
-> > > Logical reasoning is all well and good, but the actual system always
-> > > wins arguments.  ;-)
-> > > 
-> > 
-> > Agree. Reasoning may miss some ground and render a wrong result.
-> > 
-> > But it is a little hard to demonstrate the past idx is not accessed. I
-> > will go on to figure a way out.
-> 
-> On a 64-bit system especially, it should be easy to generate a pattern
-> that never actually occurs.  Even on a 32-bit system, aren't there bit
-> patterns in the low-order bits that never occur?
-> 
-> Wouldn't it be possible to check for those?
-> 
 
-I had thought about that way, but that means a write and cache invalid.
+--hoqvooc+Zx6ORxue
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-While on the other way, I still rely on the logic to add some check
-code, which should be avoided.
+On Wed, Nov 23, 2022 at 08:02:38PM +0800, Zhen Lei wrote:
+> Documentation/RCU/stallwarn.rst:
+> 401: WARNING: Literal block expected; none found.
+> 428: WARNING: Literal block expected; none found.
+> 445: WARNING: Literal block expected; none found.
+> 459: WARNING: Literal block expected; none found.
+> 468: WARNING: Literal block expected; none found.
+>=20
+> The literal block need to be indented, so add two spaces to each line.
 
-Finally, I turn back to the way which you suggested. But I have a new
-plan for this patch. So I will send out V2 for the other two patches.
+Indenting to match alignment of lists texts?
 
-As for this one, it will come in the next series.
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 
-Thanks,
+You miss crediting linux-next list, so please add:
 
-	Pingfan
+Link: https://lore.kernel.org/linux-next/20221123163255.48653674@canb.auug.=
+org.au/
+Fixes: 3d2788ba4573 ("doc: Document CONFIG_RCU_CPU_STALL_CPUTIME=3Dy stall =
+information")
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
 
+> -The sampling period is shown as follows:
+> -:<------------first timeout---------->:<-----second timeout----->:
+> -:<--half timeout-->:<--half timeout-->:                          :
+> -:                  :<--first period-->:                          :
+> -:                  :<-----------second sampling period---------->:
+> -:                  :                  :                          :
+> -:          snapshot time point    1st-stall                  2nd-stall
+> +The sampling period is shown as follows::
+> =20
+> +  |<------------first timeout---------->|<-----second timeout----->|
+> +  |<--half timeout-->|<--half timeout-->|                          |
+> +  |                  |<--first period-->|                          |
+> +  |                  |<-----------second sampling period---------->|
+> +  |                  |                  |                          |
+> +  |          snapshot time point    1st-stall                  2nd-stall
 
-> 							Thanx, Paul
-> 
-> > Thanks,
-> > 
-> > 	Pingfan
-> > 
-> > > 							Thanx, Paul
-> > > 
-> > > > Test info:
-> > > >   Running "tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 10h --configs 18*SRCU-P"
-> > > > without any failure.
-> > > > 
-> > > > Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
-> > > > Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-> > > > Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> > > > Cc: Frederic Weisbecker <frederic@kernel.org>
-> > > > Cc: Josh Triplett <josh@joshtriplett.org>
-> > > > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > > > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > > > To: rcu@vger.kernel.org
-> > > > ---
-> > > >  kernel/rcu/srcutree.c | 2 --
-> > > >  1 file changed, 2 deletions(-)
-> > > > 
-> > > > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> > > > index 7df59fc8073e..c54d6c04751f 100644
-> > > > --- a/kernel/rcu/srcutree.c
-> > > > +++ b/kernel/rcu/srcutree.c
-> > > > @@ -783,8 +783,6 @@ static void srcu_gp_end(struct srcu_struct *ssp)
-> > > >  			last_lvl = snp >= ssp->level[rcu_num_lvls - 1];
-> > > >  			if (last_lvl)
-> > > >  				cbs = ss_state < SRCU_SIZE_BIG || snp->srcu_have_cbs[idx] == gpseq;
-> > > > -			snp->srcu_have_cbs[idx] = gpseq;
-> > > > -			rcu_seq_set_state(&snp->srcu_have_cbs[idx], 1);
-> > > >  			sgsne = snp->srcu_gp_seq_needed_exp;
-> > > >  			if (srcu_invl_snp_seq(sgsne) || ULONG_CMP_LT(sgsne, gpseq))
-> > > >  				WRITE_ONCE(snp->srcu_gp_seq_needed_exp, gpseq);
-> > > > -- 
-> > > > 2.31.1
-> > > > 
+The beginning pipe (|) on the last line of diagram above shouldn't be there
+(axis label?).
+
+> =20
+>  The following describes four typical scenarios:
+> =20
+> -1. A CPU looping with interrupts disabled.::
+> +1. A CPU looping with interrupts disabled.
+> =20
+> -   rcu:          hardirqs   softirqs   csw/system
+> -   rcu:  number:        0          0            0
+> -   rcu: cputime:        0          0            0   =3D=3D> 2500(ms)
+> +   ::
+> +
+> +     rcu:          hardirqs   softirqs   csw/system
+> +     rcu:  number:        0          0            0
+> +     rcu: cputime:        0          0            0   =3D=3D> 2500(ms)
+> =20
+>     Because interrupts have been disabled throughout the measurement
+>     interval, there are no interrupts and no context switches.
+> @@ -440,11 +442,11 @@ The following describes four typical scenarios:
+> =20
+>     This is similar to the previous example, but with non-zero number of
+>     and CPU time consumed by hard interrupts, along with non-zero CPU
+> -   time consumed by in-kernel execution.::
+> +   time consumed by in-kernel execution. ::
+> =20
+> -   rcu:          hardirqs   softirqs   csw/system
+> -   rcu:  number:      624          0            0
+> -   rcu: cputime:       49          0         2446   =3D=3D> 2500(ms)
+> +     rcu:          hardirqs   softirqs   csw/system
+> +     rcu:  number:      624          0            0
+> +     rcu: cputime:       49          0         2446   =3D=3D> 2500(ms)
+> =20
+>     The fact that there are zero softirqs gives a hint that these were
+>     disabled, perhaps via local_bh_disable().  It is of course possible
+> @@ -454,20 +456,22 @@ The following describes four typical scenarios:
+> =20
+>  3. A CPU looping with preemption disabled.
+> =20
+> -   Here, only the number of context switches is zero.::
+> +   Here, only the number of context switches is zero. ::
+> =20
+> -   rcu:          hardirqs   softirqs   csw/system
+> -   rcu:  number:      624         45            0
+> -   rcu: cputime:       69          1         2425   =3D=3D> 2500(ms)
+> +     rcu:          hardirqs   softirqs   csw/system
+> +     rcu:  number:      624         45            0
+> +     rcu: cputime:       69          1         2425   =3D=3D> 2500(ms)
+> =20
+>     This situation hints that the stalled CPU was looping with preemption
+>     disabled.
+> =20
+> -4. No looping, but massive hard and soft interrupts.::
+> +4. No looping, but massive hard and soft interrupts.
+> +
+> +   ::
+> =20
+> -   rcu:          hardirqs   softirqs   csw/system
+> -   rcu:  number:       xx         xx            0
+> -   rcu: cputime:       xx         xx            0   =3D=3D> 2500(ms)
+> +     rcu:          hardirqs   softirqs   csw/system
+> +     rcu:  number:       xx         xx            0
+> +     rcu: cputime:       xx         xx            0   =3D=3D> 2500(ms)
+> =20
+>     Here, the number and CPU time of hard interrupts are all non-zero,
+>     but the number of context switches and the in-kernel CPU time consumed
+>=20
+
+Because paragraphs below the snippets directly refers to them,just use colo=
+n:=20
+
+---- >8 ----
+
+diff --git a/Documentation/RCU/stallwarn.rst b/Documentation/RCU/stallwarn.=
+rst
+index f15b766d39b8d9..4f6b91be03cfe0 100644
+--- a/Documentation/RCU/stallwarn.rst
++++ b/Documentation/RCU/stallwarn.rst
+@@ -423,9 +423,7 @@ The sampling period is shown as follows::
+=20
+ The following describes four typical scenarios:
+=20
+-1. A CPU looping with interrupts disabled.
+-
+-   ::
++1. A CPU looping with interrupts disabled::
+=20
+      rcu:          hardirqs   softirqs   csw/system
+      rcu:  number:        0          0            0
+@@ -442,7 +440,7 @@ The following describes four typical scenarios:
+=20
+    This is similar to the previous example, but with non-zero number of
+    and CPU time consumed by hard interrupts, along with non-zero CPU
+-   time consumed by in-kernel execution. ::
++   time consumed by in-kernel execution::
+=20
+      rcu:          hardirqs   softirqs   csw/system
+      rcu:  number:      624          0            0
+@@ -456,7 +454,7 @@ The following describes four typical scenarios:
+=20
+ 3. A CPU looping with preemption disabled.
+=20
+-   Here, only the number of context switches is zero. ::
++   Here, only the number of context switches is zero::
+=20
+      rcu:          hardirqs   softirqs   csw/system
+      rcu:  number:      624         45            0
+@@ -465,9 +463,7 @@ The following describes four typical scenarios:
+    This situation hints that the stalled CPU was looping with preemption
+    disabled.
+=20
+-4. No looping, but massive hard and soft interrupts.
+-
+-   ::
++4. No looping, but massive hard and soft interrupts::
+=20
+      rcu:          hardirqs   softirqs   csw/system
+      rcu:  number:       xx         xx            0
+
+Thanks.
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--hoqvooc+Zx6ORxue
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCY34mHgAKCRD2uYlJVVFO
+o5o6AQDXWjQlthiTdbZKz5RB0WuD5lXhFU06qgmYk8d1zEol5AD9HAfnOyfCSDPW
+kkwd0V9REUB1bt6kOpeuRCmtN6mlyQM=
+=2FFX
+-----END PGP SIGNATURE-----
+
+--hoqvooc+Zx6ORxue--
