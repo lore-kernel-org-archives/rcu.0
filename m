@@ -2,262 +2,179 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CEADC4332F
-	for <rcu@archiver.kernel.org>; Thu, 24 Nov 2022 03:57:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9CA04C4332F
+	for <rcu@archiver.kernel.org>; Thu, 24 Nov 2022 04:06:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229457AbiKXD5e (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 23 Nov 2022 22:57:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43310 "EHLO
+        id S229606AbiKXEGz (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 23 Nov 2022 23:06:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbiKXD5d (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 23 Nov 2022 22:57:33 -0500
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A079B33;
-        Wed, 23 Nov 2022 19:57:28 -0800 (PST)
-Received: from dggpemm500020.china.huawei.com (unknown [172.30.72.54])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4NHkdF3hDjzJnqy;
-        Thu, 24 Nov 2022 11:54:09 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggpemm500020.china.huawei.com (7.185.36.49) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 24 Nov 2022 11:57:26 +0800
-Received: from [10.174.178.55] (10.174.178.55) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 24 Nov 2022 11:57:25 +0800
-Subject: Re: [PATCH v2] doc: Fix htmldocs build warnings of stallwarn.rst
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-To:     Bagas Sanjaya <bagasdotme@gmail.com>
-CC:     "Paul E . McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        "Josh Triplett" <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, <rcu@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        <linux-next@vger.kernel.org>
-References: <20221123120238.1904-1-thunder.leizhen@huawei.com>
- <Y34mIhHYjFFzywsk@debian.me>
- <32e46feb-20ee-b3b4-8c36-e6f8c295a4d6@huawei.com>
-Message-ID: <6c5d82bc-f0bf-5cff-2eaa-58acd6aa78cd@huawei.com>
-Date:   Thu, 24 Nov 2022 11:57:24 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        with ESMTP id S229491AbiKXEGy (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 23 Nov 2022 23:06:54 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67FD2C769C
+        for <rcu@vger.kernel.org>; Wed, 23 Nov 2022 20:06:53 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id r12so776303lfp.1
+        for <rcu@vger.kernel.org>; Wed, 23 Nov 2022 20:06:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=0rz2MajdF0Iev+7W0sD18Y9MeiDwccUDPwkBJX/JwlY=;
+        b=ILGJ+pG3BTdkopGLCzITehUXJtSC575ZGrP6+CoXHA5IIsnWLUH91vx8YEjbWCl7Lz
+         rgls4UOKRREjenaksGvIpHJfAoWqcu4LOVdxCVHvgQAE7FHKmokZgmpndplLHIgZCnJy
+         fGv6D7FGxRPrdcRhY7uT8ESacJxbyWB3qdVbqVne2AlgkcnUUVmlJ92SJXilC7nyoN5J
+         h8CLAcXxIZJwlzrksMiQF+I2/ZOUX96+X5HZI71YKfk3CY7dddC9retvKDptI3W/Kjqu
+         +SPZvHTnFpcGXgVu6nHenaf7QNhysXaVyyj7OqtIYpuoM+rOQRbW7/nLs22Oeclt4R63
+         hZKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0rz2MajdF0Iev+7W0sD18Y9MeiDwccUDPwkBJX/JwlY=;
+        b=CSdYIaP+UJewUSwWNgyuoU420QxJ1PAj7ISmbiXTuEroXdixvDQmvKZNtXahTr8dh4
+         smxpbEQS2bZc5/DEaZnrYalANxMUcUd2+zrres3RG9awxRwBEYlHI3cTzzjykemR/X1I
+         v98m0j4nHcYSfUi+7jNUV2JIVKD/SzO69fW8nOZ1YKKYCyhYD2BTp4UzaakwzVetUOkt
+         tuox1PTNsHbcG0sNGrsi0YWe1vGiE3gBkvBJsqHu3NIlu69gw95EjttD+skgbf1y+z1S
+         mhjjvoO3h8SY8dwGoz7u2toV1hHrZ9iDSdMbWG+d12TRUfk4vJvH+CtZtmDF2kfdo3Wd
+         nvmg==
+X-Gm-Message-State: ANoB5pmjw4zAzTF5oW6JICsU6MQxt3UqtetalAMv1HcjL6Gqx45260ou
+        w12frFIyOMt70bnJZcAmPC6LxdjvXr3q6VuAH9KDqEZu52Go
+X-Google-Smtp-Source: AA0mqf6mVpldStCX/GRvCBobWSlaETj47p5WWR7EKyot0nP4YRKaZynBnLeb38fG1C+9h0AyC+ihhAorCpopE5YFHw8=
+X-Received: by 2002:ac2:41d9:0:b0:4b1:4d9f:2204 with SMTP id
+ d25-20020ac241d9000000b004b14d9f2204mr9803965lfi.22.1669262811659; Wed, 23
+ Nov 2022 20:06:51 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <32e46feb-20ee-b3b4-8c36-e6f8c295a4d6@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.55]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+References: <20221123135638.79021-1-kernelfans@gmail.com> <20221123135638.79021-3-kernelfans@gmail.com>
+ <20221123192046.GH4001@paulmck-ThinkPad-P17-Gen-1> <Y37l9PDleNiaHFLo@piliu.users.ipa.redhat.com>
+In-Reply-To: <Y37l9PDleNiaHFLo@piliu.users.ipa.redhat.com>
+From:   Pingfan Liu <kernelfans@gmail.com>
+Date:   Thu, 24 Nov 2022 12:06:39 +0800
+Message-ID: <CAFgQCTsEOQAuiMkPp1XnBRvSUxxW3ihkBFPhDuA7zpwgSPj+Kg@mail.gmail.com>
+Subject: Re: [PATCHv2 2/2] srcu: Eliminate the case that snp_seq bigger than
+ snap in srcu_funnel_gp_start()
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     rcu@vger.kernel.org, Lai Jiangshan <jiangshanlai@gmail.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Thu, Nov 24, 2022 at 11:33 AM Pingfan Liu <kernelfans@gmail.com> wrote:
+>
+> On Wed, Nov 23, 2022 at 11:20:46AM -0800, Paul E. McKenney wrote:
+> > On Wed, Nov 23, 2022 at 09:56:38PM +0800, Pingfan Liu wrote:
+> > > Since the srcu read lock is still held during srcu_funnel_gp_start(),
+> > > the seq snap should be the largest number for the slot
+> > > srcu_have_cbs[idx].
+> > >
+> > > Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+> > > Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> > > Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> > > Cc: Frederic Weisbecker <frederic@kernel.org>
+> > > Cc: Josh Triplett <josh@joshtriplett.org>
+> > > Cc: Steven Rostedt <rostedt@goodmis.org>
+> > > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > > To: rcu@vger.kernel.org
+> > > ---
+> > >  include/linux/rcupdate.h |  1 +
+> > >  kernel/rcu/srcutree.c    | 11 ++++++-----
+> > >  2 files changed, 7 insertions(+), 5 deletions(-)
+> > >
+> > > diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+> > > index 08605ce7379d..a09007236660 100644
+> > > --- a/include/linux/rcupdate.h
+> > > +++ b/include/linux/rcupdate.h
+> > > @@ -32,6 +32,7 @@
+> > >  #include <linux/context_tracking_irq.h>
+> > >
+> > >  #define ULONG_CMP_GE(a, b) (ULONG_MAX / 2 >= (a) - (b))
+> > > +#define ULONG_CMP_GT(a, b) (ULONG_MAX / 2 > (a) - (b))
+> >
+> > Please see below...
+> >
+> > >  #define ULONG_CMP_LT(a, b) (ULONG_MAX / 2 < (a) - (b))
+> > >  #define ulong2long(a)              (*(long *)(&(a)))
+> > >  #define USHORT_CMP_GE(a, b)        (USHRT_MAX / 2 >= (unsigned short)((a) - (b)))
+> > > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> > > index 2fc0e775ade4..41902b823687 100644
+> > > --- a/kernel/rcu/srcutree.c
+> > > +++ b/kernel/rcu/srcutree.c
+> > > @@ -905,14 +905,15 @@ static void srcu_funnel_gp_start(struct srcu_struct *ssp, struct srcu_data *sdp,
+> > >             for (snp = snp_leaf; snp != NULL; snp = snp->srcu_parent) {
+> > >                     spin_lock_irqsave_rcu_node(snp, flags);
+> > >                     snp_seq = snp->srcu_have_cbs[idx];
+> > > -                   if (!srcu_invl_snp_seq(snp_seq) && ULONG_CMP_GE(snp_seq, s)) {
+> > > +                   /*
+> > > +                    * s should be the biggest in the current slot. Hence only LE is
+> > > +                    * valid
+> > > +                    */
+> > > +                   BUG_ON(ULONG_CMP_GT(snp_seq, s));
+> >
+> > Why not this?  (Plus adjusting the comment above, of course.)
+> >
+> >                       WARN_ON_ONCE(ULONG_CMP_LT(s, snp_seq));
+> >
+>
+> A neat solution!
+>
+> And what about the comment
+>                         /* s should be the biggest in the current slot. */
+>
+> > That way we don't need ULONG_CMP_GT().  Plus if we are confused about
+> > s being the biggest in the current slot, we get a splat and can debug
+> > further.  We both might be quite sure that we are not confused, but
+> > that is exactly when we are most prone to making mistakes.  ;-)
+> >
+>
+> Same feeling :)
+>
+> > I also ask that you run with this check for some time.  After all, if
+>
 
+Forget to ask if  the test
+  "tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration
+10h --configs 18*SRCU-P"
+satisfies your requirement?
 
-On 2022/11/24 11:34, Leizhen (ThunderTown) wrote:
-> 
-> 
-> On 2022/11/23 21:54, Bagas Sanjaya wrote:
->> On Wed, Nov 23, 2022 at 08:02:38PM +0800, Zhen Lei wrote:
->>> Documentation/RCU/stallwarn.rst:
->>> 401: WARNING: Literal block expected; none found.
->>> 428: WARNING: Literal block expected; none found.
->>> 445: WARNING: Literal block expected; none found.
->>> 459: WARNING: Literal block expected; none found.
->>> 468: WARNING: Literal block expected; none found.
->>>
->>> The literal block need to be indented, so add two spaces to each line.
->>
->> Indenting to match alignment of lists texts?
-> 
-> It's required by reStructuredText Markup Specification.
-> 
-> Indented Literal Blocks
-> Indented literal blocks are indicated by indentation relative to the
-> surrounding text (leading whitespace on each line). The literal block
-> ends with the end of the indentation.
-> 
-> The surrounding text need to be indented, relative to the paragraphs
-> above and below it and at the same level.
-> 
->>
->>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
->>
->> You miss crediting linux-next list, so please add:
->>
->> Link: https://lore.kernel.org/linux-next/20221123163255.48653674@canb.auug.org.au/
->> Fixes: 3d2788ba4573 ("doc: Document CONFIG_RCU_CPU_STALL_CPUTIME=y stall information")
->> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> 
-> OK, thanks.
-> 
->>
->>> -The sampling period is shown as follows:
->>> -:<------------first timeout---------->:<-----second timeout----->:
->>> -:<--half timeout-->:<--half timeout-->:                          :
->>> -:                  :<--first period-->:                          :
->>> -:                  :<-----------second sampling period---------->:
->>> -:                  :                  :                          :
->>> -:          snapshot time point    1st-stall                  2nd-stall
->>> +The sampling period is shown as follows::
->>>  
->>> +  |<------------first timeout---------->|<-----second timeout----->|
->>> +  |<--half timeout-->|<--half timeout-->|                          |
->>> +  |                  |<--first period-->|                          |
->>> +  |                  |<-----------second sampling period---------->|
->>> +  |                  |                  |                          |
->>> +  |          snapshot time point    1st-stall                  2nd-stall
->>
->> The beginning pipe (|) on the last line of diagram above shouldn't be there
->> (axis label?).
-> 
-> OK, it might look better to delete it.
-> 
-> The text in literal block is treated as plain text.
-> 
-> 
->>
->>>  
->>>  The following describes four typical scenarios:
->>>  
->>> -1. A CPU looping with interrupts disabled.::
->>> +1. A CPU looping with interrupts disabled.
->>>  
->>> -   rcu:          hardirqs   softirqs   csw/system
->>> -   rcu:  number:        0          0            0
->>> -   rcu: cputime:        0          0            0   ==> 2500(ms)
->>> +   ::
->>> +
->>> +     rcu:          hardirqs   softirqs   csw/system
->>> +     rcu:  number:        0          0            0
->>> +     rcu: cputime:        0          0            0   ==> 2500(ms)
->>>  
->>>     Because interrupts have been disabled throughout the measurement
->>>     interval, there are no interrupts and no context switches.
->>> @@ -440,11 +442,11 @@ The following describes four typical scenarios:
->>>  
->>>     This is similar to the previous example, but with non-zero number of
->>>     and CPU time consumed by hard interrupts, along with non-zero CPU
->>> -   time consumed by in-kernel execution.::
->>> +   time consumed by in-kernel execution. ::
->>>  
->>> -   rcu:          hardirqs   softirqs   csw/system
->>> -   rcu:  number:      624          0            0
->>> -   rcu: cputime:       49          0         2446   ==> 2500(ms)
->>> +     rcu:          hardirqs   softirqs   csw/system
->>> +     rcu:  number:      624          0            0
->>> +     rcu: cputime:       49          0         2446   ==> 2500(ms)
->>>  
->>>     The fact that there are zero softirqs gives a hint that these were
->>>     disabled, perhaps via local_bh_disable().  It is of course possible
->>> @@ -454,20 +456,22 @@ The following describes four typical scenarios:
->>>  
->>>  3. A CPU looping with preemption disabled.
->>>  
->>> -   Here, only the number of context switches is zero.::
->>> +   Here, only the number of context switches is zero. ::
->>>  
->>> -   rcu:          hardirqs   softirqs   csw/system
->>> -   rcu:  number:      624         45            0
->>> -   rcu: cputime:       69          1         2425   ==> 2500(ms)
->>> +     rcu:          hardirqs   softirqs   csw/system
->>> +     rcu:  number:      624         45            0
->>> +     rcu: cputime:       69          1         2425   ==> 2500(ms)
->>>  
->>>     This situation hints that the stalled CPU was looping with preemption
->>>     disabled.
->>>  
->>> -4. No looping, but massive hard and soft interrupts.::
->>> +4. No looping, but massive hard and soft interrupts.
->>> +
->>> +   ::
->>>  
->>> -   rcu:          hardirqs   softirqs   csw/system
->>> -   rcu:  number:       xx         xx            0
->>> -   rcu: cputime:       xx         xx            0   ==> 2500(ms)
->>> +     rcu:          hardirqs   softirqs   csw/system
->>> +     rcu:  number:       xx         xx            0
->>> +     rcu: cputime:       xx         xx            0   ==> 2500(ms)
->>>  
->>>     Here, the number and CPU time of hard interrupts are all non-zero,
->>>     but the number of context switches and the in-kernel CPU time consumed
->>>
->>
->> Because paragraphs below the snippets directly refers to them,just use colon: 
-> 
-> This makes the style inconsistent when viewed on the web page. So I decided not
-> to change it.
-> 
-> Take your advice and the end result will be as follows: (1 and 4 followed by a
-> colon, 2 and 3 followed by a dot)
-> 
-> 1. A CPU looping with interrupts disabled:
-> 2. A CPU looping with bottom halves disabled.
-> 3. A CPU looping with preemption disabled.
-> 4. No looping, but massive hard and soft interrupts:
+Thanks
 
-Oh, I accept the suggestions for items 2 and 3.
-
-> 
->>
->> ---- >8 ----
->>
->> diff --git a/Documentation/RCU/stallwarn.rst b/Documentation/RCU/stallwarn.rst
->> index f15b766d39b8d9..4f6b91be03cfe0 100644
->> --- a/Documentation/RCU/stallwarn.rst
->> +++ b/Documentation/RCU/stallwarn.rst
->> @@ -423,9 +423,7 @@ The sampling period is shown as follows::
->>  
->>  The following describes four typical scenarios:
->>  
->> -1. A CPU looping with interrupts disabled.
->> -
->> -   ::
->> +1. A CPU looping with interrupts disabled::
->>  
->>       rcu:          hardirqs   softirqs   csw/system
->>       rcu:  number:        0          0            0
->> @@ -442,7 +440,7 @@ The following describes four typical scenarios:
->>  
->>     This is similar to the previous example, but with non-zero number of
->>     and CPU time consumed by hard interrupts, along with non-zero CPU
->> -   time consumed by in-kernel execution. ::
->> +   time consumed by in-kernel execution::
->>  
->>       rcu:          hardirqs   softirqs   csw/system
->>       rcu:  number:      624          0            0
->> @@ -456,7 +454,7 @@ The following describes four typical scenarios:
->>  
->>  3. A CPU looping with preemption disabled.
->>  
->> -   Here, only the number of context switches is zero. ::
->> +   Here, only the number of context switches is zero::
->>  
->>       rcu:          hardirqs   softirqs   csw/system
->>       rcu:  number:      624         45            0
->> @@ -465,9 +463,7 @@ The following describes four typical scenarios:
->>     This situation hints that the stalled CPU was looping with preemption
->>     disabled.
->>  
->> -4. No looping, but massive hard and soft interrupts.
->> -
->> -   ::
->> +4. No looping, but massive hard and soft interrupts::
->>  
->>       rcu:          hardirqs   softirqs   csw/system
->>       rcu:  number:       xx         xx            0
->>
->> Thanks.
->>
-> 
-
--- 
-Regards,
-  Zhen Lei
+    Pingfan
+> Sure. I will try it immediately.
+>
+> > the assumption is incorrect, the resulting SRCU hangs off in various
+> > systems around the world will not be so much fun to debug.
+> >
+> > Given that this is slowpath code, it is much better to take an extra
+> > compare and branch than to introduce even an extremely small risk of
+> > hanging SRCU.
+> >
+>
+> Agree.
+>
+>
+> Thanks,
+>
+>         Pingfan
+>
+> >                                                       Thanx, Paul
+> >
+> > > +                   if (!srcu_invl_snp_seq(snp_seq) && (snp_seq == s)) {
+> > >                             if (snp == snp_leaf && snp_seq == s)
+> > >                                     snp->srcu_data_have_cbs[idx] |= sdp->grpmask;
+> > >                             spin_unlock_irqrestore_rcu_node(snp, flags);
+> > > -                           if (snp == snp_leaf && snp_seq != s) {
+> > > -                                   srcu_schedule_cbs_sdp(sdp, do_norm ? SRCU_INTERVAL : 0);
+> > > -                                   return;
+> > > -                           }
+> > >                             if (!do_norm)
+> > >                                     srcu_funnel_exp_start(ssp, snp, s);
+> > >                             return;
+> > > --
+> > > 2.31.1
+> > >
