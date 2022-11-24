@@ -2,191 +2,159 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C9C0EC4332F
-	for <rcu@archiver.kernel.org>; Thu, 24 Nov 2022 00:21:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1EE4DC433FE
+	for <rcu@archiver.kernel.org>; Thu, 24 Nov 2022 01:00:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229611AbiKXAVd (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 23 Nov 2022 19:21:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49386 "EHLO
+        id S229682AbiKXBAY (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 23 Nov 2022 20:00:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbiKXAVc (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 23 Nov 2022 19:21:32 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 815F6623A5
-        for <rcu@vger.kernel.org>; Wed, 23 Nov 2022 16:21:30 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id A6B1AB825F6
-        for <rcu@vger.kernel.org>; Thu, 24 Nov 2022 00:21:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57D35C433D6;
-        Thu, 24 Nov 2022 00:21:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669249288;
-        bh=F3nMEi0/i23+ohAwW+IoOB0q23o7kJvxyk3gcIy48pg=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=hTHXTa38fBEMgnrdbNfR3lwhFxgIdzGuup/bH+PX+mq0HfApjBIWs3kaALRNJoIRw
-         q04T7jBS4qSH5yjmdHMokvVyL4bGUf4N68MinSdwqyVtY+7hr7oYYEBPRBywnTSLv+
-         ThwnF3BJ7sISmwNx4RM7Zf7yf8tBLtbP4ekmE5F5YreNvnamX96nRyyptVlapSm/WH
-         MZkl1htk+AiKwcPHQi4FInnxoEh27YUM8W/qu/Md4fDnHsfl4AkM5p2FTmIztelpxp
-         FUb246/mMh8dKX96ULyEPrxCF+xqY+RA2wcw7MhtNF/LR1ti97ycCtyggXuQYbhUiN
-         f4lpgSkPWvigw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 09C4B5C0DF2; Wed, 23 Nov 2022 16:21:28 -0800 (PST)
-Date:   Wed, 23 Nov 2022 16:21:28 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Jan Kara <jack@suse.cz>
-Cc:     rcu@vger.kernel.org, Lai Jiangshan <jiangshanlai@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Amir Goldstein <amir73il@gmail.com>
-Subject: Re: SRCU use from different contexts
-Message-ID: <20221124002128.GN4001@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20221123114645.3aowv3hw4hxqr2ed@quack3>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221123114645.3aowv3hw4hxqr2ed@quack3>
+        with ESMTP id S229686AbiKXBAW (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 23 Nov 2022 20:00:22 -0500
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E8E6D06DF
+        for <rcu@vger.kernel.org>; Wed, 23 Nov 2022 17:00:21 -0800 (PST)
+Received: by mail-qv1-xf2b.google.com with SMTP id s18so80309qvo.9
+        for <rcu@vger.kernel.org>; Wed, 23 Nov 2022 17:00:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OZUox7da7NgS3v6hjso4mfE8wJf8mF4cfDLgIf1o1rM=;
+        b=a7cgmhJvfmdaSZgsxIp7YCdK5xR1KnroUd195Ydv21xGaGj4YRxD3fVqeq2Bjx/yBM
+         YpT70gEvl8jLyu9CvdrP78Sxdw9zP7xJOnVQOneeseOj/TQb0sPiH+ZPqMX4fvs64XuD
+         QxcnmEsTnnysOOOCBybe0XWLd0IGWeQUecDWA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OZUox7da7NgS3v6hjso4mfE8wJf8mF4cfDLgIf1o1rM=;
+        b=MS/mNK+rN3tbVPgpGtQCRLqjEzlShn+LNT1tew5rpSMZuL0IgDzQwfKb8nFCK37/Q3
+         u/cWbfbnsDQwxVRIx1XvvDov1rdBYyxS1K0TNiSV1kO8eQzivIIxpCdt8x1W2mf9k3ek
+         /qU6AhBiIujzfho9lk+Olb/SbKRAjbR6oU6qoQcMdXEb26nG4YX6+u8fieu4jHo1WfOE
+         Ag5me1s9XQKxAYfTsMw9Xe3vAgk5LMa6Y+deL+JOQIYGZehMEHO1k4nUSQCDXKHpvQJj
+         Xk9oaQceZo0ZlfjYCxy3uM+xGj1pGT1JpCnY5vxBHce1zbzSrxawQnQrwtCy7YXe2bsz
+         Ru+w==
+X-Gm-Message-State: ANoB5pn/OZwwjpAPNrJnXk9y60Y/LrZEiNJR/o+On6lIgdckqj8EuzGR
+        vNxPb4D1PvHulOsjvTTxQB833Q==
+X-Google-Smtp-Source: AA0mqf4xkVWmMgFzLI8NzSImgfx/kKA1XoFMQq7ed5TI5PiwsRUgFgYbhvxOUGgn8+4PPOo9dLQXYw==
+X-Received: by 2002:ad4:534b:0:b0:4b1:8429:a8a7 with SMTP id v11-20020ad4534b000000b004b18429a8a7mr10833373qvs.52.1669251619580;
+        Wed, 23 Nov 2022 17:00:19 -0800 (PST)
+Received: from smtpclient.apple (c-73-148-104-166.hsd1.va.comcast.net. [73.148.104.166])
+        by smtp.gmail.com with ESMTPSA id fv11-20020a05622a4a0b00b003a526675c07sm10692431qtb.52.2022.11.23.17.00.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Nov 2022 17:00:19 -0800 (PST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Joel Fernandes <joel@joelfernandes.org>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH v2 rcu 05/16] rcu: Refactor code a bit in rcu_nocb_do_flush_bypass()
+Date:   Wed, 23 Nov 2022 20:00:18 -0500
+Message-Id: <F3FB7417-0E5F-487A-A880-15964B676020@joelfernandes.org>
+References: <20221123175437.GA4001@paulmck-ThinkPad-P17-Gen-1>
+Cc:     Frederic Weisbecker <frederic@kernel.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        rostedt@goodmis.org
+In-Reply-To: <20221123175437.GA4001@paulmck-ThinkPad-P17-Gen-1>
+To:     paulmck@kernel.org
+X-Mailer: iPhone Mail (19G82)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Nov 23, 2022 at 12:46:45PM +0100, Jan Kara wrote:
-> Hello!
-> 
-> We were pondering with Amir about some issues with fsnotify subsystem and
-> as a building block we would need a mechanism to make sure write(2) has
-> completed. For simplicity we could imagine it like a sequence
-> 
-> write(2)
->   START
->   do stuff to perform write
->   END
-> 
-> and we need a mechanism to wait for all processes that already passed START
-> to reach END. Ideally without blocking new writes while we wait for the
-> pending ones. Now this seems like a good task for SRCU. We could do:
-> 
-> write(2)
->   srcu_read_lock(&sb->s_write_rcu);
->   do stuff to perform write
->   srcu_read_unlock(&sb->s_write_rcu);
-> 
-> and use synchronize_srcu(&sb->s_write_rcu) for waiting.
-> 
-> But the trouble with writes is there are things like aio or io_uring where
-> the part with srcu_read_lock() happens from one task (the submitter) while
-> the part with srcu_read_unlock() happens from another context (usually worker
-> thread triggered by IRQ reporting that the HW has finished the IO).
-> 
-> Is there any chance to make SRCU work in a situation like this? It seems to
-> me in principle it should be possible to make this work but maybe there are
-> some implementation constraints I'm missing... 
 
-The srcu_read_lock_notrace() and srcu_read_unlock_notrace() functions
-will work for this, though that is not their intended purpose.  Plus you
-might want to trace these functions, which, as their names indicate, is
-not permitted.  I assume that you do not intend to use these functions
-from NMI handlers, though that really could be accommodated.  (But why
-would you need that?)
 
-So how about srcu_down_read() and srcu_up_read(), as shown in the
-(untested) patch below?
+> On Nov 23, 2022, at 12:54 PM, Paul E. McKenney <paulmck@kernel.org> wrote:=
 
-Note that you do still need to pass the return value from srcu_down_read()
-into srcu_up_read().  I am guessing that io_uring has a convenient place
-that this value can be placed.  No idea about aio.
+>=20
+> =EF=BB=BFOn Wed, Nov 23, 2022 at 04:59:29PM +0100, Frederic Weisbecker wro=
+te:
+>>> On Mon, Nov 21, 2022 at 05:04:10PM -0800, Paul E. McKenney wrote:
+>>> From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+>>>=20
+>>> This consolidates the code a bit and makes it cleaner. Functionally it
+>>> is the same.
+>>>=20
+>>> Reported-by: Paul E. McKenney <paulmck@kernel.org>
+>>> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+>>> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+>>> ---
+>>> kernel/rcu/tree_nocb.h | 17 +++++++++--------
+>>> 1 file changed, 9 insertions(+), 8 deletions(-)
+>>>=20
+>>> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+>>> index d6e4c076b0515..213daf81c057f 100644
+>>> --- a/kernel/rcu/tree_nocb.h
+>>> +++ b/kernel/rcu/tree_nocb.h
+>>> @@ -327,10 +327,11 @@ static void wake_nocb_gp_defer(struct rcu_data *rd=
+p, int waketype,
+>>>  *
+>>>  * Note that this function always returns true if rhp is NULL.
+>>>  */
+>>> -static bool rcu_nocb_do_flush_bypass(struct rcu_data *rdp, struct rcu_h=
+ead *rhp,
+>>> +static bool rcu_nocb_do_flush_bypass(struct rcu_data *rdp, struct rcu_h=
+ead *rhp_in,
+>>>                     unsigned long j, bool lazy)
+>>> {
+>>>    struct rcu_cblist rcl;
+>>> +    struct rcu_head *rhp =3D rhp_in;
+>>=20
+>> Why that intermediate rhp_in?
+>=20
+> To avoid modifying the formal parameter, should the original value prove
+> useful, for example, for tracing or debugging.
 
-Thoughts?
+So as to not re assign function parameter and introduce bugs down the line (=
+someone reading code thinks they passed a certain rhp but code is using some=
+thing else later in the function).
 
-							Thanx, Paul
+Thanks.
 
-------------------------------------------------------------------------
 
-commit 0efa1e7b5a862e9c2f1bf8c19db6bd142ad35355
-Author: Paul E. McKenney <paulmck@kernel.org>
-Date:   Wed Nov 23 15:49:55 2022 -0800
 
-    rcu: Add srcu_down_read() and srcu_up_read()
-    
-    A pair of matching srcu_read_lock() and srcu_read_unlock() invocations
-    must take place within the same context, for example, within the same
-    task.  Otherwise, lockdep complains, as is the right thing to do for
-    most use cases.
-    
-    However, there are use cases involving asynchronous I/O where the
-    SRCU reader needs to begin on one task and end on another.  This commit
-    therefore supplies the semaphore-like srcu_down_read() and srcu_up_read(),
-    which act like srcu_read_lock() and srcu_read_unlock(), but permitting
-    srcu_up_read() to be invoked in a different context than was the matching
-    srcu_down_read().
-    
-    Neither srcu_down_read() nor srcu_up_read() may be invoked from an
-    NMI handler.
-    
-    Reported-by: Jan Kara <jack@suse.cz>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+>=20
+>>>    WARN_ON_ONCE(!rcu_rdp_is_offloaded(rdp));
+>>>    rcu_lockdep_assert_cblist_protected(rdp);
+>>> @@ -345,16 +346,16 @@ static bool rcu_nocb_do_flush_bypass(struct rcu_da=
+ta *rdp, struct rcu_head *rhp,
+>>>=20
+>>>    /*
+>>>     * If the new CB requested was a lazy one, queue it onto the main
+>>> -     * ->cblist so we can take advantage of a sooner grade period.
+>>> +     * ->cblist so that we can take advantage of the grace-period that w=
+ill
+>>> +     * happen regardless. But queue it onto the bypass list first so th=
+at
+>>> +     * the lazy CB is ordered with the existing CBs in the bypass list.=
 
-diff --git a/include/linux/srcu.h b/include/linux/srcu.h
-index 9b9d0bbf1d3cf..74796cd7e7a9d 100644
---- a/include/linux/srcu.h
-+++ b/include/linux/srcu.h
-@@ -214,6 +214,34 @@ srcu_read_lock_notrace(struct srcu_struct *ssp) __acquires(ssp)
- 	return retval;
- }
- 
-+/**
-+ * srcu_down_read - register a new reader for an SRCU-protected structure.
-+ * @ssp: srcu_struct in which to register the new reader.
-+ *
-+ * Enter a semaphore-like SRCU read-side critical section.  Note that
-+ * SRCU read-side critical sections may be nested.  However, it is
-+ * illegal to call anything that waits on an SRCU grace period for the
-+ * same srcu_struct, whether directly or indirectly.  Please note that
-+ * one way to indirectly wait on an SRCU grace period is to acquire
-+ * a mutex that is held elsewhere while calling synchronize_srcu() or
-+ * synchronize_srcu_expedited().  But if you want lockdep to help you
-+ * keep this stuff straight, you should instead use srcu_read_lock().
-+ *
-+ * The semaphore-like nature of srcu_down_read() means that the matching
-+ * srcu_up_read() can be invoked from some other context, for example,
-+ * from some other task or from an irq handler.  However, neither
-+ * srcu_down_read() nor srcu_up_read() may be invoked from an NMI handler.
-+ *
-+ * Calls to srcu_down_read() may be nested, similar to the manner in
-+ * which calls to down_read() may be nested.
-+ */
-+static inline int srcu_down_read(struct srcu_struct *ssp) __acquires(ssp)
-+{
-+	WARN_ON_ONCE(in_nmi());
-+	srcu_check_nmi_safety(ssp, false);
-+	return __srcu_read_lock(ssp);
-+}
-+
- /**
-  * srcu_read_unlock - unregister a old reader from an SRCU-protected structure.
-  * @ssp: srcu_struct in which to unregister the old reader.
-@@ -254,6 +282,23 @@ srcu_read_unlock_notrace(struct srcu_struct *ssp, int idx) __releases(ssp)
- 	__srcu_read_unlock(ssp, idx);
- }
- 
-+/**
-+ * srcu_up_read - unregister a old reader from an SRCU-protected structure.
-+ * @ssp: srcu_struct in which to unregister the old reader.
-+ * @idx: return value from corresponding srcu_read_lock().
-+ *
-+ * Exit an SRCU read-side critical section, but not necessarily from
-+ * the same context as the maching srcu_down_read().
-+ */
-+static inline void srcu_up_read(struct srcu_struct *ssp, int idx)
-+	__releases(ssp)
-+{
-+	WARN_ON_ONCE(idx & ~0x1);
-+	WARN_ON_ONCE(in_nmi());
-+	srcu_check_nmi_safety(ssp, false);
-+	__srcu_read_unlock(ssp, idx);
-+}
-+
- /**
-  * smp_mb__after_srcu_read_unlock - ensure full ordering after srcu_read_unlock
-  *
+>>>     */
+>>>    if (lazy && rhp) {
+>>> -        rcu_cblist_flush_enqueue(&rcl, &rdp->nocb_bypass, NULL);
+>>> -        rcu_cblist_enqueue(&rcl, rhp);
+>>> -        WRITE_ONCE(rdp->lazy_len, 0);
+>>> -    } else {
+>>> -        rcu_cblist_flush_enqueue(&rcl, &rdp->nocb_bypass, rhp);
+>>> -        WRITE_ONCE(rdp->lazy_len, 0);
+>>> +        rcu_cblist_enqueue(&rdp->nocb_bypass, rhp);
+>>> +        rhp =3D NULL;
+>>>    }
+>>> +    rcu_cblist_flush_enqueue(&rcl, &rdp->nocb_bypass, rhp);
+>>> +    WRITE_ONCE(rdp->lazy_len, 0);
+>>=20
+>> Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+>=20
+> Thank you!  I will apply this on my next rebase.
+>=20
+>                            Thanx, Paul
+>=20
+>> Thanks.
+>>=20
+>>>=20
+>>>    rcu_segcblist_insert_pend_cbs(&rdp->cblist, &rcl);
+>>>    WRITE_ONCE(rdp->nocb_bypass_first, j);
+>>> --=20
+>>> 2.31.1.189.g2e36527f23
+>>>=20
