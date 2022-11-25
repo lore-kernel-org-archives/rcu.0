@@ -2,208 +2,119 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 247E6C4332F
-	for <rcu@archiver.kernel.org>; Fri, 25 Nov 2022 12:46:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AC18EC4332F
+	for <rcu@archiver.kernel.org>; Fri, 25 Nov 2022 12:46:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229489AbiKYMqK (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 25 Nov 2022 07:46:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46970 "EHLO
+        id S229436AbiKYMqU (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 25 Nov 2022 07:46:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbiKYMqJ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 25 Nov 2022 07:46:09 -0500
-Received: from mail-vs1-xe30.google.com (mail-vs1-xe30.google.com [IPv6:2607:f8b0:4864:20::e30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 869281706B;
-        Fri, 25 Nov 2022 04:46:05 -0800 (PST)
-Received: by mail-vs1-xe30.google.com with SMTP id i11so3044101vsr.7;
-        Fri, 25 Nov 2022 04:46:05 -0800 (PST)
+        with ESMTP id S229500AbiKYMqT (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 25 Nov 2022 07:46:19 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 677DE1A044
+        for <rcu@vger.kernel.org>; Fri, 25 Nov 2022 04:46:19 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id mv18so3652339pjb.0
+        for <rcu@vger.kernel.org>; Fri, 25 Nov 2022 04:46:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=wPivjPzzhpQmrJfAUAvoepLnVMQiqd/mK51ccxFBWCw=;
-        b=mTsjbV8sGLd0GO1e9JF/mxRHJYTjOTxWHs4Kso7JEn4fNtLXFDJ5boG2O46pj1nJaL
-         MYAdxikxubzRICJloEDJ/5QQAty+hEhefSIZeB4HmkYZhxZslwUdYaLUifNB+P1vjUrX
-         mMU4RwRWTZ7qkNY4J+I7L4G94/2lCmEGYwsHMD6s3/rBUQp1qMlwxDe/2clVEWrNYqSw
-         YCk7sex29d99CS/Ym1xl/FNiW+eHIEFQkAo2R5gw4ICKJYebKUJ4a+zrzuLBDqiRYRef
-         Usr1tbE/6CjeGMu3CmZGCmJ1nUqP6Et0YWG+tD5TtgkROo5xP5VmiJf2u2kh+TLudVD+
-         HW2Q==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=l5LjS1uk/D0svdTm4OsleYTpQTzrNA/EHEEPoJGJnvA=;
+        b=IVXhds1RDwXYeKz56wvwcmB5Q90vWTvvZc02d6oWJwca3qD/PHCIyb1zfJPsacYST0
+         KgnFVMM7LqeO7p/4H1j+/qY+zSDPBGW/CdAu50eyJ8Ztx7JdoVkbFH+CZ4TneIxOaEu2
+         c4S3Hj632nnrDFi+1Wj+ZL9dy251MNKdZN3nYjbBKmwNGV7nronjTziRC1vd4bQPNk0Q
+         fVhtpZn8s2WgG8rdtALm9G+nNT3y0VQN9v2uQatKoBuh8oSP0TN5EwO1lhjCGNKYVnNE
+         JnUeddLEZaPErqHmW+eRSjqVAiXv6NxNjVG9dfHpYb7w0LCyYQ5dHwLiw/ZkFyZ2nhle
+         Q5VQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wPivjPzzhpQmrJfAUAvoepLnVMQiqd/mK51ccxFBWCw=;
-        b=nqDwYgfAmrYbRLvL5wOYBGn25+VikpKj7I0AeQ288ef4dwPPkG8i/T9ZcJXoH2MIn3
-         tIa00wq0JMIN7abFdf5P+GynhXJkNqmaAkiJx7946+U67sdlFMw1Zr76js5hd5AxuHOv
-         hccQr50BEKLqiSgkWhnM+Je+iaNhChrGM3kxVSmU03rotqCYU064OF5GeD8L5kKUX4vG
-         rVLvKkhaBWhVF/h2/90mMoGld5EgVpxxKFetV0c2sPFEhVSkpbhJ3eTRidPZhjKyGS14
-         Bq0UjRccMoaRXcDW5GB6gR3sxzKO1UTcfhjgj4FZVWKODaEViRI+91byNmUylNyNLekp
-         TrOQ==
-X-Gm-Message-State: ANoB5pntVrxYqMBaAUZR0PTetr/QovyLSoxidsEDGrLpAq+EFLlfy2ux
-        JXKlWR3QYcD6L+tNDjGJo9Dk9z5fJg5eVrBV3b3bt7YUiJw=
-X-Google-Smtp-Source: AA0mqf6Jw6hvKKa/ikOTo7pWpu6epXVSirpNAhczeEA+O+gM2faT2KcJsxQewGdWp83ZAyk3oupTsB2Fp7nRKoaVN+8=
-X-Received: by 2002:a05:6102:3bc1:b0:3a7:9b8c:2e4c with SMTP id
- a1-20020a0561023bc100b003a79b8c2e4cmr9720937vsv.72.1669380364526; Fri, 25 Nov
- 2022 04:46:04 -0800 (PST)
-MIME-Version: 1.0
-References: <20221123114645.3aowv3hw4hxqr2ed@quack3> <20221124002128.GN4001@paulmck-ThinkPad-P17-Gen-1>
- <CAOQ4uxge4cF_o80bbXPE2ZAjRwy9zNA6U1oXsdyYsiF-wVRvpA@mail.gmail.com>
- <20221124095840.zdcwnge4hbxqcz5d@quack3> <20221124161147.GQ4001@paulmck-ThinkPad-P17-Gen-1>
- <20221124174626.lueg3f65ikhp2f3l@quack3>
-In-Reply-To: <20221124174626.lueg3f65ikhp2f3l@quack3>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Fri, 25 Nov 2022 14:45:53 +0200
-Message-ID: <CAOQ4uxhL4Rmk1ria2_AEc0rJXPAaHLeuWQj9RKZqSv9TU_paTw@mail.gmail.com>
-Subject: Re: SRCU use from different contexts
-To:     "Paul E. McKenney" <paulmck@kernel.org>, Jan Kara <jack@suse.cz>
-Cc:     rcu@vger.kernel.org, Lai Jiangshan <jiangshanlai@gmail.com>,
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=l5LjS1uk/D0svdTm4OsleYTpQTzrNA/EHEEPoJGJnvA=;
+        b=IT7Id62ntquq0olfD3VJGclQgAyqGW3kCtBzTNmKxfOeVorC9dSlbwVRQ/akw5Yl09
+         q9A69HFxkJl+7um6J/YjErDT8xNCI5fR68IN5/eufsZWqZBDckUAsU0P+9ccjJRHJ/JZ
+         6Gu+EbiIduDyzATW7dFitXbiAL7rUFmQVdtkvpJDQnWXpEv4UsjCZJpFjNR8faajqfUj
+         qKb0W83ErVImelPDyWWn2qSUBe0vIeppIQZRD7v7HYzWGD0CQBv0j6IiZdyzPJgbdDh9
+         UF8MxrFJR7vMRSeVVX7Ut4j6Wk9AiqIrAtdbGsjp4nVIk8ixxFYvrsW45SeUitGlRiax
+         ZnnQ==
+X-Gm-Message-State: ANoB5pmCPYrhdmbkh94QasgRJ/ImPUpNF6pjvlwyTLqWccv2T7z69a6l
+        A93Bn14I0Ix6yP9hLXEfqGwb8UdPQuMt
+X-Google-Smtp-Source: AA0mqf4aa+z+u+/dWyGKxBCA4BfXx/NPNAgomadGS+MjhNI2v4yGQDeEgUQHlymuhQcDJkV+KVdNuw==
+X-Received: by 2002:a17:903:2112:b0:183:9254:cc70 with SMTP id o18-20020a170903211200b001839254cc70mr19049907ple.18.1669380378385;
+        Fri, 25 Nov 2022 04:46:18 -0800 (PST)
+Received: from piliu.users.ipa.redhat.com ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id q15-20020a170902a3cf00b0017f8094a52asm3320586plb.29.2022.11.25.04.46.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Nov 2022 04:46:17 -0800 (PST)
+From:   Pingfan Liu <kernelfans@gmail.com>
+To:     rcu@vger.kernel.org
+Cc:     Pingfan Liu <kernelfans@gmail.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
         Josh Triplett <josh@joshtriplett.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: [PATCHv3] srcu: Eliminate the case that snp_seq bigger than snap in srcu_funnel_gp_start()
+Date:   Fri, 25 Nov 2022 20:46:06 +0800
+Message-Id: <20221125124606.56725-1-kernelfans@gmail.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20221123135638.79021-3-kernelfans@gmail.com>
+References: <20221123135638.79021-3-kernelfans@gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Nov 24, 2022 at 7:46 PM Jan Kara <jack@suse.cz> wrote:
->
-> On Thu 24-11-22 08:11:47, Paul E. McKenney wrote:
-> > On Thu, Nov 24, 2022 at 10:58:40AM +0100, Jan Kara wrote:
-> > > On Thu 24-11-22 08:21:13, Amir Goldstein wrote:
-> > > > [+fsdevel]
-> > > >
-> > > > On Thu, Nov 24, 2022 at 2:21 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > > >
-> > > > > On Wed, Nov 23, 2022 at 12:46:45PM +0100, Jan Kara wrote:
-> > > > > > Hello!
-> > > > > >
-> > > > > > We were pondering with Amir about some issues with fsnotify subsystem and
-> > > > > > as a building block we would need a mechanism to make sure write(2) has
-> > > > > > completed. For simplicity we could imagine it like a sequence
-> > > > > >
-> > > > > > write(2)
-> > > > > >   START
-> > > > > >   do stuff to perform write
-> > > > > >   END
-> > > > > >
-> > > > > > and we need a mechanism to wait for all processes that already passed START
-> > > > > > to reach END. Ideally without blocking new writes while we wait for the
-> > > > > > pending ones. Now this seems like a good task for SRCU. We could do:
-> > > > > >
-> > > > > > write(2)
-> > > > > >   srcu_read_lock(&sb->s_write_rcu);
-> > > > > >   do stuff to perform write
-> > > > > >   srcu_read_unlock(&sb->s_write_rcu);
-> > > > > >
-> > > > > > and use synchronize_srcu(&sb->s_write_rcu) for waiting.
-> > > > > >
-> > > > > > But the trouble with writes is there are things like aio or io_uring where
-> > > > > > the part with srcu_read_lock() happens from one task (the submitter) while
-> > > > > > the part with srcu_read_unlock() happens from another context (usually worker
-> > > > > > thread triggered by IRQ reporting that the HW has finished the IO).
-> > > > > >
-> > > > > > Is there any chance to make SRCU work in a situation like this? It seems to
-> > > > > > me in principle it should be possible to make this work but maybe there are
-> > > > > > some implementation constraints I'm missing...
-> > > > >
-> > > > > The srcu_read_lock_notrace() and srcu_read_unlock_notrace() functions
-> > > > > will work for this, though that is not their intended purpose.  Plus you
-> > > > > might want to trace these functions, which, as their names indicate, is
-> > > > > not permitted.  I assume that you do not intend to use these functions
-> > > > > from NMI handlers, though that really could be accommodated.  (But why
-> > > > > would you need that?)
-> > > > >
-> > > > > So how about srcu_down_read() and srcu_up_read(), as shown in the
-> > > > > (untested) patch below?
-> > > > >
-> > > > > Note that you do still need to pass the return value from srcu_down_read()
-> > > > > into srcu_up_read().  I am guessing that io_uring has a convenient place
-> > > > > that this value can be placed.  No idea about aio.
-> > > > >
-> > > >
-> > > > Sure, aio completion has context.
-> > > >
-> > > > > Thoughts?
-> > > >
-> > > > That looks great! Thank you.
-> > > >
-> > > > Followup question:
-> > > > Both fs/aio.c:aio_write() and io_uring/rw.c:io_write() do this ugly
-> > > > thing:
-> > > >
-> > > > /*
-> > > >  * Open-code file_start_write here to grab freeze protection,
-> > > >  * which will be released by another thread in
-> > > >  * aio_complete_rw().  Fool lockdep by telling it the lock got
-> > > >  * released so that it doesn't complain about the held lock when
-> > > >  * we return to userspace.
-> > > >  */
-> > > > if (S_ISREG(file_inode(file)->i_mode)) {
-> > > >     sb_start_write(file_inode(file)->i_sb);
-> > > >     __sb_writers_release(file_inode(file)->i_sb, SB_FREEZE_WRITE);
-> > > > }
-> > > >
-> > > > And in write completion:
-> > > >
-> > > > /*
-> > > >  * Tell lockdep we inherited freeze protection from submission
-> > > >  * thread.
-> > > >  */
-> > > > if (S_ISREG(inode->i_mode))
-> > > >     __sb_writers_acquired(inode->i_sb, SB_FREEZE_WRITE);
-> > > > file_end_write(kiocb->ki_filp);
-> > > >
-> > > > I suppose we also need to "fool lockdep" w.r.t returning to userspace
-> > > > with an acquired srcu?
-> > >
-> > > So AFAICT the whole point of Paul's new helpers is to not use lockdep and
-> > > thus not have to play the "fool lockdep" games.
-> >
-> > Exactly!  ;-)
-> >
-> > But if you do return to userspace after invoking srcu_down_read(), it
-> > is your responsibility to make sure that -something- eventually invokes
-> > srcu_up_read().  Which might or might not be able to rely on userspace
-> > doing something sensible.
-> >
-> > I would guess that you have a timeout or rely on close() for that purpose,
-> > just as you presumably do for sb_start_write(), but figured I should
-> > mention it.
->
-> Yes. We actually do not rely on userspace but rather on HW to eventually
-> signal IO completion. For misbehaving HW there are timeouts but the details
-> depend very much on the protocol etc.. But as you say it is the same
-> business as with sb_start_write() so nothing new here.
->
+Since the srcu read lock is still held during srcu_funnel_gp_start(),
+the seq snap should be the largest number for the slot
+srcu_have_cbs[idx].
 
-FYI, here is my POC branch that uses srcu_down,up_read()
-for aio writes:
+Test info
+Running the following test without any failure
+  tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 10h --configs 18*SRCU-P
+And
+  cd res && find . -name  console.log -exec grep WARNING {} \;
+prints nothing
 
-https://github.com/amir73il/linux/commits/sb_write_barrier
+Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Frederic Weisbecker <frederic@kernel.org>
+Cc: Josh Triplett <josh@joshtriplett.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To: rcu@vger.kernel.org
+---
+ kernel/rcu/srcutree.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-Note that NOT all writes take s_write_srcu, but all writes that
-generate fsnotify pre-modify events without sb_start_write() held
-MUST take s_write_srcu, so there is an assertion in fsnotify():
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index 7e450bb4ddcf..687f243dd2e2 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -905,14 +905,12 @@ static void srcu_funnel_gp_start(struct srcu_struct *ssp, struct srcu_data *sdp,
+ 		for (snp = snp_leaf; snp != NULL; snp = snp->srcu_parent) {
+ 			spin_lock_irqsave_rcu_node(snp, flags);
+ 			snp_seq = snp->srcu_have_cbs[idx];
+-			if (!srcu_invl_snp_seq(snp_seq) && ULONG_CMP_GE(snp_seq, s)) {
++			/* s should be the biggest in the current slot. */
++			WARN_ON_ONCE(ULONG_CMP_LT(s, snp_seq));
++			if (!srcu_invl_snp_seq(snp_seq) && (snp_seq == s)) {
+ 				if (snp == snp_leaf && snp_seq == s)
+ 					snp->srcu_data_have_cbs[idx] |= sdp->grpmask;
+ 				spin_unlock_irqrestore_rcu_node(snp, flags);
+-				if (snp == snp_leaf && snp_seq != s) {
+-					srcu_schedule_cbs_sdp(sdp, do_norm ? SRCU_INTERVAL : 0);
+-					return;
+-				}
+ 				if (!do_norm)
+ 					srcu_funnel_exp_start(ssp, snp, s);
+ 				return;
+-- 
+2.31.1
 
-if (mask & FS_PRE_VFS) {
-    /* Avoid false positives with LOCK_STATE_UNKNOWN */
-    lockdep_assert_once(sb_write_started(sb) != LOCK_STATE_HELD);
-    if (mask & FSNOTIFY_PRE_MODIFY_EVENTS)
-        lockdep_assert_once(sb_write_srcu_started(sb));
-}
-
-For testing, I've added synchronize_srcu(&sb->s_write_srcu) at
-the beginning of syncfs() and freeze_super().
-
-Even though syncfs() is not the intended UAPI, it is a UAPI that could
-make sense in the future (think SYNC_FILE_RANGE_WAIT_BEFORE
-for the vfs level).
-
-I've run the fstests groups aio and freeze that exercises these code
-paths on xfs and on overlayfs and (after fixing all my bugs) I have not
-observed any regressions nor any lockdep splats.
-
-So you may add:
-Tested-by: Amir Goldstein <amir73il@gmail.com>
-
-Thanks again for the patch Paul!
-Amir.
