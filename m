@@ -2,106 +2,117 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 24D11C4332F
-	for <rcu@archiver.kernel.org>; Fri, 25 Nov 2022 15:48:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 21845C4332F
+	for <rcu@archiver.kernel.org>; Fri, 25 Nov 2022 16:05:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229453AbiKYPsp (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 25 Nov 2022 10:48:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36756 "EHLO
+        id S229597AbiKYQFU (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 25 Nov 2022 11:05:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbiKYPso (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 25 Nov 2022 10:48:44 -0500
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B9F322516;
-        Fri, 25 Nov 2022 07:48:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1669391318; x=1700927318;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=YL+ZrS8YaYyzd70/eAm0Uh+wmNDQlivpxdI7bvBiGwo=;
-  b=PqEkLrmb7QFmeDZ52Z5Z+fuNbv8l95sNZoXcfw1NJlUk6dL5NeFAgWIC
-   bEZ9XNC17q7IAImYGlHUzlAFwiBydGo4O+WXEf8pEE8SYSKs5Xjd7EGQm
-   3tRtQbu+Sc3rIBDn4VrzyTuCJxIfNFWbk7td7VGCVVEsDEeIDdeigVjyp
-   cHuYYhGgi4WAflY9i86eK18C7AP39OKSj58aTPdifmzo8wh8RCiW1JreI
-   t6paq+bSMb1+hnYo/Ns02ACS15nfVihVbHl2sIhFX1PDye6uAjkRhPLzL
-   pQvzAh4It7jkbK2l4ybfZWOgcG09Ny/04Z0BzjacLITU8PcvNk3dPPpRW
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10542"; a="341407124"
-X-IronPort-AV: E=Sophos;i="5.96,193,1665471600"; 
-   d="scan'208";a="341407124"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2022 07:48:38 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10542"; a="644834099"
-X-IronPort-AV: E=Sophos;i="5.96,193,1665471600"; 
-   d="scan'208";a="644834099"
-Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.129])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2022 07:48:36 -0800
-From:   Zqiang <qiang1.zhang@intel.com>
-To:     paulmck@kernel.org, frederic@kernel.org, joel@joelfernandes.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] rcu-tasks: Make rude RCU-Tasks work well with CPU hotplug
-Date:   Fri, 25 Nov 2022 23:54:27 +0800
-Message-Id: <20221125155427.1381933-1-qiang1.zhang@intel.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S229500AbiKYQFT (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 25 Nov 2022 11:05:19 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B5824C249
+        for <rcu@vger.kernel.org>; Fri, 25 Nov 2022 08:05:19 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id CA0A8B82B4C
+        for <rcu@vger.kernel.org>; Fri, 25 Nov 2022 16:05:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86E69C433D6;
+        Fri, 25 Nov 2022 16:05:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1669392316;
+        bh=FV2UvZaeNaDKSVAG9i53DH2c/RgN9HJcKp02vLHLHK4=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=hitxecCt47emte2SBzELfZcECol0Nv7oLtiFT4eNLjg0ftwVnH8FEaTEaWenjTkFL
+         nfgC0XB0HLzLg0MRGcqS6xc5VATBKbRp14fXR/MEUVyVel0v5JUVd9rmwIWPTR125T
+         BaWXzXA7yEC0r4QJNaIsKXhJMMSNTyKRE1Rhc7IZ3zs02L7NA+4+zzgWS2LNJceJnN
+         Mu9Da4tSbcwG84Rwi+FXekQbqIooCDS0aEK3GNTjwsjFYk9uSh7CXAQoSnpqmbkkBb
+         99L5goo4uspAsDfdRwOaCWf84Raqif0t/egJlJW/SkS9GpNTNjMI2dFK98EoBWgK7t
+         /lL0RvW65Lh9Q==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 2898D5C09A9; Fri, 25 Nov 2022 08:05:16 -0800 (PST)
+Date:   Fri, 25 Nov 2022 08:05:16 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     urezki@gmail.com
+Cc:     rcu@vger.kernel.org
+Subject: get_state_synchronize_rcu() at boot time
+Message-ID: <20221125160516.GA303456@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Currently, for the case of num_online_cpus() <= 1, return directly,
-indicates the end of current grace period and then release old data.
-it's not accurate, for SMP system, when num_online_cpus() is equal
-one, maybe another cpu that in offline process(after invoke
-__cpu_disable()) is still in the rude RCU-Tasks critical section
-holding the old data, this lead to memory corruption.
+Hello, Uladzislau,
 
-Therefore, this commit add cpus_read_lock/unlock() before executing
-num_online_cpus().
+Here is where I placed that probe code and the corresponding output.
+Where should I be placing it instead?
 
-Signed-off-by: Zqiang <qiang1.zhang@intel.com>
----
- kernel/rcu/tasks.h | 20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
+						Thanx, Paul
 
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 4a991311be9b..08e72c6462d8 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -1033,14 +1033,30 @@ static void rcu_tasks_be_rude(struct work_struct *work)
- {
+------------------------------------------------------------------------
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 219b4b516f387..308cbc5e68a64 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -4546,8 +4546,17 @@ void rcu_scheduler_starting(void)
+ 	local_irq_restore(flags);
+ 
+ 	// Switch out of early boot mode.
++	pr_err("-> [%d] Invoke synchronize_rcu(): seq number: %lu\n", current->pid, get_state_synchronize_rcu());
++	synchronize_rcu();
++	pr_err("-> [%d] Done. A seq number: %lu\n", current->pid, get_state_synchronize_rcu());
+ 	rcu_scheduler_active = RCU_SCHEDULER_INIT;
++	pr_err("-> [%d] Invoke synchronize_rcu(): seq number: %lu\n", current->pid, get_state_synchronize_rcu());
++	synchronize_rcu();
++	pr_err("-> [%d] Done. A seq number: %lu\n", current->pid, get_state_synchronize_rcu());
+ 	rcu_test_sync_prims();
++	pr_err("-> [%d] Invoke synchronize_rcu(): seq number: %lu\n", current->pid, get_state_synchronize_rcu());
++	synchronize_rcu();
++	pr_err("-> [%d] Done. A seq number: %lu\n", current->pid, get_state_synchronize_rcu());
  }
  
-+static DEFINE_PER_CPU(struct work_struct, rude_work);
-+
- // Wait for one rude RCU-tasks grace period.
- static void rcu_tasks_rude_wait_gp(struct rcu_tasks *rtp)
+ /*
+@@ -4817,6 +4826,9 @@ void __init rcu_init(void)
+ 
+ 	kfree_rcu_batch_init();
+ 	rcu_bootup_announce();
++	pr_err("-> [%d] Invoke synchronize_rcu(): seq number: %lu\n", current->pid, get_state_synchronize_rcu());
++	synchronize_rcu();
++	pr_err("-> [%d] Done. A seq number: %lu\n", current->pid, get_state_synchronize_rcu());
+ 	sanitize_kthread_prio();
+ 	rcu_init_geometry();
+ 	rcu_init_one();
+diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
+index 7b1e183b0eb23..2993be46f81d5 100644
+--- a/kernel/rcu/update.c
++++ b/kernel/rcu/update.c
+@@ -557,9 +557,12 @@ struct early_boot_kfree_rcu {
+ static void early_boot_test_call_rcu(void)
  {
-+	int cpu;
-+	struct work_struct *work;
-+
-+	cpus_read_lock();
- 	if (num_online_cpus() <= 1)
--		return;	// Fastpath for only one CPU.
-+		goto end;// Fastpath for only one CPU.
+ 	static struct rcu_head head;
++	int idx;
+ 	static struct rcu_head shead;
+ 	struct early_boot_kfree_rcu *rhp;
  
- 	rtp->n_ipis += cpumask_weight(cpu_online_mask);
--	schedule_on_each_cpu(rcu_tasks_be_rude);
-+	for_each_online_cpu(cpu) {
-+		work = per_cpu_ptr(&rude_work, cpu);
-+		INIT_WORK(work, rcu_tasks_be_rude);
-+		schedule_work_on(cpu, work);
-+	}
-+
-+	for_each_online_cpu(cpu)
-+		flush_work(per_cpu_ptr(&rude_work, cpu));
-+
-+end:
-+	cpus_read_unlock();
- }
- 
- void call_rcu_tasks_rude(struct rcu_head *rhp, rcu_callback_t func);
--- 
-2.25.1
++	idx = srcu_down_read(&early_srcu);
++	srcu_up_read(&early_srcu, idx);
+ 	call_rcu(&head, test_callback);
+ 	early_srcu_cookie = start_poll_synchronize_srcu(&early_srcu);
+ 	call_srcu(&early_srcu, &shead, test_callback);
 
+------------------------------------------------------------------------
+
+[    0.016333] rcu: -> [0] Invoke synchronize_rcu(): seq number: 12
+[    0.016334] rcu: -> [0] Done. A seq number: 16
+[    0.114209] rcu: -> [0] Invoke synchronize_rcu(): seq number: 32
+[    0.114662] rcu: -> [0] Done. A seq number: 36
+[    0.115191] rcu: -> [0] Invoke synchronize_rcu(): seq number: 36
+[    0.115684] rcu: -> [0] Done. A seq number: 40
+[    0.116046] rcu: -> [0] Invoke synchronize_rcu(): seq number: 48
+[    0.116202] rcu: -> [0] Done. A seq number: 52
