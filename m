@@ -2,203 +2,210 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 76FF3C4321E
-	for <rcu@archiver.kernel.org>; Sat, 26 Nov 2022 14:43:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4626AC4332F
+	for <rcu@archiver.kernel.org>; Sat, 26 Nov 2022 18:03:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229658AbiKZOnF (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 26 Nov 2022 09:43:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47106 "EHLO
+        id S229491AbiKZSD5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 26 Nov 2022 13:03:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229676AbiKZOnC (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 26 Nov 2022 09:43:02 -0500
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54C8CE00B
-        for <rcu@vger.kernel.org>; Sat, 26 Nov 2022 06:42:59 -0800 (PST)
-Received: by mail-qv1-xf30.google.com with SMTP id a17so2752858qvt.9
-        for <rcu@vger.kernel.org>; Sat, 26 Nov 2022 06:42:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nQhwElD6HyjdOaWbP69t5Eif9DF7qh6agcOZWVGnnXQ=;
-        b=RG0e9GACvhxDMvcR8NUKJ/kSE1TeXzvh4lS6Oyq/5iAvCRyfXRIoFBL/4V/8oOt/Tv
-         V3R6VA/kmWNpTuGmd03twm4ppolFss3E+wRezPh/gQsjlrVLBT21snQiSwrrY8KjfR3T
-         sbh0sKtMCPyCCx98gFtahTT9mV8TqX6ZyuOys=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nQhwElD6HyjdOaWbP69t5Eif9DF7qh6agcOZWVGnnXQ=;
-        b=yv/HF2nC57tBKVLZi41SPd18sBsKxQ1nzZ8DGQ0UbCKLxiiJl2riNSZ8e7/o2TOXcO
-         cVCDKr9D8VBdghRc+RoUnbAqNYj/ShG1TEFdWGEHy6pldoP9Rdus3Pt666XUlq+of8u7
-         SbmMbXnYOtH3TDkpttoaL/s/GdBB+IFzjBhRoOSbJlMf6VZX5ttdF2OiH2II4HePRDUt
-         jziIMXj8gnZfz92VlmnUSvp9jHXYLob+WzWzFoXH34VHcBbrrAiY9061GxCt+juID09i
-         dwmEJYeOdebHU1u1qkM9hBSfLF/XxKYyDqFA0hg9kWrUxU/kCeMulgkvtO31AtunBZXN
-         l01g==
-X-Gm-Message-State: ANoB5pm8kBnp0LjlTULYxCMzVAbHDm/FQJs1d92a2xcmtwSA8Ba1EchC
-        b/40rZ3hSZmbyagD4Zhnv31CaQ==
-X-Google-Smtp-Source: AA0mqf7N9VYhNM+QHnaJ2zf6+fKMQEnAkxPWuvThoSZGJ183go/Nuh3NiCbyIm5PaAJU6IbaAsKRgA==
-X-Received: by 2002:a05:6214:3984:b0:4bb:e31f:a56e with SMTP id ny4-20020a056214398400b004bbe31fa56emr24205391qvb.76.1669473778664;
-        Sat, 26 Nov 2022 06:42:58 -0800 (PST)
-Received: from smtpclient.apple (c-73-148-104-166.hsd1.va.comcast.net. [73.148.104.166])
-        by smtp.gmail.com with ESMTPSA id j10-20020ac84c8a000000b003a5fb681ae7sm3795432qtv.3.2022.11.26.06.42.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 26 Nov 2022 06:42:58 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Joel Fernandes <joel@joelfernandes.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH] rcu-tasks: Make rude RCU-Tasks work well with CPU hotplug
-Date:   Sat, 26 Nov 2022 09:42:57 -0500
-Message-Id: <CE3515A9-2226-4001-BEDA-9DD6CB2ACF09@joelfernandes.org>
-References: <PH0PR11MB58804E24C3C14371F4397D68DA119@PH0PR11MB5880.namprd11.prod.outlook.com>
-Cc:     Neeraj Upadhyay <quic_neeraju@quicinc.com>, paulmck@kernel.org,
-        frederic@kernel.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <PH0PR11MB58804E24C3C14371F4397D68DA119@PH0PR11MB5880.namprd11.prod.outlook.com>
-To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
-X-Mailer: iPhone Mail (19G82)
+        with ESMTP id S229459AbiKZSD5 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 26 Nov 2022 13:03:57 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C704118396
+        for <rcu@vger.kernel.org>; Sat, 26 Nov 2022 10:03:55 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 777A4B80951
+        for <rcu@vger.kernel.org>; Sat, 26 Nov 2022 18:03:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16BDFC433C1;
+        Sat, 26 Nov 2022 18:03:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1669485833;
+        bh=zrz4L2EfzCFnPx1a5xq3YMyQSRr8mpXpGBR71X1rp+E=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=EwYhLJ215JRqPyP1s/PFIw9QYhDSVmaF5Uw9xrgW7b//oIWz6SnqPAgbMVrFbFf5e
+         teGdf17MjkS6g7Zjjlj78auztbPiGTddCf/9hMMd/zIS6TaVOweb2LHqibzxO3m5FQ
+         D6pHlnHrQjK3IO88DV79mqwZ9aofocfS8AG83UhKlbI7CU7TgHwWMf/73Y6mhT/PF9
+         US0iqTC2To2jRmycH9Ui3AIHPcmcB+SBd2eHQ00mQH1OxPimNj062GrdYVCoV0lPkg
+         hj5FrSU9uAiIZENGXU0nXr+pjyMxDUw/zvbRB52Ob7cqx9oOkIXkwMfpT9Sq75ftRm
+         DWg4yzTM4HRXw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id AA8405C0BE7; Sat, 26 Nov 2022 10:03:52 -0800 (PST)
+Date:   Sat, 26 Nov 2022 10:03:52 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Pingfan Liu <kernelfans@gmail.com>
+Cc:     rcu@vger.kernel.org, Lai Jiangshan <jiangshanlai@gmail.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: Re: [PATCHv2 2/2] srcu: Eliminate the case that snp_seq bigger than
+ snap in srcu_funnel_gp_start()
+Message-ID: <20221126180352.GD4001@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20221123135638.79021-1-kernelfans@gmail.com>
+ <20221123135638.79021-3-kernelfans@gmail.com>
+ <20221123192046.GH4001@paulmck-ThinkPad-P17-Gen-1>
+ <Y37l9PDleNiaHFLo@piliu.users.ipa.redhat.com>
+ <CAFgQCTsEOQAuiMkPp1XnBRvSUxxW3ihkBFPhDuA7zpwgSPj+Kg@mail.gmail.com>
+ <20221124052417.GO4001@paulmck-ThinkPad-P17-Gen-1>
+ <20221124161926.GA3495117@paulmck-ThinkPad-P17-Gen-1>
+ <Y4C271JOvsKU+ckG@piliu.users.ipa.redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y4C271JOvsKU+ckG@piliu.users.ipa.redhat.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Fri, Nov 25, 2022 at 08:37:03PM +0800, Pingfan Liu wrote:
+> On Thu, Nov 24, 2022 at 08:19:26AM -0800, Paul E. McKenney wrote:
+> > On Wed, Nov 23, 2022 at 09:24:17PM -0800, Paul E. McKenney wrote:
+> > > On Thu, Nov 24, 2022 at 12:06:39PM +0800, Pingfan Liu wrote:
+> > > > On Thu, Nov 24, 2022 at 11:33 AM Pingfan Liu <kernelfans@gmail.com> wrote:
+> > > > > On Wed, Nov 23, 2022 at 11:20:46AM -0800, Paul E. McKenney wrote:
+> > > > > > On Wed, Nov 23, 2022 at 09:56:38PM +0800, Pingfan Liu wrote:
+> > > > > > > Since the srcu read lock is still held during srcu_funnel_gp_start(),
+> > > > > > > the seq snap should be the largest number for the slot
+> > > > > > > srcu_have_cbs[idx].
+> > > > > > >
+> > > > > > > Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+> > > > > > > Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> > > > > > > Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> > > > > > > Cc: Frederic Weisbecker <frederic@kernel.org>
+> > > > > > > Cc: Josh Triplett <josh@joshtriplett.org>
+> > > > > > > Cc: Steven Rostedt <rostedt@goodmis.org>
+> > > > > > > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > > > > > > To: rcu@vger.kernel.org
+> > > > > > > ---
+> > > > > > >  include/linux/rcupdate.h |  1 +
+> > > > > > >  kernel/rcu/srcutree.c    | 11 ++++++-----
+> > > > > > >  2 files changed, 7 insertions(+), 5 deletions(-)
+> > > > > > >
+> > > > > > > diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+> > > > > > > index 08605ce7379d..a09007236660 100644
+> > > > > > > --- a/include/linux/rcupdate.h
+> > > > > > > +++ b/include/linux/rcupdate.h
+> > > > > > > @@ -32,6 +32,7 @@
+> > > > > > >  #include <linux/context_tracking_irq.h>
+> > > > > > >
+> > > > > > >  #define ULONG_CMP_GE(a, b) (ULONG_MAX / 2 >= (a) - (b))
+> > > > > > > +#define ULONG_CMP_GT(a, b) (ULONG_MAX / 2 > (a) - (b))
+> > > > > >
+> > > > > > Please see below...
+> > > > > >
+> > > > > > >  #define ULONG_CMP_LT(a, b) (ULONG_MAX / 2 < (a) - (b))
+> > > > > > >  #define ulong2long(a)              (*(long *)(&(a)))
+> > > > > > >  #define USHORT_CMP_GE(a, b)        (USHRT_MAX / 2 >= (unsigned short)((a) - (b)))
+> > > > > > > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> > > > > > > index 2fc0e775ade4..41902b823687 100644
+> > > > > > > --- a/kernel/rcu/srcutree.c
+> > > > > > > +++ b/kernel/rcu/srcutree.c
+> > > > > > > @@ -905,14 +905,15 @@ static void srcu_funnel_gp_start(struct srcu_struct *ssp, struct srcu_data *sdp,
+> > > > > > >             for (snp = snp_leaf; snp != NULL; snp = snp->srcu_parent) {
+> > > > > > >                     spin_lock_irqsave_rcu_node(snp, flags);
+> > > > > > >                     snp_seq = snp->srcu_have_cbs[idx];
+> > > > > > > -                   if (!srcu_invl_snp_seq(snp_seq) && ULONG_CMP_GE(snp_seq, s)) {
+> > > > > > > +                   /*
+> > > > > > > +                    * s should be the biggest in the current slot. Hence only LE is
+> > > > > > > +                    * valid
+> > > > > > > +                    */
+> > > > > > > +                   BUG_ON(ULONG_CMP_GT(snp_seq, s));
+> > > > > >
+> > > > > > Why not this?  (Plus adjusting the comment above, of course.)
+> > > > > >
+> > > > > >                       WARN_ON_ONCE(ULONG_CMP_LT(s, snp_seq));
+> > > > > >
+> > > > >
+> > > > > A neat solution!
+> > > > >
+> > > > > And what about the comment
+> > > > >                         /* s should be the biggest in the current slot. */
+> > > > >
+> > > > > > That way we don't need ULONG_CMP_GT().  Plus if we are confused about
+> > > > > > s being the biggest in the current slot, we get a splat and can debug
+> > > > > > further.  We both might be quite sure that we are not confused, but
+> > > > > > that is exactly when we are most prone to making mistakes.  ;-)
+> > > > > >
+> > > > >
+> > > > > Same feeling :)
+> > > > >
+> > > > > > I also ask that you run with this check for some time.  After all, if
+> > > > 
+> > > > Forget to ask if  the test
+> > > >   "tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration
+> > > > 10h --configs 18*SRCU-P"
+> > > > satisfies your requirement?
+> > > 
+> > > I am thinking more in terms of adding the WARN_ON_ONCE(), letting it be
+> > > in -next and possibly mainline for a couple of years, and then if there
+> > > are no splats, start feeling more confident in the asserted relationship.
+> > > 
+> > > If there was a significant performance, scalability, energy-efficiency, or
+> > > simplification benefit, I would feel justified in being more aggressive.
+> > > 
+> > > But I am not seeing a significant benefit.
+> > 
+> > Ah, and before I forget -again-, have you thought through the counter-wrap
+> > scenarios?  Please keep in mind that on a 32-bit system, those counters
+> > can wrap quite quickly compared to typical uptimes.
+> 
+> I think 32-bit has not significant different since the statement
+>   WARN_ON_ONCE(ULONG_CMP_LT(s, snp_seq));
+> 
+> where 's < snp_seq' is not associated with bits. Am I missing anything?
 
+Your point is that long before there was any danger of wrap, this
+WARN_ON_ONCE() would trigger?
 
-> On Nov 26, 2022, at 12:52 AM, Zhang, Qiang1 <qiang1.zhang@intel.com> wrote=
-:
->=20
-> =EF=BB=BF
->>=20
->> Hi Zqiang,
->>=20
->> On 11/25/2022 9:24 PM, Zqiang wrote:
->> Currently, for the case of num_online_cpus() <=3D 1, return directly,
->> indicates the end of current grace period and then release old data.
->> it's not accurate, for SMP system, when num_online_cpus() is equal
->> one, maybe another cpu that in offline process(after invoke
->> __cpu_disable()) is still in the rude RCU-Tasks critical section
->> holding the old data, this lead to memory corruption.
->>=20
->>=20
->>=20
->> Was this race seen in your testing? For the outgoing CPU, once that
->> CPU marks itself offline (and decrements __num_online_cpus), do we
->> have tracing active on that CPU, and synchronize_rcu_tasks_rude()
->> not waiting for it could potentially lead to memory corruption?
->=20
-> Hi Neeraj
->=20
-> Indeed, I didn't see race in the actual production environment,
-> Maybe my commit information description is not accurate enough,
-> like the scene I described with joel.
->=20
-> If in cpuhp_invoke_callback, some callback is in rude rcu-tasks read ctric=
-al section,
-> and still holding old data, but in this time, synchronize_rcu_tasks_rude()=
- not waiting,
-> and release old data.
->=20
-> Suppose the system has two cpus
->=20
->    CPU0                                                                   =
-  CPU1
->                         cpu_stopper_thread
->                                                                           =
-       take_cpu_down
->                            __cpu_disable
->                            dec __num_online_cpus=20
-> rcu_tasks_rude_wait_gp                                      cpuhp_invoke_c=
-allback =20
->    num_online_cpus() =3D=3D 1
->        return;
->=20
-> when __num_online_cpus =3D=3D 1, the CPU1 not completely offline.
+If so, the point is to avoid that WARN_ON_ONCE() from triggering.
 
-Agreed with yours and Neeraj assessment.
+Or am I missing your point?
 
->>=20
->> As per my understanding, given that outgoing/incoming CPU=20
->> decrements/increments the __num_online_cpus value, and num_online_cpus()
->> is a plain read, problem could happen when the incoming CPU updates the
->> __num_online_cpus  value, however, rcu_tasks_rude_wait_gp()'s=20
->> num_online_cpus() call didn't observe the increment. So,=20
->> cpus_read_lock/unlock() seems to be required to handle this case.
->=20
-> Yes, the same problem will be encountered when going online, due to
-> access  __num_online_cpus  that is not protected by cpus_read_lock/unlock(=
-)=20
-> in rcu_tasks_rude_wait_gp().
->=20
-> Do I need to change the commit information to send v2?
+							Thanx, Paul
 
-I think so. If you could add the CPU sequence diagram you mentioned, that wo=
-uld be great.
-
-Also I suggest add more details of which specific parts of the hotplug proce=
-ss (the ones in stop machine only) are susceptible to the issue. That is, on=
-ly those hotplug callbacks that are in  stop machine which may have trampoli=
-nes prematurely freed from another cpu, right?
-
-Thanks!
-
-  - Joel
-
-
-
->=20
-> Thanks
-> Zqiang
->=20
->>=20
->>=20
->> Thanks
->> Neeraj
->>=20
->> Therefore, this commit add cpus_read_lock/unlock() before executing
->> num_online_cpus().
->>=20
->> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
->> ---
->>  kernel/rcu/tasks.h | 20 ++++++++++++++++++--
->>  1 file changed, 18 insertions(+), 2 deletions(-)
->>=20
->> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
->> index 4a991311be9b..08e72c6462d8 100644
->> --- a/kernel/rcu/tasks.h
->> +++ b/kernel/rcu/tasks.h
->> @@ -1033,14 +1033,30 @@ static void rcu_tasks_be_rude(struct work_struct *=
-work)
->>  {
->>  }
->>=20
->> +static DEFINE_PER_CPU(struct work_struct, rude_work);
->> +
->>  // Wait for one rude RCU-tasks grace period.
->>  static void rcu_tasks_rude_wait_gp(struct rcu_tasks *rtp)
->>  {
->> +    int cpu;
->> +    struct work_struct *work;
->> +
->> +    cpus_read_lock();
->>      if (num_online_cpus() <=3D 1)
->> -        return;    // Fastpath for only one CPU.
->> +        goto end;// Fastpath for only one CPU.
->>=20
->>      rtp->n_ipis +=3D cpumask_weight(cpu_online_mask) > -    schedule_on_=
-each_cpu(rcu_tasks_be_rude);
->> +    for_each_online_cpu(cpu) {
->> +        work =3D per_cpu_ptr(&rude_work, cpu);
->> +        INIT_WORK(work, rcu_tasks_be_rude);
->> +        schedule_work_on(cpu, work);
->> +    }
->> +
->> +    for_each_online_cpu(cpu)
->> +        flush_work(per_cpu_ptr(&rude_work, cpu));
->> +
->> +end:
->> +    cpus_read_unlock();
->>  }
->>=20
->>  void call_rcu_tasks_rude(struct rcu_head *rhp, rcu_callback_t func);
+> Thanks,
+> 
+> 	Pingfan
+> 
+> > 							Thanx, Paul
+> > 
+> > > > Thanks
+> > > > 
+> > > >     Pingfan
+> > > > > Sure. I will try it immediately.
+> > > > >
+> > > > > > the assumption is incorrect, the resulting SRCU hangs off in various
+> > > > > > systems around the world will not be so much fun to debug.
+> > > > > >
+> > > > > > Given that this is slowpath code, it is much better to take an extra
+> > > > > > compare and branch than to introduce even an extremely small risk of
+> > > > > > hanging SRCU.
+> > > > > >
+> > > > >
+> > > > > Agree.
+> > > > >
+> > > > >
+> > > > > Thanks,
+> > > > >
+> > > > >         Pingfan
+> > > > >
+> > > > > >                                                       Thanx, Paul
+> > > > > >
+> > > > > > > +                   if (!srcu_invl_snp_seq(snp_seq) && (snp_seq == s)) {
+> > > > > > >                             if (snp == snp_leaf && snp_seq == s)
+> > > > > > >                                     snp->srcu_data_have_cbs[idx] |= sdp->grpmask;
+> > > > > > >                             spin_unlock_irqrestore_rcu_node(snp, flags);
+> > > > > > > -                           if (snp == snp_leaf && snp_seq != s) {
+> > > > > > > -                                   srcu_schedule_cbs_sdp(sdp, do_norm ? SRCU_INTERVAL : 0);
+> > > > > > > -                                   return;
+> > > > > > > -                           }
+> > > > > > >                             if (!do_norm)
+> > > > > > >                                     srcu_funnel_exp_start(ssp, snp, s);
+> > > > > > >                             return;
+> > > > > > > --
+> > > > > > > 2.31.1
+> > > > > > >
