@@ -2,53 +2,53 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B7FAC433FE
-	for <rcu@archiver.kernel.org>; Mon, 28 Nov 2022 08:28:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DB07EC433FE
+	for <rcu@archiver.kernel.org>; Mon, 28 Nov 2022 08:28:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229589AbiK1I2r (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 28 Nov 2022 03:28:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41558 "EHLO
+        id S229825AbiK1I2w (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 28 Nov 2022 03:28:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229759AbiK1I2q (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 28 Nov 2022 03:28:46 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BDF02716
-        for <rcu@vger.kernel.org>; Mon, 28 Nov 2022 00:28:45 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id b13-20020a17090a5a0d00b0021906102d05so8012962pjd.5
-        for <rcu@vger.kernel.org>; Mon, 28 Nov 2022 00:28:45 -0800 (PST)
+        with ESMTP id S230186AbiK1I2v (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 28 Nov 2022 03:28:51 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 092DE1057A
+        for <rcu@vger.kernel.org>; Mon, 28 Nov 2022 00:28:50 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id b4so9728924pfb.9
+        for <rcu@vger.kernel.org>; Mon, 28 Nov 2022 00:28:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6+6maChNckuGCrTU+BiZD5u7zvu1KWw79sg0uZa59Hs=;
-        b=q1JYkc6d47pPkX39Hz0rGik/wCHwoNqy49JUT62PSMlGilf7tDGXyECptudGU6ex57
-         9M3/zzw4FlKBrBAXM0a9GItCyuJ+/YxZwSEAjbhU15G1UMOT26KnL+Jx2QrlS+GWgxCO
-         B4vX6XcuVAPuCYiIZAtIAi84NKoawfscBUcq/VHQmHLTNz4XhAN0llwFMUt0A2DaD0zb
-         6mukA4kcUtqF4SrFDw3mThXD2LqTyznijJyqGXzxc5xT5wQs11MszNnYzsAMqNPLcS/J
-         3vEQQN8oAhbWp9khPwTxHqjLfKefS47NOPqCbqWG+hedKEx5ZjAeCuPTOpb17DDEV/U8
-         F8Mw==
+        bh=UV9geM/JQWW7KZsn3D2jR1o/HpwJ7Whcx3peCh7dDk0=;
+        b=SQFVA2WNmqUs6RMu0elVVjI+PpzkbEgegh2kfmYzk1cg5PndZgMDNsIVLri+9j9iMy
+         LF3QFAMGonWZlrKAtZ/hFMPvjEsorNkcooGRlzg4z9fDWEeumqp69yfQZeJczqnUru5F
+         050Sn61kdHsM94psBLDNFG8zv7NIwZv4vpO+T7n7zOzxtTUFXl6ezdbhVPi7bGwY/72y
+         6amVpxqhsPlwVv4c3OYA9HNZ3ZndXMxDpnPM9tnWW2mvqwWc5rc5dPatU8dkVSTuLmY7
+         hR/khC3TUvWjjwuWQukxX0XlI24sBia77Yw9vFJXWbkXM9miYV/hr3TBX8MaPK6LUn84
+         lHiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6+6maChNckuGCrTU+BiZD5u7zvu1KWw79sg0uZa59Hs=;
-        b=sUdg92qIp7iaD8u1l5/S30nskkuN42tC0U4lIQ0jksu42DlfDOksS/SL+TmG6/0m8q
-         Oc+NGhuIRg7w70FwU7mINpYSD5L2rv3fdGBcbOwXZFgCa0rL1terlXLmUp4fulS1jWa7
-         mpos7rBoBUHtQatwWS2C0b3PolDHKJa4icjMbpTDnV4ySd0S6WkbEkwUkcMPNrVC2BP3
-         M+Hdg08GRePO5K6THQMhxVSgas+pEzD0cUji4HidEx0k1oH/ZltWyMqFGAxLNa1fSP2n
-         m2yShc99oqcAQ+zsAm2F59o/+EscQFDcRO+N0zedK99a8bTTa2y18VWQh0YCUpk/zxE0
-         +T4w==
-X-Gm-Message-State: ANoB5pk5iBQX0rS0WvVOv0J4yZt5ZkbIHBss2jYul3ZCjmXQmcNmQB+X
-        7mq9SkUNA+/MvV47E84gkS9IoV4n67zm
-X-Google-Smtp-Source: AA0mqf5wUGZQhomJ91AXeq92JpHGQmhOdRvVzqVWS49/tKJMN2fup77BRXNxlNNea9rQh5KS83+ccQ==
-X-Received: by 2002:a17:902:aa4a:b0:188:d4ea:2567 with SMTP id c10-20020a170902aa4a00b00188d4ea2567mr30534172plr.155.1669624124530;
-        Mon, 28 Nov 2022 00:28:44 -0800 (PST)
+        bh=UV9geM/JQWW7KZsn3D2jR1o/HpwJ7Whcx3peCh7dDk0=;
+        b=aRS1XUgkHmB0WRDVuSW3cgbKc+pndPMulUEM7+SA7ducpoepF6/LqDl8JcrY0PLVTo
+         Gabyvbwd0vVPIt8ReS+68kZIdDxDk2tWm7alqgnipj8cbVMqW1lY8pHdZMWxqkSHotYp
+         P/eJ/aspT+vb+3qeBgpTmB6OfsHbxI0Gw/8HPH857efdv84l8c5NLEJhVbWSWOmdEMIh
+         nszzZfSFAetCdDGqaPKSN8bZ26WwJdhUuB7ixf78n3BthD5FxG0zJEHWlkBsdyLkGIaA
+         t8JuuEXNbEmXfN/rJfmhnzoc78VgxaAYm0gv1aMYA+NorJL645NnxglBkS7Y0T5zBdYj
+         Kyjw==
+X-Gm-Message-State: ANoB5pmHkiqr8PAbcJV1vsJvUBkEKK4IOM+AEbBLHNrGhpDPbfQ98hAz
+        xrr3Agp7YaUBnuz9YJElOsBItvN/vDQo
+X-Google-Smtp-Source: AA0mqf6+zDzgDoIYiHYXvnWKF30KTvx4SDiKqbDPBiJPGm2Qb8Qqc+ZMAo44faq3aGnzr03Mq95cDQ==
+X-Received: by 2002:a63:d04f:0:b0:46e:c41c:e4bf with SMTP id s15-20020a63d04f000000b0046ec41ce4bfmr26658618pgi.123.1669624129127;
+        Mon, 28 Nov 2022 00:28:49 -0800 (PST)
 Received: from piliu.users.ipa.redhat.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id z20-20020aa79494000000b0056f0753390csm7601637pfk.96.2022.11.28.00.28.40
+        by smtp.gmail.com with ESMTPSA id z20-20020aa79494000000b0056f0753390csm7601637pfk.96.2022.11.28.00.28.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Nov 2022 00:28:44 -0800 (PST)
+        Mon, 28 Nov 2022 00:28:48 -0800 (PST)
 From:   Pingfan Liu <kernelfans@gmail.com>
 To:     rcu@vger.kernel.org
 Cc:     Pingfan Liu <kernelfans@gmail.com>,
@@ -59,9 +59,9 @@ Cc:     Pingfan Liu <kernelfans@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         "Zhang, Qiang1" <qiang1.zhang@intel.com>
-Subject: [PATCH 2/3] srcu: protect against concurrent srcu_gp_end()
-Date:   Mon, 28 Nov 2022 16:28:15 +0800
-Message-Id: <20221128082816.28518-3-kernelfans@gmail.com>
+Subject: [PATCH 3/3] srcu: Decrease the srcu size state numbers
+Date:   Mon, 28 Nov 2022 16:28:16 +0800
+Message-Id: <20221128082816.28518-4-kernelfans@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20221128082816.28518-1-kernelfans@gmail.com>
 References: <20221128082816.28518-1-kernelfans@gmail.com>
@@ -71,18 +71,15 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-At present, the code chunk "Transition to big if needed" is out of the
-lock srcu_cb_mutex, which allows the following scene:
+With the previous patch, srcu_cb_mutex is held when setting
+SRCU_SIZE_WAIT_BARRIER. It means that only two seq snap value can exist.
+And these two snaps can not see the active snp tree if
+srcu_gp_start_if_needed() fetches the srcu_size_state before it is
+updated to SRCU_SIZE_WAIT_BARRIER.
 
-    srcu_gp_end() on cpu1                srcu_gp_end() on cpu2
-
-    init_srcu_struct_nodes()
-    ^^  scheduled out in the middle
-                                         init_srcu_struct_nodes()
-                                         ^^ overwrite the context set up by cpu1
-
-Squashing out the race window by putting the code chunk under the
-protection of srcu_cb_mutex.
+After dispatching these two snap value's callbacks, the mask in
+snp->srcu_data_have_cbs[idx] is assured to be right. Hence the size
+state following SRCU_SIZE_WAIT_BARRIER can be shrink to three.
 
 Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
 Cc: Lai Jiangshan <jiangshanlai@gmail.com>
@@ -94,41 +91,53 @@ Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Cc: "Zhang, Qiang1" <qiang1.zhang@intel.com>
 To: rcu@vger.kernel.org
 ---
- kernel/rcu/srcutree.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ include/linux/srcutree.h | 15 +++++++++------
+ kernel/rcu/srcutree.c    |  3 ---
+ 2 files changed, 9 insertions(+), 9 deletions(-)
 
+diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
+index e3014319d1ad..34cb9435c14d 100644
+--- a/include/linux/srcutree.h
++++ b/include/linux/srcutree.h
+@@ -94,13 +94,16 @@ struct srcu_struct {
+ /* Values for size state variable (->srcu_size_state). */
+ #define SRCU_SIZE_SMALL		0
+ #define SRCU_SIZE_ALLOC		1
++/* If snp tree is initialized */
+ #define SRCU_SIZE_WAIT_BARRIER	2
+-#define SRCU_SIZE_WAIT_CALL	3
+-#define SRCU_SIZE_WAIT_CBS1	4
+-#define SRCU_SIZE_WAIT_CBS2	5
+-#define SRCU_SIZE_WAIT_CBS3	6
+-#define SRCU_SIZE_WAIT_CBS4	7
+-#define SRCU_SIZE_BIG		8
++/*
++ * The following two states for the in-flight seq snap, who may not see
++ * the snp tree is active.
++ */
++#define SRCU_SIZE_WAIT_CBS1	3
++#define SRCU_SIZE_WAIT_CBS2	4
++/* All seq snap see the active tree */
++#define SRCU_SIZE_BIG		5
+ 
+ /* Values for state variable (bottom bits of ->srcu_gp_seq). */
+ #define SRCU_STATE_IDLE		0
 diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index fe0759d89c2d..281cd69fe804 100644
+index 281cd69fe804..bdf392e2ef63 100644
 --- a/kernel/rcu/srcutree.c
 +++ b/kernel/rcu/srcutree.c
-@@ -811,6 +811,13 @@ static void srcu_gp_end(struct srcu_struct *ssp)
- 			spin_unlock_irqrestore_rcu_node(sdp, flags);
- 		}
- 
-+	/* Transition to big if needed. */
-+	if (ss_state != SRCU_SIZE_SMALL && ss_state != SRCU_SIZE_BIG) {
-+		if (ss_state == SRCU_SIZE_ALLOC)
-+			init_srcu_struct_nodes(ssp, GFP_KERNEL);
-+		else
-+			smp_store_release(&ssp->srcu_size_state, ss_state + 1);
-+	}
- 	/* Callback initiation done, allow grace periods after next. */
- 	mutex_unlock(&ssp->srcu_cb_mutex);
- 
-@@ -826,13 +833,6 @@ static void srcu_gp_end(struct srcu_struct *ssp)
- 		spin_unlock_irq_rcu_node(ssp);
- 	}
- 
--	/* Transition to big if needed. */
--	if (ss_state != SRCU_SIZE_SMALL && ss_state != SRCU_SIZE_BIG) {
--		if (ss_state == SRCU_SIZE_ALLOC)
--			init_srcu_struct_nodes(ssp, GFP_KERNEL);
--		else
--			smp_store_release(&ssp->srcu_size_state, ss_state + 1);
--	}
- }
- 
- /*
+@@ -1652,11 +1652,8 @@ static const char * const srcu_size_state_name[] = {
+ 	"SRCU_SIZE_SMALL",
+ 	"SRCU_SIZE_ALLOC",
+ 	"SRCU_SIZE_WAIT_BARRIER",
+-	"SRCU_SIZE_WAIT_CALL",
+ 	"SRCU_SIZE_WAIT_CBS1",
+ 	"SRCU_SIZE_WAIT_CBS2",
+-	"SRCU_SIZE_WAIT_CBS3",
+-	"SRCU_SIZE_WAIT_CBS4",
+ 	"SRCU_SIZE_BIG",
+ 	"SRCU_SIZE_???",
+ };
 -- 
 2.31.1
 
