@@ -2,134 +2,165 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E87DC43217
-	for <rcu@archiver.kernel.org>; Mon, 28 Nov 2022 14:28:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BAB2EC43217
+	for <rcu@archiver.kernel.org>; Mon, 28 Nov 2022 14:36:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232465AbiK1O27 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 28 Nov 2022 09:28:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51078 "EHLO
+        id S230501AbiK1Og1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 28 Nov 2022 09:36:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232488AbiK1O25 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 28 Nov 2022 09:28:57 -0500
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 038B91F637;
-        Mon, 28 Nov 2022 06:28:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1669645736; x=1701181736;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=MrI+cgsw8fa/uMy0ii8IS1azy4iiz+Bct6bPgqhgiOA=;
-  b=juV/h03SzrZ470dHRA/kXpYr1i6AhXJr/pH/5M8Xev556W4zlOkv242h
-   uHkb7cZ6RWHXEqqGDCcafZiq8l51x2Vmghxj6oivE7fllZvLD1tzbz8SO
-   NSIwxUpagA7HR1VWXENSPWnnPg7VRDIb2n2cr+896uWGGz9LfJxbHIG4a
-   nlP9uAvblDGSDKJ4shvMyz2DtW87WyerThKNq9++Y3iL5vkLNZ6AJ0gVv
-   0Tle9IreDRebLeH5PwAKL/yjxRAw4SB3sLkaHpJh9uhNtScR5Lkjh14i1
-   3AB5K+o8bnwgwVOA4oFovyINdZmVhoG4/rD/jYxIazowp00tfu9WH+dKf
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10545"; a="376985221"
-X-IronPort-AV: E=Sophos;i="5.96,200,1665471600"; 
-   d="scan'208";a="376985221"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2022 06:28:41 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10545"; a="749408009"
-X-IronPort-AV: E=Sophos;i="5.96,200,1665471600"; 
-   d="scan'208";a="749408009"
-Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.129])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2022 06:28:39 -0800
-From:   Zqiang <qiang1.zhang@intel.com>
-To:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
-        joel@joelfernandes.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] rcu-tasks: Make rude RCU-Tasks work well with CPU hotplug
-Date:   Mon, 28 Nov 2022 22:34:28 +0800
-Message-Id: <20221128143428.1703744-1-qiang1.zhang@intel.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S230115AbiK1OgX (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 28 Nov 2022 09:36:23 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 519281DF23
+        for <rcu@vger.kernel.org>; Mon, 28 Nov 2022 06:36:22 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id a16so10235490pfg.4
+        for <rcu@vger.kernel.org>; Mon, 28 Nov 2022 06:36:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=YH7Ee3sDR7jtaerGz3FtSRejwiZHYsWLW/uJGNQh6OE=;
+        b=DnmoiD9IPUOjRygPiSRXIgGi++wZ18JAtu6s2vhs2di1Ygul/gnPDIQ8kYQLLaahps
+         4T4pBOdPlXx2rybrQQuhlzmquM0+ga0bfD+L9sXr8gcFSsmA7KAv644Jn5gPAz0HMmmR
+         xIO9CvADp0mzOO89hIcekSV585bgJBHcRY4nKEdBPMb4H9plEPZV27u+eueKCesnavzq
+         2gDBIramFROd3nI4s0ireMfGPh5nhvlJd/4uprv79KJSK6KFO6OgfjOki4roZZQ/9bNX
+         zv38iupHQe/4fvA0B9h5WErlnak3LVS+ppibKA3gvpOx9BooxUmE9KvMYD8uVfQELthT
+         0ajg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YH7Ee3sDR7jtaerGz3FtSRejwiZHYsWLW/uJGNQh6OE=;
+        b=i4KHovrJarA37ZtlLQJqbN7JBUUeuu1BEa92GVXBj0Lgw2QRUcAocCV8rcYv6AafQE
+         CzgkJiKnw4PaUa5fCGn6/J6wfsVCNq0rPseBRdHNaUnUeCdkzP3hxT0dt2+qus5xRmBK
+         0jH/pazhWGB8H7nzJlihfjLSgaeHiWjpNG0g4uxq9K56cb2v2cMncU/vd0J6M1ZtFsaa
+         cO0MWA4qQVgpAC/0poxBTF13hWpWIXZ+vwbeY+8srsRSJHz1K0UM45CLI7dL1/g+4Cd9
+         jSgsmDDBk8rb0U4dBasLv6G0p3UDfWbUwJOLQox98aXhLCzpOyowtFo2HUInI5L8fEsm
+         Ig6w==
+X-Gm-Message-State: ANoB5pkfHUIA9frgAy2cpTdHuIQEfdEKuV3yAkfmQ4eqaMg1ipEVOMAv
+        wuccDIHELzjD54dVFNoBOw==
+X-Google-Smtp-Source: AA0mqf6G2+myfuRVkWA8y/J+M/J8krUtx9glhZcSclfRZ20PpL17z99Cuyh8eEll6GbqW0Lcixpi6A==
+X-Received: by 2002:a05:6a00:4308:b0:575:649c:e9e3 with SMTP id cb8-20020a056a00430800b00575649ce9e3mr499073pfb.48.1669646181800;
+        Mon, 28 Nov 2022 06:36:21 -0800 (PST)
+Received: from piliu.users.ipa.redhat.com ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id h8-20020a170902680800b0018862bb3976sm8851065plk.308.2022.11.28.06.36.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Nov 2022 06:36:21 -0800 (PST)
+Date:   Mon, 28 Nov 2022 22:36:15 +0800
+From:   Pingfan Liu <kernelfans@gmail.com>
+To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
+Cc:     "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: Re: [PATCH 2/3] srcu: protect against concurrent srcu_gp_end()
+Message-ID: <Y4THX7G73KbIFi5z@piliu.users.ipa.redhat.com>
+References: <20221128082816.28518-1-kernelfans@gmail.com>
+ <20221128082816.28518-3-kernelfans@gmail.com>
+ <PH0PR11MB5880585607E73B0228D77946DA139@PH0PR11MB5880.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <PH0PR11MB5880585607E73B0228D77946DA139@PH0PR11MB5880.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Currently, invoke rcu_tasks_rude_wait_gp() to wait one rude
-RCU-tasks grace period, if __num_online_cpus == 1, will return
-directly, indicates the end of the rude RCU-task grace period.
-suppose the system has two cpus, consider the following scenario:
+On Mon, Nov 28, 2022 at 09:20:18AM +0000, Zhang, Qiang1 wrote:
+> >Subject: [PATCH 2/3] srcu: protect against concurrent srcu_gp_end()
+> >
+> >At present, the code chunk "Transition to big if needed" is out of the
+> >lock srcu_cb_mutex, which allows the following scene:
+> >
+> >    srcu_gp_end() on cpu1                srcu_gp_end() on cpu2
+> >
+> >    init_srcu_struct_nodes()
+> >    ^^  scheduled out in the middle
+> >                                         init_srcu_struct_nodes()
+> >                                         ^^ overwrite the context set up by cpu1
+> 
+> Hi Pingfan
+> 
+> This scenario shouldn't happen.
+> The srcu_gp_end() is invoked only in process_srcu() workfn.
+> for the same ssp->work, workqueue can guaranteed that the 
+> process_srcu() workfn is executed serially. (view __queue_work () details)
+> 
 
-	CPU0                                   CPU1 (going offline)
-				          migration/1 task:
-                                      cpu_stopper_thread
-                                       -> take_cpu_down
-                                          -> _cpu_disable
-			                   (dec __num_online_cpus)
-                                          ->cpuhp_invoke_callback
-                                                preempt_disable
-						access old_data0
-           task1
- del old_data0                                  .....
- synchronize_rcu_tasks_rude()
- task1 schedule out
- ....
- task2 schedule in
- rcu_tasks_rude_wait_gp()
-     ->__num_online_cpus == 1
-       ->return
- ....
- task1 schedule in
- ->free old_data0
-                                                preempt_enable
+How about this:
 
-when CPU1 dec __num_online_cpus and __num_online_cpus is equal one,
-the CPU1 has not finished offline, stop_machine task(migration/1)
-still running on CPU1, maybe still accessing 'old_data0', but the
-'old_data0' has freed on CPU0.
+In process_one_work()
 
-This commit add cpus_read_lock/unlock() protection before accessing
-__num_online_cpus variables, to ensure that the CPU in the offline
-process has been completed offline.
+  set_work_pool_and_clear_pending(work, pool->id);
+                                               -----> another ssp->work
+					       can be queued, which can raise the
+					       scenario mentioned above
+					       
+  worker->current_func(work);
 
-Signed-off-by: Zqiang <qiang1.zhang@intel.com>
----
- kernel/rcu/tasks.h | 20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 4a991311be9b..08e72c6462d8 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -1033,14 +1033,30 @@ static void rcu_tasks_be_rude(struct work_struct *work)
- {
- }
- 
-+static DEFINE_PER_CPU(struct work_struct, rude_work);
-+
- // Wait for one rude RCU-tasks grace period.
- static void rcu_tasks_rude_wait_gp(struct rcu_tasks *rtp)
- {
-+	int cpu;
-+	struct work_struct *work;
-+
-+	cpus_read_lock();
- 	if (num_online_cpus() <= 1)
--		return;	// Fastpath for only one CPU.
-+		goto end;// Fastpath for only one CPU.
- 
- 	rtp->n_ipis += cpumask_weight(cpu_online_mask);
--	schedule_on_each_cpu(rcu_tasks_be_rude);
-+	for_each_online_cpu(cpu) {
-+		work = per_cpu_ptr(&rude_work, cpu);
-+		INIT_WORK(work, rcu_tasks_be_rude);
-+		schedule_work_on(cpu, work);
-+	}
-+
-+	for_each_online_cpu(cpu)
-+		flush_work(per_cpu_ptr(&rude_work, cpu));
-+
-+end:
-+	cpus_read_unlock();
- }
- 
- void call_rcu_tasks_rude(struct rcu_head *rhp, rcu_callback_t func);
--- 
-2.25.1
+Thanks,
 
+	Pingfan
+> 
+> Thanks
+> Zqiang
+> 
+> 
+> >
+> >Squashing out the race window by putting the code chunk under the
+> >protection of srcu_cb_mutex.
+> >
+> >Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+> >Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> >Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> >Cc: Frederic Weisbecker <frederic@kernel.org>
+> >Cc: Josh Triplett <josh@joshtriplett.org>
+> >Cc: Steven Rostedt <rostedt@goodmis.org>
+> >Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> >Cc: "Zhang, Qiang1" <qiang1.zhang@intel.com>
+> >To: rcu@vger.kernel.org
+> >---
+> > kernel/rcu/srcutree.c | 14 +++++++-------
+> > 1 file changed, 7 insertions(+), 7 deletions(-)
+> >
+> >diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> >index fe0759d89c2d..281cd69fe804 100644
+> >--- a/kernel/rcu/srcutree.c
+> >+++ b/kernel/rcu/srcutree.c
+> >@@ -811,6 +811,13 @@ static void srcu_gp_end(struct srcu_struct *ssp)
+> > 			spin_unlock_irqrestore_rcu_node(sdp, flags);
+> > 		}
+> > 
+> >+	/* Transition to big if needed. */
+> >+	if (ss_state != SRCU_SIZE_SMALL && ss_state != SRCU_SIZE_BIG) {
+> >+		if (ss_state == SRCU_SIZE_ALLOC)
+> >+			init_srcu_struct_nodes(ssp, GFP_KERNEL);
+> >+		else
+> >+			smp_store_release(&ssp->srcu_size_state, ss_state + 1);
+> >+	}
+> > 	/* Callback initiation done, allow grace periods after next. */
+> > 	mutex_unlock(&ssp->srcu_cb_mutex);
+> > 
+> >@@ -826,13 +833,6 @@ static void srcu_gp_end(struct srcu_struct *ssp)
+> > 		spin_unlock_irq_rcu_node(ssp);
+> > 	}
+> > 
+> >-	/* Transition to big if needed. */
+> >-	if (ss_state != SRCU_SIZE_SMALL && ss_state != SRCU_SIZE_BIG) {
+> >-		if (ss_state == SRCU_SIZE_ALLOC)
+> >-			init_srcu_struct_nodes(ssp, GFP_KERNEL);
+> >-		else
+> >-			smp_store_release(&ssp->srcu_size_state, ss_state + 1);
+> >-	}
+> > }
+> > 
+> > /*
+> >-- 
+> >2.31.1
+> >
