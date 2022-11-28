@@ -2,130 +2,134 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E2E68C43217
-	for <rcu@archiver.kernel.org>; Mon, 28 Nov 2022 14:01:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E87DC43217
+	for <rcu@archiver.kernel.org>; Mon, 28 Nov 2022 14:28:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232260AbiK1OB1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 28 Nov 2022 09:01:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57588 "EHLO
+        id S232465AbiK1O27 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 28 Nov 2022 09:28:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231185AbiK1OBS (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 28 Nov 2022 09:01:18 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A973E62E0
-        for <rcu@vger.kernel.org>; Mon, 28 Nov 2022 06:01:17 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id mv18so9583710pjb.0
-        for <rcu@vger.kernel.org>; Mon, 28 Nov 2022 06:01:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=amV6jMD2wzSg3Bi29Zsva56Y6oqfokCVnbY9ZVPgtB4=;
-        b=grz9mQMYEWedHnh+phNOW2tPpOxlLj077CHZlU805AzuC2j3RLenWHCY0qyNf2sUZ2
-         NHt0fDopaRj3jsx4nbzLMH+nzGFSylOZ/RpHDQixU2pWo3dUMaaQup+OU35GSRuN4wqZ
-         2I86R7g/7oEGT5nls6oZ2IvyP786w+BQ4F2ZNyOxvadOO7pgugn7F8P6OXZnz9PFpKbQ
-         lispx2HDKGrpWErma1B15PSMS4yuIbkq7ZCjbBKx48EqyGsCC1Iw0TQ4mlgJC6oxnyZJ
-         lzQW6VBoeikUER+ETSsBaL5Uw5Sp6sBZtQVw/UpWE2FDyZzfYRDJuJnqe3bSP8xWfLSl
-         nhpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=amV6jMD2wzSg3Bi29Zsva56Y6oqfokCVnbY9ZVPgtB4=;
-        b=nfDeyIZaa73ZA4jcdLA2zqCVD8rIaxy9zN42V2L8STzHgvQerXjTeONue7r2X8rD2R
-         gDfkCpBFWyiCZKj/N9610vgLSDCHy0uIT8OfTml8hbsKvLpqDdJE+Hiu3BkssNCllH1s
-         06//556Ik2cQxJw1yyGE+udxcdPLVJJ4fu0Spa+9PKGh+jb8eHX1+bTujpnvy91hAnOw
-         HQzhYOPCHDb8QjLs4t+9Pewp6QVwPcgWbi7Uxrp28z7/kqHWTY3Tq01Iw3dQRJwGqTd5
-         zni0PMmJR5+96o7VtE/5tYtEzdHah7wLJACGsOm/wQsv3jdob8LLF1z+kPSvrkVxAAx5
-         PBKQ==
-X-Gm-Message-State: ANoB5pnpudCMjx+VzKxtxZ2Dv63PIdZ6hHQ35CNRbNC1YBbJCCkRknp5
-        iwDD/UC5IoXwKTWyJ+uHFQ==
-X-Google-Smtp-Source: AA0mqf5R+ROIdc0OfemUpsU/DQsM1L2pkbmKk/B526XMfLV16DaAdgw0XcMRNaf0jAq4SsB0IOp0Zw==
-X-Received: by 2002:a17:90b:4b42:b0:20a:e38c:8c5f with SMTP id mi2-20020a17090b4b4200b0020ae38c8c5fmr60554711pjb.217.1669644077131;
-        Mon, 28 Nov 2022 06:01:17 -0800 (PST)
-Received: from piliu.users.ipa.redhat.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id z4-20020a63c044000000b004639c772878sm6888265pgi.48.2022.11.28.06.01.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Nov 2022 06:01:16 -0800 (PST)
-Date:   Mon, 28 Nov 2022 22:01:08 +0800
-From:   Pingfan Liu <kernelfans@gmail.com>
-To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
-Cc:     "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: Re: [PATCH 1/3] srcu: Eliminate the requirement of
- SRCU_SIZE_WAIT_CALL
-Message-ID: <Y4S/JLoILJZMCj9N@piliu.users.ipa.redhat.com>
-References: <20221128082816.28518-1-kernelfans@gmail.com>
- <20221128082816.28518-2-kernelfans@gmail.com>
- <PH0PR11MB5880CEEA5D2CD0F7AF21E954DA139@PH0PR11MB5880.namprd11.prod.outlook.com>
+        with ESMTP id S232488AbiK1O25 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 28 Nov 2022 09:28:57 -0500
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 038B91F637;
+        Mon, 28 Nov 2022 06:28:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1669645736; x=1701181736;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=MrI+cgsw8fa/uMy0ii8IS1azy4iiz+Bct6bPgqhgiOA=;
+  b=juV/h03SzrZ470dHRA/kXpYr1i6AhXJr/pH/5M8Xev556W4zlOkv242h
+   uHkb7cZ6RWHXEqqGDCcafZiq8l51x2Vmghxj6oivE7fllZvLD1tzbz8SO
+   NSIwxUpagA7HR1VWXENSPWnnPg7VRDIb2n2cr+896uWGGz9LfJxbHIG4a
+   nlP9uAvblDGSDKJ4shvMyz2DtW87WyerThKNq9++Y3iL5vkLNZ6AJ0gVv
+   0Tle9IreDRebLeH5PwAKL/yjxRAw4SB3sLkaHpJh9uhNtScR5Lkjh14i1
+   3AB5K+o8bnwgwVOA4oFovyINdZmVhoG4/rD/jYxIazowp00tfu9WH+dKf
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10545"; a="376985221"
+X-IronPort-AV: E=Sophos;i="5.96,200,1665471600"; 
+   d="scan'208";a="376985221"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2022 06:28:41 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10545"; a="749408009"
+X-IronPort-AV: E=Sophos;i="5.96,200,1665471600"; 
+   d="scan'208";a="749408009"
+Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.129])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2022 06:28:39 -0800
+From:   Zqiang <qiang1.zhang@intel.com>
+To:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
+        joel@joelfernandes.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] rcu-tasks: Make rude RCU-Tasks work well with CPU hotplug
+Date:   Mon, 28 Nov 2022 22:34:28 +0800
+Message-Id: <20221128143428.1703744-1-qiang1.zhang@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <PH0PR11MB5880CEEA5D2CD0F7AF21E954DA139@PH0PR11MB5880.namprd11.prod.outlook.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Nov 28, 2022 at 08:40:22AM +0000, Zhang, Qiang1 wrote:
-> >The state SRCU_SIZE_WAIT_CALL is only used in srcu_gp_start_if_needed().
-> >And it is not needed. Because counter_wrap_check has guarantee that both
-> >srcu_gp_seq_needed and srcu_gp_seq_needed_exp are not far behind
-> >srcu_gp_seq and no false alarm will be raised by the statement in
-> >srcu_gp_start_if_needed()
-> >
-> >  ULONG_CMP_LT(sdp->srcu_gp_seq_needed, s)
-> >
-> >As a result, once if SRCU_SIZE_WAIT_BARRIER is seen, the tree snp can be
-> >used immediately, not need to wait for another srcu_gp_end() to update
-> >the srcu_gp_seq_needed and srcu_gp_seq_needed_exp to avoid false alarm.
-> >
-> >Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
-> >Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-> >Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> >Cc: Frederic Weisbecker <frederic@kernel.org>
-> >Cc: Josh Triplett <josh@joshtriplett.org>
-> >Cc: Steven Rostedt <rostedt@goodmis.org>
-> >Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> >Cc: "Zhang, Qiang1" <qiang1.zhang@intel.com>
-> >To: rcu@vger.kernel.org
-> >---
-> > kernel/rcu/srcutree.c | 2 +-
-> > 1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> >diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> >index 1c304fec89c0..fe0759d89c2d 100644
-> >--- a/kernel/rcu/srcutree.c
-> >+++ b/kernel/rcu/srcutree.c
-> >@@ -1092,7 +1092,7 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
-> > 	check_init_srcu_struct(ssp);
-> > 	idx = srcu_read_lock(ssp);
-> > 	ss_state = smp_load_acquire(&ssp->srcu_size_state);
-> >-	if (ss_state < SRCU_SIZE_WAIT_CALL)
-> >+	if (ss_state < SRCU_SIZE_WAIT_BARRIER)
-> > 		sdp = per_cpu_ptr(ssp->sda, 0);
-> 
-> Hi Pingfan
-> 
-> should it be used get_boot_cpu_id() ?
-> 
+Currently, invoke rcu_tasks_rude_wait_gp() to wait one rude
+RCU-tasks grace period, if __num_online_cpus == 1, will return
+directly, indicates the end of the rude RCU-task grace period.
+suppose the system has two cpus, consider the following scenario:
 
-I am not sure which branch to work on.
+	CPU0                                   CPU1 (going offline)
+				          migration/1 task:
+                                      cpu_stopper_thread
+                                       -> take_cpu_down
+                                          -> _cpu_disable
+			                   (dec __num_online_cpus)
+                                          ->cpuhp_invoke_callback
+                                                preempt_disable
+						access old_data0
+           task1
+ del old_data0                                  .....
+ synchronize_rcu_tasks_rude()
+ task1 schedule out
+ ....
+ task2 schedule in
+ rcu_tasks_rude_wait_gp()
+     ->__num_online_cpus == 1
+       ->return
+ ....
+ task1 schedule in
+ ->free old_data0
+                                                preempt_enable
 
-Thanks,
+when CPU1 dec __num_online_cpus and __num_online_cpus is equal one,
+the CPU1 has not finished offline, stop_machine task(migration/1)
+still running on CPU1, maybe still accessing 'old_data0', but the
+'old_data0' has freed on CPU0.
 
-	Pingfan
+This commit add cpus_read_lock/unlock() protection before accessing
+__num_online_cpus variables, to ensure that the CPU in the offline
+process has been completed offline.
 
-> Thanks
-> Zqiang
-> 
-> > 	else
-> > 		sdp = raw_cpu_ptr(ssp->sda);
-> >-- 
-> >2.31.1
-> >
+Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+---
+ kernel/rcu/tasks.h | 20 ++++++++++++++++++--
+ 1 file changed, 18 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index 4a991311be9b..08e72c6462d8 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -1033,14 +1033,30 @@ static void rcu_tasks_be_rude(struct work_struct *work)
+ {
+ }
+ 
++static DEFINE_PER_CPU(struct work_struct, rude_work);
++
+ // Wait for one rude RCU-tasks grace period.
+ static void rcu_tasks_rude_wait_gp(struct rcu_tasks *rtp)
+ {
++	int cpu;
++	struct work_struct *work;
++
++	cpus_read_lock();
+ 	if (num_online_cpus() <= 1)
+-		return;	// Fastpath for only one CPU.
++		goto end;// Fastpath for only one CPU.
+ 
+ 	rtp->n_ipis += cpumask_weight(cpu_online_mask);
+-	schedule_on_each_cpu(rcu_tasks_be_rude);
++	for_each_online_cpu(cpu) {
++		work = per_cpu_ptr(&rude_work, cpu);
++		INIT_WORK(work, rcu_tasks_be_rude);
++		schedule_work_on(cpu, work);
++	}
++
++	for_each_online_cpu(cpu)
++		flush_work(per_cpu_ptr(&rude_work, cpu));
++
++end:
++	cpus_read_unlock();
+ }
+ 
+ void call_rcu_tasks_rude(struct rcu_head *rhp, rcu_callback_t func);
+-- 
+2.25.1
+
