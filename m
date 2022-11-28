@@ -2,254 +2,109 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 62C0AC43217
-	for <rcu@archiver.kernel.org>; Sun, 27 Nov 2022 18:00:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6CD9DC4321E
+	for <rcu@archiver.kernel.org>; Mon, 28 Nov 2022 04:03:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229543AbiK0SAU (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 27 Nov 2022 13:00:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59262 "EHLO
+        id S229637AbiK1EDL (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 27 Nov 2022 23:03:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbiK0SAT (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 27 Nov 2022 13:00:19 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 711BF2641
-        for <rcu@vger.kernel.org>; Sun, 27 Nov 2022 10:00:18 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 02E5760DF6
-        for <rcu@vger.kernel.org>; Sun, 27 Nov 2022 18:00:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 451F6C433D6;
-        Sun, 27 Nov 2022 18:00:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669572017;
-        bh=u9gtsqSUyVNXSJY1Nj0BO3EKqfiKig3kRxquol6N4nA=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=WEiBXijq/x0sgb0UA0nnXKCCPfBntARdI8GKcKvlwJoW0KmSI+5B7Gcs5Y5D88aee
-         8mkk0EoqrBgLL5r8G7NNpH7DZ7Tm0MRYmQ8mWTcgGCYD9I79QaSfCW0vRsJhPByPjH
-         QYTvbzEaTSlmM7bZdiNxqXKZK8V3V4bU/aTg8KZ8ZCLj/paU3TYqMUCIU6V6FPO/W0
-         sgZP9FwYEDvfQYSlabC6XoYr5yz/IQB+vOzBYj/vJH2LagXpJJmEys1SI8gRKE3pfO
-         yvV7MUUs0CLk0flwF4GiRSuf+2MuVb43sXZQgroQVLsim+9jNsgaLO92d5RgP3mtne
-         /gCsvcN9NtAVg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id E60A55C09B0; Sun, 27 Nov 2022 10:00:16 -0800 (PST)
-Date:   Sun, 27 Nov 2022 10:00:16 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Pingfan Liu <kernelfans@gmail.com>
-Cc:     rcu@vger.kernel.org, Lai Jiangshan <jiangshanlai@gmail.com>,
+        with ESMTP id S229726AbiK1EDJ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 27 Nov 2022 23:03:09 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFAEC2704;
+        Sun, 27 Nov 2022 20:03:07 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id 6so8845691pgm.6;
+        Sun, 27 Nov 2022 20:03:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ilpG6GdC789HXmI5aw3aKOys6o4JUHsn6+C+0F+HJGE=;
+        b=JgNYRVqOjC3J6zzCHhezSQKcGICWvtRXcZZV/QfD9yLjI8PLTsPAz5j1+BpR1zZ7ud
+         C17JKc9CsWIWbLKCa6drSJskkfLcD8xb7K5I2hjcmSztUoI95mUvhTJF8QebbYXJp4Kn
+         LOmhgupsSbEXb2EmIDJ+vxVHhh6UjvXRHIsFGMQ5ZHpwDpOoI0duNxAbUZcXClEFZLFg
+         vycC1n4eB4jfDuNRSKU18HZBOWEd3mIIR4R/tS8Rd5bay6FuswTeWALmZyr6FvBbhEaz
+         kb+F09axlyNMUL609iGg5Tqtyh2K5unr/ZuPYf5AuPKyTC9GPq3UP7khnYpqra91/1oy
+         7+Tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ilpG6GdC789HXmI5aw3aKOys6o4JUHsn6+C+0F+HJGE=;
+        b=gyljfFmpU2iNZ7fpeUZPDPsXwp/PAyavYzYd9VG56BBve9g9ARQLSwi/GPUD1oLFXC
+         56yW6n2dF1Soh03FykjRbqWtTneN8gDElgI6Oi27yBfHXPaVQWD6Nhl4AKs75ZqS+TXf
+         ScdXOrXxTICGgCcPdhT15HO8dmSgQH1mwBpg6totGNJA+TRZ1cpkJz+jqsNGcsdnvorI
+         xzn0TxTvfpHCE5wqrpJmqfhswe6e1FJzGedHbcTCnbnmUnrx/hpLUzYOKej/JZyOQXKQ
+         J8yUl9Bq+0JTT4LBSeij4/ppKiFHkn6VcRM06ri3zFaVLIMd2f1mSWRXp0/g2zqyTOVi
+         1iAA==
+X-Gm-Message-State: ANoB5pllxi38dNaqpljQNthdEIVVig7oAzXTD7Eu322la9ugm1max+Ab
+        cXmRUenQHt4sWggV4EPsRX0=
+X-Google-Smtp-Source: AA0mqf6bze+yXYcqx3xk+GoY6mVDVHQSnDl/b6xE9mbGXshZotue5b5tKREVbSYA8QN58Mg5L/GZPQ==
+X-Received: by 2002:a63:d556:0:b0:435:7957:559d with SMTP id v22-20020a63d556000000b004357957559dmr32676308pgi.122.1669608187418;
+        Sun, 27 Nov 2022 20:03:07 -0800 (PST)
+Received: from debian.me (subs03-180-214-233-83.three.co.id. [180.214.233.83])
+        by smtp.gmail.com with ESMTPSA id c80-20020a624e53000000b00561dcfa700asm6913307pfb.107.2022.11.27.20.03.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Nov 2022 20:03:06 -0800 (PST)
+Received: by debian.me (Postfix, from userid 1000)
+        id 7B3D51038E9; Mon, 28 Nov 2022 11:03:03 +0700 (WIB)
+Date:   Mon, 28 Nov 2022 11:03:02 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
         Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: Re: [PATCHv2 2/2] srcu: Eliminate the case that snp_seq bigger than
- snap in srcu_funnel_gp_start()
-Message-ID: <20221127180016.GH4001@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20221123135638.79021-3-kernelfans@gmail.com>
- <20221123192046.GH4001@paulmck-ThinkPad-P17-Gen-1>
- <Y37l9PDleNiaHFLo@piliu.users.ipa.redhat.com>
- <CAFgQCTsEOQAuiMkPp1XnBRvSUxxW3ihkBFPhDuA7zpwgSPj+Kg@mail.gmail.com>
- <20221124052417.GO4001@paulmck-ThinkPad-P17-Gen-1>
- <20221124161926.GA3495117@paulmck-ThinkPad-P17-Gen-1>
- <Y4C271JOvsKU+ckG@piliu.users.ipa.redhat.com>
- <20221126180352.GD4001@paulmck-ThinkPad-P17-Gen-1>
- <20221126180704.GA3269129@paulmck-ThinkPad-P17-Gen-1>
- <Y4N7vU3MI7qvMHP5@piliu.users.ipa.redhat.com>
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        linux-next@vger.kernel.org
+Subject: Re: [PATCH v3] doc: Fix htmldocs build warnings of stallwarn.rst
+Message-ID: <Y4Qy9hpzyQMCDZwS@debian.me>
+References: <20221124062204.1932-1-thunder.leizhen@huawei.com>
+ <1c472632-caf6-72d3-5de8-aaa3a1fdfd61@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="qZu2EZ2+iL1NvBah"
 Content-Disposition: inline
-In-Reply-To: <Y4N7vU3MI7qvMHP5@piliu.users.ipa.redhat.com>
+In-Reply-To: <1c472632-caf6-72d3-5de8-aaa3a1fdfd61@huawei.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sun, Nov 27, 2022 at 11:01:17PM +0800, Pingfan Liu wrote:
-> On Sat, Nov 26, 2022 at 10:07:04AM -0800, Paul E. McKenney wrote:
-> > On Sat, Nov 26, 2022 at 10:03:52AM -0800, Paul E. McKenney wrote:
-> > > On Fri, Nov 25, 2022 at 08:37:03PM +0800, Pingfan Liu wrote:
-> > > > On Thu, Nov 24, 2022 at 08:19:26AM -0800, Paul E. McKenney wrote:
-> > > > > On Wed, Nov 23, 2022 at 09:24:17PM -0800, Paul E. McKenney wrote:
-> > > > > > On Thu, Nov 24, 2022 at 12:06:39PM +0800, Pingfan Liu wrote:
-> > > > > > > On Thu, Nov 24, 2022 at 11:33 AM Pingfan Liu <kernelfans@gmail.com> wrote:
-> > > > > > > > On Wed, Nov 23, 2022 at 11:20:46AM -0800, Paul E. McKenney wrote:
-> > > > > > > > > On Wed, Nov 23, 2022 at 09:56:38PM +0800, Pingfan Liu wrote:
-> > > > > > > > > > Since the srcu read lock is still held during srcu_funnel_gp_start(),
-> > > > > > > > > > the seq snap should be the largest number for the slot
-> > > > > > > > > > srcu_have_cbs[idx].
-> > > > > > > > > >
-> > > > > > > > > > Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
-> > > > > > > > > > Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-> > > > > > > > > > Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> > > > > > > > > > Cc: Frederic Weisbecker <frederic@kernel.org>
-> > > > > > > > > > Cc: Josh Triplett <josh@joshtriplett.org>
-> > > > > > > > > > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > > > > > > > > > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > > > > > > > > > To: rcu@vger.kernel.org
-> > > > > > > > > > ---
-> > > > > > > > > >  include/linux/rcupdate.h |  1 +
-> > > > > > > > > >  kernel/rcu/srcutree.c    | 11 ++++++-----
-> > > > > > > > > >  2 files changed, 7 insertions(+), 5 deletions(-)
-> > > > > > > > > >
-> > > > > > > > > > diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-> > > > > > > > > > index 08605ce7379d..a09007236660 100644
-> > > > > > > > > > --- a/include/linux/rcupdate.h
-> > > > > > > > > > +++ b/include/linux/rcupdate.h
-> > > > > > > > > > @@ -32,6 +32,7 @@
-> > > > > > > > > >  #include <linux/context_tracking_irq.h>
-> > > > > > > > > >
-> > > > > > > > > >  #define ULONG_CMP_GE(a, b) (ULONG_MAX / 2 >= (a) - (b))
-> > > > > > > > > > +#define ULONG_CMP_GT(a, b) (ULONG_MAX / 2 > (a) - (b))
-> > > > > > > > >
-> > > > > > > > > Please see below...
-> > > > > > > > >
-> > > > > > > > > >  #define ULONG_CMP_LT(a, b) (ULONG_MAX / 2 < (a) - (b))
-> > > > > > > > > >  #define ulong2long(a)              (*(long *)(&(a)))
-> > > > > > > > > >  #define USHORT_CMP_GE(a, b)        (USHRT_MAX / 2 >= (unsigned short)((a) - (b)))
-> > > > > > > > > > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> > > > > > > > > > index 2fc0e775ade4..41902b823687 100644
-> > > > > > > > > > --- a/kernel/rcu/srcutree.c
-> > > > > > > > > > +++ b/kernel/rcu/srcutree.c
-> > > > > > > > > > @@ -905,14 +905,15 @@ static void srcu_funnel_gp_start(struct srcu_struct *ssp, struct srcu_data *sdp,
-> > > > > > > > > >             for (snp = snp_leaf; snp != NULL; snp = snp->srcu_parent) {
-> > > > > > > > > >                     spin_lock_irqsave_rcu_node(snp, flags);
-> > > > > > > > > >                     snp_seq = snp->srcu_have_cbs[idx];
-> > > > > > > > > > -                   if (!srcu_invl_snp_seq(snp_seq) && ULONG_CMP_GE(snp_seq, s)) {
-> > > > > > > > > > +                   /*
-> > > > > > > > > > +                    * s should be the biggest in the current slot. Hence only LE is
-> > > > > > > > > > +                    * valid
-> > > > > > > > > > +                    */
-> > > > > > > > > > +                   BUG_ON(ULONG_CMP_GT(snp_seq, s));
-> > > > > > > > >
-> > > > > > > > > Why not this?  (Plus adjusting the comment above, of course.)
-> > > > > > > > >
-> > > > > > > > >                       WARN_ON_ONCE(ULONG_CMP_LT(s, snp_seq));
-> > > > > > > > >
-> > > > > > > >
-> > > > > > > > A neat solution!
-> > > > > > > >
-> > > > > > > > And what about the comment
-> > > > > > > >                         /* s should be the biggest in the current slot. */
-> > > > > > > >
-> > > > > > > > > That way we don't need ULONG_CMP_GT().  Plus if we are confused about
-> > > > > > > > > s being the biggest in the current slot, we get a splat and can debug
-> > > > > > > > > further.  We both might be quite sure that we are not confused, but
-> > > > > > > > > that is exactly when we are most prone to making mistakes.  ;-)
-> > > > > > > > >
-> > > > > > > >
-> > > > > > > > Same feeling :)
-> > > > > > > >
-> > > > > > > > > I also ask that you run with this check for some time.  After all, if
-> > > > > > > 
-> > > > > > > Forget to ask if  the test
-> > > > > > >   "tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration
-> > > > > > > 10h --configs 18*SRCU-P"
-> > > > > > > satisfies your requirement?
-> > > > > > 
-> > > > > > I am thinking more in terms of adding the WARN_ON_ONCE(), letting it be
-> > > > > > in -next and possibly mainline for a couple of years, and then if there
-> > > > > > are no splats, start feeling more confident in the asserted relationship.
-> > > > > > 
-> > > > > > If there was a significant performance, scalability, energy-efficiency, or
-> > > > > > simplification benefit, I would feel justified in being more aggressive.
-> > > > > > 
-> > > > > > But I am not seeing a significant benefit.
-> > > > > 
-> > > > > Ah, and before I forget -again-, have you thought through the counter-wrap
-> > > > > scenarios?  Please keep in mind that on a 32-bit system, those counters
-> > > > > can wrap quite quickly compared to typical uptimes.
-> > > > 
-> > > > I think 32-bit has not significant different since the statement
-> > > >   WARN_ON_ONCE(ULONG_CMP_LT(s, snp_seq));
-> > > > 
-> > > > where 's < snp_seq' is not associated with bits. Am I missing anything?
-> > > 
-> > > Your point is that long before there was any danger of wrap, this
-> > > WARN_ON_ONCE() would trigger?
-> > > 
-> > > If so, the point is to avoid that WARN_ON_ONCE() from triggering.
-> 
-> Oops! I failed to figure out the scene you pointed out, where snp_x did
-> not have call_srcu event for a very long time, then comes the wrap, and
-> when s is close enough to snp_x's snp_seq, ULONG_CMP_LT(s, snp_seq) will
-> raise false alarm.
-> 
-> Yes, this is a bug.
 
-Very good, you did get there.  ;-)
+--qZu2EZ2+iL1NvBah
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > > Or am I missing your point?
-> 
-> Sorry that I missed your point and confused you.
-> 
-> Can I remedy it using the root snp? Because the root snp's snp_seq advances
-> each GP. And it is the biggest one among snp-s.
+On Sat, Nov 26, 2022 at 09:30:32AM +0800, Leizhen (ThunderTown) wrote:
+>=20
+> Hi, Bagas Sanjaya:
+>   Do you have time to review this patch again? Your review comments are i=
+mportant
+> because you made comments in the previous version.
+>=20
 
-Yes, the root srcu_node structure is always there, but it will tend to be
-less warm in the cache, and thus will tend to be more expensive to access.
+OK, will review.
 
-So, does keeping the current unconditional store solve the wrap problem?
+--=20
+An old man doll... just what I always wanted! - Clara
 
-> > For example, are you instead saying that the WARN_ON_ONCE() proposed in
-> > your patch will detect the problem either way?  If so, what I am asking
-> > is whether your earlier analysis considered wrap without the addition
-> > of that WARN_ON_ONCE().
-> 
-> Have I answer all of your concerns?
+--qZu2EZ2+iL1NvBah
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Quite possibly.
+-----BEGIN PGP SIGNATURE-----
 
-However, to quote George Bernard Shaw, "The single biggest problem in
-communication is the illusion that it has taken place."
+iHUEABYIAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCY4Qy8QAKCRD2uYlJVVFO
+ow5zAP0d2VP67ycj21Srtq8AHtkWRGlstqm4yxtCgcQLigutlAEArz3jeMoqCN8V
+W2AkbsS/CvoDZduuNwYPDT/4Cj6cHQs=
+=bAyq
+-----END PGP SIGNATURE-----
 
-So I guess we will see!  ;-)
-
-							Thanx, Paul
-
-> Thanks,
-> 
-> 	Pingfan
-> 
-> > 							Thanx, Paul
-> > 
-> > > > Thanks,
-> > > > 
-> > > > 	Pingfan
-> > > > 
-> > > > > 							Thanx, Paul
-> > > > > 
-> > > > > > > Thanks
-> > > > > > > 
-> > > > > > >     Pingfan
-> > > > > > > > Sure. I will try it immediately.
-> > > > > > > >
-> > > > > > > > > the assumption is incorrect, the resulting SRCU hangs off in various
-> > > > > > > > > systems around the world will not be so much fun to debug.
-> > > > > > > > >
-> > > > > > > > > Given that this is slowpath code, it is much better to take an extra
-> > > > > > > > > compare and branch than to introduce even an extremely small risk of
-> > > > > > > > > hanging SRCU.
-> > > > > > > > >
-> > > > > > > >
-> > > > > > > > Agree.
-> > > > > > > >
-> > > > > > > >
-> > > > > > > > Thanks,
-> > > > > > > >
-> > > > > > > >         Pingfan
-> > > > > > > >
-> > > > > > > > >                                                       Thanx, Paul
-> > > > > > > > >
-> > > > > > > > > > +                   if (!srcu_invl_snp_seq(snp_seq) && (snp_seq == s)) {
-> > > > > > > > > >                             if (snp == snp_leaf && snp_seq == s)
-> > > > > > > > > >                                     snp->srcu_data_have_cbs[idx] |= sdp->grpmask;
-> > > > > > > > > >                             spin_unlock_irqrestore_rcu_node(snp, flags);
-> > > > > > > > > > -                           if (snp == snp_leaf && snp_seq != s) {
-> > > > > > > > > > -                                   srcu_schedule_cbs_sdp(sdp, do_norm ? SRCU_INTERVAL : 0);
-> > > > > > > > > > -                                   return;
-> > > > > > > > > > -                           }
-> > > > > > > > > >                             if (!do_norm)
-> > > > > > > > > >                                     srcu_funnel_exp_start(ssp, snp, s);
-> > > > > > > > > >                             return;
-> > > > > > > > > > --
-> > > > > > > > > > 2.31.1
-> > > > > > > > > >
+--qZu2EZ2+iL1NvBah--
