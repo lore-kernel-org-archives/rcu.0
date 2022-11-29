@@ -2,76 +2,231 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7257EC4167B
-	for <rcu@archiver.kernel.org>; Tue, 29 Nov 2022 09:01:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A7D6C4332F
+	for <rcu@archiver.kernel.org>; Tue, 29 Nov 2022 09:55:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229449AbiK2JBa (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 29 Nov 2022 04:01:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42680 "EHLO
+        id S229670AbiK2JzG (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 29 Nov 2022 04:55:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230049AbiK2JBa (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 29 Nov 2022 04:01:30 -0500
-Received: from mail.celebrcket.pl (mail.celebrcket.pl [151.236.28.110])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5274465AE
-        for <rcu@vger.kernel.org>; Tue, 29 Nov 2022 01:01:29 -0800 (PST)
-Received: by mail.celebrcket.pl (Postfix, from userid 1001)
-        id 391BB42E67; Tue, 29 Nov 2022 10:01:00 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=celebrcket.pl;
-        s=mail; t=1669712485;
-        bh=se/FEXf5wQsf2mHc3qwjfm79hMqve+JiwdtdE0sxgo0=;
-        h=Date:From:To:Subject:From;
-        b=UPmzrhrNIekX37n8Ar6cI1zQ8ONNS54gSTB2939yNmoqPhRdRYzOT5OvgFRGQFq3q
-         PSq5y18pCtfUK+MjZ0m6HO0g14f3dSoDkqArudeTn/gm6X4rWjB5r4BA0IRu7sdDsP
-         EO605hEMKXv+nhRE5wgcu8rWYI0Wc6XHctoZjHJzv//FGeOUjA5uqQZIRYpt/ydlfT
-         z6kia/0ZIglVyJRyop6Li6wWNmu7fpAdKRFFx9v9BnqkqpUdZJSQHW5R0UjD8bBdpb
-         sWp6rXU7lHMtjBWIzAzEU5CwD0LQ2SYqWXyqpDHNNs296aYCEy241fkRAJt3FDvvpi
-         YmiqpSXNX+QpQ==
-Received: by mail.celebrcket.pl for <rcu@vger.kernel.org>; Tue, 29 Nov 2022 09:00:50 GMT
-Message-ID: <20221129084500-0.1.5r.v1sq.0.pma1rapmnp@celebrcket.pl>
-Date:   Tue, 29 Nov 2022 09:00:50 GMT
-From:   "Marcelina Szymuta" <marcelina.szymuta@celebrcket.pl>
-To:     <rcu@vger.kernel.org>
-Subject: Projekt na wizerunek marki
-X-Mailer: mail.celebrcket.pl
+        with ESMTP id S229601AbiK2JzF (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 29 Nov 2022 04:55:05 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3767189;
+        Tue, 29 Nov 2022 01:55:04 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 89D54615E9;
+        Tue, 29 Nov 2022 09:55:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66C6FC433C1;
+        Tue, 29 Nov 2022 09:55:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1669715703;
+        bh=G5gpN06O+XrZ9NkRsUk5sfEk1cZQZe5PJtjFJe7vgLA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tVqGFcnF34wvDaYZSJHSuTaNwFs58GO9+TVxSPMd9akbt1j1U0TzsWPijbQKXtRW5
+         2pRiES7CKN1UtLW61Kco62cJtNMFxZNIz742nmCGhOaFJ6tJ8HaT4uHUQKmN+q5kD1
+         OBDoSgUnfCsKGlUr8gkGOXzlHX137X1CUUEtY66MYDiPix53MAFBEnyRlxwMgFibqd
+         TrpZCR9Tkho9lwObUZT7q55p/XkeWXhXlRfPTM0IvI769M/5qvrxr0ocbGk90s3x2C
+         FEkaE4n0RyF/voBQWuWI8Plm8M0Dz1CyFvI1lJr1IhAGGN0h0AL7HFzuDLBJpXB5P5
+         OduZDw2+Uvvbw==
+Date:   Tue, 29 Nov 2022 10:55:00 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>, rcu@vger.kernel.org
+Subject: Re: [PATCH 0/3] rcu-tasks: Fix race against exiting pid_ns
+Message-ID: <20221129095500.GA1706373@lothringen>
+References: <20221125135500.1653800-1-frederic@kernel.org>
+ <20221129002240.GP4001@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221129002240.GP4001@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Dzie=C5=84 dobry,
+On Mon, Nov 28, 2022 at 04:22:40PM -0800, Paul E. McKenney wrote:
+> On Fri, Nov 25, 2022 at 02:54:57PM +0100, Frederic Weisbecker wrote:
+> > Pengfei Xu has reported a deadlock involving calls to unshare(),
+> > perf_event_open() and clone3() calls. It requires CAP_SYS_ADMIN
+> > to reproduce (at least I don't see a way for a non privilege process to
+> > reproduce).
+> > 
+> > See this thread for details: https://lore.kernel.org/all/Y3sOgrOmMQqPMItu@xpf.sh.intel.com/
+> > And this document for the collaborative analysis with Boqun, Paul and Neeraj:
+> > https://docs.google.com/document/d/1hJxgiZ5TMZ4YJkdJPLAkRvq7sYQ-A7svgA8no6i-v8k
+> > 
+> > The two first patches are small improvements. The fix is in the last patch.
+> > 
+> > git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
+> > 	rcu/dev
+> > 
+> > HEAD: 45ef5a0a4be4e0db9eadcc86e8f346d34c62e744
+> 
+> Hearing no objections, queued for further review and testing.
+> 
+> And thank you very much!  That race between synchronize_rcu_tasks() and
+> zap_pid_ns_processes() certainly was more than a bit on the non-trivial
+> side.  Good show!!!
 
-od wielu lat zapewniamy kompleksowe wsparcie kreuj=C4=85ce pozytywny wize=
-runek marki oraz podnosz=C4=85ce sprzeda=C5=BC produkt=C3=B3w i us=C5=82u=
-g.
+Thanks!
 
-Od lat realizujemy skuteczne kampanie reklamowe i prowadzimy dzia=C5=82an=
-ia w Social Media dla r=C3=B3=C5=BCnych marek, buduj=C4=85c dynamiczn=C4=85=
- komunikacj=C4=99, kt=C3=B3ra przynosi wymierne rezultaty.
+Also please replace the last patch with the following to fix
+a !CONFIG_RCU_TASKS issue:
 
-Wiemy, jak wykorzysta=C4=87 r=C3=B3=C5=BCnorodne i innowacyjne pomys=C5=82=
-y oraz dost=C4=99pn=C4=85 technologi=C4=99 z zakresu content marketingu, =
-SEO i User Experience, aby podnie=C5=9B=C4=87 rozpoznawalno=C5=9B=C4=87 P=
-a=C5=84stwa firmy na rynku czy zwi=C4=99kszy=C4=87 ilo=C5=9B=C4=87 zapyta=
-=C5=84 ofertowych.
+---
+From: Frederic Weisbecker <frederic@kernel.org>
+Date: Thu, 24 Nov 2022 18:15:46 +0100
+Subject: [PATCH] rcu-tasks: Fix synchronize_rcu_tasks() VS
+ zap_pid_ns_processes()
 
-Dysponujemy nowoczesnymi narz=C4=99dziami, kt=C3=B3re dobieramy i dostoso=
-wujemy indywidualnie dla ka=C5=BCdej kampanii oraz na bie=C5=BC=C4=85co o=
-ptymalizujemy ich funkcjonowanie.=20
+RCU Tasks and PID-namespace unshare can interact in do_exit() in a
+complicated circular dependency:
 
-Pracujemy na wymiernych wska=C5=BAnikach efektywno=C5=9Bci podejmowanych =
-dzia=C5=82a=C5=84, dzi=C4=99ki kt=C3=B3rym stawiamy wy=C5=82=C4=85cznie n=
-a najskuteczniejsze narz=C4=99dzia, by zwi=C4=99ksza=C4=87 zainteresowani=
-e Pa=C5=84stwa mark=C4=85 i obni=C5=BCa=C4=87 koszty (eliminacja inwestyc=
-ji w nieefektywne projekty).=20
+1) TASK A calls unshare(CLONE_NEWPID), this creates a new PID namespace
+   that every subsequent child of TASK A will belong to. But TASK A
+   doesn't itself belong to that new PID namespace.
 
-Wierz=C4=99, =C5=BCe nasza propozycja oka=C5=BCe si=C4=99 dla Pa=C5=84stw=
-a na tyle interesuj=C4=85ca, =C5=BCe b=C4=99dziemy mieli przyjemno=C5=9B=C4=
-=87 wspiera=C4=87 Pa=C5=84stwa w rozwoju biznesu=20
+2) TASK A forks() and creates TASK B. TASK A stays attached to its PID
+   namespace (let's say PID_NS1) and TASK B is the first task belonging
+   to the new PID namespace created by unshare()  (let's call it PID_NS2).
 
-Interesuje Pa=C5=84stwa wsp=C3=B3=C5=82praca w tym zakresie?
+3) Since TASK B is the first task attached to PID_NS2, it becomes the
+   PID_NS2 child reaper.
 
+4) TASK A forks() again and creates TASK C which get attached to PID_NS2.
+   Note how TASK C has TASK A as a parent (belonging to PID_NS1) but has
+   TASK B (belonging to PID_NS2) as a pid_namespace child_reaper.
 
-Z serdecznymi pozdrowieniami,
-Marcelina Szymuta
+5) TASK B exits and since it is the child reaper for PID_NS2, it has to
+   kill all other tasks attached to PID_NS2, and wait for all of them to
+   die before getting reaped itself (zap_pid_ns_process()).
+
+6) TASK A calls synchronize_rcu_tasks() which leads to
+   synchronize_srcu(&tasks_rcu_exit_srcu).
+
+7) TASK B is waiting for TASK C to get reaped. But TASK B is under a
+   tasks_rcu_exit_srcu SRCU critical section (exit_notify() is between
+   exit_tasks_rcu_start() and exit_tasks_rcu_finish()), blocking TASK A.
+
+8) TASK C exits and since TASK A is its parent, it waits for it to reap
+   TASK C, but it can't because TASK A waits for TASK B that waits for
+   TASK C.
+
+Pid_namespace semantics can hardly be changed at this point. But the
+coverage of tasks_rcu_exit_srcu can be reduced instead.
+
+The current task is assumed not to be concurrently reapable at this
+stage of exit_notify() and therefore tasks_rcu_exit_srcu can be
+temporarily relaxed without breaking its constraints, providing a way
+out of the deadlock scenario.
+
+Fixes: 3f95aa81d265 ("rcu: Make TASKS_RCU handle tasks that are almost done exiting")
+Reported-by: Pengfei Xu <pengfei.xu@intel.com>
+Suggested-by: Boqun Feng <boqun.feng@gmail.com>
+Suggested-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+Suggested-by: Paul E. McKenney <paulmck@kernel.org>
+Cc: Oleg Nesterov <oleg@redhat.com>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+Cc: Eric W . Biederman <ebiederm@xmission.com>
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+---
+ include/linux/rcupdate.h |  2 ++
+ kernel/pid_namespace.c   | 17 +++++++++++++++++
+ kernel/rcu/tasks.h       | 15 +++++++++++++--
+ 3 files changed, 32 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index 89b3036746d2..a19d91d5461c 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -238,6 +238,7 @@ void synchronize_rcu_tasks_rude(void);
+ 
+ #define rcu_note_voluntary_context_switch(t) rcu_tasks_qs(t, false)
+ void exit_tasks_rcu_start(void);
++void exit_tasks_rcu_stop(void);
+ void exit_tasks_rcu_finish(void);
+ #else /* #ifdef CONFIG_TASKS_RCU_GENERIC */
+ #define rcu_tasks_classic_qs(t, preempt) do { } while (0)
+@@ -246,6 +247,7 @@ void exit_tasks_rcu_finish(void);
+ #define call_rcu_tasks call_rcu
+ #define synchronize_rcu_tasks synchronize_rcu
+ static inline void exit_tasks_rcu_start(void) { }
++static inline void exit_tasks_rcu_stop(void) { }
+ static inline void exit_tasks_rcu_finish(void) { }
+ #endif /* #else #ifdef CONFIG_TASKS_RCU_GENERIC */
+ 
+diff --git a/kernel/pid_namespace.c b/kernel/pid_namespace.c
+index f4f8cb0435b4..fc21c5d5fd5d 100644
+--- a/kernel/pid_namespace.c
++++ b/kernel/pid_namespace.c
+@@ -244,7 +244,24 @@ void zap_pid_ns_processes(struct pid_namespace *pid_ns)
+ 		set_current_state(TASK_INTERRUPTIBLE);
+ 		if (pid_ns->pid_allocated == init_pids)
+ 			break;
++		/*
++		 * Release tasks_rcu_exit_srcu to avoid following deadlock:
++		 *
++		 * 1) TASK A unshare(CLONE_NEWPID)
++		 * 2) TASK A fork() twice -> TASK B (child reaper for new ns)
++		 *    and TASK C
++		 * 3) TASK B exits, kills TASK C, waits for TASK A to reap it
++		 * 4) TASK A calls synchronize_rcu_tasks()
++		 *                   -> synchronize_srcu(tasks_rcu_exit_srcu)
++		 * 5) *DEADLOCK*
++		 *
++		 * It is considered safe to release tasks_rcu_exit_srcu here
++		 * because we assume the current task can not be concurrently
++		 * reaped at this point.
++		 */
++		exit_tasks_rcu_stop();
+ 		schedule();
++		exit_tasks_rcu_start();
+ 	}
+ 	__set_current_state(TASK_RUNNING);
+ 
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index 9a8114114b48..4dda8e6e5707 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -1016,16 +1016,27 @@ void exit_tasks_rcu_start(void) __acquires(&tasks_rcu_exit_srcu)
+  * task is exiting and may be removed from the tasklist. See
+  * corresponding synchronize_srcu() for further details.
+  */
+-void exit_tasks_rcu_finish(void) __releases(&tasks_rcu_exit_srcu)
++void exit_tasks_rcu_stop(void) __releases(&tasks_rcu_exit_srcu)
+ {
+ 	struct task_struct *t = current;
+ 
+ 	__srcu_read_unlock(&tasks_rcu_exit_srcu, t->rcu_tasks_idx);
+-	exit_tasks_rcu_finish_trace(t);
++}
++
++/*
++ * Contribute to protect against tasklist scan blind spot while the
++ * task is exiting and may be removed from the tasklist. See
++ * corresponding synchronize_srcu() for further details.
++ */
++void exit_tasks_rcu_finish(void)
++{
++	exit_tasks_rcu_stop();
++	exit_tasks_rcu_finish_trace(current);
+ }
+ 
+ #else /* #ifdef CONFIG_TASKS_RCU */
+ void exit_tasks_rcu_start(void) { }
++void exit_tasks_rcu_stop(void) { }
+ void exit_tasks_rcu_finish(void) { exit_tasks_rcu_finish_trace(current); }
+ #endif /* #else #ifdef CONFIG_TASKS_RCU */
+ 
+-- 
+2.25.1
+
