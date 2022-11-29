@@ -2,169 +2,211 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A128C43217
-	for <rcu@archiver.kernel.org>; Mon, 28 Nov 2022 23:57:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0EE17C43217
+	for <rcu@archiver.kernel.org>; Tue, 29 Nov 2022 00:13:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234842AbiK1X5g (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 28 Nov 2022 18:57:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36666 "EHLO
+        id S234582AbiK2ANE (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 28 Nov 2022 19:13:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234835AbiK1X5f (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 28 Nov 2022 18:57:35 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65D4E110D
-        for <rcu@vger.kernel.org>; Mon, 28 Nov 2022 15:57:34 -0800 (PST)
+        with ESMTP id S234760AbiK2AM5 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 28 Nov 2022 19:12:57 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0E302DD7;
+        Mon, 28 Nov 2022 16:12:54 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D73F361508
-        for <rcu@vger.kernel.org>; Mon, 28 Nov 2022 23:57:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30261C433D6;
-        Mon, 28 Nov 2022 23:57:33 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8D76661512;
+        Tue, 29 Nov 2022 00:12:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F22E5C433C1;
+        Tue, 29 Nov 2022 00:12:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669679853;
-        bh=uLU0gJzbqQiA2vfOvKhWHOOBFoF15JqGij0MrQDBVbY=;
+        s=k20201202; t=1669680774;
+        bh=FjN5V5IHuRq3L7i0ZyJcoPqFG6uIYmaYihyqL7Linvc=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=nGa5jo8/blQfdSnfVEUk+1QbDWQOPWy12bCva2badABVs0jOVYhIrA2DgPRNcH4RA
-         LyCCdiCtvMhFUtYzlCL7NL1+eq2oYcfT+ZYWTDvrQMykZUndLKDs4DVIzj67+lnobo
-         7Hctp8vTQ4ueWc27hHUWoiFH4Q8e2Mt3fLxqfBkg2s6i880OPeewXi7lGrw3jd0pxl
-         3tlv9DIGRdW5rVijlx/MIjs6LkeoPJxI7S1Vhl/xp/ql4cGFFc2RAxbFhDrQI746/P
-         vxhKs01XPu/lg8qIMfvb8QKqFgeHBArxLIory5ruDPg8BjFDDx4QS6XL3JZ4paxeer
-         Qs6T3BfCiX8AA==
+        b=GjS3cTpOTPEZzt0LC7D0IbEoscl17AJCHJAgV2OFe9JXwh11oiWBPJNsCUapMCC9S
+         ueVTsGhhFIyJ1LOhLDPLn7uhr1Jc6dsd7FSy+ohyyr4VCuu0nOMMXp+5a+GCvX//pw
+         /JVYYeRcUIA8NLJUgCnQh0wezWrMVq1b3/+Vs23+OsgbHWO2L4vL/Lvi07qCfIUTe2
+         4fG1g0UrO2svpa8mSWRsRsiMo6MGUUrT2ff1XIBPNO3oF6Ecv/islMBX8ablJRn19Y
+         H2X/CqiawIdZguN8SnMLTbc3q8gg1fIrRdNPlvWOR3FBXJvBQu/zZ6JvMJhAp2Ed6+
+         /NasBuTTHceZw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id C60045C0EBE; Mon, 28 Nov 2022 15:57:32 -0800 (PST)
-Date:   Mon, 28 Nov 2022 15:57:32 -0800
+        id 956725C0EBE; Mon, 28 Nov 2022 16:12:53 -0800 (PST)
+Date:   Mon, 28 Nov 2022 16:12:53 -0800
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Pingfan Liu <kernelfans@gmail.com>
-Cc:     rcu@vger.kernel.org, Lai Jiangshan <jiangshanlai@gmail.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Jan Kara <jack@suse.cz>, rcu@vger.kernel.org,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
         Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: Re: [PATCHv2 1/2] srcu: Remove needless rcu_seq_done() check while
- holding read lock
-Message-ID: <20221128235732.GM4001@paulmck-ThinkPad-P17-Gen-1>
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: SRCU use from different contexts
+Message-ID: <20221129001253.GO4001@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20221123135638.79021-1-kernelfans@gmail.com>
- <20221123135638.79021-2-kernelfans@gmail.com>
+References: <20221123114645.3aowv3hw4hxqr2ed@quack3>
+ <20221124002128.GN4001@paulmck-ThinkPad-P17-Gen-1>
+ <CAOQ4uxge4cF_o80bbXPE2ZAjRwy9zNA6U1oXsdyYsiF-wVRvpA@mail.gmail.com>
+ <20221124095840.zdcwnge4hbxqcz5d@quack3>
+ <20221124161147.GQ4001@paulmck-ThinkPad-P17-Gen-1>
+ <20221124174626.lueg3f65ikhp2f3l@quack3>
+ <CAOQ4uxhL4Rmk1ria2_AEc0rJXPAaHLeuWQj9RKZqSv9TU_paTw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221123135638.79021-2-kernelfans@gmail.com>
+In-Reply-To: <CAOQ4uxhL4Rmk1ria2_AEc0rJXPAaHLeuWQj9RKZqSv9TU_paTw@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Nov 23, 2022 at 09:56:37PM +0800, Pingfan Liu wrote:
-> As the code changes, now, srcu_gp_start_if_needed() holds the srcu read
-> lock, gets the gp_seq snap and call srcu_funnel_gp_start() passing that
-> snap value.
+On Fri, Nov 25, 2022 at 02:45:53PM +0200, Amir Goldstein wrote:
+> On Thu, Nov 24, 2022 at 7:46 PM Jan Kara <jack@suse.cz> wrote:
+> >
+> > On Thu 24-11-22 08:11:47, Paul E. McKenney wrote:
+> > > On Thu, Nov 24, 2022 at 10:58:40AM +0100, Jan Kara wrote:
+> > > > On Thu 24-11-22 08:21:13, Amir Goldstein wrote:
+> > > > > [+fsdevel]
+> > > > >
+> > > > > On Thu, Nov 24, 2022 at 2:21 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+> > > > > >
+> > > > > > On Wed, Nov 23, 2022 at 12:46:45PM +0100, Jan Kara wrote:
+> > > > > > > Hello!
+> > > > > > >
+> > > > > > > We were pondering with Amir about some issues with fsnotify subsystem and
+> > > > > > > as a building block we would need a mechanism to make sure write(2) has
+> > > > > > > completed. For simplicity we could imagine it like a sequence
+> > > > > > >
+> > > > > > > write(2)
+> > > > > > >   START
+> > > > > > >   do stuff to perform write
+> > > > > > >   END
+> > > > > > >
+> > > > > > > and we need a mechanism to wait for all processes that already passed START
+> > > > > > > to reach END. Ideally without blocking new writes while we wait for the
+> > > > > > > pending ones. Now this seems like a good task for SRCU. We could do:
+> > > > > > >
+> > > > > > > write(2)
+> > > > > > >   srcu_read_lock(&sb->s_write_rcu);
+> > > > > > >   do stuff to perform write
+> > > > > > >   srcu_read_unlock(&sb->s_write_rcu);
+> > > > > > >
+> > > > > > > and use synchronize_srcu(&sb->s_write_rcu) for waiting.
+> > > > > > >
+> > > > > > > But the trouble with writes is there are things like aio or io_uring where
+> > > > > > > the part with srcu_read_lock() happens from one task (the submitter) while
+> > > > > > > the part with srcu_read_unlock() happens from another context (usually worker
+> > > > > > > thread triggered by IRQ reporting that the HW has finished the IO).
+> > > > > > >
+> > > > > > > Is there any chance to make SRCU work in a situation like this? It seems to
+> > > > > > > me in principle it should be possible to make this work but maybe there are
+> > > > > > > some implementation constraints I'm missing...
+> > > > > >
+> > > > > > The srcu_read_lock_notrace() and srcu_read_unlock_notrace() functions
+> > > > > > will work for this, though that is not their intended purpose.  Plus you
+> > > > > > might want to trace these functions, which, as their names indicate, is
+> > > > > > not permitted.  I assume that you do not intend to use these functions
+> > > > > > from NMI handlers, though that really could be accommodated.  (But why
+> > > > > > would you need that?)
+> > > > > >
+> > > > > > So how about srcu_down_read() and srcu_up_read(), as shown in the
+> > > > > > (untested) patch below?
+> > > > > >
+> > > > > > Note that you do still need to pass the return value from srcu_down_read()
+> > > > > > into srcu_up_read().  I am guessing that io_uring has a convenient place
+> > > > > > that this value can be placed.  No idea about aio.
+> > > > > >
+> > > > >
+> > > > > Sure, aio completion has context.
+> > > > >
+> > > > > > Thoughts?
+> > > > >
+> > > > > That looks great! Thank you.
+> > > > >
+> > > > > Followup question:
+> > > > > Both fs/aio.c:aio_write() and io_uring/rw.c:io_write() do this ugly
+> > > > > thing:
+> > > > >
+> > > > > /*
+> > > > >  * Open-code file_start_write here to grab freeze protection,
+> > > > >  * which will be released by another thread in
+> > > > >  * aio_complete_rw().  Fool lockdep by telling it the lock got
+> > > > >  * released so that it doesn't complain about the held lock when
+> > > > >  * we return to userspace.
+> > > > >  */
+> > > > > if (S_ISREG(file_inode(file)->i_mode)) {
+> > > > >     sb_start_write(file_inode(file)->i_sb);
+> > > > >     __sb_writers_release(file_inode(file)->i_sb, SB_FREEZE_WRITE);
+> > > > > }
+> > > > >
+> > > > > And in write completion:
+> > > > >
+> > > > > /*
+> > > > >  * Tell lockdep we inherited freeze protection from submission
+> > > > >  * thread.
+> > > > >  */
+> > > > > if (S_ISREG(inode->i_mode))
+> > > > >     __sb_writers_acquired(inode->i_sb, SB_FREEZE_WRITE);
+> > > > > file_end_write(kiocb->ki_filp);
+> > > > >
+> > > > > I suppose we also need to "fool lockdep" w.r.t returning to userspace
+> > > > > with an acquired srcu?
+> > > >
+> > > > So AFAICT the whole point of Paul's new helpers is to not use lockdep and
+> > > > thus not have to play the "fool lockdep" games.
+> > >
+> > > Exactly!  ;-)
+> > >
+> > > But if you do return to userspace after invoking srcu_down_read(), it
+> > > is your responsibility to make sure that -something- eventually invokes
+> > > srcu_up_read().  Which might or might not be able to rely on userspace
+> > > doing something sensible.
+> > >
+> > > I would guess that you have a timeout or rely on close() for that purpose,
+> > > just as you presumably do for sb_start_write(), but figured I should
+> > > mention it.
+> >
+> > Yes. We actually do not rely on userspace but rather on HW to eventually
+> > signal IO completion. For misbehaving HW there are timeouts but the details
+> > depend very much on the protocol etc.. But as you say it is the same
+> > business as with sb_start_write() so nothing new here.
+> >
 > 
-> As the rcu_seq_snap() promises "a full grace period has elapsed since
-> the current time".  In srcu_funnel_gp_start(), the statement
->   rcu_seq_done(&ssp->srcu_gp_seq, s)
-> always return false.
+> FYI, here is my POC branch that uses srcu_down,up_read()
+> for aio writes:
 > 
-> The same condition stands for srcu_funnel_exp_start(). Hence removing
-> all the checks of rcu_seq_done().
+> https://github.com/amir73il/linux/commits/sb_write_barrier
 > 
-> Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
-> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-> Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> Cc: Frederic Weisbecker <frederic@kernel.org>
-> Cc: Josh Triplett <josh@joshtriplett.org>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> To: rcu@vger.kernel.org
+> Note that NOT all writes take s_write_srcu, but all writes that
+> generate fsnotify pre-modify events without sb_start_write() held
+> MUST take s_write_srcu, so there is an assertion in fsnotify():
+> 
+> if (mask & FS_PRE_VFS) {
+>     /* Avoid false positives with LOCK_STATE_UNKNOWN */
+>     lockdep_assert_once(sb_write_started(sb) != LOCK_STATE_HELD);
+>     if (mask & FSNOTIFY_PRE_MODIFY_EVENTS)
+>         lockdep_assert_once(sb_write_srcu_started(sb));
+> }
+> 
+> For testing, I've added synchronize_srcu(&sb->s_write_srcu) at
+> the beginning of syncfs() and freeze_super().
+> 
+> Even though syncfs() is not the intended UAPI, it is a UAPI that could
+> make sense in the future (think SYNC_FILE_RANGE_WAIT_BEFORE
+> for the vfs level).
+> 
+> I've run the fstests groups aio and freeze that exercises these code
+> paths on xfs and on overlayfs and (after fixing all my bugs) I have not
+> observed any regressions nor any lockdep splats.
+> 
+> So you may add:
+> Tested-by: Amir Goldstein <amir73il@gmail.com>
 
-Thank you!  I have queued this with some wordsmithing and modifications,
-as shown below.  Please check these.
+Very good, and thank you!  I will apply this on my next rebase.
 
-Also, please test future patches with the debug options shown in
-Documentation/process/submit-checklist.rst.  In this case, testing with
-CONFIG_PROVE_RCU=y would have located a bug with this repeat-by:
+> Thanks again for the patch Paul!
 
-tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 2m --configs "SRCU-P SRCU-N" --trust-make
+I will be cherry-picking this on top of -rcu's srcunmisafe.2022.11.09a
+branch and sending you a public branch.  I do -not- expect to push this
+into the upcoming merge window unless you tell me that you need it.
+Preferably sooner rather than later.  ;-)
 
 							Thanx, Paul
-
-------------------------------------------------------------------------
-
-commit 17a874a71faed9e38b69c6ec7bae6aa309a2530e
-Author: Pingfan Liu <kernelfans@gmail.com>
-Date:   Wed Nov 23 21:56:37 2022 +0800
-
-    srcu: Remove needless rcu_seq_done() check while holding read lock
-    
-    The srcu_gp_start_if_needed() function now read-holds the srcu_struct
-    whose grace period is being started, which means that the corresponding
-    SRCU grace period cannot end.  This in turn means that the SRCU
-    grace-period sequence number returned by rcu_seq_snap() cannot expire
-    during this time.  And that means that the calls to rcu_seq_done() in
-    srcu_funnel_exp_start() and srcu_funnel_gp_start() can never return true.
-    
-    This commit therefore removes these rcu_seq_done() checks, but adds checks
-    in kernels built with CONFIG_PROVE_RCU=y that splats if rcu_seq_done()
-    does somehow return true.
-    
-    [ paulmck: Rearrange checks to handle kernels built with lockdep. ]
-    
-    Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
-    Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-    Cc: Frederic Weisbecker <frederic@kernel.org>
-    Cc: Josh Triplett <josh@joshtriplett.org>
-    Cc: Steven Rostedt <rostedt@goodmis.org>
-    Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-    To: rcu@vger.kernel.org
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 6af0312005801..b25f77df9e5e7 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -915,8 +915,9 @@ static void srcu_funnel_exp_start(struct srcu_struct *ssp, struct srcu_node *snp
- 	if (snp)
- 		for (; snp != NULL; snp = snp->srcu_parent) {
- 			sgsne = READ_ONCE(snp->srcu_gp_seq_needed_exp);
--			if (rcu_seq_done(&ssp->srcu_gp_seq, s) ||
--			    (!srcu_invl_snp_seq(sgsne) && ULONG_CMP_GE(sgsne, s)))
-+			WARN_ON_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) &&
-+				     rcu_seq_done(&ssp->srcu_gp_seq, s));
-+			if (!srcu_invl_snp_seq(sgsne) && ULONG_CMP_GE(sgsne, s))
- 				return;
- 			spin_lock_irqsave_rcu_node(snp, flags);
- 			sgsne = snp->srcu_gp_seq_needed_exp;
-@@ -942,6 +943,9 @@ static void srcu_funnel_exp_start(struct srcu_struct *ssp, struct srcu_node *snp
-  *
-  * Note that this function also does the work of srcu_funnel_exp_start(),
-  * in some cases by directly invoking it.
-+ *
-+ * The srcu read lock should be hold around this function. And s is a seq snap
-+ * after holding that lock.
-  */
- static void srcu_funnel_gp_start(struct srcu_struct *ssp, struct srcu_data *sdp,
- 				 unsigned long s, bool do_norm)
-@@ -962,8 +966,8 @@ static void srcu_funnel_gp_start(struct srcu_struct *ssp, struct srcu_data *sdp,
- 	if (snp_leaf)
- 		/* Each pass through the loop does one level of the srcu_node tree. */
- 		for (snp = snp_leaf; snp != NULL; snp = snp->srcu_parent) {
--			if (rcu_seq_done(&ssp->srcu_gp_seq, s) && snp != snp_leaf)
--				return; /* GP already done and CBs recorded. */
-+			WARN_ON_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) &&
-+				     rcu_seq_done(&ssp->srcu_gp_seq, s));
- 			spin_lock_irqsave_rcu_node(snp, flags);
- 			snp_seq = snp->srcu_have_cbs[idx];
- 			if (!srcu_invl_snp_seq(snp_seq) && ULONG_CMP_GE(snp_seq, s)) {
-@@ -999,9 +1003,9 @@ static void srcu_funnel_gp_start(struct srcu_struct *ssp, struct srcu_data *sdp,
- 	if (!do_norm && ULONG_CMP_LT(ssp->srcu_gp_seq_needed_exp, s))
- 		WRITE_ONCE(ssp->srcu_gp_seq_needed_exp, s);
- 
--	/* If grace period not already done and none in progress, start it. */
--	if (!rcu_seq_done(&ssp->srcu_gp_seq, s) &&
--	    rcu_seq_state(ssp->srcu_gp_seq) == SRCU_STATE_IDLE) {
-+	/* If grace period not already in progress, start it. */
-+	WARN_ON_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) && rcu_seq_done(&ssp->srcu_gp_seq, s));
-+	if (rcu_seq_state(ssp->srcu_gp_seq) == SRCU_STATE_IDLE) {
- 		WARN_ON_ONCE(ULONG_CMP_GE(ssp->srcu_gp_seq, ssp->srcu_gp_seq_needed));
- 		srcu_gp_start(ssp);
- 
