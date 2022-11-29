@@ -2,52 +2,53 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ADB51C4167B
-	for <rcu@archiver.kernel.org>; Tue, 29 Nov 2022 16:00:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 555D9C46467
+	for <rcu@archiver.kernel.org>; Tue, 29 Nov 2022 16:00:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233747AbiK2QAQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 29 Nov 2022 11:00:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56610 "EHLO
+        id S235880AbiK2QAT (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 29 Nov 2022 11:00:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235976AbiK2P7t (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 29 Nov 2022 10:59:49 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04835C32;
-        Tue, 29 Nov 2022 07:58:31 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id z20so20365486edc.13;
-        Tue, 29 Nov 2022 07:58:31 -0800 (PST)
+        with ESMTP id S235992AbiK2QAA (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 29 Nov 2022 11:00:00 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E30136A775;
+        Tue, 29 Nov 2022 07:58:33 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id b8so20345498edf.11;
+        Tue, 29 Nov 2022 07:58:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=2jte3UkADbZqkDkz468rdbv/0NOM4s5ZmViVa2ZZlQ8=;
-        b=Ree2fF3HX+AtsxhEFrz1qEpeKKbWHPt72RxapGbQ9mUbpnTqTcYediTJwrsJ5vhV6/
-         94Kq8wTv5UtB4tFX/ROQkaHJSv6QnrQgBTGBAp2chXmAqegzWPlWVFMOLgD8r7AxRfN0
-         P2I/JGlIKlC/Bg68UNxWT/22QOYhzzoE8rKhr0qrQU4FYi+DAX4W6v0Ptzb6DacjyScm
-         Fp9BcWg1QebXz8OQ4gjUrdkmGEWaHwXjgnt8xPbKkqCoMR17Dm5v20X4ZKaPJ7tLUfdU
-         3UY5KDQk549Eg2kMXZ4GilZwMLbX36iZR2KndrYtSS2uSq3I+DB0PVBgBfLL7Q0WajVD
-         l98Q==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=i1497nUJKqf7VUksi/0Y8xV/c/P+R8VIcAPELcOUy1w=;
+        b=MhUMVf/m+igVldFa7ZmQ2pWdRqW1NuYkVc/IwSgq5NNNP5/jxn2sm/Z380OJj0htNf
+         1zgvtVPf/Iyd0t6kPCVPZY6sMgXuGdDwBiZ5bnanINNSI7kG5lHI5gbJocSnwtvo1QmR
+         9Xx+ilF4A4y1zoN4lPqZRtu52SbLop964AV/UxWTf7btSzSpFn7ZypYZarF+ikSibsHt
+         shMpnQNClLljA49Qa+G1IOFvZyjNl4w2eX55G26YLHkR5mxU2bj57HKcXYAH69sUZ474
+         WDCv7DQqIoEWi6mqTfDL+h0wB/T+bD1qG88nFMtVEUwkL75icLW+xth/k5aLuxnNSspd
+         PxFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2jte3UkADbZqkDkz468rdbv/0NOM4s5ZmViVa2ZZlQ8=;
-        b=mL93OiXb0GuuOYMxMS5VtymPoqh3PztV1jThfUQ/mWWqKNUIq0Y7mStYfjjF9hOIvL
-         ZrbjAhrc6T5iDhFQOYmPBQ6MDTUIapZe8PUbZIh2UjVUCl/xkcuMyjZ5L03mGI/g4Bkx
-         JdSTsKJcYdvgienuO8054TBH/JUjnMA4pRiYtMVHdFXTqeh/5xhZQ/LS76ZU4XEVdw06
-         YElEni9FYUr8fwjmwFirKQSW0nFjFaK/EYs2My3Tkz3jJ44jiuekdnwKFlGhNl2DUXDU
-         44rIId/hmVQthCzK8+VWz/FqjRmn391qYJFOlKFeNG+4V9WRS7bcea6hs+amRLazzDF8
-         tC5w==
-X-Gm-Message-State: ANoB5pmeUZT4CEt2S1GNMM/2EDOBb1PE2bGtNze8vAjnDBpnnEAywkDp
-        lak/ejHRYIgOMnJnamYTsWdEhuWcM+s=
-X-Google-Smtp-Source: AA0mqf7MLkbVibcb05kCmtJmvGzjV6UQaLM+Y5Puxu0X7+mbJ6jxLm2heIZmnIZoyFtt8yN2Ls5DnQ==
-X-Received: by 2002:a05:6402:388e:b0:468:fb0d:2d8b with SMTP id fd14-20020a056402388e00b00468fb0d2d8bmr20747563edb.124.1669737510334;
-        Tue, 29 Nov 2022 07:58:30 -0800 (PST)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=i1497nUJKqf7VUksi/0Y8xV/c/P+R8VIcAPELcOUy1w=;
+        b=ziHLbvaz2aNl4ZGhvFL+JbfCmoTI6ufhwyyVu6EZpzALuwglE5Xnx6fosBrtfdAai0
+         qlpp96bYg1Qw1jUGnw37r0lEZP9EHqnRxPEI6CYlEWlvOnXfw5Yq9XCfpLClFAcvaRjg
+         FHfehxQUHBefMz4vXrIM60YhO7KG4Gma1XyLI/pp9tYoqSCZhNs3XcUR4vrx+wCPKCf5
+         rcM3zOyKQ8//L79TJqAjUROiZH8qcAa+VTgaQzd0SL8tCbAVd2k7qIWYhxoHKdnwdcFe
+         DgJnm1HTRIZqcL0IAbZBRqlHfXTnthOGOEptGHfOJSrQ0jywmTA6br9xFRZmQxXXZXl3
+         Xtqg==
+X-Gm-Message-State: ANoB5pkdWvsY4TMgBIHwnY2PbGNEr4rCAwWoflnC4JB+h+7J4I1DlFH7
+        uDaOHl7u94IePWBWqBR/ZPndJhR33IQ=
+X-Google-Smtp-Source: AA0mqf6b9TxEOWnQxnL4rSJh5Z0KY2uxGyNKqu356PyR0UMCjwvddB6RNRJ3OOpYqXnIztmm1vqq0Q==
+X-Received: by 2002:a05:6402:1f89:b0:458:caec:8f1e with SMTP id c9-20020a0564021f8900b00458caec8f1emr51499032edc.280.1669737512122;
+        Tue, 29 Nov 2022 07:58:32 -0800 (PST)
 Received: from pc638.lan ([155.137.26.201])
-        by smtp.gmail.com with ESMTPSA id u23-20020a056402065700b0046778ce5fdfsm6371059edx.10.2022.11.29.07.58.29
+        by smtp.gmail.com with ESMTPSA id u23-20020a056402065700b0046778ce5fdfsm6371059edx.10.2022.11.29.07.58.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Nov 2022 07:58:29 -0800 (PST)
+        Tue, 29 Nov 2022 07:58:31 -0800 (PST)
 From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
         "Paul E . McKenney" <paulmck@kernel.org>
@@ -56,28 +57,181 @@ Cc:     Frederic Weisbecker <frederic@kernel.org>,
         Joel Fernandes <joel@joelfernandes.org>,
         Uladzislau Rezki <urezki@gmail.com>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: [PATCH v2 0/4] kvfree_rcu() updates related to polled API
-Date:   Tue, 29 Nov 2022 16:58:18 +0100
-Message-Id: <20221129155822.538434-1-urezki@gmail.com>
+Subject: [PATCH v2 2/4] rcu/kvfree: Move bulk/list reclaim to separate functions
+Date:   Tue, 29 Nov 2022 16:58:20 +0100
+Message-Id: <20221129155822.538434-3-urezki@gmail.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20221129155822.538434-1-urezki@gmail.com>
+References: <20221129155822.538434-1-urezki@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-v1 -> v2:
-  - Rebase on latest dev.2022.11.23a branch.
+There are two different paths how a memory is reclaimed.
+Currently it is open-coded what makes it a bit messy and
+less easy to read.
 
-Uladzislau Rezki (Sony) (4):
-  rcu/kvfree: Switch to a generic linked list API
-  rcu/kvfree: Move bulk/list reclaim to separate functions
-  rcu/kvfree: Move need_offload_krc() out of krcp->lock
-  rcu/kvfree: Use a polled API to speedup a reclaim process
+Introduce two separate functions kvfree_rcu_list() and
+kvfree_rcu_bulk() to cover two independent cases.
 
- kernel/rcu/tree.c | 221 +++++++++++++++++++++++++++-------------------
- 1 file changed, 131 insertions(+), 90 deletions(-)
+Please note, this patch does not introduce any functional
+change it is only limited by refactoring of code.
 
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+---
+ kernel/rcu/tree.c | 114 ++++++++++++++++++++++++++--------------------
+ 1 file changed, 65 insertions(+), 49 deletions(-)
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 1c79b244aac9..445f8c11a9a3 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2893,6 +2893,65 @@ drain_page_cache(struct kfree_rcu_cpu *krcp)
+ 	return freed;
+ }
+ 
++static void
++kvfree_rcu_bulk(struct kfree_rcu_cpu *krcp,
++	struct kvfree_rcu_bulk_data *bnode, int idx)
++{
++	unsigned long flags;
++	int i;
++
++	debug_rcu_bhead_unqueue(bnode);
++
++	rcu_lock_acquire(&rcu_callback_map);
++	if (idx == 0) { // kmalloc() / kfree().
++		trace_rcu_invoke_kfree_bulk_callback(
++			rcu_state.name, bnode->nr_records,
++			bnode->records);
++
++		kfree_bulk(bnode->nr_records, bnode->records);
++	} else { // vmalloc() / vfree().
++		for (i = 0; i < bnode->nr_records; i++) {
++			trace_rcu_invoke_kvfree_callback(
++				rcu_state.name, bnode->records[i], 0);
++
++			vfree(bnode->records[i]);
++		}
++	}
++	rcu_lock_release(&rcu_callback_map);
++
++	raw_spin_lock_irqsave(&krcp->lock, flags);
++	if (put_cached_bnode(krcp, bnode))
++		bnode = NULL;
++	raw_spin_unlock_irqrestore(&krcp->lock, flags);
++
++	if (bnode)
++		free_page((unsigned long) bnode);
++
++	cond_resched_tasks_rcu_qs();
++}
++
++static void
++kvfree_rcu_list(struct rcu_head *head)
++{
++	struct rcu_head *next;
++
++	for (; head; head = next) {
++		void *ptr = (void *) head->func;
++		unsigned long offset = (void *) head - ptr;
++
++		next = head->next;
++		debug_rcu_head_unqueue((struct rcu_head *)ptr);
++		rcu_lock_acquire(&rcu_callback_map);
++		trace_rcu_invoke_kvfree_callback(rcu_state.name, head, offset);
++
++		if (!WARN_ON_ONCE(!__is_kvfree_rcu_offset(offset)))
++			kvfree(ptr);
++
++		rcu_lock_release(&rcu_callback_map);
++		cond_resched_tasks_rcu_qs();
++	}
++}
++
+ /*
+  * This function is invoked in workqueue context after a grace period.
+  * It frees all the objects queued on ->bulk_head_free or ->head_free.
+@@ -2902,10 +2961,10 @@ static void kfree_rcu_work(struct work_struct *work)
+ 	unsigned long flags;
+ 	struct kvfree_rcu_bulk_data *bnode, *n;
+ 	struct list_head bulk_head[FREE_N_CHANNELS];
+-	struct rcu_head *head, *next;
++	struct rcu_head *head;
+ 	struct kfree_rcu_cpu *krcp;
+ 	struct kfree_rcu_cpu_work *krwp;
+-	int i, j;
++	int i;
+ 
+ 	krwp = container_of(to_rcu_work(work),
+ 			    struct kfree_rcu_cpu_work, rcu_work);
+@@ -2922,38 +2981,9 @@ static void kfree_rcu_work(struct work_struct *work)
+ 	raw_spin_unlock_irqrestore(&krcp->lock, flags);
+ 
+ 	// Handle the first two channels.
+-	for (i = 0; i < FREE_N_CHANNELS; i++) {
+-		list_for_each_entry_safe(bnode, n, &bulk_head[i], list) {
+-			debug_rcu_bhead_unqueue(bnode);
+-
+-			rcu_lock_acquire(&rcu_callback_map);
+-			if (i == 0) { // kmalloc() / kfree().
+-				trace_rcu_invoke_kfree_bulk_callback(
+-					rcu_state.name, bnode->nr_records,
+-					bnode->records);
+-
+-				kfree_bulk(bnode->nr_records, bnode->records);
+-			} else { // vmalloc() / vfree().
+-				for (j = 0; j < bnode->nr_records; j++) {
+-					trace_rcu_invoke_kvfree_callback(
+-						rcu_state.name, bnode->records[j], 0);
+-
+-					vfree(bnode->records[j]);
+-				}
+-			}
+-			rcu_lock_release(&rcu_callback_map);
+-
+-			raw_spin_lock_irqsave(&krcp->lock, flags);
+-			if (put_cached_bnode(krcp, bnode))
+-				bnode = NULL;
+-			raw_spin_unlock_irqrestore(&krcp->lock, flags);
+-
+-			if (bnode)
+-				free_page((unsigned long) bnode);
+-
+-			cond_resched_tasks_rcu_qs();
+-		}
+-	}
++	for (i = 0; i < FREE_N_CHANNELS; i++)
++		list_for_each_entry_safe(bnode, n, &bulk_head[i], list)
++			kvfree_rcu_bulk(krcp, bnode, i);
+ 
+ 	/*
+ 	 * This is used when the "bulk" path can not be used for the
+@@ -2962,21 +2992,7 @@ static void kfree_rcu_work(struct work_struct *work)
+ 	 * queued on a linked list through their rcu_head structures.
+ 	 * This list is named "Channel 3".
+ 	 */
+-	for (; head; head = next) {
+-		void *ptr = (void *) head->func;
+-		unsigned long offset = (void *) head - ptr;
+-
+-		next = head->next;
+-		debug_rcu_head_unqueue((struct rcu_head *)ptr);
+-		rcu_lock_acquire(&rcu_callback_map);
+-		trace_rcu_invoke_kvfree_callback(rcu_state.name, head, offset);
+-
+-		if (!WARN_ON_ONCE(!__is_kvfree_rcu_offset(offset)))
+-			kvfree(ptr);
+-
+-		rcu_lock_release(&rcu_callback_map);
+-		cond_resched_tasks_rcu_qs();
+-	}
++	kvfree_rcu_list(head);
+ }
+ 
+ static bool
 -- 
 2.30.2
 
