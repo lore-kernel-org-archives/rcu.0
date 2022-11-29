@@ -2,322 +2,134 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C84AC47088
-	for <rcu@archiver.kernel.org>; Tue, 29 Nov 2022 23:31:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 730CFC4167B
+	for <rcu@archiver.kernel.org>; Tue, 29 Nov 2022 23:38:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229679AbiK2XbM (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 29 Nov 2022 18:31:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58680 "EHLO
+        id S230016AbiK2Xih (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 29 Nov 2022 18:38:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230222AbiK2Xax (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 29 Nov 2022 18:30:53 -0500
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB0A273439
-        for <rcu@vger.kernel.org>; Tue, 29 Nov 2022 15:30:21 -0800 (PST)
-Received: by mail-qk1-x72f.google.com with SMTP id c2so11090738qko.1
-        for <rcu@vger.kernel.org>; Tue, 29 Nov 2022 15:30:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=u+yn6xGp5XjuJHAn882JMtjlQ1B8ZFr7+3a30VM2uE8=;
-        b=C4wgeKAFeFGAqIklhdubMVF9T3a/FD43iU1oRmyq6tRBr6Gj9rCEAQTFlPtJXTjtLZ
-         120YC0/zoLoxA30hz9+NxERJf8HizG6NgG2BZGj/JaEdTvK9z+kSWcLd2azf6aSTUqow
-         uesQGxBkokyJtm6FxdyaSn1o/43niTxgXcg88=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=u+yn6xGp5XjuJHAn882JMtjlQ1B8ZFr7+3a30VM2uE8=;
-        b=iLI3zz15zczMXqEjwAz76Aovpsa6gPU5EHW4VmxFfN2UxBvK7po+GGVyH2+7daPh96
-         ADTF3Bt9lErUpNHBAgk2K8xqVRqwT7rKkwqRn5fZEhcmFEkowfwrWz+HApDoNW/0/QJ0
-         G6x5PpczOxrMBQ6G5EzZzHRf225Zyw90YixI9HC0RI6cnqpICutYxyQLhYtvOf9ka/fX
-         QEKzUm98s+71I56OBGXaX7Bn1oXMB6CeznUQgkNHYUstxDE0npSB2bRBX5GHaXksdgF0
-         nuZu2Fb1wEaWoiREmsAs1XfSKWWl/qBIu5IFqzF7PObCP72Qp19FD5WBmxHFtly9Shic
-         upOA==
-X-Gm-Message-State: ANoB5plOYSIORiMH6EyI1HI2ePKsGTjRTTW9yJooSheECu/p9l1gmpVF
-        BnHrk884NkLuQ3rq6pxhHwPalA==
-X-Google-Smtp-Source: AA0mqf5r42nD4Xo+baiZ5BcCDIOSja5rAarDvGJ8N+Z+z/VSrC4pjjWAg4KcXTb1jM6RawcBMDu1Pw==
-X-Received: by 2002:a05:620a:b9a:b0:6fa:432f:298a with SMTP id k26-20020a05620a0b9a00b006fa432f298amr39021875qkh.159.1669764620935;
-        Tue, 29 Nov 2022 15:30:20 -0800 (PST)
-Received: from smtpclient.apple (c-73-148-104-166.hsd1.va.comcast.net. [73.148.104.166])
-        by smtp.gmail.com with ESMTPSA id e22-20020ac85996000000b003a4f22c6507sm9618681qte.48.2022.11.29.15.30.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Nov 2022 15:30:20 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Joel Fernandes <joel@joelfernandes.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v2] rcu-tasks: Make rude RCU-Tasks work well with CPU hotplug
-Date:   Tue, 29 Nov 2022 18:30:19 -0500
-Message-Id: <0E3DA71D-8C94-4FE9-BBF9-83AC28993485@joelfernandes.org>
-References: <20221129201349.GE4001@paulmck-ThinkPad-P17-Gen-1>
-Cc:     "Zhang, Qiang1" <qiang1.zhang@intel.com>, frederic@kernel.org,
-        quic_neeraju@quicinc.com, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20221129201349.GE4001@paulmck-ThinkPad-P17-Gen-1>
-To:     paulmck@kernel.org
-X-Mailer: iPhone Mail (19G82)
+        with ESMTP id S229751AbiK2Xig (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 29 Nov 2022 18:38:36 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C0BF5B841;
+        Tue, 29 Nov 2022 15:38:34 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 371966195B;
+        Tue, 29 Nov 2022 23:38:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C4F9C433D7;
+        Tue, 29 Nov 2022 23:38:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1669765113;
+        bh=LlNv7abHsvSQJUXOKNoMnMcBbroOgNGcMquCXxMr+Ps=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=SKXs8ulgmKXSt0N4sAl7mzGTeKHc3wZzWWUsQ846poNr4lMwEnvsa6yHCelMppqYi
+         9Syz7cYAIZsFRlkkIKGv2AC1eRO9Hsp14hDNopf9ofFR+Uw28gd8JXFuOrp26KQicJ
+         9eAhH4mp9CwW0ZFqaMGWVgXWW11ZezYi4CwXPfbUNUNQgzC8GVVcxedUhjr0a6/a4X
+         3eaAublixCCoQJyfKi2Eje4RdFmBVz+uFvv4l9dRiq8LxMUwM6tOjtmI55QzORG06R
+         4rpnSwN2/xqBITHJjCg2C5v6aCRipqL2tPKUUR+lhEHsjAB0ghjxZ1170ghXV7NZv2
+         Mzosx3op9MkkA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 244125C0584; Tue, 29 Nov 2022 15:38:33 -0800 (PST)
+Date:   Tue, 29 Nov 2022 15:38:33 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH v2 3/4] rcu/kvfree: Move need_offload_krc() out of
+ krcp->lock
+Message-ID: <20221129233833.GA154809@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20221129155822.538434-1-urezki@gmail.com>
+ <20221129155822.538434-4-urezki@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221129155822.538434-4-urezki@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Tue, Nov 29, 2022 at 04:58:21PM +0100, Uladzislau Rezki (Sony) wrote:
+> Currently a need_offload_krc() function requires the krcp->lock
+> to be held because krcp->head can not be checked concurrently.
+> 
+> Fix it by updating the krcp->head using WRITE_ONCE() macro so
+> it becomes lock-free and safe for readers to see a valid data
+> without any locking.
 
+Don't we also need to use READ_ONCE() for the code loading this krcp->head
+pointer?  Or do the remaining plain C-language accesses somehow avoid
+running concurrently with those new WRITE_ONCE() invocations?
 
-> On Nov 29, 2022, at 3:13 PM, Paul E. McKenney <paulmck@kernel.org> wrote:
->=20
-> =EF=BB=BFOn Tue, Nov 29, 2022 at 03:01:12PM -0500, Joel Fernandes wrote:
->>>> On Nov 29, 2022, at 2:18 PM, Paul E. McKenney <paulmck@kernel.org> wrot=
-e:
->>> =EF=BB=BFOn Tue, Nov 29, 2022 at 11:00:05AM -0500, Joel Fernandes wrote:=
+						Thanx, Paul
 
->>>>>> On Nov 29, 2022, at 10:18 AM, Paul E. McKenney <paulmck@kernel.org> w=
-rote:
->>>>> =EF=BB=BFOn Tue, Nov 29, 2022 at 06:25:04AM +0000, Zhang, Qiang1 wrote=
-:
->>>>>>>> On Nov 28, 2022, at 11:54 PM, Zhang, Qiang1 <qiang1.zhang@intel.com=
-> wrote:
->>>>>>>=20
->>>>>>> =EF=BB=BFOn Mon, Nov 28, 2022 at 10:34:28PM +0800, Zqiang wrote:
->>>>>>>> Currently, invoke rcu_tasks_rude_wait_gp() to wait one rude
->>>>>>>> RCU-tasks grace period, if __num_online_cpus =3D=3D 1, will return
->>>>>>>> directly, indicates the end of the rude RCU-task grace period.
->>>>>>>> suppose the system has two cpus, consider the following scenario:
->>>>>>>>=20
->>>>>>>> CPU0                                   CPU1 (going offline)
->>>>>>>>                       migration/1 task:
->>>>>>>>                                   cpu_stopper_thread
->>>>>>>>                                    -> take_cpu_down
->>>>>>>>                                       -> _cpu_disable
->>>>>>>>                            (dec __num_online_cpus)
->>>>>>>>                                       ->cpuhp_invoke_callback
->>>>>>>>                                             preempt_disable
->>>>>>>>                     access old_data0
->>>>>>>>        task1
->>>>>>>> del old_data0                                  .....
->>>>>>>> synchronize_rcu_tasks_rude()
->>>>>>>> task1 schedule out
->>>>>>>> ....
->>>>>>>> task2 schedule in
->>>>>>>> rcu_tasks_rude_wait_gp()
->>>>>>>>  ->__num_online_cpus =3D=3D 1
->>>>>>>>    ->return
->>>>>>>> ....
->>>>>>>> task1 schedule in
->>>>>>>> ->free old_data0
->>>>>>>>                                             preempt_enable
->>>>>>>>=20
->>>>>>>> when CPU1 dec __num_online_cpus and __num_online_cpus is equal one,=
-
->>>>>>>> the CPU1 has not finished offline, stop_machine task(migration/1)
->>>>>>>> still running on CPU1, maybe still accessing 'old_data0', but the
->>>>>>>> 'old_data0' has freed on CPU0.
->>>>>>>>=20
->>>>>>>> This commit add cpus_read_lock/unlock() protection before accessing=
-
->>>>>>>> __num_online_cpus variables, to ensure that the CPU in the offline
->>>>>>>> process has been completed offline.
->>>>>>>>=20
->>>>>>>> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
->>>>>>>>=20
->>>>>>>> First, good eyes and good catch!!!
->>>>>>>>=20
->>>>>>>> The purpose of that check for num_online_cpus() is not performance
->>>>>>>> on single-CPU systems, but rather correct operation during early bo=
-ot.
->>>>>>>> So a simpler way to make that work is to check for RCU_SCHEDULER_RU=
-NNING,
->>>>>>>> for example, as follows:
->>>>>>>>=20
->>>>>>>> if (rcu_scheduler_active !=3D RCU_SCHEDULER_RUNNING &&
->>>>>>>>     num_online_cpus() <=3D 1)
->>>>>>>>     return;    // Early boot fastpath for only one CPU.
->>>>>>>=20
->>>>>>> Hi Paul
->>>>>>>=20
->>>>>>> During system startup, because the RCU_SCHEDULER_RUNNING is set afte=
-r starting other CPUs,=20
->>>>>>>=20
->>>>>>>           CPU0                                                      =
-                 CPU1                                                       =
-         =20
->>>>>>>=20
->>>>>>> if (rcu_scheduler_active !=3D                                   =20
->>>>>>> RCU_SCHEDULER_RUNNING &&
->>>>>>>        __num_online_cpus  =3D=3D 1)                                 =
-             =20
->>>>>>> return;                                                             =
-            inc  __num_online_cpus
->>>>>>>                         (__num_online_cpus =3D=3D 2)
->>>>>>>=20
->>>>>>> CPU0 didn't notice the update of the __num_online_cpus variable by C=
-PU1 in time
->>>>>>> Can we move rcu_set_runtime_mode() before smp_init()
->>>>>>> any thoughts?
->>>>>>>=20
->>>>>>> Is anyone expected to do rcu-tasks operation before the scheduler is=
- running?=20
->>>>>>=20
->>>>>> Not sure if such a scenario exists.
->>>>>>=20
->>>>>>> Typically this requires the tasks to context switch which is a sched=
-uler operation.
->>>>>>>=20
->>>>>>> If the scheduler is not yet running, then I don=E2=80=99t think miss=
-ing an update the __num_online_cpus matters since no one does a tasks-RCU sy=
-nchronize.
->>>>>>=20
->>>>>> Hi Joel
->>>>>>=20
->>>>>> After the kernel_init task runs, before calling smp_init() to startin=
-g other CPUs,=20
->>>>>> the scheduler haven been initialization, task context switching can o=
-ccur.
->>>>>=20
->>>>> Good catch, thank you both.  For some reason, I was thinking that the
->>>>> additional CPUs did not come online until later.
->>>>>=20
->>>>> So how about this?
->>>>>=20
->>>>>  if (rcu_scheduler_active =3D=3D RCU_SCHEDULER_INACTIVE)
->>>>>      return;    // Early boot fastpath.
->>>>>=20
->>>>> If this condition is true, there is only one CPU and no scheduler,
->>>>> thus no preemption.
->>>>=20
->>>> Agreed. I was going to suggest exactly this :)
->>>>=20
->>>> Ack.
->>>> (Replying by phone but feel free to add my reviewed by tag).
->>>=20
->>> I should add that the downside of this approach is that there is a short=
-
->>> time between the scheduler initializing and workqueues fully initializin=
-g
->>> where a critical-path call to synchronize_rcu_tasks() will hang the
->>> system.  I do -not- consider this to be a real problem because RCU had
->>> some hundreds of calls to synchronize_rcu() before this became an issue.=
-
->>>=20
->>> So this should be fine, but please recall this for when/if someone does
->>> stick a synchronize_rcu_tasks() into that short time.  ;-)
->>=20
->> Thanks Paul, but why would anyone want to do sync rcu tasks, before
->> the scheduler is fully initialized?
->=20
-> I could ask that same question of a number of other RCU API members.  ;-)
->=20
->> Maybe we can add a warning here in the if-early-return path, to make
->> sure no such usage slips. And then we can look into someone using it
->> that way, if they ever start using it.
->=20
-> I expect that it would be more work to code and maintain any such warning
-> than it would to diagnose the hang, so let's leave it as is.
-
-Makes sense.  Works for me and you over to you Qiang! ;-)
-
-Thanks,
-
-  - Joel=20
-
->=20
->                            Thanx, Paul
->=20
->> Thanks,
->>=20
->> - Joel
->>=20
->>>=20
->>>                           Thanx, Paul
->>>=20
->>>> - Joel
->>>>=20
->>>>=20
->>>>>=20
->>>>>                      Thanx, Paul
->>>>>=20
->>>>>> Thanks
->>>>>> Zqiang
->>>>>>=20
->>>>>>>=20
->>>>>>> Or did I miss something?
->>>>>>>=20
->>>>>>> Thanks.
->>>>>>>=20
->>>>>>>=20
->>>>>>>=20
->>>>>>>=20
->>>>>>> Thanks
->>>>>>> Zqiang
->>>>>>>=20
->>>>>>>>=20
->>>>>>>> This works because rcu_scheduler_active is set to RCU_SCHEDULER_RUN=
-NING
->>>>>>>> long before it is possible to offline CPUs.
->>>>>>>>=20
->>>>>>>> Yes, schedule_on_each_cpu() does do cpus_read_lock(), again, good e=
-yes,
->>>>>>>> and it also unnecessarily does the schedule_work_on() the current C=
-PU,
->>>>>>>> but the code calling synchronize_rcu_tasks_rude() is on high-overhe=
-ad
->>>>>>>> code paths, so this overhead is down in the noise.
->>>>>>>>=20
->>>>>>>> Until further notice, anyway.
->>>>>>>>=20
->>>>>>>> So simplicity is much more important than performance in this code.=
-
->>>>>>>> So just adding the check for RCU_SCHEDULER_RUNNING should fix this,=
-
->>>>>>>> unless I am missing something (always possible!).
->>>>>>>>=20
->>>>>>>>                         Thanx, Paul
->>>>>>>>=20
->>>>>>>> ---
->>>>>>>> kernel/rcu/tasks.h | 20 ++++++++++++++++++--
->>>>>>>> 1 file changed, 18 insertions(+), 2 deletions(-)
->>>>>>>>=20
->>>>>>>> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
->>>>>>>> index 4a991311be9b..08e72c6462d8 100644
->>>>>>>> --- a/kernel/rcu/tasks.h
->>>>>>>> +++ b/kernel/rcu/tasks.h
->>>>>>>> @@ -1033,14 +1033,30 @@ static void rcu_tasks_be_rude(struct work_s=
-truct *work)
->>>>>>>> {
->>>>>>>> }
->>>>>>>>=20
->>>>>>>> +static DEFINE_PER_CPU(struct work_struct, rude_work);
->>>>>>>> +
->>>>>>>> // Wait for one rude RCU-tasks grace period.
->>>>>>>> static void rcu_tasks_rude_wait_gp(struct rcu_tasks *rtp)
->>>>>>>> {
->>>>>>>> +    int cpu;
->>>>>>>> +    struct work_struct *work;
->>>>>>>> +
->>>>>>>> +    cpus_read_lock();
->>>>>>>> if (num_online_cpus() <=3D 1)
->>>>>>>> -        return;    // Fastpath for only one CPU.
->>>>>>>> +        goto end;// Fastpath for only one CPU.
->>>>>>>>=20
->>>>>>>> rtp->n_ipis +=3D cpumask_weight(cpu_online_mask);
->>>>>>>> -    schedule_on_each_cpu(rcu_tasks_be_rude);
->>>>>>>> +    for_each_online_cpu(cpu) {
->>>>>>>> +        work =3D per_cpu_ptr(&rude_work, cpu);
->>>>>>>> +        INIT_WORK(work, rcu_tasks_be_rude);
->>>>>>>> +        schedule_work_on(cpu, work);
->>>>>>>> +    }
->>>>>>>> +
->>>>>>>> +    for_each_online_cpu(cpu)
->>>>>>>> +        flush_work(per_cpu_ptr(&rude_work, cpu));
->>>>>>>> +
->>>>>>>> +end:
->>>>>>>> +    cpus_read_unlock();
->>>>>>>> }
->>>>>>>>=20
->>>>>>>> void call_rcu_tasks_rude(struct rcu_head *rhp, rcu_callback_t func)=
-;
->>>>>>>> --=20
->>>>>>>> 2.25.1
->>>>>>>>=20
+> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> ---
+>  kernel/rcu/tree.c | 11 ++++-------
+>  1 file changed, 4 insertions(+), 7 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 445f8c11a9a3..c94c17194299 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -3058,7 +3058,7 @@ static void kfree_rcu_monitor(struct work_struct *work)
+>  			// objects queued on the linked list.
+>  			if (!krwp->head_free) {
+>  				krwp->head_free = krcp->head;
+> -				krcp->head = NULL;
+> +				WRITE_ONCE(krcp->head, NULL);
+>  			}
+>  
+>  			WRITE_ONCE(krcp->count, 0);
+> @@ -3072,6 +3072,8 @@ static void kfree_rcu_monitor(struct work_struct *work)
+>  		}
+>  	}
+>  
+> +	raw_spin_unlock_irqrestore(&krcp->lock, flags);
+> +
+>  	// If there is nothing to detach, it means that our job is
+>  	// successfully done here. In case of having at least one
+>  	// of the channels that is still busy we should rearm the
+> @@ -3079,8 +3081,6 @@ static void kfree_rcu_monitor(struct work_struct *work)
+>  	// still in progress.
+>  	if (need_offload_krc(krcp))
+>  		schedule_delayed_monitor_work(krcp);
+> -
+> -	raw_spin_unlock_irqrestore(&krcp->lock, flags);
+>  }
+>  
+>  static enum hrtimer_restart
+> @@ -3250,7 +3250,7 @@ void kvfree_call_rcu(struct rcu_head *head, void *ptr)
+>  
+>  		head->func = ptr;
+>  		head->next = krcp->head;
+> -		krcp->head = head;
+> +		WRITE_ONCE(krcp->head, head);
+>  		success = true;
+>  	}
+>  
+> @@ -3327,15 +3327,12 @@ static struct shrinker kfree_rcu_shrinker = {
+>  void __init kfree_rcu_scheduler_running(void)
+>  {
+>  	int cpu;
+> -	unsigned long flags;
+>  
+>  	for_each_possible_cpu(cpu) {
+>  		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+>  
+> -		raw_spin_lock_irqsave(&krcp->lock, flags);
+>  		if (need_offload_krc(krcp))
+>  			schedule_delayed_monitor_work(krcp);
+> -		raw_spin_unlock_irqrestore(&krcp->lock, flags);
+>  	}
+>  }
+>  
+> -- 
+> 2.30.2
+> 
