@@ -2,164 +2,100 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D665EC43217
-	for <rcu@archiver.kernel.org>; Tue, 29 Nov 2022 01:03:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C5E02C43217
+	for <rcu@archiver.kernel.org>; Tue, 29 Nov 2022 01:07:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234385AbiK2BDQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 28 Nov 2022 20:03:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39684 "EHLO
+        id S234851AbiK2BHz (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 28 Nov 2022 20:07:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234681AbiK2BDO (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 28 Nov 2022 20:03:14 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A433C27CD5;
-        Mon, 28 Nov 2022 17:03:13 -0800 (PST)
+        with ESMTP id S234898AbiK2BHy (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 28 Nov 2022 20:07:54 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D6B5DF82;
+        Mon, 28 Nov 2022 17:07:53 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 41C0561195;
-        Tue, 29 Nov 2022 01:03:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F741C433B5;
-        Tue, 29 Nov 2022 01:03:12 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D499D61195;
+        Tue, 29 Nov 2022 01:07:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C472C433C1;
+        Tue, 29 Nov 2022 01:07:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669683792;
-        bh=PPaCKThtXBv4RuxYsoVEKUj7Mw6K2389pRooeVtWdsc=;
+        s=k20201202; t=1669684072;
+        bh=bCqd8v9lHjL2ul05e/LBwa+/suvL7rIevjVdtH4HU4A=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=lunUszSqnNwu7uaSOvLmx2XPdnMiyw4hyRcfdmIM/QVZpQg2Ht7DHDVPgyStrEMvo
-         k8jRYpt4L3TDflGbbCu6R778zzBYwBDmH/fgJOAxEBbvJyoLd60KQ/0/QYQWIvjtXN
-         o09TtLiHONmflp3oCYI4kIDYTcEAczOHLP/LmHMBFK2TJByVFhmGJJJck4UZ0KE7eX
-         XeaYjk54mQS7+SVXG+c4U/3G7vo8aTZ+hVp1JxQY5lzsM9jIzTKUjadC15AMIAFQeA
-         xXwwJv0DpmdKD2HGsNyd+zaqiPd/tusOKRQLOQrSL0Ghs0MTDK/1+u3qhZGZ7eeFrI
-         ld+/FwkiM/YyQ==
+        b=Z/b1PdS2AWRPx5gGRafxRu0Pe/zco/UmEBogfjOULopORXR1WBwyYoed5eQiQkCpy
+         t+ZtE/eOdHCZ6ZR/THF0D2ZCP3iCFgfJCtJI4yOB3OaYITdCpsaVfgMXXQJHGPKLer
+         a7anDOIAqUkGv/32wpsAwW0EvIcicCFpuv+gFzpd1Zu2SNKYKqbGim8w08dNguJ2zE
+         C3ZtUdJ21cIMpzYtHAGwianSnRjp2wX34/rGvTBlYuo+uQOyKWlctcvMFFMGa7Fjjz
+         2ERds7mcEHDtcN4tUrvsN35Rhe41yusducMoIfek8LJmuzzbxoAPIsMLCPiMBl0+wC
+         vguu+vMfBEiAQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 4828D5C0EBE; Mon, 28 Nov 2022 17:03:12 -0800 (PST)
-Date:   Mon, 28 Nov 2022 17:03:12 -0800
+        id BFA305C0EBE; Mon, 28 Nov 2022 17:07:51 -0800 (PST)
+Date:   Mon, 28 Nov 2022 17:07:51 -0800
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Zqiang <qiang1.zhang@intel.com>
-Cc:     frederic@kernel.org, quic_neeraju@quicinc.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] rcu-tasks: Make rude RCU-Tasks work well with CPU
- hotplug
-Message-ID: <20221129010312.GS4001@paulmck-ThinkPad-P17-Gen-1>
+To:     Akira Yokosawa <akiyks@gmail.com>
+Cc:     Zhen Lei <thunder.leizhen@huawei.com>, bagasdotme@gmail.com,
+        frederic@kernel.org, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, josh@joshtriplett.org,
+        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
+        mathieu.desnoyers@efficios.com, quic_neeraju@quicinc.com,
+        rcu@vger.kernel.org, rostedt@goodmis.org, sfr@canb.auug.org.au
+Subject: Re: [PATCH v3] doc: Fix htmldocs build warnings of stallwarn.rst
+Message-ID: <20221129010751.GA72848@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20221128143428.1703744-1-qiang1.zhang@intel.com>
+References: <20221124062204.1932-1-thunder.leizhen@huawei.com>
+ <5689fac5-9ea9-a631-8ed0-a68dbbbe2466@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221128143428.1703744-1-qiang1.zhang@intel.com>
+In-Reply-To: <5689fac5-9ea9-a631-8ed0-a68dbbbe2466@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Nov 28, 2022 at 10:34:28PM +0800, Zqiang wrote:
-> Currently, invoke rcu_tasks_rude_wait_gp() to wait one rude
-> RCU-tasks grace period, if __num_online_cpus == 1, will return
-> directly, indicates the end of the rude RCU-task grace period.
-> suppose the system has two cpus, consider the following scenario:
+On Sat, Nov 26, 2022 at 12:09:01PM +0900, Akira Yokosawa wrote:
+> Hi,
 > 
-> 	CPU0                                   CPU1 (going offline)
-> 				          migration/1 task:
->                                       cpu_stopper_thread
->                                        -> take_cpu_down
->                                           -> _cpu_disable
-> 			                   (dec __num_online_cpus)
->                                           ->cpuhp_invoke_callback
->                                                 preempt_disable
-> 						access old_data0
->            task1
->  del old_data0                                  .....
->  synchronize_rcu_tasks_rude()
->  task1 schedule out
->  ....
->  task2 schedule in
->  rcu_tasks_rude_wait_gp()
->      ->__num_online_cpus == 1
->        ->return
->  ....
->  task1 schedule in
->  ->free old_data0
->                                                 preempt_enable
+> On Thu, 24 Nov 2022 14:22:03 +0800, Zhen Lei wrote:
+> > Documentation/RCU/stallwarn.rst:
+> > 401: WARNING: Literal block expected; none found.
+> > 428: WARNING: Literal block expected; none found.
+> > 445: WARNING: Literal block expected; none found.
+> > 459: WARNING: Literal block expected; none found.
+> > 468: WARNING: Literal block expected; none found.
+> > 
+> > The literal block need to be indented, so add two spaces to each line.
+> > 
+> > In addition, ':', which is used as a boundary in the literal block, is
+> > replaced by '|'.
+> > 
+> > Link: https://lore.kernel.org/linux-next/20221123163255.48653674@canb.auug.org.au/
+> > Fixes: 3d2788ba4573 ("doc: Document CONFIG_RCU_CPU_STALL_CPUTIME=y stall information")
+> > Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> > Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 > 
-> when CPU1 dec __num_online_cpus and __num_online_cpus is equal one,
-> the CPU1 has not finished offline, stop_machine task(migration/1)
-> still running on CPU1, maybe still accessing 'old_data0', but the
-> 'old_data0' has freed on CPU0.
+> Tested "make htmldocs" on top of -rcu tree's dev.
+> Resulting stallwarn.html looks much better!
 > 
-> This commit add cpus_read_lock/unlock() protection before accessing
-> __num_online_cpus variables, to ensure that the CPU in the offline
-> process has been completed offline.
-> 
-> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+> Tested-by: Akira Yokosawa <akiyks@gmail.com>
 
-First, good eyes and good catch!!!
-
-The purpose of that check for num_online_cpus() is not performance
-on single-CPU systems, but rather correct operation during early boot.
-So a simpler way to make that work is to check for RCU_SCHEDULER_RUNNING,
-for example, as follows:
-
-	if (rcu_scheduler_active != RCU_SCHEDULER_RUNNING &&
-	    num_online_cpus() <= 1)
-		return;	// Early boot fastpath for only one CPU.
-
-This works because rcu_scheduler_active is set to RCU_SCHEDULER_RUNNING
-long before it is possible to offline CPUs.
-
-Yes, schedule_on_each_cpu() does do cpus_read_lock(), again, good eyes,
-and it also unnecessarily does the schedule_work_on() the current CPU,
-but the code calling synchronize_rcu_tasks_rude() is on high-overhead
-code paths, so this overhead is down in the noise.
-
-Until further notice, anyway.
-
-So simplicity is much more important than performance in this code.
-So just adding the check for RCU_SCHEDULER_RUNNING should fix this,
-unless I am missing something (always possible!).
+Queued for further testing and review, thank you all!
 
 							Thanx, Paul
 
-> ---
->  kernel/rcu/tasks.h | 20 ++++++++++++++++++--
->  1 file changed, 18 insertions(+), 2 deletions(-)
+>         Thanks, Akira
 > 
-> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> index 4a991311be9b..08e72c6462d8 100644
-> --- a/kernel/rcu/tasks.h
-> +++ b/kernel/rcu/tasks.h
-> @@ -1033,14 +1033,30 @@ static void rcu_tasks_be_rude(struct work_struct *work)
->  {
->  }
->  
-> +static DEFINE_PER_CPU(struct work_struct, rude_work);
-> +
->  // Wait for one rude RCU-tasks grace period.
->  static void rcu_tasks_rude_wait_gp(struct rcu_tasks *rtp)
->  {
-> +	int cpu;
-> +	struct work_struct *work;
-> +
-> +	cpus_read_lock();
->  	if (num_online_cpus() <= 1)
-> -		return;	// Fastpath for only one CPU.
-> +		goto end;// Fastpath for only one CPU.
->  
->  	rtp->n_ipis += cpumask_weight(cpu_online_mask);
-> -	schedule_on_each_cpu(rcu_tasks_be_rude);
-> +	for_each_online_cpu(cpu) {
-> +		work = per_cpu_ptr(&rude_work, cpu);
-> +		INIT_WORK(work, rcu_tasks_be_rude);
-> +		schedule_work_on(cpu, work);
-> +	}
-> +
-> +	for_each_online_cpu(cpu)
-> +		flush_work(per_cpu_ptr(&rude_work, cpu));
-> +
-> +end:
-> +	cpus_read_unlock();
->  }
->  
->  void call_rcu_tasks_rude(struct rcu_head *rhp, rcu_callback_t func);
-> -- 
-> 2.25.1
-> 
+> > ---
+> >  Documentation/RCU/stallwarn.rst | 56 ++++++++++++++++++---------------
+> >  1 file changed, 30 insertions(+), 26 deletions(-)
+> > 
+> > v2 --> v3:
+> > 1. Add "Link:", "Fixes:", "Reported-by:".
+> > 2. Remove a orphaned pipe (|).
+> > 3. Change ". ::" to "::"
+> > 
+> > v1 --> v2:
+> > For the case that both colons need to be deleted, change "::" to expanded
+> > form or partially minimized form.
