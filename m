@@ -2,254 +2,267 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AD336C47088
-	for <rcu@archiver.kernel.org>; Tue, 29 Nov 2022 16:00:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F1EFC433FE
+	for <rcu@archiver.kernel.org>; Tue, 29 Nov 2022 16:02:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235237AbiK2QAW (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 29 Nov 2022 11:00:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56784 "EHLO
+        id S233706AbiK2QCI (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 29 Nov 2022 11:02:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236052AbiK2QAF (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 29 Nov 2022 11:00:05 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CD8F59856;
-        Tue, 29 Nov 2022 07:58:35 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id d20so9625596edn.0;
-        Tue, 29 Nov 2022 07:58:35 -0800 (PST)
+        with ESMTP id S235688AbiK2QBk (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 29 Nov 2022 11:01:40 -0500
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC49969DFC
+        for <rcu@vger.kernel.org>; Tue, 29 Nov 2022 08:00:07 -0800 (PST)
+Received: by mail-qt1-x832.google.com with SMTP id w4so9223520qts.0
+        for <rcu@vger.kernel.org>; Tue, 29 Nov 2022 08:00:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ndu8NLiGjk7yRkLXGpL0Z42hS5iNlQz7b0o3ua4PdvI=;
-        b=LGJS13DqQAiOtBkjjE+GxM+AJP0mskXMq5M1ui7bL9ICiCIxNir4ZQtWt5IX2CwMUz
-         uE3PdyGluk3ivEKkDoEOLf+ctFNjJV4VmEsXoti0oDJVe0fcVy3ljyChvG7v0KhELMam
-         drXGRLFhZt/F+GFaz5w9ICf62rLfpnbXn2xze+9TM9IUIHOdQyN8ofOZpc7/3bRgaqtT
-         w3NTPy5JqhHiANe7X+A39RBZJhGFx+BKkBgSLwuckeyipaFKTGXXNX8YCqPQz61WM/6j
-         a/DTihkR5lS4g1o33Qzcr4z+SzM0wb4DwXnsdJbGhKHl9HiTb0uHa9HTdNTWxUPYC6Wx
-         1jVQ==
+        d=joelfernandes.org; s=google;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jAz1Ii4kT4Ngt667oDc7ntxW3NYMICg18xLmFs7pDgo=;
+        b=iyxsgOvqCKFI9D5kcXLYHmby5ob2Lm6YBojPejD5DthvIM/d68rImFKeiygpC/sCrQ
+         MP1nC7cwemdpY2EkYY91F/3TilZa/uXu3Cqa9AwHzOLPbJe5g6jhpv08C9Jr7v8msYjn
+         vfD5MMEmhogoEiyU5ZBwCIXVeWGakq9YSbfoA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ndu8NLiGjk7yRkLXGpL0Z42hS5iNlQz7b0o3ua4PdvI=;
-        b=YQyAtkt/N6R61bbUfyaa4/RCoFkOEdGw/vJCmf6ggzuucM0msL3iyHOtHKf8BlL6lW
-         vzd0mc9QCXv9IQLXebbvOieZKGnu0VqDdCctIGyRZ2ICgN/TO8wt8WFJVcy6HGvSleX2
-         rnzXkj/WystGC0ndYdXCgKrChuxYbjeMG7WX6BKejGg5x8Qt+eN6c5zJrmXxNQdJuWM+
-         w2JARrqfV1HPwpXDcKeSPuYWsWmXzpqy5/AygwYx124+rpsgRGzj+iYmateLev7irnzA
-         Z1uJqVHk1hOd0LAeHdbpbQy8Cfflw/4Ja1HZn82SET7TuZrfPvb138oEDNOZLudpVggb
-         ekpQ==
-X-Gm-Message-State: ANoB5pmVratW1pq7EyrwoM2qV6crhdziS3hpc67tr7+cSrIdXLzOj37R
-        WlO/pf+HizHligsD5X3pTE1ReI/gLUQ=
-X-Google-Smtp-Source: AA0mqf6jheYnM8cLkZNMbknrGpAhk3zVWsLiJV+U+ifBhgE93tzOkvuvKhoW82EvHxyB6lYSCSlcEg==
-X-Received: by 2002:a05:6402:2421:b0:461:524f:a8f4 with SMTP id t33-20020a056402242100b00461524fa8f4mr51873418eda.260.1669737514117;
-        Tue, 29 Nov 2022 07:58:34 -0800 (PST)
-Received: from pc638.lan ([155.137.26.201])
-        by smtp.gmail.com with ESMTPSA id u23-20020a056402065700b0046778ce5fdfsm6371059edx.10.2022.11.29.07.58.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Nov 2022 07:58:33 -0800 (PST)
-From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: [PATCH v2 4/4] rcu/kvfree: Use a polled API to speedup a reclaim process
-Date:   Tue, 29 Nov 2022 16:58:22 +0100
-Message-Id: <20221129155822.538434-5-urezki@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20221129155822.538434-1-urezki@gmail.com>
-References: <20221129155822.538434-1-urezki@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        bh=jAz1Ii4kT4Ngt667oDc7ntxW3NYMICg18xLmFs7pDgo=;
+        b=nqrlfC9PKAGPHoDV9apfDKULTKzxOG0sfrurwETj1JrDYAUwGDAT0b9RlUg20Rd5TM
+         T/WfMNdnHrPoSfNZzobHvw+kZtPVyQQx8bcSpSVrp7SVeHnYfWrpd3rA3rfE96+TeBBr
+         Yz44ozmkF8UAIstJLJNoIwqwG0b9QnGVE7lAJnxb0+C+AVc/8eVhPSEMGwd3r6Zqg8pe
+         hwcWWCmjGc1Y07d2t87rqZzOmCtoNUdquKzVOf45g8ZQhbDqyUT/1CZicv4DnPgo+r/c
+         bdhxTGTqWQ4VneGrcN4l8upAYtI8o1Xg7nRzM7OwIEjJTydYRxfnU1t3ATApJCM71sdO
+         HPVw==
+X-Gm-Message-State: ANoB5pkqcxU2yOT5oS/0UCFo3UZTNyFxPTGA3KgCM+61So69CF12Vp3c
+        qOoRhndg9F7i3wsy0ZMfqo2Wcw==
+X-Google-Smtp-Source: AA0mqf6Ug5CEsHWzAhVwaNbtOKNWfpkkkw0mwGtud8HrmEf8pX9NjLWrAGhnGZXzJR6MQkbi+VBvCw==
+X-Received: by 2002:ac8:7183:0:b0:3a5:1dcb:d22d with SMTP id w3-20020ac87183000000b003a51dcbd22dmr34343541qto.489.1669737606790;
+        Tue, 29 Nov 2022 08:00:06 -0800 (PST)
+Received: from smtpclient.apple ([2600:1003:b10f:9e5b:184c:2f74:27ec:e005])
+        by smtp.gmail.com with ESMTPSA id bq10-20020a05622a1c0a00b003a582090530sm8795322qtb.83.2022.11.29.08.00.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Nov 2022 08:00:06 -0800 (PST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Joel Fernandes <joel@joelfernandes.org>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH v2] rcu-tasks: Make rude RCU-Tasks work well with CPU hotplug
+Date:   Tue, 29 Nov 2022 11:00:05 -0500
+Message-Id: <9299CE62-C7B6-45F5-BD07-C1CB02F0D08C@joelfernandes.org>
+References: <20221129151810.GY4001@paulmck-ThinkPad-P17-Gen-1>
+Cc:     "Zhang, Qiang1" <qiang1.zhang@intel.com>, frederic@kernel.org,
+        quic_neeraju@quicinc.com, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20221129151810.GY4001@paulmck-ThinkPad-P17-Gen-1>
+To:     paulmck@kernel.org
+X-Mailer: iPhone Mail (19G82)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Currently all objects placed into a batch require a full GP
-after passing which objects in a batch are eligible to be
-freed.
 
-The problem is that many pointers may already passed several
-GP sequences so there is no need for them in extra delay and
-such objects can be reclaimed right away without waiting.
 
-In order to reduce a memory footprint this patch introduces
-a per-page-grace-period-controlling mechanism. It allows us
-to distinguish pointers for which a grace period is passed
-and for which not.
+> On Nov 29, 2022, at 10:18 AM, Paul E. McKenney <paulmck@kernel.org> wrote:=
 
-A reclaim thread in its turn frees a memory in a reverse
-order starting from a tail because a GP is likely passed
-for objects in a page. If a page with a GP sequence in a
-list hits a condition when a GP is not ready we bail out
-requesting one more grace period in order to complete a
-drain process for left pages.
+>=20
+> =EF=BB=BFOn Tue, Nov 29, 2022 at 06:25:04AM +0000, Zhang, Qiang1 wrote:
+>>>> On Nov 28, 2022, at 11:54 PM, Zhang, Qiang1 <qiang1.zhang@intel.com> wr=
+ote:
+>>>=20
+>>> =EF=BB=BFOn Mon, Nov 28, 2022 at 10:34:28PM +0800, Zqiang wrote:
+>>>> Currently, invoke rcu_tasks_rude_wait_gp() to wait one rude
+>>>> RCU-tasks grace period, if __num_online_cpus =3D=3D 1, will return
+>>>> directly, indicates the end of the rude RCU-task grace period.
+>>>> suppose the system has two cpus, consider the following scenario:
+>>>>=20
+>>>>   CPU0                                   CPU1 (going offline)
+>>>>                         migration/1 task:
+>>>>                                     cpu_stopper_thread
+>>>>                                      -> take_cpu_down
+>>>>                                         -> _cpu_disable
+>>>>                              (dec __num_online_cpus)
+>>>>                                         ->cpuhp_invoke_callback
+>>>>                                               preempt_disable
+>>>>                       access old_data0
+>>>>          task1
+>>>> del old_data0                                  .....
+>>>> synchronize_rcu_tasks_rude()
+>>>> task1 schedule out
+>>>> ....
+>>>> task2 schedule in
+>>>> rcu_tasks_rude_wait_gp()
+>>>>    ->__num_online_cpus =3D=3D 1
+>>>>      ->return
+>>>> ....
+>>>> task1 schedule in
+>>>> ->free old_data0
+>>>>                                               preempt_enable
+>>>>=20
+>>>> when CPU1 dec __num_online_cpus and __num_online_cpus is equal one,
+>>>> the CPU1 has not finished offline, stop_machine task(migration/1)
+>>>> still running on CPU1, maybe still accessing 'old_data0', but the
+>>>> 'old_data0' has freed on CPU0.
+>>>>=20
+>>>> This commit add cpus_read_lock/unlock() protection before accessing
+>>>> __num_online_cpus variables, to ensure that the CPU in the offline
+>>>> process has been completed offline.
+>>>>=20
+>>>> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+>>>>=20
+>>>> First, good eyes and good catch!!!
+>>>>=20
+>>>> The purpose of that check for num_online_cpus() is not performance
+>>>> on single-CPU systems, but rather correct operation during early boot.
+>>>> So a simpler way to make that work is to check for RCU_SCHEDULER_RUNNIN=
+G,
+>>>> for example, as follows:
+>>>>=20
+>>>>   if (rcu_scheduler_active !=3D RCU_SCHEDULER_RUNNING &&
+>>>>       num_online_cpus() <=3D 1)
+>>>>       return;    // Early boot fastpath for only one CPU.
+>>>=20
+>>> Hi Paul
+>>>=20
+>>> During system startup, because the RCU_SCHEDULER_RUNNING is set after st=
+arting other CPUs,=20
+>>>=20
+>>>             CPU0                                                        =
+               CPU1                                                         =
+       =20
+>>>=20
+>>> if (rcu_scheduler_active !=3D                                   =20
+>>>   RCU_SCHEDULER_RUNNING &&
+>>>          __num_online_cpus  =3D=3D 1)                                   =
+           =20
+>>>   return;                                                               =
+          inc  __num_online_cpus
+>>>                           (__num_online_cpus =3D=3D 2)
+>>>=20
+>>> CPU0 didn't notice the update of the __num_online_cpus variable by CPU1 i=
+n time
+>>> Can we move rcu_set_runtime_mode() before smp_init()
+>>> any thoughts?
+>>>=20
+>>> Is anyone expected to do rcu-tasks operation before the scheduler is run=
+ning?=20
+>>=20
+>> Not sure if such a scenario exists.
+>>=20
+>>> Typically this requires the tasks to context switch which is a scheduler=
+ operation.
+>>>=20
+>>> If the scheduler is not yet running, then I don=E2=80=99t think missing a=
+n update the __num_online_cpus matters since no one does a tasks-RCU synchro=
+nize.
+>>=20
+>> Hi Joel
+>>=20
+>> After the kernel_init task runs, before calling smp_init() to starting ot=
+her CPUs,=20
+>> the scheduler haven been initialization, task context switching can occur=
+.
+>=20
+> Good catch, thank you both.  For some reason, I was thinking that the
+> additional CPUs did not come online until later.
+>=20
+> So how about this?
+>=20
+>    if (rcu_scheduler_active =3D=3D RCU_SCHEDULER_INACTIVE)
+>        return;    // Early boot fastpath.
+>=20
+> If this condition is true, there is only one CPU and no scheduler,
+> thus no preemption.
 
-Test example:
+Agreed. I was going to suggest exactly this :)
 
-kvm.sh --memory 10G --torture rcuscale --allcpus --duration 1 \
-  --kconfig CONFIG_NR_CPUS=64 \
-  --kconfig CONFIG_RCU_NOCB_CPU=y \
-  --kconfig CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y \
-  --kconfig CONFIG_RCU_LAZY=n \
-  --bootargs "rcuscale.kfree_rcu_test=1 rcuscale.kfree_nthreads=16 \
-  rcuscale.holdoff=20 rcuscale.kfree_loops=10000 \
-  torture.disable_onoff_at_boot" --trust-make
+Ack.
+(Replying by phone but feel free to add my reviewed by tag).
 
-Total time taken by all kfree'ers: 8535693700 ns, loops: 10000, batches: 1188, memory footprint: 2248MB
-Total time taken by all kfree'ers: 8466933582 ns, loops: 10000, batches: 1157, memory footprint: 2820MB
-Total time taken by all kfree'ers: 5375602446 ns, loops: 10000, batches: 1130, memory footprint: 6502MB
-Total time taken by all kfree'ers: 7523283832 ns, loops: 10000, batches: 1006, memory footprint: 3343MB
-Total time taken by all kfree'ers: 6459171956 ns, loops: 10000, batches: 1150, memory footprint: 6549MB
+- Joel
 
-Total time taken by all kfree'ers: 8560060176 ns, loops: 10000, batches: 1787, memory footprint: 61MB
-Total time taken by all kfree'ers: 8573885501 ns, loops: 10000, batches: 1777, memory footprint: 93MB
-Total time taken by all kfree'ers: 8320000202 ns, loops: 10000, batches: 1727, memory footprint: 66MB
-Total time taken by all kfree'ers: 8552718794 ns, loops: 10000, batches: 1790, memory footprint: 75MB
-Total time taken by all kfree'ers: 8601368792 ns, loops: 10000, batches: 1724, memory footprint: 62MB
 
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
----
- kernel/rcu/tree.c | 47 +++++++++++++++++++++++++++++++++++++++--------
- 1 file changed, 39 insertions(+), 8 deletions(-)
+>=20
+>                        Thanx, Paul
+>=20
+>> Thanks
+>> Zqiang
+>>=20
+>>>=20
+>>> Or did I miss something?
+>>>=20
+>>> Thanks.
+>>>=20
+>>>=20
+>>>=20
+>>>=20
+>>> Thanks
+>>> Zqiang
+>>>=20
+>>>>=20
+>>>> This works because rcu_scheduler_active is set to RCU_SCHEDULER_RUNNING=
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index c94c17194299..44279ca488ef 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2741,11 +2741,13 @@ EXPORT_SYMBOL_GPL(call_rcu);
- /**
-  * struct kvfree_rcu_bulk_data - single block to store kvfree_rcu() pointers
-  * @list: List node. All blocks are linked between each other
-+ * @gp_snap: Snapshot of RCU state for objects placed to this bulk
-  * @nr_records: Number of active pointers in the array
-  * @records: Array of the kvfree_rcu() pointers
-  */
- struct kvfree_rcu_bulk_data {
- 	struct list_head list;
-+	unsigned long gp_snap;
- 	unsigned long nr_records;
- 	void *records[];
- };
-@@ -2762,13 +2764,15 @@ struct kvfree_rcu_bulk_data {
-  * struct kfree_rcu_cpu_work - single batch of kfree_rcu() requests
-  * @rcu_work: Let queue_rcu_work() invoke workqueue handler after grace period
-  * @head_free: List of kfree_rcu() objects waiting for a grace period
-+ * @head_free_gp_snap: Snapshot of RCU state for objects placed to "@head_free"
-  * @bulk_head_free: Bulk-List of kvfree_rcu() objects waiting for a grace period
-  * @krcp: Pointer to @kfree_rcu_cpu structure
-  */
- 
- struct kfree_rcu_cpu_work {
--	struct rcu_work rcu_work;
-+	struct work_struct rcu_work;
- 	struct rcu_head *head_free;
-+	unsigned long head_free_gp_snap;
- 	struct list_head bulk_head_free[FREE_N_CHANNELS];
- 	struct kfree_rcu_cpu *krcp;
- };
-@@ -2964,10 +2968,11 @@ static void kfree_rcu_work(struct work_struct *work)
- 	struct rcu_head *head;
- 	struct kfree_rcu_cpu *krcp;
- 	struct kfree_rcu_cpu_work *krwp;
-+	unsigned long head_free_gp_snap;
- 	int i;
- 
--	krwp = container_of(to_rcu_work(work),
--			    struct kfree_rcu_cpu_work, rcu_work);
-+	krwp = container_of(work,
-+		struct kfree_rcu_cpu_work, rcu_work);
- 	krcp = krwp->krcp;
- 
- 	raw_spin_lock_irqsave(&krcp->lock, flags);
-@@ -2978,12 +2983,29 @@ static void kfree_rcu_work(struct work_struct *work)
- 	// Channel 3.
- 	head = krwp->head_free;
- 	krwp->head_free = NULL;
-+	head_free_gp_snap = krwp->head_free_gp_snap;
- 	raw_spin_unlock_irqrestore(&krcp->lock, flags);
- 
- 	// Handle the first two channels.
--	for (i = 0; i < FREE_N_CHANNELS; i++)
-+	for (i = 0; i < FREE_N_CHANNELS; i++) {
-+		// Start from the tail page, so a GP is likely passed for it.
-+		list_for_each_entry_safe_reverse(bnode, n, &bulk_head[i], list) {
-+			// Not yet ready? Bail out since we need one more GP.
-+			if (!poll_state_synchronize_rcu(bnode->gp_snap))
-+				break;
-+
-+			list_del_init(&bnode->list);
-+			kvfree_rcu_bulk(krcp, bnode, i);
-+		}
-+
-+		// Please note a request for one more extra GP can
-+		// occur only once for all objects in this batch.
-+		if (!list_empty(&bulk_head[i]))
-+			synchronize_rcu();
-+
- 		list_for_each_entry_safe(bnode, n, &bulk_head[i], list)
- 			kvfree_rcu_bulk(krcp, bnode, i);
-+	}
- 
- 	/*
- 	 * This is used when the "bulk" path can not be used for the
-@@ -2992,7 +3014,10 @@ static void kfree_rcu_work(struct work_struct *work)
- 	 * queued on a linked list through their rcu_head structures.
- 	 * This list is named "Channel 3".
- 	 */
--	kvfree_rcu_list(head);
-+	if (head) {
-+		cond_synchronize_rcu(head_free_gp_snap);
-+		kvfree_rcu_list(head);
-+	}
- }
- 
- static bool
-@@ -3059,6 +3084,11 @@ static void kfree_rcu_monitor(struct work_struct *work)
- 			if (!krwp->head_free) {
- 				krwp->head_free = krcp->head;
- 				WRITE_ONCE(krcp->head, NULL);
-+
-+				// Take a snapshot for this krwp. Please note no more
-+				// any objects can be added to attached head_free channel
-+				// therefore fixate a GP for it here.
-+				krwp->head_free_gp_snap = get_state_synchronize_rcu();
- 			}
- 
- 			WRITE_ONCE(krcp->count, 0);
-@@ -3068,7 +3098,7 @@ static void kfree_rcu_monitor(struct work_struct *work)
- 			// be that the work is in the pending state when
- 			// channels have been detached following by each
- 			// other.
--			queue_rcu_work(system_wq, &krwp->rcu_work);
-+			queue_work(system_wq, &krwp->rcu_work);
- 		}
- 	}
- 
-@@ -3196,8 +3226,9 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
- 		list_add(&bnode->list, &(*krcp)->bulk_head[idx]);
- 	}
- 
--	/* Finally insert. */
-+	// Finally insert and update the GP for this page.
- 	bnode->records[bnode->nr_records++] = ptr;
-+	bnode->gp_snap = get_state_synchronize_rcu();
- 	return true;
- }
- 
-@@ -4801,7 +4832,7 @@ static void __init kfree_rcu_batch_init(void)
- 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
- 
- 		for (i = 0; i < KFREE_N_BATCHES; i++) {
--			INIT_RCU_WORK(&krcp->krw_arr[i].rcu_work, kfree_rcu_work);
-+			INIT_WORK(&krcp->krw_arr[i].rcu_work, kfree_rcu_work);
- 			krcp->krw_arr[i].krcp = krcp;
- 
- 			for (j = 0; j < FREE_N_CHANNELS; j++)
--- 
-2.30.2
+>>>> long before it is possible to offline CPUs.
+>>>>=20
+>>>> Yes, schedule_on_each_cpu() does do cpus_read_lock(), again, good eyes,=
 
+>>>> and it also unnecessarily does the schedule_work_on() the current CPU,
+>>>> but the code calling synchronize_rcu_tasks_rude() is on high-overhead
+>>>> code paths, so this overhead is down in the noise.
+>>>>=20
+>>>> Until further notice, anyway.
+>>>>=20
+>>>> So simplicity is much more important than performance in this code.
+>>>> So just adding the check for RCU_SCHEDULER_RUNNING should fix this,
+>>>> unless I am missing something (always possible!).
+>>>>=20
+>>>>                           Thanx, Paul
+>>>>=20
+>>>> ---
+>>>> kernel/rcu/tasks.h | 20 ++++++++++++++++++--
+>>>> 1 file changed, 18 insertions(+), 2 deletions(-)
+>>>>=20
+>>>> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+>>>> index 4a991311be9b..08e72c6462d8 100644
+>>>> --- a/kernel/rcu/tasks.h
+>>>> +++ b/kernel/rcu/tasks.h
+>>>> @@ -1033,14 +1033,30 @@ static void rcu_tasks_be_rude(struct work_struc=
+t *work)
+>>>> {
+>>>> }
+>>>>=20
+>>>> +static DEFINE_PER_CPU(struct work_struct, rude_work);
+>>>> +
+>>>> // Wait for one rude RCU-tasks grace period.
+>>>> static void rcu_tasks_rude_wait_gp(struct rcu_tasks *rtp)
+>>>> {
+>>>> +    int cpu;
+>>>> +    struct work_struct *work;
+>>>> +
+>>>> +    cpus_read_lock();
+>>>>   if (num_online_cpus() <=3D 1)
+>>>> -        return;    // Fastpath for only one CPU.
+>>>> +        goto end;// Fastpath for only one CPU.
+>>>>=20
+>>>>   rtp->n_ipis +=3D cpumask_weight(cpu_online_mask);
+>>>> -    schedule_on_each_cpu(rcu_tasks_be_rude);
+>>>> +    for_each_online_cpu(cpu) {
+>>>> +        work =3D per_cpu_ptr(&rude_work, cpu);
+>>>> +        INIT_WORK(work, rcu_tasks_be_rude);
+>>>> +        schedule_work_on(cpu, work);
+>>>> +    }
+>>>> +
+>>>> +    for_each_online_cpu(cpu)
+>>>> +        flush_work(per_cpu_ptr(&rude_work, cpu));
+>>>> +
+>>>> +end:
+>>>> +    cpus_read_unlock();
+>>>> }
+>>>>=20
+>>>> void call_rcu_tasks_rude(struct rcu_head *rhp, rcu_callback_t func);
+>>>> --=20
+>>>> 2.25.1
+>>>>=20
