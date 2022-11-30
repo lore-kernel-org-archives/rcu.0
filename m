@@ -2,135 +2,185 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B4E88C352A1
-	for <rcu@archiver.kernel.org>; Wed, 30 Nov 2022 17:14:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 480ADC4321E
+	for <rcu@archiver.kernel.org>; Wed, 30 Nov 2022 17:39:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230070AbiK3ROa (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 30 Nov 2022 12:14:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39520 "EHLO
+        id S229685AbiK3Rj5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 30 Nov 2022 12:39:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230042AbiK3ROJ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 30 Nov 2022 12:14:09 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 950D7658D;
-        Wed, 30 Nov 2022 09:11:25 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 302B261CF1;
-        Wed, 30 Nov 2022 17:11:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 919D6C433D6;
-        Wed, 30 Nov 2022 17:11:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669828284;
-        bh=My7V4d9WJLefteKBiB+Fp5Mig1pJRCVQN44U1DCKMX0=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=BL/cq+P7CfXp9V/yBDIsyefctZLkohFMSJfKQrxm//ysUD+fkYCPwLYMciA7tZDDz
-         8zci5Eo9bBN9TwwZYew3O+xSmAxIlYt0VWUFDNVJYVMh5+rRWVEkIm1AFiS7u5R0tD
-         Td9DaG0RaS5CZuBwyOgfjHch926fVSk/f88U6M+UBEU4346t3WYodjpZqrqmc9ekBR
-         tESzEfm2t7ZEf0YE8bUk2p9urh2t+mNaWQoEML2H5P2GHGXuMkeBiMe4p0pHv15Ywl
-         ZTlri9mmXpc7fpu6aiZV36S6jPownmPNKBKAAKe2CMfdV46gj8GYLJjpQOyw3PNsfl
-         aOx4JKz0RlPOg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 4658F5C051C; Wed, 30 Nov 2022 09:11:24 -0800 (PST)
-Date:   Wed, 30 Nov 2022 09:11:24 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Zqiang <qiang1.zhang@intel.com>
-Cc:     frederic@kernel.org, quic_neeraju@quicinc.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] rcu-tasks: Make rude RCU-Tasks work well with CPU
- hotplug
-Message-ID: <20221130171124.GO4001@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20221130012445.1863104-1-qiang1.zhang@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221130012445.1863104-1-qiang1.zhang@intel.com>
+        with ESMTP id S229786AbiK3Rj4 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 30 Nov 2022 12:39:56 -0500
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDFCE3E0B6
+        for <rcu@vger.kernel.org>; Wed, 30 Nov 2022 09:39:55 -0800 (PST)
+Received: by mail-qk1-x72e.google.com with SMTP id z1so12820940qkl.9
+        for <rcu@vger.kernel.org>; Wed, 30 Nov 2022 09:39:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7RPDJxCDoUkIgI6WB0ARKRxCF6fkBTiX2FleiNgBVrQ=;
+        b=Mq1xLkf1xt6I+kmhLpR2DtzpAnypfTyN3ou6twnR+T7xtEoQxXJ7pKJnx4EmmL0HXM
+         jv5We2jQyWeP2jp1wo+5zbxIqEvnfpJz4gMp8C71pzzZfNlj7Q0eJ9trim9cuN+fO9S/
+         go/TCERUQ2wdh3eRuE+oyQosAgo5UsHwj7SIs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7RPDJxCDoUkIgI6WB0ARKRxCF6fkBTiX2FleiNgBVrQ=;
+        b=yAoCSKvQZ32elZvkH3dpiQzpIBxQCjf+20ld7JOef7/uPSHRUOHhzPnnYaKk1KGxjS
+         3RG6xBrx7xxWmRXs4H6kTAWdZ4/fuBUQ4xUnuRi4Vr9eHD3auBiMH7B7oF/Q6HcxIPwZ
+         TwNcybkfzEs1p3xAcLO+1pjHrxAWyiQ3NuR75zOZ09MVqL/ENWkjEiV8LpqMnmIkx7Yy
+         Y4Vk3UIQ7PFOjO+oJWAnBnC1f4Ml1Zw2+b+XfgXOBfemyENQh6y9L9CoeIfSZVlC6ySN
+         LMK+X3l7X8b3hzAF64kv6HtBuwK7XekI1bBxUv6Ok2UdXuGB8Oi+mKCpCQLfVFyTXZVk
+         40xQ==
+X-Gm-Message-State: ANoB5plRkxyMmYHzdBUPxcT/Le6TlZLStIr+QdpbiM9yOvV1gby6Z1/2
+        9rChzZvrWm5NbD2jPVxDtXNBUA==
+X-Google-Smtp-Source: AA0mqf6m5wgiYoWQmyYLbBA+MIkxkNl3itCOS9alR7axmaR3lQ7bmo47DoLMoNaOihNrLIFmkpjM+A==
+X-Received: by 2002:a05:620a:14a3:b0:6ce:df33:d684 with SMTP id x3-20020a05620a14a300b006cedf33d684mr38528983qkj.544.1669829994930;
+        Wed, 30 Nov 2022 09:39:54 -0800 (PST)
+Received: from smtpclient.apple (c-73-148-104-166.hsd1.va.comcast.net. [73.148.104.166])
+        by smtp.gmail.com with ESMTPSA id i10-20020ac813ca000000b0039cb59f00fcsm1184876qtj.30.2022.11.30.09.39.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Nov 2022 09:39:54 -0800 (PST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Joel Fernandes <joel@joelfernandes.org>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH] srcu: switch work func to allow concurrent gp
+Date:   Wed, 30 Nov 2022 12:39:53 -0500
+Message-Id: <0B944225-3E93-494D-A297-1B330735D44F@joelfernandes.org>
+References: <Y4eKl2fCNDX2ka1g@boqun-archlinux>
+Cc:     Pingfan Liu <kernelfans@gmail.com>, rcu@vger.kernel.org,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Zhang, Qiang1" <qiang1.zhang@intel.com>
+In-Reply-To: <Y4eKl2fCNDX2ka1g@boqun-archlinux>
+To:     Boqun Feng <boqun.feng@gmail.com>
+X-Mailer: iPhone Mail (19G82)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Nov 30, 2022 at 09:24:45AM +0800, Zqiang wrote:
-> Currently, invoke rcu_tasks_rude_wait_gp() to wait one rude
-> RCU-tasks grace period, if __num_online_cpus == 1, will return
-> directly, indicates the end of the rude RCU-task grace period.
-> suppose the system has two cpus, consider the following scenario:
-> 
->         CPU0                                   CPU1 (going offline)
->                                           migration/1 task:
->                                       cpu_stopper_thread
->                                        -> take_cpu_down
->                                           -> _cpu_disable
->                                            (dec __num_online_cpus)
->                                           ->cpuhp_invoke_callback
->                                                 preempt_disable
->                                                 access old_data0
->            task1
->  del old_data0                                  .....
->  synchronize_rcu_tasks_rude()
->  task1 schedule out
->  ....
->  task2 schedule in
->  rcu_tasks_rude_wait_gp()
->      ->__num_online_cpus == 1
->        ->return
->  ....
->  task1 schedule in
->  ->free old_data0
->                                                 preempt_enable
-> 
-> when CPU1 dec __num_online_cpus and __num_online_cpus is equal one,
-> the CPU1 has not finished offline, stop_machine task(migration/1)
-> still running on CPU1, maybe still accessing 'old_data0', but the
-> 'old_data0' has freed on CPU0.
-> 
-> In order to prevent the above scenario from happening, this commit
-> remove check for __num_online_cpus == 0 and add handling of calling
-> synchronize_rcu_tasks_generic() during early boot(when the
-> rcu_scheduler_active variable is RCU_SCHEDULER_INACTIVE, the scheduler
-> not yet initialized and only one boot-CPU online).
-> 
-> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-> ---
->  kernel/rcu/tasks.h | 8 +++-----
->  1 file changed, 3 insertions(+), 5 deletions(-)
-> 
-> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> index 4dda8e6e5707..e4f7d08bde64 100644
-> --- a/kernel/rcu/tasks.h
-> +++ b/kernel/rcu/tasks.h
-> @@ -560,8 +560,9 @@ static int __noreturn rcu_tasks_kthread(void *arg)
->  static void synchronize_rcu_tasks_generic(struct rcu_tasks *rtp)
->  {
->  	/* Complain if the scheduler has not started.  */
-> -	WARN_ONCE(rcu_scheduler_active == RCU_SCHEDULER_INACTIVE,
-> -			 "synchronize_rcu_tasks called too soon");
-> +	if (WARN_ONCE(rcu_scheduler_active == RCU_SCHEDULER_INACTIVE,
-> +			"synchronize_rcu_tasks called too soon"))
 
-Much better, thank you!
 
-But as long as you are touching this line of code, could you please also
-fix it to print rtp->name instead of "synchronize_rcu_tasks"?
+> On Nov 30, 2022, at 11:55 AM, Boqun Feng <boqun.feng@gmail.com> wrote:
+>=20
+> =EF=BB=BFOn Wed, Nov 30, 2022 at 04:39:02PM +0800, Pingfan Liu wrote:
+>> ssp->srcu_cb_mutex is introduced to allow the other srcu state machine
+>> to advance as soon as possible. But according to the implement of
+>> workqueue, the same work_struct is serialized and can not run
+>> concurrently in fact.
+>>=20
+>> Quoting from Documentation/core-api/workqueue.rst
+>> "
+>> Non-reentrance Conditions
+>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 
-							Thanx, Paul
+>>=20
+>> Workqueue guarantees that a work item cannot be re-entrant if the followi=
+ng
+>> conditions hold after a work item gets queued:
+>>=20
+>>        1. The work function hasn't been changed.
+>>        2. No one queues the work item to another workqueue.
+>>        3. The work item hasn't been reinitiated.
+>> "
+>>=20
+>> To allow the concurrence to some extent, it can be achieved by changing
+>> the work function to break the conditions. As a result, when
+>> srcu_gp_end() releases srcu_gp_mutex, a new state machine can begin.
+>>=20
+>> Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+>> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+>> Cc: "Paul E. McKenney" <paulmck@kernel.org>
+>> Cc: Frederic Weisbecker <frederic@kernel.org>
+>> Cc: Josh Triplett <josh@joshtriplett.org>
+>> Cc: Steven Rostedt <rostedt@goodmis.org>
+>> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+>> Cc: "Zhang, Qiang1" <qiang1.zhang@intel.com>
+>> To: rcu@vger.kernel.org
+>> ---
+>> kernel/rcu/srcutree.c | 19 +++++++++++++++++++
+>> 1 file changed, 19 insertions(+)
+>>=20
+>> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+>> index 1c304fec89c0..56dd9bb2c8b8 100644
+>> --- a/kernel/rcu/srcutree.c
+>> +++ b/kernel/rcu/srcutree.c
+>> @@ -75,6 +75,7 @@ static bool __read_mostly srcu_init_done;
+>> static void srcu_invoke_callbacks(struct work_struct *work);
+>> static void srcu_reschedule(struct srcu_struct *ssp, unsigned long delay)=
+;
+>> static void process_srcu(struct work_struct *work);
+>> +static void process_srcu_wrap(struct work_struct *work);
+>> static void srcu_delay_timer(struct timer_list *t);
+>>=20
+>> /* Wrappers for lock acquisition and release, see raw_spin_lock_rcu_node(=
+). */
+>> @@ -763,6 +764,11 @@ static void srcu_gp_end(struct srcu_struct *ssp)
+>>        cbdelay =3D 0;
+>>=20
+>>    WRITE_ONCE(ssp->srcu_last_gp_end, ktime_get_mono_fast_ns());
+>> +    /* Change work func so work can be concurrent */
+>> +    if (ssp->work.work.func =3D=3D process_srcu_wrap)
+>> +        ssp->work.work.func =3D process_srcu;
+>> +    else
+>> +        ssp->work.work.func =3D process_srcu_wrap;
+>=20
+> This looks really hacky ;-) It would be good that workqueue has an API
+> to allow "resetting" a work.
+>=20
+> Do you have any number of the potential performance improvement?
 
-> +		return;
->  
->  	// If the grace-period kthread is running, use it.
->  	if (READ_ONCE(rtp->kthread_ptr)) {
-> @@ -1064,9 +1065,6 @@ static void rcu_tasks_be_rude(struct work_struct *work)
->  // Wait for one rude RCU-tasks grace period.
->  static void rcu_tasks_rude_wait_gp(struct rcu_tasks *rtp)
->  {
-> -	if (num_online_cpus() <= 1)
-> -		return;	// Fastpath for only one CPU.
-> -
->  	rtp->n_ipis += cpumask_weight(cpu_online_mask);
->  	schedule_on_each_cpu(rcu_tasks_be_rude);
->  }
-> -- 
-> 2.25.1
-> 
+
+Agreed. Another question - have you verified the workqueue behavior after th=
+is change (say using tracing), regardless of what the workqueue documentatio=
+n says?
+
+Thanks,
+
+- Joel=20
+
+
+
+>=20
+> Regards,
+> Boqun
+>=20
+>>    rcu_seq_end(&ssp->srcu_gp_seq);
+>>    gpseq =3D rcu_seq_current(&ssp->srcu_gp_seq);
+>>    if (ULONG_CMP_LT(ssp->srcu_gp_seq_needed_exp, gpseq))
+>> @@ -1637,6 +1643,19 @@ static void process_srcu(struct work_struct *work)=
+
+>>    srcu_reschedule(ssp, curdelay);
+>> }
+>>=20
+>> +/*
+>> + * The ssp->work is expected to be concurrent to some extent, but the cu=
+rrent
+>> + * workqueue does not support the concurrence on the same work. (Refer t=
+o the
+>> + * section "Non-reentrance Conditions" in the file workqueue.rst)
+>> + * Resolving it by changing the work func.
+>> + *
+>> + * Prevent compilering from optimizing out it.
+>> + */
+>> +static __used void process_srcu_wrap(struct work_struct *work)
+>> +{
+>> +    process_srcu(work);
+>> +}
+>> +
+>> void srcutorture_get_gp_data(enum rcutorture_type test_type,
+>>                 struct srcu_struct *ssp, int *flags,
+>>                 unsigned long *gp_seq)
+>> --=20
+>> 2.31.1
+>>=20
