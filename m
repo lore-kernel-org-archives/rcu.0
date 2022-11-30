@@ -2,63 +2,62 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BFE03C433FE
-	for <rcu@archiver.kernel.org>; Wed, 30 Nov 2022 18:19:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B0E2C4321E
+	for <rcu@archiver.kernel.org>; Wed, 30 Nov 2022 18:20:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230299AbiK3ST3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 30 Nov 2022 13:19:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49672 "EHLO
+        id S230325AbiK3SUC (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 30 Nov 2022 13:20:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230268AbiK3STM (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 30 Nov 2022 13:19:12 -0500
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A5088D654
-        for <rcu@vger.kernel.org>; Wed, 30 Nov 2022 10:16:22 -0800 (PST)
-Received: by mail-oi1-x22b.google.com with SMTP id m204so19670662oib.6
-        for <rcu@vger.kernel.org>; Wed, 30 Nov 2022 10:16:22 -0800 (PST)
+        with ESMTP id S230324AbiK3STa (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 30 Nov 2022 13:19:30 -0500
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 408F28DFF4
+        for <rcu@vger.kernel.org>; Wed, 30 Nov 2022 10:17:10 -0800 (PST)
+Received: by mail-ot1-x32e.google.com with SMTP id r9-20020a05683001c900b0066e6e7a751eso1066858ota.0
+        for <rcu@vger.kernel.org>; Wed, 30 Nov 2022 10:17:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=BZx3c6pdH3tvbbV8hd9d5C+kOw6FjAWMt/tV6RWix8Y=;
-        b=oBDpW4gxowQLjwbJ4RHVMMkexMHrXMKjhTZQiyPABVqPYrQ7s01TUq7w7ZZQI5r4Kc
-         xu0yJ8r8HcgO+Nip5velLlgN0y+gGXA0vL+fjBPBfHGMF/OM2vvp/pnSvvU4WT0/+MIh
-         M71zdaOSYzXBAjKLzTCXd0oAQ3DD1ySOkIDek=
+        bh=GBXzxdXg5bUAJZPgixzV2JSkMT4QNamcZtjJqxGqukE=;
+        b=fg7+/lcS2nkQfkY0N86X1M19BkSqKl1vYg7sG7AL8ukRjAlvjhPwur37ZYAsB4bv17
+         Vw1BUczBwS8GXipFTUVDtXXlnJyZIWyk6impQU4sSBLBSbzIbP7eL8L4dr16x+XcFz1i
+         y37jFI6zl9h4GxP5S3QqejwV/047FoquCuQF0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=BZx3c6pdH3tvbbV8hd9d5C+kOw6FjAWMt/tV6RWix8Y=;
-        b=KZ+a+LmqQWQhjbgMD1thLsHEqDaFXmRbpX4bOuxfDQ7oHUqwBgGplURBI40uRhEXWf
-         Q8fyixdj8hQSXiIYb9K1ApB6jahHyjJ4oOkYphteGDDI9eEEPnUrdQr9ZlnXaAnJ7awq
-         fd8UIRd/sDBB/kNrLrznJXeXxssnZUq1E2FnRuBQCWxsQkfsW1/DLGDbCOzGdPG1+6Al
-         AmGg4zcQ0ykdLH+TcvV7C/omek2LnafuhyMSD2bBveMe1SCBtWHjpgwYXd8U2SJ0Ahhq
-         2UMAJ2mPEkT4thr9c/cYSGiH1DT0ORBjE9iXzyVxhe93JpvjKe3swFLIllpkpfbEyM0B
-         iNGg==
-X-Gm-Message-State: ANoB5plbes3pBZ1xTndEilL7FtOIIV+yggSmd7xXVHZMz7qKavMr1LSf
-        jMeM2coDS9Z+kpWGLZlqwdI11S8n0zkkeADtHpHAUQ==
-X-Google-Smtp-Source: AA0mqf6ktv4Mbw61Q5evf5XgM9SEqSo3B9f7VRAeR5VeuVYN1GfdLs+BjPg/oU+Mvra8qnf8D7T0V+5TYSr+T+2Sxns=
-X-Received: by 2002:a05:6808:1a09:b0:354:4a36:aa32 with SMTP id
- bk9-20020a0568081a0900b003544a36aa32mr32435098oib.15.1669832181662; Wed, 30
- Nov 2022 10:16:21 -0800 (PST)
+        bh=GBXzxdXg5bUAJZPgixzV2JSkMT4QNamcZtjJqxGqukE=;
+        b=Ty9ZvLmgFeFFffswi96ZbVruBbDtgwziKu1rPv2ifsO97iaoztQmdSIEbuo6CiUEwf
+         x5YKfXL02BF7qUtS/RVc4JDgYwk/triy4gV4R05Vr+wz1y5HiSPM4kjJLRD0S3QnN2v7
+         a/O/4vyqkMmT/vuUksu7giy5um9LRSxGOFV1RkgIu/0sVIxxlo2396xXZAxzr8J4HHrt
+         o08XDRwLTR9PGd06HirLlmBmcCNXYJNnkDKfMQS09hKl2hkvGZxZRMbueNGBX6Bo6J1S
+         hZuFJ9YAJlnjITqd5x53cRmF7nSsvHgxHpFfTYgLTpJnR3OX+77+blpblffXlAxrHFfh
+         9SZw==
+X-Gm-Message-State: ANoB5pkG/XGiHTte9wOZZsLLf0Y84ONt7VN2S4OTfEk7uPRcWPB3xdWT
+        pWeIQCErltmh6vlf6mGtnFTuyquIk1n2+JHR1g491A==
+X-Google-Smtp-Source: AA0mqf78m7kFwguAA8Bp87iPgt1Q+8TWBOGjTiq6kFcLR2+AahX4iSmvXhYJv3RbVn883yEJJntmi9xn+DJBaIyA5m8=
+X-Received: by 2002:a05:6830:d03:b0:66d:3e45:8e5a with SMTP id
+ bu3-20020a0568300d0300b0066d3e458e5amr20987786otb.177.1669832229511; Wed, 30
+ Nov 2022 10:17:09 -0800 (PST)
 MIME-Version: 1.0
-References: <20221130181316.GA1012431@paulmck-ThinkPad-P17-Gen-1> <20221130181325.1012760-14-paulmck@kernel.org>
-In-Reply-To: <20221130181325.1012760-14-paulmck@kernel.org>
+References: <20221130181316.GA1012431@paulmck-ThinkPad-P17-Gen-1> <20221130181325.1012760-15-paulmck@kernel.org>
+In-Reply-To: <20221130181325.1012760-15-paulmck@kernel.org>
 From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Wed, 30 Nov 2022 18:16:11 +0000
-Message-ID: <CAEXW_YS1nfsV_ohXDaB1i2em=+0KP1DofktS24oGFa4wPAbiiw@mail.gmail.com>
-Subject: Re: [PATCH rcu 14/16] rxrpc: Use call_rcu_hurry() instead of call_rcu()
+Date:   Wed, 30 Nov 2022 18:16:58 +0000
+Message-ID: <CAEXW_YQci19yD5wr2jyYi4wdNZ_CrZuGJ==jF9MObOzWg7f=_Q@mail.gmail.com>
+Subject: Re: [PATCH rcu 15/16] net: Use call_rcu_hurry() for dst_release()
 To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel-team@meta.com, rostedt@goodmis.org,
-        David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
+        David Ahern <dsahern@kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
         Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-afs@lists.infradead.org,
-        netdev@vger.kernel.org
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
@@ -66,7 +65,8 @@ X-Mailing-List: rcu@vger.kernel.org
 
 Hi Eric,
 
-Could you give your ACK for this patch?
+Could you give your ACK for this patch for this one as well? This is
+the other networking one.
 
 The networking testing passed on ChromeOS and it has been in -next for
 some time so has gotten testing there. The CONFIG option is default
@@ -76,12 +76,18 @@ Thanks a lot,
 
 - Joel
 
-On Wed, Nov 30, 2022 at 6:13 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+On Wed, Nov 30, 2022 at 6:14 PM Paul E. McKenney <paulmck@kernel.org> wrote:
 >
 > From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
 >
-> Earlier commits in this series allow battery-powered systems to build
-> their kernels with the default-disabled CONFIG_RCU_LAZY=y Kconfig option.
+> In a networking test on ChromeOS, kernels built with the new
+> CONFIG_RCU_LAZY=y Kconfig option fail a networking test in the teardown
+> phase.
+>
+> This failure may be reproduced as follows: ip netns del <name>
+>
+> The CONFIG_RCU_LAZY=y Kconfig option was introduced by earlier commits
+> in this series for the benefit of certain battery-powered systems.
 > This Kconfig option causes call_rcu() to delay its callbacks in order
 > to batch them.  This means that a given RCU grace period covers more
 > callbacks, thus reducing the number of grace periods, in turn reducing
@@ -117,42 +123,41 @@ On Wed, Nov 30, 2022 at 6:13 PM Paul E. McKenney <paulmck@kernel.org> wrote:
 > to call_rcu() being lazy with call_rcu_hurry() for the few places
 > where laziness is inappropriate.
 >
-> And another call_rcu() instance that cannot be lazy is the one
-> in rxrpc_kill_connection(), which sometimes does a wakeup
-> that should not be unduly delayed.
+> Returning to the test failure, use of ftrace showed that this failure
+> cause caused by the aadded delays due to this new lazy behavior of
+> call_rcu() in kernels built with CONFIG_RCU_LAZY=y.
 >
-> Therefore, make rxrpc_kill_connection() use call_rcu_hurry() in order
-> to revert to the old behavior.
+> Therefore, make dst_release() use call_rcu_hurry() in order to revert
+> to the old test-failure-free behavior.
 >
 > [ paulmck: Apply s/call_rcu_flush/call_rcu_hurry/ feedback from Tejun Heo. ]
 >
 > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> Cc: David Howells <dhowells@redhat.com>
-> Cc: Marc Dionne <marc.dionne@auristor.com>
+> Cc: David Ahern <dsahern@kernel.org>
 > Cc: "David S. Miller" <davem@davemloft.net>
 > Cc: Eric Dumazet <edumazet@google.com>
+> Cc: Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>
 > Cc: Jakub Kicinski <kuba@kernel.org>
 > Cc: Paolo Abeni <pabeni@redhat.com>
-> Cc: <linux-afs@lists.infradead.org>
 > Cc: <netdev@vger.kernel.org>
 > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 > ---
->  net/rxrpc/conn_object.c | 2 +-
+>  net/core/dst.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/net/rxrpc/conn_object.c b/net/rxrpc/conn_object.c
-> index 22089e37e97f0..9c5fae9ca106c 100644
-> --- a/net/rxrpc/conn_object.c
-> +++ b/net/rxrpc/conn_object.c
-> @@ -253,7 +253,7 @@ void rxrpc_kill_connection(struct rxrpc_connection *conn)
->          * must carry a ref on the connection to prevent us getting here whilst
->          * it is queued or running.
->          */
-> -       call_rcu(&conn->rcu, rxrpc_destroy_connection);
-> +       call_rcu_hurry(&conn->rcu, rxrpc_destroy_connection);
+> diff --git a/net/core/dst.c b/net/core/dst.c
+> index bc9c9be4e0801..a4e738d321ba2 100644
+> --- a/net/core/dst.c
+> +++ b/net/core/dst.c
+> @@ -174,7 +174,7 @@ void dst_release(struct dst_entry *dst)
+>                         net_warn_ratelimited("%s: dst:%p refcnt:%d\n",
+>                                              __func__, dst, newrefcnt);
+>                 if (!newrefcnt)
+> -                       call_rcu(&dst->rcu_head, dst_destroy_rcu);
+> +                       call_rcu_hurry(&dst->rcu_head, dst_destroy_rcu);
+>         }
 >  }
->
->  /*
+>  EXPORT_SYMBOL(dst_release);
 > --
 > 2.31.1.189.g2e36527f23
 >
