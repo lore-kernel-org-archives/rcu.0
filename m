@@ -2,58 +2,59 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D28C7C433FE
-	for <rcu@archiver.kernel.org>; Wed, 30 Nov 2022 18:20:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4FD1AC4321E
+	for <rcu@archiver.kernel.org>; Wed, 30 Nov 2022 18:22:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230199AbiK3SUq (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 30 Nov 2022 13:20:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49532 "EHLO
+        id S230005AbiK3SWJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 30 Nov 2022 13:22:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230268AbiK3SU3 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 30 Nov 2022 13:20:29 -0500
-Received: from mail-oa1-x34.google.com (mail-oa1-x34.google.com [IPv6:2001:4860:4864:20::34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A92C862D1
-        for <rcu@vger.kernel.org>; Wed, 30 Nov 2022 10:18:42 -0800 (PST)
-Received: by mail-oa1-x34.google.com with SMTP id 586e51a60fabf-12c8312131fso22023650fac.4
-        for <rcu@vger.kernel.org>; Wed, 30 Nov 2022 10:18:42 -0800 (PST)
+        with ESMTP id S229667AbiK3SV2 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 30 Nov 2022 13:21:28 -0500
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A93DF8D657
+        for <rcu@vger.kernel.org>; Wed, 30 Nov 2022 10:20:06 -0800 (PST)
+Received: by mail-oi1-x232.google.com with SMTP id m204so19682022oib.6
+        for <rcu@vger.kernel.org>; Wed, 30 Nov 2022 10:20:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=N3+c1ZdCSilgW+SSx6tvWsc7wbKwFqHqee+YfZqL2GM=;
-        b=mAWZXY/A192EartorULkeCHGOmKFBQ73IUk+1E5UsC+TbeEtcZo/nYCqGt84k2RRAt
-         zHS6sfnkOJHEqJXYTjpJagy4bzYkIpARSy7LwK1dD3fQ0Nt8UysOk9UrG7yvo7g2oBAt
-         hEVGa+ziCxfutgcHURBeubf6PGRO8786ArcHw=
+        bh=Vdp4j6kiy4UQZim4jGenqW5cdZeKNZUSFB293OPsKw4=;
+        b=mAMq4T/gP9VcyGraToL3Nre1HYLcFBZ4FbRuIAZX2RXsBbLAfM+rzDZNmEB1G040Id
+         cxtni1Wm7EGLVeYc1deX2HHYf0AFBvKl8C0SyW23CdBuu5uZao/XoeyG4dG0ncsIcvzD
+         HZ4xcobLS8wW1jOBMQ9Q5FrlsXaGAR3IFpZ1w=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=N3+c1ZdCSilgW+SSx6tvWsc7wbKwFqHqee+YfZqL2GM=;
-        b=UOcLiyHlqAI9YdJUAV9popnKCi6ONWoWLBcLpROZykaFC/ysinz8rVo7HcYTL6HloC
-         fPQlY7NKM8tD1ZHhgygf+zrQ5aUqtbBGpVXf32lb1kQqfTE3F24DFW6qoYRtG7pOR7fk
-         j53xjQ6wZEEYmOf0H6oWG+BS/bjww56QPy5+8Z68XB2OHfolh+9U0SMQpOMc0+iBL4iK
-         6Pr/F0hZ+eHXpox54Ou3kSTjJkCqpCetFb5fr6EW8U42wCWm7P9efgIRwMLRe6Hmqxp9
-         sGaZs9OrGbXJLR5vMwKueyMvdoWdOo9D95vFREn/9woRK3SC0wPRMJAd2/faHAptagZ3
-         DRxg==
-X-Gm-Message-State: ANoB5plH7Ntpj0oCzMRbyMsJoZY8PlOeWnjRqdDb3oWIm13MrbnySs1Y
-        572ut18Lt8MhZcpO+jvH0u1zT2lnYsdkeawi6F8Kww==
-X-Google-Smtp-Source: AA0mqf6ZZIpTDZ0KvdCBVoNn5gchzeQC2bhZoT/xlZWxEXVoPE7NXWJbjZNKarLlQlS31ASGH5wfRwuMpfridO5YjbQ=
-X-Received: by 2002:a05:6870:bacb:b0:13a:dd16:9b83 with SMTP id
- js11-20020a056870bacb00b0013add169b83mr37605798oab.15.1669832321389; Wed, 30
- Nov 2022 10:18:41 -0800 (PST)
+        bh=Vdp4j6kiy4UQZim4jGenqW5cdZeKNZUSFB293OPsKw4=;
+        b=d78Xr6KhcZG9rnKGBtmOe2Mudz/X+2fBgkG2MRcvFqmDiWmqZHoQxzijCUX76JiCCZ
+         kcsJP18Eg5my4sUtzQ9NPcp0kBPYlNM2uIu5KTx7JOtJ3+oFA4d9tMLqHZtdSQm/cP9u
+         1aAICEfAkeD6RGaH8BxGP6w2xekucfX/WoTlhdoHq8UGMTOxboBJz3JctWrQ1RmFq0cz
+         cJ/SVrZR3e9KbyDRPGsHstNfn53E4F8ZvFECT69cUcxwbjBYb0Rbh3ywU0dhT+R31RKs
+         hnHRfEiSkaWJJPGIVrJ5ivf5/97gaqJnruAxILT2yYqCPu3JTUajgiuMQhgsJzvYb0ap
+         f70A==
+X-Gm-Message-State: ANoB5pk5+1zQ/koMxp0kBPxmD6cO+eS3qj6rewxR2v1rkOkUfuV6PPKh
+        XRyISQiyKmHSYGWlX5VxBbnGpHVsITwFb3Ekczxarg==
+X-Google-Smtp-Source: AA0mqf5sSvtaWTm2pchCNoKTpXWdWxaMgcb6sK6DTCzJV41ofLpiVL6MLm8SxjiIxRU+GiI+YWEzkPB6FcPNwfijHl0=
+X-Received: by 2002:a05:6808:1a09:b0:354:4a36:aa32 with SMTP id
+ bk9-20020a0568081a0900b003544a36aa32mr32442745oib.15.1669832405979; Wed, 30
+ Nov 2022 10:20:05 -0800 (PST)
 MIME-Version: 1.0
-References: <20221130181316.GA1012431@paulmck-ThinkPad-P17-Gen-1> <20221130181325.1012760-13-paulmck@kernel.org>
-In-Reply-To: <20221130181325.1012760-13-paulmck@kernel.org>
+References: <20221130181316.GA1012431@paulmck-ThinkPad-P17-Gen-1> <20221130181325.1012760-12-paulmck@kernel.org>
+In-Reply-To: <20221130181325.1012760-12-paulmck@kernel.org>
 From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Wed, 30 Nov 2022 18:18:30 +0000
-Message-ID: <CAEXW_YRV8tDyTtEVDhO3_DvnAp10HFr3vkcAnCecGqQYtKNP3Q@mail.gmail.com>
-Subject: Re: [PATCH rcu 13/16] workqueue: Make queue_rcu_work() use call_rcu_hurry()
+Date:   Wed, 30 Nov 2022 18:19:55 +0000
+Message-ID: <CAEXW_YTZO1eZLpL-Rth_55n_iKJv3xthJdy1vpYRmj+=MfZHFw@mail.gmail.com>
+Subject: Re: [PATCH rcu 12/16] percpu-refcount: Use call_rcu_hurry() for
+ atomic switch
 To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel-team@meta.com, rostedt@goodmis.org,
-        Uladzislau Rezki <urezki@gmail.com>, Tejun Heo <tj@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>, linux-mm@kvack.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
@@ -61,22 +62,22 @@ X-Mailing-List: rcu@vger.kernel.org
 
 Hi Tejun,
 
-The API is renamed to call_rcu_hurry() as you and Paul discussed, to
-avoid conflicts with the word flush. Could you give your ACK for this
-patch, for workqueue?
+Could you give your ACK for this patch, for percpu refcount? The API
+is renamed like in the workqueue one, as well.
 
 Thanks a lot,
 
 - Joel
 
+
 On Wed, Nov 30, 2022 at 6:13 PM Paul E. McKenney <paulmck@kernel.org> wrote:
 >
-> From: Uladzislau Rezki <urezki@gmail.com>
+> From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
 >
 > Earlier commits in this series allow battery-powered systems to build
 > their kernels with the default-disabled CONFIG_RCU_LAZY=y Kconfig option.
-> This Kconfig option causes call_rcu() to delay its callbacks in order
-> to batch them.  This means that a given RCU grace period covers more
+> This Kconfig option causes call_rcu() to delay its callbacks in order to
+> batch callbacks.  This means that a given RCU grace period covers more
 > callbacks, thus reducing the number of grace periods, in turn reducing
 > the amount of energy consumed, which increases battery lifetime which
 > can be a very good thing.  This is not a subtle effect: In some important
@@ -110,37 +111,42 @@ On Wed, Nov 30, 2022 at 6:13 PM Paul E. McKenney <paulmck@kernel.org> wrote:
 > to call_rcu() being lazy with call_rcu_hurry() for the few places
 > where laziness is inappropriate.
 >
-> And another call_rcu() instance that cannot be lazy is the one
-> in queue_rcu_work(), given that callers to queue_rcu_work() are
-> not necessarily OK with long delays.
+> And another call_rcu() instance that cannot be lazy is the one on the
+> percpu refcounter's "per-CPU to atomic switch" code path, which
+> uses RCU when switching to atomic mode.  The enqueued callback
+> wakes up waiters waiting in the percpu_ref_switch_waitq.  Allowing
+> this callback to be lazy would result in unacceptable slowdowns for
+> users of per-CPU refcounts, such as blk_pre_runtime_suspend().
 >
-> Therefore, make queue_rcu_work() use call_rcu_hurry() in order to revert
-> to the old behavior.
+> Therefore, make __percpu_ref_switch_to_atomic() use call_rcu_hurry()
+> in order to revert to the old behavior.
 >
 > [ paulmck: Apply s/call_rcu_flush/call_rcu_hurry/ feedback from Tejun Heo. ]
 >
-> Signed-off-by: Uladzislau Rezki <urezki@gmail.com>
 > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> Cc: Tejun Heo <tj@kernel.org>
-> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
 > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> Cc: Dennis Zhou <dennis@kernel.org>
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: Christoph Lameter <cl@linux.com>
+> Cc: <linux-mm@kvack.org>
 > ---
->  kernel/workqueue.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  lib/percpu-refcount.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 >
-> diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-> index 7cd5f5e7e0a1b..07895deca2711 100644
-> --- a/kernel/workqueue.c
-> +++ b/kernel/workqueue.c
-> @@ -1771,7 +1771,7 @@ bool queue_rcu_work(struct workqueue_struct *wq, struct rcu_work *rwork)
+> diff --git a/lib/percpu-refcount.c b/lib/percpu-refcount.c
+> index e5c5315da2741..668f6aa6a75de 100644
+> --- a/lib/percpu-refcount.c
+> +++ b/lib/percpu-refcount.c
+> @@ -230,7 +230,8 @@ static void __percpu_ref_switch_to_atomic(struct percpu_ref *ref,
+>                 percpu_ref_noop_confirm_switch;
 >
->         if (!test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work))) {
->                 rwork->wq = wq;
-> -               call_rcu(&rwork->rcu, rcu_work_rcufn);
-> +               call_rcu_hurry(&rwork->rcu, rcu_work_rcufn);
->                 return true;
->         }
+>         percpu_ref_get(ref);    /* put after confirmation */
+> -       call_rcu(&ref->data->rcu, percpu_ref_switch_to_atomic_rcu);
+> +       call_rcu_hurry(&ref->data->rcu,
+> +                      percpu_ref_switch_to_atomic_rcu);
+>  }
 >
+>  static void __percpu_ref_switch_to_percpu(struct percpu_ref *ref)
 > --
 > 2.31.1.189.g2e36527f23
 >
