@@ -2,185 +2,162 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F0685C433FE
-	for <rcu@archiver.kernel.org>; Wed, 30 Nov 2022 18:50:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F97FC433FE
+	for <rcu@archiver.kernel.org>; Wed, 30 Nov 2022 18:57:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231448AbiK3SuZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 30 Nov 2022 13:50:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37864 "EHLO
+        id S230436AbiK3S5y (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 30 Nov 2022 13:57:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231480AbiK3SuT (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 30 Nov 2022 13:50:19 -0500
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82EC79D802
-        for <rcu@vger.kernel.org>; Wed, 30 Nov 2022 10:50:18 -0800 (PST)
-Received: by mail-oi1-x229.google.com with SMTP id l127so19761404oia.8
-        for <rcu@vger.kernel.org>; Wed, 30 Nov 2022 10:50:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=vRCw5HgdZ6+i+5rxJnQV5DsJbEr03vS+VFP709b7Mj0=;
-        b=Fj7wpBqfoKfCWqoddByeKCliiIhXWseC/prDubeJZMHCNycQ02GhMtCAVmR9tcFjFj
-         DfBiUniDNdOT01JiTghH+KQH04DHEJeuVOsDZEQT+Yg17EVcIlDdDcHWVQZFvMcW6Ikn
-         SBXzsr3nawMrT0TrxZz9eHu4IhIqN5adlS11Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vRCw5HgdZ6+i+5rxJnQV5DsJbEr03vS+VFP709b7Mj0=;
-        b=GOqSGDzMOppOKCBhgF0xrQxKssibXvBlsiiDxFAp45OMtIiHrLvQ5zCH9HJRHapeEx
-         wvin9kztSRrcI0dtlfJGVOHeUJcdr8PjupDD7JawTKRTNzpOXI4QMPEMJX8MPIYMlShO
-         9jW9Ok1mtoESr4KsxBmjkdYzS43a+ft7Kg/Tq8UQWzW5YqB613ohtF0dk42jOhIuX8Dx
-         UkgZUyQgsSlWFR6pVe0TZaVLEGb3S+WnZ2CK16xWFFuUf4qe5Y1j/kpLrvt+q6+ZBPq3
-         wFegxIjm9AqJK1KMHBCWVt3fNjhLfFf3Arafb7z1rugY5tQlFwmHLvpbGSpWoYyIwbo9
-         eYMQ==
-X-Gm-Message-State: ANoB5pmAePe0KmpTBl+L+2wIS1CslB0UrY+GJQbStJqbQCfmUXAcgxQm
-        m1vJPfY4t92tMSJdAnuqUNrArtRLPlbX0DcMicShJw==
-X-Google-Smtp-Source: AA0mqf5zZ4OhgadIuAOlhIl42LnTHrlqOZnhhcAxa8Ejt2e76YOhwQv/ANm9w6iLKjI4GT6DPpyBAu9Bn2JOnMBXBBg=
-X-Received: by 2002:a05:6808:46:b0:35a:ff1:bf0d with SMTP id
- v6-20020a056808004600b0035a0ff1bf0dmr22785001oic.115.1669834217790; Wed, 30
- Nov 2022 10:50:17 -0800 (PST)
+        with ESMTP id S229937AbiK3S5x (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 30 Nov 2022 13:57:53 -0500
+X-Greylist: delayed 1202 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 30 Nov 2022 10:57:51 PST
+Received: from out01.mta.xmission.com (out01.mta.xmission.com [166.70.13.231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2094327CE7;
+        Wed, 30 Nov 2022 10:57:50 -0800 (PST)
+Received: from in02.mta.xmission.com ([166.70.13.52]:52666)
+        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1p0Rxp-0021FH-I7; Wed, 30 Nov 2022 11:37:45 -0700
+Received: from ip68-110-29-46.om.om.cox.net ([68.110.29.46]:51544 helo=email.froward.int.ebiederm.org.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1p0Rxo-00BPJV-7m; Wed, 30 Nov 2022 11:37:45 -0700
+From:   "Eric W. Biederman" <ebiederm@xmission.com>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>, rcu@vger.kernel.org
+References: <20221125135500.1653800-1-frederic@kernel.org>
+        <20221125135500.1653800-4-frederic@kernel.org>
+Date:   Wed, 30 Nov 2022 12:37:15 -0600
+In-Reply-To: <20221125135500.1653800-4-frederic@kernel.org> (Frederic
+        Weisbecker's message of "Fri, 25 Nov 2022 14:55:00 +0100")
+Message-ID: <871qpkqof8.fsf@email.froward.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-References: <20221130181316.GA1012431@paulmck-ThinkPad-P17-Gen-1>
- <20221130181325.1012760-15-paulmck@kernel.org> <CAEXW_YQci19yD5wr2jyYi4wdNZ_CrZuGJ==jF9MObOzWg7f=_Q@mail.gmail.com>
- <CANn89iKifFXDpF8sZXd+rXPhF+3ajVLTuEj6n2Z4H9f27_K0kA@mail.gmail.com>
-In-Reply-To: <CANn89iKifFXDpF8sZXd+rXPhF+3ajVLTuEj6n2Z4H9f27_K0kA@mail.gmail.com>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Wed, 30 Nov 2022 18:50:06 +0000
-Message-ID: <CAEXW_YTY4mD7z6y_vtQATCzPwe3_VmRxJNipsSo6GmwQa20e8g@mail.gmail.com>
-Subject: Re: [PATCH rcu 15/16] net: Use call_rcu_hurry() for dst_release()
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org, David Ahern <dsahern@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-XM-SPF: eid=1p0Rxo-00BPJV-7m;;;mid=<871qpkqof8.fsf@email.froward.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.110.29.46;;;frm=ebiederm@xmission.com;;;spf=pass
+X-XM-AID: U2FsdGVkX19kmI+corBFVUk0NhRQbX0604aIH9Z31n8=
+X-SA-Exim-Connect-IP: 68.110.29.46
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+Subject: Re: [PATCH 3/3] rcu-tasks: Fix synchronize_rcu_tasks() VS
+ zap_pid_ns_processes()
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Eric,
+Frederic Weisbecker <frederic@kernel.org> writes:
 
-On Wed, Nov 30, 2022 at 6:39 PM Eric Dumazet <edumazet@google.com> wrote:
+> RCU Tasks and PID-namespace unshare can interact in do_exit() in a
+> complicated circular dependency:
 >
-> Sure, thanks.
+> 1) TASK A calls unshare(CLONE_NEWPID), this creates a new PID namespace
+>    that every subsequent child of TASK A will belong to. But TASK A
+>    doesn't itself belong to that new PID namespace.
 >
-> Reviewed-by: Eric Dumazet <edumazet@google.com>
+> 2) TASK A forks() and creates TASK B. TASK A stays attached to its PID
+>    namespace (let's say PID_NS1) and TASK B is the first task belonging
+>    to the new PID namespace created by unshare()  (let's call it PID_NS2).
 >
-> I think we can work later to change how dst are freed/released to
-> avoid using call_rcu_hurry()
+> 3) Since TASK B is the first task attached to PID_NS2, it becomes the
+>    PID_NS2 child reaper.
+>
+> 4) TASK A forks() again and creates TASK C which get attached to PID_NS2.
+>    Note how TASK C has TASK A as a parent (belonging to PID_NS1) but has
+>    TASK B (belonging to PID_NS2) as a pid_namespace child_reaper.
+>
+> 5) TASK B exits and since it is the child reaper for PID_NS2, it has to
+>    kill all other tasks attached to PID_NS2, and wait for all of them to
+>    die before getting reaped itself (zap_pid_ns_process()).
+>
+> 6) TASK A calls synchronize_rcu_tasks() which leads to
+>    synchronize_srcu(&tasks_rcu_exit_srcu).
+>
+> 7) TASK B is waiting for TASK C to get reaped. But TASK B is under a
+>    tasks_rcu_exit_srcu SRCU critical section (exit_notify() is between
+>    exit_tasks_rcu_start() and exit_tasks_rcu_finish()), blocking TASK A.
+>
+> 8) TASK C exits and since TASK A is its parent, it waits for it to reap
+>    TASK C, but it can't because TASK A waits for TASK B that waits for
+>    TASK C.
+>
+> Pid_namespace semantics can hardly be changed at this point. But the
+> coverage of tasks_rcu_exit_srcu can be reduced instead.
+>
+> The current task is assumed not to be concurrently reapable at this
+> stage of exit_notify() and therefore tasks_rcu_exit_srcu can be
+> temporarily relaxed without breaking its constraints, providing a way
+> out of the deadlock scenario.
+>
+> Fixes: 3f95aa81d265 ("rcu: Make TASKS_RCU handle tasks that are almost done exiting")
+> Reported-by: Pengfei Xu <pengfei.xu@intel.com>
+> Suggested-by: Boqun Feng <boqun.feng@gmail.com>
+> Suggested-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+> Suggested-by: Paul E. McKenney <paulmck@kernel.org>
+> Cc: Oleg Nesterov <oleg@redhat.com>
+> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> Cc: Eric W . Biederman <ebiederm@xmission.com>
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> ---
+>  include/linux/rcupdate.h |  2 ++
+>  kernel/pid_namespace.c   | 17 +++++++++++++++++
+>  kernel/rcu/tasks.h       | 14 ++++++++++++--
+>  3 files changed, 31 insertions(+), 2 deletions(-)
 
-That sounds great, if you can give me any high-level guidance (in the
-future) on that and what to look for, I can give it a try as well. I
-have been wanting to learn more about the networking code :-)
+> diff --git a/kernel/pid_namespace.c b/kernel/pid_namespace.c
+> index f4f8cb0435b4..fc21c5d5fd5d 100644
+> --- a/kernel/pid_namespace.c
+> +++ b/kernel/pid_namespace.c
+> @@ -244,7 +244,24 @@ void zap_pid_ns_processes(struct pid_namespace *pid_ns)
+>  		set_current_state(TASK_INTERRUPTIBLE);
+>  		if (pid_ns->pid_allocated == init_pids)
+>  			break;
+> +		/*
+> +		 * Release tasks_rcu_exit_srcu to avoid following deadlock:
+> +		 *
+> +		 * 1) TASK A unshare(CLONE_NEWPID)
+> +		 * 2) TASK A fork() twice -> TASK B (child reaper for new ns)
+> +		 *    and TASK C
+> +		 * 3) TASK B exits, kills TASK C, waits for TASK A to reap it
+> +		 * 4) TASK A calls synchronize_rcu_tasks()
+> +		 *                   -> synchronize_srcu(tasks_rcu_exit_srcu)
+> +		 * 5) *DEADLOCK*
+> +		 *
+> +		 * It is considered safe to release tasks_rcu_exit_srcu here
+> +		 * because we assume the current task can not be concurrently
+> +		 * reaped at this point.
+> +		 */
+> +		exit_tasks_rcu_stop();
+>  		schedule();
+> +		exit_tasks_rcu_start();
+>  	}
+>  	__set_current_state(TASK_RUNNING);
 
-Thanks,
+Two questions.
 
- - Joel
+1) Is there any chance you need the exit_task_rcu_stop() and
+   exit_tasks_rcu_start() around schedule in the part of this code that
+   calls kernel_wait4.
 
+2) I keep thinking zap_pid_ns_processes() should be changed so that
+   after it sends SIGKILL to all of the relevant processes to not wait,
+   and instead have wait_consider_task simply not allow the 
+   init process of the pid namespace to be reaped.
 
-> On Wed, Nov 30, 2022 at 7:17 PM Joel Fernandes <joel@joelfernandes.org> wrote:
-> >
-> > Hi Eric,
-> >
-> > Could you give your ACK for this patch for this one as well? This is
-> > the other networking one.
-> >
-> > The networking testing passed on ChromeOS and it has been in -next for
-> > some time so has gotten testing there. The CONFIG option is default
-> > disabled.
-> >
-> > Thanks a lot,
-> >
-> > - Joel
-> >
-> > On Wed, Nov 30, 2022 at 6:14 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > >
-> > > From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
-> > >
-> > > In a networking test on ChromeOS, kernels built with the new
-> > > CONFIG_RCU_LAZY=y Kconfig option fail a networking test in the teardown
-> > > phase.
-> > >
-> > > This failure may be reproduced as follows: ip netns del <name>
-> > >
-> > > The CONFIG_RCU_LAZY=y Kconfig option was introduced by earlier commits
-> > > in this series for the benefit of certain battery-powered systems.
-> > > This Kconfig option causes call_rcu() to delay its callbacks in order
-> > > to batch them.  This means that a given RCU grace period covers more
-> > > callbacks, thus reducing the number of grace periods, in turn reducing
-> > > the amount of energy consumed, which increases battery lifetime which
-> > > can be a very good thing.  This is not a subtle effect: In some important
-> > > use cases, the battery lifetime is increased by more than 10%.
-> > >
-> > > This CONFIG_RCU_LAZY=y option is available only for CPUs that offload
-> > > callbacks, for example, CPUs mentioned in the rcu_nocbs kernel boot
-> > > parameter passed to kernels built with CONFIG_RCU_NOCB_CPU=y.
-> > >
-> > > Delaying callbacks is normally not a problem because most callbacks do
-> > > nothing but free memory.  If the system is short on memory, a shrinker
-> > > will kick all currently queued lazy callbacks out of their laziness,
-> > > thus freeing their memory in short order.  Similarly, the rcu_barrier()
-> > > function, which blocks until all currently queued callbacks are invoked,
-> > > will also kick lazy callbacks, thus enabling rcu_barrier() to complete
-> > > in a timely manner.
-> > >
-> > > However, there are some cases where laziness is not a good option.
-> > > For example, synchronize_rcu() invokes call_rcu(), and blocks until
-> > > the newly queued callback is invoked.  It would not be a good for
-> > > synchronize_rcu() to block for ten seconds, even on an idle system.
-> > > Therefore, synchronize_rcu() invokes call_rcu_hurry() instead of
-> > > call_rcu().  The arrival of a non-lazy call_rcu_hurry() callback on a
-> > > given CPU kicks any lazy callbacks that might be already queued on that
-> > > CPU.  After all, if there is going to be a grace period, all callbacks
-> > > might as well get full benefit from it.
-> > >
-> > > Yes, this could be done the other way around by creating a
-> > > call_rcu_lazy(), but earlier experience with this approach and
-> > > feedback at the 2022 Linux Plumbers Conference shifted the approach
-> > > to call_rcu() being lazy with call_rcu_hurry() for the few places
-> > > where laziness is inappropriate.
-> > >
-> > > Returning to the test failure, use of ftrace showed that this failure
-> > > cause caused by the aadded delays due to this new lazy behavior of
-> > > call_rcu() in kernels built with CONFIG_RCU_LAZY=y.
-> > >
-> > > Therefore, make dst_release() use call_rcu_hurry() in order to revert
-> > > to the old test-failure-free behavior.
-> > >
-> > > [ paulmck: Apply s/call_rcu_flush/call_rcu_hurry/ feedback from Tejun Heo. ]
-> > >
-> > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > > Cc: David Ahern <dsahern@kernel.org>
-> > > Cc: "David S. Miller" <davem@davemloft.net>
-> > > Cc: Eric Dumazet <edumazet@google.com>
-> > > Cc: Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>
-> > > Cc: Jakub Kicinski <kuba@kernel.org>
-> > > Cc: Paolo Abeni <pabeni@redhat.com>
-> > > Cc: <netdev@vger.kernel.org>
-> > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > ---
-> > >  net/core/dst.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/net/core/dst.c b/net/core/dst.c
-> > > index bc9c9be4e0801..a4e738d321ba2 100644
-> > > --- a/net/core/dst.c
-> > > +++ b/net/core/dst.c
-> > > @@ -174,7 +174,7 @@ void dst_release(struct dst_entry *dst)
-> > >                         net_warn_ratelimited("%s: dst:%p refcnt:%d\n",
-> > >                                              __func__, dst, newrefcnt);
-> > >                 if (!newrefcnt)
-> > > -                       call_rcu(&dst->rcu_head, dst_destroy_rcu);
-> > > +                       call_rcu_hurry(&dst->rcu_head, dst_destroy_rcu);
-> > >         }
-> > >  }
-> > >  EXPORT_SYMBOL(dst_release);
-> > > --
-> > > 2.31.1.189.g2e36527f23
-> > >
+   Am I right in thinking that such a change were to be made it would
+   make remove the deadlock without having to have any special code?
+
+   It is just tricky enough to do that I don't want to discourage your
+   simpler change but this looks like a case that makes the pain of
+   changing zap_pid_ns_processes worthwhile in the practice.
+
+Eric
