@@ -2,48 +2,52 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B18C7C352A1
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EC4A2C46467
 	for <rcu@archiver.kernel.org>; Wed, 30 Nov 2022 18:13:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230100AbiK3SNv (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 30 Nov 2022 13:13:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38440 "EHLO
+        id S230124AbiK3SNw (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 30 Nov 2022 13:13:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229850AbiK3SNc (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S229852AbiK3SNc (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 30 Nov 2022 13:13:32 -0500
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CE32862D5;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E109862D7;
         Wed, 30 Nov 2022 10:13:31 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B6B1161D64;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C618961D74;
         Wed, 30 Nov 2022 18:13:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16823C43155;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DD0AC43152;
         Wed, 30 Nov 2022 18:13:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1669832008;
-        bh=uYoVp3wfqf3fICtozjC2ekQQHH5L+XdF7tRF4atTO+Q=;
+        bh=O3sihN19Kz2sN5DYDWZyYgF1v27O1pMTYDT2Vmf9Dd4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hkJumWSp1ikZCpXNqPUSCDnpFhz551D4U9Kk4eMWYUwEh5UqIy30sMH2g8L1UtMiy
-         7FphIoNYbtfdlUNTFX/BCIMtzBPo4pMetUOH2bKJ9hmmYGktR/W7is9KKoKtr/HkH2
-         mzVf0qcewBBpPecHuJ9AhrGl6qsru3qJlSA3NL4ZOp/izhZi3AgXH5K1Wx+oKjPNLR
-         92+bWi0y2zwX2rkYwjjEf0tEKKK2QtPxNd7VwnNiFKi+bvrH2EjtnXgHuuXfoHnSHw
-         gjC8esHljhMc+IAiMsNlhd5C9exE4K3RwPYYsJA1Yp4O7P8OLU+tVMNi7zluyW8m5f
-         tuenjVMK8X+Kw==
+        b=pN9sTHaln9m6EGe3r9Eb2mbBcomn8O7ZzzGuAofcxjdtAaYBBhuhEjCdEYKuuSr06
+         v0BxvoaljMSpxX4FpfkPcIJSQGSpia3bFMMSWxo9Hw1m5HwSGwMZFeJpkfP4YAf9ZR
+         xYFs1/y0W4mmseFXE/jsG/vHS0wbW4TNkTZnkww03YP1y/+SXiuDlCBqDWwywzHvf6
+         UVnawFrUxFkSAl1hhOSYWBxQF7dkCz4UCuF5KH2hARoBTkQY1Nu5lTOiIJ4fqmvdez
+         t973eHlre30kymo32erxf/RHRtlVEcgD/glMh8n2Zh+g+Qak1llmk5ftZmJKfsUce4
+         JU7NjJFwIrRmw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 6BEBA5C1727; Wed, 30 Nov 2022 10:13:27 -0800 (PST)
+        id 7006E5C196D; Wed, 30 Nov 2022 10:13:27 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
         rostedt@goodmis.org,
         "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>, linux-mm@kvack.org
-Subject: [PATCH rcu 12/16] percpu-refcount: Use call_rcu_hurry() for atomic switch
-Date:   Wed, 30 Nov 2022 10:13:21 -0800
-Message-Id: <20221130181325.1012760-12-paulmck@kernel.org>
+        David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, linux-afs@lists.infradead.org,
+        netdev@vger.kernel.org, "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 14/16] rxrpc: Use call_rcu_hurry() instead of call_rcu()
+Date:   Wed, 30 Nov 2022 10:13:23 -0800
+Message-Id: <20221130181325.1012760-14-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20221130181316.GA1012431@paulmck-ThinkPad-P17-Gen-1>
 References: <20221130181316.GA1012431@paulmck-ThinkPad-P17-Gen-1>
@@ -57,8 +61,8 @@ From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
 
 Earlier commits in this series allow battery-powered systems to build
 their kernels with the default-disabled CONFIG_RCU_LAZY=y Kconfig option.
-This Kconfig option causes call_rcu() to delay its callbacks in order to
-batch callbacks.  This means that a given RCU grace period covers more
+This Kconfig option causes call_rcu() to delay its callbacks in order
+to batch them.  This means that a given RCU grace period covers more
 callbacks, thus reducing the number of grace periods, in turn reducing
 the amount of energy consumed, which increases battery lifetime which
 can be a very good thing.  This is not a subtle effect: In some important
@@ -92,42 +96,42 @@ feedback at the 2022 Linux Plumbers Conference shifted the approach
 to call_rcu() being lazy with call_rcu_hurry() for the few places
 where laziness is inappropriate.
 
-And another call_rcu() instance that cannot be lazy is the one on the
-percpu refcounter's "per-CPU to atomic switch" code path, which
-uses RCU when switching to atomic mode.  The enqueued callback
-wakes up waiters waiting in the percpu_ref_switch_waitq.  Allowing
-this callback to be lazy would result in unacceptable slowdowns for
-users of per-CPU refcounts, such as blk_pre_runtime_suspend().
+And another call_rcu() instance that cannot be lazy is the one
+in rxrpc_kill_connection(), which sometimes does a wakeup
+that should not be unduly delayed.
 
-Therefore, make __percpu_ref_switch_to_atomic() use call_rcu_hurry()
-in order to revert to the old behavior.
+Therefore, make rxrpc_kill_connection() use call_rcu_hurry() in order
+to revert to the old behavior.
 
 [ paulmck: Apply s/call_rcu_flush/call_rcu_hurry/ feedback from Tejun Heo. ]
 
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Marc Dionne <marc.dionne@auristor.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Paolo Abeni <pabeni@redhat.com>
+Cc: <linux-afs@lists.infradead.org>
+Cc: <netdev@vger.kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Dennis Zhou <dennis@kernel.org>
-Cc: Tejun Heo <tj@kernel.org>
-Cc: Christoph Lameter <cl@linux.com>
-Cc: <linux-mm@kvack.org>
 ---
- lib/percpu-refcount.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ net/rxrpc/conn_object.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/lib/percpu-refcount.c b/lib/percpu-refcount.c
-index e5c5315da2741..668f6aa6a75de 100644
---- a/lib/percpu-refcount.c
-+++ b/lib/percpu-refcount.c
-@@ -230,7 +230,8 @@ static void __percpu_ref_switch_to_atomic(struct percpu_ref *ref,
- 		percpu_ref_noop_confirm_switch;
- 
- 	percpu_ref_get(ref);	/* put after confirmation */
--	call_rcu(&ref->data->rcu, percpu_ref_switch_to_atomic_rcu);
-+	call_rcu_hurry(&ref->data->rcu,
-+		       percpu_ref_switch_to_atomic_rcu);
+diff --git a/net/rxrpc/conn_object.c b/net/rxrpc/conn_object.c
+index 22089e37e97f0..9c5fae9ca106c 100644
+--- a/net/rxrpc/conn_object.c
++++ b/net/rxrpc/conn_object.c
+@@ -253,7 +253,7 @@ void rxrpc_kill_connection(struct rxrpc_connection *conn)
+ 	 * must carry a ref on the connection to prevent us getting here whilst
+ 	 * it is queued or running.
+ 	 */
+-	call_rcu(&conn->rcu, rxrpc_destroy_connection);
++	call_rcu_hurry(&conn->rcu, rxrpc_destroy_connection);
  }
  
- static void __percpu_ref_switch_to_percpu(struct percpu_ref *ref)
+ /*
 -- 
 2.31.1.189.g2e36527f23
 
