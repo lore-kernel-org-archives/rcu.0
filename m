@@ -2,105 +2,209 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 17D12C4167B
-	for <rcu@archiver.kernel.org>; Wed, 30 Nov 2022 03:36:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C1F1C4167B
+	for <rcu@archiver.kernel.org>; Wed, 30 Nov 2022 03:37:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229448AbiK3DgR (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 29 Nov 2022 22:36:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53052 "EHLO
+        id S232904AbiK3DhC (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 29 Nov 2022 22:37:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232827AbiK3DgQ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 29 Nov 2022 22:36:16 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C240D7118E
-        for <rcu@vger.kernel.org>; Tue, 29 Nov 2022 19:35:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1669779316;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=knu5cAdyeUDxZbj26wvSd/uArOtHTGtbyR7uBrMeuqE=;
-        b=WOJOdsOKxupF1iaVAeyYc5uZThJXfOXXY8dTsTfBmUtObRUaJk59OyIZank+SmdXYq9uaA
-        dI9GGo64iN0BYCycl7yMrT2yd37A2+3xfAerJ1XMI6+BMreySNK9jwrpkR5a124u87wV0l
-        eKjbmZhzVMJcU7naWAEl+gZwNB7IFiA=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-56-N6mVuR1SPGyV_F6EJJIBlQ-1; Tue, 29 Nov 2022 22:35:12 -0500
-X-MC-Unique: N6mVuR1SPGyV_F6EJJIBlQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C9FB2185A79C;
-        Wed, 30 Nov 2022 03:35:11 +0000 (UTC)
-Received: from piliu.users.ipa.redhat.com (ovpn-8-17.pek2.redhat.com [10.72.8.17])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 030832166B2D;
-        Wed, 30 Nov 2022 03:35:06 +0000 (UTC)
-From:   Pingfan Liu <piliu@redhat.com>
-To:     rcu@vger.kernel.org
-Cc:     Pingfan Liu <kernelfans@gmail.com>,
+        with ESMTP id S232870AbiK3Dg7 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 29 Nov 2022 22:36:59 -0500
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 314AA73B99
+        for <rcu@vger.kernel.org>; Tue, 29 Nov 2022 19:36:58 -0800 (PST)
+Received: by mail-pf1-x42f.google.com with SMTP id z17so10841435pff.1
+        for <rcu@vger.kernel.org>; Tue, 29 Nov 2022 19:36:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=6QESocfV/jPJ3nevgOuf+fj4+H7y0Mt1/5gpvnK+JUI=;
+        b=TxjB+VqLDovZNh2bOJNIjlKWhf8qb8Pl4nREyemYVs5NnKVuwyNU4ZXwQuI62Xx3Qt
+         CxN0i4Nx5l8qWzOfp6bTX+n1oV9Zj9EKuP7MOiQ/csdPmfUgdLM4Q7Ove4bvHGjzFpEx
+         EwIR//E9wIDFnDwcHAIr3FtjlaKGcq2/qIniBpH54076M2KUF9u+UfIyrHydtheS2tYE
+         RCbKof1CrRzgDJE5XhGt0lfKdE0k+twLdNoCmSALxhl3f+FT08eRRVzqqCz3pEj50/k3
+         u9mejFzzRevRig9Tsnpu453t5hVMAPtdHbXJrF8lKQ0OM9LlmqwfMeOT4C/+lUGC4hnF
+         mJIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6QESocfV/jPJ3nevgOuf+fj4+H7y0Mt1/5gpvnK+JUI=;
+        b=3I3ztJ7voWqmQfaAz3npI8OsRBMwUr1n0HPW8ub4tS92fDMemseeAcxRYeLOHqX0z0
+         WN2Ex5D628mQMs7GrJZvP4MY/2Ndv2mRYCi2MQ83ggZY1s7soh20z/gNer2GRK3hve9N
+         UnSRip+TOiySTWjHgs2Q7vn+VsCZL1SNDxr8i9IqieSVw+FFr9qDfPb5U7xzEAaXYgwm
+         2sYnYEw2kYRwQi49t6n+Qr23ZIHcHwYREFUuA+fLs576Csf5zFkjKCbwFtykxeQN2LfU
+         23zMAQ2z/qnzam03BFEDVLPQt5Jyrfbb8NweQ9gp+4K7bhE8uCd/HI9NUXi4vdf+zrIt
+         poPw==
+X-Gm-Message-State: ANoB5pl+ZUfPZh9z/ua2N9ZwFIpqV1lkM4kgOWIYsh7SkPk+PiN4aOne
+        Vdv4GvSEkMZwKqWOEoqnMg==
+X-Google-Smtp-Source: AA0mqf6q6yK65yW0AWhR9quxjiozNOGrzXJjRauP66Oki6+0CtQGqhk1puvJIOyYUObJgylyObi/Rg==
+X-Received: by 2002:aa7:8250:0:b0:56b:fe1d:5735 with SMTP id e16-20020aa78250000000b0056bfe1d5735mr60371363pfn.24.1669779417645;
+        Tue, 29 Nov 2022 19:36:57 -0800 (PST)
+Received: from piliu.users.ipa.redhat.com ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id l11-20020a170902f68b00b00188fdae6e0esm95039plg.44.2022.11.29.19.36.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Nov 2022 19:36:57 -0800 (PST)
+Date:   Wed, 30 Nov 2022 11:36:50 +0800
+From:   Pingfan Liu <kernelfans@gmail.com>
+To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
+Cc:     "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         "Paul E. McKenney" <paulmck@kernel.org>,
         Frederic Weisbecker <frederic@kernel.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Zhang, Qiang1" <qiang1.zhang@intel.com>
-Subject: [PATCHv2] srcu: Eliminate the requirement of SRCU_SIZE_WAIT_CALL
-Date:   Wed, 30 Nov 2022 11:34:59 +0800
-Message-Id: <20221130033459.16372-1-piliu@redhat.com>
-In-Reply-To: <20221128082816.28518-2-kernelfans@gmail.com>
-References: <20221128082816.28518-2-kernelfans@gmail.com>
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: Re: [PATCH 2/3] srcu: protect against concurrent srcu_gp_end()
+Message-ID: <Y4bP0v7WZfKzpF6i@piliu.users.ipa.redhat.com>
+References: <20221128082816.28518-1-kernelfans@gmail.com>
+ <20221128082816.28518-3-kernelfans@gmail.com>
+ <PH0PR11MB5880585607E73B0228D77946DA139@PH0PR11MB5880.namprd11.prod.outlook.com>
+ <Y4THX7G73KbIFi5z@piliu.users.ipa.redhat.com>
+ <PH0PR11MB58803CCA382FC4A50E53CBDBDA139@PH0PR11MB5880.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <PH0PR11MB58803CCA382FC4A50E53CBDBDA139@PH0PR11MB5880.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Pingfan Liu <kernelfans@gmail.com>
+On Mon, Nov 28, 2022 at 02:47:46PM +0000, Zhang, Qiang1 wrote:
+> On Mon, Nov 28, 2022 at 09:20:18AM +0000, Zhang, Qiang1 wrote:
+> > >Subject: [PATCH 2/3] srcu: protect against concurrent srcu_gp_end()
+> > >
+> > >At present, the code chunk "Transition to big if needed" is out of the
+> > >lock srcu_cb_mutex, which allows the following scene:
+> > >
+> > >    srcu_gp_end() on cpu1                srcu_gp_end() on cpu2
+> > >
+> > >    init_srcu_struct_nodes()
+> > >    ^^  scheduled out in the middle
+> > >                                         init_srcu_struct_nodes()
+> > >                                         ^^ overwrite the context set up by cpu1
+> > 
+> > Hi Pingfan
+> > 
+> > This scenario shouldn't happen.
+> > The srcu_gp_end() is invoked only in process_srcu() workfn.
+> > for the same ssp->work, workqueue can guaranteed that the 
+> > process_srcu() workfn is executed serially. (view __queue_work () details)
+> > 
+> 
+> >
+> >How about this:
+> >
+> >In process_one_work()
+> >
+> >  set_work_pool_and_clear_pending(work, pool->id);
+> >                                               -----> another ssp->work
+> >					       can be queued, which can raise the
+> >					       scenario mentioned above
+> >					       
+> >  worker->current_func(work);
+> >
+> 
+> 
+> Hi Pingfan
+> 
+> The following two code snippets ensure that this scenario  does not happen
+> 
+> __queue_work(): 
+> 
+> last_pool = get_work_pool(work);
+>         if (last_pool && last_pool != pwq->pool) {
+>                 struct worker *worker;
+> 
+>                 raw_spin_lock(&last_pool->lock);
+> 
+>                 worker = find_worker_executing_work(last_pool, work);
+> 
+>                 if (worker && worker->current_pwq->wq == wq) {
+>                         pwq = worker->current_pwq;
+> 
+> and 
+> process_one_work():
+> 
+> collision = find_worker_executing_work(pool, work);
+>         if (unlikely(collision)) {
+>                 move_linked_works(work, &collision->scheduled, NULL);
+>                 return;
+>         }
+> 
 
-The state SRCU_SIZE_WAIT_CALL is only used in srcu_gp_start_if_needed().
-And it is not needed. Because counter_wrap_check has guarantee that both
-srcu_gp_seq_needed and srcu_gp_seq_needed_exp are not far behind
-srcu_gp_seq and no false alarm will be raised by the statement in
-srcu_gp_start_if_needed()
+Appreciate for pointing out this. It is helpful.
 
-  ULONG_CMP_LT(sdp->srcu_gp_seq_needed, s)
+And I will send out a new patch about it.
 
-As a result, once if SRCU_SIZE_WAIT_BARRIER is seen, the tree snp can be
-used immediately, not need to wait for another srcu_gp_end() to update
-the srcu_gp_seq_needed and srcu_gp_seq_needed_exp to avoid false alarm.
+Thanks,
 
-Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Frederic Weisbecker <frederic@kernel.org>
-Cc: Josh Triplett <josh@joshtriplett.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: "Zhang, Qiang1" <qiang1.zhang@intel.com>
-To: rcu@vger.kernel.org
----
-v1 -> v2:
- rebase onto dev branch
- kernel/rcu/srcutree.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+	Pingfan
 
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index b25f77df9e5e..b0278d1e9c1f 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -1165,7 +1165,7 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
- 	 */
- 	idx = __srcu_read_lock_nmisafe(ssp);
- 	ss_state = smp_load_acquire(&ssp->srcu_size_state);
--	if (ss_state < SRCU_SIZE_WAIT_CALL)
-+	if (ss_state < SRCU_SIZE_WAIT_BARRIER)
- 		sdp = per_cpu_ptr(ssp->sda, get_boot_cpu_id());
- 	else
- 		sdp = raw_cpu_ptr(ssp->sda);
--- 
-2.31.1
-
+> Thanks
+> Zqiang
+> 
+> >
+> >Thanks,
+> >
+> 	Pingfan
+> > 
+> > Thanks
+> > Zqiang
+> > 
+> > 
+> > >
+> > >Squashing out the race window by putting the code chunk under the
+> > >protection of srcu_cb_mutex.
+> > >
+> > >Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+> > >Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> > >Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> > >Cc: Frederic Weisbecker <frederic@kernel.org>
+> > >Cc: Josh Triplett <josh@joshtriplett.org>
+> > >Cc: Steven Rostedt <rostedt@goodmis.org>
+> > >Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > >Cc: "Zhang, Qiang1" <qiang1.zhang@intel.com>
+> > >To: rcu@vger.kernel.org
+> > >---
+> > > kernel/rcu/srcutree.c | 14 +++++++-------
+> > > 1 file changed, 7 insertions(+), 7 deletions(-)
+> > >
+> > >diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> > >index fe0759d89c2d..281cd69fe804 100644
+> > >--- a/kernel/rcu/srcutree.c
+> > >+++ b/kernel/rcu/srcutree.c
+> > >@@ -811,6 +811,13 @@ static void srcu_gp_end(struct srcu_struct *ssp)
+> > > 			spin_unlock_irqrestore_rcu_node(sdp, flags);
+> > > 		}
+> > > 
+> > >+	/* Transition to big if needed. */
+> > >+	if (ss_state != SRCU_SIZE_SMALL && ss_state != SRCU_SIZE_BIG) {
+> > >+		if (ss_state == SRCU_SIZE_ALLOC)
+> > >+			init_srcu_struct_nodes(ssp, GFP_KERNEL);
+> > >+		else
+> > >+			smp_store_release(&ssp->srcu_size_state, ss_state + 1);
+> > >+	}
+> > > 	/* Callback initiation done, allow grace periods after next. */
+> > > 	mutex_unlock(&ssp->srcu_cb_mutex);
+> > > 
+> > >@@ -826,13 +833,6 @@ static void srcu_gp_end(struct srcu_struct *ssp)
+> > > 		spin_unlock_irq_rcu_node(ssp);
+> > > 	}
+> > > 
+> > >-	/* Transition to big if needed. */
+> > >-	if (ss_state != SRCU_SIZE_SMALL && ss_state != SRCU_SIZE_BIG) {
+> > >-		if (ss_state == SRCU_SIZE_ALLOC)
+> > >-			init_srcu_struct_nodes(ssp, GFP_KERNEL);
+> > >-		else
+> > >-			smp_store_release(&ssp->srcu_size_state, ss_state + 1);
+> > >-	}
+> > > }
+> > > 
+> > > /*
+> > >-- 
+> > >2.31.1
+> > >
