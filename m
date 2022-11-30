@@ -2,185 +2,144 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 480ADC4321E
-	for <rcu@archiver.kernel.org>; Wed, 30 Nov 2022 17:39:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9BFD0C433FE
+	for <rcu@archiver.kernel.org>; Wed, 30 Nov 2022 18:13:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229685AbiK3Rj5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 30 Nov 2022 12:39:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37360 "EHLO
+        id S229636AbiK3SNi (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 30 Nov 2022 13:13:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229786AbiK3Rj4 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 30 Nov 2022 12:39:56 -0500
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDFCE3E0B6
-        for <rcu@vger.kernel.org>; Wed, 30 Nov 2022 09:39:55 -0800 (PST)
-Received: by mail-qk1-x72e.google.com with SMTP id z1so12820940qkl.9
-        for <rcu@vger.kernel.org>; Wed, 30 Nov 2022 09:39:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7RPDJxCDoUkIgI6WB0ARKRxCF6fkBTiX2FleiNgBVrQ=;
-        b=Mq1xLkf1xt6I+kmhLpR2DtzpAnypfTyN3ou6twnR+T7xtEoQxXJ7pKJnx4EmmL0HXM
-         jv5We2jQyWeP2jp1wo+5zbxIqEvnfpJz4gMp8C71pzzZfNlj7Q0eJ9trim9cuN+fO9S/
-         go/TCERUQ2wdh3eRuE+oyQosAgo5UsHwj7SIs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7RPDJxCDoUkIgI6WB0ARKRxCF6fkBTiX2FleiNgBVrQ=;
-        b=yAoCSKvQZ32elZvkH3dpiQzpIBxQCjf+20ld7JOef7/uPSHRUOHhzPnnYaKk1KGxjS
-         3RG6xBrx7xxWmRXs4H6kTAWdZ4/fuBUQ4xUnuRi4Vr9eHD3auBiMH7B7oF/Q6HcxIPwZ
-         TwNcybkfzEs1p3xAcLO+1pjHrxAWyiQ3NuR75zOZ09MVqL/ENWkjEiV8LpqMnmIkx7Yy
-         Y4Vk3UIQ7PFOjO+oJWAnBnC1f4Ml1Zw2+b+XfgXOBfemyENQh6y9L9CoeIfSZVlC6ySN
-         LMK+X3l7X8b3hzAF64kv6HtBuwK7XekI1bBxUv6Ok2UdXuGB8Oi+mKCpCQLfVFyTXZVk
-         40xQ==
-X-Gm-Message-State: ANoB5plRkxyMmYHzdBUPxcT/Le6TlZLStIr+QdpbiM9yOvV1gby6Z1/2
-        9rChzZvrWm5NbD2jPVxDtXNBUA==
-X-Google-Smtp-Source: AA0mqf6m5wgiYoWQmyYLbBA+MIkxkNl3itCOS9alR7axmaR3lQ7bmo47DoLMoNaOihNrLIFmkpjM+A==
-X-Received: by 2002:a05:620a:14a3:b0:6ce:df33:d684 with SMTP id x3-20020a05620a14a300b006cedf33d684mr38528983qkj.544.1669829994930;
-        Wed, 30 Nov 2022 09:39:54 -0800 (PST)
-Received: from smtpclient.apple (c-73-148-104-166.hsd1.va.comcast.net. [73.148.104.166])
-        by smtp.gmail.com with ESMTPSA id i10-20020ac813ca000000b0039cb59f00fcsm1184876qtj.30.2022.11.30.09.39.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Nov 2022 09:39:54 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Joel Fernandes <joel@joelfernandes.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH] srcu: switch work func to allow concurrent gp
-Date:   Wed, 30 Nov 2022 12:39:53 -0500
-Message-Id: <0B944225-3E93-494D-A297-1B330735D44F@joelfernandes.org>
-References: <Y4eKl2fCNDX2ka1g@boqun-archlinux>
-Cc:     Pingfan Liu <kernelfans@gmail.com>, rcu@vger.kernel.org,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Zhang, Qiang1" <qiang1.zhang@intel.com>
-In-Reply-To: <Y4eKl2fCNDX2ka1g@boqun-archlinux>
-To:     Boqun Feng <boqun.feng@gmail.com>
-X-Mailer: iPhone Mail (19G82)
+        with ESMTP id S230070AbiK3SNX (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 30 Nov 2022 13:13:23 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 973922A717;
+        Wed, 30 Nov 2022 10:13:19 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 54695B81C9C;
+        Wed, 30 Nov 2022 18:13:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12907C433C1;
+        Wed, 30 Nov 2022 18:13:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1669831997;
+        bh=jEXYy2sRGOMTywAVi6nSyBZ4IPniFAdcqehMf/7xaAA=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=KoBp+JJFP9XX5vMmouLEgYef2BeT9hv2NqucWpaDWpTSiioISbDM++dWYySNUo8hB
+         fRw2iYavo5MoxOiP6JKZ220PJ196ad070E6/5UDjCGHFiE4AqVCPahzxvgqXzIpCdC
+         HN3Z/V4/JgNb3mEFChv/XK/H9n70ZpvPlUbX9xRk4OawQIkVoQGxsDMP3wr2Jq4xLT
+         mwDpZY5IBnVWFTx4SJXpJvUnBcc7mnEIOkIAqZM8CVDkpkDZT32GMct2GwtEAUOU3y
+         HcTSeLUib4HXLAwfsc9HUe8HJ1j3Ygg82cyCEkkJmIrxFTxO5JLRmo36RedW429lvk
+         r7HI/YlKG9DZQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id B268F5C051C; Wed, 30 Nov 2022 10:13:16 -0800 (PST)
+Date:   Wed, 30 Nov 2022 10:13:16 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        rostedt@goodmis.org
+Subject: [PATCH v3 rcu 0/16] Lazy call_rcu() updates for v6.2
+Message-ID: <20221130181316.GA1012431@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+Hello!
 
+This series provides energy efficiency for nearly-idle systems by making
+call_rcu() more lazy.  Several NOCB changes come along for the ride:
 
-> On Nov 30, 2022, at 11:55 AM, Boqun Feng <boqun.feng@gmail.com> wrote:
->=20
-> =EF=BB=BFOn Wed, Nov 30, 2022 at 04:39:02PM +0800, Pingfan Liu wrote:
->> ssp->srcu_cb_mutex is introduced to allow the other srcu state machine
->> to advance as soon as possible. But according to the implement of
->> workqueue, the same work_struct is serialized and can not run
->> concurrently in fact.
->>=20
->> Quoting from Documentation/core-api/workqueue.rst
->> "
->> Non-reentrance Conditions
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+1.	Simplify rcu_init_nohz() cpumask handling, courtesy of Zhen Lei.
 
->>=20
->> Workqueue guarantees that a work item cannot be re-entrant if the followi=
-ng
->> conditions hold after a work item gets queued:
->>=20
->>        1. The work function hasn't been changed.
->>        2. No one queues the work item to another workqueue.
->>        3. The work item hasn't been reinitiated.
->> "
->>=20
->> To allow the concurrence to some extent, it can be achieved by changing
->> the work function to break the conditions. As a result, when
->> srcu_gp_end() releases srcu_gp_mutex, a new state machine can begin.
->>=20
->> Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
->> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
->> Cc: "Paul E. McKenney" <paulmck@kernel.org>
->> Cc: Frederic Weisbecker <frederic@kernel.org>
->> Cc: Josh Triplett <josh@joshtriplett.org>
->> Cc: Steven Rostedt <rostedt@goodmis.org>
->> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
->> Cc: "Zhang, Qiang1" <qiang1.zhang@intel.com>
->> To: rcu@vger.kernel.org
->> ---
->> kernel/rcu/srcutree.c | 19 +++++++++++++++++++
->> 1 file changed, 19 insertions(+)
->>=20
->> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
->> index 1c304fec89c0..56dd9bb2c8b8 100644
->> --- a/kernel/rcu/srcutree.c
->> +++ b/kernel/rcu/srcutree.c
->> @@ -75,6 +75,7 @@ static bool __read_mostly srcu_init_done;
->> static void srcu_invoke_callbacks(struct work_struct *work);
->> static void srcu_reschedule(struct srcu_struct *ssp, unsigned long delay)=
-;
->> static void process_srcu(struct work_struct *work);
->> +static void process_srcu_wrap(struct work_struct *work);
->> static void srcu_delay_timer(struct timer_list *t);
->>=20
->> /* Wrappers for lock acquisition and release, see raw_spin_lock_rcu_node(=
-). */
->> @@ -763,6 +764,11 @@ static void srcu_gp_end(struct srcu_struct *ssp)
->>        cbdelay =3D 0;
->>=20
->>    WRITE_ONCE(ssp->srcu_last_gp_end, ktime_get_mono_fast_ns());
->> +    /* Change work func so work can be concurrent */
->> +    if (ssp->work.work.func =3D=3D process_srcu_wrap)
->> +        ssp->work.work.func =3D process_srcu;
->> +    else
->> +        ssp->work.work.func =3D process_srcu_wrap;
->=20
-> This looks really hacky ;-) It would be good that workqueue has an API
-> to allow "resetting" a work.
->=20
-> Do you have any number of the potential performance improvement?
+2.	Fix late wakeup when flush of bypass cblist happens, courtesy of
+	"Joel Fernandes (Google)".
 
+3.	Fix missing nocb gp wake on rcu_barrier(), courtesy of Frederic
+	Weisbecker.
 
-Agreed. Another question - have you verified the workqueue behavior after th=
-is change (say using tracing), regardless of what the workqueue documentatio=
-n says?
+4.	Make call_rcu() lazy to save power, courtesy of "Joel Fernandes
+	(Google)".
 
-Thanks,
+5.	Refactor code a bit in rcu_nocb_do_flush_bypass(), courtesy of
+	"Joel Fernandes (Google)".
 
-- Joel=20
+6.	Shrinker for lazy rcu, courtesy of Vineeth Pillai.
 
+7.	Add laziness and kfree tests, courtesy of "Joel Fernandes
+	(Google)".
 
+8.	Use call_rcu_hurry() instead of call_rcu, courtesy of "Joel
+	Fernandes (Google)".
 
->=20
-> Regards,
-> Boqun
->=20
->>    rcu_seq_end(&ssp->srcu_gp_seq);
->>    gpseq =3D rcu_seq_current(&ssp->srcu_gp_seq);
->>    if (ULONG_CMP_LT(ssp->srcu_gp_seq_needed_exp, gpseq))
->> @@ -1637,6 +1643,19 @@ static void process_srcu(struct work_struct *work)=
+9.	Use call_rcu_hurry() for async reader test, courtesy of "Joel
+	Fernandes (Google)".
 
->>    srcu_reschedule(ssp, curdelay);
->> }
->>=20
->> +/*
->> + * The ssp->work is expected to be concurrent to some extent, but the cu=
-rrent
->> + * workqueue does not support the concurrence on the same work. (Refer t=
-o the
->> + * section "Non-reentrance Conditions" in the file workqueue.rst)
->> + * Resolving it by changing the work func.
->> + *
->> + * Prevent compilering from optimizing out it.
->> + */
->> +static __used void process_srcu_wrap(struct work_struct *work)
->> +{
->> +    process_srcu(work);
->> +}
->> +
->> void srcutorture_get_gp_data(enum rcutorture_type test_type,
->>                 struct srcu_struct *ssp, int *flags,
->>                 unsigned long *gp_seq)
->> --=20
->> 2.31.1
->>=20
+10.	Use call_rcu_hurry() where needed, courtesy of "Joel Fernandes
+	(Google)".
+
+11.	scsi/scsi_error: Use call_rcu_hurry() instead of call_rcu(),
+	courtesy of Uladzislau Rezki.
+
+12.	percpu-refcount: Use call_rcu_hurry() for atomic switch, courtesy
+	of "Joel Fernandes (Google)".
+
+13.	Make queue_rcu_work() use call_rcu_hurry(), courtesy of Uladzislau
+	Rezki.
+
+14.	Use call_rcu_hurry() instead of call_rcu(), courtesy of "Joel
+	Fernandes (Google)".
+
+15.	Use call_rcu_hurry() for dst_release(), courtesy of "Joel
+	Fernandes (Google)".
+
+16.	devinet: Reduce refcount before grace period, courtesy of Eric
+	Dumazet.
+
+Changes since v2:
+
+o	Rename call_rcu_flush() to call_rcu_hurry() to avoid naming
+	conflicts in workqueues as suggested by Tejun Heo.
+
+o	Apply acks and reviews.
+
+https://lore.kernel.org/all/20221122010408.GA3799268@paulmck-ThinkPad-P17-Gen-1/
+
+Changes since v1:
+
+o	Add more adjustments to avoid excessive laziness (#15 and
+	#16 above).
+
+o	Get appropriate Cc lines onto non-RCU patches.
+
+https://lore.kernel.org/all/20221019225138.GA2499943@paulmck-ThinkPad-P17-Gen-1/
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ b/drivers/scsi/scsi_error.c |    2 
+ b/include/linux/rcupdate.h  |    9 +
+ b/kernel/rcu/Kconfig        |    8 +
+ b/kernel/rcu/rcu.h          |    8 +
+ b/kernel/rcu/rcuscale.c     |   67 +++++++++++-
+ b/kernel/rcu/rcutorture.c   |   16 +-
+ b/kernel/rcu/sync.c         |    2 
+ b/kernel/rcu/tiny.c         |    2 
+ b/kernel/rcu/tree.c         |   11 +
+ b/kernel/rcu/tree.h         |    1 
+ b/kernel/rcu/tree_exp.h     |    2 
+ b/kernel/rcu/tree_nocb.h    |   34 +-----
+ b/kernel/workqueue.c        |    2 
+ b/lib/percpu-refcount.c     |    3 
+ b/net/core/dst.c            |    2 
+ b/net/ipv4/devinet.c        |   19 +--
+ b/net/rxrpc/conn_object.c   |    2 
+ kernel/rcu/rcuscale.c       |    2 
+ kernel/rcu/tree.c           |  129 +++++++++++++++--------
+ kernel/rcu/tree.h           |   11 +
+ kernel/rcu/tree_nocb.h      |  243 ++++++++++++++++++++++++++++++++++++--------
+ 21 files changed, 434 insertions(+), 141 deletions(-)
