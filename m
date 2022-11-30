@@ -2,144 +2,112 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9BFD0C433FE
-	for <rcu@archiver.kernel.org>; Wed, 30 Nov 2022 18:13:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E82EC352A1
+	for <rcu@archiver.kernel.org>; Wed, 30 Nov 2022 18:13:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229636AbiK3SNi (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 30 Nov 2022 13:13:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39398 "EHLO
+        id S229934AbiK3SNn (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 30 Nov 2022 13:13:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230070AbiK3SNX (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 30 Nov 2022 13:13:23 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 973922A717;
-        Wed, 30 Nov 2022 10:13:19 -0800 (PST)
+        with ESMTP id S229964AbiK3SNa (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 30 Nov 2022 13:13:30 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE198880CF;
+        Wed, 30 Nov 2022 10:13:28 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 54695B81C9C;
-        Wed, 30 Nov 2022 18:13:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12907C433C1;
-        Wed, 30 Nov 2022 18:13:17 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4C82F61D4F;
+        Wed, 30 Nov 2022 18:13:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9EDB2C433C1;
+        Wed, 30 Nov 2022 18:13:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669831997;
-        bh=jEXYy2sRGOMTywAVi6nSyBZ4IPniFAdcqehMf/7xaAA=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=KoBp+JJFP9XX5vMmouLEgYef2BeT9hv2NqucWpaDWpTSiioISbDM++dWYySNUo8hB
-         fRw2iYavo5MoxOiP6JKZ220PJ196ad070E6/5UDjCGHFiE4AqVCPahzxvgqXzIpCdC
-         HN3Z/V4/JgNb3mEFChv/XK/H9n70ZpvPlUbX9xRk4OawQIkVoQGxsDMP3wr2Jq4xLT
-         mwDpZY5IBnVWFTx4SJXpJvUnBcc7mnEIOkIAqZM8CVDkpkDZT32GMct2GwtEAUOU3y
-         HcTSeLUib4HXLAwfsc9HUe8HJ1j3Ygg82cyCEkkJmIrxFTxO5JLRmo36RedW429lvk
-         r7HI/YlKG9DZQ==
+        s=k20201202; t=1669832007;
+        bh=cd9rgMHV5ytGRmwwPo9gYzUKZlyUq56zzJaeb9ZJrZY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=b3goJ/CRk/LONtMivA9/iHC0U6MW8urB5Fq8uY3sZ97b73caLX8TumVEsjYST8KDo
+         cRdgYlmyabIaKt4Wfuh+vJryxEIvJGP2cQTBqrxBjJXfWgJ6NkceSrVHXdMqY5MrBf
+         p44wjuDuJahQZzKJfFcYTxh5mlrotKI56/xUXDR+yWzlRvcHwZuycMAOCPY4rpc1/y
+         Aop9z9lMb2KCcPjrg65ItUWfs//IyOhclfAd6JRMExQncO2iM33DG2z3O8ODcoiZ7o
+         zsjiQvq1Q6Otv8TnFf5jaulAWIk7co1Au/2zGaCUEMNWFXxVbXpFhcYtfg1p2Hm+yN
+         1EHt7xCZENs2Q==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id B268F5C051C; Wed, 30 Nov 2022 10:13:16 -0800 (PST)
-Date:   Wed, 30 Nov 2022 10:13:16 -0800
+        id 57C6C5C0531; Wed, 30 Nov 2022 10:13:27 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org
-Subject: [PATCH v3 rcu 0/16] Lazy call_rcu() updates for v6.2
-Message-ID: <20221130181316.GA1012431@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        rostedt@goodmis.org,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 02/16] rcu: Fix late wakeup when flush of bypass cblist happens
+Date:   Wed, 30 Nov 2022 10:13:11 -0800
+Message-Id: <20221130181325.1012760-2-paulmck@kernel.org>
+X-Mailer: git-send-email 2.31.1.189.g2e36527f23
+In-Reply-To: <20221130181316.GA1012431@paulmck-ThinkPad-P17-Gen-1>
+References: <20221130181316.GA1012431@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello!
+From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
 
-This series provides energy efficiency for nearly-idle systems by making
-call_rcu() more lazy.  Several NOCB changes come along for the ride:
+When the bypass cblist gets too big or its timeout has occurred, it is
+flushed into the main cblist. However, the bypass timer is still running
+and the behavior is that it would eventually expire and wake the GP
+thread.
 
-1.	Simplify rcu_init_nohz() cpumask handling, courtesy of Zhen Lei.
+Since we are going to use the bypass cblist for lazy CBs, do the wakeup
+soon as the flush for "too big or too long" bypass list happens.
+Otherwise, long delays can happen for callbacks which get promoted from
+lazy to non-lazy.
 
-2.	Fix late wakeup when flush of bypass cblist happens, courtesy of
-	"Joel Fernandes (Google)".
+This is a good thing to do anyway (regardless of future lazy patches),
+since it makes the behavior consistent with behavior of other code paths
+where flushing into the ->cblist makes the GP kthread into a
+non-sleeping state quickly.
 
-3.	Fix missing nocb gp wake on rcu_barrier(), courtesy of Frederic
-	Weisbecker.
+[ Frederic Weisbecker: Changes to avoid unnecessary GP-thread wakeups plus
+		    comment changes. ]
 
-4.	Make call_rcu() lazy to save power, courtesy of "Joel Fernandes
-	(Google)".
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ kernel/rcu/tree_nocb.h | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-5.	Refactor code a bit in rcu_nocb_do_flush_bypass(), courtesy of
-	"Joel Fernandes (Google)".
+diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+index ce526cc2791ca..f77a6d7e13564 100644
+--- a/kernel/rcu/tree_nocb.h
++++ b/kernel/rcu/tree_nocb.h
+@@ -433,8 +433,9 @@ static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
+ 	if ((ncbs && j != READ_ONCE(rdp->nocb_bypass_first)) ||
+ 	    ncbs >= qhimark) {
+ 		rcu_nocb_lock(rdp);
++		*was_alldone = !rcu_segcblist_pend_cbs(&rdp->cblist);
++
+ 		if (!rcu_nocb_flush_bypass(rdp, rhp, j)) {
+-			*was_alldone = !rcu_segcblist_pend_cbs(&rdp->cblist);
+ 			if (*was_alldone)
+ 				trace_rcu_nocb_wake(rcu_state.name, rdp->cpu,
+ 						    TPS("FirstQ"));
+@@ -447,7 +448,12 @@ static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
+ 			rcu_advance_cbs_nowake(rdp->mynode, rdp);
+ 			rdp->nocb_gp_adv_time = j;
+ 		}
+-		rcu_nocb_unlock_irqrestore(rdp, flags);
++
++		// The flush succeeded and we moved CBs into the regular list.
++		// Don't wait for the wake up timer as it may be too far ahead.
++		// Wake up the GP thread now instead, if the cblist was empty.
++		__call_rcu_nocb_wake(rdp, *was_alldone, flags);
++
+ 		return true; // Callback already enqueued.
+ 	}
+ 
+-- 
+2.31.1.189.g2e36527f23
 
-6.	Shrinker for lazy rcu, courtesy of Vineeth Pillai.
-
-7.	Add laziness and kfree tests, courtesy of "Joel Fernandes
-	(Google)".
-
-8.	Use call_rcu_hurry() instead of call_rcu, courtesy of "Joel
-	Fernandes (Google)".
-
-9.	Use call_rcu_hurry() for async reader test, courtesy of "Joel
-	Fernandes (Google)".
-
-10.	Use call_rcu_hurry() where needed, courtesy of "Joel Fernandes
-	(Google)".
-
-11.	scsi/scsi_error: Use call_rcu_hurry() instead of call_rcu(),
-	courtesy of Uladzislau Rezki.
-
-12.	percpu-refcount: Use call_rcu_hurry() for atomic switch, courtesy
-	of "Joel Fernandes (Google)".
-
-13.	Make queue_rcu_work() use call_rcu_hurry(), courtesy of Uladzislau
-	Rezki.
-
-14.	Use call_rcu_hurry() instead of call_rcu(), courtesy of "Joel
-	Fernandes (Google)".
-
-15.	Use call_rcu_hurry() for dst_release(), courtesy of "Joel
-	Fernandes (Google)".
-
-16.	devinet: Reduce refcount before grace period, courtesy of Eric
-	Dumazet.
-
-Changes since v2:
-
-o	Rename call_rcu_flush() to call_rcu_hurry() to avoid naming
-	conflicts in workqueues as suggested by Tejun Heo.
-
-o	Apply acks and reviews.
-
-https://lore.kernel.org/all/20221122010408.GA3799268@paulmck-ThinkPad-P17-Gen-1/
-
-Changes since v1:
-
-o	Add more adjustments to avoid excessive laziness (#15 and
-	#16 above).
-
-o	Get appropriate Cc lines onto non-RCU patches.
-
-https://lore.kernel.org/all/20221019225138.GA2499943@paulmck-ThinkPad-P17-Gen-1/
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- b/drivers/scsi/scsi_error.c |    2 
- b/include/linux/rcupdate.h  |    9 +
- b/kernel/rcu/Kconfig        |    8 +
- b/kernel/rcu/rcu.h          |    8 +
- b/kernel/rcu/rcuscale.c     |   67 +++++++++++-
- b/kernel/rcu/rcutorture.c   |   16 +-
- b/kernel/rcu/sync.c         |    2 
- b/kernel/rcu/tiny.c         |    2 
- b/kernel/rcu/tree.c         |   11 +
- b/kernel/rcu/tree.h         |    1 
- b/kernel/rcu/tree_exp.h     |    2 
- b/kernel/rcu/tree_nocb.h    |   34 +-----
- b/kernel/workqueue.c        |    2 
- b/lib/percpu-refcount.c     |    3 
- b/net/core/dst.c            |    2 
- b/net/ipv4/devinet.c        |   19 +--
- b/net/rxrpc/conn_object.c   |    2 
- kernel/rcu/rcuscale.c       |    2 
- kernel/rcu/tree.c           |  129 +++++++++++++++--------
- kernel/rcu/tree.h           |   11 +
- kernel/rcu/tree_nocb.h      |  243 ++++++++++++++++++++++++++++++++++++--------
- 21 files changed, 434 insertions(+), 141 deletions(-)
