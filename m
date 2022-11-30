@@ -2,310 +2,288 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BCBABC4167B
-	for <rcu@archiver.kernel.org>; Wed, 30 Nov 2022 00:51:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 07ABAC4167B
+	for <rcu@archiver.kernel.org>; Wed, 30 Nov 2022 01:02:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229641AbiK3Av7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 29 Nov 2022 19:51:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52578 "EHLO
+        id S231378AbiK3BCO (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 29 Nov 2022 20:02:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230242AbiK3Av5 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 29 Nov 2022 19:51:57 -0500
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ADB3716D6;
-        Tue, 29 Nov 2022 16:51:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1669769516; x=1701305516;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=CBntfUNGuaogpzV2imkVyiTrQOugl4Uq4PxFli5Ho/0=;
-  b=I3Hv4qWmt5kn9OX5zYQJfNBn3jufofGio7Uh7EYa/N8TMpKOfrfeaBcz
-   CnDDFOHejaytgGPUkulbbobrkKQ91gCPT/H2b2kKAi2ef857unLEBjKHl
-   KKgQYQY1/mV2IMfSfqG/lvMIrafn5sD8pSEN5PQ/FpPtDBhRU9eyeYgV6
-   +TxrvbwJJN27ZlJR15vbyF+VdU36Ajvq9EXGTMmBFEx+YpwezRL+K5Psh
-   VNIULl4VtYiG81k2qcXY7GgbnrNPbpFCRwMo5WC1hqhPqY1Kp4iX19MzW
-   /LcKTxgNu/LbVVs+KWVvb7yiavnTDwOTGFdREJ6YqYVYp7H7VAfbpC+Tb
-   w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10546"; a="312885124"
-X-IronPort-AV: E=Sophos;i="5.96,204,1665471600"; 
-   d="scan'208";a="312885124"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2022 16:50:38 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10546"; a="972901330"
-X-IronPort-AV: E=Sophos;i="5.96,204,1665471600"; 
-   d="scan'208";a="972901330"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by fmsmga005.fm.intel.com with ESMTP; 29 Nov 2022 16:50:38 -0800
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.16; Tue, 29 Nov 2022 16:50:37 -0800
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.16; Tue, 29 Nov 2022 16:50:37 -0800
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.16 via Frontend Transport; Tue, 29 Nov 2022 16:50:37 -0800
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (104.47.73.43) by
- edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.16; Tue, 29 Nov 2022 16:50:37 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lqJoUCRQWET/VllU/IXdGlYB0WYzmRt4jivi1IL5ISfLQqhAi+EaEn/sc88L8N5n88L1eNOep4nDIB7wS15G7rwrmf1lIj/DvAyDpwCl+LQhbKgUNMwuwPWunAoHFHE6F3RCf6H9QXbx8y7N0VPkVPzawXGdhBWvsoPM+QsOxpUIQxvHf1L5OM0cXBlIx5qp0ViEHJiP1EZWacjaCm1GTrWk0nMZw37R5RptJwtvD28TOhiY5ffT9hrffZgJRUCue7gm8Lh1+HZ74nP5FtDCKPi04ArcQI9bhDc+ChwBopBUZff8EeD2DEOKQML2y2PZQuYj3Ae5uCsNUxSv5uKK7w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CBntfUNGuaogpzV2imkVyiTrQOugl4Uq4PxFli5Ho/0=;
- b=ByucPX0FCQQel5pPeSOFSm9AZoGqETA3U5L0jrUJy8Ufs368QsZyPaX6W9Id1HLddjLg3Lnyk42WDV1+7aAQcBx1knrw3l1eJSsAnUmlfiSDQDXVUrpc589ja+qsBggBQ0APoHpFGwgdWcfTHQtHoP9rd8d88XZU1tBAWXPQJlIon9rq5bozsHST17/7dXuFJ2g5AGEK7HeQjn0RCIgMxNt5UaVxHAq1PGWJCs3UC8PwfGgpKEEmqnaNUqzISqi1Y1mp2npqrwLSSdlkDNFX+jYVvm+zwJPt6rYVof+mUPaRVbTgHE82Ewlg82/pMFX1psyj1rxG9SXcbYQcPons7g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from PH0PR11MB5880.namprd11.prod.outlook.com (2603:10b6:510:143::14)
- by CY5PR11MB6414.namprd11.prod.outlook.com (2603:10b6:930:36::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5857.23; Wed, 30 Nov
- 2022 00:50:34 +0000
-Received: from PH0PR11MB5880.namprd11.prod.outlook.com
- ([fe80::8f92:b03a:1de2:e315]) by PH0PR11MB5880.namprd11.prod.outlook.com
- ([fe80::8f92:b03a:1de2:e315%4]) with mapi id 15.20.5857.023; Wed, 30 Nov 2022
- 00:50:34 +0000
-From:   "Zhang, Qiang1" <qiang1.zhang@intel.com>
-To:     "paulmck@kernel.org" <paulmck@kernel.org>
-CC:     Joel Fernandes <joel@joelfernandes.org>,
+        with ESMTP id S229641AbiK3BCO (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 29 Nov 2022 20:02:14 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2BBB71F39;
+        Tue, 29 Nov 2022 17:02:12 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 99112B819A9;
+        Wed, 30 Nov 2022 01:02:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E387C433D6;
+        Wed, 30 Nov 2022 01:02:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1669770130;
+        bh=lEcuRznm9PA2h+8bEnxdjvm27TlQxRAaE6qhsWnvJCQ=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=fyyS5uNW9n4YpG2otylJT7kIhy1sDZ4MYnXNthj03PZ+mmNogXm2TE4JYFnc+AUEm
+         pgq5Wa1r86UHel+GYFkyDr4xvaPTHloTY0abXfWq+yQBP9+LgiRlaGnOrwtao2N4Dh
+         czTeF/ytIQqUIACj+938Qx7OdsGv7MK3KKK3YOAxQUxA4sAfhfKAiD1Iy64TO6cto1
+         LSFpbbVD00AKkB8GkNEk0cbTMJ+icaZRV4ivNMcHSR0Piklurx+KAuDsjRVZbFbJCF
+         OWVnf435CpvyHzIOQxs/bxeGa1L5+s8nJ+DuNQAx/xLjwv/SO22VN7LIXHuA2Wk8qS
+         apJjjQ5FTDKPg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id D090E5C0584; Tue, 29 Nov 2022 17:02:09 -0800 (PST)
+Date:   Tue, 29 Nov 2022 17:02:09 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
         "frederic@kernel.org" <frederic@kernel.org>,
         "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>,
         "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2] rcu-tasks: Make rude RCU-Tasks work well with CPU
+Subject: Re: [PATCH v2] rcu-tasks: Make rude RCU-Tasks work well with CPU
  hotplug
-Thread-Topic: [PATCH v2] rcu-tasks: Make rude RCU-Tasks work well with CPU
- hotplug
-Thread-Index: AQHZAzXSKOjuTzu2RUKeoTlESXbs8q5VFkkAgAAryDCAACcSgIAAA3vQgACYiwCAAJi6wIAABCaAgAACuaA=
-Date:   Wed, 30 Nov 2022 00:50:34 +0000
-Message-ID: <PH0PR11MB5880B5F347847C7E4A2EF08CDA159@PH0PR11MB5880.namprd11.prod.outlook.com>
+Message-ID: <20221130010209.GJ4001@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 References: <PH0PR11MB588001E6982A9DC32F93FD7ADA129@PH0PR11MB5880.namprd11.prod.outlook.com>
  <24EC376D-B542-4E3C-BC10-3E81F2F2F49C@joelfernandes.org>
  <PH0PR11MB58801BEDCA0F6600F01486FEDA129@PH0PR11MB5880.namprd11.prod.outlook.com>
  <20221129151810.GY4001@paulmck-ThinkPad-P17-Gen-1>
  <PH0PR11MB5880AF19BD36D2B9DF3E88A2DA159@PH0PR11MB5880.namprd11.prod.outlook.com>
  <20221130003939.GI4001@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20221130003939.GI4001@paulmck-ThinkPad-P17-Gen-1>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR11MB5880:EE_|CY5PR11MB6414:EE_
-x-ms-office365-filtering-correlation-id: 08063c2a-8cb5-413f-5eb5-08dad26ce3dc
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: bbFDoES0ZUbnrQqBpkv+7DPzflz907NSEKaDUG8ztpfJcRUbZMKqF3/8iHE2MGfDeRvl0EMV8eKY/47xkF1OBLsSNLJuBnLG5Qp96MFMvPveqOkBPC+9RCj6OBrzL7vRBpxijAzWQUPOPsPu05vqEil2JEQ4jiRj/xdUGaNMoxkyn+5aDcQDukRK4lRdBOVWBBPUuQcSsw+yanNIJLvtGE57AHqDYWp1NMOBPnUsRHZlCUni4KOuyeKxVRzsqpetPChvmeaqEwMJvna4ryIWQjV9y/tBLlbR4+c06RQt34WSbNNWrHd+3BehRnb/VrRCavt7Ff0S8h3U0QymAEgmebgWoLlVuVQ2vJrMrDLTfiSSMCC9uDMfv7l3n87iktdi0FnkWtBSB5Xzb0eUBk1jIdm4KREIEJgFVgY8DgM2fFKN4K0i+1N5Vgb+M7WrFlgzs8B4uA9OJYVl52/8i5X/Mt+c743KAComALK0N7tUshirv3M6VJPDUYzF1lzBUkd/fBbHdkYLA4mNRaxsPmXhl6o3xHNlGs7redLMnQtLuHKahsxaCjiEerAeWOLDqvypiAeC5chYupCoT5frxDancATs1YlXkb5FwjvjSOrHHCIgClDdTJX8lbs3QWKQSGb1cDmJ4/D/K13kiXB7Nthd3v5ALQs5ciHnWKDxoIYA3Iacq2gIjGdoeXYe/UjpTzaKsElQJ+fyc95U+m1IxLTXiQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5880.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(346002)(376002)(366004)(396003)(39860400002)(136003)(451199015)(55016003)(38070700005)(86362001)(33656002)(71200400001)(478600001)(76116006)(6506007)(26005)(66476007)(8676002)(66446008)(66946007)(53546011)(9686003)(7696005)(52536014)(316002)(8936002)(64756008)(66556008)(5660300002)(2906002)(54906003)(6916009)(122000001)(82960400001)(38100700002)(186003)(41300700001)(83380400001)(4326008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?NVZTVGE4SXVnek51cDhxVllKb3htY2R6SjVHczVJdU5ZS1gyc0I3cUZrSzdu?=
- =?utf-8?B?K042Z2VSNVRpZHJUMTFYNnlwVjd1R0IvZWs0aVVHYVNtcFA2TzZ1OEtJUTNX?=
- =?utf-8?B?bHFiNlU2bGkvdUZIM2owRDlHYm93RTgwOWlLdkwwRmU0ODBFVkppeFo5RWdM?=
- =?utf-8?B?OVg5cjJucmplbGEyOHZ3QmJ6YmZrdVhDQU5KSGc0bmJpVFhIU1R4aWZLMDFj?=
- =?utf-8?B?V2NNWm1FRXFtdjRMNitZb29FRS9QYzNMdHRPY21PZG5KdUJYZFo3RFRpeDFp?=
- =?utf-8?B?VmZwb3ZjMTNlc2ZvV1hpNUY0NUZSM1dDQVV2SXJGZHFJblZEY2tYcUZXeW9k?=
- =?utf-8?B?QW0zMENWK3FQc0VNT083d0JDTXQ1VUFzUTJROEVEc2JnaTRQcjAzL09ibWVp?=
- =?utf-8?B?c3o1S2p5aUJxbnpCSjc0MnAzNzk5c3g2MXBQbkVIZWVicFdQZVFpcGtBaGxy?=
- =?utf-8?B?aG5VT0hjQmdXdERoa1FCUlNaaE4vSmN0RGhYcUl0b0VkNXI1VlZNdW5NSHJ0?=
- =?utf-8?B?dDNEL0E2MU9HZUVGNlNhNy9NQW9ONG11RGgxS3l4bHk2OXRGZldDNTRlOXVo?=
- =?utf-8?B?NGJ2T0NXdmZQYnNwQ2JiL0lGVDJqQTZveUV5Sm9jeEJzYXlpN2Naa1IyM3lw?=
- =?utf-8?B?M1pBSVp4RjRSVjF5cGlzcHVweUxBZE9XWTh1K0xDd1lGaUJtS3NTNXVjeE1t?=
- =?utf-8?B?bnFVS2xUUWx1N1hBWGloOE85MVNwbjJnY0h5alNjWVY0Yk5NUnlUdWxZT2xB?=
- =?utf-8?B?K0ovbVVxQkV4SWNpd2ZrWElFcjRPbFBsd1JUQVZ2NW9xbDNkMWw3V2w4dUda?=
- =?utf-8?B?bTJtd1ZIbnFIWU1FZXBnV2cwbXNVSXJUWGtXVGNoS2FaRXBPVEVKc0xjQXRB?=
- =?utf-8?B?NU5BVzU0a09hVWxHSlg4ZFpXRjZTbUlDcVA3V0lXdXdGelVSc0dXZjJQTWdk?=
- =?utf-8?B?b2FRVFFUYklVdW8rVWlCL1VwRXdDNHAxM216Z09tc3JIdVBGQ01zTDNVRWpo?=
- =?utf-8?B?UHB5SUVYMXloc3MxWU9xK2YycXZia0JOUW5xYjNjZEF1WEJpcUNxZFJUcnBQ?=
- =?utf-8?B?bFlDNUtwVnRyNUdPTWwySURMQmNTWVJHRUNZM1ZtMlJlS0ErTHBjTTJRaDBj?=
- =?utf-8?B?bGszSURyc1hiRy9yekVndEovOWhKMW16cFZaNzFJUWtVT09FM2FaOGxiWlhi?=
- =?utf-8?B?dWJXUVJVMHBKMjdVZjZWRjg2b08veWNwSCtIS0tjMGN6MUtPQ29iaW00WWZC?=
- =?utf-8?B?cm1CLzhKSHNidjNQbXhjeERNSWFtQXBKSkI4L1VlWTYwVk9aMy9kQXo1dXNW?=
- =?utf-8?B?S2I2ZHpQZXYvdHRtbEJrRjNFR2s3ZXRXWUFEUTFPNlZKMGQ1NzhBYjArVmRr?=
- =?utf-8?B?TVVIdjhjb2FOOUJtVWNOb1RkMDFSUDhRVXVINEsyRWhHL3BTd0VLUkxGUVFm?=
- =?utf-8?B?WHZ0MFNOTkIxbitYTkFjY2xZSm5UN0RSQm4weUlOeS9rNHMyMHNPQlNwaWZv?=
- =?utf-8?B?UlNteVRoTU5XcHFDSktnQUJhUHI1dWJxWWR3YzdjQ3NkNElORFRJRmZqT0xw?=
- =?utf-8?B?ZGVWU2R6WWptV2dBeWhZTjlBNU02WTJJREp5SDEzL2V5OWhKc3VacmRqSHBo?=
- =?utf-8?B?VHlrWmI2N2FRNWMzb1BFcmIzTWZxeVpVcFJPSWlveUtJSkUzSmMrOXBNMVpD?=
- =?utf-8?B?S1BxTDJ6NnFPcEZCUWkvV0E1aFByVzhVVmV3Mkl4VHptUEJ1RUM4aVpGVWRI?=
- =?utf-8?B?aXBmKzRWM1NJUG5rbEZmRktqQkcySGhjT0pERzQ5eG40Y3RQbThxODN4VjVN?=
- =?utf-8?B?M3BvR2luN0xXazAyanhMRHJGWlhlVklicXVGVTBzdWg5c0hERUp1TmdBT1Nr?=
- =?utf-8?B?VVNoV0NqTDUvak9iMlhON0ZIM3R5Vnl4TkxXNmxGbVlCRmdSajkvM0R6b3hI?=
- =?utf-8?B?QnNrQS9pVzFnKzdVTnNlMzc5WndxR0F2cmhKYURDMFFXeDlDd1g4U08vVmFD?=
- =?utf-8?B?bGloTGtxazJja2JFNndQVUdWa0YzRktIbjBPeUlmaXJYUFZSdHZ0dGcrSzZF?=
- =?utf-8?B?ODZHOWQxRS9XZnFLQ1VPTXM0ZzNuai9nRXdQSXJLU0VUdjd2VlRmRG5TVXRw?=
- =?utf-8?Q?VMPsXj4qCIcFEGfgItuAGoIsq?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ <PH0PR11MB5880B5F347847C7E4A2EF08CDA159@PH0PR11MB5880.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5880.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 08063c2a-8cb5-413f-5eb5-08dad26ce3dc
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Nov 2022 00:50:34.6892
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: eYVWbGp3y8hmkDwpNxHzZy2cFl1J2R31GZqgXaEZMp+ETBJus/7L0u0d5fCt5SVkMLpFAcXTKw5i+ndJ4hn+Nw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR11MB6414
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <PH0PR11MB5880B5F347847C7E4A2EF08CDA159@PH0PR11MB5880.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-T24gV2VkLCBOb3YgMzAsIDIwMjIgYXQgMTI6MjY6MzdBTSArMDAwMCwgWmhhbmcsIFFpYW5nMSB3
-cm90ZToNCj4gT24gVHVlLCBOb3YgMjksIDIwMjIgYXQgMDY6MjU6MDRBTSArMDAwMCwgWmhhbmcs
-IFFpYW5nMSB3cm90ZToNCj4gPiA+IE9uIE5vdiAyOCwgMjAyMiwgYXQgMTE6NTQgUE0sIFpoYW5n
-LCBRaWFuZzEgPHFpYW5nMS56aGFuZ0BpbnRlbC5jb20+IHdyb3RlOg0KPiA+ID4gDQo+ID4gPiDv
-u79PbiBNb24sIE5vdiAyOCwgMjAyMiBhdCAxMDozNDoyOFBNICswODAwLCBacWlhbmcgd3JvdGU6
-DQo+ID4gPj4gQ3VycmVudGx5LCBpbnZva2UgcmN1X3Rhc2tzX3J1ZGVfd2FpdF9ncCgpIHRvIHdh
-aXQgb25lIHJ1ZGUNCj4gPiA+PiBSQ1UtdGFza3MgZ3JhY2UgcGVyaW9kLCBpZiBfX251bV9vbmxp
-bmVfY3B1cyA9PSAxLCB3aWxsIHJldHVybg0KPiA+ID4+IGRpcmVjdGx5LCBpbmRpY2F0ZXMgdGhl
-IGVuZCBvZiB0aGUgcnVkZSBSQ1UtdGFzayBncmFjZSBwZXJpb2QuDQo+ID4gPj4gc3VwcG9zZSB0
-aGUgc3lzdGVtIGhhcyB0d28gY3B1cywgY29uc2lkZXIgdGhlIGZvbGxvd2luZyBzY2VuYXJpbzoN
-Cj4gPiA+PiANCj4gPiA+PiAgICBDUFUwICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICBDUFUxIChnb2luZyBvZmZsaW5lKQ0KPiA+ID4+ICAgICAgICAgICAgICAgICAgICAgICAgICBt
-aWdyYXRpb24vMSB0YXNrOg0KPiA+ID4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICBjcHVfc3RvcHBlcl90aHJlYWQNCj4gPiA+PiAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgIC0+IHRha2VfY3B1X2Rvd24NCj4gPiA+PiAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIC0+IF9jcHVfZGlzYWJsZQ0KPiA+ID4+ICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIChkZWMgX19udW1fb25saW5lX2NwdXMpDQo+ID4gPj4gICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAtPmNwdWhwX2ludm9rZV9jYWxsYmFj
-aw0KPiA+ID4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-cHJlZW1wdF9kaXNhYmxlDQo+ID4gPj4gICAgICAgICAgICAgICAgICAgICAgICBhY2Nlc3Mgb2xk
-X2RhdGEwDQo+ID4gPj4gICAgICAgICAgIHRhc2sxDQo+ID4gPj4gZGVsIG9sZF9kYXRhMCAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAuLi4uLg0KPiA+ID4+IHN5bmNocm9uaXplX3Jj
-dV90YXNrc19ydWRlKCkNCj4gPiA+PiB0YXNrMSBzY2hlZHVsZSBvdXQNCj4gPiA+PiAuLi4uDQo+
-ID4gPj4gdGFzazIgc2NoZWR1bGUgaW4NCj4gPiA+PiByY3VfdGFza3NfcnVkZV93YWl0X2dwKCkN
-Cj4gPiA+PiAgICAgLT5fX251bV9vbmxpbmVfY3B1cyA9PSAxDQo+ID4gPj4gICAgICAgLT5yZXR1
-cm4NCj4gPiA+PiAuLi4uDQo+ID4gPj4gdGFzazEgc2NoZWR1bGUgaW4NCj4gPiA+PiAtPmZyZWUg
-b2xkX2RhdGEwDQo+ID4gPj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICBwcmVlbXB0X2VuYWJsZQ0KPiA+ID4+IA0KPiA+ID4+IHdoZW4gQ1BVMSBkZWMgX19u
-dW1fb25saW5lX2NwdXMgYW5kIF9fbnVtX29ubGluZV9jcHVzIGlzIGVxdWFsIG9uZSwNCj4gPiA+
-PiB0aGUgQ1BVMSBoYXMgbm90IGZpbmlzaGVkIG9mZmxpbmUsIHN0b3BfbWFjaGluZSB0YXNrKG1p
-Z3JhdGlvbi8xKQ0KPiA+ID4+IHN0aWxsIHJ1bm5pbmcgb24gQ1BVMSwgbWF5YmUgc3RpbGwgYWNj
-ZXNzaW5nICdvbGRfZGF0YTAnLCBidXQgdGhlDQo+ID4gPj4gJ29sZF9kYXRhMCcgaGFzIGZyZWVk
-IG9uIENQVTAuDQo+ID4gPj4gDQo+ID4gPj4gVGhpcyBjb21taXQgYWRkIGNwdXNfcmVhZF9sb2Nr
-L3VubG9jaygpIHByb3RlY3Rpb24gYmVmb3JlIGFjY2Vzc2luZw0KPiA+ID4+IF9fbnVtX29ubGlu
-ZV9jcHVzIHZhcmlhYmxlcywgdG8gZW5zdXJlIHRoYXQgdGhlIENQVSBpbiB0aGUgb2ZmbGluZQ0K
-PiA+ID4+IHByb2Nlc3MgaGFzIGJlZW4gY29tcGxldGVkIG9mZmxpbmUuDQo+ID4gPj4gDQo+ID4g
-Pj4gU2lnbmVkLW9mZi1ieTogWnFpYW5nIDxxaWFuZzEuemhhbmdAaW50ZWwuY29tPg0KPiA+ID4+
-IA0KPiA+ID4+IEZpcnN0LCBnb29kIGV5ZXMgYW5kIGdvb2QgY2F0Y2ghISENCj4gPiA+PiANCj4g
-PiA+PiBUaGUgcHVycG9zZSBvZiB0aGF0IGNoZWNrIGZvciBudW1fb25saW5lX2NwdXMoKSBpcyBu
-b3QgcGVyZm9ybWFuY2UNCj4gPiA+PiBvbiBzaW5nbGUtQ1BVIHN5c3RlbXMsIGJ1dCByYXRoZXIg
-Y29ycmVjdCBvcGVyYXRpb24gZHVyaW5nIGVhcmx5IGJvb3QuDQo+ID4gPj4gU28gYSBzaW1wbGVy
-IHdheSB0byBtYWtlIHRoYXQgd29yayBpcyB0byBjaGVjayBmb3IgUkNVX1NDSEVEVUxFUl9SVU5O
-SU5HLA0KPiA+ID4+IGZvciBleGFtcGxlLCBhcyBmb2xsb3dzOg0KPiA+ID4+IA0KPiA+ID4+ICAg
-IGlmIChyY3Vfc2NoZWR1bGVyX2FjdGl2ZSAhPSBSQ1VfU0NIRURVTEVSX1JVTk5JTkcgJiYNCj4g
-PiA+PiAgICAgICAgbnVtX29ubGluZV9jcHVzKCkgPD0gMSkNCj4gPiA+PiAgICAgICAgcmV0dXJu
-OyAgICAvLyBFYXJseSBib290IGZhc3RwYXRoIGZvciBvbmx5IG9uZSBDUFUuDQo+ID4gPiANCj4g
-PiA+IEhpIFBhdWwNCj4gPiA+IA0KPiA+ID4gRHVyaW5nIHN5c3RlbSBzdGFydHVwLCBiZWNhdXNl
-IHRoZSBSQ1VfU0NIRURVTEVSX1JVTk5JTkcgaXMgc2V0IGFmdGVyIHN0YXJ0aW5nIG90aGVyIENQ
-VXMsIA0KPiA+ID4gDQo+ID4gPiAgICAgICAgICAgICAgQ1BVMCAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgQ1BVMSAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgDQo+ID4gPiANCj4gPiA+IGlmIChyY3Vfc2NoZWR1bGVyX2FjdGl2ZSAhPSAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgIA0KPiA+ID4gICAgUkNVX1NDSEVEVUxFUl9SVU5O
-SU5HICYmDQo+ID4gPiAgICAgICAgICAgX19udW1fb25saW5lX2NwdXMgID09IDEpICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICANCj4gPiA+ICAgIHJldHVybjsg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgaW5jICBfX251bV9vbmxpbmVfY3B1cw0KPiA+ID4gICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgKF9fbnVtX29ubGluZV9jcHVzID09IDIpDQo+ID4gPiANCj4gPiA+IENQ
-VTAgZGlkbid0IG5vdGljZSB0aGUgdXBkYXRlIG9mIHRoZSBfX251bV9vbmxpbmVfY3B1cyB2YXJp
-YWJsZSBieSBDUFUxIGluIHRpbWUNCj4gPiA+IENhbiB3ZSBtb3ZlIHJjdV9zZXRfcnVudGltZV9t
-b2RlKCkgYmVmb3JlIHNtcF9pbml0KCkNCj4gPiA+IGFueSB0aG91Z2h0cz8NCj4gPiA+DQo+ID4g
-PklzIGFueW9uZSBleHBlY3RlZCB0byBkbyByY3UtdGFza3Mgb3BlcmF0aW9uIGJlZm9yZSB0aGUg
-c2NoZWR1bGVyIGlzIHJ1bm5pbmc/IA0KPiA+IA0KPiA+IE5vdCBzdXJlIGlmIHN1Y2ggYSBzY2Vu
-YXJpbyBleGlzdHMuDQo+ID4gDQo+ID4gPlR5cGljYWxseSB0aGlzIHJlcXVpcmVzIHRoZSB0YXNr
-cyB0byBjb250ZXh0IHN3aXRjaCB3aGljaCBpcyBhIHNjaGVkdWxlciBvcGVyYXRpb24uDQo+ID4g
-Pg0KPiA+ID5JZiB0aGUgc2NoZWR1bGVyIGlzIG5vdCB5ZXQgcnVubmluZywgdGhlbiBJIGRvbuKA
-mXQgdGhpbmsgbWlzc2luZyBhbiB1cGRhdGUgdGhlIF9fbnVtX29ubGluZV9jcHVzIG1hdHRlcnMg
-c2luY2Ugbm8gb25lIGRvZXMgYSB0YXNrcy1SQ1Ugc3luY2hyb25pemUuDQo+ID4gDQo+ID4gSGkg
-Sm9lbA0KPiA+IA0KPiA+IEFmdGVyIHRoZSBrZXJuZWxfaW5pdCB0YXNrIHJ1bnMsIGJlZm9yZSBj
-YWxsaW5nIHNtcF9pbml0KCkgdG8gc3RhcnRpbmcgb3RoZXIgQ1BVcywgDQo+ID4gdGhlIHNjaGVk
-dWxlciBoYXZlbiBiZWVuIGluaXRpYWxpemF0aW9uLCB0YXNrIGNvbnRleHQgc3dpdGNoaW5nIGNh
-biBvY2N1ci4NCj4gPg0KPiA+R29vZCBjYXRjaCwgdGhhbmsgeW91IGJvdGguICBGb3Igc29tZSBy
-ZWFzb24sIEkgd2FzIHRoaW5raW5nIHRoYXQgdGhlDQo+ID5hZGRpdGlvbmFsIENQVXMgZGlkIG5v
-dCBjb21lIG9ubGluZSB1bnRpbCBsYXRlci4NCj4gPg0KPiA+U28gaG93IGFib3V0IHRoaXM/DQo+
-ID4NCj4gPglpZiAocmN1X3NjaGVkdWxlcl9hY3RpdmUgPT0gUkNVX1NDSEVEVUxFUl9JTkFDVElW
-RSkNCj4gPgkJcmV0dXJuOyAgICAvLyBFYXJseSBib290IGZhc3RwYXRoLg0KPiANCj4gSWYgdXNl
-IFJDVV9TQ0hFRFVMRVJfSU5BQ1RJVkUgdG8gY2hlY2ssIENhbiB3ZSBtYWtlIHRoZSBmb2xsb3dp
-bmcgY2hhbmdlcz8NCg0KPg0KPllvdSB3aWxsIG5lZWQgcy9XQVJOX09OQ0UvV0FSTl9PTl9PTkNF
-LyAob3Igc3VwcGx5IHRoZSBhZGRlZCBhcmd1bWVudHMpLA0KPmJ1dCB5ZXMsIHRoaXMgbG9va3Mg
-Z29vZC4NCj4NCj4NCj5BbmQgdGhhbmsgeW91IGZvciBkaWdnaW5nIGRvd24gdGhlIGV4dHJhIGxl
-dmVsIQ0KDQpDYW4gSSBtb2RpZnkgc2VuZGluZyBWMyBhcyBmb2xsb3dzPw0KDQpUaGFua3MNClpx
-aWFuZw0KDQo+DQo+CQkJCQkJCVRoYW54LCBQYXVsDQoNCj4gLS0tIGEva2VybmVsL3JjdS90YXNr
-cy5oDQo+ICsrKyBiL2tlcm5lbC9yY3UvdGFza3MuaA0KPiBAQCAtNTYyLDggKzU2Miw4IEBAIHN0
-YXRpYyBpbnQgX19ub3JldHVybiByY3VfdGFza3Nfa3RocmVhZCh2b2lkICphcmcpDQo+ICBzdGF0
-aWMgdm9pZCBzeW5jaHJvbml6ZV9yY3VfdGFza3NfZ2VuZXJpYyhzdHJ1Y3QgcmN1X3Rhc2tzICpy
-dHApDQo+ICB7DQo+ICAgICAgICAgLyogQ29tcGxhaW4gaWYgdGhlIHNjaGVkdWxlciBoYXMgbm90
-IHN0YXJ0ZWQuICAqLw0KPiAtICAgICAgIFdBUk5fT05DRShyY3Vfc2NoZWR1bGVyX2FjdGl2ZSA9
-PSBSQ1VfU0NIRURVTEVSX0lOQUNUSVZFLA0KPiAtICAgICAgICAgICAgICAgICAgICAgICAgInN5
-bmNocm9uaXplX3JjdV90YXNrcyBjYWxsZWQgdG9vIHNvb24iKTsNCj4gKyAgICAgICBpZihXQVJO
-X09OQ0UocmN1X3NjaGVkdWxlcl9hY3RpdmUgPT0gUkNVX1NDSEVEVUxFUl9JTkFDVElWRSkpDQo+
-ICsgICAgICAgICAgICAgICByZXR1cm47DQo+IA0KPiAgICAgICAgIC8vIElmIHRoZSBncmFjZS1w
-ZXJpb2Qga3RocmVhZCBpcyBydW5uaW5nLCB1c2UgaXQuDQo+ICAgICAgICAgaWYgKFJFQURfT05D
-RShydHAtPmt0aHJlYWRfcHRyKSkgew0KPiBAQCAtMTA2Niw5ICsxMDY2LDYgQEAgc3RhdGljIHZv
-aWQgcmN1X3Rhc2tzX2JlX3J1ZGUoc3RydWN0IHdvcmtfc3RydWN0ICp3b3JrKQ0KPiAgLy8gV2Fp
-dCBmb3Igb25lIHJ1ZGUgUkNVLXRhc2tzIGdyYWNlIHBlcmlvZC4NCj4gIHN0YXRpYyB2b2lkIHJj
-dV90YXNrc19ydWRlX3dhaXRfZ3Aoc3RydWN0IHJjdV90YXNrcyAqcnRwKQ0KPiAgew0KPiAtICAg
-ICAgIGlmIChudW1fb25saW5lX2NwdXMoKSA8PSAxKQ0KPiAtICAgICAgICAgICAgICAgcmV0dXJu
-OyAvLyBGYXN0cGF0aCBmb3Igb25seSBvbmUgQ1BVLg0KPiAtDQo+ICAgICAgICAgcnRwLT5uX2lw
-aXMgKz0gY3B1bWFza193ZWlnaHQoY3B1X29ubGluZV9tYXNrKTsNCj4gICAgICAgICBzY2hlZHVs
-ZV9vbl9lYWNoX2NwdShyY3VfdGFza3NfYmVfcnVkZSk7DQo+ICB9DQo+IA0KPiBUaGFua3MNCj4g
-WnFpYW5nDQo+IA0KPiA+DQo+ID5JZiB0aGlzIGNvbmRpdGlvbiBpcyB0cnVlLCB0aGVyZSBpcyBv
-bmx5IG9uZSBDUFUgYW5kIG5vIHNjaGVkdWxlciwNCj4gPnRodXMgbm8gcHJlZW1wdGlvbi4NCj4g
-Pg0KPiA+CQkJCQkJVGhhbngsIFBhdWwNCj4gDQo+ID4gVGhhbmtzDQo+ID4gWnFpYW5nDQo+ID4g
-DQo+ID4gPg0KPiA+ID5PciBkaWQgSSBtaXNzIHNvbWV0aGluZz8NCj4gPiA+DQo+ID4gPlRoYW5r
-cy4NCj4gPiA+DQo+ID4gPg0KPiA+ID4NCj4gPiA+IA0KPiA+ID4gVGhhbmtzDQo+ID4gPiBacWlh
-bmcNCj4gPiA+IA0KPiA+ID4+IA0KPiA+ID4+IFRoaXMgd29ya3MgYmVjYXVzZSByY3Vfc2NoZWR1
-bGVyX2FjdGl2ZSBpcyBzZXQgdG8gUkNVX1NDSEVEVUxFUl9SVU5OSU5HDQo+ID4gPj4gbG9uZyBi
-ZWZvcmUgaXQgaXMgcG9zc2libGUgdG8gb2ZmbGluZSBDUFVzLg0KPiA+ID4+IA0KPiA+ID4+IFll
-cywgc2NoZWR1bGVfb25fZWFjaF9jcHUoKSBkb2VzIGRvIGNwdXNfcmVhZF9sb2NrKCksIGFnYWlu
-LCBnb29kIGV5ZXMsDQo+ID4gPj4gYW5kIGl0IGFsc28gdW5uZWNlc3NhcmlseSBkb2VzIHRoZSBz
-Y2hlZHVsZV93b3JrX29uKCkgdGhlIGN1cnJlbnQgQ1BVLA0KPiA+ID4+IGJ1dCB0aGUgY29kZSBj
-YWxsaW5nIHN5bmNocm9uaXplX3JjdV90YXNrc19ydWRlKCkgaXMgb24gaGlnaC1vdmVyaGVhZA0K
-PiA+ID4+IGNvZGUgcGF0aHMsIHNvIHRoaXMgb3ZlcmhlYWQgaXMgZG93biBpbiB0aGUgbm9pc2Uu
-DQo+ID4gPj4gDQo+ID4gPj4gVW50aWwgZnVydGhlciBub3RpY2UsIGFueXdheS4NCj4gPiA+PiAN
-Cj4gPiA+PiBTbyBzaW1wbGljaXR5IGlzIG11Y2ggbW9yZSBpbXBvcnRhbnQgdGhhbiBwZXJmb3Jt
-YW5jZSBpbiB0aGlzIGNvZGUuDQo+ID4gPj4gU28ganVzdCBhZGRpbmcgdGhlIGNoZWNrIGZvciBS
-Q1VfU0NIRURVTEVSX1JVTk5JTkcgc2hvdWxkIGZpeCB0aGlzLA0KPiA+ID4+IHVubGVzcyBJIGFt
-IG1pc3Npbmcgc29tZXRoaW5nIChhbHdheXMgcG9zc2libGUhKS4NCj4gPiA+PiANCj4gPiA+PiAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICBUaGFueCwgUGF1bA0KPiA+ID4+IA0KPiA+ID4+IC0t
-LQ0KPiA+ID4+IGtlcm5lbC9yY3UvdGFza3MuaCB8IDIwICsrKysrKysrKysrKysrKysrKy0tDQo+
-ID4gPj4gMSBmaWxlIGNoYW5nZWQsIDE4IGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pDQo+
-ID4gPj4gDQo+ID4gPj4gZGlmZiAtLWdpdCBhL2tlcm5lbC9yY3UvdGFza3MuaCBiL2tlcm5lbC9y
-Y3UvdGFza3MuaA0KPiA+ID4+IGluZGV4IDRhOTkxMzExYmU5Yi4uMDhlNzJjNjQ2MmQ4IDEwMDY0
-NA0KPiA+ID4+IC0tLSBhL2tlcm5lbC9yY3UvdGFza3MuaA0KPiA+ID4+ICsrKyBiL2tlcm5lbC9y
-Y3UvdGFza3MuaA0KPiA+ID4+IEBAIC0xMDMzLDE0ICsxMDMzLDMwIEBAIHN0YXRpYyB2b2lkIHJj
-dV90YXNrc19iZV9ydWRlKHN0cnVjdCB3b3JrX3N0cnVjdCAqd29yaykNCj4gPiA+PiB7DQo+ID4g
-Pj4gfQ0KPiA+ID4+IA0KPiA+ID4+ICtzdGF0aWMgREVGSU5FX1BFUl9DUFUoc3RydWN0IHdvcmtf
-c3RydWN0LCBydWRlX3dvcmspOw0KPiA+ID4+ICsNCj4gPiA+PiAvLyBXYWl0IGZvciBvbmUgcnVk
-ZSBSQ1UtdGFza3MgZ3JhY2UgcGVyaW9kLg0KPiA+ID4+IHN0YXRpYyB2b2lkIHJjdV90YXNrc19y
-dWRlX3dhaXRfZ3Aoc3RydWN0IHJjdV90YXNrcyAqcnRwKQ0KPiA+ID4+IHsNCj4gPiA+PiArICAg
-IGludCBjcHU7DQo+ID4gPj4gKyAgICBzdHJ1Y3Qgd29ya19zdHJ1Y3QgKndvcms7DQo+ID4gPj4g
-Kw0KPiA+ID4+ICsgICAgY3B1c19yZWFkX2xvY2soKTsNCj4gPiA+PiAgICBpZiAobnVtX29ubGlu
-ZV9jcHVzKCkgPD0gMSkNCj4gPiA+PiAtICAgICAgICByZXR1cm47ICAgIC8vIEZhc3RwYXRoIGZv
-ciBvbmx5IG9uZSBDUFUuDQo+ID4gPj4gKyAgICAgICAgZ290byBlbmQ7Ly8gRmFzdHBhdGggZm9y
-IG9ubHkgb25lIENQVS4NCj4gPiA+PiANCj4gPiA+PiAgICBydHAtPm5faXBpcyArPSBjcHVtYXNr
-X3dlaWdodChjcHVfb25saW5lX21hc2spOw0KPiA+ID4+IC0gICAgc2NoZWR1bGVfb25fZWFjaF9j
-cHUocmN1X3Rhc2tzX2JlX3J1ZGUpOw0KPiA+ID4+ICsgICAgZm9yX2VhY2hfb25saW5lX2NwdShj
-cHUpIHsNCj4gPiA+PiArICAgICAgICB3b3JrID0gcGVyX2NwdV9wdHIoJnJ1ZGVfd29yaywgY3B1
-KTsNCj4gPiA+PiArICAgICAgICBJTklUX1dPUksod29yaywgcmN1X3Rhc2tzX2JlX3J1ZGUpOw0K
-PiA+ID4+ICsgICAgICAgIHNjaGVkdWxlX3dvcmtfb24oY3B1LCB3b3JrKTsNCj4gPiA+PiArICAg
-IH0NCj4gPiA+PiArDQo+ID4gPj4gKyAgICBmb3JfZWFjaF9vbmxpbmVfY3B1KGNwdSkNCj4gPiA+
-PiArICAgICAgICBmbHVzaF93b3JrKHBlcl9jcHVfcHRyKCZydWRlX3dvcmssIGNwdSkpOw0KPiA+
-ID4+ICsNCj4gPiA+PiArZW5kOg0KPiA+ID4+ICsgICAgY3B1c19yZWFkX3VubG9jaygpOw0KPiA+
-ID4+IH0NCj4gPiA+PiANCj4gPiA+PiB2b2lkIGNhbGxfcmN1X3Rhc2tzX3J1ZGUoc3RydWN0IHJj
-dV9oZWFkICpyaHAsIHJjdV9jYWxsYmFja190IGZ1bmMpOw0KPiA+ID4+IC0tIA0KPiA+ID4+IDIu
-MjUuMQ0KPiA+ID4+IA0K
+On Wed, Nov 30, 2022 at 12:50:34AM +0000, Zhang, Qiang1 wrote:
+> On Wed, Nov 30, 2022 at 12:26:37AM +0000, Zhang, Qiang1 wrote:
+> > On Tue, Nov 29, 2022 at 06:25:04AM +0000, Zhang, Qiang1 wrote:
+> > > > On Nov 28, 2022, at 11:54 PM, Zhang, Qiang1 <qiang1.zhang@intel.com> wrote:
+> > > > 
+> > > > ﻿On Mon, Nov 28, 2022 at 10:34:28PM +0800, Zqiang wrote:
+> > > >> Currently, invoke rcu_tasks_rude_wait_gp() to wait one rude
+> > > >> RCU-tasks grace period, if __num_online_cpus == 1, will return
+> > > >> directly, indicates the end of the rude RCU-task grace period.
+> > > >> suppose the system has two cpus, consider the following scenario:
+> > > >> 
+> > > >>    CPU0                                   CPU1 (going offline)
+> > > >>                          migration/1 task:
+> > > >>                                      cpu_stopper_thread
+> > > >>                                       -> take_cpu_down
+> > > >>                                          -> _cpu_disable
+> > > >>                               (dec __num_online_cpus)
+> > > >>                                          ->cpuhp_invoke_callback
+> > > >>                                                preempt_disable
+> > > >>                        access old_data0
+> > > >>           task1
+> > > >> del old_data0                                  .....
+> > > >> synchronize_rcu_tasks_rude()
+> > > >> task1 schedule out
+> > > >> ....
+> > > >> task2 schedule in
+> > > >> rcu_tasks_rude_wait_gp()
+> > > >>     ->__num_online_cpus == 1
+> > > >>       ->return
+> > > >> ....
+> > > >> task1 schedule in
+> > > >> ->free old_data0
+> > > >>                                                preempt_enable
+> > > >> 
+> > > >> when CPU1 dec __num_online_cpus and __num_online_cpus is equal one,
+> > > >> the CPU1 has not finished offline, stop_machine task(migration/1)
+> > > >> still running on CPU1, maybe still accessing 'old_data0', but the
+> > > >> 'old_data0' has freed on CPU0.
+> > > >> 
+> > > >> This commit add cpus_read_lock/unlock() protection before accessing
+> > > >> __num_online_cpus variables, to ensure that the CPU in the offline
+> > > >> process has been completed offline.
+> > > >> 
+> > > >> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+> > > >> 
+> > > >> First, good eyes and good catch!!!
+> > > >> 
+> > > >> The purpose of that check for num_online_cpus() is not performance
+> > > >> on single-CPU systems, but rather correct operation during early boot.
+> > > >> So a simpler way to make that work is to check for RCU_SCHEDULER_RUNNING,
+> > > >> for example, as follows:
+> > > >> 
+> > > >>    if (rcu_scheduler_active != RCU_SCHEDULER_RUNNING &&
+> > > >>        num_online_cpus() <= 1)
+> > > >>        return;    // Early boot fastpath for only one CPU.
+> > > > 
+> > > > Hi Paul
+> > > > 
+> > > > During system startup, because the RCU_SCHEDULER_RUNNING is set after starting other CPUs, 
+> > > > 
+> > > >              CPU0                                                                       CPU1                                                                 
+> > > > 
+> > > > if (rcu_scheduler_active !=                                    
+> > > >    RCU_SCHEDULER_RUNNING &&
+> > > >           __num_online_cpus  == 1)                                               
+> > > >    return;                                                                         inc  __num_online_cpus
+> > > >                            (__num_online_cpus == 2)
+> > > > 
+> > > > CPU0 didn't notice the update of the __num_online_cpus variable by CPU1 in time
+> > > > Can we move rcu_set_runtime_mode() before smp_init()
+> > > > any thoughts?
+> > > >
+> > > >Is anyone expected to do rcu-tasks operation before the scheduler is running? 
+> > > 
+> > > Not sure if such a scenario exists.
+> > > 
+> > > >Typically this requires the tasks to context switch which is a scheduler operation.
+> > > >
+> > > >If the scheduler is not yet running, then I don’t think missing an update the __num_online_cpus matters since no one does a tasks-RCU synchronize.
+> > > 
+> > > Hi Joel
+> > > 
+> > > After the kernel_init task runs, before calling smp_init() to starting other CPUs, 
+> > > the scheduler haven been initialization, task context switching can occur.
+> > >
+> > >Good catch, thank you both.  For some reason, I was thinking that the
+> > >additional CPUs did not come online until later.
+> > >
+> > >So how about this?
+> > >
+> > >	if (rcu_scheduler_active == RCU_SCHEDULER_INACTIVE)
+> > >		return;    // Early boot fastpath.
+> > 
+> > If use RCU_SCHEDULER_INACTIVE to check, Can we make the following changes?
+> 
+> >
+> >You will need s/WARN_ONCE/WARN_ON_ONCE/ (or supply the added arguments),
+> >but yes, this looks good.
+> >
+> >
+> >And thank you for digging down the extra level!
+> 
+> Can I modify sending V3 as follows?
+
+Your patch shown below is a good starting point.
+
+You will need to fix up this line of code, though:
+
+	if(WARN_ONCE(rcu_scheduler_active == RCU_SCHEDULER_INACTIVE))
+
+							Thanx, Paul
+
+> Thanks
+> Zqiang
+> 
+> >
+> >							Thanx, Paul
+> 
+> > --- a/kernel/rcu/tasks.h
+> > +++ b/kernel/rcu/tasks.h
+> > @@ -562,8 +562,8 @@ static int __noreturn rcu_tasks_kthread(void *arg)
+> >  static void synchronize_rcu_tasks_generic(struct rcu_tasks *rtp)
+> >  {
+> >         /* Complain if the scheduler has not started.  */
+> > -       WARN_ONCE(rcu_scheduler_active == RCU_SCHEDULER_INACTIVE,
+> > -                        "synchronize_rcu_tasks called too soon");
+> > +       if(WARN_ONCE(rcu_scheduler_active == RCU_SCHEDULER_INACTIVE))
+> > +               return;
+> > 
+> >         // If the grace-period kthread is running, use it.
+> >         if (READ_ONCE(rtp->kthread_ptr)) {
+> > @@ -1066,9 +1066,6 @@ static void rcu_tasks_be_rude(struct work_struct *work)
+> >  // Wait for one rude RCU-tasks grace period.
+> >  static void rcu_tasks_rude_wait_gp(struct rcu_tasks *rtp)
+> >  {
+> > -       if (num_online_cpus() <= 1)
+> > -               return; // Fastpath for only one CPU.
+> > -
+> >         rtp->n_ipis += cpumask_weight(cpu_online_mask);
+> >         schedule_on_each_cpu(rcu_tasks_be_rude);
+> >  }
+> > 
+> > Thanks
+> > Zqiang
+> > 
+> > >
+> > >If this condition is true, there is only one CPU and no scheduler,
+> > >thus no preemption.
+> > >
+> > >						Thanx, Paul
+> > 
+> > > Thanks
+> > > Zqiang
+> > > 
+> > > >
+> > > >Or did I miss something?
+> > > >
+> > > >Thanks.
+> > > >
+> > > >
+> > > >
+> > > > 
+> > > > Thanks
+> > > > Zqiang
+> > > > 
+> > > >> 
+> > > >> This works because rcu_scheduler_active is set to RCU_SCHEDULER_RUNNING
+> > > >> long before it is possible to offline CPUs.
+> > > >> 
+> > > >> Yes, schedule_on_each_cpu() does do cpus_read_lock(), again, good eyes,
+> > > >> and it also unnecessarily does the schedule_work_on() the current CPU,
+> > > >> but the code calling synchronize_rcu_tasks_rude() is on high-overhead
+> > > >> code paths, so this overhead is down in the noise.
+> > > >> 
+> > > >> Until further notice, anyway.
+> > > >> 
+> > > >> So simplicity is much more important than performance in this code.
+> > > >> So just adding the check for RCU_SCHEDULER_RUNNING should fix this,
+> > > >> unless I am missing something (always possible!).
+> > > >> 
+> > > >>                            Thanx, Paul
+> > > >> 
+> > > >> ---
+> > > >> kernel/rcu/tasks.h | 20 ++++++++++++++++++--
+> > > >> 1 file changed, 18 insertions(+), 2 deletions(-)
+> > > >> 
+> > > >> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> > > >> index 4a991311be9b..08e72c6462d8 100644
+> > > >> --- a/kernel/rcu/tasks.h
+> > > >> +++ b/kernel/rcu/tasks.h
+> > > >> @@ -1033,14 +1033,30 @@ static void rcu_tasks_be_rude(struct work_struct *work)
+> > > >> {
+> > > >> }
+> > > >> 
+> > > >> +static DEFINE_PER_CPU(struct work_struct, rude_work);
+> > > >> +
+> > > >> // Wait for one rude RCU-tasks grace period.
+> > > >> static void rcu_tasks_rude_wait_gp(struct rcu_tasks *rtp)
+> > > >> {
+> > > >> +    int cpu;
+> > > >> +    struct work_struct *work;
+> > > >> +
+> > > >> +    cpus_read_lock();
+> > > >>    if (num_online_cpus() <= 1)
+> > > >> -        return;    // Fastpath for only one CPU.
+> > > >> +        goto end;// Fastpath for only one CPU.
+> > > >> 
+> > > >>    rtp->n_ipis += cpumask_weight(cpu_online_mask);
+> > > >> -    schedule_on_each_cpu(rcu_tasks_be_rude);
+> > > >> +    for_each_online_cpu(cpu) {
+> > > >> +        work = per_cpu_ptr(&rude_work, cpu);
+> > > >> +        INIT_WORK(work, rcu_tasks_be_rude);
+> > > >> +        schedule_work_on(cpu, work);
+> > > >> +    }
+> > > >> +
+> > > >> +    for_each_online_cpu(cpu)
+> > > >> +        flush_work(per_cpu_ptr(&rude_work, cpu));
+> > > >> +
+> > > >> +end:
+> > > >> +    cpus_read_unlock();
+> > > >> }
+> > > >> 
+> > > >> void call_rcu_tasks_rude(struct rcu_head *rhp, rcu_callback_t func);
+> > > >> -- 
+> > > >> 2.25.1
+> > > >> 
