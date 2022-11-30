@@ -2,48 +2,52 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BBDCDC352A1
-	for <rcu@archiver.kernel.org>; Wed, 30 Nov 2022 18:13:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE40FC433FE
+	for <rcu@archiver.kernel.org>; Wed, 30 Nov 2022 18:14:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230169AbiK3SN6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 30 Nov 2022 13:13:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37422 "EHLO
+        id S229630AbiK3SOB (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 30 Nov 2022 13:14:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229876AbiK3SNc (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 30 Nov 2022 13:13:32 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E30A862D8;
+        with ESMTP id S230001AbiK3SNd (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 30 Nov 2022 13:13:33 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4D0E862E7;
         Wed, 30 Nov 2022 10:13:31 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C08B261D66;
-        Wed, 30 Nov 2022 18:13:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16D6CC43156;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 8630DB81CA1;
+        Wed, 30 Nov 2022 18:13:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2187AC4315A;
         Wed, 30 Nov 2022 18:13:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1669832008;
-        bh=bV4YKsjlHn2g0UUJMN8cc0Rz3CedXb1hl5bvrhhBb38=;
+        bh=tLEwwsXJ50F5WMjv+BokwLjrPrLGPh46UmjaqeJOMNw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NJNSrIdTEWWdXI6msK7DGfG0coc2GIOoXRiT7vsENQXHEZI2bVDZeOcccpqtp5dTz
-         0vv/2fHYDXpqwFQ30sKYzj5tMnnXjk1pvWM3I/TDg2T4qjejKhXOluUuQvCoI5xT6Z
-         Kic99ZMzMu3X9u1aef5hYkvYTVGN1UuhbM2GCxEsLCmOnOZcyze3d/6AqfGgD+bHe7
-         qcOybBwGDxUtIFY+pDqTTCDuL81vldfpYkdVpMHxwJM53hxbgrCLcZ1sT6t0KUQH3P
-         JiVr5JoLHuADj83l9WubCtUpgIBtCVYu4fxA2yTjXIZKGa8WuXzBaTYp5vruZlY1Ee
-         NXRsYsEbiceGw==
+        b=Qn/G0f3uTFbWSF42AqjtciE1KrJdOMt55GTNskCSfXG+ehVdvjQo7PT/4uic/Xzg1
+         Wi/E5KetpU6444YTs4tO67fBw4KORpTJ0BKVkR/Z3EMAh6cV20/1KWN/BxoKaOaAAN
+         4IPkSER2QT2w1PfvXv0JlBCGSXN2yG7XA0W899GLRdiFLJ5uYDWtNbzwrVYZ5jU9iz
+         hauOlXc4XrtNkMQU9gYEnLcdZLg3winmFw/9vpHoo+ESsEjtdGfVEVJ2RCwpQJVQq1
+         NwKPlMpxbYYVPJjir5RwdfEOfd2sKQckEBkPR+Stgh/QD3zHNsxWDTgBaOGCX58MaF
+         0ukAfUlmoFqgg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 6DBFE5C1799; Wed, 30 Nov 2022 10:13:27 -0800 (PST)
+        id 724285C1A02; Wed, 30 Nov 2022 10:13:27 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org, Uladzislau Rezki <urezki@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Tejun Heo <tj@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
+        rostedt@goodmis.org,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        David Ahern <dsahern@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 13/16] workqueue: Make queue_rcu_work() use call_rcu_hurry()
-Date:   Wed, 30 Nov 2022 10:13:22 -0800
-Message-Id: <20221130181325.1012760-13-paulmck@kernel.org>
+Subject: [PATCH rcu 15/16] net: Use call_rcu_hurry() for dst_release()
+Date:   Wed, 30 Nov 2022 10:13:24 -0800
+Message-Id: <20221130181325.1012760-15-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20221130181316.GA1012431@paulmck-ThinkPad-P17-Gen-1>
 References: <20221130181316.GA1012431@paulmck-ThinkPad-P17-Gen-1>
@@ -53,10 +57,16 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Uladzislau Rezki <urezki@gmail.com>
+From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
 
-Earlier commits in this series allow battery-powered systems to build
-their kernels with the default-disabled CONFIG_RCU_LAZY=y Kconfig option.
+In a networking test on ChromeOS, kernels built with the new
+CONFIG_RCU_LAZY=y Kconfig option fail a networking test in the teardown
+phase.
+
+This failure may be reproduced as follows: ip netns del <name>
+
+The CONFIG_RCU_LAZY=y Kconfig option was introduced by earlier commits
+in this series for the benefit of certain battery-powered systems.
 This Kconfig option causes call_rcu() to delay its callbacks in order
 to batch them.  This means that a given RCU grace period covers more
 callbacks, thus reducing the number of grace periods, in turn reducing
@@ -92,37 +102,41 @@ feedback at the 2022 Linux Plumbers Conference shifted the approach
 to call_rcu() being lazy with call_rcu_hurry() for the few places
 where laziness is inappropriate.
 
-And another call_rcu() instance that cannot be lazy is the one
-in queue_rcu_work(), given that callers to queue_rcu_work() are
-not necessarily OK with long delays.
+Returning to the test failure, use of ftrace showed that this failure
+cause caused by the aadded delays due to this new lazy behavior of
+call_rcu() in kernels built with CONFIG_RCU_LAZY=y.
 
-Therefore, make queue_rcu_work() use call_rcu_hurry() in order to revert
-to the old behavior.
+Therefore, make dst_release() use call_rcu_hurry() in order to revert
+to the old test-failure-free behavior.
 
 [ paulmck: Apply s/call_rcu_flush/call_rcu_hurry/ feedback from Tejun Heo. ]
 
-Signed-off-by: Uladzislau Rezki <urezki@gmail.com>
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Cc: Tejun Heo <tj@kernel.org>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+Cc: David Ahern <dsahern@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Paolo Abeni <pabeni@redhat.com>
+Cc: <netdev@vger.kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/workqueue.c | 2 +-
+ net/core/dst.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 7cd5f5e7e0a1b..07895deca2711 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -1771,7 +1771,7 @@ bool queue_rcu_work(struct workqueue_struct *wq, struct rcu_work *rwork)
- 
- 	if (!test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work))) {
- 		rwork->wq = wq;
--		call_rcu(&rwork->rcu, rcu_work_rcufn);
-+		call_rcu_hurry(&rwork->rcu, rcu_work_rcufn);
- 		return true;
+diff --git a/net/core/dst.c b/net/core/dst.c
+index bc9c9be4e0801..a4e738d321ba2 100644
+--- a/net/core/dst.c
++++ b/net/core/dst.c
+@@ -174,7 +174,7 @@ void dst_release(struct dst_entry *dst)
+ 			net_warn_ratelimited("%s: dst:%p refcnt:%d\n",
+ 					     __func__, dst, newrefcnt);
+ 		if (!newrefcnt)
+-			call_rcu(&dst->rcu_head, dst_destroy_rcu);
++			call_rcu_hurry(&dst->rcu_head, dst_destroy_rcu);
  	}
- 
+ }
+ EXPORT_SYMBOL(dst_release);
 -- 
 2.31.1.189.g2e36527f23
 
