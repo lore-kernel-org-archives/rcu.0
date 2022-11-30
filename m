@@ -2,51 +2,47 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 71DB7C4708C
-	for <rcu@archiver.kernel.org>; Wed, 30 Nov 2022 18:13:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C27E6C4321E
+	for <rcu@archiver.kernel.org>; Wed, 30 Nov 2022 18:13:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230079AbiK3SNt (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 30 Nov 2022 13:13:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38410 "EHLO
+        id S230086AbiK3SNu (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 30 Nov 2022 13:13:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230114AbiK3SNb (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S230120AbiK3SNb (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 30 Nov 2022 13:13:31 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFFD3862D6;
-        Wed, 30 Nov 2022 10:13:29 -0800 (PST)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E66DD862D4;
+        Wed, 30 Nov 2022 10:13:30 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7496461D69;
+        by sin.source.kernel.org (Postfix) with ESMTPS id 5F407CE1ACC;
         Wed, 30 Nov 2022 18:13:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EE5BC4347C;
-        Wed, 30 Nov 2022 18:13:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BAC0C433D6;
+        Wed, 30 Nov 2022 18:13:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669832008;
-        bh=yoNO14jnT7/3wJpWHWo0CYgw8+T0b3nI0VWmVo/0VZk=;
+        s=k20201202; t=1669832007;
+        bh=KTUh/BBOVf/jDi48jtrSyvr3uGxVW8ae61JQrk9NyJc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QmUth/WNvneVJ7GY/NtQg2tQXkTTyS6dQZtGDqBepyOjRyaRmzdEVbxOwHWojNgNG
-         fy274sxQ8p2fNmFr7zOX+v8PTdexYqqR+nEhTS6TAca3mgKJxgJmgNeZ7Qgfyb13vk
-         KmRg7eHwgtZRQ3dkAQTxR3kVNdYZZUuawesr4MoOkISj5Ge9v87CEKqjYT49l8Q27B
-         czHeZkDRTlPmeLD5CGnM9FyqIl1YmKi8jqqfbS6/XwRSsWdypQh1osFZVzDx+3doNT
-         ZEc5DK7JuXrrQWn2jEe1fbX8zvfQHWLv13WWUGCyBNyPpiiXarzI79sX1I3H8M8AhX
-         ZlhvX2BidzHTA==
+        b=W8Ib8dqo0tM2ZZX1nN5aPSqBIQqvc+AFNKQ9RXDNJHY7jdtD5p70hLzIGA+ZplQn9
+         yNjVd3NK9aPO965vSs9Vxf2u7XONZv0fe7n09XoPaKp9RIKv91a7/I0AQ7kSthytkW
+         Tr4sLMqh6hy03j1NuMEVmSvUV4p4Aw6Ers1Xb9d3m4edfqbeNf2K1i1k8peYxz+01m
+         jFywHwADwCLsnoEfQDXsnQSZERbTmMKe26WKNqh7Ivr5ZSmu4LY07LmV0OSh36uYm2
+         5yRt7Xd0DlSZXIHyPtgMwz20ir1LCys0eIY5urJHAQqB9g80LnsUGhlFagIHmTJKtZ
+         eZ52DRv0AsnUg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 744535C1A77; Wed, 30 Nov 2022 10:13:27 -0800 (PST)
+        id 558095C051C; Wed, 30 Nov 2022 10:13:27 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org, Eric Dumazet <edumazet@google.com>,
+        rostedt@goodmis.org, Zhen Lei <thunder.leizhen@huawei.com>,
         Joel Fernandes <joel@joelfernandes.org>,
-        David Ahern <dsahern@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        Frederic Weisbecker <frederic@kernel.org>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 16/16] net: devinet: Reduce refcount before grace period
-Date:   Wed, 30 Nov 2022 10:13:25 -0800
-Message-Id: <20221130181325.1012760-16-paulmck@kernel.org>
+Subject: [PATCH rcu 01/16] rcu: Simplify rcu_init_nohz() cpumask handling
+Date:   Wed, 30 Nov 2022 10:13:10 -0800
+Message-Id: <20221130181325.1012760-1-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20221130181316.GA1012431@paulmck-ThinkPad-P17-Gen-1>
 References: <20221130181316.GA1012431@paulmck-ThinkPad-P17-Gen-1>
@@ -56,89 +52,89 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-Currently, the inetdev_destroy() function waits for an RCU grace period
-before decrementing the refcount and freeing memory. This causes a delay
-with a new RCU configuration that tries to save power, which results in the
-network interface disappearing later than expected. The resulting delay
-causes test failures on ChromeOS.
+In kernels built with either CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y or
+CONFIG_NO_HZ_FULL=y, additional CPUs must be added to rcu_nocb_mask.
+Except that kernels booted without the rcu_nocbs= will not have
+allocated rcu_nocb_mask.  And the current rcu_init_nohz() function uses
+its need_rcu_nocb_mask and offload_all local variables to track the
+rcu_nocb and nohz_full state.
 
-Refactor the code such that the refcount is freed before the grace period
-and memory is freed after. With this a ChromeOS network test passes that
-does 'ip netns del' and polls for an interface disappearing, now passes.
+But there is a much simpler approach, namely creating a cpumask pointer
+to track the default and then using cpumask_available() to check the
+rcu_nocb_mask state.  This commit takes this approach, thereby simplifying
+and shortening the rcu_init_nohz() function.
 
-Reported-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Cc: David Ahern <dsahern@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Paolo Abeni <pabeni@redhat.com>
-Cc: <netdev@vger.kernel.org>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Acked-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- net/ipv4/devinet.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+ kernel/rcu/tree_nocb.h | 34 +++++++++++-----------------------
+ 1 file changed, 11 insertions(+), 23 deletions(-)
 
-diff --git a/net/ipv4/devinet.c b/net/ipv4/devinet.c
-index e8b9a9202fecd..b0acf6e19aed3 100644
---- a/net/ipv4/devinet.c
-+++ b/net/ipv4/devinet.c
-@@ -234,13 +234,20 @@ static void inet_free_ifa(struct in_ifaddr *ifa)
- 	call_rcu(&ifa->rcu_head, inet_rcu_free_ifa);
- }
- 
-+static void in_dev_free_rcu(struct rcu_head *head)
-+{
-+	struct in_device *idev = container_of(head, struct in_device, rcu_head);
-+
-+	kfree(rcu_dereference_protected(idev->mc_hash, 1));
-+	kfree(idev);
-+}
-+
- void in_dev_finish_destroy(struct in_device *idev)
+diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+index 0a5f0ef414845..ce526cc2791ca 100644
+--- a/kernel/rcu/tree_nocb.h
++++ b/kernel/rcu/tree_nocb.h
+@@ -1210,45 +1210,33 @@ EXPORT_SYMBOL_GPL(rcu_nocb_cpu_offload);
+ void __init rcu_init_nohz(void)
  {
- 	struct net_device *dev = idev->dev;
- 
- 	WARN_ON(idev->ifa_list);
- 	WARN_ON(idev->mc_list);
--	kfree(rcu_dereference_protected(idev->mc_hash, 1));
- #ifdef NET_REFCNT_DEBUG
- 	pr_debug("%s: %p=%s\n", __func__, idev, dev ? dev->name : "NIL");
- #endif
-@@ -248,7 +255,7 @@ void in_dev_finish_destroy(struct in_device *idev)
- 	if (!idev->dead)
- 		pr_err("Freeing alive in_device %p\n", idev);
- 	else
--		kfree(idev);
-+		call_rcu(&idev->rcu_head, in_dev_free_rcu);
- }
- EXPORT_SYMBOL(in_dev_finish_destroy);
- 
-@@ -298,12 +305,6 @@ static struct in_device *inetdev_init(struct net_device *dev)
- 	goto out;
- }
- 
--static void in_dev_rcu_put(struct rcu_head *head)
--{
--	struct in_device *idev = container_of(head, struct in_device, rcu_head);
--	in_dev_put(idev);
--}
+ 	int cpu;
+-	bool need_rcu_nocb_mask = false;
+-	bool offload_all = false;
+ 	struct rcu_data *rdp;
 -
- static void inetdev_destroy(struct in_device *in_dev)
- {
- 	struct net_device *dev;
-@@ -328,7 +329,7 @@ static void inetdev_destroy(struct in_device *in_dev)
- 	neigh_parms_release(&arp_tbl, in_dev->arp_parms);
- 	arp_ifdown(dev);
+-#if defined(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL)
+-	if (!rcu_state.nocb_is_setup) {
+-		need_rcu_nocb_mask = true;
+-		offload_all = true;
+-	}
+-#endif /* #if defined(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL) */
++	const struct cpumask *cpumask = NULL;
  
--	call_rcu(&in_dev->rcu_head, in_dev_rcu_put);
-+	in_dev_put(in_dev);
- }
+ #if defined(CONFIG_NO_HZ_FULL)
+-	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask)) {
+-		need_rcu_nocb_mask = true;
+-		offload_all = false; /* NO_HZ_FULL has its own mask. */
+-	}
+-#endif /* #if defined(CONFIG_NO_HZ_FULL) */
++	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask))
++		cpumask = tick_nohz_full_mask;
++#endif
++
++	if (IS_ENABLED(CONFIG_RCU_NOCB_CPU_DEFAULT_ALL) &&
++	    !rcu_state.nocb_is_setup && !cpumask)
++		cpumask = cpu_possible_mask;
  
- int inet_addr_onlink(struct in_device *in_dev, __be32 a, __be32 b)
+-	if (need_rcu_nocb_mask) {
++	if (cpumask) {
+ 		if (!cpumask_available(rcu_nocb_mask)) {
+ 			if (!zalloc_cpumask_var(&rcu_nocb_mask, GFP_KERNEL)) {
+ 				pr_info("rcu_nocb_mask allocation failed, callback offloading disabled.\n");
+ 				return;
+ 			}
+ 		}
++
++		cpumask_or(rcu_nocb_mask, rcu_nocb_mask, cpumask);
+ 		rcu_state.nocb_is_setup = true;
+ 	}
+ 
+ 	if (!rcu_state.nocb_is_setup)
+ 		return;
+ 
+-#if defined(CONFIG_NO_HZ_FULL)
+-	if (tick_nohz_full_running)
+-		cpumask_or(rcu_nocb_mask, rcu_nocb_mask, tick_nohz_full_mask);
+-#endif /* #if defined(CONFIG_NO_HZ_FULL) */
+-
+-	if (offload_all)
+-		cpumask_setall(rcu_nocb_mask);
+-
+ 	if (!cpumask_subset(rcu_nocb_mask, cpu_possible_mask)) {
+ 		pr_info("\tNote: kernel parameter 'rcu_nocbs=', 'nohz_full', or 'isolcpus=' contains nonexistent CPUs.\n");
+ 		cpumask_and(rcu_nocb_mask, cpu_possible_mask,
 -- 
 2.31.1.189.g2e36527f23
 
