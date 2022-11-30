@@ -2,99 +2,121 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B8E6C4321E
-	for <rcu@archiver.kernel.org>; Wed, 30 Nov 2022 22:48:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C37F7C47089
+	for <rcu@archiver.kernel.org>; Wed, 30 Nov 2022 23:06:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229671AbiK3WsA (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 30 Nov 2022 17:48:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55878 "EHLO
+        id S229612AbiK3XGg (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 30 Nov 2022 18:06:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229622AbiK3Wr7 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 30 Nov 2022 17:47:59 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F9091ADB1
-        for <rcu@vger.kernel.org>; Wed, 30 Nov 2022 14:47:58 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id n20so206080ejh.0
-        for <rcu@vger.kernel.org>; Wed, 30 Nov 2022 14:47:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=QZD29PB1DDnmxaZlq47fhYeHRcAqoUfi3bc/ZNgB9gU=;
-        b=omJRN5aYV43lsSLL/yIGbBrYHdeY5lcQwNAbaYZOIuJbZ1auvK/sIXPiVt/1MzRpUR
-         X89Jvizn78r4Q0w0g2NpVVxk7uaR40j8uv6ukZFpiwji9kVcArT0yeAhGP1MpyI3j+Vc
-         07Uy/Qr7sKaft4E+L+OHOB2/t5OvAyLwaBmKE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=QZD29PB1DDnmxaZlq47fhYeHRcAqoUfi3bc/ZNgB9gU=;
-        b=hvkfNKtnpOQZXue8/rZnMzx6503e/Rh3209cm/MA+qtSnYk9ip1+L4tlAVllmZWUZe
-         JWJlYT+AcWevS6/CczrNuG6yBig4rM7cYvBSX/Yy2+QDdlDx0LrdO8rHBfMb7Iwu7u8P
-         TdLBqODsl2n48DDGs1uKPLg4jFtbRnDTpMbQ0mSIHlIK6WbnKnzcw8pweNCAIJ4fJJhr
-         sLZJhl5QIMwAUo+vcNq4CRb6lPUDF+qNmqiQVQ2Va2FrMkavwog5wJspCuo+zWq0GRUK
-         T+kFY/xC8RFulYaRIudaRSFu8kkjiGEmeYrsqOovRBDCi8xKGFzkONig557rwjIaiMr+
-         KPSw==
-X-Gm-Message-State: ANoB5pnraf2yAXQRfNy9glOW8SrsPHlHchQhLQ5txTar29pS2Ur7ijtb
-        GUOyPU5YQ561EVLX9/M4EsW01P1qevBiK+RsoMj5bQ==
-X-Google-Smtp-Source: AA0mqf6BCXA5CM22fNyGWD/c96fXFEueNSkrFbKgiBvP38k8xPpVPlHBEhq1P0g+KzDS2ef5OtP6Q7GFGQgfT5K4plg=
-X-Received: by 2002:a17:906:fcd0:b0:7ad:b8c0:3057 with SMTP id
- qx16-20020a170906fcd000b007adb8c03057mr54317182ejb.440.1669848476743; Wed, 30
- Nov 2022 14:47:56 -0800 (PST)
-MIME-Version: 1.0
-References: <20221130181316.GA1012431@paulmck-ThinkPad-P17-Gen-1>
- <20221130181325.1012760-14-paulmck@kernel.org> <CAEXW_YS1nfsV_ohXDaB1i2em=+0KP1DofktS24oGFa4wPAbiiw@mail.gmail.com>
- <639433.1669835344@warthog.procyon.org.uk>
-In-Reply-To: <639433.1669835344@warthog.procyon.org.uk>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Wed, 30 Nov 2022 22:47:41 +0000
-Message-ID: <CAEXW_YSd3dyxHxnU1EuER+xyBGGatONzPovphFX5K9seSbkdkg@mail.gmail.com>
-Subject: Re: [PATCH rcu 14/16] rxrpc: Use call_rcu_hurry() instead of call_rcu()
-To:     David Howells <dhowells@redhat.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org, Marc Dionne <marc.dionne@auristor.com>,
+        with ESMTP id S229646AbiK3XG3 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 30 Nov 2022 18:06:29 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E2C3950ED
+        for <rcu@vger.kernel.org>; Wed, 30 Nov 2022 15:05:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1669849529;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=chCgMEOdPcT2pjDuX1oaF0+9J3jNNFoDJQhqkxGPISA=;
+        b=h7hHT419mpZn7L0A+INRNceHcGUftkeEvaio0744bs1m0mrnUqi3TjteYJ5L6VvIU5wTl9
+        IYxO3CZn/jwJ1sPBZmVkp9DItHKTIP2a81w+7mWYFJmeMLWKSwQw1Oaj2bfL3siKmSgizE
+        v1+PasCE9ZP/Jxb5/b0v8DJZjenhsHs=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-617-hLY3PVO3Mv259JTv7fsqyw-1; Wed, 30 Nov 2022 18:05:27 -0500
+X-MC-Unique: hLY3PVO3Mv259JTv7fsqyw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E622E2999B58;
+        Wed, 30 Nov 2022 23:05:26 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.36.36])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 56C42C15BB4;
+        Wed, 30 Nov 2022 23:05:25 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <CAEXW_YSd3dyxHxnU1EuER+xyBGGatONzPovphFX5K9seSbkdkg@mail.gmail.com>
+References: <CAEXW_YSd3dyxHxnU1EuER+xyBGGatONzPovphFX5K9seSbkdkg@mail.gmail.com> <20221130181316.GA1012431@paulmck-ThinkPad-P17-Gen-1> <20221130181325.1012760-14-paulmck@kernel.org> <CAEXW_YS1nfsV_ohXDaB1i2em=+0KP1DofktS24oGFa4wPAbiiw@mail.gmail.com> <639433.1669835344@warthog.procyon.org.uk>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     dhowells@redhat.com, "Paul E. McKenney" <paulmck@kernel.org>,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com, rostedt@goodmis.org,
+        Marc Dionne <marc.dionne@auristor.com>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>, linux-afs@lists.infradead.org,
         netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH rcu 14/16] rxrpc: Use call_rcu_hurry() instead of call_rcu()
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <658623.1669849522.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Wed, 30 Nov 2022 23:05:22 +0000
+Message-ID: <658624.1669849522@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi David,
+Joel Fernandes <joel@joelfernandes.org> wrote:
 
-On Wed, Nov 30, 2022 at 7:09 PM David Howells <dhowells@redhat.com> wrote:
+> > Note that this conflicts with my patch:
+> >
+> >         rxrpc: Don't hold a ref for connection workqueue
+> >         https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux=
+-fs.git/commit/?h=3Drxrpc-next&id=3D450b00011290660127c2d76f5c5ed264126eb2=
+29
+> >
+> > which should render it unnecessary.  It's a little ahead of yours in t=
+he
+> > net-next queue, if that means anything.
+> =
+
+> Could you clarify why it is unnecessary?
+
+Rather than tearing down parts of the connection it only logs a trace line=
+,
+frees the memory and decrements the counter on the namespace.  This it use=
+d to
+account that all the pieces of memory allocated in that namespace are gone
+before the namespace is removed to check for leaks.  The RCU cleanup used =
+to
+use some other stuff (such as the peer hash) in the rxrpc_net struct but n=
+o
+longer will after the patches I submitted.
+
+> After your patch, you are still doing a wake up in your call_rcu() callb=
+ack:
 >
-> Note that this conflicts with my patch:
->
->         rxrpc: Don't hold a ref for connection workqueue
->         https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/commit/?h=rxrpc-next&id=450b00011290660127c2d76f5c5ed264126eb229
->
-> which should render it unnecessary.  It's a little ahead of yours in the
-> net-next queue, if that means anything.
+> - ASSERTCMP(refcount_read(&conn->ref), =3D=3D, 0);
+> + if (atomic_dec_and_test(&rxnet->nr_conns))
+> +    wake_up_var(&rxnet->nr_conns);
+> +}
+> =
 
-Could you clarify why it is unnecessary?
+> Are you saying the code can now tolerate delays? What if the RCU
+> callback is invoked after arbitrarily long delays making the sleeping
+> process to wait?
 
-After your patch, you are still doing a wake up in your call_rcu() callback:
+True.  But that now only holds up the destruction of a net namespace and t=
+he
+removal of the rxrpc module.
 
-- ASSERTCMP(refcount_read(&conn->ref), ==, 0);
-+ if (atomic_dec_and_test(&rxnet->nr_conns))
-+    wake_up_var(&rxnet->nr_conns);
-+}
+> If you agree, you can convert the call_rcu() to call_rcu_hurry() in
+> your patch itself. Would you be willing to do that? If not, that's
+> totally OK and I can send a patch later once yours is in (after
+> further testing).
 
-Are you saying the code can now tolerate delays? What if the RCU
-callback is invoked after arbitrarily long delays making the sleeping
-process to wait?
+I can add it to part 4 (see my rxrpc-ringless-5 branch) if it is necessary=
+.
 
-If you agree, you can convert the call_rcu() to call_rcu_hurry() in
-your patch itself. Would you be willing to do that? If not, that's
-totally OK and I can send a patch later once yours is in (after
-further testing).
+David
 
-Thanks,
-
- - Joel
