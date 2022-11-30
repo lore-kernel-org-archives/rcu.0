@@ -2,95 +2,133 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 59F62C4321E
-	for <rcu@archiver.kernel.org>; Wed, 30 Nov 2022 19:21:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 91890C4321E
+	for <rcu@archiver.kernel.org>; Wed, 30 Nov 2022 19:43:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229507AbiK3TVJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 30 Nov 2022 14:21:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36534 "EHLO
+        id S229579AbiK3TnR (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 30 Nov 2022 14:43:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229565AbiK3TUz (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 30 Nov 2022 14:20:55 -0500
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BCA583275
-        for <rcu@vger.kernel.org>; Wed, 30 Nov 2022 11:20:54 -0800 (PST)
-Received: by mail-qt1-x82c.google.com with SMTP id cg5so11839351qtb.12
-        for <rcu@vger.kernel.org>; Wed, 30 Nov 2022 11:20:54 -0800 (PST)
+        with ESMTP id S229726AbiK3TnR (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 30 Nov 2022 14:43:17 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDE3226132;
+        Wed, 30 Nov 2022 11:43:15 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id jl24so229863plb.8;
+        Wed, 30 Nov 2022 11:43:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=QTqXUSUHOfSCHe+q8lEezcpVoHrYxPM2K46ADRFSg4Q=;
-        b=rJe4KttveESN6bqLtat/sAagy0F4KKW/91TY5Ydc/Kx5uqZeIHwD6IGOYlJFqBqq/6
-         LunTJYbb1hSAdwE1sAbhVcMu6fcw5v0xsuu2iaxasGbHxYAfhKBPKsejSeiyBE4UQMit
-         AuOMboAwJEyJpltGCRqBLw8or294DF8LJ850s=
+        bh=pUBcXV7nQy/1r0o6E64fUR2RwhClmxU+dP9giO6hLmY=;
+        b=fBZVpztZLS4scqkNd2KK5kBSJaDFwKbZkCD7lBloMLPUm1TxERP3E6+Awn4UyBRiws
+         RrFEP2bcgV6oWYpuTKP35X1NhRHLIYuBvf0xnaG3Ta1so5bYMBsei779ZlT8fR38icqX
+         FmHpKdrR40GVytaMY/oF09SOnM/LTlZ2UoPLI8AdPREHGPMtmLVvAP2+QXWOx2pmwjrT
+         nO+pRilq6WETWtwL3w78XpSiy8noae+/SPNfJiiFpGXlPALaPVuLB9hV4gKs6uv+5uuI
+         8UiAqE7kZlf8C1yGFtWc+r4Hox3xWYsLg2j4KLUtiLPDj48BtDEc9mvupGhQAUDLIvFa
+         Jf9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=QTqXUSUHOfSCHe+q8lEezcpVoHrYxPM2K46ADRFSg4Q=;
-        b=rsdEvZCXXzOliWFxf2qAdYZAR3wr+OEYEmJW1mh/7lx6fPENouVXmB/JI56XMsT37X
-         jO2D5UU6bMuveGPGInJE4oKjTtrQnrxHLQIP3+eidJ4tVgyTs148+AjvqgW4zsZ13GU0
-         XUMoxG6X38r23oXnGMkj9FQfAiq2wI/5rJKVMyxhI7ARrBlQKlcdTWkSCibPLfZQrScd
-         D+Y9C5BJvUaWEe275bUWjnbkbazhgf8YacCqttNQ63hGCBbrERU3cu9VHa7RujGqeAo9
-         yejHqeafusnmYdxkWB8bQRriPamBfzC095mHWLR3rGDe+U1yrUNkh6EM/luhoaUgkDvZ
-         3Khg==
-X-Gm-Message-State: ANoB5pkZWkaGzsPoKDyj28rdsDtNY5qmKCp8KQ7l2FerwP6vZAN4MEvR
-        644yt6FltAVrpv9uDt49C27NGQ==
-X-Google-Smtp-Source: AA0mqf58g0O4rzxbrzoBvEk2vIch+NoFrco8tr2vUXCSmOlH0ZhRx1JSuW2Ezbdm9OJJupUeGrvUyA==
-X-Received: by 2002:ac8:5ec8:0:b0:3a5:280d:31ff with SMTP id s8-20020ac85ec8000000b003a5280d31ffmr39265777qtx.646.1669836053521;
-        Wed, 30 Nov 2022 11:20:53 -0800 (PST)
-Received: from smtpclient.apple (c-73-148-104-166.hsd1.va.comcast.net. [73.148.104.166])
-        by smtp.gmail.com with ESMTPSA id z18-20020ac87112000000b0039853b7b771sm1299541qto.80.2022.11.30.11.20.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Nov 2022 11:20:52 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Joel Fernandes <joel@joelfernandes.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH rcu 14/16] rxrpc: Use call_rcu_hurry() instead of call_rcu()
-Date:   Wed, 30 Nov 2022 14:20:52 -0500
-Message-Id: <B4935931-239F-4C48-9646-2C20578F027C@joelfernandes.org>
-References: <639433.1669835344@warthog.procyon.org.uk>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org, Marc Dionne <marc.dionne@auristor.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-afs@lists.infradead.org,
-        netdev@vger.kernel.org
-In-Reply-To: <639433.1669835344@warthog.procyon.org.uk>
-To:     David Howells <dhowells@redhat.com>
-X-Mailer: iPhone Mail (19G82)
+        bh=pUBcXV7nQy/1r0o6E64fUR2RwhClmxU+dP9giO6hLmY=;
+        b=hLYsEEpxIZ+WutNQ2ZeRQq947vbAWXXwpbUzMknHVTaLr8n5C3b2xHmnn3QGz8ZbYb
+         lTvmsPbC7p0KujgfP6HuXmSJhwVm7unpTn4Q0OhRHrYaHM48/b59FmTeE8a54RWV4MM+
+         0wwbHadNPBHfo4QoOE3RcDS0xB+ajpgbLzhnvZQtGsvD91xtj+PH6IqCGpM4bTA7+dEG
+         umZBYS5mlrH9OR0sGo2trA5TujElvO057vw/7QK3x/BZNwDOmmA14yufD1nA8NH+uMnD
+         4k/X99jV76I9PQhzjmJijO80AGOCib+cCWiT9dMI8EzEYAJLOmIRE4Qpk+8hWSiA54Nh
+         0nIg==
+X-Gm-Message-State: ANoB5pmImhYYqmAKWx9HcarR91NvgDwHqUWwNGFXyFo6tEel5lh0N7xq
+        8X95KKRuZKM9pQJmypVpIvM=
+X-Google-Smtp-Source: AA0mqf4JI4PebfL031B6uLFeBwXnDd5rO16aayoO4CIzpe3CmYLTGEM3ar1kjES6c5bygXsrxdM2tw==
+X-Received: by 2002:a17:902:8548:b0:186:8398:350 with SMTP id d8-20020a170902854800b0018683980350mr43130061plo.6.1669837395109;
+        Wed, 30 Nov 2022 11:43:15 -0800 (PST)
+Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
+        by smtp.gmail.com with ESMTPSA id k1-20020a170902c40100b00188fc33e96dsm1870452plk.198.2022.11.30.11.43.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Nov 2022 11:43:14 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 30 Nov 2022 09:43:13 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com, rostedt@goodmis.org,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>
+Subject: Re: [PATCH rcu 13/16] workqueue: Make queue_rcu_work() use
+ call_rcu_hurry()
+Message-ID: <Y4eyUZwY2pY78NR7@slm.duckdns.org>
+References: <20221130181316.GA1012431@paulmck-ThinkPad-P17-Gen-1>
+ <20221130181325.1012760-13-paulmck@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221130181325.1012760-13-paulmck@kernel.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Wed, Nov 30, 2022 at 10:13:22AM -0800, Paul E. McKenney wrote:
+> From: Uladzislau Rezki <urezki@gmail.com>
+> 
+> Earlier commits in this series allow battery-powered systems to build
+> their kernels with the default-disabled CONFIG_RCU_LAZY=y Kconfig option.
+> This Kconfig option causes call_rcu() to delay its callbacks in order
+> to batch them.  This means that a given RCU grace period covers more
+> callbacks, thus reducing the number of grace periods, in turn reducing
+> the amount of energy consumed, which increases battery lifetime which
+> can be a very good thing.  This is not a subtle effect: In some important
+> use cases, the battery lifetime is increased by more than 10%.
+> 
+> This CONFIG_RCU_LAZY=y option is available only for CPUs that offload
+> callbacks, for example, CPUs mentioned in the rcu_nocbs kernel boot
+> parameter passed to kernels built with CONFIG_RCU_NOCB_CPU=y.
+> 
+> Delaying callbacks is normally not a problem because most callbacks do
+> nothing but free memory.  If the system is short on memory, a shrinker
+> will kick all currently queued lazy callbacks out of their laziness,
+> thus freeing their memory in short order.  Similarly, the rcu_barrier()
+> function, which blocks until all currently queued callbacks are invoked,
+> will also kick lazy callbacks, thus enabling rcu_barrier() to complete
+> in a timely manner.
+> 
+> However, there are some cases where laziness is not a good option.
+> For example, synchronize_rcu() invokes call_rcu(), and blocks until
+> the newly queued callback is invoked.  It would not be a good for
+> synchronize_rcu() to block for ten seconds, even on an idle system.
+> Therefore, synchronize_rcu() invokes call_rcu_hurry() instead of
+> call_rcu().  The arrival of a non-lazy call_rcu_hurry() callback on a
+> given CPU kicks any lazy callbacks that might be already queued on that
+> CPU.  After all, if there is going to be a grace period, all callbacks
+> might as well get full benefit from it.
+> 
+> Yes, this could be done the other way around by creating a
+> call_rcu_lazy(), but earlier experience with this approach and
+> feedback at the 2022 Linux Plumbers Conference shifted the approach
+> to call_rcu() being lazy with call_rcu_hurry() for the few places
+> where laziness is inappropriate.
+> 
+> And another call_rcu() instance that cannot be lazy is the one
+> in queue_rcu_work(), given that callers to queue_rcu_work() are
+> not necessarily OK with long delays.
+> 
+> Therefore, make queue_rcu_work() use call_rcu_hurry() in order to revert
+> to the old behavior.
+> 
+> [ paulmck: Apply s/call_rcu_flush/call_rcu_hurry/ feedback from Tejun Heo. ]
+> 
+> Signed-off-by: Uladzislau Rezki <urezki@gmail.com>
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
+Acked-by: Tejun Heo <tj@kernel.org>
 
-> On Nov 30, 2022, at 2:09 PM, David Howells <dhowells@redhat.com> wrote:
->=20
-> =EF=BB=BFNote that this conflicts with my patch:
+Thanks.
 
-Oh.  I don=E2=80=99t see any review or Ack tags on it. Is it still under rev=
-iew?
-
-Thanks,
-
-- Joel
-
-
-
->=20
->    rxrpc: Don't hold a ref for connection workqueue
->    https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/c=
-ommit/?h=3Drxrpc-next&id=3D450b00011290660127c2d76f5c5ed264126eb229
->=20
-> which should render it unnecessary.  It's a little ahead of yours in the
-> net-next queue, if that means anything.
->=20
-> David
->=20
+-- 
+tejun
