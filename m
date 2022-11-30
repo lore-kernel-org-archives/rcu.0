@@ -2,47 +2,46 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D68B8C4321E
-	for <rcu@archiver.kernel.org>; Wed, 30 Nov 2022 18:13:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D0EF2C4321E
+	for <rcu@archiver.kernel.org>; Wed, 30 Nov 2022 18:13:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229974AbiK3SNw (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 30 Nov 2022 13:13:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39052 "EHLO
+        id S229616AbiK3SNx (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 30 Nov 2022 13:13:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230117AbiK3SNb (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 30 Nov 2022 13:13:31 -0500
+        with ESMTP id S229899AbiK3SNc (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 30 Nov 2022 13:13:32 -0500
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63B29862D3;
-        Wed, 30 Nov 2022 10:13:30 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6763862DA;
+        Wed, 30 Nov 2022 10:13:31 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 1430BB81C9B;
-        Wed, 30 Nov 2022 18:13:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A78D8C433D7;
-        Wed, 30 Nov 2022 18:13:27 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 6195CB81C9C;
+        Wed, 30 Nov 2022 18:13:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10CB6C43154;
+        Wed, 30 Nov 2022 18:13:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669832007;
-        bh=PS6L08FWflyTwRyMdRxiUT1KwyXbAuVOfA4oJ9gzHj4=;
+        s=k20201202; t=1669832008;
+        bh=bN1R1Byx9JRzp9KLFli6bl4Fbxjs+KDfwn4AF0kT8Bw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pGXc5mgCEhUZNWYca5bydsevRHCbD4DO79w1BS8KcYR7QYHB9zGV0G0A4fauxBfHh
-         5I5ab21+L/vX8s6hvLXGlgwd0x6QD9xFKdj32OX3EmAH2dB0OubMvStmc2il1CLL5/
-         5kNGkiri929t2+8e/nJY9xRKK/CQnnKPpo7JIagwvvPV1Sg5h11usqvCBSoXx4QTT8
-         Mk17SV3zMXp0jSFua5jMhHhUeD/tfP9/ML1pXsyw+1yPCPGlkt7Hcdtcg69ow3yryx
-         ZVg/uvhtcNf9DfyZl6lNLCGc6Vz0N77HpD6iRbJquWS+tUsqHYZzjYdwAi4sXUXzTw
-         xAnA0LIGox9eA==
+        b=ujwYutX6/+BLv6Om3JgkjH/l6Pfi1kGfAwpi0Jrm78iqr1Ko5dBems6PV/sGMeL20
+         OWevhyCULn9ND6xnLOZim1GIbUQ35Col1jDlXkYyDtD42jK/dmDwznsmBIQcB4ZwJG
+         TpVJsiu7Xsl7qArx58yTBUKcIiM9XNkGwT+9xcJA8SwZR6isg028Vimh8eFj0HhQzL
+         ow4K4Co1ewczqUMXI2j4Gcwwz8cIHZ6XirPSChEct56uEJCyYzCsQ7kU5p4jec7NIq
+         jvMm41apnBYIylB1VNTrBS0APxfrOhCccrIiAE36kBJIvgjnIHSqtz6VXzSXDWJVa7
+         TJMMFS4y19Scg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 5E8AC5C0BA0; Wed, 30 Nov 2022 10:13:27 -0800 (PST)
+        id 67C6E5C16C5; Wed, 30 Nov 2022 10:13:27 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
         rostedt@goodmis.org,
         "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: [PATCH rcu 05/16] rcu: Refactor code a bit in rcu_nocb_do_flush_bypass()
-Date:   Wed, 30 Nov 2022 10:13:14 -0800
-Message-Id: <20221130181325.1012760-5-paulmck@kernel.org>
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 10/16] rcu/rcutorture: Use call_rcu_hurry() where needed
+Date:   Wed, 30 Nov 2022 10:13:19 -0800
+Message-Id: <20221130181325.1012760-10-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20221130181316.GA1012431@paulmck-ThinkPad-P17-Gen-1>
 References: <20221130181316.GA1012431@paulmck-ThinkPad-P17-Gen-1>
@@ -54,58 +53,69 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
 
-This consolidates the code a bit and makes it cleaner. Functionally it
-is the same.
+call_rcu() changes to save power will change the behavior of rcutorture
+tests. Use the call_rcu_hurry() API instead which reverts to the old
+behavior.
+
+[ paulmck: Apply s/call_rcu_flush/call_rcu_hurry/ feedback from Tejun Heo. ]
 
 Reported-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_nocb.h | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
+ kernel/rcu/rcutorture.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index d6e4c076b0515..213daf81c057f 100644
---- a/kernel/rcu/tree_nocb.h
-+++ b/kernel/rcu/tree_nocb.h
-@@ -327,10 +327,11 @@ static void wake_nocb_gp_defer(struct rcu_data *rdp, int waketype,
-  *
-  * Note that this function always returns true if rhp is NULL.
-  */
--static bool rcu_nocb_do_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
-+static bool rcu_nocb_do_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp_in,
- 				     unsigned long j, bool lazy)
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 503c2aa845a4a..2226f86f54f78 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -510,7 +510,7 @@ static unsigned long rcu_no_completed(void)
+ 
+ static void rcu_torture_deferred_free(struct rcu_torture *p)
  {
- 	struct rcu_cblist rcl;
-+	struct rcu_head *rhp = rhp_in;
+-	call_rcu(&p->rtort_rcu, rcu_torture_cb);
++	call_rcu_hurry(&p->rtort_rcu, rcu_torture_cb);
+ }
  
- 	WARN_ON_ONCE(!rcu_rdp_is_offloaded(rdp));
- 	rcu_lockdep_assert_cblist_protected(rdp);
-@@ -345,16 +346,16 @@ static bool rcu_nocb_do_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
+ static void rcu_sync_torture_init(void)
+@@ -551,7 +551,7 @@ static struct rcu_torture_ops rcu_ops = {
+ 	.start_gp_poll_exp_full	= start_poll_synchronize_rcu_expedited_full,
+ 	.poll_gp_state_exp	= poll_state_synchronize_rcu,
+ 	.cond_sync_exp		= cond_synchronize_rcu_expedited,
+-	.call			= call_rcu,
++	.call			= call_rcu_hurry,
+ 	.cb_barrier		= rcu_barrier,
+ 	.fqs			= rcu_force_quiescent_state,
+ 	.stats			= NULL,
+@@ -848,7 +848,7 @@ static void rcu_tasks_torture_deferred_free(struct rcu_torture *p)
  
- 	/*
- 	 * If the new CB requested was a lazy one, queue it onto the main
--	 * ->cblist so we can take advantage of a sooner grade period.
-+	 * ->cblist so that we can take advantage of the grace-period that will
-+	 * happen regardless. But queue it onto the bypass list first so that
-+	 * the lazy CB is ordered with the existing CBs in the bypass list.
- 	 */
- 	if (lazy && rhp) {
--		rcu_cblist_flush_enqueue(&rcl, &rdp->nocb_bypass, NULL);
--		rcu_cblist_enqueue(&rcl, rhp);
--		WRITE_ONCE(rdp->lazy_len, 0);
--	} else {
--		rcu_cblist_flush_enqueue(&rcl, &rdp->nocb_bypass, rhp);
--		WRITE_ONCE(rdp->lazy_len, 0);
-+		rcu_cblist_enqueue(&rdp->nocb_bypass, rhp);
-+		rhp = NULL;
+ static void synchronize_rcu_mult_test(void)
+ {
+-	synchronize_rcu_mult(call_rcu_tasks, call_rcu);
++	synchronize_rcu_mult(call_rcu_tasks, call_rcu_hurry);
+ }
+ 
+ static struct rcu_torture_ops tasks_ops = {
+@@ -3388,13 +3388,13 @@ static void rcu_test_debug_objects(void)
+ 	/* Try to queue the rh2 pair of callbacks for the same grace period. */
+ 	preempt_disable(); /* Prevent preemption from interrupting test. */
+ 	rcu_read_lock(); /* Make it impossible to finish a grace period. */
+-	call_rcu(&rh1, rcu_torture_leak_cb); /* Start grace period. */
++	call_rcu_hurry(&rh1, rcu_torture_leak_cb); /* Start grace period. */
+ 	local_irq_disable(); /* Make it harder to start a new grace period. */
+-	call_rcu(&rh2, rcu_torture_leak_cb);
+-	call_rcu(&rh2, rcu_torture_err_cb); /* Duplicate callback. */
++	call_rcu_hurry(&rh2, rcu_torture_leak_cb);
++	call_rcu_hurry(&rh2, rcu_torture_err_cb); /* Duplicate callback. */
+ 	if (rhp) {
+-		call_rcu(rhp, rcu_torture_leak_cb);
+-		call_rcu(rhp, rcu_torture_err_cb); /* Another duplicate callback. */
++		call_rcu_hurry(rhp, rcu_torture_leak_cb);
++		call_rcu_hurry(rhp, rcu_torture_err_cb); /* Another duplicate callback. */
  	}
-+	rcu_cblist_flush_enqueue(&rcl, &rdp->nocb_bypass, rhp);
-+	WRITE_ONCE(rdp->lazy_len, 0);
- 
- 	rcu_segcblist_insert_pend_cbs(&rdp->cblist, &rcl);
- 	WRITE_ONCE(rdp->nocb_bypass_first, j);
+ 	local_irq_enable();
+ 	rcu_read_unlock();
 -- 
 2.31.1.189.g2e36527f23
 
