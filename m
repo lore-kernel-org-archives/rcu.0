@@ -2,47 +2,46 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E82EC352A1
-	for <rcu@archiver.kernel.org>; Wed, 30 Nov 2022 18:13:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CDA5CC4321E
+	for <rcu@archiver.kernel.org>; Wed, 30 Nov 2022 18:13:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229934AbiK3SNn (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 30 Nov 2022 13:13:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38998 "EHLO
+        id S229948AbiK3SNo (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 30 Nov 2022 13:13:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229964AbiK3SNa (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S229974AbiK3SNa (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 30 Nov 2022 13:13:30 -0500
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE198880CF;
-        Wed, 30 Nov 2022 10:13:28 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F20C880D5;
+        Wed, 30 Nov 2022 10:13:29 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4C82F61D4F;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DDDCC61D59;
         Wed, 30 Nov 2022 18:13:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9EDB2C433C1;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF12BC43150;
         Wed, 30 Nov 2022 18:13:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669832007;
-        bh=cd9rgMHV5ytGRmwwPo9gYzUKZlyUq56zzJaeb9ZJrZY=;
+        s=k20201202; t=1669832008;
+        bh=hIFNQHcIbY8YtBkmBJx5icL1buQHNTtIxJeozRTrMW8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b3goJ/CRk/LONtMivA9/iHC0U6MW8urB5Fq8uY3sZ97b73caLX8TumVEsjYST8KDo
-         cRdgYlmyabIaKt4Wfuh+vJryxEIvJGP2cQTBqrxBjJXfWgJ6NkceSrVHXdMqY5MrBf
-         p44wjuDuJahQZzKJfFcYTxh5mlrotKI56/xUXDR+yWzlRvcHwZuycMAOCPY4rpc1/y
-         Aop9z9lMb2KCcPjrg65ItUWfs//IyOhclfAd6JRMExQncO2iM33DG2z3O8ODcoiZ7o
-         zsjiQvq1Q6Otv8TnFf5jaulAWIk7co1Au/2zGaCUEMNWFXxVbXpFhcYtfg1p2Hm+yN
-         1EHt7xCZENs2Q==
+        b=ZcqbaoCwWgpfTBjbKPRFJJwRPJc5Ejc/7PIei5D9g6OZD+vcLZL44CqUzletkgDmn
+         kmTWhtbegh8kbXGBylPtd1ALYn4P73Qd09zqgGld2TDoc3I4TMgmOxh0cyfMkOqOpu
+         ZWtPl4JshImqKuU1LHowxQdfmR5kp6HqByOBJIq/kv/AgQydFU4yx4gFRqF2tzUT2X
+         N+Ri6k718HDvY4R5aByGoXEDtUeJQU2zz9Dsf/P3gUJVhUqW20mGH2Oo6BBpPsftsa
+         vNrtqqiRXNPbtUdm21PaHp2OTpsVqrYRya38dDVLf1ceFxbB7PXX1TQT6xSqUBU2gu
+         0mECVh3dOkCwQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 57C6C5C0531; Wed, 30 Nov 2022 10:13:27 -0800 (PST)
+        id 607D65C0F36; Wed, 30 Nov 2022 10:13:27 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
+        rostedt@goodmis.org, Vineeth Pillai <vineeth@bitbyteword.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 02/16] rcu: Fix late wakeup when flush of bypass cblist happens
-Date:   Wed, 30 Nov 2022 10:13:11 -0800
-Message-Id: <20221130181325.1012760-2-paulmck@kernel.org>
+Subject: [PATCH rcu 06/16] rcu: Shrinker for lazy rcu
+Date:   Wed, 30 Nov 2022 10:13:15 -0800
+Message-Id: <20221130181325.1012760-6-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20221130181316.GA1012431@paulmck-ThinkPad-P17-Gen-1>
 References: <20221130181316.GA1012431@paulmck-ThinkPad-P17-Gen-1>
@@ -52,62 +51,89 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+From: Vineeth Pillai <vineeth@bitbyteword.org>
 
-When the bypass cblist gets too big or its timeout has occurred, it is
-flushed into the main cblist. However, the bypass timer is still running
-and the behavior is that it would eventually expire and wake the GP
-thread.
+The shrinker is used to speed up the free'ing of memory potentially held
+by RCU lazy callbacks. RCU kernel module test cases show this to be
+effective. Test is introduced in a later patch.
 
-Since we are going to use the bypass cblist for lazy CBs, do the wakeup
-soon as the flush for "too big or too long" bypass list happens.
-Otherwise, long delays can happen for callbacks which get promoted from
-lazy to non-lazy.
-
-This is a good thing to do anyway (regardless of future lazy patches),
-since it makes the behavior consistent with behavior of other code paths
-where flushing into the ->cblist makes the GP kthread into a
-non-sleeping state quickly.
-
-[ Frederic Weisbecker: Changes to avoid unnecessary GP-thread wakeups plus
-		    comment changes. ]
-
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+Signed-off-by: Vineeth Pillai <vineeth@bitbyteword.org>
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_nocb.h | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ kernel/rcu/tree_nocb.h | 52 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 52 insertions(+)
 
 diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index ce526cc2791ca..f77a6d7e13564 100644
+index 213daf81c057f..9e1c8caec5ceb 100644
 --- a/kernel/rcu/tree_nocb.h
 +++ b/kernel/rcu/tree_nocb.h
-@@ -433,8 +433,9 @@ static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
- 	if ((ncbs && j != READ_ONCE(rdp->nocb_bypass_first)) ||
- 	    ncbs >= qhimark) {
- 		rcu_nocb_lock(rdp);
-+		*was_alldone = !rcu_segcblist_pend_cbs(&rdp->cblist);
-+
- 		if (!rcu_nocb_flush_bypass(rdp, rhp, j)) {
--			*was_alldone = !rcu_segcblist_pend_cbs(&rdp->cblist);
- 			if (*was_alldone)
- 				trace_rcu_nocb_wake(rcu_state.name, rdp->cpu,
- 						    TPS("FirstQ"));
-@@ -447,7 +448,12 @@ static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
- 			rcu_advance_cbs_nowake(rdp->mynode, rdp);
- 			rdp->nocb_gp_adv_time = j;
- 		}
--		rcu_nocb_unlock_irqrestore(rdp, flags);
-+
-+		// The flush succeeded and we moved CBs into the regular list.
-+		// Don't wait for the wake up timer as it may be too far ahead.
-+		// Wake up the GP thread now instead, if the cblist was empty.
-+		__call_rcu_nocb_wake(rdp, *was_alldone, flags);
-+
- 		return true; // Callback already enqueued.
- 	}
+@@ -1312,6 +1312,55 @@ int rcu_nocb_cpu_offload(int cpu)
+ }
+ EXPORT_SYMBOL_GPL(rcu_nocb_cpu_offload);
  
++static unsigned long
++lazy_rcu_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
++{
++	int cpu;
++	unsigned long count = 0;
++
++	/* Snapshot count of all CPUs */
++	for_each_possible_cpu(cpu) {
++		struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
++
++		count +=  READ_ONCE(rdp->lazy_len);
++	}
++
++	return count ? count : SHRINK_EMPTY;
++}
++
++static unsigned long
++lazy_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
++{
++	int cpu;
++	unsigned long flags;
++	unsigned long count = 0;
++
++	/* Snapshot count of all CPUs */
++	for_each_possible_cpu(cpu) {
++		struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
++		int _count = READ_ONCE(rdp->lazy_len);
++
++		if (_count == 0)
++			continue;
++		rcu_nocb_lock_irqsave(rdp, flags);
++		WRITE_ONCE(rdp->lazy_len, 0);
++		rcu_nocb_unlock_irqrestore(rdp, flags);
++		wake_nocb_gp(rdp, false);
++		sc->nr_to_scan -= _count;
++		count += _count;
++		if (sc->nr_to_scan <= 0)
++			break;
++	}
++	return count ? count : SHRINK_STOP;
++}
++
++static struct shrinker lazy_rcu_shrinker = {
++	.count_objects = lazy_rcu_shrink_count,
++	.scan_objects = lazy_rcu_shrink_scan,
++	.batch = 0,
++	.seeks = DEFAULT_SEEKS,
++};
++
+ void __init rcu_init_nohz(void)
+ {
+ 	int cpu;
+@@ -1342,6 +1391,9 @@ void __init rcu_init_nohz(void)
+ 	if (!rcu_state.nocb_is_setup)
+ 		return;
+ 
++	if (register_shrinker(&lazy_rcu_shrinker, "rcu-lazy"))
++		pr_err("Failed to register lazy_rcu shrinker!\n");
++
+ 	if (!cpumask_subset(rcu_nocb_mask, cpu_possible_mask)) {
+ 		pr_info("\tNote: kernel parameter 'rcu_nocbs=', 'nohz_full', or 'isolcpus=' contains nonexistent CPUs.\n");
+ 		cpumask_and(rcu_nocb_mask, cpu_possible_mask,
 -- 
 2.31.1.189.g2e36527f23
 
