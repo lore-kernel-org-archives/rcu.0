@@ -2,52 +2,47 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EC4A2C46467
-	for <rcu@archiver.kernel.org>; Wed, 30 Nov 2022 18:13:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D68B8C4321E
+	for <rcu@archiver.kernel.org>; Wed, 30 Nov 2022 18:13:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230124AbiK3SNw (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S229974AbiK3SNw (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Wed, 30 Nov 2022 13:13:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38140 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229852AbiK3SNc (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 30 Nov 2022 13:13:32 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E109862D7;
-        Wed, 30 Nov 2022 10:13:31 -0800 (PST)
+        with ESMTP id S230117AbiK3SNb (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 30 Nov 2022 13:13:31 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63B29862D3;
+        Wed, 30 Nov 2022 10:13:30 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C618961D74;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 1430BB81C9B;
         Wed, 30 Nov 2022 18:13:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DD0AC43152;
-        Wed, 30 Nov 2022 18:13:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A78D8C433D7;
+        Wed, 30 Nov 2022 18:13:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669832008;
-        bh=O3sihN19Kz2sN5DYDWZyYgF1v27O1pMTYDT2Vmf9Dd4=;
+        s=k20201202; t=1669832007;
+        bh=PS6L08FWflyTwRyMdRxiUT1KwyXbAuVOfA4oJ9gzHj4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pN9sTHaln9m6EGe3r9Eb2mbBcomn8O7ZzzGuAofcxjdtAaYBBhuhEjCdEYKuuSr06
-         v0BxvoaljMSpxX4FpfkPcIJSQGSpia3bFMMSWxo9Hw1m5HwSGwMZFeJpkfP4YAf9ZR
-         xYFs1/y0W4mmseFXE/jsG/vHS0wbW4TNkTZnkww03YP1y/+SXiuDlCBqDWwywzHvf6
-         UVnawFrUxFkSAl1hhOSYWBxQF7dkCz4UCuF5KH2hARoBTkQY1Nu5lTOiIJ4fqmvdez
-         t973eHlre30kymo32erxf/RHRtlVEcgD/glMh8n2Zh+g+Qak1llmk5ftZmJKfsUce4
-         JU7NjJFwIrRmw==
+        b=pGXc5mgCEhUZNWYca5bydsevRHCbD4DO79w1BS8KcYR7QYHB9zGV0G0A4fauxBfHh
+         5I5ab21+L/vX8s6hvLXGlgwd0x6QD9xFKdj32OX3EmAH2dB0OubMvStmc2il1CLL5/
+         5kNGkiri929t2+8e/nJY9xRKK/CQnnKPpo7JIagwvvPV1Sg5h11usqvCBSoXx4QTT8
+         Mk17SV3zMXp0jSFua5jMhHhUeD/tfP9/ML1pXsyw+1yPCPGlkt7Hcdtcg69ow3yryx
+         ZVg/uvhtcNf9DfyZl6lNLCGc6Vz0N77HpD6iRbJquWS+tUsqHYZzjYdwAi4sXUXzTw
+         xAnA0LIGox9eA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 7006E5C196D; Wed, 30 Nov 2022 10:13:27 -0800 (PST)
+        id 5E8AC5C0BA0; Wed, 30 Nov 2022 10:13:27 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
         rostedt@goodmis.org,
         "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-afs@lists.infradead.org,
-        netdev@vger.kernel.org, "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 14/16] rxrpc: Use call_rcu_hurry() instead of call_rcu()
-Date:   Wed, 30 Nov 2022 10:13:23 -0800
-Message-Id: <20221130181325.1012760-14-paulmck@kernel.org>
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>
+Subject: [PATCH rcu 05/16] rcu: Refactor code a bit in rcu_nocb_do_flush_bypass()
+Date:   Wed, 30 Nov 2022 10:13:14 -0800
+Message-Id: <20221130181325.1012760-5-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20221130181316.GA1012431@paulmck-ThinkPad-P17-Gen-1>
 References: <20221130181316.GA1012431@paulmck-ThinkPad-P17-Gen-1>
@@ -59,79 +54,58 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
 
-Earlier commits in this series allow battery-powered systems to build
-their kernels with the default-disabled CONFIG_RCU_LAZY=y Kconfig option.
-This Kconfig option causes call_rcu() to delay its callbacks in order
-to batch them.  This means that a given RCU grace period covers more
-callbacks, thus reducing the number of grace periods, in turn reducing
-the amount of energy consumed, which increases battery lifetime which
-can be a very good thing.  This is not a subtle effect: In some important
-use cases, the battery lifetime is increased by more than 10%.
+This consolidates the code a bit and makes it cleaner. Functionally it
+is the same.
 
-This CONFIG_RCU_LAZY=y option is available only for CPUs that offload
-callbacks, for example, CPUs mentioned in the rcu_nocbs kernel boot
-parameter passed to kernels built with CONFIG_RCU_NOCB_CPU=y.
-
-Delaying callbacks is normally not a problem because most callbacks do
-nothing but free memory.  If the system is short on memory, a shrinker
-will kick all currently queued lazy callbacks out of their laziness,
-thus freeing their memory in short order.  Similarly, the rcu_barrier()
-function, which blocks until all currently queued callbacks are invoked,
-will also kick lazy callbacks, thus enabling rcu_barrier() to complete
-in a timely manner.
-
-However, there are some cases where laziness is not a good option.
-For example, synchronize_rcu() invokes call_rcu(), and blocks until
-the newly queued callback is invoked.  It would not be a good for
-synchronize_rcu() to block for ten seconds, even on an idle system.
-Therefore, synchronize_rcu() invokes call_rcu_hurry() instead of
-call_rcu().  The arrival of a non-lazy call_rcu_hurry() callback on a
-given CPU kicks any lazy callbacks that might be already queued on that
-CPU.  After all, if there is going to be a grace period, all callbacks
-might as well get full benefit from it.
-
-Yes, this could be done the other way around by creating a
-call_rcu_lazy(), but earlier experience with this approach and
-feedback at the 2022 Linux Plumbers Conference shifted the approach
-to call_rcu() being lazy with call_rcu_hurry() for the few places
-where laziness is inappropriate.
-
-And another call_rcu() instance that cannot be lazy is the one
-in rxrpc_kill_connection(), which sometimes does a wakeup
-that should not be unduly delayed.
-
-Therefore, make rxrpc_kill_connection() use call_rcu_hurry() in order
-to revert to the old behavior.
-
-[ paulmck: Apply s/call_rcu_flush/call_rcu_hurry/ feedback from Tejun Heo. ]
-
+Reported-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Cc: David Howells <dhowells@redhat.com>
-Cc: Marc Dionne <marc.dionne@auristor.com>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Paolo Abeni <pabeni@redhat.com>
-Cc: <linux-afs@lists.infradead.org>
-Cc: <netdev@vger.kernel.org>
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- net/rxrpc/conn_object.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/rcu/tree_nocb.h | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
-diff --git a/net/rxrpc/conn_object.c b/net/rxrpc/conn_object.c
-index 22089e37e97f0..9c5fae9ca106c 100644
---- a/net/rxrpc/conn_object.c
-+++ b/net/rxrpc/conn_object.c
-@@ -253,7 +253,7 @@ void rxrpc_kill_connection(struct rxrpc_connection *conn)
- 	 * must carry a ref on the connection to prevent us getting here whilst
- 	 * it is queued or running.
- 	 */
--	call_rcu(&conn->rcu, rxrpc_destroy_connection);
-+	call_rcu_hurry(&conn->rcu, rxrpc_destroy_connection);
- }
+diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+index d6e4c076b0515..213daf81c057f 100644
+--- a/kernel/rcu/tree_nocb.h
++++ b/kernel/rcu/tree_nocb.h
+@@ -327,10 +327,11 @@ static void wake_nocb_gp_defer(struct rcu_data *rdp, int waketype,
+  *
+  * Note that this function always returns true if rhp is NULL.
+  */
+-static bool rcu_nocb_do_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
++static bool rcu_nocb_do_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp_in,
+ 				     unsigned long j, bool lazy)
+ {
+ 	struct rcu_cblist rcl;
++	struct rcu_head *rhp = rhp_in;
  
- /*
+ 	WARN_ON_ONCE(!rcu_rdp_is_offloaded(rdp));
+ 	rcu_lockdep_assert_cblist_protected(rdp);
+@@ -345,16 +346,16 @@ static bool rcu_nocb_do_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
+ 
+ 	/*
+ 	 * If the new CB requested was a lazy one, queue it onto the main
+-	 * ->cblist so we can take advantage of a sooner grade period.
++	 * ->cblist so that we can take advantage of the grace-period that will
++	 * happen regardless. But queue it onto the bypass list first so that
++	 * the lazy CB is ordered with the existing CBs in the bypass list.
+ 	 */
+ 	if (lazy && rhp) {
+-		rcu_cblist_flush_enqueue(&rcl, &rdp->nocb_bypass, NULL);
+-		rcu_cblist_enqueue(&rcl, rhp);
+-		WRITE_ONCE(rdp->lazy_len, 0);
+-	} else {
+-		rcu_cblist_flush_enqueue(&rcl, &rdp->nocb_bypass, rhp);
+-		WRITE_ONCE(rdp->lazy_len, 0);
++		rcu_cblist_enqueue(&rdp->nocb_bypass, rhp);
++		rhp = NULL;
+ 	}
++	rcu_cblist_flush_enqueue(&rcl, &rdp->nocb_bypass, rhp);
++	WRITE_ONCE(rdp->lazy_len, 0);
+ 
+ 	rcu_segcblist_insert_pend_cbs(&rdp->cblist, &rcl);
+ 	WRITE_ONCE(rdp->nocb_bypass_first, j);
 -- 
 2.31.1.189.g2e36527f23
 
