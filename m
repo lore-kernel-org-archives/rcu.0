@@ -2,46 +2,46 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D4D3C46467
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C64B5C433FE
 	for <rcu@archiver.kernel.org>; Wed, 30 Nov 2022 18:13:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230031AbiK3SNp (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 30 Nov 2022 13:13:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37778 "EHLO
+        id S230053AbiK3SNr (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 30 Nov 2022 13:13:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229995AbiK3SNa (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 30 Nov 2022 13:13:30 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80D2C862C9;
-        Wed, 30 Nov 2022 10:13:29 -0800 (PST)
+        with ESMTP id S230116AbiK3SNb (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 30 Nov 2022 13:13:31 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57740862D2;
+        Wed, 30 Nov 2022 10:13:30 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 17FDF61D5C;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 03D24B81C97;
         Wed, 30 Nov 2022 18:13:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3625C43151;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9F05C433B5;
         Wed, 30 Nov 2022 18:13:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669832008;
-        bh=B649m1ZX6zSaxE2rwxoHbFbQjFjTg7X6m3NxA9r7zOA=;
+        s=k20201202; t=1669832007;
+        bh=JgCYhsIq4xhCHA9e/N+ivpZlC63szLfECFNNQENWSoc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mfxSe3go/rNNMfTBQnQyJaJaHF/0vxwxJugp+gTMgidOOl7XzZFzW6lt6iAxEfszC
-         CTZOz52+VrmRWHwuVmNzFguPfy/ApYLBKyZjKAscf+hX6p1B0vFqWmwtj3/dhs53dv
-         XK+rk7SMsaplB3m/ektanHjB+/ZngnNe+gI8IEXIfg3uUBxKlFnnIwNtT8NDczzvUi
-         rvci2gYKPco/tNgIKh2mcT4wula/mw7MDkPQ6tjzwPdffk2XW+atTYbj2QUi6cih7Q
-         O0Rskjv3AT7ppaFhK45PUYI57MC6g1o8TElFYKmT+YfUjP3paDLa5Oc2azScYCPh2h
-         2qTBaSL/gq46Q==
+        b=oZ4GteHyu0gnGxMqABOVcD9Dxi6EMrRfdI/0I+c/8WyoaHzOcbNuRXFJercOt1gc5
+         DR2zF2t2Ypo/uoW4J3F9Ugza4XapYc8PzYoLGvRx35iR/YPJEIfMdtbT6JhOA/0C4p
+         +4yYw6R0d+oZL57J4aUMt+1BSDQIUVvchk6C6SiUlSSQaA8qMhPZTR5ttBhLXO2Ity
+         F8H7YhHPEywYMXW8xmoYYAwbOsggnSs0NCj5JTKqRIUpie6OMDOtE6bWlyFhUBF80G
+         Y3oGpYjoZG8xvSVwnv6stpFfPc3dCDqTTHocOKrlg3T9NW38YNhnqsgfS1wNMxJLfn
+         +OQFbdWwP8ECg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 624275C14A0; Wed, 30 Nov 2022 10:13:27 -0800 (PST)
+        id 59E9E5C0863; Wed, 30 Nov 2022 10:13:27 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        rostedt@goodmis.org, Frederic Weisbecker <frederic@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 07/16] rcuscale: Add laziness and kfree tests
-Date:   Wed, 30 Nov 2022 10:13:16 -0800
-Message-Id: <20221130181325.1012760-7-paulmck@kernel.org>
+Subject: [PATCH rcu 03/16] rcu: Fix missing nocb gp wake on rcu_barrier()
+Date:   Wed, 30 Nov 2022 10:13:12 -0800
+Message-Id: <20221130181325.1012760-3-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20221130181316.GA1012431@paulmck-ThinkPad-P17-Gen-1>
 References: <20221130181316.GA1012431@paulmck-ThinkPad-P17-Gen-1>
@@ -51,132 +51,88 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+From: Frederic Weisbecker <frederic@kernel.org>
 
-This commit adds 2 tests to rcuscale.  The first one is a startup test
-to check whether we are not too lazy or too hard working.  The second
-one causes kfree_rcu() itself to use call_rcu() and checks memory
-pressure. Testing indicates that the new call_rcu() keeps memory pressure
-under control roughly as well as does kfree_rcu().
+In preparation for RCU lazy changes, wake up the RCU nocb gp thread if
+needed after an entrain.  This change prevents the RCU barrier callback
+from waiting in the queue for several seconds before the lazy callbacks
+in front of it are serviced.
 
-[ paulmck: Apply checkpatch feedback. ]
-
+Reported-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/rcuscale.c | 67 +++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 65 insertions(+), 2 deletions(-)
+ kernel/rcu/tree.c      | 11 +++++++++++
+ kernel/rcu/tree.h      |  1 +
+ kernel/rcu/tree_nocb.h |  5 +++++
+ 3 files changed, 17 insertions(+)
 
-diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
-index 3ef02d4a81085..3baded807a616 100644
---- a/kernel/rcu/rcuscale.c
-+++ b/kernel/rcu/rcuscale.c
-@@ -95,6 +95,7 @@ torture_param(int, verbose, 1, "Enable verbose debugging printk()s");
- torture_param(int, writer_holdoff, 0, "Holdoff (us) between GPs, zero to disable");
- torture_param(int, kfree_rcu_test, 0, "Do we run a kfree_rcu() scale test?");
- torture_param(int, kfree_mult, 1, "Multiple of kfree_obj size to allocate.");
-+torture_param(int, kfree_by_call_rcu, 0, "Use call_rcu() to emulate kfree_rcu()?");
- 
- static char *scale_type = "rcu";
- module_param(scale_type, charp, 0444);
-@@ -659,6 +660,14 @@ struct kfree_obj {
- 	struct rcu_head rh;
- };
- 
-+/* Used if doing RCU-kfree'ing via call_rcu(). */
-+static void kfree_call_rcu(struct rcu_head *rh)
-+{
-+	struct kfree_obj *obj = container_of(rh, struct kfree_obj, rh);
-+
-+	kfree(obj);
-+}
-+
- static int
- kfree_scale_thread(void *arg)
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 6bb8e72bc8151..fb7a1b95af71e 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3894,6 +3894,8 @@ static void rcu_barrier_entrain(struct rcu_data *rdp)
  {
-@@ -696,6 +705,11 @@ kfree_scale_thread(void *arg)
- 			if (!alloc_ptr)
- 				return -ENOMEM;
+ 	unsigned long gseq = READ_ONCE(rcu_state.barrier_sequence);
+ 	unsigned long lseq = READ_ONCE(rdp->barrier_seq_snap);
++	bool wake_nocb = false;
++	bool was_alldone = false;
  
-+			if (kfree_by_call_rcu) {
-+				call_rcu(&(alloc_ptr->rh), kfree_call_rcu);
-+				continue;
-+			}
-+
- 			// By default kfree_rcu_test_single and kfree_rcu_test_double are
- 			// initialized to false. If both have the same value (false or true)
- 			// both are randomly tested, otherwise only the one with value true
-@@ -767,11 +781,58 @@ kfree_scale_shutdown(void *arg)
- 	return -EINVAL;
+ 	lockdep_assert_held(&rcu_state.barrier_lock);
+ 	if (rcu_seq_state(lseq) || !rcu_seq_state(gseq) || rcu_seq_ctr(lseq) != rcu_seq_ctr(gseq))
+@@ -3902,7 +3904,14 @@ static void rcu_barrier_entrain(struct rcu_data *rdp)
+ 	rdp->barrier_head.func = rcu_barrier_callback;
+ 	debug_rcu_head_queue(&rdp->barrier_head);
+ 	rcu_nocb_lock(rdp);
++	/*
++	 * Flush bypass and wakeup rcuog if we add callbacks to an empty regular
++	 * queue. This way we don't wait for bypass timer that can reach seconds
++	 * if it's fully lazy.
++	 */
++	was_alldone = rcu_rdp_is_offloaded(rdp) && !rcu_segcblist_pend_cbs(&rdp->cblist);
+ 	WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, jiffies));
++	wake_nocb = was_alldone && rcu_segcblist_pend_cbs(&rdp->cblist);
+ 	if (rcu_segcblist_entrain(&rdp->cblist, &rdp->barrier_head)) {
+ 		atomic_inc(&rcu_state.barrier_cpu_count);
+ 	} else {
+@@ -3910,6 +3919,8 @@ static void rcu_barrier_entrain(struct rcu_data *rdp)
+ 		rcu_barrier_trace(TPS("IRQNQ"), -1, rcu_state.barrier_sequence);
+ 	}
+ 	rcu_nocb_unlock(rdp);
++	if (wake_nocb)
++		wake_nocb_gp(rdp, false);
+ 	smp_store_release(&rdp->barrier_seq_snap, gseq);
  }
  
-+// Used if doing RCU-kfree'ing via call_rcu().
-+static unsigned long jiffies_at_lazy_cb;
-+static struct rcu_head lazy_test1_rh;
-+static int rcu_lazy_test1_cb_called;
-+static void call_rcu_lazy_test1(struct rcu_head *rh)
+diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+index d4a97e40ea9c3..925dd98f8b23b 100644
+--- a/kernel/rcu/tree.h
++++ b/kernel/rcu/tree.h
+@@ -439,6 +439,7 @@ static void zero_cpu_stall_ticks(struct rcu_data *rdp);
+ static struct swait_queue_head *rcu_nocb_gp_get(struct rcu_node *rnp);
+ static void rcu_nocb_gp_cleanup(struct swait_queue_head *sq);
+ static void rcu_init_one_nocb(struct rcu_node *rnp);
++static bool wake_nocb_gp(struct rcu_data *rdp, bool force);
+ static bool rcu_nocb_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
+ 				  unsigned long j);
+ static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
+diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+index f77a6d7e13564..094fd454b6c38 100644
+--- a/kernel/rcu/tree_nocb.h
++++ b/kernel/rcu/tree_nocb.h
+@@ -1558,6 +1558,11 @@ static void rcu_init_one_nocb(struct rcu_node *rnp)
+ {
+ }
+ 
++static bool wake_nocb_gp(struct rcu_data *rdp, bool force)
 +{
-+	jiffies_at_lazy_cb = jiffies;
-+	WRITE_ONCE(rcu_lazy_test1_cb_called, 1);
++	return false;
 +}
 +
- static int __init
- kfree_scale_init(void)
+ static bool rcu_nocb_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
+ 				  unsigned long j)
  {
--	long i;
- 	int firsterr = 0;
-+	long i;
-+	unsigned long jif_start;
-+	unsigned long orig_jif;
-+
-+	// Also, do a quick self-test to ensure laziness is as much as
-+	// expected.
-+	if (kfree_by_call_rcu && !IS_ENABLED(CONFIG_RCU_LAZY)) {
-+		pr_alert("CONFIG_RCU_LAZY is disabled, falling back to kfree_rcu() for delayed RCU kfree'ing\n");
-+		kfree_by_call_rcu = 0;
-+	}
-+
-+	if (kfree_by_call_rcu) {
-+		/* do a test to check the timeout. */
-+		orig_jif = rcu_lazy_get_jiffies_till_flush();
-+
-+		rcu_lazy_set_jiffies_till_flush(2 * HZ);
-+		rcu_barrier();
-+
-+		jif_start = jiffies;
-+		jiffies_at_lazy_cb = 0;
-+		call_rcu(&lazy_test1_rh, call_rcu_lazy_test1);
-+
-+		smp_cond_load_relaxed(&rcu_lazy_test1_cb_called, VAL == 1);
-+
-+		rcu_lazy_set_jiffies_till_flush(orig_jif);
-+
-+		if (WARN_ON_ONCE(jiffies_at_lazy_cb - jif_start < 2 * HZ)) {
-+			pr_alert("ERROR: call_rcu() CBs are not being lazy as expected!\n");
-+			WARN_ON_ONCE(1);
-+			return -1;
-+		}
-+
-+		if (WARN_ON_ONCE(jiffies_at_lazy_cb - jif_start > 3 * HZ)) {
-+			pr_alert("ERROR: call_rcu() CBs are being too lazy!\n");
-+			WARN_ON_ONCE(1);
-+			return -1;
-+		}
-+	}
- 
- 	kfree_nrealthreads = compute_real(kfree_nthreads);
- 	/* Start up the kthreads. */
-@@ -784,7 +845,9 @@ kfree_scale_init(void)
- 		schedule_timeout_uninterruptible(1);
- 	}
- 
--	pr_alert("kfree object size=%zu\n", kfree_mult * sizeof(struct kfree_obj));
-+	pr_alert("kfree object size=%zu, kfree_by_call_rcu=%d\n",
-+			kfree_mult * sizeof(struct kfree_obj),
-+			kfree_by_call_rcu);
- 
- 	kfree_reader_tasks = kcalloc(kfree_nrealthreads, sizeof(kfree_reader_tasks[0]),
- 			       GFP_KERNEL);
 -- 
 2.31.1.189.g2e36527f23
 
