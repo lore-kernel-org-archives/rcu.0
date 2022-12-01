@@ -2,201 +2,174 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B8393C47088
-	for <rcu@archiver.kernel.org>; Thu,  1 Dec 2022 00:17:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 50B31C43217
+	for <rcu@archiver.kernel.org>; Thu,  1 Dec 2022 07:43:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230215AbiLAARO (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 30 Nov 2022 19:17:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36552 "EHLO
+        id S229588AbiLAHnn (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 1 Dec 2022 02:43:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230481AbiLAAQ5 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 30 Nov 2022 19:16:57 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F5444C275;
-        Wed, 30 Nov 2022 16:13:10 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 1AD86B81D12;
-        Thu,  1 Dec 2022 00:13:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE990C433D6;
-        Thu,  1 Dec 2022 00:13:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669853587;
-        bh=ZaNvpG11vcB+GiLgt2vyshN/xWWvj2/3IfUh3oU3sTg=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=hHGMHxf6nU3pFBZck2Z57Lm8maCTVmZOTG0K9FzIKshI230GtlblYZPs/udCAOsLU
-         9ixE7MqwdhS6Mr8Z+179ExBA38IxEKGLQWfDzGHSZCxIRnG+mox1R1rpqfHyM8istx
-         2FRm/FWe1Cj8pBrfUbXa5Y6/YMVc/7HMq16G8f6XdmsVOioTTzCeA0CB3hJslAo5sN
-         KQb1ZOaVp7RnauGeVXtBabfXmEqO9iYmpRjdh23fz1un6JK6UeIA4DhEDENKlO9PoZ
-         Pakbhf+4cbEpPKTpB6GzEZYUoxIte0AR5UnFI3Zl6+O/CRLUr2f/IlLAp3/Et8CqPQ
-         T7U48LSxiX/bQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 550465C089E; Wed, 30 Nov 2022 16:13:07 -0800 (PST)
-Date:   Wed, 30 Nov 2022 16:13:07 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Zqiang <qiang1.zhang@intel.com>
-Cc:     frederic@kernel.org, quic_neeraju@quicinc.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] rcu-tasks: Make rude RCU-Tasks work well with CPU
- hotplug
-Message-ID: <20221201001307.GF4001@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20221130234533.1983769-1-qiang1.zhang@intel.com>
+        with ESMTP id S229472AbiLAHnk (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 1 Dec 2022 02:43:40 -0500
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1740442C0
+        for <rcu@vger.kernel.org>; Wed, 30 Nov 2022 23:43:38 -0800 (PST)
+Received: by mail-yb1-xb30.google.com with SMTP id e141so992092ybh.3
+        for <rcu@vger.kernel.org>; Wed, 30 Nov 2022 23:43:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=n/cSfJyuw306M41Dp+L+BI0/0zq6sfGvI8BbkoukRHo=;
+        b=kJrxYS8ifZi++NNhu7Qf+KtFc8uekfyczf2pLWdBbxXH/aASZ/RXOrOk8MtPahSwbL
+         dSES1VZ6n5tlydFOcRs6UHHSoboIs6gNKuXLVq0acyLDw8/vSSGSkJAnYlPWrI/KUphq
+         chEdKyfPUoutY0nNxv4dXHykwKcl3a6OcYo1R5Qxn2KMc3YGcK2HdyJ/T/3eKHWtWQdl
+         fMf6Y5EFK1kdcIrfXQvoN73b6K+x8yT35SBSXL7vomFXH9ZxT5/A1qpmhMHzu4ZKR3an
+         9vURQPEg/mCHVEo4JP6LgAW7kJWyEXHEwwoThXDe/82DMC1yHODZYZ3rAHnq1FhHT05a
+         J3VQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=n/cSfJyuw306M41Dp+L+BI0/0zq6sfGvI8BbkoukRHo=;
+        b=0VRqOjmeGHB4MK2piOT8gh5L2yH8r+vAeqQQVStJVdfH3SX1eZhlNmKAH/J2paxwGr
+         xlfXUB+K7esnFiqe6jeh3RAevCezLhmN2E6BCv8uAZgOgSR7ISUHmTu/F5MslIH2n4OZ
+         VigO7AXw44dtIRKZ29H8wQ3pOEMaU5L91GwecolgbeZ+0XJVG4kMwj+aas74Tx+pZC0/
+         nu8YT2pZ6eOTCgrJt5NmjJWorjmc/Xz4otOPfRtJSkyrlYODD0tQlbIExz5Q7hfUU5lG
+         LVMPfb8IqffYNdDp130uOVzJvlbARHoQHp2yuQKy2WrtEMf6eoshF0QOIeJRe7qzR0U1
+         zxcQ==
+X-Gm-Message-State: ANoB5pnRubq1sdn0yKjqx5LhVEKiOq8XdYsJvZEaMGjIuT8wUQ0p2tDm
+        RytHxuSQG5f8jpwD8jg2GP/2bu6wRWTpSy36ISISew==
+X-Google-Smtp-Source: AA0mqf58zbiU2tOdgfpIyYwAtowOVuJiYQYGedVWE37iNqvP8PDnpM1y2y1xatVDhqnnQ8TB+MnNjkUHPLwvaS1G16c=
+X-Received: by 2002:a25:d782:0:b0:6f5:6b11:8110 with SMTP id
+ o124-20020a25d782000000b006f56b118110mr19813207ybg.560.1669880617677; Wed, 30
+ Nov 2022 23:43:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221130234533.1983769-1-qiang1.zhang@intel.com>
+References: <CA+G9fYsK5WUxs6p9NaE4e3p7ew_+s0SdW0+FnBgiLWdYYOvoMg@mail.gmail.com>
+ <CANpmjNOQxZ--jXZdqN3tjKE=sd4X6mV4K-PyY40CMZuoB5vQTg@mail.gmail.com>
+ <CA+G9fYs55N3J8TRA557faxvAZSnCTUqnUx+p1GOiCiG+NVfqnw@mail.gmail.com> <Y4e3WC4UYtszfFBe@codewreck.org>
+In-Reply-To: <Y4e3WC4UYtszfFBe@codewreck.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 1 Dec 2022 13:13:25 +0530
+Message-ID: <CA+G9fYuJZ1C3802+uLvqJYMjGged36wyW+G1HZJLzrtmbi1bJA@mail.gmail.com>
+Subject: Re: arm64: allmodconfig: BUG: KCSAN: data-race in p9_client_cb / p9_client_rpc
+To:     Dominique Martinet <asmadeus@codewreck.org>
+Cc:     Marco Elver <elver@google.com>, rcu <rcu@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        kunit-dev@googlegroups.com, lkft-triage@lists.linaro.org,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>
+Content-Type: multipart/mixed; boundary="00000000000008f9c705eebf61a4"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Dec 01, 2022 at 07:45:33AM +0800, Zqiang wrote:
-> Currently, invoke rcu_tasks_rude_wait_gp() to wait one rude
-> RCU-tasks grace period, if __num_online_cpus == 1, will return
-> directly, indicates the end of the rude RCU-task grace period.
-> suppose the system has two cpus, consider the following scenario:
-> 
->         CPU0                                   CPU1 (going offline)
->                                           migration/1 task:
->                                       cpu_stopper_thread
->                                        -> take_cpu_down
->                                           -> _cpu_disable
->                                            (dec __num_online_cpus)
->                                           ->cpuhp_invoke_callback
->                                                 preempt_disable
->                                                 access old_data0
->            task1
->  del old_data0                                  .....
->  synchronize_rcu_tasks_rude()
->  task1 schedule out
->  ....
->  task2 schedule in
->  rcu_tasks_rude_wait_gp()
->      ->__num_online_cpus == 1
->        ->return
->  ....
->  task1 schedule in
->  ->free old_data0
->                                                 preempt_enable
-> 
-> when CPU1 dec __num_online_cpus and __num_online_cpus is equal one,
-> the CPU1 has not finished offline, stop_machine task(migration/1)
-> still running on CPU1, maybe still accessing 'old_data0', but the
-> 'old_data0' has freed on CPU0.
-> 
-> In order to prevent the above scenario from happening, this commit
-> remove check for __num_online_cpus == 0 and add handling of calling
-> synchronize_rcu_tasks_generic() during early boot(when the
-> rcu_scheduler_active variable is RCU_SCHEDULER_INACTIVE, the scheduler
-> not yet initialized and only one boot-CPU online).
-> 
-> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+--00000000000008f9c705eebf61a4
+Content-Type: text/plain; charset="UTF-8"
 
-Very good, thank you!  I did the usual wordsmithing, including to that
-error message, so as usual please check to make sure that I didn't mess
-something up.
+On Thu, 1 Dec 2022 at 01:35, Dominique Martinet <asmadeus@codewreck.org> wrote:
+>
+> Naresh Kamboju wrote on Wed, Nov 30, 2022 at 09:34:45PM +0530:
+> > > > [  424.418214] write to 0xffff00000a753000 of 4 bytes by interrupt on cpu 0:
+> > > > [  424.422437]  p9_client_cb+0x84/0x100
+> > >
+> > > Then we can look at git blame of the lines and see if it's new code.
+> >
+> > True.
+> > Hope that tree and tag could help you get git details.
+>
+> Even with the git tag, if we don't build for the same arch with the same
+> compiler version/options and the same .config we aren't likely to have
+> identical binaries, so we cannot make sense of these offsets without
+> much work.
+>
+> As much as I'd like to investigate a data race in 9p (and geez that code
+> has been such a headache from syzbot already so I don't doubt there are
+> more), having line numbers is really not optional if we want to scale at
+> all.
+> If you still have the vmlinux binary from that build (or if you can
+> rebuild with the same options), running this text through addr2line
+> should not take you too long.
 
-							Thanx, Paul
+Please find build artifacts in this link,
+ - config
+ - vmlinux
+ - System.map
+https://people.linaro.org/~anders.roxell/next-20221130-allmodconfig-arm64-tuxmake-build/
 
-------------------------------------------------------------------------
+And
 
-commit 033ddc5d337984e20b9d49c8af4faa4689727626
-Author: Zqiang <qiang1.zhang@intel.com>
-Date:   Thu Dec 1 07:45:33 2022 +0800
+ # aarch64-linux-gnu-objdump -D vmlinux|less search for p9_client_cb
 
-    rcu-tasks: Make rude RCU-Tasks work well with CPU hotplug
-    
-    The synchronize_rcu_tasks_rude() function invokes rcu_tasks_rude_wait_gp()
-    to wait one rude RCU-tasks grace period.  The rcu_tasks_rude_wait_gp()
-    function in turn checks if there is only a single online CPU.  If so, it
-    will immediately return, because a call to synchronize_rcu_tasks_rude()
-    is by definition a grace period on a single-CPU system.  (We could
-    have blocked!)
-    
-    Unfortunately, this check uses num_online_cpus() without synchronization,
-    which can result in too-short grace periods.  To see this, consider the
-    following scenario:
-    
-            CPU0                                   CPU1 (going offline)
-                                              migration/1 task:
-                                          cpu_stopper_thread
-                                           -> take_cpu_down
-                                              -> _cpu_disable
-                                               (dec __num_online_cpus)
-                                              ->cpuhp_invoke_callback
-                                                    preempt_disable
-                                                    access old_data0
-               task1
-     del old_data0                                  .....
-     synchronize_rcu_tasks_rude()
-     task1 schedule out
-     ....
-     task2 schedule in
-     rcu_tasks_rude_wait_gp()
-         ->__num_online_cpus == 1
-           ->return
-     ....
-     task1 schedule in
-     ->free old_data0
-                                                    preempt_enable
-    
-    When CPU1 decrements __num_online_cpus, its value becomes 1.  However,
-    CPU1 has not finished going offline, and will take one last trip through
-    the scheduler and the idle loop before it actually stops executing
-    instructions.  Because synchronize_rcu_tasks_rude() is mostly used for
-    tracing, and because both the scheduler and the idle loop can be traced,
-    this means that CPU0's prematurely ended grace period might disrupt the
-    tracing on CPU1.  Given that this disruption might include CPU1 executing
-    instructions in memory that was just now freed (and maybe reallocated),
-    this is a matter of some concern.
-    
-    This commit therefore removes that problematic single-CPU check from the
-    rcu_tasks_rude_wait_gp() function.  This dispenses with the single-CPU
-    optimization, but there is no evidence indicating that this optimization
-    is important.  In addition, synchronize_rcu_tasks_generic() contains a
-    similar optimization (albeit only for early boot), which also splats.
-    (As in exactly why are you invoking synchronize_rcu_tasks_rude() so
-    early in boot, anyway???)
-    
-    It is OK for the synchronize_rcu_tasks_rude() function's check to be
-    unsynchronized because the only times that this check can evaluate to
-    true is when there is only a single CPU running with preemption
-    disabled.
-    
-    While in the area, this commit also fixes a minor bug in which a
-    call to synchronize_rcu_tasks_rude() would instead be attributed to
-    synchronize_rcu_tasks().
-    
-    [ paulmck: Add "synchronize_" prefix and "()" suffix. ]
-    
-    Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Attached objdump log and here is the link.
+    - http://ix.io/4hk1
 
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 4dda8e6e5707f..d845723c1af41 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -560,8 +560,9 @@ static int __noreturn rcu_tasks_kthread(void *arg)
- static void synchronize_rcu_tasks_generic(struct rcu_tasks *rtp)
- {
- 	/* Complain if the scheduler has not started.  */
--	WARN_ONCE(rcu_scheduler_active == RCU_SCHEDULER_INACTIVE,
--			 "synchronize_rcu_tasks called too soon");
-+	if (WARN_ONCE(rcu_scheduler_active == RCU_SCHEDULER_INACTIVE,
-+			 "synchronize_%s() called too soon", rtp->name))
-+		return;
- 
- 	// If the grace-period kthread is running, use it.
- 	if (READ_ONCE(rtp->kthread_ptr)) {
-@@ -1064,9 +1065,6 @@ static void rcu_tasks_be_rude(struct work_struct *work)
- // Wait for one rude RCU-tasks grace period.
- static void rcu_tasks_rude_wait_gp(struct rcu_tasks *rtp)
- {
--	if (num_online_cpus() <= 1)
--		return;	// Fastpath for only one CPU.
--
- 	rtp->n_ipis += cpumask_weight(cpu_online_mask);
- 	schedule_on_each_cpu(rcu_tasks_be_rude);
- }
+> (You might need to build with at least CONFIG_DEBUG_INFO_REDUCED (or not
+> reduced), but that is on by default for aarch64)
+
+Thanks for the suggestions.
+The Kconfig is enabled now.
+CONFIG_DEBUG_INFO_REDUCED=y
+
+> --
+> Dominique
+
+
+- Naresh
+
+--00000000000008f9c705eebf61a4
+Content-Type: text/plain; charset="US-ASCII"; name="objdump-p9_client_cb.txt"
+Content-Disposition: attachment; filename="objdump-p9_client_cb.txt"
+Content-Transfer-Encoding: base64
+Content-ID: <f_lb4rmdbt0>
+X-Attachment-Id: f_lb4rmdbt0
+
+ZmZmZjgwMDAwYTQ2Y2FjMCA8cDlfY2xpZW50X2NiPjoKZmZmZjgwMDAwYTQ2Y2FjMDogICAgICAg
+ZDUwMzIwMWYgICAgICAgIG5vcApmZmZmODAwMDBhNDZjYWM0OiAgICAgICBkNTAzMjAxZiAgICAg
+ICAgbm9wCmZmZmY4MDAwMGE0NmNhYzg6ICAgICAgIGQ1MDMyMzNmICAgICAgICBwYWNpYXNwCmZm
+ZmY4MDAwMGE0NmNhY2M6ICAgICAgIGE5YmM3YmZkICAgICAgICBzdHAgICAgIHgyOSwgeDMwLCBb
+c3AsICMtNjRdIQpmZmZmODAwMDBhNDZjYWQwOiAgICAgICA5MTAwMDNmZCAgICAgICAgbW92ICAg
+ICB4MjksIHNwCmZmZmY4MDAwMGE0NmNhZDQ6ICAgICAgIGE5MDE1M2YzICAgICAgICBzdHAgICAg
+IHgxOSwgeDIwLCBbc3AsICMxNl0KZmZmZjgwMDAwYTQ2Y2FkODogICAgICAgYWEwMTAzZjMgICAg
+ICAgIG1vdiAgICAgeDE5LCB4MQpmZmZmODAwMDBhNDZjYWRjOiAgICAgICBhYTFlMDNmNCAgICAg
+ICAgbW92ICAgICB4MjAsIHgzMApmZmZmODAwMDBhNDZjYWUwOiAgICAgICBhOTAyNWJmNSAgICAg
+ICAgc3RwICAgICB4MjEsIHgyMiwgW3NwLCAjMzJdCmZmZmY4MDAwMGE0NmNhZTQ6ICAgICAgIDJh
+MDIwM2Y2ICAgICAgICBtb3YgICAgIHcyMiwgdzIKZmZmZjgwMDAwYTQ2Y2FlODogICAgICAgYWEw
+MDAzZjUgICAgICAgIG1vdiAgICAgeDIxLCB4MApmZmZmODAwMDBhNDZjYWVjOiAgICAgICBmOTAw
+MWJmNyAgICAgICAgc3RyICAgICB4MjMsIFtzcCwgIzQ4XQpmZmZmODAwMDBhNDZjYWYwOiAgICAg
+ICBhYTE0MDNmZSAgICAgICAgbW92ICAgICB4MzAsIHgyMApmZmZmODAwMDBhNDZjYWY0OiAgICAg
+ICBkNTAzMjBmZiAgICAgICAgeHBhY2xyaQpmZmZmODAwMDBhNDZjYWY4OiAgICAgICA5MTAxYmE3
+NyAgICAgICAgYWRkICAgICB4MjMsIHgxOSwgIzB4NmUKZmZmZjgwMDAwYTQ2Y2FmYzogICAgICAg
+YWExZTAzZTAgICAgICAgIG1vdiAgICAgeDAsIHgzMApmZmZmODAwMDBhNDZjYjAwOiAgICAgICA5
+NzgzNGIyMCAgICAgICAgYmwgICAgICBmZmZmODAwMDA4NTNmNzgwIDxfX3RzYW5fZnVuY19lbnRy
+eT4KZmZmZjgwMDAwYTQ2Y2IwNDogICAgICAgZjAwMDM2MTQgICAgICAgIGFkcnAgICAgeDIwLCBm
+ZmZmODAwMDBhYjJmMDAwIDxldmVudF90eXBlX3NpemUrMHg4PgpmZmZmODAwMDBhNDZjYjA4OiAg
+ICAgICBhYTE3MDNlMCAgICAgICAgbW92ICAgICB4MCwgeDIzCmZmZmY4MDAwMGE0NmNiMGM6ICAg
+ICAgIDk3ODM1Y2FkICAgICAgICBibCAgICAgIGZmZmY4MDAwMDg1NDNkYzAgPF9fdHNhbl9yZWFk
+Mj4KZmZmZjgwMDAwYTQ2Y2IxMDogICAgICAgNzk0MGRlNjMgICAgICAgIGxkcmggICAgdzMsIFt4
+MTksICMxMTBdCmZmZmY4MDAwMGE0NmNiMTQ6ICAgICAgIDkxMWM4Mjk0ICAgICAgICBhZGQgICAg
+IHgyMCwgeDIwLCAjMHg3MjAKZmZmZjgwMDAwYTQ2Y2IxODogICAgICAgOTEzODQyOTQgICAgICAg
+IGFkZCAgICAgeDIwLCB4MjAsICMweGUxMApmZmZmODAwMDBhNDZjYjFjOiAgICAgICA1MjgwMDQw
+MCAgICAgICAgbW92ICAgICB3MCwgIzB4MjAgICAgICAgICAgICAgICAgICAgICAgIC8vICMzMgpm
+ZmZmODAwMDBhNDZjYjIwOiAgICAgICBhYTE0MDNlMSAgICAgICAgbW92ICAgICB4MSwgeDIwCmZm
+ZmY4MDAwMGE0NmNiMjQ6ICAgICAgIGIwMDA2YTIyICAgICAgICBhZHJwICAgIHgyLCBmZmZmODAw
+MDBiMWIxMDAwIDxrYWxsc3ltc190b2tlbl9pbmRleCsweDIwZjA3MD4KZmZmZjgwMDAwYTQ2Y2Iy
+ODogICAgICAgOTEwYTgwNDIgICAgICAgIGFkZCAgICAgeDIsIHgyLCAjMHgyYTAKZmZmZjgwMDAw
+YTQ2Y2IyYzogICAgICAgOTdmZmYzNDUgICAgICAgIGJsICAgICAgZmZmZjgwMDAwYTQ2OTg0MCA8
+X3A5X2RlYnVnPgpmZmZmODAwMDBhNDZjYjMwOiAgICAgICA1MjgwMDA4MCAgICAgICAgbW92ICAg
+ICB3MCwgIzB4NCAgICAgICAgICAgICAgICAgICAgICAgIC8vICM0CmZmZmY4MDAwMGE0NmNiMzQ6
+ICAgICAgIDk3ODM0ZGUzICAgICAgICBibCAgICAgIGZmZmY4MDAwMDg1NDAyYzAgPF9fdHNhbl9h
+dG9taWNfc2lnbmFsX2ZlbmNlPgpmZmZmODAwMDBhNDZjYjM4OiAgICAgICBkNTAzM2FiZiAgICAg
+ICAgZG1iICAgICBpc2hzdApmZmZmODAwMDBhNDZjYjNjOiAgICAgICBhYTEzMDNlMCAgICAgICAg
+bW92ICAgICB4MCwgeDE5CmZmZmY4MDAwMGE0NmNiNDA6ICAgICAgIDk3ODM1YWMwICAgICAgICBi
+bCAgICAgIGZmZmY4MDAwMDg1NDM2NDAgPF9fdHNhbl91bmFsaWduZWRfd3JpdGU0PgpmZmZmODAw
+MDBhNDZjYjQ0OiAgICAgICBhYTEzMDNlMCAgICAgICAgbW92ICAgICB4MCwgeDE5CmZmZmY4MDAw
+MGE0NmNiNDg6ICAgICAgIGQyODAwMDAzICAgICAgICBtb3YgICAgIHgzLCAjMHgwICAgICAgICAg
+ICAgICAgICAgICAgICAgLy8gIzAKZmZmZjgwMDAwYTQ2Y2I0YzogICAgICAgNTI4MDAwMjIgICAg
+ICAgIG1vdiAgICAgdzIsICMweDEgICAgICAgICAgICAgICAgICAgICAgICAvLyAjMQpmZmZmODAw
+MDBhNDZjYjUwOiAgICAgICA1MjgwMDA2MSAgICAgICAgbW92ICAgICB3MSwgIzB4MyAgICAgICAg
+ICAgICAgICAgICAgICAgIC8vICMzCg==
+--00000000000008f9c705eebf61a4--
