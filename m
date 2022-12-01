@@ -2,188 +2,259 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C2E4C43217
-	for <rcu@archiver.kernel.org>; Thu,  1 Dec 2022 13:54:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E12D4C4332F
+	for <rcu@archiver.kernel.org>; Thu,  1 Dec 2022 23:46:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231604AbiLANy4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 1 Dec 2022 08:54:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39400 "EHLO
+        id S231542AbiLAXqD (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 1 Dec 2022 18:46:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231583AbiLANy4 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 1 Dec 2022 08:54:56 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F1AD1C403
-        for <rcu@vger.kernel.org>; Thu,  1 Dec 2022 05:54:54 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id l22-20020a17090a3f1600b00212fbbcfb78so5285527pjc.3
-        for <rcu@vger.kernel.org>; Thu, 01 Dec 2022 05:54:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=rQG0P8usI4HNem+ecjQJ3f51aYJXhxGs5688WQfKpkI=;
-        b=oEXTNcgcOdsdm2oUv5BMvB2+TWmA31kF1w0Fo4fUWSqGSTzBH3SkI0sUo4OxtK3An8
-         OYBlzSWX1GoPgBueZ1grmjQxeHWIAw/5W3pxUxUcOBk/XgN6foP9p/e9XCBnoq4aFfsc
-         xudERrqS7hu1dgt/ZeglJsENgb8bM2X5wYCUAT8N7JEAK4nano12hHl0Z5D0c+O5HPtc
-         y83ivmSeKsf0MYEv31+hmjMhHQlQ3yhffrBuDt4cKZEDJbzF1P3c4z/I+2ZHVaheCSZx
-         aeqj6/7fyu2SWMHtVxf6vVN5rpbW/MOCL4zj0iYHJbpJJ1hF4INu+NDH3UUzsVsT0/Va
-         DbVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rQG0P8usI4HNem+ecjQJ3f51aYJXhxGs5688WQfKpkI=;
-        b=Vx5k4h2W01e3uDabKZ2MA2wp79TaCKwDld9L7+uEeqUf0fs9OFmGXgD8VOHhff2uj5
-         xwlIZvXwSQR04YF7BhChrb4nfNEQzHgMEMV7lORlRM9ncKN+t3VP4MtnaB9asSg/6YD3
-         hsZhKpuJdtlKHTFsXNeeoY+wSaPB2SBDS3fhmkmfOrufHvD57b+2U8mB+jSzfAp5RioV
-         FRi3A8bZT2NMHzJklY+IVfzbyTtCofNbj7YatfFTDtfQYQISXwvRqlsf33pk7g8qSH5w
-         t18m8ia+LJPvZ+qauEKbPXv4Ms3AXyS5lD/G4Oh+0Q46mN7opJgxl8DCfXe14imLKRvd
-         vO+g==
-X-Gm-Message-State: ANoB5pl0+uOg1XuIFsFwojRO0rtq3ewmlBjcTsQ02fIFfdzJ7YvK8bnZ
-        KzsQhjuPJDNoDmhOhPkNpA==
-X-Google-Smtp-Source: AA0mqf65atRDOSXed72gxrkAA53/+dGIAx0DAE1KP2RExtX90F7xrLpyqlOwU3D36JlcjD0xE0OWpw==
-X-Received: by 2002:a17:902:6a86:b0:187:722:f4db with SMTP id n6-20020a1709026a8600b001870722f4dbmr48773029plk.87.1669902893980;
-        Thu, 01 Dec 2022 05:54:53 -0800 (PST)
-Received: from piliu.users.ipa.redhat.com ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id oe12-20020a17090b394c00b002193db6f18dsm3062107pjb.13.2022.12.01.05.54.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Dec 2022 05:54:53 -0800 (PST)
-Date:   Thu, 1 Dec 2022 21:54:45 +0800
-From:   Pingfan Liu <kernelfans@gmail.com>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Boqun Feng <boqun.feng@gmail.com>, rcu@vger.kernel.org,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
+        with ESMTP id S231381AbiLAXqC (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 1 Dec 2022 18:46:02 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73C72BE6B0;
+        Thu,  1 Dec 2022 15:46:01 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0D27B621B9;
+        Thu,  1 Dec 2022 23:46:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56CE9C433C1;
+        Thu,  1 Dec 2022 23:46:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1669938360;
+        bh=+ZZDaJ2TRqfIjvZzNrIyeLfItKovFc6+CdjaaxehAkU=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=bmRtcrRiqsli1nffSTig33Fg6wjlRraY09f8JVPSUAREoaURLJBdSHqu2lrV/SZ5R
+         5TYFc0CEuOf/4zIwYASGcbrV4ny2llKEzr1amSwVCq9fw6fRSsEB2KuX4VoDZYHcn2
+         WtyHfs3Nk/qb3tlMPcPcrldHoTriA/g0blQ2hmH8NBe7fw1vUEE0X/5F0dBiP2TCLW
+         +f6wDkvUavs6NNay5wxUdRiycigZxnz90zXlvPSVBVD4FLE1LbTDEeuWD/TQVDsS0O
+         2LEr/SoVc2KjiS1E+cYCIK1698Eo6ZSnNp5To0UffvoeI5rSRrAhp0s2lgcAdqgA3u
+         /F4EVPeCMBveQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id B9A145C05F8; Thu,  1 Dec 2022 15:45:59 -0800 (PST)
+Date:   Thu, 1 Dec 2022 15:45:59 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
         Frederic Weisbecker <frederic@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Zhang, Qiang1" <qiang1.zhang@intel.com>
-Subject: Re: [PATCH] srcu: switch work func to allow concurrent gp
-Message-ID: <Y4iyJbqIqnMCv+RQ@piliu.users.ipa.redhat.com>
-References: <Y4eKl2fCNDX2ka1g@boqun-archlinux>
- <0B944225-3E93-494D-A297-1B330735D44F@joelfernandes.org>
+        Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH v2 4/4] rcu/kvfree: Use a polled API to speedup a reclaim
+ process
+Message-ID: <20221201234559.GA1520591@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20221129155822.538434-1-urezki@gmail.com>
+ <20221129155822.538434-5-urezki@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <0B944225-3E93-494D-A297-1B330735D44F@joelfernandes.org>
+In-Reply-To: <20221129155822.538434-5-urezki@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Nov 30, 2022 at 12:39:53PM -0500, Joel Fernandes wrote:
+On Tue, Nov 29, 2022 at 04:58:22PM +0100, Uladzislau Rezki (Sony) wrote:
+> Currently all objects placed into a batch require a full GP
+> after passing which objects in a batch are eligible to be
+> freed.
 > 
+> The problem is that many pointers may already passed several
+> GP sequences so there is no need for them in extra delay and
+> such objects can be reclaimed right away without waiting.
 > 
-> > On Nov 30, 2022, at 11:55 AM, Boqun Feng <boqun.feng@gmail.com> wrote:
-> > 
-> > ﻿On Wed, Nov 30, 2022 at 04:39:02PM +0800, Pingfan Liu wrote:
-> >> ssp->srcu_cb_mutex is introduced to allow the other srcu state machine
-> >> to advance as soon as possible. But according to the implement of
-> >> workqueue, the same work_struct is serialized and can not run
-> >> concurrently in fact.
-> >> 
-> >> Quoting from Documentation/core-api/workqueue.rst
-> >> "
-> >> Non-reentrance Conditions
-> >> =========================
-> >> 
-> >> Workqueue guarantees that a work item cannot be re-entrant if the following
-> >> conditions hold after a work item gets queued:
-> >> 
-> >>        1. The work function hasn't been changed.
-> >>        2. No one queues the work item to another workqueue.
-> >>        3. The work item hasn't been reinitiated.
-> >> "
-> >> 
-> >> To allow the concurrence to some extent, it can be achieved by changing
-> >> the work function to break the conditions. As a result, when
-> >> srcu_gp_end() releases srcu_gp_mutex, a new state machine can begin.
-> >> 
-> >> Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
-> >> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-> >> Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> >> Cc: Frederic Weisbecker <frederic@kernel.org>
-> >> Cc: Josh Triplett <josh@joshtriplett.org>
-> >> Cc: Steven Rostedt <rostedt@goodmis.org>
-> >> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> >> Cc: "Zhang, Qiang1" <qiang1.zhang@intel.com>
-> >> To: rcu@vger.kernel.org
-> >> ---
-> >> kernel/rcu/srcutree.c | 19 +++++++++++++++++++
-> >> 1 file changed, 19 insertions(+)
-> >> 
-> >> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> >> index 1c304fec89c0..56dd9bb2c8b8 100644
-> >> --- a/kernel/rcu/srcutree.c
-> >> +++ b/kernel/rcu/srcutree.c
-> >> @@ -75,6 +75,7 @@ static bool __read_mostly srcu_init_done;
-> >> static void srcu_invoke_callbacks(struct work_struct *work);
-> >> static void srcu_reschedule(struct srcu_struct *ssp, unsigned long delay);
-> >> static void process_srcu(struct work_struct *work);
-> >> +static void process_srcu_wrap(struct work_struct *work);
-> >> static void srcu_delay_timer(struct timer_list *t);
-> >> 
-> >> /* Wrappers for lock acquisition and release, see raw_spin_lock_rcu_node(). */
-> >> @@ -763,6 +764,11 @@ static void srcu_gp_end(struct srcu_struct *ssp)
-> >>        cbdelay = 0;
-> >> 
-> >>    WRITE_ONCE(ssp->srcu_last_gp_end, ktime_get_mono_fast_ns());
-> >> +    /* Change work func so work can be concurrent */
-> >> +    if (ssp->work.work.func == process_srcu_wrap)
-> >> +        ssp->work.work.func = process_srcu;
-> >> +    else
-> >> +        ssp->work.work.func = process_srcu_wrap;
-> > 
-> > This looks really hacky ;-) It would be good that workqueue has an API
-> > to allow "resetting" a work.
-> > 
-> > Do you have any number of the potential performance improvement?
+> In order to reduce a memory footprint this patch introduces
+> a per-page-grace-period-controlling mechanism. It allows us
+> to distinguish pointers for which a grace period is passed
+> and for which not.
 > 
+> A reclaim thread in its turn frees a memory in a reverse
+> order starting from a tail because a GP is likely passed
+> for objects in a page. If a page with a GP sequence in a
+> list hits a condition when a GP is not ready we bail out
+> requesting one more grace period in order to complete a
+> drain process for left pages.
 > 
-> Agreed. Another question - have you verified the workqueue behavior after this change (say using tracing), regardless of what the workqueue documentation says?
+> Test example:
 > 
+> kvm.sh --memory 10G --torture rcuscale --allcpus --duration 1 \
+>   --kconfig CONFIG_NR_CPUS=64 \
+>   --kconfig CONFIG_RCU_NOCB_CPU=y \
+>   --kconfig CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y \
+>   --kconfig CONFIG_RCU_LAZY=n \
+>   --bootargs "rcuscale.kfree_rcu_test=1 rcuscale.kfree_nthreads=16 \
+>   rcuscale.holdoff=20 rcuscale.kfree_loops=10000 \
+>   torture.disable_onoff_at_boot" --trust-make
+> 
+> Total time taken by all kfree'ers: 8535693700 ns, loops: 10000, batches: 1188, memory footprint: 2248MB
+> Total time taken by all kfree'ers: 8466933582 ns, loops: 10000, batches: 1157, memory footprint: 2820MB
+> Total time taken by all kfree'ers: 5375602446 ns, loops: 10000, batches: 1130, memory footprint: 6502MB
+> Total time taken by all kfree'ers: 7523283832 ns, loops: 10000, batches: 1006, memory footprint: 3343MB
+> Total time taken by all kfree'ers: 6459171956 ns, loops: 10000, batches: 1150, memory footprint: 6549MB
+> 
+> Total time taken by all kfree'ers: 8560060176 ns, loops: 10000, batches: 1787, memory footprint: 61MB
+> Total time taken by all kfree'ers: 8573885501 ns, loops: 10000, batches: 1777, memory footprint: 93MB
+> Total time taken by all kfree'ers: 8320000202 ns, loops: 10000, batches: 1727, memory footprint: 66MB
+> Total time taken by all kfree'ers: 8552718794 ns, loops: 10000, batches: 1790, memory footprint: 75MB
+> Total time taken by all kfree'ers: 8601368792 ns, loops: 10000, batches: 1724, memory footprint: 62MB
+> 
+> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 
-I will try to answer this question after figuring out a test case.
+A couple more questions interspersed below upon further reflection.
 
-Thanks,
+Thoughts?
 
-	Pingfan
+						Thanx, Paul
 
-> Thanks,
+> ---
+>  kernel/rcu/tree.c | 47 +++++++++++++++++++++++++++++++++++++++--------
+>  1 file changed, 39 insertions(+), 8 deletions(-)
 > 
-> - Joel 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index c94c17194299..44279ca488ef 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -2741,11 +2741,13 @@ EXPORT_SYMBOL_GPL(call_rcu);
+>  /**
+>   * struct kvfree_rcu_bulk_data - single block to store kvfree_rcu() pointers
+>   * @list: List node. All blocks are linked between each other
+> + * @gp_snap: Snapshot of RCU state for objects placed to this bulk
+>   * @nr_records: Number of active pointers in the array
+>   * @records: Array of the kvfree_rcu() pointers
+>   */
+>  struct kvfree_rcu_bulk_data {
+>  	struct list_head list;
+> +	unsigned long gp_snap;
+>  	unsigned long nr_records;
+>  	void *records[];
+>  };
+> @@ -2762,13 +2764,15 @@ struct kvfree_rcu_bulk_data {
+>   * struct kfree_rcu_cpu_work - single batch of kfree_rcu() requests
+>   * @rcu_work: Let queue_rcu_work() invoke workqueue handler after grace period
+>   * @head_free: List of kfree_rcu() objects waiting for a grace period
+> + * @head_free_gp_snap: Snapshot of RCU state for objects placed to "@head_free"
+>   * @bulk_head_free: Bulk-List of kvfree_rcu() objects waiting for a grace period
+>   * @krcp: Pointer to @kfree_rcu_cpu structure
+>   */
+>  
+>  struct kfree_rcu_cpu_work {
+> -	struct rcu_work rcu_work;
+> +	struct work_struct rcu_work;
+>  	struct rcu_head *head_free;
+> +	unsigned long head_free_gp_snap;
+>  	struct list_head bulk_head_free[FREE_N_CHANNELS];
+>  	struct kfree_rcu_cpu *krcp;
+>  };
+> @@ -2964,10 +2968,11 @@ static void kfree_rcu_work(struct work_struct *work)
+>  	struct rcu_head *head;
+>  	struct kfree_rcu_cpu *krcp;
+>  	struct kfree_rcu_cpu_work *krwp;
+> +	unsigned long head_free_gp_snap;
+>  	int i;
+>  
+> -	krwp = container_of(to_rcu_work(work),
+> -			    struct kfree_rcu_cpu_work, rcu_work);
+> +	krwp = container_of(work,
+> +		struct kfree_rcu_cpu_work, rcu_work);
+>  	krcp = krwp->krcp;
+>  
+>  	raw_spin_lock_irqsave(&krcp->lock, flags);
+> @@ -2978,12 +2983,29 @@ static void kfree_rcu_work(struct work_struct *work)
+>  	// Channel 3.
+>  	head = krwp->head_free;
+>  	krwp->head_free = NULL;
+> +	head_free_gp_snap = krwp->head_free_gp_snap;
+>  	raw_spin_unlock_irqrestore(&krcp->lock, flags);
+>  
+>  	// Handle the first two channels.
+> -	for (i = 0; i < FREE_N_CHANNELS; i++)
+> +	for (i = 0; i < FREE_N_CHANNELS; i++) {
+> +		// Start from the tail page, so a GP is likely passed for it.
+> +		list_for_each_entry_safe_reverse(bnode, n, &bulk_head[i], list) {
+> +			// Not yet ready? Bail out since we need one more GP.
+> +			if (!poll_state_synchronize_rcu(bnode->gp_snap))
+> +				break;
+> +
+> +			list_del_init(&bnode->list);
+> +			kvfree_rcu_bulk(krcp, bnode, i);
+> +		}
+> +
+> +		// Please note a request for one more extra GP can
+> +		// occur only once for all objects in this batch.
+> +		if (!list_empty(&bulk_head[i]))
+> +			synchronize_rcu();
+
+Does directly invoking synchronize_rcu() instead of using queue_rcu_work()
+provide benefits, for example, reduced memory footprint?  If not,
+it would be good to instead use queue_rcu_work() in order to avoid an
+unnecessary context switch in this workqueue handler.
+
+My concern is that an RCU CPU stall might otherwise end up tying up more
+workqueue kthreads as well as more memory.
+
+>  		list_for_each_entry_safe(bnode, n, &bulk_head[i], list)
+>  			kvfree_rcu_bulk(krcp, bnode, i);
+> +	}
+>  
+>  	/*
+>  	 * This is used when the "bulk" path can not be used for the
+> @@ -2992,7 +3014,10 @@ static void kfree_rcu_work(struct work_struct *work)
+>  	 * queued on a linked list through their rcu_head structures.
+>  	 * This list is named "Channel 3".
+>  	 */
+> -	kvfree_rcu_list(head);
+> +	if (head) {
+> +		cond_synchronize_rcu(head_free_gp_snap);
+
+And similarly here.
+
+> +		kvfree_rcu_list(head);
+> +	}
+>  }
+>  
+>  static bool
+> @@ -3059,6 +3084,11 @@ static void kfree_rcu_monitor(struct work_struct *work)
+>  			if (!krwp->head_free) {
+>  				krwp->head_free = krcp->head;
+>  				WRITE_ONCE(krcp->head, NULL);
+> +
+> +				// Take a snapshot for this krwp. Please note no more
+> +				// any objects can be added to attached head_free channel
+> +				// therefore fixate a GP for it here.
+> +				krwp->head_free_gp_snap = get_state_synchronize_rcu();
+>  			}
+>  
+>  			WRITE_ONCE(krcp->count, 0);
+> @@ -3068,7 +3098,7 @@ static void kfree_rcu_monitor(struct work_struct *work)
+>  			// be that the work is in the pending state when
+>  			// channels have been detached following by each
+>  			// other.
+> -			queue_rcu_work(system_wq, &krwp->rcu_work);
+> +			queue_work(system_wq, &krwp->rcu_work);
+>  		}
+>  	}
+>  
+> @@ -3196,8 +3226,9 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
+>  		list_add(&bnode->list, &(*krcp)->bulk_head[idx]);
+>  	}
+>  
+> -	/* Finally insert. */
+> +	// Finally insert and update the GP for this page.
+>  	bnode->records[bnode->nr_records++] = ptr;
+> +	bnode->gp_snap = get_state_synchronize_rcu();
+>  	return true;
+>  }
+>  
+> @@ -4801,7 +4832,7 @@ static void __init kfree_rcu_batch_init(void)
+>  		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+>  
+>  		for (i = 0; i < KFREE_N_BATCHES; i++) {
+> -			INIT_RCU_WORK(&krcp->krw_arr[i].rcu_work, kfree_rcu_work);
+> +			INIT_WORK(&krcp->krw_arr[i].rcu_work, kfree_rcu_work);
+>  			krcp->krw_arr[i].krcp = krcp;
+>  
+>  			for (j = 0; j < FREE_N_CHANNELS; j++)
+> -- 
+> 2.30.2
 > 
-> 
-> 
-> > 
-> > Regards,
-> > Boqun
-> > 
-> >>    rcu_seq_end(&ssp->srcu_gp_seq);
-> >>    gpseq = rcu_seq_current(&ssp->srcu_gp_seq);
-> >>    if (ULONG_CMP_LT(ssp->srcu_gp_seq_needed_exp, gpseq))
-> >> @@ -1637,6 +1643,19 @@ static void process_srcu(struct work_struct *work)
-> >>    srcu_reschedule(ssp, curdelay);
-> >> }
-> >> 
-> >> +/*
-> >> + * The ssp->work is expected to be concurrent to some extent, but the current
-> >> + * workqueue does not support the concurrence on the same work. (Refer to the
-> >> + * section "Non-reentrance Conditions" in the file workqueue.rst)
-> >> + * Resolving it by changing the work func.
-> >> + *
-> >> + * Prevent compilering from optimizing out it.
-> >> + */
-> >> +static __used void process_srcu_wrap(struct work_struct *work)
-> >> +{
-> >> +    process_srcu(work);
-> >> +}
-> >> +
-> >> void srcutorture_get_gp_data(enum rcutorture_type test_type,
-> >>                 struct srcu_struct *ssp, int *flags,
-> >>                 unsigned long *gp_seq)
-> >> -- 
-> >> 2.31.1
-> >> 
