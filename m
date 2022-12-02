@@ -2,254 +2,278 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 537E9C4332F
-	for <rcu@archiver.kernel.org>; Fri,  2 Dec 2022 09:54:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 32B52C4321E
+	for <rcu@archiver.kernel.org>; Fri,  2 Dec 2022 12:52:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233108AbiLBJyx (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 2 Dec 2022 04:54:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59524 "EHLO
+        id S233617AbiLBMwD (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 2 Dec 2022 07:52:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232711AbiLBJyw (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 2 Dec 2022 04:54:52 -0500
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB85613CD4;
-        Fri,  2 Dec 2022 01:54:50 -0800 (PST)
-Received: from dggpeml100012.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4NNp9l1zBLzpW4D;
-        Fri,  2 Dec 2022 17:51:23 +0800 (CST)
-Received: from [10.67.110.218] (10.67.110.218) by
- dggpeml100012.china.huawei.com (7.185.36.121) with Microsoft SMTP Server
+        with ESMTP id S232862AbiLBMwC (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 2 Dec 2022 07:52:02 -0500
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2300ADC879;
+        Fri,  2 Dec 2022 04:52:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1669985521; x=1701521521;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=AsgfoTMYd+bf11MMROIsAXaDMlSTb2OEa43l+JSsN4c=;
+  b=XvtYtmn1BKuAtoIUbOR4bfR2gHxs8HdayK0/wdL/0K+3PtrjsZVeehFd
+   P9j/ydGWIPX7kt5fwWY7CBJEkipb6/gMq81o6eoug2olXzyfpIjnb/wIK
+   izivKEUau92qhl8KEVzdLHxU10C/bmGBHQypctpic7Yj0P2fr7Jvga2ha
+   MgkCelOfIOtpxVxjmJN6eM6YdKoYEaEWV0QC0XgFSxgBdc6KnqDm97Vlo
+   XIcLVdWC+Uirn6S2Db9oqmcHCYqpYEu42cTXp8xB2fgBgYrywRbqO0BiF
+   559hfx6j7pz8t2TWpCWMShLR44mwxWvXWOcsoXszt8DKSLt4vHaaXzKLj
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10548"; a="380235200"
+X-IronPort-AV: E=Sophos;i="5.96,212,1665471600"; 
+   d="scan'208";a="380235200"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2022 04:51:59 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10548"; a="787277334"
+X-IronPort-AV: E=Sophos;i="5.96,212,1665471600"; 
+   d="scan'208";a="787277334"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmsmga001.fm.intel.com with ESMTP; 02 Dec 2022 04:51:59 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Fri, 2 Dec 2022 17:54:48 +0800
-Message-ID: <dda2427b-053a-e4b4-0d71-afb10b7c635d@huawei.com>
-Date:   Fri, 2 Dec 2022 17:54:48 +0800
+ 15.1.2507.16; Fri, 2 Dec 2022 04:51:58 -0800
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16 via Frontend Transport; Fri, 2 Dec 2022 04:51:58 -0800
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.169)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.16; Fri, 2 Dec 2022 04:51:58 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aw6fQdb11NpanLfJX1J3cblW4Y0b7SAjWwijE5MSHM4HHBWqY46PpFBVpMF+6No3eCTLIlC2+0b96Bgc+jH60msf/62CQEbPTNw5yjiiQXk43uhqh7cEwiWUxqS4O6pYHC4zr6e5oQHIUBDLgG0K+NJHW2alby/zux+qi2NNpUxprH1WgY+Fbx4pxgZ3/W5Ei+iIXqH/dT0iR6MH4mm4kXVNqcPuQVefVfFfFsDydv8RnsUIxEBmRmnICeW4uvCO/Guc0VeyI3u9AZyK/iHfC38QVrsrwzs2sviV4bB4qkIx5VFk5YLEu3vtBd588SW2L0qi1Whz5jovkAmOC9uc4w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=AsgfoTMYd+bf11MMROIsAXaDMlSTb2OEa43l+JSsN4c=;
+ b=Vf4uGX8iuKhlVKroB/lodKtl4BbAbIZl0DKTZx2q6HQs4INPEflvxbzuP5f6RCaKCKYbbkjOGxOtCNcaX3/c+bno5sZoerMIrhpX28r+K7liiaN75RlGYbH4JMMcJxKD2ipX8t1O9ATHa6021r41Uz6em07XCMlY4tqscsxrLh9iQaXuFLcdKBzbEDDo/adoZHWEWOqmkXmK8wZZs37XCGYvUTb+XWU9+SsIHI8jcs4Sx46/WbnSO1XMqF2s3LFlWfKU+bFegNt6D1oPGKNZpPOsNv/NqdXOfV0bcxONfkkXkIQa0D8+iH8Uf2BI0p8PiwmUHI6N5N2RK8uYqNa5Bg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from PH0PR11MB5880.namprd11.prod.outlook.com (2603:10b6:510:143::14)
+ by DM4PR11MB5392.namprd11.prod.outlook.com (2603:10b6:5:397::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5880.10; Fri, 2 Dec
+ 2022 12:51:57 +0000
+Received: from PH0PR11MB5880.namprd11.prod.outlook.com
+ ([fe80::8f92:b03a:1de2:e315]) by PH0PR11MB5880.namprd11.prod.outlook.com
+ ([fe80::8f92:b03a:1de2:e315%4]) with mapi id 15.20.5857.023; Fri, 2 Dec 2022
+ 12:51:57 +0000
+From:   "Zhang, Qiang1" <qiang1.zhang@intel.com>
+To:     "paulmck@kernel.org" <paulmck@kernel.org>
+CC:     "frederic@kernel.org" <frederic@kernel.org>,
+        "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>,
+        "joel@joelfernandes.org" <joel@joelfernandes.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v4] rcu-tasks: Make rude RCU-Tasks work well with CPU
+ hotplug
+Thread-Topic: [PATCH v4] rcu-tasks: Make rude RCU-Tasks work well with CPU
+ hotplug
+Thread-Index: AQHZBRUNYM7gGe8KaECV+8uqpx3Q8a5YKTWAgAJj63A=
+Date:   Fri, 2 Dec 2022 12:51:56 +0000
+Message-ID: <PH0PR11MB58800E4DF4BF0B60FBFC71E2DA179@PH0PR11MB5880.namprd11.prod.outlook.com>
+References: <20221130234533.1983769-1-qiang1.zhang@intel.com>
+ <20221201001307.GF4001@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20221201001307.GF4001@paulmck-ThinkPad-P17-Gen-1>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR11MB5880:EE_|DM4PR11MB5392:EE_
+x-ms-office365-filtering-correlation-id: 7882eff3-7624-414d-853c-08dad463fee8
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: VK4IY+p8H+En52oldM4AeF/5f8IF3myQjsDllI9cGRW8xwxugHLcrzSNFEhRRQFqTCyhXmLtrqbnxU1PxKVSqSok9G4tG1x1g5PnQS308703svRzXUsGK8By61+bjT0225cPRPTxq91NxSKnSwU5LS0Ixoe1gOwLpJ7CZm0mbIoK8dFF//CGpyZGVx/XzrL32OKNTPcWS/hRG1F49iKNJxYi8mm7KPSgDqA64D3s6RGZtR8M6jCQ6UKUOaW5fWvxxhyI7kqw5DprfkIBR0JJpQo9sMYdPzaoGiOZDZf44kSj/bsEUmTcCVSepKjJCUcOFULkCFNpiS4zCDVXwI9T9N0BONOjJzVX4kyR3/MRfEoOMdktbBG/qGCbMEHC2HmShuBWcNM8hlVX2UH9Wj8sIlLRHOf3/R3pxs2JdEpGf80xaRVoqFkyitByv9kby7MDrRQOrDl+hcQ2rE9s6QvDMa7uPtFzYKxxb1IwXVyueHxyMPDJS3hsDyCn5Z7Ekmdeghf44e79USAhvugzQtwfB7Wh5CGXGwCwgfXOVXMahOG2Wv8u6jHPn7SbGYlUDsd6D1t2FGuY1xpO3B4RZ3jBOKnwVQJwxY8sMdA/SyKHuI839wGc/cjeHEaMeRakQmr0RtwsfEFmldgWViX4KdIGEUpEWqctWE/Suu0OBLUZkkKEPUTRkcDwXwJLQGf2GH+d
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5880.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(136003)(376002)(396003)(366004)(346002)(39860400002)(451199015)(5660300002)(8936002)(66946007)(41300700001)(76116006)(55016003)(4326008)(52536014)(8676002)(64756008)(66446008)(66476007)(66556008)(2906002)(38070700005)(316002)(54906003)(6916009)(33656002)(186003)(83380400001)(478600001)(86362001)(71200400001)(9686003)(26005)(82960400001)(38100700002)(6506007)(7696005)(122000001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Z0E5cituOEU1QVVyYnc5blBHRDVPQkpVWjhsblAyWVdVOHNOL2JScEtuOHJq?=
+ =?utf-8?B?ZUJqY0ROVU8wYW81TGFTU1A2QTN6QVBSMFpzWG5YQ2xpemo0dzNEb1hSMHFM?=
+ =?utf-8?B?MlloZ1BOUUNrL0VBSFNVdVNaOTd2T2JYT1lSSzg3b0FEVE9kcjRjanlkbGZj?=
+ =?utf-8?B?cjFBTHlvczY2Y0VwVExHZS9xSHFmbUNOK0FSWjFtWVMrTFo4cmVvOUZSZ1Ix?=
+ =?utf-8?B?M2Q1RWw1akNDem1kZEUvZ0IrQ2xLMzM4ODFaaDZCN01BNnEzaGtjQ3NJQXN0?=
+ =?utf-8?B?cXEwbE03NlhNbU1wTlc2bTFTZm9aTHlJU1YzS1M5TjJuNEhKRkdmd01UWE1z?=
+ =?utf-8?B?dmRyVlVTVG1FMUorUzZWV21XT2l2bFc5QUk5RXhuSnVXQlI2VEdkZ1hkNGQ0?=
+ =?utf-8?B?Z2JsL2NodmtzdWVIOGJRb0JrOGlBNURPWkZzVWRHN3h4eFZDTkxZUmtGSklx?=
+ =?utf-8?B?S3NQZTA5OHhIQ3pjNHRXQlZxVDRJaWt3ZE81emVpMHRLODIwSno4VkYrU0pj?=
+ =?utf-8?B?L3hhMFpRdDJPNVFYN2tsVVljZ04vaEdzTnBoVGtTR202Tlp2dG9Hd1JndUhL?=
+ =?utf-8?B?WW5tQ0dnVm5wYkpZUU44QTYzbkN0cURVUEZYb1M4b1RFUWNxK0tjYmI0Skw3?=
+ =?utf-8?B?MXkyMjBnbFJkQ2hEMHN0NWJVNy9TUVh6dkJsSnY2NDdTRndzb293QVJXMlZM?=
+ =?utf-8?B?WnA2bmc4cGhhS0pIb3dxcGlRVm5yNk5UdGQ5cVNIaERqZCtQYnU4U1JRZGtF?=
+ =?utf-8?B?b0dSQVlZaGh4NEhXWFc5OGNCRmRqdDNkdFNpUXUyVHVCclpmRE9kWHh2WEJD?=
+ =?utf-8?B?QTdqMEkyMXBicUxaUkQxRENZNlVKRHAwV1VyOWJtL25iQytsWWhtTFNNbEFB?=
+ =?utf-8?B?UmRKZ2svWUY4MWhSSDEzWEo5dGVGbytZVUJ2d3V4c3dtRzUwK3JnYURVWHRW?=
+ =?utf-8?B?aFNjNUlPb1ZWQzNiT3VzcmVKREo3QS9LMmxTM2Z2QWpKYk1OTXRMYUh4UzFE?=
+ =?utf-8?B?VGhaQUZmd0EvKzB1cituaWN0ZEtlb3VNR3JhZ0U5K3g4ZEQ4dGE2aVRCV29O?=
+ =?utf-8?B?RDNGNnJnUm54U1JFa2U1YmhNeDYyUFRwTURwVXYvVlZYTURrbjlRRlBjTk1n?=
+ =?utf-8?B?SU9FelBjTDhmVEpKU2I5SktSTjlmN3pEbXRMUGxuLzdxSE9UM1JKT1ZiTEZQ?=
+ =?utf-8?B?Z3BDUjFIU2kydTA5Z2VCdGxjV3hmNDV6UG1zeG5wT3lkQVFXUmQ4ZUNKSThM?=
+ =?utf-8?B?L0tLamJyOHJYUm0xUmVnc0d2RUtrYWdqZXVueWMzY2NPOG81UmxNMjBqamF5?=
+ =?utf-8?B?VlBLcFZ1M05VVHJPMEM2VTc0dzlsa2xIYW93cUQyT1ROcnVxVEVnb2h3VVhv?=
+ =?utf-8?B?R3cvYStwOU00eW8wTGRGelVIWExBOHhTVUFnc1F1NG1MeWg2TEc2b3lOcUVT?=
+ =?utf-8?B?cm9Galk0M2JQMmFrU0JKbndJbWxWQ3hvQzlSVjRSaVBCaWJyZm1mYTBOT3dY?=
+ =?utf-8?B?K2FCNmNiTExBQTV2RGlBRTQyUzU2dkp3UTdVc3hrekpmNnRaZ3ZBUG9HT0Nt?=
+ =?utf-8?B?VzdjUzEzUCtZYUd6T1IwTXBUdmkxUkxrUGZIa2lFczE3cEN0bDR1YUVJOHhP?=
+ =?utf-8?B?T2JjM1prMXMwb0d6OVgyN2ZwaTU3blVaWHRkVkhHUUZvYk1pam00Mm1SRGNl?=
+ =?utf-8?B?QWwxemNHQzlTQ1BzVmdEMHZWayt0Y1VSSmNmanNBRmd2U0JJZkRXc29oWWov?=
+ =?utf-8?B?U1JGUVhNWFQ5d0lzc0RScXUrWWs2TXJ0MTlOTnFSQThTSlJYR0JNRW5iSlZM?=
+ =?utf-8?B?dFk3ZWkxUVJLOGF1SDhhSzZSMjRPQjc1S3JBT2RDVHlDQk51NGU2SWk2MWRG?=
+ =?utf-8?B?SitzT3NhVEZGQmR2TlBoWDNvSTZRbGVvQ0c3TGFQbFhRYVg5UmlOdXY3bzFJ?=
+ =?utf-8?B?SDBkWHdnWWhMb1FBK1A2Q0NUaml1MVFYQ1BZMU1vQjZrK3NOYnRCMU5NWjRL?=
+ =?utf-8?B?UFJuVDVuemlaOTZrM3dPK0Nqb3NsMDFwa2U0WU90bzJkMWRYaGhTdkJKZTJ2?=
+ =?utf-8?B?V1o3bUp5ZFBLbUk5TXNmQm9UbFY3U3B0S2RjelhSbG9HYmtDMWpORXVXV0t1?=
+ =?utf-8?Q?csKr8S8Zvgv33Rm1kNvc3DGBk?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.0
-Subject: Re: [PATCH] rcu: Fix kernel stack overflow caused by kprobe on
- rcu_irq_enter_check_tick()
-To:     <paulmck@kernel.org>
-CC:     <frederic@kernel.org>, <quic_neeraju@quicinc.com>,
-        <josh@joshtriplett.org>, <rostedt@goodmis.org>,
-        <mathieu.desnoyers@efficios.com>, <jiangshanlai@gmail.com>,
-        <joel@joelfernandes.org>, <rcu@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20221119040049.795065-1-zhengyejian1@huawei.com>
- <20221121195703.GO4001@paulmck-ThinkPad-P17-Gen-1>
-From:   Zheng Yejian <zhengyejian1@huawei.com>
-In-Reply-To: <20221121195703.GO4001@paulmck-ThinkPad-P17-Gen-1>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.110.218]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml100012.china.huawei.com (7.185.36.121)
-X-CFilter-Loop: Reflected
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5880.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7882eff3-7624-414d-853c-08dad463fee8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Dec 2022 12:51:56.9692
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: z3z7xCtiiwHXlpikXblK0ROdSgGNsxL/Nn0cbLEBSIz9ThNKtGx2PCxw9BhbP12v5SrXQhBqIP45sp7lDOKo2A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB5392
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-
-
-On 2022/11/22 03:57, Paul E. McKenney wrote:
-> On Sat, Nov 19, 2022 at 12:00:49PM +0800, Zheng Yejian wrote:
->> Register kprobe on __rcu_irq_enter_check_tick() can cause kernel stack
->> overflow [1]. This issue is first found in v5.10 and can be reproduced
->> by enabling CONFIG_NO_HZ_FULL and doing like:
->>    # cd /sys/kernel/debug/tracing/
->>    # echo 'p:mp1 __rcu_irq_enter_check_tick' >> kprobe_events
->>    # echo 1 > events/kprobes/enable
->>
->> So __rcu_irq_enter_check_tick() should not be kprobed, mark it as noinstr.
-> 
-> Good catch!
-> 
-> I am inclined to queue this, but noticed that one of its callers need
-> it to be noinstr but that the others do not.
-> 
-> Need noinstr:
-> 
-> o	enter_from_kernel_mode() -> __enter_from_kernel_mode() ->
-> 	rcu_irq_enter_check_tick() -> __rcu_irq_enter_check_tick()
-> 
-> Doesn't need noinstr:
-> 
-> o	ct_nmi_enter() -> rcu_irq_enter_check_tick() ->
-> 	__rcu_irq_enter_check_tick(), courtesy of the call to
-> 	instrumentation_begin() in ct_nmi_enter() that precedes the call
-> 	to rcu_irq_enter_check_tick().
-> 
-> o	irqentry_enter() -> rcu_irq_enter_check_tick() ->
-> 	__rcu_irq_enter_check_tick(), courtesy of the call to
-> 	instrumentation_begin() in irqentry_enter() that precedes the
-> 	call to rcu_irq_enter_check_tick().
-> 
-> Is tagging __rcu_irq_enter_check_tick() with noinstr as
-> proposed in this patch the right thing to do, or should there
-> be calls to instrumentation_begin() and instrumentation_end() in
-> enter_from_kernel_mode()?  Or something else entirely?
-
-I have tried the calls to instrumentation_{begin,end}() in
-enter_from_kernel_mode(), see [1]. But this problem can still be
-reproduced, maybe more complete calltrace info [2] is needed for
-analyzing.
-
-Did I add the instrumentation_{begin,end}() in wrong place or is there 
-other caller need noinstr?
-
-[1]
-diff --git a/arch/arm64/kernel/entry-common.c 
-b/arch/arm64/kernel/entry-common.c
-index 27369fa1c032..deed5a0941d3 100644
---- a/arch/arm64/kernel/entry-common.c
-+++ b/arch/arm64/kernel/entry-common.c
-@@ -49,7 +49,9 @@ static __always_inline void 
-__enter_from_kernel_mode(struct pt_regs *regs)
-         }
-
-         lockdep_hardirqs_off(CALLER_ADDR0);
-+       instrumentation_begin();
-         rcu_irq_enter_check_tick();
-+       instrumentation_end();
-         trace_hardirqs_off_finish();
-  }
-
-
-[2]
-[   48.921197] Call trace:
-[   48.921241]  dump_backtrace+0xf8/0x108
-[   48.921358]  show_stack+0x20/0x48
-[   48.921418]  dump_stack_lvl+0x68/0x84
-[   48.921477]  dump_stack+0x1c/0x38
-[   48.921530]  panic+0x214/0x404
-[   48.921598]  add_taint+0x0/0xf0
-[   48.921657]  panic_bad_stack+0x144/0x160
-[   48.921715]  handle_bad_stack+0x38/0x58
-[   48.921774]  __bad_stack+0x78/0x7c
-[   48.921825]  __rcu_irq_enter_check_tick+0x0/0x1b8
-[   48.921886]  arm64_enter_el1_dbg.isra.0+0x14/0x20
-[   48.921949]  el1_dbg+0x2c/0x90
-[   48.922001]  el1h_64_sync_handler+0xcc/0xe8
-[   48.922061]  el1h_64_sync+0x64/0x68
-[   48.922112]  __rcu_irq_enter_check_tick+0x0/0x1b8
-[...]
-[   48.938382]  __rcu_irq_enter_check_tick+0x0/0x1b8
-[   48.938441]  arm64_enter_el1_dbg.isra.0+0x14/0x20
-[   48.938500]  el1_dbg+0x2c/0x90
-[   48.938549]  el1h_64_sync_handler+0xcc/0xe8
-[   48.938607]  el1h_64_sync+0x64/0x68
-[   48.938656]  __rcu_irq_enter_check_tick+0x0/0x1b8
-[   48.938715]  arm64_enter_el1_dbg.isra.0+0x14/0x20
-[   48.938778]  el1_dbg+0x2c/0x90
-[   48.938829]  el1h_64_sync_handler+0xcc/0xe8
-[   48.938887]  el1h_64_sync+0x64/0x68
-[   48.938936]  __rcu_irq_enter_check_tick+0x0/0x1b8
-[   48.938995]  arm64_enter_el1_dbg.isra.0+0x14/0x20
-[   48.939054]  el1_dbg+0x2c/0x90
-[   48.939105]  el1h_64_sync_handler+0xcc/0xe8
-[   48.939164]  el1h_64_sync+0x64/0x68
-[   48.939215]  __rcu_irq_enter_check_tick+0x0/0x1b8
-[   48.939274]  el1_interrupt+0x28/0x60
-[   48.939327]  el1h_64_irq_handler+0x18/0x28
-[   48.939385]  el1h_64_irq+0x64/0x68
-[   48.939434]  __asan_load8+0x54/0xa8
-[   48.939500]  __ftrace_set_clr_event_nolock+0x6c/0x198
-[   48.939563]  __ftrace_set_clr_event+0x58/0x80
-[   48.939618]  system_enable_write+0x144/0x178
-[   48.939673]  vfs_write+0x174/0x738
-[   48.939734]  ksys_write+0xd0/0x188
-[   48.939791]  __arm64_sys_write+0x4c/0x60
-[   48.939851]  invoke_syscall+0x64/0x180
-[   48.939921]  el0_svc_common.constprop.0+0x84/0x160
-[   48.939996]  do_el0_svc+0x48/0xf8
-[   48.940062]  el0_svc+0x34/0xd0
-[   48.940114]  el0t_64_sync_handler+0xb8/0xc0
-[   48.940173]  el0t_64_sync+0x18c/0x190
-[   48.940872] SMP: stopping secondary CPUs
-[   48.942844] Kernel Offset: 0x2d9499c00000 from 0xffff800008000000
-[   48.942938] PHYS_OFFSET: 0xffffaa9840000000
-[   48.942999] CPU features: 0x00000,00d00080,0000421b
-[   48.943387] Memory Limit: none
-
-
-> 
-> Thoughts?
-
-Sorry, I have no more idea :-(
-
-> 
-> 							Thanx, Paul
-> 
->> [1]
->> Insufficient stack space to handle exception!
->> Insufficient stack space to handle exception!
->> [...]
->> Kernel panic - not syncing: kernel stack overflow
->> CPU: 3 PID: 34 Comm: migration/3 Not tainted
->> 6.1.0-rc5-00884-g84368d882b96 #2
->> Hardware name: linux,dummy-virt (DT)
->> Stopper: multi_cpu_stop+0x0/0x228 <- __stop_cpus.constprop.0+0xa4/0x100
->> Call trace:
->>   dump_backtrace+0xf8/0x108
->>   show_stack+0x20/0x48
->>   dump_stack_lvl+0x68/0x84
->>   dump_stack+0x1c/0x38
->>   panic+0x214/0x404
->>   add_taint+0x0/0xf0
->>   panic_bad_stack+0x144/0x160
->>   handle_bad_stack+0x38/0x58
->>   __bad_stack+0x78/0x7c
->>   el1h_64_sync_handler+0x4/0xe8
->>   __rcu_irq_enter_check_tick+0x0/0x1b8
->>   arm64_enter_el1_dbg.isra.0+0x14/0x20
->>   el1_dbg+0x2c/0x90
->>   el1h_64_sync_handler+0xcc/0xe8
->>   el1h_64_sync+0x64/0x68
->>   __rcu_irq_enter_check_tick+0x0/0x1b8
->>   arm64_enter_el1_dbg.isra.0+0x14/0x20
->>   el1_dbg+0x2c/0x90
->>   el1h_64_sync_handler+0xcc/0xe8
->>   el1h_64_sync+0x64/0x68
->>   __rcu_irq_enter_check_tick+0x0/0x1b8
->>   arm64_enter_el1_dbg.isra.0+0x14/0x20
->>   el1_dbg+0x2c/0x90
->>   el1h_64_sync_handler+0xcc/0xe8
->>   el1h_64_sync+0x64/0x68
->>   __rcu_irq_enter_check_tick+0x0/0x1b8
->>   arm64_enter_el1_dbg.isra.0+0x14/0x20
->>   el1_dbg+0x2c/0x90
->>   el1h_64_sync_handler+0xcc/0xe8
->>   el1h_64_sync+0x64/0x68
->>   __rcu_irq_enter_check_tick+0x0/0x1b8
->>   arm64_enter_el1_dbg.isra.0+0x14/0x20
->>   el1_dbg+0x2c/0x90
->>   el1h_64_sync_handler+0xcc/0xe8
->>   el1h_64_sync+0x64/0x68
->>   __rcu_irq_enter_check_tick+0x0/0x1b8
->>   [...]
->>
->> Cc: stable@vger.kernel.org
->> Fixes: aaf2bc50df1f ("rcu: Abstract out rcu_irq_enter_check_tick() from rcu_nmi_enter()")
->> Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
->> ---
->>   kernel/rcu/tree.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
->> index 93416afebd59..68230f02cfb7 100644
->> --- a/kernel/rcu/tree.c
->> +++ b/kernel/rcu/tree.c
->> @@ -631,7 +631,7 @@ void rcu_irq_exit_check_preempt(void)
->>    * controlled environments, this function allows RCU to get what it
->>    * needs without creating otherwise useless interruptions.
->>    */
->> -void __rcu_irq_enter_check_tick(void)
->> +noinstr void __rcu_irq_enter_check_tick(void)
->>   {
->>   	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
->>   
->> -- 
->> 2.25.1
->>
---
-Best regards,
-Zheng Yejian
+T24gVGh1LCBEZWMgMDEsIDIwMjIgYXQgMDc6NDU6MzNBTSArMDgwMCwgWnFpYW5nIHdyb3RlOg0K
+PiBDdXJyZW50bHksIGludm9rZSByY3VfdGFza3NfcnVkZV93YWl0X2dwKCkgdG8gd2FpdCBvbmUg
+cnVkZQ0KPiBSQ1UtdGFza3MgZ3JhY2UgcGVyaW9kLCBpZiBfX251bV9vbmxpbmVfY3B1cyA9PSAx
+LCB3aWxsIHJldHVybg0KPiBkaXJlY3RseSwgaW5kaWNhdGVzIHRoZSBlbmQgb2YgdGhlIHJ1ZGUg
+UkNVLXRhc2sgZ3JhY2UgcGVyaW9kLg0KPiBzdXBwb3NlIHRoZSBzeXN0ZW0gaGFzIHR3byBjcHVz
+LCBjb25zaWRlciB0aGUgZm9sbG93aW5nIHNjZW5hcmlvOg0KPiANCj4gICAgICAgICBDUFUwICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBDUFUxIChnb2luZyBvZmZsaW5lKQ0KPiAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBtaWdyYXRpb24vMSB0YXNr
+Og0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNwdV9zdG9wcGVyX3Ro
+cmVhZA0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAtPiB0YWtlX2Nw
+dV9kb3duDQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC0+IF9j
+cHVfZGlzYWJsZQ0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+KGRlYyBfX251bV9vbmxpbmVfY3B1cykNCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgLT5jcHVocF9pbnZva2VfY2FsbGJhY2sNCj4gICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcHJlZW1wdF9kaXNhYmxlDQo+ICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGFjY2VzcyBvbGRfZGF0YTAN
+Cj4gICAgICAgICAgICB0YXNrMQ0KPiAgZGVsIG9sZF9kYXRhMCAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAuLi4uLg0KPiAgc3luY2hyb25pemVfcmN1X3Rhc2tzX3J1ZGUoKQ0KPiAg
+dGFzazEgc2NoZWR1bGUgb3V0DQo+ICAuLi4uDQo+ICB0YXNrMiBzY2hlZHVsZSBpbg0KPiAgcmN1
+X3Rhc2tzX3J1ZGVfd2FpdF9ncCgpDQo+ICAgICAgLT5fX251bV9vbmxpbmVfY3B1cyA9PSAxDQo+
+ICAgICAgICAtPnJldHVybg0KPiAgLi4uLg0KPiAgdGFzazEgc2NoZWR1bGUgaW4NCj4gIC0+ZnJl
+ZSBvbGRfZGF0YTANCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgcHJlZW1wdF9lbmFibGUNCj4gDQo+IHdoZW4gQ1BVMSBkZWMgX19udW1fb25saW5lX2Nw
+dXMgYW5kIF9fbnVtX29ubGluZV9jcHVzIGlzIGVxdWFsIG9uZSwNCj4gdGhlIENQVTEgaGFzIG5v
+dCBmaW5pc2hlZCBvZmZsaW5lLCBzdG9wX21hY2hpbmUgdGFzayhtaWdyYXRpb24vMSkNCj4gc3Rp
+bGwgcnVubmluZyBvbiBDUFUxLCBtYXliZSBzdGlsbCBhY2Nlc3NpbmcgJ29sZF9kYXRhMCcsIGJ1
+dCB0aGUNCj4gJ29sZF9kYXRhMCcgaGFzIGZyZWVkIG9uIENQVTAuDQo+IA0KPiBJbiBvcmRlciB0
+byBwcmV2ZW50IHRoZSBhYm92ZSBzY2VuYXJpbyBmcm9tIGhhcHBlbmluZywgdGhpcyBjb21taXQN
+Cj4gcmVtb3ZlIGNoZWNrIGZvciBfX251bV9vbmxpbmVfY3B1cyA9PSAwIGFuZCBhZGQgaGFuZGxp
+bmcgb2YgY2FsbGluZw0KPiBzeW5jaHJvbml6ZV9yY3VfdGFza3NfZ2VuZXJpYygpIGR1cmluZyBl
+YXJseSBib290KHdoZW4gdGhlDQo+IHJjdV9zY2hlZHVsZXJfYWN0aXZlIHZhcmlhYmxlIGlzIFJD
+VV9TQ0hFRFVMRVJfSU5BQ1RJVkUsIHRoZSBzY2hlZHVsZXINCj4gbm90IHlldCBpbml0aWFsaXpl
+ZCBhbmQgb25seSBvbmUgYm9vdC1DUFUgb25saW5lKS4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IFpx
+aWFuZyA8cWlhbmcxLnpoYW5nQGludGVsLmNvbT4NCg0KPlZlcnkgZ29vZCwgdGhhbmsgeW91ISAg
+SSBkaWQgdGhlIHVzdWFsIHdvcmRzbWl0aGluZywgaW5jbHVkaW5nIHRvIHRoYXQNCj5lcnJvciBt
+ZXNzYWdlLCBzbyBhcyB1c3VhbCBwbGVhc2UgY2hlY2sgdG8gbWFrZSBzdXJlIHRoYXQgSSBkaWRu
+J3QgbWVzcw0KPnNvbWV0aGluZyB1cC4NCj4NCj4JCQkJCQkJVGhhbngsIFBhdWwNCj4NCj4tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0NCj4NCj5jb21taXQgMDMzZGRjNWQzMzc5ODRlMjBiOWQ0OWM4YWY0ZmFhNDY4
+OTcyNzYyNg0KPkF1dGhvcjogWnFpYW5nIDxxaWFuZzEuemhhbmdAaW50ZWwuY29tPg0KPkRhdGU6
+ICAgVGh1IERlYyAxIDA3OjQ1OjMzIDIwMjIgKzA4MDANCj4NCj4gICAgcmN1LXRhc2tzOiBNYWtl
+IHJ1ZGUgUkNVLVRhc2tzIHdvcmsgd2VsbCB3aXRoIENQVSBob3RwbHVnDQo+ICAgIA0KPiAgICBU
+aGUgc3luY2hyb25pemVfcmN1X3Rhc2tzX3J1ZGUoKSBmdW5jdGlvbiBpbnZva2VzIHJjdV90YXNr
+c19ydWRlX3dhaXRfZ3AoKQ0KPiAgICB0byB3YWl0IG9uZSBydWRlIFJDVS10YXNrcyBncmFjZSBw
+ZXJpb2QuICBUaGUgcmN1X3Rhc2tzX3J1ZGVfd2FpdF9ncCgpDQo+ICAgIGZ1bmN0aW9uIGluIHR1
+cm4gY2hlY2tzIGlmIHRoZXJlIGlzIG9ubHkgYSBzaW5nbGUgb25saW5lIENQVS4gIElmIHNvLCBp
+dA0KPiAgICB3aWxsIGltbWVkaWF0ZWx5IHJldHVybiwgYmVjYXVzZSBhIGNhbGwgdG8gc3luY2hy
+b25pemVfcmN1X3Rhc2tzX3J1ZGUoKQ0KPiAgICBpcyBieSBkZWZpbml0aW9uIGEgZ3JhY2UgcGVy
+aW9kIG9uIGEgc2luZ2xlLUNQVSBzeXN0ZW0uICAoV2UgY291bGQNCj4gICAgaGF2ZSBibG9ja2Vk
+ISkNCj4gICAgDQo+ICAgIFVuZm9ydHVuYXRlbHksIHRoaXMgY2hlY2sgdXNlcyBudW1fb25saW5l
+X2NwdXMoKSB3aXRob3V0IHN5bmNocm9uaXphdGlvbiwNCj4gICAgd2hpY2ggY2FuIHJlc3VsdCBp
+biB0b28tc2hvcnQgZ3JhY2UgcGVyaW9kcy4gIFRvIHNlZSB0aGlzLCBjb25zaWRlciB0aGUNCj4g
+ICAgZm9sbG93aW5nIHNjZW5hcmlvOg0KPiAgICANCj4gICAgICAgICAgICBDUFUwICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICBDUFUxIChnb2luZyBvZmZsaW5lKQ0KPiAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBtaWdyYXRpb24vMSB0YXNrOg0K
+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNwdV9zdG9wcGVyX3Ro
+cmVhZA0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAtPiB0YWtl
+X2NwdV9kb3duDQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IC0+IF9jcHVfZGlzYWJsZQ0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgKGRlYyBfX251bV9vbmxpbmVfY3B1cykNCj4gICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAtPmNwdWhwX2ludm9rZV9jYWxsYmFjaw0KPiAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBwcmVlbXB0X2Rpc2Fi
+bGUNCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+YWNjZXNzIG9sZF9kYXRhMA0KPiAgICAgICAgICAgICAgIHRhc2sxDQo+ICAgICBkZWwgb2xkX2Rh
+dGEwICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC4uLi4uDQo+ICAgICBzeW5jaHJv
+bml6ZV9yY3VfdGFza3NfcnVkZSgpDQo+ICAgICB0YXNrMSBzY2hlZHVsZSBvdXQNCj4gICAgIC4u
+Li4NCj4gICAgIHRhc2syIHNjaGVkdWxlIGluDQo+ICAgICByY3VfdGFza3NfcnVkZV93YWl0X2dw
+KCkNCj4gICAgICAgICAtPl9fbnVtX29ubGluZV9jcHVzID09IDENCj4gICAgICAgICAgIC0+cmV0
+dXJuDQo+ICAgICAuLi4uDQo+ICAgICB0YXNrMSBzY2hlZHVsZSBpbg0KPiAgICAgLT5mcmVlIG9s
+ZF9kYXRhMA0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICBwcmVlbXB0X2VuYWJsZQ0KPiAgICANCj4gICAgV2hlbiBDUFUxIGRlY3JlbWVudHMgX19u
+dW1fb25saW5lX2NwdXMsIGl0cyB2YWx1ZSBiZWNvbWVzIDEuICBIb3dldmVyLA0KPiAgICBDUFUx
+IGhhcyBub3QgZmluaXNoZWQgZ29pbmcgb2ZmbGluZSwgYW5kIHdpbGwgdGFrZSBvbmUgbGFzdCB0
+cmlwIHRocm91Z2gNCj4gICAgdGhlIHNjaGVkdWxlciBhbmQgdGhlIGlkbGUgbG9vcCBiZWZvcmUg
+aXQgYWN0dWFsbHkgc3RvcHMgZXhlY3V0aW5nDQo+ICAgIGluc3RydWN0aW9ucy4gIEJlY2F1c2Ug
+c3luY2hyb25pemVfcmN1X3Rhc2tzX3J1ZGUoKSBpcyBtb3N0bHkgdXNlZCBmb3INCj4gICAgdHJh
+Y2luZywgYW5kIGJlY2F1c2UgYm90aCB0aGUgc2NoZWR1bGVyIGFuZCB0aGUgaWRsZSBsb29wIGNh
+biBiZSB0cmFjZWQsDQo+ICAgIHRoaXMgbWVhbnMgdGhhdCBDUFUwJ3MgcHJlbWF0dXJlbHkgZW5k
+ZWQgZ3JhY2UgcGVyaW9kIG1pZ2h0IGRpc3J1cHQgdGhlDQo+ICAgIHRyYWNpbmcgb24gQ1BVMS4g
+IEdpdmVuIHRoYXQgdGhpcyBkaXNydXB0aW9uIG1pZ2h0IGluY2x1ZGUgQ1BVMSBleGVjdXRpbmcN
+Cj4gICAgaW5zdHJ1Y3Rpb25zIGluIG1lbW9yeSB0aGF0IHdhcyBqdXN0IG5vdyBmcmVlZCAoYW5k
+IG1heWJlIHJlYWxsb2NhdGVkKSwNCj4gICAgdGhpcyBpcyBhIG1hdHRlciBvZiBzb21lIGNvbmNl
+cm4uDQo+ICAgIA0KPiAgICBUaGlzIGNvbW1pdCB0aGVyZWZvcmUgcmVtb3ZlcyB0aGF0IHByb2Js
+ZW1hdGljIHNpbmdsZS1DUFUgY2hlY2sgZnJvbSB0aGUNCj4gICAgcmN1X3Rhc2tzX3J1ZGVfd2Fp
+dF9ncCgpIGZ1bmN0aW9uLiAgVGhpcyBkaXNwZW5zZXMgd2l0aCB0aGUgc2luZ2xlLUNQVQ0KPiAg
+ICBvcHRpbWl6YXRpb24sIGJ1dCB0aGVyZSBpcyBubyBldmlkZW5jZSBpbmRpY2F0aW5nIHRoYXQg
+dGhpcyBvcHRpbWl6YXRpb24NCj4gICAgaXMgaW1wb3J0YW50LiAgSW4gYWRkaXRpb24sIHN5bmNo
+cm9uaXplX3JjdV90YXNrc19nZW5lcmljKCkgY29udGFpbnMgYQ0KPiAgICBzaW1pbGFyIG9wdGlt
+aXphdGlvbiAoYWxiZWl0IG9ubHkgZm9yIGVhcmx5IGJvb3QpLCB3aGljaCBhbHNvIHNwbGF0cy4N
+Cj4gICAgKEFzIGluIGV4YWN0bHkgd2h5IGFyZSB5b3UgaW52b2tpbmcgc3luY2hyb25pemVfcmN1
+X3Rhc2tzX3J1ZGUoKSBzbw0KPiAgICBlYXJseSBpbiBib290LCBhbnl3YXk/Pz8pDQo+ICAgIA0K
+PiAgICBJdCBpcyBPSyBmb3IgdGhlIHN5bmNocm9uaXplX3JjdV90YXNrc19ydWRlKCkgZnVuY3Rp
+b24ncyBjaGVjayB0byBiZQ0KPiAgICB1bnN5bmNocm9uaXplZCBiZWNhdXNlIHRoZSBvbmx5IHRp
+bWVzIHRoYXQgdGhpcyBjaGVjayBjYW4gZXZhbHVhdGUgdG8NCj4gICAgdHJ1ZSBpcyB3aGVuIHRo
+ZXJlIGlzIG9ubHkgYSBzaW5nbGUgQ1BVIHJ1bm5pbmcgd2l0aCBwcmVlbXB0aW9uDQo+ICAgIGRp
+c2FibGVkLg0KPiAgICANCj4gICAgV2hpbGUgaW4gdGhlIGFyZWEsIHRoaXMgY29tbWl0IGFsc28g
+Zml4ZXMgYSBtaW5vciBidWcgaW4gd2hpY2ggYQ0KPiAgICBjYWxsIHRvIHN5bmNocm9uaXplX3Jj
+dV90YXNrc19ydWRlKCkgd291bGQgaW5zdGVhZCBiZSBhdHRyaWJ1dGVkIHRvDQo+ICAgIHN5bmNo
+cm9uaXplX3JjdV90YXNrcygpLg0KPiAgICANCj4gICAgWyBwYXVsbWNrOiBBZGQgInN5bmNocm9u
+aXplXyIgcHJlZml4IGFuZCAiKCkiIHN1ZmZpeC4gXQ0KPiAgICANCj4gICAgU2lnbmVkLW9mZi1i
+eTogWnFpYW5nIDxxaWFuZzEuemhhbmdAaW50ZWwuY29tPg0KPiAgICBTaWduZWQtb2ZmLWJ5OiBQ
+YXVsIEUuIE1jS2VubmV5IDxwYXVsbWNrQGtlcm5lbC5vcmc+DQo+DQo+ZGlmZiAtLWdpdCBhL2tl
+cm5lbC9yY3UvdGFza3MuaCBiL2tlcm5lbC9yY3UvdGFza3MuaA0KPmluZGV4IDRkZGE4ZTZlNTcw
+N2YuLmQ4NDU3MjNjMWFmNDEgMTAwNjQ0DQo+LS0tIGEva2VybmVsL3JjdS90YXNrcy5oDQo+Kysr
+IGIva2VybmVsL3JjdS90YXNrcy5oDQo+QEAgLTU2MCw4ICs1NjAsOSBAQCBzdGF0aWMgaW50IF9f
+bm9yZXR1cm4gcmN1X3Rhc2tzX2t0aHJlYWQodm9pZCAqYXJnKQ0KPiBzdGF0aWMgdm9pZCBzeW5j
+aHJvbml6ZV9yY3VfdGFza3NfZ2VuZXJpYyhzdHJ1Y3QgcmN1X3Rhc2tzICpydHApDQo+IHsNCj4g
+CS8qIENvbXBsYWluIGlmIHRoZSBzY2hlZHVsZXIgaGFzIG5vdCBzdGFydGVkLiAgKi8NCj4tCVdB
+Uk5fT05DRShyY3Vfc2NoZWR1bGVyX2FjdGl2ZSA9PSBSQ1VfU0NIRURVTEVSX0lOQUNUSVZFLA0K
+Pi0JCQkgInN5bmNocm9uaXplX3JjdV90YXNrcyBjYWxsZWQgdG9vIHNvb24iKTsNCj4rCWlmIChX
+QVJOX09OQ0UocmN1X3NjaGVkdWxlcl9hY3RpdmUgPT0gUkNVX1NDSEVEVUxFUl9JTkFDVElWRSwN
+Cj4rCQkJICJzeW5jaHJvbml6ZV8lcygpIGNhbGxlZCB0b28gc29vbiIsIHJ0cC0+bmFtZSkpDQoN
+ClRoYW5rcyBQYXVsLCAgZGV0YWlsZWQgZGVzY3JpcHRpb24gYW5kIG1vZGlmaWNhdGlvbiDwn5iK
+Lg0KDQoNCj4rCQlyZXR1cm47DQo+IA0KPiAJLy8gSWYgdGhlIGdyYWNlLXBlcmlvZCBrdGhyZWFk
+IGlzIHJ1bm5pbmcsIHVzZSBpdC4NCj4gCWlmIChSRUFEX09OQ0UocnRwLT5rdGhyZWFkX3B0cikp
+IHsNCj5AQCAtMTA2NCw5ICsxMDY1LDYgQEAgc3RhdGljIHZvaWQgcmN1X3Rhc2tzX2JlX3J1ZGUo
+c3RydWN0IHdvcmtfc3RydWN0ICp3b3JrKQ0KPiAvLyBXYWl0IGZvciBvbmUgcnVkZSBSQ1UtdGFz
+a3MgZ3JhY2UgcGVyaW9kLg0KPiBzdGF0aWMgdm9pZCByY3VfdGFza3NfcnVkZV93YWl0X2dwKHN0
+cnVjdCByY3VfdGFza3MgKnJ0cCkNCj4gew0KPi0JaWYgKG51bV9vbmxpbmVfY3B1cygpIDw9IDEp
+DQo+LQkJcmV0dXJuOwkvLyBGYXN0cGF0aCBmb3Igb25seSBvbmUgQ1BVLg0KPi0NCj4gCXJ0cC0+
+bl9pcGlzICs9IGNwdW1hc2tfd2VpZ2h0KGNwdV9vbmxpbmVfbWFzayk7DQo+IAlzY2hlZHVsZV9v
+bl9lYWNoX2NwdShyY3VfdGFza3NfYmVfcnVkZSk7DQo+IH0NCg==
