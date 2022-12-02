@@ -2,209 +2,102 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C88A8C4321E
-	for <rcu@archiver.kernel.org>; Fri,  2 Dec 2022 12:54:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CEBEBC4321E
+	for <rcu@archiver.kernel.org>; Fri,  2 Dec 2022 13:18:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231929AbiLBMy1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 2 Dec 2022 07:54:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54512 "EHLO
+        id S232372AbiLBNSs (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 2 Dec 2022 08:18:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231493AbiLBMy1 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 2 Dec 2022 07:54:27 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C65E0CCFFD;
-        Fri,  2 Dec 2022 04:54:22 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id g7so7271621lfv.5;
-        Fri, 02 Dec 2022 04:54:22 -0800 (PST)
+        with ESMTP id S232562AbiLBNSq (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 2 Dec 2022 08:18:46 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6102EA1C1C;
+        Fri,  2 Dec 2022 05:18:41 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id b2so11487105eja.7;
+        Fri, 02 Dec 2022 05:18:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=l9W1Hv3Dlzb+WKX0QBUokG3jGm+nbrLB+SsrtoKPZC8=;
-        b=mAPHioh/WkhX60/wzurR2vy6uSenQmrj+wr0AFqtKNO6AlsiDL0nH+iHfwETlTPLXo
-         gtdDKPMC32GIIUOFvuR5m7P40dqR8hkQOIbIZ7rATKqrpXo+2fwD4qgJAMDSrq6JMWZi
-         6C+Y47maD4U628qsYWDmkNAtR0mnlFZgVNGP7LmpgHufbWpYBuRnRFFopKU+taR/ugqj
-         /ohEmMhsx0Yw5S/xC1Qnoda0V5Nt5BJgHRrRRJQhZCFZOA4yoPD5n45AsxyP7U1du28T
-         4ODdPRDsPlD/qfZrrk5mUxP+zgeBHYQR7n8riA1q1ymViI++KB2EA5oOn+pAvRt8jM9J
-         SrrQ==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=8Ca6QPpKTJOWP49HF+iF94/pyngRqhYtlzDQu2E2Km0=;
+        b=Z7HcHw8RkcKlHeBQl1aaAPXZP1bfk+tKpSphCq5YjLX2nfaYrF6775w8wv+218FTuq
+         Tx9wjQON91rEhZf87KfCyeN7GVE6V+JozIxJdYjRfcfqkUt/C01GxSBRbgDDN8Gdefi7
+         NGxz5Jt7xIon0I9pz72f6/ZLLdWbs8Z6UdjIjJskx1QxiIrUThMk5ailM6gPQwXH/pDw
+         QwqgO8uFITcBgPwKaRY6Tm3w34lm5ARN+t9r09daZf8KtSaeav0h1aeLYfLYFyGoKgwI
+         rt3uoORjBPD9EuNjGG7fX6iiovn0TiLqhb6hkjIRapqLZxKE3ooLi9mpVeTuMNhtyzIH
+         sitA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=l9W1Hv3Dlzb+WKX0QBUokG3jGm+nbrLB+SsrtoKPZC8=;
-        b=nRmYuHZCxLHlUVFuup3JAzJ60OxQlMNp9RNiQ7VNquBqL4tVQATzJU6zWMG8VDhiY2
-         Fl2CYaOHfnRVVXQmcQPvSNTl4t8k/oIxlPiMwkvYSKrgSzDYzIss1Klkp9b7mkl3N+4I
-         Su3BbHnNo8/GW3s8Fu9G+QVrBmjaE3VOWewkeBsXd4P9CMb+ask0DZDJUUGsgUBzFsFK
-         t0vXE+lRaYSqpiaNH0FQDzMRlUPkMiH3mwiuWYQw5tu1UhR0xAiFBMK8JB0JroZtPI6x
-         iPsAi1O7BqYmAaOsw4ptlecHG1iQtKpK6rz36glY1BJkHjFqpfkjXPgBlC3xyZgHpSH+
-         lItw==
-X-Gm-Message-State: ANoB5pmBN+fydHQ22rkaLdWaV8GA4QrhefP4cFjEfROq7zjpSwXO4AWd
-        aYaszBQFNsPqyHPvT7EgFaU=
-X-Google-Smtp-Source: AA0mqf5rn83kHn099TvB8lfM9nKMCyv8U/6IX3kqf5nUWh1zjvYYfKErQ3tw3VNvDKMDegFA5ntMVg==
-X-Received: by 2002:a05:6512:2512:b0:4ac:9008:482 with SMTP id be18-20020a056512251200b004ac90080482mr23209924lfb.402.1669985660873;
-        Fri, 02 Dec 2022 04:54:20 -0800 (PST)
-Received: from pc636 (host-90-235-25-230.mobileonline.telia.com. [90.235.25.230])
-        by smtp.gmail.com with ESMTPSA id d10-20020a056512368a00b004972b0bb426sm1011377lfs.257.2022.12.02.04.54.19
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8Ca6QPpKTJOWP49HF+iF94/pyngRqhYtlzDQu2E2Km0=;
+        b=r4fL8v82dn3bWe9mljsz3lU0S0/OtwM2tYHOVjqe4msPftrK/4zy9i57agG0tWff9c
+         QIICOLvRX6g9c+Srxy/4lBbe9TXyEfeDVeNMJk98HsEGR7lauwC2Ty2V7DCqh3IGL4Wo
+         YEldtlmFTjvJPciZzOxqCy4MaqWHGO2sMEoraADa5Nkt3Au3IY/wL35HWomAtOzj2xjM
+         c23T7APxGVLrpQhiiY+CiqHujzyfl7NukYwJJbDwbXW0rCNGdZCVkKg5cMmgsyqmifvs
+         8BZnEmfujkMiSZW3vK49/TT+bMsFPOKjp6GGo1cWE8YlDTeNcoiEn/v3Wm2gNlaR+RF9
+         qSWg==
+X-Gm-Message-State: ANoB5plZjk1WHJZqSWVEF9vtghwvGM4KX6TINq5peGHpoPssuRInw/Do
+        J5ITMA8ssGWwhWYyLQ5OEV8h+WtBIAA=
+X-Google-Smtp-Source: AA0mqf7ULWzC5JKX52czQP93Fd7QkmK0RbAObRCCjzci++TGCUeb9XRDe6+4VRUSt3LW3L5fgDeWmQ==
+X-Received: by 2002:a17:906:a20f:b0:7bf:f0e9:1cde with SMTP id r15-20020a170906a20f00b007bff0e91cdemr20338412ejy.512.1669987119944;
+        Fri, 02 Dec 2022 05:18:39 -0800 (PST)
+Received: from pc638.lan ([155.137.26.201])
+        by smtp.gmail.com with ESMTPSA id c10-20020a17090618aa00b007ad9c826d75sm2980336ejf.61.2022.12.02.05.18.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Dec 2022 04:54:20 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Fri, 2 Dec 2022 13:54:17 +0100
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
+        Fri, 02 Dec 2022 05:18:39 -0800 (PST)
+From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: Re: [PATCH v2 4/4] rcu/kvfree: Use a polled API to speedup a reclaim
- process
-Message-ID: <Y4n1eWpLMkaEGxtP@pc636>
-References: <20221129155822.538434-1-urezki@gmail.com>
- <20221129155822.538434-5-urezki@gmail.com>
- <20221201234559.GA1520591@paulmck-ThinkPad-P17-Gen-1>
+Subject: [PATCH 1/1] rcu/kvfree: Use READ_ONCE() when access to krcp->head
+Date:   Fri,  2 Dec 2022 14:18:37 +0100
+Message-Id: <20221202131837.375341-1-urezki@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221201234559.GA1520591@paulmck-ThinkPad-P17-Gen-1>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-> 
-> A couple more questions interspersed below upon further reflection.
-> 
-> Thoughts?
-> 
-See below my thoughts:
+A need_offload_krc() function is now lock-free. A compiler
+can optimize readers in way that they see an old value even
+though writers already updated the krcp->head from another
+path.
 
-> 						Thanx, Paul
-> 
-> > ---
-> >  kernel/rcu/tree.c | 47 +++++++++++++++++++++++++++++++++++++++--------
-> >  1 file changed, 39 insertions(+), 8 deletions(-)
-> > 
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index c94c17194299..44279ca488ef 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -2741,11 +2741,13 @@ EXPORT_SYMBOL_GPL(call_rcu);
-> >  /**
-> >   * struct kvfree_rcu_bulk_data - single block to store kvfree_rcu() pointers
-> >   * @list: List node. All blocks are linked between each other
-> > + * @gp_snap: Snapshot of RCU state for objects placed to this bulk
-> >   * @nr_records: Number of active pointers in the array
-> >   * @records: Array of the kvfree_rcu() pointers
-> >   */
-> >  struct kvfree_rcu_bulk_data {
-> >  	struct list_head list;
-> > +	unsigned long gp_snap;
-> >  	unsigned long nr_records;
-> >  	void *records[];
-> >  };
-> > @@ -2762,13 +2764,15 @@ struct kvfree_rcu_bulk_data {
-> >   * struct kfree_rcu_cpu_work - single batch of kfree_rcu() requests
-> >   * @rcu_work: Let queue_rcu_work() invoke workqueue handler after grace period
-> >   * @head_free: List of kfree_rcu() objects waiting for a grace period
-> > + * @head_free_gp_snap: Snapshot of RCU state for objects placed to "@head_free"
-> >   * @bulk_head_free: Bulk-List of kvfree_rcu() objects waiting for a grace period
-> >   * @krcp: Pointer to @kfree_rcu_cpu structure
-> >   */
-> >  
-> >  struct kfree_rcu_cpu_work {
-> > -	struct rcu_work rcu_work;
-> > +	struct work_struct rcu_work;
-> >  	struct rcu_head *head_free;
-> > +	unsigned long head_free_gp_snap;
-> >  	struct list_head bulk_head_free[FREE_N_CHANNELS];
-> >  	struct kfree_rcu_cpu *krcp;
-> >  };
-> > @@ -2964,10 +2968,11 @@ static void kfree_rcu_work(struct work_struct *work)
-> >  	struct rcu_head *head;
-> >  	struct kfree_rcu_cpu *krcp;
-> >  	struct kfree_rcu_cpu_work *krwp;
-> > +	unsigned long head_free_gp_snap;
-> >  	int i;
-> >  
-> > -	krwp = container_of(to_rcu_work(work),
-> > -			    struct kfree_rcu_cpu_work, rcu_work);
-> > +	krwp = container_of(work,
-> > +		struct kfree_rcu_cpu_work, rcu_work);
-> >  	krcp = krwp->krcp;
-> >  
-> >  	raw_spin_lock_irqsave(&krcp->lock, flags);
-> > @@ -2978,12 +2983,29 @@ static void kfree_rcu_work(struct work_struct *work)
-> >  	// Channel 3.
-> >  	head = krwp->head_free;
-> >  	krwp->head_free = NULL;
-> > +	head_free_gp_snap = krwp->head_free_gp_snap;
-> >  	raw_spin_unlock_irqrestore(&krcp->lock, flags);
-> >  
-> >  	// Handle the first two channels.
-> > -	for (i = 0; i < FREE_N_CHANNELS; i++)
-> > +	for (i = 0; i < FREE_N_CHANNELS; i++) {
-> > +		// Start from the tail page, so a GP is likely passed for it.
-> > +		list_for_each_entry_safe_reverse(bnode, n, &bulk_head[i], list) {
-> > +			// Not yet ready? Bail out since we need one more GP.
-> > +			if (!poll_state_synchronize_rcu(bnode->gp_snap))
-> > +				break;
-> > +
-> > +			list_del_init(&bnode->list);
-> > +			kvfree_rcu_bulk(krcp, bnode, i);
-> > +		}
-> > +
-> > +		// Please note a request for one more extra GP can
-> > +		// occur only once for all objects in this batch.
-> > +		if (!list_empty(&bulk_head[i]))
-> > +			synchronize_rcu();
-> 
-> Does directly invoking synchronize_rcu() instead of using queue_rcu_work()
-> provide benefits, for example, reduced memory footprint?
->
-queue_rcu_work() will delay freeing of all objects in a batch. We can
-make use of it but it should be only for the ones which still require
-a grace period. A memory footprint and a time depends on when our
-callback is invoked by the RCU-core to queue the reclaim work.
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+---
+ kernel/rcu/tree.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Such time can be long, because it depends on many factors:
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index efc79f942b30..d155f2594317 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3029,7 +3029,7 @@ need_offload_krc(struct kfree_rcu_cpu *krcp)
+ 		if (!list_empty(&krcp->bulk_head[i]))
+ 			return true;
+ 
+-	return !!krcp->head;
++	return !!READ_ONCE(krcp->head);
+ }
+ 
+ static void
+@@ -3070,7 +3070,7 @@ static void kfree_rcu_monitor(struct work_struct *work)
+ 		// in that case the monitor work is rearmed.
+ 		if ((!list_empty(&krcp->bulk_head[0]) && list_empty(&krwp->bulk_head_free[0])) ||
+ 			(!list_empty(&krcp->bulk_head[1]) && list_empty(&krwp->bulk_head_free[1])) ||
+-				(krcp->head && !krwp->head_free)) {
++				(READ_ONCE(krcp->head) && !krwp->head_free)) {
+ 
+ 			// Channel 1 corresponds to the SLAB-pointer bulk path.
+ 			// Channel 2 corresponds to vmalloc-pointer bulk path.
+-- 
+2.30.2
 
-- scheduling delays in waking gp;
-- scheduling delays in kicking nocb;
-- delays in waiting in a "cblist":
-    - dequeuing and invoking f(rhp);
-- delay in waking our final reclaim work and giving it a CPU time.
-
-This patch combines a possibility to reclaim asap for objects which
-passed a grace period and requesting one more GP for the ones which
-have not passed it yet.
-
->
-> If not, it would be good to instead use queue_rcu_work() in order
-> to avoid an unnecessary context switch in this workqueue handler.
->
-I went by the most easiest way from code perspective since i do not
-see problems with a current approach from testing and personal point
-of views.
-
-If we are about to do that i need to add extra logic to split ready
-and not ready pointers for direct reclaim and the rest over the
-queu_rcu_work().
-
-I can check how it goes.
-
-> 
-> My concern is that an RCU CPU stall might otherwise end up tying up more
-> workqueue kthreads as well as more memory.
-> 
-There is a limit. We have two batches, one work for each. Suppose the
-reclaim kthread is stuck in synchronize_rcu() so it does not do any
-progress. In this case same work can be only in pending state and
-nothing more no matter how many times the queue_work() is invoked:
-
-2 * num_possible_cpus();
-
-If we end up in RCU stall we will not be able to reclaim anyway.
-
---
-Uladzislau Rezki
