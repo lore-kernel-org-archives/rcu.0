@@ -2,173 +2,123 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6604FC4321E
-	for <rcu@archiver.kernel.org>; Sat,  3 Dec 2022 00:22:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 19C9AC4321E
+	for <rcu@archiver.kernel.org>; Sat,  3 Dec 2022 00:28:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234702AbiLCAV7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 2 Dec 2022 19:21:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53104 "EHLO
+        id S234795AbiLCA2r (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 2 Dec 2022 19:28:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234557AbiLCAV6 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 2 Dec 2022 19:21:58 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 582EFF2301;
-        Fri,  2 Dec 2022 16:21:56 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F39E962444;
-        Sat,  3 Dec 2022 00:21:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60A4FC433D6;
-        Sat,  3 Dec 2022 00:21:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1670026915;
-        bh=3rPNmSVuK01RmBAJnOA4ixtiEF4U7Kko50BLc5z8NlE=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=EL4wzgR0lCe2pPamRjZ9LZD5tAcu50tz2IHUztu8UihqXLgN+rJWHLW2sWST0wN+I
-         3fHLFQO4xrznZpyQegOv/VlFjB+Wb0UeaYLYXb3j+vYeAyH2KWVW4a2sviajeir2p5
-         2jUw3I4ZnTst+KnWJEI7RX2Z64azPzNZ0Pz5gI08ZlU3KljESzfJpf0bBXzLfPtuFX
-         Os52lThu1zYNPH4bixuutAHWAEYEqkiB+ckUQxVj2Ntva6103sngp53H4FB3R9iVDe
-         IcLAToFWum19l5swFBF7m4fTY9NSD8TaYKtkFyLPbKqUdvqDEID/1gpLAdPp9xVivq
-         yS/yQamTqmq/Q==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id ED58E5C095D; Fri,  2 Dec 2022 16:21:54 -0800 (PST)
-Date:   Fri, 2 Dec 2022 16:21:54 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
-Cc:     "frederic@kernel.org" <frederic@kernel.org>,
-        "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>,
-        "joel@joelfernandes.org" <joel@joelfernandes.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] rcu-tasks: Make shrink down to a single callback queue
- safely
-Message-ID: <20221203002154.GM4001@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20221130051253.1884572-1-qiang1.zhang@intel.com>
- <20221202195723.GB4001@paulmck-ThinkPad-P17-Gen-1>
- <PH0PR11MB5880B8D62B5EA5643593EC62DA179@PH0PR11MB5880.namprd11.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <PH0PR11MB5880B8D62B5EA5643593EC62DA179@PH0PR11MB5880.namprd11.prod.outlook.com>
+        with ESMTP id S234590AbiLCA2q (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 2 Dec 2022 19:28:46 -0500
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F285EEBCA6
+        for <rcu@vger.kernel.org>; Fri,  2 Dec 2022 16:28:43 -0800 (PST)
+Received: by mail-qv1-xf34.google.com with SMTP id a17so4497448qvt.9
+        for <rcu@vger.kernel.org>; Fri, 02 Dec 2022 16:28:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7QXLDYBHBoukVILcSnj0EcQlloWfF1awoqO8Bec4odA=;
+        b=ADNM6CYvq8gf4uZwEDDYzSRz830RwdkoGK0YMsa4TVWHuC0l+NEJcNb3FCrSy4Z/qa
+         Uo7FJM6kDyJsrc9pQW7LWJezM7G7bcf0GAtVOUU9WkQKylEVDWpS04G7LJo2BB7KUbCe
+         Gj0dLc7S0jLC3GRaZADaZzgpMIygG3tr8xBCs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7QXLDYBHBoukVILcSnj0EcQlloWfF1awoqO8Bec4odA=;
+        b=AEr9aPDTACM/BDK17FVzS+9RvXccSGq9GZpSDt0Tg3+c609bh85mHy33WI0XM4Owru
+         UFZXdHLT0/ib16DxrXA5umWCxsKv3g42U00uY1x2NwOZpomjLlvgabk8sOZ0qPFSoBgx
+         sCU2ryuZbA3Rynoc5mFsOn0AaPR2oFRzsGMD8DP9an0eiqn2lfffq3EDE1zQQHsgxKYb
+         2+jvC/cDhktP5YKJa0GsQRXuvCM8hIzlt5mQvYzvMKEugoMWJGq+L9NwR5gZKCdYVN9P
+         KFNmooApJQ2+JL4Wi2HT+7TtMEgyh0gb1tsylgfYawnJUz/N9t9vPhlBmytNvqfl2UqI
+         bKBA==
+X-Gm-Message-State: ANoB5pkUhHodSJ3Ab9hh6SzPsOy9C3j+H9VIMGJim3YBO6BecKXHA13s
+        BGju/mK6u9DGlZq2o9T9hUfW4A==
+X-Google-Smtp-Source: AA0mqf471X+ZswGb1VquP4MAsp2iJsFKwOvA8BPGoUI7GKDRKbE6f+PEihNnuOq6hy4ZQExSphVgUg==
+X-Received: by 2002:a05:6214:5d91:b0:4c7:1dcd:b6c with SMTP id mf17-20020a0562145d9100b004c71dcd0b6cmr13356483qvb.102.1670027323084;
+        Fri, 02 Dec 2022 16:28:43 -0800 (PST)
+Received: from smtpclient.apple (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
+        by smtp.gmail.com with ESMTPSA id dt43-20020a05620a47ab00b006fbf88667bcsm6651030qkb.77.2022.12.02.16.28.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Dec 2022 16:28:42 -0800 (PST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Joel Fernandes <joel@joelfernandes.org>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH net-next] tcp: use 2-arg optimal variant of kfree_rcu()
+Date:   Fri, 2 Dec 2022 19:28:31 -0500
+Message-Id: <21A10014-22D8-4107-8C6C-14102478D19B@joelfernandes.org>
+References: <CAEXW_YRW+ZprkN7nE1yJK_g6UhsWBWGUVfzW+gFnjKabgevZWg@mail.gmail.com>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        eric.dumazet@gmail.com, Dmitry Safonov <dima@arista.com>,
+        rcu@vger.kernel.org
+In-Reply-To: <CAEXW_YRW+ZprkN7nE1yJK_g6UhsWBWGUVfzW+gFnjKabgevZWg@mail.gmail.com>
+To:     paulmck@kernel.org
+X-Mailer: iPhone Mail (20B101)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Dec 02, 2022 at 11:35:09PM +0000, Zhang, Qiang1 wrote:
-> On Wed, Nov 30, 2022 at 01:12:53PM +0800, Zqiang wrote:
-> > Assume that the current RCU-task belongs to per-CPU callback queuing
-> > mode and the rcu_task_cb_adjust is true.
-> > 
-> >       CPU0					CPU1
-> > 
-> > rcu_tasks_need_gpcb()
-> >   ncbsnz == 0 and
-> >   ncbs < rcu_task_collapse_lim
-> > 
-> > 					      invoke call_rcu_tasks_generic()
-> > 						 enqueue callback to CPU1
-> > 					        (CPU1 n_cbs not equal zero)
-> > 
-> >   if (rcu_task_cb_adjust &&
-> >   ncbs <= rcu_task_collapse_lim)
-> >     if (rtp->percpu_enqueue_lim > 1)
-> >       rtp->percpu_enqueue_lim = 1;
-> >       rtp->percpu_dequeue_gpseq =
-> >       get_state_synchronize_rcu();
-> > 
-> > 
-> >   A full RCU grace period has passed
-> >
-> >
-> >I don't see how this grace period can elapse.  The rcu_tasks_need_gpcb()
-> >function is invoked only from rcu_tasks_one_gp(), and while holding
-> >->tasks_gp_mutex.
-> 
-> 
-> Hi Paul
-> 
-> I mean that It's the RCU grace period instead of the RCU task grace period.
-> 
-> rtp->percpu_dequeue_gpseq = get_state_synchronize_rcu();
-> 
-> get_state_synchronize_rcu(rtp->percpu_dequeue_gpseq);
-> 
-> There is a window period between these two calls,  preemption may occur.
-> A full RCU grace period may have passed.
-> when we run it again we find get_state_synchronize_rcu() == true.
++rcu for archives=20
 
-Ah, thank you!
+> On Dec 2, 2022, at 7:16 PM, Joel Fernandes <joel@joelfernandes.org> wrote:=
 
-But for that issue, why not just place both "if" statements into an
-RCU read-side critical section?  That would maintain the diagnostics,
-just in case a bug was introduced into the shrinking process.
-
-							Thanx, Paul
-
-> Thanks
-> Zqiang
-> 
-> 
-> >
-> >What am I missing here?
-> >
-> >							Thanx, Paul
-> 
-> >   if (rcu_task_cb_adjust && !ncbsnz &&
-> >   poll_state_synchronize_rcu(
-> >     rtp->percpu_dequeue_gpseq) == true
-> >     if (rtp->percpu_enqueue_lim <
-> > 	rtp->percpu_dequeue_lim)
-> >         rtp->percpu_dequeue_lim = 1
-> >     for (cpu = rtp->percpu_dequeue_lim;
-> >         cpu < nr_cpu_ids; cpu++)
-> >         find CPU1 n_cbs is not zero
-> >         trigger warning
-> > 
-> > The above scenario will not only trigger WARN_ONCE(), but also set the
-> > rcu_tasks structure's->percpu_dequeue_lim is one when CPU1 still have
-> > callbacks, which will cause the callback of CPU1 to have no chance to be
-> > called.
-> > 
-> > This commit add per-cpu callback check(except CPU0) before set the rcu_tasks
-> > structure's->percpu_dequeue_lim to one, if other CPUs(except CPU0) still have
-> > callback, not set the rcu_tasks structure's->percpu_dequeue_lim to one, set it
-> > until the all CPUs(except CPU0) has no callback.
-> > 
-> > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-> > ---
-> >  kernel/rcu/tasks.h | 13 ++++++++-----
-> >  1 file changed, 8 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> > index e4f7d08bde64..690af479074f 100644
-> > --- a/kernel/rcu/tasks.h
-> > +++ b/kernel/rcu/tasks.h
-> > @@ -433,14 +433,17 @@ static int rcu_tasks_need_gpcb(struct rcu_tasks *rtp)
-> >  	    poll_state_synchronize_rcu(rtp->percpu_dequeue_gpseq)) {
-> >  		raw_spin_lock_irqsave(&rtp->cbs_gbl_lock, flags);
-> >  		if (rtp->percpu_enqueue_lim < rtp->percpu_dequeue_lim) {
-> > +			for (cpu = rtp->percpu_enqueue_lim; cpu < nr_cpu_ids; cpu++) {
-> > +				struct rcu_tasks_percpu *rtpcp = per_cpu_ptr(rtp->rtpcpu, cpu);
-> > +
-> > +				if(rcu_segcblist_n_cbs(&rtpcp->cblist)) {
-> > +					raw_spin_unlock_irqrestore(&rtp->cbs_gbl_lock, flags);
-> > +					return needgpcb;
-> > +				}
-> > +			}
-> >  			WRITE_ONCE(rtp->percpu_dequeue_lim, 1);
-> >  			pr_info("Completing switch %s to CPU-0 callback queuing.\n", rtp->name);
-> >  		}
-> > -		for (cpu = rtp->percpu_dequeue_lim; cpu < nr_cpu_ids; cpu++) {
-> > -			struct rcu_tasks_percpu *rtpcp = per_cpu_ptr(rtp->rtpcpu, cpu);
-> > -
-> > -			WARN_ON_ONCE(rcu_segcblist_n_cbs(&rtpcp->cblist));
-> > -		}
-> >  		raw_spin_unlock_irqrestore(&rtp->cbs_gbl_lock, flags);
-> >  	}
-> >  
-> > -- 
-> > 2.25.1
-> > 
+>=20
+> =EF=BB=BFOn Sat, Dec 3, 2022 at 12:12 AM Joel Fernandes <joel@joelfernande=
+s.org> wrote:
+>>=20
+>>> On Sat, Dec 3, 2022 at 12:03 AM Paul E. McKenney <paulmck@kernel.org> wr=
+ote:
+>>>=20
+>>> On Fri, Dec 02, 2022 at 11:49:59PM +0000, Joel Fernandes wrote:
+>>>> On Fri, Dec 02, 2022 at 05:28:47AM +0000, Eric Dumazet wrote:
+>>>>> kfree_rcu(1-arg) should be avoided as much as possible,
+>>>>> since this is only possible from sleepable contexts,
+>>>>> and incurr extra rcu barriers.
+>>>>>=20
+>>>>> I wish the 1-arg variant of kfree_rcu() would
+>>>>> get a distinct name, like kfree_rcu_slow()
+>>>>> to avoid it being abused.
+>>>>=20
+>>>> Hi Eric,
+>>>> Nice to see your patch.
+>>>>=20
+>>>> Paul, all, regarding Eric's concern, would the following work to warn o=
+f
+>>>> users? Credit to Paul/others for discussing the idea on another thread.=
+ One
+>>>> thing to note here is, this debugging will only be in effect on preempt=
+ible
+>>>> kernels, but should still help catch issues hopefully.
+>>>=20
+>>> Mightn't there be some places where someone needs to invoke
+>>> single-argument kfree_rcu() in a preemptible context, for example,
+>>> due to the RCU-protected structure being very small and very numerous?
+>>=20
+>> This could be possible but I am not able to find examples of such
+>> cases, at the moment. Another approach could be to introduce a
+>> dedicated API for such cases, where the warning will not fire. And
+>> keep the warning otherwise.
+>>=20
+>> Example: kfree_rcu_headless()
+>> With a big comment saying, use only if you are calling from a
+>> preemptible context and cannot absolutely embed an rcu_head. :-)
+>>=20
+>> Thoughts?
+>>=20
+>=20
+> Just to clarify, where I was getting at was to combine both ideas:
+> 1. new API with suppression of the new warning mentioned above.
+> 2. old API but add new warning mentioned above.
+>=20
+> Cheers,
+>=20
+> - Joel
