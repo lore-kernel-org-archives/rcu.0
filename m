@@ -2,234 +2,132 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 01828C4321E
-	for <rcu@archiver.kernel.org>; Sat,  3 Dec 2022 01:11:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 84917C4321E
+	for <rcu@archiver.kernel.org>; Sat,  3 Dec 2022 02:19:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235222AbiLCBLv (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 2 Dec 2022 20:11:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60184 "EHLO
+        id S234944AbiLCCTV (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 2 Dec 2022 21:19:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235219AbiLCBLu (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 2 Dec 2022 20:11:50 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DA7BD20A9;
-        Fri,  2 Dec 2022 17:11:49 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BFC1F6247A;
-        Sat,  3 Dec 2022 01:11:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3053EC433D6;
-        Sat,  3 Dec 2022 01:11:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1670029908;
-        bh=eZp9JU1cNITlKz5eTnc4xE9oQLxGs+SZmnkZbiNAp8k=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=FaAUezm9H8AWnJ+v5HmK6gWVlk838Y+KbrgY2o+DvOgjDJKlW/X+IXxh7F3Dhew1r
-         lis1gKzzj5SJ4pz/D6JJF1TuSGPr4yWchXYDjOxzUDfzst2iOr7m/4NlPmdO1mbWAM
-         yki1nuOxaiPFYEdcHgvUTWyaBiGQG2KxfQn20+2fgvO8z+RPzQGiMGgzzGPvtV7zDt
-         MlqX9Val8SunWJbUIi156vuYRC4SVFkmeB7svxjD5MSFfasdA+kLdO/B8jU7R6BxVa
-         S9MJzGOHBdEYB8cRGYzAIy60WiEO+aaE55Sy0loVhWiPXSdJQR1vZsgU5/75BfZ9Zb
-         ZqXukkDwpI7lw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id C0C215C095D; Fri,  2 Dec 2022 17:11:47 -0800 (PST)
-Date:   Fri, 2 Dec 2022 17:11:47 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     torvalds@linux-foundation.org
-Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        rcu@vger.kernel.org, kernel-team@meta.com
-Subject: [GIT PULL] RCU changes for v6.2
-Message-ID: <20221203011147.GA1815487@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        with ESMTP id S234936AbiLCCTV (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 2 Dec 2022 21:19:21 -0500
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CE2C98E9F;
+        Fri,  2 Dec 2022 18:19:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1670033960; x=1701569960;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=6ntn3zRMxIwgdUpPp1JYwUPfmJv8sbId8mHHuUAb1xg=;
+  b=UaHz6/XjMZ2h4wT6xpEZ2TP+DdzCu42RzcWmv757r3zARxZ/K5+yc6dc
+   tNxAZw/XUtHstrQi0Xlu2bxX590yvT3VKuqZhkxpt5lnGEZN8Mb2JzwDW
+   Li1p2oOKq6KNhdaIQ6kMwiZttYCBxlhtlcj9lIXOp5o/66+lpcp4zS0KT
+   FZdZkmYd0iPKOng9oS+cDaePKRR1v/a9wLxW0d28EPdpkry9xgJPC+R+E
+   t1rjVlP9qkdYbLpE3mm3KbSlLb88lK+Dy4/mG/K2qO2GwxUHnQyp8o2g2
+   rxubZBi2YEeoIbxncWyRYz/GZGZAKlka/uNd+gByBlGNQeSSaj667sUnd
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10549"; a="378238268"
+X-IronPort-AV: E=Sophos;i="5.96,213,1665471600"; 
+   d="scan'208";a="378238268"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2022 18:19:19 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10549"; a="713829673"
+X-IronPort-AV: E=Sophos;i="5.96,213,1665471600"; 
+   d="scan'208";a="713829673"
+Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.129])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2022 18:19:17 -0800
+From:   Zqiang <qiang1.zhang@intel.com>
+To:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
+        joel@joelfernandes.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] rcu-tasks: Make shrink down to a single callback queue safely
+Date:   Sat,  3 Dec 2022 10:25:03 +0800
+Message-Id: <20221203022503.2227023-1-qiang1.zhang@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello, Linus,
+Assume that the current RCU-task belongs to per-CPU callback queuing
+mode. the 'rcu_task_cb_adjust' variable is true and the conditions for
+converting to a single CPU-0 queue mode have been met.
+(ncbsnz == 0 && ncbs < rcu_task_collapse_lim)
 
-Once the merge window opens, please pull the latest RCU git tree from:
+	   CPU0                                          CPU1
+rcu_tasks_one_gp()
+  rcu_tasks_need_gpcb()
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git tags/rcu.2022.12.02a
-  # HEAD: 87492c06e68d802852c7ba76b4d3fde50807d72a Merge branches 'doc.2022.10.20a', 'fixes.2022.10.21a', 'lazy.2022.11.30a', 'srcunmisafe.2022.11.09a', 'torture.2022.10.18c' and 'torturescript.2022.10.20a' into HEAD (2022-11-30 13:20:05 -0800)
+                                            invoke call_rcu_tasks_generic()
+                                            enqueue callback to CPU1
+                                            (CPU1 n_cbs not equal zero)
 
-----------------------------------------------------------------
-RCU pull request for v6.2
+  if (rcu_task_cb_adjust &&
+  ncbs <= rcu_task_collapse_lim)
+    if (rtp->percpu_enqueue_lim > 1)
+      rtp->percpu_enqueue_lim = 1;
+      rtp->percpu_dequeue_gpseq =
+      get_state_synchronize_rcu();
 
-This pull request contains the following branches:
+  A full RCU grace period has passed
+  (it means that poll_state_synchronize_rcu
+  rtp->percpu_dequeue_gpseq) maybe return true)
 
-doc.2022.10.20a: Documentation updates.  This is the second
-	in a series from an ongoing review of the RCU documentation.
+  if (rcu_task_cb_adjust && !ncbsnz &&
+  poll_state_synchronize_rcu(
+    rtp->percpu_dequeue_gpseq) {
 
-fixes.2022.10.21a: Miscellaneous fixes.
+    if (rtp->percpu_enqueue_lim <
+        rtp->percpu_dequeue_lim)
+        rtp->percpu_dequeue_lim = 1
+    for (cpu = rtp->percpu_dequeue_lim;
+        cpu < nr_cpu_ids; cpu++)
+        find CPU1 n_cbs is not zero
+        trigger warning
+  }
 
-lazy.2022.11.30a: Introduces a default-off Kconfig option that depends
-	on RCU_NOCB_CPU that, on CPUs mentioned in the nohz_full or
-	rcu_nocbs boot-argument CPU lists, causes call_rcu() to introduce
-	delays.  These delays result in significant power savings on
-	nearly idle Android and ChromeOS systems.  These savings range
-	from a few percent to more than ten percent.
+The above scenario will not only trigger WARN_ONCE(), but also set the
+rcu_tasks structure's->percpu_dequeue_lim is one when CPU1 still have
+callbacks, which will cause the callback of CPU1 to have no chance to
+be called.
 
-	This series also includes several commits that change call_rcu()
-	to a new call_rcu_hurry() function that avoids these delays in
-	a few cases, for example, where timely wakeups are required.
-	Several of these are outside of RCU and thus have acks and
-	reviews from the relevant maintainers.
+This commit put get_state_synchronize_rcu() and poll_state_synchronize_rcu()
+into a RCU read critical section. it means that current readers will block
+completion of the current or next RCU grace period. this ensures that after
+we snapshot current RCU gp number and then polling it will return false.
 
-srcunmisafe.2022.11.09a: Creates an srcu_read_lock_nmisafe() and an
-	srcu_read_unlock_nmisafe() for architectures that support NMIs,
-	but which do not provide NMI-safe this_cpu_inc().  These NMI-safe
-	SRCU functions are required by the upcoming lockless printk()
-	work by John Ogness et al.
+This will lead us to judge per-CPU callback numbers again after a grace
+period of RCU tasks, until the callbacks of other CPUs(except CPU0) are
+executed and the specified RCU grace period has completed, we have just
+completed the conversion of single queue.
 
-	That printk() series depends on these commits, so if you pull
-	the printk() series before this one, you will have already
-	pulled in this branch, plus two more SRCU commits:
+Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+---
+ kernel/rcu/tasks.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-	0cd7e350abc4 ("rcu: Make SRCU mandatory")
-	51f5f78a4f80 ("srcu: Make Tiny synchronize_srcu() check for readers")
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index d845723c1af4..26f67d8220ec 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -419,6 +419,7 @@ static int rcu_tasks_need_gpcb(struct rcu_tasks *rtp)
+ 	// if there has not been an increase in callbacks, limit dequeuing
+ 	// to CPU 0.  Note the matching RCU read-side critical section in
+ 	// call_rcu_tasks_generic().
++	rcu_read_lock();
+ 	if (rcu_task_cb_adjust && ncbs <= rcu_task_collapse_lim) {
+ 		raw_spin_lock_irqsave(&rtp->cbs_gbl_lock, flags);
+ 		if (rtp->percpu_enqueue_lim > 1) {
+@@ -443,6 +444,7 @@ static int rcu_tasks_need_gpcb(struct rcu_tasks *rtp)
+ 		}
+ 		raw_spin_unlock_irqrestore(&rtp->cbs_gbl_lock, flags);
+ 	}
++	rcu_read_unlock();
+ 
+ 	return needgpcb;
+ }
+-- 
+2.25.1
 
-	These two commits appear to work well, but do not have
-	sufficient testing exposure over a long enough time for me to
-	feel comfortable pushing them unless something in mainline is
-	definitely going to use them immediately, and currently only
-	the new printk() work uses them.
-
-torture.2022.10.18c: Changes providing minor but important increases
-	in test coverage for the new RCU polled-grace-period APIs.
-
-torturescript.2022.10.20a: Changes that avoid redundant kernel builds,
-	thus providing about a 30% speedup for the torture.sh acceptance
-	test.
-
-----------------------------------------------------------------
-Eric Dumazet (1):
-      net: devinet: Reduce refcount before grace period
-
-Frederic Weisbecker (4):
-      rcu: Fix missing nocb gp wake on rcu_barrier()
-      srcu: Warn when NMI-unsafe API is used in NMI
-      srcu: Explain the reason behind the read side critical section on GP start
-      srcu: Debug NMI safety even on archs that don't require it
-
-Joel Fernandes (Google) (10):
-      rcu: Use READ_ONCE() for lockless read of rnp->qsmask
-      rcu: Fix late wakeup when flush of bypass cblist happens
-      rcu: Make call_rcu() lazy to save power
-      rcu: Refactor code a bit in rcu_nocb_do_flush_bypass()
-      rcuscale: Add laziness and kfree tests
-      rcu/sync: Use call_rcu_hurry() instead of call_rcu
-      rcu/rcuscale: Use call_rcu_hurry() for async reader test
-      rcu/rcutorture: Use call_rcu_hurry() where needed
-      percpu-refcount: Use call_rcu_hurry() for atomic switch
-      net: Use call_rcu_hurry() for dst_release()
-
-John Ogness (1):
-      rcu: Implement lockdep_rcu_enabled for !CONFIG_DEBUG_LOCK_ALLOC
-
-Paul E. McKenney (25):
-      srcu: Convert ->srcu_lock_count and ->srcu_unlock_count to atomic
-      doc: Remove arrayRCU.rst
-      doc: Update checklist.txt
-      rcutorture: Verify NUM_ACTIVE_RCU_POLL_FULL_OLDSTATE
-      rcutorture: Verify NUM_ACTIVE_RCU_POLL_OLDSTATE
-      rcutorture: Add --bootargs parameter to kvm-again.sh
-      torture: Use mktemp instead of guessing at unique names
-      rcutorture: Make kvm-test-1-run-qemu.sh check for alternative output
-      rcutorture: Make kvm-recheck.sh export TORTURE_SUITE
-      rcutorture: Add --datestamp parameter to kvm-again.sh
-      rcutorture: Avoid redundant builds for rcuscale and refscale in torture.sh
-      doc: Update listRCU.rst
-      doc: Update RCU's lockdep.rst
-      srcu: Create an srcu_read_lock_nmisafe() and srcu_read_unlock_nmisafe()
-      srcu: Check for consistent per-CPU per-srcu_struct NMI safety
-      srcu: Check for consistent global per-srcu_struct NMI safety
-      arch/x86: Add ARCH_HAS_NMI_SAFE_THIS_CPU_OPS Kconfig option
-      arch/arm64: Add ARCH_HAS_NMI_SAFE_THIS_CPU_OPS Kconfig option
-      rcutorture: Avoid torture.sh compressing identical files
-      torture: Make torture.sh create a properly formatted log file
-      slab: Explain why SLAB_TYPESAFE_BY_RCU reference before locking
-      rcu-tasks: Make grace-period-age message human-readable
-      arch/loongarch: Add ARCH_HAS_NMI_SAFE_THIS_CPU_OPS Kconfig option
-      arch/s390: Add ARCH_HAS_NMI_SAFE_THIS_CPU_OPS Kconfig option
-      Merge branches 'doc.2022.10.20a', 'fixes.2022.10.21a', 'lazy.2022.11.30a', 'srcunmisafe.2022.11.09a', 'torture.2022.10.18c' and 'torturescript.2022.10.20a' into HEAD
-
-Pingfan Liu (1):
-      rcu: Synchronize ->qsmaskinitnext in rcu_boost_kthread_setaffinity()
-
-Uladzislau Rezki (2):
-      scsi/scsi_error: Use call_rcu_hurry() instead of call_rcu()
-      workqueue: Make queue_rcu_work() use call_rcu_hurry()
-
-Vineeth Pillai (1):
-      rcu: Shrinker for lazy rcu
-
-Yipeng Zou (1):
-      rcu: Remove rcu_is_idle_cpu()
-
-Zeng Heng (1):
-      rcu: Remove unused 'cpu' in rcu_virt_note_context_switch()
-
-Zhen Lei (1):
-      rcu: Simplify rcu_init_nohz() cpumask handling
-
-Zqiang (2):
-      rcu: Remove duplicate RCU exp QS report from rcu_report_dead()
-      rcu: Fix __this_cpu_read() lockdep warning in rcu_force_quiescent_state()
-
- Documentation/RCU/arrayRCU.rst                     | 165 -------------
- Documentation/RCU/checklist.rst                    | 244 +++++++++++--------
- Documentation/RCU/index.rst                        |   1 -
- Documentation/RCU/listRCU.rst                      | 174 ++++++++------
- Documentation/RCU/lockdep.rst                      |   4 +
- arch/Kconfig                                       |   3 +
- arch/arm64/Kconfig                                 |   1 +
- arch/loongarch/Kconfig                             |   1 +
- arch/s390/Kconfig                                  |   1 +
- arch/x86/Kconfig                                   |   1 +
- drivers/scsi/scsi_error.c                          |   2 +-
- include/linux/kvm_host.h                           |   2 +-
- include/linux/rcupdate.h                           |  14 ++
- include/linux/rcutiny.h                            |   4 +-
- include/linux/rcutree.h                            |   4 +-
- include/linux/slab.h                               |  11 +
- include/linux/srcu.h                               |  63 +++++
- include/linux/srcutree.h                           |   5 +-
- kernel/rcu/Kconfig                                 |  11 +
- kernel/rcu/rcu.h                                   |   8 +
- kernel/rcu/rcuscale.c                              |  69 +++++-
- kernel/rcu/rcutorture.c                            |  72 ++++--
- kernel/rcu/srcutree.c                              | 100 ++++++--
- kernel/rcu/sync.c                                  |   2 +-
- kernel/rcu/tasks.h                                 |   2 +-
- kernel/rcu/tiny.c                                  |   2 +-
- kernel/rcu/tree.c                                  | 152 +++++++-----
- kernel/rcu/tree.h                                  |  12 +-
- kernel/rcu/tree_exp.h                              |   2 +-
- kernel/rcu/tree_nocb.h                             | 259 ++++++++++++++++-----
- kernel/rcu/tree_plugin.h                           |   5 +-
- kernel/workqueue.c                                 |   2 +-
- lib/percpu-refcount.c                              |   3 +-
- net/core/dst.c                                     |   2 +-
- net/ipv4/devinet.c                                 |  19 +-
- .../testing/selftests/rcutorture/bin/config2csv.sh |   3 +-
- .../selftests/rcutorture/bin/config_override.sh    |   3 +-
- .../selftests/rcutorture/bin/configcheck.sh        |   3 +-
- .../testing/selftests/rcutorture/bin/configinit.sh |   3 +-
- .../testing/selftests/rcutorture/bin/kvm-again.sh  |  49 +++-
- .../selftests/rcutorture/bin/kvm-assign-cpus.sh    |   3 +-
- .../testing/selftests/rcutorture/bin/kvm-build.sh  |   3 +-
- .../selftests/rcutorture/bin/kvm-end-run-stats.sh  |   3 +-
- .../selftests/rcutorture/bin/kvm-recheck.sh        |   2 +-
- .../testing/selftests/rcutorture/bin/kvm-remote.sh |  13 +-
- .../rcutorture/bin/kvm-test-1-run-batch.sh         |   3 +-
- .../rcutorture/bin/kvm-test-1-run-qemu.sh          |   5 +-
- .../selftests/rcutorture/bin/kvm-test-1-run.sh     |   3 +-
- .../selftests/rcutorture/bin/kvm-transform.sh      |  68 +++++-
- tools/testing/selftests/rcutorture/bin/kvm.sh      |   3 +-
- .../selftests/rcutorture/bin/parse-build.sh        |   3 +-
- tools/testing/selftests/rcutorture/bin/torture.sh  | 145 ++++++++++--
- 52 files changed, 1159 insertions(+), 578 deletions(-)
- delete mode 100644 Documentation/RCU/arrayRCU.rst
