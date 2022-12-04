@@ -2,133 +2,127 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 80DCCC4332F
-	for <rcu@archiver.kernel.org>; Sat,  3 Dec 2022 23:08:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8BB4C352A1
+	for <rcu@archiver.kernel.org>; Sun,  4 Dec 2022 00:04:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229503AbiLCXIo (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 3 Dec 2022 18:08:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41882 "EHLO
+        id S229630AbiLDAEE (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 3 Dec 2022 19:04:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbiLCXIn (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 3 Dec 2022 18:08:43 -0500
-Received: from nautica.notk.org (nautica.notk.org [91.121.71.147])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E037E19C12;
-        Sat,  3 Dec 2022 15:08:41 -0800 (PST)
-Received: by nautica.notk.org (Postfix, from userid 108)
-        id 5047AC01C; Sun,  4 Dec 2022 00:08:48 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1670108928; bh=+CO9rF9Z3sjMwxpNknlXTJ5cZA3lSjQQRNAnKsWpV0A=;
+        with ESMTP id S229450AbiLDAED (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 3 Dec 2022 19:04:03 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D9CB1C42D;
+        Sat,  3 Dec 2022 16:04:02 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 29C82B807E9;
+        Sun,  4 Dec 2022 00:04:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D888C433D7;
+        Sun,  4 Dec 2022 00:03:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1670112239;
+        bh=Y3yBz9Pcc8yqE2m1VhKlQSH32UcLuZuY/vu8r16m/no=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=h+QJvpndy/8fSkQmxM8YZYNF+JKwabcGgwdDpDUdDcxhUHBDZ4S3/+xxnwn13lvv3
-         29d1VXTpTI86vQhKlN6geh+ZWb/w/JwNNzZVP+460QafDIQxWHi4VAUfr1e7Bk64iT
-         HHB4lU59wIHZggeH4nqDLfX23pA1LyH8EgR9/v1JbNkX6uB7HAHOrSuDRFCmXKbwZs
-         3OqvQFUYMTy+mHt/Kuv78JAzUxMTytgn+3+bDVDuZmvUfvLptsSOOyqrORdPt86BHZ
-         YXx7d3fkxxvudKMJHwoXGtVtNBwedRF/zzKS6saaj8CVLrXiv/AUTKu5PAkiNneH6T
-         Muf0Yjx83ligQ==
-Received: from odin.codewreck.org (localhost [127.0.0.1])
-        by nautica.notk.org (Postfix) with ESMTPS id 3DF9AC009;
-        Sun,  4 Dec 2022 00:08:42 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1670108926; bh=+CO9rF9Z3sjMwxpNknlXTJ5cZA3lSjQQRNAnKsWpV0A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vWVy8GgB8kYGFJInSg+trhuXpLCiwXgCUsHXJ8A1UpZPEvMUU17zaJyv/64aXirR7
-         eLMWcaddP6oggFpkW3N6Rx8flq2qTzacrLaRy0772HncS8y4aMmdk7obsatJbwic68
-         M0EQ/8V12QnhKm4nNXC5CHKLXBqE1PqlBahyIWuM+vANE791bA6sAxZJh1JJLQzeG+
-         PvMxsf86PbpuJX9JWf2vstwkRLcwDKv4bGXG0/SwKItJHCaA82+lOVOzx9n1nL646a
-         H8lBlLZNID//lIleGfjMfpZUt7OR2diiT3e+wAX6GkgdloSE6W33qQ26OogJbKVYtD
-         QzFoRwtapxxUw==
-Received: from localhost (odin.codewreck.org [local])
-        by odin.codewreck.org (OpenSMTPD) with ESMTPA id 1bfa2785;
-        Sat, 3 Dec 2022 23:08:31 +0000 (UTC)
-Date:   Sun, 4 Dec 2022 08:08:16 +0900
-From:   Dominique Martinet <asmadeus@codewreck.org>
-To:     Marco Elver <elver@google.com>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        rcu <rcu@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        kunit-dev@googlegroups.com, lkft-triage@lists.linaro.org,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        Anders Roxell <anders.roxell@linaro.org>
-Subject: Re: arm64: allmodconfig: BUG: KCSAN: data-race in p9_client_cb /
- p9_client_rpc
-Message-ID: <Y4vW4CncDucES8m+@codewreck.org>
-References: <CA+G9fYsK5WUxs6p9NaE4e3p7ew_+s0SdW0+FnBgiLWdYYOvoMg@mail.gmail.com>
- <CANpmjNOQxZ--jXZdqN3tjKE=sd4X6mV4K-PyY40CMZuoB5vQTg@mail.gmail.com>
- <CA+G9fYs55N3J8TRA557faxvAZSnCTUqnUx+p1GOiCiG+NVfqnw@mail.gmail.com>
- <Y4e3WC4UYtszfFBe@codewreck.org>
- <CA+G9fYuJZ1C3802+uLvqJYMjGged36wyW+G1HZJLzrtmbi1bJA@mail.gmail.com>
- <Y4ttC/qESg7Np9mR@codewreck.org>
- <CANpmjNNcY0LQYDuMS2pG2R3EJ+ed1t7BeWbLK2MNxnzPcD=wZw@mail.gmail.com>
+        b=TQ5GgUZnBg79BWgCKA/SPQiuRKlcsWfTORldW4wT8/AUDIQjM+zWLfdl5hEnPEZmD
+         U7XLg2WeOh1CkzIXH0wnayUBS8hz4VMra6H+gd2fNY0fopczgFIi7YPfVRhRUR0KQX
+         R+m5TKFvyM7IOs/qiSnd6u/vVNfx1yFHAX1OQNQRvXSpN05DlurLX+h7pVYq972Z/i
+         qRArKGSues5cvjc1iQSrgjuFr8N/rI/bsKN+6H57MFN6gE02JSLKm1CjCgzj6LjUH0
+         hEYrUnG2pFw3e9AvZNwhM8rWtosuGscCevBIC2PfQXhu5emH8e5Q2FNN6A8It66T5e
+         OT465q82SKOrA==
+Date:   Sun, 4 Dec 2022 01:03:56 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>, rcu@vger.kernel.org
+Subject: Re: [PATCH 3/3] rcu-tasks: Fix synchronize_rcu_tasks() VS
+ zap_pid_ns_processes()
+Message-ID: <20221204000356.GA1779165@lothringen>
+References: <20221125135500.1653800-1-frederic@kernel.org>
+ <20221125135500.1653800-4-frederic@kernel.org>
+ <871qpkqof8.fsf@email.froward.int.ebiederm.org>
+ <20221202225428.GA1754872@lothringen>
+ <87ilitpeq1.fsf@email.froward.int.ebiederm.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CANpmjNNcY0LQYDuMS2pG2R3EJ+ed1t7BeWbLK2MNxnzPcD=wZw@mail.gmail.com>
+In-Reply-To: <87ilitpeq1.fsf@email.froward.int.ebiederm.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Marco Elver wrote on Sat, Dec 03, 2022 at 05:46:46PM +0100:
-> > But I can't really find a problem with what KCSAN complains about --
-> > we are indeed accessing status from two threads without any locks.
-> > Instead of a lock, we're using a barrier so that:
-> >  - recv thread/cb: writes to req stuff || write to req status
-> >  - p9_client_rpc: reads req status || reads other fields from req
-> >
-> > Which has been working well enough (at least, without the barrier things
-> > blow up quite fast).
-> >
-> > So can I'll just consider this a false positive, but if someone knows
-> > how much one can read into this that'd be appreciated.
+On Fri, Dec 02, 2022 at 05:28:54PM -0600, Eric W. Biederman wrote:
+> Frederic Weisbecker <frederic@kernel.org> writes:
 > 
-> The barriers only ensure ordering, but not atomicity of the accesses
-> themselves (for one, the compiler is well in its right to transform
-> plain accesses in ways that the concurrent algorithm wasn't designed
-> for). In this case it looks like it's just missing
-> READ_ONCE()/WRITE_ONCE().
+> > On Wed, Nov 30, 2022 at 12:37:15PM -0600, Eric W. Biederman wrote:
+> >> Frederic Weisbecker <frederic@kernel.org> writes:
+> >> Two questions.
+> >> 
+> >> 1) Is there any chance you need the exit_task_rcu_stop() and
+> >>    exit_tasks_rcu_start() around schedule in the part of this code that
+> >>    calls kernel_wait4.
+> >
+> > Indeed it could be relaxed there too if necessary.
+> 
+> I was just wondering how you tell if it is necessary and if perhaps
+> the kernel_wait4 was overlooked.
 
-Aha! Thanks for this!
-
-I've always believed plain int types accesses are always atomic and the
-only thing to watch for would be compilers reordering instrucions, which
-would be ensured by the barrier in this case, but I guess there are some
-architectures or places where this isn't true?
-
-
-I'm a bit confused though, I can only see five places where wait_event*
-functions use READ_ONCE and I believe they more or less all would
-require such a marker -- I guess non-equality checks might be safe
-(waiting for a value to change from a known value) but if non-atomic
-updates are on the table equality and comparisons checks all would need
-to be decorated with READ_ONCE; afaiu, unlike usespace loops with
-pthread_cond_wait there is nothing protecting the condition itself.
-
-Should I just update the wrapped condition, as below?
-
--       err = wait_event_killable(req->wq, req->status >= REQ_STATUS_RCVD);
-+       err = wait_event_killable(req->wq,
-+                                 READ_ONCE(req->status) >= REQ_STATUS_RCVD);
-
-The writes all are straightforward, there's all the error paths to
-convert to WRITE_ONCE too but that's not difficult (leaving only the
-init without such a marker); I'll send a patch when you've confirmed the
-read looks good.
-(the other reads are a bit less obvious as some are protected by a lock
-in trans_fd, which should cover all cases of possible concurrent updates
-there as far as I can see, but this mixed model is definitely hard to
-reason with... Well, that's how it was written and I won't ever have time
-to rewrite any of this. Enough ranting.)
+As for the deadlock described in this patch, it involves waiting for
+another task to reap yet another task. So it doesn't look necessary to
+relax the lock when the current task does the reaping.
 
 
-> A (relatively) quick primer on the kernel's memory model and
-> where/what/how we need to "mark" accesses:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/memory-model/Documentation/access-marking.txt
+Now the following looks possible:
 
-I read Documentation/memory-barriers.txt ages ago but wasn't aware of
-this memory-model directory; I've skimmed through and will have a proper
-read as time permits.
+      TASK A                                    TASK B                       TASK C
+      -----                                   -------                       ------
+      mutex_lock(&lock1)
+      synchronize_srcu(tasks_rcu_exit_srcu)
+                                                                            mutex_lock(&lock1)
+                                                                            //wait for TASK A to release &lock1
+                                              exit_tasks_rcu_start();
+                                              ...
+                                              zap_pid_ns_processes()
+                                                  kernel_wait4()
+                                                      //wait for TASK C
 
-Thank you,
--- 
-Dominique
+> > So you mean it still reaps those that were EXIT_ZOMBIE before ignoring
+> > SIGCHLD (the kernel_wait4() call) but it doesn't sleep anymore on those
+> > that autoreap (or get reaped by a parent outside that namespace) after
+> > ignoring SIGCHLD? Namely it doesn't do the schedule() loop I'm working
+> > around here and proceeds with exit_notify() and notifies its parent?
+> 
+> Yes.  A change to make it work like when the thread group leader exits
+> before the other threads.  So any actual sleeping happens in the reaper
+> of the init process when the reaper calls wait(2).
+> 
+> > And then in this case the responsibility of sleeping, until the init_process
+> > of the namespace is the last task in the namespace, goes to the parent while
+> > waiting that init_process, right?
+> >
+> > But what if the init_process of the given namespace autoreaps? Should it then
+> > wait itself until the namespace is empty? And then aren't we back to the initial
+> > issue?
+> 
+> The idea is that we only care when the userspace cares.  I don't think
+> there is any kernel code that fundamentally cares.  There might be a few
+> bits that accidentally care and those would need to be take care of when
+> making the proposed change.  The wait would only exist for userspace so
+> the same semantics are observed.
+
+I mean the issue is that if the pid_namespace reaper goes for autoreaping, then
+it still has to go through that loop waiting for the remaining tasks of the
+pid_namespace to be reaped. The loop will just happen later in exit_notify() but
+eventually the issue remains: we'll have to relax tasks_rcu_exit_srcu
+around that loop.
+
+Thanks.
+
+> 
+> Eric
