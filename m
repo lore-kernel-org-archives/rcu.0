@@ -2,102 +2,123 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6645BC4321E
-	for <rcu@archiver.kernel.org>; Mon,  5 Dec 2022 07:13:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6FA9AC4321E
+	for <rcu@archiver.kernel.org>; Mon,  5 Dec 2022 11:09:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231730AbiLEHNo (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 5 Dec 2022 02:13:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52142 "EHLO
+        id S230450AbiLELJY (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 5 Dec 2022 06:09:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231582AbiLEHNn (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 5 Dec 2022 02:13:43 -0500
-Received: from nautica.notk.org (ipv6.notk.org [IPv6:2001:41d0:1:7a93::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04BD8DF00;
-        Sun,  4 Dec 2022 23:13:41 -0800 (PST)
-Received: by nautica.notk.org (Postfix, from userid 108)
-        id 40ED9C009; Mon,  5 Dec 2022 08:13:49 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1670224429; bh=2/E7M28jlzB+tOHKj9EI5rF1sUTSmV05NM5sZZy2Ges=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=B0zWuxAWobbgFEMxbhwX4lp5iaDuYpVNfYEbFdypNE9BAEAUfyDNFOZ9FJxGQIdsa
-         b8O8XLAwsW93DcGQ3Q4PU3/Lta6koQ9lky6cmm3lfMhbiiA46TsCstjXBH999VsiNu
-         +g+UGbZ/ZI0sN+KWbwUv/pRW69a6gCgVxnjLgvbFBVlTAWRndzp8T/zJdsaVi0zHgy
-         w5r04KLoMbSVP7SFddKajyEj99IP8NkLmjCPuzsE1nZVZ5mvPDyRV144nm9oICY2Cy
-         1whWO7gJ3/KnNTjVIH5LIa0I6FJlll7IosmDfBEZKVNGoLLzb0Wyt/2gFNpM4NB9uD
-         TY9Y5Y2mDRT+g==
-Received: from odin.codewreck.org (localhost [127.0.0.1])
-        by nautica.notk.org (Postfix) with ESMTPS id 60CC5C009;
-        Mon,  5 Dec 2022 08:13:45 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1670224428; bh=2/E7M28jlzB+tOHKj9EI5rF1sUTSmV05NM5sZZy2Ges=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KxQeiB3TMfEP8TdHuiQ+mAFsfqmEjCtnUMdRLDavqny0AJ9quC85bvFEBSntRx1EW
-         kjheht3Ihlt2CF/xQPWMOwq5Hp75OT1K383041mHB0mzWog1mpMI4WaQBmkJkYT7Ut
-         qc0RVIfxvC04axDWpXmw086FQ2t/l35XCHSiqlIzYMqDz+K9YUpMXV5nxgGYli3Hrw
-         Kgq6sdVe8hA1CS/X51+825I4x+cBiWzHHw2YUdFUClSMpRA3HGpm2UG+i+a0wx3vZb
-         xKkm9DY1ftW3CzJ8CI0eeoJ+3T+iZoug4LvDwB+Nn8oZ4GFo/0dv5qbuFR9SS2ESgJ
-         QV9Y9Zr30M2zg==
-Received: from localhost (odin.codewreck.org [local])
-        by odin.codewreck.org (OpenSMTPD) with ESMTPA id d99753f1;
-        Mon, 5 Dec 2022 07:13:32 +0000 (UTC)
-Date:   Mon, 5 Dec 2022 16:13:17 +0900
-From:   Dominique Martinet <asmadeus@codewreck.org>
-To:     Marco Elver <elver@google.com>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        rcu <rcu@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        kunit-dev@googlegroups.com, lkft-triage@lists.linaro.org,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        Anders Roxell <anders.roxell@linaro.org>
-Subject: Re: arm64: allmodconfig: BUG: KCSAN: data-race in p9_client_cb /
- p9_client_rpc
-Message-ID: <Y42aDQ0ZOUt4dvYc@codewreck.org>
-References: <CA+G9fYsK5WUxs6p9NaE4e3p7ew_+s0SdW0+FnBgiLWdYYOvoMg@mail.gmail.com>
- <CANpmjNOQxZ--jXZdqN3tjKE=sd4X6mV4K-PyY40CMZuoB5vQTg@mail.gmail.com>
- <CA+G9fYs55N3J8TRA557faxvAZSnCTUqnUx+p1GOiCiG+NVfqnw@mail.gmail.com>
- <Y4e3WC4UYtszfFBe@codewreck.org>
- <CA+G9fYuJZ1C3802+uLvqJYMjGged36wyW+G1HZJLzrtmbi1bJA@mail.gmail.com>
- <Y4ttC/qESg7Np9mR@codewreck.org>
- <CANpmjNNcY0LQYDuMS2pG2R3EJ+ed1t7BeWbLK2MNxnzPcD=wZw@mail.gmail.com>
- <Y4vW4CncDucES8m+@codewreck.org>
- <CANpmjNPXhEB6GeMT70UT1e-8zTHf3gY21E3wx-27VjChQ0x2gA@mail.gmail.com>
+        with ESMTP id S230012AbiLELJX (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 5 Dec 2022 06:09:23 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF024B7D0;
+        Mon,  5 Dec 2022 03:09:21 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id s8so17979086lfc.8;
+        Mon, 05 Dec 2022 03:09:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Fq1/F1NL0myqtHrxXGJKtIReJGnYY6Iv7q7hOczmpX8=;
+        b=gCEgR7a83j2XMpvh2i7Fo0GPG1b131fATfmRII6AmfoT7NqVqVNxuwjU3TgbnUaoxp
+         REKXG4ZcPD23+Gwf8NrqgysDLJCRsnHXYiGZttqOix1pHUAsvmGELjDYTzig34yhtSTV
+         lboHJ8eJ6te13N6wRvBnFOwwkxJNFNrJK3GxJOggdkZHe4Uk+4wQIjgAiFUPn4hqjyp1
+         Jt1lUhD9ngvOm+M6VlHojrFE88tu6D2u2ZNYiRSOMU4ckhoFRNQXOPY0+BHjBjBIpS9y
+         CUrGmyQZSQ2gOe3T2OhH3XNg2fLfibet3wTC/hjDtRwvlWCQtCy7iyRoZLvX4sRUXdxM
+         MVWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Fq1/F1NL0myqtHrxXGJKtIReJGnYY6Iv7q7hOczmpX8=;
+        b=jUu3/mu2/NYTj7FlIVCQ6XAFWi21cc6KUZfif5veaYwArm2Ei4HMsrB5nIk4LcP3tG
+         1WGd1rjQnJEVVqv6We2k75BC8OWM7OxzzGyvhKX7k61xNaRa/lpRjJvYiP0AwvhGlU4h
+         /yBoB67bZweHj00yTuqMe1cj5ceqx9UC+c6UghAcfNXIMpXEXCASG+1M2ZFuLo0EyaSO
+         TBpxaTWQIwc2aQz/HStyydPhGGMAzxen5Ev60AtUZnDr6CC9AaRm5qn1nafPqqxYou73
+         4V3ZYZACnGUn0OE4+i83jwZP812ELZonVG7srMBSnhBU99wc9juj9Rno8B0YxOMc7nbF
+         pdRQ==
+X-Gm-Message-State: ANoB5ploScOPs7K4MhEJ59/n0dlFHPLlAr0Fdjt3FBgrQvMO3WKUZefu
+        B0JWaD4WgCtpys8ycwKVf4w=
+X-Google-Smtp-Source: AA0mqf55SfZgj07Iw0ay+yC4hXgIVwbwsdunGZxYsaFkaX4LuPRUxe4MxHmJ/4/jovYu2mgGcSgsTA==
+X-Received: by 2002:a05:6512:1687:b0:4b5:4637:3715 with SMTP id bu7-20020a056512168700b004b546373715mr5423545lfb.308.1670238560005;
+        Mon, 05 Dec 2022 03:09:20 -0800 (PST)
+Received: from pc636 (host-90-235-25-230.mobileonline.telia.com. [90.235.25.230])
+        by smtp.gmail.com with ESMTPSA id w13-20020a05651c118d00b0026c42f67eb8sm1164863ljo.7.2022.12.05.03.09.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Dec 2022 03:09:19 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Mon, 5 Dec 2022 12:09:16 +0100
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     paulmck@kernel.org, Eric Dumazet <edumazet@google.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        eric.dumazet@gmail.com, Dmitry Safonov <dima@arista.com>,
+        rcu@vger.kernel.org
+Subject: Re: [PATCH net-next] tcp: use 2-arg optimal variant of kfree_rcu()
+Message-ID: <Y43RXNu0cck6wo/0@pc636>
+References: <CAEXW_YRW+ZprkN7nE1yJK_g6UhsWBWGUVfzW+gFnjKabgevZWg@mail.gmail.com>
+ <21A10014-22D8-4107-8C6C-14102478D19B@joelfernandes.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CANpmjNPXhEB6GeMT70UT1e-8zTHf3gY21E3wx-27VjChQ0x2gA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <21A10014-22D8-4107-8C6C-14102478D19B@joelfernandes.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Marco Elver wrote on Mon, Dec 05, 2022 at 08:00:00AM +0100:
-> > Should I just update the wrapped condition, as below?
-> >
-> > -       err = wait_event_killable(req->wq, req->status >= REQ_STATUS_RCVD);
-> > +       err = wait_event_killable(req->wq,
-> > +                                 READ_ONCE(req->status) >= REQ_STATUS_RCVD);
-> 
-> Yes, this looks good!
-> 
-> > The writes all are straightforward, there's all the error paths to
-> > convert to WRITE_ONCE too but that's not difficult (leaving only the
-> > init without such a marker); I'll send a patch when you've confirmed the
-> > read looks good.
-> > (the other reads are a bit less obvious as some are protected by a lock
-> > in trans_fd, which should cover all cases of possible concurrent updates
-> > there as far as I can see, but this mixed model is definitely hard to
-> > reason with... Well, that's how it was written and I won't ever have time
-> > to rewrite any of this. Enough ranting.)
-> 
-> If the lock-protected accesses indeed are non-racy, they should be
-> left unmarked. If some assumption here turns out to be wrong, KCSAN
-> would (hopefully) tell us one way or another.
+Hello, Eric.
 
-Great, that makes sense.
+> +rcu for archives 
+> 
+> > On Dec 2, 2022, at 7:16 PM, Joel Fernandes <joel@joelfernandes.org> wrote:
+> > 
+> > ﻿On Sat, Dec 3, 2022 at 12:12 AM Joel Fernandes <joel@joelfernandes.org> wrote:
+> >> 
+> >>> On Sat, Dec 3, 2022 at 12:03 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+> >>> 
+> >>> On Fri, Dec 02, 2022 at 11:49:59PM +0000, Joel Fernandes wrote:
+> >>>> On Fri, Dec 02, 2022 at 05:28:47AM +0000, Eric Dumazet wrote:
+> >>>>> kfree_rcu(1-arg) should be avoided as much as possible,
+> >>>>> since this is only possible from sleepable contexts,
+> >>>>> and incurr extra rcu barriers.
+> >>>>> 
+> >>>>> I wish the 1-arg variant of kfree_rcu() would
+> >>>>> get a distinct name, like kfree_rcu_slow()
+> >>>>> to avoid it being abused.
+>
+<snip>
+tcp: use 2-arg optimal variant of kfree_rcu()
+Date: Fri,  2 Dec 2022 05:28:47 +0000	[thread overview]
+Message-ID: <20221202052847.2623997-1-edumazet@google.com> (raw)
 
-I've left the commit at home, will submit it tonight -- you and Naresh
-will be in Cc from suggested/reported-by tags.
+kfree_rcu(1-arg) should be avoided as much as possible,
+since this is only possible from sleepable contexts,
+and incurr extra rcu barriers.
 
--- 
-Dominique
+I wish the 1-arg variant of kfree_rcu() would
+get a distinct name, like kfree_rcu_slow()
+to avoid it being abused.
+
+Fixes: 459837b522f7 ("net/tcp: Disable TCP-MD5 static key on tcp_md5sig_info destruction")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Cc: Dmitry Safonov <dima@arista.com>
+Cc: Paul E. McKenney <paulmck@kernel.org>
+<snip>
+
+Could you please clarify a little bit about why/how have you came
+up with a patch that you posted with "Fixes" tag? I mean you run
+into:
+  - performance degrade;
+  - simple typo;
+  - etc.
+
+Thank you.
+
+--
+Uladzislau Rezki
