@@ -2,97 +2,136 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E322CC4321E
-	for <rcu@archiver.kernel.org>; Mon,  5 Dec 2022 13:24:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 287FFC4321E
+	for <rcu@archiver.kernel.org>; Mon,  5 Dec 2022 14:59:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232113AbiLENYD (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 5 Dec 2022 08:24:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48826 "EHLO
+        id S230230AbiLEO7I (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 5 Dec 2022 09:59:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230035AbiLENYC (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 5 Dec 2022 08:24:02 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 657661AF0C;
-        Mon,  5 Dec 2022 05:24:00 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 14932B80F79;
-        Mon,  5 Dec 2022 13:23:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39F5AC433C1;
-        Mon,  5 Dec 2022 13:23:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1670246637;
-        bh=wY8WWEhsULxUa+5zkLjOJ6JIAAUgwhZ1yANEZ6F4tNc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nv/TzyyF7Lsl7b2ve7RRq3FM+MHaDZjr1oLk5n3sFfOED0UCCblTzwckroNUUl7SO
-         ToitNqOLxAsua4ashRVZyskpY1Cq0buEgUqBTXkr1SsLCwpbHzegCp3Tr9XplBtp5d
-         G/9bXvJHlAE/LVhzJp7XqdHGLxmhdtBMa9+d6rgZtnLmJV4b2v9uI4vCKKUBRlKJvD
-         ftvibbHcqq6SaN/GXyPNXCEWTX1ZvIkvsj1pk3NQjLt65saSUSR9ijR2B12K477oLE
-         CG/EAYLn13cVMR0wG5JiX9sTFqY6vMa2tTKm7ofSC25cvU3QcMfpIjSPunXR3WaQyc
-         OrQuf5yW/AkXg==
-Date:   Mon, 5 Dec 2022 14:23:53 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Zheng Yejian <zhengyejian1@huawei.com>, quic_neeraju@quicinc.com,
-        josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu: Fix kernel stack overflow caused by kprobe on
- rcu_irq_enter_check_tick()
-Message-ID: <20221205132353.GB1796992@lothringen>
-References: <20221119040049.795065-1-zhengyejian1@huawei.com>
- <20221121195703.GO4001@paulmck-ThinkPad-P17-Gen-1>
+        with ESMTP id S231298AbiLEO7H (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 5 Dec 2022 09:59:07 -0500
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 157ABB4B6;
+        Mon,  5 Dec 2022 06:59:06 -0800 (PST)
+Received: by mail-lj1-x236.google.com with SMTP id n1so13829704ljg.3;
+        Mon, 05 Dec 2022 06:59:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=gnY8SXBp9bPMd0kyQP/BWkN4rezvSUUK12e+MubMKbQ=;
+        b=MMERCxtHk89MgOW+yDQfLlDS0NCrb7ujfFQsH6Z6K/visG0Laknf61poCvrUinX/cz
+         D9B9K74wgAOE5N6+1RK8VXqmiYYz9fdR55EPAtR88ZgDE/xxDk0p9lgVW5ejZds9nBt6
+         2zJJ+wK3WZ20xvuxO3WlFDlc5b4xWA/qMHELGWfU0Up3zdq+bYjUD3iMoohsB5WrTn7J
+         ECvRLNhMMrftG8YGsWbq0jo9hVKVJVxxZcNFnOIokMCZyHN5qQxUmk+4ensxrUFLnLtR
+         UyclnSXQDQz6tTIGjRivoO7WOeb0V8LnbMYrQSGCX/M+PKtO8rlfqr1bgmmPkSFG/9tB
+         yhCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gnY8SXBp9bPMd0kyQP/BWkN4rezvSUUK12e+MubMKbQ=;
+        b=3HDYxEd8cpLrkABBkjTOZrd3Bb6K/Qwhgme6NRbylP1slBR/hPjOztCp6VFNtmj3Lv
+         7GCar/XiK1dmv/giZazixnehkaISa1IoGSb4z1qNOhIznHPAuyFmxAIsNIzNGUAcV5b3
+         3i2yhrfSn0UaAbPuvqBD5muU8AtcScmdXdfgUBSLHNQpHIizIhOEHLtA8uaNd7HF7+e9
+         F2y9FdDJFJv1bGSUYBVoWmWEbDje6SDrd2F0Gy/PYslYxqFU34jm/4OPms7Yd9YkWZcV
+         wD/l7yOnnHTQzhe1ynhsvHLne4EsFw2x8DzYsd9W5aC0O01OfIRr6lNnC1krdf0Olt5m
+         8CjA==
+X-Gm-Message-State: ANoB5plxI5yGNElrvsH1ek0rc4yJOimOiI6rUsr4u/0PT/dlzHPo7Uu4
+        QL8abzbSPgro5pEGuMYW6ks=
+X-Google-Smtp-Source: AA0mqf6TWHqu6ej08VQH7KjY/A4PtoifjRpaC4iC9QJmFd2OpjEbIf6wqfEaQCCUJj7PK7MQUyo9yg==
+X-Received: by 2002:a05:651c:988:b0:279:7ab3:8738 with SMTP id b8-20020a05651c098800b002797ab38738mr19778054ljq.232.1670252344188;
+        Mon, 05 Dec 2022 06:59:04 -0800 (PST)
+Received: from pc636 (host-90-235-25-230.mobileonline.telia.com. [90.235.25.230])
+        by smtp.gmail.com with ESMTPSA id bd11-20020a05651c168b00b002773a9b5898sm1411422ljb.138.2022.12.05.06.59.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Dec 2022 06:59:03 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Mon, 5 Dec 2022 15:59:01 +0100
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     Uladzislau Rezki <urezki@gmail.com>, paulmck@kernel.org,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        eric.dumazet@gmail.com, Dmitry Safonov <dima@arista.com>,
+        rcu@vger.kernel.org
+Subject: Re: [PATCH net-next] tcp: use 2-arg optimal variant of kfree_rcu()
+Message-ID: <Y44HNfuR5OgfEXxV@pc636>
+References: <CAEXW_YRW+ZprkN7nE1yJK_g6UhsWBWGUVfzW+gFnjKabgevZWg@mail.gmail.com>
+ <21A10014-22D8-4107-8C6C-14102478D19B@joelfernandes.org>
+ <Y43RXNu0cck6wo/0@pc636>
+ <CANn89i+RNj0gaJCyNUyrMBpSTsxSgjW1YN_FuRW_pMUOMiQtuQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20221121195703.GO4001@paulmck-ThinkPad-P17-Gen-1>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CANn89i+RNj0gaJCyNUyrMBpSTsxSgjW1YN_FuRW_pMUOMiQtuQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Nov 21, 2022 at 11:57:03AM -0800, Paul E. McKenney wrote:
-> On Sat, Nov 19, 2022 at 12:00:49PM +0800, Zheng Yejian wrote:
-> > Register kprobe on __rcu_irq_enter_check_tick() can cause kernel stack
-> > overflow [1]. This issue is first found in v5.10 and can be reproduced
-> > by enabling CONFIG_NO_HZ_FULL and doing like:
-> >   # cd /sys/kernel/debug/tracing/
-> >   # echo 'p:mp1 __rcu_irq_enter_check_tick' >> kprobe_events
-> >   # echo 1 > events/kprobes/enable
-> > 
-> > So __rcu_irq_enter_check_tick() should not be kprobed, mark it as noinstr.
+> On Mon, Dec 5, 2022 at 12:09 PM Uladzislau Rezki <urezki@gmail.com> wrote:
+> >
+> > Hello, Eric.
+> >
+> > > +rcu for archives
+> > >
+> > > > On Dec 2, 2022, at 7:16 PM, Joel Fernandes <joel@joelfernandes.org> wrote:
+> > > >
+> > > > ﻿On Sat, Dec 3, 2022 at 12:12 AM Joel Fernandes <joel@joelfernandes.org> wrote:
+> > > >>
+> > > >>> On Sat, Dec 3, 2022 at 12:03 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+> > > >>>
+> > > >>> On Fri, Dec 02, 2022 at 11:49:59PM +0000, Joel Fernandes wrote:
+> > > >>>> On Fri, Dec 02, 2022 at 05:28:47AM +0000, Eric Dumazet wrote:
+> > > >>>>> kfree_rcu(1-arg) should be avoided as much as possible,
+> > > >>>>> since this is only possible from sleepable contexts,
+> > > >>>>> and incurr extra rcu barriers.
+> > > >>>>>
+> > > >>>>> I wish the 1-arg variant of kfree_rcu() would
+> > > >>>>> get a distinct name, like kfree_rcu_slow()
+> > > >>>>> to avoid it being abused.
+> > >
+> > <snip>
+> > tcp: use 2-arg optimal variant of kfree_rcu()
+> > Date: Fri,  2 Dec 2022 05:28:47 +0000   [thread overview]
+> > Message-ID: <20221202052847.2623997-1-edumazet@google.com> (raw)
+> >
+> > kfree_rcu(1-arg) should be avoided as much as possible,
+> > since this is only possible from sleepable contexts,
+> > and incurr extra rcu barriers.
+> >
+> > I wish the 1-arg variant of kfree_rcu() would
+> > get a distinct name, like kfree_rcu_slow()
+> > to avoid it being abused.
+> >
+> > Fixes: 459837b522f7 ("net/tcp: Disable TCP-MD5 static key on tcp_md5sig_info destruction")
+> > Signed-off-by: Eric Dumazet <edumazet@google.com>
+> > Cc: Dmitry Safonov <dima@arista.com>
+> > Cc: Paul E. McKenney <paulmck@kernel.org>
+> > <snip>
+> >
+> > Could you please clarify a little bit about why/how have you came
+> > up with a patch that you posted with "Fixes" tag? I mean you run
+> > into:
+> >   - performance degrade;
+> >   - simple typo;
+> >   - etc.
 > 
-> Good catch!
+> Bug was added in the blamed commit, we use Fixes: tag to clearly
+> identify bug origin.
 > 
-> I am inclined to queue this, but noticed that one of its callers need
-> it to be noinstr but that the others do not.
-> 
-> Need noinstr:
-> 
-> o	enter_from_kernel_mode() -> __enter_from_kernel_mode() ->
-> 	rcu_irq_enter_check_tick() -> __rcu_irq_enter_check_tick()
-> 
-> Doesn't need noinstr:
-> 
-> o	ct_nmi_enter() -> rcu_irq_enter_check_tick() ->
-> 	__rcu_irq_enter_check_tick(), courtesy of the call to
-> 	instrumentation_begin() in ct_nmi_enter() that precedes the call
-> 	to rcu_irq_enter_check_tick().
-> 
-> o	irqentry_enter() -> rcu_irq_enter_check_tick() ->
-> 	__rcu_irq_enter_check_tick(), courtesy of the call to
-> 	instrumentation_begin() in irqentry_enter() that precedes the
-> 	call to rcu_irq_enter_check_tick().
-> 
-> Is tagging __rcu_irq_enter_check_tick() with noinstr as
-> proposed in this patch the right thing to do, or should there
-> be calls to instrumentation_begin() and instrumentation_end() in
-> enter_from_kernel_mode()?  Or something else entirely?
+> tcp_md5_key_copy()  is called from softirq context, there is no way it
+> could sleep in synchronize_rcu()
+>
+So it was a typo then. How did you identify that BUG? Simple go through
+the code? Or some test coverage?
 
-Tagging as noinstr doesn't look right as there are functions in
-__rcu_irq_enter_check_tick() that can be traced anyway. Also that
-function has the constraint that it can't be called while RCU is idle
-so it's up to the caller to call instrumentation_begin()/end().
+Thank you!
 
-Thanks.
+--
+Uladzislau Rezki
