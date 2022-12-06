@@ -2,158 +2,148 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0730FC352A1
-	for <rcu@archiver.kernel.org>; Tue,  6 Dec 2022 16:20:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 46E69C3A5A7
+	for <rcu@archiver.kernel.org>; Tue,  6 Dec 2022 16:34:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232324AbiLFQUw (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 6 Dec 2022 11:20:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36264 "EHLO
+        id S235552AbiLFQeL (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 6 Dec 2022 11:34:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235178AbiLFQUg (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 6 Dec 2022 11:20:36 -0500
-Received: from mail-oa1-x36.google.com (mail-oa1-x36.google.com [IPv6:2001:4860:4864:20::36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E89F52F649
-        for <rcu@vger.kernel.org>; Tue,  6 Dec 2022 08:19:22 -0800 (PST)
-Received: by mail-oa1-x36.google.com with SMTP id 586e51a60fabf-144b21f5e5fso6018695fac.12
-        for <rcu@vger.kernel.org>; Tue, 06 Dec 2022 08:19:22 -0800 (PST)
+        with ESMTP id S235371AbiLFQdu (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 6 Dec 2022 11:33:50 -0500
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80662E094;
+        Tue,  6 Dec 2022 08:32:49 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id 1so10917932lfz.4;
+        Tue, 06 Dec 2022 08:32:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=32ACU6T/lTFb6vWGcYTKLeiJKe3uAE6xkvBDuOzVgNk=;
-        b=LbL32xRyru5kJ7wApUQbhbqQCKZYP/g/3Ns7yxI04gGsqm0cvSCS3t91kfyLioc0i/
-         ZwfjQTLBO7U4z+YJN7UpT9MYByVdO7inBNnvTj9vuFz+Lt/UNwY4mEgQh0AmA+S2ERJL
-         OM5DOx1b+8ucHxUma4pD1LLNDMGMid8+kwMtKHP0jqSA23bJAo1ov3rs9NCUVjT8YPk5
-         UHzeYnOfrSvhRNGdDjWOZaGR0dK7wUibuQZvRh0wXGAn3Dnx3N2+CF2yUDC3P4YNQ+P5
-         q+IUVDVRqL4d+1x30qM0edzO8SHMSImcw9G1pDxowYByS544VTl9Mn2jtpuVT/M2XCzb
-         MVLQ==
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=cnF2YDPnsO+8EZX0+nPu76+779ed9TlbeHRhkPJbO2o=;
+        b=pdU6W4aXYpxvGUZkWU6qLnKV+TwYBGb6p3G208PLOfANNZqGmDLktrsdm7NHm2V75E
+         W5vJpQnauH3QuXfpFv5QS+i81u3NPVJc2KYgiOYVUXIeBnKDi9V02KtN0RFICg2eMYlW
+         1FJKtww7CTXLWpMt6+9LA//Bc1bqRZkaZ707F3y/nzCdCOV3BAF1S4cHL0AdvdVck9qw
+         1nWF2oA1TCeCT4NmB4C7clJ8mXwiM//r35N+X51F2f4xhw2L+Mj854zgSG9XuIaGTNpS
+         2z/cb7N6Zf6Tu0feDtbjY1dlXONYODLR6eXq+jnh3XctcIiobF+ZRD8x1I/4zYBa9JpA
+         a2Ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=32ACU6T/lTFb6vWGcYTKLeiJKe3uAE6xkvBDuOzVgNk=;
-        b=AXm3XTV2x3gcR/YJiq3JRgZ8XXM/6aWA6MCJKJuSoYODw/U4qV7h9xsjtAPutfmdQI
-         pYtpOq27mqZPLbM7Gt70l9o4Ph3B6H35bFzpebPKRtzZscgQ1CgrXGxTif6689BbGOdw
-         KRFdxU3yXTAWiEfVzcxbxg+jytfefCEsNKTN6TdkWkyYvkBEhWkXqr2br25Z3lKXG2rl
-         MlkLb1IhINNkxTYE6r93c1QsMgVRRu4i9SZKVZxrsEIFnVCa1F71Qwd0IpxWig0guRTC
-         JJiwMUtJZwJqYjnb85miGqafwrc5KvkqmXUU5nspmeL9Taubfb271xBpUROJRNEtW46A
-         W4yQ==
-X-Gm-Message-State: ANoB5pm4awFLH71Q7ignc/VIKZqhG2TpWo7DNb9A/ZkU2HUHF4RkDOkL
-        hyES1YshCohTwZnXxQZ02Q+RTt6c2UzfHHdqBMG7AQ==
-X-Google-Smtp-Source: AA0mqf4SnW30QjXP3g6g3gwsvvzjnHccMhyPlYsKb9oa8G48oeoL94t7Lvl3VpY2ZNYxx/nf5gHDOFzTtOY9OrqsAt0=
-X-Received: by 2002:a05:6871:404e:b0:144:4546:61e7 with SMTP id
- ky14-20020a056871404e00b00144454661e7mr10041556oab.282.1670343562003; Tue, 06
- Dec 2022 08:19:22 -0800 (PST)
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cnF2YDPnsO+8EZX0+nPu76+779ed9TlbeHRhkPJbO2o=;
+        b=jCR0v219rIYSGv5E/ZMLd9gjEcaS/vkQSSB5WX7mIULUUBFuiOoxCu33xmD1nqM9w9
+         ZKrX7ZRzv0MRBfO6jfztpVhTrBST6ZRPvg+8AxTvmflvY8BgZ9Lvm2+io3juMn7lfjJj
+         3oYDmZ7+gzgdk+4WP0zfWEpBg3S/gm8Wvvpf3thR0RGhGQKi8CdTNTq9as0frYXXm4mL
+         H8FAYJA1ZK+LrxOnfljQ9VCGtEIJ5bUkwnsSKtmo8bpupc9hg0BogakUv1x5aj1sVMey
+         ZLYqv1Oo/BqhGuxmpHF0RwyxGZ3PoR8ecv13UZa9Z4MLiuPC0DMOuHZ1P/z5i4JBmTJb
+         GE/w==
+X-Gm-Message-State: ANoB5pkyrBolkflNPp5Zg5yVVilBdtNIoQTG8p66hMkSJcd3lLq5dmIR
+        LNLBGQJvVHdyyygRXwiUIAT7y6vojIY=
+X-Google-Smtp-Source: AA0mqf5M23SBj2lOhcKXLXnzqzbPAHhbdAKXpyvxdNHnmoUZzfCNNglgX2RpvsKF22izQm7p7pUQCw==
+X-Received: by 2002:a05:6512:22cf:b0:499:fa38:3da4 with SMTP id g15-20020a05651222cf00b00499fa383da4mr28079119lfu.12.1670344365707;
+        Tue, 06 Dec 2022 08:32:45 -0800 (PST)
+Received: from pc636 (host-90-235-25-230.mobileonline.telia.com. [90.235.25.230])
+        by smtp.gmail.com with ESMTPSA id s14-20020a056512314e00b004b584204b85sm369294lfi.161.2022.12.06.08.32.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Dec 2022 08:32:45 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Tue, 6 Dec 2022 17:32:43 +0100
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH 1/1] rcu/kvfree: Add runtime sleep check for single
+ argument
+Message-ID: <Y49uq+nGCTaM0O8N@pc636>
+References: <20221206122357.309982-1-urezki@gmail.com>
+ <E8261077-6AFB-4FA6-AEAB-3BEFF5ABEC23@joelfernandes.org>
 MIME-Version: 1.0
-References: <000000000000bd587705ef202b08@google.com> <20221206033450.GS3600936@dread.disaster.area>
- <CACT4Y+b-DCu=3LT+OMHuy4R1Fkgg_cBBtVT=jGtcyiBn4UcbRA@mail.gmail.com> <20221206153211.GN4001@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20221206153211.GN4001@paulmck-ThinkPad-P17-Gen-1>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 6 Dec 2022 17:19:10 +0100
-Message-ID: <CACT4Y+ZbmxyKJXM2zrJR6gNGSUS8j2_-Nu2dpC6gBEjcE3ercw@mail.gmail.com>
-Subject: Re: [syzbot] KASAN: use-after-free Read in xfs_qm_dqfree_one
-To:     paulmck@kernel.org
-Cc:     Dave Chinner <david@fromorbit.com>, frederic@kernel.org,
-        quic_neeraju@quicinc.com, Josh Triplett <josh@joshtriplett.org>,
-        RCU <rcu@vger.kernel.org>,
-        syzbot <syzbot+912776840162c13db1a3@syzkaller.appspotmail.com>,
-        djwong@kernel.org, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        syzkaller <syzkaller@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <E8261077-6AFB-4FA6-AEAB-3BEFF5ABEC23@joelfernandes.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, 6 Dec 2022 at 16:32, Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> On Tue, Dec 06, 2022 at 12:06:10PM +0100, Dmitry Vyukov wrote:
-> > On Tue, 6 Dec 2022 at 04:34, Dave Chinner <david@fromorbit.com> wrote:
-> > >
-> > > On Mon, Dec 05, 2022 at 07:12:15PM -0800, syzbot wrote:
-> > > > Hello,
-> > > >
-> > > > syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-> > > > INFO: rcu detected stall in corrupted
-> > > >
-> > > > rcu: INFO: rcu_preempt detected expedited stalls on CPUs/tasks: { P4122 } 2641 jiffies s: 2877 root: 0x0/T
-> > > > rcu: blocking rcu_node structures (internal RCU debug):
-> > >
-> > > I'm pretty sure this has nothing to do with the reproducer - the
-> > > console log here:
-> > >
-> > > > Tested on:
-> > > >
-> > > > commit:         bce93322 proc: proc_skip_spaces() shouldn't think it i..
-> > > > git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> > > > console output: https://syzkaller.appspot.com/x/log.txt?x=1566216b880000
-> > >
-> > > indicates that syzbot is screwing around with bluetooth, HCI,
-> > > netdevsim, bridging, bonding, etc.
-> > >
-> > > There's no evidence that it actually ran the reproducer for the bug
-> > > reported in this thread - there's no record of a single XFS
-> > > filesystem being mounted in the log....
-> > >
-> > > It look slike someone else also tried a private patch to fix this
-> > > problem (which was obviously broken) and it failed with exactly the
-> > > same RCU warnings. That was run from the same commit id as the
-> > > original reproducer, so this looks like either syzbot is broken or
-> > > there's some other completely unrelated problem that syzbot is
-> > > tripping over here.
-> > >
-> > > Over to the syzbot people to debug the syzbot failure....
-> >
-> > Hi Dave,
-> >
-> > It's not uncommon for a single program to trigger multiple bugs.
-> > That's what happens here. The rcu stall issue is reproducible with
-> > this test program.
-> > In such cases you can either submit more test requests, or test manually.
-> >
-> > I think there is an RCU expedited stall detection.
-> > For some reason CONFIG_RCU_EXP_CPU_STALL_TIMEOUT is limited to 21
-> > seconds, and that's not enough for reliable flake-free stress testing.
-> > We bump other timeouts to 100+ seconds.
-> > +RCU maintainers, do you mind removing the overly restrictive limit on
-> > CONFIG_RCU_EXP_CPU_STALL_TIMEOUT?
-> > Or you think there is something to fix in the kernel to not stall? I
-> > see the test writes to
-> > /proc/sys/vm/drop_caches, maybe there is some issue in that code.
->
-> Like this?
->
-> If so, I don't see why not.  And in that case, may I please have
-> your Tested-by or similar?
+On Tue, Dec 06, 2022 at 09:45:11AM -0500, Joel Fernandes wrote:
+> Hello Vlad,
+> 
+> > On Dec 6, 2022, at 7:24 AM, Uladzislau Rezki (Sony) <urezki@gmail.com> wrote:
+> > 
+> > ﻿A single argument can be invoked only from a sleepable
+> > context. There is already a might_sleep() check to mitigate
+> > such cases.
+> > The problem is that it requires a kernel to
+> > be built with a CONFIG_DEBUG_ATOMIC_SLEEP option.
+> > 
+> > In order to improve an extra runtime_assert_can_sleep()
+> > function is introduced by this patch. It is a run-time
+> > checking. Please note it only covers PREEMPT
+> 
+> I would call it preemptible kernels.
+> 
+> > kernels.
+> 
+> Also, It is not clear at all from the commit message about what we are checking and why. Neither is it clear why the might_sleep() is insufficient.
+> 
+> The whole point of doing this is, the purpose of might_sleep() is to check whether we are blocking in an atomic context. That will not help Eric issue which is totally different - we would like to know if we are using an API where we can block instead of an API where we do not need to, by providing additional rcu_head space.
+> 
+> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > ---
+> > kernel/rcu/tree.c | 17 ++++++++++++++++-
+> > 1 file changed, 16 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index d155f2594317..bb798f07e768 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -3232,6 +3232,19 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
+> >    return true;
+> > }
+> > 
+> > +static void
+> > +runtime_assert_can_sleep(void)
+> > +{
+> > +    if (!IS_ENABLED(CONFIG_PREEMPT_COUNT))
+> > +        return;
+> > +
+> > +    if (preemptible())
+> > +        return;
+> 
+> These 2 iffs can be combined into 2-3 lines in this function. No need to add more LOC than needed.
+> 
+It can be.
 
-I've tried with this patch and RCU_EXP_CPU_STALL_TIMEOUT=80000.
-Running the test program I got some kernel BUG in XFS and no RCU
-errors/warnings.
+> > +
+> > +    WARN_ONCE(1, "in_atomic(): %d, irqs_disabled(): %d, pid: %d, name: %s\n",
+> > +        in_atomic(), irqs_disabled(), current->pid, current->comm);
+> > +}
+> > +
+> > /*
+> >  * Queue a request for lazy invocation of the appropriate free routine
+> >  * after a grace period.  Please note that three paths are maintained,
+> > @@ -3257,8 +3270,10 @@ void kvfree_call_rcu(struct rcu_head *head, void *ptr)
+> >     * only. For other places please embed an rcu_head to
+> >     * your data.
+> >     */
+> > -    if (!head)
+> > +    if (!head) {
+> > +        runtime_assert_can_sleep();
+> >        might_sleep();
+> 
+> runtime_assert_preemptible() is a better name with a comment about big comment on top of the new function about false negatives for non-preemptible kernels. Can sleep sounds like might sleep which just adds confusion and does not help code readers.
+> 
+> Also Paul raised a point about using 1-arg API in some sleepable contexts where the caller does not want to introduce new space for the head. Have we confirmed there are not any? If there are, the warning will fire for those, as false-positives.
+> 
+single argument is only for sleepable contexts. This is a rule.
 
-Tested-by: Dmitry Vyukov <dvyukov@google.com>
-
-Thanks
-
-> At the same time, I am sure that there are things in the kernel that
-> should be adjusted to avoid stalls, but I recognize that different
-> developers in different situations will have different issues that they
-> choose to focus on.  ;-)
->
->                                                         Thanx, Paul
->
-> ------------------------------------------------------------------------
->
-> diff --git a/kernel/rcu/Kconfig.debug b/kernel/rcu/Kconfig.debug
-> index 49da904df6aa6..2984de629f749 100644
-> --- a/kernel/rcu/Kconfig.debug
-> +++ b/kernel/rcu/Kconfig.debug
-> @@ -82,7 +82,7 @@ config RCU_CPU_STALL_TIMEOUT
->  config RCU_EXP_CPU_STALL_TIMEOUT
->         int "Expedited RCU CPU stall timeout in milliseconds"
->         depends on RCU_STALL_COMMON
-> -       range 0 21000
-> +       range 0 300000
->         default 0
->         help
->           If a given expedited RCU grace period extends more than the
+--
+Uladzislau Rezki
