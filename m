@@ -2,81 +2,159 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 30707C352A1
-	for <rcu@archiver.kernel.org>; Tue,  6 Dec 2022 16:50:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B871CC4708C
+	for <rcu@archiver.kernel.org>; Tue,  6 Dec 2022 17:47:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234768AbiLFQup (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 6 Dec 2022 11:50:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33174 "EHLO
+        id S229523AbiLFRrf (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 6 Dec 2022 12:47:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235420AbiLFQue (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 6 Dec 2022 11:50:34 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FC551011
-        for <rcu@vger.kernel.org>; Tue,  6 Dec 2022 08:49:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1670345379;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gQVj/FAk6QDQrcuyuYJJ6Wfs8dTdR09EgNSH0Y+Vk4w=;
-        b=VyfQSL4rHy8hPd12ctSzbIGT0yVTvrrCl48EqeComlUOrgTkLXghTH8u7Qe4XK0y3+1vHd
-        OsdFPRyQLn329eTKPwd9NJHwDxiy7TmJKdUozSiUFg3mGzLJV0qsdD0REfO5fBKvtK6lVx
-        X7Xm7wSp0+jYgZPC78pFC+fnE4CsVuQ=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-299-1XgyIYveNcqU1pRjiRWvUw-1; Tue, 06 Dec 2022 11:49:32 -0500
-X-MC-Unique: 1XgyIYveNcqU1pRjiRWvUw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        with ESMTP id S229500AbiLFRrf (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 6 Dec 2022 12:47:35 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D01536C7B;
+        Tue,  6 Dec 2022 09:47:32 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B108E185A7A9;
-        Tue,  6 Dec 2022 16:49:31 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (ovpn-192-116.brq.redhat.com [10.40.192.116])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 84AC4FD48;
-        Tue,  6 Dec 2022 16:49:29 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Tue,  6 Dec 2022 17:49:31 +0100 (CET)
-Date:   Tue, 6 Dec 2022 17:49:28 +0100
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>, rcu@vger.kernel.org
-Subject: Re: [PATCH 3/3] rcu-tasks: Fix synchronize_rcu_tasks() VS
- zap_pid_ns_processes()
-Message-ID: <20221206164927.GD3866@redhat.com>
-References: <20221125135500.1653800-1-frederic@kernel.org>
- <20221125135500.1653800-4-frederic@kernel.org>
- <871qpkqof8.fsf@email.froward.int.ebiederm.org>
+        by ams.source.kernel.org (Postfix) with ESMTPS id D5970B81AF7;
+        Tue,  6 Dec 2022 17:47:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F988C433C1;
+        Tue,  6 Dec 2022 17:47:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1670348849;
+        bh=kpThiEp3UAhW6pzLUVd7+M75zxZbydrFxRCxs6or0pE=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=dLGwzyu6XmzXG/L7DgvYNGWvQ9CokgYuQ3e5dBAMRWxe613GDVfj+rDE5SGfYm1R/
+         nKrJvuleNLFbCmMF++/f7pPQ+pxAZJxxC/4xK4fWmxN0PAj6GMwxWUtbso3V0Rj04i
+         AJ7pU9+Gdq8Bvsn4G2ftpVQZs9PoSoDXW5gKdVKpVHNfkY4vratV2NcktXcmn3zl6N
+         I0KzBVamo3uo0TxBnJ30iJea5++v8gNwkTIyZDKVQJUa6WnF81ykjlGxHimNvc0QoU
+         AA6CpGPHcDrDiod2YFpGRvS6WAWgUuV5RCJHem3z5PSFLn0+aAIzUznBSZ+KFNRPiM
+         Zxv/88KAO8S8A==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 2D3EA5C0952; Tue,  6 Dec 2022 09:47:29 -0800 (PST)
+Date:   Tue, 6 Dec 2022 09:47:29 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Dave Chinner <david@fromorbit.com>, frederic@kernel.org,
+        quic_neeraju@quicinc.com, Josh Triplett <josh@joshtriplett.org>,
+        RCU <rcu@vger.kernel.org>,
+        syzbot <syzbot+912776840162c13db1a3@syzkaller.appspotmail.com>,
+        djwong@kernel.org, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        syzkaller <syzkaller@googlegroups.com>
+Subject: Re: [syzbot] KASAN: use-after-free Read in xfs_qm_dqfree_one
+Message-ID: <20221206174729.GQ4001@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <000000000000bd587705ef202b08@google.com>
+ <20221206033450.GS3600936@dread.disaster.area>
+ <CACT4Y+b-DCu=3LT+OMHuy4R1Fkgg_cBBtVT=jGtcyiBn4UcbRA@mail.gmail.com>
+ <20221206153211.GN4001@paulmck-ThinkPad-P17-Gen-1>
+ <CACT4Y+ZbmxyKJXM2zrJR6gNGSUS8j2_-Nu2dpC6gBEjcE3ercw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <871qpkqof8.fsf@email.froward.int.ebiederm.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
+In-Reply-To: <CACT4Y+ZbmxyKJXM2zrJR6gNGSUS8j2_-Nu2dpC6gBEjcE3ercw@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 11/30, Eric W. Biederman wrote:
->
-> 2) I keep thinking zap_pid_ns_processes() should be changed so that
->    after it sends SIGKILL to all of the relevant processes to not wait,
+On Tue, Dec 06, 2022 at 05:19:10PM +0100, Dmitry Vyukov wrote:
+> On Tue, 6 Dec 2022 at 16:32, Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > On Tue, Dec 06, 2022 at 12:06:10PM +0100, Dmitry Vyukov wrote:
+> > > On Tue, 6 Dec 2022 at 04:34, Dave Chinner <david@fromorbit.com> wrote:
+> > > >
+> > > > On Mon, Dec 05, 2022 at 07:12:15PM -0800, syzbot wrote:
+> > > > > Hello,
+> > > > >
+> > > > > syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+> > > > > INFO: rcu detected stall in corrupted
+> > > > >
+> > > > > rcu: INFO: rcu_preempt detected expedited stalls on CPUs/tasks: { P4122 } 2641 jiffies s: 2877 root: 0x0/T
+> > > > > rcu: blocking rcu_node structures (internal RCU debug):
+> > > >
+> > > > I'm pretty sure this has nothing to do with the reproducer - the
+> > > > console log here:
+> > > >
+> > > > > Tested on:
+> > > > >
+> > > > > commit:         bce93322 proc: proc_skip_spaces() shouldn't think it i..
+> > > > > git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=1566216b880000
+> > > >
+> > > > indicates that syzbot is screwing around with bluetooth, HCI,
+> > > > netdevsim, bridging, bonding, etc.
+> > > >
+> > > > There's no evidence that it actually ran the reproducer for the bug
+> > > > reported in this thread - there's no record of a single XFS
+> > > > filesystem being mounted in the log....
+> > > >
+> > > > It look slike someone else also tried a private patch to fix this
+> > > > problem (which was obviously broken) and it failed with exactly the
+> > > > same RCU warnings. That was run from the same commit id as the
+> > > > original reproducer, so this looks like either syzbot is broken or
+> > > > there's some other completely unrelated problem that syzbot is
+> > > > tripping over here.
+> > > >
+> > > > Over to the syzbot people to debug the syzbot failure....
+> > >
+> > > Hi Dave,
+> > >
+> > > It's not uncommon for a single program to trigger multiple bugs.
+> > > That's what happens here. The rcu stall issue is reproducible with
+> > > this test program.
+> > > In such cases you can either submit more test requests, or test manually.
+> > >
+> > > I think there is an RCU expedited stall detection.
+> > > For some reason CONFIG_RCU_EXP_CPU_STALL_TIMEOUT is limited to 21
+> > > seconds, and that's not enough for reliable flake-free stress testing.
+> > > We bump other timeouts to 100+ seconds.
+> > > +RCU maintainers, do you mind removing the overly restrictive limit on
+> > > CONFIG_RCU_EXP_CPU_STALL_TIMEOUT?
+> > > Or you think there is something to fix in the kernel to not stall? I
+> > > see the test writes to
+> > > /proc/sys/vm/drop_caches, maybe there is some issue in that code.
+> >
+> > Like this?
+> >
+> > If so, I don't see why not.  And in that case, may I please have
+> > your Tested-by or similar?
+> 
+> I've tried with this patch and RCU_EXP_CPU_STALL_TIMEOUT=80000.
+> Running the test program I got some kernel BUG in XFS and no RCU
+> errors/warnings.
+> 
+> Tested-by: Dmitry Vyukov <dvyukov@google.com>
 
-At least I think it should not wait for the tasks injected into this ns.
+Applied, thank you both!
 
-Because this looks like a kernel bug even if we forget about this deadlock.
+I expect to push this into the v6.3 merge window, that is, not the
+one coming up real soon now, but the one after that.
 
-Say we create a task P using clone(CLONE_NEWPID), then inject a task T into
-P's pid-namespace via setns/fork. This make the process P "unkillable", it
-will hang in zap_pid_ns_processes() "forever" until T->parent reaps a zombie
-task T killed by P.
+							Thanx, Paul
 
-Oleg.
-
+> Thanks
+> 
+> > At the same time, I am sure that there are things in the kernel that
+> > should be adjusted to avoid stalls, but I recognize that different
+> > developers in different situations will have different issues that they
+> > choose to focus on.  ;-)
+> >
+> >                                                         Thanx, Paul
+> >
+> > ------------------------------------------------------------------------
+> >
+> > diff --git a/kernel/rcu/Kconfig.debug b/kernel/rcu/Kconfig.debug
+> > index 49da904df6aa6..2984de629f749 100644
+> > --- a/kernel/rcu/Kconfig.debug
+> > +++ b/kernel/rcu/Kconfig.debug
+> > @@ -82,7 +82,7 @@ config RCU_CPU_STALL_TIMEOUT
+> >  config RCU_EXP_CPU_STALL_TIMEOUT
+> >         int "Expedited RCU CPU stall timeout in milliseconds"
+> >         depends on RCU_STALL_COMMON
+> > -       range 0 21000
+> > +       range 0 300000
+> >         default 0
+> >         help
+> >           If a given expedited RCU grace period extends more than the
