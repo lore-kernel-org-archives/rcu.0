@@ -2,246 +2,118 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 21880C4321E
-	for <rcu@archiver.kernel.org>; Mon,  5 Dec 2022 21:16:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 19DEFC352A1
+	for <rcu@archiver.kernel.org>; Tue,  6 Dec 2022 11:06:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230151AbiLEVQm (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 5 Dec 2022 16:16:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50292 "EHLO
+        id S232324AbiLFLGY (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 6 Dec 2022 06:06:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232444AbiLEVQk (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 5 Dec 2022 16:16:40 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9D1A2C66F;
-        Mon,  5 Dec 2022 13:16:38 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 260BB61459;
-        Mon,  5 Dec 2022 21:16:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82AC6C433D6;
-        Mon,  5 Dec 2022 21:16:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1670274997;
-        bh=WOS6AsLAD3h/ufcHAM7KS1SF76vYuLHpGoyFvgdD/NU=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=MRJRvtfArM6xOAWKEKAcYekp25Ggqs6Lyp6iOnhWMjcr786NCgxMKxknf+DPv6P0l
-         cJJBRrRUysAD8ivqVFtYa92nppUVH1Wn9EpAgv3S7tlSMlC0ZKZ6Hbv4Nr4guAd5A6
-         qYQmf06NE+aEK7YBsEAuCylXznUhZIlOvsftQqN6zxiLOc9lLqgokA+axUveKtt7mA
-         tunCJCNN1oFfKykihCfgJQpq3qoiBWdbrovs60vSSwzdLPuYGpO0rYhZ+MfB552O0e
-         Z/fZxNSHlb2MKILLQiYM2zpt0HSD647cN4MzMka1cH0k1aopajQxqszgrISoyvoVpd
-         Gn9yoqoTe4L5Q==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 28F355C0E98; Mon,  5 Dec 2022 13:16:37 -0800 (PST)
-Date:   Mon, 5 Dec 2022 13:16:37 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
-Cc:     "frederic@kernel.org" <frederic@kernel.org>,
-        "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>,
-        "joel@joelfernandes.org" <joel@joelfernandes.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] rcu-tasks: Make shrink down to a single callback queue
- safely
-Message-ID: <20221205211637.GA1476235@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20221130051253.1884572-1-qiang1.zhang@intel.com>
- <20221202195723.GB4001@paulmck-ThinkPad-P17-Gen-1>
- <PH0PR11MB5880B8D62B5EA5643593EC62DA179@PH0PR11MB5880.namprd11.prod.outlook.com>
- <20221203002154.GM4001@paulmck-ThinkPad-P17-Gen-1>
- <PH0PR11MB5880D9440D871BB09C1D3731DA199@PH0PR11MB5880.namprd11.prod.outlook.com>
+        with ESMTP id S231183AbiLFLGX (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 6 Dec 2022 06:06:23 -0500
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2274C5A
+        for <rcu@vger.kernel.org>; Tue,  6 Dec 2022 03:06:22 -0800 (PST)
+Received: by mail-ot1-x333.google.com with SMTP id q18-20020a056830441200b006704633f258so2672488otv.0
+        for <rcu@vger.kernel.org>; Tue, 06 Dec 2022 03:06:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=P6J5/cA2heNXWUf0rHF45pgIEEYc2mRi3nWq/9vPqQM=;
+        b=MuusQTa/qnNbDkJ/sjQ7f/u6J0NdkURpovK6EqeCU0Ck0WQA2QUp5cSCNrPXmTGNJK
+         q5yimJwPYB7qbUVcC8L/sXz0qrInRz6Uecy+IqJgAuTkafpN+TMCo7gJsXZW9nk66s0f
+         gFDwG+rgY/TQljRgOirRpj3zALG5Ut45hKwhFxApgu0EAnBz2oVkiNb+1TruraBAmgMD
+         z3CrLDCpC1rPKDRnp2LLOyfLaD1ErxPYPlsskXbjGlWR+PykkIfJeY4MU4VdsUFXiLKD
+         Ea/fhLtJyR3jaDX5Spqmto9lVs8qvS6OZWCSUvK/f0hhsA5pk3qeO8Lk7Z0ka9vb0Cgh
+         kgXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=P6J5/cA2heNXWUf0rHF45pgIEEYc2mRi3nWq/9vPqQM=;
+        b=5VAaDaduojGRhNbu5moL6Vfnzi8qDziAfnukN58gCoSP+j797WYO2zYICnDrON1qpu
+         eFzYJfFRI5XJP+0TK5qDthXUdhVi9kjjbnhl+uKuernRKeL6I1WuwbsmrPdLesiED0gW
+         Q8NWZYCOha+Rv1i3u9ijHic6R6zfz2K5KNcDE4YnbNN/jkNadeVS5nZU0Cvd44xYksX0
+         GahyP+YFywwux9cChus9/yBCqAo7P0BPf/7HACu2UwuV6bOqTRchy9ubznbnKfp7OSgB
+         trnMXoS/FEHW5HjPMg3fVW6+K8vBnDJhKAMrehSeVKJRXYd2yTtMeouhq4qRV+2Ry0+L
+         UWyQ==
+X-Gm-Message-State: ANoB5pnvcnGQLNGVD35oz9RA8m+hOl1S4GUIlc7ebrThusFmmBg6YjFw
+        tAMfrE6yjt1YmOcO6tJkogQ71psxXg4lJ84+v11prQ==
+X-Google-Smtp-Source: AA0mqf7F266rR1tTxm4R7434AaCrtd594zQmgO0fP+AzuOZHTD8XQLKdBwxpKHtD6aDv2UG/CANbX1nnEjA0t16Atzk=
+X-Received: by 2002:a9d:351:0:b0:66e:6cf5:770a with SMTP id
+ 75-20020a9d0351000000b0066e6cf5770amr12829902otv.269.1670324781674; Tue, 06
+ Dec 2022 03:06:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <PH0PR11MB5880D9440D871BB09C1D3731DA199@PH0PR11MB5880.namprd11.prod.outlook.com>
+References: <000000000000bd587705ef202b08@google.com> <20221206033450.GS3600936@dread.disaster.area>
+In-Reply-To: <20221206033450.GS3600936@dread.disaster.area>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Tue, 6 Dec 2022 12:06:10 +0100
+Message-ID: <CACT4Y+b-DCu=3LT+OMHuy4R1Fkgg_cBBtVT=jGtcyiBn4UcbRA@mail.gmail.com>
+Subject: Re: [syzbot] KASAN: use-after-free Read in xfs_qm_dqfree_one
+To:     Dave Chinner <david@fromorbit.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, frederic@kernel.org,
+        quic_neeraju@quicinc.com, Josh Triplett <josh@joshtriplett.org>,
+        RCU <rcu@vger.kernel.org>
+Cc:     syzbot <syzbot+912776840162c13db1a3@syzkaller.appspotmail.com>,
+        djwong@kernel.org, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        syzkaller <syzkaller@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sun, Dec 04, 2022 at 01:47:11AM +0000, Zhang, Qiang1 wrote:
-> On Fri, Dec 02, 2022 at 11:35:09PM +0000, Zhang, Qiang1 wrote:
-> > On Wed, Nov 30, 2022 at 01:12:53PM +0800, Zqiang wrote:
-> > > Assume that the current RCU-task belongs to per-CPU callback queuing
-> > > mode and the rcu_task_cb_adjust is true.
-> > > 
-> > >       CPU0					CPU1
-> > > 
-> > > rcu_tasks_need_gpcb()
-> > >   ncbsnz == 0 and
-> > >   ncbs < rcu_task_collapse_lim
-> > > 
-> > > 					      invoke call_rcu_tasks_generic()
-> > > 						 enqueue callback to CPU1
-> > > 					        (CPU1 n_cbs not equal zero)
-> > > 
-> > >   if (rcu_task_cb_adjust &&
-> > >   ncbs <= rcu_task_collapse_lim)
-> > >     if (rtp->percpu_enqueue_lim > 1)
-> > >       rtp->percpu_enqueue_lim = 1;
-> > >       rtp->percpu_dequeue_gpseq =
-> > >       get_state_synchronize_rcu();
-> > > 
-> > > 
-> > >   A full RCU grace period has passed
-> > >
-> > >
-> > >I don't see how this grace period can elapse.  The rcu_tasks_need_gpcb()
-> > >function is invoked only from rcu_tasks_one_gp(), and while holding
-> > >->tasks_gp_mutex.
-> > 
-> > 
-> > Hi Paul
-> > 
-> > I mean that It's the RCU grace period instead of the RCU task grace period.
-> > 
-> > rtp->percpu_dequeue_gpseq = get_state_synchronize_rcu();
-> > 
-> > get_state_synchronize_rcu(rtp->percpu_dequeue_gpseq);
-> > 
-> > There is a window period between these two calls,  preemption may occur.
-> > A full RCU grace period may have passed.
-> > when we run it again we find get_state_synchronize_rcu() == true.
+On Tue, 6 Dec 2022 at 04:34, Dave Chinner <david@fromorbit.com> wrote:
+>
+> On Mon, Dec 05, 2022 at 07:12:15PM -0800, syzbot wrote:
+> > Hello,
 > >
-> >Ah, thank you!
+> > syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+> > INFO: rcu detected stall in corrupted
 > >
-> >But for that issue, why not just place both "if" statements into an
-> >RCU read-side critical section?  
-> 
-> Ah, a better method(my brain didn't think of this way at the first time), I have been send v2.
+> > rcu: INFO: rcu_preempt detected expedited stalls on CPUs/tasks: { P4122 } 2641 jiffies s: 2877 root: 0x0/T
+> > rcu: blocking rcu_node structures (internal RCU debug):
+>
+> I'm pretty sure this has nothing to do with the reproducer - the
+> console log here:
+>
+> > Tested on:
+> >
+> > commit:         bce93322 proc: proc_skip_spaces() shouldn't think it i..
+> > git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=1566216b880000
+>
+> indicates that syzbot is screwing around with bluetooth, HCI,
+> netdevsim, bridging, bonding, etc.
+>
+> There's no evidence that it actually ran the reproducer for the bug
+> reported in this thread - there's no record of a single XFS
+> filesystem being mounted in the log....
+>
+> It look slike someone else also tried a private patch to fix this
+> problem (which was obviously broken) and it failed with exactly the
+> same RCU warnings. That was run from the same commit id as the
+> original reproducer, so this looks like either syzbot is broken or
+> there's some other completely unrelated problem that syzbot is
+> tripping over here.
+>
+> Over to the syzbot people to debug the syzbot failure....
 
-Well, one reason that your brain might not have thought of this way is
-that it does not actually fix the problem.  ;-)
+Hi Dave,
 
-The reason that it does not fix the problem is that this problem isn't
-just that the grace period can end between those two "if" statements.
-The problem is also that the grace period can end just after the loop
-over the CPUs, the one that computes ncbsnz.
+It's not uncommon for a single program to trigger multiple bugs.
+That's what happens here. The rcu stall issue is reproducible with
+this test program.
+In such cases you can either submit more test requests, or test manually.
 
-Don't get me wrong, I am very happy that you found this bug.  After all,
-we cannot fix bugs that we don't know about.
-
-So I updated your commit to check for grace-period completion upon entry
-to the rcu_tasks_need_gpcb() function.
-
-And now my question to you is "What bugs remain?"  There are bugs in
-there somewhere!  ;-)
-
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
-commit d5655681fe0f1cf531ec8300c06d3a7826cbca8f
-Author: Zqiang <qiang1.zhang@intel.com>
-Date:   Sat Dec 3 10:25:03 2022 +0800
-
-    rcu-tasks: Handle queue-shrink/callback-enqueue race condition
-    
-    The rcu_tasks_need_gpcb() determines whether or not: (1) There are
-    callbacks needing another grace period, (2) There are callbacks ready
-    to be invoked, and (3) It would be a good time to shrink back down to a
-    single-CPU callback list.  This third case is interesting because some
-    other CPU might be adding new callbacks, which might suddenly make this
-    a very bad time to be shrinking.
-    
-    This is currently handled by requiring call_rcu_tasks_generic() to
-    enqueue callbacks under the protection of rcu_read_lock() and requiring
-    rcu_tasks_need_gpcb() to wait for an RCU grace period to elapse before
-    finalizing the transition.  This works well in practice.
-    
-    Unfortunately, the current code assumes that a grace period whose end is
-    detected by the poll_state_synchronize_rcu() in the second "if" condition
-    actually ended before the earlier code counted the callbacks queued on
-    CPUs other than CPU 0 (local variable "ncbsnz").  Given the current code,
-    it is possible that a long-delayed call_rcu_tasks_generic() invocation
-    will queue a callback on a non-zero CPU after these CPUs have had their
-    callbacks counted and zero has been stored to ncbsnz.  Such a callback
-    would trigger the WARN_ON_ONCE() in the second "if" statement.
-    
-    To see this, consider the following sequence of events:
-    
-    o       CPU 0 invokes rcu_tasks_one_gp(), and counts fewer than
-            rcu_task_collapse_lim callbacks.  It sees at least one
-            callback queued on some other CPU, thus setting ncbsnz
-            to a non-zero value.
-    
-    o       CPU 1 invokes call_rcu_tasks_generic() and loads 42 from
-            ->percpu_enqueue_lim.  It therefore decides to enqueue its
-            callback onto CPU 1's callback list, but is delayed.
-    
-    o       CPU 0 sees the rcu_task_cb_adjust is non-zero and that the number
-            of callbacks does not exceed rcu_task_collapse_lim.  It therefore
-            checks percpu_enqueue_lim, and sees that its value is greater
-            than the value one.  CPU 0 therefore  starts the shift back
-            to a single callback list.  It sets ->percpu_enqueue_lim to 1,
-            but CPU 1 has already read the old value of 42.  It also gets
-            a grace-period state value from get_state_synchronize_rcu().
-    
-    o       CPU 0 sees that ncbsnz is non-zero in its second "if" statement,
-            so it declines to finalize the shrink operation.
-    
-    o       CPU 0 again invokes rcu_tasks_one_gp(), and counts fewer than
-            rcu_task_collapse_lim callbacks.  It also sees that there are
-            no callback queued on any other CPU, and thus sets ncbsnz to zero.
-    
-    o       CPU 1 resumes execution and enqueues its callback onto its own
-            list.  This invalidates the value of ncbsnz.
-    
-    o       CPU 0 sees the rcu_task_cb_adjust is non-zero and that the number
-            of callbacks does not exceed rcu_task_collapse_lim.  It therefore
-            checks percpu_enqueue_lim, but sees that its value is already
-            unity.  It therefore does not get a new grace-period state value.
-    
-    o       CPU 0 sees that rcu_task_cb_adjust is non-zero, ncbsnz is zero,
-            and that poll_state_synchronize_rcu() says that the grace period
-            has completed.  it therefore finalizes the shrink operation,
-            setting ->percpu_dequeue_lim to the value one.
-    
-    o       CPU 0 does a debug check, scanning the other CPUs' callback lists.
-            It sees that CPU 1's list has a callback, so it (rightly)
-            triggers the WARN_ON_ONCE().  After all, the new value of
-            ->percpu_dequeue_lim says to not bother looking at CPU 1's
-            callback list, which means that this callback will never be
-            invoked.  This can result in hangs and maybe even OOMs.
-    
-    Based on long experience with rcutorture, this is an extremely
-    low-probability race condition, but it really can happen, especially in
-    preemptible kernels or within guest OSes.
-    
-    This commit therefore checks for completion of the grace period
-    before counting callbacks.  With this change, in the above failure
-    scenario CPU 0 would know not to prematurely end the shrink operation
-    because the grace period would not have completed before the count
-    operation started.
-    
-    [ paulmck: Adjust grace-period end rather than adding RCU reader. ]
-    
-    Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index d845723c1af41..38f7b5892560d 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -384,6 +384,7 @@ static int rcu_tasks_need_gpcb(struct rcu_tasks *rtp)
- {
- 	int cpu;
- 	unsigned long flags;
-+	bool gpdone = poll_state_synchronize_rcu(rtp->percpu_dequeue_gpseq);
- 	long n;
- 	long ncbs = 0;
- 	long ncbsnz = 0;
-@@ -425,12 +426,12 @@ static int rcu_tasks_need_gpcb(struct rcu_tasks *rtp)
- 			WRITE_ONCE(rtp->percpu_enqueue_shift, order_base_2(nr_cpu_ids));
- 			smp_store_release(&rtp->percpu_enqueue_lim, 1);
- 			rtp->percpu_dequeue_gpseq = get_state_synchronize_rcu();
-+			gpdone = false;
- 			pr_info("Starting switch %s to CPU-0 callback queuing.\n", rtp->name);
- 		}
- 		raw_spin_unlock_irqrestore(&rtp->cbs_gbl_lock, flags);
- 	}
--	if (rcu_task_cb_adjust && !ncbsnz &&
--	    poll_state_synchronize_rcu(rtp->percpu_dequeue_gpseq)) {
-+	if (rcu_task_cb_adjust && !ncbsnz && gpdone) {
- 		raw_spin_lock_irqsave(&rtp->cbs_gbl_lock, flags);
- 		if (rtp->percpu_enqueue_lim < rtp->percpu_dequeue_lim) {
- 			WRITE_ONCE(rtp->percpu_dequeue_lim, 1);
+I think there is an RCU expedited stall detection.
+For some reason CONFIG_RCU_EXP_CPU_STALL_TIMEOUT is limited to 21
+seconds, and that's not enough for reliable flake-free stress testing.
+We bump other timeouts to 100+ seconds.
++RCU maintainers, do you mind removing the overly restrictive limit on
+CONFIG_RCU_EXP_CPU_STALL_TIMEOUT?
+Or you think there is something to fix in the kernel to not stall? I
+see the test writes to
+/proc/sys/vm/drop_caches, maybe there is some issue in that code.
