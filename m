@@ -2,148 +2,81 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 46E69C3A5A7
-	for <rcu@archiver.kernel.org>; Tue,  6 Dec 2022 16:34:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 30707C352A1
+	for <rcu@archiver.kernel.org>; Tue,  6 Dec 2022 16:50:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235552AbiLFQeL (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 6 Dec 2022 11:34:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46060 "EHLO
+        id S234768AbiLFQup (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 6 Dec 2022 11:50:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235371AbiLFQdu (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 6 Dec 2022 11:33:50 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80662E094;
-        Tue,  6 Dec 2022 08:32:49 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id 1so10917932lfz.4;
-        Tue, 06 Dec 2022 08:32:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=cnF2YDPnsO+8EZX0+nPu76+779ed9TlbeHRhkPJbO2o=;
-        b=pdU6W4aXYpxvGUZkWU6qLnKV+TwYBGb6p3G208PLOfANNZqGmDLktrsdm7NHm2V75E
-         W5vJpQnauH3QuXfpFv5QS+i81u3NPVJc2KYgiOYVUXIeBnKDi9V02KtN0RFICg2eMYlW
-         1FJKtww7CTXLWpMt6+9LA//Bc1bqRZkaZ707F3y/nzCdCOV3BAF1S4cHL0AdvdVck9qw
-         1nWF2oA1TCeCT4NmB4C7clJ8mXwiM//r35N+X51F2f4xhw2L+Mj854zgSG9XuIaGTNpS
-         2z/cb7N6Zf6Tu0feDtbjY1dlXONYODLR6eXq+jnh3XctcIiobF+ZRD8x1I/4zYBa9JpA
-         a2Ag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cnF2YDPnsO+8EZX0+nPu76+779ed9TlbeHRhkPJbO2o=;
-        b=jCR0v219rIYSGv5E/ZMLd9gjEcaS/vkQSSB5WX7mIULUUBFuiOoxCu33xmD1nqM9w9
-         ZKrX7ZRzv0MRBfO6jfztpVhTrBST6ZRPvg+8AxTvmflvY8BgZ9Lvm2+io3juMn7lfjJj
-         3oYDmZ7+gzgdk+4WP0zfWEpBg3S/gm8Wvvpf3thR0RGhGQKi8CdTNTq9as0frYXXm4mL
-         H8FAYJA1ZK+LrxOnfljQ9VCGtEIJ5bUkwnsSKtmo8bpupc9hg0BogakUv1x5aj1sVMey
-         ZLYqv1Oo/BqhGuxmpHF0RwyxGZ3PoR8ecv13UZa9Z4MLiuPC0DMOuHZ1P/z5i4JBmTJb
-         GE/w==
-X-Gm-Message-State: ANoB5pkyrBolkflNPp5Zg5yVVilBdtNIoQTG8p66hMkSJcd3lLq5dmIR
-        LNLBGQJvVHdyyygRXwiUIAT7y6vojIY=
-X-Google-Smtp-Source: AA0mqf5M23SBj2lOhcKXLXnzqzbPAHhbdAKXpyvxdNHnmoUZzfCNNglgX2RpvsKF22izQm7p7pUQCw==
-X-Received: by 2002:a05:6512:22cf:b0:499:fa38:3da4 with SMTP id g15-20020a05651222cf00b00499fa383da4mr28079119lfu.12.1670344365707;
-        Tue, 06 Dec 2022 08:32:45 -0800 (PST)
-Received: from pc636 (host-90-235-25-230.mobileonline.telia.com. [90.235.25.230])
-        by smtp.gmail.com with ESMTPSA id s14-20020a056512314e00b004b584204b85sm369294lfi.161.2022.12.06.08.32.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Dec 2022 08:32:45 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Tue, 6 Dec 2022 17:32:43 +0100
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        with ESMTP id S235420AbiLFQue (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 6 Dec 2022 11:50:34 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FC551011
+        for <rcu@vger.kernel.org>; Tue,  6 Dec 2022 08:49:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1670345379;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gQVj/FAk6QDQrcuyuYJJ6Wfs8dTdR09EgNSH0Y+Vk4w=;
+        b=VyfQSL4rHy8hPd12ctSzbIGT0yVTvrrCl48EqeComlUOrgTkLXghTH8u7Qe4XK0y3+1vHd
+        OsdFPRyQLn329eTKPwd9NJHwDxiy7TmJKdUozSiUFg3mGzLJV0qsdD0REfO5fBKvtK6lVx
+        X7Xm7wSp0+jYgZPC78pFC+fnE4CsVuQ=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-299-1XgyIYveNcqU1pRjiRWvUw-1; Tue, 06 Dec 2022 11:49:32 -0500
+X-MC-Unique: 1XgyIYveNcqU1pRjiRWvUw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B108E185A7A9;
+        Tue,  6 Dec 2022 16:49:31 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (ovpn-192-116.brq.redhat.com [10.40.192.116])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 84AC4FD48;
+        Tue,  6 Dec 2022 16:49:29 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Tue,  6 Dec 2022 17:49:31 +0100 (CET)
+Date:   Tue, 6 Dec 2022 17:49:28 +0100
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
         "Paul E . McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: Re: [PATCH 1/1] rcu/kvfree: Add runtime sleep check for single
- argument
-Message-ID: <Y49uq+nGCTaM0O8N@pc636>
-References: <20221206122357.309982-1-urezki@gmail.com>
- <E8261077-6AFB-4FA6-AEAB-3BEFF5ABEC23@joelfernandes.org>
+        LKML <linux-kernel@vger.kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>, rcu@vger.kernel.org
+Subject: Re: [PATCH 3/3] rcu-tasks: Fix synchronize_rcu_tasks() VS
+ zap_pid_ns_processes()
+Message-ID: <20221206164927.GD3866@redhat.com>
+References: <20221125135500.1653800-1-frederic@kernel.org>
+ <20221125135500.1653800-4-frederic@kernel.org>
+ <871qpkqof8.fsf@email.froward.int.ebiederm.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <E8261077-6AFB-4FA6-AEAB-3BEFF5ABEC23@joelfernandes.org>
+In-Reply-To: <871qpkqof8.fsf@email.froward.int.ebiederm.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Dec 06, 2022 at 09:45:11AM -0500, Joel Fernandes wrote:
-> Hello Vlad,
-> 
-> > On Dec 6, 2022, at 7:24 AM, Uladzislau Rezki (Sony) <urezki@gmail.com> wrote:
-> > 
-> > ﻿A single argument can be invoked only from a sleepable
-> > context. There is already a might_sleep() check to mitigate
-> > such cases.
-> > The problem is that it requires a kernel to
-> > be built with a CONFIG_DEBUG_ATOMIC_SLEEP option.
-> > 
-> > In order to improve an extra runtime_assert_can_sleep()
-> > function is introduced by this patch. It is a run-time
-> > checking. Please note it only covers PREEMPT
-> 
-> I would call it preemptible kernels.
-> 
-> > kernels.
-> 
-> Also, It is not clear at all from the commit message about what we are checking and why. Neither is it clear why the might_sleep() is insufficient.
-> 
-> The whole point of doing this is, the purpose of might_sleep() is to check whether we are blocking in an atomic context. That will not help Eric issue which is totally different - we would like to know if we are using an API where we can block instead of an API where we do not need to, by providing additional rcu_head space.
-> 
-> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > ---
-> > kernel/rcu/tree.c | 17 ++++++++++++++++-
-> > 1 file changed, 16 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index d155f2594317..bb798f07e768 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -3232,6 +3232,19 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
-> >    return true;
-> > }
-> > 
-> > +static void
-> > +runtime_assert_can_sleep(void)
-> > +{
-> > +    if (!IS_ENABLED(CONFIG_PREEMPT_COUNT))
-> > +        return;
-> > +
-> > +    if (preemptible())
-> > +        return;
-> 
-> These 2 iffs can be combined into 2-3 lines in this function. No need to add more LOC than needed.
-> 
-It can be.
+On 11/30, Eric W. Biederman wrote:
+>
+> 2) I keep thinking zap_pid_ns_processes() should be changed so that
+>    after it sends SIGKILL to all of the relevant processes to not wait,
 
-> > +
-> > +    WARN_ONCE(1, "in_atomic(): %d, irqs_disabled(): %d, pid: %d, name: %s\n",
-> > +        in_atomic(), irqs_disabled(), current->pid, current->comm);
-> > +}
-> > +
-> > /*
-> >  * Queue a request for lazy invocation of the appropriate free routine
-> >  * after a grace period.  Please note that three paths are maintained,
-> > @@ -3257,8 +3270,10 @@ void kvfree_call_rcu(struct rcu_head *head, void *ptr)
-> >     * only. For other places please embed an rcu_head to
-> >     * your data.
-> >     */
-> > -    if (!head)
-> > +    if (!head) {
-> > +        runtime_assert_can_sleep();
-> >        might_sleep();
-> 
-> runtime_assert_preemptible() is a better name with a comment about big comment on top of the new function about false negatives for non-preemptible kernels. Can sleep sounds like might sleep which just adds confusion and does not help code readers.
-> 
-> Also Paul raised a point about using 1-arg API in some sleepable contexts where the caller does not want to introduce new space for the head. Have we confirmed there are not any? If there are, the warning will fire for those, as false-positives.
-> 
-single argument is only for sleepable contexts. This is a rule.
+At least I think it should not wait for the tasks injected into this ns.
 
---
-Uladzislau Rezki
+Because this looks like a kernel bug even if we forget about this deadlock.
+
+Say we create a task P using clone(CLONE_NEWPID), then inject a task T into
+P's pid-namespace via setns/fork. This make the process P "unkillable", it
+will hang in zap_pid_ns_processes() "forever" until T->parent reaps a zombie
+task T killed by P.
+
+Oleg.
+
