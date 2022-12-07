@@ -2,108 +2,116 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CA41BC4708D
-	for <rcu@archiver.kernel.org>; Wed,  7 Dec 2022 20:40:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 54F41C63705
+	for <rcu@archiver.kernel.org>; Wed,  7 Dec 2022 22:28:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229663AbiLGUkG (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 7 Dec 2022 15:40:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54980 "EHLO
+        id S229601AbiLGW2k (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 7 Dec 2022 17:28:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbiLGUkF (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 7 Dec 2022 15:40:05 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E5B436C78
-        for <rcu@vger.kernel.org>; Wed,  7 Dec 2022 12:39:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1670445549;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DG3GYCB5orB9GpSLNS4eulWhDlsfNUeLR3OpnOQvJIk=;
-        b=YTXHhJDcx2mWD1hg0LdIrWgzbGXSO6Em5dCipbqIVz9S0qPIL8oqGjIKYKo/l2kfCinMPB
-        WQyRhJHI1mxLrh9GkAl3TkMFRgs0BmStCCuYgmgwaVb7DSW/5a1TIG8LQ6vS/hxfXGmmUL
-        mSt7ITkdFEsv1GRbyx3ds0YZMzh6ak4=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-70-j7YyzFPoNcShfVSQF7tpJg-1; Wed, 07 Dec 2022 15:39:03 -0500
-X-MC-Unique: j7YyzFPoNcShfVSQF7tpJg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        with ESMTP id S229576AbiLGW2j (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 7 Dec 2022 17:28:39 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF5E185652;
+        Wed,  7 Dec 2022 14:28:38 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4FD311C05B12;
-        Wed,  7 Dec 2022 20:39:03 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (ovpn-195-26.brq.redhat.com [10.40.195.26])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 14C182027061;
-        Wed,  7 Dec 2022 20:39:00 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Wed,  7 Dec 2022 21:39:03 +0100 (CET)
-Date:   Wed, 7 Dec 2022 21:39:00 +0100
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>, rcu@vger.kernel.org
-Subject: Re: [PATCH 3/3] rcu-tasks: Fix synchronize_rcu_tasks() VS
- zap_pid_ns_processes()
-Message-ID: <20221207203859.GD5421@redhat.com>
-References: <20221125135500.1653800-1-frederic@kernel.org>
- <20221125135500.1653800-4-frederic@kernel.org>
- <871qpkqof8.fsf@email.froward.int.ebiederm.org>
- <20221206164927.GD3866@redhat.com>
- <20221207200155.GA1840475@lothringen>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5B9A961CCD;
+        Wed,  7 Dec 2022 22:28:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACB9AC433C1;
+        Wed,  7 Dec 2022 22:28:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1670452117;
+        bh=rZzWKvvsu8qEpfjteSA5HZMcj3XTNXI0526/I2tBxz4=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=DivAyv7hrTx6EJ3OFKXdvILw1yS0rSLCipgrIevQxwbBohXvO1GwdwiMLRuJ2VqBH
+         cw51ddYchvPAzzkRhLR2b7iuihFfCMmTDsbv8AuvfIJWWw9c5q6vRpe/kR3vO3wNVl
+         fDbfC71WBv+1K5Q6jCaU7HxY5ID+bF6/5D11mBvYExOf0/7VeCH+Xy2EwXfIpiqb9l
+         TBZlvXBqT8wUGrinWL9BfUFaeA7OVWoZWu1xAg50gXrYQuS3NqycG+oY1LORr7H5yi
+         iTJ6U6LiBUbb+7naTIHD6eNoHoadnWhu3/0jlfJfiGhzLioFcrb/bDsEEW7D4c9SUI
+         hsUimiKIEOFFQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 43FBA5C0952; Wed,  7 Dec 2022 14:28:37 -0800 (PST)
+Date:   Wed, 7 Dec 2022 14:28:37 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Hou Tao <houtao1@huawei.com>
+Cc:     Hou Tao <houtao@huaweicloud.com>, bpf@vger.kernel.org,
+        rcu@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] bpf: Skip rcu_barrier() if
+ rcu_trace_implies_rcu_gp() is true
+Message-ID: <20221207222837.GK4001@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20221206042946.686847-1-houtao@huaweicloud.com>
+ <20221206042946.686847-3-houtao@huaweicloud.com>
+ <2eac2a50-40bd-3430-039f-58947d7c7af5@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221207200155.GA1840475@lothringen>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
+In-Reply-To: <2eac2a50-40bd-3430-039f-58947d7c7af5@huawei.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Frederic,
-
-before anything else, your patches look good to me, it is not that
-I tried to argue!
-
-On 12/07, Frederic Weisbecker wrote:
->
-> On Tue, Dec 06, 2022 at 05:49:28PM +0100, Oleg Nesterov wrote:
+On Wed, Dec 07, 2022 at 10:24:55AM +0800, Hou Tao wrote:
+> Forget to cc Paul and RCU maillist for more comments.
+> 
+> On 12/6/2022 12:29 PM, Hou Tao wrote:
+> > From: Hou Tao <houtao1@huawei.com>
 > >
-> > At least I think it should not wait for the tasks injected into this ns.
+> > If there are pending rcu callback, free_mem_alloc() will use
+> > rcu_barrier_tasks_trace() and rcu_barrier() to wait for the pending
+> > __free_rcu_tasks_trace() and __free_rcu() callback.
 > >
-> > Because this looks like a kernel bug even if we forget about this deadlock.
+> > If rcu_trace_implies_rcu_gp() is true, there will be no pending
+> > __free_rcu(), so it will be OK to skip rcu_barrier() as well.
+
+The bit about there being no pending __free_rcu() is guaranteed by
+your algorithm, correct?  As in you have something like this somewhere
+else in the code?
+
+	if (!rcu_trace_implies_rcu_gp())
+		call_rcu(...);
+
+Or am I missing something more subtle?
+
+							Thanx, Paul
+
+> > Signed-off-by: Hou Tao <houtao1@huawei.com>
+> > ---
+> >  kernel/bpf/memalloc.c | 10 +++++++++-
+> >  1 file changed, 9 insertions(+), 1 deletion(-)
 > >
-> I think this was made that way on purpose,
-
-Well maybe. But to me we have this behaviour only because we (me at least)
-do not know how to avoid the "hang" in this case.
-
-> see the comment in zap_pid_ns_processes():
-
-Heh ;) I wrote this comment in a53b83154914 ("exit: pidns: fix/update the
-comments in zap_pid_ns_processes()") exactly because I didn't like this
-behaviour, but I thought it must be documented.
-
-> I can't say I like the fact that a parent not belonging to a new namespace
-> can create more than one child within that namespace
-
-not sure I understand but this looks fine and useful to me,
-
-> but anyway this all look like an ABI that can't be reverted now.
-
-perhaps... But you know, I wrote my previous email because 2 weeks ago
-I had to investigate a bug report which blamed the kernel, while the
-problem (unkillable process sleeping in zap_pid_ns_processes) was caused
-by the dangling zombie injected into that process's namespace. And I am
-still trying to convince the customer they need to fix userspace.
-
-Thanks,
-
-Oleg.
-
+> > diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
+> > index 7daf147bc8f6..d43991fafc4f 100644
+> > --- a/kernel/bpf/memalloc.c
+> > +++ b/kernel/bpf/memalloc.c
+> > @@ -464,9 +464,17 @@ static void free_mem_alloc(struct bpf_mem_alloc *ma)
+> >  {
+> >  	/* waiting_for_gp lists was drained, but __free_rcu might
+> >  	 * still execute. Wait for it now before we freeing percpu caches.
+> > +	 *
+> > +	 * rcu_barrier_tasks_trace() doesn't imply synchronize_rcu_tasks_trace(),
+> > +	 * but rcu_barrier_tasks_trace() and rcu_barrier() below are only used
+> > +	 * to wait for the pending __free_rcu_tasks_trace() and __free_rcu(),
+> > +	 * so if call_rcu(head, __free_rcu) is skipped due to
+> > +	 * rcu_trace_implies_rcu_gp(), it will be OK to skip rcu_barrier() by
+> > +	 * using rcu_trace_implies_rcu_gp() as well.
+> >  	 */
+> >  	rcu_barrier_tasks_trace();
+> > -	rcu_barrier();
+> > +	if (!rcu_trace_implies_rcu_gp())
+> > +		rcu_barrier();
+> >  	free_mem_alloc_no_barrier(ma);
+> >  }
+> >  
+> 
