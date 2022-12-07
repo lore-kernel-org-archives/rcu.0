@@ -2,98 +2,80 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C5A1C352A1
-	for <rcu@archiver.kernel.org>; Wed,  7 Dec 2022 02:25:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 21A13C352A1
+	for <rcu@archiver.kernel.org>; Wed,  7 Dec 2022 14:34:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229770AbiLGCZB (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 6 Dec 2022 21:25:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57198 "EHLO
+        id S229952AbiLGOes (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 7 Dec 2022 09:34:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229538AbiLGCY7 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 6 Dec 2022 21:24:59 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A54A4C263;
-        Tue,  6 Dec 2022 18:24:58 -0800 (PST)
-Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4NRgxW1GXSzXdYY;
-        Wed,  7 Dec 2022 10:20:47 +0800 (CST)
-Received: from [10.174.176.117] (10.174.176.117) by
- dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 7 Dec 2022 10:24:56 +0800
-Subject: Re: [PATCH bpf-next 2/2] bpf: Skip rcu_barrier() if
- rcu_trace_implies_rcu_gp() is true
-To:     Hou Tao <houtao@huaweicloud.com>, <bpf@vger.kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>, <rcu@vger.kernel.org>
-CC:     Martin KaFai Lau <martin.lau@linux.dev>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "houtao1@huawei.com" <houtao1@huawei.com>
-References: <20221206042946.686847-1-houtao@huaweicloud.com>
- <20221206042946.686847-3-houtao@huaweicloud.com>
-From:   Hou Tao <houtao1@huawei.com>
-Message-ID: <2eac2a50-40bd-3430-039f-58947d7c7af5@huawei.com>
-Date:   Wed, 7 Dec 2022 10:24:55 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        with ESMTP id S229677AbiLGOer (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 7 Dec 2022 09:34:47 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C086D48418;
+        Wed,  7 Dec 2022 06:34:46 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5D10461A22;
+        Wed,  7 Dec 2022 14:34:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B82BBC433D6;
+        Wed,  7 Dec 2022 14:34:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1670423685;
+        bh=lBKJBpVB6cbpxtDkoojthxARG0HGrqEdw1sgH86GMnY=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=fKsN2YiHRHTHyiHmrZsg1L8AzS7evSfvVTzCQVk4rQ9lcY/jcucuMWzwF6ka3dJUw
+         XX85ugsOwwPxT9tqW8ujJvoBqRB1z9Xtqvh4bP8HPnGgUg1nh5dF0QhfcGowkOJOyt
+         mdpjjhPE4d1TorIUcKr+Vb4jsA8jantfgQIg9Vem4JR3asu7gfYLDnM+FuMULmjj/o
+         rp3VShtVk2IrVB/gqoG5l7pbN8rSNvQRs2bFc1YjroXt4n0tAJC4NffeUYObJctuir
+         CCIAyk9bkffGyqLfeKndLv5KR0W8uuPc5F6yJpgxDbVYMhTRBw/PNm343w8Wh8Ie3P
+         HdGzIR74Acc6w==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 44BA45C0AFC; Wed,  7 Dec 2022 06:34:45 -0800 (PST)
+Date:   Wed, 7 Dec 2022 06:34:45 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>, rcu@vger.kernel.org
+Subject: Re: [PATCH 3/3] rcu-tasks: Fix synchronize_rcu_tasks() VS
+ zap_pid_ns_processes()
+Message-ID: <20221207143445.GA4001@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20221125135500.1653800-1-frederic@kernel.org>
+ <20221125135500.1653800-4-frederic@kernel.org>
+ <871qpkqof8.fsf@email.froward.int.ebiederm.org>
+ <20221206164927.GD3866@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20221206042946.686847-3-houtao@huaweicloud.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.174.176.117]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500025.china.huawei.com (7.185.36.35)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221206164927.GD3866@redhat.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Forget to cc Paul and RCU maillist for more comments.
+On Tue, Dec 06, 2022 at 05:49:28PM +0100, Oleg Nesterov wrote:
+> On 11/30, Eric W. Biederman wrote:
+> >
+> > 2) I keep thinking zap_pid_ns_processes() should be changed so that
+> >    after it sends SIGKILL to all of the relevant processes to not wait,
+> 
+> At least I think it should not wait for the tasks injected into this ns.
+> 
+> Because this looks like a kernel bug even if we forget about this deadlock.
+> 
+> Say we create a task P using clone(CLONE_NEWPID), then inject a task T into
+> P's pid-namespace via setns/fork. This make the process P "unkillable", it
+> will hang in zap_pid_ns_processes() "forever" until T->parent reaps a zombie
+> task T killed by P.
 
-On 12/6/2022 12:29 PM, Hou Tao wrote:
-> From: Hou Tao <houtao1@huawei.com>
->
-> If there are pending rcu callback, free_mem_alloc() will use
-> rcu_barrier_tasks_trace() and rcu_barrier() to wait for the pending
-> __free_rcu_tasks_trace() and __free_rcu() callback.
->
-> If rcu_trace_implies_rcu_gp() is true, there will be no pending
-> __free_rcu(), so it will be OK to skip rcu_barrier() as well.
->
-> Signed-off-by: Hou Tao <houtao1@huawei.com>
-> ---
->  kernel/bpf/memalloc.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
->
-> diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
-> index 7daf147bc8f6..d43991fafc4f 100644
-> --- a/kernel/bpf/memalloc.c
-> +++ b/kernel/bpf/memalloc.c
-> @@ -464,9 +464,17 @@ static void free_mem_alloc(struct bpf_mem_alloc *ma)
->  {
->  	/* waiting_for_gp lists was drained, but __free_rcu might
->  	 * still execute. Wait for it now before we freeing percpu caches.
-> +	 *
-> +	 * rcu_barrier_tasks_trace() doesn't imply synchronize_rcu_tasks_trace(),
-> +	 * but rcu_barrier_tasks_trace() and rcu_barrier() below are only used
-> +	 * to wait for the pending __free_rcu_tasks_trace() and __free_rcu(),
-> +	 * so if call_rcu(head, __free_rcu) is skipped due to
-> +	 * rcu_trace_implies_rcu_gp(), it will be OK to skip rcu_barrier() by
-> +	 * using rcu_trace_implies_rcu_gp() as well.
->  	 */
->  	rcu_barrier_tasks_trace();
-> -	rcu_barrier();
-> +	if (!rcu_trace_implies_rcu_gp())
-> +		rcu_barrier();
->  	free_mem_alloc_no_barrier(ma);
->  }
->  
+Given that this is not the first time that Tasks Trace RCU has been
+involved in a deadlock involving this exit path, I could certainly get
+behind this approach.  ;-)
 
+							Thanx, Paul
