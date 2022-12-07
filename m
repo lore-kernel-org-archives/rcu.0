@@ -2,38 +2,45 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 20317C4708D
-	for <rcu@archiver.kernel.org>; Wed,  7 Dec 2022 20:03:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CA41BC4708D
+	for <rcu@archiver.kernel.org>; Wed,  7 Dec 2022 20:40:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229741AbiLGUDB (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 7 Dec 2022 15:03:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33432 "EHLO
+        id S229663AbiLGUkG (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 7 Dec 2022 15:40:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229701AbiLGUC7 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 7 Dec 2022 15:02:59 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 081B32FC27;
-        Wed,  7 Dec 2022 12:02:48 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S229486AbiLGUkF (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 7 Dec 2022 15:40:05 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E5B436C78
+        for <rcu@vger.kernel.org>; Wed,  7 Dec 2022 12:39:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1670445549;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DG3GYCB5orB9GpSLNS4eulWhDlsfNUeLR3OpnOQvJIk=;
+        b=YTXHhJDcx2mWD1hg0LdIrWgzbGXSO6Em5dCipbqIVz9S0qPIL8oqGjIKYKo/l2kfCinMPB
+        WQyRhJHI1mxLrh9GkAl3TkMFRgs0BmStCCuYgmgwaVb7DSW/5a1TIG8LQ6vS/hxfXGmmUL
+        mSt7ITkdFEsv1GRbyx3ds0YZMzh6ak4=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-70-j7YyzFPoNcShfVSQF7tpJg-1; Wed, 07 Dec 2022 15:39:03 -0500
+X-MC-Unique: j7YyzFPoNcShfVSQF7tpJg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5025C61BA9;
-        Wed,  7 Dec 2022 20:01:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51D09C433C1;
-        Wed,  7 Dec 2022 20:01:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1670443318;
-        bh=Demd/UfJqFw2eDXCVUg8SZIC3opSCXKHPmwW779cpVM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BtZx28qWQ2lj/cxCC/WUdC0hR5/c/5goXOTvWAXOlVOkqsMeCG/bLaJyM/AfUjtnx
-         t1N34HbY++iJpoElHzBSiDbDqy3gxEwUffWBjXw/8mKjo9oE6UdGgpsXmjMXp0w/yb
-         Od5UtLXeiFCvsQStP1JnzQ+kasPwPA7BCONQ0qtK1I/7YweYz3UOAgp+Qz8OyT13jH
-         VuAZyIkV4gBamAOpeNlFRmryaOB23w5t3mCSq4AiB7xV3QZMlfY3D85cbWghH2XeAL
-         ZM5DmU0mdKsr0823Azaxp45Mg5WDQw14SNxRTLDViCx9XaP/QOe4q0tpKiXRGw/sir
-         rL8jCGjAI8Nng==
-Date:   Wed, 7 Dec 2022 21:01:55 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Oleg Nesterov <oleg@redhat.com>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4FD311C05B12;
+        Wed,  7 Dec 2022 20:39:03 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (ovpn-195-26.brq.redhat.com [10.40.195.26])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 14C182027061;
+        Wed,  7 Dec 2022 20:39:00 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Wed,  7 Dec 2022 21:39:03 +0100 (CET)
+Date:   Wed, 7 Dec 2022 21:39:00 +0100
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Frederic Weisbecker <frederic@kernel.org>
 Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
         "Paul E . McKenney" <paulmck@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
@@ -43,59 +50,60 @@ Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>, rcu@vger.kernel.org
 Subject: Re: [PATCH 3/3] rcu-tasks: Fix synchronize_rcu_tasks() VS
  zap_pid_ns_processes()
-Message-ID: <20221207200155.GA1840475@lothringen>
+Message-ID: <20221207203859.GD5421@redhat.com>
 References: <20221125135500.1653800-1-frederic@kernel.org>
  <20221125135500.1653800-4-frederic@kernel.org>
  <871qpkqof8.fsf@email.froward.int.ebiederm.org>
  <20221206164927.GD3866@redhat.com>
+ <20221207200155.GA1840475@lothringen>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221206164927.GD3866@redhat.com>
+In-Reply-To: <20221207200155.GA1840475@lothringen>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Dec 06, 2022 at 05:49:28PM +0100, Oleg Nesterov wrote:
-> On 11/30, Eric W. Biederman wrote:
+Frederic,
+
+before anything else, your patches look good to me, it is not that
+I tried to argue!
+
+On 12/07, Frederic Weisbecker wrote:
+>
+> On Tue, Dec 06, 2022 at 05:49:28PM +0100, Oleg Nesterov wrote:
 > >
-> > 2) I keep thinking zap_pid_ns_processes() should be changed so that
-> >    after it sends SIGKILL to all of the relevant processes to not wait,
-> 
-> At least I think it should not wait for the tasks injected into this ns.
-> 
-> Because this looks like a kernel bug even if we forget about this deadlock.
-> 
-> Say we create a task P using clone(CLONE_NEWPID), then inject a task T into
-> P's pid-namespace via setns/fork. This make the process P "unkillable", it
-> will hang in zap_pid_ns_processes() "forever" until T->parent reaps a zombie
-> task T killed by P.
+> > At least I think it should not wait for the tasks injected into this ns.
+> >
+> > Because this looks like a kernel bug even if we forget about this deadlock.
+> >
+> I think this was made that way on purpose,
 
-I think this was made that way on purpose, see the comment in
-zap_pid_ns_processes():
+Well maybe. But to me we have this behaviour only because we (me at least)
+do not know how to avoid the "hang" in this case.
 
-	/*
-	 * kernel_wait4() misses EXIT_DEAD children, and EXIT_ZOMBIE
-	 * process whose parents processes are outside of the pid
-	 * namespace.  Such processes are created with setns()+fork().
-	 *
-	 * If those EXIT_ZOMBIE processes are not reaped by their
-	 * parents before their parents exit, they will be reparented
-	 * to pid_ns->child_reaper.  Thus pidns->child_reaper needs to
-	 * stay valid until they all go away.
-	 *
-	 * The code relies on the pid_ns->child_reaper ignoring
-	 * SIGCHILD to cause those EXIT_ZOMBIE processes to be
-	 * autoreaped if reparented.
-	 *
-	 * Semantically it is also desirable to wait for EXIT_ZOMBIE
-	 * processes before allowing the child_reaper to be reaped, as
-	 * that gives the invariant that when the init process of a
-	 * pid namespace is reaped all of the processes in the pid
-	 * namespace are gone.
+> see the comment in zap_pid_ns_processes():
 
-I can't say I like the fact that a parent not belonging to a new namespace
-can create more than one child within that namespace but anyway this all look
-like an ABI that can't be reverted now.
+Heh ;) I wrote this comment in a53b83154914 ("exit: pidns: fix/update the
+comments in zap_pid_ns_processes()") exactly because I didn't like this
+behaviour, but I thought it must be documented.
 
-Thanks.
+> I can't say I like the fact that a parent not belonging to a new namespace
+> can create more than one child within that namespace
+
+not sure I understand but this looks fine and useful to me,
+
+> but anyway this all look like an ABI that can't be reverted now.
+
+perhaps... But you know, I wrote my previous email because 2 weeks ago
+I had to investigate a bug report which blamed the kernel, while the
+problem (unkillable process sleeping in zap_pid_ns_processes) was caused
+by the dangling zombie injected into that process's namespace. And I am
+still trying to convince the customer they need to fix userspace.
+
+Thanks,
+
+Oleg.
+
