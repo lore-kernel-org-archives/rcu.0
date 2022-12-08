@@ -2,128 +2,240 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4358FC4708E
-	for <rcu@archiver.kernel.org>; Thu,  8 Dec 2022 01:42:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2932DC3A5A7
+	for <rcu@archiver.kernel.org>; Thu,  8 Dec 2022 15:07:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229830AbiLHBmV (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 7 Dec 2022 20:42:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57064 "EHLO
+        id S230133AbiLHPHM (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 8 Dec 2022 10:07:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229821AbiLHBmS (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 7 Dec 2022 20:42:18 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0684D90778;
-        Wed,  7 Dec 2022 17:42:15 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        with ESMTP id S229950AbiLHPHH (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 8 Dec 2022 10:07:07 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C77CA13CD;
+        Thu,  8 Dec 2022 07:07:04 -0800 (PST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 533F3337A0;
+        Thu,  8 Dec 2022 15:07:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1670512023; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=pqZvqnA90o9ISBB/ssQWKoeLFxAEDiRIT0nh3FJDhRU=;
+        b=GlCE1NtllOCZ9yfhIVBJLE4zIhXwqRj5CmW0ca70g9uhGzJIrMIta2xoreiBIstbZDBvBB
+        qnqvvk98YwsjhyY8BpSMzN6wegVdkMEoH/GezSfj1iQp579EN2mShKnqLCL0kiMBRtviH5
+        ImnP4igLtRFV9R+nsAJtkJnyw7veVs0=
+Received: from suse.cz (unknown [10.100.201.202])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 9838BB8212E;
-        Thu,  8 Dec 2022 01:42:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 514ADC433B5;
-        Thu,  8 Dec 2022 01:42:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1670463732;
-        bh=tpTCLGJyeiRNuantqgo8SYXrHBUZk3GTfa93gXzcr1k=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=lososBq9ZF6thMA2G77kr3DBpzKrcxrwEjDuWflpAGt8VzhIIXLhF3yslHJkgJlAW
-         RbA4UODJ5ZOVk5PoPfBH1v5764zrmcFQMg0yDPw4vAyLBJ9r5gU8fjKVd34rMKH6OD
-         mGLNi/isr/273C97QN15OR27M5ogZpSfYKVXrGUogAEBvL+zhZM0C3sBnamlDNGUlK
-         dDukvR8HTaN4n6PibzNRkKT45THYOF1jEsG6UnBk2RnVFu3+1LAGiBWnCNGYYjNgEc
-         n/gnri7bS0jS5GOsvmjA4JuPksQ/Pgb6rqIup7UwsTAnM1wy6lSNMjiolmtB5RF06s
-         HpMrieaEL5E5Q==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id E62B35C0AEC; Wed,  7 Dec 2022 17:42:11 -0800 (PST)
-Date:   Wed, 7 Dec 2022 17:42:11 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Hou Tao <houtao@huaweicloud.com>
-Cc:     Hou Tao <houtao1@huawei.com>, bpf@vger.kernel.org,
-        rcu@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>
-Subject: Re: [PATCH bpf-next 2/2] bpf: Skip rcu_barrier() if
- rcu_trace_implies_rcu_gp() is true
-Message-ID: <20221208014211.GM4001@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20221206042946.686847-1-houtao@huaweicloud.com>
- <20221206042946.686847-3-houtao@huaweicloud.com>
- <2eac2a50-40bd-3430-039f-58947d7c7af5@huawei.com>
- <20221207222837.GK4001@paulmck-ThinkPad-P17-Gen-1>
- <266a8113-b003-71a8-c7e1-70af87b7ffa7@huaweicloud.com>
+        by relay2.suse.de (Postfix) with ESMTPS id D68802C143;
+        Thu,  8 Dec 2022 15:07:02 +0000 (UTC)
+Date:   Thu, 8 Dec 2022 16:06:59 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>, Jan Kara <jack@suse.cz>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] printk for 6.2
+Message-ID: <Y5H9k52WWXBmWuwZ@alley>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <266a8113-b003-71a8-c7e1-70af87b7ffa7@huaweicloud.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Dec 08, 2022 at 09:27:05AM +0800, Hou Tao wrote:
-> Hi,
-> 
-> On 12/8/2022 6:28 AM, Paul E. McKenney wrote:
-> > On Wed, Dec 07, 2022 at 10:24:55AM +0800, Hou Tao wrote:
-> >> Forget to cc Paul and RCU maillist for more comments.
-> >>
-> >> On 12/6/2022 12:29 PM, Hou Tao wrote:
-> >>> From: Hou Tao <houtao1@huawei.com>
-> >>>
-> >>> If there are pending rcu callback, free_mem_alloc() will use
-> >>> rcu_barrier_tasks_trace() and rcu_barrier() to wait for the pending
-> >>> __free_rcu_tasks_trace() and __free_rcu() callback.
-> >>>
-> >>> If rcu_trace_implies_rcu_gp() is true, there will be no pending
-> >>> __free_rcu(), so it will be OK to skip rcu_barrier() as well.
-> > The bit about there being no pending __free_rcu() is guaranteed by
-> > your algorithm, correct?  As in you have something like this somewhere
-> > else in the code?
-> >
-> > 	if (!rcu_trace_implies_rcu_gp())
-> > 		call_rcu(...);
-> >
-> > Or am I missing something more subtle?
-> Yes. It is guaranteed by the implementation of bpf mem allocator: if
-> rcu_trace_implies_rcu_gp() is true, there will be no call_rcu() in bpf memory
-> allocator.
+Hi Linus,
 
-Very well, then from an RCU perspective:
+  git://git.kernel.org/pub/scm/linux/kernel/git/printk/linux.git tags/printk-for-6.2
 
-Acked-by: Paul E. McKenney <paulmck@kernel.org>
+========================================
 
-							Thanx, Paul
+- Add NMI-safe SRCU reader API. It uses atomic_inc() instead of
+  this_cpu_inc() on strong load-store architectures.
 
-> >>> Signed-off-by: Hou Tao <houtao1@huawei.com>
-> >>> ---
-> >>>  kernel/bpf/memalloc.c | 10 +++++++++-
-> >>>  1 file changed, 9 insertions(+), 1 deletion(-)
-> >>>
-> >>> diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
-> >>> index 7daf147bc8f6..d43991fafc4f 100644
-> >>> --- a/kernel/bpf/memalloc.c
-> >>> +++ b/kernel/bpf/memalloc.c
-> >>> @@ -464,9 +464,17 @@ static void free_mem_alloc(struct bpf_mem_alloc *ma)
-> >>>  {
-> >>>  	/* waiting_for_gp lists was drained, but __free_rcu might
-> >>>  	 * still execute. Wait for it now before we freeing percpu caches.
-> >>> +	 *
-> >>> +	 * rcu_barrier_tasks_trace() doesn't imply synchronize_rcu_tasks_trace(),
-> >>> +	 * but rcu_barrier_tasks_trace() and rcu_barrier() below are only used
-> >>> +	 * to wait for the pending __free_rcu_tasks_trace() and __free_rcu(),
-> >>> +	 * so if call_rcu(head, __free_rcu) is skipped due to
-> >>> +	 * rcu_trace_implies_rcu_gp(), it will be OK to skip rcu_barrier() by
-> >>> +	 * using rcu_trace_implies_rcu_gp() as well.
-> >>>  	 */
-> >>>  	rcu_barrier_tasks_trace();
-> >>> -	rcu_barrier();
-> >>> +	if (!rcu_trace_implies_rcu_gp())
-> >>> +		rcu_barrier();
-> >>>  	free_mem_alloc_no_barrier(ma);
-> >>>  }
-> >>>  
-> 
+- Introduce new console_list_lock to synchronize a manipulation of the list
+  of registered consoles and their flags.
+
+  It is a first step in removing the big-kernel-lock-like behavior of
+  console_lock(). This semaphore still serializes console->write()
+  calbacks against:
+
+    - each other. It primary prevents potential races between early and
+      proper console drivers using the same device.
+
+   - suspend()/resume() callbacks and init() operations in some drivers.
+
+   - various other operations in the tty/vt and framebufer susbsystems.
+     It is likely that console_lock() serializes even operations that are
+     not directly conflicting with the console->write() callbacks here.
+     This is the most complicated big-kernel-lock aspect of
+     the console_lock() that will be hard to untangle.
+
+- Introduce new console_srcu lock that is used to safely iterate and
+  access the registered console drivers under SRCU read lock.
+
+  It is a prerequisite for introducing atomic console drivers and console
+  kthreads. It will reduce the complexity of serialization against normal
+  consoles and console_lock(). Also it should remove the risk of deadlock
+  during critical situations, like Oops or panic, when only atomic consoles
+  are registered.
+
+- Check whether the console is registered instead of enabled on many
+  locations. It was a historical leftover.
+
+- Cleanly force a preferred console in xenfb code instead of a dirty hack.
+
+- A lot of code and comment clean ups and improvements.
+
+=========================================
+
+Notes:
+
+1. The NMI-safe SRCU read API code is merged from Paul's RCU tree.
+   It is going to be part of Paul's pull request as well.
+
+2. The major changes reached linux-next at Oct 22. The branch
+   rework/console-list-lock has been rebased two times last
+   week to get follow up fixes from RCU tree. They fixed issues
+   with non-standard configurations.
+
+
+IMHO, the biggest risk of these changes would be in introducing new
+races or deadlocks because of the new locks.
+
+Anyway, it should be step in the right direction. The big-kernel-lock
+behavior of console_lock() is a constant source of problems. The SRCU
+lock allows to iterate the list of consoles safely anytime. Also there
+are many new lockdep asserts that would allow to catch and nail down
+potential problems.
+
+----------------------------------------------------------------
+Andy Shevchenko (1):
+      test_printf: Refactor fwnode_pointer() to make it more readable
+
+Frederic Weisbecker (3):
+      srcu: Warn when NMI-unsafe API is used in NMI
+      srcu: Explain the reason behind the read side critical section on GP start
+      srcu: Debug NMI safety even on archs that don't require it
+
+John Ogness (40):
+      rcu: Implement lockdep_rcu_enabled for !CONFIG_DEBUG_LOCK_ALLOC
+      printk: Prepare for SRCU console list protection
+      printk: register_console: use "registered" for variable names
+      printk: move @seq initialization to helper
+      printk: fix setting first seq for consoles
+      um: kmsg_dump: only dump when no output console available
+      tty: serial: kgdboc: document console_lock usage
+      tty: tty_io: document console_lock usage
+      proc: consoles: document console_lock usage
+      printk: introduce console_list_lock
+      console: introduce wrappers to read/write console flags
+      um: kmsg_dumper: use srcu console list iterator
+      kdb: use srcu console list iterator
+      printk: console_flush_all: use srcu console list iterator
+      printk: __pr_flush: use srcu console list iterator
+      printk: console_is_usable: use console_srcu_read_flags
+      printk: console_unblank: use srcu console list iterator
+      printk: console_flush_on_panic: use srcu console list iterator
+      printk: console_device: use srcu console list iterator
+      console: introduce console_is_registered()
+      serial_core: replace uart_console_enabled() with uart_console_registered()
+      tty: nfcon: use console_is_registered()
+      efi: earlycon: use console_is_registered()
+      tty: hvc: use console_is_registered()
+      tty: serial: earlycon: use console_is_registered()
+      tty: serial: pic32_uart: use console_is_registered()
+      tty: serial: samsung_tty: use console_is_registered()
+      tty: serial: xilinx_uartps: use console_is_registered()
+      usb: early: xhci-dbc: use console_is_registered()
+      netconsole: avoid CON_ENABLED misuse to track registration
+      printk, xen: fbfront: create/use safe function for forcing preferred
+      tty: tty_io: use console_list_lock for list synchronization
+      proc: consoles: use console_list_lock for list iteration
+      tty: serial: kgdboc: use srcu console list iterator
+      tty: serial: kgdboc: use console_list_lock for list traversal
+      tty: serial: kgdboc: synchronize tty_find_polling_driver() and register_console()
+      tty: serial: kgdboc: use console_list_lock to trap exit
+      printk: relieve console_lock of list synchronization duties
+      tty: serial: sh-sci: use setup() callback for early console
+      printk: htmldocs: add missing description
+
+Paul E. McKenney (9):
+      srcu: Convert ->srcu_lock_count and ->srcu_unlock_count to atomic
+      srcu: Create an srcu_read_lock_nmisafe() and srcu_read_unlock_nmisafe()
+      srcu: Check for consistent per-CPU per-srcu_struct NMI safety
+      srcu: Check for consistent global per-srcu_struct NMI safety
+      arch/x86: Add ARCH_HAS_NMI_SAFE_THIS_CPU_OPS Kconfig option
+      arch/arm64: Add ARCH_HAS_NMI_SAFE_THIS_CPU_OPS Kconfig option
+      arch/loongarch: Add ARCH_HAS_NMI_SAFE_THIS_CPU_OPS Kconfig option
+      arch/s390: Add ARCH_HAS_NMI_SAFE_THIS_CPU_OPS Kconfig option
+      rcu: Make SRCU mandatory
+
+Petr Mladek (1):
+      Merge branch 'rework/console-list-lock' into for-linus
+
+Thomas Gleixner (2):
+      serial: kgdboc: Lock console list in probe function
+      printk: Convert console_drivers list to hlist
+
+Wang Honghui (1):
+      printk: fix a typo of comment
+
+Xu Panda (1):
+      printk: use strscpy() to instead of strlcpy()
+
+Zqiang (1):
+      srcu: Make Tiny synchronize_srcu() check for readers
+
+ye xingchen (1):
+      vsprintf: replace in_irq() with in_hardirq()
+
+ .clang-format                       |   1 +
+ arch/Kconfig                        |   3 +
+ arch/arm64/Kconfig                  |   1 +
+ arch/loongarch/Kconfig              |   1 +
+ arch/m68k/emu/nfcon.c               |   9 +-
+ arch/s390/Kconfig                   |   1 +
+ arch/um/kernel/kmsg_dump.c          |  24 +-
+ arch/x86/Kconfig                    |   1 +
+ drivers/firmware/efi/earlycon.c     |   8 +-
+ drivers/net/netconsole.c            |  21 +-
+ drivers/tty/hvc/hvc_console.c       |   4 +-
+ drivers/tty/serial/8250/8250_core.c |   2 +-
+ drivers/tty/serial/earlycon.c       |   4 +-
+ drivers/tty/serial/kgdboc.c         |  46 +++-
+ drivers/tty/serial/pic32_uart.c     |   4 +-
+ drivers/tty/serial/samsung_tty.c    |   2 +-
+ drivers/tty/serial/serial_core.c    |  14 +-
+ drivers/tty/serial/sh-sci.c         |  20 +-
+ drivers/tty/serial/xilinx_uartps.c  |   2 +-
+ drivers/tty/tty_io.c                |  18 +-
+ drivers/usb/early/xhci-dbc.c        |   2 +-
+ drivers/video/fbdev/xen-fbfront.c   |  12 +-
+ fs/proc/consoles.c                  |  21 +-
+ include/linux/console.h             | 129 +++++++++-
+ include/linux/rcupdate.h            |   5 +
+ include/linux/rcutiny.h             |   4 -
+ include/linux/serial_core.h         |  10 +-
+ include/linux/srcu.h                |  72 +++++-
+ include/linux/srcutree.h            |   5 +-
+ kernel/debug/kdb/kdb_io.c           |  18 +-
+ kernel/printk/printk.c              | 498 ++++++++++++++++++++++++++++--------
+ kernel/printk/printk_ringbuffer.c   |   2 +-
+ kernel/rcu/Kconfig                  |  14 +-
+ kernel/rcu/Kconfig.debug            |   3 -
+ kernel/rcu/rcu.h                    |   8 +-
+ kernel/rcu/rcutorture.c             |  11 +-
+ kernel/rcu/srcutiny.c               |  10 +
+ kernel/rcu/srcutree.c               | 100 ++++++--
+ kernel/rcu/update.c                 |  18 +-
+ lib/test_printf.c                   |  26 +-
+ lib/vsprintf.c                      |   2 +-
+ 41 files changed, 899 insertions(+), 257 deletions(-)
