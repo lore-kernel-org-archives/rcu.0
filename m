@@ -2,110 +2,114 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A1F1C4332F
-	for <rcu@archiver.kernel.org>; Fri,  9 Dec 2022 17:02:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 11E87C4332F
+	for <rcu@archiver.kernel.org>; Fri,  9 Dec 2022 20:27:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229863AbiLIRCZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 9 Dec 2022 12:02:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51580 "EHLO
+        id S229828AbiLIU1H (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 9 Dec 2022 15:27:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229849AbiLIRCR (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 9 Dec 2022 12:02:17 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6719379C3D
-        for <rcu@vger.kernel.org>; Fri,  9 Dec 2022 09:02:16 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id d6so7962700lfs.10
-        for <rcu@vger.kernel.org>; Fri, 09 Dec 2022 09:02:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=daikn9VroNivl1YE1yC9cN5gUExcOR7+xVWyWD74Yv8=;
-        b=WYraxe+URQxRPVJ0/YGdVKJa+sGrtCkkuC963j7whwGMMFRt6cXQ2OeWkQZc5Kc+0u
-         Sq3WkOHg/7X93qG5OH44XDvByNqGTSaJykpqqBFnVkvYGSaeLtw2K1Wxp96uB9qVrusN
-         W6yOy9oKfgxkLOlKiShhFlA7ixSJSBmMzWAAw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=daikn9VroNivl1YE1yC9cN5gUExcOR7+xVWyWD74Yv8=;
-        b=XqzDClNr5YSFroqxgCicOgVJki/TkBUns3tGYPeGxkt8npTdsG4DCum0TheF1NqSLq
-         iCL2Mp+xxj+425MLbGR3R/r/L9oQam4sBIe/JPBJvkiAd0zE/MlWm44SSBmNvg3yoywn
-         2dtePPxzIZMM07zR+jtCYYdKDsf10Bt0JEaSbZYKWrOWH+Jl9JRm4eOWsJnAfnl6QXpj
-         5aqwFtqEuX2far6LOWo1iTNRWS2MxM6UJd3Mf7A6N4wNNj8oYJnO3IcjMO7SU1h3tv4Y
-         9pd+qSuBEiAdOv+cHpg+qBXiv/ItmmPr4T6PDbMqPrsCoKnb7N8+LmqQ+1O274saNMps
-         FK4Q==
-X-Gm-Message-State: ANoB5pkmgQjqWOD8S+mu+cAjI0uoKAXN094b4FAbtGA28p/JKyDzDAPf
-        6xCxN8xlLg8Kg7tUVRvWwHCT6kgZncI4MHeioLda425yDAJIwVdR
-X-Google-Smtp-Source: AA0mqf6evJw9RZVu9lTsun7hiHcSvTbrjXEOV0BMWsMx11DYGhST83aW7ShOiqXMIAYrFrAgVJIthiBj3mruk+Ks3Pc=
-X-Received: by 2002:a05:6512:b26:b0:4b4:f7aa:4e4 with SMTP id
- w38-20020a0565120b2600b004b4f7aa04e4mr20142462lfu.128.1670605334783; Fri, 09
- Dec 2022 09:02:14 -0800 (PST)
+        with ESMTP id S229791AbiLIU1D (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 9 Dec 2022 15:27:03 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3D0B1649D;
+        Fri,  9 Dec 2022 12:27:02 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 9C8DEB82910;
+        Fri,  9 Dec 2022 20:27:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7B92C433EF;
+        Fri,  9 Dec 2022 20:26:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1670617620;
+        bh=VHSEcb2HPradXnz78wt3OItcWSye4V75Ag/bPnxxGbc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rmHaN1N8+v8nni6vfG+awJLvVJX0y4/Bs8g+Xhr3PTvXflh9b952JN+naqlXRWBDI
+         P4NPqI+fUZ34srK2L/xHX7Rgu4iWLM2NC8P1Tg0jw6g25SSV1VWjKmF+EE3qC94Hn4
+         AJFQ56AaLZH7qcWEBlIrVwf1ymSuKLESxSVdRFJvTmc4UxJi0xKNA9oQeTo++F47IK
+         etKWFSUm6SGX0JndXRDphB7wXeCYSti52SREXhSkMFVNHuUXRXKl5lxqvfe782igrJ
+         t2nQrT3R6IK11QWajIAyrk8yXUDZAP2rBIs6+M03X3EGtwiNsgWNoCSg6jyohroe19
+         qG9yRMfP02RpQ==
+Date:   Fri, 9 Dec 2022 21:26:56 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>, rcu@vger.kernel.org
+Subject: Re: [PATCH 3/3] rcu-tasks: Fix synchronize_rcu_tasks() VS
+ zap_pid_ns_processes()
+Message-ID: <20221209202656.GA1865787@lothringen>
+References: <20221125135500.1653800-1-frederic@kernel.org>
+ <20221125135500.1653800-4-frederic@kernel.org>
+ <871qpkqof8.fsf@email.froward.int.ebiederm.org>
+ <20221206164927.GD3866@redhat.com>
+ <20221207200155.GA1840475@lothringen>
+ <20221207203859.GD5421@redhat.com>
 MIME-Version: 1.0
-References: <20221209022305.321149-1-joel@joelfernandes.org> <20221209163445.jl4wdnbha47si7h7@offworld>
-In-Reply-To: <20221209163445.jl4wdnbha47si7h7@offworld>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Fri, 9 Dec 2022 17:02:03 +0000
-Message-ID: <CAEXW_YRaicORky1dWFVsRq8WFTpRsZRB5WB=GQi4--+cyEXYbA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] locktorture: Allow non-rtmutex lock types to be boosted
-To:     Davidlohr Bueso <dave@stgolabs.net>
-Cc:     linux-kernel@vger.kernel.org,
-        Josh Triplett <josh@joshtriplett.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        connoro@google.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221207203859.GD5421@redhat.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Dec 9, 2022 at 4:59 PM Davidlohr Bueso <dave@stgolabs.net> wrote:
->
-> On Fri, 09 Dec 2022, Joel Fernandes (Google) wrote:
->
-> >Currently RT boosting is only done for rtmutex_lock, however with proxy
-> >execution, we also have the mutex_lock participating in priorities. To
-> >exercise the testing better, add RT boosting to other lock testing types
-> >as well, using a new knob (rt_boost).
+On Wed, Dec 07, 2022 at 09:39:00PM +0100, Oleg Nesterov wrote:
+> On 12/07, Frederic Weisbecker wrote:
 > >
-> >Tested with boot parameters:
-> >locktorture.torture_type=mutex_lock
-> >locktorture.onoff_interval=1
-> >locktorture.nwriters_stress=8
-> >locktorture.stutter=0
-> >locktorture.rt_boost=1
-> >locktorture.rt_boost_factor=1
-> >locktorture.nlocks=3
-> >
-> >For the rtmutex test, rt_boost is always enabled even if disabling is
-> >requested.
-> >
-> >Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> >---
-> > kernel/locking/locktorture.c | 99 ++++++++++++++++++++----------------
-> > 1 file changed, 56 insertions(+), 43 deletions(-)
-> >
-> >diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
-> >index bc3557677eed..8968fd65a90d 100644
-> >--- a/kernel/locking/locktorture.c
-> >+++ b/kernel/locking/locktorture.c
-> >@@ -46,6 +46,8 @@ torture_param(int, shutdown_secs, 0, "Shutdown time (j), <= zero to disable.");
-> > torture_param(int, stat_interval, 60,
-> >            "Number of seconds between stats printk()s");
-> > torture_param(int, stutter, 5, "Number of jiffies to run/halt test, 0=disable");
-> >+torture_param(int, rt_boost, 2,
-> >+              "Do periodic rt-boost. 0=Disable, 1=Only for rt_mutex, 2=For all lock types.");
->
-> Sorry if this was already discussed, but what would be the intent of option 2 without PE?
+> > On Tue, Dec 06, 2022 at 05:49:28PM +0100, Oleg Nesterov wrote:
+> > >
+> > > At least I think it should not wait for the tasks injected into this ns.
+> > >
+> > > Because this looks like a kernel bug even if we forget about this deadlock.
+> > >
+> > I think this was made that way on purpose,
+> 
+> Well maybe. But to me we have this behaviour only because we (me at least)
+> do not know how to avoid the "hang" in this case.
+> 
+> > see the comment in zap_pid_ns_processes():
+> 
+> Heh ;) I wrote this comment in a53b83154914 ("exit: pidns: fix/update the
+> comments in zap_pid_ns_processes()") exactly because I didn't like this
+> behaviour, but I thought it must be documented.
 
-Np, Yes it was discussed. I would like to be, in order to exercise
-more scheduler paths. It is not an invasive change in any case. We
-have had issues with race conditions in the scheduler paths in the
-past, that I would prefer to have in the test.
+Bah! I should have guessed ;-)
 
-The scheduler has become incredibly complex over time with new
-features such as core scheduling and heisenbugs are showing up. I am
-still fighting an old 4.19 kernel issue which is likely scheduler
-related, for instance.
+> 
+> > I can't say I like the fact that a parent not belonging to a new namespace
+> > can create more than one child within that namespace
+> 
+> not sure I understand but this looks fine and useful to me,
+
+I mean if only one task could be injected within a new namespace, we could be sure
+that all subsequent tasks belonging to that namespace would be descendents of
+that first task (the same way that every task in the default namespace is a
+descendant of the real init_task) and thus we wouldn't be bothered with such
+deadlocks. But I guess namespaces aren't designed to work like that. I don't
+know much about them so what I'm saying is very likely irrelevant.
+
+> > but anyway this all look like an ABI that can't be reverted now.
+> 
+> perhaps... But you know, I wrote my previous email because 2 weeks ago
+> I had to investigate a bug report which blamed the kernel, while the
+> problem (unkillable process sleeping in zap_pid_ns_processes) was caused
+> by the dangling zombie injected into that process's namespace. And I am
+> still trying to convince the customer they need to fix userspace.
+
+Heh :-/
+
+I wish we could fix this but I have no idea how. I guess the child_reaper
+of an ns could avoid waiting for the rest of the ns and designate its parent
+as the new child reaper.
+
+Or we could arrange for all tasks in the ns to autoreap if they ever fall back
+to be reaped by their ns->child_reaper and that child_reaper is dead.
+
+But that would look like ABI breakages...
 
 Thanks.
