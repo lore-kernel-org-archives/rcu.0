@@ -2,165 +2,110 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A270C4167B
-	for <rcu@archiver.kernel.org>; Fri,  9 Dec 2022 17:02:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A1F1C4332F
+	for <rcu@archiver.kernel.org>; Fri,  9 Dec 2022 17:02:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229853AbiLIRCS (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 9 Dec 2022 12:02:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51474 "EHLO
+        id S229863AbiLIRCZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 9 Dec 2022 12:02:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229825AbiLIRCQ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 9 Dec 2022 12:02:16 -0500
-Received: from bee.birch.relay.mailchannels.net (bee.birch.relay.mailchannels.net [23.83.209.14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 063F911444;
-        Fri,  9 Dec 2022 09:02:14 -0800 (PST)
-X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-        by relay.mailchannels.net (Postfix) with ESMTP id AD349141E6D;
-        Fri,  9 Dec 2022 17:02:11 +0000 (UTC)
-Received: from pdx1-sub0-mail-a315.dreamhost.com (unknown [127.0.0.6])
-        (Authenticated sender: dreamhost)
-        by relay.mailchannels.net (Postfix) with ESMTPA id 18E8C141267;
-        Fri,  9 Dec 2022 17:02:11 +0000 (UTC)
-ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1670605331; a=rsa-sha256;
-        cv=none;
-        b=tVqE5WrNVjVFV+nhNoS84oRKeFqrSQ6WSO2ypJa3RcAr9oimm/KS2j+vp77WMNl9Fvt2ov
-        WsSOIXLcLf2HAd1mIvsk2sy3+65XCpkxiHplq7jA46M0xPtONrSjIjHH4kEHhH/N5/au3i
-        P+FgBBlDPpx+GMIbCwDJbOYLRlAdVHs+di27upxX3CK1jAgc695onaSWTb+ggVLaAKYeUE
-        fNv9tuH95nGaEUFyZm/Chv7+ZuEwY13DpqoC7E440glneZMZx/21NMsnynqgyT/SSJs8h1
-        OHHHZVcXW/YEAD5/BoLbn8+DFn/TlScnJnEfFyZBphudHTpeDnRIwo/dfVrknA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net;
-        s=arc-2022; t=1670605331;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references:dkim-signature;
-        bh=DG5GAQ8yayHmOkr7bY1BCADokHTCYP5QmcAa4twXErg=;
-        b=waQjqjQmQAKEiBxYsM80PcJyB/mt174u7wTzVRb19Yy6ibdzYXUDXLS24QsYrHYfD0BSAw
-        Y+W+Bsaf+uOQ1yATeKTdn94n6/n/Sshb7TnZR7g+IBcc9CzWn/q58oSOUSDg/xXWQfT6PT
-        FiY3xDNK70vpvhVkf/BD6u66V2ERaQTCEGby2ZPTx3XbrrvY1wbKp5HGAcxLjJHuUx1X+x
-        jttY5XGuqsGnmLw/AHvxj76VSfX5Vjrl1+Fr0gQmzP+tdKbnP4ssyqq2bTR1tDib88Tjmr
-        WsfcuwJXD8JuNwXUcVQ6FZi8kaJvJTObYXLApf5ABbqPy0HlVtkb1KRMqqYz/w==
-ARC-Authentication-Results: i=1;
-        rspamd-d48c5ddb-s7kkk;
-        auth=pass smtp.auth=dreamhost smtp.mailfrom=dave@stgolabs.net
-X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: dreamhost|x-authsender|dave@stgolabs.net
-X-MailChannels-Auth-Id: dreamhost
-X-Supply-Print: 0507084671630208_1670605331418_3244582274
-X-MC-Loop-Signature: 1670605331418:2434797532
-X-MC-Ingress-Time: 1670605331418
-Received: from pdx1-sub0-mail-a315.dreamhost.com (pop.dreamhost.com
- [64.90.62.162])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-        by 100.109.138.16 (trex/6.7.1);
-        Fri, 09 Dec 2022 17:02:11 +0000
-Received: from offworld (ip72-199-50-187.sd.sd.cox.net [72.199.50.187])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: dave@stgolabs.net)
-        by pdx1-sub0-mail-a315.dreamhost.com (Postfix) with ESMTPSA id 4NTHPZ2rP3z7M;
-        Fri,  9 Dec 2022 09:02:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=stgolabs.net;
-        s=dreamhost; t=1670605330;
-        bh=DG5GAQ8yayHmOkr7bY1BCADokHTCYP5QmcAa4twXErg=;
-        h=Date:From:To:Cc:Subject:Content-Type;
-        b=HS/CtV8WrndgCk+xbrtb1WTS2zAZmnvL4z2EVikcT8JsHwDA8Rwstvp5Wm8ItfwVR
-         J4vGBLd55QBjSHdEmqet2th24zrHYq44VNW8u9v8aIXL1XFYhCEtz4efd6tdQJx3HF
-         spP3df5s2Lns5jRaOsAOa/UEID0s/4SQe26rKtfF+0G72reeh5mqBulK+7uKcvMOWE
-         6e2h4vCnDM1q2TGiVqR+vm/mmdd3VKpH3YyKm9xb4f57FKMcIZMrjLwVT9Qlyriy/c
-         qrpA1wZQgKbOQMQc9EHvHIijYQDPs4J60e59lvTpqmwAmpsx5MSUp77rPYJ8dJZNai
-         PRbUbE8cK6uzw==
-Date:   Fri, 9 Dec 2022 08:37:59 -0800
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+        with ESMTP id S229849AbiLIRCR (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 9 Dec 2022 12:02:17 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6719379C3D
+        for <rcu@vger.kernel.org>; Fri,  9 Dec 2022 09:02:16 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id d6so7962700lfs.10
+        for <rcu@vger.kernel.org>; Fri, 09 Dec 2022 09:02:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=daikn9VroNivl1YE1yC9cN5gUExcOR7+xVWyWD74Yv8=;
+        b=WYraxe+URQxRPVJ0/YGdVKJa+sGrtCkkuC963j7whwGMMFRt6cXQ2OeWkQZc5Kc+0u
+         Sq3WkOHg/7X93qG5OH44XDvByNqGTSaJykpqqBFnVkvYGSaeLtw2K1Wxp96uB9qVrusN
+         W6yOy9oKfgxkLOlKiShhFlA7ixSJSBmMzWAAw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=daikn9VroNivl1YE1yC9cN5gUExcOR7+xVWyWD74Yv8=;
+        b=XqzDClNr5YSFroqxgCicOgVJki/TkBUns3tGYPeGxkt8npTdsG4DCum0TheF1NqSLq
+         iCL2Mp+xxj+425MLbGR3R/r/L9oQam4sBIe/JPBJvkiAd0zE/MlWm44SSBmNvg3yoywn
+         2dtePPxzIZMM07zR+jtCYYdKDsf10Bt0JEaSbZYKWrOWH+Jl9JRm4eOWsJnAfnl6QXpj
+         5aqwFtqEuX2far6LOWo1iTNRWS2MxM6UJd3Mf7A6N4wNNj8oYJnO3IcjMO7SU1h3tv4Y
+         9pd+qSuBEiAdOv+cHpg+qBXiv/ItmmPr4T6PDbMqPrsCoKnb7N8+LmqQ+1O274saNMps
+         FK4Q==
+X-Gm-Message-State: ANoB5pkmgQjqWOD8S+mu+cAjI0uoKAXN094b4FAbtGA28p/JKyDzDAPf
+        6xCxN8xlLg8Kg7tUVRvWwHCT6kgZncI4MHeioLda425yDAJIwVdR
+X-Google-Smtp-Source: AA0mqf6evJw9RZVu9lTsun7hiHcSvTbrjXEOV0BMWsMx11DYGhST83aW7ShOiqXMIAYrFrAgVJIthiBj3mruk+Ks3Pc=
+X-Received: by 2002:a05:6512:b26:b0:4b4:f7aa:4e4 with SMTP id
+ w38-20020a0565120b2600b004b4f7aa04e4mr20142462lfu.128.1670605334783; Fri, 09
+ Dec 2022 09:02:14 -0800 (PST)
+MIME-Version: 1.0
+References: <20221209022305.321149-1-joel@joelfernandes.org> <20221209163445.jl4wdnbha47si7h7@offworld>
+In-Reply-To: <20221209163445.jl4wdnbha47si7h7@offworld>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Fri, 9 Dec 2022 17:02:03 +0000
+Message-ID: <CAEXW_YRaicORky1dWFVsRq8WFTpRsZRB5WB=GQi4--+cyEXYbA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] locktorture: Allow non-rtmutex lock types to be boosted
+To:     Davidlohr Bueso <dave@stgolabs.net>
 Cc:     linux-kernel@vger.kernel.org,
         Josh Triplett <josh@joshtriplett.org>,
         "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
         connoro@google.com
-Subject: Re: [PATCH v2 2/2] locktorture: Make the rt_boost factor a tunable
-Message-ID: <20221209163759.6s7pqf5wdvy32ywn@offworld>
-References: <20221209022305.321149-1-joel@joelfernandes.org>
- <20221209022305.321149-2-joel@joelfernandes.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20221209022305.321149-2-joel@joelfernandes.org>
-User-Agent: NeoMutt/20220429
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, 09 Dec 2022, Joel Fernandes (Google) wrote:
+On Fri, Dec 9, 2022 at 4:59 PM Davidlohr Bueso <dave@stgolabs.net> wrote:
+>
+> On Fri, 09 Dec 2022, Joel Fernandes (Google) wrote:
+>
+> >Currently RT boosting is only done for rtmutex_lock, however with proxy
+> >execution, we also have the mutex_lock participating in priorities. To
+> >exercise the testing better, add RT boosting to other lock testing types
+> >as well, using a new knob (rt_boost).
+> >
+> >Tested with boot parameters:
+> >locktorture.torture_type=mutex_lock
+> >locktorture.onoff_interval=1
+> >locktorture.nwriters_stress=8
+> >locktorture.stutter=0
+> >locktorture.rt_boost=1
+> >locktorture.rt_boost_factor=1
+> >locktorture.nlocks=3
+> >
+> >For the rtmutex test, rt_boost is always enabled even if disabling is
+> >requested.
+> >
+> >Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> >---
+> > kernel/locking/locktorture.c | 99 ++++++++++++++++++++----------------
+> > 1 file changed, 56 insertions(+), 43 deletions(-)
+> >
+> >diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
+> >index bc3557677eed..8968fd65a90d 100644
+> >--- a/kernel/locking/locktorture.c
+> >+++ b/kernel/locking/locktorture.c
+> >@@ -46,6 +46,8 @@ torture_param(int, shutdown_secs, 0, "Shutdown time (j), <= zero to disable.");
+> > torture_param(int, stat_interval, 60,
+> >            "Number of seconds between stats printk()s");
+> > torture_param(int, stutter, 5, "Number of jiffies to run/halt test, 0=disable");
+> >+torture_param(int, rt_boost, 2,
+> >+              "Do periodic rt-boost. 0=Disable, 1=Only for rt_mutex, 2=For all lock types.");
+>
+> Sorry if this was already discussed, but what would be the intent of option 2 without PE?
 
->The rt boosting in locktorture has a factor variable s currently large enough
->that boosting only happens once every minute or so. Add a tunable to reduce the
->factor so that boosting happens more often, to test paths and arrive at failure
->modes earlier. With this change, I can set the factor to like 50 and have the
->boosting happens every 10 seconds or so.
->
->Tested with boot parameters:
->locktorture.torture_type=mutex_lock
->locktorture.onoff_interval=1
->locktorture.nwriters_stress=8
->locktorture.stutter=0
->locktorture.rt_boost=1
->locktorture.rt_boost_factor=50
->locktorture.nlocks=3
->
->Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Np, Yes it was discussed. I would like to be, in order to exercise
+more scheduler paths. It is not an invasive change in any case. We
+have had issues with race conditions in the scheduler paths in the
+past, that I would prefer to have in the test.
 
-Reviewed-by: Davidlohr Bueso <dave@stgolabs.net>
+The scheduler has become incredibly complex over time with new
+features such as core scheduling and heisenbugs are showing up. I am
+still fighting an old 4.19 kernel issue which is likely scheduler
+related, for instance.
 
->---
-> kernel/locking/locktorture.c | 12 +++++++-----
-> 1 file changed, 7 insertions(+), 5 deletions(-)
->
->diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
->index 8968fd65a90d..b64a528e511c 100644
->--- a/kernel/locking/locktorture.c
->+++ b/kernel/locking/locktorture.c
->@@ -48,6 +48,7 @@ torture_param(int, stat_interval, 60,
-> torture_param(int, stutter, 5, "Number of jiffies to run/halt test, 0=disable");
-> torture_param(int, rt_boost, 2,
-> 		"Do periodic rt-boost. 0=Disable, 1=Only for rt_mutex, 2=For all lock types.");
->+torture_param(int, rt_boost_factor, 50, "A factor determining how often rt-boost happens.");
-> torture_param(int, verbose, 1,
-> 	     "Enable verbose debugging printk()s");
-> torture_param(int, nlocks, 1,
->@@ -133,12 +134,12 @@ static void torture_lock_busted_write_unlock(int tid __maybe_unused)
->
-> static void __torture_rt_boost(struct torture_random_state *trsp)
-> {
->-	const unsigned int factor = 50000; /* yes, quite arbitrary */
->+	const unsigned int factor = rt_boost_factor;
->
-> 	if (!rt_task(current)) {
-> 		/*
->-		 * Boost priority once every ~50k operations. When the
->-		 * task tries to take the lock, the rtmutex it will account
->+		 * Boost priority once every rt_boost_factor operations. When
->+		 * the task tries to take the lock, the rtmutex it will account
-
-Nit: maybe refer to it as 'rt_boost_factor'?
-
-> 		 * for the new priority, and do any corresponding pi-dance.
-> 		 */
-> 		if (trsp && !(torture_random(trsp) %
->@@ -148,8 +149,9 @@ static void __torture_rt_boost(struct torture_random_state *trsp)
-> 			return;
-> 	} else {
-> 		/*
->-		 * The task will remain boosted for another ~500k operations,
->-		 * then restored back to its original prio, and so forth.
->+		 * The task will remain boosted for another 10*rt_boost_factor
->+		 * operations, then restored back to its original prio, and so
->+		 * forth.
-> 		 *
-> 		 * When @trsp is nil, we want to force-reset the task for
-> 		 * stopping the kthread.
->-- 
->2.39.0.rc1.256.g54fd8350bd-goog
->
+Thanks.
