@@ -2,293 +2,106 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B7B63C4332F
-	for <rcu@archiver.kernel.org>; Fri,  9 Dec 2022 02:27:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BBB24C4332F
+	for <rcu@archiver.kernel.org>; Fri,  9 Dec 2022 03:50:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229498AbiLIC1C (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 8 Dec 2022 21:27:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52066 "EHLO
+        id S229948AbiLIDuI (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 8 Dec 2022 22:50:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229838AbiLIC1B (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 8 Dec 2022 21:27:01 -0500
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BFC2442FE
-        for <rcu@vger.kernel.org>; Thu,  8 Dec 2022 18:27:00 -0800 (PST)
-Received: by mail-lj1-x22b.google.com with SMTP id a19so3574941ljk.0
-        for <rcu@vger.kernel.org>; Thu, 08 Dec 2022 18:26:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=X8MOoXqUDbJlb+GBoy+k3WpGikVWg8B+EcbBrdi8ENo=;
-        b=YQ8wH3AiTUIlVGtfZN2A8ucpwgUqcZS6x/T+MesrZCOJdztadQl8j4dqJ04LuhHra3
-         MZrQWtg1au970Feqft5JmV00Odtwusx43Mdet4Xn+YM/FgMli9VC8sSPyS2wfze8pqjJ
-         em+dS+UGk1uNJ8SQV+rdAHtSBuNAhDwX57fGU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=X8MOoXqUDbJlb+GBoy+k3WpGikVWg8B+EcbBrdi8ENo=;
-        b=8AI2SDU9UIymx6xOhOtEiPSjQvFiILVxI+Uiv/oLrRgyY11j5quuC8J3w9R8eODWTG
-         Xx8fpoG9Fo8ZSf0RN5uUxrSwkSWNYR4euA/vEwaPPQ8HGrK6pMeiiCdVHQp98pRW6OZY
-         8U8gRJIQ7pQuJB95F790aF+IMn1KMXyvFTVn3gA0kED4DeV7GCk3xv4k2Bg401Wq/2bg
-         NyctBa4uyVz81tgxSRSvdZsKaoJRHeiNyJ2/HG184IkhLseeLP1X0e864F9UCZ9dgP75
-         030Ce4WNqXJyl+ue6zrnmhynhMC4NnLk1uoQXbgXEMxInmr4koDvA0Woecrz+57rO11w
-         UyfA==
-X-Gm-Message-State: ANoB5pku45zTn8bcyBFqy4/IoriNaXJnkSTYQQcKgf+kLIr1wEJuufe7
-        x8a/r4zt+l6kT2ACEzX2xCgc8XFzKSiCDEjl16MCpmKk1Dp8gA==
-X-Google-Smtp-Source: AA0mqf49I+hd4NrBtlIhKZM0vn2WLRcWJlhiLngo7GPuQAUvLaVEFBNb+i8bMoKa60tdWPMkFsWmIWtAuaxgu7REiNs=
-X-Received: by 2002:a05:651c:124c:b0:279:f45e:ccd6 with SMTP id
- h12-20020a05651c124c00b00279f45eccd6mr6316673ljh.483.1670552818312; Thu, 08
- Dec 2022 18:26:58 -0800 (PST)
-MIME-Version: 1.0
-References: <20221209022305.321149-1-joel@joelfernandes.org>
-In-Reply-To: <20221209022305.321149-1-joel@joelfernandes.org>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Thu, 8 Dec 2022 21:26:46 -0500
-Message-ID: <CAEXW_YT+Hwk1RC=QmPpUKGNa3kyPaBdZByEeAPFKD91=dm2XXw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] locktorture: Allow non-rtmutex lock types to be boosted
-To:     linux-kernel@vger.kernel.org
-Cc:     Davidlohr Bueso <dave@stgolabs.net>,
+        with ESMTP id S229943AbiLIDuG (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 8 Dec 2022 22:50:06 -0500
+Received: from beige.elm.relay.mailchannels.net (beige.elm.relay.mailchannels.net [23.83.212.16])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E0B7B2EEE;
+        Thu,  8 Dec 2022 19:50:01 -0800 (PST)
+X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+        by relay.mailchannels.net (Postfix) with ESMTP id 6A3F510098B;
+        Fri,  9 Dec 2022 03:50:00 +0000 (UTC)
+Received: from pdx1-sub0-mail-a263.dreamhost.com (unknown [127.0.0.6])
+        (Authenticated sender: dreamhost)
+        by relay.mailchannels.net (Postfix) with ESMTPA id D72EB100BF8;
+        Fri,  9 Dec 2022 03:49:59 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1670557799; a=rsa-sha256;
+        cv=none;
+        b=Mb2OI5TVpI7DEpWH65YWvc37jO47RfLUOUkUSBnpAreSRf1jU8VBXGGAnzFTiISbZD2C45
+        ZbeMbB4LuDaDXRF9OwialdTYbcqttP9/56O2vW7aslT1vmarQTWPfZsckZc7uHrLt6b4PC
+        cTiHfXU6/zbQIfC83c/1yk4jTS+UGR+sLvFBs3czhLQmYV7GQjJKZSWXP0fCYBdSHcyNuq
+        AtgVMEIrY80BtzNwPFbMjPDEiasqKxaBadzuqzq4+AZzw42xLVzC/ezEsbbsoUscGIBrf6
+        zoJ2W7OkjXWYMlgM5rU+TVnk24Xinq7lmxbUHWYpXHDrSAM8x84vlv9chm0klA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mailchannels.net;
+        s=arc-2022; t=1670557799;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:dkim-signature;
+        bh=cbxtvkRhRL+tnV05JpD/zco8wP6mLe11Sn32Cdb8ZVU=;
+        b=Rv3EoD80Vn5KXdm7d44p43iipwk0lIz/klsi+SaG8mlhkCOCex8cXcvjUpen8DOaiox/UN
+        BKOGxfmHdTbokNXhn5jek6SD6Vk01kX1gCpGaSVi2qJtRGp6olArx0hKPRiJSQSnv/r7RS
+        OfMKC/IoNWPABmQ6KrM56UHYY/t/FnxY2c3QLXMV7GHTtvPDSbp5dSZn4casrl1Kfzd+LL
+        zLjQLEzHi2yurZS0or2M5hEYDa3UX/uwby1vOMqLUq5tbzlwL2jTDwJR3/2+1Qlyod/Cgg
+        eDsf29GwFJ2VkwaAS3a/i53WSWYeI9b60VEdQ495CSICBGYmS9k6C+MqrvsndA==
+ARC-Authentication-Results: i=1;
+        rspamd-d48c5ddb-hdvm5;
+        auth=pass smtp.auth=dreamhost smtp.mailfrom=dave@stgolabs.net
+X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: dreamhost|x-authsender|dave@stgolabs.net
+X-MailChannels-Auth-Id: dreamhost
+X-Shelf-Arithmetic: 454c2ce13f103b60_1670557800156_2839342034
+X-MC-Loop-Signature: 1670557800156:299660159
+X-MC-Ingress-Time: 1670557800155
+Received: from pdx1-sub0-mail-a263.dreamhost.com (pop.dreamhost.com
+ [64.90.62.162])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
+        by 100.103.24.106 (trex/6.7.1);
+        Fri, 09 Dec 2022 03:50:00 +0000
+Received: from offworld (ip72-199-50-187.sd.sd.cox.net [72.199.50.187])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: dave@stgolabs.net)
+        by pdx1-sub0-mail-a263.dreamhost.com (Postfix) with ESMTPSA id 4NSxqW1chrzHF;
+        Thu,  8 Dec 2022 19:49:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=stgolabs.net;
+        s=dreamhost; t=1670557799;
+        bh=cbxtvkRhRL+tnV05JpD/zco8wP6mLe11Sn32Cdb8ZVU=;
+        h=Date:From:To:Cc:Subject:Content-Type;
+        b=HB2X6gxfOPJsQfZlIxlp1gJZbBKdLCHJINv05QwGmzgYbKyhgirnvPkMUE8P8C64M
+         ScwWRjekpkywV6FsOFjwnH7T2Cd7riP/Yr04fT8TGY2K4mToRVXJWWVOfFLy/WC6X7
+         v+UEXKe1VQExN2FDNti9B1AvlMGuhG89spNbkKRt0rRv0DwPdUmFmDcOP3Cte+Eq5U
+         /fuVa1irEiGna//TGNbKyHr+YV4dkm+8kcptfbqYmBhcIjcyFBW7r+0SPtEuiZvg9T
+         ahk0FRbjKRU9gQeg9Gbn96kEvG5VAWVXz2QV5014x4pndWSBqmyh+7yjj+X/EOE6eS
+         vohzBXzCQ8jNA==
+Date:   Thu, 8 Dec 2022 19:25:50 -0800
+From:   Davidlohr Bueso <dave@stgolabs.net>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org,
         Josh Triplett <josh@joshtriplett.org>,
         "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
         connoro@google.com
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH v2 1/2] locktorture: Allow non-rtmutex lock types to be
+ boosted
+Message-ID: <20221209032550.p4tcyypgkuspp2ur@offworld>
+References: <20221209022305.321149-1-joel@joelfernandes.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20221209022305.321149-1-joel@joelfernandes.org>
+User-Agent: NeoMutt/20220429
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Dec 8, 2022 at 9:23 PM Joel Fernandes (Google)
-<joel@joelfernandes.org> wrote:
->
-> Currently RT boosting is only done for rtmutex_lock, however with proxy
-> execution, we also have the mutex_lock participating in priorities. To
-> exercise the testing better, add RT boosting to other lock testing types
-> as well, using a new knob (rt_boost).
->
-> Tested with boot parameters:
-> locktorture.torture_type=mutex_lock
-> locktorture.onoff_interval=1
-> locktorture.nwriters_stress=8
-> locktorture.stutter=0
-> locktorture.rt_boost=1
-> locktorture.rt_boost_factor=1
-> locktorture.nlocks=3
->
-> For the rtmutex test, rt_boost is always enabled even if disabling is
-> requested.
+On Fri, 09 Dec 2022, Joel Fernandes (Google) wrote:
 
-Sorry, these 2 lines are outdated, I'll hope for you to delete the 2
-lines, or I can respin and send later.
+>Currently RT boosting is only done for rtmutex_lock, however with proxy
+>execution, we also have the mutex_lock participating in priorities. To
+>exercise the testing better, add RT boosting to other lock testing types
+>as well, using a new knob (rt_boost).
 
-thanks,
+No particular objection to the patches, but shouldn't these go as part
+of the next iteration of the PE series?
 
- - Joel
-
-
->
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> ---
->  kernel/locking/locktorture.c | 99 ++++++++++++++++++++----------------
->  1 file changed, 56 insertions(+), 43 deletions(-)
->
-> diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
-> index bc3557677eed..8968fd65a90d 100644
-> --- a/kernel/locking/locktorture.c
-> +++ b/kernel/locking/locktorture.c
-> @@ -46,6 +46,8 @@ torture_param(int, shutdown_secs, 0, "Shutdown time (j), <= zero to disable.");
->  torture_param(int, stat_interval, 60,
->              "Number of seconds between stats printk()s");
->  torture_param(int, stutter, 5, "Number of jiffies to run/halt test, 0=disable");
-> +torture_param(int, rt_boost, 2,
-> +               "Do periodic rt-boost. 0=Disable, 1=Only for rt_mutex, 2=For all lock types.");
->  torture_param(int, verbose, 1,
->              "Enable verbose debugging printk()s");
->  torture_param(int, nlocks, 1,
-> @@ -129,15 +131,49 @@ static void torture_lock_busted_write_unlock(int tid __maybe_unused)
->           /* BUGGY, do not use in real life!!! */
->  }
->
-> -static void torture_boost_dummy(struct torture_random_state *trsp)
-> +static void __torture_rt_boost(struct torture_random_state *trsp)
->  {
-> -       /* Only rtmutexes care about priority */
-> +       const unsigned int factor = 50000; /* yes, quite arbitrary */
-> +
-> +       if (!rt_task(current)) {
-> +               /*
-> +                * Boost priority once every ~50k operations. When the
-> +                * task tries to take the lock, the rtmutex it will account
-> +                * for the new priority, and do any corresponding pi-dance.
-> +                */
-> +               if (trsp && !(torture_random(trsp) %
-> +                             (cxt.nrealwriters_stress * factor))) {
-> +                       sched_set_fifo(current);
-> +               } else /* common case, do nothing */
-> +                       return;
-> +       } else {
-> +               /*
-> +                * The task will remain boosted for another ~500k operations,
-> +                * then restored back to its original prio, and so forth.
-> +                *
-> +                * When @trsp is nil, we want to force-reset the task for
-> +                * stopping the kthread.
-> +                */
-> +               if (!trsp || !(torture_random(trsp) %
-> +                              (cxt.nrealwriters_stress * factor * 2))) {
-> +                       sched_set_normal(current, 0);
-> +               } else /* common case, do nothing */
-> +                       return;
-> +       }
-> +}
-> +
-> +static void torture_rt_boost(struct torture_random_state *trsp)
-> +{
-> +       if (rt_boost != 2)
-> +               return;
-> +
-> +       __torture_rt_boost(trsp);
->  }
->
->  static struct lock_torture_ops lock_busted_ops = {
->         .writelock      = torture_lock_busted_write_lock,
->         .write_delay    = torture_lock_busted_write_delay,
-> -       .task_boost     = torture_boost_dummy,
-> +       .task_boost     = torture_rt_boost,
->         .writeunlock    = torture_lock_busted_write_unlock,
->         .readlock       = NULL,
->         .read_delay     = NULL,
-> @@ -181,7 +217,7 @@ __releases(torture_spinlock)
->  static struct lock_torture_ops spin_lock_ops = {
->         .writelock      = torture_spin_lock_write_lock,
->         .write_delay    = torture_spin_lock_write_delay,
-> -       .task_boost     = torture_boost_dummy,
-> +       .task_boost     = torture_rt_boost,
->         .writeunlock    = torture_spin_lock_write_unlock,
->         .readlock       = NULL,
->         .read_delay     = NULL,
-> @@ -208,7 +244,7 @@ __releases(torture_spinlock)
->  static struct lock_torture_ops spin_lock_irq_ops = {
->         .writelock      = torture_spin_lock_write_lock_irq,
->         .write_delay    = torture_spin_lock_write_delay,
-> -       .task_boost     = torture_boost_dummy,
-> +       .task_boost     = torture_rt_boost,
->         .writeunlock    = torture_lock_spin_write_unlock_irq,
->         .readlock       = NULL,
->         .read_delay     = NULL,
-> @@ -277,7 +313,7 @@ __releases(torture_rwlock)
->  static struct lock_torture_ops rw_lock_ops = {
->         .writelock      = torture_rwlock_write_lock,
->         .write_delay    = torture_rwlock_write_delay,
-> -       .task_boost     = torture_boost_dummy,
-> +       .task_boost     = torture_rt_boost,
->         .writeunlock    = torture_rwlock_write_unlock,
->         .readlock       = torture_rwlock_read_lock,
->         .read_delay     = torture_rwlock_read_delay,
-> @@ -320,7 +356,7 @@ __releases(torture_rwlock)
->  static struct lock_torture_ops rw_lock_irq_ops = {
->         .writelock      = torture_rwlock_write_lock_irq,
->         .write_delay    = torture_rwlock_write_delay,
-> -       .task_boost     = torture_boost_dummy,
-> +       .task_boost     = torture_rt_boost,
->         .writeunlock    = torture_rwlock_write_unlock_irq,
->         .readlock       = torture_rwlock_read_lock_irq,
->         .read_delay     = torture_rwlock_read_delay,
-> @@ -362,7 +398,7 @@ __releases(torture_mutex)
->  static struct lock_torture_ops mutex_lock_ops = {
->         .writelock      = torture_mutex_lock,
->         .write_delay    = torture_mutex_delay,
-> -       .task_boost     = torture_boost_dummy,
-> +       .task_boost     = torture_rt_boost,
->         .writeunlock    = torture_mutex_unlock,
->         .readlock       = NULL,
->         .read_delay     = NULL,
-> @@ -460,7 +496,7 @@ static struct lock_torture_ops ww_mutex_lock_ops = {
->         .exit           = torture_ww_mutex_exit,
->         .writelock      = torture_ww_mutex_lock,
->         .write_delay    = torture_mutex_delay,
-> -       .task_boost     = torture_boost_dummy,
-> +       .task_boost     = torture_rt_boost,
->         .writeunlock    = torture_ww_mutex_unlock,
->         .readlock       = NULL,
->         .read_delay     = NULL,
-> @@ -478,37 +514,6 @@ __acquires(torture_rtmutex)
->         return 0;
->  }
->
-> -static void torture_rtmutex_boost(struct torture_random_state *trsp)
-> -{
-> -       const unsigned int factor = 50000; /* yes, quite arbitrary */
-> -
-> -       if (!rt_task(current)) {
-> -               /*
-> -                * Boost priority once every ~50k operations. When the
-> -                * task tries to take the lock, the rtmutex it will account
-> -                * for the new priority, and do any corresponding pi-dance.
-> -                */
-> -               if (trsp && !(torture_random(trsp) %
-> -                             (cxt.nrealwriters_stress * factor))) {
-> -                       sched_set_fifo(current);
-> -               } else /* common case, do nothing */
-> -                       return;
-> -       } else {
-> -               /*
-> -                * The task will remain boosted for another ~500k operations,
-> -                * then restored back to its original prio, and so forth.
-> -                *
-> -                * When @trsp is nil, we want to force-reset the task for
-> -                * stopping the kthread.
-> -                */
-> -               if (!trsp || !(torture_random(trsp) %
-> -                              (cxt.nrealwriters_stress * factor * 2))) {
-> -                       sched_set_normal(current, 0);
-> -               } else /* common case, do nothing */
-> -                       return;
-> -       }
-> -}
-> -
->  static void torture_rtmutex_delay(struct torture_random_state *trsp)
->  {
->         const unsigned long shortdelay_us = 2;
-> @@ -534,10 +539,18 @@ __releases(torture_rtmutex)
->         rt_mutex_unlock(&torture_rtmutex);
->  }
->
-> +static void torture_rt_boost_rtmutex(struct torture_random_state *trsp)
-> +{
-> +       if (!rt_boost)
-> +               return;
-> +
-> +       __torture_rt_boost(trsp);
-> +}
-> +
->  static struct lock_torture_ops rtmutex_lock_ops = {
->         .writelock      = torture_rtmutex_lock,
->         .write_delay    = torture_rtmutex_delay,
-> -       .task_boost     = torture_rtmutex_boost,
-> +       .task_boost     = torture_rt_boost_rtmutex,
->         .writeunlock    = torture_rtmutex_unlock,
->         .readlock       = NULL,
->         .read_delay     = NULL,
-> @@ -604,7 +617,7 @@ __releases(torture_rwsem)
->  static struct lock_torture_ops rwsem_lock_ops = {
->         .writelock      = torture_rwsem_down_write,
->         .write_delay    = torture_rwsem_write_delay,
-> -       .task_boost     = torture_boost_dummy,
-> +       .task_boost     = torture_rt_boost,
->         .writeunlock    = torture_rwsem_up_write,
->         .readlock       = torture_rwsem_down_read,
->         .read_delay     = torture_rwsem_read_delay,
-> @@ -656,7 +669,7 @@ static struct lock_torture_ops percpu_rwsem_lock_ops = {
->         .exit           = torture_percpu_rwsem_exit,
->         .writelock      = torture_percpu_rwsem_down_write,
->         .write_delay    = torture_rwsem_write_delay,
-> -       .task_boost     = torture_boost_dummy,
-> +       .task_boost     = torture_rt_boost,
->         .writeunlock    = torture_percpu_rwsem_up_write,
->         .readlock       = torture_percpu_rwsem_down_read,
->         .read_delay     = torture_rwsem_read_delay,
-> --
-> 2.39.0.rc1.256.g54fd8350bd-goog
->
+Thanks,
+Davidlohr
