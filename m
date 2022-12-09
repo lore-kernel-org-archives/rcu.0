@@ -2,122 +2,87 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 33B79C04FDE
-	for <rcu@archiver.kernel.org>; Fri,  9 Dec 2022 01:10:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C4222C4167B
+	for <rcu@archiver.kernel.org>; Fri,  9 Dec 2022 02:00:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229777AbiLIBJ7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 8 Dec 2022 20:09:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51030 "EHLO
+        id S229758AbiLICAT (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 8 Dec 2022 21:00:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229710AbiLIBJ6 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 8 Dec 2022 20:09:58 -0500
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1E1980A12;
-        Thu,  8 Dec 2022 17:09:56 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4NStGl2ZmNz4f3pFK;
-        Fri,  9 Dec 2022 09:09:51 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP4 (Coremail) with SMTP id gCh0CgB3m9jdipJjIEibBw--.55652S5;
-        Fri, 09 Dec 2022 09:09:54 +0800 (CST)
-From:   Hou Tao <houtao@huaweicloud.com>
-To:     bpf@vger.kernel.org
-Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        houtao1@huawei.com
-Subject: [PATCH bpf-next v2 1/2] bpf: Reuse freed element in free_by_rcu during allocation
-Date:   Fri,  9 Dec 2022 09:09:46 +0800
-Message-Id: <20221209010947.3130477-2-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20221209010947.3130477-1-houtao@huaweicloud.com>
-References: <20221209010947.3130477-1-houtao@huaweicloud.com>
+        with ESMTP id S229760AbiLICAS (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 8 Dec 2022 21:00:18 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58E5555A95;
+        Thu,  8 Dec 2022 18:00:17 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AF64462102;
+        Fri,  9 Dec 2022 02:00:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 112D1C433F0;
+        Fri,  9 Dec 2022 02:00:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1670551216;
+        bh=ZfWZgDyunGe+ymQUBofAg3W3Vow492/HayKThmDQ7js=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=C0CgDZBLFAGJNs+7JpSM7c6bTrNtA3BP/jz8u8V8CifjuUleD0lWeDCU9UNJGgfts
+         htfWTG71HyNIO9ODGfebPJIk4w6taD3K7CUFC113MdsGXcHHg7ynTCUj6VSdd2O7Pr
+         qtjAsvtqmUQY1VjL/7ulbZ2zuiSbMjkssJgh1Len1XCoTnyVbf6nnMNotmMEnsuZjs
+         KuihWFmqiyvwcXBP4Yc5GON2JqzapOzU8V5x79Kn6sTBbuSnqzM3L6sn+lRYG0LjAQ
+         tDWTcVJLAXRYgPGaG7L9hF+ScUmkR5eF0hZ3DHm1Dm80uN2oVAbaIiDpmsIK3cFHKn
+         j9JqnPP6jqLBQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id DDC7CE1B4D8;
+        Fri,  9 Dec 2022 02:00:15 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgB3m9jdipJjIEibBw--.55652S5
-X-Coremail-Antispam: 1UD129KBjvJXoW7AryxtrWUtr1fuFW8tr17GFg_yoW8uw15pr
-        sxGr1rJan5ZF1a9ayavFykCr9xCwn5J3sxGFW8Cw1ayr1fX34qgrnayr1jvFyfCr4vy3Wa
-        yr1kKr42ka15WaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUB0b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUGw
-        A2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
-        Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
-        Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64
-        vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
-        jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
-        x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK
-        8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
-        0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU2mL9UUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
+Subject: Re: [PATCH bpf-next v2 0/2] Misc optimizations for bpf mem allocator
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <167055121590.16670.16541321948945881937.git-patchwork-notify@kernel.org>
+Date:   Fri, 09 Dec 2022 02:00:15 +0000
+References: <20221209010947.3130477-1-houtao@huaweicloud.com>
+In-Reply-To: <20221209010947.3130477-1-houtao@huaweicloud.com>
+To:     Hou Tao <houtao@huaweicloud.com>
+Cc:     bpf@vger.kernel.org, martin.lau@linux.dev, andrii@kernel.org,
+        song@kernel.org, haoluo@google.com, yhs@fb.com, ast@kernel.org,
+        daniel@iogearbox.net, kpsingh@kernel.org, sdf@google.com,
+        jolsa@kernel.org, john.fastabend@gmail.com, paulmck@kernel.org,
+        rcu@vger.kernel.org, houtao1@huawei.com
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Hou Tao <houtao1@huawei.com>
+Hello:
 
-When there are batched freeing operations on a specific CPU, part of
-the freed elements ((high_watermark - lower_watermark) / 2 + 1) will be
-indirectly moved into waiting_for_gp list through free_by_rcu list.
-After call_rcu_in_progress becomes false again, the remaining elements
-in free_by_rcu list will be moved to waiting_for_gp list by the next
-invocation of free_bulk(). However if the expiration of RCU tasks trace
-grace period is relatively slow, none element in free_by_rcu list will
-be moved.
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-So instead of invoking __alloc_percpu_gfp() or kmalloc_node() to
-allocate a new object, in alloc_bulk() just check whether or not there is
-freed element in free_by_rcu list and reuse it if available.
+On Fri,  9 Dec 2022 09:09:45 +0800 you wrote:
+> From: Hou Tao <houtao1@huawei.com>
+> 
+> Hi,
+> 
+> The patchset is just misc optimizations for bpf mem allocator. Patch 1
+> fixes the OOM problem found during running hash-table update benchmark
+> from qp-trie patchset [0]. The benchmark will add htab elements in
+> batch and then delete elements in batch, so freed objects will stack on
+> free_by_rcu and wait for the expiration of RCU grace period. There can
+> be tens of thousands of freed objects and these objects are not
+> available for new allocation, so adding htab element will continue to do
+> new allocation.
+> 
+> [...]
 
-Acked-by: Yonghong Song <yhs@fb.com>
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- kernel/bpf/memalloc.c | 21 ++++++++++++++++++---
- 1 file changed, 18 insertions(+), 3 deletions(-)
+Here is the summary with links:
+  - [bpf-next,v2,1/2] bpf: Reuse freed element in free_by_rcu during allocation
+    https://git.kernel.org/bpf/bpf-next/c/0893d6007db5
+  - [bpf-next,v2,2/2] bpf: Skip rcu_barrier() if rcu_trace_implies_rcu_gp() is true
+    https://git.kernel.org/bpf/bpf-next/c/822ed78fab13
 
-diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
-index 8f0d65f2474a..04d96d1b98a3 100644
---- a/kernel/bpf/memalloc.c
-+++ b/kernel/bpf/memalloc.c
-@@ -171,9 +171,24 @@ static void alloc_bulk(struct bpf_mem_cache *c, int cnt, int node)
- 	memcg = get_memcg(c);
- 	old_memcg = set_active_memcg(memcg);
- 	for (i = 0; i < cnt; i++) {
--		obj = __alloc(c, node);
--		if (!obj)
--			break;
-+		/*
-+		 * free_by_rcu is only manipulated by irq work refill_work().
-+		 * IRQ works on the same CPU are called sequentially, so it is
-+		 * safe to use __llist_del_first() here. If alloc_bulk() is
-+		 * invoked by the initial prefill, there will be no running
-+		 * refill_work(), so __llist_del_first() is fine as well.
-+		 *
-+		 * In most cases, objects on free_by_rcu are from the same CPU.
-+		 * If some objects come from other CPUs, it doesn't incur any
-+		 * harm because NUMA_NO_NODE means the preference for current
-+		 * numa node and it is not a guarantee.
-+		 */
-+		obj = __llist_del_first(&c->free_by_rcu);
-+		if (!obj) {
-+			obj = __alloc(c, node);
-+			if (!obj)
-+				break;
-+		}
- 		if (IS_ENABLED(CONFIG_PREEMPT_RT))
- 			/* In RT irq_work runs in per-cpu kthread, so disable
- 			 * interrupts to avoid preemption and interrupts and
+You are awesome, thank you!
 -- 
-2.29.2
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
