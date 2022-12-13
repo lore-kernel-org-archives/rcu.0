@@ -2,254 +2,238 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 088D4C10F31
-	for <rcu@archiver.kernel.org>; Tue, 13 Dec 2022 13:21:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 523D5C4332F
+	for <rcu@archiver.kernel.org>; Tue, 13 Dec 2022 14:57:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235487AbiLMNVP (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 13 Dec 2022 08:21:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39710 "EHLO
+        id S235896AbiLMO5G (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 13 Dec 2022 09:57:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235221AbiLMNVO (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 13 Dec 2022 08:21:14 -0500
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A2791FF91
-        for <rcu@vger.kernel.org>; Tue, 13 Dec 2022 05:21:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1670937673; x=1702473673;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=xqMbWAuvhqGuNP5IIVWZHhpyHK0e16Zb5BjVu0F+KWg=;
-  b=jbYOKMPjEHMSr/jPT42KvK0HiyRJ37SJPYYxfiCzE4N6pS472mjxZ+SJ
-   XDypzWLSg60+JuxN3yR5UE3ja65X7QA+Ln8N0MOn0v2vJA2kBIVvfjWF7
-   MipuQd6ZRRE2pGAIxI8D4k6qRAoB5jqreTG24Utvf4qLVpd33TIaf1I0a
-   ycq/3uDCjNStmVIO2LZf6w5w15C+CA+pM+8oeIs7mWk5PNgRQ9X8S6gIY
-   YyuBk+5Wc7mZkVaMovbpnRXJG7t1PMQ3ORzjArmpZ4sonkLVYAWNXR2ar
-   laLSzTGpzaN3YDc7JtuuHDmYQVMYj0b+Rek3lzBOpIGkjdlI10TMfb3o9
-   g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10559"; a="345188387"
-X-IronPort-AV: E=Sophos;i="5.96,241,1665471600"; 
-   d="scan'208";a="345188387"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2022 05:21:13 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10559"; a="679302098"
-X-IronPort-AV: E=Sophos;i="5.96,241,1665471600"; 
-   d="scan'208";a="679302098"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orsmga008.jf.intel.com with ESMTP; 13 Dec 2022 05:21:12 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.16; Tue, 13 Dec 2022 05:21:11 -0800
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.16 via Frontend Transport; Tue, 13 Dec 2022 05:21:11 -0800
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.172)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.16; Tue, 13 Dec 2022 05:21:11 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=O2bKe8jn5O2QsCjmUugQlqE7ze6fW31Fe3p7NvOC0ICxsWChJ3iMNxB8AMXJgjlEEGwvf6/9KSHVtmE+KuWM8ZJfsvRga7lFeYus2Wx+7dLQF/iBvg0zH1SGMwDPTcIe9rMFcEe3wnztkYN3VwZAjwF98FWKyCozczYCBN/ZTfLW/Ty6CssZ6lFMpwtEzgcY7OOBdrHNssXnC4LY2KwC4EREcuUHg91P/boVmkCEeh8bUHjwxdy02l4W/iYq37CSOjCABoX2ugi+8559hHl0p2de8kNXDMQy2+Y1AgGs0w1K21mUb5U5ra31w3MpcSTgHFTApPq/k+I+nc4i0EcwXg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xqMbWAuvhqGuNP5IIVWZHhpyHK0e16Zb5BjVu0F+KWg=;
- b=GJl8iIGluggC67Bn+Nd+6naxvcY1rE5LhKsoy5/zo5Bc9YyZl7ciaix45ExLCw0vRtjQ3EuoTjgDOlUgjqRJpS8L6ZCGZABP2S96f/WwQSMa8M98B+KF1G0PP5hEl61skiCp1S+ThVWm1x/A9ppOhuCpLVFukI3S2CAjSuw35I+LBbGtKNVhn+hufxA2vy7A7eb/dPEgG3E3x3Bh7iMuGHZAxoJIQIZPpi2QcKIp+LL29jqQ/rwm4cyIDLHCbtgCuMY2B5+tBAsr+lWWCrIQhDDGJ34aloGAm+JCvFXuNNPm/CEWPLsnoE8INyF3iIpOOltR02TDMshjpWerkdbL+w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from PH0PR11MB5880.namprd11.prod.outlook.com (2603:10b6:510:143::14)
- by BL1PR11MB5237.namprd11.prod.outlook.com (2603:10b6:208:310::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5880.19; Tue, 13 Dec
- 2022 13:21:09 +0000
-Received: from PH0PR11MB5880.namprd11.prod.outlook.com
- ([fe80::8f92:b03a:1de2:e315]) by PH0PR11MB5880.namprd11.prod.outlook.com
- ([fe80::8f92:b03a:1de2:e315%6]) with mapi id 15.20.5880.019; Tue, 13 Dec 2022
- 13:21:09 +0000
-From:   "Zhang, Qiang1" <qiang1.zhang@intel.com>
-To:     Joel Fernandes <joel@joelfernandes.org>
-CC:     "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "paulmck@kernel.org" <paulmck@kernel.org>
-Subject: RE: [Report] v4.19 TREE03 splat (stable kernel with ChromeOS patches)
-Thread-Topic: [Report] v4.19 TREE03 splat (stable kernel with ChromeOS
- patches)
-Thread-Index: AQHZDCbIwn8BSHieL0SUCmIjHcp56K5mdPcAgAOvMvCAACj8gIABcjNA
-Date:   Tue, 13 Dec 2022 13:21:09 +0000
-Message-ID: <PH0PR11MB58803E07FC1F7DC60545F405DAE39@PH0PR11MB5880.namprd11.prod.outlook.com>
-References: <PH0PR11MB5880569A84B6DCAA1D5F4837DAE29@PH0PR11MB5880.namprd11.prod.outlook.com>
- <D00B9D88-368D-48E1-BE16-532417EDB7F5@joelfernandes.org>
-In-Reply-To: <D00B9D88-368D-48E1-BE16-532417EDB7F5@joelfernandes.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR11MB5880:EE_|BL1PR11MB5237:EE_
-x-ms-office365-filtering-correlation-id: a298a70f-e42b-4975-aa5d-08dadd0ce616
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 741nLR0BV0nKR7zmfcCrnxZtvhQLlZ5zis7dft4TEENzfVmsHp3iDnVPsxCo8N/6elCWwxx+yoHgRHWnw5EzXwci2jORFH+VFzcKFMkDdW2hMCjj/uOcspf3Mc60GoOEB5TzJh15vIfzwCWeBnT80LnCTHsQyf8lYTh6c8ZnAE4r5YUBv2qanma5qjuUFdplRp5r1kpOJseIZOKpuF6acblnmA9pLRag6YIo24zx75qP3WgYi1zWGk9FKA46roR9K/nWdfetITeMV6bYqnBwo4buKaOpXvnI0K6KEkKXZTdWG9m7qPTkArA26Mo73iW5qEBba6X5aM2IIJRkQs3EOx/u0eKijUfaOFCQC8FWDMx6bvZee1XG9jxbFAOauX54knvYe08yq68fHBzBMLTGjzJnTSWQLgKNQ9U4Up+xBQjBLqFGhouKP1nM0NeINyvfu6xa6cWqDURno3PBTtLsTOAxCSQlEid2yMGQgb2JV7iTmYKoSXapgupv8cJF3oS/R2QAYobdacOKhmnSdC9hUzoE+A9SS6q/mQ1tfYsQasYooKEZgmwi+TuWoI1VSfocuVDZ7JUnJ+Yh1IAXmHEM7E9ghnCFB6tnkVHn7vdz/N90k0rXrL6rRjcT/7srjaT4H2JCEUs8VpNp386dMXM06OOI46RmGXk4SXXp7BJOC6i6eaVQ+80AO+d0rAFlKWyqtcbi8C2aauJ6MwM9aDNRV7B10wsdrGy86texgK8B1NGMgz0dypyNMAHmjA2XEWQiHUqxR/YsXxIHfQGycyJMXQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5880.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(39860400002)(136003)(366004)(346002)(396003)(376002)(451199015)(8676002)(33656002)(316002)(54906003)(2906002)(6916009)(55016003)(122000001)(86362001)(4326008)(66556008)(45080400002)(9686003)(52536014)(8936002)(26005)(478600001)(38100700002)(186003)(82960400001)(966005)(76116006)(83380400001)(64756008)(66446008)(66946007)(5660300002)(38070700005)(66476007)(71200400001)(53546011)(41300700001)(7696005)(6506007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?MUN6ckFuNk5vU3pRdFAzTW9VdkNxSmxaOWZJVWEyVnFoeTR2QUFpdmJwVDJG?=
- =?utf-8?B?NTBOUjd0Z09YdGxiMWlRakNVNGFXSzJ1SDRvMDhERDJpUlliNmVJQ2VoVWNa?=
- =?utf-8?B?MHl3QU1oRjRUUkFPdHdnUU9NRTBzRFZ6NTBvbk96aEJRSitwOWhGY0UzVjJs?=
- =?utf-8?B?QlJDR1BZdUswQVNSNEVtVWU3UXVTVzg1YXZUcUFGNWZJV2VnWnd0UVV1L0lj?=
- =?utf-8?B?TDZTQlJ5YU1xcS8vMVBEcko0TkRPcFVIYWpmOUtQZTU0dHYrRzB5L3EvZmJX?=
- =?utf-8?B?REpPaU9GWlV4ay9KK3lkZ3dQVWZ5RmpTMkdWYWNUMjUrcFJHdWFncTRsWGJX?=
- =?utf-8?B?TTVlVjJsWW5wSjZ0a1o3ZWM2MDZIQXF4Y0dpRWlSb21sZ2hGbGlqU2o5N3Ez?=
- =?utf-8?B?dlVMc002MWIvWXJrUVV3UktwVngrZmtiMDN3YXY5c2MwWXJOcVJQWUxLazU5?=
- =?utf-8?B?eENQQUtxenpJMWE4Wms3MFdUQ3lSa1dBR2dFUE5uWkRKa0dpM3NMa0lpWjVz?=
- =?utf-8?B?OGFDTWM4UnJhWUQ2cTYxNWI0N2JmTWkxb1dmY0dQdkc4TnQ0T1RMc2lvSFF0?=
- =?utf-8?B?a3FTb0Yxc3JycklrQVZZMlIxTnYrbUMrWjlEWnJDSW9ienEwN3p5QS8wVExC?=
- =?utf-8?B?S0hKTlJ2VHppaXoyNGdGZVRCTEs2M0VCM2wvb0I4KzViS0IrWjVQcHVzMGQx?=
- =?utf-8?B?cXJkeXF4R29jbUdrb2pyMVdaLzhFR2kwQlVJcWlsTU5NRW5EMnVFbUxOU01s?=
- =?utf-8?B?TCtST3MyT3BSSTdlS2FGUUgxMmJFMkJuUEIxSzdSMzBVN3V4RzdIQklLcGh0?=
- =?utf-8?B?R2o2Y0hiUmlKa0JXMkdkbnd2bEtsWVhzUTVLL29VQ01DS1h0YWFqc01aNnJW?=
- =?utf-8?B?V1RmNGVvSlBDNjVLM3M2VjVrYzB4TUVSVTdENU5xeWh4LzBXR1dETUhDd2pq?=
- =?utf-8?B?ZDZFMmJZUVRnR0xlMDZldSs4ZWN0d3dCN2cybTBVTkNNRytCZTcwdWw1N3Fs?=
- =?utf-8?B?VWp6S3dqV0lkdG9ZWXVqa2ZiZUdiZU5CWFR1aWNRZGpDeWhubUJEaG9uYmxI?=
- =?utf-8?B?TUlSNDJObkNOQ1p0b1EvRVpGMTh6MHo0bGdreHpnbzVqdFBjVTFFVDFTM0Q3?=
- =?utf-8?B?U1lJeVhPYkZCa0dqUUlBUGxoeEVVcUNGRit2a0tvczg3aGtpQlF3Z3pYaFpy?=
- =?utf-8?B?NlNNWVIyWmpiQW81RnVYZ0ZOSXNvQXBkK0xnb00rdGNYMVRlc29OQU1NOC9x?=
- =?utf-8?B?Kzgzdnhtc0dVekdxdmFLTWFCZHdqcWpJZWdRUEUvdVpDZGVkOVY3Slpqd0ty?=
- =?utf-8?B?cFBNWWlVbWhXaU56TnRVV21ua2FtN1ZuTGJBUThsMU5Bdk5hb1hRYkZBNjBj?=
- =?utf-8?B?TkRhKy9wd0JBQ1REb2xxcythcW5QbHU3TkF3K0YrSHhLY0tpTSswV2s5aEha?=
- =?utf-8?B?aWkzSk5XOWhDNElnZTZob09sQUg2VTl2ejVUZ280dXlKOG9VSVJSbVhmTkFp?=
- =?utf-8?B?YXhXNU1IZ0ZGYkpzR0xELzVCVU9laGFEMnF2TEdZaWM1OTNLWEo5TVcrVWVp?=
- =?utf-8?B?SVcwRnNzaTVFazJDM1N4NVR6MXBkTGNtaFVUMEVTTTZaa2VtblJOdW5XR3Vp?=
- =?utf-8?B?N1NQd0xOUldZR0xkNStPV3Jtb1hVNlBrYzBJL2RVOUZaWW5zL0t4UndXekZD?=
- =?utf-8?B?Z25PU2VEZHk1eWNDNmNuQzVUVEl2RjhEM0RDbzdlTHA1MTlHRE1wOWtucnJH?=
- =?utf-8?B?OGtDL3c5aFJMMm8xQXFSSTVQRHNTZnJvQUl1U2lIMy9JNlVXbnB5S0ZiYXM0?=
- =?utf-8?B?VDYrbExpeWZ5Tkt4cHJnZWxaK2h4R05sOHRyS0RtZDlNeXdwaTJRUzNrOWtN?=
- =?utf-8?B?alhGeVIvQUl2QVFCOVhrMTNONTBVK3U2UEMreGdQdXN3bTNZUFI2cU5EQmhZ?=
- =?utf-8?B?RGQ0TDBwQ1Vad3hrd1Rja0RqV0NyeWtvV0hrRjdTYzhhTGl6MUF0amoxNkg4?=
- =?utf-8?B?aVU0RmtUYk1ZM0dLRVpNNFJ4ZUFUNzJxTGxWNGU3cG9kT21FK2NvcVNWZnRh?=
- =?utf-8?B?MlNTRW9JTzlLc2laTFYxS0YraitXeGd6VDY0NU5YOFlpd0JpdTNjSS9YaXBO?=
- =?utf-8?Q?O1DrAsKEMQKbMuJQUsckn0urX?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        with ESMTP id S236063AbiLMO47 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 13 Dec 2022 09:56:59 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6A2E6379;
+        Tue, 13 Dec 2022 06:56:58 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id l10so2291474plb.8;
+        Tue, 13 Dec 2022 06:56:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Kuc4nUgO/XR9/IXR1IzCd2vTu1wAL/qMjW/mLLbmkGc=;
+        b=RrmKZVM4DTmK68kBoKwpnqT5fT6a+1ei0i+9pcHm4Y+cQ6tFbr7At3lqFX/Icu5syp
+         lhopjPWl3gtV41Bncc6CU2dib/KKWyZLsgr33J60ZqRyneDLpa51o/m7tE4E9l2U40NS
+         81yTNjRrQNCy+sRgOgRmVV6ouQeWzBcewWzim0DW638skjvf+aLKvymdDtUsDkKJ5GsD
+         2atnpsiKPqTLe835f6RIL+DU6yyp9qLo+5duuOLRTiEZOnvuXHY7SdJEunwNQJo/ITYl
+         qxTRLzce2YVzByweQlvhiRiw1IgBfHpkN7XjVitsmcowndoiqdv6nxFt1S6Wo+7PGVF4
+         5hbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Kuc4nUgO/XR9/IXR1IzCd2vTu1wAL/qMjW/mLLbmkGc=;
+        b=5LSpS4zFbEPqfnVHtfAULLGvFfrVDnvxsdDZeQqDlphJZz9PUl03pETY5kKjSZyCPS
+         tPRBd7efrPklWN8wAd3qA8R2oZb38ztS0G3ZHKp2IKCiBO9eTwgA4bLtmsiZ9d9VxnKK
+         NKDLMocVfJp5K17nUvzLx2I9wT4HTxsa8nwV1X2DLxhTwXM15Vej4UgoMnQPUWSErkIu
+         ++prPA1TPuq+f4RSdTPDpWgdywHaHAUZFx+dxnrBGS0dDt6fdXtO/qEZh0c24zosJ3vN
+         vxOjujaJS/LhPX7xWClY0wRq2nBGw/BRi8FqIOmrWkQOOeiNuj6syWAKlk7sZPBzQ1Qe
+         0nlg==
+X-Gm-Message-State: ANoB5pkJ3mdVy6TabQeMGnRHGbXgHrr0nQyoDYQMBsA/jaM8KOEt+Dlh
+        bIH5ye0pDorHVjKxFDGgYUo=
+X-Google-Smtp-Source: AA0mqf6g2cjc5+IZgzWap0jf6DlXtUAS3dfGI+3GOaE7ypcRhl+1saQte0QPwcFhrvzxoJynzD6vLA==
+X-Received: by 2002:a17:902:f54b:b0:188:5e99:d84f with SMTP id h11-20020a170902f54b00b001885e99d84fmr29273515plf.42.1670943418265;
+        Tue, 13 Dec 2022 06:56:58 -0800 (PST)
+Received: from hyeyoo ([114.29.91.56])
+        by smtp.gmail.com with ESMTPSA id s12-20020a170902ea0c00b00189ac5a2340sm8570908plg.124.2022.12.13.06.56.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Dec 2022 06:56:57 -0800 (PST)
+Date:   Tue, 13 Dec 2022 23:56:49 +0900
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, tj@kernel.org, dennis@kernel.org, cl@linux.com,
+        akpm@linux-foundation.org, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, roman.gushchin@linux.dev,
+        linux-mm@kvack.org, bpf@vger.kernel.org, rcu@vger.kernel.org
+Subject: Re: [RFC PATCH bpf-next 0/9] mm, bpf: Add BPF into /proc/meminfo
+Message-ID: <Y5iSsdDmXhC5nxuM@hyeyoo>
+References: <20221212003711.24977-1-laoar.shao@gmail.com>
+ <c43d8d42-ecb1-a044-eb9a-b68d5808562a@suse.cz>
+ <CALOAHbC7xWFAYz0qc1XpREbw8=nAquFNTi5k4TA02UQ_7w5k0A@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5880.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a298a70f-e42b-4975-aa5d-08dadd0ce616
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Dec 2022 13:21:09.5781
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: d6fY/h6o/RCUt5Lw/1cs8l1vj4scs7Bitrj5OFZUO2HgqnoaYd2wLmJnpWoiYuJLSqNV/m7q3A6KzYzBQUGwAw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR11MB5237
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALOAHbC7xWFAYz0qc1XpREbw8=nAquFNTi5k4TA02UQ_7w5k0A@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-PiBPbiBEZWMgMTIsIDIwMjIsIGF0IDY6NDUgQU0sIFpoYW5nLCBRaWFuZzEgPHFpYW5nMS56aGFu
-Z0BpbnRlbC5jb20+IHdyb3RlOg0KPiANCj4g77u/T24gRnJpLCBEZWMgOSwgMjAyMiBhdCAxMToz
-NCBQTSBKb2VsIEZlcm5hbmRlcyA8am9lbEBqb2VsZmVybmFuZGVzLm9yZz4gd3JvdGU6DQo+PiAN
-Cj4+IEhlbGxvLA0KPj4gDQo+PiBJIHNlZSB0aGlzIGFuIGhvdXIgaW50byB0aGUgcnVuIGZvciBU
-UkVFMDMgb24gdjQuMTk6DQo+PiB0b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9yY3V0b3J0dXJlL2Jp
-bi9rdm0uc2ggLS1jcHVzIDMyIC0tZHVyYXRpb24gNjANCj4+IA0KPj4gQ2hlY2tpbmcgdG8gc2Vl
-IGlmIFFpYW5nIGhhcyBhbnkgdGhvdWdodHMgYXMgSSBzYXcgaGltIGNvbW1lbnQgYWJvdXQgYSBz
-aW1pbGFyDQo+PiBpc3N1ZSBpbiBbMV0uDQo+PiANCj4+IFsgMzI0My44NDQ0NDVdIC0tLS0tLS0t
-LS0tLVsgY3V0IGhlcmUgXS0tLS0tLS0tLS0tLV5NDQo+PiBbIDMyNDMuODQ3MTEyXSBXQVJOSU5H
-OiBDUFU6IDEgUElEOiAwIGF0IGtlcm5lbC9rdGhyZWFkLmM6NDExIF9fa3RocmVhZF9iaW5kX21h
-c2srMHgxOS8weDYwXk0NCj4+IFsgMzI0My44NTE1ODVdIE1vZHVsZXMgbGlua2VkIGluOl5NDQo+
-PiBbIDMyNDMuODUzMjk1XSBDUFU6IDEgUElEOiAwIENvbW06IHN3YXBwZXIvMSBOb3QgdGFpbnRl
-ZCA0LjE5LjI2NysgIzFeTQ0KPj4gWyAzMjQzLjg1NjY5OV0gSGFyZHdhcmUgbmFtZTogUUVNVSBT
-dGFuZGFyZCBQQyAoaTQ0MEZYICsgUElJWCwgMTk5NiksIEJJT1MgMS4xNi4wLWRlYmlhbi0xLjE2
-LjAtNCAwNC8wMS8yMDE0Xk0NCj4+IFsgMzI0My44NjAwNTJdIFJJUDogMDAxMDpfX2t0aHJlYWRf
-YmluZF9tYXNrKzB4MTkvMHg2MF5NDQo+PiBbIDMyNDMuODYxNzY5XSBDb2RlOiA0OCA4OSA0MiAy
-MCBjMyA2NiA2NiAyZSAwZiAxZiA4NCAwMCAwMCAwMCAwMCAwMCA5MCA0MSA1NSA0MSA1NCA1NSA0
-OCA4OSBmNSA0OCA4OSBkNiA1MyA0OCA4OSBmYiBlOCAzYyBlOSAwMCAwMCA0OCA4NSBjMCA3NSAw
-OSA8MGY+IDBiIDViIDVkIDQxIDVjIDQxIDVkIGMzIDRjIDhkIGFiIGI0IDA3IDAwIDAwIDRjIDg5
-IGVmIGU4IDZmIDI4Xk0NCj4+IFsgMzI0My44Njc3NTFdIFJTUDogMDAwMDpmZmZmYTU0YjgwMTRm
-ZWMwIEVGTEFHUzogMDAwMTAyNDZeTQ0KPj4gWyAzMjQzLjg2ODk1OV0gUkFYOiAwMDAwMDAwMDAw
-MDAwMDAwIFJCWDogZmZmZjk1NTU1ZWUzYzI0MCBSQ1g6IDAwMDAwMDAwMDAwMDAwMDBeTQ0KPj4g
-WyAzMjQzLjg3MDYwNl0gUkRYOiBmZmZmOTU1NTVmMDYzZDgwIFJTSTogMDAwMDAwMDAwMDAwMDI0
-NiBSREk6IDAwMDAwMDAwZmZmZmZmZmZeTQ0KPj4gWyAzMjQzLjg3MjI0Nl0gUkJQOiBmZmZmZmZm
-ZmI3MjBhMDEwIFIwODogYWY4MmJkY2IxMWY5ZjRmZiBSMDk6IDAwMDAwMDAwMDAwMDAwMDBeTQ0K
-Pj4gWyAzMjQzLjg3Mzg5NF0gUjEwOiBmZmZmYTU0YjgwMTRmZTcwIFIxMTogMDAwMDAwMDA2MjFj
-Y2RjMiBSMTI6IDAwMDAwMDAwMDAwMDAwMDBeTQ0KPj4gWyAzMjQzLjg3NTUzOF0gUjEzOiAwMDAw
-MDAwMDAwMDAwMDAwIFIxNDogMDAwMDAwMDAwMDAwMDAwMCBSMTU6IDAwMDAwMDAwMDAwMDAwMDBe
-TQ0KPj4gWyAzMjQzLjg3NzE4MV0gRlM6ICAwMDAwMDAwMDAwMDAwMDAwKDAwMDApIEdTOmZmZmY5
-NTU1NWYwNDAwMDAoMDAwMCkga25sR1M6MDAwMDAwMDAwMDAwMDAwMF5NDQo+PiBbIDMyNDMuODc4
-Njk4XSBDUzogIDAwMTAgRFM6IDAwMDAgRVM6IDAwMDAgQ1IwOiAwMDAwMDAwMDgwMDUwMDMzXk0N
-Cj4+IFsgMzI0My44Nzk3NDddIENSMjogMDAwMDAwMDAwMDAwMDAwMCBDUjM6IDAwMDAwMDAwMTMw
-MGEwMDAgQ1I0OiAwMDAwMDAwMDAwMDAwNmUwXk0NCj4+IFsgMzI0My44ODEwNTBdIERSMDogMDAw
-MDAwMDAwMDAwMDAwMCBEUjE6IDAwMDAwMDAwMDAwMDAwMDAgRFIyOiAwMDAwMDAwMDAwMDAwMDAw
-Xk0NCj4+IFsgMzI0My44ODIzNThdIERSMzogMDAwMDAwMDAwMDAwMDAwMCBEUjY6IDAwMDAwMDAw
-ZmZmZTBmZjAgRFI3OiAwMDAwMDAwMDAwMDAwNDAwXk0NCj4+IFsgMzI0My44ODM2NjBdIENhbGwg
-VHJhY2U6Xk0NCj4+IFsgMzI0My44ODQ5MjVdICBrdGhyZWFkX3VucGFyaysweDUyLzB4NjBeTQ0K
-Pj4gWyAzMjQzLjg4NTYxM10gIGNwdWhwX29ubGluZV9pZGxlKzB4MzEvMHg1MF5NDQo+PiBbIDMy
-NDMuODg2MzQxXSAgY3B1X3N0YXJ0dXBfZW50cnkrMHg2Mi8weDcwXk0NCj4+IFsgMzI0My44ODcw
-NjNdICBzdGFydF9zZWNvbmRhcnkrMHgxODYvMHgxYjBeTQ0KPj4gWyAzMjQzLjg4Nzc4M10gIHNl
-Y29uZGFyeV9zdGFydHVwXzY0KzB4YTQvMHhiMF5NDQo+PiANCj4+IFsxXSBodHRwczovL2dyb3Vw
-cy5nb29nbGUuY29tL2cvc3l6a2FsbGVyLWJ1Z3MvYy93X0xBUnk2cHh2US9tL2RLalF5SEF4QVFB
-Sg0KPj4gDQo+PiANCj4+IFRoaXMgc2V0IG9mIHNjaGVkdWxlciBwYXRjaGVzIHNlZW1zIHRvIG1h
-a2UgaXQgZ28gYXdheSwgaG93ZXZlciBJIGFtDQo+PiBydW5uaW5nIGEgbG9uZyB3ZWVrZW5kIHRl
-c3QgdG8gY29sbGVjdCBtb3JlIGRhdGE6DQo+PiBodHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9z
-Y20vbGludXgva2VybmVsL2dpdC9qZmVybi9saW51eC5naXQvbG9nLz9oPXJjdS90b3J0dXJlL3Y0
-LjE5LmZpeGVzLndpcC4xMjA5MjINCj4gDQo+IA0KPiBIaSBKb2VsDQo+IA0KPiBJIGFsc28gdXNl
-ZCB0aGUgbGluayBhYm92ZSB0byBkbyB0aGUgVFJFRTAzIHRlc3QsIGxvb2tzIGxpa2UgdGhlIHBy
-b2JsZW0gc3RpbGwgZXhpc3RzOg0KPiANCj4gNTgzNCBbICA5NjYuMDE2MjA1XSAga3RocmVhZF91
-bnBhcmsrMHg1MC8weDYwXk0NCj4gNTgzNSBbICA5NjYuMDE2NDQwXSAgY3B1aHBfb25saW5lX2lk
-bGUrMHgzMS8weDUwXk0NCj4gNTgzNiBbICA5NjYuMDE2Njc4XSAgY3B1X3N0YXJ0dXBfZW50cnkr
-MHg2NS8weDcwXk0NCj4gNTgzNyBbICA5NjYuMDE2OTEzXSAgc3RhcnRfc2Vjb25kYXJ5KzB4MThi
-LzB4MWMwXk0NCj4gNTgzOCBbICA5NjYuMDE3MTQ4XSAgc2Vjb25kYXJ5X3N0YXJ0dXBfNjQrMHhh
-NC8weGIwXk0NCj4gNTgzOSBbICA5NjYuMDE3NDA3XSAtLS1bIGVuZCB0cmFjZSA2MzY5NTNmNzZi
-ODA1NWRiIF0tLS1eTQ0KPiA1ODQwIFsgIDk2Ni4wMTc2OTFdIG1pZ3JhdGlvbi8xICAgICBSICBy
-dW5uaW5nIHRhc2sgICAgMTQ5NTIgICAgMTggICAgICAyIDB4ODAwMDAwMDAgbGFzdF9zbGVlcDog
-OTYxNDA1MzU5MDg0LiAgbGFzdF9ydW5uYSAgICAgIGJsZTogOTYxNzAwODE2NjMxXk0NCj4gNTg0
-MSBbICA5NjYuMDE4NDA2XSBDYWxsIFRyYWNlOl5NDQo+IDU4NDIgWyAgOTY2LjAxODU1OV0gIF9f
-c2NoZWR1bGUrMHg3NWYvMHgxMzIwXk0NCj4gNTg0MyBbICA5NjYuMDE4Nzc1XSAgPyBjcHVocF9p
-bnZva2VfY2FsbGJhY2srMHg4OC8weDYwMF5NDQo+IDU4NDQgWyAgOTY2LjAxOTA0Ml0gID8gX19f
-cHJlZW1wdF9zY2hlZHVsZSsweDE2LzB4MTheTQ0KPiA1ODQ1IFsgIDk2Ni4wMTkzMDJdICA/IHNv
-cnRfcmFuZ2UrMHgyMC8weDIwXk0NCj4gNTg0NiBbICA5NjYuMDE5NTE1XSAgcHJlZW1wdF9zY2hl
-ZHVsZV9jb21tb24rMHgzMi8weDgwXk0NCj4gNTg0NyBbICA5NjYuMDE5Nzc2XSAgX19fcHJlZW1w
-dF9zY2hlZHVsZSsweDE2LzB4MTheTQ0KPiA1ODQ4IFsgIDk2Ni4wMjAwMThdICBfcmF3X3NwaW5f
-dW5sb2NrX2lycSsweDFmLzB4MjBeTQ0KPiA1ODQ5IFsgIDk2Ni4wMjAyNzVdICBzbXBib290X3Ro
-cmVhZF9mbisweDE5NS8weDIzMF5NDQo+IDU4NTAgWyAgOTY2LjAyMDUyNV0gIGt0aHJlYWQrMHgx
-MzkvMHgxNjBeTQ0KPiA1ODUxIFsgIDk2Ni4wMjA3MTddICA/IGt0aHJlYWRfY3JlYXRlX3dvcmtl
-cl9vbl9jcHUrMHg2MC8weDYwXk0NCj4gNTg1MiBbICA5NjYuMDIxMDE0XSAgcmV0X2Zyb21fZm9y
-aysweDM1LzB4NDBeTQ0KPiANCj4gRnJvbSB0aGUgY2FsbHRyYWNlLCB0aGUgc3RhdGUgb2YgbWln
-cmF0aW9uIGt0aHJlYWRzIGlzIG5vdCBjb3JyZWN0LCANCj4gSSdtIGFsc28gbG9va2luZyBhdCB3
-aGF0J3MgZ29pbmcgd3JvbmcuDQo+DQo+VGhhbmtzIGZvciBjaGVja2luZy4gSSBhbHNvIG5vdGlj
-ZWQgdGhhdCB0aGUgc3RhdGUgb2YgdGhvc2UgdGhyZWFkcyBpcyBydW5uaW5nIGluc3RlYWQgb2Yg
-cGFya2VkLCBjYXVzaW5nIHRoZSB3YXJuaW5nLg0KPg0KPi0gSm9lbA0KDQpIaSBKb2VsDQoNCkkg
-ZmluZCB0aGUgVFJFRTAzIGVuYWJsZSBDT05GSUdfU0NIRURfQ09SRSA9IHksIHVuZGVyIHRoaXMg
-Y29uZGl0aW9uLCBpZiB0aGUgY3B1IGdvZXMgb2ZmbGluZSwgDQp3ZSB3aWxsIGRpcmVjdGx5IHNl
-bGVjdCB0aGUgaWRsZSBrdGhyZWFkLCB3aGljaCBsZWFkcyB0byBpdCBwcmVlbXB0aW5nIHRoZSBt
-aWdyYXRpb24ga3RocmVhZC4NCnRocm91Z2ggY2FsbHRyYWNlLCBpdCBjYW4gYWxzbyBiZSBmb3Vu
-ZCAsIHRoZSAgbWlncmF0aW9uLzEgIGt0aHJlYWQgaXMgcHJlZW1wdGVkIGFuZCBzY2hlZHVsZSBv
-dXQuDQoNClsgIDk2Ni4wMTc2OTFdIG1pZ3JhdGlvbi8xICAgICBSICBydW5uaW5nIHRhc2sgICAg
-MTQ5NTIgICANClsgIDk2Ni4wMTg1NTldICBfX3NjaGVkdWxlKzB4NzVmLzB4MTMyMF5NDQpbICA5
-NjYuMDE4Nzc1XSAgPyBjcHVocF9pbnZva2VfY2FsbGJhY2srMHg4OC8weDYwMF5NDQpbICA5NjYu
-MDE5MDQyXSAgPyBfX19wcmVlbXB0X3NjaGVkdWxlKzB4MTYvMHgxOF5NDQpbICA5NjYuMDE5MzAy
-XSAgPyBzb3J0X3JhbmdlKzB4MjAvMHgyMF5NDQpbICA5NjYuMDE5NTE1XSAgcHJlZW1wdF9zY2hl
-ZHVsZV9jb21tb24rMHgzMi8weDgwXk0NClsgIDk2Ni4wMTk3NzZdICBfX19wcmVlbXB0X3NjaGVk
-dWxlKzB4MTYvMHgxOF5NDQpbICA5NjYuMDIwMDE4XSAgX3Jhd19zcGluX3VubG9ja19pcnErMHgx
-Zi8weDIwXk0NClsgIDk2Ni4wMjAyNzVdICBzbXBib290X3RocmVhZF9mbisweDE5NS8weDIzMF5N
-DQpbICA5NjYuMDIwNTI1XSAga3RocmVhZCsweDEzOS8weDE2MF5NDQpbICA5NjYuMDIwNzE3XSAg
-PyBrdGhyZWFkX2NyZWF0ZV93b3JrZXJfb25fY3B1KzB4NjAvMHg2MF5NDQpbICA5NjYuMDIxMDE0
-XSAgcmV0X2Zyb21fZm9yaysweDM1LzB4NDBeTQ0KDQpUaGUgZm9sbG93aW5nIG1vZGlmaWNhdGlv
-biBjYW4gZml4IHRoaXMgd2FybmluZyh0aGlzIGNoYW5nZSBjb21lcyBmcm9tIHRoZSBuZXcga2Vy
-bmVsIHZlcnNpb24pLg0KDQpkaWZmIC0tZ2l0IGEva2VybmVsL3NjaGVkL2NvcmUuYyBiL2tlcm5l
-bC9zY2hlZC9jb3JlLmMNCmluZGV4IDBhY2JjNzcwNmQ3MS4uMWM3NjIyNmEyYzI2IDEwMDY0NA0K
-LS0tIGEva2VybmVsL3NjaGVkL2NvcmUuYw0KKysrIGIva2VybmVsL3NjaGVkL2NvcmUuYw0KQEAg
-LTQxMDksOCArNDEwOSwxMCBAQCBwaWNrX25leHRfdGFzayhzdHJ1Y3QgcnEgKnJxLCBzdHJ1Y3Qg
-dGFza19zdHJ1Y3QgKnByZXYsIHN0cnVjdCBycV9mbGFncyAqcmYpDQogICAgICAgIGJvb2wgZmlf
-YmVmb3JlID0gZmFsc2U7DQoNCiAgICAgICAgY3B1ID0gY3B1X29mKHJxKTsNCi0gICAgICAgaWYg
-KGNwdV9pc19vZmZsaW5lKGNwdSkpDQotICAgICAgICAgICAgICAgcmV0dXJuIGlkbGVfc2NoZWRf
-Y2xhc3MucGlja19uZXh0X3Rhc2socnEsIHByZXYsIHJmKTsNCisgICAgICAgaWYgKGNwdV9pc19v
-ZmZsaW5lKGNwdSkpIHsNCisgICAgICAgICAgICAgICBycS0+Y29yZV9waWNrID0gTlVMTDsNCisg
-ICAgICAgICAgICAgICByZXR1cm4gX19waWNrX25leHRfdGFzayhycSwgcHJldiwgcmYpOw0KKyAg
-ICAgICB9DQoNCg0KVGhhbmtzDQpacWlhbmcNCg0KPg0KPg0KPg0KPiBUaGFua3MNCj4gWnFpYW5n
-DQo+IA0KPj4gDQo+PiBUaGFua3MuDQo=
+On Tue, Dec 13, 2022 at 07:52:42PM +0800, Yafang Shao wrote:
+> On Tue, Dec 13, 2022 at 1:54 AM Vlastimil Babka <vbabka@suse.cz> wrote:
+> >
+> > On 12/12/22 01:37, Yafang Shao wrote:
+> > > Currently there's no way to get BPF memory usage, while we can only
+> > > estimate the usage by bpftool or memcg, both of which are not reliable.
+> > >
+> > > - bpftool
+> > >   `bpftool {map,prog} show` can show us the memlock of each map and
+> > >   prog, but the memlock is vary from the real memory size. The memlock
+> > >   of a bpf object is approximately
+> > >   `round_up(key_size + value_size, 8) * max_entries`,
+> > >   so 1) it can't apply to the non-preallocated bpf map which may
+> > >   increase or decrease the real memory size dynamically. 2) the element
+> > >   size of some bpf map is not `key_size + value_size`, for example the
+> > >   element size of htab is
+> > >   `sizeof(struct htab_elem) + round_up(key_size, 8) + round_up(value_size, 8)`
+> > >   That said the differece between these two values may be very great if
+> > >   the key_size and value_size is small. For example in my verifaction,
+> > >   the size of memlock and real memory of a preallocated hash map are,
+> > >
+> > >   $ grep BPF /proc/meminfo
+> > >   BPF:             1026048 B <<< the size of preallocated memalloc pool
+> > >
+> > >   (create hash map)
+> > >
+> > >   $ bpftool map show
+> > >   3: hash  name count_map  flags 0x0
+> > >           key 4B  value 4B  max_entries 1048576  memlock 8388608B
+> > >
+> > >   $ grep BPF /proc/meminfo
+> > >   BPF:            84919344 B
+> > >
+> > >   So the real memory size is $((84919344 - 1026048)) which is 83893296
+> > >   bytes while the memlock is only 8388608 bytes.
+> > >
+> > > - memcg
+> > >   With memcg we only know that the BPF memory usage is less than
+> > >   memory.usage_in_bytes (or memory.current in v2). Furthermore, we only
+> > >   know that the BPF memory usage is less than $MemTotal if the BPF
+> > >   object is charged into root memcg :)
+> > >
+> > > So we need a way to get the BPF memory usage especially there will be
+> > > more and more bpf programs running on the production environment. The
+> > > memory usage of BPF memory is not trivial, which deserves a new item in
+> > > /proc/meminfo.
+> > >
+> > > This patchset introduce a solution to calculate the BPF memory usage.
+> > > This solution is similar to how memory is charged into memcg, so it is
+> > > easy to understand. It counts three types of memory usage -
+> > >  - page
+> > >    via kmalloc, vmalloc, kmem_cache_alloc or alloc pages directly and
+> > >    their families.
+> > >    When a page is allocated, we will count its size and mark the head
+> > >    page, and then check the head page at page freeing.
+> > >  - slab
+> > >    via kmalloc, kmem_cache_alloc and their families.
+> > >    When a slab object is allocated, we will mark this object in this
+> > >    slab and check it at slab object freeing. That said we need extra memory
+> > >    to store the information of each object in a slab.
+> > >  - percpu
+> > >    via alloc_percpu and its family.
+> > >    When a percpu area is allocated, we will mark this area in this
+> > >    percpu chunk and check it at percpu area freeing. That said we need
+> > >    extra memory to store the information of each area in a percpu chunk.
+> > >
+> > > So we only need to annotate the allcation to add the BPF memory size,
+> > > and the sub of the BPF memory size will be handled automatically at
+> > > freeing. We can annotate it in irq, softirq or process context. To avoid
+> > > counting the nested allcations, for example the percpu backing allocator,
+> > > we reuse the __GFP_ACCOUNT to filter them out. __GFP_ACCOUNT also make
+> > > the count consistent with memcg accounting.
+> >
+> > So you can't easily annotate the freeing places as well, to avoid the whole
+> > tracking infrastructure?
+> 
+> The trouble is kfree_rcu().  for example,
+>     old_item = active_vm_item_set(ACTIVE_VM_BPF);
+>     kfree_rcu();
+>     active_vm_item_set(old_item);
+> If we want to pass the ACTIVE_VM_BPF into the deferred rcu context, we
+> will change lots of code in the RCU subsystem. I'm not sure if it is
+> worth it.
+
+(+Cc rcu folks)
+
+IMO adding new kfree_rcu() varient for BPF that accounts BPF memory
+usage would be much less churn :)
+ 
+> 
+> >  I thought there was a patchset for a whole
+> > bfp-specific memory allocator, where accounting would be implemented
+> > naturally, I would imagine.
+> >
+> 
+> I posted a patchset[1] which annotates both allocating and freeing
+> several months ago.
+> But unfortunately after more investigation and verification I found
+> the deferred freeing context is a problem, which can't be resolved
+> easily.
+> That's why I finally decided to annotate allocating only.
+> 
+> [1]. https://lore.kernel.org/linux-mm/20220921170002.29557-1-laoar.shao@gmail.com/
+> 
+> > > To store the information of a slab or a page, we need to create a new
+> > > member in struct page, but we can do it in page extension which can
+> > > avoid changing the size of struct page. So a new page extension
+> > > active_vm is introduced. Each page and each slab which is allocated as
+> > > BPF memory will have a struct active_vm. The reason it is named as
+> > > active_vm is that we can extend it to other areas easily, for example in
+> > > the future we may use it to count other memory usage.
+> > >
+> > > The new page extension active_vm can be disabled via CONFIG_ACTIVE_VM at
+> > > compile time or kernel parameter `active_vm=` at runtime.
+> >
+> > The issue with page_ext is the extra memory usage, so it was rather intended
+> > for debugging features that can be always compiled in, but only enabled at
+> > runtime when debugging is needed. The overhead is only paid when enabled.
+> > That's at least the case of page_owner and page_table_check. The 32bit
+> > page_idle is rather an oddity that could have instead stayed 64-bit only.
+> >
+> 
+> Right, it seems currently page_ext is for debugging purposes only.
+> 
+> > But this is proposing a page_ext functionality supposed to be enabled at all
+> > times in production, with the goal of improved accounting. Not an on-demand
+> > debugging. I'm afraid the costs will outweight the benefits.
+> >
+> 
+> The memory overhead of this new page extension is (8/4096), which is
+> 0.2% of total memory. Not too big to be acceptable.
+
+It's generally unacceptable to increase sizeof(struct page)
+(nor enabling page_ext by default, and that's the why page_ext is for
+debugging purposes only)
+
+> If the user really
+> thinks this overhead is not accepted, he can set "active_vm=off" to
+> disable it.
+
+I'd say many people won't welcome adding 0.2% of total memory by default
+to get BPF memory usage. 
+
+> To reduce the memory overhead further, I have a bold idea.
+> Actually we don't need to allocate such a page extension for every
+> page,  while we only need to allocate it if the user needs to access
+> it. That said it seems that we can allocate some kind of page
+> extensions dynamically rather than preallocate at booting, but I
+> haven't investigated it deeply to check if it can work. What do you
+> think?
+> 
+> > Just a quick thought, in case the bpf accounting really can't be handled
+> > without marking pages and slab objects - since memcg already has hooks there
+> > without need of page_ext, couldn't it be done by extending the memcg infra
+> > instead?
+> >
+> 
+> We need to make sure the accounting of BPF memory usage is still
+> workable even without memcg, see also the previous discussion[2].
+> 
+> [2]. https://lore.kernel.org/linux-mm/Yy53cgcwx+hTll4R@slm.duckdns.org/
+
+-- 
+Thanks,
+Hyeonggon
