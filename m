@@ -2,130 +2,250 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 11512C4332F
-	for <rcu@archiver.kernel.org>; Tue, 13 Dec 2022 17:17:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 80177C4332F
+	for <rcu@archiver.kernel.org>; Tue, 13 Dec 2022 19:22:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236229AbiLMRRf (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 13 Dec 2022 12:17:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43482 "EHLO
+        id S236769AbiLMTWA (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 13 Dec 2022 14:22:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236190AbiLMRRe (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 13 Dec 2022 12:17:34 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44E6F20BE8
-        for <rcu@vger.kernel.org>; Tue, 13 Dec 2022 09:17:33 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id z4so3984298ljq.6
-        for <rcu@vger.kernel.org>; Tue, 13 Dec 2022 09:17:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=zxE5lRszqVM0ouHR0vbvVZ4o1ASwrAhhJIoATFIJCtw=;
-        b=AsanEacweZDmYofQrypHGYVQOYQhWMaQ7DPTbTDeAqGm981okOHeLFgqt8+bPsalFC
-         YQbr+zOzUQoXjCvCeRdW7KjI3GLRCQ1oliWiRi+imvIXQgLs/KON33vHPcuaIF2lK2jh
-         ORLobf+h6t/ybb2R2gUGmyFh0waeyLQYzhMzI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zxE5lRszqVM0ouHR0vbvVZ4o1ASwrAhhJIoATFIJCtw=;
-        b=bj4e4JK+uasVAEsnVQvozpiq/J2z5B3FygStw1xxYJW8tknjqpGygZEfzB+aVNtAYh
-         8KLk7JJZNzxNlPSX2mb5WCX6fB2HZkvgiEKZ0u+2AO8WmoVc2k4rrZNfk2LEPAJzOqgS
-         LWiVzBZ8tk1MranQozWQK60lzlGKP6DBBeBSh1woie04laizOojmy4D9MdtK0eGbt3yk
-         5u4mP5bGStUSQONeTCWxJ7KYQoyyEGUrjWaonvEQT2B5uW1DZwV81EMEXzg6oL25KFgy
-         D2bdEuYRGe2Fk/3VkPDse/thiqN+6sieFFgMRdDXbjGgPlgAsqjsxBA6ZXWfweMve2rV
-         P5gA==
-X-Gm-Message-State: ANoB5pkH17V+JDUyw6GWFiCzxl1gtWkXbYFSI7qKa+wxF5OPKiUH6Yz6
-        /h96Z2ktSD5VcYsF++5ebjyWQDLFqN4dMRDxGEeA7UmZcl41NbBJ
-X-Google-Smtp-Source: AA0mqf7PmojIa/MT3BQvSbSqqZ1O3bxkA4hdVH4RRavcZHM03v32wnRjGtbnouskp7AfYdJTHFDcAYKcdQsgm2bADVU=
-X-Received: by 2002:a05:651c:90a:b0:277:309:73cb with SMTP id
- e10-20020a05651c090a00b00277030973cbmr32805994ljq.371.1670951851591; Tue, 13
- Dec 2022 09:17:31 -0800 (PST)
+        with ESMTP id S236746AbiLMTV7 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 13 Dec 2022 14:21:59 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C38413D2E;
+        Tue, 13 Dec 2022 11:21:58 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B0B3C614DA;
+        Tue, 13 Dec 2022 19:21:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D646C433F1;
+        Tue, 13 Dec 2022 19:21:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1670959317;
+        bh=416EG1jqoZyfQepWXUOCU6p4qjbCITDKy3iVyn1tW6s=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=ZgPayF5IxW0yNUcmpwTB6EK8/YmmSLJG5Pf/KLo903w5CMzK35p32VmL+x3geytyl
+         603J73ylMdWSV2RW8IawQyZyksY9QCfPpYM35NE3rVqfyjsXeKrjNj86ps387ov3XQ
+         sanljfuiXCJJ3MerXM3xQeenGEDnFgBZ+jSmsHnmdqSm+XKb0R5Oe1N1TbEeDoRtvP
+         NZVXJSfxo1ZbLD1/8dxWDZe9OTSx2UKXPF3cSJYkwKPtQvUJYt+8qLvJtsQJHYsQl8
+         0lRKG2ruqUFlCZ8kgmgANwkBJ+Sl1LlZ3ZcjjwXYnq0lTgwc+5ai4v2nPLxhKXXWiP
+         BajX1Phpc51PQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 9ED615C13B7; Tue, 13 Dec 2022 11:21:56 -0800 (PST)
+Date:   Tue, 13 Dec 2022 11:21:56 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Yafang Shao <laoar.shao@gmail.com>, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, tj@kernel.org, dennis@kernel.org, cl@linux.com,
+        akpm@linux-foundation.org, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, roman.gushchin@linux.dev,
+        linux-mm@kvack.org, bpf@vger.kernel.org, rcu@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [RFC PATCH bpf-next 0/9] mm, bpf: Add BPF into /proc/meminfo
+Message-ID: <20221213192156.GS4001@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20221212003711.24977-1-laoar.shao@gmail.com>
+ <c43d8d42-ecb1-a044-eb9a-b68d5808562a@suse.cz>
+ <CALOAHbC7xWFAYz0qc1XpREbw8=nAquFNTi5k4TA02UQ_7w5k0A@mail.gmail.com>
+ <Y5iSsdDmXhC5nxuM@hyeyoo>
+ <6f9bb391-580e-cfc2-e039-25f47d162d17@suse.cz>
 MIME-Version: 1.0
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Tue, 13 Dec 2022 12:17:20 -0500
-Message-ID: <CAEXW_YR=DvPhk5JWUe7gYHeVsn5d4Wba83x2UB9uqP0EURgk1g@mail.gmail.com>
-Subject: Please apply to v5.10 stable: 29368e093921 ("x86/smpboot: Move
- rcu_cpu_starting() earlier")
-To:     stable <stable@vger.kernel.org>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>, rcu <rcu@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6f9bb391-580e-cfc2-e039-25f47d162d17@suse.cz>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello,
+On Tue, Dec 13, 2022 at 04:52:09PM +0100, Vlastimil Babka wrote:
+> On 12/13/22 15:56, Hyeonggon Yoo wrote:
+> > On Tue, Dec 13, 2022 at 07:52:42PM +0800, Yafang Shao wrote:
+> >> On Tue, Dec 13, 2022 at 1:54 AM Vlastimil Babka <vbabka@suse.cz> wrote:
+> >> >
+> >> > On 12/12/22 01:37, Yafang Shao wrote:
+> >> > > Currently there's no way to get BPF memory usage, while we can only
+> >> > > estimate the usage by bpftool or memcg, both of which are not reliable.
+> >> > >
+> >> > > - bpftool
+> >> > >   `bpftool {map,prog} show` can show us the memlock of each map and
+> >> > >   prog, but the memlock is vary from the real memory size. The memlock
+> >> > >   of a bpf object is approximately
+> >> > >   `round_up(key_size + value_size, 8) * max_entries`,
+> >> > >   so 1) it can't apply to the non-preallocated bpf map which may
+> >> > >   increase or decrease the real memory size dynamically. 2) the element
+> >> > >   size of some bpf map is not `key_size + value_size`, for example the
+> >> > >   element size of htab is
+> >> > >   `sizeof(struct htab_elem) + round_up(key_size, 8) + round_up(value_size, 8)`
+> >> > >   That said the differece between these two values may be very great if
+> >> > >   the key_size and value_size is small. For example in my verifaction,
+> >> > >   the size of memlock and real memory of a preallocated hash map are,
+> >> > >
+> >> > >   $ grep BPF /proc/meminfo
+> >> > >   BPF:             1026048 B <<< the size of preallocated memalloc pool
+> >> > >
+> >> > >   (create hash map)
+> >> > >
+> >> > >   $ bpftool map show
+> >> > >   3: hash  name count_map  flags 0x0
+> >> > >           key 4B  value 4B  max_entries 1048576  memlock 8388608B
+> >> > >
+> >> > >   $ grep BPF /proc/meminfo
+> >> > >   BPF:            84919344 B
+> >> > >
+> >> > >   So the real memory size is $((84919344 - 1026048)) which is 83893296
+> >> > >   bytes while the memlock is only 8388608 bytes.
+> >> > >
+> >> > > - memcg
+> >> > >   With memcg we only know that the BPF memory usage is less than
+> >> > >   memory.usage_in_bytes (or memory.current in v2). Furthermore, we only
+> >> > >   know that the BPF memory usage is less than $MemTotal if the BPF
+> >> > >   object is charged into root memcg :)
+> >> > >
+> >> > > So we need a way to get the BPF memory usage especially there will be
+> >> > > more and more bpf programs running on the production environment. The
+> >> > > memory usage of BPF memory is not trivial, which deserves a new item in
+> >> > > /proc/meminfo.
+> >> > >
+> >> > > This patchset introduce a solution to calculate the BPF memory usage.
+> >> > > This solution is similar to how memory is charged into memcg, so it is
+> >> > > easy to understand. It counts three types of memory usage -
+> >> > >  - page
+> >> > >    via kmalloc, vmalloc, kmem_cache_alloc or alloc pages directly and
+> >> > >    their families.
+> >> > >    When a page is allocated, we will count its size and mark the head
+> >> > >    page, and then check the head page at page freeing.
+> >> > >  - slab
+> >> > >    via kmalloc, kmem_cache_alloc and their families.
+> >> > >    When a slab object is allocated, we will mark this object in this
+> >> > >    slab and check it at slab object freeing. That said we need extra memory
+> >> > >    to store the information of each object in a slab.
+> >> > >  - percpu
+> >> > >    via alloc_percpu and its family.
+> >> > >    When a percpu area is allocated, we will mark this area in this
+> >> > >    percpu chunk and check it at percpu area freeing. That said we need
+> >> > >    extra memory to store the information of each area in a percpu chunk.
+> >> > >
+> >> > > So we only need to annotate the allcation to add the BPF memory size,
+> >> > > and the sub of the BPF memory size will be handled automatically at
+> >> > > freeing. We can annotate it in irq, softirq or process context. To avoid
+> >> > > counting the nested allcations, for example the percpu backing allocator,
+> >> > > we reuse the __GFP_ACCOUNT to filter them out. __GFP_ACCOUNT also make
+> >> > > the count consistent with memcg accounting.
+> >> >
+> >> > So you can't easily annotate the freeing places as well, to avoid the whole
+> >> > tracking infrastructure?
+> >> 
+> >> The trouble is kfree_rcu().  for example,
+> >>     old_item = active_vm_item_set(ACTIVE_VM_BPF);
+> >>     kfree_rcu();
+> >>     active_vm_item_set(old_item);
+> >> If we want to pass the ACTIVE_VM_BPF into the deferred rcu context, we
+> >> will change lots of code in the RCU subsystem. I'm not sure if it is
+> >> worth it.
+> > 
+> > (+Cc rcu folks)
+> > 
+> > IMO adding new kfree_rcu() varient for BPF that accounts BPF memory
+> > usage would be much less churn :)
+> 
+> Alternatively, just account the bpf memory as freed already when calling
+> kfree_rcu()? I think the amount of memory "in flight" to be freed by rcu is
+> a separate issue (if it's actually an issue) and not something each
+> kfree_rcu() user should think about separately?
 
-Please apply to the stable v5.10 kernel, the commit: 29368e093921
-("x86/smpboot:  Move rcu_cpu_starting() earlier").
+If the in-flight memory really does need to be accounted for, then one
+straightforward approach is to use call_rcu() and do the first part of
+the needed accounting at the call_rcu() callsite and the rest of the
+accounting when the callback is invoked.  Or, if memory must be freed
+quickly even on ChromeOS and Android, use call_rcu_hurry() instead
+of call_rcu().
 
-It made it into the mainline in 5.11.  I am able to reproduce the
-following splat without it on v5.10 stable, which is identical to the
-one that the commit fixed:
+Or is there some accounting requirement that I am missing?
 
-[   42.628511] =============================
-[   42.628512] WARNING: suspicious RCU usage
-[   42.628513] 5.10.156+ #7 Not tainted
-[   42.628514] -----------------------------
-[   42.628516] kernel/locking/lockdep.c:3621 RCU-list traversed in
-non-reader section!!
-[   42.628516]
-[   42.628517] other info that might help us debug this:
-[   42.628518]
-[   42.628519]
-[   42.628519] RCU used illegally from offline CPU!
-[   42.628520] rcu_scheduler_active = 1, debug_locks = 1
-[   42.628521] no locks held by swapper/1/0.
-[   42.628522]
-[   42.628522] stack backtrace:
-[   42.628523] CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.10.156+ #7
-[   42.628540] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009),
-BIOS 1.16.0-debian-1.16.0-4 04/01/2014
-[   42.628541] Call Trace:
-[   42.628541]
-[   42.628542] =============================
-[   42.628543] WARNING: suspicious RCU usage
-[   42.628544] 5.10.156+ #7 Not tainted
-[   42.628561] -----------------------------
-[   42.628563] kernel/kprobes.c:300 RCU-list traversed in non-reader section!!
-[   42.628563]
-[   42.628564] other info that might help us debug this:
-[   42.628565]
-[   42.628566]
-[   42.628567] RCU used illegally from offline CPU!
-[   42.628568] rcu_scheduler_active = 1, debug_locks = 1
-[   42.628569] no locks held by swapper/1/0.
-[   42.628570]
-[   42.628570] stack backtrace:
-[   42.628571] CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.10.156+ #7
-[   42.628573] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009),
-BIOS 1.16.0-debian-1.16.0-4 04/01/2014
-[   42.628573] Call Trace:
-[   42.628574]  dump_stack+0x77/0x9b
-[   42.628575]  __is_insn_slot_addr+0x156/0x170
-[   42.628576]  kernel_text_address+0xb1/0xe0
-[   42.628577]  ? get_stack_info+0x2b/0x80
-[   42.628578]  __kernel_text_address+0x9/0x40
-[   42.628578]  show_trace_log_lvl+0x223/0x2f0
-[   42.628579]  ? dump_stack+0x77/0x9b
-[   42.628580]  dump_stack+0x77/0x9b
-[   42.628581]  __lock_acquire.cold+0x326/0x330
-[   42.628581]  lock_acquire+0xbd/0x2a0
-[   42.628582]  ? vprintk_emit+0x6c/0x310
-[   42.628583]  _raw_spin_lock+0x27/0x40
-[   42.628584]  ? vprintk_emit+0x6c/0x310
-[   42.628584]  vprintk_emit+0x6c/0x310
-[   42.628585]  printk+0x63/0x7e
-[   42.628586]  start_secondary+0x1c/0xf0
-[   42.628587]  secondary_startup_64_no_verify+0xc2/0xcb
-[   42.628588]  dump_stack+0x77/0x9b
-[   42.628588]  __lock_acquire.cold+0x326/0x330
-[   42.628589]  lock_acquire+0xbd/0x2a0
-[   42.628590]  ? vprintk_emit+0x6c/0x310
-[   42.628591]  _raw_spin_lock+0x27/0x40
-[   42.628591]  ? vprintk_emit+0x6c/0x310
-[   42.628592]  vprintk_emit+0x6c/0x310
+							Thanx, Paul
 
-Thanks,
-
- - Joel
+> >> >  I thought there was a patchset for a whole
+> >> > bfp-specific memory allocator, where accounting would be implemented
+> >> > naturally, I would imagine.
+> >> >
+> >> 
+> >> I posted a patchset[1] which annotates both allocating and freeing
+> >> several months ago.
+> >> But unfortunately after more investigation and verification I found
+> >> the deferred freeing context is a problem, which can't be resolved
+> >> easily.
+> >> That's why I finally decided to annotate allocating only.
+> >> 
+> >> [1]. https://lore.kernel.org/linux-mm/20220921170002.29557-1-laoar.shao@gmail.com/
+> >> 
+> >> > > To store the information of a slab or a page, we need to create a new
+> >> > > member in struct page, but we can do it in page extension which can
+> >> > > avoid changing the size of struct page. So a new page extension
+> >> > > active_vm is introduced. Each page and each slab which is allocated as
+> >> > > BPF memory will have a struct active_vm. The reason it is named as
+> >> > > active_vm is that we can extend it to other areas easily, for example in
+> >> > > the future we may use it to count other memory usage.
+> >> > >
+> >> > > The new page extension active_vm can be disabled via CONFIG_ACTIVE_VM at
+> >> > > compile time or kernel parameter `active_vm=` at runtime.
+> >> >
+> >> > The issue with page_ext is the extra memory usage, so it was rather intended
+> >> > for debugging features that can be always compiled in, but only enabled at
+> >> > runtime when debugging is needed. The overhead is only paid when enabled.
+> >> > That's at least the case of page_owner and page_table_check. The 32bit
+> >> > page_idle is rather an oddity that could have instead stayed 64-bit only.
+> >> >
+> >> 
+> >> Right, it seems currently page_ext is for debugging purposes only.
+> >> 
+> >> > But this is proposing a page_ext functionality supposed to be enabled at all
+> >> > times in production, with the goal of improved accounting. Not an on-demand
+> >> > debugging. I'm afraid the costs will outweight the benefits.
+> >> >
+> >> 
+> >> The memory overhead of this new page extension is (8/4096), which is
+> >> 0.2% of total memory. Not too big to be acceptable.
+> > 
+> > It's generally unacceptable to increase sizeof(struct page)
+> > (nor enabling page_ext by default, and that's the why page_ext is for
+> > debugging purposes only)
+> > 
+> >> If the user really
+> >> thinks this overhead is not accepted, he can set "active_vm=off" to
+> >> disable it.
+> > 
+> > I'd say many people won't welcome adding 0.2% of total memory by default
+> > to get BPF memory usage. 
+> 
+> Agreed.
+> 
+> >> To reduce the memory overhead further, I have a bold idea.
+> >> Actually we don't need to allocate such a page extension for every
+> >> page,  while we only need to allocate it if the user needs to access
+> >> it. That said it seems that we can allocate some kind of page
+> >> extensions dynamically rather than preallocate at booting, but I
+> >> haven't investigated it deeply to check if it can work. What do you
+> >> think?
+> 
+> There's lots of benefits (simplicity) of page_ext being allocated as it is
+> today. What you're suggesting will be better solved (in few years :) by
+> Matthew's bold ideas about shrinking the current struct page and allocating
+> usecase-specific descriptors.
+> 
+> >> > Just a quick thought, in case the bpf accounting really can't be handled
+> >> > without marking pages and slab objects - since memcg already has hooks there
+> >> > without need of page_ext, couldn't it be done by extending the memcg infra
+> >> > instead?
+> >> >
+> >> 
+> >> We need to make sure the accounting of BPF memory usage is still
+> >> workable even without memcg, see also the previous discussion[2].
+> >> 
+> >> [2]. https://lore.kernel.org/linux-mm/Yy53cgcwx+hTll4R@slm.duckdns.org/
+> > 
+> 
