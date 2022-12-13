@@ -2,254 +2,215 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 68CD7C4332F
-	for <rcu@archiver.kernel.org>; Tue, 13 Dec 2022 15:52:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A5EA2C4332F
+	for <rcu@archiver.kernel.org>; Tue, 13 Dec 2022 15:55:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235733AbiLMPwN (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 13 Dec 2022 10:52:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49028 "EHLO
+        id S235622AbiLMPzJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 13 Dec 2022 10:55:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235622AbiLMPwM (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 13 Dec 2022 10:52:12 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42C36C13;
-        Tue, 13 Dec 2022 07:52:11 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id E792122A26;
-        Tue, 13 Dec 2022 15:52:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1670946729; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TaoWKqUzvN4kEKY5wBtJ9aIrvgF5jGvbxcDbreYukxk=;
-        b=gVrzglvq6sZmN7YBezWqcvqEcp2amLsvixVlNUCgrbgSBMZPx/B2360gZ5vgP5MmX1f9QA
-        ssiGsmjqjBJ+pAuZNVsc7PH1KPhNP8YPdoBusEd2YFz0ZhI6x114/bDm+Ea2PojAC1uGx6
-        16yKmoHnZWBLlPYvI5p135X5WfMvyFE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1670946729;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TaoWKqUzvN4kEKY5wBtJ9aIrvgF5jGvbxcDbreYukxk=;
-        b=ZjvosJlX6Q+0yjNEX48t2IKgKY+4AMRSgyk9tccLeaYY8JCgH1BID+AMo4fm0etgdaA8sJ
-        OgPU/iqSqKbugBAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 858D5138EE;
-        Tue, 13 Dec 2022 15:52:09 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id cjEDIKmfmGM4JAAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Tue, 13 Dec 2022 15:52:09 +0000
-Message-ID: <6f9bb391-580e-cfc2-e039-25f47d162d17@suse.cz>
-Date:   Tue, 13 Dec 2022 16:52:09 +0100
+        with ESMTP id S234825AbiLMPzJ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 13 Dec 2022 10:55:09 -0500
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5E3F19005
+        for <rcu@vger.kernel.org>; Tue, 13 Dec 2022 07:55:07 -0800 (PST)
+Received: by mail-lj1-x230.google.com with SMTP id g14so3703465ljh.10
+        for <rcu@vger.kernel.org>; Tue, 13 Dec 2022 07:55:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=f45LqSLATEMrJCmw7aYkQz4KkDjKXisGTgOLI8JUUMU=;
+        b=foFhoa5s2L3nT3GlSpjnKkQaiN4h8e6BQz+8OVie20qSf/jcUdw25d8fDQSuR7eJ7v
+         5h4rdWdzND603joeZq5uX+EKdR1eCOfHo7boE7FOSpZ0S6r6Fevwmnuy/D8O6eKhcBw3
+         qNi2SzyTK1rKd5uhEIug01l+E9t3QVOWrcbn0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=f45LqSLATEMrJCmw7aYkQz4KkDjKXisGTgOLI8JUUMU=;
+        b=XWrKTObAkzXYVVG2nS2Takf8ggrYXC1jp+XxF4fsMoIXpwIrZ1521cYfjVnjb24SU/
+         4tR3OlDiSPr1/61ZnMHKhI24CRs1x6ZtUNBHuEE0DD25V4oGU0snkRRSgeIgxLuVVeY2
+         12WDydMhlGWuZeeukgptMR/3z+aF/y6vRLjLGPHvjDweBnlgUoztbZ26JuhrgY21CAdt
+         MWpowydi5fDImHMtbTdccPty3A8OJcNBdD8JiGakRamgz/W7zZRyoOB5421GMhBV0tml
+         Cj6p0B+OeDxIQbGPHT4LN1sltBqt/4cNiIH7tGHoAcZ5sEj9xgIfnq6jGgldOUlhI224
+         hj/Q==
+X-Gm-Message-State: ANoB5pld+ZwTja3OUXCLsixEcBbJzCXv1sUoEIHHRocRKuuTx2uLUlWh
+        jRDMyaMe30YRkuP/5qrtAOSKnaU3+p7VDM6sUUSG0Q==
+X-Google-Smtp-Source: AA0mqf5UDDvBoNUEJ03+OUKF/c071tTBcbnQtz+ZcXFJpWEQ/eowblIpCR9N28KEUIkFM/6Z0CFzNbAjAkYA6LnVKNw=
+X-Received: by 2002:a2e:3309:0:b0:279:d1ef:69f7 with SMTP id
+ d9-20020a2e3309000000b00279d1ef69f7mr11910701ljc.167.1670946905983; Tue, 13
+ Dec 2022 07:55:05 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.1
-Subject: Re: [RFC PATCH bpf-next 0/9] mm, bpf: Add BPF into /proc/meminfo
-Content-Language: en-US
-To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Yafang Shao <laoar.shao@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, tj@kernel.org,
-        dennis@kernel.org, cl@linux.com, akpm@linux-foundation.org,
-        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
-        roman.gushchin@linux.dev, linux-mm@kvack.org, bpf@vger.kernel.org,
-        rcu@vger.kernel.org, Matthew Wilcox <willy@infradead.org>
-References: <20221212003711.24977-1-laoar.shao@gmail.com>
- <c43d8d42-ecb1-a044-eb9a-b68d5808562a@suse.cz>
- <CALOAHbC7xWFAYz0qc1XpREbw8=nAquFNTi5k4TA02UQ_7w5k0A@mail.gmail.com>
- <Y5iSsdDmXhC5nxuM@hyeyoo>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <Y5iSsdDmXhC5nxuM@hyeyoo>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <PH0PR11MB5880569A84B6DCAA1D5F4837DAE29@PH0PR11MB5880.namprd11.prod.outlook.com>
+ <D00B9D88-368D-48E1-BE16-532417EDB7F5@joelfernandes.org> <PH0PR11MB58803E07FC1F7DC60545F405DAE39@PH0PR11MB5880.namprd11.prod.outlook.com>
+In-Reply-To: <PH0PR11MB58803E07FC1F7DC60545F405DAE39@PH0PR11MB5880.namprd11.prod.outlook.com>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Tue, 13 Dec 2022 10:54:54 -0500
+Message-ID: <CAEXW_YS5NiFH4OpLFQgT=Mbm21D6DPvafMXf6sW=CSPBx0AgJg@mail.gmail.com>
+Subject: Re: [Report] v4.19 TREE03 splat (stable kernel with ChromeOS patches)
+To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
+Cc:     "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "paulmck@kernel.org" <paulmck@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 12/13/22 15:56, Hyeonggon Yoo wrote:
-> On Tue, Dec 13, 2022 at 07:52:42PM +0800, Yafang Shao wrote:
->> On Tue, Dec 13, 2022 at 1:54 AM Vlastimil Babka <vbabka@suse.cz> wrote:
->> >
->> > On 12/12/22 01:37, Yafang Shao wrote:
->> > > Currently there's no way to get BPF memory usage, while we can only
->> > > estimate the usage by bpftool or memcg, both of which are not reliable.
->> > >
->> > > - bpftool
->> > >   `bpftool {map,prog} show` can show us the memlock of each map and
->> > >   prog, but the memlock is vary from the real memory size. The memlock
->> > >   of a bpf object is approximately
->> > >   `round_up(key_size + value_size, 8) * max_entries`,
->> > >   so 1) it can't apply to the non-preallocated bpf map which may
->> > >   increase or decrease the real memory size dynamically. 2) the element
->> > >   size of some bpf map is not `key_size + value_size`, for example the
->> > >   element size of htab is
->> > >   `sizeof(struct htab_elem) + round_up(key_size, 8) + round_up(value_size, 8)`
->> > >   That said the differece between these two values may be very great if
->> > >   the key_size and value_size is small. For example in my verifaction,
->> > >   the size of memlock and real memory of a preallocated hash map are,
->> > >
->> > >   $ grep BPF /proc/meminfo
->> > >   BPF:             1026048 B <<< the size of preallocated memalloc pool
->> > >
->> > >   (create hash map)
->> > >
->> > >   $ bpftool map show
->> > >   3: hash  name count_map  flags 0x0
->> > >           key 4B  value 4B  max_entries 1048576  memlock 8388608B
->> > >
->> > >   $ grep BPF /proc/meminfo
->> > >   BPF:            84919344 B
->> > >
->> > >   So the real memory size is $((84919344 - 1026048)) which is 83893296
->> > >   bytes while the memlock is only 8388608 bytes.
->> > >
->> > > - memcg
->> > >   With memcg we only know that the BPF memory usage is less than
->> > >   memory.usage_in_bytes (or memory.current in v2). Furthermore, we only
->> > >   know that the BPF memory usage is less than $MemTotal if the BPF
->> > >   object is charged into root memcg :)
->> > >
->> > > So we need a way to get the BPF memory usage especially there will be
->> > > more and more bpf programs running on the production environment. The
->> > > memory usage of BPF memory is not trivial, which deserves a new item in
->> > > /proc/meminfo.
->> > >
->> > > This patchset introduce a solution to calculate the BPF memory usage.
->> > > This solution is similar to how memory is charged into memcg, so it is
->> > > easy to understand. It counts three types of memory usage -
->> > >  - page
->> > >    via kmalloc, vmalloc, kmem_cache_alloc or alloc pages directly and
->> > >    their families.
->> > >    When a page is allocated, we will count its size and mark the head
->> > >    page, and then check the head page at page freeing.
->> > >  - slab
->> > >    via kmalloc, kmem_cache_alloc and their families.
->> > >    When a slab object is allocated, we will mark this object in this
->> > >    slab and check it at slab object freeing. That said we need extra memory
->> > >    to store the information of each object in a slab.
->> > >  - percpu
->> > >    via alloc_percpu and its family.
->> > >    When a percpu area is allocated, we will mark this area in this
->> > >    percpu chunk and check it at percpu area freeing. That said we need
->> > >    extra memory to store the information of each area in a percpu chunk.
->> > >
->> > > So we only need to annotate the allcation to add the BPF memory size,
->> > > and the sub of the BPF memory size will be handled automatically at
->> > > freeing. We can annotate it in irq, softirq or process context. To avoid
->> > > counting the nested allcations, for example the percpu backing allocator,
->> > > we reuse the __GFP_ACCOUNT to filter them out. __GFP_ACCOUNT also make
->> > > the count consistent with memcg accounting.
->> >
->> > So you can't easily annotate the freeing places as well, to avoid the whole
->> > tracking infrastructure?
->> 
->> The trouble is kfree_rcu().  for example,
->>     old_item = active_vm_item_set(ACTIVE_VM_BPF);
->>     kfree_rcu();
->>     active_vm_item_set(old_item);
->> If we want to pass the ACTIVE_VM_BPF into the deferred rcu context, we
->> will change lots of code in the RCU subsystem. I'm not sure if it is
->> worth it.
-> 
-> (+Cc rcu folks)
-> 
-> IMO adding new kfree_rcu() varient for BPF that accounts BPF memory
-> usage would be much less churn :)
+On Tue, Dec 13, 2022 at 8:21 AM Zhang, Qiang1 <qiang1.zhang@intel.com> wrot=
+e:
+>
+> > On Dec 12, 2022, at 6:45 AM, Zhang, Qiang1 <qiang1.zhang@intel.com> wro=
+te:
+> >
+> > =EF=BB=BFOn Fri, Dec 9, 2022 at 11:34 PM Joel Fernandes <joel@joelferna=
+ndes.org> wrote:
+> >>
+> >> Hello,
+> >>
+> >> I see this an hour into the run for TREE03 on v4.19:
+> >> tools/testing/selftests/rcutorture/bin/kvm.sh --cpus 32 --duration 60
+> >>
+> >> Checking to see if Qiang has any thoughts as I saw him comment about a=
+ similar
+> >> issue in [1].
+> >>
+> >> [ 3243.844445] ------------[ cut here ]------------^M
+> >> [ 3243.847112] WARNING: CPU: 1 PID: 0 at kernel/kthread.c:411 __kthrea=
+d_bind_mask+0x19/0x60^M
+> >> [ 3243.851585] Modules linked in:^M
+> >> [ 3243.853295] CPU: 1 PID: 0 Comm: swapper/1 Not tainted 4.19.267+ #1^=
+M
+> >> [ 3243.856699] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), =
+BIOS 1.16.0-debian-1.16.0-4 04/01/2014^M
+> >> [ 3243.860052] RIP: 0010:__kthread_bind_mask+0x19/0x60^M
+> >> [ 3243.861769] Code: 48 89 42 20 c3 66 66 2e 0f 1f 84 00 00 00 00 00 9=
+0 41 55 41 54 55 48 89 f5 48 89 d6 53 48 89 fb e8 3c e9 00 00 48 85 c0 75 0=
+9 <0f> 0b 5b 5d 41 5c 41 5d c3 4c 8d ab b4 07 00 00 4c 89 ef e8 6f 28^M
+> >> [ 3243.867751] RSP: 0000:ffffa54b8014fec0 EFLAGS: 00010246^M
+> >> [ 3243.868959] RAX: 0000000000000000 RBX: ffff95555ee3c240 RCX: 000000=
+0000000000^M
+> >> [ 3243.870606] RDX: ffff95555f063d80 RSI: 0000000000000246 RDI: 000000=
+00ffffffff^M
+> >> [ 3243.872246] RBP: ffffffffb720a010 R08: af82bdcb11f9f4ff R09: 000000=
+0000000000^M
+> >> [ 3243.873894] R10: ffffa54b8014fe70 R11: 00000000621ccdc2 R12: 000000=
+0000000000^M
+> >> [ 3243.875538] R13: 0000000000000000 R14: 0000000000000000 R15: 000000=
+0000000000^M
+> >> [ 3243.877181] FS:  0000000000000000(0000) GS:ffff95555f040000(0000) k=
+nlGS:0000000000000000^M
+> >> [ 3243.878698] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033^M
+> >> [ 3243.879747] CR2: 0000000000000000 CR3: 000000001300a000 CR4: 000000=
+00000006e0^M
+> >> [ 3243.881050] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 000000=
+0000000000^M
+> >> [ 3243.882358] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 000000=
+0000000400^M
+> >> [ 3243.883660] Call Trace:^M
+> >> [ 3243.884925]  kthread_unpark+0x52/0x60^M
+> >> [ 3243.885613]  cpuhp_online_idle+0x31/0x50^M
+> >> [ 3243.886341]  cpu_startup_entry+0x62/0x70^M
+> >> [ 3243.887063]  start_secondary+0x186/0x1b0^M
+> >> [ 3243.887783]  secondary_startup_64+0xa4/0xb0^M
+> >>
+> >> [1] https://groups.google.com/g/syzkaller-bugs/c/w_LARy6pxvQ/m/dKjQyHA=
+xAQAJ
+> >>
+> >>
+> >> This set of scheduler patches seems to make it go away, however I am
+> >> running a long weekend test to collect more data:
+> >> https://git.kernel.org/pub/scm/linux/kernel/git/jfern/linux.git/log/?h=
+=3Drcu/torture/v4.19.fixes.wip.120922
+> >
+> >
+> > Hi Joel
+> >
+> > I also used the link above to do the TREE03 test, looks like the proble=
+m still exists:
+> >
+> > 5834 [  966.016205]  kthread_unpark+0x50/0x60^M
+> > 5835 [  966.016440]  cpuhp_online_idle+0x31/0x50^M
+> > 5836 [  966.016678]  cpu_startup_entry+0x65/0x70^M
+> > 5837 [  966.016913]  start_secondary+0x18b/0x1c0^M
+> > 5838 [  966.017148]  secondary_startup_64+0xa4/0xb0^M
+> > 5839 [  966.017407] ---[ end trace 636953f76b8055db ]---^M
+> > 5840 [  966.017691] migration/1     R  running task    14952    18     =
+ 2 0x80000000 last_sleep: 961405359084.  last_runna      ble: 961700816631^=
+M
+> > 5841 [  966.018406] Call Trace:^M
+> > 5842 [  966.018559]  __schedule+0x75f/0x1320^M
+> > 5843 [  966.018775]  ? cpuhp_invoke_callback+0x88/0x600^M
+> > 5844 [  966.019042]  ? ___preempt_schedule+0x16/0x18^M
+> > 5845 [  966.019302]  ? sort_range+0x20/0x20^M
+> > 5846 [  966.019515]  preempt_schedule_common+0x32/0x80^M
+> > 5847 [  966.019776]  ___preempt_schedule+0x16/0x18^M
+> > 5848 [  966.020018]  _raw_spin_unlock_irq+0x1f/0x20^M
+> > 5849 [  966.020275]  smpboot_thread_fn+0x195/0x230^M
+> > 5850 [  966.020525]  kthread+0x139/0x160^M
+> > 5851 [  966.020717]  ? kthread_create_worker_on_cpu+0x60/0x60^M
+> > 5852 [  966.021014]  ret_from_fork+0x35/0x40^M
+> >
+> > From the calltrace, the state of migration kthreads is not correct,
+> > I'm also looking at what's going wrong.
+> >
+> >Thanks for checking. I also noticed that the state of those threads is r=
+unning instead of parked, causing the warning.
+> >
+> >- Joel
+>
+> Hi Joel
+>
+> I find the TREE03 enable CONFIG_SCHED_CORE =3D y, under this condition, i=
+f the cpu goes offline,
+> we will directly select the idle kthread, which leads to it preempting th=
+e migration kthread.
+> through calltrace, it can also be found , the  migration/1  kthread is pr=
+eempted and schedule out.
+>
+> [  966.017691] migration/1     R  running task    14952
+> [  966.018559]  __schedule+0x75f/0x1320^M
+> [  966.018775]  ? cpuhp_invoke_callback+0x88/0x600^M
+> [  966.019042]  ? ___preempt_schedule+0x16/0x18^M
+> [  966.019302]  ? sort_range+0x20/0x20^M
+> [  966.019515]  preempt_schedule_common+0x32/0x80^M
+> [  966.019776]  ___preempt_schedule+0x16/0x18^M
+> [  966.020018]  _raw_spin_unlock_irq+0x1f/0x20^M
+> [  966.020275]  smpboot_thread_fn+0x195/0x230^M
+> [  966.020525]  kthread+0x139/0x160^M
+> [  966.020717]  ? kthread_create_worker_on_cpu+0x60/0x60^M
+> [  966.021014]  ret_from_fork+0x35/0x40^M
+>
+> The following modification can fix this warning(this change comes from th=
+e new kernel version).
+>
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index 0acbc7706d71..1c76226a2c26 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -4109,8 +4109,10 @@ pick_next_task(struct rq *rq, struct task_struct *=
+prev, struct rq_flags *rf)
+>         bool fi_before =3D false;
+>
+>         cpu =3D cpu_of(rq);
+> -       if (cpu_is_offline(cpu))
+> -               return idle_sched_class.pick_next_task(rq, prev, rf);
+> +       if (cpu_is_offline(cpu)) {
+> +               rq->core_pick =3D NULL;
+> +               return __pick_next_task(rq, prev, rf);
+> +       }
 
-Alternatively, just account the bpf memory as freed already when calling
-kfree_rcu()? I think the amount of memory "in flight" to be freed by rcu is
-a separate issue (if it's actually an issue) and not something each
-kfree_rcu() user should think about separately?
+Wow hats off at that debugging and thank you so much, I will test this
+more and let you know. I think CONFIG_SCHED_CORE might be enabled by
+default on the ChromeOS 4.19 kernel, which is why we see it and the
+regular 4.19 stable kernel does not.
 
->> 
->> >  I thought there was a patchset for a whole
->> > bfp-specific memory allocator, where accounting would be implemented
->> > naturally, I would imagine.
->> >
->> 
->> I posted a patchset[1] which annotates both allocating and freeing
->> several months ago.
->> But unfortunately after more investigation and verification I found
->> the deferred freeing context is a problem, which can't be resolved
->> easily.
->> That's why I finally decided to annotate allocating only.
->> 
->> [1]. https://lore.kernel.org/linux-mm/20220921170002.29557-1-laoar.shao@gmail.com/
->> 
->> > > To store the information of a slab or a page, we need to create a new
->> > > member in struct page, but we can do it in page extension which can
->> > > avoid changing the size of struct page. So a new page extension
->> > > active_vm is introduced. Each page and each slab which is allocated as
->> > > BPF memory will have a struct active_vm. The reason it is named as
->> > > active_vm is that we can extend it to other areas easily, for example in
->> > > the future we may use it to count other memory usage.
->> > >
->> > > The new page extension active_vm can be disabled via CONFIG_ACTIVE_VM at
->> > > compile time or kernel parameter `active_vm=` at runtime.
->> >
->> > The issue with page_ext is the extra memory usage, so it was rather intended
->> > for debugging features that can be always compiled in, but only enabled at
->> > runtime when debugging is needed. The overhead is only paid when enabled.
->> > That's at least the case of page_owner and page_table_check. The 32bit
->> > page_idle is rather an oddity that could have instead stayed 64-bit only.
->> >
->> 
->> Right, it seems currently page_ext is for debugging purposes only.
->> 
->> > But this is proposing a page_ext functionality supposed to be enabled at all
->> > times in production, with the goal of improved accounting. Not an on-demand
->> > debugging. I'm afraid the costs will outweight the benefits.
->> >
->> 
->> The memory overhead of this new page extension is (8/4096), which is
->> 0.2% of total memory. Not too big to be acceptable.
-> 
-> It's generally unacceptable to increase sizeof(struct page)
-> (nor enabling page_ext by default, and that's the why page_ext is for
-> debugging purposes only)
-> 
->> If the user really
->> thinks this overhead is not accepted, he can set "active_vm=off" to
->> disable it.
-> 
-> I'd say many people won't welcome adding 0.2% of total memory by default
-> to get BPF memory usage. 
+Anyway thank you again and kudos on the awesome debug. I will keep you
+posted on my testing.
 
-Agreed.
+Thanks,
 
->> To reduce the memory overhead further, I have a bold idea.
->> Actually we don't need to allocate such a page extension for every
->> page,  while we only need to allocate it if the user needs to access
->> it. That said it seems that we can allocate some kind of page
->> extensions dynamically rather than preallocate at booting, but I
->> haven't investigated it deeply to check if it can work. What do you
->> think?
-
-There's lots of benefits (simplicity) of page_ext being allocated as it is
-today. What you're suggesting will be better solved (in few years :) by
-Matthew's bold ideas about shrinking the current struct page and allocating
-usecase-specific descriptors.
-
->> > Just a quick thought, in case the bpf accounting really can't be handled
->> > without marking pages and slab objects - since memcg already has hooks there
->> > without need of page_ext, couldn't it be done by extending the memcg infra
->> > instead?
->> >
->> 
->> We need to make sure the accounting of BPF memory usage is still
->> workable even without memcg, see also the previous discussion[2].
->> 
->> [2]. https://lore.kernel.org/linux-mm/Yy53cgcwx+hTll4R@slm.duckdns.org/
-> 
-
+ - Joel
