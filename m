@@ -2,250 +2,160 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 653E0C4332F
-	for <rcu@archiver.kernel.org>; Wed, 14 Dec 2022 12:36:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D87E6C4332F
+	for <rcu@archiver.kernel.org>; Wed, 14 Dec 2022 14:25:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238405AbiLNMgu (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 14 Dec 2022 07:36:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40558 "EHLO
+        id S237347AbiLNOZH (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 14 Dec 2022 09:25:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238466AbiLNMgT (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 14 Dec 2022 07:36:19 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56B7FBC8A
-        for <rcu@vger.kernel.org>; Wed, 14 Dec 2022 04:34:47 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id a9so3170510pld.7
-        for <rcu@vger.kernel.org>; Wed, 14 Dec 2022 04:34:47 -0800 (PST)
+        with ESMTP id S229867AbiLNOZG (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 14 Dec 2022 09:25:06 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1222275DE
+        for <rcu@vger.kernel.org>; Wed, 14 Dec 2022 06:25:04 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id z8-20020a17090abd8800b00219ed30ce47so7316240pjr.3
+        for <rcu@vger.kernel.org>; Wed, 14 Dec 2022 06:25:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=flxTKkYdV+Ux5I+C9jOGJuLoMb60/HSAb/gzXohwkO8=;
-        b=ZGXAD+u5EHsvfnKBI/kAoFFdeGFB4GD2Pskdl/drSoGQd4OMOjz11nRLGc7QvuLMnz
-         mvl8gPljvQhk9sXWEF4K6Gs6jFyI2erertAAj8UuJWQSyCrqPLnoeuG3AXNhwH7+o3p5
-         fBgqQXQn7D+Lq49Z0IKSc8FSRzDA66yKL05bDGPA4Xv0xI67DAUbowRypQSwRYHetF0r
-         PBfijwiCUThunfYrE9lsSPZPGxiJjvkXb4VNl/ED1xq9XxL9NtPuNe3Hb/xU4WPNVH28
-         6Co055ZiGEaAyD+ScTJt2xGHLRVyGJ5aqu8+qwWEWebzn8ucyK5Zqry3Nck5UgLKp2pJ
-         2RGw==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZVhu3+wc50w9K7EywxpfrE3vWE7JxNrKGRS5GAy1PI0=;
+        b=HBCextnb/TUk3qbj6PFgup6k2wlMqKnz83huW7C+VymkLwd8bIx6IEZxoWGXIZ+Cn1
+         0ExkjbGsDf76Hpti5FHKD2mjNB0uoUVYAssP8OewF9Zk/Wqs8DOiugE4pcckeBwicoOr
+         Wewa5YMXPmsyWSd3L6n7EqVkQ2sBWshXrly9zVm52uHzmsIgXkgjt+JRr2c0r5vBJXN1
+         RLzZAigAJ8RNjAjqy9vy1QDf2LFnabR1OKXPKBjhJlGTAOAdQhDOCVe2Ev2Kbwp6nlgK
+         1JKojiHzmQTiUIPxDHb9PpS1X4h1buqu3WnScVNCr/zxj+AjQdF24Zv3UacqiC5loJGF
+         aWfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=flxTKkYdV+Ux5I+C9jOGJuLoMb60/HSAb/gzXohwkO8=;
-        b=I59ab/KvqQud7TC7Uwcvo4cdnrk4ZA3CGHwNquM+9lJxzMnwxdXQxHBXS8xn9x+UU/
-         dtzPMLRq6Mzy/Nea8RnhippXzO2Dp7h+vl3qwA9wzwbqWXO8cX6aQAdLwLDvZMnaz4o1
-         4ABVD3sCvLVpujJydJKsaoWR6oH8nZ9t+Hd3b5OgGqcmaYr1q3X2CwZNnYxjaB+3i/TB
-         D+BM0mbSZXl89Z8I2vRRuCb3vVOKLN1kFPERhe5y2B2gEiUF0BQCdmym2miWFOeTXarQ
-         3Q+IxfenxyUsUccZJPzR/ShynfFlK9Lvt90AT/6K3F0tMizS2Hxg00b4WLaHqSlyzPDx
-         jP5w==
-X-Gm-Message-State: ANoB5pnVza7oxGEdnrHJFCCpcIwteXWccZbAMW1YcpLbliDlBSCbQiVF
-        yLw7t70FnayAUuuF0V7iYDk3hRwOn5Ki
-X-Google-Smtp-Source: AA0mqf51/mYm4q0moxW2741cQGPr4DzRMVxxx0YHEvI/Yfy5MGQGv2AE/F6FlI0jEkQiQjWjWNWTCQ==
-X-Received: by 2002:a17:902:b414:b0:186:7a6b:dcdb with SMTP id x20-20020a170902b41400b001867a6bdcdbmr24614461plr.40.1671021286847;
-        Wed, 14 Dec 2022 04:34:46 -0800 (PST)
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZVhu3+wc50w9K7EywxpfrE3vWE7JxNrKGRS5GAy1PI0=;
+        b=izpsBN4YIjD5AIf0E94wrKEDjTs4ElCVleWPQpa0p8UpenXwEi9Pk2k+R5hFEPolEx
+         jSduuWe8iQM2ikUdVMQ8LR+gmRKCZfNfWDA9+qdUrTUqX6t8UWhRmSelOGzVncize1WB
+         MQEvGeCbod96/hKdvM6UC1hj6YUqNMAUe+tc4PrSqZAovXNoL3Cl8tvx/gPaiGmkleku
+         DBEcEvC6wIlOAmhTp4opFJ+I7JZn0seUeCdIKmEZ81JOmHn6aF5zDDvuzI9DhcHxmghk
+         /xaXU81IRC7IM5ve5AzFvigDdwnA81qfVyKi5Kps8d8O/WxkVPMLzEfplsvbEUgVd2MU
+         VZRQ==
+X-Gm-Message-State: ANoB5pm6GGJtIFm+lZNShVr+aQH+abadUKuVMNF7sMrEtto9Zp5xhLCS
+        +Uyfvp3saCrVsE+sGT+V+vYHQaRHaA==
+X-Google-Smtp-Source: AA0mqf6ynq37rVIzl4t0etSrVjrDT1lHQ/OpWOEzSB769qRhnNcxq/VJgvRtRhvVMPamWsOOvEWLAw==
+X-Received: by 2002:a17:902:d510:b0:185:441e:90ae with SMTP id b16-20020a170902d51000b00185441e90aemr35313664plg.20.1671027903946;
+        Wed, 14 Dec 2022 06:25:03 -0800 (PST)
 Received: from piliu.users.ipa.redhat.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id l7-20020a170903120700b0017f73dc1549sm1756784plh.263.2022.12.14.04.34.39
+        by smtp.gmail.com with ESMTPSA id iz17-20020a170902ef9100b0018099c9618esm1915244plb.231.2022.12.14.06.24.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Dec 2022 04:34:45 -0800 (PST)
-Date:   Wed, 14 Dec 2022 20:34:35 +0800
+        Wed, 14 Dec 2022 06:25:03 -0800 (PST)
 From:   Pingfan Liu <kernelfans@gmail.com>
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     rcu@vger.kernel.org, Lai Jiangshan <jiangshanlai@gmail.com>,
+To:     rcu@vger.kernel.org
+Cc:     Pingfan Liu <kernelfans@gmail.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
         "Paul E. McKenney" <paulmck@kernel.org>,
         Frederic Weisbecker <frederic@kernel.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Zhang, Qiang1" <qiang1.zhang@intel.com>
-Subject: Re: [PATCH] srcu: switch work func to allow concurrent gp
-Message-ID: <Y5nC2yBhaUYirByo@piliu.users.ipa.redhat.com>
-References: <20221130083902.31577-1-kernelfans@gmail.com>
- <Y4eKl2fCNDX2ka1g@boqun-archlinux>
- <Y4ix4BWZvTrk9WkJ@piliu.users.ipa.redhat.com>
- <Y5h3bmckCkJQ6cmg@piliu.users.ipa.redhat.com>
- <Y5jXuVHKippIZ24j@boqun-archlinux>
+        "Zhang, Qiang1" <qiang1.zhang@intel.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: [PATCH] srcu: Add notes for not-effective mutex
+Date:   Wed, 14 Dec 2022 22:24:46 +0800
+Message-Id: <20221214142446.56543-1-kernelfans@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y5jXuVHKippIZ24j@boqun-archlinux>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Dec 13, 2022 at 11:51:21AM -0800, Boqun Feng wrote:
-> On Tue, Dec 13, 2022 at 09:00:30PM +0800, Pingfan Liu wrote:
-> > On Thu, Dec 01, 2022 at 09:53:36PM +0800, Pingfan Liu wrote:
-> > > On Wed, Nov 30, 2022 at 08:53:43AM -0800, Boqun Feng wrote:
-> > > > On Wed, Nov 30, 2022 at 04:39:02PM +0800, Pingfan Liu wrote:
-> > > > > ssp->srcu_cb_mutex is introduced to allow the other srcu state machine
-> > > > > to advance as soon as possible. But according to the implement of
-> > > > > workqueue, the same work_struct is serialized and can not run
-> > > > > concurrently in fact.
-> > > > > 
-> > > > > Quoting from Documentation/core-api/workqueue.rst
-> > > > > "
-> > > > > Non-reentrance Conditions
-> > > > > =========================
-> > > > > 
-> > > > > Workqueue guarantees that a work item cannot be re-entrant if the following
-> > > > > conditions hold after a work item gets queued:
-> > > > > 
-> > > > >         1. The work function hasn't been changed.
-> > > > >         2. No one queues the work item to another workqueue.
-> > > > >         3. The work item hasn't been reinitiated.
-> > > > > "
-> > > > > 
-> > > > > To allow the concurrence to some extent, it can be achieved by changing
-> > > > > the work function to break the conditions. As a result, when
-> > > > > srcu_gp_end() releases srcu_gp_mutex, a new state machine can begin.
-> > > > > 
-> > > > > Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
-> > > > > Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-> > > > > Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> > > > > Cc: Frederic Weisbecker <frederic@kernel.org>
-> > > > > Cc: Josh Triplett <josh@joshtriplett.org>
-> > > > > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > > > > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > > > > Cc: "Zhang, Qiang1" <qiang1.zhang@intel.com>
-> > > > > To: rcu@vger.kernel.org
-> > > > > ---
-> > > > >  kernel/rcu/srcutree.c | 19 +++++++++++++++++++
-> > > > >  1 file changed, 19 insertions(+)
-> > > > > 
-> > > > > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> > > > > index 1c304fec89c0..56dd9bb2c8b8 100644
-> > > > > --- a/kernel/rcu/srcutree.c
-> > > > > +++ b/kernel/rcu/srcutree.c
-> > > > > @@ -75,6 +75,7 @@ static bool __read_mostly srcu_init_done;
-> > > > >  static void srcu_invoke_callbacks(struct work_struct *work);
-> > > > >  static void srcu_reschedule(struct srcu_struct *ssp, unsigned long delay);
-> > > > >  static void process_srcu(struct work_struct *work);
-> > > > > +static void process_srcu_wrap(struct work_struct *work);
-> > > > >  static void srcu_delay_timer(struct timer_list *t);
-> > > > >  
-> > > > >  /* Wrappers for lock acquisition and release, see raw_spin_lock_rcu_node(). */
-> > > > > @@ -763,6 +764,11 @@ static void srcu_gp_end(struct srcu_struct *ssp)
-> > > > >  		cbdelay = 0;
-> > > > >  
-> > > > >  	WRITE_ONCE(ssp->srcu_last_gp_end, ktime_get_mono_fast_ns());
-> > > > > +	/* Change work func so work can be concurrent */
-> > > > > +	if (ssp->work.work.func == process_srcu_wrap)
-> > > > > +		ssp->work.work.func = process_srcu;
-> > > > > +	else
-> > > > > +		ssp->work.work.func = process_srcu_wrap;
-> > > > 
-> > > > This looks really hacky ;-) It would be good that workqueue has an API
-> > > > to allow "resetting" a work.
-> > > > 
-> > > 
-> > > Indeed, it is hacky and it can be done by using alternative work_struct
-> > > so that from the workqueue API, it is intact.
-> > > 
-> > > > Do you have any number of the potential performance improvement?
-> > > > 
-> > > 
-> > > I will try to bring out one. But the result may heavily depend on the
-> > > test case.
-> > > 
-> > 
-> > Sorry to update late, I was interrupted by something else.
-> 
-> No worries, thanks for looking into it.
-> 
-> > 
-> > I used two machine to test
-> > 
-> > -1. on 144 cpus hpe-dl560gen10
-> > 
-> > modprobe rcutorture   torture_type=srcud  fwd_progress=144 fwd_progress_holdoff=1 shutdown_secs=36000 stat_interval=60 verbose=1
-> > 
-> > # no patch
-> > [37587.632155] srcud:  End-test grace-period state: g28287244 f0x0 total-gps=28287244
-> > #my patch
-> > [36443.468017] srcud:  End-test grace-period state: g29026056 f0x0 total-gps=29026056
-> > 
-> > 
-> > -2. on 256 cpus amd-milan
-> > modprobe rcutorture   torture_type=srcud  fwd_progress=256 fwd_progress_holdoff=1 shutdown_secs=36000 stat_interval=60 verbose=1
-> > 
-> > # no patch
-> > [36093.605732] srcud:  End-test grace-period state: g10850284 f0x0 total-gps=10850284
-> > #my patch
-> > [36093.856713] srcud:  End-test grace-period state: g10672632 f0x0 total-gps=10672632
-> > 
-> > 
-> > The first test shows that it has about 2.6% improvement, while the
-> > second test shows it has no significant effect.
-> > 
-> > 
-> > I wonder if any test case can be in flavour of my patch. Any suggestion?
-> > 
-> 
-> I actually wait you to tell me that ;-) Your trick clearly can improve
-> the degree of parallel a bit, but IIUC you need that srcu_end_gp() runs
-> at the same time with the srcu work function (i.e. pending bit is
-> cleared) to archieve that. And that's really a small time window ;-)
-> 
+Capped by the design and implementation of workqueue, the same work can not
+be re-entrant.
 
-Yes, it is smaller than I expected.
+SRCU has only a single work ssp->work, there is no way to occur the
+concurrent scene in its state machine. Hence the mutexes for the
+concurrency in the state machine is unnecessary. On the other hand,
+using two works to utilize the window from the release of srcu_gp_mutex
+to the end of srcu_gp_end() to enhance the parallelism has limited
+effect. [1]
 
-> And there's always the Amdahl's law: do we know whether the state
-> machine processing of SRCU is the bottleneck in any workload?
-> 
-> And are we willing to give CPU time to SRCU state machine processing
-> instead of anything else?
-> 
-> My suggestion is to keep this patch somewhere, and whenever you see a
-> related problem, try the patch and see whether it helps ;-)
-> 
+To save any trying of improving parallelism by using two work_struct,
+put some notes around the srcu_gp_mutex and srcu_cb_mutex. And keep them
+instead of removing them, in case in future, the state machine is moved
+out of the protection of workqueue non-reentrant protection.
 
-Yes. Thanks for your suggestion.
+Some test data to show how dual work_struct affects the SRCU
+performance:
 
-Again, appreciate for your help and advice.
+-1. on 144 cpus hpe-dl560gen10
+  modprobe rcutorture   torture_type=srcud  fwd_progress=144 fwd_progress_holdoff=1 shutdown_secs=36000 stat_interval=60 verbose=1
+  # base line
+  [37587.632155] srcud:  End-test grace-period state: g28287244 f0x0 total-gps=28287244
+  # two dual work_struct
+  [36443.468017] srcud:  End-test grace-period state: g29026056 f0x0 total-gps=29026056
 
-Regards,
+-2. on 256 cpus amd-milan
+  modprobe rcutorture   torture_type=srcud  fwd_progress=256 fwd_progress_holdoff=1 shutdown_secs=36000 stat_interval=60 verbose=1
+  # base line
+  [36093.605732] srcud:  End-test grace-period state: g10850284 f0x0 total-gps=10850284
+  # two dual work_struct
+  [36093.856713] srcud:  End-test grace-period state: g10672632 f0x0 total-gps=10672632
 
-	Pingfan
+The first test shows that it has about 2.6% improvement, while the
+second test shows it has no significant effect.
 
-> Regards,
-> Boqun
-> 
-> > 
-> > Thanks,
-> > 
-> > 	Pingfan
-> > 
-> > > Thanks,
-> > > 
-> > > 	Pingfan
-> > > 
-> > > > Regards,
-> > > > Boqun
-> > > > 
-> > > > >  	rcu_seq_end(&ssp->srcu_gp_seq);
-> > > > >  	gpseq = rcu_seq_current(&ssp->srcu_gp_seq);
-> > > > >  	if (ULONG_CMP_LT(ssp->srcu_gp_seq_needed_exp, gpseq))
-> > > > > @@ -1637,6 +1643,19 @@ static void process_srcu(struct work_struct *work)
-> > > > >  	srcu_reschedule(ssp, curdelay);
-> > > > >  }
-> > > > >  
-> > > > > +/*
-> > > > > + * The ssp->work is expected to be concurrent to some extent, but the current
-> > > > > + * workqueue does not support the concurrence on the same work. (Refer to the
-> > > > > + * section "Non-reentrance Conditions" in the file workqueue.rst)
-> > > > > + * Resolving it by changing the work func.
-> > > > > + *
-> > > > > + * Prevent compilering from optimizing out it.
-> > > > > + */
-> > > > > +static __used void process_srcu_wrap(struct work_struct *work)
-> > > > > +{
-> > > > > +	process_srcu(work);
-> > > > > +}
-> > > > > +
-> > > > >  void srcutorture_get_gp_data(enum rcutorture_type test_type,
-> > > > >  			     struct srcu_struct *ssp, int *flags,
-> > > > >  			     unsigned long *gp_seq)
-> > > > > -- 
-> > > > > 2.31.1
-> > > > > 
+[1]: https://lore.kernel.org/rcu/Y5nC2yBhaUYirByo@piliu.users.ipa.redhat.com/T/#maf99cf1d92077a1b0b8e5c411c79fa4444576624
+
+Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Frederic Weisbecker <frederic@kernel.org>
+Cc: Josh Triplett <josh@joshtriplett.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: "Zhang, Qiang1" <qiang1.zhang@intel.com>
+Cc: Boqun Feng <boqun.feng@gmail.com>
+Cc: Joel Fernandes <joel@joelfernandes.org>
+To: rcu@vger.kernel.org
+---
+ include/linux/srcutree.h | 4 ++++
+ kernel/rcu/srcutree.c    | 5 ++++-
+ 2 files changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
+index 558057b517b7..f199c31493ab 100644
+--- a/include/linux/srcutree.h
++++ b/include/linux/srcutree.h
+@@ -66,8 +66,12 @@ struct srcu_struct {
+ 						/* First node at each level. */
+ 	int srcu_size_state;			/* Small-to-big transition state. */
+ 	struct mutex srcu_cb_mutex;		/* Serialize CB preparation. */
++						/* Not take effect since the only single sdp->work */
++						/* meets the workqueue non-reentrant condition */
+ 	spinlock_t __private lock;		/* Protect counters and size state. */
+ 	struct mutex srcu_gp_mutex;		/* Serialize GP work. */
++						/* Not take effect since the only single sdp->work */
++						/* meets the workqueue non-reentrant condition */
+ 	unsigned int srcu_idx;			/* Current rdr array element. */
+ 	unsigned long srcu_gp_seq;		/* Grace-period seq #. */
+ 	unsigned long srcu_gp_seq_needed;	/* Latest gp_seq needed. */
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index ce39907fa381..8ebb1a240219 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -815,7 +815,10 @@ static void srcu_gp_end(struct srcu_struct *ssp)
+ 	struct srcu_node *snp;
+ 	int ss_state;
+ 
+-	/* Prevent more than one additional grace period. */
++	/*
++	 * Prevent more than one additional grace period. But at present, it does
++	 * not take effect. Refer to the note at the definition.
++	 * /
+ 	mutex_lock(&ssp->srcu_cb_mutex);
+ 
+ 	/* End the current grace period. */
+-- 
+2.31.1
+
